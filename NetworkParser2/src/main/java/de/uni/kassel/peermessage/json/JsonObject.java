@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.Enumeration;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
@@ -204,7 +204,7 @@ public class JsonObject {
 	public JsonObject(Map<String, Object> map) {
 		this();
 		if (map != null) {
-			this.map = new HashMap<String, Object>();
+			this.map = new LinkedHashMap<String, Object>();
 			Iterator<Entry<String, Object>> i = map.entrySet().iterator();
 			while (i.hasNext()) {
 				Entry<String, Object> e = i.next();
@@ -591,7 +591,7 @@ public class JsonObject {
 	 */
 	public Iterator<String> keys() {
 		if (map == null) {
-			this.map = new HashMap<String, Object>();
+			this.map = new LinkedHashMap<String, Object>();
 		}
 		return this.map.keySet().iterator();
 	}
@@ -666,7 +666,7 @@ public class JsonObject {
 			return null;
 		}
 		if (map == null) {
-			map = new HashMap<String, Object>();
+			map = new LinkedHashMap<String, Object>();
 		}
 		return this.map.get(key);
 	}
@@ -990,7 +990,7 @@ public class JsonObject {
 		if (value != null) {
 			testValidity(value);
 			if (map == null) {
-				map = new HashMap<String, Object>();
+				map = new LinkedHashMap<String, Object>();
 			}
 			this.map.put(key, value);
 		} else {

@@ -1,7 +1,7 @@
 package de.uni.kassel.peermessage.interfaces;
 
-import de.uni.kassel.peermessage.RemoveEntity;
+import de.uni.kassel.peermessage.RemoveListener;
 
 public interface SendableEntity {
-	public void setRemoveListener(RemoveEntity removeEntity);
+	public void setRemoveListener(RemoveListener removeEntity);
 }

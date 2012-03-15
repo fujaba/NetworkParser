@@ -4,7 +4,6 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 
 import de.uni.kassel.peermessage.IdMap;
-import de.uni.kassel.peermessage.exception.DecodeException;
 import de.uni.kassel.peermessage.interfaces.PrimaryEntityCreator;
 
 public class ByteIdMap extends IdMap<PrimaryEntityCreator>{
@@ -63,14 +62,14 @@ public class ByteIdMap extends IdMap<PrimaryEntityCreator>{
 		return returnValue.toString();
 	}
 
-	public Object decode(Object bytes) throws DecodeException {
+	public Object decode(Object bytes) throws RuntimeException {
 		if (decoder == null) {
 			decoder = new Decoding(this);
 		}
 		return decoder.decode(bytes);
 	}
 
-	public Object decodeHTTP(String bytes) throws DecodeException {
+	public Object decodeHTTP(String bytes) throws RuntimeException {
 		int len = bytes.length();
 		ByteBuffer buffer = ByteBuffer.allocate(len);
 		for (int i = 0; i < len; i++) {
