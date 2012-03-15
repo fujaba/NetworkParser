@@ -2,17 +2,18 @@ package de.uni.kassel.peermessage;
 
 import java.util.HashMap;
 
+import de.uni.kassel.peermessage.interfaces.IdCounter;
 import de.uni.kassel.peermessage.interfaces.SendableEntity;
 import de.uni.kassel.peermessage.interfaces.SendableEntityCreator;
 
 public class IdMap<T extends SendableEntityCreator> {
-	protected String sessionId="J1";
-	protected long number = 1;
+	
 	private HashMap<Object, String> keys = new HashMap<Object, String>();
 	private HashMap<String, Object> values = new HashMap<String, Object>();
 	private HashMap<String, T> creators = new HashMap<String, T>();
 	protected IdMap<T> parent;
 	protected boolean isId = true;
+	private IdCounter counter;
 
 	public IdMap(){
 		keys = new HashMap<Object, String>();
@@ -23,9 +24,20 @@ public class IdMap<T extends SendableEntityCreator> {
 		this.parent=parent;
 	}
 
-	public void setSessionId(String sessionId) {
-		this.sessionId = sessionId;
+	public void setCounter(IdCounter counter){
+		this.counter=counter;
 	}
+	public IdCounter getCounter(){
+		if(counter==null){
+			counter=new SimpleIdCounter();
+		}
+		return counter;
+	}
+	
+	public void setSessionId(String sessionId) {
+		getCounter().setPrefixId(sessionId);
+	}
+	
 
 	// Key Value paar
 	public String getKey(Object obj) {
@@ -50,29 +62,14 @@ public class IdMap<T extends SendableEntityCreator> {
 			return parent.getId(obj);
 		}
 		String key = keys.get(obj);
-		if (key == null) {
-			// new object generate key and add to tables
-			// <session id>.<first char><running number>
-			if (obj == null) {
-				try {
-					throw new Exception("NullPointer: " + obj);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-			String className = obj.getClass().getName();
-			char firstChar = className.charAt(className.lastIndexOf('.') + 1);
-			if (sessionId != null) {
-				key = sessionId + "." + firstChar + number;
-			} else {
-				key = "" + firstChar + number;
-			}
-			number++;
-
-			put(key, obj);
+		if(key==null){
+			key=getCounter().getId(obj);
 		}
+		put(key, obj);
+		
 		return key;
 	}
+	
 
 	public void put(String jsonId, Object object) {
 		if(parent!=null){
@@ -81,7 +78,7 @@ public class IdMap<T extends SendableEntityCreator> {
 			values.put(jsonId, object);
 			keys.put(object, jsonId);
 			if(object instanceof SendableEntity){
-				((SendableEntity)object).setRemoveListener(new RemoveEntity(this, object));
+				((SendableEntity)object).setRemoveListener(new RemoveListener(this, object));
 			}
 		}
 	}

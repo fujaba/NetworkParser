@@ -28,7 +28,7 @@ public class DateCreator implements SendableEntityCreator, NoIndexCreator{
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value) {
 		if(VALUE.equals(attribute)){
-			((Date)entity).setTime((long) value);;
+			((Date)entity).setTime((Long) value);;
 			return true;
 		}
 		return false;

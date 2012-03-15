@@ -7,7 +7,6 @@ import java.util.HashMap;
 
 import de.uni.kassel.peermessage.event.ByteMessage;
 import de.uni.kassel.peermessage.event.UnknownMessage;
-import de.uni.kassel.peermessage.exception.DecodeException;
 import de.uni.kassel.peermessage.interfaces.PrimaryEntityCreator;
 
 public class Decoding {
@@ -17,7 +16,7 @@ public class Decoding {
 		this.parent=parent;
 	}
 
-	public Object decode(Object value) throws DecodeException {
+	public Object decode(Object value) throws RuntimeException {
 		if (value instanceof ByteBuffer) {
 			return decode((ByteBuffer) value);
 		} else if (value instanceof byte[]) {
@@ -26,9 +25,9 @@ public class Decoding {
 		return null;
 	}
 
-	public Object decode(ByteBuffer in) throws DecodeException {
+	public Object decode(ByteBuffer in) throws RuntimeException {
 		if (in.remaining() < 1)
-			throw new DecodeException(in.remaining());
+			throw new RuntimeException("DecodeExpeption - Remaining:" + in.remaining());
 
 		Object entity = null;
 		byte typ = in.get();
@@ -50,7 +49,7 @@ public class Decoding {
 						int len = in.getInt();
 						if (len > 0) {
 							if (in.remaining() != len)
-								throw new DecodeException(in.remaining());
+								throw new RuntimeException("DecodeExpeption - Remaining:" + in.remaining() + "!="+len);
 						}
 						typValue = in.get();
 					}

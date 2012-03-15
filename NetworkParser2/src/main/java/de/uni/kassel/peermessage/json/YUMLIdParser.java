@@ -7,7 +7,7 @@ import java.util.HashMap;
 import de.uni.kassel.peermessage.IdMap;
 import de.uni.kassel.peermessage.interfaces.SendableEntityCreator;
 
-public class YUMLParser extends IdMap<SendableEntityCreator>{
+public class YUMLIdParser extends IdMap<SendableEntityCreator>{
 	public static final String URL="http://yuml.me/diagram/class/";
 	public static final int CLASS = 1;
 	public static final int OBJECT = 2;
@@ -18,10 +18,10 @@ public class YUMLParser extends IdMap<SendableEntityCreator>{
 	private boolean showCardinality;
 	
 
-	public YUMLParser() {
+	public YUMLIdParser() {
 		super();
 	}
-	public YUMLParser(IdMap<SendableEntityCreator> parent) {
+	public YUMLIdParser(IdMap<SendableEntityCreator> parent) {
 		super(parent);
 	}
 

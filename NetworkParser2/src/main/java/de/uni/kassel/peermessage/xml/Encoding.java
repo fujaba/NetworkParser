@@ -72,7 +72,7 @@ public class Encoding {
 							}
 							ArrayList<String> list = children.get(label);
 							if(list==null){
-								list=new ArrayList<>();
+								list=new ArrayList<String>();
 							}
 							list.add(property);
 							children.put(label, list);							
@@ -92,7 +92,7 @@ public class Encoding {
 							property+=XMLIdMap.ENTITYSPLITTER;
 							ArrayList<String> list = children.get(property);
 							if(list==null){
-								list=new ArrayList<>();
+								list=new ArrayList<String>();
 								children.put(property, list);
 							}else{
 								list.add(property);
