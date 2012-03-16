@@ -1,14 +1,26 @@
 package de.uni.kassel.peermessage;
 
-public class RemoveListener {
-	private IdMap<?> map;
-	private Object entity;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
-	public RemoveListener(IdMap<?> map, Object entity){
+public class RemoveListener implements PropertyChangeListener{
+	private IdMap<?> map;
+
+	public RemoveListener(IdMap<?> map){
 		this.map=map;
-		this.entity=entity;
 	}
-	public boolean exeucte(){
+	public boolean exeucte(Object entity){
 		return map.remove(entity);
+	}
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if(evt.getNewValue()==null){
+			String key = map.getKey(evt.getOldValue());
+			if(key!=null){
+				exeucte(evt.getOldValue());
+			}
+//			if(evt.getPropertyName().equals(IdMap.REMOVE)){
+//			}
+		}
 	}
 }

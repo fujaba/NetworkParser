@@ -108,7 +108,10 @@ public class Encoding  {
 		}
 		return length;
 	}
-
+	public byte byteToUnsignedByte(int n) {
+		if (n < 128) return (byte) n;
+		return (byte) (n - 256);
+	}
 	public ByteBuffer encode(Object entity) {
 		SendableEntityCreator temp = parent.getCreatorClass(entity);
 		if (temp == null) {
@@ -145,6 +148,7 @@ public class Encoding  {
 			}
 			length -= lastType;
 			ByteBuffer message = ByteBuffer.allocate(length);
+			//Fixme
 			message.put(creater.getEventTyp());
 			pos = 0;
 			if (lenCheck) {

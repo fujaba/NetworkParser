@@ -7,6 +7,7 @@ import de.uni.kassel.peermessage.IdMap;
 import de.uni.kassel.peermessage.event.creater.DateCreator;
 import de.uni.kassel.peermessage.interfaces.NoIndexCreator;
 import de.uni.kassel.peermessage.interfaces.SendableEntityCreator;
+import de.uni.kassel.peermessage.interfaces.UpdateListener;
 
 public class JsonIdMap extends IdMap<SendableEntityCreator>{
 	public static final String REMOVE_SUFFIX = ".old";
@@ -15,6 +16,7 @@ public class JsonIdMap extends IdMap<SendableEntityCreator>{
 	public static final String JSON_PROPS = "prop";
 	public static final String REF_SUFFIX = "_ref";
 	public static final String JSONVALUE = "value";
+	private UpdateListener updatelistener;
 
 	public JsonIdMap() {
 		super();
@@ -351,5 +353,13 @@ public class JsonIdMap extends IdMap<SendableEntityCreator>{
 	public String toToYUmlClass(Object object) {
 		YUMLIdParser parser=new YUMLIdParser(this);
 		return parser.parseClass(object, false);
+	}
+	
+	public void setUpdateMsgListener(UpdateListener listener){
+		this.updatelistener=listener;
+	}
+
+	public void sendUpdateMsg(JsonObject jsonObject) {
+		this.updatelistener.sendUpdateMsg(jsonObject);
 	}
 }
