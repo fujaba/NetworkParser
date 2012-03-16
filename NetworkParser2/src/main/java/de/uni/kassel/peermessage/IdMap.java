@@ -1,5 +1,6 @@
 package de.uni.kassel.peermessage;
 
+import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 
 import de.uni.kassel.peermessage.interfaces.IdCounter;
@@ -7,13 +8,16 @@ import de.uni.kassel.peermessage.interfaces.SendableEntity;
 import de.uni.kassel.peermessage.interfaces.SendableEntityCreator;
 
 public class IdMap<T extends SendableEntityCreator> {
-	
+	public static final String REMOVE="rem";
+	public static final String UPDATE="upd";
 	private HashMap<Object, String> keys = new HashMap<Object, String>();
 	private HashMap<String, Object> values = new HashMap<String, Object>();
 	private HashMap<String, T> creators = new HashMap<String, T>();
 	protected IdMap<T> parent;
 	protected boolean isId = true;
 	private IdCounter counter;
+	private UpdateListener updateListener;
+	private RemoveListener removeListener;
 
 	public IdMap(){
 		keys = new HashMap<Object, String>();
@@ -64,9 +68,8 @@ public class IdMap<T extends SendableEntityCreator> {
 		String key = keys.get(obj);
 		if(key==null){
 			key=getCounter().getId(obj);
+			put(key, obj);
 		}
-		put(key, obj);
-		
 		return key;
 	}
 	
@@ -78,9 +81,25 @@ public class IdMap<T extends SendableEntityCreator> {
 			values.put(jsonId, object);
 			keys.put(object, jsonId);
 			if(object instanceof SendableEntity){
-				((SendableEntity)object).setRemoveListener(new RemoveListener(this, object));
+				((SendableEntity)object).addPropertyChangeListener(IdMap.REMOVE, getListener(IdMap.REMOVE));
+				((SendableEntity)object).addPropertyChangeListener(IdMap.UPDATE, getListener(IdMap.UPDATE));
 			}
 		}
+	}
+	
+	public PropertyChangeListener getListener(String id){
+		if(id==IdMap.UPDATE){
+			if(this.updateListener==null){
+				this.updateListener=new UpdateListener(this);
+			}
+			return updateListener;
+		}else if(id==IdMap.REMOVE){
+			if(this.removeListener==null){
+				this.removeListener=new RemoveListener(this);
+			}
+			return removeListener;
+		}
+		return null;
 	}
 
 	public boolean remove(Object oldValue) {
@@ -89,8 +108,8 @@ public class IdMap<T extends SendableEntityCreator> {
 		}
 		String key = getKey(oldValue);
 		if (key != null) {
-			keys.remove(key);
-			values.remove(oldValue);
+			keys.remove(oldValue);
+			values.remove(key);
 			return true;
 		}
 		return false;
