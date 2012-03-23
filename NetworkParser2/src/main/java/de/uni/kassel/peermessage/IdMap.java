@@ -1,6 +1,7 @@
 package de.uni.kassel.peermessage;
 
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
 
 import de.uni.kassel.peermessage.interfaces.IdCounter;
@@ -83,6 +84,9 @@ public class IdMap<T extends SendableEntityCreator> {
 			if(object instanceof SendableEntity){
 				((SendableEntity)object).addPropertyChangeListener(IdMap.REMOVE, getListener(IdMap.REMOVE));
 				((SendableEntity)object).addPropertyChangeListener(IdMap.UPDATE, getListener(IdMap.UPDATE));
+			}else if(object instanceof PropertyChangeSupport){
+				((PropertyChangeSupport)object).addPropertyChangeListener(IdMap.REMOVE, getListener(IdMap.REMOVE));
+				((PropertyChangeSupport)object).addPropertyChangeListener(IdMap.UPDATE, getListener(IdMap.UPDATE));
 			}
 		}
 	}
