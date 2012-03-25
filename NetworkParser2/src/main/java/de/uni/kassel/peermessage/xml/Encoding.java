@@ -75,16 +75,23 @@ public class Encoding {
 			String newProp="";
 			if(pos>0){
 				label=property.substring(1,pos);
-				newProp=property.substring(pos+1);
+				newProp=property.substring(pos);
 			}else{
 				label=property.substring(1);
 			}
 			if(label.length()>0){
-				XMLEntity child=new XMLEntity(label);
-				parserChild(child, newProp, value);
-				parent.addChild(child);
+				XMLEntity child = parent.getChild(label);
+				if(child==null){
+					child=new XMLEntity(label);
+					parserChild(child, newProp, value);
+					parent.addChild(child);
+				}else{
+					parserChild(child, newProp, value);
+				}
 				return child;
 			}
+		}else if(property.startsWith(XMLIdMap.ATTRIBUTEVALUE)){
+			parent.put(property.substring(1), EntityUtil.valueToString(value, true, parent));
 		}else if("".equals(property)){
 			parent.setValue(EntityUtil.valueToString(value, true, parent));
 		}
