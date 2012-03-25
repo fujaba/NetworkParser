@@ -8,7 +8,7 @@ import de.uni.kassel.peermessage.interfaces.XMLEntityCreator;
 public class XMLIdMap extends IdMap<XMLEntityCreator>{
 	public static final String ENTITYSPLITTER = "&";
 	public static final String ATTRIBUTEVALUE = "?";
-	private EncodingExt encoder;
+	private Encoding encoder;
 	private Decoding decoder;
 	private HashMap<String, XMLEntityCreator> decoderMap;
 
@@ -23,7 +23,7 @@ public class XMLIdMap extends IdMap<XMLEntityCreator>{
 	}
 	public XMLEntity encode(Object value) {
 		if (encoder == null) {
-			encoder = new EncodingExt(this);
+			encoder = new Encoding(this);
 		}
 //		return encoder.encode(value, false, false).toString();
 		return encoder.encode(value);
@@ -31,7 +31,7 @@ public class XMLIdMap extends IdMap<XMLEntityCreator>{
 
 	public XMLEntity encode(Object value, boolean simple, boolean fullEncoding) {
 		if (encoder == null) {
-			encoder = new EncodingExt(this);
+			encoder = new Encoding(this);
 		}
 		return encoder.encode(value);
 	}
