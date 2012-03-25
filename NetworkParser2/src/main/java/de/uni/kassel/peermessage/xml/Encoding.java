@@ -6,11 +6,11 @@ import de.uni.kassel.peermessage.EntityUtil;
 import de.uni.kassel.peermessage.interfaces.SendableEntityCreator;
 import de.uni.kassel.peermessage.interfaces.XMLEntityCreator;
 
-public class EncodingExt {
+public class Encoding {
 	public static final String ID="id";
 	private XMLIdMap parent;
 
-	public EncodingExt(XMLIdMap parent){
+	public Encoding(XMLIdMap parent){
 		this.parent=parent;
 	}
 
