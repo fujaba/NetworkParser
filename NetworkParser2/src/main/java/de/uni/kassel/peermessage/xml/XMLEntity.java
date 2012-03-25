@@ -107,7 +107,8 @@ public class XMLEntity extends Entity{
 			Entry<String, Object> attribute = i.next();
 			sb.append(" "+attribute.getKey()+"=\""+attribute.getValue()+"\"");
 		}
-		if(value==null&&children==null){
+		boolean hasChild=(children!=null&&children.size()>0);
+		if(value==null&&!hasChild){
 			sb.append("/>");
 		}else{
 			sb.append(">");
