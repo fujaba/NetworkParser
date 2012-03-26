@@ -10,7 +10,6 @@ import de.uni.kassel.peermessage.interfaces.SendableEntityCreator;
 import de.uni.kassel.peermessage.interfaces.UpdateListener;
 
 public class JsonIdMap extends IdMap<SendableEntityCreator>{
-	public static final String REMOVE_SUFFIX = ".old";
 	public static final String CLASS = "class";
 	public static final String JSON_ID = "id";
 	public static final String JSON_PROPS = "prop";
@@ -20,7 +19,7 @@ public class JsonIdMap extends IdMap<SendableEntityCreator>{
 
 	public JsonIdMap() {
 		super();
-		this.addCreater(new DateCreator());
+		this.addCreator(new DateCreator());
 	}
 
 	public JsonObject toJsonObject(Object object) {
@@ -145,7 +144,7 @@ public class JsonIdMap extends IdMap<SendableEntityCreator>{
 		for (int i = 0; i <= len; i++) {
 			JsonObject kidObject = jsonArray.getJSONObject(i);
 			Object tmp = readJson(kidObject);
-			if (i == len) {
+			if (i == 0) {
 				result = tmp;
 			}
 		}
@@ -207,8 +206,8 @@ public class JsonIdMap extends IdMap<SendableEntityCreator>{
 					Object oldObj = null;
 
 					if (obj == null) {
-						oldObj = jsonProp.get(property + REMOVE_SUFFIX);
-						parseValue(target, property + REMOVE_SUFFIX, oldObj,
+						oldObj = jsonProp.get(property + REMOVE);
+						parseValue(target, property + REMOVE, oldObj,
 								prototyp);
 					} else {
 						parseValue(target, property, obj, prototyp);
@@ -282,9 +281,13 @@ public class JsonIdMap extends IdMap<SendableEntityCreator>{
 		String id = getId(object);
 		String className = object.getClass().getName();
 
+		JsonObject jsonObject = new JsonObject();
+		jsonArray.put(jsonObject);
+		
 		SendableEntityCreator prototyp = getCreatorClasses(className);
 		String[] properties = prototyp.getProperties();
 		JsonObject jsonProps = new JsonObject();
+
 		if (properties != null) {
 			for (String property : properties) {
 				Object value = prototyp.getValue(object, property);
@@ -335,7 +338,6 @@ public class JsonIdMap extends IdMap<SendableEntityCreator>{
 				}
 			}
 		}
-		JsonObject jsonObject = new JsonObject();
 		if (isId) {
 			jsonObject.put(JSON_ID, id);
 		}
@@ -343,7 +345,7 @@ public class JsonIdMap extends IdMap<SendableEntityCreator>{
 		if (jsonProps.length() > 0) {
 			jsonObject.put(JSON_PROPS, jsonProps);
 		}
-		jsonArray.put(jsonObject);
+		
 	}
 
 	public String toToYUmlObject(Object object) {
