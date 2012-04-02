@@ -1,9 +1,9 @@
 package de.uni.kassel.peermessage;
 
-import de.uni.kassel.peermessage.interfaces.IdCounter;
+import de.uni.kassel.peermessage.interfaces.IdMapCounter;
 
 
-public class SimpleIdCounter implements IdCounter{
+public class SimpleIdCounter implements IdMapCounter{
 	protected String prefixId="J1";
 	protected long number = 1;
 	

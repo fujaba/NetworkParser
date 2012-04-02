@@ -1,5 +1,6 @@
 package de.uni.kassel.peermessage.json;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -7,7 +8,7 @@ import de.uni.kassel.peermessage.IdMap;
 import de.uni.kassel.peermessage.event.creater.DateCreator;
 import de.uni.kassel.peermessage.interfaces.NoIndexCreator;
 import de.uni.kassel.peermessage.interfaces.SendableEntityCreator;
-import de.uni.kassel.peermessage.interfaces.UpdateListener;
+import de.uni.kassel.peermessage.interfaces.MapUpdateListener;
 
 public class JsonIdMap extends IdMap<SendableEntityCreator>{
 	public static final String CLASS = "class";
@@ -15,7 +16,8 @@ public class JsonIdMap extends IdMap<SendableEntityCreator>{
 	public static final String JSON_PROPS = "prop";
 	public static final String REF_SUFFIX = "_ref";
 	public static final String JSONVALUE = "value";
-	private UpdateListener updatelistener;
+	public static final String MAINITEM = "main";
+	private MapUpdateListener updatelistener;
 
 	public JsonIdMap() {
 		super();
@@ -144,7 +146,9 @@ public class JsonIdMap extends IdMap<SendableEntityCreator>{
 		for (int i = 0; i <= len; i++) {
 			JsonObject kidObject = jsonArray.getJSONObject(i);
 			Object tmp = readJson(kidObject);
-			if (i == 0) {
+			if(kidObject.has(MAINITEM)){
+				result = tmp;
+			}else if(i == 0) {
 				result = tmp;
 			}
 		}
@@ -282,8 +286,12 @@ public class JsonIdMap extends IdMap<SendableEntityCreator>{
 		String className = object.getClass().getName();
 
 		JsonObject jsonObject = new JsonObject();
+		if (isId) {
+			jsonObject.put(JSON_ID, id);
+		}
+		jsonObject.put(CLASS, className);
 		jsonArray.put(jsonObject);
-		
+
 		SendableEntityCreator prototyp = getCreatorClasses(className);
 		String[] properties = prototyp.getProperties();
 		JsonObject jsonProps = new JsonObject();
@@ -338,10 +346,6 @@ public class JsonIdMap extends IdMap<SendableEntityCreator>{
 				}
 			}
 		}
-		if (isId) {
-			jsonObject.put(JSON_ID, id);
-		}
-		jsonObject.put(CLASS, className);
 		if (jsonProps.length() > 0) {
 			jsonObject.put(JSON_PROPS, jsonProps);
 		}
@@ -357,11 +361,25 @@ public class JsonIdMap extends IdMap<SendableEntityCreator>{
 		return parser.parseClass(object, false);
 	}
 	
-	public void setUpdateMsgListener(UpdateListener listener){
+	public void setUpdateMsgListener(MapUpdateListener listener){
 		this.updatelistener=listener;
 	}
 
-	public void sendUpdateMsg(JsonObject jsonObject) {
-		this.updatelistener.sendUpdateMsg(jsonObject);
+	public boolean sendUpdateMsg(JsonObject jsonObject) {
+		return this.updatelistener.sendUpdateMsg(jsonObject);
+	}
+	
+	public JsonObject toJsonObjectById(String id){
+		return toJsonObject(super.getObject(id), new JsonFilter(0));
+	}
+
+	public void toJsonArrayByIds(ArrayList<String> suspendIdList) {
+		JsonArray children=new JsonArray();
+		for(String childId : suspendIdList){
+			children.put(toJsonObjectById(childId));
+		}
+		JsonObject sendObj=new JsonObject();
+		sendObj.put(IdMap.UPDATE, children);
+		sendUpdateMsg(sendObj);
 	}
 }
