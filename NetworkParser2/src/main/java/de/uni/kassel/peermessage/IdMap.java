@@ -4,7 +4,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
 
-import de.uni.kassel.peermessage.interfaces.IdCounter;
+import de.uni.kassel.peermessage.interfaces.IdMapCounter;
 import de.uni.kassel.peermessage.interfaces.SendableEntity;
 import de.uni.kassel.peermessage.interfaces.SendableEntityCreator;
 
@@ -16,7 +16,7 @@ public class IdMap<T extends SendableEntityCreator> {
 	private HashMap<String, T> creators = new HashMap<String, T>();
 	protected IdMap<T> parent;
 	protected boolean isId = true;
-	private IdCounter counter;
+	private IdMapCounter counter;
 	private UpdateListener updateListener;
 	private RemoveListener removeListener;
 
@@ -29,10 +29,10 @@ public class IdMap<T extends SendableEntityCreator> {
 		this.parent=parent;
 	}
 
-	public void setCounter(IdCounter counter){
+	public void setCounter(IdMapCounter counter){
 		this.counter=counter;
 	}
-	public IdCounter getCounter(){
+	public IdMapCounter getCounter(){
 		if(counter==null){
 			counter=new SimpleIdCounter();
 		}
