@@ -12,8 +12,10 @@ public class UpdateListener implements PropertyChangeListener{
 	private JsonIdMap map;
 	private ArrayList<String> suspendIdList;
 
-	public UpdateListener(IdMap<?> map) {
-		this.map=(JsonIdMap) map;
+	public UpdateListener(IdMap map) {
+		if(map instanceof JsonIdMap){
+			this.map=(JsonIdMap) map;
+		}
 	}
 	
 	public void suspendNotification(){
