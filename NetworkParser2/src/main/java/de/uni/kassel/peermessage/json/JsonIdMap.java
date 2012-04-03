@@ -10,7 +10,7 @@ import de.uni.kassel.peermessage.interfaces.NoIndexCreator;
 import de.uni.kassel.peermessage.interfaces.SendableEntityCreator;
 import de.uni.kassel.peermessage.interfaces.MapUpdateListener;
 
-public class JsonIdMap extends IdMap<SendableEntityCreator>{
+public class JsonIdMap extends IdMap{
 	public static final String CLASS = "class";
 	public static final String JSON_ID = "id";
 	public static final String JSON_PROPS = "prop";
@@ -18,6 +18,7 @@ public class JsonIdMap extends IdMap<SendableEntityCreator>{
 	public static final String JSONVALUE = "value";
 	public static final String MAINITEM = "main";
 	private MapUpdateListener updatelistener;
+	private boolean simpleCheck;
 
 	public JsonIdMap() {
 		super();
@@ -76,9 +77,13 @@ public class JsonIdMap extends IdMap<SendableEntityCreator>{
 			for (String property : properties) {
 				Object value = prototyp.getValue(object, property);
 				if (value != null) {
-					Object refValue = prototyp.getValue(referenceObject,
-							property);
-					if (!value.equals(refValue)) {
+					boolean encoding=simpleCheck;
+					if(!simpleCheck){
+						Object refValue = prototyp.getValue(referenceObject,
+								property);
+						encoding=!value.equals(refValue);
+					}
+					if(encoding){
 						boolean aggregation = isConvertable(filter, property);
 						if (value instanceof Collection<?>) {
 							JsonArray subValues = new JsonArray();
@@ -381,5 +386,13 @@ public class JsonIdMap extends IdMap<SendableEntityCreator>{
 		JsonObject sendObj=new JsonObject();
 		sendObj.put(IdMap.UPDATE, children);
 		sendUpdateMsg(sendObj);
+	}
+
+	public boolean isSimpleCheck() {
+		return simpleCheck;
+	}
+
+	public void setSimpleCheck(boolean simpleCheck) {
+		this.simpleCheck = simpleCheck;
 	}
 }

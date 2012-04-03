@@ -1,9 +1,9 @@
 package de.uni.kassel.peermessage.event.creater;
 
 import de.uni.kassel.peermessage.event.BasicMessage;
-import de.uni.kassel.peermessage.interfaces.PrimaryEntityCreator;
+import de.uni.kassel.peermessage.interfaces.ByteEntityCreator;
 
-public class BasicMessageCreator implements PrimaryEntityCreator {
+public class BasicMessageCreator implements ByteEntityCreator {
 	protected final String[] properties = new String[] { BasicMessage.PROPERTY_VALUE };
 
 	public String[] getProperties() {

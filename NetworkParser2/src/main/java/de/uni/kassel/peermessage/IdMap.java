@@ -8,13 +8,13 @@ import de.uni.kassel.peermessage.interfaces.IdMapCounter;
 import de.uni.kassel.peermessage.interfaces.SendableEntity;
 import de.uni.kassel.peermessage.interfaces.SendableEntityCreator;
 
-public class IdMap<T extends SendableEntityCreator> {
+public class IdMap {
 	public static final String REMOVE="rem";
 	public static final String UPDATE="upd";
-	private HashMap<Object, String> keys = new HashMap<Object, String>();
-	private HashMap<String, Object> values = new HashMap<String, Object>();
-	private HashMap<String, T> creators = new HashMap<String, T>();
-	protected IdMap<T> parent;
+	private HashMap<Object, String> keys;
+	private HashMap<String, Object> values;
+	private HashMap<String, SendableEntityCreator> creators;
+	protected IdMap parent;
 	protected boolean isId = true;
 	private IdMapCounter counter;
 	private UpdateListener updateListener;
@@ -23,9 +23,9 @@ public class IdMap<T extends SendableEntityCreator> {
 	public IdMap(){
 		keys = new HashMap<Object, String>();
 		values = new HashMap<String, Object>();
-		creators = new HashMap<String, T>();
+		creators = new HashMap<String, SendableEntityCreator>();
 	}
-	public IdMap(IdMap<T> parent){
+	public IdMap(IdMap parent){
 		this.parent=parent;
 	}
 
@@ -130,21 +130,21 @@ public class IdMap<T extends SendableEntityCreator> {
 		return keys.size();
 	}
 
-	public T getCreatorClasses(String className) {
+	public SendableEntityCreator getCreatorClasses(String className) {
 		if(parent!=null){
-			return (T)parent.getCreatorClasses(className);
+			return parent.getCreatorClasses(className);
 		}
 		return creators.get(className);
 	}
 
-	public T getCreatorClass(Object reference) {
+	public SendableEntityCreator getCreatorClass(Object reference) {
 		if(parent!=null){
-			return (T)parent.getCreatorClass(reference);
+			return parent.getCreatorClass(reference);
 		}
 		return creators.get(reference.getClass().getName());
 	}
 	
-	public boolean addCreator(T createrClass) {
+	public boolean addCreator(SendableEntityCreator createrClass) {
 		if(parent!=null){
 			return parent.addCreator(createrClass);
 		}else{
