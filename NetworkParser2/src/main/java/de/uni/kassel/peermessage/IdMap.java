@@ -9,7 +9,7 @@ import de.uni.kassel.peermessage.interfaces.SendableEntity;
 import de.uni.kassel.peermessage.interfaces.SendableEntityCreator;
 
 public class IdMap {
-	public static final String REMOVE="rem";
+	public static final String REMOVE=".old";
 	public static final String UPDATE="upd";
 	private HashMap<Object, String> keys;
 	private HashMap<String, Object> values;
@@ -142,6 +142,19 @@ public class IdMap {
 			return parent.getCreatorClass(reference);
 		}
 		return creators.get(reference.getClass().getName());
+	}
+	public Object cloneObject(Object reference){
+		SendableEntityCreator creatorClass = getCreatorClass(reference);
+		Object newObject=null;
+		if(creatorClass!=null){
+			newObject=creatorClass.getSendableInstance(false);
+			String[] properties = creatorClass.getProperties();
+			for(String property : properties){
+				creatorClass.setValue(newObject, property, creatorClass.getValue(reference, property));
+			}
+		}
+
+		return newObject;
 	}
 	
 	public boolean addCreator(SendableEntityCreator createrClass) {

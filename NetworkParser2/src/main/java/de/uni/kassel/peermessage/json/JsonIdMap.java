@@ -15,7 +15,6 @@ public class JsonIdMap extends IdMap{
 	public static final String JSON_ID = "id";
 	public static final String JSON_PROPS = "prop";
 	public static final String REF_SUFFIX = "_ref";
-	public static final String JSONVALUE = "value";
 	public static final String MAINITEM = "main";
 	private MapUpdateListener updatelistener;
 	private boolean simpleCheck;
