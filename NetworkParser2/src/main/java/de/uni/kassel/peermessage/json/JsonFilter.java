@@ -2,7 +2,10 @@ package de.uni.kassel.peermessage.json;
 
 import java.util.HashSet;
 
-public class JsonFilter {
+import de.uni.kassel.peermessage.IdMap;
+import de.uni.kassel.peermessage.interfaces.IdMapFilter;
+
+public class JsonFilter implements IdMapFilter{
 	public final static int ALLDEEP = -1;
 	private int deep = ALLDEEP;
 	private String[] exclusiveProperties;
@@ -52,5 +55,17 @@ public class JsonFilter {
 			this.objects.add(id);
 		}
 		return result;
+	}
+	public boolean isConvertable(IdMap map, String property) {
+		if (getDeep() == 0)
+			return false;
+		if (getExcusiveProperties() != null) {
+			for (String prop : getExcusiveProperties()) {
+				if (property.equalsIgnoreCase(prop)) {
+					return false;
+				}
+			}
+		}
+		return !property.endsWith(JsonIdMap.REF_SUFFIX);
 	}
 }

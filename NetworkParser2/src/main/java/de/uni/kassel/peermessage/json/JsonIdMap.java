@@ -28,19 +28,6 @@ public class JsonIdMap extends IdMap{
 		return toJsonObject(object, null);
 	}
 
-	private boolean isConvertable(JsonFilter filter, String property) {
-		if (filter.getDeep() == 0)
-			return false;
-		if (filter.getExcusiveProperties() != null) {
-			for (String prop : filter.getExcusiveProperties()) {
-				if (property.equalsIgnoreCase(prop)) {
-					return false;
-				}
-			}
-		}
-		return !property.endsWith(REF_SUFFIX);
-	}
-
 	private void writeJsonObject(JsonArray parent, Object value,
 			boolean aggregation) {
 		SendableEntityCreator valueCreater = getCreatorClass(value);
@@ -83,7 +70,7 @@ public class JsonIdMap extends IdMap{
 						encoding=!value.equals(refValue);
 					}
 					if(encoding){
-						boolean aggregation = isConvertable(filter, property);
+						boolean aggregation = filter.isConvertable(this, property);
 						if (value instanceof Collection<?>) {
 							JsonArray subValues = new JsonArray();
 							for (Object containee : ((Collection<?>) value)) {
@@ -304,7 +291,7 @@ public class JsonIdMap extends IdMap{
 			for (String property : properties) {
 				Object value = prototyp.getValue(object, property);
 				if (value != null) {
-					boolean aggregation = isConvertable(filter, property);
+					boolean aggregation = filter.isConvertable(this, property);
 					if (value instanceof Collection) {
 						Collection<?> list = ((Collection<?>) value);
 						if (list.size() > 0) {
