@@ -70,7 +70,7 @@ public class JsonIdMap extends IdMap{
 						encoding=!value.equals(refValue);
 					}
 					if(encoding){
-						boolean aggregation = filter.isConvertable(this, property);
+						boolean aggregation = filter.isConvertable(this, property, value);
 						if (value instanceof Collection<?>) {
 							JsonArray subValues = new JsonArray();
 							for (Object containee : ((Collection<?>) value)) {
@@ -291,7 +291,7 @@ public class JsonIdMap extends IdMap{
 			for (String property : properties) {
 				Object value = prototyp.getValue(object, property);
 				if (value != null) {
-					boolean aggregation = filter.isConvertable(this, property);
+					boolean aggregation = filter.isConvertable(this, property, value);
 					if (value instanceof Collection) {
 						Collection<?> list = ((Collection<?>) value);
 						if (list.size() > 0) {
