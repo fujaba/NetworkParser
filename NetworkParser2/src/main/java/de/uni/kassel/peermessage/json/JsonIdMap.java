@@ -42,18 +42,18 @@ public class JsonIdMap extends IdMap{
 		}
 	}
 
-	private JsonObject toJsonObject(Object object, JsonFilter filter) {
+	private JsonObject toJsonObject(Object entity, JsonFilter filter) {
 		String id="";
-		String className = object.getClass().getName();
+		String className = entity.getClass().getName();
 
 		if (filter == null) {
 			filter = new JsonFilter();
 		}
 
-		SendableEntityCreator prototyp = getCreatorClass(object);
+		SendableEntityCreator prototyp = getCreatorClass(entity);
 		
 		if(!(prototyp instanceof NoIndexCreator)){
-			id=getId(object);	
+			id=getId(entity);	
 		}
 		JsonObject jsonProp = new JsonObject();
 
@@ -61,7 +61,7 @@ public class JsonIdMap extends IdMap{
 		Object referenceObject = prototyp.getSendableInstance(true);
 		if (properties != null) {
 			for (String property : properties) {
-				Object value = prototyp.getValue(object, property);
+				Object value = prototyp.getValue(entity, property);
 				if (value != null) {
 					boolean encoding=simpleCheck;
 					if(!simpleCheck){
@@ -70,7 +70,7 @@ public class JsonIdMap extends IdMap{
 						encoding=!value.equals(refValue);
 					}
 					if(encoding){
-						boolean aggregation = filter.isConvertable(this, property, value);
+						boolean aggregation = filter.isConvertable(this, entity, property, value);
 						if (value instanceof Collection<?>) {
 							JsonArray subValues = new JsonArray();
 							for (Object containee : ((Collection<?>) value)) {
@@ -270,11 +270,11 @@ public class JsonIdMap extends IdMap{
 		return jsonArray;
 	}
 	
-	private void toJsonArray(JsonArray jsonArray, Object object,
+	private void toJsonArray(JsonArray jsonArray, Object entity,
 			JsonFilter filter) {
 		
-		String id = getId(object);
-		String className = object.getClass().getName();
+		String id = getId(entity);
+		String className = entity.getClass().getName();
 
 		JsonObject jsonObject = new JsonObject();
 		if (isId) {
@@ -289,9 +289,9 @@ public class JsonIdMap extends IdMap{
 
 		if (properties != null) {
 			for (String property : properties) {
-				Object value = prototyp.getValue(object, property);
+				Object value = prototyp.getValue(entity, property);
 				if (value != null) {
-					boolean aggregation = filter.isConvertable(this, property, value);
+					boolean aggregation = filter.isConvertable(this, entity, property, value);
 					if (value instanceof Collection) {
 						Collection<?> list = ((Collection<?>) value);
 						if (list.size() > 0) {
