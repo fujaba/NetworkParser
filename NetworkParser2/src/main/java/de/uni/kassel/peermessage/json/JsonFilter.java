@@ -58,7 +58,7 @@ public class JsonFilter implements IdMapFilter{
 		}
 		return result;
 	}
-	public boolean isConvertable(IdMap map, String property, Object value) {
+	public boolean isConvertable(IdMap map, Object entity, String property, Object value) {
 		if (getDeep() == 0)
 			return false;
 		if (getExcusiveProperties() != null) {
