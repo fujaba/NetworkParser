@@ -1,5 +1,6 @@
 package de.uni.kassel.peermessage.json;
 
+import java.util.Collection;
 import java.util.HashSet;
 
 import de.uni.kassel.peermessage.IdMap;
@@ -10,6 +11,7 @@ public class JsonFilter implements IdMapFilter{
 	private int deep = ALLDEEP;
 	private String[] exclusiveProperties;
 	private HashSet<String> objects = new HashSet<String>();
+	private boolean treesync=false;
 
 	public JsonFilter() {
 
@@ -56,7 +58,7 @@ public class JsonFilter implements IdMapFilter{
 		}
 		return result;
 	}
-	public boolean isConvertable(IdMap map, String property) {
+	public boolean isConvertable(IdMap map, String property, Object value) {
 		if (getDeep() == 0)
 			return false;
 		if (getExcusiveProperties() != null) {
@@ -66,6 +68,21 @@ public class JsonFilter implements IdMapFilter{
 				}
 			}
 		}
+		if(isTreesync()){
+			if(!(value instanceof Collection<?>)){
+				if(map.getCreatorClass(value)!=null){
+					return false;
+				}
+			}
+		}
 		return !property.endsWith(JsonIdMap.REF_SUFFIX);
+	}
+
+	public boolean isTreesync() {
+		return treesync;
+	}
+
+	public void setTreesync(boolean treesync) {
+		this.treesync = treesync;
 	}
 }
