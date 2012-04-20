@@ -58,6 +58,7 @@ public class JsonIdMap extends IdMap{
 		JsonObject jsonProp = new JsonObject();
 
 		String[] properties = prototyp.getProperties();
+		filter.addObject(id);
 		Object referenceObject = prototyp.getSendableInstance(true);
 		if (properties != null) {
 			for (String property : properties) {
@@ -92,6 +93,8 @@ public class JsonIdMap extends IdMap{
 											jsonProp.put(property,
 													toJsonObject(value, filter));
 											filter.setDeep(oldValue);
+										}else{
+											jsonProp.put(property, getId(value));
 										}
 									}
 								} else {
