@@ -58,6 +58,13 @@ public class JsonFilter implements IdMapFilter{
 		}
 		return result;
 	}
+	public boolean addObject(String id){
+		if(id!=null&&id.length()>0){
+			this.objects.add(id);
+			return true;
+		}
+		return false;
+	}
 	public boolean isConvertable(IdMap map, Object entity, String property, Object value) {
 		if (getDeep() == 0)
 			return false;
