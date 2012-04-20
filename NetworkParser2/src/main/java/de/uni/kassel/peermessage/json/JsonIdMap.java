@@ -29,11 +29,11 @@ public class JsonIdMap extends IdMap{
 	}
 
 	private void writeJsonObject(JsonArray parent, Object value,
-			boolean aggregation) {
+			boolean aggregation, JsonFilter filter) {
 		SendableEntityCreator valueCreater = getCreatorClass(value);
 		if (valueCreater != null) {
 			if (aggregation) {
-				parent.put(toJsonObject(value, null));
+				parent.put(toJsonObject(value, filter));
 			} else {
 				parent.put(this.getId(value));
 			}
@@ -75,7 +75,7 @@ public class JsonIdMap extends IdMap{
 							JsonArray subValues = new JsonArray();
 							for (Object containee : ((Collection<?>) value)) {
 								writeJsonObject(subValues, containee,
-										aggregation);
+										aggregation, filter);
 							}
 							jsonProp.put(property, subValues);
 						} else {

@@ -219,6 +219,9 @@ public class IdMap {
 			return parent.addCreator(createrClass);
 		} else {
 			Object reference = createrClass.getSendableInstance(true);
+			if(reference == null){
+				return false;
+			}
 			creators.put(reference.getClass().getName(), createrClass);
 			return true;
 		}
