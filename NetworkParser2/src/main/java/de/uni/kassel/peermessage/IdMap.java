@@ -143,10 +143,7 @@ public class IdMap {
 	}
 
 	public SendableEntityCreator getCreatorClass(Object reference) {
-		if (parent != null) {
-			return parent.getCreatorClass(reference);
-		}
-		return creators.get(reference.getClass().getName());
+		return getCreatorClasses(reference.getClass().getName());
 	}
 
 	public Object cloneObject(Object reference) {
