@@ -2,13 +2,14 @@ package de.uni.kassel.peermessage.json;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 
 import de.uni.kassel.peermessage.IdMap;
 import de.uni.kassel.peermessage.event.creater.DateCreator;
+import de.uni.kassel.peermessage.interfaces.MapUpdateListener;
 import de.uni.kassel.peermessage.interfaces.NoIndexCreator;
 import de.uni.kassel.peermessage.interfaces.SendableEntityCreator;
-import de.uni.kassel.peermessage.interfaces.MapUpdateListener;
 
 public class JsonIdMap extends IdMap{
 	public static final String CLASS = "class";
@@ -28,20 +29,6 @@ public class JsonIdMap extends IdMap{
 		return toJsonObject(object, null);
 	}
 
-	private void writeJsonObject(JsonArray parent, Object value,
-			boolean aggregation, JsonFilter filter) {
-		SendableEntityCreator valueCreater = getCreatorClass(value);
-		if (valueCreater != null) {
-			if (aggregation) {
-				parent.put(toJsonObject(value, filter));
-			} else {
-				parent.put(this.getId(value));
-			}
-		} else {
-			parent.put(value);
-		}
-	}
-
 	private JsonObject toJsonObject(Object entity, JsonFilter filter) {
 		String id="";
 		String className = entity.getClass().getName();
@@ -51,6 +38,9 @@ public class JsonIdMap extends IdMap{
 		}
 
 		SendableEntityCreator prototyp = getCreatorClass(entity);
+		if(prototyp==null){
+			return null;
+		}
 		
 		if(!(prototyp instanceof NoIndexCreator)){
 			id=getId(entity);	
@@ -74,10 +64,22 @@ public class JsonIdMap extends IdMap{
 						boolean aggregation = filter.isConvertable(this, entity, property, value);
 						if (value instanceof Collection<?>) {
 							JsonArray subValues = new JsonArray();
+							int oldValue = filter.setDeeper();
 							for (Object containee : ((Collection<?>) value)) {
-								writeJsonObject(subValues, containee,
-										aggregation, filter);
+								SendableEntityCreator valueCreater = getCreatorClass(containee);
+								if (valueCreater != null) {
+									if (aggregation) {
+										subValues.put(toJsonObject(containee, filter));
+									} else {
+										JsonObject child = new JsonObject();
+										child.put(JSON_ID, this.getId(containee));
+										subValues.put(child);
+									}
+								} else {
+									subValues.put(value);
+								}
 							}
+							filter.setDeep(oldValue);
 							jsonProp.put(property, subValues);
 						} else {
 							SendableEntityCreator valueCreater = getCreatorClass(value);
@@ -94,11 +96,15 @@ public class JsonIdMap extends IdMap{
 													toJsonObject(value, filter));
 											filter.setDeep(oldValue);
 										}else{
-											jsonProp.put(property, getId(value));
+											JsonObject child = new JsonObject();
+											child.put(JSON_ID, this.getId(value));											
+											jsonProp.put(property, child);
 										}
 									}
 								} else {
-									jsonProp.put(property, getId(value));
+									JsonObject child = new JsonObject();
+									child.put(JSON_ID, this.getId(value));
+									jsonProp.put(property, child);
 								}
 							} else {
 								jsonProp.put(property, value);
@@ -133,68 +139,72 @@ public class JsonIdMap extends IdMap{
 		Object result = null;
 		int len = jsonArray.length() - 1;
 		// Add all Objects
+		HashSet<ReferenceObject> refs=new HashSet<ReferenceObject>();
 		for (int i = 0; i <= len; i++) {
 			JsonObject kidObject = jsonArray.getJSONObject(i);
-			readJson(kidObject, false);
-		}
-		for (int i = 0; i <= len; i++) {
-			JsonObject kidObject = jsonArray.getJSONObject(i);
-			Object tmp = readJson(kidObject);
+			Object tmp = readJson(kidObject, refs);
 			if(kidObject.has(MAINITEM)){
 				result = tmp;
 			}else if(i == 0) {
 				result = tmp;
 			}
 		}
+		for(ReferenceObject ref : refs){
+			ref.execute();
+		}
 		return result;
 	}
 
 	public Object readJson(JsonObject jsonObject) {
-		return readJson(jsonObject, true);
+		HashSet<ReferenceObject> refs=new HashSet<ReferenceObject>();
+		Object mainItem=readJson(jsonObject, refs);
+		for(ReferenceObject ref : refs){
+			ref.execute();
+		}
+		return mainItem;
 	}
-
-	private Object readJson(JsonObject jsonObject, boolean properties) {
+	public Object readJson(Object target, JsonObject jsonObject){
+		HashSet<ReferenceObject> refs=new HashSet<ReferenceObject>();
+		Object mainItem=readJson(target, jsonObject, refs);
+		for(ReferenceObject ref : refs){
+			ref.execute();
+		}
+		return mainItem;
+	}
+	private Object readJson(JsonObject jsonObject, HashSet<ReferenceObject> refs) {
 		Object result = null;
 		Object className = jsonObject.get(CLASS);
+	
+		SendableEntityCreator typeInfo = getCreatorClasses((String) className);
 
-		if (className != null) {
-			SendableEntityCreator typeInfo = getCreatorClasses((String) className);
-
-			if (typeInfo != null) {
-				if (isId) {
-					String jsonId = (String) jsonObject.get(JSON_ID);
-					if (jsonId == null) {
-						return null;
-					}
-					result = getObject(jsonId);
+		if (typeInfo != null) {
+			if (isId) {
+				String jsonId = (String) jsonObject.get(JSON_ID);
+				if (jsonId == null) {
+					return null;
 				}
-				if (result == null) {
-					result = typeInfo.getSendableInstance(false);
-				}
-				readJson(result, jsonObject, properties);
+				result = getObject(jsonId);
 			}
+			if (result == null) {
+				result = typeInfo.getSendableInstance(false);
+			}
+			readJson(result, jsonObject, refs);
 		}
-
 		return result;
 	}
 
-	public void readJson(Object target, JsonObject jsonObject) {
-		readJson(target, jsonObject, true);
-	}
-
-	private void readJson(Object target, JsonObject jsonObject,
-			boolean isProperties) {
+	private Object readJson(Object target, JsonObject jsonObject, HashSet<ReferenceObject> refs) {
 		// JSONArray jsonArray;
 		if (isId) {
 			String jsonId = (String) jsonObject.get(JSON_ID);
 			if (jsonId == null) {
-				return;
+				return target;
 			}
 			put(jsonId, target);
 
 			getCounter().readId(jsonId);
 		}
-		if (isProperties && jsonObject.has(JSON_PROPS)) {
+		if (jsonObject.has(JSON_PROPS)) {
 			JsonObject jsonProp = (JsonObject) jsonObject.get(JSON_PROPS);
 			SendableEntityCreator prototyp = getCreatorClass(target);
 			String[] properties = prototyp.getProperties();
@@ -206,48 +216,53 @@ public class JsonIdMap extends IdMap{
 					if (obj == null) {
 						oldObj = jsonProp.get(property + REMOVE);
 						parseValue(target, property + REMOVE, oldObj,
-								prototyp);
+								prototyp, refs);
 					} else {
-						parseValue(target, property, obj, prototyp);
+						parseValue(target, property, obj, prototyp, refs);
 					}
 				}
 			}
 		}
+		return target;
 	}
 
-	private Object parseValue(Object target, Object kid) {
-		if (kid instanceof JsonObject) {
-			// got a new kid, create it
-			return readJson((JsonObject) kid);
-		} else {
-			// got a reference
-			// got the id, ask the map
-			if (kid instanceof String) {
-				Object kidObj = this.getObject((String) kid);
-				if (kidObj != null) {
-					return kidObj;
-				} else {
-					// MayBe a Attribute
-					return kid;
-				}
-			} else {
-				return kid;
-			}
-		}
-	}
-
-	private void parseValue(Object target, String property, Object value,
-			SendableEntityCreator creater) {
+		private void parseValue(Object target, String property, Object value,
+			SendableEntityCreator creator, HashSet<ReferenceObject> refs) {
 		if (value != null) {
 			if (value instanceof JsonArray) {
 				JsonArray jsonArray = (JsonArray) value;
 				for (int i = 0; i < jsonArray.length(); i++) {
 					Object kid = jsonArray.get(i);
-					creater.setValue(target, property, parseValue(target, kid));
+					if (kid instanceof JsonObject) {
+//						// got a new kid, create it
+						JsonObject child=(JsonObject) kid;
+						String className = (String) child.get(CLASS);
+						String jsonId = (String) child.get(JSON_ID);
+						if (className == null&&jsonId!=null) {
+							// It is a Ref
+							refs.add(new ReferenceObject(jsonId, creator, property, this, target));
+						}else{
+							creator.setValue(target, property, readJson((JsonObject) kid));
+						}
+					}else{
+						creator.setValue(target, property, kid);
+					}
 				}
 			} else {
-					creater.setValue(target, property,
-							parseValue(target, value));
+				if (value instanceof JsonObject) {
+//					// got a new kid, create it
+					JsonObject child=(JsonObject) value;
+					String className = (String) child.get(CLASS);
+					String jsonId = (String) child.get(JSON_ID);
+					if (className == null&&jsonId!=null) {
+						// It is a Ref
+						refs.add(new ReferenceObject(jsonId, creator, property, this, target));
+					}else{
+						creator.setValue(target, property, readJson((JsonObject) value));
+					}
+				}else{
+					creator.setValue(target, property, value);
+				}
 			}
 		}
 	}
@@ -304,7 +319,9 @@ public class JsonIdMap extends IdMap{
 									SendableEntityCreator containeeCreater = getCreatorClass(containee);
 									if (containeeCreater != null) {
 										String subId = this.getId(containee);
-										refArray.put(subId);
+										JsonObject child = new JsonObject();
+										child.put(JSON_ID, this.getId(containee));
+										refArray.put(child);
 										if (aggregation) {
 											if (!filter.existsObject(subId)) {
 												int oldValue = filter
@@ -325,7 +342,9 @@ public class JsonIdMap extends IdMap{
 						SendableEntityCreator valueCreater = getCreatorClass(value);
 						if (valueCreater != null) {
 							String subId = this.getId(value);
-							jsonProps.put(property, subId);
+							JsonObject child = new JsonObject();
+							child.put(JSON_ID, this.getId(subId));
+							jsonProps.put(property, child);
 							if (aggregation) {
 								if (!filter.existsObject(subId)) {
 									int oldValue = filter.setDeeper();
@@ -343,7 +362,6 @@ public class JsonIdMap extends IdMap{
 		if (jsonProps.length() > 0) {
 			jsonObject.put(JSON_PROPS, jsonProps);
 		}
-		
 	}
 
 	public String toToYUmlObject(Object object) {
