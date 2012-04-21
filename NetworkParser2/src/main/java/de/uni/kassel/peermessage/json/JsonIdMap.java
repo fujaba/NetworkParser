@@ -26,18 +26,14 @@ public class JsonIdMap extends IdMap{
 	}
 
 	public JsonObject toJsonObject(Object object) {
-		return toJsonObject(object, null);
+		return toJsonObject(object, new JsonFilter());
 	}
 
 	private JsonObject toJsonObject(Object entity, JsonFilter filter) {
 		String id="";
 		String className = entity.getClass().getName();
 
-		if (filter == null) {
-			filter = new JsonFilter();
-		}
-
-		SendableEntityCreator prototyp = getCreatorClass(entity);
+		SendableEntityCreator prototyp = getCreatorClasses(className);
 		if(prototyp==null){
 			return null;
 		}
@@ -303,9 +299,9 @@ public class JsonIdMap extends IdMap{
 
 		SendableEntityCreator prototyp = getCreatorClasses(className);
 		String[] properties = prototyp.getProperties();
-		JsonObject jsonProps = new JsonObject();
 
 		if (properties != null) {
+			JsonObject jsonProps = new JsonObject();
 			for (String property : properties) {
 				Object value = prototyp.getValue(entity, property);
 				if (value != null) {
@@ -358,9 +354,9 @@ public class JsonIdMap extends IdMap{
 					}
 				}
 			}
-		}
-		if (jsonProps.length() > 0) {
-			jsonObject.put(JSON_PROPS, jsonProps);
+			if (jsonProps.length() > 0) {
+				jsonObject.put(JSON_PROPS, jsonProps);
+			}
 		}
 	}
 
