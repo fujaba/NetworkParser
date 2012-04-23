@@ -62,9 +62,14 @@ public class JsonIdMap extends IdMap{
 							JsonArray subValues = new JsonArray();
 							int oldValue = filter.setDeeper();
 							for (Object containee : ((Collection<?>) value)) {
+								boolean agg=aggregation;
 								SendableEntityCreator valueCreater = getCreatorClass(containee);
 								if (valueCreater != null) {
-									if (aggregation) {
+									if(agg){
+										String subId = this.getId(value);
+										agg=!filter.existsObject(subId);
+									}
+									if (agg) {
 										subValues.put(toJsonObject(containee, filter));
 									} else {
 										JsonObject child = new JsonObject();
@@ -326,6 +331,8 @@ public class JsonIdMap extends IdMap{
 														containee, filter);
 												filter.setDeep(oldValue);
 											}
+										}else{
+											jsonArray.put(child);
 										}
 									} else {
 										jsonArray.put(containee);
