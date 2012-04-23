@@ -304,6 +304,7 @@ public class JsonIdMap extends IdMap{
 
 		SendableEntityCreator prototyp = getCreatorClasses(className);
 		String[] properties = prototyp.getProperties();
+		filter.addObject(id);
 
 		if (properties != null) {
 			JsonObject jsonProps = new JsonObject();
@@ -321,7 +322,7 @@ public class JsonIdMap extends IdMap{
 									if (containeeCreater != null) {
 										String subId = this.getId(containee);
 										JsonObject child = new JsonObject();
-										child.put(JSON_ID, this.getId(containee));
+										child.put(JSON_ID, subId);
 										refArray.put(child);
 										if (aggregation) {
 											if (!filter.existsObject(subId)) {
@@ -331,8 +332,6 @@ public class JsonIdMap extends IdMap{
 														containee, filter);
 												filter.setDeep(oldValue);
 											}
-										}else{
-											jsonArray.put(child);
 										}
 									} else {
 										jsonArray.put(containee);
