@@ -273,7 +273,7 @@ public class JsonIdMap extends IdMap{
 		return toJsonArray(object, null);
 	}
 
-	public JsonArray toJsonArray(Object object, JsonFilter filter) {
+	public JsonArray toJsonArray(Object object, IdMapFilter filter) {
 		JsonArray jsonArray = new JsonArray();
 		if (filter == null) {
 			filter = new JsonFilter();
@@ -291,9 +291,11 @@ public class JsonIdMap extends IdMap{
 	}
 	
 	private void toJsonArray(JsonArray jsonArray, Object entity,
-			JsonFilter filter) {
-		
-		String id = getId(entity);
+			IdMapFilter filter) {
+		toJsonArray(jsonArray, entity, filter, getId(entity));
+	}
+	private void toJsonArray(JsonArray jsonArray, Object entity,
+				IdMapFilter filter, String id) {
 		String className = entity.getClass().getName();
 
 		JsonObject jsonObject = new JsonObject();
@@ -329,7 +331,7 @@ public class JsonIdMap extends IdMap{
 											if (!filter.existsObject(subId)) {
 												int oldValue = filter.setDeep(IdMapFilter.DEEPER);
 												this.toJsonArray(jsonArray,
-														containee, filter);
+														containee, filter, subId);
 												filter.setDeep(oldValue);
 											}
 										}
