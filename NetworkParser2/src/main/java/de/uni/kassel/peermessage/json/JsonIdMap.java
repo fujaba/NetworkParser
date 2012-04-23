@@ -47,13 +47,11 @@ public class JsonIdMap extends IdMap{
 		String[] properties = prototyp.getProperties();
 		filter.addObject(id);
 		Object referenceObject = prototyp.getSendableInstance(true);
-		HashSet<String> props=new HashSet<String>();
 		if (properties != null) {
 			for (String property : properties) {
-				if(props.contains(property)){
+				if(jsonProp.has(property)){
 					throw new RuntimeException("Property duplicate:"+property+"("+className+")");
 				}
-				props.add(property);
 				Object value = prototyp.getValue(entity, property);
 				if (value != null) {
 					boolean encoding=simpleCheck;
