@@ -4,6 +4,9 @@ import java.util.ArrayList;
 
 import de.uni.kassel.peermessage.interfaces.XMLEntityCreator;
 
+/**
+ * The Class Decoding for Decoding XML Entities.
+ */
 public class Decoding {
 	public static final char PREFIX = ':';
 	private String buffer;
