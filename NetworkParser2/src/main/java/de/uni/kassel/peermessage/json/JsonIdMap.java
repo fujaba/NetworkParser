@@ -296,9 +296,9 @@ public class JsonIdMap extends IdMap{
 	}
 
 	private Object parseObject(Object entity, boolean aggregation, IdMapFilter filter, JsonArray jsonArray){
-		if (aggregation) {
-			SendableEntityCreator valueCreater = getCreatorClass(entity);
-			if (valueCreater != null) {
+		SendableEntityCreator valueCreater = getCreatorClass(entity);
+		if (valueCreater != null) {
+			if (aggregation) {
 				String subId = this.getKey(entity);
 				if(valueCreater instanceof NoIndexCreator||!filter.existsObject(subId)){
 					int oldValue = filter.setDeep(IdMapFilter.DEEPER);
@@ -311,11 +311,10 @@ public class JsonIdMap extends IdMap{
 							entity, filter);
 					filter.setDeep(oldValue);
 				}
-				return new JsonObject(JSON_ID, getKey(entity));
 			}
-			return entity;
+			return new JsonObject(JSON_ID, getId(entity));
 		}
-		return new JsonObject(JSON_ID, getId(entity));
+		return entity;
 	}
 
 	public String toToYUmlObject(Object object) {
