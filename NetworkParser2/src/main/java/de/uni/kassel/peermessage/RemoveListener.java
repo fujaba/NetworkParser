@@ -3,6 +3,7 @@ package de.uni.kassel.peermessage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+
 public class RemoveListener implements PropertyChangeListener{
 	private IdMap map;
 

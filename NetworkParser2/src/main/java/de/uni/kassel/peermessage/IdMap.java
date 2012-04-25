@@ -1,7 +1,6 @@
 package de.uni.kassel.peermessage;
 
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -87,11 +86,11 @@ public class IdMap {
 						IdMap.REMOVE, getListener(IdMap.REMOVE));
 				((SendableEntity) object).addPropertyChangeListener(
 						IdMap.UPDATE, getListener(IdMap.UPDATE));
-			} else if (object instanceof PropertyChangeSupport) {
-				((PropertyChangeSupport) object).addPropertyChangeListener(
-						IdMap.REMOVE, getListener(IdMap.REMOVE));
-				((PropertyChangeSupport) object).addPropertyChangeListener(
-						IdMap.UPDATE, getListener(IdMap.UPDATE));
+//FIXME			} else if (object instanceof PropertyChangeSupport) {
+//				((PropertyChangeSupport) object).addPropertyChangeListener(
+//						IdMap.REMOVE, getListener(IdMap.REMOVE));
+//				((PropertyChangeSupport) object).addPropertyChangeListener(
+//						IdMap.UPDATE, getListener(IdMap.UPDATE));
 			}
 		}
 	}
