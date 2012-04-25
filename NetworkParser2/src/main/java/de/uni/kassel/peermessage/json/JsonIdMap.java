@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import de.uni.kassel.peermessage.IdMap;
+import de.uni.kassel.peermessage.ReferenceObject;
 import de.uni.kassel.peermessage.event.creater.DateCreator;
 import de.uni.kassel.peermessage.interfaces.IdMapFilter;
 import de.uni.kassel.peermessage.interfaces.MapUpdateListener;
