@@ -125,7 +125,6 @@ public class Decoding {
 									SendableEntityCreator parentCreator=refObject.getCreater();
 									parentCreator.setValue(refObject.getEntity(), currentTag, result);
 								}
-								System.out.println(startTag);
 								if(startTag.startsWith("/"+tag)){
 									if(stack.size()>0){
 										stack.remove(stack.size() - 1);
