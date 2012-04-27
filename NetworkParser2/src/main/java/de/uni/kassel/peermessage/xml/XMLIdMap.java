@@ -70,6 +70,9 @@ public class XMLIdMap extends IdMap {
 	}
 
 	public XMLEntityCreator getCreatorDecodeClass(String tag) {
+		if(decoderMap==null){
+			return null;
+		}
 		return decoderMap.get(tag);
 	}
 
