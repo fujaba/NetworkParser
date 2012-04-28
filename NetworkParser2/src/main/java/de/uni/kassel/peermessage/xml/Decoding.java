@@ -11,8 +11,12 @@ import de.uni.kassel.peermessage.interfaces.XMLEntityCreator;
  * The Class Decoding for Decoding XML Entities.
  */
 public class Decoding {
+	public static final char ENDTAG='/';
+	public static final char ITEMEND='>';
+	public static final char ITEMSTART='<';
+	public static final char SPACE=' ';
 	private String buffer;
-	private int len;
+//	private int len;
 	private int pos;
 	private ArrayList<ReferenceObject> stack = new ArrayList<ReferenceObject>();
 	private HashSet<String> stopwords=new HashSet<String>();
@@ -28,10 +32,9 @@ public class Decoding {
 	public Object decode(String value) {
 		Object result = null;
 		this.buffer = value;
-		this.len = value.length();
 		this.pos = 0;
 		this.stack.clear();
-		while (pos < len) {
+		while (pos < buffer.length()) {
 			result = findTag("");
 			if (result != null && !(result instanceof String)) {
 				break;
@@ -42,7 +45,7 @@ public class Decoding {
 
 	public boolean stepPos(char... character) {
 		boolean exit = false;
-		while (pos < len && !exit) {
+		while (pos < buffer.length() && !exit) {
 			for (char zeichen : character) {
 				if (buffer.charAt(pos) == zeichen) {
 					exit = true;
@@ -60,7 +63,7 @@ public class Decoding {
 		boolean exit = false;
 		int strLen=searchString.length();
 		int z=0;
-		while (pos < len && !exit) {
+		while (pos < buffer.length() && !exit) {
 			if (buffer.charAt(pos) == searchString.charAt(z)) {
 					z++;
 					if(z>=strLen){
@@ -78,10 +81,10 @@ public class Decoding {
 	}
 
 	private Object findTag(String prefix) {
-		if (stepPos('<')) {
+		if (stepPos(ITEMSTART)) {
 			int start = ++pos;
 
-			if (stepPos(' ', '>', '/')) {
+			if (stepPos(SPACE, ITEMEND, ENDTAG)) {
 				String tag = getEntity(start);
 				return findTag(prefix, tag);
 			}
@@ -133,7 +136,7 @@ public class Decoding {
 			}else{
 				if (!plainvalue) {
 					convertParams(entityCreater, entity, prefix);
-					if(buffer.charAt(pos)!='/'){
+					if(buffer.charAt(pos)!=ENDTAG){
 						//Children
 						parseChildren(newPrefix, entity, tag);
 					}else{
@@ -141,12 +144,16 @@ public class Decoding {
 					}
 					return entity;
 				}
-				int start = ++pos;
-				stepPos('<');
-				String value= buffer.substring(start, pos);
-				entityCreater.setValue(entity, prefix, value);
-				stepPos('<');
-				stepPos('>');
+				if(buffer.charAt(pos)==ENDTAG){
+					pos++;
+				}else{
+					int start = ++pos;
+					stepPos(ITEMSTART);
+					String value= buffer.substring(start, pos);
+					entityCreater.setValue(entity, prefix, value);
+					stepPos(ITEMSTART);
+					stepPos(ITEMEND);
+				}
 				return null;
 			}
 			return entity;
@@ -155,11 +162,11 @@ public class Decoding {
 	}
 	
 	private void parseChildren(String newPrefix, Object entity, String tag){
-		while (pos < len) {
-			if (stepPos('<')) {
+		while (pos < buffer.length()) {
+			if (stepPos(ITEMSTART)) {
 				int start = ++pos;
 
-				if (stepPos(' ', '>', '/')) {
+				if (stepPos(SPACE, ITEMEND, ENDTAG)) {
 					String nextTag = getEntity(start);
 			
 					if(nextTag.length()>0){
@@ -183,13 +190,12 @@ public class Decoding {
 							}
 						}
 					}
-					if(pos>=len){
+					if(pos>=buffer.length()){
 						if(entity!=null&&stack.size()>0){
 							stack.remove(stack.size() - 1);
 						}
-					}else if(buffer.charAt(pos)=='/'){
-						System.out.println(buffer.substring(pos));
-						stepPos('>');
+					}else if(buffer.charAt(pos)==ENDTAG){
+						stepPos(ITEMEND);
 						break;
 					}
 					pos++;
@@ -201,9 +207,9 @@ public class Decoding {
 	public String getNextTag(){
 		String tag="";
 		int savePos=pos;
-		stepPos('<');
+		stepPos(ITEMSTART);
 		int start=++pos;
-		stepPos(' ', '>');
+		stepPos(SPACE, ITEMEND);
 		if(start<buffer.length()){
 			tag=buffer.substring(start, pos);
 		}
@@ -228,12 +234,12 @@ public class Decoding {
 
 	private void convertParams(XMLEntityCreator entityCreater, Object entity,
 			String prefix) {
-		while (pos < len && buffer.charAt(pos) != '>') {
-			if (buffer.charAt(pos) == '/') {
+		while (pos < buffer.length() && buffer.charAt(pos) != ITEMEND) {
+			if (buffer.charAt(pos) == ENDTAG) {
 				break;
 			}
 			int start = ++pos;
-			if (buffer.charAt(pos) != '/') {
+			if (buffer.charAt(pos) != ENDTAG) {
 				if (stepPos('=')) {
 					String key = buffer.substring(start, pos);
 					pos += 2;
