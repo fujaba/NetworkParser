@@ -58,6 +58,60 @@ public class Decoding {
 		}
 		return exit;
 	}
+	public boolean stepEmptyPos(String newPrefix, Object entity, String tag) {
+		boolean exit = false;
+		boolean empty=true;
+		
+		if(!newPrefix.equals("&")){
+			return stepPos(ITEMSTART);
+		}
+		if (buffer.charAt(pos) != ITEMSTART) {
+			pos++;
+		}
+		int start=pos;
+		while (pos < buffer.length() && !exit) {
+			if(buffer.charAt(pos)!=9&&buffer.charAt(pos)!=10&&buffer.charAt(pos)!=12&&buffer.charAt(pos)!=32&&buffer.charAt(pos)!=ITEMSTART){
+				empty=false;
+			}
+			if (buffer.charAt(pos) == ITEMSTART) {
+				if(empty||buffer.charAt(pos+1)==ENDTAG){
+					exit = true;
+					break;
+				}
+			}
+			if (!exit) {
+				pos++;
+			}
+		}
+		if(!empty&&exit){
+			String value=buffer.substring(start, pos);
+			ReferenceObject refObject=null;
+			if("&".equals(newPrefix)){
+				refObject = stack.get(stack.size() - 1);
+			}
+			if(refObject!=null){
+				SendableEntityCreator parentCreator=refObject.getCreater();
+				parentCreator.setValue(refObject.getEntity(), newPrefix, value);
+			}
+		}
+		return exit;
+	}
+	
+	public boolean stepPosButNot(char not, char... character) {
+		boolean exit = false;
+		while (pos < buffer.length() && !exit) {
+			for (char zeichen : character) {
+				if (buffer.charAt(pos) == zeichen&& buffer.charAt(pos-1)!=not) {
+					exit = true;
+					break;
+				}
+			}
+			if (!exit) {
+				pos++;
+			}
+		}
+		return exit;
+	}
 	
 	public boolean stepPos(String searchString) {
 		boolean exit = false;
@@ -135,7 +189,25 @@ public class Decoding {
 				parseChildren(prefix + XMLIdMap.ENTITYSPLITTER, entity, tag);
 			}else{
 				if (!plainvalue) {
-					convertParams(entityCreater, entity, prefix);
+					// Parse Attributes
+					while (pos < buffer.length() && buffer.charAt(pos) != ITEMEND) {
+						if (buffer.charAt(pos) == ENDTAG) {
+							break;
+						}
+						int start = ++pos;
+						if (buffer.charAt(pos) != ENDTAG) {
+							if (stepPos('=')) {
+								String key = buffer.substring(start, pos);
+								pos += 2;
+								start = pos;
+								if (stepPosButNot('\\', '"')) {
+									String value = buffer.substring(start, pos++);
+									entityCreater.setValue(entity, prefix + key, value);
+								}
+							}
+						}
+					}
+					
 					if(buffer.charAt(pos)!=ENDTAG){
 						//Children
 						parseChildren(newPrefix, entity, tag);
@@ -148,7 +220,7 @@ public class Decoding {
 					pos++;
 				}else{
 					int start = ++pos;
-					stepPos(ITEMSTART);
+					stepPosButNot('\\', ITEMSTART);
 					String value= buffer.substring(start, pos);
 					entityCreater.setValue(entity, prefix, value);
 					stepPos(ITEMSTART);
@@ -163,7 +235,8 @@ public class Decoding {
 	
 	private void parseChildren(String newPrefix, Object entity, String tag){
 		while (pos < buffer.length()) {
-			if (stepPos(ITEMSTART)) {
+//FIXME			if (stepPos(ITEMSTART)) {
+			if (stepEmptyPos(newPrefix, entity, tag)) {
 				int start = ++pos;
 
 				if (stepPos(SPACE, ITEMEND, ENDTAG)) {
@@ -229,27 +302,6 @@ public class Decoding {
 	public void addStopWords(String... stopwords){
 		for(String stopword : stopwords){
 			this.stopwords.add(stopword);
-		}
-	}
-
-	private void convertParams(XMLEntityCreator entityCreater, Object entity,
-			String prefix) {
-		while (pos < buffer.length() && buffer.charAt(pos) != ITEMEND) {
-			if (buffer.charAt(pos) == ENDTAG) {
-				break;
-			}
-			int start = ++pos;
-			if (buffer.charAt(pos) != ENDTAG) {
-				if (stepPos('=')) {
-					String key = buffer.substring(start, pos);
-					pos += 2;
-					start = pos;
-					if (stepPos('"')) {
-						String value = buffer.substring(start, pos++);
-						entityCreater.setValue(entity, prefix + key, value);
-					}
-				}
-			}
 		}
 	}
 }
