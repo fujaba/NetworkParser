@@ -6,9 +6,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import de.uni.kassel.peermessage.IdMap;
+import de.uni.kassel.peermessage.IdMapFilter;
 import de.uni.kassel.peermessage.ReferenceObject;
 import de.uni.kassel.peermessage.event.creater.DateCreator;
-import de.uni.kassel.peermessage.interfaces.IdMapFilter;
 import de.uni.kassel.peermessage.interfaces.MapUpdateListener;
 import de.uni.kassel.peermessage.interfaces.NoIndexCreator;
 import de.uni.kassel.peermessage.interfaces.SendableEntityCreator;
@@ -20,7 +20,6 @@ public class JsonIdMap extends IdMap{
 	public static final String REF_SUFFIX = "_ref";
 	public static final String MAINITEM = "main";
 	private MapUpdateListener updatelistener;
-	private boolean simpleCheck;
 
 	public JsonIdMap() {
 		super();
@@ -31,7 +30,7 @@ public class JsonIdMap extends IdMap{
 		return toJsonObject(object,  new JsonFilter());
 	}
 
-	public JsonObject toJsonObject(Object entity, IdMapFilter filter) {
+	public JsonObject toJsonObject(Object entity, JsonFilter filter) {
 		String id="";
 		String className = entity.getClass().getName();
 
@@ -55,8 +54,8 @@ public class JsonIdMap extends IdMap{
 				}
 				Object value = prototyp.getValue(entity, property);
 				if (value != null) {
-					boolean encoding=simpleCheck;
-					if(!simpleCheck){
+					boolean encoding=isSimpleCheck();
+					if(!encoding){
 						Object refValue = prototyp.getValue(referenceObject,
 								property);
 						encoding=!value.equals(refValue);
@@ -235,7 +234,7 @@ public class JsonIdMap extends IdMap{
 		return toJsonArray(object, null);
 	}
 
-	public JsonArray toJsonArray(Object object, IdMapFilter filter) {
+	public JsonArray toJsonArray(Object object, JsonFilter filter) {
 		JsonArray jsonArray = new JsonArray();
 		if (filter == null) {
 			filter = new JsonFilter();
@@ -253,7 +252,7 @@ public class JsonIdMap extends IdMap{
 	}
 	
 	private void toJsonArray(JsonArray jsonArray, Object entity,
-				IdMapFilter filter) {
+			JsonFilter filter) {
 		String className = entity.getClass().getName();
 		String id=getId(entity);
 
@@ -296,7 +295,7 @@ public class JsonIdMap extends IdMap{
 		}
 	}
 
-	private Object parseObject(Object entity, boolean aggregation, IdMapFilter filter, JsonArray jsonArray){
+	private Object parseObject(Object entity, boolean aggregation, JsonFilter filter, JsonArray jsonArray){
 		SendableEntityCreator valueCreater = getCreatorClass(entity);
 		if (valueCreater != null) {
 			if (aggregation) {
@@ -338,14 +337,5 @@ public class JsonIdMap extends IdMap{
 		JsonObject sendObj=new JsonObject();
 		sendObj.put(IdMap.UPDATE, children);
 		sendUpdateMsg(sendObj);
-	}
-
-	public boolean isSimpleCheck() {
-		return simpleCheck;
-	}
-
-	public boolean setSimpleCheck(boolean simpleCheck) {
-		this.simpleCheck = simpleCheck;
-		return simpleCheck;
 	}
 }
