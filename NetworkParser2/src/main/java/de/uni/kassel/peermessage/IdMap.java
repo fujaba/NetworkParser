@@ -1,6 +1,7 @@
 package de.uni.kassel.peermessage;
 
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -9,17 +10,19 @@ import de.uni.kassel.peermessage.interfaces.SendableEntity;
 import de.uni.kassel.peermessage.interfaces.SendableEntityCreator;
 
 public class IdMap {
-	public static final String REMOVE = ".old";
+	public static final String REMOVE= "rem";
 	public static final String UPDATE = "upd";
+	public static final String PRIO = "prio";
 	private HashMap<Object, String> keys;
 	private HashMap<String, Object> values;
 	private HashMap<String, SendableEntityCreator> creators;
 	protected IdMap parent;
 	protected boolean isId = true;
 	private IdMapCounter counter;
-	private UpdateListener updateListener;
-	private RemoveListener removeListener;
+	protected UpdateListener updateListener;
+	protected RemoveListener removeListener;
 	private boolean simpleCheck;
+	private Object prio;
 
 	public IdMap() {
 		keys = new HashMap<Object, String>();
@@ -87,11 +90,11 @@ public class IdMap {
 						IdMap.REMOVE, getListener(IdMap.REMOVE));
 				((SendableEntity) object).addPropertyChangeListener(
 						IdMap.UPDATE, getListener(IdMap.UPDATE));
-//FIXME			} else if (object instanceof PropertyChangeSupport) {
-//				((PropertyChangeSupport) object).addPropertyChangeListener(
-//						IdMap.REMOVE, getListener(IdMap.REMOVE));
-//				((PropertyChangeSupport) object).addPropertyChangeListener(
-//						IdMap.UPDATE, getListener(IdMap.UPDATE));
+			} else if (object instanceof PropertyChangeSupport) {
+				((PropertyChangeSupport) object).addPropertyChangeListener(
+						IdMap.REMOVE, getListener(IdMap.REMOVE));
+				((PropertyChangeSupport) object).addPropertyChangeListener(
+						IdMap.UPDATE, getListener(IdMap.UPDATE));
 			}
 		}
 	}
@@ -232,5 +235,13 @@ public class IdMap {
 	public boolean setSimpleCheck(boolean simpleCheck) {
 		this.simpleCheck = simpleCheck;
 		return simpleCheck;
+	}
+
+	public Object getPrio() {
+		return prio;
+	}
+
+	public void setPrio(Object prio) {
+		this.prio = prio;
 	}
 }
