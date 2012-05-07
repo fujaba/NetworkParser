@@ -15,11 +15,11 @@ public class RemoveListener implements PropertyChangeListener{
 	}
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		if(evt.getNewValue()==null){
-			String key = map.getKey(evt.getOldValue());
-			if(key!=null){
-				exeucte(evt.getOldValue());
-			}
-		}
+//FIXME		if(evt.getNewValue()==null&&evt.getPropertyName().equals(PROPERTY)){
+//			String key = map.getKey(evt.getOldValue());
+//			if(key!=null){
+//				exeucte(evt.getOldValue());
+//			}
+//		}
 	}
 }

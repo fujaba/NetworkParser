@@ -8,6 +8,7 @@ import java.util.Iterator;
 import de.uni.kassel.peermessage.IdMap;
 import de.uni.kassel.peermessage.IdMapFilter;
 import de.uni.kassel.peermessage.ReferenceObject;
+import de.uni.kassel.peermessage.UpdateListener;
 import de.uni.kassel.peermessage.event.creater.DateCreator;
 import de.uni.kassel.peermessage.interfaces.MapUpdateListener;
 import de.uni.kassel.peermessage.interfaces.NoIndexCreator;
@@ -174,15 +175,7 @@ public class JsonIdMap extends IdMap{
 			if (properties != null) {
 				for (String property : properties) {
 					Object obj = jsonProp.get(property);
-					Object oldObj = null;
-
-					if (obj == null) {
-						oldObj = jsonProp.get(property + REMOVE);
-						parseValue(target, property + REMOVE, oldObj,
-								prototyp, refs);
-					} else {
-						parseValue(target, property, obj, prototyp, refs);
-					}
+					parseValue(target, property, obj, prototyp, refs);
 				}
 			}
 		}
@@ -197,7 +190,7 @@ public class JsonIdMap extends IdMap{
 				for (int i = 0; i < jsonArray.length(); i++) {
 					Object kid = jsonArray.get(i);
 					if (kid instanceof JsonObject) {
-//						// got a new kid, create it
+						// got a new kid, create it
 						JsonObject child=(JsonObject) kid;
 						String className = (String) child.get(CLASS);
 						String jsonId = (String) child.get(JSON_ID);
@@ -239,19 +232,19 @@ public class JsonIdMap extends IdMap{
 		if (filter == null) {
 			filter = new JsonFilter();
 		}
-		toJsonArray(jsonArray, object, filter);
+		toJsonArray(object, jsonArray, filter);
 		return jsonArray;
 	}
 
 	public JsonArray toJsonSortedArray(Object object, String property) {
 		JsonSortedArray jsonArray = new JsonSortedArray();
 		jsonArray.setSortProp(property);
-		JsonFilter filter = new JsonFilter();
-		toJsonArray(jsonArray, object, filter);
+		toJsonArray(object, jsonArray, new JsonFilter());
 		return jsonArray;
 	}
 	
-	private void toJsonArray(JsonArray jsonArray, Object entity,
+	
+	public void toJsonArray(Object entity, JsonArray jsonArray, 
 			JsonFilter filter) {
 		String className = entity.getClass().getName();
 		String id=getId(entity);
@@ -307,8 +300,7 @@ public class JsonIdMap extends IdMap{
 						filter.setDeep(oldValue);
 						return result;
 					}
-					this.toJsonArray(jsonArray,
-							entity, filter);
+					this.toJsonArray(entity, jsonArray, filter);
 					filter.setDeep(oldValue);
 				}
 			}
@@ -322,7 +314,10 @@ public class JsonIdMap extends IdMap{
 	}
 
 	public boolean sendUpdateMsg(JsonObject jsonObject) {
-		return this.updatelistener.sendUpdateMsg(jsonObject);
+		if(this.updatelistener!=null){
+			return this.updatelistener.sendUpdateMsg(jsonObject);	
+		}
+		return true;
 	}
 	
 	public JsonObject toJsonObjectById(String id){
@@ -337,5 +332,11 @@ public class JsonIdMap extends IdMap{
 		JsonObject sendObj=new JsonObject();
 		sendObj.put(IdMap.UPDATE, children);
 		sendUpdateMsg(sendObj);
+	}
+	public boolean executeUpdateMsg(JsonObject element){
+		if (this.updateListener == null) {
+			this.updateListener = new UpdateListener(this);
+		}
+		return this.updateListener.execute(element);
 	}
 }
