@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 import de.uni.kassel.peermessage.ReferenceObject;
+import de.uni.kassel.peermessage.Tokener;
 import de.uni.kassel.peermessage.interfaces.SendableEntityCreator;
 import de.uni.kassel.peermessage.interfaces.XMLEntityCreator;
 
@@ -15,12 +16,10 @@ public class Decoding {
 	public static final char ITEMEND='>';
 	public static final char ITEMSTART='<';
 	public static final char SPACE=' ';
-	private String buffer;
-//	private int len;
-	private int pos;
 	private ArrayList<ReferenceObject> stack = new ArrayList<ReferenceObject>();
 	private HashSet<String> stopwords=new HashSet<String>();
 	private XMLIdMap parent;
+	private Tokener value;
 
 	public Decoding(XMLIdMap parent){
 		this.parent=parent;
@@ -31,10 +30,9 @@ public class Decoding {
 
 	public Object decode(String value) {
 		Object result = null;
-		this.buffer = value;
-		this.pos = 0;
+		this.value=new Tokener(value);
 		this.stack.clear();
-		while (pos < buffer.length()) {
+		while (!this.value.end()) {
 			result = findTag("");
 			if (result != null && !(result instanceof String)) {
 				break;
@@ -43,48 +41,34 @@ public class Decoding {
 		return result;
 	}
 
-	public boolean stepPos(char... character) {
-		boolean exit = false;
-		while (pos < buffer.length() && !exit) {
-			for (char zeichen : character) {
-				if (buffer.charAt(pos) == zeichen) {
-					exit = true;
-					break;
-				}
-			}
-			if (!exit) {
-				pos++;
-			}
-		}
-		return exit;
-	}
+	
 	public boolean stepEmptyPos(String newPrefix, Object entity, String tag) {
 		boolean exit = false;
 		boolean empty=true;
 		
 		if(!newPrefix.equals("&")){
-			return stepPos(ITEMSTART);
+			return value.stepPos(ITEMSTART);
 		}
-		if (buffer.charAt(pos) != ITEMSTART) {
-			pos++;
+		if (value.getCurrentChar() != ITEMSTART) {
+			value.next();
 		}
-		int start=pos;
-		while (pos < buffer.length() && !exit) {
-			if(buffer.charAt(pos)!=9&&buffer.charAt(pos)!=10&&buffer.charAt(pos)!=12&&buffer.charAt(pos)!=32&&buffer.charAt(pos)!=ITEMSTART){
+		int start=value.getIndex();
+		while (!value.end() && !exit) {
+			if(value.checkValues('\t', '\r', '\n', ' ', ITEMSTART)){
 				empty=false;
 			}
-			if (buffer.charAt(pos) == ITEMSTART) {
-				if(empty||buffer.charAt(pos+1)==ENDTAG){
+			if (value.getCurrentChar() == ITEMSTART) {
+				if(empty||value.charAt(value.getIndex()+1)==ENDTAG){
 					exit = true;
 					break;
 				}
 			}
 			if (!exit) {
-				pos++;
+				value.next();
 			}
 		}
 		if(!empty&&exit){
-			String value=buffer.substring(start, pos);
+			String value=this.value.previous(start);
 			ReferenceObject refObject=null;
 			if("&".equals(newPrefix)){
 				refObject = stack.get(stack.size() - 1);
@@ -97,48 +81,11 @@ public class Decoding {
 		return exit;
 	}
 	
-	public boolean stepPosButNot(char not, char... character) {
-		boolean exit = false;
-		while (pos < buffer.length() && !exit) {
-			for (char zeichen : character) {
-				if (buffer.charAt(pos) == zeichen&& buffer.charAt(pos-1)!=not) {
-					exit = true;
-					break;
-				}
-			}
-			if (!exit) {
-				pos++;
-			}
-		}
-		return exit;
-	}
-	
-	public boolean stepPos(String searchString) {
-		boolean exit = false;
-		int strLen=searchString.length();
-		int z=0;
-		while (pos < buffer.length() && !exit) {
-			if (buffer.charAt(pos) == searchString.charAt(z)) {
-					z++;
-					if(z>=strLen){
-						exit = true;
-						break;
-					}
-			}else{
-				z=0;
-			}
-			if (!exit) {
-				pos++;
-			}
-		}
-		return exit;
-	}
-
 	private Object findTag(String prefix) {
-		if (stepPos(ITEMSTART)) {
-			int start = ++pos;
+		if (value.stepPos(ITEMSTART)) {
+			int start = value.nextPos();
 
-			if (stepPos(SPACE, ITEMEND, ENDTAG)) {
+			if (value.stepPos(SPACE, ITEMEND, ENDTAG)) {
 				String tag = getEntity(start);
 				return findTag(prefix, tag);
 			}
@@ -190,41 +137,42 @@ public class Decoding {
 			}else{
 				if (!plainvalue) {
 					// Parse Attributes
-					while (pos < buffer.length() && buffer.charAt(pos) != ITEMEND) {
-						if (buffer.charAt(pos) == ENDTAG) {
+					while (!value.end() && value.getCurrentChar() != ITEMEND) {
+						if (value.getCurrentChar() == ENDTAG) {
 							break;
 						}
-						int start = ++pos;
-						if (buffer.charAt(pos) != ENDTAG) {
-							if (stepPos('=')) {
-								String key = buffer.substring(start, pos);
-								pos += 2;
-								start = pos;
-								if (stepPosButNot('\\', '"')) {
-									String value = buffer.substring(start, pos++);
+						int start = value.nextPos();
+						if (value.getCurrentChar() != ENDTAG) {
+							if (value.stepPos('=')) {
+								String key = value.previous(start);
+								value.skip(2);
+								start = value.getIndex();
+								if (value.stepPosButNot('\\', '"')) {
+									String value = this.value.previous(start);
+									this.value.next();
 									entityCreater.setValue(entity, prefix + key, value);
 								}
 							}
 						}
 					}
 					
-					if(buffer.charAt(pos)!=ENDTAG){
+					if(value.getCurrentChar()!=ENDTAG){
 						//Children
 						parseChildren(newPrefix, entity, tag);
 					}else{
-						pos++;
+						value.next();
 					}
 					return entity;
 				}
-				if(buffer.charAt(pos)==ENDTAG){
-					pos++;
+				if(value.getCurrentChar()==ENDTAG){
+					value.next();
 				}else{
-					int start = ++pos;
-					stepPosButNot('\\', ITEMSTART);
-					String value= buffer.substring(start, pos);
+					int start = this.value.nextPos();
+					this.value.stepPosButNot('\\', ITEMSTART);
+					String value= this.value.previous(start);
 					entityCreater.setValue(entity, prefix, value);
-					stepPos(ITEMSTART);
-					stepPos(ITEMEND);
+					this.value.stepPos(ITEMSTART);
+					this.value.stepPos(ITEMEND);
 				}
 				return null;
 			}
@@ -234,12 +182,11 @@ public class Decoding {
 	}
 	
 	private void parseChildren(String newPrefix, Object entity, String tag){
-		while (pos < buffer.length()) {
-//FIXME			if (stepPos(ITEMSTART)) {
+		while (!value.end()) {
 			if (stepEmptyPos(newPrefix, entity, tag)) {
-				int start = ++pos;
+				int start = value.nextPos();
 
-				if (stepPos(SPACE, ITEMEND, ENDTAG)) {
+				if (value.stepPos(SPACE, ITEMEND, ENDTAG)) {
 					String nextTag = getEntity(start);
 			
 					if(nextTag.length()>0){
@@ -263,35 +210,22 @@ public class Decoding {
 							}
 						}
 					}
-					if(pos>=buffer.length()){
+					if(value.end()){
 						if(entity!=null&&stack.size()>0){
 							stack.remove(stack.size() - 1);
 						}
-					}else if(buffer.charAt(pos)==ENDTAG){
-						stepPos(ITEMEND);
+					}else if(value.getCurrentChar()==ENDTAG){
+						value.stepPos(ITEMEND);
 						break;
 					}
-					pos++;
+					value.next();
 				}
 			}
 		}
 	}
 	
-	public String getNextTag(){
-		String tag="";
-		int savePos=pos;
-		stepPos(ITEMSTART);
-		int start=++pos;
-		stepPos(SPACE, ITEMEND);
-		if(start<buffer.length()){
-			tag=buffer.substring(start, pos);
-		}
-		pos=savePos;
-		return tag;
-	}
-
 	private String getEntity(int start) {
-		String tag = buffer.substring(start, pos);
+		String tag = value.substring(start, value.getIndex());
 		for(String stopword : stopwords){
 			if(tag.startsWith(stopword)){
 				return "";

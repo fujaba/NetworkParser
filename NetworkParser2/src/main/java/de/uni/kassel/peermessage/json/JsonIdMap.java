@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import de.uni.kassel.peermessage.IdMap;
 import de.uni.kassel.peermessage.IdMapFilter;
@@ -244,7 +245,7 @@ public class JsonIdMap extends IdMap{
 	}
 	
 	
-	public void toJsonArray(Object entity, JsonArray jsonArray, 
+	public JsonArray toJsonArray(Object entity, JsonArray jsonArray, 
 			JsonFilter filter) {
 		String className = entity.getClass().getName();
 		String id=getId(entity);
@@ -286,6 +287,7 @@ public class JsonIdMap extends IdMap{
 				jsonObject.put(JSON_PROPS, jsonProps);
 			}
 		}
+		return jsonArray;
 	}
 
 	private Object parseObject(Object entity, boolean aggregation, JsonFilter filter, JsonArray jsonArray){
@@ -338,5 +340,14 @@ public class JsonIdMap extends IdMap{
 			this.updateListener = new UpdateListener(this);
 		}
 		return this.updateListener.execute(element);
+	}
+
+	public void garbageCollection(HashSet<String> classCounts) {
+		Set<String> allIds = this.values.keySet();
+		for(String id : allIds){
+			if(!classCounts.contains(id)){
+				remove(getObject(id));
+			}
+		}
 	}
 }
