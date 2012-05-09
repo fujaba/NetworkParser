@@ -33,6 +33,7 @@ import java.util.Map.Entry;
 import de.uni.kassel.peermessage.Entity;
 import de.uni.kassel.peermessage.EntityList;
 import de.uni.kassel.peermessage.EntityUtil;
+import de.uni.kassel.peermessage.Tokener;
 
 /**
  * A JsonObject is an unordered collection of name/value pairs. Its
@@ -107,7 +108,7 @@ public class JsonObject extends Entity{
      * @param x A JSONTokener object containing the source string.
      *  or a duplicated key.
      */
-    public JsonObject(JsonTokener x) {
+    public JsonObject(Tokener x) {
         this();
         char c;
         String key;
@@ -187,7 +188,7 @@ public class JsonObject extends Entity{
      *  with <code>}</code>&nbsp;<small>(right brace)</small>.
      */
     public JsonObject(String source) {
-        this(new JsonTokener(source));
+        this(new Tokener(source));
     }
 
     /**

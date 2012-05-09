@@ -33,6 +33,7 @@ import java.util.List;
 import de.uni.kassel.peermessage.Entity;
 import de.uni.kassel.peermessage.EntityList;
 import de.uni.kassel.peermessage.EntityUtil;
+import de.uni.kassel.peermessage.Tokener;
 
 /**
  * A JSONArray is an ordered sequence of values. Its external text form is a
@@ -97,7 +98,7 @@ public class JsonArray extends EntityList{
 	 * @throws RuntimeException
 	 *             If there is a syntax error.
 	 */
-	public JsonArray(JsonTokener x) throws RuntimeException {
+	public JsonArray(Tokener x) throws RuntimeException {
 		this();
 		if (x.nextClean() != '[') {
 			throw x.syntaxError("A JSONArray text must start with '['");
@@ -140,7 +141,7 @@ public class JsonArray extends EntityList{
 	 *             If there is a syntax error.
 	 */
 	public JsonArray(String source) throws RuntimeException {
-		this(new JsonTokener(source));
+		this(new Tokener(source));
 	}
 
 	/**
