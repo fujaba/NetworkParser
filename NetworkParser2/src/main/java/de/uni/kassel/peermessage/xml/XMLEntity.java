@@ -1,6 +1,5 @@
 package de.uni.kassel.peermessage.xml;
 
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -65,12 +64,6 @@ public class XMLEntity extends Entity{
 	public void setValue(String value) {
 		this.value = value;
 	}
-	
-	@Override
-	public Writer write(Writer writer) {
-		return null;
-	}
-	
 	
 	@Override
 	public String toString() {

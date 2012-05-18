@@ -1,6 +1,5 @@
 package de.uni.kassel.peermessage;
 
-import java.io.Writer;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -486,5 +485,4 @@ public abstract class Entity extends BaseEntity{
 	 */
 	public abstract String toString(int indentFactor);
 	public abstract String toString(int indentFactor, int intent);
-	public abstract Writer write(Writer writer);
 }

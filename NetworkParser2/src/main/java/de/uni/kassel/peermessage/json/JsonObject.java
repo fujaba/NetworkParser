@@ -24,8 +24,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-import java.io.IOException;
-import java.io.Writer;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -353,43 +351,5 @@ public class JsonObject extends Entity{
 	@Override
 	public Entity getNewObject() {
 		return new JsonObject();
-	}
-	/**
-	 * Write the contents of the JsonObject as JSON text to a writer.
-	 * For compactness, no whitespace is added.
-	 * <p>
-	 * Warning: This method assumes that the data structure is acyclical.
-	 *
-	 * @return The writer.
-	 */
-	public Writer write(Writer writer)  {
-		try {
-			boolean  commanate = false;
-			Map<String, Object> map = getMap();
-			Iterator<String> keys = map.keySet().iterator();
-			writer.write('{');
-
-			while (keys.hasNext()) {
-				if (commanate) {
-					writer.write(',');
-				}
-				Object key = keys.next();
-				writer.write(EntityUtil.quote(key.toString()));
-				writer.write(':');
-				Object value = map.get(key);
-				if (value instanceof Entity) {
-					((Entity)value).write(writer);
-				} else if (value instanceof EntityList) {
-					((EntityList)value).write(writer);
-				} else {
-					writer.write(EntityUtil.valueToString(value, this));
-				}
-				commanate = true;
-			}
-			writer.write('}');
-			return writer;
-		} catch (IOException exception) {
-			throw new RuntimeException(exception);
-		}
 	}
 }

@@ -2,8 +2,8 @@ package de.uni.kassel.peermessage.json;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import de.uni.kassel.peermessage.IdMap;
@@ -104,7 +104,7 @@ public class JsonIdMap extends IdMap{
 		Object result = null;
 		int len = jsonArray.length() - 1;
 		// Add all Objects
-		HashSet<ReferenceObject> refs=new HashSet<ReferenceObject>();
+		LinkedHashSet<ReferenceObject> refs=new LinkedHashSet<ReferenceObject>();
 		for (int i = 0; i <= len; i++) {
 			JsonObject kidObject = jsonArray.getJSONObject(i);
 			Object tmp = readJson(kidObject, refs);
@@ -121,7 +121,7 @@ public class JsonIdMap extends IdMap{
 	}
 
 	public Object readJson(JsonObject jsonObject) {
-		HashSet<ReferenceObject> refs=new HashSet<ReferenceObject>();
+		LinkedHashSet<ReferenceObject> refs=new LinkedHashSet<ReferenceObject>();
 		Object mainItem=readJson(jsonObject, refs);
 		for(ReferenceObject ref : refs){
 			ref.execute();
@@ -129,14 +129,14 @@ public class JsonIdMap extends IdMap{
 		return mainItem;
 	}
 	public Object readJson(Object target, JsonObject jsonObject){
-		HashSet<ReferenceObject> refs=new HashSet<ReferenceObject>();
+		LinkedHashSet<ReferenceObject> refs=new LinkedHashSet<ReferenceObject>();
 		Object mainItem=readJson(target, jsonObject, refs);
 		for(ReferenceObject ref : refs){
 			ref.execute();
 		}
 		return mainItem;
 	}
-	private Object readJson(JsonObject jsonObject, HashSet<ReferenceObject> refs) {
+	private Object readJson(JsonObject jsonObject, LinkedHashSet<ReferenceObject> refs) {
 		Object result = null;
 		Object className = jsonObject.get(CLASS);
 	
@@ -158,7 +158,7 @@ public class JsonIdMap extends IdMap{
 		return result;
 	}
 
-	private Object readJson(Object target, JsonObject jsonObject, HashSet<ReferenceObject> refs) {
+	private Object readJson(Object target, JsonObject jsonObject, LinkedHashSet<ReferenceObject> refs) {
 		// JSONArray jsonArray;
 		if (isId) {
 			String jsonId = (String) jsonObject.get(JSON_ID);
@@ -184,7 +184,7 @@ public class JsonIdMap extends IdMap{
 	}
 
 	private void parseValue(Object target, String property, Object value,
-			SendableEntityCreator creator, HashSet<ReferenceObject> refs) {
+			SendableEntityCreator creator, LinkedHashSet<ReferenceObject> refs) {
 		if (value != null) {
 			if (value instanceof JsonArray) {
 				JsonArray jsonArray = (JsonArray) value;
@@ -342,7 +342,7 @@ public class JsonIdMap extends IdMap{
 		return this.updateListener.execute(element);
 	}
 
-	public void garbageCollection(HashSet<String> classCounts) {
+	public void garbageCollection(LinkedHashSet<String> classCounts) {
 		Set<String> allIds = this.values.keySet();
 		for(String id : allIds){
 			if(!classCounts.contains(id)){

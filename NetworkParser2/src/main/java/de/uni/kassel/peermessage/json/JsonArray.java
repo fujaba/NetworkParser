@@ -24,8 +24,6 @@ package de.uni.kassel.peermessage.json;
  SOFTWARE.
  */
 
-import java.io.IOException;
-import java.io.Writer;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -325,44 +323,6 @@ public class JsonArray extends EntityList{
 		}
 		sb.append(']');
 		return sb.toString();
-	}
-
-	/**
-	 * Write the contents of the JSONArray as JSON text to a writer. For
-	 * compactness, no whitespace is added.
-	 * <p>
-	 * Warning: This method assumes that the data structure is acyclical.
-	 * 
-	 * @return The writer.
-	 * @throws RuntimeException
-	 */
-	public Writer write(Writer writer) throws RuntimeException {
-		try {
-			List<Object> elements = getElements();
-			boolean b = false;
-			int len = elements.size();
-
-			writer.write('[');
-
-			for (int i = 0; i < len; i += 1) {
-				if (b) {
-					writer.write(',');
-				}
-				Object v = elements.get(i);
-				if (v instanceof JsonObject) {
-					((JsonObject) v).write(writer);
-				} else if (v instanceof JsonArray) {
-					((JsonArray) v).write(writer);
-				} else {
-					writer.write(EntityUtil.valueToString(v, this));
-				}
-				b = true;
-			}
-			writer.write(']');
-			return writer;
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 	@Override
