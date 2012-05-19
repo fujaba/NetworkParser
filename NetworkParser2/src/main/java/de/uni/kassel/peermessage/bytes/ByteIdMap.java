@@ -49,8 +49,7 @@ public class ByteIdMap extends IdMap{
 	/** The Constant DATATYPE_BYTEARRAY. */
 	public static final byte DATATYPE_CHAR = 0x38;
 
-	/** The Constant DATATYPE_BYTEARRAY. */
-	public static final byte DATATYPE_ENTITY = 0x39;
+//	public static final byte DATATYPE_ENTITY = 0x39;
 
 	
 	/** The Constant DATATYPE_MAP. */
@@ -196,9 +195,9 @@ public class ByteIdMap extends IdMap{
 
 	public Object decode(Object bytes) throws RuntimeException {
 		if (decoder == null) {
-			decoder = new Decoding(this);
+			decoder = new Decoding();
 		}
-		return decoder.decode(bytes);
+		return decoder.decode(bytes, this);
 	}
 
 	public Object decodeHTTP(String bytes) throws RuntimeException {

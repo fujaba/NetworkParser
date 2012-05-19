@@ -93,7 +93,7 @@ public class ByteEntity extends Entity{
 	}
 	
 	private byte getTyp(byte group, byte subgroup){
-		byte returnValue=(byte) ((getTyp()/16)*16);
+		byte returnValue=(byte) ((group/16)*16);
 		return (byte) (returnValue+(subgroup%16));
 	}
 	private int calcLength(){
@@ -140,7 +140,7 @@ public class ByteEntity extends Entity{
 					setTyp(ref);
 				}
 			}else{
-				int size=getLength(getTyp());
+				int size=len-1;
 				if (size > 32767) {
 					setTyp(getTyp(getTyp(), ByteIdMap.DATATYPE_STRINGBIG));
 				} else if (size > 250) {
@@ -163,7 +163,7 @@ public class ByteEntity extends Entity{
 	@Override
 	public String toString() {
 		StringBuffer returnValue = new StringBuffer();
-		ByteBuffer byteBuffer = getBytes(false);
+		ByteBuffer byteBuffer = getBytes();
 		if(byteBuffer!=null){
 			for (int i = 0; i < byteBuffer.limit(); i++) {
 				byte value = byteBuffer.get(i);
@@ -175,11 +175,11 @@ public class ByteEntity extends Entity{
 				}
 			}
 		}
-		if(children!=null){
-			for(ByteEntity item : children){
-				returnValue.append(item.toString());
-			}
-		}
+//		if(children!=null){
+//			for(ByteEntity item : children){
+//				returnValue.append(item.toString());
+//			}
+//		}
 		return returnValue.toString();
 	}
 	public String toString(int indentFactor) {
@@ -191,22 +191,8 @@ public class ByteEntity extends Entity{
 	}
 	
 	public ByteBuffer getBytes(){
-		return getBytes(true);
-	}
-	
-	private int getLength(byte typ){
-		// Save the Len
-		int size=len-2;
-		byte ref=getTyp(typ, ByteIdMap.DATATYPE_STRINGSHORT);
-		if(ref==ByteIdMap.DATATYPE_LISTSHORT||ref==ByteIdMap.DATATYPE_MAPSHORT){
-			size=children.size();
-		}
-		return size;
-	}
-	
-	private ByteBuffer getBytes(boolean recursiv){
 		int len=calcLength();
-		if(recursiv&&children!=null){
+		if(children!=null){
 			for(ByteEntity item : children){
 				len+=item.getLength();
 			}
@@ -215,18 +201,17 @@ public class ByteEntity extends Entity{
 		message.put(typ);
 		if(isLenCheck){
 			// Save the Len
-			int size=getLength(getTyp());
 			if(getTyp()==getTyp(getTyp(), ByteIdMap.DATATYPE_STRINGSHORT)){
-				message.put((byte) (size+ByteIdMap.SPLITTER));
+				message.put((byte) (len-2+ByteIdMap.SPLITTER));
 			} else if(getTyp()==getTyp(getTyp(), ByteIdMap.DATATYPE_STRING)){
-				message.put((byte) (size));
+				message.put((byte) (len-2));
 			}else if(getTyp()==getTyp(getTyp(), ByteIdMap.DATATYPE_STRINGMID)){
-				message.putShort((short) (size));
+				message.putShort((short) (len-3));
 			}else if(getTyp()==getTyp(getTyp(), ByteIdMap.DATATYPE_STRINGBIG)){
-				message.putInt(size);
+				message.putInt(len-5);
 			}else{
 				message.put(ByteIdMap.DATATYPE_CHECK);
-				message.putInt(size);
+				message.putInt(len-5);
 			}
 		}
 		if(getTyp()==ByteIdMap.DATATYPE_CLAZZ){
@@ -236,7 +221,7 @@ public class ByteEntity extends Entity{
 		if(values!=null){
 			message.put(values);
 		}
-		if(recursiv&&children!=null){
+		if(children!=null){
 			for(ByteEntity item : children){
 				ByteBuffer child=item.getBytes();
 				child.flip();
@@ -393,44 +378,22 @@ public class ByteEntity extends Entity{
 				for (Iterator<?> i = map.entrySet().iterator(); i
 						.hasNext();) {
 					java.util.Map.Entry<?,?> entity = (Entry<?, ?>) i.next();
-					entity.getKey();
-				}
-			}
-//			Map<Object, Object> map = (Map<Object, Object>) value;
-			List<?> list=(List<?>)value;
-			for (Object childValue : list) {
-				ByteEntity child = encodingDataType(childValue, parent);
-				if(child!=null){
-					getChildren().add(child);
+
+//					ByteEntity child = new ByteEntity(isDynamic());
+//					child.setTyp(ByteIdMap.DATATYPE_ENTITY);
+					getChildren().add(encodingDataType(entity.getKey(), parent));
+					getChildren().add(encodingDataType(entity.getValue(), parent));
+//					getChildren().add(child);
 				}
 			}
 			this.isLenCheck=true;
-			
-			
-			
-			
-//FIXME			message.put(ByteConst.DATATYPE_MAP);
-//			short len = 0;
-//			@SuppressWarnings("unchecked")
-//			Map<Object, Object> map = (Map<Object, Object>) value;
-//			for (Iterator<Entry<Object, Object>> i = map.entrySet().iterator(); i
-//					.hasNext();) {
-//				Entry<Object, Object> entity = i.next();
-//				len += getValueLen(entity.getKey());
-//				len += getValueLen(entity.getValue());
-//			}
-//			message.putShort(len);
-//			for (Iterator<Entry<Object, Object>> i = map.entrySet().iterator(); i
-//					.hasNext();) {
-//				Entry<Object, Object> entity = i.next();
-//				encodingDataType(message, entity.getKey(), 0);
-//				encodingDataType(message, entity.getValue(), 0);
 		} else if(typ==ByteIdMap.DATATYPE_ASSOC){
 			ByteEntity child = parent.encode(value);
 			if(child!=null){
 				getChildren().add(child);
 			}
 			this.typ=typ;
+			this.setLenCheck(true);
 		}
 		if(buffer!=null){
 			this.typ=typ;
