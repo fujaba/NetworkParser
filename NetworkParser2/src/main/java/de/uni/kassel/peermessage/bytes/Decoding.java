@@ -10,22 +10,16 @@ import de.uni.kassel.peermessage.event.UnknownMessage;
 import de.uni.kassel.peermessage.interfaces.SendableEntityCreator;
 
 public class Decoding {
-	private ByteIdMap parent;
-
-	public Decoding(ByteIdMap parent){
-		this.parent=parent;
-	}
-
-	public Object decode(Object value) throws RuntimeException {
+	public Object decode(Object value, ByteIdMap parent) throws RuntimeException {
 		if (value instanceof ByteBuffer) {
-			return decode((ByteBuffer) value);
+			return decode((ByteBuffer) value, parent);
 		} else if (value instanceof byte[]) {
-			return decode(ByteBuffer.wrap((byte[]) value));
+			return decode(ByteBuffer.wrap((byte[]) value), parent);
 		}
 		return null;
 	}
 
-	public Object decode(ByteBuffer in) throws RuntimeException {
+	public Object decode(ByteBuffer in, ByteIdMap parent) throws RuntimeException {
 		if (in.remaining() < 1)
 			throw new RuntimeException("DecodeExpeption - Remaining:" + in.remaining());
 
@@ -86,87 +80,69 @@ public class Decoding {
 			return in.getFloat();
 		} else if (typValue == ByteIdMap.DATATYPE_DOUBLE) {
 			return in.getDouble();
-		} else if (typValue == ByteIdMap.DATATYPE_STRINGSHORT) {
-			byte len = (byte)(in.get()-ByteIdMap.SPLITTER);
-			byte[] value = new byte[len];
-			in.get(value);
-			return new String(value);
-		} else if (typValue == ByteIdMap.DATATYPE_STRING) {
-			byte len = in.get();
-			byte[] value = new byte[len];
-			in.get(value);
-			return new String(value);
-		} else if (typValue == ByteIdMap.DATATYPE_STRINGMID) {
-			short len = in.getShort();
-			byte[] value = new byte[len];
-			in.get(value);
-			return new String(value);
-		} else if (typValue == ByteIdMap.DATATYPE_STRINGBIG) {
-			int len = in.getInt();
-			byte[] value = new byte[len];
-			in.get(value);
-			return new String(value);
-		} else if (typValue == ByteIdMap.DATATYPE_STRINGLAST) {
-			byte[] value = new byte[in.remaining()];
-			in.get(value);
-			return new String(value);
 		} else if (typValue == ByteIdMap.DATATYPE_DATE) {
 			int value = in.getInt();
 			Date newValue = new Date(value);
 			return newValue;
-		} else if (typValue == ByteIdMap.DATATYPE_BYTEARRAYSHORT) {
-			byte len = (byte)(in.get()-ByteIdMap.SPLITTER);
-			byte[] value = new byte[len];
-			in.get(value);
-			return value;
-		} else if (typValue == ByteIdMap.DATATYPE_BYTEARRAY) {
-			byte len = in.get();
-			byte[] value = new byte[len];
-			in.get(value);
-			return value;
-		} else if (typValue == ByteIdMap.DATATYPE_BYTEARRAYMID) {
-			short len = in.getShort();
-			byte[] value = new byte[len];
-			in.get(value);
-			return value;
-		} else if (typValue == ByteIdMap.DATATYPE_BYTEARRAYBIG) {
-			int len = in.getInt();
-			byte[] value = new byte[len];
-			in.get(value);
-			return value;
-		} else if (typValue == ByteIdMap.DATATYPE_BYTEARRAYLAST) {
-			byte[] value = new byte[in.remaining()];
-			in.get(value);
-			return value;
-		} else if (typValue == ByteIdMap.DATATYPE_LIST) {
-			short len = in.getShort();
-			int pos = in.position();
-			ArrayList<Object> list = new ArrayList<Object>();
-			while (in.remaining() > 0 && in.position() <= pos + len) {
-				Byte subType = in.get();
-				Object entity = getDecodeObject(subType, in);
-				if (entity != null) {
-					list.add(list);
+		} else {
+			byte group=getTyp(typValue, ByteIdMap.DATATYPE_STRING);
+			if(group==ByteIdMap.DATATYPE_STRING||
+					group==ByteIdMap.DATATYPE_BYTEARRAY||
+					group==ByteIdMap.DATATYPE_LIST||
+					group==ByteIdMap.DATATYPE_MAP){
+				byte subgroup=getTyp(ByteIdMap.DATATYPE_STRING, typValue);
+				byte[] values;
+				int len=0;
+				if(subgroup == ByteIdMap.DATATYPE_STRINGSHORT) {
+					len = in.get()-ByteIdMap.SPLITTER;
+				}else if(subgroup == ByteIdMap.DATATYPE_STRING) {
+					len = in.get();
+				} else if (subgroup == ByteIdMap.DATATYPE_STRINGMID) {
+					len = in.getShort();
+				} else if (subgroup == ByteIdMap.DATATYPE_STRINGBIG) {
+					len = in.getInt();
+				} else if (subgroup == ByteIdMap.DATATYPE_STRINGLAST) {
+					len = in.remaining();
 				}
-			}
-			return list;
-		} else if (typValue == ByteIdMap.DATATYPE_MAP) {
-			short len = in.getShort();
-			int pos = in.position();
-			HashMap<Object, Object> map = new HashMap<Object, Object>();
-			while (in.remaining() > 0 && in.position() <= pos + len) {
-				Byte subType = in.get();
-				Object key = getDecodeObject(subType, in);
-				if (key != null) {
-					subType = in.get();
-					Object value = getDecodeObject(subType, in);
-					if (key != null) {
-						map.put(key, value);
+				values = new byte[len];
+				in.get(values);
+				if(group==ByteIdMap.DATATYPE_STRING){
+					return new String(values);
+				} else if (group == ByteIdMap.DATATYPE_BYTEARRAY) {
+					return values;
+				} else if (group == ByteIdMap.DATATYPE_LIST) {
+					ByteBuffer child=ByteBuffer.wrap((byte[]) values);
+					ArrayList<Object> list = new ArrayList<Object>();
+					while (child.remaining() > 0) {
+						Byte subType = child.get();
+						Object entity = getDecodeObject(subType, child);
+						if (entity != null) {
+							list.add(entity);
+						}
 					}
+					return list;
+				} else if (typValue == ByteIdMap.DATATYPE_MAP) {
+					ByteBuffer child=ByteBuffer.wrap((byte[]) values);
+					HashMap<Object, Object> map = new HashMap<Object, Object>();
+					while (child.remaining() > 0) {
+						Byte subType = child.get();
+						Object key = getDecodeObject(subType, child);
+						if (key != null) {
+							subType = child.get();
+							Object value = getDecodeObject(subType, child);
+							if (key != null) {
+								map.put(key, value);
+							}
+						}
+					}
+					return map;
 				}
 			}
-			return map;
 		}
 		return null;
+	}
+	private byte getTyp(byte group, byte subgroup){
+		byte returnValue=(byte) ((group/16)*16);
+		return (byte) (returnValue+(subgroup%16));
 	}
 }
