@@ -1,4 +1,27 @@
 package de.uni.kassel.peermessage.json;
+/*
+Copyright (c) 2012 Stefan Lindel
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+The Software shall be used for Good, not Evil.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,14 +38,32 @@ import de.uni.kassel.peermessage.interfaces.MapUpdateListener;
 import de.uni.kassel.peermessage.interfaces.NoIndexCreator;
 import de.uni.kassel.peermessage.interfaces.SendableEntityCreator;
 
+/**
+ * The Class JsonIdMap.
+ */
 public class JsonIdMap extends IdMap{
+	
+	/** The Constant CLASS. */
 	public static final String CLASS = "class";
+	
+	/** The Constant JSON_ID. */
 	public static final String JSON_ID = "id";
+	
+	/** The Constant JSON_PROPS. */
 	public static final String JSON_PROPS = "prop";
+	
+	/** The Constant REF_SUFFIX. */
 	public static final String REF_SUFFIX = "_ref";
+	
+	/** The Constant MAINITEM. */
 	public static final String MAINITEM = "main";
+	
+	/** The updatelistener. */
 	private MapUpdateListener updatelistener;
 
+	/**
+	 * Instantiates a new json id map.
+	 */
 	public JsonIdMap() {
 		super();
 		this.addCreator(new DateCreator());
@@ -158,7 +199,7 @@ public class JsonIdMap extends IdMap{
 		return result;
 	}
 
-	private Object readJson(Object target, JsonObject jsonObject, LinkedHashSet<ReferenceObject> refs) {
+	protected Object readJson(Object target, JsonObject jsonObject, LinkedHashSet<ReferenceObject> refs) {
 		// JSONArray jsonArray;
 		if (isId) {
 			String jsonId = (String) jsonObject.get(JSON_ID);
@@ -183,7 +224,7 @@ public class JsonIdMap extends IdMap{
 		return target;
 	}
 
-	private void parseValue(Object target, String property, Object value,
+	protected void parseValue(Object target, String property, Object value,
 			SendableEntityCreator creator, LinkedHashSet<ReferenceObject> refs) {
 		if (value != null) {
 			if (value instanceof JsonArray) {
