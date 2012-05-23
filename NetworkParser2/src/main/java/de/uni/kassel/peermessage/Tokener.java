@@ -55,7 +55,8 @@ public class Tokener {
     	this.buffer=s;
     	this.index=0;
     	this.line=0;
-    	this.firstChar=s.charAt(0);
+    	this.firstChar=nextClean();
+    	back();
     }
 
 
@@ -520,6 +521,9 @@ public class Tokener {
      * @return the string
      */
     public String substring(int start, int end){
+    	if(end==-1){
+    		return buffer.substring(start);
+    	}
     	return buffer.substring(start, end);
     }
     
