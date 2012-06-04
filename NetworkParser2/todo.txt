@@ -1,0 +1,3 @@
+Erweiterungen für das Serialisieren:
+- XMLParser erweitern um Values: <item>ich <b>bin</b> gut</item>
+- Quertransformation xmlEntity -> JsonObject -> xmlEntity
