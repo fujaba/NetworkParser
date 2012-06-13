@@ -24,7 +24,6 @@ SOFTWARE.
 */
 
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -183,9 +182,6 @@ public class IdMap {
 			keys.put(object, jsonId);
 			if (object instanceof SendableEntity) {
 				((SendableEntity) object).addPropertyChangeListener(
-						IdMap.UPDATE, getListener(IdMap.UPDATE));
-			} else if (object instanceof PropertyChangeSupport) {
-				((PropertyChangeSupport) object).addPropertyChangeListener(
 						IdMap.UPDATE, getListener(IdMap.UPDATE));
 			}
 		}
@@ -364,10 +360,22 @@ public class IdMap {
 			if(reference == null){
 				return false;
 			}
-			creators.put(reference.getClass().getName(), createrClass);
+			addCreator(reference.getClass().getName(), createrClass);
 			return true;
 		}
 	}
+	
+	/**
+	 * add a Creator to list
+	 *
+	 * @param className the class name
+	 * @param creator the creator
+	 */
+	public void addCreator(String className, SendableEntityCreator creator)
+	{
+	   creators.put(className, creator);
+	}
+
 	
 	/**
 	 * Checks if is simple check.
@@ -416,7 +424,7 @@ public class IdMap {
 		if (this.updateListener == null) {
 			this.updateListener = new UpdateListener(this);
 		}
-		updateListener.startCarbageColection(root);
+		updateListener.startGarbageColection(root);
 	}
 	
 	/**
@@ -429,5 +437,15 @@ public class IdMap {
 			this.updateListener = new UpdateListener(this);
 		}
 		updateListener.garbageCollection(root);
+	}
+	public Object startUpdateModell(String clazz){
+		SendableEntityCreator creator=getCreatorClasses(clazz);
+		if(creator!=null){
+			Object result=creator.getSendableInstance(false);
+			String id = getId(result);
+			put(id, result);
+			return result;
+		}
+		return null;
 	}
 }
