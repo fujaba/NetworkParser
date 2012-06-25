@@ -57,6 +57,9 @@ public class JsonIdMap extends IdMap {
 	/** The Constant REF_SUFFIX. */
 	public static final String REF_SUFFIX = "_ref";
 
+	/** The Constant REF_SUFFIX. */
+	public static final String NOT_SUFFIX = "_not";
+
 	/** The Constant MAINITEM. */
 	public static final String MAINITEM = "main";
 
@@ -107,8 +110,12 @@ public class JsonIdMap extends IdMap {
 						encoding = !value.equals(refValue);
 					}
 					if (encoding) {
+						if(property.endsWith(NOT_SUFFIX)){
+							continue;
+						}
 						boolean aggregation = filter.isConvertable(this,
 								entity, property, value);
+						
 						if (value instanceof Collection<?>) {
 							JsonArray subValues = new JsonArray();
 							for (Object containee : ((Collection<?>) value)) {
@@ -137,7 +144,7 @@ public class JsonIdMap extends IdMap {
 			}
 			jsonObject.put(CLASS, className);
 		} else {
-			if (isId) {
+			if (isId&&filter.isId()) {
 				jsonObject.put(JSON_ID, id);
 			}
 			jsonObject.put(CLASS, className);
@@ -151,7 +158,7 @@ public class JsonIdMap extends IdMap {
 
 	public Object readJson(JsonArray jsonArray) {
 		Object result = null;
-		int len = jsonArray.length() - 1;
+		int len = jsonArray.size() - 1;
 		// Add all Objects
 		LinkedHashSet<ReferenceObject> refs = new LinkedHashSet<ReferenceObject>();
 		for (int i = 0; i <= len; i++) {
@@ -241,7 +248,7 @@ public class JsonIdMap extends IdMap {
 		if (value != null) {
 			if (value instanceof JsonArray) {
 				JsonArray jsonArray = (JsonArray) value;
-				for (int i = 0; i < jsonArray.length(); i++) {
+				for (int i = 0; i < jsonArray.size(); i++) {
 					Object kid = jsonArray.get(i);
 					if (kid instanceof JsonObject) {
 						// got a new kid, create it
@@ -307,7 +314,7 @@ public class JsonIdMap extends IdMap {
 		String id = getId(entity);
 
 		JsonObject jsonObject = new JsonObject();
-		if (isId) {
+		if (isId&&filter.isId()) {
 			jsonObject.put(JSON_ID, id);
 		}
 		jsonObject.put(CLASS, className);
@@ -402,7 +409,7 @@ public class JsonIdMap extends IdMap {
 		sendUpdateMsg(sendObj);
 	}
 
-	public JsonArray toJsonArray(List<Object> items) {
+	public JsonArray toJsonArray(List<? extends Object> items) {
 		JsonArray jsonArray = new JsonArray();
 		for (Object item : items) {
 			jsonArray.put(toJsonObject(item));
@@ -417,12 +424,19 @@ public class JsonIdMap extends IdMap {
 		return this.updateListener.execute(element);
 	}
 
-	public void garbageCollection(LinkedHashSet<String> classCounts) {
+	public void garbageCollection(Set<String> classCounts) {
 		Set<String> allIds = this.values.keySet();
 		for (String id : allIds) {
 			if (!classCounts.contains(id)) {
 				remove(getObject(id));
 			}
 		}
+	}
+	public Set<String> getKeys() {
+		return values.keySet();
+	}
+	
+	public String toString(){
+		return this.getClass().getName()+" ("+this.size()+")";
 	}
 }
