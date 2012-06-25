@@ -23,9 +23,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-import java.beans.PropertyChangeListener;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Set;
 
 import de.uni.kassel.peermessage.interfaces.IdMapCounter;
 import de.uni.kassel.peermessage.interfaces.SendableEntity;
@@ -119,6 +119,15 @@ public class IdMap {
 	public void setSessionId(String sessionId) {
 		getCounter().setPrefixId(sessionId);
 	}
+	
+	/**
+	 * Sets the splitter Character.
+	 *
+	 * @param Character the new splitter-Character for the session id
+	 */
+	public void setSpliiterId(char splitter) {
+		getCounter().setSplitter(splitter);
+	}
 
 	// Key Value paar
 	/**
@@ -180,27 +189,17 @@ public class IdMap {
 		} else {
 			values.put(jsonId, object);
 			keys.put(object, jsonId);
-			if (object instanceof SendableEntity) {
-				((SendableEntity) object).addPropertyChangeListener(
-						IdMap.UPDATE, getListener(IdMap.UPDATE));
-			}
+			addListener(object);
 		}
 	}
-
-	/**
-	 * Gets the listener.
-	 *
-	 * @param id the id
-	 * @return the listener
-	 */
-	public PropertyChangeListener getListener(String id) {
-		if (id == IdMap.UPDATE) {
+	public void addListener(Object object){
+		if (object instanceof SendableEntity) {
 			if (this.updateListener == null) {
 				this.updateListener = new UpdateListener(this);
 			}
-			return updateListener;
+			((SendableEntity) object).addPropertyChangeListener(
+					IdMap.UPDATE, updateListener);
 		}
-		return null;
 	}
 
 	/**
@@ -437,6 +436,9 @@ public class IdMap {
 			this.updateListener = new UpdateListener(this);
 		}
 		updateListener.garbageCollection(root);
+	}
+	
+	public void garbageCollection(Set<String> classCounts) {
 	}
 	public Object startUpdateModell(String clazz){
 		SendableEntityCreator creator=getCreatorClasses(clazz);

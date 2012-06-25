@@ -160,6 +160,11 @@ public class UpdateListener implements PropertyChangeListener {
 
 		Object oldValue = evt.getOldValue();
 		Object newValue = evt.getNewValue();
+		
+		if((oldValue==null&&newValue==null)||(oldValue!=null&&oldValue.equals(newValue))){
+			//Nothing to do
+			return;
+		}
 
 		if (oldValue != null) {
 			creatorClass = map.getCreatorClass(oldValue);
@@ -421,7 +426,6 @@ public class UpdateListener implements PropertyChangeListener {
 							countMessage((JsonObject) value);
 						} else if (value instanceof JsonArray) {
 							countMessage((JsonArray) value);
-
 						}
 					}
 				}
