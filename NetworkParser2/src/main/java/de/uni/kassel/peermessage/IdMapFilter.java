@@ -27,7 +27,6 @@ SOFTWARE.
  * The Class IdMapFilter.
  */
 public class IdMapFilter {
-	
 	/** The Constant ALLDEEP. */
 	public final static int ALLDEEP = -1;
 	
