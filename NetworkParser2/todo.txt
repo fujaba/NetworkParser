@@ -1,9 +1,6 @@
 Erweiterungen für das Serialisieren:
 - XMLParser erweitern um Values: <item>ich <b>bin</b> gut</item>
 - Quertransformation xmlEntity -> JsonObject -> xmlEntity
-- jsonidmap-splitter ersetzebar (.)
-- ReplaceObject Id austauschen bzw. getTypList<SendableCreator>
+- ReplaceObject Id austauschen
 - compareto()
-- GetListOfObject by SendabkeCreatorClass
-- Typsicherheit bei JSOn integrieren
-Wettbewerbe (Extras anzeigen)
+- GetListOfObject by SendabkeCreatorClass bzw. getTypList<SendableCreator>
