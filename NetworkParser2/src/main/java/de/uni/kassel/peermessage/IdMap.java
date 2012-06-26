@@ -34,8 +34,7 @@ import de.uni.kassel.peermessage.interfaces.SendableEntityCreator;
 /**
  * The Class IdMap.
  */
-public class IdMap {
-	
+public class IdMap {	
 	/** The Constant REMOVE. */
 	public static final String REMOVE= "rem";
 	

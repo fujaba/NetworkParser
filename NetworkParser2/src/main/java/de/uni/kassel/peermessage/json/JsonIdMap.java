@@ -170,7 +170,7 @@ public class JsonIdMap extends IdMap {
 			}
 			jsonObject.put(CLASS, className);
 
-			if (jsonProp.length() > 0) {
+			if (jsonProp.size() > 0) {
 				jsonObject.put(JSON_PROPS, jsonProp);
 			}
 		}
@@ -457,7 +457,7 @@ public class JsonIdMap extends IdMap {
 					}
 				}
 			}
-			if (jsonProps.length() > 0) {
+			if (jsonProps.size() > 0) {
 				jsonObject.put(JSON_PROPS, jsonProps);
 			}
 		}
