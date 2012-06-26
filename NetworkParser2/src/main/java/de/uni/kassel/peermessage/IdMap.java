@@ -125,7 +125,7 @@ public class IdMap {
 	 *
 	 * @param Character the new splitter-Character for the session id
 	 */
-	public void setSpliiterId(char splitter) {
+	public void setSplitterId(char splitter) {
 		getCounter().setSplitter(splitter);
 	}
 
@@ -192,14 +192,23 @@ public class IdMap {
 			addListener(object);
 		}
 	}
-	public void addListener(Object object){
-		if (object instanceof SendableEntity) {
-			if (this.updateListener == null) {
-				this.updateListener = new UpdateListener(this);
-			}
-			((SendableEntity) object).addPropertyChangeListener(
-					IdMap.UPDATE, updateListener);
+
+	public UpdateListener getUpdateListener(){
+		if (this.updateListener == null) {
+			this.updateListener = new UpdateListener(this);
 		}
+		return updateListener;
+	}
+	/**
+	 * @param check for add Listener to object 
+	 * @return success of adding
+	 */
+	public boolean addListener(Object object){
+		if (object instanceof SendableEntity) {
+			return ((SendableEntity) object).addPropertyChangeListener(
+					IdMap.UPDATE, getUpdateListener());
+		}
+		return false;
 	}
 
 	/**
