@@ -98,7 +98,7 @@ public class Tokener {
      *
      * @return true, if successful
      */
-    public boolean end() {
+    public boolean isEnd() {
     	return buffer.length()<=index;
     }
 
@@ -151,7 +151,7 @@ public class Tokener {
      *   Substring bounds error if there are not
      *   n characters remaining in the source string.
      */
-     public String next(int n)  {
+     public String getNextString(int n)  {
     	 if (n == -1) {
     		n=buffer.length()-index; 
     	 } else if (n == 0) {
@@ -163,7 +163,7 @@ public class Tokener {
 
          while (pos < n) {
              chars[pos] = next();
-             if (end()) {
+             if (isEnd()) {
                  throw syntaxError("Substring bounds error");                 
              }
              pos += 1;
@@ -225,7 +225,7 @@ public class Tokener {
                     sb.append('\r');
                     break;
                 case 'u':
-                    sb.append((char)Integer.parseInt(next(4), 16));
+                    sb.append((char)Integer.parseInt(getNextString(4), 16));
                     break;
                 case '"':
                 case '\'':
@@ -245,51 +245,6 @@ public class Tokener {
             }
         }
     }
-
-
-    /**
-     * Get the text up but not including the specified character or the
-     * end of line, whichever comes first.
-     *
-     * @param delimiter the delimiter
-     * @return   A string.
-     */
-    public String nextTo(char delimiter)  {
-        StringBuffer sb = new StringBuffer();
-        for (;;) {
-            char c = next();
-            if (c == delimiter || c == 0 || c == '\n' || c == '\r') {
-                if (c != 0) {
-                    back();
-                }
-                return sb.toString().trim();
-            }
-            sb.append(c);
-        }
-    }
-
-    /**
-     * Get the text up but not including one of the specified delimiter
-     * characters or the end of line, whichever comes first.
-     * @param delimiters A set of delimiter characters.
-     * @return A string, trimmed.
-     */
-    public String nextTo(String delimiters)  {
-        char c;
-        StringBuffer sb = new StringBuffer();
-        for (;;) {
-            c = next();
-            if (delimiters.indexOf(c) >= 0 || c == 0 ||
-                    c == '\n' || c == '\r') {
-                if (c != 0) {
-                    back();
-                }
-                return sb.toString().trim();
-            }
-            sb.append(c);
-        }
-    }
-
 
     /**
      * Get the next value. The value can be a Boolean, Double, Integer,
@@ -509,7 +464,7 @@ public class Tokener {
      * @param start the start
      * @return the string
      */
-    public String previous(int start){
+    public String getPreviousString(int start){
     	return buffer.substring(start, index);
     }
     
@@ -543,6 +498,15 @@ public class Tokener {
     	return true;
     }
 
+    public String getNextTag(){
+    	int startTag=nextPos();
+		if(stepPos(' ', '>', '/', '<')){
+			return getPreviousString(startTag);	
+		}
+		return "";
+    }
+    
+    
 	/**
 	 * Sets the index.
 	 *
