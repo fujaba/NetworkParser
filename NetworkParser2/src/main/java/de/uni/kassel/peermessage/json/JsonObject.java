@@ -114,12 +114,29 @@ public class JsonObject extends Entity{
         this();
         setTokener(x);
     }
+
+    
+    public JsonObject(Entity entity){
+    	JsonTokener tokener=new JsonTokener();
+    	tokener.parseEntity(this, entity);
+    }
+    
+    /**
+     * Construct a JsonObject from a source JSON text string.
+     * This is the most commonly used JsonObject constructor.
+     * @param source    A string beginning
+     *  with <code>{</code>&nbsp;<small>(left brace)</small> and ending
+     *  with <code>}</code>&nbsp;<small>(right brace)</small>.
+     */
+    public JsonObject(String source) {
+    	this();
+        setTokener(new JsonTokener(source));
+    }
     
     public void setTokener(Tokener x){
         char c;
         String key;
 
-        x.setCreator(this);
         if (x.nextClean() != '{') {
             throw x.syntaxError("A JsonObject text must begin with '{'");
         }
@@ -132,7 +149,7 @@ public class JsonObject extends Entity{
                 return ;
             default:
                 x.back();
-                key = x.nextValue().toString();
+                key = x.nextValue(this).toString();
             }
 
 // The key is followed by ':'. We will also tolerate '=' or '=>'.
@@ -145,7 +162,7 @@ public class JsonObject extends Entity{
             } else if (c != ':') {
                 throw x.syntaxError("Expected a ':' after a key");
             }
-            this.put(key, x.nextValue());
+            this.put(key, x.nextValue(this));
 
 // Pairs are separated by ','. We will also tolerate ';'.
 
@@ -183,18 +200,6 @@ public class JsonObject extends Entity{
                 }
             }
         }
-    }
-
-
-    /**
-     * Construct a JsonObject from a source JSON text string.
-     * This is the most commonly used JsonObject constructor.
-     * @param source    A string beginning
-     *  with <code>{</code>&nbsp;<small>(left brace)</small> and ending
-     *  with <code>}</code>&nbsp;<small>(right brace)</small>.
-     */
-    public JsonObject(String source) {
-        this(new Tokener(source));
     }
 
     /**

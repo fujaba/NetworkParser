@@ -240,7 +240,8 @@ public class XMLIdMap extends IdMap {
 			if(label.length()>0){
 				XMLEntity child = parent.getChild(label);
 				if(child==null){
-					child=new XMLEntity(label);
+					child=new XMLEntity();
+					child.setTag(label);
 					parserChild(child, newProp, value);
 					parent.addChild(child);
 				}else{
@@ -264,7 +265,7 @@ public class XMLIdMap extends IdMap {
 	 */
 	public Object decode(String value) {
 		Object result = null;
-		this.value=new Tokener(value);
+		this.value=new XMLTokener(value);
 		this.stack.clear();
 		while (!this.value.isEnd()) {
 			if (this.value.stepPos(ITEMSTART)) {

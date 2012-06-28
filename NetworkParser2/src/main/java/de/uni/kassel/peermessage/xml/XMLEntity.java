@@ -64,84 +64,78 @@ public class XMLEntity extends Entity{
 	 *
 	 * @param tag the tag
 	 */
-	public XMLEntity(String tag){
-		this.setTag(tag);
+	public XMLEntity(String value){
+		this(new XMLTokener(value));
 	}
 	
     /**
      * Construct a XMLEntity from a Tokener.
-     * @param x A Tokener object containing the source string.
+     * @param value A Tokener object containing the source string.
      *  or a duplicated key.
      */
-    public XMLEntity(Tokener x) {
+    public XMLEntity(Tokener value) {
         this();
-        setTokener(x);
+        setTokener(value);
     }
-    public void setTokener(Tokener x){
+    public void setTokener(Tokener value){
         char c;
         
-        x.setCreator(this);
-
-        if (x.nextClean() != '<') {
-            throw x.syntaxError("A JsonObject text must begin with '<'");
+        if (value.nextClean() != '<') {
+            throw value.syntaxError("A JsonObject text must begin with '<'");
         }
         StringBuffer sb = new StringBuffer();
-        c = x.nextClean();
+        c = value.nextClean();
         while (c >= ' ' && ",:]>/\\\"<;=# ".indexOf(c) < 0) {
             sb.append(c);
-            c = x.next();
+            c = value.next();
         }
-        x.back();
+        value.back();
         setTag(sb.toString());
         XMLEntity child;
-        for (;;) {
-        	String key=null;
-            c = x.nextClean();
-            switch (c) {
-            case 0:
-                throw x.syntaxError("A JsonObject text must end with '>'");
-            case '>':
-            	if(x.getCurrentChar()>' '||x.nextClean()>' '){
-            		if(x.getCurrentChar()=='<'){
+        boolean lExit=false;
+        while(!lExit){
+            c = value.nextClean();
+            if(c==0){
+        		lExit=true;
+            }else if(c=='>'){
+            	if(value.getCurrentChar()>' '||value.nextClean()>' '){
+            		if(value.getCurrentChar()=='<'){
                 		child = (XMLEntity) getNewObject();
-                		child.setTokener(x);
+                		child.setTokener(value);
                 		this.addChild(child);
             		}else{
-            			String value = x.nextString('<');
-            			this.setValue(value);
-            			x.back();
+            			this.setValue(value.nextString('<'));
+            			value.back();
             		}
             	}
-        		break;
-            case '<':
-            	if(x.next()=='/'){
-            		x.stepPos('>');
-            		x.next();
-            		return;
+        	}else if(c=='<'){
+            	if(value.next()=='/'){
+            		value.stepPos('>');
+            		value.next();
+            		lExit=true;
             	}else{
-            		x.back();
-            		x.back();
+            		value.back();
+            		value.back();
             		child = (XMLEntity) getNewObject();
-            		child.setTokener(x);
+            		child.setTokener(value);
             		this.addChild(child);
-            		break;
             	}
-            case '/':
-            	x.next();
-            	return;
-            default:
-                x.back();
-                key = x.nextValue().toString();
-            }
-            if(key!=null){
-// The key is followed by ':'. We will also tolerate '=' or '=>'.
-	            c = x.nextClean();
-	            if (c == '=') {
-	                if (x.next() != '>') {
-	                    x.back();
-	                }
+            }else if(c=='/'){
+            	value.next();
+            	lExit=true;
+            }else{
+                value.back();
+                String key = value.nextValue(this).toString();
+                if(key!=null){
+                	// The key is followed by ':'. We will also tolerate '=' or '=>'.
+		            c = value.nextClean();
+		            if (c == '=') {
+		                if (value.next() != '>') {
+		                    value.back();
+		                }
+		            }
+		            this.put(key, value.nextValue(this));
 	            }
-	            this.put(key, x.nextValue());
             }
         }
     }
