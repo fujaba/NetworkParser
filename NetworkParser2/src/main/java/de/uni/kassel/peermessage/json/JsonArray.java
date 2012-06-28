@@ -108,7 +108,6 @@ public class JsonArray extends EntityList{
 	}
 	    
 	public void setTokener(Tokener x){
-		x.setCreator(this);
 		if (x.nextClean() != '[') {
 			throw x.syntaxError("A JSONArray text must start with '['");
 		}
@@ -120,7 +119,7 @@ public class JsonArray extends EntityList{
 					put(null);
 				} else {
 					x.back();
-					put(x.nextValue());
+					put(x.nextValue(this));
 				}
 				switch (x.nextClean()) {
 				case ';':
@@ -150,7 +149,7 @@ public class JsonArray extends EntityList{
 	 *             If there is a syntax error.
 	 */
 	public JsonArray(String source) throws RuntimeException {
-		this(new Tokener(source));
+		this(new JsonTokener(source));
 	}
 
 	/**

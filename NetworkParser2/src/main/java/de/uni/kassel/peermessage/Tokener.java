@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
  * The Class Tokener.
  */
-public class Tokener {
+public abstract class Tokener {
     
     /** The index. */
     private int 	index;
@@ -45,12 +45,8 @@ public class Tokener {
     /** The buffer. */
     private String 	buffer;
     
-    /** The first char. */
-    private char 	firstChar;
-	
-	/** The creator. */
-	private BaseEntity creator;
-
+    public Tokener() {
+    }
     /**
      * Construct a Tokener from a string.
      *
@@ -60,8 +56,6 @@ public class Tokener {
     	this.buffer=s;
     	this.index=0;
     	this.line=0;
-    	this.firstChar=nextClean();
-    	back();
     }
 
 
@@ -250,69 +244,30 @@ public class Tokener {
             }
         }
     }
-
-    /**
-     * Get the next value. The value can be a Boolean, Double, Integer,
-     * JSONArray, JSONObject, Long, or String, or the JSONObject.NULL object.
+    
+	 /**
+     * Handle unquoted text. This could be the values true, false, or
+     * null, or it can be a number. An implementation (such as this one)
+     * is allowed to also accept non-standard forms.
      *
-     * @return An object.
+     * Accumulate characters until we reach the end of the text or a
+     * formatting character.
      */
-    public Object nextValue()  {
-        char c = nextClean();
-        String string;
-
-        if(firstChar=='{'||firstChar=='['){
-	        switch (c) {
-	            case '"':
-	            case '\'':
-	                return nextString(c);
-	            case '{':
-	                back();
-	                BaseEntity element = creator.getNewObject();
-	                element.setTokener(this);
-	                return element; 
-	            case '[':
-	                back();
-	                EntityList elementList = creator.getNewArray();
-	                elementList.setTokener(this);
-	                return elementList;
-	        }
-        }else if(firstChar=='<'){
-	        switch (c) {
-            case '"':
-            case '\'':
-                return nextString(c);
-            case '<':
-                back();
-                BaseEntity element = creator.getNewObject();
-                element.setTokener(this);
-                return element;
-	        }
-        }
-
-        /*
-         * Handle unquoted text. This could be the values true, false, or
-         * null, or it can be a number. An implementation (such as this one)
-         * is allowed to also accept non-standard forms.
-         *
-         * Accumulate characters until we reach the end of the text or a
-         * formatting character.
-         */
-
-        StringBuffer sb = new StringBuffer();
-        while (c >= ' ' && ",:]}/\\\"[{;=#".indexOf(c) < 0) {
-            sb.append(c);
-            c = next();
-        }
-        back();
-
-        string = sb.toString().trim();
-        if (string.equals("")) {
-            throw syntaxError("Missing value");
-        }
-        return EntityUtil.stringToValue(string);
-    }
-
+    public Object nextValue(BaseEntity creator) {
+    	char c = nextClean();
+	    StringBuffer sb = new StringBuffer();
+	    while (c >= ' ' && ",:]}/\\\"[{;=#".indexOf(c) < 0) {
+	        sb.append(c);
+	        c = next();
+	    }
+	    back();
+	
+	    String value = sb.toString().trim();
+	    if (value.equals("")) {
+	        throw syntaxError("Missing value");
+	    }
+	    return EntityUtil.stringToValue(value);
+  }
 
     /**
      * Skip.
@@ -519,15 +474,5 @@ public class Tokener {
 	 */
 	public void setIndex(int index) {
 		this.index=index;
-	}
-
-
-	/**
-	 * Sets the creator.
-	 *
-	 * @param creator the new creator
-	 */
-	public void setCreator(BaseEntity creator) {
-		this.creator=creator;
 	}
 }
