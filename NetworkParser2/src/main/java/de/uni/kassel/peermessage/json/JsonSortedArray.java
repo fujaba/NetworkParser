@@ -43,7 +43,7 @@ public class JsonSortedArray extends JsonArray{
 	private SortedMap<Object, JsonObject> mySortArrayList;
 			
 	/** The sort prop. */
-	private String sortProp=JsonIdMap.JSON_ID;
+	private String sortProp=JsonIdMap.ID;
 	
 	/** The prop sort. */
 	private boolean propSort;

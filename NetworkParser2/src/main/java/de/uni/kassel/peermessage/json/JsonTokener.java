@@ -72,16 +72,38 @@ public class JsonTokener extends Tokener{
 		 		String[] names = Entity.getNames(xmlEntity);
 		 		parent.put(JsonIdMap.CLASS, xmlEntity.getTag());
 		 		JsonObject props=new JsonObject();
+		 		if(xmlEntity.getValue()!=null&&xmlEntity.getValue().length()>0){
+		 			parent.put(JsonIdMap.VALUE, xmlEntity.getValue());
+		 		}
 		 		for(String prop : names){
 		 			Object propValue=xmlEntity.get(prop);
-		 			if(propValue instanceof XMLEntity){
-		 				props.put(prop, parseEntity((XMLEntity)propValue));
-		 			}else{
-		 				props.put(prop, propValue);
-		 			}
+		 			parseEntityProp(props, propValue, prop);
+		 		}
+		 		for(XMLEntity children : xmlEntity.getChildren()){
+		 			parseEntityProp(props, children, children.getTag());
 		 		}
 		 		parent.put(JsonIdMap.JSON_PROPS, props);
 		 }
 		 return parent;
+	 }
+	 public void parseEntityProp(JsonObject props, Object propValue, String prop){
+		if(propValue instanceof XMLEntity){
+			if(props.has(prop)){
+				Object child = props.get(prop);
+				JsonArray propList=null;
+				if(child instanceof JsonObject){
+					propList=new JsonArray();
+					propList.put(child);
+				}else if(child instanceof JsonArray){
+					propList=(JsonArray) child;
+				}
+				propList.put(parseEntity((XMLEntity)propValue));
+				props.put(prop, propList);
+			}else{
+				props.put(prop, parseEntity((XMLEntity)propValue));
+			}
+		}else{
+			props.put(prop, propValue);
+		}
 	 }
 }

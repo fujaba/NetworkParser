@@ -74,9 +74,6 @@ public class XMLIdMap extends IdMap {
 	
 	/** The value. */
 	private Tokener value;
-	
-	/** The Constant ID. */
-	public static final String ID="id";
 
 	/**
 	 * Instantiates a new xML id map.

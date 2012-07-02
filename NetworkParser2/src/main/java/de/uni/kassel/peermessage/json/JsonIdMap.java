@@ -55,9 +55,6 @@ public class JsonIdMap extends IdMap {
 	/** The Constant VALUE. */
 	public static final String VALUE = "value";
 
-	/** The Constant JSON_ID. */
-	public static final String JSON_ID = "id";
-
 	/** The Constant JSON_PROPS. */
 	public static final String JSON_PROPS = "prop";
 
@@ -173,7 +170,7 @@ public class JsonIdMap extends IdMap {
 			jsonObject.put(CLASS, className);
 		} else {
 			if (isId&&filter.isId()) {
-				jsonObject.put(JSON_ID, id);
+				jsonObject.put(ID, id);
 			}
 			jsonObject.put(CLASS, className);
 
@@ -257,7 +254,7 @@ public class JsonIdMap extends IdMap {
 
 		if (typeInfo != null) {
 			if (isId) {
-				String jsonId = (String) jsonObject.get(JSON_ID);
+				String jsonId = (String) jsonObject.get(ID);
 				if (jsonId != null) {
 					result = getObject(jsonId);
 				}
@@ -294,7 +291,7 @@ public class JsonIdMap extends IdMap {
 			LinkedHashSet<ReferenceObject> refs) {
 		// JSONArray jsonArray;
 		if (isId) {
-			String jsonId = (String) jsonObject.get(JSON_ID);
+			String jsonId = (String) jsonObject.get(ID);
 			if (jsonId == null) {
 				return target;
 			}
@@ -336,7 +333,7 @@ public class JsonIdMap extends IdMap {
 						// got a new kid, create it
 						JsonObject child = (JsonObject) kid;
 						String className = (String) child.get(CLASS);
-						String jsonId = (String) child.get(JSON_ID);
+						String jsonId = (String) child.get(ID);
 						if (className == null && jsonId != null) {
 							// It is a Ref
 							refs.add(new ReferenceObject(jsonId, creator,
@@ -354,7 +351,7 @@ public class JsonIdMap extends IdMap {
 					// // got a new kid, create it
 					JsonObject child = (JsonObject) value;
 					String className = (String) child.get(CLASS);
-					String jsonId = (String) child.get(JSON_ID);
+					String jsonId = (String) child.get(ID);
 					if (className == null && jsonId != null) {
 						// It is a Ref
 						refs.add(new ReferenceObject(jsonId, creator, property,
@@ -425,7 +422,7 @@ public class JsonIdMap extends IdMap {
 
 		JsonObject jsonObject = new JsonObject();
 		if (isId&&filter.isId()) {
-			jsonObject.put(JSON_ID, id);
+			jsonObject.put(ID, id);
 		}
 		jsonObject.put(CLASS, className);
 		jsonArray.put(jsonObject);
@@ -498,7 +495,7 @@ public class JsonIdMap extends IdMap {
 					filter.setDeep(oldValue);
 				}
 			}
-			return new JsonObject(JSON_ID, getId(entity));
+			return new JsonObject(ID, getId(entity));
 		}
 		if(typSave){
 			JsonObject returnValue=new JsonObject(CLASS, entity.getClass().getName());
