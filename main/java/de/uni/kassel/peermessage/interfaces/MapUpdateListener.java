@@ -42,6 +42,9 @@ import de.uni.kassel.peermessage.json.JsonObject;
  * @see MapUpdateEvent
  */
 public interface MapUpdateListener {
+	public static final String TYP_NEW="new";
+	public static final String TYP_UPDATE="upd";
+	public static final String TYP_DELETE="del";
 	
 	/**
 	 * Send update msg.
@@ -49,5 +52,7 @@ public interface MapUpdateListener {
 	 * @param jsonObject the json object
 	 * @return true, if successful
 	 */
-	public boolean sendUpdateMsg(JsonObject jsonObject);
+	public boolean sendUpdateMsg(Object oldObj, Object newObject, JsonObject jsonObject);
+	
+	public boolean readMessages(String type, Object value, JsonObject props);
 }
