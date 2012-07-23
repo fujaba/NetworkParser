@@ -32,7 +32,6 @@ import java.util.Map.Entry;
 
 import de.uni.kassel.peermessage.Entity;
 import de.uni.kassel.peermessage.EntityList;
-import de.uni.kassel.peermessage.Tokener;
 import de.uni.kassel.peermessage.interfaces.SendableEntityCreator;
 
 /**
@@ -610,10 +609,5 @@ public class ByteEntity extends Entity{
 				// Zurueckformen nicht möglich da keine Infos vorliegen
 			}
 		}
-	}
-
-	@Override
-	public void setTokener(Tokener x) {
-		
 	}
 }

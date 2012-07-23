@@ -73,71 +73,9 @@ public class XMLEntity extends Entity{
      * @param value A Tokener object containing the source string.
      *  or a duplicated key.
      */
-    public XMLEntity(Tokener value) {
+    public XMLEntity(Tokener tokener) {
         this();
-        setTokener(value);
-    }
-    public void setTokener(Tokener value){
-        char c;
-        
-        if (value.nextClean() != '<') {
-            throw value.syntaxError("A JsonObject text must begin with '<'");
-        }
-        StringBuffer sb = new StringBuffer();
-        c = value.nextClean();
-        while (c >= ' ' && ",:]>/\\\"<;=# ".indexOf(c) < 0) {
-            sb.append(c);
-            c = value.next();
-        }
-        value.back();
-        setTag(sb.toString());
-        XMLEntity child;
-        boolean lExit=false;
-        while(!lExit){
-            c = value.nextClean();
-            if(c==0){
-        		lExit=true;
-            }else if(c=='>'){
-            	if(value.getCurrentChar()>' '||value.nextClean()>' '){
-            		if(value.getCurrentChar()=='<'){
-                		child = (XMLEntity) getNewObject();
-                		child.setTokener(value);
-                		this.addChild(child);
-            		}else{
-            			this.setValue(value.nextString('<'));
-            			value.back();
-            		}
-            	}
-        	}else if(c=='<'){
-            	if(value.next()=='/'){
-            		value.stepPos('>');
-            		value.next();
-            		lExit=true;
-            	}else{
-            		value.back();
-            		value.back();
-            		child = (XMLEntity) getNewObject();
-            		child.setTokener(value);
-            		this.addChild(child);
-            	}
-            }else if(c=='/'){
-            	value.next();
-            	lExit=true;
-            }else{
-                value.back();
-                String key = value.nextValue(this).toString();
-                if(key!=null){
-                	// The key is followed by ':'. We will also tolerate '=' or '=>'.
-		            c = value.nextClean();
-		            if (c == '=') {
-		                if (value.next() != '>') {
-		                    value.back();
-		                }
-		            }
-		            this.put(key, value.nextValue(this));
-	            }
-            }
-        }
+        tokener.parseToEntity(this);
     }
 
 	/* (non-Javadoc)

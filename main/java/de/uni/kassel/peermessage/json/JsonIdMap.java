@@ -441,30 +441,32 @@ public class JsonIdMap extends IdMap {
 			JsonObject jsonProps = new JsonObject();
 			for (String property : properties) {
 				Object value = prototyp.getValue(entity, property);
-				if (value instanceof Collection) {
-					Collection<?> list = ((Collection<?>) value);
-					if (list.size() > 0) {
-						JsonArray refArray = new JsonArray();
-						for (Object containee : list) {
-
-							if (containee != null && filter.isRegard(this, entity, property, containee)) {
-								boolean aggregation = filter.isConvertable(this, entity,
-										property, containee);
-								refArray.put(parseObject(containee,
-										aggregation, filter, jsonArray, isTypSave()));
+				if(value!=null){
+					if (value instanceof Collection) {
+						Collection<?> list = ((Collection<?>) value);
+						if (list.size() > 0) {
+							JsonArray refArray = new JsonArray();
+							for (Object containee : list) {
+	
+								if (containee != null && filter.isRegard(this, entity, property, containee)) {
+									boolean aggregation = filter.isConvertable(this, entity,
+											property, containee);
+									refArray.put(parseObject(containee,
+											aggregation, filter, jsonArray, isTypSave()));
+								}
+							}
+							if(refArray.size()>0){
+								jsonProps.put(property, refArray);
 							}
 						}
-						if(refArray.size()>0){
-							jsonProps.put(property, refArray);
-						}
+					} else if (filter.isRegard(this, entity, property, value)){
+						boolean aggregation = filter.isConvertable(this, entity,
+								property, value);
+						jsonProps.put(
+								property,
+								parseObject(value, aggregation, filter,
+										jsonArray, isTypSave()));
 					}
-				} else if (filter.isRegard(this, entity, property, value)){
-					boolean aggregation = filter.isConvertable(this, entity,
-							property, value);
-					jsonProps.put(
-							property,
-							parseObject(value, aggregation, filter,
-									jsonArray, isTypSave()));
 				}
 			}
 			if (jsonProps.size() > 0) {

@@ -28,6 +28,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 import de.uni.kassel.peermessage.BaseEntity;
+import de.uni.kassel.peermessage.Entity;
+import de.uni.kassel.peermessage.EntityList;
 import de.uni.kassel.peermessage.Tokener;
 
 public class XMLTokener extends Tokener{
@@ -50,11 +52,82 @@ public class XMLTokener extends Tokener{
             return nextString(c);
         case '<':
             back();
-            BaseEntity element = creator.getNewObject();
-            element.setTokener(this);
+            Entity element = creator.getNewObject();
+            parseToEntity(element);
             return element;
         }
     	back();
         return super.nextValue(creator);
     }
+	
+	public void parseToEntity(Entity entity) {
+        char c;
+        
+        if (nextClean() != '<') {
+            throw syntaxError("A XML text must begin with '<'");
+        }
+        if(!(entity instanceof XMLEntity)){
+        	throw syntaxError("Parse only XMLEntity");
+        }
+        XMLEntity xmlEntity=(XMLEntity) entity;
+        StringBuffer sb = new StringBuffer();
+        c = nextClean();
+        while (c >= ' ' && ",:]>/\\\"<;=# ".indexOf(c) < 0) {
+            sb.append(c);
+            c = next();
+        }
+        back();
+        xmlEntity.setTag(sb.toString());
+        XMLEntity child;
+        boolean lExit=false;
+        while(!lExit){
+            c = nextClean();
+            if(c==0){
+        		lExit=true;
+            }else if(c=='>'){
+            	if(getCurrentChar()>' '||nextClean()>' '){
+            		if(getCurrentChar()=='<'){
+                		child = (XMLEntity) xmlEntity.getNewObject();
+                		parseToEntity(child);
+                		xmlEntity.addChild(child);
+            		}else{
+            			xmlEntity.setValue(nextString('<'));
+            			back();
+            		}
+            	}
+        	}else if(c=='<'){
+            	if(next()=='/'){
+            		stepPos('>');
+            		next();
+            		lExit=true;
+            	}else{
+            		back();
+            		back();
+            		child = (XMLEntity) xmlEntity.getNewObject();
+            		parseToEntity(child);
+            		xmlEntity.addChild(child);
+            	}
+            }else if(c=='/'){
+            	next();
+            	lExit=true;
+            }else{
+                back();
+                String key = nextValue(xmlEntity).toString();
+                if(key!=null){
+                	// The key is followed by ':'. We will also tolerate '=' or '=>'.
+		            c = nextClean();
+		            if (c == '=') {
+		                if (next() != '>') {
+		                    back();
+		                }
+		            }
+		            xmlEntity.put(key, nextValue(xmlEntity));
+	            }
+            }
+        }		
+	}
+
+	public void parseToEntity(EntityList entityList) {
+		
+	}
 }

@@ -1,4 +1,5 @@
 package de.uni.kassel.peermessage;
+
 /*
 Copyright (c) 2012, Stefan Lindel
 All rights reserved.
@@ -475,4 +476,7 @@ public abstract class Tokener {
 	public void setIndex(int index) {
 		this.index=index;
 	}
+	
+	public abstract void parseToEntity(Entity entity);
+	public abstract void parseToEntity(EntityList entityList);
 }
