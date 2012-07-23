@@ -50,22 +50,19 @@ public class JsonTokener extends Tokener{
                 return nextString(c);
             case '{':
                 back();
-                BaseEntity element = creator.getNewObject();
-                element.setTokener(this);
+                Entity element = creator.getNewObject();
+                this.parseToEntity(element);
                 return element; 
             case '[':
                 back();
                 EntityList elementList = creator.getNewArray();
-                elementList.setTokener(this);
+                this.parseToEntity(elementList);
                 return elementList;
         }
     	back();
         return super.nextValue(creator);
 	 }
 	 
-	 public Entity parseEntity(Entity newValue){
-		 return parseEntity(new JsonObject(), newValue);
-	 }
 	 public Entity parseEntity(JsonObject parent, Entity newValue){
 		 if(newValue instanceof XMLEntity){
 		 		XMLEntity xmlEntity=(XMLEntity) newValue;
@@ -87,7 +84,7 @@ public class JsonTokener extends Tokener{
 		 return parent;
 	 }
 	 public void parseEntityProp(JsonObject props, Object propValue, String prop){
-		if(propValue instanceof XMLEntity){
+		 if(propValue instanceof XMLEntity){
 			if(props.has(prop)){
 				Object child = props.get(prop);
 				JsonArray propList=null;
@@ -97,13 +94,116 @@ public class JsonTokener extends Tokener{
 				}else if(child instanceof JsonArray){
 					propList=(JsonArray) child;
 				}
-				propList.put(parseEntity((XMLEntity)propValue));
+				propList.put(parseEntity(new JsonObject(), (XMLEntity)propValue));
 				props.put(prop, propList);
 			}else{
-				props.put(prop, parseEntity((XMLEntity)propValue));
+				props.put(prop, parseEntity(new JsonObject(), (XMLEntity)propValue));
 			}
 		}else{
 			props.put(prop, propValue);
 		}
 	 }
+	 
+	 /**
+	  * Cross compiling
+	 * @param parent
+	 * @param newValue
+	 * @return
+	 */
+	public Entity parseToEntity(JsonObject parent, Entity newValue){
+		if(newValue instanceof XMLEntity){
+			XMLEntity xmlEntity=(XMLEntity) newValue;
+	 		String[] names = Entity.getNames(xmlEntity);
+	 		parent.put(JsonIdMap.CLASS, xmlEntity.getTag());
+	 		JsonObject props=new JsonObject();
+	 		if(xmlEntity.getValue()!=null&&xmlEntity.getValue().length()>0){
+	 			parent.put(JsonIdMap.VALUE, xmlEntity.getValue());
+	 		}
+	 		for(String prop : names){
+	 			Object propValue=xmlEntity.get(prop);
+	 			parseEntityProp(props, propValue, prop);
+	 		}
+	 		for(XMLEntity children : xmlEntity.getChildren()){
+	 			parseEntityProp(props, children, children.getTag());
+	 		}
+	 		parent.put(JsonIdMap.JSON_PROPS, props);
+		 }
+		 return parent;
+	 }
+	 
+	 public void parseToEntity(Entity entity){
+	        char c;
+	        String key;
+
+	        if (nextClean() != '{') {
+	            throw syntaxError("A JsonObject text must begin with '{'");
+	        }
+	        for (;;) {
+	            c = nextClean();
+	            switch (c) {
+	            case 0:
+	                throw syntaxError("A JsonObject text must end with '}'");
+	            case '}':
+	                return ;
+	            default:
+	                back();
+	                key = nextValue(entity).toString();
+	            }
+	            // The key is followed by ':'. We will also tolerate '=' or '=>'.
+	            c = nextClean();
+	            if (c == '=') {
+	                if (next() != '>') {
+	                    back();
+	                }
+	            } else if (c != ':') {
+	                throw syntaxError("Expected a ':' after a key");
+	            }
+	            entity.put(key, nextValue(entity));
+
+	// Pairs are separated by ','. We will also tolerate ';'.
+	            switch (nextClean()) {
+	            case ';':
+	            case ',':
+	                if (nextClean() == '}') {
+	                    return;
+	                }
+	                back();
+	                break;
+	            case '}':
+	                return;
+	            default:
+	                throw syntaxError("Expected a ',' or '}' got a " + nextClean());
+	            }
+	        }
+	    }
+		public void parseToEntity(EntityList entityList){
+			if (nextClean() != '[') {
+				throw syntaxError("A JSONArray text must start with '['");
+			}
+			if (nextClean() != ']') {
+				back();
+				for (;;) {
+					if (nextClean() == ',') {
+						back();
+						entityList.put(null);
+					} else {
+						back();
+						entityList.put(nextValue(entityList));
+					}
+					switch (nextClean()) {
+					case ';':
+					case ',':
+						if (nextClean() == ']') {
+							return;
+						}
+						back();
+						break;
+					case ']':
+						return;
+					default:
+						throw syntaxError("Expected a ',' or ']'");
+					}
+				}
+			}
+		}
 }

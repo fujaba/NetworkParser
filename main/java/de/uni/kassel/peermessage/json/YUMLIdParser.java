@@ -245,7 +245,7 @@ public class YUMLIdParser extends IdMap{
 				boolean first = true;
 				for (String property : prototyp.getProperties()) {
 					Object value = prototyp.getValue(object, property);
-					if (value != null) {
+					if (value == null) {
 						continue;
 					}
 					if(!filter.isRegard(this, object, property, value)){
@@ -277,7 +277,7 @@ public class YUMLIdParser extends IdMap{
 							}
 							// plain attr just add text
 							if(type==OBJECT){
-							result += property + "=" + value;
+								result += property + "=" + value;
 							}else{
 								result += property + ":" + value.getClass().getName();
 							}
