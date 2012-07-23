@@ -38,7 +38,6 @@ import java.util.TreeMap;
  * The Class JsonSortedArray.
  */
 public class JsonSortedArray extends JsonArray{
-	
 	/** The my sort array list. */
 	private SortedMap<Object, JsonObject> mySortArrayList;
 			

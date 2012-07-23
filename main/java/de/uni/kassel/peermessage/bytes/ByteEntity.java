@@ -38,7 +38,6 @@ import de.uni.kassel.peermessage.interfaces.SendableEntityCreator;
  * The Class ByteEntity.
  */
 public class ByteEntity extends Entity{
-	
 	/** The Constant BIT OF A BYTE. */
 	public final static int BITOFBYTE=8;
 	
