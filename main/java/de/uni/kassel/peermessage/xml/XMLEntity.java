@@ -42,7 +42,6 @@ import de.uni.kassel.peermessage.Tokener;
  * The Class XMLEntity.
  */
 public class XMLEntity extends Entity{
-	
 	/** The children. */
 	private ArrayList<XMLEntity> children;
 	

@@ -87,7 +87,6 @@ import de.uni.kassel.peermessage.Tokener;
  */
 
 public class JsonArray extends EntityList{
-
 	/**
 	 * Construct an empty JSONArray.
 	 */

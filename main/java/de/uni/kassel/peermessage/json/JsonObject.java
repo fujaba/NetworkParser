@@ -90,7 +90,6 @@ import de.uni.kassel.peermessage.Tokener;
  * @version 2011-11-24
  */
 public class JsonObject extends Entity{
-
     /**
      * Construct an empty JsonObject.
      */

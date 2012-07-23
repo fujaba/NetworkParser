@@ -32,8 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
  * The Class Tokener.
  */
-public abstract class Tokener {
-    
+public abstract class Tokener {   
     /** The index. */
     private int 	index;
     

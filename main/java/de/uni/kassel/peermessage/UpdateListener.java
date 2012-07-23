@@ -52,7 +52,6 @@ import de.uni.kassel.peermessage.json.UpdateFilter;
  * @see UpdateEvent
  */
 public class UpdateListener implements PropertyChangeListener {
-
 	/** The map. */
 	private JsonIdMap map;
 

@@ -40,7 +40,6 @@ import de.uni.kassel.peermessage.interfaces.SendableEntityCreator;
  * The Class YUMLIdParser.
  */
 public class YUMLIdParser extends IdMap{
-	
 	/** The Constant URL. */
 	public static final String URL="http://yuml.me/diagram/class/";
 	

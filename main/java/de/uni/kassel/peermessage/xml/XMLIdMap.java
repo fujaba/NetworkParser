@@ -44,7 +44,6 @@ import de.uni.kassel.peermessage.interfaces.XMLEntityCreator;
  * The Class XMLIdMap.
  */
 public class XMLIdMap extends IdMap {
-	
 	/** The Constant ENTITYSPLITTER. */
 	public static final String ENTITYSPLITTER = "&";
 	
