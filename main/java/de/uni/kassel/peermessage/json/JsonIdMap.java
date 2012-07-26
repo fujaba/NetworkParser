@@ -108,7 +108,7 @@ public class JsonIdMap extends IdMap {
 			return null;
 		}
 
-		if (!(prototyp instanceof NoIndexCreator||filter.isTemporary())) {
+		if (!(prototyp instanceof NoIndexCreator||!filter.isId())) {
 			id = getId(entity);
 		}
 		JsonObject jsonProp = new JsonObject();
@@ -126,7 +126,7 @@ public class JsonIdMap extends IdMap {
 				}
 				Object value = prototyp.getValue(entity, property);
 				if (value != null) {
-					boolean encoding = isSimpleCheck();
+					boolean encoding = filter.isFullSerialization();
 					if (!encoding) {
 						Object refValue = prototyp.getValue(referenceObject,
 								property);
@@ -172,7 +172,7 @@ public class JsonIdMap extends IdMap {
 			}
 			jsonObject.put(CLASS, className);
 		} else {
-			if (isId&&filter.isId()) {
+			if (getCounter().isId()&&filter.isId()) {
 				jsonObject.put(ID, id);
 			}
 			jsonObject.put(CLASS, className);
@@ -259,7 +259,7 @@ public class JsonIdMap extends IdMap {
 		SendableEntityCreator typeInfo = getCreatorClasses((String) className);
 
 		if (typeInfo != null) {
-			if (isId) {
+			if (getCounter().isId()) {
 				String jsonId = (String) jsonObject.get(ID);
 				if (jsonId != null) {
 					result = getObject(jsonId);
@@ -299,7 +299,7 @@ public class JsonIdMap extends IdMap {
 	protected Object readJson(Object target, JsonObject jsonObject,
 			LinkedHashSet<ReferenceObject> refs, boolean readId) {
 		// JSONArray jsonArray;
-		if (isId&&readId) {
+		if (getCounter().isId()&&readId) {
 			String jsonId = (String) jsonObject.get(ID);
 			if (jsonId == null) {
 				return target;
@@ -430,7 +430,7 @@ public class JsonIdMap extends IdMap {
 		String id = getId(entity);
 
 		JsonObject jsonObject = new JsonObject();
-		if (isId&&filter.isId()) {
+		if (getCounter().isId()&&filter.isId()) {
 			jsonObject.put(ID, id);
 		}
 		jsonObject.put(CLASS, className);

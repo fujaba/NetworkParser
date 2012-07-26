@@ -45,6 +45,12 @@ public class SimpleIdCounter implements IdMapCounter{
 	
 	private char splitter='.';
 	
+	/** The is id. */
+	protected boolean isId = true;
+	
+	/** The prio Object mostly a timestzamp or int value. */
+	private Object prio;
+	
 	/** 
 	 * Set the Session Prefix for a Peer
 	 */
@@ -104,5 +110,37 @@ public class SimpleIdCounter implements IdMapCounter{
 
 	public void setSplitter(char splitter) {
 		this.splitter = splitter;
+	}
+	
+	/**
+	 * Gets the prio.
+	 *
+	 * @return the prio
+	 */
+	public Object getPrio() {
+		return prio;
+	}
+
+	/**
+	 * Sets the prio.
+	 *
+	 * @param prio the new prio
+	 */
+	public void setPrio(Object prio) {
+		this.prio = prio;
+	}
+	
+	/**
+	 * Checks if is serialisable id.
+	 *
+	 * @return true, if is id
+	 */
+	public boolean isId() {
+		return isId;
+	}
+
+	@Override
+	public void setId(boolean value) {
+		this.isId=value;
 	}
 }

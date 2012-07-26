@@ -35,6 +35,7 @@ import java.util.HashSet;
 
 import de.uni.kassel.peermessage.EntityUtil;
 import de.uni.kassel.peermessage.IdMap;
+import de.uni.kassel.peermessage.IdMapFilter;
 import de.uni.kassel.peermessage.ReferenceObject;
 import de.uni.kassel.peermessage.Tokener;
 import de.uni.kassel.peermessage.interfaces.SendableEntityCreator;
@@ -99,7 +100,7 @@ public class XMLIdMap extends IdMap {
 		stopwords.add("?xml");
 		stopwords.add("!--");
 		stopwords.add("!DOCTYPE");
-		isId=false;
+		getCounter().setId(false);
 	}
 	
 	/* (non-Javadoc)
@@ -136,21 +137,21 @@ public class XMLIdMap extends IdMap {
 	}
 
 	/**
-	 * Sets the id.
-	 *
-	 * @param value the new id
-	 */
-	public void setId(boolean value) {
-		this.isId=value;
-	}
-	
-	/**
 	 * Encode.
 	 *
 	 * @param entity the entity
 	 * @return the xML entity
 	 */
 	public XMLEntity encode(Object entity) {
+		return encode(entity, new IdMapFilter());
+	}
+	/**
+	 * Encode.
+	 *
+	 * @param entity the entity
+	 * @return the xML entity
+	 */
+	public XMLEntity encode(Object entity, IdMapFilter filter) {
 		SendableEntityCreator createrProtoTyp = getCreatorClass(entity);
 		if (createrProtoTyp == null) {
 			return null;
@@ -170,7 +171,7 @@ public class XMLIdMap extends IdMap {
 		String[] properties = createrProtoTyp.getProperties();
 		Object referenceObject = createrProtoTyp.getSendableInstance(true);
 		
-		if(isId()){
+		if(getCounter().isId()){
 			xmlEntity.put(ID, getId(entity));
 		}
 		
@@ -178,7 +179,7 @@ public class XMLIdMap extends IdMap {
 			for (String property : properties) {
 				Object value = createrProtoTyp.getValue(entity, property);
 				if (value != null) {
-					boolean encoding=isSimpleCheck();
+					boolean encoding=filter.isFullSerialization();
 					if(!encoding){
 						Object refValue = createrProtoTyp.getValue(referenceObject,
 								property);
