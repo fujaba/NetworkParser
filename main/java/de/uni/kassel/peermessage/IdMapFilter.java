@@ -43,7 +43,13 @@ public class IdMapFilter {
 	
 	/** The deep. */
 	protected int deep = ALLDEEP;
+	
+	/** The simple check. */
+	private boolean fullSerialization;
 
+	/** The deep. */
+	protected boolean isId = true;
+	
 	/**
 	 * Checks if is convertable.
 	 *
@@ -68,9 +74,24 @@ public class IdMapFilter {
 	 * Change IdMap to not give a ID and dont add UpdateListener
 	 * @return boolean
 	 */
-	public boolean isTemporary(){
-		return false;
+	public boolean isId(){
+		return true;
 	}
+	
+	public void setId(boolean isId) {
+		this.isId = isId;
+	}
+	
+	/**
+	 * Checks if is serialization many assocs.
+	 *
+	 * @return true, if is treesync
+	 */
+	public boolean isManySerialization() {
+		return true;
+	}
+
+
 	
 	/**
 	 * Gets the deep.
@@ -97,5 +118,24 @@ public class IdMapFilter {
 			deep=value;
 		}
 		return oldValue;
+	}
+	/**
+	 * Checks if is simple check.
+	 *
+	 * @return true, if is simple check
+	 */
+	public boolean isFullSerialization() {
+		return fullSerialization;
+	}
+
+	/**
+	 * Sets the simple check.
+	 *
+	 * @param simpleCheck the simple check
+	 * @return true, if successful
+	 */
+	public boolean setSerialization(boolean serialization) {
+		this.fullSerialization = serialization;
+		return fullSerialization;
 	}
 }

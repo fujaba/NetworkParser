@@ -66,17 +66,6 @@ public class CloneFilter extends IdMapFilter{
 		setTyp(typ);
 	}
 	
-	/* (non-Javadoc)
-	 * @see de.uni.kassel.peermessage.IdMapFilter#isConvertable(de.uni.kassel.peermessage.IdMap, java.lang.Object, java.lang.String, java.lang.Object)
-	 */
-	public boolean isConvertable(IdMap map, Object entity, String property,
-			Object value) {
-		if (!super.isConvertable(map, entity, property, value)){
-			return false;
-		}
-		return true;
-	}
-
 	/**
 	 * Adds the object.
 	 *

@@ -61,4 +61,16 @@ public interface IdMapCounter {
 	 * @param jsonId the json id
 	 */
 	public void readId(String jsonId);
+	
+	/**
+	 * @return if Id must seriasable
+	 */
+	public boolean isId();
+	
+	/**
+	 * @return the Prio Object for checking errors
+	 */
+	public Object getPrio();
+
+	public void setId(boolean value);
 }
