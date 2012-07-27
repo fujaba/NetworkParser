@@ -84,24 +84,28 @@ public class JsonTokener extends Tokener{
 		 return parent;
 	 }
 	 public void parseEntityProp(JsonObject props, Object propValue, String prop){
-		 if(propValue instanceof XMLEntity){
-			if(props.has(prop)){
-				Object child = props.get(prop);
-				JsonArray propList=null;
-				if(child instanceof JsonObject){
-					propList=new JsonArray();
-					propList.put(child);
-				}else if(child instanceof JsonArray){
-					propList=(JsonArray) child;
+		 if(propValue!=null){
+			 if(propValue instanceof XMLEntity){
+				if(props.has(prop)){
+					Object child = props.get(prop);
+					JsonArray propList=null;
+					if(child instanceof JsonObject){
+						propList=new JsonArray();
+						propList.put(child);
+					}else if(child instanceof JsonArray){
+						propList=(JsonArray) child;
+					}
+					if(propList!=null){
+						propList.put(parseEntity(new JsonObject(), (XMLEntity)propValue));
+						props.put(prop, propList);
+					}
+				}else{
+					props.put(prop, parseEntity(new JsonObject(), (XMLEntity)propValue));
 				}
-				propList.put(parseEntity(new JsonObject(), (XMLEntity)propValue));
-				props.put(prop, propList);
 			}else{
-				props.put(prop, parseEntity(new JsonObject(), (XMLEntity)propValue));
+				props.put(prop, propValue);
 			}
-		}else{
-			props.put(prop, propValue);
-		}
+		 }
 	 }
 	 
 	 /**

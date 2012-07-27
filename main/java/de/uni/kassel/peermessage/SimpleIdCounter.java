@@ -36,7 +36,6 @@ import de.uni.kassel.peermessage.interfaces.IdMapCounter;
  * The Class SimpleIdCounter.
  */
 public class SimpleIdCounter implements IdMapCounter{
-	
 	/** The prefix id. */
 	protected String prefixId="J1";
 	
@@ -48,7 +47,7 @@ public class SimpleIdCounter implements IdMapCounter{
 	/** The is id. */
 	protected boolean isId = true;
 	
-	/** The prio Object mostly a timestzamp or int value. */
+	/** The prio Object mostly a Timestamp or int value. */
 	private Object prio;
 	
 	/** 
@@ -67,11 +66,9 @@ public class SimpleIdCounter implements IdMapCounter{
 		// new object generate key and add to tables
 		// <session id>.<first char><running number>
 		if (obj == null) {
-			try {
-				throw new Exception("NullPointer: " + obj);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			Exception e=new Exception("NullPointer: " + obj);
+			e.printStackTrace();
+			return "";
 		}
 		String className = obj.getClass().getName();
 		char firstChar = className.charAt(className.lastIndexOf(splitter) + 1);
