@@ -44,7 +44,6 @@ import de.uni.kassel.peermessage.interfaces.SendableEntityCreator;
  * The Class ByteIdMap.
  */
 public class ByteIdMap extends IdMap{
-	
 	/** The SPLITTER. */
 	public static char SPLITTER = ' ';
 	/** The Constant CLASS-VALUE. */
