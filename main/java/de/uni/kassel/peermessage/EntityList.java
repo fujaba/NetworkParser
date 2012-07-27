@@ -463,7 +463,7 @@ public abstract class EntityList extends BaseEntity implements List<Object>{
 	}
 
 	public boolean retainAll(Collection<?> c) {
-		return retainAll(c);
+		return getElements().retainAll(c);
 	}
 
 	public void clear() {

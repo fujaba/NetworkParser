@@ -34,7 +34,6 @@ import java.util.HashMap;
  * The Class CloneFilter.
  */
 public class CloneFilter extends IdMapFilter{
-	
 	/** The Constant OBJECT. */
 	public static final int OBJECT=0;
 	

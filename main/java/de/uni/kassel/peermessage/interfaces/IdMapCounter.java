@@ -32,7 +32,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * The Interface IdMapCounter.
  */
 public interface IdMapCounter {
-	
 	/**
 	 * Sets the prefix for The Id of Elements
 	 *

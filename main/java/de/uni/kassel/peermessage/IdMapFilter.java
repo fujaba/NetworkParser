@@ -134,7 +134,7 @@ public class IdMapFilter {
 	 * @param simpleCheck the simple check
 	 * @return true, if successful
 	 */
-	public boolean setSerialization(boolean serialization) {
+	public boolean setFullSerialization(boolean serialization) {
 		this.fullSerialization = serialization;
 		return fullSerialization;
 	}
