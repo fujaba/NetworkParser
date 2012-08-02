@@ -556,6 +556,16 @@ public abstract class Entity extends BaseEntity{
 			}else{
 				if(id>=0||id==-2){
 					if(child instanceof EntityList){
+				    	if(end==len+2){
+				    		// Get List
+				    		EntityList result = getNewArray();
+				    		EntityList items=(EntityList) child;
+				    		for(int z=0;z<items.size();z++){
+				    			result.add(((Entity)items.get(z)).getValue(key.substring(end+1)));
+				    		}
+				    		return result;
+				    	}
+
 						EntityList list=(EntityList) child;
 	    				if(id==-2){
 	    					id=list.size()-1;
