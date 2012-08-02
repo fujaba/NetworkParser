@@ -91,7 +91,7 @@ public class JsonFilter extends IdMapFilter{
 	 * @return the excusive properties
 	 */
 	public String[] getExcusiveProperties() {
-		return exclusiveProperties;
+		return this.exclusiveProperties;
 	}
 
 	/**
@@ -101,7 +101,7 @@ public class JsonFilter extends IdMapFilter{
 	 * @return true, if successful
 	 */
 	public boolean existsObject(String id) {
-		boolean result = objects.contains(id);
+		boolean result = this.objects.contains(id);
 		return result;
 	}
 	
@@ -122,6 +122,7 @@ public class JsonFilter extends IdMapFilter{
 	/* (non-Javadoc)
 	 * @see de.uni.kassel.peermessage.IdMapFilter#isConvertable(de.uni.kassel.peermessage.IdMap, java.lang.Object, java.lang.String, java.lang.Object)
 	 */
+	@Override
 	public boolean isConvertable(IdMap map, Object entity, String property, Object value, boolean isMany) {
 		if (!super.isConvertable(map, entity, property, value, isMany)){
 			return false;
@@ -136,10 +137,8 @@ public class JsonFilter extends IdMapFilter{
 				}
 			}
 		}
-		if(isManySerialization()&&isMany){
-			if(map.getCreatorClass(value)!=null){
-				return false;
-			}
+		if(!isManySerialization()&&isMany){
+			return false;
 		}
 		return !property.endsWith(JsonIdMap.REF_SUFFIX);
 	}
@@ -150,6 +149,6 @@ public class JsonFilter extends IdMapFilter{
 	 * @return the objects
 	 */
 	public String[] getObjects(){
-		return objects.toArray(new String[objects.size()]);
+		return this.objects.toArray(new String[this.objects.size()]);
 	}
 }

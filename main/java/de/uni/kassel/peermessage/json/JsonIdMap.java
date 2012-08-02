@@ -39,7 +39,6 @@ import java.util.Set;
 import de.uni.kassel.peermessage.IdMap;
 import de.uni.kassel.peermessage.IdMapFilter;
 import de.uni.kassel.peermessage.ReferenceObject;
-import de.uni.kassel.peermessage.UpdateListener;
 import de.uni.kassel.peermessage.event.creater.DateCreator;
 import de.uni.kassel.peermessage.event.creater.JsonArrayCreator;
 import de.uni.kassel.peermessage.event.creater.JsonObjectCreator;
@@ -289,6 +288,8 @@ public class JsonIdMap extends IdMap {
 			}
 		}else if(jsonObject.get(VALUE)!=null){
 			return jsonObject.get(VALUE);
+		}else if(jsonObject.get(ID)!=null){
+			result = getObject((String) jsonObject.get(ID));
 		}
 		return result;
 	}
@@ -354,10 +355,10 @@ public class JsonIdMap extends IdMap {
 									property, this, target));
 						} else {
 							creator.setValue(target, property,
-									readJson((JsonObject) kid));
+									readJson((JsonObject) kid), MapUpdateListener.TYP_NEW);
 						}
 					} else {
-						creator.setValue(target, property, kid);
+						creator.setValue(target, property, kid, MapUpdateListener.TYP_NEW);
 					}
 				}
 			} else {
@@ -372,10 +373,10 @@ public class JsonIdMap extends IdMap {
 								this, target));
 					}else{
 						creator.setValue(target, property,
-								readJson(child));
+								readJson(child), MapUpdateListener.TYP_NEW);
 					}
 				} else {
-					creator.setValue(target, property, value);
+					creator.setValue(target, property, value, MapUpdateListener.TYP_NEW);
 				}
 			}
 		}
@@ -609,6 +610,7 @@ public class JsonIdMap extends IdMap {
 	/* (non-Javadoc)
 	 * @see de.uni.kassel.peermessage.IdMap#garbageCollection(java.util.Set)
 	 */
+	@Override
 	public void garbageCollection(Set<String> classCounts) {
 		Set<String> allIds = this.values.keySet();
 		for (String id : allIds) {
@@ -624,12 +626,13 @@ public class JsonIdMap extends IdMap {
 	 * @return the keys
 	 */
 	public Set<String> getKeys() {
-		return values.keySet();
+		return this.values.keySet();
 	}
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString(){
 		return this.getClass().getName()+" ("+this.size()+")";
 	}
@@ -640,7 +643,7 @@ public class JsonIdMap extends IdMap {
 	 * @return true, if is typ save
 	 */
 	public boolean isTypSave() {
-		return typSave;
+		return this.typSave;
 	}
 
 	/**
@@ -693,5 +696,11 @@ public class JsonIdMap extends IdMap {
 			}
 		}
 		return result;
+	}
+	public boolean skipCollision(Object masterObj, String key, Object value, JsonObject removeJson, JsonObject updateJson){
+		if(this.updatelistener!=null){
+			return this.updatelistener.skipCollision(masterObj, key, value, removeJson, updateJson);
+		}
+		return true;
 	}
 }
