@@ -1,5 +1,7 @@
 package de.uni.kassel.peermessage;
 
+import de.uni.kassel.peermessage.interfaces.BaseEntity;
+
 /*
 Copyright (c) 2012, Stefan Lindel
 All rights reserved.

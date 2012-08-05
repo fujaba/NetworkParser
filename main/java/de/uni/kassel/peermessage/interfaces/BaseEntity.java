@@ -1,4 +1,7 @@
-package de.uni.kassel.peermessage;
+package de.uni.kassel.peermessage.interfaces;
+
+import de.uni.kassel.peermessage.Entity;
+import de.uni.kassel.peermessage.EntityList;
 /*
 Copyright (c) 2012, Stefan Lindel
 All rights reserved.
@@ -31,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
  * The Class BaseEntity.
  */
-public abstract class BaseEntity {
+public interface BaseEntity {
 	public static final String CRLF="\r\n";
 	public abstract EntityList getNewArray();
 	public abstract Entity getNewObject();

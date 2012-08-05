@@ -32,11 +32,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import java.util.Collection;
 import java.util.Iterator;
 
-import de.uni.kassel.peermessage.BaseEntity;
 import de.uni.kassel.peermessage.Entity;
 import de.uni.kassel.peermessage.EntityList;
 import de.uni.kassel.peermessage.EntityUtil;
 import de.uni.kassel.peermessage.Tokener;
+import de.uni.kassel.peermessage.interfaces.BaseEntity;
 
 /**
  * A JSONArray is an ordered sequence of values. Its external text form is a

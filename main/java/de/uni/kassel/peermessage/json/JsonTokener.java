@@ -1,9 +1,9 @@
 package de.uni.kassel.peermessage.json;
 
-import de.uni.kassel.peermessage.BaseEntity;
 import de.uni.kassel.peermessage.Entity;
 import de.uni.kassel.peermessage.EntityList;
 import de.uni.kassel.peermessage.Tokener;
+import de.uni.kassel.peermessage.interfaces.BaseEntity;
 import de.uni.kassel.peermessage.xml.XMLEntity;
 
 /*

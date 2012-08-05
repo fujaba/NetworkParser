@@ -34,7 +34,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public abstract class Entity extends BaseEntity{
+import de.uni.kassel.peermessage.interfaces.BaseEntity;
+
+public abstract class Entity implements BaseEntity{
 	/**
 	 * The map where the Entity's properties are kept.
 	 */
