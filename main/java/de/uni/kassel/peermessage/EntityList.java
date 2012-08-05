@@ -34,11 +34,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import de.uni.kassel.peermessage.interfaces.BaseEntity;
+
 
 /**
  * The Class EntityList.
  */
-public abstract class EntityList extends BaseEntity implements List<Object>{
+public abstract class EntityList implements BaseEntity, List<Object>{
 	protected ArrayList<Object> values;
 
 	public EntityList(){

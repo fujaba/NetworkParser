@@ -27,10 +27,10 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-import de.uni.kassel.peermessage.BaseEntity;
 import de.uni.kassel.peermessage.Entity;
 import de.uni.kassel.peermessage.EntityList;
 import de.uni.kassel.peermessage.Tokener;
+import de.uni.kassel.peermessage.interfaces.BaseEntity;
 
 public class XMLTokener extends Tokener{
 
