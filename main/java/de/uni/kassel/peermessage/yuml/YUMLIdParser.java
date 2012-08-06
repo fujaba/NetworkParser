@@ -1,4 +1,4 @@
-package de.uni.kassel.peermessage.json;
+package de.uni.kassel.peermessage.yuml;
 /*
 Copyright (c) 2012, Stefan Lindel
 All rights reserved.
