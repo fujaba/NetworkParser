@@ -255,9 +255,8 @@ public class JsonIdMap extends IdMap {
 	private Object readJson(JsonObject jsonObject,
 			LinkedHashSet<ReferenceObject> refs) {
 		Object result = null;
-		Object className = jsonObject.get(CLASS);
-
-		SendableEntityCreator typeInfo = getCreatorClasses((String) className);
+		
+		SendableEntityCreator typeInfo = getJsonObjectCreator(jsonObject);
 
 		if (typeInfo != null) {
 			if (getCounter().isId()) {
@@ -290,6 +289,27 @@ public class JsonIdMap extends IdMap {
 		}
 		return result;
 	}
+	
+	/**
+	 * @param jsonObject
+	 * @return the Creator for this JsonObject
+	 */
+	public SendableEntityCreator getJsonObjectCreator(JsonObject jsonObject) {
+		Object className = jsonObject.get(CLASS);
+		return getCreatorClasses((String) className);
+	}
+
+	/**
+	 * @param jsonObject
+	 * @return the props of theJsonObject 
+	 */
+	public JsonObject getJsonObjectProperties(JsonObject jsonObject) {
+		if(jsonObject.has(JSON_PROPS)){
+			return jsonObject.getJsonObject(JSON_PROPS);
+		}
+		return null;
+	}
+
 
 	/**
 	 * Read json.
@@ -311,8 +331,8 @@ public class JsonIdMap extends IdMap {
 
 			getCounter().readId(jsonId);
 		}
-		if (jsonObject.has(JSON_PROPS)) {
-			JsonObject jsonProp = (JsonObject) jsonObject.get(JSON_PROPS);
+		JsonObject jsonProp=getJsonObjectProperties(jsonObject);
+		if (jsonProp!=null) {
 			SendableEntityCreator prototyp = getCreatorClass(target);
 			String[] properties = prototyp.getProperties();
 			if (properties != null) {
