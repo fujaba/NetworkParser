@@ -59,9 +59,6 @@ public class JsonIdMap extends IdMap {
 	/** The Constant JSON_PROPS. */
 	public static final String JSON_PROPS = "prop";
 
-	/** The Constant REF_SUFFIX. */
-	public static final String REF_SUFFIX = "_ref";
-
 	/** The Constant MAINITEM. */
 	public static final String MAINITEM = "main";
 
