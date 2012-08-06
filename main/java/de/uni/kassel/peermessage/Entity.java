@@ -294,6 +294,22 @@ public abstract class Entity implements BaseEntity{
 		}
 		throw new RuntimeException("Entity["+EntityUtil.quote(key)+"] not a string.");
 	}
+	/**
+	 * Get the string associated with a key.
+	 *
+	 * @param key   		A key string.
+	 * @param defaultValue  A defaultValue string.
+	 * @return      		A string which is the value or defaultValue
+	 */
+	public String getString(String key, String defaultValue) {
+		Object object = this.get(key);
+		if (object instanceof String) {
+			return (String)object;
+		}else if (object instanceof Entity) {
+			return object.toString();
+		}
+		return defaultValue;
+	}
 
 	/**
 	 * Determine if the Entity contains a specific key.
