@@ -267,9 +267,9 @@ public class JsonIdMap extends IdMap {
 			}
 			if (result == null) {
 				result = typeInfo.getSendableInstance(false);
-				sendReceiveMsg(MapUpdateListener.TYP_NEW, result, jsonObject);
+				sendReceiveMsg(NEW, result, jsonObject);
 			}else{
-				sendReceiveMsg(MapUpdateListener.TYP_UPDATE, result, jsonObject);
+				sendReceiveMsg(UPDATE, result, jsonObject);
 			}
 			if(typeInfo instanceof NoIndexCreator){
 				String[] properties = typeInfo.getProperties();
@@ -372,10 +372,10 @@ public class JsonIdMap extends IdMap {
 									property, this, target));
 						} else {
 							creator.setValue(target, property,
-									readJson((JsonObject) kid), MapUpdateListener.TYP_NEW);
+									readJson((JsonObject) kid), NEW);
 						}
 					} else {
-						creator.setValue(target, property, kid, MapUpdateListener.TYP_NEW);
+						creator.setValue(target, property, kid, NEW);
 					}
 				}
 			} else {
@@ -390,10 +390,10 @@ public class JsonIdMap extends IdMap {
 								this, target));
 					}else{
 						creator.setValue(target, property,
-								readJson(child), MapUpdateListener.TYP_NEW);
+								readJson(child), NEW);
 					}
 				} else {
-					creator.setValue(target, property, value, MapUpdateListener.TYP_NEW);
+					creator.setValue(target, property, value, NEW);
 				}
 			}
 		}
