@@ -28,7 +28,6 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import de.uni.kassel.peermessage.interfaces.MapUpdateListener;
 import de.uni.kassel.peermessage.interfaces.SendableEntityCreator;
 
 /**
@@ -91,7 +90,7 @@ public class ReferenceObject {
 	public boolean execute(){
 		Object assoc = this.map.getObject(this.jsonId);
 		if(assoc!=null){
-			this.creator.setValue(this.entity, this.property, assoc, MapUpdateListener.TYP_NEW);
+			this.creator.setValue(this.entity, this.property, assoc, IdMap.NEW);
 			return true;
 		}
 		return false;

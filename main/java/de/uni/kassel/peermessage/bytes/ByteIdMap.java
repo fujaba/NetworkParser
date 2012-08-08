@@ -34,11 +34,9 @@ import java.util.HashMap;
 
 import de.uni.kassel.peermessage.IdMap;
 import de.uni.kassel.peermessage.event.BasicMessage;
-import de.uni.kassel.peermessage.event.ByteMessage;
 import de.uni.kassel.peermessage.event.UnknownMessage;
 import de.uni.kassel.peermessage.event.creater.BasicMessageCreator;
 import de.uni.kassel.peermessage.interfaces.ByteEntityCreator;
-import de.uni.kassel.peermessage.interfaces.MapUpdateListener;
 import de.uni.kassel.peermessage.interfaces.SendableEntityCreator;
 
 /**
@@ -390,7 +388,7 @@ public class ByteIdMap extends IdMap{
 		}
 		if (eventCreater == null) {
 			UnknownMessage e = new UnknownMessage();
-			e.set(ByteMessage.PROPERTY_VALUE, in.array());
+			e.set(UnknownMessage.PROPERTY_VALUE, in.array());
 			entity = e;
 		} else {
 			entity = eventCreater.getSendableInstance(false);
@@ -411,7 +409,7 @@ public class ByteIdMap extends IdMap{
 					}
 					Object value = getDecodeObject(typValue, in);
 					if (value != null) {
-						eventCreater.setValue(entity, property, value, MapUpdateListener.TYP_NEW);
+						eventCreater.setValue(entity, property, value, IdMap.NEW);
 					}
 				}
 			}
