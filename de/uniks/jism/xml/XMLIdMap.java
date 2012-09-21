@@ -1,4 +1,4 @@
-package de.uniks.peermessage.xml;
+package de.uniks.jism.xml;
 /*
 Copyright (c) 2012, Stefan Lindel
 All rights reserved.
@@ -16,7 +16,7 @@ modification, are permitted provided that the following conditions are met:
 4. Neither the name of contributors may be used to endorse or promote products
    derived from this software without specific prior written permission.
 
-THIS SOFTWARE IS PROVIDED BY STEFAN LINDEL ''AS IS'' AND ANY
+THIS SOFTWARE 'Json Id Serialisierung Map' IS PROVIDED BY STEFAN LINDEL ''AS IS'' AND ANY
 EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
 DISCLAIMED. IN NO EVENT SHALL STEFAN LINDEL BE LIABLE FOR ANY
@@ -33,13 +33,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import de.uniks.peermessage.EntityUtil;
-import de.uniks.peermessage.IdMap;
-import de.uniks.peermessage.IdMapFilter;
-import de.uniks.peermessage.ReferenceObject;
-import de.uniks.peermessage.Tokener;
-import de.uniks.peermessage.interfaces.SendableEntityCreator;
-import de.uniks.peermessage.interfaces.XMLEntityCreator;
+import de.uniks.jism.EntityUtil;
+import de.uniks.jism.IdMap;
+import de.uniks.jism.IdMapFilter;
+import de.uniks.jism.ReferenceObject;
+import de.uniks.jism.Tokener;
+import de.uniks.jism.interfaces.SendableEntityCreator;
+import de.uniks.jism.interfaces.XMLEntityCreator;
 
 /**
  * The Class XMLIdMap.

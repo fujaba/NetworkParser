@@ -1,4 +1,4 @@
-package de.uniks.peermessage.json;
+package de.uniks.jism.json;
 
 /*
 Copyright (c) 2002 JSON.org
@@ -18,7 +18,7 @@ modification, are permitted provided that the following conditions are met:
 4. Neither the name of contributors may be used to endorse or promote products
    derived from this software without specific prior written permission.
 
-THIS SOFTWARE IS PROVIDED BY STEFAN LINDEL ''AS IS'' AND ANY
+THIS SOFTWARE 'Json Id Serialisierung Map' IS PROVIDED BY STEFAN LINDEL ''AS IS'' AND ANY
 EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
 DISCLAIMED. IN NO EVENT SHALL STEFAN LINDEL BE LIABLE FOR ANY
@@ -34,10 +34,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import de.uniks.peermessage.Entity;
-import de.uniks.peermessage.EntityList;
-import de.uniks.peermessage.EntityUtil;
-import de.uniks.peermessage.Tokener;
+import de.uniks.jism.Entity;
+import de.uniks.jism.EntityList;
+import de.uniks.jism.EntityUtil;
+import de.uniks.jism.Tokener;
 
 /**
  * A JsonObject is an unordered collection of name/value pairs. Its

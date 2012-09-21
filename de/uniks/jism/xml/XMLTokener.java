@@ -1,4 +1,4 @@
-package de.uniks.peermessage.xml;
+package de.uniks.jism.xml;
 /*
 Copyright (c) 2012, Stefan Lindel
 All rights reserved.
@@ -16,7 +16,7 @@ modification, are permitted provided that the following conditions are met:
 4. Neither the name of contributors may be used to endorse or promote products
    derived from this software without specific prior written permission.
 
-THIS SOFTWARE IS PROVIDED BY STEFAN LINDEL ''AS IS'' AND ANY
+THIS SOFTWARE 'Json Id Serialisierung Map' IS PROVIDED BY STEFAN LINDEL ''AS IS'' AND ANY
 EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
 DISCLAIMED. IN NO EVENT SHALL STEFAN LINDEL BE LIABLE FOR ANY
@@ -27,10 +27,10 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-import de.uniks.peermessage.Entity;
-import de.uniks.peermessage.EntityList;
-import de.uniks.peermessage.Tokener;
-import de.uniks.peermessage.interfaces.BaseEntity;
+import de.uniks.jism.Entity;
+import de.uniks.jism.EntityList;
+import de.uniks.jism.Tokener;
+import de.uniks.jism.interfaces.BaseEntity;
 
 public class XMLTokener extends Tokener{
 

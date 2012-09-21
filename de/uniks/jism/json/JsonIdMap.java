@@ -1,4 +1,4 @@
-package de.uniks.peermessage.json;
+package de.uniks.jism.json;
 
 /*
 Copyright (c) 2012, Stefan Lindel
@@ -17,7 +17,7 @@ modification, are permitted provided that the following conditions are met:
 4. Neither the name of contributors may be used to endorse or promote products
    derived from this software without specific prior written permission.
 
-THIS SOFTWARE IS PROVIDED BY STEFAN LINDEL ''AS IS'' AND ANY
+THIS SOFTWARE 'Json Id Serialisierung Map' IS PROVIDED BY STEFAN LINDEL ''AS IS'' AND ANY
 EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
 DISCLAIMED. IN NO EVENT SHALL STEFAN LINDEL BE LIABLE FOR ANY
@@ -37,15 +37,15 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import de.uniks.peermessage.IdMap;
-import de.uniks.peermessage.IdMapFilter;
-import de.uniks.peermessage.ReferenceObject;
-import de.uniks.peermessage.event.creater.DateCreator;
-import de.uniks.peermessage.event.creater.JsonArrayCreator;
-import de.uniks.peermessage.event.creater.JsonObjectCreator;
-import de.uniks.peermessage.interfaces.MapUpdateListener;
-import de.uniks.peermessage.interfaces.NoIndexCreator;
-import de.uniks.peermessage.interfaces.SendableEntityCreator;
+import de.uniks.jism.IdMap;
+import de.uniks.jism.IdMapFilter;
+import de.uniks.jism.ReferenceObject;
+import de.uniks.jism.event.creater.DateCreator;
+import de.uniks.jism.event.creater.JsonArrayCreator;
+import de.uniks.jism.event.creater.JsonObjectCreator;
+import de.uniks.jism.interfaces.MapUpdateListener;
+import de.uniks.jism.interfaces.NoIndexCreator;
+import de.uniks.jism.interfaces.SendableEntityCreator;
 
 /**
  * The Class JsonIdMap.
