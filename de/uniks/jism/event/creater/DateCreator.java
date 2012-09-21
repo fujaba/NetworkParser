@@ -1,4 +1,4 @@
-package de.uniks.peermessage.event.creater;
+package de.uniks.jism.event.creater;
 
 /*
 Copyright (c) 2012, Stefan Lindel
@@ -17,7 +17,7 @@ modification, are permitted provided that the following conditions are met:
 4. Neither the name of contributors may be used to endorse or promote products
    derived from this software without specific prior written permission.
 
-THIS SOFTWARE IS PROVIDED BY STEFAN LINDEL ''AS IS'' AND ANY
+THIS SOFTWARE 'Json Id Serialisierung Map' IS PROVIDED BY STEFAN LINDEL ''AS IS'' AND ANY
 EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
 DISCLAIMED. IN NO EVENT SHALL STEFAN LINDEL BE LIABLE FOR ANY
@@ -30,8 +30,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 import java.util.Date;
 
-import de.uniks.peermessage.interfaces.NoIndexCreator;
-import de.uniks.peermessage.interfaces.SendableEntityCreator;
+import de.uniks.jism.interfaces.NoIndexCreator;
+import de.uniks.jism.interfaces.SendableEntityCreator;
 
 /**
  * The Class DateCreator.

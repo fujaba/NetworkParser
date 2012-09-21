@@ -1,7 +1,7 @@
-package de.uniks.peermessage.event.creater;
+package de.uniks.jism.event.creater;
 
-import de.uniks.peermessage.interfaces.SendableEntityCreator;
-import de.uniks.peermessage.json.JsonObject;
+import de.uniks.jism.interfaces.SendableEntityCreator;
+import de.uniks.jism.json.JsonObject;
 
 public class JsonObjectCreator implements SendableEntityCreator{
 	private final String[] properties= new String[]{"VALUE"};

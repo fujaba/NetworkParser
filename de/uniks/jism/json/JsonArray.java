@@ -1,4 +1,4 @@
-package de.uniks.peermessage.json;
+package de.uniks.jism.json;
 
 /*
 Copyright (c) 2012, Stefan Lindel
@@ -17,7 +17,7 @@ modification, are permitted provided that the following conditions are met:
 4. Neither the name of contributors may be used to endorse or promote products
    derived from this software without specific prior written permission.
 
-THIS SOFTWARE IS PROVIDED BY STEFAN LINDEL ''AS IS'' AND ANY
+THIS SOFTWARE 'Json Id Serialisierung Map' IS PROVIDED BY STEFAN LINDEL ''AS IS'' AND ANY
 EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
 DISCLAIMED. IN NO EVENT SHALL STEFAN LINDEL BE LIABLE FOR ANY
@@ -32,11 +32,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import java.util.Collection;
 import java.util.Iterator;
 
-import de.uniks.peermessage.Entity;
-import de.uniks.peermessage.EntityList;
-import de.uniks.peermessage.EntityUtil;
-import de.uniks.peermessage.Tokener;
-import de.uniks.peermessage.interfaces.BaseEntity;
+import de.uniks.jism.Entity;
+import de.uniks.jism.EntityList;
+import de.uniks.jism.EntityUtil;
+import de.uniks.jism.Tokener;
+import de.uniks.jism.interfaces.BaseEntity;
 
 /**
  * A JSONArray is an ordered sequence of values. Its external text form is a

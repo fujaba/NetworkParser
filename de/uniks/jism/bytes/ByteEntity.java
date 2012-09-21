@@ -1,4 +1,4 @@
-package de.uniks.peermessage.bytes;
+package de.uniks.jism.bytes;
 /*
 Copyright (c) 2012 Stefan Lindel
 
@@ -30,9 +30,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import de.uniks.peermessage.Entity;
-import de.uniks.peermessage.EntityList;
-import de.uniks.peermessage.interfaces.SendableEntityCreator;
+import de.uniks.jism.Entity;
+import de.uniks.jism.EntityList;
+import de.uniks.jism.interfaces.SendableEntityCreator;
 
 /**
  * The Class ByteEntity.

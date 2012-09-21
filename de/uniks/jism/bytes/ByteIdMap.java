@@ -1,4 +1,4 @@
-package de.uniks.peermessage.bytes;
+package de.uniks.jism.bytes;
 /*
 Copyright (c) 2012, Stefan Lindel
 All rights reserved.
@@ -16,7 +16,7 @@ modification, are permitted provided that the following conditions are met:
 4. Neither the name of contributors may be used to endorse or promote products
    derived from this software without specific prior written permission.
 
-THIS SOFTWARE IS PROVIDED BY STEFAN LINDEL ''AS IS'' AND ANY
+THIS SOFTWARE 'Json Id Serialisierung Map' IS PROVIDED BY STEFAN LINDEL ''AS IS'' AND ANY
 EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
 DISCLAIMED. IN NO EVENT SHALL STEFAN LINDEL BE LIABLE FOR ANY
@@ -32,12 +32,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-import de.uniks.peermessage.IdMap;
-import de.uniks.peermessage.event.BasicMessage;
-import de.uniks.peermessage.event.UnknownMessage;
-import de.uniks.peermessage.event.creater.BasicMessageCreator;
-import de.uniks.peermessage.interfaces.ByteEntityCreator;
-import de.uniks.peermessage.interfaces.SendableEntityCreator;
+import de.uniks.jism.IdMap;
+import de.uniks.jism.event.BasicMessage;
+import de.uniks.jism.event.UnknownMessage;
+import de.uniks.jism.event.creater.BasicMessageCreator;
+import de.uniks.jism.interfaces.ByteEntityCreator;
+import de.uniks.jism.interfaces.SendableEntityCreator;
 
 /**
  * The Class ByteIdMap.

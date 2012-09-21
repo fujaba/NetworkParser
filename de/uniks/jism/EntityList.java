@@ -1,4 +1,4 @@
-package de.uniks.peermessage;
+package de.uniks.jism;
 /*
 Copyright (c) 2012, Stefan Lindel
 All rights reserved.
@@ -16,7 +16,7 @@ modification, are permitted provided that the following conditions are met:
 4. Neither the name of contributors may be used to endorse or promote products
    derived from this software without specific prior written permission.
 
-THIS SOFTWARE IS PROVIDED BY STEFAN LINDEL ''AS IS'' AND ANY
+THIS SOFTWARE 'Json Id Serialisierung Map' IS PROVIDED BY STEFAN LINDEL ''AS IS'' AND ANY
 EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
 DISCLAIMED. IN NO EVENT SHALL STEFAN LINDEL BE LIABLE FOR ANY
@@ -34,7 +34,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import de.uniks.peermessage.interfaces.BaseEntity;
+import de.uniks.jism.interfaces.BaseEntity;
 
 
 /**
