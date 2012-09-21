@@ -1,4 +1,4 @@
-package de.uni.kassel.peermessage.bytes;
+package de.uniks.peermessage.bytes;
 /*
 Copyright (c) 2012, Stefan Lindel
 All rights reserved.
@@ -32,12 +32,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-import de.uni.kassel.peermessage.IdMap;
-import de.uni.kassel.peermessage.event.BasicMessage;
-import de.uni.kassel.peermessage.event.UnknownMessage;
-import de.uni.kassel.peermessage.event.creater.BasicMessageCreator;
-import de.uni.kassel.peermessage.interfaces.ByteEntityCreator;
-import de.uni.kassel.peermessage.interfaces.SendableEntityCreator;
+import de.uniks.peermessage.IdMap;
+import de.uniks.peermessage.event.BasicMessage;
+import de.uniks.peermessage.event.UnknownMessage;
+import de.uniks.peermessage.event.creater.BasicMessageCreator;
+import de.uniks.peermessage.interfaces.ByteEntityCreator;
+import de.uniks.peermessage.interfaces.SendableEntityCreator;
 
 /**
  * The Class ByteIdMap.

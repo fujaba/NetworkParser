@@ -1,4 +1,4 @@
-package de.uni.kassel.peermessage.json;
+package de.uniks.peermessage.json;
 /*
 Copyright (c) 2012, Stefan Lindel
 All rights reserved.
@@ -30,8 +30,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import java.util.HashSet;
 
-import de.uni.kassel.peermessage.IdMap;
-import de.uni.kassel.peermessage.IdMapFilter;
+import de.uniks.peermessage.IdMap;
+import de.uniks.peermessage.IdMapFilter;
 
 /**
 // * The Class JsonFilter.

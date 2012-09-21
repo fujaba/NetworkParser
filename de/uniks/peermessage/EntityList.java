@@ -1,4 +1,4 @@
-package de.uni.kassel.peermessage;
+package de.uniks.peermessage;
 /*
 Copyright (c) 2012, Stefan Lindel
 All rights reserved.
@@ -34,7 +34,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import de.uni.kassel.peermessage.interfaces.BaseEntity;
+import de.uniks.peermessage.interfaces.BaseEntity;
 
 
 /**

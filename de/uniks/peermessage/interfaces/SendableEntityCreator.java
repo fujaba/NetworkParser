@@ -1,4 +1,4 @@
-package de.uni.kassel.peermessage.interfaces;
+package de.uniks.peermessage.interfaces;
 /*
 Copyright (c) 2012, Stefan Lindel
 All rights reserved.

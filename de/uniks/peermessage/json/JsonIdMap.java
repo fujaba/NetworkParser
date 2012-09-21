@@ -1,4 +1,4 @@
-package de.uni.kassel.peermessage.json;
+package de.uniks.peermessage.json;
 
 /*
 Copyright (c) 2012, Stefan Lindel
@@ -37,15 +37,15 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import de.uni.kassel.peermessage.IdMap;
-import de.uni.kassel.peermessage.IdMapFilter;
-import de.uni.kassel.peermessage.ReferenceObject;
-import de.uni.kassel.peermessage.event.creater.DateCreator;
-import de.uni.kassel.peermessage.event.creater.JsonArrayCreator;
-import de.uni.kassel.peermessage.event.creater.JsonObjectCreator;
-import de.uni.kassel.peermessage.interfaces.MapUpdateListener;
-import de.uni.kassel.peermessage.interfaces.NoIndexCreator;
-import de.uni.kassel.peermessage.interfaces.SendableEntityCreator;
+import de.uniks.peermessage.IdMap;
+import de.uniks.peermessage.IdMapFilter;
+import de.uniks.peermessage.ReferenceObject;
+import de.uniks.peermessage.event.creater.DateCreator;
+import de.uniks.peermessage.event.creater.JsonArrayCreator;
+import de.uniks.peermessage.event.creater.JsonObjectCreator;
+import de.uniks.peermessage.interfaces.MapUpdateListener;
+import de.uniks.peermessage.interfaces.NoIndexCreator;
+import de.uniks.peermessage.interfaces.SendableEntityCreator;
 
 /**
  * The Class JsonIdMap.

@@ -1,4 +1,4 @@
-package de.uni.kassel.peermessage.event.creater;
+package de.uniks.peermessage.event.creater;
 
 /*
 Copyright (c) 2012, Stefan Lindel
@@ -30,8 +30,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 import java.util.Date;
 
-import de.uni.kassel.peermessage.interfaces.NoIndexCreator;
-import de.uni.kassel.peermessage.interfaces.SendableEntityCreator;
+import de.uniks.peermessage.interfaces.NoIndexCreator;
+import de.uniks.peermessage.interfaces.SendableEntityCreator;
 
 /**
  * The Class DateCreator.

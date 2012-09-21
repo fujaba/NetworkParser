@@ -1,4 +1,4 @@
-package de.uni.kassel.peermessage.event;
+package de.uniks.peermessage.event;
 /*
 Copyright (c) 2012, Stefan Lindel
 All rights reserved.

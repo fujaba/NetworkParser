@@ -1,10 +1,10 @@
-package de.uni.kassel.peermessage.json;
+package de.uniks.peermessage.json;
 
 import java.util.Iterator;
 
-import de.uni.kassel.peermessage.IdMap;
-import de.uni.kassel.peermessage.interfaces.NoIndexCreator;
-import de.uni.kassel.peermessage.interfaces.SendableEntityCreator;
+import de.uniks.peermessage.IdMap;
+import de.uniks.peermessage.interfaces.NoIndexCreator;
+import de.uniks.peermessage.interfaces.SendableEntityCreator;
 
 public class Grammar {
 	/**

@@ -1,4 +1,4 @@
-package de.uni.kassel.peermessage;
+package de.uniks.peermessage;
 /*
 Copyright (c) 2012, Stefan Lindel
 All rights reserved.
@@ -35,10 +35,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import de.uni.kassel.peermessage.interfaces.IdMapCounter;
-import de.uni.kassel.peermessage.interfaces.SendableEntity;
-import de.uni.kassel.peermessage.interfaces.SendableEntityCreator;
-import de.uni.kassel.peermessage.json.UpdateListener;
+import de.uniks.peermessage.interfaces.IdMapCounter;
+import de.uniks.peermessage.interfaces.SendableEntity;
+import de.uniks.peermessage.interfaces.SendableEntityCreator;
+import de.uniks.peermessage.json.UpdateListener;
 
 /**
  * The Class IdMap.

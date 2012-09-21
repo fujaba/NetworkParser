@@ -1,4 +1,4 @@
-package de.uni.kassel.peermessage.event;
+package de.uniks.peermessage.event;
 /*
 Copyright (c) 2012, Stefan Lindel
 All rights reserved.
@@ -27,7 +27,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-import de.uni.kassel.peermessage.interfaces.PeerMessage;
+import de.uniks.peermessage.interfaces.PeerMessage;
 
 /**
  * The Class ByteMessage.

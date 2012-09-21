@@ -1,4 +1,4 @@
-package de.uni.kassel.peermessage.xml;
+package de.uniks.peermessage.xml;
 /*
 Copyright (c) 2012, Stefan Lindel
 All rights reserved.
@@ -27,10 +27,10 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-import de.uni.kassel.peermessage.Entity;
-import de.uni.kassel.peermessage.EntityList;
-import de.uni.kassel.peermessage.Tokener;
-import de.uni.kassel.peermessage.interfaces.BaseEntity;
+import de.uniks.peermessage.Entity;
+import de.uniks.peermessage.EntityList;
+import de.uniks.peermessage.Tokener;
+import de.uniks.peermessage.interfaces.BaseEntity;
 
 public class XMLTokener extends Tokener{
 

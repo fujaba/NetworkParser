@@ -1,4 +1,4 @@
-package de.uni.kassel.peermessage.json;
+package de.uniks.peermessage.json;
 
 /*
 Copyright (c) 2012, Stefan Lindel
@@ -32,11 +32,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import java.util.Collection;
 import java.util.Iterator;
 
-import de.uni.kassel.peermessage.Entity;
-import de.uni.kassel.peermessage.EntityList;
-import de.uni.kassel.peermessage.EntityUtil;
-import de.uni.kassel.peermessage.Tokener;
-import de.uni.kassel.peermessage.interfaces.BaseEntity;
+import de.uniks.peermessage.Entity;
+import de.uniks.peermessage.EntityList;
+import de.uniks.peermessage.EntityUtil;
+import de.uniks.peermessage.Tokener;
+import de.uniks.peermessage.interfaces.BaseEntity;
 
 /**
  * A JSONArray is an ordered sequence of values. Its external text form is a

@@ -1,7 +1,7 @@
-package de.uni.kassel.peermessage.event.creater;
+package de.uniks.peermessage.event.creater;
 
-import de.uni.kassel.peermessage.interfaces.SendableEntityCreator;
-import de.uni.kassel.peermessage.json.JsonObject;
+import de.uniks.peermessage.interfaces.SendableEntityCreator;
+import de.uniks.peermessage.json.JsonObject;
 
 public class JsonObjectCreator implements SendableEntityCreator{
 	private final String[] properties= new String[]{"VALUE"};
