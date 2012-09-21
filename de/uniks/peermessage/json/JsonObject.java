@@ -1,4 +1,4 @@
-package de.uni.kassel.peermessage.json;
+package de.uniks.peermessage.json;
 
 /*
 Copyright (c) 2002 JSON.org
@@ -34,10 +34,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import de.uni.kassel.peermessage.Entity;
-import de.uni.kassel.peermessage.EntityList;
-import de.uni.kassel.peermessage.EntityUtil;
-import de.uni.kassel.peermessage.Tokener;
+import de.uniks.peermessage.Entity;
+import de.uniks.peermessage.EntityList;
+import de.uniks.peermessage.EntityUtil;
+import de.uniks.peermessage.Tokener;
 
 /**
  * A JsonObject is an unordered collection of name/value pairs. Its

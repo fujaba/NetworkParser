@@ -1,4 +1,4 @@
-package de.uni.kassel.peermessage.xml;
+package de.uniks.peermessage.xml;
 /*
 Copyright (c) 2012, Stefan Lindel
 All rights reserved.
@@ -33,13 +33,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import de.uni.kassel.peermessage.EntityUtil;
-import de.uni.kassel.peermessage.IdMap;
-import de.uni.kassel.peermessage.IdMapFilter;
-import de.uni.kassel.peermessage.ReferenceObject;
-import de.uni.kassel.peermessage.Tokener;
-import de.uni.kassel.peermessage.interfaces.SendableEntityCreator;
-import de.uni.kassel.peermessage.interfaces.XMLEntityCreator;
+import de.uniks.peermessage.EntityUtil;
+import de.uniks.peermessage.IdMap;
+import de.uniks.peermessage.IdMapFilter;
+import de.uniks.peermessage.ReferenceObject;
+import de.uniks.peermessage.Tokener;
+import de.uniks.peermessage.interfaces.SendableEntityCreator;
+import de.uniks.peermessage.interfaces.XMLEntityCreator;
 
 /**
  * The Class XMLIdMap.

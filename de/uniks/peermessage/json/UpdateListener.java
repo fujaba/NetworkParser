@@ -1,4 +1,4 @@
-package de.uni.kassel.peermessage.json;
+package de.uniks.peermessage.json;
 /*
 Copyright (c) 2012, Stefan Lindel
 All rights reserved.
@@ -36,8 +36,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import de.uni.kassel.peermessage.IdMap;
-import de.uni.kassel.peermessage.interfaces.SendableEntityCreator;
+import de.uniks.peermessage.IdMap;
+import de.uniks.peermessage.interfaces.SendableEntityCreator;
 
 /**
  * The listener interface for receiving update events. The class that is

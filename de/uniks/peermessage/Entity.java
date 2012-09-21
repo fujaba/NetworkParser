@@ -1,4 +1,4 @@
-package de.uni.kassel.peermessage;
+package de.uniks.peermessage;
 /*
 Copyright (c) 2012, Stefan Lindel
 All rights reserved.
@@ -34,7 +34,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import de.uni.kassel.peermessage.interfaces.BaseEntity;
+import de.uniks.peermessage.interfaces.BaseEntity;
 
 public abstract class Entity implements BaseEntity{
 	/**

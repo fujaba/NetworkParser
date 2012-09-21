@@ -1,4 +1,4 @@
-package de.uni.kassel.peermessage.event.creater;
+package de.uniks.peermessage.event.creater;
 /*
 Copyright (c) 2012, Stefan Lindel
 All rights reserved.
@@ -28,8 +28,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import de.uni.kassel.peermessage.event.ByteMessage;
-import de.uni.kassel.peermessage.interfaces.ByteEntityCreator;
+import de.uniks.peermessage.event.ByteMessage;
+import de.uniks.peermessage.interfaces.ByteEntityCreator;
 
 /**
  * The Class ByteMessageCreator.

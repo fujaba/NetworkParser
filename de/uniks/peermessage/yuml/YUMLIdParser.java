@@ -1,4 +1,4 @@
-package de.uni.kassel.peermessage.yuml;
+package de.uniks.peermessage.yuml;
 /*
 Copyright (c) 2012, Stefan Lindel
 All rights reserved.
@@ -33,9 +33,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
-import de.uni.kassel.peermessage.IdMap;
-import de.uni.kassel.peermessage.IdMapFilter;
-import de.uni.kassel.peermessage.interfaces.SendableEntityCreator;
+import de.uniks.peermessage.IdMap;
+import de.uniks.peermessage.IdMapFilter;
+import de.uniks.peermessage.interfaces.SendableEntityCreator;
 
 /**
  * The Class YUMLIdParser.

@@ -1,4 +1,4 @@
-package de.uni.kassel.peermessage;
+package de.uniks.peermessage;
 /*
 Copyright (c) 2012, Stefan Lindel
 All rights reserved.
@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import java.util.Collection;
 import java.util.Map;
 
-import de.uni.kassel.peermessage.interfaces.BaseEntity;
+import de.uniks.peermessage.interfaces.BaseEntity;
 
 public class EntityUtil {
 	/**

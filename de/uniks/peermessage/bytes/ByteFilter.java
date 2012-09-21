@@ -1,6 +1,6 @@
-package de.uni.kassel.peermessage.bytes;
+package de.uniks.peermessage.bytes;
 
-import de.uni.kassel.peermessage.IdMapFilter;
+import de.uniks.peermessage.IdMapFilter;
 
 public class ByteFilter extends IdMapFilter{
 	private ByteIdMap map;

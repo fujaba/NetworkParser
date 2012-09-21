@@ -1,4 +1,4 @@
-package de.uni.kassel.peermessage.xml;
+package de.uniks.peermessage.xml;
 /*
 Copyright (c) 2012, Stefan Lindel
 All rights reserved.
@@ -33,10 +33,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import de.uni.kassel.peermessage.Entity;
-import de.uni.kassel.peermessage.EntityList;
-import de.uni.kassel.peermessage.EntityUtil;
-import de.uni.kassel.peermessage.Tokener;
+import de.uniks.peermessage.Entity;
+import de.uniks.peermessage.EntityList;
+import de.uniks.peermessage.EntityUtil;
+import de.uniks.peermessage.Tokener;
 
 /**
  * The Class XMLEntity.

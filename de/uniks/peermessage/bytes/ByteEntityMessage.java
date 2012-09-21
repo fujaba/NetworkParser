@@ -1,4 +1,4 @@
-package de.uni.kassel.peermessage.bytes;
+package de.uniks.peermessage.bytes;
 /*
 Copyright (c) 2012, Stefan Lindel
 All rights reserved.
@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import java.nio.ByteBuffer;
 
-import de.uni.kassel.peermessage.interfaces.SendableEntityCreator;
+import de.uniks.peermessage.interfaces.SendableEntityCreator;
 
 /**
  * The Class ByteEntityMessage.

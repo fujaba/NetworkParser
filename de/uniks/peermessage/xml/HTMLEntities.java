@@ -1,4 +1,4 @@
-package de.uni.kassel.peermessage.xml;
+package de.uniks.peermessage.xml;
 
 import java.util.HashMap;
 

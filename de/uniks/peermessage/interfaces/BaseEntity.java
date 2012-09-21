@@ -1,7 +1,7 @@
-package de.uni.kassel.peermessage.interfaces;
+package de.uniks.peermessage.interfaces;
 
-import de.uni.kassel.peermessage.Entity;
-import de.uni.kassel.peermessage.EntityList;
+import de.uniks.peermessage.Entity;
+import de.uniks.peermessage.EntityList;
 /*
 Copyright (c) 2012, Stefan Lindel
 All rights reserved.
