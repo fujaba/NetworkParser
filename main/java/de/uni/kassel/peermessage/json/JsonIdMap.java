@@ -532,7 +532,7 @@ public class JsonIdMap extends IdMap {
 	
 
 	/**
-	 * Send update msg.
+	 * Send update msg from PropertyChange MapUpdater 
 	 *
 	 * @param jsonObject the json object
 	 * @return true, if successful
