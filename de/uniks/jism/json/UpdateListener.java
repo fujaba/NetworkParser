@@ -410,9 +410,15 @@ public class UpdateListener implements PropertyChangeListener {
 			if(typeInfo!=null){
 				// notify in readJson
 			}else{
-				this.map.sendReceiveMsg(typ, element, json);
+				if(!this.map.sendReceiveMsg(typ, element, json)){
+					return false;
+				}
 			}
-			creator.setValue(element, key, this.map.readJson(json), typ);
+			Object readJson = this.map.readJson(json);
+			if(readJson!=null){
+				creator.setValue(element, key, readJson, typ);
+				this.map.sendReceiveObj(element, key, readJson, typ);
+			}
 		} else {
 			creator.setValue(element, key, newValue, typ);
 //			this.map.sendReceiveMsg(typ, element, newValue);
