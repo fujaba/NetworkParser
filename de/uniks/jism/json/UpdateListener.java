@@ -142,6 +142,11 @@ public class UpdateListener implements PropertyChangeListener {
 		String propertyName = evt.getPropertyName();
 		SendableEntityCreator creatorClass = this.map.getCreatorClass(source);
 
+		if (creatorClass == null)
+		{
+		   // this class is not supported, do nor replicate
+		   return;
+		}
 		boolean done = false;
 		String gc = null;
 		for (String attrName : creatorClass.getProperties()) {
@@ -329,8 +334,10 @@ public class UpdateListener implements PropertyChangeListener {
 
 					if (checkValue(value, key, remove)) {
 						setValue(creator, masterObj, key, update.get(key), IdMap.UPDATE);
+						this.map.sendReceiveObj(masterObj, key, update.get(key), IdMap.UPDATE);
 					} else if (checkPrio(prio)) {
 						setValue(creator, masterObj, key, update.get(key), IdMap.UPDATE);
+						this.map.sendReceiveObj(masterObj, key, update.get(key), IdMap.UPDATE);
 					}
 				}
 				return true;
