@@ -293,7 +293,6 @@ public class JsonIdMap extends IdMap {
 				return target;
 			}
 			put(jsonId, target);
-
 			getCounter().readId(jsonId);
 		}
 		JsonObject jsonProp=grammar.getJsonObjectProperties(jsonObject);
