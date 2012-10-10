@@ -31,10 +31,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import de.uniks.jism.IdMap;
@@ -348,7 +351,26 @@ public class JsonIdMap extends IdMap {
 					JsonObject child = (JsonObject) value;
 					String className = (String) child.get(CLASS);
 					String jsonId = (String) child.get(ID);
-					if (className == null && jsonId != null) {
+					// CHECK LIST AND MAPS
+					Object ref_Obj = creator.getSendableInstance(true);
+					Object refValue = creator.getValue(ref_Obj, property);
+					if(refValue instanceof Map<?,?>){
+						JsonObject json=(JsonObject) value;
+						Iterator<String> i=json.keys();
+						while(i.hasNext()){
+							String key = i.next();
+							Object entryValue= json.get(key);
+							if(entryValue instanceof JsonObject){
+								creator.setValue(target, property,
+										new AbstractMap.SimpleEntry<String, Object>(key, readJson((JsonObject) entryValue)),NEW);
+							}else if(entryValue instanceof JsonArray){
+								creator.setValue(target, property,
+										new AbstractMap.SimpleEntry<String, Object>(key, readJson((JsonArray) entryValue)),NEW);
+							}else{
+								creator.setValue(target, property,new AbstractMap.SimpleEntry<String, Object>(key, entryValue),NEW);
+							}
+						}
+					}else if (className == null && jsonId != null) {
 						// It is a Ref
 						refs.add(new ReferenceObject(jsonId, creator, property,
 								this, target));
