@@ -43,6 +43,7 @@ import java.util.Set;
 import de.uniks.jism.IdMap;
 import de.uniks.jism.IdMapFilter;
 import de.uniks.jism.ReferenceObject;
+import de.uniks.jism.event.JsonEntry;
 import de.uniks.jism.event.creater.DateCreator;
 import de.uniks.jism.event.creater.JsonArrayCreator;
 import de.uniks.jism.event.creater.JsonObjectCreator;
@@ -52,6 +53,10 @@ import de.uniks.jism.interfaces.SendableEntityCreator;
 
 /**
  * The Class JsonIdMap.
+ */
+/**
+ * @author Stefan
+ *
  */
 public class JsonIdMap extends IdMap {
 	/** The Constant CLASS. */
@@ -97,21 +102,31 @@ public class JsonIdMap extends IdMap {
 	}
 
 	/**
-	 * To json object.
+	 * To Jsonobject.
 	 *
 	 * @param entity the entity
 	 * @param filter the filter
-	 * @return the json object
+	 * @return the Jsonobject
 	 */
 	public JsonObject toJsonObject(Object entity, JsonFilter filter) {
-		String id = "";
 		String className = entity.getClass().getName();
-
-		SendableEntityCreator prototyp = grammar.getObjectCreator(entity, this);
+		return toJsonObject(entity, filter, className);
+	}
+	
+	/**
+	 * To Jsonobject.
+	 *
+	 * @param entity the entity to convert
+	 * @param filter the filter
+	 * @param className the className of the entity
+	 * @return the Jsonobject
+	 */
+	public JsonObject toJsonObject(Object entity, JsonFilter filter, String className) {
+		String id = "";
+		SendableEntityCreator prototyp = grammar.getObjectCreator(entity, className, this);
 		if (prototyp == null) {
 			return null;
 		}
-
 		if (!(prototyp instanceof NoIndexCreator||!filter.isId())) {
 			id = getId(entity);
 		}
@@ -140,16 +155,38 @@ public class JsonIdMap extends IdMap {
 						SendableEntityCreator referenceCreator=getCreatorClass(value);
 						
 						if (value instanceof Collection<?>&&referenceCreator==null) {
+							// Simple List or Assocs
 							JsonArray subValues = new JsonArray();
 							for (Object containee : ((Collection<?>) value)) {
-								if (containee != null&&filter.isRegard(this, entity, property, containee, true)){
-									boolean aggregation = filter.isConvertable(this,
-											entity, property, containee, true);
-
-									referenceCreator=getCreatorClass(containee);
-									subValues.put(parseObject(containee,
-											aggregation, filter, null, referenceCreator, typSave));
+								Object item=getItem(containee, filter, entity, property);
+								if(item!=null){
+									subValues.put(item);
 								}
+							}
+							if(subValues.size()>0){
+								jsonProp.put(property, subValues);
+							}
+						} else if (value instanceof Map<?,?>&&referenceCreator==null) {
+							// Maps
+							JsonArray subValues = new JsonArray();
+							Map<?, ?> map=(Map<?, ?>) value;
+							String packageName = JsonEntry.class.getName();
+							for (Iterator<?> i = map.entrySet().iterator(); i.hasNext();) {
+								java.util.Map.Entry<?,?> mapEntry = (Entry<?, ?>) i.next();
+								JsonObject item=toJsonObject(mapEntry, filter, packageName);
+								if(item!=null){
+									subValues.add(item);
+								}
+//								toJsonObject(mapEntry, filter, String className, SendableEntityCreator prototyp) {
+//								Object mapKey=getItem(mapEntry.getKey(), filter, entity, property);
+//								if(mapKey!=null){
+//									Object mapValue=getItem(mapEntry.getValue(), filter, entity, property);
+//									if(mapValue!=null){
+//										toJsonObject(entity, filter)
+//									}
+//										subValues.put(mapKey.toString(), mapValue);
+//									}
+//								}
 							}
 							if(subValues.size()>0){
 								jsonProp.put(property, subValues);
@@ -171,7 +208,16 @@ public class JsonIdMap extends IdMap {
 		}
 		return grammar.getJsonObject(this, prototyp, className, id, jsonProp, filter);
 	}
-
+	public Object getItem(Object item, JsonFilter filter, Object entity, String property){
+		if (item != null&&filter.isRegard(this, entity, property, item, true)){
+			boolean aggregation = filter.isConvertable(this,
+					entity, property, item, true);
+	
+			SendableEntityCreator referenceCreator=getCreatorClass(item);
+			return parseObject(item, aggregation, filter, null, referenceCreator, typSave);
+		}
+		return null;
+	}
 	/**
 	 * Read json.
 	 *
@@ -300,7 +346,7 @@ public class JsonIdMap extends IdMap {
 		}
 		JsonObject jsonProp=grammar.getJsonObjectProperties(jsonObject);
 		if (jsonProp!=null) {
-			SendableEntityCreator prototyp = grammar.getObjectCreator(target, this);
+			SendableEntityCreator prototyp = grammar.getObjectCreator(target, target.getClass().getName(), this);
 			String[] properties = prototyp.getProperties();
 			if (properties != null) {
 				for (String property : properties) {
