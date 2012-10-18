@@ -471,13 +471,15 @@ public class IdMap implements Map<String, Object> {
 		boolean result=false;
 		ArrayList<Object> oldValues = getTypList(creator);
 		for(Object obj : oldValues){
-			@SuppressWarnings("unchecked")
-			Comparable<Object> oldValue=(Comparable<Object>) obj;
-			if(oldValue.compareTo(newObject)==0){
-				String oldKey=getKey(oldValue);
-				if(oldKey!=null){
-					remove(oldValue);
-					put(oldKey, newObject);
+			if(obj instanceof Comparable<?>){
+				@SuppressWarnings("unchecked")
+				Comparable<Object> oldValue=(Comparable<Object>) obj;
+				if(oldValue.compareTo(newObject)==0){
+					String oldKey=getKey(oldValue);
+					if(oldKey!=null){
+						remove(oldValue);
+						put(oldKey, newObject);
+					}
 				}
 			}
 		}

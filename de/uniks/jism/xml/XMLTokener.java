@@ -53,8 +53,10 @@ public class XMLTokener extends Tokener{
             return nextString(c);
         case '<':
             back();
-            Entity element = creator.getNewObject();
-            parseToEntity(element);
+            BaseEntity element = creator.getNewObject();
+            if(element instanceof Entity){
+            	parseToEntity((Entity)element);
+            }
             return element;
 		default:
 			break;
