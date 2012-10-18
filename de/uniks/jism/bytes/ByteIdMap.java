@@ -37,6 +37,7 @@ import de.uniks.jism.event.BasicMessage;
 import de.uniks.jism.event.UnknownMessage;
 import de.uniks.jism.event.creater.BasicMessageCreator;
 import de.uniks.jism.interfaces.ByteEntityCreator;
+import de.uniks.jism.interfaces.ByteItem;
 import de.uniks.jism.interfaces.SendableEntityCreator;
 
 /**
@@ -45,134 +46,132 @@ import de.uniks.jism.interfaces.SendableEntityCreator;
 public class ByteIdMap extends IdMap{
 	/** The SPLITTER. */
 	public static char SPLITTER = ' ';
-	/** The Constant CLASS-VALUE. */
-	public static final byte DATATYPE_CLAZZ = 0x22;
+
 	/** The Constant NULL-VALUE. */
-	public static final byte DATATYPE_NULL = 0x23;
+	public static final byte DATATYPE_NULL = 0x22;
+	
+	/** The Constant FIXED VALUE. */
+	public static final byte DATATYPE_FIXED = 0x23;
 
-	/** The Constant CHECKTYPE. */
-	public static final byte DATATYPE_CHECK = 0x24;
-
+	/** The Constant CLASS-VALUE. */
+	public static final byte DATATYPE_CLAZZ = 0x24;
+	
 	/**
 	 * SIMPLE TYPES 
 	 * The Constant DATATYPE_BYTE.
 	 */
 	/** The Constant DATATYPE_INTEGER. */
-	public static final byte DATATYPE_SHORT = 0x30;
+	public static final byte DATATYPE_SHORT = 0x25;
 
 	/** The Constant DATATYPE_INTEGER. */
-	public static final byte DATATYPE_INTEGER = 0x31;
+	public static final byte DATATYPE_INTEGER = 0x26;
 
 	/** The Constant DATATYPE_INTEGER. */
-	public static final byte DATATYPE_LONG = 0x32;
+	public static final byte DATATYPE_LONG = 0x27;
 
 	/** The Constant DATATYPE_FLOAT. */
-	public static final byte DATATYPE_FLOAT = 0x33;
+	public static final byte DATATYPE_FLOAT = 0x28;
 
 	/** The Constant DATATYPE_DOUBLE. */
-	public static final byte DATATYPE_DOUBLE = 0x34;
+	public static final byte DATATYPE_DOUBLE = 0x29;
 	
 	/** The Constant DATATYPE_BYTEARRAY. */
-	public static final byte DATATYPE_DATE = 0x35;
+	public static final byte DATATYPE_DATE = 0x2A;
 		
-	/** The Constant DATATYPE_BYTE. */
-	public static final byte DATATYPE_BYTE = 0x36;
-
-	/** The Constant DATATYPE_BYTEARRAY. */
-	public static final byte DATATYPE_UNSIGNEDBYTE = 0x37;
-
-	/** The Constant DATATYPE_BYTEARRAY. */
-	public static final byte DATATYPE_CHAR = 0x38;
-
 	/** The Constant DATATYPE_MAP. */
-	public static final byte DATATYPE_ASSOC = 0x3A;
-	
+	public static final byte DATATYPE_ASSOC = 0x2B;
+
+	/** The Constant DATATYPE_BYTE. */
+	public static final byte DATATYPE_BYTE = 0x30;
+
+	/** The Constant DATATYPE_BYTEARRAY. */
+	public static final byte DATATYPE_UNSIGNEDBYTE = 0x31;
+
 		
 	/** The Constant DATATYPE_BYTEARRAY. */
-	public static final byte DATATYPE_BYTEARRAY = 0x42;
+	public static final byte DATATYPE_BYTEARRAY = 0x32;
 
 	/** The Constant DATATYPE_BYTEARRAY. */
-	public static final byte DATATYPE_BYTEARRAYSHORT = 0x43;
+	public static final byte DATATYPE_BYTEARRAYSHORT = 0x33;
 
 	/** The Constant DATATYPE_BYTEARRAY. */
-	public static final byte DATATYPE_BYTEARRAYMID = 0x44;
+	public static final byte DATATYPE_BYTEARRAYMID = 0x34;
 
 	/** The Constant DATATYPE_BYTEARRAY. */
-	public static final byte DATATYPE_BYTEARRAYBIG = 0x45;
+	public static final byte DATATYPE_BYTEARRAYBIG = 0x35;
 
 	/** The Constant DATATYPE_BYTEARRAY. */
-	public static final byte DATATYPE_BYTEARRAYLAST = 0x46;
+	public static final byte DATATYPE_BYTEARRAYLAST = 0x36;
 
+	
+	/** The Constant DATATYPE_BYTEARRAY. */
+	public static final byte DATATYPE_CHAR = 0x40;
+	
+	/** The Constant DATATYPE_STRING. */
+	public static final byte DATATYPE_STRING = 0x42;
 
 	/** The Constant DATATYPE_STRING. */
-	public static final byte DATATYPE_STRING = 0x52;
-
-	/** The Constant DATATYPE_STRING. */
-	public static final byte DATATYPE_STRINGSHORT = 0x53;
+	public static final byte DATATYPE_STRINGSHORT = 0x43;
 	
 	/** The Constant DATATYPE_MIDSTRING. */
-	public static final byte DATATYPE_STRINGMID = 0x54;
+	public static final byte DATATYPE_STRINGMID = 0x44;
 
 	/** The Constant DATATYPE_STRING. */
-	public static final byte DATATYPE_STRINGBIG = 0x55;
+	public static final byte DATATYPE_STRINGBIG = 0x45;
 
 	/** The Constant DATATYPE_STRING. */
-	public static final byte DATATYPE_STRINGLAST = 0x56;
-
+	public static final byte DATATYPE_STRINGLAST = 0x46;
 	
 	/** The Constant DATATYPE_LIST. */
-	public static final byte DATATYPE_LIST = 0x62;
+	public static final byte DATATYPE_LIST = 0x52;
 
 	/** The Constant DATATYPE_SHORTLIST. */
-	public static final byte DATATYPE_LISTSHORT = 0x63;
+	public static final byte DATATYPE_LISTSHORT = 0x53;
 	
 	/** The Constant DATATYPE_MIDLIST. */
-	public static final byte DATATYPE_LISTMID = 0x64;
+	public static final byte DATATYPE_LISTMID = 0x54;
 
 	/** The Constant DATATYPE_BIGLIST. */
-	public static final byte DATATYPE_LISTBIG = 0x65;
+	public static final byte DATATYPE_LISTBIG = 0x55;
 
 	/** The Constant DATATYPE_LASTLIST. */
-	public static final byte DATATYPE_LISTLAST = 0x66;
+	public static final byte DATATYPE_LISTLAST = 0x56;
 	
 	/** The Constant DATATYPE_MAP. */
-	public static final byte DATATYPE_MAP = 0x72;
+	public static final byte DATATYPE_MAP = 0x62;
 
 	/** The Constant DATATYPE_MAP. */
-	public static final byte DATATYPE_MAPSHORT = 0x73;
+	public static final byte DATATYPE_MAPSHORT = 0x63;
 
 	/** The Constant DATATYPE_MAP. */
-	public static final byte DATATYPE_MAPMID = 0x74;
+	public static final byte DATATYPE_MAPMID = 0x64;
 
 	/** The Constant DATATYPE_MAP. */
-	public static final byte DATATYPE_MAPBIG = 0x75;
+	public static final byte DATATYPE_MAPBIG = 0x65;
 
 	/** The Constant DATATYPE_MAP. */
-	public static final byte DATATYPE_MAPLAST = 0x76;
+	public static final byte DATATYPE_MAPLAST = 0x66;
+
+	/** The Constant CHECKTYPE. */
+	public static final byte DATATYPE_CHECK = 0x72;
+
+	/** The Constant DATATYPE_CHECKSHORT. */
+	public static final byte DATATYPE_CHECKSHORT = 0x73;
+
+	/** The Constant DATATYPE_MAP. */
+	public static final byte DATATYPE_CHECKMID = 0x74;
+
+	/** The Constant DATATYPE_MAP. */
+	public static final byte DATATYPE_CHECKBIG = 0x75;
 
 	/** The decoder map. */
 	protected HashMap<Byte, ByteEntityCreator> decoderMap;
-	
-	/** The len check. */
-	private boolean lenCheck;
-	
-	/** The is dynamic. */
-	private boolean isDynamic;
 
 	/**
 	 * Instantiates a new byte id map.
 	 */
 	public ByteIdMap() {
 
-	}
-
-	/**
-	 * Sets the check len.
-	 *
-	 * @param checklen the new check len
-	 */
-	public void setCheckLen(boolean checklen) {
-		this.lenCheck = checklen;
 	}
 
 	/* (non-Javadoc)
@@ -202,11 +201,11 @@ public class ByteIdMap extends IdMap{
 	 * @param entity the entity
 	 * @return the byte entity message
 	 */
-	public ByteEntityMessage encode(Object entity) {
-		ByteFilter filter=new ByteFilter(this);
+	public ByteItem encode(Object entity) {
+		ByteFilter filter=new ByteFilter();
 		return encode(entity, filter);
 	}
-	public ByteEntityMessage encode(Object entity, ByteFilter filter) {
+	public ByteItem encode(Object entity, ByteFilter filter) {
 		SendableEntityCreator creator;
 		if(this.parent!=null){
 			creator = this.parent.getCreatorClass(entity);
@@ -217,35 +216,37 @@ public class ByteIdMap extends IdMap{
 			return null;
 		}
 		
-		ByteEntityMessage msg=new ByteEntityMessage();
+		ByteList msg=new ByteList();
 		
 		if (creator instanceof BasicMessageCreator) {
 			BasicMessage basicEvent = (BasicMessage) entity;
 			String value = basicEvent.getValue();
-			msg.setFullMsg(value);
+			ByteEntity byteEntity = new ByteEntity();
+			byteEntity.setValue(DATATYPE_FIXED, value.getBytes());
+			msg.add(byteEntity);
 			return msg;
 		}
 		
-		msg.setLenCheck(this.lenCheck);
-		
 		if(creator instanceof ByteEntityCreator){
-			msg.setMsgTyp(((ByteEntityCreator) creator).getEventTyp());
+			msg.setTyp(((ByteEntityCreator) creator).getEventTyp());
 		}else{
 			Object reference = creator.getSendableInstance(true);
-			msg.setMsgTyp(reference.getClass().getName());
+			ByteEntity byteEntity = new ByteEntity();
+			byteEntity.setValue(DATATYPE_CLAZZ, reference.getClass().getName().getBytes());
+			msg.add(byteEntity);
 		}
 		
 		String[] properties = creator.getProperties();
-		msg.setDynamic(this.isDynamic);
-		
 		if (properties != null) {
 			for (String property : properties) {
-				msg.addChild(creator, entity, property, filter);				
+				ByteEntity msgEntity = new ByteEntity();
+				Object value=creator.getValue(entity, property);
+				msgEntity.setValues(value);
+				msg.add(msgEntity);
+				
+//				msg.addChild(creator, entity, property, filter);				
 			}
 		}
-		
-		
-		msg.cleanUp();
 		return msg;
 	}
 
@@ -331,24 +332,6 @@ public class ByteIdMap extends IdMap{
 
 		return out;
 	}
-
-	/**
-	 * Checks if is dynamic.
-	 *
-	 * @return true, if is dynamic
-	 */
-	public boolean isDynamic() {
-		return this.isDynamic;
-	}
-
-	/**
-	 * Sets the dynamic.
-	 *
-	 * @param isDynamic the new dynamic
-	 */
-	public void setDynamic(boolean isDynamic) {
-		this.isDynamic = isDynamic;
-	}
 	
 	/**
 	 * Decode.
@@ -381,7 +364,7 @@ public class ByteIdMap extends IdMap{
 		byte typ = in.get();
 		SendableEntityCreator eventCreater=null;
 		if(typ==ByteIdMap.DATATYPE_CLAZZ){
-			String clazz = (String) getDecodeObject(ByteIdMap.DATATYPE_STRING, in);
+			String clazz = (String) getDecodeObject(ByteIdMap.DATATYPE_CLAZZ, in);
 			eventCreater = getCreatorClasses(clazz);
 		}else{
 			eventCreater = getCreatorDecoderClass(typ);
@@ -443,6 +426,11 @@ public class ByteIdMap extends IdMap{
 			return new Double(in.getDouble());
 		} else if (typValue == ByteIdMap.DATATYPE_DATE) {
 			return new Date(new Long(in.getInt()).longValue());
+		}else if (typValue == ByteIdMap.DATATYPE_CLAZZ) {
+			int len=in.get()-ByteIdMap.SPLITTER;
+			byte[] values = new byte[len];
+			in.get(values);
+			return new String(values);
 		} else {
 			byte group=getTyp(typValue, ByteIdMap.DATATYPE_STRING);
 			if(group==ByteIdMap.DATATYPE_STRING||
