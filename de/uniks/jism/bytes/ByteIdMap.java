@@ -31,6 +31,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import de.uniks.jism.IdMap;
 import de.uniks.jism.event.BasicMessage;
@@ -217,7 +218,6 @@ public class ByteIdMap extends IdMap{
 		}
 		
 		ByteList msg=new ByteList();
-		
 		if (creator instanceof BasicMessageCreator) {
 			BasicMessage basicEvent = (BasicMessage) entity;
 			String value = basicEvent.getValue();
@@ -228,26 +228,73 @@ public class ByteIdMap extends IdMap{
 		}
 		
 		if(creator instanceof ByteEntityCreator){
-			msg.setTyp(((ByteEntityCreator) creator).getEventTyp());
+			msg.setTyp(((ByteEntityCreator) creator).getEventTyp(), false);
 		}else{
 			Object reference = creator.getSendableInstance(true);
 			ByteEntity byteEntity = new ByteEntity();
 			byteEntity.setValue(DATATYPE_CLAZZ, reference.getClass().getName().getBytes());
 			msg.add(byteEntity);
 		}
-		
 		String[] properties = creator.getProperties();
 		if (properties != null) {
 			for (String property : properties) {
-				ByteEntity msgEntity = new ByteEntity();
 				Object value=creator.getValue(entity, property);
-				msgEntity.setValues(value);
-				msg.add(msgEntity);
-				
-//				msg.addChild(creator, entity, property, filter);				
+				ByteItem child = encodeValue(value, filter);
+				if(child!=null){
+					msg.add(child);
+				}
 			}
 		}
 		return msg;
+		
+	}
+	public ByteItem encodeValue(Object value, ByteFilter filter) {
+		ByteEntity msgEntity = new ByteEntity();
+		if(msgEntity.setValues(value)){
+			return msgEntity;
+		}else{
+			// Map, List, Assocs
+			if(value instanceof List<?>){
+				ByteList byteList = new ByteList();
+				List<?> list=(List<?>)value;
+				byteList.setTyp(ByteIdMap.DATATYPE_LIST);
+				for (Object childValue : list) {
+					ByteItem child = encodeValue(childValue, filter);
+					if(child!=null){
+						byteList.add(child);
+					}
+				}
+				return byteList;
+			}
+		}
+		return null;
+//FIXME			} else if (typ==ByteIdMap.DATATYPE_MAP) {
+//				this.typ=typ;
+//				if(value instanceof Map<?, ?>){
+//					Map<?, ?> map=(Map<?,?>)value;
+//					for (Iterator<?> i = map.entrySet().iterator(); i
+//							.hasNext();) {
+//						java.util.Map.Entry<?,?> entity = (Entry<?, ?>) i.next();
+//
+//						getChildren().add(encodingDataType(entity.getKey(), parent));
+//						getChildren().add(encodingDataType(entity.getValue(), parent));
+//					}
+//				}
+//				this.isLenCheck=true;
+//			} else if(typ==ByteIdMap.DATATYPE_ASSOC){
+//				ByteEntity child = parent.encode(value);
+//				if(child!=null){
+//					getChildren().add(child);
+//				}
+//				this.typ=typ;
+//				this.setLenCheck(true);
+//
+//				
+//				
+//							if(typ/16==ByteIdMap.DATATYPE_BYTEARRAY/16){
+//					this.isLenCheck=true;
+//				}else if(typ/16==ByteIdMap.DATATYPE_STRING/16){
+//					this.isLenCheck=true;
 	}
 
 	/**

@@ -9,6 +9,7 @@ import de.uniks.jism.interfaces.ByteItem;
 public class ByteList extends EntityList implements ByteItem {
 	/** The children of the ByteEntity. */
 	private byte typ=0;
+	private boolean isGroupable=true;
 	@Override
 	public EntityList getNewArray() {
 		return new ByteList();
@@ -41,7 +42,7 @@ public class ByteList extends EntityList implements ByteItem {
 
 	public ByteBuffer getBytes(boolean isDynamic) {
 		int len=calcLength(isDynamic);
-		ByteBuffer buffer = ByteUtil.getBuffer(len, getTyp());
+		ByteBuffer buffer = ByteUtil.getBuffer(len, getTyp(), isGroupable());
 		for(Object value : values){
 			ByteBuffer child=null;
 			if(value instanceof ByteItem){
@@ -59,6 +60,9 @@ public class ByteList extends EntityList implements ByteItem {
 
 	public int calcLength(boolean isDynamic) {
 		int length=0;
+		if(this.values==null){
+			return 0;
+		}
 		Object[] valueList=this.values.toArray(new Object[this.values.size()]);
 		boolean notLast=true;
 		for(int i=valueList.length-1;i>=0;i--){
@@ -101,5 +105,12 @@ public class ByteList extends EntityList implements ByteItem {
 	public void setTyp(Byte typ) {
 		this.typ = typ;
 	}
-	
+	public void setTyp(Byte typ, boolean isGroupable) {
+		this.typ=typ;
+		this.isGroupable=isGroupable;
+	}
+
+	public boolean isGroupable() {
+		return isGroupable;
+	}
 }
