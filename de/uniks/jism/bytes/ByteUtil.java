@@ -109,8 +109,10 @@ public class ByteUtil {
 		}
 		return 0;
 	}
-	
 	public static ByteBuffer getBuffer(int len, byte typ){
+		return getBuffer(len, typ, true);
+	}
+	public static ByteBuffer getBuffer(int len, byte typ, boolean isGroupable){
 		if(len<1){
 			return null;
 		}
@@ -122,6 +124,9 @@ public class ByteUtil {
 			
 		}else{
 			int lenGroup=getTypLen(typ);
+			if(!isGroupable){
+				lenGroup=0;
+			}
 			if(lenGroup>0){
 				message=ByteBuffer.allocate(len+lenGroup+1);
 				byte typGroup = getTyp(typ, len);

@@ -139,7 +139,7 @@ public class ByteEntity implements BaseEntity, ByteItem{
 	 */
 	@Override
 	public String toString(int indentFactor, int intent) {
-		return  toString();
+		return toString();
 	}
 	
 	/**
