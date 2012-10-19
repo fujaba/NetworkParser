@@ -63,6 +63,9 @@ public class ByteList extends EntityList implements ByteItem {
 		if(this.values==null){
 			return 0;
 		}
+		if(typ!=0){
+			length=ByteUtil.getTypLen(typ)+ByteEntity.TYPBYTE;
+		}
 		Object[] valueList=this.values.toArray(new Object[this.values.size()]);
 		boolean notLast=true;
 		for(int i=valueList.length-1;i>=0;i--){

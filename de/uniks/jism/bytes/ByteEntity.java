@@ -35,6 +35,7 @@ import de.uniks.jism.interfaces.ByteItem;
 public class ByteEntity implements BaseEntity, ByteItem{
 	/** The Constant BIT OF A BYTE. */
 	public final static int BITOFBYTE=8;
+	public final static int TYPBYTE=1;
 	
 	/** The Byte Typ. */
 	protected byte typ;
@@ -149,11 +150,38 @@ public class ByteEntity implements BaseEntity, ByteItem{
 	 */
 	public ByteBuffer getBytes(boolean isDynamic){
 		int len=calcLength(isDynamic);
-		ByteBuffer buffer = ByteUtil.getBuffer(len, getTyp());
+		byte typ=getTyp();
+		byte[] value=this.values;
+		
+		if(isDynamic&&value!=null){
+			ByteBuffer bb = ByteBuffer.wrap(value);
+			if(typ==ByteIdMap.DATATYPE_SHORT){
+				short bufferValue=bb.getShort();
+				if(bufferValue>=Byte.MIN_VALUE&&bufferValue<=Byte.MAX_VALUE){
+					typ=ByteIdMap.DATATYPE_BYTE;
+					value=new byte[]{(byte)bufferValue};
+				}
+			}else if(typ==ByteIdMap.DATATYPE_INTEGER||typ==ByteIdMap.DATATYPE_LONG){
+				int bufferValue=bb.getInt();
+				if(bufferValue>=Byte.MIN_VALUE&&bufferValue<=Byte.MAX_VALUE){
+					typ=ByteIdMap.DATATYPE_BYTE;
+					value=new byte[]{(byte)bufferValue};
+				}else if(bufferValue>=Short.MIN_VALUE&&bufferValue<=Short.MAX_VALUE){
+					typ=ByteIdMap.DATATYPE_BYTE;
+					ByteBuffer buffer = ByteBuffer.allocate(Short.SIZE/BITOFBYTE);
+					buffer.putShort((short)bufferValue);
+					buffer.flip();
+					value=buffer.array();
+				}
+			}
+		}
+		
+		
+		ByteBuffer buffer = ByteUtil.getBuffer(len, typ);
 		
 		// Save the Len
-		if(this.values!=null){
-			buffer.put(this.values);
+		if(value!=null){
+			buffer.put(value);
 		}
 		buffer.flip();
 		return buffer;
@@ -237,7 +265,23 @@ public class ByteEntity implements BaseEntity, ByteItem{
 	 */
 	public int calcLength(boolean isDynamic) {
 		// Length calculate Sonderfaelle ermitteln
-		int len=1+ByteUtil.getTypLen(getTyp());
+		if(isDynamic&&this.values!=null){
+			ByteBuffer bb = ByteBuffer.wrap(values);
+			if(typ==ByteIdMap.DATATYPE_SHORT){
+				Short bufferValue=bb.getShort();
+				if(bufferValue>=Byte.MIN_VALUE&&bufferValue<=Byte.MAX_VALUE){
+					return TYPBYTE+Byte.SIZE/BITOFBYTE;
+				}
+			}else if(typ==ByteIdMap.DATATYPE_INTEGER||typ==ByteIdMap.DATATYPE_LONG){
+				Integer bufferValue=bb.getInt();
+				if(bufferValue>=Byte.MIN_VALUE&&bufferValue<=Byte.MAX_VALUE){
+					return TYPBYTE+Byte.SIZE/BITOFBYTE;
+				}else if(bufferValue>=Short.MIN_VALUE&&bufferValue<=Short.MAX_VALUE){
+					return TYPBYTE+Short.SIZE/BITOFBYTE;
+				}
+			}
+		}
+		int len=TYPBYTE+ByteUtil.getTypLen(getTyp());
 		
 		if(this.values!=null){
 			len+=this.values.length;

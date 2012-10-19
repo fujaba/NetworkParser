@@ -124,24 +124,30 @@ public class ByteUtil {
 			
 		}else{
 			int lenGroup=getTypLen(typ);
+			int lenTyp=0;
 			if(!isGroupable){
 				lenGroup=0;
+				lenTyp=1;
 			}
 			if(lenGroup>0){
-				message=ByteBuffer.allocate(len+lenGroup+1);
-				byte typGroup = getTyp(typ, len);
+				message=ByteBuffer.allocate(len);
+				int lenValue=len-ByteEntity.TYPBYTE-lenGroup;
+				byte typGroup = getTyp(typ, lenValue);
+				message.put(typGroup);
 	
 				if(typGroup%16==ByteIdMap.DATATYPE_STRINGSHORT%16){
-					message.put((byte)(ByteIdMap.SPLITTER+len));
+					message.put((byte)(ByteIdMap.SPLITTER+lenValue));
 				}else if(typGroup%16==ByteIdMap.DATATYPE_STRING%16){
-					message.put((byte)len);
+					message.put((byte)lenValue);
 				}else if(typGroup%16==ByteIdMap.DATATYPE_STRINGMID%16){
-					message.putShort((short)len);
+					message.putShort((short)lenValue);
 				}else if(typGroup%16==ByteIdMap.DATATYPE_STRINGBIG%16){
-					message.putInt(len);
+					message.putInt(lenValue);
+				}else if(typGroup%16==ByteIdMap.DATATYPE_STRINGLAST%16){
+					// Nothing to ADD
 				}
 			}else if(typ>0){
-				message = ByteBuffer.allocate(len+1);
+				message = ByteBuffer.allocate(len+lenTyp);
 				message.put(typ);
 			}else{
 				message = ByteBuffer.allocate(len);

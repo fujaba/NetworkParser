@@ -237,8 +237,12 @@ public class ByteIdMap extends IdMap{
 		}
 		String[] properties = creator.getProperties();
 		if (properties != null) {
+			Object referenceObj=creator.getSendableInstance(true);
 			for (String property : properties) {
 				Object value=creator.getValue(entity, property);
+				if(!filter.isFullSerialization()&&creator.getValue(referenceObj, property)==value){
+					value=null;
+				}
 				ByteItem child = encodeValue(value, filter);
 				if(child!=null){
 					msg.add(child);
