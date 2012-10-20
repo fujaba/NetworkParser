@@ -177,4 +177,59 @@ public class ByteUtil {
 		}
 		return false;
 	}
+
+	public static String getStringTyp(byte typ){
+		if(typ==ByteIdMap.DATATYPE_NULL){
+			return "DATATYPE_NULL";
+		}else if(typ==ByteIdMap.DATATYPE_FIXED){
+			return "DATATYPE_FIXED";
+		}else if(typ==ByteIdMap.DATATYPE_CLAZZ){
+			return "DATATYPE_CLAZZ";
+		}else if(typ==ByteIdMap.DATATYPE_SHORT){
+			return "DATATYPE_SHORT";
+		}else if(typ==ByteIdMap.DATATYPE_INTEGER){
+			return "DATATYPE_INTEGER";
+		}else if(typ==ByteIdMap.DATATYPE_LONG){
+			return "DATATYPE_LONG";
+		}else if(typ==ByteIdMap.DATATYPE_FLOAT){
+			return "DATATYPE_FLOAT";
+		}else if(typ==ByteIdMap.DATATYPE_DOUBLE){
+			return "DATATYPE_DOUBLE";
+		}else if(typ==ByteIdMap.DATATYPE_DATE){
+			return "DATATYPE_DATE";
+		}else if(typ==ByteIdMap.DATATYPE_ASSOC){
+			return "DATATYPE_ASSOC";
+		}else if(typ==ByteIdMap.DATATYPE_BYTE){
+			return "DATATYPE_BYTE";
+		}else if(typ==ByteIdMap.DATATYPE_UNSIGNEDBYTE){
+			return "DATATYPE_UNSIGNEDBYTE";
+		}else if(typ==ByteIdMap.DATATYPE_CHAR){
+			return "DATATYPE_CHAR";
+		}else {
+			byte group=getTyp(typ, ByteIdMap.DATATYPE_STRING);
+			byte subgroup=getTyp(ByteIdMap.DATATYPE_STRING, typ);
+			String result="";
+			if(group==ByteIdMap.DATATYPE_BYTEARRAY){
+				result="DATATYPE_BYTEARRAY";
+			}else if(group==ByteIdMap.DATATYPE_STRING){
+				result="DATATYPE_STRING";
+			}else if(group==ByteIdMap.DATATYPE_LIST){
+				result="DATATYPE_LIST";
+			}else if(group==ByteIdMap.DATATYPE_MAP){
+				result="DATATYPE_MAP";
+			}else if(group==ByteIdMap.DATATYPE_CHECK){
+				result="DATATYPE_CHECK";
+			}
+			if(subgroup==ByteIdMap.DATATYPE_STRINGSHORT){
+				result+="SHORT";
+			}else if(subgroup==ByteIdMap.DATATYPE_STRINGMID){
+				result+="MID";
+			}else if(subgroup==ByteIdMap.DATATYPE_STRINGBIG){
+				result+="BIG";
+			}else if(subgroup==ByteIdMap.DATATYPE_STRINGLAST){
+				result+="LAST";
+			}
+			return result;
+		}
+	}
 }

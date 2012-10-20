@@ -43,6 +43,9 @@ public class ByteList extends EntityList implements ByteItem {
 	public ByteBuffer getBytes(boolean isDynamic) {
 		int len=calcLength(isDynamic);
 		ByteBuffer buffer = ByteUtil.getBuffer(len, getTyp(), isGroupable());
+		if(buffer==null){
+			return null;
+		}
 		for(Object value : values){
 			ByteBuffer child=null;
 			if(value instanceof ByteItem){
@@ -77,6 +80,7 @@ public class ByteList extends EntityList implements ByteItem {
 						this.values.remove(valueList[i]);
 					}else{
 						notLast=false;
+						length+=len;
 					}
 				}else if(valueList[i] instanceof ByteEntity){
 					ByteEntity entity=(ByteEntity)valueList[i];
