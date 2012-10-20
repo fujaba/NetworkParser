@@ -31,7 +31,9 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import de.uniks.jism.IdMap;
 import de.uniks.jism.event.BasicMessage;
@@ -269,36 +271,33 @@ public class ByteIdMap extends IdMap{
 					}
 				}
 				return byteList;
+			} else if (value instanceof Map<?,?>){
+				ByteList byteList = new ByteList();
+				byteList.setTyp(ByteIdMap.DATATYPE_MAP);
+				Map<?,?> map=(Map<?,?>)value;
+				ByteItem child;
+				
+				for (Iterator<?> i = map.entrySet().iterator(); i.hasNext();) {
+					java.util.Map.Entry<?,?> entity = (Entry<?, ?>) i.next();
+					ByteList item = new ByteList();
+					item.setTyp(ByteIdMap.DATATYPE_CHECK);
+					
+					child = encodeValue(entity.getKey(), filter);
+					if(child!=null){
+						item.add(child);
+					}
+					child = encodeValue(entity.getValue(), filter);
+					if(child!=null){
+						item.add(child);
+					}
+					byteList.add(item);
+				}
+				return byteList;
+			} else if(value!=null){
+				return encode(value, filter);
 			}
 		}
 		return null;
-//FIXME			} else if (typ==ByteIdMap.DATATYPE_MAP) {
-//				this.typ=typ;
-//				if(value instanceof Map<?, ?>){
-//					Map<?, ?> map=(Map<?,?>)value;
-//					for (Iterator<?> i = map.entrySet().iterator(); i
-//							.hasNext();) {
-//						java.util.Map.Entry<?,?> entity = (Entry<?, ?>) i.next();
-//
-//						getChildren().add(encodingDataType(entity.getKey(), parent));
-//						getChildren().add(encodingDataType(entity.getValue(), parent));
-//					}
-//				}
-//				this.isLenCheck=true;
-//			} else if(typ==ByteIdMap.DATATYPE_ASSOC){
-//				ByteEntity child = parent.encode(value);
-//				if(child!=null){
-//					getChildren().add(child);
-//				}
-//				this.typ=typ;
-//				this.setLenCheck(true);
-//
-//				
-//				
-//							if(typ/16==ByteIdMap.DATATYPE_BYTEARRAY/16){
-//					this.isLenCheck=true;
-//				}else if(typ/16==ByteIdMap.DATATYPE_STRING/16){
-//					this.isLenCheck=true;
 	}
 
 	/**
