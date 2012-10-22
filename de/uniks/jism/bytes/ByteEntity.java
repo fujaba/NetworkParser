@@ -111,36 +111,24 @@ public class ByteEntity implements BaseEntity, ByteItem{
 	 */
 	@Override
 	public String toString() {
-		StringBuilder returnValue = new StringBuilder();
-		ByteBuffer byteBuffer = getBytes(false);
-		if(byteBuffer!=null){
-			for (int i = 0; i < byteBuffer.limit(); i++) {
-				byte value = byteBuffer.get(i);
-				if (value <= 32 || value == 127) {
-					returnValue.append(ByteIdMap.SPLITTER);
-					returnValue.append((char) (value + ByteIdMap.SPLITTER + 1));
-				} else {
-					returnValue.append((char) value);
-				}
-			}
+		return toString(null);
+	}
+	public String toString(int indentFactor){
+		return toString(null);
+	}
+
+	public String toString(ByteConverter converter){
+		if(converter==null){
+			converter=new ByteConverterHTTP();
 		}
-		return returnValue.toString();
+		return converter.toString(this);
 	}
-	
-	/*
-	 * @see de.uni.kassel.peermessage.Entity#toString(int)
-	 */
-	@Override
-	public String toString(int typ) {
-		return toString();
-	}
-	
 	/*
 	 * @see de.uni.kassel.peermessage.Entity#toString(int, int)
 	 */
 	@Override
 	public String toString(int indentFactor, int intent) {
-		return toString();
+		return toString(null);
 	}
 	
 	/**
@@ -308,5 +296,4 @@ public class ByteEntity implements BaseEntity, ByteItem{
 		}
 		return true;
 	}
-
 }

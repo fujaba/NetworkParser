@@ -28,6 +28,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 import java.nio.ByteBuffer;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -169,7 +170,7 @@ public class ByteIdMap extends IdMap{
 
 	/** The decoder map. */
 	protected HashMap<Byte, ByteEntityCreator> decoderMap;
-
+	
 	/**
 	 * Instantiates a new byte id map.
 	 */
@@ -294,35 +295,17 @@ public class ByteIdMap extends IdMap{
 				}
 				return byteList;
 			} else if(value!=null){
-				return encode(value, filter);
+				ByteItem child=encode(value, filter);
+				if(child!=null){
+					ByteList byteList = new ByteList();
+					byteList.setTyp(ByteIdMap.DATATYPE_ASSOC);
+					byteList.add(child);
+					return byteList;
+				}
+				return child;
 			}
 		}
 		return null;
-	}
-
-	/**
-	 * Decode http.
-	 *
-	 * @param bytes the bytes
-	 * @return the object
-	 * @throws RuntimeException the runtime exception
-	 */
-	public Object decodeHTTP(String bytes) throws RuntimeException {
-		int len = bytes.length();
-		ByteBuffer buffer = ByteBuffer.allocate(len);
-		for (int i = 0; i < len; i++) {
-			int value = bytes.charAt(i);
-			if (value == SPLITTER) {
-				value = bytes.charAt(++i);
-				buffer.put((byte) (value - SPLITTER - 1));
-			} else {
-				buffer.put((byte) value);
-			}
-		}
-		int limit = buffer.position();
-		buffer.position(0);
-		buffer.limit(limit);
-		return decode(buffer);
 	}
 
 	/**
@@ -336,53 +319,19 @@ public class ByteIdMap extends IdMap{
 	}
 	
 	/**
-	 * To hex string.
+	 * Decode.
 	 *
-	 * @param bytes the bytes
-	 * @return the string
+	 * @param value the value
+	 * @return the object
+	 * @throws RuntimeException the runtime exception
 	 */
-	public static String toHexString(byte[] bytes) {
-		if (bytes == null) {
-			return null;
-		}
-
-		String ret = "";
-		for (int i = 0; i < bytes.length; i++) {
-
-			char b = (char) (bytes[i] & 0xFF);
-			if (b < 0x10) {
-				ret = ret + "0";
-			}
-			ret = ret + (Integer.toHexString(b)).toUpperCase();
-		}
-		return ret;
-
+	public Object decode(String value) throws RuntimeException {
+		return decode(value, new ByteConverterHTTP());
 	}
-
-	/**
-	 * To byte string.
-	 *
-	 * @param hexString the hex string
-	 * @return the byte[]
-	 */
-	public static byte[] toByteString(String hexString) {
-		String hexVal = "0123456789ABCDEF";
-		byte[] out = new byte[hexString.length() / 2];
-
-		int n = hexString.length();
-
-		for (int i = 0; i < n; i += 2) {
-			// make a bit representation in an int of the hex value
-			int hn = hexVal.indexOf(hexString.charAt(i));
-			int ln = hexVal.indexOf(hexString.charAt(i + 1));
-
-			// now just shift the high order nibble and add them together
-			out[i / 2] = (byte) ((hn << 4) | ln);
-		}
-
-		return out;
+	public Object decode(String value, ByteConverter converter) throws RuntimeException {
+		byte[] decodeBytes = converter.decode(value);
+		return decode(decodeBytes);
 	}
-	
 	/**
 	 * Decode.
 	 *
@@ -410,8 +359,12 @@ public class ByteIdMap extends IdMap{
 		if (in.remaining() < 1)
 			throw new RuntimeException("DecodeExpeption - Remaining:" + in.remaining());
 
-		Object entity = null;
 		byte typ = in.get();
+		return decodeClazz(typ, in);
+	}
+	public Object decodeClazz(byte typ, ByteBuffer in) throws RuntimeException {
+		Object entity = null;
+
 		SendableEntityCreator eventCreater=null;
 		if(typ==ByteIdMap.DATATYPE_CLAZZ){
 			String clazz = (String) getDecodeObject(ByteIdMap.DATATYPE_CLAZZ, in);
@@ -486,7 +439,8 @@ public class ByteIdMap extends IdMap{
 			if(group==ByteIdMap.DATATYPE_STRING||
 					group==ByteIdMap.DATATYPE_BYTEARRAY||
 					group==ByteIdMap.DATATYPE_LIST||
-					group==ByteIdMap.DATATYPE_MAP){
+					group==ByteIdMap.DATATYPE_MAP||
+					group==ByteIdMap.DATATYPE_CHECK){
 				byte subgroup=getTyp(ByteIdMap.DATATYPE_STRING, typValue);
 				byte[] values;
 				int len=0;
@@ -518,20 +472,32 @@ public class ByteIdMap extends IdMap{
 						}
 					}
 					return list;
-				} else if (typValue == ByteIdMap.DATATYPE_MAP) {
+				} else if (group == ByteIdMap.DATATYPE_MAP) {
 					ByteBuffer child=ByteBuffer.wrap(values);
-					HashMap<Object, Object> map = new HashMap<Object, Object>();
+//					HashMap<Object, Object> map = new HashMap<Object, Object>();
+					AbstractMap.SimpleEntry<Object, Object> entry=null;
 					while (child.remaining() > 0) {
 						byte subType = child.get();
 						Object key = getDecodeObject(subType, child);
 						if (key != null) {
 							subType = child.get();
 							Object value = getDecodeObject(subType, child);
-							map.put(key, value);
+							entry=new AbstractMap.SimpleEntry<Object, Object>(key, value);
 						}
 					}
-					return map;
+					return entry;
+				} else if (group == ByteIdMap.DATATYPE_CHECK) {
+					ByteBuffer childBuffer = ByteBuffer.allocate(values.length-1);
+					childBuffer.put(values, 1, values.length-1);
+					childBuffer.flip();
+					Object obj = getDecodeObject(values[0], childBuffer);
+					if(childBuffer.remaining()>0){
+						in.position(in.position()-childBuffer.remaining());
+					}
+					return obj;
 				}
+			}else if(typValue==ByteIdMap.DATATYPE_ASSOC){
+				return decode(in);
 			}
 		}
 		return null;

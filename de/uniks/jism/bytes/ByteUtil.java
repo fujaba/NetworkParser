@@ -31,42 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import java.nio.ByteBuffer;
 
 public class ByteUtil {
-	public static String convertHexString(ByteBuffer value){
-		return convertHexString(value.array(), value.limit());
-	}
-	
-	public static String convertHexString(byte[] values, int size){
-		String hexVal = "0123456789ABCDEF";
-
-		StringBuilder returnValue = new StringBuilder(size*2);
-		if(values!=null){
-			for (int i = 0; i < size; i++) {
-				int value=values[i];
-				if(value<0){
-					value+=256;
-				}
-				returnValue.append(""+hexVal.charAt(value/16)+hexVal.charAt(value%16));
-			}
-		}
-		return returnValue.toString();
-	}
-	
-	public static String convertString(ByteBuffer byteBuffer){
-		StringBuilder returnValue=new StringBuilder();
-		if(byteBuffer!=null){
-			for (int i = 0; i < byteBuffer.limit(); i++) {
-				byte value = byteBuffer.get(i);
-				if (value <= 32 || value == 127) {
-					returnValue.append(ByteIdMap.SPLITTER);
-					returnValue.append((char) (value + ByteIdMap.SPLITTER + 1));
-				} else {
-					returnValue.append((char) value);
-				}
-			}
-		}
-		return returnValue.toString();
-	}
-	
 	/**
 	 * Gets the typ.
 	 *

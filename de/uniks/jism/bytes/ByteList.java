@@ -1,5 +1,27 @@
 package de.uniks.jism.bytes;
+/*
+Copyright (c) 2012 Stefan Lindel
 
+Permission is hereby granted,	 free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+The Software shall be used for Good, not Evil.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
 import java.nio.ByteBuffer;
 
 import de.uniks.jism.EntityList;
@@ -27,17 +49,19 @@ public class ByteList extends EntityList implements ByteItem {
 
 	@Override
 	public String toString(int indentFactor, int intent) {
-		return toString();
+		return toString(null);
 	}
 
 	@Override
 	public String toString() {
-		ByteBuffer buffer=getBytes(false);
-		return ByteUtil.convertString(buffer);
+		return toString(null);
 	}
 	
-	public String toHexString(){
-		return ByteUtil.convertHexString(getBytes(false));
+	public String toString(ByteConverter converter){
+		if(converter==null){
+			converter=new ByteConverterHTTP();
+		}
+		return converter.toString(this);
 	}
 
 	public ByteBuffer getBytes(boolean isDynamic) {
@@ -51,7 +75,9 @@ public class ByteList extends EntityList implements ByteItem {
 			if(value instanceof ByteItem){
 				child=((ByteItem)value).getBytes(isDynamic);
 			}
-			if(child!=null){
+			if(child==null){
+				buffer.put(ByteIdMap.DATATYPE_NULL);
+			}else{
 				byte[] array=new byte[child.limit()];
 				child.get(array);
 				buffer.put(array);
