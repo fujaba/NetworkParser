@@ -76,7 +76,7 @@ public class XMLTokener extends Tokener{
         	throw syntaxError("Parse only XMLEntity");
         }
         XMLEntity xmlEntity=(XMLEntity) entity;
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         c = nextClean();
         while (c >= ' ' && ",:]>/\\\"<;=# ".indexOf(c) < 0) {
             sb.append(c);
