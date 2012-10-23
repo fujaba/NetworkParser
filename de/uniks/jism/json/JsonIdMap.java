@@ -628,11 +628,11 @@ public class JsonIdMap extends IdMap {
 	 * @return true, if successful
 	 */
 	public boolean sendUpdateMsg(PropertyChangeEvent evt, JsonObject jsonObject) {
-		if(updatePropertylistener != null){
+		if(updatePropertylistener != null && evt!=null){
 			updatePropertylistener.propertyChange(evt);
 		}
 
-		if (this.updatelistener != null) {
+		if (this.updatelistener != null && evt!=null) {
 			return this.updatelistener.sendUpdateMsg(evt.getOldValue(), evt.getNewValue(), jsonObject);
 		}
 		return true;
