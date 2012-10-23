@@ -31,7 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -43,7 +42,7 @@ import java.util.Set;
 import de.uniks.jism.IdMap;
 import de.uniks.jism.IdMapFilter;
 import de.uniks.jism.ReferenceObject;
-import de.uniks.jism.event.JsonEntry;
+import de.uniks.jism.event.MapEntry;
 import de.uniks.jism.event.creater.DateCreator;
 import de.uniks.jism.event.creater.JsonArrayCreator;
 import de.uniks.jism.event.creater.JsonObjectCreator;
@@ -71,7 +70,7 @@ public class JsonIdMap extends IdMap {
 	/** The Constant MAINITEM. */
 	public static final String MAINITEM = "main";
 	
-	private Grammar grammar=new Grammar();
+	protected Grammar grammar=new Grammar();
 
 	/** The updatelistener. */
 	private MapUpdateListener updatelistener;
@@ -170,9 +169,9 @@ public class JsonIdMap extends IdMap {
 							// Maps
 							JsonArray subValues = new JsonArray();
 							Map<?, ?> map=(Map<?, ?>) value;
-							String packageName = JsonEntry.class.getName();
+							String packageName = MapEntry.class.getName();
 							for (Iterator<?> i = map.entrySet().iterator(); i.hasNext();) {
-								java.util.Map.Entry<?,?> mapEntry = (Entry<?, ?>) i.next();
+								Entry<?,?> mapEntry = (Entry<?, ?>) i.next();
 								JsonObject item=toJsonObject(mapEntry, filter, packageName);
 								if(item!=null){
 									subValues.add(item);
@@ -345,9 +344,6 @@ public class JsonIdMap extends IdMap {
 		}
 		return result;
 	}
-	
-
-
 
 	/**
 	 * Read json.
@@ -431,13 +427,11 @@ public class JsonIdMap extends IdMap {
 							String key = i.next();
 							Object entryValue= json.get(key);
 							if(entryValue instanceof JsonObject){
-								creator.setValue(target, property,
-										new AbstractMap.SimpleEntry<String, Object>(key, readJson((JsonObject) entryValue)),NEW);
+								creator.setValue(target, property, new MapEntry(key, readJson((JsonObject) entryValue)), NEW);
 							}else if(entryValue instanceof JsonArray){
-								creator.setValue(target, property,
-										new AbstractMap.SimpleEntry<String, Object>(key, readJson((JsonArray) entryValue)),NEW);
+								creator.setValue(target, property, new MapEntry(key, readJson((JsonArray) entryValue)), NEW);
 							}else{
-								creator.setValue(target, property,new AbstractMap.SimpleEntry<String, Object>(key, entryValue),NEW);
+								creator.setValue(target, property, new MapEntry(key, entryValue), NEW);
 							}
 						}
 					}else if (className == null && jsonId != null) {
@@ -492,6 +486,7 @@ public class JsonIdMap extends IdMap {
 		JsonSortedArray jsonArray = new JsonSortedArray();
 		jsonArray.setSortProp(property);
 		toJsonArray(object, jsonArray, new JsonFilter());
+		jsonArray.finishUnsorted();
 		return jsonArray;
 	}
 
@@ -573,7 +568,6 @@ public class JsonIdMap extends IdMap {
 	 */
 	private Object parseObject(Object entity, boolean aggregation,
 			JsonFilter filter, JsonArray jsonArray, SendableEntityCreator valueCreater, boolean typSave) {
-//		SendableEntityCreator valueCreater = getCreatorClass(entity);
 		if (valueCreater != null) {
 			if (aggregation) {
 				String subId = this.getKey(entity);
@@ -617,9 +611,6 @@ public class JsonIdMap extends IdMap {
 			this.updatelistener=(MapUpdateListener) listener;
 		}
 	}
-
-	
-	
 
 	/**
 	 * Send update msg from PropertyChange MapUpdater 

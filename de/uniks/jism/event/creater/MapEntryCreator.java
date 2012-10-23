@@ -29,11 +29,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 import java.util.Map.Entry;
 
-import de.uniks.jism.event.JsonEntry;
+import de.uniks.jism.event.MapEntry;
 import de.uniks.jism.interfaces.NoIndexCreator;
 import de.uniks.jism.interfaces.SendableEntityCreator;
 
-public class JsonEntryCreator implements SendableEntityCreator, NoIndexCreator{
+public class MapEntryCreator implements SendableEntityCreator, NoIndexCreator{
 	public static final String PROPERTY_KEY="key";
 	public static final String PROPERTY_VALUE="value";
 	private final String[] properties=new String[]{PROPERTY_KEY, PROPERTY_VALUE};
@@ -43,7 +43,7 @@ public class JsonEntryCreator implements SendableEntityCreator, NoIndexCreator{
 	}
 
 	public Object getSendableInstance(boolean prototyp) {
-		return new JsonEntry();
+		return new MapEntry();
 	}
 
 	public Object getValue(Object entity, String attribute) {
@@ -58,7 +58,7 @@ public class JsonEntryCreator implements SendableEntityCreator, NoIndexCreator{
 
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
-		JsonEntry entry=(JsonEntry) entity;
+		MapEntry entry=(MapEntry) entity;
 		if(PROPERTY_KEY.equalsIgnoreCase(attribute)){
 			entry.setKey(value);
 			return true;
