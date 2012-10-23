@@ -78,7 +78,7 @@ public class EntityUtil {
 		String       hhhh;
 		int          i;
 		int          len = string.length();
-		StringBuffer sb = new StringBuffer(len + 4);
+		StringBuilder sb = new StringBuilder(len + 4);
 
 		sb.append('"');
 		for (i = 0; i < len; i += 1) {
