@@ -1,5 +1,6 @@
 package de.uniks.jism;
 
+import de.uniks.jism.exceptions.TextParsingException;
 import de.uniks.jism.interfaces.BaseEntity;
 
 /*
@@ -135,16 +136,6 @@ public abstract class Tokener {
     }
     
     /**
-     * Next pos.
-     *
-     * @return the int
-     */
-    public int nextPos()  {
-    	next();
-    	return this.index;
-    }
-
-    /**
      * Get the next n characters.
      *
      * @param n     The number of characters to take.
@@ -190,7 +181,7 @@ public abstract class Tokener {
          while (pos < n) {
              chars[pos] = next();
              if (isEnd()) {
-                 throw syntaxError("Substring bounds error");                 
+            	 throw new TextParsingException("Substring bounds error", this);
              }
              pos += 1;
          }
@@ -231,7 +222,7 @@ public abstract class Tokener {
             case 0:
             case '\n':
             case '\r':
-                throw syntaxError("Unterminated string");
+                throw new TextParsingException("Unterminated string", this);
             case '\\':
                 c = next();
                 switch (c) {
@@ -260,7 +251,7 @@ public abstract class Tokener {
                 	sb.append(c);
                 	break;
                 default:
-                    throw syntaxError("Illegal escape.");
+                    throw new TextParsingException("Illegal escape.", this);
                 }
                 break;
             default:
@@ -291,7 +282,7 @@ public abstract class Tokener {
 	
 	    String value = sb.toString().trim();
 	    if (value.equals("")) {
-	        throw syntaxError("Missing value");
+	        throw new TextParsingException("Missing value", this);
 	    }
 	    return EntityUtil.stringToValue(value);
   }
@@ -313,88 +304,57 @@ public abstract class Tokener {
     }
     
     /**
-     * Step pos.
+     * Skip.
      *
-     * @param character the character
+     * @param search the The String of searchelements
+     * @param notSearch the String of elements with is not in string
+     * @param order the if the order of search element importent
      * @return true, if successful
      */
-    public boolean stepPos(char... character) {
-		boolean exit = false;
-		while (this.index < this.buffer.length() && !exit) {
-			for (char zeichen : character) {
-				if (this.buffer.charAt(this.index) == zeichen) {
-					exit = true;
+    public boolean stepPos(String search, String notSearch, boolean order, boolean notEscape){
+    	char[] character=search.toCharArray();
+    	char[] characterNot=notSearch.toCharArray();
+    	int z=0;
+    	int strLen=character.length;
+    	int len=this.buffer.length();
+    	char lastChar=0;
+    	if(this.index>0){
+    		lastChar=this.buffer.charAt(this.index-1);
+    	}
+		while ( this.index < len ) {
+			boolean loop=false;
+			char currentChar = getCurrentChar();
+			for (char zeichen : characterNot) {
+				if (currentChar == zeichen){
+					loop=true;
 					break;
 				}
 			}
-			if (!exit) {
-				next();
-			}
-		}
-		return exit;
-	}
-    
-	/**
-	 * Step pos.
-	 *
-	 * @param searchString the search string
-	 * @return true, if successful
-	 */
-	public boolean stepPos(String searchString) {
-		boolean exit = false;
-		int strLen=searchString.length();
-		int z=0;
-		while (this.index < this.buffer.length() && !exit) {
-			if (this.buffer.charAt(this.index) == searchString.charAt(z)) {
-					z++;
-					if(z>=strLen){
-						exit = true;
-						break;
+			if(!loop){
+				if(order){
+					if (currentChar == character[z]) {
+						z++;
+						if(z>=strLen){
+							return true;
+						}
+					}else{
+						z=0;
 					}
-			}else{
-				z=0;
-			}
-			if (!exit) {
-				next();
-			}
-		}
-		return exit;
-	}
-	
-	/**
-	 * Step pos but not.
-	 *
-	 * @param not the not
-	 * @param character the character
-	 * @return true, if successful
-	 */
-	public boolean stepPosButNot(char not, char... character) {
-		boolean exit = false;
-		while (this.index < this.buffer.length() && !exit) {
-			for (char zeichen : character) {
-				if (this.buffer.charAt(this.index) == zeichen&& this.buffer.charAt(this.index-1)!=not) {
-					exit = true;
-					break;
+				}else{
+					for (char zeichen : character) {
+						if (currentChar == zeichen && (!notEscape || lastChar!='\\')) {
+							return true;
+						}
+					}
 				}
 			}
-			if (!exit) {
-				next();
-			}
+			lastChar=currentChar;
+			next();
 		}
-		return exit;
-	}
-
-    /**
-     * Syntax error.
-     *
-     * @param message the message
-     * @return the runtime exception
-     */
-    public RuntimeException syntaxError(String message) {
-        return new RuntimeException(message + toString());
+		return false;
     }
-    
-    /**
+   
+ 	/**
      * Gets the index.
      *
      * @return the index
@@ -487,8 +447,9 @@ public abstract class Tokener {
     }
 
     public String getNextTag(){
-    	int startTag=nextPos();
-		if(stepPos(' ', '>', '/', '<')){
+    	next();
+    	int startTag=this.index;
+		if(stepPos(" >//<", "", false, true)){
 			return getPreviousString(startTag);	
 		}
 		return "";
