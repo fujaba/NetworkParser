@@ -8,6 +8,11 @@ public class TextParsingException extends RuntimeException{
 	private String tokenerMsg;
 	private int index;
 	
+	public TextParsingException(String message, int index) {
+		this.message = message;
+		this.index=index;
+	}
+	
 	public TextParsingException(String message, Tokener tokener) {
 		this.message = message;
 		this.tokenerMsg=tokener.toString();

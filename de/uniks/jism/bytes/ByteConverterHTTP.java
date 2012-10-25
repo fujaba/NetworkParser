@@ -55,7 +55,6 @@ public class ByteConverterHTTP extends ByteConverter{
 	 *
 	 * @param bytes the bytes
 	 * @return the object
-	 * @throws RuntimeException the runtime exception
 	 */
 	@Override
 	public byte[] decode(String value) {
