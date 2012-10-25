@@ -30,6 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import de.uniks.jism.Entity;
 import de.uniks.jism.EntityList;
 import de.uniks.jism.Tokener;
+import de.uniks.jism.exceptions.TextParsingException;
 import de.uniks.jism.interfaces.BaseEntity;
 
 public class XMLTokener extends Tokener{
@@ -70,10 +71,10 @@ public class XMLTokener extends Tokener{
         char c;
         
         if (nextClean() != '<') {
-            throw syntaxError("A XML text must begin with '<'");
+            throw new TextParsingException("A XML text must begin with '<'", this);
         }
         if(!(entity instanceof XMLEntity)){
-        	throw syntaxError("Parse only XMLEntity");
+        	throw new TextParsingException("Parse only XMLEntity", this);
         }
         XMLEntity xmlEntity=(XMLEntity) entity;
         StringBuilder sb = new StringBuilder();
@@ -103,7 +104,7 @@ public class XMLTokener extends Tokener{
             	}
         	}else if(c=='<'){
             	if(next()=='/'){
-            		stepPos('>');
+            		stepPos(">", "", false, false);
             		next();
             		lExit=true;
             	}else{

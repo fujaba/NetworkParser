@@ -266,7 +266,7 @@ public class XMLIdMap extends IdMap {
 		this.value=new XMLTokener(value);
 		this.stack.clear();
 		while (!this.value.isEnd()) {
-			if (this.value.stepPos(ITEMSTART)) {
+			if (this.value.stepPos(""+ITEMSTART, "", false, false)) {
 				String tag=getEntity();
 				result = findTag("", tag);
 			}
@@ -290,7 +290,7 @@ public class XMLIdMap extends IdMap {
 		boolean empty=true;
 		
 		if(!newPrefix.equals("&")){
-			return this.value.stepPos(ITEMSTART);
+			return this.value.stepPos(""+ITEMSTART, "", false, false);
 		}
 		if (this.value.getCurrentChar() != ITEMSTART) {
 			this.value.next();
@@ -403,7 +403,11 @@ public class XMLIdMap extends IdMap {
 				
 				while (!this.value.isEnd() && myStack.size()>0) {
 					if(this.value.getCurrentChar()==ENDTAG){
-						myStack.remove(this.stack.size() - 1);
+						String nextTag=this.value.getNextTag();
+						if(nextTag.length()<1||myStack.get(myStack.size() - 1).equalsIgnoreCase(nextTag)){
+							myStack.remove(myStack.size() - 1);
+							continue;
+						}
 					}
 					if(this.value.getCurrentChar()==ITEMSTART){
 						String nextTag=getEntity();
@@ -414,45 +418,6 @@ public class XMLIdMap extends IdMap {
 					}
 					this.value.next();
 				}
-//					if (this.value.getCurrentChar() == ITEMSTART) {
-//						String nextTag=this.value.getNextTag();
-//						if(nextTag.length()>0){
-//							stack.add(nextTag);
-//							continue;
-//						}
-//						if(this.value.getCurrentChar()==ENDTAG){
-//							if(stack.size()>0){
-//								int temp=this.value.getIndex();
-//								String endTag = this.value.getNextTag();
-//								if(stack.get(stack.size()-1).equals(endTag)){
-//									stack.remove(stack.size()-1);
-//								}else{
-//									stack.remove(stack.size()-1);
-//									this.value.setIndex(temp-1);
-//									continue;
-//								}
-//								
-//							}else{
-//								this.value.back();
-//								exit = true;
-//								break;
-//							}
-//						}
-//					}
-//					if (!exit) {
-//						this.value.next();
-//					}
-//				this.value.stepPos('/', '>');
-//				
-//				
-//				//FIXME
-//				if(tag.equals("!--")){
-//					// skip Comments
-//					this.value.stepPos('>');
-//				if(tag.equals("!--")){
-//					// skip Comments
-//					this.value.stepPos('>');
-//				}
 			}else{
 				if (!plainvalue) {
 					// Parse Attributes
@@ -460,13 +425,14 @@ public class XMLIdMap extends IdMap {
 						if (this.value.getCurrentChar() == ENDTAG) {
 							break;
 						}
-						int start = this.value.nextPos();
+						this.value.next();
+						int start = this.value.getIndex();
 						if (this.value.getCurrentChar() != ENDTAG) {
-							if (this.value.stepPos('=')) {
+							if (this.value.stepPos("=", "", false, false)) {
 								String key = this.value.getPreviousString(start);
 								this.value.skip(2);
 								start = this.value.getIndex();
-								if (this.value.stepPosButNot('\\', '"')) {
+								if (this.value.stepPos("\"", "", false, true)) {
 									String value = this.value.getPreviousString(start);
 									this.value.next();
 									entityCreater.setValue(entity, prefix + key, value, IdMap.NEW);
@@ -486,12 +452,13 @@ public class XMLIdMap extends IdMap {
 				if(this.value.getCurrentChar()==ENDTAG){
 					this.value.next();
 				}else{
-					int start = this.value.nextPos();
-					this.value.stepPosButNot('\\', ITEMSTART);
+					this.value.next();
+					int start = this.value.getIndex();
+					this.value.stepPos(""+ITEMSTART, "", false, true);
 					String value= this.value.getPreviousString(start);
 					entityCreater.setValue(entity, prefix, value, IdMap.NEW);
-					this.value.stepPos(ITEMSTART);
-					this.value.stepPos(ITEMEND);
+					this.value.stepPos(""+ITEMSTART, "", false, false);
+					this.value.stepPos(""+ITEMEND, "", false, false);
 				}
 				return null;
 			}
@@ -538,7 +505,7 @@ public class XMLIdMap extends IdMap {
 						this.stack.remove(this.stack.size() - 1);
 					}
 				}else if(this.value.getCurrentChar()==ENDTAG){
-					this.value.stepPos(ITEMEND);
+					this.value.stepPos(""+ITEMEND, "", false, false);
 					break;
 				}
 				this.value.next();
@@ -558,8 +525,8 @@ public class XMLIdMap extends IdMap {
 			tag=this.value.getNextTag();
 			for(String stopword : this.stopwords){
 				if(tag.startsWith(stopword)){
-					this.value.stepPos('>');
-					this.value.stepPos('<');
+					this.value.stepPos(">", "", false, false);
+					this.value.stepPos("<", "", false, false);
 					tag=null;
 					break;
 				}
