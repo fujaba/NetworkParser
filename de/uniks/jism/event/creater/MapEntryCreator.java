@@ -30,6 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import java.util.Map.Entry;
 
 import de.uniks.jism.event.MapEntry;
+import de.uniks.jism.event.MapSet;
 import de.uniks.jism.interfaces.NoIndexCreator;
 import de.uniks.jism.interfaces.SendableEntityCreator;
 
@@ -63,7 +64,19 @@ public class MapEntryCreator implements SendableEntityCreator, NoIndexCreator{
 			entry.setKey(value);
 			return true;
 		}else if(PROPERTY_VALUE.equalsIgnoreCase(attribute)){
-			entry.setValue(value);
+			if(value instanceof Entry<?,?>){
+				Object map = entry.getValue();
+				if(map==null){
+					map=new MapSet();
+				}
+				if(map instanceof MapSet){
+					((MapSet)map).add(value);
+				}
+				entry.setValue(map);
+			}else{
+				entry.setValue(value);	
+			}
+			
 			return true;
 		}
 		return false;

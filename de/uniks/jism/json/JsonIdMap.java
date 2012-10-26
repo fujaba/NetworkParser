@@ -46,6 +46,7 @@ import de.uniks.jism.event.MapEntry;
 import de.uniks.jism.event.creater.DateCreator;
 import de.uniks.jism.event.creater.JsonArrayCreator;
 import de.uniks.jism.event.creater.JsonObjectCreator;
+import de.uniks.jism.event.creater.MapEntryCreator;
 import de.uniks.jism.interfaces.MapUpdateListener;
 import de.uniks.jism.interfaces.NoIndexCreator;
 import de.uniks.jism.interfaces.SendableEntityCreator;
@@ -88,6 +89,7 @@ public class JsonIdMap extends IdMap {
 		this.addCreator(new DateCreator());
 		this.addCreator(new JsonObjectCreator());
 		this.addCreator(new JsonArrayCreator());
+		this.addCreator(new MapEntryCreator());
 	}
 
 	/**

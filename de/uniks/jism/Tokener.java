@@ -311,7 +311,7 @@ public abstract class Tokener {
      * @param order the if the order of search element importent
      * @return true, if successful
      */
-    public boolean stepPos(String search, String notSearch, boolean order, boolean notEscape){
+    public boolean stepPos2(String search, String notSearch, boolean order, boolean notEscape){
     	char[] character=search.toCharArray();
     	char[] characterNot=notSearch.toCharArray();
     	int z=0;
@@ -353,7 +353,50 @@ public abstract class Tokener {
 		}
 		return false;
     }
-   
+
+    /**
+     * Skip.
+     *
+     * @param search the The String of searchelements
+     * @param notSearch the String of elements with is not in string
+     * @param order the if the order of search element importent
+     * @return true, if successful
+     */
+    public boolean stepPos(String search, boolean order, boolean notEscape){
+    	char[] character=search.toCharArray();
+    	int z=0;
+    	int strLen=character.length;
+    	int len=this.buffer.length();
+    	char lastChar=0;
+    	if(this.index>0){
+    		lastChar=this.buffer.charAt(this.index-1);
+    	}
+		while ( this.index < len ) {
+			char currentChar = getCurrentChar();
+			if(order){
+				if (currentChar == character[z]) {
+					z++;
+					if(z>=strLen){
+						return true;
+					}
+				}else{
+					z=0;
+				}
+			}else{
+				for (char zeichen : character) {
+					if (currentChar == zeichen && (!notEscape || lastChar!='\\')) {
+						return true;
+					}
+				}
+			}
+			lastChar=currentChar;
+			next();
+		}
+		return false;
+    }
+
+    
+    
  	/**
      * Gets the index.
      *
@@ -430,6 +473,26 @@ public abstract class Tokener {
     	return this.buffer.substring(start, end);
     }
     
+    
+    public String substringRelative(int start, int end, boolean realtive){
+    	//FIXME
+    	if(!realtive){
+        	if(end==-1){
+        		return this.buffer.substring(start);
+        	}
+        	return this.buffer.substring(start, end);
+    	}
+		if (end == -1) {
+			end = this.buffer.length() - this.index;
+		} else if (this.index + end < 0 || end == 0) {
+			return "";
+		} else if (this.index + end > this.buffer.length()) {
+			end = this.buffer.length() - this.index;
+		}
+
+		return this.buffer.substring(start, end);
+	}
+    
     /**
      * Check values.
      *
@@ -449,7 +512,7 @@ public abstract class Tokener {
     public String getNextTag(){
     	next();
     	int startTag=this.index;
-		if(stepPos(" >//<", "", false, true)){
+		if(stepPos(" >//<", false, true)){
 			return getPreviousString(startTag);	
 		}
 		return "";

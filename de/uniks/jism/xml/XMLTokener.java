@@ -104,7 +104,7 @@ public class XMLTokener extends Tokener{
             	}
         	}else if(c=='<'){
             	if(next()=='/'){
-            		stepPos(">", "", false, false);
+            		stepPos(">", false, false);
             		next();
             		lExit=true;
             	}else{
