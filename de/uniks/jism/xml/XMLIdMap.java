@@ -266,7 +266,7 @@ public class XMLIdMap extends IdMap {
 		this.value=new XMLTokener(value);
 		this.stack.clear();
 		while (!this.value.isEnd()) {
-			if (this.value.stepPos(""+ITEMSTART, "", false, false)) {
+			if (this.value.stepPos(""+ITEMSTART, false, false)) {
 				String tag=getEntity();
 				result = findTag("", tag);
 			}
@@ -290,7 +290,7 @@ public class XMLIdMap extends IdMap {
 		boolean empty=true;
 		
 		if(!newPrefix.equals("&")){
-			return this.value.stepPos(""+ITEMSTART, "", false, false);
+			return this.value.stepPos(""+ITEMSTART, false, false);
 		}
 		if (this.value.getCurrentChar() != ITEMSTART) {
 			this.value.next();
@@ -428,11 +428,11 @@ public class XMLIdMap extends IdMap {
 						this.value.next();
 						int start = this.value.getIndex();
 						if (this.value.getCurrentChar() != ENDTAG) {
-							if (this.value.stepPos("=", "", false, false)) {
+							if (this.value.stepPos("=", false, false)) {
 								String key = this.value.getPreviousString(start);
 								this.value.skip(2);
 								start = this.value.getIndex();
-								if (this.value.stepPos("\"", "", false, true)) {
+								if (this.value.stepPos("\"", false, true)) {
 									String value = this.value.getPreviousString(start);
 									this.value.next();
 									entityCreater.setValue(entity, prefix + key, value, IdMap.NEW);
@@ -454,11 +454,11 @@ public class XMLIdMap extends IdMap {
 				}else{
 					this.value.next();
 					int start = this.value.getIndex();
-					this.value.stepPos(""+ITEMSTART, "", false, true);
+					this.value.stepPos(""+ITEMSTART, false, true);
 					String value= this.value.getPreviousString(start);
 					entityCreater.setValue(entity, prefix, value, IdMap.NEW);
-					this.value.stepPos(""+ITEMSTART, "", false, false);
-					this.value.stepPos(""+ITEMEND, "", false, false);
+					this.value.stepPos(""+ITEMSTART, false, false);
+					this.value.stepPos(""+ITEMEND, false, false);
 				}
 				return null;
 			}
@@ -505,7 +505,7 @@ public class XMLIdMap extends IdMap {
 						this.stack.remove(this.stack.size() - 1);
 					}
 				}else if(this.value.getCurrentChar()==ENDTAG){
-					this.value.stepPos(""+ITEMEND, "", false, false);
+					this.value.stepPos(""+ITEMEND, false, false);
 					break;
 				}
 				this.value.next();
@@ -525,8 +525,8 @@ public class XMLIdMap extends IdMap {
 			tag=this.value.getNextTag();
 			for(String stopword : this.stopwords){
 				if(tag.startsWith(stopword)){
-					this.value.stepPos(">", "", false, false);
-					this.value.stepPos("<", "", false, false);
+					this.value.stepPos(">", false, false);
+					this.value.stepPos("<", false, false);
 					tag=null;
 					break;
 				}
