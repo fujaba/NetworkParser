@@ -38,6 +38,7 @@ import java.util.Set;
 import de.uniks.jism.interfaces.IdMapCounter;
 import de.uniks.jism.interfaces.SendableEntity;
 import de.uniks.jism.interfaces.SendableEntityCreator;
+import de.uniks.jism.interfaces.TypList;
 import de.uniks.jism.json.UpdateListener;
 
 /**
@@ -76,6 +77,8 @@ public class IdMap implements Map<String, Object> {
 	
 	/** The update listener. */
 	protected UpdateListener updateListener;
+	
+	protected ArrayList<TypList> typList;
 	
 	/**
 	 * Instantiates a new id map.
@@ -205,8 +208,24 @@ public class IdMap implements Map<String, Object> {
 			this.values.put(jsonId, object);
 			this.keys.put(object, jsonId);
 			addListener(object);
+			addTypList(object);
 		}
 		return object;
+	}
+	
+	private void addTypList(Object object){
+		if(this.typList!=null){
+			for(TypList list : this.typList){
+				list.addObject(object);
+			}
+		}
+	}
+	
+	public void addToTypList(TypList typList){
+		if(typList==null){
+			this.typList = new ArrayList<TypList>();
+		}
+		this.typList.add(typList);
 	}
 
 	public UpdateListener getUpdateListener(){
@@ -258,9 +277,13 @@ public class IdMap implements Map<String, Object> {
 			}
 		}
 		if (key != null) {
-			
 			this.keys.remove(oldValue);
 			this.values.remove(key);
+			if(this.typList!=null){
+				for(TypList list : this.typList){
+					list.removeObject(oldValue);
+				}
+			}
 			return true;
 		}
 		return false;
