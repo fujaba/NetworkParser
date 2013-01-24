@@ -1,7 +1,9 @@
-package de.uniks.jism.event.creater;
-
+package de.uniks.jism.event.creator;
+import de.uniks.jism.Tokener;
+import de.uniks.jism.event.StyleFormat;
+import de.uniks.jism.interfaces.SendableEntityCreator;
 /*
-Copyright (c) 2012, Stefan Lindel
+Copyright (c) 2013, Stefan Lindel
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -28,55 +30,46 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-import java.util.Date;
 
-import de.uniks.jism.interfaces.NoIndexCreator;
-import de.uniks.jism.interfaces.SendableEntityCreator;
-
-/**
- * The Class DateCreator.
- */
-public class DateCreator implements SendableEntityCreator, NoIndexCreator{
-	
-	/** The Constant VALUE. */
-	public static final String VALUE="value";
-	
-	/*
-	 * return the Properties
-	 */
+public class StyleFormatCreator implements SendableEntityCreator {
+	/** The properties. */
+	private final String[] properties = new String[] { StyleFormat.PROPERTY_FONTFAMILY,  StyleFormat.PROPERTY_FONTSIZE,  StyleFormat.PROPERTY_BOLD,  StyleFormat.PROPERTY_ITALIC };
 	@Override
 	public String[] getProperties() {
-		return new String[]{VALUE};
+		return properties;
 	}
 
-	/*
-	 * Create new Instance of Date
-	 */
 	@Override
-	public Object getSendableInstance(boolean reference) {
-		return new Date();
+	public Object getSendableInstance(boolean prototyp) {
+		return new StyleFormat();
 	}
 
-	/*
-	 * Getter for java.util.Date
-	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if(VALUE.equals(attribute)){
-			return new Long(((Date)entity).getTime());
+		return ((StyleFormat)entity).get(attribute);
+	}
+
+	@Override
+	public boolean setValue(Object entity, String attribute, Object value,
+			String type) {
+		return ((StyleFormat)entity).set(attribute, value);
+	}
+
+	public StyleFormat getNewFormat(StyleFormat format, String tag, Tokener value) {
+		if("b".equalsIgnoreCase(tag)){
+			if(!format.isBold()){
+				StyleFormat newFormat = clone(format);
+				newFormat.setBold(true);
+				return newFormat;
+			}
 		}
 		return null;
 	}
-
-	/*
-	 * Setter for java.util.Date
-	 */
-	@Override
-	public boolean setValue(Object entity, String attribute, Object value, String typ) {
-		if(VALUE.equals(attribute)){
-			((Date)entity).setTime((Long) value);
-			return true;
+	public StyleFormat clone(StyleFormat format){
+		StyleFormat newFormat = (StyleFormat) getSendableInstance(false);
+		for(String property : getProperties()){
+			newFormat.set(property, format.get(property));
 		}
-		return false;
+		return newFormat;
 	}
 }

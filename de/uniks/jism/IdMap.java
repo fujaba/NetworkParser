@@ -44,7 +44,7 @@ import de.uniks.jism.json.UpdateListener;
 /**
  * The Class IdMap.
  */
-public class IdMap implements Map<String, Object> {	
+public class IdMap extends AbstractIdMap implements Map<String, Object> {	
 	/** The Constant ID. */
 	public static final String ID="id";
 
@@ -61,16 +61,10 @@ public class IdMap implements Map<String, Object> {
 	public static final String PRIO = "prio";
 	
 	/** The keys. */
-	protected HashMap<Object, String> keys;
+	protected Map<Object, String> keys;
 	
 	/** The values. */
-	protected HashMap<String, Object> values;
-	
-	/** The creators. */
-	protected HashMap<String, SendableEntityCreator> creators;
-	
-	/** The parent. */
-	protected IdMap parent;
+	protected Map<String, Object> values;
 	
 	/** The counter. */
 	private IdMapCounter counter;
@@ -78,15 +72,18 @@ public class IdMap implements Map<String, Object> {
 	/** The update listener. */
 	protected UpdateListener updateListener;
 	
+	/** The parent. */
+	protected IdMap parent;
+
 	protected ArrayList<TypList> typList;
 	
 	/**
 	 * Instantiates a new id map.
 	 */
 	public IdMap() {
+		super();
 		this.keys = new HashMap<Object, String>();
 		this.values = new HashMap<String, Object>();
-		this.creators = new HashMap<String, SendableEntityCreator>();
 	}
 
 	/**
@@ -227,13 +224,7 @@ public class IdMap implements Map<String, Object> {
 		}
 		this.typList.add(typList);
 	}
-
-	public UpdateListener getUpdateListener(){
-		if (this.updateListener == null) {
-			this.updateListener = new UpdateListener(this);
-		}
-		return this.updateListener;
-	}
+	
 	/**
 	 * @param check for add Listener to object 
 	 * @return success of adding
@@ -244,6 +235,13 @@ public class IdMap implements Map<String, Object> {
 					IdMap.UPDATE, getUpdateListener());
 		}
 		return false;
+	}
+	
+	public UpdateListener getUpdateListener(){
+		if (this.updateListener == null) {
+			this.updateListener = new UpdateListener(this);
+		}
+		return this.updateListener;
 	}
 
 	/**
@@ -311,43 +309,10 @@ public class IdMap implements Map<String, Object> {
 		if (this.parent != null) {
 			return this.parent.getCreatorClasses(className);
 		}
-		return this.creators.get(className);
+		return super.getCreatorClasses(className);
 	}
 
-	/**
-	 * Gets the creator class.
-	 *
-	 * @param reference the reference
-	 * @return the creator class
-	 */
-	public SendableEntityCreator getCreatorClass(Object reference) {
-		if(reference==null){
-			return null;
-		}
-		return getCreatorClasses(reference.getClass().getName());
-	}
 
-	public SendableEntityCreator getCreatorClassName(String clazz) {
-		clazz="."+clazz;
-		for(Iterator<Entry<String, SendableEntityCreator>> i = this.creators.entrySet().iterator();i.hasNext();){
-			Entry<String, SendableEntityCreator> entry = i.next();
-			if(entry.getKey().endsWith(clazz)){
-				return entry.getValue();
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Clone object.
-	 *
-	 * @param reference the reference
-	 * @return the object
-	 */
-	public Object cloneObject(Object reference) {
-		return cloneObject(reference, new CloneFilter(CloneFilter.SIMPLE));
-	}
-	
 	/**
 	 * Clone object.
 	 *
@@ -418,6 +383,17 @@ public class IdMap implements Map<String, Object> {
 		return newObject;
 	}
 
+
+	@Override
+	public void addCreator(String className, SendableEntityCreator creator) {
+		if (this.parent != null) {
+			this.parent.addCreator(className, creator);
+			return;
+		}
+		super.addCreator(className, creator);
+	}
+	
+
 	/**
 	 * Adds the creator.
 	 *
@@ -428,25 +404,8 @@ public class IdMap implements Map<String, Object> {
 		if (this.parent != null) {
 			return this.parent.addCreator(createrClass);
 		} 
-		Object reference = createrClass.getSendableInstance(true);
-		if(reference == null){
-			return false;
-		}
-		addCreator(reference.getClass().getName(), createrClass);
-		return true;
+		return super.addCreator(createrClass);
 	}
-	
-	/**
-	 * add a Creator to list
-	 *
-	 * @param className the class name
-	 * @param creator the creator
-	 */
-	public void addCreator(String className, SendableEntityCreator creator)
-	{
-	   this.creators.put(className, creator);
-	}
-
 	
 	/**
 	 * Start carbage collection.
@@ -531,13 +490,6 @@ public class IdMap implements Map<String, Object> {
 		}
 		return result;
 	}
-   public void addCreator(Set<SendableEntityCreator> creatorSet)
-   {
-      for (SendableEntityCreator sendableEntityCreator : creatorSet)
-      {
-         addCreator(sendableEntityCreator);
-      }
-   }
 	
 	public boolean isEmpty() {
 		if (this.parent != null) {

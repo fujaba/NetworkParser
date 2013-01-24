@@ -43,10 +43,10 @@ import de.uniks.jism.IdMap;
 import de.uniks.jism.IdMapFilter;
 import de.uniks.jism.ReferenceObject;
 import de.uniks.jism.event.MapEntry;
-import de.uniks.jism.event.creater.DateCreator;
-import de.uniks.jism.event.creater.JsonArrayCreator;
-import de.uniks.jism.event.creater.JsonObjectCreator;
-import de.uniks.jism.event.creater.MapEntryCreator;
+import de.uniks.jism.event.creator.DateCreator;
+import de.uniks.jism.event.creator.JsonArrayCreator;
+import de.uniks.jism.event.creator.JsonObjectCreator;
+import de.uniks.jism.event.creator.MapEntryCreator;
 import de.uniks.jism.interfaces.MapUpdateListener;
 import de.uniks.jism.interfaces.NoIndexCreator;
 import de.uniks.jism.interfaces.SendableEntityCreator;
@@ -263,6 +263,14 @@ public class JsonIdMap extends IdMap {
 	 */
 	public Object readJson(JsonObject jsonObject, boolean readId) {
 		LinkedHashSet<ReferenceObject> refs = new LinkedHashSet<ReferenceObject>();
+		if(jsonObject.has(UPDATE) || jsonObject.has(REMOVE)){
+			// Must be an update
+			if(executeUpdateMsg(jsonObject)){
+				String id = jsonObject.getString(JsonIdMap.ID);
+				return getObject(id);
+			}
+			return null;
+		}
 		Object mainItem = readJson(jsonObject, refs, readId);
 		for (ReferenceObject ref : refs) {
 			ref.execute();

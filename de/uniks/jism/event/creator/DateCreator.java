@@ -1,4 +1,5 @@
-package de.uniks.jism.event.creater;
+package de.uniks.jism.event.creator;
+
 /*
 Copyright (c) 2012, Stefan Lindel
 All rights reserved.
@@ -27,30 +28,55 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+import java.util.Date;
+
 import de.uniks.jism.interfaces.NoIndexCreator;
 import de.uniks.jism.interfaces.SendableEntityCreator;
-import de.uniks.jism.json.JsonArray;
 
-public class JsonArrayCreator implements SendableEntityCreator, NoIndexCreator{
-	private final String[] properties= new String[]{"VALUE"};
+/**
+ * The Class DateCreator.
+ */
+public class DateCreator implements SendableEntityCreator, NoIndexCreator{
+	
+	/** The Constant VALUE. */
+	public static final String VALUE="value";
+	
+	/*
+	 * return the Properties
+	 */
 	@Override
 	public String[] getProperties() {
-		return this.properties;
+		return new String[]{VALUE};
 	}
 
+	/*
+	 * Create new Instance of Date
+	 */
 	@Override
-	public Object getSendableInstance(boolean prototyp) {
-		return new JsonArray();
+	public Object getSendableInstance(boolean reference) {
+		return new Date();
 	}
 
+	/*
+	 * Getter for java.util.Date
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		return entity.toString();
+		if(VALUE.equals(attribute)){
+			return new Long(((Date)entity).getTime());
+		}
+		return null;
 	}
 
+	/*
+	 * Setter for java.util.Date
+	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String typ) {
-		return ((JsonArray)entity).setAllValue((String) value);
+		if(VALUE.equals(attribute)){
+			((Date)entity).setTime((Long) value);
+			return true;
+		}
+		return false;
 	}
-
 }
