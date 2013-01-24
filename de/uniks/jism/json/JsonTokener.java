@@ -51,7 +51,7 @@ public class JsonTokener extends Tokener{
 		switch (c) {
 		case '"':
 		case '\'':
-			return nextString(c);
+			return nextString(c, false);
 		case '{':
 			back();
 			BaseEntity element = creator.getNewObject();
@@ -181,7 +181,8 @@ public class JsonTokener extends Tokener{
 			entity.put(key, nextValue(entity));
 
 			// Pairs are separated by ','. We will also tolerate ';'.
-			switch (nextClean()) {
+			char nextClean = nextClean();
+			switch (nextClean) {
 			case ';':
 			case ',':
 				if (nextClean() == '}') {
@@ -192,7 +193,8 @@ public class JsonTokener extends Tokener{
 			case '}':
 				return;
 			default:
-				throw new TextParsingException("Expected a ',' or '}' got a " + nextClean(), this);
+				
+				throw new TextParsingException("Expected a ',' or '}' got a " + nextClean, this);
 			}
 		}
 	}

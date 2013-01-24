@@ -1,4 +1,4 @@
-package de.uniks.jism.event.creater;
+package de.uniks.jism.event.creator;
 /*
 Copyright (c) 2012, Stefan Lindel
 All rights reserved.

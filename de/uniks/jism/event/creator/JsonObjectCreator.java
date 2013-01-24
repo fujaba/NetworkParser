@@ -1,4 +1,4 @@
-package de.uniks.jism.event.creater;
+package de.uniks.jism.event.creator;
 /*
 Copyright (c) 2012, Stefan Lindel
 All rights reserved.
@@ -27,59 +27,30 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-import java.util.Map.Entry;
-
-import de.uniks.jism.event.MapEntry;
-import de.uniks.jism.event.MapSet;
 import de.uniks.jism.interfaces.NoIndexCreator;
 import de.uniks.jism.interfaces.SendableEntityCreator;
+import de.uniks.jism.json.JsonObject;
 
-public class MapEntryCreator implements SendableEntityCreator, NoIndexCreator{
-	public static final String PROPERTY_KEY="key";
-	public static final String PROPERTY_VALUE="value";
-	private final String[] properties=new String[]{PROPERTY_KEY, PROPERTY_VALUE};
-	
+public class JsonObjectCreator implements SendableEntityCreator, NoIndexCreator{
+	private final String[] properties= new String[]{"VALUE"};
+	@Override
 	public String[] getProperties() {
-		return properties;
+		return this.properties;
 	}
 
+	@Override
 	public Object getSendableInstance(boolean prototyp) {
-		return new MapEntry();
+		return new JsonObject();
 	}
 
+	@Override
 	public Object getValue(Object entity, String attribute) {
-		Entry<?,?> obj=((Entry<?,?>)entity);
-		if(PROPERTY_KEY.equalsIgnoreCase(attribute)){
-			return obj.getKey();
-		}else if(PROPERTY_VALUE.equalsIgnoreCase(attribute)){
-			return obj.getValue();
-		}
-		return null;
+		return entity.toString();
 	}
 
-	public boolean setValue(Object entity, String attribute, Object value,
-			String type) {
-		MapEntry entry=(MapEntry) entity;
-		if(PROPERTY_KEY.equalsIgnoreCase(attribute)){
-			entry.setKey(value);
-			return true;
-		}else if(PROPERTY_VALUE.equalsIgnoreCase(attribute)){
-			if(value instanceof Entry<?,?>){
-				Object map = entry.getValue();
-				if(map==null){
-					map=new MapSet();
-				}
-				if(map instanceof MapSet){
-					((MapSet)map).add(value);
-				}
-				entry.setValue(map);
-			}else{
-				entry.setValue(value);	
-			}
-			
-			return true;
-		}
-		return false;
+	@Override
+	public boolean setValue(Object entity, String attribute, Object value, String typ) {
+		return ((JsonObject)entity).setAllValue((String) value);
 	}
 
 }

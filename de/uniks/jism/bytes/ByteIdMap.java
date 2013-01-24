@@ -39,7 +39,7 @@ import de.uniks.jism.IdMap;
 import de.uniks.jism.event.BasicMessage;
 import de.uniks.jism.event.MapEntry;
 import de.uniks.jism.event.UnknownMessage;
-import de.uniks.jism.event.creater.BasicMessageCreator;
+import de.uniks.jism.event.creator.BasicMessageCreator;
 import de.uniks.jism.exceptions.TextParsingException;
 import de.uniks.jism.interfaces.ByteEntityCreator;
 import de.uniks.jism.interfaces.ByteItem;
