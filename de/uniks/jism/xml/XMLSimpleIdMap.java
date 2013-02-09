@@ -33,8 +33,7 @@ import java.util.HashSet;
 import de.uniks.jism.IdMap;
 import de.uniks.jism.ReferenceObject;
 import de.uniks.jism.Tokener;
-import de.uniks.jism.event.StyleFormat;
-import de.uniks.jism.event.creator.StyleFormatCreator;
+import de.uniks.jism.interfaces.XMLGrammar;
 
 public class XMLSimpleIdMap extends IdMap{
 	/** The Constant ENDTAG. */
@@ -82,24 +81,27 @@ public class XMLSimpleIdMap extends IdMap{
 		this.stopwords.add("!DOCTYPE");
 	}
 
-	public Object decode(String value) {
+	public Object decode(String value, XMLGrammar factory) {
 		Object result = null;
+		Object temp = null;
 		this.value=new XMLTokener(value);
+		
 		this.stack.clear();
 		while (!this.value.isEnd()) {
 			if (this.value.stepPos(""+ITEMSTART, false, false)) {
-				XMLEntity entity=getEntity();
+				XMLEntity entity=getEntity(factory);
 				if(entity!=null){
-					entity.setStyle(new StyleFormat());
-					result = findTag(entity, new StyleFormatCreator());
+					factory.initEntity(entity);
+					temp = findTag(entity, factory);
 				}
 			}
-			if (result != null && !(result instanceof String)) {
-				break;
+			if (temp != null && !(temp instanceof String)) {
+				result = temp;
 			}
 		}
 		return result;
 	}
+	
 	
 	/**
 	 * Find tag.
@@ -110,11 +112,31 @@ public class XMLSimpleIdMap extends IdMap{
 	 * @param styleFormatCreator 
 	 * @return the object
 	 */
-	private XMLEntity findTag(XMLEntity entity, StyleFormatCreator styleFormatCreator){
+	private XMLEntity findTag(XMLEntity entity, XMLGrammar styleFormatCreator){
 		if (entity != null) {
-			
-			
 			// Parsing attributes
+			char myChar=this.value.getCurrentChar();
+			while(myChar!=ITEMEND){
+				if(myChar==SPACE){
+					value.next();
+				}
+				int start=this.value.getIndex();
+				if (this.value.stepPos("=>", false, false)) {
+					myChar=this.value.getCurrentChar();
+					if(myChar=='='){
+						String key = this.value.substring(start, -1);
+						this.value.skip(2);
+						start = this.value.getIndex();
+						if (this.value.stepPos("\"", false, true)) {
+							String value = this.value.substring(start, -1);
+							this.value.next();
+							styleFormatCreator.setValue(entity, key, value, IdMap.NEW);
+						}						
+					}
+				}else{
+					break;
+				}
+			}
 
 			// Add to StackTrace
 			this.stack.add(new ReferenceObject(entity.getTag(), entity));
@@ -123,7 +145,10 @@ public class XMLSimpleIdMap extends IdMap{
 			if(value.stepPos("/>", false, false)){
 				if(value.getCurrentChar()=='/'){ 
 					stack.remove(stack.size()-1);
-					skipEntity();
+					value.next();
+					String tag = value.getNextTag();
+					styleFormatCreator.endChild(tag);
+//					skipEntity();
 					return entity;
 				}
 
@@ -131,20 +156,19 @@ public class XMLSimpleIdMap extends IdMap{
 				// Skip >
 				value.next();
 				String strvalue = value.nextString(quote, true);
-				if(strvalue.length()>0){
-					value.back();
-				}
+				
+				// BACK TO <
+				value.back();
 				strvalue = strvalue.trim();
 				XMLEntity newTag;
 				if (this.value.getCurrentChar()==ITEMSTART) {
 					// show next Tag
 					XMLEntity child = null;
 					do{
-						StyleFormat temp =null;
-						StyleFormat newFormat =null;
-						newFormat = entity.getStyle();
+//						StyleFormat newFormat =null;
+//						newFormat = entity.getStyle();
 						do{
-							newTag=getEntity();
+							newTag=getEntity(styleFormatCreator);
 							if(newTag==null ){
 								entity.setValue(strvalue);
 								stack.remove(stack.size()-1);
@@ -154,25 +178,23 @@ public class XMLSimpleIdMap extends IdMap{
 							if(newTag.getTag().isEmpty()){
 								entity.setValue(newTag.getValue());
 								skipEntity();
-								newTag=getEntity();
-								if(newTag==null ){
+								newTag=getEntity(styleFormatCreator);
+								if(newTag==null){
 									stack.remove(stack.size()-1);
 									skipEntity();
 								}
-								entity.setStyle(newFormat);
 								return entity;
 							}
-							temp = styleFormatCreator.getNewFormat(newFormat, newTag.getTag(), value);
-							if(temp!=null){
-								newFormat = temp;
+							if(styleFormatCreator.parseChild(entity, newTag, value)){
 								// Skip >
 								value.next();
+							}else{
+								break;
 							}
-						}while(temp != null);
-						newTag.setStyle(newFormat);
+						}while(newTag != null);
 						child = findTag(newTag, styleFormatCreator);
 						if(child!=null){
-							entity.addChild(child);
+							styleFormatCreator.addChildren(entity, child);
 						}
 					}while(child!=null);
 				}
@@ -192,8 +214,13 @@ public class XMLSimpleIdMap extends IdMap{
 	 * @param start the start
 	 * @return the entity
 	 */
-	protected XMLEntity getEntity() {
-		XMLEntity entity=new XMLEntity();
+	protected XMLEntity getEntity(XMLGrammar factory) {
+		XMLEntity entity;
+		if(factory!=null){
+			entity=(XMLEntity) factory.getSendableInstance(false);
+		}else{
+			entity=new XMLEntity();
+		}
 		String tag=null;
 		boolean isEmpty=true;
 		do{
