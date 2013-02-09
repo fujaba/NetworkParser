@@ -2,6 +2,8 @@ package de.uniks.jism.event.creator;
 import de.uniks.jism.Tokener;
 import de.uniks.jism.event.StyleFormat;
 import de.uniks.jism.interfaces.SendableEntityCreator;
+import de.uniks.jism.interfaces.XMLGrammar;
+import de.uniks.jism.xml.XMLEntity;
 /*
 Copyright (c) 2013, Stefan Lindel
 All rights reserved.
@@ -31,7 +33,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-public class StyleFormatCreator implements SendableEntityCreator {
+public class StyleFormatCreator implements SendableEntityCreator, XMLGrammar{
 	/** The properties. */
 	private final String[] properties = new String[] { StyleFormat.PROPERTY_FONTFAMILY,  StyleFormat.PROPERTY_FONTSIZE,  StyleFormat.PROPERTY_BOLD,  StyleFormat.PROPERTY_ITALIC };
 	@Override
@@ -55,21 +57,40 @@ public class StyleFormatCreator implements SendableEntityCreator {
 		return ((StyleFormat)entity).set(attribute, value);
 	}
 
-	public StyleFormat getNewFormat(StyleFormat format, String tag, Tokener value) {
-		if("b".equalsIgnoreCase(tag)){
-			if(!format.isBold()){
-				StyleFormat newFormat = clone(format);
-				newFormat.setBold(true);
-				return newFormat;
-			}
-		}
-		return null;
-	}
+	
 	public StyleFormat clone(StyleFormat format){
 		StyleFormat newFormat = (StyleFormat) getSendableInstance(false);
 		for(String property : getProperties()){
 			newFormat.set(property, format.get(property));
 		}
 		return newFormat;
+	}
+
+	public boolean parseChild(XMLEntity entity, XMLEntity child, Tokener value) {
+		child.setStyle(clone(entity.getStyle()));
+		
+		if("b".equalsIgnoreCase(child.getTag())){
+			StyleFormat format = entity.getStyle();
+			if(!format.isBold()){
+				format.setBold(true);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean initEntity(XMLEntity entity) {
+		entity.setStyle(new StyleFormat());
+		return true;
+	}
+
+	@Override
+	public void addChildren(XMLEntity parent, XMLEntity child) {
+		parent.addChild(child);
+	}
+
+	@Override
+	public void endChild(String tag) {
 	}
 }
