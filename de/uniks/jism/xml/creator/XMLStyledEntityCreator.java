@@ -1,4 +1,8 @@
-package de.uniks.jism.event.creator;
+package de.uniks.jism.xml.creator;
+import de.uniks.jism.Tokener;
+import de.uniks.jism.interfaces.SendableEntityCreator;
+import de.uniks.jism.interfaces.XMLGrammar;
+import de.uniks.jism.xml.XMLEntity;
 /*
 Copyright (c) 2013, Stefan Lindel
 All rights reserved.
@@ -27,9 +31,56 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-import de.uniks.jism.event.BitEntity;
-import de.uniks.jism.interfaces.SendableEntityCreator;
+import de.uniks.jism.xml.XMLStyledEntity;
 
-public interface BitEntityCreator extends SendableEntityCreator{
-	public BitEntity[] getBitProperties();
+public class XMLStyledEntityCreator implements SendableEntityCreator, XMLGrammar{
+	/** The properties. */
+	private final String[] properties = new String[] { XMLStyledEntity.PROPERTY_FONTFAMILY,  XMLStyledEntity.PROPERTY_FONTSIZE,  XMLStyledEntity.PROPERTY_BOLD,  XMLStyledEntity.PROPERTY_ITALIC };
+	@Override
+	public String[] getProperties() {
+		return properties;
+	}
+
+	@Override
+	public Object getSendableInstance(boolean prototyp) {
+		return new XMLStyledEntity();
+	}
+
+	@Override
+	public Object getValue(Object entity, String attribute) {
+		return ((XMLStyledEntity)entity).get(attribute);
+	}
+
+	@Override
+	public boolean setValue(Object entity, String attribute, Object value,
+			String type) {
+		return ((XMLStyledEntity)entity).set(attribute, value);	
+	}
+
+	
+	public boolean parseChild(XMLEntity entity, XMLEntity child, Tokener value) {
+		XMLStyledEntity source = (XMLStyledEntity) entity;
+		XMLStyledEntity target = (XMLStyledEntity) child;
+		
+		for(String property : getProperties()){
+			target.set(property, source.get(property));
+		}
+
+		if("b".equalsIgnoreCase(child.getTag())){
+			if(!source.isBold()){
+				source.setBold(true);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public void addChildren(XMLEntity parent, XMLEntity child) {
+		parent.addChild(child);
+	}
+
+	@Override
+	public void endChild(String tag) {
+	}
 }

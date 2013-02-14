@@ -1,11 +1,6 @@
-package de.uniks.jism.event.creator;
-import de.uniks.jism.Tokener;
-import de.uniks.jism.event.StyleFormat;
-import de.uniks.jism.interfaces.SendableEntityCreator;
-import de.uniks.jism.interfaces.XMLGrammar;
-import de.uniks.jism.xml.XMLEntity;
+package de.uniks.jism.json.creator;
 /*
-Copyright (c) 2013, Stefan Lindel
+Copyright (c) 2012, Stefan Lindel
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -32,65 +27,30 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+import de.uniks.jism.interfaces.NoIndexCreator;
+import de.uniks.jism.interfaces.SendableEntityCreator;
+import de.uniks.jism.json.JsonObject;
 
-public class StyleFormatCreator implements SendableEntityCreator, XMLGrammar{
-	/** The properties. */
-	private final String[] properties = new String[] { StyleFormat.PROPERTY_FONTFAMILY,  StyleFormat.PROPERTY_FONTSIZE,  StyleFormat.PROPERTY_BOLD,  StyleFormat.PROPERTY_ITALIC };
+public class JsonObjectCreator implements SendableEntityCreator, NoIndexCreator{
+	private final String[] properties= new String[]{"VALUE"};
 	@Override
 	public String[] getProperties() {
-		return properties;
+		return this.properties;
 	}
 
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
-		return new StyleFormat();
+		return new JsonObject();
 	}
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		return ((StyleFormat)entity).get(attribute);
+		return entity.toString();
 	}
 
 	@Override
-	public boolean setValue(Object entity, String attribute, Object value,
-			String type) {
-		return ((StyleFormat)entity).set(attribute, value);
+	public boolean setValue(Object entity, String attribute, Object value, String typ) {
+		return ((JsonObject)entity).setAllValue((String) value);
 	}
 
-	
-	public StyleFormat clone(StyleFormat format){
-		StyleFormat newFormat = (StyleFormat) getSendableInstance(false);
-		for(String property : getProperties()){
-			newFormat.set(property, format.get(property));
-		}
-		return newFormat;
-	}
-
-	public boolean parseChild(XMLEntity entity, XMLEntity child, Tokener value) {
-		child.setStyle(clone(entity.getStyle()));
-		
-		if("b".equalsIgnoreCase(child.getTag())){
-			StyleFormat format = entity.getStyle();
-			if(!format.isBold()){
-				format.setBold(true);
-				return true;
-			}
-		}
-		return false;
-	}
-
-	@Override
-	public boolean initEntity(XMLEntity entity) {
-		entity.setStyle(new StyleFormat());
-		return true;
-	}
-
-	@Override
-	public void addChildren(XMLEntity parent, XMLEntity child) {
-		parent.addChild(child);
-	}
-
-	@Override
-	public void endChild(String tag) {
-	}
 }

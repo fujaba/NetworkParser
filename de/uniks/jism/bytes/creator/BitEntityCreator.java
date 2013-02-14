@@ -1,6 +1,6 @@
-package de.uniks.jism.event.creator;
+package de.uniks.jism.bytes.creator;
 /*
-Copyright (c) 2012, Stefan Lindel
+Copyright (c) 2013, Stefan Lindel
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -27,30 +27,9 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-import de.uniks.jism.interfaces.NoIndexCreator;
+import de.uniks.jism.bytes.BitEntity;
 import de.uniks.jism.interfaces.SendableEntityCreator;
-import de.uniks.jism.json.JsonArray;
 
-public class JsonArrayCreator implements SendableEntityCreator, NoIndexCreator{
-	private final String[] properties= new String[]{"VALUE"};
-	@Override
-	public String[] getProperties() {
-		return this.properties;
-	}
-
-	@Override
-	public Object getSendableInstance(boolean prototyp) {
-		return new JsonArray();
-	}
-
-	@Override
-	public Object getValue(Object entity, String attribute) {
-		return entity.toString();
-	}
-
-	@Override
-	public boolean setValue(Object entity, String attribute, Object value, String typ) {
-		return ((JsonArray)entity).setAllValue((String) value);
-	}
-
+public interface BitEntityCreator extends SendableEntityCreator{
+	public BitEntity[] getBitProperties();
 }
