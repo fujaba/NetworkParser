@@ -91,7 +91,6 @@ public class XMLSimpleIdMap extends IdMap{
 			if (this.value.stepPos(""+ITEMSTART, false, false)) {
 				XMLEntity entity=getEntity(factory);
 				if(entity!=null){
-					factory.initEntity(entity);
 					temp = findTag(entity, factory);
 				}
 			}
@@ -165,8 +164,7 @@ public class XMLSimpleIdMap extends IdMap{
 					// show next Tag
 					XMLEntity child = null;
 					do{
-//						StyleFormat newFormat =null;
-//						newFormat = entity.getStyle();
+						boolean saveValue=true;
 						do{
 							newTag=getEntity(styleFormatCreator);
 							if(newTag==null ){
@@ -176,7 +174,9 @@ public class XMLSimpleIdMap extends IdMap{
 								return entity;
 							}
 							if(newTag.getTag().isEmpty()){
-								entity.setValue(newTag.getValue());
+								if(saveValue){
+									entity.setValue(newTag.getValue());
+								}
 								skipEntity();
 								newTag=getEntity(styleFormatCreator);
 								if(newTag==null){
@@ -187,6 +187,7 @@ public class XMLSimpleIdMap extends IdMap{
 							}
 							if(styleFormatCreator.parseChild(entity, newTag, value)){
 								// Skip >
+								saveValue=false;
 								value.next();
 							}else{
 								break;
@@ -217,7 +218,12 @@ public class XMLSimpleIdMap extends IdMap{
 	protected XMLEntity getEntity(XMLGrammar factory) {
 		XMLEntity entity;
 		if(factory!=null){
-			entity=(XMLEntity) factory.getSendableInstance(false);
+			Object newObj = factory.getSendableInstance(false);
+			if(newObj instanceof XMLEntity){
+				entity=(XMLEntity) newObj;
+			}else{
+				entity=new XMLEntity();	
+			}
 		}else{
 			entity=new XMLEntity();
 		}

@@ -1,4 +1,4 @@
-package de.uniks.jism.event;
+package de.uniks.jism.xml;
 /*
 Copyright (c) 2013, Stefan Lindel
 All rights reserved.
@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 import de.uniks.jism.interfaces.PeerMessage;
 
-public class StyleFormat implements PeerMessage{
+public class XMLStyledEntity extends XMLEntity implements PeerMessage{
 	/** The Constant PROPERTY_BOLD for Bold Attribute */
 	public static final String PROPERTY_BOLD="bold";
 	/** The Bold value. */
@@ -121,19 +121,21 @@ public class StyleFormat implements PeerMessage{
 		return false;
 	}
 	
-	public String getStartTag(){
+	
+	@Override
+	protected String toStringValue(int indentFactor) {
 		StringBuilder sb=new StringBuilder();
+
+		// Starttag
 		if(isBold()){
 			sb.append("<b>");
 		}
 		if(isItalic()){
 			sb.append("<i>");
 		}
-		return sb.toString();
-	}
-	
-	public String getEndTag(){
-		StringBuilder sb=new StringBuilder();
+		sb.append(super.toStringValue(indentFactor));
+		
+		// EndTag
 		if(isItalic()){
 			sb.append("</i>");
 		}

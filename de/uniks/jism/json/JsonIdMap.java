@@ -44,12 +44,12 @@ import de.uniks.jism.IdMapFilter;
 import de.uniks.jism.ReferenceObject;
 import de.uniks.jism.event.MapEntry;
 import de.uniks.jism.event.creator.DateCreator;
-import de.uniks.jism.event.creator.JsonArrayCreator;
-import de.uniks.jism.event.creator.JsonObjectCreator;
 import de.uniks.jism.event.creator.MapEntryCreator;
 import de.uniks.jism.interfaces.MapUpdateListener;
 import de.uniks.jism.interfaces.NoIndexCreator;
 import de.uniks.jism.interfaces.SendableEntityCreator;
+import de.uniks.jism.json.creator.JsonArrayCreator;
+import de.uniks.jism.json.creator.JsonObjectCreator;
 
 /**
  * The Class JsonIdMap.

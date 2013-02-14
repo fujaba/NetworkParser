@@ -1,8 +1,7 @@
-package de.uniks.jism.event;
+package de.uniks.jism.xml;
 
 import java.util.ArrayList;
 
-import de.uniks.jism.xml.XMLEntity;
 
 public class XSDEntity extends XMLEntity{
 	public static final String PROPERTY_CHOICE="choice";

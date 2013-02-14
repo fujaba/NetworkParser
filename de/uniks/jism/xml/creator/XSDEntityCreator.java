@@ -1,16 +1,16 @@
-package de.uniks.jism.event.creator;
+package de.uniks.jism.xml.creator;
 
 import java.util.ArrayList;
 
 import de.uniks.jism.Tokener;
-import de.uniks.jism.event.XSDEntity;
 import de.uniks.jism.interfaces.XMLEntityCreator;
 import de.uniks.jism.interfaces.XMLGrammar;
 import de.uniks.jism.xml.XMLEntity;
+import de.uniks.jism.xml.XSDEntity;
 
 public class XSDEntityCreator implements XMLEntityCreator, XMLGrammar{
 	private String nameSpace;
-	private ArrayList<String> privateStack;
+	private ArrayList<String> privateStack = new ArrayList<String>();
 	public static final String[] ignoreTags=new String[]{"annotation", "documentation", "complextype", "simpletype"};
 
 	public XSDEntityCreator(String namespace){
@@ -42,23 +42,18 @@ public class XSDEntityCreator implements XMLEntityCreator, XMLGrammar{
 	public String getTag() {
 		return nameSpace+":element";
 	}
-	@Override
-	public boolean initEntity(XMLEntity entity) {
-		 privateStack = new ArrayList<String>();
-		 return true;
-	}
 
 	@Override
 	public boolean parseChild(XMLEntity entity, XMLEntity child, Tokener value) {
 		String tag = child.getTag();
 		for(String ignoreTag : ignoreTags){
-			if(tag.equals(nameSpace+":"+ignoreTag)){
+			if(tag.equalsIgnoreCase(nameSpace+":"+ignoreTag)){
 				return true;
 			}
 		}
-		if(entity.getTag().equalsIgnoreCase(nameSpace+":"+XSDEntity.PROPERTY_SEQUENCE)){
+		if(child.getTag().equalsIgnoreCase(nameSpace+":"+XSDEntity.PROPERTY_SEQUENCE)){
 			this.privateStack.add(XSDEntity.PROPERTY_SEQUENCE);
-		}else if(entity.getTag().equalsIgnoreCase(nameSpace+":"+XSDEntity.PROPERTY_CHOICE)){
+		}else if(child.getTag().equalsIgnoreCase(nameSpace+":"+XSDEntity.PROPERTY_CHOICE)){
 			this.privateStack.add(XSDEntity.PROPERTY_CHOICE);
 		}
 		return false;

@@ -1,4 +1,4 @@
-package de.uniks.jism.event.creator;
+package de.uniks.jism.json.creator;
 /*
 Copyright (c) 2012, Stefan Lindel
 All rights reserved.
@@ -29,9 +29,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 import de.uniks.jism.interfaces.NoIndexCreator;
 import de.uniks.jism.interfaces.SendableEntityCreator;
-import de.uniks.jism.json.JsonObject;
+import de.uniks.jism.json.JsonArray;
 
-public class JsonObjectCreator implements SendableEntityCreator, NoIndexCreator{
+public class JsonArrayCreator implements SendableEntityCreator, NoIndexCreator{
 	private final String[] properties= new String[]{"VALUE"};
 	@Override
 	public String[] getProperties() {
@@ -40,7 +40,7 @@ public class JsonObjectCreator implements SendableEntityCreator, NoIndexCreator{
 
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
-		return new JsonObject();
+		return new JsonArray();
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class JsonObjectCreator implements SendableEntityCreator, NoIndexCreator{
 
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String typ) {
-		return ((JsonObject)entity).setAllValue((String) value);
+		return ((JsonArray)entity).setAllValue((String) value);
 	}
 
 }

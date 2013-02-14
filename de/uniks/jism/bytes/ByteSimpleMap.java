@@ -6,8 +6,7 @@ import java.util.HashMap;
 import de.uniks.jism.AbstractIdMap;
 import de.uniks.jism.CloneFilter;
 import de.uniks.jism.IdMap;
-import de.uniks.jism.event.BitEntity;
-import de.uniks.jism.event.creator.BitEntityCreator;
+import de.uniks.jism.bytes.creator.BitEntityCreator;
 
 public class ByteSimpleMap extends AbstractIdMap{
 

@@ -135,6 +135,20 @@ public class IdMap extends AbstractIdMap implements Map<String, Object> {
 	}
 	
 	/**
+	 * Get the current Splitter Character
+	 * @return Splitter as Character
+	 */
+	public String getPrefixSession()
+	{
+		IdMapCounter counter = getCounter();
+		if(counter==null || !counter.isId()){
+			return null;
+		}
+		return counter.getPrefixId()+counter.getSplitter();
+	}
+	
+	
+	/**
 	 * Sets the splitter Character.
 	 *
 	 * @param Character the new splitter-Character for the session id

@@ -1,4 +1,4 @@
-package de.uniks.jism.event;
+package de.uniks.jism.bytes;
 /*
 Copyright (c) 2013, Stefan Lindel
 All rights reserved.
