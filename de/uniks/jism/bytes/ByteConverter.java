@@ -1,6 +1,6 @@
 package de.uniks.jism.bytes;
 /*
-Copyright (c) 2012, Stefan Lindel
+Copyright (c) 2013, Stefan Lindel
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -32,8 +32,8 @@ import java.nio.ByteBuffer;
 import de.uniks.jism.interfaces.ByteItem;
 
 public abstract class ByteConverter {
-	public String toString(ByteItem item){
-		return toString(item.getBytes(false));
+	public String toString(ByteItem item, boolean dynamic){
+		return toString(item.getBytes(dynamic));
 	}
 	public String toString(ByteBuffer value){
 		return toString(value.array(), value.limit());
