@@ -118,11 +118,25 @@ public class ByteEntity implements BaseEntity, ByteItem{
 		return toString(null);
 	}
 
+	/**
+	 * Convert the bytes to a String
+	 * @param converter Grammar
+	 * @return converted bytes as String
+	 */
 	public String toString(ByteConverter converter){
+		return toString(converter, false);
+	}
+	/**
+	 * Convert the bytes to a String
+	 * @param converter Grammar
+	 * @param dynamic if byte is dynamic
+	 * @return converted bytes as String
+	 */
+	public String toString(ByteConverter converter, boolean dynamic){
 		if(converter==null){
 			converter=new ByteConverterHTTP();
 		}
-		return converter.toString(this);
+		return converter.toString(this, dynamic);
 	}
 	/*
 	 * @see de.uni.kassel.peermessage.Entity#toString(int, int)
@@ -164,8 +178,6 @@ public class ByteEntity implements BaseEntity, ByteItem{
 				}
 			}
 		}
-		
-		
 		ByteBuffer buffer = ByteUtil.getBuffer(len, typ);
 		
 		// Save the Len

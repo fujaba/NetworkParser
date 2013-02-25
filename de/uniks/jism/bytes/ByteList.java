@@ -57,11 +57,25 @@ public class ByteList extends EntityList implements ByteItem {
 		return toString(null);
 	}
 	
+	/**
+	 * Convert the bytes to a String
+	 * @param converter Grammar
+	 * @return converted bytes as String
+	 */
 	public String toString(ByteConverter converter){
+		return toString(converter, false);
+	}
+	/**
+	 * Convert the bytes to a String
+	 * @param converter Grammar
+	 * @param dynamic if byte is dynamic
+	 * @return converted bytes as String
+	 */
+	public String toString(ByteConverter converter, boolean dynamic){
 		if(converter==null){
 			converter=new ByteConverterHTTP();
 		}
-		return converter.toString(this);
+		return converter.toString(this, dynamic);
 	}
 
 	public ByteBuffer getBytes(boolean isDynamic) {
