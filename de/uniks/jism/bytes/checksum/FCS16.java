@@ -1,5 +1,4 @@
 package de.uniks.jism.bytes.checksum;
-
 /*
 Copyright (c) 2013, Stefan Lindel
 All rights reserved.

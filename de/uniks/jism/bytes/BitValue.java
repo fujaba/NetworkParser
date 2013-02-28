@@ -1,6 +1,6 @@
-package de.uniks.jism.interfaces;
+package de.uniks.jism.bytes;
 /*
-Copyright (c) 2012, Stefan Lindel
+Copyright (c) 2013, Stefan Lindel
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -27,7 +27,38 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-public interface BaseEntity extends JSIMEntity{
-	public void put(String key, Object value);
 
+public class BitValue {
+	private BitEntity start;
+	private BitEntity len;
+	private int orientation=1;
+
+	public BitValue(int start, int len){
+		this.start = new BitEntity(start);
+		this.len = new BitEntity(len);
+	}
+	public BitValue(String startTyp, String startValue, String lentyp, String lenvalue){
+		this.start =  new BitEntity(startValue, startTyp);
+		this.len =  new BitEntity(lenvalue, lentyp);
+	}
+	
+	public BitEntity getStart() {
+		return start;
+	}
+	public void setStart(BitEntity start) {
+		this.start = start;
+	}
+	public BitEntity getLen() {
+		return len;
+	}
+	public void setLen(BitEntity len) {
+		this.len = len;
+	}
+	public void setOrientation(int value){
+		this.orientation = value;
+	}
+	
+	public int getOrientation() {
+		return orientation;
+	}
 }

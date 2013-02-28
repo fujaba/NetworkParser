@@ -25,7 +25,7 @@ SOFTWARE.
 import java.nio.ByteBuffer;
 
 import de.uniks.jism.EntityList;
-import de.uniks.jism.interfaces.BaseEntity;
+import de.uniks.jism.interfaces.JSIMEntity;
 import de.uniks.jism.interfaces.ByteItem;
 
 public class ByteList extends EntityList implements ByteItem {
@@ -38,13 +38,13 @@ public class ByteList extends EntityList implements ByteItem {
 	}
 
 	@Override
-	public BaseEntity getNewObject() {
+	public JSIMEntity getNewObject() {
 		return new ByteEntity();
 	}
 
 	@Override
 	public String toString(int indentFactor) {
-		return toString();
+		return toString(null);
 	}
 
 	@Override

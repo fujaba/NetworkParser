@@ -26,13 +26,13 @@ import java.nio.ByteBuffer;
 import java.util.Date;
 
 import de.uniks.jism.EntityList;
-import de.uniks.jism.interfaces.BaseEntity;
+import de.uniks.jism.interfaces.JSIMEntity;
 import de.uniks.jism.interfaces.ByteItem;
 
 /**
  * The Class ByteEntity.
  */
-public class ByteEntity implements BaseEntity, ByteItem{
+public class ByteEntity implements JSIMEntity, ByteItem{
 	/** The Constant BIT OF A BYTE. */
 	public final static int BITOFBYTE=8;
 	public final static int TYPBYTE=1;
@@ -73,7 +73,7 @@ public class ByteEntity implements BaseEntity, ByteItem{
 	 * @see de.uni.kassel.peermessage.BaseEntity#getNewObject()
 	 */
 	@Override
-	public BaseEntity getNewObject() {
+	public JSIMEntity getNewObject() {
 		return new ByteEntity();
 	}
 	

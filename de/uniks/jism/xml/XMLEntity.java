@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -37,19 +38,13 @@ import de.uniks.jism.Entity;
 import de.uniks.jism.EntityList;
 import de.uniks.jism.EntityUtil;
 import de.uniks.jism.Tokener;
+import de.uniks.jism.interfaces.BaseEntity;
+import de.uniks.jism.interfaces.BaseEntityList;
 
 /**
  * The Class XMLEntity.
  */
-/**
- * @author Stefan
- *
- */
-/**
- * @author Stefan
- *
- */
-public class XMLEntity extends Entity{
+public class XMLEntity extends Entity implements BaseEntityList {
 	/** The children. */
 	protected ArrayList<XMLEntity> children;
 	
@@ -82,7 +77,7 @@ public class XMLEntity extends Entity{
      */
     public XMLEntity(Tokener tokener) {
         this();
-        tokener.parseToEntity(this);
+        tokener.parseToEntity((BaseEntity)this);
     }
 
 	/* (non-Javadoc)
@@ -232,5 +227,27 @@ public class XMLEntity extends Entity{
 			sb.append(this.value);
 		}
 		return sb.toString();
+	}
+
+	public BaseEntityList initWithMap(Collection<?> value) {
+		for(Iterator<?>i=value.iterator();i.hasNext();){
+			children.add((XMLEntity) i.next());
+		}
+		return this;
+	}
+
+	public BaseEntityList put(Object value) {
+		children.add((XMLEntity) value);
+		return this;
+	}
+
+	@Override
+	public boolean add(Object value) {
+		return children.add((XMLEntity) value);
+	}
+
+	@Override
+	public Object get(int index) {
+		return children.get(index);
 	}
 }
