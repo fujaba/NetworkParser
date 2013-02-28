@@ -2,6 +2,8 @@ package de.uniks.jism;
 
 import de.uniks.jism.exceptions.TextParsingException;
 import de.uniks.jism.interfaces.BaseEntity;
+import de.uniks.jism.interfaces.JSIMEntity;
+import de.uniks.jism.interfaces.BaseEntityList;
 
 /*
 Copyright (c) 2012, Stefan Lindel
@@ -280,7 +282,7 @@ public abstract class Tokener {
      * Accumulate characters until we reach the end of the text or a
      * formatting character.
      */
-    public Object nextValue(BaseEntity creator) {
+    public Object nextValue(JSIMEntity creator) {
     	char c = nextClean();
     	StringBuilder sb = new StringBuilder();
 	    while (c >= ' ' && ",:]}/\\\"[{;=#".indexOf(c) < 0) {
@@ -377,7 +379,7 @@ public abstract class Tokener {
     	int strLen=character.length;
     	int len=this.buffer.length();
     	char lastChar=0;
-    	if(this.index>0){
+    	if(this.index>0&&this.index<len){
     		lastChar=this.buffer.charAt(this.index-1);
     	}
 		while ( this.index < len ) {
@@ -539,6 +541,6 @@ public abstract class Tokener {
 		this.index=index;
 	}
 	
-	public abstract void parseToEntity(Entity entity);
-	public abstract void parseToEntity(EntityList entityList);
+	public abstract void parseToEntity(BaseEntity entity);
+	public abstract void parseToEntity(BaseEntityList entityList);
 }

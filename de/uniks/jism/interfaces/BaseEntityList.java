@@ -27,7 +27,12 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-public interface BaseEntity extends JSIMEntity{
-	public void put(String key, Object value);
+import java.util.Collection;
 
+public interface BaseEntityList extends JSIMEntity{
+	public BaseEntityList initWithMap(Collection<?> value);
+	public BaseEntityList put(Object value);
+	public int size();
+	public boolean add(Object value);
+	public Object get(int z);
 }

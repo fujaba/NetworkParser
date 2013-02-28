@@ -34,13 +34,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import de.uniks.jism.interfaces.BaseEntity;
+import de.uniks.jism.interfaces.BaseEntityList;
 
 
 /**
  * The Class EntityList.
  */
-public abstract class EntityList implements BaseEntity, List<Object>{
+public abstract class EntityList implements BaseEntityList,List<Object>{
 	protected ArrayList<Object> values;
 	private boolean visible=true;
 

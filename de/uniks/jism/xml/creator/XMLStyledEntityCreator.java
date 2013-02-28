@@ -1,8 +1,4 @@
 package de.uniks.jism.xml.creator;
-import de.uniks.jism.Tokener;
-import de.uniks.jism.interfaces.SendableEntityCreator;
-import de.uniks.jism.interfaces.XMLGrammar;
-import de.uniks.jism.xml.XMLEntity;
 /*
 Copyright (c) 2013, Stefan Lindel
 All rights reserved.
@@ -31,6 +27,10 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+import de.uniks.jism.Tokener;
+import de.uniks.jism.interfaces.SendableEntityCreator;
+import de.uniks.jism.interfaces.XMLGrammar;
+import de.uniks.jism.xml.XMLEntity;
 import de.uniks.jism.xml.XMLStyledEntity;
 
 public class XMLStyledEntityCreator implements SendableEntityCreator, XMLGrammar{
