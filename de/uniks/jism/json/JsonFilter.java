@@ -28,6 +28,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import de.uniks.jism.IdMap;
@@ -39,6 +40,9 @@ import de.uniks.jism.IdMapFilter;
  * serialization  
  */
 public class JsonFilter extends IdMapFilter{
+	public static final String PROPERTY_EXCLUSIVEPROPERTY="properties";
+	public static final String PROPERTY_EXCLUSIVEOBJECT="object";
+	
 	/** The Constant REFERENCE. */
 	public static final String REF_SUFFIX= "_ref";
 
@@ -156,5 +160,50 @@ public class JsonFilter extends IdMapFilter{
 	 */
 	public String[] getObjects(){
 		return this.objects.toArray(new String[this.objects.size()]);
+	}
+	
+	public Object get(String attrName) {
+		int pos = attrName.indexOf(".");
+		String attribute = attrName;
+
+		if (pos > 0) {
+			attribute = attrName.substring(0, pos);
+		}
+		if (PROPERTY_EXCLUSIVEPROPERTY.equalsIgnoreCase(attribute)) {
+			return getExcusiveProperties();
+		} else if (PROPERTY_EXCLUSIVEOBJECT.equalsIgnoreCase(attribute)) {
+			return getObjects();
+		}
+		return super.get(attrName);
+	}
+
+	public boolean set(String attribute, Object value) {
+		if (PROPERTY_EXCLUSIVEPROPERTY.equalsIgnoreCase(attribute)) {
+			if(value instanceof String){
+				ArrayList<String> values=new ArrayList<String>();
+				if(exclusiveProperties!=null){
+					for(String item : exclusiveProperties){
+						values.add(item);
+					}
+				}
+				values.add(""+value);
+				exclusiveProperties = values.toArray(new String[values.size()]);
+				return true;
+			}else if(value instanceof String[]){
+				exclusiveProperties = (String[]) value;
+				return true;
+			}
+		} else if (PROPERTY_EXCLUSIVEOBJECT.equalsIgnoreCase(attribute)) {
+			if(value instanceof String){
+				objects.add((String) value);
+				return true;
+			}else if(value instanceof String[]){
+				for(String item : (String[])value){
+					objects.add(item);
+				}
+				return true;
+			}
+		}
+		return super.set(attribute, value);
 	}
 }

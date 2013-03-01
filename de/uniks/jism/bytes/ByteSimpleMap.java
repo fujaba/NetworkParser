@@ -28,6 +28,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -76,7 +77,14 @@ public class ByteSimpleMap extends AbstractIdMap{
 		// Wert ermitteln
 		
 		// Init the Values
-		ByteBuffer result = null;
+ 		ArrayList<ByteBuffer> results=new ArrayList<ByteBuffer>(); 
+ 		ArrayList<Integer> resultsLength=new ArrayList<Integer>();
+
+		if(entry.size()>1){
+			//FIXME
+			System.out.println("Length of Results: ");
+		}
+ 		
 		for(Iterator<BitValue> i= entry.valueIterator();i.hasNext();){
 			BitValue bitValue = i.next();
 			
@@ -100,8 +108,8 @@ public class ByteSimpleMap extends AbstractIdMap{
 				noOfByte++;
 			}
 			
-
-			result = ByteBuffer.allocate(noOfByte);
+			resultsLength.add(temp);
+			ByteBuffer result = ByteBuffer.allocate(noOfByte);
 			orientationSource=orientationSource*-1;
 			while(temp>0){
 				int bitvalue = (theByte >> posOfBit)&1;
@@ -131,17 +139,61 @@ public class ByteSimpleMap extends AbstractIdMap{
 					result.put((byte)number);
 					resultPos = 0;
 				}
-				
 			}
 			if(resultPos>0){
 				result.put((byte)number);
 			}
+			// Save one Result to List
+			result.flip();
+			results.add(result);
 		}
+		
+		// Merge all Results to one
+		int length=0;
+		for(Integer item : resultsLength){
+			length+=item;
+		}
+		int number=length/8+((length%8>0)?1:0);
+		
+		ByteBuffer result=ByteBuffer.allocate(number);
+		
+		if(results.size()>1){
+			//FIXME
+			System.out.println("Length of Results:"+length+"-"+result.limit()+"-"+results.size());
+		}
+
+		int resultPos=0;
+		number=0;
+		for(int i=0;i<results.size();i++){
+			ByteBuffer source =results.get(i);
+			length = resultsLength.get(i);
+			while(length>0){
+				byte theByte=source.get();
+				int sourceBit=(length<8-resultPos)?length:8-resultPos;
+				number=(number<<(sourceBit))+(theByte&(0xff>>(8-sourceBit)));
+				theByte=(byte) (theByte>>(sourceBit));
+				resultPos+=sourceBit;
+				length-=sourceBit;
+				if(resultPos==8){
+					result.put((byte)number);
+					resultPos = 0;
+					number =0;
+					if(length>0){
+						theByte=source.get();
+					}
+				}
+			}
+		}
+		if(resultPos>0){
+			result.put((byte)number);
+		}
+		
+		result.flip();
 		
 		// Set the Typ
 		Object element=null;
 
-		result.flip();
+		
 		if(entry.getTyp().equals(BitEntity.BIT_BYTE)){
 			byte[] array = result.array();
 			if(array.length==1){

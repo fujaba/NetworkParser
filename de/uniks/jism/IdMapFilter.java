@@ -1,4 +1,6 @@
 package de.uniks.jism;
+
+import de.uniks.jism.interfaces.PeerMessage;
 /*
 Copyright (c) 2012, Stefan Lindel
 All rights reserved.
@@ -31,7 +33,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
  * The Class IdMapFilter.
  */
-public class IdMapFilter {
+public class IdMapFilter implements PeerMessage{
+	public static final String PROPERTY_DEEP="deep";
+	public static final String PROPERTY_FULLSERIALIZATION="fullSerialization";
+	public static final String PROPERTY_ID="id";
+	
 	/** The Constant ALLDEEP. */
 	public final static int ALLDEEP = -1;
 	
@@ -135,5 +141,36 @@ public class IdMapFilter {
 	public boolean setFullSerialization(boolean serialization) {
 		this.fullSerialization = serialization;
 		return this.fullSerialization;
+	}
+
+	public Object get(String attrName) {
+		int pos = attrName.indexOf(".");
+		String attribute = attrName;
+
+		if (pos > 0) {
+			attribute = attrName.substring(0, pos);
+		}
+		if (PROPERTY_DEEP.equalsIgnoreCase(attribute)) {
+			return getDeep();
+		} else if (PROPERTY_FULLSERIALIZATION.equalsIgnoreCase(attribute)) {
+			return isFullSerialization();
+		} else if (PROPERTY_ID.equalsIgnoreCase(attribute)) {
+			return isId();
+		}
+		return null;
+	}
+
+	public boolean set(String attribute, Object value) {
+		if (PROPERTY_DEEP.equalsIgnoreCase(attribute)) {
+			this.setDeep(Integer.valueOf(""+value));
+			return true;
+		} else if (PROPERTY_FULLSERIALIZATION.equalsIgnoreCase(attribute)) {
+			setFullSerialization(Boolean.valueOf(""+value));
+			return true;
+		} else if (PROPERTY_ID.equalsIgnoreCase(attribute)) {
+			setId(Boolean.valueOf(""+value));
+			return true;
+		}
+		return false;
 	}
 }
