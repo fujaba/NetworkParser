@@ -80,11 +80,6 @@ public class ByteSimpleMap extends AbstractIdMap{
  		ArrayList<ByteBuffer> results=new ArrayList<ByteBuffer>(); 
  		ArrayList<Integer> resultsLength=new ArrayList<Integer>();
 
-		if(entry.size()>1){
-			//FIXME
-			System.out.println("Length of Results: ");
-		}
- 		
 		for(Iterator<BitValue> i= entry.valueIterator();i.hasNext();){
 			BitValue bitValue = i.next();
 			
@@ -95,54 +90,71 @@ public class ByteSimpleMap extends AbstractIdMap{
 			int posOfByte = temp/8;
 			int posOfBit = (8-((temp+1)%8))%8;
 			
-			temp = Integer.valueOf(""+getEntity(buffer, bitValue.getLen(), values));
-			int noOfByte=temp/8;
-			int number=0;
-			int resultPos = 0;
+			int length = Integer.valueOf(""+getEntity(buffer, bitValue.getLen(), values));
+			int noOfByte=length/8;
+			if(length%8>0){
+				noOfByte++;
+			}
+			
+			resultsLength.add(length);
+			ByteBuffer result = ByteBuffer.allocate(noOfByte);
+
 			int theByte = buffer.get(posOfByte);
 			if(theByte<0){
 				theByte+=256;
 			}
 			
-			if(temp%8>0){
-				noOfByte++;
-			}
-			
-			resultsLength.add(temp);
-			ByteBuffer result = ByteBuffer.allocate(noOfByte);
-			orientationSource=orientationSource*-1;
-			while(temp>0){
-				int bitvalue = (theByte >> posOfBit)&1;
+			int resultPos=0;
+			int number=0;
+			int sourceBit=(length<8-resultPos)?length:8-resultPos;
+
+			theByte =  theByte>>(posOfBit-sourceBit+1);
+			while(length>0){
+				sourceBit=(length<8-resultPos)?length:8-resultPos;
+				int sourceBits = (theByte&(0xff>>(8-sourceBit)));
+
 				if(orientationTarget>0){
-					number = (number<<1)+bitvalue;
+					number=(number<<(sourceBit));
+					if(orientationSource>0)
+						// Source Target
+						number+=sourceBits;
+					else{
+						// Bits vertauschen
+						for(int z=sourceBit;z>0;z--){
+							number+=sourceBits&(0x1<<sourceBit)<<(sourceBit-z);
+						}
+					}
 				}else{
-					number += bitvalue << resultPos;
-				}
-				temp--;
-				if(temp<1){
-					break;
+					if(orientationSource>0)
+						// Source Target
+						number+=sourceBits <<sourceBit;
+					else{
+						// Bits vertauschen
+						for(int z=sourceBit;z>0;z--){
+							number+=sourceBits&(0x1<<sourceBit)<<(sourceBit-z);
+						}
+					}
 				}
 				
-				posOfBit+=orientationSource;
-				resultPos++;
-				if(posOfBit>7||posOfBit<0){
-					posOfBit = 0;
-					++posOfByte;
-					if(posOfByte<buffer.limit()){
+				theByte=(byte) (theByte>>(sourceBit));
+				resultPos+=sourceBit;
+				length-=sourceBit;
+				if(resultPos==8){
+					result.put((byte)number);
+					resultPos = 0;
+					number =0;
+					if(length>0){
 						theByte = buffer.get(posOfByte);
 						if(theByte<0){
 							theByte+=256;
 						}
 					}
 				}
-				if(resultPos ==8){
-					result.put((byte)number);
-					resultPos = 0;
-				}
 			}
 			if(resultPos>0){
 				result.put((byte)number);
 			}
+			
 			// Save one Result to List
 			result.flip();
 			results.add(result);
@@ -157,11 +169,6 @@ public class ByteSimpleMap extends AbstractIdMap{
 		
 		ByteBuffer result=ByteBuffer.allocate(number);
 		
-		if(results.size()>1){
-			//FIXME
-			System.out.println("Length of Results:"+length+"-"+result.limit()+"-"+results.size());
-		}
-
 		int resultPos=0;
 		number=0;
 		for(int i=0;i<results.size();i++){
@@ -192,7 +199,6 @@ public class ByteSimpleMap extends AbstractIdMap{
 		
 		// Set the Typ
 		Object element=null;
-
 		
 		if(entry.getTyp().equals(BitEntity.BIT_BYTE)){
 			byte[] array = result.array();
