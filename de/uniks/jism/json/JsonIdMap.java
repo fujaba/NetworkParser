@@ -111,7 +111,7 @@ public class JsonIdMap extends IdMap {
 	 */
 	public JsonObject toJsonObject(Object entity, JsonFilter filter) {
 		String className = entity.getClass().getName();
-		return toJsonObject(entity, filter, className);
+		return toJsonObject(entity, filter, className, new LinkedHashSet<String>());
 	}
 	
 	/**
@@ -123,6 +123,18 @@ public class JsonIdMap extends IdMap {
 	 * @return the Jsonobject
 	 */
 	public JsonObject toJsonObject(Object entity, JsonFilter filter, String className) {
+		return toJsonObject(entity, filter, className, new LinkedHashSet<String>());
+	}
+	
+	/**
+	 * To Jsonobject.
+	 *
+	 * @param entity the entity to convert
+	 * @param filter the filter
+	 * @param className the className of the entity
+	 * @return the Jsonobject
+	 */
+	protected JsonObject toJsonObject(Object entity, JsonFilter filter, String className, LinkedHashSet<String> visitedObjects) {
 		String id = "";
 		SendableEntityCreator prototyp = grammar.getObjectCreator(entity, className, this);
 		if (prototyp == null) {
@@ -134,7 +146,7 @@ public class JsonIdMap extends IdMap {
 		JsonObject jsonProp = new JsonObject();
 
 		String[] properties = prototyp.getProperties();
-		filter.addObject(id);
+		visitedObjects.add(id);
 		Object referenceObject = prototyp.getSendableInstance(true);
 		
 		if (properties != null) {
@@ -159,7 +171,7 @@ public class JsonIdMap extends IdMap {
 							// Simple List or Assocs
 							JsonArray subValues = new JsonArray();
 							for (Object containee : ((Collection<?>) value)) {
-								Object item=getItem(containee, filter, entity, property);
+								Object item=getItem(containee, filter, entity, property, visitedObjects);
 								if(item!=null){
 									subValues.put(item);
 								}
@@ -174,20 +186,10 @@ public class JsonIdMap extends IdMap {
 							String packageName = MapEntry.class.getName();
 							for (Iterator<?> i = map.entrySet().iterator(); i.hasNext();) {
 								Entry<?,?> mapEntry = (Entry<?, ?>) i.next();
-								JsonObject item=toJsonObject(mapEntry, filter, packageName);
+								JsonObject item=toJsonObject(mapEntry, filter, packageName, visitedObjects);
 								if(item!=null){
 									subValues.add(item);
 								}
-//								toJsonObject(mapEntry, filter, String className, SendableEntityCreator prototyp) {
-//								Object mapKey=getItem(mapEntry.getKey(), filter, entity, property);
-//								if(mapKey!=null){
-//									Object mapValue=getItem(mapEntry.getValue(), filter, entity, property);
-//									if(mapValue!=null){
-//										toJsonObject(entity, filter)
-//									}
-//										subValues.put(mapKey.toString(), mapValue);
-//									}
-//								}
 							}
 							if(subValues.size()>0){
 								jsonProp.put(property, subValues);
@@ -201,7 +203,7 @@ public class JsonIdMap extends IdMap {
 							jsonProp.put(
 									property,
 									parseObject(value, aggregation, filter,
-											null, referenceCreator, typSave));
+											null, referenceCreator, typSave, visitedObjects));
 						}
 					}
 				}
@@ -209,13 +211,13 @@ public class JsonIdMap extends IdMap {
 		}
 		return grammar.getJsonObject(this, prototyp, className, id, jsonProp, filter);
 	}
-	public Object getItem(Object item, JsonFilter filter, Object entity, String property){
+	public Object getItem(Object item, JsonFilter filter, Object entity, String property, LinkedHashSet<String> visitedObjects){
 		if (item != null&&filter.isRegard(this, entity, property, item, true)){
 			boolean aggregation = filter.isConvertable(this,
 					entity, property, item, true);
 	
 			SendableEntityCreator referenceCreator=getCreatorClass(item);
-			return parseObject(item, aggregation, filter, null, referenceCreator, typSave);
+			return parseObject(item, aggregation, filter, null, referenceCreator, typSave, visitedObjects);
 		}
 		return null;
 	}
@@ -481,7 +483,7 @@ public class JsonIdMap extends IdMap {
 		if (filter == null) {
 			filter = new JsonFilter();
 		}
-		toJsonArray(object, jsonArray, filter);
+		toJsonArray(object, jsonArray, filter, new LinkedHashSet<String>());
 		return jsonArray;
 	}
 
@@ -495,9 +497,16 @@ public class JsonIdMap extends IdMap {
 	public JsonArray toJsonSortedArray(Object object, String property) {
 		JsonSortedArray jsonArray = new JsonSortedArray();
 		jsonArray.setSortProp(property);
-		toJsonArray(object, jsonArray, new JsonFilter());
+		toJsonArray(object, jsonArray, new JsonFilter(), new LinkedHashSet<String>());
 		jsonArray.finishUnsorted();
 		return jsonArray;
+	}
+
+	public JsonArray toJsonArray(Object object, JsonArray jsonArray,
+			JsonFilter filter) {
+
+		return toJsonArray(object, jsonArray, filter,
+				new LinkedHashSet<String>());
 	}
 
 	/**
@@ -508,24 +517,26 @@ public class JsonIdMap extends IdMap {
 	 * @param filter the filter
 	 * @return the json array
 	 */
-	public JsonArray toJsonArray(Object entity, JsonArray jsonArray,
-			JsonFilter filter) {
+	protected JsonArray toJsonArray(Object entity, JsonArray jsonArray,
+			JsonFilter filter, LinkedHashSet<String> visitedObjects) {
 		String className = entity.getClass().getName();
 		String id = getId(entity);
 
 		JsonObject jsonObject = new JsonObject();
-		if (getCounter().isId()&&filter.isId()) {
-			jsonObject.put(ID, id);
+		if ( ! visitedObjects.contains(id)){
+			if (getCounter().isId()&&filter.isId()) {
+				jsonObject.put(ID, id);
+			}
+			jsonObject.put(CLASS, className);
+			jsonArray.put(jsonObject);
 		}
-		jsonObject.put(CLASS, className);
-		jsonArray.put(jsonObject);
 
 		SendableEntityCreator prototyp = getCreatorClasses(className);
 		if (prototyp == null) {
 			throw new RuntimeException("No Creator exist for " + className);
 		}
 		String[] properties = prototyp.getProperties();
-		filter.addObject(id);
+		visitedObjects.add(id);
 
 		if (properties != null) {
 			JsonObject jsonProps = new JsonObject();
@@ -543,7 +554,7 @@ public class JsonIdMap extends IdMap {
 											property, containee, true);
 									referenceCreator=getCreatorClass(containee);
 									refArray.put(parseObject(containee,
-											aggregation, filter, jsonArray, referenceCreator, isTypSave()));
+											aggregation, filter, jsonArray, referenceCreator, isTypSave(), visitedObjects));
 								}
 							}
 							if(refArray.size()>0){
@@ -556,7 +567,7 @@ public class JsonIdMap extends IdMap {
 						jsonProps.put(
 								property,
 								parseObject(value, aggregation, filter,
-										jsonArray, referenceCreator, isTypSave()));
+										jsonArray, referenceCreator, isTypSave(), visitedObjects));
 					}
 				}
 			}
@@ -576,20 +587,20 @@ public class JsonIdMap extends IdMap {
 	 * @param jsonArray the json array
 	 * @return the object
 	 */
-	private Object parseObject(Object entity, boolean aggregation,
-			JsonFilter filter, JsonArray jsonArray, SendableEntityCreator valueCreater, boolean typSave) {
+	protected Object parseObject(Object entity, boolean aggregation,
+			JsonFilter filter, JsonArray jsonArray, SendableEntityCreator valueCreater, boolean typSave, LinkedHashSet<String> visitedObjects) {
 		if (valueCreater != null) {
 			if (aggregation) {
 				String subId = this.getKey(entity);
 				if (valueCreater instanceof NoIndexCreator
-						|| !filter.existsObject(subId)) {
+						|| subId==null || !filter.checkProperty(this, subId, entity) || ! visitedObjects.contains(subId)) {
 					int oldValue = filter.setDeep(IdMapFilter.DEEPER);
 					if (jsonArray == null) {
 						JsonObject result = toJsonObject(entity, filter);
 						filter.setDeep(oldValue);
 						return result;
 					}
-					this.toJsonArray(entity, jsonArray, filter);
+					this.toJsonArray(entity, jsonArray, filter, visitedObjects);
 					filter.setDeep(oldValue);
 				}
 			}

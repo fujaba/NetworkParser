@@ -37,6 +37,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 public class JsonTokener extends Tokener{
+	public final static String STOPCHARS=",:]}/\\\"[{;=# ";
 	public JsonTokener() {
 		super();
 	}
@@ -52,7 +53,7 @@ public class JsonTokener extends Tokener{
 		switch (c) {
 		case '"':
 		case '\'':
-			return nextString(c, false);
+			return nextString(c, false, false);
 		case '{':
 			back();
 			JSIMEntity element = creator.getNewObject();
@@ -70,6 +71,11 @@ public class JsonTokener extends Tokener{
 		}
 		back();
 		return super.nextValue(creator);
+	}
+	
+	@Override
+	protected String getStopChars() {
+		return STOPCHARS;
 	}
 
 	public Entity parseEntity(JsonObject parent, Entity newValue) {
@@ -177,7 +183,7 @@ public class JsonTokener extends Tokener{
 					back();
 				}
 			} else if (c != ':') {
-				throw new TextParsingException("Expected a ':' after a key", this);
+				throw new TextParsingException("Expected a ':' after a key ["+getNextString(30)+"]", this);
 			}
 			entity.put(key, nextValue(entity));
 

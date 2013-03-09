@@ -28,8 +28,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 import de.uniks.jism.IdMap;
 import de.uniks.jism.IdMapFilter;
@@ -40,18 +39,19 @@ import de.uniks.jism.IdMapFilter;
  * serialization  
  */
 public class JsonFilter extends IdMapFilter{
-	public static final String PROPERTY_EXCLUSIVEPROPERTY="properties";
-	public static final String PROPERTY_EXCLUSIVEOBJECT="object";
+	public static final String PROPERTY_ITEMS="items";
 	
 	/** The Constant REFERENCE. */
 	public static final String REF_SUFFIX= "_ref";
+	
+	/** The Constant REFERENCE. */
+	public static final String REFERENCE= "#";
+	/** The Constant Cut the Association. */
+	public static final String CUTREFERENCE= "-";
 
 	
-	/** The exclusive properties. */
-	private String[] exclusiveProperties;
-	
-	/** The objects. */
-	private HashSet<String> objects = new HashSet<String>();
+	/** The objects and exclusive properties. */
+	private LinkedHashSet<String> items;
 	
 	/**
 	 * Instantiates a new json filter.
@@ -74,8 +74,17 @@ public class JsonFilter extends IdMapFilter{
 	 *
 	 * @param filter the filter
 	 */
-	public JsonFilter(String... filter) {
-		this.exclusiveProperties = filter;
+	public JsonFilter(String... filters) {
+		items = new LinkedHashSet<String>();
+		for(String value : filters){
+			if(value!=null && value.length()>0){
+				if(value.startsWith(REFERENCE)||value.startsWith(CUTREFERENCE)){
+					items.add(value);
+				}else{
+					items.add(REFERENCE+value);
+				}
+			}
+		}
 	}
 
 	/**
@@ -84,43 +93,62 @@ public class JsonFilter extends IdMapFilter{
 	 * @param deep the deep
 	 * @param filter the filter
 	 */
-	public JsonFilter(int deep, String... filter) {
+	public JsonFilter(int deep, String... filters) {
+		this(filters);
 		this.deep = deep;
-		this.exclusiveProperties = filter;
 	}
 
 	/**
-	 * Gets the excusive properties.
-	 *
-	 * @return the excusive properties
-	 */
-	public String[] getExcusiveProperties() {
-		return this.exclusiveProperties;
-	}
-
-	/**
-	 * Exists object.
+	 * Adds the object or Attribute
+	 * Starts with # {@link #REFERENCE}
+	 * or - {@link #CUTREFERENCE}
 	 *
 	 * @param id the id
 	 * @return true, if successful
 	 */
-	public boolean existsObject(String id) {
-		boolean result = this.objects.contains(id);
-		return result;
-	}
-	
-	/**
-	 * Adds the object.
-	 *
-	 * @param id the id
-	 * @return true, if successful
-	 */
-	public boolean addObject(String id){
-		if(id!=null&&id.length()>0){
-			this.objects.add(id);
+	public boolean add(String value){
+		if(value!=null && value.length()>0){
+			if(items==null){
+				items = new LinkedHashSet<String>();
+			}
+			if(value.startsWith(REFERENCE)||value.startsWith(CUTREFERENCE)){
+				items.add(value);
+			}else{
+				items.add(REFERENCE+value);
+			}
 			return true;
 		}
 		return false;
+	}
+	
+	public JsonFilter withReference(String value){
+		add(REFERENCE+value);
+		return this;
+	}
+	public JsonFilter withCutReference(String value){
+		add(CUTREFERENCE+value);
+		return this;
+	}
+	
+	
+	public boolean checkProperty(IdMap map,String property, Object value){
+		if(items!=null){
+			for(String item : items){
+				String sessionIdMap = map.getPrefixSession();
+				if(property.startsWith(REFERENCE)|| property.startsWith(CUTREFERENCE)){
+					String prop=property.substring(REFERENCE.length());
+					if (item.equalsIgnoreCase(prop)) {
+						return false;
+					}else if(prop.startsWith(""+sessionIdMap)){
+						String key = map.getKey(value);
+						if(prop.equals(key)){
+							return false;
+						}
+					}
+				}
+			}
+		}
+		return true;
 	}
 	
 	/* (non-Javadoc)
@@ -134,32 +162,15 @@ public class JsonFilter extends IdMapFilter{
 		if(property.endsWith(REF_SUFFIX)){
 			return false;
 		}
-		if (getExcusiveProperties() != null) {
-			String sessionIdMap = map.getPrefixSession();
-			for (String prop : getExcusiveProperties()) {
-				if (property.equalsIgnoreCase(prop)) {
-					return false;
-				}else if(prop.startsWith(""+sessionIdMap)){
-					String key = map.getKey(value);
-					if(prop.equals(key)){
-						return false;
-					}
-				}
-			}
+		
+		if(!checkProperty(map,property, value)){
+			return false;
 		}
+		
 		if(!isManySerialization()&&isMany){
 			return false;
 		}
-		return !property.endsWith(REF_SUFFIX);
-	}
-	
-	/**
-	 * Gets the objects.
-	 *
-	 * @return the objects
-	 */
-	public String[] getObjects(){
-		return this.objects.toArray(new String[this.objects.size()]);
+		return true;
 	}
 	
 	public Object get(String attrName) {
@@ -169,37 +180,26 @@ public class JsonFilter extends IdMapFilter{
 		if (pos > 0) {
 			attribute = attrName.substring(0, pos);
 		}
-		if (PROPERTY_EXCLUSIVEPROPERTY.equalsIgnoreCase(attribute)) {
-			return getExcusiveProperties();
-		} else if (PROPERTY_EXCLUSIVEOBJECT.equalsIgnoreCase(attribute)) {
-			return getObjects();
+		if (PROPERTY_ITEMS.equalsIgnoreCase(attribute)) {
+			return getItems();
 		}
 		return super.get(attrName);
 	}
+	
+	public String[] getItems(){
+		if(items==null){
+			return null;
+		}
+		return this.items.toArray(new String[this.items.size()]);
+	}
 
 	public boolean set(String attribute, Object value) {
-		if (PROPERTY_EXCLUSIVEPROPERTY.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_ITEMS.equalsIgnoreCase(attribute)) {
 			if(value instanceof String){
-				ArrayList<String> values=new ArrayList<String>();
-				if(exclusiveProperties!=null){
-					for(String item : exclusiveProperties){
-						values.add(item);
-					}
-				}
-				values.add(""+value);
-				exclusiveProperties = values.toArray(new String[values.size()]);
-				return true;
+				return add(""+value);
 			}else if(value instanceof String[]){
-				exclusiveProperties = (String[]) value;
-				return true;
-			}
-		} else if (PROPERTY_EXCLUSIVEOBJECT.equalsIgnoreCase(attribute)) {
-			if(value instanceof String){
-				objects.add((String) value);
-				return true;
-			}else if(value instanceof String[]){
-				for(String item : (String[])value){
-					objects.add(item);
+				for(String item : (String[]) value){
+					add(item);
 				}
 				return true;
 			}
