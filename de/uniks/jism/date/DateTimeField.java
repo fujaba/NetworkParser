@@ -1,4 +1,4 @@
-package de.uniks.jism.json.creator;
+package de.uniks.jism.date;
 /*
 Copyright (c) 2013, Stefan Lindel
 All rights reserved.
@@ -27,31 +27,69 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-import de.uniks.jism.interfaces.SendableEntityCreator;
-import de.uniks.jism.json.JsonFilter;
+public class DateTimeField {
 
-public class JsonFilterCreator implements SendableEntityCreator{
-	private String[] properties=new String[]{JsonFilter.PROPERTY_DEEP, JsonFilter.PROPERTY_FULLSERIALIZATION, JsonFilter.PROPERTY_ID,JsonFilter.PROPERTY_ITEMS}; 
+    /** The field type. */
+    private String typValue;
+	private Integer min;
+	private Integer max;
+	private int defaultValue;
 
-	public String[] getProperties() {
-		return properties;
+    /**
+     * Constructor.
+     */
+	public DateTimeField(String type, Integer min, Integer max) {
+    	this.typValue = type;
+    	this.min = min;
+    	this.max = max;
+    }
+	public DateTimeField(String type, Integer min, Integer max, int value) {
+		this(type, min, max);
+    	this.defaultValue=value;
+    }
+    
+    public String getType() {
+        return typValue;
+    }
+
+    /**
+     * @return true always
+     */
+    public boolean isSupported() {
+        return true;
+    }
+
+	public int getMin() {
+		return min;
 	}
 
-	@Override
-	public Object getSendableInstance(boolean prototyp) {
-		return new JsonFilter();
+	public void setMin(int min) {
+		this.min = min;
 	}
 
-	@Override
-	public Object getValue(Object entity, String attribute) {
-		return ((JsonFilter)entity).get(attribute);
+	public int getMax() {
+		return max;
 	}
 
-	@Override
-	public boolean setValue(Object entity, String attribute, Object value,
-			String type) {
-		return ((JsonFilter)entity).set(attribute, value);
+	public void setMax(int max) {
+		this.max = max;
+	}
+
+	public int getValue() {
+		return defaultValue;
+	}
+
+	public void setValue(int value) {
+		this.defaultValue = value;
 	}
 	
-
+	public int validate(int value){
+		if(min!=null && value<min){
+			return -1;
+		}
+		if(max !=null && value>max){
+			return 1;
+		}
+		return 0;
+	}
 }

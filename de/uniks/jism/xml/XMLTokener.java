@@ -52,7 +52,7 @@ public class XMLTokener extends Tokener{
         switch (c) {
         case '"':
         case '\'':
-            return nextString(c, false);
+            return nextString(c, false, false);
         case '<':
             back();
             JSIMEntity element = creator.getNewObject();
@@ -80,7 +80,7 @@ public class XMLTokener extends Tokener{
         XMLEntity xmlEntity=(XMLEntity) entity;
         StringBuilder sb = new StringBuilder();
         c = nextClean();
-        while (c >= ' ' && ",:]>/\\\"<;=# ".indexOf(c) < 0) {
+        while (c >= ' ' && getStopChars().indexOf(c) < 0) {
             sb.append(c);
             c = next();
         }
@@ -93,13 +93,14 @@ public class XMLTokener extends Tokener{
             if(c==0){
         		lExit=true;
             }else if(c=='>'){
-            	if(getCurrentChar()>' '||nextClean()>' '){
-            		if(getCurrentChar()=='<'){
+            	if(nextClean()>' '){
+            		back();
+            	   if(getCurrentChar()=='<'){
                 		child = (XMLEntity) xmlEntity.getNewObject();
                 		parseToEntity((BaseEntity)child);
                 		xmlEntity.addChild(child);
             		}else{
-            			xmlEntity.setValue(nextString('<', false));
+            			xmlEntity.setValue(nextString('<', false, false));
             			back();
             		}
             	}

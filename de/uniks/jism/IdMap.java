@@ -84,6 +84,7 @@ public class IdMap extends AbstractIdMap implements Map<String, Object> {
 		super();
 		this.keys = new HashMap<Object, String>();
 		this.values = new HashMap<String, Object>();
+		this.addCreator(new TextItems());
 	}
 
 	/**
