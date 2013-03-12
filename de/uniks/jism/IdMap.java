@@ -28,6 +28,7 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -76,6 +77,9 @@ public class IdMap extends AbstractIdMap implements Map<String, Object> {
 	protected IdMap parent;
 
 	protected ArrayList<TypList> typList;
+	
+	/** The updatelistener for Notification changes. */
+	protected PropertyChangeListener updatePropertylistener;
 	
 	/**
 	 * Instantiates a new id map.
@@ -579,5 +583,9 @@ public class IdMap extends AbstractIdMap implements Map<String, Object> {
 			return this.parent.entrySet();
 		}
 		return values.entrySet();
+	}
+	
+	public void setUpdateMsgListener(PropertyChangeListener listener) {
+		this.updatePropertylistener = listener;
 	}
 }
