@@ -119,26 +119,26 @@ public abstract class Tokener {
      * @return The next character, or 0 if past the end of the source string.
      */
     public char next()  {
-    	char c;
     	if(this.index>=this.buffer.length())
         {
-    		c=0;
-        }else{
-        	c= this.buffer.charAt(this.index);
+    		return 0;
         }
-    	this.index += 1;
-    	char last = 0;
-    	if(this.index<this.buffer.length()){
-    		last=this.buffer.charAt(this.index-1);
-    	}
-    	if (last == '\r') {
+    	char c = this.buffer.charAt(this.index);
+    	this.index++;
+    	if (c == '\r') {
     		this.line += 1;
-    		this.character = c == '\n' ? 0 : 1;
+    		if(this.buffer.charAt(this.index)=='\n'){
+    			this.character = 1;
+    			this.index ++;
+    			c='\n';
+    		}else{
+    			this.character = 0;
+    		}
     	} else if (c == '\n') {
     		this.line += 1;
     		this.character = 0;
     	} else {
-    		this.character += 1;
+    		this.character +=1;
     	}
         return c;
     }
@@ -201,15 +201,17 @@ public abstract class Tokener {
      * Get the next char in the string, skipping whitespace.
      * @return  A character, or 0 if there are no more characters.
      */
-    public char nextClean()  {
-        for(;;) {
-            char c = next();
-            if (c == 0 || c > ' ') {
-                return c;
+    public char nextClean() {
+    	char c=42;
+    	while(c!=0){
+            c = next();
+            if (c > ' ') {
+                break;
             }
         }
+    	return c;
     }
-
+    
     /**
      * Return the characters up to the next close quote character.
      * Backslash processing is done. The formal JSON format does not
@@ -488,8 +490,8 @@ public abstract class Tokener {
 		}
 		return "";
     }
-    
-	/**
+
+    /**
 	 * Sets the index.
 	 *
 	 * @param index the new index
