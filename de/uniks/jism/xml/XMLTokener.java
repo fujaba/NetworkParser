@@ -87,38 +87,40 @@ public class XMLTokener extends Tokener{
         back();
         xmlEntity.setTag(sb.toString());
         XMLEntity child;
-        boolean lExit=false;
-        while(!lExit){
+        while(true){
             c = nextClean();
             if(c==0){
-        		lExit=true;
+            	break;
             }else if(c=='>'){
-            	if(nextClean()>' '){
+            	c=nextClean();
+            	if(c!='<'){
             		back();
-            	   if(getCurrentChar()=='<'){
-                		child = (XMLEntity) xmlEntity.getNewObject();
-                		parseToEntity((BaseEntity)child);
-                		xmlEntity.addChild(child);
-            		}else{
-            			xmlEntity.setValue(nextString('<', false, false));
-            			back();
-            		}
+            		xmlEntity.setValue(nextString('<', false, false));
+        	        back();
+        	        continue;
             	}
-        	}else if(c=='<'){
+            }
+            
+            if(c=='<'){
             	if(next()=='/'){
             		stepPos(">", false, false);
             		next();
-            		lExit=true;
+                	break;
             	}else{
             		back();
             		back();
-            		child = (XMLEntity) xmlEntity.getNewObject();
-            		parseToEntity((BaseEntity)child);
-            		xmlEntity.addChild(child);
+            		if(getCurrentChar()=='<'){
+            	         child = (XMLEntity) xmlEntity.getNewObject();
+            	         parseToEntity((BaseEntity)child);
+            	         xmlEntity.addChild(child);
+            	      }else{
+            	         xmlEntity.setValue(nextString('<', false, false));
+            	         back();
+            	      }
             	}
             }else if(c=='/'){
             	next();
-            	lExit=true;
+            	break;
             }else{
                 back();
                 String key = nextValue(xmlEntity).toString();
