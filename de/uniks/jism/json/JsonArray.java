@@ -1,32 +1,32 @@
 package de.uniks.jism.json;
 
 /*
-Copyright (c) 2012, Stefan Lindel
-All rights reserved.
+ Copyright (c) 2012, Stefan Lindel
+ All rights reserved.
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-1. Redistributions of source code must retain the above copyright
-   notice, this list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright
-   notice, this list of conditions and the following disclaimer in the
-   documentation and/or other materials provided with the distribution.
-3. All advertising materials mentioning features or use of this software
-   must display the following acknowledgement:
-   This product includes software developed by Stefan Lindel.
-4. Neither the name of contributors may be used to endorse or promote products
-   derived from this software without specific prior written permission.
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+ 1. Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright
+ notice, this list of conditions and the following disclaimer in the
+ documentation and/or other materials provided with the distribution.
+ 3. All advertising materials mentioning features or use of this software
+ must display the following acknowledgement:
+ This product includes software developed by Stefan Lindel.
+ 4. Neither the name of contributors may be used to endorse or promote products
+ derived from this software without specific prior written permission.
 
-THIS SOFTWARE 'Json Id Serialisierung Map' IS PROVIDED BY STEFAN LINDEL ''AS IS'' AND ANY
-EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL STEFAN LINDEL BE LIABLE FOR ANY
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ THIS SOFTWARE 'Json Id Serialisierung Map' IS PROVIDED BY STEFAN LINDEL ''AS IS'' AND ANY
+ EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL STEFAN LINDEL BE LIABLE FOR ANY
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 import java.util.Collection;
@@ -87,7 +87,7 @@ import de.uniks.jism.interfaces.BaseEntityList;
  * @version 2010-12-28
  */
 
-public class JsonArray extends EntityList{
+public class JsonArray extends EntityList {
 	/**
 	 * Construct an empty JSONArray.
 	 */
@@ -106,8 +106,6 @@ public class JsonArray extends EntityList{
 		this();
 		x.parseToEntity(this);
 	}
-	    
-
 
 	/**
 	 * Construct a JSONArray from a source JSON text.
@@ -138,14 +136,15 @@ public class JsonArray extends EntityList{
 			}
 		}
 	}
-	
+
 	/**
 	 * Construct a JSONArray from a BaseEntityArray.
 	 * 
-	 * @param Array of Elements.
+	 * @param Array
+	 *            of Elements.
 	 */
 	public JsonArray(JSIMEntity... values) {
-		for(int i=0;i<values.length;i++){
+		for (int i = 0; i < values.length; i++) {
 			put(EntityUtil.wrap(values[i], this));
 		}
 	}
@@ -188,9 +187,6 @@ public class JsonArray extends EntityList{
 				+ "] is not a JSONObject.");
 	}
 
-
-
-
 	/**
 	 * Put a value in the JSONArray, where the value will be a JSONArray which
 	 * is produced from a Collection.
@@ -221,8 +217,6 @@ public class JsonArray extends EntityList{
 		super.put(index, new JsonArray(value));
 		return this;
 	}
-
-
 
 	/**
 	 * Produce a JSONObject by combining a JSONArray of names with the values of
@@ -266,33 +260,35 @@ public class JsonArray extends EntityList{
 			}
 			return '[' + join(",") + ']';
 		} catch (Exception e) {
-			return null;
+			return "";
 		}
 	}
 
 	/**
 	 * Make a prettyprinted JSON text of this JSONArray. Warning: This method
 	 * assumes that the data structure is acyclical.
-	 *
-	 * @param indentFactor The number of spaces to add to each level of indentation.
+	 * 
+	 * @param indentFactor
+	 *            The number of spaces to add to each level of indentation.
 	 * @return a printable, displayable, transmittable representation of the
-	 * object, beginning with <code>[</code>&nbsp;<small>(left
-	 * bracket)</small> and ending with <code>]</code>
-	 * &nbsp;<small>(right bracket)</small>.
-	 * @throws RuntimeException the runtime exception
+	 *         object, beginning with <code>[</code>&nbsp;<small>(left
+	 *         bracket)</small> and ending with <code>]</code>
+	 *         &nbsp;<small>(right bracket)</small>.
+	 * @throws RuntimeException
+	 *             the runtime exception
 	 */
 	@Override
 	public String toString(int indentFactor) throws RuntimeException {
 		return toString(indentFactor, 0);
 	}
-	
-	/** 
+
+	/**
 	 * Make a prettyprinted JSON text of this JSONArray.
 	 */
 	@Override
 	public String toString(int indentFactor, int indent) {
 		Iterator<Object> iterator = getElements().iterator();
-		if(!iterator.hasNext()){
+		if (!iterator.hasNext()) {
 			return "[]";
 		}
 
@@ -301,48 +297,51 @@ public class JsonArray extends EntityList{
 		}
 
 		StringBuilder sb = new StringBuilder();
-        for(int i = 0; i < indentFactor; i++) {
-        	sb.append(' ');
-        }
-        String step=sb.toString();
-        String prefix="";
-        int newindent = indent + indentFactor;
-		if(newindent>0){
-        	sb = new StringBuilder();
-            for(int i = 0; i < indent; i+=indentFactor) {
-            	sb.append(step);
-            }
-            prefix=CRLF+sb.toString();
+		for (int i = 0; i < indentFactor; i++) {
+			sb.append(' ');
 		}
-		//First Element
-		
-		sb = new StringBuilder("["+prefix+step);
+		String step = sb.toString();
+		String prefix = "";
+		int newindent = indent + indentFactor;
+		if (newindent > 0) {
+			sb = new StringBuilder();
+			for (int i = 0; i < indent; i += indentFactor) {
+				sb.append(step);
+			}
+			prefix = CRLF + sb.toString();
+		}
+		// First Element
+
+		sb = new StringBuilder("[" + prefix + step);
 		Object element = iterator.next();
-		sb.append(EntityUtil.valueToString(element, indentFactor, newindent, false, this));
-		
-		while(iterator.hasNext()){
+		sb.append(EntityUtil.valueToString(element, indentFactor, newindent,
+				false, this));
+
+		while (iterator.hasNext()) {
 			element = iterator.next();
-			sb.append(","+prefix+step);
-			sb.append(EntityUtil.valueToString(element, indentFactor, newindent, false, this));
+			sb.append("," + prefix + step);
+			sb.append(EntityUtil.valueToString(element, indentFactor,
+					newindent, false, this));
 		}
-		sb.append(prefix+']');
+		sb.append(prefix + ']');
 		return sb.toString();
 	}
 
 	/**
-	 *  Get a new Instance of a JsonObject
+	 * Get a new Instance of a JsonObject
 	 */
 	@Override
 	public Entity getNewObject() {
 		return new JsonObject();
 	}
 
-    public boolean setAllValue(String value){
-    	clear();
-    	JsonTokener tokener = new JsonTokener(value);
-    	tokener.parseToEntity(this);
-    	return true;
-    }
+	public boolean setAllValue(String value) {
+		clear();
+		JsonTokener tokener = new JsonTokener(value);
+		tokener.parseToEntity(this);
+		return true;
+	}
+
 	/**
 	 * Get a new Instance of a JsonArray
 	 */

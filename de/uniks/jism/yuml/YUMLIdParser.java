@@ -97,7 +97,8 @@ public class YUMLIdParser extends IdMap {
 	/**
 	 * Parses the object.
 	 * 
-	 * @param object the object
+	 * @param object
+	 *            the object
 	 * @return the string
 	 */
 	public String parseObject(Object object, IdMapFilter filter) {
@@ -355,7 +356,7 @@ public class YUMLIdParser extends IdMap {
 	/**
 	 * Checks if is show line.
 	 * 
-	 * @return true, if is show line
+	 * @return true, if is show line for objects
 	 */
 	public boolean isShowLine() {
 		return this.isLine;
@@ -364,7 +365,7 @@ public class YUMLIdParser extends IdMap {
 	/**
 	 * Sets the show line.
 	 * 
-	 * @param showLine
+	 * @param value
 	 *            the new show line
 	 */
 	public void setShowLine(boolean value) {
