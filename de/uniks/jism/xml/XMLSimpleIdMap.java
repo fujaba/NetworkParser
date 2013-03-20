@@ -85,7 +85,7 @@ public class XMLSimpleIdMap extends IdMap {
 
 	public Object decode(String value, XMLGrammar factory) {
 		Object result = null;
-		Object temp = null;
+		XMLEntity temp = null;
 		this.value = new XMLTokener(value);
 
 		this.stack.clear();
@@ -96,7 +96,7 @@ public class XMLSimpleIdMap extends IdMap {
 					temp = findTag(entity, factory);
 				}
 			}
-			if (temp != null && !(temp instanceof String)) {
+			if ( temp != null ) {
 				result = temp;
 			}
 		}

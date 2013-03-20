@@ -1,32 +1,33 @@
 package de.uniks.jism;
+
 /*
-Copyright (c) 2012, Stefan Lindel
-All rights reserved.
+ Copyright (c) 2012, Stefan Lindel
+ All rights reserved.
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-1. Redistributions of source code must retain the above copyright
-   notice, this list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright
-   notice, this list of conditions and the following disclaimer in the
-   documentation and/or other materials provided with the distribution.
-3. All advertising materials mentioning features or use of this software
-   must display the following acknowledgement:
-   This product includes software developed by Stefan Lindel.
-4. Neither the name of contributors may be used to endorse or promote products
-   derived from this software without specific prior written permission.
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+ 1. Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright
+ notice, this list of conditions and the following disclaimer in the
+ documentation and/or other materials provided with the distribution.
+ 3. All advertising materials mentioning features or use of this software
+ must display the following acknowledgement:
+ This product includes software developed by Stefan Lindel.
+ 4. Neither the name of contributors may be used to endorse or promote products
+ derived from this software without specific prior written permission.
 
-THIS SOFTWARE 'Json Id Serialisierung Map' IS PROVIDED BY STEFAN LINDEL ''AS IS'' AND ANY
-EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL STEFAN LINDEL BE LIABLE FOR ANY
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ THIS SOFTWARE 'Json Id Serialisierung Map' IS PROVIDED BY STEFAN LINDEL ''AS IS'' AND ANY
+ EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL STEFAN LINDEL BE LIABLE FOR ANY
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,17 +37,17 @@ import java.util.ListIterator;
 
 import de.uniks.jism.interfaces.BaseEntityList;
 
-
 /**
  * The Class EntityList.
  */
-public abstract class EntityList implements BaseEntityList,List<Object>{
+public abstract class EntityList implements BaseEntityList, List<Object> {
 	protected ArrayList<Object> values;
-	private boolean visible=true;
+	private boolean visible = true;
 
-	public EntityList(){
-		
+	public EntityList() {
+
 	}
+
 	/**
 	 * Construct a EntityList from a Collection.
 	 * 
@@ -56,7 +57,8 @@ public abstract class EntityList implements BaseEntityList,List<Object>{
 	public EntityList(Collection<?> collection) {
 		initWithMap(collection);
 	}
-	public EntityList initWithMap(Collection<?> collection){
+
+	public EntityList initWithMap(Collection<?> collection) {
 		if (collection != null) {
 			getElements();
 			Iterator<?> iter = collection.iterator();
@@ -66,16 +68,17 @@ public abstract class EntityList implements BaseEntityList,List<Object>{
 		}
 		return this;
 	}
-	
+
 	/**
 	 * The arrayList where the EntityList's properties are kept.
 	 */
-	public List<Object> getElements(){
-		if(this.values==null){
-			this.values=new ArrayList<Object>();
+	public List<Object> getElements() {
+		if (this.values == null) {
+			this.values = new ArrayList<Object>();
 		}
 		return this.values;
 	}
+
 	/**
 	 * Get the object value associated with an index.
 	 * 
@@ -93,6 +96,7 @@ public abstract class EntityList implements BaseEntityList,List<Object>{
 		}
 		return object;
 	}
+
 	/**
 	 * Get the boolean value associated with an index. The string values "true"
 	 * and "false" are converted to boolean.
@@ -115,7 +119,8 @@ public abstract class EntityList implements BaseEntityList,List<Object>{
 						.equalsIgnoreCase("true"))) {
 			return true;
 		}
-		throw new RuntimeException("EntityList[" + index + "] is not a boolean.");
+		throw new RuntimeException("EntityList[" + index
+				+ "] is not a boolean.");
 	}
 
 	/**
@@ -158,6 +163,7 @@ public abstract class EntityList implements BaseEntityList,List<Object>{
 					+ "] is not a number.");
 		}
 	}
+
 	/**
 	 * Get the long value associated with an index.
 	 * 
@@ -220,24 +226,24 @@ public abstract class EntityList implements BaseEntityList,List<Object>{
 		return sb.toString();
 	}
 
-
 	/**
 	 * Append a boolean value. This increases the array's length by one.
 	 * 
 	 * @param value
 	 *            A boolean value.
-	 * @return 
+	 * @return
 	 */
 	public EntityList put(boolean value) {
 		put(value ? Boolean.TRUE : Boolean.FALSE);
 		return this;
 	}
+
 	/**
 	 * Append an int value. This increases the array's length by one.
 	 * 
 	 * @param value
 	 *            An int value.
-	 * @return 
+	 * @return
 	 */
 	public EntityList put(int value) {
 		put(new Integer(value));
@@ -249,7 +255,7 @@ public abstract class EntityList implements BaseEntityList,List<Object>{
 	 * 
 	 * @param value
 	 *            A long value.
-	 * @return 
+	 * @return
 	 * @return this.
 	 */
 	public EntityList put(long value) {
@@ -263,7 +269,7 @@ public abstract class EntityList implements BaseEntityList,List<Object>{
 	 * @param value
 	 *            An object value. The value should be a Boolean, Double,
 	 *            Integer, EntityList, Entity, Long, or String object.
-	 * @return 
+	 * @return
 	 */
 	public EntityList put(Object value) {
 		getElements().add(value);
@@ -279,7 +285,7 @@ public abstract class EntityList implements BaseEntityList,List<Object>{
 	 *            The subscript.
 	 * @param value
 	 *            A boolean value.
-	 * @return 
+	 * @return
 	 * @return this.
 	 * @throws RuntimeException
 	 *             If the index is negative.
@@ -288,6 +294,7 @@ public abstract class EntityList implements BaseEntityList,List<Object>{
 		put(index, value ? Boolean.TRUE : Boolean.FALSE);
 		return this;
 	}
+
 	/**
 	 * Put or replace a double value. If the index is greater than the length of
 	 * the EntityList, then null elements will be added as necessary to pad it
@@ -297,7 +304,7 @@ public abstract class EntityList implements BaseEntityList,List<Object>{
 	 *            The subscript.
 	 * @param value
 	 *            A double value.
-	 * @return 
+	 * @return
 	 * @throws RuntimeException
 	 *             If the index is negative or if the value is not finite.
 	 */
@@ -315,7 +322,7 @@ public abstract class EntityList implements BaseEntityList,List<Object>{
 	 *            The subscript.
 	 * @param value
 	 *            An int value.
-	 * @return 
+	 * @return
 	 * @throws RuntimeException
 	 *             If the index is negative.
 	 */
@@ -333,7 +340,7 @@ public abstract class EntityList implements BaseEntityList,List<Object>{
 	 *            The subscript.
 	 * @param value
 	 *            A long value.
-	 * @return 
+	 * @return
 	 * @throws RuntimeException
 	 *             If the index is negative.
 	 */
@@ -351,8 +358,8 @@ public abstract class EntityList implements BaseEntityList,List<Object>{
 	 *            The subscript.
 	 * @param value
 	 *            The value to put into the array. The value should be a
-	 *            Boolean, Double, Integer, EntityList, Entity, Long, or
-	 *            String object.
+	 *            Boolean, Double, Integer, EntityList, Entity, Long, or String
+	 *            object.
 	 * @return this.
 	 * @throws RuntimeException
 	 *             If the index is negative or if the the value is an invalid
@@ -389,7 +396,7 @@ public abstract class EntityList implements BaseEntityList,List<Object>{
 		put(d);
 		return this;
 	}
-	
+
 	/**
 	 * Remove an index and close the hole.
 	 * 
@@ -404,11 +411,13 @@ public abstract class EntityList implements BaseEntityList,List<Object>{
 		getElements().remove(index);
 		return o;
 	}
+
 	public abstract String toString(int indentFactor);
+
 	public abstract String toString(int indentFactor, int intent);
+
 	@Override
 	public abstract String toString();
-	
 
 	/**
 	 * Get the number of elements in the EntityList, included nulls.
@@ -427,7 +436,7 @@ public abstract class EntityList implements BaseEntityList,List<Object>{
 	 */
 	@Override
 	public boolean isEmpty() {
-		return getElements().size()<1;
+		return getElements().size() < 1;
 	}
 
 	@Override
@@ -524,12 +533,13 @@ public abstract class EntityList implements BaseEntityList,List<Object>{
 	public List<Object> subList(int fromIndex, int toIndex) {
 		return getElements().subList(fromIndex, toIndex);
 	}
-	
+
 	@Override
 	public void setVisible(boolean value) {
-		this.visible=value;
+		this.visible = value;
 	}
-	public boolean isVisible(){
+
+	public boolean isVisible() {
 		return visible;
 	}
 }

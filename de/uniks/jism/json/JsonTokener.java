@@ -9,35 +9,36 @@ import de.uniks.jism.interfaces.JSIMEntity;
 import de.uniks.jism.xml.XMLEntity;
 
 /*
-Copyright (c) 2012, Stefan Lindel
-All rights reserved.
+ Copyright (c) 2012, Stefan Lindel
+ All rights reserved.
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-1. Redistributions of source code must retain the above copyright
-   notice, this list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright
-   notice, this list of conditions and the following disclaimer in the
-   documentation and/or other materials provided with the distribution.
-3. All advertising materials mentioning features or use of this software
-   must display the following acknowledgement:
-   This product includes software developed by Stefan Lindel.
-4. Neither the name of contributors may be used to endorse or promote products
-   derived from this software without specific prior written permission.
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+ 1. Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright
+ notice, this list of conditions and the following disclaimer in the
+ documentation and/or other materials provided with the distribution.
+ 3. All advertising materials mentioning features or use of this software
+ must display the following acknowledgement:
+ This product includes software developed by Stefan Lindel.
+ 4. Neither the name of contributors may be used to endorse or promote products
+ derived from this software without specific prior written permission.
 
-THIS SOFTWARE 'Json Id Serialisierung Map' IS PROVIDED BY STEFAN LINDEL ''AS IS'' AND ANY
-EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL STEFAN LINDEL BE LIABLE FOR ANY
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-public class JsonTokener extends Tokener{
-	public final static String STOPCHARS=",:]}/\\\"[{;=# ";
+ THIS SOFTWARE 'Json Id Serialisierung Map' IS PROVIDED BY STEFAN LINDEL ''AS IS'' AND ANY
+ EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL STEFAN LINDEL BE LIABLE FOR ANY
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+public class JsonTokener extends Tokener {
+	public final static String STOPCHARS = ",:]}/\\\"[{;=# ";
+
 	public JsonTokener() {
 		super();
 	}
@@ -57,8 +58,8 @@ public class JsonTokener extends Tokener{
 		case '{':
 			back();
 			JSIMEntity element = creator.getNewObject();
-			if(element instanceof Entity){
-				this.parseToEntity((Entity)element);
+			if (element instanceof Entity) {
+				this.parseToEntity((Entity) element);
 			}
 			return element;
 		case '[':
@@ -72,7 +73,7 @@ public class JsonTokener extends Tokener{
 		back();
 		return super.nextValue(creator);
 	}
-	
+
 	@Override
 	protected String getStopChars() {
 		return STOPCHARS;
@@ -163,13 +164,15 @@ public class JsonTokener extends Tokener{
 		String key;
 
 		if (nextClean() != '{') {
-			throw new TextParsingException("A JsonObject text must begin with '{'", this);
+			throw new TextParsingException(
+					"A JsonObject text must begin with '{'", this);
 		}
 		for (;;) {
 			c = nextClean();
 			switch (c) {
 			case 0:
-				throw new TextParsingException("A JsonObject text must end with '}'", this);
+				throw new TextParsingException(
+						"A JsonObject text must end with '}'", this);
 			case '}':
 				return;
 			default:
@@ -183,7 +186,8 @@ public class JsonTokener extends Tokener{
 					back();
 				}
 			} else if (c != ':') {
-				throw new TextParsingException("Expected a ':' after a key ["+getNextString(30)+"]", this);
+				throw new TextParsingException("Expected a ':' after a key ["
+						+ getNextString(30) + "]", this);
 			}
 			entity.put(key, nextValue(entity));
 
@@ -200,8 +204,9 @@ public class JsonTokener extends Tokener{
 			case '}':
 				return;
 			default:
-				
-				throw new TextParsingException("Expected a ',' or '}' got a " + nextClean, this);
+
+				throw new TextParsingException("Expected a ',' or '}' got a "
+						+ nextClean, this);
 			}
 		}
 	}
@@ -209,7 +214,8 @@ public class JsonTokener extends Tokener{
 	@Override
 	public void parseToEntity(BaseEntityList entityList) {
 		if (nextClean() != '[') {
-			throw new TextParsingException("A JSONArray text must start with '['", this);
+			throw new TextParsingException(
+					"A JSONArray text must start with '['", this);
 		}
 		if (nextClean() != ']') {
 			back();
@@ -232,7 +238,8 @@ public class JsonTokener extends Tokener{
 				case ']':
 					return;
 				default:
-					throw new TextParsingException("Expected a ',' or ']'", this);
+					throw new TextParsingException("Expected a ',' or ']'",
+							this);
 				}
 			}
 		}

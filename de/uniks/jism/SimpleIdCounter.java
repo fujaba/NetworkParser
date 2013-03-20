@@ -1,70 +1,69 @@
 package de.uniks.jism;
 
 /*
-Copyright (c) 2012, Stefan Lindel
-All rights reserved.
+ Copyright (c) 2012, Stefan Lindel
+ All rights reserved.
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-1. Redistributions of source code must retain the above copyright
-   notice, this list of conditions and the following disclaimer.
-2. Redistributions in binary form must reproduce the above copyright
-   notice, this list of conditions and the following disclaimer in the
-   documentation and/or other materials provided with the distribution.
-3. All advertising materials mentioning features or use of this software
-   must display the following acknowledgement:
-   This product includes software developed by Stefan Lindel.
-4. Neither the name of contributors may be used to endorse or promote products
-   derived from this software without specific prior written permission.
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+ 1. Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright
+ notice, this list of conditions and the following disclaimer in the
+ documentation and/or other materials provided with the distribution.
+ 3. All advertising materials mentioning features or use of this software
+ must display the following acknowledgement:
+ This product includes software developed by Stefan Lindel.
+ 4. Neither the name of contributors may be used to endorse or promote products
+ derived from this software without specific prior written permission.
 
-THIS SOFTWARE 'Json Id Serialisierung Map' IS PROVIDED BY STEFAN LINDEL ''AS IS'' AND ANY
-EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL STEFAN LINDEL BE LIABLE FOR ANY
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ THIS SOFTWARE 'Json Id Serialisierung Map' IS PROVIDED BY STEFAN LINDEL ''AS IS'' AND ANY
+ EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL STEFAN LINDEL BE LIABLE FOR ANY
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 import de.uniks.jism.interfaces.IdMapCounter;
-
 
 /**
  * The Class SimpleIdCounter.
  */
-public class SimpleIdCounter implements IdMapCounter{
+public class SimpleIdCounter implements IdMapCounter {
 	/** The prefix id. */
-	protected String prefixId="J1";
-	
+	protected String prefixId = "J1";
+
 	/** The number. */
 	protected long number = 1;
-	
-	private char splitter='.';
-	
+
+	private char splitter = '.';
+
 	/** The is id. */
 	protected boolean isId = true;
-	
+
 	/** The prio Object mostly a Timestamp or int value. */
 	private Object prio;
-	
-	/** 
+
+	/**
 	 * Set the Session Prefix for a Peer
 	 */
 	public void setPrefixId(String value) {
 		this.prefixId = value;
 	}
 
-	/** 
+	/**
 	 * Set the Session Prefix for a Peer
 	 */
 	public String getPrefixId() {
 		return this.prefixId;
 	}
 
-	/** 
+	/**
 	 * Get a new Id
 	 */
 	@Override
@@ -74,7 +73,7 @@ public class SimpleIdCounter implements IdMapCounter{
 		// new object generate key and add to tables
 		// <session id>.<first char><running number>
 		if (obj == null) {
-			Exception e=new Exception("NullPointer: " + obj);
+			Exception e = new Exception("NullPointer: " + obj);
 			e.printStackTrace();
 			return "";
 		}
@@ -130,10 +129,10 @@ public class SimpleIdCounter implements IdMapCounter{
 	public void setSplitter(char splitter) {
 		this.splitter = splitter;
 	}
-	
+
 	/**
 	 * Gets the prio.
-	 *
+	 * 
 	 * @return the prio
 	 */
 	@Override
@@ -143,16 +142,17 @@ public class SimpleIdCounter implements IdMapCounter{
 
 	/**
 	 * Sets the prio.
-	 *
-	 * @param prio the new prio
+	 * 
+	 * @param prio
+	 *            the new prio
 	 */
 	public void setPrio(Object prio) {
 		this.prio = prio;
 	}
-	
+
 	/**
 	 * Checks if is serialisable id.
-	 *
+	 * 
 	 * @return true, if is id
 	 */
 	@Override
@@ -162,6 +162,6 @@ public class SimpleIdCounter implements IdMapCounter{
 
 	@Override
 	public void enableId(boolean value) {
-		this.isId=value;
+		this.isId = value;
 	}
 }

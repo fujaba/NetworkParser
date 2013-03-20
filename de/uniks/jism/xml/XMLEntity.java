@@ -104,6 +104,7 @@ public class XMLEntity extends Entity implements BaseEntityList {
 
 	/**
 	 * Gets the children.
+	 * 
 	 * @return the children
 	 */
 	public ArrayList<XMLEntity> getChildren() {
