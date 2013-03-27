@@ -28,6 +28,7 @@ package de.uniks.jism.xml.creator;
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+import de.uniks.jism.Style;
 import de.uniks.jism.Tokener;
 import de.uniks.jism.interfaces.SendableEntityCreator;
 import de.uniks.jism.interfaces.XMLGrammar;
@@ -38,9 +39,9 @@ public class XMLStyledEntityCreator implements SendableEntityCreator,
 		XMLGrammar {
 	/** The properties. */
 	private final String[] properties = new String[] {
-			XMLStyledEntity.PROPERTY_FONTFAMILY,
-			XMLStyledEntity.PROPERTY_FONTSIZE, XMLStyledEntity.PROPERTY_BOLD,
-			XMLStyledEntity.PROPERTY_ITALIC };
+			Style.PROPERTY_FONTFAMILY,
+			Style.PROPERTY_FONTSIZE, Style.PROPERTY_BOLD,
+			Style.PROPERTY_ITALIC };
 
 	@Override
 	public String[] getProperties() {
