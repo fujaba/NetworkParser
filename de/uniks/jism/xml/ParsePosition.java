@@ -1,6 +1,7 @@
 package de.uniks.jism.xml;
 
 import de.uniks.jism.Style;
+import de.uniks.jism.interfaces.PeerMessage;
 
 /*
  Copyright (c) 2013, Stefan Lindel
@@ -39,20 +40,25 @@ import de.uniks.jism.Style;
  * Information includes where the content located in the document (offset and
  * length) and what style should be applied on that segment of content.
  */
-public class ParsePosition {
+public class ParsePosition implements PeerMessage{
+	public static final String PROPERTY_OFFSET="offset";
 	/**
 	 * The start position of the content.
 	 */
 	protected int offset;
+
+	public static final String PROPERTY_LENGTH="length";
 	/**
 	 * The length of the content.
 	 */
 	protected int length;
 
+	public static final String PROPERTY_TYP="styleTyp";
 	/**
 	 * The Typ of the Style
 	 */
 	private String styleTyp;
+	public static final String PROPERTY_STYLE="style";
 	private Style style;
 	/**
 	 * Constructor.
@@ -125,5 +131,59 @@ public class ParsePosition {
 
 	public Style getStyle() {
 		return style;
+	}
+	
+	public void resize(int value){
+		this.offset = this.offset+value;
+		this.length = this.length - value;
+	}
+	
+	public void setFixEnd(int value){
+		int diff = value - (this.offset+this.length);
+		this.length = this.length + diff;
+	}
+	
+	/*
+	 * Generic Getter for Attributes
+	 */
+	@Override
+	public Object get(String attrName) {
+		String attribute;
+		int pos = attrName.indexOf(".");
+		if (pos > 0) {
+			attribute = attrName.substring(0, pos);
+		} else {
+			attribute = attrName;
+		}
+
+		if (attribute.equalsIgnoreCase(PROPERTY_OFFSET)) {
+			return getOffset();
+		} else if (attribute.equalsIgnoreCase(PROPERTY_LENGTH)) {
+			return getLength();
+		} else if (attribute.equalsIgnoreCase(PROPERTY_TYP)) {
+			return getStyleTyp();
+		} else if (attribute.equalsIgnoreCase(PROPERTY_STYLE)) {
+			return getStyle();
+		}
+		
+		return null;
+	}
+
+	/*
+	 * Generic Setter for Attributes
+	 */
+	@Override
+	public boolean set(String attribute, Object value) {
+		if (attribute.equalsIgnoreCase(PROPERTY_OFFSET)) {
+			this.offset = Integer.valueOf(""+value);
+			return true;
+		} else if (attribute.equalsIgnoreCase(PROPERTY_LENGTH)) {
+			this.length = Integer.valueOf(""+value);
+			return true;
+		} else if (attribute.equalsIgnoreCase(PROPERTY_TYP)) {
+			this.styleTyp = ""+value;
+			return true;
+		}
+		return false;
 	}
 }
