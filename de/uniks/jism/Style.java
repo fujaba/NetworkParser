@@ -42,8 +42,12 @@ public class Style implements PeerMessage{
 	/**
 	 * Empty Constructor
 	 */
-	public Style(String forground){
-		this.forground = forground;
+	public Style(Object... fields){
+		if (fields.length % 2 == 0) {
+			for (int z = 0; z < fields.length; z += 2) {
+				set((String)fields[z], fields[z + 1]);
+			}
+		}
 	}
 
 	public boolean isBold() {
@@ -121,7 +125,7 @@ public class Style implements PeerMessage{
 			setFontFamily((String) value);
 			return true;
 		} else if (attribute.equalsIgnoreCase(PROPERTY_FONTSIZE)) {
-			setFontSize((String) value);
+			setFontSize(value.toString());
 			return true;
 		} else if (attribute.equalsIgnoreCase(PROPERTY_FORGROUND)) {
 			setForground((String) value);
