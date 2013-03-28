@@ -1,4 +1,7 @@
 package de.uniks.jism.xml;
+
+import de.uniks.jism.Style;
+
 /*
  Copyright (c) 2013, Stefan Lindel
  All rights reserved.
@@ -50,6 +53,7 @@ public class ParsePosition {
 	 * The Typ of the Style
 	 */
 	private String styleTyp;
+	private Style style;
 	/**
 	 * Constructor.
 	 * 
@@ -58,9 +62,10 @@ public class ParsePosition {
 	 * @param length
 	 *            the length of the content
 	 */
-	public ParsePosition(int offset, int length) {
+	public ParsePosition(int offset, int length, Style style) {
 		this.offset = offset;
 		this.length = length;
+		this.style= style;
 	}
 
 	/**
@@ -73,10 +78,11 @@ public class ParsePosition {
 	 * @param typ
 	 *            the typ of the PrsePosition
 	 */
-	public ParsePosition(int offset, int length, String typ) {
+	public ParsePosition(int offset, int length, String typ, Style style) {
 		this.offset = offset;
 		this.length = length;
 		this.styleTyp = typ;
+		this.style= style;
 	}
 	/**
 	 * The start position of the content.
@@ -117,4 +123,7 @@ public class ParsePosition {
 		return sb.toString();
 	}
 
+	public Style getStyle() {
+		return style;
+	}
 }
