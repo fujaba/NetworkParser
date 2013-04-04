@@ -73,7 +73,7 @@ public class JsonIdMap extends IdMap {
 	private MapUpdateListener updatelistener;
 
 	/** If this is true the IdMap save the Typ of primary datatypes. */
-	private boolean typSave;
+	protected boolean typSave;
 
 	/**
 	 * Instantiates a new json id map.
@@ -233,7 +233,7 @@ public class JsonIdMap extends IdMap {
 			String property, JsonArray jsonArray,
 			LinkedHashSet<String> visitedObjects, String className) {
 		if (item != null && filter.isRegard(this, entity, property, item, true)) {
-			boolean typSave = isTypSave();
+//			boolean typSave = isTypSave();
 
 			if (className == null) {
 				className = entity.getClass().getName();
@@ -268,7 +268,7 @@ public class JsonIdMap extends IdMap {
 		}
 		return null;
 	}
-
+	
 	/**
 	 * Read json.
 	 * 
@@ -393,9 +393,9 @@ public class JsonIdMap extends IdMap {
 			}
 			if (result == null) {
 				result = typeInfo.getSendableInstance(false);
-				sendReceiveMsg(NEW, result, jsonObject);
+				readMessages(null, null, result, jsonObject, NEW);
 			} else {
-				sendReceiveMsg(UPDATE, result, jsonObject);
+				readMessages(null, null, result, jsonObject, UPDATE);
 			}
 			if (typeInfo instanceof NoIndexCreator) {
 				String[] properties = typeInfo.getProperties();
@@ -566,7 +566,17 @@ public class JsonIdMap extends IdMap {
 		if (filter == null) {
 			filter = new JsonFilter();
 		}
-		toJsonArray(object, jsonArray, filter, new LinkedHashSet<String>());
+		
+		LinkedHashSet<String> visited = new LinkedHashSet<String>();
+		if(object instanceof List<?>){
+			List<?> list = (List<?>) object;
+			for(Iterator<?> i = list.iterator();i.hasNext();){
+				Object item = i.next();
+				toJsonArray(item, jsonArray, filter, visited);
+			}
+			return jsonArray;
+		}
+		toJsonArray(object, jsonArray, filter, visited);
 		return jsonArray;
 	}
 
@@ -602,6 +612,7 @@ public class JsonIdMap extends IdMap {
 	public JsonArray toJsonArray(Object object, JsonArray jsonArray,
 			JsonFilter filter) {
 
+		
 		return toJsonArray(object, jsonArray, filter,
 				new LinkedHashSet<String>());
 	}
@@ -610,7 +621,7 @@ public class JsonIdMap extends IdMap {
 			JsonFilter filter, LinkedHashSet<String> visitedObjects) {
 		String className = entity.getClass().getName();
 		String id = getId(entity);
-
+//FIXME ixme list
 		JsonObject jsonObject = new JsonObject();
 		if (!visitedObjects.contains(id)
 				&& filter.checkProperty(this, JsonFilter.CUTREFERENCE, id,
@@ -683,27 +694,26 @@ public class JsonIdMap extends IdMap {
 		}
 
 		if (this.updatelistener != null && evt != null) {
-			return this.updatelistener.sendUpdateMsg(evt.getOldValue(),
+			return this.updatelistener.sendUpdateMsg(evt.getSource(), evt.getPropertyName(), evt.getOldValue(),
 					evt.getNewValue(), jsonObject);
 		}
 		return true;
 	}
-
-	public boolean sendReceiveMsg(String type, Object value, JsonObject props) {
+	
+	public boolean readMessages(String key, Object element, Object value, JsonObject props, String typ){
 		if (this.updatelistener != null) {
-			return this.updatelistener.readMessages(type, value, props);
+			return this.updatelistener.readMessages(key, element, value, props, typ);
 		}
 		return true;
 	}
 
-	public boolean sendReceiveObj(Object element, String key, Object value,
-			String typ) {
+	public boolean isReadMessages(String key, Object element, JsonObject props, String typ){
 		if (this.updatelistener != null) {
-			return this.updatelistener.readMessageObj(element, key, value, typ);
+			return this.updatelistener.isReadMessages(key, element, props, typ);
 		}
 		return true;
 	}
-
+	
 	/**
 	 * To json object by id.
 	 * 
@@ -729,21 +739,6 @@ public class JsonIdMap extends IdMap {
 		JsonObject sendObj = new JsonObject();
 		sendObj.put(IdMap.UPDATE, children);
 		sendUpdateMsg(null, sendObj);
-	}
-
-	/**
-	 * To json array.
-	 * 
-	 * @param items
-	 *            the items
-	 * @return the json array
-	 */
-	public JsonArray toJsonArray(List<? extends Object> items) {
-		JsonArray jsonArray = new JsonArray();
-		for (Object item : items) {
-			jsonArray.put(toJsonObject(item));
-		}
-		return jsonArray;
 	}
 
 	/**
@@ -794,25 +789,6 @@ public class JsonIdMap extends IdMap {
 		return this.getClass().getName() + " (" + this.size() + ")";
 	}
 
-	/**
-	 * Checks if is typ save.
-	 * 
-	 * @return true, if is typ save
-	 */
-	public boolean isTypSave() {
-		return this.typSave;
-	}
-
-	/**
-	 * Sets the typ save.
-	 * 
-	 * @param typSave
-	 *            the new typ save
-	 */
-	public void setTypSave(boolean typSave) {
-		this.typSave = typSave;
-	}
-
 	public boolean skipCollision(Object masterObj, String key, Object value,
 			JsonObject removeJson, JsonObject updateJson) {
 		if (this.updatelistener != null) {
@@ -825,4 +801,15 @@ public class JsonIdMap extends IdMap {
 	public void setGrammar(Grammar value) {
 		this.grammar = value;
 	}
+	
+	/**
+	 * Sets the typ save.
+	 * 
+	 * @param typSave
+	 *            the new typ save
+	 */
+	public void setTypSave(boolean typSave) {
+		this.typSave = typSave;
+	}
+
 }
