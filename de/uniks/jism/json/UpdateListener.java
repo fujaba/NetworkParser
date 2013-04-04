@@ -327,8 +327,7 @@ public class UpdateListener implements PropertyChangeListener {
 					if (removeJsonObject != null
 							&& removeJsonObject instanceof JsonObject) {
 						JsonObject json = (JsonObject) removeJsonObject;
-						this.map.sendReceiveMsg(IdMap.REMOVE,
-								this.map.readJson(json), json);
+						this.map.readMessages(key, masterObj, this.map.readJson(json), json, IdMap.REMOVE);
 					}
 				}
 				return true;
@@ -338,18 +337,16 @@ public class UpdateListener implements PropertyChangeListener {
 				while (keys.hasNext()) {
 					String key = keys.next();
 					// CHECK WITH REMOVE key
-					Object value = creator.getValue(masterObj, key);
+					Object oldValue = creator.getValue(masterObj, key);
 
-					if (checkValue(value, key, remove)) {
-						setValue(creator, masterObj, key, update.get(key),
-								IdMap.UPDATE);
-						this.map.sendReceiveObj(masterObj, key,
-								update.get(key), IdMap.UPDATE);
+					if (checkValue(oldValue, key, remove)) {
+						Object newValue = update.get(key);
+						setValue(creator, masterObj, key, newValue, IdMap.UPDATE);
+						this.map.readMessages(key, masterObj, newValue, update, IdMap.UPDATE);
 					} else if (checkPrio(prio)) {
-						setValue(creator, masterObj, key, update.get(key),
-								IdMap.UPDATE);
-						this.map.sendReceiveObj(masterObj, key,
-								update.get(key), IdMap.UPDATE);
+						Object newValue = update.get(key);
+						setValue(creator, masterObj, key,newValue , IdMap.UPDATE);
+						this.map.readMessages(key, masterObj, newValue, update, IdMap.UPDATE);
 					}
 				}
 				return true;
@@ -431,18 +428,18 @@ public class UpdateListener implements PropertyChangeListener {
 			if (typeInfo != null) {
 				// notify in readJson
 			} else {
-				if (!this.map.sendReceiveMsg(typ, element, json)) {
+				if(!this.map.isReadMessages(key, element, json, typ)){
 					return false;
 				}
 			}
-			Object readJson = this.map.readJson(json);
-			if (readJson != null) {
-				creator.setValue(element, key, readJson, typ);
-				this.map.sendReceiveObj(element, key, readJson, typ);
+			Object value = this.map.readJson(json);
+			if (value != null) {
+				creator.setValue(element, key, value, typ);
+				this.map.readMessages(key, element, value, json, typ);
 			}
 		} else {
 			creator.setValue(element, key, newValue, typ);
-			// this.map.sendReceiveMsg(typ, element, newValue);
+			this.map.readMessages(key, element, newValue, null, typ);
 		}
 		return true;
 	}

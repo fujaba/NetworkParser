@@ -69,7 +69,9 @@ public class XMLStyledEntityCreator implements SendableEntityCreator,
 		XMLStyledEntity target = (XMLStyledEntity) child;
 
 		for (String property : getProperties()) {
-			target.set(property, source.get(property));
+			if(source.get(property)!=null){
+				target.set(property, source.get(property));
+			}
 		}
 
 		if ("b".equalsIgnoreCase(child.getTag())) {
