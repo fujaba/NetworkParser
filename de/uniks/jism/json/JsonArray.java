@@ -36,8 +36,8 @@ import de.uniks.jism.Entity;
 import de.uniks.jism.EntityList;
 import de.uniks.jism.EntityUtil;
 import de.uniks.jism.Tokener;
-import de.uniks.jism.interfaces.JSIMEntity;
 import de.uniks.jism.interfaces.BaseEntityList;
+import de.uniks.jism.interfaces.JSIMEntity;
 
 /**
  * A JSONArray is an ordered sequence of values. Its external text form is a
@@ -129,7 +129,6 @@ public class JsonArray extends EntityList {
 	 */
 	public JsonArray(Collection<?> collection) {
 		if (collection != null) {
-			getElements();
 			Iterator<?> iter = collection.iterator();
 			while (iter.hasNext()) {
 				put(EntityUtil.wrap(iter.next(), this));
@@ -148,7 +147,7 @@ public class JsonArray extends EntityList {
 			put(EntityUtil.wrap(values[i], this));
 		}
 	}
-
+	
 	/**
 	 * Get the JSONArray associated with an index.
 	 * 
@@ -256,7 +255,7 @@ public class JsonArray extends EntityList {
 	public String toString() {
 		try {
 			if (!isVisible()) {
-				return "[" + getElements().size() + " Items]";
+				return "[" + size() + " Items]";
 			}
 			return '[' + join(",") + ']';
 		} catch (Exception e) {
@@ -287,13 +286,13 @@ public class JsonArray extends EntityList {
 	 */
 	@Override
 	public String toString(int indentFactor, int indent) {
-		Iterator<Object> iterator = getElements().iterator();
+		Iterator<Object> iterator = iterator();
 		if (!iterator.hasNext()) {
 			return "[]";
 		}
 
 		if (!isVisible()) {
-			return "[" + getElements().size() + " Items]";
+			return "[" + size() + " Items]";
 		}
 
 		StringBuilder sb = new StringBuilder();

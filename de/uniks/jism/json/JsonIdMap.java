@@ -590,11 +590,9 @@ public class JsonIdMap extends IdMap {
 	 * @return the JsonArray
 	 */
 	public JsonArray toJsonSortedArray(Object object, String property) {
-		JsonSortedArray jsonArray = new JsonSortedArray();
-		jsonArray.setSortProp(property);
+		JsonArraySorted jsonArray = new JsonArraySorted(property);
 		toJsonArray(object, jsonArray, new JsonFilter(),
 				new LinkedHashSet<String>());
-		jsonArray.finishUnsorted();
 		return jsonArray;
 	}
 
@@ -621,7 +619,7 @@ public class JsonIdMap extends IdMap {
 			JsonFilter filter, LinkedHashSet<String> visitedObjects) {
 		String className = entity.getClass().getName();
 		String id = getId(entity);
-//FIXME ixme list
+
 		JsonObject jsonObject = new JsonObject();
 		if (!visitedObjects.contains(id)
 				&& filter.checkProperty(this, JsonFilter.CUTREFERENCE, id,

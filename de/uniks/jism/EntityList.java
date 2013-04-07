@@ -41,13 +41,13 @@ import de.uniks.jism.interfaces.BaseEntityList;
  * The Class EntityList.
  */
 public abstract class EntityList implements BaseEntityList, List<Object> {
-	protected ArrayList<Object> values;
+	protected List<Object> values;
 	private boolean visible = true;
 
 	public EntityList() {
-
+		initMap();
 	}
-
+	
 	/**
 	 * Construct a EntityList from a Collection.
 	 * 
@@ -56,11 +56,11 @@ public abstract class EntityList implements BaseEntityList, List<Object> {
 	 */
 	public EntityList(Collection<?> collection) {
 		initWithMap(collection);
+		initMap();
 	}
 
 	public EntityList initWithMap(Collection<?> collection) {
 		if (collection != null) {
-			getElements();
 			Iterator<?> iter = collection.iterator();
 			while (iter.hasNext()) {
 				put(EntityUtil.wrap(iter.next(), this));
@@ -69,14 +69,9 @@ public abstract class EntityList implements BaseEntityList, List<Object> {
 		return this;
 	}
 
-	/**
-	 * The arrayList where the EntityList's properties are kept.
-	 */
-	public List<Object> getElements() {
-		if (this.values == null) {
-			this.values = new ArrayList<Object>();
-		}
-		return this.values;
+	//FIXME
+	protected void initMap(){
+		this.values=new ArrayList<Object>();
 	}
 
 	/**
@@ -90,7 +85,7 @@ public abstract class EntityList implements BaseEntityList, List<Object> {
 	 */
 	@Override
 	public Object get(int index) throws RuntimeException {
-		Object object = getElements().get(index);
+		Object object = values.get(index);
 		if (object == null) {
 			throw new RuntimeException("EntityList[" + index + "] not found.");
 		}
@@ -214,14 +209,13 @@ public abstract class EntityList implements BaseEntityList, List<Object> {
 	 *             If the array contains an invalid number.
 	 */
 	public String join(String separator) throws RuntimeException {
-		List<Object> elements = getElements();
 		StringBuilder sb = new StringBuilder();
 
-		for (int i = 0; i < elements.size(); i += 1) {
+		for (int i = 0; i < values.size(); i += 1) {
 			if (i > 0) {
 				sb.append(separator);
 			}
-			sb.append(EntityUtil.valueToString(elements.get(i), this));
+			sb.append(EntityUtil.valueToString(values.get(i), this));
 		}
 		return sb.toString();
 	}
@@ -272,7 +266,7 @@ public abstract class EntityList implements BaseEntityList, List<Object> {
 	 * @return
 	 */
 	public EntityList put(Object value) {
-		getElements().add(value);
+		add(value);
 		return this;
 	}
 
@@ -371,7 +365,7 @@ public abstract class EntityList implements BaseEntityList, List<Object> {
 			throw new RuntimeException("EntityList[" + index + "] not found.");
 		}
 		if (index < size()) {
-			getElements().set(index, value);
+			values.set(index, value);
 		} else {
 			while (index != size()) {
 				put(null);
@@ -408,7 +402,7 @@ public abstract class EntityList implements BaseEntityList, List<Object> {
 	@Override
 	public Object remove(int index) {
 		Object o = get(index);
-		getElements().remove(index);
+		values.remove(index);
 		return o;
 	}
 
@@ -426,7 +420,7 @@ public abstract class EntityList implements BaseEntityList, List<Object> {
 	 */
 	@Override
 	public int size() {
-		return getElements().size();
+		return values.size();
 	}
 
 	/**
@@ -436,102 +430,105 @@ public abstract class EntityList implements BaseEntityList, List<Object> {
 	 */
 	@Override
 	public boolean isEmpty() {
-		return getElements().size() < 1;
+		return values.size() < 1;
 	}
 
 	@Override
 	public boolean contains(Object o) {
-		return getElements().contains(o);
+		return values.contains(o);
 	}
 
 	@Override
 	public Iterator<Object> iterator() {
-		return getElements().iterator();
+		return values.iterator();
 	}
 
 	@Override
 	public Object[] toArray() {
-		return getElements().toArray();
+		return values.toArray();
 	}
 
 	@Override
 	public <T> T[] toArray(T[] a) {
-		return getElements().toArray(a);
+		return values.toArray(a);
 	}
 
+	/* The Basic-Add Method
+	 * @see de.uniks.jism.interfaces.BaseEntityList#add(java.lang.Object)
+	 */
 	@Override
 	public boolean add(Object e) {
-		return getElements().add(e);
+		return values.add(e);
 	}
 
 	@Override
 	public boolean remove(Object o) {
-		return getElements().remove(o);
+		return values.remove(o);
 	}
 
 	@Override
 	public boolean containsAll(Collection<?> c) {
-		return getElements().containsAll(c);
+		return values.containsAll(c);
 	}
 
 	@Override
 	public boolean addAll(Collection<? extends Object> c) {
-		return getElements().addAll(c);
+		return values.addAll(c);
 	}
 
 	@Override
 	public boolean addAll(int index, Collection<? extends Object> c) {
-		return getElements().addAll(index, c);
+		return values.addAll(index, c);
 	}
 
 	@Override
 	public boolean removeAll(Collection<?> c) {
-		return getElements().removeAll(c);
+		return values.removeAll(c);
 	}
 
 	@Override
 	public boolean retainAll(Collection<?> c) {
-		return getElements().retainAll(c);
+		return values.retainAll(c);
 	}
 
 	@Override
 	public void clear() {
-		getElements().clear();
+		values.clear();
 	}
 
 	@Override
 	public Object set(int index, Object element) {
-		return getElements().set(index, element);
+		return values.set(index, element);
 	}
 
 	@Override
 	public void add(int index, Object element) {
-		getElements().add(index, element);
+		values.add(index, element);
 	}
 
 	@Override
 	public int indexOf(Object o) {
-		return getElements().indexOf(o);
+		return values.indexOf(o);
 	}
 
 	@Override
 	public int lastIndexOf(Object o) {
-		return getElements().lastIndexOf(o);
+		return values.lastIndexOf(o);
 	}
 
 	@Override
 	public ListIterator<Object> listIterator() {
-		return getElements().listIterator();
+		return values.listIterator();
 	}
 
 	@Override
 	public ListIterator<Object> listIterator(int index) {
-		return getElements().listIterator(index);
+		return values.listIterator(index);
 	}
 
 	@Override
 	public List<Object> subList(int fromIndex, int toIndex) {
-		return getElements().subList(fromIndex, toIndex);
+		return values.subList(fromIndex, toIndex);
 	}
 
 	@Override
