@@ -490,7 +490,8 @@ public class UpdateListener implements PropertyChangeListener {
 	 *            the message
 	 */
 	private void countMessage(JsonArray message) {
-		for (Object obj : message.getElements()) {
+		for(Iterator<Object> i = message.iterator();i.hasNext();){
+			Object obj=i.next();
 			if (obj instanceof JsonObject) {
 				countMessage((JsonObject) obj);
 			}

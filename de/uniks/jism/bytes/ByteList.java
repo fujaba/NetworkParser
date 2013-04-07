@@ -111,7 +111,7 @@ public class ByteList extends EntityList implements ByteItem {
 
 	public int calcLength(boolean isDynamic) {
 		int length = 0;
-		if (this.values == null) {
+		if (size() == 0 ) {
 			return 0;
 		}
 		if (typ != 0) {
