@@ -40,7 +40,7 @@ public class TextItems implements SendableEntityCreator, PeerMessage,
 	public static final String PROPERTY_VALUE = "value";
 	private TreeMap<String, String> values = new TreeMap<String, String>();
 	private LocalisationInterface customLanguage = null;
-
+	
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		return ((TextItems) entity).get(attribute);
@@ -59,7 +59,7 @@ public class TextItems implements SendableEntityCreator, PeerMessage,
 		}
 		return attribute;
 	}
-
+	
 	public String getText(String label, Object model, Object gui) {
 		String text = null;
 		if (customLanguage != null) {

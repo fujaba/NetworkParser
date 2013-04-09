@@ -38,7 +38,7 @@ import de.uniks.jism.interfaces.ByteEntityCreator;
 public class ByteMessageCreator implements ByteEntityCreator {
 
 	/** The properties. */
-	private final String[] properties = new String[] { ByteMessage.PROPERTY_VALUE };
+	private final String[] properties = new String[] {ByteMessage.PROPERTY_VALUE};
 
 	/*
 	 * return the Properties

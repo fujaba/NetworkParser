@@ -256,7 +256,6 @@ public class ByteIdMap extends IdMap {
 					value = null;
 				}
 				ByteItem child = encodeValue(value, filter);
-				child.getBytes(false);
 				if (child != null) {
 					msg.add(child);
 				}

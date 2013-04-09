@@ -30,6 +30,7 @@ package de.uniks.jism.date;
  */
 import java.util.Date;
 
+import de.uniks.jism.DefaultTextItems;
 import de.uniks.jism.TextItems;
 
 public class DateTime extends Date {
@@ -40,14 +41,16 @@ public class DateTime extends Date {
 	/**
 	 * Month of the Year Default is German
 	 */
-	public String[] monthOfYear = new String[] { "January", "February",
-			"March", "April", "May", "June", "July", "August", "September",
-			"October", "November", "December" };
+	public String[] monthOfYear = new String[] { DefaultTextItems.JANUARY, DefaultTextItems.FEBRUARY,
+			DefaultTextItems.MARCH, DefaultTextItems.APRIL, DefaultTextItems.MAY, DefaultTextItems.JUNE, 
+			DefaultTextItems.JULY, DefaultTextItems.AUGUST, DefaultTextItems.SEPTEMBER, DefaultTextItems.OCTOBER,
+			DefaultTextItems.NOVEMBER, DefaultTextItems.DECEMBER};
+
 	/**
 	 * Days of the week
 	 */
-	public String[] weekDays = new String[] { "Sunday", "Monday", "Tuesday",
-			"Wednesday", "Thursday", "Friday", "Saturday" };
+	public String[] weekDays = new String[] { DefaultTextItems.SUNDAY, DefaultTextItems.MONDAY, DefaultTextItems.TUESDAY,
+			DefaultTextItems.WEDNESDAY, DefaultTextItems.THURSDAY, DefaultTextItems.FRIDAY, DefaultTextItems.SATURDAY };
 	private boolean isInitConstants = false;
 
 	public DateTime() {

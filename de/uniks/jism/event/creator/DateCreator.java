@@ -37,7 +37,6 @@ import de.uniks.jism.interfaces.SendableEntityCreator;
  * The Class DateCreator.
  */
 public class DateCreator implements SendableEntityCreator, NoIndexCreator {
-
 	/** The Constant VALUE. */
 	public static final String VALUE = "value";
 
@@ -46,7 +45,7 @@ public class DateCreator implements SendableEntityCreator, NoIndexCreator {
 	 */
 	@Override
 	public String[] getProperties() {
-		return new String[] { VALUE };
+		return new String[] {VALUE};
 	}
 
 	/*
