@@ -51,20 +51,17 @@ public class YUMLIdParser extends IdMap {
 	/** The Constant for OBJECT Diagramms. */
 	public static final int OBJECT = 2;
 
-	/** The link property. */
-	private HashMap<String, String> linkProperty = new HashMap<String, String>();
-
 	/** The link cardinality. */
 	private HashMap<String, String> linkCardinality = new HashMap<String, String>();
+
+	/** The link property. */
+	private HashMap<String, String> linkProperty = new HashMap<String, String>();
 
 	/** The value yuml. */
 	private HashMap<String, String> valueYUML = new HashMap<String, String>();
 
 	/** The show line. */
 	private boolean isLine;
-
-	/** The show cardinality. */
-	private boolean showCardinality;
 
 	/**
 	 * Instantiates a new yUML id parser.
@@ -75,9 +72,9 @@ public class YUMLIdParser extends IdMap {
 
 	/**
 	 * Instantiates a new yUML id parser.
-	 * 
+	 *
 	 * @param parent
-	 *            the parent
+	 *			the parent
 	 */
 	public YUMLIdParser(IdMap parent) {
 		super(parent);
@@ -85,69 +82,68 @@ public class YUMLIdParser extends IdMap {
 
 	/**
 	 * Parses the object.
-	 * 
+	 *
 	 * @param object
-	 *            the object
+	 *			the object
 	 * @return the string
 	 */
 	public String parseObject(Object object) {
-		return parse(object, OBJECT, new IdMapFilter());
+		return parse(object, OBJECT, new IdMapFilter(), true);
 	}
 
 	/**
 	 * Parses the object.
-	 * 
+	 *
 	 * @param object
-	 *            the object
+	 *			the object
 	 * @return the string
 	 */
 	public String parseObject(Object object, IdMapFilter filter) {
-		return parse(object, OBJECT, filter);
+		return parse(object, OBJECT, filter, true);
 	}
 
 	/**
 	 * Parses the class.
-	 * 
+	 *
 	 * @param object
-	 *            the object
+	 *			the object
 	 * @param showCardinality
-	 *            the show cardinality
+	 *			the show cardinality
 	 * @return the string
 	 */
 	public String parseClass(Object object, boolean showCardinality) {
-		this.showCardinality = showCardinality;
-		return parse(object, CLASS, new IdMapFilter());
+		return parse(object, CLASS, new IdMapFilter(), showCardinality);
 	}
 
 	/**
 	 * Parses the class.
-	 * 
+	 *
 	 * @param object
-	 *            the object
+	 *			the object
 	 * @param showCardinality
-	 *            the show cardinality
-	 * @param IdMapFilter
-	 *            Filter function
+	 *			the show cardinality
+	 * @param filter
+	 *			Filter for Serialisation
 	 * @return the string
 	 */
 	public String parseClass(Object object, boolean showCardinality,
 			IdMapFilter filter) {
-		this.showCardinality = showCardinality;
-		return parse(object, CLASS, filter);
+		return parse(object, CLASS, filter, showCardinality);
 	}
 
 	/**
 	 * Parses the.
-	 * 
+	 *
 	 * @param object
-	 *            the object
+	 *			the object
 	 * @param typ
-	 *            the typ
-	 * @param IdMapFilter
-	 *            Filter for serialisation
-	 * @return the string
+	 *			Is it a OBJECT OR A CLASS diagram
+	 * @param filter
+	 *			Filter for Serialisation
+	 * @return the Object as String
 	 */
-	public String parse(Object object, int typ, IdMapFilter filter) {
+	public String parse(Object object, int typ, IdMapFilter filter,
+			boolean isShowCardinality) {
 		this.linkProperty.clear();
 		this.linkCardinality.clear();
 		this.valueYUML.clear();
@@ -159,18 +155,23 @@ public class YUMLIdParser extends IdMap {
 			Iterator<String> i = keySet.iterator();
 
 			String key = i.next();
-			String result = getUMLText(key, typ);
+			String result = getUMLText(key, typ, isShowCardinality);
 
 			while (i.hasNext()) {
-				result += "," + getUMLText(i.next(), typ);
+				result += "," + getUMLText(i.next(), typ, isShowCardinality);
 			}
 			return result;
 		}
 		return getYUMLString(id, typ);
 	}
 
-	private String getUMLText(String key, int typ) {
-
+	/**
+	 * @param key of the Object
+	 * @param typ
+	 *			Is it a OBJECT OR A CLASS diagram
+	 * @return Object as String
+	 */
+	private String getUMLText(String key, int typ, boolean isShowCardinality) {
 		String[] itemsId = key.split("-");
 
 		String first = getYUMLString(itemsId[0], typ);
@@ -183,7 +184,7 @@ public class YUMLIdParser extends IdMap {
 			String secondCardNo = this.linkCardinality.get(itemsId[1] + "-"
 					+ itemsId[0]);
 			result = first;
-			if (this.showCardinality) {
+			if (isShowCardinality) {
 				String firstCardName = this.linkProperty.get(key);
 				String secondCardName = this.linkProperty.get(itemsId[1] + "-"
 						+ itemsId[0]);
@@ -204,9 +205,11 @@ public class YUMLIdParser extends IdMap {
 
 	/**
 	 * Gets the yUML string.
-	 * 
+	 *
 	 * @param id
-	 *            the id
+	 *			the id of object
+	 * @param typ
+	 *			Is it a OBJECT OR A CLASS diagram
 	 * @return the yUML string
 	 */
 	private String getYUMLString(String id, int typ) {
@@ -229,10 +232,14 @@ public class YUMLIdParser extends IdMap {
 	}
 
 	/**
-	 * Parses the instance Object
-	 * 
+	 * Parses the instance Object.
+	 *
 	 * @param object
-	 *            the object
+	 *			the object
+	 * @param typ
+	 *			Is it a OBJECT OR A CLASS diagram
+	 * @param filter
+	 *			Filter for converting
 	 * @return the string
 	 */
 	private String parse(Object object, IdMapFilter filter, int typ) {
@@ -326,9 +333,11 @@ public class YUMLIdParser extends IdMap {
 
 	/**
 	 * Gets the cardinality.
-	 * 
+	 *
 	 * @param cardinaltity
-	 *            the cardinaltity
+	 *			the cardinaltity
+	 * @param typ
+	 *			Is it a OBJECT OR A CLASS diagram
 	 * @return the cardinality
 	 */
 	private String getCardinality(String cardinaltity, int typ) {
@@ -340,9 +349,9 @@ public class YUMLIdParser extends IdMap {
 
 	/**
 	 * Gets the class name.
-	 * 
+	 *
 	 * @param object
-	 *            the object
+	 *			the object
 	 * @return the class name
 	 */
 	public String getClassName(Object object) {
@@ -355,7 +364,7 @@ public class YUMLIdParser extends IdMap {
 
 	/**
 	 * Checks if is show line.
-	 * 
+	 *
 	 * @return true, if is show line for objects
 	 */
 	public boolean isShowLine() {
@@ -364,9 +373,9 @@ public class YUMLIdParser extends IdMap {
 
 	/**
 	 * Sets the show line.
-	 * 
+	 *
 	 * @param value
-	 *            the new show line
+	 *			the new show line
 	 */
 	public void setShowLine(boolean value) {
 		this.isLine = value;

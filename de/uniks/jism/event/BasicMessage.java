@@ -35,7 +35,6 @@ import de.uniks.jism.interfaces.PeerMessage;
  * The Class BasicMessage.
  */
 public class BasicMessage implements PeerMessage {
-
 	/** The Constant PROPERTY_VALUE. */
 	public static final String PROPERTY_VALUE = "value";
 

@@ -203,6 +203,9 @@ public class IdMap extends AbstractIdMap implements Map<String, Object> {
 	 * @return the id
 	 */
 	public String getId(Object obj) {
+		if (obj == null) {
+			return "null";
+		}
 		if (!getCounter().isId()) {
 			return "";
 		}
