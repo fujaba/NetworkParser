@@ -49,7 +49,7 @@ public class DateTime extends Date {
 	/**
 	 * Days of the week
 	 */
-	public String[] weekDays = new String[] { DefaultTextItems.SUNDAY, DefaultTextItems.MONDAY, DefaultTextItems.TUESDAY,
+	public String[] weekDays = new String[] {DefaultTextItems.SUNDAY, DefaultTextItems.MONDAY, DefaultTextItems.TUESDAY,
 			DefaultTextItems.WEDNESDAY, DefaultTextItems.THURSDAY, DefaultTextItems.FRIDAY, DefaultTextItems.SATURDAY };
 	private boolean isInitConstants = false;
 

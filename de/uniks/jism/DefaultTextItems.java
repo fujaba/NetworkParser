@@ -62,5 +62,5 @@ public class DefaultTextItems {
 	public static final String COPY = "Copy";
 	public static final String PASTE = "Paste";
 	public static final String SELECTALL = "Select all";
-	public static final String TEXTSTATUSLINE = "Pos: %POS% / %LEN%  Line: %LINE% / %LINECOUNT%";
+	public static final String TEXTSTATUSLINE = "Pos: %POS% / %LEN%  Line: %LINE% / %LINECOUNT%  ";
 }
