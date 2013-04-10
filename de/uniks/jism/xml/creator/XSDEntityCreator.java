@@ -39,16 +39,19 @@ import de.uniks.jism.xml.XSDEntity;
 public class XSDEntityCreator implements XMLEntityCreator, XMLGrammar {
 	private String nameSpace;
 	private ArrayList<String> privateStack = new ArrayList<String>();
-	public static final String[] ignoreTags = new String[] { "annotation",
+	public static final String[] IGNORETAGS = new String[] {"annotation",
 			"documentation", "complextype", "simpletype" };
 
+	/**
+	 * @param namespace     the NameSpace for xsd
+	 */
 	public XSDEntityCreator(String namespace) {
 		this.nameSpace = namespace;
 	}
 
 	@Override
 	public String[] getProperties() {
-		return new String[] { XSDEntity.PROPERTY_CHOICE,
+		return new String[] {XSDEntity.PROPERTY_CHOICE,
 				XSDEntity.PROPERTY_SEQUENCE, XSDEntity.PROPERTY_ATTRIBUTE,
 				XSDEntity.PROPERTY_MINOCCURS, XSDEntity.PROPERTY_MAXOCCURS };
 	}
@@ -78,7 +81,7 @@ public class XSDEntityCreator implements XMLEntityCreator, XMLGrammar {
 	@Override
 	public boolean parseChild(XMLEntity entity, XMLEntity child, Tokener value) {
 		String tag = child.getTag();
-		for (String ignoreTag : ignoreTags) {
+		for (String ignoreTag : IGNORETAGS) {
 			if (tag.equalsIgnoreCase(nameSpace + ":" + ignoreTag)) {
 				return true;
 			}

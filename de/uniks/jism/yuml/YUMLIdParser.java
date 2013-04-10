@@ -94,8 +94,8 @@ public class YUMLIdParser extends IdMap {
 	/**
 	 * Parses the object.
 	 *
-	 * @param object
-	 *			the object
+	 * @param object the object
+	 * @param filter  Filter for Serialisation
 	 * @return the string
 	 */
 	public String parseObject(Object object, IdMapFilter filter) {
@@ -118,12 +118,9 @@ public class YUMLIdParser extends IdMap {
 	/**
 	 * Parses the class.
 	 *
-	 * @param object
-	 *			the object
-	 * @param showCardinality
-	 *			the show cardinality
-	 * @param filter
-	 *			Filter for Serialisation
+	 * @param object           the object to Serialisation
+	 * @param showCardinality  the show cardinality
+	 * @param filter           Filter for Serialisation
 	 * @return the string
 	 */
 	public String parseClass(Object object, boolean showCardinality,
@@ -134,16 +131,14 @@ public class YUMLIdParser extends IdMap {
 	/**
 	 * Parses the.
 	 *
-	 * @param object
-	 *			the object
-	 * @param typ
-	 *			Is it a OBJECT OR A CLASS diagram
-	 * @param filter
-	 *			Filter for Serialisation
+	 * @param object  the object to Serialisation
+	 * @param typ     Is it a OBJECT OR A CLASS diagram
+	 * @param filter  Filter for Serialisation
+	 * @param showCardinality  the show cardinality
 	 * @return the Object as String
 	 */
 	public String parse(Object object, int typ, IdMapFilter filter,
-			boolean isShowCardinality) {
+			boolean showCardinality) {
 		this.linkProperty.clear();
 		this.linkCardinality.clear();
 		this.valueYUML.clear();
@@ -155,10 +150,10 @@ public class YUMLIdParser extends IdMap {
 			Iterator<String> i = keySet.iterator();
 
 			String key = i.next();
-			String result = getUMLText(key, typ, isShowCardinality);
+			String result = getUMLText(key, typ, showCardinality);
 
 			while (i.hasNext()) {
-				result += "," + getUMLText(i.next(), typ, isShowCardinality);
+				result += "," + getUMLText(i.next(), typ, showCardinality);
 			}
 			return result;
 		}
@@ -167,11 +162,11 @@ public class YUMLIdParser extends IdMap {
 
 	/**
 	 * @param key of the Object
-	 * @param typ
-	 *			Is it a OBJECT OR A CLASS diagram
+	 * @param typ Is it a OBJECT OR A CLASS diagram
+	 * @param showCardinality  the show cardinality
 	 * @return Object as String
 	 */
-	private String getUMLText(String key, int typ, boolean isShowCardinality) {
+	private String getUMLText(String key, int typ, boolean showCardinality) {
 		String[] itemsId = key.split("-");
 
 		String first = getYUMLString(itemsId[0], typ);
@@ -184,7 +179,7 @@ public class YUMLIdParser extends IdMap {
 			String secondCardNo = this.linkCardinality.get(itemsId[1] + "-"
 					+ itemsId[0]);
 			result = first;
-			if (isShowCardinality) {
+			if (showCardinality) {
 				String firstCardName = this.linkProperty.get(key);
 				String secondCardName = this.linkProperty.get(itemsId[1] + "-"
 						+ itemsId[0]);
