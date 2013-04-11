@@ -31,9 +31,9 @@ package de.uniks.jism.yuml;
 */
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
+
 import de.uniks.jism.IdMap;
 import de.uniks.jism.IdMapFilter;
 import de.uniks.jism.interfaces.SendableEntityCreator;
@@ -50,18 +50,6 @@ public class YUMLIdParser extends IdMap {
 
 	/** The Constant for OBJECT Diagramms. */
 	public static final int OBJECT = 2;
-
-	/** The link cardinality. */
-	private HashMap<String, String> linkCardinality = new HashMap<String, String>();
-
-	/** The link property. */
-	private HashMap<String, String> linkProperty = new HashMap<String, String>();
-
-	/** The value yuml. */
-	private HashMap<String, String> valueYUML = new HashMap<String, String>();
-
-	/** The show line. */
-	private boolean isLine;
 
 	/**
 	 * Instantiates a new yUML id parser.
@@ -88,7 +76,7 @@ public class YUMLIdParser extends IdMap {
 	 * @return the string
 	 */
 	public String parseObject(Object object) {
-		return parse(object, OBJECT, new IdMapFilter(), true);
+		return parse(object, OBJECT, new YUmlIdMapFilter(true));
 	}
 
 	/**
@@ -98,8 +86,8 @@ public class YUMLIdParser extends IdMap {
 	 * @param filter  Filter for Serialisation
 	 * @return the string
 	 */
-	public String parseObject(Object object, IdMapFilter filter) {
-		return parse(object, OBJECT, filter, true);
+	public String parseObject(Object object, YUmlIdMapFilter filter) {
+		return parse(object, OBJECT, filter);
 	}
 
 	/**
@@ -111,21 +99,19 @@ public class YUMLIdParser extends IdMap {
 	 *			the show cardinality
 	 * @return the string
 	 */
-	public String parseClass(Object object, boolean showCardinality) {
-		return parse(object, CLASS, new IdMapFilter(), showCardinality);
+	public String parseClass(Object object, boolean showCardinality ) {
+		return parse(object, CLASS, new YUmlIdMapFilter(showCardinality));
 	}
 
 	/**
 	 * Parses the class.
 	 *
 	 * @param object           the object to Serialisation
-	 * @param showCardinality  the show cardinality
 	 * @param filter           Filter for Serialisation
 	 * @return the string
 	 */
-	public String parseClass(Object object, boolean showCardinality,
-			IdMapFilter filter) {
-		return parse(object, CLASS, filter, showCardinality);
+	public String parseClass(Object object, YUmlIdMapFilter filter) {
+		return parse(object, CLASS, filter);
 	}
 
 	/**
@@ -137,27 +123,22 @@ public class YUMLIdParser extends IdMap {
 	 * @param showCardinality  the show cardinality
 	 * @return the Object as String
 	 */
-	public String parse(Object object, int typ, IdMapFilter filter,
-			boolean showCardinality) {
-		this.linkProperty.clear();
-		this.linkCardinality.clear();
-		this.valueYUML.clear();
-
+	protected String parse(Object object, int typ, YUmlIdMapFilter filter) {
 		String id = parse(object, filter, typ);
-		// Links aufl�sen
-		Set<String> keySet = this.linkProperty.keySet();
+		// Links aufloesen
+		Set<String> keySet = filter.getLinkPropertys();
 		if (keySet.size() > 0) {
 			Iterator<String> i = keySet.iterator();
 
 			String key = i.next();
-			String result = getUMLText(key, typ, showCardinality);
+			String result = getUMLText(key, typ, filter);
 
 			while (i.hasNext()) {
-				result += "," + getUMLText(i.next(), typ, showCardinality);
+				result += "," + getUMLText(i.next(), typ, filter);
 			}
 			return result;
 		}
-		return getYUMLString(id, typ);
+		return getYUMLString(id, typ, filter);
 	}
 
 	/**
@@ -166,23 +147,21 @@ public class YUMLIdParser extends IdMap {
 	 * @param showCardinality  the show cardinality
 	 * @return Object as String
 	 */
-	private String getUMLText(String key, int typ, boolean showCardinality) {
+	private String getUMLText(String key, int typ, YUmlIdMapFilter filter) {
 		String[] itemsId = key.split("-");
 
-		String first = getYUMLString(itemsId[0], typ);
-		String second = getYUMLString(itemsId[1], typ);
+		String first = getYUMLString(itemsId[0], typ, filter);
+		String second = getYUMLString(itemsId[1], typ, filter);
 		String result;
 		if (typ == OBJECT) {
 			result = first + "-" + second;
 		} else {
-			String firstCardNo = this.linkCardinality.get(key);
-			String secondCardNo = this.linkCardinality.get(itemsId[1] + "-"
-					+ itemsId[0]);
+			String firstCardNo = filter.getLinkCardinality(key);
+			String secondCardNo = filter.getLinkCardinality(itemsId[1] + "-" + itemsId[0]);
 			result = first;
-			if (showCardinality) {
-				String firstCardName = this.linkProperty.get(key);
-				String secondCardName = this.linkProperty.get(itemsId[1] + "-"
-						+ itemsId[0]);
+			if ( filter.isShowCardinality() ) {
+				String firstCardName = filter.getLinkProperty(key);
+				String secondCardName = filter.getLinkProperty(itemsId[1] + "-" + itemsId[0]);
 				result += firstCardName + ": " + firstCardNo + "-";
 				if (secondCardName != null) {
 					result += secondCardName + ": " + secondCardNo;
@@ -207,13 +186,13 @@ public class YUMLIdParser extends IdMap {
 	 *			Is it a OBJECT OR A CLASS diagram
 	 * @return the yUML string
 	 */
-	private String getYUMLString(String id, int typ) {
-		String removeString = this.valueYUML.remove(id);
+	private String getYUMLString(String id, int typ, YUmlIdMapFilter filter) {
+		String removeString = filter.removeValueYUML(id);
 		if (removeString != null) {
 			return removeString;
 		}
 		if (typ == OBJECT) {
-			if (isShowLine()) {
+			if (filter.isShowLine()) {
 				String text = id + " : " + getClassName(id);
 				return "["
 						+ text
@@ -237,7 +216,7 @@ public class YUMLIdParser extends IdMap {
 	 *			Filter for converting
 	 * @return the string
 	 */
-	private String parse(Object object, IdMapFilter filter, int typ) {
+	private String parse(Object object, YUmlIdMapFilter filter, int typ) {
 		String className = "";
 		String id = "";
 		String mainKey = "";
@@ -258,8 +237,8 @@ public class YUMLIdParser extends IdMap {
 			}
 		}
 
-		if (prototyp != null && !this.valueYUML.containsKey(id)) {
-			this.valueYUML.put(id, null);
+		if (prototyp != null && !filter.containsKeyValueYUML(id)) {
+			filter.addValueYUML(id,  null);
 			if (prototyp.getProperties().length > 0) {
 				result += "|";
 				boolean first = true;
@@ -282,9 +261,8 @@ public class YUMLIdParser extends IdMap {
 
 							String subId = parse(containee, filter, typ);
 							String key = id + "-" + subId;
-							this.linkProperty.put(key, property);
-							this.linkCardinality.put(key,
-									getCardinality("0..n", typ));
+							filter.addLinkProperty(key, property);
+							filter.addLinkCardinality(key, getCardinality("0..n", typ));
 						}
 					} else {
 						if (!filter.isRegard(this, object, property, value,
@@ -299,9 +277,8 @@ public class YUMLIdParser extends IdMap {
 						if (valueCreater != null) {
 							String subId = parse(value, filter, typ);
 							String key = id + "-" + subId;
-							this.linkProperty.put(key, property);
-							this.linkCardinality.put(key,
-									getCardinality("0..1", typ));
+							filter.addLinkProperty(key, property);
+							filter.addLinkCardinality(key, getCardinality("0..n", typ));
 						} else {
 							if (!first) {
 								result += ";";
@@ -321,7 +298,7 @@ public class YUMLIdParser extends IdMap {
 			}
 			result += "]";
 			put(id, object);
-			this.valueYUML.put(id, result);
+			filter.addValueYUML(id, result);
 		}
 		return id;
 	}
@@ -357,22 +334,4 @@ public class YUMLIdParser extends IdMap {
 		return className.substring(className.lastIndexOf('.') + 1);
 	}
 
-	/**
-	 * Checks if is show line.
-	 *
-	 * @return true, if is show line for objects
-	 */
-	public boolean isShowLine() {
-		return this.isLine;
-	}
-
-	/**
-	 * Sets the show line.
-	 *
-	 * @param value
-	 *			the new show line
-	 */
-	public void setShowLine(boolean value) {
-		this.isLine = value;
-	}
 }
