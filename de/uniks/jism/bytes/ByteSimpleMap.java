@@ -1,7 +1,8 @@
 package de.uniks.jism.bytes;
 
 /*
- Copyright (c) 2012, Stefan Lindel
+ Json Id Serialisierung Map
+ Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -17,7 +18,7 @@ package de.uniks.jism.bytes;
  4. Neither the name of contributors may be used to endorse or promote products
  derived from this software without specific prior written permission.
 
- THIS SOFTWARE 'Json Id Serialisierung Map' IS PROVIDED BY STEFAN LINDEL ''AS IS'' AND ANY
+ THE SOFTWARE 'AS IS' IS PROVIDED BY STEFAN LINDEL ''AS IS'' AND ANY
  EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
  DISCLAIMED. IN NO EVENT SHALL STEFAN LINDEL BE LIABLE FOR ANY
@@ -27,12 +28,12 @@ package de.uniks.jism.bytes;
  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+*/
+
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-
 import de.uniks.jism.AbstractIdMap;
 import de.uniks.jism.CloneFilter;
 import de.uniks.jism.IdMap;
