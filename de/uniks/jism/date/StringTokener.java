@@ -45,10 +45,26 @@ public class StringTokener extends Tokener {
 	public String nextString(char quote, boolean allowCRLF,
 			boolean ignoreCurrent) {
 
-		if (getCurrentChar() == quote) {
+		if(quote=='"'){
+			if (getCurrentChar() == quote) {
+				isString = true;
+			} else {
+				isString = !isString;
+			}
+		}else if(getCurrentChar()=='"'){
 			isString = true;
-		} else {
-			isString = !isString;
+			String sub = "";
+			StringBuilder sb=new StringBuilder();
+			for(;;){
+				sub = super.nextString(quote, allowCRLF, ignoreCurrent);
+				sb.append(sub);
+				if(sub.length()>0&&!sub.endsWith("\"")){
+					sb.append(",");
+				}else{
+					break;
+				}
+			}
+			return sb.toString();
 		}
 		return super.nextString(quote, allowCRLF, ignoreCurrent);
 	}
@@ -68,5 +84,8 @@ public class StringTokener extends Tokener {
 	public void setString(boolean isString) {
 		this.isString = isString;
 	}
-
+	
+	public void setLength(int length){
+		this.length = length;
+	}
 }
