@@ -74,8 +74,11 @@ public class DateTime extends Date {
 	 */
 	public DateTime(int year, int month, int day) {
 		super(0);
-		this.setNewDate(getYearSeconds(year)
-				+ get(DateTimeFields.SECOND_OF_DAY, year, month, day));
+		this.setYear(year);
+		this.setMonth(month);
+		this.setDate(day);
+//		this.setNewDate(getYearSeconds(year)
+//				+ get(DateTimeFields.SECOND_OF_DAY, year, month, day));
 		this.initDate();
 	}
 
@@ -94,8 +97,8 @@ public class DateTime extends Date {
 		Integer month = Integer.valueOf(monthString);
 		Integer year = Integer.valueOf(yearString);
 
-		this.setNewDate(getYearSeconds(year)
-				+ get(DateTimeFields.SECOND_OF_DAY, year, month, day));
+		this.setNewDate(getYearSeconds(year)+ DateTime.get(DateTimeFields.SECOND_OF_DAY, new DateTime(year, month, day)));
+//				+ get(DateTimeFields.SECOND_OF_DAY, year, month, day));
 		this.initDate();
 	}
 
@@ -162,7 +165,6 @@ public class DateTime extends Date {
 	 * @param amount
 	 *            value of changes
 	 */
-	@SuppressWarnings("deprecation")
 	public void add(String fieldCode, int amount) {
 		if (DateTimeFields.DAY_OF_YEAR.equalsIgnoreCase(fieldCode)
 				|| DateTimeFields.DAY_OF_MONTH.equalsIgnoreCase(fieldCode)
@@ -200,15 +202,10 @@ public class DateTime extends Date {
 		}
 	}
 
-	public static long get(String field, int year, int month, int day) {
-		return get(field, new DateTime(year, month, day));
-	}
-
 	public long get(String field) {
 		return get(field, this);
 	}
 
-	@SuppressWarnings("deprecation")
 	public static long get(String field, DateTime reference) {
 		if (DateTimeFields.MILLISECONDS.equalsIgnoreCase(field)) {
 			return reference.getTime();
@@ -223,6 +220,9 @@ public class DateTime extends Date {
 					% DateTimeFields.ONE_MINUTE;
 		} else if (DateTimeFields.SECOND_OF_DAY.equalsIgnoreCase(field)) {
 			return (get(DateTimeFields.MILLISECOND_OF_DAY, reference) / DateTimeFields.ONE_SECOND);
+		} else if (DateTimeFields.SECOND_OF_YEAR.equalsIgnoreCase(field)) {
+			long milli = get(DateTimeFields.MILLISECONDS, reference)/ DateTimeFields.ONE_SECOND;
+			return milli - reference.getYearSeconds(reference.getYear());
 		} else if (DateTimeFields.MINUTES.equalsIgnoreCase(field)) {
 			return get(DateTimeFields.MILLISECONDS, reference)
 					/ DateTimeFields.ONE_MINUTE;
@@ -257,11 +257,10 @@ public class DateTime extends Date {
 	 * 
 	 * @param newYear
 	 */
-	@SuppressWarnings("deprecation")
 	public void setYear(int newYear) {
-		this.setNewDate(getYearSeconds(newYear)
-				+ get(DateTimeFields.SECOND_OF_DAY, newYear, this.getMonth(),
-						this.getDate()) / 1000);
+		this.setNewDate(getYearSeconds(newYear)+get(DateTimeFields.SECOND_OF_YEAR));
+		//FIXME 
+		System.out.println(get(DateTimeFields.SECOND_OF_YEAR));
 	}
 
 	/**
@@ -282,6 +281,21 @@ public class DateTime extends Date {
 	@SuppressWarnings("deprecation")
 	public int getMonth() {
 		return super.getMonth() + 1;
+	}
+	
+	@SuppressWarnings("deprecation")
+	public void setHours(int hours){
+		super.setHours(hours);
+	}
+	
+	@SuppressWarnings("deprecation")
+	public void setMinutes(int minutes){
+		super.setMinutes(minutes);
+	}
+	
+	@SuppressWarnings("deprecation")
+	public void setSeconds(int seconds){
+		super.setSeconds(seconds);
 	}
 
 	// /**
@@ -309,27 +323,30 @@ public class DateTime extends Date {
 
 	@SuppressWarnings("deprecation")
 	public void setMonth(int newMonth) {
-		int year = this.getYear();
-		this.setNewDate(getYearSeconds(year)
-				+ get(DateTimeFields.SECOND_OF_DAY, year, newMonth,
-						this.getDate()));
+//		int year = this.getYear();
+		super.setMonth(newMonth);
+//		this.setNewDate(getYearSeconds(year)+get(DateTimeFields.SECOND_OF_YEAR));
+//		System.out.println(get(DateTimeFields.SECOND_OF_YEAR));
 	}
 
-	// public int getDate(){
-	// return Integer.parseInt(splitDate()[2]);
-	// }
 	public int getDay() {
 		// Get the Weekday
 		// 01.01.70 is Tuersday
 		int weekday = (int) ((this.get(DateTimeFields.DAYS) - 3) % 7);
 		return weekday;
 	}
-
+	
+	@SuppressWarnings("deprecation")
+	public int getDate(){
+		return super.getDate();
+	}
+	
+	@SuppressWarnings("deprecation")
 	public void setDate(int dayOfMonth) {
-		int year = this.getYear();
-		this.setNewDate(getYearSeconds(year)
-				+ get(DateTimeFields.SECOND_OF_DAY, year, this.getMonth(),
-						dayOfMonth));
+		super.setDate(dayOfMonth);
+//		int year = this.getYear();
+//		this.setNewDate(getYearSeconds(year)+get(DateTimeFields.SECOND_OF_YEAR));
+//		System.out.println(get(DateTimeFields.SECOND_OF_YEAR));
 	}
 
 	public int getDayOfYear(int year, int month, int dayOfMonth) {

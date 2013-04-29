@@ -50,6 +50,7 @@ public class DateTimeFields extends HashMap<String, DateTimeField> {
 	public static final String MINUTE_OF_HOUR = "minute_of_hour";
 	public static final String SECOND_OF_MINUTE = "second_of_minute";
 	public static final String SECOND_OF_DAY = "second_of_minute";
+	public static final String SECOND_OF_YEAR = "second_of_year";
 	public static final String SECONDS = "seconds";
 	public static final String MILLISECONDS = "milliseconds";
 	public static final String MILLISECOND_OF_DAY = "millisecond_of_day";
