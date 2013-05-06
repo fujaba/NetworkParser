@@ -34,7 +34,7 @@ import java.util.Date;
 import de.uniks.jism.DefaultTextItems;
 import de.uniks.jism.TextItems;
 
-public class DateTime extends Date {
+public class DateTimeEntity extends Date {
 	private static final long serialVersionUID = -6958410418045637223L;
 	private DateTimeFields fields = new DateTimeFields();
 	private TextItems items;
@@ -54,11 +54,11 @@ public class DateTime extends Date {
 			DefaultTextItems.WEDNESDAY, DefaultTextItems.THURSDAY, DefaultTextItems.FRIDAY, DefaultTextItems.SATURDAY };
 	private boolean isInitConstants = false;
 
-	public DateTime() {
+	public DateTimeEntity() {
 		super();
 	}
 
-	public DateTime(long milliseconds) {
+	public DateTimeEntity(long milliseconds) {
 		super(milliseconds);
 	}
 
@@ -72,7 +72,7 @@ public class DateTime extends Date {
 	 * @param day
 	 *            day of the date
 	 */
-	public DateTime(int year, int month, int day) {
+	public DateTimeEntity(int year, int month, int day) {
 		super(0);
 		this.setYear(year);
 		this.setMonth(month);
@@ -88,7 +88,7 @@ public class DateTime extends Date {
 	 * @param date
 	 *            date as String
 	 */
-	public DateTime(String date) {
+	public DateTimeEntity(String date) {
 		super(0);
 		String dayString = date.substring(0, 1);
 		String monthString = date.substring(3, 4);
@@ -97,7 +97,7 @@ public class DateTime extends Date {
 		Integer month = Integer.valueOf(monthString);
 		Integer year = Integer.valueOf(yearString);
 
-		this.setNewDate(getYearSeconds(year)+ DateTime.get(DateTimeFields.SECOND_OF_DAY, new DateTime(year, month, day)));
+		this.setNewDate(getYearSeconds(year)+ DateTimeEntity.get(DateTimeFields.SECOND_OF_DAY, new DateTimeEntity(year, month, day)));
 //				+ get(DateTimeFields.SECOND_OF_DAY, year, month, day));
 		this.initDate();
 	}
@@ -108,7 +108,7 @@ public class DateTime extends Date {
 	 * @param date
 	 *            with new date
 	 */
-	public DateTime(java.util.Date date) {
+	public DateTimeEntity(java.util.Date date) {
 		super(date.getTime());
 		this.initDate();
 	}
@@ -206,7 +206,7 @@ public class DateTime extends Date {
 		return get(field, this);
 	}
 
-	public static long get(String field, DateTime reference) {
+	public static long get(String field, DateTimeEntity reference) {
 		if (DateTimeFields.MILLISECONDS.equalsIgnoreCase(field)) {
 			return reference.getTime();
 		} else if (DateTimeFields.MILLISECOND_OF_DAY.equalsIgnoreCase(field)) {
@@ -362,7 +362,7 @@ public class DateTime extends Date {
 	 *            > 1583
 	 * @return The date of Easter Sunday for a given year.
 	 */
-	public static DateTime getEasterSunday(int year) {
+	public static DateTimeEntity getEasterSunday(int year) {
 		int i = year % 19;
 		int j = year / 100;
 		int k = year % 100;
@@ -374,7 +374,7 @@ public class DateTime extends Date {
 		int month = n / 31;
 		int day = (n % 31) + 1;
 
-		return new DateTime(year, month - 1, day);
+		return new DateTimeEntity(year, month - 1, day);
 	}
 
 	/**
