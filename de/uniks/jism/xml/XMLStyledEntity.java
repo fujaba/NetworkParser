@@ -83,6 +83,6 @@ public class XMLStyledEntity extends XMLEntity implements PeerMessage {
 
 
 	public void setBold(boolean value) {
-		style.setBold(value);
+		style.withBold(value);
 	}
 }
