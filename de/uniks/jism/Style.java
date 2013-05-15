@@ -64,52 +64,51 @@ public class Style implements PeerMessage{
 	private String background;
 
 	/**
-	 * Empty Constructor
+	 * Set the Settings
 	 */
-	public Style(){ 
-	}
-
-	/**
-	 * Empty Constructor
-	 */
-	public Style(Object... fields){
+	public Style withSettings(Object... fields){
 		if (fields.length % 2 == 0) {
 			for (int z = 0; z < fields.length; z += 2) {
 				set((String)fields[z], fields[z + 1]);
 			}
 		}
+		return this;
 	}
 
 	public boolean isBold() {
 		return bold;
 	}
 
-	public void setBold(boolean bold) {
+	public Style withBold(boolean bold) {
 		this.bold = bold;
+		return this;
 	}
 
 	public boolean isItalic() {
 		return italic;
 	}
 
-	public void setItalic(boolean italic) {
+	public Style withItalic(boolean italic) {
 		this.italic = italic;
+		return this;
 	}
 
 	public String getFontFamily() {
 		return fontfamily;
 	}
 
-	public void setFontFamily(String fontFamily) {
+	public Style withFontFamily(String fontFamily) {
 		this.fontfamily = fontFamily;
+		return this;
 	}
 
 	public String getFontSize() {
 		return fontsize;
 	}
 
-	public void setFontSize(String size) {
+	public Style withFontSize(String size) {
 		this.fontsize = size;
+		return this;
 	}
 
 	/*
@@ -146,22 +145,22 @@ public class Style implements PeerMessage{
 	@Override
 	public boolean set(String attribute, Object value) {
 		if (attribute.equalsIgnoreCase(PROPERTY_BOLD)) {
-			setBold((Boolean) value);
+			withBold((Boolean) value);
 			return true;
 		} else if (attribute.equalsIgnoreCase(PROPERTY_ITALIC)) {
-			setItalic((Boolean) value);
+			withItalic((Boolean) value);
 			return true;
 		} else if (attribute.equalsIgnoreCase(PROPERTY_FONTFAMILY)) {
-			setFontFamily((String) value);
+			withFontFamily((String) value);
 			return true;
 		} else if (attribute.equalsIgnoreCase(PROPERTY_FONTSIZE)) {
-			setFontSize(value.toString());
+			withFontSize(value.toString());
 			return true;
 		} else if (attribute.equalsIgnoreCase(PROPERTY_FORGROUND)) {
-			setForground((String) value);
+			withForground((String) value);
 			return true;
 		} else if (attribute.equalsIgnoreCase(PROPERTY_BACKGROUND)) {
-			setBackground((String) value);
+			withBackground((String) value);
 			return true;
 		}
 		return false;
@@ -171,15 +170,17 @@ public class Style implements PeerMessage{
 		return forground;
 	}
 
-	public void setForground(String forground) {
+	public Style withForground(String forground) {
 		this.forground = forground;
+		return this;
 	}
 
 	public String getBackground() {
 		return background;
 	}
 
-	public void setBackground(String background) {
+	public Style withBackground(String background) {
 		this.background = background;
+		return this;
 	}
 }
