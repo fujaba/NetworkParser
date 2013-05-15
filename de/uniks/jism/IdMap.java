@@ -89,7 +89,7 @@ public class IdMap extends AbstractIdMap implements Map<String, Object> {
 		super();
 		this.keys = new HashMap<Object, String>();
 		this.values = new HashMap<String, Object>();
-		this.addCreator(new TextItems());
+		this.withCreator(new TextItems());
 	}
 
 	/**
@@ -429,26 +429,12 @@ public class IdMap extends AbstractIdMap implements Map<String, Object> {
 	}
 
 	@Override
-	public void addCreator(String className, SendableEntityCreator creator) {
+	public AbstractIdMap withCreator(String className, SendableEntityCreator creator) {
 		if (this.parent != null) {
-			this.parent.addCreator(className, creator);
-			return;
+			this.parent.withCreator(className, creator);
+			return this;
 		}
-		super.addCreator(className, creator);
-	}
-
-	/**
-	 * Adds the creator.
-	 * 
-	 * @param createrClass
-	 *            the creater class
-	 * @return true, if successful
-	 */
-	public boolean addCreator(SendableEntityCreator createrClass) {
-		if (this.parent != null) {
-			return this.parent.addCreator(createrClass);
-		}
-		return super.addCreator(createrClass);
+		return super.withCreator(className, creator);
 	}
 
 	/**
