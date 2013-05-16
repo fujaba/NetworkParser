@@ -63,18 +63,6 @@ public class Style implements PeerMessage{
 	/** The Font-Size-Family value. */
 	private String background;
 
-	/**
-	 * Set the Settings
-	 */
-	public Style withSettings(Object... fields){
-		if (fields.length % 2 == 0) {
-			for (int z = 0; z < fields.length; z += 2) {
-				set((String)fields[z], fields[z + 1]);
-			}
-		}
-		return this;
-	}
-
 	public boolean isBold() {
 		return bold;
 	}
