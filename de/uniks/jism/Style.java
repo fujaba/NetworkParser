@@ -32,7 +32,7 @@ package de.uniks.jism;
 
 import de.uniks.jism.interfaces.PeerMessage;
 
-public class Style implements PeerMessage{
+public class Style implements PeerMessage, Cloneable{
 	/** The Constant PROPERTY_BOLD for Bold Attribute */
 	public static final String PROPERTY_BOLD = "bold";
 	/** The Bold value. */
@@ -171,4 +171,15 @@ public class Style implements PeerMessage{
 		this.background = background;
 		return this;
 	}
+	
+	public Style clone(){
+		return new Style()
+				.withFontFamily(fontfamily)
+				.withFontSize(fontsize)
+				.withForground(forground)
+				.withBackground(background)
+				.withBold(bold)
+				.withItalic(italic);
+	}
+	
 }
