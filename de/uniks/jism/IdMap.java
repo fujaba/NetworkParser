@@ -107,9 +107,11 @@ public class IdMap extends AbstractIdMap implements Map<String, Object> {
 	 * 
 	 * @param counter
 	 *            the new counter
+	 * @return 
 	 */
-	public void setCounter(IdMapCounter counter) {
+	public IdMap withCounter(IdMapCounter counter) {
 		this.counter = counter;
+		return this;
 	}
 
 	/**
