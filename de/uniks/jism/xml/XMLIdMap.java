@@ -68,7 +68,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 	@Override
 	protected void init() {
 		super.init();
-		getCounter().enableId(false);
+		getCounter().withId(false);
 	}
 
 	/*
