@@ -47,4 +47,6 @@ public interface SendableEntity {
 	 */
 	public boolean addPropertyChangeListener(String propertyName,
 			PropertyChangeListener listener);
+	
+	public boolean removePropertyChangeListener(PropertyChangeListener listener);
 }
