@@ -265,8 +265,7 @@ public class IdMap extends AbstractIdMap implements Map<String, Object> {
 	 */
 	public boolean addListener(Object object) {
 		if (object instanceof SendableEntity) {
-			return ((SendableEntity) object).addPropertyChangeListener(
-					IdMap.UPDATE, getUpdateListener());
+			return ((SendableEntity) object).addPropertyChangeListener(getUpdateListener());
 		}
 		return false;
 	}
