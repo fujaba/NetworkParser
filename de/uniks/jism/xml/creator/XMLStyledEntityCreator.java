@@ -37,8 +37,7 @@ import de.uniks.jism.interfaces.XMLGrammar;
 import de.uniks.jism.xml.XMLEntity;
 import de.uniks.jism.xml.XMLStyledEntity;
 
-public class XMLStyledEntityCreator implements SendableEntityCreator,
-		XMLGrammar {
+public class XMLStyledEntityCreator implements SendableEntityCreator, XMLGrammar {
 	/** The properties. */
 	private final String[] properties = new String[] {
 			Style.PROPERTY_FONTFAMILY,

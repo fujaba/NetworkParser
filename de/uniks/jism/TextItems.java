@@ -35,8 +35,7 @@ import de.uniks.jism.interfaces.LocalisationInterface;
 import de.uniks.jism.interfaces.PeerMessage;
 import de.uniks.jism.interfaces.SendableEntityCreator;
 
-public class TextItems implements SendableEntityCreator, PeerMessage,
-		LocalisationInterface {
+public class TextItems implements SendableEntityCreator, PeerMessage, LocalisationInterface {
 	public static final String PROPERTY_VALUE = "value";
 	private TreeMap<String, String> values = new TreeMap<String, String>();
 	private LocalisationInterface customLanguage = null;
