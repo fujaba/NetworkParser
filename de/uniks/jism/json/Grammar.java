@@ -31,6 +31,7 @@ package de.uniks.jism.json;
 */
 
 import java.util.Iterator;
+
 import de.uniks.jism.IdMap;
 import de.uniks.jism.interfaces.NoIndexCreator;
 import de.uniks.jism.interfaces.SendableEntityCreator;
@@ -87,5 +88,9 @@ public class Grammar {
 			json.put(JsonIdMap.JSON_PROPS, jsonProp);
 		}
 		return json;
+	}
+	
+	public String getValue(JsonObject json, String property){
+		return json.getString(property);
 	}
 }

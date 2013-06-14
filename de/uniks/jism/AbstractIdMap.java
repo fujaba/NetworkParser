@@ -30,10 +30,12 @@ package de.uniks.jism;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Map.Entry;
+
 import de.uniks.jism.interfaces.SendableEntityCreator;
 
 public abstract class AbstractIdMap {
@@ -144,4 +146,12 @@ public abstract class AbstractIdMap {
 	 * @return the object
 	 */
 	public abstract Object cloneObject(Object reference, CloneFilter filter);
+	
+	/**
+	 * @return a Collection of All Creators
+	 */
+	public Collection<SendableEntityCreator> getCreators(){
+		return creators.values();
+	}
+
 }
