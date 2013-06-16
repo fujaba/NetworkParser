@@ -439,7 +439,7 @@ public class JsonIdMap extends IdMap {
 			put(jsonId, target);
 			getCounter().readId(jsonId);
 		}
-		JsonObject jsonProp = grammar.getJsonObjectProperties(jsonObject);
+		JsonObject jsonProp = grammar.getJsonObjectProperties(jsonObject, this);
 		if (jsonProp != null) {
 			SendableEntityCreator prototyp = grammar.getObjectCreator(target,
 					target.getClass().getName(), this);
