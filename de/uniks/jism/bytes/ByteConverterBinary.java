@@ -41,11 +41,6 @@ public class ByteConverterBinary extends ByteConverter {
 		return converter.toString(new byte[] { (byte) value }, 1);
 	}
 
-	public static String toString(byte[] values) {
-		ByteConverterBinary converter = new ByteConverterBinary();
-		return converter.toString(values, values.length);
-	}
-
 	/**
 	 * To Binary string.
 	 * 

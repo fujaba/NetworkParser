@@ -43,6 +43,10 @@ public abstract class ByteConverter {
 	}
 
 	public abstract String toString(byte[] values, int size);
+	
+	public String toString(byte[] values){
+		return toString(values, values.length);
+	}
 
 	public abstract byte[] decode(String value);
 }
