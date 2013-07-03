@@ -30,6 +30,8 @@ package de.uniks.jism.date;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import java.util.ArrayList;
+
 import de.uniks.jism.Tokener;
 import de.uniks.jism.interfaces.BaseEntity;
 import de.uniks.jism.interfaces.BaseEntityList;
@@ -40,7 +42,7 @@ public class StringTokener extends Tokener {
 	public StringTokener(String value) {
 		super(value);
 	}
-
+	
 	@Override
 	public String nextString(char quote, boolean allowCRLF,
 			boolean ignoreCurrent) {
@@ -87,5 +89,41 @@ public class StringTokener extends Tokener {
 	
 	public void setLength(int length){
 		this.length = length;
+	}
+	
+	public ArrayList<String> getStringList(){
+		ArrayList<String> list=new ArrayList<String>();
+		String sub;
+		do{
+			sub=nextString('"', true, true);
+			if(sub.length()>0){
+				if(isString()){
+					list.add("\""+sub+"\"");
+				}else{
+					list.add(sub);
+				}
+			}
+		}while(sub.length()>0);
+		return list;
+	}
+	
+	public String getString(String value){
+		if(value.startsWith("\"") && value.endsWith("\"")){
+			return value.substring(1, value.length()-1);
+		}
+		return value;
+	}
+	
+	public ArrayList<String> getString(String value, boolean split){
+		ArrayList<String> result = new ArrayList<String>();
+		if(value.startsWith("\"") && value.endsWith("\"")){
+			result.add(value.substring(1, value.length()-1));
+			return result;
+		}
+		String[] values = value.split(" ");
+		for(String item :values){
+			result.add(item);
+		}
+		return result;
 	}
 }

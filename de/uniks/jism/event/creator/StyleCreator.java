@@ -35,7 +35,7 @@ import de.uniks.jism.interfaces.SendableEntityCreator;
 public class StyleCreator implements SendableEntityCreator{
 	private static final String[] props=new String[]{Style.PROPERTY_BOLD, Style.PROPERTY_ITALIC, Style.PROPERTY_FONTFAMILY, 
 													Style.PROPERTY_FONTSIZE, Style.PROPERTY_FORGROUND, Style.PROPERTY_BACKGROUND,
-													Style.PROPERTY_UNDERLINE, Style.PROPERTY_ALIGNMENT};
+													Style.PROPERTY_UNDERLINE, Style.PROPERTY_ALIGNMENT, Style.PROPERTY_WIDTH, Style.PROPERTY_HEIGHT};
 
 	@Override
 	public String[] getProperties() {
