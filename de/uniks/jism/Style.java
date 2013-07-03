@@ -72,7 +72,17 @@ public class Style implements PeerMessage, Cloneable{
 	public static final String PROPERTY_ALIGNMENT = "alignment";
 	/** The Underline value. */
 	private String alignment;
+	
+	
+	public static final String PROPERTY_WIDTH = "width";
+	/** The Width value. */
+	private double width;
 
+	public static final String PROPERTY_HEIGHT = "height";
+	/** The Height value. */
+	private double height;
+
+	
 	public boolean isBold() {
 		return bold;
 	}
@@ -137,6 +147,10 @@ public class Style implements PeerMessage, Cloneable{
 			return getUnderline();
 		} else if (attribute.equalsIgnoreCase(PROPERTY_ALIGNMENT)) {
 			return getAlignment();
+		} else if (attribute.equalsIgnoreCase(PROPERTY_WIDTH)) {
+			return getWidth();
+		} else if (attribute.equalsIgnoreCase(PROPERTY_HEIGHT)) {
+			return getHeight();
 		}
 		return null;
 	}
@@ -170,6 +184,12 @@ public class Style implements PeerMessage, Cloneable{
 		} else if (attribute.equalsIgnoreCase(PROPERTY_ALIGNMENT)) {
 			withAlignment((String)value);
 			return true;
+		} else if (attribute.equalsIgnoreCase(PROPERTY_WIDTH)) {
+			withWidth(Double.valueOf(""+value));
+			return true;
+		} else if (attribute.equalsIgnoreCase(PROPERTY_HEIGHT)) {
+			withHeight(Double.valueOf(""+value));
+			return true;
 		}
 		return false;
 	}
@@ -201,7 +221,9 @@ public class Style implements PeerMessage, Cloneable{
 				.withBold(bold)
 				.withItalic(italic)
 				.withAlignment(alignment)
-				.withUnderline(underline);
+				.withUnderline(underline)
+				.withWidth(width)
+				.withHeight(height);
 	}
 
 	public boolean getUnderline() {
@@ -219,6 +241,24 @@ public class Style implements PeerMessage, Cloneable{
 
 	public Style withAlignment(String alignment) {
 		this.alignment = alignment;
+		return this;
+	}
+
+	public double getHeight() {
+		return height;
+	}
+
+	public Style withHeight(double height) {
+		this.height = height;
+		return this;
+	}
+
+	public double getWidth() {
+		return width;
+	}
+
+	public Style withWidth(double width) {
+		this.width = width;
 		return this;
 	}
 }
