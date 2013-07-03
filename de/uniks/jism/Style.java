@@ -144,7 +144,7 @@ public class Style implements PeerMessage, Cloneable{
 		} else if (attribute.equalsIgnoreCase(PROPERTY_BACKGROUND)) {
 			return getBackground();
 		} else if (attribute.equalsIgnoreCase(PROPERTY_UNDERLINE)) {
-			return getUnderline();
+			return isUnderline();
 		} else if (attribute.equalsIgnoreCase(PROPERTY_ALIGNMENT)) {
 			return getAlignment();
 		} else if (attribute.equalsIgnoreCase(PROPERTY_WIDTH)) {
@@ -226,7 +226,7 @@ public class Style implements PeerMessage, Cloneable{
 				.withHeight(height);
 	}
 
-	public boolean getUnderline() {
+	public boolean isUnderline() {
 		return underline;
 	}
 
