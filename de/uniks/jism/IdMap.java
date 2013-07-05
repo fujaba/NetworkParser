@@ -132,7 +132,7 @@ public class IdMap extends AbstractIdMap implements Map<String, Object> {
 	 * @param value
 	 *            the new session id
 	 */
-	public void setSessionId(String value) {
+	public void withSessionId(String value) {
 		getCounter().withPrefixId(value);
 	}
 
