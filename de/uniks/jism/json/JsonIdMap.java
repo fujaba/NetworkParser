@@ -387,9 +387,11 @@ public class JsonIdMap extends IdMap {
 
 		if (typeInfo != null) {
 			if (getCounter().isId()) {
-				String jsonId = grammar.getValue(jsonObject, ID);
-				if (jsonId != null) {
-					result = getObject(jsonId);
+				if(grammar.hasValue(jsonObject, ID)){
+					String jsonId = grammar.getValue(jsonObject, ID);
+					if (jsonId != null) {
+						result = getObject(jsonId);
+					}
 				}
 			}
 			if (result == null) {
