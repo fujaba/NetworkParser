@@ -69,7 +69,7 @@ public class XMLEntity extends Entity implements BaseEntityList {
 	 *            the tag
 	 */
 	public XMLEntity(String value) {
-		this(new XMLTokener(value));
+		this(new XMLTokener().withText(value));
 	}
 
 	/**

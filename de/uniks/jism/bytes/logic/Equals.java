@@ -30,9 +30,9 @@ package de.uniks.jism.bytes.logic;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import java.nio.ByteBuffer;
+import de.uniks.jism.Buffer;
 
-public class Equals implements ByteCondition {
+public class Equals implements Condition {
 	private Byte value;
 	// Position of the Byte or -1 for currentPosition
 	private int position = -1;
@@ -47,7 +47,7 @@ public class Equals implements ByteCondition {
 	}
 
 	@Override
-	public boolean matches(ByteBuffer buffer) {
+	public boolean matches(Buffer buffer) {
 		int pos;
 		if (position < 0) {
 			pos = buffer.position();

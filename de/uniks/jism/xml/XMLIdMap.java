@@ -255,7 +255,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 	 */
 	public Object decode(String value) {
 		Object result = null;
-		this.value = new XMLTokener(value);
+		this.value = new XMLTokener().withText(value);
 		this.stack.clear();
 		while (!this.value.isEnd()) {
 			if (this.value.stepPos("" + ITEMSTART, false, false)) {

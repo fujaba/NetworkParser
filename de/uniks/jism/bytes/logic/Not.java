@@ -30,17 +30,17 @@ package de.uniks.jism.bytes.logic;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import java.nio.ByteBuffer;
+import de.uniks.jism.Buffer;
 
-public class Not implements ByteCondition {
-	private ByteCondition item;
+public class Not implements Condition {
+	private Condition item;
 
-	public Not(ByteCondition byteCondition) {
+	public Not(Condition byteCondition) {
 		this.item = byteCondition;
 	}
 
 	@Override
-	public boolean matches(ByteBuffer buffer) {
+	public boolean matches(Buffer buffer) {
 		return !item.matches(buffer);
 	}
 }

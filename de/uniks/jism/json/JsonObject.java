@@ -138,7 +138,7 @@ public class JsonObject extends Entity {
 	 */
 	public JsonObject(String source) {
 		this();
-		JsonTokener tokener = new JsonTokener(source);
+		Tokener tokener = new JsonTokener().withText(source);
 		tokener.parseToEntity(this);
 	}
 
@@ -348,8 +348,7 @@ public class JsonObject extends Entity {
 
 	public boolean setAllValue(String value) {
 		this.getMap().clear();
-		JsonTokener tokener = new JsonTokener(value);
-		tokener.parseToEntity(this);
+		new JsonTokener().withText(value).parseToEntity(this);
 		return true;
 	}
 

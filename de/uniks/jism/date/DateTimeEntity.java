@@ -387,7 +387,7 @@ public class DateTimeEntity extends Date {
 	public String toString(String dateFormat) {
 		StringBuilder sb = new StringBuilder();
 		String sub;
-		StringTokener tokener = new StringTokener(dateFormat);
+		StringTokener tokener = (StringTokener) new StringTokener().withText(dateFormat);
 		do {
 			sub = tokener.nextString('"', true, true);
 			if (sub.length() > 0 && !tokener.isString()) {

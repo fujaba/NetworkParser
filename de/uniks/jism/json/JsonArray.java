@@ -118,7 +118,7 @@ public class JsonArray extends EntityList {
 	 *             If there is a syntax error.
 	 */
 	public JsonArray(String source) throws RuntimeException {
-		this(new JsonTokener(source));
+		this(new JsonTokener().withText(source));
 	}
 
 	/**
@@ -336,8 +336,7 @@ public class JsonArray extends EntityList {
 
 	public boolean setAllValue(String value) {
 		clear();
-		JsonTokener tokener = new JsonTokener(value);
-		tokener.parseToEntity(this);
+		new JsonTokener().withText(value).parseToEntity(this);
 		return true;
 	}
 

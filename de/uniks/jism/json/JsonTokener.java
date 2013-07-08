@@ -41,14 +41,6 @@ import de.uniks.jism.xml.XMLEntity;
 public class JsonTokener extends Tokener {
 	public final static String STOPCHARS = ",:]}/\\\"[{;=# ";
 
-	public JsonTokener() {
-		super();
-	}
-
-	public JsonTokener(String s) {
-		super(s);
-	}
-
 	@Override
 	public Object nextValue(JSIMEntity creator) {
 		char c = nextClean();
