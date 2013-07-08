@@ -42,8 +42,9 @@ public class And implements ByteCondition {
 		}
 	}
 
-	public void addCondition(ByteCondition condition) {
+	public And add(ByteCondition condition) {
 		this.list.add(condition);
+		return this;
 	}
 
 	@Override

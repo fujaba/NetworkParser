@@ -90,6 +90,9 @@ public class Grammar {
 		return json;
 	}
 	
+	public boolean hasValue(JsonObject json, String property){
+		return json.has(property);
+	}
 	public String getValue(JsonObject json, String property){
 		return json.getString(property);
 	}
