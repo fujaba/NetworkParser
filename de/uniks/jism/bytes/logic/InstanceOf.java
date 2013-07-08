@@ -30,10 +30,10 @@ package de.uniks.jism.bytes.logic;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import java.nio.ByteBuffer;
+import de.uniks.jism.Buffer;
 import de.uniks.jism.interfaces.ByteEntityCreator;
 
-public class InstanceOf implements ByteCondition {
+public class InstanceOf implements Condition {
 	protected ByteEntityCreator value;
 
 	public InstanceOf(ByteEntityCreator creator) {
@@ -41,7 +41,7 @@ public class InstanceOf implements ByteCondition {
 	}
 
 	@Override
-	public boolean matches(ByteBuffer buffer) {
+	public boolean matches(Buffer buffer) {
 
 		// return value.getEventTyp();
 		return false;

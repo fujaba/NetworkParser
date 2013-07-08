@@ -38,11 +38,6 @@ import de.uniks.jism.interfaces.BaseEntityList;
 import de.uniks.jism.interfaces.JSIMEntity;
 
 public class XMLTokener extends Tokener {
-
-	public XMLTokener(String s) {
-		super(s);
-	}
-
 	/**
 	 * Get the next value. The value can be a Boolean, Double, Integer,
 	 * JSONArray, JSONObject, Long, or String, or the JSONObject.NULL object.

@@ -30,26 +30,23 @@ package de.uniks.jism.bytes.logic;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import de.uniks.jism.Buffer;
 
-public class Or implements ByteCondition {
-	private ArrayList<ByteCondition> list = new ArrayList<ByteCondition>();
+public class Or implements Condition {
+	private ArrayList<Condition> list = new ArrayList<Condition>();
 
-	public Or(ByteCondition... byteConditions) {
-		for (ByteCondition condition : byteConditions) {
+	public Or add(Condition... byteConditions) {
+		for (Condition condition : byteConditions) {
 			this.list.add(condition);
 		}
-	}
-
-	public void addCondition(ByteCondition condition) {
-		this.list.add(condition);
+		return this;
 	}
 
 	@Override
-	public boolean matches(ByteBuffer buffer) {
+	public boolean matches(Buffer buffer) {
 		boolean result = true;
-		for (ByteCondition condition : list) {
+		for (Condition condition : list) {
 			if (!condition.matches(buffer)) {
 				result = false;
 			}

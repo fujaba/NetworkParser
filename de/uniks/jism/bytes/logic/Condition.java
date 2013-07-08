@@ -30,9 +30,9 @@ package de.uniks.jism.bytes.logic;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import java.nio.ByteBuffer;
+import de.uniks.jism.Buffer;
 
-public interface ByteCondition {
+public interface Condition {
 	/**
 	 * checks if a telegram fulfills this condition
 	 * 
@@ -40,6 +40,6 @@ public interface ByteCondition {
 	 *            the telegram to be checked
 	 * @return true if the telegram fulfills this condition, false otherwise
 	 */
-	public boolean matches(ByteBuffer buffer);
+	public boolean matches(Buffer buffer);
 
 }

@@ -39,10 +39,6 @@ import de.uniks.jism.interfaces.BaseEntityList;
 public class StringTokener extends Tokener {
 	private boolean isString = true;
 
-	public StringTokener(String value) {
-		super(value);
-	}
-	
 	@Override
 	public String nextString(char quote, boolean allowCRLF,
 			boolean ignoreCurrent) {
@@ -88,7 +84,7 @@ public class StringTokener extends Tokener {
 	}
 	
 	public void setLength(int length){
-		this.length = length;
+		this.buffer.withLength(length);
 	}
 	
 	public ArrayList<String> getStringList(){

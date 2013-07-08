@@ -87,7 +87,7 @@ public class XMLSimpleIdMap extends IdMap {
 	public Object decode(String value, XMLGrammar factory) {
 		Object result = null;
 		XMLEntity temp = null;
-		this.value = new XMLTokener(value);
+		this.value = new XMLTokener().withText(value);
 
 		this.stack.clear();
 		while (!this.value.isEnd()) {

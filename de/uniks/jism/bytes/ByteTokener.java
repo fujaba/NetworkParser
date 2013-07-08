@@ -8,12 +8,16 @@ public class ByteTokener extends Tokener{
 
 	@Override
 	public void parseToEntity(BaseEntity entity) {
-		// TODO Auto-generated method stub
+//		buffer
+//		if (typ == ByteIdMap.DATATYPE_CLAZZ) {
+//			String clazz = (String) getDecodeObject(ByteIdMap.DATATYPE_CLAZZ,
+//					in);
 		
 	}
 
 	@Override
 	public void parseToEntity(BaseEntityList entityList) {
+
 		// TODO Auto-generated method stub
 		
 	}

@@ -307,6 +307,17 @@ public class JsonIdMap extends IdMap {
 	public Object readJson(JsonObject jsonObject) {
 		return readJson(jsonObject, true);
 	}
+	
+	/**
+	 * Read Json Automatic create JsonArray or JsonObejct
+	 * @return the object
+	 */
+	public Object decode(String value){
+		if(value.startsWith("[")){
+			return readJson(new JsonArray(value));
+		}
+		return readJson(new JsonObject(value));
+	}
 
 	/**
 	 * Read json.
