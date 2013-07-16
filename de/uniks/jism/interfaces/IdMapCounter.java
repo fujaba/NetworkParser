@@ -78,20 +78,7 @@ public interface IdMapCounter {
 	public void readId(String id);
 
 	/**
-	 * @return if Id must seriasable
-	 */
-	public boolean isId();
-
-	/**
 	 * @return the Prio Object for checking errors
 	 */
 	public Object getPrio();
-
-	/**
-	 * @param Enable
-	 *            or disable the ID generating
-	 */
-	public IdMapCounter withId(boolean value);
-
-	public boolean isSimpleObject();
 }

@@ -35,7 +35,6 @@ import java.util.Iterator;
 import java.util.Set;
 
 import de.uniks.jism.IdMap;
-import de.uniks.jism.IdMapFilter;
 import de.uniks.jism.interfaces.SendableEntityCreator;
 
 /**
@@ -76,7 +75,7 @@ public class YUMLIdParser extends IdMap {
 	 * @return the string
 	 */
 	public String parseObject(Object object) {
-		return parse(object, OBJECT, new YUmlIdMapFilter(true));
+		return parse(object, OBJECT, new YUmlIdMapFilter(true), 0);
 	}
 
 	/**
@@ -87,7 +86,7 @@ public class YUMLIdParser extends IdMap {
 	 * @return the string
 	 */
 	public String parseObject(Object object, YUmlIdMapFilter filter) {
-		return parse(object, OBJECT, filter);
+		return parse(object, OBJECT, filter, 0);
 	}
 
 	/**
@@ -100,7 +99,7 @@ public class YUMLIdParser extends IdMap {
 	 * @return the string
 	 */
 	public String parseClass(Object object, boolean showCardinality ) {
-		return parse(object, CLASS, new YUmlIdMapFilter(showCardinality));
+		return parse(object, CLASS, new YUmlIdMapFilter(showCardinality), 0);
 	}
 
 	/**
@@ -111,7 +110,7 @@ public class YUMLIdParser extends IdMap {
 	 * @return the string
 	 */
 	public String parseClass(Object object, YUmlIdMapFilter filter) {
-		return parse(object, CLASS, filter);
+		return parse(object, CLASS, filter, 0);
 	}
 
 	/**
@@ -123,8 +122,8 @@ public class YUMLIdParser extends IdMap {
 	 * @param showCardinality  the show cardinality
 	 * @return the Object as String
 	 */
-	protected String parse(Object object, int typ, YUmlIdMapFilter filter) {
-		String id = parse(object, filter, typ);
+	protected String parse(Object object, int typ, YUmlIdMapFilter filter, int deep) {
+		String id = parse(object, filter, typ, deep);
 		// Links aufloesen
 		Set<String> keySet = filter.getLinkPropertys();
 		if (keySet.size() > 0) {
@@ -216,7 +215,7 @@ public class YUMLIdParser extends IdMap {
 	 *			Filter for converting
 	 * @return the string
 	 */
-	private String parse(Object object, YUmlIdMapFilter filter, int typ) {
+	private String parse(Object object, YUmlIdMapFilter filter, int typ, int deep) {
 		String className = "";
 		String id = "";
 		String mainKey = "";
@@ -247,35 +246,34 @@ public class YUMLIdParser extends IdMap {
 					if (value == null) {
 						continue;
 					}
-					int oldValue = filter.setDeep(IdMapFilter.DEEPER);
 					if (value instanceof Collection<?>) {
 						for (Object containee : ((Collection<?>) value)) {
 							if (!filter.isRegard(this, object, property,
-									containee, true)) {
+									containee, true, deep+1)) {
 								continue;
 							}
 							if (!filter.isConvertable(this, object, property,
-									containee, true)) {
+									containee, true, deep+1)) {
 								continue;
 							}
 
-							String subId = parse(containee, filter, typ);
+							String subId = parse(containee, filter, typ, deep+1);
 							String key = id + "-" + subId;
 							filter.addLinkProperty(key, property);
 							filter.addLinkCardinality(key, getCardinality("0..n", typ));
 						}
 					} else {
 						if (!filter.isRegard(this, object, property, value,
-								false)) {
+								false, deep+1)) {
 							continue;
 						}
 						if (!filter.isConvertable(this, object, property,
-								value, false)) {
+								value, false, deep+1)) {
 							continue;
 						}
 						SendableEntityCreator valueCreater = getCreatorClass(value);
 						if (valueCreater != null) {
-							String subId = parse(value, filter, typ);
+							String subId = parse(value, filter, typ, deep+1);
 							String key = id + "-" + subId;
 							filter.addLinkProperty(key, property);
 							filter.addLinkCardinality(key, getCardinality("0..n", typ));
@@ -293,7 +291,6 @@ public class YUMLIdParser extends IdMap {
 							first = false;
 						}
 					}
-					filter.setDeep(oldValue);
 				}
 			}
 			result += "]";

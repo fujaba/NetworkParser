@@ -56,9 +56,4 @@ public class RestCounter extends SimpleIdCounter{
 		this.number++;
 		return key;
 	}
-	
-	@Override
-	public boolean isSimpleObject() {
-		return true;
-	}
 }

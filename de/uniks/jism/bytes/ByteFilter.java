@@ -30,9 +30,9 @@ package de.uniks.jism.bytes;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import de.uniks.jism.IdMapFilter;
+import de.uniks.jism.Filter;
 
-public class ByteFilter extends IdMapFilter {
+public class ByteFilter extends Filter {
 	private boolean isDynamic;
 	private boolean isLenCheck;
 

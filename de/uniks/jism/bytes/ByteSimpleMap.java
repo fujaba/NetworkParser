@@ -42,7 +42,7 @@ import de.uniks.jism.bytes.creator.BitEntityCreator;
 public class ByteSimpleMap extends AbstractIdMap {
 
 	@Override
-	public Object cloneObject(Object reference, CloneFilter filter) {
+	public Object cloneObject(Object reference, CloneFilter filter, int deep) {
 		return null;
 	}
 

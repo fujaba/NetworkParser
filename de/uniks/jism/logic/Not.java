@@ -1,4 +1,4 @@
-package de.uniks.jism.json;
+package de.uniks.jism.logic;
 
 /*
  Json Id Serialisierung Map
@@ -30,13 +30,24 @@ package de.uniks.jism.json;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import de.uniks.jism.Filter;
+import de.uniks.jism.Buffer;
 import de.uniks.jism.IdMap;
 
-public class UpdateFilter extends Filter {
+public class Not implements Condition {
+	private Condition item;
+
+	public Not(Condition byteCondition) {
+		this.item = byteCondition;
+	}
+
 	@Override
-	public boolean isConvertable(IdMap map, Object entity, String property,
+	public boolean matches(IdMap map, Object entity, String property,
 			Object value, boolean isMany, int deep) {
-		return map.getKey(value) == null;
+		return !item.matches(map, entity, property, value, isMany, deep);
+	}
+
+	@Override
+	public boolean matches(Buffer buffer) {
+		return !item.matches(buffer);
 	}
 }

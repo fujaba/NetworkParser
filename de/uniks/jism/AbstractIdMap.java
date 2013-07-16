@@ -133,7 +133,7 @@ public abstract class AbstractIdMap {
 	 * @return the object
 	 */
 	public Object cloneObject(Object reference) {
-		return cloneObject(reference, new CloneFilter().withTyp(CloneFilter.SIMPLE));
+		return cloneObject(reference, new CloneFilter().withTyp(CloneFilter.SIMPLE), 0);
 	}
 
 	/**
@@ -145,7 +145,7 @@ public abstract class AbstractIdMap {
 	 *            the filter
 	 * @return the object
 	 */
-	public abstract Object cloneObject(Object reference, CloneFilter filter);
+	public abstract Object cloneObject(Object reference, CloneFilter filter, int deep);
 	
 	/**
 	 * @return a Collection of All Creators
