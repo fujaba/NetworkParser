@@ -143,7 +143,7 @@ public class XMLSimpleIdMap extends IdMap {
 			}
 
 			// Add to StackTrace
-			this.stack.add(new ReferenceObject(entity.getTag(), entity));
+			this.stack.add(new ReferenceObject().withProperty(entity.getTag()).withEntity(entity));
 
 			// Parsing next Element
 			if (value.stepPos("/>", false, false)) {

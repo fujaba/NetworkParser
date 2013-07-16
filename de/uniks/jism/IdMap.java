@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
 import de.uniks.jism.interfaces.IdMapCounter;
 import de.uniks.jism.interfaces.SendableEntity;
 import de.uniks.jism.interfaces.SendableEntityCreator;
@@ -152,7 +153,7 @@ public class IdMap extends AbstractIdMap implements Map<String, Object> {
 	 */
 	public String getPrefixSession() {
 		IdMapCounter counter = getCounter();
-		if (counter == null || !counter.isId()) {
+		if (counter == null ) {
 			return null;
 		}
 		return counter.getPrefixId() + counter.getSplitter();
@@ -207,9 +208,6 @@ public class IdMap extends AbstractIdMap implements Map<String, Object> {
 	public String getId(Object obj) {
 		if (obj == null) {
 			return "null";
-		}
-		if (!getCounter().isId()) {
-			return "";
 		}
 		if (this.parent != null) {
 			return this.parent.getId(obj);
@@ -358,7 +356,7 @@ public class IdMap extends AbstractIdMap implements Map<String, Object> {
 	 *            the filter
 	 * @return the object
 	 */
-	public Object cloneObject(Object reference, CloneFilter filter) {
+	public Object cloneObject(Object reference, CloneFilter filter, int deep) {
 		SendableEntityCreator creatorClass = getCreatorClass(reference);
 		Object newObject = null;
 		if (creatorClass != null) {
@@ -382,14 +380,11 @@ public class IdMap extends AbstractIdMap implements Map<String, Object> {
 								SendableEntityCreator childCreatorClass = getCreatorClass(item);
 								if (childCreatorClass != null) {
 									if (!filter.isConvertable(this, item,
-											property, value, true)) {
+											property, value, true, deep)) {
 										creatorClass.setValue(newObject,
 												property, item, IdMap.NEW);
 									} else {
-										int oldDeep = filter.setDeep(filter
-												.getDeep() - 1);
-										cloneObject(item, filter);
-										filter.setDeep(oldDeep);
+										cloneObject(item, filter, deep-1);
 									}
 								} else {
 									creatorClass.setValue(newObject, property,
@@ -409,14 +404,11 @@ public class IdMap extends AbstractIdMap implements Map<String, Object> {
 						SendableEntityCreator childCreatorClass = getCreatorClass(value);
 						if (childCreatorClass != null) {
 							if (!filter.isConvertable(this, value, property,
-									value, false)) {
+									value, false, deep)) {
 								creatorClass.setValue(newObject, property,
 										value, IdMap.NEW);
 							} else {
-								int oldDeep = filter
-										.setDeep(filter.getDeep() - 1);
-								cloneObject(value, filter);
-								filter.setDeep(oldDeep);
+								cloneObject(value, filter, deep-1);
 							}
 						} else {
 							creatorClass.setValue(newObject, property, value,

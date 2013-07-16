@@ -40,8 +40,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import de.uniks.jism.Filter;
 import de.uniks.jism.IdMap;
-import de.uniks.jism.IdMapFilter;
 import de.uniks.jism.ReferenceObject;
 import de.uniks.jism.event.MapEntry;
 import de.uniks.jism.event.creator.DateCreator;
@@ -51,6 +51,7 @@ import de.uniks.jism.interfaces.NoIndexCreator;
 import de.uniks.jism.interfaces.SendableEntityCreator;
 import de.uniks.jism.json.creator.JsonArrayCreator;
 import de.uniks.jism.json.creator.JsonObjectCreator;
+import de.uniks.jism.logic.Deep;
 
 /**
  * The Class JsonIdMap.
@@ -75,6 +76,8 @@ public class JsonIdMap extends IdMap {
 
 	/** If this is true the IdMap save the Typ of primary datatypes. */
 	protected boolean typSave;
+	
+	private Filter filter = new Filter();
 
 	/**
 	 * Instantiates a new json id map.
@@ -95,7 +98,7 @@ public class JsonIdMap extends IdMap {
 	 * @return the json object
 	 */
 	public JsonObject toJsonObject(Object object) {
-		return toJsonObject(object, new JsonFilter());
+		return toJsonObject(object, filter.clone());
 	}
 
 	/**
@@ -107,9 +110,8 @@ public class JsonIdMap extends IdMap {
 	 *            the filter
 	 * @return the Jsonobject
 	 */
-	public JsonObject toJsonObject(Object entity, JsonFilter filter) {
-		return toJsonObject(entity, filter, entity.getClass().getName(),
-				new LinkedHashSet<String>());
+	public JsonObject toJsonObject(Object entity, Filter filter) {
+		return toJsonObject(entity, filter.withStandard(this.filter), entity.getClass().getName(), 0);
 	}
 
 	/**
@@ -123,37 +125,19 @@ public class JsonIdMap extends IdMap {
 	 *            the className of the entity
 	 * @return the Jsonobject
 	 */
-	public JsonObject toJsonObject(Object entity, JsonFilter filter,
-			String className) {
-		return toJsonObject(entity, filter, className,
-				new LinkedHashSet<String>());
-	}
-
-	/**
-	 * To Jsonobject.
-	 * 
-	 * @param entity
-	 *            the entity to convert
-	 * @param filter
-	 *            the filter
-	 * @param className
-	 *            the className of the entity
-	 * @return the Jsonobject
-	 */
-	protected JsonObject toJsonObject(Object entity, JsonFilter filter,
-			String className, LinkedHashSet<String> visitedObjects) {
+	protected JsonObject toJsonObject(Object entity, Filter filter, String className, int deep) {
 		String id = "";
 		SendableEntityCreator prototyp = grammar.getObjectCreator(entity,
 				className, this);
 		if (prototyp == null) {
 			return null;
 		}
-		if (!(prototyp instanceof NoIndexCreator || !filter.isId())) {
+		if (!(prototyp instanceof NoIndexCreator || !filter.isId(this, entity, className))) {
 			id = getId(entity);
 		}
 		JsonObject jsonProp = new JsonObject();
 
-		visitedObjects.add(id);
+		filter.addToVisitedObjects(id);
 
 		String[] properties = prototyp.getProperties();
 		if (properties != null) {
@@ -163,7 +147,7 @@ public class JsonIdMap extends IdMap {
 							+ "(" + className + ")");
 				}
 				Object subValue = parseProperty(prototyp, entity, filter,
-						className, property, visitedObjects, null);
+						className, property, null, deep);
 				if (subValue != null) {
 					jsonProp.put(property, subValue);
 				}
@@ -175,18 +159,15 @@ public class JsonIdMap extends IdMap {
 	}
 
 	protected Object parseProperty(SendableEntityCreator prototyp,
-			Object entity, JsonFilter filter, String className,
-			String property, LinkedHashSet<String> visitedObjects,
-			JsonArray jsonArray) {
+			Object entity, Filter filter, String className,
+			String property, JsonArray jsonArray, int deep) {
 		Object referenceObject = prototyp.getSendableInstance(true);
 
 		Object value = prototyp.getValue(entity, property);
 		if (value != null) {
-			boolean encoding = filter.isFullSerialization();
-			if (!encoding) {
-				Object refValue = prototyp.getValue(referenceObject, property);
-				encoding = !value.equals(refValue);
-			}
+			Object refValue = prototyp.getValue(referenceObject, property);
+			boolean encoding = !value.equals(refValue);
+
 			if (encoding) {
 				SendableEntityCreator referenceCreator = getCreatorClass(value);
 
@@ -195,7 +176,7 @@ public class JsonIdMap extends IdMap {
 					JsonArray subValues = new JsonArray();
 					for (Object containee : ((Collection<?>) value)) {
 						Object item = parseItem(entity, filter, containee,
-								property, jsonArray, visitedObjects, null);
+								property, jsonArray, null, deep);
 						if (item != null) {
 							subValues.put(item);
 						}
@@ -212,8 +193,7 @@ public class JsonIdMap extends IdMap {
 					for (Iterator<?> i = map.entrySet().iterator(); i.hasNext();) {
 						Entry<?, ?> mapEntry = (Entry<?, ?>) i.next();
 						Object item = parseItem(entity, filter, mapEntry,
-								property, jsonArray, visitedObjects,
-								packageName);
+								property, jsonArray, packageName, deep);
 						if (item != null) {
 							subValues.add(item);
 						}
@@ -223,17 +203,16 @@ public class JsonIdMap extends IdMap {
 					}
 				} else {
 					return parseItem(entity, filter, value, property,
-							jsonArray, visitedObjects, null);
+							jsonArray, null, deep);
 				}
 			}
 		}
 		return null;
 	}
 
-	protected Object parseItem(Object item, JsonFilter filter, Object entity,
-			String property, JsonArray jsonArray,
-			LinkedHashSet<String> visitedObjects, String className) {
-		if (item != null && filter.isRegard(this, entity, property, item, true)) {
+	protected Object parseItem(Object item, Filter filter, Object entity,
+			String property, JsonArray jsonArray, String className, int deep) {
+		if (item != null && filter.isRegard(this, entity, property, item, true, deep)) {
 //			boolean typSave = isTypSave();
 
 			if (className == null) {
@@ -242,20 +221,16 @@ public class JsonIdMap extends IdMap {
 			SendableEntityCreator valueCreater = getCreatorClasses(className);
 
 			if (valueCreater != null) {
-				if (filter.isConvertable(this, entity, property, item, true) && !getCounter().isSimpleObject()) {
+				if (filter.isConvertable(this, entity, property, item, true, deep) ) {
 					String subId = this.getKey(entity);
 					if (valueCreater instanceof NoIndexCreator || subId == null
-							|| !visitedObjects.contains(subId)) {
-						int oldValue = filter.setDeep(IdMapFilter.DEEPER);
+							|| filter.hasVisitedObjects(subId)) {
 						if (jsonArray == null) {
 							JsonObject result = toJsonObject(entity, filter,
-									className, visitedObjects);
-							filter.setDeep(oldValue);
+									className, deep+1);
 							return result;
 						}
-						this.toJsonArray(entity, jsonArray, filter,
-								visitedObjects);
-						filter.setDeep(oldValue);
+						this.toJsonArray(entity, jsonArray, filter, deep+1);
 					}
 				}
 				return new JsonObject(ID, getId(entity));
@@ -292,7 +267,7 @@ public class JsonIdMap extends IdMap {
 			}
 		}
 		for (ReferenceObject ref : refs) {
-			ref.execute();
+			ref.execute(this);
 		}
 		return result;
 	}
@@ -338,7 +313,7 @@ public class JsonIdMap extends IdMap {
 		}
 		Object mainItem = readJson(jsonObject, refs, readId);
 		for (ReferenceObject ref : refs) {
-			ref.execute();
+			ref.execute(this);
 		}
 		return mainItem;
 	}
@@ -360,7 +335,7 @@ public class JsonIdMap extends IdMap {
 		LinkedHashSet<ReferenceObject> refs = new LinkedHashSet<ReferenceObject>();
 		Object mainItem = readJson(target, jsonObject, refs, readId);
 		for (ReferenceObject ref : refs) {
-			ref.execute();
+			ref.execute(this);
 		}
 		return mainItem;
 	}
@@ -397,12 +372,10 @@ public class JsonIdMap extends IdMap {
 				jsonObject, this);
 
 		if (typeInfo != null) {
-			if (getCounter().isId()) {
-				if(grammar.hasValue(jsonObject, ID)){
-					String jsonId = grammar.getValue(jsonObject, ID);
-					if (jsonId != null) {
-						result = getObject(jsonId);
-					}
+			if(grammar.hasValue(jsonObject, ID)){
+				String jsonId = grammar.getValue(jsonObject, ID);
+				if (jsonId != null) {
+					result = getObject(jsonId);
 				}
 			}
 			if (result == null) {
@@ -444,7 +417,7 @@ public class JsonIdMap extends IdMap {
 	protected Object readJson(Object target, JsonObject jsonObject,
 			LinkedHashSet<ReferenceObject> refs, boolean readId) {
 		// JSONArray jsonArray;
-		if (getCounter().isId() && readId) {
+		if (readId) {
 			String jsonId =  grammar.getValue(jsonObject, ID);
 			if (jsonId == null) {
 				return target;
@@ -495,8 +468,11 @@ public class JsonIdMap extends IdMap {
 						String jsonId = (String) child.get(ID);
 						if (className == null && jsonId != null) {
 							// It is a Ref
-							refs.add(new ReferenceObject(jsonId, creator,
-									property, this, target));
+							refs.add(new ReferenceObject()
+								.withId(jsonId)
+								.withCreator(creator)
+								.withProperty(property)
+								.withEntity(target));
 						} else {
 							creator.setValue(target, property,
 									readJson((JsonObject) kid), NEW);
@@ -543,8 +519,11 @@ public class JsonIdMap extends IdMap {
 						}
 					} else if (className == null && jsonId != null) {
 						// It is a Ref
-						refs.add(new ReferenceObject(jsonId, creator, property,
-								this, target));
+						refs.add(new ReferenceObject()
+									.withId(jsonId)
+									.withCreator(creator)
+									.withProperty(property)
+									.withEntity(target));
 					} else {
 						creator.setValue(target, property, readJson(child), NEW);
 					}
@@ -575,22 +554,21 @@ public class JsonIdMap extends IdMap {
 	 *            the filter
 	 * @return the json array
 	 */
-	public JsonArray toJsonArray(Object object, JsonFilter filter) {
+	public JsonArray toJsonArray(Object object, Filter filter) {
 		JsonArray jsonArray = new JsonArray();
 		if (filter == null) {
-			filter = new JsonFilter();
+			filter = this.filter.clone();
 		}
 		
-		LinkedHashSet<String> visited = new LinkedHashSet<String>();
 		if(object instanceof List<?>){
 			List<?> list = (List<?>) object;
 			for(Iterator<?> i = list.iterator();i.hasNext();){
 				Object item = i.next();
-				toJsonArray(item, jsonArray, filter, visited);
+				toJsonArray(item, jsonArray, filter);
 			}
 			return jsonArray;
 		}
-		toJsonArray(object, jsonArray, filter, visited);
+		toJsonArray(object, jsonArray, filter);
 		return jsonArray;
 	}
 
@@ -605,8 +583,7 @@ public class JsonIdMap extends IdMap {
 	 */
 	public JsonArray toJsonSortedArray(Object object, String property) {
 		JsonArraySorted jsonArray = new JsonArraySorted(property);
-		toJsonArray(object, jsonArray, new JsonFilter(),
-				new LinkedHashSet<String>());
+		toJsonArray(object, jsonArray, filter.clone());
 		return jsonArray;
 	}
 
@@ -622,23 +599,18 @@ public class JsonIdMap extends IdMap {
 	 * @return the JsonArray
 	 */
 	public JsonArray toJsonArray(Object object, JsonArray jsonArray,
-			JsonFilter filter) {
-
-		
-		return toJsonArray(object, jsonArray, filter,
-				new LinkedHashSet<String>());
+			Filter filter) {
+		return toJsonArray(object, jsonArray, filter.withStandard(this.filter), 0);
 	}
 
 	protected JsonArray toJsonArray(Object entity, JsonArray jsonArray,
-			JsonFilter filter, LinkedHashSet<String> visitedObjects) {
+			Filter filter, int deep) {
 		String className = entity.getClass().getName();
 		String id = getId(entity);
 
 		JsonObject jsonObject = new JsonObject();
-		if (!visitedObjects.contains(id)
-				&& filter.checkProperty(this, JsonFilter.CUTREFERENCE, id,
-						entity)) {
-			if (getCounter().isId() && filter.isId()) {
+		if (!filter.hasVisitedObjects(id) ) {
+			if (filter.isId(this, entity, className)) {
 				jsonObject.put(ID, id);
 			}
 			jsonObject.put(CLASS, className);
@@ -650,7 +622,7 @@ public class JsonIdMap extends IdMap {
 			throw new RuntimeException("No Creator exist for " + className);
 		}
 		String[] properties = prototyp.getProperties();
-		visitedObjects.add(id);
+		filter.addToVisitedObjects(id);
 
 		if (properties != null) {
 			JsonObject jsonProps = new JsonObject();
@@ -660,7 +632,7 @@ public class JsonIdMap extends IdMap {
 							+ "(" + className + ")");
 				}
 				Object subValue = parseProperty(prototyp, entity, filter,
-						className, property, visitedObjects, jsonArray);
+						className, property, jsonArray, deep);
 				if (subValue != null) {
 					jsonProps.put(property, subValue);
 				}
@@ -737,7 +709,7 @@ public class JsonIdMap extends IdMap {
 	 * @return the json object
 	 */
 	public JsonObject toJsonObjectById(String id) {
-		return toJsonObject(super.getObject(id), new JsonFilter(0));
+		return toJsonObject(super.getObject(id), new Filter().withConvertable(new Deep().withDeep(0)));
 	}
 
 	/**
@@ -833,5 +805,4 @@ public class JsonIdMap extends IdMap {
 		this.typSave = typSave;
 		return this;
 	}
-
 }

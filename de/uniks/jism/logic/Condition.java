@@ -1,4 +1,4 @@
-package de.uniks.jism.json;
+package de.uniks.jism.logic;
 
 /*
  Json Id Serialisierung Map
@@ -30,13 +30,26 @@ package de.uniks.jism.json;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import de.uniks.jism.Filter;
+import de.uniks.jism.Buffer;
 import de.uniks.jism.IdMap;
 
-public class UpdateFilter extends Filter {
-	@Override
-	public boolean isConvertable(IdMap map, Object entity, String property,
-			Object value, boolean isMany, int deep) {
-		return map.getKey(value) == null;
-	}
+public interface Condition {
+	/**
+	 * checks if a telegram fulfills this condition
+	 * 
+	 * @param telegram
+	 *            the telegram to be checked
+	 * @return true if the telegram fulfills this condition, false otherwise
+	 */
+	public boolean matches(IdMap map, Object entity, String property,
+			Object value, boolean isMany, int deep);
+
+	/**
+	 * checks if a telegram fulfills this condition
+	 * 
+	 * @param telegram
+	 *            the telegram to be checked
+	 * @return true if the telegram fulfills this condition, false otherwise
+	 */
+	public boolean matches(Buffer buffer);
 }

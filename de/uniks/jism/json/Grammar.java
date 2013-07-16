@@ -32,6 +32,7 @@ package de.uniks.jism.json;
 
 import java.util.Iterator;
 
+import de.uniks.jism.Filter;
 import de.uniks.jism.IdMap;
 import de.uniks.jism.interfaces.NoIndexCreator;
 import de.uniks.jism.interfaces.SendableEntityCreator;
@@ -68,7 +69,7 @@ public class Grammar {
 	}
 
 	public JsonObject getJsonObject(IdMap map, SendableEntityCreator prototyp,
-			String className, String id, JsonObject jsonProp, JsonFilter filter) {
+			String className, String id, JsonObject jsonProp, Filter filter) {
 		JsonObject json = new JsonObject();
 		if (prototyp instanceof NoIndexCreator) {
 			Iterator<String> keys = jsonProp.keys();
@@ -79,7 +80,7 @@ public class Grammar {
 			json.put(JsonIdMap.CLASS, className);
 			return json;
 		}
-		if (map.getCounter().isId() && filter.isId()) {
+		if (filter.isId(map, jsonProp, className)) {
 			json.put(IdMap.ID, id);
 		}
 		json.put(JsonIdMap.CLASS, className);

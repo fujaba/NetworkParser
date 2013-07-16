@@ -32,9 +32,10 @@ package de.uniks.jism.yuml;
 
 import java.util.HashMap;
 import java.util.Set;
-import de.uniks.jism.IdMapFilter;
 
-public class YUmlIdMapFilter extends IdMapFilter{
+import de.uniks.jism.Filter;
+
+public class YUmlIdMapFilter extends Filter{
 /** The link cardinality. */
 	private HashMap<String, String> linkCardinality = new HashMap<String, String>();
 
@@ -125,4 +126,5 @@ public class YUmlIdMapFilter extends IdMapFilter{
 	public void setShowCardinality(boolean showCardinality) {
 		this.isShowCardinality = showCardinality;
 	}
+	//FIXME RENAME METHODS
 }

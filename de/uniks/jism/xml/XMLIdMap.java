@@ -37,8 +37,8 @@ import java.util.HashSet;
 
 import de.uniks.jism.AbstractIdMap;
 import de.uniks.jism.EntityUtil;
+import de.uniks.jism.Filter;
 import de.uniks.jism.IdMap;
-import de.uniks.jism.IdMapFilter;
 import de.uniks.jism.ReferenceObject;
 import de.uniks.jism.interfaces.SendableEntityCreator;
 import de.uniks.jism.interfaces.XMLEntityCreator;
@@ -62,13 +62,14 @@ public class XMLIdMap extends XMLSimpleIdMap {
 	/** The stopwords. */
 	private HashSet<String> stopwords = new HashSet<String>();
 
+	private Filter filter=new Filter(); 
 	/**
 	 * Inits the.
 	 */
 	@Override
 	protected void init() {
 		super.init();
-		getCounter().withId(false);
+		getCounter();
 	}
 
 	/*
@@ -129,7 +130,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 	 * @return the xML entity
 	 */
 	public XMLEntity encode(Object entity) {
-		return encode(entity, new IdMapFilter());
+		return encode(entity, filter.clone());
 	}
 
 	/**
@@ -139,7 +140,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 	 *            the entity
 	 * @return the xML entity
 	 */
-	public XMLEntity encode(Object entity, IdMapFilter filter) {
+	public XMLEntity encode(Object entity, Filter filter) {
 		SendableEntityCreator createrProtoTyp = getCreatorClass(entity);
 		if (createrProtoTyp == null) {
 			return null;
@@ -159,20 +160,15 @@ public class XMLIdMap extends XMLSimpleIdMap {
 		String[] properties = createrProtoTyp.getProperties();
 		Object referenceObject = createrProtoTyp.getSendableInstance(true);
 
-		if (getCounter().isId()) {
-			xmlEntity.put(ID, getId(entity));
-		}
+		xmlEntity.put(ID, getId(entity));
 
 		if (properties != null) {
 			for (String property : properties) {
 				Object value = createrProtoTyp.getValue(entity, property);
 				if (value != null) {
-					boolean encoding = filter.isFullSerialization();
-					if (!encoding) {
 						Object refValue = createrProtoTyp.getValue(
 								referenceObject, property);
-						encoding = !value.equals(refValue);
-					}
+					boolean encoding = !value.equals(refValue);
 					if (encoding) {
 						if (property.startsWith(XMLIdMap.ENTITYSPLITTER)) {
 							parserChild(xmlEntity, property, value);
@@ -393,8 +389,10 @@ public class XMLIdMap extends XMLSimpleIdMap {
 				}
 			} else {
 				entity = entityCreater.getSendableInstance(false);
-				this.stack.add(new ReferenceObject(entityCreater, tag,
-						this.parent, entity));
+				this.stack.add(new ReferenceObject()
+							.withCreator(entityCreater)
+							.withProperty(tag)
+							.withEntity(entity));
 				newPrefix = XMLIdMap.ENTITYSPLITTER;
 				prefix = "";
 			}

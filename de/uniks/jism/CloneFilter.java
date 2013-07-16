@@ -35,7 +35,7 @@ import java.util.HashMap;
 /**
  * The Class CloneFilter.
  */
-public class CloneFilter extends IdMapFilter {
+public class CloneFilter extends Filter {
 	/** The Constant OBJECT. */
 	public static final int OBJECT = 0;
 
@@ -105,9 +105,6 @@ public class CloneFilter extends IdMapFilter {
 	 */
 	public CloneFilter withTyp(int typ) {
 		this.typ = typ;
-		if (typ == OBJECT) {
-			this.deep = LASTDEEP;
-		}
 		return this;
 	}
 }
