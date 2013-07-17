@@ -51,4 +51,7 @@ public class Deep implements Condition{
 		return deep<=this.deep;
 	}
 
+	public static Deep value(int value){
+		return new Deep().withDeep(value);
+	}
 }
