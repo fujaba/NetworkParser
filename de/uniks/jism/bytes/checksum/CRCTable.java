@@ -30,42 +30,59 @@ package de.uniks.jism.bytes.checksum;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-public class Crc32 extends CRCTable {
+public abstract class CRCTable extends CRC{
+	/** The fast CRC table. Computed once when the CRC32 class is loaded. */
+	protected int[] crc_table = getGenTable();
+
 	/** Make the table for a fast CRC. */
 	public int[] getGenTable() {
-		int[] crc_table = new int[256];
-		for (int n = 0; n < 256; n++) {
-			int c = n;
-			for (int k = 8; --k >= 0;) {
-				if ((c & 1) != 0)
-					c = 0xedb88320 ^ (c >>> 1);
-				else
-					c = c >>> 1;
+		int[] result = new int[256];
+
+		int order = getOrder();
+		long topBit = (long) 1 << (order - 1);
+		long widthMask = (((1 << (order - 1)) - 1) << 1) | 1;
+		int polynom = getPolynom();
+		boolean isReflect = isReflect();
+
+		for (int i = 0; i < 256; ++i) {
+			result[i] = i;
+			if (isReflect) {
+				result[i] = Reflect(i, 8);
 			}
-			crc_table[n] = c;
+			result[i] = result[i] << (order - 8);
+			for (int j = 0; j < 8; ++j) {
+				if ((result[i] & topBit) != 0) {
+					result[i] = (result[i] << 1) ^ polynom;
+				} else {
+					result[i] <<= 1;
+				}
+			}
+			if (isReflect) {
+				result[i] = Reflect(result[i], order);
+			}
+			result[i] &= widthMask;
 		}
-		return crc_table;
+		return result;
 	}
 
-	public void update(int bval) {
-		super.update(bval);
-		int c = (int) ~value;
-		c = crc_table[(c ^ bval) & 0xff] ^ (c >>> 8);
-		value = ~c;
-	}
+	// / <summary>Reflects the lower bits of the value provided.</summary>
+	// / <param name="data">The value to reflect.</param>
+	// / <param name="numBits">The number of bits to reflect.</param>
+	// / <returns>The reflected value.</returns>
+	static private int Reflect(int data, int numBits) {
+		int temp = data;
 
-	@Override
-	public int getPolynom() {
-		return 0;
-	}
+		for (int i = 0; i < numBits; i++) {
+			long bitMask = (long) 1 << ((numBits - 1) - i);
 
-	@Override
-	public boolean isReflect() {
-		return false;
-	}
+			if ((temp & (long) 1) != 0) {
+				data |= bitMask;
+			} else {
+				data &= ~bitMask;
+			}
 
-	@Override
-	public int getOrder() {
-		return 32;
+			temp >>= 1;
+		}
+		return data;
 	}
 }

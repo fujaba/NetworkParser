@@ -33,7 +33,7 @@ package de.uniks.jism.bytes.checksum;
 /**
  * A class that can be used to compute the Crc8 of a data stream.
  */
-public class Crc8 extends CRC {
+public class Crc8 extends CRCTable {
 	// CRC-8, poly = x^8 + x^2 + x^1 + 1, init = 0
 	// 1 0000 0111
 	// 0111 0000 1
