@@ -46,10 +46,6 @@ public class CCITT16 extends CRC {
 		return 0x1021; // 1000000000000101
 	}
 	
-	public int[] getGenTable() {
-		return null;
-	}
-
 	public void update(int b) {
 		super.update(b);
 		

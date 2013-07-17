@@ -35,7 +35,7 @@ package de.uniks.jism.bytes.checksum;
  * 100% Java implementation.
  */
 
-public class Crc16 extends CRC {
+public class Crc16 extends CRCTable {
 
 	@Override
 	public int getPolynom() {
