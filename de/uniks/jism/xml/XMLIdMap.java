@@ -141,6 +141,9 @@ public class XMLIdMap extends XMLSimpleIdMap {
 	 * @return the xML entity
 	 */
 	public XMLEntity encode(Object entity, Filter filter) {
+		return encode(entity, filter.withStandard(this.filter), 0);
+	}
+	public XMLEntity encode(Object entity, Filter filter, int deep) {
 		SendableEntityCreator createrProtoTyp = getCreatorClass(entity);
 		if (createrProtoTyp == null) {
 			return null;
@@ -160,7 +163,9 @@ public class XMLIdMap extends XMLSimpleIdMap {
 		String[] properties = createrProtoTyp.getProperties();
 		Object referenceObject = createrProtoTyp.getSendableInstance(true);
 
-		xmlEntity.put(ID, getId(entity));
+		if(filter.isId(this, entity, entity.getClass().getName())){
+			xmlEntity.put(ID, getId(entity));
+		}
 
 		if (properties != null) {
 			for (String property : properties) {
