@@ -75,7 +75,7 @@ public class YUMLIdParser extends IdMap {
 	 * @return the string
 	 */
 	public String parseObject(Object object) {
-		return parse(object, OBJECT, new YUmlIdMapFilter(true), 0);
+		return parse(object, OBJECT, new YUmlIdMapFilter().withShowCardinality(true), 0);
 	}
 
 	/**
@@ -99,7 +99,7 @@ public class YUMLIdParser extends IdMap {
 	 * @return the string
 	 */
 	public String parseClass(Object object, boolean showCardinality ) {
-		return parse(object, CLASS, new YUmlIdMapFilter(showCardinality), 0);
+		return parse(object, CLASS, new YUmlIdMapFilter().withShowCardinality(showCardinality), 0);
 	}
 
 	/**
@@ -330,5 +330,5 @@ public class YUMLIdParser extends IdMap {
 		String className = object.getClass().getName();
 		return className.substring(className.lastIndexOf('.') + 1);
 	}
-
+//FIXME RENOAME METHODS
 }

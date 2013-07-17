@@ -9,6 +9,7 @@ public class Filter {
 	private Condition convertable;
 	private Condition property;
 	private LinkedHashSet<String> visitedObjects;
+	private Boolean full;
 
 	public Condition getIdFilter() {
 		return idFilter;
@@ -24,6 +25,21 @@ public class Filter {
 			return idFilter.matches(map, entity, className, null, false, 0);
 		}
 		return true;
+	}
+	
+	
+	/**
+	 * Serialization the Full object inclusive null value
+	 * 
+	 * @return boolean for serialization the full object
+	 */
+	public Boolean isFullSeriation(){
+		return full;
+	}
+	
+	public Filter withFull(boolean value){
+		this.full = value;
+		return this;
 	}
 	
 	public Condition getConvertable() {
@@ -51,6 +67,13 @@ public class Filter {
 			property = referenceFilter.getProperty();
 		}
 		visitedObjects=new LinkedHashSet<String>();
+		if(full==null){
+			full = referenceFilter.isFullSeriation();
+			if(full==null){
+				full=false;
+			}
+		}
+		
 		return this;
 	}
 	

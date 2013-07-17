@@ -50,10 +50,6 @@ public class YUmlIdMapFilter extends Filter{
 	
 	private boolean isShowCardinality;
 	
-	public YUmlIdMapFilter(boolean showCardinality){
-		this.isShowCardinality = showCardinality;
-	}
-	
 	public void reset(){
 		this.valueYUML.clear();
 		this.linkProperty.clear();
@@ -114,17 +110,19 @@ public class YUmlIdMapFilter extends Filter{
 	 *
 	 * @param value
 	 *			the new show line
+	 * @return 
 	 */
-	public void setShowLine(boolean value) {
+	public YUmlIdMapFilter withShowLine(boolean value) {
 		this.isShowLine = value;
+		return this;
 	}
 
 	public boolean isShowCardinality() {
 		return isShowCardinality;
 	}
 
-	public void setShowCardinality(boolean showCardinality) {
-		this.isShowCardinality = showCardinality;
+	public YUmlIdMapFilter withShowCardinality(boolean value) {
+		this.isShowCardinality = value;
+		return this;
 	}
-	//FIXME RENAME METHODS
 }

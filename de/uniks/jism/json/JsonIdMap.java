@@ -126,7 +126,7 @@ public class JsonIdMap extends IdMap {
 	 * @return the Jsonobject
 	 */
 	protected JsonObject toJsonObject(Object entity, Filter filter, String className, int deep) {
-		String id = "";
+		String id = null;
 		SendableEntityCreator prototyp = grammar.getObjectCreator(entity,
 				className, this);
 		if (prototyp == null) {
@@ -137,7 +137,9 @@ public class JsonIdMap extends IdMap {
 		}
 		JsonObject jsonProp = new JsonObject();
 
-		filter.addToVisitedObjects(id);
+		if(id !=null){
+			filter.addToVisitedObjects(id);
+		}
 
 		String[] properties = prototyp.getProperties();
 		if (properties != null) {
@@ -147,7 +149,7 @@ public class JsonIdMap extends IdMap {
 							+ "(" + className + ")");
 				}
 				Object subValue = parseProperty(prototyp, entity, filter,
-						className, property, null, deep);
+						className, property, null, deep+1);
 				if (subValue != null) {
 					jsonProp.put(property, subValue);
 				}
@@ -165,12 +167,14 @@ public class JsonIdMap extends IdMap {
 
 		Object value = prototyp.getValue(entity, property);
 		if (value != null) {
-			Object refValue = prototyp.getValue(referenceObject, property);
-			boolean encoding = !value.equals(refValue);
+			boolean encoding = filter.isFullSeriation();
+			if(!encoding){
+				Object refValue = prototyp.getValue(referenceObject, property);
+				encoding = !value.equals(refValue);
+			}
 
 			if (encoding) {
 				SendableEntityCreator referenceCreator = getCreatorClass(value);
-
 				if (value instanceof Collection<?> && referenceCreator == null) {
 					// Simple List or Assocs
 					JsonArray subValues = new JsonArray();
@@ -189,7 +193,7 @@ public class JsonIdMap extends IdMap {
 					// Maps
 					JsonArray subValues = new JsonArray();
 					Map<?, ?> map = (Map<?, ?>) value;
-					String packageName = MapEntry.class.getName();
+ 					String packageName = MapEntry.class.getName();
 					for (Iterator<?> i = map.entrySet().iterator(); i.hasNext();) {
 						Entry<?, ?> mapEntry = (Entry<?, ?>) i.next();
 						Object item = parseItem(entity, filter, mapEntry,
@@ -224,7 +228,7 @@ public class JsonIdMap extends IdMap {
 				if (filter.isConvertable(this, entity, property, item, true, deep) ) {
 					String subId = this.getKey(entity);
 					if (valueCreater instanceof NoIndexCreator || subId == null
-							|| filter.hasVisitedObjects(subId)) {
+							|| !filter.hasVisitedObjects(subId)) {
 						if (jsonArray == null) {
 							JsonObject result = toJsonObject(entity, filter,
 									className, deep+1);
@@ -632,7 +636,7 @@ public class JsonIdMap extends IdMap {
 							+ "(" + className + ")");
 				}
 				Object subValue = parseProperty(prototyp, entity, filter,
-						className, property, jsonArray, deep);
+						className, property, jsonArray, deep+1);
 				if (subValue != null) {
 					jsonProps.put(property, subValue);
 				}

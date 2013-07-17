@@ -37,6 +37,10 @@ package de.uniks.jism.bytes.checksum;
 
 public class CCITT16 extends CRC {
 
+	public CCITT16(){
+		value = 0xFFFF;
+	}
+
 	@Override
 	public int getPolynom() {
 		return 0x1021; // 1000000000000101
@@ -44,6 +48,26 @@ public class CCITT16 extends CRC {
 
 	public void update(int b) {
 		super.update(b);
+		
+//	     int crc = 0xFFFF;          // initial value
+//	        int polynomial = 0x1021;   // 0001 0000 0010 0001  (0, 5, 12) 
+//
+//	        // byte[] testBytes = "123456789".getBytes("ASCII");
+//
+//	        byte[] bytes = args[0].getBytes();
+//
+//	        for (byte b : bytes) {
+//	            for (int i = 0; i < 8; i++) {
+//	                boolean bit = ((b   >> (7-i) & 1) == 1);
+//	                boolean c15 = ((crc >> 15    & 1) == 1);
+//	                crc <<= 1;
+//	                if (c15 ^ bit) crc ^= polynomial;
+//	             }
+//	        }
+//
+//	        crc &= 0xffff;
+//		
+		
 		value = (value >>> 8) ^ crc_table[((int) value ^ b) & 0xff];
 	}
 
