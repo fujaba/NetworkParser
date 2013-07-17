@@ -36,27 +36,21 @@ public class ByteFilter extends Filter {
 	private boolean isDynamic;
 	private boolean isLenCheck;
 
-	public ByteFilter() {
-	}
-
-	public ByteFilter(boolean isLenCheck, boolean isDynamic) {
-		this.isLenCheck = isLenCheck;
-		this.isDynamic = isDynamic;
-	}
-
 	public boolean isLenCheck() {
 		return isLenCheck;
 	}
 
-	public void setLenCheck(boolean isLenCheck) {
-		this.isLenCheck = isLenCheck;
+	public ByteFilter withLenCheck(boolean value) {
+		this.isLenCheck = value;
+		return this;
 	}
 
 	public boolean isDynamic() {
 		return isDynamic;
 	}
 
-	public void setDynamic(boolean isDynamic) {
-		this.isDynamic = isDynamic;
+	public ByteFilter withDynamic(boolean value) {
+		this.isDynamic = value;
+		return this;
 	}
 }
