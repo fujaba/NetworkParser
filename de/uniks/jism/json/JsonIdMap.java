@@ -263,7 +263,7 @@ public class JsonIdMap extends IdMap {
 		LinkedHashSet<ReferenceObject> refs = new LinkedHashSet<ReferenceObject>();
 		for (int i = 0; i <= len; i++) {
 			JsonObject kidObject = jsonArray.getJSONObject(i);
-			Object tmp = readJson(kidObject, refs);
+			Object tmp = readJson(kidObject, refs, true);
 			if (kidObject.has(MAINITEM)) {
 				result = tmp;
 			} else if (i == 0) {
@@ -342,20 +342,6 @@ public class JsonIdMap extends IdMap {
 			ref.execute(this);
 		}
 		return mainItem;
-	}
-
-	/**
-	 * Read json.
-	 * 
-	 * @param jsonObject
-	 *            the json object
-	 * @param refs
-	 *            the refs
-	 * @return the object
-	 */
-	private Object readJson(JsonObject jsonObject,
-			LinkedHashSet<ReferenceObject> refs) {
-		return readJson(jsonObject, refs, true);
 	}
 
 	/**

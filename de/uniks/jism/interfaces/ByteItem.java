@@ -31,7 +31,8 @@ package de.uniks.jism.interfaces;
 */
 
 import java.nio.ByteBuffer;
-import de.uniks.jism.bytes.ByteConverter;
+
+import de.uniks.jism.bytes.converter.ByteConverter;
 
 public interface ByteItem {
 	/**

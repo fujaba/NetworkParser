@@ -34,6 +34,8 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+
+import de.uniks.jism.bytes.converter.ByteConverter;
 import de.uniks.jism.interfaces.BaseEntity;
 import de.uniks.jism.interfaces.BaseEntityList;
 import de.uniks.jism.interfaces.ByteItem;
@@ -55,11 +57,7 @@ public class BitEntity implements BaseEntityList, ByteItem {
 	public static final String PROPERTY_TYP = "typ";
 	public static final String PROPERTY_ORIENTATION = "orientation";
 
-	public BitEntity() {
-
-	}
-
-	public BitEntity(Object value) {
+	public BitEntity withValue(Object value) {
 		if (value instanceof Byte) {
 			this.typ = BIT_BYTE;
 			this.property = "" + value;
@@ -70,25 +68,23 @@ public class BitEntity implements BaseEntityList, ByteItem {
 			this.typ = BIT_STRING;
 			this.property = "" + value;
 		}
+		return this;
 	}
 
-	public BitEntity(String property, String typ, int start, int len) {
+	public BitEntity withValue(String property, String typ) {
 		this.property = property;
 		this.typ = typ;
+		return this;
+	}
+	
+	public BitEntity withStartLen(int start, int len){
 		this.values.add(new BitValue(start, len));
+		return this;
 	}
 
-	public BitEntity(String property, String typ) {
-		this.property = property;
-		this.typ = typ;
-	}
-
-	public BitEntity(String field, String typ, int start, int len,
-			int orientation) {
-		this.property = field;
-		this.typ = typ;
+	public BitEntity withOrientation(int orientation) {
 		this.orientation = orientation;
-		this.values.add(new BitValue(start, len));
+		return this;
 	}
 
 	public boolean addValue(BitValue value) {
@@ -223,9 +219,5 @@ public class BitEntity implements BaseEntityList, ByteItem {
 
 	public int getOrientation() {
 		return orientation;
-	}
-
-	public void setOrientation(int orientation) {
-		this.orientation = orientation;
 	}
 }

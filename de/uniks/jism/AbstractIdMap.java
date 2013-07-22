@@ -124,28 +124,6 @@ public abstract class AbstractIdMap {
 		}
 		return this;
 	}
-
-	/**
-	 * Clone object.
-	 * 
-	 * @param reference
-	 *            the reference
-	 * @return the object
-	 */
-	public Object cloneObject(Object reference) {
-		return cloneObject(reference, new CloneFilter().withTyp(CloneFilter.SIMPLE), 0);
-	}
-
-	/**
-	 * Clone object.
-	 * 
-	 * @param reference
-	 *            the reference
-	 * @param filter
-	 *            the filter
-	 * @return the object
-	 */
-	public abstract Object cloneObject(Object reference, CloneFilter filter, int deep);
 	
 	/**
 	 * @return a Collection of All Creators

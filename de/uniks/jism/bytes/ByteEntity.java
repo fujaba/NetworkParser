@@ -32,7 +32,10 @@ package de.uniks.jism.bytes;
 
 import java.nio.ByteBuffer;
 import java.util.Date;
+
 import de.uniks.jism.EntityList;
+import de.uniks.jism.bytes.converter.ByteConverter;
+import de.uniks.jism.bytes.converter.ByteConverterHTTP;
 import de.uniks.jism.interfaces.JSIMEntity;
 import de.uniks.jism.interfaces.ByteItem;
 
@@ -50,25 +53,6 @@ public class ByteEntity implements JSIMEntity, ByteItem {
 	/** The values. */
 	protected byte[] values;
 	private boolean visible;
-
-	/**
-	 * Instantiates a new byte entity.
-	 */
-	public ByteEntity() {
-
-	}
-
-	/**
-	 * Instantiates a new byte entity.
-	 * 
-	 * @param typ
-	 *            the typ
-	 * @param value
-	 *            the value
-	 */
-	public ByteEntity(byte typ, byte[] value) {
-		this.setValue(typ, value);
-	}
 
 	/*
 	 * @see de.uni.kassel.peermessage.BaseEntity#getNewArray()
@@ -101,7 +85,7 @@ public class ByteEntity implements JSIMEntity, ByteItem {
 	 * @param value
 	 *            the new value
 	 */
-	public void setValue(byte typ, byte[] value) {
+	public void withValue(byte typ, byte[] value) {
 		this.typ = typ;
 		this.values = value;
 	}
