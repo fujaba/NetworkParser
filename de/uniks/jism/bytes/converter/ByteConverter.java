@@ -1,4 +1,4 @@
-package de.uniks.jism.bytes;
+package de.uniks.jism.bytes.converter;
 
 /*
  Json Id Serialisierung Map
@@ -31,50 +31,22 @@ package de.uniks.jism.bytes;
 */
 
 import java.nio.ByteBuffer;
+import de.uniks.jism.interfaces.ByteItem;
 
-public class ByteConverterHTTP extends ByteConverter {
-
-	@Override
-	public String toString(byte[] values, int size) {
-		StringBuilder returnValue = new StringBuilder();
-
-		if (values != null) {
-			for (int i = 0; i < size; i++) {
-				byte value = values[i];
-				if (value <= 32 || value == 127) {
-					returnValue.append(ByteIdMap.SPLITTER);
-					returnValue.append((char) (value + ByteIdMap.SPLITTER + 1));
-				} else {
-					returnValue.append((char) value);
-				}
-			}
-		}
-		return returnValue.toString();
+public abstract class ByteConverter {
+	public String toString(ByteItem item, boolean dynamic) {
+		return toString(item.getBytes(dynamic));
 	}
 
-	/**
-	 * Decode http.
-	 * 
-	 * @param bytes
-	 *            the bytes
-	 * @return the object
-	 */
-	@Override
-	public byte[] decode(String value) {
-		int len = value.length();
-		ByteBuffer buffer = ByteBuffer.allocate(len);
-		for (int i = 0; i < len; i++) {
-			int c = value.charAt(i);
-			if (c == ByteIdMap.SPLITTER) {
-				c = value.charAt(++i);
-				buffer.put((byte) (c - ByteIdMap.SPLITTER - 1));
-			} else {
-				buffer.put((byte) c);
-			}
-		}
-		buffer.flip();
-		byte[] returnValue = new byte[buffer.limit()];
-		buffer.get(returnValue);
-		return returnValue;
+	public String toString(ByteBuffer value) {
+		return toString(value.array(), value.limit());
 	}
+
+	public abstract String toString(byte[] values, int size);
+	
+	public String toString(byte[] values){
+		return toString(values, values.length);
+	}
+
+	public abstract byte[] decode(String value);
 }

@@ -34,22 +34,12 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+
 import de.uniks.jism.AbstractIdMap;
-import de.uniks.jism.CloneFilter;
 import de.uniks.jism.IdMap;
 import de.uniks.jism.bytes.creator.BitEntityCreator;
 
 public class ByteSimpleMap extends AbstractIdMap {
-
-	@Override
-	public Object cloneObject(Object reference, CloneFilter filter, int deep) {
-		return null;
-	}
-
-	// public Object decode(ByteBuffer buffer){
-	//
-	// }
-
 	public Object decode(ByteBuffer buffer, BitEntityCreator creator) {
 		HashMap<String, Object> values = new HashMap<String, Object>();
 		BitEntity[] bitProperties = creator.getBitProperties();

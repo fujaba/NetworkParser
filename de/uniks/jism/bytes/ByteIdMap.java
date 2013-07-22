@@ -40,6 +40,8 @@ import java.util.Map;
 
 import de.uniks.jism.AbstractIdMap;
 import de.uniks.jism.IdMap;
+import de.uniks.jism.bytes.converter.ByteConverter;
+import de.uniks.jism.bytes.converter.ByteConverterHTTP;
 import de.uniks.jism.event.BasicMessage;
 import de.uniks.jism.event.MapEntry;
 import de.uniks.jism.event.UnknownMessage;
@@ -244,7 +246,7 @@ public class ByteIdMap extends IdMap {
 			BasicMessage basicEvent = (BasicMessage) entity;
 			String value = basicEvent.getValue();
 			ByteEntity byteEntity = new ByteEntity();
-			byteEntity.setValue(DATATYPE_FIXED, value.getBytes());
+			byteEntity.withValue(DATATYPE_FIXED, value.getBytes());
 			msg.add(byteEntity);
 			return msg;
 		}
@@ -254,7 +256,7 @@ public class ByteIdMap extends IdMap {
 		} else {
 			Object reference = creator.getSendableInstance(true);
 			ByteEntity byteEntity = new ByteEntity();
-			byteEntity.setValue(DATATYPE_CLAZZ, reference.getClass().getName()
+			byteEntity.withValue(DATATYPE_CLAZZ, reference.getClass().getName()
 					.getBytes());
 			msg.add(byteEntity);
 		}

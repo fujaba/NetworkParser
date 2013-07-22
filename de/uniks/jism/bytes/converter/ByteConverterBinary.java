@@ -1,4 +1,4 @@
-package de.uniks.jism.bytes;
+package de.uniks.jism.bytes.converter;
 
 /*
  Json Id Serialisierung Map
@@ -30,10 +30,19 @@ package de.uniks.jism.bytes;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-public class ByteConverterString extends ByteConverter {
+public class ByteConverterBinary extends ByteConverter {
+	public static String toString(byte value) {
+		ByteConverterBinary converter = new ByteConverterBinary();
+		return converter.toString(new byte[] { value }, 1);
+	}
+
+	public static String toString(int value) {
+		ByteConverterBinary converter = new ByteConverterBinary();
+		return converter.toString(new byte[] { (byte) value }, 1);
+	}
 
 	/**
-	 * To simple string.
+	 * To Binary string.
 	 * 
 	 * @param bytes
 	 *            the bytes
@@ -41,13 +50,22 @@ public class ByteConverterString extends ByteConverter {
 	 */
 	@Override
 	public String toString(byte[] values, int size) {
-		StringBuilder returnValue = new StringBuilder(size);
-		if (values != null) {
-			for (int i = 0; i < size; i++) {
-				returnValue.append((char) values[i]);
+		StringBuilder sb = new StringBuilder();
+		for (int z = 0; z < size; z++) {
+			int number = values[z];
+			char[] bits = new char[] { '0', '0', '0', '0', '0', '0', '0', '0' };
+			int i = 7;
+			if (number < 0) {
+				number += 256;
 			}
+			while (number != 0) {
+				bits[i] = (char) (48 + (number % 2));
+				number = (byte) (number / 2);
+				i--;
+			}
+			sb.append(new String(bits));
 		}
-		return returnValue.toString();
+		return sb.toString();
 	}
 
 	/**
@@ -59,11 +77,17 @@ public class ByteConverterString extends ByteConverter {
 	 */
 	@Override
 	public byte[] decode(String value) {
-		byte[] out = new byte[value.length()];
+		byte[] out = new byte[value.length() / 8];
+
 		int n = value.length();
 
-		for (int i = 0; i < n; i++) {
-			out[i] = (byte) value.charAt(i);
+		for (int i = 0; i < n;) {
+			int charText = 0;
+			for (int z = 0; z < 8; z++) {
+				charText = charText << ((byte) (value.charAt(i++) - 48));
+			}
+			// now just shift the high order nibble and add them together
+			out[i / 8] = (byte) charText;
 		}
 		return out;
 	}

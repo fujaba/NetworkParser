@@ -31,7 +31,10 @@ package de.uniks.jism.bytes;
 */
 
 import java.nio.ByteBuffer;
+
 import de.uniks.jism.EntityList;
+import de.uniks.jism.bytes.converter.ByteConverter;
+import de.uniks.jism.bytes.converter.ByteConverterHTTP;
 import de.uniks.jism.interfaces.JSIMEntity;
 import de.uniks.jism.interfaces.ByteItem;
 
