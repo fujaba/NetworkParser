@@ -14,7 +14,13 @@ public class GridValue {
 		return this;
 	}
 	
-	public void add(Object node, int col, int row) {
+	public CellValue add(Object node, int col, int row, String width, String height) {
+		CellValue cell = add(node, col, row);
+		cell.withHeight(height).withWidth(width);
+		return cell;
+	}
+	
+	public CellValue add(Object node, int col, int row) {
 		boolean refresh=false;
 		if(col>=maxColumns){
 			maxColumns = col;
@@ -34,6 +40,7 @@ public class GridValue {
 		if(refresh){
 			refreshLines();
 		}
+		return cell;
 	}
 	
 	public void setSpanRow(Object node, int row){
@@ -93,5 +100,12 @@ public class GridValue {
 			return true;
 		}
 		return false;
+	}
+
+	public int getCountColumns() {
+		return maxColumns;
+	}
+	public int getCountRows() {
+		return maxRows;
 	}
 }

@@ -1,8 +1,11 @@
 package de.uniks.jism.grid;
 
 import de.uniks.jism.Style;
+import de.uniks.jism.calculator.RegCalculator;
 
 public class CellValue{
+	public static final String COUNT="%count%";
+	public static final String POSITION="%position%";
 	private int rowSpan=1;
 	private int columnSpan=1;
 	private int column;
@@ -12,6 +15,8 @@ public class CellValue{
 	private GridValue grid;
 	private Style cellStyle;
 	private GridGUICell guiElement;
+	private String heightExpression;
+	private String widthExpression;
 	
 	public CellValue withGrid(GridValue grid){
 		this.grid=grid;
@@ -60,9 +65,25 @@ public class CellValue{
 		return row;
 	}
 	public int getRowEnd(){
+		if(heightExpression!=null){
+			RegCalculator calculator=new RegCalculator().withStandard();
+			calculator.withConstants(COUNT, grid.getCountRows());
+			calculator.withConstants(POSITION, row);
+			double result = (double)calculator.calculate(heightExpression);
+			return (int)result;
+			
+		}
+
 		return getRow()+getRowSpan()-1;
 	}
 	public int getColumnEnd(){
+		if(widthExpression!=null){
+			RegCalculator calculator=new RegCalculator().withStandard();
+			calculator.withConstants(COUNT, grid.getCountRows());
+			calculator.withConstants(POSITION, column);
+			double result = (double)calculator.calculate(widthExpression);
+			return (int)result;
+		}
 		return getColumn()+getColumnSpan()-1;
 	}
 	public int getColumnSpan() {
@@ -102,6 +123,17 @@ public class CellValue{
 			this.grid.setSpanColumn(this, column);
 		}
 	}
+	
+	public CellValue withHeight(String value) {
+		this.heightExpression = value;
+		return this;
+	}
+
+	public CellValue withWidth(String value) {
+		this.widthExpression = value;
+		return this;
+	}
+
 	
 	public String getSavedStyle(){
 		return style;
