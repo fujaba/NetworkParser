@@ -30,7 +30,6 @@ package de.uniks.jism.logic;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import de.uniks.jism.Buffer;
 import de.uniks.jism.IdMap;
 
 public class Not implements Condition {
@@ -44,10 +43,5 @@ public class Not implements Condition {
 	public boolean matches(IdMap map, Object entity, String property,
 			Object value, boolean isMany, int deep) {
 		return !item.matches(map, entity, property, value, isMany, deep);
-	}
-
-	@Override
-	public boolean matches(Buffer buffer) {
-		return !item.matches(buffer);
 	}
 }

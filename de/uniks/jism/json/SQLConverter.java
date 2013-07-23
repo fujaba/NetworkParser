@@ -48,14 +48,14 @@ public class SQLConverter {
 
 	public static JsonObject sqlToJson(ResultSet sqlSet, String clazz)
 			throws SQLException {
-		JsonObject msg = new JsonObject(JsonIdMap.CLASS, clazz);
+		JsonObject msg = new JsonObject().withValue(JsonIdMap.CLASS, clazz);
 		msg.put(JsonIdMap.JSON_PROPS, sqlToJsonObject(sqlSet));
 		return msg;
 	}
 
 	public static JsonObject sqlToJson(ResultSet sqlSet, String clazz, String id)
 			throws SQLException {
-		JsonObject msg = new JsonObject(JsonIdMap.CLASS, clazz, JsonIdMap.ID,
+		JsonObject msg = new JsonObject().withValue(JsonIdMap.CLASS, clazz, JsonIdMap.ID,
 				id);
 		msg.put(JsonIdMap.JSON_PROPS, sqlToJsonObject(sqlSet));
 		return msg;

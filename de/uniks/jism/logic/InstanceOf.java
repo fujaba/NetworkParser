@@ -30,7 +30,6 @@ package de.uniks.jism.logic;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import de.uniks.jism.Buffer;
 import de.uniks.jism.IdMap;
 import de.uniks.jism.interfaces.ByteEntityCreator;
 
@@ -52,11 +51,4 @@ public class InstanceOf implements Condition {
 			Object value, boolean isMany, int deep) {
 		return entity.getClass().getName().equals(clazzName);
 	}
-
-	@Override
-	public boolean matches(Buffer buffer) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 }

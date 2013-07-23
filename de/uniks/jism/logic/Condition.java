@@ -30,7 +30,6 @@ package de.uniks.jism.logic;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import de.uniks.jism.Buffer;
 import de.uniks.jism.IdMap;
 
 public interface Condition {
@@ -43,13 +42,4 @@ public interface Condition {
 	 */
 	public boolean matches(IdMap map, Object entity, String property,
 			Object value, boolean isMany, int deep);
-
-	/**
-	 * checks if a telegram fulfills this condition
-	 * 
-	 * @param telegram
-	 *            the telegram to be checked
-	 * @return true if the telegram fulfills this condition, false otherwise
-	 */
-	public boolean matches(Buffer buffer);
 }

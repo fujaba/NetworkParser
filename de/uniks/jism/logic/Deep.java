@@ -29,7 +29,6 @@ package de.uniks.jism.logic;
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-import de.uniks.jism.Buffer;
 import de.uniks.jism.IdMap;
 
 public class Deep implements Condition{
@@ -43,11 +42,6 @@ public class Deep implements Condition{
 	@Override
 	public boolean matches(IdMap map, Object entity, String property,
 			Object value, boolean isMany, int deep) {
-		return deep<=this.deep;
-	}
-
-	@Override
-	public boolean matches(Buffer buffer) {
 		return deep<=this.deep;
 	}
 

@@ -106,8 +106,13 @@ public class Filter {
 	}
 	
 	public Filter clone(){
-		return new Filter().withConvertable(convertable).withIdFilter(idFilter).withProperty(property);
+		return clone(new Filter());
 	}
+	public Filter clone(Filter newInstance){
+		return newInstance.withConvertable(convertable).withIdFilter(idFilter).withProperty(property);
+	}
+	
+	
 	public boolean hasVisitedObjects(String id) {
 		return visitedObjects.contains(id);
 	}

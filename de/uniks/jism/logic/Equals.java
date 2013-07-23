@@ -34,38 +34,37 @@ import de.uniks.jism.Buffer;
 import de.uniks.jism.IdMap;
 
 public class Equals implements Condition {
-	private Byte value;
 	private String strValue;
 	// Position of the Byte or -1 for currentPosition
 	private int position = -1;
+	private Byte bytevalue;
 
 	@Override
 	public boolean matches(IdMap map, Object entity, String property,
 			Object value, boolean isMany, int deep) {
+		if(entity instanceof Buffer){
+			Buffer buffer = (Buffer) entity;
+			int pos;
+			if (position < 0) {
+				pos = buffer.position();
+			} else {
+				pos = position;
+			}
+			return buffer.get(pos) == bytevalue;
+		}
 		if(value==null){
 			return (strValue==null);
 		}
 		return value.equals(strValue);
 	}
 
-	@Override
-	public boolean matches(Buffer buffer) {
-		int pos;
-		if (position < 0) {
-			pos = buffer.position();
-		} else {
-			pos = position;
-		}
-		return buffer.get(pos) == value;
-	}
-	
 	public Equals withPosition(int value){
 		this.position = value;
 		return this;
 	}
 	
 	public Equals withValue(Byte value){
-		this.value = value;
+		this.bytevalue = value;
 		return this;
 	}
 	public Equals withValue(String value){

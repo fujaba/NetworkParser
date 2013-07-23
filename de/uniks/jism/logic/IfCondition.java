@@ -1,6 +1,5 @@
 package de.uniks.jism.logic;
 
-import de.uniks.jism.Buffer;
 import de.uniks.jism.IdMap;
 
 public class IfCondition implements Condition{
@@ -23,20 +22,6 @@ public class IfCondition implements Condition{
 		}else{
 			if(falseCondition!=null){
 				return falseCondition.matches(map, entity, property, value, isMany, deep);
-			}
-		}
-		return false;
-	}
-
-	@Override
-	public boolean matches(Buffer buffer) {
-		if(expression.matches(buffer)){
-			if(trueCondition!=null){
-				return trueCondition.matches(buffer);
-			}
-		}else{
-			if(falseCondition!=null){
-				return falseCondition.matches(buffer);
 			}
 		}
 		return false;

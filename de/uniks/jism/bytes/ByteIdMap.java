@@ -175,12 +175,7 @@ public class ByteIdMap extends IdMap {
 	/** The decoder map. */
 	protected HashMap<Byte, ByteEntityCreator> decoderMap;
 
-	/**
-	 * Instantiates a new byte id map.
-	 */
-	public ByteIdMap() {
-
-	}
+	private ByteFilter filter=new ByteFilter();
 
 	/*
 	 * (non-Javadoc)
@@ -226,8 +221,7 @@ public class ByteIdMap extends IdMap {
 	 * @return the byte entity message
 	 */
 	public ByteItem encode(Object entity) {
-		ByteFilter filter = new ByteFilter();
-		return encode(entity, filter);
+		return encode(entity, (ByteFilter)filter.clone());
 	}
 
 	public ByteItem encode(Object entity, ByteFilter filter) {

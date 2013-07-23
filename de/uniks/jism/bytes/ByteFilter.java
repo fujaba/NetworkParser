@@ -53,4 +53,12 @@ public class ByteFilter extends Filter {
 		this.isDynamic = value;
 		return this;
 	}
+	
+	@Override
+	public Filter clone() {
+		ByteFilter newInstance = (ByteFilter) super.clone(new ByteFilter());
+		newInstance.withDynamic(this.isDynamic);
+		newInstance.withLenCheck(this.isLenCheck);
+		return newInstance;
+	}
 }

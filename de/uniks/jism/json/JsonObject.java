@@ -97,73 +97,6 @@ import de.uniks.jism.Tokener;
  */
 public class JsonObject extends Entity {
 	/**
-	 * Construct an empty JsonObject.
-	 */
-	public JsonObject() {
-	}
-
-	public JsonObject(String... values) {
-		if (values.length % 2 == 0) {
-			for (int z = 0; z < values.length; z += 2) {
-				put(values[z], values[z + 1]);
-			}
-		}
-	}
-
-	/**
-	 * Construct a JsonObject from a JSONTokener.
-	 * 
-	 * @param x
-	 *            A JSONTokener object containing the source string. or a
-	 *            duplicated key.
-	 */
-	public JsonObject(Tokener x) {
-		this();
-		x.parseToEntity(this);
-	}
-
-	public JsonObject(Entity entity) {
-		JsonTokener tokener = new JsonTokener();
-		tokener.parseToEntity(this, entity);
-	}
-
-	/**
-	 * Construct a JsonObject from a source JSON text string. This is the most
-	 * commonly used JsonObject constructor.
-	 * 
-	 * @param source
-	 *            A string beginning with <code>{</code>&nbsp;<small>(left
-	 *            brace)</small> and ending with <code>}</code>
-	 *            &nbsp;<small>(right brace)</small>.
-	 */
-	public JsonObject(String source) {
-		this();
-		Tokener tokener = new JsonTokener().withText(source);
-		tokener.parseToEntity(this);
-	}
-
-	/**
-	 * Construct a JsonObject from a Map.
-	 * 
-	 * @param map
-	 *            A map object that can be used to initialize the contents of
-	 *            the JsonObject.
-	 */
-	public JsonObject(Map<String, Object> map) {
-		getMap();
-		if (map != null) {
-			Iterator<Entry<String, Object>> i = map.entrySet().iterator();
-			while (i.hasNext()) {
-				Entry<String, Object> e = i.next();
-				Object value = e.getValue();
-				if (value != null) {
-					this.put(e.getKey(), EntityUtil.wrap(value, this));
-				}
-			}
-		}
-	}
-
-	/**
 	 * Produce a string from a double. The string "null" will be returned if the
 	 * number is not finite.
 	 * 
@@ -346,12 +279,68 @@ public class JsonObject extends Entity {
 		return sb.toString();
 	}
 
-	public boolean setAllValue(String value) {
+	/**
+	 * Set the value to Tokener or pairs of values
+	 * 
+	 * @param values
+	 *            a simple String of Value or pairs of key-values
+	 */
+	public JsonObject withValue(String... values) {
 		this.getMap().clear();
-		new JsonTokener().withText(value).parseToEntity(this);
-		return true;
+		if (values.length % 2 == 0) {
+			for (int z = 0; z < values.length; z += 2) {
+				put(values[z], values[z + 1]);
+			}
+			return this;
+		}
+		if(values.length>0){
+			new JsonTokener().withText(values[0]).parseToEntity(this);
+		}
+		return this;
 	}
-
+	
+	/**
+	 * add the Values of the map to JsonObjectmap
+	 * 
+	 * @param map
+	 *            a map of key-values
+	 */
+	public JsonObject withMap(Map<String, Object> map) {
+		getMap();
+		if (map != null) {
+			Iterator<Entry<String, Object>> i = map.entrySet().iterator();
+			while (i.hasNext()) {
+				Entry<String, Object> e = i.next();
+				Object value = e.getValue();
+				if (value != null) {
+					this.put(e.getKey(), EntityUtil.wrap(value, this));
+				}
+			}
+		}
+		return  this;
+	}
+	/**
+	 * Tokener to init the JsonObject
+	 * 
+	 * @param x
+	 *            tokener to add values with the tokener
+	 */
+	public JsonObject withTokener(Tokener x) {
+		x.parseToEntity(this);
+		return this;
+	}
+	
+	/**
+	 * Tokener to init the JsonObject
+	 * 
+	 * @param entity
+	 *            entity to add values with the tokener
+	 */
+	public JsonObject withEntity(Entity entity) {
+		new JsonTokener().parseToEntity(this, entity);
+		return this;
+	}
+	
 	/**
 	 * Get a new Instance of JsonArray
 	 */

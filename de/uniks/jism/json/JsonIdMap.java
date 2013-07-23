@@ -237,10 +237,10 @@ public class JsonIdMap extends IdMap {
 						this.toJsonArray(entity, jsonArray, filter, deep+1);
 					}
 				}
-				return new JsonObject(ID, getId(entity));
+				return new JsonObject().withValue(ID, getId(entity));
 			}
 			if (typSave) {
-				JsonObject returnValue = new JsonObject(CLASS, className);
+				JsonObject returnValue = new JsonObject().withValue(CLASS, className);
 				returnValue.put(VALUE, entity);
 				return returnValue;
 			}
@@ -295,7 +295,7 @@ public class JsonIdMap extends IdMap {
 		if(value.startsWith("[")){
 			return readJson(new JsonArray(value));
 		}
-		return readJson(new JsonObject(value));
+		return readJson(new JsonObject().withValue(value));
 	}
 
 	/**
