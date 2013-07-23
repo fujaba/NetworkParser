@@ -32,7 +32,6 @@ package de.uniks.jism.logic;
 
 import java.util.ArrayList;
 
-import de.uniks.jism.Buffer;
 import de.uniks.jism.IdMap;
 
 public class Or implements Condition {
@@ -51,17 +50,6 @@ public class Or implements Condition {
 		boolean result = true;
 		for (Condition condition : list) {
 			if (!condition.matches( map, entity, property, value, isMany, deep)) {
-				result = false;
-			}
-		}
-		return result;
-	}
-
-	@Override
-	public boolean matches(Buffer buffer) {
-		boolean result = true;
-		for (Condition condition : list) {
-			if (!condition.matches(buffer)) {
 				result = false;
 			}
 		}

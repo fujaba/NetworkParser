@@ -55,7 +55,7 @@ public class JsonObjectCreator implements SendableEntityCreator, NoIndexCreator 
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String typ) {
-		return ((JsonObject) entity).setAllValue((String) value);
+		((JsonObject) entity).withValue((String) value);
+		return true;
 	}
-
 }

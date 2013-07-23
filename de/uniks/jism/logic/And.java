@@ -32,7 +32,6 @@ package de.uniks.jism.logic;
 
 import java.util.ArrayList;
 
-import de.uniks.jism.Buffer;
 import de.uniks.jism.IdMap;
 
 public class And implements Condition {
@@ -50,16 +49,6 @@ public class And implements Condition {
 			Object value, boolean isMany, int deep) {
 		for (Condition condition : list) {
 			if (!condition.matches(map, entity, property, value, isMany, deep)) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	@Override
-	public boolean matches(Buffer buffer) {
-		for (Condition condition : list) {
-			if (!condition.matches(buffer)) {
 				return false;
 			}
 		}

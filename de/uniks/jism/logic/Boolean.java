@@ -29,7 +29,6 @@ package de.uniks.jism.logic;
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-import de.uniks.jism.Buffer;
 import de.uniks.jism.IdMap;
 
 public class Boolean implements Condition {
@@ -41,11 +40,6 @@ public class Boolean implements Condition {
 		return this.value;
 	}
 
-	@Override
-	public boolean matches(Buffer buffer) {
-		return value;
-	}
-	
 	public Boolean withValue(boolean value) {
 		this.value = value;
 		return this;
