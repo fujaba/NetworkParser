@@ -36,6 +36,8 @@ public class Filter {
 	private Condition idFilter;
 	private Condition convertable;
 	private Condition property;
+	
+	// Temporary variables
 	private LinkedHashSet<String> visitedObjects;
 	private Boolean full;
 
