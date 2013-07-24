@@ -33,7 +33,7 @@ package de.uniks.jism.calculator;
 public class Mod implements Operator {
 	@Override
 	public int getPriority() {
-		return 2;
+		return RegCalculator.POINT;
 	}
 
 	@Override

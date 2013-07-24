@@ -33,7 +33,7 @@ package de.uniks.jism.calculator;
 public class Addition implements Operator {
 	@Override
 	public int getPriority() {
-		return 1;
+		return RegCalculator.LINE;
 	}
 
 	@Override

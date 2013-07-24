@@ -32,9 +32,13 @@ package de.uniks.jism.calculator;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
 import de.uniks.jism.StringTokener;
 
 public class RegCalculator {
+	public static final int LINE=1;
+	public static final int POINT=1;
+	public static final int FUNCTION=3;
 	/** List of Operators */
     private HashMap<String, Operator> operators = new HashMap<String, Operator>();
  
@@ -47,6 +51,8 @@ public class RegCalculator {
     	withOperator(new Multiply());
     	withOperator(new Division());
     	withOperator(new Mod());
+    	withOperator(new Minimum());
+    	withOperator(new Maximum());
     	return this;
     }
     public RegCalculator withOperator(Operator value){
@@ -79,28 +85,13 @@ public class RegCalculator {
 			}
 			String value="";
 			if( current == '('){
-				int count=1;
-				value = "(";
-				while(!tokener.isEnd()){
-					current = tokener.next();
-					if(current=='('){
-						count++;
-					}
-					if(current==')'){
-						count--;
-					}
-					value+=current;
-					if(count==0){
-						break;
-					}
-				}
-				if(count==0){
+				value = getBreakedValue(tokener);
+				if(value != null){
 					parts.add( value );
 				}
                 current=null;
                 continue;
             }
-
 			
 			if( Character.isDigit( current ) || current == '.' ){
 				while(Character.isDigit( current ) || current == '.'){
@@ -112,26 +103,15 @@ public class RegCalculator {
 			}
    			value+= current;
 			while(!tokener.isEnd() ){
-    			if(constants.containsKey(value)){
-    				// Its constants
-    				parts.add( ""+constants.get(value) );
-    				value="";
+				if(addOperator(value, tokener, parts)){
+					value="";
     				break;
-    			}else if(operators.containsKey(value)){
-    				parts.add( value );
-    				value="";
-    				break;
-    			}
+				}
     			current = tokener.next();
     			value += current;
     		}
 			if(value.length()>0){
-				if(constants.containsKey(value)){
-    				// Its constants
-    				parts.add( ""+constants.get(value) );
-    			}else if(operators.containsKey(value)){
-    				parts.add( value );
-    			}
+				addOperator(value, tokener, parts);
 			}
 			current=null;
     	}
@@ -143,12 +123,56 @@ public class RegCalculator {
     	return Double.valueOf(parts.get(0));
     }
     
+    private boolean addOperator(String value, StringTokener tokener, ArrayList<String> parts){
+    	if(constants.containsKey(value)){
+			// Its constants
+			return parts.add( ""+constants.get(value) );
+		}else if(operators.containsKey(value)){
+			if(operators.get(value).getPriority()==FUNCTION){
+				tokener.next();
+				return parts.add( value + getBreakedValue(tokener) );
+			}
+			return parts.add( value );
+		}
+    	return false;
+    }
+    
+    private String getBreakedValue(StringTokener tokener){
+    	int count=1;
+    	Character current;
+    	String value = "(";
+		while(!tokener.isEnd()){
+			current = tokener.next();
+			if(current=='('){
+				count++;
+			}
+			if(current==')'){
+				count--;
+			}
+			value+=current;
+			if(count==0){
+				return value;
+			}
+		}
+		return null;
+    }
+    
     public void parse(ArrayList<String> parts){
-    	// Parsing (
+    	// Parsing Funciton & Parsing (
     	for(int i=0;i<parts.size();i++){
-    		if(parts.get(i).startsWith("(")){
-    			parts.set(i, ""+calculate(parts.get(i)));
+    		int pos=parts.get(i).indexOf("(");
+    		if(pos<0){
+    			continue;
     		}
+    		if(pos>0){
+    			// Function
+    			Operator operator = operators.get(parts.get(i).substring(0, parts.get(i).indexOf("(")));
+    			String[] value= parts.get(i).substring(pos+1,  parts.get(i).length()-1).split(",");
+    			if(operator!=null&&value.length==2){
+    				parts.set(i, ""+operator.calculate(Double.valueOf(value[0]), Double.valueOf(value[1])));
+    			}
+    		}
+    		parts.set(i, ""+calculate(parts.get(i)));
     	}
     	parse(parts, 2);
     	parse(parts, 1);
@@ -175,6 +199,4 @@ public class RegCalculator {
     		}
     	}
     }
-    
- 
 }
