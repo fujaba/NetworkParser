@@ -30,19 +30,23 @@ package de.uniks.jism.calculator;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-public class Subtract implements Operator {
+public class Minimum implements Operator {
 	@Override
 	public int getPriority() {
-		return RegCalculator.LINE;
+		return RegCalculator.FUNCTION;
 	}
 
 	@Override
 	public double calculate(double a, double b) {
-		return a-b;
+		if(a<b){
+			return a;
+		}else{
+			return b;
+		}
 	}
 
 	@Override
 	public String getTag() {
-		return "-";
+		return "min";
 	}
 }
