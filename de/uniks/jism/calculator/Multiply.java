@@ -1,4 +1,4 @@
-package de.uniks.jism.grid;
+package de.uniks.jism.calculator;
 
 /*
  Json Id Serialisierung Map
@@ -30,11 +30,19 @@ package de.uniks.jism.grid;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-public interface GridGUITable {
-	public void add(CellValue cell);
-	public void setSpanRow(CellValue node);
-	public void setSpanColumn(CellValue node);
-	public GridGUICell getNewCell();
-	public void setSpanRow(Object node, int row);
-	public void setSpanColumn(Object node, int column);
+public class Multiply implements Operator {
+	@Override
+	public int getPriority() {
+		return 2;
+	}
+
+	@Override
+	public double calculate(double a, double b) {
+		return a*b;
+	}
+
+	@Override
+	public String getTag() {
+		return "*";
+	}
 }
