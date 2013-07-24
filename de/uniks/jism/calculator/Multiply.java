@@ -37,12 +37,17 @@ public class Multiply implements Operator {
 	}
 
 	@Override
-	public double calculate(double a, double b) {
-		return a*b;
+	public double calculate(Double[] values) {
+		return values[0]*values[1];
 	}
 
 	@Override
 	public String getTag() {
 		return "*";
+	}
+
+	@Override
+	public int getValues() {
+		return 2;
 	}
 }

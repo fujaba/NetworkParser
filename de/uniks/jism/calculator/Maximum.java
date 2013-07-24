@@ -37,16 +37,21 @@ public class Maximum implements Operator {
 	}
 
 	@Override
-	public double calculate(double a, double b) {
-		if(a>b){
-			return a;
+	public double calculate(Double[] values) {
+		if(values[0]>values[1]){
+			return values[0];
 		}else{
-			return b;
+			return values[1];
 		}
 	}
 
 	@Override
 	public String getTag() {
 		return "max";
+	}
+
+	@Override
+	public int getValues() {
+		return 2;
 	}
 }

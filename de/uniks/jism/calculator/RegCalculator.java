@@ -64,8 +64,14 @@ public class RegCalculator {
     	constants.put(tag, value);
     	return this;
     }
-    
     public Double calculate(String formular){
+    	Double[] values = calculateFields(formular);
+    	if(values.length<1){
+    		return null;
+    	}
+    	return values[0];
+    }
+    public Double[] calculateFields(String formular){
     	StringTokener tokener = new StringTokener();
     	tokener.withText(formular);
 
@@ -77,15 +83,15 @@ public class RegCalculator {
     	}
     	while(!tokener.isEnd()){
     		if(current==null){
-    			current = tokener.next();
+    			current = tokener.nextClean();
     		}
-			if( Character.isWhitespace( current )){
+			if( current==',' ){
 				current=null;
 				continue;
 			}
 			String value="";
 			if( current == '('){
-				value = getBreakedValue(tokener);
+				value = tokener.getBreakedString();
 				if(value != null){
 					parts.add( value );
 				}
@@ -117,10 +123,11 @@ public class RegCalculator {
     	}
     	
     	parse(parts);
-    	if(parts.size()<1){
-    		return 0.0;
+    	Double[] result=new Double[parts.size()];
+    	for(int i=0;i<parts.size();i++){
+    		result[i]=Double.valueOf(parts.get(i));
     	}
-    	return Double.valueOf(parts.get(0));
+    	return result;
     }
     
     private boolean addOperator(String value, StringTokener tokener, ArrayList<String> parts){
@@ -130,31 +137,11 @@ public class RegCalculator {
 		}else if(operators.containsKey(value)){
 			if(operators.get(value).getPriority()==FUNCTION){
 				tokener.next();
-				return parts.add( value + getBreakedValue(tokener) );
+				return parts.add( value + tokener.getBreakedString() );
 			}
 			return parts.add( value );
 		}
     	return false;
-    }
-    
-    private String getBreakedValue(StringTokener tokener){
-    	int count=1;
-    	Character current;
-    	String value = "(";
-		while(!tokener.isEnd()){
-			current = tokener.next();
-			if(current=='('){
-				count++;
-			}
-			if(current==')'){
-				count--;
-			}
-			value+=current;
-			if(count==0){
-				return value;
-			}
-		}
-		return null;
     }
     
     public void parse(ArrayList<String> parts){
@@ -167,9 +154,9 @@ public class RegCalculator {
     		if(pos>0){
     			// Function
     			Operator operator = operators.get(parts.get(i).substring(0, parts.get(i).indexOf("(")));
-    			String[] value= parts.get(i).substring(pos+1,  parts.get(i).length()-1).split(",");
-    			if(operator!=null&&value.length==2){
-    				parts.set(i, ""+operator.calculate(Double.valueOf(value[0]), Double.valueOf(value[1])));
+    			Double[] values = calculateFields(parts.get(i).substring(pos+1,  parts.get(i).length()-1));
+    			if(operator!=null&&values.length>=operator.getValues()){
+    				parts.set(i, ""+operator.calculate(values));
     			}
     		}
     		parts.set(i, ""+calculate(parts.get(i)));
@@ -192,7 +179,7 @@ public class RegCalculator {
     				i=-1;
     				continue;
     			}
-    			parts.set(i-1, ""+operator.calculate(Double.valueOf(parts.get(i-1)), Double.valueOf(parts.get(i+1))));
+    			parts.set(i-1, ""+operator.calculate(new Double[]{Double.valueOf(parts.get(i-1)), Double.valueOf(parts.get(i+1))}));
     			parts.remove(i);
     			parts.remove(i);
     			i=i-1;

@@ -32,6 +32,7 @@ package de.uniks.jism.calculator;
 
 public interface Operator {
 	public int getPriority();
-    public double calculate( double a, double b );
+	public int getValues();
+    public double calculate( Double[] values );
     public String getTag();
 }
