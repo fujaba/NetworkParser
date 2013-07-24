@@ -1,4 +1,4 @@
-package de.uniks.jism.date;
+package de.uniks.jism;
 
 /*
  Json Id Serialisierung Map
@@ -32,7 +32,6 @@ package de.uniks.jism.date;
 
 import java.util.ArrayList;
 
-import de.uniks.jism.Tokener;
 import de.uniks.jism.interfaces.BaseEntity;
 import de.uniks.jism.interfaces.BaseEntityList;
 
