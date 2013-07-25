@@ -438,35 +438,6 @@ public abstract class Tokener {
 		}
 		return "";
 	}
-	
-	/**
-	 * get the () values
-	 * 
-	 * @return string of values
-	 */
-	public String getBreakedString(){
-    	int count=1;
-    	Character current;
-    	int pos;
-    	if(getCurrentChar()=='('){
-    		pos=buffer.position();
-    	}else{
-    		pos=buffer.position()-1;
-    	}
-		while(!isEnd()){
-			current = next();
-			if(current=='('){
-				count++;
-			}
-			if(current==')'){
-				count--;
-			}
-			if(count==0){
-				return buffer.substring2(pos, buffer.position()-pos);
-			}
-		}
-		return null;
-    }
 
 	/**
 	 * Sets the index.

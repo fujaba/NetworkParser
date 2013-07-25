@@ -65,6 +65,38 @@ public class StringTokener extends Tokener {
 		}
 		return super.nextString(quote, allowCRLF, ignoreCurrent);
 	}
+	
+	/**
+	 * get the () values
+	 * 
+	 * @return string of values
+	 */
+	public String getStringPart(Character start, Character end){
+    	int count=1;
+    	Character current;
+    	int pos;
+    	if(getCurrentChar()==start){
+    		pos=buffer.position();
+    		isString = true;
+    	}else{
+    		isString = !isString;
+    		pos=buffer.position()-1;
+    	}
+		while(!isEnd()){
+			current = next();
+			if(current==end){
+				count--;
+				if(count==0){
+					return buffer.substring2(pos, buffer.position()-pos);
+				}
+				continue;
+			}
+			if(current==start){
+				count++;
+			}
+		}
+		return null;
+    }
 
 	@Override
 	public void parseToEntity(BaseEntity entity) {
