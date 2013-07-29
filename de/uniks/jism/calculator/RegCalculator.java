@@ -37,7 +37,7 @@ import de.uniks.jism.StringTokener;
 
 public class RegCalculator {
 	public static final int LINE=1;
-	public static final int POINT=1;
+	public static final int POINT=2;
 	public static final int FUNCTION=3;
 	/** List of Operators */
     private HashMap<String, Operator> operators = new HashMap<String, Operator>();
