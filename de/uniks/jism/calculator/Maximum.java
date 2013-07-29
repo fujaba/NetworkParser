@@ -38,11 +38,13 @@ public class Maximum implements Operator {
 
 	@Override
 	public double calculate(Double[] values) {
-		if(values[0]>values[1]){
-			return values[0];
-		}else{
-			return values[1];
+		double max=values[0];
+		for(int i=1;i<values.length;i++){
+			if(values[i]>max){
+				max=values[i];
+			}
 		}
+		return max;
 	}
 
 	@Override
