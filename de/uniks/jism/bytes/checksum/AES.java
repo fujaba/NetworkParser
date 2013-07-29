@@ -1,5 +1,7 @@
 package de.uniks.jism.bytes.checksum;
 
+import de.uniks.jism.bytes.converter.ByteConverterString;
+
 /** AES - implementation of the AES block cipher in Java.
  *  <p> Illustrative code for the AES block cipher (Rijndael).
  *  Handles a single block encryption or decryption, with diagnostic
@@ -132,10 +134,8 @@ public class AES {
 		for (i = 1; i < 255; i++) log[alog[i]] = i;
 	}
 
-	/** Construct AES object. */
-	public AES() {
-	}
-
+	private ByteConverterString converter=new ByteConverterString();
+	
 	/** return number of rounds for a given AES key size.
 	 *
 	 * @param keySize    size of the user key material in bytes.
@@ -165,7 +165,15 @@ public class AES {
 					0;
 	}
 
-	//......................................................................
+	public String encodeBytes(byte[] plain) {
+		return converter.toString( encode(plain) );
+	}
+
+	public String encode(String data) {
+		while((data.length() % 32) != 0) data += " ";
+		return _cryptAll(data, 1);
+	}
+
 	/**
 	 * AES encrypt 128-bit plaintext using key previously set.
 	 *
@@ -175,7 +183,7 @@ public class AES {
 	 * @param plain the 128-bit plaintext value to encrypt.
 	 * @return the encrypted 128-bit ciphertext value.
 	 */
-	public byte[] encrypt(byte[] plain) {
+	public byte[] encode(byte[] plain) {
 		// define working variables
 		byte [] a = new byte[BLOCK_SIZE];    // AES state variable
 		byte [] ta = new byte[BLOCK_SIZE];    // AES temp state variable
@@ -239,8 +247,14 @@ public class AES {
 		return (a);
 	}
 
+	public String decode(String data) {
+		return _cryptAll(data, 2).trim();
+	}
+	
+	public byte[] decodeString(String value) {
+		return converter.decode( decode( value ) );
+	}
 
-	//......................................................................
 	/**
 	 * AES decrypt 128-bit ciphertext using key previously set.
 	 *
@@ -250,7 +264,7 @@ public class AES {
 	 * @param cipher the 128-bit ciphertext value to decrypt.
 	 * @return the decrypted 128-bit plaintext value.
 	 */
-	public byte[] decrypt(byte[] cipher) {
+	public byte[] decode(byte[] cipher) {
 		// define working variables
 		byte [] a = new byte[BLOCK_SIZE];    // AES state variable
 		byte [] ta = new byte[BLOCK_SIZE];    // AES temp state variable
@@ -317,7 +331,10 @@ public class AES {
 	}
 
 
-	//......................................................................
+
+	public void setKey(String key) {
+		setKey(converter.decode(key));
+	}
 	/**
 	 * Expand a user-supplied key material into a session key.
 	 * <p>See FIPS-197 Section 5.3 Fig 11 for details of the key expansion.
@@ -396,32 +413,7 @@ public class AES {
 		}
 	}
 
-	private String static_byteArrayToString(byte[] data) {
-		String res = "";
-		StringBuffer sb = new StringBuffer();
-		for(int i=0; i<data.length; i++) {
-			int n = (int) data[i];
-			if(n<0) n += 256;
-			sb.append((char) n);
-		}
-		res = sb.toString();
-		return res;
-	}
-
-	private byte[] static_stringToByteArray(String s){
-		byte[] temp = new byte[s.length()];
-		for(int i=0;i<s.length();i++){
-			temp[i] = (byte) s.charAt(i);
-		}
-		return temp;
-	}
-
-	/** self-test routine for AES cipher
-        @param args command line arguments
-	 */
-
 	public String _cryptAll(String data, int mode)  {
-		AES aes = this;
 		if(data.length()/16 > ((int) data.length()/16)) {
 			int rest = data.length()-((int) data.length()/16)*16;
 			for(int i=0; i<rest; i++)
@@ -433,25 +425,12 @@ public class AES {
 		byte[] partByte = new byte[16];
 		for(int p=0; p<nParts; p++) {
 			partStr = data.substring(p*16, p*16+16);
-			partByte = static_stringToByteArray(partStr);
-			if(mode==1) partByte = aes.encrypt(partByte);
-			if(mode==2) partByte = aes.decrypt(partByte);
+			partByte = converter.decode(partStr);
+			if(mode==1) partByte = encode(partByte);
+			if(mode==2) partByte = decode(partByte);
 			for(int b=0; b<16; b++)
 				res[p*16+b] = partByte[b];
 		}
-		return static_byteArrayToString(res);
-	}
-
-	public String encrypt(String data) {
-		while((data.length() % 32) != 0) data += " ";
-		return _cryptAll(data, 1);
-	}
-	public String decrypt(String data) {
-		return _cryptAll(data, 2).trim();
-	}
-
-	public void setKey(String key) {
-		//System.out.println("CRYPT KEY IS "+key);
-		setKey(static_stringToByteArray(key));
+		return converter.toString(res);
 	}
 }
