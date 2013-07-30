@@ -34,7 +34,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
+import de.uniks.jism.Filter;
 import de.uniks.jism.IdMap;
+import de.uniks.jism.interfaces.JSIMEntity;
 import de.uniks.jism.interfaces.SendableEntityCreator;
 
 /**
@@ -330,5 +332,23 @@ public class YUMLIdParser extends IdMap {
 		String className = object.getClass().getName();
 		return className.substring(className.lastIndexOf('.') + 1);
 	}
-//FIXME RENOAME METHODS
+
+	@Override
+	public JSIMEntity encode(Object value) {
+//		value.
+//		return parseClass(value);
+		return new YUMLEntity();
+	}
+
+	@Override
+	public Object decode(JSIMEntity value) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public JSIMEntity encode(Object value, Filter filter) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

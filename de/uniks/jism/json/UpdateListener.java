@@ -251,7 +251,7 @@ public class UpdateListener implements PropertyChangeListener {
 	public boolean execute(JsonObject updateMessage) {
 		if (updateMessage.has(JsonIdMap.JSON_PROPS)) {
 			// its a new Object
-			this.map.readJson(updateMessage);
+			this.map.decode(updateMessage);
 			return true;
 		}
 
@@ -327,7 +327,7 @@ public class UpdateListener implements PropertyChangeListener {
 					if (removeJsonObject != null
 							&& removeJsonObject instanceof JsonObject) {
 						JsonObject json = (JsonObject) removeJsonObject;
-						this.map.readMessages(key, masterObj, this.map.readJson(json), json, IdMap.REMOVE);
+						this.map.readMessages(key, masterObj, this.map.decode(json), json, IdMap.REMOVE);
 					}
 				}
 				return true;
@@ -432,7 +432,7 @@ public class UpdateListener implements PropertyChangeListener {
 					return false;
 				}
 			}
-			Object value = this.map.readJson(json);
+			Object value = this.map.decode(json);
 			if (value != null) {
 				creator.setValue(element, key, value, typ);
 				this.map.readMessages(key, element, value, json, typ);

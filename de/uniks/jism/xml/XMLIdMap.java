@@ -130,21 +130,12 @@ public class XMLIdMap extends XMLSimpleIdMap {
 	 *            the entity
 	 * @return the xML entity
 	 */
+	@Override
 	public XMLEntity encode(Object entity) {
 		return encode(entity, filter.clone());
 	}
 
-	/**
-	 * Encode.
-	 * 
-	 * @param entity
-	 *            the entity
-	 * @return the xML entity
-	 */
 	public XMLEntity encode(Object entity, Filter filter) {
-		return encode(entity, filter.withStandard(this.filter), 0);
-	}
-	public XMLEntity encode(Object entity, Filter filter, int deep) {
 		SendableEntityCreator createrProtoTyp = getCreatorClass(entity);
 		if (createrProtoTyp == null) {
 			return null;

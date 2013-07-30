@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.Set;
 
 import de.uniks.jism.interfaces.IdMapCounter;
+import de.uniks.jism.interfaces.JSIMEntity;
 import de.uniks.jism.interfaces.SendableEntity;
 import de.uniks.jism.interfaces.SendableEntityCreator;
 import de.uniks.jism.interfaces.TypList;
@@ -47,7 +48,7 @@ import de.uniks.jism.json.UpdateListener;
 /**
  * The Class IdMap.
  */
-public class IdMap extends AbstractIdMap implements Map<String, Object> {
+public abstract class IdMap extends AbstractIdMap implements Map<String, Object> {
 	/** The Constant ID. */
 	public static final String ID = "id";
 
@@ -596,4 +597,9 @@ public class IdMap extends AbstractIdMap implements Map<String, Object> {
 	public void setUpdateMsgListener(PropertyChangeListener listener) {
 		this.updatePropertylistener = listener;
 	}
+	
+	public abstract JSIMEntity encode(Object value);
+	public abstract JSIMEntity encode(Object value, Filter filter);
+	
+	public abstract Object decode(JSIMEntity value);
 }

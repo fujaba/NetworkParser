@@ -57,19 +57,13 @@ public class XMLEntity extends Entity implements BaseEntityList {
 
 	/**
 	 * Instantiates a new xML entity.
-	 */
-	public XMLEntity() {
-
-	}
-
-	/**
-	 * Instantiates a new xML entity.
 	 * 
 	 * @param tag
 	 *            the tag
 	 */
-	public XMLEntity(String value) {
-		this(new XMLTokener().withText(value));
+	public XMLEntity withValue(String value) {
+		withValue(new XMLTokener().withText(value));
+		return this;
 	}
 
 	/**
@@ -79,9 +73,9 @@ public class XMLEntity extends Entity implements BaseEntityList {
 	 *            A Tokener object containing the source string. or a duplicated
 	 *            key.
 	 */
-	public XMLEntity(Tokener tokener) {
-		this();
+	public XMLEntity withValue(Tokener tokener) {
 		tokener.parseToEntity((BaseEntity) this);
+		return this;
 	}
 
 	/*

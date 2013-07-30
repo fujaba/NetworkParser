@@ -46,6 +46,7 @@ import de.uniks.jism.ReferenceObject;
 import de.uniks.jism.event.MapEntry;
 import de.uniks.jism.event.creator.DateCreator;
 import de.uniks.jism.event.creator.MapEntryCreator;
+import de.uniks.jism.interfaces.JSIMEntity;
 import de.uniks.jism.interfaces.MapUpdateListener;
 import de.uniks.jism.interfaces.NoIndexCreator;
 import de.uniks.jism.interfaces.SendableEntityCreator;
@@ -111,6 +112,9 @@ public class JsonIdMap extends IdMap {
 	 * @return the Jsonobject
 	 */
 	public JsonObject toJsonObject(Object entity, Filter filter) {
+		if(filter==null){
+			filter = new Filter();
+		}
 		return toJsonObject(entity, filter.withStandard(this.filter), entity.getClass().getName(), 0);
 	}
 
@@ -250,20 +254,60 @@ public class JsonIdMap extends IdMap {
 	}
 	
 	/**
+	 * Encode.
+	 * 
+	 * @param entity
+	 *            the entity
+	 * @return the byte entity message
+	 */
+	@Override
+	public JsonObject encode(Object entity) {
+		return toJsonObject(entity);
+	}
+
+	/**
+	 * Encode.
+	 * 
+	 * @param entity
+	 *            the entity
+	 * @return the byte entity message
+	 */
+	@Override
+	public JsonObject encode(Object entity, Filter filter) {
+		return toJsonObject(entity, filter);
+	}
+	/**
+	 * Read Json Automatic create JsonArray or JsonObejct
+	 * @return the object
+	 */
+	public Object decode(String value){
+		if(value.startsWith("[")){
+			return decode(new JsonArray(value));
+		}
+		return decode(new JsonObject().withValue(value));
+	}
+	public Object decode(JSIMEntity value) {
+		if(value instanceof JsonArray){
+			return decode((JsonArray) value);
+		}
+		return decode((JsonObject) value);
+	}
+	
+	/**
 	 * Read json.
 	 * 
 	 * @param jsonArray
 	 *            the json array
 	 * @return the object
 	 */
-	public Object readJson(JsonArray jsonArray) {
+	public Object decode(JsonArray jsonArray) {
 		Object result = null;
 		int len = jsonArray.size() - 1;
 		// Add all Objects
 		LinkedHashSet<ReferenceObject> refs = new LinkedHashSet<ReferenceObject>();
 		for (int i = 0; i <= len; i++) {
 			JsonObject kidObject = jsonArray.getJSONObject(i);
-			Object tmp = readJson(kidObject, refs, true);
+			Object tmp = decode(kidObject, refs, this.filter.clone());
 			if (kidObject.has(MAINITEM)) {
 				result = tmp;
 			} else if (i == 0) {
@@ -283,29 +327,7 @@ public class JsonIdMap extends IdMap {
 	 *            the json object
 	 * @return the object
 	 */
-	public Object readJson(JsonObject jsonObject) {
-		return readJson(jsonObject, true);
-	}
-	
-	/**
-	 * Read Json Automatic create JsonArray or JsonObejct
-	 * @return the object
-	 */
-	public Object decode(String value){
-		if(value.startsWith("[")){
-			return readJson(new JsonArray(value));
-		}
-		return readJson(new JsonObject().withValue(value));
-	}
-
-	/**
-	 * Read json.
-	 * 
-	 * @param jsonObject
-	 *            the json object
-	 * @return the object
-	 */
-	public Object readJson(JsonObject jsonObject, boolean readId) {
+	public Object decode(JsonObject jsonObject) {
 		LinkedHashSet<ReferenceObject> refs = new LinkedHashSet<ReferenceObject>();
 		if (jsonObject.has(UPDATE) || jsonObject.has(REMOVE)) {
 			// Must be an update
@@ -315,13 +337,13 @@ public class JsonIdMap extends IdMap {
 			}
 			return null;
 		}
-		Object mainItem = readJson(jsonObject, refs, readId);
+		Object mainItem = decode(jsonObject, refs, null);
 		for (ReferenceObject ref : refs) {
 			ref.execute(this);
 		}
 		return mainItem;
 	}
-
+	
 	/**
 	 * Read json.
 	 * 
@@ -331,13 +353,12 @@ public class JsonIdMap extends IdMap {
 	 *            the json object
 	 * @return the object
 	 */
-	public Object readJson(Object target, JsonObject jsonObject) {
-		return readJson(target, jsonObject, true);
-	}
-
-	public Object readJson(Object target, JsonObject jsonObject, boolean readId) {
+	public Object decode(Object target, JsonObject jsonObject, Filter filter) {
 		LinkedHashSet<ReferenceObject> refs = new LinkedHashSet<ReferenceObject>();
-		Object mainItem = readJson(target, jsonObject, refs, readId);
+		if(filter==null){
+			filter=this.filter.clone();
+		}
+		Object mainItem = decode(target, jsonObject, refs, filter.withStandard(this.filter));
 		for (ReferenceObject ref : refs) {
 			ref.execute(this);
 		}
@@ -355,11 +376,15 @@ public class JsonIdMap extends IdMap {
 	 *            for read the id from JsonObject
 	 * @return the object
 	 */
-	private Object readJson(JsonObject jsonObject,
-			LinkedHashSet<ReferenceObject> refs, boolean readId) {
+	private Object decode(JsonObject jsonObject,
+			LinkedHashSet<ReferenceObject> refs, Filter filter) {
 		Object result = null;
 		SendableEntityCreator typeInfo = grammar.getJsonObjectCreator(
 				jsonObject, this);
+		
+		if(filter==null){
+			filter=this.filter.clone();
+		}
 
 		if (typeInfo != null) {
 			if(grammar.hasValue(jsonObject, ID)){
@@ -383,7 +408,7 @@ public class JsonIdMap extends IdMap {
 					}
 				}
 			} else {
-				readJson(result, jsonObject, refs, readId);
+				decode(result, jsonObject, refs, filter);
 			}
 		} else if (jsonObject.get(VALUE) != null) {
 			return jsonObject.get(VALUE);
@@ -404,10 +429,10 @@ public class JsonIdMap extends IdMap {
 	 *            the refs
 	 * @return the object
 	 */
-	protected Object readJson(Object target, JsonObject jsonObject,
-			LinkedHashSet<ReferenceObject> refs, boolean readId) {
+	protected Object decode(Object target, JsonObject jsonObject,
+			LinkedHashSet<ReferenceObject> refs, Filter filter) {
 		// JSONArray jsonArray;
-		if (readId) {
+		if (filter.isId(this, target, target.getClass().getName())) {
 			String jsonId =  grammar.getValue(jsonObject, ID);
 			if (jsonId == null) {
 				return target;
@@ -465,7 +490,7 @@ public class JsonIdMap extends IdMap {
 								.withEntity(target));
 						} else {
 							creator.setValue(target, property,
-									readJson((JsonObject) kid), NEW);
+									decode((JsonObject) kid), NEW);
 						}
 					} else {
 						creator.setValue(target, property, kid, NEW);
@@ -492,7 +517,7 @@ public class JsonIdMap extends IdMap {
 										property,
 										new MapEntry(
 												key,
-												readJson((JsonObject) entryValue)),
+												decode((JsonObject) entryValue)),
 										NEW);
 							} else if (entryValue instanceof JsonArray) {
 								creator.setValue(
@@ -500,7 +525,7 @@ public class JsonIdMap extends IdMap {
 										property,
 										new MapEntry(
 												key,
-												readJson((JsonArray) entryValue)),
+												decode((JsonArray) entryValue)),
 										NEW);
 							} else {
 								creator.setValue(target, property,
@@ -515,7 +540,7 @@ public class JsonIdMap extends IdMap {
 									.withProperty(property)
 									.withEntity(target));
 					} else {
-						creator.setValue(target, property, readJson(child), NEW);
+						creator.setValue(target, property, decode(child), NEW);
 					}
 				} else {
 					creator.setValue(target, property, value, NEW);

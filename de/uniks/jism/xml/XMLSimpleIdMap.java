@@ -32,9 +32,12 @@ package de.uniks.jism.xml;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+
+import de.uniks.jism.Filter;
 import de.uniks.jism.IdMap;
 import de.uniks.jism.ReferenceObject;
 import de.uniks.jism.Tokener;
+import de.uniks.jism.interfaces.JSIMEntity;
 import de.uniks.jism.interfaces.XMLGrammar;
 
 public class XMLSimpleIdMap extends IdMap {
@@ -84,6 +87,12 @@ public class XMLSimpleIdMap extends IdMap {
 		this.stopwords.add("!DOCTYPE");
 	}
 
+	
+	@Override
+	public Object decode(JSIMEntity value) {
+		return decode(value.toString(), null);
+	}
+	
 	public Object decode(String value, XMLGrammar factory) {
 		Object result = null;
 		XMLEntity temp = null;
@@ -103,6 +112,19 @@ public class XMLSimpleIdMap extends IdMap {
 		}
 		return result;
 	}
+	
+	
+	//FIXME new Functionality
+	@Override
+	public JSIMEntity encode(Object value) {
+		return null;
+	}
+	
+	@Override
+	public JSIMEntity encode(Object value, Filter filter) {
+		return null;
+	}
+
 
 	/**
 	 * Find tag.
