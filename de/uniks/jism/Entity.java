@@ -52,23 +52,6 @@ public abstract class Entity implements BaseEntity {
 		return this.map;
 	}
 
-	/**
-	 * Construct an empty Entity.
-	 */
-	public Entity() {
-	}
-
-	/**
-	 * Construct a Entity from a Map.
-	 * 
-	 * @param map
-	 *            A map object that can be used to initialize the contents of
-	 *            the Entity.
-	 */
-	public Entity(Map<String, Object> map) {
-		initWithMap(map);
-	}
-
 	public Entity initWithMap(Map<String, Object> map) {
 		if (map != null) {
 			getMap();

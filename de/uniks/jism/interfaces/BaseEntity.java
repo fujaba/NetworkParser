@@ -32,5 +32,10 @@ package de.uniks.jism.interfaces;
 
 public interface BaseEntity extends JSIMEntity {
 	public void put(String key, Object value);
-
+	
+	public boolean has(String key);
+	
+	public String getString(String key);
+	
+	public Object get(String key);
 }

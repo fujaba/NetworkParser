@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.uniks.jism.AbstractIdMap;
+import de.uniks.jism.Filter;
 import de.uniks.jism.IdMap;
 import de.uniks.jism.bytes.converter.ByteConverter;
 import de.uniks.jism.bytes.converter.ByteConverterHTTP;
@@ -49,6 +50,7 @@ import de.uniks.jism.event.creator.BasicMessageCreator;
 import de.uniks.jism.exceptions.TextParsingException;
 import de.uniks.jism.interfaces.ByteEntityCreator;
 import de.uniks.jism.interfaces.ByteItem;
+import de.uniks.jism.interfaces.JSIMEntity;
 import de.uniks.jism.interfaces.SendableEntityCreator;
 
 /**
@@ -220,11 +222,12 @@ public class ByteIdMap extends IdMap {
 	 *            the entity
 	 * @return the byte entity message
 	 */
+	@Override
 	public ByteItem encode(Object entity) {
 		return encode(entity, (ByteFilter)filter.clone());
 	}
 
-	public ByteItem encode(Object entity, ByteFilter filter) {
+	public ByteItem encode(Object entity, Filter filter) {
 		SendableEntityCreator creator;
 		if (this.parent != null) {
 			creator = this.parent.getCreatorClass(entity);
@@ -271,7 +274,7 @@ public class ByteIdMap extends IdMap {
 		return msg;
 	}
 
-	public ByteItem encodeValue(Object value, ByteFilter filter) {
+	public ByteItem encodeValue(Object value, Filter filter) {
 		ByteEntity msgEntity = new ByteEntity();
 		if (msgEntity.setValues(value)) {
 			return msgEntity;
@@ -376,6 +379,13 @@ public class ByteIdMap extends IdMap {
 		return null;
 	}
 
+	@Override
+	public Object decode(JSIMEntity value) {
+		if(value instanceof ByteEntity){
+			return decode(((ByteEntity)value).getValue());
+		}
+		return null;
+	}
 	/**
 	 * Decode.
 	 * 
@@ -391,6 +401,8 @@ public class ByteIdMap extends IdMap {
 		byte typ = in.get();
 		return decodeClazz(typ, in);
 	}
+	
+
 
 	/**
 	 * Decode.

@@ -34,7 +34,7 @@ import java.nio.ByteBuffer;
 
 import de.uniks.jism.bytes.converter.ByteConverter;
 
-public interface ByteItem {
+public interface ByteItem extends JSIMEntity{
 	/**
 	 * @return the ByteItem as String
 	 */
