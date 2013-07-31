@@ -111,6 +111,10 @@ public class GridValue {
 			 if(col>=maxColumns){
 				 columnId="1";
 			 }
+			 if(guiElement!=null){
+				guiElement.setSpanColumn(n);
+				guiElement.setSpanRow(n);
+			 }
 			 n.setStyle("-fx-border-color: black; -fx-border-width: 1 "+columnId+" "+rowId+" 1;");
 		}
 	}
