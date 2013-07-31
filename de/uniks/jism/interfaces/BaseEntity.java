@@ -30,7 +30,7 @@ package de.uniks.jism.interfaces;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-public interface BaseEntity extends JSIMEntity {
+public interface BaseEntity extends JISMEntity {
 	public void put(String key, Object value);
 	
 	public boolean has(String key);

@@ -30,71 +30,74 @@ package de.uniks.jism.yuml;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import java.util.HashMap;
-import java.util.Set;
-
 import de.uniks.jism.Filter;
 
 public class YUmlIdMapFilter extends Filter{
-/** The link cardinality. */
-	private HashMap<String, String> linkCardinality = new HashMap<String, String>();
-
-	/** The link property. */
-	private HashMap<String, String> linkProperty = new HashMap<String, String>();
-
-	/** The value yuml. */
-	private HashMap<String, String> valueYUML = new HashMap<String, String>();
-
 	/** The show line. */
 	private boolean isShowLine;
 	
 	private boolean isShowCardinality;
 	
-	public void reset(){
-		this.valueYUML.clear();
-		this.linkProperty.clear();
-		this.linkCardinality.clear();
-	}
+	private int typ;
+	
+	/** The value yuml. */
+//	private HashMap<String, String> valueYUML = new HashMap<String, String>();
 
-	public String getLinkCardinality(String key) {
-		return linkCardinality.get(key);
-	}
+	//	/** The link property. */
+//	private HashMap<String, String> linkProperty = new HashMap<String, String>();
 	
-	public boolean addLinkCardinality(String key, String value) {
-		linkCardinality.put(key, value);
-		return true;
-	}
+//	/** The link cardinality. */
+//	private HashMap<String, String> linkCardinality = new HashMap<String, String>();
+
 	
-	public Set<String> getLinkPropertys() {
-		return linkProperty.keySet();
-	}
+//	public String getValueYUML(String key) {
+//		return valueYUML.get(key);
+//	}
+//	
+//	public boolean addValueYUML(String key, String value) {
+//		valueYUML.put(key, value);
+//		return true;
+//	}
+//	
+//	public String removeValueYUML(String key) {
+//		return valueYUML.remove(key);
+//	}
+//	
+//	public boolean containsKeyValueYUML(String key){
+//		return valueYUML.containsKey(key);
+//	}
+
+
+//	@Override
+//	public YUmlIdMapFilter withStandard(Filter referenceFilter) {
+//		super.withStandard(referenceFilter);
+//		this.valueYUML.clear();
+//		return this;
+//	}
+//	
+//	public Set<String> getLinkPropertys() {
+//		return linkProperty.keySet();
+//	}
+//
+//	public String getLinkProperty(String key) {
+//		return linkProperty.get(key);
+//	}
+//
+//	public boolean addLinkProperty(String key, String value) {
+//		linkProperty.put(key, value);
+//		return true;
+//	}
 	
-	
-	public String getLinkProperty(String key) {
-		return linkProperty.get(key);
-	}
-	
-	public boolean addLinkProperty(String key, String value) {
-		linkProperty.put(key, value);
-		return true;
-	}
-	
-	public String getValueYUML(String key) {
-		return valueYUML.get(key);
-	}
-	
-	public boolean addValueYUML(String key, String value) {
-		valueYUML.put(key, value);
-		return true;
-	}
-	
-	public String removeValueYUML(String key) {
-		return valueYUML.remove(key);
-	}
-	
-	public boolean containsKeyValueYUML(String key){
-		return valueYUML.containsKey(key);
-	}
+//
+//	public String getLinkCardinality(String key) {
+//		return linkCardinality.get(key);
+//	}
+//	
+//	public boolean addLinkCardinality(String key, String value) {
+//		linkCardinality.put(key, value);
+//		return true;
+//	}
+//	
 
 	/**
 	 * Checks if is show line.
@@ -123,6 +126,20 @@ public class YUmlIdMapFilter extends Filter{
 
 	public YUmlIdMapFilter withShowCardinality(boolean value) {
 		this.isShowCardinality = value;
+		return this;
+	}
+	
+	@Override
+	public YUmlIdMapFilter clone(Filter newInstance) {
+		return (YUmlIdMapFilter) super.clone(newInstance);
+	}
+
+	public int getTyp() {
+		return typ;
+	}
+
+	public YUmlIdMapFilter withTyp(int typ) {
+		this.typ = typ;
 		return this;
 	}
 }

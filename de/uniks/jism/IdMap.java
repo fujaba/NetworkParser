@@ -39,7 +39,7 @@ import java.util.Map;
 import java.util.Set;
 
 import de.uniks.jism.interfaces.IdMapCounter;
-import de.uniks.jism.interfaces.JSIMEntity;
+import de.uniks.jism.interfaces.JISMEntity;
 import de.uniks.jism.interfaces.SendableEntity;
 import de.uniks.jism.interfaces.SendableEntityCreator;
 import de.uniks.jism.interfaces.TypList;
@@ -598,8 +598,8 @@ public abstract class IdMap extends AbstractIdMap implements Map<String, Object>
 		this.updatePropertylistener = listener;
 	}
 	
-	public abstract JSIMEntity encode(Object value);
-	public abstract JSIMEntity encode(Object value, Filter filter);
+	public abstract JISMEntity encode(Object value);
+	public abstract JISMEntity encode(Object value, Filter filter);
 	
-	public abstract Object decode(JSIMEntity value);
+	public abstract Object decode(JISMEntity value);
 }

@@ -33,7 +33,7 @@ package de.uniks.jism;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
-import de.uniks.jism.interfaces.JSIMEntity;
+import de.uniks.jism.interfaces.JISMEntity;
 
 public class EntityUtil {
 	/**
@@ -232,7 +232,7 @@ public class EntityUtil {
 	 *         brace)</small> and ending with <code>}</code>&nbsp;<small>(right
 	 *         brace)</small>.
 	 */
-	public static String valueToString(Object value, JSIMEntity reference) {
+	public static String valueToString(Object value, JISMEntity reference) {
 		return valueToString(value, false, reference);
 	}
 
@@ -255,7 +255,7 @@ public class EntityUtil {
 	 *             If the object contains an invalid number.
 	 */
 	public static String valueToString(Object value, int indentFactor,
-			int intent, boolean simpleText, JSIMEntity reference) {
+			int intent, boolean simpleText, JISMEntity reference) {
 		if (value == null) {
 			return "null";
 		}
@@ -296,7 +296,7 @@ public class EntityUtil {
 	}
 
 	public static String valueToString(Object value, boolean simpleText,
-			JSIMEntity reference) {
+			JISMEntity reference) {
 		if (value == null) {
 			return "null";
 		}
@@ -348,7 +348,7 @@ public class EntityUtil {
 	 *            The object to wrap
 	 * @return The wrapped value
 	 */
-	public static Object wrap(Object object, JSIMEntity reference) {
+	public static Object wrap(Object object, JISMEntity reference) {
 		try {
 			if (object == null) {
 				return null;

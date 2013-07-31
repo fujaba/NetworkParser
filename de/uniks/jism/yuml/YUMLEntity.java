@@ -1,28 +1,28 @@
 package de.uniks.jism.yuml;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map.Entry;
 
 import de.uniks.jism.interfaces.BaseEntityList;
-import de.uniks.jism.interfaces.JSIMEntity;
+import de.uniks.jism.interfaces.JISMEntity;
 
-public class YUMLEntity implements JSIMEntity, BaseEntityList{
-	private int typ;
+public class YUMLEntity implements JISMEntity{
 	private String className;
 	private String id;
 	private boolean showLine;
 	private boolean isVisible=true;
-	private ArrayList<YUMLEntity> children=new ArrayList<YUMLEntity>();
-	
+	private LinkedHashMap<String, String> objValues=new LinkedHashMap<String, String>();
+	private LinkedHashMap<String, String> clazzValues=new LinkedHashMap<String, String>();
+	private LinkedHashMap<String, String> cardinalityValues=new LinkedHashMap<String, String>();
 	
 	@Override
 	public BaseEntityList getNewArray() {
-		return new YUMLEntity();
+		return new YUMLList();
 	}
 
 	@Override
-	public JSIMEntity getNewObject() {
+	public JISMEntity getNewObject() {
 		return new YUMLEntity();
 	}
 
@@ -33,6 +33,13 @@ public class YUMLEntity implements JSIMEntity, BaseEntityList{
 
 	@Override
 	public String toString(int indentFactor, int intent) {
+		if(id==null){
+			return toString(indentFactor, intent, YUMLIdParser.CLASS);
+		}
+		return toString(indentFactor, intent, YUMLIdParser.OBJECT);
+	}
+
+	public String toString(int indentFactor, int intent, int typ) {
 		if(!isVisible){
 			return "";
 		}
@@ -44,14 +51,42 @@ public class YUMLEntity implements JSIMEntity, BaseEntityList{
 						+ "\\n"
 						+ new String(new char[text.length()]).replace("\0", "&oline;") + "]";
 			}
-			return "[" + id + " : " + className + "]";
+			return "[" + id + " : " + className + parseValues(typ) + "]";
 		}
-		return "[" + id + "]";
+		return "[" + id + parseValues(typ) + "]";
+	}
+	public String parseValues(int typ){
+		StringBuilder sb=new StringBuilder();
+		Iterator<Entry<String, String>> i=null;
+		String splitter="";
+		if(objValues.size()>0){
+			if (typ == YUMLIdParser.OBJECT) {
+				i = objValues.entrySet().iterator();
+				splitter="=";
+			}else if (typ == YUMLIdParser.CLASS) {
+				i = clazzValues.entrySet().iterator();
+				splitter=":";
+				
+			}
+		}
+		if(i!=null){
+				sb.append("|");
+				Entry<String, String> item = i.next();
+				sb.append(item.getKey() + splitter + item.getValue());
+				
+				while(i.hasNext()){
+					item = i.next();
+					sb.append(";");
+					sb.append(item.getKey() + splitter + item.getValue());
+				}
+		}
+		return sb.toString();
 	}
 
 	@Override
-	public void setVisible(boolean value) {
+	public YUMLEntity withVisible(boolean value) {
 		this.isVisible = value;
+		return this;
 	}
 
 	@Override
@@ -59,54 +94,7 @@ public class YUMLEntity implements JSIMEntity, BaseEntityList{
 		return isVisible;
 	}
 
-	@Override
-	public BaseEntityList initWithMap(Collection<?> value) {
-		for(Iterator<?> i = value.iterator();i.hasNext();){
-			Object item = i.next();
-			if(item instanceof YUMLEntity){
-				children.add((YUMLEntity)item);
-			}
-		}
-		return this;
-	}
-
-	@Override
-	public BaseEntityList put(Object value) {
-		if(value instanceof YUMLEntity){
-			children.add((YUMLEntity)value);
-		}
-		return this;
-	}
-
-	@Override
-	public int size() {
-		return children.size();
-	}
-
-	@Override
-	public boolean add(Object value) {
-		if(value instanceof YUMLEntity){
-			children.add((YUMLEntity)value);
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public Object get(int z) {
-		return children.get(z);
-	}
-
-	
 	// GETTER AND SETTER
-	public int getTyp() {
-		return typ;
-	}
-
-	public YUMLEntity withTyp(int typ) {
-		this.typ = typ;
-		return this;
-	}
 	public String getClassName() {
 		return className;
 	}
@@ -134,4 +122,13 @@ public class YUMLEntity implements JSIMEntity, BaseEntityList{
 		return this;
 	}
 
+	public void addValue(String property, String clazz, String value, String cardinality){
+		this.objValues.put(property, value);
+		this.clazzValues.put(property, clazz);
+		this.cardinalityValues.put(property, cardinality);
+	}
+
+	public LinkedHashMap<String, String> getCardinalityValues() {
+		return cardinalityValues;
+	}
 }

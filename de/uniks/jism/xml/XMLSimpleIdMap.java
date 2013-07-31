@@ -37,7 +37,7 @@ import de.uniks.jism.Filter;
 import de.uniks.jism.IdMap;
 import de.uniks.jism.ReferenceObject;
 import de.uniks.jism.Tokener;
-import de.uniks.jism.interfaces.JSIMEntity;
+import de.uniks.jism.interfaces.JISMEntity;
 import de.uniks.jism.interfaces.XMLGrammar;
 
 public class XMLSimpleIdMap extends IdMap {
@@ -89,7 +89,7 @@ public class XMLSimpleIdMap extends IdMap {
 
 	
 	@Override
-	public Object decode(JSIMEntity value) {
+	public Object decode(JISMEntity value) {
 		return decode(value.toString(), null);
 	}
 	
@@ -116,12 +116,12 @@ public class XMLSimpleIdMap extends IdMap {
 	
 	//FIXME new Functionality
 	@Override
-	public JSIMEntity encode(Object value) {
+	public JISMEntity encode(Object value) {
 		return null;
 	}
 	
 	@Override
-	public JSIMEntity encode(Object value, Filter filter) {
+	public JISMEntity encode(Object value, Filter filter) {
 		return null;
 	}
 

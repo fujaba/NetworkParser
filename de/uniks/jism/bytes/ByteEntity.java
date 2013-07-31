@@ -36,13 +36,13 @@ import java.util.Date;
 import de.uniks.jism.EntityList;
 import de.uniks.jism.bytes.converter.ByteConverter;
 import de.uniks.jism.bytes.converter.ByteConverterHTTP;
-import de.uniks.jism.interfaces.JSIMEntity;
+import de.uniks.jism.interfaces.JISMEntity;
 import de.uniks.jism.interfaces.ByteItem;
 
 /**
  * The Class ByteEntity.
  */
-public class ByteEntity implements JSIMEntity, ByteItem {
+public class ByteEntity implements JISMEntity, ByteItem {
 	/** The Constant BIT OF A BYTE. */
 	public final static int BITOFBYTE = 8;
 	public final static int TYPBYTE = 1;
@@ -66,7 +66,7 @@ public class ByteEntity implements JSIMEntity, ByteItem {
 	 * @see de.uni.kassel.peermessage.BaseEntity#getNewObject()
 	 */
 	@Override
-	public JSIMEntity getNewObject() {
+	public JISMEntity getNewObject() {
 		return new ByteEntity();
 	}
 
@@ -323,8 +323,9 @@ public class ByteEntity implements JSIMEntity, ByteItem {
 		return true;
 	}
 
-	public void setVisible(boolean value) {
+	public ByteEntity withVisible(boolean value) {
 		this.visible = value;
+		return this;
 	}
 
 	public boolean isVisible() {

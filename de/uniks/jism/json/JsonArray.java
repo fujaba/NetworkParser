@@ -37,7 +37,7 @@ import de.uniks.jism.EntityList;
 import de.uniks.jism.EntityUtil;
 import de.uniks.jism.Tokener;
 import de.uniks.jism.interfaces.BaseEntityList;
-import de.uniks.jism.interfaces.JSIMEntity;
+import de.uniks.jism.interfaces.JISMEntity;
 
 /**
  * A JSONArray is an ordered sequence of values. Its external text form is a
@@ -142,7 +142,7 @@ public class JsonArray extends EntityList {
 	 * @param Array
 	 *            of Elements.
 	 */
-	public JsonArray(JSIMEntity... values) {
+	public JsonArray(JISMEntity... values) {
 		for (int i = 0; i < values.length; i++) {
 			put(EntityUtil.wrap(values[i], this));
 		}

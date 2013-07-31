@@ -35,7 +35,7 @@ import de.uniks.jism.Tokener;
 import de.uniks.jism.exceptions.TextParsingException;
 import de.uniks.jism.interfaces.BaseEntity;
 import de.uniks.jism.interfaces.BaseEntityList;
-import de.uniks.jism.interfaces.JSIMEntity;
+import de.uniks.jism.interfaces.JISMEntity;
 
 public class XMLTokener extends Tokener {
 	/**
@@ -45,7 +45,7 @@ public class XMLTokener extends Tokener {
 	 * @return An object.
 	 */
 	@Override
-	public Object nextValue(JSIMEntity creator) {
+	public Object nextValue(JISMEntity creator) {
 		char c = nextClean();
 
 		switch (c) {
@@ -54,7 +54,7 @@ public class XMLTokener extends Tokener {
 			return nextString(c, false, false);
 		case '<':
 			back();
-			JSIMEntity element = creator.getNewObject();
+			JISMEntity element = creator.getNewObject();
 			if (element instanceof Entity) {
 				parseToEntity((Entity) element);
 			}

@@ -32,7 +32,7 @@ package de.uniks.jism.interfaces;
 
 import java.util.Collection;
 
-public interface BaseEntityList extends JSIMEntity {
+public interface BaseEntityList extends JISMEntity {
 	public BaseEntityList initWithMap(Collection<?> value);
 
 	public BaseEntityList put(Object value);
