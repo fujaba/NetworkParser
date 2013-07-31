@@ -68,7 +68,7 @@ public class TextItems implements SendableEntityCreator, PeerMessage, Localisati
 			}
 		}
 		text = getLabelValue(label + "."
-				+ System.getProperty("java.class.version"));
+				+ System.getProperty("java.class.version", ""));
 		if (text != null) {
 			return text;
 

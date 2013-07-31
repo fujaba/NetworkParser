@@ -35,6 +35,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import de.uniks.jism.interfaces.BaseEntity;
 import de.uniks.jism.interfaces.BaseEntityList;
 
@@ -693,8 +694,9 @@ public abstract class Entity implements BaseEntity {
 	}
 
 	@Override
-	public void setVisible(boolean value) {
+	public Entity withVisible(boolean value) {
 		this.visible = value;
+		return this;
 	}
 
 	public boolean isVisible() {

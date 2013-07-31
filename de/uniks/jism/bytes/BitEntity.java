@@ -185,8 +185,9 @@ public class BitEntity implements BaseEntityList, ByteItem {
 		return toString();
 	}
 
-	public void setVisible(boolean value) {
+	public BitEntity withVisible(boolean value) {
 		this.isVisible = value;
+		return this;
 	}
 
 	public boolean isVisible() {

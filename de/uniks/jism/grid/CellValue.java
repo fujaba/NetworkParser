@@ -60,6 +60,9 @@ public class CellValue{
 		this.guiElement = guiElement;
 		this.guiElement.withParent(this);
 
+//		this.guiElement.getProperties().put(GridGUICell.ROW_INDEX_CONSTRAINT, row);
+//		this.guiElement.getProperties().put(GridGUICell.COLUMN_INDEX_CONSTRAINT, row);
+
 		if(guiElement!=null){
 			guiElement.maximizeSize();
 			guiElement.setContentNode(node);
@@ -123,12 +126,27 @@ public class CellValue{
 		return rowSpan;
 	}
 	public CellValue withRowSpan(int value) {
+		if(value<1) {
+			return this;
+		}
+		int oldValue = this.rowSpan; 
 		this.rowSpan = value;
+		if(value != oldValue){
+			this.guiElement.getProperties().put(GridGUICell.ROW_SPAN_CONSTRAINT, value);
+		}
+		
 		return this;
 	}
 	
 	public CellValue withColumnSpan(int value) {
+		if(value<1) {
+			return this;
+		}
+		int oldValue = this.columnSpan; 
 		this.columnSpan = value;
+		if(value!=oldValue){
+			this.guiElement.getProperties().put(GridGUICell.COLUMN_SPAN_CONSTRAINT, value);
+		}
 		return this;
 	}
 	
@@ -162,7 +180,6 @@ public class CellValue{
 		this.widthExpression = value;
 		return this;
 	}
-
 	
 	public String getSavedStyle(){
 		return style;

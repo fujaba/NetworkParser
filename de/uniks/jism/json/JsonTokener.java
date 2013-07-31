@@ -35,14 +35,14 @@ import de.uniks.jism.Tokener;
 import de.uniks.jism.exceptions.TextParsingException;
 import de.uniks.jism.interfaces.BaseEntity;
 import de.uniks.jism.interfaces.BaseEntityList;
-import de.uniks.jism.interfaces.JSIMEntity;
+import de.uniks.jism.interfaces.JISMEntity;
 import de.uniks.jism.xml.XMLEntity;
 
 public class JsonTokener extends Tokener {
 	public final static String STOPCHARS = ",:]}/\\\"[{;=# ";
 
 	@Override
-	public Object nextValue(JSIMEntity creator) {
+	public Object nextValue(JISMEntity creator) {
 		char c = nextClean();
 
 		switch (c) {
@@ -51,7 +51,7 @@ public class JsonTokener extends Tokener {
 			return nextString(c, false, false);
 		case '{':
 			back();
-			JSIMEntity element = creator.getNewObject();
+			JISMEntity element = creator.getNewObject();
 			if (element instanceof Entity) {
 				this.parseToEntity((Entity) element);
 			}

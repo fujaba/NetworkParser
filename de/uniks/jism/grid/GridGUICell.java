@@ -1,5 +1,7 @@
 package de.uniks.jism.grid;
 
+import java.util.Map;
+
 /*
  Json Id Serialisierung Map
  Copyright (c) 2011 - 2013, Stefan Lindel
@@ -31,11 +33,16 @@ package de.uniks.jism.grid;
 */
 
 public interface GridGUICell {
+	public static final String ROW_INDEX_CONSTRAINT = "gridpane-row";
+	public static final String COLUMN_INDEX_CONSTRAINT = "gridpane-column";
+	public static final String ROW_SPAN_CONSTRAINT = "gridpane-row-span";
+	public static final String COLUMN_SPAN_CONSTRAINT = "gridpane-column-span";
 	public String getStyle();
 	public GridGUICell withParent(CellValue parent);
 	public void setStyle(String string);
 	public void maximizeSize();
 	public void setContentNode(Object node);
+	public Map<Object, Object> getProperties();
 	public void select(String string);
 	public void deselect();
 }

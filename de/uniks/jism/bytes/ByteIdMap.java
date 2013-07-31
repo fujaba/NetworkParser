@@ -50,7 +50,7 @@ import de.uniks.jism.event.creator.BasicMessageCreator;
 import de.uniks.jism.exceptions.TextParsingException;
 import de.uniks.jism.interfaces.ByteEntityCreator;
 import de.uniks.jism.interfaces.ByteItem;
-import de.uniks.jism.interfaces.JSIMEntity;
+import de.uniks.jism.interfaces.JISMEntity;
 import de.uniks.jism.interfaces.SendableEntityCreator;
 
 /**
@@ -380,7 +380,7 @@ public class ByteIdMap extends IdMap {
 	}
 
 	@Override
-	public Object decode(JSIMEntity value) {
+	public Object decode(JISMEntity value) {
 		if(value instanceof ByteEntity){
 			return decode(((ByteEntity)value).getValue());
 		}

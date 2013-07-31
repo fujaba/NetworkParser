@@ -532,8 +532,9 @@ public abstract class EntityList implements BaseEntityList, List<Object> {
 	}
 
 	@Override
-	public void setVisible(boolean value) {
+	public EntityList withVisible(boolean value) {
 		this.visible = value;
+		return this;
 	}
 
 	public boolean isVisible() {

@@ -46,7 +46,7 @@ import de.uniks.jism.ReferenceObject;
 import de.uniks.jism.event.MapEntry;
 import de.uniks.jism.event.creator.DateCreator;
 import de.uniks.jism.event.creator.MapEntryCreator;
-import de.uniks.jism.interfaces.JSIMEntity;
+import de.uniks.jism.interfaces.JISMEntity;
 import de.uniks.jism.interfaces.MapUpdateListener;
 import de.uniks.jism.interfaces.NoIndexCreator;
 import de.uniks.jism.interfaces.SendableEntityCreator;
@@ -286,7 +286,7 @@ public class JsonIdMap extends IdMap {
 		}
 		return decode(new JsonObject().withValue(value));
 	}
-	public Object decode(JSIMEntity value) {
+	public Object decode(JISMEntity value) {
 		if(value instanceof JsonArray){
 			return decode((JsonArray) value);
 		}

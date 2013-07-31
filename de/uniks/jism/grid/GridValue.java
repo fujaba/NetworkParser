@@ -1,5 +1,6 @@
 package de.uniks.jism.grid;
 
+import java.util.ArrayList;
 /*
  Json Id Serialisierung Map
  Copyright (c) 2011 - 2013, Stefan Lindel
@@ -29,12 +30,13 @@ package de.uniks.jism.grid;
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class GridValue {
 	private int maxRows=0;
 	private int maxColumns=0;
-	private HashMap<Object, CellValue> children=new HashMap<Object, CellValue>();
+	private LinkedHashMap<Object, CellValue> children=new LinkedHashMap<Object, CellValue>();
+	private ArrayList<CellValue> childrenLink=new ArrayList<CellValue>();
 	private CellValue selectedCell;
 	private GridGUITable guiElement;
 
@@ -51,17 +53,18 @@ public class GridValue {
 	
 	public CellValue add(Object node, int col, int row) {
 		boolean refresh=false;
-		if(col>=maxColumns){
+		if(col>maxColumns){
 			maxColumns = col;
 			refresh=true;
 		}
-		if(row>=maxRows){
+		if(row>maxRows){
 			maxRows = row;
 			refresh=true;
 		}
 
 		CellValue cell=new CellValue().withGrid(this).withCellValue(guiElement.getNewCell(), node, col, row);
 		children.put(node, cell);
+		childrenLink.add(cell);
 		if(guiElement!=null){
 			guiElement.add(cell);
 		}
@@ -101,20 +104,21 @@ public class GridValue {
 	
 	public void refreshLines(){
 		 for (CellValue n: children.values()) {
-			 int row = n.getRowEnd();
-			 int col = n.getColumnEnd();
+			 int rowEnd = n.getRowEnd();
+			 int colEnd = n.getColumnEnd();
+			 int col = n.getColumn();
+			 int row = n.getRow();
 			 String rowId="0";
-			 if(row>=maxRows){
+			 if(rowEnd>=maxRows){
 				 rowId="1";
 			 }
 			 String columnId="0";
-			 if(col>=maxColumns){
+			 if(colEnd>=maxColumns){
 				 columnId="1";
 			 }
-			 if(guiElement!=null){
-				guiElement.setSpanColumn(n);
-				guiElement.setSpanRow(n);
-			 }
+			 
+			 n.withColumnSpan(colEnd-col);
+			 n.withRowSpan(rowEnd-row);
 			 n.setStyle("-fx-border-color: black; -fx-border-width: 1 "+columnId+" "+rowId+" 1;");
 		}
 	}

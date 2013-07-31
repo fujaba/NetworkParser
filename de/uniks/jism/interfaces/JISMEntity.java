@@ -1,5 +1,6 @@
 package de.uniks.jism.interfaces;
 
+
 /*
  Json Id Serialisierung Map
  Copyright (c) 2011 - 2013, Stefan Lindel
@@ -33,12 +34,12 @@ package de.uniks.jism.interfaces;
 /**
  * The Class BaseEntity.
  */
-public interface JSIMEntity {
+public interface JISMEntity {
 	public static final String CRLF = "\r\n";
 
 	public BaseEntityList getNewArray();
 
-	public JSIMEntity getNewObject();
+	public JISMEntity getNewObject();
 
 	/**
 	 * Make a Text of this Entity. For compactness, no whitespace is added. If
@@ -71,7 +72,7 @@ public interface JSIMEntity {
 
 	public String toString(int indentFactor, int intent);
 
-	public void setVisible(boolean value);
+	public JISMEntity withVisible(boolean value);
 
 	public boolean isVisible();
 }

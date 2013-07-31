@@ -32,7 +32,7 @@ package de.uniks.jism;
 
 import de.uniks.jism.exceptions.TextParsingException;
 import de.uniks.jism.interfaces.BaseEntity;
-import de.uniks.jism.interfaces.JSIMEntity;
+import de.uniks.jism.interfaces.JISMEntity;
 import de.uniks.jism.interfaces.BaseEntityList;
 
 /**
@@ -238,7 +238,7 @@ public abstract class Tokener {
 	 * Accumulate characters until we reach the end of the text or a formatting
 	 * character.
 	 */
-	public Object nextValue(JSIMEntity creator) {
+	public Object nextValue(JISMEntity creator) {
 		char c = nextClean();
 		StringBuilder sb = new StringBuilder();
 		while (c >= ' ' && getStopChars().indexOf(c) < 0) {
