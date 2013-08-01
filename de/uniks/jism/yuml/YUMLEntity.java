@@ -14,7 +14,6 @@ public class YUMLEntity implements JISMEntity{
 	private boolean isVisible=true;
 	private LinkedHashMap<String, String> objValues=new LinkedHashMap<String, String>();
 	private LinkedHashMap<String, String> clazzValues=new LinkedHashMap<String, String>();
-	private LinkedHashMap<String, String> cardinalityValues=new LinkedHashMap<String, String>();
 	
 	@Override
 	public BaseEntityList getNewArray() {
@@ -34,12 +33,12 @@ public class YUMLEntity implements JISMEntity{
 	@Override
 	public String toString(int indentFactor, int intent) {
 		if(id==null){
-			return toString(indentFactor, intent, YUMLIdParser.CLASS);
+			return toString(YUMLIdParser.CLASS, false);
 		}
-		return toString(indentFactor, intent, YUMLIdParser.OBJECT);
+		return toString(YUMLIdParser.OBJECT, false);
 	}
 
-	public String toString(int indentFactor, int intent, int typ) {
+	public String toString( int typ, boolean shortString) {
 		if(!isVisible){
 			return "";
 		}
@@ -51,11 +50,14 @@ public class YUMLEntity implements JISMEntity{
 						+ "\\n"
 						+ new String(new char[text.length()]).replace("\0", "&oline;") + "]";
 			}
-			return "[" + id + " : " + className + parseValues(typ) + "]";
+			return "[" + id + " : " + className + parseValues(typ, shortString) + "]";
 		}
-		return "[" + id + parseValues(typ) + "]";
+		return "[" + className + parseValues(typ, shortString) + "]";
 	}
-	public String parseValues(int typ){
+	public String parseValues(int typ, boolean shortString){
+		if(shortString){
+			return "";
+		}
 		StringBuilder sb=new StringBuilder();
 		Iterator<Entry<String, String>> i=null;
 		String splitter="";
@@ -122,13 +124,8 @@ public class YUMLEntity implements JISMEntity{
 		return this;
 	}
 
-	public void addValue(String property, String clazz, String value, String cardinality){
+	public void addValue(String property, String clazz, String value){
 		this.objValues.put(property, value);
 		this.clazzValues.put(property, clazz);
-		this.cardinalityValues.put(property, cardinality);
-	}
-
-	public LinkedHashMap<String, String> getCardinalityValues() {
-		return cardinalityValues;
 	}
 }

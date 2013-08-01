@@ -50,7 +50,7 @@ public class YUMLIdParser extends IdMap {
 	/** The Constant for OBJECT Diagramms. */
 	public static final int OBJECT = 2;
 	
-	private YUmlIdMapFilter filter = new YUmlIdMapFilter().withShowCardinality(true).withTyp(CLASS);
+	private YUMLIdMapFilter filter = new YUMLIdMapFilter().withShowCardinality(true).withTyp(CLASS);
 
 	/**
 	 * Instantiates a new yUML id parser.
@@ -77,7 +77,7 @@ public class YUMLIdParser extends IdMap {
 	 * @return the string
 	 */
 	public String parseObject(Object object) {
-		return parse(object, filter.clone(new YUmlIdMapFilter()).withTyp(OBJECT));
+		return parse(object, filter.clone(new YUMLIdMapFilter()).withTyp(OBJECT));
 	}
 
 	/**
@@ -90,10 +90,10 @@ public class YUMLIdParser extends IdMap {
 	 * @return the string
 	 */
 	public String parseClass(Object object) {
-		return parse(object, filter.clone(new YUmlIdMapFilter()).withTyp(CLASS));
+		return parse(object, filter.clone(new YUMLIdMapFilter()).withTyp(CLASS));
 	}
 
-	public String parse(Object object, YUmlIdMapFilter filter) {
+	public String parse(Object object, YUMLIdMapFilter filter) {
 		YUMLList list = new YUMLList().withTyp(filter.getTyp());
 		parse(object, filter, list, 0);
 		return list.toString();
@@ -108,7 +108,7 @@ public class YUMLIdParser extends IdMap {
 	 * @param showCardinality  the show cardinality
 	 * @return the Object as String
 	 */
-	private YUMLEntity parse(Object object, YUmlIdMapFilter filter, YUMLList list, int deep) {
+	private YUMLEntity parse(Object object, YUMLIdMapFilter filter, YUMLList list, int deep) {
 		if (object == null) {
 			return null;
 		}
@@ -126,7 +126,7 @@ public class YUMLIdParser extends IdMap {
 		element=new YUMLEntity();
 		element.withId(mainKey);
 		element.withClassName(className);
-		
+		list.add(element);
 		if (prototyp != null ) {
 			for (String property : prototyp.getProperties()) {
 				Object value = prototyp.getValue(object, property);
@@ -135,41 +135,40 @@ public class YUMLIdParser extends IdMap {
 				}
 				if (value instanceof Collection<?>) {
 					for (Object containee : ((Collection<?>) value)) {
-						if(containee == null){
-							continue;
-						}
-						if (!filter.isRegard(this, object, property,
-								containee, true, deep+1)) {
-							continue;
-						}
-						if (!filter.isConvertable(this, object, property,
-								containee, true, deep+1)) {
-							continue;
-						}
-
-						YUMLEntity subId = parse(containee, filter, list, deep+1);
-						element.addValue(property, containee.getClass().getName(), subId.getId(), "0..n");
+						parsePropertyValue(object, filter,
+								list, deep, element, property, containee, "0..n");
 					}
 				} else {
-					if (!filter.isRegard(this, object, property, value,
-							false, deep+1)) {
-						continue;
-					}
-					if (!filter.isConvertable(this, object, property,
-							value, false, deep+1)) {
-						continue;
-					}
-					SendableEntityCreator valueCreater = getCreatorClass(value);
-					if (valueCreater != null) {
-						YUMLEntity subId = parse(value, filter, list, deep+1);
-						element.addValue(property, value.getClass().getName(), subId.getId(), "0..1");
-					} else {
-						element.addValue(property, value.getClass().getName(), ""+value, "");
-					}
+					parsePropertyValue(object, filter,
+							list, deep, element, property, value, "0..1");
 				}
 			}
 		}
 		return element;
+	}
+
+	private void parsePropertyValue(Object entity,
+			YUMLIdMapFilter filter, YUMLList list, int deep,
+			YUMLEntity element, String property, Object item, String cardinality) {
+		if(item == null){
+			return ;
+		}
+		if (!filter.isRegard(this, entity, property,
+				item, true, deep+1)) {
+			return ;
+		}
+		if (!filter.isConvertable(this, entity, property,
+				item, true, deep+1)) {
+			return ;
+		}
+		SendableEntityCreator valueCreater = getCreatorClass(item);
+		if (valueCreater != null) {
+			YUMLEntity subId = parse(item, filter, list, deep+1);
+			list.addCardinality(new Cardinality().withSource(element).withTarget(subId).withCardinality(cardinality));
+		}else{
+			element.addValue(property, item.getClass().getName(), ""+item);
+		}
+		return;
 	}
 	
 	
