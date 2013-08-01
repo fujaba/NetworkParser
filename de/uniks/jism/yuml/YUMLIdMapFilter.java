@@ -32,7 +32,7 @@ package de.uniks.jism.yuml;
 
 import de.uniks.jism.Filter;
 
-public class YUmlIdMapFilter extends Filter{
+public class YUMLIdMapFilter extends Filter{
 	/** The show line. */
 	private boolean isShowLine;
 	
@@ -115,7 +115,7 @@ public class YUmlIdMapFilter extends Filter{
 	 *			the new show line
 	 * @return 
 	 */
-	public YUmlIdMapFilter withShowLine(boolean value) {
+	public YUMLIdMapFilter withShowLine(boolean value) {
 		this.isShowLine = value;
 		return this;
 	}
@@ -124,21 +124,21 @@ public class YUmlIdMapFilter extends Filter{
 		return isShowCardinality;
 	}
 
-	public YUmlIdMapFilter withShowCardinality(boolean value) {
+	public YUMLIdMapFilter withShowCardinality(boolean value) {
 		this.isShowCardinality = value;
 		return this;
 	}
 	
 	@Override
-	public YUmlIdMapFilter clone(Filter newInstance) {
-		return (YUmlIdMapFilter) super.clone(newInstance);
+	public YUMLIdMapFilter clone(Filter newInstance) {
+		return (YUMLIdMapFilter) super.clone(newInstance);
 	}
 
 	public int getTyp() {
 		return typ;
 	}
 
-	public YUmlIdMapFilter withTyp(int typ) {
+	public YUMLIdMapFilter withTyp(int typ) {
 		this.typ = typ;
 		return this;
 	}
