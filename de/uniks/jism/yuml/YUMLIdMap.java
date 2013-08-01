@@ -40,7 +40,7 @@ import de.uniks.jism.interfaces.SendableEntityCreator;
 /**
  * The Class YUMLIdParser.
  */
-public class YUMLIdParser extends IdMap {
+public class YUMLIdMap extends IdMap {
 	/** The Constant URL. */
 	public static final String URL = "http://yuml.me/diagram/class/";
 
@@ -55,7 +55,7 @@ public class YUMLIdParser extends IdMap {
 	/**
 	 * Instantiates a new yUML id parser.
 	 */
-	public YUMLIdParser() {
+	public YUMLIdMap() {
 		super();
 	}
 
@@ -65,7 +65,7 @@ public class YUMLIdParser extends IdMap {
 	 * @param parent
 	 *			the parent
 	 */
-	public YUMLIdParser(IdMap parent) {
+	public YUMLIdMap(IdMap parent) {
 		super(parent);
 	}
 	
@@ -79,6 +79,7 @@ public class YUMLIdParser extends IdMap {
 	public String parseObject(Object object) {
 		return parse(object, filter.clone(new YUMLIdMapFilter()).withTyp(OBJECT));
 	}
+	
 
 	/**
 	 * Parses the class.
@@ -171,59 +172,30 @@ public class YUMLIdParser extends IdMap {
 		return;
 	}
 	
+	@Override
+	public JISMEntity encode(Object value) {
+		YUMLList list = new YUMLList();
+		parse(value, this.filter.clone(new YUMLIdMapFilter()), list, 0);
+		return list;
+	}
 	
-//	/**
-//	 * @param key of the Object
-//	 * @param typ Is it a OBJECT OR A CLASS diagram
-//	 * @param showCardinality  the show cardinality
-//	 * @return Object as String
-//	 */
-//	private String getUMLText(String key, YUmlIdMapFilter filter) {
-//		String[] itemsId = key.split("-");
-//
-//		String first = getYUMLString(itemsId[0], filter.getTyp(), filter);
-//		String second = getYUMLString(itemsId[1], filter.getTyp(), filter);
-//		String result;
-//		if (typ == OBJECT) {
-//			result = first + "-" + second;
-//		} else {
-//			String firstCardNo = filter.getLinkCardinality(key);
-//			String secondCardNo = filter.getLinkCardinality(itemsId[1] + "-" + itemsId[0]);
-//			result = first;
-//			if ( filter.isShowCardinality() ) {
-//				String firstCardName = filter.getLinkProperty(key);
-//				String secondCardName = filter.getLinkProperty(itemsId[1] + "-" + itemsId[0]);
-//				result += firstCardName + ": " + firstCardNo + "-";
-//				if (secondCardName != null) {
-//					result += secondCardName + ": " + secondCardNo;
-//				}
-//			} else {
-//				result += firstCardNo + "-";
-//				if (secondCardNo != null) {
-//					result += secondCardNo;
-//				}
-//			}
-//			result += second;
-//		}
-//		return result;
-//	}
+	@Override
+	public JISMEntity encode(Object value, Filter filter) {
+		YUMLList list = new YUMLList();
+		if(filter instanceof YUMLIdMapFilter){
+			YUMLIdMapFilter yumlFilter = (YUMLIdMapFilter)filter;
+			list.withTyp(yumlFilter.getTyp());
+			parse(value, yumlFilter, list, 0);
+		}
+		return list;
+	}
 
-//	/**
-//	 * Gets the cardinality.
-//	 *
-//	 * @param cardinaltity
-//	 *			the cardinaltity
-//	 * @param typ
-//	 *			Is it a OBJECT OR A CLASS diagram
-//	 * @return the cardinality
-//	 */
-//	private String getCardinality(String cardinaltity, int typ) {
-//		if (typ == OBJECT) {
-//			return "";
-//		}
-//		return cardinaltity;
-//	}
-
+	@Override
+	public Object decode(JISMEntity value) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	/**
 	 * Gets the class name.
 	 *
@@ -237,24 +209,5 @@ public class YUMLIdParser extends IdMap {
 		}
 		String className = object.getClass().getName();
 		return className.substring(className.lastIndexOf('.') + 1);
-	}
-
-	@Override
-	public JISMEntity encode(Object value) {
-//		value.
-//		return parseClass(value);
-		return new YUMLEntity();
-	}
-
-	@Override
-	public Object decode(JISMEntity value) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public JISMEntity encode(Object value, Filter filter) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }
