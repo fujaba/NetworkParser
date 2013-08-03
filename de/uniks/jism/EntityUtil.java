@@ -33,6 +33,7 @@ package de.uniks.jism;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+
 import de.uniks.jism.interfaces.JISMEntity;
 
 public class EntityUtil {
@@ -45,7 +46,7 @@ public class EntityUtil {
 	 * @throws RuntimeException
 	 *             If n is a non-finite number.
 	 */
-	public static String numberToString(Number number) {
+	public static String valueToString(Number number) {
 		if (number == null) {
 			throw new RuntimeException("Null pointer");
 		}
@@ -260,7 +261,7 @@ public class EntityUtil {
 			return "null";
 		}
 		if (value instanceof Number) {
-			return numberToString((Number) value);
+			return valueToString((Number) value);
 		}
 		if (value instanceof Boolean) {
 			return value.toString();
@@ -301,7 +302,7 @@ public class EntityUtil {
 			return "null";
 		}
 		if (value instanceof Number) {
-			return numberToString((Number) value);
+			return valueToString((Number) value);
 		}
 		if (value instanceof Boolean) {
 			return value.toString();
