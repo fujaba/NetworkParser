@@ -101,7 +101,7 @@ public abstract class Entity implements BaseEntity {
 	 *            An object to be accumulated under the key.
 	 * @return this.
 	 */
-	public Entity accumulate(String key, Object value) {
+	public Entity add(String key, Object value) {
 		EntityUtil.testValidity(value);
 		Object object = this.get(key);
 		if (object == null) {
@@ -113,63 +113,6 @@ public abstract class Entity implements BaseEntity {
 			this.put(key, getNewArray().put(object).put(value));
 		}
 		return this;
-	}
-
-	/**
-	 * Append values to the array under a key. If the key does not exist in the
-	 * Entity, then the key is put in the Entity with its value being a
-	 * EntityList containing the value parameter. If the key was already
-	 * associated with a EntityList, then the value parameter is appended to it.
-	 * 
-	 * @param key
-	 *            A key string.
-	 * @param value
-	 *            An object to be accumulated under the key.
-	 * @return this.
-	 * @throws RuntimeException
-	 *             If the key is null or if the current value associated with
-	 *             the key is not a EntityList.
-	 */
-	public Entity append(String key, Object value) {
-		EntityUtil.testValidity(value);
-		Object object = this.get(key);
-		if (object == null) {
-			this.put(key, getNewArray().put(value));
-		} else if (object instanceof EntityList) {
-			this.put(key, ((EntityList) object).put(value));
-		} else {
-			throw new RuntimeException("Entity[" + key
-					+ "] is not a EntityList.");
-		}
-		return this;
-	}
-
-	/**
-	 * Produce a string from a double. The string "null" will be returned if the
-	 * number is not finite.
-	 * 
-	 * @param d
-	 *            A double.
-	 * @return A String.
-	 */
-	public static String doubleToString(double d) {
-		if (Double.isInfinite(d) || Double.isNaN(d)) {
-			return "null";
-		}
-
-		// Shave off trailing zeros and decimal point, if possible.
-
-		String string = Double.toString(d);
-		if (string.indexOf('.') > 0 && string.indexOf('e') < 0
-				&& string.indexOf('E') < 0) {
-			while (string.endsWith("0")) {
-				string = string.substring(0, string.length() - 1);
-			}
-			if (string.endsWith(".")) {
-				string = string.substring(0, string.length() - 1);
-			}
-		}
-		return string;
 	}
 
 	/**
@@ -616,7 +559,13 @@ public abstract class Entity implements BaseEntity {
 		return null;
 	}
 
-	public void setValue(String key, Object value) {
+	/**
+	 * Set a Value to Entity 
+	 * With this Method it is possible to set a Value of a Set by using a [Number] or [L] for Last
+	 * @param key
+	 * @param value
+	 */
+	public Entity setValue(String key, Object value) {
 		int len = 0;
 		int end = 0;
 		int id = 0;
@@ -691,6 +640,7 @@ public abstract class Entity implements BaseEntity {
 		} else {
 			put(key.substring(0, len), value);
 		}
+		return this;
 	}
 
 	@Override
