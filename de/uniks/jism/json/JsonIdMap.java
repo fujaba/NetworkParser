@@ -353,6 +353,18 @@ public class JsonIdMap extends IdMap {
 	 *            the json object
 	 * @return the object
 	 */
+	public Object decode(Object target, JsonObject jsonObject) {
+		return decode(target, jsonObject, null);
+	}
+	/**
+	 * Read json.
+	 * 
+	 * @param target
+	 *            the target
+	 * @param jsonObject
+	 *            the json object
+	 * @return the object
+	 */
 	public Object decode(Object target, JsonObject jsonObject, Filter filter) {
 		LinkedHashSet<ReferenceObject> refs = new LinkedHashSet<ReferenceObject>();
 		if(filter==null){

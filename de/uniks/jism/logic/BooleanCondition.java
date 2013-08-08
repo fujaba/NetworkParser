@@ -31,7 +31,7 @@ package de.uniks.jism.logic;
 */
 import de.uniks.jism.IdMap;
 
-public class Boolean implements Condition {
+public class BooleanCondition implements Condition {
 	private boolean value;
 
 	@Override
@@ -40,13 +40,13 @@ public class Boolean implements Condition {
 		return this.value;
 	}
 
-	public Boolean withValue(boolean value) {
+	public BooleanCondition withValue(boolean value) {
 		this.value = value;
 		return this;
 	}
 	
-	public static Boolean value(boolean value){
-		return new Boolean().withValue(value);
+	public static BooleanCondition value(boolean value){
+		return new BooleanCondition().withValue(value);
 	}
 
 	
