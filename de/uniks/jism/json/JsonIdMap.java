@@ -53,6 +53,7 @@ import de.uniks.jism.interfaces.SendableEntityCreator;
 import de.uniks.jism.json.creator.JsonArrayCreator;
 import de.uniks.jism.json.creator.JsonObjectCreator;
 import de.uniks.jism.logic.Deep;
+import de.uniks.jism.sort.EntityComparator;
 
 /**
  * The Class JsonIdMap.
@@ -609,7 +610,7 @@ public class JsonIdMap extends IdMap {
 	 * @return the JsonArray
 	 */
 	public JsonArray toJsonSortedArray(Object object, String property) {
-		JsonArraySorted jsonArray = new JsonArraySorted(property);
+		JsonArraySorted jsonArray = new JsonArraySorted(new EntityComparator().withColumn(property));
 		toJsonArray(object, jsonArray, filter.clone());
 		return jsonArray;
 	}

@@ -42,17 +42,7 @@ public class JsonArraySorted extends JsonArray {
 	 * Instantiates a new json sorted array.
 	 */
 	public JsonArraySorted(){
-		this.cpr = new EntityComparator(EntityComparator.HASHCODE, SortingDirection.ASC);
-	}
-	
-	/**
-	 * Instantiates a new json sorted array.
-	 * 
-	 * @param property
-	 *            the property
-	 */
-	public JsonArraySorted(String property) {
-		this.cpr = new EntityComparator(property, SortingDirection.ASC);
+		this.cpr = new EntityComparator().withColumn(EntityComparator.HASHCODE).withDirection(SortingDirection.ASC);
 	}
 	
 	/**
@@ -64,9 +54,6 @@ public class JsonArraySorted extends JsonArray {
 	public JsonArraySorted(Comparator<Object> comparator) {
 		this.cpr = comparator;
 	}
-
-	
-	
 	
 	@Override
 	protected void initMap() {
@@ -74,9 +61,9 @@ public class JsonArraySorted extends JsonArray {
 	}
 	@Override
 	public void add(int index, Object element) {
-		// TODO Auto-generated method stub
 		super.add(index, element);
 	}
+
 	@Override
 	public boolean add(Object newValue) {
 		for (int i = 0; i < values.size(); i++) {
