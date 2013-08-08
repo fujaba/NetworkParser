@@ -44,14 +44,6 @@ public class EntityComparator implements Comparator<Object> {
 	private IdMap map;
 	private EntityValueFactory cellCreator = new EntityValueFactory();
 
-	public EntityComparator() {
-	}
-
-	public EntityComparator(String column, SortingDirection direction) {
-		this.column = column;
-		this.direction = direction;
-	}
-
 	@Override
 	public int compare(Object o1, Object o2) {
 		return direction.getDirection() * compareValue(o2, o1);
@@ -164,21 +156,23 @@ public class EntityComparator implements Comparator<Object> {
 		return direction;
 	}
 
-	public SortingDirection setDirection(SortingDirection direction) {
+	public EntityComparator withDirection(SortingDirection direction) {
 		this.direction = direction;
-		return direction;
+		return this;
 	}
 
 	public String getColumn() {
 		return column;
 	}
 
-	public void setColumn(String column) {
+	public EntityComparator withColumn(String column) {
 		this.column = column;
+		return this;
 	}
 
-	public void setIdMap(IdMap value) {
+	public EntityComparator withMap(IdMap value) {
 		this.map = value;
+		return this;
 	}
 
 	public IdMap getMap() {
@@ -189,8 +183,9 @@ public class EntityComparator implements Comparator<Object> {
 		return cellCreator;
 	}
 
-	public void setCellCreator(EntityValueFactory cellCreator) {
+	public EntityComparator withCellCreator(EntityValueFactory cellCreator) {
 		this.cellCreator = cellCreator;
+		return this;
 	}
 
 	public SortingDirection changeDirection() {
