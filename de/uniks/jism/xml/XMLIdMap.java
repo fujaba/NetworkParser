@@ -42,7 +42,7 @@ import de.uniks.jism.IdMap;
 import de.uniks.jism.ReferenceObject;
 import de.uniks.jism.interfaces.SendableEntityCreator;
 import de.uniks.jism.interfaces.XMLEntityCreator;
-import de.uniks.jism.logic.Boolean;
+import de.uniks.jism.logic.BooleanCondition;
 
 /**
  * The Class XMLIdMap.
@@ -63,7 +63,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 	/** The stopwords. */
 	private HashSet<String> stopwords = new HashSet<String>();
 
-	private Filter filter=new Filter().withIdFilter(Boolean.value(false));
+	private Filter filter=new Filter().withIdFilter(BooleanCondition.value(false));
 	/**
 	 * Inits the.
 	 */
