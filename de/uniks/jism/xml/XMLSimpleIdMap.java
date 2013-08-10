@@ -145,13 +145,13 @@ public class XMLSimpleIdMap extends IdMap {
 				if (myChar == SPACE) {
 					value.next();
 				}
-				int start = this.value.getIndex();
+				int start = this.value.position();
 				if (this.value.stepPos("=>", false, false)) {
 					myChar = this.value.getCurrentChar();
 					if (myChar == '=') {
 						String key = this.value.substring(start, -1);
 						this.value.skip(2);
-						start = this.value.getIndex();
+						start = this.value.position();
 						if (this.value.stepPos("\"", false, true)) {
 							String value = this.value.substring(start, -1);
 							this.value.next();

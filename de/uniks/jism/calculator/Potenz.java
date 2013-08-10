@@ -1,4 +1,4 @@
-package de.uniks.jism;
+package de.uniks.jism.calculator;
 
 /*
  Json Id Serialisierung Map
@@ -30,19 +30,28 @@ package de.uniks.jism;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-public interface Buffer {
-	public int length();
-	public char charAt(int index);
-	public void next();
-	public String substring(int startTag, int length);
-	public Buffer withLength(int length);
-	public Byte get(int pos);
-	public int position();
-	public int remaining();
-	public void back();
-	public boolean isEnd();
-	public Buffer setPosition(int index);
-	public String toString();
-	public String toText();
-	public byte[] toArray();
+public class Potenz implements Operator {
+	@Override
+	public int getPriority() {
+		return RegCalculator.POINT;
+	}
+
+	@Override
+	public double calculate(Double[] values) {
+		double result=values[0];
+		for(int i=1;i<values[1];i++){
+			result *= values[0];
+		}
+		return result;
+	}
+
+	@Override
+	public String getTag() {
+		return "^";
+	}
+
+	@Override
+	public int getValues() {
+		return 2;
+	}
 }

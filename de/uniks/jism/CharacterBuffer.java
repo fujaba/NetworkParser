@@ -58,7 +58,10 @@ public class CharacterBuffer implements Buffer{
 	public char charAt(int index){
 		return buffer[index];
 	}
-	public String substring2(int startTag, int length){
+	public String substring(int startTag, int length){
+		if(startTag+length>buffer.length){
+			length = buffer.length - startTag;
+		}
 		return new String(buffer, startTag, length);
 	}
 
@@ -90,9 +93,12 @@ public class CharacterBuffer implements Buffer{
 	}
 
 	@Override
-	public char nextChar() {
-		char c = this.buffer[this.index];
+	public void next() {
 		this.index++;
+		if(this.index==this.buffer.length){
+			return ;
+		}
+		char c = this.buffer[this.index];
 		if (c == '\r') {
 			this.line += 1;
 			if (this.buffer[this.index] == '\n') {
@@ -108,7 +114,6 @@ public class CharacterBuffer implements Buffer{
 		} else {
 			this.character += 1;
 		}
-		return c;
 	}
 
 	@Override
@@ -126,5 +131,18 @@ public class CharacterBuffer implements Buffer{
 	public Buffer setPosition(int index) {
 		this.index = index;
 		return this;
+	}
+
+	@Override
+	public String toText() {
+		return new String(buffer);
+	}
+	@Override
+	public byte[] toArray() {
+		byte[] result = new byte[buffer.length];
+		for(int i=0;i<buffer.length;i++){
+			result[i]=(byte) buffer[i];
+		}
+		return result;
 	}
 }

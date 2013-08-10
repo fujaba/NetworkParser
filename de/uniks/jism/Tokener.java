@@ -85,7 +85,8 @@ public abstract class Tokener {
 		if (this.isEnd()) {
 			return 0;
 		}
-		return buffer.nextChar();
+		buffer.next();
+		return getCurrentChar();
 	}
 
 	/**
@@ -97,16 +98,22 @@ public abstract class Tokener {
 	 *         n characters remaining in the source string.
 	 */
 	public String getNextString(int n) {
-		if (n == -1) {
+		int pos = 0;
+		if(n<-1){
+			n=n*-1;
+			char[] chars = new char[n];
+			while (pos < n) {
+				chars[pos] = this.buffer.charAt(this.buffer.position() - (n-pos++));
+			}
+			return new String(chars);
+		}else if (n == -1) {
 			n = buffer.length() - this.buffer.position();
 		} else if (n == 0) {
 			return "";
 		} else if (this.buffer.position() + n > this.buffer.length()) {
 			n = buffer.length() - this.buffer.position();
 		}
-
 		char[] chars = new char[n];
-		int pos = 0;
 
 		while (pos < n) {
 			chars[pos] = this.buffer.charAt(this.buffer.position() + pos++);
@@ -148,13 +155,21 @@ public abstract class Tokener {
 	 * @return A character, or 0 if there are no more characters.
 	 */
 	public char nextClean() {
-		char c;
+		char c=getCurrentChar();
 		do{
 			c = next();
 		}while(c!=0 && c <= ' ');
 		return c;
 	}
-
+	
+	public char nextStartClean() {
+		char c=getCurrentChar();
+		if(c!=0 && c <= ' '){
+			c=nextClean();
+		}
+		return c;
+	}
+	
 	/**
 	 * Return the characters up to the next close quote character. Backslash
 	 * processing is done. The formal JSON format does not allow strings in
@@ -173,7 +188,6 @@ public abstract class Tokener {
 		StringBuilder sb = new StringBuilder();
 		char c = getCurrentChar();
 		if (c == quote) {
-			next();
 			if (!ignoreCurrent) {
 				return "";
 			}
@@ -227,6 +241,7 @@ public abstract class Tokener {
 				}
 			}
 		}
+		next();
 		return sb.toString();
 	}
 
@@ -239,16 +254,15 @@ public abstract class Tokener {
 	 * character.
 	 */
 	public Object nextValue(JISMEntity creator) {
-		char c = nextClean();
+		char c = nextStartClean();
 		StringBuilder sb = new StringBuilder();
 		while (c >= ' ' && getStopChars().indexOf(c) < 0) {
 			sb.append(c);
 			c = next();
 		}
-		back();
 
 		String value = sb.toString().trim();
-		if (value.equals("")) {
+		if (value.length()<1) {
 			throw new TextParsingException("Missing value", this);
 		}
 		return EntityUtil.stringToValue(value);
@@ -325,7 +339,7 @@ public abstract class Tokener {
 	 * 
 	 * @return the index
 	 */
-	public int getIndex() {
+	public int position() {
 		return this.buffer.position();
 	}
 
@@ -334,7 +348,7 @@ public abstract class Tokener {
 	 * 
 	 * @return the length
 	 */
-	public int getLength() {
+	public int length() {
 		return buffer.length();
 	}
 
@@ -410,7 +424,7 @@ public abstract class Tokener {
 		if (start < 0 || end <= 0 || start > end) {
 			return "";
 		}
-		return this.buffer.substring2(start, end-start);
+		return this.buffer.substring(start, end-start);
 	}
 
 	/**
@@ -434,7 +448,7 @@ public abstract class Tokener {
 		nextClean();
 		int startTag = this.buffer.position();
 		if (stepPos(" >//<", false, true)) {
-			return this.buffer.substring2(startTag, this.buffer.position()-startTag);
+			return this.buffer.substring(startTag, this.buffer.position()-startTag);
 		}
 		return "";
 	}
@@ -447,6 +461,14 @@ public abstract class Tokener {
 	 */
 	public void setIndex(int index) {
 		this.buffer.setPosition(index);
+	}
+	
+	public byte[] toArray(){
+		return buffer.toArray();
+	}
+	
+	public String toText(){
+		return buffer.toText();
 	}
 
 	public abstract void parseToEntity(BaseEntity entity);

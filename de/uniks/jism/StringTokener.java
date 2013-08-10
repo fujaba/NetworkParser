@@ -73,7 +73,7 @@ public class StringTokener extends Tokener {
 	 */
 	public String getStringPart(Character start, Character end){
     	int count=1;
-    	Character current;
+    	Character current = null;
     	int pos;
     	if(getCurrentChar()==start){
     		pos=buffer.position();
@@ -87,7 +87,8 @@ public class StringTokener extends Tokener {
 			if(current==end){
 				count--;
 				if(count==0){
-					return buffer.substring2(pos, buffer.position()-pos);
+					next();
+					return buffer.substring(pos, buffer.position()-pos);
 				}
 				continue;
 			}
@@ -95,6 +96,11 @@ public class StringTokener extends Tokener {
 				count++;
 			}
 		}
+//FIXME		if(current==end){
+//			if(count==1){
+//				return buffer.substring(pos, buffer.position()-pos+1);
+//			}
+//		}
 		return null;
     }
 
