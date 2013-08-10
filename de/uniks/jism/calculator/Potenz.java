@@ -33,7 +33,7 @@ package de.uniks.jism.calculator;
 public class Potenz implements Operator {
 	@Override
 	public int getPriority() {
-		return RegCalculator.POINT;
+		return RegCalculator.POTENZ;
 	}
 
 	@Override
