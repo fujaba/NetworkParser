@@ -38,7 +38,8 @@ import de.uniks.jism.StringTokener;
 public class RegCalculator {
 	public static final int LINE=1;
 	public static final int POINT=2;
-	public static final int FUNCTION=3;
+	public static final int POTENZ=3;
+	public static final int FUNCTION=4;
 	public static final String BACKETSOPEN="([{";
 	public static final String BACKETSCLOSE=")]}";
 	/** List of Operators */
@@ -190,7 +191,7 @@ public class RegCalculator {
     	}
     	
     	// Point and Line Statement
-    	for(int prio=2;prio>0;prio--){
+    	for(int prio=3;prio>0;prio--){
     		for(int i=0;i<parts.size();i++){
         		Operator operator = operators.get(parts.get(i));
         		if(operator!=null&&operator.getPriority()==prio){
