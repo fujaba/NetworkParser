@@ -51,7 +51,7 @@ public class XMLTokener extends Tokener {
 		switch (c) {
 		case '"':
 		case '\'':
-			return nextString(c, false, false);
+			return nextString(c, false, true);
 		case '<':
 			back();
 			JISMEntity element = creator.getNewObject();
@@ -63,14 +63,22 @@ public class XMLTokener extends Tokener {
 			break;
 		}
 		back();
+		if(getCurrentChar()=='"'){
+			next();
+			next();
+			return "";
+		}
 		return super.nextValue(creator);
 	}
 
 	@Override
 	public void parseToEntity(BaseEntity entity) {
-		char c;
+		char c=getCurrentChar();
 
-		if (nextClean() != '<') {
+		if (c!= '<') {
+			c = nextClean();
+		}
+		if (c != '<') {
 			throw new TextParsingException("A XML text must begin with '<'",
 					this);
 		}
@@ -84,15 +92,17 @@ public class XMLTokener extends Tokener {
 			sb.append(c);
 			c = next();
 		}
-		back();
 		xmlEntity.setTag(sb.toString());
 		XMLEntity child;
 		while (true) {
-			c = nextClean();
+			c = nextStartClean();
 			if (c == 0) {
 				break;
 			} else if (c == '>') {
 				c = nextClean();
+				if(c==0){
+					return;
+				}
 				if (c != '<') {
 					back();
 					xmlEntity.setValue(nextString('<', false, false));
@@ -104,10 +114,8 @@ public class XMLTokener extends Tokener {
 			if (c == '<') {
 				if (next() == '/') {
 					stepPos(">", false, false);
-					next();
 					break;
 				} else {
-					back();
 					back();
 					if (getCurrentChar() == '<') {
 						child = (XMLEntity) xmlEntity.getNewObject();
@@ -124,15 +132,7 @@ public class XMLTokener extends Tokener {
 			} else {
 				back();
 				String key = nextValue(xmlEntity).toString();
-				if (key != null) {
-					// The key is followed by ':'. We will also tolerate '=' or
-					// '=>'.
-					c = nextClean();
-					if (c == '=') {
-						if (next() != '>') {
-							back();
-						}
-					}
+				if ( key.length()>0 ) {
 					xmlEntity.put(key, nextValue(xmlEntity));
 				}
 			}

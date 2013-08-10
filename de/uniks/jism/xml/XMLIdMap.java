@@ -283,7 +283,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 		if (this.value.getCurrentChar() != ITEMSTART) {
 			this.value.next();
 		}
-		int start = this.value.getIndex();
+		int start = this.value.position();
 		ArrayList<String> stack = new ArrayList<String>();
 		while (!this.value.isEnd() && !exit) {
 			if (!this.value.checkValues('\t', '\r', '\n', ' ', ITEMSTART)) {
@@ -301,7 +301,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 				}
 				if (this.value.getCurrentChar() == ENDTAG) {
 					if (stack.size() > 0) {
-						int temp = this.value.getIndex();
+						int temp = this.value.position();
 						String endTag = this.value.getNextTag();
 						if (stack.get(stack.size() - 1).equals(endTag)) {
 							stack.remove(stack.size() - 1);
@@ -426,12 +426,12 @@ public class XMLIdMap extends XMLSimpleIdMap {
 							break;
 						}
 						this.value.next();
-						int start = this.value.getIndex();
+						int start = this.value.position();
 						if (this.value.getCurrentChar() != ENDTAG) {
 							if (this.value.stepPos("=", false, false)) {
 								String key = this.value.substring(start, -1);
 								this.value.skip(2);
-								start = this.value.getIndex();
+								start = this.value.position();
 								if (this.value.stepPos("\"", false, true)) {
 									String value = this.value.substring(start,
 											-1);
@@ -455,7 +455,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 					this.value.next();
 				} else {
 					this.value.next();
-					int start = this.value.getIndex();
+					int start = this.value.position();
 					this.value.stepPos("" + ITEMSTART, false, true);
 					String value = this.value.substring(start, -1);
 					entityCreater.setValue(entity, prefix, value, IdMap.NEW);

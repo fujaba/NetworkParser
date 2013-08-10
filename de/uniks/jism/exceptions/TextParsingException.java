@@ -46,7 +46,7 @@ public class TextParsingException extends RuntimeException {
 	public TextParsingException(String message, Tokener tokener) {
 		this.message = message;
 		this.tokenerMsg = tokener.toString();
-		this.index = tokener.getIndex();
+		this.index = tokener.position();
 	}
 
 	public String getMessage() {

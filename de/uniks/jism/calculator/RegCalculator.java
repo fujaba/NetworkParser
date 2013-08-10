@@ -39,6 +39,8 @@ public class RegCalculator {
 	public static final int LINE=1;
 	public static final int POINT=2;
 	public static final int FUNCTION=3;
+	public static final String BACKETSOPEN="([{";
+	public static final String BACKETSCLOSE=")]}";
 	/** List of Operators */
     private HashMap<String, Operator> operators = new HashMap<String, Operator>();
  
@@ -50,6 +52,7 @@ public class RegCalculator {
     	withOperator(new Subtract());
     	withOperator(new Multiply());
     	withOperator(new Division());
+    	withOperator(new Potenz());
     	withOperator(new Mod());
     	withOperator(new Minimum());
     	withOperator(new Maximum());
@@ -76,11 +79,20 @@ public class RegCalculator {
     	tokener.withText(formular);
 
     	ArrayList<String> parts = new ArrayList<String>();
-    	Character current =null;
-    	if(tokener.getCurrentChar()=='('&&tokener.charAt(tokener.getLength()-1)==')'){
-    		tokener.setIndex(1);
-    		tokener.setLength(tokener.getLength()-1);
+    	int pos;
+    	if(tokener.getCurrentChar()=='('&&tokener.charAt(tokener.length()-1)==')'){
+    		pos = tokener.position();
+    		String value = tokener.getStringPart('(', ')');
+    		if(value!=null&&tokener.position()==tokener.length()){
+    			tokener.setIndex(1);
+    			tokener.setLength(tokener.length()-1);
+    		}else{
+    			tokener.setIndex(pos);
+    		}
+    		
     	}
+    	Character current = tokener.getCurrentChar();
+    	boolean defaultMulti=false;
     	while(!tokener.isEnd()){
     		if(current==null){
     			current = tokener.nextClean();
@@ -90,14 +102,23 @@ public class RegCalculator {
 				continue;
 			}
 			String value="";
-			if( current == '('){
-				value = tokener.getStringPart('(', ')');
+			if((pos = BACKETSOPEN.indexOf(current))>=0 ){
+				value = tokener.getStringPart(BACKETSOPEN.charAt(pos), BACKETSCLOSE.charAt(pos));
 				if(value != null){
-					parts.add( value );
+					if(defaultMulti){
+						parts.add("*");
+					}
+					if(pos>0){
+						parts.add( "("+value.substring(1, value.length()-1)+")" );
+					}else{
+						parts.add( value );
+					}
+					tokener.back();
+					defaultMulti=true;
+					current=null;
+					continue;
 				}
-                current=null;
-                continue;
-            }
+			}
 			
 			if( Character.isDigit( current ) || current == '.' ){
 				while(Character.isDigit( current ) || current == '.'){
@@ -105,12 +126,16 @@ public class RegCalculator {
 					current = tokener.next();
 				}
 				parts.add( value );
+				defaultMulti=true;
 				continue;
 			}
-   			value+= current;
+			if(current!=' '){
+				value+= current;
+			}
 			while(!tokener.isEnd() ){
 				if(addOperator(value, tokener, parts)){
 					value="";
+					defaultMulti=false;
     				break;
 				}
     			current = tokener.next();
@@ -118,6 +143,7 @@ public class RegCalculator {
     		}
 			if(value.length()>0){
 				addOperator(value, tokener, parts);
+				defaultMulti=false;
 			}
 			current=null;
     	}
@@ -125,7 +151,7 @@ public class RegCalculator {
     	// Parsing Funciton & Parsing (
     	int z=parts.size()-1;
     	while(z>=0){
-    		int pos=parts.get(z).indexOf("(");
+    		pos=parts.get(z).indexOf("(");
     		if(pos<0){
     			// Check for Vorzeichen
     			if(z>0){
