@@ -46,6 +46,8 @@ import de.uniks.jism.interfaces.BaseEntityList;
  * The Class XMLEntity.
  */
 public class XMLEntity extends Entity implements BaseEntityList {
+	public static final String PROPERTY_TAG="tag";
+	public static final String PROPERTY_VALUE="value";
 	/** The children. */
 	protected ArrayList<XMLEntity> children;
 

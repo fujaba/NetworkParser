@@ -100,6 +100,7 @@ public class RegCalculator {
     		}
 			if( current==',' ){
 				current=null;
+				defaultMulti=false;
 				continue;
 			}
 			String value="";
@@ -125,6 +126,9 @@ public class RegCalculator {
 				while(Character.isDigit( current ) || current == '.'){
 					value+= current;
 					current = tokener.next();
+				}
+				if(defaultMulti){
+					parts.add("*");
 				}
 				parts.add( value );
 				defaultMulti=true;

@@ -39,6 +39,7 @@ import de.uniks.jism.ReferenceObject;
 import de.uniks.jism.Tokener;
 import de.uniks.jism.interfaces.JISMEntity;
 import de.uniks.jism.interfaces.XMLGrammar;
+import de.uniks.jism.xml.creator.XSDEntityCreator;
 
 public class XMLSimpleIdMap extends IdMap {
 	/** The Constant ENDTAG. */
@@ -90,27 +91,25 @@ public class XMLSimpleIdMap extends IdMap {
 	
 	@Override
 	public Object decode(JISMEntity value) {
-		return decode(value.toString(), null);
+		return decode((XMLTokener) new XMLTokener().withText(value.toString()), null);
 	}
 	
-	public Object decode(String value, XMLGrammar factory) {
-		Object result = null;
-		XMLEntity temp = null;
-		this.value = new XMLTokener().withText(value);
+	public Object decode(XMLTokener entity, XMLGrammar factory) {
+		this.value = entity;
+		if(factory==null){
+			factory = new XSDEntityCreator();
+		}
 
 		this.stack.clear();
 		while (!this.value.isEnd()) {
 			if (this.value.stepPos("" + ITEMSTART, false, false)) {
-				XMLEntity entity = getEntity(factory);
-				if (entity != null) {
-					temp = findTag(entity, factory);
+				XMLEntity item = getEntity(factory);
+				if (item != null) {
+					return parse(item, factory, "");
 				}
 			}
-			if ( temp != null ) {
-				result = temp;
-			}
 		}
-		return result;
+		return null;
 	}
 	
 	
@@ -137,7 +136,7 @@ public class XMLSimpleIdMap extends IdMap {
 	 * @param styleFormatCreator
 	 * @return the object
 	 */
-	private XMLEntity findTag(XMLEntity entity, XMLGrammar styleFormatCreator) {
+	protected Object parse(XMLEntity entity, XMLGrammar styleFormatCreator, String prefix) {
 		if (entity != null) {
 			// Parsing attributes
 			char myChar = this.value.getCurrentChar();
@@ -189,7 +188,7 @@ public class XMLSimpleIdMap extends IdMap {
 				XMLEntity newTag;
 				if (this.value.getCurrentChar() == ITEMSTART) {
 					// show next Tag
-					XMLEntity child = null;
+					Object child;
 					do {
 						boolean saveValue = true;
 						do {
@@ -221,9 +220,9 @@ public class XMLSimpleIdMap extends IdMap {
 								break;
 							}
 						} while (newTag != null);
-						child = findTag(newTag, styleFormatCreator);
-						if (child != null) {
-							styleFormatCreator.addChildren(entity, child);
+						child = parse(newTag, styleFormatCreator, "");
+						if (child != null && child instanceof XMLEntity) {
+							styleFormatCreator.addChildren(entity, (XMLEntity)child);
 						}
 					} while (child != null);
 				}

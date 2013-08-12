@@ -1,4 +1,9 @@
-package de.uniks.jism.calculator;
+package de.uniks.jism.xml.creator;
+
+import de.uniks.jism.Tokener;
+import de.uniks.jism.interfaces.SendableEntityCreator;
+import de.uniks.jism.interfaces.XMLGrammar;
+import de.uniks.jism.xml.XMLEntity;
 
 /*
  Json Id Serialisierung Map
@@ -30,35 +35,57 @@ package de.uniks.jism.calculator;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-public class Potenz implements Operator {
+
+public class XMLEntityCreator implements SendableEntityCreator, XMLGrammar {
+	/** The properties. */
+	private final String[] properties = new String[] {XMLEntity.PROPERTY_TAG, XMLEntity.PROPERTY_VALUE};
+
 	@Override
-	public int getPriority() {
-		return RegCalculator.POTENZ;
+	public String[] getProperties() {
+		return properties;
 	}
 
 	@Override
-	public double calculate(Double[] values) {
-		double result=values[0];
-		if(values[1]<0){
-			values[1]=values[1]*-1;
-			for(int i=1;i<values[1];i++){
-				result *= values[0];
-			}
-			return 1/result;
+	public Object getSendableInstance(boolean prototyp) {
+		return new XMLEntity();
+	}
+
+	@Override
+	public Object getValue(Object entity, String attribute) {
+		if(XMLEntity.PROPERTY_TAG.equalsIgnoreCase(attribute)){
+			return ((XMLEntity) entity).getTag();
 		}
-		for(int i=1;i<values[1];i++){
-			result *= values[0];
+		if(XMLEntity.PROPERTY_VALUE.equalsIgnoreCase(attribute)){
+			return ((XMLEntity) entity).getValue();
 		}
-		return result;
+		return null;
 	}
 
 	@Override
-	public String getTag() {
-		return "^";
+	public boolean setValue(Object entity, String attribute, Object value,
+			String type) {
+		
+		if(XMLEntity.PROPERTY_TAG.equalsIgnoreCase(attribute)){
+			((XMLEntity) entity).setTag(""+value);
+			return true;
+		}
+		if(XMLEntity.PROPERTY_VALUE.equalsIgnoreCase(attribute)){
+			((XMLEntity) entity).setValue(""+value);
+			return true;
+		}
+		return false;
+	}
+
+	public boolean parseChild(XMLEntity entity, XMLEntity child, Tokener value) {
+		return false;
 	}
 
 	@Override
-	public int getValues() {
-		return 2;
+	public void addChildren(XMLEntity parent, XMLEntity child) {
+		parent.addChild(child);
+	}
+
+	@Override
+	public void endChild(String tag) {
 	}
 }
