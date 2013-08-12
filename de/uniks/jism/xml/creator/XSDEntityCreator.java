@@ -38,7 +38,7 @@ import de.uniks.jism.xml.XMLEntity;
 import de.uniks.jism.xml.XSDEntity;
 
 public class XSDEntityCreator implements XMLEntityCreator, XMLGrammar {
-	private String nameSpace;
+	private String nameSpace="";
 	private ArrayList<String> privateStack = new ArrayList<String>();
 	public static final String[] IGNORETAGS = new String[] {"annotation",
 			"documentation", "complextype", "simpletype" };
@@ -46,8 +46,9 @@ public class XSDEntityCreator implements XMLEntityCreator, XMLGrammar {
 	/**
 	 * @param namespace     the NameSpace for xsd
 	 */
-	public XSDEntityCreator(String namespace) {
+	public XSDEntityCreator withNameSpace(String namespace) {
 		this.nameSpace = namespace;
+		return this;
 	}
 
 	@Override

@@ -42,6 +42,7 @@ import de.uniks.jism.IdMap;
 import de.uniks.jism.ReferenceObject;
 import de.uniks.jism.interfaces.SendableEntityCreator;
 import de.uniks.jism.interfaces.XMLEntityCreator;
+import de.uniks.jism.interfaces.XMLGrammar;
 import de.uniks.jism.logic.BooleanCondition;
 
 /**
@@ -239,27 +240,28 @@ public class XMLIdMap extends XMLSimpleIdMap {
 		return null;
 	}
 
-	/**
-	 * Decode.
-	 * 
-	 * @param value
-	 *            the value
-	 * @return the object
-	 */
+//FIXME	/**
+//	 * Decode.
+//	 * 
+//	 * @param value
+//	 *            the value
+//	 * @return the object
+//	 */
+//	@Override
+//	public Object decode(XMLTokener entity, XMLGrammar factory) {
+//		Object result = null;
+//		this.value = new XMLTokener().withText(value);
+//		this.stack.clear();
+//		while (!this.value.isEnd()) {
+//			if (this.value.stepPos("" + ITEMSTART, false, false)) {
+//				XMLEntity item = getEntity(null);
+//				result = parse(item, factory);
+//			}
+//		}
+//		return result;
+//	}
 	public Object decode(String value) {
-		Object result = null;
-		this.value = new XMLTokener().withText(value);
-		this.stack.clear();
-		while (!this.value.isEnd()) {
-			if (this.value.stepPos("" + ITEMSTART, false, false)) {
-				XMLEntity tag = getEntity(null);
-				result = findTag("", tag);
-			}
-			if (result != null && !(result instanceof String)) {
-				break;
-			}
-		}
-		return result;
+		return decode((XMLTokener) new XMLTokener().withText(value), null);
 	}
 
 	/**
@@ -346,9 +348,11 @@ public class XMLIdMap extends XMLSimpleIdMap {
 	 *            the tag
 	 * @return the object
 	 */
-	private Object findTag(String prefix, XMLEntity item) {
-		String tag = item.getTag();
-		Object entity = null;
+//	@Override
+	protected Object parse(XMLEntity entity, XMLGrammar formatCreator, String prefix) {
+//	private Object parseXMLEntity(String prefix, XMLEntity item) {
+		String tag = entity.getTag();
+		Object item = null;
 
 		if (tag.length() > 0) {
 			XMLEntityCreator entityCreater = getCreatorDecodeClass(tag);
@@ -368,32 +372,32 @@ public class XMLIdMap extends XMLSimpleIdMap {
 				for (String prop : properties) {
 					if (prop.equalsIgnoreCase(prefix)) {
 						// It is a Attribute
-						entity = referenceObject.getEntity();
+						item = referenceObject.getEntity();
 						plainvalue = true;
 						break;
 					} else if (prop.startsWith(prefix)) {
 						// it is a Child
-						entity = referenceObject.getEntity();
+						item = referenceObject.getEntity();
 						break;
 					}
 				}
 
-				if (entity != null) {
+				if (item != null) {
 					if (!plainvalue) {
 						newPrefix = prefix + XMLIdMap.ENTITYSPLITTER;
 						prefix += XMLIdMap.ATTRIBUTEVALUE;
 					}
 				}
 			} else {
-				entity = entityCreater.getSendableInstance(false);
+				item = entityCreater.getSendableInstance(false);
 				this.stack.add(new ReferenceObject()
 							.withCreator(entityCreater)
 							.withProperty(tag)
-							.withEntity(entity));
+							.withEntity(item));
 				newPrefix = XMLIdMap.ENTITYSPLITTER;
 				prefix = "";
 			}
-			if (entity == null) {
+			if (item == null) {
 				// First Skip not valid entry
 				ArrayList<String> myStack = new ArrayList<String>();
 				myStack.add(tag);
@@ -436,7 +440,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 									String value = this.value.substring(start,
 											-1);
 									this.value.next();
-									entityCreater.setValue(entity,
+									entityCreater.setValue(item,
 											prefix + key, value, IdMap.NEW);
 								}
 							}
@@ -445,11 +449,11 @@ public class XMLIdMap extends XMLSimpleIdMap {
 
 					if (this.value.getCurrentChar() != ENDTAG) {
 						// Children
-						parseChildren(newPrefix, entity, tag);
+						parseChildren(newPrefix, item, tag);
 					} else {
 						this.value.next();
 					}
-					return entity;
+					return item;
 				}
 				if (this.value.getCurrentChar() == ENDTAG) {
 					this.value.next();
@@ -458,13 +462,13 @@ public class XMLIdMap extends XMLSimpleIdMap {
 					int start = this.value.position();
 					this.value.stepPos("" + ITEMSTART, false, true);
 					String value = this.value.substring(start, -1);
-					entityCreater.setValue(entity, prefix, value, IdMap.NEW);
+					entityCreater.setValue(item, prefix, value, IdMap.NEW);
 					this.value.stepPos("" + ITEMSTART, false, false);
 					this.value.stepPos("" + ITEMEND, false, false);
 				}
 				return null;
 			}
-			return entity;
+			return item;
 		}
 		return null;
 	}
@@ -485,7 +489,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 				XMLEntity nextTag = getEntity(null);
 
 				if (nextTag != null) {
-					Object result = findTag(newPrefix, nextTag);
+					Object result = parse(nextTag, null, newPrefix);
 
 					if (result != null) {
 						ReferenceObject refObject = null;

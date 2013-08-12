@@ -140,6 +140,12 @@ public class XMLTokener extends Tokener {
 	}
 
 	@Override
+	public XMLTokener withText(String value) {
+		super.withText(value);
+		return this;
+	}
+	
+	@Override
 	public void parseToEntity(BaseEntityList entityList) {
 		// Do Nothing
 	}
