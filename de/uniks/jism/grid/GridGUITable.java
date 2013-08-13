@@ -32,6 +32,7 @@ package de.uniks.jism.grid;
 
 public interface GridGUITable {
 	public void add(CellValue cell);
+	public void move(CellValue cell);
 	public void setSpanRow(CellValue node);
 	public void setSpanColumn(CellValue node);
 	public GridGUICell getNewCell();

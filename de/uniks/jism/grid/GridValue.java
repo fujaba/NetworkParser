@@ -106,8 +106,8 @@ public class GridValue {
 		 for (CellValue n: children.values()) {
 			 int rowEnd = n.getRowEnd();
 			 int colEnd = n.getColumnEnd();
-			 int col = n.getColumn();
-			 int row = n.getRow();
+//			 int col = n.getColumn();
+//			 int row = n.getRow();
 			 String rowId="0";
 			 if(rowEnd>=maxRows){
 				 rowId="1";
@@ -116,9 +116,6 @@ public class GridValue {
 			 if(colEnd>=maxColumns){
 				 columnId="1";
 			 }
-			 
-			 n.withColumnSpan(colEnd-col);
-			 n.withRowSpan(rowEnd-row);
 			 n.setStyle("-fx-border-color: black; -fx-border-width: 1 "+columnId+" "+rowId+" 1;");
 		}
 	}
@@ -144,5 +141,19 @@ public class GridValue {
 	}
 	public int getCountRows() {
 		return maxRows;
+	}
+	
+	public void insertRow(int offset){
+		CellValue[] items = children.values().toArray(new CellValue[children.size()]);
+		for(CellValue cell : items){
+			if(cell.getRow()>=offset){
+				cell.withRow(cell.getRow()+1);
+				if(guiElement!=null){
+					guiElement.move(cell);
+				}
+				
+			}
+		}
+		maxRows++;
 	}
 }

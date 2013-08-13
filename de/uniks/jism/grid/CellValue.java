@@ -102,8 +102,9 @@ public class CellValue{
 			calculator.withConstants(COUNT, grid.getCountRows());
 			calculator.withConstants(POSITION, row);
 			double result = (double)calculator.calculate(heightExpression);
-			return (int)result;
-			
+			int end = (int)result;
+			withRowSpan(end-row);
+			return end;
 		}
 
 		return getRow()+getRowSpan()-1;
@@ -114,7 +115,9 @@ public class CellValue{
 			calculator.withConstants(COUNT, grid.getCountRows());
 			calculator.withConstants(POSITION, column);
 			double result = (double)calculator.calculate(widthExpression);
-			return (int)result;
+			int end = (int)result;
+			withColumnSpan(end-column);
+			return end;
 		}
 		return getColumn()+getColumnSpan()-1;
 	}
@@ -200,5 +203,10 @@ public class CellValue{
 		if(guiElement!=null){
 			guiElement.setStyle(value);
 		}
+	}
+
+
+	public void withRow(int value) {
+		this.row = value;
 	}
 }
