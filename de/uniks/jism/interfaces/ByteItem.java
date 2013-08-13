@@ -30,8 +30,7 @@ package de.uniks.jism.interfaces;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import java.nio.ByteBuffer;
-
+import de.uniks.jism.bytes.BufferedBytes;
 import de.uniks.jism.bytes.converter.ByteConverter;
 
 public interface ByteItem extends JISMEntity{
@@ -57,7 +56,7 @@ public interface ByteItem extends JISMEntity{
 	 * @param isDynamic ByteStream for minimize output
 	 * @return ByteStream 
 	 */
-	public ByteBuffer getBytes(boolean isDynamic);
+	public BufferedBytes getBytes(boolean isDynamic);
 
 	/**
 	 * @param isDynamic ByteStream for minimize output
