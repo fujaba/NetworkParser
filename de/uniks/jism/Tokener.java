@@ -85,8 +85,7 @@ public abstract class Tokener {
 		if (this.isEnd()) {
 			return 0;
 		}
-		buffer.next();
-		return getCurrentChar();
+		return buffer.getChar();
 	}
 
 	/**
@@ -460,7 +459,7 @@ public abstract class Tokener {
 	 *            the new index
 	 */
 	public void setIndex(int index) {
-		this.buffer.setPosition(index);
+		this.buffer.withPosition(index);
 	}
 	
 	public byte[] toArray(){

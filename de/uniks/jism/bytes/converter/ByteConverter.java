@@ -30,7 +30,7 @@ package de.uniks.jism.bytes.converter;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import java.nio.ByteBuffer;
+import de.uniks.jism.bytes.BufferedBytes;
 import de.uniks.jism.interfaces.ByteItem;
 
 public abstract class ByteConverter {
@@ -38,8 +38,8 @@ public abstract class ByteConverter {
 		return toString(item.getBytes(dynamic));
 	}
 
-	public String toString(ByteBuffer value) {
-		return toString(value.array(), value.limit());
+	public String toString(BufferedBytes bufferedBytes) {
+		return toString(bufferedBytes.array(), bufferedBytes.length());
 	}
 
 	public abstract String toString(byte[] values, int size);
