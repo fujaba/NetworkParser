@@ -154,7 +154,7 @@ public class YUMLIdMap extends IdMap {
 		if(item == null){
 			return ;
 		}
-		if (!filter.isRegard(this, entity, property,
+		if (!filter.isPropertyRegard(this, entity, property,
 				item, true, deep+1)) {
 			return ;
 		}

@@ -38,7 +38,7 @@ public class Filter {
 	private Condition property;
 	
 	// Temporary variables
-	private LinkedHashSet<String> visitedObjects;
+	private LinkedHashSet<Object> visitedObjects;
 	private Boolean full;
 
 	public Condition getIdFilter() {
@@ -79,10 +79,10 @@ public class Filter {
 		this.convertable = convertable;
 		return this;
 	}
-	public Condition getProperty() {
+	public Condition getPropertyRegard() {
 		return property;
 	}
-	public Filter withProperty(Condition property) {
+	public Filter withPropertyRegard(Condition property) {
 		this.property = property;
 		return this;
 	}
@@ -94,9 +94,9 @@ public class Filter {
 			convertable = referenceFilter.getConvertable();
 		}
 		if(property== null){
-			property = referenceFilter.getProperty();
+			property = referenceFilter.getPropertyRegard();
 		}
-		visitedObjects=new LinkedHashSet<String>();
+		visitedObjects=new LinkedHashSet<Object>();
 		if(full==null){
 			full = referenceFilter.isFullSeriation();
 			if(full==null){
@@ -111,19 +111,22 @@ public class Filter {
 		return clone(new Filter());
 	}
 	public Filter clone(Filter newInstance){
-		return newInstance.withConvertable(convertable).withIdFilter(idFilter).withProperty(property);
+		return newInstance.withConvertable(convertable).withIdFilter(idFilter).withPropertyRegard(property);
 	}
 	
 	
-	public boolean hasVisitedObjects(String id) {
-		return visitedObjects.contains(id);
+	public boolean hasVisitedObjects(String id, Object element) {
+		if(id!=null){
+			return visitedObjects.contains(id);
+		}
+		return visitedObjects.contains(element);
 	}
 	
-	public void addToVisitedObjects(String visitedObjects) {
+	public void addToVisitedObjects(Object visitedObjects) {
 		this.visitedObjects.add(visitedObjects);
 	}
 
-	public boolean isRegard(IdMap map, Object entity,
+	public boolean isPropertyRegard(IdMap map, Object entity,
 			String property, Object value, boolean isMany, int deep) {
 		if(this.property!=null){
 			return this.property.matches(map, entity, property, value, isMany, deep);

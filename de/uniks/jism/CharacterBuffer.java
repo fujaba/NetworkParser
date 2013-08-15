@@ -58,6 +58,13 @@ public class CharacterBuffer implements Buffer{
 	public char charAt(int index){
 		return buffer[index];
 	}
+	
+	@Override
+	public byte byteAt(int index) {
+		return (byte)buffer[index];
+	}
+
+	
 	public String substring(int startTag, int length){
 		if(startTag+length>buffer.length){
 			length = buffer.length - startTag;
@@ -69,11 +76,6 @@ public class CharacterBuffer implements Buffer{
 	public Buffer withLength(int value) {
 		this.length = value;
 		return this;
-	}
-
-	@Override
-	public Byte get(int pos) {
-		return (byte) buffer[pos];
 	}
 
 	@Override
@@ -93,10 +95,41 @@ public class CharacterBuffer implements Buffer{
 	}
 
 	@Override
-	public void next() {
+	public int remaining() {
+		return length - index;
+	}
+	
+	@Override
+	public String toString() {
+		return " at " + this.index + " [character " + this.character + " line "
+				+ this.line + "]";
+	}
+
+	@Override
+	public Buffer withPosition(int index) {
+		this.index = index;
+		return this;
+	}
+
+	@Override
+	public String toText() {
+		return new String(buffer);
+	}
+	@Override
+	public byte[] toArray() {
+		byte[] result = new byte[buffer.length];
+		for(int i=0;i<buffer.length;i++){
+			result[i]=(byte) buffer[i];
+		}
+		return result;
+	}
+
+
+	@Override
+	public char getChar() {
 		this.index++;
 		if(this.index==this.buffer.length){
-			return ;
+			return 0;
 		}
 		char c = this.buffer[this.index];
 		if (c == '\r') {
@@ -114,35 +147,6 @@ public class CharacterBuffer implements Buffer{
 		} else {
 			this.character += 1;
 		}
-	}
-
-	@Override
-	public int remaining() {
-		return length - index;
-	}
-	
-	@Override
-	public String toString() {
-		return " at " + this.index + " [character " + this.character + " line "
-				+ this.line + "]";
-	}
-
-	@Override
-	public Buffer setPosition(int index) {
-		this.index = index;
-		return this;
-	}
-
-	@Override
-	public String toText() {
-		return new String(buffer);
-	}
-	@Override
-	public byte[] toArray() {
-		byte[] result = new byte[buffer.length];
-		for(int i=0;i<buffer.length;i++){
-			result[i]=(byte) buffer[i];
-		}
-		return result;
+		return c;
 	}
 }

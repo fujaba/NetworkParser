@@ -155,7 +155,7 @@ public class ByteEntity implements JISMEntity, ByteItem {
 	 * 
 	 * @return the bytes
 	 */
-	public ByteBuffer getBytes(boolean isDynamic) {
+	public BufferedBytes getBytes(boolean isDynamic) {
 		int len = calcLength(isDynamic);
 		byte typ = getTyp();
 		byte[] value = this.values;
@@ -187,7 +187,18 @@ public class ByteEntity implements JISMEntity, ByteItem {
 				}
 			}
 		}
-		ByteBuffer buffer = ByteUtil.getBuffer(len, typ);
+		BufferedBytes buffer = ByteUtil.getBuffer(len, typ);
+		// SAVE Length
+		int lenSize=ByteUtil.getTypLen(typ);
+		if(typ!=ByteIdMap.DATATYPE_CLAZZ){
+			if(lenSize==1){
+				buffer.put((byte)value.length);
+			}else if(lenSize==2){
+				buffer.put((short)value.length);
+			}else if(lenSize==4){
+				buffer.put((int)value.length);
+			}
+		}
 
 		// Save the Len
 		if (value != null) {
@@ -276,16 +287,15 @@ public class ByteEntity implements JISMEntity, ByteItem {
 	public int calcLength(boolean isDynamic) {
 		// Length calculate Sonderfaelle ermitteln
 		if (isDynamic && this.values != null) {
-			ByteBuffer bb = ByteBuffer.wrap(values);
 			if (typ == ByteIdMap.DATATYPE_SHORT) {
-				Short bufferValue = bb.getShort();
+				Short bufferValue = new BytesBuffer().withValue(values).getShort();
 				if (bufferValue >= Byte.MIN_VALUE
 						&& bufferValue <= Byte.MAX_VALUE) {
 					return TYPBYTE + Byte.SIZE / BITOFBYTE;
 				}
 			} else if (typ == ByteIdMap.DATATYPE_INTEGER
 					|| typ == ByteIdMap.DATATYPE_LONG) {
-				Integer bufferValue = bb.getInt();
+				Integer bufferValue = new BytesBuffer().withValue(values).getInt();
 				if (bufferValue >= Byte.MIN_VALUE
 						&& bufferValue <= Byte.MAX_VALUE) {
 					return TYPBYTE + Byte.SIZE / BITOFBYTE;
@@ -295,7 +305,7 @@ public class ByteEntity implements JISMEntity, ByteItem {
 				}
 			}
 		}
-		int len = TYPBYTE + ByteUtil.getTypLen(getTyp());
+ 		int len = TYPBYTE+ByteUtil.getTypLen(typ);
 
 		if (this.values != null) {
 			len += this.values.length;
@@ -303,25 +313,25 @@ public class ByteEntity implements JISMEntity, ByteItem {
 		return len;
 	}
 
-	/**
-	 * Sets the len check.
-	 * 
-	 * @param isLenCheck
-	 *            the is len check
-	 * @return true, if successful
-	 */
-	public boolean setLenCheck(boolean isLenCheck) {
-		if (!isLenCheck) {
-			if (typ / 16 == (ByteIdMap.DATATYPE_CHECK / 16)) {
-			} else if (ByteUtil.isGroup(typ)) {
-				this.typ = ByteUtil.getTyp(typ, ByteIdMap.DATATYPE_STRINGLAST);
-			}
-		} else {
-			int size = this.values.length - 1;
-			this.typ = ByteUtil.getTyp(getTyp(), size);
-		}
-		return true;
-	}
+//FIXME	/**
+//	 * Sets the len check.
+//	 * 
+//	 * @param isLenCheck
+//	 *            the is len check
+//	 * @return true, if successful
+//	 */
+//	public boolean setLenCheck(boolean isLenCheck) {
+//		if (!isLenCheck) {
+//			if (typ / 16 == (ByteIdMap.DATATYPE_CHECK / 16)) {
+//			} else if (ByteUtil.isGroup(typ)) {
+//				this.typ = ByteUtil.getTyp(typ, ByteIdMap.DATATYPE_STRINGLAST);
+//			}
+//		} else {
+//			int size = this.values.length - 1;
+//			this.typ = ByteUtil.getTyp(getTyp(), size);
+//		}
+//		return true;
+//	}
 
 	public ByteEntity withVisible(boolean value) {
 		this.visible = value;

@@ -30,7 +30,6 @@ package de.uniks.jism.bytes;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -249,7 +248,9 @@ public class ByteIdMap extends IdMap {
 		}
 
 		if (creator instanceof ByteEntityCreator) {
-			msg.setTyp(((ByteEntityCreator) creator).getEventTyp(), false);
+			long id=((ByteEntityCreator) creator).getEventTyp();
+			msg.setTyp((byte)id);
+//			msg.setTyp(((ByteEntityCreator) creator).getEventTyp(), false);
 		} else {
 			Object reference = creator.getSendableInstance(true);
 			ByteEntity byteEntity = new ByteEntity();
@@ -268,6 +269,25 @@ public class ByteIdMap extends IdMap {
 				ByteItem child = encodeValue(value, filter);
 				if (child != null) {
 					msg.add(child);
+				}
+			}
+			
+			// Kill Empty Fields
+			Object[] array = msg.toArray();
+			for(int i=array.length-1;i>0;i--){
+				if(array[i] instanceof ByteEntity){
+					ByteEntity byteEntity = (ByteEntity)array[i];
+					if(byteEntity.getTyp()==ByteIdMap.DATATYPE_NULL){
+						msg.remove(i);
+					}else{
+						break;
+					}
+				}else if(array[i] instanceof ByteList){
+					if(((ByteList)array[i]).size()<1){
+						msg.remove(i);
+					}else{
+						break;
+					}
 				}
 			}
 		}
@@ -371,10 +391,10 @@ public class ByteIdMap extends IdMap {
 	 * @return the object
 	 */
 	public Object decode(Object value) {
-		if (value instanceof ByteBuffer) {
-			return decode((ByteBuffer) value);
-		} else if (value instanceof byte[]) {
-			return decode(ByteBuffer.wrap((byte[]) value));
+		if (value instanceof BufferedBytes) {
+			return decode((BufferedBytes) value);
+//		} else if (value instanceof byte[]) {
+//			return decode(new BufferedBytes().withValue((byte[]) value));
 		}
 		return null;
 	}
@@ -393,12 +413,12 @@ public class ByteIdMap extends IdMap {
 	 *            the in
 	 * @return the object
 	 */
-	public Object decode(ByteBuffer in) {
+	public Object decode(BufferedBytes in) {
 		if (in.remaining() < 1)
 			throw new TextParsingException("DecodeExpeption - Remaining:"
 					+ in.remaining(), in.remaining());
 
-		byte typ = in.get();
+		byte typ = in.getByte();
 		return decodeClazz(typ, in);
 	}
 	
@@ -413,7 +433,7 @@ public class ByteIdMap extends IdMap {
 	 *            the in
 	 * @return the object
 	 */
-	public Object decodeClazz(byte typ, ByteBuffer in) {
+	public Object decodeClazz(byte typ, BufferedBytes in) {
 		Object entity = null;
 
 		SendableEntityCreator eventCreater = null;
@@ -436,7 +456,7 @@ public class ByteIdMap extends IdMap {
 					if (in.remaining() < 1) {
 						break;
 					}
-					byte typValue = in.get();
+					byte typValue = in.getByte();
 					if (typValue == ByteIdMap.DATATYPE_CHECK) {
 						int len = in.getInt();
 						if (len > 0) {
@@ -446,7 +466,7 @@ public class ByteIdMap extends IdMap {
 												+ in.remaining() + "!=" + len,
 										len);
 						}
-						typValue = in.get();
+						typValue = in.getByte();
 					}
 					Object value = getDecodeObject(typValue, in);
 					if (value != null) {
@@ -468,11 +488,11 @@ public class ByteIdMap extends IdMap {
 	 *            the in
 	 * @return the decode object
 	 */
-	public Object getDecodeObject(byte typValue, ByteBuffer in) {
+	public Object getDecodeObject(byte typValue, BufferedBytes in) {
 		if (in.remaining() < 1) {
 			return null;
 		} else if (typValue == ByteIdMap.DATATYPE_BYTE) {
-			return new Byte(in.get());
+			return new Byte(in.getByte());
 		} else if (typValue == ByteIdMap.DATATYPE_CHAR) {
 			return new Character(in.getChar());
 		} else if (typValue == ByteIdMap.DATATYPE_SHORT) {
@@ -488,10 +508,8 @@ public class ByteIdMap extends IdMap {
 		} else if (typValue == ByteIdMap.DATATYPE_DATE) {
 			return new Date(new Long(in.getInt()).longValue());
 		} else if (typValue == ByteIdMap.DATATYPE_CLAZZ) {
-			int len = in.get() - ByteIdMap.SPLITTER;
-			byte[] values = new byte[len];
-			in.get(values);
-			return new String(values);
+			int len = in.getByte() - ByteIdMap.SPLITTER;
+			return new String(in.getValue(len));
 		} else {
 			byte group = getTyp(typValue, ByteIdMap.DATATYPE_STRING);
 			if (group == ByteIdMap.DATATYPE_STRING
@@ -503,9 +521,9 @@ public class ByteIdMap extends IdMap {
 				byte[] values;
 				int len = 0;
 				if (subgroup == ByteIdMap.DATATYPE_STRINGSHORT) {
-					len = in.get() - ByteIdMap.SPLITTER;
+					len = in.getByte() - ByteIdMap.SPLITTER;
 				} else if (subgroup == ByteIdMap.DATATYPE_STRING) {
-					len = in.get();
+					len = in.getByte();
 				} else if (subgroup == ByteIdMap.DATATYPE_STRINGMID) {
 					len = in.getShort();
 				} else if (subgroup == ByteIdMap.DATATYPE_STRINGBIG) {
@@ -513,17 +531,16 @@ public class ByteIdMap extends IdMap {
 				} else if (subgroup == ByteIdMap.DATATYPE_STRINGLAST) {
 					len = in.remaining();
 				}
-				values = new byte[len];
-				in.get(values);
+				values = in.getValue(len);
 				if (group == ByteIdMap.DATATYPE_STRING) {
 					return new String(values);
 				} else if (group == ByteIdMap.DATATYPE_BYTEARRAY) {
 					return values;
 				} else if (group == ByteIdMap.DATATYPE_LIST) {
-					ByteBuffer child = ByteBuffer.wrap(values);
+					BufferedBytes child = in.getNewBuffer(values);
 					ArrayList<Object> list = new ArrayList<Object>();
 					while (child.remaining() > 0) {
-						byte subType = child.get();
+						byte subType = child.getByte();
 						Object entity = getDecodeObject(subType, child);
 						if (entity != null) {
 							list.add(entity);
@@ -531,28 +548,27 @@ public class ByteIdMap extends IdMap {
 					}
 					return list;
 				} else if (group == ByteIdMap.DATATYPE_MAP) {
-					ByteBuffer child = ByteBuffer.wrap(values);
+					BufferedBytes child = in.getNewBuffer(values);
 					// HashMap<Object, Object> map = new HashMap<Object,
 					// Object>();
 					MapEntry entry = null;
 					while (child.remaining() > 0) {
-						byte subType = child.get();
+						byte subType = child.getByte();
 						Object key = getDecodeObject(subType, child);
 						if (key != null) {
-							subType = child.get();
+							subType = child.getByte();
 							Object value = getDecodeObject(subType, child);
 							entry = new MapEntry(key, value);
 						}
 					}
 					return entry;
 				} else if (group == ByteIdMap.DATATYPE_CHECK) {
-					ByteBuffer childBuffer = ByteBuffer
-							.allocate(values.length - 1);
+					BufferedBytes childBuffer = in.getNewBuffer(values.length - 1);
 					childBuffer.put(values, 1, values.length - 1);
 					childBuffer.flip();
 					Object obj = getDecodeObject(values[0], childBuffer);
 					if (childBuffer.remaining() > 0) {
-						in.position(in.position() - childBuffer.remaining());
+						in.withPosition(in.position() - childBuffer.remaining());
 					}
 					return obj;
 				}

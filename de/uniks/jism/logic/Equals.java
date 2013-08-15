@@ -50,7 +50,7 @@ public class Equals implements Condition {
 			} else {
 				pos = position;
 			}
-			return buffer.get(pos) == bytevalue;
+			return buffer.byteAt(pos) == bytevalue;
 		}
 		if(value==null){
 			return (strValue==null);

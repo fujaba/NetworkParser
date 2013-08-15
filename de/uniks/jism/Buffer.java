@@ -32,16 +32,16 @@ package de.uniks.jism;
 
 public interface Buffer {
 	public int length();
+	public byte byteAt(int index);
 	public char charAt(int index);
-	public void next();
+	public char getChar();
 	public String substring(int startTag, int length);
 	public Buffer withLength(int length);
-	public Byte get(int pos);
 	public int position();
 	public int remaining();
 	public void back();
 	public boolean isEnd();
-	public Buffer setPosition(int index);
+	public Buffer withPosition(int index);
 	public String toString();
 	public String toText();
 	public byte[] toArray();

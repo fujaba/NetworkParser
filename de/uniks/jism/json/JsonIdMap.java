@@ -137,14 +137,14 @@ public class JsonIdMap extends IdMap {
 		if (prototyp == null) {
 			return null;
 		}
-		if (!(prototyp instanceof NoIndexCreator || !filter.isId(this, entity, className))) {
+		if (prototyp instanceof NoIndexCreator){
+		}else if(!filter.isId(this, entity, className)) {
+			filter.addToVisitedObjects(entity);
+		}else{
 			id = getId(entity);
-		}
-		JsonObject jsonProp = new JsonObject();
-
-		if(id !=null){
 			filter.addToVisitedObjects(id);
 		}
+		JsonObject jsonProp = new JsonObject();
 
 		String[] properties = prototyp.getProperties();
 		if (properties != null) {
@@ -221,7 +221,7 @@ public class JsonIdMap extends IdMap {
 
 	protected Object parseItem(Object item, Filter filter, Object entity,
 			String property, JsonArray jsonArray, String className, int deep) {
-		if (item != null && filter.isRegard(this, entity, property, item, true, deep)) {
+		if (item != null && filter.isPropertyRegard(this, entity, property, item, true, deep)) {
 //			boolean typSave = isTypSave();
 
 			if (className == null) {
@@ -232,8 +232,7 @@ public class JsonIdMap extends IdMap {
 			if (valueCreater != null) {
 				if (filter.isConvertable(this, entity, property, item, true, deep) ) {
 					String subId = this.getKey(entity);
-					if (valueCreater instanceof NoIndexCreator || subId == null
-							|| !filter.hasVisitedObjects(subId)) {
+					if (valueCreater instanceof NoIndexCreator || !filter.hasVisitedObjects(subId, entity)){ 
 						if (jsonArray == null) {
 							JsonObject result = toJsonObject(entity, filter,
 									className, deep+1);
@@ -637,7 +636,7 @@ public class JsonIdMap extends IdMap {
 		String id = getId(entity);
 
 		JsonObject jsonObject = new JsonObject();
-		if (!filter.hasVisitedObjects(id) ) {
+		if (!filter.hasVisitedObjects(id, entity) ) {
 			if (filter.isId(this, entity, className)) {
 				jsonObject.put(ID, id);
 			}

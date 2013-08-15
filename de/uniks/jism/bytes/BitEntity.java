@@ -30,7 +30,6 @@ package de.uniks.jism.bytes;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -148,7 +147,7 @@ public class BitEntity implements BaseEntityList, ByteItem {
 	}
 
 	@Override
-	public ByteBuffer getBytes(boolean isDynamic) {
+	public BufferedBytes getBytes(boolean isDynamic) {
 		return null;
 	}
 

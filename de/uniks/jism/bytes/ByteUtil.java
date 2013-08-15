@@ -30,7 +30,6 @@ package de.uniks.jism.bytes;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import java.nio.ByteBuffer;
 
 public class ByteUtil {
 	/**
@@ -79,50 +78,18 @@ public class ByteUtil {
 		return 0;
 	}
 
-	public static ByteBuffer getBuffer(int len, byte typ) {
-		return getBuffer(len, typ, true);
-	}
-
-	public static ByteBuffer getBuffer(int len, byte typ, boolean isGroupable) {
+	public static BufferedBytes getBuffer(int len, byte typ) {
 		if (len < 1) {
 			return null;
 		}
-		ByteBuffer message;
-		if (typ == ByteIdMap.DATATYPE_CLAZZ) {
-			message = ByteBuffer.allocate(len);
+		BufferedBytes message;
+		message = new BytesBuffer();
+		message.withLength(len);
+		if(typ!=0){
 			message.put(typ);
+		}
+		if (typ == ByteIdMap.DATATYPE_CLAZZ) {
 			message.put((byte) (ByteIdMap.SPLITTER + len - 2));
-
-		} else {
-			int lenGroup = getTypLen(typ);
-			int lenTyp = 0;
-			if (!isGroupable) {
-				lenGroup = 0;
-				lenTyp = 1;
-			}
-			if (lenGroup > 0) {
-				message = ByteBuffer.allocate(len);
-				int lenValue = len - ByteEntity.TYPBYTE - lenGroup;
-				byte typGroup = getTyp(typ, lenValue);
-				message.put(typGroup);
-
-				if (typGroup % 16 == ByteIdMap.DATATYPE_STRINGSHORT % 16) {
-					message.put((byte) (ByteIdMap.SPLITTER + lenValue));
-				} else if (typGroup % 16 == ByteIdMap.DATATYPE_STRING % 16) {
-					message.put((byte) lenValue);
-				} else if (typGroup % 16 == ByteIdMap.DATATYPE_STRINGMID % 16) {
-					message.putShort((short) lenValue);
-				} else if (typGroup % 16 == ByteIdMap.DATATYPE_STRINGBIG % 16) {
-					message.putInt(lenValue);
-				} else if (typGroup % 16 == ByteIdMap.DATATYPE_STRINGLAST % 16) {
-					// Nothing to ADD
-				}
-			} else if (typ > 0) {
-				message = ByteBuffer.allocate(len + lenTyp);
-				message.put(typ);
-			} else {
-				message = ByteBuffer.allocate(len);
-			}
 		}
 		return message;
 	}
