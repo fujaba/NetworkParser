@@ -30,7 +30,6 @@ package de.uniks.jism.bytes;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import java.nio.ByteBuffer;
 import java.util.Date;
 
 import de.uniks.jism.EntityList;
@@ -163,7 +162,8 @@ public class ByteEntity implements JISMEntity, ByteItem {
 		byte typ=getTyp();
 
 		if (isDynamic && value != null) {
-			ByteBuffer bb = ByteBuffer.wrap(value);
+			BytesBuffer bb = new BytesBuffer();
+			bb.withValue(value);
 			if (typ == ByteIdMap.DATATYPE_SHORT) {
 				short bufferValue = bb.getShort();
 				if (bufferValue >= Byte.MIN_VALUE
@@ -181,9 +181,8 @@ public class ByteEntity implements JISMEntity, ByteItem {
 				} else if (bufferValue >= Short.MIN_VALUE
 						&& bufferValue <= Short.MAX_VALUE) {
 					typ = ByteIdMap.DATATYPE_BYTE;
-					ByteBuffer bbShort = ByteBuffer.allocate(Short.SIZE
-							/ BITOFBYTE);
-					bbShort.putShort((short) bufferValue);
+					BytesBuffer bbShort = BytesBuffer.allocate(Short.SIZE / BITOFBYTE);
+					bbShort.put((short) bufferValue);
 					bbShort.flip();
 					value = bbShort.array();
 				}
@@ -212,52 +211,52 @@ public class ByteEntity implements JISMEntity, ByteItem {
 
 	public boolean setValues(Object value) {
 		byte typ = 0;
-		ByteBuffer msgValue = null;
+		BytesBuffer msgValue = new BytesBuffer();
 		if (value == null) {
 			typ = ByteIdMap.DATATYPE_NULL;
 		}
 		if (value instanceof Short) {
 			typ = ByteIdMap.DATATYPE_SHORT;
-			msgValue = ByteBuffer.allocate(Short.SIZE / BITOFBYTE);
-			msgValue.putShort((Short) value);
+			msgValue.withLength(Short.SIZE / BITOFBYTE);
+			msgValue.put((Short) value);
 		} else if (value instanceof Integer) {
 			typ = ByteIdMap.DATATYPE_INTEGER;
-			msgValue = ByteBuffer.allocate(Integer.SIZE / BITOFBYTE);
-			msgValue.putInt((Integer) value);
+			msgValue.withLength(Integer.SIZE / BITOFBYTE);
+			msgValue.put((Integer) value);
 		} else if (value instanceof Long) {
 			typ = ByteIdMap.DATATYPE_LONG;
-			msgValue = ByteBuffer.allocate(Long.SIZE / BITOFBYTE);
-			msgValue.putLong((Long) value);
+			msgValue.withLength(Long.SIZE / BITOFBYTE);
+			msgValue.put((Long) value);
 		} else if (value instanceof Float) {
 			typ = ByteIdMap.DATATYPE_FLOAT;
-			msgValue = ByteBuffer.allocate(Float.SIZE / BITOFBYTE);
-			msgValue.putFloat((Float) value);
+			msgValue.withLength(Float.SIZE / BITOFBYTE);
+			msgValue.put((Float) value);
 		} else if (value instanceof Double) {
 			typ = ByteIdMap.DATATYPE_DOUBLE;
-			msgValue = ByteBuffer.allocate(Double.SIZE / BITOFBYTE);
-			msgValue.putDouble((Double) value);
+			msgValue.withLength(Double.SIZE / BITOFBYTE);
+			msgValue.put((Double) value);
 		} else if (value instanceof Byte) {
 			typ = ByteIdMap.DATATYPE_BYTE;
-			msgValue = ByteBuffer.allocate(Byte.SIZE / BITOFBYTE);
+			msgValue.withLength(Byte.SIZE / BITOFBYTE);
 			msgValue.put((Byte) value);
 		} else if (value instanceof Character) {
 			typ = ByteIdMap.DATATYPE_CHAR;
-			msgValue = ByteBuffer.allocate(Character.SIZE / BITOFBYTE);
-			msgValue.putChar((Character) value);
+			msgValue.withLength(Character.SIZE / BITOFBYTE);
+			msgValue.put((Character) value);
 		} else if (value instanceof String) {
 			typ = ByteIdMap.DATATYPE_STRING;
 			String newValue = (String) value;
-			msgValue = ByteBuffer.allocate(newValue.length());
+			msgValue.withLength(newValue.length());
 			msgValue.put(newValue.getBytes());
 		} else if (value instanceof Date) {
 			typ = ByteIdMap.DATATYPE_DATE;
-			msgValue = ByteBuffer.allocate(Integer.SIZE / BITOFBYTE);
+			msgValue.withLength(Integer.SIZE / BITOFBYTE);
 			Date newValue = (Date) value;
-			msgValue.putInt((int) newValue.getTime());
+			msgValue.put((int) newValue.getTime());
 		} else if (value instanceof Byte[] || value instanceof byte[]) {
 			typ = ByteIdMap.DATATYPE_BYTEARRAY;
 			byte[] newValue = (byte[]) value;
-			msgValue = ByteBuffer.allocate(newValue.length);
+			msgValue.withLength(newValue.length);
 			msgValue.put(newValue);
 		}
 		if (typ != 0) {

@@ -30,9 +30,8 @@ package de.uniks.jism.bytes.converter;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import java.nio.ByteBuffer;
-
 import de.uniks.jism.bytes.ByteIdMap;
+import de.uniks.jism.bytes.BytesBuffer;
 
 public class ByteConverterHTTP extends ByteConverter {
 
@@ -64,7 +63,7 @@ public class ByteConverterHTTP extends ByteConverter {
 	@Override
 	public byte[] decode(String value) {
 		int len = value.length();
-		ByteBuffer buffer = ByteBuffer.allocate(len);
+		BytesBuffer buffer=BytesBuffer.allocate(len);
 		for (int i = 0; i < len; i++) {
 			int c = value.charAt(i);
 			if (c == ByteIdMap.SPLITTER) {
@@ -75,8 +74,6 @@ public class ByteConverterHTTP extends ByteConverter {
 			}
 		}
 		buffer.flip();
-		byte[] returnValue = new byte[buffer.limit()];
-		buffer.get(returnValue);
-		return returnValue;
+		return buffer.getValue(buffer.length());
 	}
 }

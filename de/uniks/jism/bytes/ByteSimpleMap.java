@@ -30,7 +30,6 @@ package de.uniks.jism.bytes;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -40,7 +39,7 @@ import de.uniks.jism.IdMap;
 import de.uniks.jism.bytes.creator.BitEntityCreator;
 
 public class ByteSimpleMap extends AbstractIdMap {
-	public Object decode(ByteBuffer buffer, BitEntityCreator creator) {
+	public Object decode(BufferedBytes buffer, BitEntityCreator creator) {
 		HashMap<String, Object> values = new HashMap<String, Object>();
 		BitEntity[] bitProperties = creator.getBitProperties();
 		Object newInstance = creator.getSendableInstance(false);
@@ -54,7 +53,7 @@ public class ByteSimpleMap extends AbstractIdMap {
 		return newInstance;
 	}
 
-	public Object getEntity(ByteBuffer buffer, BitEntity entry,
+	public Object getEntity(BufferedBytes buffer, BitEntity entry,
 			HashMap<String, Object> values) {
 		if (entry.size() < 1) {
 			// Reference or Value
@@ -72,7 +71,7 @@ public class ByteSimpleMap extends AbstractIdMap {
 		// Wert ermitteln
 
 		// Init the Values
-		ArrayList<ByteBuffer> results = new ArrayList<ByteBuffer>();
+		ArrayList<BufferedBytes> results = new ArrayList<BufferedBytes>();
 		ArrayList<Integer> resultsLength = new ArrayList<Integer>();
 
 		for (Iterator<BitValue> i = entry.valueIterator(); i.hasNext();) {
@@ -94,9 +93,9 @@ public class ByteSimpleMap extends AbstractIdMap {
 			}
 
 			resultsLength.add(length);
-			ByteBuffer result = ByteBuffer.allocate(noOfByte);
+			BytesBuffer result = BytesBuffer.allocate(noOfByte);
 
-			int theByte = buffer.get(posOfByte);
+			int theByte = buffer.byteAt(posOfByte);
 			if (theByte < 0) {
 				theByte += 256;
 			}
@@ -143,7 +142,7 @@ public class ByteSimpleMap extends AbstractIdMap {
 					resultPos = 0;
 					number = 0;
 					if (length > 0) {
-						theByte = buffer.get(posOfByte);
+						theByte = buffer.byteAt(posOfByte);
 						if (theByte < 0) {
 							theByte += 256;
 						}
@@ -166,15 +165,16 @@ public class ByteSimpleMap extends AbstractIdMap {
 		}
 		int number = length / 8 + ((length % 8 > 0) ? 1 : 0);
 
-		ByteBuffer result = ByteBuffer.allocate(number);
+		BytesBuffer result = new BytesBuffer();
+		result.withLength(number);
 
 		int resultPos = 0;
 		number = 0;
 		for (int i = 0; i < results.size(); i++) {
-			ByteBuffer source = results.get(i);
+			BufferedBytes source = results.get(i);
 			length = resultsLength.get(i);
 			while (length > 0) {
-				byte theByte = source.get();
+				byte theByte = source.getByte();
 				int sourceBit = (length < 8 - resultPos) ? length
 						: 8 - resultPos;
 				number = (number << (sourceBit))
@@ -187,7 +187,7 @@ public class ByteSimpleMap extends AbstractIdMap {
 					resultPos = 0;
 					number = 0;
 					if (length > 0) {
-						theByte = source.get();
+						theByte = source.getByte();
 					}
 				}
 			}
@@ -213,17 +213,17 @@ public class ByteSimpleMap extends AbstractIdMap {
 				element = item;
 			}
 		} else if (entry.getTyp().equals(BitEntity.BIT_NUMBER)) {
-			if (result.limit() == Byte.SIZE / ByteEntity.BITOFBYTE) {
-				element = result.get();
-			} else if (result.limit() == Short.SIZE / ByteEntity.BITOFBYTE) {
+			if (result.length() == Byte.SIZE / ByteEntity.BITOFBYTE) {
+				element = result.getByte();
+			} else if (result.length() == Short.SIZE / ByteEntity.BITOFBYTE) {
 				element = result.getShort();
-			} else if (result.limit() == Integer.SIZE / ByteEntity.BITOFBYTE) {
+			} else if (result.length() == Integer.SIZE / ByteEntity.BITOFBYTE) {
 				element = result.getInt();
-			} else if (result.limit() == Long.SIZE / ByteEntity.BITOFBYTE) {
+			} else if (result.length() == Long.SIZE / ByteEntity.BITOFBYTE) {
 				element = result.getLong();
-			} else if (result.limit() == Float.SIZE / ByteEntity.BITOFBYTE) {
+			} else if (result.length() == Float.SIZE / ByteEntity.BITOFBYTE) {
 				element = result.getFloat();
-			} else if (result.limit() == Double.SIZE / ByteEntity.BITOFBYTE) {
+			} else if (result.length() == Double.SIZE / ByteEntity.BITOFBYTE) {
 				element = result.getDouble();
 			} else {
 				element = result.getInt();
