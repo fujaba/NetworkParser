@@ -36,8 +36,8 @@ import java.util.Date;
 import de.uniks.jism.EntityList;
 import de.uniks.jism.bytes.converter.ByteConverter;
 import de.uniks.jism.bytes.converter.ByteConverterHTTP;
-import de.uniks.jism.interfaces.JISMEntity;
 import de.uniks.jism.interfaces.ByteItem;
+import de.uniks.jism.interfaces.JISMEntity;
 
 /**
  * The Class ByteEntity.
@@ -85,9 +85,10 @@ public class ByteEntity implements JISMEntity, ByteItem {
 	 * @param value
 	 *            the new value
 	 */
-	public void withValue(byte typ, byte[] value) {
+	public ByteEntity withValue(byte typ, byte[] value) {
 		this.typ = typ;
 		this.values = value;
+		return this;
 	}
 
 	/**
@@ -155,10 +156,11 @@ public class ByteEntity implements JISMEntity, ByteItem {
 	 * 
 	 * @return the bytes
 	 */
-	public BufferedBytes getBytes(boolean isDynamic) {
-		int len = calcLength(isDynamic);
-		byte typ = getTyp();
+	public void writeBytes(BufferedBytes buffer, boolean isDynamic, boolean last){
+//		int len = calcLength(isDynamic);
 		byte[] value = this.values;
+		int valueLen=0;
+		byte typ=getTyp();
 
 		if (isDynamic && value != null) {
 			ByteBuffer bb = ByteBuffer.wrap(value);
@@ -179,31 +181,31 @@ public class ByteEntity implements JISMEntity, ByteItem {
 				} else if (bufferValue >= Short.MIN_VALUE
 						&& bufferValue <= Short.MAX_VALUE) {
 					typ = ByteIdMap.DATATYPE_BYTE;
-					ByteBuffer buffer = ByteBuffer.allocate(Short.SIZE
+					ByteBuffer bbShort = ByteBuffer.allocate(Short.SIZE
 							/ BITOFBYTE);
-					buffer.putShort((short) bufferValue);
-					buffer.flip();
-					value = buffer.array();
+					bbShort.putShort((short) bufferValue);
+					bbShort.flip();
+					value = bbShort.array();
 				}
 			}
 		}
-		BufferedBytes buffer = ByteUtil.getBuffer(len, typ);
-		// SAVE Length
-		int lenSize=ByteUtil.getTypLen(typ);
-		if(typ!=ByteIdMap.DATATYPE_CLAZZ){
-			if(lenSize==1){
-				buffer.put((byte)value.length);
-			}else if(lenSize==2){
-				buffer.put((short)value.length);
-			}else if(lenSize==4){
-				buffer.put((int)value.length);
-			}
+		if(value!=null){
+			valueLen= value.length;
 		}
-
-		// Save the Len
-		if (value != null) {
+		typ = ByteUtil.getTyp(typ, valueLen, last);
+		
+		ByteUtil.writeByteHeader(buffer, typ, valueLen);
+		
+		// SAVE Length
+		if (valueLen>0) {
 			buffer.put(value);
 		}
+	}
+	
+	public BufferedBytes getBytes(boolean isDynamic) {
+		int len = calcLength(isDynamic);
+		BufferedBytes buffer = ByteUtil.getBuffer(len);
+		writeBytes(buffer, isDynamic, false);		
 		buffer.flip();
 		return buffer;
 	}
@@ -305,33 +307,14 @@ public class ByteEntity implements JISMEntity, ByteItem {
 				}
 			}
 		}
- 		int len = TYPBYTE+ByteUtil.getTypLen(typ);
+ 		int len = TYPBYTE;
 
 		if (this.values != null) {
+			len += ByteUtil.getTypLen(typ, values.length);
 			len += this.values.length;
 		}
 		return len;
 	}
-
-//FIXME	/**
-//	 * Sets the len check.
-//	 * 
-//	 * @param isLenCheck
-//	 *            the is len check
-//	 * @return true, if successful
-//	 */
-//	public boolean setLenCheck(boolean isLenCheck) {
-//		if (!isLenCheck) {
-//			if (typ / 16 == (ByteIdMap.DATATYPE_CHECK / 16)) {
-//			} else if (ByteUtil.isGroup(typ)) {
-//				this.typ = ByteUtil.getTyp(typ, ByteIdMap.DATATYPE_STRINGLAST);
-//			}
-//		} else {
-//			int size = this.values.length - 1;
-//			this.typ = ByteUtil.getTyp(getTyp(), size);
-//		}
-//		return true;
-//	}
 
 	public ByteEntity withVisible(boolean value) {
 		this.visible = value;
