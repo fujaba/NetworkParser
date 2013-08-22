@@ -31,6 +31,12 @@ public interface BufferedBytes extends Buffer{
 		
 	public void put(byte[] value);
 	
+	public void put(char value);
+	
+	public void put(float value);
+
+	public void put(double value);
+	
 	public void put(byte[] value, int offset, int length);
 	
 	public void flip();

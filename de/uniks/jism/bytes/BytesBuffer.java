@@ -197,6 +197,34 @@ public class BytesBuffer implements BufferedBytes {
 		this.buffer[index++] = (byte) (value & 0xff);
 	}
 	
+	@Override
+	public void put(char value) {
+		this.buffer[index++] = (byte) ((value&0xFF00)>>8);
+		this.buffer[index++] = (byte) (value&0x00FF);
+	}
+	
+	@Override
+	public void put(float value) {
+		int bits = Float.floatToIntBits(value);
+		this.buffer[index++] = (byte)(bits & 0xff);
+		this.buffer[index++] = (byte)((bits >> 8) & 0xff);
+		this.buffer[index++] = (byte)((bits >> 16) & 0xff);
+		this.buffer[index++] = (byte)((bits >> 24) & 0xff);
+	}
+
+	@Override
+	public void put(double value) {
+		long bits = Double.doubleToRawLongBits(value);
+		this.buffer[index++] = (byte)((bits >> 56) & 0xff);
+		this.buffer[index++] = (byte)((bits >> 48) & 0xff);
+		this.buffer[index++] = (byte)((bits >> 40) & 0xff);
+		this.buffer[index++] = (byte)((bits >> 32) & 0xff);
+		this.buffer[index++] = (byte)((bits >> 24) & 0xff);
+		this.buffer[index++] = (byte)((bits >> 16) & 0xff);
+		this.buffer[index++] = (byte)((bits >> 8) & 0xff);
+		this.buffer[index++] = (byte)((bits >> 0) & 0xff);
+	}
+
 
 	@Override
 	public void put(byte[] value) {
@@ -221,6 +249,12 @@ public class BytesBuffer implements BufferedBytes {
 	public BufferedBytes getNewBuffer(int capacity) {
 		new BytesBuffer().withLength(capacity);
 		return this;
+	}
+	
+	public static BytesBuffer allocate(int len){
+		BytesBuffer bytesBuffer = new BytesBuffer();
+		bytesBuffer.withLength(len);
+		return bytesBuffer;
 	}
 
 	@Override

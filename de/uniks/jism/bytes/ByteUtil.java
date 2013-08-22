@@ -110,8 +110,7 @@ public class ByteUtil {
 		if (len < 1) {
 			return null;
 		}
-		BufferedBytes message=new BytesBuffer();
-		message.withLength(len);
+		BufferedBytes message=BytesBuffer.allocate(len);
 		return message;
 	}
 
