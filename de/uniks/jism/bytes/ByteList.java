@@ -94,63 +94,60 @@ public class ByteList extends EntityList implements ByteItem {
 
 	public BufferedBytes getBytes(boolean isDynamic) {
 		int len = calcLength(isDynamic);
-		BufferedBytes buffer = ByteUtil.getBuffer(len, getTyp());
-		if (buffer == null) {
-			return null;
-		}
-		
-		for(int i=0;i<values.size();i++){
-			BufferedBytes child = null;
-			if (values.get(i) instanceof ByteItem) {
-				child = ((ByteItem) values.get(i)).getBytes(isDynamic);
-			}
-			if (child == null) {
-				buffer.put(ByteIdMap.DATATYPE_NULL);
-			} else {
-				if(i==values.size()-1&&child.byteAt(0)!=ByteIdMap.DATATYPE_CHECK){
-					// Its the Last Entity
-					byte typ=child.byteAt(0); 
-					int typLen = 1+ByteUtil.getTypLen(typ);
-					if(typLen>1){
-						buffer.put(ByteUtil.getTyp(child.byteAt(0), ByteIdMap.DATATYPE_STRINGLAST));
-//						byte[] array = new byte[child.length()-typLen];
-						byte[] array = child.getValue(typLen, child.length()-typLen);
-						buffer.put(array);
-						continue;
-					}
-				}
-				byte[] array = child.getValue(child.length());
-				System.out.println(ByteUtil.getStringTyp(array[0]));
-				buffer.put(array);
-			}
-		}
+		BufferedBytes buffer = ByteUtil.getBuffer(len);
+		writeBytes(buffer, isDynamic, false);
 		buffer.flip();
 		return buffer;
 	}
+	
+
+	public void writeBytes(BufferedBytes buffer, boolean isDynamic, boolean last){
+		int size=calcChildren(isDynamic);
+		
+		byte typ = ByteUtil.getTyp(getTyp(), size, last);
+		ByteUtil.writeByteHeader(buffer, typ, size);
+	
+		for(int i=0;i<values.size();i++){
+			((ByteItem) values.get(i)).writeBytes(buffer, isDynamic, i==values.size()-1);
+		}
+	}
 
 	public int calcLength(boolean isDynamic) {
-		int size=size();
-		if (size == 0 ) {
+		if (size() == 0 ) {
+			return 1;
+		}
+		int length = calcChildren(isDynamic);
+		// add The Headerlength
+		if (typ != 0) {
+			length += ByteEntity.TYPBYTE + ByteUtil.getTypLen(typ, length);
+		}
+		return length;
+	}
+	
+	public int calcChildren(boolean isDynamic) {
+		int length, size=size();
+		if(size<1){
 			return 0;
 		}
-		int length = 0;
-		if (typ != 0) {
-			length = ByteEntity.TYPBYTE;
-		}
-		Object[] valueList = this.values.toArray(new Object[size]);
+		Object[] valueList = this.values.toArray(new Object[size()]);
 		
 		// SonderFall Last Entity
+		int typLen;
+		int len;
 		if(valueList[size-1] instanceof ByteEntity){
-			ByteEntity item =(ByteEntity) valueList[size-1];
-			int typLen=ByteUtil.getTypLen(item.getTyp());
-			if(typLen>0){
-				// Must be a Group and not the optimize LastEntity
-				length+=item.getValue().length+1;
-			}else{
-				length+=item.calcLength(isDynamic);
-			}
+			ByteEntity entity =(ByteEntity) valueList[size-1];
+			len=entity.getValue().length;
+			typLen=ByteUtil.getTypLen(((ByteEntity)entity).getTyp(), len);
 		}else{
-			length+=((ByteItem)valueList[size-1]).calcLength(isDynamic);
+			ByteList list = (ByteList) valueList[size-1];
+			len=list.calcChildren(isDynamic);
+			typLen=ByteUtil.getTypLen(((ByteList)list).getTyp(), len);
+		}
+		if(typLen>0){
+			// Must be a Group and not the optimize LastEntity
+			length=len+1;
+		}else{
+			length=((ByteItem)valueList[size-1]).calcLength(isDynamic);
 		}
 		for (int i = size - 2; i >= 0; i--) {
 			length += ((ByteItem)valueList[i]).calcLength(isDynamic);
@@ -158,7 +155,7 @@ public class ByteList extends EntityList implements ByteItem {
 		return length;
 	}
 
-	public Byte getTyp() {
+	public byte getTyp() {
 		return typ;
 	}
 

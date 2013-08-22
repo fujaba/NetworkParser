@@ -57,6 +57,8 @@ public interface ByteItem extends JISMEntity{
 	 * @return ByteStream 
 	 */
 	public BufferedBytes getBytes(boolean isDynamic);
+	
+	public void writeBytes(BufferedBytes buffer, boolean isDynamic, boolean last);
 
 	/**
 	 * @param isDynamic ByteStream for minimize output

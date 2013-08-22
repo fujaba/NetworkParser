@@ -150,6 +150,11 @@ public class BitEntity implements BaseEntityList, ByteItem {
 	public BufferedBytes getBytes(boolean isDynamic) {
 		return null;
 	}
+	@Override
+	public void writeBytes(BufferedBytes buffer, boolean isDynamic, boolean last) {
+		// FIXME
+	}
+
 
 	@Override
 	public int calcLength(boolean isDynamic) {
