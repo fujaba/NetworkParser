@@ -38,8 +38,15 @@ import de.uniks.jism.TextItems;
 
 public class DateTimeEntity extends Date {
 	private static final long serialVersionUID = -6958410418045637223L;
+	public static final long ONE_SECOND=1000;
+	public static final long ONE_MINUTE=ONE_SECOND*60;
+	public static final long ONE_HOUR=ONE_MINUTE*60;
+	public static final long ONE_DAY=ONE_MINUTE*24;
+	public static final long ONE_YEAR=ONE_DAY*364;
+
 	private DateTimeFields fields = new DateTimeFields();
 	private TextItems items;
+	protected Integer timezone;
 
 	/**
 	 * Month of the Year Default is German
@@ -158,6 +165,22 @@ public class DateTimeEntity extends Date {
 		return DateTimeConstants.FIXED_MILLISECOND[year
 				- DateTimeConstants.BASE_YEAR + 1];
 	}
+	
+	public Integer getTimezone() {
+		return timezone;
+	}
+	
+	/* Fix the TimeZone Offset so the Entity is a simpleCalendar item
+	 * @see java.util.Date#getTime()
+	 */
+	@Override
+	public long getTime() {
+		long value = super.getTime();
+		if(getTimezone()!=null){
+			return value+(getTimezone()*ONE_HOUR);
+		}
+		return value;
+	}
 
 	/**
 	 * add to the date the amount value for the field
@@ -270,8 +293,9 @@ public class DateTimeEntity extends Date {
 	 * 
 	 * @return Year
 	 */
-	@SuppressWarnings("deprecation")
 	public int getYear() {
+		getTime();
+		Date date = new java.util.Date();
 		return super.getYear() + 1900;
 		// return Integer.parseInt(splitDate()[0]);
 	}
@@ -280,35 +304,21 @@ public class DateTimeEntity extends Date {
 	// * get the currentmonth of the date
 	// * @return Month
 	// */
-	@SuppressWarnings("deprecation")
 	public int getMonth() {
 		return super.getMonth() + 1;
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void setHours(int hours){
 		super.setHours(hours);
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void setMinutes(int minutes){
 		super.setMinutes(minutes);
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void setSeconds(int seconds){
 		super.setSeconds(seconds);
 	}
-
-	// /**
-	// * split the currentdate in a array
-	// * @return SplitArray
-	// */
-	// protected String[] splitDate(){
-	// // d MMM yyyy HH:mm:ss 'GMT'
-	// String values=super.toGMTString();
-	// return values.split(" ");
-	// }
 
 	public int getMaxDays(int month, int year) {
 		return fields.getMonthLength(month, year);
@@ -318,12 +328,11 @@ public class DateTimeEntity extends Date {
 	 * erase the time of the date
 	 */
 	public void setMidnight() {
-		long result = this.getTime() % 86400000;
-		this.setTime(this.getTime() + 86400000);
+		long result = this.getTime() % ONE_DAY;
+		this.setTime(this.getTime() + ONE_DAY);
 		this.setTime(this.getTime() - result);
 	}
 
-	@SuppressWarnings("deprecation")
 	public void setMonth(int newMonth) {
 //		int year = this.getYear();
 		super.setMonth(newMonth);
@@ -338,12 +347,10 @@ public class DateTimeEntity extends Date {
 		return weekday;
 	}
 	
-	@SuppressWarnings("deprecation")
 	public int getDate(){
 		return super.getDate();
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void setDate(int dayOfMonth) {
 		super.setDate(dayOfMonth);
 //		int year = this.getYear();
@@ -355,6 +362,11 @@ public class DateTimeEntity extends Date {
 		return (int) dayOfMonth
 				+ (fields.isLeapYear(year) ? DateTimeConstants.ACCUMULATED_DAYS_IN_MONTH_LEAP[month]
 						: DateTimeConstants.ACCUMULATED_DAYS_IN_MONTH[month]);
+	}
+	
+	public static boolean isSchaltjahr(int year) {
+		//FIXMEs
+		return false;
 	}
 
 	/**
@@ -385,7 +397,6 @@ public class DateTimeEntity extends Date {
 	 * @param dateFormat
 	 * @return a String of Date
 	 */
-	@SuppressWarnings("deprecation")
 	public String toString(String dateFormat) {
 		StringBuilder sb = new StringBuilder();
 		String sub;

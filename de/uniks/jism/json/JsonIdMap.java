@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import de.uniks.jism.EntityList;
 import de.uniks.jism.Filter;
 import de.uniks.jism.IdMap;
 import de.uniks.jism.ReferenceObject;
@@ -90,6 +91,13 @@ public class JsonIdMap extends IdMap {
 		this.withCreator(new JsonObjectCreator());
 		this.withCreator(new JsonArrayCreator());
 		this.withCreator(new MapEntryCreator());
+	}
+	
+	/**
+	 * @return the Prototyp forModel
+	 */
+	public JsonObject getPrototyp(){
+		return new JsonObject();
 	}
 
 	/**
@@ -144,7 +152,9 @@ public class JsonIdMap extends IdMap {
 			id = getId(entity);
 			filter.addToVisitedObjects(id);
 		}
-		JsonObject jsonProp = new JsonObject();
+		
+		JsonObject jsonProp = getPrototyp();
+		
 
 		String[] properties = prototyp.getProperties();
 		if (properties != null) {
@@ -182,7 +192,8 @@ public class JsonIdMap extends IdMap {
 				SendableEntityCreator referenceCreator = getCreatorClass(value);
 				if (value instanceof Collection<?> && referenceCreator == null) {
 					// Simple List or Assocs
-					JsonArray subValues = new JsonArray();
+					EntityList subValues = getPrototyp().getNewArray();
+//					jsonArray.getNewArray();
 					for (Object containee : ((Collection<?>) value)) {
 						Object item = parseItem(entity, filter, containee,
 								property, jsonArray, null, deep);
@@ -196,7 +207,7 @@ public class JsonIdMap extends IdMap {
 				} else if (value instanceof Map<?, ?>
 						&& referenceCreator == null) {
 					// Maps
-					JsonArray subValues = new JsonArray();
+					EntityList subValues = jsonArray.getNewArray();
 					Map<?, ?> map = (Map<?, ?>) value;
  					String packageName = MapEntry.class.getName();
 					for (Iterator<?> i = map.entrySet().iterator(); i.hasNext();) {
@@ -241,10 +252,10 @@ public class JsonIdMap extends IdMap {
 						this.toJsonArray(entity, jsonArray, filter, deep+1);
 					}
 				}
-				return new JsonObject().withValue(ID, getId(entity));
+				return getPrototyp().withValue(ID, getId(entity));
 			}
 			if (typSave) {
-				JsonObject returnValue = new JsonObject().withValue(CLASS, className);
+				JsonObject returnValue = getPrototyp().withValue(CLASS, className);
 				returnValue.put(VALUE, entity);
 				return returnValue;
 			}
@@ -282,9 +293,9 @@ public class JsonIdMap extends IdMap {
 	 */
 	public Object decode(String value){
 		if(value.startsWith("[")){
-			return decode(new JsonArray(value));
+			return decode(getPrototyp().getNewArray().withValue(value));
 		}
-		return decode(new JsonObject().withValue(value));
+		return decode(getPrototyp().withValue(value));
 	}
 	public Object decode(JISMEntity value) {
 		if(value instanceof JsonArray){
@@ -582,7 +593,7 @@ public class JsonIdMap extends IdMap {
 	 * @return the json array
 	 */
 	public JsonArray toJsonArray(Object object, Filter filter) {
-		JsonArray jsonArray = new JsonArray();
+		JsonArray jsonArray = getPrototyp().getNewArray();
 		if (filter == null) {
 			filter = this.filter.clone();
 		}
@@ -635,7 +646,7 @@ public class JsonIdMap extends IdMap {
 		String className = entity.getClass().getName();
 		String id = getId(entity);
 
-		JsonObject jsonObject = new JsonObject();
+		JsonObject jsonObject = jsonArray.getNewObject();
 		if (!filter.hasVisitedObjects(id, entity) ) {
 			if (filter.isId(this, entity, className)) {
 				jsonObject.put(ID, id);
@@ -652,7 +663,7 @@ public class JsonIdMap extends IdMap {
 		filter.addToVisitedObjects(id);
 
 		if (properties != null) {
-			JsonObject jsonProps = new JsonObject();
+			JsonObject jsonProps = getPrototyp();
 			for (String property : properties) {
 				if (jsonProps.has(property)) {
 					throw new RuntimeException("Property duplicate:" + property
@@ -746,11 +757,11 @@ public class JsonIdMap extends IdMap {
 	 *            the suspend id list
 	 */
 	public void toJsonArrayByIds(ArrayList<String> suspendIdList) {
-		JsonArray children = new JsonArray();
+		JsonObject sendObj = getPrototyp();
+		JsonArray children = sendObj.getNewArray();
 		for (String childId : suspendIdList) {
 			children.put(toJsonObjectById(childId));
 		}
-		JsonObject sendObj = new JsonObject();
 		sendObj.put(IdMap.UPDATE, children);
 		sendUpdateMsg(null, sendObj);
 	}

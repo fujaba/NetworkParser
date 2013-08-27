@@ -33,8 +33,8 @@ package de.uniks.jism.json;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import de.uniks.jism.Entity;
-import de.uniks.jism.EntityList;
 import de.uniks.jism.EntityUtil;
 import de.uniks.jism.Tokener;
 
@@ -345,7 +345,7 @@ public class JsonObject extends Entity {
 	 * Get a new Instance of JsonArray
 	 */
 	@Override
-	public EntityList getNewArray() {
+	public JsonArray getNewArray() {
 		return new JsonArray();
 	}
 
@@ -353,7 +353,7 @@ public class JsonObject extends Entity {
 	 * Get a new Instance of JsonObject
 	 */
 	@Override
-	public Entity getNewObject() {
+	public JsonObject getNewObject() {
 		return new JsonObject();
 	}
 }
