@@ -32,11 +32,10 @@ package de.uniks.jism.json;
 
 import java.util.Collection;
 import java.util.Iterator;
-import de.uniks.jism.Entity;
+
 import de.uniks.jism.EntityList;
 import de.uniks.jism.EntityUtil;
 import de.uniks.jism.Tokener;
-import de.uniks.jism.interfaces.BaseEntityList;
 import de.uniks.jism.interfaces.JISMEntity;
 
 /**
@@ -89,66 +88,6 @@ import de.uniks.jism.interfaces.JISMEntity;
 
 public class JsonArray extends EntityList {
 	/**
-	 * Construct an empty JSONArray.
-	 */
-	public JsonArray() {
-	}
-
-	/**
-	 * Construct a JSONArray from a JSONTokener.
-	 * 
-	 * @param x
-	 *            A JSONTokener
-	 * @throws RuntimeException
-	 *             If there is a syntax error.
-	 */
-	public JsonArray(Tokener x) throws RuntimeException {
-		this();
-		x.parseToEntity(this);
-	}
-
-	/**
-	 * Construct a JSONArray from a source JSON text.
-	 * 
-	 * @param source
-	 *            A string that begins with <code>[</code>&nbsp;<small>(left
-	 *            bracket)</small> and ends with <code>]</code>
-	 *            &nbsp;<small>(right bracket)</small>.
-	 * @throws RuntimeException
-	 *             If there is a syntax error.
-	 */
-	public JsonArray(String source) throws RuntimeException {
-		this(new JsonTokener().withText(source));
-	}
-
-	/**
-	 * Construct a JSONArray from a Collection.
-	 * 
-	 * @param collection
-	 *            A Collection.
-	 */
-	public JsonArray(Collection<?> collection) {
-		if (collection != null) {
-			Iterator<?> iter = collection.iterator();
-			while (iter.hasNext()) {
-				put(EntityUtil.wrap(iter.next(), this));
-			}
-		}
-	}
-
-	/**
-	 * Construct a JSONArray from a BaseEntityArray.
-	 * 
-	 * @param Array
-	 *            of Elements.
-	 */
-	public JsonArray(JISMEntity... values) {
-		for (int i = 0; i < values.length; i++) {
-			put(EntityUtil.wrap(values[i], this));
-		}
-	}
-	
-	/**
 	 * Get the JSONArray associated with an index.
 	 * 
 	 * @param index
@@ -184,37 +123,6 @@ public class JsonArray extends EntityList {
 		}
 		throw new RuntimeException("JSONArray[" + index
 				+ "] is not a JSONObject.");
-	}
-
-	/**
-	 * Put a value in the JSONArray, where the value will be a JSONArray which
-	 * is produced from a Collection.
-	 * 
-	 * @param value
-	 *            A Collection value.
-	 * @return this.
-	 */
-	public BaseEntityList put(Collection<?> value) {
-		super.put(new JsonArray(value));
-		return this;
-	}
-
-	/**
-	 * Put a value in the JSONArray, where the value will be a JSONArray which
-	 * is produced from a Collection.
-	 * 
-	 * @param index
-	 *            The subscript.
-	 * @param value
-	 *            A Collection value.
-	 * @return this.
-	 * @throws RuntimeException
-	 *             If the index is negative or if the value is not finite.
-	 */
-	public JsonArray put(int index, Collection<?> value)
-			throws RuntimeException {
-		super.put(index, new JsonArray(value));
-		return this;
 	}
 
 	/**
@@ -327,24 +235,76 @@ public class JsonArray extends EntityList {
 	}
 
 	/**
+	 * JSONArray from a source JSON text.
+	 * 
+	 * @param source
+	 *            A string that begins with <code>[</code>&nbsp;<small>(left
+	 *            bracket)</small> and ends with <code>]</code>
+	 *            &nbsp;<small>(right bracket)</small>.
+	 * @throws RuntimeException
+	 *             If there is a syntax error.
+	 */
+	public JsonArray withValue(String value) {
+		clear();
+		new JsonTokener().withText(value).parseToEntity(this);
+		return this;
+	}
+	
+	/**
+	 * JSONArray from a JSONTokener.
+	 * 
+	 * @param x
+	 *            A JSONTokener
+	 * @throws RuntimeException
+	 *             If there is a syntax error.
+	 */
+	public JsonArray withValue(Tokener x) throws RuntimeException {
+		x.parseToEntity(this);
+		return this;
+	}
+
+	/**
+	 * JSONArray from a Collection.
+	 * 
+	 * @param collection
+	 *            A Collection.
+	 */
+	public JsonArray withValue(Collection<?> collection) {
+		if (collection != null) {
+			Iterator<?> iter = collection.iterator();
+			while (iter.hasNext()) {
+				put(EntityUtil.wrap(iter.next(), this));
+			}
+		}
+		return this;
+	}
+
+	/**
+	 * JSONArray from a BaseEntityArray.
+	 * 
+	 * @param Array
+	 *            of Elements.
+	 */
+	public JsonArray withValue(JISMEntity... values) {
+		for (int i = 0; i < values.length; i++) {
+			put(EntityUtil.wrap(values[i], this));
+		}
+		return this;
+	}
+
+	/**
 	 * Get a new Instance of a JsonObject
 	 */
 	@Override
-	public Entity getNewObject() {
+	public JsonObject getNewObject() {
 		return new JsonObject();
-	}
-
-	public boolean setAllValue(String value) {
-		clear();
-		new JsonTokener().withText(value).parseToEntity(this);
-		return true;
 	}
 
 	/**
 	 * Get a new Instance of a JsonArray
 	 */
 	@Override
-	public EntityList getNewArray() {
+	public JsonArray getNewArray() {
 		return new JsonArray();
 	}
 }

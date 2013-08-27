@@ -536,6 +536,8 @@ public abstract class EntityList implements BaseEntityList, List<Object> {
 		this.visible = value;
 		return this;
 	}
+	
+	public abstract EntityList withValue(String value);
 
 	public boolean isVisible() {
 		return visible;

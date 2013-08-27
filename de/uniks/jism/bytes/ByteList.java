@@ -33,20 +33,20 @@ package de.uniks.jism.bytes;
 import de.uniks.jism.EntityList;
 import de.uniks.jism.bytes.converter.ByteConverter;
 import de.uniks.jism.bytes.converter.ByteConverterHTTP;
+import de.uniks.jism.bytes.converter.ByteConverterString;
 import de.uniks.jism.interfaces.ByteItem;
-import de.uniks.jism.interfaces.JISMEntity;
 
 public class ByteList extends EntityList implements ByteItem {
 	/** The children of the ByteEntity. */
 	private byte typ = 0;
 
 	@Override
-	public EntityList getNewArray() {
+	public ByteList getNewArray() {
 		return new ByteList();
 	}
 
 	@Override
-	public JISMEntity getNewObject() {
+	public ByteEntity getNewObject() {
 		return new ByteEntity();
 	}
 
@@ -161,5 +161,12 @@ public class ByteList extends EntityList implements ByteItem {
 
 	public void setTyp(Byte value) {
 		this.typ = value;
+	}
+
+	@Override
+	public EntityList withValue(String value) {
+		ByteConverterString	converter = new ByteConverterString();
+		this.add(getNewObject().withValue(ByteIdMap.DATATYPE_FIXED, converter.decode(value)));
+		return this;
 	}
 }
