@@ -50,7 +50,7 @@ public class EntityComparator implements Comparator<Object> {
 	}
 
 	public int compareValue(Object o1, Object o2) {
-		SendableEntityCreator c1 = null;
+ 		SendableEntityCreator c1 = null;
 		if (map != null) {
 			c1 = map.getCreatorClass(o1);
 			SendableEntityCreator c2 = map.getCreatorClass(o2);

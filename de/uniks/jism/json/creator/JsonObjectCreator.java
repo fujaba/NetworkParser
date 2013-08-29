@@ -35,7 +35,8 @@ import de.uniks.jism.interfaces.SendableEntityCreator;
 import de.uniks.jism.json.JsonObject;
 
 public class JsonObjectCreator implements SendableEntityCreator, NoIndexCreator {
-	private final String[] properties = new String[] { "VALUE" };
+	private final String VALUE="VALUE";
+	private final String[] properties = new String[] { VALUE };
 
 	@Override
 	public String[] getProperties() {
@@ -49,7 +50,10 @@ public class JsonObjectCreator implements SendableEntityCreator, NoIndexCreator 
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		return entity.toString();
+		if(VALUE.equalsIgnoreCase(attribute)){
+			return entity.toString();
+		}
+		return ((JsonObject)entity).getValue(attribute);
 	}
 
 	@Override
