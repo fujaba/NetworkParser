@@ -75,4 +75,9 @@ public class JsonArraySorted extends JsonArray {
 		}
 		return values.add(newValue);
 	}
+	
+	@Override
+	public boolean hasComparator() {
+		return true;
+	}
 }

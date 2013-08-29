@@ -207,7 +207,7 @@ public class JsonIdMap extends IdMap {
 				} else if (value instanceof Map<?, ?>
 						&& referenceCreator == null) {
 					// Maps
-					EntityList subValues = jsonArray.getNewArray();
+					EntityList subValues = getPrototyp().getNewArray();
 					Map<?, ?> map = (Map<?, ?>) value;
  					String packageName = MapEntry.class.getName();
 					for (Iterator<?> i = map.entrySet().iterator(); i.hasNext();) {
@@ -620,7 +620,7 @@ public class JsonIdMap extends IdMap {
 	 * @return the JsonArray
 	 */
 	public JsonArray toJsonSortedArray(Object object, String property) {
-		JsonArraySorted jsonArray = new JsonArraySorted(new EntityComparator().withColumn(property));
+		JsonArraySorted jsonArray = new JsonArraySorted(new EntityComparator().withColumn(property).withMap(this));
 		toJsonArray(object, jsonArray, filter.clone());
 		return jsonArray;
 	}
@@ -652,7 +652,9 @@ public class JsonIdMap extends IdMap {
 				jsonObject.put(ID, id);
 			}
 			jsonObject.put(CLASS, className);
-			jsonArray.put(jsonObject);
+			if(!jsonArray.hasComparator()){
+				jsonArray.put(jsonObject);
+			}
 		}
 
 		SendableEntityCreator prototyp = getCreatorClasses(className);
@@ -679,6 +681,10 @@ public class JsonIdMap extends IdMap {
 				jsonObject.put(JSON_PROPS, jsonProps);
 			}
 		}
+		if(jsonArray.hasComparator() && jsonObject.has(CLASS)){
+			jsonArray.put(jsonObject);
+		}
+		
 		return jsonArray;
 	}
 

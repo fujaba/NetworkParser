@@ -33,58 +33,79 @@ package de.uniks.jism.date;
 public class DateTimeField {
 
 	/** The field type. */
-	private String typValue;
-	private Integer min;
-	private Integer max;
-	private int defaultValue;
-
+	private DateField typValue;
+	private Long min;
+	private Long max;
+	private Long defaultValue;
+	private Long value;
+	
 	/**
-	 * Constructor.
+	 * Constructor
+	 * 		DateTimeField must be have a typ
+	 * @param typ
 	 */
-	public DateTimeField(String type, Integer min, Integer max) {
-		this.typValue = type;
-		this.min = min;
-		this.max = max;
+	public DateTimeField(DateField typ){
+		this.typValue = typ;
 	}
-
-	public DateTimeField(String type, Integer min, Integer max, int value) {
-		this(type, min, max);
-		this.defaultValue = value;
-	}
-
-	public String getType() {
+	public DateField getType() {
 		return typValue;
 	}
-
-	/**
-	 * @return true always
-	 */
-	public boolean isSupported() {
-		return true;
+	
+	public boolean isType(DateField typ) {
+		return typValue.equals(typ);
 	}
 
-	public int getMin() {
+	public Long getMin() {
 		return min;
 	}
-
-	public void setMin(int min) {
+	
+	public DateTimeField withMin(int value) {
+		this.min = (long) value;
+		this.defaultValue = this.min;
+		return this;
+	}
+	public DateTimeField withMin(Long min) {
 		this.min = min;
+		return this;
+	}
+	
+	public DateTimeField withMinMax(int min, int max) {
+		this.min = (long) min;
+		this.max = (long) max;
+		this.defaultValue = this.min;
+		return this;
 	}
 
-	public int getMax() {
+	public Long getMax() {
 		return max;
 	}
 
-	public void setMax(int max) {
+	public DateTimeField withMax(Long max) {
 		this.max = max;
+		return this;
 	}
 
-	public int getValue() {
+	public Long getDefaultValue() {
 		return defaultValue;
 	}
+	
+	public Long getValue() {
+		return value;
+	}
 
-	public void setValue(int value) {
+	public DateTimeField withDefault(int value) {
+		this.defaultValue = (long) value;
+		return this;
+	}
+	
+	public DateTimeField withDefault(Long value) {
 		this.defaultValue = value;
+		return this;
+	}
+	
+	public DateTimeField withValue(Long value) {
+		this.value = value;
+		return this;
 	}
 
 	public int validate(int value) {
@@ -93,6 +114,42 @@ public class DateTimeField {
 		}
 		if (max != null && value > max) {
 			return 1;
+		}
+		return 0;
+	}
+	
+	/**
+	 * Supported Values are
+	 * 	   MILLISECONDS, MILLISECOND_OF_YEAR
+	 *     SECONDS, SECOND_OF_MINUTE, SECOND_OF_DAY, SECOND_OF_YEAR
+	 *     MINUTES, MINUTE_OF_HOUR
+	 *     HOURS, HOUR_OF_DAY
+	 *     DAYS, DAY_OF_WEEK, DAY_OF_MONTH, DAY_OF_YEAR
+	 *     AMPM,
+	 *     WEEK_OF_MONTH, WEEK_OF_YEAR
+	 *     YEAR
+	 * 
+	 * @return the Value As Milliseconds
+	 */
+	public long getValueInMillisecond(){
+		if (isType(DateField.MILLISECONDS) || isType(DateField.MILLISECOND_OF_YEAR)) {
+			return value;
+		} else if (isType(DateField.SECONDS) ||  isType(DateField.SECOND_OF_MINUTE) || isType(DateField.SECOND_OF_DAY) || isType(DateField.SECOND_OF_YEAR)) {
+				return value * DateTimeFields.ONE_SECOND;
+		} else if (isType(DateField.MINUTES) || isType(DateField.MINUTE_OF_HOUR)) {
+			return value * DateTimeFields.ONE_MINUTE;
+		} else if (isType(DateField.HOURS) || isType(DateField.HOUR_OF_DAY)) {
+			return value * DateTimeFields.ONE_HOUR;
+		} else if (isType(DateField.DAYS) || isType(DateField.DAY_OF_WEEK) || isType(DateField.DAY_OF_MONTH)|| isType(DateField.DAY_OF_YEAR)) {
+			return value * DateTimeFields.ONE_DAY;
+		} else if (isType(DateField.AMPM)){
+			return value * (DateTimeFields.ONE_DAY/2);
+		} else if (isType(DateField.WEEK_OF_MONTH) || isType(DateField.WEEK_OF_YEAR)){
+			return value * DateTimeFields.ONE_WEEK;
+		} else if (isType(DateField.YEAR)){
+			int year=Integer.valueOf(""+value);
+			int schaltjahre=((year-1)-1968)/4 - ((year-1)-1900)/100 + ((year-1)-1600)/400;
+			return (year-schaltjahre)*DateTimeFields.ONE_YEAR + (schaltjahre*DateTimeFields.ONE_YEAR_LY);
 		}
 		return 0;
 	}

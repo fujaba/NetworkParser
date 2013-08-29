@@ -291,6 +291,13 @@ public class JsonArray extends EntityList {
 		}
 		return this;
 	}
+	
+	/**
+	 * @return boolean if has comparator
+	 */
+	public boolean hasComparator(){
+		return false;
+	}
 
 	/**
 	 * Get a new Instance of a JsonObject
