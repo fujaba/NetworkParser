@@ -1,7 +1,7 @@
 package de.uniks.jism.date;
 
 public enum DateField {
-	MILLISECONDS("milliseconds"), MILLISECOND_OF_DAY("millisecond_of_day"), MILLISECOND_OF_YEAR("millisecond_of_year"),
+	MILLISECOND("millisecond"), MILLISECONDS("milliseconds"), MILLISECOND_OF_DAY("millisecond_of_day"), MILLISECOND_OF_YEAR("millisecond_of_year"),
 	SECONDS("seconds"), SECOND_OF_MINUTE("second_of_minute"), SECOND_OF_DAY("second_of_minute"), SECOND_OF_YEAR("second_of_year"),
 	MINUTES("minutes"), MINUTE_OF_HOUR("minute_of_hour"),
 	HOURS("hours"), HOUR_OF_DAY("hour_of_day"), AMPM("am/pm"), TIMEZONE("zone"),

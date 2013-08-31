@@ -31,7 +31,6 @@ package de.uniks.jism.date;
 */
 
 public class DateTimeField {
-
 	/** The field type. */
 	private DateField typValue;
 	private Long min;
@@ -90,6 +89,12 @@ public class DateTimeField {
 	}
 	
 	public Long getValue() {
+		if(value==null){
+			return defaultValue;
+		}
+		return value;
+	}
+	public Long getInternValue() {
 		return value;
 	}
 
@@ -105,6 +110,7 @@ public class DateTimeField {
 	
 	public DateTimeField withValue(Long value) {
 		this.value = value;
+		System.out.println(value);
 		return this;
 	}
 
@@ -135,21 +141,21 @@ public class DateTimeField {
 		if (isType(DateField.MILLISECONDS) || isType(DateField.MILLISECOND_OF_YEAR)) {
 			return value;
 		} else if (isType(DateField.SECONDS) ||  isType(DateField.SECOND_OF_MINUTE) || isType(DateField.SECOND_OF_DAY) || isType(DateField.SECOND_OF_YEAR)) {
-				return value * DateTimeFields.ONE_SECOND;
+				return value * DateTimeEntity.ONE_SECOND;
 		} else if (isType(DateField.MINUTES) || isType(DateField.MINUTE_OF_HOUR)) {
-			return value * DateTimeFields.ONE_MINUTE;
+			return value * DateTimeEntity.ONE_MINUTE;
 		} else if (isType(DateField.HOURS) || isType(DateField.HOUR_OF_DAY)) {
-			return value * DateTimeFields.ONE_HOUR;
+			return value * DateTimeEntity.ONE_HOUR;
 		} else if (isType(DateField.DAYS) || isType(DateField.DAY_OF_WEEK) || isType(DateField.DAY_OF_MONTH)|| isType(DateField.DAY_OF_YEAR)) {
-			return value * DateTimeFields.ONE_DAY;
+			return value * DateTimeEntity.ONE_DAY;
 		} else if (isType(DateField.AMPM)){
-			return value * (DateTimeFields.ONE_DAY/2);
+			return value * (DateTimeEntity.ONE_DAY/2);
 		} else if (isType(DateField.WEEK_OF_MONTH) || isType(DateField.WEEK_OF_YEAR)){
-			return value * DateTimeFields.ONE_WEEK;
+			return value * DateTimeEntity.ONE_WEEK;
 		} else if (isType(DateField.YEAR)){
 			int year=Integer.valueOf(""+value);
 			int schaltjahre=((year-1)-1968)/4 - ((year-1)-1900)/100 + ((year-1)-1600)/400;
-			return (year-schaltjahre)*DateTimeFields.ONE_YEAR + (schaltjahre*DateTimeFields.ONE_YEAR_LY);
+			return (year-schaltjahre)*DateTimeEntity.ONE_YEAR + (schaltjahre*DateTimeEntity.ONE_YEAR_LY);
 		}
 		return 0;
 	}
