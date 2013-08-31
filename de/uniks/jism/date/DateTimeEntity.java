@@ -30,11 +30,9 @@ package de.uniks.jism.date;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
-
 import de.uniks.jism.DefaultTextItems;
+import de.uniks.jism.StringTokener;
 import de.uniks.jism.TextItems;
 
 public class DateTimeEntity  {
@@ -220,31 +218,24 @@ public class DateTimeEntity  {
 		}
 		this.fields.get(DateField.MONTH).withValue((long) month);
 		this.fields.get(DateField.DAY_OF_MONTH).withValue((long) day);
-
 		
-		long dayOfWeek=(days - 3) % 7+1;
+		// 01.01.70 is Tuersday
+		long dayOfWeek=(days - 3) % 7;
 		this.fields.get(DateField.DAY_OF_WEEK).withValue(dayOfWeek);
-		int dayOf0101 = (int) ((dayOfYear+dayOfWeek+2)%7);
-		
-		
-//		this.fields.get(DateField.DAY_OF_WEEK).withValue((yearMillis - 3) % 7);
-		
-		//		this.fields.get(DateField.WEEK_OF_YEAR).withValue(yearMillis/ONE_WEEK);
-//	case WEEK_OF_MONTH:
-
-//		// 01.01.70 is Tuersday
+		int dayOf0101 = (int) ((dayOfYear+dayOfWeek+3)%7)+1;
+		long week= dayOfYear/7;
+		if(dayOfYear%7>0){
+			week++;
+		}
+		if(dayOf0101>4){
+			week++;
+		}
+		this.fields.get(DateField.WEEK_OF_YEAR).withValue(week);
+		this.fields.get(DateField.WEEK_OF_MONTH).withValue( week - ((dayOfYear-day)/7) );
 
 		//TIMEZONE not set
 		this.dirty=false;
 	}
-	
-//	public int GetWeekOfYear(DateTime todayDate)
-//	{
-//	    int days = todayDate.DayOfYear;
-//	    float result = days / 7;
-//	    result=result+1;
-//	    return Convert.ToInt32(result);
-//	}
 	
 	public DateTimeField get(DateField field){
 		DateTimeField item = fields.get(field);
@@ -258,6 +249,9 @@ public class DateTimeEntity  {
 			}
 		}
 		return item;
+	}
+	public long getValue(DateField field){
+		return get(field).getValue();
 	}
 	
 	private DateTimeField getInternalField(DateField field){
@@ -321,8 +315,6 @@ public class DateTimeEntity  {
 		}
 	}
 	
-	
-	
 	/**
 	 * set to the date the amount value for the field
 	 * 
@@ -350,8 +342,6 @@ public class DateTimeEntity  {
 			}
 		}
 	}
-
-	
 	
 	/**
 	 * Setter with milliseconds
@@ -476,49 +466,45 @@ public class DateTimeEntity  {
 	 * @param dateFormat
 	 * @return a String of Date
 	 */
-	//FIXME
-//	public String toString(String dateFormat) {
-//		StringBuilder sb = new StringBuilder();
-//		String sub;
-//		StringTokener tokener = (StringTokener) new StringTokener().withText(dateFormat);
-//		do {
-//			sub = tokener.nextString('"', true, true);
-//			if (sub.length() > 0 && !tokener.isString()) {
-//				// System.out.println(count++
-//				// +": #"+sub+"# -- "+tokener.isString());
-//				// Time
-//				sub = sub.replace("HH", strZero(this.getHours(), 2));
-//				sub = sub.replace("H", String.valueOf(this.getHours()));
-//				sub = sub.replace("MM", strZero(this.getMinutes(), 2));
-//				sub = sub.replace("M", String.valueOf(this.getMinutes()));
-//				sub = sub.replace("SS", strZero(this.getSeconds(), 2));
-//				sub = sub.replace("S", String.valueOf(this.getSeconds()));
-//				// Date
-//
-//				sub = sub.replace("dddd", this.weekDays[this.getDay()]);
-//				sub = sub.replace("ddd",
-//						this.weekDays[this.getDay()].substring(0, 2));
-//				sub = sub.replace("dd", strZero(this.getDate(), 2));
-//				sub = sub.replace("d", String.valueOf(this.getDate()));
-//				sub = sub.replace("mmmm", this.monthOfYear[this.getMonth()]);
-//				sub = sub.replace("mmm",
-//						this.monthOfYear[this.getMonth()].substring(0, 3));
-//				sub = sub.replace("mm", strZero(this.getMonth(), 2));
-//				sub = sub.replace("m", String.valueOf(this.getMonth()));
-//				sub = sub.replace("yyyy", String.valueOf(this.getYear()));
-//				sub = sub.replace("yyy", String.valueOf(this.getYear()));
-//				sub = sub.replace("yy", strZero(this.getYear(), 2, 2));
-//				sub = sub.replace("y", strZero(this.getYear(), 1, 2));
-//			}
-//			sb.append(sub);
-//		} while (sub.length() > 0);
-//
-//		return sb.toString();
-//	}
-	//FIXME
-	public String toString(String format) {
-		SimpleDateFormat pattern=new SimpleDateFormat(format);
-		return pattern.format(new Date());
+	public String toString(String dateFormat) {
+		initDate();
+		StringBuilder sb = new StringBuilder();
+		String sub;
+		StringTokener tokener = new StringTokener();
+		tokener.withText(dateFormat);
+		do {
+			sub = tokener.nextString('"', true, true);
+			if (sub.length() > 0 && !tokener.isString()) {
+				// System.out.println(count++
+				// +": #"+sub+"# -- "+tokener.isString());
+				// Time
+				sub = sub.replace("HH", strZero(getValue(DateField.HOUR_OF_DAY), 2));
+				sub = sub.replace("H", String.valueOf(getValue(DateField.HOUR_OF_DAY)));
+				sub = sub.replace("MM", strZero(getValue(DateField.MINUTE_OF_HOUR), 2));
+				sub = sub.replace("M", String.valueOf(getValue(DateField.MINUTE_OF_HOUR)));
+				sub = sub.replace("SS", strZero(getValue(DateField.SECOND_OF_MINUTE), 2));
+				sub = sub.replace("S", String.valueOf(getValue(DateField.SECOND_OF_MINUTE)));
+				// Date
+
+				sub = sub.replace("dddd", this.weekDays[(int)getValue(DateField.DAY_OF_WEEK)]);
+				sub = sub.replace("ddd",
+						this.weekDays[(int)getValue(DateField.DAY_OF_WEEK)].substring(0, 2));
+				sub = sub.replace("dd", strZero(getValue(DateField.DAY_OF_MONTH), 2));
+				sub = sub.replace("d", String.valueOf(getValue(DateField.DAY_OF_MONTH)));
+				sub = sub.replace("mmmm", this.monthOfYear[(int)getValue(DateField.MONTH)]);
+				sub = sub.replace("mmm",
+						this.monthOfYear[(int)getValue(DateField.MONTH)].substring(0, 3));
+				sub = sub.replace("mm", strZero(getValue(DateField.MONTH), 2));
+				sub = sub.replace("m", String.valueOf(getValue(DateField.MONTH)));
+				sub = sub.replace("yyyy", String.valueOf(getValue(DateField.YEAR)));
+				sub = sub.replace("yyy", String.valueOf(getValue(DateField.YEAR)));
+				sub = sub.replace("yy", strZero(getValue(DateField.YEAR), 2, 2));
+				sub = sub.replace("y", strZero(getValue(DateField.YEAR), 1, 2));
+			}
+			sb.append(sub);
+		} while (sub.length() > 0);
+
+		return sb.toString();
 	}
 	
 	public String toString(){
@@ -571,6 +557,14 @@ public class DateTimeEntity  {
 		}
 		return result;
 	}
+	
+	public String strZero(long value, int length) {
+		String result = String.valueOf(value);
+		while (result.length() < length) {
+			result = "0" + result;
+		}
+		return result;
+	}
 
 	/**
 	 * Format a date with 0
@@ -581,6 +575,21 @@ public class DateTimeEntity  {
 	 * @return a String of Value with max value
 	 */
 	public String strZero(int value, int length, int max) {
+		String result = strZero(value, length);
+		if (result.length() > max) {
+			result = result.substring(0, max);
+		}
+		return result;
+	}
+	/**
+	 * Format a date with 0
+	 * 
+	 * @param value
+	 * @param length
+	 * @param max
+	 * @return a String of Value with max value
+	 */
+	public String strZero(long value, int length, int max) {
 		String result = strZero(value, length);
 		if (result.length() > max) {
 			result = result.substring(0, max);
