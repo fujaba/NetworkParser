@@ -107,7 +107,7 @@ public class GridValue {
 			 int rowEnd = n.getRowEnd();
 			 int colEnd = n.getColumnEnd();
 //			 int col = n.getColumn();
-//			 int row = n.getRow();
+			 int row = n.getRow();
 			 String rowId="0";
 			 if(rowEnd>=maxRows){
 				 rowId="1";
