@@ -104,7 +104,6 @@ public class XMLTokener extends Tokener {
 					return;
 				}
 				if (c != '<') {
-					back();
 					xmlEntity.setValue(nextString('<', false, false));
 					back();
 					continue;
