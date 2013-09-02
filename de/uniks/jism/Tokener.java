@@ -191,6 +191,8 @@ public abstract class Tokener {
 				return "";
 			}
 			c = 1;
+		}else if (!ignoreCurrent && c>0) {
+			sb.append(c);
 		}
 		while (c != 0 && c != quote) {
 			c = next();

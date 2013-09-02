@@ -60,8 +60,6 @@ public class DateTimeEntity  {
 
 	static final int MONTH_LENGTH[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31,
 			30, 31 }; // 0-based
-	static final int MONTH_LENGTH_LP[] = { 31, 29, 31, 30, 31, 30, 31, 31,
-			30, 31, 30, 31 }; // 0-based
 
 	public static final int ONE_SECOND = 1000;
 	public static final int ONE_MINUTE = 60 * ONE_SECOND;
@@ -71,15 +69,11 @@ public class DateTimeEntity  {
 	public static final long ONE_YEAR=ONE_DAY*365;
 	public static final long ONE_YEAR_LY=ONE_DAY*366;
 
-
 	/**
 	 * The normalized year of the gregorianCutover in Gregorian, with 0
 	 * representing 1 BCE, -1 representing 2 BCE, etc.
 	 */
 	private transient int GREGORIANCUTOVERYEAR = 1582;
-
-	// The default value of gregorianCutover.
-//	static final long DEFAULT_GREGORIAN_CUTOVER = -12219292800000L;
 
 	/**
 	 * Returns the length of the specified month in the specified year. The year
@@ -87,9 +81,17 @@ public class DateTimeEntity  {
 	 * 
 	 * @see #isLeapYear(int)
 	 */
-	public final int getMonthLength(int month, int year) {
-		return isLeapYear(year) ? MONTH_LENGTH_LP[month]
-				: MONTH_LENGTH[month];
+	public int getMonthLength(int month, int year) {
+		if(isLeapYear(year)){
+			return getMonthLengthLP(month);
+		}
+		return MONTH_LENGTH[month];
+	}
+	private int getMonthLengthLP(int month){
+		if(month==1){
+			return MONTH_LENGTH[month]+1;
+		}
+		return MONTH_LENGTH[month];
 	}
 
 	/**
@@ -157,12 +159,12 @@ public class DateTimeEntity  {
 		long day=0;
 		if(isLeapYear(year)){
 			while(temp>0){
-				temp -= MONTH_LENGTH_LP[month++]*ONE_DAY;
+				temp -= getMonthLengthLP(month++)*ONE_DAY;
 			}
-			day = (temp + MONTH_LENGTH_LP[month-1]*ONE_DAY)/ONE_DAY;
+			day = (temp + getMonthLengthLP(month-1)*ONE_DAY)/ONE_DAY;
 			if(day==0){
-				temp += MONTH_LENGTH_LP[--month]*ONE_DAY;
-				day = (temp + MONTH_LENGTH_LP[month-1]*ONE_DAY)/ONE_DAY;
+				temp += getMonthLengthLP(--month)*ONE_DAY;
+				day = (temp + getMonthLengthLP(month-1)*ONE_DAY)/ONE_DAY;
 			}
 		}else{
 			while(temp>0){
@@ -418,7 +420,7 @@ public class DateTimeEntity  {
 		StringTokener tokener = new StringTokener();
 		tokener.withText(dateFormat);
 		do {
-			sub = tokener.nextString('"', true, true);
+			sub = tokener.nextString('"', true, false);
 			if (sub.length() > 0 && !tokener.isString()) {
 				// System.out.println(count++
 				// +": #"+sub+"# -- "+tokener.isString());
@@ -474,7 +476,18 @@ public class DateTimeEntity  {
 		set(DateField.DAY_OF_MONTH, value);
 		return this;
 	}
-
+	public DateTimeEntity withHour(int value) {
+		set(DateField.HOUR_OF_DAY, value);
+		return this;
+	}
+	public DateTimeEntity withMinute(int value) {
+		set(DateField.MINUTE_OF_HOUR, value);
+		return this;
+	}
+	public DateTimeEntity withSecond(int value) {
+		set(DateField.SECOND_OF_MINUTE, value);
+		return this;
+	}
 	
 	// GETTER
 	public long getTime(){
@@ -579,5 +592,4 @@ public class DateTimeEntity  {
 		}
 		return 0;
 	}
-
 }
