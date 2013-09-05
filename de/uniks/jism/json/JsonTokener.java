@@ -176,7 +176,7 @@ public class JsonTokener extends Tokener {
 			default:
 				key = nextValue(entity).toString();
 			}
-			c = getCurrentChar();
+			c = nextStartClean();
 			if (c == '=') {
 				if (next() != '>') {
 					back();

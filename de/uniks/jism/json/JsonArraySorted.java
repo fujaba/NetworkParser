@@ -59,10 +59,6 @@ public class JsonArraySorted extends JsonArray {
 	protected void initMap() {
 		values = new LinkedList<Object>();
 	}
-	@Override
-	public void add(int index, Object element) {
-		super.add(index, element);
-	}
 
 	@Override
 	public boolean add(Object newValue) {
