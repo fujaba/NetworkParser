@@ -222,5 +222,6 @@ public class JsonTokener extends Tokener {
 				}
 			}
 		}
+		next();
 	}
 }
