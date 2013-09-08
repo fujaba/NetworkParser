@@ -48,7 +48,8 @@ public class JsonTokener extends Tokener {
 		switch (c) {
 		case '"':
 		case '\'':
-			return nextString(c, false, true);
+			next();
+			return nextString(c, false);
 		case '{':
 			JISMEntity element = creator.getNewObject();
 			if (element instanceof Entity) {
@@ -178,8 +179,8 @@ public class JsonTokener extends Tokener {
 			}
 			c = nextStartClean();
 			if (c == '=') {
-				if (next() != '>') {
-					back();
+				if (charAt(position()+1) == '>') {
+					next();
 				}
 			} else if (c != ':') {
 				throw new TextParsingException("Expected a ':' after a key ["

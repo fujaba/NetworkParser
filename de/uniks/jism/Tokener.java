@@ -182,19 +182,15 @@ public abstract class Tokener {
 	 *            allowCRLF
 	 * @return A String.
 	 */
-	public String nextString(char quote, boolean allowCRLF,
-			boolean ignoreCurrent) {
-		StringBuilder sb = new StringBuilder();
-		char c = getCurrentChar();
-		if (c == quote) {
-			if (!ignoreCurrent) {
-				return "";
-			}
-			c = 1;
-		}else if (!ignoreCurrent && c>0) {
-			sb.append(c);
+	public String nextString(char quote, boolean allowCRLF) {
+		if(getCurrentChar()==0){
+			return "";
 		}
-		while (c != 0 && c != quote) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(getCurrentChar());
+
+		char c;
+		do{
 			c = next();
 			switch (c) {
 			case 0:
@@ -241,7 +237,8 @@ public abstract class Tokener {
 					sb.append(c);
 				}
 			}
-		}
+		}while (c != 0 && c != quote);
+
 		next();
 		return sb.toString();
 	}
