@@ -420,7 +420,7 @@ public class DateTimeEntity  {
 		StringTokener tokener = new StringTokener();
 		tokener.withText(dateFormat);
 		do {
-			sub = tokener.nextString('"', true, false);
+			sub = tokener.nextString('"', true);
 			if (sub.length() > 0 && !tokener.isString()) {
 				// System.out.println(count++
 				// +": #"+sub+"# -- "+tokener.isString());

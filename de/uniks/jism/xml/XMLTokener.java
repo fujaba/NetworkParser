@@ -51,7 +51,8 @@ public class XMLTokener extends Tokener {
 		switch (c) {
 		case '"':
 		case '\'':
-			return nextString(c, false, true);
+			next();
+			return nextString(c, false);
 		case '<':
 			back();
 			JISMEntity element = creator.getNewObject();
@@ -104,24 +105,23 @@ public class XMLTokener extends Tokener {
 					return;
 				}
 				if (c != '<') {
-					xmlEntity.setValue(nextString('<', false, false));
+					xmlEntity.setValue(nextString('<', false));
 					back();
 					continue;
 				}
 			}
 
 			if (c == '<') {
-				if (next() == '/') {
+				if (charAt(position()+1) == '/') {
 					stepPos(">", false, false);
 					break;
 				} else {
-					back();
 					if (getCurrentChar() == '<') {
 						child = (XMLEntity) xmlEntity.getNewObject();
 						parseToEntity((BaseEntity) child);
 						xmlEntity.addChild(child);
 					} else {
-						xmlEntity.setValue(nextString('<', false, false));
+						xmlEntity.setValue(nextString('<', false));
 						back();
 					}
 				}

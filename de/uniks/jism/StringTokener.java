@@ -39,8 +39,7 @@ public class StringTokener extends Tokener {
 	private boolean isString = true;
 
 	@Override
-	public String nextString(char quote, boolean allowCRLF,
-			boolean ignoreCurrent) {
+	public String nextString(char quote, boolean allowCRLF) {
 
 		if(quote=='"'){
 			if (getCurrentChar() == quote) {
@@ -53,7 +52,7 @@ public class StringTokener extends Tokener {
 			String sub = "";
 			StringBuilder sb=new StringBuilder();
 			for(;;){
-				sub = super.nextString(quote, allowCRLF, ignoreCurrent);
+				sub = super.nextString(quote, allowCRLF);
 				sb.append(sub);
 				if(sub.length()>0&&!sub.endsWith("\"")){
 					sb.append(",");
@@ -63,7 +62,7 @@ public class StringTokener extends Tokener {
 			}
 			return sb.toString();
 		}
-		return super.nextString(quote, allowCRLF, ignoreCurrent);
+		return super.nextString(quote, allowCRLF);
 	}
 	
 	/**
@@ -128,7 +127,7 @@ public class StringTokener extends Tokener {
 		ArrayList<String> list=new ArrayList<String>();
 		String sub;
 		do{
-			sub=nextString('"', true, true);
+			sub=nextString('"', true);
 			if(sub.length()>0){
 				if(isString()){
 					list.add("\""+sub+"\"");
