@@ -620,7 +620,7 @@ public class JsonIdMap extends IdMap {
 	 * @return the JsonArray
 	 */
 	public JsonArray toJsonSortedArray(Object object, String property) {
-		JsonArraySorted jsonArray = new JsonArraySorted(new EntityComparator().withColumn(property).withMap(this));
+		JsonArraySorted jsonArray = new JsonArraySorted().withComparator(new EntityComparator().withColumn(property).withMap(this));
 		toJsonArray(object, jsonArray, filter.clone());
 		return jsonArray;
 	}

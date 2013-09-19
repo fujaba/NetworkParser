@@ -38,11 +38,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public abstract class AbstractIdMap {
 	/** The creators. */
-	protected HashMap<String, SendableEntityCreator> creators;
-
-	public AbstractIdMap() {
-		this.creators = new HashMap<String, SendableEntityCreator>();
-	}
+	protected HashMap<String, SendableEntityCreator> creators=new HashMap<String, SendableEntityCreator>();
 
 	/**
 	 * Gets the creator class.

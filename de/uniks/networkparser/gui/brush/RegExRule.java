@@ -1,4 +1,4 @@
-package de.uniks.networkparser.event;
+package de.uniks.networkparser.gui.brush;
 
 /*
  NetworkParser
@@ -29,80 +29,65 @@ package de.uniks.networkparser.event;
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-import de.uniks.networkparser.interfaces.PeerMessage;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
+import de.uniks.networkparser.Style;
 
-/**
- * The Class ByteMessage.
- */
-public class ByteMessage implements PeerMessage {
-	/** The Constant PROPERTY_VALUE. */
-	public static final String PROPERTY_VALUE = "value";
-
-	/** The value. */
-	private byte[] value = new byte[] {};
-
+public class RegExRule {
 	/**
-	 * Instantiates a new byte message.
+	 * The compiled pattern.
 	 */
-	public ByteMessage() {
+	protected Pattern pattern;
+	/**
+	 * Override Style
+	 */
+	protected Style style;
+
+	protected HashMap<Integer, Object> groupOperations = new HashMap<Integer, Object>();
+	
+	public RegExRule(){
+		groupOperations.put(0, null);
 	}
 
 	/**
-	 * Instantiates a new byte message.
+	 * Get the compiled pattern
 	 * 
-	 * @param message
-	 *            the message
+	 * @return the pattern
 	 */
-	public ByteMessage(byte[] message) {
-		setValue(message);
+	public Pattern getPattern() {
+		return pattern;
 	}
 
-	/*
-	 * Generic Getter for Attributes
-	 */
-	@Override
-	public Object get(String attrName) {
-		String attribute;
-		int pos = attrName.indexOf(".");
-		if (pos > 0) {
-			attribute = attrName.substring(0, pos);
-		} else {
-			attribute = attrName;
-		}
-		if (attribute.equalsIgnoreCase(PROPERTY_VALUE)) {
-			return this.value;
+	public Style getStyle() {
+		return style;
+	}
+	
+	public void setStyleKey(String value) {
+		this.groupOperations.put(0, value);
+	}
+	
+	public String getStyleKey() {
+		if (groupOperations.size() == 1) {
+			return (String) groupOperations.get(0);
 		}
 		return null;
 	}
 
-	/*
-	 * Generic Setter for Attributes
+	/**
+	 * Get the map of group operations. For more details, see
+	 * {@link #groupOperations}.
+	 * 
+	 * @return a copy of the group operations map
 	 */
-	@Override
-	public boolean set(String attribute, Object value) {
-		if (attribute.equalsIgnoreCase(PROPERTY_VALUE)) {
-			setValue((byte[]) value);
-			return true;
+	public Map<Integer, Object> getGroupOperations() {
+		return new HashMap<Integer, Object>(groupOperations);
+	}
+	
+	public void addToGroupOperation(Object... values){
+		int startIndex=groupOperations.size();
+		for(int i=0;i<values.length;i++){
+			this.groupOperations.put(startIndex++, values[i]);
 		}
-		return false;
-	}
-
-	/**
-	 * Gets the value.
-	 * 
-	 * @return the value
-	 */
-	public byte[] getValue() {
-		return this.value;
-	}
-
-	/**
-	 * Sets the value.
-	 * 
-	 * @param value
-	 *            the new value
-	 */
-	public void setValue(byte[] value) {
-		this.value = value;
 	}
 }
