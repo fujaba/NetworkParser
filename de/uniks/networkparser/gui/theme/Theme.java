@@ -1,4 +1,4 @@
-package de.uniks.networkparser.event;
+package de.uniks.networkparser.gui.theme;
 
 /*
  NetworkParser
@@ -29,80 +29,35 @@ package de.uniks.networkparser.event;
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-import de.uniks.networkparser.interfaces.PeerMessage;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import de.uniks.networkparser.Style;
 
-/**
- * The Class ByteMessage.
- */
-public class ByteMessage implements PeerMessage {
-	/** The Constant PROPERTY_VALUE. */
-	public static final String PROPERTY_VALUE = "value";
-
-	/** The value. */
-	private byte[] value = new byte[] {};
-
+public class Theme {
 	/**
-	 * Instantiates a new byte message.
+	 * The styles of this theme.
 	 */
-	public ByteMessage() {
-	}
+	protected Map<String, Style> styles=new LinkedHashMap<String, Style>();
 
-	/**
-	 * Instantiates a new byte message.
-	 * 
-	 * @param message
-	 *            the message
-	 */
-	public ByteMessage(byte[] message) {
-		setValue(message);
-	}
-
-	/*
-	 * Generic Getter for Attributes
-	 */
-	@Override
-	public Object get(String attrName) {
-		String attribute;
-		int pos = attrName.indexOf(".");
-		if (pos > 0) {
-			attribute = attrName.substring(0, pos);
-		} else {
-			attribute = attrName;
-		}
-		if (attribute.equalsIgnoreCase(PROPERTY_VALUE)) {
-			return this.value;
-		}
-		return null;
-	}
-
-	/*
-	 * Generic Setter for Attributes
-	 */
-	@Override
-	public boolean set(String attribute, Object value) {
-		if (attribute.equalsIgnoreCase(PROPERTY_VALUE)) {
-			setValue((byte[]) value);
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Gets the value.
-	 * 
-	 * @return the value
-	 */
-	public byte[] getValue() {
-		return this.value;
-	}
-
-	/**
-	 * Sets the value.
-	 * 
-	 * @param value
-	 *            the new value
-	 */
-	public void setValue(byte[] value) {
-		this.value = value;
-	}
+	  /**
+	   * Add style.
+	   * @param styleKey the keyword of the style
+	   * @param style the style
+	   * @return see the return value of {@link Map#put(Object, Object)}
+	   */
+	  public Style addStyle(String styleKey, Style style) {
+	    return styles.put(styleKey, style);
+	  }
+	  
+	  /**
+	   * Get the style by keyword.
+	   * @param key the keyword
+	   * @return the {@link syntaxhighlighter.theme.Style} related to the 
+	   * {@code key}; if the style related to the {@code key} not exist, the 
+	   * style of 'plain' will return.
+	   */
+	  public Style getStyle(String key) {
+	    Style returnStyle = styles.get(key);
+	    return returnStyle != null ? returnStyle : getStyle(StyleConstants.STYLE_PLAIN);
+	  }
 }

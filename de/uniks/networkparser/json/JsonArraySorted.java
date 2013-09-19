@@ -30,6 +30,7 @@ package de.uniks.networkparser.json;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.SortedSet;
 
@@ -37,24 +38,7 @@ import de.uniks.networkparser.sort.EntityComparator;
 import de.uniks.networkparser.sort.SortingDirection;
 
 public class JsonArraySorted extends JsonArray implements SortedSet<Object>{
-	protected Comparator<? super Object> cpr;
-	
-	/**
-	 * Instantiates a new json sorted array.
-	 */
-	public JsonArraySorted(){
-		this.cpr = new EntityComparator().withColumn(EntityComparator.HASHCODE).withDirection(SortingDirection.ASC);
-	}
-	
-	/**
-	 * Instantiates a new json sorted array.
-	 * 
-	 * @param comparator
-	 *            the comparator
-	 */
-	public JsonArraySorted(Comparator<Object> comparator) {
-		this.cpr = comparator;
-	}
+	protected Comparator<Object> cpr;
 	
 	@Override
 	protected void initMap() {
@@ -64,7 +48,7 @@ public class JsonArraySorted extends JsonArray implements SortedSet<Object>{
 	@Override
 	public boolean add(Object newValue) {
 		for (int i = 0; i < values.size(); i++) {
-			int result = cpr.compare(values.get(i), newValue);
+			int result = comparator().compare(values.get(i), newValue);
 			if (result >= 0) {
 				values.add(i, newValue);
 				return true;
@@ -73,39 +57,89 @@ public class JsonArraySorted extends JsonArray implements SortedSet<Object>{
 		return values.add(newValue);
 	}
 	
+	public JsonArraySorted withComparator(Comparator<Object> comparator){
+		this.cpr = comparator;
+		return this;
+	}
+	
 	@Override
 	public Comparator<? super Object> comparator() {
-		// TODO Auto-generated method stub
-		return null;
+		if(this.cpr==null){
+			this.cpr = new EntityComparator().withColumn(EntityComparator.HASHCODE).withDirection(SortingDirection.ASC);
+		}
+		return cpr;
 	}
 
 	@Override
 	public SortedSet<Object> subSet(Object fromElement, Object toElement) {
-		// TODO Auto-generated method stub
-		return null;
+		JsonArraySorted newList = new JsonArraySorted().withComparator(cpr);
+		
+		// PRE WHILE
+		Iterator<Object> iterator = iterator();
+		while(iterator.hasNext()){
+			Object item = iterator.next();
+			if(cpr.compare(item, fromElement)>=0){
+				newList.add(item);
+				break;
+			}
+		}
+		
+		// MUST COPY
+		while(iterator.hasNext()){
+			Object item = iterator.next();
+			if(cpr.compare(item, toElement)>=0){
+				break;
+			}
+			newList.add(item);
+		}
+		return newList;
 	}
 
 	@Override
 	public SortedSet<Object> headSet(Object toElement) {
-		// TODO Auto-generated method stub
-		return null;
+		Iterator<Object> iterator = iterator();
+		JsonArraySorted newList = new JsonArraySorted().withComparator(cpr);
+
+		// MUST COPY
+		while(iterator.hasNext()){
+			Object item = iterator.next();
+			if(cpr.compare(item, toElement)>=0){
+				break;
+			}
+			newList.add(item);
+		}
+		return newList;
 	}
 
 	@Override
 	public SortedSet<Object> tailSet(Object fromElement) {
-		// TODO Auto-generated method stub
-		return null;
+		Iterator<Object> iterator = iterator();
+		JsonArraySorted newList = new JsonArraySorted().withComparator(cpr);
+
+		// PRE WHILE
+		while(iterator.hasNext()){
+			Object item = iterator.next();
+			if(cpr.compare(item, fromElement)>=0){
+				newList.add(item);
+				break;
+			}
+		}
+	
+		// MUST COPY
+		while(iterator.hasNext()){
+			Object item = iterator.next();
+			newList.add(item);
+		}
+		return newList;
 	}
 
 	@Override
 	public Object first() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.get(0);
 	}
 
 	@Override
 	public Object last() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.get(this.size()-1);
 	}
 }

@@ -1,4 +1,4 @@
-package de.uniks.networkparser.event;
+package de.uniks.networkparser.gui.theme;
 
 /*
  NetworkParser
@@ -29,80 +29,21 @@ package de.uniks.networkparser.event;
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-import de.uniks.networkparser.interfaces.PeerMessage;
 
-/**
- * The Class ByteMessage.
- */
-public class ByteMessage implements PeerMessage {
-	/** The Constant PROPERTY_VALUE. */
-	public static final String PROPERTY_VALUE = "value";
-
-	/** The value. */
-	private byte[] value = new byte[] {};
-
-	/**
-	 * Instantiates a new byte message.
-	 */
-	public ByteMessage() {
-	}
-
-	/**
-	 * Instantiates a new byte message.
-	 * 
-	 * @param message
-	 *            the message
-	 */
-	public ByteMessage(byte[] message) {
-		setValue(message);
-	}
-
-	/*
-	 * Generic Getter for Attributes
-	 */
-	@Override
-	public Object get(String attrName) {
-		String attribute;
-		int pos = attrName.indexOf(".");
-		if (pos > 0) {
-			attribute = attrName.substring(0, pos);
-		} else {
-			attribute = attrName;
-		}
-		if (attribute.equalsIgnoreCase(PROPERTY_VALUE)) {
-			return this.value;
-		}
-		return null;
-	}
-
-	/*
-	 * Generic Setter for Attributes
-	 */
-	@Override
-	public boolean set(String attribute, Object value) {
-		if (attribute.equalsIgnoreCase(PROPERTY_VALUE)) {
-			setValue((byte[]) value);
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Gets the value.
-	 * 
-	 * @return the value
-	 */
-	public byte[] getValue() {
-		return this.value;
-	}
-
-	/**
-	 * Sets the value.
-	 * 
-	 * @param value
-	 *            the new value
-	 */
-	public void setValue(byte[] value) {
-		this.value = value;
-	}
+public class StyleConstants {
+	public final static String STYLE_BOLD="bold";
+	public final static String STYLE_PLAIN="plain";
+	public final static String STYLE_COMMENTS="comments";
+	public final static String STYLE_STRING="string";
+	public final static String STYLE_KEYWORD="keyword";
+	public final static String STYLE_PREPROCESSOR="preprocessor";
+	public final static String STYLE_VARIABLE="variable";
+	public final static String STYLE_VALUE="value";
+	public final static String STYLE_FUNCTIONS="functions";
+	public final static String STYLE_CONSTANTS="constants";
+	public final static String STYLE_SCRIPT="script";
+	public final static String STYLE_COLOR1="color1";
+	public final static String STYLE_COLOR2="color2";
+	public final static String STYLE_COLOR3="color3";
+	public final static String STYLE_HIGHTLIGHTED="hightlighted";
 }

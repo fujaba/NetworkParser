@@ -244,8 +244,12 @@ public class EntityUtil {
 	 *            The value to be serialized.
 	 * @param indentFactor
 	 *            The number of spaces to add to each level of indentation.
-	 * @param indent
+	 * @param intent
 	 *            The indentation of the top level.
+	 * @param simpleText
+	 *            Boolean for switch between text and Escaped-Text
+	 * @param reference
+	 *            A Reference Object to generate new Objects like Factory Pattern
 	 * @return a printable, displayable, transmittable representation of the
 	 *         object, beginning with <code>{</code>&nbsp;<small>(left
 	 *         brace)</small> and ending with <code>}</code>&nbsp;<small>(right

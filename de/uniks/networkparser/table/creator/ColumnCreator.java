@@ -1,4 +1,4 @@
-package de.uniks.networkparser.event;
+package de.uniks.networkparser.table.creator;
 
 /*
  NetworkParser
@@ -29,80 +29,48 @@ package de.uniks.networkparser.event;
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-import de.uniks.networkparser.interfaces.PeerMessage;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.table.Column;
 
-/**
- * The Class ByteMessage.
- */
-public class ByteMessage implements PeerMessage {
-	/** The Constant PROPERTY_VALUE. */
-	public static final String PROPERTY_VALUE = "value";
+public class ColumnCreator implements SendableEntityCreator{
+	private static final String[] properties=new String[]{Column.PROPERTY_ATTRNAME,
+		Column.PROPERTY_NUMBERFORMAT,
+		Column.PROPERTY_EDITCOLUMN,
+		Column.PROPERTY_LABEL,
+		Column.PROPERTY_DEFAULTTEXT,
+		Column.PROPERTY_BACKGROUNDCOLOR,
+		Column.PROPERTY_FORGROUNDCOLOR,
+		Column.PROPERTY_FORGROUNDCOLORACTIV,
+		Column.PROPERTY_BACKGROUNDCOLORACTIV,
+		Column.PROPERTY_TEXTALIGNMENT,
+		Column.PROPERTY_FONT,
+		Column.PROPERTY_SIZE,
+		Column.PROPERTY_RESIZE,
+		Column.PROPERTY_VISIBLE,
+		Column.PROPERTY_MOVABLE,
+		Column.PROPERTY_ALTTEXT,
+		Column.PROPERTY_BROWSERID,
+		Column.PROPERTY_VALUEFROMDROPDOWNLIST};
 
-	/** The value. */
-	private byte[] value = new byte[] {};
-
-	/**
-	 * Instantiates a new byte message.
-	 */
-	public ByteMessage() {
-	}
-
-	/**
-	 * Instantiates a new byte message.
-	 * 
-	 * @param message
-	 *            the message
-	 */
-	public ByteMessage(byte[] message) {
-		setValue(message);
-	}
-
-	/*
-	 * Generic Getter for Attributes
-	 */
 	@Override
-	public Object get(String attrName) {
-		String attribute;
-		int pos = attrName.indexOf(".");
-		if (pos > 0) {
-			attribute = attrName.substring(0, pos);
-		} else {
-			attribute = attrName;
-		}
-		if (attribute.equalsIgnoreCase(PROPERTY_VALUE)) {
-			return this.value;
-		}
-		return null;
+	public String[] getProperties() {
+		return properties;
 	}
 
-	/*
-	 * Generic Setter for Attributes
-	 */
 	@Override
-	public boolean set(String attribute, Object value) {
-		if (attribute.equalsIgnoreCase(PROPERTY_VALUE)) {
-			setValue((byte[]) value);
-			return true;
-		}
-		return false;
+	public Object getSendableInstance(boolean prototyp) {
+		return new Column();
 	}
 
-	/**
-	 * Gets the value.
-	 * 
-	 * @return the value
-	 */
-	public byte[] getValue() {
-		return this.value;
+	@Override
+	public Object getValue(Object entity, String attribute) {
+		return ((Column)entity).get(attribute);
 	}
 
-	/**
-	 * Sets the value.
-	 * 
-	 * @param value
-	 *            the new value
-	 */
-	public void setValue(byte[] value) {
-		this.value = value;
+	@Override
+	public boolean setValue(Object entity, String attribute, Object value,
+			String type) {
+		return ((Column)entity).set(attribute, value);
 	}
+
 }
