@@ -112,7 +112,7 @@ public class CellValue{
 	public int getColumnEnd(){
 		if(widthExpression!=null){
 			RegCalculator calculator=new RegCalculator().withStandard();
-			calculator.withConstants(COUNT, grid.getCountRows());
+			calculator.withConstants(COUNT, grid.getCountColumns());
 			calculator.withConstants(POSITION, column);
 			double result = (double)calculator.calculate(widthExpression);
 			int end = (int)result;
@@ -122,10 +122,16 @@ public class CellValue{
 		return getColumn()+getColumnSpan()-1;
 	}
 	public int getColumnSpan() {
+		if(widthExpression!=null){
+			return getColumnEnd()-getColumn()+1;
+		}
 		return columnSpan;
 	}
 
 	public int getRowSpan() {
+		if(heightExpression!=null){
+			return getRowEnd()-getRow()+1;
+		}
 		return rowSpan;
 	}
 	public CellValue withRowSpan(int value) {
