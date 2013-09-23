@@ -106,7 +106,16 @@ public class GridValue {
 		 for (CellValue n: children.values()) {
 			 int rowEnd = n.getRowEnd();
 			 int colEnd = n.getColumnEnd();
-//			 int col = n.getColumn();
+
+			 int col = n.getColumn();
+			 int row = n.getRow();
+			 if(colEnd-col>0){
+				 guiElement.setSpanColumn(n);
+			 }
+			 if(rowEnd-row>0){
+				 guiElement.setSpanRow(n);
+			 }
+
 			 String rowId="0";
 			 if(rowEnd>=maxRows){
 				 rowId="1";
@@ -154,5 +163,9 @@ public class GridValue {
 			}
 		}
 		maxRows++;
+	}
+	
+	public CellValue getCellValue(Object node) {
+		return children.get(node);
 	}
 }
