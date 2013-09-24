@@ -28,12 +28,13 @@ package de.uniks.networkparser.yuml;
  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 import java.util.Collection;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.interfaces.JISMEntity;
+import de.uniks.networkparser.interfaces.BaseEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+
 /**
  * The Class YUMLIdParser.
  */
@@ -47,8 +48,9 @@ public class YUMLIdMap extends IdMap {
 
 	/** The Constant for OBJECT Diagramms. */
 	public static final int OBJECT = 2;
-	
-	private YUMLIdMapFilter filter = new YUMLIdMapFilter().withShowCardinality(true).withTyp(CLASS);
+
+	private YUMLIdMapFilter filter = new YUMLIdMapFilter().withShowCardinality(
+			true).withTyp(CLASS);
 
 	/**
 	 * Instantiates a new yUML id parser.
@@ -59,33 +61,33 @@ public class YUMLIdMap extends IdMap {
 
 	/**
 	 * Instantiates a new yUML id parser.
-	 *
+	 * 
 	 * @param parent
-	 *			the parent
+	 *            the parent
 	 */
 	public YUMLIdMap(IdMap parent) {
 		super(parent);
 	}
-	
+
 	/**
 	 * Parses the object.
-	 *
+	 * 
 	 * @param object
-	 *			the object
+	 *            the object
 	 * @return the string
 	 */
 	public String parseObject(Object object) {
-		return parse(object, filter.clone(new YUMLIdMapFilter()).withTyp(OBJECT));
+		return parse(object, filter.clone(new YUMLIdMapFilter())
+				.withTyp(OBJECT));
 	}
-	
 
 	/**
 	 * Parses the class.
-	 *
+	 * 
 	 * @param object
-	 *			the object
+	 *            the object
 	 * @param showCardinality
-	 *			the show cardinality
+	 *            the show cardinality
 	 * @return the string
 	 */
 	public String parseClass(Object object) {
@@ -100,33 +102,39 @@ public class YUMLIdMap extends IdMap {
 
 	/**
 	 * Parses the.
-	 *
-	 * @param object  the object to Serialisation
-	 * @param typ     Is it a OBJECT OR A CLASS diagram
-	 * @param filter  Filter for Serialisation
-	 * @param showCardinality  the show cardinality
+	 * 
+	 * @param object
+	 *            the object to Serialisation
+	 * @param typ
+	 *            Is it a OBJECT OR A CLASS diagram
+	 * @param filter
+	 *            Filter for Serialisation
+	 * @param showCardinality
+	 *            the show cardinality
 	 * @return the Object as String
 	 */
-	private YUMLEntity parse(Object object, YUMLIdMapFilter filter, YUMLList list, int deep) {
+	private YUMLEntity parse(Object object, YUMLIdMapFilter filter,
+			YUMLList list, int deep) {
 		if (object == null) {
 			return null;
 		}
-		
+
 		String mainKey = getId(object);
 		YUMLEntity element = list.getById(mainKey);
-		if(element!=null){
+		if (element != null) {
 			return element;
 		}
-		
+
 		SendableEntityCreator prototyp = getCreatorClass(object);
-		String className = object.getClass().getName();;
+		String className = object.getClass().getName();
+		;
 		className = className.substring(className.lastIndexOf('.') + 1);
-		
-		element=new YUMLEntity();
+
+		element = new YUMLEntity();
 		element.withId(mainKey);
 		element.withClassName(className);
 		list.add(element);
-		if (prototyp != null ) {
+		if (prototyp != null) {
 			for (String property : prototyp.getProperties()) {
 				Object value = prototyp.getValue(object, property);
 				if (value == null) {
@@ -134,54 +142,54 @@ public class YUMLIdMap extends IdMap {
 				}
 				if (value instanceof Collection<?>) {
 					for (Object containee : ((Collection<?>) value)) {
-						parsePropertyValue(object, filter,
-								list, deep, element, property, containee, "0..n");
+						parsePropertyValue(object, filter, list, deep, element,
+								property, containee, "0..n");
 					}
 				} else {
-					parsePropertyValue(object, filter,
-							list, deep, element, property, value, "0..1");
+					parsePropertyValue(object, filter, list, deep, element,
+							property, value, "0..1");
 				}
 			}
 		}
 		return element;
 	}
 
-	private void parsePropertyValue(Object entity,
-			YUMLIdMapFilter filter, YUMLList list, int deep,
-			YUMLEntity element, String property, Object item, String cardinality) {
-		if(item == null){
-			return ;
+	private void parsePropertyValue(Object entity, YUMLIdMapFilter filter,
+			YUMLList list, int deep, YUMLEntity element, String property,
+			Object item, String cardinality) {
+		if (item == null) {
+			return;
 		}
-		if (!filter.isPropertyRegard(this, entity, property,
-				item, true, deep+1)) {
-			return ;
+		if (!filter.isPropertyRegard(this, entity, property, item, true,
+				deep + 1)) {
+			return;
 		}
-		if (!filter.isConvertable(this, entity, property,
-				item, true, deep+1)) {
-			return ;
+		if (!filter.isConvertable(this, entity, property, item, true, deep + 1)) {
+			return;
 		}
 		SendableEntityCreator valueCreater = getCreatorClass(item);
 		if (valueCreater != null) {
-			YUMLEntity subId = parse(item, filter, list, deep+1);
-			list.addCardinality(new Cardinality().withSource(element).withTarget(subId).withCardinality(cardinality));
-		}else{
-			element.addValue(property, item.getClass().getName(), ""+item);
+			YUMLEntity subId = parse(item, filter, list, deep + 1);
+			list.addCardinality(new Cardinality().withSource(element)
+					.withTarget(subId).withCardinality(cardinality));
+		} else {
+			element.addValue(property, item.getClass().getName(), "" + item);
 		}
 		return;
 	}
-	
+
 	@Override
-	public JISMEntity encode(Object value) {
+	public BaseEntity encode(Object value) {
 		YUMLList list = new YUMLList();
 		parse(value, this.filter.clone(new YUMLIdMapFilter()), list, 0);
 		return list;
 	}
-	
+
 	@Override
-	public JISMEntity encode(Object value, Filter filter) {
+	public BaseEntity encode(Object value, Filter filter) {
 		YUMLList list = new YUMLList();
-		if(filter instanceof YUMLIdMapFilter){
-			YUMLIdMapFilter yumlFilter = (YUMLIdMapFilter)filter;
+		if (filter instanceof YUMLIdMapFilter) {
+			YUMLIdMapFilter yumlFilter = (YUMLIdMapFilter) filter;
 			list.withTyp(yumlFilter.getTyp());
 			parse(value, yumlFilter, list, 0);
 		}
@@ -189,16 +197,16 @@ public class YUMLIdMap extends IdMap {
 	}
 
 	@Override
-	public Object decode(JISMEntity value) {
+	public Object decode(BaseEntity value) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	/**
 	 * Gets the class name.
-	 *
+	 * 
 	 * @param object
-	 *			the object
+	 *            the object
 	 * @return the class name
 	 */
 	public String getClassName(Object object) {

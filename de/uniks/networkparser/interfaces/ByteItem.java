@@ -32,7 +32,7 @@ package de.uniks.networkparser.interfaces;
 import de.uniks.networkparser.bytes.BufferedBytes;
 import de.uniks.networkparser.bytes.converter.ByteConverter;
 
-public interface ByteItem extends JISMEntity{
+public interface ByteItem extends BaseEntity{
 	/**
 	 * @return the ByteItem as String
 	 */

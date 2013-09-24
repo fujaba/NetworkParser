@@ -28,7 +28,7 @@ package de.uniks.networkparser.xml.creator;
  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 import java.util.ArrayList;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.XMLCreator;
@@ -37,13 +37,14 @@ import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XSDEntity;
 
 public class XSDEntityCreator implements XMLCreator, XMLGrammar {
-	private String nameSpace="";
+	private String nameSpace = "";
 	private ArrayList<String> privateStack = new ArrayList<String>();
-	public static final String[] IGNORETAGS = new String[] {"annotation",
+	public static final String[] IGNORETAGS = new String[] { "annotation",
 			"documentation", "complextype", "simpletype" };
 
 	/**
-	 * @param namespace     the NameSpace for xsd
+	 * @param namespace
+	 *            the NameSpace for xsd
 	 */
 	public XSDEntityCreator withNameSpace(String namespace) {
 		this.nameSpace = namespace;
@@ -52,7 +53,7 @@ public class XSDEntityCreator implements XMLCreator, XMLGrammar {
 
 	@Override
 	public String[] getProperties() {
-		return new String[] {XSDEntity.PROPERTY_CHOICE,
+		return new String[] { XSDEntity.PROPERTY_CHOICE,
 				XSDEntity.PROPERTY_SEQUENCE, XSDEntity.PROPERTY_ATTRIBUTE,
 				XSDEntity.PROPERTY_MINOCCURS, XSDEntity.PROPERTY_MAXOCCURS };
 	}

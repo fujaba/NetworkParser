@@ -34,8 +34,9 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import de.uniks.networkparser.interfaces.BaseEntity;
+
 import de.uniks.networkparser.interfaces.BaseEntityList;
+import de.uniks.networkparser.interfaces.BaseEntity;
 
 public abstract class Entity implements BaseEntity {
 	/**
@@ -119,12 +120,10 @@ public abstract class Entity implements BaseEntity {
 	 * @param key
 	 *            A key string.
 	 * @return The object associated with the key.
-	 * @throws RuntimeException
-	 *             if the key is not found.
 	 */
 	public Object get(String key) {
 		if (key == null) {
-			throw new RuntimeException("Null key.");
+			return null;
 		}
 		return getMap().get(key);
 	}
@@ -139,7 +138,7 @@ public abstract class Entity implements BaseEntity {
 	 *             if the value is not a Boolean or the String "true" or
 	 *             "false".
 	 */
-	public boolean getBoolean(String key) {
+	public boolean getBoolean(String key) throws RuntimeException{
 		Object object = this.get(key);
 		if (object == null
 				|| object.equals(Boolean.FALSE)
@@ -165,7 +164,7 @@ public abstract class Entity implements BaseEntity {
 	 *             if the key is not found or if the value is not a Number
 	 *             object and cannot be converted to a number.
 	 */
-	public double getDouble(String key) {
+	public double getDouble(String key) throws RuntimeException{
 		Object object = this.get(key);
 		try {
 			return object instanceof Number ? ((Number) object).doubleValue()
@@ -186,7 +185,7 @@ public abstract class Entity implements BaseEntity {
 	 *             if the key is not found or if the value cannot be converted
 	 *             to an integer.
 	 */
-	public int getInt(String key) {
+	public int getInt(String key) throws RuntimeException{
 		Object object = this.get(key);
 		try {
 			return object instanceof Number ? ((Number) object).intValue()
@@ -207,7 +206,7 @@ public abstract class Entity implements BaseEntity {
 	 *             if the key is not found or if the value cannot be converted
 	 *             to a long.
 	 */
-	public long getLong(String key) {
+	public long getLong(String key) throws RuntimeException{
 		Object object = this.get(key);
 		try {
 			return object instanceof Number ? ((Number) object).longValue()
@@ -247,7 +246,7 @@ public abstract class Entity implements BaseEntity {
 	 * @throws RuntimeException
 	 *             if there is no string value for the key.
 	 */
-	public String getString(String key) {
+	public String getString(String key) throws RuntimeException{
 		Object object = this.get(key);
 		if (object instanceof String) {
 			return (String) object;
@@ -300,7 +299,7 @@ public abstract class Entity implements BaseEntity {
 	 *             If there is already a property with this name that is not an
 	 *             Integer, Long, Double, or Float.
 	 */
-	public Entity increment(String key) {
+	public Entity increment(String key) throws RuntimeException{
 		Object value = this.get(key);
 		if (value == null) {
 			this.put(key, 1);

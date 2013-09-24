@@ -183,7 +183,7 @@ public class AES {
 	 * @param plain the 128-bit plaintext value to encrypt.
 	 * @return the encrypted 128-bit ciphertext value.
 	 */
-	public byte[] encode(byte[] plain) {
+	public byte[] encode(byte[] plain) throws IllegalArgumentException{
 		// define working variables
 		byte [] a = new byte[BLOCK_SIZE];    // AES state variable
 		byte [] ta = new byte[BLOCK_SIZE];    // AES temp state variable
@@ -264,7 +264,7 @@ public class AES {
 	 * @param cipher the 128-bit ciphertext value to decrypt.
 	 * @return the decrypted 128-bit plaintext value.
 	 */
-	public byte[] decode(byte[] cipher) {
+	public byte[] decode(byte[] cipher) throws IllegalArgumentException{
 		// define working variables
 		byte [] a = new byte[BLOCK_SIZE];    // AES state variable
 		byte [] ta = new byte[BLOCK_SIZE];    // AES temp state variable
@@ -343,7 +343,7 @@ public class AES {
 	 *
 	 * @param key        The 128/192/256-bit AES key to use.
 	 */
-	public void setKey(byte[] key) {
+	public void setKey(byte[] key) throws IllegalArgumentException{
 		// assorted internal constants
 		final int BC = BLOCK_SIZE / 4;
 		final int Klen = key.length;

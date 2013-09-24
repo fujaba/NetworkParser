@@ -34,14 +34,14 @@ import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.exceptions.TextParsingException;
 import de.uniks.networkparser.interfaces.BaseEntity;
 import de.uniks.networkparser.interfaces.BaseEntityList;
-import de.uniks.networkparser.interfaces.JISMEntity;
+import de.uniks.networkparser.interfaces.TextEntity;
 import de.uniks.networkparser.xml.XMLEntity;
 
 public class JsonTokener extends Tokener {
 	public final static String STOPCHARS = ",:]}/\\\"[{;=# ";
 
 	@Override
-	public Object nextValue(JISMEntity creator) {
+	public Object nextValue(BaseEntity creator) {
 		char c = nextStartClean();
 
 		switch (c) {
@@ -50,7 +50,7 @@ public class JsonTokener extends Tokener {
 			next();
 			return nextString(c, false);
 		case '{':
-			JISMEntity element = creator.getNewObject();
+			BaseEntity element = creator.getNewObject();
 			if (element instanceof Entity) {
 				this.parseToEntity((Entity) element);
 			}
@@ -151,10 +151,13 @@ public class JsonTokener extends Tokener {
 	}
 
 	@Override
-	public void parseToEntity(BaseEntity entity) {
+	public void parseToEntity(BaseEntity entity) throws TextParsingException{
+		if (!(entity instanceof TextEntity)) {
+			return;
+		}
 		char c;
 		String key;
-
+		TextEntity item=(TextEntity)entity;
 		if (nextStartClean() != '{') {
 			throw new TextParsingException(
 					"A JsonObject text must begin with '{'", this);
@@ -171,10 +174,10 @@ public class JsonTokener extends Tokener {
 				return;
 			case ',':
 				next();
-				key = nextValue(entity).toString();
+				key = nextValue(item).toString();
 				break;
 			default:
-				key = nextValue(entity).toString();
+				key = nextValue(item).toString();
 			}
 			c = nextStartClean();
 			if (c == '=') {
@@ -186,12 +189,12 @@ public class JsonTokener extends Tokener {
 						+ getNextString(30) + "]", this);
 			}
 			next();
-			entity.put(key, nextValue(entity));
+			item.put(key, nextValue(entity));
 		}
 	}
 
 	@Override
-	public void parseToEntity(BaseEntityList entityList) {
+	public void parseToEntity(BaseEntityList entityList) throws TextParsingException{
 		char c=nextStartClean();
 		if (c != '[') {
 			throw new TextParsingException(

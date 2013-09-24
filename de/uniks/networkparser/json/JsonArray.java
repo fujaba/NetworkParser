@@ -31,10 +31,12 @@ package de.uniks.networkparser.json;
 */
 import java.util.Collection;
 import java.util.Iterator;
+
 import de.uniks.networkparser.EntityList;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Tokener;
-import de.uniks.networkparser.interfaces.JISMEntity;
+import de.uniks.networkparser.exceptions.TextParsingException;
+import de.uniks.networkparser.interfaces.BaseEntity;
 /**
  * A JSONArray is an ordered sequence of values. Its external text form is a
  * string wrapped in square brackets with commas separating the values. The
@@ -91,17 +93,17 @@ public class JsonArray extends EntityList {
 	 * @param index
 	 *            The index must be between 0 and length() - 1.
 	 * @return A JSONArray value.
-	 * @throws RuntimeException
+	 * @throws TextParsingException
 	 *             If there is no value for the index. or if the value is not a
 	 *             JSONArray
 	 */
-	public JsonArray getJSONArray(int index) throws RuntimeException {
+	public JsonArray getJSONArray(int index) throws TextParsingException {
 		Object object = get(index);
 		if (object instanceof JsonArray) {
 			return (JsonArray) object;
 		}
-		throw new RuntimeException("JSONArray[" + index
-				+ "] is not a JSONArray.");
+		throw new TextParsingException("JSONArray[" + index
+				+ "] is not a JSONArray.", index);
 	}
 
 	/**
@@ -110,17 +112,17 @@ public class JsonArray extends EntityList {
 	 * @param index
 	 *            subscript
 	 * @return A JSONObject value.
-	 * @throws RuntimeException
+	 * @throws TextParsingException
 	 *             If there is no value for the index or if the value is not a
 	 *             JSONObject
 	 */
-	public JsonObject getJSONObject(int index) throws RuntimeException {
+	public JsonObject getJSONObject(int index) throws TextParsingException {
 		Object object = get(index);
 		if (object instanceof JsonObject) {
 			return (JsonObject) object;
 		}
-		throw new RuntimeException("JSONArray[" + index
-				+ "] is not a JSONObject.");
+		throw new TextParsingException("JSONArray[" + index
+				+ "] is not a JSONObject.", index);
 	}
 
 	/**
@@ -132,10 +134,8 @@ public class JsonArray extends EntityList {
 	 *            paired with the values.
 	 * @return A JSONObject, or null if there are no names or if this JSONArray
 	 *         has no values.
-	 * @throws RuntimeException
-	 *             If any of the names are null.
 	 */
-	public JsonObject toJSONObject(JsonArray names) throws RuntimeException {
+	public JsonObject toJSONObject(JsonArray names) {
 		if (names == null || names.size() == 0 || size() == 0) {
 			return null;
 		}
@@ -179,11 +179,9 @@ public class JsonArray extends EntityList {
 	 *         object, beginning with <code>[</code>&nbsp;<small>(left
 	 *         bracket)</small> and ending with <code>]</code>
 	 *         &nbsp;<small>(right bracket)</small>.
-	 * @throws RuntimeException
-	 *             the runtime exception
 	 */
 	@Override
-	public String toString(int indentFactor) throws RuntimeException {
+	public String toString(int indentFactor) {
 		return toString(indentFactor, 0);
 	}
 
@@ -239,8 +237,6 @@ public class JsonArray extends EntityList {
 	 *            A string that begins with <code>[</code>&nbsp;<small>(left
 	 *            bracket)</small> and ends with <code>]</code>
 	 *            &nbsp;<small>(right bracket)</small>.
-	 * @throws RuntimeException
-	 *             If there is a syntax error.
 	 */
 	public JsonArray withValue(String value) {
 		clear();
@@ -253,10 +249,8 @@ public class JsonArray extends EntityList {
 	 * 
 	 * @param x
 	 *            A JSONTokener
-	 * @throws RuntimeException
-	 *             If there is a syntax error.
 	 */
-	public JsonArray withValue(Tokener x) throws RuntimeException {
+	public JsonArray withValue(Tokener x)  {
 		x.parseToEntity(this);
 		return this;
 	}
@@ -283,7 +277,7 @@ public class JsonArray extends EntityList {
 	 * @param Array
 	 *            of Elements.
 	 */
-	public JsonArray withValue(JISMEntity... values) {
+	public JsonArray withValue(BaseEntity... values) {
 		for (int i = 0; i < values.length; i++) {
 			put(EntityUtil.wrap(values[i], this));
 		}

@@ -31,7 +31,7 @@ package de.uniks.networkparser.interfaces;
 */
 import java.util.Collection;
 
-public interface BaseEntityList extends JISMEntity {
+public interface BaseEntityList extends BaseEntity {
 	public BaseEntityList initWithMap(Collection<?> value);
 
 	public BaseEntityList put(Object value);

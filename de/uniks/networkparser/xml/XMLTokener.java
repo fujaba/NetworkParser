@@ -34,7 +34,6 @@ import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.exceptions.TextParsingException;
 import de.uniks.networkparser.interfaces.BaseEntity;
 import de.uniks.networkparser.interfaces.BaseEntityList;
-import de.uniks.networkparser.interfaces.JISMEntity;
 
 public class XMLTokener extends Tokener {
 	/**
@@ -44,7 +43,7 @@ public class XMLTokener extends Tokener {
 	 * @return An object.
 	 */
 	@Override
-	public Object nextValue(JISMEntity creator) {
+	public Object nextValue(BaseEntity creator) {
 		char c = nextClean();
 
 		switch (c) {
@@ -54,7 +53,7 @@ public class XMLTokener extends Tokener {
 			return nextString(c, false);
 		case '<':
 			back();
-			JISMEntity element = creator.getNewObject();
+			BaseEntity element = creator.getNewObject();
 			if (element instanceof Entity) {
 				parseToEntity((Entity) element);
 			}
@@ -72,7 +71,7 @@ public class XMLTokener extends Tokener {
 	}
 
 	@Override
-	public void parseToEntity(BaseEntity entity) {
+	public void parseToEntity(BaseEntity entity) throws TextParsingException{
 		char c=getCurrentChar();
 
 		if (c!= '<') {

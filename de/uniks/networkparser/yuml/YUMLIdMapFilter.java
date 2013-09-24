@@ -28,20 +28,20 @@ package de.uniks.networkparser.yuml;
  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 import de.uniks.networkparser.Filter;
 
-public class YUMLIdMapFilter extends Filter{
+public class YUMLIdMapFilter extends Filter {
 	/** The show line. */
 	private boolean isShowLine;
-	
+
 	private boolean isShowCardinality;
-	
+
 	private int typ;
-	
+
 	/**
 	 * Checks if is show line.
-	 *
+	 * 
 	 * @return true, if is show line for objects
 	 */
 	public boolean isShowLine() {
@@ -50,10 +50,10 @@ public class YUMLIdMapFilter extends Filter{
 
 	/**
 	 * Sets the show line.
-	 *
+	 * 
 	 * @param value
-	 *			the new show line
-	 * @return 
+	 *            the new show line
+	 * @return
 	 */
 	public YUMLIdMapFilter withShowLine(boolean value) {
 		this.isShowLine = value;
@@ -68,7 +68,7 @@ public class YUMLIdMapFilter extends Filter{
 		this.isShowCardinality = value;
 		return this;
 	}
-	
+
 	@Override
 	public YUMLIdMapFilter clone(Filter newInstance) {
 		return (YUMLIdMapFilter) super.clone(newInstance);

@@ -94,7 +94,7 @@ public class Brush {
    */
   protected static String getKeywords(String str) {
     if (str == null) {
-      throw new NullPointerException("argument 'str' cannot be null");
+      throw new IllegalArgumentException("argument 'str' cannot be null");
     }
     return "\\b(?:" + str.replaceAll("^\\s+|\\s+$", "").replaceAll("\\s+", "|") + ")\\b";
   }

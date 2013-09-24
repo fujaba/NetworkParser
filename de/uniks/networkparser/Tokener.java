@@ -32,7 +32,6 @@ package de.uniks.networkparser;
 import de.uniks.networkparser.exceptions.TextParsingException;
 import de.uniks.networkparser.interfaces.BaseEntity;
 import de.uniks.networkparser.interfaces.BaseEntityList;
-import de.uniks.networkparser.interfaces.JISMEntity;
 /**
  * The Class Tokener.
  */
@@ -250,7 +249,7 @@ public abstract class Tokener {
 	 * Accumulate characters until we reach the end of the text or a formatting
 	 * character.
 	 */
-	public Object nextValue(JISMEntity creator) {
+	public Object nextValue(BaseEntity creator) {
 		char c = nextStartClean();
 		StringBuilder sb = new StringBuilder();
 		while (c >= ' ' && getStopChars().indexOf(c) < 0) {

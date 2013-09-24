@@ -204,10 +204,8 @@ public abstract class EntityList implements BaseEntityList, List<Object> {
 	 * @param separator
 	 *            A string that will be inserted between the elements.
 	 * @return a string.
-	 * @throws RuntimeException
-	 *             If the array contains an invalid number.
 	 */
-	public String join(String separator) throws RuntimeException {
+	public String join(String separator) {
 		StringBuilder sb = new StringBuilder();
 
 		for (int i = 0; i < values.size(); i += 1) {
@@ -280,7 +278,7 @@ public abstract class EntityList implements BaseEntityList, List<Object> {
 	 *            A boolean value.
 	 * @return
 	 * @return this.
-	 * @throws RuntimeException
+	 * @throws RuntimeExceptioni
 	 *             If the index is negative.
 	 */
 	public EntityList put(int index, boolean value) throws RuntimeException {
