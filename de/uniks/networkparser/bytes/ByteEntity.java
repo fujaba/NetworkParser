@@ -34,12 +34,12 @@ import de.uniks.networkparser.EntityList;
 import de.uniks.networkparser.bytes.converter.ByteConverter;
 import de.uniks.networkparser.bytes.converter.ByteConverterHTTP;
 import de.uniks.networkparser.interfaces.ByteItem;
-import de.uniks.networkparser.interfaces.JISMEntity;
+import de.uniks.networkparser.interfaces.BaseEntity;
 /**
  * The Class ByteEntity.
  */
 
-public class ByteEntity implements JISMEntity, ByteItem {
+public class ByteEntity implements BaseEntity, ByteItem {
 	/** The Constant BIT OF A BYTE. */
 	public final static int BITOFBYTE = 8;
 	public final static int TYPBYTE = 1;
@@ -63,7 +63,7 @@ public class ByteEntity implements JISMEntity, ByteItem {
 	 * @see de.uni.kassel.peermessage.BaseEntity#getNewObject()
 	 */
 	@Override
-	public JISMEntity getNewObject() {
+	public BaseEntity getNewObject() {
 		return new ByteEntity();
 	}
 

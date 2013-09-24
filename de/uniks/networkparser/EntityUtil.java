@@ -32,7 +32,8 @@ package de.uniks.networkparser;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
-import de.uniks.networkparser.interfaces.JISMEntity;
+
+import de.uniks.networkparser.interfaces.BaseEntity;
 
 public class EntityUtil {
 	/**
@@ -41,12 +42,12 @@ public class EntityUtil {
 	 * @param number
 	 *            A Number
 	 * @return A String.
-	 * @throws RuntimeException
+	 * @throws IllegalArgumentException
 	 *             If n is a non-finite number.
 	 */
-	public static String valueToString(Number number) {
+	public static String valueToString(Number number) throws IllegalArgumentException{
 		if (number == null) {
-			throw new RuntimeException("Null pointer");
+			throw new IllegalArgumentException("Null pointer");
 		}
 		testValidity(number);
 
@@ -231,7 +232,7 @@ public class EntityUtil {
 	 *         brace)</small> and ending with <code>}</code>&nbsp;<small>(right
 	 *         brace)</small>.
 	 */
-	public static String valueToString(Object value, JISMEntity reference) {
+	public static String valueToString(Object value, BaseEntity reference) {
 		return valueToString(value, false, reference);
 	}
 
@@ -254,11 +255,9 @@ public class EntityUtil {
 	 *         object, beginning with <code>{</code>&nbsp;<small>(left
 	 *         brace)</small> and ending with <code>}</code>&nbsp;<small>(right
 	 *         brace)</small>.
-	 * @throws JSONException
-	 *             If the object contains an invalid number.
 	 */
 	public static String valueToString(Object value, int indentFactor,
-			int intent, boolean simpleText, JISMEntity reference) {
+			int intent, boolean simpleText, BaseEntity reference) {
 		if (value == null) {
 			return "null";
 		}
@@ -299,7 +298,7 @@ public class EntityUtil {
 	}
 
 	public static String valueToString(Object value, boolean simpleText,
-			JISMEntity reference) {
+			BaseEntity reference) {
 		if (value == null) {
 			return "null";
 		}
@@ -351,7 +350,7 @@ public class EntityUtil {
 	 *            The object to wrap
 	 * @return The wrapped value
 	 */
-	public static Object wrap(Object object, JISMEntity reference) {
+	public static Object wrap(Object object, BaseEntity reference) {
 		try {
 			if (object == null) {
 				return null;

@@ -47,7 +47,7 @@ import de.uniks.networkparser.event.creator.BasicMessageCreator;
 import de.uniks.networkparser.exceptions.TextParsingException;
 import de.uniks.networkparser.interfaces.ByteCreator;
 import de.uniks.networkparser.interfaces.ByteItem;
-import de.uniks.networkparser.interfaces.JISMEntity;
+import de.uniks.networkparser.interfaces.BaseEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 /**
  * The Class ByteIdMap.
@@ -354,7 +354,7 @@ public class ByteIdMap extends IdMap {
 	}
 
 	@Override
-	public Object decode(JISMEntity value) {
+	public Object decode(BaseEntity value) {
 		if(value instanceof ByteEntity){
 			return decode(((ByteEntity)value).getValue());
 		}
@@ -368,7 +368,7 @@ public class ByteIdMap extends IdMap {
 	 *            the in
 	 * @return the object
 	 */
-	public Object decode(BufferedBytes buffer) {
+	public Object decode(BufferedBytes buffer) throws TextParsingException{
 		if (buffer.remaining() < 1)
 			throw new TextParsingException("DecodeExpeption - Remaining:"
 					+ buffer.remaining(), buffer.remaining());

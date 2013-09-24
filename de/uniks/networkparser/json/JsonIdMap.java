@@ -47,7 +47,7 @@ import de.uniks.networkparser.ReferenceObject;
 import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.event.creator.DateCreator;
 import de.uniks.networkparser.event.creator.MapEntryCreator;
-import de.uniks.networkparser.interfaces.JISMEntity;
+import de.uniks.networkparser.interfaces.BaseEntity;
 import de.uniks.networkparser.interfaces.MapUpdateListener;
 import de.uniks.networkparser.interfaces.NoIndexCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -138,7 +138,7 @@ public class JsonIdMap extends IdMap {
 	 *            the className of the entity
 	 * @return the Jsonobject
 	 */
-	protected JsonObject toJsonObject(Object entity, Filter filter, String className, int deep) {
+	protected JsonObject toJsonObject(Object entity, Filter filter, String className, int deep) throws RuntimeException{
 		String id = null;
 		SendableEntityCreator prototyp = grammar.getObjectCreator(entity,
 				className, this);
@@ -297,7 +297,7 @@ public class JsonIdMap extends IdMap {
 		}
 		return decode(getPrototyp().withValue(value));
 	}
-	public Object decode(JISMEntity value) {
+	public Object decode(BaseEntity value) {
 		if(value instanceof JsonArray){
 			return decode((JsonArray) value);
 		}
@@ -642,7 +642,7 @@ public class JsonIdMap extends IdMap {
 	}
 
 	protected JsonArray toJsonArray(Object entity, JsonArray jsonArray,
-			Filter filter, int deep) {
+			Filter filter, int deep) throws RuntimeException{
 		String className = entity.getClass().getName();
 		String id = getId(entity);
 
