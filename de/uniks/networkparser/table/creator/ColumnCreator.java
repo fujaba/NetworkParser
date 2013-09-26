@@ -29,8 +29,8 @@ package de.uniks.networkparser.table.creator;
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+import de.uniks.networkparser.gui.table.Column;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.table.Column;
 
 public class ColumnCreator implements SendableEntityCreator{
 	private static final String[] properties=new String[]{Column.PROPERTY_ATTRNAME,

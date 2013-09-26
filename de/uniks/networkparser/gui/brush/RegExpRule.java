@@ -30,7 +30,8 @@ package de.uniks.networkparser.gui.brush;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 import java.util.regex.Pattern;
-import de.uniks.networkparser.Style;
+
+import de.uniks.networkparser.gui.Style;
 
 public class RegExpRule extends RegExRule {
 	/**

@@ -1,4 +1,4 @@
-package de.uniks.networkparser.grid;
+package de.uniks.networkparser.interfaces;
 
 /*
  NetworkParser
@@ -29,19 +29,32 @@ package de.uniks.networkparser.grid;
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-import java.util.Map;
 
-public interface GridGUICell {
-	public static final String ROW_INDEX_CONSTRAINT = "gridpane-row";
-	public static final String COLUMN_INDEX_CONSTRAINT = "gridpane-column";
-	public static final String ROW_SPAN_CONSTRAINT = "gridpane-row-span";
-	public static final String COLUMN_SPAN_CONSTRAINT = "gridpane-column-span";
-	public String getStyle();
-	public GridGUICell withParent(CellValue parent);
-	public void setStyle(String string);
-	public void maximizeSize();
-	public void setContentNode(Object node);
-	public Map<Object, Object> getProperties();
-	public void select(String string);
-	public void deselect();
+/**
+ * INterface for Buffer For Tokener to parse some Values
+ *
+ */
+public interface Buffer {
+	/**
+	 * @return the length of the buffer
+	 */
+	public int length();
+	public byte byteAt(int index);
+	public char charAt(int index);
+	public char getChar();
+	/**
+	 * @param start startindex for parsing
+	 * @param length the length of Substring
+	 * @return the Substring
+	 */
+	public String substring(int start, int length);
+	public Buffer withLength(int length);
+	public int position();
+	public int remaining();
+	public void back();
+	public boolean isEnd();
+	public Buffer withPosition(int index);
+	public String toString();
+	public String toText();
+	public byte[] toArray();
 }

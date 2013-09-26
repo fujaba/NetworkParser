@@ -29,8 +29,8 @@ package de.uniks.networkparser.logic;
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-import de.uniks.networkparser.Buffer;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.interfaces.Buffer;
 
 public class Equals implements Condition {
 	private String strValue;

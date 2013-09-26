@@ -1,5 +1,7 @@
-package de.uniks.networkparser.grid;
+package de.uniks.networkparser.gui.grid;
 
+import java.beans.PropertyChangeListener;
+import java.util.Iterator;
 /*
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
@@ -29,106 +31,141 @@ package de.uniks.networkparser.grid;
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Map.Entry;
 
-public class GridValue {
+import de.uniks.networkparser.interfaces.GUIPosition;
+
+public class ValueGrid {
 	private int maxRows=0;
 	private int maxColumns=0;
-	private LinkedHashMap<Object, CellValue> children=new LinkedHashMap<Object, CellValue>();
-	private ArrayList<CellValue> childrenLink=new ArrayList<CellValue>();
-	private CellValue selectedCell;
+	private LinkedHashMap<GridStyle, Object> children=new LinkedHashMap<GridStyle, Object>();
+	private LinkedHashMap<PropertyChangeListener, Object> container=new LinkedHashMap<PropertyChangeListener, Object>();
+	private GridStyle selectedCell;
 	private GridGUITable guiElement;
 
-	public GridValue withGridTable(GridGUITable value){
+
+	public ValueGrid withGridTable(GridGUITable value){
 		this.guiElement = value;
 		return this;
 	}
 	
-	public CellValue add(Object node, int col, int row, String width, String height) {
-		CellValue cell = add(node, col, row);
+	public GridStyle add(Object node, int col, int row, String width, String height) {
+		GridStyle cell = add(node, col, row);
 		cell.withHeight(height).withWidth(width);
 		return cell;
 	}
 	
-	public CellValue add(Object node, int col, int row) {
+	public GridStyle add(Object node, int col, int row) {
 		boolean refresh=false;
-		if(col>maxColumns){
+
+		if(col>=maxColumns){
 			maxColumns = col;
 			refresh=true;
 		}
-		if(row>maxRows){
+		if(row>=maxRows){
 			maxRows = row;
 			refresh=true;
 		}
 
-		CellValue cell=new CellValue().withGrid(this).withCellValue(guiElement.getNewCell(), node, col, row);
-		children.put(node, cell);
-		childrenLink.add(cell);
-		if(guiElement!=null){
-			guiElement.add(cell);
+		GridStyle guiCell = null;
+		if(guiElement != null){
+			guiCell=guiElement.getNewStyle();
+			PropertyChangeListener child;
+			if(node instanceof PropertyChangeListener){
+				child = (PropertyChangeListener) node;
+			}else{
+				child = guiElement.getNewCell(node);
+				container.put(child, node);
+			}
+			guiCell.addPropertyChangeListener(child);
+			guiCell.withGrid(this);
+			guiCell.withColumn(col);
+			guiCell.withRow(row);
+			
+			children.put(guiCell, node);
+			if(guiElement!=null){
+				guiElement.add(child);
+			}
 		}
+		
 
 		if(refresh){
 			refreshLines();
 		}
-		return cell;
+		return guiCell;
+	}
+	
+	public GridStyle getGridStyle(Object node){
+		if(node instanceof GridStyle){
+			return (GridStyle) node;
+		}
+		Object result=container.get(node);
+		if(result==null){
+			result = node;
+		}
+		for(Iterator<Entry<GridStyle, Object>> iterator = children.entrySet().iterator();iterator.hasNext();){
+			Entry<GridStyle, Object> item = iterator.next();
+			if(item.getValue()==result){
+				return item.getKey();
+			}
+		}
+		return null;
+	}
+	
+	public Object getCell(Object node){
+		if(node instanceof GridStyle){
+			return children.get(node);
+		}
+		for(Iterator<Entry<PropertyChangeListener, Object>> iterator = container.entrySet().iterator();iterator.hasNext();){
+			Entry<PropertyChangeListener, Object> item = iterator.next();
+			if(item.getValue()==node){
+				return item.getKey();
+			}
+		}
+		return node;
 	}
 	
 	public void setSpanRow(Object node, int row){
-		CellValue cell = children.get(node);
+		GridStyle cell = getGridStyle(node);
+
 		if(cell!=null){
 			cell.withRowSpan(row);
-			if(guiElement!=null){
-				guiElement.setSpanRow(cell);
-			}
-
 			refreshLines();
 		}
 	}
 	
 	public void setSpanColumn(Object node, int column){
-		CellValue cell = children.get(node);
+		GridStyle cell = getGridStyle(node);
+
 		if(cell!=null){
 			cell.withColumnSpan(column);
-			if(guiElement!=null){
-				guiElement.setSpanColumn(cell);
-			}
 			refreshLines();
 		}
 	}
 	
-	public CellValue getCell(Object node){
-		return children.get(node);
-	}
-	
 	public void refreshLines(){
-		 for (CellValue n: children.values()) {
+		 for (GridStyle n: children.keySet()) {
 			 int rowEnd = n.getRowEnd();
 			 int colEnd = n.getColumnEnd();
 
-			 int col = n.getColumn();
-			 int row = n.getRow();
-			 if(colEnd-col>0){
-				 guiElement.setSpanColumn(n);
-			 }
-			 if(rowEnd-row>0){
-				 guiElement.setSpanRow(n);
-			 }
-
-			 String rowId="0";
+			 n.setBorder(GUIPosition.NORTH, "1", "black");
+			 n.setBorder(GUIPosition.WEST, "1", "black");
 			 if(rowEnd>=maxRows){
-				 rowId="1";
+				 n.setBorder(GUIPosition.SOUTH, "1", "black");
+			 }else{
+				 n.setBorder(GUIPosition.SOUTH, null, null);
 			 }
-			 String columnId="0";
 			 if(colEnd>=maxColumns){
-				 columnId="1";
+				 n.setBorder(GUIPosition.EAST, "1", "black");
+			 }else{
+				 n.setBorder(GUIPosition.EAST, null, null);
+
 			 }
-			 n.setStyle("-fx-border-color: black; -fx-border-width: 1 "+columnId+" "+rowId+" 1;");
 		}
 	}
 
-	public boolean selectCell(CellValue cell) {
+	public boolean selectCell(GridStyle cell) {
 		if(selectedCell==cell){
 			return true;
 		}
@@ -152,20 +189,15 @@ public class GridValue {
 	}
 	
 	public void insertRow(int offset){
-		CellValue[] items = children.values().toArray(new CellValue[children.size()]);
-		for(CellValue cell : items){
+		GridStyle[] items = children.keySet().toArray(new GridStyle[children.size()]);
+		for(GridStyle cell : items){
 			if(cell.getRow()>=offset){
 				cell.withRow(cell.getRow()+1);
 				if(guiElement!=null){
 					guiElement.move(cell);
 				}
-				
 			}
 		}
 		maxRows++;
-	}
-	
-	public CellValue getCellValue(Object node) {
-		return children.get(node);
 	}
 }

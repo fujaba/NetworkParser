@@ -29,7 +29,7 @@ package de.uniks.networkparser.xml;
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-import de.uniks.networkparser.Style;
+import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.interfaces.PeerMessage;
 
 public class XMLStyledEntity extends XMLEntity implements PeerMessage {

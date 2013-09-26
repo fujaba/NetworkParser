@@ -29,7 +29,7 @@ package de.uniks.networkparser.bytes;
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-import de.uniks.networkparser.Buffer;
+import de.uniks.networkparser.interfaces.Buffer;
 
 public interface BufferedBytes extends Buffer{
 	public byte getByte();

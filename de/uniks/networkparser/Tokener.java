@@ -32,6 +32,7 @@ package de.uniks.networkparser;
 import de.uniks.networkparser.exceptions.TextParsingException;
 import de.uniks.networkparser.interfaces.BaseEntity;
 import de.uniks.networkparser.interfaces.BaseEntityList;
+import de.uniks.networkparser.interfaces.Buffer;
 /**
  * The Class Tokener.
  */
@@ -48,7 +49,7 @@ public abstract class Tokener {
 	 * @param value
 	 */
 	public Tokener withText(String value) {
-		this.buffer = new CharacterBuffer(value);
+		this.buffer = new CharacterBuffer().withValue(value);
 		return this;
 	}
 

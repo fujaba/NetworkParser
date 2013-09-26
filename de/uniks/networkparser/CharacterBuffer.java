@@ -1,5 +1,7 @@
 package de.uniks.networkparser;
 
+import de.uniks.networkparser.interfaces.Buffer;
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
@@ -28,48 +30,55 @@ package de.uniks.networkparser;
  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 
-public class CharacterBuffer implements Buffer{
+/**
+ * Buffer of String for alternative for StringBuffer.
+ *
+ */
+public class CharacterBuffer implements Buffer {
 	/** The buffer. */
-	protected char[] buffer;
+	private char[] buffer;
 
 	/** The length. */
 	private int length;
-	
+
 	/** The index. */
-	protected int index;
-	
+	private int position;
+
 	/** The line. */
-	protected int line;
+	private int line;
 
 	/** The character. */
-	protected int character;
+	private int character;
 
-	
-	public CharacterBuffer(String value){
-		this.buffer = value.toCharArray();
-		this.length = buffer.length; 
-	}
-
+	@Override
 	public int length() {
 		return length;
 	}
-	public char charAt(int index){
+
+	@Override
+	public char charAt(int index) {
 		return buffer[index];
 	}
-	
+
 	@Override
 	public byte byteAt(int index) {
-		return (byte)buffer[index];
+		return (byte) buffer[index];
 	}
 
-	
-	public String substring(int startTag, int length){
-		if(startTag+length>buffer.length){
-			length = buffer.length - startTag;
+	@Override
+	public String substring(int start, int len) {
+		if (start + len > buffer.length) {
+			len = buffer.length - start;
 		}
-		return new String(buffer, startTag, length);
+		return new String(buffer, start, len);
+	}
+
+	@Override
+	public Buffer withPosition(int value) {
+		this.position = value;
+		return this;
 	}
 
 	@Override
@@ -78,65 +87,69 @@ public class CharacterBuffer implements Buffer{
 		return this;
 	}
 
+	/**
+	 * @param value String of Value
+	 * @return the CharacterBuffer
+	 */
+	public CharacterBuffer withValue(String value) {
+		this.buffer = value.toCharArray();
+		this.length = buffer.length;
+		return this;
+	}
+
 	@Override
 	public int position() {
-		return index;
+		return position;
 	}
 
 	@Override
 	public void back() {
-		this.index -= 1;
+		this.position -= 1;
 		this.character -= 1;
 	}
 
 	@Override
 	public boolean isEnd() {
-		return length <= this.index;
+		return length <= this.position;
 	}
 
 	@Override
 	public int remaining() {
-		return length - index;
-	}
-	
-	@Override
-	public String toString() {
-		return " at " + this.index + " [character " + this.character + " line "
-				+ this.line + "]";
+		return length - position;
 	}
 
 	@Override
-	public Buffer withPosition(int index) {
-		this.index = index;
-		return this;
+	public String toString() {
+		return " at " + this.position + " [character " + this.character + " line "
+				+ this.line + "]";
 	}
 
 	@Override
 	public String toText() {
 		return new String(buffer);
 	}
+
 	@Override
 	public byte[] toArray() {
 		byte[] result = new byte[buffer.length];
-		for(int i=0;i<buffer.length;i++){
-			result[i]=(byte) buffer[i];
+		for (int i = 0; i < buffer.length; i++) {
+			result[i] = (byte) buffer[i];
 		}
 		return result;
 	}
 
-
 	@Override
 	public char getChar() {
-		this.index++;
-		if(this.index==this.buffer.length){
+		this.position++;
+		if (this.position == this.buffer.length) {
 			return 0;
 		}
-		char c = this.buffer[this.index];
+		char c = this.buffer[this.position];
 		if (c == '\r') {
 			this.line += 1;
-			if (this.buffer[this.index] == '\n') {
+			if (this.buffer[this.position] == '\n') {
 				this.character = 1;
-				this.index++;
+				this.position++;
 				c = '\n';
 			} else {
 				this.character = 0;

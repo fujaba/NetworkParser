@@ -31,7 +31,8 @@ package de.uniks.networkparser.gui.theme;
 */
 import java.util.LinkedHashMap;
 import java.util.Map;
-import de.uniks.networkparser.Style;
+
+import de.uniks.networkparser.gui.Style;
 
 public class Theme {
 	/**

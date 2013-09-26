@@ -50,4 +50,6 @@ public interface SendableEntity {
 	public boolean addPropertyChangeListener(PropertyChangeListener listener);
 	
 	public boolean removePropertyChangeListener(PropertyChangeListener listener);
+	
+	public void propertyChange(String property, Object oldValue, Object newValue);
 }
