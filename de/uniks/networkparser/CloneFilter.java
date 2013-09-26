@@ -52,12 +52,12 @@ public class CloneFilter extends Filter {
 
 	/**
 	 * Adds the object.
-	 * 
+	 *
 	 * @param reference
 	 *            the reference
 	 * @param newObject
 	 *            the new object
-	 * @return 
+	 * @return CloneFilter-Object
 	 */
 	public CloneFilter withObject(Object reference, Object newObject) {
 		this.assocs.put(reference, newObject);
@@ -66,7 +66,7 @@ public class CloneFilter extends Filter {
 
 	/**
 	 * Checks for object.
-	 * 
+	 *
 	 * @param objects
 	 *            the objects
 	 * @return true, if successful
@@ -77,7 +77,7 @@ public class CloneFilter extends Filter {
 
 	/**
 	 * Gets the object.
-	 * 
+	 *
 	 * @param objects
 	 *            the objects
 	 * @return the object
@@ -88,7 +88,7 @@ public class CloneFilter extends Filter {
 
 	/**
 	 * Gets the typ.
-	 * 
+	 *
 	 * @return the typ
 	 */
 	public int getTyp() {
@@ -97,13 +97,13 @@ public class CloneFilter extends Filter {
 
 	/**
 	 * Sets the typ.
-	 * 
-	 * @param typ
+	 *
+	 * @param value
 	 *            the new typ
-	 * @return 
+	 * @return CloneFilter-Object
 	 */
-	public CloneFilter withTyp(int typ) {
-		this.typ = typ;
+	public CloneFilter withTyp(int value) {
+		this.typ = value;
 		return this;
 	}
 }

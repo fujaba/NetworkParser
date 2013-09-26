@@ -1,4 +1,6 @@
-package de.uniks.networkparser.grid;
+package de.uniks.networkparser.gui.grid;
+
+import java.beans.PropertyChangeListener;
 
 /*
  NetworkParser
@@ -31,11 +33,8 @@ package de.uniks.networkparser.grid;
 */
 
 public interface GridGUITable {
-	public void add(CellValue cell);
-	public void move(CellValue cell);
-	public void setSpanRow(CellValue node);
-	public void setSpanColumn(CellValue node);
-	public GridGUICell getNewCell();
-	public void setSpanRow(Object node, int row);
-	public void setSpanColumn(Object node, int column);
+	public void add(Object cell);
+	public void move(Object cell);
+	public GridStyle getNewStyle();
+	public PropertyChangeListener getNewCell(Object node);
 }

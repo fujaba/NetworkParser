@@ -27,7 +27,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import java.util.regex.Pattern;
 
-import de.uniks.networkparser.Style;
+import de.uniks.networkparser.gui.Style;
 
 /**
  * Ruby brush.

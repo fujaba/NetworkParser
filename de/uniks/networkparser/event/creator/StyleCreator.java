@@ -29,7 +29,7 @@ package de.uniks.networkparser.event.creator;
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-import de.uniks.networkparser.Style;
+import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class StyleCreator implements SendableEntityCreator{

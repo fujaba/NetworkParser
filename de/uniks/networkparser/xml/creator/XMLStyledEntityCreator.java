@@ -29,8 +29,8 @@ package de.uniks.networkparser.xml.creator;
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-import de.uniks.networkparser.Style;
 import de.uniks.networkparser.Tokener;
+import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.XMLGrammar;
 import de.uniks.networkparser.xml.XMLEntity;

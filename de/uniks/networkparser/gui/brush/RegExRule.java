@@ -32,7 +32,8 @@ package de.uniks.networkparser.gui.brush;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
-import de.uniks.networkparser.Style;
+
+import de.uniks.networkparser.gui.Style;
 
 public class RegExRule {
 	/**
