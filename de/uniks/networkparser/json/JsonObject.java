@@ -32,10 +32,12 @@ package de.uniks.networkparser.json;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import de.uniks.networkparser.Entity;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Tokener;
 /* Copyright (c) 2002 JSON.org */
+import de.uniks.networkparser.interfaces.TextEntity;
 
 
 /**
@@ -93,7 +95,7 @@ import de.uniks.networkparser.Tokener;
  * @author JSON.org
  * @version 2011-11-24
  */
-public class JsonObject extends Entity {
+public class JsonObject extends Entity implements TextEntity {
 	/**
 	 * Produce a string from a double. The string "null" will be returned if the
 	 * number is not finite.

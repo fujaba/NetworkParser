@@ -243,7 +243,7 @@ public class BytesBuffer implements BufferedBytes {
 
 	@Override
 	public void put(double value) {
-		long bits = Double.doubleToRawLongBits(value);
+		long bits = Double.doubleToLongBits(value);
 		this.buffer[index++] = (byte)((bits >> 56) & 0xff);
 		this.buffer[index++] = (byte)((bits >> 48) & 0xff);
 		this.buffer[index++] = (byte)((bits >> 40) & 0xff);
