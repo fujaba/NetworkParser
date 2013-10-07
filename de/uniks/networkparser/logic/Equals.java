@@ -70,4 +70,10 @@ public class Equals implements Condition {
 		this.strValue = value;
 		return this;
 	}
+	public String toString(){
+		if(strValue!=null){
+			return "=="+strValue+" ";
+		}
+		return "=="+bytevalue+" ";
+	}
 }
