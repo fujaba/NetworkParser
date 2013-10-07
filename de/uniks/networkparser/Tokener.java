@@ -185,6 +185,10 @@ public abstract class Tokener {
 		if(getCurrentChar()==0){
 			return "";
 		}
+		if(getCurrentChar()==quote){
+			next();
+			return "";
+		}
 		StringBuilder sb = new StringBuilder();
 		sb.append(getCurrentChar());
 

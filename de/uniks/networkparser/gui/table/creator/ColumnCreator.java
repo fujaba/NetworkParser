@@ -1,4 +1,4 @@
-package de.uniks.networkparser.table.creator;
+package de.uniks.networkparser.gui.table.creator;
 
 /*
  NetworkParser
@@ -29,6 +29,48 @@ package de.uniks.networkparser.table.creator;
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+import de.uniks.networkparser.gui.table.Column;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class ColumnListCreator {
+public class ColumnCreator implements SendableEntityCreator{
+	private static final String[] properties=new String[]{Column.PROPERTY_ATTRNAME,
+		Column.PROPERTY_NUMBERFORMAT,
+		Column.PROPERTY_EDITCOLUMN,
+		Column.PROPERTY_LABEL,
+		Column.PROPERTY_DEFAULTTEXT,
+		Column.PROPERTY_BACKGROUNDCOLOR,
+		Column.PROPERTY_FORGROUNDCOLOR,
+		Column.PROPERTY_FORGROUNDCOLORACTIV,
+		Column.PROPERTY_BACKGROUNDCOLORACTIV,
+		Column.PROPERTY_TEXTALIGNMENT,
+		Column.PROPERTY_FONT,
+		Column.PROPERTY_SIZE,
+		Column.PROPERTY_RESIZE,
+		Column.PROPERTY_VISIBLE,
+		Column.PROPERTY_MOVABLE,
+		Column.PROPERTY_ALTTEXT,
+		Column.PROPERTY_BROWSERID,
+		Column.PROPERTY_VALUEFROMDROPDOWNLIST};
+
+	@Override
+	public String[] getProperties() {
+		return properties;
 	}
+
+	@Override
+	public Object getSendableInstance(boolean prototyp) {
+		return new Column();
+	}
+
+	@Override
+	public Object getValue(Object entity, String attribute) {
+		return ((Column)entity).get(attribute);
+	}
+
+	@Override
+	public boolean setValue(Object entity, String attribute, Object value,
+			String type) {
+		return ((Column)entity).set(attribute, value);
+	}
+
+}

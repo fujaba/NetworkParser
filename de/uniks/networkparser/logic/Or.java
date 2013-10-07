@@ -30,13 +30,14 @@ package de.uniks.networkparser.logic;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 import java.util.ArrayList;
+
 import de.uniks.networkparser.IdMap;
 
 public class Or implements Condition {
 	private ArrayList<Condition> list = new ArrayList<Condition>();
 
-	public Or add(Condition... byteConditions) {
-		for (Condition condition : byteConditions) {
+	public Or add(Condition... conditions) {
+		for (Condition condition : conditions) {
 			this.list.add(condition);
 		}
 		return this;
@@ -53,4 +54,14 @@ public class Or implements Condition {
 		}
 		return result;
 	}
+	public String toString(){
+		StringBuilder sb=new StringBuilder();
+		for(Condition condition : list){
+			sb.append("["+condition.toString()+" ");
+		}
+		sb.trimToSize();
+		sb.append("]");
+		return sb.toString();
+	}
+
 }

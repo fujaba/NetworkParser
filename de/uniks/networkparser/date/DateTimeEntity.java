@@ -185,9 +185,9 @@ public class DateTimeEntity  {
 		if(dayOfYear%7>0){
 			week++;
 		}
-		if(dayOf0101>4){
-			week++;
-		}
+//		if(dayOf0101>4){
+//			week++;
+//		}
 		this.fields.put(DateField.WEEK_OF_YEAR, week);
 		this.fields.put(DateField.WEEK_OF_MONTH,  week - ((dayOfYear-day)/7) );
 
