@@ -33,7 +33,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
-import java.util.Set;
+
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 /**
@@ -42,7 +42,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
  */
 public abstract class AbstractIdMap {
 	/** The creators. */
-	private HashMap<String, SendableEntityCreator> creators = new HashMap<String, SendableEntityCreator>();
+	protected HashMap<String, SendableEntityCreator> creators = new HashMap<String, SendableEntityCreator>();
 
 	/**
 	 * Gets the creator class.
@@ -91,7 +91,7 @@ public abstract class AbstractIdMap {
 	 * @param creatorSet the creater class
 	 * @return true, if successful
 	 */
-	public AbstractIdMap withCreator(Set<SendableEntityCreator> creatorSet) {
+	public AbstractIdMap withCreator(Collection<SendableEntityCreator> creatorSet) {
 		for (SendableEntityCreator sendableEntityCreator : creatorSet) {
 			withCreator(sendableEntityCreator);
 		}

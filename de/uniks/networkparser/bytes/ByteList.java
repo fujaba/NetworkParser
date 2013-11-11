@@ -33,6 +33,7 @@ import de.uniks.networkparser.EntityList;
 import de.uniks.networkparser.bytes.converter.ByteConverter;
 import de.uniks.networkparser.bytes.converter.ByteConverterHTTP;
 import de.uniks.networkparser.bytes.converter.ByteConverterString;
+import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteItem;
 
 public class ByteList extends EntityList implements ByteItem {

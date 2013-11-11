@@ -29,7 +29,6 @@ package de.uniks.networkparser.interfaces;
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-import de.uniks.networkparser.bytes.BufferedBytes;
 import de.uniks.networkparser.bytes.converter.ByteConverter;
 
 public interface ByteItem extends BaseEntity{

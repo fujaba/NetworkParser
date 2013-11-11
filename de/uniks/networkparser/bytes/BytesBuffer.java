@@ -30,6 +30,7 @@ package de.uniks.networkparser.bytes;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 import de.uniks.networkparser.interfaces.Buffer;
+import de.uniks.networkparser.interfaces.BufferedBytes;
 
 public class BytesBuffer implements BufferedBytes {
 	/** The buffer. */

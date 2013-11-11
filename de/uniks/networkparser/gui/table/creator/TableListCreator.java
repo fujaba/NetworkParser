@@ -1,7 +1,7 @@
-package de.uniks.networkparser.bytes.converter;
+package de.uniks.networkparser.gui.table.creator;
 
 /*
- NetworkParser
+ Json Id Serialisierung Map
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
 
@@ -29,23 +29,34 @@ package de.uniks.networkparser.bytes.converter;
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-import de.uniks.networkparser.interfaces.BufferedBytes;
-import de.uniks.networkparser.interfaces.ByteItem;
 
-public abstract class ByteConverter {
-	public String toString(ByteItem item, boolean dynamic) {
-		return toString(item.getBytes(dynamic));
+import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.gui.table.TableList;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
+
+public class TableListCreator implements SendableEntityCreator{
+	public static final String[] properties=new String[]{TableList.PROPERTY_ITEMS};
+	@Override
+	public String[] getProperties() {
+		return properties;
 	}
 
-	public String toString(BufferedBytes bufferedBytes) {
-		return toString(bufferedBytes.array(), bufferedBytes.length());
+	@Override
+	public Object getSendableInstance(boolean prototyp) {
+		return new TableList();
 	}
 
-	public abstract String toString(byte[] values, int size);
-	
-	public String toString(byte[] values){
-		return toString(values, values.length);
+	@Override
+	public Object getValue(Object entity, String attribute) {
+		return ((TableList)entity).get(attribute);
 	}
 
-	public abstract byte[] decode(String value);
+	@Override
+	public boolean setValue(Object entity, String attribute, Object value,
+			String type) {
+		if(IdMap.REMOVE.equalsIgnoreCase(type)){
+			attribute+=IdMap.REMOVE;
+		}
+		return ((TableList)entity).set(attribute, value);
+	}
 }
