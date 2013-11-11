@@ -33,7 +33,7 @@ package de.uniks.networkparser.gui.table;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import de.uniks.jism.interfaces.SendableEntity;
+import de.uniks.networkparser.interfaces.SendableEntity;
 
 public class UpdateSearchList implements PropertyChangeListener {
 	protected TableComponent tableComponent;
