@@ -32,9 +32,11 @@ package de.uniks.networkparser.bytes;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+
 import de.uniks.networkparser.bytes.converter.ByteConverter;
 import de.uniks.networkparser.interfaces.BaseEntity;
 import de.uniks.networkparser.interfaces.BaseEntityList;
+import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteItem;
 
 public class BitEntity implements BaseEntityList, ByteItem {

@@ -30,18 +30,28 @@ package de.uniks.networkparser.sort;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 import java.util.Comparator;
+
 import de.uniks.networkparser.EntityValueFactory;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.gui.table.TableList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class EntityComparator implements Comparator<Object> {
 	public static String IDMAP = "%idmap%";
-	public static String HASHCODE = "%HASHCODE%";
+	public static String HASHCODE = "%hashcode%";
+	public static String LIST = "%list%";
 
 	private SortingDirection direction = SortingDirection.ASC;
 	private String column = IDMAP;
 	private IdMap map;
 	private EntityValueFactory cellCreator = new EntityValueFactory();
+	private TableList owner;
+	
+	public EntityComparator withTableList(TableList owner){
+		this.owner = owner;
+		this.column = LIST;
+		return this;
+	}
 
 	@Override
 	public int compare(Object o1, Object o2) {
@@ -136,6 +146,10 @@ public class EntityComparator implements Comparator<Object> {
 
 		if (o1.equals(o2)) {
 			return 0;
+		}
+		
+		if(LIST.equalsIgnoreCase(column) && owner != null) {
+			return owner.indexOf(o1)-owner.indexOf(o2);
 		}
 
 		// KEY IN IDMAP

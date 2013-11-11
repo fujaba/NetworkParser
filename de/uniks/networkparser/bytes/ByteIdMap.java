@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import de.uniks.networkparser.AbstractIdMap;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
@@ -45,6 +46,7 @@ import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.event.UnknownMessage;
 import de.uniks.networkparser.event.creator.BasicMessageCreator;
 import de.uniks.networkparser.exceptions.TextParsingException;
+import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteCreator;
 import de.uniks.networkparser.interfaces.ByteItem;
 import de.uniks.networkparser.interfaces.BaseEntity;

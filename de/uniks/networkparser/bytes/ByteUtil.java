@@ -1,5 +1,7 @@
 package de.uniks.networkparser.bytes;
 
+import de.uniks.networkparser.interfaces.BufferedBytes;
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel

@@ -81,6 +81,8 @@ public abstract class IdMap extends AbstractIdMap implements Map<String, Object>
 
 	/** The updatelistener for Notification changes. */
 	protected PropertyChangeListener updatePropertylistener;
+	
+	protected Filter filter=new Filter();
 
 	/**
 	 * Instantiates a new id map.
@@ -132,8 +134,9 @@ public abstract class IdMap extends AbstractIdMap implements Map<String, Object>
 	 * @param value
 	 *            the new session id
 	 */
-	public void withSessionId(String value) {
+	public IdMap withSessionId(String value) {
 		getCounter().withPrefixId(value);
+		return this;
 	}
 
 	/**
@@ -592,8 +595,14 @@ public abstract class IdMap extends AbstractIdMap implements Map<String, Object>
 		return values.entrySet();
 	}
 
-	public void setUpdateMsgListener(PropertyChangeListener listener) {
+	public IdMap withUpdateMsgListener(PropertyChangeListener listener) {
 		this.updatePropertylistener = listener;
+		return this;
+	}
+	
+	public IdMap withFilter(Filter filter){
+		this.filter = filter;
+		return parent;		
 	}
 	
 	public abstract BaseEntity encode(Object value);

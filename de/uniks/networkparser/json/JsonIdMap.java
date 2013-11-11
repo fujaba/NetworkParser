@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -232,7 +231,7 @@ public class JsonIdMap extends IdMap {
 
 	protected Object parseItem(Object item, Filter filter, Object entity,
 			String property, JsonArray jsonArray, String className, int deep) {
-		if (item != null && filter.isPropertyRegard(this, entity, property, item, true, deep)) {
+		if (item != null && filter.isPropertyRegard(this, item, property, entity, true, deep)) {
 //			boolean typSave = isTypSave();
 
 			if (className == null) {
@@ -598,8 +597,8 @@ public class JsonIdMap extends IdMap {
 			filter = this.filter.clone();
 		}
 		
-		if(object instanceof List<?>){
-			List<?> list = (List<?>) object;
+		if(object instanceof Collection<?>){
+			Collection<?> list = (Collection<?>) object;
 			for(Iterator<?> i = list.iterator();i.hasNext();){
 				Object item = i.next();
 				toJsonArray(item, jsonArray, filter);
@@ -638,6 +637,9 @@ public class JsonIdMap extends IdMap {
 	 */
 	public JsonArray toJsonArray(Object object, JsonArray jsonArray,
 			Filter filter) {
+		if(filter==null){
+			filter = this.filter;
+		}
 		return toJsonArray(object, jsonArray, filter.withStandard(this.filter), 0);
 	}
 
@@ -699,13 +701,13 @@ public class JsonIdMap extends IdMap {
 	public JsonIdMap withUpdateMsgListener(MapUpdateListener listener) {
 		this.updatelistener = listener;
 		if (listener instanceof PropertyChangeListener) {
-			super.setUpdateMsgListener((PropertyChangeListener) listener);
+			super.withUpdateMsgListener((PropertyChangeListener) listener);
 		}
 		return this;
 	}
 
-	public JsonIdMap withUpdateMsgListener(PropertyChangeListener listener) {
-		super.setUpdateMsgListener(listener);
+	public IdMap withUpdateMsgListener(PropertyChangeListener listener) {
+		super.withUpdateMsgListener(listener);
 		if (listener instanceof MapUpdateListener) {
 
 			this.updatelistener = (MapUpdateListener) listener;

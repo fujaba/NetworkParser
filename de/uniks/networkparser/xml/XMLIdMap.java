@@ -62,7 +62,6 @@ public class XMLIdMap extends XMLSimpleIdMap {
 	/** The stopwords. */
 	private HashSet<String> stopwords = new HashSet<String>();
 
-	private Filter filter=new Filter().withIdFilter(BooleanCondition.value(false));
 	/**
 	 * Inits the.
 	 */
@@ -70,6 +69,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 	protected void init() {
 		super.init();
 		getCounter();
+		this.filter.withIdFilter(BooleanCondition.value(false));
 	}
 
 	/*

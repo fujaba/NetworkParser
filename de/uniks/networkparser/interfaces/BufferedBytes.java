@@ -1,4 +1,4 @@
-package de.uniks.networkparser.bytes.converter;
+package de.uniks.networkparser.interfaces;
 
 /*
  NetworkParser
@@ -29,23 +29,49 @@ package de.uniks.networkparser.bytes.converter;
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-import de.uniks.networkparser.interfaces.BufferedBytes;
-import de.uniks.networkparser.interfaces.ByteItem;
 
-public abstract class ByteConverter {
-	public String toString(ByteItem item, boolean dynamic) {
-		return toString(item.getBytes(dynamic));
-	}
-
-	public String toString(BufferedBytes bufferedBytes) {
-		return toString(bufferedBytes.array(), bufferedBytes.length());
-	}
-
-	public abstract String toString(byte[] values, int size);
+public interface BufferedBytes extends Buffer{
+	public byte getByte();
 	
-	public String toString(byte[] values){
-		return toString(values, values.length);
-	}
+	public short getShort();
+	
+	public long getLong();
 
-	public abstract byte[] decode(String value);
+	public int getInt();
+	
+	public float getFloat();
+	
+	public double getDouble();
+	
+	public byte[] getValue(int len);
+
+	public byte[] getValue(int start, int len);
+	
+	public byte[] array();
+
+	public void put(byte value);
+	
+	public void put(short value);
+	
+	public void put(int value);
+	
+	public void put(long value);
+		
+	public void put(byte[] value);
+	
+	public void put(char value);
+	
+	public void put(float value);
+
+	public void put(double value);
+	
+	public void put(byte[] value, int offset, int length);
+	
+	public void flip();
+	
+	public BufferedBytes getNewBuffer(int capacity);
+	
+	public BufferedBytes getNewBuffer(byte[] array);
+	
+	
 }

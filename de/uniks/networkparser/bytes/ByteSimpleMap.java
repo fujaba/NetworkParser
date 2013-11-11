@@ -32,9 +32,11 @@ package de.uniks.networkparser.bytes;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+
 import de.uniks.networkparser.AbstractIdMap;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.bytes.creator.BitEntityCreator;
+import de.uniks.networkparser.interfaces.BufferedBytes;
 
 public class ByteSimpleMap extends AbstractIdMap {
 	public Object decode(BufferedBytes buffer, BitEntityCreator creator) {

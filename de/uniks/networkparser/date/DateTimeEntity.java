@@ -180,7 +180,7 @@ public class DateTimeEntity  {
 		// 01.01.70 is Tuersday
 		long dayOfWeek=(time/ONE_DAY - 3) % 7;
 		this.fields.put(DateField.DAY_OF_WEEK, dayOfWeek);
-		int dayOf0101 = (int) ((dayOfYear+dayOfWeek+3)%7)+1;
+//		int dayOf0101 = (int) ((dayOfYear+dayOfWeek+3)%7)+1;
 		long week= dayOfYear/7;
 		if(dayOfYear%7>0){
 			week++;
