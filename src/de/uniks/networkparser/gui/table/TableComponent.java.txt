@@ -108,40 +108,7 @@ public class TableComponent extends Composite implements Listener, PropertyChang
 			tableSyncronizer.refreshMiddle();
 		}
 	}
-
-	public void addColumn(Column column) {
-		if (column.getBrowserId().equals(GUIPosition.WEST)) {
-			setVisibleFixedColumns(true);
-		}
-		// FIX FOR EMPTY TABLE
-		if (tableComposite == null) {
-			getTableComponent();
-			this.layout(true);
-
-		}
-		this.columns.add(new TableColumnView(this, column, mnuColumns));
-		if (column.getAltAttribute() != null) {
-			if (!isToolTip) {
-				isToolTip = true;
-				if (fixedTableViewerLeft != null) {
-					ColumnViewerToolTipSupport.enableFor(fixedTableViewerLeft,
-							ToolTip.NO_RECREATE);
-				}
-				if (tableViewer != null) {
-					ColumnViewerToolTipSupport.enableFor(tableViewer,
-							ToolTip.NO_RECREATE);
-				}
-				
-			}
-		}
-		if (getParent() instanceof PropertyChangeListener) {
-			((PropertyChangeListener) getParent())
-					.propertyChange(new PropertyChangeEvent(this,
-							PROPERTY_COLUMN, null, column));
-		}
-		setColumnAttrSet();
-	}
-
+	
 	public void updatePosition() {
 		updatePosition(GUIPosition.WEST, null);
 		updatePosition(GUIPosition.CENTER, null);
@@ -286,54 +253,9 @@ public class TableComponent extends Composite implements Listener, PropertyChang
 		return tableViewer;
 	}
 
-	public void setVisibleFixedColumns(boolean visible) {
-		if (fixedTableViewerLeft != null && !visible) {
-			for (TableColumnView item : columns) {
-				if (item.getColumn().getBrowserId().equals(GUIPosition.WEST)) {
-					item.setVisible(false);
-				}
-			}
-
-			fixedTableViewerLeft.getTable().dispose();
-			fixedTableViewerLeft = null;
-			tableSyncronizer.dispose();
-		} else if (fixedTableViewerLeft == null && visible) {
-			fixedTableViewerLeft = createBrowser(GUIPosition.WEST);
-
-			tableSyncronizer = new TableSyncronizer(this,
-					fixedTableViewerLeft.getTable(), tableViewer.getTable());
-			tableViewer.getTable().addMouseWheelListener(tableSyncronizer);
-			tableViewer.getTable().addListener(SWT.Selection, tableSyncronizer);
-			if (tableViewer.getTable().getVerticalBar() != null) {
-				tableViewer.getTable().getVerticalBar()
-						.addListener(SWT.Selection, tableSyncronizer);
-			}
-			fixedTableViewerLeft.getTable().addListener(SWT.Selection,
-					tableSyncronizer);
-
-			for (TableColumnView item : columns) {
-				if (item.getColumn().getBrowserId().equals(GUIPosition.WEST)) {
-					item.setVisible(true);
-				}
-			}
-		}
-	}
-
 	public void createFromCreator(SendableEntityCreator creator) {
 		createFromCreator(creator, false);
 
-	}
-
-	public void createFromCreator(SendableEntityCreator creator, boolean edit) {
-		String[] properties = creator.getProperties();
-		Object prototyp = creator.getSendableInstance(true);
-		for (String property : properties) {
-			Object value = creator.getValue(prototyp, property);
-			if (!(value instanceof Collection<?>)) {
-				addColumn(new Column().withAttrName(property, edit)
-						.withGetDropDownListFromMap(true));
-			}
-		}
 	}
 
 	public void addControl(Control control) {

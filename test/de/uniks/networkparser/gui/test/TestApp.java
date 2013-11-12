@@ -12,10 +12,12 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import de.uniks.networkparser.gui.table.Column;
 import de.uniks.networkparser.gui.table.SearchTableComponent;
 import de.uniks.networkparser.gui.table.TableComponent;
 import de.uniks.networkparser.gui.table.TableList;
 import de.uniks.networkparser.gui.table.creator.TableListCreator;
+import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.json.JsonIdMap;
 
 /**
@@ -55,21 +57,47 @@ public class TestApp extends Application {
         tableList.add(new Person("Ethan",     "Williams", "ethan.williams@example.com" ));
         tableList.add(new Person("Emma",      "Jones",    "emma.jones@example.com" ));
         tableList.add(new Person("Michael",   "Brown",    "michael.brown@example.com" ));
+
+        tableList.add(new Person("Jacob",     "Smith",    "jacob.smith@example.com" ));
+        tableList.add(new Person("Isabella",  "Johnson",  "isabella.johnson@example.com" ));
+        tableList.add(new Person("Ethan",     "Williams", "ethan.williams@example.com" ));
+        tableList.add(new Person("Emma",      "Jones",    "emma.jones@example.com" ));
+        tableList.add(new Person("Michael",   "Brown",    "michael.brown@example.com" ));
+
+        
+        tableList.add(new Person("Jacob",     "Smith",    "jacob.smith@example.com" ));
+        tableList.add(new Person("Isabella",  "Johnson",  "isabella.johnson@example.com" ));
+        tableList.add(new Person("Ethan",     "Williams", "ethan.williams@example.com" ));
+        tableList.add(new Person("Emma",      "Jones",    "emma.jones@example.com" ));
+        tableList.add(new Person("Michael",   "Brown",    "michael.brown@example.com" ));
+
+        
         JsonIdMap map = new JsonIdMap();
         map.withCreator(new TableListCreator());
         map.withCreator(new PersonCreator());
         
-        tableView.finishDataBinding(map, tableList);
+        tableView.withMap(map).withList(tableList);
         
         tableView.withSearchProperties(Person.PROPERTY_FIRSTNAME, Person.PROPERTY_LASTNAME, Person.PROPERTY_EMAIL);
+        
+//        tableView.createFromCreator(null, true);
+        
+        tableView.withColumn(new Column().withAttrName(Person.PROPERTY_FIRSTNAME));
+        tableView.withColumn(new Column().withAttrName(Person.PROPERTY_LASTNAME));
+        tableView.withColumn(new Column().withAttrName(Person.PROPERTY_EMAIL).withBrowserId(GUIPosition.EAST));
+        
+        
         root.getChildren().add(tableView);
+        
+        primaryStage.show();
+//        tableView.test();
 
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         init(primaryStage);
-        primaryStage.show();
+//        primaryStage.show();
     }
 
     public static void main(String[] args) { launch(args); }

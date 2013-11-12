@@ -15,6 +15,11 @@ public class Person {
 
 
     public Person(){
+    	this.firstName = new SimpleStringProperty("");
+
+        this.lastName = new SimpleStringProperty("");
+
+        this.email = new SimpleStringProperty("");
     	
     }
     public Person(String fName, String lName, String email) {
