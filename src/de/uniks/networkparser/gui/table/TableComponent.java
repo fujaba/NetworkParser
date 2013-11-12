@@ -35,19 +35,23 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.value.WritableListValue;
+import javafx.event.EventHandler;
+import javafx.geometry.Orientation;
 import javafx.scene.Node;
-import javafx.scene.control.TableColumn;
+import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.TextItems;
+import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class TableComponent extends BorderPane implements PropertyChangeListener, TableComponentInterface {
@@ -59,7 +63,11 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	protected SendableEntityCreator sourceCreator;
 	private String property;
 	protected UpdateSearchList updateItemListener;
-	protected TableView<Object> tableViewer;
+	protected TableView<Object> centerTableViewer;
+	protected TableView<Object> leftTableViewer;
+	protected TableView<Object> rightTableViewer;
+	protected boolean isToolTip;
+
 	protected TableList sourceList;
 	protected WritableListValue<Object> list;
 	protected TableFilterView tableFilterView;
@@ -76,46 +84,263 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		return node;
 	}
 	
-	@SuppressWarnings("unchecked")
-	public boolean finishDataBinding(IdMap map, TableList item) {
-		this.withMap(map);
-		boolean result = finishDataBinding(item);
-		if(item!=null){
-			LinkedHashSet<Object> items = item.getItems();
-			Iterator<Object> iterator = items.iterator();
+	public TableComponent withList(TableList item) {
+		return withList(item, TableList.PROPERTY_ITEMS);
+	}
+	
+	public TableComponent createFromCreator(SendableEntityCreator creator, boolean edit) {
+		if(creator==null){
+			Iterator<Object> iterator = list.iterator();
 			if(iterator.hasNext()){
 				Object value = iterator.next();
-				SendableEntityCreator creatorClass = map.getCreatorClass(value);
-				if(creatorClass!=null){
-					String[] properties = creatorClass.getProperties();
-					for(int z=0;z<properties.length;z++){
-						TableColumn<Object, Object> col = new TableColumn<Object, Object>();
-						col.setText(properties[z]);
-						col.setCellValueFactory(new PropertyValueFactory<Object, Object>(properties[z]));
-//						col.setComparator(list);
-						
-//						TextField header = new TextField("Pink Elephants");
-// 						TableColumnHeaderFX header=new TableColumnHeaderFX(this.getTableViewer(), col);
- 						
-//						col.setGraphic(header);
-						
-//						getTableViewer().
-//				        TableViewSkin<?> skin = (TableViewSkin<?>) getTableViewer().getSkin();
+				creator = map.getCreatorClass(value);
+			}			
+		}
+		if(creator==null){
+			return this;
+		}
+		String[] properties = creator.getProperties();
+		Object prototyp = creator.getSendableInstance(true);
+		for (String property : properties) {
+			Object value = creator.getValue(prototyp, property);
+			if (!(value instanceof Collection<?>)) {
+				withColumn(new Column().withAttrName(property, edit)
+						.withGetDropDownListFromMap(true));
+			}
+		}
+		return this;
+	}
+	
+	public TableView<Object> getBrowserView(GUIPosition browserId) {
+		TableView<Object> resultTableViewer=null;
+		if (browserId.equals(GUIPosition.WEST)) {
+			resultTableViewer = leftTableViewer;
+		}else if (browserId.equals(GUIPosition.CENTER)) {
+			resultTableViewer = centerTableViewer;
+		}else if (browserId.equals(GUIPosition.EAST)) {
+			resultTableViewer = rightTableViewer;
+		}
+		
+		if (resultTableViewer == null) {
+			resultTableViewer = new TableView<Object>();
+			resultTableViewer.setItems(list);
+//				for (Node n : resultTableViewer.lookupAll(".scroll-bar")) {
+//					System.out.println(n);
+//					if (n instanceof ScrollBar) {
+//						ScrollBar bar = (ScrollBar) n;
+//		//				System.out.println(bar.getOrientation() + ": range "
+//		//						+ bar.getMin() + " => " + bar.getMax() + ", value "
+//		//						+ bar.getValue());
+//						if (bar.getOrientation().equals(Orientation.VERTICAL)) {
+//							System.out.println(bar);
+////							bar.setValue(pos);
+//						}
+//					}
+//				}
 
-//				        TableHeaderRow tableHeader = skin.getTableHeaderRow();
-//				        NestedTableColumnHeader rootHeader = tableHeader.getRootHeader();
+			
+			this.setOnScroll(new EventHandler<ScrollEvent>() {
+				  @Override
+				  public void handle(ScrollEvent event) {
+					  System.out.println(centerTableViewer.getChildrenUnmodifiable().size());
+					  System.out.println(event);
+					  System.out.println("Scene.x: " + event.getSceneX());
+					  System.out.println("Screen.x: " + event.getScreenX());
+					  System.out.println(event.getDeltaY()+"::"+event.getSceneY()+"::"+event.getScreenY()+"::"+event.getTotalDeltaY()+"::"+event.getY());
+//					  withScrollPosition(event.getTotalDeltaY());
+				  }
+			});
+			
+//			this.addEventFilter(ScrollEvent.ANY, new EventHandler<ScrollEvent>() {
+//	            @Override
+//	            public void handle(ScrollEvent scrollEvent) {
+//	               System.out.println("Scrolled Filter.");
+//	            }
+//	     });
+//			this.addEventHandler(ScrollEvent.ANY, new EventHandler<ScrollEvent>() {
+//	            @Override
+//	            public void handle(ScrollEvent scrollEvent) {
+//	               System.out.println("Scrolled Event.");
+//	            }
+//	     });
+//			this.setOnScrollStarted(new EventHandler<ScrollEvent>() {
+//	            @Override
+//	            public void handle(ScrollEvent scrollEvent) {
+//	               System.out.println("setOnScrollStarted Event.");
+//	            }
+//	     });
+//			this.setOnScrollFinished(new EventHandler<ScrollEvent>() {
+//	            @Override
+//	            public void handle(ScrollEvent scrollEvent) {
+//	               System.out.println("setOnScrollFinished Event.");
+//	            }
+//	     });
+	
+			
+			 
+			
+			
+			
+//			resultTableViewer.addEventHandler(Event, arg1);
+//			resultTableViewer.addListener(SWT.KeyDown, this);
+//			resultTableViewer.addListener(SWT.MouseMove, this);
+//			resultTableViewer.addListener(SWT.MouseUp, this);
+//			resultTableViewer.addListener(SWT.MouseExit, this);
+//			resultTableViewer.addListener(SWT.SELECTED, this);
 
-						addColumn(col);
-						System.out.println(col.getTableView());
-//						columns.get
-//						TableViewSkin<?> skin = (TableViewSkin<?>)getTableViewer().getSkin();
-//						skin.getTableHeaderRow().
+			if (browserId.equals(GUIPosition.CENTER)) {
+				this.setCenter(resultTableViewer);
+				centerTableViewer = resultTableViewer; 
+			}else if (browserId.equals(GUIPosition.WEST)) {
+				this.setLeft(resultTableViewer);
+				leftTableViewer = resultTableViewer; 
+			}else if (browserId.equals(GUIPosition.EAST)) {
+				this.setRight(resultTableViewer);
+				rightTableViewer = resultTableViewer;
+			}
+			
+//			if(centerTableViewer!=null && rightTableViewer != null){
+//				DoubleProperty wProperty = new SimpleDoubleProperty();
+//			    wProperty.bind(centerTableViewer.); // bind to Hbox width chnages
+//			    wProperty.addListener(new ChangeListener() {
+//			        @Override
+//			        public void changed(ObservableValue ov, Object t, Object t1) {
+//			           //when ever Hbox width chnages set ScrollPane Hvalue
+//			         chatBoxScrollPane.setHvalue(chatBoxScrollPane.getHmax()); 
+//			        }
+//			    }) ;
+//			}
+			
+			
+		}
+//			table.setMenu(headerMenu);
+//
+		return resultTableViewer;
+	}
+	
+	public void test(){
+        final ScrollBar  scrollBarV = (ScrollBar) centerTableViewer.lookup(".scroll-bar");
+        scrollBarV.addEventFilter(ScrollEvent.ANY, new EventHandler<ScrollEvent>() {
+            @Override
+            public void handle(ScrollEvent scrollEvent) {
+               System.out.println("Scrolled Filter.");
+            }
+     });
+        scrollBarV.setOnScroll(new EventHandler<ScrollEvent>() {
+            @Override
+            public void handle(ScrollEvent scrollEvent) {
+               System.out.println("Scrolled Filter.");
+            }
+     });
+//        scrollBarV.setVisible(false);
+	}
+	
+	public TableComponent withScrollPosition(double pos){
+		setPosition(leftTableViewer, pos);
+		setPosition(centerTableViewer, pos);
+		setPosition(rightTableViewer, pos);
+		return this;
+	}
+	
+	private void setPosition(TableView<Object> table, double pos) {
+		if(table!=null){
+			for (Node n : table.lookupAll(".scroll-bar")) {
+				if (n instanceof ScrollBar) {
+					ScrollBar bar = (ScrollBar) n;
+	//				System.out.println(bar.getOrientation() + ": range "
+	//						+ bar.getMin() + " => " + bar.getMax() + ", value "
+	//						+ bar.getValue());
+					if (bar.getOrientation().equals(Orientation.VERTICAL)) {
+						bar.setValue(pos);
 					}
 				}
 			}
 		}
-		return result; 
 	}
+
+	
+//	public void setVisibleFixedColumns(boolean visible) {
+//		if (fixedTableViewerLeft != null && !visible) {
+//			for (TableColumnView item : columns) {
+//				if (item.getColumn().getBrowserId().equals(GUIPosition.WEST)) {
+//					item.setVisible(false);
+//				}
+//			}
+//
+//			fixedTableViewerLeft.getTable().dispose();
+//			fixedTableViewerLeft = null;
+//			tableSyncronizer.dispose();
+//		} else if (fixedTableViewerLeft == null && visible) {
+//			fixedTableViewerLeft = createBrowser(GUIPosition.WEST);
+//
+//			tableSyncronizer = new TableSyncronizer(this,
+//					fixedTableViewerLeft.getTable(), tableViewer.getTable());
+//			tableViewer.getTable().addMouseWheelListener(tableSyncronizer);
+//			tableViewer.getTable().addListener(SWT.Selection, tableSyncronizer);
+//			if (tableViewer.getTable().getVerticalBar() != null) {
+//				tableViewer.getTable().getVerticalBar()
+//						.addListener(SWT.Selection, tableSyncronizer);
+//			}
+//			fixedTableViewerLeft.getTable().addListener(SWT.Selection,
+//					tableSyncronizer);
+//
+//			for (TableColumnView item : columns) {
+//				if (item.getColumn().getBrowserId().equals(GUIPosition.WEST)) {
+//					item.setVisible(true);
+//				}
+//			}
+//		}
+//	}
+
+
+	public TableComponent withColumn(Column column) {
+		TableView<Object> browserView = getBrowserView(column.getBrowserId());
+
+		TableColumnFX columnFX = new TableColumnFX().withColumn(column);
+		this.columns.add(columnFX);
+		if (column.getAltAttribute() != null) {
+			if (!isToolTip) {
+				isToolTip = true;
+			}
+		}
+		if (getParent() instanceof PropertyChangeListener) {
+			((PropertyChangeListener) getParent())
+					.propertyChange(new PropertyChangeEvent(this,
+							PROPERTY_COLUMN, null, column));
+		}
+		browserView.getColumns().add(columnFX);
+		return this;
+	}
+
+//		if(item!=null){
+//			
+//				if(creatorClass!=null){
+//					String[] properties = creatorClass.getProperties();
+//					for(int z=0;z<properties.length;z++){
+//						
+//
+////						TableColumnHeaderFX header=new TableColumnHeaderFX(this.getTableViewer(), col);
+////						TextField header = new TextField("Pink Elephants");
+// 						
+////						col.setGraphic(header);
+//						
+////						getTableViewer().
+////				        TableViewSkin<?> skin = (TableViewSkin<?>) getTableViewer().getSkin();
+//
+////				        TableHeaderRow tableHeader = skin.getTableHeaderRow();
+////				        NestedTableColumnHeader rootHeader = tableHeader.getRootHeader();
+//
+//						addColumn(col);
+//						System.out.println(col.getTableView());
+////						columns.get
+////						TableViewSkin<?> skin = (TableViewSkin<?>)getTableViewer().getSkin();
+////						skin.getTableHeaderRow().
+//					}
+//				}
+//			}
+//		}
+//		return result; 
+//	}
 	
 	public TableComponent withMap(IdMap map){
 		this.map = map;
@@ -128,23 +353,12 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		return this;
 	}
 	
-	public boolean finishDataBinding(TableList item) {
-		return finishDataBinding(item, TableList.PROPERTY_ITEMS);
-	}
-	
 	public void init(){
-		if(this.tableViewer==null){
-			this.tableViewer = new TableView<Object>();
-			withAnchor(this);
-			this.setCenter(tableViewer);
-		}	
-		
+		withAnchor(this);
 		if(list==null){
-			
 			this.list = new SimpleListProperty<Object>(javafx.collections.FXCollections.observableList(new ArrayList<Object>()));
 //			this.list.addPropertyChangeListener(this);
 //			this.list.setIdMap(map);
-			tableViewer.setItems(list);
 			
 			
 			//FIXME
@@ -181,7 +395,6 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 			this.sourceList = new TableList();
 			this.sourceList.addPropertyChangeListener(this);
 			this.sourceList.setIdMap(map);
-//			tableViewer.setItems(sourceList);
 		}
 
 		if(tableFilterView==null){
@@ -229,15 +442,15 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		}
 		return false;
 	}
-	public boolean finishDataBinding(Object item, String property) {
+	public TableComponent withList(Object item, String property) {
 		if (map == null) {
-			return true;
+			return this;
 		}
 		this.source = item;
 		this.sourceCreator = map.getCreatorClass(source);
 		this.property = property;
 		if (sourceCreator == null) {
-			return false;
+			return this;
 		}
 		
 		// Copy Sources
@@ -262,11 +475,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 			}
 		}
 		addUpdateListener(source);
-		return true;
-	}
-	
-	public void addColumn(TableColumn<Object, Object>... columns){
-		this.tableViewer.getColumns().addAll(columns);
+		return this;
 	}
 	
 	public TableColumnInterface getColumn(Column column) {
@@ -287,10 +496,6 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 
 	public String getProperty() {
 		return property;
-	}
-	
-	public TableView<Object> getTableViewer() {
-		return tableViewer;
 	}
 
 	protected String getText(String label) {
