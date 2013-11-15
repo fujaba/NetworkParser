@@ -84,7 +84,7 @@ public class TestApp extends Application {
         
         tableView.withColumn(new Column().withAttrName(Person.PROPERTY_FIRSTNAME));
         tableView.withColumn(new Column().withAttrName(Person.PROPERTY_LASTNAME));
-        tableView.withColumn(new Column().withAttrName(Person.PROPERTY_EMAIL).withBrowserId(GUIPosition.EAST));
+        tableView.withColumn(new Column().withAttrName(Person.PROPERTY_EMAIL).withBrowserId(GUIPosition.WEST));
         
         
         root.getChildren().add(tableView);

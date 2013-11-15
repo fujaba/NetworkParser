@@ -37,24 +37,23 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleListProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.beans.value.WritableListValue;
-import javafx.event.EventHandler;
-import javafx.geometry.Orientation;
 import javafx.scene.Node;
-import javafx.scene.control.ScrollBar;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Menu;
 import javafx.scene.control.TableView;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import de.uniks.networkparser.DefaultTextItems;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.TextItems;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class TableComponent extends BorderPane implements PropertyChangeListener, TableComponentInterface {
+public class TableComponent extends BorderPane implements PropertyChangeListener, TableComponentInterface, ChangeListener<Number> {
 	private ArrayList<TableColumnInterface> columns = new ArrayList<TableColumnInterface>();
 	public static final String PROPERTY_COLUMN = "column";
 	public static final String PROPERTY_ITEM = "item";
@@ -63,14 +62,14 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	protected SendableEntityCreator sourceCreator;
 	private String property;
 	protected UpdateSearchList updateItemListener;
-	protected TableView<Object> centerTableViewer;
-	protected TableView<Object> leftTableViewer;
-	protected TableView<Object> rightTableViewer;
+	protected TableViewFX[] tableViewer=new TableViewFX[3];
 	protected boolean isToolTip;
+	protected ContextMenu contextMenu;
 
 	protected TableList sourceList;
 	protected WritableListValue<Object> list;
 	protected TableFilterView tableFilterView;
+	private Menu visibleItems;
 	
 	public IdMap getMap() {
 		return map;
@@ -112,155 +111,44 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	}
 	
 	public TableView<Object> getBrowserView(GUIPosition browserId) {
-		TableView<Object> resultTableViewer=null;
 		if (browserId.equals(GUIPosition.WEST)) {
-			resultTableViewer = leftTableViewer;
-		}else if (browserId.equals(GUIPosition.CENTER)) {
-			resultTableViewer = centerTableViewer;
-		}else if (browserId.equals(GUIPosition.EAST)) {
-			resultTableViewer = rightTableViewer;
-		}
-		
-		if (resultTableViewer == null) {
-			resultTableViewer = new TableView<Object>();
-			resultTableViewer.setItems(list);
-//				for (Node n : resultTableViewer.lookupAll(".scroll-bar")) {
-//					System.out.println(n);
-//					if (n instanceof ScrollBar) {
-//						ScrollBar bar = (ScrollBar) n;
-//		//				System.out.println(bar.getOrientation() + ": range "
-//		//						+ bar.getMin() + " => " + bar.getMax() + ", value "
-//		//						+ bar.getValue());
-//						if (bar.getOrientation().equals(Orientation.VERTICAL)) {
-//							System.out.println(bar);
-////							bar.setValue(pos);
-//						}
-//					}
-//				}
-
-			
-			this.setOnScroll(new EventHandler<ScrollEvent>() {
-				  @Override
-				  public void handle(ScrollEvent event) {
-					  System.out.println(centerTableViewer.getChildrenUnmodifiable().size());
-					  System.out.println(event);
-					  System.out.println("Scene.x: " + event.getSceneX());
-					  System.out.println("Screen.x: " + event.getScreenX());
-					  System.out.println(event.getDeltaY()+"::"+event.getSceneY()+"::"+event.getScreenY()+"::"+event.getTotalDeltaY()+"::"+event.getY());
-//					  withScrollPosition(event.getTotalDeltaY());
-				  }
-			});
-			
-//			this.addEventFilter(ScrollEvent.ANY, new EventHandler<ScrollEvent>() {
-//	            @Override
-//	            public void handle(ScrollEvent scrollEvent) {
-//	               System.out.println("Scrolled Filter.");
-//	            }
-//	     });
-//			this.addEventHandler(ScrollEvent.ANY, new EventHandler<ScrollEvent>() {
-//	            @Override
-//	            public void handle(ScrollEvent scrollEvent) {
-//	               System.out.println("Scrolled Event.");
-//	            }
-//	     });
-//			this.setOnScrollStarted(new EventHandler<ScrollEvent>() {
-//	            @Override
-//	            public void handle(ScrollEvent scrollEvent) {
-//	               System.out.println("setOnScrollStarted Event.");
-//	            }
-//	     });
-//			this.setOnScrollFinished(new EventHandler<ScrollEvent>() {
-//	            @Override
-//	            public void handle(ScrollEvent scrollEvent) {
-//	               System.out.println("setOnScrollFinished Event.");
-//	            }
-//	     });
-	
-			
-			 
-			
-			
-			
-//			resultTableViewer.addEventHandler(Event, arg1);
-//			resultTableViewer.addListener(SWT.KeyDown, this);
-//			resultTableViewer.addListener(SWT.MouseMove, this);
-//			resultTableViewer.addListener(SWT.MouseUp, this);
-//			resultTableViewer.addListener(SWT.MouseExit, this);
-//			resultTableViewer.addListener(SWT.SELECTED, this);
-
-			if (browserId.equals(GUIPosition.CENTER)) {
-				this.setCenter(resultTableViewer);
-				centerTableViewer = resultTableViewer; 
-			}else if (browserId.equals(GUIPosition.WEST)) {
-				this.setLeft(resultTableViewer);
-				leftTableViewer = resultTableViewer; 
-			}else if (browserId.equals(GUIPosition.EAST)) {
-				this.setRight(resultTableViewer);
-				rightTableViewer = resultTableViewer;
+			if(tableViewer[0]!=null){
+				return tableViewer[0];
 			}
-			
-//			if(centerTableViewer!=null && rightTableViewer != null){
-//				DoubleProperty wProperty = new SimpleDoubleProperty();
-//			    wProperty.bind(centerTableViewer.); // bind to Hbox width chnages
-//			    wProperty.addListener(new ChangeListener() {
-//			        @Override
-//			        public void changed(ObservableValue ov, Object t, Object t1) {
-//			           //when ever Hbox width chnages set ScrollPane Hvalue
-//			         chatBoxScrollPane.setHvalue(chatBoxScrollPane.getHmax()); 
-//			        }
-//			    }) ;
-//			}
-			
-			
+		}else if (browserId.equals(GUIPosition.CENTER)) {
+			if(tableViewer[1]!=null){
+				return tableViewer[1];
+			}
+		}else if (browserId.equals(GUIPosition.EAST)) {
+			if(tableViewer[2]!=null){
+				return tableViewer[2];
+			}
 		}
-//			table.setMenu(headerMenu);
-//
+		TableViewFX resultTableViewer=new TableViewFX();
+		resultTableViewer.withListener(this);
+		resultTableViewer.setItems(list);
+		if (browserId.equals(GUIPosition.CENTER)) {
+			this.setCenter(resultTableViewer);
+			tableViewer[1] = resultTableViewer; 
+		}else if (browserId.equals(GUIPosition.WEST)) {
+			this.setLeft(resultTableViewer);
+			tableViewer[0] = resultTableViewer; 
+		}else if (browserId.equals(GUIPosition.EAST)) {
+			this.setRight(resultTableViewer);
+			tableViewer[2]= resultTableViewer;
+		}
 		return resultTableViewer;
 	}
-	
-	public void test(){
-        final ScrollBar  scrollBarV = (ScrollBar) centerTableViewer.lookup(".scroll-bar");
-        scrollBarV.addEventFilter(ScrollEvent.ANY, new EventHandler<ScrollEvent>() {
-            @Override
-            public void handle(ScrollEvent scrollEvent) {
-               System.out.println("Scrolled Filter.");
-            }
-     });
-        scrollBarV.setOnScroll(new EventHandler<ScrollEvent>() {
-            @Override
-            public void handle(ScrollEvent scrollEvent) {
-               System.out.println("Scrolled Filter.");
-            }
-     });
-//        scrollBarV.setVisible(false);
-	}
-	
+
 	public TableComponent withScrollPosition(double pos){
-		setPosition(leftTableViewer, pos);
-		setPosition(centerTableViewer, pos);
-		setPosition(rightTableViewer, pos);
+		for(TableViewFX table :tableViewer){
+			if(table!=null){
+				table.setScrollValue(pos);
+			}
+		}
 		return this;
 	}
 	
-	private void setPosition(TableView<Object> table, double pos) {
-		if(table!=null){
-			for (Node n : table.lookupAll(".scroll-bar")) {
-				if (n instanceof ScrollBar) {
-					ScrollBar bar = (ScrollBar) n;
-	//				System.out.println(bar.getOrientation() + ": range "
-	//						+ bar.getMin() + " => " + bar.getMax() + ", value "
-	//						+ bar.getValue());
-					if (bar.getOrientation().equals(Orientation.VERTICAL)) {
-						bar.setValue(pos);
-					}
-				}
-			}
-		}
-	}
-
-	
-//	public void setVisibleFixedColumns(boolean visible) {
-//		if (fixedTableViewerLeft != null && !visible) {
 //			for (TableColumnView item : columns) {
 //				if (item.getColumn().getBrowserId().equals(GUIPosition.WEST)) {
 //					item.setVisible(false);
@@ -296,7 +184,9 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	public TableComponent withColumn(Column column) {
 		TableView<Object> browserView = getBrowserView(column.getBrowserId());
 
-		TableColumnFX columnFX = new TableColumnFX().withColumn(column);
+		TableColumnFX columnFX = new TableColumnFX().withColumn(column, visibleItems);
+		columnFX.setContextMenu(contextMenu);
+		
 		this.columns.add(columnFX);
 		if (column.getAltAttribute() != null) {
 			if (!isToolTip) {
@@ -355,13 +245,20 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	
 	public void init(){
 		withAnchor(this);
+		
+		if(contextMenu==null){
+			contextMenu = new ContextMenu();
+			visibleItems = new Menu();
+			visibleItems.setText(getText(DefaultTextItems.COLUMNS));
+			contextMenu.getItems().add(visibleItems);
+		}
+
 		if(list==null){
 			this.list = new SimpleListProperty<Object>(javafx.collections.FXCollections.observableList(new ArrayList<Object>()));
 //			this.list.addPropertyChangeListener(this);
 //			this.list.setIdMap(map);
 			
 			
-			//FIXME
 //			list.withTableComponent(this);
 //			ObservableList<Object> theList = list;
 			
@@ -539,51 +436,11 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 					}
 				}
 			}
-			
-			
-			
-//FIXME			if (list.equals(event.getSource())) {
-//				if (event.getPropertyName().equals(TableList.PROPERTY_ITEMS)) {
-//					if (event.getOldValue() == null && event.getNewValue() != null) {
-//						// ADD a new Item
-//						if (fixedTableViewerLeft != null) {
-//							fixedTableViewerLeft.add(event.getNewValue());
-//						}
-//						if (tableViewer != null) {
-//							tableViewer.add(event.getNewValue());
-//						}
-//					} else if (event.getOldValue() != null
-//							&& event.getNewValue() == null) {
-//						if (fixedTableViewerLeft != null) {
-//							fixedTableViewerLeft.remove(event.getOldValue());
-//						}
-//						if (tableViewer != null) {
-//							tableViewer.remove(event.getOldValue());
-//						}
-//					}
-//				}
-//			} else if (source.equals(event.getSource())) {
-//				if (event.getPropertyName().equals(property)) {
-//					if (event.getOldValue() != null && event.getNewValue() == null) {
-//						removeItem(event.getOldValue());
-////						list.set(property + IdMap.REMOVE, evt.getOldValue());
-////						refreshViewer();
-//					}
-//				}
-//			} else{ 
-////				if(lastUpdate < new Date().getTime()-3000){
-////				lastUpdate = new Date().getTime();
-//				// Must be an update
-//				//refresh(event.getSource(), new String[] { event.getPropertyName() });
-//				refresh(event.getSource(), new String[] { event.getPropertyName() });
-//			}		
-			
 		}
 	}
 
 	@Override
 	public void refreshViewer() {
-		
 		// TODO Auto-generated method stub
 		
 	}
@@ -594,5 +451,19 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 			return sourceList;
 		}
 		return list;
+	}
+
+	@Override
+	public void changed(ObservableValue<? extends Number> arg0, Number arg1,
+			Number arg2) {
+		withScrollPosition((Double) arg2);
+	}
+
+	public void findAllScrollBars() {
+		for(TableViewFX table : tableViewer){
+			if(table!=null){
+				table.getScrollbar();
+			}
+		}
 	}
 }
