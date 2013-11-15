@@ -76,11 +76,12 @@ public class Style implements PeerMessage, Cloneable{
 	/** The Underline value. */
 	private String alignment;
 	
-	
+	/** The Constant PROPERTY_WIDTH for Width of Width */
 	public static final String PROPERTY_WIDTH = "width";
 	/** The Width value. */
 	private double width;
 
+	/** The Constant PROPERTY_HEIGHT for Height of Height */
 	public static final String PROPERTY_HEIGHT = "height";
 	/** The Height value. */
 	private double height;
@@ -257,6 +258,12 @@ public class Style implements PeerMessage, Cloneable{
 		return alignment;
 	}
 
+	public Style withAlignment(GUIPosition value) {
+		String oldValue = this.alignment;
+		this.alignment = ""+value;
+		propertyChange(PROPERTY_ALIGNMENT, oldValue, value);
+		return this;
+	}
 	public Style withAlignment(String value) {
 		String oldValue = this.alignment;
 		this.alignment = value;

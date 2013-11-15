@@ -32,14 +32,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import java.util.List;
 
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public interface TableComponentInterface {
 	public IdMap getMap();
-	public boolean finishDataBinding(IdMap map, TableList item);
-	public boolean finishDataBinding(TableList item);
 	public boolean addItem(Object item);
 	public boolean removeItem(Object item);
-	public boolean finishDataBinding(Object item, String property);
 	public void addUpdateListener(Object list);
 	public String getProperty();
 	public TableColumnInterface getColumn(Column column);
@@ -47,4 +45,9 @@ public interface TableComponentInterface {
 	public void refreshViewer();
 	public List<Object> getItems(boolean all);
 	public TableComponentInterface withSearchProperties(String... searchProperties);
+	public TableComponentInterface withColumn(Column column);
+	public TableComponentInterface withList(TableList item);
+	public TableComponentInterface withList(Object item, String property);
+	public TableComponentInterface createFromCreator(SendableEntityCreator creator, boolean edit);
+	public TableComponentInterface withScrollPosition(double pos);
 }
