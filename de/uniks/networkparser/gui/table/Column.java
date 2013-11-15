@@ -30,23 +30,19 @@ package de.uniks.networkparser.gui.table;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 import de.uniks.networkparser.EntityValueFactory;
+import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.PeerMessage;
 
 public class Column implements PeerMessage{
 	public static final int AUTOWIDTH=-1;
+	public static final String PROPERTY_STYLE="style";
+	public static final String PROPERTY_ACTIVESTYLE="activeStyle";
 	public static final String PROPERTY_ATTRNAME="attrName";
 	public static final String PROPERTY_NUMBERFORMAT="numberformat";
 	public static final String PROPERTY_EDITCOLUMN="editColumn";
 	public static final String PROPERTY_LABEL="label";
 	public static final String PROPERTY_DEFAULTTEXT="defaulttext";
-	public static final String PROPERTY_BACKGROUNDCOLOR="bgcolor";
-	public static final String PROPERTY_FORGROUNDCOLOR="fgcolor";
-	public static final String PROPERTY_FORGROUNDCOLORACTIV="fgcoloractiv";
-	public static final String PROPERTY_BACKGROUNDCOLORACTIV="bgcoloractiv";
-	public static final String PROPERTY_TEXTALIGNMENT="textalignment";
-	public static final String PROPERTY_FONT="font";
-	public static final String PROPERTY_SIZE="size";
 	public static final String PROPERTY_RESIZE="resize";
 	public static final String PROPERTY_VISIBLE="visible";
 	public static final String PROPERTY_MOVABLE="movable";
@@ -55,24 +51,20 @@ public class Column implements PeerMessage{
 	public static final String PROPERTY_VALUEFROMDROPDOWNLIST="valuefromdropdown";
 	
 	public static final String DATE="%DATE%";
-	private int width=100;
+	private Style style;
+	private Style activestyle;
+	
 	private String attrName;
 	private String numberFormat;
 	private String editColumn;
 	private String label;
 	private String defaultText;
-	private String backgroundColor=null;
-	private String forgroundColor=null;
-	private String forgroundColorActiv=null;
-	private String backgroundColorActiv=null;
 	private boolean isResizable=true;
-	private int textalignment=-1;
 	private boolean isVisible=true;
 	private boolean isMovable=true;
 	private String altAttribute;
 	private Object item;
 	private GUIPosition browserId=GUIPosition.CENTER;
-	private String font;
 	private boolean getDropDownListFromMap=false;
 	
 	/**
@@ -81,27 +73,19 @@ public class Column implements PeerMessage{
 	public String getLabel() {
 		return label;
 	}
+	
+	public String getLabelOrAttrName() {
+		if(label==null){
+			return attrName;
+		}
+		return label;
+	}
 
 	/**
 	 * @param label the label to set
 	 */
 	public Column withLabel(String label) {
 		this.label = label;
-		return this;
-	}
-
-	/**
-	 * @return the width
-	 */
-	public int getWidth() {
-		return width;
-	}
-
-	/**
-	 * @param width the width to set
-	 */
-	public Column withWidth(int width) {
-		this.width = width;
 		return this;
 	}
 
@@ -165,57 +149,12 @@ public class Column implements PeerMessage{
 		return this;
 	}
 
-	public String getBackgroundColor() {
-		return backgroundColor;
-	}
-
-	public Column withBackgroundColor(String backgroundColor) {
-		this.backgroundColor = backgroundColor;
-		return this;
-	}
-
-	public String getForgroundColor() {
-		return forgroundColor;
-	}
-
-	public Column withForgroundColor(String value) {
-		this.forgroundColor = value;
-		return this;
-	}
-
-	public String getForgroundColorActiv() {
-		return forgroundColorActiv;
-	}
-
-	public Column withForgroundColorActiv(String forgroundColorActiv) {
-		this.forgroundColorActiv = forgroundColorActiv;
-		return this;
-	}
-
-	public String getBackgroundColorActiv() {
-		return backgroundColorActiv;
-	}
-
-	public Column withBackgroundColorActiv(String backgroundColorActiv) {
-		this.backgroundColorActiv = backgroundColorActiv;
-		return this;
-	}
-
 	public boolean isResizable() {
 		return isResizable;
 	}
 
 	public Column withResizable(boolean isResizable) {
 		this.isResizable = isResizable;
-		return this;
-	}
-
-	public int getTextalignment() {
-		return textalignment;
-	}
-
-	public Column withTextalignment(int textalignment) {
-		this.textalignment = textalignment;
 		return this;
 	}
 	
@@ -271,15 +210,6 @@ public class Column implements PeerMessage{
 	public boolean isEditingSupport() {
 		return false;
 	}
-
-	public String getFont() {
-		return font;
-	}
-
-	public Column withFont(String font) {
-		this.font = font;
-		return this;
-	}
 	
 	public boolean isGetDropDownListFromMap() {
 		return getDropDownListFromMap;
@@ -306,102 +236,107 @@ public class Column implements PeerMessage{
 		} else {
 			attrName = attribute;
 		}
-		if (attrName.equalsIgnoreCase(PROPERTY_ATTRNAME)) {
+		if (attrName.equalsIgnoreCase(PROPERTY_ATTRNAME))
 			return this.getAttrName();
-		}else if (attrName.equalsIgnoreCase(PROPERTY_NUMBERFORMAT)) {
+		if (attrName.equalsIgnoreCase(PROPERTY_NUMBERFORMAT))
 			return this.getNumberFormat();
-		}else if (attrName.equalsIgnoreCase(PROPERTY_EDITCOLUMN)) {
+		if (attrName.equalsIgnoreCase(PROPERTY_EDITCOLUMN))
 			return this.getEditColumn();
-		}else if (attrName.equalsIgnoreCase(PROPERTY_LABEL)) {
+		if (attrName.equalsIgnoreCase(PROPERTY_LABEL))
 			return this.getLabel();
-		}else if (attrName.equalsIgnoreCase(PROPERTY_DEFAULTTEXT)) {
+		if (attrName.equalsIgnoreCase(PROPERTY_DEFAULTTEXT))
 			return this.getDefaultText();
-		}else if (attrName.equalsIgnoreCase(PROPERTY_BACKGROUNDCOLOR)) {
-			return this.getBackgroundColor();
-		}else if (attrName.equalsIgnoreCase(PROPERTY_FORGROUNDCOLOR)) {
-			return this.getForgroundColor();
-		}else if (attrName.equalsIgnoreCase(PROPERTY_FORGROUNDCOLORACTIV)) {
-			return this.getForgroundColorActiv();
-		}else if (attrName.equalsIgnoreCase(PROPERTY_BACKGROUNDCOLORACTIV)) {
-			return this.getBackgroundColorActiv();
-		}else if (attrName.equalsIgnoreCase(PROPERTY_TEXTALIGNMENT)) {
-			return this.getTextalignment();
-		}else if (attrName.equalsIgnoreCase(PROPERTY_FONT)) {
-			return this.getFont();
-		}else if (attrName.equalsIgnoreCase(PROPERTY_SIZE)) {
-			return this.getWidth();
-		}else if (attrName.equalsIgnoreCase(PROPERTY_RESIZE)) {
+		if (attrName.equalsIgnoreCase(PROPERTY_STYLE))
+			return this.getStyle();
+		if (attrName.equalsIgnoreCase(PROPERTY_ACTIVESTYLE))
+			return this.getActiveStyle();
+		if (attrName.equalsIgnoreCase(PROPERTY_RESIZE))
 			return this.isResizable();
-		}else if (attrName.equalsIgnoreCase(PROPERTY_VISIBLE)) {
+		if (attrName.equalsIgnoreCase(PROPERTY_VISIBLE))
 			return this.isVisible();
-		}else if (attrName.equalsIgnoreCase(PROPERTY_MOVABLE)) {
+		if (attrName.equalsIgnoreCase(PROPERTY_MOVABLE))
 			return this.isMovable();
-		}else if (attrName.equalsIgnoreCase(PROPERTY_ALTTEXT)) {
+		if (attrName.equalsIgnoreCase(PROPERTY_ALTTEXT))
 			return this.getAltAttribute();
-		}else if (attrName.equalsIgnoreCase(PROPERTY_BROWSERID)) {
+		if (attrName.equalsIgnoreCase(PROPERTY_BROWSERID))
 			return this.getBrowserId();
-		}else if (attrName.equalsIgnoreCase(PROPERTY_VALUEFROMDROPDOWNLIST)) {
+		if (attrName.equalsIgnoreCase(PROPERTY_VALUEFROMDROPDOWNLIST))
 			return this.isGetDropDownListFromMap();
-		}
 		return null;
 	}
+	
 	@Override
 	public boolean set(String attribute, Object value) {
 		if (attribute.equalsIgnoreCase(PROPERTY_ATTRNAME)) {
 			withAttrName((String) value);
 			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_NUMBERFORMAT)) {
+		}
+		if (attribute.equalsIgnoreCase(PROPERTY_NUMBERFORMAT)) {
 			withNumberFormat((String) value);
 			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_EDITCOLUMN)) {
+		}
+		if (attribute.equalsIgnoreCase(PROPERTY_EDITCOLUMN)) {
 			withEditColumn((String) value);
 			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_LABEL)) {
+		}
+		if (attribute.equalsIgnoreCase(PROPERTY_LABEL)) {
 			withLabel((String) value);
 			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_DEFAULTTEXT)) {
+		}
+		if (attribute.equalsIgnoreCase(PROPERTY_DEFAULTTEXT)) {
 			withDefaultText((String) value);
 			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_BACKGROUNDCOLOR)) {
-			withBackgroundColor((String) value);
+		}
+		if (attrName.equalsIgnoreCase(PROPERTY_STYLE)){
+			withStyle((Style) value);
 			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_FORGROUNDCOLOR)) {
-			withForgroundColor((String) value);
+		}
+		if (attrName.equalsIgnoreCase(PROPERTY_ACTIVESTYLE)){
+			withActiveStyle((Style) value);
 			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_FORGROUNDCOLORACTIV)) {
-			withForgroundColorActiv((String) value);
-			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_BACKGROUNDCOLORACTIV)) {
-			withBackgroundColorActiv((String) value);
-			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_TEXTALIGNMENT)) {
-			withTextalignment((Integer) value);
-			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_FONT)) {
-			withFont((String) value);
-			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_SIZE)) {
-			withWidth((Integer) value);
-			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_RESIZE)) {
+		}
+		if (attribute.equalsIgnoreCase(PROPERTY_RESIZE)) {
 			withResizable((Boolean) value);
 			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_VISIBLE)) {
+		}
+		if (attribute.equalsIgnoreCase(PROPERTY_VISIBLE)) {
 			withVisible((Boolean) value);
 			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_MOVABLE)) {
+		}
+		if (attribute.equalsIgnoreCase(PROPERTY_MOVABLE)) {
 			withMovable((Boolean) value);
 			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_ALTTEXT)) {
+		}
+		if (attribute.equalsIgnoreCase(PROPERTY_ALTTEXT)) {
 			withAltAttribute((String) value);
 			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_BROWSERID)) {
+		}
+		if (attribute.equalsIgnoreCase(PROPERTY_BROWSERID)) {
 			withBrowserId(GUIPosition.valueOf((String)value));
 			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_VALUEFROMDROPDOWNLIST)) {
+		}
+		if (attribute.equalsIgnoreCase(PROPERTY_VALUEFROMDROPDOWNLIST)) {
 			withGetDropDownListFromMap((Boolean) value);
 			return true;
 		}
 		return false;
+	}
+
+	public Style getStyle() {
+		return style;
+	}
+
+	public Column withStyle(Style style) {
+		this.style = style;
+		return this;
+	}
+	
+	public Style getActiveStyle() {
+		return activestyle;
+	}
+
+	public Column withActiveStyle(Style activestyle) {
+		this.activestyle = activestyle;
+		return this;
 	}
 }
