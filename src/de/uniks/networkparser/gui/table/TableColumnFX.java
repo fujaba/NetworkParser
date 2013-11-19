@@ -1,31 +1,51 @@
 package de.uniks.networkparser.gui.table;
 
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 
-public class TableColumnFX extends TableColumn<Object, Object> implements TableColumnInterface, EventHandler<ActionEvent>, Callback<TableColumn<Object, Object>, TableCell<Object, Object>>{
+public class TableColumnFX extends TableColumn<Object, TableCellValue> implements TableColumnInterface, EventHandler<ActionEvent>{
 	private Column column;
 	private CheckMenuItem menueItem;
+	private TableComponent tableComponent;
 
-	public TableColumnFX withColumn(Column column, Menu visibleItems){
+	public TableColumnFX withColumn(Column column, Menu visibleItems, TableComponent tableComponent){
 		this.column = column;
+		this.tableComponent = tableComponent;
+		if(column.getComparator()!=null){
+			this.setComparator(column.getComparator());
+		}
 		this.setText(column.getLabelOrAttrName());
-		setCellValueFactory(new PropertyValueFactory<Object, Object>(column.getAttrName()));
+			
 		menueItem = new CheckMenuItem();
 		menueItem.setSelected(true);
 		menueItem.setText(column.getLabelOrAttrName());
 		menueItem.setOnAction(this);
 		visibleItems.getItems().add(menueItem);
 		
-		setCellFactory(this);
-		
+		setCellFactory(new Callback<TableColumn<Object,TableCellValue>, TableCell<Object,TableCellValue>>() {
+			@Override
+			public TableCell<Object, TableCellValue> call(
+					TableColumn<Object, TableCellValue> arg0) {
+				return new TableCellFX().withColumn(TableColumnFX.this.column).withTableComponent(TableColumnFX.this.tableComponent);
+			}
+		});
+		setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Object,TableCellValue>, ObservableValue<TableCellValue>>() {
+			@Override
+			public ObservableValue<TableCellValue> call(
+					javafx.scene.control.TableColumn.CellDataFeatures<Object, TableCellValue> arg0) {
+				return new TableCellValueFX().withItem(arg0.getValue()).withColumn(TableColumnFX.this.column).withCreator(TableColumnFX.this.tableComponent.getMap().getCreatorClass(arg0.getValue())).withTableComponent(TableColumnFX.this.tableComponent);
+			}
+		});
 		return this;
+	}
+	public void sort() {
+		System.out.println("JJJ");
 	}
 	
 	@Override
@@ -44,9 +64,29 @@ public class TableColumnFX extends TableColumn<Object, Object> implements TableC
 			}
 		}
 	}
+//	@Override
+//	public ObservableValue<TableCellValue> call(
+//			CellDataFeatures<Object, TableCellValue> arg0) {
+//		return new TableCellFX().withColumn(column).withTableComponent(tableComponent);
+//////	.withCreator(tableComponent.getCreatorClass(arg0.getValue()));
+//	}
 
-	@Override
-	public TableCell<Object, Object> call(TableColumn<Object, Object> arg0) {
-		return new TableCellFX().withColumn(column);
-	}		
+//	@Override
+//	public ObservableValue<TableCellValue> call(CellDataFeatures<Object, TableCellValue> arg0) {
+//	public TableCell<Object, TableCellValue> call(TableColumn<Object, TableCellValue> arg0) {
+//		return new TableCellFX().withColumn(column).withTableComponent(tableComponent);
+//setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Object,TableCellValue>, ObservableValue<TableCellValue>>() {
+//			
+//			@Override
+//			public ObservableValue<TableCellValue> call(CellDataFeatures<Object, TableCellValue> arg0) {
+//				 return new TableCellValueFX().withItem(arg0.getValue()).withColumn(TableColumnFX.this.column).withCreator(TableColumnFX.this.tableComponent.getMap().getCreatorClass(arg0.getValue()));
+//			}
+//		});
+//	}
+//	public TableCell<Object, TableCellValue> call(
+//			TableColumn<Object, TableCellValue> arg0) {
+//		System.out.println(arg0);
+//		arg0.get
+//		
+//	}
 }
