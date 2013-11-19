@@ -50,4 +50,5 @@ public interface TableComponentInterface {
 	public TableComponentInterface withList(Object item, String property);
 	public TableComponentInterface createFromCreator(SendableEntityCreator creator, boolean edit);
 	public TableComponentInterface withScrollPosition(double pos);
+	public SendableEntityCreator getCreator(Object entity);
 }

@@ -323,18 +323,27 @@ public class TableList implements List<Object>, PeerMessage, SendableEntity {
 		return true;
 	}
 	
-	public void setSort(String field, SortingDirection direction, EntityValueFactory cellValueCreator) {
+	public TableList withSort(String field, SortingDirection direction, EntityValueFactory cellValueCreator) {
 		EntityComparator comparator = getComparator();
 		comparator.withColumn(field);
 		comparator.withDirection(direction);
 		comparator.withCellCreator(cellValueCreator);
 		refreshSort();
+		return this;
 	}
-	public void setSort(String field, SortingDirection direction) {
+	
+	public TableList withSort(EntityComparator comparator) {
+		this.comparator = comparator;
+		refreshSort();
+		return this;
+	}
+	
+	public TableList withSort(String field, SortingDirection direction) {
 		EntityComparator comparator = getComparator();
 		comparator.withColumn(field);
 		comparator.withDirection(direction);
 		refreshSort();
+		return this;
 	}
 
 	public void refreshSort(){
