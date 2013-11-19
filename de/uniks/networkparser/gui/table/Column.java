@@ -29,6 +29,8 @@ package de.uniks.networkparser.gui.table;
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+import java.util.Comparator;
+
 import de.uniks.networkparser.EntityValueFactory;
 import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.interfaces.GUIPosition;
@@ -56,7 +58,7 @@ public class Column implements PeerMessage{
 	
 	private String attrName;
 	private String numberFormat;
-	private String editColumn;
+	private boolean isEditable=false;
 	private String label;
 	private String defaultText;
 	private boolean isResizable=true;
@@ -66,6 +68,8 @@ public class Column implements PeerMessage{
 	private Object item;
 	private GUIPosition browserId=GUIPosition.CENTER;
 	private boolean getDropDownListFromMap=false;
+	protected ColumnListener handler;
+	private Comparator<TableCellValue> comparator;
 	
 	/**
 	 * @return the label
@@ -113,9 +117,7 @@ public class Column implements PeerMessage{
 		if(label==null){
 			label = attrName;
 		}
-		if(edit){
-			this.editColumn = attrName;
-		}
+		this.isEditable = edit;
 		return this;
 	}
 
@@ -137,15 +139,15 @@ public class Column implements PeerMessage{
 	/**
 	 * @return the editColumn
 	 */
-	public String getEditColumn() {
-		return editColumn;
+	public boolean isEditable() {
+		return isEditable;
 	}
 
 	/**
 	 * @param editColumn the editColumn to set
 	 */
-	public Column withEditColumn(String editColumn) {
-		this.editColumn = editColumn;
+	public Column withEditable(boolean value) {
+		this.isEditable = value;
 		return this;
 	}
 
@@ -187,7 +189,6 @@ public class Column implements PeerMessage{
 	public Object getItem() {
 		return item;
 	}
-	public void setSelection(int x, int y){}
 
 	public boolean isMovable() {
 		return isMovable;
@@ -205,10 +206,6 @@ public class Column implements PeerMessage{
 	public Column withBrowserId(GUIPosition browserId) {
 		this.browserId = browserId;
 		return this;
-	}
-	
-	public boolean isEditingSupport() {
-		return false;
 	}
 	
 	public boolean isGetDropDownListFromMap() {
@@ -241,7 +238,7 @@ public class Column implements PeerMessage{
 		if (attrName.equalsIgnoreCase(PROPERTY_NUMBERFORMAT))
 			return this.getNumberFormat();
 		if (attrName.equalsIgnoreCase(PROPERTY_EDITCOLUMN))
-			return this.getEditColumn();
+			return this.isEditable();
 		if (attrName.equalsIgnoreCase(PROPERTY_LABEL))
 			return this.getLabel();
 		if (attrName.equalsIgnoreCase(PROPERTY_DEFAULTTEXT))
@@ -276,7 +273,7 @@ public class Column implements PeerMessage{
 			return true;
 		}
 		if (attribute.equalsIgnoreCase(PROPERTY_EDITCOLUMN)) {
-			withEditColumn((String) value);
+			withEditable((Boolean) value);
 			return true;
 		}
 		if (attribute.equalsIgnoreCase(PROPERTY_LABEL)) {
@@ -337,6 +334,28 @@ public class Column implements PeerMessage{
 
 	public Column withActiveStyle(Style activestyle) {
 		this.activestyle = activestyle;
+		return this;
+	}
+	
+	public Column withListener(ColumnListener handler){
+		this.handler = handler;
+		this.handler.withColumn(this);
+		return this;
+	}
+	
+	public ColumnListener getListener(){
+		if(handler==null){
+			handler = new ColumnHandler().withColumn(this);
+		}
+		return handler;
+	}
+
+	public Comparator<TableCellValue> getComparator() {
+		return comparator;
+	}
+
+	public Column withComparator(Comparator<TableCellValue> comparator) {
+		this.comparator = comparator;
 		return this;
 	}
 }

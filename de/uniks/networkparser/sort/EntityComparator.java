@@ -46,6 +46,7 @@ public class EntityComparator implements Comparator<Object> {
 	private IdMap map;
 	private EntityValueFactory cellCreator = new EntityValueFactory();
 	private TableList owner;
+	protected SendableEntityCreator creator;
 	
 	public EntityComparator withTableList(TableList owner){
 		this.owner = owner;
@@ -59,20 +60,19 @@ public class EntityComparator implements Comparator<Object> {
 	}
 
 	public int compareValue(Object o1, Object o2) {
- 		SendableEntityCreator c1 = null;
 		if (map != null) {
-			c1 = map.getCreatorClass(o1);
+			creator = map.getCreatorClass(o1);
 			SendableEntityCreator c2 = map.getCreatorClass(o2);
-			if (c1 != c2) {
-				c1 = null;
+			if (creator != c2) {
+				creator = null;
 			}
 		}
-		if (c1 == null) {
+		if (creator == null) {
 			return checkIntern(o1, o2);
 		}
 
-		Object v1 = cellCreator.getCellValue(o1, c1, column);
-		Object v2 = cellCreator.getCellValue(o2, c1, column);
+		Object v1 = cellCreator.getCellValue(o1, creator, column);
+		Object v2 = cellCreator.getCellValue(o2, creator, column);
 		if (v1 == null && v2 == null) {
 			return checkIntern(o1, o2);
 		}
@@ -118,7 +118,7 @@ public class EntityComparator implements Comparator<Object> {
 			}
 		} else if (v1 instanceof Boolean) {
 			Boolean valueA = (Boolean) v1;
-			Boolean valueB = (Boolean) cellCreator.getCellValue(o2, c1, column);
+			Boolean valueB = (Boolean) cellCreator.getCellValue(o2, creator, column);
 			if (valueA != null) {
 				if (valueB != null) {
 					int value = valueB.compareTo(valueA);
