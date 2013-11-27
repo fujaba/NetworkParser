@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import de.uniks.networkparser.AbstractIdMap;
+import de.uniks.networkparser.AbstractMap;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
@@ -94,7 +94,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 	}
 	
 	@Override
-	public AbstractIdMap withCreator(String className,
+	public AbstractMap withCreator(String className,
 			SendableEntityCreator createrClass) {
 		super.withCreator(className, createrClass);
 

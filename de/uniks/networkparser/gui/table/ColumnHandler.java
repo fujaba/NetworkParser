@@ -5,6 +5,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 
 public class ColumnHandler implements ColumnListener {
+	public static final String AUTOEDIT="AUTOEDIT";
 	protected Column column;
 
 	public ColumnHandler withColumn(Column column){
@@ -24,7 +25,7 @@ public class ColumnHandler implements ColumnListener {
 	}
 	
 	public Object onEdit(TableComponentInterface tableComponent, Object entity, SendableEntityCreator creator){
-		return null;
+		return AUTOEDIT;
 	}
 	
 	public Object getValue(TableComponentInterface tableComponent, Object entity, SendableEntityCreator creator) {

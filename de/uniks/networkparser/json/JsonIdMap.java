@@ -225,6 +225,8 @@ public class JsonIdMap extends IdMap {
 							jsonArray, null, deep);
 				}
 			}
+		}else if(filter.isFullSeriation()){
+			return "";
 		}
 		return null;
 	}
