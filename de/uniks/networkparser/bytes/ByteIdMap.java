@@ -36,7 +36,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import de.uniks.networkparser.AbstractIdMap;
+import de.uniks.networkparser.AbstractMap;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.bytes.converter.ByteConverter;
@@ -157,7 +157,7 @@ public class ByteIdMap extends IdMap {
 	}
 
 	@Override
-	public AbstractIdMap withCreator(String className,
+	public AbstractMap withCreator(String className,
 			SendableEntityCreator createrClass) {
 		super.withCreator(className, createrClass);
 
