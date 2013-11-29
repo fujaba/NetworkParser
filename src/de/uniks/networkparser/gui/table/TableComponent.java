@@ -67,7 +67,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	protected ContextMenu contextMenu;
 
 	protected TableList sourceList;
-	private WritableListValue<Object> list;
+	private SimpleListProperty<Object> list;
 	protected TableFilterView tableFilterView;
 	private Menu visibleItems;
 	
@@ -93,7 +93,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 			if(iterator.hasNext()){
 				Object value = iterator.next();
 				creator = map.getCreatorClass(value);
-			}			
+			}
 		}
 		if(creator==null){
 			return this;
@@ -238,6 +238,9 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	}
 
 	public TableComponent withSearchProperties(String... searchProperties) {
+		if(tableFilterView==null){
+			init();
+		}
 		tableFilterView.setSearchProperties(searchProperties);
 		tableFilterView.refresh();
 		return this;
@@ -315,6 +318,8 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 							.propertyChange(new PropertyChangeEvent(this,
 									PROPERTY_ITEM, null, item));
 				}
+				this.list.add(item);
+//				this.updateItemListener.addItem(item);
 			}
 			this.updateItemListener.addItem(item);
 			tableFilterView.refreshCounter();
@@ -412,7 +417,8 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		if (event != null) {
 			if (source.equals(event.getSource())) {
 				if (event.getOldValue() == null && event.getNewValue() != null) {
-					sourceList.add(event.getNewValue());
+					addItem(event.getNewValue());
+//					sourceList.add(event.getNewValue());
 				}
 			}else if (sourceList.equals(event.getSource())) {
 //				if(TableListFX.SETALL.equalsIgnoreCase(event.getPropertyName())){
@@ -439,6 +445,16 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 						removeItem(event.getOldValue());
 					}
 				}
+			}else{
+//				this.tableViewer[0].setItems(null);
+//				this.tableViewer[1].setItems(null);
+//				this.tableViewer[2].setItems(null);
+				
+//				this.tableViewer[0].setItems(list);
+//				this.tableViewer[1].setItems(list);
+//				this.tableViewer[2].setItems(list);
+//				event.
+//				this.tableViewer[0].re
 			}
 		}
 	}

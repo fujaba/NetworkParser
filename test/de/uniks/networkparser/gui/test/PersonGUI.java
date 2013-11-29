@@ -3,7 +3,7 @@ package de.uniks.networkparser.gui.test;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class Person {
+public class PersonGUI {
 	public static final String PROPERTY_FIRSTNAME="firstname";
 	public static final String PROPERTY_LASTNAME="lastname";
 	public static final String PROPERTY_EMAIL="email";
@@ -19,7 +19,7 @@ public class Person {
 	private String caption;
 
 
-    public Person(){
+    public PersonGUI(){
     	this.firstName = new SimpleStringProperty("");
 
         this.lastName = new SimpleStringProperty("");
@@ -29,7 +29,7 @@ public class Person {
         this.distanceValue = new SimpleStringProperty("");
     	
     }
-    public Person(String fName, String lName, String email, int distance) {
+    public PersonGUI(String fName, String lName, String email, int distance) {
 
         this.firstName = new SimpleStringProperty(fName);
 
