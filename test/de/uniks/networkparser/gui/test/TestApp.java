@@ -14,21 +14,14 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.bytes.ByteIdMap;
 import de.uniks.networkparser.gui.table.Column;
-import de.uniks.networkparser.gui.table.ColumnHandler;
-import de.uniks.networkparser.gui.table.ColumnListener;
 import de.uniks.networkparser.gui.table.SearchTableComponent;
 import de.uniks.networkparser.gui.table.TableCellValue;
 import de.uniks.networkparser.gui.table.TableComponent;
-import de.uniks.networkparser.gui.table.TableComponentInterface;
 import de.uniks.networkparser.gui.table.TableList;
 import de.uniks.networkparser.gui.table.creator.TableListCreator;
 import de.uniks.networkparser.interfaces.GUIPosition;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonIdMap;
-import de.uniks.networkparser.xml.XMLIdMap;
 
 /**
 
@@ -62,46 +55,46 @@ public class TestApp extends Application {
 //        TableComponent tableView = new TableComponent();
         TableComponent tableView = new SearchTableComponent();
         tableList = new TableList();
-        tableList.add(new Person("Jacob",     "Smith",    "jacob.smith@example.com", 1));
-        tableList.add(new Person("Isabella",  "Johnson",  "isabella.johnson@example.com", 2));
-        tableList.add(new Person("Ethan",     "Williams", "ethan.williams@example.com", 23));
-        tableList.add(new Person("Emma",      "Jones",    "emma.jones@example.com", 12));
-        tableList.add(new Person("Michael",   "Brown",    "michael.brown@example.com", 122));
+        tableList.add(new PersonGUI("Jacob",     "Smith",    "jacob.smith@example.com", 1));
+        tableList.add(new PersonGUI("Isabella",  "Johnson",  "isabella.johnson@example.com", 2));
+        tableList.add(new PersonGUI("Ethan",     "Williams", "ethan.williams@example.com", 23));
+        tableList.add(new PersonGUI("Emma",      "Jones",    "emma.jones@example.com", 12));
+        tableList.add(new PersonGUI("Michael",   "Brown",    "michael.brown@example.com", 122));
 
-        tableList.add(new Person("Jacob",     "Smith",    "jacob.smith@example.com", 1));
-        tableList.add(new Person("Isabella",  "Johnson",  "isabella.johnson@example.com", 2));
-        tableList.add(new Person("Ethan",     "Williams", "ethan.williams@example.com", 23));
-        tableList.add(new Person("Emma",      "Jones",    "emma.jones@example.com", 12));
-        tableList.add(new Person("Michael",   "Brown",    "michael.brown@example.com", 122));
+        tableList.add(new PersonGUI("Jacob",     "Smith",    "jacob.smith@example.com", 1));
+        tableList.add(new PersonGUI("Isabella",  "Johnson",  "isabella.johnson@example.com", 2));
+        tableList.add(new PersonGUI("Ethan",     "Williams", "ethan.williams@example.com", 23));
+        tableList.add(new PersonGUI("Emma",      "Jones",    "emma.jones@example.com", 12));
+        tableList.add(new PersonGUI("Michael",   "Brown",    "michael.brown@example.com", 122));
 
         
-        tableList.add(new Person("Jacob",     "Smith",    "jacob.smith@example.com", 1));
-        tableList.add(new Person("Isabella",  "Johnson",  "isabella.johnson@example.com", 2));
-        tableList.add(new Person("Ethan",     "Williams", "ethan.williams@example.com", 23));
-        tableList.add(new Person("Emma",      "Jones",    "emma.jones@example.com", 12));
-        tableList.add(new Person("Michael",   "Brown",    "michael.brown@example.com", 122));
+        tableList.add(new PersonGUI("Jacob",     "Smith",    "jacob.smith@example.com", 1));
+        tableList.add(new PersonGUI("Isabella",  "Johnson",  "isabella.johnson@example.com", 2));
+        tableList.add(new PersonGUI("Ethan",     "Williams", "ethan.williams@example.com", 23));
+        tableList.add(new PersonGUI("Emma",      "Jones",    "emma.jones@example.com", 12));
+        tableList.add(new PersonGUI("Michael",   "Brown",    "michael.brown@example.com", 122));
 
         
         JsonIdMap map = new  JsonIdMap();
         map.withCreator(new TableListCreator());
-        map.withCreator(new PersonCreator());
+        map.withCreator(new PersonGUICreator());
         
         tableView.withMap(map).withList(tableList);
         
-        tableView.withSearchProperties(Person.PROPERTY_FIRSTNAME, Person.PROPERTY_LASTNAME, Person.PROPERTY_EMAIL);
+        tableView.withSearchProperties(PersonGUI.PROPERTY_FIRSTNAME, PersonGUI.PROPERTY_LASTNAME, PersonGUI.PROPERTY_EMAIL);
         
 //        tableView.createFromCreator(null, true);
         
-        tableView.withColumn(new Column().withAttrName(Person.PROPERTY_FIRSTNAME));
-        tableView.withColumn(new Column().withAttrName(Person.PROPERTY_LASTNAME));
-        tableView.withColumn(new Column().withAttrName(Person.PROPERTY_EMAIL).withBrowserId(GUIPosition.WEST));
+        tableView.withColumn(new Column().withAttrName(PersonGUI.PROPERTY_FIRSTNAME));
+        tableView.withColumn(new Column().withAttrName(PersonGUI.PROPERTY_LASTNAME));
+        tableView.withColumn(new Column().withAttrName(PersonGUI.PROPERTY_EMAIL).withBrowserId(GUIPosition.WEST));
         
-        tableView.withColumn(new Column().withAttrName(Person.PROPERTY_DISTANCE).withComparator(new Comparator<TableCellValue>() {
+        tableView.withColumn(new Column().withAttrName(PersonGUI.PROPERTY_DISTANCE).withComparator(new Comparator<TableCellValue>() {
 			
 			@Override
 			public int compare(TableCellValue o1, TableCellValue o2) {
-				Person item1 = (Person)o1.getItem();
-				Person item2 = (Person)o2.getItem();
+				PersonGUI item1 = (PersonGUI)o1.getItem();
+				PersonGUI item2 = (PersonGUI)o2.getItem();
 				return item1.getDistance().compareTo(item2.getDistance());
 			}
 		}));
