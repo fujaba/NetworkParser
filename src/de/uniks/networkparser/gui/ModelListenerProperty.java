@@ -16,11 +16,12 @@ import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 
-public abstract class ModelListenerProperty<T> implements javafx.beans.property.Property<T>, PropertyChangeListener {
+public abstract class ModelListenerProperty<T> implements javafx.beans.property.Property<T>, PropertyChangeListener, ObservableValue<T>{
     private Object item;
     private String property;
     private SendableEntityCreator creator;
     private LinkedHashSet<ChangeListener<? super T>> listeners=new LinkedHashSet<ChangeListener<? super T>>();
+    private LinkedHashSet<InvalidationListener> invalidationListeners=new LinkedHashSet<InvalidationListener>();
 
     public ModelListenerProperty(SendableEntityCreator creator, Object item, String property) {
         this.item = item;
@@ -65,15 +66,13 @@ public abstract class ModelListenerProperty<T> implements javafx.beans.property.
     }
 
     @Override
-    public void addListener(InvalidationListener arg0) {
-        // TODO Auto-generated method stub
-
+    public void addListener(InvalidationListener listener) {
+    	this.invalidationListeners.add(listener);
     }
 
     @Override
-    public void removeListener(InvalidationListener arg0) {
-        // TODO Auto-generated method stub
-
+    public void removeListener(InvalidationListener listener) {
+    	this.invalidationListeners.remove(listener);
     }
 
     @Override

@@ -67,7 +67,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	protected ContextMenu contextMenu;
 
 	protected TableList sourceList;
-	protected WritableListValue<Object> list;
+	private WritableListValue<Object> list;
 	protected TableFilterView tableFilterView;
 	private Menu visibleItems;
 	
@@ -141,7 +141,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	}
 
 	public TableComponent withScrollPosition(double pos){
-		for(TableViewFX table :tableViewer){
+		for(TableViewFX table : tableViewer){
 			if(table!=null){
 				table.setScrollValue(pos);
 			}
@@ -184,7 +184,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	public TableComponent withColumn(Column column) {
 		TableView<Object> browserView = getBrowserView(column.getBrowserId());
 
-		TableColumnFX columnFX = new TableColumnFX().withColumn(column, visibleItems);
+		TableColumnFX columnFX = new TableColumnFX().withColumn(column, visibleItems, this);
 		columnFX.setContextMenu(contextMenu);
 		
 		this.columns.add(columnFX);
@@ -410,7 +410,11 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event != null) {
-			if (sourceList.equals(event.getSource())) {
+			if (source.equals(event.getSource())) {
+				if (event.getOldValue() == null && event.getNewValue() != null) {
+					sourceList.add(event.getNewValue());
+				}
+			}else if (sourceList.equals(event.getSource())) {
 //				if(TableListFX.SETALL.equalsIgnoreCase(event.getPropertyName())){
 //					// Must be a Sort
 //					ObservableList<TableColumn<Object, ?>> sortOrder = this.tableViewer.getSortOrder();
@@ -439,6 +443,9 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		}
 	}
 
+	public SendableEntityCreator getCreator(Object entity) {
+		return getMap().getCreatorClass(entity);
+	}
 	@Override
 	public void refreshViewer() {
 		// TODO Auto-generated method stub
@@ -458,7 +465,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 			Number arg2) {
 		withScrollPosition((Double) arg2);
 	}
-
+	
 	public void findAllScrollBars() {
 		for(TableViewFX table : tableViewer){
 			if(table!=null){
@@ -466,4 +473,9 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 			}
 		}
 	}
+
+	public WritableListValue<Object> getItems() {
+		return list;
+	}
+
 }
