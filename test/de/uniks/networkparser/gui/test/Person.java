@@ -16,6 +16,7 @@ public class Person {
     
     private StringProperty distanceValue;
 	private int distance;
+	private String caption;
 
 
     public Person(){
@@ -51,5 +52,11 @@ public class Person {
 
     public Integer getDistance() {
 		return distance;
+	}
+	public String getCaption() {
+		return caption;
+	}
+	public void setCaption(String caption) {
+		this.caption = caption;
 	}
 }

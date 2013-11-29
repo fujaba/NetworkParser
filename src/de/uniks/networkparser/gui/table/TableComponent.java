@@ -410,7 +410,11 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event != null) {
-			if (sourceList.equals(event.getSource())) {
+			if (source.equals(event.getSource())) {
+				if (event.getOldValue() == null && event.getNewValue() != null) {
+					sourceList.add(event.getNewValue());
+				}
+			}else if (sourceList.equals(event.getSource())) {
 //				if(TableListFX.SETALL.equalsIgnoreCase(event.getPropertyName())){
 //					// Must be a Sort
 //					ObservableList<TableColumn<Object, ?>> sortOrder = this.tableViewer.getSortOrder();

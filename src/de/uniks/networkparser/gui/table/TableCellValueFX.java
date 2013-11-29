@@ -43,7 +43,7 @@ public class TableCellValueFX extends SimpleObjectProperty<TableCellValue> imple
 		return creator;
 	}
 	public String toString(){
-		return (String) this.column.getListener().getValue(tableComponent, item, creator);
+		return ""+this.column.getListener().getValue(tableComponent, item, creator);
 	}
 
 	@Override
