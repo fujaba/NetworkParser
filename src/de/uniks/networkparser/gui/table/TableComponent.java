@@ -241,7 +241,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	public TableComponent withMap(IdMap map){
 		this.map = map;
 		return this;
-	}
+	} 
 
 	public TableComponent withSearchProperties(String... searchProperties) {
 		tableFilterView.setSearchProperties(searchProperties);
