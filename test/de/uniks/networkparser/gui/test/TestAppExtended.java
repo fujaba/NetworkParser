@@ -90,6 +90,7 @@ public class TestAppExtended extends Application {
 			@Override
 			public void handle(ActionEvent arg0) {
 				groupAccount.addToPersons(new org.sdmlib.examples.groupAccount.Person().withName(textField.getText()));
+
 			}
 		});        
         Button update = new Button();
