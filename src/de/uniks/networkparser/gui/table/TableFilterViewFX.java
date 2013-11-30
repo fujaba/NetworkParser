@@ -6,6 +6,9 @@ import java.util.List;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
+import org.sdmlib.serialization.gui.table.TableComponentInterface;
+import org.sdmlib.serialization.gui.table.TableFilterView;
+
 public class TableFilterViewFX extends TableFilterView implements ChangeListener<String>{
 
 	public TableFilterViewFX(TableComponentInterface tableComponent) {

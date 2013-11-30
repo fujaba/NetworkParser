@@ -9,6 +9,10 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.util.Callback;
 
+import org.sdmlib.serialization.gui.table.Column;
+import org.sdmlib.serialization.gui.table.TableCellValue;
+import org.sdmlib.serialization.gui.table.TableColumnInterface;
+
 public class TableColumnFX extends TableColumn<Object, TableCellValue> implements TableColumnInterface, EventHandler<ActionEvent>{
 	private Column column;
 	private CheckMenuItem menueItem;

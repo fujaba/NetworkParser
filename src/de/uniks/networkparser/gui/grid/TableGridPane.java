@@ -4,8 +4,12 @@ import java.beans.PropertyChangeListener;
 
 import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
-import de.uniks.networkparser.gui.GUILine;
-import de.uniks.networkparser.interfaces.GUIPosition;
+
+import org.sdmlib.serialization.gui.GUILine;
+import org.sdmlib.serialization.gui.grid.GridGUITable;
+import org.sdmlib.serialization.gui.grid.GridStyle;
+import org.sdmlib.serialization.gui.grid.ValueGrid;
+import org.sdmlib.serialization.interfaces.GUIPosition;
 
 public class TableGridPane extends GridPane implements GridGUITable{
 	protected ValueGrid value=new ValueGrid().withGridTable(this);
