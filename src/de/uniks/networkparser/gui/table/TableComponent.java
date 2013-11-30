@@ -47,11 +47,17 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import de.uniks.networkparser.DefaultTextItems;
-import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.TextItems;
-import de.uniks.networkparser.interfaces.GUIPosition;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
+
+import org.sdmlib.serialization.DefaultTextItems;
+import org.sdmlib.serialization.IdMap;
+import org.sdmlib.serialization.TextItems;
+import org.sdmlib.serialization.gui.table.Column;
+import org.sdmlib.serialization.gui.table.TableColumnInterface;
+import org.sdmlib.serialization.gui.table.TableComponentInterface;
+import org.sdmlib.serialization.gui.table.TableFilterView;
+import org.sdmlib.serialization.gui.table.TableList;
+import org.sdmlib.serialization.interfaces.GUIPosition;
+import org.sdmlib.serialization.interfaces.SendableEntityCreator;
 
 public class TableComponent extends BorderPane implements PropertyChangeListener, TableComponentInterface, ChangeListener<Number> {
 	private ArrayList<TableColumnInterface> columns = new ArrayList<TableColumnInterface>();
@@ -410,7 +416,11 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event != null) {
-			if (sourceList.equals(event.getSource())) {
+			if (source.equals(event.getSource())) {
+				if (event.getOldValue() == null && event.getNewValue() != null) {
+					sourceList.add(event.getNewValue());
+				}
+			}else if (sourceList.equals(event.getSource())) {
 //				if(TableListFX.SETALL.equalsIgnoreCase(event.getPropertyName())){
 //					// Must be a Sort
 //					ObservableList<TableColumn<Object, ?>> sortOrder = this.tableViewer.getSortOrder();
