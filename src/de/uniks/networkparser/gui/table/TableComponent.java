@@ -70,6 +70,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	private SimpleListProperty<Object> list;
 	protected TableFilterView tableFilterView;
 	private Menu visibleItems;
+	private ItemUpdater itemUpdater;
 	
 	public IdMap getMap() {
 		return map;
@@ -81,10 +82,6 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		AnchorPane.setRightAnchor(node, 0.0);
 		AnchorPane.setBottomAnchor(node, 0.0);
 		return node;
-	}
-	
-	public TableComponent withList(TableList item) {
-		return withList(item, TableList.PROPERTY_ITEMS);
 	}
 	
 	public TableComponent createFromCreator(SendableEntityCreator creator, boolean edit) {
@@ -255,6 +252,9 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 			visibleItems.setText(getText(DefaultTextItems.COLUMNS));
 			contextMenu.getItems().add(visibleItems);
 		}
+		if(itemUpdater == null){
+			itemUpdater = new ItemUpdater();
+		}
 
 		if(list==null){
 			this.list = new SimpleListProperty<Object>(javafx.collections.FXCollections.observableList(new ArrayList<Object>()));
@@ -319,7 +319,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 									PROPERTY_ITEM, null, item));
 				}
 				this.list.add(item);
-//				this.updateItemListener.addItem(item);
+//				this.itemUpdater.addItem(item, this, columns);
 			}
 			this.updateItemListener.addItem(item);
 			tableFilterView.refreshCounter();
@@ -344,6 +344,11 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		}
 		return false;
 	}
+	
+	public TableComponent withList(TableList item) {
+		return withList(item, TableList.PROPERTY_ITEMS);
+	}
+	
 	public TableComponent withList(Object item, String property) {
 		if (map == null) {
 			return this;
@@ -360,9 +365,10 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		if(sourceList instanceof Collection<?>){
 			init();
 			for(Iterator<?> iterator = ((Collection<?>)sourceList).iterator();iterator.hasNext();){
-				Object itemList = iterator.next();
-				this.sourceList.add(itemList);
-				this.list.add(itemList);
+				Object entity = iterator.next();
+				addItem(entity);
+//				this.sourceList.add(itemList);
+//				this.list.add(itemList);
 			}
 		}
 		
@@ -446,6 +452,8 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 					}
 				}
 			}else{
+				this.list.remove(event.getSource());
+				this.list.add(event.getSource());
 //				this.tableViewer[0].setItems(null);
 //				this.tableViewer[1].setItems(null);
 //				this.tableViewer[2].setItems(null);
