@@ -1,11 +1,12 @@
 package de.uniks.networkparser.gui.table;
 
-import de.uniks.networkparser.gui.Style;
 import javafx.scene.control.TableCell;
 import javafx.scene.text.Font;
+import de.uniks.networkparser.gui.Style;
 
-public class TableCellFX extends TableCell<Object, Object>{
+public class TableCellFX extends TableCell<Object, TableCellValue>{
 	private Column column;
+	private TableComponent tableComponent;
 
 	public TableCellFX withColumn(Column column) {
 		this.column = column;
@@ -13,23 +14,26 @@ public class TableCellFX extends TableCell<Object, Object>{
 	}
 	
 	@Override
-	protected void updateItem(Object arg0, boolean arg1) {
+	protected void updateItem(TableCellValue arg0, boolean arg1) {
 		super.updateItem(arg0, arg1);
+//		System.out.println(getIndex()+": "+getItem()+"-- "+this.itemProperty());
+//		System.out.println(this.tableComponent.getItems());
+//		System.out.println(this.tableComponent.getItems().get(getIndex()));
+//		System.out.println(tableColumn.getCellData(arg0));
+//		System.out.println(tableColumn.getCellObservableValue(arg0));
 		if(arg0!=null){
 			setText(""+arg0);
+			
 	    	if(this.column.getStyle()!=null){
 	    		Style myStyle = this.column.getStyle();
 	    		if(myStyle.getFontFamily()!=null && myStyle.getFontSize()!=null){
 	    			setFont(new Font(myStyle.getFontFamily(), Integer.valueOf(myStyle.getFontSize())));
 	    		}
+	    		setStyle(myStyle.toString());
 	    	}
-//	    	String css=
-//	    	if()
-//	    	column.getBackgroundColor()
-//	    	this.set
 		}
 	}
-	
+	 
 	
 	
 //	@Override
@@ -70,5 +74,11 @@ public class TableCellFX extends TableCell<Object, Object>{
 	
 	public Column getColumn(){
 		return column;
+	}
+
+	public TableCellFX withTableComponent(
+			TableComponent tableComponent) {
+		this.tableComponent = tableComponent;
+		return this;
 	}
 }

@@ -7,11 +7,15 @@ public class Person {
 	public static final String PROPERTY_FIRSTNAME="firstname";
 	public static final String PROPERTY_LASTNAME="lastname";
 	public static final String PROPERTY_EMAIL="email";
+	public static final String PROPERTY_DISTANCE="distance";
     private StringProperty firstName;
 
     private StringProperty lastName;
 
     private StringProperty email;
+    
+    private StringProperty distanceValue;
+	private int distance;
 
 
     public Person(){
@@ -20,15 +24,19 @@ public class Person {
         this.lastName = new SimpleStringProperty("");
 
         this.email = new SimpleStringProperty("");
+        
+        this.distanceValue = new SimpleStringProperty("");
     	
     }
-    public Person(String fName, String lName, String email) {
+    public Person(String fName, String lName, String email, int distance) {
 
         this.firstName = new SimpleStringProperty(fName);
 
         this.lastName = new SimpleStringProperty(lName);
 
         this.email = new SimpleStringProperty(email);
+        this.distance = distance;
+        this.distanceValue = new SimpleStringProperty(distance+" min");
     }
 
      
@@ -38,5 +46,10 @@ public class Person {
     public StringProperty lastnameProperty() { return lastName; }
 
     public StringProperty emailProperty() { return email; }
+    
+    public StringProperty distanceProperty() { return distanceValue; }
 
+    public Integer getDistance() {
+		return distance;
+	}
 }
