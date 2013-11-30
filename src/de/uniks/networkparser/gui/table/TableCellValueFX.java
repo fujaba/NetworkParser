@@ -1,7 +1,10 @@
 package de.uniks.networkparser.gui.table;
 
 import javafx.beans.property.SimpleObjectProperty;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
+
+import org.sdmlib.serialization.gui.table.Column;
+import org.sdmlib.serialization.gui.table.TableCellValue;
+import org.sdmlib.serialization.interfaces.SendableEntityCreator;
 
 public class TableCellValueFX extends SimpleObjectProperty<TableCellValue> implements TableCellValue{
 
@@ -43,7 +46,7 @@ public class TableCellValueFX extends SimpleObjectProperty<TableCellValue> imple
 		return creator;
 	}
 	public String toString(){
-		return (String) this.column.getListener().getValue(tableComponent, item, creator);
+		return "" + this.column.getListener().getValue(tableComponent, item, creator);
 	}
 
 	@Override
