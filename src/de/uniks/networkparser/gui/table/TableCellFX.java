@@ -2,7 +2,10 @@ package de.uniks.networkparser.gui.table;
 
 import javafx.scene.control.TableCell;
 import javafx.scene.text.Font;
-import de.uniks.networkparser.gui.Style;
+
+import org.sdmlib.serialization.gui.Style;
+import org.sdmlib.serialization.gui.table.Column;
+import org.sdmlib.serialization.gui.table.TableCellValue;
 
 public class TableCellFX extends TableCell<Object, TableCellValue>{
 	private Column column;

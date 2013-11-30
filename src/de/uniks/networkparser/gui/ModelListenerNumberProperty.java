@@ -1,6 +1,6 @@
 package de.uniks.networkparser.gui;
 
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import org.sdmlib.serialization.interfaces.SendableEntityCreator;
 
 /**
  * Created by Stefan on 29.10.13.

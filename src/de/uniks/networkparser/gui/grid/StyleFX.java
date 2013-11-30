@@ -3,9 +3,9 @@ package de.uniks.networkparser.gui.grid;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import de.uniks.networkparser.gui.GUILine;
-import de.uniks.networkparser.gui.grid.GridStyle;
-import de.uniks.networkparser.interfaces.GUIPosition;
+import org.sdmlib.serialization.gui.GUILine;
+import org.sdmlib.serialization.gui.grid.GridStyle;
+import org.sdmlib.serialization.interfaces.GUIPosition;
 
 public class StyleFX extends GridStyle{
 
