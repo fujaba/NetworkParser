@@ -50,7 +50,7 @@ public class Column implements PeerMessage{
 	public static final String PROPERTY_MOVABLE="movable";
 	public static final String PROPERTY_ALTTEXT="altText";
 	public static final String PROPERTY_BROWSERID="browserid";
-	public static final String PROPERTY_VALUEFROMDROPDOWNLIST="valuefromdropdown";
+	public static final String PROPERTY_FIELDTYP="fieldTyp";
 	
 	public static final String DATE="%DATE%";
 	private Style style;
@@ -65,11 +65,11 @@ public class Column implements PeerMessage{
 	private boolean isVisible=true;
 	private boolean isMovable=true;
 	private String altAttribute;
-	private Object item;
+	private FieldTyp fieldTyp;
 	private GUIPosition browserId=GUIPosition.CENTER;
-	private boolean getDropDownListFromMap=false;
 	protected ColumnListener handler;
 	private Comparator<TableCellValue> comparator;
+	
 	
 	/**
 	 * @return the label
@@ -182,14 +182,6 @@ public class Column implements PeerMessage{
 		return altAttribute;
 	}
 
-	public Column withItem(Object item) {
-		this.item=item;
-		return this;
-	}
-	public Object getItem() {
-		return item;
-	}
-
 	public boolean isMovable() {
 		return isMovable;
 	}
@@ -208,12 +200,12 @@ public class Column implements PeerMessage{
 		return this;
 	}
 	
-	public boolean isGetDropDownListFromMap() {
-		return getDropDownListFromMap;
+	public FieldTyp getFieldTyp() {
+		return fieldTyp;
 	}
 	
-	public Column withGetDropDownListFromMap(boolean getDropDownListFromMap) {
-		this.getDropDownListFromMap = getDropDownListFromMap;
+	public Column withFieldTyp(FieldTyp fieldTyp) {
+		this.fieldTyp = fieldTyp;
 		return this;
 	}
 	
@@ -257,8 +249,8 @@ public class Column implements PeerMessage{
 			return this.getAltAttribute();
 		if (attrName.equalsIgnoreCase(PROPERTY_BROWSERID))
 			return this.getBrowserId();
-		if (attrName.equalsIgnoreCase(PROPERTY_VALUEFROMDROPDOWNLIST))
-			return this.isGetDropDownListFromMap();
+		if (attrName.equalsIgnoreCase(PROPERTY_FIELDTYP))
+			return this.getFieldTyp();
 		return null;
 	}
 	
@@ -312,8 +304,8 @@ public class Column implements PeerMessage{
 			withBrowserId(GUIPosition.valueOf((String)value));
 			return true;
 		}
-		if (attribute.equalsIgnoreCase(PROPERTY_VALUEFROMDROPDOWNLIST)) {
-			withGetDropDownListFromMap((Boolean) value);
+		if (attribute.equalsIgnoreCase(PROPERTY_FIELDTYP)) {
+			withFieldTyp(FieldTyp.valueOf(""+value));
 			return true;
 		}
 		return false;
