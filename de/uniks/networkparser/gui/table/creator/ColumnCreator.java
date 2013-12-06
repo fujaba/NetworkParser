@@ -43,7 +43,7 @@ public class ColumnCreator implements SendableEntityCreator{
 		Column.PROPERTY_MOVABLE,
 		Column.PROPERTY_ALTTEXT,
 		Column.PROPERTY_BROWSERID,
-		Column.PROPERTY_VALUEFROMDROPDOWNLIST,
+		Column.PROPERTY_FIELDTYP,
 		Column.PROPERTY_STYLE,
 		Column.PROPERTY_ACTIVESTYLE};
 

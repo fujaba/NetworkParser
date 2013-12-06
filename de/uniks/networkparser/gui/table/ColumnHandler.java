@@ -5,7 +5,6 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 
 public class ColumnHandler implements ColumnListener {
-	public static final String AUTOEDIT="AUTOEDIT";
 	protected Column column;
 
 	public ColumnHandler withColumn(Column column){
@@ -17,25 +16,18 @@ public class ColumnHandler implements ColumnListener {
 		return creator.getValue(entity, column.getAttrName());
 	}
 
-	public boolean canEdit(TableComponentInterface tableComponent, Object entity, SendableEntityCreator creator){
+	public boolean canEdit(Object entity, SendableEntityCreator creator){
 		return column.isEditable();
 	}
 	
-	public void onSelection(TableComponentInterface tableComponent, Object entity, SendableEntityCreator creator, int x, int y){
+	public void onSelection(Object entity, SendableEntityCreator creator, int x, int y){
 	}
 	
-	public Object onEdit(TableComponentInterface tableComponent, Object entity, SendableEntityCreator creator){
-		return AUTOEDIT;
-	}
-	
-	public Object getValue(TableComponentInterface tableComponent, Object entity, SendableEntityCreator creator) {
-		if(creator==null){
-			return null;
-		}
-		return getValue(entity, creator);
+	public CellEditorElement onEdit(Object entity, SendableEntityCreator creator){
+		return null;
 	}
 
-	public boolean setValue(TableComponentInterface tableComponent, Object entity, SendableEntityCreator creator, Object value) {
+	public boolean setValue(Object entity, SendableEntityCreator creator, Object value) {
 		if(creator==null){
 			return false;
 		}
