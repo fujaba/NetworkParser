@@ -14,16 +14,14 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-
-import org.sdmlib.serialization.gui.table.Column;
-import org.sdmlib.serialization.gui.table.TableCellValue;
-import org.sdmlib.serialization.gui.table.TableList;
-import org.sdmlib.serialization.gui.table.creator.TableListCreator;
-import org.sdmlib.serialization.interfaces.GUIPosition;
-import org.sdmlib.serialization.json.JsonIdMap;
-
+import de.uniks.networkparser.gui.table.Column;
 import de.uniks.networkparser.gui.table.SearchTableComponent;
+import de.uniks.networkparser.gui.table.TableCellValue;
 import de.uniks.networkparser.gui.table.TableComponent;
+import de.uniks.networkparser.gui.table.TableList;
+import de.uniks.networkparser.gui.table.creator.TableListCreator;
+import de.uniks.networkparser.interfaces.GUIPosition;
+import de.uniks.networkparser.json.JsonIdMap;
 
 /**
 

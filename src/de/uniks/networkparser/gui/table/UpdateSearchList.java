@@ -33,8 +33,7 @@ package de.uniks.networkparser.gui.table;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.sdmlib.serialization.interfaces.SendableEntity;
-import org.sdmlib.utils.PropertyChangeInterface;
+import de.uniks.networkparser.interfaces.SendableEntity;
 
 public class UpdateSearchList implements PropertyChangeListener {
 	protected TableComponent tableComponent;
@@ -44,9 +43,9 @@ public class UpdateSearchList implements PropertyChangeListener {
 	}
 	
 	public void addItem(Object item){
-		if (item instanceof PropertyChangeInterface) {
+		if (item instanceof SendableEntity) {
 //			System.out.println("ADD"+item);
-			((PropertyChangeInterface) item).getPropertyChangeSupport().addPropertyChangeListener(this);
+			((SendableEntity) item).addPropertyChangeListener(this);
 		}
 	}
 	

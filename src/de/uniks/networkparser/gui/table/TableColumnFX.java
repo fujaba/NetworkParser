@@ -8,10 +8,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.util.Callback;
-
-import org.sdmlib.serialization.gui.table.Column;
-import org.sdmlib.serialization.gui.table.TableCellValue;
-import org.sdmlib.serialization.gui.table.TableColumnInterface;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class TableColumnFX extends TableColumn<Object, TableCellValue> implements TableColumnInterface, EventHandler<ActionEvent>{
 	private Column column;
@@ -36,14 +33,18 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 			@Override
 			public TableCell<Object, TableCellValue> call(
 					TableColumn<Object, TableCellValue> arg0) {
-				return new TableCellFX().withColumn(TableColumnFX.this.column).withTableComponent(TableColumnFX.this.tableComponent);
+				return new TableCellFX().withColumn(TableColumnFX.this.column).withMap(TableColumnFX.this.tableComponent.getMap());
 			}
 		});
 		setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Object,TableCellValue>, ObservableValue<TableCellValue>>() {
 			@Override
 			public ObservableValue<TableCellValue> call(
 					javafx.scene.control.TableColumn.CellDataFeatures<Object, TableCellValue> arg0) {
-				return new TableCellValueFX().withItem(arg0.getValue()).withColumn(TableColumnFX.this.column).withCreator(TableColumnFX.this.tableComponent.getMap().getCreatorClass(arg0.getValue())).withTableComponent(TableColumnFX.this.tableComponent);
+				SendableEntityCreator creator = TableColumnFX.this.tableComponent.getCreator(arg0.getValue());
+				return new TableCellValueFX()
+						.withItem(arg0.getValue())
+						.withColumn(TableColumnFX.this.column)
+						.withCreator(creator);
 			}
 		});
 		return this;

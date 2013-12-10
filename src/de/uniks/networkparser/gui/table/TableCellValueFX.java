@@ -1,17 +1,13 @@
 package de.uniks.networkparser.gui.table;
 
 import javafx.beans.property.SimpleObjectProperty;
-
-import org.sdmlib.serialization.gui.table.Column;
-import org.sdmlib.serialization.gui.table.TableCellValue;
-import org.sdmlib.serialization.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class TableCellValueFX extends SimpleObjectProperty<TableCellValue> implements TableCellValue{
 
 	private Column column;
 	private SendableEntityCreator creator;
 	private Object item;
-	private TableComponent tableComponent;
 	
 	public TableCellValueFX withItem(Object item) {
 		this.item = item;
@@ -19,10 +15,6 @@ public class TableCellValueFX extends SimpleObjectProperty<TableCellValue> imple
 		return this;
 	}
 	
-	public TableCellValueFX withTableComponent(TableComponent tableComponent) {
-		this.tableComponent = tableComponent;
-		return this;
-	}
 	public TableCellValueFX withColumn(Column column) {
 		this.column = column;
 		return this;
@@ -46,7 +38,10 @@ public class TableCellValueFX extends SimpleObjectProperty<TableCellValue> imple
 		return creator;
 	}
 	public String toString(){
-		return "" + this.column.getListener().getValue(tableComponent, item, creator);
+		if(creator==null){
+			return "";
+		}
+		return "" + this.column.getListener().getValue(item, creator);
 	}
 
 	@Override

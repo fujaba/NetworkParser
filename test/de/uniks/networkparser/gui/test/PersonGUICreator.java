@@ -1,6 +1,6 @@
 package de.uniks.networkparser.gui.test;
 
-import org.sdmlib.serialization.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class PersonGUICreator implements SendableEntityCreator{
 
