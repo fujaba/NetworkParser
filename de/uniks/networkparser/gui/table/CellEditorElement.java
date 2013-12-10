@@ -30,7 +30,7 @@ public interface CellEditorElement {
 	public boolean nextFocus();
 	public void apply();
 	public Object getValue(boolean convert);
-	public void setValue(Object value);
+	public CellEditorElement withValue(Object value);
 	public FieldTyp getControllForTyp(Object value);
 	public void dispose();
 }
