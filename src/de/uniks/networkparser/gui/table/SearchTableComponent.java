@@ -3,9 +3,7 @@ package de.uniks.networkparser.gui.table;
 
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
-
-import org.sdmlib.serialization.DefaultTextItems;
-
+import de.uniks.networkparser.DefaultTextItems;
 import de.uniks.networkparser.gui.resource.Styles;
 
 public class SearchTableComponent extends TableComponent{

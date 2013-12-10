@@ -1,6 +1,7 @@
 package de.uniks.networkparser.gui.table;
 
 
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TableView;
@@ -18,6 +19,10 @@ public class TableViewFX extends TableView<Object> {
 				parent.findAllScrollBars();
 			}
 		});
+		return this;
+	}
+	public TableViewFX withItems(ObservableList<Object> items){
+		setItems(items);
 		return this;
 	}
 	

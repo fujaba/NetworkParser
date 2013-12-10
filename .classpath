@@ -4,6 +4,6 @@
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JavaFX"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/SDMLib"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/NetworkParser"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
