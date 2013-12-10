@@ -21,44 +21,28 @@ package de.uniks.networkparser.gui.controls;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import javafx.event.EventHandler;
-import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import de.uniks.networkparser.gui.table.Column;
 import de.uniks.networkparser.gui.table.FieldTyp;
 
-public class TextEditorControl extends EditControl<TextField>{
+public class SpinnerIntegerEditControl extends EditControl<NumberSpinner>{
 	@Override
 	public Object getValue(boolean convert) {
-		return this.control.getText();
+		return getControl().getValue(convert);
 	}
 
 	@Override
 	public FieldTyp getControllForTyp(Object value) {
-		return FieldTyp.TEXT;
+		return FieldTyp.INTEGER;
 	}
 
 	@Override
-	public TextEditorControl withValue(Object value) {
-		getControl().setText(""+value);
-		getControl().selectAll();
+	public NumberSpinner createControl(Column column) {
+		return new NumberSpinner().withOwner(this).withColumn(column);
+	}
+
+	@Override
+	public SpinnerIntegerEditControl withValue(Object value) {
+		getControl().withValue(value);
 		return this;
-	}
-
-	@Override
-	public TextField createControl(Column column) {
-		TextField textField = new TextField();
-		textField.addEventFilter(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>()
-	            {
-	                public void handle(KeyEvent t)
-	                {
-	                	if(t.getCode()==KeyCode.ENTER){
-	                		apply();
-	                	}
-//	                    System.out.println("char = '" + t.getCharacter() + "'");
-	                }
-	            });
-		return textField;
 	}
 }

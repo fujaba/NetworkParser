@@ -21,11 +21,11 @@ package de.uniks.networkparser.gui.controls;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import javafx.scene.control.Control;
+import javafx.scene.Node;
 import de.uniks.networkparser.gui.table.CellEditorElement;
 import de.uniks.networkparser.gui.table.Column;
 
-public abstract class EditControl<T extends Control> implements CellEditorElement{
+public abstract class EditControl<T extends Node> implements CellEditorElement{
 	protected T control;
 	protected CellEditorElement cellOwner;
 	protected Column column;
@@ -39,7 +39,7 @@ public abstract class EditControl<T extends Control> implements CellEditorElemen
 	
 	public T getControl() {
 		if (control == null ) {
-			control = createControl();
+			control = createControl(column);
 		}
 		return control;
 	}
@@ -57,7 +57,7 @@ public abstract class EditControl<T extends Control> implements CellEditorElemen
 	}
 	
 	public boolean isVisible(){
-		 Control control=getControl();
+		 Node control=getControl();
 		 if(control!=null){
 			 return control.isVisible();
 		 }
@@ -66,7 +66,7 @@ public abstract class EditControl<T extends Control> implements CellEditorElemen
 	
 	public boolean setFocus(boolean value){
 		if(value){
-			 Control control=getControl();
+			Node control=getControl();
 			 if(control!=null){
 				 return control.isFocused();
 			 }
@@ -108,8 +108,8 @@ public abstract class EditControl<T extends Control> implements CellEditorElemen
 	public void addChoiceList(Object value){
 		
 	}
-	public abstract T createControl();
-	public abstract void setValue(Object value);
+	public abstract T createControl(Column column);
+	public abstract CellEditorElement withValue(Object value);
 //	public abstract boolean isCorrect(Object value, EditFields field) throws ParseException;
 	
 //	public Point getLocation(){
