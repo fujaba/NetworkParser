@@ -26,7 +26,9 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Method;
 import java.util.LinkedHashSet;
+
 import javafx.beans.InvalidationListener;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -35,12 +37,13 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public abstract class ModelListenerProperty<T> implements javafx.beans.property.Property<T>, PropertyChangeListener, ObservableValue<T>{
-	private Object item;
-    private String property;
-    private SendableEntityCreator creator;
+public abstract class ModelListenerProperty<T> implements javafx.beans.property.Property<T>, PropertyChangeListener, ObservableValue<T>, InvalidationListener{
+	protected Object item;
+	protected String property;
+    protected SendableEntityCreator creator;
     private LinkedHashSet<ChangeListener<? super T>> listeners=new LinkedHashSet<ChangeListener<? super T>>();
     private LinkedHashSet<InvalidationListener> invalidationListeners=new LinkedHashSet<InvalidationListener>();
+    protected ObservableValue<? extends T> observable = null;
 
     public ModelListenerProperty(SendableEntityCreator creator, Object item, String property) {
         this.item = item;
@@ -73,12 +76,6 @@ public abstract class ModelListenerProperty<T> implements javafx.beans.property.
         listeners.add(listener);
     }
 
-	@Override
-	@SuppressWarnings("unchecked")
-    public T getValue() {
-        return (T)creator.getValue(item, property);
-    }
-
     @Override
     public void removeListener(ChangeListener<? super T> listener) {
         listeners.remove(listener);
@@ -100,35 +97,40 @@ public abstract class ModelListenerProperty<T> implements javafx.beans.property.
     }
 
     @Override
-    public void bind(ObservableValue<? extends T> arg0) {
-        // TODO Auto-generated method stub
-
+    public void bind(ObservableValue<? extends T> newObservable) {
+        if (newObservable == null) {
+            throw new NullPointerException("Cannot bind to null");
+        }
+        if (!newObservable.equals(observable)) {
+            unbind();
+            observable = newObservable;
+            observable.addListener(this);
+        }
     }
 
     @Override
-    public void bindBidirectional(Property<T> arg0) {
-        // TODO Auto-generated method stub
-
+    public void bindBidirectional(Property<T> other) {
+    	Bindings.bindBidirectional(this, other);
     }
 
     @Override
     public boolean isBound() {
-        // TODO Auto-generated method stub
-        return false;
+    	 return observable != null;
     }
 
     @Override
     public void unbind() {
-        // TODO Auto-generated method stub
-
+        if (observable != null) {
+            observable.removeListener(this);
+            observable = null;
+        }
     }
 
     @Override
-    public void unbindBidirectional(Property<T> arg0) {
-        // TODO Auto-generated method stub
-
-    }
-
+    public void unbindBidirectional(Property<T> other) {
+    	 Bindings.unbindBidirectional(this, other);
+    } 
+    
 	@Override
 	@SuppressWarnings("unchecked")
     public void propertyChange(PropertyChangeEvent evt) {
@@ -137,6 +139,9 @@ public abstract class ModelListenerProperty<T> implements javafx.beans.property.
         	objectProperty.setValue((T)evt.getSource());
         	
         	listener.changed(objectProperty, (T)evt.getOldValue(), (T)evt.getNewValue());
+        }
+        for(InvalidationListener listener : invalidationListeners) {
+        	listener.invalidated(this);
         }
     }
 }

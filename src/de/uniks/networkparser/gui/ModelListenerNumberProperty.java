@@ -1,5 +1,6 @@
 package de.uniks.networkparser.gui;
 
+import javafx.beans.Observable;
 /*
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
@@ -27,4 +28,17 @@ public class ModelListenerNumberProperty extends ModelListenerProperty<Number> {
 	public ModelListenerNumberProperty(SendableEntityCreator creator, Object item, String property) {
         super(creator, item, property);
     }
+
+	@Override
+	public void invalidated(Observable arg0) {
+	}
+
+	@Override
+	public Number getValue() {
+		Object value = creator.getValue(item, property);
+		if(value instanceof Number){
+			return (Number)value;
+		}
+		return Double.valueOf(""+value);
+	}
 }

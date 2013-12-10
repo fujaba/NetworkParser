@@ -1,6 +1,5 @@
 package de.uniks.networkparser.gui;
 
-import javafx.beans.Observable;
 /*
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
@@ -22,23 +21,20 @@ import javafx.beans.Observable;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
+import javafx.beans.Observable;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class ModelListenerStringProperty extends ModelListenerProperty<String> {
-	public ModelListenerStringProperty(SendableEntityCreator creator, Object item, String property) {
+public class ModelListenerObjectProperty extends ModelListenerProperty<Object> {
+	public ModelListenerObjectProperty(SendableEntityCreator creator, Object item, String property) {
         super(creator, item, property);
     }
 
 	@Override
-	public void invalidated(Observable observable) {		
+	public void invalidated(Observable arg0) {
 	}
 
 	@Override
-	public String getValue() {
-		Object value = creator.getValue(item, property);
-		if(value instanceof String){
-			return ""+value;
-		}
-		return String.valueOf(value);
+	public Object getValue() {
+		return creator.getValue(item, property);
     }
 }

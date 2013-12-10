@@ -22,7 +22,8 @@ package de.uniks.networkparser.gui.table;
  permissions and limitations under the Licence.
 */
 import java.util.HashSet;
-import javafx.scene.control.Control;
+
+import javafx.scene.Node;
 import javafx.scene.control.TableCell;
 import javafx.scene.text.Font;
 import de.uniks.networkparser.IdMap;
@@ -30,22 +31,22 @@ import de.uniks.networkparser.event.creator.DateCreator;
 import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.gui.controls.EditControl;
 import de.uniks.networkparser.gui.controls.PasswordEditorControl;
+import de.uniks.networkparser.gui.controls.SpinnerDoubleEditControl;
 import de.uniks.networkparser.gui.controls.TextEditorControl;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class TableCellFX extends TableCell<Object, TableCellValue> implements CellEditorElement{
 	private Column column;
 	protected HashSet<EditControl<?>> fields=new HashSet<EditControl<?>>();
-	private String numberFormat;
 	private IdMap map;
-	private EditControl<? extends Control> editControl;
+	private EditControl<? extends Node> editControl;
 	
 	public TableCellFX(){
 //		addToEditControls( new CheckBoxEditControl().withOwner(this) );
 //		addToEditControls( new ComboEditControl().withOwner(this) );
 //		addToEditControls( new DateTimeEditControl().withOwner(this) );
 //		addToEditControls( new NumberEditControl().withOwner(this) );
-//		addToEditControls( new SpinnerEditControl().withOwner(this) );
+		addToEditControls( new SpinnerDoubleEditControl().withOwner(this) );
 		addToEditControls( new TextEditorControl().withOwner(this) );
 		addToEditControls( new PasswordEditorControl().withOwner(this) );
 	}
@@ -85,9 +86,11 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 			super.startEdit();
 			Object value = getItem().getCreator().getValue(getItem().getItem(), column.getAttrName());
 			FieldTyp typ = getControllForTyp(value);
-			setText(null);
-			getControl(typ, value);
-			setGraphic(editControl.getControl());
+			Node control = getControl(typ, value);
+			if(control!=null){
+				setText(null);
+				setGraphic(control);
+			}
 		}
 	}
 	
@@ -97,23 +100,12 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 		apply();
 	}
 	
-	
-	
-	public TableCellFX withNumberFormat(String numberFormat){
-		this.numberFormat = numberFormat;
-		return this;
-	}
-	
-	public String getNumberFormat() {
-		return numberFormat;
-	}
-	
 	public TableCellFX withMap(IdMap map){
 		this.map = map;
 		return this;
 	}
 	
-	public boolean getControl(FieldTyp typ, Object value){
+	public Node getControl(FieldTyp typ, Object value){
 		EditControl<?> newFieldControl = null;
 		
 		if(typ==null){
@@ -130,21 +122,22 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 		
 		if(editControl != null){
 			if(editControl == newFieldControl){
-				return false;
+				return editControl.getControl();
 			}
 		}
 
 		if(newFieldControl==null){
-			return false;
+			return null;
 		}
 		
 		editControl = newFieldControl;
+		editControl.withColumn(column);
 		
 		// Set the value to the Controll
 		if(value!=null){
-			editControl.setValue(value);
+			editControl.withValue(value);
 		}
-		return true;
+		return editControl.getControl();
 	}
 
 	@Override
@@ -233,8 +226,9 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 	}
 
 	@Override
-	public void setValue(Object value) {
-		editControl.setValue(value);
+	public TableCellFX withValue(Object value) {
+		editControl.withValue(value);
+		return this;
 	}
 
 	@Override
@@ -242,7 +236,6 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 		FieldTyp typ;
 		if( column!=null ){
 			typ = column.getFieldTyp();
-			this.numberFormat = column.getNumberFormat();
 			if(typ!=null){
 				return typ;
 			}
@@ -259,10 +252,14 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 			}
 		}
 		if(value instanceof Integer){
-			withNumberFormat("###");
+			if(column.getNumberFormat()==null){
+				column.withNumberFormat("###");
+			}
 			return FieldTyp.INTEGER;
 		}else if(value instanceof Double){
-			withNumberFormat("###.##");
+			if(column.getNumberFormat()==null){
+				column.withNumberFormat("###.##");
+			}
 			return FieldTyp.DOUBLE;
 		}else if(value instanceof String){
 //			if( typ!=FieldTyp.COMBOBOX ){
