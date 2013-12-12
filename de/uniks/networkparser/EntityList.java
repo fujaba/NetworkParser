@@ -181,11 +181,7 @@ public abstract class EntityList implements BaseEntityList, List<Object> {
 	 *             If there is no value for the index.
 	 */
 	public String getString(int index) throws RuntimeException {
-		Object object = get(index);
-		if (object == null) {
-			return null;
-		}
-		return object.toString();
+		return get(index).toString();
 	}
 
 	/**
@@ -229,7 +225,7 @@ public abstract class EntityList implements BaseEntityList, List<Object> {
 	 * @return
 	 */
 	public EntityList put(int value) {
-		put(new Integer(value));
+		put(Integer.valueOf(value));
 		return this;
 	}
 
@@ -242,7 +238,7 @@ public abstract class EntityList implements BaseEntityList, List<Object> {
 	 * @return this.
 	 */
 	public EntityList put(long value) {
-		put(new Long(value));
+		put(Long.valueOf(value));
 		return this;
 	}
 
@@ -292,7 +288,7 @@ public abstract class EntityList implements BaseEntityList, List<Object> {
 	 *             If the index is negative or if the value is not finite.
 	 */
 	public EntityList put(int index, double value) throws RuntimeException {
-		put(index, new Double(value));
+		put(index, Double.valueOf(value));
 		return this;
 	}
 
@@ -310,7 +306,7 @@ public abstract class EntityList implements BaseEntityList, List<Object> {
 	 *             If the index is negative.
 	 */
 	public EntityList put(int index, int value) throws RuntimeException {
-		put(index, new Integer(value));
+		put(index, Integer.valueOf(value));
 		return this;
 	}
 
@@ -328,7 +324,7 @@ public abstract class EntityList implements BaseEntityList, List<Object> {
 	 *             If the index is negative.
 	 */
 	public EntityList put(int index, long value) throws RuntimeException {
-		put(index, new Long(value));
+		put(index, Long.valueOf(value));
 		return this;
 	}
 

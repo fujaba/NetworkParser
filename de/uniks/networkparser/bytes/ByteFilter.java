@@ -46,10 +46,14 @@ public class ByteFilter extends Filter {
 	}
 	
 	@Override
-	public Filter clone() {
+	public Filter cloneObj() {
 		ByteFilter newInstance = (ByteFilter) super.clone(new ByteFilter());
 		newInstance.withDynamic(this.isDynamic);
 		newInstance.withLenCheck(this.isLenCheck);
 		return newInstance;
+	}
+
+	public String getCharset() {
+		return "UTF-8";
 	}
 }

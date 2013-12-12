@@ -22,6 +22,7 @@ package de.uniks.networkparser;
  permissions and limitations under the Licence.
 */
 import java.util.LinkedHashSet;
+
 import de.uniks.networkparser.logic.Condition;
 
 public class Filter {
@@ -99,7 +100,7 @@ public class Filter {
 		return this;
 	}
 	
-	public Filter clone(){
+	public Filter cloneObj() {
 		return clone(new Filter());
 	}
 	public Filter clone(Filter newInstance){

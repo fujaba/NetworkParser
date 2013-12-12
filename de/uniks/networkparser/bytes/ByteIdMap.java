@@ -21,12 +21,14 @@ package de.uniks.networkparser.bytes;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import de.uniks.networkparser.AbstractMap;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
@@ -37,10 +39,10 @@ import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.event.UnknownMessage;
 import de.uniks.networkparser.event.creator.BasicMessageCreator;
 import de.uniks.networkparser.exceptions.TextParsingException;
+import de.uniks.networkparser.interfaces.BaseEntity;
 import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteCreator;
 import de.uniks.networkparser.interfaces.ByteItem;
-import de.uniks.networkparser.interfaces.BaseEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 /**
  * The Class ByteIdMap.
@@ -48,7 +50,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class ByteIdMap extends IdMap {
 	/** The SPLITTER. */
-	public static char SPLITTER = ' ';
+	public static final char SPLITTER = ' ';
 
 	/** The Constant FIXED VALUE. */
 	public static final byte DATATYPE_FIXED = 0x00;
@@ -138,7 +140,7 @@ public class ByteIdMap extends IdMap {
 	public boolean addCreator(SendableEntityCreator createrClass) {
 		if (createrClass instanceof ByteCreator) {
 			if(this.decoderMap != null){
-				if (this.decoderMap.containsKey(new Byte(((ByteCreator) createrClass).getEventTyp()))) {
+				if (this.decoderMap.containsKey(Byte.valueOf(((ByteCreator) createrClass).getEventTyp()))) {
 					return false;
 				}
 			}
@@ -158,7 +160,7 @@ public class ByteIdMap extends IdMap {
 				this.decoderMap = new HashMap<Byte, ByteCreator>();
 			}
 
-			this.decoderMap.put(new Byte(byteCreator.getEventTyp()),
+			this.decoderMap.put(Byte.valueOf(byteCreator.getEventTyp()),
 					byteCreator);
 		}
 		return this;
@@ -173,7 +175,7 @@ public class ByteIdMap extends IdMap {
 	 */
 	@Override
 	public ByteItem encode(Object entity) {
-		return encode(entity, (ByteFilter)filter.clone());
+		return encode(entity, (ByteFilter)filter.cloneObj());
 	}
 
 	public ByteItem encode(Object entity, Filter filter) {
@@ -191,7 +193,13 @@ public class ByteIdMap extends IdMap {
 		if (creator instanceof BasicMessageCreator) {
 			BasicMessage basicEvent = (BasicMessage) entity;
 			String value = basicEvent.getValue();
-			msg.add(new ByteEntity().withValue(DATATYPE_FIXED, value.getBytes()));
+			try {
+				if(filter instanceof ByteFilter){
+					msg.add(new ByteEntity().withValue(DATATYPE_CLAZZNAME, value
+							.getBytes(((ByteFilter) filter).getCharset())));
+				}
+			} catch (UnsupportedEncodingException e) {
+			}
 			return msg;
 		}
 
@@ -201,8 +209,13 @@ public class ByteIdMap extends IdMap {
 		} else {
 			Object reference = creator.getSendableInstance(true);
 			ByteEntity byteEntity = new ByteEntity();
-			byteEntity.withValue(DATATYPE_CLAZZNAME, reference.getClass().getName()
-					.getBytes());
+			try {
+				if(filter instanceof ByteFilter){
+					byteEntity.withValue(DATATYPE_CLAZZNAME, reference.getClass().getName()
+							.getBytes(((ByteFilter) filter).getCharset()));
+				}
+			} catch (UnsupportedEncodingException e) {
+			}
 			msg.add(byteEntity);
 		}
 		String[] properties = creator.getProperties();
@@ -302,7 +315,7 @@ public class ByteIdMap extends IdMap {
 	 * @return the creator decoder class
 	 */
 	public ByteCreator getCreatorDecoderClass(byte typ) {
-		return this.decoderMap.get(new Byte(typ));
+		return this.decoderMap.get(Byte.valueOf(typ));
 	}
 
 	/**
@@ -426,33 +439,38 @@ public class ByteIdMap extends IdMap {
 			return null;
 		}
 		if (typ == ByteIdMap.DATATYPE_BYTE) {
-			return new Byte(buffer.getByte());
+			return Byte.valueOf(buffer.getByte());
 		}
 		if (typ == ByteIdMap.DATATYPE_CHAR) {
-			return new Character(buffer.getChar());
+			return Character.valueOf(buffer.getChar());
 		}
 		if (typ == ByteIdMap.DATATYPE_SHORT) {
-			return new Short(buffer.getShort());
+			return Short.valueOf(buffer.getShort());
 		}
 		if (typ == ByteIdMap.DATATYPE_INTEGER) {
-			return new Integer(buffer.getInt());
+			return Integer.valueOf(buffer.getInt());
 		}
 		if (typ == ByteIdMap.DATATYPE_LONG) {
-			return new Long(buffer.getLong());
+			return Long.valueOf(buffer.getLong());
 		}
 		if (typ == ByteIdMap.DATATYPE_FLOAT) {
-			return new Float(buffer.getFloat());
+			return Float.valueOf(buffer.getFloat());
 		}
 		if (typ == ByteIdMap.DATATYPE_DOUBLE) {
-			return new Double(buffer.getDouble());
+			return Double.valueOf(buffer.getDouble());
 		}
 		if (typ == ByteIdMap.DATATYPE_DATE) {
-			return new Date(new Long(buffer.getInt()).longValue());
+			return new Date(Long.valueOf(buffer.getInt()).longValue());
 		}
 		if (typ == ByteIdMap.DATATYPE_CLAZZNAME) {
 			int len = buffer.getByte() - ByteIdMap.SPLITTER;
-			SendableEntityCreator eventCreater = getCreatorClasses(new String(buffer.getValue(len)));
-			return decodeClazz(buffer, eventCreater);
+			SendableEntityCreator eventCreater;
+			try {
+				eventCreater = getCreatorClasses(new String(buffer.getValue(len), filter.getCharset()));
+				return decodeClazz(buffer, eventCreater);
+			} catch (UnsupportedEncodingException e) {
+			}
+			return null;
 		}
 		if (typ == ByteIdMap.DATATYPE_CLAZZID) {
 			typ = buffer.getByte();
@@ -475,7 +493,11 @@ public class ByteIdMap extends IdMap {
 			}
 			byte group = ByteUtil.getGroup(typ);
 			if (group == ByteIdMap.DATATYPE_STRING) {
-				return new String(buffer.getValue(len));
+				try {
+					return new String(buffer.getValue(len), filter.getCharset());
+				} catch (UnsupportedEncodingException e) {
+					return "";
+				}
 			} else if (group == ByteIdMap.DATATYPE_BYTEARRAY) {
 				return buffer.getValue(len);
 			} else if (group == ByteIdMap.DATATYPE_LIST) {

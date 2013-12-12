@@ -398,7 +398,7 @@ public abstract class Entity implements BaseEntity {
 	 * @return this.
 	 */
 	public Entity put(String key, int value) {
-		this.put(key, new Integer(value));
+		this.put(key, Integer.valueOf(value));
 		return this;
 	}
 
@@ -412,7 +412,7 @@ public abstract class Entity implements BaseEntity {
 	 * @return this.
 	 */
 	public Entity put(String key, long value) {
-		this.put(key, new Long(value));
+		this.put(key, Long.valueOf(value));
 		return this;
 	}
 

@@ -161,7 +161,7 @@ public class RegCalculator {
     							continue;
     						}
     					}
-						if(operator.getTag()=="-"){
+						if(operator.getTag().equals("-")){
 							parts.set(z-1, ""+(Double.valueOf(parts.get(z))*-1));
 						}else{
 							parts.set(z-1, ""+(Double.valueOf(parts.get(z))));

@@ -147,9 +147,6 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	 */
 	public String getPrefixSession() {
 		IdMapCounter counter = getCounter();
-		if (counter == null ) {
-			return null;
-		}
 		return counter.getPrefixId() + counter.getSplitter();
 	}
 

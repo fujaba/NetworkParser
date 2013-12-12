@@ -22,6 +22,7 @@ package de.uniks.networkparser.gui;
  permissions and limitations under the Licence.
 */
 import java.util.HashMap;
+
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.PeerMessage;
 
@@ -220,6 +221,10 @@ public class Style implements PeerMessage, Cloneable{
 	}
 	
 	public Style clone(){
+		try {
+			super.clone();
+		} catch (CloneNotSupportedException e) {
+		}
 		return new Style()
 				.withFontFamily(fontfamily)
 				.withFontSize(fontsize)

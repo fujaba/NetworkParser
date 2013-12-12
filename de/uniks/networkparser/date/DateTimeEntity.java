@@ -209,7 +209,7 @@ public class DateTimeEntity  {
 	}
 
 	public DateTimeEntity withTime(Long value) {
-		if(value!=this.time){
+		if((this.time==null&&value!=null)||(this.time!=null&&!this.time.equals(value))){
 			this.time = value;
 			this.dirty = true;
 		}
@@ -229,7 +229,7 @@ public class DateTimeEntity  {
 	}
 
 	public DateTimeEntity withTimezone(Long value) {
-		if(value!=this.timeZone){
+		if((this.timeZone==null&&value!=null)||(this.timeZone!=null&&!this.timeZone.equals(value))){
 			this.timeZone = value;
 			this.dirty = true;
 		}

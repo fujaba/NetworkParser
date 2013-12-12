@@ -110,7 +110,7 @@ public class BitEntity implements BaseEntityList, ByteItem {
 			this.typ = "" + value;
 			return true;
 		} else if (PROPERTY_ORIENTATION.equalsIgnoreCase(attribute)) {
-			this.orientation = Integer.valueOf("" + value);
+			this.orientation = Integer.parseInt(""+value);
 			return true;
 		}
 		return false;

@@ -21,7 +21,9 @@ package de.uniks.networkparser.bytes;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
+
 import de.uniks.networkparser.EntityList;
 import de.uniks.networkparser.bytes.converter.ByteConverter;
 import de.uniks.networkparser.bytes.converter.ByteConverterHTTP;
@@ -66,7 +68,7 @@ public class ByteEntity implements BaseEntity, ByteItem {
 	 * @return the value
 	 */
 	public byte[] getValue() {
-		return this.values;
+		return this.values.clone();
 	}
 
 	/**
@@ -77,7 +79,7 @@ public class ByteEntity implements BaseEntity, ByteItem {
 	 */
 	public ByteEntity withValue(byte typ, byte[] value) {
 		this.typ = typ;
-		this.values = value;
+		this.values = value.clone();
 		return this;
 	}
 
@@ -238,7 +240,10 @@ public class ByteEntity implements BaseEntity, ByteItem {
 			typ = ByteIdMap.DATATYPE_STRING;
 			String newValue = (String) value;
 			msgValue.withLength(newValue.length());
-			msgValue.put(newValue.getBytes());
+			try {
+				msgValue.put(newValue.getBytes("UTF-8"));
+			} catch (UnsupportedEncodingException e) {
+			}
 		} else if (value instanceof Date) {
 			typ = ByteIdMap.DATATYPE_DATE;
 			msgValue.withLength(Integer.SIZE / BITOFBYTE);

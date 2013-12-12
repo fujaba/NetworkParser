@@ -73,7 +73,7 @@ public class StringTokener extends Tokener {
     	}
 		while(!isEnd()){
 			current = next();
-			if(current==end){
+			if(current.compareTo(end)==0){
 				count--;
 				if(count==0){
 					next();
@@ -81,7 +81,7 @@ public class StringTokener extends Tokener {
 				}
 				continue;
 			}
-			if(current==start){
+			if(current.compareTo(start)==0){
 				count++;
 			}
 		}
