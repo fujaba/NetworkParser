@@ -133,7 +133,6 @@ public class EntityUtil {
 	 * @return A simple JSON value.
 	 */
 	public static Object stringToValue(String string) {
-		Double d;
 		if (string.equals("")) {
 			return string;
 		}
@@ -153,7 +152,7 @@ public class EntityUtil {
 		 * and implied string conventions are non-standard. A JSON parser may
 		 * accept non-JSON forms as long as it accepts all correct JSON forms.
 		 */
-
+		Double d;
 		char b = string.charAt(0);
 		if ((b >= '0' && b <= '9') || b == '.' || b == '-' || b == '+') {
 			try {
@@ -164,9 +163,9 @@ public class EntityUtil {
 						return d;
 					}
 				} else {
-					Long myLong = new Long(string);
+					Long myLong = Long.valueOf(string);
 					if (myLong.longValue() == myLong.intValue()) {
-						return new Integer(myLong.intValue());
+						return Integer.valueOf(myLong.intValue());
 					}
 					return myLong;
 				}

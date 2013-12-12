@@ -118,27 +118,31 @@ public class BytesBuffer implements BufferedBytes {
 	@Override
 	public char getChar() {
 		byte[] bytes= converter(Character.SIZE);
-		return (char) ((bytes[0]<<8)+bytes[1]);
+		char result=(char)bytes[0];
+		result = (char) (result<<8 + (char)bytes[1]);
+		return result;
 	}
 
 	@Override
 	public short getShort() {
 		byte[] bytes= converter(Short.SIZE);
-		return (short) ((bytes[0]<<8)+bytes[1]);
+		short result = bytes[0];
+		result = (short) (result << 8 + bytes[1]);
+		return result;
 	}
 
 	@Override
 	public long getLong() {
 		byte[] bytes= converter(Long.SIZE);
-		return (long) (
-					(bytes[0]<<56)+
-					(bytes[1]<<48)+
-					(bytes[2]<<40)+
-					(bytes[3]<<32)+
-					(bytes[4]<<24)+
-					(bytes[5]<<16)+
-					(bytes[6]<<8)+
-					bytes[7]);
+		long result=bytes[0];
+		result = result<<8+bytes[1];
+		result = result<<8+bytes[2];
+		result = result<<8+bytes[3];
+		result = result<<8+bytes[4];
+		result = result<<8+bytes[5];
+		result = result<<8+bytes[6];
+		result = result<<8+bytes[7];
+		return result;
 	}
 
 	@Override

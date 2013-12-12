@@ -98,7 +98,7 @@ public class JsonIdMap extends IdMap {
 	 * @return the json object
 	 */
 	public JsonObject toJsonObject(Object object) {
-		return toJsonObject(object, filter.clone());
+		return toJsonObject(object, filter.cloneObj());
 	}
 
 	/**
@@ -310,7 +310,7 @@ public class JsonIdMap extends IdMap {
 		LinkedHashSet<ReferenceObject> refs = new LinkedHashSet<ReferenceObject>();
 		for (int i = 0; i <= len; i++) {
 			JsonObject kidObject = jsonArray.getJSONObject(i);
-			Object tmp = decode(kidObject, refs, this.filter.clone());
+			Object tmp = decode(kidObject, refs, this.filter.cloneObj());
 			if (kidObject.has(MAINITEM)) {
 				result = tmp;
 			} else if (i == 0) {
@@ -371,7 +371,7 @@ public class JsonIdMap extends IdMap {
 	public Object decode(Object target, JsonObject jsonObject, Filter filter) {
 		LinkedHashSet<ReferenceObject> refs = new LinkedHashSet<ReferenceObject>();
 		if(filter==null){
-			filter=this.filter.clone();
+			filter=this.filter.cloneObj();
 		}
 		Object mainItem = decode(target, jsonObject, refs, filter.withStandard(this.filter));
 		for (ReferenceObject ref : refs) {
@@ -398,7 +398,7 @@ public class JsonIdMap extends IdMap {
 				jsonObject, this);
 		
 		if(filter==null){
-			filter=this.filter.clone();
+			filter=this.filter.cloneObj();
 		}
 
 		if (typeInfo != null) {
@@ -587,7 +587,7 @@ public class JsonIdMap extends IdMap {
 	public JsonArray toJsonArray(Object object, Filter filter) {
 		JsonArray jsonArray = getPrototyp().getNewArray();
 		if (filter == null) {
-			filter = this.filter.clone();
+			filter = this.filter.cloneObj();
 		}
 		
 		if(object instanceof Collection<?>){
@@ -613,7 +613,7 @@ public class JsonIdMap extends IdMap {
 	 */
 	public JsonArray toJsonSortedArray(Object object, String property) {
 		JsonArraySorted jsonArray = new JsonArraySorted().withComparator(new EntityComparator().withColumn(property).withMap(this));
-		toJsonArray(object, jsonArray, filter.clone());
+		toJsonArray(object, jsonArray, filter.cloneObj());
 		return jsonArray;
 	}
 

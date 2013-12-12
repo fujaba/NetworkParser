@@ -123,7 +123,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 	 */
 	@Override
 	public XMLEntity encode(Object entity) {
-		return encode(entity, filter.clone());
+		return encode(entity, filter.cloneObj());
 	}
 
 	public XMLEntity encode(Object entity, Filter filter) {

@@ -38,8 +38,6 @@ public class RestCounter extends SimpleIdCounter{
 		// new object generate key and add to tables
 		// <session id>.<first char><running number>
 		if (obj == null) {
-			Exception e = new Exception("NullPointer: " + obj);
-			e.printStackTrace();
 			return "";
 		}
 		String className = obj.getClass().getName();
