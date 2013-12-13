@@ -71,12 +71,12 @@ public class ByteSimpleMap extends AbstractMap {
 			int orientationSource = bitValue.getOrientation();
 			int orientationTarget = entry.getOrientation();
 
-			int temp = Integer.valueOf(""
+			int temp = Integer.parseInt(""
 					+ getEntity(buffer, bitValue.getStart(), values));
 			int posOfByte = temp / 8;
 			int posOfBit = (8 - ((temp + 1) % 8)) % 8;
 
-			int length = Integer.valueOf(""
+			int length = Integer.parseInt(""
 					+ getEntity(buffer, bitValue.getLen(), values));
 			int noOfByte = length / 8;
 			if (length % 8 > 0) {
@@ -195,7 +195,7 @@ public class ByteSimpleMap extends AbstractMap {
 		if (entry.getTyp().equals(BitEntity.BIT_BYTE)) {
 			byte[] array = result.array();
 			if (array.length == 1) {
-				element = new Byte(array[0]);
+				element = Byte.valueOf(array[0]);
 			} else {
 				Byte[] item = new Byte[array.length];
 				for (int i = 0; i < array.length; i++) {
@@ -221,7 +221,7 @@ public class ByteSimpleMap extends AbstractMap {
 			}
 		} else if (entry.getTyp().equals(BitEntity.BIT_STRING)) {
 			result.flip();
-			element = new String(result.array());
+			element = String.valueOf(result.array());
 
 		}
 		values.put(entry.getPropertyName(), element);

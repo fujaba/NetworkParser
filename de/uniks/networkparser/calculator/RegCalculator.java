@@ -113,32 +113,34 @@ public class RegCalculator {
 				}
 			}
 			
+			StringBuilder sb=new StringBuilder(value);
+			
 			if( Character.isDigit( current ) || current == '.' ){
 				while(Character.isDigit( current ) || current == '.'){
-					value+= current;
+					sb.append(current);
 					current = tokener.next();
 				}
 				if(defaultMulti){
 					parts.add("*");
 				}
-				parts.add( value );
+				parts.add( sb.toString() );
 				defaultMulti=true;
 				continue;
 			}
 			if(current!=' '){
-				value+= current;
+				sb.append(current);
 			}
 			while(!tokener.isEnd() ){
-				if(addOperator(value, tokener, parts)){
-					value="";
+				if(addOperator(sb.toString(), tokener, parts)){
+					sb = new StringBuilder();
 					defaultMulti=false;
     				break;
 				}
     			current = tokener.next();
-    			value += current;
+    			sb.append(current);
     		}
 			if(value.length()>0){
-				addOperator(value, tokener, parts);
+				addOperator(sb.toString(), tokener, parts);
 				defaultMulti=false;
 			}
 			current=null;

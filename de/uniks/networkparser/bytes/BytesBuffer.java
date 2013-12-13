@@ -52,7 +52,7 @@ public class BytesBuffer implements BufferedBytes {
 		for(int i=0;i<length;i++){
 			sub[i]=buffer[startTag+length];
 		}
-		return new String(sub);
+		return String.valueOf(sub);
 	}
 
 	@Override
@@ -91,7 +91,7 @@ public class BytesBuffer implements BufferedBytes {
 
 	@Override
 	public String toText() {
-		return new String(buffer);
+		return String.valueOf(buffer);
 	}
 
 	@Override
@@ -289,7 +289,7 @@ public class BytesBuffer implements BufferedBytes {
 	}
 	
 	public BytesBuffer withValue(byte[] array){
-		this.buffer=array;
+		this.buffer=array.clone();
 		return this;
 	}
 }

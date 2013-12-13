@@ -119,7 +119,7 @@ public class DateTimeEntity  {
 		this.fields.put(DateField.MILLISECONDS, time);
 		this.fields.put(DateField.MILLISECOND, time%ONE_SECOND);
 
-		time += ONE_HOUR;
+//		time += ONE_HOUR;
 		this.fields.put(DateField.MILLISECONDSREAL, time);
 
 		
@@ -426,8 +426,8 @@ public class DateTimeEntity  {
 				sub = sub.replace("ddd",  this.weekDays[(int)get(DateField.DAY_OF_WEEK)].substring(0, 2));
 				sub = sub.replace("dd",   strZero(get(DateField.DAY_OF_MONTH), 2));
 				sub = sub.replace("d",    String.valueOf(get(DateField.DAY_OF_MONTH)));
-				sub = sub.replace("mmmm", this.monthOfYear[(int)get(DateField.MONTH)]);
-				sub = sub.replace("mmm",  this.monthOfYear[(int)get(DateField.MONTH)].substring(0, 3));
+				sub = sub.replace("mmmm", this.monthOfYear[(int)get(DateField.MONTH)-1]);
+				sub = sub.replace("mmm",  this.monthOfYear[(int)get(DateField.MONTH)-1].substring(0, 3));
 				sub = sub.replace("mm",   strZero(get(DateField.MONTH), 2));
 				sub = sub.replace("m",    String.valueOf(get(DateField.MONTH)));
 				sub = sub.replace("yyyy", String.valueOf(get(DateField.YEAR)));
