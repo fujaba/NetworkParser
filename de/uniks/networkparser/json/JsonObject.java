@@ -24,6 +24,7 @@ package de.uniks.networkparser.json;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import de.uniks.networkparser.Entity;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Tokener;
@@ -173,21 +174,18 @@ public class JsonObject extends Entity implements TextEntity {
 			return "{Item with " + map.size() + " values}";
 		}
 
-		Iterator<String> keys = map.keySet().iterator();
-
-		Object key = keys.next();
-		Object value = map.get(key);
-		StringBuilder sb = new StringBuilder();
-		sb = new StringBuilder("{");
-		sb.append(EntityUtil.quote(key.toString()));
+		StringBuilder sb = new StringBuilder("{");
+		Iterator<Entry<String, Object>> i = map.entrySet().iterator();
+		Entry<String, Object> item = i.next();
+		sb.append(EntityUtil.quote(item.getKey().toString()));
 		sb.append(":");
-		sb.append(EntityUtil.valueToString(value, false, this));
-		while (keys.hasNext()) {
-			key = keys.next();
+		sb.append(EntityUtil.valueToString(item.getValue(), false, this));
+		while (i.hasNext()) {
+			item = i.next();
 			sb.append(",");
-			sb.append(EntityUtil.quote(key.toString()));
+			sb.append(EntityUtil.quote(item.getKey().toString()));
 			sb.append(":");
-			sb.append(EntityUtil.valueToString(map.get(key), false, this));
+			sb.append(EntityUtil.valueToString(item.getValue(), false, this));
 		}
 		sb.append("}");
 		return sb.toString();
@@ -223,10 +221,10 @@ public class JsonObject extends Entity implements TextEntity {
 			return "{" + map.size() + " values}";
 		}
 
-		Iterator<String> keys = map.keySet().iterator();
-
+		Iterator<Entry<String, Object>> iterator = map.entrySet().iterator();
+		
 		int newindent = indent + indentFactor;
-		String prefix = "";
+		String prefix = null;
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < indentFactor; i++) {
 			sb.append(' ');
@@ -242,24 +240,24 @@ public class JsonObject extends Entity implements TextEntity {
 			prefix = CRLF;
 		}
 
-		Object key = keys.next();
-		Object value = map.get(key);
+		Entry<String, Object> item = iterator.next();
+		Object value = item.getValue();
 		if (length == 1 && !(value instanceof Entity)) {
 			sb = new StringBuilder("{");
 		} else {
 			sb = new StringBuilder("{" + prefix + step);
 		}
 
-		sb.append(EntityUtil.quote(key.toString()));
+		sb.append(EntityUtil.quote(item.getKey().toString()));
 		sb.append(":");
 		sb.append(EntityUtil.valueToString(value, indentFactor, newindent,
 				false, this));
-		while (keys.hasNext()) {
-			key = keys.next();
+		while (iterator.hasNext()) {
+			item = iterator.next();
 			sb.append("," + prefix + step);
-			sb.append(EntityUtil.quote(key.toString()));
+			sb.append(EntityUtil.quote(item.getKey().toString()));
 			sb.append(":");
-			sb.append(EntityUtil.valueToString(map.get(key), indentFactor,
+			sb.append(EntityUtil.valueToString(item.getValue(), indentFactor,
 					newindent, false, this));
 		}
 		if (length == 1 && !(value instanceof Entity)) {

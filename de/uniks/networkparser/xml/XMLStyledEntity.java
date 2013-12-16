@@ -58,6 +58,7 @@ public class XMLStyledEntity extends XMLEntity implements PeerMessage {
 		}
 		return false;
 	}
+
 	@Override
 	public Object get(String key) {
 		Object attrValue=style.get(key);

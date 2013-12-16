@@ -530,21 +530,17 @@ public class JsonIdMap extends IdMap {
 								creator.setValue(
 										target,
 										property,
-										new MapEntry(
-												key,
-												decode((JsonObject) entryValue)),
+										new MapEntry().with(key, decode((JsonObject) entryValue)),
 										NEW);
 							} else if (entryValue instanceof JsonArray) {
 								creator.setValue(
 										target,
 										property,
-										new MapEntry(
-												key,
-												decode((JsonArray) entryValue)),
+										new MapEntry().with(key, decode((JsonArray) entryValue)),
 										NEW);
 							} else {
 								creator.setValue(target, property,
-										new MapEntry(key, entryValue), NEW);
+										new MapEntry().with(key, entryValue), NEW);
 							}
 						}
 					} else if (className == null && jsonId != null) {

@@ -28,9 +28,9 @@ import de.uniks.networkparser.gui.table.TableList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class EntityComparator implements Comparator<Object> {
-	public static String IDMAP = "%idmap%";
-	public static String HASHCODE = "%hashcode%";
-	public static String LIST = "%list%";
+	public static final String IDMAP = "%idmap%";
+	public static final String HASHCODE = "%hashcode%";
+	public static final String LIST = "%list%";
 
 	private SortingDirection direction = SortingDirection.ASC;
 	private String column = IDMAP;
@@ -70,58 +70,45 @@ public class EntityComparator implements Comparator<Object> {
 
 		if (v1 instanceof String) {
 			String valueA = (String) v1;
-			String valueB = (String) v2;
-			if (valueA != null) {
-				if (valueB != null) {
-					int value = valueB.compareTo(valueA);
-
-					if (value < 1) {
-						return -1;
-					}
+			if (v2 != null) {
+				String valueB = (String) v2;
+				int value = valueB.compareTo(valueA);
+				if (value < 1) {
+					return -1;
 				}
-				return 1;
 			}
 		} else if (v1 instanceof Integer) {
 			Integer valueA = (Integer) v1;
-			Integer valueB = (Integer) v2;
-			if (valueA != null) {
-				if (valueB != null) {
-					int value = valueB.compareTo(valueA);
+			if(v2 != null) {
+				Integer valueB = (Integer) v2;
+				int value = valueB.compareTo(valueA);
 
-					if (value < 1) {
-						return -1;
-					}
+				if (value < 1) {
+					return -1;
 				}
-				return 1;
 			}
+			return 1;
 		} else if (v1 instanceof Long) {
 			Long valueA = (Long) v1;
-			Long valueB = (Long) v2;
-			if (valueA != null) {
-				if (valueB != null) {
-					int value = valueB.compareTo(valueA);
+			if(v2 != null) {
+				Long valueB = (Long) v2;
+				int value = valueB.compareTo(valueA);
 
-					if (value < 1) {
-						return -1;
-					}
+				if (value < 1) {
+					return -1;
 				}
-				return 1;
 			}
 		} else if (v1 instanceof Boolean) {
 			Boolean valueA = (Boolean) v1;
 			Boolean valueB = (Boolean) cellCreator.getCellValue(o2, creator, column);
-			if (valueA != null) {
-				if (valueB != null) {
-					int value = valueB.compareTo(valueA);
-
-					if (value < 1) {
-						return -1;
-					}
+			if (valueB != null) {
+				int value = valueB.compareTo(valueA);
+				if (value < 1) {
+					return -1;
 				}
-				return 1;
 			}
 		}
-		return -1;
+		return 1;
 	}
 
 	private int checkIntern(Object o1, Object o2) {

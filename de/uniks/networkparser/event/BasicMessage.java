@@ -33,23 +33,6 @@ public class BasicMessage implements PeerMessage {
 	/** The value. */
 	private String value;
 
-	/**
-	 * Instantiates a new basic message.
-	 */
-	public BasicMessage() {
-
-	}
-
-	/**
-	 * Instantiates a new basic message.
-	 * 
-	 * @param message
-	 *            the message
-	 */
-	public BasicMessage(String message) {
-		setValue(message);
-	}
-
 	/*
 	 * Generic Getter for Attribute
 	 */
@@ -74,7 +57,7 @@ public class BasicMessage implements PeerMessage {
 	@Override
 	public boolean set(String attribute, Object value) {
 		if (attribute.equalsIgnoreCase(PROPERTY_VALUE)) {
-			setValue((String) value);
+			withValue((String) value);
 			return true;
 		}
 		return false;
@@ -94,8 +77,10 @@ public class BasicMessage implements PeerMessage {
 	 * 
 	 * @param value
 	 *            the new value
+	 * @return 
 	 */
-	public void setValue(String value) {
+	public BasicMessage withValue(String value) {
 		this.value = value;
+		return this;
 	}
 }

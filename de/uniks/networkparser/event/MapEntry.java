@@ -28,13 +28,10 @@ public class MapEntry implements Entry<Object, Object> {
 	private Object key;
 	private Object value;
 
-	public MapEntry() {
-
-	}
-
-	public MapEntry(Object key, Object value) {
+	public MapEntry with(Object key, Object value) {
 		this.key = key;
 		this.value = value;
+		return this;
 	}
 
 	public Object setKey(Object key) {

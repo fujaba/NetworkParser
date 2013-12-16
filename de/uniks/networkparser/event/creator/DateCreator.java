@@ -54,7 +54,7 @@ public class DateCreator implements SendableEntityCreator, NoIndexCreator {
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if (VALUE.equals(attribute)) {
-			return new Long(((Date) entity).getTime());
+			return Long.valueOf(((Date) entity).getTime());
 		}
 		return null;
 	}

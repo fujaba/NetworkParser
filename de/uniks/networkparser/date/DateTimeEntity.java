@@ -315,9 +315,9 @@ public class DateTimeEntity  {
 	 *            date as String
 	 */
 	public DateTimeEntity withValue(String date) {
-		this.withYear( Integer.valueOf( date.substring(6, 9) ) );
-		this.withMonth( Integer.valueOf( date.substring(3, 4) ) );
-		this.withDate( Integer.valueOf( date.substring(0, 1) ) );
+		this.withYear( Integer.parseInt( date.substring(6, 9) ) );
+		this.withMonth( Integer.parseInt( date.substring(3, 4) ) );
+		this.withDate( Integer.parseInt( date.substring(0, 1) ) );
 		return this;
 	}
 
@@ -576,7 +576,7 @@ public class DateTimeEntity  {
 		} else if (field==DateField.WEEK_OF_MONTH || field==DateField.WEEK_OF_YEAR){
 			return value * DateTimeEntity.ONE_WEEK;
 		} else if (field==DateField.YEAR){
-			int year=Integer.valueOf(""+value);
+			int year=Integer.parseInt(""+value);
 			int schaltjahre=((year-1)-1968)/4 - ((year-1)-1900)/100 + ((year-1)-1600)/400;
 			return (year-schaltjahre)*DateTimeEntity.ONE_YEAR + (schaltjahre*DateTimeEntity.ONE_YEAR_LY);
 		}

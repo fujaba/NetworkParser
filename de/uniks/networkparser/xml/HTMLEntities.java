@@ -42,8 +42,8 @@ public class HTMLEntities {
 	}
 
 	private void addEntity(String value, int key) {
-		this.htmlentities_map.put(new Integer(key), value);
-		this.unhtmlentities_map.put(value, new Integer(key));
+		this.htmlentities_map.put(Integer.valueOf(key), value);
+		this.unhtmlentities_map.put(value, Integer.valueOf(key));
 	}
 
 	public void init() {
@@ -320,7 +320,7 @@ public class HTMLEntities {
 
 		for (int i = 0; i < str.length(); ++i) {
 			char ch = str.charAt(i);
-			String entity = this.htmlentities_map.get(new Integer(ch)); // get equivalent html entity
+			String entity = this.htmlentities_map.get(Integer.valueOf(ch)); // get equivalent html entity
 			if (entity == null) { // if entity has not been found
 				if (ch > 128) { // check if is an extended character
 					buf.append("&#" + ((int) ch) + ";"); // convert extended
@@ -366,7 +366,7 @@ public class HTMLEntities {
 						iso = Integer.valueOf(
 								entity.substring(3, entity.length() - 1), 16);
 					} else {
-						iso = new Integer(entity.substring(2,
+						iso = Integer.valueOf(entity.substring(2,
 								entity.length() - 1));
 					}
 				} else {
