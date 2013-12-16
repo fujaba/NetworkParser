@@ -1,6 +1,10 @@
 package de.uniks.networkparser.gui;
 
+import java.util.Collection;
+
 import javafx.beans.Observable;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.logic.Condition;
 /*
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
@@ -22,10 +26,10 @@ import javafx.beans.Observable;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class ModelListenerStringProperty extends ModelListenerProperty<String> {
-	public ModelListenerStringProperty(SendableEntityCreator creator, Object item, String property) {
+public class ModelListenerBooleanProperty extends ModelListenerProperty<Boolean> {
+	private Condition condition;
+	public ModelListenerBooleanProperty(SendableEntityCreator creator, Object item, String property) {
         super(creator, item, property);
     }
 
@@ -34,11 +38,26 @@ public class ModelListenerStringProperty extends ModelListenerProperty<String> {
 	}
 
 	@Override
-	public String getValue() {
-		Object value = getItemValue();
-		if(value instanceof String){
-			return ""+value;
+	public Boolean getValue() {
+		
+		Object value = creator.getValue(item, property);
+		boolean isMany = (value instanceof Collection<?>);
+		if(condition!=null){
+			return condition.matches(null, item, property, value, isMany, 0);
 		}
-		return String.valueOf(value);
+		return false;
     }
+	
+	@Override
+	public void setValue(Boolean value) {
+		Object oldValue = creator.getValue(item, property);
+		if(oldValue instanceof Boolean){
+			super.setValue(value);
+		}
+	}
+	
+	public ModelListenerBooleanProperty withCondition(Condition condition){
+		this.condition = condition;
+		return this;
+	}
 }

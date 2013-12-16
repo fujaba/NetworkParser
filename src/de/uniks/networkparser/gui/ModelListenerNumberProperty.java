@@ -35,7 +35,7 @@ public class ModelListenerNumberProperty extends ModelListenerProperty<Number> {
 
 	@Override
 	public Number getValue() {
-		Object value = creator.getValue(item, property);
+		Object value = getItemValue();
 		if(value instanceof Number){
 			return (Number)value;
 		}
