@@ -33,22 +33,6 @@ public class ByteMessage implements PeerMessage {
 	/** The value. */
 	private byte[] value = new byte[] {};
 
-	/**
-	 * Instantiates a new byte message.
-	 */
-	public ByteMessage() {
-	}
-
-	/**
-	 * Instantiates a new byte message.
-	 * 
-	 * @param message
-	 *            the message
-	 */
-	public ByteMessage(byte[] message) {
-		setValue(message);
-	}
-
 	/*
 	 * Generic Getter for Attributes
 	 */
@@ -73,7 +57,7 @@ public class ByteMessage implements PeerMessage {
 	@Override
 	public boolean set(String attribute, Object value) {
 		if (attribute.equalsIgnoreCase(PROPERTY_VALUE)) {
-			setValue((byte[]) value);
+			withValue((byte[]) value);
 			return true;
 		}
 		return false;
@@ -93,8 +77,10 @@ public class ByteMessage implements PeerMessage {
 	 * 
 	 * @param value
 	 *            the new value
+	 * @return 
 	 */
-	public void setValue(byte[] value) {
+	public ByteMessage withValue(byte[] value) {
 		this.value = value;
+		return this;
 	}
 }

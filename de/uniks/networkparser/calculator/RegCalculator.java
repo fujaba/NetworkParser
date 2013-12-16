@@ -94,9 +94,9 @@ public class RegCalculator {
 				defaultMulti=false;
 				continue;
 			}
-			String value="";
+			
 			if((pos = BACKETSOPEN.indexOf(current))>=0 ){
-				value = tokener.getStringPart(BACKETSOPEN.charAt(pos), BACKETSCLOSE.charAt(pos));
+				String value = tokener.getStringPart(BACKETSOPEN.charAt(pos), BACKETSCLOSE.charAt(pos));
 				if(value != null){
 					if(defaultMulti){
 						parts.add("*");
@@ -113,7 +113,7 @@ public class RegCalculator {
 				}
 			}
 			
-			StringBuilder sb=new StringBuilder(value);
+			StringBuilder sb = new StringBuilder();
 			
 			if( Character.isDigit( current ) || current == '.' ){
 				while(Character.isDigit( current ) || current == '.'){
@@ -139,7 +139,7 @@ public class RegCalculator {
     			current = tokener.next();
     			sb.append(current);
     		}
-			if(value.length()>0){
+			if(sb.length()>0){
 				addOperator(sb.toString(), tokener, parts);
 				defaultMulti=false;
 			}

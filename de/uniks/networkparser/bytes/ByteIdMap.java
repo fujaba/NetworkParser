@@ -518,7 +518,7 @@ public class ByteIdMap extends IdMap {
 					if(subValues!=null && subValues instanceof List<?>){
 						List<?> list=(List<?>) subValues;
 						if(list.size()==2){
-							values.add(new MapEntry(list.get(0), list.get(1)));
+							values.add(new MapEntry().with(list.get(0), list.get(1)));
 						}
 					}else{
 						break;

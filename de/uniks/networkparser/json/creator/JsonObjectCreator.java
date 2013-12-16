@@ -26,7 +26,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonObject;
 
 public class JsonObjectCreator implements SendableEntityCreator, NoIndexCreator {
-	private final String VALUE="VALUE";
+	private final static String VALUE="VALUE";
 	private final String[] properties = new String[] { VALUE };
 
 	@Override
