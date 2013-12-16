@@ -25,6 +25,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 
 import javafx.beans.InvalidationListener;
@@ -129,7 +130,15 @@ public abstract class ModelListenerProperty<T> implements javafx.beans.property.
     @Override
     public void unbindBidirectional(Property<T> other) {
     	 Bindings.unbindBidirectional(this, other);
-    } 
+    }
+    
+    public Object getItemValue(){
+    	Object value = creator.getValue(item, property);
+    	if(value instanceof Collection<?>){
+    		return ((Collection<?>)value).size();
+    	}
+    	return value;
+    }
     
 	@Override
 	@SuppressWarnings("unchecked")

@@ -18,7 +18,9 @@ import de.uniks.networkparser.test.model.creator.DataCreator;
 
 public class ClickCounter extends Application
 {
-   
+   private Data data = new Data();
+   private TextField field;
+	   
    public static void main(String[] args)
    {
       launch(args);
@@ -55,9 +57,6 @@ public class ClickCounter extends Application
          public void handle(ActionEvent arg0)
          {
             data.setNum(data.getNum() + 1);
-            
-//            data.getFxnum().set(data.getFxnum().get()+1);
-            
             System.out.println("now: " + data.getNum());
          }
       });
@@ -70,9 +69,4 @@ public class ClickCounter extends Application
       stage.setScene(scene);
       stage.show();
    }
-   
-   
-   private Data data = new Data();
-private TextField field;
-   
 }

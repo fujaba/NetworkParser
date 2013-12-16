@@ -5,11 +5,13 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import de.uniks.networkparser.gui.ModelListenerStringProperty;
 import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.gui.table.Column;
 import de.uniks.networkparser.gui.table.SearchTableComponent;
@@ -73,7 +75,17 @@ public class GroupAccountGUI extends Application {
 			});
 	        
 	        hbox.getChildren().addAll(textField, addField, update);
-	        box.getChildren().addAll(tableView, hbox);
+	        
+	        HBox info=new HBox();
+	        Label albertLabel=new Label();
+	        albertLabel.setText("Albertsliste:");
+	        
+	        Label counter = new Label();
+	        counter.textProperty().bindBidirectional(new ModelListenerStringProperty(new PersonCreator(), albert, Person.PROPERTY_ITEMS));
+	        
+	        info.getChildren().addAll(albertLabel, counter);
+	        
+	        box.getChildren().addAll(tableView, hbox, info);
 	        root.getChildren().add(box);
 //	        groupAccount.updateBalances();
 	}
