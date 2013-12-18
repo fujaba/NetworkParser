@@ -5,7 +5,7 @@ package de.uniks.networkparser.event.creator;
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
  
- Licensed under the EUPL, Version 1.1 or later as soon they
+ Licensed under the EUPL, Version 1.1 or – as soon they
  will be approved by the European Commission - subsequent
  versions of the EUPL (the "Licence");
  You may not use this work except in compliance with the Licence.
@@ -28,4 +28,47 @@ import de.uniks.networkparser.interfaces.ByteCreator;
  */
 
 public class ByteMessageCreator implements ByteCreator {
-	
+	/** The properties. */
+	private final String[] properties = new String[] {ByteMessage.PROPERTY_VALUE};
+
+	/*
+	 * return the Properties
+	 */
+	@Override
+	public String[] getProperties() {
+		return properties;
+	}
+
+	/*
+	 * Create new Instance of ByteMessage
+	 */
+	@Override
+	public Object getSendableInstance(boolean reference) {
+		return new ByteMessage();
+	}
+
+	/*
+	 * Get the EventTyp of BasicMessage (0x01)
+	 */
+	@Override
+	public byte getEventTyp() {
+		return 0x01;
+	}
+
+	/*
+	 * Getter for ByteMessage
+	 */
+	@Override
+	public Object getValue(Object entity, String attribute) {
+		return ((ByteMessage) entity).get(attribute);
+	}
+
+	/*
+	 * Setter for ByteMessage
+	 */
+	@Override
+	public boolean setValue(Object entity, String attribute, Object value,
+			String typ) {
+		return ((ByteMessage) entity).set(attribute, value);
+	}
+}

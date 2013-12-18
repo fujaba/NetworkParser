@@ -5,7 +5,7 @@ package de.uniks.networkparser.gui.grid;
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
  
- Licensed under the EUPL, Version 1.1 or later as soon they
+ Licensed under the EUPL, Version 1.1 or – as soon they
  will be approved by the European Commission - subsequent
  versions of the EUPL (the "Licence");
  You may not use this work except in compliance with the Licence.
@@ -24,4 +24,8 @@ package de.uniks.networkparser.gui.grid;
 import java.beans.PropertyChangeListener;
 
 public interface GridGUITable {
-	
+	public void add(Object cell);
+	public void move(Object cell);
+	public GridStyle getNewStyle();
+	public PropertyChangeListener getNewCell(Object node);
+}

@@ -5,7 +5,7 @@ package de.uniks.networkparser.xml;
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
  
- Licensed under the EUPL, Version 1.1 or later as soon they
+ Licensed under the EUPL, Version 1.1 or – as soon they
  will be approved by the European Commission - subsequent
  versions of the EUPL (the "Licence");
  You may not use this work except in compliance with the Licence.
@@ -25,4 +25,56 @@ import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.interfaces.PeerMessage;
 
 public class XMLStyledEntity extends XMLEntity implements PeerMessage {
+	private Style style=new Style();
 	
+	@Override
+	protected String toStringValue(int indentFactor) {
+		StringBuilder sb = new StringBuilder();
+
+		// Starttag
+		if (style.isBold()) {
+			sb.append("<b>");
+		}
+		if (style.isItalic()) {
+			sb.append("<i>");
+		}
+		sb.append(super.toStringValue(indentFactor));
+
+		// EndTag
+		if (style.isItalic()) {
+			sb.append("</i>");
+		}
+		if (style.isBold()) {
+			sb.append("</b>");
+		}
+		return sb.toString();
+	}
+
+
+	@Override
+	public boolean set(String attribute, Object value) {
+		if(style.set(attribute, value)){
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public Object get(String key) {
+		Object attrValue=style.get(key);
+		if(attrValue!=null){
+			return attrValue;
+		}
+		return super.get(key);
+	}
+
+
+	public boolean isBold() {
+		return style.isBold();
+	}
+
+
+	public void setBold(boolean value) {
+		style.withBold(value);
+	}
+}

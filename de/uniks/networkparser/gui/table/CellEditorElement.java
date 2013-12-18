@@ -5,7 +5,7 @@ package de.uniks.networkparser.gui.table;
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
  
- Licensed under the EUPL, Version 1.1 or later as soon they
+ Licensed under the EUPL, Version 1.1 or – as soon they
  will be approved by the European Commission - subsequent
  versions of the EUPL (the "Licence");
  You may not use this work except in compliance with the Licence.
@@ -23,4 +23,14 @@ package de.uniks.networkparser.gui.table;
 */
 
 public interface CellEditorElement {
-	
+	public CellEditorElement withColumn(Column column);
+	public void cancel();
+	public boolean setFocus(boolean value);
+	public boolean onActive(boolean value);
+	public boolean nextFocus();
+	public void apply();
+	public Object getValue(boolean convert);
+	public CellEditorElement withValue(Object value);
+	public FieldTyp getControllForTyp(Object value);
+	public void dispose();
+}

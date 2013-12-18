@@ -5,7 +5,7 @@ package de.uniks.networkparser.logic;
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
  
- Licensed under the EUPL, Version 1.1 or later as soon they
+ Licensed under the EUPL, Version 1.1 or – as soon they
  will be approved by the European Commission - subsequent
  versions of the EUPL (the "Licence");
  You may not use this work except in compliance with the Licence.
@@ -24,4 +24,13 @@ package de.uniks.networkparser.logic;
 import de.uniks.networkparser.IdMap;
 
 public interface Condition {
-	
+	/**
+	 * checks if a telegram fulfills this condition
+	 * 
+	 * @param telegram
+	 *            the telegram to be checked
+	 * @return true if the telegram fulfills this condition, false otherwise
+	 */
+	public boolean matches(IdMap map, Object entity, String property,
+			Object value, boolean isMany, int deep);
+}
