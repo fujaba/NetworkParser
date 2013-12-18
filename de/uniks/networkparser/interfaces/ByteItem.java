@@ -5,7 +5,7 @@ package de.uniks.networkparser.interfaces;
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
  
- Licensed under the EUPL, Version 1.1 or later as soon they
+ Licensed under the EUPL, Version 1.1 or – as soon they
  will be approved by the European Commission - subsequent
  versions of the EUPL (the "Licence");
  You may not use this work except in compliance with the Licence.
@@ -24,4 +24,35 @@ package de.uniks.networkparser.interfaces;
 import de.uniks.networkparser.bytes.converter.ByteConverter;
 
 public interface ByteItem extends BaseEntity{
+	/**
+	 * @return the ByteItem as String
+	 */
+	public String toString();
+
+	/**
+	 * @param converter ByteConverter for Format
+	 * @return the ByteItem as String with converter
+	 */
+	public String toString(ByteConverter converter);
+
+	/**
+	 * @param converter ByteConverter for Format
+	 * @param isDynamic ByteStream for minimize output
+	 * @return the ByteItem as String 
+	 */
+	public String toString(ByteConverter converter, boolean isDynamic);
+
+	/**
+	 * @param isDynamic ByteStream for minimize output
+	 * @return ByteStream 
+	 */
+	public BufferedBytes getBytes(boolean isDynamic);
 	
+	public void writeBytes(BufferedBytes buffer, boolean isDynamic, boolean last);
+
+	/**
+	 * @param isDynamic ByteStream for minimize output
+	 * @return the Size of Bytes
+	 */
+	public int calcLength(boolean isDynamic);
+}
