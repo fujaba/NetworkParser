@@ -5,7 +5,7 @@ package de.uniks.networkparser.interfaces;
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
  
- Licensed under the EUPL, Version 1.1 or – as soon they
+ Licensed under the EUPL, Version 1.1 or later as soon they
  will be approved by the European Commission - subsequent
  versions of the EUPL (the "Licence");
  You may not use this work except in compliance with the Licence.
@@ -34,19 +34,4 @@ import de.uniks.networkparser.json.JsonObject;
  */
 
 public interface MapUpdateListener {
-	/**
-	 * Send update msg.
-	 * 
-	 * @param jsonObject
-	 *            the json object
-	 * @return true, if successful
-	 */
-	public boolean sendUpdateMsg(Object target, String property, Object oldObj, Object newObject,
-			JsonObject jsonObject);
-
-	public boolean isReadMessages(String key, Object element, JsonObject props, String type);
-	public boolean readMessages(String key, Object element, Object value, JsonObject props, String type);
-
-	public boolean skipCollision(Object masterObj, String key, Object value,
-			JsonObject removeJson, JsonObject updateJson);
-}
+	
