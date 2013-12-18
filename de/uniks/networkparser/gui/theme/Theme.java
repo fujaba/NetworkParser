@@ -5,7 +5,7 @@ package de.uniks.networkparser.gui.theme;
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
  
- Licensed under the EUPL, Version 1.1 or – as soon they
+ Licensed under the EUPL, Version 1.1 or later as soon they
  will be approved by the European Commission - subsequent
  versions of the EUPL (the "Licence");
  You may not use this work except in compliance with the Licence.
@@ -26,30 +26,4 @@ import java.util.Map;
 import de.uniks.networkparser.gui.Style;
 
 public class Theme {
-	/**
-	 * The styles of this theme.
-	 */
-	protected Map<String, Style> styles=new LinkedHashMap<String, Style>();
-
-	  /**
-	   * Add style.
-	   * @param styleKey the keyword of the style
-	   * @param style the style
-	   * @return see the return value of {@link Map#put(Object, Object)}
-	   */
-	  public Style addStyle(String styleKey, Style style) {
-	    return styles.put(styleKey, style);
-	  }
-	  
-	  /**
-	   * Get the style by keyword.
-	   * @param key the keyword
-	   * @return the {@link syntaxhighlighter.theme.Style} related to the 
-	   * {@code key}; if the style related to the {@code key} not exist, the 
-	   * style of 'plain' will return.
-	   */
-	  public Style getStyle(String key) {
-	    Style returnStyle = styles.get(key);
-	    return returnStyle != null ? returnStyle : getStyle(StyleConstants.STYLE_PLAIN);
-	  }
-}
+	

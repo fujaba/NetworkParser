@@ -5,7 +5,7 @@ package de.uniks.networkparser.interfaces;
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
  
- Licensed under the EUPL, Version 1.1 or – as soon they
+ Licensed under the EUPL, Version 1.1 or later as soon they
  will be approved by the European Commission - subsequent
  versions of the EUPL (the "Licence");
  You may not use this work except in compliance with the Licence.
@@ -25,9 +25,4 @@ import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.xml.XMLEntity;
 
 public interface XMLGrammar extends SendableEntityCreator {
-	public boolean parseChild(XMLEntity entity, XMLEntity child, Tokener value);
-
-	public void addChildren(XMLEntity parent, XMLEntity child);
-
-	public void endChild(String tag);
-}
+	

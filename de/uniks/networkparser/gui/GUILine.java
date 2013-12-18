@@ -5,7 +5,7 @@ package de.uniks.networkparser.gui;
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
  
- Licensed under the EUPL, Version 1.1 or – as soon they
+ Licensed under the EUPL, Version 1.1 or later as soon they
  will be approved by the European Commission - subsequent
  versions of the EUPL (the "Licence");
  You may not use this work except in compliance with the Licence.
@@ -23,26 +23,4 @@ package de.uniks.networkparser.gui;
 */
 
 public class GUILine {
-	/** The Font-Size-Family value. */
-	private String color;
 	
-	private String width;
-
-	public String getColor() {
-		return color;
-	}
-
-	public GUILine withColor(String color) {
-		this.color = color;
-		return this;
-	}
-
-	public String getWidth() {
-		return width;
-	}
-
-	public GUILine withWidth(String width) {
-		this.width = width;
-		return this;
-	}
-}

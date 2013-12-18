@@ -5,7 +5,7 @@ package de.uniks.networkparser.bytes.checksum;
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
  
- Licensed under the EUPL, Version 1.1 or – as soon they
+ Licensed under the EUPL, Version 1.1 or later as soon they
  will be approved by the European Commission - subsequent
  versions of the EUPL (the "Licence");
  You may not use this work except in compliance with the Licence.
@@ -28,20 +28,4 @@ package de.uniks.networkparser.bytes.checksum;
  */
 
 public class Adler32 extends Checksum {
-	private static final int BASE = 65521;
-
-	public void update(int b) {
-		super.update(b);
-		int s1 = (int) value & 0xffff;
-		int s2 = (int) value >>> 16;
-		s1 = (s1 + (b & 0xFF)) % BASE;
-		s2 = (s1 + s2) % BASE;
-
-		value = (s2 << 16) + s1;
-	}
-
-	@Override
-	public int getOrder() {
-		return 32;
-	}
-}
+	

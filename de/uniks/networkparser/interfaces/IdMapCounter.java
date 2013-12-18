@@ -5,7 +5,7 @@ package de.uniks.networkparser.interfaces;
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
  
- Licensed under the EUPL, Version 1.1 or – as soon they
+ Licensed under the EUPL, Version 1.1 or later as soon they
  will be approved by the European Commission - subsequent
  versions of the EUPL (the "Licence");
  You may not use this work except in compliance with the Licence.
@@ -26,51 +26,4 @@ package de.uniks.networkparser.interfaces;
  */
 
 public interface IdMapCounter {
-	/**
-	 * Sets the prefix for The Id of Elements
-	 * 
-	 * @param sessionId
-	 *            the new prefix id
-	 */
-	public IdMapCounter withPrefixId(String sessionId);
-
-	/**
-	 * @return the current sessionid
-	 */
-	public String getPrefixId();
-
-	/**
-	 * Sets the splitter for The session id
-	 * 
-	 * @param Character
-	 *            the new splitter character for the session id
-	 */
-	public IdMapCounter withSplitter(char splitter);
-
-	/**
-	 * @return the current splitterString
-	 */
-	public char getSplitter();
-
-	/**
-	 * Gets the id.
-	 * 
-	 * @param obj
-	 *            the obj
-	 * @return the id
-	 */
-	public String getId(Object obj);
-
-	/**
-	 * Read id.
-	 * 
-	 * @param id
-	 *            the last id from Message
-	 */
-	public void readId(String id);
-
-	/**
-	 * @return the Prio Object for checking errors
-	 */
-	public Object getPrio();
-}
+	

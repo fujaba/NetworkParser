@@ -5,7 +5,7 @@ package de.uniks.networkparser.calculator;
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
  
- Licensed under the EUPL, Version 1.1 or – as soon they
+ Licensed under the EUPL, Version 1.1 or later as soon they
  will be approved by the European Commission - subsequent
  versions of the EUPL (the "Licence");
  You may not use this work except in compliance with the Licence.
@@ -23,23 +23,4 @@ package de.uniks.networkparser.calculator;
 */
 
 public class Subtract implements Operator {
-	@Override
-	public int getPriority() {
-		return RegCalculator.LINE;
-	}
-
-	@Override
-	public double calculate(Double[] values) {
-		return values[0]-values[1];
-	}
-
-	@Override
-	public String getTag() {
-		return "-";
-	}
-
-	@Override
-	public int getValues() {
-		return 2;
-	}
-}
+	

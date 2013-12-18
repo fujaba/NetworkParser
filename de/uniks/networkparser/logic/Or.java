@@ -5,7 +5,7 @@ package de.uniks.networkparser.logic;
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
  
- Licensed under the EUPL, Version 1.1 or – as soon they
+ Licensed under the EUPL, Version 1.1 or later as soon they
  will be approved by the European Commission - subsequent
  versions of the EUPL (the "Licence");
  You may not use this work except in compliance with the Licence.
@@ -25,34 +25,4 @@ import java.util.ArrayList;
 import de.uniks.networkparser.IdMap;
 
 public class Or implements Condition {
-	private ArrayList<Condition> list = new ArrayList<Condition>();
-
-	public Or add(Condition... conditions) {
-		for (Condition condition : conditions) {
-			this.list.add(condition);
-		}
-		return this;
-	}
-
-	@Override
-	public boolean matches(IdMap map, Object entity, String property,
-			Object value, boolean isMany, int deep) {
-		boolean result = true;
-		for (Condition condition : list) {
-			if (!condition.matches( map, entity, property, value, isMany, deep)) {
-				result = false;
-			}
-		}
-		return result;
-	}
-	public String toString(){
-		StringBuilder sb=new StringBuilder();
-		for(Condition condition : list){
-			sb.append("["+condition.toString()+" ");
-		}
-		sb.trimToSize();
-		sb.append("]");
-		return sb.toString();
-	}
-
-}
+	
