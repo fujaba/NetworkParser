@@ -5,7 +5,7 @@ package de.uniks.networkparser.json.creator;
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
  
- Licensed under the EUPL, Version 1.1 or – as soon they
+ Licensed under the EUPL, Version 1.1 or later as soon they
  will be approved by the European Commission - subsequent
  versions of the EUPL (the "Licence");
  You may not use this work except in compliance with the Licence.
@@ -26,28 +26,4 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonArray;
 
 public class JsonArrayCreator implements SendableEntityCreator, NoIndexCreator {
-	private final String[] properties = new String[] { "VALUE" };
-
-	@Override
-	public String[] getProperties() {
-		return this.properties;
-	}
-
-	@Override
-	public Object getSendableInstance(boolean prototyp) {
-		return new JsonArray();
-	}
-
-	@Override
-	public Object getValue(Object entity, String attribute) {
-		return entity.toString();
-	}
-
-	@Override
-	public boolean setValue(Object entity, String attribute, Object value,
-			String typ) {
-		((JsonArray) entity).withValue((String) value);
-		return true;
-	}
-
-}
+	

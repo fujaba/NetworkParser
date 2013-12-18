@@ -5,7 +5,7 @@ package de.uniks.networkparser.bytes.converter;
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
  
- Licensed under the EUPL, Version 1.1 or – as soon they
+ Licensed under the EUPL, Version 1.1 or later as soon they
  will be approved by the European Commission - subsequent
  versions of the EUPL (the "Licence");
  You may not use this work except in compliance with the Licence.
@@ -25,19 +25,4 @@ import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteItem;
 
 public abstract class ByteConverter {
-	public String toString(ByteItem item, boolean dynamic) {
-		return toString(item.getBytes(dynamic));
-	}
-
-	public String toString(BufferedBytes bufferedBytes) {
-		return toString(bufferedBytes.array(), bufferedBytes.length());
-	}
-
-	public abstract String toString(byte[] values, int size);
 	
-	public String toString(byte[] values){
-		return toString(values, values.length);
-	}
-
-	public abstract byte[] decode(String value);
-}
