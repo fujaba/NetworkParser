@@ -5,7 +5,7 @@ package de.uniks.networkparser.gui.table;
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
  
- Licensed under the EUPL, Version 1.1 or – as soon they
+ Licensed under the EUPL, Version 1.1 or later as soon they
  will be approved by the European Commission - subsequent
  versions of the EUPL (the "Licence");
  You may not use this work except in compliance with the Licence.
@@ -23,18 +23,4 @@ package de.uniks.networkparser.gui.table;
 */
 
 public enum FieldTyp {
-	ASSOC(1), DATE(2), CHECKBOX(3), COMBOBOX(4), DOUBLE(5), INTEGER(6), TEXT(7), PASSWORD(8), VALUEFROMDROPDOWNLIST(9);
-
-	private int value;
 	
-	FieldTyp(int value) {
-		this.setValue(value);
-    }
-	  
-	  public int getValue() {
-		return value;
-	}
-	public void setValue(int value) {
-		this.value = value;
-	}
-}

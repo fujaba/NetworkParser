@@ -5,7 +5,7 @@ package de.uniks.networkparser.interfaces;
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
  
- Licensed under the EUPL, Version 1.1 or – as soon they
+ Licensed under the EUPL, Version 1.1 or later as soon they
  will be approved by the European Commission - subsequent
  versions of the EUPL (the "Licence");
  You may not use this work except in compliance with the Licence.
@@ -24,13 +24,4 @@ package de.uniks.networkparser.interfaces;
 import java.util.Collection;
 
 public interface BaseEntityList extends BaseEntity {
-	public BaseEntityList initWithMap(Collection<?> value);
-
-	public BaseEntityList put(Object value);
-
-	public int size();
-
-	public boolean add(Object value);
-
-	public Object get(int z);
-}
+	

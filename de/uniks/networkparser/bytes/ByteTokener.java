@@ -5,7 +5,7 @@ package de.uniks.networkparser.bytes;
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
  
- Licensed under the EUPL, Version 1.1 or – as soon they
+ Licensed under the EUPL, Version 1.1 or later as soon they
  will be approved by the European Commission - subsequent
  versions of the EUPL (the "Licence");
  You may not use this work except in compliance with the Licence.
@@ -26,20 +26,4 @@ import de.uniks.networkparser.interfaces.BaseEntity;
 import de.uniks.networkparser.interfaces.BaseEntityList;
 
 public class ByteTokener extends Tokener{
-	@Override
-	public void parseToEntity(BaseEntity entity) {
-//		buffer
-//		if (typ == ByteIdMap.DATATYPE_CLAZZ) {
-//			String clazz = (String) getDecodeObject(ByteIdMap.DATATYPE_CLAZZ,
-//					in);
-		
-	}
-
-	@Override
-	public void parseToEntity(BaseEntityList entityList) {
-
-		// TODO Auto-generated method stub
-		
-	}
-
-}
+	

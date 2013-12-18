@@ -5,7 +5,7 @@ package de.uniks.networkparser.interfaces;
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
  
- Licensed under the EUPL, Version 1.1 or – as soon they
+ Licensed under the EUPL, Version 1.1 or later as soon they
  will be approved by the European Commission - subsequent
  versions of the EUPL (the "Licence");
  You may not use this work except in compliance with the Licence.
@@ -23,20 +23,4 @@ package de.uniks.networkparser.interfaces;
 */
 
 public interface TextEntity extends BaseEntity{
-	/**
-	 * @param key The Key for Item
-	 * @param value The Vlaue of Item
-	 */
-	public void put(String key, Object value);
 	
-	/**
-	 * Check if the Map has the key
-	 * @param key for searching
-	 * @return boolean if the Map has the key
-	 */
-	public boolean has(String key);
-	
-	public String getString(String key);
-	
-	public Object get(String key);
-}
