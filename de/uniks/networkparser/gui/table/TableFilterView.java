@@ -40,6 +40,9 @@ public class TableFilterView {
 	private ArrayList<String> searchProperties = new ArrayList<String>();
 	protected TableComponentInterface component;
 	private Column updateField;
+	protected boolean lastSearchDetails;
+	protected String lastSearchCriteria="##";
+
 
 	public TableFilterView(TableComponentInterface tableComponent) {
 		this.component = tableComponent;
@@ -63,6 +66,8 @@ public class TableFilterView {
 		// if search did not change do nothing
 		if (searchCriteria == null)
 			return; // <========= sudden death
+		lastSearchDetails = searchCriteria.contains(lastSearchCriteria);
+		lastSearchCriteria=searchCriteria;
 
 		StringTokener stringTokener = new StringTokener();
 		stringTokener.withText(searchCriteria.toLowerCase());

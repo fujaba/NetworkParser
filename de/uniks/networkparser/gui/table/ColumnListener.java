@@ -33,4 +33,5 @@ public interface ColumnListener {
 	public boolean updateWidth(int oldWidth, int newWidth);
 	public void update(Object cell);
 	public ColumnListener withColumn(Column column);
+	public void startEdit(CellEditorElement editField);
 }

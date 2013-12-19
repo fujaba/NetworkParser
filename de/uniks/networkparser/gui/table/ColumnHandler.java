@@ -33,7 +33,10 @@ public class ColumnHandler implements ColumnListener {
 	}
 	
 	public Object getValue(Object entity, SendableEntityCreator creator){
-		return creator.getValue(entity, column.getAttrName());
+		if(creator!=null && column!=null){
+			return creator.getValue(entity, column.getAttrName());
+		}
+		return null;
 	}
 
 	public boolean canEdit(Object entity, SendableEntityCreator creator){
@@ -62,5 +65,9 @@ public class ColumnHandler implements ColumnListener {
 
 	@Override
 	public void update(Object cell) {
+	}
+
+	@Override
+	public void startEdit(CellEditorElement editField) {
 	}
 }
