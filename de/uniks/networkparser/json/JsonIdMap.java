@@ -30,6 +30,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
+
 import de.uniks.networkparser.EntityList;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
@@ -144,7 +145,6 @@ public class JsonIdMap extends IdMap {
 		}
 		
 		JsonObject jsonProp = getPrototyp();
-		
 
 		String[] properties = prototyp.getProperties();
 		if (properties != null) {
@@ -163,6 +163,15 @@ public class JsonIdMap extends IdMap {
 
 		return grammar.getJsonObject(this, prototyp, className, id, jsonProp,
 				filter);
+	}
+	
+	public String getId(Object obj) {
+		String key = grammar.getId(obj, getCounter());
+		if(key!=null){
+			put(key, obj);
+			return key;
+		}
+		return super.getId(obj);
 	}
 
 	protected Object parseProperty(SendableEntityCreator prototyp,

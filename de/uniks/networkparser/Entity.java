@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import de.uniks.networkparser.interfaces.BaseEntityList;
 import de.uniks.networkparser.interfaces.BaseEntity;
 
@@ -41,6 +42,10 @@ public abstract class Entity implements BaseEntity {
 			this.map = new LinkedHashMap<String, Object>();
 		}
 		return this.map;
+	}
+	
+	public Iterator<Entry<String, Object>> iterator(){
+		return getMap().entrySet().iterator();
 	}
 
 	public Entity initWithMap(Map<String, Object> map) {
