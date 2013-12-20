@@ -328,9 +328,13 @@ public class Column implements PeerMessage{
 	
 	public ColumnListener getListener(){
 		if(handler==null){
-			handler = new ColumnHandler().withColumn(this);
+			withListener(getDefaultListener());
 		}
 		return handler;
+	}
+	
+	public ColumnListener getDefaultListener(){
+		return new ColumnListener();
 	}
 
 	public Comparator<TableCellValue> getComparator() {
