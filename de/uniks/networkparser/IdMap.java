@@ -197,9 +197,6 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	 * @return the id
 	 */
 	public String getId(Object obj) {
-		if (obj == null) {
-			return "null";
-		}
 		if (this.parent != null) {
 			return this.parent.getId(obj);
 		}

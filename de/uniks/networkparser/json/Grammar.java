@@ -22,8 +22,10 @@ package de.uniks.networkparser.json;
  permissions and limitations under the Licence.
 */
 import java.util.Iterator;
+
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.interfaces.IdMapCounter;
 import de.uniks.networkparser.interfaces.NoIndexCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
@@ -86,5 +88,9 @@ public class Grammar {
 	}
 	public String getValue(JsonObject json, String property){
 		return json.getString(property);
+	}
+
+	public String getId(Object obj, IdMapCounter counter) {
+		return null;
 	}
 }
