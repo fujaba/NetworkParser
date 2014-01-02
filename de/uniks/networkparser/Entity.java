@@ -239,18 +239,15 @@ public abstract class Entity implements BaseEntity {
 	 * @param key
 	 *            A key string.
 	 * @return A string which is the value.
-	 * @throws RuntimeException
-	 *             if there is no string value for the key.
 	 */
-	public String getString(String key) throws RuntimeException{
+	public String getString(String key) {
 		Object object = this.get(key);
 		if (object instanceof String) {
 			return (String) object;
 		} else if (object instanceof Entity) {
 			return object.toString();
 		}
-		throw new RuntimeException("Entity[" + EntityUtil.quote(key)
-				+ "] not a string.");
+		return null;
 	}
 
 	/**
@@ -263,11 +260,9 @@ public abstract class Entity implements BaseEntity {
 	 * @return A string which is the value or defaultValue
 	 */
 	public String getString(String key, String defaultValue) {
-		Object object = this.get(key);
-		if (object instanceof String) {
-			return (String) object;
-		} else if (object instanceof Entity) {
-			return object.toString();
+		String object = getString(key);
+		if (object!=null) {
+			return object;
 		}
 		return defaultValue;
 	}
