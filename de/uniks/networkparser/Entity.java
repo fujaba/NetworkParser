@@ -109,6 +109,40 @@ public abstract class Entity implements BaseEntity {
 		}
 		return this;
 	}
+	
+	public Entity insert(int pos, String key, Object value){
+		EntityUtil.testValidity(value);
+		Object object = this.get(key);
+		if (object != null) {
+			this.put(key, value);
+		}else{
+			Map<String, Object> entries = getMap();
+			if(pos<0){pos=0;}
+			if(pos>getMap().size()){pos=entries.size();}
+			
+			Object[] list = entries.entrySet().toArray();
+			entries.clear();
+			int z=0;
+			for(;z<list.length;z++){
+				if(z==pos){
+					entries.put(key, value);
+				}
+				
+				if(list[z] instanceof Entry<?, ?>){
+					Object itemKey = ((Entry<?, ?>) list[z]).getKey();
+					Object itemValue = ((Entry<?, ?>) list[z]).getValue();
+					if(itemKey instanceof String){
+						entries.put(""+itemKey, itemValue);
+					}
+				}
+			}
+			if(z==pos){
+				entries.put(key, value);
+			}
+		}
+		return this;
+	}
+
 
 	/**
 	 * Get the value object associated with a key.
@@ -455,6 +489,8 @@ public abstract class Entity implements BaseEntity {
 			this.remove(key);
 		}
 	}
+	
+	
 
 	/**
 	 * Remove a name and its value, if present.

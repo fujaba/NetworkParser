@@ -22,17 +22,51 @@ package de.uniks.networkparser.logic;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class Not implements Condition {
+public class Not implements Condition, SendableEntityCreator  {
+	public final String ITEM="item";
 	private Condition item;
-
-	public Not(Condition byteCondition) {
-		this.item = byteCondition;
-	}
 
 	@Override
 	public boolean matches(IdMap map, Object entity, String property,
 			Object value, boolean isMany, int deep) {
 		return !item.matches(map, entity, property, value, isMany, deep);
+	}
+	
+	public Condition getItem(){
+		return item;
+	}
+	
+	public Not withItem(Condition item){
+		this.item = item;
+		return this;
+	}
+
+	@Override
+	public String[] getProperties() {
+		return new String[]{ITEM};
+	}
+
+	@Override
+	public Object getSendableInstance(boolean prototyp) {
+		return new Not();
+	}
+
+	@Override
+	public Object getValue(Object entity, String attribute) {
+		if(ITEM.equalsIgnoreCase(attribute)){
+			((Not)entity).getItem();
+		}
+		return null;
+	}
+
+	@Override
+	public boolean setValue(Object entity, String attribute, Object value,
+			String type) {
+		if(ITEM.equalsIgnoreCase(attribute)){
+			((Not)entity).withItem((Condition)value);
+		}
+		return false;
 	}
 }

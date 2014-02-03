@@ -22,9 +22,12 @@ package de.uniks.networkparser.logic;
  permissions and limitations under the Licence.
 */
 import java.util.ArrayList;
-import de.uniks.networkparser.IdMap;
 
-public class Or implements Condition {
+import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
+
+public class Or implements Condition, SendableEntityCreator {
+	public static final String CHILD="childs";
 	private ArrayList<Condition> list = new ArrayList<Condition>();
 
 	public Or add(Condition... conditions) {
@@ -53,6 +56,34 @@ public class Or implements Condition {
 		sb.trimToSize();
 		sb.append("]");
 		return sb.toString();
+	}
+
+	@Override
+	public String[] getProperties() {
+		return new String[]{CHILD};
+	}
+
+	@Override
+	public Object getSendableInstance(boolean prototyp) {
+		return new Or();
+	}
+
+	@Override
+	public Object getValue(Object entity, String attribute) {
+		if(CHILD.equalsIgnoreCase(attribute)){
+			return list;
+		}
+		return null;
+	}
+
+	@Override
+	public boolean setValue(Object entity, String attribute, Object value,
+			String type) {
+		if(CHILD.equalsIgnoreCase(attribute)){
+			list.add((Condition) value);
+			return true;
+		}
+		return false;
 	}
 
 }

@@ -27,10 +27,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
+
 import de.uniks.networkparser.calculator.RegCalculator;
-import de.uniks.networkparser.gui.GUILine;
 import de.uniks.networkparser.gui.Style;
-import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntity;
 
 public class GridStyle extends Style implements SendableEntity{
@@ -40,7 +39,6 @@ public class GridStyle extends Style implements SendableEntity{
 	public static final String PROPERTY_COLUMNSPAN = "gridpane-column-span";
 	public static final String PROPERTY_HEIGHTEXPRESSION="height_expression";
 	public static final String PROPERTY_WIDTHEXPRESSION="width_expression";
-	public static final String PROPERTY_BORDER="border";
 	public static final String COUNT="count";
 	public static final String POSITION="position";
 	public static final String MAXIMIZE="maximize";
@@ -61,7 +59,7 @@ public class GridStyle extends Style implements SendableEntity{
 	public int getRow() {
 		return row;
 	}
-	
+		
 	public int getRowEnd(){
 		if(heightExpression!=null){
 			RegCalculator calculator=new RegCalculator().withStandard();
@@ -212,23 +210,6 @@ public class GridStyle extends Style implements SendableEntity{
 			}
 		}
 		return result;
-	}
-	
-	public void setBorder(GUIPosition position, String width, String color){
-		GUILine border = this.borders.get(position);
-		if(width!=null){
-			if(border==null){
-				this.borders.put(position, new GUILine().withColor(color).withWidth(width));
-				this.propertyChange(PROPERTY_BORDER, null, this.borders);
-			}else{
-				border.withColor(color);
-				border.withWidth(width);
-				this.propertyChange(PROPERTY_BORDER, null, this.borders);
-			}
-		}else if(border!=null){
-			this.borders.remove(position);
-			this.propertyChange(PROPERTY_BORDER, null, this.borders);
-		}
 	}
 	
 	public void select(){

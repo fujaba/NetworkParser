@@ -28,13 +28,14 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
+
 import de.uniks.networkparser.interfaces.BaseEntity;
 import de.uniks.networkparser.interfaces.BaseEntityList;
 
 public class YUMLList implements BaseEntityList {
 	private LinkedHashMap<String, YUMLEntity> children = new LinkedHashMap<String, YUMLEntity>();
+	private ArrayList<Cardinality> cardinalities = new ArrayList<Cardinality>();
 	private int typ;
-	private ArrayList<Cardinality> cardinalityValues = new ArrayList<Cardinality>();
 
 	@Override
 	public BaseEntityList initWithMap(Collection<?> value) {
@@ -116,23 +117,14 @@ public class YUMLList implements BaseEntityList {
 			Iterator<YUMLEntity> i = children.values().iterator();
 
 			HashMap<String, HashSet<Cardinality>> links = new HashMap<String, HashSet<Cardinality>>();
-			String[] items = new String[2];
-			for (Cardinality element : cardinalityValues) {
-				if (typ == YUMLIdMap.OBJECT) {
-					items[0] = element.getSourceID();
-					items[1] = element.getTargetID();
+			for (Cardinality element : cardinalities) {
+				String key = element.getSource().getTyp(typ);
+				if (links.containsKey(key)) {
+					links.get(key).add(element);
 				} else {
-					items[0] = element.getSourceClazz();
-					items[1] = element.getTargetClazz();
-				}
-				for (int z = 0; z < 2; z++) {
-					if (links.containsKey(items[z])) {
-						links.get(items[z]).add(element.reset());
-					} else {
-						HashSet<Cardinality> hashSet = new HashSet<Cardinality>();
-						hashSet.add(element.reset());
-						links.put(items[z], hashSet);
-					}
+					HashSet<Cardinality> hashSet = new HashSet<Cardinality>();
+					hashSet.add(element);
+					links.put(key, hashSet);
 				}
 			}
 
@@ -150,12 +142,7 @@ public class YUMLList implements BaseEntityList {
 	public void parse(YUMLEntity item, StringBuilder sb,
 			HashSet<YUMLEntity> visited,
 			HashMap<String, HashSet<Cardinality>> links) {
-		String key;
-		if (typ == YUMLIdMap.OBJECT) {
-			key = item.getId();
-		} else {
-			key = item.getClassName();
-		}
+		String key = item.getTyp(typ);
 		HashSet<Cardinality> showedLinks = links.get(key);
 		if (showedLinks == null) {
 			sb.append(item.toString(typ, visited.contains(item)));
@@ -163,31 +150,19 @@ public class YUMLList implements BaseEntityList {
 			return;
 		}
 		Iterator<Cardinality> iterator = showedLinks.iterator();
-		if (iterator.hasNext()) {
+		while (iterator.hasNext() ) {
 			Cardinality entry = iterator.next();
-			while (iterator.hasNext() && entry.isShowed()) {
-				entry = iterator.next();
+			if (sb.length() > 0) {
+				sb.append(",");
 			}
-			if (!entry.isShowed()) {
-				if (sb.length() > 0) {
-					sb.append(",");
-				}
-				sb.append(item.toString(typ, visited.contains(item)));
-				visited.add(item);
-				sb.append("-");
-				YUMLEntity target = children.get(entry.getTargetID());
-				sb.append(target.toString(typ, visited.contains(target)));
-				visited.add(target);
-				entry.withShowed(true);
-				while (iterator.hasNext()) {
-					sb.append(",");
-					sb.append(item.toString(typ, true));
-					sb.append("-");
-					visited.add(item);
-					sb.append(item.toString(typ, visited.contains(item)));
-					entry.withShowed(true);
-				}
-			}
+			sb.append(item.toString(typ, visited.contains(item)));
+			visited.add(item);
+			sb.append("-");
+			YUMLEntity target;
+			target = children.get(entry.getTarget().getTyp(typ));
+
+			sb.append(target.toString(typ, visited.contains(target)));
+			visited.add(target);
 		}
 	}
 
@@ -211,6 +186,31 @@ public class YUMLList implements BaseEntityList {
 	}
 
 	public boolean addCardinality(Cardinality cardinality) {
-		return this.cardinalityValues.add(cardinality);
+		return this.cardinalities.add(cardinality);
 	}
+	public YUMLList withCardinality(String sourceID, String targetID) {
+		YUMLEntity source = children.get(sourceID);
+		if(source==null){
+			source = new YUMLEntity().withClassName(sourceID);
+			children.put(sourceID, source);
+		}
+		YUMLEntity target = children.get(targetID);
+		if(target==null){
+			target = new YUMLEntity().withClassName(targetID);
+			children.put(targetID, target);
+		}
+		
+		for(Cardinality item : this.cardinalities){
+			if(item.getSource().getTyp(typ).equals(source.getTyp(typ)) && item.getTarget().getTyp(typ).equals(target.getTyp(typ))){
+				return this;
+			}else if(item.getSource().getTyp(typ).equals(target.getTyp(typ)) && item.getTarget().getTyp(typ).equals(source.getTyp(typ))){
+				return this;
+			}
+		}
+		Cardinality cardinality = new Cardinality().withSource(source).withTarget(target);
+		this.cardinalities.add(cardinality);
+
+		return this;
+	}
+
 }

@@ -23,17 +23,34 @@ package de.uniks.networkparser.logic;
 */
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.ByteCreator;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class InstanceOf implements Condition {
+public class InstanceOf implements Condition, SendableEntityCreator {
+	public static final String CLAZZNAME="clazzname";
+	public static final String VALUE="value";
+
 	protected ByteCreator value;
 	private String clazzName;
 
-	public InstanceOf(ByteCreator creator) {
+	public InstanceOf withCreator(ByteCreator creator) {
 		this.value = creator;
+		return this;
+	}
+
+	public ByteCreator getValue() {
+		return value;
+	}
+
+	public String getClazzName() {
+		return clazzName;
 	}
 
 	public InstanceOf withClass(Class<?> className){
 		this.clazzName = className.getName();
+		return this;
+	}
+	public InstanceOf withClass(String className){
+		this.clazzName = className;
 		return this;
 	}
 
@@ -41,5 +58,40 @@ public class InstanceOf implements Condition {
 	public boolean matches(IdMap map, Object entity, String property,
 			Object value, boolean isMany, int deep) {
 		return entity.getClass().getName().equals(clazzName);
+	}
+
+	@Override
+	public String[] getProperties() {
+		return new String[]{CLAZZNAME, VALUE};
+	}
+
+	@Override
+	public Object getSendableInstance(boolean prototyp) {
+		return new InstanceOf();
+	}
+
+	@Override
+	public Object getValue(Object entity, String attribute) {
+		if(CLAZZNAME.equalsIgnoreCase(attribute)){
+			return ((InstanceOf)entity).getClazzName();
+		}
+		if(VALUE.equalsIgnoreCase(attribute)){
+			return ((InstanceOf)entity).getValue();
+		}
+		return null;
+	}
+
+	@Override
+	public boolean setValue(Object entity, String attribute, Object value,
+			String type) {
+		if(CLAZZNAME.equalsIgnoreCase(attribute)){
+			((InstanceOf)entity).withClass(String.valueOf(value));
+			return true;
+		}
+		if(VALUE.equalsIgnoreCase(attribute)){
+			((InstanceOf)entity).withCreator((ByteCreator) value);
+			return true;
+		}
+		return false;
 	}
 }

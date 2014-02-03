@@ -25,7 +25,7 @@ package de.uniks.networkparser.gui;
 public class GUILine {
 	/** The Font-Size-Family value. */
 	private String color;
-	
+	private boolean customLine;
 	private String width;
 
 	public String getColor() {
@@ -43,6 +43,15 @@ public class GUILine {
 
 	public GUILine withWidth(String width) {
 		this.width = width;
+		return this;
+	}
+
+	public boolean isCustomLine() {
+		return customLine;
+	}
+
+	public GUILine withCustomLine(boolean customLine) {
+		this.customLine = customLine;
 		return this;
 	}
 }

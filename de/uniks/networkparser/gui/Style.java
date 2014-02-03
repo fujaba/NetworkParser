@@ -76,6 +76,8 @@ public class Style implements PeerMessage, Cloneable{
 	public static final String PROPERTY_HEIGHT = "height";
 	/** The Height value. */
 	private double height;
+	
+	public static final String PROPERTY_BORDER = "borders";
 
 	protected HashMap<GUIPosition, GUILine> borders=new HashMap<GUIPosition, GUILine>(); 
 	
@@ -288,9 +290,46 @@ public class Style implements PeerMessage, Cloneable{
 		return this;
 	}
 	
+	
+	public Style withBorder(GUIPosition position, GUILine line){
+		getBorders().put(position, line);
+		propertyChange(PROPERTY_BORDER, null, position);
+		return this;
+	}
+	
+	public void setBorder(GUIPosition position, String width, String color){
+		GUILine border = this.borders.get(position);
+		if(width!=null){
+			if(border==null){
+				this.borders.put(position, new GUILine().withColor(color).withWidth(width));
+				this.propertyChange(PROPERTY_BORDER, null, this.borders);
+			}else{
+				if(!border.isCustomLine()){
+					border.withColor(color);
+					border.withWidth(width);
+					this.propertyChange(PROPERTY_BORDER, null, this.borders);
+				}
+			}
+		}else if(border!=null){
+			if(!border.isCustomLine()){
+				this.borders.remove(position);
+				this.propertyChange(PROPERTY_BORDER, null, this.borders);
+			}
+		}
+	}
+	
 	public HashMap<GUIPosition, GUILine> getBorders(){
 		return borders;
 	}
+	
+	public Style withOutBorder(GUIPosition position) {
+		GUILine removedItem = getBorders().remove(position);
+		if(removedItem!=null){
+			propertyChange(PROPERTY_BORDER, position, null);
+		}
+		return this;
+	}
+	
 	
 	public void propertyChange(String property, Object oldValue, Object newValue){
 	}
