@@ -64,10 +64,16 @@ public class EntityComparator implements Comparator<Object> {
 
 		Object v1 = cellCreator.getCellValue(o1, creator, column);
 		Object v2 = cellCreator.getCellValue(o2, creator, column);
-		if (v1 == null && v2 == null) {
-			return checkIntern(o1, o2);
+		if (v1 == null ){
+			if(v2 == null) {
+				return checkIntern(o1, o2);
+			}
+			return checkValues(v1, v2);
 		}
-
+		return checkValues(v2, v1)*-1;
+	}
+	
+	private int checkValues(Object v1, Object v2){
 		if (v1 instanceof String) {
 			String valueA = (String) v1;
 			if (v2 != null) {
@@ -100,7 +106,7 @@ public class EntityComparator implements Comparator<Object> {
 			}
 		} else if (v1 instanceof Boolean) {
 			Boolean valueA = (Boolean) v1;
-			Boolean valueB = (Boolean) cellCreator.getCellValue(o2, creator, column);
+			Boolean valueB = (Boolean) v2;
 			if (valueB != null) {
 				int value = valueB.compareTo(valueA);
 				if (value < 1) {

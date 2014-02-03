@@ -31,7 +31,7 @@ public class YUMLEntity implements BaseEntity {
 	private String className;
 	private String id;
 	private boolean showLine;
-	private boolean isVisible = true;
+	private boolean visible = true;
 	private LinkedHashMap<String, String> objValues = new LinkedHashMap<String, String>();
 	private LinkedHashMap<String, String> clazzValues = new LinkedHashMap<String, String>();
 
@@ -59,7 +59,7 @@ public class YUMLEntity implements BaseEntity {
 	}
 
 	public String toString(int typ, boolean shortString) {
-		if (!isVisible) {
+		if (!visible) {
 			return "";
 		}
 		if (typ == YUMLIdMap.OBJECT) {
@@ -110,13 +110,13 @@ public class YUMLEntity implements BaseEntity {
 
 	@Override
 	public YUMLEntity withVisible(boolean value) {
-		this.isVisible = value;
+		this.visible = value;
 		return this;
 	}
 
 	@Override
 	public boolean isVisible() {
-		return isVisible;
+		return visible;
 	}
 
 	// GETTER AND SETTER
@@ -131,6 +131,24 @@ public class YUMLEntity implements BaseEntity {
 
 	public String getId() {
 		return id;
+	}
+	
+	public String getTyp(int typ){
+		if(typ==YUMLIdMap.OBJECT){
+			return getId();
+		}else if(typ==YUMLIdMap.CLASS){
+			return getClassName();
+		}
+		return "";
+	}
+	
+	public YUMLEntity withTyp(int typ, String value){
+		if(typ==YUMLIdMap.OBJECT){
+			withId(value);
+		}else if(typ==YUMLIdMap.CLASS){
+			withClassName(value);
+		}
+		return this;
 	}
 
 	public YUMLEntity withId(String id) {
