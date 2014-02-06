@@ -24,6 +24,7 @@ package de.uniks.networkparser;
 import java.util.LinkedHashSet;
 
 import de.uniks.networkparser.logic.Condition;
+import de.uniks.networkparser.logic.ValuesMap;
 
 public class Filter {
 	private Condition idFilter;
@@ -45,7 +46,7 @@ public class Filter {
 	
 	public boolean isId(IdMap map, Object entity, String className) {
 		if(idFilter!=null){
-			return idFilter.matches(map, entity, className, null, false, 0);
+			return idFilter.matches(ValuesMap.with(map, entity, className));
 		}
 		return true;
 	}
@@ -122,7 +123,7 @@ public class Filter {
 	public boolean isPropertyRegard(IdMap map, Object entity,
 			String property, Object value, boolean isMany, int deep) {
 		if(this.property!=null){
-			return this.property.matches(map, entity, property, value, isMany, deep);
+			return this.property.matches(ValuesMap.with(map, entity, property, value, isMany, deep));
 		}
 		return true;
 	}
@@ -130,7 +131,7 @@ public class Filter {
 	public boolean isConvertable(IdMap map, Object entity,
 			String property, Object value, boolean isMany, int deep) {
 		if(this.convertable!=null){
-			return this.convertable.matches(map, entity, property, value, isMany, deep);
+			return this.convertable.matches(ValuesMap.with(map, entity, property, value, isMany, deep));
 		}
 		return true;
 	}

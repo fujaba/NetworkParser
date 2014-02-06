@@ -1,5 +1,7 @@
 package de.uniks.networkparser.logic;
 
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
@@ -21,9 +23,8 @@ package de.uniks.networkparser.logic;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.IdMap;
 
-public interface Condition {
+public interface Condition extends SendableEntityCreator{
 	/**
 	 * checks if a telegram fulfills this condition
 	 * 
@@ -31,6 +32,5 @@ public interface Condition {
 	 *            the telegram to be checked
 	 * @return true if the telegram fulfills this condition, false otherwise
 	 */
-	public boolean matches(IdMap map, Object entity, String property,
-			Object value, boolean isMany, int deep);
+	public boolean matches(ValuesSimple value);
 }

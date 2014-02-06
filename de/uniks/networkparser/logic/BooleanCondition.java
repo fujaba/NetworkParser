@@ -21,14 +21,13 @@ package de.uniks.networkparser.logic;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.IdMap;
 
 public class BooleanCondition implements Condition {
+	public static final String VALUE="value";
 	private boolean value;
 
 	@Override
-	public boolean matches(IdMap map, Object entity, String property,
-			Object value, boolean isMany, int deep) {
+	public boolean matches(ValuesSimple values) {
 		return this.value;
 	}
 
@@ -37,10 +36,39 @@ public class BooleanCondition implements Condition {
 		return this;
 	}
 	
+	public boolean getValue() {
+		return value;
+	}
+	
 	public static BooleanCondition value(boolean value){
 		return new BooleanCondition().withValue(value);
 	}
 
-	
+	@Override
+	public String[] getProperties() {
+		return new String[]{VALUE};
+	}
 
+	@Override
+	public Object getSendableInstance(boolean prototyp) {
+		return new BooleanCondition();
+	}
+
+	@Override
+	public Object getValue(Object entity, String attribute) {
+		if(VALUE.equalsIgnoreCase(attribute)){
+			return ((BooleanCondition)entity).getValue();
+		}
+		return null;
+	}
+
+	@Override
+	public boolean setValue(Object entity, String attribute, Object value,
+			String type) {
+		if(VALUE.equalsIgnoreCase(attribute)){
+			((BooleanCondition)entity).withValue((Boolean) value);
+			return true;
+		}
+		return false;
+	}
 }

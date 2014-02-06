@@ -21,17 +21,14 @@ package de.uniks.networkparser.logic;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class Not implements Condition, SendableEntityCreator  {
+public class Not implements Condition  {
 	public final String ITEM="item";
 	private Condition item;
 
 	@Override
-	public boolean matches(IdMap map, Object entity, String property,
-			Object value, boolean isMany, int deep) {
-		return !item.matches(map, entity, property, value, isMany, deep);
+	public boolean matches(ValuesSimple values) {
+		return !item.matches(values);
 	}
 	
 	public Condition getItem(){

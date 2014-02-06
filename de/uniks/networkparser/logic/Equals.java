@@ -21,20 +21,22 @@ package de.uniks.networkparser.logic;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.Buffer;
 
-public class Equals implements Condition {
+public class Equals extends ConditionMap{
+	public static final String STRINGVALUE="stringvalue";
+	public static final String POSITION="position";
+	public static final String BYTEVALUE="bytevalue";
+	
 	private String strValue;
 	// Position of the Byte or -1 for currentPosition
 	private int position = -1;
 	private Byte bytevalue;
-
+	
 	@Override
-	public boolean matches(IdMap map, Object entity, String property,
-			Object value, boolean isMany, int deep) {
-		if(entity instanceof Buffer){
-			Buffer buffer = (Buffer) entity;
+	public boolean matches(ValuesMap values) {
+		if(values.entity instanceof Buffer){
+			Buffer buffer = (Buffer) values.entity;
 			int pos;
 			if (position < 0) {
 				pos = buffer.position();
@@ -43,29 +45,84 @@ public class Equals implements Condition {
 			}
 			return buffer.byteAt(pos) == bytevalue;
 		}
-		if(value==null){
+		if(values.value==null){
 			return (strValue==null);
 		}
-		return value.equals(strValue);
+		return values.value.equals(strValue);
 	}
 
 	public Equals withPosition(int value){
 		this.position = value;
 		return this;
 	}
+
+	public int getPosition() {
+		return position;
+	}
 	
 	public Equals withValue(Byte value){
 		this.bytevalue = value;
 		return this;
 	}
+	public Byte getBytevalue() {
+		return bytevalue;
+	}
+
 	public Equals withValue(String value){
 		this.strValue = value;
 		return this;
 	}
+	
+	public String getStringvalue() {
+		return strValue;
+	}
+	
 	public String toString(){
 		if(strValue!=null){
 			return "=="+strValue+" ";
 		}
 		return "=="+bytevalue+" ";
+	}
+
+	@Override
+	public String[] getProperties() {
+		return new String[]{STRINGVALUE, POSITION, BYTEVALUE};
+	}
+
+	@Override
+	public Object getSendableInstance(boolean prototyp) {
+		return new Equals();
+	}
+
+	@Override
+	public Object getValue(Object entity, String attribute) {
+		if(STRINGVALUE.equalsIgnoreCase(attribute)){
+			return ((Equals)entity).getStringvalue();
+		}
+		if(POSITION.equalsIgnoreCase(attribute)){
+			return ((Equals)entity).getPosition();
+		}
+		if(BYTEVALUE.equalsIgnoreCase(attribute)){
+			return ((Equals)entity).getBytevalue();
+		}
+		return null;
+	}
+
+	@Override
+	public boolean setValue(Object entity, String attribute, Object value,
+			String type) {
+		if(STRINGVALUE.equalsIgnoreCase(attribute)){
+			((Equals)entity).withValue(String.valueOf(value));
+			return true;
+		}
+		if(POSITION.equalsIgnoreCase(attribute)){
+			((Equals)entity).withPosition(Integer.parseInt(""+value));
+			return true;
+		}
+		if(BYTEVALUE.equalsIgnoreCase(attribute)){
+			((Equals)entity).withValue((Byte) value);
+			return true;
+		}
+		return false;
 	}
 }

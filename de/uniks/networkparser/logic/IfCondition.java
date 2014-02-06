@@ -21,10 +21,8 @@ package de.uniks.networkparser.logic;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class IfCondition implements Condition, SendableEntityCreator {
+public class IfCondition implements Condition {
 	public static final String EXPRESSION="expression";
 	public static final String TRUECONDITION="truecondition";
 	public static final String FALSECONDITION="falsecondition";
@@ -61,15 +59,14 @@ public class IfCondition implements Condition, SendableEntityCreator {
 	}
 	
 	@Override
-	public boolean matches(IdMap map, Object entity, String property,
-			Object value, boolean isMany, int deep) {
-		if(expression.matches(map, entity, property, value, isMany, deep)){
+	public boolean matches(ValuesSimple values) {
+		if(expression.matches(values)){
 			if(trueCondition!=null){
-				return trueCondition.matches(map, entity, property, value, isMany, deep);
+				return trueCondition.matches(values);
 			}
 		}else{
 			if(falseCondition!=null){
-				return falseCondition.matches(map, entity, property, value, isMany, deep);
+				return falseCondition.matches(values);
 			}
 		}
 		return false;
