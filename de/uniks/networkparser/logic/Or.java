@@ -23,10 +23,7 @@ package de.uniks.networkparser.logic;
 */
 import java.util.ArrayList;
 
-import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
-
-public class Or implements Condition, SendableEntityCreator {
+public class Or implements Condition {
 	public static final String CHILD="childs";
 	private ArrayList<Condition> list = new ArrayList<Condition>();
 
@@ -36,18 +33,22 @@ public class Or implements Condition, SendableEntityCreator {
 		}
 		return this;
 	}
+	
+	private ArrayList<Condition> getList() {
+		return list;
+	}
 
 	@Override
-	public boolean matches(IdMap map, Object entity, String property,
-			Object value, boolean isMany, int deep) {
+	public boolean matches(ValuesSimple values) {
 		boolean result = true;
 		for (Condition condition : list) {
-			if (!condition.matches( map, entity, property, value, isMany, deep)) {
+			if (!condition.matches( values )) {
 				result = false;
 			}
 		}
 		return result;
 	}
+
 	public String toString(){
 		StringBuilder sb=new StringBuilder();
 		for(Condition condition : list){
@@ -71,7 +72,7 @@ public class Or implements Condition, SendableEntityCreator {
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if(CHILD.equalsIgnoreCase(attribute)){
-			return list;
+			return ((Or)entity).getList();
 		}
 		return null;
 	}
@@ -80,7 +81,7 @@ public class Or implements Condition, SendableEntityCreator {
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
 		if(CHILD.equalsIgnoreCase(attribute)){
-			list.add((Condition) value);
+			((Or)entity).add((Condition) value);
 			return true;
 		}
 		return false;

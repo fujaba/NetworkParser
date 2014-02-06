@@ -21,9 +21,9 @@ package de.uniks.networkparser.logic;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.IdMap;
 
-public class Deep implements Condition{
+public class Deep extends ConditionMap{
+	public static final String DEEP="deep";
 	private int deep;
 	
 	public Deep withDeep(int deep){
@@ -31,13 +31,44 @@ public class Deep implements Condition{
 		return this;
 	}
 	
+	public int getDeep() {
+		return deep;
+	}
+	
 	@Override
-	public boolean matches(IdMap map, Object entity, String property,
-			Object value, boolean isMany, int deep) {
-		return deep<=this.deep;
+	public boolean matches(ValuesMap values) {
+		return values.deep<=this.deep;
 	}
 
 	public static Deep value(int value){
 		return new Deep().withDeep(value);
+	}
+
+	@Override
+	public String[] getProperties() {
+		return new String[]{DEEP};
+	}
+
+	@Override
+	public Object getSendableInstance(boolean prototyp) {
+		return new Deep();
+	}
+
+	@Override
+	public Object getValue(Object entity, String attribute) {
+		if(DEEP.equalsIgnoreCase(attribute)){
+			return ((Deep)entity).getDeep();
+		}
+		return null;
+	}
+
+	@Override
+	public boolean setValue(Object entity, String attribute, Object value,
+			String type) {
+		if(DEEP.equalsIgnoreCase(attribute)){
+			((Deep)entity).withDeep(Integer.parseInt(""+value));
+			return true;
+		}
+		return false;
 	}
 }

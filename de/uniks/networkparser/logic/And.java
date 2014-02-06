@@ -22,9 +22,9 @@ package de.uniks.networkparser.logic;
  permissions and limitations under the Licence.
 */
 import java.util.ArrayList;
-import de.uniks.networkparser.IdMap;
 
 public class And implements Condition {
+	public static final String CHILD="childs";
 	private ArrayList<Condition> list = new ArrayList<Condition>();
 
 	public And add(Condition... conditions) {
@@ -34,14 +34,45 @@ public class And implements Condition {
 		return this;
 	}
 
+	public ArrayList<Condition> getList() {
+		return list;
+	}
+	
 	@Override
-	public boolean matches(IdMap map, Object entity, String property,
-			Object value, boolean isMany, int deep) {
+	public boolean matches(ValuesSimple values) {
 		for (Condition condition : list) {
-			if (!condition.matches(map, entity, property, value, isMany, deep)) {
+			if (!condition.matches(values)) {
 				return false;
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public String[] getProperties() {
+		return new String[]{CHILD};
+	}
+
+	@Override
+	public Object getSendableInstance(boolean prototyp) {
+		return new And();
+	}
+
+	@Override
+	public Object getValue(Object entity, String attribute) {
+		if(CHILD.equalsIgnoreCase(attribute)){
+			return ((And)entity).getList();
+		}
+		return null;
+	}
+
+	@Override
+	public boolean setValue(Object entity, String attribute, Object value,
+			String type) {
+		if(CHILD.equalsIgnoreCase(attribute)){
+			((And)entity).add((Condition) value);
+			return true;
+		}
+		return false;
 	}
 }

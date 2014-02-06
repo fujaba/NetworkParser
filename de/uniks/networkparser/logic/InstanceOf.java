@@ -21,11 +21,9 @@ package de.uniks.networkparser.logic;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.ByteCreator;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class InstanceOf implements Condition, SendableEntityCreator {
+public class InstanceOf extends ConditionMap {
 	public static final String CLAZZNAME="clazzname";
 	public static final String VALUE="value";
 
@@ -53,11 +51,10 @@ public class InstanceOf implements Condition, SendableEntityCreator {
 		this.clazzName = className;
 		return this;
 	}
-
+	
 	@Override
-	public boolean matches(IdMap map, Object entity, String property,
-			Object value, boolean isMany, int deep) {
-		return entity.getClass().getName().equals(clazzName);
+	public boolean matches(ValuesMap values) {
+		return values.entity.getClass().getName().equals(clazzName);
 	}
 
 	@Override
