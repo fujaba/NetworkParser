@@ -34,7 +34,7 @@ public class Grammar {
 	 * @param jsonObject
 	 * @return the props of theJsonObject
 	 */
-	public JsonObject getJsonObjectProperties(JsonObject jsonObject, IdMap map) {
+	public JsonObject getReadProperties(JsonObject jsonObject, IdMap map) {
 		if (jsonObject.has(JsonIdMap.JSON_PROPS)) {
 			return jsonObject.getJsonObject(JsonIdMap.JSON_PROPS);
 		}
@@ -45,7 +45,7 @@ public class Grammar {
 	 * @param jsonObject
 	 * @return the Creator for this JsonObject
 	 */
-	public SendableEntityCreator getJsonObjectCreator(JsonObject jsonObject,
+	public SendableEntityCreator getReadCreator(JsonObject jsonObject,
 			IdMap map) {
 		Object className = jsonObject.get(JsonIdMap.CLASS);
 		return map.getCreatorClasses((String) className);
@@ -55,12 +55,12 @@ public class Grammar {
 	 * @param jsonObject
 	 * @return the Creator for this JsonObject
 	 */
-	public SendableEntityCreator getObjectCreator(Object modelItem,
+	public SendableEntityCreator getWriteCreator(Object modelItem,
 			String className, IdMap map) {
 		return map.getCreatorClasses(className);
 	}
 
-	public JsonObject getJsonObject(IdMap map, SendableEntityCreator prototyp,
+	public JsonObject getWriteObject(IdMap map, SendableEntityCreator prototyp,
 			String className, String id, JsonObject jsonProp, Filter filter) {
 		JsonObject json = new JsonObject();
 		if (prototyp instanceof NoIndexCreator) {
@@ -83,14 +83,14 @@ public class Grammar {
 		return json;
 	}
 	
-	public boolean hasValue(JsonObject json, String property){
+	public boolean hasReadValue(JsonObject json, String property){
 		return json.has(property);
 	}
-	public String getValue(JsonObject json, String property){
+	public String getReadValue(JsonObject json, String property){
 		return json.getString(property);
 	}
 
-	public String getId(Object obj, IdMapCounter counter) {
+	public String getWriteId(Object obj, IdMapCounter counter) {
 		return null;
 	}
 }

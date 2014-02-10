@@ -22,7 +22,6 @@ package de.uniks.networkparser;
  permissions and limitations under the Licence.
 */
 import java.util.LinkedHashSet;
-
 import de.uniks.networkparser.logic.Condition;
 import de.uniks.networkparser.logic.ValuesMap;
 
@@ -102,8 +101,13 @@ public class Filter {
 	}
 	
 	public Filter cloneObj() {
-		return clone(new Filter());
+		Filter reference = new Filter();
+		if(reference.getClass().getName().equals(this.getClass().getName())){
+			return clone(new Filter());
+		}
+		return this;
 	}
+
 	public Filter clone(Filter newInstance){
 		return newInstance.withConvertable(convertable).withIdFilter(idFilter).withPropertyRegard(property);
 	}

@@ -71,8 +71,6 @@ public class JsonIdMap extends IdMap {
 	/** If this is true the IdMap save the Typ of primary datatypes. */
 	protected boolean typSave;
 	
-	private Filter filter = new Filter();
-
 	/**
 	 * Instantiates a new json id map.
 	 */
@@ -131,7 +129,7 @@ public class JsonIdMap extends IdMap {
 	 */
 	protected JsonObject toJsonObject(Object entity, Filter filter, String className, int deep) throws RuntimeException{
 		String id = null;
-		SendableEntityCreator prototyp = grammar.getObjectCreator(entity,
+		SendableEntityCreator prototyp = grammar.getWriteCreator(entity,
 				className, this);
 		if (prototyp == null) {
 			return null;
@@ -161,12 +159,12 @@ public class JsonIdMap extends IdMap {
 			}
 		}
 
-		return grammar.getJsonObject(this, prototyp, className, id, jsonProp,
+		return grammar.getWriteObject(this, prototyp, className, id, jsonProp,
 				filter);
 	}
 	
 	public String getId(Object obj) {
-		String key = grammar.getId(obj, getCounter());
+		String key = grammar.getWriteId(obj, getCounter());
 		if(key!=null){
 			put(key, obj);
 			return key;
@@ -403,7 +401,7 @@ public class JsonIdMap extends IdMap {
 	private Object decode(JsonObject jsonObject,
 			LinkedHashSet<ReferenceObject> refs, Filter filter) {
 		Object result = null;
-		SendableEntityCreator typeInfo = grammar.getJsonObjectCreator(
+		SendableEntityCreator typeInfo = grammar.getReadCreator(
 				jsonObject, this);
 		
 		if(filter==null){
@@ -411,8 +409,8 @@ public class JsonIdMap extends IdMap {
 		}
 
 		if (typeInfo != null) {
-			if(grammar.hasValue(jsonObject, ID)){
-				String jsonId = grammar.getValue(jsonObject, ID);
+			if(grammar.hasReadValue(jsonObject, ID)){
+				String jsonId = grammar.getReadValue(jsonObject, ID);
 				if (jsonId != null) {
 					result = getObject(jsonId);
 				}
@@ -457,16 +455,16 @@ public class JsonIdMap extends IdMap {
 			LinkedHashSet<ReferenceObject> refs, Filter filter) {
 		// JSONArray jsonArray;
 		if (filter.isId(this, target, target.getClass().getName())) {
-			String jsonId =  grammar.getValue(jsonObject, ID);
+			String jsonId =  grammar.getReadValue(jsonObject, ID);
 			if (jsonId == null) {
 				return target;
 			}
 			put(jsonId, target);
 			getCounter().readId(jsonId);
 		}
-		JsonObject jsonProp = grammar.getJsonObjectProperties(jsonObject, this);
+		JsonObject jsonProp = grammar.getReadProperties(jsonObject, this);
 		if (jsonProp != null) {
-			SendableEntityCreator prototyp = grammar.getObjectCreator(target,
+			SendableEntityCreator prototyp = grammar.getWriteCreator(target,
 					target.getClass().getName(), this);
 			String[] properties = prototyp.getProperties();
 			if (properties != null) {
