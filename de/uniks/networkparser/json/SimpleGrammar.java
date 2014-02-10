@@ -35,7 +35,7 @@ public class SimpleGrammar extends Grammar{
 	 * @param jsonObject
 	 * @return the props of theJsonObject
 	 */
-	public JsonObject getJsonObjectProperties(JsonObject jsonObject, IdMap map) {
+	public JsonObject getReadProperties(JsonObject jsonObject, IdMap map) {
 		jsonObject.remove(ID);
 		return jsonObject;
 	}
@@ -44,7 +44,7 @@ public class SimpleGrammar extends Grammar{
 	 * @param jsonObject
 	 * @return the Creator for this JsonObject
 	 */
-	public SendableEntityCreator getJsonObjectCreator(JsonObject jsonObject,
+	public SendableEntityCreator getReadCreator(JsonObject jsonObject,
 			IdMap map) {
 		String idString = jsonObject.getString(ID);
 		String className = "."+idString.substring(0, idString.indexOf(map.getCounter().getSplitter()));
@@ -59,7 +59,7 @@ public class SimpleGrammar extends Grammar{
 		return null;
 	}
 
-	public JsonObject getJsonObject(IdMap map, SendableEntityCreator prototyp,
+	public JsonObject getWriteObject(IdMap map, SendableEntityCreator prototyp,
 			String className, String id, JsonObject jsonProp, Filter filter) {
 		JsonObject json = new JsonObject();
 		
@@ -75,7 +75,7 @@ public class SimpleGrammar extends Grammar{
 	}
 	
 	@Override
-	public String getId(Object obj, IdMapCounter counter) {
+	public String getWriteId(Object obj, IdMapCounter counter) {
 		String name = obj.getClass().getName();
 		int pos = name.lastIndexOf(".");
 		counter.withPrefixId(null);
@@ -86,14 +86,14 @@ public class SimpleGrammar extends Grammar{
 		}
 	}
 	
-	public String getValue(JsonObject json, String property){
+	public String getReadValue(JsonObject json, String property){
 		if(JsonIdMap.ID.equals(property)){
 			return json.getString(ID);
 		}
 		return json.getString(property);
 	}
 	
-	public boolean hasValue(JsonObject json, String property){
+	public boolean hasReadValue(JsonObject json, String property){
 		if(JsonIdMap.ID.equals(property)){
 			return true;
 		}
