@@ -25,9 +25,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
 import de.uniks.networkparser.EntityList;
-import de.uniks.networkparser.bytes.converter.ByteConverter;
 import de.uniks.networkparser.bytes.converter.ByteConverterHTTP;
 import de.uniks.networkparser.interfaces.BufferedBytes;
+import de.uniks.networkparser.interfaces.ByteConverter;
 import de.uniks.networkparser.interfaces.ByteItem;
 import de.uniks.networkparser.interfaces.BaseEntity;
 /**

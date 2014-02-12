@@ -23,7 +23,9 @@ package de.uniks.networkparser.logic;
 */
 import java.util.ArrayList;
 
-public class And implements Condition {
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
+
+public class And implements Condition, SendableEntityCreator {
 	public static final String CHILD="childs";
 	private ArrayList<Condition> list = new ArrayList<Condition>();
 

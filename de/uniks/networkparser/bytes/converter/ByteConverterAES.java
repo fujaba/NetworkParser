@@ -22,6 +22,7 @@ package de.uniks.networkparser.bytes.converter;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.bytes.checksum.AES;
+import de.uniks.networkparser.interfaces.ByteConverter;
 
 public class ByteConverterAES extends ByteConverter{
 	private AES aes;

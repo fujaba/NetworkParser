@@ -1,4 +1,6 @@
 package de.uniks.networkparser.logic;
+
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 /*
 NetworkParser
 Copyright (c) 2011 - 2013, Stefan Lindel
@@ -21,7 +23,7 @@ See the Licence for the specific language governing
 permissions and limitations under the Licence.
 */
 
-public class CompareTo implements Condition{
+public class CompareTo implements Condition, SendableEntityCreator {
 	public static final String VALUE="value";
 	public static final String COMPARE="compare";
 	public static final int GREATER=1;

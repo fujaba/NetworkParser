@@ -1,6 +1,5 @@
 package de.uniks.networkparser.logic;
 
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 /*
  NetworkParser
@@ -24,7 +23,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
  permissions and limitations under the Licence.
 */
 
-public interface Condition extends SendableEntityCreator{
+public interface Condition {
 	/**
 	 * checks if a telegram fulfills this condition
 	 * 

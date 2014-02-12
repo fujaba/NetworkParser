@@ -1,5 +1,7 @@
 package de.uniks.networkparser.logic;
 
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
@@ -22,7 +24,7 @@ package de.uniks.networkparser.logic;
  permissions and limitations under the Licence.
 */
 
-public class BooleanCondition implements Condition {
+public class BooleanCondition implements Condition, SendableEntityCreator {
 	public static final String VALUE="value";
 	private boolean value;
 

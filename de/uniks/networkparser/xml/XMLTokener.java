@@ -22,8 +22,8 @@ package de.uniks.networkparser.xml;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.Entity;
+import de.uniks.networkparser.TextParsingException;
 import de.uniks.networkparser.Tokener;
-import de.uniks.networkparser.exceptions.TextParsingException;
 import de.uniks.networkparser.interfaces.BaseEntity;
 import de.uniks.networkparser.interfaces.BaseEntityList;
 
