@@ -23,6 +23,7 @@ package de.uniks.networkparser.bytes.converter;
 */
 import de.uniks.networkparser.bytes.ByteIdMap;
 import de.uniks.networkparser.bytes.BytesBuffer;
+import de.uniks.networkparser.interfaces.ByteConverter;
 
 public class ByteConverterHTTP extends ByteConverter {
 	@Override

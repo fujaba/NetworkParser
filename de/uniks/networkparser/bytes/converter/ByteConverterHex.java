@@ -1,5 +1,7 @@
 package de.uniks.networkparser.bytes.converter;
 
+import de.uniks.networkparser.interfaces.ByteConverter;
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel

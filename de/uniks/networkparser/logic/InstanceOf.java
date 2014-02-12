@@ -22,8 +22,9 @@ package de.uniks.networkparser.logic;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.interfaces.ByteCreator;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class InstanceOf extends ConditionMap {
+public class InstanceOf extends ConditionMap implements SendableEntityCreator {
 	public static final String CLAZZNAME="clazzname";
 	public static final String VALUE="value";
 

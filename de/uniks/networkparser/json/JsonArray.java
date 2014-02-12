@@ -23,10 +23,11 @@ package de.uniks.networkparser.json;
 */
 import java.util.Collection;
 import java.util.Iterator;
+
 import de.uniks.networkparser.EntityList;
 import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.TextParsingException;
 import de.uniks.networkparser.Tokener;
-import de.uniks.networkparser.exceptions.TextParsingException;
 import de.uniks.networkparser.interfaces.BaseEntity;
 /**
  * A JSONArray is an ordered sequence of values. Its external text form is a

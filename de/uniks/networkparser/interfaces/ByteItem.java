@@ -21,7 +21,6 @@ package de.uniks.networkparser.interfaces;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.bytes.converter.ByteConverter;
 
 public interface ByteItem extends BaseEntity{
 	/**
