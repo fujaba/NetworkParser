@@ -5,8 +5,8 @@ package de.uniks.networkparser.bytes;
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
  
- Licensed under the EUPL, Version 1.1 or – as soon they
- will be approved by the European Commission - subsequent
+ Licensed under the EUPL, Version 1.1 or (as soon they
+ will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
  You may not use this work except in compliance with the Licence.
  You may obtain a copy of the Licence at:
@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import de.uniks.networkparser.AbstractMap;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
@@ -179,12 +178,7 @@ public class ByteIdMap extends IdMap {
 	}
 
 	public ByteItem encode(Object entity, Filter filter) {
-		SendableEntityCreator creator;
-		if (this.parent != null) {
-			creator = this.parent.getCreatorClass(entity);
-		} else {
-			creator = getCreatorClass(entity);
-		}
+		SendableEntityCreator creator = getCreatorClass(entity);
 		if (creator == null) {
 			return null;
 		}

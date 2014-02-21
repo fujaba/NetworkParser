@@ -1,4 +1,4 @@
-package de.uniks.networkparser;
+package de.uniks.networkparser.json;
 
 /*
  NetworkParser
@@ -22,32 +22,6 @@ package de.uniks.networkparser;
  permissions and limitations under the Licence.
 */
 
-public class TextParsingException extends RuntimeException {
-	private static final long serialVersionUID = 1L;
-	private String message;
-	private String tokenerMsg;
-	private int index;
-
-	public TextParsingException(String message, int index) {
-		this.message = message;
-		this.index = index;
-	}
-
-	public TextParsingException(String message, Tokener tokener) {
-		this.message = message;
-		this.tokenerMsg = tokener.toString();
-		this.index = tokener.position();
-	}
-
-	public String getMessage() {
-		return message;
-	}
-
-	public String getTokenerMsg() {
-		return tokenerMsg;
-	}
-
-	public int getIndex() {
-		return index;
-	}
+public class GraphMap {
+	//	private B
 }
