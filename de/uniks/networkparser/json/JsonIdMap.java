@@ -5,8 +5,8 @@ package de.uniks.networkparser.json;
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
  
- Licensed under the EUPL, Version 1.1 or – as soon they
- will be approved by the European Commission - subsequent
+ Licensed under the EUPL, Version 1.1 or (as soon they
+ will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
  You may not use this work except in compliance with the Licence.
  You may obtain a copy of the Licence at:
@@ -30,7 +30,6 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
-
 import de.uniks.networkparser.EntityList;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
@@ -792,21 +791,12 @@ public class JsonIdMap extends IdMap {
 	 */
 	@Override
 	public void garbageCollection(Set<String> classCounts) {
-		Set<String> allIds = this.values.keySet();
+		Set<String> allIds = this.keyValue.getKeys();
 		for (String id : allIds) {
 			if (!classCounts.contains(id)) {
 				remove(getObject(id));
 			}
 		}
-	}
-
-	/**
-	 * Gets the keys.
-	 * 
-	 * @return the keys
-	 */
-	public Set<String> getKeys() {
-		return this.values.keySet();
 	}
 
 	/*

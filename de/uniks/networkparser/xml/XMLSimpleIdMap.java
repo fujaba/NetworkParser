@@ -5,8 +5,8 @@ package de.uniks.networkparser.xml;
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
  
- Licensed under the EUPL, Version 1.1 or – as soon they
- will be approved by the European Commission - subsequent
+ Licensed under the EUPL, Version 1.1 or (as soon they
+ will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
  You may not use this work except in compliance with the Licence.
  You may obtain a copy of the Licence at:
@@ -63,15 +63,7 @@ public class XMLSimpleIdMap extends IdMap {
 
 	/**
 	 * Instantiates a new XML id map.
-	 * 
-	 * @param parent
-	 *            the parent
 	 */
-	public XMLSimpleIdMap(IdMap parent) {
-		super(parent);
-		init();
-	}
-
 	protected void init() {
 		this.stopwords.add("?xml");
 		this.stopwords.add("!--");
