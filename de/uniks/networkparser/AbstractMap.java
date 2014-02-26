@@ -108,7 +108,7 @@ public abstract class AbstractMap {
 	 *
 	 * @param createrClass
 	 *            the creater class
-	 * @return true, if successful
+	 * @return AbstractIdMap to interlink arguments
 	 */
 	public AbstractMap withCreator(SendableEntityCreator createrClass) {
 		Object reference = createrClass.getSendableInstance(true);
@@ -116,6 +116,17 @@ public abstract class AbstractMap {
 			withCreator(reference.getClass().getName(), createrClass);
 		}
 		return this;
+	}
+	
+	/**
+	 * remove the creator.
+	 *
+	 * @param createrClass
+	 *            the creater class
+	 * @return true, if successful
+	 */
+	public boolean removeCreator(String className) {
+		return this.creators.remove(className)!=null;
 	}
 
 	/**
