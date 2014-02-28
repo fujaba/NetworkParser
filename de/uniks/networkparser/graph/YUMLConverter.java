@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 public class YUMLConverter implements Converter {
+	/** The Constant URL. */
+	public static final String URL = "http://yuml.me/diagram/class/";
 
 	@Override
 	public String convert(GraphList root, boolean removePackage){
