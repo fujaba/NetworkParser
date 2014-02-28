@@ -31,9 +31,6 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
  */
 
 public class GraphIdMap extends IdMap {
-	/** The Constant URL. */
-	public static final String URL = "http://yuml.me/diagram/class/";
-
 	/** The Constant for CLASS Diagramms. */
 	public static final String CLASS = "class";
 
