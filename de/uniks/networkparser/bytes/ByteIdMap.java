@@ -40,7 +40,7 @@ import de.uniks.networkparser.event.creator.BasicMessageCreator;
 import de.uniks.networkparser.interfaces.BaseEntity;
 import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteConverter;
-import de.uniks.networkparser.interfaces.ByteCreator;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorByte;
 import de.uniks.networkparser.interfaces.ByteItem;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 /**
@@ -125,7 +125,7 @@ public class ByteIdMap extends IdMap {
 
 	
 	/** The decoder map. */
-	protected HashMap<Byte, ByteCreator> decoderMap;
+	protected HashMap<Byte, SendableEntityCreatorByte> decoderMap;
 
 	private ByteFilter filter=new ByteFilter();
 
@@ -137,9 +137,9 @@ public class ByteIdMap extends IdMap {
 	 * interfaces.SendableEntityCreator)
 	 */
 	public boolean addCreator(SendableEntityCreator createrClass) {
-		if (createrClass instanceof ByteCreator) {
+		if (createrClass instanceof SendableEntityCreatorByte) {
 			if(this.decoderMap != null){
-				if (this.decoderMap.containsKey(Byte.valueOf(((ByteCreator) createrClass).getEventTyp()))) {
+				if (this.decoderMap.containsKey(Byte.valueOf(((SendableEntityCreatorByte) createrClass).getEventTyp()))) {
 					return false;
 				}
 			}
@@ -153,10 +153,10 @@ public class ByteIdMap extends IdMap {
 			SendableEntityCreator createrClass) {
 		super.withCreator(className, createrClass);
 
-		if (createrClass instanceof ByteCreator) {
-			ByteCreator byteCreator = (ByteCreator) createrClass;
+		if (createrClass instanceof SendableEntityCreatorByte) {
+			SendableEntityCreatorByte byteCreator = (SendableEntityCreatorByte) createrClass;
 			if (this.decoderMap == null) {
-				this.decoderMap = new HashMap<Byte, ByteCreator>();
+				this.decoderMap = new HashMap<Byte, SendableEntityCreatorByte>();
 			}
 
 			this.decoderMap.put(Byte.valueOf(byteCreator.getEventTyp()),
@@ -197,8 +197,8 @@ public class ByteIdMap extends IdMap {
 			return msg;
 		}
 
-		if (creator instanceof ByteCreator) {
-			long id=((ByteCreator) creator).getEventTyp();
+		if (creator instanceof SendableEntityCreatorByte) {
+			long id=((SendableEntityCreatorByte) creator).getEventTyp();
 			msg.add(new ByteEntity().withValue(ByteIdMap.DATATYPE_CLAZZID, new byte[]{(byte) id}));
 		} else {
 			Object reference = creator.getSendableInstance(true);
@@ -308,7 +308,7 @@ public class ByteIdMap extends IdMap {
 	 *            the typ
 	 * @return the creator decoder class
 	 */
-	public ByteCreator getCreatorDecoderClass(byte typ) {
+	public SendableEntityCreatorByte getCreatorDecoderClass(byte typ) {
 		return this.decoderMap.get(Byte.valueOf(typ));
 	}
 

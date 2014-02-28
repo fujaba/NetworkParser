@@ -24,10 +24,11 @@ package de.uniks.networkparser.json;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import de.uniks.networkparser.Entity;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Tokener;
-import de.uniks.networkparser.interfaces.TextEntity;
+import de.uniks.networkparser.interfaces.LocalisationEntity;
 /* Copyright (c) 2002 JSON.org */
 
 
@@ -86,7 +87,7 @@ import de.uniks.networkparser.interfaces.TextEntity;
  * @author JSON.org
  * @version 2011-11-24
  */
-public class JsonObject extends Entity implements TextEntity {
+public class JsonObject extends Entity implements LocalisationEntity {
 	/**
 	 * Produce a string from a double. The string "null" will be returned if the
 	 * number is not finite.
@@ -224,11 +225,8 @@ public class JsonObject extends Entity implements TextEntity {
 		
 		int newindent = indent + indentFactor;
 		String prefix = null;
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < indentFactor; i++) {
-			sb.append(' ');
-		}
-		String step = sb.toString();
+		StringBuilder sb;
+		String step = EntityUtil.repeat(' ', indentFactor);
 		if (indent > 0) {
 			sb = new StringBuilder();
 			for (int i = 0; i < indent; i += indentFactor) {

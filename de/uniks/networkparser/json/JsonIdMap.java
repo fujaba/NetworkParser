@@ -39,7 +39,7 @@ import de.uniks.networkparser.event.creator.DateCreator;
 import de.uniks.networkparser.event.creator.MapEntryCreator;
 import de.uniks.networkparser.interfaces.BaseEntity;
 import de.uniks.networkparser.interfaces.MapUpdateListener;
-import de.uniks.networkparser.interfaces.NoIndexCreator;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.creator.JsonArrayCreator;
 import de.uniks.networkparser.json.creator.JsonObjectCreator;
@@ -133,7 +133,7 @@ public class JsonIdMap extends IdMap {
 		if (prototyp == null) {
 			return null;
 		}
-		if (prototyp instanceof NoIndexCreator){
+		if (prototyp instanceof SendableEntityCreatorNoIndex){
 		}else if(!filter.isId(this, entity, className)) {
 			filter.addToVisitedObjects(entity);
 		}else{
@@ -241,7 +241,7 @@ public class JsonIdMap extends IdMap {
 			if (valueCreater != null) {
 				if (filter.isConvertable(this, entity, property, item, true, deep) ) {
 					String subId = this.getKey(entity);
-					if (valueCreater instanceof NoIndexCreator || !filter.hasVisitedObjects(subId, entity)){ 
+					if (valueCreater instanceof SendableEntityCreatorNoIndex || !filter.hasVisitedObjects(subId, entity)){ 
 						if (jsonArray == null) {
 							JsonObject result = toJsonObject(entity, filter,
 									className, deep+1);
@@ -420,7 +420,7 @@ public class JsonIdMap extends IdMap {
 			} else {
 				readMessages(null, null, result, jsonObject, UPDATE);
 			}
-			if (typeInfo instanceof NoIndexCreator) {
+			if (typeInfo instanceof SendableEntityCreatorNoIndex) {
 				String[] properties = typeInfo.getProperties();
 				if (properties != null) {
 					for (String property : properties) {

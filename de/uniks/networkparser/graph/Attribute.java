@@ -27,7 +27,7 @@ public class Attribute {
 		return this;
 	}
 	public String getValue(String typ) {
-		if(typ.equals(GaphIdMap.CLASS)){
+		if(typ.equals(GraphIdMap.CLASS)){
 			return clazz;
 		}
 		return value;

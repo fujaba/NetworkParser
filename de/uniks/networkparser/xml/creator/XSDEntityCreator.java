@@ -22,13 +22,13 @@ package de.uniks.networkparser.xml.creator;
  permissions and limitations under the Licence.
 */
 import java.util.ArrayList;
+
 import de.uniks.networkparser.Tokener;
-import de.uniks.networkparser.interfaces.XMLCreator;
-import de.uniks.networkparser.interfaces.XMLGrammar;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorXML;
 import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XSDEntity;
 
-public class XSDEntityCreator implements XMLCreator, XMLGrammar {
+public class XSDEntityCreator implements SendableEntityCreatorXML, XMLGrammar {
 	private String nameSpace = "";
 	private ArrayList<String> privateStack = new ArrayList<String>();
 	public static final String[] IGNORETAGS = new String[] { "annotation",

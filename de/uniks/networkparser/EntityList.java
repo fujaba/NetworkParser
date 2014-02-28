@@ -200,7 +200,7 @@ public abstract class EntityList implements BaseEntityList, List<Object> {
 			if (i > 0) {
 				sb.append(separator);
 			}
-			sb.append(EntityUtil.valueToString(values.get(i), this));
+			sb.append(EntityUtil.valueToString(values.get(i), false, this));
 		}
 		return sb.toString();
 	}
@@ -359,7 +359,7 @@ public abstract class EntityList implements BaseEntityList, List<Object> {
 		}
 		return this;
 	}
-
+	
 	/**
 	 * Append a double value. This increases the array's length by one.
 	 * 

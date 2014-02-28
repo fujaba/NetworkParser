@@ -24,10 +24,10 @@ package de.uniks.networkparser.event.creator;
 import java.util.Map.Entry;
 import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.event.MapSet;
-import de.uniks.networkparser.interfaces.NoIndexCreator;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class MapEntryCreator implements SendableEntityCreator, NoIndexCreator {
+public class MapEntryCreator implements SendableEntityCreator, SendableEntityCreatorNoIndex {
 	public static final String PROPERTY_KEY = "key";
 	public static final String PROPERTY_VALUE = "value";
 	private final String[] properties = new String[] { PROPERTY_KEY,

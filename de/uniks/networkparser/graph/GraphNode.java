@@ -54,8 +54,11 @@ public class GraphNode implements BaseEntity {
 	}
 
 	// GETTER AND SETTER
-	public String getClassName() {
-		return className;
+	public String getClassName(boolean shortName) {
+		if(!shortName || className==null || className.lastIndexOf(".")<0){
+			return className;
+		}
+		return className.substring(className.lastIndexOf(".") + 1);
 	}
 
 	public GraphNode withClassName(String className) {
@@ -67,11 +70,11 @@ public class GraphNode implements BaseEntity {
 		return id;
 	}
 	
-	public String getTyp(String typ){
-		if(typ.equals(GaphIdMap.OBJECT)){
+	public String getTyp(String typ, boolean shortName){
+		if(typ.equals(GraphIdMap.OBJECT)){
 			return getId();
-		}else if(typ.equals(GaphIdMap.CLASS)){
-			return getClassName();
+		}else if(typ.equals(GraphIdMap.CLASS)){
+			return getClassName(shortName);
 		}
 		return "";
 	}
@@ -81,9 +84,9 @@ public class GraphNode implements BaseEntity {
 	}
 	
 	public GraphNode withTyp(String typ, String value){
-		if(typ.equals(GaphIdMap.OBJECT)){
+		if(typ.equals(GraphIdMap.OBJECT)){
 			withId(value);
-		}else if(typ.equals(GaphIdMap.CLASS)){
+		}else if(typ.equals(GraphIdMap.CLASS)){
 			withClassName(value);
 		}
 		return this;

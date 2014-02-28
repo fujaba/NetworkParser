@@ -23,12 +23,13 @@ package de.uniks.networkparser.xml;
 */
 import java.util.ArrayList;
 import java.util.HashSet;
+
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ReferenceObject;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.BaseEntity;
-import de.uniks.networkparser.interfaces.XMLGrammar;
+import de.uniks.networkparser.xml.creator.XMLGrammar;
 import de.uniks.networkparser.xml.creator.XSDEntityCreator;
 
 public class XMLSimpleIdMap extends IdMap {

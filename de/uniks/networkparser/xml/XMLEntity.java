@@ -196,9 +196,7 @@ public class XMLEntity extends Entity implements BaseEntityList {
 		if (indentFactor > 0) {
 			sb.append("\n");
 		}
-		for (int i = 0; i < indentFactor; i += 1) {
-			sb.append(' ');
-		}
+		sb.append(EntityUtil.repeat(' ', indentFactor));
 		sb.append("<" + this.getTag());
 		Map<String, Object> attributes = getMap();
 
