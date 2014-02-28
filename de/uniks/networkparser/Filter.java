@@ -22,6 +22,7 @@ package de.uniks.networkparser;
  permissions and limitations under the Licence.
 */
 import java.util.LinkedHashSet;
+
 import de.uniks.networkparser.logic.Condition;
 import de.uniks.networkparser.logic.ValuesMap;
 
@@ -112,11 +113,8 @@ public class Filter {
 		return newInstance.withConvertable(convertable).withIdFilter(idFilter).withPropertyRegard(property);
 	}
 	
-	
-	public boolean hasVisitedObjects(String id, Object element) {
-		if(id!=null){
-			return visitedObjects.contains(id);
-		}
+
+	public boolean hasVisitedObjects(Object element) {
 		return visitedObjects.contains(element);
 	}
 	
