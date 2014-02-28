@@ -224,7 +224,7 @@ public class JsonObject extends Entity implements LocalisationEntity {
 		Iterator<Entry<String, Object>> iterator = map.entrySet().iterator();
 		
 		int newindent = indent + indentFactor;
-		String prefix = null;
+		String prefix = "";
 		StringBuilder sb;
 		String step = EntityUtil.repeat(' ', indentFactor);
 		if (indent > 0) {

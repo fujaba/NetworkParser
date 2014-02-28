@@ -34,7 +34,7 @@ import de.uniks.networkparser.interfaces.BaseEntityList;
 
 public class GraphList implements BaseEntityList {
 	private LinkedHashMap<String, GraphNode> children = new LinkedHashMap<String, GraphNode>();
-	private ArrayList<GraphEdge> cardinalities = new ArrayList<GraphEdge>();
+	private ArrayList<GraphEdge> edges = new ArrayList<GraphEdge>();
 	private String typ;
 
 	@Override
@@ -138,17 +138,42 @@ public class GraphList implements BaseEntityList {
 		return this;
 	}
 
-	public boolean addCardinality(GraphEdge cardinality) {
-		return this.cardinalities.add(cardinality);
+	public boolean addEdge(GraphEdge edge) {
+		boolean found=false;
+		for(Iterator<GraphEdge> i = this.edges.iterator();i.hasNext();){
+			GraphEdge item = i.next();
+//			if(item.getSource()==edge.getSource().has())
+		}
+//		edge.get
+		// Must be 
+//		EdgeLabels fwdEdgeLabels = edgeMap.get(srcId + ":" + tgtId);
+//		if (fwdEdgeLabels != null) {
+//			// add label to the headlabel
+//			fwdEdgeLabels.headlabel += "_" + label;
+//		} else {
+//			EdgeLabels bwdEdgeLabels = edgeMap.get(tgtId + ":" + srcId);
+//			if (bwdEdgeLabels != null) {
+//				// add label to the taillabel
+//				bwdEdgeLabels.taillabel += "_" + label;
+//			} else {
+//				// unknown edge, create it
+//				fwdEdgeLabels = new EdgeLabels();
+//				fwdEdgeLabels.headlabel = label;
+//				edgeMap.put(srcId + ":" + tgtId, fwdEdgeLabels);
+//			}
+//		}
+
+		
+		return this.edges.add(edge);
 	}
 
 	public ArrayList<GraphEdge> getEdges() {
-		return cardinalities;
+		return edges;
 	}
 	
 	public HashMap<String, HashSet<GraphEdge>> getLinks(){
 		HashMap<String, HashSet<GraphEdge>> links = new HashMap<String, HashSet<GraphEdge>>();
-		for (GraphEdge element : cardinalities) {
+		for (GraphEdge element : edges) {
 			for(GraphNode node : element.getSource().getItems()){
 				String key = node.getTyp(typ, false);
 				if (links.containsKey(key)) {

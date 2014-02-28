@@ -147,7 +147,7 @@ public class GraphIdMap extends IdMap {
 		SendableEntityCreator valueCreater = getCreatorClass(item);
 		if (valueCreater != null) {
 			GraphNode subId = parse(item, filter, list, deep + 1);
-			list.addCardinality(new GraphEdge().withSource(element)
+			list.addEdge(new GraphEdge().withSource(element)
 					.withTarget(subId, cardinality, property));
 		} else {
 			element.addValue(property, item.getClass().getName(), "" + item);
