@@ -237,11 +237,13 @@ public class JsonIdMap extends IdMap {
 				className = entity.getClass().getName();
 			}
 			SendableEntityCreator valueCreater = getCreatorClasses(className);
-
+			boolean isId = filter.isId(this, entity, className);
 			if (valueCreater != null) {
 				if (filter.isConvertable(this, entity, property, item, true, deep) ) {
 					String subId = this.getKey(entity);
-					if (valueCreater instanceof SendableEntityCreatorNoIndex || !filter.hasVisitedObjects(subId, entity)){ 
+					if (valueCreater instanceof SendableEntityCreatorNoIndex
+							|| (isId &&!filter.hasVisitedObjects(subId))
+							|| (!isId && !filter.hasVisitedObjects(entity))){ 
 						if (jsonArray == null) {
 							JsonObject result = toJsonObject(entity, filter,
 									className, deep+1);
@@ -645,10 +647,15 @@ public class JsonIdMap extends IdMap {
 
 		JsonObject jsonObject = jsonArray.getNewObject();
 		boolean sortedArray = jsonArray instanceof SortedSet<?>;
-		if (!filter.hasVisitedObjects(id, entity) ) {
-			if (filter.isId(this, entity, className)) {
+		if (filter.isId(this, entity, className)) {
+			if (!filter.hasVisitedObjects(id) ) {
 				jsonObject.put(ID, id);
+				jsonObject.put(CLASS, className);
+				if(!sortedArray){
+					jsonArray.put(jsonObject);
+				}
 			}
+		}else if (!filter.hasVisitedObjects(entity) ) {
 			jsonObject.put(CLASS, className);
 			if(!sortedArray){
 				jsonArray.put(jsonObject);
