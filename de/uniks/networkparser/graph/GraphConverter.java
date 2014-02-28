@@ -21,6 +21,10 @@ public class GraphConverter implements Converter {
 	public static final String SOURCE= "source";
 	public static final String TARGET= "target";
 	public static final String CARDINALITY="cardinality";
+	public static final String SOURCECARDINALITY= "sourcecardinality";
+	public static final String TARGETCARDINALITY= "targetcardinality";
+	public static final String SOURCEPROPERTY= "sourceproperty";
+	public static final String TARGETPROPERTY= "targetproperty";
 	public static final String LABEL="label";
 	
 	@Override
@@ -59,7 +63,7 @@ public class GraphConverter implements Converter {
 				if(value instanceof JsonObject) {
 					// Must be a Link to 1
 					GraphNode newNode = parseJsonObject(root, (JsonObject)value);
-					root.addCardinality(new GraphEdge().withSource(graphNode).withTarget(newNode, GraphIdMap.ONE, key));
+					root.addEdge(new GraphEdge().withSource(graphNode).withTarget(newNode, GraphIdMap.ONE, key));
 				}else if(value instanceof JsonArray) {
 					// Must be a Link to n
 					JsonArray array = (JsonArray) value;
@@ -67,7 +71,7 @@ public class GraphConverter implements Converter {
 					for(Object item : array){
 						if(item instanceof JsonObject){
 							GraphNode newNode = parseJsonObject(root, (JsonObject)item);
-							root.addCardinality(new GraphEdge().withSource(graphNode).withTarget(newNode, GraphIdMap.MANY, key));							
+							root.addEdge(new GraphEdge().withSource(graphNode).withTarget(newNode, GraphIdMap.MANY, key));							
 						}else{
 							if(sb.length()>0){
 								sb.append(","+item.toString());
@@ -98,9 +102,15 @@ public class GraphConverter implements Converter {
 
 		for(GraphEdge edge : edges){
 			if(typ.equals(GraphIdMap.OBJECT)) {
+				
 				for(GraphNode source : edge.getSource().getItems()){
 					for(GraphNode target : edge.getTarget().getItems()){
-						result.add(new JsonObject().withValue(TYP, EDGE, SOURCE, source.getId(), TARGET, target.getId()));
+						JsonObject child = new JsonObject().withValue(TYP, EDGE, SOURCE, source.getId(), TARGET, target.getId());
+						child.put(SOURCECARDINALITY,  edge.getSource().getCardinality());
+						child.put(TARGETCARDINALITY,  edge.getTarget().getCardinality());
+						child.put(SOURCEPROPERTY,  edge.getSource().getProperty());
+						child.put(TARGETPROPERTY,  edge.getTarget().getProperty());
+						result.add(child);
 					}
 				}
 			}else{
@@ -113,6 +123,7 @@ public class GraphConverter implements Converter {
 		}
 		return result;
 	}
+	
 	public JsonArray parseEntities(String typ, Collection<GraphNode> nodes, boolean shortName) {
 		JsonArray result=new JsonArray();
 		for(GraphNode entity : nodes){
@@ -136,11 +147,11 @@ public class GraphConverter implements Converter {
 		}
 		JsonObject item = new JsonObject().withValue(TYP, NODE);
 		if (typ == GraphIdMap.OBJECT) {
-			item.add(ID, entity.getId() + " : " + entity.getClassName(shortName));
+			item.put(ID, entity.getId() + " : " + entity.getClassName(shortName));
 		}else{
-			item.add(ID, entity.getClassName(shortName));
+			item.put(ID, entity.getClassName(shortName));
 		}
-		item.add(ATTRIBUTES, parseAttributes(typ, entity.getAttributes()));
+		item.put(ATTRIBUTES, parseAttributes(typ, entity.getAttributes()));
 		return item;
 	}
 	private JsonArray parseAttributes(String typ, ArrayList<Attribute> attributes) {

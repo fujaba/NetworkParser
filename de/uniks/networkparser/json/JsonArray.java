@@ -206,7 +206,7 @@ public class JsonArray extends EntityList {
 			prefix = CRLF + sb.toString();
 		}
 		// First Element
-		sb = new StringBuilder("[" + prefix + step);
+		sb = new StringBuilder("[" + prefix);
 		Object element = iterator.next();
 		sb.append(EntityUtil.valueToString(element, indentFactor, newindent,
 				false, this));

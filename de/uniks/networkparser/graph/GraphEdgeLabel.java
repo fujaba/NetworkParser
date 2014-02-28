@@ -1,14 +1,14 @@
 package de.uniks.networkparser.graph;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 
 public class GraphEdgeLabel {
-	private ArrayList<GraphNode> items = new ArrayList<GraphNode>();
+	private HashSet<GraphNode> items = new HashSet<GraphNode>();
 	private String cardinality;
 	private String property;
 	
-	public ArrayList<GraphNode> getItems() {
+	public HashSet<GraphNode> getItems() {
 		return items;
 	}
 	public GraphEdgeLabel withItem(GraphNode item) {
@@ -31,5 +31,13 @@ public class GraphEdgeLabel {
 	}
 	public Iterator<GraphNode> iterator(){
 		return items.iterator();
+	}
+	
+	public String getInfo(){
+		return property+"<br>0.."+this.cardinality;
+	}
+	
+	public boolean has(GraphNode node){
+		return items.contains(node);
 	}
 }

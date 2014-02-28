@@ -95,7 +95,7 @@ public abstract class Entity implements BaseEntity {
 	 *            An object to be accumulated under the key.
 	 * @return this.
 	 */
-	public Entity add(String key, Object value) {
+	public Entity addToList(String key, Object value) {
 		EntityUtil.testValidity(value);
 		Object object = this.get(key);
 		if (object == null) {
