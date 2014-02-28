@@ -21,22 +21,22 @@ package de.uniks.networkparser.logic;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.interfaces.ByteCreator;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorByte;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class InstanceOf extends ConditionMap implements SendableEntityCreator {
 	public static final String CLAZZNAME="clazzname";
 	public static final String VALUE="value";
 
-	protected ByteCreator value;
+	protected SendableEntityCreatorByte value;
 	private String clazzName;
 
-	public InstanceOf withCreator(ByteCreator creator) {
+	public InstanceOf withCreator(SendableEntityCreatorByte creator) {
 		this.value = creator;
 		return this;
 	}
 
-	public ByteCreator getValue() {
+	public SendableEntityCreatorByte getValue() {
 		return value;
 	}
 
@@ -87,7 +87,7 @@ public class InstanceOf extends ConditionMap implements SendableEntityCreator {
 			return true;
 		}
 		if(VALUE.equalsIgnoreCase(attribute)){
-			((InstanceOf)entity).withCreator((ByteCreator) value);
+			((InstanceOf)entity).withCreator((SendableEntityCreatorByte) value);
 			return true;
 		}
 		return false;

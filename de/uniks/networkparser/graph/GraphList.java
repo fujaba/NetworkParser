@@ -116,7 +116,7 @@ public class GraphList implements BaseEntityList {
 	}
 
 	public String toString(Converter converter) {
-		return converter.convert(this);
+		return converter.convert(this, false);
 	}
 
 	@Override
@@ -150,7 +150,7 @@ public class GraphList implements BaseEntityList {
 		HashMap<String, HashSet<GraphEdge>> links = new HashMap<String, HashSet<GraphEdge>>();
 		for (GraphEdge element : cardinalities) {
 			for(GraphNode node : element.getSource().getItems()){
-				String key = node.getTyp(typ);
+				String key = node.getTyp(typ, false);
 				if (links.containsKey(key)) {
 					links.get(key).add(element);
 				} else {

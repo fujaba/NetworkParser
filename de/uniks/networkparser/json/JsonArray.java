@@ -190,13 +190,14 @@ public class JsonArray extends EntityList {
 			return "[" + size() + " Items]";
 		}
 
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < indentFactor; i++) {
-			sb.append(' ');
-		}
-		String step = sb.toString();
+		StringBuilder sb;
+		String step = EntityUtil.repeat(' ', indentFactor);
 		String prefix = "";
-		int newindent = indent + indentFactor;
+		int newindent =0;
+		if(indent>0){
+			newindent = indent + indentFactor;
+		}
+
 		if (newindent > 0) {
 			sb = new StringBuilder();
 			for (int i = 0; i < indent; i += indentFactor) {
@@ -205,7 +206,6 @@ public class JsonArray extends EntityList {
 			prefix = CRLF + sb.toString();
 		}
 		// First Element
-
 		sb = new StringBuilder("[" + prefix + step);
 		Object element = iterator.next();
 		sb.append(EntityUtil.valueToString(element, indentFactor, newindent,

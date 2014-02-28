@@ -26,7 +26,7 @@ import de.uniks.networkparser.TextParsingException;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.BaseEntity;
 import de.uniks.networkparser.interfaces.BaseEntityList;
-import de.uniks.networkparser.interfaces.TextEntity;
+import de.uniks.networkparser.interfaces.LocalisationEntity;
 import de.uniks.networkparser.xml.XMLEntity;
 
 public class JsonTokener extends Tokener {
@@ -144,12 +144,12 @@ public class JsonTokener extends Tokener {
 
 	@Override
 	public void parseToEntity(BaseEntity entity) throws TextParsingException{
-		if (!(entity instanceof TextEntity)) {
+		if (!(entity instanceof LocalisationEntity)) {
 			return;
 		}
 		char c;
 		String key;
-		TextEntity item=(TextEntity)entity;
+		LocalisationEntity item=(LocalisationEntity)entity;
 		if (nextStartClean() != '{') {
 			throw new TextParsingException(
 					"A JsonObject text must begin with '{'", this);

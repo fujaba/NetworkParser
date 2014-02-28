@@ -25,7 +25,7 @@ import java.util.Iterator;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.IdMapCounter;
-import de.uniks.networkparser.interfaces.NoIndexCreator;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class Grammar {
@@ -62,7 +62,7 @@ public class Grammar {
 	public JsonObject getWriteObject(IdMap map, SendableEntityCreator prototyp,
 			String className, String id, JsonObject jsonProp, Filter filter) {
 		JsonObject json = new JsonObject();
-		if (prototyp instanceof NoIndexCreator) {
+		if (prototyp instanceof SendableEntityCreatorNoIndex) {
 			Iterator<String> keys = jsonProp.keys();
 			while (keys.hasNext()) {
 				String key = keys.next();

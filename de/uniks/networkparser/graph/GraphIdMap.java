@@ -30,7 +30,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
  * The Class YUMLIdParser.
  */
 
-public class GaphIdMap extends IdMap {
+public class GraphIdMap extends IdMap {
 	/** The Constant URL. */
 	public static final String URL = "http://yuml.me/diagram/class/";
 

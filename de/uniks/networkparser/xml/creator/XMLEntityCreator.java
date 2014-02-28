@@ -23,7 +23,6 @@ package de.uniks.networkparser.xml.creator;
 */
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.interfaces.XMLGrammar;
 import de.uniks.networkparser.xml.XMLEntity;
 
 public class XMLEntityCreator implements SendableEntityCreator, XMLGrammar {

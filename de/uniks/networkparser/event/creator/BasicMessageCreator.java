@@ -22,12 +22,12 @@ package de.uniks.networkparser.event.creator;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.event.BasicMessage;
-import de.uniks.networkparser.interfaces.ByteCreator;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorByte;
 /**
  * The Class BasicMessageCreator.
  */
 
-public class BasicMessageCreator implements ByteCreator {
+public class BasicMessageCreator implements SendableEntityCreatorByte {
 	/** The properties. */
 	protected final String[] properties = new String[] { BasicMessage.PROPERTY_VALUE };
 
