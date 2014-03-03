@@ -2,6 +2,7 @@ package de.uniks.networkparser.graph;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 
 import de.uniks.networkparser.json.JsonArray;
@@ -20,12 +21,10 @@ public class GraphConverter implements Converter {
 	public static final String EDGES = "edges";
 	public static final String SOURCE= "source";
 	public static final String TARGET= "target";
-	public static final String CARDINALITY="cardinality";
 	public static final String SOURCECARDINALITY= "sourcecardinality";
 	public static final String TARGETCARDINALITY= "targetcardinality";
 	public static final String SOURCEPROPERTY= "sourceproperty";
 	public static final String TARGETPROPERTY= "targetproperty";
-	public static final String LABEL="label";
 	
 	@Override
 	public String convert(GraphList root, boolean removePackage) {
@@ -93,32 +92,36 @@ public class GraphConverter implements Converter {
 		String typ = root.getTyp();
 		JsonObject jsonRoot=new JsonObject().withValue(TYP, typ);
 		jsonRoot.put(NODES, parseEntities(typ, root.getChildren(), removePackage));
-		jsonRoot.put(EDGES, parseEdges(typ, root.getEdges()));
+		jsonRoot.put(EDGES, parseEdges(typ, root.getEdges(), removePackage));
 		return jsonRoot;
 	}
 	
-	private Collection<?> parseEdges(String typ, ArrayList<GraphEdge> edges) {
+	private Collection<?> parseEdges(String typ, ArrayList<GraphEdge> edges, boolean shortName) {
 		JsonArray result=new JsonArray();
+		HashSet<String> ids=new HashSet<String>();
 
 		for(GraphEdge edge : edges){
-			if(typ.equals(GraphIdMap.OBJECT)) {
-				
-				for(GraphNode source : edge.getSource().getItems()){
-					for(GraphNode target : edge.getTarget().getItems()){
-						JsonObject child = new JsonObject().withValue(TYP, EDGE, SOURCE, source.getId(), TARGET, target.getId());
-						child.put(SOURCECARDINALITY,  edge.getSource().getCardinality());
-						child.put(TARGETCARDINALITY,  edge.getTarget().getCardinality());
-						child.put(SOURCEPROPERTY,  edge.getSource().getProperty());
-						child.put(TARGETPROPERTY,  edge.getTarget().getProperty());
+			for(GraphNode source : edge.getSource().getItems()){
+				for(GraphNode target : edge.getTarget().getItems()){
+					JsonObject child = new JsonObject().withValue(TYP, EDGE);
+					child.put(SOURCECARDINALITY,  edge.getSource().getCardinality());
+					child.put(TARGETCARDINALITY,  edge.getTarget().getCardinality());
+					child.put(SOURCEPROPERTY,  edge.getSource().getProperty());
+					child.put(TARGETPROPERTY,  edge.getTarget().getProperty());
+					if(typ.equals(GraphIdMap.OBJECT)) {
+						child.put(SOURCE, source.getId());
+						child.put(TARGET, target.getId());
 						result.add(child);
+					}else{
+						String id = source.getClassName(false)+":"+edge.getSource().getProperty()+target.getClassName(false)+":"+edge.getTarget().getProperty();
+						if(!ids.contains(id)){
+							child.put(SOURCE, source.getClassName(shortName));
+							child.put(TARGET, target.getClassName(shortName));
+							result.add(child);
+							ids.add(id);
+						}
 					}
 				}
-			}else{
-				for(GraphNode source : edge.getSource().getItems()){
-					for(GraphNode target : edge.getTarget().getItems()){
-						result.add(new JsonObject().withValue(TYP, EDGE, SOURCE, source.getId(), TARGET, target.getId(), CARDINALITY, edge.getTarget().getCardinality(), LABEL, edge.getTarget().getProperty()));
-					}
-				}	
 			}
 		}
 		return result;
@@ -126,9 +129,17 @@ public class GraphConverter implements Converter {
 	
 	public JsonArray parseEntities(String typ, Collection<GraphNode> nodes, boolean shortName) {
 		JsonArray result=new JsonArray();
+		HashSet<String> ids=new HashSet<String>();
 		for(GraphNode entity : nodes){
 			JsonObject item = parseEntity(typ, entity, shortName);
 			if(item!=null){
+				if (typ == GraphIdMap.CLASS) {
+					String key = item.getString(ID);
+					if(ids.contains(key)){
+						continue;
+					}
+					ids.add(key);
+				}
 				result.add(item);
 			}
 		}
