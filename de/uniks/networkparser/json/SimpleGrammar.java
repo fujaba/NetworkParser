@@ -24,7 +24,7 @@ package de.uniks.networkparser.json;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import de.uniks.networkparser.Filter;
-import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.interfaces.IdMapCounter;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
@@ -34,7 +34,7 @@ public class SimpleGrammar extends Grammar{
 	 * @param jsonObject
 	 * @return the props of theJsonObject
 	 */
-	public JsonObject getReadProperties(JsonObject jsonObject, IdMap map) {
+	public JsonObject getReadProperties(JsonObject jsonObject, IdMapEncoder map) {
 		jsonObject.remove(ID);
 		return jsonObject;
 	}
@@ -44,7 +44,7 @@ public class SimpleGrammar extends Grammar{
 	 * @return the Creator for this JsonObject
 	 */
 	public SendableEntityCreator getReadCreator(JsonObject jsonObject,
-			IdMap map) {
+			IdMapEncoder map) {
 		String idString = jsonObject.getString(ID);
 		String className = "."+idString.substring(0, idString.indexOf(map.getCounter().getSplitter()));
 		
@@ -58,7 +58,7 @@ public class SimpleGrammar extends Grammar{
 		return null;
 	}
 
-	public JsonObject getWriteObject(IdMap map, SendableEntityCreator prototyp,
+	public JsonObject getWriteObject(IdMapEncoder map, SendableEntityCreator prototyp,
 			String className, String id, JsonObject jsonProp, Filter filter) {
 		JsonObject json = new JsonObject();
 		

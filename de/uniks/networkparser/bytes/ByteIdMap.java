@@ -32,6 +32,7 @@ import java.util.Map;
 import de.uniks.networkparser.AbstractMap;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.TextParsingException;
 import de.uniks.networkparser.bytes.converter.ByteConverterHTTP;
 import de.uniks.networkparser.event.BasicMessage;
@@ -405,10 +406,10 @@ public class ByteIdMap extends IdMap {
 						List<?> list=(List<?>) value;
 						for(Iterator<?> i=list.iterator();i.hasNext();){
 							Object item = i.next();
-							eventCreater.setValue(entity, property, item, IdMap.NEW);
+							eventCreater.setValue(entity, property, item, IdMapEncoder.NEW);
 						}
 					}else{
-						eventCreater.setValue(entity, property, value, IdMap.NEW);
+						eventCreater.setValue(entity, property, value, IdMapEncoder.NEW);
 					}
 				}
 			}

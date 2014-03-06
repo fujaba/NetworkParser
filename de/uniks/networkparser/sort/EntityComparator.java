@@ -23,7 +23,7 @@ package de.uniks.networkparser.sort;
 */
 import java.util.Comparator;
 import de.uniks.networkparser.EntityValueFactory;
-import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.gui.table.TableList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
@@ -34,7 +34,7 @@ public class EntityComparator implements Comparator<Object> {
 
 	private SortingDirection direction = SortingDirection.ASC;
 	private String column = IDMAP;
-	private IdMap map;
+	private IdMapEncoder map;
 	private EntityValueFactory cellCreator = new EntityValueFactory();
 	private TableList owner;
 	protected SendableEntityCreator creator;
@@ -167,12 +167,12 @@ public class EntityComparator implements Comparator<Object> {
 		return this;
 	}
 
-	public EntityComparator withMap(IdMap value) {
+	public EntityComparator withMap(IdMapEncoder value) {
 		this.map = value;
 		return this;
 	}
 
-	public IdMap getMap() {
+	public IdMapEncoder getMap() {
 		return map;
 	}
 

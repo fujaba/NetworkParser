@@ -31,11 +31,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import java.util.List;
 
-import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public interface TableComponentInterface {
-	public IdMap getMap();
+	public IdMapEncoder getMap();
 	public boolean addItem(Object item);
 	public boolean removeItem(Object item);
 	public void addUpdateListener(Object list);
