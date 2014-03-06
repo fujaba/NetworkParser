@@ -23,17 +23,17 @@ permissions and limitations under the Licence.
 
 import java.util.Collection;
 
-import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.IdMapEncoder;
 
 public class ValuesMap extends ValuesSimple{
-	public IdMap map;
+	public IdMapEncoder map;
 	public Object entity;
 	public String property;
 	public Object value;
 	public boolean isMany;
 	public int deep;
 	
-	public static ValuesMap with(IdMap map, Object entity, String property,
+	public static ValuesMap with(IdMapEncoder map, Object entity, String property,
 			Object value, boolean isMany, int deep){
 		ValuesMap mapCondition = new ValuesMap();
 		mapCondition.map = map;
@@ -44,7 +44,7 @@ public class ValuesMap extends ValuesSimple{
 		mapCondition.deep = deep;
 		return mapCondition;
 	}
-	public static ValuesMap with(IdMap map, Object entity, String property){
+	public static ValuesMap with(IdMapEncoder map, Object entity, String property){
 		ValuesMap mapCondition = new ValuesMap();
 		mapCondition.map = map;
 		mapCondition.entity = entity;

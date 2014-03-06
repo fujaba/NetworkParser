@@ -32,7 +32,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import de.uniks.networkparser.EntityList;
 import de.uniks.networkparser.Filter;
-import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.ReferenceObject;
 import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.event.creator.DateCreator;
@@ -49,7 +49,7 @@ import de.uniks.networkparser.sort.EntityComparator;
  * The Class JsonIdMap.
  */
 
-public class JsonIdMap extends IdMap {
+public class JsonIdMap extends IdMapEncoder {
 	/** The Constant CLASS. */
 	public static final String CLASS = "class";
 
@@ -714,7 +714,7 @@ public class JsonIdMap extends IdMap {
 		return this;
 	}
 
-	public IdMap withUpdateMsgListener(PropertyChangeListener listener) {
+	public IdMapEncoder withUpdateMsgListener(PropertyChangeListener listener) {
 		super.withUpdateMsgListener(listener);
 		if (listener instanceof MapUpdateListener) {
 
@@ -779,7 +779,7 @@ public class JsonIdMap extends IdMap {
 		for (String childId : suspendIdList) {
 			children.put(toJsonObjectById(childId));
 		}
-		sendObj.put(IdMap.UPDATE, children);
+		sendObj.put(IdMapEncoder.UPDATE, children);
 		sendUpdateMsg(null, sendObj);
 	}
 

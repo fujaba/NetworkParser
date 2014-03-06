@@ -29,7 +29,7 @@ import java.util.HashSet;
 import de.uniks.networkparser.AbstractMap;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Filter;
-import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.ReferenceObject;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorXML;
@@ -144,14 +144,14 @@ public class XMLIdMap extends XMLSimpleIdMap {
 		} else {
 			xmlEntity.setTag(entity.getClass().getName());
 		}
-		String[] properties = createrProtoTyp.getProperties();
-		Object referenceObject = createrProtoTyp.getSendableInstance(true);
 
 		if(filter.isId(this, entity, entity.getClass().getName())){
 			xmlEntity.put(ID, getId(entity));
 		}
 
+		String[] properties = createrProtoTyp.getProperties();
 		if (properties != null) {
+			Object referenceObject = createrProtoTyp.getSendableInstance(true);
 			for (String property : properties) {
 				Object value = createrProtoTyp.getValue(entity, property);
 				if (value != null) {
@@ -324,7 +324,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 			if (refObject != null) {
 				SendableEntityCreator parentCreator = refObject.getCreater();
 				parentCreator.setValue(refObject.getEntity(), newPrefix, value,
-						IdMap.NEW);
+						IdMapEncoder.NEW);
 			}
 		}
 		return exit;
@@ -432,7 +432,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 											-1);
 									this.value.next();
 									entityCreater.setValue(item,
-											prefix + key, value, IdMap.NEW);
+											prefix + key, value, IdMapEncoder.NEW);
 								}
 							}
 						}
@@ -453,7 +453,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 					int start = this.value.position();
 					this.value.stepPos("" + ITEMSTART, false, true);
 					String value = this.value.substring(start, -1);
-					entityCreater.setValue(item, prefix, value, IdMap.NEW);
+					entityCreater.setValue(item, prefix, value, IdMapEncoder.NEW);
 					this.value.stepPos("" + ITEMSTART, false, false);
 					this.value.stepPos("" + ITEMEND, false, false);
 				}
@@ -496,7 +496,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 								SendableEntityCreator parentCreator = refObject
 										.getCreater();
 								parentCreator.setValue(refObject.getEntity(),
-										nextTag.getTag(), result, IdMap.NEW);
+										nextTag.getTag(), result, IdMapEncoder.NEW);
 								if (entity != null && this.stack.size() > 0) {
 									this.stack.remove(this.stack.size() - 1);
 								}

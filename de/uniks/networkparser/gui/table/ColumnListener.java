@@ -21,7 +21,7 @@ package de.uniks.networkparser.gui.table;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class ColumnListener {
@@ -54,7 +54,7 @@ public class ColumnListener {
 		if(creator==null){
 			return false;
 		}
-		return creator.setValue(entity, column.getAttrName(), value, IdMap.UPDATE);
+		return creator.setValue(entity, column.getAttrName(), value, IdMapEncoder.UPDATE);
 	}
 	public void dispose(){
 		

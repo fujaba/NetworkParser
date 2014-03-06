@@ -24,14 +24,14 @@ package de.uniks.networkparser.graph;
 import java.util.Collection;
 
 import de.uniks.networkparser.Filter;
-import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.interfaces.BaseEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 /**
  * The Class YUMLIdParser.
  */
 
-public class GraphIdMap extends IdMap {
+public class GraphIdMap extends IdMapEncoder {
 	/** The Constant for CLASS Diagramms. */
 	public static final String CLASS = "class";
 
@@ -169,16 +169,6 @@ public class GraphIdMap extends IdMap {
 			parse(value, yumlFilter, list, 0);
 		}
 		return list;
-	}
-
-	@Override
-	public Object decode(BaseEntity value) {
-		return null;
-	}
-	
-	@Override
-	public Object decode(String value) {
-		return null;
 	}
 
 	/**

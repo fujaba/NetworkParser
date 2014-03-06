@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import de.uniks.networkparser.AbstractMap;
-import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.bytes.creator.BitEntityCreator;
 import de.uniks.networkparser.interfaces.BufferedBytes;
 
@@ -38,7 +38,7 @@ public class ByteSimpleMap extends AbstractMap {
 			Object element = getEntity(buffer, entity, values);
 			if (element != null) {
 				creator.setValue(newInstance, entity.getPropertyName(),
-						element, IdMap.NEW);
+						element, IdMapEncoder.NEW);
 			}
 		}
 		return newInstance;

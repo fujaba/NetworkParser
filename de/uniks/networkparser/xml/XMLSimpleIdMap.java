@@ -22,13 +22,17 @@ package de.uniks.networkparser.xml;
  permissions and limitations under the Licence.
 */
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.ReferenceObject;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.BaseEntity;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorXML;
 import de.uniks.networkparser.xml.creator.XMLGrammar;
 import de.uniks.networkparser.xml.creator.XSDEntityCreator;
 
@@ -105,17 +109,56 @@ public class XMLSimpleIdMap extends IdMap {
 		}
 		return decode(getPrototyp().withValue(value));
 	}
-	
-	
-	//FIXME new Functionality
+
 	@Override
-	public BaseEntity encode(Object value) {
-		return null;
+	public XMLEntity encode(Object value) {
+		return encode(value,  filter.cloneObj());
 	}
-	
+
 	@Override
-	public BaseEntity encode(Object value, Filter filter) {
-		return null;
+	public XMLEntity encode(Object entity, Filter filter) {
+		XMLEntity xmlEntity = new XMLEntity();
+		SendableEntityCreator createrProtoTyp = getCreatorClass(entity);
+		if (createrProtoTyp == null) {
+			return null;
+		}
+		if (createrProtoTyp instanceof SendableEntityCreatorXML) {
+			SendableEntityCreatorXML xmlCreater = (SendableEntityCreatorXML) createrProtoTyp;
+			if (xmlCreater.getTag() != null) {
+				xmlEntity.setTag(xmlCreater.getTag());
+			} else {
+				xmlEntity.setTag(entity.getClass().getName());
+			}
+		} else {
+			xmlEntity.setTag(entity.getClass().getName());
+		}
+		String[] properties = createrProtoTyp.getProperties();
+		if (properties != null) {
+			Object referenceObject = createrProtoTyp.getSendableInstance(true);
+			for (String property : properties) {
+				Object value = createrProtoTyp.getValue(entity, property);
+				if (value != null) {
+						Object refValue = createrProtoTyp.getValue(
+								referenceObject, property);
+					boolean encoding = !value.equals(refValue);
+					if (encoding) {
+						if (value instanceof Collection<?>) {
+							for (Object item : (Collection<?>) value) {
+								xmlEntity.addChild( encode(item) );
+							}
+						} else {
+							SendableEntityCreator valueCreater = getCreatorClass(value);
+							if (valueCreater != null) {
+								xmlEntity.addChild(encode(value));
+							} else {
+								xmlEntity.put(property, value);
+							}
+						}
+					}
+				}
+			}
+		}
+		return xmlEntity;
 	}
 
 
@@ -149,7 +192,7 @@ public class XMLSimpleIdMap extends IdMap {
 							String value = this.value.substring(start, -1);
 							this.value.next();
 							styleFormatCreator.setValue(entity, key, value,
-									IdMap.NEW);
+									IdMapEncoder.NEW);
 						}
 					}
 				} else {
