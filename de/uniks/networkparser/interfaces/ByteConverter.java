@@ -1,5 +1,6 @@
 package de.uniks.networkparser.interfaces;
 
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
@@ -23,6 +24,13 @@ package de.uniks.networkparser.interfaces;
 */
 
 public abstract class ByteConverter {
+	public String encode(BaseEntity entity){
+		if(entity instanceof ByteItem){
+			return toString(((ByteItem)entity).getBytes(true));
+		}
+		return toString(entity.toString(2).getBytes());
+	}
+	
 	public String toString(ByteItem item, boolean dynamic) {
 		return toString(item.getBytes(dynamic));
 	}

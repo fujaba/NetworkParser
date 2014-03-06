@@ -29,15 +29,15 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.TreeSet;
+
 import de.uniks.networkparser.EntityValueFactory;
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.interfaces.PeerMessage;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.sort.EntityComparator;
 import de.uniks.networkparser.sort.SortingDirection;
 
-public class TableList implements List<Object>, PeerMessage, SendableEntity {
+public class TableList implements List<Object>, SendableEntity {
 	public static final String PROPERTY_ITEMS = "items";
 	protected EntityComparator comparator;
 	protected LinkedHashSet<Object> list;
