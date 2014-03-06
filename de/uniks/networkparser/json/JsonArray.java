@@ -290,4 +290,16 @@ public class JsonArray extends EntityList {
 	public JsonArray getNewArray() {
 		return new JsonArray();
 	}
+	
+	public JsonObject get(String id){
+		for(Object item : values){
+			if(item instanceof JsonObject){
+				JsonObject json = (JsonObject) item;
+				if(json.has(JsonIdMap.ID) && json.getString(JsonIdMap.ID).equals(id)){
+					return json;
+				}
+			}
+		}
+		return null;
+	}
 }

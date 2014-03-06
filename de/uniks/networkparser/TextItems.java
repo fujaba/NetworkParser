@@ -22,11 +22,11 @@ package de.uniks.networkparser;
  permissions and limitations under the Licence.
 */
 import java.util.TreeMap;
+
 import de.uniks.networkparser.interfaces.LocalisationInterface;
-import de.uniks.networkparser.interfaces.PeerMessage;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class TextItems implements SendableEntityCreator, PeerMessage, LocalisationInterface {
+public class TextItems implements SendableEntityCreator, LocalisationInterface {
 	public static final String PROPERTY_VALUE = "value";
 	private TreeMap<String, String> values = new TreeMap<String, String>();
 	private LocalisationInterface customLanguage = null;
@@ -42,7 +42,6 @@ public class TextItems implements SendableEntityCreator, PeerMessage, Localisati
 		return ((TextItems) entity).set(attribute, value);
 	}
 
-	@Override
 	public Object get(String attribute) {
 		if (values.containsKey(attribute)) {
 			return values.get(attribute);
@@ -82,9 +81,7 @@ public class TextItems implements SendableEntityCreator, PeerMessage, Localisati
 		values.put(key, value);
 	}
 
-	@Override
 	public boolean set(String attribute, Object value) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

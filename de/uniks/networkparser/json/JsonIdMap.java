@@ -287,8 +287,9 @@ public class JsonIdMap extends IdMap {
 	public JsonObject encode(Object entity, Filter filter) {
 		return toJsonObject(entity, filter);
 	}
+
 	/**
-	 * Read Json Automatic create JsonArray or JsonObejct
+	 * Read Json Automatic create JsonArray or JsonObject
 	 * @return the object
 	 */
 	public Object decode(String value){
@@ -297,6 +298,11 @@ public class JsonIdMap extends IdMap {
 		}
 		return decode(getPrototyp().withValue(value));
 	}
+
+	/**
+	 * Read Json Automatic create JsonArray or JsonObject
+	 * @return the object
+	 */
 	public Object decode(BaseEntity value) {
 		if(value instanceof JsonArray){
 			return decode((JsonArray) value);

@@ -22,9 +22,8 @@ package de.uniks.networkparser.xml;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.gui.Style;
-import de.uniks.networkparser.interfaces.PeerMessage;
 
-public class XMLStyledEntity extends XMLEntity implements PeerMessage {
+public class XMLStyledEntity extends XMLEntity  {
 	private Style style=new Style();
 	
 	@Override
@@ -51,7 +50,6 @@ public class XMLStyledEntity extends XMLEntity implements PeerMessage {
 	}
 
 
-	@Override
 	public boolean set(String attribute, Object value) {
 		if(style.set(attribute, value)){
 			return true;

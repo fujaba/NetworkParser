@@ -22,12 +22,12 @@ package de.uniks.networkparser.gui.table;
  permissions and limitations under the Licence.
 */
 import java.util.Comparator;
+
 import de.uniks.networkparser.EntityValueFactory;
 import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.interfaces.GUIPosition;
-import de.uniks.networkparser.interfaces.PeerMessage;
 
-public class Column implements PeerMessage{
+public class Column {
 	public static final int AUTOWIDTH=-1;
 	public static final String PROPERTY_STYLE="style";
 	public static final String PROPERTY_ACTIVESTYLE="activeStyle";
@@ -207,7 +207,7 @@ public class Column implements PeerMessage{
 		this.defaultText = defaultText;
 		return this;
 	}
-	@Override
+
 	public Object get(String attribute) {
 		String attrName;
 		int pos = attribute.indexOf(".");
@@ -245,7 +245,6 @@ public class Column implements PeerMessage{
 		return null;
 	}
 	
-	@Override
 	public boolean set(String attribute, Object value) {
 		if (attribute.equalsIgnoreCase(PROPERTY_ATTRNAME)) {
 			withAttrName((String) value);

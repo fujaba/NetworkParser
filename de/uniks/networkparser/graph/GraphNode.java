@@ -29,6 +29,7 @@ import de.uniks.networkparser.interfaces.BaseEntityList;
 public class GraphNode implements BaseEntity {
 	private String className;
 	private String id;
+	private String headImage;
 	private boolean visible = true;
 	private ArrayList<Attribute> values = new ArrayList<Attribute>();
 
@@ -104,6 +105,9 @@ public class GraphNode implements BaseEntity {
 	public void addValue(String property, String clazz, String value) {
 		values.add(new Attribute().withKey(property).withClazz(clazz).withValue(value));
 	}
+	public void addValue(Attribute attribute) {
+		values.add(attribute);
+	}
 
 	@Override
 	public String toString(int indentFactor) {
@@ -116,5 +120,14 @@ public class GraphNode implements BaseEntity {
 			return className;
 		}
 		return id;
+	}
+
+	public String getHeadImage() {
+		return headImage;
+	}
+
+	public GraphNode withHeadImage(String headImage) {
+		this.headImage = headImage;
+		return this;
 	}
 }

@@ -22,6 +22,7 @@ package de.uniks.networkparser.graph;
  permissions and limitations under the Licence.
 */
 import java.util.Collection;
+
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.BaseEntity;
@@ -174,6 +175,11 @@ public class GraphIdMap extends IdMap {
 	public Object decode(BaseEntity value) {
 		return null;
 	}
+	
+	@Override
+	public Object decode(String value) {
+		return null;
+	}
 
 	/**
 	 * Gets the class name.
@@ -188,5 +194,11 @@ public class GraphIdMap extends IdMap {
 		}
 		String className = object.getClass().getName();
 		return className.substring(className.lastIndexOf('.') + 1);
+	}
+
+
+	@Override
+	public BaseEntity getPrototyp() {
+		return new GraphList();
 	}
 }

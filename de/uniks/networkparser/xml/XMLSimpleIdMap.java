@@ -95,6 +95,17 @@ public class XMLSimpleIdMap extends IdMap {
 		return null;
 	}
 	
+	/**
+	 * Read Json Automatic create JsonArray or JsonObject
+	 * @return the object
+	 */
+	public Object decode(String value){
+		if(value.startsWith("<")){
+			return decode(getPrototyp().getNewArray().withValue(value));
+		}
+		return decode(getPrototyp().withValue(value));
+	}
+	
 	
 	//FIXME new Functionality
 	@Override
@@ -268,5 +279,10 @@ public class XMLSimpleIdMap extends IdMap {
 		}
 		entity.setTag(tag);
 		return entity;
+	}
+	
+	@Override
+	public XMLEntity getPrototyp() {
+		return new XMLEntity();
 	}
 }

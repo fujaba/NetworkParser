@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+
 import de.uniks.networkparser.interfaces.BaseEntityList;
 /**
  * The Class EntityList.
@@ -60,7 +61,6 @@ public abstract class EntityList implements BaseEntityList, List<Object> {
 		return this;
 	}
 
-	//FIXME
 	protected void initMap(){
 		this.values=new ArrayList<Object>();
 	}

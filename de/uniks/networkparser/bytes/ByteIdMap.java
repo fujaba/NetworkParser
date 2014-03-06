@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import de.uniks.networkparser.AbstractMap;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
@@ -40,9 +41,9 @@ import de.uniks.networkparser.event.creator.BasicMessageCreator;
 import de.uniks.networkparser.interfaces.BaseEntity;
 import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteConverter;
-import de.uniks.networkparser.interfaces.SendableEntityCreatorByte;
 import de.uniks.networkparser.interfaces.ByteItem;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorByte;
 /**
  * The Class ByteIdMap.
  */
@@ -532,5 +533,10 @@ public class ByteIdMap extends IdMap {
 			}
 		}
 		return null;
+	}
+	
+	@Override
+	public ByteEntity getPrototyp() {
+		return new ByteEntity();
 	}
 }

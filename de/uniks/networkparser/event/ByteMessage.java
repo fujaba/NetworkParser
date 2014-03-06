@@ -21,12 +21,11 @@ package de.uniks.networkparser.event;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.interfaces.PeerMessage;
 /**
  * The Class ByteMessage.
  */
 
-public class ByteMessage implements PeerMessage {
+public class ByteMessage  {
 	/** The Constant PROPERTY_VALUE. */
 	public static final String PROPERTY_VALUE = "value";
 
@@ -36,7 +35,6 @@ public class ByteMessage implements PeerMessage {
 	/*
 	 * Generic Getter for Attributes
 	 */
-	@Override
 	public Object get(String attrName) {
 		String attribute;
 		int pos = attrName.indexOf(".");
@@ -54,7 +52,6 @@ public class ByteMessage implements PeerMessage {
 	/*
 	 * Generic Setter for Attributes
 	 */
-	@Override
 	public boolean set(String attribute, Object value) {
 		if (attribute.equalsIgnoreCase(PROPERTY_VALUE)) {
 			withValue((byte[]) value);
