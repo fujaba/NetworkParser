@@ -23,6 +23,7 @@ package de.uniks.networkparser.bytes;
 */
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
+
 import de.uniks.networkparser.EntityList;
 import de.uniks.networkparser.bytes.converter.ByteConverterHTTP;
 import de.uniks.networkparser.interfaces.BufferedBytes;

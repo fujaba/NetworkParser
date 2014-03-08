@@ -30,8 +30,10 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
+
 import de.uniks.networkparser.EntityList;
 import de.uniks.networkparser.Filter;
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.ReferenceObject;
 import de.uniks.networkparser.event.MapEntry;
@@ -49,7 +51,7 @@ import de.uniks.networkparser.sort.EntityComparator;
  * The Class JsonIdMap.
  */
 
-public class JsonIdMap extends IdMapEncoder {
+public class JsonIdMap extends IdMap {
 	/** The Constant CLASS. */
 	public static final String CLASS = "class";
 
