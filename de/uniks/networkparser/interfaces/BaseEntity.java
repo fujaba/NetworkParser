@@ -1,5 +1,6 @@
 package de.uniks.networkparser.interfaces;
 
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel

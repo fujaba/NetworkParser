@@ -284,7 +284,7 @@ public class JsonObject extends Entity implements LocalisationEntity {
 		}
 		return this;
 	}
-	
+
 	/**
 	 * add the Values of the map to JsonObjectmap
 	 * 
