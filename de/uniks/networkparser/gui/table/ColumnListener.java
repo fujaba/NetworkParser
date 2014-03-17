@@ -49,6 +49,10 @@ public class ColumnListener {
 	public CellEditorElement onEdit(Object entity, SendableEntityCreator creator){
 		return null;
 	}
+	
+	public boolean isFinish(){
+		return false;
+	}
 
 	public boolean setValue(Object controll, Object entity, SendableEntityCreator creator, Object value) {
 		if(creator==null){

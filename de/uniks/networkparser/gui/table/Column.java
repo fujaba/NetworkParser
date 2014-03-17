@@ -322,6 +322,7 @@ public class Column {
 	public Column withListener(ColumnListener handler){
 		this.handler = handler;
 		this.handler.withColumn(this);
+		this.withEditable(true);
 		return this;
 	}
 	
