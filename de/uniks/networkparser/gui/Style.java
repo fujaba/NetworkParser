@@ -220,12 +220,11 @@ public class Style implements Cloneable{
 	}
 	
 	public Style clone(){
-		try {
-			super.clone();
-		} catch (CloneNotSupportedException e) {
-		}
-		return new Style()
-				.withFontFamily(fontfamily)
+		return clone(new Style());
+	}
+	
+	public Style clone(Style prototyp){
+		return prototyp.withFontFamily(fontfamily)
 				.withFontSize(fontsize)
 				.withForground(forground)
 				.withBackground(background)
@@ -236,6 +235,8 @@ public class Style implements Cloneable{
 				.withWidth(width)
 				.withHeight(height);
 	}
+	
+	
 
 	public boolean isUnderline() {
 		return underline;
