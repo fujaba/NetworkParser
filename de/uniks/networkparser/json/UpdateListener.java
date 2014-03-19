@@ -253,7 +253,7 @@ public class UpdateListener implements PropertyChangeListener {
 		Object masterObj = this.map.getObject(id);
 		if (masterObj != null) {
 			SendableEntityCreator creator = this.map.getCreatorClass(masterObj);
-			if (remove == null) {
+			if (remove == null && update != null) {
 				// create Message
 				Object refObject = creator.getSendableInstance(true);
 				Iterator<String> keys = update.keys();
@@ -291,7 +291,7 @@ public class UpdateListener implements PropertyChangeListener {
 					}
 				}
 				return true;
-			} else if (update == null) {
+			} else if (update == null && remove != null) {
 				// delete Message
 				Object refObject = creator.getSendableInstance(true);
 				Iterator<String> keys = remove.keys();
@@ -322,7 +322,7 @@ public class UpdateListener implements PropertyChangeListener {
 					}
 				}
 				return true;
-			} else {
+			} else if(update!= null){
 				// update Message
 				Iterator<String> keys = update.keys();
 				while (keys.hasNext()) {
