@@ -27,7 +27,7 @@ public class UpdateAccumulate {
 			JsonObject child;
 			
 			// OldValue
-			if(change.has(IdMapEncoder.REMOVE)){
+			if(!change.has(IdMapEncoder.REMOVE)){
 				child =change.getJsonObject(IdMapEncoder.REMOVE);
 				change.put(IdMapEncoder.REMOVE, child);
 			}else{
@@ -44,8 +44,8 @@ public class UpdateAccumulate {
 			}
 			
 			// NewValue
-			if(change.has(IdMapEncoder.UPDATE)){
-				child =change.getJsonObject(IdMapEncoder.UPDATE);
+			if(!change.has(IdMapEncoder.UPDATE)){
+				child = change.getJsonObject(IdMapEncoder.UPDATE);
 				change.put(IdMapEncoder.UPDATE, child);
 			}else{
 				child = new JsonObject();
