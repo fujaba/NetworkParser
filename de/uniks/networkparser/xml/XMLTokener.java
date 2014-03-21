@@ -30,7 +30,7 @@ import de.uniks.networkparser.interfaces.BaseEntityList;
 public class XMLTokener extends Tokener {
 	/**
 	 * Get the next value. The value can be a Boolean, Double, Integer,
-	 * JSONArray, JSONObject, Long, or String, or the JSONObject.NULL object.
+     * BaseEntity, Long, or String.
 	 * 
 	 * @return An object.
 	 */
@@ -79,7 +79,7 @@ public class XMLTokener extends Tokener {
 		XMLEntity xmlEntity = (XMLEntity) entity;
 		StringBuilder sb = new StringBuilder();
 		c = nextClean();
-		while (c >= ' ' && getStopChars().indexOf(c) < 0) {
+		while (c >= ' ' && getStopChars().indexOf(c) < 0 && c!='>') {
 			sb.append(c);
 			c = next();
 		}

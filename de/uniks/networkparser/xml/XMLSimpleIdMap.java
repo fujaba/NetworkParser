@@ -92,7 +92,7 @@ public class XMLSimpleIdMap extends IdMap {
 			if (this.value.stepPos("" + ITEMSTART, false, false)) {
 				XMLEntity item = getEntity(factory);
 				if (item != null) {
-					return parse(item, factory, "");
+					return parseRoot(item, factory);
 				}
 			}
 		}
@@ -161,6 +161,14 @@ public class XMLSimpleIdMap extends IdMap {
 		return xmlEntity;
 	}
 
+    /**
+     * @param entity
+     * @param styleFormatCreator
+     * @return the object
+     */
+    protected Object parseRoot(XMLEntity entity, XMLGrammar styleFormatCreator) {
+        return parse(entity, styleFormatCreator, "");
+    }
 
 	/**
 	 * Find tag.
