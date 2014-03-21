@@ -34,6 +34,7 @@ import de.uniks.networkparser.ReferenceObject;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorXML;
 import de.uniks.networkparser.logic.BooleanCondition;
+import de.uniks.networkparser.xml.creator.XMLEntityCreator;
 import de.uniks.networkparser.xml.creator.XMLGrammar;
 /**
  * The Class XMLIdMap.
@@ -231,26 +232,21 @@ public class XMLIdMap extends XMLSimpleIdMap {
 		return null;
 	}
 
-//FIXME	/**
+/**
 //	 * Decode.
 //	 * 
 //	 * @param value
 //	 *            the value
 //	 * @return the object
 //	 */
-//	@Override
-//	public Object decode(XMLTokener entity, XMLGrammar factory) {
-//		Object result = null;
-//		this.value = new XMLTokener().withText(value);
-//		this.stack.clear();
-//		while (!this.value.isEnd()) {
-//			if (this.value.stepPos("" + ITEMSTART, false, false)) {
-//				XMLEntity item = getEntity(null);
-//				result = parse(item, factory);
-//			}
-//		}
-//		return result;
-//	}
+    @Override
+    public Object decode(XMLTokener entity, XMLGrammar factory) {
+        if(factory==null){
+            factory=new XMLEntityCreator();
+        }
+        return super.decode(entity, factory);
+    }
+
 	public Object decode(String value) {
 		return decode((XMLTokener) new XMLTokener().withText(value), null);
 	}
