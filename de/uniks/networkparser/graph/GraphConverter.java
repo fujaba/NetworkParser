@@ -112,6 +112,13 @@ public class GraphConverter implements Converter {
 							}
 						}
 					}
+					if(sb.length()>0){
+						Attribute attribute = new Attribute().withKey(key).withClazz(value.getClass().getName()).withValue(sb.toString());
+						if(attributes.get(graphNode)==null){
+							attributes.put(graphNode, new ArrayList<Attribute>());
+						}
+						attributes.get(graphNode).add(attribute);
+					}
 				}else{
 					Attribute attribute = new Attribute().withKey(key).withClazz(value.getClass().getName()).withValue(value.toString());
 					if(attributes.get(graphNode)==null){
