@@ -232,38 +232,36 @@ public class JsonIdMap extends IdMap {
 
 	protected Object parseItem(Object item, Filter filter, Object entity,
 			String property, JsonArray jsonArray, String className, int deep) {
-		if (item != null && filter.isPropertyRegard(this, item, property, entity, true, deep)) {
-//			boolean typSave = isTypSave();
-
-			if (className == null) {
-				className = entity.getClass().getName();
-			}
-			SendableEntityCreator valueCreater = getCreatorClasses(className);
-			boolean isId = filter.isId(this, entity, className);
-			if (valueCreater != null) {
-				if (filter.isConvertable(this, entity, property, item, true, deep) ) {
-					String subId = this.getKey(entity);
-					if (valueCreater instanceof SendableEntityCreatorNoIndex
-							|| (isId &&!filter.hasVisitedObjects(subId))
-							|| (!isId && !filter.hasVisitedObjects(entity))){ 
-						if (jsonArray == null) {
-							JsonObject result = toJsonObject(entity, filter,
-									className, deep+1);
-							return result;
-						}
-						this.toJsonArray(entity, jsonArray, filter, deep+1);
-					}
-				}
-				return getPrototyp().withValue(ID, getId(entity));
-			}
-			if (typSave) {
-				JsonObject returnValue = getPrototyp().withValue(CLASS, className);
-				returnValue.put(VALUE, entity);
-				return returnValue;
-			}
-			return entity;
+		if (item == null || !filter.isPropertyRegard(this, item, property, entity, true, deep)) {
+			return null;
 		}
-		return null;
+		if (className == null) {
+			className = entity.getClass().getName();
+		}
+		SendableEntityCreator valueCreater = getCreatorClasses(className);
+		boolean isId = filter.isId(this, entity, className);
+		if (valueCreater != null) {
+			if (filter.isConvertable(this, entity, property, item, true, deep) ) {
+				String subId = this.getKey(entity);
+				if (valueCreater instanceof SendableEntityCreatorNoIndex
+						|| (isId &&!filter.hasVisitedObjects(subId))
+						|| (!isId && !filter.hasVisitedObjects(entity))){ 
+					if (jsonArray == null) {
+						JsonObject result = toJsonObject(entity, filter,
+								className, deep+1);
+						return result;
+					}
+					this.toJsonArray(entity, jsonArray, filter, deep+1);
+				}
+			}
+			return getPrototyp().withValue(ID, getId(entity));
+		}
+		if (typSave) {
+			JsonObject returnValue = getPrototyp().withValue(CLASS, className);
+			returnValue.put(VALUE, entity);
+			return returnValue;
+		}
+		return entity;
 	}
 	
 	/**
@@ -604,9 +602,10 @@ public class JsonIdMap extends IdMap {
 		
 		if(object instanceof Collection<?>){
 			Collection<?> list = (Collection<?>) object;
+			Filter newFilter = filter.withStandard(this.filter);
 			for(Iterator<?> i = list.iterator();i.hasNext();){
 				Object item = i.next();
-				toJsonArray(item, jsonArray, filter);
+				toJsonArray(item, jsonArray, newFilter, 0);
 			}
 			return jsonArray;
 		}
@@ -655,7 +654,8 @@ public class JsonIdMap extends IdMap {
 
 		JsonObject jsonObject = jsonArray.getNewObject();
 		boolean sortedArray = jsonArray instanceof SortedSet<?>;
-		if (filter.isId(this, entity, className)) {
+		boolean isId = filter.isId(this, entity, className);
+		if (isId) {
 			if (!filter.hasVisitedObjects(id) ) {
 				jsonObject.put(ID, id);
 				jsonObject.put(CLASS, className);
@@ -675,7 +675,11 @@ public class JsonIdMap extends IdMap {
 			throw new RuntimeException("No Creator exist for " + className);
 		}
 		String[] properties = prototyp.getProperties();
-		filter.addToVisitedObjects(id);
+		if (isId) {
+			filter.addToVisitedObjects(id);
+		}else{
+			filter.addToVisitedObjects(entity);
+		}
 
 		if (properties != null) {
 			JsonObject jsonProps = getPrototyp();
