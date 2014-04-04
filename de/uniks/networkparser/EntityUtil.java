@@ -235,8 +235,8 @@ public class EntityUtil {
 		if (value instanceof Entity) {
 			return ((Entity) value).toString(indentFactor, intent);
 		}
-		if (value instanceof EntityList) {
-			return ((EntityList) value).toString(indentFactor, intent);
+		if (value instanceof EntityCollection) {
+			return ((EntityCollection) value).toString(indentFactor, intent);
 		}
 		if (value instanceof Map) {
 			Entity entity = (Entity) reference.getNewObject();
@@ -276,8 +276,8 @@ public class EntityUtil {
 		if (value instanceof Entity) {
 			return ((Entity) value).toString();
 		}
-		if (value instanceof EntityList) {
-			return ((EntityList) value).toString();
+		if (value instanceof EntityCollection) {
+			return ((EntityCollection) value).toString();
 		}
 		if (value instanceof Map) {
 			Entity entity = (Entity) reference.getNewObject();
@@ -321,7 +321,7 @@ public class EntityUtil {
 				return null;
 			}
 
-			if (object instanceof Entity || object instanceof EntityList
+			if (object instanceof Entity || object instanceof EntityCollection
 					|| object instanceof Byte || object instanceof Character
 					|| object instanceof Short || object instanceof Integer
 					|| object instanceof Long || object instanceof Boolean
