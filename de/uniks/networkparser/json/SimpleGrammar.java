@@ -34,7 +34,8 @@ public class SimpleGrammar extends Grammar{
 	 * @param jsonObject
 	 * @return the props of theJsonObject
 	 */
-	public JsonObject getReadProperties(JsonObject jsonObject, IdMapEncoder map) {
+	@Override
+	public JsonObject getReadProperties(JsonObject jsonObject, IdMapEncoder map, Filter filter, boolean isId) {
 		jsonObject.remove(ID);
 		return jsonObject;
 	}
