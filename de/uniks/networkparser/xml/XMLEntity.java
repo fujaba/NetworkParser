@@ -27,7 +27,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import de.uniks.networkparser.Entity;
-import de.uniks.networkparser.EntityList;
+import de.uniks.networkparser.EntityCollection;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.BaseEntity;
@@ -76,7 +76,7 @@ public class XMLEntity extends Entity implements BaseEntityList {
 	 * 
 	 * @see de.uni.kassel.peermessage.BaseEntity#getNewArray()
 	 */
-	public EntityList getNewArray() {
+	public EntityCollection getNewArray() {
 		return null;
 	}
 

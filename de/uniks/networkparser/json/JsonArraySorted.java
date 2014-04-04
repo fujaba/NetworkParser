@@ -28,7 +28,7 @@ import java.util.SortedSet;
 import de.uniks.networkparser.sort.EntityComparator;
 import de.uniks.networkparser.sort.SortingDirection;
 
-public class JsonArraySorted extends JsonArray implements SortedSet<Object>{
+public class JsonArraySorted extends JsonCollection implements SortedSet<Object>{
 	protected Comparator<Object> cpr;
 	
 	@Override
