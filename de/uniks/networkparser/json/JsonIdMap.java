@@ -461,7 +461,8 @@ public class JsonIdMap extends IdMap {
 	protected Object decode(Object target, JsonObject jsonObject,
 			LinkedHashSet<ReferenceObject> refs, Filter filter) {
 		// JSONArray jsonArray;
-		if (filter.isId(this, target, target.getClass().getName())) {
+		boolean isId = filter.isId(this, target, target.getClass().getName());
+		if (isId) {
 			String jsonId =  grammar.getReadValue(jsonObject, ID);
 			if (jsonId == null) {
 				return target;
@@ -469,7 +470,7 @@ public class JsonIdMap extends IdMap {
 			put(jsonId, target);
 			getCounter().readId(jsonId);
 		}
-		JsonObject jsonProp = grammar.getReadProperties(jsonObject, this);
+		JsonObject jsonProp = grammar.getReadProperties(jsonObject, this, filter, isId);
 		if (jsonProp != null) {
 			SendableEntityCreator prototyp = grammar.getWriteCreator(target,
 					target.getClass().getName(), this);
