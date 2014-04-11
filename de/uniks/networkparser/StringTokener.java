@@ -85,11 +85,6 @@ public class StringTokener extends Tokener {
 				count++;
 			}
 		}
-//FIXME		if(current==end){
-//			if(count==1){
-//				return buffer.substring(pos, buffer.position()-pos+1);
-//			}
-//		}
 		return null;
     }
 

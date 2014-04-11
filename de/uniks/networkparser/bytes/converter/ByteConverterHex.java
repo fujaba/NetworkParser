@@ -1,5 +1,6 @@
 package de.uniks.networkparser.bytes.converter;
 
+import de.uniks.networkparser.EntityUtil;
 /*
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
@@ -32,9 +33,13 @@ public class ByteConverterHex extends ByteConverter {
 	 */
 	@Override
 	public String toString(byte[] values, int size) {
+		return toString(values, size, 0);
+	}
+	public String toString(byte[] values, int size, int space) {
 		String hexVal = "0123456789ABCDEF";
 
 		StringBuilder returnValue = new StringBuilder(size << 1 );
+		String step = EntityUtil.repeat(' ', space);
 		if (values != null) {
 			for (int i = 0; i < size; i++) {
 				int value = values[i];
@@ -42,7 +47,7 @@ public class ByteConverterHex extends ByteConverter {
 					value += 256;
 				}
 				returnValue.append("" + hexVal.charAt(value / 16)
-						+ hexVal.charAt(value % 16));
+						+ hexVal.charAt(value % 16)+step);
 			}
 		}
 		return returnValue.toString();

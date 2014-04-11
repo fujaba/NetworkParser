@@ -113,37 +113,12 @@ public class DateTimeEntity  {
 		}
 		return true; // Julian
 	}
-
-	public void calculate(){
-		Long time = getTimeWithTimeZone();
-		this.fields.put(DateField.MILLISECONDS, time);
-		this.fields.put(DateField.MILLISECOND, time%ONE_SECOND);
-
-//		time += ONE_HOUR;
-		this.fields.put(DateField.MILLISECONDSREAL, time);
-
-		
-		long daymillis=time % ONE_DAY;
-		if(daymillis>ONE_DAY/2){
-			this.fields.put(DateField.AMPM, 1L);
-		}else{
-			this.fields.put(DateField.AMPM, 0L);
-		}
-		this.fields.put(DateField.MILLISECOND_OF_DAY, daymillis);
-		this.fields.put(DateField.HOUR_OF_DAY, daymillis/ONE_HOUR);
-		this.fields.put(DateField.MINUTE_OF_HOUR, (daymillis%ONE_HOUR)/ONE_MINUTE);
-		this.fields.put(DateField.SECOND_OF_MINUTE, (daymillis%ONE_MINUTE)/ONE_SECOND);
-		
+	
+	private boolean internCalculate(long time){
 		long years = time/ONE_YEAR+1970;
 		long schaltjahre=((years-1)-1968)/4 - ((years-1)-1900)/100 + ((years-1)-1600)/400;
-		
 		long yearMillis = (time-(schaltjahre-1)*ONE_DAY) % ONE_YEAR;
 		int year=(int)((time-schaltjahre*ONE_DAY)/ONE_YEAR)+1970;
-		this.fields.put(DateField.MILLISECOND_OF_YEAR, yearMillis);
-
-		long dayOfYear = yearMillis/ONE_DAY;
-		this.fields.put(DateField.DAY_OF_YEAR, dayOfYear);
-		this.fields.put(DateField.YEAR, (long) year);
 		int month=0;
 		long temp=yearMillis;
 		long day=0;
@@ -166,24 +141,64 @@ public class DateTimeEntity  {
 				day = (temp + MONTH_LENGTH[month-1]*ONE_DAY)/ONE_DAY;
 			}
 		}
-		this.fields.put(DateField.MONTH, (long) month);
-		this.fields.put(DateField.DAY_OF_MONTH, (long) day);
+		
+		long daymillis=time % ONE_DAY;
+		if(daymillis>ONE_DAY/2){
+			this.fields.put(DateField.AMPM, 1L);
+		}else{
+			this.fields.put(DateField.AMPM, 0L);
+		}
+		long hour=daymillis/ONE_HOUR;
 		
 		// 01.01.70 is Tuersday
 		long dayOfWeek=(time/ONE_DAY - 3) % 7;
+		long leftDays=31-day;
+		if(month>3&&month<10){
+			return true;
+		}else if(month==3&&leftDays<7){
+			if((7-dayOfWeek)>=leftDays || (dayOfWeek==7 && hour>=3)){
+				return true;
+			}
+		}else if(month==10&&leftDays<7 || (dayOfWeek==7 && hour<3)){
+			if((7-dayOfWeek)<leftDays){
+				return true;
+			}
+		}
+		this.fields.put(DateField.MILLISECOND_OF_DAY, daymillis);
+		this.fields.put(DateField.HOUR_OF_DAY, hour);
+		this.fields.put(DateField.MINUTE_OF_HOUR, (daymillis%ONE_HOUR)/ONE_MINUTE);
+		this.fields.put(DateField.SECOND_OF_MINUTE, (daymillis%ONE_MINUTE)/ONE_SECOND);
+
+		
+		this.fields.put(DateField.MILLISECOND_OF_YEAR, yearMillis);
+
+		long dayOfYear = yearMillis/ONE_DAY;
+		this.fields.put(DateField.DAY_OF_YEAR, dayOfYear);
+		this.fields.put(DateField.YEAR, (long) year);
+		this.fields.put(DateField.MONTH, (long) month);
+		this.fields.put(DateField.DAY_OF_MONTH, (long) day);
+		
 		this.fields.put(DateField.DAY_OF_WEEK, dayOfWeek);
-//		int dayOf0101 = (int) ((dayOfYear+dayOfWeek+3)%7)+1;
 		long week= dayOfYear/7;
 		if(dayOfYear%7>0){
 			week++;
 		}
-//		if(dayOf0101>4){
-//			week++;
-//		}
-		this.fields.put(DateField.WEEK_OF_YEAR, week);
+		this.fields.put(DateField.WEEK_OF_YEAR, week+1);
 		this.fields.put(DateField.WEEK_OF_MONTH,  week - ((dayOfYear-day)/7) );
+		this.fields.put(DateField.MILLISECONDSREAL, time);
+		return false;
+	}
 
-		//TIMEZONE not set
+	public void calculate(){
+		Long time = getTimeWithTimeZone();
+		this.fields.put(DateField.MILLISECONDS, time);
+		this.fields.put(DateField.MILLISECOND, time%ONE_SECOND);
+		
+		if(internCalculate(time)){
+			time += ONE_HOUR;
+			internCalculate(time);
+		}
+		
 		this.dirty=false;
 	}
 	

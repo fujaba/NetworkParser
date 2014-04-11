@@ -21,32 +21,14 @@ package de.uniks.networkparser;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.interfaces.Buffer;
 /**
  * Buffer of String for alternative for StringBuffer.
  *
  */
 
-public class CharacterBuffer implements Buffer {
+public class CharacterBuffer extends TextBuffer {
 	/** The buffer. */
 	private char[] buffer;
-
-	/** The length. */
-	private int length;
-
-	/** The index. */
-	private int position;
-
-	/** The line. */
-	private int line;
-
-	/** The character. */
-	private int character;
-
-	@Override
-	public int length() {
-		return length;
-	}
 
 	@Override
 	public char charAt(int index) {
@@ -66,18 +48,6 @@ public class CharacterBuffer implements Buffer {
 		return new String(buffer, start, len);
 	}
 
-	@Override
-	public Buffer withPosition(int value) {
-		this.position = value;
-		return this;
-	}
-
-	@Override
-	public Buffer withLength(int value) {
-		this.length = value;
-		return this;
-	}
-
 	/**
 	 * @param value String of Value
 	 * @return the CharacterBuffer
@@ -86,33 +56,6 @@ public class CharacterBuffer implements Buffer {
 		this.buffer = value.toCharArray();
 		this.length = buffer.length;
 		return this;
-	}
-
-	@Override
-	public int position() {
-		return position;
-	}
-
-	@Override
-	public void back() {
-		this.position -= 1;
-		this.character -= 1;
-	}
-
-	@Override
-	public boolean isEnd() {
-		return length <= this.position;
-	}
-
-	@Override
-	public int remaining() {
-		return length - position;
-	}
-
-	@Override
-	public String toString() {
-		return " at " + this.position + " [character " + this.character + " line "
-				+ this.line + "]";
 	}
 
 	@Override
