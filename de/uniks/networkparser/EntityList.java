@@ -27,6 +27,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+
 import de.uniks.networkparser.interfaces.BaseEntityList;
 import de.uniks.networkparser.sort.EntityComparator;
 import de.uniks.networkparser.sort.SortingDirection;
@@ -34,14 +35,14 @@ import de.uniks.networkparser.sort.SortingDirection;
  * The Class EntityList.
  */
 
-public abstract class EntityList implements BaseEntityList, List<Object> {
-	protected List<Object> values=getNewList();
+public abstract class EntityList<V> implements BaseEntityList, List<V> {
+	protected List<V> values=getNewList();
 	private boolean visible = true;
 	private boolean allowDuplicate = true;
 	protected Comparator<Object> cpr;
 
-	public List<Object> getNewList(){
-		return new ArrayList<Object>();
+	public List<V> getNewList(){
+		return new ArrayList<V>();
 	}
 	
 	public Comparator<? super Object> comparator() {
@@ -50,41 +51,48 @@ public abstract class EntityList implements BaseEntityList, List<Object> {
 		}
 		return cpr;
 	}
-	public EntityList withComparator(Comparator<Object> comparator){
+	
+	public boolean isComparator(){
+		return (this.cpr!=null);
+	}
+	
+	public EntityList<V> withComparator(Comparator<Object> comparator){
 		this.cpr = comparator;
 		return this;
 	}
-	public EntityList withComparator(String column){
+	public EntityList<V> withComparator(String column){
 		this.cpr = new EntityComparator().withColumn(column).withDirection(SortingDirection.ASC);
 		return this;
 	}
 
-
+	@SuppressWarnings("unchecked")
 	public boolean add(Object newValue) {
 		if(cpr==null){
-			values.add(newValue);
+			values.add((V) newValue);
 			return true;
 		}
 		for (int i = 0; i < values.size(); i++) {
 			int result = comparator().compare(values.get(i), newValue);
 			if (result >= 0) {
-				values.add(i, newValue);
+				values.add(i, (V) newValue);
 				return true;
 			}
 		}
-		return values.add(newValue);
+		return values.add((V) newValue);
 	}
 	
-	public EntityList with(Object newvalue){
+	public EntityList<V> with(Object newvalue){
 		add(newvalue);
 		return this;
 	}
 
-	public EntityList subSet(Object fromElement, Object toElement) {
-		EntityList newList = (EntityList) getNewArray();
+	public abstract EntityList<V> getNewArray();
+	
+	public EntityList<V> subSet(Object fromElement, Object toElement) {
+		EntityList<V> newList = getNewArray();
 		
 		// PRE WHILE
-		Iterator<Object> iterator = iterator();
+		Iterator<V> iterator = iterator();
 		while(iterator.hasNext()){
 			Object item = iterator.next();
 			if(cpr.compare(item, fromElement)>=0){
@@ -103,7 +111,7 @@ public abstract class EntityList implements BaseEntityList, List<Object> {
 		}
 		return newList;
 	}
-	public List<Object> subList(int fromIndex, int toIndex) {
+	public List<V> subList(int fromIndex, int toIndex) {
 		return values.subList(fromIndex, toIndex);
 	}
 
@@ -121,9 +129,9 @@ public abstract class EntityList implements BaseEntityList, List<Object> {
      * @param inclusive {@code true} if the high endpoint
      *        is to be included in the returned view
 	*/
-	public EntityList headSet(Object toElement, boolean inclusive) {
-		Iterator<Object> iterator = iterator();
-		EntityList newList = (EntityList) getNewArray();
+	public EntityList<V> headSet(Object toElement, boolean inclusive) {
+		Iterator<V> iterator = iterator();
+		EntityList<V> newList = getNewArray();
 
 		// MUST COPY
 		while(iterator.hasNext()){
@@ -153,9 +161,9 @@ public abstract class EntityList implements BaseEntityList, List<Object> {
      *         (or equal to, if {@code inclusive} is true) {@code fromKey}
      *         
      */
-	public EntityList tailSet(Object fromElement, boolean inclusive) {
-		Iterator<Object> iterator = iterator();
-		EntityList newList = (EntityList) getNewArray();
+	public EntityList<V> tailSet(Object fromElement, boolean inclusive) {
+		Iterator<V> iterator = iterator();
+		EntityList<V> newList = getNewArray();
 
 		// PRE WHILE
 		while(iterator.hasNext()){
@@ -204,8 +212,8 @@ public abstract class EntityList implements BaseEntityList, List<Object> {
 	 *             If there is no value for the index.
 	 */
 	@Override
-	public Object get(int index) throws RuntimeException {
-		Object object = values.get(index);
+	public V get(int index) throws RuntimeException {
+		V object = values.get(index);
 		if (object == null) {
 			throw new RuntimeException("EntityList[" + index + "] not found.");
 		}
@@ -350,7 +358,7 @@ public abstract class EntityList implements BaseEntityList, List<Object> {
 	 *             If the index is negative or if the the value is an invalid
 	 *             number.
 	 */
-	public EntityList put(int index, Object value) throws RuntimeException {
+	public EntityList<V> put(int index, V value) throws RuntimeException {
 		EntityUtil.testValidity(value);
 		if (index < 0) {
 			throw new RuntimeException("EntityList[" + index + "] not found.");
@@ -367,7 +375,7 @@ public abstract class EntityList implements BaseEntityList, List<Object> {
 	}
 	
 	@Override
-	public EntityList withVisible(boolean value) {
+	public EntityList<V> withVisible(boolean value) {
 		this.visible = value;
 		return this;
 	}
@@ -379,14 +387,14 @@ public abstract class EntityList implements BaseEntityList, List<Object> {
 		return allowDuplicate;
 	}
 
-	public EntityList withAllowDuplicate(boolean allowDuplicate) {
+	public EntityList<V> withAllowDuplicate(boolean allowDuplicate) {
 		this.allowDuplicate = allowDuplicate;
 		return this;
 	}
 	
-	public abstract EntityList withValue(String value);
+//	public abstract EntityList withValue(String value);
 
-	public EntityList withValues(Collection<?> collection) {
+	public EntityList<V> withValues(Collection<?> collection) {
 		if (collection != null) {
 			Iterator<?> iter = collection.iterator();
 			while (iter.hasNext()) {
@@ -404,18 +412,18 @@ public abstract class EntityList implements BaseEntityList, List<Object> {
 	 * @return The value that was associated with the index, or null if there
 	 *         was no value.
 	 */
-	public Object remove(int index) {
-		Object o = get(index);
+	public V remove(int index) {
+		V o = get(index);
 		values.remove(index);
 		return o;
 	}
 	
-	public EntityList withList(List<Object> reference){
+	public EntityList<V> withList(List<V> reference){
 		this.values = reference;
 		return this;
 	}
 
-	public EntityList withReference(EntityList reference){
+	public EntityList<V> withReference(EntityList<V> reference){
 		this.cpr = reference.comparator();
 		this.values = reference.getNewList();
 		this.allowDuplicate = reference.isAllowDuplicate();
@@ -456,7 +464,7 @@ public abstract class EntityList implements BaseEntityList, List<Object> {
 	}
 
 	@Override
-	public Iterator<Object> iterator() {
+	public Iterator<V> iterator() {
 		return values.iterator();
 	}
 
@@ -482,11 +490,11 @@ public abstract class EntityList implements BaseEntityList, List<Object> {
 	}
 
 	@Override
-	public boolean addAll(Collection<? extends Object> c) {
+	public boolean addAll(Collection<? extends V> c) {
 		return values.addAll(c);
 	}
 
-	public boolean addAll(int index, Collection<? extends Object> c) {
+	public boolean addAll(int index, Collection<? extends V> c) {
 		return values.addAll(index, c);
 	}
 
@@ -505,11 +513,11 @@ public abstract class EntityList implements BaseEntityList, List<Object> {
 		values.clear();
 	}
 
-	public Object set(int index, Object element) {
+	public V set(int index, V element) {
 		return values.set(index, element);
 	}
 
-	public void add(int index, Object element) {
+	public void add(int index, V element) {
 		values.add(index, element);
 	}
 
@@ -521,11 +529,11 @@ public abstract class EntityList implements BaseEntityList, List<Object> {
 		return values.lastIndexOf(o);
 	}
 
-	public ListIterator<Object> listIterator() {
+	public ListIterator<V> listIterator() {
 		return values.listIterator();
 	}
 
-	public ListIterator<Object> listIterator(int index) {
+	public ListIterator<V> listIterator(int index) {
 		return values.listIterator(index);
 	}
 }

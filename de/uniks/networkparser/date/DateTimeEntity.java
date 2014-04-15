@@ -114,7 +114,7 @@ public class DateTimeEntity  {
 		return true; // Julian
 	}
 	
-	private boolean internCalculate(long time){
+	private boolean internCalculate(long time, boolean calc){
 		long years = time/ONE_YEAR+1970;
 		long schaltjahre=((years-1)-1968)/4 - ((years-1)-1900)/100 + ((years-1)-1600)/400;
 		long yearMillis = (time-(schaltjahre-1)*ONE_DAY) % ONE_YEAR;
@@ -153,15 +153,17 @@ public class DateTimeEntity  {
 		// 01.01.70 is Tuersday
 		long dayOfWeek=(time/ONE_DAY - 3) % 7;
 		long leftDays=31-day;
-		if(month>3&&month<10){
-			return true;
-		}else if(month==3&&leftDays<7){
-			if((7-dayOfWeek)>=leftDays || (dayOfWeek==7 && hour>=3)){
+		if(calc){
+			if(month>3&&month<10){
 				return true;
-			}
-		}else if(month==10&&leftDays<7 || (dayOfWeek==7 && hour<3)){
-			if((7-dayOfWeek)<leftDays){
-				return true;
+			}else if(month==3&&leftDays<7){
+				if((7-dayOfWeek)>=leftDays || (dayOfWeek==7 && hour>=3)){
+					return true;
+				}
+			}else if(month==10&&leftDays<7 || (dayOfWeek==7 && hour<3)){
+				if((7-dayOfWeek)<leftDays){
+					return true;
+				}
 			}
 		}
 		this.fields.put(DateField.MILLISECOND_OF_DAY, daymillis);
@@ -194,9 +196,9 @@ public class DateTimeEntity  {
 		this.fields.put(DateField.MILLISECONDS, time);
 		this.fields.put(DateField.MILLISECOND, time%ONE_SECOND);
 		
-		if(internCalculate(time)){
+		if(internCalculate(time, true)){
 			time += ONE_HOUR;
-			internCalculate(time);
+			internCalculate(time, false);
 		}
 		
 		this.dirty=false;

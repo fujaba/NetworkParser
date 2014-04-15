@@ -26,11 +26,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class BidiHashMap<K, V> {
-	private Map<K, V> keyValue;
-	private Map<V, K> valueKey;
+public class BidiMap<K, V> {
+	private ArrayEntryList<K, V> values;
 	
-	public BidiHashMap(){
+	public BidiMap(){
 		this.keyValue = getNewKeyValueMap();
 		this.valueKey = getNewValueKeyMap();
 	}
@@ -48,7 +47,7 @@ public class BidiHashMap<K, V> {
 	public K getKey(V value){
 		return valueKey.get(value);
 	}
-	public BidiHashMap<K, V> with(K key, V value){
+	public BidiMap<K, V> with(K key, V value){
 		this.valueKey.put(value, key);
 		this.keyValue.put(key, value);
 		return this;
@@ -63,7 +62,7 @@ public class BidiHashMap<K, V> {
 	}
 
 	
-	public BidiHashMap<K, V> remove(K key, V value){
+	public BidiMap<K, V> remove(K key, V value){
 		this.valueKey.remove(value);
 		this.keyValue.remove(key);
 		return this;
@@ -88,4 +87,5 @@ public class BidiHashMap<K, V> {
 		this.keyValue.clear();
 		this.valueKey.clear();
 	}
+ 
 }

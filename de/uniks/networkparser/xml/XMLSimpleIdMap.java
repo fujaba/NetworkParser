@@ -92,9 +92,6 @@ public class XMLSimpleIdMap extends IdMap {
 	 * @return the object
 	 */
 	public Object decode(String value){
-		if(value.startsWith("<")){
-			return decode(getPrototyp().getNewArray().withValue(value));
-		}
 		return decode(getPrototyp().withValue(value));
 	}
 

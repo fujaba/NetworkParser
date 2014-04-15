@@ -29,7 +29,6 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
 
 import de.uniks.networkparser.EntityList;
 import de.uniks.networkparser.Filter;
@@ -46,6 +45,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.json.creator.JsonArrayCreator;
 import de.uniks.networkparser.json.creator.JsonObjectCreator;
 import de.uniks.networkparser.logic.Deep;
+import de.uniks.networkparser.sort.EntityComparator;
 /**
  * The Class JsonIdMap.
  */
@@ -189,7 +189,7 @@ public class JsonIdMap extends IdMap {
 				SendableEntityCreator referenceCreator = getCreatorClass(value);
 				if (value instanceof Collection<?> && referenceCreator == null) {
 					// Simple List or Assocs
-					EntityList subValues = getPrototyp().getNewArray();
+					EntityList<Object> subValues = getPrototyp().getNewArray();
 //					jsonArray.getNewArray();
 					for (Object containee : ((Collection<?>) value)) {
 						Object item = parseItem(entity, filter, containee,
@@ -204,7 +204,7 @@ public class JsonIdMap extends IdMap {
 				} else if (value instanceof Map<?, ?>
 						&& referenceCreator == null) {
 					// Maps
-					EntityList subValues = getPrototyp().getNewArray();
+					EntityList<Object> subValues = getPrototyp().getNewArray();
 					Map<?, ?> map = (Map<?, ?>) value;
  					String packageName = MapEntry.class.getName();
 					for (Iterator<?> i = map.entrySet().iterator(); i.hasNext();) {
@@ -629,6 +629,9 @@ public class JsonIdMap extends IdMap {
 		if(filter==null){
 			filter = this.filter;
 		}
+		if(jsonArray.isComparator() && jsonArray.comparator() instanceof EntityComparator){
+			((EntityComparator)jsonArray.comparator()).withMap(this);
+		}
 		return toJsonArray(object, jsonArray, filter.withStandard(this.filter), 0);
 	}
 
@@ -638,7 +641,7 @@ public class JsonIdMap extends IdMap {
 		String id = getId(entity);
 
 		JsonObject jsonObject = jsonArray.getNewObject();
-		boolean sortedArray = jsonArray instanceof SortedSet<?>;
+		boolean sortedArray = jsonArray.isComparator();
 		boolean isId = filter.isId(this, entity, className);
 		if (isId) {
 			if (!filter.hasVisitedObjects(id) ) {

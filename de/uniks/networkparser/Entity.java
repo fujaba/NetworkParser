@@ -47,26 +47,10 @@ public abstract class Entity implements BaseEntity {
 	public Iterator<Entry<String, Object>> iterator(){
 		return getMap().entrySet().iterator();
 	}
-
-	public Entity initWithMap(Map<String, Object> map) {
+	
+	public Entity withValues(Map<?, ?> map) {
 		if (map != null) {
 			getMap();
-			Iterator<Entry<String, Object>> i = map.entrySet().iterator();
-			while (i.hasNext()) {
-				Entry<String, Object> e = i.next();
-				Object value = e.getValue();
-				if (value != null) {
-					this.put(EntityUtil.wrap(e.getKey(), this).toString(),
-							EntityUtil.wrap(value, this));
-				}
-			}
-		}
-		return this;
-	}
-
-	public Entity initWithMap(Object value) {
-		if (value != null && value instanceof Map<?, ?>) {
-			Map<?, ?> map = (Map<?, ?>) value;
 			for (Iterator<?> i = map.entrySet().iterator(); i.hasNext();) {
 				java.util.Map.Entry<?, ?> mapEntry = (Entry<?, ?>) i.next();
 				Object item = mapEntry.getValue();
@@ -103,7 +87,7 @@ public abstract class Entity implements BaseEntity {
 			this.put(key, value instanceof EntityList ? getNewArray()
 					.add(value) : value);
 		} else if (object instanceof EntityList) {
-			((EntityList) object).add(value);
+			((EntityList<?>) object).add(value);
 		} else {
 			this.put(key, getNewArray().with(object).with(value));
 		}
@@ -227,27 +211,6 @@ public abstract class Entity implements BaseEntity {
 	}
 
 	/**
-	 * Get the long value associated with a key.
-	 * 
-	 * @param key
-	 *            A key string.
-	 * @return The long value.
-	 * @throws RuntimeException
-	 *             if the key is not found or if the value cannot be converted
-	 *             to a long.
-	 */
-	public long getLong(String key) throws RuntimeException{
-		Object object = this.get(key);
-		try {
-			return object instanceof Number ? ((Number) object).longValue()
-					: Long.parseLong((String) object);
-		} catch (Exception e) {
-			throw new RuntimeException("Entity[" + EntityUtil.quote(key)
-					+ "] is not a long.");
-		}
-	}
-
-	/**
 	 * Get an array of field names from a Entity.
 	 * 
 	 * @return An array of field names, or null if there are no names.
@@ -328,19 +291,38 @@ public abstract class Entity implements BaseEntity {
 		Object value = this.get(key);
 		if (value == null) {
 			this.put(key, 1);
-		} else if (value instanceof Integer) {
-			this.put(key, ((Integer) value).intValue() + 1);
-		} else if (value instanceof Long) {
-			this.put(key, ((Long) value).longValue() + 1);
-		} else if (value instanceof Double) {
-			this.put(key, ((Double) value).doubleValue() + 1);
-		} else if (value instanceof Float) {
-			this.put(key, ((Float) value).floatValue() + 1);
-		} else {
-			throw new RuntimeException("Unable to increment ["
-					+ EntityUtil.quote(key) + "].");
+			return this;
 		}
-		return this;
+		if (value instanceof Integer) {
+			this.put(key, ((Integer) value).intValue() + 1);
+			return this;
+		}
+		if (value instanceof Long) {
+			this.put(key, ((Long) value).longValue() + 1);
+			return this;
+		}
+		if (value instanceof Double) {
+			this.put(key, ((Double) value).doubleValue() + 1);
+			return this;
+		}
+		if (value instanceof Float) {
+			this.put(key, ((Float) value).floatValue() + 1);
+			return this;
+		}
+		if (value instanceof String) {
+			try {
+				this.put(key, ""+(getInt(key) + 1));
+				return this;
+			} catch (Exception e) {
+			}
+			try {
+				this.put(key, ""+(getDouble(key) + 1));
+				return this;
+			} catch (Exception e) {
+				throw new RuntimeException("Unable to increment [" + EntityUtil.quote(key) + "].");
+			}
+		}
+		throw new RuntimeException("Unable to increment [" + EntityUtil.quote(key) + "].");			
 	}
 
 	/**
@@ -364,19 +346,21 @@ public abstract class Entity implements BaseEntity {
 		return this.map.size();
 	}
 
+	public abstract EntityList<Object> getNewArray();
+	
 	/**
 	 * Produce a EntityList containing the names of the elements of this Entity.
 	 * 
 	 * @return A EntityList containing the key strings, or null if the Entity is
 	 *         empty.
 	 */
-	public EntityList names() {
-		BaseEntityList ja = getNewArray();
+	public EntityList<Object> names() {
+		EntityList<Object> ja = getNewArray();
 		Iterator<String> keys = this.keys();
 		while (keys.hasNext()) {
 			ja.add(keys.next());
 		}
-		return ja.size() == 0 ? null : (EntityList) ja;
+		return ja.size() == 0 ? null : ja;
 	}
 
 	/**
@@ -447,22 +431,6 @@ public abstract class Entity implements BaseEntity {
 	 */
 	public Entity put(String key, long value) {
 		this.put(key, Long.valueOf(value));
-		return this;
-	}
-
-	/**
-	 * Put a key/value pair in the Entity, where the value will be a Entity
-	 * which is produced from a Map.
-	 * 
-	 * @param key
-	 *            A key string.
-	 * @param value
-	 *            A Map value.
-	 * @return this.
-	 */
-	public Entity put(String key, Map<String, Object> value) {
-		this.put(key, getNewObject());
-		this.initWithMap(value);
 		return this;
 	}
 
@@ -541,7 +509,7 @@ public abstract class Entity implements BaseEntity {
 			if (end == 0) {
 				if (id >= 0 || id == -2) {
 					if (child instanceof EntityList) {
-						EntityList list = (EntityList) child;
+						EntityList<?> list = (EntityList<?>) child;
 						if (id == -2) {
 							id = list.size() - 1;
 						}
@@ -566,7 +534,7 @@ public abstract class Entity implements BaseEntity {
 							return result;
 						}
 
-						EntityList list = (EntityList) child;
+						EntityList<?> list = (EntityList<?>) child;
 						if (id == -2) {
 							id = list.size() - 1;
 						}
@@ -589,6 +557,7 @@ public abstract class Entity implements BaseEntity {
 	 * @param key
 	 * @param value
 	 */
+	@SuppressWarnings("unchecked")
 	public Entity setValue(String key, Object value) {
 		int len = 0;
 		int end = 0;
@@ -626,7 +595,7 @@ public abstract class Entity implements BaseEntity {
 			if (end == 0) {
 				if (id >= 0 || id == -2) {
 					if (child instanceof EntityList) {
-						EntityList list = (EntityList) child;
+						EntityList<Object> list = (EntityList<Object>) child;
 						if (id == -2) {
 							id = list.size() - 1;
 						}
@@ -648,7 +617,7 @@ public abstract class Entity implements BaseEntity {
 			} else {
 				if (id >= 0 || id == -2) {
 					if (child instanceof EntityList) {
-						EntityList list = (EntityList) child;
+						EntityList<?> list = (EntityList<?>) child;
 						if (id == -2) {
 							id = list.size() - 1;
 						}

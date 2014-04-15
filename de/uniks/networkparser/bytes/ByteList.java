@@ -28,7 +28,7 @@ import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteConverter;
 import de.uniks.networkparser.interfaces.ByteItem;
 
-public class ByteList extends EntityList implements ByteItem {
+public class ByteList extends EntityList<ByteEntity> implements ByteItem {
 	/** The children of the ByteEntity. */
 	private byte typ = 0;
 
@@ -155,8 +155,7 @@ public class ByteList extends EntityList implements ByteItem {
 		this.typ = value;
 	}
 
-	@Override
-	public EntityList withValue(String value) {
+	public EntityList<ByteEntity> withValue(String value) {
 		ByteConverterString	converter = new ByteConverterString();
 		this.add(getNewObject().withValue(ByteIdMap.DATATYPE_FIXED, converter.decode(value)));
 		return this;

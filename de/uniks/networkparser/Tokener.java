@@ -180,6 +180,55 @@ public abstract class Tokener {
 			next();
 			return "";
 		}
+		if(buffer.isCache()){
+			return getStringBuffer(quote, allowCRLF);
+		}
+		
+		return getString(quote, allowCRLF);
+	}
+	
+	private String getString(char quote, boolean allowCRLF){
+		int startpos = this.buffer.position();
+	      char c;
+	      char b = 0;
+	      do
+	      {
+	         c = next();
+	         switch (c)
+	         {
+	         case 0:
+	         case '\n':
+	         case '\r':
+	            if (!allowCRLF)
+	            {
+	               throw new TextParsingException("Unterminated string", this);
+	            }
+	         default:
+	            if (b == '\\')
+	            {
+	               b = c;
+	               c = 1;
+	               continue;
+	            }
+	         }
+	         if (b == '\\' && c == '\\')
+	         {
+	            b = 1;
+	         }
+	         else
+	         {
+	            b = c;
+	         }
+	      }
+	      while (c != 0 && c != quote);
+
+	      int endPos = this.buffer.position();
+
+	      next();
+	      return this.buffer.substring(startpos, endPos - startpos);
+	}
+
+	private String getStringBuffer(char quote, boolean allowCRLF){
 		StringBuilder sb = new StringBuilder();
 		sb.append(getCurrentChar());
 
