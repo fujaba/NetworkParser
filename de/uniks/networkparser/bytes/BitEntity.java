@@ -24,6 +24,7 @@ package de.uniks.networkparser.bytes;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+
 import de.uniks.networkparser.interfaces.BaseEntity;
 import de.uniks.networkparser.interfaces.BaseEntityList;
 import de.uniks.networkparser.interfaces.BufferedBytes;
@@ -189,14 +190,16 @@ public class BitEntity implements BaseEntityList, ByteItem {
 		return isVisible;
 	}
 
-	public BaseEntityList initWithMap(Collection<?> value) {
-		for (Iterator<?> i = value.iterator(); i.hasNext();) {
+	@Override
+	public BaseEntityList withValues(Collection<?> collection) {
+		for (Iterator<?> i = collection.iterator(); i.hasNext();) {
 			values.add((BitValue) i.next());
 		}
 		return this;
 	}
 
-	public BaseEntityList put(Object value) {
+	@Override
+	public BaseEntityList with(Object value) {
 		values.add((BitValue) value);
 		return this;
 	}

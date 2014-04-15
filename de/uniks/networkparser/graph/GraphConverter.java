@@ -223,7 +223,7 @@ public class GraphConverter implements Converter {
 			splitter = ":";
 		}
 		for(Attribute attribute : attributes){
-			result.put(attribute.getKey() + splitter + attribute.getValue(typ, shortName));
+			result.add(attribute.getKey() + splitter + attribute.getValue(typ, shortName));
 		}
 		return result;
 	}

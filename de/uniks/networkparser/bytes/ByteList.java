@@ -21,14 +21,14 @@ package de.uniks.networkparser.bytes;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.EntityCollection;
+import de.uniks.networkparser.EntityList;
 import de.uniks.networkparser.bytes.converter.ByteConverterHTTP;
 import de.uniks.networkparser.bytes.converter.ByteConverterString;
 import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteConverter;
 import de.uniks.networkparser.interfaces.ByteItem;
 
-public class ByteList extends EntityCollection implements ByteItem {
+public class ByteList extends EntityList implements ByteItem {
 	/** The children of the ByteEntity. */
 	private byte typ = 0;
 
@@ -156,7 +156,7 @@ public class ByteList extends EntityCollection implements ByteItem {
 	}
 
 	@Override
-	public EntityCollection withValue(String value) {
+	public EntityList withValue(String value) {
 		ByteConverterString	converter = new ByteConverterString();
 		this.add(getNewObject().withValue(ByteIdMap.DATATYPE_FIXED, converter.decode(value)));
 		return this;

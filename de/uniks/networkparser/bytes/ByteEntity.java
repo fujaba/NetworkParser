@@ -24,7 +24,7 @@ package de.uniks.networkparser.bytes;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
-import de.uniks.networkparser.EntityCollection;
+import de.uniks.networkparser.EntityList;
 import de.uniks.networkparser.bytes.converter.ByteConverterHTTP;
 import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteConverter;
@@ -50,7 +50,7 @@ public class ByteEntity implements BaseEntity, ByteItem {
 	 * @see de.uni.kassel.peermessage.BaseEntity#getNewArray()
 	 */
 	@Override
-	public EntityCollection getNewArray() {
+	public EntityList getNewArray() {
 		return new ByteList();
 	}
 

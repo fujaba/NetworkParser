@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 
-import de.uniks.networkparser.EntityCollection;
+import de.uniks.networkparser.EntityList;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.IdMapEncoder;
@@ -41,12 +41,11 @@ import de.uniks.networkparser.event.creator.DateCreator;
 import de.uniks.networkparser.event.creator.MapEntryCreator;
 import de.uniks.networkparser.interfaces.BaseEntity;
 import de.uniks.networkparser.interfaces.MapUpdateListener;
-import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.json.creator.JsonArrayCreator;
 import de.uniks.networkparser.json.creator.JsonObjectCreator;
 import de.uniks.networkparser.logic.Deep;
-import de.uniks.networkparser.sort.EntityComparator;
 /**
  * The Class JsonIdMap.
  */
@@ -175,7 +174,7 @@ public class JsonIdMap extends IdMap {
 
 	protected Object parseProperty(SendableEntityCreator prototyp,
 			Object entity, Filter filter, String className,
-			String property, JsonCollection jsonArray, int deep) {
+			String property, JsonArray jsonArray, int deep) {
 		Object referenceObject = prototyp.getSendableInstance(true);
 
 		Object value = prototyp.getValue(entity, property);
@@ -190,13 +189,13 @@ public class JsonIdMap extends IdMap {
 				SendableEntityCreator referenceCreator = getCreatorClass(value);
 				if (value instanceof Collection<?> && referenceCreator == null) {
 					// Simple List or Assocs
-					EntityCollection subValues = getPrototyp().getNewArray();
+					EntityList subValues = getPrototyp().getNewArray();
 //					jsonArray.getNewArray();
 					for (Object containee : ((Collection<?>) value)) {
 						Object item = parseItem(entity, filter, containee,
 								property, jsonArray, null, deep);
 						if (item != null) {
-							subValues.put(item);
+							subValues.add(item);
 						}
 					}
 					if (subValues.size() > 0) {
@@ -205,7 +204,7 @@ public class JsonIdMap extends IdMap {
 				} else if (value instanceof Map<?, ?>
 						&& referenceCreator == null) {
 					// Maps
-					EntityCollection subValues = getPrototyp().getNewArray();
+					EntityList subValues = getPrototyp().getNewArray();
 					Map<?, ?> map = (Map<?, ?>) value;
  					String packageName = MapEntry.class.getName();
 					for (Iterator<?> i = map.entrySet().iterator(); i.hasNext();) {
@@ -231,7 +230,7 @@ public class JsonIdMap extends IdMap {
 	}
 
 	protected Object parseItem(Object item, Filter filter, Object entity,
-			String property, JsonCollection jsonArray, String className, int deep) {
+			String property, JsonArray jsonArray, String className, int deep) {
 		if (item == null || !filter.isPropertyRegard(this, item, property, entity, true, deep)) {
 			return null;
 		}
@@ -587,7 +586,7 @@ public class JsonIdMap extends IdMap {
 	}
 
 	/**
-	 * To json array.
+	 * Convert to JsonArray in the resource
 	 * 
 	 * @param object
 	 *            the object
@@ -613,22 +612,7 @@ public class JsonIdMap extends IdMap {
 		toJsonArray(object, jsonArray, filter);
 		return jsonArray;
 	}
-
-	/**
-	 * To json sorted array.
-	 * 
-	 * @param object
-	 *            the object
-	 * @param property
-	 *            the property
-	 * @return the JsonArray
-	 */
-	public JsonArraySorted toJsonSortedArray(Object object, String property) {
-		JsonArraySorted jsonArray = new JsonArraySorted().withComparator(new EntityComparator().withColumn(property).withMap(this));
-		toJsonArray(object, jsonArray, filter.cloneObj());
-		return jsonArray;
-	}
-
+	
 	/**
 	 * To json sorted array.
 	 * 
@@ -640,7 +624,7 @@ public class JsonIdMap extends IdMap {
 	 *            the Filter for split serialisation
 	 * @return the JsonArray
 	 */
-	public JsonCollection toJsonArray(Object object, JsonCollection jsonArray,
+	public JsonArray toJsonArray(Object object, JsonArray jsonArray,
 			Filter filter) {
 		if(filter==null){
 			filter = this.filter;
@@ -648,7 +632,7 @@ public class JsonIdMap extends IdMap {
 		return toJsonArray(object, jsonArray, filter.withStandard(this.filter), 0);
 	}
 
-	protected JsonCollection toJsonArray(Object entity, JsonCollection jsonArray,
+	protected JsonArray toJsonArray(Object entity, JsonArray jsonArray,
 			Filter filter, int deep) throws RuntimeException{
 		String className = entity.getClass().getName();
 		String id = getId(entity);
@@ -661,13 +645,13 @@ public class JsonIdMap extends IdMap {
 				jsonObject.put(ID, id);
 				jsonObject.put(CLASS, className);
 				if(!sortedArray){
-					jsonArray.put(jsonObject);
+					jsonArray.add(jsonObject);
 				}
 			}
 		}else if (!filter.hasVisitedObjects(entity) ) {
 			jsonObject.put(CLASS, className);
 			if(!sortedArray){
-				jsonArray.put(jsonObject);
+				jsonArray.add(jsonObject);
 			}
 		}
 
@@ -700,7 +684,7 @@ public class JsonIdMap extends IdMap {
 			}
 		}
 		if(sortedArray && jsonObject.has(CLASS)){
-			jsonArray.put(jsonObject);
+			jsonArray.add(jsonObject);
 		}
 		
 		return jsonArray;
@@ -784,7 +768,7 @@ public class JsonIdMap extends IdMap {
 		JsonObject sendObj = getPrototyp();
 		JsonArray children = sendObj.getNewArray();
 		for (String childId : suspendIdList) {
-			children.put(toJsonObjectById(childId));
+			children.add(toJsonObjectById(childId));
 		}
 		sendObj.put(IdMapEncoder.UPDATE, children);
 		sendUpdateMsg(null, sendObj);
