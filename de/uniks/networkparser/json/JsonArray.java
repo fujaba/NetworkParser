@@ -78,7 +78,7 @@ import de.uniks.networkparser.interfaces.BaseEntity;
  * @version 2010-12-28
  */
 
-public class JsonArray extends EntityList {
+public class JsonArray extends EntityList<Object> {
 	/**
 	 * Get the JSONArray associated with an index.
 	 * 

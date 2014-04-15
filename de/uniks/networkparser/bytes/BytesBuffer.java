@@ -292,4 +292,9 @@ public class BytesBuffer implements BufferedBytes {
 		this.buffer=array.clone();
 		return this;
 	}
+	
+	@Override
+	public boolean isCache() {
+		return true;
+	}
 }

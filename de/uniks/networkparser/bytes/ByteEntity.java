@@ -50,7 +50,7 @@ public class ByteEntity implements BaseEntity, ByteItem {
 	 * @see de.uni.kassel.peermessage.BaseEntity#getNewArray()
 	 */
 	@Override
-	public EntityList getNewArray() {
+	public EntityList<ByteEntity> getNewArray() {
 		return new ByteList();
 	}
 

@@ -49,4 +49,5 @@ public interface Buffer {
 	public String toString();
 	public String toText();
 	public byte[] toArray();
+	public boolean isCache();
 }

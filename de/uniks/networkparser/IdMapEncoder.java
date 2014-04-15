@@ -65,7 +65,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	/** The updatelistener for Notification changes. */
 	protected PropertyChangeListener updatePropertylistener;
 	
-	protected BidiHashMap<String, Object> keyValue;
+	protected BidiMap<String, Object> keyValue;
 	
 	protected Filter filter=new Filter();
 
@@ -74,7 +74,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	 */
 	public IdMapEncoder() {
 		super();
-		this.keyValue = new BidiHashMap<String, Object>();
+		this.keyValue = new BidiMap<String, Object>();
 		this.withCreator(new TextItems());
 	}
 
@@ -85,7 +85,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	 *            the parent-List of Items
 	 * @return the Map
 	 */
-	public IdMapEncoder withKeyValue(BidiHashMap<String, Object> parent) {
+	public IdMapEncoder withKeyValue(BidiMap<String, Object> parent) {
 		this.keyValue = parent;
 		return this;
 	}
@@ -125,38 +125,6 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 		return this;
 	}
 
-	/**
-	 * Get the current Session Id
-	 * 
-	 * @return sessionid as String
-	 */
-	public String getSessionId() {
-		return getCounter().getPrefixId();
-	}
-
-	/**
-	 * Get the current Splitter Character
-	 * 
-	 * @return Splitter as Character
-	 */
-	public String getPrefixSession() {
-		IdMapCounter counter = getCounter();
-		return counter.getPrefixId() + counter.getSplitter();
-	}
-
-	/**
-	 * Sets the splitter Character.
-	 * 
-	 * @param Character
-	 *            the new splitter-Character for the session id
-	 * @return the Map  
-	 */
-	public IdMapEncoder setSplitterId(char splitter) {
-		getCounter().withSplitter(splitter);
-		return this;
-	}
-
-	// Key Value paar
 	/**
 	 * Gets the Id. Do not generate a Id
 	 * 
@@ -497,7 +465,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 		return null;
 	}
 
-	public BidiHashMap<String, Object> getKeyValue(){
+	public BidiMap<String, Object> getKeyValue(){
 		return keyValue;
 	}
 	
@@ -533,11 +501,10 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	
 	public IdMapEncoder withFilter(Filter filter){
 		this.filter = filter;
-		return this;		
+		return this;
 	}
 	
 	public abstract BaseEntity encode(Object value);
 	public abstract BaseEntity encode(Object value, Filter filter);
 	public abstract BaseEntity getPrototyp();
-	
 }

@@ -204,11 +204,11 @@ public class EntityUtil {
 			return ((Entity) value).toString(indentFactor, intent);
 		}
 		if (value instanceof EntityList) {
-			return ((EntityList) value).toString(indentFactor, intent);
+			return ((EntityList<?>) value).toString(indentFactor, intent);
 		}
 		if (value instanceof Map) {
 			Entity entity = (Entity) reference.getNewObject();
-			entity.initWithMap(value);
+			entity.withValues((Map<?, ?>) value);
 			return entity.toString(indentFactor, intent);
 		}
 		if (value instanceof Collection) {
@@ -245,11 +245,11 @@ public class EntityUtil {
 			return ((Entity) value).toString();
 		}
 		if (value instanceof EntityList) {
-			return ((EntityList) value).toString();
+			return ((EntityList<?>) value).toString();
 		}
 		if (value instanceof Map) {
 			Entity entity = (Entity) reference.getNewObject();
-			entity.initWithMap(value);
+			entity.withValues((Map<?, ?>) value);
 			return entity.toString();
 		}
 		if (value instanceof Collection) {
@@ -308,7 +308,7 @@ public class EntityUtil {
 			}
 			if (object instanceof Map) {
 				Entity entity = (Entity) reference.getNewObject();
-				entity.initWithMap(object);
+				entity.withValues((Map<?, ?>) object);
 				return entity;
 			}
 			if (object.getClass().getName().startsWith("java.")

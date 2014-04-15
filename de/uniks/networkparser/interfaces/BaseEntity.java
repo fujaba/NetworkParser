@@ -1,6 +1,5 @@
 package de.uniks.networkparser.interfaces;
 
-
 /*
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
@@ -61,7 +60,7 @@ public interface BaseEntity {
 	 *         brace)</small>.
 	 */
 	public String toString(int indentFactor);
-
+	
 	public String toString(int indentFactor, int intent);
 
 	public BaseEntity withVisible(boolean value);
