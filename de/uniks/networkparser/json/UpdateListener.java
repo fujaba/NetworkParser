@@ -414,8 +414,8 @@ public class UpdateListener implements PropertyChangeListener {
 			String key, Object newValue, String typ) {
 		if (newValue instanceof JsonObject) {
 			JsonObject json = (JsonObject) newValue;
-			SendableEntityCreator typeInfo = this.map.getCreatorClasses(json
-					.getString(JsonIdMap.CLASS, ""));
+			SendableEntityCreator typeInfo = this.map.getCreatorClassName(json
+					.getString(JsonIdMap.CLASS, ""), true);
 			if (typeInfo != null) {
 				// notify in readJson
 			} else {

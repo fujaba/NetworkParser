@@ -464,7 +464,7 @@ public class ByteIdMap extends IdMap {
 			int len = buffer.getByte() - ByteIdMap.SPLITTER;
 			SendableEntityCreator eventCreater;
 			try {
-				eventCreater = getCreatorClasses(new String(buffer.getValue(len), filter.getCharset()));
+				eventCreater = super.getCreatorClassName(new String(buffer.getValue(len), filter.getCharset()), true);
 				return decodeClazz(buffer, eventCreater);
 			} catch (UnsupportedEncodingException e) {
 			}
@@ -516,7 +516,7 @@ public class ByteIdMap extends IdMap {
 					if(subValues!=null && subValues instanceof List<?>){
 						List<?> list=(List<?>) subValues;
 						if(list.size()==2){
-							values.add(new MapEntry().with(list.get(0), list.get(1)));
+							values.add(new MapEntry<Object>().with(list.get(0), list.get(1)));
 						}
 					}else{
 						break;

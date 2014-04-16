@@ -269,18 +269,6 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	}
 
 	/**
-	 * Gets the creator classes.
-	 * 
-	 * @param className
-	 *            the class name
-	 * @return the creator classes
-	 */
-	@Override
-	public SendableEntityCreator getCreatorClasses(String className) {
-		return super.getCreatorClasses(className);
-	}
-
-	/**
 	 * Clone object.
 	 * 
 	 * @param reference
@@ -390,7 +378,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	}
 
 	public Object startUpdateModell(String clazz) {
-		SendableEntityCreator creator = getCreatorClasses(clazz);
+		SendableEntityCreator creator = super.getCreatorClassName(clazz, true);
 		if (creator != null) {
 			Object result = creator.getSendableInstance(false);
 			String id = getId(result);
