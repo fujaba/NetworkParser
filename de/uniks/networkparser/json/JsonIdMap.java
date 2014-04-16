@@ -238,7 +238,7 @@ public class JsonIdMap extends IdMap {
 		if (className == null) {
 			className = entity.getClass().getName();
 		}
-		SendableEntityCreator valueCreater = getCreatorClasses(className);
+		SendableEntityCreator valueCreater = getCreatorClassName(className, true);
 		boolean isId = filter.isId(this, entity, className);
 		if (valueCreater != null) {
 			if (filter.isConvertable(this, entity, property, item, true, deep) ) {
@@ -661,7 +661,7 @@ public class JsonIdMap extends IdMap {
 			}
 		}
 
-		SendableEntityCreator prototyp = getCreatorClasses(className);
+		SendableEntityCreator prototyp = getCreatorClassName(className, true);
 		if (prototyp == null) {
 			throw new RuntimeException("No Creator exist for " + className);
 		}
@@ -805,7 +805,7 @@ public class JsonIdMap extends IdMap {
 		for(Iterator<MapEntry<String>> i = keyValue.iterator();i.hasNext();){
 			String id = i.next().getKeyString();
 			if (!classCounts.contains(id)) {
-				remove(getObject(id));
+				i.remove();
 			}
 		}
 	}

@@ -155,7 +155,7 @@ public class MapEntry<K> implements Entry<K, Object>, SendableEntityCreator, Sen
 
 	@Override
 	public BaseEntityList getNewArray() {
-		return new ArrayEntryList();
+		return new ArrayEntryList<MapEntry<K>>();
 	}
 
 	@Override
