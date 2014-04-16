@@ -38,6 +38,7 @@ public class SHA1 extends Checksum {
 		return 20;
 	}
 
+	@Override
 	public void reset() {
 		H0 = 0x67452301;
 		H1 = 0xEFCDAB89;

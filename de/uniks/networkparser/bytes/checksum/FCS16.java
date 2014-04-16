@@ -75,16 +75,19 @@ public class FCS16 extends Checksum {
 
 	};
 
+	@Override
 	public void reset() {
 		super.reset();
 		value = 0xFFFF;
 	}
 
+	@Override
 	public void update(int b) {
 		super.update(b);
 		value = (int) (((value >> 8) ^ crc_table[((int) value ^ (int) b) & 0xFF]) & 0xFFFF);
 	}
 
+	@Override
 	public long getValue() {
 		return (~value & 0xFFFF);
 	}

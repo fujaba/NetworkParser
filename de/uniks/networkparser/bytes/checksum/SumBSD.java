@@ -24,6 +24,7 @@ package de.uniks.networkparser.bytes.checksum;
 
 public class SumBSD extends Checksum {
 	/** implemented from original GNU C source */
+	@Override
 	public void update(int b) {
 		super.update(b);
 		value = (value >> 1) + ((value & 1) << 15);
@@ -31,6 +32,7 @@ public class SumBSD extends Checksum {
 		value &= 0xffff;
 	}
 
+	@Override
 	public int getOrder() {
 		return 16;
 	}

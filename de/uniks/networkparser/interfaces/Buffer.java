@@ -46,6 +46,7 @@ public interface Buffer {
 	public void back();
 	public boolean isEnd();
 	public Buffer withPosition(int index);
+	@Override
 	public String toString();
 	public String toText();
 	public byte[] toArray();

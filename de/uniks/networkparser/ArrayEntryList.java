@@ -27,15 +27,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class ArrayEntryList extends EntityList<BidiMapEntry> {
+import de.uniks.networkparser.event.MapEntry;
+
+public class ArrayEntryList<K> extends EntityList<MapEntry<K>> {
 	@Override
-	public ArrayEntryList getNewArray() {
-		return new ArrayEntryList();
+	public ArrayEntryList<K> getNewArray() {
+		return new ArrayEntryList<K>();
 	}
 
 	@Override
-	public BidiMapEntry getNewObject() {
-		return new BidiMapEntry();
+	public MapEntry<K> getNewObject() {
+		return new MapEntry<K>();
 	}
 
 	@Override
@@ -54,8 +56,8 @@ public class ArrayEntryList extends EntityList<BidiMapEntry> {
 	}
 
 	public boolean containsKey(Object key) {
-		for(Iterator<BidiMapEntry> i = iterator();i.hasNext();){
-			BidiMapEntry item = i.next();
+		for(Iterator<MapEntry<K>> i = iterator();i.hasNext();){
+			MapEntry<K> item = i.next();
 			if(item.getKey().equals(key)){
 				return true;
 			}
@@ -64,8 +66,8 @@ public class ArrayEntryList extends EntityList<BidiMapEntry> {
 	}
 
 	public boolean containsValue(Object value) {
-		for(Iterator<BidiMapEntry> i = iterator();i.hasNext();){
-			BidiMapEntry item = i.next();
+		for(Iterator<MapEntry<K>> i = iterator();i.hasNext();){
+			MapEntry<K> item = i.next();
 			if(item.getValue().equals(value)){
 				return true;
 			}
@@ -74,8 +76,8 @@ public class ArrayEntryList extends EntityList<BidiMapEntry> {
 	}
 
 	public Object get(String key) {
-		for(Iterator<BidiMapEntry> i = iterator();i.hasNext();){
-			BidiMapEntry item = i.next();
+		for(Iterator<MapEntry<K>> i = iterator();i.hasNext();){
+			MapEntry<K> item = i.next();
 			if(item.getKey().equals(key)){
 				return item.getValue();
 			}
@@ -83,47 +85,81 @@ public class ArrayEntryList extends EntityList<BidiMapEntry> {
 		return null;
 	}
 
-	public Object put(String key, Object value) {
+	public Object put(K key, Object value) {
 		if(!isAllowDuplicate()){			
-			for(Iterator<BidiMapEntry> i = iterator();i.hasNext();){
-				BidiMapEntry item = i.next();
+			for(Iterator<MapEntry<K>> i = iterator();i.hasNext();){
+				MapEntry<K> item = i.next();
 				if(item.getKey().equals(key)){
 					item.withValue(value);
 					return item.getValue();
 				}
 			}
 		}
-		BidiMapEntry newObject = getNewObject();
+		MapEntry<K> newObject = getNewObject();
 		newObject.withKey(key);
 		newObject.withValue(value);
 		values.add(newObject);
 		return value;
 	}
 
-	public void putAll(Map<String, Object> map) {
-		for(Iterator<Entry<String, Object>> i = map.entrySet().iterator();i.hasNext();){
-			Entry<String, Object> item = i.next();
+	public void putAll(Map<K, Object> map) {
+		for(Iterator<Entry<K, Object>> i = map.entrySet().iterator();i.hasNext();){
+			Entry<K, Object> item = i.next();
 			this.put(item.getKey(), item.getValue());
 		}
 	}
 
 	public ArrayList<String> keySet() {
 		ArrayList<String> list = new ArrayList<String>();
-		for(Iterator<BidiMapEntry> i = values.listIterator();i.hasNext();){
-			list.add(i.next().getKey());
+		for(Iterator<MapEntry<K>> i = values.listIterator();i.hasNext();){
+			list.add(i.next().getKeyString());
 		}
 		return list;
 	}
 
+	/**
+	 * Not Good because the values copy to new List
+	 * 
+	 * @return Collection of Values
+	 */
 	public Collection<Object> values() {
 		ArrayList<Object> list = new ArrayList<Object>();
-		for(Iterator<BidiMapEntry> i = values.listIterator();i.hasNext();){
+		for(Iterator<MapEntry<K>> i = values.listIterator();i.hasNext();){
 			list.add(i.next().getValue());
 		}
 		return list;
 	}
 
-	public List<BidiMapEntry> entrySet() {
+	public List<MapEntry<K>> entrySet() {
 		return values;
+	}
+
+	public String getKey(Object obj) {
+		for(Iterator<MapEntry<K>> i = iterator();i.hasNext();){
+			MapEntry<K> item = i.next();
+			if(item.getValue().equals(obj)){
+				return item.getKeyString();
+			}
+		}
+		return null;
+	}
+	public Object getValue(String key) {
+		return get(key);
+	}
+	
+	public ArrayEntryList<K> with(K key, Object value) {
+		this.put(key, value);
+		return this;
+	}
+
+	public boolean removeKey(String key) {
+		for(Iterator<MapEntry<K>> i = iterator();i.hasNext();){
+			MapEntry<K> item = i.next();
+			if(item.getKey().equals(key)){
+				i.remove();
+				return true;
+			}
+		}
+		return false;
 	}
 }

@@ -24,10 +24,12 @@ package de.uniks.networkparser;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.interfaces.BaseEntity;
 import de.uniks.networkparser.interfaces.IdMapCounter;
 import de.uniks.networkparser.interfaces.SendableEntity;
@@ -65,7 +67,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	/** The updatelistener for Notification changes. */
 	protected PropertyChangeListener updatePropertylistener;
 	
-	protected BidiMap<String, Object> keyValue;
+	protected ArrayEntryList<String> keyValue;
 	
 	protected Filter filter=new Filter();
 
@@ -74,7 +76,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	 */
 	public IdMapEncoder() {
 		super();
-		this.keyValue = new BidiMap<String, Object>();
+		this.keyValue = new ArrayEntryList<String>();
 		this.withCreator(new TextItems());
 	}
 
@@ -85,7 +87,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	 *            the parent-List of Items
 	 * @return the Map
 	 */
-	public IdMapEncoder withKeyValue(BidiMap<String, Object> parent) {
+	public IdMapEncoder withKeyValue(ArrayEntryList<String> parent) {
 		this.keyValue = parent;
 		return this;
 	}
@@ -172,6 +174,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	 *            the object
 	 * @return
 	 */
+	@Override
 	public Object put(String jsonId, Object object) {
 		this.keyValue.with(jsonId, object);
 		addListener(object);
@@ -244,7 +247,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 			}
 		}
 		if (key != null) {
-			this.keyValue.remove(key, oldValue);
+			this.keyValue.removeKey(key);
 			if (this.typList != null) {
 				for (TypList list : this.typList) {
 					list.removeObject(oldValue);
@@ -260,6 +263,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	 * 
 	 * @return the int
 	 */
+	@Override
 	public int size() {
 		return this.keyValue.size();
 	}
@@ -271,6 +275,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	 *            the class name
 	 * @return the creator classes
 	 */
+	@Override
 	public SendableEntityCreator getCreatorClasses(String className) {
 		return super.getCreatorClasses(className);
 	}
@@ -402,10 +407,11 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 		ArrayList<Object> result = new ArrayList<Object>();
 		String clazzName = creator.getSendableInstance(true).getClass()
 				.getName();
-		for (Object obj : this.keyValue.getValues()) {
-			if (obj != null) {
-				if (obj.getClass().getName().equals(clazzName)) {
-					result.add(obj);
+		for(Iterator<MapEntry<String>> i = this.keyValue.iterator();i.hasNext();){
+			MapEntry<String> item = i.next();
+			if (item.getValue() != null) {
+				if (item.getValue().getClass().getName().equals(clazzName)) {
+					result.add(item.getValue());
 				}
 			}
 		}
@@ -442,22 +448,27 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 		return result;
 	}
 
+	@Override
 	public boolean isEmpty() {
 		return this.keyValue.size() < 1;
 	}
 
+	@Override
 	public boolean containsKey(Object key) {
 		return this.keyValue.containsKey(""+key);
 	}
 
+	@Override
 	public boolean containsValue(Object value) {
 		return this.keyValue.containsValue(value);
 	}
 
+	@Override
 	public Object get(Object key) {
 		return getKey(key);
 	}
 	
+	@Override
 	public Object remove(Object oldValue) {
 		if (removeObj(oldValue, false)) {
 			return oldValue;
@@ -465,10 +476,11 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 		return null;
 	}
 
-	public BidiMap<String, Object> getKeyValue(){
+	public ArrayEntryList<String> getKeyValue(){
 		return keyValue;
 	}
 	
+	@Override
 	public void putAll(Map<? extends String, ? extends Object> map) {
 		this.clear();
 
@@ -478,21 +490,38 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 		}
 	}
 
+	@Override
 	public void clear() {
 		this.keyValue.clear();
 	}
+	
+    /* Not Good because copy values to new List use iterator
+     * @see java.util.Map#keySet()
+     */
+	@Override
+	@Deprecated
+    public Set<String> keySet() {
+        return new HashSet<String>(keyValue.keySet());
+    }
 
-	public Set<String> keySet() {
-		return keyValue.getKeys();
-	}
-
+    /* Not Good because copy values to new List use iterator
+     * @see java.util.Map#values()
+     */
+	@Override
+	@Deprecated
 	public Collection<Object> values() {
-		return keyValue.getValues();
-	}
+        return keyValue.values();
+    }
 
+    /* Not Good because copy values to new List use iterator
+     * @see java.util.Map#entrySet()
+     */
+	@Override
+	@Deprecated
 	public Set<java.util.Map.Entry<String, Object>> entrySet() {
-		return keyValue.entrySet();
-	}
+        return new HashSet<java.util.Map.Entry<String, Object>>(keyValue);
+    }
+
 
 	public IdMapEncoder withUpdateMsgListener(PropertyChangeListener listener) {
 		this.updatePropertylistener = listener;

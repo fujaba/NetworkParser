@@ -65,27 +65,28 @@ public abstract class EntityList<V> implements BaseEntityList, List<V> {
 		return this;
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public boolean add(Object newValue) {
-		if(cpr==null){
-			values.add((V) newValue);
-			return true;
-		}
-		for (int i = 0; i < values.size(); i++) {
-			int result = comparator().compare(values.get(i), newValue);
-			if (result >= 0) {
-				values.add(i, (V) newValue);
-				return true;
+		if(cpr!=null){
+			for (int i = 0; i < values.size(); i++) {
+				int result = comparator().compare(values.get(i), newValue);
+				if (result >= 0) {
+					values.add(i, (V) newValue);
+					return true;
+				}
 			}
 		}
 		return values.add((V) newValue);
 	}
 	
+	@Override
 	public EntityList<V> with(Object newvalue){
 		add(newvalue);
 		return this;
 	}
 
+	@Override
 	public abstract EntityList<V> getNewArray();
 	
 	public EntityList<V> subSet(Object fromElement, Object toElement) {
@@ -111,6 +112,7 @@ public abstract class EntityList<V> implements BaseEntityList, List<V> {
 		}
 		return newList;
 	}
+	@Override
 	public List<V> subList(int fromIndex, int toIndex) {
 		return values.subList(fromIndex, toIndex);
 	}
@@ -379,6 +381,7 @@ public abstract class EntityList<V> implements BaseEntityList, List<V> {
 		this.visible = value;
 		return this;
 	}
+	@Override
 	public boolean isVisible() {
 		return visible;
 	}
@@ -394,6 +397,7 @@ public abstract class EntityList<V> implements BaseEntityList, List<V> {
 	
 //	public abstract EntityList withValue(String value);
 
+	@Override
 	public EntityList<V> withValues(Collection<?> collection) {
 		if (collection != null) {
 			Iterator<?> iter = collection.iterator();
@@ -412,6 +416,7 @@ public abstract class EntityList<V> implements BaseEntityList, List<V> {
 	 * @return The value that was associated with the index, or null if there
 	 *         was no value.
 	 */
+	@Override
 	public V remove(int index) {
 		V o = get(index);
 		values.remove(index);
@@ -431,8 +436,10 @@ public abstract class EntityList<V> implements BaseEntityList, List<V> {
 	}
 
 	
+	@Override
 	public abstract String toString(int indentFactor);
 
+	@Override
 	public abstract String toString(int indentFactor, int intent);
 
 	@Override
@@ -494,6 +501,7 @@ public abstract class EntityList<V> implements BaseEntityList, List<V> {
 		return values.addAll(c);
 	}
 
+	@Override
 	public boolean addAll(int index, Collection<? extends V> c) {
 		return values.addAll(index, c);
 	}
@@ -513,26 +521,32 @@ public abstract class EntityList<V> implements BaseEntityList, List<V> {
 		values.clear();
 	}
 
+	@Override
 	public V set(int index, V element) {
 		return values.set(index, element);
 	}
 
+	@Override
 	public void add(int index, V element) {
 		values.add(index, element);
 	}
 
+	@Override
 	public int indexOf(Object o) {
 		return values.indexOf(o);
 	}
 
+	@Override
 	public int lastIndexOf(Object o) {
 		return values.lastIndexOf(o);
 	}
 
+	@Override
 	public ListIterator<V> listIterator() {
 		return values.listIterator();
 	}
 
+	@Override
 	public ListIterator<V> listIterator(int index) {
 		return values.listIterator(index);
 	}

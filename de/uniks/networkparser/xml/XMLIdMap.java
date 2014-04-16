@@ -122,6 +122,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 		return encode(entity, filter.cloneObj());
 	}
 
+	@Override
 	public XMLEntity encode(Object entity, Filter filter) {
 		SendableEntityCreator createrProtoTyp = getCreatorClass(entity);
 		if (createrProtoTyp == null) {
@@ -241,6 +242,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
         return super.decode(entity, factory);
     }
 
+	@Override
 	public Object decode(String value) {
 		return decode((XMLTokener) new XMLTokener().withText(value), null);
 	}
@@ -489,7 +491,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 													.getCreater();
 											parentCreator.setValue(refObject.getEntity(),
 													nextTag.getTag(), result, IdMapEncoder.NEW);
-											if (item != null && tokener.getStackSize() > 0) {
+											if (tokener.getStackSize() > 0) {
 												tokener.popStack();
 											}
 										}
@@ -497,7 +499,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 								}
 							}
 							if (tokener.isEnd()) {
-								if (item != null && tokener.getStackSize() > 0) {
+								if (tokener.getStackSize() > 0) {
 									tokener.popStack();
 								}
 							} else if (tokener.getCurrentChar() == ENDTAG) {

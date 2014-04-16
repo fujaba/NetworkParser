@@ -219,6 +219,7 @@ public class Style implements Cloneable{
 		return this;
 	}
 	
+	@Override
 	public Style clone(){
 		return clone(new Style());
 	}

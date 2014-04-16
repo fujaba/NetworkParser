@@ -63,7 +63,8 @@ public class HTMLRegExRule extends RegExRule{
 	   * 
 	   * @return the pattern with flags: CASE_INSENSITIVE and DOTALL
 	   */
-	  public Pattern getPattern() {
+	  @Override
+	public Pattern getPattern() {
 	    return Pattern.compile("(" + left + ")(.*?)(" + right + ")", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 	  }
 	  
