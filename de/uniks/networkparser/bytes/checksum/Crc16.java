@@ -32,6 +32,7 @@ public class Crc16 extends CRCTable {
 		return 0x8005; // 1000000000000101
 	}
 
+	@Override
 	public void update(int b) {
 		super.update(b);
 		value = (value >>> 8) ^ crc_table[((int) value ^ b) & 0xff];

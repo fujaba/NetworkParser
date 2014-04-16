@@ -24,6 +24,7 @@ package de.uniks.networkparser.bytes.checksum;
 
 public class Crc32 extends CRCTable {
 	/** Make the table for a fast CRC. */
+	@Override
 	public int[] getGenTable() {
 		int[] crc_table = new int[256];
 		for (int n = 0; n < 256; n++) {
@@ -39,6 +40,7 @@ public class Crc32 extends CRCTable {
 		return crc_table;
 	}
 
+	@Override
 	public void update(int bval) {
 		super.update(bval);
 		int c = (int) ~value;

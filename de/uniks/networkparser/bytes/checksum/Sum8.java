@@ -23,6 +23,7 @@ package de.uniks.networkparser.bytes.checksum;
 */
 
 public class Sum8 extends Checksum {
+	@Override
 	public void update(int b) {
 		super.update(b);
 		value += b & 0xFF;

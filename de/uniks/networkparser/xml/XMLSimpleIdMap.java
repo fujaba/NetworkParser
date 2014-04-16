@@ -91,6 +91,7 @@ public class XMLSimpleIdMap extends IdMap {
 	 * Read Json Automatic create JsonArray or JsonObject
 	 * @return the object
 	 */
+	@Override
 	public Object decode(String value){
 		return decode(getPrototyp().withValue(value));
 	}
@@ -241,7 +242,7 @@ public class XMLSimpleIdMap extends IdMap {
 							} else {
 								break;
 							}
-						} while (newTag != null);
+						} while (true);
 						child = parse(newTag, tokener.withPrefix(""), grammar);
 						if (child != null && child instanceof XMLEntity) {
 							grammar.addChildren(entity, (XMLEntity)child);

@@ -30,6 +30,7 @@ package de.uniks.networkparser.bytes.checksum;
 public class Adler32 extends Checksum {
 	private static final int BASE = 65521;
 
+	@Override
 	public void update(int b) {
 		super.update(b);
 		int s1 = (int) value & 0xffff;

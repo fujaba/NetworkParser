@@ -167,6 +167,7 @@ public class BytesBuffer implements BufferedBytes {
 		return Double.longBitsToDouble(asLong);
 	}
 
+	@Override
 	public byte[] getValue(int len) {
 		byte[] array = new byte[len];
 		for(int i=0;i<len;i++){

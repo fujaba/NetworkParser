@@ -346,6 +346,7 @@ public abstract class Entity implements BaseEntity {
 		return this.map.size();
 	}
 
+	@Override
 	public abstract EntityList<Object> getNewArray();
 	
 	/**
@@ -642,6 +643,7 @@ public abstract class Entity implements BaseEntity {
 		return this;
 	}
 
+	@Override
 	public boolean isVisible() {
 		return visible;
 	}

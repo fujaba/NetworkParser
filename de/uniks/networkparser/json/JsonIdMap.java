@@ -37,7 +37,6 @@ import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.ReferenceObject;
 import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.event.creator.DateCreator;
-import de.uniks.networkparser.event.creator.MapEntryCreator;
 import de.uniks.networkparser.interfaces.BaseEntity;
 import de.uniks.networkparser.interfaces.MapUpdateListener;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -79,12 +78,13 @@ public class JsonIdMap extends IdMap {
 		this.withCreator(new DateCreator());
 		this.withCreator(new JsonObjectCreator());
 		this.withCreator(new JsonArrayCreator());
-		this.withCreator(new MapEntryCreator());
+		this.withCreator(new MapEntry<String>());
 	}
 	
 	/**
 	 * @return the Prototyp forModel
 	 */
+	@Override
 	public JsonObject getPrototyp(){
 		return new JsonObject();
 	}
@@ -163,6 +163,7 @@ public class JsonIdMap extends IdMap {
 				filter);
 	}
 	
+	@Override
 	public String getId(Object obj) {
 		String key = grammar.getWriteId(obj, getCounter());
 		if(key!=null){
@@ -291,6 +292,7 @@ public class JsonIdMap extends IdMap {
 	 * Read Json Automatic create JsonArray or JsonObject
 	 * @return the object
 	 */
+	@Override
 	public Object decode(String value){
 		if(value.startsWith("[")){
 			return decode(getPrototyp().getNewArray().withValue(value));
@@ -302,6 +304,7 @@ public class JsonIdMap extends IdMap {
 	 * Read Json Automatic create JsonArray or JsonObject
 	 * @return the object
 	 */
+	@Override
 	public Object decode(BaseEntity value) {
 		if(value instanceof JsonArray){
 			return decode((JsonArray) value);
@@ -544,17 +547,17 @@ public class JsonIdMap extends IdMap {
 								creator.setValue(
 										target,
 										property,
-										new MapEntry().with(key, decode((JsonObject) entryValue)),
+										new MapEntry<String>().with(key, decode((JsonObject) entryValue)),
 										NEW);
 							} else if (entryValue instanceof JsonArray) {
 								creator.setValue(
 										target,
 										property,
-										new MapEntry().with(key, decode((JsonArray) entryValue)),
+										new MapEntry<String>().with(key, decode((JsonArray) entryValue)),
 										NEW);
 							} else {
 								creator.setValue(target, property,
-										new MapEntry().with(key, entryValue), NEW);
+										new MapEntry<String>().with(key, entryValue), NEW);
 							}
 						}
 					} else if (className == null && jsonId != null) {
@@ -708,6 +711,7 @@ public class JsonIdMap extends IdMap {
 		return this;
 	}
 
+	@Override
 	public IdMapEncoder withUpdateMsgListener(PropertyChangeListener listener) {
 		super.withUpdateMsgListener(listener);
 		if (listener instanceof MapUpdateListener) {
@@ -798,8 +802,8 @@ public class JsonIdMap extends IdMap {
 	 */
 	@Override
 	public void garbageCollection(Set<String> classCounts) {
-		Set<String> allIds = this.keyValue.getKeys();
-		for (String id : allIds) {
+		for(Iterator<MapEntry<String>> i = keyValue.iterator();i.hasNext();){
+			String id = i.next().getKeyString();
 			if (!classCounts.contains(id)) {
 				remove(getObject(id));
 			}

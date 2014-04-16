@@ -50,6 +50,7 @@ public class Or implements Condition, SendableEntityCreator {
 		return result;
 	}
 
+	@Override
 	public String toString(){
 		StringBuilder sb=new StringBuilder();
 		for(Condition condition : list){

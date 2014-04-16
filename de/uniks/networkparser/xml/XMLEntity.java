@@ -77,6 +77,7 @@ public class XMLEntity extends Entity implements BaseEntityList {
 	 * 
 	 * @see de.uni.kassel.peermessage.BaseEntity#getNewArray()
 	 */
+	@Override
 	public EntityList<Object> getNewArray() {
 		return null;
 	}
@@ -86,6 +87,7 @@ public class XMLEntity extends Entity implements BaseEntityList {
 	 * 
 	 * @see de.uni.kassel.peermessage.BaseEntity#getNewObject()
 	 */
+	@Override
 	public Entity getNewObject() {
 		return new XMLEntity();
 	}

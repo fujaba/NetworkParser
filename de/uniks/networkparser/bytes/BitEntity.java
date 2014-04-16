@@ -153,39 +153,48 @@ public class BitEntity implements BaseEntityList, ByteItem {
 		return 0;
 	}
 
+	@Override
 	public BaseEntityList getNewArray() {
 		return new BitEntity();
 	}
 
+	@Override
 	public BaseEntity getNewObject() {
 		return null;
 	}
 
+	@Override
 	public String toString() {
 		return super.toString();
 	}
 
+	@Override
 	public String toString(ByteConverter converter) {
 		return toString();
 	}
 
+	@Override
 	public String toString(ByteConverter converter, boolean isDynamic) {
 		return toString();
 	}
 
+	@Override
 	public String toString(int indentFactor) {
 		return toString();
 	}
 
+	@Override
 	public String toString(int indentFactor, int intent) {
 		return toString();
 	}
 
+	@Override
 	public BitEntity withVisible(boolean value) {
 		this.isVisible = value;
 		return this;
 	}
 
+	@Override
 	public boolean isVisible() {
 		return isVisible;
 	}
@@ -204,14 +213,17 @@ public class BitEntity implements BaseEntityList, ByteItem {
 		return this;
 	}
 
+	@Override
 	public int size() {
 		return values.size();
 	}
 
+	@Override
 	public boolean add(Object value) {
 		return values.add((BitValue) value);
 	}
 
+	@Override
 	public Object get(int index) {
 		return values.get(index);
 	}

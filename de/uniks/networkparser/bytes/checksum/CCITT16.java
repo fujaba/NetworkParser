@@ -36,6 +36,7 @@ public class CCITT16 extends CRC {
 		return 0x1021; // 1000000000000101
 	}
 	
+	@Override
 	public void update(int b) {
 		super.update(b);
 		

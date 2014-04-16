@@ -179,6 +179,7 @@ public class ByteIdMap extends IdMap {
 		return encode(entity, (ByteFilter)filter.cloneObj());
 	}
 
+	@Override
 	public ByteItem encode(Object entity, Filter filter) {
 		SendableEntityCreator creator = getCreatorClass(entity);
 		if (creator == null) {
@@ -321,6 +322,7 @@ public class ByteIdMap extends IdMap {
 	 *            the value
 	 * @return the object
 	 */
+	@Override
 	public Object decode(String value) {
 		return decode(value, new ByteConverterHTTP());
 	}

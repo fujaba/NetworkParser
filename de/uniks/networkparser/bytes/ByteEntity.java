@@ -104,6 +104,7 @@ public class ByteEntity implements BaseEntity, ByteItem {
 		return toString(null);
 	}
 
+	@Override
 	public String toString(int indentFactor) {
 		return toString(null);
 	}
@@ -115,6 +116,7 @@ public class ByteEntity implements BaseEntity, ByteItem {
 	 *            Grammar
 	 * @return converted bytes as String
 	 */
+	@Override
 	public String toString(ByteConverter converter) {
 		return toString(converter, false);
 	}
@@ -128,6 +130,7 @@ public class ByteEntity implements BaseEntity, ByteItem {
 	 *            if byte is dynamic
 	 * @return converted bytes as String
 	 */
+	@Override
 	public String toString(ByteConverter converter, boolean dynamic) {
 		if (converter == null) {
 			converter = new ByteConverterHTTP();
@@ -148,6 +151,7 @@ public class ByteEntity implements BaseEntity, ByteItem {
 	 * 
 	 * @return the bytes
 	 */
+	@Override
 	public void writeBytes(BufferedBytes buffer, boolean isDynamic, boolean last){
 //		int len = calcLength(isDynamic);
 		byte[] value = this.values;
@@ -194,6 +198,7 @@ public class ByteEntity implements BaseEntity, ByteItem {
 		}
 	}
 	
+	@Override
 	public BufferedBytes getBytes(boolean isDynamic) {
 		int len = calcLength(isDynamic);
 		BufferedBytes buffer = ByteUtil.getBuffer(len);
@@ -251,17 +256,17 @@ public class ByteEntity implements BaseEntity, ByteItem {
 			msgValue.put((int) newValue.getTime());
 		} else if (value instanceof Byte[] || value instanceof byte[]) {
 			typ = ByteIdMap.DATATYPE_BYTEARRAY;
-			byte[] newValue = (byte[]) value;
-			msgValue.withLength(newValue.length);
-			msgValue.put(newValue);
+			if(value != null){
+				byte[] newValue = (byte[]) value;
+				msgValue.withLength(newValue.length);
+				msgValue.put(newValue);
+			}
 		}
 		if (typ != 0) {
 			this.typ = typ;
 			// Check for group
-			if (msgValue != null) {
-				msgValue.flip();
-				this.values = msgValue.array();
-			}
+			msgValue.flip();
+			this.values = msgValue.array();
 			return true;
 		}
 		return false;
@@ -281,6 +286,7 @@ public class ByteEntity implements BaseEntity, ByteItem {
 	 * 
 	 * @return the length
 	 */
+	@Override
 	public int calcLength(boolean isDynamic) {
 		// Length calculate Sonderfaelle ermitteln
 		if (isDynamic && this.values != null) {
@@ -311,11 +317,13 @@ public class ByteEntity implements BaseEntity, ByteItem {
 		return len;
 	}
 
+	@Override
 	public ByteEntity withVisible(boolean value) {
 		this.visible = value;
 		return this;
 	}
 
+	@Override
 	public boolean isVisible() {
 		return visible;
 	}

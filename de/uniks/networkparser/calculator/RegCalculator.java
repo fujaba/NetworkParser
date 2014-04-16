@@ -89,6 +89,9 @@ public class RegCalculator {
     		if(current==null){
     			current = tokener.nextClean();
     		}
+    		if(current==null){
+    			break;
+    		}
 			if( current==',' ){
 				current=null;
 				defaultMulti=false;
@@ -119,6 +122,9 @@ public class RegCalculator {
 				while(Character.isDigit( current ) || current == '.'){
 					sb.append(current);
 					current = tokener.next();
+					if(current==null){
+						break;
+					}
 				}
 				if(defaultMulti){
 					parts.add("*");
