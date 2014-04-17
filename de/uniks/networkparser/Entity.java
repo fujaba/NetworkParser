@@ -23,34 +23,26 @@ package de.uniks.networkparser;
 */
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import de.uniks.networkparser.interfaces.BaseEntityList;
+import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.interfaces.BaseEntity;
+import de.uniks.networkparser.interfaces.BaseEntityList;
 
 public abstract class Entity implements BaseEntity {
 	/**
 	 * The map where the Entity's properties are kept.
 	 */
-	private Map<String, Object> map;
+	protected ArrayEntryList<String> map = new ArrayEntryList<String>().withAllowDuplicate(false);
 	private boolean visible = true;
 
-	protected Map<String, Object> getMap() {
-		if (this.map == null) {
-			this.map = new LinkedHashMap<String, Object>();
-		}
-		return this.map;
-	}
-	
-	public Iterator<Entry<String, Object>> iterator(){
-		return getMap().entrySet().iterator();
+	public Iterator<MapEntry<String>> iterator(){
+		return map.iterator();
 	}
 	
 	public Entity withValues(Map<?, ?> map) {
 		if (map != null) {
-			getMap();
 			for (Iterator<?> i = map.entrySet().iterator(); i.hasNext();) {
 				java.util.Map.Entry<?, ?> mapEntry = (Entry<?, ?>) i.next();
 				Object item = mapEntry.getValue();
@@ -100,28 +92,27 @@ public abstract class Entity implements BaseEntity {
 		if (object != null) {
 			this.put(key, value);
 		}else{
-			Map<String, Object> entries = getMap();
 			if(pos<0){pos=0;}
-			if(pos>getMap().size()){pos=entries.size();}
+			if(pos>map.size()){pos=map.size();}
 			
-			Object[] list = entries.entrySet().toArray();
-			entries.clear();
+			Object[] list = map.entrySet().toArray();
+			map.clear();
 			int z=0;
 			for(;z<list.length;z++){
 				if(z==pos){
-					entries.put(key, value);
+					map.put(key, value);
 				}
 				
 				if(list[z] instanceof Entry<?, ?>){
 					Object itemKey = ((Entry<?, ?>) list[z]).getKey();
 					Object itemValue = ((Entry<?, ?>) list[z]).getValue();
 					if(itemKey instanceof String){
-						entries.put(""+itemKey, itemValue);
+						map.put(""+itemKey, itemValue);
 					}
 				}
 			}
 			if(z==pos){
-				entries.put(key, value);
+				map.put(key, value);
 			}
 		}
 		return this;
@@ -139,7 +130,7 @@ public abstract class Entity implements BaseEntity {
 		if (key == null) {
 			return null;
 		}
-		return getMap().get(key);
+		return map.get(key);
 	}
 
 	/**
@@ -272,7 +263,7 @@ public abstract class Entity implements BaseEntity {
 	 * @return true if the key exists in the Entity.
 	 */
 	public boolean has(String key) {
-		return getMap().containsKey(key);
+		return map.containsKey(key);
 	}
 
 	/**
@@ -331,7 +322,7 @@ public abstract class Entity implements BaseEntity {
 	 * @return An iterator of the keys.
 	 */
 	public Iterator<String> keys() {
-		return getMap().keySet().iterator();
+		return map.keySet().iterator();
 	}
 
 	/**
@@ -453,7 +444,7 @@ public abstract class Entity implements BaseEntity {
 		}
 		if (value != null) {
 			EntityUtil.testValidity(value);
-			getMap().put(key, value);
+			map.put(key, value);
 		} else {
 			this.remove(key);
 		}
@@ -470,7 +461,7 @@ public abstract class Entity implements BaseEntity {
 	 *         no value.
 	 */
 	public Object remove(String key) {
-		return getMap().remove(key);
+		return map.remove(key);
 	}
 
 	public Object getValue(String key) {

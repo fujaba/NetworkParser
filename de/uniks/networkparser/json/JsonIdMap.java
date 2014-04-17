@@ -633,7 +633,7 @@ public class JsonIdMap extends IdMap {
 			filter = this.filter;
 		}
 		if(jsonArray.isComparator() && jsonArray.comparator() instanceof EntityComparator){
-			((EntityComparator)jsonArray.comparator()).withMap(this);
+			((EntityComparator<?>)jsonArray.comparator()).withMap(this);
 		}
 		return toJsonArray(object, jsonArray, filter.withStandard(this.filter), 0);
 	}

@@ -28,6 +28,7 @@ import java.util.Map.Entry;
 import de.uniks.networkparser.Entity;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Tokener;
+import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.interfaces.LocalisationEntity;
 /* Copyright (c) 2002 JSON.org */
 
@@ -168,14 +169,12 @@ public class JsonObject extends Entity implements LocalisationEntity {
 		if (length == 0) {
 			return "{}";
 		}
-		Map<String, Object> map = getMap();
-
 		if (!isVisible()) {
 			return "{Item with " + map.size() + " values}";
 		}
 
 		StringBuilder sb = new StringBuilder("{");
-		Iterator<Entry<String, Object>> i = map.entrySet().iterator();
+		Iterator<MapEntry<String>> i = map.iterator();
 		Entry<String, Object> item = i.next();
 		sb.append(EntityUtil.quote(item.getKey().toString()));
 		sb.append(":");
@@ -215,13 +214,11 @@ public class JsonObject extends Entity implements LocalisationEntity {
 			return "{}";
 		}
 
-		Map<String, Object> map = getMap();
-
 		if (!isVisible()) {
 			return "{" + map.size() + " values}";
 		}
 
-		Iterator<Entry<String, Object>> iterator = map.entrySet().iterator();
+		Iterator<MapEntry<String>> iterator = map.iterator();
 		
 		int newindent = indent + indentFactor;
 		String prefix = "";
@@ -272,7 +269,7 @@ public class JsonObject extends Entity implements LocalisationEntity {
 	 *            a simple String of Value or pairs of key-values
 	 */
 	public JsonObject withValue(String... values) {
-		this.getMap().clear();
+		this.map.clear();
 		if (values.length % 2 == 0) {
 			for (int z = 0; z < values.length; z += 2) {
 				put(values[z], values[z + 1]);
@@ -288,13 +285,12 @@ public class JsonObject extends Entity implements LocalisationEntity {
 	/**
 	 * add the Values of the map to JsonObjectmap
 	 * 
-	 * @param map
+	 * @param collection
 	 *            a map of key-values
 	 */
-	public JsonObject withMap(Map<String, Object> map) {
-		getMap();
-		if (map != null) {
-			Iterator<Entry<String, Object>> i = map.entrySet().iterator();
+	public JsonObject withMap(Map<String, Object> collection) {
+		if (collection != null) {
+			Iterator<Entry<String, Object>> i = collection.entrySet().iterator();
 			while (i.hasNext()) {
 				Entry<String, Object> e = i.next();
 				Object value = e.getValue();
