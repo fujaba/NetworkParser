@@ -24,13 +24,13 @@ package de.uniks.networkparser.xml;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import de.uniks.networkparser.Entity;
 import de.uniks.networkparser.EntityList;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Tokener;
+import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.interfaces.BaseEntity;
 import de.uniks.networkparser.interfaces.BaseEntityList;
 /**
@@ -201,10 +201,8 @@ public class XMLEntity extends Entity implements BaseEntityList {
 		}
 		sb.append(EntityUtil.repeat(' ', indentFactor));
 		sb.append("<" + this.getTag());
-		Map<String, Object> attributes = getMap();
 
-		for (Iterator<Entry<String, Object>> i = attributes.entrySet()
-				.iterator(); i.hasNext();) {
+		for (Iterator<MapEntry<String>> i = this.map.iterator(); i.hasNext();) {
 			Entry<String, Object> attribute = i.next();
 			sb.append(" " + attribute.getKey() + "="
 					+ EntityUtil.quote((String) attribute.getValue()));

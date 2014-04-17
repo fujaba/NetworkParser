@@ -27,7 +27,7 @@ import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.gui.table.TableList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class EntityComparator implements Comparator<Object> {
+public class EntityComparator<V> implements Comparator<V> {
 	public static final String IDMAP = "%idmap%";
 	public static final String HASHCODE = "%hashcode%";
 	public static final String LIST = "%list%";
@@ -39,7 +39,7 @@ public class EntityComparator implements Comparator<Object> {
 	private TableList owner;
 	protected SendableEntityCreator creator;
 	
-	public EntityComparator withTableList(TableList owner){
+	public EntityComparator<V> withTableList(TableList owner){
 		this.owner = owner;
 		this.column = LIST;
 		return this;
@@ -153,7 +153,7 @@ public class EntityComparator implements Comparator<Object> {
 		return direction;
 	}
 
-	public EntityComparator withDirection(SortingDirection direction) {
+	public EntityComparator<V> withDirection(SortingDirection direction) {
 		this.direction = direction;
 		return this;
 	}
@@ -162,12 +162,12 @@ public class EntityComparator implements Comparator<Object> {
 		return column;
 	}
 
-	public EntityComparator withColumn(String column) {
+	public EntityComparator<V> withColumn(String column) {
 		this.column = column;
 		return this;
 	}
 
-	public EntityComparator withMap(IdMapEncoder value) {
+	public EntityComparator<V> withMap(IdMapEncoder value) {
 		this.map = value;
 		return this;
 	}
@@ -180,7 +180,7 @@ public class EntityComparator implements Comparator<Object> {
 		return cellCreator;
 	}
 
-	public EntityComparator withCellCreator(EntityValueFactory cellCreator) {
+	public EntityComparator<V> withCellCreator(EntityValueFactory cellCreator) {
 		this.cellCreator = cellCreator;
 		return this;
 	}

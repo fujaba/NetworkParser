@@ -54,6 +54,12 @@ public class ArrayEntryList<K> extends EntityList<MapEntry<K>> {
 	public String toString() {
 		return "ArrayEntryList with "+size()+" Elements";
 	}
+	
+	@Override
+	public ArrayEntryList<K> withAllowDuplicate(boolean value) {
+		super.withAllowDuplicate(value);
+		return this;
+	}
 
 	public boolean containsKey(Object key) {
 		for(Iterator<MapEntry<K>> i = iterator();i.hasNext();){

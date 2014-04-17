@@ -39,13 +39,13 @@ import de.uniks.networkparser.sort.SortingDirection;
 
 public class TableList implements List<Object>, SendableEntity {
 	public static final String PROPERTY_ITEMS = "items";
-	protected EntityComparator comparator;
+	protected EntityComparator<Object> comparator;
 	protected LinkedHashSet<Object> list;
 	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
 	
-	public EntityComparator getComparator(){
+	public EntityComparator<Object> getComparator(){
 		if(comparator==null){
-			comparator = new EntityComparator();
+			comparator = new EntityComparator<Object>();
 			comparator.withTableList(this);
 		}
 		return comparator;
@@ -316,7 +316,7 @@ public class TableList implements List<Object>, SendableEntity {
 	}
 	
 	public TableList withSort(String field, SortingDirection direction, EntityValueFactory cellValueCreator) {
-		EntityComparator comparator = getComparator();
+		EntityComparator<Object> comparator = getComparator();
 		comparator.withColumn(field);
 		comparator.withDirection(direction);
 		comparator.withCellCreator(cellValueCreator);
@@ -324,14 +324,14 @@ public class TableList implements List<Object>, SendableEntity {
 		return this;
 	}
 	
-	public TableList withSort(EntityComparator comparator) {
+	public TableList withSort(EntityComparator<Object> comparator) {
 		this.comparator = comparator;
 		refreshSort();
 		return this;
 	}
 	
 	public TableList withSort(String field, SortingDirection direction) {
-		EntityComparator comparator = getComparator();
+		EntityComparator<Object> comparator = getComparator();
 		comparator.withColumn(field);
 		comparator.withDirection(direction);
 		refreshSort();
@@ -369,7 +369,7 @@ public class TableList implements List<Object>, SendableEntity {
 	}
 	
 	public Object[] getSortedIndex(){
-		EntityComparator comparator = getComparator();
+		EntityComparator<Object> comparator = getComparator();
 		IdMapEncoder map = comparator.getMap();
 		Iterator<Object> iterator = iterator();
 		SendableEntityCreator creator = null; 
