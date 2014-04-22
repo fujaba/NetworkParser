@@ -199,9 +199,6 @@ public class GraphConverter implements Converter {
 				typ = GraphIdMap.CLASS;
 			}
 		}
-		if (!entity.isVisible()) {
-			return null;
-		}
 		JsonObject item = new JsonObject().withValue(TYP, NODE);
 		if (entity.getHeadImage()!=null) {
 			item.put(HEADIMAGE, entity.getHeadImage());

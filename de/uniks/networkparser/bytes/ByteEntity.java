@@ -26,10 +26,10 @@ import java.util.Date;
 
 import de.uniks.networkparser.EntityList;
 import de.uniks.networkparser.bytes.converter.ByteConverterHTTP;
+import de.uniks.networkparser.interfaces.BaseEntity;
 import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteConverter;
 import de.uniks.networkparser.interfaces.ByteItem;
-import de.uniks.networkparser.interfaces.BaseEntity;
 /**
  * The Class ByteEntity.
  */
@@ -44,7 +44,6 @@ public class ByteEntity implements BaseEntity, ByteItem {
 
 	/** The values. */
 	protected byte[] values;
-	private boolean visible;
 
 	/*
 	 * @see de.uni.kassel.peermessage.BaseEntity#getNewArray()
@@ -104,11 +103,6 @@ public class ByteEntity implements BaseEntity, ByteItem {
 		return toString(null);
 	}
 
-	@Override
-	public String toString(int indentFactor) {
-		return toString(null);
-	}
-
 	/**
 	 * Convert the bytes to a String
 	 * 
@@ -136,14 +130,6 @@ public class ByteEntity implements BaseEntity, ByteItem {
 			converter = new ByteConverterHTTP();
 		}
 		return converter.toString(this, dynamic);
-	}
-
-	/*
-	 * @see de.uni.kassel.peermessage.Entity#toString(int, int)
-	 */
-	@Override
-	public String toString(int indentFactor, int intent) {
-		return toString(null);
 	}
 
 	/**
@@ -315,16 +301,5 @@ public class ByteEntity implements BaseEntity, ByteItem {
 			len += this.values.length;
 		}
 		return len;
-	}
-
-	@Override
-	public ByteEntity withVisible(boolean value) {
-		this.visible = value;
-		return this;
-	}
-
-	@Override
-	public boolean isVisible() {
-		return visible;
 	}
 }

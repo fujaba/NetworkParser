@@ -36,8 +36,6 @@ public class BitEntity implements BaseEntityList, ByteItem {
 	public static final String BIT_NUMBER = "number";
 	public static final String BIT_BYTE = "byte";
 	public static final String BIT_REFERENCE = "reference";
-
-	private boolean isVisible = true;
 	private ArrayList<BitValue> values = new ArrayList<BitValue>();
 
 	// Can be a Typ
@@ -176,27 +174,6 @@ public class BitEntity implements BaseEntityList, ByteItem {
 	@Override
 	public String toString(ByteConverter converter, boolean isDynamic) {
 		return toString();
-	}
-
-	@Override
-	public String toString(int indentFactor) {
-		return toString();
-	}
-
-	@Override
-	public String toString(int indentFactor, int intent) {
-		return toString();
-	}
-
-	@Override
-	public BitEntity withVisible(boolean value) {
-		this.isVisible = value;
-		return this;
-	}
-
-	@Override
-	public boolean isVisible() {
-		return isVisible;
 	}
 
 	@Override

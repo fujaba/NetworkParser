@@ -29,8 +29,9 @@ import java.util.Map.Entry;
 import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.interfaces.BaseEntity;
 import de.uniks.networkparser.interfaces.BaseEntityList;
+import de.uniks.networkparser.interfaces.StringItem;
 
-public abstract class Entity implements BaseEntity {
+public abstract class Entity implements BaseEntity, StringItem {
 	/**
 	 * The map where the Entity's properties are kept.
 	 */
