@@ -29,13 +29,14 @@ import java.util.List;
 import java.util.ListIterator;
 
 import de.uniks.networkparser.interfaces.BaseEntityList;
+import de.uniks.networkparser.interfaces.StringItem;
 import de.uniks.networkparser.sort.EntityComparator;
 import de.uniks.networkparser.sort.SortingDirection;
 /**
  * The Class EntityList.
  */
 
-public abstract class EntityList<V> implements BaseEntityList, List<V> {
+public abstract class EntityList<V> implements BaseEntityList, StringItem, List<V> {
 	protected List<V> values=getNewList();
 	private boolean visible = true;
 	private boolean allowDuplicate = true;

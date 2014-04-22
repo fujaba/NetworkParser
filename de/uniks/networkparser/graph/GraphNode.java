@@ -30,7 +30,6 @@ public class GraphNode implements BaseEntity {
 	private String className;
 	private String id;
 	private String headImage;
-	private boolean visible = true;
 	private ArrayList<Attribute> values = new ArrayList<Attribute>();
 
 	@Override
@@ -41,17 +40,6 @@ public class GraphNode implements BaseEntity {
 	@Override
 	public BaseEntity getNewObject() {
 		return new GraphNode();
-	}
-
-	@Override
-	public GraphNode withVisible(boolean value) {
-		this.visible = value;
-		return this;
-	}
-
-	@Override
-	public boolean isVisible() {
-		return visible;
 	}
 
 	// GETTER AND SETTER
@@ -110,12 +98,7 @@ public class GraphNode implements BaseEntity {
 	}
 
 	@Override
-	public String toString(int indentFactor) {
-		return toString(0,0);
-	}
-
-	@Override
-	public String toString(int indentFactor, int intent) {
+	public String toString() {
 		if(id==null){
 			return className;
 		}

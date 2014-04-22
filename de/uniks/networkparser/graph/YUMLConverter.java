@@ -78,9 +78,6 @@ public class YUMLConverter implements Converter {
 				typ = GraphIdMap.CLASS;
 			}
 		}
-		if (!entity.isVisible()) {
-			return "";
-		}
 		if (typ == GraphIdMap.OBJECT) {
 //				String text = entity.getId() + " : " + entity.getClassName();
 //				return "["

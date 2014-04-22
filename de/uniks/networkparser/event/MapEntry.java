@@ -35,7 +35,6 @@ public class MapEntry<K> implements Entry<K, Object>, SendableEntityCreator, Sen
 	public static final String PROPERTY_VALUE = "value";
 	private final String[] properties = new String[] { PROPERTY_KEY, PROPERTY_VALUE };
 	private K key;
-	private boolean visible=true;
 	private Object value;
 
 	public MapEntry<K> with(K key, Object value) {
@@ -161,26 +160,5 @@ public class MapEntry<K> implements Entry<K, Object>, SendableEntityCreator, Sen
 	@Override
 	public BaseEntity getNewObject() {
 		return new MapEntry<K>();
-	}
-
-	@Override
-	public String toString(int indentFactor) {
-		return toString();
-	}
-
-	@Override
-	public String toString(int indentFactor, int intent) {
-		return toString();
-	}
-
-	@Override
-	public BaseEntity withVisible(boolean value) {
-		this.visible = value;
-		return this;
-	}
-
-	@Override
-	public boolean isVisible() {
-		return visible;
 	}
 }

@@ -28,7 +28,10 @@ public abstract class ByteConverter {
 		if(entity instanceof ByteItem){
 			return toString(((ByteItem)entity).getBytes(true));
 		}
-		return toString(entity.toString(2).getBytes());
+		if(entity instanceof StringItem){
+			return toString(((StringItem)entity).toString(2).getBytes());
+		}
+		return toString(entity.toString().getBytes());
 	}
 	
 	public String toString(ByteItem item, boolean dynamic) {

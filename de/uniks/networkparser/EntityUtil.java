@@ -26,6 +26,8 @@ import java.util.Collection;
 import java.util.Map;
 
 import de.uniks.networkparser.interfaces.BaseEntity;
+import de.uniks.networkparser.interfaces.BaseEntityList;
+import de.uniks.networkparser.interfaces.StringItem;
 
 public class EntityUtil {
 	/**
@@ -212,8 +214,11 @@ public class EntityUtil {
 			return entity.toString(indentFactor, intent);
 		}
 		if (value instanceof Collection) {
-			return reference.getNewArray().withValues((Collection<?>) value)
-					.toString(indentFactor, intent);
+			BaseEntityList item = reference.getNewArray().withValues((Collection<?>) value);
+			if(item instanceof StringItem){
+				return ((StringItem)item).toString(indentFactor, intent);
+			}
+			return ((StringItem)item).toString();
 		}
 		if (value.getClass().isArray()) {
 			Object[] items = (Object[]) value;
@@ -221,8 +226,11 @@ public class EntityUtil {
 			for (Object item : items) {
 				arrayList.add(item);
 			}
-			return reference.getNewArray().withValues(arrayList)
-					.toString(indentFactor, intent);
+			BaseEntityList item = reference.getNewArray().withValues(arrayList);
+			if(item instanceof StringItem){
+				return ((StringItem)item).toString(indentFactor, intent);
+			}
+			return ((StringItem)item).toString();
 		}
 		if (simpleText) {
 			return value.toString();

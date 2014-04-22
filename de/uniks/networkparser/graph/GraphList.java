@@ -105,28 +105,8 @@ public class GraphList implements BaseEntityList {
 		return toString(new YUMLConverter());
 	}
 
-	@Override
-	public String toString(int indentFactor) {
-		return toString();
-	}
-
-	@Override
-	public String toString(int indentFactor, int intent) {
-		return toString();
-	}
-
 	public String toString(Converter converter) {
 		return converter.convert(this, false);
-	}
-
-	@Override
-	public BaseEntity withVisible(boolean value) {
-		return this;
-	}
-
-	@Override
-	public boolean isVisible() {
-		return true;
 	}
 
 	public String getTyp() {
