@@ -44,14 +44,12 @@ public class XMLTokener extends Tokener {
 	 * @return An object.
 	 */
 	@Override
-	public Object nextValue(BaseEntity creator) {
-		char c = nextClean();
-
+	public Object nextValue(BaseEntity creator, boolean allowQuote, char c) {
 		switch (c) {
 		case '"':
 		case '\'':
 			next();
-			return nextString(c, false);
+			return nextString(c, false, allowQuote, false, true);
 		case '<':
 			back();
 			BaseEntity element = creator.getNewObject();
@@ -62,13 +60,13 @@ public class XMLTokener extends Tokener {
 		default:
 			break;
 		}
-		back();
-		if(getCurrentChar()=='"'){
-			next();
+//		back();
+		if(c=='"'){
+//			next();
 			next();
 			return "";
 		}
-		return super.nextValue(creator);
+		return super.nextValue(creator,allowQuote, c);
 	}
 
 	@Override
@@ -104,8 +102,7 @@ public class XMLTokener extends Tokener {
 					return;
 				}
 				if (c != '<') {
-					xmlEntity.setValue(nextString('<', false));
-					back();
+					xmlEntity.setValue(nextString('<', false, false, false, false));
 					continue;
 				}
 			}
@@ -120,18 +117,16 @@ public class XMLTokener extends Tokener {
 						parseToEntity((BaseEntity) child);
 						xmlEntity.addChild(child);
 					} else {
-						xmlEntity.setValue(nextString('<', false));
-						back();
+						xmlEntity.setValue(nextString('<', false, false, false, false));
 					}
 				}
 			} else if (c == '/') {
 				next();
 				break;
 			} else {
-				back();
-				String key = nextValue(xmlEntity).toString();
+				String key = nextValue(xmlEntity, false, c).toString();
 				if ( key.length()>0 ) {
-					xmlEntity.put(key, nextValue(xmlEntity));
+					xmlEntity.put(key, nextValue(xmlEntity, true, nextClean()));
 				}
 			}
 		}

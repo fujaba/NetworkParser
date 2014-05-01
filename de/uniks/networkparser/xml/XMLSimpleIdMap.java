@@ -203,10 +203,7 @@ public class XMLSimpleIdMap extends IdMap {
 				char quote = (char) ITEMSTART;
 				// Skip >
 				tokener.next();
-				String strvalue = tokener.nextString(quote, true);
-
-				// BACK TO <
-				tokener.back();
+				String strvalue = tokener.nextString(quote, true, false, false, false);
 				strvalue = strvalue.trim();
 				XMLEntity newTag;
 				if (tokener.getCurrentChar() == ITEMSTART) {
@@ -279,9 +276,8 @@ public class XMLSimpleIdMap extends IdMap {
 		boolean isEmpty = true;
 		do {
 			if (tokener.getCurrentChar() != ITEMSTART) {
-				String strValue = tokener.nextString(ITEMSTART, true);
+				String strValue = tokener.nextString(ITEMSTART, true, false, false, false);
 				if (strValue != null) {
-					tokener.back();
 					strValue = strValue.trim();
 					isEmpty = strValue.isEmpty();
 				}

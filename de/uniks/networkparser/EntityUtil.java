@@ -59,6 +59,45 @@ public class EntityUtil {
 		}
 		return string;
 	}
+	public static String unQuote(String value) {
+		if (value == null || value.length() == 0) {
+			return "";
+		}
+		if(!value.startsWith("\\")){
+			return value;
+		}
+		StringBuilder sb=new StringBuilder(value.length());
+		char c;
+		for(int i=0;i<value.length();i++){
+			c = value.charAt(i);
+			if(c=='\\'){
+				c = value.charAt(++i);
+			    switch (c) {
+				    case 'b':
+				        sb.append('\b');
+				        break;
+				    case 't':
+				        sb.append('\t');
+				        break;
+				    case 'n':
+				        sb.append('\n');
+				        break;
+				    case 'f':
+				        sb.append('\f');
+				        break;
+				    case 'r':
+				        sb.append('\r');
+				        break;
+				    case 'u':
+				    	int no = Integer.parseInt(new String(new char[]{value.charAt(++i), value.charAt(++i)}));
+				        sb.append(""+no);
+				        break;
+			    }
+			}
+			sb.append(c);
+		}
+		return sb.toString();
+	}
 
 	/**
 	 * Produce a string in double quotes with backslash sequences in all the
@@ -78,11 +117,15 @@ public class EntityUtil {
 		int i;
 		int len = string.length();
 		StringBuilder sb = new StringBuilder(len + 4);
-		char c;
+		char b=0, c;
 		String hhhh;
 		sb.append('"');
 		for (i = 0; i < len; i += 1) {
 			c = string.charAt(i);
+			if(c=='"' && b!='\\'){
+				sb.append("\\\"");
+				continue;
+			}
 			if (c < ' ' || (c >= '\u0080' && c < '\u00a0')
 					|| (c >= '\u2000' && c < '\u2100')) {
 				hhhh = "000" + Integer.toHexString(c);
@@ -90,6 +133,7 @@ public class EntityUtil {
 			} else {
 				sb.append(c);
 			}
+			b=c;
 		}
 		sb.append('"');
 		return sb.toString();

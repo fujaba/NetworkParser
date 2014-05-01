@@ -159,6 +159,9 @@ public abstract class Tokener {
 		return c;
 	}
 	
+	public String nextString(char quote, boolean allowCRLF){
+		return nextString(quote, allowCRLF, false, false, true);
+	}
 	/**
 	 * Return the characters up to the next close quote character. Backslash
 	 * processing is done. The formal JSON format does not allow strings in
@@ -172,24 +175,26 @@ public abstract class Tokener {
 	 *            allowCRLF
 	 * @return A String.
 	 */
-	public String nextString(char quote, boolean allowCRLF) {
+	public String nextString(char quote, boolean allowCRLF, boolean allowQuote, boolean mustQuote, boolean nextStep) {
 		if(getCurrentChar()==0){
 			return "";
 		}
 		if(getCurrentChar()==quote){
-			next();
+			if(nextStep){
+				next();
+			}
 			return "";
 		}
-		if(buffer.isCache()){
-			return getStringBuffer(quote, allowCRLF);
-		}
-		
-		return getString(quote, allowCRLF);
+//FIXME		if(buffer.isCache()){
+			return getString(quote, allowCRLF, allowQuote, mustQuote, nextStep);
+//		}
+//		return getStringBuffer(quote, allowCRLF, allowQuote, mustQuote, nextStep);
 	}
 	
-	private String getString(char quote, boolean allowCRLF){
+	private String getString(char quote, boolean allowCRLF, boolean allowQuote, boolean mustQuote, boolean nextStep){
 		int startpos = this.buffer.position();
 	      char c;
+	      boolean isQuote=false;
 	      char b = 0;
 	      do
 	      {
@@ -204,31 +209,37 @@ public abstract class Tokener {
 	               throw new TextParsingException("Unterminated string", this);
 	            }
 	         default:
+	        	if (b == '\\' && c == '\\')
+		         {
+		            c = 1;
+		            isQuote = false;
+		        }
 	            if (b == '\\')
 	            {
-	               b = c;
-	               c = 1;
-	               continue;
+	            	if(allowQuote){
+		               b = c;
+		               c = 1;
+		               continue;
+	            	}
+	            	isQuote = true;
 	            }
 	         }
-	         if (b == '\\' && c == '\\')
-	         {
-	            b = 1;
-	         }
-	         else
-	         {
-	            b = c;
-	         }
+	         b = c;
 	      }
 	      while (c != 0 && c != quote);
 
 	      int endPos = this.buffer.position();
+	      if(nextStep){
+	    	  next();
+	      }
+	      if(isQuote || mustQuote){
+	    	  return this.buffer.substring(startpos, endPos - startpos - 1);
+	      }
 
-	      next();
 	      return this.buffer.substring(startpos, endPos - startpos);
 	}
 
-	private String getStringBuffer(char quote, boolean allowCRLF){
+	private String getStringBuffer(char quote, boolean allowCRLF, boolean allowQuote, boolean mustQuote, boolean nextStep){
 		StringBuilder sb = new StringBuilder();
 		sb.append(getCurrentChar());
 
@@ -247,10 +258,14 @@ public abstract class Tokener {
 				if (c != quote){
 					sb.append(c);
 				}else if(b=='\\') {
-					sb.append(c);
-					b=c;
-					c=1;
-					continue;
+					if(allowQuote){
+						sb.append(c);
+						sb.append(c);
+						b=c;
+						c=1;
+						continue;
+					}
+		            c = next();
 				}
 			}
 			if(b=='\\'&& c=='\\'){
@@ -259,8 +274,9 @@ public abstract class Tokener {
 				b=c;
 			}
 		}while (c != 0 && c != quote);
-
-		next();
+		if(nextStep){
+	    	  next();
+	      }
 		return sb.toString();
 	}
 
@@ -272,8 +288,10 @@ public abstract class Tokener {
 	 * Accumulate characters until we reach the end of the text or a formatting
 	 * character.
 	 */
-	public Object nextValue(BaseEntity creator) {
-		char c = nextStartClean();
+	public Object nextValue(BaseEntity creator, boolean allowQuote) {
+		return nextValue(creator, allowQuote, nextStartClean());
+	}
+	public Object nextValue(BaseEntity creator, boolean allowQuote, char c) {
 		StringBuilder sb = new StringBuilder();
 		while (c >= ' ' && getStopChars().indexOf(c) < 0) {
 			sb.append(c);

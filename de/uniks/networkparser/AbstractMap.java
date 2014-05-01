@@ -107,10 +107,12 @@ public abstract class AbstractMap {
 	 *            the creater class
 	 * @return AbstractIdMap to interlink arguments
 	 */
-	public AbstractMap withCreator(SendableEntityCreator createrClass) {
-		Object reference = createrClass.getSendableInstance(true);
-		if (reference != null) {
-			withCreator(reference.getClass().getName(), createrClass);
+	public AbstractMap withCreator(SendableEntityCreator... createrClass) {
+		for(SendableEntityCreator creator : createrClass){
+			Object reference = creator.getSendableInstance(true);
+			if (reference != null) {
+				withCreator(reference.getClass().getName(), creator);
+			}
 		}
 		return this;
 	}
