@@ -33,14 +33,18 @@ public class JsonTokener extends Tokener {
 	public final static String STOPCHARS = ",:]}/\\\"[{;=# ";
 
 	@Override
-	public Object nextValue(BaseEntity creator) {
+	public Object nextValue(BaseEntity creator, boolean allowQuote) {
 		char c = nextStartClean();
 
 		switch (c) {
 		case '"':
-		case '\'':
 			next();
-			return nextString(c, false);
+			return nextString(c, false, allowQuote, false, true);
+		case '\\':
+			// Must be unquote
+			next();
+			next();
+			return nextString('"', false, allowQuote, true, true);
 		case '{':
 			BaseEntity element = creator.getNewObject();
 			if (element instanceof Entity) {
@@ -55,7 +59,7 @@ public class JsonTokener extends Tokener {
 			break;
 		}
 //		back();
-		return super.nextValue(creator);
+		return super.nextValue(creator, allowQuote);
 	}
 
 	@Override
@@ -155,23 +159,30 @@ public class JsonTokener extends Tokener {
 					"A JsonObject text must begin with '{'", this);
 		}
 		next();
+		boolean isQuote=true;
 		for (;;) {
 			c = nextStartClean();
 			switch (c) {
 			case 0:
 				throw new TextParsingException(
 						"A JsonObject text must end with '}'", this);
+			case '\\':
+				// unquote
+				next();
+				isQuote = false;
+				continue;
 			case '}':
 				next();
 				return;
 			case ',':
 				next();
-				key = nextValue(item).toString();
+				key = nextValue(item, isQuote).toString();
 				break;
 			default:
-				key = nextValue(item).toString();
+				key = nextValue(item, isQuote).toString();
 			}
 			c = nextStartClean();
+			System.out.println(position());
 			if (c == '=') {
 				if (charAt(position()+1) == '>') {
 					next();
@@ -181,7 +192,7 @@ public class JsonTokener extends Tokener {
 						+ getNextString(30) + "]", this);
 			}
 			next();
-			item.put(key, nextValue(entity));
+			item.put(key, nextValue(entity,isQuote));
 		}
 	}
 
@@ -198,7 +209,7 @@ public class JsonTokener extends Tokener {
 				if (c == ',') {
 					entityList.add(null);
 				} else {
-					entityList.add(nextValue(entityList));
+					entityList.add(nextValue(entityList, false));
 				}
 				c = nextStartClean();
 				switch (c) {

@@ -21,8 +21,8 @@ package de.uniks.networkparser.json.creator;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.json.JsonObject;
 
 public class JsonObjectCreator implements SendableEntityCreator, SendableEntityCreatorNoIndex {

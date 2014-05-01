@@ -230,7 +230,7 @@ public class JsonIdMap extends IdMap {
 		return null;
 	}
 
-	protected Object parseItem(Object item, Filter filter, Object entity,
+	protected Object parseItem(Object item, Filter filter, Object entity, 
 			String property, JsonArray jsonArray, String className, int deep) {
 		if (item == null || !filter.isPropertyRegard(this, item, property, entity, true, deep)) {
 			return null;
