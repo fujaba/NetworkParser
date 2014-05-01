@@ -185,10 +185,10 @@ public abstract class Tokener {
 			}
 			return "";
 		}
-//FIXME		if(buffer.isCache()){
+		if(buffer.isCache()){
 			return getString(quote, allowCRLF, allowQuote, mustQuote, nextStep);
-//		}
-//		return getStringBuffer(quote, allowCRLF, allowQuote, mustQuote, nextStep);
+		}
+		return getStringBuffer(quote, allowCRLF, allowQuote, mustQuote, nextStep);
 	}
 	
 	private String getString(char quote, boolean allowCRLF, boolean allowQuote, boolean mustQuote, boolean nextStep){
@@ -209,13 +209,13 @@ public abstract class Tokener {
 	               throw new TextParsingException("Unterminated string", this);
 	            }
 	         default:
-	        	if (b == '\\' && c == '\\')
-		         {
-		            c = 1;
-		            isQuote = false;
-		        }
 	            if (b == '\\')
 	            {
+					if (c == '\\')
+					{
+						c = 1;
+						isQuote = false;
+					}
 	            	if(allowQuote){
 		               b = c;
 		               c = 1;
@@ -243,8 +243,8 @@ public abstract class Tokener {
 		StringBuilder sb = new StringBuilder();
 		sb.append(getCurrentChar());
 
-		char c;
-		char b = 0;
+		char c, b = 0;
+		boolean isQuote=false;
 		do{
 			c = next();
 			switch (c) {
@@ -255,28 +255,34 @@ public abstract class Tokener {
 					throw new TextParsingException("Unterminated string", this);
 				}
 			default:
+				if (b == '\\')
+	            {
+	            	if(allowQuote){
+	            		sb.append(c);
+	            		if (c == '\\'){
+	            			c = 1;
+	            		}
+	            		b = c;
+	            		c = 1;
+	            		continue;
+	            	}else if (c == '\\')
+					{
+						c = 1;
+					}
+	            	isQuote = true;
+	            }
 				if (c != quote){
 					sb.append(c);
-				}else if(b=='\\') {
-					if(allowQuote){
-						sb.append(c);
-						sb.append(c);
-						b=c;
-						c=1;
-						continue;
-					}
-		            c = next();
 				}
-			}
-			if(b=='\\'&& c=='\\'){
-				b=1;
-			}else{
-				b=c;
+				b = c;
 			}
 		}while (c != 0 && c != quote);
 		if(nextStep){
-	    	  next();
-	      }
+			next();
+	    }
+		if(isQuote || mustQuote){
+	    	  return sb.substring(0, sb.length()-1);
+		}
 		return sb.toString();
 	}
 

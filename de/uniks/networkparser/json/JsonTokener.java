@@ -182,7 +182,6 @@ public class JsonTokener extends Tokener {
 				key = nextValue(item, isQuote).toString();
 			}
 			c = nextStartClean();
-			System.out.println(position());
 			if (c == '=') {
 				if (charAt(position()+1) == '>') {
 					next();
