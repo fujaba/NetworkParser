@@ -84,13 +84,23 @@ public class XMLTokener extends Tokener {
 			throw new TextParsingException("Parse only XMLEntity", this);
 		}
 		XMLEntity xmlEntity = (XMLEntity) entity;
-		StringBuilder sb = new StringBuilder();
-		c = nextClean();
-		while (c >= ' ' && getStopChars().indexOf(c) < 0 && c!='>') {
-			sb.append(c);
-			c = next();
+		if(buffer.isCache()){
+			c = nextClean();
+			int pos=position();
+			while (c >= ' ' && getStopChars().indexOf(c) < 0 && c!='>') {
+				c = next();
+			}
+			xmlEntity.setTag(buffer.substring(pos, position()-pos));
+		}else{
+			StringBuilder sb = new StringBuilder();
+			c = nextClean();
+			while (c >= ' ' && getStopChars().indexOf(c) < 0 && c!='>') {
+				sb.append(c);
+				c = next();
+			}
+			xmlEntity.setTag(sb.toString());
 		}
-		xmlEntity.setTag(sb.toString());
+		
 		XMLEntity child;
 		while (true) {
 			c = nextStartClean();
