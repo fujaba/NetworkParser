@@ -258,7 +258,7 @@ public class EntityUtil {
 			return entity.toString(indentFactor, intent);
 		}
 		if (value instanceof Collection) {
-			BaseEntityList item = reference.getNewArray().withValues((Collection<?>) value);
+			BaseEntityList item = reference.getNewArray().with((Collection<?>) value);
 			if(item instanceof StringItem){
 				return ((StringItem)item).toString(indentFactor, intent);
 			}
@@ -270,7 +270,7 @@ public class EntityUtil {
 			for (Object item : items) {
 				arrayList.add(item);
 			}
-			BaseEntityList item = reference.getNewArray().withValues(arrayList);
+			BaseEntityList item = reference.getNewArray().with(arrayList);
 			if(item instanceof StringItem){
 				return ((StringItem)item).toString(indentFactor, intent);
 			}
@@ -305,7 +305,7 @@ public class EntityUtil {
 			return entity.toString();
 		}
 		if (value instanceof Collection) {
-			return reference.getNewArray().withValues((Collection<?>) value)
+			return reference.getNewArray().with((Collection<?>) value)
 					.toString();
 		}
 		if (value.getClass().isArray()) {
@@ -315,7 +315,7 @@ public class EntityUtil {
 				arrayList.add(item);
 			}
 
-			return reference.getNewArray().withValues(arrayList).toString();
+			return reference.getNewArray().with(arrayList).toString();
 		}
 		if (simpleText) {
 			return value.toString();
@@ -351,11 +351,11 @@ public class EntityUtil {
 			}
 
 			if (object instanceof Collection) {
-				return reference.getNewArray().withValues(
+				return reference.getNewArray().with(
 						(Collection<?>) object);
 			}
 			if (object.getClass().isArray()) {
-				return reference.getNewArray().withValues(
+				return reference.getNewArray().with(
 						(Collection<?>) object);
 			}
 			if (object instanceof Map) {

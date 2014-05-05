@@ -381,7 +381,7 @@ public abstract class Entity implements BaseEntity, StringItem {
 	 * @return this.
 	 */
 	public Entity put(String key, Collection<?> value) {
-		put(key, (Object) getNewArray().withValues(value));
+		put(key, (Object) getNewArray().with(value));
 		return this;
 	}
 

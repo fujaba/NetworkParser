@@ -26,9 +26,9 @@ import java.util.Collection;
 
 public interface BaseEntityList extends BaseEntity {
 	
-	public BaseEntityList withValues(Collection<?> collection);
+	public BaseEntityList with(Collection<?> collection);
 	
-	public BaseEntityList with(Object value);
+	public BaseEntityList with(Object... value);
 
 	public int size();
 
