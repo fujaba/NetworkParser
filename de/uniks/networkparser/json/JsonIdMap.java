@@ -26,13 +26,14 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import de.uniks.networkparser.EntityList;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.IdMapEncoder;
+import de.uniks.networkparser.ObjectMapEntry;
 import de.uniks.networkparser.ReferenceObject;
 import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.event.creator.DateCreator;
@@ -77,7 +78,7 @@ public class JsonIdMap extends IdMap {
 		this.withCreator(new DateCreator());
 		this.withCreator(new JsonObjectCreator());
 		this.withCreator(new JsonArrayCreator());
-		this.withCreator(new MapEntry<String>());
+		this.withCreator(new MapEntry());
 	}
 	
 	/**
@@ -206,7 +207,7 @@ public class JsonIdMap extends IdMap {
 					// Maps
 					EntityList<Object> subValues = getPrototyp().getNewArray();
 					Map<?, ?> map = (Map<?, ?>) value;
- 					String packageName = MapEntry.class.getName();
+ 					String packageName = ObjectMapEntry.class.getName();
 					for (Iterator<?> i = map.entrySet().iterator(); i.hasNext();) {
 						Entry<?, ?> mapEntry = (Entry<?, ?>) i.next();
 						Object item = parseItem(entity, filter, mapEntry,
@@ -547,17 +548,17 @@ public class JsonIdMap extends IdMap {
 								creator.setValue(
 										target,
 										property,
-										new MapEntry<String>().with(key, decode((JsonObject) entryValue)),
+										new ObjectMapEntry().with(key, decode((JsonObject) entryValue)),
 										NEW);
 							} else if (entryValue instanceof JsonArray) {
 								creator.setValue(
 										target,
 										property,
-										new MapEntry<String>().with(key, decode((JsonArray) entryValue)),
+										new ObjectMapEntry().with(key, decode((JsonArray) entryValue)),
 										NEW);
 							} else {
 								creator.setValue(target, property,
-										new MapEntry<String>().with(key, entryValue), NEW);
+										new ObjectMapEntry().with(key, entryValue), NEW);
 							}
 						}
 					} else if (className == null && jsonId != null) {
@@ -800,9 +801,8 @@ public class JsonIdMap extends IdMap {
 	 * 
 	 * @see de.uni.kassel.peermessage.IdMap#garbageCollection(java.util.Set)
 	 */
-	@Override
-	public void garbageCollection(Set<String> classCounts) {
-		for(Iterator<MapEntry<String>> i = keyValue.iterator();i.hasNext();){
+	public void garbageCollection(List<String> classCounts) {
+		for(Iterator<MapEntry> i = keyValue.iterator();i.hasNext();){
 			String id = i.next().getKeyString();
 			if (!classCounts.contains(id)) {
 				i.remove();

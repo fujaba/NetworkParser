@@ -25,9 +25,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
+
+import de.uniks.networkparser.ArrayEntryList;
 import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 /**
@@ -49,7 +49,7 @@ public class UpdateListener implements PropertyChangeListener {
 	private ArrayList<String> suspendIdList;
 
 	/** The garbage collection. */
-	private HashMap<String, Integer> garbageCollection = null;
+	private ArrayEntryList garbageCollection = null;
 
 	/** The class counts. */
 	private ArrayList<String> classCounts;
@@ -76,7 +76,7 @@ public class UpdateListener implements PropertyChangeListener {
 	 * @return the json object
 	 */
 	public JsonObject startGarbageColection(Object root) {
-		this.garbageCollection = new HashMap<String, Integer>();
+		this.garbageCollection = new ArrayEntryList();
 		this.classCounts = new ArrayList<String>();
 		JsonObject initField = this.map.toJsonObject(root);
 		countMessage(initField);
@@ -92,7 +92,7 @@ public class UpdateListener implements PropertyChangeListener {
 	 */
 	public JsonObject garbageCollection(Object root) {
 		boolean isStarted = this.garbageCollection != null;
-		this.garbageCollection = new HashMap<String, Integer>();
+		this.garbageCollection = new ArrayEntryList();
 		this.classCounts = new ArrayList<String>();
 		JsonObject initField = this.map.toJsonObject(root);
 		countMessage(initField);
@@ -212,7 +212,8 @@ public class UpdateListener implements PropertyChangeListener {
 
 		if (gc != null && this.garbageCollection != null) {
 			if (this.garbageCollection.containsKey(gc)) {
-				int newAssocValue = this.garbageCollection.get(gc) - 1;
+				Object value = this.garbageCollection.get(gc);
+				int newAssocValue = ((int)value) - 1;
 				if (newAssocValue > 0) {
 					this.garbageCollection.put(gc, newAssocValue);
 				} else {
@@ -447,7 +448,7 @@ public class UpdateListener implements PropertyChangeListener {
 				String id = (String) message.get(JsonIdMap.ID);
 				if (this.garbageCollection.containsKey(id)) {
 					this.garbageCollection.put(id,
-							this.garbageCollection.get(id) + 1);
+							(int)this.garbageCollection.get(id) + 1);
 				} else {
 					this.garbageCollection.put(id, 1);
 				}

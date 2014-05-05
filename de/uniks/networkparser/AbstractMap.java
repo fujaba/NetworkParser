@@ -35,7 +35,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public abstract class AbstractMap {
 	/** The creators. */
-	protected ArrayEntryList<String> creators = new ArrayEntryList<String>(); 
+	protected ArrayEntryList creators = new ArrayEntryList(); 
 
 	/**
 	 * Gets the creator class.
@@ -65,7 +65,7 @@ public abstract class AbstractMap {
 			return (SendableEntityCreator) this.creators.get(clazz);
 		}
 		clazz = "." + clazz;
-		for (Iterator<MapEntry<String>> i = this.creators
+		for (Iterator<MapEntry> i = this.creators
 				.entrySet().iterator(); i.hasNext();) {
 			Entry<String, Object> entry = i.next();
 			if (entry.getKey().endsWith(clazz) && entry.getValue() instanceof SendableEntityCreator) {
@@ -135,7 +135,7 @@ public abstract class AbstractMap {
 	 */
 	public Collection<SendableEntityCreator> getCreators() {
 		ArrayList<SendableEntityCreator> result=new ArrayList<SendableEntityCreator>();
-		for (Iterator<MapEntry<String>> i = this.creators
+		for (Iterator<MapEntry> i = this.creators
 				.entrySet().iterator(); i.hasNext();) {
 			Object value = i.next().getValue();
 			if(value instanceof SendableEntityCreator) {

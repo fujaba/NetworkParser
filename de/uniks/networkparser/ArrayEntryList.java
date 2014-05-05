@@ -29,15 +29,15 @@ import java.util.Map.Entry;
 
 import de.uniks.networkparser.event.MapEntry;
 
-public class ArrayEntryList<K> extends EntityList<MapEntry<K>> {
+public class ArrayEntryList extends EntityList<MapEntry> {
 	@Override
-	public ArrayEntryList<K> getNewArray() {
-		return new ArrayEntryList<K>();
+	public ArrayEntryList getNewArray() {
+		return new ArrayEntryList();
 	}
 	
 	@Override
-	public MapEntry<K> getNewObject() {
-		return new MapEntry<K>();
+	public MapEntry getNewObject() {
+		return new MapEntry();
 	}
 
 	@Override
@@ -46,14 +46,14 @@ public class ArrayEntryList<K> extends EntityList<MapEntry<K>> {
 	}
 	
 	@Override
-	public ArrayEntryList<K> withAllowDuplicate(boolean value) {
+	public ArrayEntryList withAllowDuplicate(boolean value) {
 		super.withAllowDuplicate(value);
 		return this;
 	}
 
 	public boolean containsKey(Object key) {
-		for(Iterator<MapEntry<K>> i = iterator();i.hasNext();){
-			MapEntry<K> item = i.next();
+		for(Iterator<MapEntry> i = iterator();i.hasNext();){
+			MapEntry item = i.next();
 			if(item.getKey().equals(key)){
 				return true;
 			}
@@ -62,8 +62,8 @@ public class ArrayEntryList<K> extends EntityList<MapEntry<K>> {
 	}
 
 	public boolean containsValue(Object value) {
-		for(Iterator<MapEntry<K>> i = iterator();i.hasNext();){
-			MapEntry<K> item = i.next();
+		for(Iterator<MapEntry> i = iterator();i.hasNext();){
+			MapEntry item = i.next();
 			if(item.getValue().equals(value)){
 				return true;
 			}
@@ -72,8 +72,8 @@ public class ArrayEntryList<K> extends EntityList<MapEntry<K>> {
 	}
 
 	public Object get(String key) {
-		for(Iterator<MapEntry<K>> i = iterator();i.hasNext();){
-			MapEntry<K> item = i.next();
+		for(Iterator<MapEntry> i = iterator();i.hasNext();){
+			MapEntry item = i.next();
 			if(item.getKey().equals(key)){
 				return item.getValue();
 			}
@@ -81,33 +81,33 @@ public class ArrayEntryList<K> extends EntityList<MapEntry<K>> {
 		return null;
 	}
 
-	public Object put(K key, Object value) {
+	public Object put(String key, Object value) {
 		if(!isAllowDuplicate()){			
-			for(Iterator<MapEntry<K>> i = iterator();i.hasNext();){
-				MapEntry<K> item = i.next();
+			for(Iterator<MapEntry> i = iterator();i.hasNext();){
+				MapEntry item = i.next();
 				if(item.getKey().equals(key)){
 					item.withValue(value);
 					return item.getValue();
 				}
 			}
 		}
-		MapEntry<K> newObject = getNewObject();
+		MapEntry newObject = getNewObject();
 		newObject.withKey(key);
 		newObject.withValue(value);
 		values.add(newObject);
 		return value;
 	}
 
-	public void putAll(Map<K, Object> map) {
-		for(Iterator<Entry<K, Object>> i = map.entrySet().iterator();i.hasNext();){
-			Entry<K, Object> item = i.next();
+	public void putAll(Map<String, Object> map) {
+		for(Iterator<Entry<String, Object>> i = map.entrySet().iterator();i.hasNext();){
+			Entry<String, Object> item = i.next();
 			this.put(item.getKey(), item.getValue());
 		}
 	}
 
 	public ArrayList<String> keySet() {
 		ArrayList<String> list = new ArrayList<String>();
-		for(Iterator<MapEntry<K>> i = values.listIterator();i.hasNext();){
+		for(Iterator<MapEntry> i = values.listIterator();i.hasNext();){
 			list.add(i.next().getKeyString());
 		}
 		return list;
@@ -120,19 +120,19 @@ public class ArrayEntryList<K> extends EntityList<MapEntry<K>> {
 	 */
 	public Collection<Object> values() {
 		ArrayList<Object> list = new ArrayList<Object>();
-		for(Iterator<MapEntry<K>> i = values.listIterator();i.hasNext();){
+		for(Iterator<MapEntry> i = values.listIterator();i.hasNext();){
 			list.add(i.next().getValue());
 		}
 		return list;
 	}
 
-	public List<MapEntry<K>> entrySet() {
+	public List<MapEntry> entrySet() {
 		return values;
 	}
 
 	public String getKey(Object obj) {
-		for(Iterator<MapEntry<K>> i = iterator();i.hasNext();){
-			MapEntry<K> item = i.next();
+		for(Iterator<MapEntry> i = iterator();i.hasNext();){
+			MapEntry item = i.next();
 			if(item.getValue().equals(obj)){
 				return item.getKeyString();
 			}
@@ -143,14 +143,14 @@ public class ArrayEntryList<K> extends EntityList<MapEntry<K>> {
 		return get(key);
 	}
 	
-	public ArrayEntryList<K> with(K key, Object value) {
+	public ArrayEntryList with(String key, Object value) {
 		this.put(key, value);
 		return this;
 	}
 
 	public boolean removeKey(String key) {
-		for(Iterator<MapEntry<K>> i = iterator();i.hasNext();){
-			MapEntry<K> item = i.next();
+		for(Iterator<MapEntry> i = iterator();i.hasNext();){
+			MapEntry item = i.next();
 			if(item.getKey().equals(key)){
 				i.remove();
 				return true;

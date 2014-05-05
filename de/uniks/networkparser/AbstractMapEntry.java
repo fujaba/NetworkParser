@@ -142,6 +142,27 @@ public abstract class AbstractMapEntry<K, V> implements Entry<K, V>, SendableEnt
 				} else {
 					entry.setValue(value);
 				}
+				return true;
+			}
+		}
+		if(entity instanceof ObjectMapEntry){
+			ObjectMapEntry entry = (ObjectMapEntry) entity;
+			if (PROPERTY_KEY.equalsIgnoreCase(attribute)) {
+				entry.setKey(value);
+				return true;
+			} else if (PROPERTY_VALUE.equalsIgnoreCase(attribute)) {
+				if (value instanceof Entry<?, ?>) {
+					Object map = entry.getValue();
+					if (map == null) {
+						map = new ArrayEntryList();
+					}
+					if (map instanceof ArrayEntryList) {
+						((ArrayEntryList) map).add(value);
+					}
+					entry.setValue(map);
+				} else {
+					entry.setValue(value);
+				}
 				
 				return true;
 			}
@@ -151,11 +172,11 @@ public abstract class AbstractMapEntry<K, V> implements Entry<K, V>, SendableEnt
 
 	@Override
 	public BaseEntityList getNewArray() {
-		return new ArrayEntryList<K>();
+		return new ArrayEntryList();
 	}
 
 	@Override
 	public BaseEntity getNewObject() {
-		return new MapEntry<K>();
+		return new MapEntry();
 	}
 }

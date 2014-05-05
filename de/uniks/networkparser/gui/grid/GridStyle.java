@@ -23,12 +23,12 @@ package de.uniks.networkparser.gui.grid;
 */
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
+import de.uniks.networkparser.ArrayEntryList;
 import de.uniks.networkparser.calculator.RegCalculator;
+import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.interfaces.SendableEntity;
 
@@ -49,7 +49,7 @@ public class GridStyle extends Style implements SendableEntity{
 	private int column;
 	private int row;
 	private ValueGrid grid;
-	private LinkedHashMap<String, HashSet<PropertyChangeListener>> listeners=new LinkedHashMap<String, HashSet<PropertyChangeListener>>();
+	private ArrayEntryList listeners=new ArrayEntryList();
 	private String selectedBackground=null;
 
 	public int getColumn() {
@@ -166,7 +166,7 @@ public class GridStyle extends Style implements SendableEntity{
 	}
 	
 	private void executeEvent(PropertyChangeEvent change, String key){
-		HashSet<PropertyChangeListener> list = listeners.get(key);
+		PropertyChangeListenerList list = (PropertyChangeListenerList) listeners.get(key);
 		if(list != null){
 			for(PropertyChangeListener listener : list){
 				listener.propertyChange(change);
@@ -177,9 +177,9 @@ public class GridStyle extends Style implements SendableEntity{
 	@Override
 	public boolean addPropertyChangeListener(String propertyName,
 			PropertyChangeListener listener) {
-		HashSet<PropertyChangeListener> list = listeners.get(propertyName);
+		PropertyChangeListenerList list = (PropertyChangeListenerList) listeners.get(propertyName);
 		if(list==null){
-			list = new HashSet<PropertyChangeListener>();
+			list = new PropertyChangeListenerList();
 			listeners.put(propertyName, list);
 		}
 		return list.add(listener);
@@ -187,9 +187,9 @@ public class GridStyle extends Style implements SendableEntity{
 
 	@Override
 	public boolean addPropertyChangeListener(PropertyChangeListener listener) {
-		HashSet<PropertyChangeListener> list = listeners.get(null);
+		PropertyChangeListenerList list = (PropertyChangeListenerList) listeners.get(null);
 		if(list==null){
-			list = new HashSet<PropertyChangeListener>();
+			list = new PropertyChangeListenerList();
 			listeners.put(null, list);
 		}
 		return list.add(listener);
@@ -198,16 +198,17 @@ public class GridStyle extends Style implements SendableEntity{
 	@Override
 	public boolean removePropertyChangeListener(PropertyChangeListener listener) {
 		boolean result=false;
-		for(Iterator<Entry<String, HashSet<PropertyChangeListener>>> iterator = listeners.entrySet().iterator();iterator.hasNext();){
-			Entry<String, HashSet<PropertyChangeListener>> item = iterator.next();
-			for(Iterator<PropertyChangeListener> i = item.getValue().iterator();i.hasNext();){
+		for(Iterator<MapEntry> iterator = listeners.entrySet().iterator();iterator.hasNext();){
+			Entry<String, Object> item = iterator.next();
+			PropertyChangeListenerList list = (PropertyChangeListenerList)item.getValue();
+			for(Iterator<PropertyChangeListener> i = list.iterator();i.hasNext();){
 				PropertyChangeListener propertyChangeListener = i.next();
 				if(propertyChangeListener==listener){
 					i.remove();
 					result=true;
 				}
 			}
-			if(item.getValue().size()<1){
+			if(list.size()<1){
 				iterator.remove();
 			}
 		}

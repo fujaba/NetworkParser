@@ -23,9 +23,9 @@ package de.uniks.networkparser.gui.table;
 */
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.TreeSet;
@@ -40,7 +40,7 @@ import de.uniks.networkparser.sort.SortingDirection;
 public class TableList implements List<Object>, SendableEntity {
 	public static final String PROPERTY_ITEMS = "items";
 	protected EntityComparator<Object> comparator;
-	protected LinkedHashSet<Object> list;
+	protected ArrayList<Object> list;
 	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
 	
 	public EntityComparator<Object> getComparator(){
@@ -51,12 +51,12 @@ public class TableList implements List<Object>, SendableEntity {
 		return comparator;
 	}
 	
-	public LinkedHashSet<Object> getItems(){
+	public ArrayList<Object> getItems(){
 		return getItems(false);
 	}
-	public LinkedHashSet<Object> getItems(boolean always){
+	public ArrayList<Object> getItems(boolean always){
 		if(list==null||always){
-			list=new LinkedHashSet<Object>( );
+			list=new ArrayList<Object>( );
 		}
 		return list;
 	}
@@ -89,7 +89,7 @@ public class TableList implements List<Object>, SendableEntity {
 		return false;
 	}
 
-	public void setItems(LinkedHashSet<Object> items) {
+	public void setItems(ArrayList<Object> items) {
 		addAll(items);
 	}
 
@@ -111,7 +111,7 @@ public class TableList implements List<Object>, SendableEntity {
 	@Override
 	public boolean remove(Object value) {
 		if (contains(value)) {
-			LinkedHashSet<Object> items = getItems(false);
+			ArrayList<Object> items = getItems(false);
 			if(items.remove(value)){
 				getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEMS, value,null);
 				return true;
@@ -339,7 +339,7 @@ public class TableList implements List<Object>, SendableEntity {
 	}
 
 	public void refreshSort(){
-		LinkedHashSet<Object> oldValue = list;
+		ArrayList<Object> oldValue = list;
 		
 		list = getItems(true);
 		int size = oldValue.size();

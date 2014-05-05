@@ -33,10 +33,10 @@ import de.uniks.networkparser.AbstractMap;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.IdMapEncoder;
+import de.uniks.networkparser.ObjectMapEntry;
 import de.uniks.networkparser.TextParsingException;
 import de.uniks.networkparser.bytes.converter.ByteConverterHTTP;
 import de.uniks.networkparser.event.BasicMessage;
-import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.event.UnknownMessage;
 import de.uniks.networkparser.event.creator.BasicMessageCreator;
 import de.uniks.networkparser.interfaces.BaseEntity;
@@ -516,7 +516,7 @@ public class ByteIdMap extends IdMap {
 					if(subValues!=null && subValues instanceof List<?>){
 						List<?> list=(List<?>) subValues;
 						if(list.size()==2){
-							values.add(new MapEntry<Object>().with(list.get(0), list.get(1)));
+							values.add(new ObjectMapEntry().with(list.get(0), list.get(1)));
 						}
 					}else{
 						break;
