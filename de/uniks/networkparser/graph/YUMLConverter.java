@@ -2,10 +2,7 @@ package de.uniks.networkparser.graph;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
-
 import de.uniks.networkparser.ArrayEntryList;
 
 public class YUMLConverter implements Converter {
@@ -20,8 +17,8 @@ public class YUMLConverter implements Converter {
 			StringBuilder sb = new StringBuilder();
 			Iterator<GraphNode> i = children.iterator();
 
-			HashSet<GraphNode> visitedObj = new HashSet<GraphNode>();
-			ArrayEntryList<String> links = root.getLinks();
+			ArrayList<GraphNode> visitedObj = new ArrayList<GraphNode>();
+			ArrayEntryList links = root.getLinks();
 			parse(typ, i.next(), sb, visitedObj, links, removePackage);
 			while (i.hasNext()) {
 				parse(typ, i.next(), sb, visitedObj, links, removePackage);
@@ -32,10 +29,10 @@ public class YUMLConverter implements Converter {
 	}
 
 	public void parse(String typ, GraphNode item, StringBuilder sb,
-			HashSet<GraphNode> visited,
-			HashMap<String, HashSet<GraphEdge>> links, boolean shortName) {
+			ArrayList<GraphNode> visited,
+			ArrayEntryList links, boolean shortName) {
 		String key = item.getTyp(typ, shortName);
-		HashSet<GraphEdge> showedLinks = links.get(key);
+		EdgeList showedLinks = (EdgeList) links.get(key);
 		if (showedLinks == null) {
 			if(sb.length()<1){
 				sb.append(parseEntity(item, visited, typ, shortName));
@@ -66,10 +63,10 @@ public class YUMLConverter implements Converter {
 
 	
 	// ##################################### Entity
-	public String parseEntity(GraphNode entity, HashSet<GraphNode> visited, boolean shortName) {
+	public String parseEntity(GraphNode entity, ArrayList<GraphNode> visited, boolean shortName) {
 		return parseEntity(entity, visited, null, shortName);
 	}
-	public String parseEntity(GraphNode entity, HashSet<GraphNode> visited, String typ, boolean shortName) {
+	public String parseEntity(GraphNode entity, ArrayList<GraphNode> visited, String typ, boolean shortName) {
 		boolean shortString = visited.contains(entity);
 		if(!shortString){
 			visited.add(entity);

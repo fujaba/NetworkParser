@@ -1,4 +1,4 @@
-package de.uniks.networkparser;
+package de.uniks.networkparser.gui.grid;
 /*
 NetworkParser
 Copyright (c) 2011 - 2013, Stefan Lindel
@@ -21,17 +21,20 @@ See the Licence for the specific language governing
 permissions and limitations under the Licence.
 */
 
+import java.beans.PropertyChangeListener;
+
+import de.uniks.networkparser.EntityList;
 import de.uniks.networkparser.interfaces.BaseEntity;
 
-public class SimpleList extends EntityList<Object> {
+public class PropertyChangeListenerList extends EntityList<PropertyChangeListener> {
 	@Override
 	public BaseEntity getNewObject() {
 		return null;
 	}
 	
 	@Override
-	public EntityList<Object> getNewArray() {
-		return new SimpleList();
+	public EntityList<PropertyChangeListener> getNewArray() {
+		return new PropertyChangeListenerList();
 	}
 	
 	@Override

@@ -70,7 +70,7 @@ public class SimpleGrammar extends Grammar{
 		json.put(ID, id);
 
 		if (jsonProp.size() > 0) {
-			for(Iterator<MapEntry<String>> iterator = jsonProp.iterator();iterator.hasNext();){
+			for(Iterator<MapEntry> iterator = jsonProp.iterator();iterator.hasNext();){
 				Entry<String, Object> item = iterator.next();
 				json.put(item.getKey(), item.getValue());
 			}

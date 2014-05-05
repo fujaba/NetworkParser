@@ -35,10 +35,10 @@ public abstract class Entity implements BaseEntity, StringItem {
 	/**
 	 * The map where the Entity's properties are kept.
 	 */
-	protected ArrayEntryList<String> map = new ArrayEntryList<String>().withAllowDuplicate(false);
+	protected ArrayEntryList map = new ArrayEntryList().withAllowDuplicate(false);
 	private boolean visible = true;
 
-	public Iterator<MapEntry<String>> iterator(){
+	public Iterator<MapEntry> iterator(){
 		return map.iterator();
 	}
 	

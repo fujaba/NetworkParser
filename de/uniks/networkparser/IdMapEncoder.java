@@ -67,7 +67,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	/** The updatelistener for Notification changes. */
 	protected PropertyChangeListener updatePropertylistener;
 	
-	protected ArrayEntryList<String> keyValue;
+	protected ArrayEntryList keyValue;
 	
 	protected Filter filter=new Filter();
 
@@ -76,7 +76,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	 */
 	public IdMapEncoder() {
 		super();
-		this.keyValue = new ArrayEntryList<String>();
+		this.keyValue = new ArrayEntryList();
 		this.withCreator(new TextItems());
 	}
 
@@ -87,7 +87,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	 *            the parent-List of Items
 	 * @return the Map
 	 */
-	public IdMapEncoder withKeyValue(ArrayEntryList<String> parent) {
+	public IdMapEncoder withKeyValue(ArrayEntryList parent) {
 		this.keyValue = parent;
 		return this;
 	}
@@ -373,10 +373,6 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 		this.updateListener.garbageCollection(root);
 	}
 
-	public void garbageCollection(Set<String> classCounts) {
-		// Must be override
-	}
-
 	public Object startUpdateModell(String clazz) {
 		SendableEntityCreator creator = super.getCreatorClassName(clazz, true);
 		if (creator != null) {
@@ -388,15 +384,15 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 		return null;
 	}
 
-	public ArrayEntryList<Object> getTypList(SendableEntityCreator creator) {
+	public ArrayEntryList getTypList(SendableEntityCreator creator) {
 		if (creator == null) {
 			return null;
 		}
-		ArrayEntryList<Object> result = new ArrayEntryList<Object>();
+		ArrayEntryList result = new ArrayEntryList();
 		String clazzName = creator.getSendableInstance(true).getClass()
 				.getName();
-		for(Iterator<MapEntry<String>> i = this.keyValue.iterator();i.hasNext();){
-			MapEntry<String> item = i.next();
+		for(Iterator<MapEntry> i = this.keyValue.iterator();i.hasNext();){
+			MapEntry item = i.next();
 			if (item.getValue() != null) {
 				if (item.getValue().getClass().getName().equals(clazzName)) {
 					result.add(item.getValue());
@@ -419,7 +415,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 			return false;
 		}
 		boolean result = false;
-		ArrayEntryList<Object> oldValues = getTypList(creator);
+		ArrayEntryList oldValues = getTypList(creator);
 		for (Object obj : oldValues) {
 			if (obj instanceof Comparable<?>) {
 				@SuppressWarnings("unchecked")
@@ -464,7 +460,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 		return null;
 	}
 
-	public ArrayEntryList<String> getKeyValue(){
+	public ArrayEntryList getKeyValue(){
 		return keyValue;
 	}
 	

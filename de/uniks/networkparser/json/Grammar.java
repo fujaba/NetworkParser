@@ -43,7 +43,7 @@ public class Grammar {
 			}
 		}else{
 			JsonObject props=new JsonObject();
-			for(Iterator<MapEntry<String>> i=jsonObject.iterator();i.hasNext();){
+			for(Iterator<MapEntry> i=jsonObject.iterator();i.hasNext();){
 				Entry<String, Object> item = i.next();
 				if(!JsonIdMap.CLASS.equalsIgnoreCase(item.getKey())){
 					props.put(item.getKey(), item.getValue());

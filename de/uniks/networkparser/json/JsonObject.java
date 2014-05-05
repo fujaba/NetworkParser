@@ -174,7 +174,7 @@ public class JsonObject extends Entity implements LocalisationEntity {
 		}
 
 		StringBuilder sb = new StringBuilder("{");
-		Iterator<MapEntry<String>> i = map.iterator();
+		Iterator<MapEntry> i = map.iterator();
 		Entry<String, Object> item = i.next();
 		sb.append(EntityUtil.quote(item.getKey().toString()));
 		sb.append(":");
@@ -218,7 +218,7 @@ public class JsonObject extends Entity implements LocalisationEntity {
 			return "{" + map.size() + " values}";
 		}
 
-		Iterator<MapEntry<String>> iterator = map.iterator();
+		Iterator<MapEntry> iterator = map.iterator();
 		
 		int newindent = indent + indentFactor;
 		String prefix = "";

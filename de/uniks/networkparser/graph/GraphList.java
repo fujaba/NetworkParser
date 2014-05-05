@@ -28,7 +28,6 @@ import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
 import de.uniks.networkparser.ArrayEntryList;
-import de.uniks.networkparser.SimpleList;
 import de.uniks.networkparser.interfaces.BaseEntity;
 import de.uniks.networkparser.interfaces.BaseEntityList;
 
@@ -146,18 +145,18 @@ public class GraphList implements BaseEntityList {
 		return edges;
 	}
 	
-	public ArrayEntryList<String> getLinks(){
-		ArrayEntryList<String> links = new ArrayEntryList<String>();
+	public ArrayEntryList getLinks(){
+		ArrayEntryList links = new ArrayEntryList();
 		for (GraphEdge element : edges) {
 			for(GraphNode node : element.getSource().getItems()){
 				String key = node.getTyp(typ, false);
-				SimpleList value = (SimpleList)links.get(key);
+				EdgeList value = (EdgeList)links.get(key);
 				if(value!=null){
 					value.add((Object)element);
 				}else{
-					SimpleList hashSet = new SimpleList();
-					hashSet.add(element);
-					links.put(key, hashSet);
+					EdgeList simpleList = new EdgeList();
+					simpleList.add(element);
+					links.put(key, simpleList);
 				}
 			}
 		}
