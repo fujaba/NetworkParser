@@ -177,7 +177,7 @@ public class BitEntity implements BaseEntityList, ByteItem {
 	}
 
 	@Override
-	public BaseEntityList withValues(Collection<?> collection) {
+	public BaseEntityList with(Collection<?> collection) {
 		for (Iterator<?> i = collection.iterator(); i.hasNext();) {
 			values.add((BitValue) i.next());
 		}
@@ -185,8 +185,10 @@ public class BitEntity implements BaseEntityList, ByteItem {
 	}
 
 	@Override
-	public BaseEntityList with(Object value) {
-		values.add((BitValue) value);
+	public BaseEntityList with(Object... values) {
+		for(Object value : values){
+			this.values.add((BitValue) value);
+		}
 		return this;
 	}
 

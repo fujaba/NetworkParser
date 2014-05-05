@@ -48,6 +48,6 @@ public class TableListCreator implements SendableEntityCreator{
 		if(IdMapEncoder.REMOVE.equalsIgnoreCase(type)){
 			attribute+=IdMapEncoder.REMOVE;
 		}
-		return ((TableList)entity).set(attribute, value);
+		return ((TableList)entity).setValue(attribute, value);
 	}
 }

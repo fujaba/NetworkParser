@@ -37,7 +37,7 @@ public class GraphList implements BaseEntityList {
 	private String typ;
 
 	@Override
-	public BaseEntityList withValues(Collection<?> collection) {
+	public BaseEntityList with(Collection<?> collection) {
 		for (Iterator<?> i = collection.iterator(); i.hasNext();) {
 			Object item = i.next();
 			if (item instanceof GraphNode) {
@@ -49,10 +49,12 @@ public class GraphList implements BaseEntityList {
 	}
 
 	@Override
-	public BaseEntityList with(Object value) {
-		if (value instanceof GraphNode) {
-			GraphNode entity = (GraphNode) value;
-			children.put(entity.getId(), entity);
+	public BaseEntityList with(Object... values) {
+		for(Object value : values){
+			if (value instanceof GraphNode) {
+				GraphNode entity = (GraphNode) value;
+				children.put(entity.getId(), entity);
+			}
 		}
 		return this;
 	}

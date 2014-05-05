@@ -234,7 +234,7 @@ public class XMLEntity extends Entity implements BaseEntityList {
 	}
 
 	@Override
-	public BaseEntityList withValues(Collection<?> collection) {
+	public BaseEntityList with(Collection<?> collection) {
 		for (Iterator<?> i = collection.iterator(); i.hasNext();) {
 			children.add((XMLEntity) i.next());
 		}
@@ -242,8 +242,10 @@ public class XMLEntity extends Entity implements BaseEntityList {
 	}
 
 	@Override
-	public BaseEntityList with(Object value) {
-		children.add((XMLEntity) value);
+	public BaseEntityList with(Object... values){ 
+		for(Object value : values){
+			children.add((XMLEntity) value);
+		}
 		return this;
 	}
 

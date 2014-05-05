@@ -35,16 +35,11 @@ import de.uniks.networkparser.sort.SortingDirection;
 /**
  * The Class EntityList.
  */
-
 public abstract class EntityList<V> implements BaseEntityList, StringItem, List<V> {
-	protected List<V> values=getNewList();
+    protected List<V> values = new ArrayList<V>();
 	private boolean visible = true;
 	private boolean allowDuplicate = true;
 	protected Comparator<V> cpr;
-
-	public List<V> getNewList(){
-		return new ArrayList<V>();
-	}
 	
 	public Comparator<V> comparator() {
 		if(this.cpr==null){
@@ -61,6 +56,7 @@ public abstract class EntityList<V> implements BaseEntityList, StringItem, List<
 		this.cpr = comparator;
 		return this;
 	}
+
 	public EntityList<V> withComparator(String column){
 		this.cpr = new EntityComparator<V>().withColumn(column).withDirection(SortingDirection.ASC);
 		return this;
@@ -70,15 +66,15 @@ public abstract class EntityList<V> implements BaseEntityList, StringItem, List<
 	@SuppressWarnings("unchecked")
 	public boolean add(Object newValue) {
 		if(cpr!=null){
-			for (int i = 0; i < values.size(); i++) {
-				int result = compare(values.get(i), (V)newValue);
+			for (int i = 0; i < size(); i++) {
+				int result = compare(get(i), (V)newValue);
 				if (result >= 0) {
-					values.add(i, (V) newValue);
+					this.values.add(i, (V) newValue);
 					return true;
 				}
 			}
 		}
-		return values.add((V) newValue);
+		return this.values.add((V) newValue);
 	}
 	
 	public int compare(V o1, V o2){
@@ -86,8 +82,10 @@ public abstract class EntityList<V> implements BaseEntityList, StringItem, List<
 	}
 	
 	@Override
-	public EntityList<V> with(Object newvalue){
-		add(newvalue);
+	public EntityList<V> with(Object... arg0) {
+		for(Object item : this){
+			add(item);
+		}
 		return this;
 	}
 
@@ -117,9 +115,10 @@ public abstract class EntityList<V> implements BaseEntityList, StringItem, List<
 		}
 		return newList;
 	}
+	
 	@Override
 	public List<V> subList(int fromIndex, int toIndex) {
-		return values.subList(fromIndex, toIndex);
+		return this.values.subList(fromIndex, toIndex);
 	}
 
     /**
@@ -220,7 +219,7 @@ public abstract class EntityList<V> implements BaseEntityList, StringItem, List<
 	 */
 	@Override
 	public V get(int index) throws RuntimeException {
-		V object = values.get(index);
+		V object = this.values.get(index);
 		if (object == null) {
 			throw new RuntimeException("EntityList[" + index + "] not found.");
 		}
@@ -340,11 +339,11 @@ public abstract class EntityList<V> implements BaseEntityList, StringItem, List<
 	public String join(String separator) {
 		StringBuilder sb = new StringBuilder();
 
-		for (int i = 0; i < values.size(); i += 1) {
+		for (int i = 0; i < this.values.size(); i += 1) {
 			if (i > 0) {
 				sb.append(separator);
 			}
-			sb.append(EntityUtil.valueToString(values.get(i), false, this));
+			sb.append(EntityUtil.valueToString(this.values.get(i), false, this));
 		}
 		return sb.toString();
 	}
@@ -371,7 +370,7 @@ public abstract class EntityList<V> implements BaseEntityList, StringItem, List<
 			throw new RuntimeException("EntityList[" + index + "] not found.");
 		}
 		if (index < size()) {
-			values.set(index, value);
+			this.values.set(index, value);
 		} else {
 			while (index != size()) {
 				add(null);
@@ -403,7 +402,7 @@ public abstract class EntityList<V> implements BaseEntityList, StringItem, List<
 //	public abstract EntityList withValue(String value);
 
 	@Override
-	public EntityList<V> withValues(Collection<?> collection) {
+	public EntityList<V> with(Collection<?> collection) {
 		if (collection != null) {
 			Iterator<?> iter = collection.iterator();
 			while (iter.hasNext()) {
@@ -424,18 +423,17 @@ public abstract class EntityList<V> implements BaseEntityList, StringItem, List<
 	@Override
 	public V remove(int index) {
 		V o = get(index);
-		values.remove(index);
+		this.values.remove(index);
 		return o;
 	}
 	
-	public EntityList<V> withList(List<V> reference){
-		this.values = reference;
-		return this;
-	}
-
+    public EntityList<V> withList(List<V> reference){
+        this.values = reference;
+        return this;
+    }
+	
 	public EntityList<V> withReference(EntityList<V> reference){
 		this.cpr = reference.comparator();
-		this.values = reference.getNewList();
 		this.allowDuplicate = reference.isAllowDuplicate();
 		return this;
 	}
@@ -444,108 +442,115 @@ public abstract class EntityList<V> implements BaseEntityList, StringItem, List<
 	public abstract String toString();
 
 	/**
-	 * Get the number of elements in the EntityList, included nulls.
-	 * 
-	 * @return The length (or size).
-	 */
-	@Override
-	public int size() {
-		return values.size();
-	}
-
-	/**
 	 * If the JsonArray is Empty
 	 * 
 	 * @return boolean of size
 	 */
 	@Override
 	public boolean isEmpty() {
-		return values.size() < 1;
+        return values.size() < 1;
+    }
+
+    @Override
+    public boolean contains(Object o) {
+        return values.contains(o);
+    }
+
+    @Override
+    public Iterator<V> iterator() {
+        return values.iterator();
+    }
+
+    @Override
+    public Object[] toArray() {
+        return values.toArray();
+    }
+
+    @Override
+    public <T> T[] toArray(T[] a) {
+        return values.toArray(a);
+    }
+
+
+    @Override
+    public boolean remove(Object o) {
+        return values.remove(o);
+    }
+
+    @Override
+    public boolean containsAll(Collection<?> c) {
+        return values.containsAll(c);
+    }
+
+    @Override
+    public boolean addAll(int index, Collection<? extends V> c) {
+        return values.addAll(index, c);
+    }
+    
+	public boolean addAll(Iterator<? extends V> list){
+		while(list.hasNext()){
+			Object item = list.next();
+			if(item!=null){
+				if(!add(item)){
+					return false;
+				}	
+			}
+		}
+		return true;
 	}
-
+	
 	@Override
-	public boolean contains(Object o) {
-		return values.contains(o);
+	public boolean addAll(Collection<? extends V> list){
+		return addAll(list.iterator());
 	}
+	
+    @Override
+    public boolean removeAll(Collection<?> c) {
+        return values.removeAll(c);
+    }
 
-	@Override
-	public Iterator<V> iterator() {
-		return values.iterator();
+    @Override
+    public boolean retainAll(Collection<?> c) {
+        return values.retainAll(c);
+    }
+
+    @Override
+    public void clear() {
+        values.clear();
+    }
+
+    @Override
+    public V set(int index, V element) {
+        return values.set(index, element);
+    }
+
+    @Override
+    public void add(int index, V element) {
+        values.add(index, element);
+    }
+
+    @Override
+    public int indexOf(Object o) {
+        return values.indexOf(o);
+    }
+
+    @Override
+    public int lastIndexOf(Object o) {
+        return values.lastIndexOf(o);
+    }
+
+    @Override
+    public ListIterator<V> listIterator() {
+        return values.listIterator();
+    }
+
+    @Override
+    public ListIterator<V> listIterator(int index) {
+        return values.listIterator(index);
 	}
-
+	
 	@Override
-	public Object[] toArray() {
-		return values.toArray();
-	}
-
-	@Override
-	public <T> T[] toArray(T[] a) {
-		return values.toArray(a);
-	}
-
-
-	@Override
-	public boolean remove(Object o) {
-		return values.remove(o);
-	}
-
-	@Override
-	public boolean containsAll(Collection<?> c) {
-		return values.containsAll(c);
-	}
-
-	@Override
-	public boolean addAll(Collection<? extends V> c) {
-		return values.addAll(c);
-	}
-
-	@Override
-	public boolean addAll(int index, Collection<? extends V> c) {
-		return values.addAll(index, c);
-	}
-
-	@Override
-	public boolean removeAll(Collection<?> c) {
-		return values.removeAll(c);
-	}
-
-	@Override
-	public boolean retainAll(Collection<?> c) {
-		return values.retainAll(c);
-	}
-
-	@Override
-	public void clear() {
-		values.clear();
-	}
-
-	@Override
-	public V set(int index, V element) {
-		return values.set(index, element);
-	}
-
-	@Override
-	public void add(int index, V element) {
-		values.add(index, element);
-	}
-
-	@Override
-	public int indexOf(Object o) {
-		return values.indexOf(o);
-	}
-
-	@Override
-	public int lastIndexOf(Object o) {
-		return values.lastIndexOf(o);
-	}
-
-	@Override
-	public ListIterator<V> listIterator() {
-		return values.listIterator();
-	}
-
-	@Override
-	public ListIterator<V> listIterator(int index) {
-		return values.listIterator(index);
+	public int size() {
+		return this.values.size();
 	}
 }

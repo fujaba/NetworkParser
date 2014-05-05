@@ -25,83 +25,54 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.TreeSet;
 
+import de.uniks.networkparser.ArrayEntryList;
 import de.uniks.networkparser.EntityValueFactory;
 import de.uniks.networkparser.IdMapEncoder;
+import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.sort.EntityComparator;
 import de.uniks.networkparser.sort.SortingDirection;
 
-public class TableList implements List<Object>, SendableEntity {
+public class TableList extends ArrayEntryList implements SendableEntity {
 	public static final String PROPERTY_ITEMS = "items";
-	protected EntityComparator<Object> comparator;
-	protected ArrayList<Object> list;
 	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
 	
-	public EntityComparator<Object> getComparator(){
-		if(comparator==null){
-			comparator = new EntityComparator<Object>();
-			comparator.withTableList(this);
-		}
-		return comparator;
+	@Override
+	public EntityComparator<MapEntry> comparator() {
+		return (EntityComparator<MapEntry>) cpr;
 	}
 	
 	public ArrayList<Object> getItems(){
-		return getItems(false);
-	}
-	public ArrayList<Object> getItems(boolean always){
-		if(list==null||always){
-			list=new ArrayList<Object>( );
-		}
-		return list;
+		return (ArrayList<Object>) super.values();
 	}
 	
 	public void setIdMap(IdMapEncoder map){
-		getComparator().withMap(map);
+		if(cpr instanceof EntityComparator<?>){
+			((EntityComparator<?>)this.cpr).withMap(map);
+		}
 	}
 	
-	public Object get(String attrName) {
-		int pos = attrName.indexOf('.');
-		String attribute = attrName;
+    public boolean setValue(String attrName, Object value) {
+        if (PROPERTY_ITEMS.equalsIgnoreCase(attrName)) {
+            add(value);
+            return true;
+        }else if ((PROPERTY_ITEMS+IdMapEncoder.REMOVE).equalsIgnoreCase(attrName)) {
+            remove(value);
+            return true;
+        }
+        return false;
+    }
 
-		if (pos > 0) {
-			attribute = attrName.substring(0, pos);
-		}
-		if (PROPERTY_ITEMS.equalsIgnoreCase(attribute)) {
-			return getItems(false);
-		}
-		return null;
-	}
-
-	public boolean set(String attrName, Object value) {
-		if (PROPERTY_ITEMS.equalsIgnoreCase(attrName)) {
-			add(value);
-			return true;
-		}else if ((PROPERTY_ITEMS+IdMapEncoder.REMOVE).equalsIgnoreCase(attrName)) {
-			remove(value);
-			return true;
-		}
-		return false;
-	}
-
-	public void setItems(ArrayList<Object> items) {
-		addAll(items);
-	}
-
-	@Override
-	public boolean add(Object value){
-		if (!contains(value)) 
+	
+	public boolean addItem(Object value){
+		if (!super.add(value)) 
 		{
-			TreeSet<Object> items = new TreeSet<Object>(getComparator());
-			items.addAll(getItems(false));
-			items.add(value);
-			
-			getItems(true).addAll(items);
 			getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEMS, null, value);
 			return true;
 		}
@@ -111,13 +82,19 @@ public class TableList implements List<Object>, SendableEntity {
 	@Override
 	public boolean remove(Object value) {
 		if (contains(value)) {
-			ArrayList<Object> items = getItems(false);
+			List<MapEntry> items = this.values;
 			if(items.remove(value)){
-				getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEMS, value,null);
 				return true;
 			}
 		}
 		return false;
+	}
+	
+	@Override
+	public MapEntry remove(int index) {
+		MapEntry item = super.remove(index);
+		getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEMS, item,null);
+		return item;
 	}
 	
 	@Override
@@ -127,8 +104,7 @@ public class TableList implements List<Object>, SendableEntity {
 	
 	@Override
 	public boolean removeAll(Collection<?> list) {
-		Iterator<?> i=list.iterator();
-		return removeAll(i);
+		return removeAll(list.iterator());
 	}
 	
 	public boolean removeAll(Iterator<?> i) {
@@ -142,59 +118,8 @@ public class TableList implements List<Object>, SendableEntity {
 		return true;
 	}
 	
-	public boolean addAll(Iterator<? extends Object> list){
-		while(list.hasNext()){
-			Object item = list.next();
-			if(item!=null){
-				if(!add(item)){
-					return false;
-				}	
-			}
-		}
-		return true;
-	}
-	@Override
-	public boolean addAll(Collection<? extends Object> list){
-		for(Object item : list){
-			if(!add(item)){
-				return false;
-			}
-		}
-		return true;
-	}
-
 	public boolean addAll(TableList list){
-		for(Object item : list.getItems(false)){
-			if(!add(item)){
-				return false;
-			}
-		}
-		return true;
-	}
-	@Override
-	public List<Object> subList(int fromIndex, int toIndex) {
-		TableList subList=new TableList();
-		int count=0;
-		Iterator<Object> iterator = iterator();
-		while(iterator.hasNext()){
-			if(count==fromIndex){
-				break;
-			}
-			iterator.next();
-			count++;
-		}
-		while(iterator.hasNext() && count<toIndex){
-			subList.add(iterator.next());
-			if(count==toIndex){
-				break;
-			}
-			count++;
-		}
-		return subList;
-	}
-
-	public boolean addAll(Object... arg0) {
-		for(Object item : list){
+		for(Object item : this){
 			if(!add(item)){
 				return false;
 			}
@@ -202,10 +127,9 @@ public class TableList implements List<Object>, SendableEntity {
 		return true;
 	}
 
-	public boolean setAll(Collection<? extends Object> list) {
-		this.clear();
-
-		for(Iterator<? extends Object> iterator = list.iterator();iterator.hasNext();){
+	@Override
+	public boolean addAll(int index, Collection<? extends MapEntry> c) {
+		for(Iterator<? extends Object> iterator = super.iterator();iterator.hasNext();){
 			if(!add(iterator.next())){
 				return false;
 			}
@@ -213,85 +137,19 @@ public class TableList implements List<Object>, SendableEntity {
 		return true;
 	}
 	
-	
-	@Override
-	public boolean addAll(int index, Collection<? extends Object> c) {
-		for(Iterator<? extends Object> iterator = list.iterator();iterator.hasNext();){
-			if(!add(iterator.next())){
-				return false;
-			}
-		}
-		return true;
-	}
-
-	@Override
-	public Object get(int index) {
-		if(index>=0&&index<size()){
-			Iterator<Object> iterator = iterator();
-			while(index>0){
-				iterator.next();
-				index--;
-			}
-			return iterator.next();
-		}
-		return null;
-	}
-
-	@Override
-	public Object set(int index, Object element) {
-		if(index>=0&&index<size()){
-			Iterator<Object> iterator = iterator();
-			while(index>0){
-				iterator.next();
-				index--;
-			}
-			iterator.remove();
-			add(element);
-		}
-		return null;
-	}
-
-	@Override
-	public void add(int index, Object element) {
-		add(element);
-	}
-
-	@Override
-	public Object remove(int index) {
-		if(index>=0&&index<size()){
-			Object[] array = toArray(new Object[size()]);
-			Object item = array[index];
-			remove(item);
-			return item;
-		}
-		return null;
-	}
-	
-	@Override
-	public int indexOf(Object element) {
-		int count=0;
-		for(Iterator<Object> iterator = iterator();iterator.hasNext();){
-			if(iterator.next()==element){
-				return count;
-			}
-			count++;
-		}
-		return -1;
-	}
-
 	@Override
 	public int lastIndexOf(Object obj) {
 		return indexOf(obj);
 	}
 
 	@Override
-	public ListIterator<Object> listIterator() {
-		return new ListIteratorImpl<Object>(this);
+	public ListIterator<MapEntry> listIterator() {
+		return new ListIteratorImpl<MapEntry>(this);
 	}
 
 	@Override
-	public ListIterator<Object> listIterator(int index) {
-		ListIterator<Object> iterator = listIterator();
+	public ListIterator<MapEntry> listIterator(int index) {
+		ListIterator<MapEntry> iterator = listIterator();
 		if(index>=0&&index<=size()){
 			for(int z=0;z<index;z++){
 				iterator.next();
@@ -316,7 +174,7 @@ public class TableList implements List<Object>, SendableEntity {
 	}
 	
 	public TableList withSort(String field, SortingDirection direction, EntityValueFactory cellValueCreator) {
-		EntityComparator<Object> comparator = getComparator();
+		EntityComparator<MapEntry> comparator = comparator();
 		comparator.withColumn(field);
 		comparator.withDirection(direction);
 		comparator.withCellCreator(cellValueCreator);
@@ -324,14 +182,16 @@ public class TableList implements List<Object>, SendableEntity {
 		return this;
 	}
 	
-	public TableList withSort(EntityComparator<Object> comparator) {
-		this.comparator = comparator;
+	@Override
+	public TableList withComparator(Comparator<MapEntry> comparator) {
+		super.withComparator(comparator);
 		refreshSort();
 		return this;
+	
 	}
 	
 	public TableList withSort(String field, SortingDirection direction) {
-		EntityComparator<Object> comparator = getComparator();
+		EntityComparator<MapEntry> comparator = comparator();
 		comparator.withColumn(field);
 		comparator.withDirection(direction);
 		refreshSort();
@@ -339,56 +199,52 @@ public class TableList implements List<Object>, SendableEntity {
 	}
 
 	public void refreshSort(){
-		ArrayList<Object> oldValue = list;
-		
-		list = getItems(true);
-		int size = oldValue.size();
-		Object[] array = oldValue.toArray(new Object[size]);
-		for(int i=0;i<size;i++){
-			list.add(array[i]);
-		}
+//		ArrayList<Object> oldValue = list;
+//		
+//		list = getItems(true);
+//		int size = oldValue.size();
+//		Object[] array = oldValue.toArray(new Object[size]);
+//		for(int i=0;i<size;i++){
+//			list.add(array[i]);
+//		}
 	}
-		
-	
+
 	public void setSort(String field) {
-		getComparator().withColumn(field);
-		refreshSort();
-	}
-	
-	public int compare(Object o1, Object o2) {
-		return getComparator().compare(o1, o2);
+		EntityComparator<MapEntry> comparator = comparator();
+		if(comparator!=null){
+			comparator.withColumn(field);
+			refreshSort();
+		}
 	}
 	
 	public SortingDirection changeDirection(){
-		return getComparator().changeDirection();
-	}
-
-	@Override
-	public boolean contains(Object item) {
-		return getItems(false).contains(item);
+		return comparator().changeDirection();
 	}
 	
 	public Object[] getSortedIndex(){
-		EntityComparator<Object> comparator = getComparator();
+		EntityComparator<MapEntry> comparator = comparator();
+		if(comparator==null){
+			return null;
+		}
 		IdMapEncoder map = comparator.getMap();
-		Iterator<Object> iterator = iterator();
+		Iterator<MapEntry> iterator = iterator();
 		SendableEntityCreator creator = null; 
 		if(iterator.hasNext()){
 			creator = map.getCreatorClass(iterator.next());
 		}
 		String column = comparator.getColumn();
 		if(creator != null &&  column != null){
-			Object[] returnValues=new Object[list.size()];
+			Object[] returnValues=new Object[super.size()];
 			EntityValueFactory cellCreator = comparator.getCellCreator();
 			if(comparator.getDirection()==SortingDirection.ASC){
 				int pos=0;
-				for(Iterator<Object> i = iterator();i.hasNext();){
+				for(Iterator<MapEntry> i = iterator();i.hasNext();){
 					Object item = i.next();
 					returnValues[pos++] = cellCreator.getCellValue(item, creator, column);
 				}
 			}else{
-				int pos=list.size()-1;
-				for(Iterator<Object> i = iterator();i.hasNext();){
+				int pos=super.size()-1;
+				for(Iterator<MapEntry> i = iterator();i.hasNext();){
 					Object item = i.next();
 					returnValues[pos--] = cellCreator.getCellValue(item, creator, column);
 				}
@@ -399,62 +255,7 @@ public class TableList implements List<Object>, SendableEntity {
 		return null;
 	}
 
-	@Override
-	public int size() {
-		if(list!=null){
-			return list.size();
-		}
-		return 0;
-	}
-
-	@Override
-	public boolean isEmpty() {
-		if(list!=null){
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public Iterator<Object> iterator() {
-		return getItems(false).iterator();
-	}
-	
-
-	@Override
-	public Object[] toArray() {
-		if(list!=null){
-			return list.toArray();
-		}
-		return null;
-	}
-
-	@Override
-	public <T> T[] toArray(T[] a) {
-		if(list!=null){
-			return list.toArray(a);
-		}
-		return null;
-	}
-
-	@Override
-	public boolean containsAll(Collection<?> c) {
-		if(list!=null){
-			return list.containsAll(c);
-		}
-		return false;
-	}
-
-	@Override
-	public boolean retainAll(Collection<?> c) {
-		if(list!=null){
-			return list.retainAll(c);
-		}
-		return false;
-	}
-
 	// ==========================================================================
-
 	@Override
 	public boolean addPropertyChangeListener(PropertyChangeListener listener) {
 		getPropertyChangeSupport().addPropertyChangeListener(listener);
