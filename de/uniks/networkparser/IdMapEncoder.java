@@ -388,11 +388,11 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 		return null;
 	}
 
-	public ArrayList<Object> getTypList(SendableEntityCreator creator) {
+	public ArrayEntryList<Object> getTypList(SendableEntityCreator creator) {
 		if (creator == null) {
 			return null;
 		}
-		ArrayList<Object> result = new ArrayList<Object>();
+		ArrayEntryList<Object> result = new ArrayEntryList<Object>();
 		String clazzName = creator.getSendableInstance(true).getClass()
 				.getName();
 		for(Iterator<MapEntry<String>> i = this.keyValue.iterator();i.hasNext();){
@@ -419,7 +419,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 			return false;
 		}
 		boolean result = false;
-		ArrayList<Object> oldValues = getTypList(creator);
+		ArrayEntryList<Object> oldValues = getTypList(creator);
 		for (Object obj : oldValues) {
 			if (obj instanceof Comparable<?>) {
 				@SuppressWarnings("unchecked")

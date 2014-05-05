@@ -1,15 +1,15 @@
 package de.uniks.networkparser.graph;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 
 public class GraphEdgeLabel {
-	private HashSet<GraphNode> items = new HashSet<GraphNode>();
+	private ArrayList<GraphNode> items = new ArrayList<GraphNode>();
 	private String cardinality;
 	private String property;
 	
-	public HashSet<GraphNode> getItems() {
+	public ArrayList<GraphNode> getItems() {
 		return items;
 	}
 	public GraphEdgeLabel withItem(GraphNode item) {

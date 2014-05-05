@@ -23,12 +23,12 @@ package de.uniks.networkparser.graph;
 */
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
+import de.uniks.networkparser.ArrayEntryList;
+import de.uniks.networkparser.SimpleList;
 import de.uniks.networkparser.interfaces.BaseEntity;
 import de.uniks.networkparser.interfaces.BaseEntityList;
 
@@ -146,15 +146,16 @@ public class GraphList implements BaseEntityList {
 		return edges;
 	}
 	
-	public HashMap<String, HashSet<GraphEdge>> getLinks(){
-		HashMap<String, HashSet<GraphEdge>> links = new HashMap<String, HashSet<GraphEdge>>();
+	public ArrayEntryList<String> getLinks(){
+		ArrayEntryList<String> links = new ArrayEntryList<String>();
 		for (GraphEdge element : edges) {
 			for(GraphNode node : element.getSource().getItems()){
 				String key = node.getTyp(typ, false);
-				if (links.containsKey(key)) {
-					links.get(key).add(element);
-				} else {
-					HashSet<GraphEdge> hashSet = new HashSet<GraphEdge>();
+				SimpleList value = (SimpleList)links.get(key);
+				if(value!=null){
+					value.add((Object)element);
+				}else{
+					SimpleList hashSet = new SimpleList();
 					hashSet.add(element);
 					links.put(key, hashSet);
 				}

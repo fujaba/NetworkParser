@@ -50,6 +50,8 @@ public abstract class AbstractMap {
 		}
 		return getCreatorClassName(reference.getClass().getName(), true);
 	}
+	
+	
 
 	/**
 	 * Gets the creator classes.

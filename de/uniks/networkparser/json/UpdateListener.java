@@ -52,7 +52,7 @@ public class UpdateListener implements PropertyChangeListener {
 	private HashMap<String, Integer> garbageCollection = null;
 
 	/** The class counts. */
-	private HashSet<String> classCounts;
+	private ArrayList<String> classCounts;
 
 	private UpdateFilter updateFilter = new UpdateFilter();
 
@@ -77,7 +77,7 @@ public class UpdateListener implements PropertyChangeListener {
 	 */
 	public JsonObject startGarbageColection(Object root) {
 		this.garbageCollection = new HashMap<String, Integer>();
-		this.classCounts = new HashSet<String>();
+		this.classCounts = new ArrayList<String>();
 		JsonObject initField = this.map.toJsonObject(root);
 		countMessage(initField);
 		return initField;
@@ -93,7 +93,7 @@ public class UpdateListener implements PropertyChangeListener {
 	public JsonObject garbageCollection(Object root) {
 		boolean isStarted = this.garbageCollection != null;
 		this.garbageCollection = new HashMap<String, Integer>();
-		this.classCounts = new HashSet<String>();
+		this.classCounts = new ArrayList<String>();
 		JsonObject initField = this.map.toJsonObject(root);
 		countMessage(initField);
 		// Remove all others
