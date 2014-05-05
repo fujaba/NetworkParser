@@ -3,7 +3,6 @@ package de.uniks.networkparser.graph;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
@@ -144,7 +143,7 @@ public class GraphConverter implements Converter {
 	
 	private Collection<?> parseEdges(String typ, ArrayList<GraphEdge> edges, boolean shortName) {
 		JsonArray result=new JsonArray();
-		HashSet<String> ids=new HashSet<String>();
+		ArrayList<String> ids=new ArrayList<String>();
 
 		for(GraphEdge edge : edges){
 			for(GraphNode source : edge.getSource().getItems()){
@@ -175,7 +174,7 @@ public class GraphConverter implements Converter {
 	
 	public JsonArray parseEntities(String typ, Collection<GraphNode> nodes, boolean shortName) {
 		JsonArray result=new JsonArray();
-		HashSet<String> ids=new HashSet<String>();
+		ArrayList<String> ids=new ArrayList<String>();
 		for(GraphNode entity : nodes){
 			JsonObject item = parseEntity(typ, entity, shortName);
 			if(item!=null){

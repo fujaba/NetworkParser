@@ -21,8 +21,9 @@ package de.uniks.networkparser.xml;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.IdMapEncoder;
@@ -47,7 +48,7 @@ public class XMLSimpleIdMap extends IdMap {
 	public static final char SPACE = ' ';
 
 	/** The stopwords. */
-	protected HashSet<String> stopwords = new HashSet<String>();
+	protected ArrayList<String> stopwords = new ArrayList<String>();
 
 	/**
 	 * Instantiates a new XML id map.

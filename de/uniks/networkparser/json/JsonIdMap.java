@@ -26,7 +26,6 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -323,7 +322,7 @@ public class JsonIdMap extends IdMap {
 		Object result = null;
 		int len = jsonArray.size() - 1;
 		// Add all Objects
-		LinkedHashSet<ReferenceObject> refs = new LinkedHashSet<ReferenceObject>();
+		ArrayList<ReferenceObject> refs = new ArrayList<ReferenceObject>();
 		for (int i = 0; i <= len; i++) {
 			JsonObject kidObject = jsonArray.getJSONObject(i);
 			Object tmp = decode(kidObject, refs, this.filter.cloneObj());
@@ -347,7 +346,7 @@ public class JsonIdMap extends IdMap {
 	 * @return the object
 	 */
 	public Object decode(JsonObject jsonObject) {
-		LinkedHashSet<ReferenceObject> refs = new LinkedHashSet<ReferenceObject>();
+		ArrayList<ReferenceObject> refs = new ArrayList<ReferenceObject>();
 		if (jsonObject.has(UPDATE) || jsonObject.has(REMOVE)) {
 			// Must be an update
 			if (executeUpdateMsg(jsonObject)) {
@@ -385,7 +384,8 @@ public class JsonIdMap extends IdMap {
 	 * @return the object
 	 */
 	public Object decode(Object target, JsonObject jsonObject, Filter filter) {
-		LinkedHashSet<ReferenceObject> refs = new LinkedHashSet<ReferenceObject>();
+		//FIXME ArrayList ReferenceObject -> MapEntry vererben
+		ArrayList<ReferenceObject> refs = new ArrayList<ReferenceObject>();
 		if(filter==null){
 			filter=this.filter.cloneObj();
 		}
@@ -408,7 +408,7 @@ public class JsonIdMap extends IdMap {
 	 * @return the object
 	 */
 	private Object decode(JsonObject jsonObject,
-			LinkedHashSet<ReferenceObject> refs, Filter filter) {
+			ArrayList<ReferenceObject> refs, Filter filter) {
 		Object result = null;
 		SendableEntityCreator typeInfo = grammar.getReadCreator(
 				jsonObject, this);
@@ -461,7 +461,7 @@ public class JsonIdMap extends IdMap {
 	 * @return the object
 	 */
 	protected Object decode(Object target, JsonObject jsonObject,
-			LinkedHashSet<ReferenceObject> refs, Filter filter) {
+			ArrayList<ReferenceObject> refs, Filter filter) {
 		// JSONArray jsonArray;
 		boolean isId = filter.isId(this, target, target.getClass().getName());
 		if (isId) {
@@ -502,7 +502,7 @@ public class JsonIdMap extends IdMap {
 	 *            the refs
 	 */
 	protected void parseValue(Object target, String property, Object value,
-			SendableEntityCreator creator, LinkedHashSet<ReferenceObject> refs) {
+			SendableEntityCreator creator, ArrayList<ReferenceObject> refs) {
 		if (value != null) {
 			if (value instanceof JsonArray) {
 				JsonArray jsonArray = (JsonArray) value;

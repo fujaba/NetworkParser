@@ -34,20 +34,10 @@ public class ArrayEntryList<K> extends EntityList<MapEntry<K>> {
 	public ArrayEntryList<K> getNewArray() {
 		return new ArrayEntryList<K>();
 	}
-
+	
 	@Override
 	public MapEntry<K> getNewObject() {
 		return new MapEntry<K>();
-	}
-
-	@Override
-	public String toString(int indentFactor) {
-		return toString();
-	}
-
-	@Override
-	public String toString(int indentFactor, int intent) {
-		return toString();
 	}
 
 	@Override
@@ -167,5 +157,14 @@ public class ArrayEntryList<K> extends EntityList<MapEntry<K>> {
 			}
 		}
 		return false;
+	}
+	@Override
+	public String toString(int indentFactor) {
+		return toString();
+	}
+
+	@Override
+	public String toString(int indentFactor, int intent) {
+		return toString();
 	}
 }

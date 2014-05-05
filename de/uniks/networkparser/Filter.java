@@ -21,7 +21,7 @@ package de.uniks.networkparser;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import java.util.LinkedHashSet;
+import java.util.ArrayList;
 
 import de.uniks.networkparser.logic.Condition;
 import de.uniks.networkparser.logic.ValuesMap;
@@ -32,7 +32,7 @@ public class Filter {
 	private Condition property;
 	
 	// Temporary variables
-	private LinkedHashSet<Object> visitedObjects;
+	private ArrayList<Object> visitedObjects;
 	private Boolean full;
 
 	public Condition getIdFilter() {
@@ -90,7 +90,7 @@ public class Filter {
 		if(property== null){
 			property = referenceFilter.getPropertyRegard();
 		}
-		visitedObjects=new LinkedHashSet<Object>();
+		visitedObjects=new ArrayList<Object>();
 		if(full==null){
 			full = referenceFilter.isFullSeriation();
 			if(full==null){

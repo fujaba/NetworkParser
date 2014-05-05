@@ -439,14 +439,7 @@ public abstract class EntityList<V> implements BaseEntityList, StringItem, List<
 		this.allowDuplicate = reference.isAllowDuplicate();
 		return this;
 	}
-
 	
-	@Override
-	public abstract String toString(int indentFactor);
-
-	@Override
-	public abstract String toString(int indentFactor, int intent);
-
 	@Override
 	public abstract String toString();
 

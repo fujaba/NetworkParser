@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import de.uniks.networkparser.ArrayEntryList;
+
 public class YUMLConverter implements Converter {
 	/** The Constant URL. */
 	public static final String URL = "http://yuml.me/diagram/class/";
@@ -19,7 +21,7 @@ public class YUMLConverter implements Converter {
 			Iterator<GraphNode> i = children.iterator();
 
 			HashSet<GraphNode> visitedObj = new HashSet<GraphNode>();
-			HashMap<String, HashSet<GraphEdge>> links = root.getLinks();
+			ArrayEntryList<String> links = root.getLinks();
 			parse(typ, i.next(), sb, visitedObj, links, removePackage);
 			while (i.hasNext()) {
 				parse(typ, i.next(), sb, visitedObj, links, removePackage);
