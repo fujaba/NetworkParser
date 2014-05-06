@@ -62,7 +62,7 @@ public abstract class AbstractMap {
 	 */
 	public SendableEntityCreator getCreatorClassName(String clazz, boolean fullName) {
 		if(fullName){
-			return (SendableEntityCreator) this.creators.get(clazz);
+			return (SendableEntityCreator) this.creators.getValue(clazz);
 		}
 		clazz = "." + clazz;
 		for (Iterator<MapEntry> i = this.creators

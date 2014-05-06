@@ -29,6 +29,7 @@ import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.TextParsingException;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.BaseEntity;
+import de.uniks.networkparser.interfaces.StringItem;
 /**
  * A JSONArray is an ordered sequence of values. Its external text form is a
  * string wrapped in square brackets with commas separating the values. The
@@ -78,7 +79,7 @@ import de.uniks.networkparser.interfaces.BaseEntity;
  * @version 2010-12-28
  */
 
-public class JsonArray extends EntityList<Object> {
+public class JsonArray extends EntityList<Object> implements StringItem{
 	/**
 	 * Get the JSONArray associated with an index.
 	 * 

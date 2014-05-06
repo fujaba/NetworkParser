@@ -22,16 +22,17 @@ package de.uniks.networkparser.bytes;
  permissions and limitations under the Licence.
 */
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
+
 import de.uniks.networkparser.AbstractMap;
+import de.uniks.networkparser.ArrayEntryList;
 import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.bytes.creator.BitEntityCreator;
 import de.uniks.networkparser.interfaces.BufferedBytes;
 
 public class ByteSimpleMap extends AbstractMap {
 	public Object decode(BufferedBytes buffer, BitEntityCreator creator) {
-		HashMap<String, Object> values = new HashMap<String, Object>();
+		ArrayEntryList values = new ArrayEntryList();
 		BitEntity[] bitProperties = creator.getBitProperties();
 		Object newInstance = creator.getSendableInstance(false);
 		for (BitEntity entity : bitProperties) {
@@ -45,13 +46,13 @@ public class ByteSimpleMap extends AbstractMap {
 	}
 
 	public Object getEntity(BufferedBytes buffer, BitEntity entry,
-			HashMap<String, Object> values) {
+			ArrayEntryList values) {
 		if (entry.size() < 1) {
 			// Reference or Value
 			if (entry.isTyp(BitEntity.BIT_REFERENCE)) {
 				String propertyName = entry.getPropertyName();
 				if (values.containsKey(propertyName)) {
-					return values.get(propertyName);
+					return values.getValue(propertyName);
 				}
 			} else if (entry.isTyp(BitEntity.BIT_BYTE, BitEntity.BIT_NUMBER,
 					BitEntity.BIT_STRING)) {

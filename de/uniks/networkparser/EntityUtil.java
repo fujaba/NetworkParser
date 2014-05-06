@@ -246,11 +246,8 @@ public class EntityUtil {
 		if (value instanceof Boolean) {
 			return value.toString();
 		}
-		if (value instanceof Entity) {
-			return ((Entity) value).toString(indentFactor, intent);
-		}
-		if (value instanceof EntityList) {
-			return ((EntityList<?>) value).toString(indentFactor, intent);
+		if (value instanceof StringItem) {
+			return ((StringItem) value).toString(indentFactor, intent);
 		}
 		if (value instanceof Map) {
 			Entity entity = (Entity) reference.getNewObject();

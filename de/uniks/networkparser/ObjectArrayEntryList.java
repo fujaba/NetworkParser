@@ -27,17 +27,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import de.uniks.networkparser.event.MapEntry;
-
-public class ArrayEntryList extends EntityList<MapEntry> {
+public class ObjectArrayEntryList extends EntityList<ObjectMapEntry> {
 	@Override
-	public ArrayEntryList getNewArray() {
-		return new ArrayEntryList();
+	public ObjectArrayEntryList getNewArray() {
+		return new ObjectArrayEntryList();
 	}
 	
 	@Override
-	public MapEntry getNewObject() {
-		return new MapEntry();
+	public ObjectMapEntry getNewObject() {
+		return new ObjectMapEntry();
 	}
 
 	@Override
@@ -46,14 +44,14 @@ public class ArrayEntryList extends EntityList<MapEntry> {
 	}
 	
 	@Override
-	public ArrayEntryList withAllowDuplicate(boolean value) {
+	public ObjectArrayEntryList withAllowDuplicate(boolean value) {
 		super.withAllowDuplicate(value);
 		return this;
 	}
 
 	public boolean containsKey(Object key) {
-		for(Iterator<MapEntry> i = iterator();i.hasNext();){
-			MapEntry item = i.next();
+		for(Iterator<ObjectMapEntry> i = iterator();i.hasNext();){
+			ObjectMapEntry item = i.next();
 			if(item.getKey().equals(key)){
 				return true;
 			}
@@ -62,8 +60,8 @@ public class ArrayEntryList extends EntityList<MapEntry> {
 	}
 
 	public boolean containsValue(Object value) {
-		for(Iterator<MapEntry> i = iterator();i.hasNext();){
-			MapEntry item = i.next();
+		for(Iterator<ObjectMapEntry> i = iterator();i.hasNext();){
+			ObjectMapEntry item = i.next();
 			if(item.getValue().equals(value)){
 				return true;
 			}
@@ -71,17 +69,17 @@ public class ArrayEntryList extends EntityList<MapEntry> {
 		return false;
 	}
 
-	public Object put(String key, Object value) {
+	public Object put(Object key, Object value) {
 		if(!isAllowDuplicate()){			
-			for(Iterator<MapEntry> i = iterator();i.hasNext();){
-				MapEntry item = i.next();
+			for(Iterator<ObjectMapEntry> i = iterator();i.hasNext();){
+				ObjectMapEntry item = i.next();
 				if(item.getKey().equals(key)){
 					item.withValue(value);
 					return item.getValue();
 				}
 			}
 		}
-		MapEntry newObject = getNewObject();
+		ObjectMapEntry newObject = getNewObject();
 		newObject.withKey(key);
 		newObject.withValue(value);
 		values.add(newObject);
@@ -97,7 +95,7 @@ public class ArrayEntryList extends EntityList<MapEntry> {
 
 	public ArrayList<String> keySet() {
 		ArrayList<String> list = new ArrayList<String>();
-		for(Iterator<MapEntry> i = values.listIterator();i.hasNext();){
+		for(Iterator<ObjectMapEntry> i = values.listIterator();i.hasNext();){
 			list.add(i.next().getKeyString());
 		}
 		return list;
@@ -110,28 +108,28 @@ public class ArrayEntryList extends EntityList<MapEntry> {
 	 */
 	public Collection<Object> values() {
 		ArrayList<Object> list = new ArrayList<Object>();
-		for(Iterator<MapEntry> i = values.listIterator();i.hasNext();){
+		for(Iterator<ObjectMapEntry> i = values.listIterator();i.hasNext();){
 			list.add(i.next().getValue());
 		}
 		return list;
 	}
 
-	public List<MapEntry> entrySet() {
+	public List<ObjectMapEntry> entrySet() {
 		return values;
 	}
 
 	public String getKey(Object obj) {
-		for(Iterator<MapEntry> i = iterator();i.hasNext();){
-			MapEntry item = i.next();
+		for(Iterator<ObjectMapEntry> i = iterator();i.hasNext();){
+			ObjectMapEntry item = i.next();
 			if(item.getValue().equals(obj)){
 				return item.getKeyString();
 			}
 		}
 		return null;
 	}
-	public Object getValue(String key) {
-		for(Iterator<MapEntry> i = iterator();i.hasNext();){
-			MapEntry item = i.next();
+	public Object getValue(Object key) {
+		for(Iterator<ObjectMapEntry> i = iterator();i.hasNext();){
+			ObjectMapEntry item = i.next();
 			if(item.getKey().equals(key)){
 				return item.getValue();
 			}
@@ -139,14 +137,14 @@ public class ArrayEntryList extends EntityList<MapEntry> {
 		return null;
 	}
 	
-	public ArrayEntryList with(String key, Object value) {
+	public ObjectArrayEntryList with(String key, Object value) {
 		this.put(key, value);
 		return this;
 	}
 
 	public boolean removeKey(String key) {
-		for(Iterator<MapEntry> i = iterator();i.hasNext();){
-			MapEntry item = i.next();
+		for(Iterator<ObjectMapEntry> i = iterator();i.hasNext();){
+			ObjectMapEntry item = i.next();
 			if(item.getKey().equals(key)){
 				i.remove();
 				return true;

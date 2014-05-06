@@ -21,7 +21,6 @@ package de.uniks.networkparser;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import java.util.HashMap;
 /**
  * The Class CloneFilter.
  */
@@ -40,7 +39,7 @@ public class CloneFilter extends Filter {
 	private int typ;
 
 	/** The assocs. */
-	private HashMap<Object, Object> assocs = new HashMap<Object, Object>();
+	private ObjectArrayEntryList assocs = new ObjectArrayEntryList();
 
 	/**
 	 * Adds the object.
@@ -75,7 +74,7 @@ public class CloneFilter extends Filter {
 	 * @return the object
 	 */
 	public Object getObject(Object objects) {
-		return this.assocs.get(objects);
+		return this.assocs.getValue(objects);
 	}
 
 	/**

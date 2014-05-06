@@ -166,7 +166,7 @@ public class GridStyle extends Style implements SendableEntity{
 	}
 	
 	private void executeEvent(PropertyChangeEvent change, String key){
-		PropertyChangeListenerList list = (PropertyChangeListenerList) listeners.get(key);
+		PropertyChangeListenerList list = (PropertyChangeListenerList) listeners.getValue(key);
 		if(list != null){
 			for(PropertyChangeListener listener : list){
 				listener.propertyChange(change);
@@ -177,7 +177,7 @@ public class GridStyle extends Style implements SendableEntity{
 	@Override
 	public boolean addPropertyChangeListener(String propertyName,
 			PropertyChangeListener listener) {
-		PropertyChangeListenerList list = (PropertyChangeListenerList) listeners.get(propertyName);
+		PropertyChangeListenerList list = (PropertyChangeListenerList) listeners.getValue(propertyName);
 		if(list==null){
 			list = new PropertyChangeListenerList();
 			listeners.put(propertyName, list);
@@ -187,7 +187,7 @@ public class GridStyle extends Style implements SendableEntity{
 
 	@Override
 	public boolean addPropertyChangeListener(PropertyChangeListener listener) {
-		PropertyChangeListenerList list = (PropertyChangeListenerList) listeners.get(null);
+		PropertyChangeListenerList list = (PropertyChangeListenerList) listeners.getValue(null);
 		if(list==null){
 			list = new PropertyChangeListenerList();
 			listeners.put(null, list);

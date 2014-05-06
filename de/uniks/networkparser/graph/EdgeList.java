@@ -36,16 +36,6 @@ public class EdgeList extends EntityList<GraphEdge> {
 	}
 	
 	@Override
-	public String toString(int indentFactor) {
-		return toString();
-	}
-
-	@Override
-	public String toString(int indentFactor, int intent) {
-		return toString();
-	}
-
-	@Override
 	public String toString() {
 		return "ArrayEntryList with "+size()+" Elements";
 	}
