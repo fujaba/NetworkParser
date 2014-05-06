@@ -39,7 +39,7 @@ public class TableListCreator implements SendableEntityCreator{
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		return ((TableList)entity).get(attribute);
+		return ((TableList)entity).getValue(attribute);
 	}
 
 	@Override

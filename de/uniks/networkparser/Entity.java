@@ -131,7 +131,7 @@ public abstract class Entity implements BaseEntity, StringItem {
 		if (key == null) {
 			return null;
 		}
-		return map.get(key);
+		return map.getValue(key);
 	}
 
 	/**

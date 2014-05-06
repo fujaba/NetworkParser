@@ -32,7 +32,7 @@ public class YUMLConverter implements Converter {
 			ArrayList<GraphNode> visited,
 			ArrayEntryList links, boolean shortName) {
 		String key = item.getTyp(typ, shortName);
-		EdgeList showedLinks = (EdgeList) links.get(key);
+		EdgeList showedLinks = (EdgeList) links.getValue(key);
 		if (showedLinks == null) {
 			if(sb.length()<1){
 				sb.append(parseEntity(item, visited, typ, shortName));

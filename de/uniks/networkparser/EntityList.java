@@ -29,13 +29,12 @@ import java.util.List;
 import java.util.ListIterator;
 
 import de.uniks.networkparser.interfaces.BaseEntityList;
-import de.uniks.networkparser.interfaces.StringItem;
 import de.uniks.networkparser.sort.EntityComparator;
 import de.uniks.networkparser.sort.SortingDirection;
 /**
  * The Class EntityList.
  */
-public abstract class EntityList<V> implements BaseEntityList, StringItem, List<V> {
+public abstract class EntityList<V> implements BaseEntityList, List<V> {
     protected List<V> values = new ArrayList<V>();
 	private boolean visible = true;
 	private boolean allowDuplicate = true;
@@ -380,12 +379,11 @@ public abstract class EntityList<V> implements BaseEntityList, StringItem, List<
 		return this;
 	}
 	
-	@Override
 	public EntityList<V> withVisible(boolean value) {
 		this.visible = value;
 		return this;
 	}
-	@Override
+
 	public boolean isVisible() {
 		return visible;
 	}

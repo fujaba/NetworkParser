@@ -38,16 +38,6 @@ public class PropertyChangeListenerList extends EntityList<PropertyChangeListene
 	}
 	
 	@Override
-	public String toString(int indentFactor) {
-		return toString();
-	}
-
-	@Override
-	public String toString(int indentFactor, int intent) {
-		return toString();
-	}
-
-	@Override
 	public String toString() {
 		return "ArrayEntryList with "+size()+" Elements";
 	}

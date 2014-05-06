@@ -152,7 +152,7 @@ public class GraphList implements BaseEntityList {
 		for (GraphEdge element : edges) {
 			for(GraphNode node : element.getSource().getItems()){
 				String key = node.getTyp(typ, false);
-				EdgeList value = (EdgeList)links.get(key);
+				EdgeList value = (EdgeList)links.getValue(key);
 				if(value!=null){
 					value.add((Object)element);
 				}else{

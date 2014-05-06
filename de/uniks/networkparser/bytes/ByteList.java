@@ -43,16 +43,6 @@ public class ByteList extends EntityList<ByteEntity> implements ByteItem {
 	}
 
 	@Override
-	public String toString(int indentFactor) {
-		return toString(null);
-	}
-
-	@Override
-	public String toString(int indentFactor, int intent) {
-		return toString(null);
-	}
-
-	@Override
 	public String toString() {
 		return toString(null);
 	}
