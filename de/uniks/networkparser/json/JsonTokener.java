@@ -21,19 +21,19 @@ package de.uniks.networkparser.json;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.Entity;
 import de.uniks.networkparser.TextParsingException;
 import de.uniks.networkparser.Tokener;
-import de.uniks.networkparser.interfaces.BaseEntity;
-import de.uniks.networkparser.interfaces.BaseEntityList;
-import de.uniks.networkparser.interfaces.LocalisationEntity;
+import de.uniks.networkparser.interfaces.BaseKeyValueEntity;
+import de.uniks.networkparser.interfaces.BaseListEntity;
+import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.xml.XMLEntity;
 
 public class JsonTokener extends Tokener {
 	public final static String STOPCHARS = ",:]}/\\\"[{;=# ";
 
 	@Override
-	public Object nextValue(BaseEntity creator, boolean allowQuote) {
+	public Object nextValue(BaseItem creator, boolean allowQuote) {
 		char c = nextStartClean();
 
 		switch (c) {
@@ -46,15 +46,17 @@ public class JsonTokener extends Tokener {
 			next();
 			return nextString('"', false, allowQuote, true, true);
 		case '{':
-			BaseEntity element = creator.getNewObject();
-			if (element instanceof Entity) {
-				this.parseToEntity((Entity) element);
+			if (creator instanceof FactoryEntity) {
+				BaseItem element = ((FactoryEntity)creator).getNewObject();
+				this.parseToEntity((BaseKeyValueEntity) element);
+				return element;
 			}
-			return element;
 		case '[':
-			BaseEntityList elementList = creator.getNewArray();
-			this.parseToEntity(elementList);
-			return elementList;
+			if (creator instanceof FactoryEntity) {
+				BaseListEntity elementList = ((FactoryEntity)creator).getNewArray();
+				this.parseToEntity(elementList);
+				return elementList;
+			}
 		default:
 			break;
 		}
@@ -67,10 +69,10 @@ public class JsonTokener extends Tokener {
 		return STOPCHARS;
 	}
 
-	public Entity parseEntity(JsonObject parent, Entity newValue) {
+	public BaseKeyValueEntity parseEntity(JsonObject parent, BaseKeyValueEntity newValue) {
 		if (newValue instanceof XMLEntity) {
 			XMLEntity xmlEntity = (XMLEntity) newValue;
-			String[] names = Entity.getNames(xmlEntity);
+			String[] names = BaseKeyValueEntity.getNames(xmlEntity);
 			parent.put(JsonIdMap.CLASS, xmlEntity.getTag());
 			JsonObject props = new JsonObject();
 			if (xmlEntity.getValue() != null
@@ -124,10 +126,10 @@ public class JsonTokener extends Tokener {
 	 * @param newValue
 	 * @return
 	 */
-	public Entity parseToEntity(JsonObject parent, Entity newValue) {
+	public BaseKeyValueEntity parseToEntity(JsonObject parent, BaseKeyValueEntity newValue) {
 		if (newValue instanceof XMLEntity) {
 			XMLEntity xmlEntity = (XMLEntity) newValue;
-			String[] names = Entity.getNames(xmlEntity);
+			String[] names = BaseKeyValueEntity.getNames(xmlEntity);
 			parent.put(JsonIdMap.CLASS, xmlEntity.getTag());
 			JsonObject props = new JsonObject();
 			if (xmlEntity.getValue() != null
@@ -147,13 +149,9 @@ public class JsonTokener extends Tokener {
 	}
 
 	@Override
-	public void parseToEntity(BaseEntity entity) throws TextParsingException{
-		if (!(entity instanceof LocalisationEntity)) {
-			return;
-		}
+	public void parseToEntity(BaseKeyValueEntity entity) throws TextParsingException{
 		char c;
 		String key;
-		LocalisationEntity item=(LocalisationEntity)entity;
 		if (nextStartClean() != '{') {
 			throw new TextParsingException(
 					"A JsonObject text must begin with '{'", this);
@@ -176,10 +174,10 @@ public class JsonTokener extends Tokener {
 				return;
 			case ',':
 				next();
-				key = nextValue(item, isQuote).toString();
+				key = nextValue(entity, isQuote).toString();
 				break;
 			default:
-				key = nextValue(item, isQuote).toString();
+				key = nextValue(entity, isQuote).toString();
 			}
 			c = nextStartClean();
 			if (c == '=') {
@@ -191,12 +189,12 @@ public class JsonTokener extends Tokener {
 						+ getNextString(30) + "]", this);
 			}
 			next();
-			item.put(key, nextValue(entity,isQuote));
+			entity.put(key, nextValue(entity,isQuote));
 		}
 	}
 
 	@Override
-	public void parseToEntity(BaseEntityList entityList) throws TextParsingException{
+	public void parseToEntity(BaseListEntity entityList) throws TextParsingException{
 		char c=nextStartClean();
 		if (c != '[') {
 			throw new TextParsingException(
@@ -206,9 +204,9 @@ public class JsonTokener extends Tokener {
 			for (;;) {
 				c=getCurrentChar();
 				if (c == ',') {
-					entityList.add(null);
+					entityList.with(null);
 				} else {
-					entityList.add(nextValue(entityList, false));
+					entityList.with(nextValue(entityList, false));
 				}
 				c = nextStartClean();
 				switch (c) {

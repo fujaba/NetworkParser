@@ -22,25 +22,15 @@ package de.uniks.networkparser.graph;
  permissions and limitations under the Licence.
 */
 import java.util.ArrayList;
+import java.util.Collection;
 
-import de.uniks.networkparser.interfaces.BaseEntity;
-import de.uniks.networkparser.interfaces.BaseEntityList;
+import de.uniks.networkparser.interfaces.BaseListEntity;
 
-public class GraphNode implements BaseEntity {
+public class GraphNode implements BaseListEntity {
 	private String className;
 	private String id;
 	private String headImage;
 	private ArrayList<Attribute> values = new ArrayList<Attribute>();
-
-	@Override
-	public BaseEntityList getNewArray() {
-		return new GraphList();
-	}
-
-	@Override
-	public BaseEntity getNewObject() {
-		return new GraphNode();
-	}
 
 	// GETTER AND SETTER
 	public String getClassName(boolean shortName) {
@@ -111,6 +101,45 @@ public class GraphNode implements BaseEntity {
 
 	public GraphNode withHeadImage(String headImage) {
 		this.headImage = headImage;
+		return this;
+	}
+
+	public BaseListEntity with(Object... values) {
+		for(Object item : values){
+			if(item instanceof Attribute){
+				this.values.add((Attribute) item);
+			}
+		}
+		return this;
+	}
+
+	@Override
+	public int size() {
+		return values.size();
+	}
+
+	public boolean add(Attribute value) {
+		return values.add(value);
+	}
+
+	@Override
+	public Attribute get(int z) {
+		return values.get(z);
+	}
+
+	@Override
+	public BaseListEntity with(Collection<?> values) {
+		for(Object item : values){
+			this.with(item);
+		}
+		return this;
+	}
+
+	@Override
+	public BaseListEntity with(Object value) {
+		if(value instanceof Attribute){
+			values.add((Attribute) value);
+		}
 		return this;
 	}
 }

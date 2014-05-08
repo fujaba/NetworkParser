@@ -61,7 +61,7 @@ public class Grammar {
 	public SendableEntityCreator getReadCreator(JsonObject jsonObject,
 			IdMapEncoder map) {
 		Object className = jsonObject.get(JsonIdMap.CLASS);
-		return map.getCreatorClassName((String) className, true);
+		return map.getCreator((String) className, true);
 	}
 
 	/**
@@ -70,7 +70,7 @@ public class Grammar {
 	 */
 	public SendableEntityCreator getWriteCreator(Object modelItem,
 			String className, IdMapEncoder map) {
-		return map.getCreatorClassName(className, true);
+		return map.getCreator(className, true);
 	}
 
 	public JsonObject getWriteObject(IdMapEncoder map, SendableEntityCreator prototyp,

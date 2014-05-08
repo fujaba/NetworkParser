@@ -23,12 +23,12 @@ package de.uniks.networkparser.xml;
 */
 import java.util.ArrayList;
 
-import de.uniks.networkparser.Entity;
 import de.uniks.networkparser.ReferenceObject;
 import de.uniks.networkparser.TextParsingException;
 import de.uniks.networkparser.Tokener;
-import de.uniks.networkparser.interfaces.BaseEntity;
-import de.uniks.networkparser.interfaces.BaseEntityList;
+import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.BaseListEntity;
+import de.uniks.networkparser.interfaces.BaseKeyValueEntity;
 
 public class XMLTokener extends Tokener {
 	/** The stack. */
@@ -44,7 +44,7 @@ public class XMLTokener extends Tokener {
 	 * @return An object.
 	 */
 	@Override
-	public Object nextValue(BaseEntity creator, boolean allowQuote, char c) {
+	public Object nextValue(BaseItem creator, boolean allowQuote, char c) {
 		switch (c) {
 		case '"':
 		case '\'':
@@ -52,11 +52,13 @@ public class XMLTokener extends Tokener {
 			return nextString(c, false, allowQuote, false, true);
 		case '<':
 			back();
-			BaseEntity element = creator.getNewObject();
-			if (element instanceof Entity) {
-				parseToEntity((Entity) element);
+			if (creator instanceof BaseKeyValueEntity) {
+				BaseItem element = ((BaseKeyValueEntity)creator).getNewObject();
+				if(element instanceof BaseKeyValueEntity){
+					parseToEntity((BaseKeyValueEntity)element);
+				}
+				return element;
 			}
-			return element;
 		default:
 			break;
 		}
@@ -70,7 +72,7 @@ public class XMLTokener extends Tokener {
 	}
 
 	@Override
-	public void parseToEntity(BaseEntity entity) throws TextParsingException{
+	public void parseToEntity(BaseKeyValueEntity entity) throws TextParsingException{
 		char c=getCurrentChar();
 
 		if (c!= '<') {
@@ -124,7 +126,7 @@ public class XMLTokener extends Tokener {
 				} else {
 					if (getCurrentChar() == '<') {
 						child = (XMLEntity) xmlEntity.getNewObject();
-						parseToEntity((BaseEntity) child);
+						parseToEntity((BaseKeyValueEntity) child);
 						xmlEntity.addChild(child);
 					} else {
 						xmlEntity.setValue(nextString('<', false, false, false, false));
@@ -155,7 +157,7 @@ public class XMLTokener extends Tokener {
 	}
 	
 	@Override
-	public void parseToEntity(BaseEntityList entityList) {
+	public void parseToEntity(BaseListEntity entityList) {
 		// Do Nothing
 	}
 

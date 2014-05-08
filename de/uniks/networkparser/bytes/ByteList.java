@@ -21,6 +21,8 @@ package de.uniks.networkparser.bytes;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
+import java.util.Collection;
+
 import de.uniks.networkparser.EntityList;
 import de.uniks.networkparser.bytes.converter.ByteConverterHTTP;
 import de.uniks.networkparser.bytes.converter.ByteConverterString;
@@ -28,7 +30,7 @@ import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteConverter;
 import de.uniks.networkparser.interfaces.ByteItem;
 
-public class ByteList extends EntityList<ByteEntity> implements ByteItem {
+public class ByteList extends EntityList<ByteItem> implements ByteItem {
 	/** The children of the ByteEntity. */
 	private byte typ = 0;
 
@@ -85,6 +87,16 @@ public class ByteList extends EntityList<ByteEntity> implements ByteItem {
 		return buffer;
 	}
 	
+	@Override
+	public ByteList with(Collection<?> collection) {
+		if(collection instanceof ByteList){
+			this.add((ByteList)collection);
+			return this;
+		}
+		super.with(collection);
+		return this;
+	}
+	
 
 	@Override
 	public void writeBytes(BufferedBytes buffer, boolean isDynamic, boolean last){
@@ -116,7 +128,7 @@ public class ByteList extends EntityList<ByteEntity> implements ByteItem {
 		if(size<1){
 			return 0;
 		}
-		Object[] valueList = this.values.toArray(new Object[size()]);
+		Object[] valueList = this.values.toArray(new Object[size]);
 		
 		// SonderFall Last Entity
 		int typLen;
@@ -150,7 +162,7 @@ public class ByteList extends EntityList<ByteEntity> implements ByteItem {
 		this.typ = value;
 	}
 
-	public EntityList<ByteEntity> withValue(String value) {
+	public EntityList<ByteItem> withValue(String value) {
 		ByteConverterString	converter = new ByteConverterString();
 		this.add(getNewObject().withValue(ByteIdMap.DATATYPE_FIXED, converter.decode(value)));
 		return this;

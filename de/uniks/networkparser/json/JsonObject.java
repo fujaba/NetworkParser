@@ -21,16 +21,21 @@ package de.uniks.networkparser.json;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import de.uniks.networkparser.Entity;
+import de.uniks.networkparser.AbstractMapEntry;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.event.MapEntry;
-import de.uniks.networkparser.interfaces.LocalisationEntity;
+import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.BaseKeyValueEntity;
 /* Copyright (c) 2002 JSON.org */
+import de.uniks.networkparser.interfaces.BaseListEntity;
+import de.uniks.networkparser.interfaces.FactoryEntity;
+import de.uniks.networkparser.interfaces.StringItem;
 
 
 /**
@@ -88,7 +93,8 @@ import de.uniks.networkparser.interfaces.LocalisationEntity;
  * @author JSON.org
  * @version 2011-11-24
  */
-public class JsonObject extends Entity implements LocalisationEntity {
+public class JsonObject extends BaseKeyValueEntity implements StringItem, FactoryEntity {
+	private boolean visible=true;
 	/**
 	 * Produce a string from a double. The string "null" will be returned if the
 	 * number is not finite.
@@ -236,7 +242,7 @@ public class JsonObject extends Entity implements LocalisationEntity {
 
 		Entry<String, Object> item = iterator.next();
 		Object value = item.getValue();
-		if (length == 1 && !(value instanceof Entity)) {
+		if (length == 1 && !(value instanceof BaseKeyValueEntity)) {
 			sb = new StringBuilder("{");
 		} else {
 			sb = new StringBuilder("{" + prefix + step);
@@ -254,7 +260,7 @@ public class JsonObject extends Entity implements LocalisationEntity {
 			sb.append(EntityUtil.valueToString(item.getValue(), indentFactor,
 					newindent, false, this));
 		}
-		if (length == 1 && !(value instanceof Entity)) {
+		if (length == 1 && !(value instanceof BaseKeyValueEntity)) {
 			sb.append("}");
 		} else {
 			sb.append(prefix + "}");
@@ -318,7 +324,7 @@ public class JsonObject extends Entity implements LocalisationEntity {
 	 * @param entity
 	 *            entity to add values with the tokener
 	 */
-	public JsonObject withEntity(Entity entity) {
+	public JsonObject withEntity(BaseKeyValueEntity entity) {
 		new JsonTokener().parseToEntity(this, entity);
 		return this;
 	}
@@ -337,5 +343,42 @@ public class JsonObject extends Entity implements LocalisationEntity {
 	@Override
 	public JsonObject getNewObject() {
 		return new JsonObject();
+	}
+
+	@Override
+	public Object get(int index) {
+		Object object = this.map.get(index);
+		if (object == null) {
+			throw new RuntimeException("EntityList[" + index + "] not found.");
+		}
+		return object;
+	}
+
+	@Override
+	public BaseListEntity with(Collection<?> values) {
+		for(Object item : values){
+			with(item);
+		}
+		return this;
+	}
+
+	@Override
+	public BaseListEntity with(Object value) {
+		if(value instanceof AbstractMapEntry<?,?>){
+			AbstractMapEntry<?,?> item = (AbstractMapEntry<?, ?>) value;
+			this.put(item.getKeyString(), item.getValue());
+		}
+		return this;
+	}
+
+	@Override
+	public BaseItem withVisible(boolean value) {
+		this.visible = value;
+		return this;
+	}
+
+	@Override
+	public boolean isVisible() {
+		return visible;
 	}
 }

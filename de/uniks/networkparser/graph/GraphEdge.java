@@ -1,5 +1,7 @@
 package de.uniks.networkparser.graph;
 
+import de.uniks.networkparser.interfaces.BaseItem;
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
@@ -22,7 +24,7 @@ package de.uniks.networkparser.graph;
  permissions and limitations under the Licence.
 */
 
-public class GraphEdge {
+public class GraphEdge implements BaseItem{
 	private GraphEdgeLabel source;
 	private GraphEdgeLabel target;
 

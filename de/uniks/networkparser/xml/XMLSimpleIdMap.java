@@ -28,7 +28,7 @@ import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.ReferenceObject;
-import de.uniks.networkparser.interfaces.BaseEntity;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorXML;
 import de.uniks.networkparser.xml.creator.XMLGrammar;
@@ -69,7 +69,7 @@ public class XMLSimpleIdMap extends IdMap {
 
 	
 	@Override
-	public Object decode(BaseEntity value) {
+	public Object decode(BaseItem value) {
 		return decode((XMLTokener) new XMLTokener().withText(value.toString()), null);
 	}
 	

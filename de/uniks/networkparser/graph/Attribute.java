@@ -1,6 +1,8 @@
 package de.uniks.networkparser.graph;
 
-public class Attribute {
+import de.uniks.networkparser.interfaces.BaseItem;
+
+public class Attribute implements BaseItem{
 	private String key;
 	private String className;
 	private String value;

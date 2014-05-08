@@ -23,7 +23,7 @@ permissions and limitations under the Licence.
 
 public interface StringItem {
 	
-	public BaseEntity withVisible(boolean value);
+	public BaseItem withVisible(boolean value);
 	
 	public boolean isVisible();
 

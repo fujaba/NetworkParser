@@ -39,7 +39,7 @@ import de.uniks.networkparser.bytes.converter.ByteConverterHTTP;
 import de.uniks.networkparser.event.BasicMessage;
 import de.uniks.networkparser.event.UnknownMessage;
 import de.uniks.networkparser.event.creator.BasicMessageCreator;
-import de.uniks.networkparser.interfaces.BaseEntity;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteConverter;
 import de.uniks.networkparser.interfaces.ByteItem;
@@ -224,8 +224,9 @@ public class ByteIdMap extends IdMap {
 					value = null;
 				}
 				ByteItem child = encodeValue(value, filter);
+				child.toString();
 				if (child != null) {
-					msg.add(child);
+					msg.with(child);
 				}
 			}
 			
@@ -264,7 +265,7 @@ public class ByteIdMap extends IdMap {
 				for (Object childValue : list) {
 					ByteItem child = encodeValue(childValue, filter);
 					if (child != null) {
-						byteList.add(child);
+						byteList.with(child);
 					}
 				}
 				return byteList;
@@ -281,13 +282,13 @@ public class ByteIdMap extends IdMap {
 
 					child = encodeValue(entity.getKey(), filter);
 					if (child != null) {
-						item.add(child);
+						item.with(child);
 					}
 					child = encodeValue(entity.getValue(), filter);
 					if (child != null) {
-						item.add(child);
+						item.with(child);
 					}
-					byteList.add(item);
+					byteList.with(item);
 				}
 				return byteList;
 			} else if (value != null) {
@@ -295,7 +296,7 @@ public class ByteIdMap extends IdMap {
 				if (child != null) {
 					ByteList byteList = new ByteList();
 //					byteList.setTyp(ByteIdMap.DATATYPE_CLAZZ);
-					byteList.add(child);
+					byteList.with(child);
 					return byteList;
 				}
 				return child;
@@ -358,7 +359,7 @@ public class ByteIdMap extends IdMap {
 	}
 
 	@Override
-	public Object decode(BaseEntity value) {
+	public Object decode(BaseItem value) {
 		if(value instanceof ByteEntity){
 			return decode(((ByteEntity)value).getValue());
 		}
@@ -464,7 +465,7 @@ public class ByteIdMap extends IdMap {
 			int len = buffer.getByte() - ByteIdMap.SPLITTER;
 			SendableEntityCreator eventCreater;
 			try {
-				eventCreater = super.getCreatorClassName(new String(buffer.getValue(len), filter.getCharset()), true);
+				eventCreater = super.getCreator(new String(buffer.getValue(len), filter.getCharset()), true);
 				return decodeClazz(buffer, eventCreater);
 			} catch (UnsupportedEncodingException e) {
 			}

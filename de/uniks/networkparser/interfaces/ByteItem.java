@@ -22,7 +22,7 @@ package de.uniks.networkparser.interfaces;
  permissions and limitations under the Licence.
 */
 
-public interface ByteItem extends BaseEntity{
+public interface ByteItem extends BaseItem{
 	/**
 	 * @return the ByteItem as String
 	 */

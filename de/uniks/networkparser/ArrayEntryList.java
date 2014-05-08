@@ -28,18 +28,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import de.uniks.networkparser.event.MapEntry;
+import de.uniks.networkparser.interfaces.FactoryEntity;
 
-public class ArrayEntryList extends EntityList<MapEntry> {
-	@Override
-	public ArrayEntryList getNewArray() {
-		return new ArrayEntryList();
-	}
-	
-	@Override
-	public MapEntry getNewObject() {
-		return new MapEntry();
-	}
-
+public class ArrayEntryList extends EntityList<MapEntry> implements FactoryEntity {
 	@Override
 	public String toString() {
 		return "ArrayEntryList with "+size()+" Elements";
@@ -153,5 +144,20 @@ public class ArrayEntryList extends EntityList<MapEntry> {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public boolean add(MapEntry e) {
+		return super.add(e);
+	}
+
+	@Override
+	public MapEntry getNewObject() {
+		return new MapEntry();
+	}
+
+	@Override
+	public ArrayEntryList getNewArray() {
+		return new ArrayEntryList();
 	}
 }

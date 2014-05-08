@@ -24,7 +24,7 @@ package de.uniks.networkparser.interfaces;
 */
 
 public abstract class ByteConverter {
-	public String encode(BaseEntity entity){
+	public String encode(BaseItem entity){
 		if(entity instanceof ByteItem){
 			return toString(((ByteItem)entity).getBytes(true));
 		}
