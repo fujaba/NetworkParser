@@ -24,9 +24,7 @@ package de.uniks.networkparser.bytes;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
-import de.uniks.networkparser.EntityList;
 import de.uniks.networkparser.bytes.converter.ByteConverterHTTP;
-import de.uniks.networkparser.interfaces.BaseEntity;
 import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteConverter;
 import de.uniks.networkparser.interfaces.ByteItem;
@@ -34,7 +32,7 @@ import de.uniks.networkparser.interfaces.ByteItem;
  * The Class ByteEntity.
  */
 
-public class ByteEntity implements BaseEntity, ByteItem {
+public class ByteEntity implements ByteItem {
 	/** The Constant BIT OF A BYTE. */
 	public final static int BITOFBYTE = 8;
 	public final static int TYPBYTE = 1;
@@ -44,22 +42,6 @@ public class ByteEntity implements BaseEntity, ByteItem {
 
 	/** The values. */
 	protected byte[] values;
-
-	/*
-	 * @see de.uni.kassel.peermessage.BaseEntity#getNewArray()
-	 */
-	@Override
-	public EntityList<ByteEntity> getNewArray() {
-		return new ByteList();
-	}
-
-	/*
-	 * @see de.uni.kassel.peermessage.BaseEntity#getNewObject()
-	 */
-	@Override
-	public BaseEntity getNewObject() {
-		return new ByteEntity();
-	}
 
 	/**
 	 * Gets the value.

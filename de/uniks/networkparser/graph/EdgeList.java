@@ -22,11 +22,11 @@ permissions and limitations under the Licence.
 */
 
 import de.uniks.networkparser.EntityList;
-import de.uniks.networkparser.interfaces.BaseEntity;
+import de.uniks.networkparser.interfaces.BaseItem;
 
 public class EdgeList extends EntityList<GraphEdge> {
 	@Override
-	public BaseEntity getNewObject() {
+	public BaseItem getNewObject() {
 		return null;
 	}
 	

@@ -25,13 +25,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import de.uniks.networkparser.interfaces.BaseEntity;
-import de.uniks.networkparser.interfaces.BaseEntityList;
+import de.uniks.networkparser.EntityList;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteConverter;
 import de.uniks.networkparser.interfaces.ByteItem;
 
-public class BitEntity implements BaseEntityList, ByteItem {
+public class BitEntity extends EntityList<BitValue> implements ByteItem {
 	public static final String BIT_STRING = "string";
 	public static final String BIT_NUMBER = "number";
 	public static final String BIT_BYTE = "byte";
@@ -152,16 +152,6 @@ public class BitEntity implements BaseEntityList, ByteItem {
 	}
 
 	@Override
-	public BaseEntityList getNewArray() {
-		return new BitEntity();
-	}
-
-	@Override
-	public BaseEntity getNewObject() {
-		return null;
-	}
-
-	@Override
 	public String toString() {
 		return super.toString();
 	}
@@ -177,15 +167,14 @@ public class BitEntity implements BaseEntityList, ByteItem {
 	}
 
 	@Override
-	public BaseEntityList with(Collection<?> collection) {
+	public BitEntity with(Collection<?> collection) {
 		for (Iterator<?> i = collection.iterator(); i.hasNext();) {
 			values.add((BitValue) i.next());
 		}
 		return this;
 	}
 
-	@Override
-	public BaseEntityList with(Object... values) {
+	public BitEntity with(Object... values) {
 		for(Object value : values){
 			this.values.add((BitValue) value);
 		}
@@ -198,16 +187,26 @@ public class BitEntity implements BaseEntityList, ByteItem {
 	}
 
 	@Override
-	public boolean add(Object value) {
+	public boolean add(BitValue value) {
 		return values.add((BitValue) value);
 	}
 
 	@Override
-	public Object get(int index) {
+	public BitValue get(int index) {
 		return values.get(index);
 	}
 
 	public int getOrientation() {
 		return orientation;
+	}
+
+	@Override
+	public BaseItem getNewObject() {
+		return new BitEntity();
+	}
+
+	@Override
+	public EntityList<BitValue> getNewArray() {
+		return new BitEntity();
 	}
 }

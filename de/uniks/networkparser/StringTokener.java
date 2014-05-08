@@ -22,8 +22,9 @@ package de.uniks.networkparser;
  permissions and limitations under the Licence.
 */
 import java.util.ArrayList;
-import de.uniks.networkparser.interfaces.BaseEntity;
-import de.uniks.networkparser.interfaces.BaseEntityList;
+
+import de.uniks.networkparser.interfaces.BaseKeyValueEntity;
+import de.uniks.networkparser.interfaces.BaseListEntity;
 
 public class StringTokener extends Tokener {
 	private boolean isString = true;
@@ -89,11 +90,11 @@ public class StringTokener extends Tokener {
     }
 
 	@Override
-	public void parseToEntity(BaseEntity entity) {
+	public void parseToEntity(BaseKeyValueEntity entity) {
 	}
 
 	@Override
-	public void parseToEntity(BaseEntityList entityList) {
+	public void parseToEntity(BaseListEntity entityList) {
 	}
 
 	public boolean isString() {

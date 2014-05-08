@@ -21,8 +21,9 @@ package de.uniks.networkparser;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.interfaces.BaseEntity;
-import de.uniks.networkparser.interfaces.BaseEntityList;
+import de.uniks.networkparser.interfaces.BaseKeyValueEntity;
+import de.uniks.networkparser.interfaces.BaseListEntity;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Buffer;
 /**
  * The Class Tokener.
@@ -294,21 +295,71 @@ public abstract class Tokener {
 	 * Accumulate characters until we reach the end of the text or a formatting
 	 * character.
 	 */
-	public Object nextValue(BaseEntity creator, boolean allowQuote) {
+	public Object nextValue(BaseItem creator, boolean allowQuote) {
 		return nextValue(creator, allowQuote, nextStartClean());
 	}
-	public Object nextValue(BaseEntity creator, boolean allowQuote, char c) {
-		StringBuilder sb = new StringBuilder();
-		while (c >= ' ' && getStopChars().indexOf(c) < 0) {
-			sb.append(c);
-			c = next();
+	
+	public Object nextValue(BaseItem creator, boolean allowQuote, char c) {
+		String value;
+		if(buffer.isCache()){
+			int start=buffer.position();
+			while (c >= ' ' && getStopChars().indexOf(c) < 0) {
+				c = next();
+			}
+			value = buffer.substring(start, buffer.position() - start).trim();
+		}else{
+			StringBuilder sb = new StringBuilder();
+			while (c >= ' ' && getStopChars().indexOf(c) < 0) {
+				sb.append(c);
+				c = next();
+			}
+			value = sb.toString().trim();
 		}
-
-		String value = sb.toString().trim();
+		
 		if (value.length()<1) {
 			throw new TextParsingException("Missing value", this);
 		}
-		return EntityUtil.stringToValue(value);
+
+		if (value.equals("")) {
+			return value;
+		}
+		if (value.equalsIgnoreCase("true")) {
+			return Boolean.TRUE;
+		}
+		if (value.equalsIgnoreCase("false")) {
+			return Boolean.FALSE;
+		}
+		if (value.equalsIgnoreCase("null")) {
+			return null;
+		}
+		/*
+		 * If it might be a number, try converting it. If a number cannot be
+		 * produced, then the value will just be a string. Note that the plus
+		 * and implied string conventions are non-standard. A JSON parser may
+		 * accept non-JSON forms as long as it accepts all correct JSON forms.
+		 */
+		Double d;
+		char b = value.charAt(0);
+		if ((b >= '0' && b <= '9') || b == '.' || b == '-' || b == '+') {
+			try {
+				if (value.indexOf('.') > -1 || value.indexOf('e') > -1
+					|| value.indexOf('E') > -1) {
+					d = Double.valueOf(value);
+					if (!d.isInfinite() && !d.isNaN()) {
+						return d;
+					}
+				} else {
+					Long myLong = Long.valueOf(value);
+					if (myLong.longValue() == myLong.intValue()) {
+						return Integer.valueOf(myLong.intValue());
+						}
+						return myLong;
+					}
+			} catch (Exception ignore) {
+			// DO nothing
+			}
+		}
+		return value;
 	}
 
 	protected String getStopChars() {
@@ -519,7 +570,7 @@ public abstract class Tokener {
 		return this;
 	}
 
-	public abstract void parseToEntity(BaseEntity entity);
+	public abstract void parseToEntity(BaseKeyValueEntity entity);
 
-	public abstract void parseToEntity(BaseEntityList entityList);
+	public abstract void parseToEntity(BaseListEntity entityList);
 }

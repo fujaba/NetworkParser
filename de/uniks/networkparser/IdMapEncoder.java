@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.Set;
 
 import de.uniks.networkparser.event.MapEntry;
-import de.uniks.networkparser.interfaces.BaseEntity;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.IdMapCounter;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -374,7 +374,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	}
 
 	public Object startUpdateModell(String clazz) {
-		SendableEntityCreator creator = super.getCreatorClassName(clazz, true);
+		SendableEntityCreator creator = super.getCreator(clazz, true);
 		if (creator != null) {
 			Object result = creator.getSendableInstance(false);
 			String id = getId(result);
@@ -395,7 +395,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 			MapEntry item = i.next();
 			if (item.getValue() != null) {
 				if (item.getValue().getClass().getName().equals(clazzName)) {
-					result.add(item.getValue());
+					result.with(item.getValue());
 				}
 			}
 		}
@@ -517,7 +517,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 		return this;
 	}
 	
-	public abstract BaseEntity encode(Object value);
-	public abstract BaseEntity encode(Object value, Filter filter);
-	public abstract BaseEntity getPrototyp();
+	public abstract BaseItem encode(Object value);
+	public abstract BaseItem encode(Object value, Filter filter);
+	public abstract BaseItem getPrototyp();
 }

@@ -28,15 +28,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import de.uniks.networkparser.interfaces.BaseEntityList;
+import de.uniks.networkparser.interfaces.BaseListEntity;
+import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.sort.EntityComparator;
 import de.uniks.networkparser.sort.SortingDirection;
 /**
  * The Class EntityList.
  */
-public abstract class EntityList<V> implements BaseEntityList, List<V> {
+public abstract class EntityList<V> implements BaseListEntity, List<V>, FactoryEntity {
     protected List<V> values = new ArrayList<V>();
-	private boolean visible = true;
 	private boolean allowDuplicate = true;
 	protected Comparator<V> cpr;
 	
@@ -62,32 +62,23 @@ public abstract class EntityList<V> implements BaseEntityList, List<V> {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public boolean add(Object newValue) {
+	public boolean add(V newValue) {
 		if(cpr!=null){
 			for (int i = 0; i < size(); i++) {
-				int result = compare(get(i), (V)newValue);
+				int result = compare(get(i), newValue);
 				if (result >= 0) {
-					this.values.add(i, (V) newValue);
+					this.values.add(i, newValue);
 					return true;
 				}
 			}
 		}
-		return this.values.add((V) newValue);
+		return this.values.add(newValue);
 	}
 	
 	public int compare(V o1, V o2){
 		return comparator().compare(o1, o2);
 	}
 	
-	@Override
-	public EntityList<V> with(Object... arg0) {
-		for(Object item : this){
-			add(item);
-		}
-		return this;
-	}
-
 	@Override
 	public abstract EntityList<V> getNewArray();
 	
@@ -187,7 +178,7 @@ public abstract class EntityList<V> implements BaseEntityList, List<V> {
 	
 		// MUST COPY
 		while(iterator.hasNext()){
-			Object item = iterator.next();
+			V item = iterator.next();
 			newList.add(item);
 		}
 		return newList;
@@ -379,15 +370,6 @@ public abstract class EntityList<V> implements BaseEntityList, List<V> {
 		return this;
 	}
 	
-	public EntityList<V> withVisible(boolean value) {
-		this.visible = value;
-		return this;
-	}
-
-	public boolean isVisible() {
-		return visible;
-	}
-
 	public boolean isAllowDuplicate() {
 		return allowDuplicate;
 	}
@@ -404,12 +386,19 @@ public abstract class EntityList<V> implements BaseEntityList, List<V> {
 		if (collection != null) {
 			Iterator<?> iter = collection.iterator();
 			while (iter.hasNext()) {
-				add(EntityUtil.wrap(iter.next(), this));
+				with(EntityUtil.wrap(iter.next(), this));
 			}
 		}
 		return this;
 	}
 
+	@Override
+	@SuppressWarnings("unchecked")
+	public EntityList<V> with(Object value) {
+		add((V)value);
+		return this;
+	}
+	
 	/**
 	 * Remove an index and close the hole.
 	 * 
@@ -436,9 +425,6 @@ public abstract class EntityList<V> implements BaseEntityList, List<V> {
 		return this;
 	}
 	
-	@Override
-	public abstract String toString();
-
 	/**
 	 * If the JsonArray is Empty
 	 * 
@@ -487,7 +473,7 @@ public abstract class EntityList<V> implements BaseEntityList, List<V> {
     
 	public boolean addAll(Iterator<? extends V> list){
 		while(list.hasNext()){
-			Object item = list.next();
+			V item = list.next();
 			if(item!=null){
 				if(!add(item)){
 					return false;

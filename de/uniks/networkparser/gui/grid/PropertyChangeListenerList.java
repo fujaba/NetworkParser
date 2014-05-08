@@ -24,11 +24,11 @@ permissions and limitations under the Licence.
 import java.beans.PropertyChangeListener;
 
 import de.uniks.networkparser.EntityList;
-import de.uniks.networkparser.interfaces.BaseEntity;
+import de.uniks.networkparser.interfaces.BaseItem;
 
 public class PropertyChangeListenerList extends EntityList<PropertyChangeListener> {
 	@Override
-	public BaseEntity getNewObject() {
+	public BaseItem getNewObject() {
 		return null;
 	}
 	

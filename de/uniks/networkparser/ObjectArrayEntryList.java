@@ -27,7 +27,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class ObjectArrayEntryList extends EntityList<ObjectMapEntry> {
+import de.uniks.networkparser.interfaces.FactoryEntity;
+
+public class ObjectArrayEntryList extends EntityList<ObjectMapEntry> implements FactoryEntity {
 	@Override
 	public ObjectArrayEntryList getNewArray() {
 		return new ObjectArrayEntryList();

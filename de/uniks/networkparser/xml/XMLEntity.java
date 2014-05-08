@@ -26,22 +26,25 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import de.uniks.networkparser.Entity;
 import de.uniks.networkparser.EntityList;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.event.MapEntry;
-import de.uniks.networkparser.interfaces.BaseEntity;
-import de.uniks.networkparser.interfaces.BaseEntityList;
+import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.BaseKeyValueEntity;
+import de.uniks.networkparser.interfaces.BaseListEntity;
+import de.uniks.networkparser.interfaces.FactoryEntity;
+import de.uniks.networkparser.interfaces.StringItem;
 /**
  * The Class XMLEntity.
  */
 
-public class XMLEntity extends Entity implements BaseEntityList {
+public class XMLEntity extends BaseKeyValueEntity implements BaseListEntity, StringItem, FactoryEntity {
 	public static final String PROPERTY_TAG="tag";
 	public static final String PROPERTY_VALUE="value";
 	/** The children. */
 	protected ArrayList<XMLEntity> children;
+	private boolean visible=true;
 
 	/** The tag. */
 	protected String tag;
@@ -68,7 +71,7 @@ public class XMLEntity extends Entity implements BaseEntityList {
 	 *            key.
 	 */
 	public XMLEntity withValue(Tokener tokener) {
-		tokener.parseToEntity((BaseEntity) this);
+		tokener.parseToEntity((BaseKeyValueEntity) this);
 		return this;
 	}
 
@@ -88,7 +91,7 @@ public class XMLEntity extends Entity implements BaseEntityList {
 	 * @see de.uni.kassel.peermessage.BaseEntity#getNewObject()
 	 */
 	@Override
-	public Entity getNewObject() {
+	public BaseKeyValueEntity getNewObject() {
 		return new XMLEntity();
 	}
 
@@ -234,28 +237,45 @@ public class XMLEntity extends Entity implements BaseEntityList {
 	}
 
 	@Override
-	public BaseEntityList with(Collection<?> collection) {
+	public BaseListEntity with(Collection<?> collection) {
 		for (Iterator<?> i = collection.iterator(); i.hasNext();) {
 			children.add((XMLEntity) i.next());
 		}
 		return this;
 	}
 
-	@Override
-	public BaseEntityList with(Object... values){ 
+	public BaseListEntity with(XMLEntity... values){ 
 		for(Object value : values){
 			children.add((XMLEntity) value);
 		}
 		return this;
 	}
 
-	@Override
-	public boolean add(Object value) {
-		return children.add((XMLEntity) value);
+	public boolean add(XMLEntity value) {
+		return children.add(value);
 	}
 
 	@Override
 	public Object get(int index) {
 		return children.get(index);
+	}
+
+	@Override
+	public BaseItem withVisible(boolean value) {
+		this.visible = value;
+		return this;
+	}
+
+	@Override
+	public boolean isVisible() {
+		return visible;
+	}
+
+	@Override
+	public BaseListEntity with(Object value) {
+		if(value instanceof XMLEntity){
+			add((XMLEntity) value);
+		}
+		return this;
 	}
 }

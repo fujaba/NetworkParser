@@ -25,8 +25,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-import de.uniks.networkparser.interfaces.BaseEntity;
-import de.uniks.networkparser.interfaces.BaseEntityList;
+import de.uniks.networkparser.interfaces.BaseListEntity;
+import de.uniks.networkparser.interfaces.BaseKeyValueEntity;
+import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
 
 public class EntityUtil {
@@ -140,58 +141,6 @@ public class EntityUtil {
 	}
 
 	/**
-	 * Try to convert a string into a number, boolean, or null. If the string
-	 * can't be converted, return the string.
-	 * 
-	 * @param string
-	 *            A String.
-	 * @return A simple JSON value.
-	 */
-	public static Object stringToValue(String string) {
-		if (string.equals("")) {
-			return string;
-		}
-		if (string.equalsIgnoreCase("true")) {
-			return Boolean.TRUE;
-		}
-		if (string.equalsIgnoreCase("false")) {
-			return Boolean.FALSE;
-		}
-		if (string.equalsIgnoreCase("null")) {
-			return null;
-		}
-
-		/*
-		 * If it might be a number, try converting it. If a number cannot be
-		 * produced, then the value will just be a string. Note that the plus
-		 * and implied string conventions are non-standard. A JSON parser may
-		 * accept non-JSON forms as long as it accepts all correct JSON forms.
-		 */
-		Double d;
-		char b = string.charAt(0);
-		if ((b >= '0' && b <= '9') || b == '.' || b == '-' || b == '+') {
-			try {
-				if (string.indexOf('.') > -1 || string.indexOf('e') > -1
-						|| string.indexOf('E') > -1) {
-					d = Double.valueOf(string);
-					if (!d.isInfinite() && !d.isNaN()) {
-						return d;
-					}
-				} else {
-					Long myLong = Long.valueOf(string);
-					if (myLong.longValue() == myLong.intValue()) {
-						return Integer.valueOf(myLong.intValue());
-					}
-					return myLong;
-				}
-			} catch (Exception ignore) {
-				// DO nothing
-			}
-		}
-		return string;
-	}
-
-	/**
 	 * Throw an exception if the object is a NaN or infinite number.
 	 * 
 	 * @param o
@@ -236,7 +185,7 @@ public class EntityUtil {
 	 *         brace)</small>.
 	 */
 	public static String valueToString(Object value, int indentFactor,
-			int intent, boolean simpleText, BaseEntity reference) {
+			int intent, boolean simpleText, FactoryEntity reference) {
 		if (value == null) {
 			return "null";
 		}
@@ -250,12 +199,12 @@ public class EntityUtil {
 			return ((StringItem) value).toString(indentFactor, intent);
 		}
 		if (value instanceof Map) {
-			Entity entity = (Entity) reference.getNewObject();
+			BaseKeyValueEntity entity = (BaseKeyValueEntity) reference.getNewObject();
 			entity.withValues((Map<?, ?>) value);
-			return entity.toString(indentFactor, intent);
+			return ((StringItem)entity).toString(indentFactor, intent);
 		}
 		if (value instanceof Collection) {
-			BaseEntityList item = reference.getNewArray().with((Collection<?>) value);
+			BaseListEntity item = reference.getNewArray().with((Collection<?>) value);
 			if(item instanceof StringItem){
 				return ((StringItem)item).toString(indentFactor, intent);
 			}
@@ -267,7 +216,7 @@ public class EntityUtil {
 			for (Object item : items) {
 				arrayList.add(item);
 			}
-			BaseEntityList item = reference.getNewArray().with(arrayList);
+			BaseListEntity item = reference.getNewArray().with(arrayList);
 			if(item instanceof StringItem){
 				return ((StringItem)item).toString(indentFactor, intent);
 			}
@@ -280,7 +229,7 @@ public class EntityUtil {
 	}
 
 	public static String valueToString(Object value, boolean simpleText,
-			BaseEntity reference) {
+			FactoryEntity reference) {
 		if (value == null) {
 			return "null";
 		}
@@ -290,14 +239,14 @@ public class EntityUtil {
 		if (value instanceof Boolean) {
 			return value.toString();
 		}
-		if (value instanceof Entity) {
-			return ((Entity) value).toString();
+		if (value instanceof BaseKeyValueEntity) {
+			return ((BaseKeyValueEntity) value).toString();
 		}
 		if (value instanceof EntityList) {
 			return ((EntityList<?>) value).toString();
 		}
 		if (value instanceof Map) {
-			Entity entity = (Entity) reference.getNewObject();
+			BaseKeyValueEntity entity = (BaseKeyValueEntity) reference.getNewObject();
 			entity.withValues((Map<?, ?>) value);
 			return entity.toString();
 		}
@@ -311,7 +260,6 @@ public class EntityUtil {
 			for (Object item : items) {
 				arrayList.add(item);
 			}
-
 			return reference.getNewArray().with(arrayList).toString();
 		}
 		if (simpleText) {
@@ -332,13 +280,13 @@ public class EntityUtil {
 	 *            The object to wrap
 	 * @return The wrapped value
 	 */
-	public static Object wrap(Object object, BaseEntity reference) {
+	public static Object wrap(Object object, FactoryEntity reference) {
 		try {
 			if (object == null) {
 				return null;
 			}
 
-			if (object instanceof Entity || object instanceof EntityList
+			if (object instanceof BaseKeyValueEntity || object instanceof EntityList
 					|| object instanceof Byte || object instanceof Character
 					|| object instanceof Short || object instanceof Integer
 					|| object instanceof Long || object instanceof Boolean
@@ -348,15 +296,13 @@ public class EntityUtil {
 			}
 
 			if (object instanceof Collection) {
-				return reference.getNewArray().with(
-						(Collection<?>) object);
+				return reference.getNewArray().with((Collection<?>) object);
 			}
 			if (object.getClass().isArray()) {
-				return reference.getNewArray().with(
-						(Collection<?>) object);
+				return reference.getNewArray().with((Collection<?>) object);
 			}
 			if (object instanceof Map) {
-				Entity entity = (Entity) reference.getNewObject();
+				BaseKeyValueEntity entity = (BaseKeyValueEntity) reference.getNewObject();
 				entity.withValues((Map<?, ?>) object);
 				return entity;
 			}

@@ -24,14 +24,12 @@ package de.uniks.networkparser;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import de.uniks.networkparser.ArrayEntryList;
 import de.uniks.networkparser.event.MapEntry;
-import de.uniks.networkparser.interfaces.BaseEntity;
-import de.uniks.networkparser.interfaces.BaseEntityList;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 
-public abstract class AbstractMapEntry<K, V> implements Entry<K, V>, SendableEntityCreator, SendableEntityCreatorNoIndex, BaseEntity{
+public abstract class AbstractMapEntry<K, V> implements BaseItem, Entry<K, V>, SendableEntityCreator, SendableEntityCreatorNoIndex {
 	public static final String PROPERTY_KEY = "key";
 	public static final String PROPERTY_VALUE = "value";
 	private final String[] properties = new String[] { PROPERTY_KEY, PROPERTY_VALUE };
@@ -136,7 +134,7 @@ public abstract class AbstractMapEntry<K, V> implements Entry<K, V>, SendableEnt
 						map = new ArrayEntryList();
 					}
 					if (map instanceof ArrayEntryList) {
-						((ArrayEntryList) map).add(value);
+						((ArrayEntryList) map).with(value);
 					}
 					entry.setValue(map);
 				} else {
@@ -157,7 +155,7 @@ public abstract class AbstractMapEntry<K, V> implements Entry<K, V>, SendableEnt
 						map = new ArrayEntryList();
 					}
 					if (map instanceof ArrayEntryList) {
-						((ArrayEntryList) map).add(value);
+						((ArrayEntryList) map).with(value);
 					}
 					entry.setValue(map);
 				} else {
@@ -168,15 +166,5 @@ public abstract class AbstractMapEntry<K, V> implements Entry<K, V>, SendableEnt
 			}
 		}
 		return false;
-	}
-
-	@Override
-	public BaseEntityList getNewArray() {
-		return new ArrayEntryList();
-	}
-
-	@Override
-	public BaseEntity getNewObject() {
-		return new MapEntry();
 	}
 }

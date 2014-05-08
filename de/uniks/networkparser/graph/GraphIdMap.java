@@ -25,7 +25,7 @@ import java.util.Collection;
 
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMapEncoder;
-import de.uniks.networkparser.interfaces.BaseEntity;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 /**
  * The Class YUMLIdParser.
@@ -154,14 +154,14 @@ public class GraphIdMap extends IdMapEncoder {
 	}
 
 	@Override
-	public BaseEntity encode(Object value) {
+	public BaseItem encode(Object value) {
 		GraphList list = new GraphList();
 		parse(value, this.filter.clone(new GraphIdMapFilter()), list, 0);
 		return list;
 	}
 
 	@Override
-	public BaseEntity encode(Object value, Filter filter) {
+	public BaseItem encode(Object value, Filter filter) {
 		GraphList list = new GraphList();
 		if (filter instanceof GraphIdMapFilter) {
 			GraphIdMapFilter yumlFilter = (GraphIdMapFilter) filter;
@@ -188,7 +188,7 @@ public class GraphIdMap extends IdMapEncoder {
 
 
 	@Override
-	public BaseEntity getPrototyp() {
+	public BaseItem getPrototyp() {
 		return new GraphList();
 	}
 }

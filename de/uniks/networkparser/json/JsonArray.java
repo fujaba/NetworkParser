@@ -28,7 +28,7 @@ import de.uniks.networkparser.EntityList;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.TextParsingException;
 import de.uniks.networkparser.Tokener;
-import de.uniks.networkparser.interfaces.BaseEntity;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.StringItem;
 /**
  * A JSONArray is an ordered sequence of values. Its external text form is a
@@ -80,6 +80,7 @@ import de.uniks.networkparser.interfaces.StringItem;
  */
 
 public class JsonArray extends EntityList<Object> implements StringItem{
+	private boolean visible=true;
 	/**
 	 * Get the JSONArray associated with an index.
 	 * 
@@ -270,7 +271,7 @@ public class JsonArray extends EntityList<Object> implements StringItem{
 	 * @param Array
 	 *            of Elements.
 	 */
-	public JsonArray withValue(BaseEntity... values) {
+	public JsonArray withValue(BaseItem... values) {
 		for (int i = 0; i < values.length; i++) {
 			add(EntityUtil.wrap(values[i], this));
 		}
@@ -303,5 +304,16 @@ public class JsonArray extends EntityList<Object> implements StringItem{
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public BaseItem withVisible(boolean value) {
+		this.visible = value;
+		return this;
+	}
+
+	@Override
+	public boolean isVisible() {
+		return visible;
 	}
 }

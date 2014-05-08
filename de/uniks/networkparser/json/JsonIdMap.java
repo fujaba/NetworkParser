@@ -37,7 +37,7 @@ import de.uniks.networkparser.ObjectMapEntry;
 import de.uniks.networkparser.ReferenceObject;
 import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.event.creator.DateCreator;
-import de.uniks.networkparser.interfaces.BaseEntity;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.MapUpdateListener;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
@@ -238,7 +238,7 @@ public class JsonIdMap extends IdMap {
 		if (className == null) {
 			className = entity.getClass().getName();
 		}
-		SendableEntityCreator valueCreater = getCreatorClassName(className, true);
+		SendableEntityCreator valueCreater = getCreator(className, true);
 		boolean isId = filter.isId(this, entity, className);
 		if (valueCreater != null) {
 			if (filter.isConvertable(this, entity, property, item, true, deep) ) {
@@ -305,7 +305,7 @@ public class JsonIdMap extends IdMap {
 	 * @return the object
 	 */
 	@Override
-	public Object decode(BaseEntity value) {
+	public Object decode(BaseItem value) {
 		if(value instanceof JsonArray){
 			return decode((JsonArray) value);
 		}
@@ -662,7 +662,7 @@ public class JsonIdMap extends IdMap {
 			}
 		}
 
-		SendableEntityCreator prototyp = getCreatorClassName(className, true);
+		SendableEntityCreator prototyp = getCreator(className, true);
 		if (prototyp == null) {
 			throw new RuntimeException("No Creator exist for " + className);
 		}

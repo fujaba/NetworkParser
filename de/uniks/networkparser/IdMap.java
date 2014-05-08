@@ -22,10 +22,10 @@ package de.uniks.networkparser;
  permissions and limitations under the Licence.
 */
 
-import de.uniks.networkparser.interfaces.BaseEntity;
+import de.uniks.networkparser.interfaces.BaseItem;
 
 public abstract class IdMap extends IdMapEncoder{
-	public abstract Object decode(BaseEntity value);
+	public abstract Object decode(BaseItem value);
 	public abstract Object decode(String value);
 
 }

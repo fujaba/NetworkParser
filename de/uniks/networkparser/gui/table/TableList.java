@@ -23,33 +23,28 @@ package de.uniks.networkparser.gui.table;
 */
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import de.uniks.networkparser.ArrayEntryList;
+import de.uniks.networkparser.EntityList;
 import de.uniks.networkparser.EntityValueFactory;
 import de.uniks.networkparser.IdMapEncoder;
-import de.uniks.networkparser.event.MapEntry;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.sort.EntityComparator;
 import de.uniks.networkparser.sort.SortingDirection;
 
-public class TableList extends ArrayEntryList implements SendableEntity {
+public class TableList extends EntityList<Object> implements SendableEntity {
 	public static final String PROPERTY_ITEMS = "items";
 	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
 	
 	@Override
-	public EntityComparator<MapEntry> comparator() {
-		return (EntityComparator<MapEntry>) cpr;
-	}
-	
-	public ArrayList<Object> getItems(){
-		return (ArrayList<Object>) super.values();
+	public EntityComparator<Object> comparator() {
+		return (EntityComparator<Object>) cpr;
 	}
 	
 	public void setIdMap(IdMapEncoder map){
@@ -68,6 +63,10 @@ public class TableList extends ArrayEntryList implements SendableEntity {
         }
         return false;
     }
+    
+    public List<Object> getValues(){
+    	return values;
+    }
 
 	
 	public boolean addItem(Object value){
@@ -82,7 +81,7 @@ public class TableList extends ArrayEntryList implements SendableEntity {
 	@Override
 	public boolean remove(Object value) {
 		if (contains(value)) {
-			List<MapEntry> items = this.values;
+			List<Object> items = this.values;
 			if(items.remove(value)){
 				return true;
 			}
@@ -91,8 +90,8 @@ public class TableList extends ArrayEntryList implements SendableEntity {
 	}
 	
 	@Override
-	public MapEntry remove(int index) {
-		MapEntry item = super.remove(index);
+	public Object remove(int index) {
+		Object item = super.remove(index);
 		getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEMS, item,null);
 		return item;
 	}
@@ -128,7 +127,7 @@ public class TableList extends ArrayEntryList implements SendableEntity {
 	}
 
 	@Override
-	public boolean addAll(int index, Collection<? extends MapEntry> c) {
+	public boolean addAll(int index, Collection<? extends Object> c) {
 		for(Iterator<? extends Object> iterator = super.iterator();iterator.hasNext();){
 			if(!add(iterator.next())){
 				return false;
@@ -143,13 +142,13 @@ public class TableList extends ArrayEntryList implements SendableEntity {
 	}
 
 	@Override
-	public ListIterator<MapEntry> listIterator() {
-		return new ListIteratorImpl<MapEntry>(this);
+	public ListIterator<Object> listIterator() {
+		return new ListIteratorImpl<Object>(this);
 	}
 
 	@Override
-	public ListIterator<MapEntry> listIterator(int index) {
-		ListIterator<MapEntry> iterator = listIterator();
+	public ListIterator<Object> listIterator(int index) {
+		ListIterator<Object> iterator = listIterator();
 		if(index>=0&&index<=size()){
 			for(int z=0;z<index;z++){
 				iterator.next();
@@ -174,7 +173,7 @@ public class TableList extends ArrayEntryList implements SendableEntity {
 	}
 	
 	public TableList withSort(String field, SortingDirection direction, EntityValueFactory cellValueCreator) {
-		EntityComparator<MapEntry> comparator = comparator();
+		EntityComparator<Object> comparator = comparator();
 		comparator.withColumn(field);
 		comparator.withDirection(direction);
 		comparator.withCellCreator(cellValueCreator);
@@ -183,7 +182,7 @@ public class TableList extends ArrayEntryList implements SendableEntity {
 	}
 	
 	@Override
-	public TableList withComparator(Comparator<MapEntry> comparator) {
+	public TableList withComparator(Comparator<Object> comparator) {
 		super.withComparator(comparator);
 		refreshSort();
 		return this;
@@ -191,7 +190,7 @@ public class TableList extends ArrayEntryList implements SendableEntity {
 	}
 	
 	public TableList withSort(String field, SortingDirection direction) {
-		EntityComparator<MapEntry> comparator = comparator();
+		EntityComparator<Object> comparator = comparator();
 		comparator.withColumn(field);
 		comparator.withDirection(direction);
 		refreshSort();
@@ -210,7 +209,7 @@ public class TableList extends ArrayEntryList implements SendableEntity {
 	}
 
 	public void setSort(String field) {
-		EntityComparator<MapEntry> comparator = comparator();
+		EntityComparator<Object> comparator = comparator();
 		if(comparator!=null){
 			comparator.withColumn(field);
 			refreshSort();
@@ -222,12 +221,12 @@ public class TableList extends ArrayEntryList implements SendableEntity {
 	}
 	
 	public Object[] getSortedIndex(){
-		EntityComparator<MapEntry> comparator = comparator();
+		EntityComparator<Object> comparator = comparator();
 		if(comparator==null){
 			return null;
 		}
 		IdMapEncoder map = comparator.getMap();
-		Iterator<MapEntry> iterator = iterator();
+		Iterator<Object> iterator = iterator();
 		SendableEntityCreator creator = null; 
 		if(iterator.hasNext()){
 			creator = map.getCreatorClass(iterator.next());
@@ -238,13 +237,13 @@ public class TableList extends ArrayEntryList implements SendableEntity {
 			EntityValueFactory cellCreator = comparator.getCellCreator();
 			if(comparator.getDirection()==SortingDirection.ASC){
 				int pos=0;
-				for(Iterator<MapEntry> i = iterator();i.hasNext();){
+				for(Iterator<Object> i = iterator();i.hasNext();){
 					Object item = i.next();
 					returnValues[pos++] = cellCreator.getCellValue(item, creator, column);
 				}
 			}else{
 				int pos=super.size()-1;
-				for(Iterator<MapEntry> i = iterator();i.hasNext();){
+				for(Iterator<Object> i = iterator();i.hasNext();){
 					Object item = i.next();
 					returnValues[pos--] = cellCreator.getCellValue(item, creator, column);
 				}
@@ -280,5 +279,21 @@ public class TableList extends ArrayEntryList implements SendableEntity {
 		getPropertyChangeSupport().addPropertyChangeListener(name, listener);
 		return true;
 	
+	}
+
+	@Override
+	public EntityList<Object> getNewArray() {
+		return new TableList();
+	}
+
+	@Override
+	public String toString() {
+		return "TableList with "+size()+" Elements";
+	}
+
+	@Override
+	public BaseItem getNewObject() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

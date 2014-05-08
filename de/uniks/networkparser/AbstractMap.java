@@ -48,7 +48,7 @@ public abstract class AbstractMap {
 		if (reference == null) {
 			return null;
 		}
-		return getCreatorClassName(reference.getClass().getName(), true);
+		return getCreator(reference.getClass().getName(), true);
 	}
 	
 	
@@ -60,7 +60,7 @@ public abstract class AbstractMap {
 	 * @param fullName if the clazzName is the Fullname for search
 	 * @return return a Creator class for a clazz name
 	 */
-	public SendableEntityCreator getCreatorClassName(String clazz, boolean fullName) {
+	public SendableEntityCreator getCreator(String clazz, boolean fullName) {
 		if(fullName){
 			return (SendableEntityCreator) this.creators.getValue(clazz);
 		}
