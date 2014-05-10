@@ -74,19 +74,19 @@ public class GraphConverter implements Converter {
 	
 	public GraphNode parseJsonObject(GraphList root, JsonObject node, HashMap<GraphNode, ArrayList<Attribute>> attributes){
 		String id = node.getString(JsonIdMap.ID);
-		GraphNode graphNode = root.getById(id);
+		GraphNode graphNode = root.get(id);
 		if(graphNode==null){
 			graphNode = new GraphNode().withId(id);
 			root.add(graphNode);
 		}
-		if(node.has(JsonIdMap.CLASS)){
+		if(node.containsKey(JsonIdMap.CLASS)){
 			graphNode.withClassName(node.getString(JsonIdMap.CLASS));
 		}
-		if(node.has(HEADIMAGE)){
+		if(node.containsKey(HEADIMAGE)){
 			graphNode.withHeadImage(node.getString(HEADIMAGE));
 		}
 		
-		if(node.has(JsonIdMap.JSON_PROPS)){
+		if(node.containsKey(JsonIdMap.JSON_PROPS)){
 			JsonObject props = node.getJsonObject(JsonIdMap.JSON_PROPS);
 			for(Iterator<String> keys = props.keys();keys.hasNext();){
 				String key = keys.next();

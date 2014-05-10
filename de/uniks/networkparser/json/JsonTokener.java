@@ -21,10 +21,14 @@ package de.uniks.networkparser.json;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
+import java.util.Iterator;
+
+import de.uniks.networkparser.AbstractEntityList;
+import de.uniks.networkparser.AbstractKeyValueEntry;
+import de.uniks.networkparser.AbstractKeyValueList;
+import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.TextParsingException;
 import de.uniks.networkparser.Tokener;
-import de.uniks.networkparser.interfaces.BaseKeyValueEntity;
-import de.uniks.networkparser.interfaces.BaseListEntity;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.xml.XMLEntity;
@@ -47,14 +51,18 @@ public class JsonTokener extends Tokener {
 			return nextString('"', false, allowQuote, true, true);
 		case '{':
 			if (creator instanceof FactoryEntity) {
-				BaseItem element = ((FactoryEntity)creator).getNewObject();
-				this.parseToEntity((BaseKeyValueEntity) element);
+				BaseItem element = ((FactoryEntity)creator).getNewArray();
+				if(element instanceof AbstractEntityList<?>){
+					this.parseToEntity((AbstractEntityList<?>)element);
+				}
 				return element;
 			}
 		case '[':
 			if (creator instanceof FactoryEntity) {
-				BaseListEntity elementList = ((FactoryEntity)creator).getNewArray();
-				this.parseToEntity(elementList);
+				AbstractList<?> elementList = ((FactoryEntity)creator).getNewObject();
+				if(elementList instanceof AbstractKeyValueList<?,?>){
+					this.parseToEntity((AbstractKeyValueList<?,?>)elementList);
+				}
 				return elementList;
 			}
 		default:
@@ -69,19 +77,18 @@ public class JsonTokener extends Tokener {
 		return STOPCHARS;
 	}
 
-	public BaseKeyValueEntity parseEntity(JsonObject parent, BaseKeyValueEntity newValue) {
+	public JsonObject parseEntity(JsonObject parent, AbstractKeyValueList<?, ?> newValue) {
 		if (newValue instanceof XMLEntity) {
 			XMLEntity xmlEntity = (XMLEntity) newValue;
-			String[] names = BaseKeyValueEntity.getNames(xmlEntity);
 			parent.put(JsonIdMap.CLASS, xmlEntity.getTag());
 			JsonObject props = new JsonObject();
 			if (xmlEntity.getValue() != null
 					&& xmlEntity.getValue().length() > 0) {
 				parent.put(JsonIdMap.VALUE, xmlEntity.getValue());
 			}
-			for (String prop : names) {
-				Object propValue = xmlEntity.get(prop);
-				parseEntityProp(props, propValue, prop);
+			for(Iterator<AbstractKeyValueEntry<String, Object>> i = xmlEntity.iterator();i.hasNext();){
+				AbstractKeyValueEntry<String, Object> item = i.next();
+				parseEntityProp(props, item.getValue(), item.getKey());
 			}
 			for (XMLEntity children : xmlEntity.getChildren()) {
 				parseEntityProp(props, children, children.getTag());
@@ -94,7 +101,7 @@ public class JsonTokener extends Tokener {
 	public void parseEntityProp(JsonObject props, Object propValue, String prop) {
 		if (propValue != null) {
 			if (propValue instanceof XMLEntity) {
-				if (props.has(prop)) {
+				if (props.containsKey(prop)) {
 					Object child = props.get(prop);
 					JsonArray propList = null;
 					if (child instanceof JsonObject) {
@@ -126,19 +133,18 @@ public class JsonTokener extends Tokener {
 	 * @param newValue
 	 * @return
 	 */
-	public BaseKeyValueEntity parseToEntity(JsonObject parent, BaseKeyValueEntity newValue) {
+	public JsonObject parseToEntity(JsonObject parent, AbstractKeyValueList<?, ?> newValue) {
 		if (newValue instanceof XMLEntity) {
 			XMLEntity xmlEntity = (XMLEntity) newValue;
-			String[] names = BaseKeyValueEntity.getNames(xmlEntity);
 			parent.put(JsonIdMap.CLASS, xmlEntity.getTag());
 			JsonObject props = new JsonObject();
 			if (xmlEntity.getValue() != null
 					&& xmlEntity.getValue().length() > 0) {
 				parent.put(JsonIdMap.VALUE, xmlEntity.getValue());
 			}
-			for (String prop : names) {
-				Object propValue = xmlEntity.get(prop);
-				parseEntityProp(props, propValue, prop);
+			for(Iterator<AbstractKeyValueEntry<String, Object>> i = xmlEntity.iterator();i.hasNext();){
+				AbstractKeyValueEntry<String, Object> item = i.next();
+				parseEntityProp(props, item.getValue(), item.getKey());
 			}
 			for (XMLEntity children : xmlEntity.getChildren()) {
 				parseEntityProp(props, children, children.getTag());
@@ -149,7 +155,7 @@ public class JsonTokener extends Tokener {
 	}
 
 	@Override
-	public void parseToEntity(BaseKeyValueEntity entity) throws TextParsingException{
+	public void parseToEntity(AbstractKeyValueList<?,?> entity) throws TextParsingException{
 		char c;
 		String key;
 		if (nextStartClean() != '{') {
@@ -189,12 +195,12 @@ public class JsonTokener extends Tokener {
 						+ getNextString(30) + "]", this);
 			}
 			next();
-			entity.put(key, nextValue(entity,isQuote));
+			entity.withValue(key, nextValue(entity,isQuote));
 		}
 	}
 
 	@Override
-	public void parseToEntity(BaseListEntity entityList) throws TextParsingException{
+	public void parseToEntity(AbstractEntityList<?> entityList) throws TextParsingException{
 		char c=nextStartClean();
 		if (c != '[') {
 			throw new TextParsingException(

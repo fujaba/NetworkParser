@@ -22,25 +22,26 @@ package de.uniks.networkparser.bytes;
  permissions and limitations under the Licence.
 */
 import java.util.Collection;
+import java.util.Iterator;
 
-import de.uniks.networkparser.EntityList;
+import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.bytes.converter.ByteConverterHTTP;
 import de.uniks.networkparser.bytes.converter.ByteConverterString;
 import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteConverter;
 import de.uniks.networkparser.interfaces.ByteItem;
 
-public class ByteList extends EntityList<ByteItem> implements ByteItem {
+public class ByteList extends AbstractList<ByteItem> implements ByteItem {
 	/** The children of the ByteEntity. */
 	private byte typ = 0;
 
 	@Override
-	public ByteList getNewArray() {
+	public ByteList getList() {
 		return new ByteList();
 	}
 
 	@Override
-	public ByteEntity getNewObject() {
+	public ByteEntity getListItem() {
 		return new ByteEntity();
 	}
 
@@ -87,17 +88,6 @@ public class ByteList extends EntityList<ByteItem> implements ByteItem {
 		return buffer;
 	}
 	
-	@Override
-	public ByteList with(Collection<?> collection) {
-		if(collection instanceof ByteList){
-			this.add((ByteList)collection);
-			return this;
-		}
-		super.with(collection);
-		return this;
-	}
-	
-
 	@Override
 	public void writeBytes(BufferedBytes buffer, boolean isDynamic, boolean last){
 		int size=calcChildren(isDynamic);
@@ -162,9 +152,20 @@ public class ByteList extends EntityList<ByteItem> implements ByteItem {
 		this.typ = value;
 	}
 
-	public EntityList<ByteItem> withValue(String value) {
+	public AbstractList<ByteItem> withValue(String value) {
 		ByteConverterString	converter = new ByteConverterString();
-		this.add(getNewObject().withValue(ByteIdMap.DATATYPE_FIXED, converter.decode(value)));
+		this.add(getListItem().withValue(ByteIdMap.DATATYPE_FIXED, converter.decode(value)));
+		return this;
+	}
+
+	@Override
+	public AbstractList<ByteItem> with(Collection<?> collection) {
+		for(Iterator<?> i = collection.iterator();i.hasNext();){
+			Object item = i.next();
+			if(item instanceof ByteItem) {
+				this.add((ByteItem) item);
+			}
+		}
 		return this;
 	}
 }

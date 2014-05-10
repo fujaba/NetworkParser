@@ -24,16 +24,12 @@ package de.uniks.networkparser.graph;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map.Entry;
 
+import de.uniks.networkparser.AbstractKeyValueEntry;
+import de.uniks.networkparser.AbstractKeyValueList;
 import de.uniks.networkparser.ArrayEntryList;
-import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.BaseKeyValueEntity;
-import de.uniks.networkparser.interfaces.BaseListEntity;
 
-public class GraphList extends BaseKeyValueEntity {
-	private LinkedHashMap<String, GraphNode> children = new LinkedHashMap<String, GraphNode>();
+public class GraphList extends AbstractKeyValueList<String, GraphNode> {
 	private ArrayList<GraphEdge> edges = new ArrayList<GraphEdge>();
 	private String typ;
 
@@ -42,38 +38,16 @@ public class GraphList extends BaseKeyValueEntity {
 		for(Object value : values){
 			if (value instanceof GraphNode) {
 				GraphNode entity = (GraphNode) value;
-				children.put(entity.getId(), entity);
+				put(entity.getId(), entity);
 			}
 		}
 		return this;
 	}
 
-	@Override
-	public int size() {
-		return children.size();
-	}
-
 	public boolean add(GraphNode value) {
 		GraphNode entity = (GraphNode) value;
-		children.put(entity.getId(), entity);
+		put(entity.getId(), entity);
 		return true;
-	}
-
-	@Override
-	public GraphNode get(int z) {
-		Iterator<Entry<String, GraphNode>> iterator = children.entrySet()
-				.iterator();
-		while (z > 0 && iterator.hasNext()) {
-			iterator.next();
-		}
-		if (z == 0) {
-			return iterator.next().getValue();
-		}
-		return null;
-	}
-
-	public GraphNode getById(String id) {
-		return children.get(id);
 	}
 
 	@Override
@@ -140,33 +114,25 @@ public class GraphList extends BaseKeyValueEntity {
 		return links;
 	}
 	
-	public Collection<GraphNode> getChildren() {
-		return children.values();
+	@Override
+	public AbstractKeyValueEntry<String, GraphNode> getListItem() {
+		return null;
 	}
 
 	@Override
-	public BaseItem getNewObject() {
-		return new GraphEdge();
-	}
-
-	@Override
-	public GraphList getNewArray() {
+	public GraphList getList() {
 		return new GraphList();
 	}
 
 	@Override
-	public BaseListEntity with(Collection<?> values) {
+	public GraphList with(Collection<?> values) {
 		for(Iterator<?> i = values.iterator();i.hasNext();){
-			with(i.next());
+			Object item = i.next();
+			if(item instanceof GraphNode) {
+				add((GraphNode)item);
+			}
 		}
 		return this;
 	}
 
-	@Override
-	public BaseListEntity with(Object value) {
-		if(value instanceof GraphNode){
-			this.add((GraphNode)value);
-		}
-		return this;
-	}
 }

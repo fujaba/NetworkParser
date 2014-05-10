@@ -66,7 +66,7 @@ public class ByteSimpleMap extends AbstractMap {
 		ArrayList<BufferedBytes> results = new ArrayList<BufferedBytes>();
 		ArrayList<Integer> resultsLength = new ArrayList<Integer>();
 
-		for (Iterator<BitValue> i = entry.valueIterator(); i.hasNext();) {
+		for (Iterator<BitValue> i = entry.iterator(); i.hasNext();) {
 			BitValue bitValue = i.next();
 
 			int orientationSource = bitValue.getOrientation();

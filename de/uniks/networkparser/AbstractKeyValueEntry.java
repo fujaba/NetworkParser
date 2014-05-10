@@ -29,18 +29,21 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 
-public abstract class AbstractMapEntry<K, V> implements BaseItem, Entry<K, V>, SendableEntityCreator, SendableEntityCreatorNoIndex {
+public abstract class AbstractKeyValueEntry<K, V> implements BaseItem, Entry<K, V>, SendableEntityCreator, SendableEntityCreatorNoIndex {
 	public static final String PROPERTY_KEY = "key";
 	public static final String PROPERTY_VALUE = "value";
 	private final String[] properties = new String[] { PROPERTY_KEY, PROPERTY_VALUE };
 	protected K key;
-	private V value;
+	protected V value;
 
-	public AbstractMapEntry<K, V> with(K key, V value) {
+	public AbstractKeyValueEntry<K, V> with(K key, V value) {
 		this.key = key;
 		this.value = value;
 		return this;
 	}
+	
+	public abstract AbstractKeyValueEntry<K, V> withValue(Object key, Object value);
+	public abstract AbstractKeyValueEntry<K, V> withToValue(Object value);
 
 	@Override
 	public K getKey() {
@@ -89,12 +92,12 @@ public abstract class AbstractMapEntry<K, V> implements BaseItem, Entry<K, V>, S
 		return key + "=" + value;
 	}
 	
-	public AbstractMapEntry<K, V> withKey(K key) {
+	public AbstractKeyValueEntry<K, V> withKey(K key) {
 		this.key = key;
 		return this;
 	}
 
-	public AbstractMapEntry<K, V> withValue(V value) {
+	public AbstractKeyValueEntry<K, V> withValue(V value) {
 		this.value = value;
 		return this;
 	}

@@ -23,12 +23,13 @@ package de.uniks.networkparser.xml;
 */
 import java.util.ArrayList;
 
+import de.uniks.networkparser.AbstractEntityList;
+import de.uniks.networkparser.AbstractKeyValueList;
+import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.ReferenceObject;
 import de.uniks.networkparser.TextParsingException;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.BaseListEntity;
-import de.uniks.networkparser.interfaces.BaseKeyValueEntity;
 
 public class XMLTokener extends Tokener {
 	/** The stack. */
@@ -52,10 +53,10 @@ public class XMLTokener extends Tokener {
 			return nextString(c, false, allowQuote, false, true);
 		case '<':
 			back();
-			if (creator instanceof BaseKeyValueEntity) {
-				BaseItem element = ((BaseKeyValueEntity)creator).getNewObject();
-				if(element instanceof BaseKeyValueEntity){
-					parseToEntity((BaseKeyValueEntity)element);
+			if (creator instanceof AbstractList<?>) {
+				BaseItem element = ((AbstractList<?>)creator).getListItem();
+				if(element instanceof AbstractEntityList<?>){
+					parseToEntity((AbstractEntityList<?>)element);
 				}
 				return element;
 			}
@@ -72,7 +73,7 @@ public class XMLTokener extends Tokener {
 	}
 
 	@Override
-	public void parseToEntity(BaseKeyValueEntity entity) throws TextParsingException{
+	public void parseToEntity(AbstractKeyValueList<?,?> entity) throws TextParsingException{
 		char c=getCurrentChar();
 
 		if (c!= '<') {
@@ -125,8 +126,8 @@ public class XMLTokener extends Tokener {
 					break;
 				} else {
 					if (getCurrentChar() == '<') {
-						child = (XMLEntity) xmlEntity.getNewObject();
-						parseToEntity((BaseKeyValueEntity) child);
+						child = (XMLEntity) xmlEntity.getListItem();
+						parseToEntity(child);
 						xmlEntity.addChild(child);
 					} else {
 						xmlEntity.setValue(nextString('<', false, false, false, false));
@@ -157,7 +158,7 @@ public class XMLTokener extends Tokener {
 	}
 	
 	@Override
-	public void parseToEntity(BaseListEntity entityList) {
+	public void parseToEntity(AbstractEntityList<?>  entityList) {
 		// Do Nothing
 	}
 

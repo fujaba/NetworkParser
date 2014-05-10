@@ -29,7 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import de.uniks.networkparser.EntityList;
+import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.EntityValueFactory;
 import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -38,7 +38,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.sort.EntityComparator;
 import de.uniks.networkparser.sort.SortingDirection;
 
-public class TableList extends EntityList<Object> implements SendableEntity {
+public class TableList extends AbstractList<Object> implements SendableEntity {
 	public static final String PROPERTY_ITEMS = "items";
 	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
 	
@@ -78,7 +78,6 @@ public class TableList extends EntityList<Object> implements SendableEntity {
 		return false;
 	}
 	
-	@Override
 	public boolean remove(Object value) {
 		if (contains(value)) {
 			List<Object> items = this.values;
@@ -118,7 +117,7 @@ public class TableList extends EntityList<Object> implements SendableEntity {
 	}
 	
 	public boolean addAll(TableList list){
-		for(Object item : this){
+		for(Object item : values){
 			if(!add(item)){
 				return false;
 			}
@@ -139,11 +138,6 @@ public class TableList extends EntityList<Object> implements SendableEntity {
 	@Override
 	public int lastIndexOf(Object obj) {
 		return indexOf(obj);
-	}
-
-	@Override
-	public ListIterator<Object> listIterator() {
-		return new ListIteratorImpl<Object>(this);
 	}
 
 	@Override
@@ -282,7 +276,7 @@ public class TableList extends EntityList<Object> implements SendableEntity {
 	}
 
 	@Override
-	public EntityList<Object> getNewArray() {
+	public AbstractList<Object> getList() {
 		return new TableList();
 	}
 
@@ -292,8 +286,15 @@ public class TableList extends EntityList<Object> implements SendableEntity {
 	}
 
 	@Override
-	public BaseItem getNewObject() {
-		// TODO Auto-generated method stub
+	public BaseItem getListItem() {
 		return null;
+	}
+
+	@Override
+	public TableList with(Collection<?> values) {
+		for(Iterator<?> i = values.iterator();i.hasNext();){
+			add(i.next());
+		}
+		return this;
 	}
 }

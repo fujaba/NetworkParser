@@ -21,11 +21,26 @@ package de.uniks.networkparser.event;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.AbstractMapEntry;
+import de.uniks.networkparser.AbstractKeyValueEntry;
 
-public class MapEntry extends AbstractMapEntry<String, Object>{
+public class MapEntry extends AbstractKeyValueEntry<String, Object>{
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new MapEntry();
+	}
+
+	@Override
+	public AbstractKeyValueEntry<String, Object> withValue(Object key,
+			Object value) {
+		if(key instanceof String){
+			this.with(""+key, value);
+		}
+		return this;
+	}
+
+	@Override
+	public AbstractKeyValueEntry<String, Object> withToValue(Object value) {
+		this.value = value;
+		return this;
 	}
 }

@@ -22,6 +22,8 @@ package de.uniks.networkparser.graph;
  permissions and limitations under the Licence.
 */
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMapEncoder;
@@ -95,7 +97,7 @@ public class GraphIdMap extends IdMapEncoder {
 		}
 
 		String mainKey = getId(object);
-		GraphNode element = list.getById(mainKey);
+		GraphNode element = list.get(mainKey);
 		if (element != null) {
 			return element;
 		}
@@ -190,5 +192,10 @@ public class GraphIdMap extends IdMapEncoder {
 	@Override
 	public BaseItem getPrototyp() {
 		return new GraphList();
+	}
+
+	@Override
+	public Set<java.util.Map.Entry<String, Object>> entrySet() {
+		return new HashSet<java.util.Map.Entry<String,Object>>(values());
 	}
 }

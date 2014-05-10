@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import de.uniks.networkparser.AbstractMap;
 import de.uniks.networkparser.Filter;
@@ -224,9 +225,8 @@ public class ByteIdMap extends IdMap {
 					value = null;
 				}
 				ByteItem child = encodeValue(value, filter);
-				child.toString();
 				if (child != null) {
-					msg.with(child);
+					msg.add(child);
 				}
 			}
 			
@@ -265,7 +265,7 @@ public class ByteIdMap extends IdMap {
 				for (Object childValue : list) {
 					ByteItem child = encodeValue(childValue, filter);
 					if (child != null) {
-						byteList.with(child);
+						byteList.add(child);
 					}
 				}
 				return byteList;
@@ -282,13 +282,13 @@ public class ByteIdMap extends IdMap {
 
 					child = encodeValue(entity.getKey(), filter);
 					if (child != null) {
-						item.with(child);
+						item.add(child);
 					}
 					child = encodeValue(entity.getValue(), filter);
 					if (child != null) {
-						item.with(child);
+						item.add(child);
 					}
-					byteList.with(item);
+					byteList.add(item);
 				}
 				return byteList;
 			} else if (value != null) {
@@ -296,7 +296,7 @@ public class ByteIdMap extends IdMap {
 				if (child != null) {
 					ByteList byteList = new ByteList();
 //					byteList.setTyp(ByteIdMap.DATATYPE_CLAZZ);
-					byteList.with(child);
+					byteList.add(child);
 					return byteList;
 				}
 				return child;

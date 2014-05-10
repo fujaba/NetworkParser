@@ -1,7 +1,10 @@
 package de.uniks.networkparser.interfaces;
 
-public interface FactoryEntity {
-	public BaseListEntity getNewArray();
+import de.uniks.networkparser.AbstractEntityList;
+import de.uniks.networkparser.AbstractKeyValueList;
 
-	public BaseItem getNewObject();
+public interface FactoryEntity {
+	public AbstractEntityList<?> getNewArray();
+
+	public AbstractKeyValueList<?,?> getNewObject();
 }

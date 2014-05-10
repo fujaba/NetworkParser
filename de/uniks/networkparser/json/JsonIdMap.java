@@ -29,7 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import de.uniks.networkparser.EntityList;
+import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.IdMapEncoder;
@@ -190,7 +190,7 @@ public class JsonIdMap extends IdMap {
 				SendableEntityCreator referenceCreator = getCreatorClass(value);
 				if (value instanceof Collection<?> && referenceCreator == null) {
 					// Simple List or Assocs
-					EntityList<Object> subValues = getPrototyp().getNewArray();
+					AbstractList<Object> subValues = getPrototyp().getList();
 //					jsonArray.getNewArray();
 					for (Object containee : ((Collection<?>) value)) {
 						Object item = parseItem(entity, filter, containee,
@@ -205,7 +205,7 @@ public class JsonIdMap extends IdMap {
 				} else if (value instanceof Map<?, ?>
 						&& referenceCreator == null) {
 					// Maps
-					EntityList<Object> subValues = getPrototyp().getNewArray();
+					AbstractList<Object> subValues = getPrototyp().getList();
 					Map<?, ?> map = (Map<?, ?>) value;
  					String packageName = ObjectMapEntry.class.getName();
 					for (Iterator<?> i = map.entrySet().iterator(); i.hasNext();) {
@@ -295,7 +295,7 @@ public class JsonIdMap extends IdMap {
 	@Override
 	public Object decode(String value){
 		if(value.startsWith("[")){
-			return decode(getPrototyp().getNewArray().withValue(value));
+			return decode(getPrototyp().getList().withValue(value));
 		}
 		return decode(getPrototyp().withValue(value));
 	}
@@ -599,7 +599,7 @@ public class JsonIdMap extends IdMap {
 	 * @return the json array
 	 */
 	public JsonArray toJsonArray(Object object, Filter filter) {
-		JsonArray jsonArray = getPrototyp().getNewArray();
+		JsonArray jsonArray = getPrototyp().getList();
 		if (filter == null) {
 			filter = this.filter.cloneObj();
 		}
@@ -644,7 +644,7 @@ public class JsonIdMap extends IdMap {
 		String className = entity.getClass().getName();
 		String id = getId(entity);
 
-		JsonObject jsonObject = jsonArray.getNewObject();
+		JsonObject jsonObject = jsonArray.getListItem();
 		boolean sortedArray = jsonArray.isComparator();
 		boolean isId = filter.isId(this, entity, className);
 		if (isId) {
@@ -774,7 +774,7 @@ public class JsonIdMap extends IdMap {
 	 */
 	public void toJsonArrayByIds(ArrayList<String> suspendIdList) {
 		JsonObject sendObj = getPrototyp();
-		JsonArray children = sendObj.getNewArray();
+		JsonArray children = sendObj.getList();
 		for (String childId : suspendIdList) {
 			children.add(toJsonObjectById(childId));
 		}

@@ -28,14 +28,14 @@ public class BitValue {
 	private int orientation = 1;
 
 	public BitValue(int start, int len) {
-		this.start = new BitEntity().withValue(start);
-		this.len = new BitEntity().withValue(len);
+		this.start = new BitEntity().with(start);
+		this.len = new BitEntity().with(len);
 	}
 
 	public BitValue(String startTyp, String startValue, String lentyp,
 			String lenvalue) {
-		this.start = new BitEntity().withValue(startValue, startTyp);
-		this.len = new BitEntity().withValue(lenvalue, lentyp);
+		this.start = new BitEntity().with(startValue, startTyp);
+		this.len = new BitEntity().with(lenvalue, lentyp);
 	}
 
 	public BitEntity getStart() {

@@ -27,16 +27,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import de.uniks.networkparser.interfaces.FactoryEntity;
-
-public class ObjectArrayEntryList extends EntityList<ObjectMapEntry> implements FactoryEntity {
+public class ObjectArrayEntryList extends AbstractList<ObjectMapEntry>  {
 	@Override
-	public ObjectArrayEntryList getNewArray() {
+	public ObjectArrayEntryList getList() {
 		return new ObjectArrayEntryList();
 	}
 	
 	@Override
-	public ObjectMapEntry getNewObject() {
+	public ObjectMapEntry getListItem() {
 		return new ObjectMapEntry();
 	}
 
@@ -81,7 +79,7 @@ public class ObjectArrayEntryList extends EntityList<ObjectMapEntry> implements 
 				}
 			}
 		}
-		ObjectMapEntry newObject = getNewObject();
+		ObjectMapEntry newObject = getListItem();
 		newObject.withKey(key);
 		newObject.withValue(value);
 		values.add(newObject);
@@ -153,5 +151,16 @@ public class ObjectArrayEntryList extends EntityList<ObjectMapEntry> implements 
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public ObjectArrayEntryList with(Collection<?> values) {
+		for(Iterator<?> i = values.iterator();i.hasNext();){
+			Object item = i.next();
+			if(item instanceof ObjectMapEntry) {
+				add((ObjectMapEntry) item);
+			}
+		}
+		return this;
 	}
 }
