@@ -21,22 +21,36 @@ See the Licence for the specific language governing
 permissions and limitations under the Licence.
 */
 
-import de.uniks.networkparser.EntityList;
+import java.util.Collection;
+import java.util.Iterator;
+
+import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.interfaces.BaseItem;
 
-public class EdgeList extends EntityList<GraphEdge> {
+public class EdgeList extends AbstractList<GraphEdge> {
 	@Override
-	public BaseItem getNewObject() {
+	public BaseItem getListItem() {
 		return null;
 	}
 	
 	@Override
-	public EntityList<GraphEdge> getNewArray() {
+	public AbstractList<GraphEdge> getList() {
 		return new EdgeList();
 	}
 	
 	@Override
 	public String toString() {
 		return "ArrayEntryList with "+size()+" Elements";
+	}
+
+	@Override
+	public EdgeList with(Collection<?> values) {
+		for(Iterator<?> i = values.iterator();i.hasNext();){
+			Object item = i.next();
+			if(item instanceof GraphNode){
+				add((GraphEdge) item);
+			}
+		}
+		return this;
 	}
 }

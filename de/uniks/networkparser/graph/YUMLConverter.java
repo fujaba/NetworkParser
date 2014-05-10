@@ -12,7 +12,7 @@ public class YUMLConverter implements Converter {
 	@Override
 	public String convert(GraphList root, boolean removePackage){
 		String typ = root.getTyp();
-		Collection<GraphNode> children = root.getChildren(); 
+		Collection<GraphNode> children = root.values(); 
 		if (children.size() > 0) {
 			StringBuilder sb = new StringBuilder();
 			Iterator<GraphNode> i = children.iterator();

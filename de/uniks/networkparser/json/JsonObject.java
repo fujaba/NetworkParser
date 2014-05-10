@@ -24,18 +24,15 @@ package de.uniks.networkparser.json;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 
-import de.uniks.networkparser.AbstractMapEntry;
+import de.uniks.networkparser.AbstractKeyValueEntry;
+import de.uniks.networkparser.AbstractKeyValueList;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Tokener;
-import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.BaseKeyValueEntity;
-/* Copyright (c) 2002 JSON.org */
-import de.uniks.networkparser.interfaces.BaseListEntity;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
+/* Copyright (c) 2002 JSON.org */
 
 
 /**
@@ -93,7 +90,7 @@ import de.uniks.networkparser.interfaces.StringItem;
  * @author JSON.org
  * @version 2011-11-24
  */
-public class JsonObject extends BaseKeyValueEntity implements StringItem, FactoryEntity {
+public class JsonObject extends AbstractKeyValueList<String, Object> implements StringItem, FactoryEntity {
 	private boolean visible=true;
 	/**
 	 * Produce a string from a double. The string "null" will be returned if the
@@ -176,11 +173,11 @@ public class JsonObject extends BaseKeyValueEntity implements StringItem, Factor
 			return "{}";
 		}
 		if (!isVisible()) {
-			return "{Item with " + map.size() + " values}";
+			return "{Item with " + values.size() + " values}";
 		}
 
 		StringBuilder sb = new StringBuilder("{");
-		Iterator<MapEntry> i = map.iterator();
+		Iterator<AbstractKeyValueEntry<String, Object>> i = values.iterator();
 		Entry<String, Object> item = i.next();
 		sb.append(EntityUtil.quote(item.getKey().toString()));
 		sb.append(":");
@@ -221,10 +218,10 @@ public class JsonObject extends BaseKeyValueEntity implements StringItem, Factor
 		}
 
 		if (!isVisible()) {
-			return "{" + map.size() + " values}";
+			return "{" + values.size() + " values}";
 		}
 
-		Iterator<MapEntry> iterator = map.iterator();
+		Iterator<AbstractKeyValueEntry<String, Object>> iterator = values.iterator();
 		
 		int newindent = indent + indentFactor;
 		String prefix = "";
@@ -242,7 +239,7 @@ public class JsonObject extends BaseKeyValueEntity implements StringItem, Factor
 
 		Entry<String, Object> item = iterator.next();
 		Object value = item.getValue();
-		if (length == 1 && !(value instanceof BaseKeyValueEntity)) {
+		if (length == 1 && !(value instanceof AbstractKeyValueEntry)) {
 			sb = new StringBuilder("{");
 		} else {
 			sb = new StringBuilder("{" + prefix + step);
@@ -260,7 +257,7 @@ public class JsonObject extends BaseKeyValueEntity implements StringItem, Factor
 			sb.append(EntityUtil.valueToString(item.getValue(), indentFactor,
 					newindent, false, this));
 		}
-		if (length == 1 && !(value instanceof BaseKeyValueEntity)) {
+		if (length == 1 && !(value instanceof AbstractKeyValueEntry)) {
 			sb.append("}");
 		} else {
 			sb.append(prefix + "}");
@@ -275,7 +272,7 @@ public class JsonObject extends BaseKeyValueEntity implements StringItem, Factor
 	 *            a simple String of Value or pairs of key-values
 	 */
 	public JsonObject withValue(String... values) {
-		this.map.clear();
+		this.values.clear();
 		if (values.length % 2 == 0) {
 			for (int z = 0; z < values.length; z += 2) {
 				put(values[z], values[z + 1]);
@@ -324,7 +321,7 @@ public class JsonObject extends BaseKeyValueEntity implements StringItem, Factor
 	 * @param entity
 	 *            entity to add values with the tokener
 	 */
-	public JsonObject withEntity(BaseKeyValueEntity entity) {
+	public JsonObject withEntity(AbstractKeyValueList<?, ?> entity) {
 		new JsonTokener().parseToEntity(this, entity);
 		return this;
 	}
@@ -333,21 +330,20 @@ public class JsonObject extends BaseKeyValueEntity implements StringItem, Factor
 	 * Get a new Instance of JsonArray
 	 */
 	@Override
-	public JsonArray getNewArray() {
-		return new JsonArray();
+	public JsonObject getNewObject() {
+		return new JsonObject();
 	}
 
 	/**
 	 * Get a new Instance of JsonObject
 	 */
 	@Override
-	public JsonObject getNewObject() {
-		return new JsonObject();
+	public JsonArray getNewArray() {
+		return new JsonArray();
 	}
 
-	@Override
 	public Object get(int index) {
-		Object object = this.map.get(index);
+		Object object = this.values.get(index);
 		if (object == null) {
 			throw new RuntimeException("EntityList[" + index + "] not found.");
 		}
@@ -355,17 +351,16 @@ public class JsonObject extends BaseKeyValueEntity implements StringItem, Factor
 	}
 
 	@Override
-	public BaseListEntity with(Collection<?> values) {
+	public JsonObject with(Collection<?> values) {
 		for(Object item : values){
 			with(item);
 		}
 		return this;
 	}
 
-	@Override
-	public BaseListEntity with(Object value) {
-		if(value instanceof AbstractMapEntry<?,?>){
-			AbstractMapEntry<?,?> item = (AbstractMapEntry<?, ?>) value;
+	public JsonObject with(Object value) {
+		if(value instanceof AbstractKeyValueEntry<?,?>){
+			AbstractKeyValueEntry<?,?> item = (AbstractKeyValueEntry<?, ?>) value;
 			this.put(item.getKeyString(), item.getValue());
 		}
 		return this;
@@ -380,5 +375,20 @@ public class JsonObject extends BaseKeyValueEntity implements StringItem, Factor
 	@Override
 	public boolean isVisible() {
 		return visible;
+	}
+	
+	public boolean has(String key){
+		return containsKey(key);
+	}
+	
+	@Override
+	public JsonObject withValue(Object key, Object value) {
+		super.withValue(key, value);
+		return this;
+	}
+
+	@Override
+	public JsonObject getNewInstance() {
+		return new JsonObject();
 	}
 }

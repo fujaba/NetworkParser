@@ -24,9 +24,9 @@ package de.uniks.networkparser.json;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import de.uniks.networkparser.AbstractKeyValueEntry;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMapEncoder;
-import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.interfaces.IdMapCounter;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
@@ -70,7 +70,7 @@ public class SimpleGrammar extends Grammar{
 		json.put(ID, id);
 
 		if (jsonProp.size() > 0) {
-			for(Iterator<MapEntry> iterator = jsonProp.iterator();iterator.hasNext();){
+			for(Iterator<AbstractKeyValueEntry<String, Object>> iterator = jsonProp.iterator();iterator.hasNext();){
 				Entry<String, Object> item = iterator.next();
 				json.put(item.getKey(), item.getValue());
 			}

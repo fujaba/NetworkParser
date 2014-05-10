@@ -25,8 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-import de.uniks.networkparser.interfaces.BaseListEntity;
-import de.uniks.networkparser.interfaces.BaseKeyValueEntity;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
 
@@ -199,12 +198,14 @@ public class EntityUtil {
 			return ((StringItem) value).toString(indentFactor, intent);
 		}
 		if (value instanceof Map) {
-			BaseKeyValueEntity entity = (BaseKeyValueEntity) reference.getNewObject();
-			entity.withValues((Map<?, ?>) value);
-			return ((StringItem)entity).toString(indentFactor, intent);
+			BaseItem item = reference.getNewObject().withValues((Map<?, ?>) value);
+			if(item instanceof StringItem){
+				return ((StringItem)item).toString(indentFactor, intent);
+			}
+			return ((StringItem)item).toString();
 		}
 		if (value instanceof Collection) {
-			BaseListEntity item = reference.getNewArray().with((Collection<?>) value);
+			AbstractList<?> item = reference.getNewArray().with((Collection<?>) value);
 			if(item instanceof StringItem){
 				return ((StringItem)item).toString(indentFactor, intent);
 			}
@@ -216,7 +217,7 @@ public class EntityUtil {
 			for (Object item : items) {
 				arrayList.add(item);
 			}
-			BaseListEntity item = reference.getNewArray().with(arrayList);
+			AbstractList<?> item = reference.getNewArray().with(arrayList);
 			if(item instanceof StringItem){
 				return ((StringItem)item).toString(indentFactor, intent);
 			}
@@ -239,16 +240,11 @@ public class EntityUtil {
 		if (value instanceof Boolean) {
 			return value.toString();
 		}
-		if (value instanceof BaseKeyValueEntity) {
-			return ((BaseKeyValueEntity) value).toString();
-		}
-		if (value instanceof EntityList) {
-			return ((EntityList<?>) value).toString();
+		if (value instanceof AbstractList) {
+			return ((AbstractList<?>) value).toString();
 		}
 		if (value instanceof Map) {
-			BaseKeyValueEntity entity = (BaseKeyValueEntity) reference.getNewObject();
-			entity.withValues((Map<?, ?>) value);
-			return entity.toString();
+			return reference.getNewObject().withValues((Map<?, ?>) value).toString();
 		}
 		if (value instanceof Collection) {
 			return reference.getNewArray().with((Collection<?>) value)
@@ -260,7 +256,7 @@ public class EntityUtil {
 			for (Object item : items) {
 				arrayList.add(item);
 			}
-			return reference.getNewArray().with(arrayList).toString();
+			return reference.getNewObject().with(arrayList).toString();
 		}
 		if (simpleText) {
 			return value.toString();
@@ -286,7 +282,7 @@ public class EntityUtil {
 				return null;
 			}
 
-			if (object instanceof BaseKeyValueEntity || object instanceof EntityList
+			if (object instanceof AbstractList
 					|| object instanceof Byte || object instanceof Character
 					|| object instanceof Short || object instanceof Integer
 					|| object instanceof Long || object instanceof Boolean
@@ -296,15 +292,13 @@ public class EntityUtil {
 			}
 
 			if (object instanceof Collection) {
-				return reference.getNewArray().with((Collection<?>) object);
+				return reference.getNewObject().with((Collection<?>) object);
 			}
 			if (object.getClass().isArray()) {
-				return reference.getNewArray().with((Collection<?>) object);
+				return reference.getNewObject().with((Collection<?>) object);
 			}
 			if (object instanceof Map) {
-				BaseKeyValueEntity entity = (BaseKeyValueEntity) reference.getNewObject();
-				entity.withValues((Map<?, ?>) object);
-				return entity;
+				return reference.getNewObject().withValues((Map<?, ?>) object);
 			}
 			if (object.getClass().getName().startsWith("java.")
 					|| object.getClass().getName().startsWith("javax.")) {

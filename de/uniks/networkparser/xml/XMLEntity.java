@@ -24,22 +24,21 @@ package de.uniks.networkparser.xml;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Map.Entry;
 
-import de.uniks.networkparser.EntityList;
+import de.uniks.networkparser.AbstractKeyValueEntry;
+import de.uniks.networkparser.AbstractKeyValueList;
+import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.BaseKeyValueEntity;
 import de.uniks.networkparser.interfaces.BaseListEntity;
-import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
 /**
  * The Class XMLEntity.
  */
 
-public class XMLEntity extends BaseKeyValueEntity implements BaseListEntity, StringItem, FactoryEntity {
+public class XMLEntity extends AbstractKeyValueList<String, Object> implements BaseListEntity, StringItem {
 	public static final String PROPERTY_TAG="tag";
 	public static final String PROPERTY_VALUE="value";
 	/** The children. */
@@ -71,7 +70,7 @@ public class XMLEntity extends BaseKeyValueEntity implements BaseListEntity, Str
 	 *            key.
 	 */
 	public XMLEntity withValue(Tokener tokener) {
-		tokener.parseToEntity((BaseKeyValueEntity) this);
+		tokener.parseToEntity(this);
 		return this;
 	}
 
@@ -81,8 +80,8 @@ public class XMLEntity extends BaseKeyValueEntity implements BaseListEntity, Str
 	 * @see de.uni.kassel.peermessage.BaseEntity#getNewArray()
 	 */
 	@Override
-	public EntityList<Object> getNewArray() {
-		return null;
+	public AbstractList<AbstractKeyValueEntry<String, Object>> getList() {
+		return new XMLEntity();
 	}
 
 	/*
@@ -91,7 +90,7 @@ public class XMLEntity extends BaseKeyValueEntity implements BaseListEntity, Str
 	 * @see de.uni.kassel.peermessage.BaseEntity#getNewObject()
 	 */
 	@Override
-	public BaseKeyValueEntity getNewObject() {
+	public XMLEntity getListItem() {
 		return new XMLEntity();
 	}
 
@@ -205,7 +204,7 @@ public class XMLEntity extends BaseKeyValueEntity implements BaseListEntity, Str
 		sb.append(EntityUtil.repeat(' ', indentFactor));
 		sb.append("<" + this.getTag());
 
-		for (Iterator<MapEntry> i = this.map.iterator(); i.hasNext();) {
+		for (Iterator<AbstractKeyValueEntry<String, Object>> i = iterator(); i.hasNext();) {
 			Entry<String, Object> attribute = i.next();
 			sb.append(" " + attribute.getKey() + "="
 					+ EntityUtil.quote((String) attribute.getValue()));
@@ -237,7 +236,7 @@ public class XMLEntity extends BaseKeyValueEntity implements BaseListEntity, Str
 	}
 
 	@Override
-	public BaseListEntity with(Collection<?> collection) {
+	public XMLEntity with(Collection<?> collection) {
 		for (Iterator<?> i = collection.iterator(); i.hasNext();) {
 			children.add((XMLEntity) i.next());
 		}
@@ -253,11 +252,6 @@ public class XMLEntity extends BaseKeyValueEntity implements BaseListEntity, Str
 
 	public boolean add(XMLEntity value) {
 		return children.add(value);
-	}
-
-	@Override
-	public Object get(int index) {
-		return children.get(index);
 	}
 
 	@Override
@@ -277,5 +271,15 @@ public class XMLEntity extends BaseKeyValueEntity implements BaseListEntity, Str
 			add((XMLEntity) value);
 		}
 		return this;
+	}
+
+	@Override
+	public Object get(int index) {
+		return values.get(index);
+	}
+
+	@Override
+	public AbstractKeyValueEntry<String, Object> getListEntity() {
+		return new MapEntry();
 	}
 }
