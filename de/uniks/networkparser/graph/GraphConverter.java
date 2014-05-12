@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 
 import de.uniks.networkparser.json.JsonArray;
@@ -65,7 +66,7 @@ public class GraphConverter implements Converter {
 					}
 				}
 				if(addValue){
-					node.getKey().addValue(attribute);
+					node.getKey().add(attribute);
 				}
 			}
 		}
@@ -135,7 +136,7 @@ public class GraphConverter implements Converter {
 		String typ = root.getTyp();
 		JsonObject jsonRoot=new JsonObject().withValue(TYP, typ);
 		JsonObject value=new JsonObject();
-		value.put(NODES, parseEntities(typ, root.getChildren(), removePackage));
+		value.put(NODES, parseEntities(typ, root.values(), removePackage));
 		value.put(EDGES, parseEdges(typ, root.getEdges(), removePackage));
 		jsonRoot.put("value", value);
 		return jsonRoot;
@@ -210,7 +211,7 @@ public class GraphConverter implements Converter {
 		item.put(ATTRIBUTES, parseAttributes(typ, entity.getAttributes(), shortName));
 		return item;
 	}
-	private JsonArray parseAttributes(String typ, ArrayList<Attribute> attributes, boolean shortName) {
+	private JsonArray parseAttributes(String typ, List<Attribute> attributes, boolean shortName) {
 		JsonArray result=new JsonArray();
 		String splitter = "";
 		if (typ.equals(GraphIdMap.OBJECT)) {

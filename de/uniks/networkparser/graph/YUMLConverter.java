@@ -93,20 +93,20 @@ public class YUMLConverter implements Converter {
 			return "";
 		}
 		StringBuilder sb = new StringBuilder();
-		ArrayList<Attribute> attributes = entity.getAttributes();
-		if (attributes.size() > 0) {
+		
+		Iterator<Attribute> i =  entity.iterator();
+		if(i.hasNext()){
 			String splitter = "";
-			Iterator<Attribute> i = attributes.iterator();
 			if (typ.equals(GraphIdMap.OBJECT)) {
 				splitter = "=";
 			} else if (typ.equals(GraphIdMap.CLASS)) {
 				splitter = ":";
-
+	
 			}
 			sb.append("|");
 			Attribute attribute = i.next();
 			sb.append(attribute.getKey() + splitter + attribute.getValue(typ, shortName));
-
+	
 			while (i.hasNext()) {
 				attribute = i.next();
 				sb.append(";");

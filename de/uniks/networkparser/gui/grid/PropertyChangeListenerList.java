@@ -22,24 +22,39 @@ permissions and limitations under the Licence.
 */
 
 import java.beans.PropertyChangeListener;
+import java.util.Collection;
 
 import de.uniks.networkparser.AbstractEntityList;
 import de.uniks.networkparser.AbstractList;
-import de.uniks.networkparser.interfaces.BaseItem;
 
+
+//FIXME CHECK IF NESSESSARY
 public class PropertyChangeListenerList extends AbstractEntityList<PropertyChangeListener> {
-	@Override
-	public BaseItem getListItem() {
-		return null;
-	}
-	
-	@Override
-	public AbstractList<PropertyChangeListener> getList() {
-		return new PropertyChangeListenerList();
-	}
-	
 	@Override
 	public String toString() {
 		return "ArrayEntryList with "+size()+" Elements";
+	}
+
+	@Override
+	public PropertyChangeListener get(int index) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public AbstractEntityList<PropertyChangeListener> with(Object value) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public AbstractList<PropertyChangeListener> getNewInstance() {
+		return new PropertyChangeListenerList();
+	}
+
+	@Override
+	public AbstractList<PropertyChangeListener> with(Collection<?> collection) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

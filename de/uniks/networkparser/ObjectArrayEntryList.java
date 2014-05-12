@@ -27,17 +27,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class ObjectArrayEntryList extends AbstractList<ObjectMapEntry>  {
-	@Override
-	public ObjectArrayEntryList getList() {
-		return new ObjectArrayEntryList();
-	}
-	
-	@Override
-	public ObjectMapEntry getListItem() {
-		return new ObjectMapEntry();
-	}
+import de.uniks.networkparser.interfaces.FactoryEntity;
 
+public class ObjectArrayEntryList extends AbstractList<ObjectMapEntry> implements FactoryEntity {
 	@Override
 	public String toString() {
 		return "ArrayEntryList with "+size()+" Elements";
@@ -79,7 +71,7 @@ public class ObjectArrayEntryList extends AbstractList<ObjectMapEntry>  {
 				}
 			}
 		}
-		ObjectMapEntry newObject = getListItem();
+		ObjectMapEntry newObject = getNewObject();
 		newObject.withKey(key);
 		newObject.withValue(value);
 		values.add(newObject);
@@ -162,5 +154,20 @@ public class ObjectArrayEntryList extends AbstractList<ObjectMapEntry>  {
 			}
 		}
 		return this;
+	}
+
+	@Override
+	public AbstractList<ObjectMapEntry> getNewInstance() {
+		return new ObjectArrayEntryList();
+	}
+
+	@Override
+	public ObjectArrayEntryList getNewArray() {
+		return new ObjectArrayEntryList();
+	}
+
+	@Override
+	public ObjectMapEntry getNewObject() {
+		return new ObjectMapEntry();
 	}
 }

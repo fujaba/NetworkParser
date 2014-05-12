@@ -1,12 +1,10 @@
-package de.uniks.networkparser.interfaces;
-
-import java.util.Collection;
+package de.uniks.networkparser.event;
 
 /*
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -22,15 +20,28 @@ import java.util.Collection;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 
-public interface BaseListEntity extends BaseItem {
-	
-	public Object get(int z);
-	
-	public BaseListEntity with(Collection<?> values);
-	
-	public BaseListEntity with(Object value);
+import de.uniks.networkparser.AbstractKeyValueEntry;
 
-	public int size();
+public class SimpleMapEntry<K,V> extends AbstractKeyValueEntry<K, V> {
+	@Override
+	public Object getSendableInstance(boolean prototyp) {
+		return new SimpleMapEntry<K,V>();
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public AbstractKeyValueEntry<K, V> withValue(Object key, Object value) {
+		this.setKey((K) key);
+		this.setValue((V) value);
+		return this;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public SimpleMapEntry<K, V> withToValue(Object value) {
+		this.setValue((V) value);
+		return this;
+	}
 }

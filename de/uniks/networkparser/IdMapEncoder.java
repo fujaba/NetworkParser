@@ -29,7 +29,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.gui.table.TableList;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.IdMapCounter;

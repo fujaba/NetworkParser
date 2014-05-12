@@ -25,19 +25,8 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import de.uniks.networkparser.AbstractList;
-import de.uniks.networkparser.interfaces.BaseItem;
 
 public class EdgeList extends AbstractList<GraphEdge> {
-	@Override
-	public BaseItem getListItem() {
-		return null;
-	}
-	
-	@Override
-	public AbstractList<GraphEdge> getList() {
-		return new EdgeList();
-	}
-	
 	@Override
 	public String toString() {
 		return "ArrayEntryList with "+size()+" Elements";
@@ -53,4 +42,17 @@ public class EdgeList extends AbstractList<GraphEdge> {
 		}
 		return this;
 	}
+
+	@Override
+	public AbstractList<GraphEdge> getNewInstance() {
+		return new EdgeList();
+	}
+	
+	public EdgeList with(Object value){
+		if(value instanceof GraphEdge){
+			this.add((GraphEdge)value);
+		}
+		return this;
+	}
+
 }

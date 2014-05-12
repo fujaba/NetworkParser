@@ -29,8 +29,9 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteConverter;
 import de.uniks.networkparser.interfaces.ByteItem;
+import de.uniks.networkparser.interfaces.FactoryEntity;
 
-public class BitEntity extends AbstractList<BitValue> implements ByteItem {
+public class BitEntity extends AbstractList<BitValue> implements ByteItem, FactoryEntity {
 	public static final String BIT_STRING = "string";
 	public static final String BIT_NUMBER = "number";
 	public static final String BIT_BYTE = "byte";
@@ -144,7 +145,18 @@ public class BitEntity extends AbstractList<BitValue> implements ByteItem {
 
 	public BitEntity with(Object... values) {
 		for(Object value : values){
-			withValue(value);
+			if (value instanceof Byte) {
+				this.typ = BIT_BYTE;
+				this.property = "" + value;
+			} else if (value instanceof Integer) {
+				this.typ = BIT_NUMBER;
+				this.property = "" + value;
+			} else if(value instanceof BitEntity){
+				this.add((BitValue) value);
+			}else{
+				this.typ = BIT_STRING;
+				this.property = "" + value;
+			}
 		}
 		return this;
 	}
@@ -154,12 +166,12 @@ public class BitEntity extends AbstractList<BitValue> implements ByteItem {
 	}
 
 	@Override
-	public BaseItem getListItem() {
+	public BaseItem getNewObject() {
 		return new BitEntity();
 	}
 
 	@Override
-	public BitEntity getList() {
+	public BitEntity getNewArray() {
 		return new BitEntity();
 	}
 
@@ -171,18 +183,8 @@ public class BitEntity extends AbstractList<BitValue> implements ByteItem {
 		return this;
 	}
 	
-	public BitEntity withValue(Object value) {
-		if (value instanceof Byte) {
-			this.typ = BIT_BYTE;
-			this.property = "" + value;
-		} else if (value instanceof Integer) {
-			this.typ = BIT_NUMBER;
-			this.property = "" + value;
-		} else {
-			this.typ = BIT_STRING;
-			this.property = "" + value;
-		}
-		return this;
+	@Override
+	public AbstractList<BitValue> getNewInstance() {
+		return new BitEntity();
 	}
-
 }

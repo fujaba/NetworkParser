@@ -37,8 +37,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
  * component's <code>addUpdateListener<code> method. When
  * the update event occurs, that object's appropriate
  * method is invoked.
- * 
- * @see UpdateEvent
+ *
  */
 
 public class UpdateListener implements PropertyChangeListener {
@@ -213,7 +212,7 @@ public class UpdateListener implements PropertyChangeListener {
 		if (gc != null && this.garbageCollection != null) {
 			if (this.garbageCollection.containsKey(gc)) {
 				Object value = this.garbageCollection.getValue(gc);
-				int newAssocValue = ((int)value) - 1;
+				int newAssocValue = ((Integer)value) - 1;
 				if (newAssocValue > 0) {
 					this.garbageCollection.put(gc, newAssocValue);
 				} else {
@@ -448,7 +447,7 @@ public class UpdateListener implements PropertyChangeListener {
 				String id = (String) message.get(JsonIdMap.ID);
 				if (this.garbageCollection.containsKey(id)) {
 					this.garbageCollection.put(id,
-							(int)this.garbageCollection.getValue(id) + 1);
+							(Integer)this.garbageCollection.getValue(id) + 1);
 				} else {
 					this.garbageCollection.put(id, 1);
 				}

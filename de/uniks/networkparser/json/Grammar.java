@@ -77,10 +77,9 @@ public class Grammar {
 			String className, String id, JsonObject jsonProp, Filter filter) {
 		JsonObject json = new JsonObject();
 		if (prototyp instanceof SendableEntityCreatorNoIndex) {
-			Iterator<String> keys = jsonProp.keys();
-			while (keys.hasNext()) {
-				String key = keys.next();
-				json.put(key, jsonProp.get(key));
+			for(Iterator<AbstractKeyValueEntry<String, Object>> i = jsonProp.iterator();i.hasNext();){
+				AbstractKeyValueEntry<String, Object> item = i.next();
+				json.put(item.getKey(), item.getValue());
 			}
 			json.put(JsonIdMap.CLASS, className);
 			return json;
