@@ -28,6 +28,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import de.uniks.networkparser.interfaces.FactoryEntity;
+
 public abstract class AbstractKeyValueList<K, V> extends AbstractList<AbstractKeyValueEntry<K, V>> implements Map<K, V> {
 	public AbstractKeyValueList<K, V> withValues(Map<?, ?> map) {
 		if (map != null) {
@@ -57,7 +59,7 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<AbstractKe
 		AbstractKeyValueEntry<K, V> newObject = getNewEntity();
 		newObject.withKey(key);
 		newObject.withValue(value);
-		values.add(newObject);
+		super.add(newObject);
 		return value;
 	}
 	
@@ -65,18 +67,7 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<AbstractKe
 		if(!isAllowDuplicate()){			
 			setValue(key, value);
 		}
-		values.add(getNewEntity().withValue(key, value));
-		return this;
-	}
-	
-	public AbstractKeyValueList<K, V> setValue(Object key, Object value) {
-		for(Iterator<AbstractKeyValueEntry<K, V>> i = iterator();i.hasNext();){
-			AbstractKeyValueEntry<K, V> item = i.next();
-			if(item.getKey().equals(key)){
-				item.withToValue(value);
-				return this;
-			}
-		}
+		super.add(getNewEntity().withValue(key, value));
 		return this;
 	}
 	
@@ -200,15 +191,192 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<AbstractKe
 		return null;
 	}
 	
-	public V getValue(K key) {
+	public Object getValue(Object key) {
 		for(Iterator<AbstractKeyValueEntry<K, V>> i = iterator();i.hasNext();){
 			AbstractKeyValueEntry<K, V> item = i.next();
 			if(item.getKey().equals(key)){
 				return item.getValue();
 			}
 		}
+		if(!(key instanceof String)){
+			return null;
+		}
+		String keyString = ""+key;
+		int len = 0;
+		int end = 0;
+		int id = 0;
+		for (; len < keyString.length(); len++) {
+			char temp = keyString.charAt(len);
+			if (temp == '[') {
+				for (end = len + 1; end < keyString.length(); end++) {
+					temp = keyString.charAt(end);
+					if (keyString.charAt(end) == ']') {
+						end++;
+						break;
+					} else if (temp > 47 && temp < 58 && id >= 0) {
+						id = id * 10 + temp - 48;
+					} else if (temp == 'L') {
+						id = -2;
+					}
+				}
+				if (end == keyString.length()) {
+					end = 0;
+				}
+				break;
+			} else if (temp == '.') {
+				end = len;
+				id = -1;
+				break;
+			}
+		}
+		if (end == 0 && len == keyString.length()) {
+			id = -1;
+		}
+
+		Object child = get(keyString.substring(0, len));
+		if (child != null) {
+			if (end == 0) {
+				if (id >= 0 || id == -2) {
+					if (child instanceof AbstractList<?>) {
+						AbstractList<?> list = (AbstractList<?>) child;
+						if (id == -2) {
+							id = list.size() - 1;
+						}
+						if (list.size() >= id) {
+							return list.get(id);
+						}
+					}
+				} else {
+					return child;
+				}
+			} else {
+				if (id >= 0 || id == -2) {
+					if (child instanceof AbstractList) {
+						if (end == len + 2) {
+							// Get List
+							if(this instanceof FactoryEntity){
+								AbstractEntityList<?> result = (AbstractEntityList<?>) ((FactoryEntity)this).getNewArray();
+								AbstractList<?> items = (AbstractList<?>) child;
+								for (int z = 0; z < items.size(); z++) {
+									result.with(((AbstractKeyValueList<?,?>) items.get(z)).getValue(keyString
+											.substring(end + 1)));
+								}
+								return result;
+							}
+						}
+						AbstractList<?> list = (AbstractList<?>) child;
+						if (id == -2) {
+							id = list.size() - 1;
+						}
+						if (list.size() >= id) {
+							return ((AbstractKeyValueList<?,?>) list.get(id)).getValue(keyString
+									.substring(end + 1));
+						}
+					}
+				} else {
+					return ((AbstractKeyValueList<?, ?>) child).getValue(keyString.substring(end + 1));
+				}
+			}
+		}
 		return null;
 	}
+
+	/**
+	 * Set a Value to Entity 
+	 * With this Method it is possible to set a Value of a Set by using a [Number] or [L] for Last
+	 * @param keyString
+	 * @param value
+	 */
+	@SuppressWarnings("unchecked")
+	public AbstractKeyValueList<K, V> setValue(Object key, Object value) {
+		for(Iterator<AbstractKeyValueEntry<K, V>> i = iterator();i.hasNext();){
+			AbstractKeyValueEntry<K, V> item = i.next();
+			if(item.getKey().equals(key)){
+				item.withToValue(value);
+				return this;
+			}
+		}
+		
+		String keyString = ""+key;
+		
+		
+		int len = 0;
+		int end = 0;
+		int id = 0;
+		for (; len < keyString.length(); len++) {
+			char temp = keyString.charAt(len);
+			if (temp == '[') {
+				for (end = len + 1; end < keyString.length(); end++) {
+					temp = keyString.charAt(end);
+					if (keyString.charAt(end) == ']') {
+						end++;
+						break;
+					} else if (temp > 47 && temp < 58 && id >= 0) {
+						id = id * 10 + temp - 48;
+					} else if (temp == 'L') {
+						id = -2;
+					}
+				}
+				if (end == keyString.length()) {
+					end = 0;
+				}
+				break;
+			} else if (temp == '.') {
+				end = len;
+				id = -1;
+				break;
+			}
+		}
+		if (end == 0 && len == keyString.length()) {
+			id = -1;
+		}
+
+		Object child = get(keyString.substring(0, len));
+		if (child != null) {
+			if (end == 0) {
+				if (id >= 0 || id == -2) {
+					if (child instanceof AbstractEntityList) {
+						AbstractEntityList<Object> list = (AbstractEntityList<Object>) child;
+						if (id == -2) {
+							id = list.size() - 1;
+						}
+						if (list.size() >= id) {
+							if (value == null) {
+								list.remove(id);
+							} else {
+								list.set(id, value);
+							}
+						}
+					}
+				} else {
+					if (value == null) {
+						remove(keyString.substring(0, len));
+					} else {
+						put((K)keyString.substring(0, len), (V)value);
+					}
+				}
+			} else {
+				if (id >= 0 || id == -2) {
+					if (child instanceof AbstractEntityList) {
+						AbstractEntityList<?> list = (AbstractEntityList<?>) child;
+						if (id == -2) {
+							id = list.size() - 1;
+						}
+						if (list.size() >= id) {
+							((AbstractKeyValueList<K,?>) list.get(id)).setValue(
+									(K)keyString.substring(end + 1), value);
+						}
+					}
+				} else {
+					((AbstractKeyValueList<K,?>) child).setValue((K)keyString.substring(end + 1), value);
+				}
+			}
+		} else {
+			put((K)keyString.substring(0, len), (V)value);
+		}
+		return this;
+	}
+	
 	
 	@Override
 	public V get(Object key) {
@@ -233,18 +401,6 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<AbstractKe
 		return -1;
 	}
 
-	@Override
-	public int getInt(int index) throws RuntimeException {
-		V object = get(index);
-		try {
-			return object instanceof Number ? ((Number) object).intValue()
-					: Integer.parseInt((String) object);
-		} catch (Exception e) {
-			throw new RuntimeException("EntityList[" + index
-					+ "] is not a number.");
-		}
-	}
-	
 	/**
 	 * Get the object value associated with an index.
 	 * 
@@ -261,46 +417,7 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<AbstractKe
 		}
 		return object;
 	}
-	
-	@Override
-	public double getDouble(int index) throws RuntimeException {
-		V object = get(index);
-		try {
-			return object instanceof Number ? ((Number) object).doubleValue()
-					: Double.parseDouble((String) object);
-		} catch (Exception e) {
-			throw new RuntimeException("EntityList[" + index
-					+ "] is not a number.");
-		}
-	}
-	
-	@Override
-	public boolean getBoolean(int index) throws RuntimeException {
-		V object = get(index);
-		if (object.equals(Boolean.FALSE)
-				|| (object instanceof String && ((String) object)
-						.equalsIgnoreCase("false"))) {
-			return false;
-		} else if (object.equals(Boolean.TRUE)
-				|| (object instanceof String && ((String) object)
-						.equalsIgnoreCase("true"))) {
-			return true;
-		}
-		throw new RuntimeException("EntityList[" + index
-				+ "] is not a boolean.");	}
-	
-	@Override
-	public long getLong(int index) throws RuntimeException {
-		V object = get(index);
-		try {
-			return object instanceof Number ? ((Number) object).longValue()
-					: Long.parseLong((String) object);
-		} catch (Exception e) {
-			throw new RuntimeException("EntityList[" + index
-					+ "] is not a number.");
-		}
-	}
-	
+		
 	public boolean removeKey(K key) {
 		for(Iterator<AbstractKeyValueEntry<K, V>> i = iterator();i.hasNext();){
 			AbstractKeyValueEntry<K, V> item = i.next();
@@ -354,7 +471,6 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<AbstractKe
     	}
     	return -1;
     }
-
 	
 	/**
 	 * Get the string associated with an index.
@@ -367,6 +483,23 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<AbstractKe
 	 */
 	public String getString(K key) throws RuntimeException {
 		return getString(getIndexByKey(key));
+	}
+	
+	/**
+	 * Get the string associated with an index.
+	 * 
+	 * @param index
+	 *            The index must be between 0 and length() - 1.
+	 * @return A string value.
+	 * @throws RuntimeException
+	 *             If there is no value for the index.
+	 */
+	public String getString(K key, String defaultValue) {
+		int pos = getIndexByKey(key);
+		if(pos<0){
+			return defaultValue;
+		}
+		return getString(pos);
 	}
 	
 	/**
@@ -411,5 +544,12 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<AbstractKe
 		return getInt(getIndexByKey(key));
 	}
 
-	
+	@Override
+	public Object getEntity(int index) throws RuntimeException {
+		Object item = super.getEntity(index);
+		if(item instanceof AbstractKeyValueEntry<?,?>){
+			return ((AbstractKeyValueEntry<?,?>)item).getValue();
+		}
+		return null;
+	}
 }

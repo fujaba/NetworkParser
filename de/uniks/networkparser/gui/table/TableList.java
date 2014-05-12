@@ -29,16 +29,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import de.uniks.networkparser.AbstractList;
+import de.uniks.networkparser.AbstractEntityList;
 import de.uniks.networkparser.EntityValueFactory;
 import de.uniks.networkparser.IdMapEncoder;
-import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.sort.EntityComparator;
 import de.uniks.networkparser.sort.SortingDirection;
 
-public class TableList extends AbstractList<Object> implements SendableEntity {
+public class TableList extends AbstractEntityList<Object> implements SendableEntity {
 	public static final String PROPERTY_ITEMS = "items";
 	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
 	
@@ -78,6 +77,7 @@ public class TableList extends AbstractList<Object> implements SendableEntity {
 		return false;
 	}
 	
+	@Override
 	public boolean remove(Object value) {
 		if (contains(value)) {
 			List<Object> items = this.values;
@@ -276,18 +276,8 @@ public class TableList extends AbstractList<Object> implements SendableEntity {
 	}
 
 	@Override
-	public AbstractList<Object> getList() {
-		return new TableList();
-	}
-
-	@Override
 	public String toString() {
 		return "TableList with "+size()+" Elements";
-	}
-
-	@Override
-	public BaseItem getListItem() {
-		return null;
 	}
 
 	@Override
@@ -295,6 +285,25 @@ public class TableList extends AbstractList<Object> implements SendableEntity {
 		for(Iterator<?> i = values.iterator();i.hasNext();){
 			add(i.next());
 		}
+		return this;
+	}
+
+	/* (non-Javadoc)
+	 * @see de.uniks.networkparser.AbstractList#getNewInstance()
+	 */
+	@Override
+	public TableList getNewInstance() {
+		return new TableList();
+	}
+
+	@Override
+	public Object get(int index) {
+		return super.getEntity(index);
+	}
+
+	@Override
+	public TableList with(Object value) {
+		this.add(value);
 		return this;
 	}
 }

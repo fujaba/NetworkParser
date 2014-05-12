@@ -25,11 +25,11 @@ import java.util.ArrayList;
 
 import de.uniks.networkparser.AbstractEntityList;
 import de.uniks.networkparser.AbstractKeyValueList;
-import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.ReferenceObject;
 import de.uniks.networkparser.TextParsingException;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.FactoryEntity;
 
 public class XMLTokener extends Tokener {
 	/** The stack. */
@@ -53,8 +53,8 @@ public class XMLTokener extends Tokener {
 			return nextString(c, false, allowQuote, false, true);
 		case '<':
 			back();
-			if (creator instanceof AbstractList<?>) {
-				BaseItem element = ((AbstractList<?>)creator).getListItem();
+			if (creator instanceof FactoryEntity) {
+				BaseItem element = ((FactoryEntity)creator).getNewObject();
 				if(element instanceof AbstractEntityList<?>){
 					parseToEntity((AbstractEntityList<?>)element);
 				}
@@ -126,7 +126,7 @@ public class XMLTokener extends Tokener {
 					break;
 				} else {
 					if (getCurrentChar() == '<') {
-						child = (XMLEntity) xmlEntity.getListItem();
+						child = (XMLEntity) xmlEntity.getNewArray();
 						parseToEntity(child);
 						xmlEntity.addChild(child);
 					} else {

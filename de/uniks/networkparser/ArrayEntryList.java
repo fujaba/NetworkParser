@@ -6,6 +6,7 @@ import java.util.Iterator;
 
 
 
+
 /*
 NetworkParser
 Copyright (c) 2011 - 2013, Stefan Lindel
@@ -66,12 +67,12 @@ public class ArrayEntryList extends AbstractKeyValueList<String, Object> {
 	}
 
 	@Override
-	public AbstractKeyValueEntry<String, Object> getListEntity() {
-		return new MapEntry();
+	public ArrayEntryList getNewInstance() {
+		return new ArrayEntryList();
 	}
 
 	@Override
-	public ArrayEntryList getNewInstance() {
-		return new ArrayEntryList();
+	public AbstractKeyValueEntry<String, Object> getNewEntity() {
+		return new MapEntry();
 	}
 }

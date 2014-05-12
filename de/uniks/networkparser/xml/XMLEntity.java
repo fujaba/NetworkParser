@@ -32,13 +32,13 @@ import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.BaseListEntity;
+import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
 /**
  * The Class XMLEntity.
  */
 
-public class XMLEntity extends AbstractKeyValueList<String, Object> implements BaseListEntity, StringItem {
+public class XMLEntity extends AbstractKeyValueList<String, Object> implements StringItem, FactoryEntity{
 	public static final String PROPERTY_TAG="tag";
 	public static final String PROPERTY_VALUE="value";
 	/** The children. */
@@ -72,26 +72,6 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements B
 	public XMLEntity withValue(Tokener tokener) {
 		tokener.parseToEntity(this);
 		return this;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.uni.kassel.peermessage.BaseEntity#getNewArray()
-	 */
-	@Override
-	public AbstractList<AbstractKeyValueEntry<String, Object>> getList() {
-		return new XMLEntity();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.uni.kassel.peermessage.BaseEntity#getNewObject()
-	 */
-	@Override
-	public XMLEntity getListItem() {
-		return new XMLEntity();
 	}
 
 	/**
@@ -242,8 +222,9 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements B
 		}
 		return this;
 	}
+	
 
-	public BaseListEntity with(XMLEntity... values){ 
+	public XMLEntity with(XMLEntity... values){ 
 		for(Object value : values){
 			children.add((XMLEntity) value);
 		}
@@ -266,20 +247,22 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements B
 	}
 
 	@Override
-	public BaseListEntity with(Object value) {
-		if(value instanceof XMLEntity){
-			add((XMLEntity) value);
-		}
-		return this;
+	public AbstractList<?> getNewArray() {
+		return new XMLEntity();
 	}
 
 	@Override
-	public Object get(int index) {
-		return values.get(index);
+	public BaseItem getNewObject() {
+		return new XMLEntity();
 	}
 
 	@Override
-	public AbstractKeyValueEntry<String, Object> getListEntity() {
+	public AbstractKeyValueEntry<String, Object> getNewEntity() {
 		return new MapEntry();
+	}
+
+	@Override
+	public AbstractList<AbstractKeyValueEntry<String, Object>> getNewInstance() {
+		return new XMLEntity();
 	}
 }

@@ -28,11 +28,12 @@ import de.uniks.networkparser.bytes.converter.ByteConverterHTTP;
 import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteConverter;
 import de.uniks.networkparser.interfaces.ByteItem;
+import de.uniks.networkparser.interfaces.FactoryEntity;
 /**
  * The Class ByteEntity.
  */
 
-public class ByteEntity implements ByteItem {
+public class ByteEntity implements ByteItem, FactoryEntity{
 	/** The Constant BIT OF A BYTE. */
 	public final static int BITOFBYTE = 8;
 	public final static int TYPBYTE = 1;
@@ -283,5 +284,15 @@ public class ByteEntity implements ByteItem {
 			len += this.values.length;
 		}
 		return len;
+	}
+
+	@Override
+	public ByteList getNewArray() {
+		return new ByteList();
+	}
+
+	@Override
+	public ByteEntity getNewObject() {
+		return new ByteEntity();
 	}
 }

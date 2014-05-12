@@ -198,7 +198,7 @@ public class EntityUtil {
 			return ((StringItem) value).toString(indentFactor, intent);
 		}
 		if (value instanceof Map) {
-			BaseItem item = reference.getNewObject().withValues((Map<?, ?>) value);
+			BaseItem item = ((AbstractKeyValueList<?,?>)reference.getNewArray()).withValues((Map<?, ?>) value);
 			if(item instanceof StringItem){
 				return ((StringItem)item).toString(indentFactor, intent);
 			}
@@ -244,7 +244,7 @@ public class EntityUtil {
 			return ((AbstractList<?>) value).toString();
 		}
 		if (value instanceof Map) {
-			return reference.getNewObject().withValues((Map<?, ?>) value).toString();
+			return ((AbstractKeyValueList<?,?>)reference.getNewArray()).withValues((Map<?, ?>) value).toString();
 		}
 		if (value instanceof Collection) {
 			return reference.getNewArray().with((Collection<?>) value)
@@ -256,7 +256,7 @@ public class EntityUtil {
 			for (Object item : items) {
 				arrayList.add(item);
 			}
-			return reference.getNewObject().with(arrayList).toString();
+			return ((AbstractList<?>) reference.getNewObject()).with(arrayList).toString();
 		}
 		if (simpleText) {
 			return value.toString();
@@ -292,13 +292,13 @@ public class EntityUtil {
 			}
 
 			if (object instanceof Collection) {
-				return reference.getNewObject().with((Collection<?>) object);
+				return ((AbstractList<?>) reference.getNewObject()).with((Collection<?>) object);
 			}
 			if (object.getClass().isArray()) {
-				return reference.getNewObject().with((Collection<?>) object);
+				return ((AbstractList<?>) reference.getNewObject()).with((Collection<?>) object);
 			}
 			if (object instanceof Map) {
-				return reference.getNewObject().withValues((Map<?, ?>) object);
+				return ((AbstractKeyValueList<?,?>)reference.getNewObject()).withValues((Map<?, ?>) object);
 			}
 			if (object.getClass().getName().startsWith("java.")
 					|| object.getClass().getName().startsWith("javax.")) {

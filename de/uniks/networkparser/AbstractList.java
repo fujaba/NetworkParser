@@ -63,7 +63,7 @@ public abstract class AbstractList<V> implements BaseItem {
 	public boolean add(V newValue) {
 		if(cpr!=null){
 			for (int i = 0; i < size(); i++) {
-				int result = compare(getEntity(i), newValue);
+				int result = compare(get(i), newValue);
 				if (result >= 0) {
 					this.values.add(i, newValue);
 					V beforeElement = null;
@@ -95,7 +95,7 @@ public abstract class AbstractList<V> implements BaseItem {
 	 * @throws RuntimeException
 	 *             If there is no value for the index.
 	 */
-	public V getEntity(int index) throws RuntimeException {
+	public V get(int index) throws RuntimeException {
 		V object = this.values.get(index);
 		if (object == null) {
 			throw new RuntimeException("EntityList[" + index + "] not found.");
@@ -230,8 +230,15 @@ public abstract class AbstractList<V> implements BaseItem {
 	public Object last() {
 		return this.getEntity(this.size()-1);
 	}
-
 	
+	/**
+	 * @param index of value
+	 * @return the entity
+	 */
+	public Object getEntity(int index){
+		return this.values.get(index);
+	}
+
 	/**
 	 * Get the boolean value associated with an index. The string values "true"
 	 * and "false" are converted to boolean.
@@ -395,10 +402,10 @@ public abstract class AbstractList<V> implements BaseItem {
 	 *         was no value.
 	 */
 	public V remove(int index) {
-		V oldValue = getEntity(index);
+		V oldValue = get(index);
 		V beforeValue = null;
 		if(index>0){
-			beforeValue = getEntity(index - 1);
+			beforeValue = get(index - 1);
 		}
 		this.values.remove(index);
 		fireProperty(oldValue, null, beforeValue);
@@ -521,7 +528,7 @@ public abstract class AbstractList<V> implements BaseItem {
         values.add(index, element);
         V beforeValue = null;
         if(index>0){
-        	beforeValue = getEntity(index - 1);
+        	beforeValue = get(index - 1);
         	fireProperty(null, element, beforeValue);
         }
     }

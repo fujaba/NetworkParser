@@ -74,7 +74,7 @@ public class ByteSimpleMap extends AbstractMap {
 
 			int temp = Integer.parseInt(""
 					+ getEntity(buffer, bitValue.getStart(), values));
-			int posOfByte = temp / 8;
+  			int posOfByte = temp / 8;
 			int posOfBit = (8 - ((temp + 1) % 8)) % 8;
 
 			int length = Integer.parseInt(""

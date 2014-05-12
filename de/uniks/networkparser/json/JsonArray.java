@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import de.uniks.networkparser.AbstractEntityList;
-import de.uniks.networkparser.AbstractKeyValueList;
 import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.TextParsingException;
@@ -274,22 +273,7 @@ public class JsonArray extends AbstractEntityList<Object> implements StringItem,
 		return this;
 	}
 	
-	/**
-	 * Get a new Instance of a JsonObject
-	 */
-	@Override
-	public JsonObject getListItem() {
-		return new JsonObject();
-	}
 
-	/**
-	 * Get a new Instance of a JsonArray
-	 */
-	@Override
-	public JsonArray getList() {
-		return new JsonArray();
-	}
-	
 	public JsonObject get(String id){
 		for(Object item : values){
 			if(item instanceof JsonObject){
@@ -347,11 +331,17 @@ public class JsonArray extends AbstractEntityList<Object> implements StringItem,
 		return (JsonArray) super.subSet(fromElement, toElement);
 	}
 
+	/**
+	 * Get a new Instance of a JsonArray
+	 */
 	@Override
 	public JsonArray getNewArray() {
 		return new JsonArray();
 	}
 
+	/**
+	 * Get a new Instance of a JsonObject
+	 */
 	@Override
 	public JsonObject getNewObject() {
 		return new JsonObject();

@@ -26,7 +26,6 @@ import java.util.Iterator;
 import de.uniks.networkparser.AbstractEntityList;
 import de.uniks.networkparser.AbstractKeyValueEntry;
 import de.uniks.networkparser.AbstractKeyValueList;
-import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.TextParsingException;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -51,19 +50,20 @@ public class JsonTokener extends Tokener {
 			return nextString('"', false, allowQuote, true, true);
 		case '{':
 			if (creator instanceof FactoryEntity) {
+				BaseItem element = ((FactoryEntity)creator).getNewObject();
+				if(element instanceof AbstractKeyValueList<?,?>){
+					this.parseToEntity((AbstractKeyValueList<?,?>)element);
+				}
+				
+				return element;
+			}
+		case '[':
+			if (creator instanceof FactoryEntity) {
 				BaseItem element = ((FactoryEntity)creator).getNewArray();
 				if(element instanceof AbstractEntityList<?>){
 					this.parseToEntity((AbstractEntityList<?>)element);
 				}
 				return element;
-			}
-		case '[':
-			if (creator instanceof FactoryEntity) {
-				AbstractList<?> elementList = ((FactoryEntity)creator).getNewObject();
-				if(elementList instanceof AbstractKeyValueList<?,?>){
-					this.parseToEntity((AbstractKeyValueList<?,?>)elementList);
-				}
-				return elementList;
 			}
 		default:
 			break;

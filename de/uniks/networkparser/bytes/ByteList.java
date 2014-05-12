@@ -30,18 +30,19 @@ import de.uniks.networkparser.bytes.converter.ByteConverterString;
 import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteConverter;
 import de.uniks.networkparser.interfaces.ByteItem;
+import de.uniks.networkparser.interfaces.FactoryEntity;
 
-public class ByteList extends AbstractList<ByteItem> implements ByteItem {
+public class ByteList extends AbstractList<ByteItem> implements ByteItem, FactoryEntity{
 	/** The children of the ByteEntity. */
 	private byte typ = 0;
 
 	@Override
-	public ByteList getList() {
+	public ByteList getNewArray() {
 		return new ByteList();
 	}
 
 	@Override
-	public ByteEntity getListItem() {
+	public ByteEntity getNewObject() {
 		return new ByteEntity();
 	}
 
@@ -154,7 +155,7 @@ public class ByteList extends AbstractList<ByteItem> implements ByteItem {
 
 	public AbstractList<ByteItem> withValue(String value) {
 		ByteConverterString	converter = new ByteConverterString();
-		this.add(getListItem().withValue(ByteIdMap.DATATYPE_FIXED, converter.decode(value)));
+		this.add(getNewObject().withValue(ByteIdMap.DATATYPE_FIXED, converter.decode(value)));
 		return this;
 	}
 
@@ -167,5 +168,10 @@ public class ByteList extends AbstractList<ByteItem> implements ByteItem {
 			}
 		}
 		return this;
+	}
+
+	@Override
+	public AbstractList<ByteItem> getNewInstance() {
+		return new ByteList();
 	}
 }

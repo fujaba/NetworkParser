@@ -29,6 +29,7 @@ import de.uniks.networkparser.AbstractKeyValueEntry;
 import de.uniks.networkparser.AbstractKeyValueList;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Tokener;
+import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
@@ -342,14 +343,6 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 		return new JsonArray();
 	}
 
-	public Object get(int index) {
-		Object object = this.values.get(index);
-		if (object == null) {
-			throw new RuntimeException("EntityList[" + index + "] not found.");
-		}
-		return object;
-	}
-
 	@Override
 	public JsonObject with(Collection<?> values) {
 		for(Object item : values){
@@ -390,5 +383,13 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 	@Override
 	public JsonObject getNewInstance() {
 		return new JsonObject();
+	}
+
+	@Override
+	public AbstractKeyValueEntry<String, Object> getNewEntity() {
+		return new MapEntry();
+	}
+	public void add(int index, String key, String value) {
+		add(index, getNewEntity().withValue(key, value));
 	}
 }

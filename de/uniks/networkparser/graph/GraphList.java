@@ -27,7 +27,9 @@ import java.util.Iterator;
 
 import de.uniks.networkparser.AbstractKeyValueEntry;
 import de.uniks.networkparser.AbstractKeyValueList;
+import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.ArrayEntryList;
+import de.uniks.networkparser.event.SimpleMapEntry;
 
 public class GraphList extends AbstractKeyValueList<String, GraphNode> {
 	private ArrayList<GraphEdge> edges = new ArrayList<GraphEdge>();
@@ -115,22 +117,31 @@ public class GraphList extends AbstractKeyValueList<String, GraphNode> {
 	}
 	
 	@Override
-	public AbstractKeyValueEntry<String, GraphNode> getListItem() {
-		return null;
-	}
-
-	@Override
-	public GraphList getList() {
-		return new GraphList();
-	}
-
-	@Override
 	public GraphList with(Collection<?> values) {
 		for(Iterator<?> i = values.iterator();i.hasNext();){
 			Object item = i.next();
 			if(item instanceof GraphNode) {
 				add((GraphNode)item);
 			}
+		}
+		return this;
+	}
+
+	@Override
+	public AbstractKeyValueEntry<String, GraphNode> getNewEntity() {
+		return new SimpleMapEntry<String, GraphNode>();
+	}
+
+	@Override
+	public AbstractList<AbstractKeyValueEntry<String, GraphNode>> getNewInstance() {
+		return new GraphList();
+	}
+
+	
+	public GraphList with(Object value){
+	//FIXME
+		if(value instanceof GraphNode){
+			this.add((GraphNode)value);
 		}
 		return this;
 	}
