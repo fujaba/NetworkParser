@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import de.uniks.networkparser.AbstractKeyValueEntry;
 import de.uniks.networkparser.ArrayEntryList;
 import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -459,14 +460,12 @@ public class UpdateListener implements PropertyChangeListener {
 					// Its a new Object
 					JsonObject props = (JsonObject) message
 							.get(JsonIdMap.JSON_PROPS);
-					Iterator<String> keys = props.keys();
-					while (keys.hasNext()) {
-						String key = keys.next();
-						Object value = props.get(key);
-						if (value instanceof JsonObject) {
-							countMessage((JsonObject) value);
-						} else if (value instanceof JsonArray) {
-							countMessage((JsonArray) value);
+					for(Iterator<AbstractKeyValueEntry<String, Object>> i = props.iterator();i.hasNext();){
+						AbstractKeyValueEntry<String, Object> item = i.next();
+						if (item.getValue() instanceof JsonObject) {
+							countMessage((JsonObject) item.getValue());
+						} else if (item.getValue() instanceof JsonArray) {
+							countMessage((JsonArray) item.getValue());
 						}
 					}
 				}

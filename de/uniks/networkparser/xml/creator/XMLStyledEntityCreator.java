@@ -77,7 +77,7 @@ public class XMLStyledEntityCreator implements SendableEntityCreator, XMLGrammar
 
 	@Override
 	public void addChildren(XMLEntity parent, XMLEntity child) {
-		parent.addChild(child);
+		parent.add(child);
 	}
 
 	@Override

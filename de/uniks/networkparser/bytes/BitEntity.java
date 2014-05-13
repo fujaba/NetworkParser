@@ -143,6 +143,7 @@ public class BitEntity extends AbstractList<BitValue> implements ByteItem, Facto
 		return toString();
 	}
 
+	@Override
 	public BitEntity with(Object... values) {
 		for(Object value : values){
 			if (value instanceof Byte) {

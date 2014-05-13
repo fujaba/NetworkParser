@@ -31,7 +31,7 @@ import java.util.Set;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 
 public abstract class AbstractKeyValueList<K, V> extends AbstractList<AbstractKeyValueEntry<K, V>> implements Map<K, V> {
-	public AbstractKeyValueList<K, V> withValues(Map<?, ?> map) {
+	public AbstractKeyValueList<K, V> with(Map<?, ?> map) {
 		if (map != null) {
 			for (Iterator<?> i = map.entrySet().iterator(); i.hasNext();) {
 				java.util.Map.Entry<?, ?> mapEntry = (Entry<?, ?>) i.next();
@@ -45,6 +45,19 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<AbstractKe
 		return this;
 	}
 	
+	
+	/**
+	 * Put a key/value pair in the Entity. If the value is null, then the key
+	 * will be removed from the Entity if it is present.
+	 * 
+	 * @param key
+	 *            A key string.
+	 * @param value
+	 *            An object which is the value. It should be of one of these
+	 *            types: Boolean, Double, Integer, EntityList, Entity, Long or
+	 *            String object.
+	 * @return this.
+	 */
 	@Override
 	public V put(K key, V value) {
 		if(!isAllowDuplicate()){			
@@ -64,8 +77,9 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<AbstractKe
 	}
 	
 	public AbstractKeyValueList<K, V> withValue(Object key, Object value) {
-		if(!isAllowDuplicate()){			
+		 if(!isAllowDuplicate()){			
 			setValue(key, value);
+			return this;
 		}
 		super.add(getNewEntity().withValue(key, value));
 		return this;
@@ -73,6 +87,13 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<AbstractKe
 	
 	public abstract AbstractKeyValueEntry<K, V> getNewEntity();
 	
+	/**
+	 * Determine if the Entity contains a specific key.
+	 * 
+	 * @param key
+	 *            A key string.
+	 * @return true if the key exists in the Entity.
+	 */
 	@Override
 	public boolean containsKey(Object key) {
 		for(Iterator<AbstractKeyValueEntry<K, V>> i = iterator();i.hasNext();){
@@ -417,7 +438,16 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<AbstractKe
 		}
 		return object;
 	}
-		
+	
+
+	/**
+	 * Remove a name and its value, if present.
+	 * 
+	 * @param key
+	 *            The name to be removed.
+	 * @return The value that was associated with the name, or null if there was
+	 *         no value.
+	 */
 	public boolean removeKey(K key) {
 		for(Iterator<AbstractKeyValueEntry<K, V>> i = iterator();i.hasNext();){
 			AbstractKeyValueEntry<K, V> item = i.next();
@@ -431,7 +461,7 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<AbstractKe
 	
 	@Override
 	public void putAll(Map<? extends K, ? extends V> values) {
-		withValues(values);
+		with(values);
 	}
 
 	@Override

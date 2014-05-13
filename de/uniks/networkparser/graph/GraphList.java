@@ -22,7 +22,6 @@ package de.uniks.networkparser.graph;
  permissions and limitations under the Licence.
 */
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 
 import de.uniks.networkparser.AbstractKeyValueEntry;
@@ -35,20 +34,8 @@ public class GraphList extends AbstractKeyValueList<String, GraphNode> {
 	private ArrayList<GraphEdge> edges = new ArrayList<GraphEdge>();
 	private String typ;
 
-
-	public GraphList with(GraphNode... values) {
-		for(Object value : values){
-			if (value instanceof GraphNode) {
-				GraphNode entity = (GraphNode) value;
-				put(entity.getId(), entity);
-			}
-		}
-		return this;
-	}
-
 	public boolean add(GraphNode value) {
-		GraphNode entity = (GraphNode) value;
-		put(entity.getId(), entity);
+		put(value.getId(), value);
 		return true;
 	}
 
@@ -115,17 +102,6 @@ public class GraphList extends AbstractKeyValueList<String, GraphNode> {
 		}
 		return links;
 	}
-	
-	@Override
-	public GraphList with(Collection<?> values) {
-		for(Iterator<?> i = values.iterator();i.hasNext();){
-			Object item = i.next();
-			if(item instanceof GraphNode) {
-				add((GraphNode)item);
-			}
-		}
-		return this;
-	}
 
 	@Override
 	public AbstractKeyValueEntry<String, GraphNode> getNewEntity() {
@@ -136,14 +112,16 @@ public class GraphList extends AbstractKeyValueList<String, GraphNode> {
 	public AbstractList<AbstractKeyValueEntry<String, GraphNode>> getNewInstance() {
 		return new GraphList();
 	}
-
 	
-	public GraphList with(Object value){
-	//FIXME
-		if(value instanceof GraphNode){
-			this.add((GraphNode)value);
+	@Override
+	public GraphList with(Object... values){
+		if(values != null){
+			for(Object value : values){
+				if(value instanceof GraphNode){
+					this.add((GraphNode)value);
+				}
+			}
 		}
 		return this;
 	}
-
 }

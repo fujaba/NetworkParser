@@ -21,9 +21,6 @@ package de.uniks.networkparser.bytes;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import java.util.Collection;
-import java.util.Iterator;
-
 import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.bytes.converter.ByteConverterHTTP;
 import de.uniks.networkparser.bytes.converter.ByteConverterString;
@@ -160,18 +157,19 @@ public class ByteList extends AbstractList<ByteItem> implements ByteItem, Factor
 	}
 
 	@Override
-	public AbstractList<ByteItem> with(Collection<?> collection) {
-		for(Iterator<?> i = collection.iterator();i.hasNext();){
-			Object item = i.next();
-			if(item instanceof ByteItem) {
-				this.add((ByteItem) item);
-			}
-		}
-		return this;
+	public AbstractList<ByteItem> getNewInstance() {
+		return new ByteList();
 	}
 
 	@Override
-	public AbstractList<ByteItem> getNewInstance() {
-		return new ByteList();
+	public AbstractList<ByteItem> with(Object... values) {
+		if(values != null){
+			for(Object value : values){
+				if(value instanceof ByteItem) {
+					this.add((ByteItem) value);
+				}
+			}
+		}
+		return this;
 	}
 }

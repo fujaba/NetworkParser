@@ -21,9 +21,6 @@ See the Licence for the specific language governing
 permissions and limitations under the Licence.
 */
 
-import java.util.Collection;
-import java.util.Iterator;
-
 import de.uniks.networkparser.AbstractList;
 
 public class EdgeList extends AbstractList<GraphEdge> {
@@ -33,26 +30,19 @@ public class EdgeList extends AbstractList<GraphEdge> {
 	}
 
 	@Override
-	public EdgeList with(Collection<?> values) {
-		for(Iterator<?> i = values.iterator();i.hasNext();){
-			Object item = i.next();
-			if(item instanceof GraphNode){
-				add((GraphEdge) item);
-			}
-		}
-		return this;
-	}
-
-	@Override
 	public AbstractList<GraphEdge> getNewInstance() {
 		return new EdgeList();
 	}
 	
-	public EdgeList with(Object value){
-		if(value instanceof GraphEdge){
-			this.add((GraphEdge)value);
+	@Override
+	public EdgeList with(Object... values){
+		if(values!=null){
+			for(Object value : values){
+				if(value instanceof GraphEdge){
+					this.add((GraphEdge)value);
+				}
+			}
 		}
 		return this;
 	}
-
 }

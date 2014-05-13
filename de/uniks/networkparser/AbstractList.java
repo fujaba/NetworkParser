@@ -36,8 +36,12 @@ import de.uniks.networkparser.sort.SortingDirection;
  */
 public abstract class AbstractList<V> implements BaseItem {
     protected List<V> values = new ArrayList<V>();
-	private boolean allowDuplicate = true;
+	private boolean allowDuplicate = initAllowDuplicate();
 	protected Comparator<V> cpr;
+	
+	protected boolean initAllowDuplicate(){
+		return true;
+	}
 	
 	public Comparator<V> comparator() {
 		if(this.cpr==null){
@@ -357,7 +361,6 @@ public abstract class AbstractList<V> implements BaseItem {
 	 *             number.
 	 */
 	public AbstractList<V> put(int index, V value) throws RuntimeException {
-		EntityUtil.testValidity(value);
 		if (index < 0) {
 			throw new RuntimeException("EntityList[" + index + "] not found.");
 		}
@@ -522,7 +525,14 @@ public abstract class AbstractList<V> implements BaseItem {
     	return this;
     }
     
-	public abstract AbstractList<V> with(Collection<?> collection);
+	public AbstractList<V> with(Collection<?> values) {
+		for(Iterator<?> i = values.iterator();i.hasNext();){
+			with( i.next() );
+		}
+		return this;
+	}
+	
+	public abstract AbstractList<V> with(Object... values);
     
     public void add(int index, V element) {
         values.add(index, element);

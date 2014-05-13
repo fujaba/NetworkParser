@@ -22,7 +22,6 @@ package de.uniks.networkparser.xml;
  permissions and limitations under the Licence.
 */
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 
 import de.uniks.networkparser.AbstractKeyValueEntry;
@@ -51,6 +50,11 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements S
 	/** The value. */
 	protected String value;
 
+	@Override
+	protected boolean initAllowDuplicate() {
+		return false;
+	}
+	
 	/**
 	 * Instantiates a new xML entity.
 	 * 
@@ -92,8 +96,8 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements S
 	 * @param child
 	 *            the child
 	 */
-	public void addChild(XMLEntity child) {
-		getChildren().add(child);
+	public boolean add(XMLEntity child) {
+		return getChildren().add(child);
 	}
 
 	/**
@@ -216,23 +220,13 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements S
 	}
 
 	@Override
-	public XMLEntity with(Collection<?> collection) {
-		for (Iterator<?> i = collection.iterator(); i.hasNext();) {
-			children.add((XMLEntity) i.next());
-		}
-		return this;
-	}
-	
-
-	public XMLEntity with(XMLEntity... values){ 
+	public XMLEntity with(Object... values) {
 		for(Object value : values){
-			children.add((XMLEntity) value);
+			if(value instanceof XMLEntity){
+				add((XMLEntity)value);
+			}
 		}
 		return this;
-	}
-
-	public boolean add(XMLEntity value) {
-		return children.add(value);
 	}
 
 	@Override

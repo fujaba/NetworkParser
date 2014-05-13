@@ -59,9 +59,14 @@ public class ArrayEntryList extends AbstractKeyValueList<String, Object> {
 		return this;
 	}
 	
-	public ArrayEntryList with(Object value){
-		if(value instanceof MapEntry){
-			add((MapEntry) value);
+	@Override
+	public ArrayEntryList with(Object... values){
+		if(values != null){
+			for(Object value : values){
+				if(value instanceof MapEntry){
+					add((MapEntry) value);
+				}
+			}
 		}
 		return this;
 	}

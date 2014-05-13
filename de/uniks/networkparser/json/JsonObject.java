@@ -21,12 +21,11 @@ package de.uniks.networkparser.json;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import java.util.Collection;
 import java.util.Iterator;
-import java.util.Map;
 
 import de.uniks.networkparser.AbstractKeyValueEntry;
 import de.uniks.networkparser.AbstractKeyValueList;
+import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.event.MapEntry;
@@ -93,32 +92,12 @@ import de.uniks.networkparser.interfaces.StringItem;
  */
 public class JsonObject extends AbstractKeyValueList<String, Object> implements StringItem, FactoryEntity {
 	private boolean visible=true;
-	/**
-	 * Produce a string from a double. The string "null" will be returned if the
-	 * number is not finite.
-	 * 
-	 * @param d
-	 *            A double.
-	 * @return A String.
-	 */
-	public static String doubleToString(double d) {
-		if (Double.isInfinite(d) || Double.isNaN(d)) {
-			return "null";
-		}
-		// Shave off trailing zeros and decimal point, if possible.
-		String string = Double.toString(d);
-		if (string.indexOf('.') > 0 && string.indexOf('e') < 0
-				&& string.indexOf('E') < 0) {
-			while (string.endsWith("0")) {
-				string = string.substring(0, string.length() - 1);
-			}
-			if (string.endsWith(".")) {
-				string = string.substring(0, string.length() - 1);
-			}
-		}
-		return string;
+	
+	@Override
+	protected boolean initAllowDuplicate() {
+		return false;
 	}
-
+	
 	/**
 	 * Get the JsonArray value associated with a key.
 	 * 
@@ -287,25 +266,6 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 	}
 
 	/**
-	 * add the Values of the map to JsonObjectmap
-	 * 
-	 * @param collection
-	 *            a map of key-values
-	 */
-	public JsonObject withMap(Map<String, Object> collection) {
-		if (collection != null) {
-			Iterator<Entry<String, Object>> i = collection.entrySet().iterator();
-			while (i.hasNext()) {
-				Entry<String, Object> e = i.next();
-				Object value = e.getValue();
-				if (value != null) {
-					this.put(e.getKey(), EntityUtil.wrap(value, this));
-				}
-			}
-		}
-		return  this;
-	}
-	/**
 	 * Tokener to init the JsonObject
 	 * 
 	 * @param x
@@ -344,22 +304,6 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 	}
 
 	@Override
-	public JsonObject with(Collection<?> values) {
-		for(Object item : values){
-			with(item);
-		}
-		return this;
-	}
-
-	public JsonObject with(Object value) {
-		if(value instanceof AbstractKeyValueEntry<?,?>){
-			AbstractKeyValueEntry<?,?> item = (AbstractKeyValueEntry<?, ?>) value;
-			this.put(item.getKeyString(), item.getValue());
-		}
-		return this;
-	}
-
-	@Override
 	public BaseItem withVisible(boolean value) {
 		this.visible = value;
 		return this;
@@ -391,5 +335,49 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 	}
 	public void add(int index, String key, String value) {
 		add(index, getNewEntity().withValue(key, value));
+	}
+
+	@Override
+	public JsonObject with(
+			Object... values) {
+		if(values != null){
+			for(Object value : values){
+				if(value instanceof AbstractKeyValueEntry<?,?>){
+					AbstractKeyValueEntry<?,?> item = (AbstractKeyValueEntry<?, ?>) value;
+					this.put(item.getKeyString(), item.getValue());
+				}
+			}
+		}
+		return this;
+	}
+	
+
+	/**
+	 * Accumulate values under a key. It is similar to the put method except
+	 * that if there is already an object stored under the key then a EntityList
+	 * is stored under the key to hold all of the accumulated values. If there
+	 * is already a EntityList, then the new value is appended to it. In
+	 * contrast, the put method replaces the previous value.
+	 * 
+	 * If only one value is accumulated that is not a EntityList, then the
+	 * result will be the same as using put. But if multiple values are
+	 * accumulated, then the result will be like append.
+	 * 
+	 * @param key
+	 *            A key string.
+	 * @param value
+	 *            An object to be accumulated under the key.
+	 * @return this.
+	 */
+	public JsonObject addToList(String key, Object value) {
+		Object object = this.get(key);
+		if (object == null) {
+			this.put(key, value instanceof AbstractList ? getNewArray().with(value) : value);
+		} else if (object instanceof AbstractList) {
+			((AbstractList<?>) object).with(value);
+		} else {
+			this.put(key, getNewArray().with(object).with(value));
+		}
+		return this;
 	}
 }
