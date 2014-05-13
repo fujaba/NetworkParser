@@ -281,29 +281,17 @@ public class TableList extends AbstractEntityList<Object> implements SendableEnt
 	}
 
 	@Override
-	public TableList with(Collection<?> values) {
-		for(Iterator<?> i = values.iterator();i.hasNext();){
-			add(i.next());
-		}
-		return this;
-	}
-
-	/* (non-Javadoc)
-	 * @see de.uniks.networkparser.AbstractList#getNewInstance()
-	 */
-	@Override
 	public TableList getNewInstance() {
 		return new TableList();
 	}
 
 	@Override
-	public Object get(int index) {
-		return super.getEntity(index);
-	}
-
-	@Override
-	public TableList with(Object value) {
-		this.add(value);
+	public TableList with(Object... values) {
+		if(values != null){
+			for(Object value : values){
+				this.add(value);
+			}
+		}
 		return this;
 	}
 }

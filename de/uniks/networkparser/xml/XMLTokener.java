@@ -128,7 +128,7 @@ public class XMLTokener extends Tokener {
 					if (getCurrentChar() == '<') {
 						child = (XMLEntity) xmlEntity.getNewArray();
 						parseToEntity(child);
-						xmlEntity.addChild(child);
+						xmlEntity.add(child);
 					} else {
 						xmlEntity.setValue(nextString('<', false, false, false, false));
 					}

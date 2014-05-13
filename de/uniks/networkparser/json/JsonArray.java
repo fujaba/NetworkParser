@@ -245,22 +245,6 @@ public class JsonArray extends AbstractEntityList<Object> implements StringItem,
 	}
 
 	/**
-	 * JSONArray from a Collection.
-	 * 
-	 * @param collection
-	 *            A Collection.
-	 */
-	public JsonArray withValue(Collection<?> collection) {
-		if (collection != null) {
-			Iterator<?> iter = collection.iterator();
-			while (iter.hasNext()) {
-				add(EntityUtil.wrap(iter.next(), this));
-			}
-		}
-		return this;
-	}
-
-	/**
 	 * JSONArray from a BaseEntityArray.
 	 * 
 	 * @param Array
@@ -298,8 +282,12 @@ public class JsonArray extends AbstractEntityList<Object> implements StringItem,
 	}
 
 	@Override
-	public JsonArray with(Object value) {
-		add(value);
+	public JsonArray with(Object... values) {
+		if(values != null){
+			for(Object item : values){
+				add(item);
+			}
+		}
 		return this;
 	}
 

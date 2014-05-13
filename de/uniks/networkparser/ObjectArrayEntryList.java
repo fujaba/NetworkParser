@@ -170,4 +170,16 @@ public class ObjectArrayEntryList extends AbstractList<ObjectMapEntry> implement
 	public ObjectMapEntry getNewObject() {
 		return new ObjectMapEntry();
 	}
+
+	@Override
+	public ObjectArrayEntryList with(Object... values) {
+		if(values != null){
+			for(Object value : values){
+				if(value instanceof ObjectMapEntry){
+					add((ObjectMapEntry)value);
+				}
+			}
+		}
+		return this;
+	}
 }

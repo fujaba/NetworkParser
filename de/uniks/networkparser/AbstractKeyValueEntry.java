@@ -21,6 +21,7 @@ package de.uniks.networkparser;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -39,6 +40,26 @@ public abstract class AbstractKeyValueEntry<K, V> implements BaseItem, Entry<K, 
 	public AbstractKeyValueEntry<K, V> with(K key, V value) {
 		this.key = key;
 		this.value = value;
+		return this;
+	}
+	
+	/**
+	 * add the Values of the map to AbstractKeyValueEntry<K, V>
+	 * 
+	 * @param collection
+	 *            a map of key-values
+	 */
+	public AbstractKeyValueEntry<K, V> with(Map<K, V> collection) {
+		if (collection != null) {
+			Iterator<Entry<K, V>> i = collection.entrySet().iterator();
+			while (i.hasNext()) {
+				Entry<K, V> e = i.next();
+				Object value = e.getValue();
+				if (value != null) {
+					this.with(e.getKey(), e.getValue());
+				}
+			}
+		}
 		return this;
 	}
 	

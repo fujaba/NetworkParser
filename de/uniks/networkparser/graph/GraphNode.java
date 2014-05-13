@@ -21,7 +21,6 @@ package de.uniks.networkparser.graph;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import java.util.Collection;
 import java.util.List;
 
 import de.uniks.networkparser.AbstractList;
@@ -101,17 +100,19 @@ public class GraphNode  extends AbstractList<Attribute> {
 		return new GraphNode();
 	}
 
+	public List<Attribute> getAttributes() {
+		return values;
+	}
+
 	@Override
-	public GraphNode with(Collection<?> values) {
-		for(Object value : values){
-			if(value instanceof Attribute){
-				this.add((Attribute)value);
+	public GraphNode with(Object... values) {
+		if(values != null){
+			for(Object value : values){
+				if(value instanceof Attribute){
+					add((Attribute) value);
+				}
 			}
 		}
 		return this;
-	}
-
-	public List<Attribute> getAttributes() {
-		return values;
 	}
 }

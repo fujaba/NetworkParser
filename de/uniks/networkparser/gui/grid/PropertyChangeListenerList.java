@@ -22,13 +22,10 @@ permissions and limitations under the Licence.
 */
 
 import java.beans.PropertyChangeListener;
-import java.util.Collection;
 
 import de.uniks.networkparser.AbstractEntityList;
 import de.uniks.networkparser.AbstractList;
 
-
-//FIXME CHECK IF NESSESSARY
 public class PropertyChangeListenerList extends AbstractEntityList<PropertyChangeListener> {
 	@Override
 	public String toString() {
@@ -36,15 +33,15 @@ public class PropertyChangeListenerList extends AbstractEntityList<PropertyChang
 	}
 
 	@Override
-	public PropertyChangeListener get(int index) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public AbstractEntityList<PropertyChangeListener> with(Object value) {
-		// TODO Auto-generated method stub
-		return null;
+	public AbstractEntityList<PropertyChangeListener> with(Object... values) {
+		if(values != null){
+			for(Object value : values){
+				if(value instanceof PropertyChangeListener){
+					add((PropertyChangeListener) value);
+				}
+			}
+		}
+		return this;
 	}
 
 	@Override
@@ -52,9 +49,5 @@ public class PropertyChangeListenerList extends AbstractEntityList<PropertyChang
 		return new PropertyChangeListenerList();
 	}
 
-	@Override
-	public AbstractList<PropertyChangeListener> with(Collection<?> collection) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 }

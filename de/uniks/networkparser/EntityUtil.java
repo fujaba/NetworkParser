@@ -31,6 +31,32 @@ import de.uniks.networkparser.interfaces.StringItem;
 
 public class EntityUtil {
 	/**
+	 * Produce a string from a double. The string "null" will be returned if the
+	 * number is not finite.
+	 * 
+	 * @param d
+	 *            A double.
+	 * @return A String.
+	 */
+	public static String doubleToString(double d) {
+		if (Double.isInfinite(d) || Double.isNaN(d)) {
+			return "null";
+		}
+		// Shave off trailing zeros and decimal point, if possible.
+		String string = Double.toString(d);
+		if (string.indexOf('.') > 0 && string.indexOf('e') < 0
+				&& string.indexOf('E') < 0) {
+			while (string.endsWith("0")) {
+				string = string.substring(0, string.length() - 1);
+			}
+			if (string.endsWith(".")) {
+				string = string.substring(0, string.length() - 1);
+			}
+		}
+		return string;
+	}
+	
+	/**
 	 * Produce a string from a Number.
 	 * 
 	 * @param number
@@ -43,8 +69,6 @@ public class EntityUtil {
 		if (number == null) {
 			throw new IllegalArgumentException("Null pointer");
 		}
-		testValidity(number);
-
 		// Shave off trailing zeros and decimal point, if possible.
 
 		String string = number.toString();
@@ -140,30 +164,6 @@ public class EntityUtil {
 	}
 
 	/**
-	 * Throw an exception if the object is a NaN or infinite number.
-	 * 
-	 * @param o
-	 *            The object to test.
-	 * @throws RuntimeException
-	 *             If o is a non-finite number.
-	 */
-	public static void testValidity(Object o) {
-		if (o != null) {
-			if (o instanceof Double) {
-				if (((Double) o).isInfinite() || ((Double) o).isNaN()) {
-					throw new RuntimeException(
-							"JSON does not allow non-finite numbers.");
-				}
-			} else if (o instanceof Float) {
-				if (((Float) o).isInfinite() || ((Float) o).isNaN()) {
-					throw new RuntimeException(
-							"JSON does not allow non-finite numbers.");
-				}
-			}
-		}
-	}
-
-	/**
 	 * Make a prettyprinted JSON text of an object value.
 	 * <p>
 	 * Warning: This method assumes that the data structure is acyclical.
@@ -198,7 +198,7 @@ public class EntityUtil {
 			return ((StringItem) value).toString(indentFactor, intent);
 		}
 		if (value instanceof Map) {
-			BaseItem item = ((AbstractKeyValueList<?,?>)reference.getNewArray()).withValues((Map<?, ?>) value);
+			BaseItem item = ((AbstractKeyValueList<?,?>)reference.getNewArray()).with((Map<?, ?>) value);
 			if(item instanceof StringItem){
 				return ((StringItem)item).toString(indentFactor, intent);
 			}
@@ -244,7 +244,7 @@ public class EntityUtil {
 			return ((AbstractList<?>) value).toString();
 		}
 		if (value instanceof Map) {
-			return ((AbstractKeyValueList<?,?>)reference.getNewArray()).withValues((Map<?, ?>) value).toString();
+			return ((AbstractKeyValueList<?,?>)reference.getNewArray()).with((Map<?, ?>) value).toString();
 		}
 		if (value instanceof Collection) {
 			return reference.getNewArray().with((Collection<?>) value)
@@ -298,7 +298,7 @@ public class EntityUtil {
 				return ((AbstractList<?>) reference.getNewObject()).with((Collection<?>) object);
 			}
 			if (object instanceof Map) {
-				return ((AbstractKeyValueList<?,?>)reference.getNewObject()).withValues((Map<?, ?>) object);
+				return ((AbstractKeyValueList<?,?>)reference.getNewObject()).with((Map<?, ?>) object);
 			}
 			if (object.getClass().getName().startsWith("java.")
 					|| object.getClass().getName().startsWith("javax.")) {

@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
+import de.uniks.networkparser.AbstractKeyValueEntry;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
@@ -89,38 +90,37 @@ public class GraphConverter implements Converter {
 		
 		if(node.containsKey(JsonIdMap.JSON_PROPS)){
 			JsonObject props = node.getJsonObject(JsonIdMap.JSON_PROPS);
-			for(Iterator<String> keys = props.keys();keys.hasNext();){
-				String key = keys.next();
-				Object value = props.get(key);
-				if(value instanceof JsonObject) {
+			for(Iterator<AbstractKeyValueEntry<String, Object>> i = props.iterator();i.hasNext();){
+				AbstractKeyValueEntry<String, Object> item = i.next();
+				if(item.getValue() instanceof JsonObject) {
 					// Must be a Link to 1
-					GraphNode newNode = parseJsonObject(root, (JsonObject)value, attributes);
-					root.addEdge(new GraphEdge().withSource(graphNode).withTarget(newNode, GraphIdMap.ONE, key));
-				}else if(value instanceof JsonArray) {
+					GraphNode newNode = parseJsonObject(root, (JsonObject)item.getValue(), attributes);
+					root.addEdge(new GraphEdge().withSource(graphNode).withTarget(newNode, GraphIdMap.ONE, item.getKey()));
+				}else if(item.getValue() instanceof JsonArray) {
 					// Must be a Link to n
-					JsonArray array = (JsonArray) value;
+					JsonArray array = (JsonArray) item.getValue();
 					StringBuilder sb = new StringBuilder();
-					for(Object item : array){
-						if(item instanceof JsonObject){
-							GraphNode newNode = parseJsonObject(root, (JsonObject)item, attributes);
-							root.addEdge(new GraphEdge().withSource(graphNode).withTarget(newNode, GraphIdMap.MANY, key));							
+					for(Object entity : array){
+						if(entity instanceof JsonObject){
+							GraphNode newNode = parseJsonObject(root, (JsonObject)entity, attributes);
+							root.addEdge(new GraphEdge().withSource(graphNode).withTarget(newNode, GraphIdMap.MANY, item.getKey()));							
 						}else{
 							if(sb.length()>0){
-								sb.append(","+item.toString());
+								sb.append(","+entity.toString());
 							}else{
-								sb.append(item.toString());
+								sb.append(entity.toString());
 							}
 						}
 					}
 					if(sb.length()>0){
-						Attribute attribute = new Attribute().withKey(key).withClazz(value.getClass().getName()).withValue(sb.toString());
+						Attribute attribute = new Attribute().withKey(item.getKey()).withClazz(item.getValue().getClass().getName()).withValue(sb.toString());
 						if(attributes.get(graphNode)==null){
 							attributes.put(graphNode, new ArrayList<Attribute>());
 						}
 						attributes.get(graphNode).add(attribute);
 					}
 				}else{
-					Attribute attribute = new Attribute().withKey(key).withClazz(value.getClass().getName()).withValue(value.toString());
+					Attribute attribute = new Attribute().withKey(item.getKey()).withClazz(item.getValue().getClass().getName()).withValue(item.getValue().toString());
 					if(attributes.get(graphNode)==null){
 						attributes.put(graphNode, new ArrayList<Attribute>());
 					}
