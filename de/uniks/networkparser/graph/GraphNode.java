@@ -25,7 +25,7 @@ import java.util.List;
 
 import de.uniks.networkparser.AbstractList;
 
-public class GraphNode  extends AbstractList<Attribute> {
+public class GraphNode extends AbstractList<Attribute> {
 	private String className;
 	private String id;
 	private String headImage;

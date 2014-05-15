@@ -46,4 +46,8 @@ public abstract class AbstractEntityList<V> extends AbstractList<V> implements L
 		}
 		return this;
 	}
+
+	public List<V> values(){
+		return values;
+	}
 }

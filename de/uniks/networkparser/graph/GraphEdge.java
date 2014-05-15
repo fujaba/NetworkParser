@@ -37,7 +37,7 @@ public class GraphEdge implements BaseItem{
 	}
 	
 	public GraphEdge withSource(GraphNode item) {
-		this.source = new GraphEdgeLabel().withItem(item);
+		this.source = new GraphEdgeLabel().with(item);
 		return this;
 	}
 	
@@ -51,11 +51,11 @@ public class GraphEdge implements BaseItem{
 	}
 	
 	public GraphEdge withTarget(GraphNode item){
-		this.target = new GraphEdgeLabel().withItem(item);
+		this.target = new GraphEdgeLabel().with(item);
 		return this;
 	}
 	public GraphEdge withTarget(GraphNode item, String cardinality, String property) {
-		this.target = new GraphEdgeLabel().withItem(item).withCardinality(cardinality).withProperty(property);
+		this.target = new GraphEdgeLabel().with(item).withCardinality(cardinality).withProperty(property);
 		return this;
 	}
 }
