@@ -71,7 +71,7 @@ public class GraphList extends AbstractKeyValueList<String, GraphNode> {
 	public boolean addEdge(GraphEdge edge) {
 		for(Iterator<GraphEdge> i = this.edges.iterator();i.hasNext();){
 			GraphEdge item = i.next();
-			if(item.getSource().has(edge.getTarget().getItems()) && item.getTarget().has(edge.getSource().getItems())){
+			if(item.getSource().containsAll(edge.getTarget().values()) && item.getTarget().containsAll(edge.getSource().values())){
 				// Back again
 				item.getSource().withCardinality(edge.getTarget().getCardinality());
 				item.getSource().withProperty(edge.getTarget().getProperty());
@@ -88,7 +88,7 @@ public class GraphList extends AbstractKeyValueList<String, GraphNode> {
 	public ArrayEntryList getLinks(){
 		ArrayEntryList links = new ArrayEntryList();
 		for (GraphEdge element : edges) {
-			for(GraphNode node : element.getSource().getItems()){
+			for(GraphNode node : element.getSource().values()){
 				String key = node.getTyp(typ, false);
 				EdgeList value = (EdgeList)links.getValue(key);
 				if(value!=null){

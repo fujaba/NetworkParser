@@ -53,13 +53,13 @@ public class GraphConverter implements Converter {
 			for(Attribute attribute : node.getValue()){
 				boolean addValue=true;
 				for(GraphEdge edge : root.getEdges()){
-					if(edge.getSource().has(node.getKey())){
+					if(edge.getSource().contains(node.getKey())){
 						if(attribute.getKey().equals(edge.getSource().getProperty())){
 							addValue=false;
 							break;
 						}
 					}
-					if(edge.getTarget().has(node.getKey())){
+					if(edge.getTarget().contains(node.getKey())){
 						if(attribute.getKey().equals(edge.getTarget().getProperty())){
 							addValue=false;
 							break;
@@ -147,8 +147,8 @@ public class GraphConverter implements Converter {
 		ArrayList<String> ids=new ArrayList<String>();
 
 		for(GraphEdge edge : edges){
-			for(GraphNode source : edge.getSource().getItems()){
-				for(GraphNode target : edge.getTarget().getItems()){
+			for(GraphNode source : edge.getSource().values()){
+				for(GraphNode target : edge.getTarget().values()){
 					JsonObject child = new JsonObject().withValue(TYP, EDGE);
 					child.put(SOURCECARDINALITY,  edge.getSource().getCardinality());
 					child.put(TARGETCARDINALITY,  edge.getTarget().getCardinality());

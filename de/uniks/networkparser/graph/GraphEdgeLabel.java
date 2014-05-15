@@ -1,21 +1,32 @@
 package de.uniks.networkparser.graph;
+import de.uniks.networkparser.AbstractEntityList;
+/*
+NetworkParser
+Copyright (c) 2011 - 2013, Stefan Lindel
+All rights reserved.
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
+Licensed under the EUPL, Version 1.1 or (as soon they
+will be approved by the European Commission) subsequent
+versions of the EUPL (the "Licence");
+You may not use this work except in compliance with the Licence.
+You may obtain a copy of the Licence at:
 
-public class GraphEdgeLabel {
-	private ArrayList<GraphNode> items = new ArrayList<GraphNode>();
+http://ec.europa.eu/idabc/eupl5
+
+Unless required by applicable law or agreed to in
+writing, software distributed under the Licence is
+distributed on an "AS IS" basis,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+express or implied.
+See the Licence for the specific language governing
+permissions and limitations under the Licence.
+*/
+import de.uniks.networkparser.AbstractList;
+
+public class GraphEdgeLabel extends AbstractEntityList<GraphNode> {
 	private String cardinality;
 	private String property;
-	
-	public ArrayList<GraphNode> getItems() {
-		return items;
-	}
-	public GraphEdgeLabel withItem(GraphNode item) {
-		this.items.add(item);
-		return this;
-	}
+
 	public String getCardinality() {
 		return cardinality;
 	}
@@ -23,6 +34,7 @@ public class GraphEdgeLabel {
 		this.cardinality = cardinality;
 		return this;
 	}
+
 	public String getProperty() {
 		return property;
 	}
@@ -30,24 +42,23 @@ public class GraphEdgeLabel {
 		this.property = property;
 		return this;
 	}
-	public Iterator<GraphNode> iterator(){
-		return items.iterator();
-	}
-	
+
 	public String getInfo(){
 		return property+"<br>0.."+this.cardinality;
 	}
 	
-	public boolean has(GraphNode node){
-		return items.contains(node);
+	@Override
+	public AbstractList<GraphNode> getNewInstance() {
+		return new GraphEdgeLabel();
 	}
 	
-	public boolean has(Collection<GraphNode> nodes){
-		for(GraphNode node : nodes){
-			if(!items.contains(node)){
-				return false;
+	@Override
+	public GraphEdgeLabel with(Object... values) {
+		for(Object value : values){
+			if(value instanceof GraphNode){
+				add((GraphNode) value);
 			}
 		}
-		return true;
+		return this;
 	}
 }

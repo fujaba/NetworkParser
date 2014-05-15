@@ -34,6 +34,7 @@ import de.uniks.networkparser.interfaces.FactoryEntity;
 public class XMLTokener extends Tokener {
 	/** The stack. */
 	protected ArrayList<ReferenceObject> stack = new ArrayList<ReferenceObject>();
+	private boolean isAllowQuote=false;
 	
 	/** The prefix. */
 	private String prefix;
@@ -139,7 +140,7 @@ public class XMLTokener extends Tokener {
 			} else {
 				String key = nextValue(xmlEntity, false, c).toString();
 				if ( key.length()>0 ) {
-					xmlEntity.put(key, nextValue(xmlEntity, true, nextClean()));
+					xmlEntity.put(key, nextValue(xmlEntity, isAllowQuote, nextClean()));
 				}
 			}
 		}
@@ -190,5 +191,10 @@ public class XMLTokener extends Tokener {
 	}
 	public ReferenceObject getStackLast(int offset) {
 		return this.stack.get(this.stack.size() -1 - offset);
+	}
+	
+	public XMLTokener withAllowQuote(boolean value){
+		this.isAllowQuote = value;
+		return this;
 	}
 }
