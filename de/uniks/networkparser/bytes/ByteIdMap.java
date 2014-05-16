@@ -224,7 +224,6 @@ public class ByteIdMap extends IdMap {
 					value = null;
 				}
 				ByteItem child = encodeValue(value, filter);
-				child.toString();
 				if (child != null) {
 					msg.with(child);
 				}
