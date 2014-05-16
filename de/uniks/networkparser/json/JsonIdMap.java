@@ -429,6 +429,7 @@ public class JsonIdMap extends IdMap {
 			} else {
 				readMessages(null, null, result, jsonObject, UPDATE);
 			}
+			filter.withStandard(this.filter);
 			if (typeInfo instanceof SendableEntityCreatorNoIndex) {
 				String[] properties = typeInfo.getProperties();
 				if (properties != null) {
@@ -438,7 +439,7 @@ public class JsonIdMap extends IdMap {
 					}
 				}
 			} else {
-				decoding(result, jsonObject, filter);
+				decode(result, jsonObject, filter);
 			}
 		} else if (jsonObject.get(VALUE) != null) {
 			return jsonObject.get(VALUE);
