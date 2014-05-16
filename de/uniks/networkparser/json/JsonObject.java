@@ -21,21 +21,18 @@ package de.uniks.networkparser.json;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import java.util.Collection;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
 
-import de.uniks.networkparser.AbstractMapEntry;
+import de.uniks.networkparser.AbstractKeyValueEntry;
+import de.uniks.networkparser.AbstractKeyValueList;
+import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.BaseKeyValueEntity;
-/* Copyright (c) 2002 JSON.org */
-import de.uniks.networkparser.interfaces.BaseListEntity;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
+/* Copyright (c) 2002 JSON.org */
 
 
 /**
@@ -93,34 +90,14 @@ import de.uniks.networkparser.interfaces.StringItem;
  * @author JSON.org
  * @version 2011-11-24
  */
-public class JsonObject extends BaseKeyValueEntity implements StringItem, FactoryEntity {
+public class JsonObject extends AbstractKeyValueList<String, Object> implements StringItem, FactoryEntity {
 	private boolean visible=true;
-	/**
-	 * Produce a string from a double. The string "null" will be returned if the
-	 * number is not finite.
-	 * 
-	 * @param d
-	 *            A double.
-	 * @return A String.
-	 */
-	public static String doubleToString(double d) {
-		if (Double.isInfinite(d) || Double.isNaN(d)) {
-			return "null";
-		}
-		// Shave off trailing zeros and decimal point, if possible.
-		String string = Double.toString(d);
-		if (string.indexOf('.') > 0 && string.indexOf('e') < 0
-				&& string.indexOf('E') < 0) {
-			while (string.endsWith("0")) {
-				string = string.substring(0, string.length() - 1);
-			}
-			if (string.endsWith(".")) {
-				string = string.substring(0, string.length() - 1);
-			}
-		}
-		return string;
+	
+	@Override
+	protected boolean initAllowDuplicate() {
+		return false;
 	}
-
+	
 	/**
 	 * Get the JsonArray value associated with a key.
 	 * 
@@ -176,11 +153,11 @@ public class JsonObject extends BaseKeyValueEntity implements StringItem, Factor
 			return "{}";
 		}
 		if (!isVisible()) {
-			return "{Item with " + map.size() + " values}";
+			return "{Item with " + values.size() + " values}";
 		}
 
 		StringBuilder sb = new StringBuilder("{");
-		Iterator<MapEntry> i = map.iterator();
+		Iterator<AbstractKeyValueEntry<String, Object>> i = values.iterator();
 		Entry<String, Object> item = i.next();
 		sb.append(EntityUtil.quote(item.getKey().toString()));
 		sb.append(":");
@@ -221,10 +198,10 @@ public class JsonObject extends BaseKeyValueEntity implements StringItem, Factor
 		}
 
 		if (!isVisible()) {
-			return "{" + map.size() + " values}";
+			return "{" + values.size() + " values}";
 		}
 
-		Iterator<MapEntry> iterator = map.iterator();
+		Iterator<AbstractKeyValueEntry<String, Object>> iterator = values.iterator();
 		
 		int newindent = indent + indentFactor;
 		String prefix = "";
@@ -242,7 +219,7 @@ public class JsonObject extends BaseKeyValueEntity implements StringItem, Factor
 
 		Entry<String, Object> item = iterator.next();
 		Object value = item.getValue();
-		if (length == 1 && !(value instanceof BaseKeyValueEntity)) {
+		if (length == 1 && !(value instanceof AbstractKeyValueEntry)) {
 			sb = new StringBuilder("{");
 		} else {
 			sb = new StringBuilder("{" + prefix + step);
@@ -260,7 +237,7 @@ public class JsonObject extends BaseKeyValueEntity implements StringItem, Factor
 			sb.append(EntityUtil.valueToString(item.getValue(), indentFactor,
 					newindent, false, this));
 		}
-		if (length == 1 && !(value instanceof BaseKeyValueEntity)) {
+		if (length == 1 && !(value instanceof AbstractKeyValueEntry)) {
 			sb.append("}");
 		} else {
 			sb.append(prefix + "}");
@@ -275,7 +252,7 @@ public class JsonObject extends BaseKeyValueEntity implements StringItem, Factor
 	 *            a simple String of Value or pairs of key-values
 	 */
 	public JsonObject withValue(String... values) {
-		this.map.clear();
+		this.values.clear();
 		if (values.length % 2 == 0) {
 			for (int z = 0; z < values.length; z += 2) {
 				put(values[z], values[z + 1]);
@@ -288,25 +265,6 @@ public class JsonObject extends BaseKeyValueEntity implements StringItem, Factor
 		return this;
 	}
 
-	/**
-	 * add the Values of the map to JsonObjectmap
-	 * 
-	 * @param collection
-	 *            a map of key-values
-	 */
-	public JsonObject withMap(Map<String, Object> collection) {
-		if (collection != null) {
-			Iterator<Entry<String, Object>> i = collection.entrySet().iterator();
-			while (i.hasNext()) {
-				Entry<String, Object> e = i.next();
-				Object value = e.getValue();
-				if (value != null) {
-					this.put(e.getKey(), EntityUtil.wrap(value, this));
-				}
-			}
-		}
-		return  this;
-	}
 	/**
 	 * Tokener to init the JsonObject
 	 * 
@@ -324,7 +282,7 @@ public class JsonObject extends BaseKeyValueEntity implements StringItem, Factor
 	 * @param entity
 	 *            entity to add values with the tokener
 	 */
-	public JsonObject withEntity(BaseKeyValueEntity entity) {
+	public JsonObject withEntity(AbstractKeyValueList<?, ?> entity) {
 		new JsonTokener().parseToEntity(this, entity);
 		return this;
 	}
@@ -333,42 +291,16 @@ public class JsonObject extends BaseKeyValueEntity implements StringItem, Factor
 	 * Get a new Instance of JsonArray
 	 */
 	@Override
-	public JsonArray getNewArray() {
-		return new JsonArray();
+	public JsonObject getNewObject() {
+		return new JsonObject();
 	}
 
 	/**
 	 * Get a new Instance of JsonObject
 	 */
 	@Override
-	public JsonObject getNewObject() {
-		return new JsonObject();
-	}
-
-	@Override
-	public Object get(int index) {
-		Object object = this.map.get(index);
-		if (object == null) {
-			throw new RuntimeException("EntityList[" + index + "] not found.");
-		}
-		return object;
-	}
-
-	@Override
-	public BaseListEntity with(Collection<?> values) {
-		for(Object item : values){
-			with(item);
-		}
-		return this;
-	}
-
-	@Override
-	public BaseListEntity with(Object value) {
-		if(value instanceof AbstractMapEntry<?,?>){
-			AbstractMapEntry<?,?> item = (AbstractMapEntry<?, ?>) value;
-			this.put(item.getKeyString(), item.getValue());
-		}
-		return this;
+	public JsonArray getNewArray() {
+		return new JsonArray();
 	}
 
 	@Override
@@ -380,5 +312,72 @@ public class JsonObject extends BaseKeyValueEntity implements StringItem, Factor
 	@Override
 	public boolean isVisible() {
 		return visible;
+	}
+	
+	public boolean has(String key){
+		return containsKey(key);
+	}
+	
+	@Override
+	public JsonObject withValue(Object key, Object value) {
+		super.withValue(key, value);
+		return this;
+	}
+
+	@Override
+	public JsonObject getNewInstance() {
+		return new JsonObject();
+	}
+
+	@Override
+	public AbstractKeyValueEntry<String, Object> getNewEntity() {
+		return new MapEntry();
+	}
+	public void add(int index, String key, String value) {
+		add(index, getNewEntity().withValue(key, value));
+	}
+
+	@Override
+	public JsonObject with(
+			Object... values) {
+		if(values != null){
+			for(Object value : values){
+				if(value instanceof AbstractKeyValueEntry<?,?>){
+					AbstractKeyValueEntry<?,?> item = (AbstractKeyValueEntry<?, ?>) value;
+					this.put(item.getKeyString(), item.getValue());
+				}
+			}
+		}
+		return this;
+	}
+	
+
+	/**
+	 * Accumulate values under a key. It is similar to the put method except
+	 * that if there is already an object stored under the key then a EntityList
+	 * is stored under the key to hold all of the accumulated values. If there
+	 * is already a EntityList, then the new value is appended to it. In
+	 * contrast, the put method replaces the previous value.
+	 * 
+	 * If only one value is accumulated that is not a EntityList, then the
+	 * result will be the same as using put. But if multiple values are
+	 * accumulated, then the result will be like append.
+	 * 
+	 * @param key
+	 *            A key string.
+	 * @param value
+	 *            An object to be accumulated under the key.
+	 * @return this.
+	 */
+	public JsonObject addToList(String key, Object value) {
+		Object object = this.get(key);
+		if (object == null) {
+			this.put(key, value instanceof AbstractList ? getNewArray().with(value) : value);
+		} else if (object instanceof AbstractList) {
+			((AbstractList<?>) object).with(value);
+		} else {
+			this.put(key, getNewArray().with(object).with(value));
+		}
+		return this;
 	}
 }

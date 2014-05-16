@@ -32,7 +32,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import java.util.List;
 
 import de.uniks.networkparser.IdMapEncoder;
-import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public interface TableComponentInterface {
@@ -44,7 +43,7 @@ public interface TableComponentInterface {
 	public TableColumnInterface getColumn(Column column);
 	public void init();
 	public void refreshViewer();
-	public List<MapEntry> getItems(boolean all);
+	public List<Object> getItems(boolean all);
 	public TableComponentInterface withSearchProperties(String... searchProperties);
 	public TableComponentInterface withColumn(Column column);
 	public TableComponentInterface withList(TableList item);

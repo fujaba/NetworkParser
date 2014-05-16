@@ -1,4 +1,7 @@
-package de.uniks.networkparser.gui.grid;
+package de.uniks.networkparser;
+
+import java.util.Collection;
+import java.util.List;
 /*
 NetworkParser
 Copyright (c) 2011 - 2013, Stefan Lindel
@@ -21,33 +24,30 @@ See the Licence for the specific language governing
 permissions and limitations under the Licence.
 */
 
-import java.beans.PropertyChangeListener;
-
-import de.uniks.networkparser.AbstractEntityList;
-import de.uniks.networkparser.AbstractList;
-
-public class PropertyChangeListenerList extends AbstractEntityList<PropertyChangeListener> {
+public abstract class AbstractEntityList<V> extends AbstractList<V> implements List<V>{
 	@Override
-	public String toString() {
-		return "ArrayEntryList with "+size()+" Elements";
-	}
-
+    public boolean remove(Object value) {
+    	int index = getIndex(value);
+        boolean result = values.remove(value);
+        if(result){
+        	V beforeValue = null;
+        	if(index>0){
+    			beforeValue = get(index - 1);
+    		}
+        	fireProperty(value, null, beforeValue);
+        }
+        return result;
+    }
+	
 	@Override
-	public AbstractEntityList<PropertyChangeListener> with(Object... values) {
-		if(values != null){
-			for(Object value : values){
-				if(value instanceof PropertyChangeListener){
-					add((PropertyChangeListener) value);
-				}
-			}
+	public AbstractEntityList<V> with(Collection<?> values) {
+		for(Object value : values){
+			with(value);
 		}
 		return this;
 	}
 
-	@Override
-	public AbstractList<PropertyChangeListener> getNewInstance() {
-		return new PropertyChangeListenerList();
+	public List<V> values(){
+		return values;
 	}
-
-	
 }

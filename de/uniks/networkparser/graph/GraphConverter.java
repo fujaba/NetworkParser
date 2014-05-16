@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 
+import de.uniks.networkparser.AbstractKeyValueEntry;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
@@ -51,13 +53,13 @@ public class GraphConverter implements Converter {
 			for(Attribute attribute : node.getValue()){
 				boolean addValue=true;
 				for(GraphEdge edge : root.getEdges()){
-					if(edge.getSource().has(node.getKey())){
+					if(edge.getSource().contains(node.getKey())){
 						if(attribute.getKey().equals(edge.getSource().getProperty())){
 							addValue=false;
 							break;
 						}
 					}
-					if(edge.getTarget().has(node.getKey())){
+					if(edge.getTarget().contains(node.getKey())){
 						if(attribute.getKey().equals(edge.getTarget().getProperty())){
 							addValue=false;
 							break;
@@ -65,7 +67,7 @@ public class GraphConverter implements Converter {
 					}
 				}
 				if(addValue){
-					node.getKey().addValue(attribute);
+					node.getKey().add(attribute);
 				}
 			}
 		}
@@ -74,52 +76,51 @@ public class GraphConverter implements Converter {
 	
 	public GraphNode parseJsonObject(GraphList root, JsonObject node, HashMap<GraphNode, ArrayList<Attribute>> attributes){
 		String id = node.getString(JsonIdMap.ID);
-		GraphNode graphNode = root.getById(id);
+		GraphNode graphNode = root.get(id);
 		if(graphNode==null){
 			graphNode = new GraphNode().withId(id);
 			root.add(graphNode);
 		}
-		if(node.has(JsonIdMap.CLASS)){
+		if(node.containsKey(JsonIdMap.CLASS)){
 			graphNode.withClassName(node.getString(JsonIdMap.CLASS));
 		}
-		if(node.has(HEADIMAGE)){
+		if(node.containsKey(HEADIMAGE)){
 			graphNode.withHeadImage(node.getString(HEADIMAGE));
 		}
 		
-		if(node.has(JsonIdMap.JSON_PROPS)){
+		if(node.containsKey(JsonIdMap.JSON_PROPS)){
 			JsonObject props = node.getJsonObject(JsonIdMap.JSON_PROPS);
-			for(Iterator<String> keys = props.keys();keys.hasNext();){
-				String key = keys.next();
-				Object value = props.get(key);
-				if(value instanceof JsonObject) {
+			for(Iterator<AbstractKeyValueEntry<String, Object>> i = props.iterator();i.hasNext();){
+				AbstractKeyValueEntry<String, Object> item = i.next();
+				if(item.getValue() instanceof JsonObject) {
 					// Must be a Link to 1
-					GraphNode newNode = parseJsonObject(root, (JsonObject)value, attributes);
-					root.addEdge(new GraphEdge().withSource(graphNode).withTarget(newNode, GraphIdMap.ONE, key));
-				}else if(value instanceof JsonArray) {
+					GraphNode newNode = parseJsonObject(root, (JsonObject)item.getValue(), attributes);
+					root.addEdge(new GraphEdge().withSource(graphNode).withTarget(newNode, GraphIdMap.ONE, item.getKey()));
+				}else if(item.getValue() instanceof JsonArray) {
 					// Must be a Link to n
-					JsonArray array = (JsonArray) value;
+					JsonArray array = (JsonArray) item.getValue();
 					StringBuilder sb = new StringBuilder();
-					for(Object item : array){
-						if(item instanceof JsonObject){
-							GraphNode newNode = parseJsonObject(root, (JsonObject)item, attributes);
-							root.addEdge(new GraphEdge().withSource(graphNode).withTarget(newNode, GraphIdMap.MANY, key));							
+					for(Object entity : array){
+						if(entity instanceof JsonObject){
+							GraphNode newNode = parseJsonObject(root, (JsonObject)entity, attributes);
+							root.addEdge(new GraphEdge().withSource(graphNode).withTarget(newNode, GraphIdMap.MANY, item.getKey()));							
 						}else{
 							if(sb.length()>0){
-								sb.append(","+item.toString());
+								sb.append(","+entity.toString());
 							}else{
-								sb.append(item.toString());
+								sb.append(entity.toString());
 							}
 						}
 					}
 					if(sb.length()>0){
-						Attribute attribute = new Attribute().withKey(key).withClazz(value.getClass().getName()).withValue(sb.toString());
+						Attribute attribute = new Attribute().withKey(item.getKey()).withClazz(item.getValue().getClass().getName()).withValue(sb.toString());
 						if(attributes.get(graphNode)==null){
 							attributes.put(graphNode, new ArrayList<Attribute>());
 						}
 						attributes.get(graphNode).add(attribute);
 					}
 				}else{
-					Attribute attribute = new Attribute().withKey(key).withClazz(value.getClass().getName()).withValue(value.toString());
+					Attribute attribute = new Attribute().withKey(item.getKey()).withClazz(item.getValue().getClass().getName()).withValue(item.getValue().toString());
 					if(attributes.get(graphNode)==null){
 						attributes.put(graphNode, new ArrayList<Attribute>());
 					}
@@ -135,7 +136,7 @@ public class GraphConverter implements Converter {
 		String typ = root.getTyp();
 		JsonObject jsonRoot=new JsonObject().withValue(TYP, typ);
 		JsonObject value=new JsonObject();
-		value.put(NODES, parseEntities(typ, root.getChildren(), removePackage));
+		value.put(NODES, parseEntities(typ, root.values(), removePackage));
 		value.put(EDGES, parseEdges(typ, root.getEdges(), removePackage));
 		jsonRoot.put("value", value);
 		return jsonRoot;
@@ -146,8 +147,8 @@ public class GraphConverter implements Converter {
 		ArrayList<String> ids=new ArrayList<String>();
 
 		for(GraphEdge edge : edges){
-			for(GraphNode source : edge.getSource().getItems()){
-				for(GraphNode target : edge.getTarget().getItems()){
+			for(GraphNode source : edge.getSource().values()){
+				for(GraphNode target : edge.getTarget().values()){
 					JsonObject child = new JsonObject().withValue(TYP, EDGE);
 					child.put(SOURCECARDINALITY,  edge.getSource().getCardinality());
 					child.put(TARGETCARDINALITY,  edge.getTarget().getCardinality());
@@ -210,7 +211,7 @@ public class GraphConverter implements Converter {
 		item.put(ATTRIBUTES, parseAttributes(typ, entity.getAttributes(), shortName));
 		return item;
 	}
-	private JsonArray parseAttributes(String typ, ArrayList<Attribute> attributes, boolean shortName) {
+	private JsonArray parseAttributes(String typ, List<Attribute> attributes, boolean shortName) {
 		JsonArray result=new JsonArray();
 		String splitter = "";
 		if (typ.equals(GraphIdMap.OBJECT)) {

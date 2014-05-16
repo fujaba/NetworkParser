@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import de.uniks.networkparser.AbstractKeyValueEntry;
 import de.uniks.networkparser.ArrayEntryList;
 import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -37,8 +38,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
  * component's <code>addUpdateListener<code> method. When
  * the update event occurs, that object's appropriate
  * method is invoked.
- * 
- * @see UpdateEvent
+ *
  */
 
 public class UpdateListener implements PropertyChangeListener {
@@ -213,7 +213,7 @@ public class UpdateListener implements PropertyChangeListener {
 		if (gc != null && this.garbageCollection != null) {
 			if (this.garbageCollection.containsKey(gc)) {
 				Object value = this.garbageCollection.getValue(gc);
-				int newAssocValue = ((int)value) - 1;
+				int newAssocValue = ((Integer)value) - 1;
 				if (newAssocValue > 0) {
 					this.garbageCollection.put(gc, newAssocValue);
 				} else {
@@ -448,7 +448,7 @@ public class UpdateListener implements PropertyChangeListener {
 				String id = (String) message.get(JsonIdMap.ID);
 				if (this.garbageCollection.containsKey(id)) {
 					this.garbageCollection.put(id,
-							(int)this.garbageCollection.getValue(id) + 1);
+							(Integer)this.garbageCollection.getValue(id) + 1);
 				} else {
 					this.garbageCollection.put(id, 1);
 				}
@@ -460,14 +460,12 @@ public class UpdateListener implements PropertyChangeListener {
 					// Its a new Object
 					JsonObject props = (JsonObject) message
 							.get(JsonIdMap.JSON_PROPS);
-					Iterator<String> keys = props.keys();
-					while (keys.hasNext()) {
-						String key = keys.next();
-						Object value = props.get(key);
-						if (value instanceof JsonObject) {
-							countMessage((JsonObject) value);
-						} else if (value instanceof JsonArray) {
-							countMessage((JsonArray) value);
+					for(Iterator<AbstractKeyValueEntry<String, Object>> i = props.iterator();i.hasNext();){
+						AbstractKeyValueEntry<String, Object> item = i.next();
+						if (item.getValue() instanceof JsonObject) {
+							countMessage((JsonObject) item.getValue());
+						} else if (item.getValue() instanceof JsonArray) {
+							countMessage((JsonArray) item.getValue());
 						}
 					}
 				}

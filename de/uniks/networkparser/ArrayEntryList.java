@@ -1,4 +1,12 @@
 package de.uniks.networkparser;
+import java.util.Collection;
+import java.util.Iterator;
+
+
+
+
+
+
 /*
 NetworkParser
 Copyright (c) 2011 - 2013, Stefan Lindel
@@ -20,17 +28,9 @@ express or implied.
 See the Licence for the specific language governing
 permissions and limitations under the Licence.
 */
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import de.uniks.networkparser.event.MapEntry;
-import de.uniks.networkparser.interfaces.FactoryEntity;
 
-public class ArrayEntryList extends EntityList<MapEntry> implements FactoryEntity {
+public class ArrayEntryList extends AbstractKeyValueList<String, Object> {
 	@Override
 	public String toString() {
 		return "ArrayEntryList with "+size()+" Elements";
@@ -42,122 +42,42 @@ public class ArrayEntryList extends EntityList<MapEntry> implements FactoryEntit
 		return this;
 	}
 
-	public boolean containsKey(Object key) {
-		for(Iterator<MapEntry> i = iterator();i.hasNext();){
-			MapEntry item = i.next();
-			if(item.getKey().equals(key)){
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public boolean containsValue(Object value) {
-		for(Iterator<MapEntry> i = iterator();i.hasNext();){
-			MapEntry item = i.next();
-			if(item.getValue().equals(value)){
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public Object put(String key, Object value) {
-		if(!isAllowDuplicate()){			
-			for(Iterator<MapEntry> i = iterator();i.hasNext();){
-				MapEntry item = i.next();
-				if(item.getKey().equals(key)){
-					item.withValue(value);
-					return item.getValue();
-				}
-			}
-		}
-		MapEntry newObject = getNewObject();
-		newObject.withKey(key);
-		newObject.withValue(value);
-		values.add(newObject);
-		return value;
-	}
-
-	public void putAll(Map<String, Object> map) {
-		for(Iterator<Entry<String, Object>> i = map.entrySet().iterator();i.hasNext();){
-			Entry<String, Object> item = i.next();
-			this.put(item.getKey(), item.getValue());
-		}
-	}
-
-	public ArrayList<String> keySet() {
-		ArrayList<String> list = new ArrayList<String>();
-		for(Iterator<MapEntry> i = values.listIterator();i.hasNext();){
-			list.add(i.next().getKeyString());
-		}
-		return list;
-	}
-
-	/**
-	 * Not Good because the values copy to new List
-	 * 
-	 * @return Collection of Values
-	 */
-	public Collection<Object> values() {
-		ArrayList<Object> list = new ArrayList<Object>();
-		for(Iterator<MapEntry> i = values.listIterator();i.hasNext();){
-			list.add(i.next().getValue());
-		}
-		return list;
-	}
-
-	public List<MapEntry> entrySet() {
-		return values;
-	}
-
-	public String getKey(Object obj) {
-		for(Iterator<MapEntry> i = iterator();i.hasNext();){
-			MapEntry item = i.next();
-			if(item.getValue().equals(obj)){
-				return item.getKeyString();
-			}
-		}
-		return null;
-	}
-	public Object getValue(String key) {
-		for(Iterator<MapEntry> i = iterator();i.hasNext();){
-			MapEntry item = i.next();
-			if(item.getKey().equals(key)){
-				return item.getValue();
-			}
-		}
-		return null;
-	}
-	
 	public ArrayEntryList with(String key, Object value) {
 		this.put(key, value);
 		return this;
 	}
 
-	public boolean removeKey(String key) {
-		for(Iterator<MapEntry> i = iterator();i.hasNext();){
-			MapEntry item = i.next();
-			if(item.getKey().equals(key)){
-				i.remove();
-				return true;
+	@Override
+	public ArrayEntryList with(
+			Collection<?> values) {
+		for(Iterator<?> i = values.iterator();i.hasNext();){
+			Object item = i.next();
+			if(item instanceof MapEntry){
+				add((MapEntry) item);
 			}
 		}
-		return false;
+		return this;
+	}
+	
+	@Override
+	public ArrayEntryList with(Object... values){
+		if(values != null){
+			for(Object value : values){
+				if(value instanceof MapEntry){
+					add((MapEntry) value);
+				}
+			}
+		}
+		return this;
 	}
 
 	@Override
-	public boolean add(MapEntry e) {
-		return super.add(e);
-	}
-
-	@Override
-	public MapEntry getNewObject() {
-		return new MapEntry();
-	}
-
-	@Override
-	public ArrayEntryList getNewArray() {
+	public ArrayEntryList getNewInstance() {
 		return new ArrayEntryList();
+	}
+
+	@Override
+	public AbstractKeyValueEntry<String, Object> getNewEntity() {
+		return new MapEntry();
 	}
 }

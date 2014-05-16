@@ -21,16 +21,14 @@ package de.uniks.networkparser.graph;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
-import de.uniks.networkparser.interfaces.BaseListEntity;
+import de.uniks.networkparser.AbstractList;
 
-public class GraphNode implements BaseListEntity {
+public class GraphNode extends AbstractList<Attribute> {
 	private String className;
 	private String id;
 	private String headImage;
-	private ArrayList<Attribute> values = new ArrayList<Attribute>();
 
 	// GETTER AND SETTER
 	public String getClassName(boolean shortName) {
@@ -62,10 +60,6 @@ public class GraphNode implements BaseListEntity {
 		return "";
 	}
 	
-	public ArrayList<Attribute> getAttributes(){
-		return values;
-	}
-	
 	public GraphNode withTyp(String typ, String value){
 		if(typ.equals(GraphIdMap.OBJECT)){
 			withId(value);
@@ -82,9 +76,6 @@ public class GraphNode implements BaseListEntity {
 
 	public void addValue(String property, String clazz, String value) {
 		values.add(new Attribute().withKey(property).withClazz(clazz).withValue(value));
-	}
-	public void addValue(Attribute attribute) {
-		values.add(attribute);
 	}
 
 	@Override
@@ -104,41 +95,23 @@ public class GraphNode implements BaseListEntity {
 		return this;
 	}
 
-	public BaseListEntity with(Object... values) {
-		for(Object item : values){
-			if(item instanceof Attribute){
-				this.values.add((Attribute) item);
+	@Override
+	public GraphNode getNewInstance() {
+		return new GraphNode();
+	}
+
+	public List<Attribute> getAttributes() {
+		return values;
+	}
+
+	@Override
+	public GraphNode with(Object... values) {
+		if(values != null){
+			for(Object value : values){
+				if(value instanceof Attribute){
+					add((Attribute) value);
+				}
 			}
-		}
-		return this;
-	}
-
-	@Override
-	public int size() {
-		return values.size();
-	}
-
-	public boolean add(Attribute value) {
-		return values.add(value);
-	}
-
-	@Override
-	public Attribute get(int z) {
-		return values.get(z);
-	}
-
-	@Override
-	public BaseListEntity with(Collection<?> values) {
-		for(Object item : values){
-			this.with(item);
-		}
-		return this;
-	}
-
-	@Override
-	public BaseListEntity with(Object value) {
-		if(value instanceof Attribute){
-			values.add((Attribute) value);
 		}
 		return this;
 	}

@@ -95,14 +95,13 @@ public class GraphIdMap extends IdMapEncoder {
 		}
 
 		String mainKey = getId(object);
-		GraphNode element = list.getById(mainKey);
+		GraphNode element = list.get(mainKey);
 		if (element != null) {
 			return element;
 		}
 
 		SendableEntityCreator prototyp = getCreatorClass(object);
 		String className = object.getClass().getName();
-		;
 		className = className.substring(className.lastIndexOf('.') + 1);
 
 		element = new GraphNode();

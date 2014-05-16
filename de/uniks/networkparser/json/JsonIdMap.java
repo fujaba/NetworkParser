@@ -29,7 +29,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import de.uniks.networkparser.EntityList;
+import de.uniks.networkparser.AbstractKeyValueEntry;
+import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.IdMapEncoder;
@@ -190,7 +191,7 @@ public class JsonIdMap extends IdMap {
 				SendableEntityCreator referenceCreator = getCreatorClass(value);
 				if (value instanceof Collection<?> && referenceCreator == null) {
 					// Simple List or Assocs
-					EntityList<Object> subValues = getPrototyp().getNewArray();
+					AbstractList<Object> subValues = getPrototyp().getNewArray();
 //					jsonArray.getNewArray();
 					for (Object containee : ((Collection<?>) value)) {
 						Object item = parseItem(entity, filter, containee,
@@ -205,7 +206,7 @@ public class JsonIdMap extends IdMap {
 				} else if (value instanceof Map<?, ?>
 						&& referenceCreator == null) {
 					// Maps
-					EntityList<Object> subValues = getPrototyp().getNewArray();
+					AbstractList<Object> subValues = getPrototyp().getNewArray();
 					Map<?, ?> map = (Map<?, ?>) value;
  					String packageName = ObjectMapEntry.class.getName();
 					for (Iterator<?> i = map.entrySet().iterator(); i.hasNext();) {
@@ -323,17 +324,17 @@ public class JsonIdMap extends IdMap {
 		Object result = null;
 		int len = jsonArray.size() - 1;
 		// Add all Objects
-		ArrayList<ReferenceObject> refs = new ArrayList<ReferenceObject>();
+		Filter filter = this.filter.cloneObj();
 		for (int i = 0; i <= len; i++) {
 			JsonObject kidObject = jsonArray.getJSONObject(i);
-			Object tmp = decode(kidObject, refs, this.filter.cloneObj());
+			Object tmp = decoding(kidObject, filter);
 			if (kidObject.has(MAINITEM)) {
 				result = tmp;
 			} else if (i == 0) {
 				result = tmp;
 			}
 		}
-		for (ReferenceObject ref : refs) {
+		for (ReferenceObject ref : filter.getRefs()) {
 			ref.execute(this);
 		}
 		return result;
@@ -356,7 +357,7 @@ public class JsonIdMap extends IdMap {
 			}
 			return null;
 		}
-		Object mainItem = decode(jsonObject, refs, null);
+		Object mainItem = decoding(jsonObject, null);
 		for (ReferenceObject ref : refs) {
 			ref.execute(this);
 		}
@@ -385,13 +386,11 @@ public class JsonIdMap extends IdMap {
 	 * @return the object
 	 */
 	public Object decode(Object target, JsonObject jsonObject, Filter filter) {
-		//FIXME ArrayList ReferenceObject -> MapEntry vererben
-		ArrayList<ReferenceObject> refs = new ArrayList<ReferenceObject>();
 		if(filter==null){
 			filter=this.filter.cloneObj();
 		}
-		Object mainItem = decode(target, jsonObject, refs, filter.withStandard(this.filter));
-		for (ReferenceObject ref : refs) {
+		Object mainItem = decoding(target, jsonObject, filter.withStandard(this.filter));
+		for (ReferenceObject ref : filter.getRefs()) {
 			ref.execute(this);
 		}
 		return mainItem;
@@ -408,8 +407,7 @@ public class JsonIdMap extends IdMap {
 	 *            for read the id from JsonObject
 	 * @return the object
 	 */
-	private Object decode(JsonObject jsonObject,
-			ArrayList<ReferenceObject> refs, Filter filter) {
+	private Object decoding(JsonObject jsonObject, Filter filter) {
 		Object result = null;
 		SendableEntityCreator typeInfo = grammar.getReadCreator(
 				jsonObject, this);
@@ -436,11 +434,11 @@ public class JsonIdMap extends IdMap {
 				if (properties != null) {
 					for (String property : properties) {
 						Object obj = jsonObject.get(property);
-						parseValue(result, property, obj, typeInfo, refs);
+						parseValue(result, property, obj, typeInfo, filter);
 					}
 				}
 			} else {
-				decode(result, jsonObject, refs, filter);
+				decoding(result, jsonObject, filter);
 			}
 		} else if (jsonObject.get(VALUE) != null) {
 			return jsonObject.get(VALUE);
@@ -457,12 +455,9 @@ public class JsonIdMap extends IdMap {
 	 *            the target
 	 * @param jsonObject
 	 *            the json object
-	 * @param refs
-	 *            the refs
 	 * @return the object
 	 */
-	protected Object decode(Object target, JsonObject jsonObject,
-			ArrayList<ReferenceObject> refs, Filter filter) {
+	protected Object decoding(Object target, JsonObject jsonObject,	Filter filter) {
 		// JSONArray jsonArray;
 		boolean isId = filter.isId(this, target, target.getClass().getName());
 		if (isId) {
@@ -481,7 +476,7 @@ public class JsonIdMap extends IdMap {
 			if (properties != null) {
 				for (String property : properties) {
 					Object obj = jsonProp.get(property);
-					parseValue(target, property, obj, prototyp, refs);
+					parseValue(target, property, obj, prototyp, filter);
 				}
 			}
 		}
@@ -499,11 +494,12 @@ public class JsonIdMap extends IdMap {
 	 *            the value
 	 * @param creator
 	 *            the creator
+	 * @param filter 
 	 * @param refs
 	 *            the refs
 	 */
 	protected void parseValue(Object target, String property, Object value,
-			SendableEntityCreator creator, ArrayList<ReferenceObject> refs) {
+			SendableEntityCreator creator, Filter filter) {
 		if (value != null) {
 			if (value instanceof JsonArray) {
 				JsonArray jsonArray = (JsonArray) value;
@@ -516,14 +512,14 @@ public class JsonIdMap extends IdMap {
 						String jsonId = (String) child.get(ID);
 						if (className == null && jsonId != null) {
 							// It is a Ref
-							refs.add(new ReferenceObject()
+							filter.add(new ReferenceObject()
 								.withId(jsonId)
 								.withCreator(creator)
 								.withProperty(property)
 								.withEntity(target));
 						} else {
 							creator.setValue(target, property,
-									decode((JsonObject) kid), NEW);
+									decoding((JsonObject) kid, filter), NEW);
 						}
 					} else {
 						creator.setValue(target, property, kid, NEW);
@@ -563,13 +559,13 @@ public class JsonIdMap extends IdMap {
 						}
 					} else if (className == null && jsonId != null) {
 						// It is a Ref
-						refs.add(new ReferenceObject()
+						filter.add(new ReferenceObject()
 									.withId(jsonId)
 									.withCreator(creator)
 									.withProperty(property)
 									.withEntity(target));
 					} else {
-						creator.setValue(target, property, decode(child), NEW);
+						creator.setValue(target, property, decoding(child, filter), NEW);
 					}
 				} else {
 					creator.setValue(target, property, value, NEW);
@@ -802,7 +798,7 @@ public class JsonIdMap extends IdMap {
 	 * @see de.uni.kassel.peermessage.IdMap#garbageCollection(java.util.Set)
 	 */
 	public void garbageCollection(List<String> classCounts) {
-		for(Iterator<MapEntry> i = keyValue.iterator();i.hasNext();){
+		for(Iterator<AbstractKeyValueEntry<String, Object>> i = keyValue.iterator();i.hasNext();){
 			String id = i.next().getKeyString();
 			if (!classCounts.contains(id)) {
 				i.remove();

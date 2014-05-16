@@ -26,7 +26,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 /**
  *AbstractIdMap embedded all methods for all formats.
@@ -65,7 +64,7 @@ public abstract class AbstractMap {
 			return (SendableEntityCreator) this.creators.getValue(clazz);
 		}
 		clazz = "." + clazz;
-		for (Iterator<MapEntry> i = this.creators
+		for (Iterator<Entry<String, Object>> i = this.creators
 				.entrySet().iterator(); i.hasNext();) {
 			Entry<String, Object> entry = i.next();
 			if (entry.getKey().endsWith(clazz) && entry.getValue() instanceof SendableEntityCreator) {
@@ -127,7 +126,7 @@ public abstract class AbstractMap {
 	 * @return true, if successful
 	 */
 	public boolean removeCreator(String className) {
-		return this.creators.remove(className);
+		return this.creators.remove(className) != null;
 	}
 
 	/**
@@ -135,7 +134,7 @@ public abstract class AbstractMap {
 	 */
 	public Collection<SendableEntityCreator> getCreators() {
 		ArrayList<SendableEntityCreator> result=new ArrayList<SendableEntityCreator>();
-		for (Iterator<MapEntry> i = this.creators
+		for (Iterator<Entry<String, Object>> i = this.creators
 				.entrySet().iterator(); i.hasNext();) {
 			Object value = i.next().getValue();
 			if(value instanceof SendableEntityCreator) {

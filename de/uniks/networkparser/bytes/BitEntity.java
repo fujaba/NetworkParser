@@ -21,22 +21,21 @@ package de.uniks.networkparser.bytes;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import de.uniks.networkparser.EntityList;
+import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteConverter;
 import de.uniks.networkparser.interfaces.ByteItem;
+import de.uniks.networkparser.interfaces.FactoryEntity;
 
-public class BitEntity extends EntityList<BitValue> implements ByteItem {
+public class BitEntity extends AbstractList<BitValue> implements ByteItem, FactoryEntity {
 	public static final String BIT_STRING = "string";
 	public static final String BIT_NUMBER = "number";
 	public static final String BIT_BYTE = "byte";
 	public static final String BIT_REFERENCE = "reference";
-	private ArrayList<BitValue> values = new ArrayList<BitValue>();
 
 	// Can be a Typ
 	protected String property;
@@ -46,21 +45,7 @@ public class BitEntity extends EntityList<BitValue> implements ByteItem {
 	public static final String PROPERTY_TYP = "typ";
 	public static final String PROPERTY_ORIENTATION = "orientation";
 
-	public BitEntity withValue(Object value) {
-		if (value instanceof Byte) {
-			this.typ = BIT_BYTE;
-			this.property = "" + value;
-		} else if (value instanceof Integer) {
-			this.typ = BIT_NUMBER;
-			this.property = "" + value;
-		} else {
-			this.typ = BIT_STRING;
-			this.property = "" + value;
-		}
-		return this;
-	}
-
-	public BitEntity withValue(String property, String typ) {
+	public BitEntity with(String property, String typ) {
 		this.property = property;
 		this.typ = typ;
 		return this;
@@ -74,10 +59,6 @@ public class BitEntity extends EntityList<BitValue> implements ByteItem {
 	public BitEntity withOrientation(int orientation) {
 		this.orientation = orientation;
 		return this;
-	}
-
-	public boolean addValue(BitValue value) {
-		return this.values.add(value);
 	}
 
 	public String getPropertyName() {
@@ -95,10 +76,6 @@ public class BitEntity extends EntityList<BitValue> implements ByteItem {
 			}
 		}
 		return false;
-	}
-
-	public Iterator<BitValue> valueIterator() {
-		return values.iterator();
 	}
 
 	public boolean set(String attribute, Object value) {
@@ -167,33 +144,22 @@ public class BitEntity extends EntityList<BitValue> implements ByteItem {
 	}
 
 	@Override
-	public BitEntity with(Collection<?> collection) {
-		for (Iterator<?> i = collection.iterator(); i.hasNext();) {
-			values.add((BitValue) i.next());
-		}
-		return this;
-	}
-
 	public BitEntity with(Object... values) {
 		for(Object value : values){
-			this.values.add((BitValue) value);
+			if (value instanceof Byte) {
+				this.typ = BIT_BYTE;
+				this.property = "" + value;
+			} else if (value instanceof Integer) {
+				this.typ = BIT_NUMBER;
+				this.property = "" + value;
+			} else if(value instanceof BitEntity){
+				this.add((BitValue) value);
+			}else{
+				this.typ = BIT_STRING;
+				this.property = "" + value;
+			}
 		}
 		return this;
-	}
-
-	@Override
-	public int size() {
-		return values.size();
-	}
-
-	@Override
-	public boolean add(BitValue value) {
-		return values.add((BitValue) value);
-	}
-
-	@Override
-	public BitValue get(int index) {
-		return values.get(index);
 	}
 
 	public int getOrientation() {
@@ -206,7 +172,20 @@ public class BitEntity extends EntityList<BitValue> implements ByteItem {
 	}
 
 	@Override
-	public EntityList<BitValue> getNewArray() {
+	public BitEntity getNewArray() {
+		return new BitEntity();
+	}
+
+	@Override
+	public BitEntity with(Collection<?> values) {
+		for(Iterator<?> i = values.iterator();i.hasNext();){
+			with(i.next());
+		}
+		return this;
+	}
+	
+	@Override
+	public AbstractList<BitValue> getNewInstance() {
 		return new BitEntity();
 	}
 }

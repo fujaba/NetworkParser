@@ -23,9 +23,6 @@ package de.uniks.networkparser;
 */
 import java.util.ArrayList;
 
-import de.uniks.networkparser.interfaces.BaseKeyValueEntity;
-import de.uniks.networkparser.interfaces.BaseListEntity;
-
 public class StringTokener extends Tokener {
 	private boolean isString = true;
 
@@ -90,11 +87,11 @@ public class StringTokener extends Tokener {
     }
 
 	@Override
-	public void parseToEntity(BaseKeyValueEntity entity) {
+	public void parseToEntity(AbstractKeyValueList<?, ?> entity) {
 	}
 
 	@Override
-	public void parseToEntity(BaseListEntity entityList) {
+	public void parseToEntity(AbstractEntityList<?> entity) {
 	}
 
 	public boolean isString() {

@@ -22,9 +22,22 @@ package de.uniks.networkparser;
 */
 
 
-public class ObjectMapEntry extends AbstractMapEntry<Object, Object>{
+public class ObjectMapEntry extends AbstractKeyValueEntry<Object, Object>{
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new ObjectMapEntry();
+	}
+
+	@Override
+	public ObjectMapEntry withValue(Object key, Object value) {
+		this.setKey(key);
+		this.setValue(value);
+		return this;
+	}
+
+	@Override
+	public ObjectMapEntry withToValue(Object value) {
+		this.setValue(value);
+		return this;
 	}
 }

@@ -29,16 +29,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import de.uniks.networkparser.EntityList;
+import de.uniks.networkparser.AbstractEntityList;
 import de.uniks.networkparser.EntityValueFactory;
 import de.uniks.networkparser.IdMapEncoder;
-import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.sort.EntityComparator;
 import de.uniks.networkparser.sort.SortingDirection;
 
-public class TableList extends EntityList<Object> implements SendableEntity {
+public class TableList extends AbstractEntityList<Object> implements SendableEntity {
 	public static final String PROPERTY_ITEMS = "items";
 	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
 	
@@ -118,7 +117,7 @@ public class TableList extends EntityList<Object> implements SendableEntity {
 	}
 	
 	public boolean addAll(TableList list){
-		for(Object item : this){
+		for(Object item : values){
 			if(!add(item)){
 				return false;
 			}
@@ -139,11 +138,6 @@ public class TableList extends EntityList<Object> implements SendableEntity {
 	@Override
 	public int lastIndexOf(Object obj) {
 		return indexOf(obj);
-	}
-
-	@Override
-	public ListIterator<Object> listIterator() {
-		return new ListIteratorImpl<Object>(this);
 	}
 
 	@Override
@@ -174,6 +168,11 @@ public class TableList extends EntityList<Object> implements SendableEntity {
 	
 	public TableList withSort(String field, SortingDirection direction, EntityValueFactory cellValueCreator) {
 		EntityComparator<Object> comparator = comparator();
+		if(comparator == null){
+			comparator = new EntityComparator<Object>();
+			this.cpr = comparator;
+			
+		}
 		comparator.withColumn(field);
 		comparator.withDirection(direction);
 		comparator.withCellCreator(cellValueCreator);
@@ -191,6 +190,11 @@ public class TableList extends EntityList<Object> implements SendableEntity {
 	
 	public TableList withSort(String field, SortingDirection direction) {
 		EntityComparator<Object> comparator = comparator();
+		if(comparator == null){
+			comparator = new EntityComparator<Object>();
+			this.cpr = comparator;
+			
+		}
 		comparator.withColumn(field);
 		comparator.withDirection(direction);
 		refreshSort();
@@ -282,18 +286,22 @@ public class TableList extends EntityList<Object> implements SendableEntity {
 	}
 
 	@Override
-	public EntityList<Object> getNewArray() {
-		return new TableList();
-	}
-
-	@Override
 	public String toString() {
 		return "TableList with "+size()+" Elements";
 	}
 
 	@Override
-	public BaseItem getNewObject() {
-		// TODO Auto-generated method stub
-		return null;
+	public TableList getNewInstance() {
+		return new TableList();
+	}
+
+	@Override
+	public TableList with(Object... values) {
+		if(values != null){
+			for(Object value : values){
+				this.add(value);
+			}
+		}
+		return this;
 	}
 }
