@@ -33,6 +33,7 @@ public class Filter {
 	
 	// Temporary variables
 	private ArrayList<Object> visitedObjects;
+	private ArrayList<ReferenceObject> refs;
 	private Boolean full;
 
 	public Condition getIdFilter() {
@@ -91,6 +92,7 @@ public class Filter {
 			property = referenceFilter.getPropertyRegard();
 		}
 		visitedObjects=new ArrayList<Object>();
+		refs = new ArrayList<ReferenceObject>();
 		if(full==null){
 			full = referenceFilter.isFullSeriation();
 			if(full==null){
@@ -136,5 +138,13 @@ public class Filter {
 			return this.convertable.matches(ValuesMap.with(map, entity, property, value, isMany, deep));
 		}
 		return true;
+	}
+
+	public ArrayList<ReferenceObject> getRefs() {
+		return refs;
+	}
+
+	public boolean add(ReferenceObject item) {
+		return refs.add(item);
 	}
 }
