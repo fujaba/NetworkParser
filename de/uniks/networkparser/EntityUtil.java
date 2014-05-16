@@ -25,12 +25,37 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-import de.uniks.networkparser.interfaces.BaseListEntity;
-import de.uniks.networkparser.interfaces.BaseKeyValueEntity;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
 
 public class EntityUtil {
+	/**
+	 * Produce a string from a double. The string "null" will be returned if the
+	 * number is not finite.
+	 * 
+	 * @param d
+	 *            A double.
+	 * @return A String.
+	 */
+	public static String doubleToString(double d) {
+		if (Double.isInfinite(d) || Double.isNaN(d)) {
+			return "null";
+		}
+		// Shave off trailing zeros and decimal point, if possible.
+		String string = Double.toString(d);
+		if (string.indexOf('.') > 0 && string.indexOf('e') < 0
+				&& string.indexOf('E') < 0) {
+			while (string.endsWith("0")) {
+				string = string.substring(0, string.length() - 1);
+			}
+			if (string.endsWith(".")) {
+				string = string.substring(0, string.length() - 1);
+			}
+		}
+		return string;
+	}
+	
 	/**
 	 * Produce a string from a Number.
 	 * 
@@ -44,8 +69,6 @@ public class EntityUtil {
 		if (number == null) {
 			throw new IllegalArgumentException("Null pointer");
 		}
-		testValidity(number);
-
 		// Shave off trailing zeros and decimal point, if possible.
 
 		String string = number.toString();
@@ -141,30 +164,6 @@ public class EntityUtil {
 	}
 
 	/**
-	 * Throw an exception if the object is a NaN or infinite number.
-	 * 
-	 * @param o
-	 *            The object to test.
-	 * @throws RuntimeException
-	 *             If o is a non-finite number.
-	 */
-	public static void testValidity(Object o) {
-		if (o != null) {
-			if (o instanceof Double) {
-				if (((Double) o).isInfinite() || ((Double) o).isNaN()) {
-					throw new RuntimeException(
-							"JSON does not allow non-finite numbers.");
-				}
-			} else if (o instanceof Float) {
-				if (((Float) o).isInfinite() || ((Float) o).isNaN()) {
-					throw new RuntimeException(
-							"JSON does not allow non-finite numbers.");
-				}
-			}
-		}
-	}
-
-	/**
 	 * Make a prettyprinted JSON text of an object value.
 	 * <p>
 	 * Warning: This method assumes that the data structure is acyclical.
@@ -199,12 +198,14 @@ public class EntityUtil {
 			return ((StringItem) value).toString(indentFactor, intent);
 		}
 		if (value instanceof Map) {
-			BaseKeyValueEntity entity = (BaseKeyValueEntity) reference.getNewObject();
-			entity.withValues((Map<?, ?>) value);
-			return ((StringItem)entity).toString(indentFactor, intent);
+			BaseItem item = ((AbstractKeyValueList<?,?>)reference.getNewArray()).with((Map<?, ?>) value);
+			if(item instanceof StringItem){
+				return ((StringItem)item).toString(indentFactor, intent);
+			}
+			return ((StringItem)item).toString();
 		}
 		if (value instanceof Collection) {
-			BaseListEntity item = reference.getNewArray().with((Collection<?>) value);
+			AbstractList<?> item = reference.getNewArray().with((Collection<?>) value);
 			if(item instanceof StringItem){
 				return ((StringItem)item).toString(indentFactor, intent);
 			}
@@ -216,7 +217,7 @@ public class EntityUtil {
 			for (Object item : items) {
 				arrayList.add(item);
 			}
-			BaseListEntity item = reference.getNewArray().with(arrayList);
+			AbstractList<?> item = reference.getNewArray().with(arrayList);
 			if(item instanceof StringItem){
 				return ((StringItem)item).toString(indentFactor, intent);
 			}
@@ -239,16 +240,11 @@ public class EntityUtil {
 		if (value instanceof Boolean) {
 			return value.toString();
 		}
-		if (value instanceof BaseKeyValueEntity) {
-			return ((BaseKeyValueEntity) value).toString();
-		}
-		if (value instanceof EntityList) {
-			return ((EntityList<?>) value).toString();
+		if (value instanceof AbstractList) {
+			return ((AbstractList<?>) value).toString();
 		}
 		if (value instanceof Map) {
-			BaseKeyValueEntity entity = (BaseKeyValueEntity) reference.getNewObject();
-			entity.withValues((Map<?, ?>) value);
-			return entity.toString();
+			return ((AbstractKeyValueList<?,?>)reference.getNewArray()).with((Map<?, ?>) value).toString();
 		}
 		if (value instanceof Collection) {
 			return reference.getNewArray().with((Collection<?>) value)
@@ -260,7 +256,7 @@ public class EntityUtil {
 			for (Object item : items) {
 				arrayList.add(item);
 			}
-			return reference.getNewArray().with(arrayList).toString();
+			return ((AbstractList<?>) reference.getNewObject()).with(arrayList).toString();
 		}
 		if (simpleText) {
 			return value.toString();
@@ -286,7 +282,7 @@ public class EntityUtil {
 				return null;
 			}
 
-			if (object instanceof BaseKeyValueEntity || object instanceof EntityList
+			if (object instanceof AbstractList
 					|| object instanceof Byte || object instanceof Character
 					|| object instanceof Short || object instanceof Integer
 					|| object instanceof Long || object instanceof Boolean
@@ -296,15 +292,13 @@ public class EntityUtil {
 			}
 
 			if (object instanceof Collection) {
-				return reference.getNewArray().with((Collection<?>) object);
+				return ((AbstractList<?>) reference.getNewObject()).with((Collection<?>) object);
 			}
 			if (object.getClass().isArray()) {
-				return reference.getNewArray().with((Collection<?>) object);
+				return ((AbstractList<?>) reference.getNewObject()).with((Collection<?>) object);
 			}
 			if (object instanceof Map) {
-				BaseKeyValueEntity entity = (BaseKeyValueEntity) reference.getNewObject();
-				entity.withValues((Map<?, ?>) object);
-				return entity;
+				return ((AbstractKeyValueList<?,?>)reference.getNewObject()).with((Map<?, ?>) object);
 			}
 			if (object.getClass().getName().startsWith("java.")
 					|| object.getClass().getName().startsWith("javax.")) {

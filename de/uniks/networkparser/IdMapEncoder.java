@@ -29,7 +29,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import de.uniks.networkparser.event.MapEntry;
+import de.uniks.networkparser.gui.table.TableList;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.IdMapCounter;
 import de.uniks.networkparser.interfaces.SendableEntity;
@@ -384,18 +384,18 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 		return null;
 	}
 
-	public ArrayEntryList getTypList(SendableEntityCreator creator) {
+	public TableList getTypList(SendableEntityCreator creator) {
 		if (creator == null) {
 			return null;
 		}
-		ArrayEntryList result = new ArrayEntryList();
+		TableList result = new TableList();
 		String clazzName = creator.getSendableInstance(true).getClass()
 				.getName();
-		for(Iterator<MapEntry> i = this.keyValue.iterator();i.hasNext();){
-			MapEntry item = i.next();
+		for(Iterator<AbstractKeyValueEntry<String, Object>> i = this.keyValue.iterator();i.hasNext();){
+			AbstractKeyValueEntry<String, Object> item = i.next();
 			if (item.getValue() != null) {
 				if (item.getValue().getClass().getName().equals(clazzName)) {
-					result.with(item.getValue());
+					result.add(item.getValue());
 				}
 			}
 		}
@@ -415,7 +415,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 			return false;
 		}
 		boolean result = false;
-		ArrayEntryList oldValues = getTypList(creator);
+		TableList oldValues = getTypList(creator);
 		for (Object obj : oldValues) {
 			if (obj instanceof Comparable<?>) {
 				@SuppressWarnings("unchecked")
@@ -497,16 +497,6 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
         return keyValue.values();
     }
 
-    /* Not Good because copy values to new List use iterator
-     * @see java.util.Map#entrySet()
-     */
-	@Override
-	@Deprecated
-	public Set<java.util.Map.Entry<String, Object>> entrySet() {
-        return new HashSet<java.util.Map.Entry<String, Object>>(keyValue);
-    }
-
-
 	public IdMapEncoder withUpdateMsgListener(PropertyChangeListener listener) {
 		this.updatePropertylistener = listener;
 		return this;
@@ -520,4 +510,10 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	public abstract BaseItem encode(Object value);
 	public abstract BaseItem encode(Object value, Filter filter);
 	public abstract BaseItem getPrototyp();
+
+	@Override
+	public Set<java.util.Map.Entry<String, Object>> entrySet() {
+		return this.creators.entrySet();
+	}
+
 }

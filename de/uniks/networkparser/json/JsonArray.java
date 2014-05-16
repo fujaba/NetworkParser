@@ -24,11 +24,13 @@ package de.uniks.networkparser.json;
 import java.util.Collection;
 import java.util.Iterator;
 
-import de.uniks.networkparser.EntityList;
+import de.uniks.networkparser.AbstractEntityList;
+import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.TextParsingException;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
 /**
  * A JSONArray is an ordered sequence of values. Its external text form is a
@@ -79,7 +81,7 @@ import de.uniks.networkparser.interfaces.StringItem;
  * @version 2010-12-28
  */
 
-public class JsonArray extends EntityList<Object> implements StringItem{
+public class JsonArray extends AbstractEntityList<Object> implements StringItem, FactoryEntity{
 	private boolean visible=true;
 	/**
 	 * Get the JSONArray associated with an index.
@@ -153,14 +155,7 @@ public class JsonArray extends EntityList<Object> implements StringItem{
 	 */
 	@Override
 	public String toString() {
-		try {
-			if (!isVisible()) {
-				return "[" + size() + " Items]";
-			}
-			return '[' + join(",") + ']';
-		} catch (Exception e) {
-			return "";
-		}
+		return toString(0,0);
 	}
 
 	/**
@@ -250,22 +245,6 @@ public class JsonArray extends EntityList<Object> implements StringItem{
 	}
 
 	/**
-	 * JSONArray from a Collection.
-	 * 
-	 * @param collection
-	 *            A Collection.
-	 */
-	public JsonArray withValue(Collection<?> collection) {
-		if (collection != null) {
-			Iterator<?> iter = collection.iterator();
-			while (iter.hasNext()) {
-				add(EntityUtil.wrap(iter.next(), this));
-			}
-		}
-		return this;
-	}
-
-	/**
 	 * JSONArray from a BaseEntityArray.
 	 * 
 	 * @param Array
@@ -278,22 +257,7 @@ public class JsonArray extends EntityList<Object> implements StringItem{
 		return this;
 	}
 	
-	/**
-	 * Get a new Instance of a JsonObject
-	 */
-	@Override
-	public JsonObject getNewObject() {
-		return new JsonObject();
-	}
 
-	/**
-	 * Get a new Instance of a JsonArray
-	 */
-	@Override
-	public JsonArray getNewArray() {
-		return new JsonArray();
-	}
-	
 	public JsonObject get(String id){
 		for(Object item : values){
 			if(item instanceof JsonObject){
@@ -315,5 +279,64 @@ public class JsonArray extends EntityList<Object> implements StringItem{
 	@Override
 	public boolean isVisible() {
 		return visible;
+	}
+
+	@Override
+	public JsonArray with(Object... values) {
+		if(values != null){
+			for(Object item : values){
+				add(item);
+			}
+		}
+		return this;
+	}
+
+	@Override
+	public JsonArray with(Collection<?> values) {
+		for(Iterator<?> i = values.iterator();i.hasNext();){
+			add(i.next());
+		}
+		return this;
+	}
+
+	@Override
+	public Object get(int index) {
+		return this.values.get(index);
+	}
+	
+	@Override
+	public JsonArray tailSet(Object fromElement, boolean inclusive) {
+		return (JsonArray) super.tailSet(fromElement, inclusive);
+	}
+	
+	@Override
+	public JsonArray headSet(Object toElement, boolean inclusive) {
+		return (JsonArray) super.headSet(toElement, inclusive);
+	}
+	
+	@Override
+	public JsonArray subSet(Object fromElement, Object toElement) {
+		return (JsonArray) super.subSet(fromElement, toElement);
+	}
+
+	/**
+	 * Get a new Instance of a JsonArray
+	 */
+	@Override
+	public JsonArray getNewArray() {
+		return new JsonArray();
+	}
+
+	/**
+	 * Get a new Instance of a JsonObject
+	 */
+	@Override
+	public JsonObject getNewObject() {
+		return new JsonObject();
+	}
+
+	@Override
+	public AbstractList<Object> getNewInstance() {
+		return new JsonArray();
 	}
 }

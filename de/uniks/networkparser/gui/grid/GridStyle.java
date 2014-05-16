@@ -28,7 +28,6 @@ import java.util.Map.Entry;
 
 import de.uniks.networkparser.ArrayEntryList;
 import de.uniks.networkparser.calculator.RegCalculator;
-import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.interfaces.SendableEntity;
 
@@ -198,7 +197,7 @@ public class GridStyle extends Style implements SendableEntity{
 	@Override
 	public boolean removePropertyChangeListener(PropertyChangeListener listener) {
 		boolean result=false;
-		for(Iterator<MapEntry> iterator = listeners.entrySet().iterator();iterator.hasNext();){
+		for(Iterator<Entry<String, Object>> iterator = listeners.entrySet().iterator();iterator.hasNext();){
 			Entry<String, Object> item = iterator.next();
 			PropertyChangeListenerList list = (PropertyChangeListenerList)item.getValue();
 			for(Iterator<PropertyChangeListener> i = list.iterator();i.hasNext();){

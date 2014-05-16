@@ -23,16 +23,18 @@ package de.uniks.networkparser.xml;
 */
 import java.util.ArrayList;
 
+import de.uniks.networkparser.AbstractEntityList;
+import de.uniks.networkparser.AbstractKeyValueList;
 import de.uniks.networkparser.ReferenceObject;
 import de.uniks.networkparser.TextParsingException;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.BaseListEntity;
-import de.uniks.networkparser.interfaces.BaseKeyValueEntity;
+import de.uniks.networkparser.interfaces.FactoryEntity;
 
 public class XMLTokener extends Tokener {
 	/** The stack. */
 	protected ArrayList<ReferenceObject> stack = new ArrayList<ReferenceObject>();
+	private boolean isAllowQuote=false;
 	
 	/** The prefix. */
 	private String prefix;
@@ -52,10 +54,10 @@ public class XMLTokener extends Tokener {
 			return nextString(c, false, allowQuote, false, true);
 		case '<':
 			back();
-			if (creator instanceof BaseKeyValueEntity) {
-				BaseItem element = ((BaseKeyValueEntity)creator).getNewObject();
-				if(element instanceof BaseKeyValueEntity){
-					parseToEntity((BaseKeyValueEntity)element);
+			if (creator instanceof FactoryEntity) {
+				BaseItem element = ((FactoryEntity)creator).getNewObject();
+				if(element instanceof AbstractEntityList<?>){
+					parseToEntity((AbstractEntityList<?>)element);
 				}
 				return element;
 			}
@@ -72,7 +74,7 @@ public class XMLTokener extends Tokener {
 	}
 
 	@Override
-	public void parseToEntity(BaseKeyValueEntity entity) throws TextParsingException{
+	public void parseToEntity(AbstractKeyValueList<?,?> entity) throws TextParsingException{
 		char c=getCurrentChar();
 
 		if (c!= '<') {
@@ -125,9 +127,9 @@ public class XMLTokener extends Tokener {
 					break;
 				} else {
 					if (getCurrentChar() == '<') {
-						child = (XMLEntity) xmlEntity.getNewObject();
-						parseToEntity((BaseKeyValueEntity) child);
-						xmlEntity.addChild(child);
+						child = (XMLEntity) xmlEntity.getNewArray();
+						parseToEntity(child);
+						xmlEntity.add(child);
 					} else {
 						xmlEntity.setValue(nextString('<', false, false, false, false));
 					}
@@ -138,7 +140,7 @@ public class XMLTokener extends Tokener {
 			} else {
 				String key = nextValue(xmlEntity, false, c).toString();
 				if ( key.length()>0 ) {
-					xmlEntity.put(key, nextValue(xmlEntity, true, nextClean()));
+					xmlEntity.put(key, nextValue(xmlEntity, isAllowQuote, nextClean()));
 				}
 			}
 		}
@@ -157,7 +159,7 @@ public class XMLTokener extends Tokener {
 	}
 	
 	@Override
-	public void parseToEntity(BaseListEntity entityList) {
+	public void parseToEntity(AbstractEntityList<?>  entityList) {
 		// Do Nothing
 	}
 
@@ -189,5 +191,10 @@ public class XMLTokener extends Tokener {
 	}
 	public ReferenceObject getStackLast(int offset) {
 		return this.stack.get(this.stack.size() -1 - offset);
+	}
+	
+	public XMLTokener withAllowQuote(boolean value){
+		this.isAllowQuote = value;
+		return this;
 	}
 }

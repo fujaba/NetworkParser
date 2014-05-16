@@ -21,11 +21,9 @@ package de.uniks.networkparser;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.interfaces.BaseKeyValueEntity;
-import de.uniks.networkparser.interfaces.BaseListEntity;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Buffer;
-/**
+/**parseToEntity
  * The Class Tokener.
  */
 
@@ -233,7 +231,7 @@ public abstract class Tokener {
 	      if(nextStep){
 	    	  next();
 	      }
-	      if(isQuote || mustQuote){
+	      if( (isQuote && allowQuote) || mustQuote){
 	    	  return this.buffer.substring(startpos, endPos - startpos - 1);
 	      }
 
@@ -570,7 +568,7 @@ public abstract class Tokener {
 		return this;
 	}
 
-	public abstract void parseToEntity(BaseKeyValueEntity entity);
+	public abstract void parseToEntity(AbstractKeyValueList<?, ?> entity);
 
-	public abstract void parseToEntity(BaseListEntity entityList);
+	public abstract void parseToEntity(AbstractEntityList<?> entityList);
 }

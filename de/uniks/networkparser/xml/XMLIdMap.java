@@ -160,13 +160,13 @@ public class XMLIdMap extends XMLSimpleIdMap {
 						} else {
 							if (value instanceof Collection<?>) {
 								for (Object item : (Collection<?>) value) {
-									xmlEntity.addChild(encode(item));
+									xmlEntity.add(encode(item));
 								}
 
 							} else {
 								SendableEntityCreator valueCreater = getCreatorClass(value);
 								if (valueCreater != null) {
-									xmlEntity.addChild(encode(value));
+									xmlEntity.add(encode(value));
 								} else {
 									xmlEntity.put(property, value);
 								}
@@ -212,7 +212,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 					child = new XMLEntity();
 					child.setTag(label);
 					parserChild(child, newProp, value);
-					parent.addChild(child);
+					parent.add(child);
 				} else {
 					parserChild(child, newProp, value);
 				}

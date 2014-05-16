@@ -57,7 +57,6 @@ public class XMLStyledEntity extends XMLEntity  {
 		return false;
 	}
 
-	@Override
 	public Object get(String key) {
 		Object attrValue=style.get(key);
 		if(attrValue!=null){

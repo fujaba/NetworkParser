@@ -24,12 +24,12 @@ package de.uniks.networkparser.json;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import de.uniks.networkparser.AbstractKeyValueEntry;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMapEncoder;
-import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.interfaces.IdMapCounter;
-import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 
 public class Grammar {
 	/**
@@ -43,7 +43,7 @@ public class Grammar {
 			}
 		}else{
 			JsonObject props=new JsonObject();
-			for(Iterator<MapEntry> i=jsonObject.iterator();i.hasNext();){
+			for(Iterator<AbstractKeyValueEntry<String, Object>> i=jsonObject.iterator();i.hasNext();){
 				Entry<String, Object> item = i.next();
 				if(!JsonIdMap.CLASS.equalsIgnoreCase(item.getKey())){
 					props.put(item.getKey(), item.getValue());
@@ -77,10 +77,9 @@ public class Grammar {
 			String className, String id, JsonObject jsonProp, Filter filter) {
 		JsonObject json = new JsonObject();
 		if (prototyp instanceof SendableEntityCreatorNoIndex) {
-			Iterator<String> keys = jsonProp.keys();
-			while (keys.hasNext()) {
-				String key = keys.next();
-				json.put(key, jsonProp.get(key));
+			for(Iterator<AbstractKeyValueEntry<String, Object>> i = jsonProp.iterator();i.hasNext();){
+				AbstractKeyValueEntry<String, Object> item = i.next();
+				json.put(item.getKey(), item.getValue());
 			}
 			json.put(JsonIdMap.CLASS, className);
 			return json;
