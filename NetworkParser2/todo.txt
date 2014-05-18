@@ -1,3 +1,0 @@
-Erweiterungen für das Serialisieren:
-- Quertransformation xmlEntity -> JsonObject -> xmlEntity
-- XML Parser restrict()
