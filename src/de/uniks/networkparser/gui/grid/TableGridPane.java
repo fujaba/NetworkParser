@@ -37,6 +37,7 @@ public class TableGridPane extends GridPane implements GridGUITable{
 		super.add(node, style.getColumn(), style.getRow());
 	}
 	
+	@Override
 	public void move(Object cell) {
 		Node node = (Node) value.getCell(cell);
 		super.getChildren().remove(node);

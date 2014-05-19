@@ -1,10 +1,9 @@
 package de.uniks.networkparser.gui;
 
-import java.util.Collection;
-
 import javafx.beans.Observable;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.logic.Condition;
+import de.uniks.networkparser.logic.ValuesMap;
 /*
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
@@ -39,11 +38,9 @@ public class ModelListenerBooleanProperty extends ModelListenerProperty<Boolean>
 
 	@Override
 	public Boolean getValue() {
-		
 		Object value = creator.getValue(item, property);
-		boolean isMany = (value instanceof Collection<?>);
 		if(condition!=null){
-			return condition.matches(null, item, property, value, isMany, 0);
+			return condition.matches(ValuesMap.with(item, property, value));
 		}
 		return false;
     }

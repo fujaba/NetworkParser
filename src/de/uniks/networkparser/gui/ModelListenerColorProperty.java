@@ -2,7 +2,7 @@ package de.uniks.networkparser.gui;
 
 import javafx.beans.Observable;
 import javafx.scene.paint.Color;
-import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 /*
  NetworkParser
@@ -32,7 +32,8 @@ public class ModelListenerColorProperty extends ModelListenerProperty<Color> {
     }
 
 	@Override
-	public void invalidated(Observable observable) {		
+	public void invalidated(Observable observable) {
+		System.out.println(observable);
 	}
 
 	@Override
@@ -41,24 +42,26 @@ public class ModelListenerColorProperty extends ModelListenerProperty<Color> {
 		if(value instanceof String){
 			return Color.web((String) value);
 		}
+		if(value==null){
+			return Color.WHITE;
+		}
 		return (Color) value;
     }
 	
 	@Override
 	public void setValue(Color value) {
-
          int green = (int) (value.getGreen()*255);
-         String greenString = Integer.toHexString(green);
+         String greenString = (green<16 ? "0" : "") + Integer.toHexString(green);
 
          int red = (int) (value.getRed()*255);
-         String redString = Integer.toHexString(red);
+         String redString = (red<16 ? "0" : "") + Integer.toHexString(red);
 
          int blue = (int) (value.getBlue()*255);
-         String blueString = Integer.toHexString(blue);
+         String blueString = (blue<16 ? "0" : "") + Integer.toHexString(blue);
 
          String hexColor = "#"+redString+greenString+blueString;
 		
-		creator.setValue(item, property, hexColor, IdMap.NEW);
+		creator.setValue(item, property, hexColor, IdMapEncoder.NEW);
 //		super.setValue(value);
 	}
 }

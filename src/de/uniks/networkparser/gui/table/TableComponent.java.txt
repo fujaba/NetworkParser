@@ -19,101 +19,6 @@ public class TableComponent extends Composite implements Listener, PropertyChang
 	protected String[] columnAttr;
 //	private long lastUpdate;
 	
-	public TableComponent(Composite parent, int style, IdMap map) {
-		super(parent, style);
-
-		if (map != null) {
-			this.map = map;
-			this.map.withCreator(new TableListCreator());
-		}
-
-		createContent(this);
-		
-//		lastUpdate = new Date().getTime();
-	}
-
-	public TableComponent(Composite parent, int style) {
-		super(parent, style);
-		
-//		lastUpdate = new Date().getTime();
-	}
-	
-	public void createContent(Composite owner) {
-		tableComposite = new Composite(owner, SWT.NONE | SWT.FILL);
-		tableComposite.setLayoutData(GUIPosition.CENTER);
-		tableComposite.setLayout(new BorderLayout(0, 0));
-
-		headerMenu = new Menu(getShell(), SWT.POP_UP);
-		MenuItem columnsMenue = new MenuItem(headerMenu, SWT.CASCADE);
-		columnsMenue.setText(getText(DefaultTextItems.COLUMNS));
-		mnuColumns = new Menu(getShell(), SWT.DROP_DOWN);
-		columnsMenue.setMenu(mnuColumns);
-
-		tableViewer = createBrowser(GUIPosition.CENTER);
-
-		setLayout(new BorderLayout(0, 0));
-		
-		this.updateItemListener = getUpdateListener();
-	}
-	
-	protected UpdateSearchList getUpdateListener()
-	{
-		return new UpdateSearchList(this);
-	}
-
-	protected TableViewerComponent createBrowser(GUIPosition browserId) {
-		int flags = SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION;
-		if (!browserId.equals(GUIPosition.CENTER)) {
-			flags = flags | SWT.NO_SCROLL;
-		}
-		TableViewerComponent tableViewer = new TableViewerComponent(
-				tableComposite, this, flags, browserId);
-		tableViewer.setFilters(new ViewerFilter[] { tableFilterView });
-
-		Table table = tableViewer.getTable();
-		table.setLinesVisible(true);
-		table.setHeaderVisible(true);
-		table.setMenu(headerMenu);
-
-		table.addListener(SWT.KeyDown, this);
-		table.addListener(SWT.MouseMove, this);
-		table.addListener(SWT.MouseUp, this);
-		table.addListener(SWT.MouseExit, this);
-		table.addListener(SWT.SELECTED, this);
-		ScrollBar verticalScrollBar = table.getVerticalBar();
-		if (verticalScrollBar != null) {
-			verticalScrollBar.addSelectionListener(new SelectionListener() {
-				public void widgetDefaultSelected(SelectionEvent event) {
-				}
-
-				public void widgetSelected(SelectionEvent event) {
-					// listen for drag events in the scrollbar
-					// if the user scrolls away from the bottom, stop auto
-					// scrolling
-					// if the user scrolls back to the bottom, resume auto
-					// scrolling
-					if (event.detail != SWT.DRAG)
-						return;
-					refreshPosition();
-				}
-			});
-		}
-		table.setLayoutData(browserId);
-
-		return tableViewer;
-	}
-
-	public void refreshPosition() {
-		if (tableSyncronizer != null) {
-			tableSyncronizer.refreshMiddle();
-		}
-	}
-	
-	public void updatePosition() {
-		updatePosition(GUIPosition.WEST, null);
-		updatePosition(GUIPosition.CENTER, null);
-	}
-
 	public TableColumnView updatePosition(GUIPosition pos, Point pt) {
 		int position = -1;
 		int index = -1;
@@ -161,10 +66,6 @@ public class TableComponent extends Composite implements Listener, PropertyChang
 			}
 		}
 		return result;
-	}
-
-	public Table getTableCenter() {
-		return getTable(GUIPosition.CENTER);
 	}
 
 	public Table getTable(GUIPosition browserId) {
@@ -235,28 +136,6 @@ public class TableComponent extends Composite implements Listener, PropertyChang
 			onResizeColumn(column);
 		}
 	}
-	
-	@Override
-	public void dispose() {
-		super.dispose();
-		for(TableColumnView column : columns){
-			column.disposeColumn();
-		}
-	}
-
-	public TableViewer getBrowserView(GUIPosition browserId) {
-		if (browserId.equals(GUIPosition.WEST)) {
-			return fixedTableViewerLeft;
-		} else if (tableViewer == null) {
-			createBrowser(browserId);
-		}
-		return tableViewer;
-	}
-
-	public void createFromCreator(SendableEntityCreator creator) {
-		createFromCreator(creator, false);
-
-	}
 
 	public void addControl(Control control) {
 		control.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false,
@@ -311,9 +190,6 @@ public class TableComponent extends Composite implements Listener, PropertyChang
 		}
 		tableViewer.refresh();
 
-	}
-
-	protected void onSelection(Table table, TableItem[] tableItems) {
 	}
 
 	@Override
@@ -520,14 +396,6 @@ public class TableComponent extends Composite implements Listener, PropertyChang
 		getTable(GUIPosition.CENTER).redraw();
 	}
 
-	public TableList getList() {
-		return list;
-	}
-
-	public IdMap getIdMap() {
-		return map;
-	}
-
 	public int getColumnsSize() {
 		return columns.size();
 	}
@@ -621,9 +489,5 @@ public class TableComponent extends Composite implements Listener, PropertyChang
 		if(this.fixedTableViewerLeft!=null){
 			this.fixedTableViewerLeft.getTable().addKeyListener(listener);
 		}
-	}
-	
-	public TableFilterView getTableFilter(){
-		return tableFilterView;
 	}
 }

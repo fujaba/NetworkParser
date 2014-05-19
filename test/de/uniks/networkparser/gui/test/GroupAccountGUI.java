@@ -49,6 +49,7 @@ public class GroupAccountGUI extends Application {
 	        
 	        tableView.withColumn(new Column().withAttrName(Person.PROPERTY_NAME).withStyle(new Style().withWidth(100)));
 	        tableView.withColumn(new Column().withAttrName(Person.PROPERTY_BALANCE).withStyle(new Style().withWidth(100)));
+	        tableView.withSearchProperties(Person.PROPERTY_NAME);
 	        tableView.withList(groupAccount,  GroupAccount.PROPERTY_PERSONS);
 	        VBox box = new VBox();
 	        

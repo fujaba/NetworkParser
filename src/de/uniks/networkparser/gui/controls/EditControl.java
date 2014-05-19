@@ -64,6 +64,7 @@ public abstract class EditControl<T extends Node> implements CellEditorElement{
 		return false;
 	}
 	
+	@Override
 	public boolean setFocus(boolean value){
 		if(value){
 			Node control=getControl();
@@ -84,6 +85,7 @@ public abstract class EditControl<T extends Node> implements CellEditorElement{
 		return false;
 	}
 	
+	@Override
 	public void dispose(){
 		if(isActive()){
 //			control.di();
@@ -109,6 +111,7 @@ public abstract class EditControl<T extends Node> implements CellEditorElement{
 		
 	}
 	public abstract T createControl(Column column);
+	@Override
 	public abstract CellEditorElement withValue(Object value);
 //	public abstract boolean isCorrect(Object value, EditFields field) throws ParseException;
 	
@@ -133,6 +136,7 @@ public abstract class EditControl<T extends Node> implements CellEditorElement{
 		return false;
 	}
 	
+	@Override
 	public boolean nextFocus(){
 		return false;
 	}

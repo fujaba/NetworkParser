@@ -51,7 +51,8 @@ public class TextEditorControl extends EditControl<TextField>{
 		TextField textField = new TextField();
 		textField.addEventFilter(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>()
 	            {
-	                public void handle(KeyEvent t)
+	                @Override
+					public void handle(KeyEvent t)
 	                {
 	                	if(t.getCode()==KeyCode.ENTER){
 	                		apply();

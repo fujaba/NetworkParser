@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.shape.*?>
+
+<BorderPane prefHeight="243.0" prefWidth="329.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2">
+  <!-- TODO Add Nodes -->
+  <center>
+    <Circle fill="DODGERBLUE" radius="100.0" stroke="BLACK" strokeType="INSIDE" />
+  </center>
+  <left>
+    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="200.0" stroke="BLACK" strokeType="INSIDE" width="71.0" BorderPane.alignment="CENTER">
+      <BorderPane.margin>
+        <Insets />
+      </BorderPane.margin>
+    </Rectangle>
+  </left>
+</BorderPane>

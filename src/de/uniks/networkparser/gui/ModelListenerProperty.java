@@ -34,7 +34,7 @@ import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
@@ -50,15 +50,26 @@ public abstract class ModelListenerProperty<T> implements javafx.beans.property.
         this.item = item;
         this.creator = creator;
         this.property = property;
-        try {
+		if (item instanceof SendableEntity) {
+			((SendableEntity) item).addPropertyChangeListener(property, this);
+			return;
+		}
+		if(item instanceof PropertyChangeSupport){
+			((PropertyChangeSupport) item).addPropertyChangeListener(property, this);
+			return;
+		}
+		try {
 			Method method = item.getClass().getMethod("addPropertyChangeListener", String.class, java.beans.PropertyChangeListener.class );
 			method.invoke(item, property, this);
+			return;
 		} catch (Exception e) {
-			if (item instanceof SendableEntity) {
-				((SendableEntity) item).addPropertyChangeListener(property, this);
-			}else if(item instanceof PropertyChangeSupport){
-				((PropertyChangeSupport) item).addPropertyChangeListener(property, this);
-			}
+		}
+		
+		try {
+			Method method = item.getClass().getMethod("addPropertyChangeListener", java.beans.PropertyChangeListener.class );
+			method.invoke(item, this);
+			return;
+		} catch (Exception e) {
 		}
     }
 
@@ -94,7 +105,7 @@ public abstract class ModelListenerProperty<T> implements javafx.beans.property.
 
     @Override
     public void setValue(T value) {
-        creator.setValue(item, property, value, IdMap.NEW);
+        creator.setValue(item, property, value, IdMapEncoder.NEW);
     }
 
     @Override

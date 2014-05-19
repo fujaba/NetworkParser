@@ -26,10 +26,22 @@ import javafx.event.EventHandler;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
+import de.uniks.networkparser.interfaces.GUIPosition;
 
 public class TableViewFX extends TableView<Object> {
 	private ScrollBar scrollbar;
 	private TableComponent parent;
+	private GUIPosition position;
+	
+	
+	public TableViewFX withPosition(GUIPosition position){
+		this.position = position;
+		return this;
+	}
+	
+	public GUIPosition getPosition(){
+		return position;
+	}
 	
 	public TableViewFX withListener(TableComponent tableComponent){
 		this.parent = tableComponent;
@@ -47,15 +59,32 @@ public class TableViewFX extends TableView<Object> {
 	}
 	
 	public ScrollBar getScrollbar() {
-		if(scrollbar==null){
-			ScrollBar bar = (ScrollBar) lookup(".scroll-bar:vertical");
-			if(bar!=null && bar != TableViewFX.this.scrollbar){
-				TableViewFX.this.scrollbar = bar;
-				bar.valueProperty().addListener(parent);
+		ScrollBar bar = (ScrollBar) lookup(".scroll-bar:vertical");
+		if(bar != null){
+			if(scrollbar==null){
+				if(bar != TableViewFX.this.scrollbar){
+					this.scrollbar = bar;
+					bar.valueProperty().addListener(parent);
+					
+	//				this.scrollbar.needsLayoutProperty().addListener(new ChangeListener<Boolean>() {
+	//					@Override
+	//					public void changed(
+	//							ObservableValue<? extends Boolean> arg0,
+	//							Boolean arg1, Boolean arg2) {
+	//						TableViewFX.this.showScrollbar(arg2);
+	//					}
+	//				});
+				}
 			}
+			parent.showScrollbar(this);
 		}
 		return scrollbar;
 	}
+	
+	public ScrollBar getScrollbar(String orientation) {
+		return (ScrollBar) lookup(".scroll-bar:"+orientation);
+	}
+
 	public void setScrollValue(double pos) {
 		if(getScrollbar()!=null){
 			getScrollbar().setValue(pos);
