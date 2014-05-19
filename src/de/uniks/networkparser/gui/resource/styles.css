@@ -46,3 +46,11 @@
     -fx-background-insets: -1.4, 1;
     -fx-background-radius: 14.4;
 }
+
+.table-row-cell:empty {
+    -fx-background-color: lightyellow;
+}
+  
+.table-row-cell:empty .table-cell {
+    -fx-border-width: 0px;
+}

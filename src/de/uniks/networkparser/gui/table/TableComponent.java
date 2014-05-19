@@ -37,19 +37,21 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import javafx.beans.property.SimpleListProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.beans.value.WritableListValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
+import javafx.scene.control.ScrollBar;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import de.uniks.networkparser.DefaultTextItems;
-import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.TextItems;
 import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.interfaces.GUIPosition;
@@ -59,7 +61,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	private ArrayList<TableColumnFX> columns = new ArrayList<TableColumnFX>();
 	public static final String PROPERTY_COLUMN = "column";
 	public static final String PROPERTY_ITEM = "item";
-	protected IdMap map;
+	protected IdMapEncoder map;
 	protected Object source;
 	protected SendableEntityCreator sourceCreator;
 	private String property;
@@ -69,12 +71,13 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	protected ContextMenu contextMenu;
 
 	protected TableList sourceList;
-	private SimpleListProperty<Object> list;
+	private ObservableList<Object> list;
 	protected TableFilterView tableFilterView;
 	private Menu visibleItems;
 	private SelectionListener listener;
 	
-	public IdMap getMap() {
+	@Override
+	public IdMapEncoder getMap() {
 		return map;
 	}
 	
@@ -86,6 +89,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		return node;
 	}
 	
+	@Override
 	public TableComponent createFromCreator(SendableEntityCreator creator, boolean edit) {
 		if(creator==null){
 			Iterator<Object> iterator = list.iterator();
@@ -112,18 +116,21 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		if (browserId.equals(GUIPosition.WEST)) {
 			if(tableViewer[0]==null){
 				tableViewer[0]=getBrowser();
+				tableViewer[0].withPosition(browserId);
 				this.setLeft(tableViewer[0]);
 			}
 			return tableViewer[0];
 		}else if (browserId.equals(GUIPosition.CENTER)) {
 			if(tableViewer[1]==null){
 				tableViewer[1]=getBrowser();
+				tableViewer[1].withPosition(browserId);
 				this.setCenter(tableViewer[1]);
 			}
 			return tableViewer[1];
 		}else if (browserId.equals(GUIPosition.EAST)) {
 			if(tableViewer[2]==null){
 				tableViewer[2]=getBrowser();
+				tableViewer[2].withPosition(browserId);
 				this.setRight(tableViewer[2]);
 			}
 			return tableViewer[2];
@@ -134,12 +141,14 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		TableViewFX resultTableViewer=new TableViewFX();
 		resultTableViewer.withListener(this).withItems(list);
 		resultTableViewer.setEditable(true);
+		
 		resultTableViewer.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE); // just in case you didnt already set the selection model to multiple selection.
 		resultTableViewer.getSelectionModel().getSelectedIndices().addListener(listener);
 		listener.withTableViewer(resultTableViewer);
 		return resultTableViewer;
 	}
 
+	@Override
 	public TableComponent withScrollPosition(double pos){
 		for(TableViewFX table : tableViewer){
 			if(table!=null){
@@ -148,39 +157,8 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		}
 		return this;
 	}
-	
-//			for (TableColumnView item : columns) {
-//				if (item.getColumn().getBrowserId().equals(GUIPosition.WEST)) {
-//					item.setVisible(false);
-//				}
-//			}
-//
-//			fixedTableViewerLeft.getTable().dispose();
-//			fixedTableViewerLeft = null;
-//			tableSyncronizer.dispose();
-//		} else if (fixedTableViewerLeft == null && visible) {
-//			fixedTableViewerLeft = createBrowser(GUIPosition.WEST);
-//
-//			tableSyncronizer = new TableSyncronizer(this,
-//					fixedTableViewerLeft.getTable(), tableViewer.getTable());
-//			tableViewer.getTable().addMouseWheelListener(tableSyncronizer);
-//			tableViewer.getTable().addListener(SWT.Selection, tableSyncronizer);
-//			if (tableViewer.getTable().getVerticalBar() != null) {
-//				tableViewer.getTable().getVerticalBar()
-//						.addListener(SWT.Selection, tableSyncronizer);
-//			}
-//			fixedTableViewerLeft.getTable().addListener(SWT.Selection,
-//					tableSyncronizer);
-//
-//			for (TableColumnView item : columns) {
-//				if (item.getColumn().getBrowserId().equals(GUIPosition.WEST)) {
-//					item.setVisible(true);
-//				}
-//			}
-//		}
-//	}
 
-
+	@Override
 	public TableComponent withColumn(Column column) {
 		init();
 		TableView<Object> browserView = getBrowserView(column.getBrowserId());
@@ -200,44 +178,52 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 							PROPERTY_COLUMN, null, column));
 		}
 		browserView.getColumns().add(columnFX);
+
+		System.out.println("ADD");
+		// Recalculate Width
+		TableViewFX table = (TableViewFX) browserView;
+		showScrollbar(table);
+		
 		return this;
 	}
 
-//		if(item!=null){
-//			
-//				if(creatorClass!=null){
-//					String[] properties = creatorClass.getProperties();
-//					for(int z=0;z<properties.length;z++){
-//						
-//
-////						TableColumnHeaderFX header=new TableColumnHeaderFX(this.getTableViewer(), col);
-////						TextField header = new TextField("Pink Elephants");
-// 						
-////						col.setGraphic(header);
-//						
-////						getTableViewer().
-////				        TableViewSkin<?> skin = (TableViewSkin<?>) getTableViewer().getSkin();
-//
-////				        TableHeaderRow tableHeader = skin.getTableHeaderRow();
-////				        NestedTableColumnHeader rootHeader = tableHeader.getRootHeader();
-//
-//						addColumn(col);
-//						System.out.println(col.getTableView());
-////						columns.get
-////						TableViewSkin<?> skin = (TableViewSkin<?>)getTableViewer().getSkin();
-////						skin.getTableHeaderRow().
-//					}
-//				}
-//			}
-//		}
-//		return result; 
-//	}
+	public void showScrollbar(TableViewFX table) {
+		if(table.getPosition() == GUIPosition.CENTER){
+			return;
+		}
+		if(table.widthProperty().get()<1){
+			return;
+		}
+		ObservableList<TableColumn<Object, ?>> listOfColumns = table.getColumns(); 
+		double withBrowser=0;
+		for(Iterator<TableColumn<Object, ?>> iterator = listOfColumns.iterator();iterator.hasNext();){
+			TableColumn<Object, ?> item = iterator.next();
+			withBrowser += item.getWidth();
+		}
+		withBrowser += 2;
+		ScrollBar scrollbar = table.getScrollbar("vertical");
+		if(scrollbar.isVisible()){
+			withBrowser += scrollbar.getWidth()+3;
+		}else{
+			ScrollBar scrollbarHorizontal = table.getScrollbar("horizontal");
+			if(scrollbarHorizontal!=null){
+				if(scrollbarHorizontal.isVisible()){
+					withBrowser += scrollbar.getWidth()+3;
+				}
+			}
+		}
+		BorderPane.clearConstraints(getLeft());
+		table.setPrefWidth(withBrowser);
+		BorderPane.clearConstraints(getLeft());
+	}
+
 	
-	public TableComponent withMap(IdMap map){
+	public TableComponent withMap(IdMapEncoder map){
 		this.map = map;
 		return this;
 	}
 
+	@Override
 	public TableComponent withSearchProperties(String... searchProperties) {
 		if(tableFilterView==null){
 			init();
@@ -247,6 +233,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		return this;
 	}
 	
+	@Override
 	public void init(){
 		withAnchor(this);
 		
@@ -258,7 +245,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		}
 
 		if(list==null){
-			this.list = new SimpleListProperty<Object>(javafx.collections.FXCollections.observableList(new ArrayList<Object>()));
+			this.list = FXCollections.observableArrayList();
 		}
 		
 		if(listener==null){
@@ -280,6 +267,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		}
 	}
 
+	@Override
 	public boolean addItem(Object item) {
 		if(sourceList==null){
 			init();
@@ -293,7 +281,6 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 									PROPERTY_ITEM, null, item));
 				}
 				this.list.add(item);
-//				this.itemUpdater.addItem(item, this, columns);
 			}
 			this.updateItemListener.addItem(item);
 			tableFilterView.refreshCounter();
@@ -302,9 +289,10 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		return false;
 	}
 
+	@Override
 	public boolean removeItem(Object item) {
 		if (sourceList.contains(item)) {
-			sourceCreator.setValue(source, property, item, IdMap.REMOVE);
+			sourceCreator.setValue(source, property, item, IdMapEncoder.REMOVE);
 			this.updateItemListener.removeItem(item);
 			sourceList.remove(item);
 			if (getParent() instanceof PropertyChangeListener) {
@@ -312,17 +300,18 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 						.propertyChange(new PropertyChangeEvent(this,
 								PROPERTY_ITEM, item, null));
 			}
-//			tableViewer.refresh();
 			tableFilterView.refreshCounter();
 			return true;
 		}
 		return false;
 	}
 	
+	@Override
 	public TableComponent withList(TableList item) {
 		return withList(item, TableList.PROPERTY_ITEMS);
 	}
 	
+	@Override
 	public TableComponent withList(Object item, String property) {
 		if (map == null) {
 			return this;
@@ -341,14 +330,13 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 			for(Iterator<?> iterator = ((Collection<?>)sourceList).iterator();iterator.hasNext();){
 				Object entity = iterator.next();
 				addItem(entity);
-//				this.sourceList.add(itemList);
-//				this.list.add(itemList);
 			}
 		}
 		addUpdateListener(source);
 		return this;
 	}
 	
+	@Override
 	public TableColumnInterface getColumn(Column column) {
 		if (column != null) {
 			for (Iterator<TableColumnFX> i = this.columns.iterator(); i
@@ -361,10 +349,12 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		}
 		return null;
 	}
+	@Override
 	public void addUpdateListener(Object list) {
 		this.updateItemListener.addItem(list);
 	}
 
+	@Override
 	public String getProperty() {
 		return property;
 	}
@@ -372,7 +362,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	protected String getText(String label) {
 		if (this.map != null) {
 			SendableEntityCreator textItemClazz = map
-					.getCreatorClasses(TextItems.class.getName());
+					.getCreator(TextItems.class.getName(), true);
 			if (textItemClazz != null) {
 				return ((TextItems) textItemClazz).getText(label, source, this);
 			}
@@ -414,6 +404,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		}
 	}
 
+	@Override
 	public SendableEntityCreator getCreator(Object entity) {
 		return getMap().getCreatorClass(entity);
 	}
@@ -428,7 +419,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		}
 		return list;
 	}
-
+	
 	@Override
 	public void changed(ObservableValue<? extends Number> arg0, Number arg1,
 			Number arg2) {
@@ -442,9 +433,4 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 			}
 		}
 	}
-
-	public WritableListValue<Object> getItems() {
-		return list;
-	}
-
 }

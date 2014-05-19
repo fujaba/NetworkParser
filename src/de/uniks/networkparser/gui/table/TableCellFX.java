@@ -26,7 +26,7 @@ import java.util.HashSet;
 import javafx.scene.Node;
 import javafx.scene.control.TableCell;
 import javafx.scene.text.Font;
-import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.event.creator.DateCreator;
 import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.gui.controls.EditControl;
@@ -38,7 +38,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 public class TableCellFX extends TableCell<Object, TableCellValue> implements CellEditorElement{
 	private Column column;
 	protected HashSet<EditControl<?>> fields=new HashSet<EditControl<?>>();
-	private IdMap map;
+	private IdMapEncoder map;
 	private EditControl<? extends Node> editControl;
 	
 	public TableCellFX(){
@@ -54,14 +54,15 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 	public void addToEditControls(EditControl<?> field){
 		fields.add(field);
 	}
+	@Override
 	public TableCellFX withColumn(Column column) {
 		this.column = column;
 		return this;
 	}
 
 	@Override
-	protected void updateItem(TableCellValue arg0, boolean arg1) {
-		super.updateItem(arg0, arg1);
+	protected void updateItem(TableCellValue arg0, boolean empty) {
+		super.updateItem(arg0, empty);
 		if (arg0 != null) {
 			setText("" + arg0);
 
@@ -77,6 +78,8 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 					setStyle(style);
 				}
 			}
+		}else if(empty){
+			setText("");
 		}
 	}
 
@@ -100,7 +103,7 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 		apply();
 	}
 	
-	public TableCellFX withMap(IdMap map){
+	public TableCellFX withMap(IdMapEncoder map){
 		this.map = map;
 		return this;
 	}
@@ -214,7 +217,7 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 	@Override
 	public void apply() {
 		Object value = editControl.getValue(false);
-		getItem().getColumn().getListener().setValue(getItem().getItem(), getItem().getCreator(), value);
+		getItem().getColumn().getListener().setValue(this, getItem().getItem(), getItem().getCreator(), value);
 		setText(""+value);
 		setGraphic(null);		
 	}

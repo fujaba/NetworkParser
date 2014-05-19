@@ -35,10 +35,6 @@ public class ModelListenerStringProperty extends ModelListenerProperty<String> {
 
 	@Override
 	public String getValue() {
-		Object value = getItemValue();
-		if(value instanceof String){
-			return ""+value;
-		}
-		return String.valueOf(value);
+		return String.valueOf(getItemValue());
     }
 }

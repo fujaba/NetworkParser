@@ -40,28 +40,31 @@ public class TableCellValueFX extends SimpleObjectProperty<TableCellValue> imple
 		return this;
 	}
 	
-	
 	public TableCellValueFX withCreator(
 			SendableEntityCreator creator) {
 		this.creator = creator;
 		return this;
 	}
 	
+	@Override
 	public Object getItem(){
 		return item;
 	}
+	@Override
 	public Column getColumn() {
 		return column;
 	}
 
+	@Override
 	public SendableEntityCreator getCreator() {
 		return creator;
 	}
+	@Override
 	public String toString(){
 		if(creator==null){
 			return "";
 		}
-		return "" + this.column.getListener().getValue(item, creator);
+		return ""+this.column.getListener().getValue(item, creator);
 	}
 
 	@Override
@@ -72,6 +75,9 @@ public class TableCellValueFX extends SimpleObjectProperty<TableCellValue> imple
 //		}else if(value instanceof Number){
 //			return new ModelListenerNumberProperty(getCreator(), item, getColumn().getAttrName());
 //		}
+		if(creator==null){
+			return "";
+		}
 		return getCreator().getValue(item, getColumn().getAttrName());
 	}
 }

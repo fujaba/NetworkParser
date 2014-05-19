@@ -50,6 +50,8 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 		menueItem.setOnAction(this);
 		visibleItems.getItems().add(menueItem);
 		
+
+		
 		setCellFactory(new Callback<TableColumn<Object,TableCellValue>, TableCell<Object,TableCellValue>>() {
 			@Override
 			public TableCell<Object, TableCellValue> call(
@@ -61,6 +63,7 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 			@Override
 			public ObservableValue<TableCellValue> call(
 					javafx.scene.control.TableColumn.CellDataFeatures<Object, TableCellValue> arg0) {
+//				System.out.println(arg0.getTableColumn());;
 				SendableEntityCreator creator = TableColumnFX.this.tableComponent.getCreator(arg0.getValue());
 				return new TableCellValueFX()
 						.withItem(arg0.getValue())

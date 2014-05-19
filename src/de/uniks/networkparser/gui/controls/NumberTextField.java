@@ -159,7 +159,8 @@ public class NumberTextField extends TextField implements CellEditorElement {
             });
             addEventFilter(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>()
     	            {
-    	                public void handle(KeyEvent t)
+    	                @Override
+						public void handle(KeyEvent t)
     	                {
     	                	if(t.getCode()==KeyCode.ENTER){
     	                		apply();

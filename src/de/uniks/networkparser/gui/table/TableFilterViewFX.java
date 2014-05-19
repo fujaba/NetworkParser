@@ -23,6 +23,7 @@ package de.uniks.networkparser.gui.table;
 */
 import java.util.Iterator;
 import java.util.List;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
@@ -41,7 +42,7 @@ public class TableFilterViewFX extends TableFilterView implements ChangeListener
 	public void refreshSearch(){
 		List<Object> resultList = component.getItems(false);
 		for(Iterator<Object> iterator = resultList.iterator();iterator.hasNext();){
-			if(!matchesSearchCriteria(iterator.next())){
+			if(!matchesSearchCriteria( iterator.next() )){
 				iterator.remove();
 			}
 		}

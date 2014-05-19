@@ -42,7 +42,14 @@ public class PersonGUI {
 
      
 
-    public StringProperty firstnameProperty() { return firstName; }
+    public PersonGUI(String fName, String lName, String email) {
+        this.firstName = new SimpleStringProperty(fName);
+
+        this.lastName = new SimpleStringProperty(lName);
+
+        this.email = new SimpleStringProperty(email);
+	}
+	public StringProperty firstnameProperty() { return firstName; }
 
     public StringProperty lastnameProperty() { return lastName; }
 
@@ -58,5 +65,9 @@ public class PersonGUI {
 	}
 	public void setCaption(String caption) {
 		this.caption = caption;
+	}
+	public PersonGUI withName(String value) {
+		this.lastName.setValue(value);
+		return this;
 	}
 }
