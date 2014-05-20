@@ -32,137 +32,287 @@ package de.uniks.networkparser.gui.form;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.EventListener;
 
-import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.gui.controls.EditControl;
-import de.uniks.networkparser.gui.table.CellEditorElement;
-import de.uniks.networkparser.gui.table.Column;
-import de.uniks.networkparser.gui.table.FieldTyp;
-import de.uniks.networkparser.gui.table.TableCellFX;
-import de.uniks.networkparser.interfaces.GUIPosition;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
+import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.TextItems;
+import de.uniks.networkparser.gui.controls.EditFieldMap;
+import de.uniks.networkparser.gui.table.CellEditorElement;
+import de.uniks.networkparser.gui.table.Column;
+import de.uniks.networkparser.gui.table.FieldTyp;
+import de.uniks.networkparser.interfaces.GUIPosition;
+import de.uniks.networkparser.interfaces.SendableEntity;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 
 public class PropertyComposite extends HBox implements PropertyChangeListener, CellEditorElement{
-	private Label westLabel = new Label();
+	private Label westLabel;
 	private Node centerComposite;
-	private Label eastLabel = new Label();
+	private Label eastLabel;
 	private GUIPosition labelOrientation=GUIPosition.WEST;
 	private String labelPostText=": ";
-	private TableCellFX field=new TableCellFX();
-	private SendableEntityCreator creator;
+	private EditFieldMap field=new EditFieldMap();
 	private Object item;
-	private Column column=new Column();
-	private IdMap map;
-	private ArrayList<EventListener> listeners=new ArrayList<EventListener>();
+//	private ArrayList<EventListener> listeners=new ArrayList<EventListener>();
+	private ModelForm owner;
+	private SendableEntityCreator creator;
 
-	public PropertyComposite() {
-		
+	public PropertyComposite withOwner(ModelForm owner) {
+		this.owner = owner;
+//		owner.addProperty(this);
+//		if(modelForm.getMap()!=null){
+//			setDataBinding(modelForm.getMap(), modelForm.getItem());
+//		}
+		return this;
 	}
 	public String getLabelText() {
-		return column.getLabel();
+		if(field.getColumn().getLabel()!= null){
+			return field.getColumn().getLabel();
+		}
+		return field.getColumn().getAttrName();
 	}
-//		if(this.getParent() instanceof ModelForm){
-//			ModelForm modelForm=(ModelForm) this.getParent();
-//			modelForm.addProperty(this);
-//			
-//			if(modelForm.getMap()!=null){
-//				setDataBinding(modelForm.getMap(), modelForm.getItem());
-//			}
-//		}
-//	}
-//	
-//
-//	public void setLabelText(String value) {
-//		this.column.withLabel(value);
-//		setDataBinding();
-//	}
-//	
-//	public void setLabel(String value) {
-//		if(value != null){
-//			if(this.map!=null){
-//				TextItems textClazz = (TextItems) map.getCreatorClasses(TextItems.class.getName());
-//				if(textClazz !=null){
-//					column.withLabel(textClazz.getText(value, item, this));
-//				}
-//			}else{
-//				column.withLabel(value);
-//			}
-//		}
-//		setDataBinding();
-//	}
-//	
-//	public void setFieldType(EditFields type){
-//		this.field.setFormat(type);
-//	}
-//
-//	
-//
-//	public LabelPosition getLabelOrientation() {
-//		return labelOrientation;
-//	}
-//	
-//	public void initLabel() {
-//		if(LabelPosition.WEST.equals(labelOrientation)){
-//			westLabel.setVisible(true);
-//			
-//			eastLabel.setVisible(false);
-//			String labelText = getLabelText();
-//			if(labelText!=null){
-//				westLabel.setText(labelText+labelPostText);
-//			}
-//		}else if(LabelPosition.EAST.equals(labelOrientation)){
-//			westLabel.setVisible(false);
-//			eastLabel.setVisible(true);
-//			String labelText = getLabelText();
-//			if(labelText != null){
-//				eastLabel.setText(labelText);
-//			}
-//		}else{
-//			westLabel.setVisible(false);
-//			eastLabel.setVisible(false);
-//		}
-//	}
-//
-//
-//	public void setLabelOrientation(LabelPosition labelOrientation) {
-//		this.labelOrientation = labelOrientation;
-//		initLabel();
-//	}
-//	
-//	private CLabel getLabelControl(){
-//		if(labelOrientation==null){
-//		}else if(labelOrientation.equals(LabelPosition.WEST)){
-//			return westLabel;
-//		}else if(labelOrientation.equals(LabelPosition.EAST)){
-//			return eastLabel;
-//		}
-//		return null;
-//	}
-//	
-//	public int getLabelLength(){
-//		CLabel control = getLabelControl();
-//		if(control!=null){
-//			Point size = control.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-//			return size.x;
-//		}
-//		return 0;
-//	}
-//	
-//	public void setLabelLength(int width){
-//		CLabel control = getLabelControl();
-//		if(control!=null){
-//			layout.setFixWestSize(width);
-//			control.layout();
-//		}
-//	}
-//
+
+	public PropertyComposite withLabelText(String value) {
+		field.getColumn().withLabel(value);
+		withDataBinding();
+		return this;
+	}
+
+	public PropertyComposite withLabel(String value) {
+		if(value != null){
+			if(field.getMap()!=null){
+				TextItems textClazz = (TextItems) field.getMap().getCreator(TextItems.class.getName(), true);
+				if(textClazz !=null){
+					field.getColumn().withLabel(textClazz.getText(value, item, this));
+				}
+			}else{
+				field.getColumn().withLabel(value);
+			}
+		}
+		withDataBinding();
+		return this;
+	}
+	
+	public PropertyComposite withFieldType(FieldTyp type){
+		field.getColumn().withFieldTyp(type);
+		return this;
+	}
+
+	 private PropertyComposite withDataBinding() {
+//		 field.init(item, map, this.column);
+		 initLabel();
+		 field.withValue(getItemValue() );
+		 if(item instanceof SendableEntity) {
+			 ((SendableEntity)item).addPropertyChangeListener(field.getColumn().getAttrName(), this);
+		 }
+		 return this;
+	 }
+	
+	 public PropertyComposite withDataBinding(IdMap map, Object item, Column column) {
+		 this.item = item;
+		 this.field.withColumn(column);
+		 this.field.withMap(map);
+		 if(map!=null){
+			 this.creator = map.getCreatorClass(item);
+		 }
+		 return withDataBinding();
+	 }
+	 
+	 public void initLabel() {
+		 if(westLabel==null){
+			westLabel = new Label();
+			westLabel.setPadding(new Insets(3, 0, 0, 0));
+			this.getChildren().add(westLabel);
+		}
+		 if(this.centerComposite==null){
+			 this.centerComposite = this.field.getControl(null, getItemValue());
+			this.getChildren().add(1, centerComposite);
+		 }
+		if(GUIPosition.WEST.equals(labelOrientation)){
+			
+			westLabel.setVisible(true);
+			if(eastLabel!=null){
+				eastLabel.setVisible(false);
+			}
+			String labelText = getLabelText();
+			if(labelText!=null){
+				westLabel.setText(labelText+labelPostText);
+			}
+		}else if(GUIPosition.EAST.equals(labelOrientation)){
+			if(eastLabel==null){
+				eastLabel = new Label();
+				this.getChildren().add(2, eastLabel);
+			}
+			if(westLabel!=null){
+				westLabel.setVisible(false);
+			}
+			String labelText = getLabelText();
+			if(labelText != null){
+				eastLabel.setText(labelText);
+			}
+		}else{
+			if(westLabel!=null){
+				westLabel.setVisible(false);
+			}
+			if(eastLabel!=null){
+				eastLabel.setVisible(false);
+			}
+		}
+	}
+	 
+	 public Object getItemValue(){
+		 if(creator!=null && field.getColumn().getAttrName() != null){
+			 return creator.getValue(item, this.field.getColumn().getAttrName());
+		 }
+		 return null;
+	}
+	 
+	public void reload() {
+		field.withValue( getItemValue() );	
+	}
+
+	public void save() {
+		creator.setValue(item, field.getColumn().getAttrName(), field.getEditControl().getValue(true), IdMap.UPDATE);
+	}
+	
+	public Label getLabelControl(){
+		if(labelOrientation==null){
+		}else if(labelOrientation.equals( GUIPosition.WEST)){
+			return westLabel;
+		}else if(labelOrientation.equals(GUIPosition.EAST)){
+			return eastLabel;
+		}
+		return null;
+	}
+	
+	public double getLabelWidth(Pane owner){
+		Text text = new Text(getLabelControl().getText() );
+		text.applyCss(); 
+
+	    return text.getLayoutBounds().getWidth();
+	}
+	
+	public void setLabelLength(double width){
+		Label control = getLabelControl();
+		if(control!=null){
+			control.setMinWidth(width);
+		}
+	}
+	
+	@Override
+	public void dispose() {
+		if(item instanceof SendableEntity) {
+			((SendableEntity) item).removePropertyChangeListener(this);
+		}
+	}
+	
+	@Override
+	public boolean setFocus(boolean value) {
+		if(field!=null){
+			return field.setFocus(value);
+		}
+		return false;
+	}
+	
+	@Override
+	public void relocate(double x, double y) {
+		super.relocate(x, y);
+		withDataBinding();
+	}
+	
+	@Override
+	public PropertyComposite withColumn(Column column) {
+		field.withColumn(column);
+		return this;
+	}
+	
+	public Column getColumn() {
+		return field.getColumn();
+	}
+	
+	public PropertyComposite withLabelOrientation(GUIPosition position) {
+		this.labelOrientation = position;
+		initLabel();
+		return this;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	@Override
+	public void cancel() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean onActive(boolean value) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean nextFocus() {
+//FIXME		this.owner.focusnext();
+		return false;
+	}
+
+	@Override
+	public void apply() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Object getValue(boolean convert) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public CellEditorElement withValue(Object value) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public FieldTyp getControllForTyp(Object value) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if(evt.getPropertyName()!=null){
+			if(evt.getPropertyName().equals(field.getColumn().getAttrName())){
+				// Test Thread and restarten
+	//			field.setValue(evt.getNewValue(), false);
+			}
+		}
+	}
+
+	//FIXME
 //	public String getLabelPostText() {
 //		return labelPostText;
 //	}
@@ -170,75 +320,6 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 //
 //	public void setLabelPostText(String value) {
 //		this.labelPostText = value;
-//	}
-//		
-//	public void setProperty(String value){
-//		this.column.withAttrName(value);
-//		
-//		setDataBinding();
-//	}
-//	public String getProperty(){
-//		return column.getAttrName();
-//	}
-//	
-//	private void setDataBinding() {
-//		setDataBinding(map, item, column);
-//	}
-//
-//	public void setDataBinding(IdMap map, Object item) {
-//		setDataBinding(map, item, column);
-//	}
-//	public void setDataBinding(Column column) {
-//		if(column!=null){
-//			this.column = column;
-//		}
-//		field.init(column, "");
-//		initControl();
-//		
-//		initLabel();
-//	}
-//	public void setDataBinding(IdMap map, Object item, Column column) {
-//		this.item = item;
-//		if(column!=null){
-//			this.column = column;
-//		}
-//		if(map!=null){
-//			this.creator = map.getCreatorClass(item);
-//			this.map = map;
-//			field.init(item, map, this.column);
-//		}
-//		initControl();
-//		if(creator!=null && column.getAttrName() != null){
-//			field.setValue(creator.getValue(item, this.column.getAttrName()), false);
-//		}
-//		initLabel();
-//		if(item instanceof SendableEntity) {
-//			((SendableEntity) item).addPropertyChangeListener(this.column.getAttrName(), this);
-//		}
-//	}
-//	
-//	private void initControl(){
-//		field.setParent(this, centerComposite);
-//	}
-//
-//	public void focusnext(){
-//		if(this.getParent() instanceof ModelForm){
-//			ModelForm parent=(ModelForm) this.getParent();
-//			parent.focusnext();
-//		}
-//	}
-//
-//	public void reload() {
-//		Object value = creator.getValue(item, column.getAttrName());
-//		field.setValue(value, false);
-//		
-//	}
-//
-//	public void save() {
-//		try {
-//			creator.setValue(item, column.getAttrName(), field.getEditorValue(true), IdMap.UPDATE);
-//		} catch (ParseException e) {
-//		}
 //	}
 //
 //	public void handleDefaultSelection(SelectionEvent event) {
@@ -332,89 +413,4 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 //		}
 //	}
 //
-//	@Override
-//	public void dispose() {
-//		if(item instanceof SendableEntity) {
-//			((SendableEntity) item).removePropertyChangeListener(this);
-//		}
-//		super.dispose();
-//	}
-//
-	@Override
-	public CellEditorElement withColumn(Column column) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void cancel() {
-		// TODO Auto-generated method stub
-		
-	}
-//
-//	@Override
-//	public boolean setFocus(boolean value) {
-//		if(field!=null){
-//			return field.setFocus(value);
-//		}
-//		return false;
-//	}
-
-	@Override
-	public boolean onActive(boolean value) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean nextFocus() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void apply() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public Object getValue(boolean convert) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public CellEditorElement withValue(Object value) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public FieldTyp getControllForTyp(Object value) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean setFocus(boolean value) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void dispose() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		if(evt.getPropertyName()!=null){
-		if(evt.getPropertyName().equals(column.getAttrName())){
-			// Test Thread and restarten
-//			field.setValue(evt.getNewValue(), false);
-		}
-	}
-	}
 }

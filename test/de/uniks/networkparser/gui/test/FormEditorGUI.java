@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import de.uniks.networkparser.gui.form.PropertyComposite;
+import de.uniks.networkparser.gui.table.Column;
 import de.uniks.networkparser.json.JsonIdMap;
 
 public class FormEditorGUI extends Application {
@@ -18,6 +19,7 @@ public class FormEditorGUI extends Application {
 	        PersonGUI albert= new PersonGUI().withName("Albert");
 	        
 	        PropertyComposite box = new PropertyComposite();
+	        box.withDataBinding(map, albert, new Column().withAttrName(PersonGUI.PROPERTY_LASTNAME));
 	        root.getChildren().add(box);
 	        
 //	        tableView.withColumn(new Column().withAttrName(Person.PROPERTY_NAME).withStyle(new Style().withWidth(100)));

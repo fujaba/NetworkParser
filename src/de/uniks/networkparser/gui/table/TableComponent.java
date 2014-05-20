@@ -56,7 +56,7 @@ import de.uniks.networkparser.TextItems;
 import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-
+//TODO ADD ALL FUNCTIONALITY FROM TABLECOMPONENT.JAVA.TXT
 public class TableComponent extends BorderPane implements PropertyChangeListener, TableComponentInterface, ChangeListener<Number> {
 	private ArrayList<TableColumnFX> columns = new ArrayList<TableColumnFX>();
 	public static final String PROPERTY_COLUMN = "column";
