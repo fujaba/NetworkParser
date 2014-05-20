@@ -21,42 +21,19 @@ package de.uniks.networkparser.gui.table;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import java.util.HashSet;
-
 import javafx.scene.Node;
 import javafx.scene.control.TableCell;
 import javafx.scene.text.Font;
 import de.uniks.networkparser.IdMapEncoder;
-import de.uniks.networkparser.event.creator.DateCreator;
 import de.uniks.networkparser.gui.Style;
-import de.uniks.networkparser.gui.controls.EditControl;
-import de.uniks.networkparser.gui.controls.PasswordEditorControl;
-import de.uniks.networkparser.gui.controls.SpinnerDoubleEditControl;
-import de.uniks.networkparser.gui.controls.TextEditorControl;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.gui.controls.EditFieldMap;
 
 public class TableCellFX extends TableCell<Object, TableCellValue> implements CellEditorElement{
-	private Column column;
-	protected HashSet<EditControl<?>> fields=new HashSet<EditControl<?>>();
-	private IdMapEncoder map;
-	private EditControl<? extends Node> editControl;
+	private EditFieldMap field = new EditFieldMap();
 	
-	public TableCellFX(){
-//		addToEditControls( new CheckBoxEditControl().withOwner(this) );
-//		addToEditControls( new ComboEditControl().withOwner(this) );
-//		addToEditControls( new DateTimeEditControl().withOwner(this) );
-//		addToEditControls( new NumberEditControl().withOwner(this) );
-		addToEditControls( new SpinnerDoubleEditControl().withOwner(this) );
-		addToEditControls( new TextEditorControl().withOwner(this) );
-		addToEditControls( new PasswordEditorControl().withOwner(this) );
-	}
-	
-	public void addToEditControls(EditControl<?> field){
-		fields.add(field);
-	}
 	@Override
 	public TableCellFX withColumn(Column column) {
-		this.column = column;
+		this.field.withColumn( column );
 		return this;
 	}
 
@@ -66,8 +43,8 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 		if (arg0 != null) {
 			setText("" + arg0);
 
-			if (this.column.getStyle() != null) {
-				Style myStyle = this.column.getStyle();
+			if (this.field.getStyle() != null) {
+				Style myStyle = this.field.getStyle();
 				if (myStyle.getFontFamily() != null
 						&& myStyle.getFontSize() != null) {
 					setFont(new Font(myStyle.getFontFamily(),
@@ -87,9 +64,9 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 	public void startEdit() {
 		if (!isEmpty()) {
 			super.startEdit();
-			Object value = getItem().getCreator().getValue(getItem().getItem(), column.getAttrName());
+			Object value = getItem().getCreator().getValue(getItem().getItem(), this.field.getColumn().getAttrName());
 			FieldTyp typ = getControllForTyp(value);
-			Node control = getControl(typ, value);
+			Node control = field.getControl(typ, value);
 			if(control!=null){
 				setText(null);
 				setGraphic(control);
@@ -104,51 +81,16 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 	}
 	
 	public TableCellFX withMap(IdMapEncoder map){
-		this.map = map;
+		this.field.withMap(map);
 		return this;
 	}
 	
-	public Node getControl(FieldTyp typ, Object value){
-		EditControl<?> newFieldControl = null;
-		
-		if(typ==null){
-			typ=FieldTyp.TEXT;
-		}
-		
-		for(EditControl<?> item : fields){
-			FieldTyp newTyp = item.getControllForTyp(value);
-			if(newTyp==typ){
-				newFieldControl = item;
-				break;
-			}
-		}
-		
-		if(editControl != null){
-			if(editControl == newFieldControl){
-				return editControl.getControl();
-			}
-		}
-
-		if(newFieldControl==null){
-			return null;
-		}
-		
-		editControl = newFieldControl;
-		editControl.withColumn(column);
-		
-		// Set the value to the Controll
-		if(value!=null){
-			editControl.withValue(value);
-		}
-		return editControl.getControl();
-	}
-
 	@Override
 	public void cancelEdit() {
 		super.cancelEdit();
 		cancel();
 	}
-
+	
 	// @Override
 	// public Color getBackground(Object element) {
 	// return colors.getColor(column.getBackgroundColor());
@@ -186,10 +128,6 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 	// return getTextValue(element);
 	// }
 
-	public Column getColumn() {
-		return column;
-	}
-
 	@Override
 	public void cancel() {
 		setText(""+getItem());
@@ -216,7 +154,7 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 
 	@Override
 	public void apply() {
-		Object value = editControl.getValue(false);
+		Object value = field.getEditControl().getValue(false);
 		getItem().getColumn().getListener().setValue(this, getItem().getItem(), getItem().getCreator(), value);
 		setText(""+value);
 		setGraphic(null);		
@@ -230,51 +168,17 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 
 	@Override
 	public TableCellFX withValue(Object value) {
-		editControl.withValue(value);
+		field.getEditControl().withValue(value);
 		return this;
 	}
 
 	@Override
 	public FieldTyp getControllForTyp(Object value) {
-		FieldTyp typ;
-		if( column!=null ){
-			typ = column.getFieldTyp();
-			if(typ!=null){
-				return typ;
-			}
-		}
-		
-		// Autodetect
-		if(map!=null){
-			SendableEntityCreator creator = map.getCreatorClass(value);
-			if(creator!=null){
-				if(creator instanceof DateCreator){
-					return FieldTyp.DATE;
-				}
-				return FieldTyp.COMBOBOX;
-			}
-		}
-		if(value instanceof Integer){
-			if(column.getNumberFormat()==null){
-				column.withNumberFormat("###");
-			}
-			return FieldTyp.INTEGER;
-		}else if(value instanceof Double){
-			if(column.getNumberFormat()==null){
-				column.withNumberFormat("###.##");
-			}
-			return FieldTyp.DOUBLE;
-		}else if(value instanceof String){
-//			if( typ!=FieldTyp.COMBOBOX ){
-				return FieldTyp.TEXT;
-//			}s
-		}else if(value instanceof Boolean){
-			return FieldTyp.CHECKBOX;
-		}
-		return FieldTyp.TEXT;
+		return this.field.getControllForTyp(value);
 	}
 
 	@Override
 	public void dispose() {
 	}
+
 }

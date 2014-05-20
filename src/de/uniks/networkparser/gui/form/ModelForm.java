@@ -30,47 +30,141 @@ package de.uniks.networkparser.gui.form;
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import java.util.Iterator;
+
+import de.uniks.networkparser.DefaultTextItems;
+import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.TextItems;
+import de.uniks.networkparser.gui.table.Column;
+import de.uniks.networkparser.interfaces.GUIPosition;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
-import com.sun.javafx.geom.BaseBounds;
-import com.sun.javafx.geom.transform.BaseTransform;
-import com.sun.javafx.jmx.MXNodeAlgorithm;
-import com.sun.javafx.jmx.MXNodeAlgorithmContext;
-import com.sun.javafx.sg.prism.NGNode;
+public class ModelForm extends BorderPane{
+	private IdMap map;
+	private TextItems textClazz= null;
+	private Button saveBtn;
+	private Button reloadBtn;
+	private Object item;
+	private HBox actionComposite;
+	private VBox items = new VBox();
 
-public class ModelForm extends Node{
+	public VBox getItems(){
+		return items;
+	}
+	
+	public ModelForm withDataBinding(IdMap map, Object item, boolean addCommandBtn){
+		this.map = map;
+		this.item = item;
+		textClazz = (TextItems) map.getCreator(TextItems.class.getName(), true);
+		
+		SendableEntityCreator creator = map.getCreatorClass(item);
+		if(creator != null){
+			this.setCenter(items);
+			
+			double max=0;
+			for(String property : creator.getProperties()){
+				PropertyComposite propertyComposite = new PropertyComposite();
+				Column column = propertyComposite.getColumn();
+				if(this.textClazz!=null){
+					column.withLabel(this.textClazz.getText(property, item, this));
+					propertyComposite.withLabelOrientation(GUIPosition.WEST);
+				}
+				column.withAttrName(property);
+				
+				propertyComposite.withDataBinding(map, item, column);
+				getItems().getChildren().add(propertyComposite);
 
-	@Override
-	protected boolean impl_computeContains(double arg0, double arg1) {
-		// TODO Auto-generated method stub
-		return false;
+//				double temp = propertyComposite.getLabelControl();
+				double temp = propertyComposite.getLabelWidth(this);
+				if(temp>max){
+					max = temp; 
+				}
+			}
+			for(Iterator<Node> iterator = getItems().getChildren().iterator();iterator.hasNext();){
+				Node node = iterator.next();
+				if(node instanceof PropertyComposite) {
+					((PropertyComposite)node).setLabelLength(max);
+				}
+			}
+			
+			if(addCommandBtn){
+				this.actionComposite = new HBox();
+				this.saveBtn = new Button();
+				this.actionComposite.getChildren().add(saveBtn);
+				this.saveBtn.setText(getText(DefaultTextItems.SAVE));
+				this.saveBtn.setOnAction(new EventHandler<ActionEvent>() {
+					
+					@Override
+					public void handle(ActionEvent event) {
+						save();						
+					}
+				});
+				this.reloadBtn = new Button();
+				this.reloadBtn.setText(getText(DefaultTextItems.RELOAD));
+				Label empty = new Label();
+				empty.setMinWidth(10);
+				this.actionComposite.getChildren().add(empty);
+				this.actionComposite.getChildren().add(reloadBtn);
+				this.actionComposite.setAlignment(Pos.BASELINE_RIGHT);
+				this.reloadBtn.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+						reload();						
+					}
+				});
+				
+				this.setBottom(actionComposite);
+			}
+		}
+		return this;
+	}
+	
+	private String getText(String label){
+		if(this.textClazz!=null){
+			return this.textClazz.getText(label, item, this);
+		}
+		return label;
 	}
 
-	@Override
-	public BaseBounds impl_computeGeomBounds(BaseBounds arg0, BaseTransform arg1) {
-		// TODO Auto-generated method stub
-		return null;
+	public void save(){
+		for(Iterator<Node> iterator = getItems().getChildren().iterator();iterator.hasNext();){
+			Node node = iterator.next();
+			if(node instanceof PropertyComposite) {
+				((PropertyComposite)node).save();
+			}
+		}
 	}
-
-	@Override
-	protected NGNode impl_createPeer() {
-		// TODO Auto-generated method stub
-		return null;
+	public void reload(){
+		for(Iterator<Node> iterator = getItems().getChildren().iterator();iterator.hasNext();){
+			Node node = iterator.next();
+			if(node instanceof PropertyComposite) {
+				((PropertyComposite)node).reload();
+			}
+		}
 	}
-
-	@Override
-	public Object impl_processMXNode(MXNodeAlgorithm arg0,
-			MXNodeAlgorithmContext arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-//	private IdMap map;
-//	private TextItems textClazz= null;
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//FIXME
 //	private LinkedHashSet<PropertyComposite> properties=new LinkedHashSet<PropertyComposite>();
-//	private Composite actionComposite;
-//	private Button saveBtn;
-//	private Button reloadBtn;
-//	private Object item;
 //	private PropertyComposite currentFocus;
 //	private KeyListener keyListener;
 //
@@ -111,84 +205,9 @@ public class ModelForm extends Node{
 //		}	
 //	}
 //	
-//	public void init(IdMap map, Object item, boolean addCommandBtn){
-//		this.map = map;
-//		this.item = item;
-//		textClazz = (TextItems) map.getCreatorClasses(TextItems.class.getName());
-//		
-//		SendableEntityCreator creator = map.getCreatorClass(item);
-//		if(creator != null){
-//			int max=0;
-//			for(String property : creator.getProperties()){
-//				PropertyComposite propertyComposite = new PropertyComposite(this, SWT.NONE);
-//				Column column = new Column();
-//				if(this.textClazz!=null){
-//					column.withLabel(this.textClazz.getText(property, item, this));
-//					propertyComposite.setLabelOrientation(LabelPosition.WEST);
-//				}
-//				column.withAttrName(property);
-//				
-//				propertyComposite.setDataBinding(map, item, column);
-//				int temp = propertyComposite.getLabelLength();
-//				if(temp>max){
-//					max = temp; 
-//				}
-//				properties.add(propertyComposite);
-//			}
-//			for(Iterator<PropertyComposite> iterator = properties.iterator();iterator.hasNext();){
-//				iterator.next().setLabelLength(max);
-//			}
-//			
-//			if(addCommandBtn){
-//				this.actionComposite = new Composite(this, SWT.NONE);
-//				this.actionComposite.setLayout(new RowLayout(SWT.HORIZONTAL));
-//				
-//				this.saveBtn = new Button(actionComposite, SWT.NONE);
-//				this.saveBtn.setText(getText(DefaultTextItems.SAVE));
-//				this.saveBtn.addSelectionListener(new SelectionListener() {
-//					@Override
-//					public void widgetSelected(SelectionEvent e) {
-//						save();
-//					}
-//					
-//					@Override
-//					public void widgetDefaultSelected(SelectionEvent e) {
-//					}
-//				});
-//				this.reloadBtn = new Button(actionComposite, SWT.NONE);
-//				this.reloadBtn.setText(getText(DefaultTextItems.RELOAD));
-//				this.reloadBtn.addSelectionListener(new SelectionListener() {
-//					@Override
-//					public void widgetSelected(SelectionEvent e) {
-//						reload();
-//					}
-//					
-//					@Override
-//					public void widgetDefaultSelected(SelectionEvent e) {
-//					}
-//				});
-//				
-//			}
-//		}
-//	}
 //	
-//	private String getText(String label){
-//		if(this.textClazz!=null){
-//			return this.textClazz.getText(label, item, this);
-//		}
-//		return label;
-//	}
 //	
-//	public void save(){
-//		for(Iterator<PropertyComposite> iterator = properties.iterator();iterator.hasNext();){
-//			iterator.next().save();
-//		}
-//	}
-//	public void reload(){
-//		for(Iterator<PropertyComposite> iterator = properties.iterator();iterator.hasNext();){
-//			iterator.next().reload();
-//		}
-//	}
+
 //
 //	public IdMap getMap() {
 //		return map;
