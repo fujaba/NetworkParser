@@ -37,10 +37,10 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.TextItems;
+import de.uniks.networkparser.gui.controls.EditControl;
 import de.uniks.networkparser.gui.controls.EditFieldMap;
 import de.uniks.networkparser.gui.table.CellEditorElement;
 import de.uniks.networkparser.gui.table.Column;
@@ -56,29 +56,23 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 	private Label eastLabel;
 	private GUIPosition labelOrientation=GUIPosition.WEST;
 	private String labelPostText=": ";
-	private EditFieldMap field=new EditFieldMap();
+//	private EditFieldMap field=new EditFieldMap().withOwner(this);
 	private Object item;
-//	private ArrayList<EventListener> listeners=new ArrayList<EventListener>();
-	private ModelForm owner;
+	private Column column;
 	private SendableEntityCreator creator;
+	private boolean init;
+	private EditFieldMap field=new EditFieldMap();
+	private EditControl<?> editControl;
 
-	public PropertyComposite withOwner(ModelForm owner) {
-		this.owner = owner;
-//		owner.addProperty(this);
-//		if(modelForm.getMap()!=null){
-//			setDataBinding(modelForm.getMap(), modelForm.getItem());
-//		}
-		return this;
-	}
 	public String getLabelText() {
-		if(field.getColumn().getLabel()!= null){
-			return field.getColumn().getLabel();
+		if(getColumn().getLabel()!= null){
+			return getColumn().getLabel();
 		}
-		return field.getColumn().getAttrName();
+		return getColumn().getAttrName();
 	}
 
 	public PropertyComposite withLabelText(String value) {
-		field.getColumn().withLabel(value);
+		getColumn().withLabel(value);
 		withDataBinding();
 		return this;
 	}
@@ -88,10 +82,10 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 			if(field.getMap()!=null){
 				TextItems textClazz = (TextItems) field.getMap().getCreator(TextItems.class.getName(), true);
 				if(textClazz !=null){
-					field.getColumn().withLabel(textClazz.getText(value, item, this));
+					getColumn().withLabel(textClazz.getText(value, item, this));
 				}
 			}else{
-				field.getColumn().withLabel(value);
+				getColumn().withLabel(value);
 			}
 		}
 		withDataBinding();
@@ -99,23 +93,26 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 	}
 	
 	public PropertyComposite withFieldType(FieldTyp type){
-		field.getColumn().withFieldTyp(type);
+		getColumn().withFieldTyp(type);
 		return this;
 	}
 
 	 private PropertyComposite withDataBinding() {
-//		 field.init(item, map, this.column);
+		 if(init){
+			 return this;
+		 }
+		 this.init = true;
 		 initLabel();
-		 field.withValue(getItemValue() );
+		 editControl.withValue(getItemValue() );
 		 if(item instanceof SendableEntity) {
-			 ((SendableEntity)item).addPropertyChangeListener(field.getColumn().getAttrName(), this);
+			 ((SendableEntity)item).addPropertyChangeListener(getColumn().getAttrName(), this);
 		 }
 		 return this;
 	 }
 	
 	 public PropertyComposite withDataBinding(IdMap map, Object item, Column column) {
 		 this.item = item;
-		 this.field.withColumn(column);
+		 this.column =  column;
 		 this.field.withMap(map);
 		 if(map!=null){
 			 this.creator = map.getCreatorClass(item);
@@ -130,7 +127,9 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 			this.getChildren().add(westLabel);
 		}
 		 if(this.centerComposite==null){
-			 this.centerComposite = this.field.getControl(null, getItemValue());
+			 editControl = this.field.getControl(null, column, getItemValue());
+			 editControl.withValue(getItemValue());
+			 this.centerComposite = editControl.getControl(); 
 			this.getChildren().add(1, centerComposite);
 		 }
 		if(GUIPosition.WEST.equals(labelOrientation)){
@@ -166,18 +165,18 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 	}
 	 
 	 public Object getItemValue(){
-		 if(creator!=null && field.getColumn().getAttrName() != null){
-			 return creator.getValue(item, this.field.getColumn().getAttrName());
+		 if(creator!=null && getColumn().getAttrName() != null){
+			 return creator.getValue(item, getColumn().getAttrName());
 		 }
 		 return null;
 	}
 	 
 	public void reload() {
-		field.withValue( getItemValue() );	
+		editControl.withValue( getItemValue() );
 	}
 
 	public void save() {
-		creator.setValue(item, field.getColumn().getAttrName(), field.getEditControl().getValue(true), IdMap.UPDATE);
+		creator.setValue(item, getColumn().getAttrName(), editControl.getValue(true), IdMap.UPDATE);
 	}
 	
 	public Label getLabelControl(){
@@ -190,7 +189,7 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 		return null;
 	}
 	
-	public double getLabelWidth(Pane owner){
+	public double getLabelWidth(){
 		Text text = new Text(getLabelControl().getText() );
 		text.applyCss(); 
 
@@ -225,24 +224,33 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 		withDataBinding();
 	}
 	
+	
+	
+	
+	
 	@Override
-	public PropertyComposite withColumn(Column column) {
-		field.withColumn(column);
+	public PropertyComposite withColumn(Column value) {
+		this.column = value;
 		return this;
 	}
 	
 	public Column getColumn() {
-		return field.getColumn();
+		if(this.column==null){
+			this.column = new Column();
+		}
+		return column;
 	}
 	
 	public PropertyComposite withLabelOrientation(GUIPosition position) {
 		this.labelOrientation = position;
-		initLabel();
 		return this;
 	}
 	
-	
-	
+	@Override
+	public CellEditorElement withValue(Object value) {
+		editControl.withValue( value );	
+		return this;
+	}
 	
 	
 	
@@ -290,22 +298,11 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 		return null;
 	}
 
-	@Override
-	public CellEditorElement withValue(Object value) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public FieldTyp getControllForTyp(Object value) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if(evt.getPropertyName()!=null){
-			if(evt.getPropertyName().equals(field.getColumn().getAttrName())){
+			if(evt.getPropertyName().equals(getColumn().getAttrName())){
 				// Test Thread and restarten
 	//			field.setValue(evt.getNewValue(), false);
 			}

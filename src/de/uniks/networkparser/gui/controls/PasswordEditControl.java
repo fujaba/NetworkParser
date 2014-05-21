@@ -21,11 +21,11 @@ package de.uniks.networkparser.gui.controls;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
+import javafx.scene.control.PasswordField;
 import de.uniks.networkparser.gui.table.Column;
 import de.uniks.networkparser.gui.table.FieldTyp;
-import javafx.scene.control.PasswordField;
 
-public class PasswordEditorControl extends EditControl<PasswordField>{
+public class PasswordEditControl extends EditControl<PasswordField>{
 	@Override
 	public Object getValue(boolean convert) {
 		return this.control.getText();
@@ -37,7 +37,7 @@ public class PasswordEditorControl extends EditControl<PasswordField>{
 	}
 
 	@Override
-	public PasswordEditorControl withValue(Object value) {
+	public PasswordEditControl withValue(Object value) {
 		getControl().setText(""+value);
 		return this;
 	}
@@ -46,5 +46,4 @@ public class PasswordEditorControl extends EditControl<PasswordField>{
 	public PasswordField createControl(Column column) {
 		return new PasswordField();
 	}
-
 }

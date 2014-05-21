@@ -1,5 +1,8 @@
 package de.uniks.networkparser.gui.test;
 
+import java.util.Date;
+
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -8,14 +11,17 @@ public class PersonGUI {
 	public static final String PROPERTY_LASTNAME="lastname";
 	public static final String PROPERTY_EMAIL="email";
 	public static final String PROPERTY_DISTANCE="distance";
+	public static final String PROPERTY_CREATE="created";
     private StringProperty firstName;
 
     private StringProperty lastName;
 
     private StringProperty email;
     
-    private StringProperty distanceValue;
-	private int distance;
+    private SimpleIntegerProperty distanceValue;
+    
+    private Date date;
+    
 	private String caption;
 
 
@@ -26,7 +32,7 @@ public class PersonGUI {
 
         this.email = new SimpleStringProperty("");
         
-        this.distanceValue = new SimpleStringProperty("");
+        this.distanceValue = new SimpleIntegerProperty();
     	
     }
     public PersonGUI(String fName, String lName, String email, int distance) {
@@ -36,8 +42,7 @@ public class PersonGUI {
         this.lastName = new SimpleStringProperty(lName);
 
         this.email = new SimpleStringProperty(email);
-        this.distance = distance;
-        this.distanceValue = new SimpleStringProperty(distance+" min");
+        this.distanceValue = new SimpleIntegerProperty(distance);
     }
 
      
@@ -55,11 +60,8 @@ public class PersonGUI {
 
     public StringProperty emailProperty() { return email; }
     
-    public StringProperty distanceProperty() { return distanceValue; }
+    public SimpleIntegerProperty distanceProperty() { return distanceValue; }
 
-    public Integer getDistance() {
-		return distance;
-	}
 	public String getCaption() {
 		return caption;
 	}
@@ -68,6 +70,16 @@ public class PersonGUI {
 	}
 	public PersonGUI withName(String value) {
 		this.lastName.setValue(value);
+		return this;
+	}
+	public Integer getDistance() {
+		return distanceValue.getValue();
+	}
+	public Date getDate() {
+		return date;
+	}
+	public PersonGUI withDate(Date date) {
+		this.date = date;
 		return this;
 	}
 }

@@ -21,30 +21,50 @@ package de.uniks.networkparser.gui.controls;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
+import javafx.event.EventHandler;
 import javafx.scene.Node;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.gui.table.CellEditorElement;
 import de.uniks.networkparser.gui.table.Column;
+import de.uniks.networkparser.gui.table.FieldTyp;
 
-public abstract class EditControl<T extends Node> implements CellEditorElement{
+public abstract class EditControl<T extends Node> implements CellEditorElement, EventHandler<KeyEvent>{
 	protected T control;
-	protected CellEditorElement cellOwner;
+	protected EditFieldMap cellOwner;
 	protected Column column;
-
+	protected IdMap map;
+	protected Object value;
+	
+	
 	@Override
 	public EditControl<T> withColumn(Column value) {
 		this.column = value;
 		return this;
 	}
+	
+	public EditControl<T> withMap(IdMap map) {
+		this.map = map;
+		return this;
+	}
+	
+	public EditControl<T> withItem(Object value) {
+		this.value = value;
+		return this;
+	}
 
+	public abstract FieldTyp getControllForTyp(Object value);
 	
 	public T getControl() {
 		if (control == null ) {
 			control = createControl(column);
+			control.setOnKeyReleased(this);
 		}
 		return control;
 	}
 	
-	public EditControl<T> withOwner(CellEditorElement owner){
+	public EditControl<T> withOwner(EditFieldMap owner){
 		this.cellOwner = owner;
 		return this;
 	}
@@ -122,12 +142,13 @@ public abstract class EditControl<T extends Node> implements CellEditorElement{
 //		return null;
 //	}
 
-//	public void keyReleased(KeyEvent e) {
-//		if(e.keyCode==SWT.CR){
-//			apply();
-//		}
-//	}
-
+	@Override
+	public void handle(KeyEvent event) {
+		if(event.getCode().equals(KeyCode.ENTER)){
+			apply();
+		}
+	}
+	
 	public boolean clearEditor() {
 		return false;
 	}
@@ -141,3 +162,4 @@ public abstract class EditControl<T extends Node> implements CellEditorElement{
 		return false;
 	}
 }
+

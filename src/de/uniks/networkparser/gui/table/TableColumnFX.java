@@ -56,7 +56,7 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 			@Override
 			public TableCell<Object, TableCellValue> call(
 					TableColumn<Object, TableCellValue> arg0) {
-				return new TableCellFX().withColumn(TableColumnFX.this.column).withMap(TableColumnFX.this.tableComponent.getMap());
+				return new TableCellFX().withColumn(TableColumnFX.this.column).withEditFieldMap(TableColumnFX.this.tableComponent.getFieldFactory());
 			}
 		});
 		setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Object,TableCellValue>, ObservableValue<TableCellValue>>() {

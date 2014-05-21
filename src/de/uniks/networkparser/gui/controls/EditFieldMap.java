@@ -2,30 +2,27 @@ package de.uniks.networkparser.gui.controls;
 
 import java.util.HashSet;
 
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.event.creator.DateCreator;
-import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.gui.table.CellEditorElement;
 import de.uniks.networkparser.gui.table.Column;
 import de.uniks.networkparser.gui.table.FieldTyp;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import javafx.scene.Node;
 
-public class EditFieldMap implements CellEditorElement{
+public class EditFieldMap {
 	protected HashSet<EditControl<?>> fields=new HashSet<EditControl<?>>();
-	private EditControl<? extends Node> editControl;
+	private IdMap map;
 	private CellEditorElement owner;
-	private Column column;
-	private IdMapEncoder map;
 
 	public EditFieldMap(){
-//		addToEditControls( new CheckBoxEditControl().withOwner(this) );
-//		addToEditControls( new ComboEditControl().withOwner(this) );
-//		addToEditControls( new DateTimeEditControl().withOwner(this) );
-//		addToEditControls( new NumberEditControl().withOwner(this) );
+		withEditControls( new CheckBoxEditControl().withOwner(this) );
+		withEditControls( new ComboEditControl().withOwner(this) );
+		withEditControls( new DateTimeEditControl().withOwner(this) );
+		withEditControls( new SpinnerIntegerEditControl().withOwner(this) );
 		withEditControls( new SpinnerDoubleEditControl().withOwner(this) );
 		withEditControls( new TextEditorControl().withOwner(this) );
-		withEditControls( new PasswordEditorControl().withOwner(this) );
+		withEditControls( new PasswordEditControl().withOwner(this) );
 	}
 	
 	public EditFieldMap withEditControls(EditControl<?> field){
@@ -38,23 +35,10 @@ public class EditFieldMap implements CellEditorElement{
 		return this;
 	}
 
-	@Override
-	public EditFieldMap withColumn(Column column) {
-		if(column == null || column==this.column){
-			return this;
-		}
-		this.column = column;
-		if(owner!=null){
-			this.owner.withColumn(column);
-		}
-		return this;
-	}
-	
-	public Node getControl(FieldTyp typ, Object value){
+	public EditControl<?> getControl(FieldTyp typ, Column column, Object value){
 		EditControl<?> newFieldControl = null;
-		
 		if(typ==null){
-			typ=FieldTyp.TEXT;
+			typ = getControllForTyp(column, value);
 		}
 		
 		for(EditControl<?> item : fields){
@@ -64,49 +48,27 @@ public class EditFieldMap implements CellEditorElement{
 				break;
 			}
 		}
-		
-		if(editControl != null){
-			if(editControl == newFieldControl){
-				return editControl.getControl();
-			}
-		}
 
 		if(newFieldControl==null){
 			return null;
 		}
 		
-		editControl = newFieldControl;
-		editControl.withColumn(column);
+		newFieldControl.withColumn(column);
+		newFieldControl.withMap(map);
 		
 		// Set the value to the Controll
 		if(value!=null){
-			editControl.withValue(value);
+			newFieldControl.withValue(value);
 		}
-		return editControl.getControl();
+		return newFieldControl;
 	}
 
-	public EditControl<? extends Node> getEditControl(){
-		return editControl;
-	}
-	
-	@Override
 	public void cancel() {
 		if(owner!=null){
 			this.owner.cancel();
 		}
 	}
 
-	public Column getColumn() {
-		if(column==null){
-			column = new Column();
-		}
-		return column;
-	}
-	
-	public Style getStyle() {
-		return column.getStyle();
-	}
-	@Override
 	public boolean setFocus(boolean value) {
 		if(owner!=null){
 			return this.owner.setFocus(value);
@@ -114,7 +76,6 @@ public class EditFieldMap implements CellEditorElement{
 		return false;
 	}
 
-	@Override
 	public boolean onActive(boolean value) {
 		if(owner!=null){
 			return this.owner.onActive(value);
@@ -122,7 +83,6 @@ public class EditFieldMap implements CellEditorElement{
 		return false;
 	}
 
-	@Override
 	public boolean nextFocus() {
 		if(owner!=null){
 			return this.owner.nextFocus();
@@ -130,33 +90,20 @@ public class EditFieldMap implements CellEditorElement{
 		return false;
 	}
 
-	@Override
 	public void apply() {
 		if(owner!=null){
 			this.owner.apply();
 		}
 	}
 
-	@Override
-	public Object getValue(boolean convert) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public CellEditorElement withValue(Object value) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public FieldTyp getControllForTyp(Object value) {
+	public FieldTyp getControllForTyp(Column column, Object value) {
 		FieldTyp typ;
-		if( column!=null ){
-			typ = column.getFieldTyp();
-			if(typ!=null){
-				return typ;
-			}
+		if( column == null ){
+			return null;
+		}
+		typ = column.getFieldTyp();
+		if(typ!=null){
+			return typ;
 		}
 		
 		// Autodetect
@@ -189,14 +136,13 @@ public class EditFieldMap implements CellEditorElement{
 		return FieldTyp.TEXT;
 	}
 
-	@Override
 	public void dispose() {
 		if(owner!=null){
 			this.owner.dispose();
 		}
 	}
 
-	public EditFieldMap withMap(IdMapEncoder map) {
+	public EditFieldMap withMap(IdMap map) {
 		if(map == null || map==this.map){
 			return this;
 		}
