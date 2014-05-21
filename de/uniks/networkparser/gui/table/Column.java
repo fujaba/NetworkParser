@@ -42,8 +42,7 @@ public class Column {
 	public static final String PROPERTY_ALTTEXT="altText";
 	public static final String PROPERTY_BROWSERID="browserid";
 	public static final String PROPERTY_FIELDTYP="fieldTyp";
-	
-	public static final String DATE="%DATE%";
+
 	private Style style;
 	private Style activestyle;
 	
@@ -343,6 +342,15 @@ public class Column {
 
 	public Column withComparator(Comparator<TableCellValue> comparator) {
 		this.comparator = comparator;
+		return this;
+	}
+	
+	public Column withComboValue(String value) {
+		if(this.numberFormat == null || !this.numberFormat.startsWith("[") || numberFormat.length()==2){
+			this.numberFormat = "["+value+"]";
+			return this;
+		}
+		this.numberFormat= this.numberFormat.substring(0, this.numberFormat.length()-1)+","+value+"]";
 		return this;
 	}
 }
