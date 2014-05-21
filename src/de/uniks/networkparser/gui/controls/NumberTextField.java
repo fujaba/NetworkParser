@@ -146,6 +146,7 @@ public class NumberTextField extends TextField implements CellEditorElement {
                 @Override
                 public void handle(ActionEvent arg0) {
                 	format();
+                	apply();
                 }
             });
 
@@ -167,15 +168,16 @@ public class NumberTextField extends TextField implements CellEditorElement {
     	                	}
     	                }
     	            });
+            this.init = true;
     	}
 		this.value = newValue;
+		System.out.println("NEW VALUE: "+value);
         if(nf!=null){
     		setText(nf.format(newValue));
     	}
 		return this;
 	}
 
-	@Override
 	public FieldTyp getControllForTyp(Object value) {
 		return FieldTyp.INTEGER;
 	}

@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import de.uniks.networkparser.gui.ModelListenerStringProperty;
 import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.gui.table.Column;
+import de.uniks.networkparser.gui.table.FieldTyp;
 import de.uniks.networkparser.gui.table.SearchTableComponent;
 import de.uniks.networkparser.gui.table.TableComponent;
 import de.uniks.networkparser.gui.table.creator.TableListCreator;
@@ -49,6 +50,15 @@ public class GroupAccountGUI extends Application {
 	        
 	        tableView.withColumn(new Column().withAttrName(Person.PROPERTY_NAME).withStyle(new Style().withWidth(100)));
 	        tableView.withColumn(new Column().withAttrName(Person.PROPERTY_BALANCE).withStyle(new Style().withWidth(100)));
+	        
+	        tableView.withColumn(new Column().withAttrName(Person.PROPERTY_CREATED).withFieldTyp(FieldTyp.DATE).withStyle(new Style().withWidth(100)));
+	        tableView.withColumn(new Column().withAttrName(Person.PROPERTY_ACTIVE).withFieldTyp(FieldTyp.CHECKBOX).withStyle(new Style().withWidth(100)));
+	        
+	        
+	        Column comboBox = new Column().withAttrName(Person.PROPERTY_TITLE).withFieldTyp(FieldTyp.COMBOBOX).withStyle(new Style().withWidth(100));
+	        comboBox.withComboValue("Prof.").withComboValue("Dr.").withComboValue("B. S.").withComboValue("M. S.").withComboValue("");
+			tableView.withColumn(comboBox);
+	        
 	        tableView.withSearchProperties(Person.PROPERTY_NAME);
 	        tableView.withList(groupAccount,  GroupAccount.PROPERTY_PERSONS);
 	        VBox box = new VBox();

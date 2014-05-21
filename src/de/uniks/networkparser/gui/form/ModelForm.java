@@ -32,15 +32,8 @@ package de.uniks.networkparser.gui.form;
 
 import java.util.Iterator;
 
-import de.uniks.networkparser.DefaultTextItems;
-import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.TextItems;
-import de.uniks.networkparser.gui.table.Column;
-import de.uniks.networkparser.interfaces.GUIPosition;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -48,6 +41,12 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import de.uniks.networkparser.DefaultTextItems;
+import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.TextItems;
+import de.uniks.networkparser.gui.table.Column;
+import de.uniks.networkparser.interfaces.GUIPosition;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class ModelForm extends BorderPane{
 	private IdMap map;
@@ -57,6 +56,7 @@ public class ModelForm extends BorderPane{
 	private Object item;
 	private HBox actionComposite;
 	private VBox items = new VBox();
+	
 
 	public VBox getItems(){
 		return items;
@@ -85,7 +85,7 @@ public class ModelForm extends BorderPane{
 				getItems().getChildren().add(propertyComposite);
 
 //				double temp = propertyComposite.getLabelControl();
-				double temp = propertyComposite.getLabelWidth(this);
+				double temp = propertyComposite.getLabelWidth();
 				if(temp>max){
 					max = temp; 
 				}
@@ -154,7 +154,24 @@ public class ModelForm extends BorderPane{
 	}
 	
 	
-	
+	public void setPreSize(){
+	double max=0;
+	for(Iterator<Node> iterator = getItems().getChildren().iterator();iterator.hasNext();){
+		Node node = iterator.next();
+		if(node instanceof PropertyComposite) {
+			double temp = ((PropertyComposite)node).getLabelWidth();
+			if(temp>max){
+				max = temp; 
+			}
+		}
+	}
+	for(Iterator<Node> iterator = getItems().getChildren().iterator();iterator.hasNext();){
+		Node node = iterator.next();
+		if(node instanceof PropertyComposite) {
+			((PropertyComposite)node).setLabelLength(max);
+		}
+	}
+}
 	
 	
 	
@@ -187,12 +204,7 @@ public class ModelForm extends BorderPane{
 //			iterator.next().setLabelLength(max);
 //		}
 //	}
-//	
-//	public void init(IdMap map, Object item){
-//		this.map = map;
-//		this.item = item;
-//	}
-//	
+
 //	public void finishDataBinding(){
 //		for(Iterator<PropertyComposite> iterator = properties.iterator();iterator.hasNext();){
 //			iterator.next().setDataBinding(map, item);

@@ -47,7 +47,7 @@ public class PersonCreator implements SendableEntityCreator{
 			return true;
 		}
 		if(PersonGUI.PROPERTY_DISTANCE.equalsIgnoreCase(attribute)){
-			((PersonGUI)entity).distanceProperty().setValue(""+value);
+			((PersonGUI)entity).distanceProperty().setValue(Integer.valueOf(""+value));
 			return true;
 		}
 

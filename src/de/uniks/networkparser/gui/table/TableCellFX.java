@@ -24,16 +24,23 @@ package de.uniks.networkparser.gui.table;
 import javafx.scene.Node;
 import javafx.scene.control.TableCell;
 import javafx.scene.text.Font;
-import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.gui.Style;
+import de.uniks.networkparser.gui.controls.EditControl;
 import de.uniks.networkparser.gui.controls.EditFieldMap;
 
 public class TableCellFX extends TableCell<Object, TableCellValue> implements CellEditorElement{
-	private EditFieldMap field = new EditFieldMap();
-	
+	private EditFieldMap fieldMap;
+	private Column field;
+	private EditControl<? extends Node> control;
+
+	public TableCellFX withEditFieldMap(EditFieldMap fieldMap) {
+		this.fieldMap = fieldMap;
+		return this;
+	}
+
 	@Override
 	public TableCellFX withColumn(Column column) {
-		this.field.withColumn( column );
+		this.field = column;
 		return this;
 	}
 
@@ -64,12 +71,12 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 	public void startEdit() {
 		if (!isEmpty()) {
 			super.startEdit();
-			Object value = getItem().getCreator().getValue(getItem().getItem(), this.field.getColumn().getAttrName());
-			FieldTyp typ = getControllForTyp(value);
-			Node control = field.getControl(typ, value);
+			Object value = getItem().getCreator().getValue(getItem().getItem(), this.field.getAttrName());
+			FieldTyp typ = fieldMap.getControllForTyp(field, value);
+			control = fieldMap.getControl(typ, field, value);
 			if(control!=null){
 				setText(null);
-				setGraphic(control);
+				setGraphic(control.getControl());
 			}
 		}
 	}
@@ -78,11 +85,6 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 	public void commitEdit(TableCellValue arg0) {
 		super.commitEdit(arg0);
 		apply();
-	}
-	
-	public TableCellFX withMap(IdMapEncoder map){
-		this.field.withMap(map);
-		return this;
 	}
 	
 	@Override
@@ -154,7 +156,11 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 
 	@Override
 	public void apply() {
-		Object value = field.getEditControl().getValue(false);
+		Node node = control.getControl();
+		Object value = null;
+		if(node instanceof CellEditorElement){
+			value = ((CellEditorElement)node).getValue(false);
+		}
 		getItem().getColumn().getListener().setValue(this, getItem().getItem(), getItem().getCreator(), value);
 		setText(""+value);
 		setGraphic(null);		
@@ -168,17 +174,11 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 
 	@Override
 	public TableCellFX withValue(Object value) {
-		field.getEditControl().withValue(value);
+		control.withValue(value);
 		return this;
-	}
-
-	@Override
-	public FieldTyp getControllForTyp(Object value) {
-		return this.field.getControllForTyp(value);
 	}
 
 	@Override
 	public void dispose() {
 	}
-
 }

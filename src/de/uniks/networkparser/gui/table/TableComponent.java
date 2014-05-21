@@ -51,9 +51,11 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import de.uniks.networkparser.DefaultTextItems;
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.TextItems;
 import de.uniks.networkparser.gui.Style;
+import de.uniks.networkparser.gui.controls.EditFieldMap;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 //TODO ADD ALL FUNCTIONALITY FROM TABLECOMPONENT.JAVA.TXT
@@ -75,6 +77,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	protected TableFilterView tableFilterView;
 	private Menu visibleItems;
 	private SelectionListener listener;
+	private EditFieldMap field=new EditFieldMap();
 	
 	@Override
 	public IdMapEncoder getMap() {
@@ -218,8 +221,9 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	}
 
 	
-	public TableComponent withMap(IdMapEncoder map){
+	public TableComponent withMap(IdMap map){
 		this.map = map;
+		this.field.withMap(map);
 		return this;
 	}
 
@@ -432,5 +436,9 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 				table.getScrollbar();
 			}
 		}
+	}
+
+	public EditFieldMap getFieldFactory() {
+		return field;
 	}
 }

@@ -57,7 +57,13 @@ public class NumberSpinner extends HBox implements CellEditorElement {
     private void increment() {
         BigDecimal value = (BigDecimal) numberField.getValue(false);
         value = value.add(getStepWitdh());
+        
+        System.out.println( "NUMBER: " + System.identityHashCode(numberField) );
+        
+        System.out.println(numberField.getValue(false));;
         numberField.withValue(value);
+        
+        System.out.println(numberField.getValue(false));
     }
 
     /**
@@ -228,7 +234,6 @@ public class NumberSpinner extends HBox implements CellEditorElement {
 		 return this;
 	}
 
-	@Override
 	public FieldTyp getControllForTyp(Object value) {
 		return FieldTyp.INTEGER;
 	}

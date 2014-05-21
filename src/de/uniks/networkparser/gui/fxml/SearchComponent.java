@@ -10,7 +10,7 @@ import de.uniks.networkparser.gui.table.SearchTableComponent;
 
 public class SearchComponent implements Initializable{
 	@FXML AnchorPane root;
-	private SearchTableComponent table;
+	private SearchTableComponent tableView;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -24,13 +24,31 @@ public class SearchComponent implements Initializable{
 //		          } catch (IOException exception) {
 //		              throw new RuntimeException(exception);
 //		          }
-		table = new SearchTableComponent();
-		root.getChildren().add(table);
-//		getC
+		tableView = new SearchTableComponent();
+
+		
+//        JsonIdMap map = new  JsonIdMap();
+//        map.withCreator(new TableListCreator());
+//        map.withCreator(new PersonCreator());
+//        map.withCreator(new GroupAccountCreator());
+//        
+//        tableView.withMap(map);
+//        GroupAccount groupAccount = new GroupAccount();
+//        
+//        Person albert = groupAccount.createPersons().withName("Albert");
+//        
+//        groupAccount.createPersons().withName("Nina");
+//        
+//        tableView.withColumn(new Column().withAttrName(Person.PROPERTY_NAME).withStyle(new Style().withWidth(100)));
+//        tableView.withColumn(new Column().withAttrName(Person.PROPERTY_BALANCE).withStyle(new Style().withWidth(100)));
+//        tableView.withSearchProperties(Person.PROPERTY_NAME);
+//        tableView.withList(groupAccount,  GroupAccount.PROPERTY_PERSONS);
+		
+		root.getChildren().add(tableView);
 	}
 	
 	public SearchTableComponent getTable() {
-		return table;
+		return tableView;
 	}
 
 }
