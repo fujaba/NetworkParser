@@ -30,7 +30,5 @@ public interface CellEditorElement {
 	public boolean onActive(boolean value);
 	public boolean nextFocus();
 	public void apply();
-	public Object getValue(boolean convert);
-	public CellEditorElement withValue(Object value);
 	public void dispose();
 }
