@@ -602,7 +602,7 @@ public class JsonIdMap extends IdMap {
 		}
 		
 		if(object instanceof Collection<?>){
-			Collection<?> list = (Collection<?>) object;
+		   Collection<?> list = (Collection<?>) object;
 			Filter newFilter = filter.withStandard(this.filter);
 			for(Iterator<?> i = list.iterator();i.hasNext();){
 				Object item = i.next();
@@ -610,6 +610,13 @@ public class JsonIdMap extends IdMap {
 			}
 			return jsonArray;
 		}
+	   if(object.getClass().isArray()){
+	      Filter newFilter = filter.withStandard(this.filter);
+	      for(Object item : ((Object[])object)){
+            toJsonArray(item, jsonArray, newFilter, 0);
+	      }
+	      return jsonArray;
+	   }
 		toJsonArray(object, jsonArray, filter);
 		return jsonArray;
 	}
