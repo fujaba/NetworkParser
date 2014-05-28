@@ -147,4 +147,8 @@ public class Filter {
 	public boolean add(ReferenceObject item) {
 		return refs.add(item);
 	}
+	
+	public static Filter regard(Condition convertable) {
+		return new Filter().withPropertyRegard(convertable);
+	}
 }
