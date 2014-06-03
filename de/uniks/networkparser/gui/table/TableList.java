@@ -23,7 +23,6 @@ package de.uniks.networkparser.gui.table;
 */
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -66,56 +65,15 @@ public class TableList extends AbstractEntityList<Object> implements SendableEnt
     public List<Object> getValues(){
     	return values;
     }
+    
+    @Override
+    protected void fireProperty(Object oldValue, Object newValue,
+    		Object beforeValue) {
+    	super.fireProperty(oldValue, newValue, beforeValue);
+    	
+    	getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEMS, oldValue, newValue);
+    }
 
-	
-	public boolean addItem(Object value){
-		if (!super.add(value)) 
-		{
-			getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEMS, null, value);
-			return true;
-		}
-		return false;
-	}
-	
-	@Override
-	public boolean remove(Object value) {
-		if (contains(value)) {
-			List<Object> items = this.values;
-			if(items.remove(value)){
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	@Override
-	public Object remove(int index) {
-		Object item = super.remove(index);
-		getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEMS, item,null);
-		return item;
-	}
-	
-	@Override
-	public void clear() {
-		removeAll(iterator());
-	}
-	
-	@Override
-	public boolean removeAll(Collection<?> list) {
-		return removeAll(list.iterator());
-	}
-	
-	public boolean removeAll(Iterator<?> i) {
-		while(i.hasNext()){
-			Object item = i.next();
-			if(item!=null){
-				i.remove();
-				getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEMS, item,null);
-			}
-		}
-		return true;
-	}
-	
 	public boolean addAll(TableList list){
 		for(Object item : values){
 			if(!add(item)){
@@ -123,21 +81,6 @@ public class TableList extends AbstractEntityList<Object> implements SendableEnt
 			}
 		}
 		return true;
-	}
-
-	@Override
-	public boolean addAll(int index, Collection<? extends Object> c) {
-		for(Iterator<? extends Object> iterator = super.iterator();iterator.hasNext();){
-			if(!add(iterator.next())){
-				return false;
-			}
-		}
-		return true;
-	}
-	
-	@Override
-	public int lastIndexOf(Object obj) {
-		return indexOf(obj);
 	}
 
 	@Override
