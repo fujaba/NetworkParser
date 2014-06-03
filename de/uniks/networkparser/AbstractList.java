@@ -498,15 +498,28 @@ public abstract class AbstractList<V> implements BaseItem {
 	}
 	
     public boolean removeAll(Collection<?> c) {
-        return values.removeAll(c);
+        return removeAll(c.iterator());
     }
 
     public boolean retainAll(Collection<?> c) {
         return values.retainAll(c);
     }
+    
+    public boolean removeAll(Iterator<?> i) {
+    	Object oldValue=null;
+		while(i.hasNext()){
+			Object item = i.next();
+			if(item!=null){
+				i.remove();
+				fireProperty(item, null, oldValue);
+			}
+			oldValue = item;
+		}
+		return true;
+	}
 
     public void clear() {
-        values.clear();
+    	removeAll(iterator());
     }
 
     public V set(int index, V element) {
