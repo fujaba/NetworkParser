@@ -34,7 +34,17 @@ import de.uniks.networkparser.xml.XMLEntity;
 
 public class JsonTokener extends Tokener {
 	public final static String STOPCHARS = ",:]}/\\\"[{;=# ";
+	private boolean allowCRLF=false;
 
+	public boolean isAllowCRLF() {
+		return allowCRLF;
+	}
+
+	public JsonTokener withAllowCRLF(boolean allowCRLF) {
+		this.allowCRLF = allowCRLF;
+		return this;
+	}
+	
 	@Override
 	public Object nextValue(BaseItem creator, boolean allowQuote) {
 		char c = nextStartClean();
@@ -42,12 +52,12 @@ public class JsonTokener extends Tokener {
 		switch (c) {
 		case '"':
 			next();
-			return nextString(c, false, allowQuote, false, true);
+			return nextString(c, isAllowCRLF(), allowQuote, false, true);
 		case '\\':
 			// Must be unquote
 			next();
 			next();
-			return nextString('"', false, allowQuote, true, true);
+			return nextString('"', isAllowCRLF(), allowQuote, true, true);
 		case '{':
 			if (creator instanceof FactoryEntity) {
 				BaseItem element = ((FactoryEntity)creator).getNewObject();
