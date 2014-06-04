@@ -21,7 +21,6 @@ package de.uniks.networkparser.json;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import java.util.Collection;
 import java.util.Iterator;
 
 import de.uniks.networkparser.AbstractEntityList;
@@ -287,14 +286,6 @@ public class JsonArray extends AbstractEntityList<Object> implements StringItem,
 			for(Object item : values){
 				add(item);
 			}
-		}
-		return this;
-	}
-
-	@Override
-	public JsonArray with(Collection<?> values) {
-		for(Iterator<?> i = values.iterator();i.hasNext();){
-			add(i.next());
 		}
 		return this;
 	}

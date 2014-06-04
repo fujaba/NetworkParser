@@ -1,12 +1,4 @@
 package de.uniks.networkparser;
-import java.util.Collection;
-import java.util.Iterator;
-
-
-
-
-
-
 /*
 NetworkParser
 Copyright (c) 2011 - 2013, Stefan Lindel
@@ -47,18 +39,6 @@ public class ArrayEntryList extends AbstractKeyValueList<String, Object> {
 		return this;
 	}
 
-	@Override
-	public ArrayEntryList with(
-			Collection<?> values) {
-		for(Iterator<?> i = values.iterator();i.hasNext();){
-			Object item = i.next();
-			if(item instanceof MapEntry){
-				add((MapEntry) item);
-			}
-		}
-		return this;
-	}
-	
 	@Override
 	public ArrayEntryList with(Object... values){
 		if(values != null){

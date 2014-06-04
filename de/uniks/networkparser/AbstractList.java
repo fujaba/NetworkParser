@@ -224,8 +224,8 @@ public abstract class AbstractList<V> implements BaseItem {
 	/**
 	 * @return the First Element of the List
 	 */
-	public Object first() {
-		return this.getEntity(0);
+	public V first() {
+		return this.values.get(0);
 	}
 
 	/**
@@ -538,11 +538,12 @@ public abstract class AbstractList<V> implements BaseItem {
     	return this;
     }
     
-	public AbstractList<V> with(Collection<?> values) {
+	@SuppressWarnings("unchecked")
+   public <ST extends AbstractList<V>> ST with(Collection<?> values) {
 		for(Iterator<?> i = values.iterator();i.hasNext();){
 			with( i.next() );
 		}
-		return this;
+		return (ST)this;
 	}
 	
 	public abstract AbstractList<V> with(Object... values);
