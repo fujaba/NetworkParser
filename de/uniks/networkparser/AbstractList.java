@@ -231,8 +231,8 @@ public abstract class AbstractList<V> implements BaseItem {
 	/**
 	 * @return the Last Element of the List
 	 */
-	public Object last() {
-		return this.getEntity(this.size()-1);
+	public V last() {
+		return this.values.get(this.size()-1);
 	}
 	
 	/**
@@ -545,6 +545,11 @@ public abstract class AbstractList<V> implements BaseItem {
 		}
 		return (ST)this;
 	}
+	
+	@Override
+   public AbstractList<V> clone() {
+	   return this.getNewInstance().with(this);
+   }
 	
 	public abstract AbstractList<V> with(Object... values);
     
