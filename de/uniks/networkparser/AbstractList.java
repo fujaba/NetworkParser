@@ -528,11 +528,6 @@ public abstract class AbstractList<V> implements BaseItem {
 		return true;
 	}
     
-    
-    public boolean remove(V oldValue) {
-       return this.values.remove(oldValue);
-    }
-
     public void clear() {
     	removeAll(iterator());
     }
