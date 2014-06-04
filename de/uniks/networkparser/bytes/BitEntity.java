@@ -21,9 +21,6 @@ package de.uniks.networkparser.bytes;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import java.util.Collection;
-import java.util.Iterator;
-
 import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferedBytes;
@@ -176,14 +173,6 @@ public class BitEntity extends AbstractList<BitValue> implements ByteItem, Facto
 		return new BitEntity();
 	}
 
-	@Override
-	public BitEntity with(Collection<?> values) {
-		for(Iterator<?> i = values.iterator();i.hasNext();){
-			with(i.next());
-		}
-		return this;
-	}
-	
 	@Override
 	public AbstractList<BitValue> getNewInstance() {
 		return new BitEntity();

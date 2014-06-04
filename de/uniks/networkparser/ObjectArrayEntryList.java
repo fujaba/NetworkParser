@@ -146,17 +146,6 @@ public class ObjectArrayEntryList extends AbstractList<ObjectMapEntry> implement
 	}
 
 	@Override
-	public ObjectArrayEntryList with(Collection<?> values) {
-		for(Iterator<?> i = values.iterator();i.hasNext();){
-			Object item = i.next();
-			if(item instanceof ObjectMapEntry) {
-				add((ObjectMapEntry) item);
-			}
-		}
-		return this;
-	}
-
-	@Override
 	public AbstractList<ObjectMapEntry> getNewInstance() {
 		return new ObjectArrayEntryList();
 	}

@@ -1,6 +1,5 @@
 package de.uniks.networkparser;
 
-import java.util.Collection;
 import java.util.List;
 /*
 NetworkParser
@@ -38,14 +37,6 @@ public abstract class AbstractEntityList<V> extends AbstractList<V> implements L
         }
         return result;
     }
-	
-	@Override
-	public AbstractEntityList<V> with(Collection<?> values) {
-		for(Object value : values){
-			with(value);
-		}
-		return this;
-	}
 
 	public List<V> values(){
 		return values;
