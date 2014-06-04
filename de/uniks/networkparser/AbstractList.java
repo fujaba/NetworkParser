@@ -519,14 +519,19 @@ public abstract class AbstractList<V> implements BaseItem {
     	Object oldValue=null;
 		while(i.hasNext()){
 			Object item = i.next();
+			this.values.remove(item);
 			if(item!=null){
-				i.remove();
 				fireProperty(item, null, oldValue);
 			}
 			oldValue = item;
 		}
 		return true;
 	}
+    
+    
+    public boolean remove(V oldValue) {
+       return this.values.remove(oldValue);
+    }
 
     public void clear() {
     	removeAll(iterator());
