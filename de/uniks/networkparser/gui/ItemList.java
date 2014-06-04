@@ -59,4 +59,13 @@ public abstract class ItemList<E>  extends AbstractEntityList<E> {
 		}
 		return super.remove(index);
     }
+    
+    @Override
+   public boolean add(E newValue)
+   {
+       if(readonly){
+          throw new UnsupportedOperationException("add()");
+       }
+      return super.add(newValue);
+   }
 }
