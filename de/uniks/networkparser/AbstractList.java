@@ -69,6 +69,9 @@ public abstract class AbstractList<V> implements BaseItem {
 			for (int i = 0; i < size(); i++) {
 				int result = compare(get(i), newValue);
 				if (result >= 0) {
+				   if(!isAllowDuplicate() && get(i)==newValue){
+				      return false;
+				   }
 					this.values.add(i, newValue);
 					V beforeElement = null;
 					if(i>0){
@@ -79,6 +82,13 @@ public abstract class AbstractList<V> implements BaseItem {
 				}
 			}
 		}
+		if(!isAllowDuplicate()){       
+         for(Iterator<V> i = iterator();i.hasNext();){
+            if(i.next()==newValue){
+               return false; 
+            }
+         }
+      }
 		boolean result = this.values.add(newValue);
 		if(result){
 			V beforeElement = null;

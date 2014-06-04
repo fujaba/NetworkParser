@@ -22,23 +22,9 @@ permissions and limitations under the Licence.
 */
 
 import de.uniks.networkparser.AbstractEntityList;
-import de.uniks.networkparser.AbstractList;
 
-public class ItemList<E>  extends AbstractEntityList<E> {
+public abstract class ItemList<E>  extends AbstractEntityList<E> {
 	private boolean readonly = false;
-	@Override
-	public AbstractList<E> getNewInstance() {
-		return new ItemList<E>();
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public AbstractList<E> with(Object... values) {
-		for(Object item : values){
-			this.add((E) item);
-		}
-		return this;
-	}
 	
 	public boolean isReadonly() {
 		return readonly;
