@@ -35,7 +35,7 @@ import de.uniks.networkparser.sort.SortingDirection;
  * The Class EntityList.
  */
 public abstract class AbstractList<V> implements BaseItem {
-    protected List<V> values = new ArrayList<V>();
+   protected List<V> values = new ArrayList<V>();
 	private boolean allowDuplicate = initAllowDuplicate();
 	protected Comparator<V> cpr;
 	
@@ -83,8 +83,8 @@ public abstract class AbstractList<V> implements BaseItem {
 			}
 		}
 		if(!isAllowDuplicate()){       
-         for(Iterator<V> i = iterator();i.hasNext();){
-            if(i.next()==newValue){
+         for(ListIterator<V> i = reverseListIterator();i.hasPrevious();){
+            if(i.previous()==newValue){
                return false; 
             }
          }
@@ -468,7 +468,7 @@ public abstract class AbstractList<V> implements BaseItem {
     public Iterator<V> iterator() {
         return values.iterator();
     }
-
+    
     public Object[] toArray() {
         return values.toArray();
     }
@@ -587,6 +587,10 @@ public abstract class AbstractList<V> implements BaseItem {
     public ListIterator<V> listIterator(int index) {
         return values.listIterator(index);
 	}
+    
+    public ListIterator<V> reverseListIterator() {
+       return values.listIterator(values.size());
+    }
 	
 	public int size() {
 		return this.values.size();
