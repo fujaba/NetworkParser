@@ -63,7 +63,7 @@ public abstract class AbstractList<V> implements BaseItem {
 		this.cpr = new EntityComparator<V>().withColumn(column).withDirection(SortingDirection.ASC);
 		return this;
 	}
-
+	
 	public boolean add(V newValue) {
 		if(cpr!=null){
 			for (int i = 0; i < size(); i++) {
@@ -558,7 +558,7 @@ public abstract class AbstractList<V> implements BaseItem {
 	
 	@Override
    public AbstractList<V> clone() {
-	   return this.getNewInstance().with(this);
+	   return this.getNewInstance().with((Collection<?>)this);
    }
 	
 	public abstract AbstractList<V> with(Object... values);
