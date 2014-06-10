@@ -47,13 +47,29 @@ public class ByteFilter extends Filter {
 	
 	@Override
 	public Filter cloneObj() {
-		ByteFilter newInstance = (ByteFilter) super.clone(new ByteFilter());
-		newInstance.withDynamic(this.isDynamic);
-		newInstance.withLenCheck(this.isLenCheck);
-		return newInstance;
+	   return clone(new ByteFilter());
+	}
+	
+	@Override
+	public Filter clone(Filter newInstance)
+	{
+	   ByteFilter result = (ByteFilter) super.clone(newInstance);
+	   result.withDynamic(this.isDynamic).withLenCheck(this.isLenCheck);
+	   return result;
 	}
 
 	public String getCharset() {
 		return "UTF-8";
 	}
+	
+  public int getIndexOfClazz(String clazzName){
+     int pos=0;
+     for(Object item : visitedObjects){
+        if(clazzName.equalsIgnoreCase(item.getClass().getName())){
+           return pos;
+        }
+        pos++;
+     }
+     return -1;
+  }
 }

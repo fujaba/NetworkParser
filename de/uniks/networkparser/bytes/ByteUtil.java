@@ -76,7 +76,7 @@ public class ByteUtil {
 		if (isGroup(typ)) {
 			int ref = typ % 16  - 10;
 			if (ref == 0) {
-				typ = getTyp(typ, len, false);
+				typ = getTyp(typ, len, true);
 				ref = typ % 16 - 10;
 			}	
 			if (ref == ByteIdMap.LEN_SHORT || ref == ByteIdMap.LEN_LITTLE) {
@@ -88,12 +88,14 @@ public class ByteUtil {
 			if (ref == ByteIdMap.LEN_BIG) {
 				return 4;
 			}
-			if (ref == ByteIdMap.LEN_LAST) {
-				return 0;
-			}
-		} else if (typ == ByteIdMap.DATATYPE_CLAZZNAME) {
-			return 1;
+//			if (ref == ByteIdMap.LEN_LAST) {
+			return 0;
 		}
+		if (typ == ByteIdMap.DATATYPE_CLAZZNAME) {
+		   return 1;
+		}
+//		if (typ == ByteIdMap.DATATYPE_ASSOC) {
+//		if (typ == ByteIdMap.DATATYPE_CLAZZTYP) {
 		return 0;
 	}
 
@@ -143,6 +145,8 @@ public class ByteUtil {
 			return "DATATYPE_UNSIGNEDBYTE";
 		} else if (typ == ByteIdMap.DATATYPE_CHAR) {
 			return "DATATYPE_CHAR";
+		} else if (typ == ByteIdMap.DATATYPE_ASSOC) {
+         return "DATATYPE_ASSOC";
 		} else if(isGroup(typ)){
 			byte group = getGroup(typ);
 			byte subgroup = getSubGroup(typ);

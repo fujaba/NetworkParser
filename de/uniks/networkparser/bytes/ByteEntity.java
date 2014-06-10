@@ -64,6 +64,14 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 		this.values = value.clone();
 		return this;
 	}
+	
+	public ByteEntity withValue(byte typ, int value) {
+      this.typ = typ;
+      BytesBuffer msgValue = new BytesBuffer().withLength(4);
+      msgValue.put(value);
+      this.values = msgValue.flip();
+      return this;
+   }
 
 	/**
 	 * Byte to unsigned byte.
@@ -129,7 +137,7 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 
 		if (isDynamic && value != null) {
 			BytesBuffer bb = new BytesBuffer();
-			bb.withValue(value);
+			bb.with(value);
 			if (typ == ByteIdMap.DATATYPE_SHORT) {
 				short bufferValue = bb.getShort();
 				if (bufferValue >= Byte.MIN_VALUE
@@ -158,7 +166,6 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 			valueLen= value.length;
 		}
 		typ = ByteUtil.getTyp(typ, valueLen, last);
-		
 		ByteUtil.writeByteHeader(buffer, typ, valueLen);
 		
 		// SAVE Length
@@ -260,14 +267,14 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 		// Length calculate Sonderfaelle ermitteln
 		if (isDynamic && this.values != null) {
 			if (typ == ByteIdMap.DATATYPE_SHORT) {
-				Short bufferValue = new BytesBuffer().withValue(values).getShort();
+				Short bufferValue = new BytesBuffer().with(values).getShort();
 				if (bufferValue >= Byte.MIN_VALUE
 						&& bufferValue <= Byte.MAX_VALUE) {
 					return TYPBYTE + Byte.SIZE / BITOFBYTE;
 				}
 			} else if (typ == ByteIdMap.DATATYPE_INTEGER
 					|| typ == ByteIdMap.DATATYPE_LONG) {
-				Integer bufferValue = new BytesBuffer().withValue(values).getInt();
+				Integer bufferValue = new BytesBuffer().with(values).getInt();
 				if (bufferValue >= Byte.MIN_VALUE
 						&& bufferValue <= Byte.MAX_VALUE) {
 					return TYPBYTE + Byte.SIZE / BITOFBYTE;
