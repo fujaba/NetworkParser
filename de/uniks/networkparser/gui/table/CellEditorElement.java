@@ -1,6 +1,5 @@
 package de.uniks.networkparser.gui.table;
 
-
 /*
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
@@ -31,4 +30,6 @@ public interface CellEditorElement {
 	public boolean nextFocus();
 	public void apply();
 	public void dispose();
+	public Object getValue(boolean convert);
+	public CellEditorElement withValue(Object value);
 }
