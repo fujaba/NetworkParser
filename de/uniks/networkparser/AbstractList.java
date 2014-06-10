@@ -35,7 +35,7 @@ import de.uniks.networkparser.sort.SortingDirection;
  * The Class EntityList.
  */
 public abstract class AbstractList<V> implements BaseItem {
-    protected List<V> values = new ArrayList<V>();
+   protected List<V> values = new ArrayList<V>();
 	private boolean allowDuplicate = initAllowDuplicate();
 	protected Comparator<V> cpr;
 	
@@ -63,7 +63,7 @@ public abstract class AbstractList<V> implements BaseItem {
 		this.cpr = new EntityComparator<V>().withColumn(column).withDirection(SortingDirection.ASC);
 		return this;
 	}
-
+	
 	public boolean add(V newValue) {
 		if(cpr!=null){
 			for (int i = 0; i < size(); i++) {
@@ -83,8 +83,8 @@ public abstract class AbstractList<V> implements BaseItem {
 			}
 		}
 		if(!isAllowDuplicate()){       
-         for(Iterator<V> i = iterator();i.hasNext();){
-            if(i.next()==newValue){
+         for(ListIterator<V> i = reverseListIterator();i.hasPrevious();){
+            if(i.previous()==newValue){
                return false; 
             }
          }
@@ -471,7 +471,7 @@ public abstract class AbstractList<V> implements BaseItem {
     public Iterator<V> iterator() {
         return values.iterator();
     }
-
+    
     public Object[] toArray() {
         return values.toArray();
     }
@@ -522,15 +522,15 @@ public abstract class AbstractList<V> implements BaseItem {
     	Object oldValue=null;
 		while(i.hasNext()){
 			Object item = i.next();
+			this.values.remove(item);
 			if(item!=null){
-				i.remove();
 				fireProperty(item, null, oldValue);
 			}
 			oldValue = item;
 		}
 		return true;
 	}
-
+    
     public void clear() {
     	removeAll(iterator());
     }
@@ -561,7 +561,7 @@ public abstract class AbstractList<V> implements BaseItem {
 	
 	@Override
    public AbstractList<V> clone() {
-	   return this.getNewInstance().with(this);
+	   return this.getNewInstance().with((Collection<?>)this);
    }
 	
 	public abstract AbstractList<V> with(Object... values);
@@ -590,6 +590,10 @@ public abstract class AbstractList<V> implements BaseItem {
     public ListIterator<V> listIterator(int index) {
         return values.listIterator(index);
 	}
+    
+    public ListIterator<V> reverseListIterator() {
+       return values.listIterator(values.size());
+    }
 	
 	public int size() {
 		return this.values.size();
