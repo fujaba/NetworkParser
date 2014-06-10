@@ -666,11 +666,11 @@ public class JsonIdMap extends IdMap {
 			}
 		}
 
-		SendableEntityCreator prototyp = getCreator(className, true);
-		if (prototyp == null) {
+		SendableEntityCreator creator = getCreator(className, true);
+		if (creator == null) {
 			throw new RuntimeException("No Creator exist for " + className);
 		}
-		String[] properties = prototyp.getProperties();
+		String[] properties = creator.getProperties();
 		if (isId) {
 			filter.addToVisitedObjects(id);
 		}else{
@@ -684,7 +684,7 @@ public class JsonIdMap extends IdMap {
 					throw new RuntimeException("Property duplicate:" + property
 							+ "(" + className + ")");
 				}
-				Object subValue = parseProperty(prototyp, entity, filter,
+				Object subValue = parseProperty(creator, entity, filter,
 						className, property, jsonArray, deep+1);
 				if (subValue != null) {
 					jsonProps.put(property, subValue);
