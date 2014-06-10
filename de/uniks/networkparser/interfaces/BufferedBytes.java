@@ -59,7 +59,7 @@ public interface BufferedBytes extends Buffer{
 	
 	public void put(byte[] value, int offset, int length);
 	
-	public void flip();
+	public byte[] flip();
 	
 	public BufferedBytes getNewBuffer(int capacity);
 	
