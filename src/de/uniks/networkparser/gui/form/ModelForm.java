@@ -49,7 +49,7 @@ import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class ModelForm extends BorderPane{
-	private IdMap map;
+	protected IdMap map;
 	private TextItems textClazz= null;
 	private Button saveBtn;
 	private Button reloadBtn;
@@ -98,32 +98,22 @@ public class ModelForm extends BorderPane{
 			}
 			
 			if(addCommandBtn){
-				this.actionComposite = new HBox();
-				this.saveBtn = new Button();
-				this.actionComposite.getChildren().add(saveBtn);
-				this.saveBtn.setText(getText(DefaultTextItems.SAVE));
+				this.saveBtn = new Button(getText(DefaultTextItems.SAVE));
 				this.saveBtn.setOnAction(new EventHandler<ActionEvent>() {
-					
 					@Override
 					public void handle(ActionEvent event) {
 						save();						
 					}
 				});
-				this.reloadBtn = new Button();
-				this.reloadBtn.setText(getText(DefaultTextItems.RELOAD));
-				Label empty = new Label();
-				empty.setMinWidth(10);
-				this.actionComposite.getChildren().add(empty);
-				this.actionComposite.getChildren().add(reloadBtn);
-				this.actionComposite.setAlignment(Pos.BASELINE_RIGHT);
+				this.reloadBtn = new Button(getText(DefaultTextItems.RELOAD));
 				this.reloadBtn.setOnAction(new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent event) {
 						reload();						
 					}
 				});
-				
-				this.setBottom(actionComposite);
+
+				this.withActionComponente(this.saveBtn, this.reloadBtn);
 			}
 		}
 		return this;
@@ -153,25 +143,51 @@ public class ModelForm extends BorderPane{
 		}
 	}
 	
-	
-	public void setPreSize(){
-	double max=0;
-	for(Iterator<Node> iterator = getItems().getChildren().iterator();iterator.hasNext();){
-		Node node = iterator.next();
-		if(node instanceof PropertyComposite) {
-			double temp = ((PropertyComposite)node).getLabelWidth();
-			if(temp>max){
-				max = temp; 
+	public void setPreSize() {
+		double max = 0;
+		for (Iterator<Node> iterator = getItems().getChildren().iterator(); iterator
+				.hasNext();) {
+			Node node = iterator.next();
+			if (node instanceof PropertyComposite) {
+				double temp = ((PropertyComposite) node).getLabelWidth();
+				if (temp > max) {
+					max = temp;
+				}
+			}
+		}
+		for (Iterator<Node> iterator = getItems().getChildren().iterator(); iterator
+				.hasNext();) {
+			Node node = iterator.next();
+			if (node instanceof PropertyComposite) {
+				((PropertyComposite) node).setLabelLength(max);
 			}
 		}
 	}
-	for(Iterator<Node> iterator = getItems().getChildren().iterator();iterator.hasNext();){
-		Node node = iterator.next();
-		if(node instanceof PropertyComposite) {
-			((PropertyComposite)node).setLabelLength(max);
+	
+	public ModelForm withActionComponente(Button... buttons){
+		if(buttons==null){
+			return this;
 		}
+		if(this.actionComposite==null){
+			this.actionComposite = new HBox();
+			this.setBottom(actionComposite);
+			this.actionComposite.setAlignment(Pos.BASELINE_RIGHT);
+		}
+		
+		int count = this.actionComposite.getChildren().size();
+		
+		
+		for(Button btn : buttons){
+			if(count>0){
+				Label empty = new Label();
+				empty.setMinWidth(10);
+				this.actionComposite.getChildren().add(empty);
+			}
+			this.actionComposite.getChildren().add(btn);
+			count++;
+		}
+		return this;
 	}
-}
 	
 	
 	
@@ -181,16 +197,6 @@ public class ModelForm extends BorderPane{
 	
 	
 	//FIXME
-//	private LinkedHashSet<PropertyComposite> properties=new LinkedHashSet<PropertyComposite>();
-//	private PropertyComposite currentFocus;
-//	private KeyListener keyListener;
-//
-//	public ModelForm(Composite parent, int style) {
-//		super(parent, style);
-//		
-//		setLayout(new RowLayout(SWT.VERTICAL));
-//	}
-//	
 //	public void setPreSize(){
 //		int max=0;
 //		
@@ -215,22 +221,6 @@ public class ModelForm extends BorderPane{
 //		for(Iterator<PropertyComposite> iterator = properties.iterator();iterator.hasNext();){
 //			iterator.next().dispose();
 //		}	
-//	}
-//	
-//	
-//	
-
-//
-//	public IdMap getMap() {
-//		return map;
-//	}
-//	
-//	public Object getItem() {
-//		return item;
-//	}
-//
-//	public TextItems getTextClazz() {
-//		return textClazz;
 //	}
 //	
 //	public void addProperty(PropertyComposite propertyComposite){

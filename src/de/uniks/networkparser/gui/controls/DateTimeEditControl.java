@@ -24,7 +24,10 @@ package de.uniks.networkparser.gui.controls;
 import java.time.LocalDate;
 import java.util.GregorianCalendar;
 
+import javafx.event.EventHandler;
 import javafx.scene.control.DatePicker;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import de.uniks.networkparser.gui.table.Column;
 import de.uniks.networkparser.gui.table.FieldTyp;
 
@@ -32,11 +35,14 @@ public class DateTimeEditControl extends EditControl<DatePicker>{
 	@Override
 	public Object getValue(boolean convert) {
 		LocalDate date = this.control.getValue();
-		GregorianCalendar calendar=new GregorianCalendar();
-		calendar.set(GregorianCalendar.YEAR, date.getYear());
-		calendar.set(GregorianCalendar.MONTH, date.getMonth().getValue());
-		calendar.set(GregorianCalendar.DAY_OF_MONTH, date.getDayOfMonth());
-		return calendar.getTime();
+		if(date!=null){
+			GregorianCalendar calendar=new GregorianCalendar();
+			calendar.set(GregorianCalendar.YEAR, date.getYear());
+			calendar.set(GregorianCalendar.MONTH, date.getMonth().getValue());
+			calendar.set(GregorianCalendar.DAY_OF_MONTH, date.getDayOfMonth());
+			return calendar.getTime();
+		}
+		return null;
 //		return date;
 	}
 
@@ -56,5 +62,19 @@ public class DateTimeEditControl extends EditControl<DatePicker>{
 	@Override
 	public DatePicker createControl(Column column) {
 		return new DatePicker();
+	}
+
+	@Override
+	protected void registerListener() {
+		super.registerListener();
+		
+		control.addEventFilter(KeyEvent.ANY, new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent event) {
+				if(event.getCode().equals(KeyCode.ENTER)){
+					apply();
+				}
+			}
+		});
 	}
 }

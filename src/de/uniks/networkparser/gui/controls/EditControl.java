@@ -21,6 +21,8 @@ package de.uniks.networkparser.gui.controls;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
@@ -30,9 +32,10 @@ import de.uniks.networkparser.gui.table.CellEditorElement;
 import de.uniks.networkparser.gui.table.Column;
 import de.uniks.networkparser.gui.table.FieldTyp;
 
-public abstract class EditControl<T extends Node> implements CellEditorElement, EventHandler<KeyEvent>{
+public abstract class EditControl<T extends Node> implements CellEditorElement, EventHandler<KeyEvent>, ChangeListener<Boolean> {
 	protected T control;
-	protected EditFieldMap cellOwner;
+	protected EditFieldMap listener;
+	protected CellEditorElement owner;
 	protected Column column;
 	protected IdMap map;
 	protected Object value;
@@ -53,19 +56,33 @@ public abstract class EditControl<T extends Node> implements CellEditorElement, 
 		this.value = value;
 		return this;
 	}
+	
+
+	public EditControl<T> withOwner(CellEditorElement value) {
+		this.owner = value;
+		return this;
+	}
 
 	public abstract FieldTyp getControllForTyp(Object value);
+	
+	@Override
+	public abstract Object getValue(boolean convert);
 	
 	public T getControl() {
 		if (control == null ) {
 			control = createControl(column);
-			control.setOnKeyReleased(this);
+			registerListener();
 		}
 		return control;
 	}
 	
-	public EditControl<T> withOwner(EditFieldMap owner){
-		this.cellOwner = owner;
+	protected void registerListener(){
+		control.setOnKeyPressed(this);
+		control.focusedProperty().addListener(this);
+	}
+	
+	public EditControl<T> withListener(EditFieldMap owner){
+		this.listener = owner;
 		return this;
 	}
 	
@@ -92,8 +109,8 @@ public abstract class EditControl<T extends Node> implements CellEditorElement, 
 				 return control.isFocused();
 			 }
 		}else{
-			if(cellOwner != null){
-				cellOwner.setFocus(value);
+			if(owner != null){
+				owner.setFocus(value);
 			}
 		}
 		 return false;
@@ -115,21 +132,18 @@ public abstract class EditControl<T extends Node> implements CellEditorElement, 
 	
 	@Override
 	public void cancel() {
-		if(cellOwner != null){
-			cellOwner.cancel();
+		if(owner != null){
+			owner.cancel();
 		}
 	}
 
 	@Override
 	public void apply() {
-		if(cellOwner != null){
-			cellOwner.apply();
+		if(owner != null){
+			owner.apply();
 		}
 	}
 	
-	public void addChoiceList(Object value){
-		
-	}
 	public abstract T createControl(Column column);
 	@Override
 	public abstract CellEditorElement withValue(Object value);
@@ -146,6 +160,9 @@ public abstract class EditControl<T extends Node> implements CellEditorElement, 
 	public void handle(KeyEvent event) {
 		if(event.getCode().equals(KeyCode.ENTER)){
 			apply();
+		}else if(event.getCode().equals(KeyCode.TAB)){
+			apply();
+			nextFocus();
 		}
 	}
 	
@@ -161,5 +178,13 @@ public abstract class EditControl<T extends Node> implements CellEditorElement, 
 	public boolean nextFocus(){
 		return false;
 	}
+	@Override
+	public void changed(ObservableValue<? extends Boolean> observable,
+			Boolean oldValue, Boolean newValue) {
+		// FOCUSLost
+		if(newValue==false){
+			apply();
+		}
+		
+	}
 }
-
