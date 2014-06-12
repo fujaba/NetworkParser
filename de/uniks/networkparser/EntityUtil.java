@@ -30,6 +30,8 @@ import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
 
 public class EntityUtil {
+	private static final String HEXVAL = "0123456789abcdef";
+
 	/**
 	 * Produce a string from a double. The string "null" will be returned if the
 	 * number is not finite.
@@ -87,9 +89,9 @@ public class EntityUtil {
 		if (value == null || value.length() == 0) {
 			return "";
 		}
-		if(!value.startsWith("\\")){
-			return value;
-		}
+//FIXME STEFAN		if(!value.startsWith(""")){
+//			return value;
+//		}
 		StringBuilder sb=new StringBuilder(value.length());
 		char c;
 		for(int i=0;i<value.length();i++){
@@ -113,14 +115,22 @@ public class EntityUtil {
 				        sb.append('\r');
 				        break;
 				    case 'u':
-				    	int no = Integer.parseInt(new String(new char[]{value.charAt(++i), value.charAt(++i)}));
-				        sb.append(""+no);
-				        break;
+				    	char no = fromHex(value.charAt(++i), value.charAt(++i), value.charAt(++i), value.charAt(++i));
+				        sb.append((char)no);
+				        continue;
 			    }
 			}
 			sb.append(c);
 		}
 		return sb.toString();
+	}
+	
+	private static char fromHex(char... values) {
+		return (char) (
+				(HEXVAL.indexOf(values[0])<<24)+
+				(HEXVAL.indexOf(values[1])<<16)+
+				(HEXVAL.indexOf(values[2])<<8)+
+				HEXVAL.indexOf(values[3]));
 	}
 
 	/**
