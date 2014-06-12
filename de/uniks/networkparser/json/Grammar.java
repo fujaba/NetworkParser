@@ -76,19 +76,15 @@ public class Grammar {
 	public JsonObject getWriteObject(IdMapEncoder map, SendableEntityCreator prototyp,
 			String className, String id, JsonObject jsonProp, Filter filter) {
 		JsonObject json = new JsonObject();
-		if (prototyp instanceof SendableEntityCreatorNoIndex) {
+		json.put(JsonIdMap.CLASS, className);
+		if (prototyp instanceof SendableEntityCreatorNoIndex || !filter.isId(map, jsonProp, className)) {
 			for(Iterator<AbstractKeyValueEntry<String, Object>> i = jsonProp.iterator();i.hasNext();){
 				AbstractKeyValueEntry<String, Object> item = i.next();
 				json.put(item.getKey(), item.getValue());
 			}
-			json.put(JsonIdMap.CLASS, className);
 			return json;
 		}
-		if (filter.isId(map, jsonProp, className)) {
-			json.put(IdMapEncoder.ID, id);
-		}
-		json.put(JsonIdMap.CLASS, className);
-
+		json.put(IdMapEncoder.ID, id);
 		if (jsonProp.size() > 0) {
 			json.put(JsonIdMap.JSON_PROPS, jsonProp);
 		}
