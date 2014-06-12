@@ -73,7 +73,7 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 			super.startEdit();
 			Object value = getItem().getCreator().getValue(getItem().getItem(), this.field.getAttrName());
 			FieldTyp typ = fieldMap.getControllForTyp(field, value);
-			control = fieldMap.getControl(typ, field, value);
+			control = fieldMap.getControl(typ, field, value, this);
 			if(control!=null){
 				setText(null);
 				setGraphic(control.getControl());
@@ -137,18 +137,6 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 	}
 
 	@Override
-	public boolean setFocus(boolean value) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean onActive(boolean value) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public boolean nextFocus() {
 		// TODO Auto-generated method stub
 		return false;
@@ -156,11 +144,7 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 
 	@Override
 	public void apply() {
-		Node node = control.getControl();
-		Object value = null;
-		if(node instanceof CellEditorElement){
-			value = ((CellEditorElement)node).getValue(false);
-		}
+		Object value = control.getValue(false);
 		getItem().getColumn().getListener().setValue(this, getItem().getItem(), getItem().getCreator(), value);
 		setText(""+value);
 		setGraphic(null);		
@@ -168,8 +152,7 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 
 	@Override
 	public Object getValue(boolean convert) {
-		// TODO Auto-generated method stub
-		return null;
+		return control.getValue(convert);
 	}
 
 	@Override
@@ -180,5 +163,17 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 
 	@Override
 	public void dispose() {
+	}
+
+	@Override
+	public boolean setFocus(boolean value) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean onActive(boolean value) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

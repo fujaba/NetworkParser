@@ -16,13 +16,13 @@ public class EditFieldMap {
 	private CellEditorElement owner;
 
 	public EditFieldMap(){
-		withEditControls( new CheckBoxEditControl().withOwner(this) );
-		withEditControls( new ComboEditControl().withOwner(this) );
-		withEditControls( new DateTimeEditControl().withOwner(this) );
-		withEditControls( new SpinnerIntegerEditControl().withOwner(this) );
-		withEditControls( new SpinnerDoubleEditControl().withOwner(this) );
-		withEditControls( new TextEditorControl().withOwner(this) );
-		withEditControls( new PasswordEditControl().withOwner(this) );
+		withEditControls( new CheckBoxEditControl().withListener(this) );
+		withEditControls( new ComboEditControl().withListener(this) );
+		withEditControls( new DateTimeEditControl().withListener(this) );
+		withEditControls( new SpinnerIntegerEditControl().withListener(this) );
+		withEditControls( new SpinnerDoubleEditControl().withListener(this) );
+		withEditControls( new TextEditorControl().withListener(this) );
+		withEditControls( new PasswordEditControl().withListener(this) );
 	}
 	
 	public EditFieldMap withEditControls(EditControl<?> field){
@@ -35,7 +35,7 @@ public class EditFieldMap {
 		return this;
 	}
 
-	public EditControl<?> getControl(FieldTyp typ, Column column, Object value){
+	public EditControl<?> getControl(FieldTyp typ, Column column, Object value, CellEditorElement owner){
 		EditControl<?> newFieldControl = null;
 		if(typ==null){
 			typ = getControllForTyp(column, value);
@@ -53,6 +53,7 @@ public class EditFieldMap {
 			return null;
 		}
 		
+		newFieldControl.withOwner(owner);
 		newFieldControl.withColumn(column);
 		newFieldControl.withMap(map);
 		

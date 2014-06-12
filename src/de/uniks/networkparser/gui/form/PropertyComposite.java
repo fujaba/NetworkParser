@@ -127,7 +127,7 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 			this.getChildren().add(westLabel);
 		}
 		 if(this.centerComposite==null){
-			 editControl = this.field.getControl(null, column, getItemValue());
+			 editControl = this.field.getControl(null, column, getItemValue(), this);
 			 editControl.withValue(getItemValue());
 			 this.centerComposite = editControl.getControl(); 
 			this.getChildren().add(1, centerComposite);
@@ -224,10 +224,6 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 		withDataBinding();
 	}
 	
-	
-	
-	
-	
 	@Override
 	public PropertyComposite withColumn(Column value) {
 		this.column = value;
@@ -251,7 +247,6 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 		editControl.withValue( value );	
 		return this;
 	}
-	
 	
 	
 	
@@ -293,13 +288,6 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 	}
 
 	@Override
-	public Object getValue(boolean convert) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if(evt.getPropertyName()!=null){
 			if(evt.getPropertyName().equals(getColumn().getAttrName())){
@@ -307,6 +295,11 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 	//			field.setValue(evt.getNewValue(), false);
 			}
 		}
+	}
+
+	@Override
+	public Object getValue(boolean convert) {
+		return editControl.getValue(convert);
 	}
 
 	//FIXME
