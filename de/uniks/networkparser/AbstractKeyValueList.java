@@ -205,7 +205,7 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<AbstractKe
 	public K getKey(V obj) {
 		for(Iterator<AbstractKeyValueEntry<K, V>> i = iterator();i.hasNext();){
 			AbstractKeyValueEntry<K, V> item = i.next();
-			if(item.getValue().equals(obj)){
+			if(item!=null && item.getValue() != null && item.getValue().equals(obj)){
 				return item.getKey();
 			}
 		}

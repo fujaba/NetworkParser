@@ -136,7 +136,6 @@ public class TableList extends AbstractEntityList<Object> implements SendableEnt
 		if(comparator == null){
 			comparator = new EntityComparator<Object>();
 			this.cpr = comparator;
-			
 		}
 		comparator.withColumn(field);
 		comparator.withDirection(direction);
@@ -158,13 +157,21 @@ public class TableList extends AbstractEntityList<Object> implements SendableEnt
 	public void setSort(String field) {
 		EntityComparator<Object> comparator = comparator();
 		if(comparator!=null){
-			comparator.withColumn(field);
+			if(comparator.getColumn() != null && comparator.getColumn().equals(field)){
+				comparator.changeDirection();
+			}else{
+				comparator.withColumn(field);
+			}
 			refreshSort();
 		}
 	}
 	
 	public SortingDirection changeDirection(){
-		return comparator().changeDirection();
+		EntityComparator<Object> comparator = comparator();
+		if(comparator!=null){
+			return comparator.changeDirection();
+		}
+		return null;
 	}
 	
 	public Object[] getSortedIndex(){

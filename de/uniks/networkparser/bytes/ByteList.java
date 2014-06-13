@@ -91,11 +91,15 @@ public class ByteList extends AbstractList<ByteItem> implements ByteItem, Factor
 		int size=calcChildren(isDynamic);
 		
 		byte typ = ByteUtil.getTyp(getTyp(), size, last);
-		ByteUtil.writeByteHeader(buffer, typ, size);
-	
+int pos=buffer.position();
+      ByteUtil.writeByteHeader(buffer, typ, size);
+
 		for(int i=0;i<values.size();i++){
 			((ByteItem) values.get(i)).writeBytes(buffer, isDynamic, i==values.size()-1);
 		}
+//FIXME
+System.out.println("BL "+typ +" : "+pos +" - "+buffer.position());
+
 	}
 
 	@Override
@@ -146,8 +150,9 @@ public class ByteList extends AbstractList<ByteItem> implements ByteItem, Factor
 		return typ;
 	}
 
-	public void setTyp(Byte value) {
+	public ByteList withTyp(Byte value) {
 		this.typ = value;
+		return this;
 	}
 
 	public AbstractList<ByteItem> withValue(String value) {
@@ -162,7 +167,7 @@ public class ByteList extends AbstractList<ByteItem> implements ByteItem, Factor
 	}
 
 	@Override
-	public AbstractList<ByteItem> with(Object... values) {
+	public ByteList with(Object... values) {
 		if(values != null){
 			for(Object value : values){
 				if(value instanceof ByteItem) {

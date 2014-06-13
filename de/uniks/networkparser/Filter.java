@@ -27,14 +27,14 @@ import de.uniks.networkparser.logic.Condition;
 import de.uniks.networkparser.logic.ValuesMap;
 
 public class Filter {
-	private Condition idFilter;
-	private Condition convertable;
-	private Condition property;
+   protected Condition idFilter;
+	protected Condition convertable;
+	protected Condition property;
 	
 	// Temporary variables
-	private ArrayList<Object> visitedObjects;
-	private ArrayList<ReferenceObject> refs;
-	private Boolean full;
+	protected ArrayList<Object> visitedObjects;
+	protected ArrayList<ReferenceObject> refs;
+	protected Boolean full;
 
 	public Condition getIdFilter() {
 		return idFilter;
@@ -115,15 +115,28 @@ public class Filter {
 		return newInstance.withConvertable(convertable).withIdFilter(idFilter).withPropertyRegard(property);
 	}
 	
-
 	public boolean hasVisitedObjects(Object element) {
 		return visitedObjects.contains(element);
 	}
 	
+	public int getIndexVisitedObjects(Object element) {
+	   int pos=0;
+	   if(visitedObjects==null){
+	      visitedObjects = new ArrayList<Object>();
+	   }
+	   for(Object item : visitedObjects){
+	      if(item==element){
+	         return pos;
+	      }
+	      pos++;
+	   }
+      return -1;
+   }
+	
 	public void addToVisitedObjects(Object visitedObjects) {
 		this.visitedObjects.add(visitedObjects);
 	}
-
+	
 	public boolean isPropertyRegard(IdMapEncoder map, Object entity,
 			String property, Object value, boolean isMany, int deep) {
 		if(this.property!=null){

@@ -56,7 +56,7 @@ public class BytesBuffer implements BufferedBytes {
 	}
 
 	@Override
-	public Buffer withLength(int length) {
+	public BytesBuffer withLength(int length) {
 		this.buffer=new byte[length];
 		return this;
 	}
@@ -268,14 +268,14 @@ public class BytesBuffer implements BufferedBytes {
 	}
 
 	@Override
-	public void flip() {
+	public byte[] flip() {
 		this.index=0;
+		return buffer;
 	}
 
 	@Override
 	public BufferedBytes getNewBuffer(int capacity) {
-		new BytesBuffer().withLength(capacity);
-		return this;
+		return new BytesBuffer().withLength(capacity);
 	}
 	
 	public static BytesBuffer allocate(int len){
@@ -286,10 +286,10 @@ public class BytesBuffer implements BufferedBytes {
 
 	@Override
 	public BufferedBytes getNewBuffer(byte[] array) {
-		return new BytesBuffer().withValue(array);
+		return new BytesBuffer().with(array);
 	}
 	
-	public BytesBuffer withValue(byte[] array){
+	public BytesBuffer with(byte[] array){
 		this.buffer=array.clone();
 		return this;
 	}
