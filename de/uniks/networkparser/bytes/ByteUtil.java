@@ -106,6 +106,10 @@ public class ByteUtil {
 		BufferedBytes message=BytesBuffer.allocate(len);
 		return message;
 	}
+	
+	public static boolean isPrimitive(byte typ){
+		return ((typ>=ByteIdMap.DATATYPE_SHORT && typ<=ByteIdMap.DATATYPE_BYTE) || typ<=ByteIdMap.DATATYPE_CHAR);
+	}
 
 	/**
 	 * CHeck if the Typ is typ of Group

@@ -29,20 +29,20 @@ import de.uniks.networkparser.interfaces.ByteItem;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 
 public class BitEntity extends AbstractList<BitValue> implements ByteItem, FactoryEntity {
-	public static final String BIT_STRING = "string";
-	public static final String BIT_NUMBER = "number";
-	public static final String BIT_BYTE = "byte";
-	public static final String BIT_REFERENCE = "reference";
+	public static final byte BIT_STRING = 0x53; // S = String;
+	public static final byte BIT_NUMBER = 0x4E; // N = Number
+	public static final byte BIT_BYTE = 0x42;    // B = Byte
+	public static final byte BIT_REFERENCE = 0x52;	// R = Reference
 
 	// Can be a Typ
 	protected String property;
-	protected String typ = BIT_BYTE;
+	protected byte typ = BIT_BYTE;
 	protected int orientation = 1;
 	public static final String PROPERTY_PROPERTY = "property";
 	public static final String PROPERTY_TYP = "typ";
 	public static final String PROPERTY_ORIENTATION = "orientation";
 
-	public BitEntity with(String property, String typ) {
+	public BitEntity with(String property, byte typ) {
 		this.property = property;
 		this.typ = typ;
 		return this;
@@ -62,13 +62,17 @@ public class BitEntity extends AbstractList<BitValue> implements ByteItem, Facto
 		return property;
 	}
 
-	public String getTyp() {
+	@Override
+	public byte getTyp() {
 		return typ;
 	}
 
-	public boolean isTyp(String... referenceTyp) {
-		for (String typ : referenceTyp) {
-			if (this.typ.equals(typ)) {
+	public boolean isTyp(byte... referenceTyp) {
+		if(referenceTyp==null){
+			return false;
+		}
+		for (byte typ : referenceTyp) {
+			if (this.typ== typ) {
 				return true;
 			}
 		}
@@ -80,7 +84,7 @@ public class BitEntity extends AbstractList<BitValue> implements ByteItem, Facto
 			this.property = "" + value;
 			return true;
 		} else if (PROPERTY_TYP.equalsIgnoreCase(attribute)) {
-			this.typ = "" + value;
+			this.typ = (byte)value;
 			return true;
 		} else if (PROPERTY_ORIENTATION.equalsIgnoreCase(attribute)) {
 			this.orientation = Integer.parseInt(""+value);

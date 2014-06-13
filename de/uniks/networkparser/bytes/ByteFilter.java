@@ -24,7 +24,6 @@ package de.uniks.networkparser.bytes;
 import de.uniks.networkparser.Filter;
 
 public class ByteFilter extends Filter {
-	private boolean isDynamic;
 	private boolean isLenCheck;
 
 	public boolean isLenCheck() {
@@ -33,15 +32,6 @@ public class ByteFilter extends Filter {
 
 	public ByteFilter withLenCheck(boolean value) {
 		this.isLenCheck = value;
-		return this;
-	}
-
-	public boolean isDynamic() {
-		return isDynamic;
-	}
-
-	public ByteFilter withDynamic(boolean value) {
-		this.isDynamic = value;
 		return this;
 	}
 	
@@ -54,8 +44,7 @@ public class ByteFilter extends Filter {
 	public Filter clone(Filter newInstance)
 	{
 	   ByteFilter result = (ByteFilter) super.clone(newInstance);
-	   result.withDynamic(this.isDynamic).withLenCheck(this.isLenCheck);
-	   return result;
+	   return result.withLenCheck(this.isLenCheck);
 	}
 
 	public String getCharset() {

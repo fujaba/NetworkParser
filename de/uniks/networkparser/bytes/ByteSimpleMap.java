@@ -193,7 +193,7 @@ public class ByteSimpleMap extends AbstractMap {
 		// Set the Typ
 		Object element = null;
 
-		if (entry.getTyp().equals(BitEntity.BIT_BYTE)) {
+		if (entry.getTyp()== BitEntity.BIT_BYTE) {
 			byte[] array = result.array();
 			if (array.length == 1) {
 				element = Byte.valueOf(array[0]);
@@ -204,7 +204,7 @@ public class ByteSimpleMap extends AbstractMap {
 				}
 				element = item;
 			}
-		} else if (entry.getTyp().equals(BitEntity.BIT_NUMBER)) {
+		} else if (entry.getTyp() == BitEntity.BIT_NUMBER) {
 			if (result.length() == Byte.SIZE / ByteEntity.BITOFBYTE) {
 				element = result.getByte();
 			} else if (result.length() == Short.SIZE / ByteEntity.BITOFBYTE) {
@@ -220,7 +220,7 @@ public class ByteSimpleMap extends AbstractMap {
 			} else {
 				element = result.getInt();
 			}
-		} else if (entry.getTyp().equals(BitEntity.BIT_STRING)) {
+		} else if (entry.getTyp() == BitEntity.BIT_STRING) {
 			result.flip();
 			element = String.valueOf(result.array());
 

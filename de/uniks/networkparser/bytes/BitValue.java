@@ -32,7 +32,7 @@ public class BitValue {
 		this.len = new BitEntity().with(len);
 	}
 
-	public BitValue(String startTyp, String startValue, String lentyp,
+	public BitValue(byte startTyp, String startValue, byte lentyp,
 			String lenvalue) {
 		this.start = new BitEntity().with(startValue, startTyp);
 		this.len = new BitEntity().with(lenvalue, lentyp);
