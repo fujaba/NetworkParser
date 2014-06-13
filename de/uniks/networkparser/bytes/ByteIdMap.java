@@ -23,6 +23,7 @@ package de.uniks.networkparser.bytes;
 */
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -247,22 +248,12 @@ public class ByteIdMap extends IdMap {
 			}
 			
 			// Kill Empty Fields
-			Object[] array = msg.toArray();
+			ByteItem[] array = msg.toArray(new ByteItem[msg.size()]);
 			for(int i=array.length-1;i>0;i--){
-				if(array[i] instanceof ByteEntity){
-					ByteEntity byteEntity = (ByteEntity)array[i];
-					if(byteEntity.getTyp()==ByteIdMap.DATATYPE_NULL){
-						msg.remove(i);
-					}else{
-						break;
-					}
-				}else if(array[i] instanceof ByteList){
-					if(((ByteList)array[i]).size()<1){
-						msg.remove(i);
-					}else{
-						break;
-					}
+				if(!array[i].isEmpty()){
+					break;
 				}
+				msg.remove(i);
 			}
 		}
 		return msg;
@@ -274,8 +265,8 @@ public class ByteIdMap extends IdMap {
 			return msgEntity;
 		} else {
 			// Map, List, Assocs
-			if (value instanceof List<?>) {
-			   List<?> list = (List<?>) value;
+			if (value instanceof Collection<?>) {
+				Collection<?> list = (Collection<?>) value;
 				ByteList byteList = new ByteList().withTyp(ByteIdMap.DATATYPE_LIST);
 				for (Object childValue : list) {
 					ByteItem child = encodeValue(childValue, filter);
@@ -284,7 +275,8 @@ public class ByteIdMap extends IdMap {
 					}
 				}
 				return byteList;
-			} else if (value instanceof Map<?, ?>) {
+			}
+			if (value instanceof Map<?, ?>) {
 				ByteList byteList = new ByteList().withTyp(ByteIdMap.DATATYPE_MAP);
 				Map<?, ?> map = (Map<?, ?>) value;
 				ByteItem child;
@@ -304,15 +296,9 @@ public class ByteIdMap extends IdMap {
 					byteList.add(item);
 				}
 				return byteList;
-			} else if (value != null) {
+			}
+			if (value != null) {
 				return encode(value, filter);
-//				if (child != null) {
-//					return new ByteList().with(child);
-//FIXME					byteList.setTyp(ByteIdMap.DATATYPE_CLAZZ);
-//					byteList.add(child);
-//					return byteList;
-//				}
-//				return child;
 			}
 		}
 		return null;

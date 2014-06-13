@@ -97,27 +97,17 @@ public class EntityUtil {
 		for(int i=0;i<value.length();i++){
 			c = value.charAt(i);
 			if(c=='\\'){
+				if(i+1==value.length()){
+					sb.append('\\');
+					break;
+				}
 				c = value.charAt(++i);
-			    switch (c) {
-				    case 'b':
-				        sb.append('\b');
-				        break;
-				    case 't':
-				        sb.append('\t');
-				        break;
-				    case 'n':
-				        sb.append('\n');
-				        break;
-				    case 'f':
-				        sb.append('\f');
-				        break;
-				    case 'r':
-				        sb.append('\r');
-				        break;
-				    case 'u':
-				    	char no = fromHex(value.charAt(++i), value.charAt(++i), value.charAt(++i), value.charAt(++i));
-				        sb.append((char)no);
-				        continue;
+			    if(c=='u'){
+			    	char no = fromHex(value.charAt(++i), value.charAt(++i), value.charAt(++i), value.charAt(++i));
+			        sb.append((char)no);
+			        continue;
+			    }else{
+			    	sb.append('\\');
 			    }
 			}
 			sb.append(c);

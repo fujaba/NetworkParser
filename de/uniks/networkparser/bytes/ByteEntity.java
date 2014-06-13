@@ -253,6 +253,7 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 	 * 
 	 * @return the typ
 	 */
+	@Override
 	public byte getTyp() {
 		return this.typ;
 	}
@@ -265,7 +266,10 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 	@Override
 	public int calcLength(boolean isDynamic) {
 		// Length calculate Sonderfaelle ermitteln
-		if (isDynamic && this.values != null) {
+		if(this.values==null){
+			return TYPBYTE;
+		}
+		if (isDynamic) {
 			if (typ == ByteIdMap.DATATYPE_SHORT) {
 				Short bufferValue = new BytesBuffer().with(values).getShort();
 				if (bufferValue >= Byte.MIN_VALUE
@@ -284,13 +288,7 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 				}
 			}
 		}
- 		int len = TYPBYTE;
-
-		if (this.values != null) {
-			len += ByteUtil.getTypLen(typ, values.length);
-			len += this.values.length;
-		}
-		return len;
+ 		return TYPBYTE + ByteUtil.getTypLen(typ, values.length) + this.values.length;
 	}
 
 	@Override
@@ -301,5 +299,18 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 	@Override
 	public ByteEntity getNewObject() {
 		return new ByteEntity();
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return getTyp()==ByteIdMap.DATATYPE_NULL;
+	}
+
+	@Override
+	public int size() {
+		if(values==null){
+			return 0;
+		}
+		return values.length;
 	}
 }

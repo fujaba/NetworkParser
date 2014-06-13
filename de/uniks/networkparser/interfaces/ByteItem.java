@@ -55,4 +55,16 @@ public interface ByteItem extends BaseItem{
 	 * @return the Size of Bytes
 	 */
 	public int calcLength(boolean isDynamic);
+	
+	public byte getTyp();
+	
+	/**
+	 * @return true if the ByteItem is Empty
+	 */
+	public boolean isEmpty();
+	
+	/**
+	 * @return the Size of the Item
+	 */
+	public int size();
 }

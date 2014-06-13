@@ -89,17 +89,14 @@ public class ByteList extends AbstractList<ByteItem> implements ByteItem, Factor
 	@Override
 	public void writeBytes(BufferedBytes buffer, boolean isDynamic, boolean last){
 		int size=calcChildren(isDynamic);
+		//FIXME not right wirte more then Buffer
 		
 		byte typ = ByteUtil.getTyp(getTyp(), size, last);
-int pos=buffer.position();
       ByteUtil.writeByteHeader(buffer, typ, size);
 
 		for(int i=0;i<values.size();i++){
 			((ByteItem) values.get(i)).writeBytes(buffer, isDynamic, i==values.size()-1);
 		}
-//FIXME
-System.out.println("BL "+typ +" : "+pos +" - "+buffer.position());
-
 	}
 
 	@Override
@@ -120,32 +117,37 @@ System.out.println("BL "+typ +" : "+pos +" - "+buffer.position());
 		if(size<1){
 			return 0;
 		}
-		Object[] valueList = this.values.toArray(new Object[size]);
+		ByteItem[] valueList = this.values.toArray(new ByteItem[size]);
 		
 		// SonderFall Last Entity
-		int typLen;
+//		int typLen;
 		int len;
+		boolean isPrimitive=isDynamic;
 		if(valueList[size-1] instanceof ByteEntity){
 			ByteEntity entity =(ByteEntity) valueList[size-1];
-			len=entity.getValue().length;
-			typLen=ByteUtil.getTypLen(((ByteEntity)entity).getTyp(), len);
+			// HEADER + VALUE
+			len=entity.getValue().length + 1;
 		}else{
 			ByteList list = (ByteList) valueList[size-1];
 			len=list.calcChildren(isDynamic);
-			typLen=ByteUtil.getTypLen(((ByteList)list).getTyp(), len);
+			isPrimitive=false;
 		}
-		if(typLen>0){
-			// Must be a Group and not the optimize LastEntity
-			length=len+1;
-		}else{
-			length=((ByteItem)valueList[size-1]).calcLength(isDynamic);
-		}
+		length=len+ByteUtil.getTypLen(valueList[size-1].getTyp(), len - 1);
 		for (int i = size - 2; i >= 0; i--) {
-			length += ((ByteItem)valueList[i]).calcLength(isDynamic);
+			len = valueList[i].calcLength(isDynamic);;
+			if(isPrimitive){
+				isPrimitive = (valueList[i].size()==len - 1);
+			}
+			length += len;
  		}
+		if(isPrimitive){
+			// Only for ByteList with value dynamic and values with cant be short
+			length-= size;
+		}
 		return length;
 	}
 
+	@Override
 	public byte getTyp() {
 		return typ;
 	}
