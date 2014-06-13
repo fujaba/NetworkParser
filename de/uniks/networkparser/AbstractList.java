@@ -268,6 +268,9 @@ public abstract class AbstractList<V> implements BaseItem {
 	 *             convertible to boolean.
 	 */
 	public boolean getBoolean(int index) throws RuntimeException {
+		if(index==-1){
+			return false;
+		}
 		Object object = getEntity(index);
 		if (object.equals(Boolean.FALSE)
 				|| (object instanceof String && ((String) object)

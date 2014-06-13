@@ -26,6 +26,7 @@ import java.util.Iterator;
 import de.uniks.networkparser.AbstractEntityList;
 import de.uniks.networkparser.AbstractKeyValueEntry;
 import de.uniks.networkparser.AbstractKeyValueList;
+import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.TextParsingException;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -52,7 +53,7 @@ public class JsonTokener extends Tokener {
 		switch (c) {
 		case '"':
 			next();
-			return nextString(c, isAllowCRLF(), allowQuote, false, true);
+			return EntityUtil.unQuote(nextString(c, isAllowCRLF(), allowQuote, false, true));
 		case '\\':
 			// Must be unquote
 			next();
