@@ -77,28 +77,28 @@ public class ByteIdMap extends IdMap {
 	 * SIMPLE TYPES The Constant DATATYPE_BYTE.
 	 */
 	/** The Constant DATATYPE_INTEGER. */
-	public static final byte DATATYPE_SHORT = 0x27;
+	public static final byte DATATYPE_SHORT = 0x30;
 
 	/** The Constant DATATYPE_INTEGER. */
-	public static final byte DATATYPE_INTEGER = 0x28;
+	public static final byte DATATYPE_INTEGER = 0x31;
 
 	/** The Constant DATATYPE_INTEGER. */
-	public static final byte DATATYPE_LONG = 0x29;
+	public static final byte DATATYPE_LONG = 0x32;
 
 	/** The Constant DATATYPE_FLOAT. */
-	public static final byte DATATYPE_FLOAT = 0x30;
+	public static final byte DATATYPE_FLOAT = 0x33;
 
 	/** The Constant DATATYPE_DOUBLE. */
-	public static final byte DATATYPE_DOUBLE = 0x31;
+	public static final byte DATATYPE_DOUBLE = 0x34;
 
 	/** The Constant DATATYPE_BYTEARRAY. */
-	public static final byte DATATYPE_DATE = 0x32;
+	public static final byte DATATYPE_DATE = 0x35;
 
 	/** The Constant DATATYPE_BYTE. */
-	public static final byte DATATYPE_BYTE = 0x33;
+	public static final byte DATATYPE_BYTE = 0x36;
 
 	/** The Constant DATATYPE_BYTEARRAY. */
-	public static final byte DATATYPE_UNSIGNEDBYTE = 0x34;
+	public static final byte DATATYPE_UNSIGNEDBYTE = 0x37;
 
 	/** The Constant DATATYPE_BYTEARRAY. */
 	public static final byte DATATYPE_BYTEARRAY = 0x3A;
@@ -469,6 +469,13 @@ public class ByteIdMap extends IdMap {
 			} catch (UnsupportedEncodingException e) {
 			}
 			return null;
+		}
+		if (typ == ByteIdMap.DATATYPE_CLAZZTYP) {
+			int pos = buffer.getByte() - ByteIdMap.SPLITTER;
+			SendableEntityCreator eventCreater;
+			ByteFilter bf = (ByteFilter) filter;
+			eventCreater = super.getCreator(bf.getClazz(pos), true);
+			return decodeClazz(buffer, eventCreater);
 		}
 		if (typ == ByteIdMap.DATATYPE_CLAZZID) {
 			typ = buffer.getByte();

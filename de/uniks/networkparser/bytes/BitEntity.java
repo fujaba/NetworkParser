@@ -125,7 +125,7 @@ public class BitEntity extends AbstractList<BitValue> implements ByteItem, Facto
 
 
 	@Override
-	public int calcLength(boolean isDynamic) {
+	public int calcLength(boolean isDynamic, boolean isLast) {
 		return 0;
 	}
 
