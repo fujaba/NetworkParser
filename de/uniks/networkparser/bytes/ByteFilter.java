@@ -61,4 +61,11 @@ public class ByteFilter extends Filter {
      }
      return -1;
   }
+  public String getClazz(int pos){
+	  Object item = visitedObjects.get(pos);
+	  if(item instanceof String){
+		  return ""+item;
+	  }
+	  return null;
+  }
 }

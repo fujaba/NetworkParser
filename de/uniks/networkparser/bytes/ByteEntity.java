@@ -119,7 +119,7 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 	public String toString(ByteConverter converter, boolean dynamic) {
 		if (converter == null) {
 			converter = new ByteConverterHTTP();
-		}
+			}
 		return converter.toString(this, dynamic);
 	}
 
@@ -132,14 +132,16 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 	public void writeBytes(BufferedBytes buffer, boolean isDynamic, boolean last){
 //		int len = calcLength(isDynamic);
 		byte[] value = this.values;
-		int valueLen=0;
-		byte typ=getTyp();
 
-		if (isDynamic && value != null) {
-			BytesBuffer bb = new BytesBuffer();
-			bb.with(value);
+		byte typ=getTyp();
+		if(value==null){
+			typ = ByteUtil.getTyp(typ, 0, last);
+			ByteUtil.writeByteHeader(buffer, typ, 0);
+			return;
+		}
+		if (isDynamic) {
 			if (typ == ByteIdMap.DATATYPE_SHORT) {
-				short bufferValue = bb.getShort();
+				short bufferValue = new BytesBuffer().with(value).getShort();
 				if (bufferValue >= Byte.MIN_VALUE
 						&& bufferValue <= Byte.MAX_VALUE) {
 					typ = ByteIdMap.DATATYPE_BYTE;
@@ -147,7 +149,7 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 				}
 			} else if (typ == ByteIdMap.DATATYPE_INTEGER
 					|| typ == ByteIdMap.DATATYPE_LONG) {
-				int bufferValue = bb.getInt();
+				int bufferValue = new BytesBuffer().with(value).getInt();
 				if (bufferValue >= Byte.MIN_VALUE
 						&& bufferValue <= Byte.MAX_VALUE) {
 					typ = ByteIdMap.DATATYPE_BYTE;
@@ -162,23 +164,20 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 				}
 			}
 		}
-		if(value!=null){
-			valueLen= value.length;
-		}
-		typ = ByteUtil.getTyp(typ, valueLen, last);
-		ByteUtil.writeByteHeader(buffer, typ, valueLen);
+		typ = ByteUtil.getTyp(typ, value.length, last);
+ 		ByteUtil.writeByteHeader(buffer, typ, value.length);
 		
 		// SAVE Length
-		if (valueLen>0) {
+  		if (value.length>0) {
 			buffer.put(value);
 		}
 	}
 	
 	@Override
 	public BufferedBytes getBytes(boolean isDynamic) {
-		int len = calcLength(isDynamic);
+		int len = calcLength(isDynamic, true);
 		BufferedBytes buffer = ByteUtil.getBuffer(len);
-		writeBytes(buffer, isDynamic, false);		
+		writeBytes(buffer, isDynamic, true);		
 		buffer.flip();
 		return buffer;
 	}
@@ -264,7 +263,7 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 	 * @return the length
 	 */
 	@Override
-	public int calcLength(boolean isDynamic) {
+	public int calcLength(boolean isDynamic, boolean isLast) {
 		// Length calculate Sonderfaelle ermitteln
 		if(this.values==null){
 			return TYPBYTE;
@@ -288,7 +287,7 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 				}
 			}
 		}
- 		return TYPBYTE + ByteUtil.getTypLen(typ, values.length) + this.values.length;
+ 		return TYPBYTE + ByteUtil.getTypLen(typ, values.length, isLast) + this.values.length;
 	}
 
 	@Override
