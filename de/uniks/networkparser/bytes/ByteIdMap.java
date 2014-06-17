@@ -23,6 +23,7 @@ package de.uniks.networkparser.bytes;
 */
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -76,28 +77,28 @@ public class ByteIdMap extends IdMap {
 	 * SIMPLE TYPES The Constant DATATYPE_BYTE.
 	 */
 	/** The Constant DATATYPE_INTEGER. */
-	public static final byte DATATYPE_SHORT = 0x27;
+	public static final byte DATATYPE_SHORT = 0x30;
 
 	/** The Constant DATATYPE_INTEGER. */
-	public static final byte DATATYPE_INTEGER = 0x28;
+	public static final byte DATATYPE_INTEGER = 0x31;
 
 	/** The Constant DATATYPE_INTEGER. */
-	public static final byte DATATYPE_LONG = 0x29;
+	public static final byte DATATYPE_LONG = 0x32;
 
 	/** The Constant DATATYPE_FLOAT. */
-	public static final byte DATATYPE_FLOAT = 0x30;
+	public static final byte DATATYPE_FLOAT = 0x33;
 
 	/** The Constant DATATYPE_DOUBLE. */
-	public static final byte DATATYPE_DOUBLE = 0x31;
+	public static final byte DATATYPE_DOUBLE = 0x34;
 
 	/** The Constant DATATYPE_BYTEARRAY. */
-	public static final byte DATATYPE_DATE = 0x32;
+	public static final byte DATATYPE_DATE = 0x35;
 
 	/** The Constant DATATYPE_BYTE. */
-	public static final byte DATATYPE_BYTE = 0x33;
+	public static final byte DATATYPE_BYTE = 0x36;
 
 	/** The Constant DATATYPE_BYTEARRAY. */
-	public static final byte DATATYPE_UNSIGNEDBYTE = 0x34;
+	public static final byte DATATYPE_UNSIGNEDBYTE = 0x37;
 
 	/** The Constant DATATYPE_BYTEARRAY. */
 	public static final byte DATATYPE_BYTEARRAY = 0x3A;
@@ -247,22 +248,12 @@ public class ByteIdMap extends IdMap {
 			}
 			
 			// Kill Empty Fields
-			Object[] array = msg.toArray();
+			ByteItem[] array = msg.toArray(new ByteItem[msg.size()]);
 			for(int i=array.length-1;i>0;i--){
-				if(array[i] instanceof ByteEntity){
-					ByteEntity byteEntity = (ByteEntity)array[i];
-					if(byteEntity.getTyp()==ByteIdMap.DATATYPE_NULL){
-						msg.remove(i);
-					}else{
-						break;
-					}
-				}else if(array[i] instanceof ByteList){
-					if(((ByteList)array[i]).size()<1){
-						msg.remove(i);
-					}else{
-						break;
-					}
+				if(!array[i].isEmpty()){
+					break;
 				}
+				msg.remove(i);
 			}
 		}
 		return msg;
@@ -274,8 +265,8 @@ public class ByteIdMap extends IdMap {
 			return msgEntity;
 		} else {
 			// Map, List, Assocs
-			if (value instanceof List<?>) {
-			   List<?> list = (List<?>) value;
+			if (value instanceof Collection<?>) {
+				Collection<?> list = (Collection<?>) value;
 				ByteList byteList = new ByteList().withTyp(ByteIdMap.DATATYPE_LIST);
 				for (Object childValue : list) {
 					ByteItem child = encodeValue(childValue, filter);
@@ -284,7 +275,8 @@ public class ByteIdMap extends IdMap {
 					}
 				}
 				return byteList;
-			} else if (value instanceof Map<?, ?>) {
+			}
+			if (value instanceof Map<?, ?>) {
 				ByteList byteList = new ByteList().withTyp(ByteIdMap.DATATYPE_MAP);
 				Map<?, ?> map = (Map<?, ?>) value;
 				ByteItem child;
@@ -304,15 +296,9 @@ public class ByteIdMap extends IdMap {
 					byteList.add(item);
 				}
 				return byteList;
-			} else if (value != null) {
+			}
+			if (value != null) {
 				return encode(value, filter);
-//				if (child != null) {
-//					return new ByteList().with(child);
-//FIXME					byteList.setTyp(ByteIdMap.DATATYPE_CLAZZ);
-//					byteList.add(child);
-//					return byteList;
-//				}
-//				return child;
 			}
 		}
 		return null;
@@ -483,6 +469,13 @@ public class ByteIdMap extends IdMap {
 			} catch (UnsupportedEncodingException e) {
 			}
 			return null;
+		}
+		if (typ == ByteIdMap.DATATYPE_CLAZZTYP) {
+			int pos = buffer.getByte() - ByteIdMap.SPLITTER;
+			SendableEntityCreator eventCreater;
+			ByteFilter bf = (ByteFilter) filter;
+			eventCreater = super.getCreator(bf.getClazz(pos), true);
+			return decodeClazz(buffer, eventCreater);
 		}
 		if (typ == ByteIdMap.DATATYPE_CLAZZID) {
 			typ = buffer.getByte();

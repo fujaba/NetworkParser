@@ -54,5 +54,17 @@ public interface ByteItem extends BaseItem{
 	 * @param isDynamic ByteStream for minimize output
 	 * @return the Size of Bytes
 	 */
-	public int calcLength(boolean isDynamic);
+	public int calcLength(boolean isDynamic, boolean isLast);
+	
+	public byte getTyp();
+	
+	/**
+	 * @return true if the ByteItem is Empty
+	 */
+	public boolean isEmpty();
+	
+	/**
+	 * @return the Size of the Item
+	 */
+	public int size();
 }
