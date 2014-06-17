@@ -681,8 +681,9 @@ public class JsonIdMap extends IdMap {
 			JsonObject jsonProps = getPrototyp();
 			for (String property : properties) {
 				if (jsonProps.has(property)) {
-					throw new RuntimeException("Property duplicate:" + property
-							+ "(" + className + ")");
+				   System.out.println("Property duplicate:" + property + "(" + className + ")");
+				   //					throw new RuntimeException("Property duplicate:" + property
+				   //							+ "(" + className + ")");
 				}
 				Object subValue = parseProperty(creator, entity, filter,
 						className, property, jsonArray, deep+1);

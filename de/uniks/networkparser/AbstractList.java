@@ -65,6 +65,8 @@ public abstract class AbstractList<V> implements BaseItem {
 	}
 	
 	public boolean add(V newValue) {
+	   if (newValue == null)
+	      return false;
 		if(cpr!=null){
 			for (int i = 0; i < size(); i++) {
 				int result = compare(get(i), newValue);
