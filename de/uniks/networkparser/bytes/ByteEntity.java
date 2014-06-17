@@ -64,6 +64,18 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 		this.values = value.clone();
 		return this;
 	}
+
+	/**
+	 * Sets the value.
+	 * 
+	 * @param value
+	 *            the new value
+	 */
+	public ByteEntity withValue(byte typ, byte value) {
+		this.typ = typ;
+		this.values = new byte[]{value};
+		return this;
+	}
 	
 	public ByteEntity withValue(byte typ, int value) {
       this.typ = typ;
@@ -129,7 +141,7 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 	 * @return the bytes
 	 */
 	@Override
-	public void writeBytes(BufferedBytes buffer, boolean isDynamic, boolean last){
+	public void writeBytes(BufferedBytes buffer, boolean isDynamic, boolean last, boolean isPrimitive){
 //		int len = calcLength(isDynamic);
 		byte[] value = this.values;
 
@@ -164,11 +176,14 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 				}
 			}
 		}
-		typ = ByteUtil.getTyp(typ, value.length, last);
- 		ByteUtil.writeByteHeader(buffer, typ, value.length);
+		if(!isPrimitive){
+			typ = ByteUtil.getTyp(typ, value.length, last);
+	 		ByteUtil.writeByteHeader(buffer, typ, value.length);
+		}
 		
 		// SAVE Length
   		if (value.length>0) {
+  			System.out.println(buffer.position());
 			buffer.put(value);
 		}
 	}
@@ -177,7 +192,7 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 	public BufferedBytes getBytes(boolean isDynamic) {
 		int len = calcLength(isDynamic, true);
 		BufferedBytes buffer = ByteUtil.getBuffer(len);
-		writeBytes(buffer, isDynamic, true);		
+		writeBytes(buffer, isDynamic, true, false);		
 		buffer.flip();
 		return buffer;
 	}

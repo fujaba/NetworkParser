@@ -81,19 +81,27 @@ public class ByteList extends AbstractList<ByteItem> implements ByteItem, Factor
 	public BufferedBytes getBytes(boolean isDynamic) {
 		int len = calcLength(isDynamic, true);
 		BufferedBytes buffer = ByteUtil.getBuffer(len);
-		writeBytes(buffer, isDynamic, true);
+		writeBytes(buffer, isDynamic, true, isPrimitive(isDynamic));
 		buffer.flip();
 		return buffer;
 	}
 	
 	@Override
-	public void writeBytes(BufferedBytes buffer, boolean isDynamic, boolean last){
+	public void writeBytes(BufferedBytes buffer, boolean isDynamic, boolean last, boolean isPrimitive){
+		// Override for each ByteList
+		isPrimitive = isPrimitive(isDynamic);
 		int size=calcChildren(isDynamic, last);
-		byte typ = ByteUtil.getTyp(getTyp(), size, last);
-      ByteUtil.writeByteHeader(buffer, typ, size);
+		
+		byte typ;
+		if(isPrimitive){
+			typ=ByteIdMap.DATATYPE_CLAZZSTREAM;
+		}else{
+			typ = ByteUtil.getTyp(getTyp(), size, last);
+		}
+		ByteUtil.writeByteHeader(buffer, typ, size);
 
 		for(int i=0;i<values.size();i++){
-			((ByteItem) values.get(i)).writeBytes(buffer, isDynamic, i==values.size()-1);
+			((ByteItem) values.get(i)).writeBytes(buffer, isDynamic, i==values.size()-1, isPrimitive);
 		}
 	}
 
@@ -103,7 +111,7 @@ public class ByteList extends AbstractList<ByteItem> implements ByteItem, Factor
 			return 1;
 		}
 		int length = calcChildren(isDynamic, isLast);
-		// add The Headerlength
+		// add The Headerlength 
 		if (typ != 0) {
 			length += ByteEntity.TYPBYTE + ByteUtil.getTypLen(typ, length, isLast);
 		}
@@ -117,20 +125,14 @@ public class ByteList extends AbstractList<ByteItem> implements ByteItem, Factor
 		}
 		ByteItem[] valueList = this.values.toArray(new ByteItem[size]);
 		
-		// SonderFall Last Entity
-		boolean isPrimitive=isDynamic;
+		boolean isPrimitive = isDynamic;
 		if(valueList[size-1] instanceof ByteEntity){
 			// HEADER + VALUE
-			length=valueList[size-1].calcLength(isDynamic, true);
+			isPrimitive = isPrimitive && valueList[0].getTyp()==ByteIdMap.DATATYPE_CLAZZTYP;
 		}else{
-			ByteList list = (ByteList) valueList[size-1];
-			int len=list.calcChildren(isDynamic, true);
-			if(list.getTyp()!=0){
-				len++;
-			}
 			isPrimitive=false;
-			length=len+ByteUtil.getTypLen(valueList[size-1].getTyp(), len - 1, true);
 		}
+		length=valueList[size-1].calcLength(isDynamic, true);
 //		length=len+ByteUtil.getTypLen(valueList[size-1].getTyp(), len - 1);
 		for (int i = size - 2; i >= 0; i--) {
 			int len = valueList[i].calcLength(isDynamic, false);
@@ -141,9 +143,32 @@ public class ByteList extends AbstractList<ByteItem> implements ByteItem, Factor
  		}
 		if(isPrimitive){
 			// Only for ByteList with value dynamic and values with cant be short
-//FIXME			length-= size;
+			// add one for ClazzSTEAM Byte as first Byte 
+			length= length - size + ByteEntity.TYPBYTE;
 		}
 		return length;
+	}
+	
+	private boolean isPrimitive(boolean isDynamic){
+		if(!isDynamic){
+			return false;
+		}
+		if(this.values.size()<1){
+			return false;
+		}
+		if(!(this.values.get(this.values.size() - 1) instanceof ByteEntity)){
+			return false;
+		}
+		if(this.values.get(0).getTyp()!=ByteIdMap.DATATYPE_CLAZZTYP){
+			return false;
+		}
+		for(int i=1; i<this.values.size();i++){
+			int len = this.values.get(i).calcLength(isDynamic, false);
+			if((this.values.get(i).size()!=len - 1)){
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override
