@@ -30,9 +30,9 @@ public class ByteUtil {
 			if(typ!=0){
 				buffer.put(typ);
 				if(getSubGroup(typ)!=ByteIdMap.LEN_LAST){
-					int lenSize=ByteUtil.getTypLen(typ, valueLength);
+					int lenSize=ByteUtil.getTypLen(typ, valueLength, true);
 					if(lenSize==1){
-						if(typ==ByteIdMap.DATATYPE_CLAZZNAME || ByteUtil.getSubGroup(typ)==ByteIdMap.LEN_LITTLE){
+						if(typ==ByteIdMap.DATATYPE_CLAZZNAME || typ==ByteIdMap.DATATYPE_CLAZZTYP || ByteUtil.getSubGroup(typ)==ByteIdMap.LEN_LITTLE){
 							buffer.put((byte)(valueLength+ByteIdMap.SPLITTER));
 						}else{
 							buffer.put((byte)valueLength);
@@ -71,12 +71,12 @@ public class ByteUtil {
 		}
 		return typ;
 	}
-
-	public static int getTypLen(byte typ, int len) {
+	
+	public static int getTypLen(byte typ, int len, boolean isLast) {
 		if (isGroup(typ)) {
 			int ref = typ % 16  - 10;
 			if (ref == 0) {
-				typ = getTyp(typ, len, true);
+				typ = getTyp(typ, len, isLast);
 				ref = typ % 16 - 10;
 			}	
 			if (ref == ByteIdMap.LEN_SHORT || ref == ByteIdMap.LEN_LITTLE) {
@@ -91,20 +91,23 @@ public class ByteUtil {
 //			if (ref == ByteIdMap.LEN_LAST) {
 			return 0;
 		}
-		if (typ == ByteIdMap.DATATYPE_CLAZZNAME) {
+		if (typ == ByteIdMap.DATATYPE_CLAZZNAME || typ == ByteIdMap.DATATYPE_CLAZZTYP) {
 		   return 1;
 		}
 //		if (typ == ByteIdMap.DATATYPE_ASSOC) {
-//		if (typ == ByteIdMap.DATATYPE_CLAZZTYP) {
 		return 0;
 	}
-
+	
 	public static BufferedBytes getBuffer(int len) {
 		if (len < 1) {
 			return null;
 		}
 		BufferedBytes message=BytesBuffer.allocate(len);
 		return message;
+	}
+	
+	public static boolean isPrimitive(byte typ){
+		return ((typ>=ByteIdMap.DATATYPE_SHORT && typ<=ByteIdMap.DATATYPE_BYTE) || typ<=ByteIdMap.DATATYPE_CHAR);
 	}
 
 	/**
@@ -139,6 +142,8 @@ public class ByteUtil {
 			return "DATATYPE_CLAZZID";
 		} else if (typ == ByteIdMap.DATATYPE_CLAZZNAME) {
 			return "DATATYPE_CLAZZNAME";
+		} else if (typ == ByteIdMap.DATATYPE_CLAZZTYP) {
+			return "DATATYPE_CLAZZTYP";
 		} else if (typ == ByteIdMap.DATATYPE_BYTE) {
 			return "DATATYPE_BYTE";
 		} else if (typ == ByteIdMap.DATATYPE_UNSIGNEDBYTE) {
@@ -146,7 +151,8 @@ public class ByteUtil {
 		} else if (typ == ByteIdMap.DATATYPE_CHAR) {
 			return "DATATYPE_CHAR";
 		} else if (typ == ByteIdMap.DATATYPE_ASSOC) {
-         return "DATATYPE_ASSOC";
+			return "DATATYPE_ASSOC";
+			
 		} else if(isGroup(typ)){
 			byte group = getGroup(typ);
 			byte subgroup = getSubGroup(typ);

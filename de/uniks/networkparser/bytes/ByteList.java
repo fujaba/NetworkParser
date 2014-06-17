@@ -79,73 +79,74 @@ public class ByteList extends AbstractList<ByteItem> implements ByteItem, Factor
 
 	@Override
 	public BufferedBytes getBytes(boolean isDynamic) {
-		int len = calcLength(isDynamic);
+		int len = calcLength(isDynamic, true);
 		BufferedBytes buffer = ByteUtil.getBuffer(len);
-		writeBytes(buffer, isDynamic, false);
+		writeBytes(buffer, isDynamic, true);
 		buffer.flip();
 		return buffer;
 	}
 	
 	@Override
 	public void writeBytes(BufferedBytes buffer, boolean isDynamic, boolean last){
-		int size=calcChildren(isDynamic);
-		
+		int size=calcChildren(isDynamic, last);
 		byte typ = ByteUtil.getTyp(getTyp(), size, last);
-int pos=buffer.position();
       ByteUtil.writeByteHeader(buffer, typ, size);
 
 		for(int i=0;i<values.size();i++){
 			((ByteItem) values.get(i)).writeBytes(buffer, isDynamic, i==values.size()-1);
 		}
-//FIXME
-System.out.println("BL "+typ +" : "+pos +" - "+buffer.position());
-
 	}
 
 	@Override
-	public int calcLength(boolean isDynamic) {
+	public int calcLength(boolean isDynamic, boolean isLast) {
 		if (size() == 0 ) {
 			return 1;
 		}
-		int length = calcChildren(isDynamic);
+		int length = calcChildren(isDynamic, isLast);
 		// add The Headerlength
 		if (typ != 0) {
-			length += ByteEntity.TYPBYTE + ByteUtil.getTypLen(typ, length);
+			length += ByteEntity.TYPBYTE + ByteUtil.getTypLen(typ, length, isLast);
 		}
 		return length;
 	}
 	
-	public int calcChildren(boolean isDynamic) {
+	public int calcChildren(boolean isDynamic, boolean isLast) {
 		int length, size=size();
 		if(size<1){
 			return 0;
 		}
-		Object[] valueList = this.values.toArray(new Object[size]);
+		ByteItem[] valueList = this.values.toArray(new ByteItem[size]);
 		
 		// SonderFall Last Entity
-		int typLen;
-		int len;
+		boolean isPrimitive=isDynamic;
 		if(valueList[size-1] instanceof ByteEntity){
-			ByteEntity entity =(ByteEntity) valueList[size-1];
-			len=entity.getValue().length;
-			typLen=ByteUtil.getTypLen(((ByteEntity)entity).getTyp(), len);
+			// HEADER + VALUE
+			length=valueList[size-1].calcLength(isDynamic, true);
 		}else{
 			ByteList list = (ByteList) valueList[size-1];
-			len=list.calcChildren(isDynamic);
-			typLen=ByteUtil.getTypLen(((ByteList)list).getTyp(), len);
+			int len=list.calcChildren(isDynamic, true);
+			if(list.getTyp()!=0){
+				len++;
+			}
+			isPrimitive=false;
+			length=len+ByteUtil.getTypLen(valueList[size-1].getTyp(), len - 1, true);
 		}
-		if(typLen>0){
-			// Must be a Group and not the optimize LastEntity
-			length=len+1;
-		}else{
-			length=((ByteItem)valueList[size-1]).calcLength(isDynamic);
-		}
+//		length=len+ByteUtil.getTypLen(valueList[size-1].getTyp(), len - 1);
 		for (int i = size - 2; i >= 0; i--) {
-			length += ((ByteItem)valueList[i]).calcLength(isDynamic);
+			int len = valueList[i].calcLength(isDynamic, false);
+			if(isPrimitive){
+				isPrimitive = (valueList[i].size()==len - 1);
+			}
+			length += len;
  		}
+		if(isPrimitive){
+			// Only for ByteList with value dynamic and values with cant be short
+//FIXME			length-= size;
+		}
 		return length;
 	}
 
+	@Override
 	public byte getTyp() {
 		return typ;
 	}
