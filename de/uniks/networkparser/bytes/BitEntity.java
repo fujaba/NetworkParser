@@ -119,8 +119,7 @@ public class BitEntity extends AbstractList<BitValue> implements ByteItem, Facto
 		return null;
 	}
 	@Override
-	public void writeBytes(BufferedBytes buffer, boolean isDynamic, boolean last) {
-		// FIXME
+	public void writeBytes(BufferedBytes buffer, boolean isDynamic, boolean last, boolean isPrimitive) {
 	}
 
 

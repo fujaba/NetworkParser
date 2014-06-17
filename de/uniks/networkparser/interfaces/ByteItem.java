@@ -48,7 +48,14 @@ public interface ByteItem extends BaseItem{
 	 */
 	public BufferedBytes getBytes(boolean isDynamic);
 	
-	public void writeBytes(BufferedBytes buffer, boolean isDynamic, boolean last);
+	/**
+	 * Write the Entity to the buffer
+	 * @param buffer for writing
+	 * @param isDynamic dynamic switsch
+	 * @param lastEntity is the entity is the last of a list
+	 * @param isPrimitive need the entity no datatyp
+	 */
+	public void writeBytes(BufferedBytes buffer, boolean isDynamic, boolean lastEntity, boolean isPrimitive);
 
 	/**
 	 * @param isDynamic ByteStream for minimize output

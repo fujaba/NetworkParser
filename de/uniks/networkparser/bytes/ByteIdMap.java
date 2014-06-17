@@ -62,16 +62,6 @@ public class ByteIdMap extends IdMap {
 
 	/** The Constant DATATYPE_MAP. */
 	public static final byte DATATYPE_CLAZZID = 0x23;
-
-	/** The Constant CLASS-VALUE. */
-	public static final byte DATATYPE_CLAZZNAME = 0x24;
-
-	  
-   /** The Constant DATATYPE_BYTEARRAY. */
-   public static final byte DATATYPE_ASSOC = 0x25;
-   
-   /** The Constant DATATYPE_BYTEARRAY. */
-   public static final byte DATATYPE_CLAZZTYP = 0x26;
 	
 	/**
 	 * SIMPLE TYPES The Constant DATATYPE_BYTE.
@@ -105,6 +95,27 @@ public class ByteIdMap extends IdMap {
 
 	/** The Constant DATATYPE_CHAR. */
 	public static final byte DATATYPE_CHAR = 0x40;
+
+	/** The Constant CLASS-VALUE. */
+	public static final byte DATATYPE_CLAZZNAME = 0x41;
+
+	/** The Constant CLASS-VALUE. */
+	public static final byte DATATYPE_CLAZZNAMELONG = 0x42;
+
+	/** The Constant DATATYPE_BYTEARRAY. */
+	public static final byte DATATYPE_CLAZZTYP = 0x43;
+
+	/** The Constant DATATYPE_BYTEARRAY. */
+	public static final byte DATATYPE_CLAZZTYPLONG = 0x44;
+
+   /** The Constant DATATYPE_BYTEARRAY. */
+   public static final byte DATATYPE_ASSOC = 0x45;
+
+   /** The Constant DATATYPE_BYTEARRAY. */
+   public static final byte DATATYPE_ASSOCLONG = 0x46;
+
+   /** The Constant DATATYPE_BYTEARRAY. */
+	public static final byte DATATYPE_CLAZZSTREAM = 0x47;
 
 	/** The Constant DATATYPE_STRING. */
 	public static final byte DATATYPE_STRING = 0x4A;
@@ -193,11 +204,19 @@ public class ByteIdMap extends IdMap {
             ByteFilter bf = (ByteFilter) filter;
             int id = bf.getIndexOfClazz(clazzName);
             if(id>0){
-               msg.add(new ByteEntity().withValue(DATATYPE_CLAZZTYP, id));
-               return true;
+            	if (id <= Byte.MAX_VALUE) {
+            		msg.add(new ByteEntity().withValue(DATATYPE_CLAZZTYP, (byte)id));	
+            	}else{
+            		msg.add(new ByteEntity().withValue(DATATYPE_CLAZZTYPLONG, (byte)id));
+            	}
+	           return true;
             }
-            msg.add(new ByteEntity().withValue(DATATYPE_CLAZZNAME, clazzName
-                  .getBytes(bf.getCharset())));
+            byte[] bytes = clazzName.getBytes(bf.getCharset());
+            if (id <= Byte.MAX_VALUE) {
+            	msg.add(new ByteEntity().withValue(DATATYPE_CLAZZNAME, bytes));	
+            }else{
+            	msg.add(new ByteEntity().withValue(DATATYPE_CLAZZNAMELONG, bytes));
+            }
             return true;
          }
          
@@ -212,10 +231,14 @@ public class ByteIdMap extends IdMap {
 		if (creator == null) {
 			return null;
 		}
-		Integer id = filter.getIndexVisitedObjects(entity);
-	   if(id>=0){
-	         // Must be a assoc
-	         return new ByteEntity().withValue(DATATYPE_ASSOC, id);
+		int id = filter.getIndexVisitedObjects(entity);
+		if(id>=0){
+			// Must be a assoc
+			if (id <= Byte.MAX_VALUE) {
+		         return new ByteEntity().withValue(DATATYPE_ASSOC, (byte) id);
+			}else{
+				 return new ByteEntity().withValue(DATATYPE_ASSOCLONG, id);
+			}
 	    }
 		ByteList msg = new ByteList();
 		if (creator instanceof BasicMessageCreator) {
@@ -225,8 +248,8 @@ public class ByteIdMap extends IdMap {
 		}
 
 		if (creator instanceof SendableEntityCreatorByte) {
-			long cId=((SendableEntityCreatorByte) creator).getEventTyp();
-			msg.add(new ByteEntity().withValue(ByteIdMap.DATATYPE_CLAZZID, new byte[]{(byte) cId}));
+			byte cId=((SendableEntityCreatorByte) creator).getEventTyp();
+			msg.add(new ByteEntity().withValue(ByteIdMap.DATATYPE_CLAZZID, cId));
 		} else {
 			Object reference = creator.getSendableInstance(true);
          addClazzTyp(msg, reference.getClass().getName(), filter);
@@ -470,17 +493,40 @@ public class ByteIdMap extends IdMap {
 			}
 			return null;
 		}
+		if (typ == ByteIdMap.DATATYPE_CLAZZNAMELONG) {
+			int len = buffer.getInt();
+			SendableEntityCreator eventCreater;
+			try {
+				eventCreater = super.getCreator(new String(buffer.getValue(len), filter.getCharset()), true);
+				return decodeClazz(buffer, eventCreater);
+			} catch (UnsupportedEncodingException e) {
+			}
+			return null;
+		}
 		if (typ == ByteIdMap.DATATYPE_CLAZZTYP) {
 			int pos = buffer.getByte() - ByteIdMap.SPLITTER;
-			SendableEntityCreator eventCreater;
 			ByteFilter bf = (ByteFilter) filter;
-			eventCreater = super.getCreator(bf.getClazz(pos), true);
+			SendableEntityCreator eventCreater = super.getCreator(bf.getClazz(pos), true);
+			return decodeClazz(buffer, eventCreater);
+		}
+		if (typ == ByteIdMap.DATATYPE_CLAZZTYPLONG) {
+			int pos = buffer.getInt();
+			ByteFilter bf = (ByteFilter) filter;
+			SendableEntityCreator eventCreater = super.getCreator(bf.getClazz(pos), true);
 			return decodeClazz(buffer, eventCreater);
 		}
 		if (typ == ByteIdMap.DATATYPE_CLAZZID) {
 			typ = buffer.getByte();
 			SendableEntityCreator eventCreater = getCreatorDecoderClass(typ);
 			return decodeClazz(buffer, eventCreater);
+		}
+		if (typ == ByteIdMap.DATATYPE_ASSOC) {
+			int pos = buffer.getByte();
+			return filter.getVisitedObjects(pos);
+		}
+		if (typ == ByteIdMap.DATATYPE_ASSOCLONG) {
+			int pos = buffer.getInt();
+			return filter.getVisitedObjects(pos);
 		}
 		if(ByteUtil.isGroup(typ)){
 			byte subgroup = ByteUtil.getSubGroup(typ);

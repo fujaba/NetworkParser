@@ -133,6 +133,13 @@ public class Filter {
       return -1;
    }
 	
+	public Object getVisitedObjects(int index) {
+	   if(visitedObjects!=null){
+	      return visitedObjects.get(index);
+	   }
+	   return null;
+	}
+
 	public void addToVisitedObjects(Object visitedObjects) {
 		this.visitedObjects.add(visitedObjects);
 	}
