@@ -31,7 +31,7 @@ public class ByteConverterSimple extends ByteConverter{
 		if(size<1){
 			return  "EMTPY";
 		}
-		return ByteUtil.getStringTyp(values[0])+" Länge: "+size;
+		return ByteUtil.getStringTyp(values[0])+" Laenge: "+size;
 	}
 
 	@Override
