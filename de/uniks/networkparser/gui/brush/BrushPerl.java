@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 
 /**
  * Perl brush.
- * @author Chan Wai Shing <cws1989@gmail.com>
+ * @author Chan Wai Shing (cws1989@gmail.com)
  */
 public class BrushPerl extends Brush {
 
@@ -60,13 +60,13 @@ public class BrushPerl extends Brush {
             + "for foreach goto if import last local my next no our package redo ref "
             + "require return sub tie tied unless untie until use wantarray while";
 
-    addRule(new RegExpRule("#[^!].*$", Pattern.MULTILINE, "comments"));
-    addRule(new RegExpRule("^\\s*#!.*$", Pattern.MULTILINE, "preprocessor")); // shebang
-    addRule(new RegExpRule(RegExpRule.doubleQuotedString, "string"));
-    addRule(new RegExpRule(RegExpRule.singleQuotedString, "string"));
-    addRule(new RegExpRule("(\\$|@|%)\\w+", "variable"));
-    addRule(new RegExpRule(getKeywords(funcs), Pattern.MULTILINE | Pattern.CASE_INSENSITIVE, "functions"));
-    addRule(new RegExpRule(getKeywords(keywords), Pattern.MULTILINE, "keyword"));
+    addRule(new RegExpressions("#[^!].*$", Pattern.MULTILINE, "comments"));
+    addRule(new RegExpressions("^\\s*#!.*$", Pattern.MULTILINE, "preprocessor")); // shebang
+    addRule(new RegExpressions(RegExpressions.doubleQuotedString, "string"));
+    addRule(new RegExpressions(RegExpressions.singleQuotedString, "string"));
+    addRule(new RegExpressions("(\\$|@|%)\\w+", "variable"));
+    addRule(new RegExpressions(getKeywords(funcs), Pattern.MULTILINE | Pattern.CASE_INSENSITIVE, "functions"));
+    addRule(new RegExpressions(getKeywords(keywords), Pattern.MULTILINE, "keyword"));
 
     addRule(HTMLRegExRule.phpScriptTags);
 

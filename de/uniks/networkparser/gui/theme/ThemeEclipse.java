@@ -28,7 +28,7 @@ import de.uniks.networkparser.gui.Style;
 
 /**
  * Eclipse theme.
- * @author Chan Wai Shing <cws1989@gmail.com>
+ * @author Chan Wai Shing (cws1989@gmail.com)
  */
 public class ThemeEclipse extends Theme {
 

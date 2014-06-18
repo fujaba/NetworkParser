@@ -27,7 +27,6 @@ import de.uniks.networkparser.AbstractEntityList;
 import de.uniks.networkparser.AbstractKeyValueEntry;
 import de.uniks.networkparser.AbstractKeyValueList;
 import de.uniks.networkparser.EntityUtil;
-import de.uniks.networkparser.TextParsingException;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.FactoryEntity;
@@ -140,9 +139,9 @@ public class JsonTokener extends Tokener {
 	/**
 	 * Cross compiling
 	 * 
-	 * @param parent
-	 * @param newValue
-	 * @return
+	 * @param parent the parent Element
+	 * @param newValue the newValue
+	 * @return Itself
 	 */
 	public JsonObject parseToEntity(JsonObject parent, AbstractKeyValueList<?, ?> newValue) {
 		if (newValue instanceof XMLEntity) {
@@ -166,12 +165,11 @@ public class JsonTokener extends Tokener {
 	}
 
 	@Override
-	public void parseToEntity(AbstractKeyValueList<?,?> entity) throws TextParsingException{
+	public void parseToEntity(AbstractKeyValueList<?,?> entity) {
 		char c;
 		String key;
 		if (nextStartClean() != '{') {
-			throw new TextParsingException(
-					"A JsonObject text must begin with '{'", this);
+			logger.error(this, "A JsonObject text must begin with '{'");
 		}
 		next();
 		boolean isQuote=true;
@@ -179,8 +177,8 @@ public class JsonTokener extends Tokener {
 			c = nextStartClean();
 			switch (c) {
 			case 0:
-				throw new TextParsingException(
-						"A JsonObject text must end with '}'", this);
+				logger.error(this, "A JsonObject text must end with '}'");
+				return;
 			case '\\':
 				// unquote
 				next();
@@ -202,8 +200,9 @@ public class JsonTokener extends Tokener {
 					next();
 				}
 			} else if (c != ':') {
-				throw new TextParsingException("Expected a ':' after a key ["
-						+ getNextString(30) + "]", this);
+				logger.error(this, "Expected a ':' after a key ["
+						+ getNextString(30) + "]");
+				return;
 			}
 			next();
 			entity.withValue(key, nextValue(entity,isQuote));
@@ -211,11 +210,11 @@ public class JsonTokener extends Tokener {
 	}
 
 	@Override
-	public void parseToEntity(AbstractEntityList<?> entityList) throws TextParsingException{
+	public void parseToEntity(AbstractEntityList<?> entityList) {
 		char c=nextStartClean();
 		if (c != '[') {
-			throw new TextParsingException(
-					"A JSONArray text must start with '['", this);
+			logger.error(this, "A JSONArray text must start with '['");
+			return;
 		}
 		if ((nextClean()) != ']') {
 			for (;;) {
@@ -235,8 +234,8 @@ public class JsonTokener extends Tokener {
 					next();
 					return;
 				default:
-					throw new TextParsingException("Expected a ',' or ']' not '"+getCurrentChar()+"'",
-							this);
+					logger.error(this, "Expected a ',' or ']' not '"+getCurrentChar()+"'");
+					return;
 				}
 			}
 		}

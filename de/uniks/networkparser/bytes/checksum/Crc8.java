@@ -39,9 +39,6 @@ public class Crc8 extends CRCTable {
 	 * 
 	 * @param data
 	 *            The byte data
-	 * @param crc
-	 *            The starting CRC value
-	 * @return The updated CRC value
 	 */
 	@Override
 	public void update(int data) {

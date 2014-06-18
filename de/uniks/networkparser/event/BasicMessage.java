@@ -74,7 +74,7 @@ public class BasicMessage {
 	 * 
 	 * @param value
 	 *            the new value
-	 * @return 
+	 * @return Itself
 	 */
 	public BasicMessage withValue(String value) {
 		this.value = value;

@@ -56,8 +56,10 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 	/**
 	 * Sets the value.
 	 * 
+	 * @param typ the new Typ
 	 * @param value
 	 *            the new value
+	 * @return Itself
 	 */
 	public ByteEntity withValue(byte typ, byte[] value) {
 		this.typ = typ;
@@ -68,8 +70,10 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 	/**
 	 * Sets the value.
 	 * 
+	 * @param typ The Typ of Element
 	 * @param value
 	 *            the new value
+	 * @return Itself
 	 */
 	public ByteEntity withValue(byte typ, byte value) {
 		this.typ = typ;
@@ -137,17 +141,18 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 
 	/**
 	 * Gets the bytes.
-	 * 
-	 * @return the bytes
+	 * @param buffer The Buffer to write
+	 * @param isDynamic is short the Stream for message
+	 * @param isLast is the Element is the last of Group
+	 * @param isPrimitive is the Element is the StreamClazz
 	 */
 	@Override
-	public void writeBytes(BufferedBytes buffer, boolean isDynamic, boolean last, boolean isPrimitive){
-//		int len = calcLength(isDynamic);
+	public void writeBytes(BufferedBytes buffer, boolean isDynamic, boolean isLast, boolean isPrimitive){
 		byte[] value = this.values;
 
 		byte typ=getTyp();
 		if(value==null){
-			typ = ByteUtil.getTyp(typ, 0, last);
+			typ = ByteUtil.getTyp(typ, 0, isLast);
 			ByteUtil.writeByteHeader(buffer, typ, 0);
 			return;
 		}
@@ -176,16 +181,12 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 				}
 			}
 		}
-		if(!isPrimitive){
-			typ = ByteUtil.getTyp(typ, value.length, last);
+		if(!isPrimitive || typ==ByteIdMap.DATATYPE_CLAZZTYP || typ==ByteIdMap.DATATYPE_CLAZZTYPLONG){
+			typ = ByteUtil.getTyp(typ, value.length, isLast);
 	 		ByteUtil.writeByteHeader(buffer, typ, value.length);
 		}
-		
 		// SAVE Length
-  		if (value.length>0) {
-  			System.out.println(buffer.position());
-			buffer.put(value);
-		}
+		buffer.put(value);
 	}
 	
 	@Override

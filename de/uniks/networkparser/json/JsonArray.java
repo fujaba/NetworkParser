@@ -26,7 +26,6 @@ import java.util.Iterator;
 import de.uniks.networkparser.AbstractEntityList;
 import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.EntityUtil;
-import de.uniks.networkparser.TextParsingException;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.FactoryEntity;
@@ -43,11 +42,6 @@ import de.uniks.networkparser.interfaces.StringItem;
  * <p>
  * The constructor can convert a JSON text into a Java object. The
  * <code>toString</code> method converts to JSON text.
- * <p>
- * A <code>get</code> method returns a value if one can be found, and throws an
- * exception if one cannot be found. An <code>opt</code> method returns a
- * default value instead of throwing an exception, and so is useful for
- * obtaining optional values.
  * <p>
  * The generic <code>get()</code> and <code>opt()</code> methods return an
  * object which you can cast or query for type. There are also typed
@@ -88,17 +82,16 @@ public class JsonArray extends AbstractEntityList<Object> implements StringItem,
 	 * @param index
 	 *            The index must be between 0 and length() - 1.
 	 * @return A JSONArray value.
-	 * @throws TextParsingException
+	 * @throws RuntimeException
 	 *             If there is no value for the index. or if the value is not a
 	 *             JSONArray
 	 */
-	public JsonArray getJSONArray(int index) throws TextParsingException {
+	public JsonArray getJSONArray(int index) {
 		Object object = get(index);
 		if (object instanceof JsonArray) {
 			return (JsonArray) object;
 		}
-		throw new TextParsingException("JSONArray[" + index
-				+ "] is not a JSONArray.", index);
+		throw new RuntimeException("JSONArray[" + index + "] is not a JSONArray.");
 	}
 
 	/**
@@ -107,17 +100,17 @@ public class JsonArray extends AbstractEntityList<Object> implements StringItem,
 	 * @param index
 	 *            subscript
 	 * @return A JSONObject value.
-	 * @throws TextParsingException
+	 * @throws RuntimeException
 	 *             If there is no value for the index or if the value is not a
 	 *             JSONObject
 	 */
-	public JsonObject getJSONObject(int index) throws TextParsingException {
+	public JsonObject getJSONObject(int index) {
 		Object object = get(index);
 		if (object instanceof JsonObject) {
 			return (JsonObject) object;
 		}
-		throw new TextParsingException("JSONArray[" + index
-				+ "] is not a JSONObject.", index);
+		throw new RuntimeException("JSONArray[" + index
+				+ "] is not a JSONObject.");
 	}
 
 	/**
@@ -221,10 +214,11 @@ public class JsonArray extends AbstractEntityList<Object> implements StringItem,
 	/**
 	 * JSONArray from a source JSON text.
 	 * 
-	 * @param source
+	 * @param value
 	 *            A string that begins with <code>[</code>&nbsp;<small>(left
 	 *            bracket)</small> and ends with <code>]</code>
 	 *            &nbsp;<small>(right bracket)</small>.
+	 * @return Itself
 	 */
 	public JsonArray withValue(String value) {
 		clear();
@@ -237,6 +231,7 @@ public class JsonArray extends AbstractEntityList<Object> implements StringItem,
 	 * 
 	 * @param x
 	 *            A JSONTokener
+	 * @return Itself
 	 */
 	public JsonArray withValue(Tokener x)  {
 		x.parseToEntity(this);
@@ -246,8 +241,9 @@ public class JsonArray extends AbstractEntityList<Object> implements StringItem,
 	/**
 	 * JSONArray from a BaseEntityArray.
 	 * 
-	 * @param Array
+	 * @param values
 	 *            of Elements.
+	 * @return Itself
 	 */
 	public JsonArray withValue(BaseItem... values) {
 		for (int i = 0; i < values.length; i++) {

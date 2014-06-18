@@ -92,7 +92,8 @@ public class ByteUtil {
 //			if (ref == ByteIdMap.LEN_LAST) {
 			return 0;
 		}
-		if (typ == ByteIdMap.DATATYPE_CLAZZNAME){
+		if (typ == ByteIdMap.DATATYPE_CLAZZNAME ){
+			// || typ == ByteIdMap.DATATYPE_CLAZZTYP add bei ByteList
 			return 1;
 		}
 		if (typ == ByteIdMap.DATATYPE_CLAZZNAMELONG){

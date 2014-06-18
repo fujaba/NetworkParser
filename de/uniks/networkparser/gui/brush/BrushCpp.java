@@ -30,7 +30,7 @@ import de.uniks.networkparser.gui.Style;
 
 /**
  * C++ brush.
- * @author Chan Wai Shing <cws1989@gmail.com>
+ * @author Chan Wai Shing (cws1989@gmail.com)
  */
 public class BrushCpp extends Brush {
 
@@ -89,14 +89,14 @@ public class BrushCpp extends Brush {
             + "strncpy strpbrk strrchr strspn strstr strtok strxfrm asctime "
             + "clock ctime difftime gmtime localtime mktime strftime time";
 
-    addRule(new RegExpRule(RegExpRule.singleLineCComments, "comments")); // one line comments
-    addRule(new RegExpRule(RegExpRule.multiLineCComments, "comments")); // multiline comments
-    addRule(new RegExpRule(RegExpRule.doubleQuotedString, "string")); // strings
-    addRule(new RegExpRule(RegExpRule.singleQuotedString, "string")); // strings
-    addRule(new RegExpRule("^ *#.*", Pattern.MULTILINE, "preprocessor"));
-    addRule(new RegExpRule(getKeywords(datatypes), Pattern.MULTILINE, "color1", new Style().withBold(true)));
-    addRule(new RegExpRule(getKeywords(functions), Pattern.MULTILINE, "functions", new Style().withBold(true)));
-    addRule(new RegExpRule(getKeywords(keywords), Pattern.MULTILINE, "keyword", new Style().withBold(true)));
+    addRule(new RegExpressions(RegExpressions.singleLineCComments, "comments")); // one line comments
+    addRule(new RegExpressions(RegExpressions.multiLineCComments, "comments")); // multiline comments
+    addRule(new RegExpressions(RegExpressions.doubleQuotedString, "string")); // strings
+    addRule(new RegExpressions(RegExpressions.singleQuotedString, "string")); // strings
+    addRule(new RegExpressions("^ *#.*", Pattern.MULTILINE, "preprocessor"));
+    addRule(new RegExpressions(getKeywords(datatypes), Pattern.MULTILINE, "color1", new Style().withBold(true)));
+    addRule(new RegExpressions(getKeywords(functions), Pattern.MULTILINE, "functions", new Style().withBold(true)));
+    addRule(new RegExpressions(getKeywords(keywords), Pattern.MULTILINE, "keyword", new Style().withBold(true)));
 
     setCommonFileExtensionList("c", "cpp");
   }

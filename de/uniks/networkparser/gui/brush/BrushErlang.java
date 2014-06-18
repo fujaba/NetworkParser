@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 
 /**
  * Erlang brush.
- * @author Chan Wai Shing <cws1989@gmail.com>
+ * @author Chan Wai Shing (cws1989@gmail.com)
  */
 public class BrushErlang extends Brush {
 
@@ -45,12 +45,12 @@ public class BrushErlang extends Brush {
             + // additional
             " module export import define";
 
-    addRule(new RegExpRule("[A-Z][A-Za-z0-9_]+", "constants"));
-    addRule(new RegExpRule("\\%.+", Pattern.MULTILINE, "comments"));
-    addRule(new RegExpRule("\\?[A-Za-z0-9_]+", "preprocessor"));
-    addRule(new RegExpRule("[a-z0-9_]+:[a-z0-9_]+", "functions"));
-    addRule(new RegExpRule(RegExpRule.doubleQuotedString, "string"));
-    addRule(new RegExpRule(RegExpRule.singleQuotedString, "string"));
-    addRule(new RegExpRule(getKeywords(keywords), Pattern.MULTILINE, "keyword"));
+    addRule(new RegExpressions("[A-Z][A-Za-z0-9_]+", "constants"));
+    addRule(new RegExpressions("\\%.+", Pattern.MULTILINE, "comments"));
+    addRule(new RegExpressions("\\?[A-Za-z0-9_]+", "preprocessor"));
+    addRule(new RegExpressions("[a-z0-9_]+:[a-z0-9_]+", "functions"));
+    addRule(new RegExpressions(RegExpressions.doubleQuotedString, "string"));
+    addRule(new RegExpressions(RegExpressions.singleQuotedString, "string"));
+    addRule(new RegExpressions(getKeywords(keywords), Pattern.MULTILINE, "keyword"));
   }
 }

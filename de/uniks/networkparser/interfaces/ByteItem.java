@@ -59,6 +59,7 @@ public interface ByteItem extends BaseItem{
 
 	/**
 	 * @param isDynamic ByteStream for minimize output
+	 * @param isLast is the Element is the Last of Group
 	 * @return the Size of Bytes
 	 */
 	public int calcLength(boolean isDynamic, boolean isLast);

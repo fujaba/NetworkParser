@@ -26,7 +26,10 @@ public abstract class CRCTable extends CRC{
 	/** The fast CRC table. Computed once when the CRC32 class is loaded. */
 	protected int[] crc_table = getGenTable();
 
-	/** Make the table for a fast CRC. */
+	/** Make the table for a fast CRC. 
+	 * @return the GenTable
+	 * */
+	
 	public int[] getGenTable() {
 		int[] result = new int[256];
 

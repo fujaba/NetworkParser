@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 
 /**
  * Java brush.
- * @author Chan Wai Shing <cws1989@gmail.com>
+ * @author Chan Wai Shing (cws1989@gmail.com)
  */
 public class BrushJava extends Brush {
 
@@ -43,15 +43,15 @@ public class BrushJava extends Brush {
             + "short static strictfp super switch synchronized this throw throws true "
             + "transient try void volatile while";
 
-    addRule(new RegExpRule(RegExpRule.singleLineCComments, "comments")); // one line comments
-    addRule(new RegExpRule("\\/\\*([^\\*][\\s\\S]*?)?\\*\\/", Pattern.MULTILINE, "comments")); // multiline comments
-    addRule(new RegExpRule("\\/\\*(?!\\*\\/)\\*[\\s\\S]*?\\*\\/", Pattern.MULTILINE, "preprocessor")); // documentation comments
-    addRule(new RegExpRule(RegExpRule.doubleQuotedString, "string")); // strings
-    addRule(new RegExpRule(RegExpRule.singleQuotedString, "string")); // strings
-    addRule(new RegExpRule("\\b([\\d]+(\\.[\\d]+)?|0x[a-f0-9]+)\\b", Pattern.CASE_INSENSITIVE, "value")); // numbers
-    addRule(new RegExpRule("(?!\\@interface\\b)\\@[\\$\\w]+\\b", "color1")); // annotation @anno
-    addRule(new RegExpRule("\\@interface\\b", "color2")); // @interface keyword
-    addRule(new RegExpRule(getKeywords(keywords), Pattern.MULTILINE, "keyword")); // java keyword
+    addRule(new RegExpressions(RegExpressions.singleLineCComments, "comments")); // one line comments
+    addRule(new RegExpressions("\\/\\*([^\\*][\\s\\S]*?)?\\*\\/", Pattern.MULTILINE, "comments")); // multiline comments
+    addRule(new RegExpressions("\\/\\*(?!\\*\\/)\\*[\\s\\S]*?\\*\\/", Pattern.MULTILINE, "preprocessor")); // documentation comments
+    addRule(new RegExpressions(RegExpressions.doubleQuotedString, "string")); // strings
+    addRule(new RegExpressions(RegExpressions.singleQuotedString, "string")); // strings
+    addRule(new RegExpressions("\\b([\\d]+(\\.[\\d]+)?|0x[a-f0-9]+)\\b", Pattern.CASE_INSENSITIVE, "value")); // numbers
+    addRule(new RegExpressions("(?!\\@interface\\b)\\@[\\$\\w]+\\b", "color1")); // annotation @anno
+    addRule(new RegExpressions("\\@interface\\b", "color2")); // @interface keyword
+    addRule(new RegExpressions(getKeywords(keywords), Pattern.MULTILINE, "keyword")); // java keyword
     addRule(new HTMLRegExRule("(?:&lt;|<)%[@!=]?", "%(?:&gt;|>)"));
 
     setCommonFileExtensionList("java");

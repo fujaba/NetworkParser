@@ -69,6 +69,10 @@ public class DateTimeEntity  {
 	 * Returns the length of the specified month in the specified year. The year
 	 * number must be normalized.
 	 * 
+	 * @param month month as asking
+	 * @param year year of asking
+	 * @return int day of Month
+	 * 
 	 * @see #isLeapYear(int)
 	 */
 	public int getMonthLength(int month, int year) {
@@ -87,8 +91,10 @@ public class DateTimeEntity  {
 	/**
 	 * Returns the length (in days) of the specified year. The year must be
 	 * normalized.
+	 * @param year year for asking 
+	 * @return day of fullyear
 	 */
-	public final int getYearLength(int year) {
+	public int getYearLength(int year) {
 		return isLeapYear(year) ? 366 : 365;
 	}
 
@@ -272,7 +278,7 @@ public class DateTimeEntity  {
 	/**
 	 * set to the date the amount value for the field
 	 * 
-	 * @param dateTimeField
+	 * @param field
 	 *            dateTimeField
 	 * @param value
 	 *            value of changes
@@ -302,6 +308,7 @@ public class DateTimeEntity  {
 	 * 
 	 * @param milliseconds
 	 *            milliseconds since 01.01.1970
+	 * @return Itself
 	 */
 	public DateTimeEntity withValue(long milliseconds){
 		withTime(milliseconds);
@@ -317,6 +324,7 @@ public class DateTimeEntity  {
 	 *            month of the date
 	 * @param day
 	 *            day of the date
+	 * @return Itself
 	 */
 	public DateTimeEntity withValue(int year, int month, int day) {
 		this.withYear(year);
@@ -330,6 +338,7 @@ public class DateTimeEntity  {
 	 * 
 	 * @param date
 	 *            date as String
+	 * @return Itself
 	 */
 	public DateTimeEntity withValue(String date) {
 		this.withYear( Integer.parseInt( date.substring(6, 9) ) );
@@ -343,6 +352,7 @@ public class DateTimeEntity  {
 	 * 
 	 * @param date
 	 *            with new date
+	 * @return Itself
 	 */
 	public DateTimeEntity withValue(java.util.Date date) {
 		withValue(date.getTime());
@@ -354,13 +364,17 @@ public class DateTimeEntity  {
 	 * 
 	 * @param date
 	 *            a new Date
-	 * @return 
+	 * @return Itself
 	 */
 	public DateTimeEntity withNewDate(long date) {
 		withTime(date * ONE_SECOND);
 		return this;
 	}
 
+	/**
+	 * @param items The new TextItem for text
+	 * @return Itself
+	 */
 	public DateTimeEntity withTextItems(TextItems items) {
 		this.items = items;
 		return this;
@@ -396,7 +410,7 @@ public class DateTimeEntity  {
 	 * Returns the date of Easter Sunday for a given year.
 	 * 
 	 * @param year
-	 *            > 1583
+	 *            &gt; 1583
 	 * @return The date of Easter Sunday for a given year.
 	 */
 	public static DateTimeEntity getEasterSunday(int year) {
@@ -417,7 +431,7 @@ public class DateTimeEntity  {
 	/**
 	 * format a date with the formatString
 	 * 
-	 * @param dateFormat
+	 * @param dateFormat The Format
 	 * @return a String of Date
 	 */
 	public String toString(String dateFormat) {
@@ -467,14 +481,19 @@ public class DateTimeEntity  {
 	/**
 	 * set a new year for the date
 	 * 
-	 * @param newYear
-	 * @return 
+	 * @param value the newYear
+	 * @return Itself
 	 */
 	public DateTimeEntity withYear(int value) {
 		set(DateField.YEAR, value);
 		return this;
 	}
 	
+	/**
+	 * set a new month for the Date
+	 * @param value The new Month
+	 * @return Itself
+	 */
 	public DateTimeEntity withMonth(int value) {
 		set(DateField.MONTH, value);
 		return this;
@@ -509,8 +528,8 @@ public class DateTimeEntity  {
 	/**
 	 * format a String with 0
 	 * 
-	 * @param value
-	 * @param length
+	 * @param value the numericvalue
+	 * @param length the length of Value
 	 * @return a String of Value
 	 */
 	public String strZero(int value, int length) {
@@ -532,9 +551,9 @@ public class DateTimeEntity  {
 	/**
 	 * Format a date with 0
 	 * 
-	 * @param value
-	 * @param length
-	 * @param max
+	 * @param value the numericvalue
+	 * @param length the length of Value
+	 * @param max the maxValue
 	 * @return a String of Value with max value
 	 */
 	public String strZero(int value, int length, int max) {
@@ -547,9 +566,9 @@ public class DateTimeEntity  {
 	/**
 	 * Format a date with 0
 	 * 
-	 * @param value
-	 * @param length
-	 * @param max
+	 * @param value the numericvalue
+	 * @param length the length of Value
+	 * @param max the maxValue
 	 * @return a String of Value with max value
 	 */
 	public String strZero(long value, int length, int max) {
@@ -570,7 +589,7 @@ public class DateTimeEntity  {
 	 *     AMPM,
 	 *     WEEK_OF_MONTH, WEEK_OF_YEAR
 	 *     YEAR
-	 * 
+	 * @param field The Field for get
 	 * @return the Value As Milliseconds
 	 */
 	public long getValueInMillisecond(DateField field){

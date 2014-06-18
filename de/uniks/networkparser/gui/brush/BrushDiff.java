@@ -28,19 +28,19 @@ import java.util.regex.Pattern;
 
 /**
  * Diff file brush.
- * @author Chan Wai Shing <cws1989@gmail.com>
+ * @author Chan Wai Shing (cws1989@gmail.com)
  */
 public class BrushDiff extends Brush {
 
   public BrushDiff() {
     super();
 
-    addRule(new RegExpRule("^\\+\\+\\+\\s.*$", Pattern.MULTILINE, "color2")); // new file
-    addRule(new RegExpRule("^\\-\\-\\-\\s.*$", Pattern.MULTILINE, "color2")); // old file
-    addRule(new RegExpRule("^\\s.*$", Pattern.MULTILINE, "color1")); // unchanged
-    addRule(new RegExpRule("^@@.*@@$", Pattern.MULTILINE, "variable")); // location
-    addRule(new RegExpRule("^\\+.*$", Pattern.MULTILINE, "string")); // additions
-    addRule(new RegExpRule("^\\-.*$", Pattern.MULTILINE, "color3")); // deletions
+    addRule(new RegExpressions("^\\+\\+\\+\\s.*$", Pattern.MULTILINE, "color2")); // new file
+    addRule(new RegExpressions("^\\-\\-\\-\\s.*$", Pattern.MULTILINE, "color2")); // old file
+    addRule(new RegExpressions("^\\s.*$", Pattern.MULTILINE, "color1")); // unchanged
+    addRule(new RegExpressions("^@@.*@@$", Pattern.MULTILINE, "variable")); // location
+    addRule(new RegExpressions("^\\+.*$", Pattern.MULTILINE, "string")); // additions
+    addRule(new RegExpressions("^\\-.*$", Pattern.MULTILINE, "color3")); // deletions
 
     setCommonFileExtensionList("diff", "patch");
   }

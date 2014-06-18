@@ -27,8 +27,9 @@ public class ByteConverterString extends ByteConverter {
 	/**
 	 * To simple string.
 	 * 
-	 * @param bytes
+	 * @param values
 	 *            the bytes
+	 * @param size The len of values
 	 * @return the string
 	 */
 	@Override
@@ -45,7 +46,7 @@ public class ByteConverterString extends ByteConverter {
 	/**
 	 * To byte string.
 	 * 
-	 * @param hexString
+	 * @param value
 	 *            the hex string
 	 * @return the byte[]
 	 */

@@ -35,7 +35,6 @@ import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.ObjectMapEntry;
-import de.uniks.networkparser.TextParsingException;
 import de.uniks.networkparser.bytes.converter.ByteConverterHTTP;
 import de.uniks.networkparser.event.BasicMessage;
 import de.uniks.networkparser.event.UnknownMessage;
@@ -355,7 +354,7 @@ public class ByteIdMap extends IdMap {
 	 * 
 	 * @param value
 	 *            the value
-	 * @param ByteConverter
+	 * @param converter
 	 *            the Converter for bytes to String
 	 * @return the object
 	 */
@@ -395,21 +394,22 @@ public class ByteIdMap extends IdMap {
 	 *            the in
 	 * @return the object
 	 */
-	public Object decode(BufferedBytes buffer) throws TextParsingException{
-		if (buffer.remaining() < 1)
-			throw new TextParsingException("DecodeExpeption - Remaining:"
-					+ buffer.remaining(), buffer.remaining());
-		
+	public Object decode(BufferedBytes buffer) {
+		if (buffer.remaining() < 1) {
+			logger.error(this, "DecodeExpeption - Remaining:"
+					+ buffer.remaining());
+			return null;
+		}
 		return decodeValue(buffer, buffer.length());
 	}
 
 	/**
 	 * Decode.
 	 * 
-	 * @param typ
-	 *            of message
 	 * @param buffer
 	 *            the in
+	 * @param eventCreater
+	 *            The Creator as Factory
 	 * @return the object
 	 */
 	public Object decodeClazz(BufferedBytes buffer, SendableEntityCreator eventCreater) {
@@ -445,10 +445,10 @@ public class ByteIdMap extends IdMap {
 	/**
 	 * Gets the decode object.
 	 * 
-	 * @param typ
-	 *            the typ value
 	 * @param buffer
 	 *            the in
+	 * @param end
+	 *            EndIndex
 	 * @return the decode object
 	 */
 	public Object decodeValue(BufferedBytes buffer, int end) {

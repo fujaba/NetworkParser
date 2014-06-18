@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 
 /**
  * Sass brush.
- * @author Chan Wai Shing <cws1989@gmail.com>
+ * @author Chan Wai Shing (cws1989@gmail.com)
  */
 public class BrushSass extends Brush {
 
@@ -67,25 +67,25 @@ public class BrushSass extends Brush {
     String statements = "!important !default";
     String preprocessors = "import extend debug warn if for while mixin include";
 
-    addRule(new RegExpRule(RegExpRule.multiLineCComments, "comments")); // multiline comments
-    addRule(new RegExpRule(RegExpRule.singleLineCComments, "comments")); // singleline comments
-    addRule(new RegExpRule(RegExpRule.doubleQuotedString, "string")); // double quoted strings
-    addRule(new RegExpRule(RegExpRule.singleQuotedString, "string")); // single quoted strings
-    addRule(new RegExpRule("\\#[a-fA-F0-9]{3,6}", "value")); // html colors
-    addRule(new RegExpRule("\\b(-?\\d+)(\\.\\d+)?(px|em|pt|\\:|\\%|)\\b", "value")); // sizes
-    addRule(new RegExpRule("(\\$|!)\\w+", "variable")); // variables
-    addRule(new RegExpRule(getKeywords(statements), "color3")); // statements
-    addRule(new RegExpRule(getKeywordsPrependedBy(preprocessors, "@"), "preprocessor")); // preprocessor
-    addRule(new RegExpRule("(^|\\n)\\s*=.*", "functions")); // short mixin declarations
-    addRule(new RegExpRule("(^|\\n)\\s*\\+.*", "functions")); // short mixin call
-    addRule(new RegExpRule("&amp;", "keyword")); // &
-    addRule(new RegExpRule("#(\\w|-|_)+", "color2")); // ids
+    addRule(new RegExpressions(RegExpressions.multiLineCComments, "comments")); // multiline comments
+    addRule(new RegExpressions(RegExpressions.singleLineCComments, "comments")); // singleline comments
+    addRule(new RegExpressions(RegExpressions.doubleQuotedString, "string")); // double quoted strings
+    addRule(new RegExpressions(RegExpressions.singleQuotedString, "string")); // single quoted strings
+    addRule(new RegExpressions("\\#[a-fA-F0-9]{3,6}", "value")); // html colors
+    addRule(new RegExpressions("\\b(-?\\d+)(\\.\\d+)?(px|em|pt|\\:|\\%|)\\b", "value")); // sizes
+    addRule(new RegExpressions("(\\$|!)\\w+", "variable")); // variables
+    addRule(new RegExpressions(getKeywords(statements), "color3")); // statements
+    addRule(new RegExpressions(getKeywordsPrependedBy(preprocessors, "@"), "preprocessor")); // preprocessor
+    addRule(new RegExpressions("(^|\\n)\\s*=.*", "functions")); // short mixin declarations
+    addRule(new RegExpressions("(^|\\n)\\s*\\+.*", "functions")); // short mixin call
+    addRule(new RegExpressions("&amp;", "keyword")); // &
+    addRule(new RegExpressions("#(\\w|-|_)+", "color2")); // ids
     // original code uses 'color4' which do not exist yet, here uses color1 as a temporary replacement
-    addRule(new RegExpRule("(\\.(\\w|-|_)+)", "color1")); // classes
-    addRule(new RegExpRule(getKeywordsCSS(keywords), Pattern.MULTILINE, "keyword")); // keywords
-    addRule(new RegExpRule(getKeywordsPrependedBy(keywords, ":"), "keyword")); // :keyword value
-    addRule(new RegExpRule(getValuesCSS(values), "value")); // values
-    addRule(new RegExpRule(getKeywords(fonts), "color1")); // fonts
+    addRule(new RegExpressions("(\\.(\\w|-|_)+)", "color1")); // classes
+    addRule(new RegExpressions(getKeywordsCSS(keywords), Pattern.MULTILINE, "keyword")); // keywords
+    addRule(new RegExpressions(getKeywordsPrependedBy(keywords, ":"), "keyword")); // :keyword value
+    addRule(new RegExpressions(getValuesCSS(values), "value")); // values
+    addRule(new RegExpressions(getKeywords(fonts), "color1")); // fonts
 
     setCommonFileExtensionList("sass", "scss");
   }

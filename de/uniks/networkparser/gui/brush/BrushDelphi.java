@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 
 /**
  * Delphi brush.
- * @author Chan Wai Shing <cws1989@gmail.com>
+ * @author Chan Wai Shing (cws1989@gmail.com)
  */
 public class BrushDelphi extends Brush {
 
@@ -47,14 +47,14 @@ public class BrushDelphi extends Brush {
             + "threadvar to true try type unit until uses val var varirnt while widechar "
             + "widestring with word write writeln xor";
 
-    addRule(new RegExpRule("\\(\\*[\\s\\S]*?\\*\\)", Pattern.MULTILINE, "comments")); // multiline comments (* *)
-    addRule(new RegExpRule("\\{(?!\\$)[\\s\\S]*?\\}", Pattern.MULTILINE, "comments")); // multiline comments { }
-    addRule(new RegExpRule(RegExpRule.singleLineCComments, "comments")); // one line
-    addRule(new RegExpRule(RegExpRule.singleQuotedString, "string")); // strings
-    addRule(new RegExpRule("\\{\\$[a-zA-Z]+ .+\\}", "color1")); // compiler Directives and Region tags
-    addRule(new RegExpRule("\\b[\\d\\.]+\\b", "value")); // numbers 12345
-    addRule(new RegExpRule("\\$[a-zA-Z0-9]+\\b", "value")); // numbers $F5D3
-    addRule(new RegExpRule(getKeywords(keywords), Pattern.MULTILINE | Pattern.CASE_INSENSITIVE, "keyword")); // keyword
+    addRule(new RegExpressions("\\(\\*[\\s\\S]*?\\*\\)", Pattern.MULTILINE, "comments")); // multiline comments (* *)
+    addRule(new RegExpressions("\\{(?!\\$)[\\s\\S]*?\\}", Pattern.MULTILINE, "comments")); // multiline comments { }
+    addRule(new RegExpressions(RegExpressions.singleLineCComments, "comments")); // one line
+    addRule(new RegExpressions(RegExpressions.singleQuotedString, "string")); // strings
+    addRule(new RegExpressions("\\{\\$[a-zA-Z]+ .+\\}", "color1")); // compiler Directives and Region tags
+    addRule(new RegExpressions("\\b[\\d\\.]+\\b", "value")); // numbers 12345
+    addRule(new RegExpressions("\\$[a-zA-Z0-9]+\\b", "value")); // numbers $F5D3
+    addRule(new RegExpressions(getKeywords(keywords), Pattern.MULTILINE | Pattern.CASE_INSENSITIVE, "keyword")); // keyword
 
     setCommonFileExtensionList("pas");
   }

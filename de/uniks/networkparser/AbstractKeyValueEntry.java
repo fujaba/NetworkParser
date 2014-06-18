@@ -44,10 +44,11 @@ public abstract class AbstractKeyValueEntry<K, V> implements BaseItem, Entry<K, 
 	}
 	
 	/**
-	 * add the Values of the map to AbstractKeyValueEntry<K, V>
+	 * add the Values of the map to AbstractKeyValueEntry&lt;K, V&gt;
 	 * 
 	 * @param collection
 	 *            a map of key-values
+	 * @return Itself
 	 */
 	public AbstractKeyValueEntry<K, V> with(Map<K, V> collection) {
 		if (collection != null) {

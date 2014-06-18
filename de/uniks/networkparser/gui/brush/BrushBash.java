@@ -30,7 +30,7 @@ import de.uniks.networkparser.gui.Style;
 
 /**
  * Bash brush.
- * @author Chan Wai Shing <cws1989@gmail.com>
+ * @author Chan Wai Shing (cws1989@gmail.com)
  */
 public class BrushBash extends Brush {
 
@@ -53,13 +53,13 @@ public class BrushBash extends Brush {
             + "uname unexpand uniq units unset unshar useradd usermod users uuencode uudecode v vdir "
             + "vi watch wc whereis which who whoami Wget xargs yes";
 
-    addRule(new RegExpRule("^#!.*$", Pattern.MULTILINE, "preprocessor", new Style().withBold(true)));
-    addRule(new RegExpRule("\\/[\\w-\\/]+", Pattern.MULTILINE, "plain"));
-    addRule(new RegExpRule(RegExpRule.singleLinePerlComments, "comments")); // one line comments
-    addRule(new RegExpRule(RegExpRule.doubleQuotedString, "string")); // double quoted strings
-    addRule(new RegExpRule(RegExpRule.singleQuotedString, "string")); // single quoted strings
-    addRule(new RegExpRule(getKeywords(keywords), Pattern.MULTILINE, "keyword")); // keywords
-    addRule(new RegExpRule(getKeywords(commands), Pattern.MULTILINE, "functions")); // commands
+    addRule(new RegExpressions("^#!.*$", Pattern.MULTILINE, "preprocessor", new Style().withBold(true)));
+    addRule(new RegExpressions("\\/[\\w-\\/]+", Pattern.MULTILINE, "plain"));
+    addRule(new RegExpressions(RegExpressions.singleLinePerlComments, "comments")); // one line comments
+    addRule(new RegExpressions(RegExpressions.doubleQuotedString, "string")); // double quoted strings
+    addRule(new RegExpressions(RegExpressions.singleQuotedString, "string")); // single quoted strings
+    addRule(new RegExpressions(getKeywords(keywords), Pattern.MULTILINE, "keyword")); // keywords
+    addRule(new RegExpressions(getKeywords(commands), Pattern.MULTILINE, "functions")); // commands
 
     setCommonFileExtensionList("sh");
   }

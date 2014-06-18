@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 
 /**
  * PowerShell brush.
- * @author Chan Wai Shing <cws1989@gmail.com>
+ * @author Chan Wai Shing (cws1989@gmail.com)
  */
 public class BrushPowerShell extends Brush {
 
@@ -67,13 +67,13 @@ public class BrushPowerShell extends Brush {
             + "mount mv popd ps pushd pwd r rm rmdir echo cls chdir del dir "
             + "erase rd ren type % \\?";
 
-    addRule(new RegExpRule("#.*$", Pattern.MULTILINE, "comments")); // one line comments
-    addRule(new RegExpRule("\\$[a-zA-Z0-9]+\\b", "value")); // variables $Computer1
-    addRule(new RegExpRule("\\-[a-zA-Z]+\\b", "keyword")); // Operators    -not  -and  -eq
-    addRule(new RegExpRule(RegExpRule.doubleQuotedString, "string")); // strings
-    addRule(new RegExpRule(RegExpRule.singleQuotedString, "string")); // strings
-    addRule(new RegExpRule(getKeywords(keywords), Pattern.MULTILINE | Pattern.CASE_INSENSITIVE, "keyword"));
-    addRule(new RegExpRule(getKeywords(alias), Pattern.MULTILINE | Pattern.CASE_INSENSITIVE, "keyword"));
+    addRule(new RegExpressions("#.*$", Pattern.MULTILINE, "comments")); // one line comments
+    addRule(new RegExpressions("\\$[a-zA-Z0-9]+\\b", "value")); // variables $Computer1
+    addRule(new RegExpressions("\\-[a-zA-Z]+\\b", "keyword")); // Operators    -not  -and  -eq
+    addRule(new RegExpressions(RegExpressions.doubleQuotedString, "string")); // strings
+    addRule(new RegExpressions(RegExpressions.singleQuotedString, "string")); // strings
+    addRule(new RegExpressions(getKeywords(keywords), Pattern.MULTILINE | Pattern.CASE_INSENSITIVE, "keyword"));
+    addRule(new RegExpressions(getKeywords(alias), Pattern.MULTILINE | Pattern.CASE_INSENSITIVE, "keyword"));
     setCommonFileExtensionList("ps1");
   }
 }

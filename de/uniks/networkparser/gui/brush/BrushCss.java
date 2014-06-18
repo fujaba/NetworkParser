@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 
 /**
  * CSS brush.
- * @author Chan Wai Shing <cws1989@gmail.com>
+ * @author Chan Wai Shing (cws1989@gmail.com)
  */
 public class BrushCss extends Brush {
 
@@ -63,15 +63,15 @@ public class BrushCss extends Brush {
             + "upper-roman url visible wait white wider w-resize x-fast x-high x-large x-loud x-low x-slow x-small x-soft xx-large xx-small yellow";
     String fonts = "[mM]onospace [tT]ahoma [vV]erdana [aA]rial [hH]elvetica [sS]ans-serif [sS]erif [cC]ourier mono sans serif";
 
-    addRule(new RegExpRule(RegExpRule.multiLineCComments, "comments")); // multiline comments
-    addRule(new RegExpRule(RegExpRule.doubleQuotedString, "string")); // double quoted strings
-    addRule(new RegExpRule(RegExpRule.singleQuotedString, "string")); // single quoted strings
-    addRule(new RegExpRule("\\#[a-fA-F0-9]{3,6}", "value")); // html colors
-    addRule(new RegExpRule("(-?\\d+)(\\.\\d+)?(px|em|pt|\\:|\\%|)", "value")); // sizes
-    addRule(new RegExpRule("!important", "color3")); // !important
-    addRule(new RegExpRule(getKeywordsCSS(keywords), Pattern.MULTILINE, "keyword")); // keywords
-    addRule(new RegExpRule(getValuesCSS(values), "value")); // values
-    addRule(new RegExpRule(getKeywords(fonts), "color1")); // fonts
+    addRule(new RegExpressions(RegExpressions.multiLineCComments, "comments")); // multiline comments
+    addRule(new RegExpressions(RegExpressions.doubleQuotedString, "string")); // double quoted strings
+    addRule(new RegExpressions(RegExpressions.singleQuotedString, "string")); // single quoted strings
+    addRule(new RegExpressions("\\#[a-fA-F0-9]{3,6}", "value")); // html colors
+    addRule(new RegExpressions("(-?\\d+)(\\.\\d+)?(px|em|pt|\\:|\\%|)", "value")); // sizes
+    addRule(new RegExpressions("!important", "color3")); // !important
+    addRule(new RegExpressions(getKeywordsCSS(keywords), Pattern.MULTILINE, "keyword")); // keywords
+    addRule(new RegExpressions(getValuesCSS(values), "value")); // values
+    addRule(new RegExpressions(getKeywords(fonts), "color1")); // fonts
     addRule(new HTMLRegExRule("(?:&lt;|<)\\s*style.*?(?:&gt;|>)", "(?:&lt;|<)\\/\\s*style\\s*(?:&gt;|>)"));
     setCommonFileExtensionList("css");
   }

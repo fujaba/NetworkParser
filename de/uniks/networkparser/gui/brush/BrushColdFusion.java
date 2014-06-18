@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 
 /**
  * Cold Fusion brush.
- * @author Chan Wai Shing <cws1989@gmail.com>
+ * @author Chan Wai Shing (cws1989@gmail.com)
  */
 public class BrushColdFusion extends Brush {
 
@@ -91,13 +91,13 @@ public class BrushColdFusion extends Brush {
             + "cfwindow cfxml cfzip cfzipparam";
     String operators = "all and any between cross in join like not null or outer some";
 
-    addRule(new RegExpRule("--(.*)$", Pattern.MULTILINE, "comments")); // one line and multiline comments
-    addRule(new RegExpRule(RegExpRule.xmlComments, "comments")); // single quoted strings
-    addRule(new RegExpRule(RegExpRule.doubleQuotedString, "string")); // double quoted strings
-    addRule(new RegExpRule(RegExpRule.singleQuotedString, "string")); // single quoted strings
-    addRule(new RegExpRule(getKeywords(funcs), Pattern.CASE_INSENSITIVE | Pattern.MULTILINE, "functions")); // functions
-    addRule(new RegExpRule(getKeywords(operators), Pattern.CASE_INSENSITIVE | Pattern.MULTILINE, "color1")); // operators and such
-    addRule(new RegExpRule(getKeywords(keywords), Pattern.CASE_INSENSITIVE | Pattern.MULTILINE, "keyword")); // keyword
+    addRule(new RegExpressions("--(.*)$", Pattern.MULTILINE, "comments")); // one line and multiline comments
+    addRule(new RegExpressions(RegExpressions.xmlComments, "comments")); // single quoted strings
+    addRule(new RegExpressions(RegExpressions.doubleQuotedString, "string")); // double quoted strings
+    addRule(new RegExpressions(RegExpressions.singleQuotedString, "string")); // single quoted strings
+    addRule(new RegExpressions(getKeywords(funcs), Pattern.CASE_INSENSITIVE | Pattern.MULTILINE, "functions")); // functions
+    addRule(new RegExpressions(getKeywords(operators), Pattern.CASE_INSENSITIVE | Pattern.MULTILINE, "color1")); // operators and such
+    addRule(new RegExpressions(getKeywords(keywords), Pattern.CASE_INSENSITIVE | Pattern.MULTILINE, "keyword")); // keyword
 
     setCommonFileExtensionList("cfm", "cfml");
   }

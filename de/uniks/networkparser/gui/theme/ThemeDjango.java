@@ -28,7 +28,7 @@ import de.uniks.networkparser.gui.Style;
 
 /**
  * Django theme.
- * @author Chan Wai Shing <cws1989@gmail.com>
+ * @author Chan Wai Shing (cws1989@gmail.com)
  */
 public class ThemeDjango extends Theme {
 

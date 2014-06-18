@@ -125,7 +125,7 @@ public class EntityUtil {
 
 	/**
 	 * Produce a string in double quotes with backslash sequences in all the
-	 * right places. A backslash will be inserted within </, producing <\/,
+	 * right places. A backslash will be inserted within &lt;/, producing &lt;\/,
 	 * allowing JSON text to be delivered in HTML. In JSON text, a string cannot
 	 * contain a control character or an unescaped quote or backslash.
 	 * 
@@ -274,6 +274,7 @@ public class EntityUtil {
 	 * 
 	 * @param object
 	 *            The object to wrap
+	 * @param reference The reference
 	 * @return The wrapped value
 	 */
 	public static Object wrap(Object object, FactoryEntity reference) {

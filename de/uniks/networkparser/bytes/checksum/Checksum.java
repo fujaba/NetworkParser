@@ -47,6 +47,7 @@ public abstract class Checksum {
 
 	/**
 	 * Updates the checksum with the specified byte.
+	 * @param b the byte
 	 */
 	public void update(int b) {
 		length++;
@@ -54,6 +55,7 @@ public abstract class Checksum {
 
 	/**
 	 * Updates the checksum with the specified byte.
+	 * @param b the item to update
 	 */
 	public void update(byte b) {
 		update((int) (b & 0xFF));
@@ -77,6 +79,7 @@ public abstract class Checksum {
 
 	/**
 	 * Updates the current checksum with the specified array of bytes.
+	 * @param bytes bytearray of items
 	 */
 	public void update(byte[] bytes) {
 		update(bytes, 0, bytes.length);
@@ -86,6 +89,7 @@ public abstract class Checksum {
 	 * Returns the value of the checksum.
 	 * 
 	 * @see #getByteArray()
+	 * @return the value of checksum
 	 */
 	public long getValue() {
 		int len = getOrder() / 8;
@@ -99,6 +103,7 @@ public abstract class Checksum {
 
 	/**
 	 * Returns the length of the processed bytes.
+	 * @return the length of checksum
 	 */
 	public long getLength() {
 		return length;
@@ -106,6 +111,7 @@ public abstract class Checksum {
 
 	/**
 	 * Returns the result of the computation as byte array.
+	 * @return a new ByteArray
 	 */
 	public byte[] getByteArray() {
 		long value = getValue();
@@ -127,5 +133,8 @@ public abstract class Checksum {
 		return result;
 	}
 
+	/**
+	 * @return the Orderindex
+	 */
 	public abstract int getOrder();
 }

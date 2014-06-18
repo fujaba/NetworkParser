@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 
 /**
  * Groovy brush.
- * @author Chan Wai Shing <cws1989@gmail.com>
+ * @author Chan Wai Shing (cws1989@gmail.com)
  */
 public class BrushGroovy extends Brush {
 
@@ -55,16 +55,16 @@ public class BrushGroovy extends Brush {
             + "dump inspect invokeMethod print println step times upto use waitForOrKill "
             + "getText";
 
-    addRule(new RegExpRule(RegExpRule.singleLineCComments, "comments")); // one line comments
-    addRule(new RegExpRule(RegExpRule.multiLineCComments, "comments")); // multiline comments
-    addRule(new RegExpRule(RegExpRule.doubleQuotedString, "string")); // strings
-    addRule(new RegExpRule(RegExpRule.singleQuotedString, "string")); // strings
-    addRule(new RegExpRule("\"\"\".*\"\"\"", "string")); // GStrings
-    addRule(new RegExpRule("\\b([\\d]+(\\.[\\d]+)?|0x[a-f0-9]+)\\b", Pattern.CASE_INSENSITIVE, "value")); // numbers
-    addRule(new RegExpRule(getKeywords(keywords), Pattern.MULTILINE, "keyword")); // goovy keyword
-    addRule(new RegExpRule(getKeywords(types), Pattern.MULTILINE, "color1")); // goovy/java type
-    addRule(new RegExpRule(getKeywords(constants), Pattern.MULTILINE, "constants")); // constants
-    addRule(new RegExpRule(getKeywords(methods), Pattern.MULTILINE, "functions")); // methods
+    addRule(new RegExpressions(RegExpressions.singleLineCComments, "comments")); // one line comments
+    addRule(new RegExpressions(RegExpressions.multiLineCComments, "comments")); // multiline comments
+    addRule(new RegExpressions(RegExpressions.doubleQuotedString, "string")); // strings
+    addRule(new RegExpressions(RegExpressions.singleQuotedString, "string")); // strings
+    addRule(new RegExpressions("\"\"\".*\"\"\"", "string")); // GStrings
+    addRule(new RegExpressions("\\b([\\d]+(\\.[\\d]+)?|0x[a-f0-9]+)\\b", Pattern.CASE_INSENSITIVE, "value")); // numbers
+    addRule(new RegExpressions(getKeywords(keywords), Pattern.MULTILINE, "keyword")); // goovy keyword
+    addRule(new RegExpressions(getKeywords(types), Pattern.MULTILINE, "color1")); // goovy/java type
+    addRule(new RegExpressions(getKeywords(constants), Pattern.MULTILINE, "constants")); // constants
+    addRule(new RegExpressions(getKeywords(methods), Pattern.MULTILINE, "functions")); // methods
 
     addRule(HTMLRegExRule.aspScriptTags);
 

@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 
 /**
  * Java FX brush.
- * @author Chan Wai Shing <cws1989@gmail.com>
+ * @author Chan Wai Shing (cws1989@gmail.com)
  */
 public class BrushJavaFX extends Brush {
 
@@ -48,13 +48,13 @@ public class BrushJavaFX extends Brush {
             + "step super then this throw true try tween typeof var where while with "
             + "attribute let private readonly static trigger";
 
-    addRule(new RegExpRule(RegExpRule.singleLineCComments, "comments"));
-    addRule(new RegExpRule(RegExpRule.multiLineCComments, "comments"));
-    addRule(new RegExpRule(RegExpRule.singleQuotedString, "string"));
-    addRule(new RegExpRule(RegExpRule.doubleQuotedString, "string"));
-    addRule(new RegExpRule("(-?\\.?)(\\b(\\d*\\.?\\d+|\\d+\\.?\\d*)(e[+-]?\\d+)?|0x[a-f\\d]+)\\b\\.?", Pattern.CASE_INSENSITIVE, "color2")); // numbers
-    addRule(new RegExpRule(getKeywords(datatypes), Pattern.MULTILINE, "variable")); // datatypes
-    addRule(new RegExpRule(getKeywords(keywords), Pattern.MULTILINE, "keyword"));
+    addRule(new RegExpressions(RegExpressions.singleLineCComments, "comments"));
+    addRule(new RegExpressions(RegExpressions.multiLineCComments, "comments"));
+    addRule(new RegExpressions(RegExpressions.singleQuotedString, "string"));
+    addRule(new RegExpressions(RegExpressions.doubleQuotedString, "string"));
+    addRule(new RegExpressions("(-?\\.?)(\\b(\\d*\\.?\\d+|\\d+\\.?\\d*)(e[+-]?\\d+)?|0x[a-f\\d]+)\\b\\.?", Pattern.CASE_INSENSITIVE, "color2")); // numbers
+    addRule(new RegExpressions(getKeywords(datatypes), Pattern.MULTILINE, "variable")); // datatypes
+    addRule(new RegExpressions(getKeywords(keywords), Pattern.MULTILINE, "keyword"));
 
     addRule(HTMLRegExRule.aspScriptTags);
 

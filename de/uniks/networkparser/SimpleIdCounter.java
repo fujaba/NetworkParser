@@ -137,6 +137,7 @@ public class SimpleIdCounter implements IdMapCounter {
 	 * 
 	 * @param prio
 	 *            the new prio
+	 * @return Itself
 	 */
 	public SimpleIdCounter withPrio(Object prio) {
 		this.prio = prio;

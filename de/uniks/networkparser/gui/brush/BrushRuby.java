@@ -31,7 +31,7 @@ import de.uniks.networkparser.gui.Style;
 
 /**
  * Ruby brush.
- * @author Chan Wai Shing <cws1989@gmail.com>
+ * @author Chan Wai Shing (cws1989@gmail.com)
  */
 public class BrushRuby extends Brush {
 
@@ -47,14 +47,14 @@ public class BrushRuby extends Brush {
             + "Hash Integer IO MatchData Method Module NilClass Numeric Object Proc Range Regexp String Struct::TMS Symbol "
             + "ThreadGroup Thread Time TrueClass";
 
-    addRule(new RegExpRule(RegExpRule.singleLinePerlComments, "comments")); // one line comments
-    addRule(new RegExpRule(RegExpRule.doubleQuotedString, "string")); // double quoted strings
-    addRule(new RegExpRule(RegExpRule.singleQuotedString, "string")); // single quoted strings
-    addRule(new RegExpRule("\\b[A-Z0-9_]+\\b", "constants")); // constants
-    addRule(new RegExpRule(":[a-z][A-Za-z0-9_]*", "color2")); // symbols
-    addRule(new RegExpRule("(\\$|@@|@)\\w+", "variable", new Style().withBold(true))); // $global, @instance, and @@class variables
-    addRule(new RegExpRule(getKeywords(keywords), Pattern.MULTILINE, "keyword")); // keywords
-    addRule(new RegExpRule(getKeywords(builtins), Pattern.MULTILINE, "color1")); // builtins
+    addRule(new RegExpressions(RegExpressions.singleLinePerlComments, "comments")); // one line comments
+    addRule(new RegExpressions(RegExpressions.doubleQuotedString, "string")); // double quoted strings
+    addRule(new RegExpressions(RegExpressions.singleQuotedString, "string")); // single quoted strings
+    addRule(new RegExpressions("\\b[A-Z0-9_]+\\b", "constants")); // constants
+    addRule(new RegExpressions(":[a-z][A-Za-z0-9_]*", "color2")); // symbols
+    addRule(new RegExpressions("(\\$|@@|@)\\w+", "variable", new Style().withBold(true))); // $global, @instance, and @@class variables
+    addRule(new RegExpressions(getKeywords(keywords), Pattern.MULTILINE, "keyword")); // keywords
+    addRule(new RegExpressions(getKeywords(builtins), Pattern.MULTILINE, "color1")); // builtins
 
     addRule(HTMLRegExRule.phpScriptTags);
 

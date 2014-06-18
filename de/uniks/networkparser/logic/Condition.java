@@ -26,7 +26,7 @@ public interface Condition {
 	/**
 	 * checks if a telegram fulfills this condition
 	 * 
-	 * @param telegram
+	 * @param value
 	 *            the telegram to be checked
 	 * @return true if the telegram fulfills this condition, false otherwise
 	 */
