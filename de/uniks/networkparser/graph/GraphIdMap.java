@@ -61,8 +61,6 @@ public class GraphIdMap extends IdMapEncoder {
 	 * 
 	 * @param object
 	 *            the object
-	 * @param showCardinality
-	 *            the show cardinality
 	 * @return the string
 	 */
 	public String parseClass(Object object) {

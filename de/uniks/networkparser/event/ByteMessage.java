@@ -74,7 +74,7 @@ public class ByteMessage  {
 	 * 
 	 * @param value
 	 *            the new value
-	 * @return 
+	 * @return Itself
 	 */
 	public ByteMessage withValue(byte[] value) {
 		this.value = value;

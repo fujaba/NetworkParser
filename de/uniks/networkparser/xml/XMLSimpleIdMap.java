@@ -150,14 +150,12 @@ public class XMLSimpleIdMap extends IdMap {
 
 	/**
 	 * Find tag.
-	 * @param entity2 
+	 * @param entity The Entity
 	 * 
-	 * @param prefix
-	 *            the prefix
-	 * @param tag
-	 *            the tag
-	 * @param styleFormat
-	 * @param styleFormatCreator
+	 * @param tokener
+	 *            the tokener
+	 * @param grammar
+	 *            the grammar
 	 * @return the object
 	 */
 	protected Object parse(XMLEntity entity, XMLTokener tokener, XMLGrammar grammar) {
@@ -257,8 +255,10 @@ public class XMLSimpleIdMap extends IdMap {
 	/**
 	 * Gets the entity.
 	 * 
-	 * @param start
-	 *            the start
+	 * @param factory
+	 *            the grammar
+	 * @param tokener
+	 *            the tokener
 	 * @return the entity
 	 */
 	protected XMLEntity getEntity(XMLGrammar factory, XMLTokener tokener) {

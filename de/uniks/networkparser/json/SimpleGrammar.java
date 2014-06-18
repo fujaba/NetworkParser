@@ -33,7 +33,10 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 public class SimpleGrammar extends Grammar{
 	public static final String ID="@ID";
 	/**
-	 * @param jsonObject
+	 * @param jsonObject the new Value
+	 * @param map the IdMap
+	 * @param filter the Filter
+	 * @param isId is Id is reed
 	 * @return the props of theJsonObject
 	 */
 	@Override
@@ -43,7 +46,7 @@ public class SimpleGrammar extends Grammar{
 	}
 
 	/**
-	 * @param jsonObject
+	 * @param jsonObject the new Value
 	 * @return the Creator for this JsonObject
 	 */
 	@Override

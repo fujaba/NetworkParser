@@ -308,7 +308,6 @@ public class HTMLEntities {
 	 * @param str
 	 *            input string
 	 * @return formatted string
-	 * @see #unhtmlentities(String)
 	 */
 	public String encode(String str) {
 
@@ -342,7 +341,6 @@ public class HTMLEntities {
 	 * @param str
 	 *            input string
 	 * @return formatted string
-	 * @see #htmlentities(String)
 	 */
 	public String decode(String str) {
 		StringBuilder buf = new StringBuilder();

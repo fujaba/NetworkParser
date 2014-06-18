@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 
 /**
  * PHP brush.
- * @author Chan Wai Shing <cws1989@gmail.com>
+ * @author Chan Wai Shing (cws1989@gmail.com)
  */
 public class BrushPhp extends Brush {
 
@@ -76,14 +76,14 @@ public class BrushPhp extends Brush {
             + "throw try use var while xor";
     String constants = "__FILE__ __LINE__ __METHOD__ __FUNCTION__ __CLASS__";
 
-    addRule(new RegExpRule(RegExpRule.singleLineCComments, "comments")); // one line comments
-    addRule(new RegExpRule(RegExpRule.multiLineCComments, "comments")); // multiline comments
-    addRule(new RegExpRule(RegExpRule.doubleQuotedString, "string")); // double quoted strings
-    addRule(new RegExpRule(RegExpRule.singleQuotedString, "string")); // single quoted strings
-    addRule(new RegExpRule("\\$\\w+", "variable")); // variables
-    addRule(new RegExpRule(getKeywords(funcs), Pattern.MULTILINE | Pattern.CASE_INSENSITIVE, "functions")); // common functions
-    addRule(new RegExpRule(getKeywords(constants), Pattern.MULTILINE | Pattern.CASE_INSENSITIVE, "constants")); // constants
-    addRule(new RegExpRule(getKeywords(keywords), Pattern.MULTILINE, "keyword")); // keyword
+    addRule(new RegExpressions(RegExpressions.singleLineCComments, "comments")); // one line comments
+    addRule(new RegExpressions(RegExpressions.multiLineCComments, "comments")); // multiline comments
+    addRule(new RegExpressions(RegExpressions.doubleQuotedString, "string")); // double quoted strings
+    addRule(new RegExpressions(RegExpressions.singleQuotedString, "string")); // single quoted strings
+    addRule(new RegExpressions("\\$\\w+", "variable")); // variables
+    addRule(new RegExpressions(getKeywords(funcs), Pattern.MULTILINE | Pattern.CASE_INSENSITIVE, "functions")); // common functions
+    addRule(new RegExpressions(getKeywords(constants), Pattern.MULTILINE | Pattern.CASE_INSENSITIVE, "constants")); // constants
+    addRule(new RegExpressions(getKeywords(keywords), Pattern.MULTILINE, "keyword")); // keyword
 
     addRule(HTMLRegExRule.phpScriptTags);
 

@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 
 /**
  * SQL brush.
- * @author Chan Wai Shing <cws1989@gmail.com>
+ * @author Chan Wai Shing (cws1989@gmail.com)
  */
 public class BrushSql extends Brush {
 
@@ -57,12 +57,12 @@ public class BrushSql extends Brush {
             + "varchar varying view when where with work";
     String operators = "all and any between cross in join like not null or outer some";
 
-    addRule(new RegExpRule("--(.*)$", Pattern.MULTILINE, "comments")); // one line and multiline comments
-    addRule(new RegExpRule(RegExpRule.multiLineDoubleQuotedString, "string")); // double quoted strings
-    addRule(new RegExpRule(RegExpRule.multiLineSingleQuotedString, "string")); // single quoted strings
-    addRule(new RegExpRule(getKeywords(funcs), Pattern.MULTILINE | Pattern.CASE_INSENSITIVE, "color2")); // functions
-    addRule(new RegExpRule(getKeywords(operators), Pattern.MULTILINE | Pattern.CASE_INSENSITIVE, "color1")); // operators and such
-    addRule(new RegExpRule(getKeywords(keywords), Pattern.MULTILINE | Pattern.CASE_INSENSITIVE, "keyword"));// keyword
+    addRule(new RegExpressions("--(.*)$", Pattern.MULTILINE, "comments")); // one line and multiline comments
+    addRule(new RegExpressions(RegExpressions.multiLineDoubleQuotedString, "string")); // double quoted strings
+    addRule(new RegExpressions(RegExpressions.multiLineSingleQuotedString, "string")); // single quoted strings
+    addRule(new RegExpressions(getKeywords(funcs), Pattern.MULTILINE | Pattern.CASE_INSENSITIVE, "color2")); // functions
+    addRule(new RegExpressions(getKeywords(operators), Pattern.MULTILINE | Pattern.CASE_INSENSITIVE, "color1")); // operators and such
+    addRule(new RegExpressions(getKeywords(keywords), Pattern.MULTILINE | Pattern.CASE_INSENSITIVE, "keyword"));// keyword
 
     setCommonFileExtensionList("sql");
   }

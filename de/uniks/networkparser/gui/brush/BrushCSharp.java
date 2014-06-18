@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 
 /**
  * C# brush.
- * @author Chan Wai Shing <cws1989@gmail.com>
+ * @author Chan Wai Shing (cws1989@gmail.com)
  */
 public class BrushCSharp extends Brush {
 
@@ -43,16 +43,16 @@ public class BrushCSharp extends Brush {
             + "short sizeof stackalloc static string struct switch this throw true try "
             + "typeof uint ulong unchecked unsafe ushort using virtual void while var";
 
-    addRule(new RegExpRule("\\/\\/\\/.*$", Pattern.MULTILINE, "color1")); // documents
-    addRule(new RegExpRule(RegExpRule.singleLineCComments, "comments")); // one line comments
-    addRule(new RegExpRule(RegExpRule.multiLineCComments, "comments")); // multiline comments
-    addRule(new RegExpRule("@\"(?:[^\"]|\"\")*\"", "string")); // @-quoted strings
-    addRule(new RegExpRule(RegExpRule.doubleQuotedString, "string")); // strings
-    addRule(new RegExpRule(RegExpRule.singleQuotedString, "string")); // strings
-    addRule(new RegExpRule("^\\s*#.*", Pattern.MULTILINE, "preprocessor")); // preprocessor tags like #region and #endregion
-    addRule(new RegExpRule(getKeywords(keywords), Pattern.MULTILINE, "keyword")); // c# keyword
-    addRule(new RegExpRule("\\bpartial(?=\\s+(?:class|interface|struct)\\b)", "keyword")); // contextual keyword: 'partial'
-    addRule(new RegExpRule("\\byield(?=\\s+(?:return|break)\\b)", "keyword")); // contextual keyword: 'yield'
+    addRule(new RegExpressions("\\/\\/\\/.*$", Pattern.MULTILINE, "color1")); // documents
+    addRule(new RegExpressions(RegExpressions.singleLineCComments, "comments")); // one line comments
+    addRule(new RegExpressions(RegExpressions.multiLineCComments, "comments")); // multiline comments
+    addRule(new RegExpressions("@\"(?:[^\"]|\"\")*\"", "string")); // @-quoted strings
+    addRule(new RegExpressions(RegExpressions.doubleQuotedString, "string")); // strings
+    addRule(new RegExpressions(RegExpressions.singleQuotedString, "string")); // strings
+    addRule(new RegExpressions("^\\s*#.*", Pattern.MULTILINE, "preprocessor")); // preprocessor tags like #region and #endregion
+    addRule(new RegExpressions(getKeywords(keywords), Pattern.MULTILINE, "keyword")); // c# keyword
+    addRule(new RegExpressions("\\bpartial(?=\\s+(?:class|interface|struct)\\b)", "keyword")); // contextual keyword: 'partial'
+    addRule(new RegExpressions("\\byield(?=\\s+(?:return|break)\\b)", "keyword")); // contextual keyword: 'yield'
 
     addRule(HTMLRegExRule.aspScriptTags);
 

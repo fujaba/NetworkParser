@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 
 /**
  * Action Script brush.
- * @author Chan Wai Shing <cws1989@gmail.com>
+ * @author Chan Wai Shing (cws1989@gmail.com)
  */
 public class BrushAS3 extends Brush {
 
@@ -46,15 +46,15 @@ public class BrushAS3 extends Brush {
             + "return set static String super switch this throw true try typeof uint undefined unescape "
             + "use void while with";
 
-    addRule(new RegExpRule(RegExpRule.singleLineCComments, "comments")); // one line comments
-    addRule(new RegExpRule(RegExpRule.multiLineCComments, "comments")); // multiline comments
-    addRule(new RegExpRule(RegExpRule.doubleQuotedString, "string")); // double quoted strings
-    addRule(new RegExpRule(RegExpRule.singleQuotedString, "string")); // single quoted strings
-    addRule(new RegExpRule("\\b([\\d]+(\\.[\\d]+)?|0x[a-f0-9]+)\\b", Pattern.CASE_INSENSITIVE, "value")); // numbers
-    addRule(new RegExpRule(getKeywords(inits), Pattern.MULTILINE, "color3")); // initializations
-    addRule(new RegExpRule(getKeywords(keywords), Pattern.MULTILINE, "keyword")); // keywords
-    addRule(new RegExpRule("var", Pattern.MULTILINE, "variable")); // variable
-    addRule(new RegExpRule("trace", Pattern.MULTILINE, "color1")); // trace
+    addRule(new RegExpressions(RegExpressions.singleLineCComments, "comments")); // one line comments
+    addRule(new RegExpressions(RegExpressions.multiLineCComments, "comments")); // multiline comments
+    addRule(new RegExpressions(RegExpressions.doubleQuotedString, "string")); // double quoted strings
+    addRule(new RegExpressions(RegExpressions.singleQuotedString, "string")); // single quoted strings
+    addRule(new RegExpressions("\\b([\\d]+(\\.[\\d]+)?|0x[a-f0-9]+)\\b", Pattern.CASE_INSENSITIVE, "value")); // numbers
+    addRule(new RegExpressions(getKeywords(inits), Pattern.MULTILINE, "color3")); // initializations
+    addRule(new RegExpressions(getKeywords(keywords), Pattern.MULTILINE, "keyword")); // keywords
+    addRule(new RegExpressions("var", Pattern.MULTILINE, "variable")); // variable
+    addRule(new RegExpressions("trace", Pattern.MULTILINE, "color1")); // trace
 
     addRule(HTMLRegExRule.scriptScriptTags);
 

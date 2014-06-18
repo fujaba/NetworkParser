@@ -91,7 +91,7 @@ public class ByteList extends AbstractList<ByteItem> implements ByteItem, Factor
 		// Override for each ByteList
 		isPrimitive = isPrimitive(isDynamic);
 		int size=calcChildren(isDynamic, last);
-		
+		int start = buffer.position();
 		byte typ;
 		if(isPrimitive){
 			typ=ByteIdMap.DATATYPE_CLAZZSTREAM;
@@ -102,6 +102,9 @@ public class ByteList extends AbstractList<ByteItem> implements ByteItem, Factor
 
 		for(int i=0;i<values.size();i++){
 			((ByteItem) values.get(i)).writeBytes(buffer, isDynamic, i==values.size()-1, isPrimitive);
+		}
+		if(buffer.position()!=start+size){
+			System.out.println("ERROR");
 		}
 	}
 
@@ -123,28 +126,29 @@ public class ByteList extends AbstractList<ByteItem> implements ByteItem, Factor
 		if(size<1){
 			return 0;
 		}
-		ByteItem[] valueList = this.values.toArray(new ByteItem[size]);
-		
 		boolean isPrimitive = isDynamic;
-		if(valueList[size-1] instanceof ByteEntity){
+		int nullerBytes=0;
+		if(this.values.get(size-1) instanceof ByteEntity){
 			// HEADER + VALUE
-			isPrimitive = isPrimitive && valueList[0].getTyp()==ByteIdMap.DATATYPE_CLAZZTYP;
+			isPrimitive = isPrimitive && this.values.get(0).getTyp()==ByteIdMap.DATATYPE_CLAZZTYP;
+			if(this.values.get(size-1).getTyp()==ByteIdMap.DATATYPE_NULL){nullerBytes++;}
 		}else{
 			isPrimitive=false;
 		}
-		length=valueList[size-1].calcLength(isDynamic, true);
+		length=this.values.get(size-1).calcLength(isDynamic, true);
 //		length=len+ByteUtil.getTypLen(valueList[size-1].getTyp(), len - 1);
 		for (int i = size - 2; i >= 0; i--) {
-			int len = valueList[i].calcLength(isDynamic, false);
+			int len = this.values.get(i).calcLength(isDynamic, false);
 			if(isPrimitive){
-				isPrimitive = (valueList[i].size()==len - 1);
+				if(this.values.get(i).getTyp()==ByteIdMap.DATATYPE_NULL){nullerBytes++;}
+				isPrimitive = (this.values.get(i).size()==len - 1);
 			}
 			length += len;
  		}
 		if(isPrimitive){
 			// Only for ByteList with value dynamic and values with cant be short
 			// add one for ClazzSTEAM Byte as first Byte 
-			length= length - size + ByteEntity.TYPBYTE;
+			length= length - size + ByteEntity.TYPBYTE + ByteEntity.TYPBYTE + nullerBytes;
 		}
 		return length;
 	}

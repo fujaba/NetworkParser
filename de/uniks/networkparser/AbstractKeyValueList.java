@@ -305,8 +305,9 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<AbstractKe
 	/**
 	 * Set a Value to Entity 
 	 * With this Method it is possible to set a Value of a Set by using a [Number] or [L] for Last
-	 * @param keyString
-	 * @param value
+	 * @param key the Key to add
+	 * @param value the Value to add
+	 * @return Itself
 	 */
 	@SuppressWarnings("unchecked")
 	public AbstractKeyValueList<K, V> setValue(Object key, Object value) {
@@ -505,7 +506,7 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<AbstractKe
 	/**
 	 * Get the string associated with an index.
 	 * 
-	 * @param index
+	 * @param key
 	 *            The index must be between 0 and length() - 1.
 	 * @return A string value.
 	 * @throws RuntimeException
@@ -518,8 +519,9 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<AbstractKe
 	/**
 	 * Get the string associated with an index.
 	 * 
-	 * @param index
+	 * @param key
 	 *            The index must be between 0 and length() - 1.
+	 * @param defaultValue The defaultValue
 	 * @return A string value.
 	 * @throws RuntimeException
 	 *             If there is no value for the index.

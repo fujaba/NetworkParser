@@ -53,7 +53,7 @@ public class GraphIdMapFilter extends Filter {
 	 * 
 	 * @param value
 	 *            the new show line
-	 * @return
+	 * @return Itself
 	 */
 	public GraphIdMapFilter withShowLine(boolean value) {
 		this.isShowLine = value;

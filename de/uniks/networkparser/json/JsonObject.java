@@ -81,7 +81,7 @@ import de.uniks.networkparser.interfaces.StringItem;
  * <code>{ } [ ] / \ : , = ; #</code> and if they do not look like numbers and
  * if they are not the reserved words <code>true</code>, <code>false</code>, or
  * <code>null</code>.</li>
- * <li>Keys can be followed by <code>=</code> or <code>=></code> as well as by
+ * <li>Keys can be followed by <code>=</code> or <code>=&gt;</code> as well as by
  * <code>:</code>.</li>
  * <li>Values can be followed by <code>;</code> <small>(semicolon)</small> as
  * well as by <code>,</code> <small>(comma)</small>.</li>
@@ -104,7 +104,6 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 	 * @param key
 	 *            A key string.
 	 * @return A JsonArray which is the value.
-	 * @throws RuntimeExpetion
 	 *             if the key is not found or if the value is not a JsonArray.
 	 */
 	public JsonArray getJsonArray(String key) {
@@ -250,6 +249,7 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 	 * 
 	 * @param values
 	 *            a simple String of Value or pairs of key-values
+	 * @return Itself
 	 */
 	public JsonObject withValue(String... values) {
 		this.values.clear();
@@ -270,6 +270,7 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 	 * 
 	 * @param x
 	 *            tokener to add values with the tokener
+	 * @return Itself
 	 */
 	public JsonObject withTokener(Tokener x) {
 		x.parseToEntity(this);
@@ -281,6 +282,7 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 	 * 
 	 * @param entity
 	 *            entity to add values with the tokener
+	 * @return Itself
 	 */
 	public JsonObject withEntity(AbstractKeyValueList<?, ?> entity) {
 		new JsonTokener().parseToEntity(this, entity);

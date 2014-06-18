@@ -23,20 +23,24 @@ package de.uniks.networkparser;
 */
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Buffer;
+import de.uniks.networkparser.interfaces.LoggerElement;
 /**parseToEntity
  * The Class Tokener.
  */
 
-public abstract class Tokener {
+public abstract class Tokener implements LoggerElement{
 	public final static String STOPCHARS = ",]}/\\\"[{;=# ";
 	
 	/** BUFFER */
 	protected Buffer buffer;
 	
+	protected NetworkParserLog logger=new NetworkParserLog();
+	
 	/**
 	 * Reset the Tokener
 	 * 
-	 * @param value
+	 * @param value The Text for parsing
+	 * @return Itself
 	 */
 	public Tokener withText(String value) {
 		this.buffer = new CharacterBuffer().withValue(value);
@@ -50,8 +54,8 @@ public abstract class Tokener {
 	 */
 	public void back() {
 		if (this.buffer.length() <= 0) {
-			throw new RuntimeException(
-					"Stepping back two steps is not supported");
+			logger.error(this, "Stepping back two steps is not supported");
+			return;
 		}
 		this.buffer.back();
 	}
@@ -130,7 +134,8 @@ public abstract class Tokener {
 		while (pos < n) {
 			chars[pos] = next();
 			if (isEnd()) {
-				throw new TextParsingException("Substring bounds error", this);
+				logger.error(this, "Substring bounds error");
+				return null;
 			}
 			pos += 1;
 		}
@@ -170,8 +175,15 @@ public abstract class Tokener {
 	 *            The quoting character, either <code>"</code>
 	 *            &nbsp;<small>(double quote)</small> or <code>'</code>
 	 *            &nbsp;<small>(single quote)</small>.
-	 * @param quote
-	 *            allowCRLF
+	 * @param allowCRLF
+	 *            is allow CRLF in Stream
+	 * @param allowQuote
+	 *            is allow Quote in Stream
+	 * @param mustQuote
+	 *            must find Quote in Stream
+
+	 * @param nextStep
+	 *            must i step next after find Text
 	 * @return A String.
 	 */
 	public String nextString(char quote, boolean allowCRLF, boolean allowQuote, boolean mustQuote, boolean nextStep) {
@@ -205,7 +217,8 @@ public abstract class Tokener {
 	         case '\r':
 	            if (!allowCRLF)
 	            {
-	               throw new TextParsingException("Unterminated string", this);
+	            	logger.error(this, "Unterminated string");
+	            	return null;
 	            }
 	         default:
 	            if (b == '\\')
@@ -251,7 +264,8 @@ public abstract class Tokener {
 			case '\n':
 			case '\r':
 				if (!allowCRLF) {
-					throw new TextParsingException("Unterminated string", this);
+					logger.error(this, "Unterminated string");
+					return null;
 				}
 			default:
 				if (b == '\\')
@@ -292,6 +306,10 @@ public abstract class Tokener {
 	 * 
 	 * Accumulate characters until we reach the end of the text or a formatting
 	 * character.
+	 * 
+	 * @param creator The creatorobject
+	 * @param allowQuote is allow Quote in Strem
+	 * @return the new Element
 	 */
 	public Object nextValue(BaseItem creator, boolean allowQuote) {
 		return nextValue(creator, allowQuote, nextStartClean());
@@ -315,7 +333,8 @@ public abstract class Tokener {
 		}
 		
 		if (value.length()<1) {
-			throw new TextParsingException("Missing value", this);
+			logger.error(this, "Missing value");
+			return null;
 		}
 
 		if (value.equals("")) {
@@ -386,10 +405,10 @@ public abstract class Tokener {
 	 * 
 	 * @param search
 	 *            the The String of searchelements
-	 * @param notSearch
-	 *            the String of elements with is not in string
 	 * @param order
 	 *            the if the order of search element importent
+	 * @param notEscape
+	 *            Boolean if escaping the text
 	 * @return true, if successful
 	 */
 	public boolean stepPos(String search, boolean order, boolean notEscape) {
@@ -480,10 +499,10 @@ public abstract class Tokener {
 	 * @param positions
 	 *            first is start Position, second is Endposition
 	 * 
-	 *            Absolut fix Start and End start>0 StartPosition end>Start
+	 *            Absolut fix Start and End start&gt;0 StartPosition end&gt;Start
 	 *            EndPosition
 	 * 
-	 *            Absolut from fix Position Start>0 Position end NULL To End end
+	 *            Absolut from fix Position Start&gt;0 Position end NULL To End end
 	 *            -1 To this.index
 	 * 
 	 *            Relativ from indexPosition Start Position from this.index +

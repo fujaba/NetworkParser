@@ -37,6 +37,7 @@ public class XSDEntityCreator implements SendableEntityCreatorXML, XMLGrammar {
 	/**
 	 * @param namespace
 	 *            the NameSpace for xsd
+	 * @return Itself
 	 */
 	public XSDEntityCreator withNameSpace(String namespace) {
 		this.nameSpace = namespace;

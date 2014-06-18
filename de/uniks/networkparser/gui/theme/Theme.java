@@ -44,8 +44,7 @@ public class Theme {
 	  /**
 	   * Get the style by keyword.
 	   * @param key the keyword
-	   * @return the {@link syntaxhighlighter.theme.Style} related to the 
-	   * {@code key}; if the style related to the {@code key} not exist, the 
+	   * @return if the style related to the {@code key} not exist, the 
 	   * style of 'plain' will return.
 	   */
 	  public Style getStyle(String key) {

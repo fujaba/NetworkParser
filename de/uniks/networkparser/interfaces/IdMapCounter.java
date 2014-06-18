@@ -31,6 +31,7 @@ public interface IdMapCounter {
 	 * 
 	 * @param sessionId
 	 *            the new prefix id
+	 * @return Itself
 	 */
 	public IdMapCounter withPrefixId(String sessionId);
 
@@ -42,8 +43,9 @@ public interface IdMapCounter {
 	/**
 	 * Sets the splitter for The session id
 	 * 
-	 * @param Character
+	 * @param splitter
 	 *            the new splitter character for the session id
+	 * @return Itself
 	 */
 	public IdMapCounter withSplitter(char splitter);
 

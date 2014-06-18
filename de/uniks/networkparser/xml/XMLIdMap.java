@@ -256,6 +256,8 @@ public class XMLIdMap extends XMLSimpleIdMap {
 	 *            the entity
 	 * @param tag
 	 *            the tag
+	 * @param tokener
+	 *            the tokener
 	 * @return true, if successful
 	 */
 	public boolean stepEmptyPos(String newPrefix, Object entity, String tag, XMLTokener tokener) {
@@ -325,10 +327,12 @@ public class XMLIdMap extends XMLSimpleIdMap {
 	/**
 	 * Find tag.
 	 * 
-	 * @param prefix
-	 *            the prefix
-	 * @param tag
-	 *            the tag
+	 * @param entity
+	 *            the entity
+	 * @param tokener
+	 *            the tokener
+	 * @param grammar
+	 *            the grammar
 	 * @return the object
 	 */
 	@Override
@@ -373,10 +377,10 @@ public class XMLIdMap extends XMLSimpleIdMap {
 	}
 
 	/** Parse a Element with IdCreater
-	 * @param entity
+	 * @param entity    The Entity
 	 * @param grammar	The Grammar of XML
 	 * @param tokener	The XML-Tokener
-	 * @param entityCreater
+	 * @param entityCreater The Entity-Factory
 	 * @return the Object
 	 */
 	protected Object parseIdEntity(XMLEntity entity, XMLGrammar grammar, XMLTokener tokener,  SendableEntityCreatorXML entityCreater) {

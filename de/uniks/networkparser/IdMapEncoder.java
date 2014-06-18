@@ -97,7 +97,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	 * 
 	 * @param counter
 	 *            the new counter
-	 * @return 
+	 * @return Itself
 	 */
 	public IdMapEncoder withCounter(IdMapCounter counter) {
 		this.counter = counter;
@@ -121,6 +121,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	 * 
 	 * @param value
 	 *            the new session id
+	 * @return Itself
 	 */
 	public IdMapEncoder withSessionId(String value) {
 		getCounter().withPrefixId(value);
@@ -172,7 +173,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	 *            the json id
 	 * @param object
 	 *            the object
-	 * @return
+	 * @return the newObject
 	 */
 	@Override
 	public Object put(String jsonId, Object object) {
@@ -198,7 +199,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	}
 
 	/**
-	 * @param check
+	 * @param object
 	 *            for add Listener to object
 	 * @return success of adding
 	 */
@@ -219,9 +220,8 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	/**
 	 * Removes the Entity from List or Destroy them
 	 * 
-	 * @param oldValue
-	 * @param destroy
-	 * @param destroyAll
+	 * @param oldValue the old Value
+	 * @param destroy destroy the missed Element
 	 * @return boolean if success
 	 */
 	public boolean removeObj(Object oldValue, boolean destroy) {
@@ -275,6 +275,8 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	 *            the reference
 	 * @param filter
 	 *            the filter
+	 * @param deep
+	 *            the index of deep of model-ebene
 	 * @return the object
 	 */
 	public Object cloneObject(Object reference, CloneFilter filter, int deep) {

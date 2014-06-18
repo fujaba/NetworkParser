@@ -58,8 +58,9 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements S
 	/**
 	 * Instantiates a new xML entity.
 	 * 
-	 * @param tag
+	 * @param value
 	 *            the tag
+	 * @return Itself
 	 */
 	public XMLEntity withValue(String value) {
 		withValue(new XMLTokener().withText(value));
@@ -69,9 +70,10 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements S
 	/**
 	 * Construct a XMLEntity from a Tokener.
 	 * 
-	 * @param value
+	 * @param tokener
 	 *            A Tokener object containing the source string. or a duplicated
 	 *            key.
+	 * @return Itself
 	 */
 	public XMLEntity withValue(Tokener tokener) {
 		tokener.parseToEntity(this);
@@ -95,6 +97,7 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements S
 	 * 
 	 * @param child
 	 *            the child
+	 * @return result if the child is added
 	 */
 	public boolean add(XMLEntity child) {
 		return getChildren().add(child);

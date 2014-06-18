@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 
 /**
  * General XML (include HTML) brush.
- * @author Chan Wai Shing <cws1989@gmail.com>
+ * @author Chan Wai Shing (cws1989@gmail.com)
  */
 public class BrushXml extends Brush {
 
@@ -36,22 +36,22 @@ public class BrushXml extends Brush {
     super();
 
 
-    addRule(new RegExpRule("(\\&lt;|<)\\!\\[[\\w\\s]*?\\[(.|\\s)*?\\]\\](\\&gt;|>)", Pattern.MULTILINE, "color2")); // <![ ... [ ... ]]>
-    addRule(new RegExpRule(RegExpRule.xmlComments, "comments")); // <!-- ... -->
+    addRule(new RegExpressions("(\\&lt;|<)\\!\\[[\\w\\s]*?\\[(.|\\s)*?\\]\\](\\&gt;|>)", Pattern.MULTILINE, "color2")); // <![ ... [ ... ]]>
+    addRule(new RegExpressions(RegExpressions.xmlComments, "comments")); // <!-- ... -->
 
     // regular expression for highlighting the tag
-    RegExpRule tagRegExpRule = new RegExpRule("(?:&lt;|<)[\\s\\/\\?]*([:\\w-\\.]+)", Pattern.COMMENTS);
+    RegExpressions tagRegExpRule = new RegExpressions("(?:&lt;|<)[\\s\\/\\?]*([:\\w-\\.]+)", Pattern.COMMENTS);
     // highlight the tag only, not including the symbols at the start, 1 means the group 1 of the matched results
     tagRegExpRule.addToGroupOperation("keyword");
 
     // regular expression for highlighting the variable assignment
-    RegExpRule valueRegExpRule = new RegExpRule("([\\w:\\-\\.]+)"
+    RegExpressions valueRegExpRule = new RegExpressions("([\\w:\\-\\.]+)"
             + "\\s*=\\s*"
             + "(\".*?\"|'.*?'|\\w+)", Pattern.COMMENTS);
     valueRegExpRule.addToGroupOperation("color1", "string");
     
 
-    RegExpRule _regExpRule = new RegExpRule("((?:&lt;|<)[\\s\\/\\?]*(?:\\w+))(.*?)[\\s\\/\\?]*(?:&gt;|>)", Pattern.DOTALL);
+    RegExpressions _regExpRule = new RegExpressions("((?:&lt;|<)[\\s\\/\\?]*(?:\\w+))(.*?)[\\s\\/\\?]*(?:&gt;|>)", Pattern.DOTALL);
     _regExpRule.addToGroupOperation(tagRegExpRule, valueRegExpRule);
     addRule(_regExpRule);
 

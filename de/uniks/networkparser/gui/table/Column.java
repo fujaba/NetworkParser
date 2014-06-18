@@ -77,6 +77,7 @@ public class Column {
 
 	/**
 	 * @param label the label to set
+	 * @return Itself
 	 */
 	public Column withLabel(String label) {
 		this.label = label;
@@ -92,6 +93,7 @@ public class Column {
 
 	/**
 	 * @param attrName Attribute Name for display
+	 * @return Itself
 	 */
 	public Column withAttrName(String attrName) {
 		this.attrName = attrName;
@@ -119,7 +121,8 @@ public class Column {
 	}
 
 	/**
-	 * @param NumberFormat the NumberFormat to set
+	 * @param value the NumberFormat to set
+	 * @return Itself
 	 */
 	public Column withNumberFormat(String value) {
 		this.numberFormat = value;
@@ -134,7 +137,8 @@ public class Column {
 	}
 
 	/**
-	 * @param editColumn the editColumn to set
+	 * @param value the editColumn to set
+	 * @return Itself
 	 */
 	public Column withEditable(boolean value) {
 		this.isEditable = value;

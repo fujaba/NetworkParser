@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 
 /**
  * Python brush.
- * @author Chan Wai Shing <cws1989@gmail.com>
+ * @author Chan Wai Shing (cws1989@gmail.com)
  */
 public class BrushPython extends Brush {
 
@@ -50,16 +50,16 @@ public class BrushPython extends Brush {
             + "str sum super tuple type type unichr unicode vars xrange zip";
     String special = "None True False self cls class_";
 
-    addRule(new RegExpRule(RegExpRule.singleLinePerlComments, "comments"));
-    addRule(new RegExpRule("^\\s*@\\w+", Pattern.MULTILINE, "color2"));
-    addRule(new RegExpRule("(['\\\"]{3})([^['\\\"]{3}])*?['\\\"]{3}", Pattern.MULTILINE, "comments"));
-    addRule(new RegExpRule("\"(?!\")(?:\\.|\\\\\\\"|[^\\\"\"\\n])*\"", Pattern.MULTILINE, "string"));
-    addRule(new RegExpRule("'(?!')(?:\\.|(\\\\\\')|[^\\''\\n])*'", Pattern.MULTILINE, "string"));
-    addRule(new RegExpRule("\\+|\\-|\\*|\\/|\\%|=|==", Pattern.MULTILINE, "keyword"));
-    addRule(new RegExpRule("\\b\\d+\\.?\\w*", "value"));
-    addRule(new RegExpRule(getKeywords(funcs), Pattern.MULTILINE | Pattern.CASE_INSENSITIVE, "functions"));
-    addRule(new RegExpRule(getKeywords(keywords), Pattern.MULTILINE, "keyword"));
-    addRule(new RegExpRule(getKeywords(special), Pattern.MULTILINE, "color1"));
+    addRule(new RegExpressions(RegExpressions.singleLinePerlComments, "comments"));
+    addRule(new RegExpressions("^\\s*@\\w+", Pattern.MULTILINE, "color2"));
+    addRule(new RegExpressions("(['\\\"]{3})([^['\\\"]{3}])*?['\\\"]{3}", Pattern.MULTILINE, "comments"));
+    addRule(new RegExpressions("\"(?!\")(?:\\.|\\\\\\\"|[^\\\"\"\\n])*\"", Pattern.MULTILINE, "string"));
+    addRule(new RegExpressions("'(?!')(?:\\.|(\\\\\\')|[^\\''\\n])*'", Pattern.MULTILINE, "string"));
+    addRule(new RegExpressions("\\+|\\-|\\*|\\/|\\%|=|==", Pattern.MULTILINE, "keyword"));
+    addRule(new RegExpressions("\\b\\d+\\.?\\w*", "value"));
+    addRule(new RegExpressions(getKeywords(funcs), Pattern.MULTILINE | Pattern.CASE_INSENSITIVE, "functions"));
+    addRule(new RegExpressions(getKeywords(keywords), Pattern.MULTILINE, "keyword"));
+    addRule(new RegExpressions(getKeywords(special), Pattern.MULTILINE, "color1"));
 
     addRule(HTMLRegExRule.aspScriptTags);
 

@@ -26,17 +26,18 @@ import de.uniks.networkparser.json.JsonObject;
  * The listener interface for receiving mapUpdate events. The class that is
  * interested in processing a mapUpdate event implements this interface, and the
  * object created with that class is registered with a component using the
- * component's <code>addMapUpdateListener<code> method. When
+ * component's <code>addMapUpdateListener</code> method. When
  * the mapUpdate event occurs, that object's appropriate
  * method is invoked.
- * 
- * @see MapUpdateEvent
  */
 
 public interface MapUpdateListener {
 	/**
 	 * Send update msg.
-	 * 
+	 * @param target The Object of UpdateMsg
+	 * @param property Which property is changed
+	 * @param oldObj The oldValue
+	 * @param newObject The newValue
 	 * @param jsonObject
 	 *            the json object
 	 * @return true, if successful

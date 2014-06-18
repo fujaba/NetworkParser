@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 
 /**
  * Visual Basic brush.
- * @author Chan Wai Shing <cws1989@gmail.com>
+ * @author Chan Wai Shing (cws1989@gmail.com)
  */
 public class BrushVb extends Brush {
 
@@ -50,10 +50,10 @@ public class BrushVb extends Brush {
             + "Structure Sub SyncLock Then Throw To True Try TypeOf Unicode Until "
             + "Variant When While With WithEvents WriteOnly Xor";
 
-    addRule(new RegExpRule("'.*$", Pattern.MULTILINE, "comments")); // one line comments
-    addRule(new RegExpRule(RegExpRule.doubleQuotedString, "string")); // strings
-    addRule(new RegExpRule("^\\s*#.*$", Pattern.MULTILINE, "preprocessor")); // preprocessor tags like #region and #endregion
-    addRule(new RegExpRule(getKeywords(keywords), Pattern.MULTILINE, "keyword")); // vb keyword
+    addRule(new RegExpressions("'.*$", Pattern.MULTILINE, "comments")); // one line comments
+    addRule(new RegExpressions(RegExpressions.doubleQuotedString, "string")); // strings
+    addRule(new RegExpressions("^\\s*#.*$", Pattern.MULTILINE, "preprocessor")); // preprocessor tags like #region and #endregion
+    addRule(new RegExpressions(getKeywords(keywords), Pattern.MULTILINE, "keyword")); // vb keyword
 
     addRule(HTMLRegExRule.aspScriptTags);
     setCommonFileExtensionList("vb", "vbs");

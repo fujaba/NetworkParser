@@ -170,9 +170,11 @@ public abstract class AbstractList<V> implements BaseItem {
      * <p>The returned map will throw an {@code IllegalArgumentException}
      * on an attempt to insert a key outside its range.
      *
-     * @param toKey high endpoint of the keys in the returned map
+     * @param toElement high endpoint of the keys in the returned map
      * @param inclusive {@code true} if the high endpoint
      *        is to be included in the returned view
+     * @return result a list with less item then the key       
+     * 
 	*/
 	public AbstractList<V> headSet(V toElement, boolean inclusive) {
 		Iterator<V> iterator = iterator();
@@ -199,7 +201,7 @@ public abstract class AbstractList<V> implements BaseItem {
      * Returns a view of the portion of this map whose keys are greater than (or
      * equal to, if {@code inclusive} is true) {@code fromKey}.
      *
-     * @param fromKey low endpoint of the keys in the returned map
+     * @param fromElement low endpoint of the keys in the returned map
      * @param inclusive {@code true} if the low endpoint
      *        is to be included in the returned view
      * @return a view of the portion of this map whose keys are greater than
@@ -406,7 +408,7 @@ public abstract class AbstractList<V> implements BaseItem {
 
 	/**
 	 * Set the Flag for Duplicate Entities
-	 * @param allowDuplicate
+	 * @param allowDuplicate isAllowDuplicate
 	 * @return the List
 	 */
 	public AbstractList<V> withAllowDuplicate(boolean allowDuplicate) {
@@ -546,8 +548,8 @@ public abstract class AbstractList<V> implements BaseItem {
 
     /**
      * Add a Element after the Element from the second Parameter
-     * @param element
-     * @param beforeElement
+     * @param element element to add
+     * @param beforeElement element before the element
      * @return the List
      */
     public AbstractList<V> with(V element, V beforeElement) {
