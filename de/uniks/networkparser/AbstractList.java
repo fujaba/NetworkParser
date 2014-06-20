@@ -238,15 +238,27 @@ public abstract class AbstractList<V> implements BaseItem {
 	/**
 	 * @return the First Element of the List
 	 */
-	public V first() {
-		return this.values.get(0);
+	public V first() 
+	{
+	   if (this.values.size() > 0)
+	   {
+	      return this.values.get(0);
+	   }
+	   
+	   return null;
 	}
 
 	/**
 	 * @return the Last Element of the List
 	 */
-	public V last() {
-		return this.values.get(this.size()-1);
+	public V last() 
+	{
+	   if (this.values.size() > 0)
+	   {
+	      return this.values.get(this.size()-1);
+	   }
+	   
+	   return null;
 	}
 	
 	/**
