@@ -23,12 +23,11 @@ package de.uniks.networkparser;
 */
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Buffer;
-import de.uniks.networkparser.interfaces.LoggerElement;
 /**parseToEntity
  * The Class Tokener.
  */
 
-public abstract class Tokener implements LoggerElement{
+public abstract class Tokener {
 	public final static String STOPCHARS = ",]}/\\\"[{;=# ";
 	
 	/** BUFFER */
@@ -54,7 +53,7 @@ public abstract class Tokener implements LoggerElement{
 	 */
 	public void back() {
 		if (this.buffer.length() <= 0) {
-			logger.error(this, "Stepping back two steps is not supported");
+			logger.error(this, "back", "Stepping back two steps is not supported");
 			return;
 		}
 		this.buffer.back();
@@ -134,7 +133,7 @@ public abstract class Tokener implements LoggerElement{
 		while (pos < n) {
 			chars[pos] = next();
 			if (isEnd()) {
-				logger.error(this, "Substring bounds error");
+				logger.error(this, "skipPos", "Substring bounds error", n);
 				return null;
 			}
 			pos += 1;
@@ -217,7 +216,7 @@ public abstract class Tokener implements LoggerElement{
 	         case '\r':
 	            if (!allowCRLF)
 	            {
-	            	logger.error(this, "Unterminated string");
+	            	logger.error(this, "getString", "Unterminated string", quote, allowCRLF, allowQuote, mustQuote, nextStep);
 	            	return null;
 	            }
 	         default:
@@ -264,7 +263,7 @@ public abstract class Tokener implements LoggerElement{
 			case '\n':
 			case '\r':
 				if (!allowCRLF) {
-					logger.error(this, "Unterminated string");
+					logger.error(this, "getStringBuffer", "Unterminated string", quote, allowCRLF, allowQuote, mustQuote, nextStep);
 					return null;
 				}
 			default:
@@ -333,7 +332,7 @@ public abstract class Tokener implements LoggerElement{
 		}
 		
 		if (value.length()<1) {
-			logger.error(this, "Missing value");
+			logger.error(this, "nextValue", "Missing value", creator, allowQuote, c);
 			return null;
 		}
 

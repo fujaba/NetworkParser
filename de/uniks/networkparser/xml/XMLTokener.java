@@ -80,11 +80,11 @@ public class XMLTokener extends Tokener {
 			c = nextClean();
 		}
 		if (c != '<') {
-			logger.error(this, "A XML text must begin with '<'");
+			logger.error(this, "parseToEntity", "A XML text must begin with '<'", entity);
 			return;
 		}
 		if (!(entity instanceof XMLEntity)) {
-			logger.error(this, "Parse only XMLEntity");
+			logger.error(this, "parseToEntity", "Parse only XMLEntity", entity);
 			return;
 		}
 		XMLEntity xmlEntity = (XMLEntity) entity;

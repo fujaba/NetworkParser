@@ -26,14 +26,13 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import de.uniks.networkparser.interfaces.LoggerElement;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 /**
  *AbstractIdMap embedded all methods for all formats.
  *
  */
 
-public abstract class AbstractMap implements LoggerElement {
+public abstract class AbstractMap {
 	/** The creators. */
 	protected ArrayEntryList creators = new ArrayEntryList().withAllowDuplicate(false); 
 
