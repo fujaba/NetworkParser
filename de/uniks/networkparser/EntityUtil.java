@@ -85,6 +85,8 @@ public class EntityUtil {
 		}
 		return string;
 	}
+	
+	
 	public static String unQuote(String value) {
 		if (value == null || value.length() == 0) {
 			return "";
@@ -106,7 +108,13 @@ public class EntityUtil {
 			    	char no = fromHex(value.charAt(++i), value.charAt(++i), value.charAt(++i), value.charAt(++i));
 			        sb.append((char)no);
 			        continue;
-			    }else{
+			    }
+			    else if (c=='"')
+			    {
+			       // remove the backslash
+			    }
+			    else
+			    {
 			    	sb.append('\\');
 			    }
 			}

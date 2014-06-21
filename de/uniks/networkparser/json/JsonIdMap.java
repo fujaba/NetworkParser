@@ -132,12 +132,12 @@ public class JsonIdMap extends IdMap {
 	 */
 	protected JsonObject toJsonObject(Object entity, Filter filter, String className, int deep) {
 		String id = null;
-		SendableEntityCreator prototyp = grammar.getWriteCreator(entity,
+		SendableEntityCreator creator = grammar.getWriteCreator(entity,
 				className, this);
-		if (prototyp == null) {
+		if (creator == null) {
 			return null;
 		}
-		if (prototyp instanceof SendableEntityCreatorNoIndex){
+		if (creator instanceof SendableEntityCreatorNoIndex){
 		}else if(!filter.isId(this, entity, className)) {
 			filter.addToVisitedObjects(entity);
 		}else{
@@ -147,14 +147,14 @@ public class JsonIdMap extends IdMap {
 		
 		JsonObject jsonProp = getPrototyp();
 
-		String[] properties = prototyp.getProperties();
+		String[] properties = creator.getProperties();
 		if (properties != null) {
 			for (String property : properties) {
 				if (jsonProp.has(property) ) {
 					logger.error(this, "toJsonObject", "Property duplicate:" + property
 							+ "(" + className + ")", entity, filter, className, deep);
 				}
-				Object subValue = parseProperty(prototyp, entity, filter,
+				Object subValue = parseProperty(creator, entity, filter,
 						className, property, null, deep+1);
 				if (subValue != null) {
 					jsonProp.put(property, subValue);
@@ -162,7 +162,7 @@ public class JsonIdMap extends IdMap {
 			}
 		}
 
-		return grammar.getWriteObject(this, prototyp, className, id, jsonProp,
+		return grammar.getWriteObject(this, creator, className, id, jsonProp,
 				filter);
 	}
 	

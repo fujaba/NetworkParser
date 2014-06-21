@@ -133,6 +133,29 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 				+ "] is not a JsonObject.");
 	}
 
+   /**
+    * Get the JsonObject value associated with a key.
+    * 
+    * @param key
+    *            A key string.
+    * @return A JsonObject which is the value.
+    * @throws RuntimeException
+    *             if the key is not found or if the value is not a JsonObject.
+    */
+   public long getLong(String key) {
+      Object object = this.get(key);
+      if (object instanceof Long) {
+         return (long) object;
+      }
+      else if (object instanceof Integer)
+      {
+         return 0l + (Integer) object;
+      }
+      throw new RuntimeException("JsonObject[" + EntityUtil.quote(key)
+            + "] is not a JsonObject.");
+   }
+
+	
 	/**
 	 * Make a JSON text of this JsonObject. For compactness, no whitespace is
 	 * added. If this would not result in a syntactically correct JSON text,
