@@ -151,8 +151,8 @@ public class JsonIdMap extends IdMap {
 		if (properties != null) {
 			for (String property : properties) {
 				if (jsonProp.has(property) ) {
-					logger.error(this, "Property duplicate:" + property
-							+ "(" + className + ")");
+					logger.error(this, "toJsonObject", "Property duplicate:" + property
+							+ "(" + className + ")", entity, filter, className, deep);
 				}
 				Object subValue = parseProperty(prototyp, entity, filter,
 						className, property, null, deep+1);
@@ -671,7 +671,7 @@ public class JsonIdMap extends IdMap {
 
 		SendableEntityCreator creator = getCreator(className, true);
 		if (creator == null ) {
-			logger.error(this, "No Creator exist for " + className);
+			logger.error(this, "toJsonArray", "No Creator exist for " + className, entity, jsonArray, filter, deep);
 			return null;
 		}
 		String[] properties = creator.getProperties();
@@ -685,7 +685,7 @@ public class JsonIdMap extends IdMap {
 			JsonObject jsonProps = getPrototyp();
 			for (String property : properties) {
 				if (jsonProps.has(property) ) {
-					logger.error(this, "Property duplicate:" + property + "(" + className + ")");
+					logger.error(this, "toJsonArray", "Property duplicate:" + property + "(" + className + ")", entity, jsonArray, filter, deep);
 				}
 				Object subValue = parseProperty(creator, entity, filter,
 						className, property, jsonArray, deep+1);

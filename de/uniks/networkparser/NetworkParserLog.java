@@ -17,9 +17,6 @@
 
 package de.uniks.networkparser;
 
-import de.uniks.networkparser.interfaces.LoggerElement;
-
-
 /**
  * A simple logging interface abstracting logging APIs.  In order to be
  * instantiated successfully by Apache Common Logging, classes that implement
@@ -67,7 +64,7 @@ public class NetworkParserLog {
      * @param owner The Element with call the Methods
      * @param message log this message
      */
-    public void debug(LoggerElement owner, String message){
+    public void debug(Object owner, String method, String message){
     	System.out.println("DEBUG: "+message);
     }
 
@@ -77,7 +74,7 @@ public class NetworkParserLog {
      * @param owner The Element with call the Methods
      * @param message log this message
      */
-    public void info(LoggerElement owner, String message){
+    public void info(Object owner, String method, String message){
     	System.out.println("INFO: "+message);
     }
 
@@ -87,7 +84,7 @@ public class NetworkParserLog {
      * @param owner The Element with call the Methods
      * @param message log this message
      */
-    public void warn(LoggerElement owner, String message){
+    public void warn(Object owner, String method, String message){
     	System.err.println("WARN: "+message);
     }
 
@@ -97,7 +94,7 @@ public class NetworkParserLog {
      * @param owner The Element with call the Methods
      * @param message log this message
      */
-    public void error(LoggerElement owner, String message){
+    public void error(Object owner, String method, String message, Object... params){
     	if(this.isError){
     		throw new RuntimeException(""+message);
     	}
