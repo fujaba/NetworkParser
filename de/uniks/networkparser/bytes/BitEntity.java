@@ -180,4 +180,15 @@ public class BitEntity extends AbstractList<BitValue> implements ByteItem, Facto
 	public AbstractList<BitValue> getNewInstance() {
 		return new BitEntity();
 	}
+	
+	@Override
+	public BitEntity without(Object... values) {
+		if(values == null){
+			return 	this;
+		}
+		for(Object value : values){
+			remove(getIndex(value));
+		}
+		return this;
+	}
 }

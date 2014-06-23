@@ -101,20 +101,23 @@ public class ByteIdMap extends IdMap {
 	/** The Constant CLASS-VALUE. */
 	public static final byte DATATYPE_CLAZZNAMELONG = 0x42;
 
-	/** The Constant DATATYPE_BYTEARRAY. */
-	public static final byte DATATYPE_CLAZZTYP = 0x43;
+	/** The Constant CLASS-VALUE. */
+	public static final byte DATATYPE_CLAZZPACKAGE = 0x43;
 
 	/** The Constant DATATYPE_BYTEARRAY. */
-	public static final byte DATATYPE_CLAZZTYPLONG = 0x44;
+	public static final byte DATATYPE_CLAZZTYP = 0x44;
+
+	/** The Constant DATATYPE_BYTEARRAY. */
+	public static final byte DATATYPE_CLAZZTYPLONG = 0x45;
 
    /** The Constant DATATYPE_BYTEARRAY. */
-   public static final byte DATATYPE_ASSOC = 0x45;
+   public static final byte DATATYPE_ASSOC = 0x46;
 
    /** The Constant DATATYPE_BYTEARRAY. */
-   public static final byte DATATYPE_ASSOCLONG = 0x46;
+   public static final byte DATATYPE_ASSOCLONG = 0x47;
 
    /** The Constant DATATYPE_BYTEARRAY. */
-	public static final byte DATATYPE_CLAZZSTREAM = 0x47;
+	public static final byte DATATYPE_CLAZZSTREAM = 0x50;
 
 	/** The Constant DATATYPE_STRING. */
 	public static final byte DATATYPE_STRING = 0x4A;
@@ -209,6 +212,16 @@ public class ByteIdMap extends IdMap {
             		msg.add(new ByteEntity().withValue(DATATYPE_CLAZZTYPLONG, (byte)id));
             	}
 	           return true;
+            }
+            int pos = clazzName.lastIndexOf(".");
+            if(pos>0){
+            	String lastClazz = bf.getLastClazz();
+            	if(lastClazz!=null && lastClazz.lastIndexOf(".")==pos)
+            	if(clazzName.substring(0, pos).equals(lastClazz.substring(0, pos))){
+            		 byte[] bytes = clazzName.substring(pos+1).getBytes(bf.getCharset());
+            		 msg.add(new ByteEntity().withValue(DATATYPE_CLAZZPACKAGE, bytes));
+            		 return true;
+            	}
             }
             byte[] bytes = clazzName.getBytes(bf.getCharset());
             if (id <= Byte.MAX_VALUE) {

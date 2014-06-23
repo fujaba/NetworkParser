@@ -50,7 +50,7 @@ public class ArrayEntryList extends AbstractKeyValueList<String, Object> {
 		}
 		return this;
 	}
-
+	
 	@Override
 	public ArrayEntryList getNewInstance() {
 		return new ArrayEntryList();

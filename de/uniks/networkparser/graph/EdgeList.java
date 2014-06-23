@@ -45,4 +45,15 @@ public class EdgeList extends AbstractList<GraphEdge> {
 		}
 		return this;
 	}
+	
+	@Override
+	public EdgeList without(Object... values) {
+		if(values == null){
+			return 	this;
+		}
+		for(Object value : values){
+			remove(getIndex(value));
+		}
+		return this;
+	}
 }

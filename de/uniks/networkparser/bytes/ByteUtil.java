@@ -159,6 +159,9 @@ public class ByteUtil {
 		if (typ == ByteIdMap.DATATYPE_CLAZZID) {
 			return "DATATYPE_CLAZZID";
 		}
+		if (typ == ByteIdMap.DATATYPE_CLAZZPACKAGE) {
+			return "DATATYPE_CLAZZPACKAGE";
+		}
 		if (typ == ByteIdMap.DATATYPE_CLAZZNAME) {
 			return "DATATYPE_CLAZZNAME";
 		}

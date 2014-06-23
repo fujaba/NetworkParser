@@ -115,4 +115,14 @@ public class GraphNode extends AbstractList<Attribute> {
 		}
 		return this;
 	}
+	@Override
+	public GraphNode without(Object... values) {
+		if(values == null){
+			return 	this;
+		}
+		for(Object value : values){
+			remove(getIndex(value));
+		}
+		return this;
+	}
 }
