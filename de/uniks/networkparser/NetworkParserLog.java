@@ -62,6 +62,7 @@ public class NetworkParserLog {
      * Log a message with debug log level.
      *
      * @param owner The Element with call the Methods
+     * @param method The Caller-Method
      * @param message log this message
      */
     public void debug(Object owner, String method, String message){
@@ -72,6 +73,7 @@ public class NetworkParserLog {
      * Log a message with info log level.
      *
      * @param owner The Element with call the Methods
+     * @param method The Caller-Method
      * @param message log this message
      */
     public void info(Object owner, String method, String message){
@@ -82,6 +84,7 @@ public class NetworkParserLog {
      * Log a message with warn log level.
      *
      * @param owner The Element with call the Methods
+     * @param method The Caller-Method
      * @param message log this message
      */
     public void warn(Object owner, String method, String message){
@@ -92,7 +95,9 @@ public class NetworkParserLog {
      * Log a message with error log level.
      * 
      * @param owner The Element with call the Methods
+     * @param method The Caller-Method
      * @param message log this message
+     * @param params The Original Parameters
      */
     public void error(Object owner, String method, String message, Object... params){
     	if(this.isError){
