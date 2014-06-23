@@ -91,7 +91,6 @@ public class ByteList extends AbstractList<ByteItem> implements ByteItem, Factor
 		// Override for each ByteList
 		isPrimitive = isPrimitive(isDynamic);
 		int size=calcChildren(isDynamic, last);
-		int start = buffer.position();
 		byte typ;
 		if(isPrimitive){
 			typ=ByteIdMap.DATATYPE_CLAZZSTREAM;
@@ -102,9 +101,6 @@ public class ByteList extends AbstractList<ByteItem> implements ByteItem, Factor
 
 		for(int i=0;i<values.size();i++){
 			((ByteItem) values.get(i)).writeBytes(buffer, isDynamic, i==values.size()-1, isPrimitive);
-		}
-		if(buffer.position()!=start+size){
-			System.out.println("ERROR");
 		}
 	}
 
@@ -204,6 +200,17 @@ public class ByteList extends AbstractList<ByteItem> implements ByteItem, Factor
 					this.add((ByteItem) value);
 				}
 			}
+		}
+		return this;
+	}
+	
+	@Override
+	public ByteList without(Object... values) {
+		if(values == null){
+			return 	this;
+		}
+		for(Object value : values){
+			remove(getIndex(value));
 		}
 		return this;
 	}

@@ -68,4 +68,11 @@ public class ByteFilter extends Filter {
 	  }
 	  return null;
   }
+  
+  public String getLastClazz(){
+	  if(visitedObjects.size()>0){
+		  return visitedObjects.get(visitedObjects.size() - 1).getClass().getName();
+	  }
+	  return null;
+  }
 }

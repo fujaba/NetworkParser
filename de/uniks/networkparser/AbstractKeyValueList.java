@@ -450,12 +450,15 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<AbstractKe
 	 *         no value.
 	 */
 	public boolean removeKey(K key) {
+		AbstractKeyValueEntry<K, V> beforeValue=null;
 		for(Iterator<AbstractKeyValueEntry<K, V>> i = iterator();i.hasNext();){
 			AbstractKeyValueEntry<K, V> item = i.next();
 			if(item.getKey().equals(key)){
 				i.remove();
+				fireProperty(item, null, beforeValue);
 				return true;
 			}
+			beforeValue = item;
 		}
 		return false;
 	}
@@ -469,6 +472,7 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<AbstractKe
 	public Set<Entry<K, V>> entrySet() {
 		return new HashSet<Entry<K, V>>(values);
 	}
+
 	@Override
 	public V remove(Object key) {
     	int index = getKeyIndex(key);
@@ -583,5 +587,17 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<AbstractKe
 			return ((AbstractKeyValueEntry<?,?>)item).getValue();
 		}
 		return null;
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public AbstractKeyValueList<K, V> without(Object... values) {
+		if(values == null){
+			return this;
+		}
+		for(Object value : values){
+			removeKey((K)value);
+		}
+		return this;
 	}
 }

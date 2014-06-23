@@ -578,11 +578,20 @@ public abstract class AbstractList<V> implements BaseItem {
 		return (ST)this;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public <ST extends AbstractList<V>> ST without(Collection<?> values) {
+		for (Iterator<?> i = values.iterator(); i.hasNext();) {
+			without(i.next());
+		}
+		return (ST) this;
+	}
+
+	public abstract AbstractList<V> without(Object... values);
+
 	@Override
    public AbstractList<V> clone() {
 	   return this.getNewInstance().with((Collection<?>)this);
    }
-	
 	public abstract AbstractList<V> with(Object... values);
     
     public void add(int index, V element) {
