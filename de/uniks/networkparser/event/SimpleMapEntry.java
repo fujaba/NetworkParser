@@ -4,7 +4,7 @@ package de.uniks.networkparser.event;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
-
+ 
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -20,8 +20,7 @@ package de.uniks.networkparser.event;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
- */
-
+*/
 import de.uniks.networkparser.AbstractKeyValueEntry;
 
 public class SimpleMapEntry<K,V> extends AbstractKeyValueEntry<K, V> {
