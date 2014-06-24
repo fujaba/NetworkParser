@@ -38,9 +38,6 @@ public class GraphIdMap extends IdMapEncoder {
 	/** The Constant for OBJECT Diagramms. */
 	public static final String OBJECT = "object";
 	
-	public static final String MANY="n";
-	public static final String ONE="1";
-
 	private GraphIdMapFilter filter = new GraphIdMapFilter().withShowCardinality(
 			true).withTyp(CLASS);
 
@@ -115,11 +112,11 @@ public class GraphIdMap extends IdMapEncoder {
 				if (value instanceof Collection<?>) {
 					for (Object containee : ((Collection<?>) value)) {
 						parsePropertyValue(object, filter, list, deep, element,
-								property, containee, MANY);
+								property, containee, Cardinality.MANY);
 					}
 				} else {
 					parsePropertyValue(object, filter, list, deep, element,
-							property, value, ONE);
+							property, value, Cardinality.ONE);
 				}
 			}
 		}
@@ -128,7 +125,7 @@ public class GraphIdMap extends IdMapEncoder {
 
 	private void parsePropertyValue(Object entity, GraphIdMapFilter filter,
 			GraphList list, int deep, GraphNode element, String property,
-			Object item, String cardinality) {
+			Object item, Cardinality cardinality) {
 		if (item == null) {
 			return;
 		}
@@ -142,8 +139,8 @@ public class GraphIdMap extends IdMapEncoder {
 		SendableEntityCreator valueCreater = getCreatorClass(item);
 		if (valueCreater != null) {
 			GraphNode subId = parse(item, filter, list, deep + 1);
-			list.addEdge(new GraphEdge().withSource(element)
-					.withTarget(subId, cardinality, property));
+			list.addEdge(new GraphEdge().with(element)
+					.with(new GraphEdge(subId, cardinality, property)));
 		} else {
 			element.addValue(property, item.getClass().getName(), "" + item);
 		}

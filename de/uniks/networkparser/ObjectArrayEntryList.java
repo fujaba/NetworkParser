@@ -171,15 +171,4 @@ public class ObjectArrayEntryList extends AbstractList<ObjectMapEntry> implement
 		}
 		return this;
 	}
-	
-	@Override
-	public ObjectArrayEntryList without(Object... values) {
-		if(values == null){
-			return 	this;
-		}
-		for(Object value : values){
-			remove(getIndex(value));
-		}
-		return this;
-	}
 }

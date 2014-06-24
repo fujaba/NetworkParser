@@ -25,7 +25,6 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.List;
 import java.util.ListIterator;
 
 import de.uniks.networkparser.AbstractEntityList;
@@ -60,10 +59,6 @@ public class TableList extends AbstractEntityList<Object> implements SendableEnt
             return true;
         }
         return false;
-    }
-    
-    public List<Object> getValues(){
-    	return values;
     }
     
     @Override

@@ -41,15 +41,4 @@ public abstract class AbstractEntityList<V> extends AbstractList<V> implements L
 	public List<V> values(){
 		return values;
 	}
-	
-	@Override
-	public AbstractEntityList<V> without(Object... values) {
-		if(values == null){
-			return 	this;
-		}
-		for(Object value : values){
-			remove(getIndex(value));
-		}
-		return this;
-	}
 }

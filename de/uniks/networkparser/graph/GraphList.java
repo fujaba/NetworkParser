@@ -28,6 +28,7 @@ import de.uniks.networkparser.AbstractKeyValueEntry;
 import de.uniks.networkparser.AbstractKeyValueList;
 import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.ArrayEntryList;
+import de.uniks.networkparser.SimpleArrayList;
 import de.uniks.networkparser.event.SimpleMapEntry;
 
 public class GraphList extends AbstractKeyValueList<String, GraphNode> {
@@ -61,9 +62,7 @@ public class GraphList extends AbstractKeyValueList<String, GraphNode> {
 		 return this;
 	}
 	public GraphList withEdge(String sourceName, String targetName) {
-		GraphEdge edge = new GraphEdge()
-			.withSource(new GraphNode().withClassName(sourceName))
-			.withTarget(new GraphNode().withClassName(targetName));
+		GraphEdge edge = new GraphEdge().with(sourceName).with(new GraphEdge().with(targetName));
 		addEdge(edge);
 		return this;
 	}
@@ -71,10 +70,10 @@ public class GraphList extends AbstractKeyValueList<String, GraphNode> {
 	public boolean addEdge(GraphEdge edge) {
 		for(Iterator<GraphEdge> i = this.edges.iterator();i.hasNext();){
 			GraphEdge item = i.next();
-			if(item.getSource().containsAll(edge.getTarget().values()) && item.getTarget().containsAll(edge.getSource().values())){
+			if(item.contains(edge.getOther().values()) && item.getOther().containsAll(edge.values())){
 				// Back again
-				item.getSource().withCardinality(edge.getTarget().getCardinality());
-				item.getSource().withProperty(edge.getTarget().getProperty());
+				item.with(edge.getOther().getCardinality());
+				item.with(edge.getOther().getProperty());
 				return false;
 			}
 		}
@@ -88,13 +87,13 @@ public class GraphList extends AbstractKeyValueList<String, GraphNode> {
 	public ArrayEntryList getLinks(){
 		ArrayEntryList links = new ArrayEntryList();
 		for (GraphEdge element : edges) {
-			for(GraphNode node : element.getSource().values()){
+			for(GraphNode node : element.values()){
 				String key = node.getTyp(typ, false);
-				EdgeList value = (EdgeList)links.getValue(key);
+				SimpleArrayList<?> value = (SimpleArrayList<?>)links.getValue(key);
 				if(value!=null){
 					value.with(element);
 				}else{
-					EdgeList simpleList = new EdgeList();
+					SimpleArrayList<GraphEdge> simpleList = new SimpleArrayList<GraphEdge>();
 					simpleList.add(element);
 					links.put(key, simpleList);
 				}
