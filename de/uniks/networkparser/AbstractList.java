@@ -510,10 +510,9 @@ public abstract class AbstractList<V> implements BaseItem {
     		add(index++, item);
     	}
     	return true;
-//        return values.addAll(index, c);
     }
     
-	public boolean addAll(Iterator<? extends V> list){
+	public boolean add(Iterator<? extends V> list){
 		while(list.hasNext()){
 			V item = list.next();
 			if(item!=null){
@@ -526,7 +525,7 @@ public abstract class AbstractList<V> implements BaseItem {
 	}
 	
 	public boolean addAll(Collection<? extends V> list){
-		return addAll(list.iterator());
+		return add(list.iterator());
 	}
 	
     public boolean removeAll(Collection<?> c) {
