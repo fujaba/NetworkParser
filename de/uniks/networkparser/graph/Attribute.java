@@ -21,27 +21,16 @@ package de.uniks.networkparser.graph;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.interfaces.BaseItem;
 
-public class Attribute implements BaseItem{
-	private String key;
-	private String className;
-	private String value;
-	
-	public String getKey() {
-		return key;
-	}
-	public Attribute withKey(String key) {
-		this.key = key;
-		return this;
-	}
-	public String getClazz() {
-		return className;
-	}
-	public Attribute withClazz(String clazz) {
-		this.className = clazz;
-		return this;
-	}
+public class Attribute extends Value implements GraphMember {
+	public static final String PROPERTY_CLAZZ="clazz";
+	public static final String PROPERTY_VALUE="value";
+	public static final String PROPERTY_VISIBILITY="visibility";
+
+	private GraphNode clazz = null;
+	private String value = null;
+	private Visibility visibility = Visibility.PRIVATE;
+
 	public String getValue() {
 		return value;
 	}
@@ -49,13 +38,28 @@ public class Attribute implements BaseItem{
 		this.value = value;
 		return this;
 	}
-	public String getValue(String typ, boolean shortName) {
-		if(typ.equals(GraphIdMap.CLASS)){
-			if(!shortName || className==null || className.lastIndexOf(".")<0){
-				return className;
-			}
-			return className.substring(className.lastIndexOf(".") + 1);
-		}
-		return value;
+	public Visibility getVisibility() {
+		return visibility;
+	}
+	public void with(Visibility visibility) {
+		this.visibility = visibility;
+	}
+	public GraphNode getClazz() {
+		return clazz;
+	}
+	public void setClazz(GraphNode clazz) {
+		this.clazz = clazz;
+	}
+	
+	// Redirect
+	@Override
+	public Attribute with(String value) {
+		super.with(value);
+		return this;
+	}
+	@Override
+	public Attribute with(DataType value){
+		super.with(value);
+		return this;
 	}
 }

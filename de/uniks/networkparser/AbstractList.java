@@ -446,7 +446,7 @@ public abstract class AbstractList<V> implements BaseItem {
 		fireProperty(oldValue, null, beforeValue);
 		return oldValue;
 	}
-
+	
     /**
      * Locate the Entity in the List
      * @param value Entity
@@ -586,7 +586,20 @@ public abstract class AbstractList<V> implements BaseItem {
 		return (ST) this;
 	}
 
-	public abstract AbstractList<V> without(Object... values);
+	@SuppressWarnings("unchecked")
+	public  <ST extends AbstractList<V>> ST without(Object... values){
+		if(values==null){
+			return null;
+		}
+		for(Object item : values){
+			int index = getIndex(item);
+			if(index>=0){
+				this.remove(index);
+			}
+		}
+		return (ST)this;
+	}
+
 
 	@Override
    public AbstractList<V> clone() {
@@ -625,5 +638,9 @@ public abstract class AbstractList<V> implements BaseItem {
 	
 	public int size() {
 		return this.values.size();
+	}
+	
+	public List<V> getValues(){
+		return values;
 	}
 }

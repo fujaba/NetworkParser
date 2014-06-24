@@ -24,7 +24,9 @@ package de.uniks.networkparser.graph;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+
 import de.uniks.networkparser.ArrayEntryList;
+import de.uniks.networkparser.SimpleArrayList;
 
 public class YUMLConverter implements Converter {
 	/** The Constant URL. */
@@ -53,23 +55,27 @@ public class YUMLConverter implements Converter {
 			ArrayList<GraphNode> visited,
 			ArrayEntryList links, boolean shortName) {
 		String key = item.getTyp(typ, shortName);
-		EdgeList showedLinks = (EdgeList) links.getValue(key);
+		SimpleArrayList<?> showedLinks = (SimpleArrayList<?>) links.getValue(key);
 		if (showedLinks == null) {
 			if(sb.length()<1){
 				sb.append(parseEntity(item, visited, typ, shortName));
 			}
 			return;
 		}
-		Iterator<GraphEdge> iterator = showedLinks.iterator();
+		Iterator<?> iterator = showedLinks.iterator();
 		while (iterator.hasNext() ) {
-			GraphEdge entry = iterator.next();
+			Object entry = iterator.next();
+			if(!(entry instanceof GraphEdge)){
+				continue;
+			}
+			GraphEdge element = (GraphEdge) entry; 
 			if (sb.length() > 0) {
 				sb.append(",");
 			}
 			sb.append(parseEntity(item, visited, typ, shortName));
 			sb.append("-");
 			
-			Iterator<GraphNode> targetIterator = entry.getTarget().iterator();
+			Iterator<GraphNode> targetIterator = element.getOther().iterator();
 			GraphNode target = targetIterator.next();
 			sb.append(parseEntity(target, visited, typ, shortName));
 			
@@ -115,7 +121,7 @@ public class YUMLConverter implements Converter {
 		}
 		StringBuilder sb = new StringBuilder();
 		
-		Iterator<Attribute> i =  entity.iterator();
+		Iterator<GraphMember> i =  entity.iterator();
 		if(i.hasNext()){
 			String splitter = "";
 			if (typ.equals(GraphIdMap.OBJECT)) {
@@ -125,13 +131,23 @@ public class YUMLConverter implements Converter {
 	
 			}
 			sb.append("|");
-			Attribute attribute = i.next();
-			sb.append(attribute.getKey() + splitter + attribute.getValue(typ, shortName));
+			Object element = i.next();
+			Attribute attribute;
+			if(element instanceof Attribute){
+				attribute =(Attribute) element; 
+				sb.append(attribute.getName() + splitter + attribute.getType(shortName));	/// without Typ
+			}
 	
 			while (i.hasNext()) {
-				attribute = i.next();
+				element = i.next();
+				if(!(element instanceof Attribute)){
+					continue;
+				}
+				attribute =(Attribute) element; 
+				
+				
 				sb.append(";");
-				sb.append(attribute.getKey() + splitter + attribute.getValue(typ, shortName));
+				sb.append(attribute.getName() + splitter + attribute.getType(shortName));
 			}
 		}
 		return sb.toString();

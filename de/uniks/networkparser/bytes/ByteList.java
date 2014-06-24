@@ -203,15 +203,4 @@ public class ByteList extends AbstractList<ByteItem> implements ByteItem, Factor
 		}
 		return this;
 	}
-	
-	@Override
-	public ByteList without(Object... values) {
-		if(values == null){
-			return 	this;
-		}
-		for(Object value : values){
-			remove(getIndex(value));
-		}
-		return this;
-	}
 }

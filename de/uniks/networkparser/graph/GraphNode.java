@@ -21,14 +21,11 @@ package de.uniks.networkparser.graph;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import java.util.List;
-
 import de.uniks.networkparser.AbstractList;
 
-public class GraphNode extends AbstractList<Attribute> {
+public class GraphNode extends AbstractList<GraphMember> {
 	private String className;
 	private String id;
-	private String headImage;
 
 	// GETTER AND SETTER
 	public String getClassName(boolean shortName) {
@@ -75,7 +72,7 @@ public class GraphNode extends AbstractList<Attribute> {
 	}
 
 	public void addValue(String property, String clazz, String value) {
-		values.add(new Attribute().withKey(property).withClazz(clazz).withValue(value));
+		values.add(new Attribute().withValue(value).with(property).with(DataType.ref(clazz)));
 	}
 
 	@Override
@@ -86,22 +83,9 @@ public class GraphNode extends AbstractList<Attribute> {
 		return id;
 	}
 
-	public String getHeadImage() {
-		return headImage;
-	}
-
-	public GraphNode withHeadImage(String headImage) {
-		this.headImage = headImage;
-		return this;
-	}
-
 	@Override
 	public GraphNode getNewInstance() {
 		return new GraphNode();
-	}
-
-	public List<Attribute> getAttributes() {
-		return values;
 	}
 
 	@Override
@@ -112,16 +96,6 @@ public class GraphNode extends AbstractList<Attribute> {
 					add((Attribute) value);
 				}
 			}
-		}
-		return this;
-	}
-	@Override
-	public GraphNode without(Object... values) {
-		if(values == null){
-			return 	this;
-		}
-		for(Object value : values){
-			remove(getIndex(value));
 		}
 		return this;
 	}
