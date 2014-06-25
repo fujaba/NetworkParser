@@ -35,6 +35,7 @@ import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.IdMapEncoder;
+import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.ObjectMapEntry;
 import de.uniks.networkparser.ReferenceObject;
 import de.uniks.networkparser.event.MapEntry;
@@ -155,7 +156,7 @@ public class JsonIdMap extends IdMap {
 		if (properties != null) {
 			for (String property : properties) {
 				if (jsonProp.has(property) ) {
-					if(logger.error(this, "toJsonObject", entity, filter, className, deep)){
+					if(logger.error(this, "toJsonObject", NetworkParserLog.ERROR_TYP_DUPPLICATE, entity, filter, className, deep)){
 						throw new RuntimeException("Property duplicate:" + property	+ "(" + className + ")");
 					}
 				}
@@ -181,7 +182,7 @@ public class JsonIdMap extends IdMap {
 		try{
 			return super.getId(obj);
 		}catch(ConcurrentModificationException e){
-			if(this.logger.error(this, "getId", obj)){
+			if(this.logger.error(this, "getId", NetworkParserLog.ERROR_TYP_CONCURRENTMODIFICATION, obj)){
 				throw e;
 			}
 			return null;
@@ -262,7 +263,7 @@ public class JsonIdMap extends IdMap {
 				try{
 					subId = this.getKey(entity);
 				}catch(ConcurrentModificationException e){
-					if(this.logger.error(this, "parseItem", item, filter, entity, property, jsonArray, className, deep)){
+					if(this.logger.error(this, "parseItem", NetworkParserLog.ERROR_TYP_CONCURRENTMODIFICATION, item, filter, entity, property, jsonArray, className, deep)){
 						throw e;
 					}
 				}
@@ -466,7 +467,13 @@ public class JsonIdMap extends IdMap {
 		} else if (jsonObject.get(VALUE) != null) {
 			return jsonObject.get(VALUE);
 		} else if (jsonObject.get(ID) != null) {
-			result = getObject((String) jsonObject.get(ID));
+			try{
+				result = getObject((String) jsonObject.get(ID));
+			}catch(ConcurrentModificationException e){
+				if(this.logger.error(this, "decoding", NetworkParserLog.ERROR_TYP_CONCURRENTMODIFICATION, jsonObject, filter)){
+					throw e;
+				}
+			}
 		}
 		return result;
 	}
@@ -691,7 +698,7 @@ public class JsonIdMap extends IdMap {
 
 		SendableEntityCreator creator = getCreator(className, true);
 		if (creator == null ) {
-			if(logger.error(this, "toJsonArray", entity, jsonArray, filter, deep)){
+			if(logger.error(this, "toJsonArray", NetworkParserLog.ERROR_TYP_NOCREATOR, entity, jsonArray, filter, deep)){
 				throw new RuntimeException("No Creator exist for " + className);
 			}
 			return null;
@@ -707,7 +714,7 @@ public class JsonIdMap extends IdMap {
 			JsonObject jsonProps = getPrototyp();
 			for (String property : properties) {
 				if (jsonProps.has(property) ) {
-					if(logger.error(this, "toJsonArray", entity, jsonArray, filter, deep)){
+					if(logger.error(this, "toJsonArray", NetworkParserLog.ERROR_TYP_DUPPLICATE, entity, jsonArray, filter, deep)){
 						throw new RuntimeException("Property duplicate:" + property + "(" + className + ")");
 					}
 				}

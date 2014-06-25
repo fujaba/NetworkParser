@@ -25,6 +25,7 @@ import java.util.ArrayList;
 
 import de.uniks.networkparser.AbstractEntityList;
 import de.uniks.networkparser.AbstractKeyValueList;
+import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.ReferenceObject;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -80,13 +81,13 @@ public class XMLTokener extends Tokener {
 			c = nextClean();
 		}
 		if (c != '<') {
-			if(logger.error(this, "parseToEntity", entity)){
+			if(logger.error(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)){
 				throw new RuntimeException("A XML text must begin with '<'");
 			}
 			return;
 		}
 		if (!(entity instanceof XMLEntity)) {
-			if(logger.error(this, "parseToEntity", entity)){
+			if(logger.error(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)){
 				throw new RuntimeException("Parse only XMLEntity");
 			}
 			

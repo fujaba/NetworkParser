@@ -57,6 +57,10 @@ package de.uniks.networkparser;
  * @version $Id: Log.java 1432663 2013-01-13 17:24:18Z tn $
  */
 public class NetworkParserLog {
+	public static final String ERROR_TYP_PARSING="PARSING";
+	public static final String ERROR_TYP_CONCURRENTMODIFICATION="CONCURRENTMODIFICATION";
+	public static final String ERROR_TYP_NOCREATOR="NOCREATORFOUND";
+	public static final String ERROR_TYP_DUPPLICATE="DUPPLICATE";
 	private boolean isError=true;
     /**
      * Log a message with debug log level.
@@ -99,7 +103,7 @@ public class NetworkParserLog {
      * @param params The Original Parameters
      * @return boolean if method must Cancel
      */
-    public boolean error(Object owner, String method, Object... params){
+    public boolean error(Object owner, String method, String typ, Object... params){
     	return this.isError;
     }
     
