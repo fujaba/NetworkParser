@@ -27,6 +27,7 @@ import de.uniks.networkparser.AbstractEntityList;
 import de.uniks.networkparser.AbstractKeyValueEntry;
 import de.uniks.networkparser.AbstractKeyValueList;
 import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.FactoryEntity;
@@ -169,7 +170,7 @@ public class JsonTokener extends Tokener {
 		char c;
 		String key;
 		if (nextStartClean() != '{') {
-			if(logger.error(this, "parseToEntity", entity)){
+			if(logger.error(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)){
 				throw new RuntimeException("A JsonObject text must begin with '{'");
 			}
 		}
@@ -179,7 +180,7 @@ public class JsonTokener extends Tokener {
 			c = nextStartClean();
 			switch (c) {
 			case 0:
-				if(logger.error(this, "parseToEntity", entity)){
+				if(logger.error(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)){
 					throw new RuntimeException("A JsonObject text must end with '}'");
 				}
 				return;
@@ -204,7 +205,7 @@ public class JsonTokener extends Tokener {
 					next();
 				}
 			} else if (c != ':') {
-				if(logger.error(this, "parseToEntity", entity)){
+				if(logger.error(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)){
 					throw new RuntimeException("Expected a ':' after a key ["+ getNextString(30) + "]");
 				}
 				return;
@@ -218,7 +219,7 @@ public class JsonTokener extends Tokener {
 	public void parseToEntity(AbstractEntityList<?> entityList) {
 		char c=nextStartClean();
 		if (c != '[') {
-			if(logger.error(this, "parseToEntity", entityList)){
+			if(logger.error(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entityList)){
 				throw new RuntimeException("A JSONArray text must start with '['");
 			}
 			return;
@@ -241,7 +242,7 @@ public class JsonTokener extends Tokener {
 					next();
 					return;
 				default:
-					if(logger.error(this, "parseToEntity", entityList)){
+					if(logger.error(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entityList)){
 						throw new RuntimeException("Expected a ',' or ']' not '"+getCurrentChar()+"'");
 					}
 					return;

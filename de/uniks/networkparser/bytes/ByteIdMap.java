@@ -34,6 +34,7 @@ import de.uniks.networkparser.AbstractMap;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.IdMapEncoder;
+import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.ObjectMapEntry;
 import de.uniks.networkparser.bytes.converter.ByteConverterHTTP;
 import de.uniks.networkparser.event.BasicMessage;
@@ -409,7 +410,7 @@ public class ByteIdMap extends IdMap {
 	 */
 	public Object decode(BufferedBytes buffer) {
 		if (buffer.remaining() < 1) {
-			if(logger.error(this, "decode", buffer)){
+			if(logger.error(this, "decode", NetworkParserLog.ERROR_TYP_PARSING, buffer)){
 				throw new RuntimeException("DecodeExpeption - Remaining:" + buffer.remaining());
 			}
 			return null;
