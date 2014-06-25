@@ -53,7 +53,9 @@ public abstract class Tokener {
 	 */
 	public void back() {
 		if (this.buffer.length() <= 0) {
-			logger.error(this, "back", "Stepping back two steps is not supported");
+			if(logger.error(this, "back")){
+				throw new RuntimeException("Stepping back two steps is not supported");
+			}
 			return;
 		}
 		this.buffer.back();
@@ -133,7 +135,9 @@ public abstract class Tokener {
 		while (pos < n) {
 			chars[pos] = next();
 			if (isEnd()) {
-				logger.error(this, "skipPos", "Substring bounds error", n);
+				if(logger.error(this, "skipPos", n)){
+					throw new RuntimeException("Substring bounds error");
+				}
 				return null;
 			}
 			pos += 1;
@@ -216,7 +220,9 @@ public abstract class Tokener {
 	         case '\r':
 	            if (!allowCRLF)
 	            {
-	            	logger.error(this, "getString", "Unterminated string", quote, allowCRLF, allowQuote, mustQuote, nextStep);
+	            	if(logger.error(this, "getString", quote, allowCRLF, allowQuote, mustQuote, nextStep)){
+	            		throw new RuntimeException("Unterminated string"); 
+	            	}
 	            	return null;
 	            }
 	         default:
@@ -263,7 +269,9 @@ public abstract class Tokener {
 			case '\n':
 			case '\r':
 				if (!allowCRLF) {
-					logger.error(this, "getStringBuffer", "Unterminated string", quote, allowCRLF, allowQuote, mustQuote, nextStep);
+					if(logger.error(this, "getStringBuffer", quote, allowCRLF, allowQuote, mustQuote, nextStep)){
+						throw new RuntimeException("Unterminated string");
+					}
 					return null;
 				}
 			default:
@@ -332,7 +340,9 @@ public abstract class Tokener {
 		}
 		
 		if (value.length()<1) {
-			logger.error(this, "nextValue", "Missing value", creator, allowQuote, c);
+			if(logger.error(this, "nextValue", creator, allowQuote, c)){
+				throw new RuntimeException("Missing value");
+			}
 			return null;
 		}
 

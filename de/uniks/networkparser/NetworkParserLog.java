@@ -96,15 +96,13 @@ public class NetworkParserLog {
      * 
      * @param owner The Element with call the Methods
      * @param method The Caller-Method
-     * @param message log this message
      * @param params The Original Parameters
+     * @return boolean if method must Cancel
      */
-    public void error(Object owner, String method, String message, Object... params){
-    	if(this.isError){
-    		throw new RuntimeException(""+message);
-    	}
+    public boolean error(Object owner, String method, Object... params){
+    	return this.isError;
     }
-
+    
 	public boolean isError() {
 		return isError;
 	}

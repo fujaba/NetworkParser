@@ -140,7 +140,7 @@ public class GraphConverter implements Converter {
 						attributes.get(graphNode).add(attribute);
 					}
 				}else{
-					Attribute attribute = new Attribute().with(item.getKey()).with(item.getValue().getClass().getName()).withValue(item.getValue().toString());
+					Attribute attribute = new Attribute().with(item.getKey()).with(DataType.ref(item.getValue().getClass())).withValue(item.getValue().toString());
 					if(attributes.get(graphNode)==null){
 						attributes.put(graphNode, new ArrayList<Attribute>());
 					}
@@ -254,7 +254,7 @@ public class GraphConverter implements Converter {
 				continue;
 			}
 			Attribute attribute= (Attribute) item; 
-			result.add(attribute.getName() + splitter + attribute.getType(shortName));
+			result.add(attribute.getName() + splitter + attribute.getValue(typ, shortName));
 		}
 		return result;
 	}

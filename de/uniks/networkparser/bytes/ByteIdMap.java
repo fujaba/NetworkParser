@@ -409,8 +409,9 @@ public class ByteIdMap extends IdMap {
 	 */
 	public Object decode(BufferedBytes buffer) {
 		if (buffer.remaining() < 1) {
-			logger.error(this, "decode", "DecodeExpeption - Remaining:"
-					+ buffer.remaining(), buffer);
+			if(logger.error(this, "decode", buffer)){
+				throw new RuntimeException("DecodeExpeption - Remaining:" + buffer.remaining());
+			}
 			return null;
 		}
 		return decodeValue(buffer, buffer.length());
