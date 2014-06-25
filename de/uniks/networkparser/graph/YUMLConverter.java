@@ -135,7 +135,7 @@ public class YUMLConverter implements Converter {
 			Attribute attribute;
 			if(element instanceof Attribute){
 				attribute =(Attribute) element; 
-				sb.append(attribute.getName() + splitter + attribute.getType(shortName));	/// without Typ
+				sb.append(attribute.getName() + splitter + attribute.getValue(typ, shortName));	/// without Typ
 			}
 	
 			while (i.hasNext()) {
@@ -147,7 +147,7 @@ public class YUMLConverter implements Converter {
 				
 				
 				sb.append(";");
-				sb.append(attribute.getName() + splitter + attribute.getType(shortName));
+				sb.append(attribute.getName() + splitter + attribute.getValue(typ, shortName));
 			}
 		}
 		return sb.toString();

@@ -71,8 +71,8 @@ public class GraphNode extends AbstractList<GraphMember> {
 		return this;
 	}
 
-	public void addValue(String property, String clazz, String value) {
-		values.add(new Attribute().withValue(value).with(property).with(DataType.ref(clazz)));
+	public void addValue(String property, DataType clazz, String value) {
+		values.add(new Attribute().withValue(value).with(property).with(clazz));
 	}
 
 	@Override

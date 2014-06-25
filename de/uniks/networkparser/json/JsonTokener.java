@@ -169,7 +169,9 @@ public class JsonTokener extends Tokener {
 		char c;
 		String key;
 		if (nextStartClean() != '{') {
-			logger.error(this, "parseToEntity", "A JsonObject text must begin with '{'", entity);
+			if(logger.error(this, "parseToEntity", entity)){
+				throw new RuntimeException("A JsonObject text must begin with '{'");
+			}
 		}
 		next();
 		boolean isQuote=true;
@@ -177,7 +179,9 @@ public class JsonTokener extends Tokener {
 			c = nextStartClean();
 			switch (c) {
 			case 0:
-				logger.error(this, "parseToEntity", "A JsonObject text must end with '}'", entity);
+				if(logger.error(this, "parseToEntity", entity)){
+					throw new RuntimeException("A JsonObject text must end with '}'");
+				}
 				return;
 			case '\\':
 				// unquote
@@ -200,8 +204,9 @@ public class JsonTokener extends Tokener {
 					next();
 				}
 			} else if (c != ':') {
-				logger.error(this, "parseToEntity", "Expected a ':' after a key ["
-						+ getNextString(30) + "]", entity);
+				if(logger.error(this, "parseToEntity", entity)){
+					throw new RuntimeException("Expected a ':' after a key ["+ getNextString(30) + "]");
+				}
 				return;
 			}
 			next();
@@ -213,7 +218,9 @@ public class JsonTokener extends Tokener {
 	public void parseToEntity(AbstractEntityList<?> entityList) {
 		char c=nextStartClean();
 		if (c != '[') {
-			logger.error(this, "parseToEntity", "A JSONArray text must start with '['", entityList);
+			if(logger.error(this, "parseToEntity", entityList)){
+				throw new RuntimeException("A JSONArray text must start with '['");
+			}
 			return;
 		}
 		if ((nextClean()) != ']') {
@@ -234,7 +241,9 @@ public class JsonTokener extends Tokener {
 					next();
 					return;
 				default:
-					logger.error(this, "parseToEntity", "Expected a ',' or ']' not '"+getCurrentChar()+"'", entityList);
+					if(logger.error(this, "parseToEntity", entityList)){
+						throw new RuntimeException("Expected a ',' or ']' not '"+getCurrentChar()+"'");
+					}
 					return;
 				}
 			}

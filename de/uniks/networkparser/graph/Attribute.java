@@ -62,4 +62,12 @@ public class Attribute extends Value implements GraphMember {
 		super.with(value);
 		return this;
 	}
+	
+   public String getValue(String typ, boolean shortName){
+	   if(typ.equals(GraphIdMap.OBJECT)){
+		   return this.value;
+	   }
+	   return getType(shortName);
+   }
+
 }

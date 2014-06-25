@@ -74,7 +74,7 @@ import de.uniks.networkparser.interfaces.StringItem;
  * @version 2010-12-28
  */
 
-public class JsonArray extends AbstractEntityList<Object> implements StringItem, FactoryEntity{
+public class JsonArray extends AbstractEntityList<Object> implements StringItem, FactoryEntity{	
 	private boolean visible=true;
 	/**
 	 * Get the JSONArray associated with an index.
@@ -326,4 +326,11 @@ public class JsonArray extends AbstractEntityList<Object> implements StringItem,
 	public AbstractList<Object> getNewInstance() {
 		return new JsonArray();
 	}
+
+	@Override
+	public JsonArray withAllowDuplicate(boolean allowDuplicate) {
+		super.withAllowDuplicate(allowDuplicate);
+		return this;
+	}
+
 }

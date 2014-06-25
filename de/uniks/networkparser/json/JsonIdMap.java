@@ -25,6 +25,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -111,6 +112,9 @@ public class JsonIdMap extends IdMap {
 	 * @return the Jsonobject
 	 */
 	public JsonObject toJsonObject(Object entity, Filter filter) {
+		if(entity==null){
+			return null;
+		}
 		if(filter==null){
 			filter = new Filter();
 		}
@@ -151,8 +155,9 @@ public class JsonIdMap extends IdMap {
 		if (properties != null) {
 			for (String property : properties) {
 				if (jsonProp.has(property) ) {
-					logger.error(this, "toJsonObject", "Property duplicate:" + property
-							+ "(" + className + ")", entity, filter, className, deep);
+					if(logger.error(this, "toJsonObject", entity, filter, className, deep)){
+						throw new RuntimeException("Property duplicate:" + property	+ "(" + className + ")");
+					}
 				}
 				Object subValue = parseProperty(creator, entity, filter,
 						className, property, null, deep+1);
@@ -173,7 +178,15 @@ public class JsonIdMap extends IdMap {
 			put(key, obj);
 			return key;
 		}
-		return super.getId(obj);
+		try{
+			return super.getId(obj);
+		}catch(ConcurrentModificationException e){
+			if(this.logger.error(this, "getId", obj)){
+				throw e;
+			}
+			return null;
+		}
+		
 	}
 
 	protected Object parseProperty(SendableEntityCreator prototyp,
@@ -245,7 +258,14 @@ public class JsonIdMap extends IdMap {
 		boolean isId = filter.isId(this, entity, className);
 		if (valueCreater != null) {
 			if (filter.isConvertable(this, entity, property, item, true, deep) ) {
-				String subId = this.getKey(entity);
+				String subId = null;
+				try{
+					subId = this.getKey(entity);
+				}catch(ConcurrentModificationException e){
+					if(this.logger.error(this, "parseItem", item, filter, entity, property, jsonArray, className, deep)){
+						throw e;
+					}
+				}
 				if (valueCreater instanceof SendableEntityCreatorNoIndex
 						|| (isId &&!filter.hasVisitedObjects(subId))
 						|| (!isId && !filter.hasVisitedObjects(entity))){ 
@@ -671,7 +691,9 @@ public class JsonIdMap extends IdMap {
 
 		SendableEntityCreator creator = getCreator(className, true);
 		if (creator == null ) {
-			logger.error(this, "toJsonArray", "No Creator exist for " + className, entity, jsonArray, filter, deep);
+			if(logger.error(this, "toJsonArray", entity, jsonArray, filter, deep)){
+				throw new RuntimeException("No Creator exist for " + className);
+			}
 			return null;
 		}
 		String[] properties = creator.getProperties();
@@ -685,7 +707,9 @@ public class JsonIdMap extends IdMap {
 			JsonObject jsonProps = getPrototyp();
 			for (String property : properties) {
 				if (jsonProps.has(property) ) {
-					logger.error(this, "toJsonArray", "Property duplicate:" + property + "(" + className + ")", entity, jsonArray, filter, deep);
+					if(logger.error(this, "toJsonArray", entity, jsonArray, filter, deep)){
+						throw new RuntimeException("Property duplicate:" + property + "(" + className + ")");
+					}
 				}
 				Object subValue = parseProperty(creator, entity, filter,
 						className, property, jsonArray, deep+1);
