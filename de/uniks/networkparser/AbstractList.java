@@ -21,7 +21,9 @@ package de.uniks.networkparser;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -39,9 +41,9 @@ public abstract class AbstractList<V> implements BaseItem {
 	private boolean allowDuplicate = initAllowDuplicate();
 	protected Comparator<V> cpr;
 	
-	protected V[] hashTable = null;
-	protected static final int startHashingThreshold = 420; 
-	protected static final float loadThreshold = 0.6f;
+	protected Object[] hashTable = null;
+	protected static final int hashTableStartHashingThreshold = 420; 
+	protected static final float hashTableLoadThreshold = 0.7f;
 	
 	protected boolean initAllowDuplicate(){
 		return true;
@@ -107,20 +109,49 @@ public abstract class AbstractList<V> implements BaseItem {
 		return result;
 	}
 	
-	private void hashTableAdd(V newValue)
+	private void hashTableAdd(Object newValue)
    {
       if (hashTable == null)
       {
-         if (this.values.size() < this.startHashingThreshold) return;
+         if (this.values.size() <= this.hashTableStartHashingThreshold) return;
       }
       
       ensureHashTableCapacity(this.values.size());
+      
+      int hashKey = hashKey(newValue);
+      
+      while (true)
+      {
+         Object oldEntry = hashTable[hashKey];
+         if (oldEntry == null) 
+         {
+            hashTable[hashKey] = newValue;
+            return;
+         }
+         
+         if (oldEntry.equals(newValue)) return;
+         
+         hashKey = (hashKey + 1) % hashTable.length;
+      }
    }
 
    private void ensureHashTableCapacity(int size)
    {
-      // TODO Auto-generated method stub
+      if (hashTable == null && size > hashTableStartHashingThreshold)
+      {
+         hashTable = new Object[hashTableStartHashingThreshold*3];
+      }
       
+      if (hashTable != null && size > hashTable.length * hashTableLoadThreshold)
+      {
+         // double hashTable size
+         Object[] oldTable = this.hashTable;
+         this.hashTable = new Object[oldTable.length*2];
+         for (Object o : this.values)
+         {
+            hashTableAdd(o);
+         }
+      }
    }
 
    /**
