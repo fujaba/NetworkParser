@@ -27,15 +27,8 @@ public abstract class AbstractEntityList<V> extends AbstractList<V> implements L
 	@Override
     public boolean remove(Object value) {
     	int index = getIndex(value);
-        boolean result = values.remove(value);
-        if(result){
-        	V beforeValue = null;
-        	if(index>0){
-    			beforeValue = get(index - 1);
-    		}
-        	fireProperty(value, null, beforeValue);
-        }
-        return result;
+    	if (index < 0) return false;
+      return super.remove(index) != null;
     }
 
 	public List<V> values(){

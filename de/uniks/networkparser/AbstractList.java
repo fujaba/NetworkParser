@@ -495,11 +495,50 @@ public abstract class AbstractList<V> implements BaseItem {
 			beforeValue = get(index - 1);
 		}
 		this.values.remove(index);
-		fireProperty(oldValue, null, beforeValue);
+		hashTableRemove(oldValue);
+      fireProperty(oldValue, null, beforeValue);
 		return oldValue;
 	}
 	
-    /**
+	private void hashTableRemove(V oldValue)
+   {
+	   if (hashTable == null) return;
+	   
+	   int hashKey = hashKey(oldValue);
+	   int origHashKey = hashKey;
+	   
+	   while (true)
+	   {
+	      Object oldEntry = hashTable[hashKey];
+	      if (oldEntry == null) return;
+	      if (oldEntry.equals(oldValue))
+	      {
+	         int gapIndex = hashKey;
+	         int lastIndex = gapIndex;
+	         
+	         // search later element to put in this gap
+	         while (true)
+	         {
+	            hashKey = (hashKey + 1) % hashTable.length;
+	            oldEntry = hashTable[hashKey];
+	            if (oldEntry == null)
+	            {
+	               hashTable[gapIndex] = hashTable[lastIndex];
+	               hashTable[lastIndex] = null;
+	               return;
+	            }
+	            
+	            if (origHashKey == hashKey(oldEntry))
+	            {
+	               lastIndex = hashKey;
+	            }
+	         }
+	      }
+	      hashKey = (hashKey + 1) % hashTable.length;
+	   }
+   }
+
+   /**
      * Locate the Entity in the List
      * @param value Entity
      * @return the position of the Entity or -1
@@ -576,7 +615,11 @@ public abstract class AbstractList<V> implements BaseItem {
     }
 
     public boolean containsAll(Collection<?> c) {
-        return values.containsAll(c);
+       for (Object o : c)
+       {
+          if ( ! this.contains(o)) return false;
+       }
+       return true;
     }
 
     public boolean addAll(int index, Collection<? extends V> c) {
@@ -684,6 +727,7 @@ public abstract class AbstractList<V> implements BaseItem {
     
     public void add(int index, V element) {
         values.add(index, element);
+        hashTableAdd(element);
         V beforeValue = null;
         if(index>0){
         	beforeValue = get(index - 1);
