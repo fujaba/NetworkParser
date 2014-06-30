@@ -39,6 +39,10 @@ public abstract class AbstractList<V> implements BaseItem {
 	private boolean allowDuplicate = initAllowDuplicate();
 	protected Comparator<V> cpr;
 	
+	protected V[] hashTable = null;
+	protected static final int startHashingThreshold = 420; 
+	protected static final float loadThreshold = 0.6f;
+	
 	protected boolean initAllowDuplicate(){
 		return true;
 	}
@@ -84,15 +88,16 @@ public abstract class AbstractList<V> implements BaseItem {
 				}
 			}
 		}
+
 		if(!isAllowDuplicate()){       
-         for(ListIterator<V> i = reverseListIterator();i.hasPrevious();){
-            if(i.previous()==newValue){
+         if(this.contains(newValue)){
                return false; 
-            }
          }
       }
+		
 		boolean result = this.values.add(newValue);
 		if(result){
+		   this.hashTableAdd(newValue);
 			V beforeElement = null;
 			if(size() > 1){
 				beforeElement = this.values.get(size() - 1);
@@ -102,7 +107,23 @@ public abstract class AbstractList<V> implements BaseItem {
 		return result;
 	}
 	
-	/**
+	private void hashTableAdd(V newValue)
+   {
+      if (hashTable == null)
+      {
+         if (this.values.size() < this.startHashingThreshold) return;
+      }
+      
+      ensureHashTableCapacity(this.values.size());
+   }
+
+   private void ensureHashTableCapacity(int size)
+   {
+      // TODO Auto-generated method stub
+      
+   }
+
+   /**
 	 * Get the object value associated with an index.
 	 * 
 	 * @param index
@@ -483,8 +504,32 @@ public abstract class AbstractList<V> implements BaseItem {
         return values.size() < 1;
     }
 
-    public boolean contains(Object o) {
-        return values.contains(o);
+    public boolean contains(Object o) 
+    {
+        if (this.hashTable != null)
+        {
+           int hashKey = hashKey(o);
+           while (true)
+           {
+              Object value = hashTable[hashKey];
+              if (value == null) return false;
+              if (value.equals(o)) return true;
+              hashKey = (hashKey + 1) % hashTable.length;
+           }
+        }
+        
+        // search from the end as in models we frequently ask for elements that have just been added to the end
+        for(ListIterator<V> i = reverseListIterator();i.hasPrevious();){
+           if(i.previous().equals(o)){
+              return true; 
+           }
+        }
+        return false;
+    }
+
+    private int hashKey(Object o)
+    {
+        return o.hashCode() % this.hashTable.length;
     }
 
     public Iterator<V> iterator() {
