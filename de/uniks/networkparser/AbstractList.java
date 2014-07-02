@@ -44,6 +44,8 @@ public abstract class AbstractList<V> implements BaseItem {
 	protected Object[] hashTable = null;
 	protected static final int hashTableStartHashingThreshold = 420; 
 	protected static final float hashTableLoadThreshold = 0.7f;
+	protected static final int hashTableRemoveCountThreshold = 5;
+	protected int hashTableRemoveCount = 0;
 	
 	protected boolean initAllowDuplicate(){
 		return true;
@@ -137,9 +139,17 @@ public abstract class AbstractList<V> implements BaseItem {
 
    private void ensureHashTableCapacity(int size)
    {
+      if (hashTable == null && size <= hashTableStartHashingThreshold) 
+         return;
+      
       if (hashTable == null && size > hashTableStartHashingThreshold)
       {
          hashTable = new Object[hashTableStartHashingThreshold*3];
+      }
+      
+      if (hashTable != null && size < hashTableStartHashingThreshold / 10)
+      {
+         hashTable = null;
       }
       
       if (hashTable != null && size > hashTable.length * hashTableLoadThreshold)
@@ -152,6 +162,17 @@ public abstract class AbstractList<V> implements BaseItem {
             hashTableAdd(o);
          }
       }
+      else if (hashTable != null && size < hashTable.length / 20)
+      {
+         // shrink hashTable size to a loadThreshold of 33%
+         Object[] oldTable = this.hashTable;
+         this.hashTable = new Object[size*3];
+         for (Object o : this.values)
+         {
+            hashTableAdd(o);
+         }
+      }
+         
    }
 
    /**
@@ -502,6 +523,8 @@ public abstract class AbstractList<V> implements BaseItem {
 	
 	private void hashTableRemove(V oldValue)
    {
+	   if (hashTableRemoveCount < hashTableRemoveCountThreshold) hashTableRemoveCount++;
+	   
 	   if (hashTable == null) return;
 	   
 	   int hashKey = hashKey(oldValue);
