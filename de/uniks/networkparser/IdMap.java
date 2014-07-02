@@ -27,22 +27,4 @@ import de.uniks.networkparser.interfaces.BaseItem;
 public abstract class IdMap extends IdMapEncoder{
 	public abstract Object decode(BaseItem value);
 	public abstract Object decode(String value);
-	protected NetworkParserLog logger = new NetworkParserLog();
-	
-	/**
-	 * @return the CurrentLogger
-	 */
-	public NetworkParserLog getLogger() {
-		return logger;
-	}
-
-	/**
-	 * Set the Current Logger for Infos
-	 * @param logger the new Logger
-	 * @return Itself
-	 */
-	public IdMap withLogger(NetworkParserLog logger) {
-		this.logger = logger;
-		return this;
-	}
 }
