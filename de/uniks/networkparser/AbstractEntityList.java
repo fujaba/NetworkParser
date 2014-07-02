@@ -26,10 +26,8 @@ permissions and limitations under the Licence.
 public abstract class AbstractEntityList<V> extends AbstractList<V> implements List<V> {
 	@Override
     public boolean remove(Object value) {
-    	int index = getIndex(value);
-    	if (index < 0) return false;
-      return super.remove(index) != null;
-    }
+	      return removeItemByObject(value) != null;
+	}
 
 	public List<V> values(){
 		return values;
