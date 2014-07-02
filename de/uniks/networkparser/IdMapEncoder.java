@@ -24,6 +24,7 @@ package de.uniks.networkparser;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -70,6 +71,27 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	protected ArrayEntryList keyValue;
 	
 	protected Filter filter=new Filter();
+	
+	
+	protected NetworkParserLog logger = new NetworkParserLog();
+	
+	/**
+	 * @return the CurrentLogger
+	 */
+	public NetworkParserLog getLogger() {
+		return logger;
+	}
+
+	/**
+	 * Set the Current Logger for Infos
+	 * @param logger the new Logger
+	 * @return Itself
+	 */
+	public IdMapEncoder withLogger(NetworkParserLog logger) {
+		this.logger = logger;
+		return this;
+	}
+
 
 	/**
 	 * Instantiates a new id map.
@@ -136,7 +158,15 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	 * @return the key
 	 */
 	public String getKey(Object obj) {
-		return this.keyValue.getKey(obj);
+		String result = null;
+		try{
+			result = this.keyValue.getKey(obj);
+		}catch(ConcurrentModificationException e){
+			if(this.logger.error(this, "getKey", NetworkParserLog.ERROR_TYP_CONCURRENTMODIFICATION, obj)){
+				throw e;
+			}
+		}
+		return result;
 	}
 
 	/**
@@ -147,7 +177,15 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	 * @return the object
 	 */
 	public Object getObject(String key) {
-		return this.keyValue.getValue(key);
+		Object result = null;
+		try{
+			result = this.keyValue.getValue(key);
+		}catch(ConcurrentModificationException e){
+			if(this.logger.error(this, "getObject", NetworkParserLog.ERROR_TYP_CONCURRENTMODIFICATION, key)){
+				throw e;
+			}
+		}
+		return result;
 	}
 
 	/**
@@ -158,7 +196,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	 * @return the id
 	 */
 	public String getId(Object obj) {
-		String key = this.keyValue.getKey(obj);
+		String key = getKey(obj);
 		if (key == null) {
 			key = getCounter().getId(obj);
 			put(key, obj);
