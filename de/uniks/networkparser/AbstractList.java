@@ -141,9 +141,17 @@ public abstract class AbstractList<V> implements BaseItem {
 
    private void ensureHashTableCapacity(int size)
    {
+      if (hashTable == null && size <= hashTableStartHashingThreshold) 
+         return;
+      
       if (hashTable == null && size > hashTableStartHashingThreshold)
       {
          hashTable = new Object[hashTableStartHashingThreshold*3];
+      }
+      
+      if (hashTable != null && size < hashTableStartHashingThreshold / 10)
+      {
+         hashTable = null;
       }
       
       if (hashTable != null && size > hashTable.length * hashTableLoadThreshold)
@@ -156,6 +164,17 @@ public abstract class AbstractList<V> implements BaseItem {
             hashTableAdd(o);
          }
       }
+      else if (hashTable != null && size < hashTable.length / 20)
+      {
+         // shrink hashTable size to a loadThreshold of 33%
+         Object[] oldTable = this.hashTable;
+         this.hashTable = new Object[size*3];
+         for (Object o : this.values)
+         {
+            hashTableAdd(o);
+         }
+      }
+         
    }
 
    /**
@@ -512,6 +531,11 @@ public abstract class AbstractList<V> implements BaseItem {
 		if(!hashTableRemoveFlags){
 			// change hashTable to Object with ids
 			Object[] oldTable = this.hashTable;
+<<<<<<< HEAD
+=======
+			
+			// System.out.println("REMOVE ITEM: "+ObjectGraphMeasurer.measure(this.hashTable));
+>>>>>>> a3a20e95fd89720a85fb035450545c31f9ad3c35
 	         this.hashTable = new Object[oldTable.length*2];
 	         for (Object o : this.values)
 	         {
