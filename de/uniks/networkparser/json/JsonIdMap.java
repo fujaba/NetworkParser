@@ -25,7 +25,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -179,15 +178,7 @@ public class JsonIdMap extends IdMap {
 			put(key, obj);
 			return key;
 		}
-		try{
-			return super.getId(obj);
-		}catch(ConcurrentModificationException e){
-			if(this.logger.error(this, "getId", NetworkParserLog.ERROR_TYP_CONCURRENTMODIFICATION, obj)){
-				throw e;
-			}
-			return null;
-		}
-		
+		return super.getId(obj);
 	}
 
 	protected Object parseProperty(SendableEntityCreator prototyp,
@@ -259,14 +250,7 @@ public class JsonIdMap extends IdMap {
 		boolean isId = filter.isId(this, entity, className);
 		if (valueCreater != null) {
 			if (filter.isConvertable(this, entity, property, item, true, deep) ) {
-				String subId = null;
-				try{
-					subId = this.getKey(entity);
-				}catch(ConcurrentModificationException e){
-					if(this.logger.error(this, "parseItem", NetworkParserLog.ERROR_TYP_CONCURRENTMODIFICATION, item, filter, entity, property, jsonArray, className, deep)){
-						throw e;
-					}
-				}
+				String subId = this.getKey(entity);
 				if (valueCreater instanceof SendableEntityCreatorNoIndex
 						|| (isId &&!filter.hasVisitedObjects(subId))
 						|| (!isId && !filter.hasVisitedObjects(entity))){ 
@@ -467,13 +451,7 @@ public class JsonIdMap extends IdMap {
 		} else if (jsonObject.get(VALUE) != null) {
 			return jsonObject.get(VALUE);
 		} else if (jsonObject.get(ID) != null) {
-			try{
-				result = getObject((String) jsonObject.get(ID));
-			}catch(ConcurrentModificationException e){
-				if(this.logger.error(this, "decoding", NetworkParserLog.ERROR_TYP_CONCURRENTMODIFICATION, jsonObject, filter)){
-					throw e;
-				}
-			}
+			result = getObject((String) jsonObject.get(ID));
 		}
 		return result;
 	}
