@@ -21,9 +21,7 @@ package de.uniks.networkparser;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -514,8 +512,6 @@ public abstract class AbstractList<V> implements BaseItem {
 		if(!hashTableRemoveFlags){
 			// change hashTable to Object with ids
 			Object[] oldTable = this.hashTable;
-			
-			System.out.println("REMOVE ITEM: "+ObjectGraphMeasurer.measure(this.hashTable));
 	         this.hashTable = new Object[oldTable.length*2];
 	         for (Object o : this.values)
 	         {
