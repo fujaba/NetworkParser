@@ -24,6 +24,7 @@ permissions and limitations under the Licence.
 */
 
 public abstract class AbstractEntityList<V> extends AbstractList<V> implements List<V> {
+	@SuppressWarnings("unchecked")
 	@Override
     public boolean remove(Object value) {
 	      return removeItemByObject((V)value) != null;

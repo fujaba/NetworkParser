@@ -531,11 +531,6 @@ public abstract class AbstractList<V> implements BaseItem {
 		if(!hashTableRemoveFlags){
 			// change hashTable to Object with ids
 			Object[] oldTable = this.hashTable;
-<<<<<<< HEAD
-=======
-			
-			// System.out.println("REMOVE ITEM: "+ObjectGraphMeasurer.measure(this.hashTable));
->>>>>>> a3a20e95fd89720a85fb035450545c31f9ad3c35
 	         this.hashTable = new Object[oldTable.length*2];
 	         for (Object o : this.values)
 	         {
