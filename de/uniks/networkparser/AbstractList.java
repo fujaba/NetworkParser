@@ -528,7 +528,7 @@ public abstract class AbstractList<V> implements BaseItem {
 	}
 	
 	protected V removeItemByObject(V value){
-		if(!hashTableRemoveFlags){
+		if(!hashTableRemoveFlags && this.hashTable != null){
 			// change hashTable to Object with ids
 			Object[] oldTable = this.hashTable;
 	         this.hashTable = new Object[oldTable.length*2];
@@ -540,6 +540,7 @@ public abstract class AbstractList<V> implements BaseItem {
 		
     	int index = getIndex(value);
     	if (index < 0) return null;
+    	remove(index);
 		return (V) value;
 	}
 	
@@ -685,16 +686,20 @@ public abstract class AbstractList<V> implements BaseItem {
     	return true;
     }
     
-	public boolean add(Iterator<? extends V> list){
-		while(list.hasNext()){
+	public boolean add(Iterator<? extends V> list)
+	{
+	   boolean flag = false;
+	   
+		while(list.hasNext())
+		{
 			V item = list.next();
-			if(item!=null){
-				if(!add(item)){
-					return false;
-				}	
+			if(item!=null)
+			{
+			   flag = add(item) || flag;
 			}
 		}
-		return true;
+		
+		return flag;
 	}
 	
 	public boolean addAll(Collection<? extends V> list){
