@@ -37,14 +37,12 @@ import de.uniks.networkparser.sort.SortingDirection;
 public abstract class AbstractList<V> implements BaseItem {
 	protected List<V> values = new ArrayList<V>();
 	protected Object[] hashTable = null;
-//	protected Object[] removedTable = null;
    
 	private boolean allowDuplicate = initAllowDuplicate();
 	protected Comparator<V> cpr;
 
 	protected static final int hashTableStartHashingThreshold = 420;
 	protected static final float hashTableLoadThreshold = 0.7f;
-	protected static final boolean hashTableRemoveFlags = false;
 	protected int entitySize = 1;
 
 	protected boolean initAllowDuplicate(){
@@ -101,7 +99,7 @@ public abstract class AbstractList<V> implements BaseItem {
 		
 		boolean result = this.values.add(newValue);
 		if(result){
-		   this.hashTableAdd(newValue);
+		   this.hashTableAdd(newValue, this.values.size());
 			V beforeElement = null;
 			if(size() > 1){
 				beforeElement = this.values.get(size() - 1);
@@ -111,7 +109,7 @@ public abstract class AbstractList<V> implements BaseItem {
 		return result;
 	}
 	
-	private void hashTableAdd(Object newValue)
+	private void hashTableAdd(Object newValue, int pos)
    {
       if (hashTable == null)
       {
@@ -120,7 +118,7 @@ public abstract class AbstractList<V> implements BaseItem {
       
       ensureHashTableCapacity(this.values.size());
       
-      int hashKey = hashKey(newValue);
+      int hashKey = hashKey(newValue.hashCode());
       
       while (true)
       {
@@ -129,6 +127,9 @@ public abstract class AbstractList<V> implements BaseItem {
          {
         	
             hashTable[hashKey] = newValue;
+            if(entitySize==2){
+            	hashTable[hashKey + 1] = pos;
+            }
             
             return;
          }
@@ -141,40 +142,28 @@ public abstract class AbstractList<V> implements BaseItem {
 
    private void ensureHashTableCapacity(int size)
    {
-      if (hashTable == null && size <= hashTableStartHashingThreshold) 
-         return;
-      
-      if (hashTable == null && size > hashTableStartHashingThreshold)
-      {
-         hashTable = new Object[hashTableStartHashingThreshold*3];
+      if (hashTable == null){
+    	  if(size <= hashTableStartHashingThreshold){
+    		  return;
+    	  }
+          hashTable = new Object[hashTableStartHashingThreshold*3];
+      }else {
+    	  	if (size < hashTableStartHashingThreshold / 10){
+		         hashTable = null;
+		         return;
+    	  	}
       }
       
-      if (hashTable != null && size < hashTableStartHashingThreshold / 10)
-      {
-         hashTable = null;
-      }
-      
-      if (hashTable != null && size > hashTable.length * hashTableLoadThreshold)
+      if (size > hashTable.length * hashTableLoadThreshold)
       {
          // double hashTable size
-         Object[] oldTable = this.hashTable;
-         this.hashTable = new Object[oldTable.length*2];
-         for (Object o : this.values)
-         {
-            hashTableAdd(o);
-         }
+    	  resizeHashMap(this.hashTable.length*2);
       }
-      else if (hashTable != null && size < hashTable.length / 20)
+      else if (size < hashTable.length / 20)
       {
          // shrink hashTable size to a loadThreshold of 33%
-         Object[] oldTable = this.hashTable;
-         this.hashTable = new Object[size*3];
-         for (Object o : this.values)
-         {
-            hashTableAdd(o);
-         }
+    	 resizeHashMap(size*3);
       }
-         
    }
 
    /**
@@ -516,6 +505,9 @@ public abstract class AbstractList<V> implements BaseItem {
 	}
 
 	protected V removeItemByIndex(int index){
+		if(index<0){
+			return null;
+		}
 		V oldValue = get(index);
 		V beforeValue = null;
 		if(index>0){
@@ -527,27 +519,51 @@ public abstract class AbstractList<V> implements BaseItem {
 		return oldValue;
 	}
 	
+	protected void resizeHashMap(int size){
+		this.hashTable = new Object[size];
+        for(int i=0;i<this.values.size();i++){
+            hashTableAdd(this.values.get(i), i);
+        }
+	}
+	
 	protected V removeItemByObject(V value){
-		if(!hashTableRemoveFlags){
+		if(entitySize==1){
 			// change hashTable to Object with ids
-			Object[] oldTable = this.hashTable;
-	         this.hashTable = new Object[oldTable.length*2];
-	         for (Object o : this.values)
-	         {
-	            hashTableAdd(o);
-	         }
+	         this.entitySize = 2;
+	         resizeHashMap(this.hashTable.length*2);
 		}
 		
-    	int index = getIndex(value);
-    	if (index < 0) return null;
-		return (V) value;
+    	int index=getPosition(value);
+    	if(index<0){
+    		return null;
+    	}
+    	if(this.hashTable != null){
+    		if(this.entitySize==2){
+    			index = (int) this.hashTable[index + 1];
+    			int diff= index;
+    			if(index>this.values.size()){
+    				diff = this.values.size() - 1;
+    			}
+	    		while( this.values.get(diff)!=value ){
+	    			diff--;
+	    		}
+    			if(index - diff > 1000){
+    				V result = removeItemByIndex(diff);
+    				// Refactoring
+    				resizeHashMap(this.hashTable.length);
+    				return result;
+    			}
+    			index = diff;
+    		}
+    	}
+		return removeItemByIndex(index);
 	}
 	
 	private void hashTableRemove(V oldValue)
    {
 	   if (hashTable == null) return;
 	   
-	   int hashKey = hashKey(oldValue);
+	   int hashKey = hashKey(oldValue.hashCode());
 	   int origHashKey = hashKey;
 	   
 	   while (true)
@@ -568,10 +584,14 @@ public abstract class AbstractList<V> implements BaseItem {
 	            {
 	               hashTable[gapIndex] = hashTable[lastIndex];
 	               hashTable[lastIndex] = null;
+	               if(entitySize==2){
+	            	   hashTable[gapIndex + 1] = hashTable[lastIndex + 1];
+	            	   hashTable[lastIndex + 1] = null;
+	               }
 	               return;
 	            }
 	            
-	            if (origHashKey == hashKey(oldEntry))
+	            if (origHashKey == hashKey(oldEntry.hashCode()))
 	            {
 	               lastIndex = hashKey;
 	            }
@@ -587,14 +607,13 @@ public abstract class AbstractList<V> implements BaseItem {
      * @return the position of the Entity or -1
      */
     public int getIndex(Object value){
-    	int pos=0;
-    	for(Iterator<V> i = iterator();i.hasNext();){
-    		if(i.next().equals(value)){
-    			return pos;
+    	int pos=getPosition(value);
+    	if(this.hashTable != null){
+    		if(this.entitySize==2){
+    			return (int) this.hashTable[pos + 1];
     		}
-    		pos++;
     	}
-    	return -1;
+    	return pos; 
     }
         
     public AbstractList<V> withList(List<V> reference){
@@ -625,7 +644,7 @@ public abstract class AbstractList<V> implements BaseItem {
     {
         if (this.hashTable != null)
         {
-           int hashKey = hashKey(o);
+           int hashKey = hashKey(o.hashCode());
            while (true)
            {
               Object value = hashTable[hashKey];
@@ -648,12 +667,12 @@ public abstract class AbstractList<V> implements BaseItem {
    
     /**
      * Get the HashKey from a Object with Max HashTableIndex and StepSize of EntitySize
-     * @param o the object for hash
+     * @param hashKey the hashKey of a Object
      * @return the hasKey
      */
-    private int hashKey(Object o)
+    private int hashKey(int hashKey)
     {
-        return (o.hashCode() - o.hashCode() % entitySize) % this.hashTable.length;
+        return (hashKey - hashKey % entitySize) % this.hashTable.length;
     }
 
     public Iterator<V> iterator() {
@@ -782,7 +801,7 @@ public abstract class AbstractList<V> implements BaseItem {
     public void add(int index, V element) {
     	if( ! contains(element) ){
     		values.add(index, element);
-    		hashTableAdd(element);
+    		hashTableAdd(element, index);
     		V beforeValue = null;
     		if(index>0){
     			beforeValue = get(index - 1);
