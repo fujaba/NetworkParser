@@ -27,7 +27,12 @@ public abstract class AbstractEntityList<V> extends AbstractList<V> implements L
 	@SuppressWarnings("unchecked")
 	@Override
     public boolean remove(Object value) {
-	      return removeItemByObject((V)value) != null;
+	      V i= removeItemByObject((V)value);
+	      if(i==null){
+	    	  System.out.println(value);
+	    	  removeItemByObject((V)value);
+	      }
+	      return i!=null;
 	}
 
 	public List<V> values(){
