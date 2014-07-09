@@ -31,6 +31,7 @@ import java.util.ListIterator;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.sort.EntityComparator;
 import de.uniks.networkparser.sort.SortingDirection;
+
 /**
  * The Class EntityList.
  */
@@ -532,7 +533,6 @@ public abstract class AbstractList<V> implements BaseItem {
 	         this.entitySize = 2;
 	         resizeHashMap(this.hashTable.length*2);
 		}
-		
     	int index=getPosition(value);
     	if(index<0){
     		return null;
@@ -564,7 +564,7 @@ public abstract class AbstractList<V> implements BaseItem {
 	   if (hashTable == null) return;
 	   
 	   int hashKey = hashKey(oldValue.hashCode());
-	   int origHashKey = hashKey;
+	   
 	   
 	   while (true)
 	   {
@@ -572,6 +572,7 @@ public abstract class AbstractList<V> implements BaseItem {
 	      if (oldEntry == null) return;
 	      if (oldEntry.equals(oldValue))
 	      {
+//	    	 int origHashKey = hashKey;
 	         int gapIndex = hashKey;
 	         int lastIndex = gapIndex;
 	         
@@ -591,7 +592,7 @@ public abstract class AbstractList<V> implements BaseItem {
 	               return;
 	            }
 	            
-	            if (origHashKey == hashKey(oldEntry.hashCode()))
+	            if (hashKey(oldEntry.hashCode()) <= gapIndex )
 	            {
 	               lastIndex = hashKey;
 	            }
@@ -670,9 +671,9 @@ public abstract class AbstractList<V> implements BaseItem {
      * @param hashKey the hashKey of a Object
      * @return the hasKey
      */
-    private int hashKey(int hashKey)
+    public int hashKey(int hashKey)
     {
-        return (hashKey - hashKey % entitySize) % this.hashTable.length;
+        return (hashKey + hashKey % entitySize) % this.hashTable.length;
     }
 
     public Iterator<V> iterator() {
