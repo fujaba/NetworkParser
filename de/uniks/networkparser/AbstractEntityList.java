@@ -28,10 +28,10 @@ public abstract class AbstractEntityList<V> extends AbstractList<V> implements L
 	@Override
     public boolean remove(Object value) {
 	      V i= removeItemByObject((V)value);
-	      if(i==null){
-	    	  System.out.println(value);
-	    	  removeItemByObject((V)value);
-	      }
+//	      if(i==null){
+//	    	  System.out.println(value);
+//	    	  removeItemByObject((V)value);
+//	      }
 	      return i!=null;
 	}
 
