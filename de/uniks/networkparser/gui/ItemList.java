@@ -21,10 +21,12 @@ See the Licence for the specific language governing
 permissions and limitations under the Licence.
 */
 
+import java.util.List;
+
 import de.uniks.networkparser.AbstractEntityList;
 import de.uniks.networkparser.AbstractList;
 
-public abstract class ItemList<E>  extends AbstractEntityList<E> {
+public abstract class ItemList<E>  extends AbstractEntityList<E> implements List<E>{
 	private boolean readonly = false;
 	
 	public boolean isReadonly() {
@@ -68,6 +70,6 @@ public abstract class ItemList<E>  extends AbstractEntityList<E> {
        if(readonly){
           throw new UnsupportedOperationException("add()");
        }
-      return super.add(newValue);
+      return super.addEntity(newValue);
    }
 }

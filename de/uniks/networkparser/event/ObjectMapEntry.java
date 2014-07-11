@@ -1,4 +1,6 @@
-package de.uniks.networkparser;
+package de.uniks.networkparser.event;
+
+import de.uniks.networkparser.AbstractEntity;
 /*
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
@@ -21,23 +23,22 @@ package de.uniks.networkparser;
  permissions and limitations under the Licence.
 */
 
+public class ObjectMapEntry extends AbstractEntity<Object, Object>{
 
-public class ObjectMapEntry extends AbstractKeyValueEntry<Object, Object>{
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new ObjectMapEntry();
 	}
 
 	@Override
-	public ObjectMapEntry withValue(Object key, Object value) {
-		this.setKey(key);
-		this.setValue(value);
+	public ObjectMapEntry withKeyItem(Object key) {
+		withKey(key);
 		return this;
 	}
 
 	@Override
-	public ObjectMapEntry withToValue(Object value) {
-		this.setValue(value);
+	public ObjectMapEntry withValueItem(Object value) {
+		this.withValue(value);
 		return this;
 	}
 }

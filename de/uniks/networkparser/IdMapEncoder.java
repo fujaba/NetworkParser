@@ -285,7 +285,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 			}
 		}
 		if (key != null) {
-			this.keyValue.removeKey(key);
+			this.keyValue.remove(key);
 			if (this.typList != null) {
 				for (TypList list : this.typList) {
 					list.removeObject(oldValue);
@@ -431,11 +431,11 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 		TableList result = new TableList();
 		String clazzName = creator.getSendableInstance(true).getClass()
 				.getName();
-		for(Iterator<AbstractKeyValueEntry<String, Object>> i = this.keyValue.iterator();i.hasNext();){
-			AbstractKeyValueEntry<String, Object> item = i.next();
-			if (item.getValue() != null) {
-				if (item.getValue().getClass().getName().equals(clazzName)) {
-					result.add(item.getValue());
+		for(int i=0;i<this.keyValue.size();i++){
+			Object item = this.keyValue.getValue(i);
+			if(item != null){
+				if (item.getClass().getName().equals(clazzName)) {
+					result.add(item);
 				}
 			}
 		}

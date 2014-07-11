@@ -20,7 +20,6 @@ express or implied.
 See the Licence for the specific language governing
 permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.event.MapEntry;
 
 public class ArrayEntryList extends AbstractKeyValueList<String, Object> {
 	@Override
@@ -43,8 +42,8 @@ public class ArrayEntryList extends AbstractKeyValueList<String, Object> {
 	public ArrayEntryList with(Object... values){
 		if(values != null){
 			for(Object value : values){
-				if(value instanceof MapEntry){
-					add((MapEntry) value);
+				if(value instanceof AbstractEntity){
+					addEntity((AbstractEntity<?, ?>) value);
 				}
 			}
 		}
@@ -57,7 +56,7 @@ public class ArrayEntryList extends AbstractKeyValueList<String, Object> {
 	}
 
 	@Override
-	public AbstractKeyValueEntry<String, Object> getNewEntity() {
-		return new MapEntry();
+	public Object remove(Object key) {
+		return removeItemByObject(""+key);
 	}
 }
