@@ -548,7 +548,7 @@ public abstract class AbstractList<V> implements BaseItem {
 	}
 	
 	protected int removeItemByObject(Object key){
-		if(entitySize==1){
+		if(entitySize==1 && this.hashTable != null){
 			// change hashTable to Object with ids
 	         this.entitySize = 2;
 	         resizeHashMap(this.hashTable.length*2);
@@ -713,8 +713,6 @@ public abstract class AbstractList<V> implements BaseItem {
        }
        return true;
     }
-
-    
 	
     public boolean removeAll(Collection<?> c) {
         return removeAll(c.iterator());
