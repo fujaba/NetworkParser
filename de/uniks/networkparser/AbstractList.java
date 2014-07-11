@@ -363,7 +363,7 @@ public abstract class AbstractList<V> implements BaseItem {
 		if(index==-1){
 			return false;
 		}
-		Object object = getKey(index);
+		Object object = getItem(index);
 		if (object.equals(Boolean.FALSE)
 				|| (object instanceof String && ((String) object)
 						.equalsIgnoreCase("false"))) {
@@ -388,7 +388,7 @@ public abstract class AbstractList<V> implements BaseItem {
 	 *             to a number.
 	 */
 	public double getDouble(int index) throws RuntimeException {
-		Object object = getKey(index);
+		Object object = getItem(index);
 		try {
 			return object instanceof Number ? ((Number) object).doubleValue()
 					: Double.parseDouble((String) object);
@@ -396,6 +396,10 @@ public abstract class AbstractList<V> implements BaseItem {
 			throw new RuntimeException("EntityList[" + index
 					+ "] is not a number.");
 		}
+	}
+	
+	protected Object getItem(int index){
+		return getKey(index);
 	}
 
 	/**
@@ -408,7 +412,7 @@ public abstract class AbstractList<V> implements BaseItem {
 	 *             If the key is not found or if the value is not a number.
 	 */
 	public int getInt(int index) throws RuntimeException {
-		Object object = getKey(index);
+		Object object = getItem(index);
 		try {
 			return object instanceof Number ? ((Number) object).intValue()
 					: Integer.parseInt((String) object);
@@ -429,7 +433,7 @@ public abstract class AbstractList<V> implements BaseItem {
 	 *             to a number.
 	 */
 	public long getLong(int index) throws RuntimeException {
-		Object object = getKey(index);
+		Object object = getItem(index);
 		try {
 			return object instanceof Number ? ((Number) object).longValue()
 					: Long.parseLong((String) object);
@@ -449,7 +453,7 @@ public abstract class AbstractList<V> implements BaseItem {
 	 *             If there is no value for the index.
 	 */
 	public String getString(int index) throws RuntimeException {
-		return getKey(index).toString();
+		return getItem(index).toString();
 	}
 
 	/**
