@@ -550,6 +550,11 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 		return values;
 	}
 	
+	@Override
+	protected Object getItem(int index){
+		return getValue(index);
+	}
+	
 	public void copyEntity(AbstractKeyValueList<K, V> target, int pos){
 		target.add(this.get(pos), this.values.get(pos));
 	}
