@@ -21,10 +21,6 @@ package de.uniks.networkparser.json;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import java.util.Iterator;
-import java.util.Map.Entry;
-
-import de.uniks.networkparser.AbstractKeyValueEntry;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.interfaces.IdMapCounter;
@@ -47,11 +43,11 @@ public class Grammar {
 			}
 		}else{
 			JsonObject props=new JsonObject();
-			for(Iterator<AbstractKeyValueEntry<String, Object>> i=jsonObject.iterator();i.hasNext();){
-				Entry<String, Object> item = i.next();
-				if(!JsonIdMap.CLASS.equalsIgnoreCase(item.getKey())){
-					props.put(item.getKey(), item.getValue());
+			for(int i=0;i<jsonObject.size();i++){
+				if(!JsonIdMap.CLASS.equalsIgnoreCase(jsonObject.get(i))){
+					props.put(jsonObject.get(i), jsonObject.getValue(i));
 				}
+				
 			}
 			return props;
 		}
@@ -86,9 +82,8 @@ public class Grammar {
 		JsonObject json = new JsonObject();
 		json.put(JsonIdMap.CLASS, className);
 		if (prototyp instanceof SendableEntityCreatorNoIndex || !filter.isId(map, jsonProp, className)) {
-			for(Iterator<AbstractKeyValueEntry<String, Object>> i = jsonProp.iterator();i.hasNext();){
-				AbstractKeyValueEntry<String, Object> item = i.next();
-				json.put(item.getKey(), item.getValue());
+			for(int i=0;i<jsonProp.size();i++){
+				json.put(jsonProp.get(i), jsonProp.getValue(i));
 			}
 			return json;
 		}

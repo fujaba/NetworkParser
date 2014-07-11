@@ -25,6 +25,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ListIterator;
 
 import de.uniks.networkparser.AbstractEntityList;
@@ -35,7 +36,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.sort.EntityComparator;
 import de.uniks.networkparser.sort.SortingDirection;
 
-public class TableList extends AbstractEntityList<Object> implements SendableEntity {
+public class TableList extends AbstractEntityList<Object> implements SendableEntity, List<Object>  {
 	public static final String PROPERTY_ITEMS = "items";
 	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
 	
@@ -70,7 +71,7 @@ public class TableList extends AbstractEntityList<Object> implements SendableEnt
     }
 
 	public boolean addAll(TableList list){
-		for(Object item : values){
+		for(Object item : keys){
 			if(!add(item)){
 				return false;
 			}
@@ -248,5 +249,19 @@ public class TableList extends AbstractEntityList<Object> implements SendableEnt
 			}
 		}
 		return this;
+	}
+
+	@Override
+	public boolean remove(Object value) {
+		return removeItemByObject(value) >= 0;
+	}
+
+	public List<Object> values(){
+		return keys;
+	}
+
+	@Override
+	public boolean add(Object e) {
+		return addEntity(e);
 	}
 }

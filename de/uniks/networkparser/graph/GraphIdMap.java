@@ -139,7 +139,7 @@ public class GraphIdMap extends IdMapEncoder {
 		SendableEntityCreator valueCreater = getCreatorClass(item);
 		if (valueCreater != null) {
 			GraphNode subId = parse(item, filter, list, deep + 1);
-			list.addEdge(new GraphEdge().with(element)
+			list.addEdge(new GraphEdge().with((Object)element)
 					.with(new GraphEdge(subId, cardinality, property)));
 		} else {
 			element.addValue(property, DataType.ref(item.getClass()), "" + item);

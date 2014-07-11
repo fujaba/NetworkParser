@@ -598,5 +598,5 @@ public abstract class Tokener {
 
 	public abstract void parseToEntity(AbstractKeyValueList<?, ?> entity);
 
-	public abstract void parseToEntity(AbstractEntityList<?> entityList);
+	public abstract void parseToEntity(AbstractList<?> entityList);
 }

@@ -29,15 +29,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import de.uniks.networkparser.AbstractKeyValueEntry;
 import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.NetworkParserLog;
-import de.uniks.networkparser.ObjectMapEntry;
 import de.uniks.networkparser.ReferenceObject;
-import de.uniks.networkparser.event.MapEntry;
+import de.uniks.networkparser.event.ObjectMapEntry;
 import de.uniks.networkparser.event.creator.DateCreator;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.MapUpdateListener;
@@ -80,7 +78,6 @@ public class JsonIdMap extends IdMap {
 		this.withCreator(new DateCreator());
 		this.withCreator(new JsonObjectCreator());
 		this.withCreator(new JsonArrayCreator());
-		this.withCreator(new MapEntry());
 	}
 	
 	/**
@@ -204,7 +201,7 @@ public class JsonIdMap extends IdMap {
 						Object item = parseItem(entity, filter, containee,
 								property, jsonArray, null, deep);
 						if (item != null) {
-							subValues.add(item);
+							subValues.with(item);
 						}
 					}
 					if (subValues.size() > 0) {
@@ -221,7 +218,7 @@ public class JsonIdMap extends IdMap {
 						Object item = parseItem(entity, filter, mapEntry,
 								property, jsonArray, packageName, deep);
 						if (item != null) {
-							subValues.add(item);
+							subValues.with(item);
 						}
 					}
 					if (subValues.size() > 0) {
@@ -820,10 +817,10 @@ public class JsonIdMap extends IdMap {
 	 * @see de.uni.kassel.peermessage.IdMap#garbageCollection(java.util.Set)
 	 */
 	public void garbageCollection(List<String> classCounts) {
-		for(Iterator<AbstractKeyValueEntry<String, Object>> i = keyValue.iterator();i.hasNext();){
-			String id = i.next().getKeyString();
+		for(int i=size()-1;i>=0;i--){
+			String id = this.keyValue.get(i);
 			if (!classCounts.contains(id)) {
-				i.remove();
+				this.keyValue.remove(i);
 			}
 		}
 	}

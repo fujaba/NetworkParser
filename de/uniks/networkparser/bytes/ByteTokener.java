@@ -21,8 +21,8 @@ package de.uniks.networkparser.bytes;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.AbstractEntityList;
 import de.uniks.networkparser.AbstractKeyValueList;
+import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.Tokener;
 
 public class ByteTokener extends Tokener{
@@ -36,7 +36,7 @@ public class ByteTokener extends Tokener{
 	}
 
 	@Override
-	public void parseToEntity(AbstractEntityList<?> entityList) {
+	public void parseToEntity(AbstractList<?> entityList) {
 
 		// TODO Auto-generated method stub
 		

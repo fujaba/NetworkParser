@@ -21,9 +21,9 @@ package de.uniks.networkparser.graph;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.AbstractList;
+import de.uniks.networkparser.AbstractEntityList;
 
-public class GraphNode extends AbstractList<GraphMember> {
+public class GraphNode extends AbstractEntityList<GraphMember> {
 	private String className;
 	private String id;
 
@@ -72,7 +72,7 @@ public class GraphNode extends AbstractList<GraphMember> {
 	}
 
 	public void addValue(String property, DataType clazz, String value) {
-		values.add(new Attribute().withValue(value).with(property).with(clazz));
+		keys.add(new Attribute().withValue(value).with(property).with(clazz));
 	}
 
 	@Override
@@ -98,5 +98,15 @@ public class GraphNode extends AbstractList<GraphMember> {
 			}
 		}
 		return this;
+	}
+
+	@Override
+	public boolean add(GraphMember e) {
+		return addEntity(e);
+	}
+
+	@Override
+	public boolean remove(Object value) {
+		return removeItemByObject((GraphMember) value) >= 0;
 	}
 }

@@ -21,14 +21,11 @@ package de.uniks.networkparser.json;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import java.util.Iterator;
-
-import de.uniks.networkparser.AbstractKeyValueEntry;
+import de.uniks.networkparser.AbstractEntity;
 import de.uniks.networkparser.AbstractKeyValueList;
 import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Tokener;
-import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
@@ -179,17 +176,14 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 		}
 
 		StringBuilder sb = new StringBuilder("{");
-		Iterator<AbstractKeyValueEntry<String, Object>> i = values.iterator();
-		Entry<String, Object> item = i.next();
-		sb.append(EntityUtil.quote(item.getKey().toString()));
+		sb.append(EntityUtil.quote(get(0).toString()));
 		sb.append(":");
-		sb.append(EntityUtil.valueToString(item.getValue(), false, this));
-		while (i.hasNext()) {
-			item = i.next();
+		sb.append(EntityUtil.valueToString(getValue(0), false, this));
+		for(int i=1;i<size();i++){
 			sb.append(",");
-			sb.append(EntityUtil.quote(item.getKey().toString()));
+			sb.append(EntityUtil.quote(get(i).toString()));
 			sb.append(":");
-			sb.append(EntityUtil.valueToString(item.getValue(), false, this));
+			sb.append(EntityUtil.valueToString(getValue(i), false, this));
 		}
 		sb.append("}");
 		return sb.toString();
@@ -223,8 +217,6 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 			return "{" + values.size() + " values}";
 		}
 
-		Iterator<AbstractKeyValueEntry<String, Object>> iterator = values.iterator();
-		
 		int newindent = indent + indentFactor;
 		String prefix = "";
 		StringBuilder sb;
@@ -239,27 +231,24 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 			prefix = CRLF;
 		}
 
-		Entry<String, Object> item = iterator.next();
-		Object value = item.getValue();
-		if (length == 1 && !(value instanceof AbstractKeyValueEntry)) {
+		if ( length == 1 ) {
 			sb = new StringBuilder("{");
 		} else {
 			sb = new StringBuilder("{" + prefix + step);
 		}
 
-		sb.append(EntityUtil.quote(item.getKey().toString()));
+		sb.append(EntityUtil.quote(get(0).toString()));
 		sb.append(":");
-		sb.append(EntityUtil.valueToString(value, indentFactor, newindent,
+		sb.append(EntityUtil.valueToString(getValue(0), indentFactor, newindent,
 				false, this));
-		while (iterator.hasNext()) {
-			item = iterator.next();
+		for(int i=1; i<length;i++){
 			sb.append("," + prefix + step);
-			sb.append(EntityUtil.quote(item.getKey().toString()));
+			sb.append(EntityUtil.quote(get(i).toString()));
 			sb.append(":");
-			sb.append(EntityUtil.valueToString(item.getValue(), indentFactor,
+			sb.append(EntityUtil.valueToString(getValue(i), indentFactor,
 					newindent, false, this));
 		}
-		if (length == 1 && !(value instanceof AbstractKeyValueEntry)) {
+		if ( length == 1 ) {
 			sb.append("}");
 		} else {
 			sb.append(prefix + "}");
@@ -355,20 +344,12 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 	}
 
 	@Override
-	public AbstractKeyValueEntry<String, Object> getNewEntity() {
-		return new MapEntry();
-	}
-	public void add(int index, String key, String value) {
-		add(index, getNewEntity().withValue(key, value));
-	}
-
-	@Override
 	public JsonObject with(
 			Object... values) {
 		if(values != null){
 			for(Object value : values){
-				if(value instanceof AbstractKeyValueEntry<?,?>){
-					AbstractKeyValueEntry<?,?> item = (AbstractKeyValueEntry<?, ?>) value;
+				if(value instanceof AbstractEntity<?,?>){
+					AbstractEntity<?,?> item = (AbstractEntity<?, ?>) value;
 					this.put(item.getKeyString(), item.getValue());
 				}
 			}
@@ -404,5 +385,10 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 			this.put(key, getNewArray().with(object).with(value));
 		}
 		return this;
+	}
+
+	@Override
+	public Object remove(Object key) {
+		return removeItemByObject((String) key);
 	}
 }
