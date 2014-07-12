@@ -39,7 +39,7 @@ public class GraphEdge extends AbstractEntityList<GraphNode> implements List<Gra
 	}
 
 	public GraphEdge(GraphNode node, Cardinality cardinality, String property) {
-		with(node);
+		with((Object)node);
 		with(cardinality);
 		with(property);
 	}
