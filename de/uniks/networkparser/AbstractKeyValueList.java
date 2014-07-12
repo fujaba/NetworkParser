@@ -70,6 +70,7 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 		}
 		
 		addEntity(key, value);
+		
 		return value;
 	}
 	
@@ -564,6 +565,15 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 		 V graphNode = this.values.get(index);
 		 this.values.remove(index);
 		 return graphNode;
+	}
+	
+	@Override
+	protected K removeItemByIndex(int index, boolean refresh) {
+		K result = super.removeItemByIndex(index, refresh);
+		if(result!= null){
+			this.values.remove(index);
+		}
+		return result;
 	}
 
 	protected void fireProperty(Object object, K key, K beforeElement, V value) {

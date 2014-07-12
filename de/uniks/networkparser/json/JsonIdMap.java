@@ -78,6 +78,7 @@ public class JsonIdMap extends IdMap {
 		this.withCreator(new DateCreator());
 		this.withCreator(new JsonObjectCreator());
 		this.withCreator(new JsonArrayCreator());
+		this.withCreator(new ObjectMapEntry());
 	}
 	
 	/**
