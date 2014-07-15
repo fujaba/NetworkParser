@@ -28,6 +28,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import com.sun.org.apache.xml.internal.security.signature.Reference;
+
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.sort.EntityComparator;
 import de.uniks.networkparser.sort.SortingDirection;
@@ -644,12 +646,6 @@ public abstract class AbstractList<V> implements BaseItem {
         return this;
     }
 	
-	public AbstractList<V> withReference(AbstractList<V> reference){
-		this.cpr = reference.comparator();
-		this.allowDuplicate = reference.isAllowDuplicate();
-		return this;
-	}
-	
 	/**
 	 * If the List is Empty
 	 * 
@@ -769,8 +765,19 @@ public abstract class AbstractList<V> implements BaseItem {
 	
 	@Override
    public AbstractList<V> clone() {
-	   return this.getNewInstance().with((Collection<?>)this);
+	   return clone(getNewInstance());
    }
+	
+	public AbstractList<V> clone(AbstractList<V> newInstance) {
+		newInstance.withComparator( this.cpr );
+		newInstance.withAllowDuplicate( isAllowDuplicate() );
+		newInstance.withList(this.keys);
+		return newInstance;
+	}
+	public AbstractList<V> withReference(AbstractList<V> reference){
+		return this;
+	}
+	
 	public abstract AbstractList<V> with(Object... values);
     
 	@SuppressWarnings("unchecked")
