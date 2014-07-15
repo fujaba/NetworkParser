@@ -27,9 +27,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-
-import com.sun.org.apache.xml.internal.security.signature.Reference;
-
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.sort.EntityComparator;
 import de.uniks.networkparser.sort.SortingDirection;
