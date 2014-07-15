@@ -36,7 +36,7 @@ public abstract class AbstractEntityList<V> extends AbstractList<V> implements L
     		V beforeValue = null;
     		if(index>0){
     			beforeValue = get(index - 1);
-    			fireProperty(null, element, beforeValue);
+    			fireProperty(null, element, beforeValue, null);
     		}
     	}
     }
@@ -65,13 +65,6 @@ public abstract class AbstractEntityList<V> extends AbstractList<V> implements L
 		return this;
 	}
     
-   public AbstractList<V> with(Collection<?> values) {
-		for(Iterator<?> i = values.iterator();i.hasNext();){
-			with( i.next() );
-		}
-		return this;
-	}
-	
 	public Collection<V> values() {
 		return keys;
 	}
