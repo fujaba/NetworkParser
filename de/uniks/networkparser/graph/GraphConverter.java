@@ -113,7 +113,7 @@ public class GraphConverter implements Converter {
 				if(props.getValue(i) instanceof JsonObject) {
 					// Must be a Link to 1
 					GraphNode newNode = parseJsonObject(root, (JsonObject)props.getValue(i), attributes);
-					root.addEdge(new GraphEdge().with((Object)graphNode).with(new GraphEdge(newNode, Cardinality.ONE, props.get(i))));
+					root.addEdge(new GraphEdge().with(graphNode).with(new GraphEdge(newNode, Cardinality.ONE, props.get(i))));
 				}else if(props.getValue(i) instanceof JsonArray) {
 					// Must be a Link to n
 					JsonArray array = (JsonArray) props.getValue(i);
@@ -121,7 +121,7 @@ public class GraphConverter implements Converter {
 					for(Object entity : array){
 						if(entity instanceof JsonObject){
 							GraphNode newNode = parseJsonObject(root, (JsonObject)entity, attributes);
-							root.addEdge(new GraphEdge().with((Object)graphNode).with(new GraphEdge(newNode, Cardinality.MANY, props.get(i))));							
+							root.addEdge(new GraphEdge().with(graphNode).with(new GraphEdge(newNode, Cardinality.MANY, props.get(i))));							
 						}else{
 							if(sb.length()>0){
 								sb.append(","+entity.toString());
