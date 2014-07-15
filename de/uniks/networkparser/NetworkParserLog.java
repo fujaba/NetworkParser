@@ -100,6 +100,7 @@ public class NetworkParserLog {
      * 
      * @param owner The Element with call the Methods
      * @param method The Caller-Method
+     * @param typ Typ of Log Value 
      * @param params The Original Parameters
      * @return boolean if method must Cancel
      */
