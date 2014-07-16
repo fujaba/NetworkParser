@@ -64,8 +64,8 @@ public class TableList extends AbstractEntityList<Object> implements SendableEnt
     
     @Override
     protected void fireProperty(Object oldValue, Object newValue,
-    		Object beforeValue) {
-    	super.fireProperty(oldValue, newValue, beforeValue);
+    		Object beforeValue, Object value) {
+    	super.fireProperty(oldValue, newValue, beforeValue,value);
     	
     	getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEMS, oldValue, newValue);
     }

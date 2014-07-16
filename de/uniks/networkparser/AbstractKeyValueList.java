@@ -575,8 +575,4 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 		}
 		return result;
 	}
-
-	protected void fireProperty(Object object, K key, K beforeElement, V value) {
-		// TODO Auto-generated method stub
-	}
 }

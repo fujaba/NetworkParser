@@ -27,7 +27,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.sort.EntityComparator;
 import de.uniks.networkparser.sort.SortingDirection;
@@ -176,7 +175,7 @@ public abstract class AbstractList<V> implements BaseItem {
 					if (i > 0) {
 						beforeElement = this.keys.get(i - 1);
 					}
-					fireProperty(null, newValue, beforeElement);
+					fireProperty(null, newValue, beforeElement, null);
 					return true;
 				}
 			}
@@ -195,7 +194,7 @@ public abstract class AbstractList<V> implements BaseItem {
 			if (size() > 1) {
 				beforeElement = this.keys.get(size() - 1);
 			}
-			fireProperty(null, newValue, beforeElement);
+			fireProperty(null, newValue, beforeElement, null);
 		}
 		return result;
 	}
@@ -483,7 +482,7 @@ public abstract class AbstractList<V> implements BaseItem {
 				oldValue = this.keys.get(index - 1);
 			}
 			this.keys.set(index, key);
-			fireProperty(oldValue, key, null);
+			fireProperty(oldValue, key, null, null);
 		} else {
 			addEntity(key);
 		}
@@ -531,7 +530,7 @@ public abstract class AbstractList<V> implements BaseItem {
 		}
 		listRemove(index);
 		hashTableRemove(oldValue);
-		fireProperty(oldValue, null, beforeValue);
+		fireProperty(oldValue, null, beforeValue, null);
 		if(refresh){
 			// Refactoring
 			resizeHashMap(this.hashTable.length);
@@ -639,16 +638,10 @@ public abstract class AbstractList<V> implements BaseItem {
     	return pos; 
     }
         
-    public AbstractList<V> withList(List<V> reference){
+    public AbstractList<V> withCopyList(List<V> reference){
         this.keys = reference;
         return this;
     }
-	
-	public AbstractList<V> withReference(AbstractList<V> reference){
-		this.cpr = reference.comparator();
-		this.allowDuplicate = reference.isAllowDuplicate();
-		return this;
-	}
 	
 	/**
 	 * If the List is Empty
@@ -738,8 +731,8 @@ public abstract class AbstractList<V> implements BaseItem {
         return keys.set(index, element);
     }
 
-	@SuppressWarnings("unchecked")
-	public <ST extends AbstractList<V>> ST without(Collection<?> values) {
+    @SuppressWarnings("unchecked")
+	public <ST extends AbstractList<V>> ST withoutList(Collection<?> values) {
 		for (Iterator<?> i = values.iterator(); i.hasNext();) {
 			without(i.next());
 		}
@@ -752,6 +745,7 @@ public abstract class AbstractList<V> implements BaseItem {
 			return null;
 		}
 		for(Object item : values){
+			
 			removeItemByObject((V) item);
 		}
 		return (ST)this;
@@ -768,11 +762,28 @@ public abstract class AbstractList<V> implements BaseItem {
 	
 	@Override
    public AbstractList<V> clone() {
-	   return this.getNewInstance().with((Collection<?>)this);
+	   return clone(getNewInstance());
    }
+	
+	public AbstractList<V> clone(AbstractList<V> newInstance) {
+		newInstance.withComparator( this.cpr );
+		newInstance.withAllowDuplicate( isAllowDuplicate() );
+		newInstance.withList(this.keys);
+		return newInstance;
+	}
+	public AbstractList<V> withReference(AbstractList<V> reference){
+		return this;
+	}
+	
 	public abstract AbstractList<V> with(Object... values);
     
-
+	@SuppressWarnings("unchecked")
+	public <ST extends AbstractList<V>> ST withList(Collection<?> values) {
+		for (Iterator<?> i = values.iterator(); i.hasNext();) {
+			with(i.next());
+		}
+		return (ST) this;
+	}
 
     public int indexOf(Object o) {
         return keys.indexOf(o);
@@ -798,7 +809,6 @@ public abstract class AbstractList<V> implements BaseItem {
 		return this.keys.size();
 	}
 
-	protected void fireProperty(Object oldValue, Object newValue, Object beforeValue){
-		
+	protected void fireProperty(Object oldElement, Object newElement, Object beforeElement, Object value){
 	}
 }
