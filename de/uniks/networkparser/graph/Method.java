@@ -50,7 +50,7 @@ public class Method extends AbstractList<Parameter> implements GraphMember
 		boolean first = true;
 		int i = 0;
 
-		for (Parameter parameter : values) {
+		for (Parameter parameter : keys) {
 
 			if (first) {
 				sb.append(getParameterSignature(includeName, parameter, i));
@@ -59,7 +59,7 @@ public class Method extends AbstractList<Parameter> implements GraphMember
 				sb.append(getParameterSignature(includeName, parameter, i));
 			}
 
-			if (i < values.size() - 1) {
+			if (i < keys.size() - 1) {
 				if (includeName) {
 					sb.append(", ");
 				} else {
@@ -111,7 +111,7 @@ public class Method extends AbstractList<Parameter> implements GraphMember
       {
          if (item != null)
          {
-        	 this.add(item);
+        	 this.addEntity(item);
          }
       }
       return this;
@@ -187,7 +187,7 @@ public class Method extends AbstractList<Parameter> implements GraphMember
 		}
 		for(Object value : values){
 			if(value!=null && value instanceof Parameter){
-				this.add((Parameter) value);
+				this.addEntity((Parameter) value);
 			}
 		}
 		return this;

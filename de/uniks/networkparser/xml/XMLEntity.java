@@ -22,9 +22,7 @@ package de.uniks.networkparser.xml;
  permissions and limitations under the Licence.
 */
 import java.util.ArrayList;
-import java.util.Iterator;
 
-import de.uniks.networkparser.AbstractKeyValueEntry;
 import de.uniks.networkparser.AbstractKeyValueList;
 import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.EntityUtil;
@@ -191,10 +189,9 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements S
 		sb.append(EntityUtil.repeat(' ', indentFactor));
 		sb.append("<" + this.getTag());
 
-		for (Iterator<AbstractKeyValueEntry<String, Object>> i = iterator(); i.hasNext();) {
-			Entry<String, Object> attribute = i.next();
-			sb.append(" " + attribute.getKey() + "="
-					+ EntityUtil.quote((String) attribute.getValue()));
+		int size=size();
+		for(int i=0;i<size;i++){
+			sb.append(" " + get(i) + "=" + EntityUtil.quote((String) getValue(i)));
 		}
 
 		boolean hasChild = (this.children != null && this.children.size() > 0);
@@ -253,13 +250,17 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements S
 		return new XMLEntity();
 	}
 
-	@Override
-	public AbstractKeyValueEntry<String, Object> getNewEntity() {
+	public MapEntry getNewEntity() {
 		return new MapEntry();
 	}
 
 	@Override
-	public AbstractList<AbstractKeyValueEntry<String, Object>> getNewInstance() {
+	public XMLEntity getNewInstance() {
 		return new XMLEntity();
+	}
+
+	@Override
+	public Object remove(Object key) {
+		return removeItemByObject(""+key);
 	}
 }

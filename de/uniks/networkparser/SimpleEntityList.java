@@ -1,6 +1,5 @@
-package de.uniks.networkparser.event;
+package de.uniks.networkparser;
 
-import de.uniks.networkparser.AbstractEntity;
 /*
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
@@ -23,24 +22,29 @@ import de.uniks.networkparser.AbstractEntity;
  permissions and limitations under the Licence.
 */
 
-public class SimpleMapEntry<K, V> extends AbstractEntity<K, V>{
-
+public class SimpleEntityList<K, V> extends AbstractKeyValueList<K, V>{
 	@Override
-	public Object getSendableInstance(boolean prototyp) {
-		return new SimpleMapEntry<K, V>();
+	public SimpleEntityList<K, V> getNewInstance() {
+		return new SimpleEntityList<K, V>();
+	}
+//FIXME
+//	@Override
+//	public boolean add(V e) {
+//		return addEntity(e);
+//	}
+	
+	private void main(){
+		
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public SimpleMapEntry<K, V> withKeyItem(Object key) {
-		withKey((K)key);
-		return this;
+	public V remove(Object key) {
+		return removeItem(key); 
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public SimpleMapEntry<K, V> withValueItem(Object value) {
-		this.withValue((V)value);
-		return this;
+	public AbstractList<K> with(Object... values) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

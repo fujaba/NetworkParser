@@ -24,9 +24,7 @@ package de.uniks.networkparser.graph;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import de.uniks.networkparser.AbstractKeyValueEntry;
 import de.uniks.networkparser.AbstractKeyValueList;
-import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.ArrayEntryList;
 import de.uniks.networkparser.SimpleArrayList;
 import de.uniks.networkparser.event.SimpleMapEntry;
@@ -102,13 +100,12 @@ public class GraphList extends AbstractKeyValueList<String, GraphNode> {
 		return links;
 	}
 
-	@Override
-	public AbstractKeyValueEntry<String, GraphNode> getNewEntity() {
+	public SimpleMapEntry<String, GraphNode> getNewEntity() {
 		return new SimpleMapEntry<String, GraphNode>();
 	}
 
 	@Override
-	public AbstractList<AbstractKeyValueEntry<String, GraphNode>> getNewInstance() {
+	public GraphList getNewInstance() {
 		return new GraphList();
 	}
 	
@@ -122,5 +119,10 @@ public class GraphList extends AbstractKeyValueList<String, GraphNode> {
 			}
 		}
 		return this;
+	}
+
+	@Override
+	public GraphNode remove(Object key) {
+		return removeItem(key);
 	}
 }

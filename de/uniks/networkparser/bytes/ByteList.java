@@ -21,6 +21,7 @@ package de.uniks.networkparser.bytes;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
+import de.uniks.networkparser.AbstractEntityList;
 import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.bytes.converter.ByteConverterHTTP;
 import de.uniks.networkparser.bytes.converter.ByteConverterString;
@@ -29,7 +30,7 @@ import de.uniks.networkparser.interfaces.ByteConverter;
 import de.uniks.networkparser.interfaces.ByteItem;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 
-public class ByteList extends AbstractList<ByteItem> implements ByteItem, FactoryEntity{
+public class ByteList extends AbstractEntityList<ByteItem> implements ByteItem, FactoryEntity{
 	/** The children of the ByteEntity. */
 	private byte typ = 0;
 
@@ -99,8 +100,8 @@ public class ByteList extends AbstractList<ByteItem> implements ByteItem, Factor
 		}
 		ByteUtil.writeByteHeader(buffer, typ, size);
 
-		for(int i=0;i<values.size();i++){
-			((ByteItem) values.get(i)).writeBytes(buffer, isDynamic, i==values.size()-1, isPrimitive);
+		for(int i=0;i<keys.size();i++){
+			((ByteItem) keys.get(i)).writeBytes(buffer, isDynamic, i==keys.size()-1, isPrimitive);
 		}
 	}
 
@@ -124,20 +125,20 @@ public class ByteList extends AbstractList<ByteItem> implements ByteItem, Factor
 		}
 		boolean isPrimitive = isDynamic;
 		int nullerBytes=0;
-		if(this.values.get(size-1) instanceof ByteEntity){
+		if(this.keys.get(size-1) instanceof ByteEntity){
 			// HEADER + VALUE
-			isPrimitive = isPrimitive && this.values.get(0).getTyp()==ByteIdMap.DATATYPE_CLAZZTYP;
-			if(this.values.get(size-1).getTyp()==ByteIdMap.DATATYPE_NULL){nullerBytes++;}
+			isPrimitive = isPrimitive && this.keys.get(0).getTyp()==ByteIdMap.DATATYPE_CLAZZTYP;
+			if(this.keys.get(size-1).getTyp()==ByteIdMap.DATATYPE_NULL){nullerBytes++;}
 		}else{
 			isPrimitive=false;
 		}
-		length=this.values.get(size-1).calcLength(isDynamic, true);
+		length=this.keys.get(size-1).calcLength(isDynamic, true);
 //		length=len+ByteUtil.getTypLen(valueList[size-1].getTyp(), len - 1);
 		for (int i = size - 2; i >= 0; i--) {
-			int len = this.values.get(i).calcLength(isDynamic, false);
+			int len = this.keys.get(i).calcLength(isDynamic, false);
 			if(isPrimitive){
-				if(this.values.get(i).getTyp()==ByteIdMap.DATATYPE_NULL){nullerBytes++;}
-				isPrimitive = (this.values.get(i).size()==len - 1);
+				if(this.keys.get(i).getTyp()==ByteIdMap.DATATYPE_NULL){nullerBytes++;}
+				isPrimitive = (this.keys.get(i).size()==len - 1);
 			}
 			length += len;
  		}
@@ -153,18 +154,18 @@ public class ByteList extends AbstractList<ByteItem> implements ByteItem, Factor
 		if(!isDynamic){
 			return false;
 		}
-		if(this.values.size()<1){
+		if(this.keys.size()<1){
 			return false;
 		}
-		if(!(this.values.get(this.values.size() - 1) instanceof ByteEntity)){
+		if(!(this.keys.get(this.keys.size() - 1) instanceof ByteEntity)){
 			return false;
 		}
-		if(this.values.get(0).getTyp()!=ByteIdMap.DATATYPE_CLAZZTYP){
+		if(this.keys.get(0).getTyp()!=ByteIdMap.DATATYPE_CLAZZTYP){
 			return false;
 		}
-		for(int i=1; i<this.values.size();i++){
-			int len = this.values.get(i).calcLength(isDynamic, false);
-			if((this.values.get(i).size()!=len - 1)){
+		for(int i=1; i<this.keys.size();i++){
+			int len = this.keys.get(i).calcLength(isDynamic, false);
+			if((this.keys.get(i).size()!=len - 1)){
 				return false;
 			}
 		}
@@ -202,5 +203,15 @@ public class ByteList extends AbstractList<ByteItem> implements ByteItem, Factor
 			}
 		}
 		return this;
+	}
+
+	@Override
+	public boolean add(ByteItem e) {
+		return addEntity(e);
+	}
+
+	@Override
+	public boolean remove(Object value) {
+		return removeItemByObject((ByteItem) value) >= 0;
 	}
 }
