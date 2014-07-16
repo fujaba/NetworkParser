@@ -569,14 +569,32 @@ public abstract class AbstractList<V> implements BaseItem {
     	return this;
     }
     
-	@SuppressWarnings("unchecked")
-   public <ST extends AbstractList<V>> ST with(Collection<?> values) {
-		for(Iterator<?> i = values.iterator();i.hasNext();){
-			with( i.next() );
-		}
-		return (ST)this;
-	}
-	
+    // obsolete, now down by with(Object... values)
+    //	@SuppressWarnings("unchecked")
+    //   public <ST extends AbstractList<V>> ST with(Collection<?> values) {
+    //		for(Iterator<?> i = values.iterator();i.hasNext();){
+    //			with( i.next() );
+    //		}
+    //		return (ST)this;
+    //	}
+    //	
+
+    public AbstractList<V> with(Object... values)
+	{
+	   for (Object obj : values)
+	   {
+	      if (obj instanceof Collection<?>)
+	      {
+	         this.addAll((Collection<? extends V>) obj);
+	      }
+	      else
+	      {
+	         this.add((V) obj);
+	      }
+	   }
+	   return this;
+	};
+		
 	@SuppressWarnings("unchecked")
 	public <ST extends AbstractList<V>> ST without(Collection<?> values) {
 		for (Iterator<?> i = values.iterator(); i.hasNext();) {
@@ -604,8 +622,7 @@ public abstract class AbstractList<V> implements BaseItem {
    public AbstractList<V> clone() {
 	   return this.getNewInstance().with((Collection<?>)this);
    }
-	public abstract AbstractList<V> with(Object... values);
-    
+
     public void add(int index, V element) {
         values.add(index, element);
         V beforeValue = null;
