@@ -21,10 +21,12 @@ express or implied.
 See the Licence for the specific language governing
 permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.AbstractList;
-import de.uniks.networkparser.AbstractEntityList;
+import java.util.List;
 
-public class GraphEdge extends AbstractEntityList<GraphNode> {
+import de.uniks.networkparser.AbstractEntityList;
+import de.uniks.networkparser.AbstractList;
+
+public class GraphEdge extends AbstractEntityList<GraphNode> implements List<GraphNode>{
 	public static final String PROPERTY_NODE = "node";
 	public static final String PROPERTY_CARDINALITY = "cardinality";
 	public static final String PROPERTY_PROPERTY = "property";
@@ -35,8 +37,6 @@ public class GraphEdge extends AbstractEntityList<GraphNode> {
 	public GraphEdge(){
 		
 	}
-	
-	
 
 	public GraphEdge(GraphNode node, Cardinality cardinality, String property) {
 		with(node);
@@ -106,7 +106,7 @@ public class GraphEdge extends AbstractEntityList<GraphNode> {
 
 	@Override
 	public boolean add(GraphNode newValue) {
-		if(super.add(newValue)){
+		if(super.addEntity(newValue)){
 			newValue.with(this);
 		}
 		return true;
@@ -114,5 +114,14 @@ public class GraphEdge extends AbstractEntityList<GraphNode> {
 
 	public GraphEdge getOther() {
 		return other;
+	}
+
+	@Override
+	public boolean remove(Object value) {
+		return removeItemByObject((GraphNode)value)>=0;
+	}
+	
+	public List<GraphNode> values(){
+		return keys;
 	}
 }

@@ -25,9 +25,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map.Entry;
-import de.uniks.networkparser.AbstractKeyValueEntry;
+
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
@@ -110,20 +109,19 @@ public class GraphConverter implements Converter {
 		
 		if(node.containsKey(JsonIdMap.JSON_PROPS)){
 			JsonObject props = node.getJsonObject(JsonIdMap.JSON_PROPS);
-			for(Iterator<AbstractKeyValueEntry<String, Object>> i = props.iterator();i.hasNext();){
-				AbstractKeyValueEntry<String, Object> item = i.next();
-				if(item.getValue() instanceof JsonObject) {
+			for(int i=0;i<props.size();i++){
+				if(props.getValue(i) instanceof JsonObject) {
 					// Must be a Link to 1
-					GraphNode newNode = parseJsonObject(root, (JsonObject)item.getValue(), attributes);
-					root.addEdge(new GraphEdge().with(graphNode).with(new GraphEdge(newNode, Cardinality.ONE, item.getKey())));
-				}else if(item.getValue() instanceof JsonArray) {
+					GraphNode newNode = parseJsonObject(root, (JsonObject)props.getValue(i), attributes);
+					root.addEdge(new GraphEdge().with(graphNode).with(new GraphEdge(newNode, Cardinality.ONE, props.get(i))));
+				}else if(props.getValue(i) instanceof JsonArray) {
 					// Must be a Link to n
-					JsonArray array = (JsonArray) item.getValue();
+					JsonArray array = (JsonArray) props.getValue(i);
 					StringBuilder sb = new StringBuilder();
 					for(Object entity : array){
 						if(entity instanceof JsonObject){
 							GraphNode newNode = parseJsonObject(root, (JsonObject)entity, attributes);
-							root.addEdge(new GraphEdge().with(graphNode).with(new GraphEdge(newNode, Cardinality.MANY, item.getKey())));							
+							root.addEdge(new GraphEdge().with(graphNode).with(new GraphEdge(newNode, Cardinality.MANY, props.get(i))));							
 						}else{
 							if(sb.length()>0){
 								sb.append(","+entity.toString());
@@ -133,14 +131,14 @@ public class GraphConverter implements Converter {
 						}
 					}
 					if(sb.length()>0){
-						Attribute attribute = new Attribute().with(item.getKey()).with(item.getValue().getClass().getName()).withValue(sb.toString());
+						Attribute attribute = new Attribute().with(props.get(i)).with(props.getValue(i).getClass().getName()).withValue(sb.toString());
 						if(attributes.get(graphNode)==null){
 							attributes.put(graphNode, new ArrayList<Attribute>());
 						}
 						attributes.get(graphNode).add(attribute);
 					}
 				}else{
-					Attribute attribute = new Attribute().with(item.getKey()).with(DataType.ref(item.getValue().getClass())).withValue(item.getValue().toString());
+					Attribute attribute = new Attribute().with(props.get(i)).with(DataType.ref(props.getValue(i).getClass())).withValue(props.getValue(i).toString());
 					if(attributes.get(graphNode)==null){
 						attributes.put(graphNode, new ArrayList<Attribute>());
 					}
@@ -229,19 +227,19 @@ public class GraphConverter implements Converter {
 		}else{
 			item.put(ID, entity.getClassName(shortName));
 		}
-		item.put(ATTRIBUTES, parseAttributes(typ, entity.getValues(), shortName));
+		item.put(ATTRIBUTES, parseAttributes(typ, entity.values(), shortName));
 		return item;
 	}
 	
 	public GraphNodeImage getNodeHeader(GraphNode entity){
-		for(GraphMember member : entity.getValues()){
+		for(GraphMember member : entity.values()){
 			if(member instanceof GraphNodeImage){
 				return (GraphNodeImage) member;
 			}
 		}
 		return null;
 	}
-	private JsonArray parseAttributes(String typ, List<GraphMember> list, boolean shortName) {
+	private JsonArray parseAttributes(String typ, Collection<GraphMember> list, boolean shortName) {
 		JsonArray result=new JsonArray();
 		String splitter = "";
 		if (typ.equals(GraphIdMap.OBJECT)) {

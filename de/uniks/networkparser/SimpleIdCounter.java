@@ -32,6 +32,11 @@ public class SimpleIdCounter implements IdMapCounter {
 
 	/** The number. */
 	protected long number = 1;
+	
+	public void setNumber(long number)
+   {
+      this.number = number;
+   }
 
 	private char splitter = '.';
 

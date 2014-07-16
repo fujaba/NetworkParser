@@ -22,9 +22,7 @@ package de.uniks.networkparser.json;
  permissions and limitations under the Licence.
 */
 import java.util.Iterator;
-import java.util.Map.Entry;
 
-import de.uniks.networkparser.AbstractKeyValueEntry;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.interfaces.IdMapCounter;
@@ -73,9 +71,8 @@ public class SimpleGrammar extends Grammar{
 		json.put(ID, id);
 
 		if (jsonProp.size() > 0) {
-			for(Iterator<AbstractKeyValueEntry<String, Object>> iterator = jsonProp.iterator();iterator.hasNext();){
-				Entry<String, Object> item = iterator.next();
-				json.put(item.getKey(), item.getValue());
+			for(int i=0;i<jsonProp.size();i++){
+				json.put(jsonProp.get(i), jsonProp.getValue(i));
 			}
 		}
 		return json;

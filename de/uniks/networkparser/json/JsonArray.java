@@ -24,7 +24,6 @@ package de.uniks.networkparser.json;
 import java.util.Iterator;
 
 import de.uniks.networkparser.AbstractEntityList;
-import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -74,7 +73,7 @@ import de.uniks.networkparser.interfaces.StringItem;
  * @version 2010-12-28
  */
 
-public class JsonArray extends AbstractEntityList<Object> implements StringItem, FactoryEntity{	
+public class JsonArray extends AbstractEntityList<Object> implements StringItem, FactoryEntity {	
 	private boolean visible=true;
 	/**
 	 * Get the JSONArray associated with an index.
@@ -254,7 +253,7 @@ public class JsonArray extends AbstractEntityList<Object> implements StringItem,
 	
 
 	public JsonObject get(String id){
-		for(Object item : values){
+		for(Object item : keys){
 			if(item instanceof JsonObject){
 				JsonObject json = (JsonObject) item;
 				if(json.has(JsonIdMap.ID) && json.getString(JsonIdMap.ID).equals(id)){
@@ -287,11 +286,6 @@ public class JsonArray extends AbstractEntityList<Object> implements StringItem,
 	}
 
 	@Override
-	public Object get(int index) {
-		return this.values.get(index);
-	}
-	
-	@Override
 	public JsonArray tailSet(Object fromElement, boolean inclusive) {
 		return (JsonArray) super.tailSet(fromElement, inclusive);
 	}
@@ -323,7 +317,7 @@ public class JsonArray extends AbstractEntityList<Object> implements StringItem,
 	}
 
 	@Override
-	public AbstractList<Object> getNewInstance() {
+	public JsonArray getNewInstance() {
 		return new JsonArray();
 	}
 
@@ -333,4 +327,13 @@ public class JsonArray extends AbstractEntityList<Object> implements StringItem,
 		return this;
 	}
 
+	@Override
+	public boolean add(Object e) {
+		return addEntity(e);
+	}
+
+	@Override
+	public boolean remove(Object value) {
+		return removeItemByObject(value) >= 0;
+	}
 }

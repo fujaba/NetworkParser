@@ -21,11 +21,8 @@ package de.uniks.networkparser.json;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import java.util.Iterator;
-
-import de.uniks.networkparser.AbstractEntityList;
-import de.uniks.networkparser.AbstractKeyValueEntry;
 import de.uniks.networkparser.AbstractKeyValueList;
+import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.Tokener;
@@ -71,8 +68,8 @@ public class JsonTokener extends Tokener {
 		case '[':
 			if (creator instanceof FactoryEntity) {
 				BaseItem element = ((FactoryEntity)creator).getNewArray();
-				if(element instanceof AbstractEntityList<?>){
-					this.parseToEntity((AbstractEntityList<?>)element);
+				if(element instanceof AbstractList<?>){
+					this.parseToEntity((AbstractList<?>)element);
 				}
 				return element;
 			}
@@ -97,9 +94,9 @@ public class JsonTokener extends Tokener {
 					&& xmlEntity.getValue().length() > 0) {
 				parent.put(JsonIdMap.VALUE, xmlEntity.getValue());
 			}
-			for(Iterator<AbstractKeyValueEntry<String, Object>> i = xmlEntity.iterator();i.hasNext();){
-				AbstractKeyValueEntry<String, Object> item = i.next();
-				parseEntityProp(props, item.getValue(), item.getKey());
+			
+			for(int i=0;i<xmlEntity.size();i++){
+				parseEntityProp(props, xmlEntity.getValue(i), xmlEntity.get(i));
 			}
 			for (XMLEntity children : xmlEntity.getChildren()) {
 				parseEntityProp(props, children, children.getTag());
@@ -153,9 +150,9 @@ public class JsonTokener extends Tokener {
 					&& xmlEntity.getValue().length() > 0) {
 				parent.put(JsonIdMap.VALUE, xmlEntity.getValue());
 			}
-			for(Iterator<AbstractKeyValueEntry<String, Object>> i = xmlEntity.iterator();i.hasNext();){
-				AbstractKeyValueEntry<String, Object> item = i.next();
-				parseEntityProp(props, item.getValue(), item.getKey());
+			
+			for(int i=0;i<xmlEntity.size();i++){
+				parseEntityProp(props, xmlEntity.getValue(i), xmlEntity.get(i));
 			}
 			for (XMLEntity children : xmlEntity.getChildren()) {
 				parseEntityProp(props, children, children.getTag());
@@ -216,7 +213,7 @@ public class JsonTokener extends Tokener {
 	}
 
 	@Override
-	public void parseToEntity(AbstractEntityList<?> entityList) {
+	public void parseToEntity(AbstractList<?> entityList) {
 		char c=nextStartClean();
 		if (c != '[') {
 			if(logger.error(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entityList)){

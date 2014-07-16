@@ -22,18 +22,19 @@ permissions and limitations under the Licence.
 */
 
 import java.beans.PropertyChangeListener;
+import java.util.List;
 
 import de.uniks.networkparser.AbstractEntityList;
 import de.uniks.networkparser.AbstractList;
 
-public class PropertyChangeListenerList extends AbstractEntityList<PropertyChangeListener> {
+public class PropertyChangeListenerList extends AbstractEntityList<PropertyChangeListener> implements List<PropertyChangeListener>{
 	@Override
 	public String toString() {
 		return "ArrayEntryList with "+size()+" Elements";
 	}
 
 	@Override
-	public AbstractEntityList<PropertyChangeListener> with(Object... values) {
+	public PropertyChangeListenerList with(Object... values) {
 		if(values != null){
 			for(Object value : values){
 				if(value instanceof PropertyChangeListener){
@@ -49,5 +50,13 @@ public class PropertyChangeListenerList extends AbstractEntityList<PropertyChang
 		return new PropertyChangeListenerList();
 	}
 
-	
+	@Override
+	public boolean remove(Object value) {
+		return removeItemByObject((PropertyChangeListener)value) >= 0;
+	}
+
+	@Override
+	public boolean add(PropertyChangeListener e) {
+		return addEntity(e);
+	}
 }

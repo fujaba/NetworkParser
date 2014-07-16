@@ -21,6 +21,7 @@ package de.uniks.networkparser.bytes;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
+import de.uniks.networkparser.AbstractEntityList;
 import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferedBytes;
@@ -28,7 +29,7 @@ import de.uniks.networkparser.interfaces.ByteConverter;
 import de.uniks.networkparser.interfaces.ByteItem;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 
-public class BitEntity extends AbstractList<BitValue> implements ByteItem, FactoryEntity {
+public class BitEntity extends AbstractEntityList<BitValue> implements ByteItem, FactoryEntity {
 	public static final byte BIT_STRING = 0x53; // S = String;
 	public static final byte BIT_NUMBER = 0x4E; // N = Number
 	public static final byte BIT_BYTE = 0x42;    // B = Byte
@@ -49,7 +50,7 @@ public class BitEntity extends AbstractList<BitValue> implements ByteItem, Facto
 	}
 	
 	public BitEntity withStartLen(int start, int len){
-		this.values.add(new BitValue(start, len));
+		this.keys.add(new BitValue(start, len));
 		return this;
 	}
 
@@ -179,5 +180,15 @@ public class BitEntity extends AbstractList<BitValue> implements ByteItem, Facto
 	@Override
 	public AbstractList<BitValue> getNewInstance() {
 		return new BitEntity();
+	}
+
+	@Override
+	public boolean add(BitValue e) {
+		return addEntity(e);
+	}
+
+	@Override
+	public boolean remove(Object value) {
+		return removeItemByObject((BitValue) value)>=0;
 	}
 }

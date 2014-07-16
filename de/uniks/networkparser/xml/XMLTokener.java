@@ -23,8 +23,8 @@ package de.uniks.networkparser.xml;
 */
 import java.util.ArrayList;
 
-import de.uniks.networkparser.AbstractEntityList;
 import de.uniks.networkparser.AbstractKeyValueList;
+import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.ReferenceObject;
 import de.uniks.networkparser.Tokener;
@@ -56,8 +56,10 @@ public class XMLTokener extends Tokener {
 			back();
 			if (creator instanceof FactoryEntity) {
 				BaseItem element = ((FactoryEntity)creator).getNewObject();
-				if(element instanceof AbstractEntityList<?>){
-					parseToEntity((AbstractEntityList<?>)element);
+				if(element instanceof AbstractKeyValueList<?,?>){
+					parseToEntity((AbstractKeyValueList<?,?>)element);
+				}else if(element instanceof AbstractList<?>){
+					parseToEntity((AbstractList<?>)element);
 				}
 				return element;
 			}
@@ -165,7 +167,7 @@ public class XMLTokener extends Tokener {
 	}
 	
 	@Override
-	public void parseToEntity(AbstractEntityList<?>  entityList) {
+	public void parseToEntity(AbstractList<?>  entityList) {
 		// Do Nothing
 	}
 
