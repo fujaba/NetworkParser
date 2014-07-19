@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="buildJars" name="Create Jar for NetworkParser">
+	<!-- Change to JRE on Workspace -->
+	<import file="buildAnt.xml" as="Ant"/>
+	<target name="buildJars" depends="Ant.buildAnt">
+		<taskdef name="CopyRightSetter" classname="de.uniks.networkparser.test.build.CopyRightSetter"  classpath="build/ant.jar"/>
+		<CopyRightSetter projectName="NetworkParser" source="src/de/uniks/networkparser/" file="Ant/de/uniks/networkparser/test/build/Licence.txt"/>
+
+		<jar destfile="./build/networkparser.jar" filesetmanifest="mergewithoutmain" manifest="build/MANIFEST.MF">
+			<fileset dir="./bin" excludes="de/uniks/networkparser/test/**" />
+			<fileset file="Ant/de/uniks/networkparser/test/build/Licence.txt" id="Licence.txt" />
+		</jar>
+		<jar destfile="./build/networkparser-source.jar" filesetmanifest="mergewithoutmain" manifest="build/MANIFEST.MF">
+			<fileset dir="./bin" excludes="de/uniks/networkparser/test/**" />
+			<fileset dir="./src"/>
+			<fileset file="Ant/de/uniks/networkparser/test/build/Licence.txt" id="Licence.txt" />
+		</jar>
+		
+		<javadoc destdir="build/javadoc/" sourcepath="src" />
+		<jar destfile="./build/networkparser-javadoc.jar" filesetmanifest="mergewithoutmain"  manifest="build/MANIFEST.MF">
+			<fileset dir="build/javadoc/" />
+			<fileset file="Ant/de/uniks/networkparser/test/build/Licence.txt" id="Licence.txt" />
+		</jar>
+		<delete dir="build/javadoc/"/>
+	</target>
+</project>

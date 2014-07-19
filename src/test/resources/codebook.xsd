@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--W3C Schema erstellt mit XMLSpy v2013 sp1 (http://www.altova.com)-->
+<cb:schema xmlns:cb="http://www.w3.org/2001/XMLSchema">
+	<cb:element name="qtafi">
+		<cb:annotation>
+			<cb:documentation>QTAFI - Questions, Tables and Figures</cb:documentation>
+		</cb:annotation>
+		<cb:complexType>
+			<cb:sequence>
+				<cb:element name="codebook">
+					<cb:complexType>
+						<cb:sequence>
+							<cb:element name="properties" minOccurs="1" maxOccurs="unbounded">
+								<cb:complexType>
+									<cb:attribute name="data" use="required">
+										<cb:annotation>
+											<cb:documentation>Path of the Data (CSV-File)</cb:documentation>
+										</cb:annotation>
+									</cb:attribute>
+								</cb:complexType>
+							</cb:element>
+							<cb:element ref="page" minOccurs="1" maxOccurs="unbounded"/>
+						</cb:sequence>
+					</cb:complexType>
+				</cb:element>
+			</cb:sequence>
+		</cb:complexType>
+	</cb:element><!--  ELEMENTS-->
+	<cb:element name="page">
+		<cb:complexType>
+			<cb:sequence>
+				<cb:element ref="children" minOccurs="1" maxOccurs="1"/>
+			</cb:sequence>
+			<cb:attribute name="number" type="cb:decimal" use="required"/>
+		</cb:complexType>
+	</cb:element>
+	<cb:element name="children">
+		<cb:complexType>
+			<cb:choice maxOccurs="unbounded" minOccurs="1">
+				<cb:element ref="CV"/>
+				<cb:element ref="OR"/>
+				<cb:element ref="MD"/>
+				<cb:element ref="TL"/>
+				<cb:element ref="ME"/>
+				<cb:element ref="COLUMNCONTAINER"/>
+			</cb:choice>
+		</cb:complexType>
+	</cb:element>
+	<cb:element name="CV" type="question">
+		<cb:annotation>
+			<cb:documentation>Categorical variable - Single choice question</cb:documentation>
+		</cb:annotation>
+	</cb:element>
+	<cb:element name="MD" type="question">
+		<cb:annotation>
+			<cb:documentation>Multiple dichitomous variable - Multiple choice question
+			</cb:documentation>
+		</cb:annotation>
+	</cb:element>
+	<cb:element name="OR" type="question">
+		<cb:annotation>
+			<cb:documentation>Ordinal variable - Rating question
+			</cb:documentation>
+		</cb:annotation>
+	</cb:element>
+	<cb:element name="TE" type="question">
+		<cb:annotation>
+			<cb:documentation>Text variable - Text input question</cb:documentation>
+		</cb:annotation>
+	</cb:element>
+	<cb:element name="TL" type="question">
+		<cb:annotation>
+			<cb:documentation>Text variable - Text input question</cb:documentation>
+		</cb:annotation>
+	</cb:element>
+	<cb:element name="ME" type="question">
+		<cb:annotation>
+			<cb:documentation>Metric variable - Number input question</cb:documentation>
+		</cb:annotation>
+	</cb:element>
+	<cb:element name="COLUMNCONTAINER">
+		<cb:annotation>
+			<cb:documentation>Container for Question with multiply sections</cb:documentation>
+		</cb:annotation>
+		<cb:complexType>
+			<cb:complexContent>
+				<cb:extension base="question">
+					<cb:sequence>
+						<cb:element ref="children"/>
+					</cb:sequence>
+				</cb:extension>
+			</cb:complexContent>
+		</cb:complexType>
+	</cb:element>
+	<cb:element name="text">
+		<cb:annotation>
+			<cb:documentation>Text Element for Description</cb:documentation>
+		</cb:annotation>
+		<cb:complexType>
+			<cb:attribute name="level" use="required">
+				<cb:simpleType>
+					<cb:restriction base="cb:string">
+						<cb:enumeration value="caption">
+							<cb:annotation>
+								<cb:documentation xml:lang="DE">Footnote</cb:documentation>
+							</cb:annotation>
+						</cb:enumeration>
+						<cb:enumeration value="head1">
+							<cb:annotation>
+								<cb:documentation xml:lang="DE">Heading level</cb:documentation>
+							</cb:annotation>
+						</cb:enumeration>
+						<cb:enumeration value="head2">
+							<cb:annotation>
+								<cb:documentation xml:lang="DE">Heading level</cb:documentation>
+							</cb:annotation>
+						</cb:enumeration>
+						<cb:enumeration value="moretext"/>
+					</cb:restriction>
+				</cb:simpleType>
+			</cb:attribute>
+		</cb:complexType>
+	</cb:element>
+	<cb:element name="report">
+		<cb:annotation>
+			<cb:documentation>Report for Question (Each one report per table)</cb:documentation>
+		</cb:annotation>
+		<cb:complexType>
+			<cb:sequence>
+				<cb:element ref="text" minOccurs="1" maxOccurs="unbounded"/>
+				<cb:element ref="break" minOccurs="0" maxOccurs="unbounded"/>
+				<cb:element ref="block" minOccurs="1" maxOccurs="unbounded"/>
+			</cb:sequence>
+		</cb:complexType>
+	</cb:element>
+	<cb:element name="break">
+		<cb:complexType>
+			<cb:sequence>
+				<cb:element ref="text" minOccurs="1" maxOccurs="unbounded"/><!--																<cb:element name="variable" type="ReportVariable" minOccurs="1" maxOccurs="unbounded"/>
+-->
+				<cb:element name="value" type="ValueType" minOccurs="1" maxOccurs="unbounded"/>
+				<cb:element ref="break" minOccurs="0" maxOccurs="unbounded"/>
+			</cb:sequence>
+			<cb:attribute name="variable" type="cb:string" use="required"/>
+		</cb:complexType>
+	</cb:element>
+	
+	<cb:element name="block">
+		<cb:complexType>
+			<cb:sequence>
+				<cb:element ref="text" minOccurs="1" maxOccurs="unbounded"/>
+				<cb:element name="variable" type="ReportVariable" minOccurs="1" maxOccurs="unbounded"/>
+				<cb:element name="value" type="ValueType" minOccurs="0" maxOccurs="unbounded"/>
+				<cb:element ref="statistic" minOccurs="1" maxOccurs="unbounded"/>
+			</cb:sequence>
+		</cb:complexType>
+	</cb:element>
+	
+	<cb:element name="statistic">
+		<cb:complexType>
+			<cb:sequence>
+				<cb:element ref="text" minOccurs="1" maxOccurs="unbounded"/>
+				<cb:element name="data" minOccurs="1" maxOccurs="unbounded"/>
+					<cb:element ref="row" minOccurs="1" maxOccurs="unbounded"/>
+
+			</cb:sequence>
+			<cb:attribute name="type" use="required">
+				<cb:simpleType>
+					<cb:restriction base="cb:string">
+						<cb:enumeration value="count"/>
+						<cb:enumeration value="percentage"/>
+						<cb:enumeration value="sum"/>
+						<cb:enumeration value="mean"/>
+						<cb:enumeration value="sd"/>
+					</cb:restriction>
+				</cb:simpleType>
+			</cb:attribute>
+			<cb:attribute name="base" use="required">
+				<cb:simpleType>
+					<cb:restriction base="cb:string">
+						<cb:enumeration value="responses"/>
+						<cb:enumeration value="cases"/>
+						<cb:enumeration value="is"/>
+						<cb:enumeration value="r"/>
+					</cb:restriction>
+				</cb:simpleType>
+			</cb:attribute>
+			<cb:attribute name="NumberFormat" use="required" type="cb:string"/>
+			<cb:attribute name="missingsInclude" use="required" type="cb:boolean"/>
+			<cb:attribute name="aggregate" use="required">
+				<cb:simpleType>
+					<cb:restriction base="cb:string">
+						<cb:enumeration value="none"/>
+						<cb:enumeration value="variables"/>
+						<cb:enumeration value="all"/>
+					</cb:restriction>
+				</cb:simpleType>
+			</cb:attribute>
+		</cb:complexType>
+	</cb:element>
+	
+	<cb:element name="row">
+		<cb:complexType>
+		    <cb:sequence>
+			   <cb:element ref="cell" minOccurs="1" maxOccurs="unbounded"/>
+			</cb:sequence>
+		
+			<cb:attribute name="variable" type="cb:string" use="required"/>
+			<cb:attribute name="value" type="cb:string" use="required"/>
+		</cb:complexType>
+	</cb:element>
+	
+	<cb:element name="cell" >
+				<cb:annotation>
+			<cb:documentation xml:lang="DE">Cell Value</cb:documentation>
+		</cb:annotation>
+					<cb:complexType>
+								<cb:attribute name="value" type="cb:string" use="required"/>
+								<cb:attribute name="breakvar" type="cb:string"/>
+								<cb:attribute name="breakval" type="cb:string" />
+								<cb:attribute name="all" type="cb:string" use="required"/>
+					</cb:complexType>
+	</cb:element>
+
+	<!--  COMPLEXTYPES -->
+	<cb:complexType name="question">
+		<cb:annotation>
+			<cb:documentation xml:lang="DE">Question Element</cb:documentation>
+		</cb:annotation>
+		<cb:sequence>
+			<cb:element ref="text" minOccurs="1" maxOccurs="unbounded"/>
+			<cb:element name="variable" type="VariableType"/>
+			<cb:element name="value" type="ValueType"/>
+			<cb:element name="number" type="cb:string" minOccurs="1" maxOccurs="1"/>
+			<cb:element ref="report" minOccurs="0" maxOccurs="unbounded"/>
+		</cb:sequence>
+		<cb:attribute name="id" type="cb:string" use="required"/>
+		<cb:attribute name="qmsid" type="cb:string" use="required"/>
+	</cb:complexType>
+	<cb:complexType name="VariableType">
+		<cb:attribute name="name" type="cb:string" use="required"/>
+		<cb:attribute name="label" type="cb:string" use="optional"/>
+	</cb:complexType>
+	<cb:complexType name="ReportVariable">
+		<cb:attribute name="name" type="cb:string" use="required"/>
+	</cb:complexType>
+	<cb:complexType name="ValueType">
+		<cb:attribute name="key" type="cb:string" use="required"/>
+		<cb:attribute name="missing" type="cb:boolean" use="optional"/>
+	</cb:complexType>
+</cb:schema>

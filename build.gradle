@@ -1,0 +1,78 @@
+import java.text.SimpleDateFormat
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+
+// only for jenkins
+if(project.hasProperty('jenkins')) {
+	apply from: 'artifactory.gradle'
+	apply from: 'version.gradle'
+    apply plugin: 'jacoco'
+}
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '2.2.4')
+    }
+}
+
+sourceCompatibility = 1.7
+
+repositories {
+	mavenCentral()
+}
+
+
+dependencies {
+	testCompile group: 'junit', name: 'junit', version: '4.+'
+}
+
+jar {
+	from sourceSets.main.allJava
+
+	manifest {
+		attributes 'Specification-Version': "4.2.23.${revisionNumber()} ${today()}",
+			'Implementation-Title': 'Networkparser',
+			'Specification-Title': 'Networkparser',
+			'Built-Time': today(),
+			'Created-By': "4.2.23.${revisionNumber()} ${today()} ${System.properties['user.name']}",
+			'Built-By': "${System.properties['user.name']}",
+			'Location': "${System.properties['user.language']}",
+			'Author': 'Stefan Lindel',
+			'Version': revisionNumber(),
+			'Implementation-Version': "4.2.23.${revisionNumber()} ${today()}",
+			//'GIT-Branch': branchName(),
+			//'GIT-CommitId': '${LastCommit}',
+			'GIT-Revision': revisionNumber(),
+			'Java-Version': "${System.properties['java.version']}",
+			'Bundle-Description': 'NetworkParser',
+			'Bundle-ClassPath': '.'
+	}
+}
+
+def revisionNumber() {
+    def gitFolder = "$projectDir/.git/"
+    def takeFromHash = 12
+
+    def head = new File(gitFolder + "HEAD").text.split(":")
+    def isCommit = head.length == 1
+ 
+    if(isCommit) return head[0].trim().take(takeFromHash)
+ 
+    def refHead = new File(gitFolder + head[1].trim())
+    refHead.text.trim().take takeFromHash
+}
+
+def today() {
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+    Date date = new Date()
+    sdf.format(date)
+}
+
+
