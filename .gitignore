@@ -1,0 +1,9 @@
+/build
+/bin
+/.idea
+/gen
+/.settings
+/.gradle
+atlassian-ide-plugin.xml
+*.*~
+.classpath

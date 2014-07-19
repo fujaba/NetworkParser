@@ -1,0 +1,42 @@
+// MAJOR VERSION - Manually set
+//----------------------
+def majorVersion = 4
+//----------------------
+
+task printVersion {
+	doFirst {
+		println "$version"
+	}
+}
+
+version = new Version(major: majorVersion, minor: getGitTag())
+group = 'de.uniks'
+
+class Version {
+	int major, minor
+	int revision = System.getenv().BUILD_NUMBER as int
+	// change, if release is needed some day: boolean release
+	// also change version above to accept release property
+	boolean release = false
+
+	String toString() {
+		"$major.$minor.$revision${release ? '' : '-SNAPSHOT'}"
+	}
+}
+
+def getGitTag() {
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'tag'
+        standardOutput = stdout
+    }
+    int max = 0;
+	for(String line : stdout.toString().split("\n")){
+		try{
+			int val = Integer.parseInt(line.trim());
+			if(val > max) max = val;
+		}catch(NumberFormatException e){				
+		}			
+	}
+	return max;
+}

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="findBugs" name="Create Jar for NetworkParser" xmlns:cs="antlib:com.puppycrawl.tools.checkstyle">
+	<target name="checkStyle">
+		<taskdef resource="checkstyletask.properties" classpath="lib/checkstyle-5.7/checkstyle-5.7-all.jar" />
+		<checkstyle config="lib/checkstyle-5.7/sun_checks.xml" >
+			<fileset dir="src/" includes="**/*.java"/>
+			<!-- Location of cache-file. Something that is project specific -->
+			<property key="checkstyle.cache.file" file="target/cachefile"/>
+			<property key="LineLength.max" value="200"></property>
+			<formatter type="xml" tofile="build/checkstyle_report.xml"/>
+		</checkstyle>
+	</target>
+	<target name="findBugs">
+		<taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask" classpath="lib/findbugs-3.0.0/findbugs-ant.jar">
+			<classpath>
+			    <fileset dir="lib/findbugs-3.0.0/lib">
+			      <include name="*.jar"/>
+			    </fileset>
+			  </classpath>
+		</taskdef>
+		<mkdir dir="build/" />
+		<findbugs home="lib/findbugs-3.0.0/" output="xml" outputFile="build/findbugs.xml">
+			<sourcePath path="src" />
+			<fileset dir="./bin" excludes="de/uniks/networkparser/test/**,**/networkparser.gwt.xml" />
+		</findbugs>
+	</target>
+
+	<taskdef name="jacococoverage" classname="org.jacoco.ant.CoverageTask"><classpath path="lib\jacoco-0.7.1.201405082137\jacocoant.jar" /></taskdef>
+	<taskdef name="jacocoreport" classname="org.jacoco.ant.ReportTask"><classpath path="lib\jacoco-0.7.1.201405082137\jacocoant.jar"/></taskdef>
+	<target name="coverage">
+		<mkdir dir="build/junit"/>
+		<jacococoverage output="file" destfile="build/networkparser.exec">
+			<junit fork="yes" failureProperty="test.failed" forkmode="once" showoutput="false" printsummary="false">
+				<!--<formatter type="plain" usefile="false" />-->
+				<formatter type="xml"/>
+				<classpath path="lib">
+					<pathelement location="lib/jacoco-0.7.1.201405082137/junit.jar" />
+					<pathelement location="lib/jacoco-0.7.1.201405082137/org.hamcrest.core_1.3.0.v201303031735.jar" />
+					<pathelement location="./bin"/>
+				</classpath>
+				<batchtest todir="build/junit">
+					<fileset dir="src/test/java">
+						<include name="**/*Test.java" />
+					</fileset>
+				</batchtest>
+<!--				<test name="de.uniks.networkparser.test.AESTest"/>
+				<test name="de.uniks.networkparser.test.BitMapTest"/>
+				<test name="de.uniks.networkparser.test.ByteTest"/>
+				<test name="de.uniks.networkparser.test.CalculatorTest"/>
+				<test name="de.uniks.networkparser.test.CheckSumTest"/>
+				<test name="de.uniks.networkparser.test.CrossCompilerTest"/>
+				<test name="de.uniks.networkparser.test.DateTimeEntityTest"/>
+				<test name="de.uniks.networkparser.test.debugTest"/>
+				<test name="de.uniks.networkparser.test.EntityTest"/>
+				<test name="de.uniks.networkparser.test.GLocationJsonTest"/>
+				<test name="de.uniks.networkparser.test.JISMEngineTest"/>
+				<test name="de.uniks.networkparser.test.JsonFilterTest"/>
+				<test name="de.uniks.networkparser.test.JsonModellTest"/>
+				<test name="de.uniks.networkparser.test.JsonPeer2PeerTest"/>
+				<test name="de.uniks.networkparser.test.JsonTest"/>
+				<test name="de.uniks.networkparser.test.MathParserTest"/>
+				<test name="de.uniks.networkparser.test.MinimalJsonTest"/>
+				<!- -<test name="de.uniks.networkparser.test.PatternTest"/>- ->
+				<test name="de.uniks.networkparser.test.RegTest"/>
+				<test name="de.uniks.networkparser.test.StringTokenerTest"/>
+				<test name="de.uniks.networkparser.test.TestSimpleJson"/>
+				<test name="de.uniks.networkparser.test.XMLTest"/>
+				<!- -<test name="de.uniks.networkparser.test.XMLValidatorTest"/>- ->
+				<!- -<test name="de.uniks.networkparser.test.YUmlTest"/>- ->
+-->
+			</junit>
+		</jacococoverage>
+		<jacocoreport>
+			<executiondata>
+			     <file file="build/networkparser.exec"/>
+			</executiondata>
+			<structure name="NetworkParser">
+				<classfiles><fileset dir="bin/">
+					<exclude name="**/test/**" />
+				</fileset></classfiles>
+				<sourcefiles encoding="UTF-8">
+					<fileset dir="src"></fileset>					
+				</sourcefiles>
+			</structure>
+			<html destdir="build/report"/>
+		</jacocoreport>
+	</target>
+</project>
