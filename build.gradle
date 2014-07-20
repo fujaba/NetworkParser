@@ -2,15 +2,17 @@ import java.text.SimpleDateFormat
 
 apply plugin: 'java'
 apply plugin: 'maven'
-apply plugin: 'eclipse'
-apply plugin: 'idea'
-
+apply from: 'gradle/ide.gradle'
 
 // only for jenkins
 if(project.hasProperty('jenkins')) {
-	apply from: 'artifactory.gradle'
-	apply from: 'version.gradle'
+	apply from: 'gradle/artifactory.gradle'
+	apply from: 'gradle/version.gradle'
     apply plugin: 'jacoco'
+	
+	//tbd - need configuration
+	//apply plugin: 'checkstyle'
+	//apply plugin: 'findbugs'
 }
 
 buildscript {
@@ -23,11 +25,11 @@ buildscript {
 }
 
 sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
 repositories {
 	mavenCentral()
 }
-
 
 dependencies {
 	testCompile group: 'junit', name: 'junit', version: '4.+'

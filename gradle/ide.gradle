@@ -1,0 +1,9 @@
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+idea {
+	project {
+		jdkName = '1.7'
+		languageLevel = '1.7'
+	}
+}
