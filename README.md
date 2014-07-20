@@ -1,8 +1,7 @@
 NetworkParser
 =============
 
-Framework for serialization to Json, XML and Byte
+Framework for serialization from Java objects to Json, XML and Byte.
 
 
-A Simple Framework for serialization complexe Model structures.
-The NetworkParser transform a Model to a intermediate Modell with can be serializize with many filters.
+NetworkParser is a simple framework for serializing complex model structures. To do that it transforms a given model to an intermediate model which can be serialized. It also offers lots of filters.
