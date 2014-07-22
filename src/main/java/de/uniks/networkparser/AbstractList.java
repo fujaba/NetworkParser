@@ -104,26 +104,26 @@ public abstract class AbstractList<V> implements BaseItem {
    private void ensureHashTableCapacity(int size)
    {
       if (hashTable == null){
-    	  if(size <= hashTableStartHashingThreshold){
-    		  return;
-    	  }
-          hashTable = new Object[hashTableStartHashingThreshold*3];
-      }else {
-    	  	if (size < hashTableStartHashingThreshold / 10){
+         if(size*entitySize <= hashTableStartHashingThreshold){
+            return;
+         }
+         hashTable = new Object[hashTableStartHashingThreshold*entitySize*3];
+      } else {
+    	  	if (size*entitySize < hashTableStartHashingThreshold / 10){
 		         hashTable = null;
 		         return;
     	  	}
       }
       
-      if (size > hashTable.length * hashTableLoadThreshold)
+      if (size*entitySize > hashTable.length * hashTableLoadThreshold)
       {
          // double hashTable size
     	  resizeHashMap(this.hashTable.length*2);
       }
-      else if (size < hashTable.length / 20)
+      else if (size*entitySize < hashTable.length / 20)
       {
          // shrink hashTable size to a loadThreshold of 33%
-    	 resizeHashMap(size*3);
+    	 resizeHashMap(size*entitySize*3);
       }
    }
 
