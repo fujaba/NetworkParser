@@ -689,8 +689,9 @@ public abstract class AbstractList<V> implements BaseItem {
      */
     public int hashKey(int hashKey)
     {
-        int tmp = (hashKey + hashKey % entitySize) % this.hashTable.length;
-      return (tmp < 0 )? -tmp:tmp;
+       int tmp = (hashKey + hashKey % entitySize) % this.hashTable.length;
+       
+       return (tmp < 0 )? -tmp:tmp;
     }
 
     public Iterator<V> iterator() {
