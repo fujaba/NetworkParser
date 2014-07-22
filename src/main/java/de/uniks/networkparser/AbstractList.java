@@ -631,7 +631,7 @@ public abstract class AbstractList<V> implements BaseItem {
      */
     public int getIndex(Object key){
     	int pos=getPosition(key);
-    	if(this.hashTable != null){
+    	if(this.hashTable != null&& pos >=0){
     		if(this.entitySize==2){
     			return (int) this.hashTable[pos + 1];
     		}
@@ -691,7 +691,7 @@ public abstract class AbstractList<V> implements BaseItem {
     {
        int tmp = (hashKey + hashKey % entitySize) % this.hashTable.length;
        
-       return (tmp < 0 )? -tmp:tmp;
+      return (tmp < 0 ) ? -tmp:tmp;
     }
 
     public Iterator<V> iterator() {

@@ -34,6 +34,11 @@ import de.uniks.networkparser.interfaces.FactoryEntity;
 public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> implements Map<K, V> {
 	protected ArrayList<V> values = new ArrayList<V>();
 	
+	public AbstractKeyValueList()
+   {
+	   this.entitySize = 2;
+   }
+	
 	public AbstractKeyValueList<K, V> with(Map<?, ?> map) {
 		if (map != null) {
 			for (Iterator<?> i = map.entrySet().iterator(); i.hasNext();) {
