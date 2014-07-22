@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -68,7 +69,8 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	/** The updatelistener for Notification changes. */
 	protected PropertyChangeListener updatePropertylistener;
 	
-	protected ArrayEntryList keyValue;
+	protected LinkedHashMap<String, Object> keyValue;
+	protected LinkedHashMap<Object, String> valueKey;
 	
 	protected Filter filter=new Filter();
 	
@@ -98,7 +100,8 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	 */
 	public IdMapEncoder() {
 		super();
-		this.keyValue = new ArrayEntryList();
+		this.keyValue = new LinkedHashMap<String, Object>();
+		this.valueKey = new LinkedHashMap<Object, String>();
 		this.withCreator(new TextItems());
 	}
 
@@ -110,7 +113,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	 * @return the Map
 	 */
 	public IdMapEncoder withKeyValue(ArrayEntryList parent) {
-		this.keyValue = parent;
+		// this.keyValue = parent;
 		return this;
 	}
 
@@ -160,7 +163,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	public String getKey(Object obj) {
 		String result = null;
 		try{
-			result = this.keyValue.getKey(obj);
+			result = this.valueKey.get(obj);
 		}catch(ConcurrentModificationException e){
 			if(this.logger.error(this, "getKey", NetworkParserLog.ERROR_TYP_CONCURRENTMODIFICATION, obj)){
 				throw e;
@@ -179,7 +182,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	public Object getObject(String key) {
 		Object result = null;
 		try{
-			result = this.keyValue.getValue(key);
+			result = this.keyValue.get(key);
 		}catch(ConcurrentModificationException e){
 			if(this.logger.error(this, "getObject", NetworkParserLog.ERROR_TYP_CONCURRENTMODIFICATION, key)){
 				throw e;
@@ -215,7 +218,8 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	 */
 	@Override
 	public Object put(String jsonId, Object object) {
-		this.keyValue.with(jsonId, object);
+		this.keyValue.put(jsonId, object);
+		this.valueKey.put(object, jsonId);
 		addListener(object);
 		addTypList(object);
 		return object;
@@ -286,6 +290,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 		}
 		if (key != null) {
 			this.keyValue.remove(key);
+			this.valueKey.remove(oldValue);
 			if (this.typList != null) {
 				for (TypList list : this.typList) {
 					list.removeObject(oldValue);
@@ -431,8 +436,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 		TableList result = new TableList();
 		String clazzName = creator.getSendableInstance(true).getClass()
 				.getName();
-		for(int i=0;i<this.keyValue.size();i++){
-			Object item = this.keyValue.getValue(i);
+		for(Object item : this.keyValue.values()){
 			if(item != null){
 				if (item.getClass().getName().equals(clazzName)) {
 					result.add(item);
@@ -500,7 +504,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 		return null;
 	}
 
-	public ArrayEntryList getKeyValue(){
+	public LinkedHashMap<String, Object> getKeyValue(){
 		return keyValue;
 	}
 	

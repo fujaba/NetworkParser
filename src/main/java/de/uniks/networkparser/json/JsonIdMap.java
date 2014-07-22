@@ -818,10 +818,9 @@ public class JsonIdMap extends IdMap {
 	 * @see de.uni.kassel.peermessage.IdMap#garbageCollection(java.util.Set)
 	 */
 	public void garbageCollection(List<String> classCounts) {
-		for(int i=size()-1;i>=0;i--){
-			String id = this.keyValue.get(i);
+		for(String id : this.keyValue.keySet()){
 			if (!classCounts.contains(id)) {
-				this.keyValue.remove(i);
+				this.keyValue.remove(id);
 			}
 		}
 	}
