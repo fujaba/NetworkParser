@@ -1,4 +1,7 @@
 package de.uniks.networkparser;
+
+import de.uniks.networkparser.interfaces.BidiMap;
+
 /*
 NetworkParser
 Copyright (c) 2011 - 2013, Stefan Lindel
@@ -21,7 +24,7 @@ See the Licence for the specific language governing
 permissions and limitations under the Licence.
 */
 
-public class ArrayEntryList extends AbstractKeyValueList<String, Object> {
+public class ArrayEntryList extends AbstractKeyValueList<String, Object> implements BidiMap<String, Object>{
 	@Override
 	public String toString() {
 		return "ArrayEntryList with "+size()+" Elements";
@@ -58,5 +61,23 @@ public class ArrayEntryList extends AbstractKeyValueList<String, Object> {
 	@Override
 	public Object remove(Object key) {
 		return removeItemByObject(""+key);
+	}
+
+	// Methods for BidiMap
+	@Override
+	public boolean containKey(String key) {
+		return super.contains(key);
+	}
+	
+
+	@Override
+	public boolean containValue(Object value) {
+		return super.containsValue(value);
+	}
+
+	@Override
+	public ArrayEntryList without(String key, Object value) {
+		super.removeItemByObject(key);
+		return this;
 	}
 }

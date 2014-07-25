@@ -32,15 +32,15 @@ public interface BidiMap<K,V> {
 	
 	public Set<String> keySet();
 	
-	public boolean containsKey(K key);
+	public boolean containKey(K key);
 	
-	public boolean containsValue(V value);
+	public boolean containValue(V value);
 	
 	public BidiMap<K,V> without(K key, V value);
 	
 	public BidiMap<K,V> with(K key, V value);
 	
-	public V getValue(K key);
+	public V getValue(Object key);
 	
 	public K getKey(V key);
 }
