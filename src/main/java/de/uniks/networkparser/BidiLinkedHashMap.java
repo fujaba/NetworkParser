@@ -52,12 +52,12 @@ public class BidiLinkedHashMap implements BidiMap<String, Object>{
 	}
 
 	@Override
-	public boolean containsKey(String key) {
+	public boolean containKey(String key) {
 		return keyValue.containsKey(key);
 	}
 
 	@Override
-	public boolean containsValue(Object value) {
+	public boolean containValue(Object value) {
 		return valueKey.containsKey(value);
 	}
 
@@ -75,7 +75,7 @@ public class BidiLinkedHashMap implements BidiMap<String, Object>{
 	}
 
 	@Override
-	public Object getValue(String key) {
+	public Object getValue(Object key) {
 		return keyValue.get(key);
 	}
 
