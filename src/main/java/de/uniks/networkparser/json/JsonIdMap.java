@@ -820,7 +820,7 @@ public class JsonIdMap extends IdMap {
 	public void garbageCollection(List<String> classCounts) {
 		for(String id : this.keyValue.keySet()){
 			if (!classCounts.contains(id)) {
-				this.keyValue.remove(id);
+				this.keyValue.without(id, this.keyValue.getValue(id));
 			}
 		}
 	}
