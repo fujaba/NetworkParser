@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import de.uniks.networkparser.SimpleArrayList;
+import de.uniks.networkparser.ArraySimpleList;
 
 
 public class SimpleArrayListTest
@@ -16,7 +16,7 @@ public class SimpleArrayListTest
    public void test()
    {
       ArrayList<TestObject> list = gtTestList();
-      SimpleArrayList<TestObject> simpleArrayList = new SimpleArrayList<SimpleArrayListTest.TestObject>();
+      ArraySimpleList<TestObject> simpleArrayList = new ArraySimpleList<SimpleArrayListTest.TestObject>();
       for (TestObject testObject : list)
       {
          simpleArrayList.add(testObject);

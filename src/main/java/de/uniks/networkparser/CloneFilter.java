@@ -39,7 +39,7 @@ public class CloneFilter extends Filter {
 	private int typ;
 
 	/** The assocs. */
-	private SimpleEntityList<Object, Object> assocs = new SimpleEntityList<Object, Object>();
+	private ArrayEntityList<Object, Object> assocs = new ArrayEntityList<Object, Object>();
 
 	/**
 	 * Adds the object.

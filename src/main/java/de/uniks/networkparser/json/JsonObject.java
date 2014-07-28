@@ -21,6 +21,8 @@ package de.uniks.networkparser.json;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
+import java.util.Map;
+
 import de.uniks.networkparser.AbstractEntity;
 import de.uniks.networkparser.AbstractKeyValueList;
 import de.uniks.networkparser.AbstractList;
@@ -351,6 +353,8 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 				if(value instanceof AbstractEntity<?,?>){
 					AbstractEntity<?,?> item = (AbstractEntity<?, ?>) value;
 					this.put(item.getKeyString(), item.getValue());
+				}else if(value instanceof Map<?,?>){
+					this.withMap( (Map<?,?>) value);
 				}
 			}
 		}

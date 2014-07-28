@@ -25,8 +25,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import de.uniks.networkparser.AbstractKeyValueList;
-import de.uniks.networkparser.ArrayEntryList;
-import de.uniks.networkparser.SimpleArrayList;
+import de.uniks.networkparser.ArrayEntityList;
+import de.uniks.networkparser.ArraySimpleList;
 import de.uniks.networkparser.event.SimpleMapEntry;
 
 public class GraphList extends AbstractKeyValueList<String, GraphNode> {
@@ -82,16 +82,16 @@ public class GraphList extends AbstractKeyValueList<String, GraphNode> {
 		return edges;
 	}
 	
-	public ArrayEntryList getLinks(){
-		ArrayEntryList links = new ArrayEntryList();
+	public ArrayEntityList<String, Object> getLinks(){
+		ArrayEntityList<String, Object> links = new ArrayEntityList<String, Object>();
 		for (GraphEdge element : edges) {
 			for(GraphNode node : element.values()){
 				String key = node.getTyp(typ, false);
-				SimpleArrayList<?> value = (SimpleArrayList<?>)links.getValue(key);
+				ArraySimpleList<?> value = (ArraySimpleList<?>)links.getValue(key);
 				if(value!=null){
 					value.with(element);
 				}else{
-					SimpleArrayList<GraphEdge> simpleList = new SimpleArrayList<GraphEdge>();
+					ArraySimpleList<GraphEdge> simpleList = new ArraySimpleList<GraphEdge>();
 					simpleList.add(element);
 					links.put(key, simpleList);
 				}

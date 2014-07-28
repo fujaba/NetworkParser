@@ -39,7 +39,7 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 	   this.entitySize = 2;
    }
 	
-	public AbstractKeyValueList<K, V> with(Map<?, ?> map) {
+	public AbstractKeyValueList<K, V> withMap(Map<?, ?> map) {
 		if (map != null) {
 			for (Iterator<?> i = map.entrySet().iterator(); i.hasNext();) {
 				java.util.Map.Entry<?, ?> mapEntry = (Entry<?, ?>) i.next();
@@ -82,8 +82,8 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 	public void add(int index, K key, V element) {
     	if( ! contains(key) ){
     		keys.add(index, key);
-    		values.add(index, element);
     		hashTableAdd(key, index);
+    		values.add(index, element);
     		K beforeValue = null;
     		if(index>0){
     			beforeValue = get(index - 1);
@@ -104,6 +104,7 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 					}
 					this.keys.add(i, key);
 					this.values.add(i, value);
+					this.hashTableAdd(key, i);
 					K beforeElement = null;
 					if (i > 0) {
 						beforeElement = this.keys.get(i - 1);
@@ -540,18 +541,6 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 	}
 	
 	@Override
-	@SuppressWarnings("unchecked")
-	public AbstractKeyValueList<K, V> without(Object... values) {
-		if(values == null){
-			return this;
-		}
-		for(Object value : values){
-			remove((K)value);
-		}
-		return this;
-	}
-	
-	@Override
 	public Collection<V> values() {
 		return values;
 	}
@@ -570,6 +559,11 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 		 V graphNode = this.values.get(index);
 		 this.values.remove(index);
 		 return graphNode;
+	}
+	
+	@Override
+	public V remove(Object key) {
+		return removeItem(key); 
 	}
 	
 	@Override

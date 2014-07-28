@@ -166,10 +166,10 @@ public abstract class AbstractEntity<K, V> implements BaseItem, Entry<K, V>, Sen
 				if (value instanceof Entry<?, ?>) {
 					Object map = entry.getValue();
 					if (map == null) {
-						map = new ArrayEntryList();
+						map = new ArrayEntityList<String, Object>();
 					}
-					if (map instanceof ArrayEntryList) {
-						((ArrayEntryList) map).with(value);
+					if (map instanceof ArrayEntityList<?,?>) {
+						((ArrayEntityList<?,?>) map).with(value);
 					}
 					entry.withValueItem(map);
 				} else {

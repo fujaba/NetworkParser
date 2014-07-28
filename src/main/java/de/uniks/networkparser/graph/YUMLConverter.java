@@ -25,8 +25,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import de.uniks.networkparser.ArrayEntryList;
-import de.uniks.networkparser.SimpleArrayList;
+import de.uniks.networkparser.ArrayEntityList;
+import de.uniks.networkparser.ArraySimpleList;
 
 public class YUMLConverter implements Converter {
 	/** The Constant URL. */
@@ -41,7 +41,7 @@ public class YUMLConverter implements Converter {
 			Iterator<GraphNode> i = children.iterator();
 
 			ArrayList<GraphNode> visitedObj = new ArrayList<GraphNode>();
-			ArrayEntryList links = root.getLinks();
+			ArrayEntityList<String, Object> links = root.getLinks();
 			parse(typ, i.next(), sb, visitedObj, links, removePackage);
 			while (i.hasNext()) {
 				parse(typ, i.next(), sb, visitedObj, links, removePackage);
@@ -53,9 +53,9 @@ public class YUMLConverter implements Converter {
 
 	public void parse(String typ, GraphNode item, StringBuilder sb,
 			ArrayList<GraphNode> visited,
-			ArrayEntryList links, boolean shortName) {
+			ArrayEntityList<String, Object> links, boolean shortName) {
 		String key = item.getTyp(typ, shortName);
-		SimpleArrayList<?> showedLinks = (SimpleArrayList<?>) links.getValue(key);
+		ArraySimpleList<?> showedLinks = (ArraySimpleList<?>) links.getValue(key);
 		if (showedLinks == null) {
 			if(sb.length()<1){
 				sb.append(parseEntity(item, visited, typ, shortName));
