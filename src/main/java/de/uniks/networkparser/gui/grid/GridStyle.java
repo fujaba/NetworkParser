@@ -26,7 +26,7 @@ import java.beans.PropertyChangeListener;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import de.uniks.networkparser.ArrayEntryList;
+import de.uniks.networkparser.ArrayEntityList;
 import de.uniks.networkparser.calculator.RegCalculator;
 import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.interfaces.SendableEntity;
@@ -48,7 +48,7 @@ public class GridStyle extends Style implements SendableEntity{
 	private int column;
 	private int row;
 	private ValueGrid grid;
-	private ArrayEntryList listeners=new ArrayEntryList();
+	private ArrayEntityList<String, Object> listeners=new ArrayEntityList<String, Object>();
 	private String selectedBackground=null;
 
 	public int getColumn() {

@@ -28,9 +28,9 @@ public interface BidiMap<K,V> {
 	
 	public void clear();
 	
-	public Collection<Object> values();
+	public Collection<V> values();
 	
-	public Set<String> keySet();
+	public Set<K> keySet();
 	
 	public boolean containKey(K key);
 	
@@ -40,7 +40,7 @@ public interface BidiMap<K,V> {
 	
 	public BidiMap<K,V> with(K key, V value);
 	
-	public V getValue(Object key);
+	public Object getValue(Object key);
 	
 	public K getKey(V key);
 }

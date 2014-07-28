@@ -322,12 +322,6 @@ public class JsonArray extends AbstractEntityList<Object> implements StringItem,
 	}
 
 	@Override
-	public JsonArray withAllowDuplicate(boolean allowDuplicate) {
-		super.withAllowDuplicate(allowDuplicate);
-		return this;
-	}
-
-	@Override
 	public boolean add(Object e) {
 		return addEntity(e);
 	}

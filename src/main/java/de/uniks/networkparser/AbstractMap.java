@@ -34,7 +34,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public abstract class AbstractMap {
 	/** The creators. */
-	protected ArrayEntryList creators = new ArrayEntryList().withAllowDuplicate(false); 
+	protected ArrayEntityList<String, Object> creators = new ArrayEntityList<String, Object>().withAllowDuplicate(false); 
 
 	/**
 	 * Gets the creator class.

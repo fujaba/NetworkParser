@@ -22,29 +22,20 @@ package de.uniks.networkparser;
  permissions and limitations under the Licence.
 */
 
-public class SimpleEntityList<K, V> extends AbstractKeyValueList<K, V>{
+public class ArraySimpleList<V> extends AbstractEntityList<V>{
 	@Override
-	public SimpleEntityList<K, V> getNewInstance() {
-		return new SimpleEntityList<K, V>();
-	}
-//FIXME
-//	@Override
-//	public boolean add(V e) {
-//		return addEntity(e);
-//	}
-	
-	private void main(){
-		
+	public AbstractList<V> getNewInstance() {
+		return new ArraySimpleList<V>();
 	}
 
 	@Override
-	public V remove(Object key) {
-		return removeItem(key); 
+	public boolean add(V e) {
+		return addEntity(e);
 	}
 
 	@Override
-	public AbstractList<K> with(Object... values) {
-		// TODO Auto-generated method stub
-		return null;
+	@SuppressWarnings("unchecked")
+	public boolean remove(Object value) {
+		return removeItemByObject((V) value) >= 0;
 	}
 }
