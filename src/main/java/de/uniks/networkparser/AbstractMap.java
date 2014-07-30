@@ -95,7 +95,7 @@ public abstract class AbstractMap {
 	 * @return AbstractIdMap to interlink arguments
 	 */
 	public AbstractMap withCreator(String className, SendableEntityCreator creator) {
-		this.creators.put(className, creator);
+		this.creators.addEntity(className, creator);
 		return this;
 	}
 

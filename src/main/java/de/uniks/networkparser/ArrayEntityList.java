@@ -75,4 +75,31 @@ public class ArrayEntityList<K, V> extends AbstractKeyValueList<K, V> implements
 		this.put(key, value);
 		return this;
 	}
+	
+	public K getKey(V obj) {
+		for(int i=0;i<size();i++){
+			if(this.values.get(i) == null){
+				if(obj==null){
+					return this.keys.get(i);
+				}
+			}else if(this.values.get(i).equals(obj)){
+				return this.keys.get(i);
+			}
+		}
+		return null;
+	}
+	
+	@Override
+	protected boolean addValue(int pos, V value) {
+		boolean result = super.addValue(pos, value);
+		if (result) {
+			this.hashTableAddValues(value, pos);
+		}
+		return result;	
+	}
+	
+	protected void hashTableAddValues(Object newValue, int pos) {
+		this.hashTableValues = hashTableAdd(this.hashTableValues, this.values,
+				newValue, pos);
+	}
 }
