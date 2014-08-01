@@ -191,7 +191,7 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements S
 
 		int size=size();
 		for(int i=0;i<size;i++){
-			sb.append(" " + get(i) + "=" + EntityUtil.quote((String) getValue(i)));
+			sb.append(" " + get(i) + "=" + EntityUtil.quote("" + getValue(i)));
 		}
 
 		boolean hasChild = (this.children != null && this.children.size() > 0);
