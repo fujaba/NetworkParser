@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
@@ -213,6 +214,11 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 	@Override
 	public HashSet<K> keySet() {
 		return new HashSet<K>(this.keys);
+	}
+	
+	public List<K> keyList()
+	{
+	   return this.keys;
 	}
 	
 	/**
