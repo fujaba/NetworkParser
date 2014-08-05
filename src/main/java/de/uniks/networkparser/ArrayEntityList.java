@@ -26,7 +26,7 @@ import de.uniks.networkparser.interfaces.BidiMap;
  permissions and limitations under the Licence.
 */
 
-public class ArrayEntityList<K, V> extends AbstractKeyValueList<K, V> implements BidiMap<K, V>{
+public class ArrayEntityList<K, V> extends AbstractKeyValueList<K, V> implements BidiMap<K, V>, Iterable<K>{
 	@Override
 	public ArrayEntityList<K, V> getNewInstance() {
 		return new ArrayEntityList<K, V>();

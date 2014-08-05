@@ -12,8 +12,8 @@ import de.uniks.networkparser.logic.InstanceOf;
 import de.uniks.networkparser.test.model.GroupAccount;
 import de.uniks.networkparser.test.model.Person;
 import de.uniks.networkparser.test.model.SortedMsg;
-import de.uniks.networkparser.test.model.creator.PersonCreator;
-import de.uniks.networkparser.test.model.creator.SortedMsgCreator;
+import de.uniks.networkparser.test.model.util.PersonCreator;
+import de.uniks.networkparser.test.model.util.SortedMsgCreator;
 
 public class JsonModellTest implements MapUpdateListener{
 

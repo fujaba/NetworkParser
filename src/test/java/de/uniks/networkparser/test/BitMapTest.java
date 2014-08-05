@@ -12,8 +12,8 @@ import de.uniks.networkparser.bytes.ByteSimpleMap;
 import de.uniks.networkparser.bytes.BytesBuffer;
 import de.uniks.networkparser.test.model.BitDate;
 import de.uniks.networkparser.test.model.NumberFormat;
-import de.uniks.networkparser.test.model.creator.BitDateCreator;
-import de.uniks.networkparser.test.model.creator.NumberFormatCreator;
+import de.uniks.networkparser.test.model.util.BitDateCreator;
+import de.uniks.networkparser.test.model.util.NumberFormatCreator;
 
 public class BitMapTest {
 
