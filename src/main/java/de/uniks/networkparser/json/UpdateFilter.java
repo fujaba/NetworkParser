@@ -28,6 +28,6 @@ public class UpdateFilter extends Filter {
 	@Override
 	public boolean isConvertable(IdMapEncoder map, Object entity, String property,
 			Object value, boolean isMany, int deep) {
-		return map.getKey(value) == null;
+		return map.getKey(entity) == null;
 	}
 }
