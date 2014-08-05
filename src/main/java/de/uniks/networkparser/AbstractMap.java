@@ -84,6 +84,19 @@ public abstract class AbstractMap {
 		}
 		return this;
 	}
+	
+	/**
+	 * Adds the creator.
+	 *
+	 * @param creatorSet the creater class
+	 * @return true, if successful
+	 */
+	public AbstractMap withCreator(AbstractMap map) {
+		for (SendableEntityCreator sendableEntityCreator : map.getCreators()) {
+			withCreator(sendableEntityCreator);
+		}
+		return this;
+	}
 
 	/**
 	 * add a Creator to list of all creators.

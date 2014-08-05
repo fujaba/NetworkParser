@@ -22,11 +22,11 @@ import de.uniks.networkparser.test.model.FullAssocs;
 import de.uniks.networkparser.test.model.SortedMsg;
 import de.uniks.networkparser.test.model.StringMessage;
 import de.uniks.networkparser.test.model.Uni;
-import de.uniks.networkparser.test.model.creator.ChatMessageCreator;
-import de.uniks.networkparser.test.model.creator.FullAssocsCreator;
-import de.uniks.networkparser.test.model.creator.SortedMsgCreator;
-import de.uniks.networkparser.test.model.creator.StringMessageCreator;
-import de.uniks.networkparser.test.model.creator.UniCreator;
+import de.uniks.networkparser.test.model.util.ChatMessageCreator;
+import de.uniks.networkparser.test.model.util.FullAssocsCreator;
+import de.uniks.networkparser.test.model.util.SortedMsgCreator;
+import de.uniks.networkparser.test.model.util.StringMessageCreator;
+import de.uniks.networkparser.test.model.util.UniCreator;
 
 public class ByteTest{
 	@Test

@@ -6,8 +6,8 @@ import org.junit.Test;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.test.model.Barbarian;
-import de.uniks.networkparser.test.model.creator.BarbarianCreator;
-import de.uniks.networkparser.test.model.creator.GameCreator;
+import de.uniks.networkparser.test.model.util.BarbarianCreator;
+import de.uniks.networkparser.test.model.util.GameCreator;
 
 public class MinimalJsonTest {
 

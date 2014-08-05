@@ -4,8 +4,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import de.uniks.networkparser.test.model.creator.ApplicationMessageCreator;
-import de.uniks.networkparser.test.model.creator.FIXMLMessageCreator;
+import de.uniks.networkparser.test.model.util.ApplicationMessageCreator;
+import de.uniks.networkparser.test.model.util.FIXMLMessageCreator;
 import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XMLIdMap;
 

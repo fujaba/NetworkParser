@@ -7,8 +7,8 @@ import org.junit.Test;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.test.model.FullMessage;
 import de.uniks.networkparser.test.model.Location;
-import de.uniks.networkparser.test.model.creator.FullMessageCreator;
-import de.uniks.networkparser.test.model.creator.LocationCreator;
+import de.uniks.networkparser.test.model.util.FullMessageCreator;
+import de.uniks.networkparser.test.model.util.LocationCreator;
 
 public class JsonFilterTest {
 	@Test

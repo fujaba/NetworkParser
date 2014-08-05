@@ -718,11 +718,6 @@ public abstract class AbstractList<V> implements BaseItem {
         return keys.toArray(a);
     }
     
-	public List<V> keyList()
-	{
-	   return this.keys;
-	}
-    
     public boolean containsAll(Collection<?> c) {
        for (Object o : c)
        {
