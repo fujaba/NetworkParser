@@ -505,8 +505,6 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	
 	@Override
 	public void putAll(Map<? extends String, ? extends Object> map) {
-		this.clear();
-
 		for (Iterator<?> i = map.entrySet().iterator(); i.hasNext();) {
 			java.util.Map.Entry<?, ?> mapEntity = (Entry<?, ?>) i.next();
 			put("" + mapEntity.getKey(), mapEntity.getValue());
