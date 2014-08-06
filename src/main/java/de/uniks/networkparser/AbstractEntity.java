@@ -36,10 +36,11 @@ public abstract class AbstractEntity<K, V> implements BaseItem, Entry<K, V>, Sen
 	protected K key;
 	protected V value;
 
-	public AbstractEntity<K, V> with(K key, V value) {
+	@SuppressWarnings("unchecked")
+	public <ST extends AbstractEntity<K,V>> ST with(K key, V value) {
 		this.key = key;
 		this.value = value;
-		return this;
+		return (ST)this;
 	}
 	
 	public abstract AbstractEntity<K, V> withKeyItem(Object key);

@@ -7,7 +7,7 @@ import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.json.SimpleGrammar;
 import de.uniks.networkparser.test.model.Person;
-import de.uniks.networkparser.test.model.creator.PersonCreator;
+import de.uniks.networkparser.test.model.util.PersonCreator;
 
 public class TestSimpleJson {
 

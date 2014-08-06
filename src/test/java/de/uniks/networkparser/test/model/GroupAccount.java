@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2013 zuendorf 
+   Copyright (c) 2014 Stefan 
    
    Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
    and associated documentation files (the "Software"), to deal in the Software without restriction, 
@@ -23,62 +23,35 @@ package de.uniks.networkparser.test.model;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.LinkedHashSet;
 
-import de.uniks.networkparser.interfaces.SendableEntity;
-import de.uniks.networkparser.json.JsonIdMap;
-import de.uniks.networkparser.test.model.creator.ItemSet;
-import de.uniks.networkparser.test.model.creator.PersonSet;
+import de.uniks.networkparser.test.model.util.ItemSet;
+import de.uniks.networkparser.test.model.util.PersonSet;
 
-public class GroupAccount implements SendableEntity
+public class GroupAccount 
 {
+
+   
    //==========================================================================
    
-   public Object get(String attrName)
+   public double getTaskNames( double p0, String p1 )
    {
-      if (PROPERTY_PERSONS.equalsIgnoreCase(attrName))
-      {
-         return getPersons();
-      }
-
-      if (PROPERTY_ITEMS.equalsIgnoreCase(attrName))
-      {
-         return getItems();
-      }
-
-      return null;
+      return 0;
    }
 
    
    //==========================================================================
    
-   public boolean set(String attrName, Object value)
+   public void updateBalances(  )
    {
-      if (PROPERTY_PERSONS.equalsIgnoreCase(attrName))
-      {
-         addToPersons((Person) value);
-         return true;
-      }
+      // compute share
+      double totalExpenses = this.getItem().getValue().sum();
+      double share = totalExpenses / this.getItem().size();
       
-      if ((PROPERTY_PERSONS + JsonIdMap.REMOVE).equalsIgnoreCase(attrName))
+      for (Person person : this.getPersons())
       {
-         removeFromPersons((Person) value);
-         return true;
+         double personExpenses  = person.getItem().getValue().sum();
+         person.setBalance(personExpenses - share);
       }
-
-      if (PROPERTY_ITEMS.equalsIgnoreCase(attrName))
-      {
-         addToItems((Item) value);
-         return true;
-      }
-      
-      if ((PROPERTY_ITEMS + JsonIdMap.REMOVE).equalsIgnoreCase(attrName))
-      {
-         removeFromItems((Item) value);
-         return true;
-      }
-
-      return false;
    }
 
    
@@ -91,34 +64,22 @@ public class GroupAccount implements SendableEntity
       return listeners;
    }
    
-   @Override
-   public boolean addPropertyChangeListener(PropertyChangeListener listener) 
+   public void addPropertyChangeListener(PropertyChangeListener listener) 
    {
       getPropertyChangeSupport().addPropertyChangeListener(listener);
-      return true;
    }
 
    
    //==========================================================================
+   
    
    public void removeYou()
    {
-      removeAllFromPersons();
-      removeAllFromItems();
+       withoutPersons(this.getPersons().toArray(new Person[this.getPersons().size()]));
+       withoutItem(this.getItem().toArray(new Item[this.getItem().size()]));
       getPropertyChangeSupport().firePropertyChange("REMOVE_YOU", this, null);
    }
 
-   
-   //==========================================================================
-   
-   public double initAccounts( double p0, String p1 )
-   {
-      return 0;
-   }
-
-   
-   //==========================================================================
-   
    
    /********************************************************************
     * <pre>
@@ -129,7 +90,7 @@ public class GroupAccount implements SendableEntity
     */
    
    public static final String PROPERTY_PERSONS = "persons";
-   
+
    private PersonSet persons = null;
    
    public PersonSet getPersons()
@@ -141,70 +102,50 @@ public class GroupAccount implements SendableEntity
    
       return this.persons;
    }
-   
-   public boolean addToPersons(Person value)
+
+   public GroupAccount withPersons(Person... value)
    {
-      boolean changed = false;
-      
-      if (value != null)
+      if(value==null){
+         return this;
+      }
+      for (Person item : value)
       {
-         if (this.persons == null)
+         if (item != null)
          {
-            this.persons = new PersonSet();
-         }
-         
-         changed = this.persons.add (value);
-         
-         if (changed)
-         {
-            value.withParent(this);
-            getPropertyChangeSupport().firePropertyChange(PROPERTY_PERSONS, null, value);
+            if (this.persons == null)
+            {
+               this.persons = new PersonSet();
+            }
+            
+            boolean changed = this.persons.add (item);
+
+            if (changed)
+            {
+               item.withParent(this);
+               getPropertyChangeSupport().firePropertyChange(PROPERTY_PERSONS, null, item);
+            }
          }
       }
-         
-      return changed;   
-   }
-   
-   public boolean removeFromPersons(Person value)
-   {
-      boolean changed = false;
-      
-      if ((this.persons != null) && (value != null))
-      {
-         changed = this.persons.remove (value);
-         
-         if (changed)
-         {
-            value.setParent(null);
-            getPropertyChangeSupport().firePropertyChange(PROPERTY_PERSONS, value, null);
-         }
-      }
-         
-      return changed;   
-   }
-   
-   public GroupAccount withPersons(Person value)
-   {
-      addToPersons(value);
       return this;
    } 
-   
-   public GroupAccount withoutPersons(Person value)
+
+   public GroupAccount withoutPersons(Person... value)
    {
-      removeFromPersons(value);
-      return this;
-   } 
-   
-   public void removeAllFromPersons()
-   {
-      LinkedHashSet<Person> tmpSet = new LinkedHashSet<Person>(this.getPersons());
-   
-      for (Person value : tmpSet)
+      for (Person item : value)
       {
-         this.removeFromPersons(value);
+         if ((this.persons != null) && (item != null))
+         {
+            if (this.persons.remove(item))
+            {
+               item.setParent(null);
+               getPropertyChangeSupport().firePropertyChange(PROPERTY_PERSONS, item, null);
+            }
+         }
+         
       }
+      return this;
    }
-   
+
    public Person createPersons()
    {
       Person value = new Person();
@@ -217,121 +158,71 @@ public class GroupAccount implements SendableEntity
     * <pre>
     *              one                       many
     * GroupAccount ----------------------------------- Item
-    *              parent                   items
+    *              parent                   item
     * </pre>
     */
    
-   public static final String PROPERTY_ITEMS = "items";
+   public static final String PROPERTY_ITEM = "item";
+
+   private ItemSet item = null;
    
-   private ItemSet items = null;
-   
-   public ItemSet getItems()
+   public ItemSet getItem()
    {
-      if (this.items == null)
+      if (this.item == null)
       {
          return Item.EMPTY_SET;
       }
    
-      return this.items;
+      return this.item;
    }
-   
-   public boolean addToItems(Item value)
+
+   public GroupAccount withItem(Item... value)
    {
-      boolean changed = false;
-      
-      if (value != null)
+      if(value==null){
+         return this;
+      }
+      for (Item item : value)
       {
-         if (this.items == null)
+         if (item != null)
          {
-            this.items = new ItemSet();
-         }
-         
-         changed = this.items.add (value);
-         
-         if (changed)
-         {
-            value.withParent(this);
-            getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEMS, null, value);
+            if (this.item == null)
+            {
+               this.item = new ItemSet();
+            }
+            
+            boolean changed = this.item.add (item);
+
+            if (changed)
+            {
+               item.withParent(this);
+               getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEM, null, item);
+            }
          }
       }
-         
-      return changed;   
-   }
-   
-   public boolean removeFromItems(Item value)
-   {
-      boolean changed = false;
-      
-      if ((this.items != null) && (value != null))
-      {
-         changed = this.items.remove (value);
-         
-         if (changed)
-         {
-            value.setParent(null);
-            getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEMS, value, null);
-         }
-      }
-         
-      return changed;   
-   }
-   
-   public GroupAccount withItems(Item value)
-   {
-      addToItems(value);
       return this;
    } 
-   
-   public GroupAccount withoutItems(Item value)
+
+   public GroupAccount withoutItem(Item... value)
    {
-      removeFromItems(value);
-      return this;
-   } 
-   
-   public void removeAllFromItems()
-   {
-      LinkedHashSet<Item> tmpSet = new LinkedHashSet<Item>(this.getItems());
-   
-      for (Item value : tmpSet)
+      for (Item item : value)
       {
-         this.removeFromItems(value);
+         if ((this.item != null) && (item != null))
+         {
+            if (this.item.remove(item))
+            {
+               item.setParent(null);
+               getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEM, item, null);
+            }
+         }
+         
       }
+      return this;
    }
-   
-   public Item createItems()
+
+   public Item createItem()
    {
       Item value = new Item();
-      withItems(value);
+      withItem(value);
       return value;
-   }
-
-
-	@Override
-	public boolean addPropertyChangeListener(String propertyName,
-			PropertyChangeListener listener) {
-		getPropertyChangeSupport().addPropertyChangeListener(propertyName, listener);
-		return true;
-	}
-	
-	
-	@Override
-	public boolean removePropertyChangeListener(PropertyChangeListener listener) {
-		getPropertyChangeSupport().removePropertyChangeListener(listener);
-		return true;
-	}
-	   public void updateBalances(  )
-	   {
-	      double total = this.getItems().getValueSum();
-	      
-	      double share = total / this.getPersons().size();
-	      
-	      for (Person person : this.getPersons())
-	      {
-	         double myCosts = person.getItems().getValueSum();
-	         
-	         person.setBalance(myCosts - share); 
-	      }
-	   }
-
+   } 
 }
-

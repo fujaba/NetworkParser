@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2013 zuendorf 
+   Copyright (c) 2014 Stefan 
    
    Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
    and associated documentation files (the "Software"), to deal in the Software without restriction, 
@@ -23,145 +23,52 @@ package de.uniks.networkparser.test.model;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.Date;
-import java.util.LinkedHashSet;
 
-import de.uniks.networkparser.interfaces.SendableEntity;
-import de.uniks.networkparser.json.JsonIdMap;
-import de.uniks.networkparser.test.model.creator.ItemSet;
-import de.uniks.networkparser.test.model.creator.PersonSet;
+import de.uniks.networkparser.test.model.ludo.StrUtil;
+import de.uniks.networkparser.test.model.util.ItemSet;
+import de.uniks.networkparser.test.model.util.PersonSet;
 
-public class Person implements SendableEntity
+public class Person 
 {
+	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
+   public static final String PROPERTY_NAME = "name";
+   public static final String PROPERTY_BALANCE = "balance";
+   public static final String PROPERTY_PARENT = "parent";
+   public static final String PROPERTY_ITEM = "item";
 
-   //==========================================================================
+   private ItemSet item = null;
+   private GroupAccount parent = null;
+   private double balance;
    
-   public Object get(String attrName)
-   {
-      if (PROPERTY_NAME.equalsIgnoreCase(attrName))
-      {
-         return getName();
-      }
-
-      if (PROPERTY_BALANCE.equalsIgnoreCase(attrName))
-      {
-         return getBalance();
-      }
-
-      if (PROPERTY_PARENT.equalsIgnoreCase(attrName))
-      {
-         return getParent();
-      }
-
-      if (PROPERTY_ITEMS.equalsIgnoreCase(attrName))
-      {
-         return getItems();
-      }
-      if (PROPERTY_ACTIVE.equalsIgnoreCase(attrName))
-      {
-         return isActive();
-      }
-      if (PROPERTY_TITLE.equalsIgnoreCase(attrName))
-      {
-         return getTitle();
-      }
-      if ((PROPERTY_CREATED).equalsIgnoreCase(attrName))
-      {
-         return getCreated();
-      }
-
-      return null;
-   }
-
+   private String name;
+	   
    
    //==========================================================================
    
-   public boolean set(String attrName, Object value)
-   {
-      if (PROPERTY_NAME.equalsIgnoreCase(attrName))
-      {
-         setName((String) value);
-         return true;
-      }
-
-      if (PROPERTY_BALANCE.equalsIgnoreCase(attrName))
-      {
-         setBalance(Double.parseDouble(value.toString()));
-         return true;
-      }
-
-      if (PROPERTY_PARENT.equalsIgnoreCase(attrName))
-      {
-         setParent((GroupAccount) value);
-         return true;
-      }
-
-      if (PROPERTY_ITEMS.equalsIgnoreCase(attrName))
-      {
-         addToItems((Item) value);
-         return true;
-      }
-      
-      if ((PROPERTY_ITEMS + JsonIdMap.REMOVE).equalsIgnoreCase(attrName))
-      {
-         removeFromItems((Item) value);
-         return true;
-      }
-      if ((PROPERTY_CREATED).equalsIgnoreCase(attrName))
-      {
-    	  setCreated((Date) value);
-         return true;
-      }
-      
-      if (PROPERTY_ACTIVE.equalsIgnoreCase(attrName))
-      {
-    	  setActive((boolean) value);
-         return true;
-      }
-      
-      if (PROPERTY_TITLE.equalsIgnoreCase(attrName))
-      {
-    	  setTitle(""+value);
-         return true;
-      }
-
-      return false;
-   }
-
-   
-   //==========================================================================
-   
-   protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
    
    public PropertyChangeSupport getPropertyChangeSupport()
    {
       return listeners;
    }
    
-   @Override
-   public boolean addPropertyChangeListener(PropertyChangeListener listener) 
+   public void addPropertyChangeListener(PropertyChangeListener listener) 
    {
       getPropertyChangeSupport().addPropertyChangeListener(listener);
-      return true;
    }
 
    
    //==========================================================================
    
+   
    public void removeYou()
    {
       setParent(null);
-      removeAllFromItems();
+       withoutItem(this.getItem().toArray(new Item[this.getItem().size()]));
       getPropertyChangeSupport().firePropertyChange("REMOVE_YOU", this, null);
    }
 
    
    //==========================================================================
-   
-   public static final String PROPERTY_NAME = "name";
-   
-   private String name;
-
    public String getName()
    {
       return this.name;
@@ -169,7 +76,7 @@ public class Person implements SendableEntity
    
    public void setName(String value)
    {
-      if ( ( this.name==null && value!=null) || (this.name!=null && !this.name.equals(value)))
+      if ( ! StrUtil.stringEquals(this.name, value))
       {
          String oldValue = this.name;
          this.name = value;
@@ -183,105 +90,21 @@ public class Person implements SendableEntity
       return this;
    } 
 
-   //==========================================================================
-   
-   public static final String PROPERTY_CREATED= "created";
-   
-   private Date created;
 
-   public Date getCreated()
-   {
-      return this.created;
-   }
-   
-   public void setCreated(Date value)
-   {
-      if ( ( this.created==null && value!=null) || (this.created!=null && !this.created.equals(value)))
-      {
-         Date oldValue = this.created;
-         this.created = value;
-         getPropertyChangeSupport().firePropertyChange(PROPERTY_CREATED, oldValue, value);
-      }
-   }
-   
-   public Person withCreated(Date value)
-   {
-      setCreated(value);
-      return this;
-   } 
-
-   //==========================================================================
-   
-   public static final String PROPERTY_ACTIVE = "active";
-   
-   private boolean active;
-
-   public boolean isActive()
-   {
-      return this.active;
-   }
-   
-   public void setActive(boolean value)
-   {
-      if (this.active != value )
-      {
-         boolean oldValue = this.active;
-         this.active = value;
-         getPropertyChangeSupport().firePropertyChange(PROPERTY_ACTIVE, oldValue, value);
-      }
-   }
-   
-   public Person withActive(boolean value)
-   {
-      setActive(value);
-      return this;
-   } 
-
-   //==========================================================================
-   
-   public static final String PROPERTY_TITLE = "title";
-   
-   private String title;
-
-   public String getTitle()
-   {
-      return this.title;
-   }
-   
-   public void setTitle(String value)
-   {
-      if ( ( this.title==null && value!=null) || (this.title!=null && !this.title.equals(value)))
-      {
-         String oldValue = this.title;
-         this.title = value;
-         getPropertyChangeSupport().firePropertyChange(PROPERTY_TITLE, oldValue, value);
-      }
-   }
-   
-   public Person withTitle(String value)
-   {
-      setTitle(value);
-      return this;
-   } 
-
-   
    @Override
    public String toString()
    {
-      StringBuilder result = new StringBuilder();
+      StringBuilder r = new StringBuilder();
       
-      result.append(" ").append(this.getName());
-      result.append(" ").append(this.getBalance());
-      return result.substring(1);
+      r.append(" ").append(this.getName());
+      r.append(" ").append(this.getBalance());
+      return r.substring(1);
    }
 
 
    
    //==========================================================================
    
-   public static final String PROPERTY_BALANCE = "balance";
-   
-   private double balance;
 
    public double getBalance()
    {
@@ -305,7 +128,7 @@ public class Person implements SendableEntity
    } 
 
    
-   public static final PersonSet EMPTY_SET = new PersonSet();
+   public static final PersonSet EMPTY_SET = new PersonSet().withReadonly(true);
 
    
    /********************************************************************
@@ -316,15 +139,12 @@ public class Person implements SendableEntity
     * </pre>
     */
    
-   public static final String PROPERTY_PARENT = "parent";
-   
-   private GroupAccount parent = null;
-   
+
    public GroupAccount getParent()
    {
       return this.parent;
    }
-   
+
    public boolean setParent(GroupAccount value)
    {
       boolean changed = false;
@@ -352,13 +172,13 @@ public class Person implements SendableEntity
       
       return changed;
    }
-   
+
    public Person withParent(GroupAccount value)
    {
       setParent(value);
       return this;
    } 
-   
+
    public GroupAccount createParent()
    {
       GroupAccount value = new GroupAccount();
@@ -371,107 +191,69 @@ public class Person implements SendableEntity
     * <pre>
     *              one                       many
     * Person ----------------------------------- Item
-    *              buyer                   items
+    *              buyer                   item
     * </pre>
     */
    
-   public static final String PROPERTY_ITEMS = "items";
    
-   private ItemSet items = null;
-   
-   public ItemSet getItems()
+   public ItemSet getItem()
    {
-      if (this.items == null)
+      if (this.item == null)
       {
          return Item.EMPTY_SET;
       }
    
-      return this.items;
+      return this.item;
    }
-   
-   public boolean addToItems(Item value)
+
+   public Person withItem(Item... value)
    {
-      boolean changed = false;
-      
-      if (value != null)
+      if(value==null){
+         return this;
+      }
+      for (Item item : value)
       {
-         if (this.items == null)
+         if (item != null)
          {
-            this.items = new ItemSet();
-         }
-         
-         changed = this.items.add (value);
-         
-         if (changed)
-         {
-            value.withBuyer(this);
-            getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEMS, null, value);
+            if (this.item == null)
+            {
+               this.item = new ItemSet();
+            }
+            
+            boolean changed = this.item.add (item);
+
+            if (changed)
+            {
+               item.withBuyer(this);
+               getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEM, null, item);
+            }
          }
       }
-         
-      return changed;   
-   }
-   
-   public boolean removeFromItems(Item value)
-   {
-      boolean changed = false;
-      
-      if ((this.items != null) && (value != null))
-      {
-         changed = this.items.remove (value);
-         
-         if (changed)
-         {
-            value.setBuyer(null);
-            getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEMS, value, null);
-         }
-      }
-         
-      return changed;   
-   }
-   
-   public Person withItems(Item value)
-   {
-      addToItems(value);
       return this;
    } 
-   
-   public Person withoutItems(Item value)
+
+   public Person withoutItem(Item... value)
    {
-      removeFromItems(value);
-      return this;
-   } 
-   
-   public void removeAllFromItems()
-   {
-      LinkedHashSet<Item> tmpSet = new LinkedHashSet<Item>(this.getItems());
-   
-      for (Item value : tmpSet)
+      for (Item item : value)
       {
-         this.removeFromItems(value);
+         if ((this.item != null) && (item != null))
+         {
+            if (this.item.remove(item))
+            {
+               item.setBuyer(null);
+               getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEM, item, null);
+            }
+         }
+         
       }
+      return this;
    }
-   
-   public Item createItems()
+
+   public Item createItem()
    {
       Item value = new Item();
-      withItems(value);
+      withItem(value);
       return value;
-   }
-
-
-	@Override
-	public boolean addPropertyChangeListener(String propertyName,
-			PropertyChangeListener listener) {
-		getPropertyChangeSupport().addPropertyChangeListener(propertyName, listener);
-		return true;
-	}
-
-
-	@Override
-	public boolean removePropertyChangeListener(PropertyChangeListener listener) {
-		getPropertyChangeSupport().removePropertyChangeListener(listener);
-		return true;
-	} 
+   } 
 }
 

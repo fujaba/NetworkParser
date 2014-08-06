@@ -347,7 +347,8 @@ public class XMLIdMap extends XMLSimpleIdMap {
 		}
 		// Must be a Child of Root
 		ArrayList<SendableEntityCreatorXML> filter=new ArrayList<SendableEntityCreatorXML>();
-		for(SendableEntityCreator creator : getCreators()){
+		for(Iterator<SendableEntityCreator> i = iterator();i.hasNext();){
+			SendableEntityCreator creator = i.next();
 			if(creator instanceof SendableEntityCreatorXML){
 				SendableEntityCreatorXML xmlCreator = (SendableEntityCreatorXML) creator;
 				if(xmlCreator.getTag().startsWith(tag)){

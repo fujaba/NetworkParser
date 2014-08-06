@@ -164,7 +164,6 @@ public class JsonIdMap extends IdMap {
 				}
 			}
 		}
-
 		return grammar.getWriteObject(this, creator, className, id, jsonProp,
 				filter);
 	}
@@ -353,7 +352,6 @@ public class JsonIdMap extends IdMap {
 	 * @return the object
 	 */
 	public Object decode(JsonObject jsonObject) {
-		ArrayList<ReferenceObject> refs = new ArrayList<ReferenceObject>();
 		if (jsonObject.has(UPDATE) || jsonObject.has(REMOVE)) {
 			// Must be an update
 			if (executeUpdateMsg(jsonObject)) {
@@ -362,11 +360,7 @@ public class JsonIdMap extends IdMap {
 			}
 			return null;
 		}
-		Object mainItem = decoding(jsonObject, null);
-		for (ReferenceObject ref : refs) {
-			ref.execute(this);
-		}
-		return mainItem;
+		return decoding(jsonObject, null);
 	}
 	
 	/**

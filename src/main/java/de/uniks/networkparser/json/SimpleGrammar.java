@@ -54,7 +54,7 @@ public class SimpleGrammar extends Grammar{
 		String className = "."+idString.substring(0, idString.indexOf(map.getCounter().getSplitter()));
 		
 		// Find Item for LastName
-		for(Iterator<SendableEntityCreator> iterator = map.getCreators().iterator();iterator.hasNext();){
+		for(Iterator<SendableEntityCreator> iterator = map.iterator();iterator.hasNext();){
 			SendableEntityCreator item = iterator.next();
 			if(item.getSendableInstance(true).getClass().getName().endsWith(className)){
 				return item;

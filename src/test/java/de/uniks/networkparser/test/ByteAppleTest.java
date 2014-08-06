@@ -7,8 +7,8 @@ import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteItem;
 import de.uniks.networkparser.test.model.Apple;
 import de.uniks.networkparser.test.model.AppleTree;
-import de.uniks.networkparser.test.model.creator.AppleCreator;
-import de.uniks.networkparser.test.model.creator.AppleTreeCreator;
+import de.uniks.networkparser.test.model.util.AppleCreator;
+import de.uniks.networkparser.test.model.util.AppleTreeCreator;
 
 public class ByteAppleTest {
 

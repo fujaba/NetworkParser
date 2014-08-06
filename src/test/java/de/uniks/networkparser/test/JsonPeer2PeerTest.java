@@ -8,7 +8,7 @@ import de.uniks.networkparser.interfaces.MapUpdateListener;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.test.model.SortedMsg;
-import de.uniks.networkparser.test.model.creator.SortedMsgCreator;
+import de.uniks.networkparser.test.model.util.SortedMsgCreator;
 
 public class JsonPeer2PeerTest implements MapUpdateListener{
 	private JsonIdMap firstMap;
