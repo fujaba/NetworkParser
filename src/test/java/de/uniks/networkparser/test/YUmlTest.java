@@ -30,7 +30,7 @@ public class YUmlTest {
 		jsonMap.withCreator(new ChatMessageCreator());
 		GraphIdMap yumlParser = new GraphIdMap();
 		yumlParser.withKeyValue(jsonMap.getKeyValue())
-			.withCreator(jsonMap.getCreators());
+			.withCreator(jsonMap);
 
 		String parseObject = yumlParser.parseObject(chatMessage);
 		assertEquals(
