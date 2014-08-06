@@ -1,9 +1,12 @@
 package de.uniks.networkparser.test;
 
+import java.util.Iterator;
+
 import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.ArrayEntityList;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.test.model.Person;
 import de.uniks.networkparser.test.model.util.PersonCreator;
@@ -48,13 +51,23 @@ public class ModelTest {
 	public void testIdMapFromIdMap(){
 		JsonIdMap map=new JsonIdMap();
 		map.withCreator(new PersonCreator());
-		Assert.assertEquals(6, map.getCreators().size());
-		System.out.println(map.getCreators().size());
+		Assert.assertEquals(6, countMap(map));
+		System.out.println(countMap(map));
 		
 		JsonIdMap subMap=new JsonIdMap();
-		Assert.assertEquals(5, subMap.getCreators().size());
+		Assert.assertEquals(5, countMap(subMap));
 		subMap.withCreator(map);
-		Assert.assertEquals(6, subMap.getCreators().size());
+		Assert.assertEquals(6, countMap(subMap));
+		
+	}
+	
+	private int countMap(JsonIdMap map){
+		int count=0;
+		for(Iterator<SendableEntityCreator> i = map.iterator();i.hasNext();){
+			i.next();
+			count++;
+		}
+		return count;
 		
 	}
 }

@@ -1,6 +1,6 @@
 package de.uniks.networkparser.test;
 
-import java.util.Collection;
+import java.util.Iterator;
 
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMapEncoder;
@@ -60,8 +60,8 @@ public class EMFGrammar extends Grammar{
 		int pos=className.indexOf("@");
 		if(pos>0){
 			String clazz=className.substring(0, pos);
-			Collection<SendableEntityCreator> creators = map.getCreators();
-			for(SendableEntityCreator creator : creators){
+			for(Iterator<SendableEntityCreator> i = map.iterator();i.hasNext();){
+				SendableEntityCreator creator = i.next();
 				Object sendableInstance = creator.getSendableInstance(true);
 				String refClazzName = sendableInstance.getClass().getName();
 				if(refClazzName.endsWith("."+clazz)){
