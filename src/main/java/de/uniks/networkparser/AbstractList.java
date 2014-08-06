@@ -781,9 +781,13 @@ public abstract class AbstractList<V> implements BaseItem {
 	}
 
 	public boolean retainAll(Collection<?> c) {
-		for(int i=0;i<size();i++){
+		for(int i=0;i<size();){
 			if(!c.contains(get(i))){
 				remove(i);
+			}
+			else
+			{
+			   i++;
 			}
 		}
 		return true;
