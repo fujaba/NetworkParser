@@ -30,7 +30,6 @@ import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.test.model.SortedMsg;
-import de.uniks.networkparser.test.model.creator.SortedMsgCreator;
 import de.uniks.networkparser.test.model.ludo.Field;
 import de.uniks.networkparser.test.model.ludo.Ludo;
 import de.uniks.networkparser.test.model.ludo.LudoColor;
@@ -42,6 +41,7 @@ import de.uniks.networkparser.test.model.ludo.creator.FieldCreator;
 import de.uniks.networkparser.test.model.ludo.creator.LudoCreator;
 import de.uniks.networkparser.test.model.ludo.creator.PawnCreator;
 import de.uniks.networkparser.test.model.ludo.creator.PlayerCreator;
+import de.uniks.networkparser.test.model.util.SortedMsgCreator;
    
 public class GraphLudoTest 
 {

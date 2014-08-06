@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2013 zuendorf 
+   Copyright (c) 2014 Stefan 
    
    Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
    and associated documentation files (the "Software"), to deal in the Software without restriction, 
@@ -24,69 +24,11 @@ package de.uniks.networkparser.test.model;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-import de.uniks.networkparser.interfaces.SendableEntity;
-import de.uniks.networkparser.test.model.creator.ItemSet;
+import de.uniks.networkparser.test.model.ludo.StrUtil;
+import de.uniks.networkparser.test.model.util.ItemSet;
 
-public class Item implements SendableEntity
+public class Item 
 {
-   //==========================================================================
-   
-   public Object get(String attrName)
-   {
-      if (PROPERTY_DESCRIPTION.equalsIgnoreCase(attrName))
-      {
-         return getDescription();
-      }
-
-      if (PROPERTY_VALUE.equalsIgnoreCase(attrName))
-      {
-         return getValue();
-      }
-
-      if (PROPERTY_PARENT.equalsIgnoreCase(attrName))
-      {
-         return getParent();
-      }
-
-      if (PROPERTY_BUYER.equalsIgnoreCase(attrName))
-      {
-         return getBuyer();
-      }
-
-      return null;
-   }
-
-   
-   //==========================================================================
-   
-   public boolean set(String attrName, Object value)
-   {
-      if (PROPERTY_DESCRIPTION.equalsIgnoreCase(attrName))
-      {
-         setDescription((String) value);
-         return true;
-      }
-
-      if (PROPERTY_VALUE.equalsIgnoreCase(attrName))
-      {
-         setValue(Double.parseDouble(value.toString()));
-         return true;
-      }
-
-      if (PROPERTY_PARENT.equalsIgnoreCase(attrName))
-      {
-         setParent((GroupAccount) value);
-         return true;
-      }
-
-      if (PROPERTY_BUYER.equalsIgnoreCase(attrName))
-      {
-         setBuyer((Person) value);
-         return true;
-      }
-
-      return false;
-   }
 
    
    //==========================================================================
@@ -98,15 +40,14 @@ public class Item implements SendableEntity
       return listeners;
    }
    
-   @Override
-   public boolean addPropertyChangeListener(PropertyChangeListener listener) 
+   public void addPropertyChangeListener(PropertyChangeListener listener) 
    {
       getPropertyChangeSupport().addPropertyChangeListener(listener);
-      return true;
    }
 
    
    //==========================================================================
+   
    
    public void removeYou()
    {
@@ -129,7 +70,7 @@ public class Item implements SendableEntity
    
    public void setDescription(String value)
    {
-      if (( this.description==null && value!=null ) || (this.description!=null && this.description.equals(value)))
+      if ( ! StrUtil.stringEquals(this.description, value))
       {
          String oldValue = this.description;
          this.description = value;
@@ -143,14 +84,15 @@ public class Item implements SendableEntity
       return this;
    } 
 
+
    @Override
    public String toString()
    {
-      StringBuilder result = new StringBuilder();
+      StringBuilder r = new StringBuilder();
       
-      result.append(" ").append(this.getDescription());
-      result.append(" ").append(this.getValue());
-      return result.substring(1);
+      r.append(" ").append(this.getDescription());
+      r.append(" ").append(this.getValue());
+      return r.substring(1);
    }
 
 
@@ -183,26 +125,26 @@ public class Item implements SendableEntity
    } 
 
    
-   public static final ItemSet EMPTY_SET = new ItemSet();
+   public static final ItemSet EMPTY_SET = new ItemSet().withReadonly(true);
 
    
    /********************************************************************
     * <pre>
     *              many                       one
     * Item ----------------------------------- GroupAccount
-    *              items                   parent
+    *              item                   parent
     * </pre>
     */
    
    public static final String PROPERTY_PARENT = "parent";
-   
+
    private GroupAccount parent = null;
-   
+
    public GroupAccount getParent()
    {
       return this.parent;
    }
-   
+
    public boolean setParent(GroupAccount value)
    {
       boolean changed = false;
@@ -214,14 +156,14 @@ public class Item implements SendableEntity
          if (this.parent != null)
          {
             this.parent = null;
-            oldValue.withoutItems(this);
+            oldValue.withoutItem(this);
          }
          
          this.parent = value;
          
          if (value != null)
          {
-            value.withItems(this);
+            value.withItem(this);
          }
          
          getPropertyChangeSupport().firePropertyChange(PROPERTY_PARENT, oldValue, value);
@@ -230,13 +172,13 @@ public class Item implements SendableEntity
       
       return changed;
    }
-   
+
    public Item withParent(GroupAccount value)
    {
       setParent(value);
       return this;
    } 
-   
+
    public GroupAccount createParent()
    {
       GroupAccount value = new GroupAccount();
@@ -249,19 +191,19 @@ public class Item implements SendableEntity
     * <pre>
     *              many                       one
     * Item ----------------------------------- Person
-    *              items                   buyer
+    *              item                   buyer
     * </pre>
     */
    
    public static final String PROPERTY_BUYER = "buyer";
-   
+
    private Person buyer = null;
-   
+
    public Person getBuyer()
    {
       return this.buyer;
    }
-   
+
    public boolean setBuyer(Person value)
    {
       boolean changed = false;
@@ -273,14 +215,14 @@ public class Item implements SendableEntity
          if (this.buyer != null)
          {
             this.buyer = null;
-            oldValue.withoutItems(this);
+            oldValue.withoutItem(this);
          }
          
          this.buyer = value;
          
          if (value != null)
          {
-            value.withItems(this);
+            value.withItem(this);
          }
          
          getPropertyChangeSupport().firePropertyChange(PROPERTY_BUYER, oldValue, value);
@@ -289,33 +231,18 @@ public class Item implements SendableEntity
       
       return changed;
    }
-   
+
    public Item withBuyer(Person value)
    {
       setBuyer(value);
       return this;
    } 
-   
+
    public Person createBuyer()
    {
       Person value = new Person();
       withBuyer(value);
       return value;
-   }
-
-
-	@Override
-	public boolean addPropertyChangeListener(String propertyName,
-			PropertyChangeListener listener) {
-		getPropertyChangeSupport().addPropertyChangeListener(propertyName, listener);
-		return true;
-	}
-	
-	
-	@Override
-	public boolean removePropertyChangeListener(PropertyChangeListener listener) {
-		getPropertyChangeSupport().removePropertyChangeListener(listener);
-		return true;
-	} 
+   } 
 }
 

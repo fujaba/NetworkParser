@@ -26,9 +26,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
+import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.gui.table.TableList;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BidiMap;
@@ -505,8 +507,6 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	
 	@Override
 	public void putAll(Map<? extends String, ? extends Object> map) {
-		this.clear();
-
 		for (Iterator<?> i = map.entrySet().iterator(); i.hasNext();) {
 			java.util.Map.Entry<?, ?> mapEntity = (Entry<?, ?>) i.next();
 			put("" + mapEntity.getKey(), mapEntity.getValue());
@@ -550,7 +550,11 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 
 	@Override
 	public Set<java.util.Map.Entry<String, Object>> entrySet() {
-		return this.creators.entrySet();
+		LinkedHashSet<java.util.Map.Entry<String, Object>> list=new LinkedHashSet<java.util.Map.Entry<String, Object>>();
+		for(String key : keyValue.keySet()){
+			list.add(new MapEntry().with(key, keyValue.getValue(key)));
+		}
+		return list;
 	}
 
 }

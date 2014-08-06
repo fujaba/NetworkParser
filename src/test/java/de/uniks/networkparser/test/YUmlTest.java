@@ -11,9 +11,9 @@ import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.test.model.ChatMessage;
 import de.uniks.networkparser.test.model.Room;
 import de.uniks.networkparser.test.model.University;
-import de.uniks.networkparser.test.model.creator.ChatMessageCreator;
-import de.uniks.networkparser.test.model.creator.RoomCreator;
-import de.uniks.networkparser.test.model.creator.UniversityCreator;
+import de.uniks.networkparser.test.model.util.ChatMessageCreator;
+import de.uniks.networkparser.test.model.util.RoomCreator;
+import de.uniks.networkparser.test.model.util.UniversityCreator;
 
 public class YUmlTest {
 	@Test
@@ -30,7 +30,7 @@ public class YUmlTest {
 		jsonMap.withCreator(new ChatMessageCreator());
 		GraphIdMap yumlParser = new GraphIdMap();
 		yumlParser.withKeyValue(jsonMap.getKeyValue())
-			.withCreator(jsonMap.getCreators());
+			.withCreator(jsonMap);
 
 		String parseObject = yumlParser.parseObject(chatMessage);
 		assertEquals(

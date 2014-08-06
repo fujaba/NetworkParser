@@ -92,12 +92,12 @@ public abstract class AbstractList<V> implements BaseItem {
 		if (items.size() * entitySize > hashTable.length
 				* hashTableLoadThreshold) {
 			// double hashTable size
-			return hashAdd(hashTableResize(hashTable.length * 2, items),newValue, pos);
+			return hashAdd(hashTableResize(hashTable.length * 2, items), newValue, pos);
 		}
 
 		if (items.size() * entitySize < hashTable.length / 20) {
 			// shrink hashTable size to a loadThreshold of 33%
-			return hashAdd(hashTableResize(items.size() * entitySize * 3, items),newValue, pos);
+			return hashAdd(hashTableResize(items.size() * entitySize * 3, items), newValue, pos);
 		}
 		return hashAdd(hashTable, newValue, pos);
    }
@@ -717,7 +717,7 @@ public abstract class AbstractList<V> implements BaseItem {
     public <T> T[] toArray(T[] a) {
         return keys.toArray(a);
     }
-
+    
     public boolean containsAll(Collection<?> c) {
        for (Object o : c)
        {

@@ -31,15 +31,15 @@ import de.uniks.networkparser.test.model.SortedMsg;
 import de.uniks.networkparser.test.model.StringMessage;
 import de.uniks.networkparser.test.model.Student;
 import de.uniks.networkparser.test.model.University;
-import de.uniks.networkparser.test.model.creator.ChangeCreator;
-import de.uniks.networkparser.test.model.creator.ChatMessageCreator;
-import de.uniks.networkparser.test.model.creator.FullAssocsCreator;
-import de.uniks.networkparser.test.model.creator.FullMessageCreator;
-import de.uniks.networkparser.test.model.creator.LocationCreator;
-import de.uniks.networkparser.test.model.creator.MapEntryElementCreator;
-import de.uniks.networkparser.test.model.creator.SortedMsgCreator;
-import de.uniks.networkparser.test.model.creator.StringMessageCreator;
-import de.uniks.networkparser.test.model.creator.UniversityCreator;
+import de.uniks.networkparser.test.model.util.ChangeCreator;
+import de.uniks.networkparser.test.model.util.ChatMessageCreator;
+import de.uniks.networkparser.test.model.util.FullAssocsCreator;
+import de.uniks.networkparser.test.model.util.FullMessageCreator;
+import de.uniks.networkparser.test.model.util.LocationCreator;
+import de.uniks.networkparser.test.model.util.MapEntryElementCreator;
+import de.uniks.networkparser.test.model.util.SortedMsgCreator;
+import de.uniks.networkparser.test.model.util.StringMessageCreator;
+import de.uniks.networkparser.test.model.util.UniversityCreator;
 
 public class JsonTest {
 	@Test
