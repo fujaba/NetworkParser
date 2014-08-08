@@ -569,7 +569,18 @@ public class JsonIdMap extends IdMap {
 						creator.setValue(target, property, decoding(child, filter), NEW);
 					}
 				} else {
-					creator.setValue(target, property, value, NEW);
+				   try {
+				      creator.setValue(target, property, value, NEW);
+				   } catch (ClassCastException e) {
+				      if (value instanceof String && "".equals(value)) {
+				         // may happen in case of empty sets
+				         // ignore
+				      } else {
+				         throw e;
+				      }
+				         
+				   }
+				   
 				}
 			}
 		}
