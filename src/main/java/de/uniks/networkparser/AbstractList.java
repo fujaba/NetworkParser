@@ -636,19 +636,19 @@ public abstract class AbstractList<V> implements BaseItem {
     }
     
     protected int transformIndex(int index, Object key){
-    	if(this.hashTableKeys != null&& index >=0){
-    		if(this.entitySize==2){
-    			index = (int) this.hashTableKeys[index + 1];
-        		if(index>this.keys.size()){
-        			index = this.keys.size() - 1;
-       			}
-   	    		while( this.keys.get(index) != key ){
-   	    			index--;
-   	    		}
-    			return index;
-    		}
-    	}
-    	return index;
+       if(this.hashTableKeys != null&& index >=0){
+          if(this.entitySize==2){
+             index = (int) this.hashTableKeys[index + 1];
+             if(index >= this.keys.size()){
+                index = this.keys.size() - 1;
+             }
+             while( this.keys.get(index) != key ){
+                index--;
+             }
+             return index;
+          }
+       }
+       return index;
     }
         
     public AbstractList<V> withCopyList(List<V> reference){
