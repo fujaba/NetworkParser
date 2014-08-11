@@ -379,9 +379,15 @@ public class JsonTest {
 		JsonObject actual=jsonMap.toJsonObject(chatMessage);
 		assertEquals("WERT Vergleichen", reference, actual.toString(2));
 		
-		reference="{\r\n  \"class\":\"de.uniks.networkparser.test.model.ChatMessage\",\r\n  \"id\":\"J1.C1\",\r\n  \"prop\":{\r\n    \"sender\":\"Stefan Lindel\",\r\n    \"time\":\"\",\r\n    \"txt\":\"Dies ist eine Testnachricht\",\r\n    \"count\":0,\r\n    \"activ\":false\r\n  }\r\n}";
+		reference="{\r\n  \"class\":\"de.uniks.networkparser.test.model.ChatMessage\",\r\n  \"id\":\"J1.C1\",\r\n  \"prop\":{\r\n    \"sender\":\"Stefan Lindel\",\r\n    \"time\":null,\r\n    \"txt\":\"Dies ist eine Testnachricht\",\r\n    \"count\":0,\r\n    \"activ\":false\r\n  }\r\n}";
 		actual=jsonMap.toJsonObject(chatMessage, new Filter().withFull(true));
 		assertEquals("WERT Vergleichen", reference, actual.toString(2));
+		
+		
+		// Array
+		reference="[{\r\n  \"id\":\"J1.C1\",\r\n  \"class\":\"de.uniks.networkparser.test.model.ChatMessage\",\r\n  \"prop\":{\r\n    \"sender\":\"Stefan Lindel\",\r\n    \"time\":null,\r\n    \"txt\":\"Dies ist eine Testnachricht\",\r\n    \"count\":0,\r\n    \"activ\":false\r\n  }\r\n}]";
+		JsonArray actualArray=jsonMap.toJsonArray(chatMessage, new Filter().withFull(true));
+		assertEquals("WERT Vergleichen", reference, actualArray.toString(2));
 	}
 		
 	

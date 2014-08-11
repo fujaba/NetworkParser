@@ -29,13 +29,14 @@ import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
 /**
  * The Class XMLEntity.
  */
 
-public class XMLEntity extends AbstractKeyValueList<String, Object> implements StringItem, FactoryEntity{
+public class XMLEntity extends AbstractKeyValueList<String, Object> implements StringItem, FactoryEntity, Entity{
 	public static final String PROPERTY_TAG="tag";
 	public static final String PROPERTY_VALUE="value";
 	/** The children. */
@@ -97,7 +98,7 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements S
 	 *            the child
 	 * @return result if the child is added
 	 */
-	public boolean add(XMLEntity child) {
+	public boolean addChild(XMLEntity child) {
 		return getChildren().add(child);
 	}
 
@@ -223,7 +224,7 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements S
 	public XMLEntity with(Object... values) {
 		for(Object value : values){
 			if(value instanceof XMLEntity){
-				add((XMLEntity)value);
+				addChild((XMLEntity)value);
 			}
 		}
 		return this;

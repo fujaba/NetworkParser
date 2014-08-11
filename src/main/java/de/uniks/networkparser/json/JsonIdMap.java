@@ -159,7 +159,7 @@ public class JsonIdMap extends IdMap {
 				}
 				Object subValue = parseProperty(creator, entity, filter,
 						className, property, null, deep+1);
-				if (subValue != null) {
+				if (subValue != null || filter.isFullSeriation()){
 					jsonProp.put(property, subValue);
 				}
 			}
@@ -229,8 +229,6 @@ public class JsonIdMap extends IdMap {
 							jsonArray, null, deep);
 				}
 			}
-		}else if(filter.isFullSeriation()){
-			return "";
 		}
 		return null;
 	}
@@ -569,19 +567,7 @@ public class JsonIdMap extends IdMap {
 						creator.setValue(target, property, decoding(child, filter), NEW);
 					}
 				} else {
-				   try {
 				      creator.setValue(target, property, value, NEW);
-				   } catch (ClassCastException e) {
-				      if (value instanceof String && "".equals(value)) {
-				         // may happen in case of empty sets
-				         // ignore
-				         int x = 42;
-				      } else {
-				         throw e;
-				      }
-				         
-				   }
-				   
 				}
 			}
 		}
@@ -702,7 +688,7 @@ public class JsonIdMap extends IdMap {
 				}
 				Object subValue = parseProperty(creator, entity, filter,
 						className, property, jsonArray, deep+1);
-				if (subValue != null) {
+				if (subValue != null || filter.isFullSeriation()){
 					jsonProps.put(property, subValue);
 				}
 			}

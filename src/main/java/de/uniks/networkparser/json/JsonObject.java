@@ -29,6 +29,7 @@ import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
 /* Copyright (c) 2002 JSON.org */
@@ -89,7 +90,7 @@ import de.uniks.networkparser.interfaces.StringItem;
  * @author JSON.org
  * @version 2011-11-24
  */
-public class JsonObject extends AbstractKeyValueList<String, Object> implements StringItem, FactoryEntity {
+public class JsonObject extends AbstractKeyValueList<String, Object> implements StringItem, FactoryEntity, Entity{
 	private boolean visible=true;
 	
 	@Override
