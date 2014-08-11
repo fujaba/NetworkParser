@@ -575,6 +575,7 @@ public class JsonIdMap extends IdMap {
 				      if (value instanceof String && "".equals(value)) {
 				         // may happen in case of empty sets
 				         // ignore
+				         int x = 42;
 				      } else {
 				         throw e;
 				      }
