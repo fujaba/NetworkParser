@@ -131,12 +131,12 @@ public class XMLSimpleIdMap extends IdMap {
 					if (encoding) {
 						if (value instanceof Collection<?>) {
 							for (Object item : (Collection<?>) value) {
-								xmlEntity.add( encode(item) );
+								xmlEntity.addChild( encode(item) );
 							}
 						} else {
 							SendableEntityCreator valueCreater = getCreatorClass(value);
 							if (valueCreater != null) {
-								xmlEntity.add(encode(value));
+								xmlEntity.addChild(encode(value));
 							} else {
 								xmlEntity.put(property, value);
 							}

@@ -72,7 +72,7 @@ public class XMLEntityCreator implements SendableEntityCreator, XMLGrammar {
 
 	@Override
 	public void addChildren(XMLEntity parent, XMLEntity child) {
-		parent.add(child);
+		parent.addChild(child);
 	}
 
 	@Override

@@ -104,7 +104,7 @@ public class XSDEntityCreator implements SendableEntityCreatorXML, XMLGrammar {
 			}
 
 		}
-		parent.add(child);
+		parent.addChild(child);
 	}
 
 	@Override

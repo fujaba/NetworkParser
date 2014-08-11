@@ -67,9 +67,11 @@ public abstract class AbstractEntityList<V> extends AbstractList<V> implements L
      * @param beforeElement element before the element
      * @return the List
      */
-    public AbstractEntityList<V> with(V element, V beforeElement) {
+    public AbstractEntityList<V> withBefore(V element, V beforeElement) {
     	int index = getIndex(beforeElement);
-    	add(index, element);
+    	if(index>=0){
+    		add(index, element);
+    	}
     	return this;
     }
 

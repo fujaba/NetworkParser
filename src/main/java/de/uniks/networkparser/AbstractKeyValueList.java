@@ -167,6 +167,10 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 	public boolean containsKey(Object key) {
 		return super.contains(key);
 	}
+	
+	public boolean has(K key){
+		return super.contains(key);
+	}
 
 	@Override
 	public boolean containsValue(Object value) {
@@ -475,7 +479,7 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 		}
 		return null;
 	}
-		
+	
 	@Override
 	public void putAll(Map<? extends K, ? extends V> values) {
 		with(values);
