@@ -6,7 +6,9 @@ import static org.junit.Assert.assertNotNull;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.test.model.ChatMessage;
@@ -15,15 +17,17 @@ import de.uniks.networkparser.test.model.JabberBindMessage;
 import de.uniks.networkparser.test.model.JabberChatMessage;
 import de.uniks.networkparser.test.model.ListItem;
 import de.uniks.networkparser.test.model.StringMessage;
-import de.uniks.networkparser.test.model.Uni;
+import de.uniks.networkparser.test.model.University;
 import de.uniks.networkparser.test.model.XMLTestEntity;
+import de.uniks.networkparser.test.model.XMLTestItem;
 import de.uniks.networkparser.test.model.util.ChatMessageCreator;
 import de.uniks.networkparser.test.model.util.EntityCreator;
 import de.uniks.networkparser.test.model.util.JabberChatMessageCreator;
 import de.uniks.networkparser.test.model.util.ListItemCreator;
 import de.uniks.networkparser.test.model.util.MyXMLEntityCreator;
 import de.uniks.networkparser.test.model.util.StringMessageCreator;
-import de.uniks.networkparser.test.model.util.UniCreator;
+import de.uniks.networkparser.test.model.util.UniversityCreator;
+import de.uniks.networkparser.test.model.util.XMLTestItemCreator;
 import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XMLIdMap;
 import de.uniks.networkparser.xml.XMLTokener;
@@ -91,8 +95,8 @@ public class XMLTest {
 		String xml = "<uni name=\"Kassel\"><!-- Meine erster Test --><fg value=\"se\"><no><id></id></no><user>Stefan Lindel</user></fg></uni>";
 		String xmlWithoutComment = "<uni name=\"Kassel\"><fg value=\"se\"><user>Stefan Lindel</user></fg></uni>";
 		XMLIdMap map = new XMLIdMap();
-		map.addCreator(new UniCreator());
-		Uni entity = (Uni) map.decode(xml);
+		map.addCreator(new UniversityCreator());
+		University entity = (University) map.decode(xml);
 		assertEquals("Kassel", entity.getName());
 		assertEquals("se", entity.getValue());
 		assertEquals("Stefan Lindel", entity.getUser());
@@ -129,8 +133,8 @@ public class XMLTest {
 	public void testUni() {
 		String xml = "<uni name=\"Kassel\"><fg value=\"se\"><user>Stefan Lindel</user></fg></uni>";
 		XMLIdMap map = new XMLIdMap();
-		map.addCreator(new UniCreator());
-		Uni entity = (Uni) map.decode(xml);
+		map.addCreator(new UniversityCreator());
+		University entity = (University) map.decode(xml);
 		assertEquals("Kassel", entity.getName());
 		assertEquals("se", entity.getValue());
 		assertEquals("Stefan Lindel", entity.getUser());
@@ -142,8 +146,8 @@ public class XMLTest {
 	public void testXMLUniExt(){
 		String xml = "<uni name=\"Kassel\"><child><value>Ich</value></child><fg value=\"se\"><user>Stefan Lindel</user></fg><not-supported/><not-supported></not-supported><!-- NIX VERSTEHEN --></uni>";
 		XMLIdMap map = new XMLIdMap();
-		map.addCreator(new UniCreator());
-		Uni entity = (Uni) map.decode(xml);
+		map.addCreator(new UniversityCreator());
+		University entity = (University) map.decode(xml);
 		assertEquals("Kassel", entity.getName());
 		assertEquals("se", entity.getValue());
 		assertEquals("Stefan Lindel", entity.getUser());
@@ -227,40 +231,44 @@ public class XMLTest {
 		assertEquals("WERT Vergleichen", reference, xmlMap.encode(chatMessage).toString(2));
 	}
 	
-	public static StringBuilder readFile(String fileName) {
+	public static StringBuilder readFile(String fileName) throws IOException {
 		File file = new File(fileName);
 		StringBuilder stringBuilder = readFile(file);
 		return stringBuilder;
 	}
 
-	public static StringBuilder readFile(File file) {
+	public static StringBuilder readFile(File file) throws IOException {
 		StringBuilder result = new StringBuilder();
-		try {
-			BufferedReader in = new BufferedReader(new FileReader(file));
+		BufferedReader in = new BufferedReader(new FileReader(file));
 
-			String line = in.readLine();
-			while (line != null) {
-				result.append(line).append('\n');
-				line = in.readLine();
-			}
-			in.close();
-		} catch (Exception e) {
-			e.printStackTrace();
+		String line = in.readLine();
+		while (line != null) {
+			result.append(line).append('\n');
+			line = in.readLine();
 		}
+		in.close();
 
 		return result;
 	}
 	
 	@Test
-	public void testsimpleXMLStructur(){
-		StringBuilder xmlData = readFile("src/test/resources/testcase4-in.petrinet");
- 		String string = xmlData.toString();
-		XMLEntity xmlEntity = new XMLEntity().withValue(string);
- 		assertNotNull(xmlEntity);
+	public void testXMLTest() throws IOException{
+		XMLTestItem item = new XMLTestItem();
+		item.setBody("Hallo Welt");
+		item.setId(42);
+		item.setUser("Stefan");
+		item.setValue("new Value");
 		
-//	      EmfIdMap map = new EmfIdMap()
-//	      .withCreators(P2SCreatorCreator.getCreatorSet());
-//
-//	      Net net = (Net) map.decodeFile();
+		XMLIdMap map = new XMLIdMap();
+		map.withCreator(new XMLTestItemCreator());
+		XMLEntity xmlEmF = map.encode(item);
+		Assert.assertEquals("<item id=\"42\"><user>Stefan</user><body txt=\"Hallo Welt\">new Value</body></item>", xmlEmF.toString());
+		
+		
+		XMLTestItem newItem = (XMLTestItem) map.decode(xmlEmF.toString());
+		Assert.assertEquals(item.getBody(), newItem.getBody());
+		Assert.assertEquals(item.getId(), newItem.getId());
+		Assert.assertEquals(item.getUser(), newItem.getUser());
+		Assert.assertEquals(item.getValue(), newItem.getValue());
 	}
 }

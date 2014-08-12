@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import de.uniks.networkparser.test.model.util.UniversityCreator;
+
 public class Room {
 	/**
 	 * <pre>
@@ -187,7 +189,7 @@ public class Room {
 			return getSublocations();
 		} else if (PROPERTY_UNIVERSITY.equalsIgnoreCase(attribute)) {
 			if (pos > 0) {
-				return getUniversity().get(attrName.substring(pos + 1));
+				return new UniversityCreator().getValue(getUniversity(), attrName.substring(pos + 1));
 			}
 
 			return getUniversity();

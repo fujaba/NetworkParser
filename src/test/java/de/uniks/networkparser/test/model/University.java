@@ -8,8 +8,41 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 // should become a JSON Parser
-// should become a JSON Parser
 public class University {
+    public static final String PROPERTY_USER = "&fg&user";
+    public static final String PROPERTY_ICH = "&child&value";
+    public static final String PROPERTY_VALUE = "&fg?value";
+
+
+    private String user;
+    private String ich;
+    private String value;
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public String getIch() {
+        return ich;
+    }
+
+    public void setIch(String ich) {
+        this.ich = ich;
+    }
+
 	/**
 	 * <pre>
 	 *           0..1     students     0..n
@@ -169,37 +202,6 @@ public class University {
 
 	public PropertyChangeSupport getPropertyChangeSupport() {
 		return listeners;
-	}
-
-	public boolean set(String attrName, Object value) {
-		if (PROPERTY_NAME.equalsIgnoreCase(attrName)) {
-			setName((String) value);
-			return true;
-		} else if (PROPERTY_STUDENTS.equalsIgnoreCase(attrName)) {
-			addToStudents((Student) value);
-			return true;
-		} else if (PROPERTY_ROOMS.equalsIgnoreCase(attrName)) {
-			addToRooms((Room) value);
-			return true;
-		}
-		return false;
-	}
-
-	public Object get(String attrName) {
-		int pos = attrName.indexOf(".");
-		String attribute = attrName;
-
-		if (pos > 0) {
-			attribute = attrName.substring(0, pos);
-		}
-		if (PROPERTY_NAME.equalsIgnoreCase(attribute)) {
-			return getName();
-		} else if (PROPERTY_STUDENTS.equalsIgnoreCase(attribute)) {
-			return getStudents();
-		} else if (PROPERTY_ROOMS.equalsIgnoreCase(attribute)) {
-			return getRooms();
-		}
-		return null;
 	}
 
 	public University withName(String newValue) {
