@@ -21,12 +21,12 @@ import de.uniks.networkparser.test.model.ChatMessage;
 import de.uniks.networkparser.test.model.FullAssocs;
 import de.uniks.networkparser.test.model.SortedMsg;
 import de.uniks.networkparser.test.model.StringMessage;
-import de.uniks.networkparser.test.model.Uni;
+import de.uniks.networkparser.test.model.University;
 import de.uniks.networkparser.test.model.util.ChatMessageCreator;
 import de.uniks.networkparser.test.model.util.FullAssocsCreator;
 import de.uniks.networkparser.test.model.util.SortedMsgCreator;
 import de.uniks.networkparser.test.model.util.StringMessageCreator;
-import de.uniks.networkparser.test.model.util.UniCreator;
+import de.uniks.networkparser.test.model.util.UniversityCreator;
 
 public class ByteTest{
 	@Test
@@ -84,14 +84,14 @@ public class ByteTest{
 	@Test
 	public void testByteDefault(){
 		ByteIdMap map=new ByteIdMap();
-		map.addCreator(new UniCreator());
-		Uni uni = new Uni();
+		map.addCreator(new UniversityCreator());
+		University uni = new University();
 		uni.setName("Uni Kassel");
 		ByteItem data = map.encode(uni);
 		BufferedBytes byteBuffer = data.getBytes(false);
-		assertEquals("AEde.uniks.networkparser.test.model.UniOUni Kassel", data.toString(new ByteConverterString()));
-		assertEquals(50, byteBuffer.length());
-		Uni decodeObj = (Uni) map.decode(byteBuffer);
+		assertEquals("ALde.uniks.networkparser.test.model.UniversityOUni Kassel", data.toString(new ByteConverterString()));
+		assertEquals(57, byteBuffer.length());
+		University decodeObj = (University) map.decode(byteBuffer);
 		
 		assertEquals(uni.getName(), decodeObj.getName());
 	}

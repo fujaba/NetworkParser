@@ -34,7 +34,6 @@ import de.uniks.networkparser.ReferenceObject;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorXML;
 import de.uniks.networkparser.logic.BooleanCondition;
-import de.uniks.networkparser.xml.creator.XMLEntityCreator;
 import de.uniks.networkparser.xml.creator.XMLGrammar;
 /**
  * The Class XMLIdMap.
@@ -227,21 +226,6 @@ public class XMLIdMap extends XMLSimpleIdMap {
 		return null;
 	}
 
-/**
-//	 * Decode.
-//	 * 
-//	 * @param value
-//	 *            the value
-//	 * @return the object
-//	 */
-    @Override
-    public Object decode(XMLTokener entity, XMLGrammar factory) {
-        if(factory==null){
-            factory=new XMLEntityCreator();
-        }
-        return super.decode(entity, factory);
-    }
-
 	@Override
 	public Object decode(String value) {
 		return decode((XMLTokener) new XMLTokener().withText(value), null);
@@ -264,7 +248,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 		boolean exit = false;
 		boolean empty = true;
 
-		if (!newPrefix.equals("&")) {
+		if (!newPrefix.endsWith("&")) {
 			return tokener.stepPos("" + ITEMSTART, false, false);
 		}
 		if (tokener.getCurrentChar() != ITEMSTART) {
@@ -312,10 +296,13 @@ public class XMLIdMap extends XMLSimpleIdMap {
 		if (!empty && exit) {
 			String value = tokener.substring(start, -1);
 			ReferenceObject refObject = null;
-			if ("&".equals(newPrefix)) {
+			if (newPrefix.endsWith("&")) {
 				refObject = tokener.popStack();
 			}
 			if (refObject != null) {
+				if(newPrefix.length()>1){
+					newPrefix = newPrefix.substring(0, newPrefix.length() - 1); 
+				}
 				SendableEntityCreator parentCreator = refObject.getCreater();
 				parentCreator.setValue(refObject.getEntity(), newPrefix, value,
 						IdMapEncoder.NEW);

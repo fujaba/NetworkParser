@@ -10,6 +10,8 @@ package de.uniks.networkparser.test.model;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
+import de.uniks.networkparser.test.model.util.UniversityCreator;
+
 // should become a JSON Parser
 // should become a JSON Parser
 public class Student {
@@ -154,7 +156,7 @@ public class Student {
 			return getStudNo();
 		} else if (PROPERTY_UNIVERSITY.equalsIgnoreCase(attribute)) {
 			if (pos > 0) {
-				return getUniversity().get(attrName.substring(pos + 1));
+				return new UniversityCreator().getValue(getUniversity(), attrName.substring(pos + 1));
 			}
 
 			return getUniversity();
