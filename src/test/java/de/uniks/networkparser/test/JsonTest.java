@@ -20,6 +20,7 @@ import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.json.JsonTokener;
 import de.uniks.networkparser.logic.BooleanCondition;
 import de.uniks.networkparser.logic.Deep;
+import de.uniks.networkparser.test.model.Apple;
 import de.uniks.networkparser.test.model.Change;
 import de.uniks.networkparser.test.model.ChatMessage;
 import de.uniks.networkparser.test.model.FullAssocs;
@@ -31,6 +32,7 @@ import de.uniks.networkparser.test.model.SortedMsg;
 import de.uniks.networkparser.test.model.StringMessage;
 import de.uniks.networkparser.test.model.Student;
 import de.uniks.networkparser.test.model.University;
+import de.uniks.networkparser.test.model.util.AppleCreator;
 import de.uniks.networkparser.test.model.util.ChangeCreator;
 import de.uniks.networkparser.test.model.util.ChatMessageCreator;
 import de.uniks.networkparser.test.model.util.FullAssocsCreator;
@@ -517,5 +519,19 @@ public class JsonTest {
 		items.add(parent);
 		items.add(child);
 		assertEquals(2, map.toJsonArray(items, new Filter().withFull(true)).size());
+	}
+	
+	@Test
+	public void testFullList() {
+		Apple apple = new Apple();
+		JsonIdMap map = new JsonIdMap();
+		map.withCreator(new AppleCreator());
+
+		// ARRAY
+		Assert.assertEquals("[{\"id\":\"J1.A1\",\"class\":\"de.uniks.networkparser.test.model.Apple\",\"prop\":{\"value\":0,\"x\":0,\"y\":0,\"owner\":null}}]", map.toJsonArray(apple, new Filter().withFull(true)).toString());
+
+		// OBJECT
+		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.Apple\",\"id\":\"J1.A1\",\"prop\":{\"value\":0,\"x\":0,\"y\":0,\"owner\":null}}", map.toJsonObject(apple, new Filter().withFull(true)).toString());
+
 	}
 }

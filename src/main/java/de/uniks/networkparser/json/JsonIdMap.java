@@ -141,10 +141,10 @@ public class JsonIdMap extends IdMap {
 		}
 		if (creator instanceof SendableEntityCreatorNoIndex){
 		}else if(!filter.isId(this, entity, className)) {
-			filter.addToVisitedObjects(entity);
+			filter.withObjects(entity);
 		}else{
 			id = getId(entity);
-			filter.addToVisitedObjects(id);
+			filter.withObjects(id);
 		}
 		
 		JsonObject jsonProp = getPrototyp();
@@ -247,8 +247,8 @@ public class JsonIdMap extends IdMap {
 			if (filter.isConvertable(this, entity, property, item, true, deep) ) {
 				String subId = this.getKey(entity);
 				if (valueCreater instanceof SendableEntityCreatorNoIndex
-						|| (isId &&!filter.hasVisitedObjects(subId))
-						|| (!isId && !filter.hasVisitedObjects(entity))){ 
+						|| (isId &&!filter.hasObjects(subId))
+						|| (!isId && !filter.hasObjects(entity))){ 
 					if (jsonArray == null) {
 						JsonObject result = toJsonObject(entity, filter,
 								className, deep+1);
@@ -511,7 +511,7 @@ public class JsonIdMap extends IdMap {
 						String jsonId = (String) child.get(ID);
 						if (className == null && jsonId != null) {
 							// It is a Ref
-							filter.add(new ReferenceObject()
+							filter.with(new ReferenceObject()
 								.withId(jsonId)
 								.withCreator(creator)
 								.withProperty(property)
@@ -558,7 +558,7 @@ public class JsonIdMap extends IdMap {
 						}
 					} else if (className == null && jsonId != null) {
 						// It is a Ref
-						filter.add(new ReferenceObject()
+						filter.with(new ReferenceObject()
 									.withId(jsonId)
 									.withCreator(creator)
 									.withProperty(property)
@@ -650,14 +650,14 @@ public class JsonIdMap extends IdMap {
 		boolean sortedArray = jsonArray.isComparator();
 		boolean isId = filter.isId(this, entity, className);
 		if (isId) {
-			if (!filter.hasVisitedObjects(id) ) {
+			if (!filter.hasObjects(id) ) {
 				jsonObject.put(ID, id);
 				jsonObject.put(CLASS, className);
 				if(!sortedArray){
 					jsonArray.add(jsonObject);
 				}
 			}
-		}else if (!filter.hasVisitedObjects(entity) ) {
+		}else if (!filter.hasObjects(entity) ) {
 			jsonObject.put(CLASS, className);
 			if(!sortedArray){
 				jsonArray.add(jsonObject);
@@ -673,9 +673,9 @@ public class JsonIdMap extends IdMap {
 		}
 		String[] properties = creator.getProperties();
 		if (isId) {
-			filter.addToVisitedObjects(id);
+			filter.withObjects(id);
 		}else{
-			filter.addToVisitedObjects(entity);
+			filter.withObjects(entity);
 		}
 
 		if (properties != null) {
