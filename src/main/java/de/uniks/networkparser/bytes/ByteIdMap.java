@@ -268,7 +268,7 @@ public class ByteIdMap extends IdMap {
          addClazzTyp(msg, reference.getClass().getName(), filter);
 		}
 		
-		filter.addToVisitedObjects(entity);
+		filter.withObjects(entity);
 		String[] properties = creator.getProperties();
 		if (properties != null) {
 			Object referenceObj = creator.getSendableInstance(true);

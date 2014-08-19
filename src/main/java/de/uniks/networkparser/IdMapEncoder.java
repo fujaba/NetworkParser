@@ -319,31 +319,27 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	 *            the index of deep of model-ebene
 	 * @return the object
 	 */
-	public Object cloneObject(Object reference, CloneFilter filter, int deep) {
+	public Object cloneObject(Object reference, Filter filter, int deep) {
 		SendableEntityCreator creatorClass = getCreatorClass(reference);
 		Object newObject = null;
 		if (creatorClass != null) {
 			newObject = creatorClass.getSendableInstance(false);
 			String[] properties = creatorClass.getProperties();
-			filter.withObject(reference, newObject);
 
 			for (String property : properties) {
 				Object value = creatorClass.getValue(reference, property);
-				if (filter.getTyp() == CloneFilter.SIMPLE) {
-					creatorClass
-							.setValue(newObject, property, value, IdMapEncoder.NEW);
-				} else if (value instanceof Collection<?>) {
-					if (filter.getTyp() == CloneFilter.FULL) {
+				if (value instanceof Collection<?>) {
+					if( filter.isFullSeriation() ){
 						Collection<?> list = (Collection<?>) value;
 						for (Object item : list) {
-							if (filter.hasObject(item)) {
-								creatorClass.setValue(newObject, property,
-										filter.getObject(item), IdMapEncoder.NEW);
+							Object refValue = filter.getRefByEntity(item);
+							if (refValue != null) {
+								creatorClass.setValue(newObject, property, refValue, IdMapEncoder.NEW);
 							} else {
 								SendableEntityCreator childCreatorClass = getCreatorClass(item);
 								if (childCreatorClass != null) {
-									if (!filter.isConvertable(this, item,
-											property, value, true, deep)) {
+									if (!filter.isConvertable(this, reference,
+											property, item, true, deep)) {
 										creatorClass.setValue(newObject,
 												property, item, IdMapEncoder.NEW);
 									} else {
@@ -355,29 +351,26 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 								}
 							}
 						}
-					} else {
-						creatorClass.setValue(newObject, property, value,
-								IdMapEncoder.NEW);
 					}
 				} else {
-					if (filter.hasObject(value)) {
-						creatorClass.setValue(newObject, property,
-								filter.getObject(value), IdMapEncoder.NEW);
-					} else {
+					Object refValue = filter.getRefByEntity(value);
+					if (refValue != null) {
+						creatorClass.setValue(newObject, property, refValue, IdMapEncoder.NEW);
+					}else{
 						SendableEntityCreator childCreatorClass = getCreatorClass(value);
 						if (childCreatorClass != null) {
-							if (!filter.isConvertable(this, value, property,
-									value, false, deep)) {
-								creatorClass.setValue(newObject, property,
-										value, IdMapEncoder.NEW);
+							if (!filter.isConvertable(this, reference,
+									property, value, false, deep)) {
+								creatorClass.setValue(newObject,
+										property, value, IdMapEncoder.NEW);
 							} else {
 								cloneObject(value, filter, deep-1);
 							}
 						} else {
-							creatorClass.setValue(newObject, property, value,
-									IdMapEncoder.NEW);
+							creatorClass.setValue(newObject, property, value, IdMapEncoder.NEW);
 						}
 					}
+
 				}
 			}
 		}

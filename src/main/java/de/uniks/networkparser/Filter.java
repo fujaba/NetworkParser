@@ -115,7 +115,7 @@ public class Filter {
 		return newInstance.withConvertable(convertable).withIdFilter(idFilter).withPropertyRegard(property);
 	}
 	
-	public boolean hasVisitedObjects(Object element) {
+	public boolean hasObjects(Object element) {
 		return visitedObjects.contains(element);
 	}
 	
@@ -140,8 +140,20 @@ public class Filter {
 	   return null;
 	}
 
-	public void addToVisitedObjects(Object visitedObjects) {
-		this.visitedObjects.add(visitedObjects);
+	/**
+	 * @param visitedObject Visited Object to Add to List
+	 * @return Filter
+	 */
+	public Filter withObjects(Object... visitedObject) {
+		if(visitedObject == null){
+			return this;
+		}
+		for(Object item : visitedObject){
+			if(item != null){
+				this.visitedObjects.add( item );
+			}
+		}
+		return this;
 	}
 	
 	public boolean isPropertyRegard(IdMapEncoder map, Object entity,
@@ -164,8 +176,18 @@ public class Filter {
 		return refs;
 	}
 
-	public boolean add(ReferenceObject item) {
-		return refs.add(item);
+	public Filter with(ReferenceObject item) {
+		refs.add(item);
+		return this;
+	}
+	
+	public Object getRefByEntity(Object value){
+		for(int i=0; i < visitedObjects.size(); i += 2){
+			if(visitedObjects.get(i) == value){
+				return visitedObjects.get(i + 1);
+			}
+		}
+		return null;
 	}
 	
 	public static Filter regard(Condition convertable) {
