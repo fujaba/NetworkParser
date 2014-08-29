@@ -7,6 +7,7 @@ import org.junit.Test;
 import de.uniks.networkparser.gui.table.Column;
 import de.uniks.networkparser.gui.table.ColumnListener;
 import de.uniks.networkparser.gui.table.util.ColumnCreator;
+import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonIdMap;
 
@@ -22,7 +23,11 @@ public class ColumnTest {
 
 	@Test
 	public void testColumnSerialization(){
-		Column column=new Column().withAttrName("Name");
+		Column column=new Column().withAttrName("Name").withResizable(true);
+		column.withVisible(true);
+		column.withMovable(true);
+		Assert.assertEquals(column.getBrowserId(), GUIPosition.CENTER);
+		
 		JsonIdMap map=(JsonIdMap) new JsonIdMap().withCreator(new ColumnCreator());
 		
 		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.gui.table.Column\",\"id\":\"J1.C1\",\"prop\":{\"attrName\":\"Name\"}}", map.toJsonObject(column).toString());

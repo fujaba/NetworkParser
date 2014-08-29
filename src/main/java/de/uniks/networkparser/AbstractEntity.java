@@ -11,7 +11,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -29,6 +29,14 @@ import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
  permissions and limitations under the Licence.
 */
 
+/**
+ * AbstractEntity is a Simple KeyValue - Object.
+ *
+ * @author Stefan Lindel
+ *
+ * @param <K> Key Element 
+ * @param <V> Value Element
+ */
 public abstract class AbstractEntity<K, V> implements BaseItem, Entry<K, V>, SendableEntityCreator, SendableEntityCreatorNoIndex {
 	public static final String PROPERTY_KEY = "key";
 	public static final String PROPERTY_VALUE = "value";
