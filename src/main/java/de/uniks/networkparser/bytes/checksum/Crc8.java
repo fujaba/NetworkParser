@@ -4,7 +4,7 @@ package de.uniks.networkparser.bytes.checksum;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -36,7 +36,7 @@ public class Crc8 extends CRCTable {
 
 	/**
 	 * Update the CRC value with a byte data.
-	 * 
+	 *
 	 * @param data
 	 *            The byte data
 	 */

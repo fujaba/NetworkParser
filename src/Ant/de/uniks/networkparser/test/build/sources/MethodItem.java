@@ -5,10 +5,10 @@ import java.util.ArrayList;
 public class MethodItem {
 	private boolean isMethod;
 	private String name="";
-//	private StringBuilder comment=new StringBuilder();
-	private ArrayList<String> body=new ArrayList<String>();
-	private LoCMetric locmetric=new LoCMetric();
-	private McCabe mccabemetric=new McCabe();
+//	private StringBuilder comment= new StringBuilder();
+	private ArrayList<String> body= new ArrayList<String>();
+	private LoCMetric locmetric= new LoCMetric();
+	private McCabe mccabemetric= new McCabe();
 	
 	public void append(String value) {
 		if(body.size()<1){
@@ -32,8 +32,8 @@ public class MethodItem {
 	
 	@Override
 	public String toString(){
-		StringBuilder sb=new StringBuilder();
-		for(String line : body){
+		StringBuilder sb = new StringBuilder();
+		for (String line : body){
 			sb.append(line);
 		}
 		return sb.toString();

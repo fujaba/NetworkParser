@@ -4,7 +4,7 @@ package de.uniks.networkparser.logic;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -32,47 +32,47 @@ public class IfCondition implements Condition, SendableEntityCreator {
 	private Condition trueCondition;
 	private Condition falseCondition;
 
-	public IfCondition withExpression(Condition expression){
+	public IfCondition withExpression(Condition expression) {
 		this.expression = expression;
 		return this;
 	}
-	
+
 	public Condition getExpression() {
 		return expression;
 	}
-	
-	public IfCondition withTrue(Condition condition){
+
+	public IfCondition withTrue(Condition condition) {
 		this.trueCondition = condition;
 		return this;
 	}
-	
+
 	public Condition getTrue() {
 		return trueCondition;
 	}
-	
-	public IfCondition withFalse(Condition condition){
+
+	public IfCondition withFalse(Condition condition) {
 		this.falseCondition = condition;
 		return this;
 	}
-	
+
 	public Condition getFalse() {
 		return falseCondition;
 	}
-	
+
 	@Override
 	public boolean matches(ValuesSimple values) {
-		if(expression.matches(values)){
-			if(trueCondition!=null){
+		if (expression.matches(values)) {
+			if (trueCondition!=null) {
 				return trueCondition.matches(values);
 			}
 		}else{
-			if(falseCondition!=null){
+			if (falseCondition!=null) {
 				return falseCondition.matches(values);
 			}
 		}
 		return false;
 	}
-	
+
 	@Override
 	public String[] getProperties() {
 		return new String[]{EXPRESSION, TRUECONDITION, FALSECONDITION};
@@ -85,13 +85,13 @@ public class IfCondition implements Condition, SendableEntityCreator {
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if(EXPRESSION.equalsIgnoreCase(attribute)){
+		if (EXPRESSION.equalsIgnoreCase(attribute)) {
 			return ((IfCondition)entity).getExpression();
 		}
-		if(TRUECONDITION.equalsIgnoreCase(attribute)){
+		if (TRUECONDITION.equalsIgnoreCase(attribute)) {
 			return ((IfCondition)entity).getTrue();
 		}
-		if(FALSECONDITION.equalsIgnoreCase(attribute)){
+		if (FALSECONDITION.equalsIgnoreCase(attribute)) {
 			return ((IfCondition)entity).getFalse();
 		}
 		return null;
@@ -100,15 +100,15 @@ public class IfCondition implements Condition, SendableEntityCreator {
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
-		if(EXPRESSION.equalsIgnoreCase(attribute)){
+		if (EXPRESSION.equalsIgnoreCase(attribute)) {
 			((IfCondition)entity).withExpression((Condition) value);
 			return true;
 		}
-		if(TRUECONDITION.equalsIgnoreCase(attribute)){
+		if (TRUECONDITION.equalsIgnoreCase(attribute)) {
 			((IfCondition)entity).withTrue((Condition) value);
 			return true;
 		}
-		if(FALSECONDITION.equalsIgnoreCase(attribute)){
+		if (FALSECONDITION.equalsIgnoreCase(attribute)) {
 			((IfCondition)entity).withFalse((Condition) value);
 			return true;
 		}

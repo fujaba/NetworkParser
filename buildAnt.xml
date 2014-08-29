@@ -12,7 +12,7 @@
             <fileset dir="./build/temp"/>
         </jar>
 
-		<taskdef name="GitRevision" classname="de.uniks.networkparser.test.build.GitRevision" classpath="build/ant.jar">
+		<taskdef name="GitRevision" classname="de.uniks.networkparser.test.build.GitRevision" classpath="bin:build/ant.jar">
 			<classpath>
 				<pathelement location="lib/git/org.eclipse.jgit-3.4.1.201406201815-r.jar"/>
 				<pathelement location="bin"></pathelement>

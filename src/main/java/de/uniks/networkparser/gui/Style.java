@@ -4,7 +4,7 @@ package de.uniks.networkparser.gui;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -22,7 +22,6 @@ package de.uniks.networkparser.gui;
  permissions and limitations under the Licence.
 */
 import java.util.HashMap;
-
 import de.uniks.networkparser.interfaces.GUIPosition;
 
 public class Style implements Cloneable{
@@ -55,17 +54,17 @@ public class Style implements Cloneable{
 	public static final String PROPERTY_BACKGROUND = "background";
 	/** The Font-Size-Family value. */
 	private String background;
-	
+
 	/** The Constant PROPERTY_BACKGROUND for Color of Background Attribute */
 	public static final String PROPERTY_UNDERLINE = "underline";
 	/** The Underline value. */
 	private boolean underline;
-	
+
 	/** The Constant PROPERTY_BACKGROUND for Color of Background Attribute */
 	public static final String PROPERTY_ALIGNMENT = "alignment";
 	/** The Underline value. */
 	private String alignment;
-	
+
 	/** The Constant PROPERTY_WIDTH for Width of Width */
 	public static final String PROPERTY_WIDTH = "width";
 	/** The Width value. */
@@ -75,11 +74,11 @@ public class Style implements Cloneable{
 	public static final String PROPERTY_HEIGHT = "height";
 	/** The Height value. */
 	private double height;
-	
+
 	public static final String PROPERTY_BORDER = "borders";
 
-	protected HashMap<GUIPosition, GUILine> borders=new HashMap<GUIPosition, GUILine>(); 
-	
+	protected HashMap<GUIPosition, GUILine> borders= new HashMap<GUIPosition, GUILine>();
+
 	public boolean isBold() {
 		return bold;
 	}
@@ -90,7 +89,7 @@ public class Style implements Cloneable{
 		propertyChange(PROPERTY_BOLD, oldValue, value);
 		return this;
 	}
-	
+
 	public boolean isItalic() {
 		return italic;
 	}
@@ -188,10 +187,10 @@ public class Style implements Cloneable{
 			withAlignment((String)value);
 			return true;
 		} else if (attribute.equalsIgnoreCase(PROPERTY_WIDTH)) {
-			withWidth(Double.valueOf(""+value));
+			withWidth(Double.valueOf("" +value));
 			return true;
 		} else if (attribute.equalsIgnoreCase(PROPERTY_HEIGHT)) {
-			withHeight(Double.valueOf(""+value));
+			withHeight(Double.valueOf("" +value));
 			return true;
 		}
 		return false;
@@ -218,13 +217,13 @@ public class Style implements Cloneable{
 		propertyChange(PROPERTY_BACKGROUND, oldValue, value);
 		return this;
 	}
-	
+
 	@Override
-	public Style clone(){
+	public Style clone() {
 		return clone(new Style());
 	}
-	
-	public Style clone(Style prototyp){
+
+	public Style clone(Style prototyp) {
 		return prototyp.withFontFamily(fontfamily)
 				.withFontSize(fontsize)
 				.withForground(forground)
@@ -236,8 +235,8 @@ public class Style implements Cloneable{
 				.withWidth(width)
 				.withHeight(height);
 	}
-	
-	
+
+
 
 	public boolean isUnderline() {
 		return underline;
@@ -256,7 +255,7 @@ public class Style implements Cloneable{
 
 	public Style withAlignment(GUIPosition value) {
 		String oldValue = this.alignment;
-		this.alignment = ""+value;
+		this.alignment = "" +value;
 		propertyChange(PROPERTY_ALIGNMENT, oldValue, value);
 		return this;
 	}
@@ -288,48 +287,48 @@ public class Style implements Cloneable{
 		propertyChange(PROPERTY_WIDTH, oldValue, value);
 		return this;
 	}
-	
-	
-	public Style withBorder(GUIPosition position, GUILine line){
+
+
+	public Style withBorder(GUIPosition position, GUILine line) {
 		getBorders().put(position, line);
 		propertyChange(PROPERTY_BORDER, null, position);
 		return this;
 	}
-	
-	public void setBorder(GUIPosition position, String width, String color){
+
+	public void setBorder(GUIPosition position, String width, String color) {
 		GUILine border = this.borders.get(position);
-		if(width!=null){
-			if(border==null){
+		if (width!=null) {
+			if (border==null) {
 				this.borders.put(position, new GUILine().withColor(color).withWidth(width));
 				this.propertyChange(PROPERTY_BORDER, null, this.borders);
 			}else{
-				if(!border.isCustomLine()){
+				if (!border.isCustomLine()) {
 					border.withColor(color);
 					border.withWidth(width);
 					this.propertyChange(PROPERTY_BORDER, null, this.borders);
 				}
 			}
-		}else if(border!=null){
-			if(!border.isCustomLine()){
+		}else if (border!=null) {
+			if (!border.isCustomLine()) {
 				this.borders.remove(position);
 				this.propertyChange(PROPERTY_BORDER, null, this.borders);
 			}
 		}
 	}
-	
-	public HashMap<GUIPosition, GUILine> getBorders(){
+
+	public HashMap<GUIPosition, GUILine> getBorders() {
 		return borders;
 	}
-	
+
 	public Style withOutBorder(GUIPosition position) {
 		GUILine removedItem = getBorders().remove(position);
-		if(removedItem!=null){
+		if (removedItem!=null) {
 			propertyChange(PROPERTY_BORDER, position, null);
 		}
 		return this;
 	}
-	
-	
-	public void propertyChange(String property, Object oldValue, Object newValue){
+
+
+	public void propertyChange(String property, Object oldValue, Object newValue) {
 	}
 }

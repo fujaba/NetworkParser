@@ -4,7 +4,7 @@ package de.uniks.networkparser.gui.brush;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -57,17 +57,17 @@ public class HTMLRegExRule extends RegExRule{
 
 	  /**
 	   * Get the pattern of this HTML script RegExp.
-	   * It is a combination of left and right tag and some pattern to match the 
-	   * in-between content. Group 1 is the left tag, group 2 is the inner content, 
+	   * It is a combination of left and right tag and some pattern to match the
+	   * in-between content. Group 1 is the left tag, group 2 is the inner content,
 	   * group 3 is the right tag.
-	   * 
+	   *
 	   * @return the pattern with flags: CASE_INSENSITIVE and DOTALL
 	   */
 	  @Override
 	public Pattern getPattern() {
 	    return Pattern.compile("(" + left + ")(.*?)(" + right + ")", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 	  }
-	  
+	 
 	  /**
 	   * {@inheritDoc}
 	   */

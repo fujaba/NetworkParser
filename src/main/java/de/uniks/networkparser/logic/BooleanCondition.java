@@ -4,7 +4,7 @@ package de.uniks.networkparser.logic;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -36,12 +36,12 @@ public class BooleanCondition implements Condition, SendableEntityCreator {
 		this.value = value;
 		return this;
 	}
-	
+
 	public boolean getValue() {
 		return value;
 	}
-	
-	public static BooleanCondition value(boolean value){
+
+	public static BooleanCondition value(boolean value) {
 		return new BooleanCondition().withValue(value);
 	}
 
@@ -57,7 +57,7 @@ public class BooleanCondition implements Condition, SendableEntityCreator {
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if(VALUE.equalsIgnoreCase(attribute)){
+		if (VALUE.equalsIgnoreCase(attribute)) {
 			return ((BooleanCondition)entity).getValue();
 		}
 		return null;
@@ -66,7 +66,7 @@ public class BooleanCondition implements Condition, SendableEntityCreator {
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
-		if(VALUE.equalsIgnoreCase(attribute)){
+		if (VALUE.equalsIgnoreCase(attribute)) {
 			((BooleanCondition)entity).withValue((Boolean) value);
 			return true;
 		}

@@ -4,7 +4,7 @@ package de.uniks.networkparser.json;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -26,7 +26,6 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-
 import de.uniks.networkparser.ArrayEntityList;
 import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -57,7 +56,7 @@ public class UpdateListener implements PropertyChangeListener {
 
 	/**
 	 * Instantiates a new update listener.
-	 * 
+	 *
 	 * @param map
 	 *            the map
 	 */
@@ -69,7 +68,7 @@ public class UpdateListener implements PropertyChangeListener {
 
 	/**
 	 * Start carbage colection.
-	 * 
+	 *
 	 * @param root
 	 *            the root
 	 * @return the json object
@@ -84,7 +83,7 @@ public class UpdateListener implements PropertyChangeListener {
 
 	/**
 	 * Garbage collection.
-	 * 
+	 *
 	 * @param root
 	 *            the root
 	 * @return the json object
@@ -122,7 +121,7 @@ public class UpdateListener implements PropertyChangeListener {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.
 	 * PropertyChangeEvent)
 	 */
@@ -234,7 +233,7 @@ public class UpdateListener implements PropertyChangeListener {
 
 	/**
 	 * Execute.
-	 * 
+	 *
 	 * @param updateMessage
 	 *            the update message
 	 * @return true, if successful
@@ -322,7 +321,7 @@ public class UpdateListener implements PropertyChangeListener {
 					}
 				}
 				return true;
-			} else if(update!= null){
+			} else if (update!= null) {
 				// update Message
 				Iterator<String> keys = update.keys();
 				while (keys.hasNext()) {
@@ -349,7 +348,7 @@ public class UpdateListener implements PropertyChangeListener {
 
 	/**
 	 * Check value.
-	 * 
+	 *
 	 * @param value
 	 *            the value
 	 * @param key
@@ -376,7 +375,7 @@ public class UpdateListener implements PropertyChangeListener {
 
 	/**
 	 * Check prio.
-	 * 
+	 *
 	 * @param prio
 	 *            the prio
 	 * @return true, if successful
@@ -399,7 +398,7 @@ public class UpdateListener implements PropertyChangeListener {
 
 	/**
 	 * Sets the value.
-	 * 
+	 *
 	 * @param creator
 	 *            the creator
 	 * @param element
@@ -419,7 +418,7 @@ public class UpdateListener implements PropertyChangeListener {
 			if (typeInfo != null) {
 				// notify in readJson
 			} else {
-				if(!this.map.isReadMessages(key, element, json, typ)){
+				if (!this.map.isReadMessages(key, element, json, typ)) {
 					return false;
 				}
 			}
@@ -437,7 +436,7 @@ public class UpdateListener implements PropertyChangeListener {
 
 	/**
 	 * Count message.
-	 * 
+	 *
 	 * @param message
 	 *            the message
 	 */
@@ -459,7 +458,7 @@ public class UpdateListener implements PropertyChangeListener {
 					// Its a new Object
 					JsonObject props = (JsonObject) message
 							.get(JsonIdMap.JSON_PROPS);
-					for(int i=0;i<props.size();i++){
+					for (int i=0;i<props.size();i++) {
 						if (props.getValue(i) instanceof JsonObject) {
 							countMessage((JsonObject) props.getValue(i));
 						} else if (props.getValue(i) instanceof JsonArray) {
@@ -473,12 +472,12 @@ public class UpdateListener implements PropertyChangeListener {
 
 	/**
 	 * Count message.
-	 * 
+	 *
 	 * @param message
 	 *            the message
 	 */
 	private void countMessage(JsonArray message) {
-		for(Iterator<Object> i = message.iterator();i.hasNext();){
+		for (Iterator<Object> i = message.iterator();i.hasNext();) {
 			Object obj=i.next();
 			if (obj instanceof JsonObject) {
 				countMessage((JsonObject) obj);

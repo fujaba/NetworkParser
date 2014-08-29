@@ -4,7 +4,7 @@ package de.uniks.networkparser.xml;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -22,7 +22,6 @@ package de.uniks.networkparser.xml;
  permissions and limitations under the Licence.
 */
 import java.util.ArrayList;
-
 import de.uniks.networkparser.AbstractKeyValueList;
 import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.EntityUtil;
@@ -52,13 +51,13 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements S
 	/**
 	 * Simple Constructor
 	 */
-	public XMLEntity(){
+	public XMLEntity() {
 		this.allowDuplicate = false;
 	}
-	
+
 	/**
 	 * Instantiates a new xML entity.
-	 * 
+	 *
 	 * @param value
 	 *            the tag
 	 * @return Itself
@@ -70,7 +69,7 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements S
 
 	/**
 	 * Construct a XMLEntity from a Tokener.
-	 * 
+	 *
 	 * @param tokener
 	 *            A Tokener object containing the source string. or a duplicated
 	 *            key.
@@ -83,7 +82,7 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements S
 
 	/**
 	 * Gets the children.
-	 * 
+	 *
 	 * @return the children
 	 */
 	public ArrayList<XMLEntity> getChildren() {
@@ -95,7 +94,7 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements S
 
 	/**
 	 * Adds the child.
-	 * 
+	 *
 	 * @param child
 	 *            the child
 	 * @return result if the child is added
@@ -103,7 +102,7 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements S
 	public boolean addChild(XMLEntity child) {
 		return getChildren().add(child);
 	}
-	
+
 	/**
 	 * Method to add a new Child to List
 	 * @param child the new Child
@@ -116,7 +115,7 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements S
 
 	/**
 	 * Gets the child.
-	 * 
+	 *
 	 * @param tag
 	 *            the tag
 	 * @return the child
@@ -132,7 +131,7 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements S
 
 	/**
 	 * Gets the tag.
-	 * 
+	 *
 	 * @return the tag
 	 */
 	public String getTag() {
@@ -141,10 +140,10 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements S
 
 	/**
 	 * Sets the tag.
-	 * 
+	 *
 	 * @param tag
 	 *            the new tag
-	 * @return the instance XMLEntity 
+	 * @return the instance XMLEntity
 	 */
 	public XMLEntity withTag(String tag) {
 		this.tag = tag;
@@ -153,7 +152,7 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements S
 
 	/**
 	 * Gets the value.
-	 * 
+	 *
 	 * @return the value
 	 */
 	public String getValueItem() {
@@ -162,7 +161,7 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements S
 
 	/**
 	 * Sets the value.
-	 * 
+	 *
 	 * @param value
 	 *            the new value
 	 * @return the XMLEntity Instance
@@ -174,7 +173,7 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements S
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see de.uni.kassel.peermessage.Entity#toString()
 	 */
 	@Override
@@ -184,7 +183,7 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements S
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see de.uni.kassel.peermessage.Entity#toString(int)
 	 */
 	@Override
@@ -194,7 +193,7 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements S
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see de.uni.kassel.peermessage.Entity#toString(int, int)
 	 */
 	@Override
@@ -207,14 +206,14 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements S
 		sb.append("<" + this.getTag());
 
 		int size=size();
-		for(int i=0;i<size;i++){
+		for (int i=0;i<size;i++) {
 			sb.append(" " + get(i) + "=" + EntityUtil.quote("" + getValue(i)));
 		}
 
 		toStringChildren(sb, indentFactor, intent+indentFactor);
 		return sb.toString();
 	}
-	
+
 	protected void toStringChildren(StringBuilder sb, int indentFactor, int intent) {
 		// parse Children
 		if (this.children != null && this.children.size() > 0) {
@@ -228,7 +227,7 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements S
 			sb.append(EntityUtil.repeat(' ', intent));
 			sb.append("</" + getTag() + ">");
 		} else if (this.value != null) {
-			sb.append(">"+ this.value);
+			sb.append(">" + this.value);
 			sb.append("</" + getTag() + ">");
 		}else{
 			sb.append("/>");
@@ -237,8 +236,8 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements S
 
 	@Override
 	public XMLEntity with(Object... values) {
-		for(Object value : values){
-			if(value instanceof XMLEntity){
+		for (Object value : values) {
+			if (value instanceof XMLEntity) {
 				addChild((XMLEntity)value);
 			}
 		}
@@ -277,19 +276,19 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements S
 
 	@Override
 	public Object remove(Object key) {
-		return removeItemByObject(""+key);
+		return removeItemByObject("" +key);
 	}
-	
+
 	/**
 	 * Static Method to generate XMLEntity
 	 * @param tag Tagname
 	 * @return a new Instance of XMLEntity
 	 */
-	public static XMLEntity TAG(String tag){
+	public static XMLEntity TAG(String tag) {
 		return new XMLEntity().withTag(tag);
 	}
-	
-	
+
+
 	public XMLEntity withValue(Object key, Object value) {
 		super.withValue(key, value);
 		return this;

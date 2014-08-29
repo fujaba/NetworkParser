@@ -4,7 +4,7 @@ package de.uniks.networkparser.gui.table.util;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -26,7 +26,7 @@ import de.uniks.networkparser.gui.table.TableList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class TableListCreator implements SendableEntityCreator{
-	public static final String[] properties=new String[]{TableList.PROPERTY_ITEMS};
+	public static final String[] properties= new String[]{TableList.PROPERTY_ITEMS};
 	@Override
 	public String[] getProperties() {
 		return properties;
@@ -39,7 +39,7 @@ public class TableListCreator implements SendableEntityCreator{
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if(TableList.PROPERTY_ITEMS.equalsIgnoreCase(attribute)){
+		if (TableList.PROPERTY_ITEMS.equalsIgnoreCase(attribute)) {
 			return ((TableList)entity).values();
 		}
 		return null;
@@ -48,7 +48,7 @@ public class TableListCreator implements SendableEntityCreator{
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
-		if(IdMapEncoder.REMOVE.equalsIgnoreCase(type)){
+		if (IdMapEncoder.REMOVE.equalsIgnoreCase(type)) {
 			attribute+=IdMapEncoder.REMOVE;
 		}
 		return ((TableList)entity).setValue(attribute, value);

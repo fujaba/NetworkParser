@@ -250,7 +250,7 @@
             versionsBox.selectedIndex = 0;
             if (versions.length>=1) {
                for (x=0; versions.length>1 && x<versions.length; x++) {
-                  versionsBox[x+1] = new Option(" Bugs at release: "+versions[versions.length-x-1][1], versions[versions.length-x-1][0]);
+                  versionsBox[x+1] = new Option(" Bugs at release: " +versions[versions.length-x-1][1], versions[versions.length-x-1][0]);
                }
             }
 
@@ -264,7 +264,7 @@
          // display a message
          function displayMessage(msg) {
             var container = document.getElementById(messageContainerId);
-            container.innerHTML = "<div class='message'>"+msg+"</div>";
+            container.innerHTML = "<div class='message'>" +msg+"</div>";
          }
 
          // reset displayed message
@@ -515,7 +515,7 @@
             var content = "";
             var content2 = "";
 
-            content += "<h3>"+title+"</h3>";
+            content += "<h3>" +title+"</h3>";
             content += getPriorityLegend();
             content2 += "<div class='bugList'>";
 
@@ -541,14 +541,14 @@
                   id = categories[x][idxCatKey];
                   label = categories[x][idxCatDescr];
                   containerId = "categories-" + id;
-                  subContainerId = "cat-"+id;
+                  subContainerId = "cat-" +id;
                   p = countBugsCat(selectedVersion, selectedPriority, id, idxBugCat);
                }
                if (list=="lbp") {
                   id = packageStats[x][0];
                   label = packageStats[x][0];
                   containerId = "packages-" + id;
-                  subContainerId = "package-"+id;
+                  subContainerId = "package-" +id;
                   p = countBugsPackage(selectedVersion, selectedPriority, id, idxBugPackage);
                }
 
@@ -557,7 +557,7 @@
                var total = p[1]+p[2]+p[3]+p[4];
                if (total > 0) {
                   content2 += addListItem( 1, containerId, label, total, p, subContainerId,
-                                          "toggleList('" + list + "', '" + subContainerId + "', '"+ id + "', '', '')"
+                                          "toggleList('" + list + "', '" + subContainerId + "', '" + id + "', '', '')"
                                           );
                }
                numberOfBugs += total;
@@ -567,7 +567,7 @@
             if (selectedVersion!=-1) {
                content += " (introduced in release " + versions[selectedVersion][1] +")";
             }
-            content += ": "+numberOfBugs+"</h4>";
+            content += ": " +numberOfBugs+"</h4>";
             return content+content2;
          }
 
@@ -592,14 +592,14 @@
                if (list=="lbc") {
                   id2 = codes[x][idxCodeKey];
                   label = codes[x][idxCodeDescr];
-                  containerId = "codes-"+id1;
+                  containerId = "codes-" +id1;
                   subContainerId = "cat-" + id1 + "-code-" + id2;
                   p = countBugsCode(selectedVersion, selectedPriority, id1, idxBugCat, id2, idxBugCode);
                }
                if (list=="lbp") {
                   id2 = classStats[x][0];
                   label = classStats[x][0];
-                  containerId = "packages-"+id1;
+                  containerId = "packages-" +id1;
                   subContainerId = "package-" + id1 + "-class-" + id2;
                   p = countBugsClass(selectedVersion, selectedPriority, id1, idxBugPackage, id2, idxBugClass);
                }
@@ -607,7 +607,7 @@
                var total = p[1]+p[2]+p[3]+p[4];
                if (total > 0) {
                   content += addListItem( 2, containerId, label, total, p, subContainerId,
-                                          "toggleList('"+ list + "', '" + subContainerId + "', '"+ id1 + "', '"+ id2 + "', '')"
+                                          "toggleList('" + list + "', '" + subContainerId + "', '" + id1 + "', '" + id2 + "', '')"
                                           );
                }
             }
@@ -637,14 +637,14 @@
                if (list=="lbc") {
                   id3 = patterns[x][idxPatternKey];;
                   label = patterns[x][idxPatternDescr];
-                  containerId = "patterns-"+id1;
+                  containerId = "patterns-" +id1;
                   subContainerId = "cat-" + id1 + "-code-" + id2 + "-pattern-" + id3;
                   p = countBugsPattern(selectedVersion, selectedPriority, id1, idxBugCat, id2, idxBugCode, id3, idxBugPattern);
                }
                if (list=="lbp") {
                   id3 = patterns[x][idxPatternKey];;
                   label = patterns[x][idxPatternDescr];
-                  containerId = "classpatterns-"+id1;
+                  containerId = "classpatterns-" +id1;
                   subContainerId = "package-" + id1 + "-class-" + id2 + "-pattern-" + id3;
                   p = countBugsClassPattern(selectedVersion, selectedPriority, id2, idxBugClass, id3, idxBugPattern);
                }
@@ -652,7 +652,7 @@
                var total = p[1]+p[2]+p[3]+p[4];
                if (total > 0) {
                   content += addListItem( 3, containerId, label, total, p, subContainerId,
-                                          "toggleList('" + list + "', '" + subContainerId + "', '"+ id1 + "', '"+ id2 + "', '"+ id3 + "')"
+                                          "toggleList('" + list + "', '" + subContainerId + "', '" + id1 + "', '" + id2 + "', '" + id3 + "')"
                                           );
                }
             }
@@ -692,13 +692,13 @@
 
                bugId = "b-uid-" + bug[0];
                label = bug[idxBugDescr];
-               containerId = "bugs-"+bugId;
+               containerId = "bugs-" +bugId;
                bugP = bug[4];
                p[bugP]++;
                var total = p[1]+p[2]+p[3]+p[4];
                if (total > 0) {
                   content += addBug(   4, containerId, label, bugP, bug[5], subContainerId,
-                                       "showbug('" + bugId + "', '" + subContainerId + "', '"+id3+"')");
+                                       "showbug('" + bugId + "', '" + subContainerId + "', '" +id3+"')");
                }
             }
             return content;
@@ -708,25 +708,25 @@
          function addListItem(level, id, label, total, p, subId, onclick) {
             var content = "";
 
-            content += "<div class='bugList-level"+level+"' >";
-            content += "<div class='bugList-level"+level+"-label' id='"+id+"' >";
+            content += "<div class='bugList-level" +level+"' >";
+            content += "<div class='bugList-level" +level+"-label' id='" +id+"' >";
             content += "<a href='' onclick=\"" + onclick + ";return false;\" ";
             content += ">";
-            content += "<strong>"+label+"</strong>";
-            content += " "+total+" bugs";
+            content += "<strong>" +label+"</strong>";
+            content += " " +total+" bugs";
             if (selectedPriority>1)
-               content += " <em>("+p[1];
+               content += " <em>(" +p[1];
             if (selectedPriority>=2)
-               content += "/"+p[2];
+               content += "/" +p[2];
             if (selectedPriority>=3)
-               content += "/"+p[3];
+               content += "/" +p[3];
             if (selectedPriority>=4)
-               content += "/"+p[4];
+               content += "/" +p[4];
             if (selectedPriority>1)
                content += ")</em>";
             content += "</a>";
             content += "</div>";
-            content += "<div class='bugList-level"+level+"-inner' id='"+subId+"' style='display:none;'>Loading...</div>";
+            content += "<div class='bugList-level" +level+"-inner' id='" +subId+"' style='display:none;'>Loading...</div>";
             content += "</div>";
             return content;
          }

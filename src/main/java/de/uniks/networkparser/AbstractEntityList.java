@@ -26,41 +26,41 @@ import java.util.List;
 
 public abstract class AbstractEntityList<V> extends AbstractList<V> implements List<V>{
 	public boolean addAll(int index, Collection<? extends V> c) {
-    	for(Iterator<? extends V> i = c.iterator();i.hasNext();){
+    	for (Iterator<? extends V> i = c.iterator();i.hasNext();) {
     		V item = i.next();
     		add(index++, item);
     	}
     	return true;
     }
-    
-	public boolean add(Iterator<? extends V> list){
-		while(list.hasNext()){
+   
+	public boolean add(Iterator<? extends V> list) {
+		while(list.hasNext()) {
 			V item = list.next();
-			if(item!=null){
-				if(!addEntity(item)){
+			if (item!=null) {
+				if (!addEntity(item)) {
 					return false;
-				}	
+				}
 			}
 		}
 		return true;
 	}
-	
-	public boolean addAll(Collection<? extends V> list){
+
+	public boolean addAll(Collection<? extends V> list) {
 		return add(list.iterator());
 	}
-	
+
 	public void add(int index, V element) {
-    	if( ! contains(element) ){
+    	if ( ! contains(element)) {
     		keys.add(index, element);
     		hashTableAddKey(element, index);
     		V beforeValue = null;
-    		if(index>0){
+    		if (index>0) {
     			beforeValue = get(index - 1);
     			fireProperty(null, element, beforeValue, null);
     		}
     	}
     }
-	
+
 	    /**
      * Add a Element after the Element from the second Parameter
      * @param element element to add
@@ -69,7 +69,7 @@ public abstract class AbstractEntityList<V> extends AbstractList<V> implements L
      */
     public AbstractEntityList<V> withBefore(V element, V beforeElement) {
     	int index = getIndex(beforeElement);
-    	if(index>=0){
+    	if (index>=0) {
     		add(index, element);
     	}
     	return this;
@@ -78,15 +78,15 @@ public abstract class AbstractEntityList<V> extends AbstractList<V> implements L
 	@Override
 	@SuppressWarnings("unchecked")
 	public AbstractList<V> with(Object... values) {
-		if(values==null){
+		if (values==null) {
 			return this;
 		}
-		for(Object item : values){
+		for (Object item : values) {
 			this.addEntity((V)item);
 		}
 		return this;
 	}
-    
+   
 	public Collection<V> values() {
 		return keys;
 	}

@@ -4,7 +4,7 @@ package de.uniks.networkparser.interfaces;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -30,7 +30,7 @@ import java.beans.PropertyChangeListener;
 public interface SendableEntity {
 	/**
 	 * Adds the property change listener.
-	 * 
+	 *
 	 * @param propertyName
 	 *            the property name
 	 * @param listener
@@ -39,8 +39,8 @@ public interface SendableEntity {
 	 */
 	public boolean addPropertyChangeListener(String propertyName,
 			PropertyChangeListener listener);
-	
+
 	public boolean addPropertyChangeListener(PropertyChangeListener listener);
-	
+
 	public boolean removePropertyChangeListener(PropertyChangeListener listener);
 }

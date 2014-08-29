@@ -4,7 +4,7 @@ package de.uniks.networkparser.bytes.checksum;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -27,7 +27,7 @@ package de.uniks.networkparser.bytes.checksum;
  */
 
 public class CCITT16 extends CRC {
-	public CCITT16(){
+	public CCITT16() {
 		value = 0x0000;
 	}
 
@@ -35,11 +35,11 @@ public class CCITT16 extends CRC {
 	public int getPolynom() {
 		return 0x1021; // 1000000000000101
 	}
-	
+
 	@Override
 	public void update(int b) {
 		super.update(b);
-		
+	
         for (int i = 0; i < 8; i++) {
             boolean bit = ((b   >> (7-i) & 1) == 1);
             boolean c15 = ((value >> 15    & 1) == 1);

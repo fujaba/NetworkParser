@@ -24,7 +24,7 @@ public class BitMapTest {
 		//  5 = 000101
 		//  8 = 001000
 		
-		ByteSimpleMap map=new ByteSimpleMap();
+		ByteSimpleMap map= new ByteSimpleMap();
 		BytesBuffer buffer=BytesBuffer.allocate(2);
 		buffer.put(new byte[]{8});
 		buffer.put(new byte[]{42});
@@ -44,7 +44,7 @@ public class BitMapTest {
 		// Bits: 0010 0101 0000 1100 1010 1111 0001 0001
 		//         |Minute|   | hour|yL|  day |yU  |Month
 		// 15.01.13 12:37
-		ByteSimpleMap map=new ByteSimpleMap();
+		ByteSimpleMap map= new ByteSimpleMap();
 		BytesBuffer buffer=BytesBuffer.allocate(4);
 		buffer.put(new byte[]{0x25,0x0C,(byte) 0xAF,0x11});
 		

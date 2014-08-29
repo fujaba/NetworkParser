@@ -1322,7 +1322,7 @@ package de.uniks.networkparser.test;
 //
 //        // Modify pattern to match canonical equivalences
 //        StringBuilder newPattern = new StringBuilder(patternLength);
-//        for(int i=0; i<patternLength; ) {
+//        for (int i=0; i<patternLength; ) {
 //            int c = normalizedPattern.codePointAt(i);
 //            StringBuilder sequenceBuffer;
 //            if ((Character.getType(c) == Character.NON_SPACING_MARK)
@@ -1400,7 +1400,7 @@ package de.uniks.networkparser.test;
 //        }
 //
 //        if (eq != null) {
-//            result = "(?:"+charClass.toString()+eq.toString()+")";
+//            result = "(?:" +charClass.toString()+eq.toString()+ ")";
 //        } else {
 //            result = charClass.toString();
 //        }
@@ -1427,13 +1427,13 @@ package de.uniks.networkparser.test;
 //        StringBuilder result = new StringBuilder(source);
 //
 //        // Add combined permutations
-//        for(int x=0; x<perms.length; x++) {
+//        for (int x=0; x<perms.length; x++) {
 //            String next = base + perms[x];
 //            if (x>0)
-//                result.append("|"+next);
+//                result.append("|" +next);
 //            next = composeOneStep(next);
 //            if (next != null)
-//                result.append("|"+produceEquivalentAlternation(next));
+//                result.append("|" +produceEquivalentAlternation(next));
 //        }
 //        return result.toString();
 //    }
@@ -1468,13 +1468,13 @@ package de.uniks.networkparser.test;
 //
 //        int length = 1;
 //        int nCodePoints = countCodePoints(input);
-//        for(int x=1; x<nCodePoints; x++)
+//        for (int x=1; x<nCodePoints; x++)
 //            length = length * (x+1);
 //
 //        String[] temp = new String[length];
 //
 //        int combClass[] = new int[nCodePoints];
-//        for(int x=0, i=0; x<nCodePoints; x++) {
+//        for (int x=0, i=0; x<nCodePoints; x++) {
 //            int c = Character.codePointAt(input, i);
 //            combClass[x] = getClass(c);
 //            i +=  Character.charCount(c);
@@ -1485,10 +1485,10 @@ package de.uniks.networkparser.test;
 //        int index = 0;
 //        int len;
 //        // offset maintains the index in code units.
-//loop:   for(int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
+//loop:   for (int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
 //            len = countChars(input, offset, 1);
 //            boolean skip = false;
-//            for(int y=x-1; y>=0; y--) {
+//            for (int y=x-1; y>=0; y--) {
 //                if (combClass[y] == combClass[x]) {
 //                    continue loop;
 //                }
@@ -1498,7 +1498,7 @@ package de.uniks.networkparser.test;
 //            String[] subResult = producePermutations(otherChars);
 //
 //            String prefix = input.substring(offset, offset+len);
-//            for(int y=0; y<subResult.length; y++)
+//            for (int y=0; y<subResult.length; y++)
 //                temp[index++] =  prefix + subResult[y];
 //        }
 //        String[] result = new String[index];
@@ -1689,7 +1689,7 @@ package de.uniks.networkparser.test;
 //                System.out.println("**** end contents GroupCurly body");
 //            } else if (node instanceof GroupTail) {
 //                System.out.println(node);
-//                System.out.println("Tail next is "+node.next);
+//                System.out.println("Tail next is " +node.next);
 //                return;
 //            } else {
 //                System.out.println(node);
@@ -2334,7 +2334,7 @@ package de.uniks.networkparser.test;
 //                throw error("\\k is not followed by '<' for named capturing group");
 //            String name = groupname(read());
 //            if (!namedGroups().containsKey(name))
-//                throw error("(named capturing group <"+ name+"> does not exit");
+//                throw error("(named capturing group <" + name+ "> does not exit");
 //            if (create) {
 //                if (has(CASE_INSENSITIVE))
 //                    root = new CIBackRef(namedGroups().get(name), has(UNICODE_CASE));
@@ -2560,14 +2560,14 @@ package de.uniks.networkparser.test;
 //                    if (m < ch)
 //                        throw error("Illegal character range");
 //                    if (has(CASE_INSENSITIVE))
-//                        return caseInsensitiveRangeFor(ch, m);
+//                        return caseInsensitiveRangefor (ch, m);
 //                    else
-//                        return rangeFor(ch, m);
+//                        return rangefor (ch, m);
 //                }
 //            }
 //            return bitsOrSingle(bits, ch);
 //        }
-//        throw error("Unexpected character '"+((char)ch)+"'");
+//        throw error("Unexpected character '" +((char)ch)+ "'");
 //    }
 //
 //    private int single() {
@@ -2619,11 +2619,11 @@ package de.uniks.networkparser.test;
 //            String value = name.substring(i + 1);
 //            name = name.substring(0, i).toLowerCase(Locale.ENGLISH);
 //            if ("sc".equals(name) || "script".equals(name)) {
-//                node = unicodeScriptPropertyFor(value);
+//                node = unicodeScriptPropertyfor (value);
 //            } else if ("blk".equals(name) || "block".equals(name)) {
-//                node = unicodeBlockPropertyFor(value);
+//                node = unicodeBlockPropertyfor (value);
 //            } else if ("gc".equals(name) || "general_category".equals(name)) {
-//                node = charPropertyNodeFor(value);
+//                node = charPropertyNodefor (value);
 //            } else {
 //                throw error("Unknown Unicode property {name=<" + name + ">, "
 //                             + "value=<" + value + ">}");
@@ -2631,7 +2631,7 @@ package de.uniks.networkparser.test;
 //        } else {
 //            if (name.startsWith("In")) {
 //                // \p{inBlockName}
-//                node = unicodeBlockPropertyFor(name.substring(2));
+//                node = unicodeBlockPropertyfor (name.substring(2));
 //            } else if (name.startsWith("Is")) {
 //                // \p{isGeneralCategory} and \p{isScriptName}
 //                name = name.substring(2);
@@ -2639,9 +2639,9 @@ package de.uniks.networkparser.test;
 //                if (uprop != null)
 //                    node = new Utype(uprop);
 //                if (node == null)
-//                    node = CharPropertyNames.charPropertyFor(name);
+//                    node = CharPropertyNames.charPropertyfor (name);
 //                if (node == null)
-//                    node = unicodeScriptPropertyFor(name);
+//                    node = unicodeScriptPropertyfor (name);
 //            } else {
 //                if (has(UNICODE_CHARACTER_CLASS)) {
 //                    UnicodeProp uprop = UnicodeProp.forPOSIXName(name);
@@ -2649,7 +2649,7 @@ package de.uniks.networkparser.test;
 //                        node = new Utype(uprop);
 //                }
 //                if (node == null)
-//                    node = charPropertyNodeFor(name);
+//                    node = charPropertyNodefor (name);
 //            }
 //        }
 //        if (maybeComplement) {
@@ -2665,7 +2665,7 @@ package de.uniks.networkparser.test;
 //     * Returns a CharProperty matching all characters belong to
 //     * a UnicodeScript.
 //     */
-//    private CharProperty unicodeScriptPropertyFor(String name) {
+//    private CharProperty unicodeScriptPropertyfor (String name) {
 //        final Character.UnicodeScript script;
 //        try {
 //            script = Character.UnicodeScript.forName(name);
@@ -2678,7 +2678,7 @@ package de.uniks.networkparser.test;
 //    /**
 //     * Returns a CharProperty matching all characters in a UnicodeBlock.
 //     */
-//    private CharProperty unicodeBlockPropertyFor(String name) {
+//    private CharProperty unicodeBlockPropertyfor (String name) {
 //        final Character.UnicodeBlock block;
 //        try {
 //            block = Character.UnicodeBlock.forName(name);
@@ -2691,8 +2691,8 @@ package de.uniks.networkparser.test;
 //    /**
 //     * Returns a CharProperty matching all characters in a named property.
 //     */
-//    private CharProperty charPropertyNodeFor(String name) {
-//        CharProperty p = CharPropertyNames.charPropertyFor(name);
+//    private CharProperty charPropertyNodefor (String name) {
+//        CharProperty p = CharPropertyNames.charPropertyfor (name);
 //        if (p == null)
 //            throw error("Unknown character property name {" + name + "}");
 //        return p;
@@ -3969,7 +3969,7 @@ package de.uniks.networkparser.test;
 //    /**
 //     * Returns node for matching characters within an explicit value range.
 //     */
-//    private static CharProperty rangeFor(final int lower,
+//    private static CharProperty rangefor (final int lower,
 //                                         final int upper) {
 //        return new CharProperty() {
 //                boolean isSatisfiedBy(int ch) {
@@ -3980,7 +3980,7 @@ package de.uniks.networkparser.test;
 //     * Returns node for matching characters within an explicit value
 //     * range in a case insensitive manner.
 //     */
-//    private CharProperty caseInsensitiveRangeFor(final int lower,
+//    private CharProperty caseInsensitiveRangefor (final int lower,
 //                                                 final int upper) {
 //        if (has(UNICODE_CASE))
 //            return new CharProperty() {
@@ -5416,7 +5416,7 @@ package de.uniks.networkparser.test;
 //
 //    private static class CharPropertyNames {
 //
-//        static CharProperty charPropertyFor(String name) {
+//        static CharProperty charPropertyfor (String name) {
 //            CharPropertyFactory m = map.get(name);
 //            return m == null ? null : m.make();
 //        }
@@ -5434,7 +5434,7 @@ package de.uniks.networkparser.test;
 //        private static void defRange(String name,
 //                                     final int lower, final int upper) {
 //            map.put(name, new CharPropertyFactory() {
-//                    CharProperty make() { return rangeFor(lower, upper);}});
+//                    CharProperty make() { return rangefor (lower, upper);}});
 //        }
 //
 //        private static void defCtype(String name,

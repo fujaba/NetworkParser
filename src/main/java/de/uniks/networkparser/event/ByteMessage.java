@@ -4,7 +4,7 @@ package de.uniks.networkparser.event;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -62,7 +62,7 @@ public class ByteMessage  {
 
 	/**
 	 * Gets the value.
-	 * 
+	 *
 	 * @return the value
 	 */
 	public byte[] getValue() {
@@ -71,7 +71,7 @@ public class ByteMessage  {
 
 	/**
 	 * Sets the value.
-	 * 
+	 *
 	 * @param value
 	 *            the new value
 	 * @return Itself

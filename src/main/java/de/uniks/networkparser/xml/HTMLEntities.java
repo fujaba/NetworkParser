@@ -4,7 +4,7 @@ package de.uniks.networkparser.xml;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -337,7 +337,7 @@ public class HTMLEntities {
 	/**
 	 * Convert HTML entities to special and extended unicode characters
 	 * equivalents.
-	 * 
+	 *
 	 * @param str
 	 *            input string
 	 * @return formatted string
@@ -387,7 +387,7 @@ public class HTMLEntities {
 
 	/**
 	 * Replace single quotes characters with HTML entities.
-	 * 
+	 *
 	 * @param str
 	 *            the input string
 	 * @return string with replaced single quotes
@@ -402,7 +402,7 @@ public class HTMLEntities {
 
 	/**
 	 * Replace single quotes HTML entities with equivalent character.
-	 * 
+	 *
 	 * @param str
 	 *            the input string
 	 * @return string with replaced single quotes
@@ -413,7 +413,7 @@ public class HTMLEntities {
 
 	/**
 	 * Replace double quotes characters with HTML entities.
-	 * 
+	 *
 	 * @param str
 	 *            the input string
 	 * @return string with replaced double quotes
@@ -425,7 +425,7 @@ public class HTMLEntities {
 
 	/**
 	 * Replace single quotes HTML entities with equivalent character.
-	 * 
+	 *
 	 * @param str
 	 *            the input string
 	 * @return string with replaced single quotes
@@ -436,7 +436,7 @@ public class HTMLEntities {
 
 	/**
 	 * Replace &amp; characters with &amp;amp; HTML entities.
-	 * 
+	 *
 	 * @param str
 	 *            the input string
 	 * @return string with replaced characters
@@ -447,7 +447,7 @@ public class HTMLEntities {
 
 	/**
 	 * Replace &amp;amp; HTML entities with &amp; characters.
-	 * 
+	 *
 	 * @param str
 	 *            the input string
 	 * @return string with replaced entities

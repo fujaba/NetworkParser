@@ -14,7 +14,7 @@ public class XMLTCC2014Test extends IOClasses{
 	public void testPattern() {
 		String XMLText = readFile("src/test/resources/test3.xml").toString();
 		
-		XMLIdMap map=new XMLIdMap();
+		XMLIdMap map= new XMLIdMap();
 		map.withCreator(new FIXMLMessageCreator());
 		map.withCreator(new ApplicationMessageCreator());
 //		map.withCreator(new de.kassel.ttc2014.fixml.test3.creators.OrderCreator());
@@ -39,7 +39,7 @@ public class XMLTCC2014Test extends IOClasses{
 		String str = readFile("src/test/resources/test3.xml").toString();
 		
 		
-		XMLEntity item=new XMLEntity();
+		XMLEntity item= new XMLEntity();
 		item.withValue(str);
 		
 		System.out.println(item.toString());

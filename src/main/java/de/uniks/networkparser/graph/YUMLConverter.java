@@ -4,7 +4,7 @@ package de.uniks.networkparser.graph;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -24,7 +24,6 @@ package de.uniks.networkparser.graph;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-
 import de.uniks.networkparser.ArrayEntityList;
 import de.uniks.networkparser.ArraySimpleList;
 
@@ -33,9 +32,9 @@ public class YUMLConverter implements Converter {
 	public static final String URL = "http://yuml.me/diagram/class/";
 
 	@Override
-	public String convert(GraphList root, boolean removePackage){
+	public String convert(GraphList root, boolean removePackage) {
 		String typ = root.getTyp();
-		Collection<GraphNode> children = root.values(); 
+		Collection<GraphNode> children = root.values();
 		if (children.size() > 0) {
 			StringBuilder sb = new StringBuilder();
 			Iterator<GraphNode> i = children.iterator();
@@ -57,29 +56,29 @@ public class YUMLConverter implements Converter {
 		String key = item.getTyp(typ, shortName);
 		ArraySimpleList<?> showedLinks = (ArraySimpleList<?>) links.getValue(key);
 		if (showedLinks == null) {
-			if(sb.length()<1){
+			if (sb.length()<1) {
 				sb.append(parseEntity(item, visited, typ, shortName));
 			}
 			return;
 		}
 		Iterator<?> iterator = showedLinks.iterator();
-		while (iterator.hasNext() ) {
+		while (iterator.hasNext()) {
 			Object entry = iterator.next();
-			if(!(entry instanceof GraphEdge)){
+			if (!(entry instanceof GraphEdge)) {
 				continue;
 			}
-			GraphEdge element = (GraphEdge) entry; 
+			GraphEdge element = (GraphEdge) entry;
 			if (sb.length() > 0) {
 				sb.append(",");
 			}
 			sb.append(parseEntity(item, visited, typ, shortName));
 			sb.append("-");
-			
+		
 			Iterator<GraphNode> targetIterator = element.getOther().iterator();
 			GraphNode target = targetIterator.next();
 			sb.append(parseEntity(target, visited, typ, shortName));
-			
-			while(targetIterator.hasNext()){
+		
+			while(targetIterator.hasNext()) {
 				sb.append(parseEntity(item, visited, typ, shortName));
 				sb.append("-");
 				target = targetIterator.next();
@@ -88,19 +87,19 @@ public class YUMLConverter implements Converter {
 		}
 	}
 
-	
+
 	// ##################################### Entity
 	public String parseEntity(GraphNode entity, ArrayList<GraphNode> visited, boolean shortName) {
 		return parseEntity(entity, visited, null, shortName);
 	}
 	public String parseEntity(GraphNode entity, ArrayList<GraphNode> visited, String typ, boolean shortName) {
 		boolean shortString = visited.contains(entity);
-		if(!shortString){
+		if (!shortString) {
 			visited.add(entity);
 		}
-		if(typ==null){
+		if (typ==null) {
 			typ = GraphIdMap.OBJECT;
-			if(entity.getId()==null){
+			if (entity.getId()==null) {
 				typ = GraphIdMap.CLASS;
 			}
 		}
@@ -120,32 +119,32 @@ public class YUMLConverter implements Converter {
 			return "";
 		}
 		StringBuilder sb = new StringBuilder();
-		
+	
 		Iterator<GraphMember> i =  entity.iterator();
-		if(i.hasNext()){
+		if (i.hasNext()) {
 			String splitter = "";
 			if (typ.equals(GraphIdMap.OBJECT)) {
 				splitter = "=";
 			} else if (typ.equals(GraphIdMap.CLASS)) {
 				splitter = ":";
-	
+
 			}
 			sb.append("|");
 			Object element = i.next();
 			Attribute attribute;
-			if(element instanceof Attribute){
-				attribute =(Attribute) element; 
+			if (element instanceof Attribute) {
+				attribute =(Attribute) element;
 				sb.append(attribute.getName() + splitter + attribute.getValue(typ, shortName));	/// without Typ
 			}
-	
+
 			while (i.hasNext()) {
 				element = i.next();
-				if(!(element instanceof Attribute)){
+				if (!(element instanceof Attribute)) {
 					continue;
 				}
-				attribute =(Attribute) element; 
-				
-				
+				attribute =(Attribute) element;
+			
+			
 				sb.append(";");
 				sb.append(attribute.getName() + splitter + attribute.getValue(typ, shortName));
 			}

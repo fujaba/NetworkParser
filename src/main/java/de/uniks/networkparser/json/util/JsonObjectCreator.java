@@ -4,7 +4,7 @@ package de.uniks.networkparser.json.util;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -41,7 +41,7 @@ public class JsonObjectCreator implements SendableEntityCreator, SendableEntityC
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if(VALUE.equalsIgnoreCase(attribute)){
+		if (VALUE.equalsIgnoreCase(attribute)) {
 			return entity.toString();
 		}
 		return ((JsonObject)entity).getValue(attribute);

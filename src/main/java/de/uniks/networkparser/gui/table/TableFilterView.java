@@ -48,20 +48,20 @@ public class TableFilterView {
 		this.component = tableComponent;
 	}
 
-	public void setSearchProperties(String... searchProperties){
-		if(searchProperties!=null){
+	public void setSearchProperties(String... searchProperties) {
+		if (searchProperties!=null) {
 			this.searchProperties.clear();
 			for (String item : searchProperties) {
 				this.searchProperties.add(item);
 			}
 		}
 	}
-	
+
 
 	public void refresh() {
 		refresh("");
 	}
-	
+
 	public void refresh(String searchCriteria) {
 		// if search did not change do nothing
 		if (searchCriteria == null)
@@ -72,13 +72,13 @@ public class TableFilterView {
 		StringTokener stringTokener = new StringTokener();
 		stringTokener.withText(searchCriteria.toLowerCase());
 		ArrayList<String> stringList = stringTokener.getStringList();
-		ArrayList<String> searchList=new ArrayList<String>();
-		for(int i=0;i<stringList.size();i++){
-			if(stringList.get(i).endsWith("-") && i<stringList.size()-1){
+		ArrayList<String> searchList= new ArrayList<String>();
+		for (int i=0;i<stringList.size();i++) {
+			if (stringList.get(i).endsWith("-") && i<stringList.size()-1) {
 				String temp=stringList.get(i);
 				temp=temp.substring(0, temp.length()-1);
 				searchList.addAll(stringTokener.getString(temp.trim(), true));
-				searchList.add("-"+stringList.get(++i).trim());
+				searchList.add("-" +stringList.get(++i).trim());
 			}else{
 				searchList.addAll(stringTokener.getString(stringList.get(i), true));
 			}
@@ -88,24 +88,24 @@ public class TableFilterView {
 		refreshSearch();
 		refreshCounter();
 	}
-	
-	public void refreshSearch(){
+
+	public void refreshSearch() {
 		component.refreshViewer();
 	}
 
 	public boolean matchesSearchCriteria(Object item) {
-		if(lastSearchCriteriaItems==null){
+		if (lastSearchCriteriaItems==null) {
 			return true;
 		}
 		StringBuilder fullText = new StringBuilder();
 		SendableEntityCreator creatorClass = component.getMap().getCreatorClass(item);
 		// SEARCH FOR #ID:3
-		if(creatorClass==null){
+		if (creatorClass==null) {
 			return false;
 		}
 		for (String property : searchProperties) {
 			Object value = creatorClass.getValue(item, property);
-			if(value!=null){
+			if (value!=null) {
 				fullText.append(" " + value.toString().toLowerCase());
 			}
 		}
@@ -120,7 +120,7 @@ public class TableFilterView {
 					if (searchProperties.contains(propString)) {
 						String value = word.substring(pos + 1);
 						Object objValue = creatorClass.getValue(item, word.substring(1, pos));
-						if(objValue!=null){
+						if (objValue!=null) {
 							String itemValue = objValue.toString().toLowerCase();
 							// Search for simple Property
 							if (itemValue.indexOf(value) < 0) {
@@ -151,10 +151,10 @@ public class TableFilterView {
 		return true;
 	}
 
-	public void refreshCounter(){
-		if(updateField!=null){
+	public void refreshCounter() {
+		if (updateField!=null) {
 			TableColumnInterface column = component.getColumn(updateField);
-			if(column!=null){
+			if (column!=null) {
 //				column.UpdateCount()
 //FIXME				column.getTableColumn().setText(updateField.getLabel() + " (" + component.getTable(GUIPosition.CENTER).getItemCount() + ")");
 			}

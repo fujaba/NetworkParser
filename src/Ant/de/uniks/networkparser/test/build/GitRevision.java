@@ -36,19 +36,19 @@ public class GitRevision {
 		ObjectId headID = repository.resolve("HEAD");
 		System.setProperty("LastCommit", headID.getName());
 		
-		JsonArray map=new JsonArray();
+		JsonArray map= new JsonArray();
 		commitInfo(map, repository, headID, null);
 		
 		int count=0;
 		while(headID!=null){
 			count++;
 			ObjectId oldId = headID;
-			headID = repository.resolve(headID.getName()+"^1");
+			headID = repository.resolve(headID.getName()+ "^1");
 			commitInfo(map, repository, headID, oldId);
 //			System.out.println(count);
 		}
-		System.setProperty("Revisionnumber", ""+count);
-		FileWriter writer=new FileWriter("build/commits.json");
+		System.setProperty("Revisionnumber", "" +count);
+		FileWriter writer= new FileWriter("build/commits.json");
 		writer.write(map.toString(2));
 		writer.close();
 	}
@@ -90,8 +90,8 @@ public class GitRevision {
 						}
 					}
 					if(diffs!=null){
-						JsonArray files=new JsonArray();
-						for(DiffEntry entry : diffs) {
+						JsonArray files= new JsonArray();
+						for (DiffEntry entry : diffs) {
 							FileMode mode =entry.getNewMode(); 
 							if(FileMode.MISSING==mode){
 								files.add(new JsonObject().withValue("REM", entry.getNewPath()));

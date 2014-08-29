@@ -4,7 +4,7 @@ package de.uniks.networkparser.xml;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -23,7 +23,6 @@ package de.uniks.networkparser.xml;
 */
 import java.util.ArrayList;
 import java.util.Collection;
-
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.IdMapEncoder;
@@ -67,14 +66,14 @@ public class XMLSimpleIdMap extends IdMap {
 		this.stopwords.add("!DOCTYPE");
 	}
 
-	
+
 	@Override
 	public Object decode(BaseItem value) {
 		return decode((XMLTokener) new XMLTokener().withText(value.toString()), null);
 	}
-	
+
 	public Object decode(XMLTokener tokener, XMLGrammar factory) {
-		if(factory==null){
+		if (factory==null) {
 			factory = new XSDEntityCreator();
 		}
 		while (!tokener.isEnd()) {
@@ -87,13 +86,13 @@ public class XMLSimpleIdMap extends IdMap {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Read Json Automatic create JsonArray or JsonObject
 	 * @return the object
 	 */
 	@Override
-	public Object decode(String value){
+	public Object decode(String value) {
 		return decode(getPrototyp().withValue(value));
 	}
 
@@ -131,7 +130,7 @@ public class XMLSimpleIdMap extends IdMap {
 					if (encoding) {
 						if (value instanceof Collection<?>) {
 							for (Object item : (Collection<?>) value) {
-								xmlEntity.addChild( encode(item) );
+								xmlEntity.addChild( encode(item));
 							}
 						} else {
 							SendableEntityCreator valueCreater = getCreatorClass(value);
@@ -151,7 +150,7 @@ public class XMLSimpleIdMap extends IdMap {
 	/**
 	 * Find tag.
 	 * @param entity The Entity
-	 * 
+	 *
 	 * @param tokener
 	 *            the tokener
 	 * @param grammar
@@ -250,11 +249,11 @@ public class XMLSimpleIdMap extends IdMap {
 		return entity;
 	}
 
-	
+
 
 	/**
 	 * Gets the entity.
-	 * 
+	 *
 	 * @param factory
 	 *            the grammar
 	 * @param tokener
@@ -302,7 +301,7 @@ public class XMLSimpleIdMap extends IdMap {
 		entity.withTag(tag);
 		return entity;
 	}
-	
+
 	@Override
 	public XMLEntity getPrototyp() {
 		return new XMLEntity();

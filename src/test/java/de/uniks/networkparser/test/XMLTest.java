@@ -36,7 +36,7 @@ public class XMLTest {
 	@Test
 	public void testSimple(){
 		String xml="<br/><br/>";
-		XMLIdMap map=new XMLIdMap();
+		XMLIdMap map= new XMLIdMap();
 		map.decode(xml);
 		
 		xml="<listitem>" +
@@ -50,7 +50,7 @@ public class XMLTest {
 		map.addCreator(new EntityCreator());
 		ListItem listItem = (ListItem) map.decode(xml);
 		assertEquals(3, listItem.getChild().size());
-		Entity[] children=new Entity[3];
+		Entity[] children= new Entity[3];
 		listItem.getChild().toArray(children);
 		
 		assertEquals("Stefan", children[0].get("value"));
@@ -74,7 +74,7 @@ public class XMLTest {
 	@Test
 	public void testSonderfaelle(){
 		String xml="<chatmsg sender=\"Stefan (\\\"Eraser\\\")\">0<1</chatmsg>";
-		XMLIdMap map=new XMLIdMap();
+		XMLIdMap map= new XMLIdMap();
 		map.addCreator(new MyXMLEntityCreator());
 		XMLTestEntity decode = (XMLTestEntity) map.decode(xml);
 		assertEquals("Stefan (\\\"Eraser\\\")", decode.getSender());
@@ -107,20 +107,20 @@ public class XMLTest {
 	@Test
 	public void createXML(){
 		XMLEntity xmlEntity;
-		xmlEntity=new XMLEntity().withValue("<p id=\"42\" />");
+		xmlEntity= new XMLEntity().withValue("<p id=\"42\" />");
 		assertEquals("42", xmlEntity.get("id"));
 
-		xmlEntity=new XMLEntity().withValue("<p id=\"42\"/>");
+		xmlEntity= new XMLEntity().withValue("<p id=\"42\"/>");
 		assertEquals("42", xmlEntity.get("id"));
 		
-		xmlEntity=new XMLEntity().withValue("<p id=\"42\"></p>");
+		xmlEntity= new XMLEntity().withValue("<p id=\"42\"></p>");
 		assertEquals("42", xmlEntity.get("id"));
 	}
 	
 	@Test
 	public void testXML(){
 		String xml="<chatmsg>ich <b>bin</b> gut</chatmsg>";
-		XMLIdMap map=new XMLIdMap();
+		XMLIdMap map= new XMLIdMap();
 		map.addCreator(new MyXMLEntityCreator());
 		XMLTestEntity decode = (XMLTestEntity) map.decode(xml);
 		assertEquals("ich <b>bin</b> gut", decode.getText());
@@ -157,7 +157,7 @@ public class XMLTest {
 	
 	@Test
 	public void testChatMessage(){
-		ChatMessage chatMessage=new ChatMessage();
+		ChatMessage chatMessage= new ChatMessage();
 		chatMessage.setText("Dies ist eine Testnachricht");
 		chatMessage.setSender("Stefan Lindel");
 		
@@ -221,7 +221,7 @@ public class XMLTest {
 		jabberBind.setId("TEST");
 		jabberBind.setResource("AndroidPeer");
 
-		ChatMessage chatMessage=new ChatMessage();
+		ChatMessage chatMessage= new ChatMessage();
 		chatMessage.setText("Dies ist eine Testnachricht");
 		chatMessage.setSender("Stefan Lindel");
 		

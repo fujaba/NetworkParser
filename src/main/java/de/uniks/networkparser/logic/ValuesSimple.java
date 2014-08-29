@@ -22,8 +22,8 @@ permissions and limitations under the Licence.
 */
 public class ValuesSimple {
 	public Object value;
-	
-	public static ValuesSimple with(Object value){
+
+	public static ValuesSimple with(Object value) {
 		ValuesSimple simple = new ValuesSimple();
 		simple.value = value;
 		return simple;

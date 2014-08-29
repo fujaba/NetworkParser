@@ -32,9 +32,9 @@ public class ValuesMap extends ValuesSimple{
 	public Object value;
 	public boolean isMany;
 	public int deep;
-	
+
 	public static ValuesMap with(IdMapEncoder map, Object entity, String property,
-			Object value, boolean isMany, int deep){
+			Object value, boolean isMany, int deep) {
 		ValuesMap mapCondition = new ValuesMap();
 		mapCondition.map = map;
 		mapCondition.entity = entity;
@@ -44,14 +44,14 @@ public class ValuesMap extends ValuesSimple{
 		mapCondition.deep = deep;
 		return mapCondition;
 	}
-	public static ValuesMap with(IdMapEncoder map, Object entity, String property){
+	public static ValuesMap with(IdMapEncoder map, Object entity, String property) {
 		ValuesMap mapCondition = new ValuesMap();
 		mapCondition.map = map;
 		mapCondition.entity = entity;
 		mapCondition.property = property;
 		return mapCondition;
 	}
-	public static ValuesMap with(Object entity, String property, Object value){
+	public static ValuesMap with(Object entity, String property, Object value) {
 		ValuesMap mapCondition = new ValuesMap();
 		mapCondition.entity = entity;
 		mapCondition.property = property;

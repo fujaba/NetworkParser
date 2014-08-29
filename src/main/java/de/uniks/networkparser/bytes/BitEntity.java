@@ -4,7 +4,7 @@ package de.uniks.networkparser.bytes;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -48,8 +48,8 @@ public class BitEntity extends AbstractEntityList<BitValue> implements ByteItem,
 		this.typ = typ;
 		return this;
 	}
-	
-	public BitEntity withStartLen(int start, int len){
+
+	public BitEntity withStartLen(int start, int len) {
 		this.keys.add(new BitValue(start, len));
 		return this;
 	}
@@ -69,7 +69,7 @@ public class BitEntity extends AbstractEntityList<BitValue> implements ByteItem,
 	}
 
 	public boolean isTyp(byte... referenceTyp) {
-		if(referenceTyp==null){
+		if (referenceTyp==null) {
 			return false;
 		}
 		for (byte typ : referenceTyp) {
@@ -88,7 +88,7 @@ public class BitEntity extends AbstractEntityList<BitValue> implements ByteItem,
 			this.typ = (byte)value;
 			return true;
 		} else if (PROPERTY_ORIENTATION.equalsIgnoreCase(attribute)) {
-			this.orientation = Integer.parseInt(""+value);
+			this.orientation = Integer.parseInt("" +value);
 			return true;
 		}
 		return false;
@@ -146,14 +146,14 @@ public class BitEntity extends AbstractEntityList<BitValue> implements ByteItem,
 
 	@Override
 	public BitEntity with(Object... values) {
-		for(Object value : values){
+		for (Object value : values) {
 			if (value instanceof Byte) {
 				this.typ = BIT_BYTE;
 				this.property = "" + value;
 			} else if (value instanceof Integer) {
 				this.typ = BIT_NUMBER;
 				this.property = "" + value;
-			} else if(value instanceof BitEntity){
+			} else if (value instanceof BitEntity) {
 				this.add((BitValue) value);
 			}else{
 				this.typ = BIT_STRING;

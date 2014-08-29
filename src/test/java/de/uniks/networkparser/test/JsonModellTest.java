@@ -21,12 +21,12 @@ public class JsonModellTest implements MapUpdateListener{
 
 	@Test
 	public void testSet(){
-		GroupAccount account=new GroupAccount();
+		GroupAccount account= new GroupAccount();
 		account.createPersons().withName("Albert");
 		account.createPersons().withName("Tobi");
 		
 		
-		JsonIdMap map=new JsonIdMap();
+		JsonIdMap map= new JsonIdMap();
 		map.withCreator(new PersonCreator());
 //		System.out.println(map.toJsonArray(account.getPersons(), new Filter().withPropertyRegard(InstanceOf.value(Person.class, Person.PROPERTY_PARENT))).toString(2));
 		System.out.println(map.toJsonArray(account.getPersons(), Filter.regard(InstanceOf.value(Person.class, Person.PROPERTY_PARENT))).toString(2));
@@ -35,13 +35,13 @@ public class JsonModellTest implements MapUpdateListener{
 	
 	@Test
 	public void testModell(){
-		JsonIdMap map=new JsonIdMap();
+		JsonIdMap map= new JsonIdMap();
 		map.withUpdateMsgListener(this);
 		map.withCreator(new SortedMsgCreator());
-		SortedMsg first=new SortedMsg();
+		SortedMsg first= new SortedMsg();
 		first.setNumber(1);
 		
-		SortedMsg second=new SortedMsg();
+		SortedMsg second= new SortedMsg();
 		second.setNumber(2);
 		first.setChild(second);
 		
@@ -54,7 +54,7 @@ public class JsonModellTest implements MapUpdateListener{
 	    
 		// test string
 		String text = "Hello world!";
-		System.out.println("" + text+ "("+text.length()+")");
+		System.out.println("" + text+ "(" +text.length()+ ")");
 
 		// convert to big integer
 		BigInteger number = new BigInteger(text.getBytes());
@@ -67,7 +67,7 @@ public class JsonModellTest implements MapUpdateListener{
 		System.out.println("And back = " + textBack);
 
 		
-		this.secondMap=new JsonIdMap();
+		this.secondMap= new JsonIdMap();
 		secondMap.withUpdateMsgListener(this);
 		secondMap.withCreator(new SortedMsgCreator());
 
@@ -77,7 +77,7 @@ public class JsonModellTest implements MapUpdateListener{
 		System.out.println(jsonObject.toString(2));
 		secondMap.getUpdateListener().execute(jsonObject);
 		
-		SortedMsg third=new SortedMsg();
+		SortedMsg third= new SortedMsg();
 		third.setNumber(4);
 		second.setChild(third);
 		// DEEP 0
@@ -106,7 +106,7 @@ public class JsonModellTest implements MapUpdateListener{
 	@Override
 	public boolean sendUpdateMsg(Object target, String property, Object oldObj, Object newObject,
 			JsonObject jsonObject) {
-		System.out.println("Send: "+jsonObject);
+		System.out.println("Send: " +jsonObject);
 		secondMap.getUpdateListener().execute(jsonObject);
 		return true;
 	}
@@ -120,14 +120,14 @@ public class JsonModellTest implements MapUpdateListener{
 	@Override
 	public boolean isReadMessages(String key, Object element, JsonObject props,
 			String type) {
-		System.out.println("Receive: Typ:"+type+"value:"+props);
+		System.out.println("Receive: Typ:" +type+ "value:" +props);
 		return false;
 	}
 
 	@Override
 	public boolean readMessages(String key, Object element, Object value,
 			JsonObject props, String type) {
-		System.out.println("ReceiveOBJ: Typ:"+key+"value:"+value);
+		System.out.println("ReceiveOBJ: Typ:" +key+ "value:" +value);
 		return false;
 	}
 }

@@ -20,8 +20,8 @@ public class CheckSumTest {
 	
 	@Test
 	public void testCCITT16() throws UnsupportedEncodingException{
-		CCITT16 crc16=new CCITT16();
-		ByteConverterHex converter=new ByteConverterHex();
+		CCITT16 crc16= new CCITT16();
+		ByteConverterHex converter= new ByteConverterHex();
 		byte[] array = converter.decode("030400FB0000000000000240000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
 		
 		
@@ -56,7 +56,7 @@ public class CheckSumTest {
 	public void testCRC8(){
 		Crc8 crc = new Crc8();
 
-//		for(int i=0;i<test.length;i++){
+//		for (int i=0;i<test.length;i++){
 //			System.out.printf("%1$H ", test[i]);
 //		}
 //		crc.update(new byte[]{0x41, 0x6C, 0x62, 0x65, 0x72, 0x74});
@@ -66,7 +66,7 @@ public class CheckSumTest {
 	
 	@Test
 	public void testCRC16(){
-		Crc16 crc=new Crc16();
+		Crc16 crc= new Crc16();
 		crc.update(test);
 		assertEquals(14516,crc.getValue());
 		
@@ -75,15 +75,15 @@ public class CheckSumTest {
 	
 	@Test
 	public void testFCS16(){
-		FCS16 crc=new FCS16();
+		FCS16 crc= new FCS16();
 //		printTables(crc.crctab, crc.getGenTable());
 		crc.update(test);
 		assertEquals(19779,crc.getValue());
 	}
 	
 	public void printTables(int[] left, int[] right){
-		for(int i=0;i<256;i++){
-			System.out.println(left[i]+":"+right[i]);
+		for (int i=0;i<256;i++){
+			System.out.println(left[i]+ ":" +right[i]);
 		}
 	}
 	
@@ -93,7 +93,7 @@ public class CheckSumTest {
 	}
 	@Test
 	public void testSum8(){
-		Sum8 crc=new Sum8();
+		Sum8 crc= new Sum8();
 		crc.update(new byte[]{0x24,(byte) 0xD3,(byte) 0xA3,0x04,0x6D,(byte) 0xC0,0x3A,(byte) 0xF7,0x2F,0x5C});
 		assertEquals(135, crc.getValue());
 	}
@@ -124,24 +124,24 @@ public class CheckSumTest {
 
 	//	
 //	
-//	CRC crctest=new CRC();
+//	CRC crctest= new CRC();
 //	int[] table=crctest.make_crc_table(0x107);
-//	for(int i=0;i<256;i++){
-//		System.out.println(Crc8.CRC8_TABLE[i]+":"+table[i]);
+//	for (int i=0;i<256;i++){
+//		System.out.println(Crc8.CRC8_TABLE[i]+ ":" +table[i]);
 //	}
 //	
 //	Crc16 crc = new Crc16();
 ////	crc.calculate(new byte[]{0x42});
-////	System.out.println("CRC16: "+crc.crc16(new byte[]{0x65, 0x66}, 0, 2));
+////	System.out.println("CRC16: " +crc.crc16(new byte[]{0x65, 0x66}, 0, 2));
 //	
 ////	crc.calculate(new byte[]{0x65, 0x66});
-////	System.out.println("CHEKCSUM: "+crc.checksum());
+////	System.out.println("CHEKCSUM: " +crc.checksum());
 //	
 //
 //	
 
 ////	crc.add_bits(00101010, 8);
-//	System.out.println("CHEKCSUM: "+crc.getValue());
+//	System.out.println("CHEKCSUM: " +crc.getValue());
 //	
 //	// 38B4
 //	System.out.println("ENDE CRC");

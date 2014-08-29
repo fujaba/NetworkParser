@@ -8,7 +8,7 @@ import de.uniks.networkparser.bytes.util.BitEntityCreator;
 import de.uniks.networkparser.test.model.NumberFormat;
 
 public class NumberFormatCreator implements BitEntityCreator{
-	private ArrayList<BitEntity> entities=new ArrayList<BitEntity>();
+	private ArrayList<BitEntity> entities= new ArrayList<BitEntity>();
 	
 	public NumberFormatCreator(String propertyName, int start, int len){
 		entities.add(new BitEntity().with(propertyName, BitEntity.BIT_BYTE).withStartLen(start, len));
@@ -36,8 +36,8 @@ public class NumberFormatCreator implements BitEntityCreator{
 	
 	@Override
 	public String[] getProperties() {
-		ArrayList<String> list=new ArrayList<String>();
-		for(BitEntity entity : entities){
+		ArrayList<String> list= new ArrayList<String>();
+		for (BitEntity entity : entities){
 			list.add(entity.getPropertyName());
 		}
 		return list.toArray(new String[list.size()]);

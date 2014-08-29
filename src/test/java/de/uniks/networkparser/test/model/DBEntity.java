@@ -121,7 +121,7 @@ public class DBEntity {
 
 	public boolean set(String attribute, Object value) {
 		if(PROPERTY_TEXT.equalsIgnoreCase(attribute)){
-			withText(""+value);
+			withText("" +value);
 			return true;
 		}
 		if(PROPERTY_CHECK.equalsIgnoreCase(attribute)){
@@ -129,11 +129,11 @@ public class DBEntity {
 			return true;
 		}
 		if(PROPERTY_COMBO.equalsIgnoreCase(attribute)){
-			withCombo(""+value);
+			withCombo("" +value);
 			return true;
 		}
 		if(PROPERTY_PASSWORD.equalsIgnoreCase(attribute)){
-			withPassword(""+value);
+			withPassword("" +value);
 			return true;
 		}
 		if(PROPERTY_DATE.equalsIgnoreCase(attribute)){

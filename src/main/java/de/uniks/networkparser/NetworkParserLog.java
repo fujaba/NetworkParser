@@ -69,8 +69,8 @@ public class NetworkParserLog {
      * @param method The Caller-Method
      * @param message log this message
      */
-    public void debug(Object owner, String method, String message){
-    	System.out.println("DEBUG: "+message);
+    public void debug(Object owner, String method, String message) {
+    	System.out.println("DEBUG: " +message);
     }
 
     /**
@@ -80,8 +80,8 @@ public class NetworkParserLog {
      * @param method The Caller-Method
      * @param message log this message
      */
-    public void info(Object owner, String method, String message){
-    	System.out.println("INFO: "+message);
+    public void info(Object owner, String method, String message) {
+    	System.out.println("INFO: " +message);
     }
 
     /**
@@ -91,23 +91,23 @@ public class NetworkParserLog {
      * @param method The Caller-Method
      * @param message log this message
      */
-    public void warn(Object owner, String method, String message){
-    	System.err.println("WARN: "+message);
+    public void warn(Object owner, String method, String message) {
+    	System.err.println("WARN: " +message);
     }
 
     /**
      * Log a message with error log level.
-     * 
+     *
      * @param owner The Element with call the Methods
      * @param method The Caller-Method
-     * @param typ Typ of Log Value 
+     * @param typ Typ of Log Value
      * @param params The Original Parameters
      * @return boolean if method must Cancel
      */
-    public boolean error(Object owner, String method, String typ, Object... params){
+    public boolean error(Object owner, String method, String typ, Object... params) {
     	return this.isError;
     }
-    
+   
 	public boolean isError() {
 		return isError;
 	}

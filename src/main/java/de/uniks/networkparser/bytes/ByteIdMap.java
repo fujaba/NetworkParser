@@ -4,7 +4,7 @@ package de.uniks.networkparser.bytes;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import de.uniks.networkparser.AbstractMap;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
@@ -62,7 +61,7 @@ public class ByteIdMap extends IdMap {
 
 	/** The Constant DATATYPE_MAP. */
 	public static final byte DATATYPE_CLAZZID = 0x23;
-	
+
 	/**
 	 * SIMPLE TYPES The Constant DATATYPE_BYTE.
 	 */
@@ -147,22 +146,22 @@ public class ByteIdMap extends IdMap {
 	/** The Constant DATATYPE_LAST. */
 	public static final byte LEN_LAST = 0x05;
 
-	
+
 	/** The decoder map. */
 	protected HashMap<Byte, SendableEntityCreatorByte> decoderMap;
 
-	private ByteFilter filter=new ByteFilter();
+	private ByteFilter filter= new ByteFilter();
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * de.uni.kassel.peermessage.IdMap#addCreator(de.uni.kassel.peermessage.
 	 * interfaces.SendableEntityCreator)
 	 */
 	public boolean addCreator(SendableEntityCreator createrClass) {
 		if (createrClass instanceof SendableEntityCreatorByte) {
-			if(this.decoderMap != null){
+			if (this.decoderMap != null) {
 				if (this.decoderMap.containsKey(Byte.valueOf(((SendableEntityCreatorByte) createrClass).getEventTyp()))) {
 					return false;
 				}
@@ -191,7 +190,7 @@ public class ByteIdMap extends IdMap {
 
 	/**
 	 * Encode.
-	 * 
+	 *
 	 * @param entity
 	 *            the entity
 	 * @return the byte entity message
@@ -200,25 +199,25 @@ public class ByteIdMap extends IdMap {
 	public ByteItem encode(Object entity) {
 		return encode(entity, filter.withStandard(this.filter));
 	}
-	
-	private boolean addClazzTyp(ByteList msg, String clazzName, Filter filter){
+
+	private boolean addClazzTyp(ByteList msg, String clazzName, Filter filter) {
 	   try {
-         if(filter instanceof ByteFilter){
+         if (filter instanceof ByteFilter) {
             ByteFilter bf = (ByteFilter) filter;
             int id = bf.getIndexOfClazz(clazzName);
-            if(id>0){
+            if (id>0) {
             	if (id <= Byte.MAX_VALUE) {
-            		msg.add(new ByteEntity().withValue(DATATYPE_CLAZZTYP, (byte)id));	
+            		msg.add(new ByteEntity().withValue(DATATYPE_CLAZZTYP, (byte)id));
             	}else{
             		msg.add(new ByteEntity().withValue(DATATYPE_CLAZZTYPLONG, (byte)id));
             	}
 	           return true;
             }
             int pos = clazzName.lastIndexOf(".");
-            if(pos>0){
+            if (pos>0) {
             	String lastClazz = bf.getLastClazz();
-            	if(lastClazz!=null && lastClazz.lastIndexOf(".")==pos)
-            	if(clazzName.substring(0, pos).equals(lastClazz.substring(0, pos))){
+            	if (lastClazz!=null && lastClazz.lastIndexOf(".")==pos)
+            	if (clazzName.substring(0, pos).equals(lastClazz.substring(0, pos))) {
             		 byte[] bytes = clazzName.substring(pos+1).getBytes(bf.getCharset());
             		 msg.add(new ByteEntity().withValue(DATATYPE_CLAZZPACKAGE, bytes));
             		 return true;
@@ -226,18 +225,18 @@ public class ByteIdMap extends IdMap {
             }
             byte[] bytes = clazzName.getBytes(bf.getCharset());
             if (id <= Byte.MAX_VALUE) {
-            	msg.add(new ByteEntity().withValue(DATATYPE_CLAZZNAME, bytes));	
+            	msg.add(new ByteEntity().withValue(DATATYPE_CLAZZNAME, bytes));
             }else{
             	msg.add(new ByteEntity().withValue(DATATYPE_CLAZZNAMELONG, bytes));
             }
             return true;
          }
-         
+        
       } catch (UnsupportedEncodingException e) {
       }
 	   return false;
 	}
-	
+
 	@Override
 	public ByteItem encode(Object entity, Filter filter) {
 		SendableEntityCreator creator = getCreatorClass(entity);
@@ -245,7 +244,7 @@ public class ByteIdMap extends IdMap {
 			return null;
 		}
 		int id = filter.getIndexVisitedObjects(entity);
-		if(id>=0){
+		if (id>=0) {
 			// Must be a assoc
 			if (id <= Byte.MAX_VALUE) {
 		         return new ByteEntity().withValue(DATATYPE_ASSOC, (byte) id);
@@ -267,7 +266,7 @@ public class ByteIdMap extends IdMap {
 			Object reference = creator.getSendableInstance(true);
          addClazzTyp(msg, reference.getClass().getName(), filter);
 		}
-		
+	
 		filter.withObjects(entity);
 		String[] properties = creator.getProperties();
 		if (properties != null) {
@@ -282,11 +281,11 @@ public class ByteIdMap extends IdMap {
 					msg.add(child);
 				}
 			}
-			
+		
 			// Kill Empty Fields
 			ByteItem[] array = msg.toArray(new ByteItem[msg.size()]);
-			for(int i=array.length-1;i>0;i--){
-				if(!array[i].isEmpty()){
+			for (int i=array.length-1;i>0;i--) {
+				if (!array[i].isEmpty()) {
 					break;
 				}
 				msg.remove(i);
@@ -342,7 +341,7 @@ public class ByteIdMap extends IdMap {
 
 	/**
 	 * Gets the creator decoder class.
-	 * 
+	 *
 	 * @param typ
 	 *            the typ
 	 * @return the creator decoder class
@@ -353,7 +352,7 @@ public class ByteIdMap extends IdMap {
 
 	/**
 	 * Decode.
-	 * 
+	 *
 	 * @param value
 	 *            the value
 	 * @return the object
@@ -365,7 +364,7 @@ public class ByteIdMap extends IdMap {
 
 	/**
 	 * Decode.
-	 * 
+	 *
 	 * @param value
 	 *            the value
 	 * @param converter
@@ -379,7 +378,7 @@ public class ByteIdMap extends IdMap {
 
 	/**
 	 * Decode.
-	 * 
+	 *
 	 * @param value
 	 *            the value
 	 * @return the object
@@ -395,22 +394,22 @@ public class ByteIdMap extends IdMap {
 
 	@Override
 	public Object decode(BaseItem value) {
-		if(value instanceof ByteEntity){
+		if (value instanceof ByteEntity) {
 			return decode(((ByteEntity)value).getValue());
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Decode.
-	 * 
+	 *
 	 * @param buffer
 	 *            the in
 	 * @return the object
 	 */
 	public Object decode(BufferedBytes buffer) {
 		if (buffer.remaining() < 1) {
-			if(logger.error(this, "decode", NetworkParserLog.ERROR_TYP_PARSING, buffer)){
+			if (logger.error(this, "decode", NetworkParserLog.ERROR_TYP_PARSING, buffer)) {
 				throw new RuntimeException("DecodeExpeption - Remaining:" + buffer.remaining());
 			}
 			return null;
@@ -420,7 +419,7 @@ public class ByteIdMap extends IdMap {
 
 	/**
 	 * Decode.
-	 * 
+	 *
 	 * @param buffer
 	 *            the in
 	 * @param eventCreater
@@ -441,10 +440,10 @@ public class ByteIdMap extends IdMap {
 					break;
 				}
 				Object value = decodeValue(buffer, buffer.length() - buffer.position());
-				if(value != null){
-					if(value instanceof List<?>){
+				if (value != null) {
+					if (value instanceof List<?>) {
 						List<?> list=(List<?>) value;
-						for(Iterator<?> i=list.iterator();i.hasNext();){
+						for (Iterator<?> i=list.iterator();i.hasNext();) {
 							Object item = i.next();
 							eventCreater.setValue(entity, property, item, IdMapEncoder.NEW);
 						}
@@ -456,10 +455,10 @@ public class ByteIdMap extends IdMap {
 		}
 		return entity;
 	}
-	
+
 	/**
 	 * Gets the decode object.
-	 * 
+	 *
 	 * @param buffer
 	 *            the in
 	 * @param end
@@ -467,11 +466,11 @@ public class ByteIdMap extends IdMap {
 	 * @return the decode object
 	 */
 	public Object decodeValue(BufferedBytes buffer, int end) {
-		if (buffer.remaining() < 1 ){
+		if (buffer.remaining() < 1) {
 			return null;
 		}
 		byte typ=buffer.getByte();
-		if(typ == ByteIdMap.DATATYPE_NULL) {
+		if (typ == ByteIdMap.DATATYPE_NULL) {
 			return null;
 		}
 		if (typ == ByteIdMap.DATATYPE_BYTE) {
@@ -543,7 +542,7 @@ public class ByteIdMap extends IdMap {
 			int pos = buffer.getInt();
 			return filter.getVisitedObjects(pos);
 		}
-		if(ByteUtil.isGroup(typ)){
+		if (ByteUtil.isGroup(typ)) {
 			byte subgroup = ByteUtil.getSubGroup(typ);
 			int len = 0;
 			if (subgroup == ByteIdMap.LEN_LITTLE) {
@@ -568,22 +567,22 @@ public class ByteIdMap extends IdMap {
 				return buffer.getValue(len);
 			} else if (group == ByteIdMap.DATATYPE_LIST) {
 				int start = buffer.position();
-				ArrayList<Object> values=new ArrayList<Object>();
-				while(start+len-buffer.position()>0){
+				ArrayList<Object> values= new ArrayList<Object>();
+				while(start+len-buffer.position()>0) {
 					Object value = decodeValue(buffer, start+len-buffer.position());
-					if(value!=null){
+					if (value!=null) {
 						values.add(value);
 					}
 				}
 				return values;
 			} else if (group == ByteIdMap.DATATYPE_MAP) {
 				int start = buffer.position();
-				ArrayList<Object> values=new ArrayList<Object>();
-				while(start+len-buffer.position()>0){
+				ArrayList<Object> values= new ArrayList<Object>();
+				while(start+len-buffer.position()>0) {
 					Object subValues = decodeValue(buffer, start+len-buffer.position());
-					if(subValues!=null && subValues instanceof List<?>){
+					if (subValues!=null && subValues instanceof List<?>) {
 						List<?> list=(List<?>) subValues;
-						if(list.size()==2){
+						if (list.size()==2) {
 							values.add(new ObjectMapEntry().with(list.get(0), list.get(1)));
 						}
 					}else{
@@ -593,19 +592,19 @@ public class ByteIdMap extends IdMap {
 				return values;
 			} else if (group == ByteIdMap.DATATYPE_CHECK) {
 				int start = buffer.position();
-				if(buffer.length()<start+len){
+				if (buffer.length()<start+len) {
 					return null;
 				}
-				ArrayList<Object> values=new ArrayList<Object>();
-				while(start+len-buffer.position()>0){
-					values.add( decodeValue(buffer, start+len-buffer.position()) );
+				ArrayList<Object> values= new ArrayList<Object>();
+				while(start+len-buffer.position()>0) {
+					values.add( decodeValue(buffer, start+len-buffer.position()));
 				}
 				return values;
 			}
 		}
 		return null;
 	}
-	
+
 	@Override
 	public ByteEntity getPrototyp() {
 		return new ByteEntity();

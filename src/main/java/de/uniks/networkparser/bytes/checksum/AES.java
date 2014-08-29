@@ -134,8 +134,8 @@ public class AES {
 		for (i = 1; i < 255; i++) log[alog[i]] = i;
 	}
 
-	private ByteConverterString converter=new ByteConverterString();
-	
+	private ByteConverterString converter= new ByteConverterString();
+
 	/** return number of rounds for a given AES key size.
 	 *
 	 * @param keySize    size of the user key material in bytes.
@@ -166,12 +166,12 @@ public class AES {
 	}
 
 	public String encodeBytes(byte[] plain) {
-		return converter.toString( encode(plain) );
+		return converter.toString( encode(plain));
 	}
 
 	public String encode(String data) {
-		StringBuilder sb=new StringBuilder(data);
-		while((sb.length() % 32) != 0){
+		StringBuilder sb = new StringBuilder(data);
+		while((sb.length() % 32) != 0) {
 			sb.append(" ");
 		}
 		return cryptAll(sb, 1);
@@ -251,12 +251,12 @@ public class AES {
 	}
 
 	public String decode(String data) {
-		StringBuilder sb=new StringBuilder(data);
+		StringBuilder sb = new StringBuilder(data);
 		return cryptAll(sb, 2).trim();
 	}
-	
+
 	public byte[] decodeString(String value) {
-		return converter.decode( decode( value ) );
+		return converter.decode( decode( value));
 	}
 
 	/**
@@ -418,9 +418,9 @@ public class AES {
 	}
 
 	public String cryptAll(StringBuilder data, int mode)  {
-		if(data.length()/16 > ((int) data.length()/16)) {
+		if (data.length()/16 > ((int) data.length()/16)) {
 			int rest = data.length()-((int) data.length()/16)*16;
-			for(int i=0; i<rest; i++){
+			for (int i=0; i<rest; i++) {
 				data.append(" ");
 			}
 		}
@@ -428,12 +428,12 @@ public class AES {
 		byte[] res = new byte[data.length()];
 		String partStr = "";
 		byte[] partByte = new byte[16];
-		for(int p=0; p<nParts; p++) {
+		for (int p=0; p<nParts; p++) {
 			partStr = data.substring(p*16, p*16+16);
 			partByte = converter.decode(partStr);
-			if(mode==1) partByte = encode(partByte);
-			if(mode==2) partByte = decode(partByte);
-			for(int b=0; b<16; b++)
+			if (mode==1) partByte = encode(partByte);
+			if (mode==2) partByte = decode(partByte);
+			for (int b=0; b<16; b++)
 				res[p*16+b] = partByte[b];
 		}
 		return converter.toString(res);

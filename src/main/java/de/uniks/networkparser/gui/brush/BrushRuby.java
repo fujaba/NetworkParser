@@ -52,7 +52,7 @@ public class BrushRuby extends Brush {
     addRule(new RegExpressions(RegExpressions.singleQuotedString, "string")); // single quoted strings
     addRule(new RegExpressions("\\b[A-Z0-9_]+\\b", "constants")); // constants
     addRule(new RegExpressions(":[a-z][A-Za-z0-9_]*", "color2")); // symbols
-    addRule(new RegExpressions("(\\$|@@|@)\\w+", "variable", new Style().withBold(true))); // $global, @instance, and @@class variables
+    addRule(new RegExpressions("(\\$|@@|@)\\w+ ", "variable", new Style().withBold(true))); // $global, @instance, and @@class variables
     addRule(new RegExpressions(getKeywords(keywords), Pattern.MULTILINE, "keyword")); // keywords
     addRule(new RegExpressions(getKeywords(builtins), Pattern.MULTILINE, "color1")); // builtins
 

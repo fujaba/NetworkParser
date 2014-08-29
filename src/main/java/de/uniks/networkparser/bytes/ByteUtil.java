@@ -4,7 +4,7 @@ package de.uniks.networkparser.bytes;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -24,23 +24,23 @@ package de.uniks.networkparser.bytes;
 import de.uniks.networkparser.interfaces.BufferedBytes;
 
 public class ByteUtil {
-	public static void writeByteHeader(BufferedBytes buffer, byte typ, int valueLength){
+	public static void writeByteHeader(BufferedBytes buffer, byte typ, int valueLength) {
 		if (valueLength>0) {
 			// Save Typ
-			if(typ!=0){
+			if (typ!=0) {
 				buffer.put(typ);
-				if(getSubGroup(typ)!=ByteIdMap.LEN_LAST){
+				if (getSubGroup(typ)!=ByteIdMap.LEN_LAST) {
 					int lenSize=ByteUtil.getTypLen(typ, valueLength, true);
 
-					if(lenSize==1){
-						if(typ==ByteIdMap.DATATYPE_CLAZZNAME || ByteUtil.getSubGroup(typ)==ByteIdMap.LEN_LITTLE){
+					if (lenSize==1) {
+						if (typ==ByteIdMap.DATATYPE_CLAZZNAME || ByteUtil.getSubGroup(typ)==ByteIdMap.LEN_LITTLE) {
 							buffer.put((byte)(valueLength+ByteIdMap.SPLITTER));
 						}else{
 							buffer.put((byte)valueLength);
 						}
-					}else if(lenSize==2){
+					}else if (lenSize==2) {
 						buffer.put((short)valueLength);
-					}else if(lenSize==4){
+					}else if (lenSize==4) {
 						buffer.put((int)valueLength);
 					}
 				}
@@ -49,14 +49,14 @@ public class ByteUtil {
 			buffer.put(ByteIdMap.DATATYPE_NULL);
 		}
 	}
-	
-	
+
+
 	public static byte getTyp(byte group, byte subGroup) {
 		return (byte) (group+subGroup);
 	}
 	public static byte getTyp(byte typ, int len, boolean isLast) {
 		if (isGroup(typ)) {
-			if(isLast){
+			if (isLast) {
 				return getTyp(typ, ByteIdMap.LEN_LAST);
 			}
 			if (len > 32767) {
@@ -72,14 +72,14 @@ public class ByteUtil {
 		}
 		return typ;
 	}
-	
+
 	public static int getTypLen(byte typ, int len, boolean isLast) {
 		if (isGroup(typ)) {
 			int ref = typ % 16  - 10;
 			if (ref == 0) {
 				typ = getTyp(typ, len, isLast);
 				ref = typ % 16 - 10;
-			}	
+			}
 			if (ref == ByteIdMap.LEN_SHORT || ref == ByteIdMap.LEN_LITTLE) {
 				return 1;
 			}
@@ -92,11 +92,11 @@ public class ByteUtil {
 //			if (ref == ByteIdMap.LEN_LAST) {
 			return 0;
 		}
-		if (typ == ByteIdMap.DATATYPE_CLAZZNAME ){
+		if (typ == ByteIdMap.DATATYPE_CLAZZNAME) {
 			// || typ == ByteIdMap.DATATYPE_CLAZZTYP add bei ByteList
 			return 1;
 		}
-		if (typ == ByteIdMap.DATATYPE_CLAZZNAMELONG){
+		if (typ == ByteIdMap.DATATYPE_CLAZZNAMELONG) {
 			return 4;
 		}
 //		if (typ == ByteIdMap.DATATYPE_CLAZZTYP || typ == ByteIdMap.DATATYPE_ASSOC) {
@@ -107,7 +107,7 @@ public class ByteUtil {
 //		}
 		return 0;
 	}
-	
+
 	public static BufferedBytes getBuffer(int len) {
 		if (len < 1) {
 			return null;
@@ -115,14 +115,14 @@ public class ByteUtil {
 		BufferedBytes message=BytesBuffer.allocate(len);
 		return message;
 	}
-	
-	public static boolean isPrimitive(byte typ){
+
+	public static boolean isPrimitive(byte typ) {
 		return ((typ>=ByteIdMap.DATATYPE_SHORT && typ<=ByteIdMap.DATATYPE_BYTE) || typ<=ByteIdMap.DATATYPE_CHAR);
 	}
 
 	/**
 	 * CHeck if the Typ is typ of Group
-	 * 
+	 *
 	 * @param typ
 	 *            the the typ of data
 	 * @return the boolean
@@ -192,8 +192,8 @@ public class ByteUtil {
 		if (typ == ByteIdMap.DATATYPE_CLAZZSTREAM) {
 			return "DATATYPE_CLAZZSTREAM";
 		}
-		
-		if(isGroup(typ)){
+	
+		if (isGroup(typ)) {
 			byte group = getGroup(typ);
 			byte subgroup = getSubGroup(typ);
 			String result = "";
@@ -224,10 +224,10 @@ public class ByteUtil {
 		}
 		return null;
 	}
-	public static byte getGroup(byte typ){
+	public static byte getGroup(byte typ) {
 		return  (byte)((typ/16)*16+10);
 	}
-	public static byte getSubGroup(byte typ){
+	public static byte getSubGroup(byte typ) {
 		return (byte)((typ%16)-10);
 	}
 }

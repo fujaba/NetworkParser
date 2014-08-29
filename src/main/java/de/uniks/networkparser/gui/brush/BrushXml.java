@@ -49,7 +49,7 @@ public class BrushXml extends Brush {
             + "\\s*=\\s*"
             + "(\".*?\"|'.*?'|\\w+)", Pattern.COMMENTS);
     valueRegExpRule.addToGroupOperation("color1", "string");
-    
+   
 
     RegExpressions _regExpRule = new RegExpressions("((?:&lt;|<)[\\s\\/\\?]*(?:\\w+))(.*?)[\\s\\/\\?]*(?:&gt;|>)", Pattern.DOTALL);
     _regExpRule.addToGroupOperation(tagRegExpRule, valueRegExpRule);

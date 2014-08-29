@@ -15,7 +15,7 @@ public class NumberFormat {
 	
 	public boolean set(String attrName, Object value) {
 		if (PROPERTY_NUMBER.equalsIgnoreCase(attrName)) {
-			setNumber(Integer.valueOf(""+value));
+			setNumber(Integer.valueOf("" +value));
 			return true;
 		}
 		return false;

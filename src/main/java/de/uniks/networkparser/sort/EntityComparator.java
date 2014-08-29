@@ -4,7 +4,7 @@ package de.uniks.networkparser.sort;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -38,8 +38,8 @@ public class EntityComparator<V> implements Comparator<V> {
 	private EntityValueFactory cellCreator = new EntityValueFactory();
 	private TableList owner;
 	protected SendableEntityCreator creator;
-	
-	public EntityComparator<V> withTableList(TableList owner){
+
+	public EntityComparator<V> withTableList(TableList owner) {
 		this.owner = owner;
 		this.column = LIST;
 		return this;
@@ -64,16 +64,16 @@ public class EntityComparator<V> implements Comparator<V> {
 
 		Object v1 = cellCreator.getCellValue(o1, creator, column);
 		Object v2 = cellCreator.getCellValue(o2, creator, column);
-		if (v1 == null ){
-			if(v2 == null) {
+		if (v1 == null) {
+			if (v2 == null) {
 				return checkIntern(o1, o2);
 			}
 			return checkValues(v1, v2);
 		}
 		return checkValues(v2, v1)*-1;
 	}
-	
-	private int checkValues(Object v1, Object v2){
+
+	private int checkValues(Object v1, Object v2) {
 		if (v1 instanceof String) {
 			String valueA = (String) v1;
 			if (v2 != null) {
@@ -85,7 +85,7 @@ public class EntityComparator<V> implements Comparator<V> {
 			}
 		} else if (v1 instanceof Integer) {
 			Integer valueA = (Integer) v1;
-			if(v2 != null) {
+			if (v2 != null) {
 				Integer valueB = (Integer) v2;
 				int value = valueB.compareTo(valueA);
 
@@ -96,7 +96,7 @@ public class EntityComparator<V> implements Comparator<V> {
 			return 1;
 		} else if (v1 instanceof Long) {
 			Long valueA = (Long) v1;
-			if(v2 != null) {
+			if (v2 != null) {
 				Long valueB = (Long) v2;
 				int value = valueB.compareTo(valueA);
 
@@ -131,8 +131,8 @@ public class EntityComparator<V> implements Comparator<V> {
 		if (o1.equals(o2)) {
 			return 0;
 		}
-		
-		if(LIST.equalsIgnoreCase(column) && owner != null) {
+	
+		if (LIST.equalsIgnoreCase(column) && owner != null) {
 			return owner.indexOf(o1)-owner.indexOf(o2);
 		}
 

@@ -64,7 +64,7 @@ public class BrushPerl extends Brush {
     addRule(new RegExpressions("^\\s*#!.*$", Pattern.MULTILINE, "preprocessor")); // shebang
     addRule(new RegExpressions(RegExpressions.doubleQuotedString, "string"));
     addRule(new RegExpressions(RegExpressions.singleQuotedString, "string"));
-    addRule(new RegExpressions("(\\$|@|%)\\w+", "variable"));
+    addRule(new RegExpressions("(\\$|@|%)\\w+ ", "variable"));
     addRule(new RegExpressions(getKeywords(funcs), Pattern.MULTILINE | Pattern.CASE_INSENSITIVE, "functions"));
     addRule(new RegExpressions(getKeywords(keywords), Pattern.MULTILINE, "keyword"));
 

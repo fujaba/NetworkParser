@@ -58,6 +58,6 @@ public class Location {
 	}
 	
 	public String toStringShort(){
-		return getX()+":"+getY();
+		return getX()+ ":" +getY();
 	}
 }

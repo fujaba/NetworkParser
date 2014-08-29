@@ -4,7 +4,7 @@ package de.uniks.networkparser;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -29,15 +29,15 @@ import de.uniks.networkparser.interfaces.Buffer;
 
 public abstract class Tokener {
 	public final static String STOPCHARS = ",]}/\\\"[{;=# ";
-	
+
 	/** BUFFER */
 	protected Buffer buffer;
-	
-	protected NetworkParserLog logger=new NetworkParserLog();
-	
+
+	protected NetworkParserLog logger= new NetworkParserLog();
+
 	/**
 	 * Reset the Tokener
-	 * 
+	 *
 	 * @param value The Text for parsing
 	 * @return Itself
 	 */
@@ -53,7 +53,7 @@ public abstract class Tokener {
 	 */
 	public void back() {
 		if (this.buffer.length() <= 0) {
-			if(logger.error(this, "back", NetworkParserLog.ERROR_TYP_PARSING)){
+			if (logger.error(this, "back", NetworkParserLog.ERROR_TYP_PARSING)) {
 				throw new RuntimeException("Stepping back two steps is not supported");
 			}
 			return;
@@ -63,7 +63,7 @@ public abstract class Tokener {
 
 	/**
 	 * Check if End of String
-	 * 
+	 *
 	 * @return true, if successful
 	 */
 	public boolean isEnd() {
@@ -72,7 +72,7 @@ public abstract class Tokener {
 
 	/**
 	 * Get the next character in the source string.
-	 * 
+	 *
 	 * @return The next character, or 0 if past the end of the source string.
 	 */
 	public char next() {
@@ -84,7 +84,7 @@ public abstract class Tokener {
 
 	/**
 	 * Get the next n characters.
-	 * 
+	 *
 	 * @param n
 	 *            The number of characters to take.
 	 * @return A string of n characters. Substring bounds error if there are not
@@ -92,7 +92,7 @@ public abstract class Tokener {
 	 */
 	public String getNextString(int n) {
 		int pos = 0;
-		if(n<-1){
+		if (n<-1) {
 			n=n*-1;
 			char[] chars = new char[n];
 			while (pos < n) {
@@ -116,7 +116,7 @@ public abstract class Tokener {
 
 	/**
 	 * Get the next n characters.
-	 * 
+	 *
 	 * @param n
 	 *            The number of characters to take.
 	 * @return A string of n characters. Substring bounds error if there are not
@@ -135,7 +135,7 @@ public abstract class Tokener {
 		while (pos < n) {
 			chars[pos] = next();
 			if (isEnd()) {
-				if(logger.error(this, "skipPos", NetworkParserLog.ERROR_TYP_PARSING, n)){
+				if (logger.error(this, "skipPos", NetworkParserLog.ERROR_TYP_PARSING, n)) {
 					throw new RuntimeException("Substring bounds error");
 				}
 				return null;
@@ -147,7 +147,7 @@ public abstract class Tokener {
 
 	/**
 	 * Get the next char in the string, skipping whitespace.
-	 * 
+	 *
 	 * @return A character, or 0 if there are no more characters.
 	 */
 	public char nextClean() {
@@ -157,23 +157,23 @@ public abstract class Tokener {
 		}while(c!=0 && c <= ' ');
 		return c;
 	}
-	
+
 	public char nextStartClean() {
 		char c=getCurrentChar();
-		if(c!=0 && c <= ' '){
+		if (c!=0 && c <= ' ') {
 			c=nextClean();
 		}
 		return c;
 	}
-	
-	public String nextString(char quote, boolean allowCRLF){
+
+	public String nextString(char quote, boolean allowCRLF) {
 		return nextString(quote, allowCRLF, false, false, true);
 	}
 	/**
 	 * Return the characters up to the next close quote character. Backslash
 	 * processing is done. The formal JSON format does not allow strings in
 	 * single quotes, but an implementation is allowed to accept them.
-	 * 
+	 *
 	 * @param quote
 	 *            The quoting character, either <code>"</code>
 	 *            &nbsp;<small>(double quote)</small> or <code>'</code>
@@ -190,22 +190,22 @@ public abstract class Tokener {
 	 * @return A String.
 	 */
 	public String nextString(char quote, boolean allowCRLF, boolean allowQuote, boolean mustQuote, boolean nextStep) {
-		if(getCurrentChar()==0){
+		if (getCurrentChar()==0) {
 			return "";
 		}
-		if(getCurrentChar()==quote){
-			if(nextStep){
+		if (getCurrentChar()==quote) {
+			if (nextStep) {
 				next();
 			}
 			return "";
 		}
-		if(buffer.isCache()){
+		if (buffer.isCache()) {
 			return getString(quote, allowCRLF, allowQuote, mustQuote, nextStep);
 		}
 		return getStringBuffer(quote, allowCRLF, allowQuote, mustQuote, nextStep);
 	}
-	
-	private String getString(char quote, boolean allowCRLF, boolean allowQuote, boolean mustQuote, boolean nextStep){
+
+	private String getString(char quote, boolean allowCRLF, boolean allowQuote, boolean mustQuote, boolean nextStep) {
 		int startpos = this.buffer.position();
 	      char c;
 	      boolean isQuote=false;
@@ -220,8 +220,8 @@ public abstract class Tokener {
 	         case '\r':
 	            if (!allowCRLF)
 	            {
-	            	if(logger.error(this, "getString", NetworkParserLog.ERROR_TYP_PARSING, quote, allowCRLF, allowQuote, mustQuote, nextStep)){
-	            		throw new RuntimeException("Unterminated string"); 
+	            	if (logger.error(this, "getString", NetworkParserLog.ERROR_TYP_PARSING, quote, allowCRLF, allowQuote, mustQuote, nextStep)) {
+	            		throw new RuntimeException("Unterminated string");
 	            	}
 	            	return null;
 	            }
@@ -233,7 +233,7 @@ public abstract class Tokener {
 						c = 1;
 						isQuote = false;
 					}
-	            	if(allowQuote){
+	            	if (allowQuote) {
 		               b = c;
 		               c = 1;
 		               continue;
@@ -246,17 +246,17 @@ public abstract class Tokener {
 	      while (c != 0 && c != quote);
 
 	      int endPos = this.buffer.position();
-	      if(nextStep){
+	      if (nextStep) {
 	    	  next();
 	      }
-	      if( (isQuote && allowQuote) || mustQuote){
+	      if ( (isQuote && allowQuote) || mustQuote) {
 	    	  return this.buffer.substring(startpos, endPos - startpos - 1);
 	      }
 
 	      return this.buffer.substring(startpos, endPos - startpos);
 	}
 
-	private String getStringBuffer(char quote, boolean allowCRLF, boolean allowQuote, boolean mustQuote, boolean nextStep){
+	private String getStringBuffer(char quote, boolean allowCRLF, boolean allowQuote, boolean mustQuote, boolean nextStep) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(getCurrentChar());
 
@@ -269,7 +269,7 @@ public abstract class Tokener {
 			case '\n':
 			case '\r':
 				if (!allowCRLF) {
-					if(logger.error(this, "getStringBuffer", NetworkParserLog.ERROR_TYP_PARSING, quote, allowCRLF, allowQuote, mustQuote, nextStep)){
+					if (logger.error(this, "getStringBuffer", NetworkParserLog.ERROR_TYP_PARSING, quote, allowCRLF, allowQuote, mustQuote, nextStep)) {
 						throw new RuntimeException("Unterminated string");
 					}
 					return null;
@@ -277,9 +277,9 @@ public abstract class Tokener {
 			default:
 				if (b == '\\')
 	            {
-	            	if(allowQuote){
+	            	if (allowQuote) {
 	            		sb.append(c);
-	            		if (c == '\\'){
+	            		if (c == '\\') {
 	            			c = 1;
 	            		}
 	            		b = c;
@@ -291,16 +291,16 @@ public abstract class Tokener {
 					}
 	            	isQuote = true;
 	            }
-				if (c != quote){
+				if (c != quote) {
 					sb.append(c);
 				}
 				b = c;
 			}
 		}while (c != 0 && c != quote);
-		if(nextStep){
+		if (nextStep) {
 			next();
 	    }
-		if(isQuote || mustQuote){
+		if (isQuote || mustQuote) {
 	    	  return sb.substring(0, sb.length()-1);
 		}
 		return sb.toString();
@@ -310,10 +310,10 @@ public abstract class Tokener {
 	 * Handle unquoted text. This could be the values true, false, or null, or
 	 * it can be a number. An implementation (such as this one) is allowed to
 	 * also accept non-standard forms.
-	 * 
+	 *
 	 * Accumulate characters until we reach the end of the text or a formatting
 	 * character.
-	 * 
+	 *
 	 * @param creator The creatorobject
 	 * @param allowQuote is allow Quote in Strem
 	 * @return the new Element
@@ -321,10 +321,10 @@ public abstract class Tokener {
 	public Object nextValue(BaseItem creator, boolean allowQuote) {
 		return nextValue(creator, allowQuote, nextStartClean());
 	}
-	
+
 	public Object nextValue(BaseItem creator, boolean allowQuote, char c) {
 		String value;
-		if(buffer.isCache()){
+		if (buffer.isCache()) {
 			int start=buffer.position();
 			while (c >= ' ' && getStopChars().indexOf(c) < 0) {
 				c = next();
@@ -338,9 +338,9 @@ public abstract class Tokener {
 			}
 			value = sb.toString().trim();
 		}
-		
+	
 		if (value.length()<1) {
-			if(logger.error(this, "nextValue", NetworkParserLog.ERROR_TYP_PARSING, creator, allowQuote, c)){
+			if (logger.error(this, "nextValue", NetworkParserLog.ERROR_TYP_PARSING, creator, allowQuote, c)) {
 				throw new RuntimeException("Missing value");
 			}
 			return null;
@@ -394,7 +394,7 @@ public abstract class Tokener {
 
 	/**
 	 * Skip.
-	 * 
+	 *
 	 * @param pos
 	 *            the pos
 	 * @return true, if successful
@@ -411,7 +411,7 @@ public abstract class Tokener {
 
 	/**
 	 * Skip.
-	 * 
+	 *
 	 * @param search
 	 *            the The String of searchelements
 	 * @param order
@@ -456,7 +456,7 @@ public abstract class Tokener {
 
 	/**
 	 * Gets the index.
-	 * 
+	 *
 	 * @return the index
 	 */
 	public int position() {
@@ -465,7 +465,7 @@ public abstract class Tokener {
 
 	/**
 	 * Gets the length.
-	 * 
+	 *
 	 * @return the length
 	 */
 	public int length() {
@@ -474,7 +474,7 @@ public abstract class Tokener {
 
 	/**
 	 * Make a printable string of this JSONTokener.
-	 * 
+	 *
 	 * @return " at {index} [character {character} line {line}]"
 	 */
 	@Override
@@ -484,7 +484,7 @@ public abstract class Tokener {
 
 	/**
 	 * Char at.
-	 * 
+	 *
 	 * @param pos the Position of the bufferarray
 	 * @return the char
 	 */
@@ -494,7 +494,7 @@ public abstract class Tokener {
 
 	/**
 	 * Gets the current char.
-	 * 
+	 *
 	 * @return the current char
 	 */
 	public char getCurrentChar() {
@@ -507,16 +507,16 @@ public abstract class Tokener {
 	/**
 	 * @param positions
 	 *            first is start Position, second is Endposition
-	 * 
+	 *
 	 *            Absolut fix Start and End start&gt;0 StartPosition end&gt;Start
 	 *            EndPosition
-	 * 
+	 *
 	 *            Absolut from fix Position Start&gt;0 Position end NULL To End end
 	 *            -1 To this.index
-	 * 
+	 *
 	 *            Relativ from indexPosition Start Position from this.index +
 	 *            (-Start) End = 0 current Position
-	 * 
+	 *
 	 * @return substring from buffer
 	 */
 	public String substring(int... positions) {
@@ -549,7 +549,7 @@ public abstract class Tokener {
 
 	/**
 	 * Check values.
-	 * 
+	 *
 	 * @param items
 	 *            the items
 	 * @return true, if successful
@@ -575,23 +575,23 @@ public abstract class Tokener {
 
 	/**
 	 * Sets the index.
-	 * 
+	 *
 	 * @param index
 	 *            the new index
 	 */
 	public void setIndex(int index) {
 		this.buffer.withPosition(index);
 	}
-	
-	public byte[] toArray(){
+
+	public byte[] toArray() {
 		return buffer.toArray();
 	}
-	
-	public String toText(){
+
+	public String toText() {
 		return buffer.toText();
 	}
-	
-	public Tokener withBuffer(Buffer buffer){
+
+	public Tokener withBuffer(Buffer buffer) {
 		this.buffer=buffer;
 		return this;
 	}

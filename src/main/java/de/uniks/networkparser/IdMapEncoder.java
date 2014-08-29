@@ -4,7 +4,7 @@ package de.uniks.networkparser;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -29,7 +29,6 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-
 import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.gui.table.TableList;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -58,7 +57,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 
 	/** The Constant PRIO. */
 	public static final String PRIO = "prio";
-	
+
 	/** The counter. */
 	private IdMapCounter counter;
 
@@ -69,14 +68,14 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 
 	/** The updatelistener for Notification changes. */
 	protected PropertyChangeListener updatePropertylistener;
-	
+
 	protected BidiMap<String, Object> keyValue;
-	
-	protected Filter filter=new Filter();
-	
-	
+
+	protected Filter filter= new Filter();
+
+
 	protected NetworkParserLog logger = new NetworkParserLog();
-	
+
 	/**
 	 * @return the CurrentLogger
 	 */
@@ -106,7 +105,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 
 	/**
 	 * set the new List of Items for the Map
-	 * 
+	 *
 	 * @param parent
 	 *            the parent-List of Items
 	 * @return the Map
@@ -118,7 +117,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 
 	/**
 	 * Sets the counter.
-	 * 
+	 *
 	 * @param counter
 	 *            the new counter
 	 * @return Itself
@@ -130,7 +129,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 
 	/**
 	 * Gets the counter.
-	 * 
+	 *
 	 * @return the counter
 	 */
 	public IdMapCounter getCounter() {
@@ -142,7 +141,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 
 	/**
 	 * Sets the session id.
-	 * 
+	 *
 	 * @param value
 	 *            the new session id
 	 * @return Itself
@@ -154,7 +153,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 
 	/**
 	 * Gets the Id. Do not generate a Id
-	 * 
+	 *
 	 * @param obj
 	 *            the obj
 	 * @return the key
@@ -163,8 +162,8 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 		String result = null;
 		try{
 			result = this.keyValue.getKey(obj);
-		}catch(ConcurrentModificationException e){
-			if(this.logger.error(this, "getKey", NetworkParserLog.ERROR_TYP_CONCURRENTMODIFICATION, obj)){
+		}catch(ConcurrentModificationException e) {
+			if (this.logger.error(this, "getKey", NetworkParserLog.ERROR_TYP_CONCURRENTMODIFICATION, obj)) {
 				throw e;
 			}
 		}
@@ -173,7 +172,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 
 	/**
 	 * Gets the object.
-	 * 
+	 *
 	 * @param key
 	 *            the key
 	 * @return the object
@@ -182,8 +181,8 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 		Object result = null;
 		try{
 			result = this.keyValue.getValue(key);
-		}catch(ConcurrentModificationException e){
-			if(this.logger.error(this, "getObject", NetworkParserLog.ERROR_TYP_CONCURRENTMODIFICATION, key)){
+		}catch(ConcurrentModificationException e) {
+			if (this.logger.error(this, "getObject", NetworkParserLog.ERROR_TYP_CONCURRENTMODIFICATION, key)) {
 				throw e;
 			}
 		}
@@ -192,7 +191,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 
 	/**
 	 * Gets or Create the id.
-	 * 
+	 *
 	 * @param obj
 	 *            the obj
 	 * @return the id
@@ -208,7 +207,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 
 	/**
 	 * Put.
-	 * 
+	 *
 	 * @param jsonId
 	 *            the json id
 	 * @param object
@@ -259,7 +258,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 
 	/**
 	 * Removes the Entity from List or Destroy them
-	 * 
+	 *
 	 * @param oldValue the old Value
 	 * @param destroy destroy the missed Element
 	 * @return boolean if success
@@ -300,7 +299,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 
 	/**
 	 * Size.
-	 * 
+	 *
 	 * @return the int
 	 */
 	@Override
@@ -310,7 +309,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 
 	/**
 	 * Clone object.
-	 * 
+	 *
 	 * @param reference
 	 *            the reference
 	 * @param filter
@@ -329,7 +328,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 			for (String property : properties) {
 				Object value = creatorClass.getValue(reference, property);
 				if (value instanceof Collection<?>) {
-					if( filter.isFullSeriation() ){
+					if ( filter.isFullSeriation()) {
 						Collection<?> list = (Collection<?>) value;
 						for (Object item : list) {
 							Object refValue = filter.getRefByEntity(item);
@@ -384,7 +383,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 
 	/**
 	 * Start carbage collection.
-	 * 
+	 *
 	 * @param root
 	 *            the root
 	 */
@@ -397,7 +396,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 
 	/**
 	 * Garbage collection.
-	 * 
+	 *
 	 * @param root
 	 *            the root
 	 */
@@ -426,8 +425,8 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 		TableList result = new TableList();
 		String clazzName = creator.getSendableInstance(true).getClass()
 				.getName();
-		for(Object item : this.keyValue.values()){
-			if(item != null){
+		for (Object item : this.keyValue.values()) {
+			if (item != null) {
 				if (item.getClass().getName().equals(clazzName)) {
 					result.add(item);
 				}
@@ -473,7 +472,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 
 	@Override
 	public boolean containsKey(Object key) {
-		return this.keyValue.containKey(""+key);
+		return this.keyValue.containKey("" +key);
 	}
 
 	@Override
@@ -485,7 +484,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	public Object get(Object key) {
 		return getKey(key);
 	}
-	
+
 	@Override
 	public Object remove(Object oldValue) {
 		if (removeObj(oldValue, false)) {
@@ -494,10 +493,10 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 		return null;
 	}
 
-	public BidiMap<String, Object> getKeyValue(){
+	public BidiMap<String, Object> getKeyValue() {
 		return keyValue;
 	}
-	
+
 	@Override
 	public void putAll(Map<? extends String, ? extends Object> map) {
 		for (Iterator<?> i = map.entrySet().iterator(); i.hasNext();) {
@@ -510,7 +509,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	public void clear() {
 		this.keyValue.clear();
 	}
-	
+
     /* Not Good because copy values to new List use iterator
      * @see java.util.Map#keySet()
      */
@@ -531,20 +530,20 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 		this.updatePropertylistener = listener;
 		return this;
 	}
-	
-	public IdMapEncoder withFilter(Filter filter){
+
+	public IdMapEncoder withFilter(Filter filter) {
 		this.filter = filter;
 		return this;
 	}
-	
+
 	public abstract BaseItem encode(Object value);
 	public abstract BaseItem encode(Object value, Filter filter);
 	public abstract BaseItem getPrototyp();
 
 	@Override
 	public Set<java.util.Map.Entry<String, Object>> entrySet() {
-		LinkedHashSet<java.util.Map.Entry<String, Object>> list=new LinkedHashSet<java.util.Map.Entry<String, Object>>();
-		for(String key : keyValue.keySet()){
+		LinkedHashSet<java.util.Map.Entry<String, Object>> list= new LinkedHashSet<java.util.Map.Entry<String, Object>>();
+		for (String key : keyValue.keySet()) {
 			list.add(new MapEntry().with(key, keyValue.getValue(key)));
 		}
 		return list;

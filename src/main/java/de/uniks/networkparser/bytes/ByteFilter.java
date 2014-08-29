@@ -4,7 +4,7 @@ package de.uniks.networkparser.bytes;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -34,12 +34,12 @@ public class ByteFilter extends Filter {
 		this.isLenCheck = value;
 		return this;
 	}
-	
+
 	@Override
 	public Filter cloneObj() {
 	   return clone(new ByteFilter());
 	}
-	
+
 	@Override
 	public Filter clone(Filter newInstance)
 	{
@@ -50,27 +50,27 @@ public class ByteFilter extends Filter {
 	public String getCharset() {
 		return "UTF-8";
 	}
-	
-  public int getIndexOfClazz(String clazzName){
+
+  public int getIndexOfClazz(String clazzName) {
      int pos=0;
-     for(Object item : visitedObjects){
-        if(clazzName.equalsIgnoreCase(item.getClass().getName())){
+     for (Object item : visitedObjects) {
+        if (clazzName.equalsIgnoreCase(item.getClass().getName())) {
            return pos;
         }
         pos++;
      }
      return -1;
   }
-  public String getClazz(int pos){
+  public String getClazz(int pos) {
 	  Object item = visitedObjects.get(pos);
-	  if(item instanceof String){
-		  return ""+item;
+	  if (item instanceof String) {
+		  return "" +item;
 	  }
 	  return null;
   }
-  
-  public String getLastClazz(){
-	  if(visitedObjects.size()>0){
+ 
+  public String getLastClazz() {
+	  if (visitedObjects.size()>0) {
 		  return visitedObjects.get(visitedObjects.size() - 1).getClass().getName();
 	  }
 	  return null;

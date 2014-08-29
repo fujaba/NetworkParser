@@ -4,7 +4,7 @@ package de.uniks.networkparser;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -22,7 +22,6 @@ package de.uniks.networkparser;
  permissions and limitations under the Licence.
 */
 import java.util.TreeMap;
-
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
@@ -30,7 +29,7 @@ public class TextItems implements SendableEntityCreator, LocalisationInterface {
 	public static final String PROPERTY_VALUE = "value";
 	private TreeMap<String, String> values = new TreeMap<String, String>();
 	private LocalisationInterface customLanguage = null;
-	
+
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		return ((TextItems) entity).get(attribute);
@@ -48,7 +47,7 @@ public class TextItems implements SendableEntityCreator, LocalisationInterface {
 		}
 		return attribute;
 	}
-	
+
 	@Override
 	public String getText(String label, Object model, Object gui) {
 		String text = null;
@@ -95,7 +94,7 @@ public class TextItems implements SendableEntityCreator, LocalisationInterface {
 	public Object getSendableInstance(boolean prototyp) {
 		return new TextItems();
 	}
-	public void setCustomLanguage(LocalisationInterface value){
+	public void setCustomLanguage(LocalisationInterface value) {
 		this.customLanguage=value;
 	}
 }

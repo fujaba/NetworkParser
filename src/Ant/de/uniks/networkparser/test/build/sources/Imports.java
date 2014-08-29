@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 public class Imports implements FilePart{
-	private ArrayList<String> items=new ArrayList<String>();
-	private HashSet<String> packages=new HashSet<String>();
+	private ArrayList<String> items= new ArrayList<String>();
+	private HashSet<String> packages= new HashSet<String>();
 
 	@Override
 	public void append(String value) {
@@ -32,7 +32,7 @@ public class Imports implements FilePart{
 	@Override
 	public String toString(){
 		StringBuilder sb = new StringBuilder();
-		for(String item : items){
+		for (String item : items){
 			sb.append(item);
 		}
 		return sb.toString();

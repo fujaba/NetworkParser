@@ -4,7 +4,7 @@ package de.uniks.networkparser.xml.util;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -27,6 +27,10 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XMLStyledEntity;
 
+/**
+ * @author Stefan
+ * The XMLStyledEntityCreator is the Creator for Styled Element of XML.
+ */
 public class XMLStyledEntityCreator implements SendableEntityCreator, XMLGrammar {
 	/** The properties. */
 	private final String[] properties = new String[] {
@@ -61,7 +65,7 @@ public class XMLStyledEntityCreator implements SendableEntityCreator, XMLGrammar
 		XMLStyledEntity target = (XMLStyledEntity) child;
 
 		for (String property : getProperties()) {
-			if(source.get(property)!=null){
+			if (source.get(property) != null) {
 				target.set(property, source.get(property));
 			}
 		}

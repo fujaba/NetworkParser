@@ -13,18 +13,18 @@ public class AESTest {
 		aes.setKey("kWmHe8xIsDpfzK4d");  // choose 16 byte password
 		
 		String data = "Hello world, here is some sample text.";
-		System.out.println("Original text : ["+data+"] ["+data.length()+" bytes]");
+		System.out.println("Original text : [" +data+ "] [" +data.length()+ " bytes]");
 		
 		String encrypted = aes.encode(data); 
-		System.out.println("Encrypted text : ["+encrypted+"] ["+encrypted.length()+" bytes]");
+		System.out.println("Encrypted text : [" +encrypted+ "] [" +encrypted.length()+ " bytes]");
 		
 		ByteConverterHex converter = new ByteConverterHex();
 		
 		String hex = converter.toString(encrypted.getBytes()).replace(" ", "");
-		System.out.println("Encrypted text (as hex) : ["+hex+"] ["+hex.length()+" bytes]");
+		System.out.println("Encrypted text (as hex) : [" +hex+ "] [" +hex.length()+ " bytes]");
 		
 		String unencrypted = aes.decode(encrypted); 
-		System.out.println("Unencrypted text : ["+unencrypted+"] ["+unencrypted.length()+" bytes]");
+		System.out.println("Unencrypted text : [" +unencrypted+ "] [" +unencrypted.length()+ " bytes]");
 	}
 	
 	@Test
@@ -33,17 +33,17 @@ public class AESTest {
 		aes.setKey("kWmHe8xIsDpfzK4d");  // choose 16 byte password
 		
 		String data = "Hello world, here is some sample text.";
-		System.out.println("Original text : ["+data+"] ["+data.length()+" bytes]");
+		System.out.println("Original text : [" +data+ "] [" +data.length()+ " bytes]");
 		
 		String encrypted = aes.toString(data); 
-		System.out.println("Encrypted text : ["+encrypted+"] ["+encrypted.length()+" bytes]");
+		System.out.println("Encrypted text : [" +encrypted+ "] [" +encrypted.length()+ " bytes]");
 		
 		ByteConverterHex converter = new ByteConverterHex();
 		
 		String hex = converter.toString(encrypted.getBytes()).replace(" ", "");
-		System.out.println("Encrypted text (as hex) : ["+hex+"] ["+hex.length()+" bytes]");
+		System.out.println("Encrypted text (as hex) : [" +hex+ "] [" +hex.length()+ " bytes]");
 		
 		String unencrypted = aes.decodeString(encrypted); 
-		System.out.println("Unencrypted text : ["+unencrypted+"] ["+unencrypted.length()+" bytes]");
+		System.out.println("Unencrypted text : [" +unencrypted+ "] [" +unencrypted.length()+ " bytes]");
 	}
 }

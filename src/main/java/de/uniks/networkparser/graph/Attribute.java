@@ -4,7 +4,7 @@ package de.uniks.networkparser.graph;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -50,7 +50,7 @@ public class Attribute extends Value implements GraphMember {
 	public void setClazz(GraphNode clazz) {
 		this.clazz = clazz;
 	}
-	
+
 	// Redirect
 	@Override
 	public Attribute with(String value) {
@@ -58,13 +58,13 @@ public class Attribute extends Value implements GraphMember {
 		return this;
 	}
 	@Override
-	public Attribute with(DataType value){
+	public Attribute with(DataType value) {
 		super.with(value);
 		return this;
 	}
-	
-   public String getValue(String typ, boolean shortName){
-	   if(typ.equals(GraphIdMap.OBJECT)){
+
+   public String getValue(String typ, boolean shortName) {
+	   if (typ.equals(GraphIdMap.OBJECT)) {
 		   return this.value;
 	   }
 	   return getType(shortName);

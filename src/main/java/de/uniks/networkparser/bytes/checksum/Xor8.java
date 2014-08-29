@@ -4,7 +4,7 @@ package de.uniks.networkparser.bytes.checksum;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -38,6 +38,6 @@ public class Xor8 extends Checksum {
 /*
  * Testvector from Motorola's GPS:
  * (http://www.motorola.com/ies/GPS/docs_pdf/checksum.pdf)
- * 
+ *
  * hex: 45 61 01 => 25
  */

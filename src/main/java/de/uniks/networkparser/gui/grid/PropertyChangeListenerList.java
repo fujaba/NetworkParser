@@ -30,14 +30,14 @@ import de.uniks.networkparser.AbstractList;
 public class PropertyChangeListenerList extends AbstractEntityList<PropertyChangeListener> implements List<PropertyChangeListener>{
 	@Override
 	public String toString() {
-		return "ArrayEntryList with "+size()+" Elements";
+		return "ArrayEntryList with " +size()+ " Elements";
 	}
 
 	@Override
 	public PropertyChangeListenerList with(Object... values) {
-		if(values != null){
-			for(Object value : values){
-				if(value instanceof PropertyChangeListener){
+		if (values != null) {
+			for (Object value : values) {
+				if (value instanceof PropertyChangeListener) {
 					add((PropertyChangeListener) value);
 				}
 			}

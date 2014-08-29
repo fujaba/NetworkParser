@@ -67,19 +67,19 @@ public class BitDate {
 
 	public boolean set(String attribute, Object value) {
 		if (attribute.equalsIgnoreCase(PROPERTY_DAY)) {
-			setDay(Integer.valueOf(""+value));
+			setDay(Integer.valueOf("" +value));
 			return true;
 		} else if (attribute.equalsIgnoreCase(PROPERTY_MONTH)) {
-			setMonth(Integer.valueOf(""+value));
+			setMonth(Integer.valueOf("" +value));
 			return true;
 		} else if (attribute.equalsIgnoreCase(PROPERTY_YEAR)) {
-			setYear(Integer.valueOf(""+value));
+			setYear(Integer.valueOf("" +value));
 			return true;
 		} else if (attribute.equalsIgnoreCase(PROPERTY_MINUTE)) {
-			setMinute(Integer.valueOf(""+value));
+			setMinute(Integer.valueOf("" +value));
 			return true;
 		} else if (attribute.equalsIgnoreCase(PROPERTY_HOUR)) {
-			setHour(Integer.valueOf(""+value));
+			setHour(Integer.valueOf("" +value));
 			return true;
 		}
 		return false;

@@ -4,7 +4,7 @@ package de.uniks.networkparser.bytes.checksum;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -63,7 +63,7 @@ public abstract class Checksum {
 
 	/**
 	 * Updates the current checksum with the specified array of bytes.
-	 * 
+	 *
 	 * @param bytes
 	 *            the byte array to update the checksum with
 	 * @param offset
@@ -87,7 +87,7 @@ public abstract class Checksum {
 
 	/**
 	 * Returns the value of the checksum.
-	 * 
+	 *
 	 * @see #getByteArray()
 	 * @return the value of checksum
 	 */

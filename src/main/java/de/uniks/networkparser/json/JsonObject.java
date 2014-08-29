@@ -4,7 +4,7 @@ package de.uniks.networkparser.json;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -22,7 +22,6 @@ package de.uniks.networkparser.json;
  permissions and limitations under the Licence.
 */
 import java.util.Map;
-
 import de.uniks.networkparser.AbstractEntity;
 import de.uniks.networkparser.AbstractKeyValueList;
 import de.uniks.networkparser.AbstractList;
@@ -59,7 +58,7 @@ import de.uniks.networkparser.interfaces.StringItem;
  * not throw. Instead, they return a specified value, such as null.
  * <p>
  * The <code>put</code> methods add or replace values in an object. For example,
- * 
+ *
  * <pre>
  * myString = new JsonObject().put(&quot;JSON&quot;, &quot;Hello, World!&quot;).toString();
  * </pre>
@@ -86,16 +85,16 @@ import de.uniks.networkparser.interfaces.StringItem;
  * <li>Values can be followed by <code>;</code> <small>(semicolon)</small> as
  * well as by <code>,</code> <small>(comma)</small>.</li>
  * </ul>
- * 
+ *
  * @author JSON.org
  * @version 2011-11-24
  */
 public class JsonObject extends AbstractKeyValueList<String, Object> implements StringItem, FactoryEntity, Entity{
 	private boolean visible=true;
-	
+
 	/**
 	 * Get the JsonArray value associated with a key.
-	 * 
+	 *
 	 * @param key
 	 *            A key string.
 	 * @return A JsonArray which is the value.
@@ -112,7 +111,7 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 
 	/**
 	 * Get the JsonObject value associated with a key.
-	 * 
+	 *
 	 * @param key
 	 *            A key string.
 	 * @return A JsonObject which is the value.
@@ -130,7 +129,7 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 
    /**
     * Get the JsonObject value associated with a key.
-    * 
+    *
     * @param key
     *            A key string.
     * @return A JsonObject which is the value.
@@ -150,14 +149,14 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
             + "] is not a JsonObject.");
    }
 
-	
+
 	/**
 	 * Make a JSON text of this JsonObject. For compactness, no whitespace is
 	 * added. If this would not result in a syntactically correct JSON text,
 	 * then null will be returned instead.
 	 * <p>
 	 * Warning: This method assumes that the data structure is acyclical.
-	 * 
+	 *
 	 * @return a printable, displayable, portable, transmittable representation
 	 *         of the object, beginning with <code>{</code>&nbsp;<small>(left
 	 *         brace)</small> and ending with <code>}</code>&nbsp;<small>(right
@@ -177,7 +176,7 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 		sb.append(EntityUtil.quote(get(0).toString()));
 		sb.append(":");
 		sb.append(EntityUtil.valueToString(getValue(0), false, this));
-		for(int i=1;i<size();i++){
+		for (int i=1;i<size();i++) {
 			sb.append(",");
 			sb.append(EntityUtil.quote(get(i).toString()));
 			sb.append(":");
@@ -191,7 +190,7 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 	 * Make a prettyprinted JSON text of this JsonObject.
 	 * <p>
 	 * Warning: This method assumes that the data structure is acyclical.
-	 * 
+	 *
 	 * @param indentFactor
 	 *            The number of spaces to add to each level of indentation.
 	 * @return a printable, displayable, portable, transmittable representation
@@ -229,7 +228,7 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 			prefix = CRLF;
 		}
 
-		if ( length == 1 ) {
+		if ( length == 1) {
 			sb = new StringBuilder("{");
 		} else {
 			sb = new StringBuilder("{" + prefix + step);
@@ -239,14 +238,14 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 		sb.append(":");
 		sb.append(EntityUtil.valueToString(getValue(0), indentFactor, newindent,
 				false, this));
-		for(int i=1; i<length;i++){
+		for (int i=1; i<length;i++) {
 			sb.append("," + prefix + step);
 			sb.append(EntityUtil.quote(get(i).toString()));
 			sb.append(":");
 			sb.append(EntityUtil.valueToString(getValue(i), indentFactor,
 					newindent, false, this));
 		}
-		if ( length == 1 ) {
+		if ( length == 1) {
 			sb.append("}");
 		} else {
 			sb.append(prefix + "}");
@@ -256,7 +255,7 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 
 	/**
 	 * Set the value to Tokener or pairs of values
-	 * 
+	 *
 	 * @param values
 	 *            a simple String of Value or pairs of key-values
 	 * @return Itself
@@ -269,7 +268,7 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 			}
 			return this;
 		}
-		if(values.length>0){
+		if (values.length>0) {
 			new JsonTokener().withText(values[0]).parseToEntity(this);
 		}
 		return this;
@@ -277,7 +276,7 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 
 	/**
 	 * Tokener to init the JsonObject
-	 * 
+	 *
 	 * @param x
 	 *            tokener to add values with the tokener
 	 * @return Itself
@@ -286,10 +285,10 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 		x.parseToEntity(this);
 		return this;
 	}
-	
+
 	/**
 	 * Tokener to init the JsonObject
-	 * 
+	 *
 	 * @param entity
 	 *            entity to add values with the tokener
 	 * @return Itself
@@ -298,7 +297,7 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 		new JsonTokener().parseToEntity(this, entity);
 		return this;
 	}
-	
+
 	/**
 	 * Get a new Instance of JsonArray
 	 */
@@ -325,11 +324,11 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 	public boolean isVisible() {
 		return visible;
 	}
-	
-	public boolean has(String key){
+
+	public boolean has(String key) {
 		return containsKey(key);
 	}
-	
+
 	@Override
 	public JsonObject withValue(Object key, Object value) {
 		super.withValue(key, value);
@@ -344,19 +343,19 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 	@Override
 	public JsonObject with(
 			Object... values) {
-		if(values != null){
-			for(Object value : values){
-				if(value instanceof AbstractEntity<?,?>){
+		if (values != null) {
+			for (Object value : values) {
+				if (value instanceof AbstractEntity<?,?>) {
 					AbstractEntity<?,?> item = (AbstractEntity<?, ?>) value;
 					this.put(item.getKeyString(), item.getValue());
-				}else if(value instanceof Map<?,?>){
+				}else if (value instanceof Map<?,?>) {
 					this.withMap( (Map<?,?>) value);
 				}
 			}
 		}
 		return this;
 	}
-	
+
 
 	/**
 	 * Accumulate values under a key. It is similar to the put method except
@@ -364,11 +363,11 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 	 * is stored under the key to hold all of the accumulated values. If there
 	 * is already a EntityList, then the new value is appended to it. In
 	 * contrast, the put method replaces the previous value.
-	 * 
+	 *
 	 * If only one value is accumulated that is not a EntityList, then the
 	 * result will be the same as using put. But if multiple values are
 	 * accumulated, then the result will be like append.
-	 * 
+	 *
 	 * @param key
 	 *            A key string.
 	 * @param value
@@ -391,30 +390,30 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 	public Object remove(Object key) {
 		return removeItemByObject((String) key);
 	}
-	
+
 	@Override
 	public Object put(String key, Object value) {
 		int pos;
-		if(!isAllowDuplicate()){
+		if (!isAllowDuplicate()) {
 			key = key.toLowerCase();
 		}
 		pos = getPositionKey(key);
-		if(pos>=0){
-	    	if(this.hashTableValues != null){
+		if (pos>=0) {
+	    	if (this.hashTableValues != null) {
 	    		this.hashTableValues[pos] = value;
 	    		pos = transformIndex(pos, key);
 	    	}
 			return this.values.set(pos, value);
 		}
 		addEntity(key, value);
-		
+	
 		return value;
 	}
-	
+
 	@Override
 	public Object get(Object key) {
-		if(!isAllowDuplicate() && key instanceof String){
-			key = (""+key).toLowerCase();
+		if (!isAllowDuplicate() && key instanceof String) {
+			key = ("" +key).toLowerCase();
 		}
 		return super.get(key);
 	}

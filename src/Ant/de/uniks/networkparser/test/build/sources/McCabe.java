@@ -18,7 +18,7 @@ public class McCabe {
 	public void evaluate(String allText)
     {
             int index=0;
-            for(int i = 0; i < allText.length(); i++)
+            for (int i = 0; i < allText.length(); i++)
             {
                     index = allText.indexOf("if(", index);
                     if(index != -1)
@@ -37,7 +37,7 @@ public class McCabe {
             }
             
             index = 0;
-            for(int i = 0; i < allText.length(); i++)
+            for (int i = 0; i < allText.length(); i++)
             {
                     index = allText.indexOf("do{", index);
                     if(index != -1)
@@ -56,7 +56,7 @@ public class McCabe {
             }
             
             index = 0;
-            for(int i = 0; i < allText.length(); i++)
+            for (int i = 0; i < allText.length(); i++)
             {
                     index = allText.indexOf("while(", index);
                     if(index != -1)
@@ -76,7 +76,7 @@ public class McCabe {
             }
             
             index = 0;
-            for(int i = 0; i < allText.length(); i++)
+            for (int i = 0; i < allText.length(); i++)
             {
                     index = allText.indexOf("&&", index);
                     if(index != -1)
@@ -99,7 +99,7 @@ public class McCabe {
     public boolean checkQuotes(String allText, int index)
     {
             int quote = 0;
-            for(int i = 0; i < index; i++)
+            for (int i = 0; i < index; i++)
             {
                     char nextChar = allText.charAt(i);
                     if(nextChar == '\"')

@@ -30,20 +30,20 @@ public class CompareTo implements Condition, SendableEntityCreator {
 	public static final int LOWER=-1;
 	private Comparable<Object> value;
 	private int compare;
-	
+
 	public Comparable<?> getValue() {
 		return value;
 	}
-	
+
 	public CompareTo withValue(Comparable<Object> value) {
 		this.value = value;
 		return this;
 	}
-	
+
 	public int getCompare() {
 		return compare;
 	}
-	
+
 	public CompareTo withCompare(int compare) {
 		this.compare = compare;
 		return this;
@@ -52,10 +52,10 @@ public class CompareTo implements Condition, SendableEntityCreator {
 	@Override
 	public boolean matches(ValuesSimple value) {
 		Object entityValue = value.value;
-		if(entityValue!=null){
-			if(entityValue instanceof Comparable<?>){
+		if (entityValue!=null) {
+			if (entityValue instanceof Comparable<?>) {
 				Comparable<?> comparatorValue = (Comparable<?>) entityValue;
-				if(compare<0){
+				if (compare<0) {
 					return this.value.compareTo(comparatorValue)<=compare;
 				}else{
 					return this.value.compareTo(comparatorValue)>=compare;
@@ -74,13 +74,13 @@ public class CompareTo implements Condition, SendableEntityCreator {
 	public Object getSendableInstance(boolean prototyp) {
 		return new CompareTo();
 	}
-	
+
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if(COMPARE.equalsIgnoreCase(attribute)){
+		if (COMPARE.equalsIgnoreCase(attribute)) {
 			return ((CompareTo)entity).getCompare();
 		}
-		if(VALUE.equalsIgnoreCase(attribute)){
+		if (VALUE.equalsIgnoreCase(attribute)) {
 			return ((CompareTo)entity).getValue();
 		}
 		return null;
@@ -90,17 +90,17 @@ public class CompareTo implements Condition, SendableEntityCreator {
 	@SuppressWarnings("unchecked")
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
-		if(COMPARE.equalsIgnoreCase(attribute)){
-			((CompareTo)entity).withCompare(Integer.parseInt(""+value));
+		if (COMPARE.equalsIgnoreCase(attribute)) {
+			((CompareTo)entity).withCompare(Integer.parseInt("" +value));
 			return true;
 		}
-		if(VALUE.equalsIgnoreCase(attribute)){
-			if(value instanceof Comparable<?>){
+		if (VALUE.equalsIgnoreCase(attribute)) {
+			if (value instanceof Comparable<?>) {
 				((CompareTo)entity).withValue((Comparable<Object>) value);
 			}
 			return true;
-		}		
-		
+		}	
+	
 		return false;
 	}
 }

@@ -4,7 +4,7 @@ package de.uniks.networkparser.graph;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -22,7 +22,6 @@ package de.uniks.networkparser.graph;
  permissions and limitations under the Licence.
 */
 import java.util.Collection;
-
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -37,13 +36,13 @@ public class GraphIdMap extends IdMapEncoder {
 
 	/** The Constant for OBJECT Diagramms. */
 	public static final String OBJECT = "object";
-	
+
 	private GraphIdMapFilter filter = new GraphIdMapFilter().withShowCardinality(
 			true).withTyp(CLASS);
 
 	/**
 	 * Parses the object.
-	 * 
+	 *
 	 * @param object
 	 *            the object
 	 * @return the string
@@ -55,7 +54,7 @@ public class GraphIdMap extends IdMapEncoder {
 
 	/**
 	 * Parses the class.
-	 * 
+	 *
 	 * @param object
 	 *            the object
 	 * @return the string
@@ -72,7 +71,7 @@ public class GraphIdMap extends IdMapEncoder {
 
 	/**
 	 * Parses the.
-	 * 
+	 *
 	 * @param object
 	 *            the object to Serialisation
 	 * @param typ
@@ -167,7 +166,7 @@ public class GraphIdMap extends IdMapEncoder {
 
 	/**
 	 * Gets the class name.
-	 * 
+	 *
 	 * @param object
 	 *            the object
 	 * @return the class name

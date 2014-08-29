@@ -4,7 +4,7 @@ package de.uniks.networkparser.interfaces;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -28,7 +28,7 @@ package de.uniks.networkparser.interfaces;
 public interface IdMapCounter {
 	/**
 	 * Sets the prefix for The Id of Elements
-	 * 
+	 *
 	 * @param sessionId
 	 *            the new prefix id
 	 * @return Itself
@@ -42,7 +42,7 @@ public interface IdMapCounter {
 
 	/**
 	 * Sets the splitter for The session id
-	 * 
+	 *
 	 * @param splitter
 	 *            the new splitter character for the session id
 	 * @return Itself
@@ -56,7 +56,7 @@ public interface IdMapCounter {
 
 	/**
 	 * Gets the id.
-	 * 
+	 *
 	 * @param obj
 	 *            the obj
 	 * @return the id
@@ -65,7 +65,7 @@ public interface IdMapCounter {
 
 	/**
 	 * Read id.
-	 * 
+	 *
 	 * @param id
 	 *            the last id from Message
 	 */

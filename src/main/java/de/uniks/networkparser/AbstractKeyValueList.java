@@ -4,7 +4,7 @@ package de.uniks.networkparser;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -28,19 +28,18 @@ import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
-
 import de.uniks.networkparser.event.SimpleMapEntry;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 
 public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> implements Map<K, V>, Iterable<K> {
 	protected ArrayList<V> values = new ArrayList<V>();
 	protected Object[] hashTableValues = null;
-	
+
 	public AbstractKeyValueList()
    {
 	   this.entitySize = 2;
    }
-	
+
 	public AbstractKeyValueList<K, V> withMap(Map<?, ?> map) {
 		if (map != null) {
 			for (Iterator<?> i = map.entrySet().iterator(); i.hasNext();) {
@@ -54,11 +53,11 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 		}
 		return this;
 	}
-	
+
 	/**
 	 * Put a key/value pair in the Entity. If the value is null, then the key
 	 * will be removed from the Entity if it is present.
-	 * 
+	 *
 	 * @param key
 	 *            A key string.
 	 * @param value
@@ -69,34 +68,34 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 	 */
 	@Override
 	public V put(K key, V value) {
-		if(!isAllowDuplicate()){
+		if (!isAllowDuplicate()) {
 			int pos = getPositionKey(key);
-			if(pos>=0){
-		    	if(this.hashTableValues != null){
+			if (pos>=0) {
+		    	if (this.hashTableValues != null) {
 		    		this.hashTableValues[pos] = value;
 		    		pos = transformIndex(pos, key);
 		    	}
 				return this.values.set(pos, value);
 			}
 		}
-		
+	
 		addEntity(key, value);
-		
+	
 		return value;
 	}
-	
+
 	public void add(int index, K key, V value) {
-    	if( ! contains(key) ){
+    	if ( ! contains(key)) {
     		addKey(index, key);
     		addValue(index, value);
     		K beforeValue = null;
-    		if(index>0){
+    		if (index>0) {
     			beforeValue = get(index - 1);
     			fireProperty(null, key, beforeValue, value);
     		}
     	}
     }
-	
+
 	public boolean addEntity(K key, V value) {
 		if (key == null)
 			return false;
@@ -125,7 +124,7 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 			}
 		}
 
-		if( !addKey( -1 , key) ){
+		if ( !addKey( -1 , key)) {
 			return false;
 		}
 		addValue(-1, value);
@@ -136,29 +135,29 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 		fireProperty(null, key, beforeElement, value);
 		return true;
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	protected boolean addEntity(AbstractEntity<?,?> item){
+	protected boolean addEntity(AbstractEntity<?,?> item) {
 		return addEntity((K)item.getKey(), (V)item.getValue());
 	}
 
 	@SuppressWarnings("unchecked")
 	public AbstractKeyValueList<K, V> withValue(Object key, Object value) {
-		 if(!isAllowDuplicate()){			
+		 if (!isAllowDuplicate()) {		
 			setValue(key, value);
 			return this;
 		}
 		addEntity((K)key, (V)value);
 		return this;
 	}
-	
+
 	public boolean add(K newKey, V newValue) {
 		return addEntity(newKey, newValue);
 	}
-	
+
 	/**
 	 * Determine if the Entity contains a specific key.
-	 * 
+	 *
 	 * @param key
 	 *            A key string.
 	 * @return true if the key exists in the Entity.
@@ -167,8 +166,8 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 	public boolean containsKey(Object key) {
 		return super.contains(key);
 	}
-	
-	public boolean has(K key){
+
+	public boolean has(K key) {
 		return super.contains(key);
 	}
 
@@ -176,8 +175,8 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 	public boolean containsValue(Object value) {
 		return this.getPositionValue(value)>=0;
 	}
-	
-	 public int getPositionValue(Object o) 
+
+	 public int getPositionValue(Object o)
 	    {
 	        if (this.hashTableValues != null)
 	        {
@@ -190,27 +189,27 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 	              hashKey = (hashKey + entitySize) % hashTableValues.length;
 	           }
 	        }
-	        
+	       
 	        // search from the end as in models we frequently ask for elements that have just been added to the end
 	        int pos  = this.values.size() - 1;
-	        for(ListIterator<V> i = values.listIterator(values.size());i.hasPrevious();){
-	           if(i.previous().equals(o)){
-	              return pos; 
+	        for (ListIterator<V> i = values.listIterator(values.size());i.hasPrevious();) {
+	           if (i.previous().equals(o)) {
+	              return pos;
 	           }
 	           pos--;
 	        }
 	        return -1;
 	    }
-	
+
 	/**
 	 * Get an enumeration of the keys of the Entity.
-	 * 
+	 *
 	 * @return An iterator of the keys.
 	 */
 	public Iterator<K> keys() {
 		return keySet().iterator();
 	}
-	
+
 	/**
 	 * @return the keySet of all Keys
 	 */
@@ -218,12 +217,12 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 	public HashSet<K> keySet() {
 		return new HashSet<K>(this.keys);
 	}
-	
+
 	/**
 	 * Increment a property of a Entity. If there is no such property, create
 	 * one with a value of 1. If there is such a property, and if it is an
 	 * Integer, Long, Double, or Float, then add one to it.
-	 * 
+	 *
 	 * @param key
 	 *            A key string.
 	 * @return this.
@@ -255,42 +254,42 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 		}
 		if (value instanceof String) {
 			try {
-				setValue(key, ""+(getInt(getIndex(key)) + 1));
+				setValue(key, "" +(getInt(getIndex(key)) + 1));
 				return this;
 			} catch (Exception e) {
 			}
 			try {
-				setValue(key, ""+(getDouble(getIndex(key)) + 1));
+				setValue(key, "" +(getDouble(getIndex(key)) + 1));
 				return this;
 			} catch (Exception e) {
-				throw new RuntimeException("Unable to increment [" + EntityUtil.quote(""+key) + "].");
+				throw new RuntimeException("Unable to increment [" + EntityUtil.quote("" +key) + "].");
 			}
 		}
-		throw new RuntimeException("Unable to increment [" + EntityUtil.quote(""+key) + "].");			
+		throw new RuntimeException("Unable to increment [" + EntityUtil.quote("" +key) + "].");		
 	}
-	
+
 	public K getKey(V obj) {
-		for(int i=0;i<size();i++){
-			if(this.values.get(i) == null){
-				if(obj==null){
+		for (int i=0;i<size();i++) {
+			if (this.values.get(i) == null) {
+				if (obj==null) {
 					return this.keys.get(i);
 				}
-			}else if(this.values.get(i).equals(obj)){
+			}else if (this.values.get(i).equals(obj)) {
 				return this.keys.get(i);
 			}
 		}
 		return null;
 	}
-	
+
 	public Object getValue(Object key) {
 		int pos = getIndex(key);
-		if(pos >= 0){
+		if (pos >= 0) {
 			return this.values.get(pos);
 		}
-		if(!(key instanceof String)){
+		if (!(key instanceof String)) {
 			return null;
 		}
-		String keyString = ""+key;
+		String keyString = "" +key;
 		int len = 0;
 		int end = 0;
 		int id = 0;
@@ -343,7 +342,7 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 					if (child instanceof AbstractList) {
 						if (end == len + 2) {
 							// Get List
-							if(this instanceof FactoryEntity){
+							if (this instanceof FactoryEntity) {
 								AbstractList<?> result = (AbstractList<?>) ((FactoryEntity)this).getNewArray();
 								AbstractList<?> items = (AbstractList<?>) child;
 								for (int z = 0; z < items.size(); z++) {
@@ -371,7 +370,7 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 	}
 
 	/**
-	 * Set a Value to Entity 
+	 * Set a Value to Entity
 	 * With this Method it is possible to set a Value of a Set by using a [Number] or [L] for Last
 	 * @param key the Key to add
 	 * @param value the Value to add
@@ -380,18 +379,18 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 	@SuppressWarnings("unchecked")
 	public AbstractKeyValueList<K, V> setValue(Object key, Object value) {
 		int pos = getIndex(key);
-		if(pos >= 0){
+		if (pos >= 0) {
 			V oldValue = this.values.get(pos);
 			int position = getPositionValue(oldValue);
 			this.values.set(pos, (V) value);
-			if(this.hashTableValues != null && position>=0){
+			if (this.hashTableValues != null && position>=0) {
 				this.hashTableValues[position] = value;
 			}
 		}
-		if(!(key instanceof String)){
+		if (!(key instanceof String)) {
 			return this;
 		}
-		String keyString = ""+key;
+		String keyString = "" +key;
 
 		int len = 0;
 		int end = 0;
@@ -469,17 +468,17 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 		}
 		return this;
 	}
-	
-	
+
+
 	@Override
 	public V get(Object key) {
 		int pos = getIndex(key);
-		if(pos>=0){
+		if (pos>=0) {
 			return this.values.get(pos);
 		}
 		return null;
 	}
-	
+
 	@Override
 	public void putAll(Map<? extends K, ? extends V> values) {
 		with(values);
@@ -488,15 +487,15 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 	@Override
 	public Set<Entry<K, V>> entrySet() {
 		HashSet<Entry<K, V>> result = new HashSet<Map.Entry<K,V>>();
-		for(int i=0;i<size();i++){
+		for (int i=0;i<size();i++) {
 			result.add(new SimpleMapEntry<K,V>().withKeyItem(this.getKey(i)).withValueItem(this.getValue(i)));
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Get the string associated with an index.
-	 * 
+	 *
 	 * @param key
 	 *            The index must be between 0 and length() - 1.
 	 * @return A string value.
@@ -506,10 +505,10 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 	public String getString(K key) throws RuntimeException {
 		return getString(getIndex(key));
 	}
-	
+
 	/**
 	 * Get the string associated with an index.
-	 * 
+	 *
 	 * @param key
 	 *            The index must be between 0 and length() - 1.
 	 * @param defaultValue The defaultValue
@@ -519,15 +518,15 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 	 */
 	public String getString(K key, String defaultValue) {
 		int pos = getIndex(key);
-		if(pos<0){
+		if (pos<0) {
 			return defaultValue;
 		}
 		return getString(pos);
 	}
-	
+
 	/**
 	 * Get the boolean value associated with a key.
-	 * 
+	 *
 	 * @param key
 	 *            A key.
 	 * @return The truth.
@@ -538,10 +537,10 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 	public boolean getBoolean(K key) throws RuntimeException{
 		return getBoolean(getIndex(key));
 	}
-	
+
 	/**
 	 * Get the double value associated with a key.
-	 * 
+	 *
 	 * @param key
 	 *            A key.
 	 * @return The numeric value.
@@ -555,7 +554,7 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 
 	/**
 	 * Get the int value associated with a key.
-	 * 
+	 *
 	 * @param key
 	 *            A key.
 	 * @return The integer value.
@@ -568,23 +567,23 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 	}
 
 	public Object getValue(int index) throws RuntimeException {
-		if(index < 0 || index>this.keys.size()){
+		if (index < 0 || index>this.keys.size()) {
 			return null;
 		}
 		return this.values.get(index);
 	}
-	
+
 	@Override
 	public Collection<V> values() {
 		return values;
 	}
-	
+
 	@Override
-	protected Object getItem(int index){
+	protected Object getItem(int index) {
 		return getValue(index);
 	}
-	
-	public void copyEntity(AbstractKeyValueList<K, V> target, int pos){
+
+	public void copyEntity(AbstractKeyValueList<K, V> target, int pos) {
 		target.add(this.get(pos), this.values.get(pos));
 	}
 
@@ -594,24 +593,24 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 		 this.values.remove(index);
 		 return graphNode;
 	}
-	
+
 	@Override
 	public V remove(Object key) {
-		return removeItem(key); 
+		return removeItem(key);
 	}
-	
+
 	@Override
 	protected K removeItemByIndex(int index) {
 		K result = super.removeItemByIndex(index);
-		if(result!= null){
+		if (result!= null) {
 			this.values.remove(index);
 		}
 		return result;
 	}
 
-	protected boolean addValue(int pos, V value){
+	protected boolean addValue(int pos, V value) {
 		boolean result = true;
-		if(pos==-1){
+		if (pos==-1) {
 			result = this.values.add(value);
 			pos = this.values.size();
 		}else{

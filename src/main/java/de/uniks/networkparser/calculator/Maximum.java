@@ -4,7 +4,7 @@ package de.uniks.networkparser.calculator;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -31,8 +31,8 @@ public class Maximum implements Operator {
 	@Override
 	public double calculate(Double[] values) {
 		double max=values[0];
-		for(int i=1;i<values.length;i++){
-			if(values[i]>max){
+		for (int i=1;i<values.length;i++) {
+			if (values[i]>max) {
 				max=values[i];
 			}
 		}

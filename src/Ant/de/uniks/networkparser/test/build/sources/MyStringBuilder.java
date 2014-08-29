@@ -1,7 +1,7 @@
 package de.uniks.networkparser.test.build.sources;
 
 public class MyStringBuilder implements FilePart{
-	private StringBuilder sb=new StringBuilder();
+	private StringBuilder sb = new StringBuilder();
 	
 	@Override
 	public void append(String value) {

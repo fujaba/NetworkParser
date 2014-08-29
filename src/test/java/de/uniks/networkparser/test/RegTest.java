@@ -12,7 +12,7 @@ public class RegTest {
 	@Test
 	public void testRegEx(){
 		String reg="[abc]";
-		StringTokener item=new StringTokener();
+		StringTokener item= new StringTokener();
 		item.withText(reg);
 		Condition root = parseCurrentChar(item);
 		Assert.assertNotNull(root);
@@ -30,6 +30,6 @@ public class RegTest {
 			return or;
 		}
 		
-		return new Equals().withValue(""+ch);
+		return new Equals().withValue("" +ch);
 	}
 }

@@ -45,10 +45,10 @@ public class BrushErlang extends Brush {
             + // additional
             " module export import define";
 
-    addRule(new RegExpressions("[A-Z][A-Za-z0-9_]+", "constants"));
-    addRule(new RegExpressions("\\%.+", Pattern.MULTILINE, "comments"));
-    addRule(new RegExpressions("\\?[A-Za-z0-9_]+", "preprocessor"));
-    addRule(new RegExpressions("[a-z0-9_]+:[a-z0-9_]+", "functions"));
+    addRule(new RegExpressions("[A-Z][A-Za-z0-9_]+ ", "constants"));
+    addRule(new RegExpressions("\\%.+ ", Pattern.MULTILINE, "comments"));
+    addRule(new RegExpressions("\\?[A-Za-z0-9_]+ ", "preprocessor"));
+    addRule(new RegExpressions("[a-z0-9_]+:[a-z0-9_]+ ", "functions"));
     addRule(new RegExpressions(RegExpressions.doubleQuotedString, "string"));
     addRule(new RegExpressions(RegExpressions.singleQuotedString, "string"));
     addRule(new RegExpressions(getKeywords(keywords), Pattern.MULTILINE, "keyword"));

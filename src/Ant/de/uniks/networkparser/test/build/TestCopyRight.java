@@ -16,32 +16,32 @@ public class TestCopyRight {
 		}
 		
 //		int fullLines=0;
-//		SourceItem source=new SourceItem(file);
-//		for(MethodItem method : source.getMethods().getItems()){
+//		SourceItem source= new SourceItem(file);
+//		for (MethodItem method : source.getMethods().getItems()){
 //			if(method.isMethod()){
-//				System.out.println("Method: "+method.getName() +method.getLinesOfCodeMetric()+ " McCabe:"+ method.getMcCabe());
+//				System.out.println("Method: " +method.getName() +method.getLinesOfCodeMetric()+ " McCabe:" + method.getMcCabe());
 //			}
 //			fullLines += method.getLinesOfCodeMetric(). getFullLines();
 //		}
 		
 		
-//		System.out.println("FullLines: "+fullLines+" - LOC: "+source.getLineOfCode() );
+//		System.out.println("FullLines: " +fullLines+ " - LOC: " +source.getLineOfCode() );
 		
 //		System.out.println("###############################");
 //		System.out.println(source.getBody());
 //		System.out.println("###############################");
 
-		NetworkParserSources network=new NetworkParserSources();
+		NetworkParserSources network= new NetworkParserSources();
 		HashSet<SourceItem> sources = network.getSources("src/de/uniks/networkparser/");
 		
 //		HashSet<SourceItem> sources = new HashSet<SourceItem>();
 //		sources.add(new SourceItem(new File( "src/de/uniks/networkparser/TextItems.java" )));
 //		sources.add(new SourceItem(new File( "src/de/uniks/networkparser/Tokener.java" )));
 		
-//		for(SourceItem source : sources){
-//			for(MethodItem method : source.getMethods().getItems()){
+//		for (SourceItem source : sources){
+//			for (MethodItem method : source.getMethods().getItems()){
 //				if(method.isMethod()){
-//					System.out.println("Method: "+method.getName() +method.getLinesOfCodeMetric()+ " McCabe:"+ method.getMcCabe());
+//					System.out.println("Method: " +method.getName() +method.getLinesOfCodeMetric()+ " McCabe:" + method.getMcCabe());
 //				}
 //				fullLines += method.getLinesOfCodeMetric(). getFullLines();
 //			}

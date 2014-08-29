@@ -4,7 +4,7 @@ package de.uniks.networkparser;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -36,7 +36,7 @@ public class DefaultTextItems {
 	public static final String OCTOBER = "October";
 	public static final String NOVEMBER = "November";
 	public static final String DECEMBER = "December";
-	
+
 	// Weekday
 	public static final String SUNDAY = "Sunday";
 	public static final String MONDAY = "Monday";
@@ -45,7 +45,7 @@ public class DefaultTextItems {
 	public static final String THURSDAY = "Thursday";
 	public static final String FRIDAY = "Friday";
 	public static final String SATURDAY = "Saturday";
-	
+
 	// ANY
 	public static final String LOAD = "Load";
 	public static final String SAVE = "Save";

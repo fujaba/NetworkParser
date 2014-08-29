@@ -4,7 +4,7 @@ package de.uniks.networkparser.interfaces;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -38,16 +38,16 @@ public interface ByteItem extends BaseItem{
 	/**
 	 * @param converter ByteConverter for Format
 	 * @param isDynamic ByteStream for minimize output
-	 * @return the ByteItem as String 
+	 * @return the ByteItem as String
 	 */
 	public String toString(ByteConverter converter, boolean isDynamic);
 
 	/**
 	 * @param isDynamic ByteStream for minimize output
-	 * @return ByteStream 
+	 * @return ByteStream
 	 */
 	public BufferedBytes getBytes(boolean isDynamic);
-	
+
 	/**
 	 * Write the Entity to the buffer
 	 * @param buffer for writing
@@ -63,14 +63,14 @@ public interface ByteItem extends BaseItem{
 	 * @return the Size of Bytes
 	 */
 	public int calcLength(boolean isDynamic, boolean isLast);
-	
+
 	public byte getTyp();
-	
+
 	/**
 	 * @return true if the ByteItem is Empty
 	 */
 	public boolean isEmpty();
-	
+
 	/**
 	 * @return the Size of the Item
 	 */

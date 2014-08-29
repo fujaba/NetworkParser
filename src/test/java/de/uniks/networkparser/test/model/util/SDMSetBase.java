@@ -135,7 +135,7 @@ public class SDMSetBase<T> extends ItemList<T>
    @SuppressWarnings("unchecked")
    @Override
    public SDMSetBase<T> with(Object... values) {
-      for(Object item : values){
+      for (Object item : values){
          this.add((T) item);
       }
       return this;

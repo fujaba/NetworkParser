@@ -4,7 +4,7 @@ package de.uniks.networkparser.gui.brush;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -37,14 +37,14 @@ public class RegExRule {
 	protected Style style;
 
 	protected HashMap<Integer, Object> groupOperations = new HashMap<Integer, Object>();
-	
-	public RegExRule(){
+
+	public RegExRule() {
 		groupOperations.put(0, null);
 	}
 
 	/**
 	 * Get the compiled pattern
-	 * 
+	 *
 	 * @return the pattern
 	 */
 	public Pattern getPattern() {
@@ -54,11 +54,11 @@ public class RegExRule {
 	public Style getStyle() {
 		return style;
 	}
-	
+
 	public void setStyleKey(String value) {
 		this.groupOperations.put(0, value);
 	}
-	
+
 	public String getStyleKey() {
 		if (groupOperations.size() == 1) {
 			return (String) groupOperations.get(0);
@@ -69,16 +69,16 @@ public class RegExRule {
 	/**
 	 * Get the map of group operations. For more details, see
 	 * {@link #groupOperations}.
-	 * 
+	 *
 	 * @return a copy of the group operations map
 	 */
 	public Map<Integer, Object> getGroupOperations() {
 		return new HashMap<Integer, Object>(groupOperations);
 	}
-	
-	public void addToGroupOperation(Object... values){
+
+	public void addToGroupOperation(Object... values) {
 		int startIndex=groupOperations.size();
-		for(int i=0;i<values.length;i++){
+		for (int i=0;i<values.length;i++) {
 			this.groupOperations.put(startIndex++, values[i]);
 		}
 	}
