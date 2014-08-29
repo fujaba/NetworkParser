@@ -4,7 +4,7 @@ package de.uniks.networkparser.json;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -22,7 +22,6 @@ package de.uniks.networkparser.json;
  permissions and limitations under the Licence.
 */
 import java.util.Iterator;
-
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.interfaces.IdMapCounter;
@@ -51,12 +50,12 @@ public class SimpleGrammar extends Grammar{
 	public SendableEntityCreator getReadCreator(JsonObject jsonObject,
 			IdMapEncoder map) {
 		String idString = jsonObject.getString(ID);
-		String className = "."+idString.substring(0, idString.indexOf(map.getCounter().getSplitter()));
-		
+		String className = "." +idString.substring(0, idString.indexOf(map.getCounter().getSplitter()));
+	
 		// Find Item for LastName
-		for(Iterator<SendableEntityCreator> iterator = map.iterator();iterator.hasNext();){
+		for (Iterator<SendableEntityCreator> iterator = map.iterator();iterator.hasNext();) {
 			SendableEntityCreator item = iterator.next();
-			if(item.getSendableInstance(true).getClass().getName().endsWith(className)){
+			if (item.getSendableInstance(true).getClass().getName().endsWith(className)) {
 				return item;
 			}
 		}
@@ -67,40 +66,40 @@ public class SimpleGrammar extends Grammar{
 	public JsonObject getWriteObject(IdMapEncoder map, SendableEntityCreator prototyp,
 			String className, String id, JsonObject jsonProp, Filter filter) {
 		JsonObject json = new JsonObject();
-		
+	
 		json.put(ID, id);
 
 		if (jsonProp.size() > 0) {
-			for(int i=0;i<jsonProp.size();i++){
+			for (int i=0;i<jsonProp.size();i++) {
 				json.put(jsonProp.get(i), jsonProp.getValue(i));
 			}
 		}
 		return json;
 	}
-	
+
 	@Override
 	public String getWriteId(Object obj, IdMapCounter counter) {
 		String name = obj.getClass().getName();
 		int pos = name.lastIndexOf(".");
 		counter.withPrefixId(null);
-		if(pos>0){
+		if (pos>0) {
 			return name.substring(pos+1)+counter.getSplitter()+counter.getId(obj);
 		}else{
 			return name+counter.getSplitter()+counter.getId(obj);
 		}
 	}
-	
+
 	@Override
-	public String getReadValue(JsonObject json, String property){
-		if(JsonIdMap.ID.equals(property)){
+	public String getReadValue(JsonObject json, String property) {
+		if (JsonIdMap.ID.equals(property)) {
 			return json.getString(ID);
 		}
 		return json.getString(property);
 	}
-	
+
 	@Override
-	public boolean hasReadValue(JsonObject json, String property){
-		if(JsonIdMap.ID.equals(property)){
+	public boolean hasReadValue(JsonObject json, String property) {
+		if (JsonIdMap.ID.equals(property)) {
 			return true;
 		}
 		return json.has(property);

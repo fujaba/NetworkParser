@@ -4,7 +4,7 @@ package de.uniks.networkparser.xml.util;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -25,6 +25,10 @@ import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.xml.XMLEntity;
 
+/**
+ * @author Stefan
+ * Creator for XML Entity.
+ */
 public class XMLEntityCreator implements SendableEntityCreator, XMLGrammar {
 	/** The properties. */
 	private final String[] properties = new String[] {XMLEntity.PROPERTY_TAG, XMLEntity.PROPERTY_VALUE};
@@ -41,10 +45,10 @@ public class XMLEntityCreator implements SendableEntityCreator, XMLGrammar {
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if(XMLEntity.PROPERTY_TAG.equalsIgnoreCase(attribute)){
+		if (XMLEntity.PROPERTY_TAG.equalsIgnoreCase(attribute)) {
 			return ((XMLEntity) entity).getTag();
 		}
-		if(XMLEntity.PROPERTY_VALUE.equalsIgnoreCase(attribute)){
+		if (XMLEntity.PROPERTY_VALUE.equalsIgnoreCase(attribute)) {
 			return ((XMLEntity) entity).getValueItem();
 		}
 		return null;
@@ -53,12 +57,12 @@ public class XMLEntityCreator implements SendableEntityCreator, XMLGrammar {
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
-		if(XMLEntity.PROPERTY_TAG.equalsIgnoreCase(attribute)){
-			((XMLEntity) entity).withTag(""+value);
+		if (XMLEntity.PROPERTY_TAG.equalsIgnoreCase(attribute)) {
+			((XMLEntity) entity).withTag("" + value);
 			return true;
 		}
-		if(XMLEntity.PROPERTY_VALUE.equalsIgnoreCase(attribute)){
-			((XMLEntity) entity).withValueItem(""+value);
+		if (XMLEntity.PROPERTY_VALUE.equalsIgnoreCase(attribute)) {
+			((XMLEntity) entity).withValueItem("" + value);
 			return true;
 		}
 		return false;

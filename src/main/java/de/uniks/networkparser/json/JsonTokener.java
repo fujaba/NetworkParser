@@ -4,7 +4,7 @@ package de.uniks.networkparser.json;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -42,7 +42,7 @@ public class JsonTokener extends Tokener {
 		this.allowCRLF = allowCRLF;
 		return this;
 	}
-	
+
 	@Override
 	public Object nextValue(BaseItem creator, boolean allowQuote) {
 		char c = nextStartClean();
@@ -59,16 +59,16 @@ public class JsonTokener extends Tokener {
 		case '{':
 			if (creator instanceof FactoryEntity) {
 				BaseItem element = ((FactoryEntity)creator).getNewObject();
-				if(element instanceof AbstractKeyValueList<?,?>){
+				if (element instanceof AbstractKeyValueList<?,?>) {
 					this.parseToEntity((AbstractKeyValueList<?,?>)element);
 				}
-				
+			
 				return element;
 			}
 		case '[':
 			if (creator instanceof FactoryEntity) {
 				BaseItem element = ((FactoryEntity)creator).getNewArray();
-				if(element instanceof AbstractList<?>){
+				if (element instanceof AbstractList<?>) {
 					this.parseToEntity((AbstractList<?>)element);
 				}
 				return element;
@@ -94,8 +94,8 @@ public class JsonTokener extends Tokener {
 					&& xmlEntity.getValueItem().length() > 0) {
 				parent.put(JsonIdMap.VALUE, xmlEntity.getValueItem());
 			}
-			
-			for(int i=0;i<xmlEntity.size();i++){
+		
+			for (int i=0;i<xmlEntity.size();i++) {
 				parseEntityProp(props, xmlEntity.getValue(i), xmlEntity.get(i));
 			}
 			for (XMLEntity children : xmlEntity.getChildren()) {
@@ -136,7 +136,7 @@ public class JsonTokener extends Tokener {
 
 	/**
 	 * Cross compiling
-	 * 
+	 *
 	 * @param parent the parent Element
 	 * @param newValue the newValue
 	 * @return Itself
@@ -150,8 +150,8 @@ public class JsonTokener extends Tokener {
 					&& xmlEntity.getValueItem().length() > 0) {
 				parent.put(JsonIdMap.VALUE, xmlEntity.getValueItem());
 			}
-			
-			for(int i=0;i<xmlEntity.size();i++){
+		
+			for (int i=0;i<xmlEntity.size();i++) {
 				parseEntityProp(props, xmlEntity.getValue(i), xmlEntity.get(i));
 			}
 			for (XMLEntity children : xmlEntity.getChildren()) {
@@ -167,7 +167,7 @@ public class JsonTokener extends Tokener {
 		char c;
 		String key;
 		if (nextStartClean() != '{') {
-			if(logger.error(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)){
+			if (logger.error(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
 				throw new RuntimeException("A JsonObject text must begin with '{'");
 			}
 		}
@@ -177,7 +177,7 @@ public class JsonTokener extends Tokener {
 			c = nextStartClean();
 			switch (c) {
 			case 0:
-				if(logger.error(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)){
+				if (logger.error(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
 					throw new RuntimeException("A JsonObject text must end with '}'");
 				}
 				return;
@@ -202,8 +202,8 @@ public class JsonTokener extends Tokener {
 					next();
 				}
 			} else if (c != ':') {
-				if(logger.error(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)){
-					throw new RuntimeException("Expected a ':' after a key ["+ getNextString(30) + "]");
+				if (logger.error(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
+					throw new RuntimeException("Expected a ':' after a key [" + getNextString(30) + "]");
 				}
 				return;
 			}
@@ -216,7 +216,7 @@ public class JsonTokener extends Tokener {
 	public void parseToEntity(AbstractList<?> entityList) {
 		char c=nextStartClean();
 		if (c != '[') {
-			if(logger.error(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entityList)){
+			if (logger.error(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entityList)) {
 				throw new RuntimeException("A JSONArray text must start with '['");
 			}
 			return;
@@ -239,8 +239,8 @@ public class JsonTokener extends Tokener {
 					next();
 					return;
 				default:
-					if(logger.error(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entityList)){
-						throw new RuntimeException("Expected a ',' or ']' not '"+getCurrentChar()+"'");
+					if (logger.error(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entityList)) {
+						throw new RuntimeException("Expected a ',' or ']' not '" +getCurrentChar()+ "'");
 					}
 					return;
 				}

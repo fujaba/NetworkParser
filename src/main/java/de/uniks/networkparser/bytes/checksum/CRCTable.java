@@ -4,7 +4,7 @@ package de.uniks.networkparser.bytes.checksum;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -26,10 +26,10 @@ public abstract class CRCTable extends CRC{
 	/** The fast CRC table. Computed once when the CRC32 class is loaded. */
 	protected int[] crc_table = getGenTable();
 
-	/** Make the table for a fast CRC. 
+	/** Make the table for a fast CRC.
 	 * @return the GenTable
 	 * */
-	
+
 	public int[] getGenTable() {
 		int[] result = new int[256];
 

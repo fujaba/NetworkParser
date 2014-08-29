@@ -8,7 +8,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.test.model.BitDate;
 
 public class BitDateCreator implements SendableEntityCreator,BitEntityCreator {
-	private ArrayList<BitEntity> entities=new ArrayList<BitEntity>();
+	private ArrayList<BitEntity> entities= new ArrayList<BitEntity>();
 	
 	public BitDateCreator(){
 	}
@@ -30,8 +30,8 @@ public class BitDateCreator implements SendableEntityCreator,BitEntityCreator {
 
 	@Override
 	public String[] getProperties() {
-		ArrayList<String> list=new ArrayList<String>();
-		for(BitEntity entity : entities){
+		ArrayList<String> list= new ArrayList<String>();
+		for (BitEntity entity : entities){
 			list.add(entity.getPropertyName());
 		}
 		return list.toArray(new String[list.size()]);

@@ -13,15 +13,15 @@ public class SourceItem {
 	private String packageString;
 	private String header;
 	private String comment;
-	private Imports imports=new Imports();
+	private Imports imports= new Imports();
 //	private String body;
 	private File file;
 	private String definePart;
 	private enum PART {PACKAGE, COMMENT, IMPORTS, HEADER, DEFINE, BODY};
-	public static final String STARTCOMMENT="/*"+CRLF;
-	public static final String STARTCOMMENTEXT="/**"+CRLF;
+	public static final String STARTCOMMENT="/*" +CRLF;
+	public static final String STARTCOMMENTEXT="/**" +CRLF;
 	private String projectName;
-	private Body body=new Body();
+	private Body body= new Body();
 	
 	public SourceItem(File file){
 		this.file=file;
@@ -34,9 +34,9 @@ public class SourceItem {
 		try {
 			in = new BufferedReader(new FileReader(file));
 			
-			MyStringBuilder packageBuilder=new MyStringBuilder();
-			MyStringBuilder headerBBuilder=new MyStringBuilder();
-			MyStringBuilder commentBuilder=new MyStringBuilder();
+			MyStringBuilder packageBuilder= new MyStringBuilder();
+			MyStringBuilder headerBBuilder= new MyStringBuilder();
+			MyStringBuilder commentBuilder= new MyStringBuilder();
 			PART typ=PART.HEADER;
 			FilePart activ=headerBBuilder;
 			String line=in.readLine();
@@ -122,9 +122,9 @@ public class SourceItem {
 	
 	public void write(){
 		try {
-			BufferedWriter writer=new BufferedWriter(new FileWriter(file));
+			BufferedWriter writer= new BufferedWriter(new FileWriter(file));
 			
-//			String template = "%packageString%"+CRLF+CRLF+"%comment%"+CRLF+CRLF+"%header%%body%";
+//			String template = "%packageString%" +CRLF+CRLF+ "%comment%" +CRLF+CRLF+ "%header%%body%";
 //			template.replaceAll("%packageString%", packageString);
 //			template.replaceAll("%comment%", comment);
 //			template.replaceAll("%header%", header);
@@ -149,7 +149,7 @@ public class SourceItem {
 			
 			writer.write(CRLF);
 			writer.write(definePart);
-			writer.write("\t"+body.toString().trim()+CRLF);
+			writer.write("\t" +body.toString().trim()+CRLF);
 			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -182,7 +182,7 @@ public class SourceItem {
 		if(comment.length()<1){
 			return false;
 		}
-		return !comment.startsWith(STARTCOMMENT+" "+projectName+CRLF);
+		return !comment.startsWith(STARTCOMMENT+ " " +projectName+CRLF);
 	}
 	public int getLineOfCode() {
 		return body.getLinesOfCode();

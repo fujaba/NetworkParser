@@ -4,7 +4,7 @@ package de.uniks.networkparser.graph;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -27,11 +27,11 @@ public enum Cardinality
 	ONE("1"), MANY("n");
 
    private String value;
-   
-   private Cardinality(String value){
+  
+   private Cardinality(String value) {
 	   this.value = value;
    }
-   
+  
    @Override
    public String toString()
    {
@@ -41,7 +41,7 @@ public enum Cardinality
 	public String getValue() {
 		return value;
 	}
-	
+
 	public Cardinality withValue(String value) {
 		this.value = value;
 		return this;

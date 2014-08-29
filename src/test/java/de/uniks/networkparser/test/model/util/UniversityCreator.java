@@ -74,7 +74,7 @@ public class UniversityCreator implements SendableEntityCreator, SendableEntityC
 			return true;
 		}
 		if (University.PROPERTY_ICH.equalsIgnoreCase(attrName)) {
-			((University)entity).setIch(""+ value);
+			((University)entity).setIch("" + value);
 			return true;
 		}
 		if (University.PROPERTY_USER .equalsIgnoreCase(attrName)) {

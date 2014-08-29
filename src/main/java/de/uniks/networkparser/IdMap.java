@@ -4,7 +4,7 @@ package de.uniks.networkparser;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -21,13 +21,12 @@ package de.uniks.networkparser;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-
 import de.uniks.networkparser.interfaces.BaseItem;
 
 public abstract class IdMap extends IdMapEncoder{
 	public abstract Object decode(BaseItem value);
 	public abstract Object decode(String value);
-	
+
 	private boolean caseSensitive=false;
 
 	/**
@@ -35,16 +34,16 @@ public abstract class IdMap extends IdMapEncoder{
 	 * @param value the new Value of CaseSensitive
 	 * @return XMLGrammar Instance
 	 */
-	public IdMap withCaseSensitive(boolean value){
+	public IdMap withCaseSensitive(boolean value) {
 		this.caseSensitive = value;
 		return this;
 	}
-	
+
 	/**
 	 * @return the CaseSensitive Option
 	 */
-	public boolean isCaseSensitive(){
+	public boolean isCaseSensitive() {
 		return caseSensitive;
 	}
-	
+
 }

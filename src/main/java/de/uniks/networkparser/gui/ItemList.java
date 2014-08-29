@@ -28,46 +28,46 @@ import de.uniks.networkparser.AbstractList;
 
 public abstract class ItemList<E>  extends AbstractEntityList<E> implements List<E>{
 	private boolean readonly = false;
-	
+
 	public boolean isReadonly() {
 		return readonly;
 	}
-	
+
 	@SuppressWarnings("unchecked")
    public <ST extends AbstractList<E>> ST withReadonly(boolean readonly) {
 		this.readonly = readonly;
 		return (ST)this;
 	}
-	
-	// Add all 
+
+	// Add all
     @Override
 	public E set(int index, E element) {
-		if(readonly){
-			throw new UnsupportedOperationException("set("+index+")");
+		if (readonly) {
+			throw new UnsupportedOperationException("set(" +index+ ")");
 		}
 		return super.set(index, element);
     }
-	
+
     @Override
 	public void add(int index, E element) {
-		if(readonly){
-			throw new UnsupportedOperationException("add("+index+")");
+		if (readonly) {
+			throw new UnsupportedOperationException("add(" +index+ ")");
 		}
 		super.add(index, element);
     }
-    
+   
     @Override
 	public E remove(int index) {
-    	if(readonly){
-			throw new UnsupportedOperationException("remove("+index+")");
+    	if (readonly) {
+			throw new UnsupportedOperationException("remove(" +index+ ")");
 		}
 		return super.remove(index);
     }
-    
+   
     @Override
    public boolean add(E newValue)
    {
-       if(readonly){
+       if (readonly) {
           throw new UnsupportedOperationException("add()");
        }
       return super.addEntity(newValue);

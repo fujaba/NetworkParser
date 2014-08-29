@@ -4,7 +4,7 @@ package de.uniks.networkparser.graph;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -23,7 +23,6 @@ package de.uniks.networkparser.graph;
 */
 import java.util.ArrayList;
 import java.util.Iterator;
-
 import de.uniks.networkparser.AbstractKeyValueList;
 import de.uniks.networkparser.ArrayEntityList;
 import de.uniks.networkparser.ArraySimpleList;
@@ -64,11 +63,11 @@ public class GraphList extends AbstractKeyValueList<String, GraphNode> {
 		addEdge(edge);
 		return this;
 	}
-	
+
 	public boolean addEdge(GraphEdge edge) {
-		for(Iterator<GraphEdge> i = this.edges.iterator();i.hasNext();){
+		for (Iterator<GraphEdge> i = this.edges.iterator();i.hasNext();) {
 			GraphEdge item = i.next();
-			if(item.contains(edge.getOther().values()) && item.getOther().containsAll(edge.values())){
+			if (item.contains(edge.getOther().values()) && item.getOther().containsAll(edge.values())) {
 				// Back again
 				item.with(edge.getOther().getCardinality());
 				item.with(edge.getOther().getProperty());
@@ -81,14 +80,14 @@ public class GraphList extends AbstractKeyValueList<String, GraphNode> {
 	public ArrayList<GraphEdge> getEdges() {
 		return edges;
 	}
-	
-	public ArrayEntityList<String, Object> getLinks(){
+
+	public ArrayEntityList<String, Object> getLinks() {
 		ArrayEntityList<String, Object> links = new ArrayEntityList<String, Object>();
 		for (GraphEdge element : edges) {
-			for(GraphNode node : element.values()){
+			for (GraphNode node : element.values()) {
 				String key = node.getTyp(typ, false);
 				ArraySimpleList<?> value = (ArraySimpleList<?>)links.getValue(key);
-				if(value!=null){
+				if (value!=null) {
 					value.with(element);
 				}else{
 					ArraySimpleList<GraphEdge> simpleList = new ArraySimpleList<GraphEdge>();
@@ -108,12 +107,12 @@ public class GraphList extends AbstractKeyValueList<String, GraphNode> {
 	public GraphList getNewInstance() {
 		return new GraphList();
 	}
-	
+
 	@Override
-	public GraphList with(Object... values){
-		if(values != null){
-			for(Object value : values){
-				if(value instanceof GraphNode){
+	public GraphList with(Object... values) {
+		if (values != null) {
+			for (Object value : values) {
+				if (value instanceof GraphNode) {
 					this.add((GraphNode)value);
 				}
 			}

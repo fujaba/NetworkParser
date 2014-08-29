@@ -4,7 +4,7 @@ package de.uniks.networkparser.bytes;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -30,7 +30,7 @@ public class BytesBuffer implements BufferedBytes {
 
 	/** The index. */
 	protected int index;
-	
+
 	@Override
 	public int length() {
 		return buffer.length;
@@ -40,7 +40,7 @@ public class BytesBuffer implements BufferedBytes {
 	public char charAt(int index) {
 		return (char) buffer[index];
 	}
-	
+
 	@Override
 	public byte byteAt(int index) {
 		return buffer[index];
@@ -48,8 +48,8 @@ public class BytesBuffer implements BufferedBytes {
 
 	@Override
 	public String substring(int startTag, int length) {
-		byte[] sub=new byte[length];
-		for(int i=0;i<length;i++){
+		byte[] sub= new byte[length];
+		for (int i=0;i<length;i++) {
 			sub[i]=buffer[startTag+length];
 		}
 		return String.valueOf(sub);
@@ -57,7 +57,7 @@ public class BytesBuffer implements BufferedBytes {
 
 	@Override
 	public BytesBuffer withLength(int length) {
-		this.buffer=new byte[length];
+		this.buffer= new byte[length];
 		return this;
 	}
 
@@ -73,7 +73,7 @@ public class BytesBuffer implements BufferedBytes {
 
 	@Override
 	public void back() {
-		if(index>0){
+		if (index>0) {
 			index--;
 		}
 	}
@@ -104,17 +104,17 @@ public class BytesBuffer implements BufferedBytes {
 		return this.buffer[index++];
 	}
 
-	
-	private byte[] converter(int bits){
+
+	private byte[] converter(int bits) {
 		int len = bits/8;
-		byte[] buffer=new byte[len];
-		
-		for(int i=0;i<len;i++){
+		byte[] buffer= new byte[len];
+	
+		for (int i=0;i<len;i++) {
 			buffer[i] = this.buffer[index++];
 		}
 		return buffer;
 	}
-	
+
 	@Override
 	public char getChar() {
 		byte[] bytes= converter(Character.SIZE);
@@ -170,19 +170,19 @@ public class BytesBuffer implements BufferedBytes {
 	@Override
 	public byte[] getValue(int len) {
 		byte[] array = new byte[len];
-		for(int i=0;i<len;i++){
+		for (int i=0;i<len;i++) {
 			array[i]=getByte();
 		}
 		return array;
 	}
-	
-	
+
+
 	@Override
 	public byte[] getValue(int start, int len) {
 		this.withPosition(start);
 
 		byte[] array = new byte[len];
-		for(int i=0;i<len;i++){
+		for (int i=0;i<len;i++) {
 			array[i]=getByte();
 		}
 		return array;
@@ -197,13 +197,13 @@ public class BytesBuffer implements BufferedBytes {
 	public void put(byte value) {
 		this.buffer[index++] = value;
 	}
-	
+
 	@Override
 	public void put(short value) {
 		this.buffer[index++] = (byte) (value >>> 8);
 		this.buffer[index++] = (byte) value;
 	}
-	
+
 	@Override
 	public void put(int value) {
 		this.buffer[index++] = (byte) (value >>> 24);
@@ -223,13 +223,13 @@ public class BytesBuffer implements BufferedBytes {
 		this.buffer[index++] = (byte) (value >>> 8);
 		this.buffer[index++] = (byte) value;
 	}
-	
+
 	@Override
 	public void put(char value) {
 		this.buffer[index++] = (byte) (value >>> 8);
 		this.buffer[index++] = (byte) value;
 	}
-	
+
 	@Override
 	public void put(float value) {
 		int bits = Float.floatToIntBits(value);
@@ -255,14 +255,14 @@ public class BytesBuffer implements BufferedBytes {
 
 	@Override
 	public void put(byte[] value) {
-		for(int i=0;i<value.length;i++){
+		for (int i=0;i<value.length;i++) {
 			put(value[i]);
 		}
 	}
 
 	@Override
 	public void put(byte[] value, int offset, int length) {
-		for(int i=0;i<length;i++){
+		for (int i=0;i<length;i++) {
 			put(value[offset+i]);
 		}
 	}
@@ -277,8 +277,8 @@ public class BytesBuffer implements BufferedBytes {
 	public BufferedBytes getNewBuffer(int capacity) {
 		return new BytesBuffer().withLength(capacity);
 	}
-	
-	public static BytesBuffer allocate(int len){
+
+	public static BytesBuffer allocate(int len) {
 		BytesBuffer bytesBuffer = new BytesBuffer();
 		bytesBuffer.withLength(len);
 		return bytesBuffer;
@@ -288,12 +288,12 @@ public class BytesBuffer implements BufferedBytes {
 	public BufferedBytes getNewBuffer(byte[] array) {
 		return new BytesBuffer().with(array);
 	}
-	
-	public BytesBuffer with(byte[] array){
+
+	public BytesBuffer with(byte[] array) {
 		this.buffer=array.clone();
 		return this;
 	}
-	
+
 	@Override
 	public boolean isCache() {
 		return true;

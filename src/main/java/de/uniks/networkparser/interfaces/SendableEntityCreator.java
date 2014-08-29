@@ -4,7 +4,7 @@ package de.uniks.networkparser.interfaces;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -29,14 +29,14 @@ package de.uniks.networkparser.interfaces;
 public interface SendableEntityCreator {
 	/**
 	 * Gets the properties.
-	 * 
+	 *
 	 * @return the properties
 	 */
 	public String[] getProperties();
 
 	/**
 	 * Gets the sendable instance.
-	 * 
+	 *
 	 * @param prototyp
 	 *            the prototyp
 	 * @return the sendable instance
@@ -45,7 +45,7 @@ public interface SendableEntityCreator {
 
 	/**
 	 * Gets the value.
-	 * 
+	 *
 	 * @param entity
 	 *            the entity
 	 * @param attribute
@@ -56,7 +56,7 @@ public interface SendableEntityCreator {
 
 	/**
 	 * Sets the value.
-	 * 
+	 *
 	 * @param entity
 	 *            the entity
 	 * @param attribute

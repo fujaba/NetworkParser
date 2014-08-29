@@ -25,7 +25,7 @@ public class Barbarian {
 	}
 	public boolean set(String attribute, Object value) {
 		if(PROPERTY_POSITION.equalsIgnoreCase(attribute)){
-			setPosition((Integer.valueOf(""+value)));
+			setPosition((Integer.valueOf("" +value)));
 			return true;
 		}else if(PROPERTY_GAME.equalsIgnoreCase(attribute)){
 			this.setGame((Game) value);

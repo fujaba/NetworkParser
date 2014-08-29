@@ -4,7 +4,7 @@ package de.uniks.networkparser.gui.table;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -22,7 +22,6 @@ package de.uniks.networkparser.gui.table;
  permissions and limitations under the Licence.
 */
 import java.util.Comparator;
-
 import de.uniks.networkparser.EntityValueFactory;
 import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.interfaces.GUIPosition;
@@ -45,7 +44,7 @@ public class Column {
 
 	private Style style;
 	private Style activestyle;
-	
+
 	private String attrName;
 	private String numberFormat;
 	private boolean isEditable=false;
@@ -59,17 +58,17 @@ public class Column {
 	private GUIPosition browserId=GUIPosition.CENTER;
 	protected ColumnListener handler;
 	private Comparator<TableCellValue> comparator;
-	
-	
+
+
 	/**
 	 * @return the label
 	 */
 	public String getLabel() {
 		return label;
 	}
-	
+
 	public String getLabelOrAttrName() {
-		if(label==null){
+		if (label==null) {
 			return attrName;
 		}
 		return label;
@@ -101,12 +100,12 @@ public class Column {
 	}
 	/**
 	 * @param attrName Attribute Name for display
-	 * @param edit is the Column is editable 
+	 * @param edit is the Column is editable
 	 * @return this
 	 */
 	public Column withAttrName(String attrName, boolean edit) {
 		this.attrName = attrName;
-		if(label==null){
+		if (label==null) {
 			label = attrName;
 		}
 		this.isEditable = edit;
@@ -153,8 +152,8 @@ public class Column {
 		this.isResizable = isResizable;
 		return this;
 	}
-	
-	public EntityValueFactory getCellValueCreator(){
+
+	public EntityValueFactory getCellValueCreator() {
 		return new EntityValueFactory();
 	}
 
@@ -167,11 +166,11 @@ public class Column {
 		return this;
 	}
 
-	public Column withAltAttribute(String altAttribute){
+	public Column withAltAttribute(String altAttribute) {
 		this.altAttribute=altAttribute;
 		return this;
 	}
-	
+
 	public String getAltAttribute() {
 		return altAttribute;
 	}
@@ -193,16 +192,16 @@ public class Column {
 		this.browserId = browserId;
 		return this;
 	}
-	
+
 	public FieldTyp getFieldTyp() {
 		return fieldTyp;
 	}
-	
+
 	public Column withFieldTyp(FieldTyp fieldTyp) {
 		this.fieldTyp = fieldTyp;
 		return this;
 	}
-	
+
 	public String getDefaultText() {
 		return defaultText;
 	}
@@ -247,7 +246,7 @@ public class Column {
 			return this.getFieldTyp();
 		return null;
 	}
-	
+
 	public boolean set(String attribute, Object value) {
 		if (attribute.equalsIgnoreCase(PROPERTY_ATTRNAME)) {
 			withAttrName((String) value);
@@ -269,11 +268,11 @@ public class Column {
 			withDefaultText((String) value);
 			return true;
 		}
-		if (attrName.equalsIgnoreCase(PROPERTY_STYLE)){
+		if (attrName.equalsIgnoreCase(PROPERTY_STYLE)) {
 			withStyle((Style) value);
 			return true;
 		}
-		if (attrName.equalsIgnoreCase(PROPERTY_ACTIVESTYLE)){
+		if (attrName.equalsIgnoreCase(PROPERTY_ACTIVESTYLE)) {
 			withActiveStyle((Style) value);
 			return true;
 		}
@@ -298,7 +297,7 @@ public class Column {
 			return true;
 		}
 		if (attribute.equalsIgnoreCase(PROPERTY_FIELDTYP)) {
-			withFieldTyp(FieldTyp.valueOf(""+value));
+			withFieldTyp(FieldTyp.valueOf("" +value));
 			return true;
 		}
 		return false;
@@ -312,7 +311,7 @@ public class Column {
 		this.style = style;
 		return this;
 	}
-	
+
 	public Style getActiveStyle() {
 		return activestyle;
 	}
@@ -321,22 +320,22 @@ public class Column {
 		this.activestyle = activestyle;
 		return this;
 	}
-	
-	public Column withListener(ColumnListener handler){
+
+	public Column withListener(ColumnListener handler) {
 		this.handler = handler;
 		this.handler.withColumn(this);
 		this.withEditable(true);
 		return this;
 	}
-	
-	public ColumnListener getListener(){
-		if(handler==null){
+
+	public ColumnListener getListener() {
+		if (handler==null) {
 			withListener(getDefaultListener());
 		}
 		return handler;
 	}
-	
-	public ColumnListener getDefaultListener(){
+
+	public ColumnListener getDefaultListener() {
 		return new ColumnListener();
 	}
 
@@ -348,13 +347,13 @@ public class Column {
 		this.comparator = comparator;
 		return this;
 	}
-	
+
 	public Column withComboValue(String value) {
-		if(this.numberFormat == null || !this.numberFormat.startsWith("[") || numberFormat.length()==2){
-			this.numberFormat = "["+value+"]";
+		if (this.numberFormat == null || !this.numberFormat.startsWith("[") || numberFormat.length()==2) {
+			this.numberFormat = "[" +value+ "]";
 			return this;
 		}
-		this.numberFormat= this.numberFormat.substring(0, this.numberFormat.length()-1)+","+value+"]";
+		this.numberFormat= this.numberFormat.substring(0, this.numberFormat.length()-1)+ "," +value+ "]";
 		return this;
 	}
 }

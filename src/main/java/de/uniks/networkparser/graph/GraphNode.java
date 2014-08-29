@@ -4,7 +4,7 @@ package de.uniks.networkparser.graph;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -29,7 +29,7 @@ public class GraphNode extends AbstractEntityList<GraphMember> {
 
 	// GETTER AND SETTER
 	public String getClassName(boolean shortName) {
-		if(!shortName || className==null || className.lastIndexOf(".")<0){
+		if (!shortName || className==null || className.lastIndexOf(".")<0) {
 			return className;
 		}
 		return className.substring(className.lastIndexOf(".") + 1);
@@ -40,27 +40,27 @@ public class GraphNode extends AbstractEntityList<GraphMember> {
 		return this;
 	}
 
-	public String getClassName(){
+	public String getClassName() {
 		return className;
 	}
-	
+
 	public String getId() {
 		return id;
 	}
-	
-	public String getTyp(String typ, boolean shortName){
-		if(typ.equals(GraphIdMap.OBJECT)){
+
+	public String getTyp(String typ, boolean shortName) {
+		if (typ.equals(GraphIdMap.OBJECT)) {
 			return getId();
-		}else if(typ.equals(GraphIdMap.CLASS)){
+		}else if (typ.equals(GraphIdMap.CLASS)) {
 			return getClassName(shortName);
 		}
 		return "";
 	}
-	
-	public GraphNode withTyp(String typ, String value){
-		if(typ.equals(GraphIdMap.OBJECT)){
+
+	public GraphNode withTyp(String typ, String value) {
+		if (typ.equals(GraphIdMap.OBJECT)) {
 			withId(value);
-		}else if(typ.equals(GraphIdMap.CLASS)){
+		}else if (typ.equals(GraphIdMap.CLASS)) {
 			withClassName(value);
 		}
 		return this;
@@ -77,7 +77,7 @@ public class GraphNode extends AbstractEntityList<GraphMember> {
 
 	@Override
 	public String toString() {
-		if(id==null){
+		if (id==null) {
 			return className;
 		}
 		return id;
@@ -90,9 +90,9 @@ public class GraphNode extends AbstractEntityList<GraphMember> {
 
 	@Override
 	public GraphNode with(Object... values) {
-		if(values != null){
-			for(Object value : values){
-				if(value instanceof Attribute){
+		if (values != null) {
+			for (Object value : values) {
+				if (value instanceof Attribute) {
 					add((Attribute) value);
 				}
 			}

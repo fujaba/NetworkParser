@@ -4,7 +4,7 @@ package de.uniks.networkparser.json;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -27,27 +27,27 @@ import de.uniks.networkparser.interfaces.IdMapCounter;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 
-public class Grammar {	
+public class Grammar {
 	/**
 	 * @param jsonObject The Object for read
 	 * @param map The IdMap
 	 * @param filter The filter
 	 * @param isId The isReadId
-	 * 
+	 *
 	 * @return the props of theJsonObject
 	 */
 	public JsonObject getReadProperties(JsonObject jsonObject, IdMapEncoder map, Filter filter, boolean isId) {
-		if(isId){
+		if (isId) {
 			if (jsonObject.has(JsonIdMap.JSON_PROPS)) {
 				return jsonObject.getJsonObject(JsonIdMap.JSON_PROPS);
 			}
 		}else{
-			JsonObject props=new JsonObject();
-			for(int i=0;i<jsonObject.size();i++){
-				if(!JsonIdMap.CLASS.equalsIgnoreCase(jsonObject.get(i))){
+			JsonObject props= new JsonObject();
+			for (int i=0;i<jsonObject.size();i++) {
+				if (!JsonIdMap.CLASS.equalsIgnoreCase(jsonObject.get(i))) {
 					props.put(jsonObject.get(i), jsonObject.getValue(i));
 				}
-				
+			
 			}
 			return props;
 		}
@@ -69,7 +69,7 @@ public class Grammar {
 	 * @param modelItem Item for write
 	 * @param className String className
 	 * @param map The IdMap
-	 * 
+	 *
 	 * @return the Creator for this JsonObject
 	 */
 	public SendableEntityCreator getWriteCreator(Object modelItem,
@@ -82,7 +82,7 @@ public class Grammar {
 		JsonObject json = new JsonObject();
 		json.put(JsonIdMap.CLASS, className);
 		if (prototyp instanceof SendableEntityCreatorNoIndex || !filter.isId(map, jsonProp, className)) {
-			for(int i=0;i<jsonProp.size();i++){
+			for (int i=0;i<jsonProp.size();i++) {
 				json.put(jsonProp.get(i), jsonProp.getValue(i));
 			}
 			return json;
@@ -93,11 +93,11 @@ public class Grammar {
 		}
 		return json;
 	}
-	
-	public boolean hasReadValue(JsonObject json, String property){
+
+	public boolean hasReadValue(JsonObject json, String property) {
 		return json.has(property);
 	}
-	public String getReadValue(JsonObject json, String property){
+	public String getReadValue(JsonObject json, String property) {
 		return json.getString(property);
 	}
 

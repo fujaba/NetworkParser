@@ -8,7 +8,7 @@ public class LoCMetric {
 	private int emptyLine=0;
 	private int annotation=0;
 	public void finish(MethodItem item){
-		for(String line : item.getBody()){
+		for (String line : item.getBody()){
 			String simple = line.trim();
 			if(simple.length()<1){
 				emptyLine++;
@@ -48,7 +48,7 @@ public class LoCMetric {
 	
 	@Override
 	public String toString(){
-		return "Line of File:"+ getFullLines() +" - Lines of Code:"+linesOfCode;
+		return "Line of File:" + getFullLines() + " - Lines of Code:" +linesOfCode;
 	}
 	
 	public int getFullLines(){

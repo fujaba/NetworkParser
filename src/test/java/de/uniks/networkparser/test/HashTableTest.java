@@ -39,7 +39,7 @@ public class HashTableTest
 		
 		String end = String.format(FORMAT, (System.currentTimeMillis() - currentTimeMillis));
 		
-		System.out.println(label+" Add:          "+end+" = number of persons: " + list.size());	
+		System.out.println(label+ " Add:          " +end+ " = number of persons: " + list.size());	
 		return list;
 	}
 
@@ -50,7 +50,7 @@ public class HashTableTest
 			Assert.assertTrue("not in list", list.contains(items.get(i)));
 		}
 		String end = String.format(FORMAT, (System.currentTimeMillis() - currentTimeMillis));
-		System.out.println(label+" contains:     " +end+" for "+list.size()/step +" Objects");
+		System.out.println(label+ " contains:     " +end+ " for " +list.size()/step + " Objects");
 	}
 	
 	private void getter(String label, List<Person> list){
@@ -60,7 +60,7 @@ public class HashTableTest
 			Assert.assertNotNull("not in list", list.get(i));
 		}
 		String end = String.format(FORMAT, (System.currentTimeMillis() - currentTimeMillis));
-		System.out.println(label+" getter(index):"+end+" for "+list.size()/step +" Objects");
+		System.out.println(label+ " getter(index):" +end+ " for " +list.size()/step + " Objects");
 	}
 	
 	private void getter(String label, Set<Person> list){
@@ -78,7 +78,7 @@ public class HashTableTest
 			}
 		}
 		String end = String.format(FORMAT, (System.currentTimeMillis() - currentTimeMillis));
-		System.out.println(label+" getter(index):" + end + " for 100 Objects");
+		System.out.println(label+ " getter(index):" + end + " for 100 Objects");
 	}
 	
 	private void contains(String label, Set<Person> list){
@@ -87,16 +87,16 @@ public class HashTableTest
 			Assert.assertTrue("not in list", list.contains(items.get(i)));
 		}
 		String end = String.format(FORMAT, (System.currentTimeMillis() - currentTimeMillis));
-		System.out.println(label+" contains:     " + end + " for 10000 Objects");
+		System.out.println(label+ " contains:     " + end + " for 10000 Objects");
 	}
 	
 	private void iterator(String label, Collection<Person> list){
 		long currentTimeMillis = System.currentTimeMillis();
-		for(Iterator<Person> i = list.iterator();i.hasNext();){
+		for (Iterator<Person> i = list.iterator();i.hasNext();){
 			Assert.assertNotNull(i.next());
 		}
 		String end = String.format(FORMAT, (System.currentTimeMillis() - currentTimeMillis));
-		System.out.println(label+" iterator:     " + end);
+		System.out.println(label+ " iterator:     " + end);
 	}
 	
 	private void removeObject(String label, Collection<Person> list){
@@ -104,11 +104,11 @@ public class HashTableTest
 		for (int i = 0; i < items.size(); i += 100) {
 			list.remove(items.get(i));
 		}
-		for(Iterator<Person> i = list.iterator();i.hasNext();){
+		for (Iterator<Person> i = list.iterator();i.hasNext();){
 			Assert.assertNotNull(i.next());
 		}
 		String end = String.format(FORMAT, (System.currentTimeMillis() - currentTimeMillis));
-		System.out.println(label+" removeObject: " + end+ "("+list.size()+")");
+		System.out.println(label+ " removeObject: " + end+ "(" +list.size()+ ")");
 	}
 	
 	private void test(String text, Set<Person> items){
@@ -154,7 +154,7 @@ public class HashTableTest
       
       
       System.out.println("     number of persons: " + groupAccount.getPersons().size() + " probe size: " + personSet.size());
-      System.out.println("     "+(System.currentTimeMillis() - currentTimeMillis ));
+      System.out.println("     " +(System.currentTimeMillis() - currentTimeMillis ));
 //      for (Person person : personSet)
 //      {
 //         Assert.assertTrue("not in list", groupAccount.getPersons().contains(person));

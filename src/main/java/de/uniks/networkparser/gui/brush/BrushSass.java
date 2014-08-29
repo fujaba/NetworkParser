@@ -73,13 +73,13 @@ public class BrushSass extends Brush {
     addRule(new RegExpressions(RegExpressions.singleQuotedString, "string")); // single quoted strings
     addRule(new RegExpressions("\\#[a-fA-F0-9]{3,6}", "value")); // html colors
     addRule(new RegExpressions("\\b(-?\\d+)(\\.\\d+)?(px|em|pt|\\:|\\%|)\\b", "value")); // sizes
-    addRule(new RegExpressions("(\\$|!)\\w+", "variable")); // variables
+    addRule(new RegExpressions("(\\$|!)\\w+ ", "variable")); // variables
     addRule(new RegExpressions(getKeywords(statements), "color3")); // statements
     addRule(new RegExpressions(getKeywordsPrependedBy(preprocessors, "@"), "preprocessor")); // preprocessor
     addRule(new RegExpressions("(^|\\n)\\s*=.*", "functions")); // short mixin declarations
     addRule(new RegExpressions("(^|\\n)\\s*\\+.*", "functions")); // short mixin call
     addRule(new RegExpressions("&amp;", "keyword")); // &
-    addRule(new RegExpressions("#(\\w|-|_)+", "color2")); // ids
+    addRule(new RegExpressions("#(\\w|-|_)+ ", "color2")); // ids
     // original code uses 'color4' which do not exist yet, here uses color1 as a temporary replacement
     addRule(new RegExpressions("(\\.(\\w|-|_)+)", "color1")); // classes
     addRule(new RegExpressions(getKeywordsCSS(keywords), Pattern.MULTILINE, "keyword")); // keywords
@@ -99,6 +99,6 @@ public class BrushSass extends Brush {
   }
 
   protected static String getKeywordsPrependedBy(String keywords, String by) {
-    return "(?:" + by + "\\b" + keywords.replaceAll("^\\s+|\\s+$", "").replaceAll("\\s+", "|" + by + "\\b").replaceAll("^\\s+|\\s+$", "") + ")\\b";
+    return "(?:" + by + "\\b" + keywords.replaceAll("^\\s+|\\s+$", "").replaceAll("\\s+ ", "|" + by + "\\b").replaceAll("^\\s+|\\s+$", "") + ")\\b";
   }
 }

@@ -25,22 +25,22 @@ import java.util.Set;
 
 public interface BidiMap<K,V> {
 	public int size();
-	
+
 	public void clear();
-	
+
 	public Collection<V> values();
-	
+
 	public Set<K> keySet();
-	
+
 	public boolean containKey(K key);
-	
+
 	public boolean containValue(V value);
-	
+
 	public BidiMap<K,V> without(K key, V value);
-	
+
 	public BidiMap<K,V> with(K key, V value);
-	
+
 	public Object getValue(Object key);
-	
+
 	public K getKey(V key);
 }

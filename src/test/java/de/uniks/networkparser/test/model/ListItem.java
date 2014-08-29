@@ -5,7 +5,7 @@ import java.util.LinkedHashSet;
 
 public class ListItem {
 	public static final String PROPERTY_ENTITY="item";
-	private LinkedHashSet<Entity> child=new LinkedHashSet<Entity>();
+	private LinkedHashSet<Entity> child= new LinkedHashSet<Entity>();
 	public LinkedHashSet<Entity> getChild() {
 		return child;
 	}
@@ -37,7 +37,7 @@ public class ListItem {
 		return null;
 	}
 	public Entity getChildByName(String name){
-		for(Entity item : child){
+		for (Entity item : child){
 			if(name.equals(item.getValue())){
 				return item;
 			}

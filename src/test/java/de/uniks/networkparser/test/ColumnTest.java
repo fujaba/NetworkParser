@@ -15,7 +15,7 @@ public class ColumnTest {
 
 	@Test
 	public void testColumn(){
-		Column column=new Column();
+		Column column= new Column();
 		Assert.assertTrue("Must be True", column.getListener().canEdit(null, null));
 		column.withEditable(false);
 		Assert.assertFalse("Must be False", column.getListener().canEdit(null, null));
@@ -23,7 +23,7 @@ public class ColumnTest {
 
 	@Test
 	public void testColumnSerialization(){
-		Column column=new Column().withAttrName("Name").withResizable(true);
+		Column column= new Column().withAttrName("Name").withResizable(true);
 		column.withVisible(true);
 		column.withMovable(true);
 		Assert.assertEquals(column.getBrowserId(), GUIPosition.CENTER);
@@ -36,7 +36,7 @@ public class ColumnTest {
 	
 	@Test
 	public void testColumnListenerTrue(){
-		Column column=new Column().withListener(new ColumnListener(){
+		Column column= new Column().withListener(new ColumnListener(){
 			@Override
 			public boolean canEdit(Object entity, SendableEntityCreator creator) {
 				return false;

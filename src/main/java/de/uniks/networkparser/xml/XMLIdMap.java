@@ -4,7 +4,7 @@ package de.uniks.networkparser.xml;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-
 import de.uniks.networkparser.AbstractMap;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Filter;
@@ -61,14 +60,14 @@ public class XMLIdMap extends XMLSimpleIdMap {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.sdmlib.serialization.IdMap#addCreator(org.sdmlib.serialization.interfaces
 	 * .SendableEntityCreator)
 	 */
 	public boolean addCreator(SendableEntityCreator createrClass) {
 		if (createrClass instanceof SendableEntityCreatorXML) {
-			if(this.decoderMap != null){
+			if (this.decoderMap != null) {
 				if (this.decoderMap.containsKey(((SendableEntityCreatorXML)createrClass).getTag())) {
 					return false;
 				}
@@ -79,7 +78,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 		super.withCreator(createrClass);
 		return true;
 	}
-	
+
 	@Override
 	public AbstractMap withCreator(String className,
 			SendableEntityCreator createrClass) {
@@ -97,7 +96,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 
 	/**
 	 * Gets the creator decode class.
-	 * 
+	 *
 	 * @param tag
 	 *            the tag
 	 * @return the creator decode class
@@ -111,7 +110,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 
 	/**
 	 * Encode.
-	 * 
+	 *
 	 * @param entity
 	 *            the entity
 	 * @return the xML entity
@@ -140,7 +139,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 			xmlEntity.withTag(entity.getClass().getName());
 		}
 
-		if(filter.isId(this, entity, entity.getClass().getName())){
+		if (filter.isId(this, entity, entity.getClass().getName())) {
 			xmlEntity.put(ID, getId(entity));
 		}
 
@@ -177,10 +176,10 @@ public class XMLIdMap extends XMLSimpleIdMap {
 		}
 		return xmlEntity;
 	}
-	
+
 	/**
 	 * Parser child.
-	 * 
+	 *
 	 * @param parent
 	 *            the parent
 	 * @param property
@@ -233,7 +232,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 
 	/**
 	 * Step empty pos.
-	 * 
+	 *
 	 * @param newPrefix
 	 *            the new prefix
 	 * @param entity
@@ -300,8 +299,8 @@ public class XMLIdMap extends XMLSimpleIdMap {
 				refObject = tokener.popStack();
 			}
 			if (refObject != null) {
-				if(newPrefix.length()>1){
-					newPrefix = newPrefix.substring(0, newPrefix.length() - 1); 
+				if (newPrefix.length()>1) {
+					newPrefix = newPrefix.substring(0, newPrefix.length() - 1);
 				}
 				SendableEntityCreator parentCreator = refObject.getCreater();
 				parentCreator.setValue(refObject.getEntity(), newPrefix, value,
@@ -313,7 +312,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 
 	/**
 	 * Find tag.
-	 * 
+	 *
 	 * @param entity
 	 *            the entity
 	 * @param tokener
@@ -329,28 +328,28 @@ public class XMLIdMap extends XMLSimpleIdMap {
 			return null;
 		}
 		SendableEntityCreatorXML entityCreater = getCreatorDecodeClass(tag);
-		if(entityCreater!=null || tokener.getStackSize()>0){
+		if (entityCreater!=null || tokener.getStackSize()>0) {
 			return parseIdEntity(entity, grammar, tokener, entityCreater);
 		}
 		// Must be a Child of Root
-		ArrayList<SendableEntityCreatorXML> filter=new ArrayList<SendableEntityCreatorXML>();
-		for(Iterator<SendableEntityCreator> i = iterator();i.hasNext();){
+		ArrayList<SendableEntityCreatorXML> filter= new ArrayList<SendableEntityCreatorXML>();
+		for (Iterator<SendableEntityCreator> i = iterator();i.hasNext();) {
 			SendableEntityCreator creator = i.next();
-			if(creator instanceof SendableEntityCreatorXML){
+			if (creator instanceof SendableEntityCreatorXML) {
 				SendableEntityCreatorXML xmlCreator = (SendableEntityCreatorXML) creator;
-				if(xmlCreator.getTag().startsWith(tag)){
+				if (xmlCreator.getTag().startsWith(tag)) {
 					filter.add(xmlCreator);
 				}
 			}
 		}
-		while(filter.size()>1){
+		while(filter.size()>1) {
 			while (!tokener.isEnd()) {
 				if (tokener.stepPos("" + ITEMSTART, false, false)) {
 					XMLEntity item = getEntity(grammar, tokener);
 					if (item != null) {
 						tag+=XMLIdMap.ENTITYSPLITTER+item.getTag();
-						for(Iterator<SendableEntityCreatorXML> i=filter.iterator();i.hasNext();){
-							if(!i.next().getTag().startsWith(tag)){
+						for (Iterator<SendableEntityCreatorXML> i=filter.iterator();i.hasNext();) {
+							if (!i.next().getTag().startsWith(tag)) {
 								i.remove();
 							}
 						}
@@ -358,7 +357,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 				}
 			}
 		}
-		if(filter.size()==1){
+		if (filter.size()==1) {
 			return parseIdEntity(entity, grammar, tokener.withPrefix(""), filter.get(0));
 		}
 		return null;
@@ -386,7 +385,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 			entityCreater = (SendableEntityCreatorXML) referenceObject.getCreater();
 			String[] properties = entityCreater.getProperties();
 			tokener.addPrefix(tag);
-			if(isCaseSensitive()){
+			if (isCaseSensitive()) {
 				for (String prop : properties) {
 					if (prop.equals(tokener.getPrefix())) {
 						// It is a Attribute
@@ -525,7 +524,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 			} else {
 				tokener.next();
 				int start = tokener.position();
-				tokener.stepPos(ITEMSTART+"/"+tag, true, true);
+				tokener.stepPos(ITEMSTART+ "/" +tag, true, true);
 				String value = tokener.substring(start, tokener.position() - tag.length() - 1);
 				entityCreater.setValue(item, tokener.getPrefix(), value, IdMapEncoder.NEW);
 //				tokener.stepPos("" + ITEMSTART, false, false);
@@ -538,7 +537,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 
 	/**
 	 * Adds the stop words.
-	 * 
+	 *
 	 * @param stopwords
 	 *            the stopwords
 	 * @return true, if successful

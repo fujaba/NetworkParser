@@ -40,7 +40,7 @@ public class BrushScala extends Brush {
     String keywords = "val sealed case def true trait implicit forSome import match object null finally super "
             + "override try lazy for var catch throw type extends class while with new final yield abstract "
             + "else do if return protected private this package false";
-    String keyops = "[_:=><%#@]+";
+    String keyops = "[_:=><%#@]+ ";
 
     addRule(new RegExpressions(RegExpressions.singleLineCComments, "comments")); // one line comments
     addRule(new RegExpressions(RegExpressions.multiLineCComments, "comments")); // multiline comments

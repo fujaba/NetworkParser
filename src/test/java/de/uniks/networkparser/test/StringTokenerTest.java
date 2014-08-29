@@ -39,7 +39,7 @@ public class StringTokenerTest {
 			do{
 				sub = tokener.nextString(',', true);
 				if(sub.length()>0){
-					System.out.println(count++ +": #"+sub+"# -- "+tokener.isString());
+					System.out.println(count++ + ": #" +sub+ "# -- " +tokener.isString());
 				}
 			}while(sub.length()>0);
 		}
@@ -47,7 +47,7 @@ public class StringTokenerTest {
 	
 	@Test
 	public void testToday(){
-		DateTimeEntity date=new DateTimeEntity();
+		DateTimeEntity date= new DateTimeEntity();
 	   System.out.println(date.getTime());
 		System.out.println(date.toString("ddd. dd.mm.yyyy"));
 	}
@@ -56,12 +56,12 @@ public class StringTokenerTest {
 		int count=0;
 		String sub;
 		
-		System.out.println("zu parsen: "+value);
+		System.out.println("zu parsen: " +value);
 		tokener.withText(value);
 		do{
 			sub=tokener.nextString('"', true);
 			if(sub.length()>0){
-				System.out.println(count++ +": #"+sub+"# -- "+tokener.isString());
+				System.out.println(count++ + ": #" +sub+ "# -- " +tokener.isString());
 			}
 		}while(sub.length()>0);
 		System.out.println();
@@ -71,13 +71,13 @@ public class StringTokenerTest {
 	public void testSearchText(){
 		StringTokener stringTokener = (StringTokener) new StringTokener().withText("-Harmonie -Illusion -\"E1 E2\"");
 		ArrayList<String> stringList = stringTokener.getStringList();
-		ArrayList<String> searchList=new ArrayList<String>();
-		for(int i=0;i<stringList.size();i++){
+		ArrayList<String> searchList= new ArrayList<String>();
+		for (int i=0;i<stringList.size();i++){
 			if(stringList.get(i).endsWith("-") && i<stringList.size()-1){
 				String temp=stringList.get(i);
 				temp=temp.substring(0, temp.length()-1);
 				searchList.addAll(stringTokener.getString(temp.trim(), true));
-				searchList.add("-"+stringList.get(++i).trim());
+				searchList.add("-" +stringList.get(++i).trim());
 			}else{
 				searchList.addAll(stringTokener.getString(stringList.get(i), true));
 			}

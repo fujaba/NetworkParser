@@ -15,7 +15,7 @@ public class JISMEngineTest extends IOClasses{
 		StringBuffer stringBuffer = readFile("src/test/resources/template.html");
 		
 		
-		XMLSimpleIdMap decoder=new XMLSimpleIdMap();
+		XMLSimpleIdMap decoder= new XMLSimpleIdMap();
 		String data = stringBuffer.toString();
 		XMLStyledEntityCreator factory = new XMLStyledEntityCreator();
 		Object decode = decoder.decode(new XMLTokener().withText(data), factory);

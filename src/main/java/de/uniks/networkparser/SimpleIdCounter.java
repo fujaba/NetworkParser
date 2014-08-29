@@ -4,7 +4,7 @@ package de.uniks.networkparser;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -32,7 +32,7 @@ public class SimpleIdCounter implements IdMapCounter {
 
 	/** The number. */
 	protected long number = 1;
-	
+
 	public IdMapCounter withNumber(long number) {
 		this.number = number;
 		return this;
@@ -129,7 +129,7 @@ public class SimpleIdCounter implements IdMapCounter {
 
 	/**
 	 * Gets the prio.
-	 * 
+	 *
 	 * @return the prio
 	 */
 	@Override
@@ -139,7 +139,7 @@ public class SimpleIdCounter implements IdMapCounter {
 
 	/**
 	 * Sets the prio.
-	 * 
+	 *
 	 * @param prio
 	 *            the new prio
 	 * @return Itself

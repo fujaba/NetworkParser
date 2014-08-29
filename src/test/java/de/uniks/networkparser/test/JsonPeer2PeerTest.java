@@ -31,7 +31,7 @@ public class JsonPeer2PeerTest implements MapUpdateListener{
 		firstRoot = new SortedMsg();
 		firstRoot.setNumber(1);
 		
-		SortedMsg second=new SortedMsg();
+		SortedMsg second= new SortedMsg();
 		second.setNumber(2);
 		firstRoot.setChild(second);
 		
@@ -40,7 +40,7 @@ public class JsonPeer2PeerTest implements MapUpdateListener{
 		System.out.println("SEND ALL");
 		sendUpdateMsg(null, null, null, null, firstMap.toJsonObject(firstRoot));
 		
-		SortedMsg third=new SortedMsg();
+		SortedMsg third= new SortedMsg();
 		third.setNumber(4);
 		System.out.println("ADD THIRD");
 //		second.setChild(third);

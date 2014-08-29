@@ -15,7 +15,7 @@ public class SortedMsg implements SendableEntity {
 	private SortedMsg child;
 	private SortedMsg parent;
 	private String msg;
-	private PropertyChangeSupport change=new PropertyChangeSupport(this);
+	private PropertyChangeSupport change= new PropertyChangeSupport(this);
 
 	public int getNumber() {
 		return number;

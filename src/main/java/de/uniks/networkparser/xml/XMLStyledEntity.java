@@ -4,7 +4,7 @@ package de.uniks.networkparser.xml;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -24,8 +24,8 @@ package de.uniks.networkparser.xml;
 import de.uniks.networkparser.gui.Style;
 
 public class XMLStyledEntity extends XMLEntity  {
-	private Style style=new Style();
-	
+	private Style style= new Style();
+
 	@Override
 	protected void toStringChildren(StringBuilder sb, int indentFactor, int intent) {
 		// Starttag
@@ -48,7 +48,7 @@ public class XMLStyledEntity extends XMLEntity  {
 
 
 	public boolean set(String attribute, Object value) {
-		if(style.set(attribute, value)){
+		if (style.set(attribute, value)) {
 			return true;
 		}
 		return false;
@@ -56,7 +56,7 @@ public class XMLStyledEntity extends XMLEntity  {
 
 	public Object get(String key) {
 		Object attrValue=style.get(key);
-		if(attrValue!=null){
+		if (attrValue!=null) {
 			return attrValue;
 		}
 		return super.get(key);

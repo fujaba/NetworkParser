@@ -4,7 +4,7 @@ package de.uniks.networkparser.xml.util;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -25,10 +25,14 @@ import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.xml.XMLEntity;
 
+/**
+ * @author Stefan
+ * Interface for Grammar of XML reading.
+ */
 public interface XMLGrammar extends SendableEntityCreator {
 	/**
-	 * Methgod to parse Children
-	 * 
+	 * Methgod to parse Children.
+	 *
 	 * @param entity the Entity
 	 * @param child the new Child
 	 * @param value the Tokener
@@ -37,16 +41,16 @@ public interface XMLGrammar extends SendableEntityCreator {
 	public boolean parseChild(XMLEntity entity, XMLEntity child, Tokener value);
 
 	/**
-	 * Add a Child to parent Element
-	 * 
+	 * Add a Child to parent Element.
+	 *
 	 * @param parent the Parent Element
 	 * @param child	the new Child
 	 */
 	public void addChildren(XMLEntity parent, XMLEntity child);
 
 	/**
-	 * Set the EndTag of Child
-	 * 
+	 * Set the EndTag of Child.
+	 *
 	 * @param tag the End Tag
 	 */
 	public void endChild(String tag);

@@ -4,7 +4,7 @@ package de.uniks.networkparser.bytes.converter;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -27,17 +27,17 @@ import de.uniks.networkparser.interfaces.ByteConverter;
 public class ByteConverterAES extends ByteConverter{
 	private AES aes;
 
-	public void setKey(String value){
-		if(this.aes==null){
+	public void setKey(String value) {
+		if (this.aes==null) {
 			this.aes = new AES();
 		}
 		this.aes.setKey(value);
 	}
-	
+
 	public String toString(String values) {
 		return aes.encode(values);
 	}
-	
+
 	@Override
 	public String toString(byte[] values, int size) {
 		return this.aes.encodeBytes(values);

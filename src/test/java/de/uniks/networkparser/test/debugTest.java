@@ -20,7 +20,7 @@ public class debugTest {
 
 	@Test
 	public void testError(){
-		TreeSet<Integer> values=new TreeSet<Integer>();
+		TreeSet<Integer> values= new TreeSet<Integer>();
 		
 		values.add(1);
 		values.add(3);
@@ -29,28 +29,28 @@ public class debugTest {
 		values.add(5);
 		values.add(4);
 		
-//		for(Integer v : values){
+//		for (Integer v : values){
 //			System.out.println(v);
 //		}
 		
 		SortedSet<Integer> subSet = values.subSet(2, 4);
 		System.out.print("OLD subSet:");
-		for(Integer v : subSet){
-			System.out.print(v+" ");
+		for (Integer v : subSet){
+			System.out.print(v+ " ");
 		}
 		System.out.println();
 
 		SortedSet<Integer> headSet = values.headSet(3);
 		System.out.print("OLD headSet:");
-		for(Integer v : headSet){
-			System.out.print(v+" ");
+		for (Integer v : headSet){
+			System.out.print(v+ " ");
 		}
 		System.out.println();
 		
 		SortedSet<Integer> tailSet = values.tailSet(3);
 		System.out.print("OLD tailSet:");
-		for(Integer v : tailSet){
-			System.out.print(v+" ");
+		for (Integer v : tailSet){
+			System.out.print(v+ " ");
 		}
 		System.out.println();
 }
@@ -67,28 +67,28 @@ public class debugTest {
 		values.add(5);
 		values.add(4);
 		
-//		for(Integer v : values){
+//		for (Integer v : values){
 //			System.out.println(v);
 //		}
 		
 		JsonArray subSet = values.subSet(2, 4);
 		System.out.print("NEW subSet:");
-		for(Object v : subSet){
-			System.out.print(v+" ");
+		for (Object v : subSet){
+			System.out.print(v+ " ");
 		}
 		System.out.println();
 
 		JsonArray headSet = values.headSet(3, true);
 		System.out.print("NEW headSet:");
-		for(Object v : headSet){
-			System.out.print(v+" ");
+		for (Object v : headSet){
+			System.out.print(v+ " ");
 		}
 		System.out.println();
 		
 		JsonArray tailSet = values.tailSet(3, true);
 		System.out.print("NEW tailSet:");
-		for(Object v : tailSet){
-			System.out.print(v+" ");
+		for (Object v : tailSet){
+			System.out.print(v+ " ");
 		}
 		System.out.println();
 	}

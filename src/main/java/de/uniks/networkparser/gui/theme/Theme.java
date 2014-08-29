@@ -4,7 +4,7 @@ package de.uniks.networkparser.gui.theme;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -29,7 +29,7 @@ public class Theme {
 	/**
 	 * The styles of this theme.
 	 */
-	protected Map<String, Style> styles=new LinkedHashMap<String, Style>();
+	protected Map<String, Style> styles= new LinkedHashMap<String, Style>();
 
 	  /**
 	   * Add style.
@@ -40,11 +40,11 @@ public class Theme {
 	  public Style addStyle(String styleKey, Style style) {
 	    return styles.put(styleKey, style);
 	  }
-	  
+	 
 	  /**
 	   * Get the style by keyword.
 	   * @param key the keyword
-	   * @return if the style related to the {@code key} not exist, the 
+	   * @return if the style related to the {@code key} not exist, the
 	   * style of 'plain' will return.
 	   */
 	  public Style getStyle(String key) {

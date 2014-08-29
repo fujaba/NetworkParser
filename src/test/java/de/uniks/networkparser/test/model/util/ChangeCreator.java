@@ -4,7 +4,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.test.model.Change;
 
 public class ChangeCreator implements SendableEntityCreator{
-	private final String[] properties=new String[]{Change.PROPERTY_KEY, Change.PROPERTY_VALUE, Change.PROPERTY_LIST};
+	private final String[] properties= new String[]{Change.PROPERTY_KEY, Change.PROPERTY_VALUE, Change.PROPERTY_LIST};
 	@Override
 	public String[] getProperties() {
 		return properties;

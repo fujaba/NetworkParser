@@ -54,7 +54,7 @@ public class BrushBash extends Brush {
             + "vi watch wc whereis which who whoami Wget xargs yes";
 
     addRule(new RegExpressions("^#!.*$", Pattern.MULTILINE, "preprocessor", new Style().withBold(true)));
-    addRule(new RegExpressions("\\/[\\w-\\/]+", Pattern.MULTILINE, "plain"));
+    addRule(new RegExpressions("\\/[\\w-\\/]+ ", Pattern.MULTILINE, "plain"));
     addRule(new RegExpressions(RegExpressions.singleLinePerlComments, "comments")); // one line comments
     addRule(new RegExpressions(RegExpressions.doubleQuotedString, "string")); // double quoted strings
     addRule(new RegExpressions(RegExpressions.singleQuotedString, "string")); // single quoted strings

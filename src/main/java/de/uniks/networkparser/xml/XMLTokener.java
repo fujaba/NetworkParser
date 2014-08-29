@@ -4,7 +4,7 @@ package de.uniks.networkparser.xml;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -22,7 +22,6 @@ package de.uniks.networkparser.xml;
  permissions and limitations under the Licence.
 */
 import java.util.ArrayList;
-
 import de.uniks.networkparser.AbstractKeyValueList;
 import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.NetworkParserLog;
@@ -35,14 +34,14 @@ public class XMLTokener extends Tokener {
 	/** The stack. */
 	protected ArrayList<ReferenceObject> stack = new ArrayList<ReferenceObject>();
 	private boolean isAllowQuote=false;
-	
+
 	/** The prefix. */
 	private String prefix;
-	
+
 	/**
 	 * Get the next value. The value can be a Boolean, Double, Integer,
      * BaseEntity, Long, or String.
-	 * 
+	 *
 	 * @return An object.
 	 */
 	@Override
@@ -56,9 +55,9 @@ public class XMLTokener extends Tokener {
 			back();
 			if (creator instanceof FactoryEntity) {
 				BaseItem element = ((FactoryEntity)creator).getNewObject();
-				if(element instanceof AbstractKeyValueList<?,?>){
+				if (element instanceof AbstractKeyValueList<?,?>) {
 					parseToEntity((AbstractKeyValueList<?,?>)element);
-				}else if(element instanceof AbstractList<?>){
+				}else if (element instanceof AbstractList<?>) {
 					parseToEntity((AbstractList<?>)element);
 				}
 				return element;
@@ -67,7 +66,7 @@ public class XMLTokener extends Tokener {
 			break;
 		}
 //		back();
-		if(c=='"'){
+		if (c=='"') {
 //			next();
 			next();
 			return "";
@@ -83,20 +82,20 @@ public class XMLTokener extends Tokener {
 			c = nextClean();
 		}
 		if (c != '<') {
-			if(logger.error(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)){
+			if (logger.error(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
 				throw new RuntimeException("A XML text must begin with '<'");
 			}
 			return;
 		}
 		if (!(entity instanceof XMLEntity)) {
-			if(logger.error(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)){
+			if (logger.error(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
 				throw new RuntimeException("Parse only XMLEntity");
 			}
-			
+		
 			return;
 		}
 		XMLEntity xmlEntity = (XMLEntity) entity;
-		if(buffer.isCache()){
+		if (buffer.isCache()) {
 			c = nextClean();
 			int pos=position();
 			while (c >= ' ' && getStopChars().indexOf(c) < 0 && c!='>') {
@@ -112,7 +111,7 @@ public class XMLTokener extends Tokener {
 			}
 			xmlEntity.withTag(sb.toString());
 		}
-		
+	
 		XMLEntity child;
 		while (true) {
 			c = nextStartClean();
@@ -120,7 +119,7 @@ public class XMLTokener extends Tokener {
 				break;
 			} else if (c == '>') {
 				c = nextClean();
-				if(c==0){
+				if (c==0) {
 					return;
 				}
 				if (c != '<') {
@@ -147,13 +146,13 @@ public class XMLTokener extends Tokener {
 				break;
 			} else {
 				String key = nextValue(xmlEntity, false, c).toString();
-				if ( key.length()>0 ) {
+				if ( key.length()>0) {
 					xmlEntity.put(key, nextValue(xmlEntity, isAllowQuote, nextClean()));
 				}
 			}
 		}
 	}
-	
+
 	protected void skipEntity() {
 		stepPos(">", false, false);
 		// Skip >
@@ -165,7 +164,7 @@ public class XMLTokener extends Tokener {
 		super.withText(value);
 		return this;
 	}
-	
+
 	@Override
 	public void parseToEntity(AbstractList<?>  entityList) {
 		// Do Nothing
@@ -190,18 +189,30 @@ public class XMLTokener extends Tokener {
 		return this;
 	}
 
+	/**
+	 * @return The Last Element and remove it
+	 */
 	public ReferenceObject popStack() {
-		return this.stack.remove(this.stack.size()-1);
+		return this.stack.remove(this.stack.size() - 1);
 	}
 
+	/** @return The StackSize */
 	public int getStackSize() {
 		return this.stack.size();
 	}
+	/**
+	 * @param offset Offset from Last
+	 * @return The Stack Element - offset
+	 */
 	public ReferenceObject getStackLast(int offset) {
-		return this.stack.get(this.stack.size() -1 - offset);
+		return this.stack.get(this.stack.size() - 1 - offset);
 	}
-	
-	public XMLTokener withAllowQuote(boolean value){
+
+	/**
+	 * @param value of AllowQuote
+	 * @return XMLTokener Instance
+	 */
+	public XMLTokener withAllowQuote(boolean value) {
 		this.isAllowQuote = value;
 		return this;
 	}

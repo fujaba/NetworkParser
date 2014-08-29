@@ -18,9 +18,9 @@ public class GLocationJsonTest extends IOClasses{
 	
 	@Test
 	public void testEmpty(){
-		String json="{\n"+
-		   "\t\"results\" : [],\n"+
-		   "\t\"status\" : \"ZERO_RESULTS\"\n"+
+		String json="{\n" +
+		   "\t\"results\" : [],\n" +
+		   "\t\"status\" : \"ZERO_RESULTS\"\n" +
 		"}";
 		
 		JsonObject item = new JsonObject().withValue(json);

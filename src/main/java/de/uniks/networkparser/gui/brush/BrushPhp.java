@@ -80,7 +80,7 @@ public class BrushPhp extends Brush {
     addRule(new RegExpressions(RegExpressions.multiLineCComments, "comments")); // multiline comments
     addRule(new RegExpressions(RegExpressions.doubleQuotedString, "string")); // double quoted strings
     addRule(new RegExpressions(RegExpressions.singleQuotedString, "string")); // single quoted strings
-    addRule(new RegExpressions("\\$\\w+", "variable")); // variables
+    addRule(new RegExpressions("\\$\\w+ ", "variable")); // variables
     addRule(new RegExpressions(getKeywords(funcs), Pattern.MULTILINE | Pattern.CASE_INSENSITIVE, "functions")); // common functions
     addRule(new RegExpressions(getKeywords(constants), Pattern.MULTILINE | Pattern.CASE_INSENSITIVE, "constants")); // constants
     addRule(new RegExpressions(getKeywords(keywords), Pattern.MULTILINE, "keyword")); // keyword

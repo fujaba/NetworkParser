@@ -4,7 +4,7 @@ package de.uniks.networkparser.calculator;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -30,7 +30,7 @@ public class RegExParser {
 	        }
 
 	        for (int i = 0; i < str.length(); i++) {
-	            if ( match(str.substring(i), pattern) ) {
+	            if ( match(str.substring(i), pattern)) {
 	                return true;
 	            }
 	        }
@@ -43,29 +43,29 @@ public class RegExParser {
 	        if ( pattern.length() == 2 && pattern.charAt(1) == '*') {
 	            return true;
 	        }
-	        else if ( str.isEmpty()  || pattern.isEmpty() ) {
+	        else if ( str.isEmpty()  || pattern.isEmpty()) {
 	            return false;
 	        }
 	        else {
-	            if ( (pattern.length() > 1 && pattern.charAt(1) == '*') ) {
+	            if ( (pattern.length() > 1 && pattern.charAt(1) == '*')) {
 	                int index = 0;
-	                while (index < str.length()  && 
-	                       (pattern.charAt(0) == str.charAt(index) || pattern.charAt(0) == '.') ) {
-	                    if (match(str.substring(index + 1), pattern)){
+	                while (index < str.length()  &&
+	                       (pattern.charAt(0) == str.charAt(index) || pattern.charAt(0) == '.')) {
+	                    if (match(str.substring(index + 1), pattern)) {
 	                        return true;
 	                    }
 	                    index++;
 	                }
 	                return match(str, pattern.substring(2)) || pattern.length() == 2;
 	            }
-	            else if ( (pattern.length() > 1 && pattern.charAt(1) == '+')  )
+	            else if ( (pattern.length() > 1 && pattern.charAt(1) == '+') )
 	            {
 	                int index = 0;
 	                boolean match = false;
-	                while (index < str.length()  && 
-	                       (pattern.charAt(0) == str.charAt(index) || pattern.charAt(0) == '.') ) {
+	                while (index < str.length()  &&
+	                       (pattern.charAt(0) == str.charAt(index) || pattern.charAt(0) == '.')) {
 	                    match = true;
-	                    if (match(str.substring(index + 1), pattern)){
+	                    if (match(str.substring(index + 1), pattern)) {
 	                        return true;
 	                    }
 	                    index++;
@@ -73,7 +73,7 @@ public class RegExParser {
 	                return match && match(str.substring(1), pattern.substring(2)) || match && pattern.length() == 2;
 
 	            }
-	            else if ( pattern.charAt(0) == str.charAt(0) || pattern.charAt(0) == '.' ) {
+	            else if ( pattern.charAt(0) == str.charAt(0) || pattern.charAt(0) == '.') {
 	                if (pattern.length() == 1) {
 	                    return true;
 	                }

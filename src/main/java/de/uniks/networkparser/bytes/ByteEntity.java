@@ -4,7 +4,7 @@ package de.uniks.networkparser.bytes;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -23,7 +23,6 @@ package de.uniks.networkparser.bytes;
 */
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
-
 import de.uniks.networkparser.bytes.converter.ByteConverterHTTP;
 import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteConverter;
@@ -46,7 +45,7 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 
 	/**
 	 * Gets the value.
-	 * 
+	 *
 	 * @return the value
 	 */
 	public byte[] getValue() {
@@ -55,7 +54,7 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 
 	/**
 	 * Sets the value.
-	 * 
+	 *
 	 * @param typ the new Typ
 	 * @param value
 	 *            the new value
@@ -69,7 +68,7 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 
 	/**
 	 * Sets the value.
-	 * 
+	 *
 	 * @param typ The Typ of Element
 	 * @param value
 	 *            the new value
@@ -80,7 +79,7 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 		this.values = new byte[]{value};
 		return this;
 	}
-	
+
 	public ByteEntity withValue(byte typ, int value) {
       this.typ = typ;
       BytesBuffer msgValue = new BytesBuffer().withLength(4);
@@ -91,7 +90,7 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 
 	/**
 	 * Byte to unsigned byte.
-	 * 
+	 *
 	 * @param n
 	 *            the Byte
 	 * @return the Byte
@@ -112,7 +111,7 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 
 	/**
 	 * Convert the bytes to a String
-	 * 
+	 *
 	 * @param converter
 	 *            Grammar
 	 * @return converted bytes as String
@@ -124,7 +123,7 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 
 	/**
 	 * Convert the bytes to a String
-	 * 
+	 *
 	 * @param converter
 	 *            Grammar
 	 * @param dynamic
@@ -147,11 +146,11 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 	 * @param isPrimitive is the Element is the StreamClazz
 	 */
 	@Override
-	public void writeBytes(BufferedBytes buffer, boolean isDynamic, boolean isLast, boolean isPrimitive){
+	public void writeBytes(BufferedBytes buffer, boolean isDynamic, boolean isLast, boolean isPrimitive) {
 		byte[] value = this.values;
 
 		byte typ=getTyp();
-		if(value==null){
+		if (value==null) {
 			typ = ByteUtil.getTyp(typ, 0, isLast);
 			ByteUtil.writeByteHeader(buffer, typ, 0);
 			return;
@@ -181,19 +180,19 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 				}
 			}
 		}
-		if(!isPrimitive || typ==ByteIdMap.DATATYPE_CLAZZTYP || typ==ByteIdMap.DATATYPE_CLAZZTYPLONG){
+		if (!isPrimitive || typ==ByteIdMap.DATATYPE_CLAZZTYP || typ==ByteIdMap.DATATYPE_CLAZZTYPLONG) {
 			typ = ByteUtil.getTyp(typ, value.length, isLast);
 	 		ByteUtil.writeByteHeader(buffer, typ, value.length);
 		}
 		// SAVE Length
 		buffer.put(value);
 	}
-	
+
 	@Override
 	public BufferedBytes getBytes(boolean isDynamic) {
 		int len = calcLength(isDynamic, true);
 		BufferedBytes buffer = ByteUtil.getBuffer(len);
-		writeBytes(buffer, isDynamic, true, false);		
+		writeBytes(buffer, isDynamic, true, false);	
 		buffer.flip();
 		return buffer;
 	}
@@ -247,7 +246,7 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 			msgValue.put((int) newValue.getTime());
 		} else if (value instanceof Byte[] || value instanceof byte[]) {
 			typ = ByteIdMap.DATATYPE_BYTEARRAY;
-			if(value != null){
+			if (value != null) {
 				byte[] newValue = (byte[]) value;
 				msgValue.withLength(newValue.length);
 				msgValue.put(newValue);
@@ -265,7 +264,7 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 
 	/**
 	 * Gets the typ.
-	 * 
+	 *
 	 * @return the typ
 	 */
 	@Override
@@ -275,13 +274,13 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 
 	/**
 	 * calculate the length of value
-	 * 
+	 *
 	 * @return the length
 	 */
 	@Override
 	public int calcLength(boolean isDynamic, boolean isLast) {
 		// Length calculate Sonderfaelle ermitteln
-		if(this.values==null){
+		if (this.values==null) {
 			return TYPBYTE;
 		}
 		if (isDynamic) {
@@ -323,7 +322,7 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 
 	@Override
 	public int size() {
-		if(values==null){
+		if (values==null) {
 			return 0;
 		}
 		return values.length;

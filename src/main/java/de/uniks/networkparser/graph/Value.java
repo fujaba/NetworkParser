@@ -4,7 +4,7 @@ package de.uniks.networkparser.graph;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -27,11 +27,11 @@ public abstract class Value implements BaseItem
 {
 	public static final String PROPERTY_INITIALIZATION = "initialization";
    public static final String PROPERTY_TYPE = "type";
-   
+  
    protected DataType type = null;
    protected String name;
-   
-	
+  
+
 	public String getName() {
 		return name;
 	}
@@ -47,15 +47,15 @@ public abstract class Value implements BaseItem
          this.type = value;
       }
       return this;
-   } 
-   
+   }
+  
 
    public DataType getType()
    {
       return type;
    }
-   
-   public String getType(boolean shortName){
+  
+   public String getType(boolean shortName) {
 	   return type.getValue(shortName);
    }
 }

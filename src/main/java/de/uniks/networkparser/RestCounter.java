@@ -4,7 +4,7 @@ package de.uniks.networkparser;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -23,14 +23,14 @@ package de.uniks.networkparser;
 */
 
 public class RestCounter extends SimpleIdCounter{
-	public RestCounter(String path){
-		if(path.endsWith("/")){
+	public RestCounter(String path) {
+		if (path.endsWith("/")) {
 			this.prefixId = path;
 		}else{
-			this.prefixId = path+"/";
+			this.prefixId = path+ "/";
 		}
 	}
-	
+
 	@Override
 	public String getId(Object obj) {
 		String key;
@@ -41,7 +41,7 @@ public class RestCounter extends SimpleIdCounter{
 			return "";
 		}
 		String className = obj.getClass().getName();
-		key = this.prefixId + className.toLowerCase() +"/"+ this.number;
+		key = this.prefixId + className.toLowerCase() + "/" + this.number;
 		this.number++;
 		return key;
 	}

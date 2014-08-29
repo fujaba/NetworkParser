@@ -21,7 +21,7 @@ private String PROPERTY_MSG = "msg";
 	public static final String PROPERTY_CHILD="child";
 	private int number;
 	private P child;
-	private PropertyChangeSupport change=new PropertyChangeSupport(this);
+	private PropertyChangeSupport change= new PropertyChangeSupport(this);
 
 	public int getNumber() {
 		return number;

@@ -4,7 +4,7 @@ package de.uniks.networkparser.gui.brush;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -68,7 +68,7 @@ public class RegExpressions extends RegExRule {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param regExp
 	 *            the regular expression for this rule
 	 * @param styleKey
@@ -78,10 +78,10 @@ public class RegExpressions extends RegExRule {
 		this.pattern = Pattern.compile(regExp, 0);
 		setStyleKey(styleKey);
 	}
-	
+
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param regExp
 	 *            the regular expression for this rule
 	 * @param styleKey
@@ -91,10 +91,10 @@ public class RegExpressions extends RegExRule {
 		this.pattern = regExp;
 		setStyleKey(styleKey);
 	}
-	
+
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param regExp
 	 *            the regular expression for this rule
 	 * @param regFlags
@@ -107,7 +107,7 @@ public class RegExpressions extends RegExRule {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param regExp
 	 *            the regular expression for this rule
 	 * @param regFlags
@@ -120,10 +120,10 @@ public class RegExpressions extends RegExRule {
 		this.pattern = Pattern.compile(regExp, regFlags);
 		setStyleKey(styleKey);
 	}
-	
+
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param regExp
 	 *            the regular expression for this rule
 	 * @param styleKey
@@ -139,7 +139,7 @@ public class RegExpressions extends RegExRule {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param regExp
 	 *            the regular expression for this rule
 	 * @param regFlags

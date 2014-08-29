@@ -34,15 +34,20 @@ import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
  *
  * @author Stefan Lindel
  *
- * @param <K> Key Element 
+ * @param <K> Key-Element
  * @param <V> Value Element
  */
 public abstract class AbstractEntity<K, V> implements BaseItem, Entry<K, V>, SendableEntityCreator, SendableEntityCreatorNoIndex {
+	/** Constant for KEY. */
 	public static final String PROPERTY_KEY = "key";
+	/** Constant for VALUE. */
 	public static final String PROPERTY_VALUE = "value";
-	private final String[] properties = new String[] { PROPERTY_KEY, PROPERTY_VALUE };
-	protected K key;
-	protected V value;
+	/** Propertys for Values. */
+	private final String[] properties = new String[] {PROPERTY_KEY, PROPERTY_VALUE};
+	/** The Variable of Key. */
+	private K key;
+	/** The Variable of Value. */
+	private V value;
 
 	@SuppressWarnings("unchecked")
 	public <ST extends AbstractEntity<K,V>> ST with(K key, V value) {
@@ -50,13 +55,13 @@ public abstract class AbstractEntity<K, V> implements BaseItem, Entry<K, V>, Sen
 		this.value = value;
 		return (ST)this;
 	}
-	
+
 	public abstract AbstractEntity<K, V> withKeyItem(Object key);
 	public abstract AbstractEntity<K, V> withValueItem(Object value);
-	
+
 	/**
 	 * add the Values of the map to AbstractKeyValueEntry&lt;K, V&gt;
-	 * 
+	 *
 	 * @param collection
 	 *            a map of key-values
 	 * @return Itself
@@ -75,19 +80,19 @@ public abstract class AbstractEntity<K, V> implements BaseItem, Entry<K, V>, Sen
 		}
 		return this;
 	}
-	
+
 	@Override
 	public K getKey() {
 		return key;
 	}
-	
+
 	public String getKeyString() {
-		if(key instanceof String){
-			return ""+key;
+		if (key instanceof String) {
+			return "" +key;
 		}
-		throw new RuntimeException("Key is not a String <"+key+">");
+		throw new RuntimeException("Key is not a String <" +key+ ">");
 	}
-	
+
 	@Override
 	public V getValue() {
 		return value;
@@ -98,7 +103,7 @@ public abstract class AbstractEntity<K, V> implements BaseItem, Entry<K, V>, Sen
 		this.value = value;
 		return value;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private void setValueIntern(Object value) {
 		this.value = (V) value;
@@ -132,7 +137,7 @@ public abstract class AbstractEntity<K, V> implements BaseItem, Entry<K, V>, Sen
 	public String toString() {
 		return key + "=" + value;
 	}
-	
+
 	public AbstractEntity<K, V> withKey(K key) {
 		this.key = key;
 		return this;
@@ -146,12 +151,12 @@ public abstract class AbstractEntity<K, V> implements BaseItem, Entry<K, V>, Sen
 	private static boolean eq(Object o1, Object o2) {
 		return (o1 == null ? o2 == null : o1.equals(o2));
 	}
-	
+
 	@Override
 	public String[] getProperties() {
 		return properties;
 	}
-	
+
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		Entry<?, ?> obj = ((Entry<?, ?>) entity);
@@ -166,7 +171,7 @@ public abstract class AbstractEntity<K, V> implements BaseItem, Entry<K, V>, Sen
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
-		if(entity instanceof AbstractEntity){
+		if (entity instanceof AbstractEntity) {
 			AbstractEntity<?, ?>  entry = (AbstractEntity<?, ?>) entity;
 			if (PROPERTY_KEY.equalsIgnoreCase(attribute)) {
 				entry.withKeyItem(value);

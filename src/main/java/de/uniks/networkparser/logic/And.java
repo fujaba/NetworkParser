@@ -4,7 +4,7 @@ package de.uniks.networkparser.logic;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -38,7 +38,7 @@ public class And implements Condition, SendableEntityCreator {
 	public ArrayList<Condition> getList() {
 		return list;
 	}
-	
+
 	@Override
 	public boolean matches(ValuesSimple values) {
 		for (Condition condition : list) {
@@ -61,7 +61,7 @@ public class And implements Condition, SendableEntityCreator {
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if(CHILD.equalsIgnoreCase(attribute)){
+		if (CHILD.equalsIgnoreCase(attribute)) {
 			return ((And)entity).getList();
 		}
 		return null;
@@ -70,7 +70,7 @@ public class And implements Condition, SendableEntityCreator {
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
-		if(CHILD.equalsIgnoreCase(attribute)){
+		if (CHILD.equalsIgnoreCase(attribute)) {
 			((And)entity).add((Condition) value);
 			return true;
 		}

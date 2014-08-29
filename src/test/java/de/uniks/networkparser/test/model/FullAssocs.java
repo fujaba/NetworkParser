@@ -15,9 +15,9 @@ public class FullAssocs {
 	public static final String PROPERTY_FULLMAP = "fullmap";
 	public static final String PROPERTY_MESSAGE = "message";
 
-	private List<String> persons=new ArrayList<String>();
-	private TreeMap<String, String> passwords=new TreeMap<String, String>();
-	private LinkedHashMap<FullAssocs, FullAssocs> fullMap=new LinkedHashMap<FullAssocs, FullAssocs>();
+	private List<String> persons= new ArrayList<String>();
+	private TreeMap<String, String> passwords= new TreeMap<String, String>();
+	private LinkedHashMap<FullAssocs, FullAssocs> fullMap= new LinkedHashMap<FullAssocs, FullAssocs>();
 	private int answer;
 	private StringMessage message;
 
@@ -87,7 +87,7 @@ public class FullAssocs {
 				setPasswords((Map<String, String>) value);
 			}else if(value instanceof Entry<?,?>){
 				Entry<Object, Object> entry=(Entry<Object, Object>) value;
-				passwords.put(""+entry.getKey(), ""+entry.getValue());
+				passwords.put("" +entry.getKey(), "" +entry.getValue());
 			}
 			return true;
 		} else if (attribute.equalsIgnoreCase(PROPERTY_ANSWER)) {

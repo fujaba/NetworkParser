@@ -33,9 +33,9 @@ public class GraphEdge extends AbstractEntityList<GraphNode> implements List<Gra
 	private Cardinality cardinality;
 	private String property;
 	private GraphEdge other;
+
+	public GraphEdge() {
 	
-	public GraphEdge(){
-		
 	}
 
 	public GraphEdge(GraphNode node, Cardinality cardinality, String property) {
@@ -49,7 +49,7 @@ public class GraphEdge extends AbstractEntityList<GraphNode> implements List<Gra
 	public Cardinality getCardinality() {
 		return cardinality;
 	}
-	
+
 	public String getCardinalityText() {
 		return cardinality.getValue();
 	}
@@ -62,43 +62,43 @@ public class GraphEdge extends AbstractEntityList<GraphNode> implements List<Gra
 		return this;
 	}
 
-	public String getInfo(){
-		return property+"<br>0.."+this.cardinality;
+	public String getInfo() {
+		return property+ "<br>0.." +this.cardinality;
 	}
-	
+
 	@Override
 	public AbstractList<GraphNode> getNewInstance() {
 		return new GraphEdge();
 	}
-	
+
 	@Override
 	public GraphEdge with(Object... values) {
-		if(values==null){
+		if (values==null) {
 			return this;
 		}
-		for(Object value : values){
-			if(value instanceof GraphNode){
+		for (Object value : values) {
+			if (value instanceof GraphNode) {
 				add((GraphNode) value);
 			}
-			if(value instanceof GraphEdge){
+			if (value instanceof GraphEdge) {
 				with((GraphEdge)value);
 			}
-			if(value instanceof Cardinality){
+			if (value instanceof Cardinality) {
 				with((Cardinality)value);
 			}
 		}
 		return this;
 	}
-	
-	public GraphEdge with(GraphEdge value){
-		 if (this.getOther() == value){
+
+	public GraphEdge with(GraphEdge value) {
+		 if (this.getOther() == value) {
 	         return this;
 	      }
 		 this.other = value;
 		 getOther().with(this);
 		 return this;
 	}
-	
+
 	public GraphEdge with(Cardinality cardinality) {
 		this.cardinality = cardinality;
 		return this;
@@ -106,7 +106,7 @@ public class GraphEdge extends AbstractEntityList<GraphNode> implements List<Gra
 
 	@Override
 	public boolean add(GraphNode newValue) {
-		if(super.addEntity(newValue)){
+		if (super.addEntity(newValue)) {
 			newValue.with(this);
 		}
 		return true;
@@ -120,8 +120,8 @@ public class GraphEdge extends AbstractEntityList<GraphNode> implements List<Gra
 	public boolean remove(Object value) {
 		return removeItemByObject((GraphNode)value)>=0;
 	}
-	
-	public List<GraphNode> values(){
+
+	public List<GraphNode> values() {
 		return keys;
 	}
 }

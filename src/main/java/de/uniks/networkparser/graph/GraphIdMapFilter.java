@@ -4,7 +4,7 @@ package de.uniks.networkparser.graph;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -33,7 +33,7 @@ public class GraphIdMapFilter extends Filter {
 
 	/**
 	 * Checks if is show line.
-	 * 
+	 *
 	 * @return true, if is show line for objects
 	 */
 	public boolean isShowLine() {
@@ -42,7 +42,7 @@ public class GraphIdMapFilter extends Filter {
 
 	/**
 	 * Sets the show line.
-	 * 
+	 *
 	 * @param value
 	 *            the new show line
 	 * @return Itself

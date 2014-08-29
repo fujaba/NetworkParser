@@ -4,7 +4,7 @@ package de.uniks.networkparser.json;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -22,7 +22,6 @@ package de.uniks.networkparser.json;
  permissions and limitations under the Licence.
 */
 import java.util.Iterator;
-
 import de.uniks.networkparser.AbstractEntityList;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Tokener;
@@ -68,16 +67,16 @@ import de.uniks.networkparser.interfaces.StringItem;
  * well as by <code>,</code> <small>(comma)</small>.</li>
  * <li>Numbers may have the <code>0x-</code> <small>(hex)</small> prefix.</li>
  * </ul>
- * 
+ *
  * @author JSON.org
  * @version 2010-12-28
  */
 
-public class JsonArray extends AbstractEntityList<Object> implements StringItem, FactoryEntity {	
+public class JsonArray extends AbstractEntityList<Object> implements StringItem, FactoryEntity {
 	private boolean visible=true;
 	/**
 	 * Get the JSONArray associated with an index.
-	 * 
+	 *
 	 * @param index
 	 *            The index must be between 0 and length() - 1.
 	 * @return A JSONArray value.
@@ -95,7 +94,7 @@ public class JsonArray extends AbstractEntityList<Object> implements StringItem,
 
 	/**
 	 * Get the JSONObject associated with an index.
-	 * 
+	 *
 	 * @param index
 	 *            subscript
 	 * @return A JSONObject value.
@@ -115,7 +114,7 @@ public class JsonArray extends AbstractEntityList<Object> implements StringItem,
 	/**
 	 * Produce a JSONObject by combining a JSONArray of names with the values of
 	 * this JSONArray.
-	 * 
+	 *
 	 * @param names
 	 *            A JSONArray containing a list of key strings. These will be
 	 *            paired with the values.
@@ -140,7 +139,7 @@ public class JsonArray extends AbstractEntityList<Object> implements StringItem,
 	 * the array contains an invalid number.
 	 * <p>
 	 * Warning: This method assumes that the data structure is acyclical.
-	 * 
+	 *
 	 * @return a printable, displayable, transmittable representation of the
 	 *         array.
 	 */
@@ -152,7 +151,7 @@ public class JsonArray extends AbstractEntityList<Object> implements StringItem,
 	/**
 	 * Make a prettyprinted JSON text of this JSONArray. Warning: This method
 	 * assumes that the data structure is acyclical.
-	 * 
+	 *
 	 * @param indentFactor
 	 *            The number of spaces to add to each level of indentation.
 	 * @return a printable, displayable, transmittable representation of the
@@ -183,7 +182,7 @@ public class JsonArray extends AbstractEntityList<Object> implements StringItem,
 		String step = EntityUtil.repeat(' ', indentFactor);
 		String prefix = "";
 		int newindent =0;
-		if(indent>0){
+		if (indent>0) {
 			newindent = indent + indentFactor;
 		}
 
@@ -212,7 +211,7 @@ public class JsonArray extends AbstractEntityList<Object> implements StringItem,
 
 	/**
 	 * JSONArray from a source JSON text.
-	 * 
+	 *
 	 * @param value
 	 *            A string that begins with <code>[</code>&nbsp;<small>(left
 	 *            bracket)</small> and ends with <code>]</code>
@@ -224,10 +223,10 @@ public class JsonArray extends AbstractEntityList<Object> implements StringItem,
 		new JsonTokener().withText(value).parseToEntity(this);
 		return this;
 	}
-	
+
 	/**
 	 * JSONArray from a JSONTokener.
-	 * 
+	 *
 	 * @param x
 	 *            A JSONTokener
 	 * @return Itself
@@ -239,7 +238,7 @@ public class JsonArray extends AbstractEntityList<Object> implements StringItem,
 
 	/**
 	 * JSONArray from a BaseEntityArray.
-	 * 
+	 *
 	 * @param values
 	 *            of Elements.
 	 * @return Itself
@@ -250,13 +249,13 @@ public class JsonArray extends AbstractEntityList<Object> implements StringItem,
 		}
 		return this;
 	}
-	
 
-	public JsonObject get(String id){
-		for(Object item : keys){
-			if(item instanceof JsonObject){
+
+	public JsonObject get(String id) {
+		for (Object item : keys) {
+			if (item instanceof JsonObject) {
 				JsonObject json = (JsonObject) item;
-				if(json.has(JsonIdMap.ID) && json.getString(JsonIdMap.ID).equals(id)){
+				if (json.has(JsonIdMap.ID) && json.getString(JsonIdMap.ID).equals(id)) {
 					return json;
 				}
 			}
@@ -277,8 +276,8 @@ public class JsonArray extends AbstractEntityList<Object> implements StringItem,
 
 	@Override
 	public JsonArray with(Object... values) {
-		if(values != null){
-			for(Object item : values){
+		if (values != null) {
+			for (Object item : values) {
 				add(item);
 			}
 		}
@@ -289,12 +288,12 @@ public class JsonArray extends AbstractEntityList<Object> implements StringItem,
 	public JsonArray tailSet(Object fromElement, boolean inclusive) {
 		return (JsonArray) super.tailSet(fromElement, inclusive);
 	}
-	
+
 	@Override
 	public JsonArray headSet(Object toElement, boolean inclusive) {
 		return (JsonArray) super.headSet(toElement, inclusive);
 	}
-	
+
 	@Override
 	public JsonArray subSet(Object fromElement, Object toElement) {
 		return (JsonArray) super.subSet(fromElement, toElement);

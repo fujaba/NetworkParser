@@ -36,7 +36,7 @@ public class XMLTestItemCreator implements SendableEntityCreatorXML{
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
 		if (XMLTestItem.PROPERTY_ID.equalsIgnoreCase(attribute)) {
-			((XMLTestItem)entity).setId(Integer.valueOf(""+ value));
+			((XMLTestItem)entity).setId(Integer.valueOf("" + value));
 			return true;
 		}
 		if (XMLTestItem.PROPERTY_USER.equalsIgnoreCase(attribute)) {

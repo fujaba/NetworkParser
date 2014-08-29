@@ -29,12 +29,12 @@ import java.util.List;
 
 /**
  * Brush for syntax highlighter.
- * 
- * In syntax highlighter, every supported programming language has its own 
- * brush. Brush contain a set of rules, the highlighter/parser will use these 
- * rules to determine the structure of the code and apply different color to 
+ *
+ * In syntax highlighter, every supported programming language has its own
+ * brush. Brush contain a set of rules, the highlighter/parser will use these
+ * rules to determine the structure of the code and apply different color to
  * different group of component.
- * 
+ *
  * @author Chan Wai Shing (cws1989@gmail.com)
  */
 public class Brush {
@@ -43,7 +43,7 @@ public class Brush {
    */
   protected List<RegExRule> rules;
   /**
-   * The list of common file extension for this language. It is no use so far, 
+   * The list of common file extension for this language. It is no use so far,
    * just for reference.
    */
   protected List<String> commonFileExtensionList;
@@ -81,13 +81,13 @@ public class Brush {
       this.commonFileExtensionList = new ArrayList<String>();
     }
     this.commonFileExtensionList = new ArrayList<String>();
-    for(String extension : value){
+    for (String extension : value) {
     	this.commonFileExtensionList.add(extension);
     }
   }
 
   /**
-   * Similar function in JavaScript SyntaxHighlighter for making string of 
+   * Similar function in JavaScript SyntaxHighlighter for making string of
    * keywords separated by space into regular expression.
    * @param str the keywords separated by space
    * @return the treated regexp string
@@ -96,10 +96,10 @@ public class Brush {
     if (str == null) {
       throw new IllegalArgumentException("argument 'str' cannot be null");
     }
-    return "\\b(?:" + str.replaceAll("^\\s+|\\s+$", "").replaceAll("\\s+", "|") + ")\\b";
+    return "\\b(?:" + str.replaceAll("^\\s+|\\s+$", "").replaceAll("\\s+ ", "|") + ")\\b";
   }
-  
-  public void addRule(RegExRule rule){
+ 
+  public void addRule(RegExRule rule) {
 	  this.rules.add(rule);
   }
 

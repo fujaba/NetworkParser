@@ -42,7 +42,7 @@ public class EMFGrammar extends Grammar{
 	
 	@Override
 	public JsonObject getReadProperties(JsonObject jsonObject, IdMapEncoder map, Filter filter, boolean isId) {
-		JsonObject props=new JsonObject();
+		JsonObject props= new JsonObject();
 		if(jsonObject.has(PROP)){
 			String key = jsonObject.getString(PROP);
 			String value = jsonObject.getString(NV);
@@ -60,11 +60,11 @@ public class EMFGrammar extends Grammar{
 		int pos=className.indexOf("@");
 		if(pos>0){
 			String clazz=className.substring(0, pos);
-			for(Iterator<SendableEntityCreator> i = map.iterator();i.hasNext();){
+			for (Iterator<SendableEntityCreator> i = map.iterator();i.hasNext();){
 				SendableEntityCreator creator = i.next();
 				Object sendableInstance = creator.getSendableInstance(true);
 				String refClazzName = sendableInstance.getClass().getName();
-				if(refClazzName.endsWith("."+clazz)){
+				if(refClazzName.endsWith("." +clazz)){
 					return creator;
 				}
 			}

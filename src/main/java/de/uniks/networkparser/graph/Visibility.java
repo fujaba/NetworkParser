@@ -4,7 +4,7 @@ package de.uniks.networkparser.graph;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -34,7 +34,7 @@ public class Visibility
    public static final Visibility STATIC = new Visibility(" static");
 
    private String value;
-   Visibility(String value){
+   Visibility(String value) {
       this.setValue(value);
    }
    public String getValue()
@@ -45,20 +45,20 @@ public class Visibility
    {
       this.value = value;
    }
-   public Visibility withValue(String value){
+   public Visibility withValue(String value) {
       this.value = value;
       return this;
    }
-   
-   public static Visibility ref(String value){
+  
+   public static Visibility ref(String value) {
       return new Visibility(value);
    }
-   
-   public static Visibility ref(Visibility... value){
+  
+   public static Visibility ref(Visibility... value) {
       Visibility first=PUBLIC;
       String seconds="";
-      for(Visibility item : value){
-         if(item==PUBLIC || item==PACKAGE || item==PROTECTED || item==PRIVATE){
+      for (Visibility item : value) {
+         if (item==PUBLIC || item==PACKAGE || item==PROTECTED || item==PRIVATE) {
             first = item;
             continue;
          }
@@ -70,14 +70,14 @@ public class Visibility
    {
       return this.getValue().equalsIgnoreCase(other.getValue());
    }
-   
+  
    public boolean has(Visibility other)
    {
       return this.getValue().contains(other.getValue());
    }
-   
+  
    @Override
-   public String toString(){
+   public String toString() {
       return this.value;
    }
 }

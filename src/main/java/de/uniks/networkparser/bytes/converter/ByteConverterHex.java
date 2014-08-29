@@ -1,11 +1,10 @@
 package de.uniks.networkparser.bytes.converter;
 
-import de.uniks.networkparser.EntityUtil;
 /*
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -22,12 +21,13 @@ import de.uniks.networkparser.EntityUtil;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
+import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.interfaces.ByteConverter;
 
 public class ByteConverterHex extends ByteConverter {
 	/**
 	 * To hex string.
-	 * 
+	 *
 	 * @param values the bytes
 	 * @param size The Size of values
 	 * @return the string
@@ -39,7 +39,7 @@ public class ByteConverterHex extends ByteConverter {
 	public String toString(byte[] values, int size, int space) {
 		String hexVal = "0123456789ABCDEF";
 
-		StringBuilder returnValue = new StringBuilder(size << 1 );
+		StringBuilder returnValue = new StringBuilder(size << 1);
 		String step = EntityUtil.repeat(' ', space);
 		if (values != null) {
 			for (int i = 0; i < size; i++) {
@@ -56,7 +56,7 @@ public class ByteConverterHex extends ByteConverter {
 
 	/**
 	 * To byte string.
-	 * 
+	 *
 	 * @param value
 	 *            the hex string
 	 * @return the byte[]

@@ -4,7 +4,7 @@ package de.uniks.networkparser;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -24,7 +24,6 @@ package de.uniks.networkparser;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
-
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
@@ -35,7 +34,7 @@ public class EntityUtil {
 	/**
 	 * Produce a string from a double. The string "null" will be returned if the
 	 * number is not finite.
-	 * 
+	 *
 	 * @param d
 	 *            A double.
 	 * @return A String.
@@ -57,10 +56,10 @@ public class EntityUtil {
 		}
 		return string;
 	}
-	
+
 	/**
 	 * Produce a string from a Number.
-	 * 
+	 *
 	 * @param number
 	 *            A Number
 	 * @return A String.
@@ -85,26 +84,26 @@ public class EntityUtil {
 		}
 		return string;
 	}
-	
-	
+
+
 	public static String unQuote(String value) {
 		if (value == null || value.length() == 0) {
 			return "";
 		}
-//FIXME STEFAN		if(!value.startsWith(""")){
+//FIXME STEFAN		if (!value.startsWith(""")) {
 //			return value;
 //		}
-		StringBuilder sb=new StringBuilder(value.length());
+		StringBuilder sb = new StringBuilder(value.length());
 		char c;
-		for(int i=0;i<value.length();i++){
+		for (int i=0;i<value.length();i++) {
 			c = value.charAt(i);
-			if(c=='\\'){
-				if(i+1==value.length()){
+			if (c=='\\') {
+				if (i+1==value.length()) {
 					sb.append('\\');
 					break;
 				}
 				c = value.charAt(++i);
-			    if(c=='u'){
+			    if (c=='u') {
 			    	char no = fromHex(value.charAt(++i), value.charAt(++i), value.charAt(++i), value.charAt(++i));
 			        sb.append((char)no);
 			        continue;
@@ -122,7 +121,7 @@ public class EntityUtil {
 		}
 		return sb.toString();
 	}
-	
+
 	private static char fromHex(char... values) {
 		return (char) (
 				(HEXVAL.indexOf(values[0])<<24)+
@@ -136,7 +135,7 @@ public class EntityUtil {
 	 * right places. A backslash will be inserted within &lt;/, producing &lt;\/,
 	 * allowing JSON text to be delivered in HTML. In JSON text, a string cannot
 	 * contain a control character or an unescaped quote or backslash.
-	 * 
+	 *
 	 * @param string
 	 *            A String
 	 * @return A String correctly formatted for insertion in a JSON text.
@@ -154,7 +153,7 @@ public class EntityUtil {
 		sb.append('"');
 		for (i = 0; i < len; i += 1) {
 			c = string.charAt(i);
-			if(c=='"' && b!='\\'){
+			if (c=='"' && b!='\\') {
 				sb.append("\\\"");
 				continue;
 			}
@@ -175,7 +174,7 @@ public class EntityUtil {
 	 * Make a prettyprinted JSON text of an object value.
 	 * <p>
 	 * Warning: This method assumes that the data structure is acyclical.
-	 * 
+	 *
 	 * @param value
 	 *            The value to be serialized.
 	 * @param indentFactor
@@ -207,14 +206,14 @@ public class EntityUtil {
 		}
 		if (value instanceof Map) {
 			BaseItem item = ((AbstractKeyValueList<?,?>)reference.getNewArray()).with((Map<?, ?>) value);
-			if(item instanceof StringItem){
+			if (item instanceof StringItem) {
 				return ((StringItem)item).toString(indentFactor, intent);
 			}
 			return ((StringItem)item).toString();
 		}
 		if (value instanceof Collection) {
 			AbstractList<?> item = reference.getNewArray().with((Collection<?>) value);
-			if(item instanceof StringItem){
+			if (item instanceof StringItem) {
 				return ((StringItem)item).toString(indentFactor, intent);
 			}
 			return ((StringItem)item).toString();
@@ -226,7 +225,7 @@ public class EntityUtil {
 				arrayList.add(item);
 			}
 			AbstractList<?> item = reference.getNewArray().with(arrayList);
-			if(item instanceof StringItem){
+			if (item instanceof StringItem) {
 				return ((StringItem)item).toString(indentFactor, intent);
 			}
 			return ((StringItem)item).toString();
@@ -279,7 +278,7 @@ public class EntityUtil {
 	 * String, et al) then it is already wrapped. Otherwise, if it comes from
 	 * one of the java packages, turn it into a string. And if it doesn't, try
 	 * to wrap it in a JsonObject. If the wrapping fails, then null is returned.
-	 * 
+	 *
 	 * @param object
 	 *            The object to wrap
 	 * @param reference The reference
@@ -318,9 +317,9 @@ public class EntityUtil {
 		}
 		return null;
 	}
-	
+
 	/**
-	 * Repeat a Char and return a simple String 
+	 * Repeat a Char and return a simple String
 	 * @param ch Char
 	 * @param repeat Number of Repeat
 	 * @return a String

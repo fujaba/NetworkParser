@@ -28,10 +28,10 @@ public class ByteConverterSimple extends ByteConverter{
 
 	@Override
 	public String toString(byte[] values, int size) {
-		if(size<1){
+		if (size<1) {
 			return  "EMTPY";
 		}
-		return ByteUtil.getStringTyp(values[0])+" Laenge: "+size;
+		return ByteUtil.getStringTyp(values[0])+ " Laenge: " +size;
 	}
 
 	@Override

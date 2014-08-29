@@ -1,11 +1,10 @@
 package de.uniks.networkparser.interfaces;
 
-
 /*
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -24,16 +23,16 @@ package de.uniks.networkparser.interfaces;
 */
 
 public abstract class ByteConverter {
-	public String encode(BaseItem entity){
-		if(entity instanceof ByteItem){
+	public String encode(BaseItem entity) {
+		if (entity instanceof ByteItem) {
 			return toString(((ByteItem)entity).getBytes(true));
 		}
-		if(entity instanceof StringItem){
+		if (entity instanceof StringItem) {
 			return toString(((StringItem)entity).toString(2).getBytes());
 		}
 		return toString(entity.toString().getBytes());
 	}
-	
+
 	public String toString(ByteItem item, boolean dynamic) {
 		return toString(item.getBytes(dynamic));
 	}
@@ -43,8 +42,8 @@ public abstract class ByteConverter {
 	}
 
 	public abstract String toString(byte[] values, int size);
-	
-	public String toString(byte[] values){
+
+	public String toString(byte[] values) {
 		return toString(values, values.length);
 	}
 

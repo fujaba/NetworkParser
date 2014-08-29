@@ -4,7 +4,7 @@ package de.uniks.networkparser;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -39,30 +39,30 @@ public class ReferenceObject {
 	/** The entity. */
 	private Object entity;
 
-	public ReferenceObject withId(String id){
+	public ReferenceObject withId(String id) {
 		this.jsonId = id;
 		return this;
 	}
-	
-	public ReferenceObject withCreator(SendableEntityCreator value){
+
+	public ReferenceObject withCreator(SendableEntityCreator value) {
 		this.creator = value;
 		return this;
 	}
-	
-	public ReferenceObject withProperty(String value){
+
+	public ReferenceObject withProperty(String value) {
 		this.property = value;
 		return this;
 	}
-	
-	public ReferenceObject withEntity(Object value){
+
+	public ReferenceObject withEntity(Object value) {
 		this.entity = value;
 		return this;
 	}
-	
+
 	/**
 	 * Execute.
 	 * @param map The IdMap for Execute
-	 * 
+	 *
 	 * @return true, if successful
 	 */
 	public boolean execute(IdMapEncoder map) {
@@ -76,7 +76,7 @@ public class ReferenceObject {
 
 	/**
 	 * Gets the creater.
-	 * 
+	 *
 	 * @return the creater
 	 */
 	public SendableEntityCreator getCreater() {
@@ -85,7 +85,7 @@ public class ReferenceObject {
 
 	/**
 	 * Gets the entity.
-	 * 
+	 *
 	 * @return the entity
 	 */
 	public Object getEntity() {
@@ -94,7 +94,7 @@ public class ReferenceObject {
 
 	/**
 	 * Gets the property.
-	 * 
+	 *
 	 * @return the property
 	 */
 	public String getProperty() {
@@ -103,7 +103,7 @@ public class ReferenceObject {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

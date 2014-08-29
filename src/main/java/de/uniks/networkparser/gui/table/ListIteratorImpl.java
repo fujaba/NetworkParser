@@ -38,17 +38,17 @@ public class ListIteratorImpl<T> implements java.util.ListIterator<T> {
 	private int index=0;
 	private Iterator<T> iterator = null;
 
-	public ListIteratorImpl(Collection<T> owner){
+	public ListIteratorImpl(Collection<T> owner) {
 		this.owner=owner;
 	}
 
-	public Iterator<T> getInterator(){
-		if(iterator==null){
+	public Iterator<T> getInterator() {
+		if (iterator==null) {
 			iterator = owner.iterator();
 		}
 		return iterator;
 	}
-	
+
 	@Override
 	public boolean hasNext() {
 		return iterator.hasNext();
@@ -68,10 +68,10 @@ public class ListIteratorImpl<T> implements java.util.ListIterator<T> {
 	@Override
 	public T previous() {
 		T item = null;
-		if(index>0){
+		if (index>0) {
 			index--;
 			iterator = owner.iterator();
-			for(int z=0;z<index;z++){
+			for (int z=0;z<index;z++) {
 				item = iterator.next();
 			}
 		}

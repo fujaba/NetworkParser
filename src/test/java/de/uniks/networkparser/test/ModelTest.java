@@ -21,7 +21,7 @@ public class ModelTest {
 		persons.with(new Person().withName("Stefan"));
 		
 		int i=0;
-		for(Person p : persons){
+		for (Person p : persons){
 			if(i==0){
 				Assert.assertEquals("Albert", p.getName());
 			}else{
@@ -33,11 +33,11 @@ public class ModelTest {
 	
 	@Test
 	public void testMap(){
-		ArrayEntityList<String, Integer> values=new ArrayEntityList<String, Integer>();
+		ArrayEntityList<String, Integer> values= new ArrayEntityList<String, Integer>();
 		
 		values.with("Albert", 42);
 		values.with("Stefan", 23);
-		for(String key : values){
+		for (String key : values){
 			if(key.equals("Albert")){
 				Assert.assertEquals(42, values.getInt(key));
 			}
@@ -49,12 +49,12 @@ public class ModelTest {
 	
 	@Test
 	public void testIdMapFromIdMap(){
-		JsonIdMap map=new JsonIdMap();
+		JsonIdMap map= new JsonIdMap();
 		map.withCreator(new PersonCreator());
 		Assert.assertEquals(6, countMap(map));
 		System.out.println(countMap(map));
 		
-		JsonIdMap subMap=new JsonIdMap();
+		JsonIdMap subMap= new JsonIdMap();
 		Assert.assertEquals(5, countMap(subMap));
 		subMap.withCreator(map);
 		Assert.assertEquals(6, countMap(subMap));
@@ -63,7 +63,7 @@ public class ModelTest {
 	
 	private int countMap(JsonIdMap map){
 		int count=0;
-		for(Iterator<SendableEntityCreator> i = map.iterator();i.hasNext();){
+		for (Iterator<SendableEntityCreator> i = map.iterator();i.hasNext();){
 			i.next();
 			count++;
 		}

@@ -67,7 +67,7 @@ public class BidiLinkedHashMap implements BidiMap<String, Object>{
 		this.valueKey.remove(value);
 		return this;
 	}
-	
+
 	public BidiLinkedHashMap with(String key, Object value) {
 		this.keyValue.put(key, value);
 		this.valueKey.put(value, key);

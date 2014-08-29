@@ -13,15 +13,15 @@ import de.uniks.networkparser.test.model.util.LocationCreator;
 public class JsonFilterTest {
 	@Test
 	public void testJsonFilter(){
-//FIXME		JsonFilter filter=new JsonFilter(42, "Stefan", "Albert", "Flo");
-//		JsonIdMap map=new JsonIdMap();
+//FIXME		JsonFilter filter= new JsonFilter(42, "Stefan", "Albert", "Flo");
+//		JsonIdMap map= new JsonIdMap();
 //		map.withCreator(new JsonFilterCreator());
 //		JsonObject jsonObject = map.toJsonObject(filter);
 //		assertNotNull(jsonObject);
 //		String string = jsonObject.toString();
 //		JsonObject newItem = new JsonObject(string);
 //		
-//		JsonIdMap mapB=new JsonIdMap();
+//		JsonIdMap mapB= new JsonIdMap();
 //		mapB.withCreator(new JsonFilterCreator());
 //		JsonFilter jsonFilterB = (JsonFilter) mapB.readJson(newItem);
 //		
@@ -35,7 +35,7 @@ public class JsonFilterTest {
 		fullMessage.setText("Hallo Welt");
 		
 		fullMessage.setLocation(new Location(1,2));
-		JsonIdMap map=new JsonIdMap();
+		JsonIdMap map= new JsonIdMap();
 		map.withCreator(new FullMessageCreator());
 		map.withCreator(new LocationCreator());
 		

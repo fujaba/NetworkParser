@@ -66,7 +66,7 @@ public class ListEntity implements SendableEntityCreator{
 	}
 	public ListEntity withChildren(ListEntity... children) {
 		if(children!=null){
-			for(ListEntity item : children){
+			for (ListEntity item : children){
 				if(this.children.add(item)){
 					item.withOwner(this);
 				}
@@ -76,7 +76,7 @@ public class ListEntity implements SendableEntityCreator{
 	}
 	public ListEntity withoutChildren(ListEntity... children) {
 		if(children!=null){
-			for(ListEntity item : children){
+			for (ListEntity item : children){
 				this.children.remove(item);
 			}
 		}

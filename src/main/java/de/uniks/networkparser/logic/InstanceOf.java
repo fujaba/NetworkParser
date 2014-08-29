@@ -4,7 +4,7 @@ package de.uniks.networkparser.logic;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -42,19 +42,19 @@ public class InstanceOf extends ConditionMap implements SendableEntityCreator {
 	public Object getSendableInstance(boolean prototyp) {
 		return new InstanceOf();
 	}
-	
+
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if(CLAZZNAME.equalsIgnoreCase(attribute)){
+		if (CLAZZNAME.equalsIgnoreCase(attribute)) {
 			return ((InstanceOf)entity).getClazzName();
 		}
-		if(CLAZZ.equalsIgnoreCase(attribute)){
+		if (CLAZZ.equalsIgnoreCase(attribute)) {
 			return ((InstanceOf)entity).getClazz();
 		}
-		if(PROPERTY.equalsIgnoreCase(attribute)){
+		if (PROPERTY.equalsIgnoreCase(attribute)) {
 			return ((InstanceOf)entity).getProperty();
 		}
-		if(VALUE.equalsIgnoreCase(attribute)){
+		if (VALUE.equalsIgnoreCase(attribute)) {
 			return ((InstanceOf)entity).getValue();
 		}
 		return null;
@@ -63,35 +63,35 @@ public class InstanceOf extends ConditionMap implements SendableEntityCreator {
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
-		if(CLAZZNAME.equalsIgnoreCase(attribute)){
+		if (CLAZZNAME.equalsIgnoreCase(attribute)) {
 			((InstanceOf)entity).withClazzName((Class<?>)value);
 			return true;
 		}
-		if(CLAZZ.equalsIgnoreCase(attribute)){
+		if (CLAZZ.equalsIgnoreCase(attribute)) {
 			((InstanceOf)entity).withClazz(value);
 			return true;
 		}
-		if(PROPERTY.equalsIgnoreCase(attribute)){
-			((InstanceOf)entity).withProperty(""+value);
+		if (PROPERTY.equalsIgnoreCase(attribute)) {
+			((InstanceOf)entity).withProperty("" +value);
 			return true;
 		}
-		if(VALUE.equalsIgnoreCase(attribute)){
+		if (VALUE.equalsIgnoreCase(attribute)) {
 			((InstanceOf)entity).withValue(value);
 			return true;
 		}
 		return false;
 	}
 
-	
-	public static InstanceOf value(Class<?>  clazzName, String property, Object element){
+
+	public static InstanceOf value(Class<?>  clazzName, String property, Object element) {
 		return new InstanceOf().withClazzName(clazzName).withProperty(property).withValue(element);
 	}
-	
-	public static InstanceOf value(Class<?>  clazzName, String property){
+
+	public static InstanceOf value(Class<?>  clazzName, String property) {
 		return new InstanceOf().withClazzName(clazzName).withProperty(property);
 	}
-	
-	public static InstanceOf value(Object clazz, String property){
+
+	public static InstanceOf value(Object clazz, String property) {
 		return new InstanceOf().withClazz(clazz).withProperty(property);
 	}
 
@@ -133,13 +133,13 @@ public class InstanceOf extends ConditionMap implements SendableEntityCreator {
 
 	@Override
 	public boolean matches(ValuesMap values) {
-		if(this.clazzName!=null && values.entity.getClass()!=this.clazzName){
+		if (this.clazzName!=null && values.entity.getClass()!=this.clazzName) {
 			return true;
 		}
-		if(this.clazz!=null && values.entity!=this.clazz){
+		if (this.clazz!=null && values.entity!=this.clazz) {
 			return true;
 		}
-		if(!this.property.equalsIgnoreCase(values.property)){
+		if (!this.property.equalsIgnoreCase(values.property)) {
 			return true;
 		}
 		return (this.value != null && this.value==values.value);

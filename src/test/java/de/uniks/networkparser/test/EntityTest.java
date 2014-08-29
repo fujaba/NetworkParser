@@ -13,7 +13,7 @@ public class EntityTest {
 
 	@Test
 	public void testEntity(){
-		JsonObject entity=new JsonObject().withValue("id", "23");
+		JsonObject entity= new JsonObject().withValue("id", "23");
 		JsonObject child = new JsonObject().withValue("id", "42");
 		entity.put("child", child);
 		JsonArray list = new JsonArray();

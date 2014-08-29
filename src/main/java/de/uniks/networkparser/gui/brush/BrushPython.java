@@ -51,7 +51,7 @@ public class BrushPython extends Brush {
     String special = "None True False self cls class_";
 
     addRule(new RegExpressions(RegExpressions.singleLinePerlComments, "comments"));
-    addRule(new RegExpressions("^\\s*@\\w+", Pattern.MULTILINE, "color2"));
+    addRule(new RegExpressions("^\\s*@\\w+ ", Pattern.MULTILINE, "color2"));
     addRule(new RegExpressions("(['\\\"]{3})([^['\\\"]{3}])*?['\\\"]{3}", Pattern.MULTILINE, "comments"));
     addRule(new RegExpressions("\"(?!\")(?:\\.|\\\\\\\"|[^\\\"\"\\n])*\"", Pattern.MULTILINE, "string"));
     addRule(new RegExpressions("'(?!')(?:\\.|(\\\\\\')|[^\\''\\n])*'", Pattern.MULTILINE, "string"));

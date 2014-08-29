@@ -4,7 +4,7 @@ package de.uniks.networkparser.calculator;
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
  All rights reserved.
- 
+
  Licensed under the EUPL, Version 1.1 or (as soon they
  will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
@@ -25,6 +25,6 @@ package de.uniks.networkparser.calculator;
 public interface Operator {
 	public int getPriority();
 	public int getValues();
-    public double calculate( Double[] values );
+    public double calculate( Double[] values);
     public String getTag();
 }

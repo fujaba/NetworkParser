@@ -31,7 +31,7 @@ import de.uniks.networkparser.test.model.util.UniversityCreator;
 public class ByteTest{
 	@Test
 	public void testString(){
-		ByteEntity entity=new ByteEntity();
+		ByteEntity entity= new ByteEntity();
 		entity.setValues(42);
 		//48=00110000 42=00101010
 		String value = entity.toString(new ByteConverterBinary(), true);
@@ -43,8 +43,8 @@ public class ByteTest{
 	
 	@Test
 	public void testByteEntity(){
-		StringMessage msg=new StringMessage("Hallo Welt");
-		ByteIdMap map=new ByteIdMap();
+		StringMessage msg= new StringMessage("Hallo Welt");
+		ByteIdMap map= new ByteIdMap();
 		map.addCreator(new StringMessageCreator());
 		ByteItem data = map.encode(msg);
 		// CLAZZ, StringMessage<0x02>, 0x00, 0x46, Hallo Welt(10 Bytes)
@@ -54,9 +54,9 @@ public class ByteTest{
 	
 	@Test
 	public void testSimpleEntity(){
-		SortedMsg msg=new SortedMsg();
+		SortedMsg msg= new SortedMsg();
 		msg.setNumber(42);
-		ByteIdMap map=new ByteIdMap();
+		ByteIdMap map= new ByteIdMap();
 		map.addCreator(new SortedMsgCreator());
 		ByteItem data = map.encode(msg);
 		BufferedBytes bytes = data.getBytes(false);
@@ -66,7 +66,7 @@ public class ByteTest{
 	
 	@Test
 	public void testChatMessage(){
-		ChatMessage chatMessage=new ChatMessage();
+		ChatMessage chatMessage= new ChatMessage();
 		chatMessage.setText("Dies ist eine Testnachricht");
 		chatMessage.setSender("Stefan Lindel");
 		
@@ -83,7 +83,7 @@ public class ByteTest{
 	
 	@Test
 	public void testByteDefault(){
-		ByteIdMap map=new ByteIdMap();
+		ByteIdMap map= new ByteIdMap();
 		map.addCreator(new UniversityCreator());
 		University uni = new University();
 		uni.setName("Uni Kassel");
@@ -113,7 +113,7 @@ public class ByteTest{
 	
 	@Test
 	public void testByteList(){
-		ByteIdMap map=new ByteIdMap();
+		ByteIdMap map= new ByteIdMap();
 		map.addCreator(new FullAssocsCreator());
 		FullAssocs uni = new FullAssocs();
 		uni.addPerson("Maier");
@@ -136,7 +136,7 @@ public class ByteTest{
 	
 	@Test
 	public void testByteDynamic(){
-		ByteIdMap map=new ByteIdMap();
+		ByteIdMap map= new ByteIdMap();
 		map.addCreator(new SortedMsgCreator());
 		SortedMsg sortedMsg = new SortedMsg();
 		sortedMsg.setNumber(23);
@@ -157,17 +157,17 @@ public class ByteTest{
 	private void outputStream(BufferedBytes buffer){
 		byte[] bytes=buffer.getValue(buffer.length()); 
 		
-		System.out.println("Length: "+bytes.length);
+		System.out.println("Length: " +bytes.length);
 		boolean newline=false;
-		for(int i=0;i<bytes.length;i++){
+		for (int i=0;i<bytes.length;i++){
 			if(bytes[i]<10){
-				System.out.print(" 00"+(byte)bytes[i]);
+				System.out.print(" 00" +(byte)bytes[i]);
 				newline=false;
 			}else if(bytes[i]<100){
-				System.out.print(" 0"+(byte)bytes[i]);
+				System.out.print(" 0" +(byte)bytes[i]);
 				newline=false;
 			}else{
-				System.out.print(" "+(byte)bytes[i]);
+				System.out.print(" " +(byte)bytes[i]);
 				newline=false;
 			}
 			if((i+1)%10==0){
@@ -223,13 +223,13 @@ public class ByteTest{
 
 	@Test
 	public void testAssoc(){
-		FullAssocs assocs=new FullAssocs();
-		StringMessage msg=new StringMessage();
+		FullAssocs assocs= new FullAssocs();
+		StringMessage msg= new StringMessage();
 		msg.setValue("Testnachricht");
 		assocs.setMessage(msg);
 		assocs.addPassword("Stefan", "42");
 		
-		ByteIdMap map=new ByteIdMap();
+		ByteIdMap map= new ByteIdMap();
 		map.addCreator(new FullAssocsCreator());
 		map.addCreator(new StringMessageCreator());
 		
