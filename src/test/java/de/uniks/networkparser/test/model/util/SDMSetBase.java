@@ -8,12 +8,12 @@ import de.uniks.networkparser.gui.ItemList;
 
 public class SDMSetBase<T> extends ItemList<T>
 {
-   @Override
-   protected boolean initAllowDuplicate()
-   {
-      return false;
-   }
-   
+	/**
+	 * Simple Constructor
+	 */
+	public SDMSetBase(){
+		this.allowDuplicate = false;
+	}
 //   @Override
 //   public String toString()
 //   {

@@ -102,7 +102,7 @@ public class XMLTokener extends Tokener {
 			while (c >= ' ' && getStopChars().indexOf(c) < 0 && c!='>') {
 				c = next();
 			}
-			xmlEntity.setTag(buffer.substring(pos, position()-pos));
+			xmlEntity.withTag(buffer.substring(pos, position()-pos));
 		}else{
 			StringBuilder sb = new StringBuilder();
 			c = nextClean();
@@ -110,7 +110,7 @@ public class XMLTokener extends Tokener {
 				sb.append(c);
 				c = next();
 			}
-			xmlEntity.setTag(sb.toString());
+			xmlEntity.withTag(sb.toString());
 		}
 		
 		XMLEntity child;
@@ -124,7 +124,7 @@ public class XMLTokener extends Tokener {
 					return;
 				}
 				if (c != '<') {
-					xmlEntity.setValue(nextString('<', false, false, false, false));
+					xmlEntity.withValueItem(nextString('<', false, false, false, false));
 					continue;
 				}
 			}
@@ -139,7 +139,7 @@ public class XMLTokener extends Tokener {
 						parseToEntity(child);
 						xmlEntity.addChild(child);
 					} else {
-						xmlEntity.setValue(nextString('<', false, false, false, false));
+						xmlEntity.withValueItem(nextString('<', false, false, false, false));
 					}
 				}
 			} else if (c == '/') {

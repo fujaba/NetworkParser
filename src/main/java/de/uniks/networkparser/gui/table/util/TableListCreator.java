@@ -1,4 +1,4 @@
-package de.uniks.networkparser.event.creator;
+package de.uniks.networkparser.gui.table.util;
 
 /*
  NetworkParser
@@ -21,54 +21,36 @@ package de.uniks.networkparser.event.creator;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import java.util.Date;
-import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
+import de.uniks.networkparser.IdMapEncoder;
+import de.uniks.networkparser.gui.table.TableList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-/**
- * The Class DateCreator.
- */
 
-public class DateCreator implements SendableEntityCreator, SendableEntityCreatorNoIndex {
-	/** The Constant VALUE. */
-	public static final String VALUE = "value";
-
-	/*
-	 * return the Properties
-	 */
+public class TableListCreator implements SendableEntityCreator{
+	public static final String[] properties=new String[]{TableList.PROPERTY_ITEMS};
 	@Override
 	public String[] getProperties() {
-		return new String[] {VALUE};
+		return properties;
 	}
 
-	/*
-	 * Create new Instance of Date
-	 */
 	@Override
-	public Object getSendableInstance(boolean reference) {
-		return new Date();
+	public Object getSendableInstance(boolean prototyp) {
+		return new TableList();
 	}
 
-	/*
-	 * Getter for java.util.Date
-	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if (VALUE.equals(attribute)) {
-			return Long.valueOf(((Date) entity).getTime());
+		if(TableList.PROPERTY_ITEMS.equalsIgnoreCase(attribute)){
+			return ((TableList)entity).values();
 		}
 		return null;
 	}
 
-	/*
-	 * Setter for java.util.Date
-	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
-			String typ) {
-		if (VALUE.equals(attribute)) {
-			((Date) entity).setTime((Long) value);
-			return true;
+			String type) {
+		if(IdMapEncoder.REMOVE.equalsIgnoreCase(type)){
+			attribute+=IdMapEncoder.REMOVE;
 		}
-		return false;
+		return ((TableList)entity).setValue(attribute, value);
 	}
 }

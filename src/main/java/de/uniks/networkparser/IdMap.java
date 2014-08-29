@@ -27,4 +27,24 @@ import de.uniks.networkparser.interfaces.BaseItem;
 public abstract class IdMap extends IdMapEncoder{
 	public abstract Object decode(BaseItem value);
 	public abstract Object decode(String value);
+	
+	private boolean caseSensitive=false;
+
+	/**
+	 * For setting the Option of checking the CaseSensitive of the Properties
+	 * @param value the new Value of CaseSensitive
+	 * @return XMLGrammar Instance
+	 */
+	public IdMap withCaseSensitive(boolean value){
+		this.caseSensitive = value;
+		return this;
+	}
+	
+	/**
+	 * @return the CaseSensitive Option
+	 */
+	public boolean isCaseSensitive(){
+		return caseSensitive;
+	}
+	
 }

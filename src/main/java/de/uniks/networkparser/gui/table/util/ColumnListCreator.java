@@ -1,4 +1,4 @@
-package de.uniks.networkparser.gui.table.creator;
+package de.uniks.networkparser.gui.table.util;
 
 /*
  NetworkParser

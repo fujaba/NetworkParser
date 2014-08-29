@@ -39,17 +39,13 @@ public abstract class AbstractList<V> implements BaseItem {
 	protected List<V> keys = new ArrayList<V>();
 	protected Object[] hashTableKeys = null;
    
-	private boolean allowDuplicate = initAllowDuplicate();
+	protected boolean allowDuplicate = true;
 	protected Comparator<V> cpr;
 
 	protected static final int hashTableStartHashingThreshold = 420;
 	protected static final float hashTableLoadThreshold = 0.7f;
 	protected int entitySize = 1;
 
-	protected boolean initAllowDuplicate(){
-		return true;
-	}
-	
 	public Comparator<V> comparator() {
 		if(this.cpr==null){
 			withComparator(new EntityComparator<V>().withColumn(EntityComparator.LIST).withDirection(SortingDirection.ASC));

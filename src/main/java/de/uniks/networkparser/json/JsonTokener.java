@@ -90,9 +90,9 @@ public class JsonTokener extends Tokener {
 			XMLEntity xmlEntity = (XMLEntity) newValue;
 			parent.put(JsonIdMap.CLASS, xmlEntity.getTag());
 			JsonObject props = new JsonObject();
-			if (xmlEntity.getValue() != null
-					&& xmlEntity.getValue().length() > 0) {
-				parent.put(JsonIdMap.VALUE, xmlEntity.getValue());
+			if (xmlEntity.getValueItem() != null
+					&& xmlEntity.getValueItem().length() > 0) {
+				parent.put(JsonIdMap.VALUE, xmlEntity.getValueItem());
 			}
 			
 			for(int i=0;i<xmlEntity.size();i++){
@@ -146,9 +146,9 @@ public class JsonTokener extends Tokener {
 			XMLEntity xmlEntity = (XMLEntity) newValue;
 			parent.put(JsonIdMap.CLASS, xmlEntity.getTag());
 			JsonObject props = new JsonObject();
-			if (xmlEntity.getValue() != null
-					&& xmlEntity.getValue().length() > 0) {
-				parent.put(JsonIdMap.VALUE, xmlEntity.getValue());
+			if (xmlEntity.getValueItem() != null
+					&& xmlEntity.getValueItem().length() > 0) {
+				parent.put(JsonIdMap.VALUE, xmlEntity.getValueItem());
 			}
 			
 			for(int i=0;i<xmlEntity.size();i++){

@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import de.uniks.networkparser.xml.XMLSimpleIdMap;
 import de.uniks.networkparser.xml.XMLTokener;
-import de.uniks.networkparser.xml.creator.XMLStyledEntityCreator;
+import de.uniks.networkparser.xml.util.XMLStyledEntityCreator;
 
 public class JISMEngineTest extends IOClasses{
 	

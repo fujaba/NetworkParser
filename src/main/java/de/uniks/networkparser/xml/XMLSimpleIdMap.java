@@ -31,8 +31,8 @@ import de.uniks.networkparser.ReferenceObject;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorXML;
-import de.uniks.networkparser.xml.creator.XMLGrammar;
-import de.uniks.networkparser.xml.creator.XSDEntityCreator;
+import de.uniks.networkparser.xml.util.XMLGrammar;
+import de.uniks.networkparser.xml.util.XSDEntityCreator;
 
 public class XMLSimpleIdMap extends IdMap {
 	/** The Constant ENDTAG. */
@@ -112,12 +112,12 @@ public class XMLSimpleIdMap extends IdMap {
 		if (createrProtoTyp instanceof SendableEntityCreatorXML) {
 			SendableEntityCreatorXML xmlCreater = (SendableEntityCreatorXML) createrProtoTyp;
 			if (xmlCreater.getTag() != null) {
-				xmlEntity.setTag(xmlCreater.getTag());
+				xmlEntity.withTag(xmlCreater.getTag());
 			} else {
-				xmlEntity.setTag(entity.getClass().getName());
+				xmlEntity.withTag(entity.getClass().getName());
 			}
 		} else {
-			xmlEntity.setTag(entity.getClass().getName());
+			xmlEntity.withTag(entity.getClass().getName());
 		}
 		String[] properties = createrProtoTyp.getProperties();
 		if (properties != null) {
@@ -213,14 +213,14 @@ public class XMLSimpleIdMap extends IdMap {
 						do {
 							newTag = getEntity(grammar, tokener);
 							if (newTag == null) {
-								entity.setValue(strvalue);
+								entity.withValueItem(strvalue);
 								tokener.popStack();
 								tokener.skipEntity();
 								return entity;
 							}
 							if (newTag.getTag().isEmpty()) {
 								if (saveValue) {
-									entity.setValue(newTag.getValue());
+									entity.withValueItem(newTag.getValueItem());
 								}
 								tokener.skipEntity();
 								newTag = getEntity(grammar, tokener);
@@ -282,7 +282,7 @@ public class XMLSimpleIdMap extends IdMap {
 					strValue = strValue.trim();
 					isEmpty = strValue.isEmpty();
 				}
-				entity.setValue(strValue);
+				entity.withValueItem(strValue);
 			}
 			tag = tokener.getNextTag();
 			if (tag != null) {
@@ -299,7 +299,7 @@ public class XMLSimpleIdMap extends IdMap {
 		if (tag.isEmpty() && isEmpty) {
 			return null;
 		}
-		entity.setTag(tag);
+		entity.withTag(tag);
 		return entity;
 	}
 	

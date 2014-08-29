@@ -14,7 +14,7 @@ import de.uniks.networkparser.bytes.converter.ByteConverterBinary;
 import de.uniks.networkparser.bytes.converter.ByteConverterHex;
 import de.uniks.networkparser.bytes.converter.ByteConverterString;
 import de.uniks.networkparser.event.ByteMessage;
-import de.uniks.networkparser.event.creator.ByteMessageCreator;
+import de.uniks.networkparser.event.util.ByteMessageCreator;
 import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteItem;
 import de.uniks.networkparser.test.model.ChatMessage;

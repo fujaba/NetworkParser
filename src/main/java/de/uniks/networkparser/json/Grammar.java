@@ -27,7 +27,7 @@ import de.uniks.networkparser.interfaces.IdMapCounter;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 
-public class Grammar {
+public class Grammar {	
 	/**
 	 * @param jsonObject The Object for read
 	 * @param map The IdMap

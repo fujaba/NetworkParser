@@ -1,4 +1,4 @@
-package de.uniks.networkparser.xml.creator;
+package de.uniks.networkparser.xml.util;
 
 /*
  NetworkParser
@@ -22,12 +22,17 @@ package de.uniks.networkparser.xml.creator;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.Tokener;
+import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.xml.XMLEntity;
+import de.uniks.networkparser.xml.XMLStyledEntity;
 
-public class XMLEntityCreator implements SendableEntityCreator, XMLGrammar {
+public class XMLStyledEntityCreator implements SendableEntityCreator, XMLGrammar {
 	/** The properties. */
-	private final String[] properties = new String[] {XMLEntity.PROPERTY_TAG, XMLEntity.PROPERTY_VALUE};
+	private final String[] properties = new String[] {
+			Style.PROPERTY_FONTFAMILY,
+			Style.PROPERTY_FONTSIZE, Style.PROPERTY_BOLD,
+			Style.PROPERTY_ITALIC };
 
 	@Override
 	public String[] getProperties() {
@@ -36,37 +41,37 @@ public class XMLEntityCreator implements SendableEntityCreator, XMLGrammar {
 
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
-		return new XMLEntity();
+		return new XMLStyledEntity();
 	}
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if(XMLEntity.PROPERTY_TAG.equalsIgnoreCase(attribute)){
-			return ((XMLEntity) entity).getTag();
-		}
-		if(XMLEntity.PROPERTY_VALUE.equalsIgnoreCase(attribute)){
-			return ((XMLEntity) entity).getValue();
-		}
-		return null;
+		return ((XMLStyledEntity) entity).get(attribute);
 	}
 
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
-		
-		if(XMLEntity.PROPERTY_TAG.equalsIgnoreCase(attribute)){
-			((XMLEntity) entity).setTag(""+value);
-			return true;
-		}
-		if(XMLEntity.PROPERTY_VALUE.equalsIgnoreCase(attribute)){
-			((XMLEntity) entity).setValue(""+value);
-			return true;
-		}
-		return false;
+		return ((XMLStyledEntity) entity).set(attribute, value);
 	}
 
 	@Override
 	public boolean parseChild(XMLEntity entity, XMLEntity child, Tokener value) {
+		XMLStyledEntity source = (XMLStyledEntity) entity;
+		XMLStyledEntity target = (XMLStyledEntity) child;
+
+		for (String property : getProperties()) {
+			if(source.get(property)!=null){
+				target.set(property, source.get(property));
+			}
+		}
+
+		if ("b".equalsIgnoreCase(child.getTag())) {
+			if (!source.isBold()) {
+				source.setBold(true);
+				return true;
+			}
+		}
 		return false;
 	}
 

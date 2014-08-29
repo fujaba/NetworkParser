@@ -39,7 +39,7 @@ import de.uniks.networkparser.bytes.converter.ByteConverterHTTP;
 import de.uniks.networkparser.event.BasicMessage;
 import de.uniks.networkparser.event.ObjectMapEntry;
 import de.uniks.networkparser.event.UnknownMessage;
-import de.uniks.networkparser.event.creator.BasicMessageCreator;
+import de.uniks.networkparser.event.util.BasicMessageCreator;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteConverter;
