@@ -1,4 +1,4 @@
-package de.uniks.networkparser.xml.creator;
+package de.uniks.networkparser.bytes.util;
 
 /*
  NetworkParser
@@ -21,14 +21,9 @@ package de.uniks.networkparser.xml.creator;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.Tokener;
+import de.uniks.networkparser.bytes.BitEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.xml.XMLEntity;
 
-public interface XMLGrammar extends SendableEntityCreator {
-	public boolean parseChild(XMLEntity entity, XMLEntity child, Tokener value);
-
-	public void addChildren(XMLEntity parent, XMLEntity child);
-
-	public void endChild(String tag);
+public interface BitEntityCreator extends SendableEntityCreator {
+	public BitEntity[] getBitProperties();
 }

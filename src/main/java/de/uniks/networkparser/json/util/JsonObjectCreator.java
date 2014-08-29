@@ -1,4 +1,4 @@
-package de.uniks.networkparser.json.creator;
+package de.uniks.networkparser.json.util;
 
 /*
  NetworkParser
@@ -21,12 +21,13 @@ package de.uniks.networkparser.json.creator;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.json.JsonArray;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
+import de.uniks.networkparser.json.JsonObject;
 
-public class JsonArrayCreator implements SendableEntityCreator, SendableEntityCreatorNoIndex {
-	private final String[] properties = new String[] { "VALUE" };
+public class JsonObjectCreator implements SendableEntityCreator, SendableEntityCreatorNoIndex {
+	private final static String VALUE="VALUE";
+	private final String[] properties = new String[] { VALUE };
 
 	@Override
 	public String[] getProperties() {
@@ -35,19 +36,21 @@ public class JsonArrayCreator implements SendableEntityCreator, SendableEntityCr
 
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
-		return new JsonArray();
+		return new JsonObject();
 	}
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		return entity.toString();
+		if(VALUE.equalsIgnoreCase(attribute)){
+			return entity.toString();
+		}
+		return ((JsonObject)entity).getValue(attribute);
 	}
 
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String typ) {
-		((JsonArray) entity).withValue((String) value);
+		((JsonObject) entity).withValue((String) value);
 		return true;
 	}
-
 }

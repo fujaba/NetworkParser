@@ -18,27 +18,33 @@ import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.json.JsonTokener;
+import de.uniks.networkparser.json.SimpleGrammar;
 import de.uniks.networkparser.logic.BooleanCondition;
 import de.uniks.networkparser.logic.Deep;
 import de.uniks.networkparser.test.model.Apple;
+import de.uniks.networkparser.test.model.Barbarian;
 import de.uniks.networkparser.test.model.Change;
 import de.uniks.networkparser.test.model.ChatMessage;
 import de.uniks.networkparser.test.model.FullAssocs;
 import de.uniks.networkparser.test.model.FullMessage;
 import de.uniks.networkparser.test.model.Location;
 import de.uniks.networkparser.test.model.MapEntryElement;
+import de.uniks.networkparser.test.model.Person;
 import de.uniks.networkparser.test.model.Room;
 import de.uniks.networkparser.test.model.SortedMsg;
 import de.uniks.networkparser.test.model.StringMessage;
 import de.uniks.networkparser.test.model.Student;
 import de.uniks.networkparser.test.model.University;
 import de.uniks.networkparser.test.model.util.AppleCreator;
+import de.uniks.networkparser.test.model.util.BarbarianCreator;
 import de.uniks.networkparser.test.model.util.ChangeCreator;
 import de.uniks.networkparser.test.model.util.ChatMessageCreator;
 import de.uniks.networkparser.test.model.util.FullAssocsCreator;
 import de.uniks.networkparser.test.model.util.FullMessageCreator;
+import de.uniks.networkparser.test.model.util.GameCreator;
 import de.uniks.networkparser.test.model.util.LocationCreator;
 import de.uniks.networkparser.test.model.util.MapEntryElementCreator;
+import de.uniks.networkparser.test.model.util.PersonCreator;
 import de.uniks.networkparser.test.model.util.SortedMsgCreator;
 import de.uniks.networkparser.test.model.util.StringMessageCreator;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
@@ -520,7 +526,7 @@ public class JsonTest {
 		items.add(child);
 		assertEquals(2, map.toJsonArray(items, new Filter().withFull(true)).size());
 	}
-	
+
 	@Test
 	public void testFullList() {
 		Apple apple = new Apple();
@@ -533,5 +539,60 @@ public class JsonTest {
 		// OBJECT
 		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.Apple\",\"id\":\"J1.A1\",\"prop\":{\"value\":0,\"x\":0,\"y\":0,\"owner\":null}}", map.toJsonObject(apple, new Filter().withFull(true)).toString());
 
+	}
+	
+	@Test
+	public void testSimple(){
+		JsonIdMap encodeMap=new JsonIdMap().withGrammar(new SimpleGrammar());
+		
+		encodeMap.withCreator(new PersonCreator());
+		Person person = new Person().withName("Albert").withBalance(42);
+		String shortString = encodeMap.toJsonObject(person).toString();
+		System.out.println(shortString);
+		
+		JsonIdMap decodeMap=new JsonIdMap().withGrammar(new SimpleGrammar());
+		decodeMap.withCreator(new PersonCreator());
+		Person item = (Person) decodeMap.decode(new JsonObject().withValue(shortString));
+		Assert.assertEquals("Albert", item.getName());
+		Assert.assertEquals(42, item.getBalance(), 0.000001);
+	}
+
+	@Test
+	public void testServerJson(){
+		String json = "{\"@ts\":\"1368185625179\",\"@src\":\"Barbarian@2b40c3b9\",\"@prop\":\"position\",\"@nv\":\"42\"}";
+		
+		JsonIdMap map=new JsonIdMap();
+		map.withCreator(new BarbarianCreator());
+		map.withCreator(new GameCreator());
+		map.withGrammar(new EMFGrammar());
+		
+		Barbarian barbar = (Barbarian) map.decode(new JsonObject().withValue(json));
+		
+		Assert.assertNotNull(barbar);
+		Assert.assertEquals(barbar.getPosition(), 42);
+		
+		Assert.assertNull(barbar.getGame());
+		json = "{\"@ts\":\"1368185625179\",\"@src\":\"Barbarian@2b40c3b9\",\"@prop\":\"game\",\"@nv\":\"Game@55a92d3a\"}";
+		
+		map.decode(new JsonObject().withValue(json));
+		
+		Assert.assertNotNull(barbar.getGame());
+	}
+	
+	@Test
+	public void testDuplicate() {
+		String json = "{number=23, Number=42}";
+		
+		JsonObject item = new JsonObject().withValue(json);
+		// Duplicate allow
+		Assert.assertEquals(item.get("Number"), 42);
+		Assert.assertEquals(item.get("number"), 23);
+		
+
+		// Dont allow Duplicate
+		JsonObject item2 = new JsonObject().withAllowDuplicate(false);
+		item2.withValue(json);
+		Assert.assertEquals(item2.get("Number"), 42);
+		Assert.assertEquals(item2.get("number"), 42);
 	}
 }

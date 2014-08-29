@@ -164,7 +164,7 @@ public class XMLTest {
 		XMLIdMap map = new XMLIdMap();
 		map.withCreator(new ChatMessageCreator());
 		
-		String reference="\n  <chatmsg sender=\"Stefan Lindel\" txt=\"Dies ist eine Testnachricht\"/>";
+		String reference="<chatmsg sender=\"Stefan Lindel\" txt=\"Dies ist eine Testnachricht\"/>";
 		System.out.println(reference);
 		XMLEntity actual=map.encode(chatMessage);
 		assertEquals("WERT Vergleichen", reference, actual.toString(2));
@@ -227,7 +227,7 @@ public class XMLTest {
 		
 		XMLIdMap xmlMap = new XMLIdMap();
 		xmlMap.addCreator(new ChatMessageCreator());
-		String reference="\n  <chatmsg sender=\"Stefan Lindel\" txt=\"Dies ist eine Testnachricht\"/>";
+		String reference="<chatmsg sender=\"Stefan Lindel\" txt=\"Dies ist eine Testnachricht\"/>";
 		assertEquals("WERT Vergleichen", reference, xmlMap.encode(chatMessage).toString(2));
 	}
 	

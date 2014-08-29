@@ -93,11 +93,6 @@ import de.uniks.networkparser.interfaces.StringItem;
 public class JsonObject extends AbstractKeyValueList<String, Object> implements StringItem, FactoryEntity, Entity{
 	private boolean visible=true;
 	
-	@Override
-	protected boolean initAllowDuplicate() {
-		return false;
-	}
-	
 	/**
 	 * Get the JsonArray value associated with a key.
 	 * 
@@ -395,5 +390,32 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 	@Override
 	public Object remove(Object key) {
 		return removeItemByObject((String) key);
+	}
+	
+	@Override
+	public Object put(String key, Object value) {
+		int pos;
+		if(!isAllowDuplicate()){
+			key = key.toLowerCase();
+		}
+		pos = getPositionKey(key);
+		if(pos>=0){
+	    	if(this.hashTableValues != null){
+	    		this.hashTableValues[pos] = value;
+	    		pos = transformIndex(pos, key);
+	    	}
+			return this.values.set(pos, value);
+		}
+		addEntity(key, value);
+		
+		return value;
+	}
+	
+	@Override
+	public Object get(Object key) {
+		if(!isAllowDuplicate() && key instanceof String){
+			key = (""+key).toLowerCase();
+		}
+		return super.get(key);
 	}
 }

@@ -34,7 +34,7 @@ import de.uniks.networkparser.ReferenceObject;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorXML;
 import de.uniks.networkparser.logic.BooleanCondition;
-import de.uniks.networkparser.xml.creator.XMLGrammar;
+import de.uniks.networkparser.xml.util.XMLGrammar;
 /**
  * The Class XMLIdMap.
  */
@@ -132,12 +132,12 @@ public class XMLIdMap extends XMLSimpleIdMap {
 		if (createrProtoTyp instanceof SendableEntityCreatorXML) {
 			SendableEntityCreatorXML xmlCreater = (SendableEntityCreatorXML) createrProtoTyp;
 			if (xmlCreater.getTag() != null) {
-				xmlEntity.setTag(xmlCreater.getTag());
+				xmlEntity.withTag(xmlCreater.getTag());
 			} else {
-				xmlEntity.setTag(entity.getClass().getName());
+				xmlEntity.withTag(entity.getClass().getName());
 			}
 		} else {
-			xmlEntity.setTag(entity.getClass().getName());
+			xmlEntity.withTag(entity.getClass().getName());
 		}
 
 		if(filter.isId(this, entity, entity.getClass().getName())){
@@ -209,7 +209,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 				XMLEntity child = parent.getChild(label);
 				if (child == null) {
 					child = new XMLEntity();
-					child.setTag(label);
+					child.withTag(label);
 					parserChild(child, newProp, value);
 					parent.addChild(child);
 				} else {
@@ -221,7 +221,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 			parent.put(property.substring(1),
 					EntityUtil.valueToString(value, true, parent));
 		} else if ("".equals(property)) {
-			parent.setValue(EntityUtil.valueToString(value, true, parent));
+			parent.withValueItem(EntityUtil.valueToString(value, true, parent));
 		}
 		return null;
 	}
@@ -386,17 +386,31 @@ public class XMLIdMap extends XMLSimpleIdMap {
 			entityCreater = (SendableEntityCreatorXML) referenceObject.getCreater();
 			String[] properties = entityCreater.getProperties();
 			tokener.addPrefix(tag);
-
-			for (String prop : properties) {
-				if (prop.equalsIgnoreCase(tokener.getPrefix())) {
-					// It is a Attribute
-					item = referenceObject.getEntity();
-					plainvalue = true;
-					break;
-				} else if (prop.startsWith(tokener.getPrefix())) {
-					// it is a Child
-					item = referenceObject.getEntity();
-					break;
+			if(isCaseSensitive()){
+				for (String prop : properties) {
+					if (prop.equals(tokener.getPrefix())) {
+						// It is a Attribute
+						item = referenceObject.getEntity();
+						plainvalue = true;
+						break;
+					} else if (prop.startsWith(tokener.getPrefix())) {
+						// it is a Child
+						item = referenceObject.getEntity();
+						break;
+					}
+				}
+			}else{
+				for (String prop : properties) {
+					if (prop.equalsIgnoreCase(tokener.getPrefix())) {
+						// It is a Attribute
+						item = referenceObject.getEntity();
+						plainvalue = true;
+						break;
+					} else if (prop.toLowerCase().startsWith(tokener.getPrefix().toLowerCase())) {
+						// it is a Child
+						item = referenceObject.getEntity();
+						break;
+					}
 				}
 			}
 
@@ -511,10 +525,10 @@ public class XMLIdMap extends XMLSimpleIdMap {
 			} else {
 				tokener.next();
 				int start = tokener.position();
-				tokener.stepPos("" + ITEMSTART, false, true);
-				String value = tokener.substring(start, -1);
+				tokener.stepPos(ITEMSTART+"/"+tag, true, true);
+				String value = tokener.substring(start, tokener.position() - tag.length() - 1);
 				entityCreater.setValue(item, tokener.getPrefix(), value, IdMapEncoder.NEW);
-				tokener.stepPos("" + ITEMSTART, false, false);
+//				tokener.stepPos("" + ITEMSTART, false, false);
 				tokener.stepPos("" + ITEMEND, false, false);
 			}
 			return null;

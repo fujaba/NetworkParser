@@ -1,4 +1,4 @@
-package de.uniks.networkparser.gui.table.creator;
+package de.uniks.networkparser.event.util;
 
 /*
  NetworkParser
@@ -21,43 +21,54 @@ package de.uniks.networkparser.gui.table.creator;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.gui.table.Column;
+import java.util.Date;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+/**
+ * The Class DateCreator.
+ */
 
-public class ColumnCreator implements SendableEntityCreator{
-	private static final String[] properties=new String[]{Column.PROPERTY_ATTRNAME,
-		Column.PROPERTY_NUMBERFORMAT,
-		Column.PROPERTY_EDITCOLUMN,
-		Column.PROPERTY_LABEL,
-		Column.PROPERTY_DEFAULTTEXT,
-		Column.PROPERTY_RESIZE,
-		Column.PROPERTY_VISIBLE,
-		Column.PROPERTY_MOVABLE,
-		Column.PROPERTY_ALTTEXT,
-		Column.PROPERTY_BROWSERID,
-		Column.PROPERTY_FIELDTYP,
-		Column.PROPERTY_STYLE,
-		Column.PROPERTY_ACTIVESTYLE};
+public class DateCreator implements SendableEntityCreator, SendableEntityCreatorNoIndex {
+	/** The Constant VALUE. */
+	public static final String VALUE = "value";
 
+	/*
+	 * return the Properties
+	 */
 	@Override
 	public String[] getProperties() {
-		return properties;
+		return new String[] {VALUE};
 	}
 
+	/*
+	 * Create new Instance of Date
+	 */
 	@Override
-	public Object getSendableInstance(boolean prototyp) {
-		return new Column();
+	public Object getSendableInstance(boolean reference) {
+		return new Date();
 	}
 
+	/*
+	 * Getter for java.util.Date
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		return ((Column)entity).get(attribute);
+		if (VALUE.equals(attribute)) {
+			return Long.valueOf(((Date) entity).getTime());
+		}
+		return null;
 	}
 
+	/*
+	 * Setter for java.util.Date
+	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
-			String type) {
-		return ((Column)entity).set(attribute, value);
+			String typ) {
+		if (VALUE.equals(attribute)) {
+			((Date) entity).setTime((Long) value);
+			return true;
+		}
+		return false;
 	}
-
 }

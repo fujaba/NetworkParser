@@ -1,4 +1,4 @@
-package de.uniks.networkparser.event.creator;
+package de.uniks.networkparser.json.util;
 
 /*
  NetworkParser
@@ -21,54 +21,33 @@ package de.uniks.networkparser.event.creator;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.event.BasicMessage;
-import de.uniks.networkparser.interfaces.SendableEntityCreatorByte;
-/**
- * The Class BasicMessageCreator.
- */
+import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.json.JsonArray;
 
-public class BasicMessageCreator implements SendableEntityCreatorByte {
-	/** The properties. */
-	protected final String[] properties = new String[] { BasicMessage.PROPERTY_VALUE };
+public class JsonArrayCreator implements SendableEntityCreator, SendableEntityCreatorNoIndex {
+	private final String[] properties = new String[] { "VALUE" };
 
-	/*
-	 * return the Properties
-	 */
 	@Override
 	public String[] getProperties() {
 		return this.properties;
 	}
 
-	/*
-	 * Create new Instance of BasicMessage
-	 */
 	@Override
-	public Object getSendableInstance(boolean reference) {
-		return new BasicMessage();
+	public Object getSendableInstance(boolean prototyp) {
+		return new JsonArray();
 	}
 
-	/*
-	 * Get the EventTyp of BasicMessage (0x42)
-	 */
-	@Override
-	public byte getEventTyp() {
-		return 0x42;
-	}
-
-	/*
-	 * Getter for BasicMessage
-	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		return ((BasicMessage) entity).get(attribute);
+		return entity.toString();
 	}
 
-	/*
-	 * Setter for BasicMessage
-	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String typ) {
-		return ((BasicMessage) entity).set(attribute, value);
+		((JsonArray) entity).withValue((String) value);
+		return true;
 	}
+
 }

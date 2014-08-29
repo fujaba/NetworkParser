@@ -1,4 +1,4 @@
-package de.uniks.networkparser.xml.creator;
+package de.uniks.networkparser.xml.util;
 
 /*
  NetworkParser
@@ -111,5 +111,4 @@ public class XSDEntityCreator implements SendableEntityCreatorXML, XMLGrammar {
 	public void endChild(String tag) {
 		this.privateStack.remove(this.privateStack.size() - 1);
 	}
-
 }

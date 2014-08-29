@@ -1,4 +1,4 @@
-package de.uniks.networkparser.json.creator;
+package de.uniks.networkparser.gui.table.util;
 
 /*
  NetworkParser
@@ -21,36 +21,43 @@ package de.uniks.networkparser.json.creator;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
+import de.uniks.networkparser.gui.table.Column;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
-import de.uniks.networkparser.json.JsonObject;
 
-public class JsonObjectCreator implements SendableEntityCreator, SendableEntityCreatorNoIndex {
-	private final static String VALUE="VALUE";
-	private final String[] properties = new String[] { VALUE };
+public class ColumnCreator implements SendableEntityCreator{
+	private static final String[] properties=new String[]{Column.PROPERTY_ATTRNAME,
+		Column.PROPERTY_NUMBERFORMAT,
+		Column.PROPERTY_EDITCOLUMN,
+		Column.PROPERTY_LABEL,
+		Column.PROPERTY_DEFAULTTEXT,
+		Column.PROPERTY_RESIZE,
+		Column.PROPERTY_VISIBLE,
+		Column.PROPERTY_MOVABLE,
+		Column.PROPERTY_ALTTEXT,
+		Column.PROPERTY_BROWSERID,
+		Column.PROPERTY_FIELDTYP,
+		Column.PROPERTY_STYLE,
+		Column.PROPERTY_ACTIVESTYLE};
 
 	@Override
 	public String[] getProperties() {
-		return this.properties;
+		return properties;
 	}
 
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
-		return new JsonObject();
+		return new Column();
 	}
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if(VALUE.equalsIgnoreCase(attribute)){
-			return entity.toString();
-		}
-		return ((JsonObject)entity).getValue(attribute);
+		return ((Column)entity).get(attribute);
 	}
 
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
-			String typ) {
-		((JsonObject) entity).withValue((String) value);
-		return true;
+			String type) {
+		return ((Column)entity).set(attribute, value);
 	}
+
 }

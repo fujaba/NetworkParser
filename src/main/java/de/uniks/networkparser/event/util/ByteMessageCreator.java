@@ -1,4 +1,4 @@
-package de.uniks.networkparser.event.creator;
+package de.uniks.networkparser.event.util;
 
 /*
  NetworkParser

@@ -1,4 +1,4 @@
-package de.uniks.networkparser.gui.table.creator;
+package de.uniks.networkparser.event.util;
 
 /*
  NetworkParser
@@ -21,36 +21,54 @@ package de.uniks.networkparser.gui.table.creator;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.IdMapEncoder;
-import de.uniks.networkparser.gui.table.TableList;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.event.BasicMessage;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorByte;
+/**
+ * The Class BasicMessageCreator.
+ */
 
-public class TableListCreator implements SendableEntityCreator{
-	public static final String[] properties=new String[]{TableList.PROPERTY_ITEMS};
+public class BasicMessageCreator implements SendableEntityCreatorByte {
+	/** The properties. */
+	protected final String[] properties = new String[] { BasicMessage.PROPERTY_VALUE };
+
+	/*
+	 * return the Properties
+	 */
 	@Override
 	public String[] getProperties() {
-		return properties;
+		return this.properties;
 	}
 
+	/*
+	 * Create new Instance of BasicMessage
+	 */
 	@Override
-	public Object getSendableInstance(boolean prototyp) {
-		return new TableList();
+	public Object getSendableInstance(boolean reference) {
+		return new BasicMessage();
 	}
 
+	/*
+	 * Get the EventTyp of BasicMessage (0x42)
+	 */
+	@Override
+	public byte getEventTyp() {
+		return 0x42;
+	}
+
+	/*
+	 * Getter for BasicMessage
+	 */
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if(TableList.PROPERTY_ITEMS.equalsIgnoreCase(attribute)){
-			return ((TableList)entity).values();
-		}
-		return null;
+		return ((BasicMessage) entity).get(attribute);
 	}
 
+	/*
+	 * Setter for BasicMessage
+	 */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
-			String type) {
-		if(IdMapEncoder.REMOVE.equalsIgnoreCase(type)){
-			attribute+=IdMapEncoder.REMOVE;
-		}
-		return ((TableList)entity).setValue(attribute, value);
+			String typ) {
+		return ((BasicMessage) entity).set(attribute, value);
 	}
 }

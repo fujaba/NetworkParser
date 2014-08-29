@@ -27,9 +27,7 @@ public class XMLStyledEntity extends XMLEntity  {
 	private Style style=new Style();
 	
 	@Override
-	protected String toStringValue(int indentFactor) {
-		StringBuilder sb = new StringBuilder();
-
+	protected void toStringChildren(StringBuilder sb, int indentFactor, int intent) {
 		// Starttag
 		if (style.isBold()) {
 			sb.append("<b>");
@@ -37,7 +35,7 @@ public class XMLStyledEntity extends XMLEntity  {
 		if (style.isItalic()) {
 			sb.append("<i>");
 		}
-		sb.append(super.toStringValue(indentFactor));
+		super.toStringChildren(sb, indentFactor, intent);
 
 		// EndTag
 		if (style.isItalic()) {
@@ -46,7 +44,6 @@ public class XMLStyledEntity extends XMLEntity  {
 		if (style.isBold()) {
 			sb.append("</b>");
 		}
-		return sb.toString();
 	}
 
 

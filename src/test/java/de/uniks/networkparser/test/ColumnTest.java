@@ -6,7 +6,9 @@ import org.junit.Test;
 
 import de.uniks.networkparser.gui.table.Column;
 import de.uniks.networkparser.gui.table.ColumnListener;
+import de.uniks.networkparser.gui.table.util.ColumnCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.json.JsonIdMap;
 
 public class ColumnTest {
 
@@ -17,6 +19,15 @@ public class ColumnTest {
 		column.withEditable(false);
 		Assert.assertFalse("Must be False", column.getListener().canEdit(null, null));
 	}
+
+	@Test
+	public void testColumnSerialization(){
+		Column column=new Column().withAttrName("Name");
+		JsonIdMap map=(JsonIdMap) new JsonIdMap().withCreator(new ColumnCreator());
+		
+		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.gui.table.Column\",\"id\":\"J1.C1\",\"prop\":{\"attrName\":\"Name\"}}", map.toJsonObject(column).toString());
+	}
+	
 	
 	@Test
 	public void testColumnListenerTrue(){
