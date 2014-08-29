@@ -35,7 +35,7 @@ public class Addition implements Operator {
 
 	@Override
 	public String getTag() {
-		return " + ";
+		return "+";
 	}
 
 	@Override
