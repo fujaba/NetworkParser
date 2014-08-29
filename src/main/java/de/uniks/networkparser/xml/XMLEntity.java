@@ -165,7 +165,7 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements S
 	 * 
 	 * @param value
 	 *            the new value
-	 * @return 
+	 * @return the XMLEntity Instance
 	 */
 	public XMLEntity withValueItem(String value) {
 		this.value = value;

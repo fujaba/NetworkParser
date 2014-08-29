@@ -493,15 +493,10 @@ public abstract class AbstractList<V> implements BaseItem {
 		return allowDuplicate;
 	}
 
-	/**
-	 * Set the Flag for Duplicate Entities
-	 * @param allowDuplicate isAllowDuplicate
-	 * @return the List
-	 */
 	@SuppressWarnings("unchecked")
 	public <ST extends AbstractList<V>> ST withAllowDuplicate(boolean allowDuplicate) {
 		this.allowDuplicate = allowDuplicate;
-		return (ST)this;
+		return (ST) this;
 	}
 	
 	/**
@@ -693,6 +688,7 @@ public abstract class AbstractList<V> implements BaseItem {
     /**
      * Get the HashKey from a Object with Max HashTableIndex and StepSize of EntitySize
      * @param hashKey the hashKey of a Object
+     * @param len the max Length of all Hashvalues
      * @return the hasKey
      */
     public int hashKey(int hashKey, int len)
