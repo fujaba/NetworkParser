@@ -24,7 +24,7 @@ public class ModelTest {
 		for (Person p : persons){
 			if(i==0){
 				Assert.assertEquals("Albert", p.getName());
-			}else{
+			} else {
 				Assert.assertEquals("Stefan", p.getName());
 			}
 			i++;

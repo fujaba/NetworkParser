@@ -99,7 +99,7 @@ public abstract class Tokener {
 				chars[pos] = this.buffer.charAt(this.buffer.position() - (n-pos++));
 			}
 			return new String(chars);
-		}else if (n == -1) {
+		} else if (n == -1) {
 			n = buffer.length() - this.buffer.position();
 		} else if (n == 0) {
 			return "";
@@ -154,7 +154,7 @@ public abstract class Tokener {
 		char c=getCurrentChar();
 		do{
 			c = next();
-		}while(c!=0 && c <= ' ');
+		}while (c!=0 && c <= ' ');
 		return c;
 	}
 
@@ -285,7 +285,7 @@ public abstract class Tokener {
 	            		b = c;
 	            		c = 1;
 	            		continue;
-	            	}else if (c == '\\')
+	            	} else if (c == '\\')
 					{
 						c = 1;
 					}
@@ -330,7 +330,7 @@ public abstract class Tokener {
 				c = next();
 			}
 			value = buffer.substring(start, buffer.position() - start).trim();
-		}else{
+		} else {
 			StringBuilder sb = new StringBuilder();
 			while (c >= ' ' && getStopChars().indexOf(c) < 0) {
 				sb.append(c);

@@ -65,7 +65,7 @@ public class ValueGrid {
 			PropertyChangeListener child;
 			if (node instanceof PropertyChangeListener) {
 				child = (PropertyChangeListener) node;
-			}else{
+			} else {
 				child = guiElement.getNewCell(node);
 				container.put(child, node);
 			}
@@ -144,12 +144,12 @@ public class ValueGrid {
 			 n.setBorder(GUIPosition.WEST, "1", "black");
 			 if (rowEnd>=maxRows) {
 				 n.setBorder(GUIPosition.SOUTH, "1", "black");
-			 }else{
+			 } else {
 				 n.setBorder(GUIPosition.SOUTH, null, null);
 			 }
 			 if (colEnd>=maxColumns) {
 				 n.setBorder(GUIPosition.EAST, "1", "black");
-			 }else{
+			 } else {
 				 n.setBorder(GUIPosition.EAST, null, null);
 
 			 }

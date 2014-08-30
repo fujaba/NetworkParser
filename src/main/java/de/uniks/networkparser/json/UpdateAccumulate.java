@@ -51,7 +51,7 @@ public class UpdateAccumulate {
 			if (!change.has(IdMapEncoder.REMOVE)) {
 				child =change.getJsonObject(IdMapEncoder.REMOVE);
 				change.put(IdMapEncoder.REMOVE, child);
-			}else{
+			} else {
 				child = new JsonObject();
 			}
 			SendableEntityCreator creatorClass = map.getCreatorClass(oldValue);
@@ -68,7 +68,7 @@ public class UpdateAccumulate {
 			if (!change.has(IdMapEncoder.UPDATE)) {
 				child = change.getJsonObject(IdMapEncoder.UPDATE);
 				change.put(IdMapEncoder.UPDATE, child);
-			}else{
+			} else {
 				child = new JsonObject();
 			}
 		
@@ -116,7 +116,7 @@ public class UpdateAccumulate {
 			if (change.has(IdMapEncoder.REMOVE)) {
 				child =change.getJsonObject(IdMapEncoder.REMOVE);
 				change.put(IdMapEncoder.REMOVE, child);
-			}else{
+			} else {
 				child = new JsonObject();
 			}
 			SendableEntityCreator creatorClass = map.getCreatorClass(oldValue);
@@ -133,7 +133,7 @@ public class UpdateAccumulate {
 			if (change.has(IdMapEncoder.UPDATE)) {
 				child =change.getJsonObject(IdMapEncoder.UPDATE);
 				change.put(IdMapEncoder.UPDATE, child);
-			}else{
+			} else {
 				child = new JsonObject();
 			}
 		

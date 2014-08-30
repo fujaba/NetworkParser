@@ -163,10 +163,10 @@ public class ByteTest{
 			if(bytes[i]<10){
 				System.out.print(" 00" +(byte)bytes[i]);
 				newline=false;
-			}else if(bytes[i]<100){
+			} else if(bytes[i]<100){
 				System.out.print(" 0" +(byte)bytes[i]);
 				newline=false;
-			}else{
+			} else {
 				System.out.print(" " +(byte)bytes[i]);
 				newline=false;
 			}

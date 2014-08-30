@@ -35,7 +35,7 @@ public class MapEntryElement {
 		if (PROPERTY_VALUE.equalsIgnoreCase(attrName)) {
 			if(value instanceof HashMap<?, ?>){
 				setValue((HashMap<String, Object>) value);	
-			}else if(value instanceof AbstractEntity){
+			} else if(value instanceof AbstractEntity){
 				AbstractEntity<?,?> item=(AbstractEntity<?,?>) value;
 				addToValue((String) item.getKey(), item.getValue());
 			}

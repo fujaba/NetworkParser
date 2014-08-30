@@ -113,7 +113,7 @@ public class GraphConverter implements Converter {
 					// Must be a Link to 1
 					GraphNode newNode = parseJsonObject(root, (JsonObject)props.getValue(i), attributes);
 					root.addEdge(new GraphEdge().with(graphNode).with(new GraphEdge(newNode, Cardinality.ONE, props.get(i))));
-				}else if (props.getValue(i) instanceof JsonArray) {
+				} else if (props.getValue(i) instanceof JsonArray) {
 					// Must be a Link to n
 					JsonArray array = (JsonArray) props.getValue(i);
 					StringBuilder sb = new StringBuilder();
@@ -121,10 +121,10 @@ public class GraphConverter implements Converter {
 						if (entity instanceof JsonObject) {
 							GraphNode newNode = parseJsonObject(root, (JsonObject)entity, attributes);
 							root.addEdge(new GraphEdge().with(graphNode).with(new GraphEdge(newNode, Cardinality.MANY, props.get(i))));						
-						}else{
+						} else {
 							if (sb.length()>0) {
 								sb.append("," +entity.toString());
-							}else{
+							} else {
 								sb.append(entity.toString());
 							}
 						}
@@ -136,7 +136,7 @@ public class GraphConverter implements Converter {
 						}
 						attributes.get(graphNode).add(attribute);
 					}
-				}else{
+				} else {
 					Attribute attribute = new Attribute().with(props.get(i));
 					if (props.getValue(i) != null) {
 						attribute.with(DataType.ref(props.getValue(i).getClass())).withValue( props.getValue(i).toString());
@@ -178,7 +178,7 @@ public class GraphConverter implements Converter {
 						child.put(SOURCE, source.getId() + " : " + source.getClassName(shortName));
 						child.put(TARGET, target.getId() + " : " + target.getClassName(shortName));
 						result.add(child);
-					}else{
+					} else {
 						String id = source.getClassName(false)+ ":" +edge.getProperty()+target.getClassName(false)+ ":" +edge.getOther().getProperty();
 						if (!ids.contains(id)) {
 							child.put(SOURCE, source.getClassName(shortName));
@@ -226,7 +226,7 @@ public class GraphConverter implements Converter {
 		}
 		if (typ == GraphIdMap.OBJECT) {
 			item.put(ID, entity.getId() + " : " + entity.getClassName(shortName));
-		}else{
+		} else {
 			item.put(ID, entity.getClassName(shortName));
 		}
 		item.put(ATTRIBUTES, parseAttributes(typ, entity.values(), shortName));

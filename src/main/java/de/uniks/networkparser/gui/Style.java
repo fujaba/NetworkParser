@@ -301,14 +301,14 @@ public class Style implements Cloneable{
 			if (border==null) {
 				this.borders.put(position, new GUILine().withColor(color).withWidth(width));
 				this.propertyChange(PROPERTY_BORDER, null, this.borders);
-			}else{
+			} else {
 				if (!border.isCustomLine()) {
 					border.withColor(color);
 					border.withWidth(width);
 					this.propertyChange(PROPERTY_BORDER, null, this.borders);
 				}
 			}
-		}else if (border!=null) {
+		} else if (border!=null) {
 			if (!border.isCustomLine()) {
 				this.borders.remove(position);
 				this.propertyChange(PROPERTY_BORDER, null, this.borders);

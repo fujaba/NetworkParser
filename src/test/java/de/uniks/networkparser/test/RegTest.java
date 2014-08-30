@@ -23,7 +23,7 @@ public class RegTest {
 			// OR-Item
 			Or or = new Or();
 			item.next();
-			while(ch!=']'){
+			while (ch!=']'){
 				or.add( parseCurrentChar(item));
 				ch = item.next();
 			}

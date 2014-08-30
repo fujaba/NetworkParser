@@ -34,7 +34,7 @@ public abstract class AbstractEntityList<V> extends AbstractList<V> implements L
     }
    
 	public boolean add(Iterator<? extends V> list) {
-		while(list.hasNext()) {
+		while (list.hasNext()) {
 			V item = list.next();
 			if (item!=null) {
 				if (!addEntity(item)) {

@@ -177,15 +177,15 @@ public abstract class AbstractList<V> implements BaseItem {
 			}
 		}
 
-		boolean result = addKey(-1, newValue);
-		if (result) {
+		if (addKey(-1, newValue) >= 0) {
 			V beforeElement = null;
 			if (size() > 1) {
 				beforeElement = this.keys.get(size() - 1);
 			}
 			fireProperty(null, newValue, beforeElement, null);
+			return true;
 		}
-		return result;
+		return false;
 	}
 
 	public AbstractList<V> subSet(V fromElement, V toElement) {
@@ -194,7 +194,7 @@ public abstract class AbstractList<V> implements BaseItem {
 		// PRE WHILE
 		int pos=0;
 		int size=size();
-		while(pos<size) {
+		while (pos<size) {
 			if (compare(get(pos), fromElement)>=0) {
 				copyEntity(newList, pos);
 				break;
@@ -203,7 +203,7 @@ public abstract class AbstractList<V> implements BaseItem {
 		}
 	
 		// MUST COPY
-		while(pos<size) {
+		while (pos<size) {
 			if (compare(get(pos), toElement)>=0) {
 				break;
 			}
@@ -256,7 +256,7 @@ public abstract class AbstractList<V> implements BaseItem {
 					copyEntity(newList, pos);
 				}
 				break;
-			}else if (compare>0) {
+			} else if (compare>0) {
 				copyEntity(newList, pos);
 				break;
 			}
@@ -287,14 +287,14 @@ public abstract class AbstractList<V> implements BaseItem {
 					copyEntity(newList, pos);
 				}
 				break;
-			}else if (compare>0) {
+			} else if (compare>0) {
 				copyEntity(newList, pos);
 				break;
 			}
 		}
 
 		// MUST COPY
-		while(pos<size()) {
+		while (pos<size()) {
 			copyEntity(newList, pos++);
 		}
 		return newList;
@@ -555,7 +555,7 @@ public abstract class AbstractList<V> implements BaseItem {
 			if (index>this.keys.size()) {
 				diff = this.keys.size() - 1;
 			}
-    		while( this.keys.get(diff)!=key) {
+    		while ( this.keys.get(diff)!=key) {
     			diff--;
     		}
 			if (index - diff > 1000) {
@@ -564,7 +564,7 @@ public abstract class AbstractList<V> implements BaseItem {
 				 return diff;
 			}
 			index = diff;
-		}else{
+		} else {
 			index=getPositionKey(key);
 	    	if (index<0) {
 	    		return -1;
@@ -622,17 +622,17 @@ public abstract class AbstractList<V> implements BaseItem {
      * @return the position of the Entity or -1
      */
     public int getIndex(Object key) {
-    	return transformIndex( getPositionKey(key), key);
+    	return transformIndexKey( getPositionKey(key), key);
     }
    
-    protected int transformIndex(int index, Object key) {
+    protected int transformIndexKey(int index, Object key) {
        if (this.hashTableKeys != null&& index >=0) {
           if (this.entitySize==2) {
              index = (int) this.hashTableKeys[index + 1];
              if (index >= this.keys.size()) {
                 index = this.keys.size() - 1;
              }
-             while( this.keys.get(index) != key) {
+             while (!this.keys.get(index).equals(key)) {
                 index--;
              }
              return index;
@@ -640,7 +640,7 @@ public abstract class AbstractList<V> implements BaseItem {
        }
        return index;
     }
-       
+
     public AbstractList<V> withCopyList(List<V> reference) {
         this.keys = reference;
         return this;
@@ -658,7 +658,7 @@ public abstract class AbstractList<V> implements BaseItem {
 	public boolean contains(Object o) {
 		return getPositionKey(o)>=0;
 	}
-
+	
     public int getPositionKey(Object o)
     {
         if (this.hashTableKeys != null)
@@ -723,7 +723,7 @@ public abstract class AbstractList<V> implements BaseItem {
    
     @SuppressWarnings("unchecked")
 	public boolean removeAll(Iterator<?> i) {
-		while(i.hasNext()) {
+		while (i.hasNext()) {
 			removeItemByObject((V)i.next());
 		}
 		return true;
@@ -843,18 +843,18 @@ public abstract class AbstractList<V> implements BaseItem {
 	 * @param pos the new Position -1 = End
 	 * @return if value is added
 	 */
-	protected boolean addKey(int pos, V newValue) {
-		boolean result = true;
+	protected int addKey(int pos, V newValue) {
 		if (pos==-1) {
-			result = this.keys.add(newValue);
+			if (!this.keys.add(newValue)){
+				return -1;
+			}
 			pos = this.keys.size();
-		}else{
-			this.keys.add(pos, newValue);
-		}
-		if (result) {
 			this.hashTableAddKey(newValue, pos);
+			return pos;
 		}
-		return result;
+		this.keys.add(pos, newValue);
+		this.hashTableAddKey(newValue, pos);
+		return -1;
 	}
 
 	protected void fireProperty(Object oldElement, Object newElement, Object beforeElement, Object value) {

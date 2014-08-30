@@ -71,7 +71,7 @@ public class HashTableTest
 				if(pos==i){
 					Assert.assertNotNull("not in list", iterator.next());
 					break;
-				}else{
+				} else {
 					iterator.next();
 					pos++;
 				}

@@ -16,7 +16,7 @@ public class Entity {
 		if (attribute.equalsIgnoreCase(PROPERTY_CHILD)) {
 			setChild((Entity) value);
 			return true;
-		}else if (attribute.equalsIgnoreCase(PROPERTY_VALUE)) {
+		} else if (attribute.equalsIgnoreCase(PROPERTY_VALUE)) {
 			withValue((String) value);
 			return true;
 		}
@@ -33,7 +33,7 @@ public class Entity {
 		}
 		if (attribute.equalsIgnoreCase(PROPERTY_CHILD)) {
 			return getChild();
-		}else if (attribute.equalsIgnoreCase(PROPERTY_VALUE)) {
+		} else if (attribute.equalsIgnoreCase(PROPERTY_VALUE)) {
 			return getValue();
 		}
 		return null;

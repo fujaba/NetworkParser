@@ -33,6 +33,10 @@ import de.uniks.networkparser.interfaces.SendableEntityCreatorXML;
 import de.uniks.networkparser.xml.util.XMLGrammar;
 import de.uniks.networkparser.xml.util.XSDEntityCreator;
 
+/**
+ * A Simple XMLIdMap for Decoding and Encoding XML Elements.
+ * @author Stefan Lindel
+ */
 public class XMLSimpleIdMap extends IdMap {
 	/** The Constant ENDTAG. */
 	public static final char ENDTAG = '/';
@@ -47,7 +51,7 @@ public class XMLSimpleIdMap extends IdMap {
 	public static final char SPACE = ' ';
 
 	/** The stopwords. */
-	protected ArrayList<String> stopwords = new ArrayList<String>();
+	private ArrayList<String> stopwords = new ArrayList<String>();
 
 	/**
 	 * Instantiates a new XML id map.
@@ -66,14 +70,36 @@ public class XMLSimpleIdMap extends IdMap {
 		this.stopwords.add("!DOCTYPE");
 	}
 
+	/**
+	 * Add new Stopwords to List.
+	 * @param values The List for add
+	 * @return XMLSimpleIdMap Instance
+	 */
+	public XMLSimpleIdMap withStopwords(String... values) {
+		if (values == null) {
+			return this;
+		}
+		for (String value : values) {
+			if (value != null) {
+				this.stopwords.add(value);
+			}
+		}
+		return this;
+	}
 
 	@Override
 	public Object decode(BaseItem value) {
 		return decode((XMLTokener) new XMLTokener().withText(value.toString()), null);
 	}
 
+	/**
+	 * Decoding Teh XMLTokener with XMLGrammar.
+	 * @param tokener The XMLTokener
+	 * @param factory The XMLGrammar for Structure
+	 * @return teh Model-Instance
+	 */
 	public Object decode(XMLTokener tokener, XMLGrammar factory) {
-		if (factory==null) {
+		if (factory == null) {
 			factory = new XSDEntityCreator();
 		}
 		while (!tokener.isEnd()) {
@@ -88,7 +114,8 @@ public class XMLSimpleIdMap extends IdMap {
 	}
 
 	/**
-	 * Read Json Automatic create JsonArray or JsonObject
+	 * Read Json Automatic create JsonArray or JsonObject.
+	 * @param value Decoding Value
 	 * @return the object
 	 */
 	@Override
@@ -130,7 +157,7 @@ public class XMLSimpleIdMap extends IdMap {
 					if (encoding) {
 						if (value instanceof Collection<?>) {
 							for (Object item : (Collection<?>) value) {
-								xmlEntity.addChild( encode(item));
+								xmlEntity.addChild(encode(item));
 							}
 						} else {
 							SendableEntityCreator valueCreater = getCreatorClass(value);
@@ -240,7 +267,7 @@ public class XMLSimpleIdMap extends IdMap {
 						} while (true);
 						child = parse(newTag, tokener.withPrefix(""), grammar);
 						if (child != null && child instanceof XMLEntity) {
-							grammar.addChildren(entity, (XMLEntity)child);
+							grammar.addChildren(entity, (XMLEntity) child);
 						}
 					} while (child != null);
 				}
@@ -248,8 +275,6 @@ public class XMLSimpleIdMap extends IdMap {
 		}
 		return entity;
 	}
-
-
 
 	/**
 	 * Gets the entity.

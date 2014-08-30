@@ -29,7 +29,7 @@ public class Body implements FilePart{
 		for (int z=0;z<value.length();z++){
 			if(value.charAt(z)=='{'){
 				counter++;
-			}else if(value.charAt(z)=='}'){
+			} else if(value.charAt(z)=='}'){
 				counter--;
 			}
 		}

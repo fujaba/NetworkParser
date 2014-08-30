@@ -54,7 +54,7 @@ public class TableList extends AbstractEntityList<Object> implements SendableEnt
         if (PROPERTY_ITEMS.equalsIgnoreCase(attrName)) {
             add(value);
             return true;
-        }else if ((PROPERTY_ITEMS+IdMapEncoder.REMOVE).equalsIgnoreCase(attrName)) {
+        } else if ((PROPERTY_ITEMS+IdMapEncoder.REMOVE).equalsIgnoreCase(attrName)) {
             remove(value);
             return true;
         }
@@ -154,7 +154,7 @@ public class TableList extends AbstractEntityList<Object> implements SendableEnt
 		if (comparator!=null) {
 			if (comparator.getColumn() != null && comparator.getColumn().equals(field)) {
 				comparator.changeDirection();
-			}else{
+			} else {
 				comparator.withColumn(field);
 			}
 			refreshSort();
@@ -190,7 +190,7 @@ public class TableList extends AbstractEntityList<Object> implements SendableEnt
 					Object item = i.next();
 					returnValues[pos++] = cellCreator.getCellValue(item, creator, column);
 				}
-			}else{
+			} else {
 				int pos=super.size()-1;
 				for (Iterator<Object> i = iterator();i.hasNext();) {
 					Object item = i.next();

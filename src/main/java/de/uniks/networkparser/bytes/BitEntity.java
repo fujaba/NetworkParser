@@ -155,7 +155,7 @@ public class BitEntity extends AbstractEntityList<BitValue> implements ByteItem,
 				this.property = "" + value;
 			} else if (value instanceof BitEntity) {
 				this.add((BitValue) value);
-			}else{
+			} else {
 				this.typ = BIT_STRING;
 				this.property = "" + value;
 			}

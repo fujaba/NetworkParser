@@ -180,7 +180,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	public Object getObject(String key) {
 		Object result = null;
 		try{
-			result = this.keyValue.getValue(key);
+			result = this.keyValue.getValueItem(key);
 		}catch(ConcurrentModificationException e) {
 			if (this.logger.error(this, "getObject", NetworkParserLog.ERROR_TYP_CONCURRENTMODIFICATION, key)) {
 				throw e;
@@ -355,7 +355,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 					Object refValue = filter.getRefByEntity(value);
 					if (refValue != null) {
 						creatorClass.setValue(newObject, property, refValue, IdMapEncoder.NEW);
-					}else{
+					} else {
 						SendableEntityCreator childCreatorClass = getCreatorClass(value);
 						if (childCreatorClass != null) {
 							if (!filter.isConvertable(this, reference,
@@ -544,7 +544,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	public Set<java.util.Map.Entry<String, Object>> entrySet() {
 		LinkedHashSet<java.util.Map.Entry<String, Object>> list= new LinkedHashSet<java.util.Map.Entry<String, Object>>();
 		for (String key : keyValue.keySet()) {
-			list.add(new MapEntry().with(key, keyValue.getValue(key)));
+			list.add(new MapEntry().with(key, keyValue.getValueItem(key)));
 		}
 		return list;
 	}

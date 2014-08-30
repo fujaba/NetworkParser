@@ -1164,7 +1164,7 @@ package de.uniks.networkparser.test;
 //        Matcher m = matcher(input);
 //
 //        // Add segments before each match found
-//        while(m.find()) {
+//        while (m.find()) {
 //            if (!matchLimited || matchList.size() < limit - 1) {
 //                String match = input.subSequence(index, m.start()).toString();
 //                matchList.add(match);
@@ -1330,7 +1330,7 @@ package de.uniks.networkparser.test;
 //                sequenceBuffer = new StringBuilder();
 //                sequenceBuffer.appendCodePoint(lastCodePoint);
 //                sequenceBuffer.appendCodePoint(c);
-//                while(Character.getType(c) == Character.NON_SPACING_MARK) {
+//                while (Character.getType(c) == Character.NON_SPACING_MARK) {
 //                    i += Character.charCount(c);
 //                    if (i >= patternLength)
 //                        break;
@@ -1365,7 +1365,7 @@ package de.uniks.networkparser.test;
 //
 //        i++;
 //        charClass.append("[");
-//        while(true) {
+//        while (true) {
 //            int c = normalizedPattern.codePointAt(i);
 //            StringBuilder sequenceBuffer;
 //
@@ -1375,7 +1375,7 @@ package de.uniks.networkparser.test;
 //            } else if (Character.getType(c) == Character.NON_SPACING_MARK) {
 //                sequenceBuffer = new StringBuilder();
 //                sequenceBuffer.appendCodePoint(lastCodePoint);
-//                while(Character.getType(c) == Character.NON_SPACING_MARK) {
+//                while (Character.getType(c) == Character.NON_SPACING_MARK) {
 //                    sequenceBuffer.appendCodePoint(c);
 //                    i += Character.charCount(c);
 //                    if (i >= normalizedPattern.length())
@@ -1670,7 +1670,7 @@ package de.uniks.networkparser.test;
 //     * Used to print out a subtree of the Pattern to help with debugging.
 //     */
 //    private static void printObjectTree(Node node) {
-//        while(node != null) {
+//        while (node != null) {
 //            if (node instanceof Prolog) {
 //                System.out.println(node);
 //                printObjectTree(((Prolog)node).loop);
@@ -2184,7 +2184,7 @@ package de.uniks.networkparser.test;
 //     */
 //    private Node ref(int refNum) {
 //        boolean done = false;
-//        while(!done) {
+//        while (!done) {
 //            int ch = peek();
 //            switch(ch) {
 //            case '0':
@@ -2602,7 +2602,7 @@ package de.uniks.networkparser.test;
 //        } else {
 //            int i = cursor;
 //            mark('}');
-//            while(read() != '}') {
+//            while (read() != '}') {
 //            }
 //            mark('\000');
 //            int j = cursor;

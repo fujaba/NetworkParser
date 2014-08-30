@@ -40,7 +40,7 @@ public interface BidiMap<K,V> {
 
 	public BidiMap<K,V> with(K key, V value);
 
-	public Object getValue(Object key);
+	public Object getValueItem(Object key);
 
 	public K getKey(V key);
 }

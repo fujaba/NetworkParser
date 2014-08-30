@@ -26,7 +26,7 @@ public class RestCounter extends SimpleIdCounter{
 	public RestCounter(String path) {
 		if (path.endsWith("/")) {
 			this.prefixId = path;
-		}else{
+		} else {
 			this.prefixId = path+ "/";
 		}
 	}

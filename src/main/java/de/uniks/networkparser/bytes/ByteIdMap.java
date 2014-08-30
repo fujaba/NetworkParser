@@ -208,7 +208,7 @@ public class ByteIdMap extends IdMap {
             if (id>0) {
             	if (id <= Byte.MAX_VALUE) {
             		msg.add(new ByteEntity().withValue(DATATYPE_CLAZZTYP, (byte)id));
-            	}else{
+            	} else {
             		msg.add(new ByteEntity().withValue(DATATYPE_CLAZZTYPLONG, (byte)id));
             	}
 	           return true;
@@ -226,7 +226,7 @@ public class ByteIdMap extends IdMap {
             byte[] bytes = clazzName.getBytes(bf.getCharset());
             if (id <= Byte.MAX_VALUE) {
             	msg.add(new ByteEntity().withValue(DATATYPE_CLAZZNAME, bytes));
-            }else{
+            } else {
             	msg.add(new ByteEntity().withValue(DATATYPE_CLAZZNAMELONG, bytes));
             }
             return true;
@@ -248,7 +248,7 @@ public class ByteIdMap extends IdMap {
 			// Must be a assoc
 			if (id <= Byte.MAX_VALUE) {
 		         return new ByteEntity().withValue(DATATYPE_ASSOC, (byte) id);
-			}else{
+			} else {
 				 return new ByteEntity().withValue(DATATYPE_ASSOCLONG, id);
 			}
 	    }
@@ -447,7 +447,7 @@ public class ByteIdMap extends IdMap {
 							Object item = i.next();
 							eventCreater.setValue(entity, property, item, IdMapEncoder.NEW);
 						}
-					}else{
+					} else {
 						eventCreater.setValue(entity, property, value, IdMapEncoder.NEW);
 					}
 				}
@@ -568,7 +568,7 @@ public class ByteIdMap extends IdMap {
 			} else if (group == ByteIdMap.DATATYPE_LIST) {
 				int start = buffer.position();
 				ArrayList<Object> values= new ArrayList<Object>();
-				while(start+len-buffer.position()>0) {
+				while (start+len-buffer.position()>0) {
 					Object value = decodeValue(buffer, start+len-buffer.position());
 					if (value!=null) {
 						values.add(value);
@@ -578,14 +578,14 @@ public class ByteIdMap extends IdMap {
 			} else if (group == ByteIdMap.DATATYPE_MAP) {
 				int start = buffer.position();
 				ArrayList<Object> values= new ArrayList<Object>();
-				while(start+len-buffer.position()>0) {
+				while (start+len-buffer.position()>0) {
 					Object subValues = decodeValue(buffer, start+len-buffer.position());
 					if (subValues!=null && subValues instanceof List<?>) {
 						List<?> list=(List<?>) subValues;
 						if (list.size()==2) {
 							values.add(new ObjectMapEntry().with(list.get(0), list.get(1)));
 						}
-					}else{
+					} else {
 						break;
 					}
 				}
@@ -596,7 +596,7 @@ public class ByteIdMap extends IdMap {
 					return null;
 				}
 				ArrayList<Object> values= new ArrayList<Object>();
-				while(start+len-buffer.position()>0) {
+				while (start+len-buffer.position()>0) {
 					values.add( decodeValue(buffer, start+len-buffer.position()));
 				}
 				return values;

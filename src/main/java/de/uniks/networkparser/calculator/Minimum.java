@@ -32,7 +32,7 @@ public class Minimum implements Operator {
 	public double calculate(Double[] values) {
 		if (values[0]<values[1]) {
 			return values[0];
-		}else{
+		} else {
 			return values[1];
 		}
 	}

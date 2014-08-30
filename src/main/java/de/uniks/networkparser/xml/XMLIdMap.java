@@ -58,21 +58,18 @@ public class XMLIdMap extends XMLSimpleIdMap {
 		this.filter.withIdFilter(BooleanCondition.value(false));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.sdmlib.serialization.IdMap#addCreator(org.sdmlib.serialization.interfaces
-	 * .SendableEntityCreator)
+	/**
+	 * @param createrClass new Creator
+	 * @return Boolean for add the new Creator
 	 */
 	public boolean addCreator(SendableEntityCreator createrClass) {
 		if (createrClass instanceof SendableEntityCreatorXML) {
 			if (this.decoderMap != null) {
-				if (this.decoderMap.containsKey(((SendableEntityCreatorXML)createrClass).getTag())) {
+				if (this.decoderMap.containsKey(((SendableEntityCreatorXML) createrClass).getTag())) {
 					return false;
 				}
 			}
-		}else{
+		} else {
 			return false;
 		}
 		super.withCreator(createrClass);
@@ -299,7 +296,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 				refObject = tokener.popStack();
 			}
 			if (refObject != null) {
-				if (newPrefix.length()>1) {
+				if (newPrefix.length() > 1) {
 					newPrefix = newPrefix.substring(0, newPrefix.length() - 1);
 				}
 				SendableEntityCreator parentCreator = refObject.getCreater();
@@ -313,12 +310,9 @@ public class XMLIdMap extends XMLSimpleIdMap {
 	/**
 	 * Find tag.
 	 *
-	 * @param entity
-	 *            the entity
-	 * @param tokener
-	 *            the tokener
-	 * @param grammar
-	 *            the grammar
+	 * @param entity The Entity
+	 * @param tokener the Tokener
+	 * @param grammar the grammar of XML.
 	 * @return the object
 	 */
 	@Override
@@ -328,12 +322,12 @@ public class XMLIdMap extends XMLSimpleIdMap {
 			return null;
 		}
 		SendableEntityCreatorXML entityCreater = getCreatorDecodeClass(tag);
-		if (entityCreater!=null || tokener.getStackSize()>0) {
+		if (entityCreater != null || tokener.getStackSize() > 0) {
 			return parseIdEntity(entity, grammar, tokener, entityCreater);
 		}
 		// Must be a Child of Root
-		ArrayList<SendableEntityCreatorXML> filter= new ArrayList<SendableEntityCreatorXML>();
-		for (Iterator<SendableEntityCreator> i = iterator();i.hasNext();) {
+		ArrayList<SendableEntityCreatorXML> filter = new ArrayList<SendableEntityCreatorXML>();
+		for (Iterator<SendableEntityCreator> i = iterator(); i.hasNext();) {
 			SendableEntityCreator creator = i.next();
 			if (creator instanceof SendableEntityCreatorXML) {
 				SendableEntityCreatorXML xmlCreator = (SendableEntityCreatorXML) creator;
@@ -342,13 +336,13 @@ public class XMLIdMap extends XMLSimpleIdMap {
 				}
 			}
 		}
-		while(filter.size()>1) {
+		while (filter.size() > 1) {
 			while (!tokener.isEnd()) {
 				if (tokener.stepPos("" + ITEMSTART, false, false)) {
 					XMLEntity item = getEntity(grammar, tokener);
 					if (item != null) {
-						tag+=XMLIdMap.ENTITYSPLITTER+item.getTag();
-						for (Iterator<SendableEntityCreatorXML> i=filter.iterator();i.hasNext();) {
+						tag += XMLIdMap.ENTITYSPLITTER + item.getTag();
+						for (Iterator<SendableEntityCreatorXML> i = filter.iterator(); i.hasNext();) {
 							if (!i.next().getTag().startsWith(tag)) {
 								i.remove();
 							}
@@ -357,33 +351,33 @@ public class XMLIdMap extends XMLSimpleIdMap {
 				}
 			}
 		}
-		if (filter.size()==1) {
+		if (filter.size() == 1) {
 			return parseIdEntity(entity, grammar, tokener.withPrefix(""), filter.get(0));
 		}
 		return null;
 	}
 
-	/** Parse a Element with IdCreater
+	/** Parse a Element with IdCreater.
 	 * @param entity    The Entity
 	 * @param grammar	The Grammar of XML
 	 * @param tokener	The XML-Tokener
-	 * @param entityCreater The Entity-Factory
+	 * @param creator The Entity-Factory
 	 * @return the Object
 	 */
-	protected Object parseIdEntity(XMLEntity entity, XMLGrammar grammar, XMLTokener tokener,  SendableEntityCreatorXML entityCreater) {
+	protected Object parseIdEntity(XMLEntity entity, XMLGrammar grammar, XMLTokener tokener, SendableEntityCreatorXML creator) {
 		boolean plainvalue = false;
 		Object item = null;
 
 		String newPrefix = "";
 		String tag = entity.getTag();
-		if (entityCreater == null) {
+		if (creator == null) {
 			if (tokener.getStackSize() == 0) {
 				return null;
 			}
 			// Not found child creater
 			ReferenceObject referenceObject = tokener.getStackLast(0);
-			entityCreater = (SendableEntityCreatorXML) referenceObject.getCreater();
-			String[] properties = entityCreater.getProperties();
+			creator = (SendableEntityCreatorXML) referenceObject.getCreater();
+			String[] properties = creator.getProperties();
 			tokener.addPrefix(tag);
 			if (isCaseSensitive()) {
 				for (String prop : properties) {
@@ -398,7 +392,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 						break;
 					}
 				}
-			}else{
+			} else {
 				for (String prop : properties) {
 					if (prop.equalsIgnoreCase(tokener.getPrefix())) {
 						// It is a Attribute
@@ -418,9 +412,9 @@ public class XMLIdMap extends XMLSimpleIdMap {
 				tokener.addPrefix(XMLIdMap.ATTRIBUTEVALUE);
 			}
 		} else {
-			item = entityCreater.getSendableInstance(false);
+			item = creator.getSendableInstance(false);
 			tokener.withStack(new ReferenceObject()
-						.withCreator(entityCreater)
+						.withCreator(creator)
 						.withProperty(tag)
 						.withEntity(item));
 			newPrefix = XMLIdMap.ENTITYSPLITTER;
@@ -467,7 +461,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 							if (tokener.stepPos("\"", false, true)) {
 								String value = tokener.substring(start, -1);
 								tokener.next();
-								entityCreater.setValue(item,
+								creator.setValue(item,
 										tokener.getPrefix() + key, value, IdMapEncoder.NEW);
 							}
 						}
@@ -524,28 +518,14 @@ public class XMLIdMap extends XMLSimpleIdMap {
 			} else {
 				tokener.next();
 				int start = tokener.position();
-				tokener.stepPos(ITEMSTART+ "/" +tag, true, true);
+				tokener.stepPos(ITEMSTART + "/" + tag, true, true);
 				String value = tokener.substring(start, tokener.position() - tag.length() - 1);
-				entityCreater.setValue(item, tokener.getPrefix(), value, IdMapEncoder.NEW);
+				creator.setValue(item, tokener.getPrefix(), value, IdMapEncoder.NEW);
 //				tokener.stepPos("" + ITEMSTART, false, false);
 				tokener.stepPos("" + ITEMEND, false, false);
 			}
 			return null;
 		}
 		return item;
-	}
-
-	/**
-	 * Adds the stop words.
-	 *
-	 * @param stopwords
-	 *            the stopwords
-	 * @return true, if successful
-	 */
-	public boolean addStopWords(String... stopwords) {
-		for (String stopword : stopwords) {
-			this.stopwords.add(stopword);
-		}
-		return true;
 	}
 }
