@@ -249,7 +249,7 @@ public abstract class Tokener {
 	      if (nextStep) {
 	    	  next();
 	      }
-	      if ( (isQuote && allowQuote) || mustQuote) {
+	      if ((isQuote && allowQuote) || mustQuote) {
 	    	  return this.buffer.substring(startpos, endPos - startpos - 1);
 	      }
 

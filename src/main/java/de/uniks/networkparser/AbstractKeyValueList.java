@@ -86,7 +86,7 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 	}
 
 	public void add(int index, K key, V value) {
-    	if ( ! contains(key)) {
+    	if (! contains(key)) {
     		addKey(index, key);
     		addValue(index, value);
     		K beforeValue = null;
@@ -125,7 +125,7 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 			}
 		}
 
-		if ( addKey( -1 , key) < 0) {
+		if (addKey(-1 , key) < 0) {
 			return false;
 		}
 		addValue(-1, value);
@@ -296,7 +296,7 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
               if (index >= this.values.size()) {
                  index = this.values.size() - 1;
               }
-              while ( this.values.get(index) != value) {
+              while (this.values.get(index) != value) {
                  index--;
               }
               return index;

@@ -166,7 +166,7 @@ public class AES {
 	}
 
 	public String encodeBytes(byte[] plain) {
-		return converter.toString( encode(plain));
+		return converter.toString(encode(plain));
 	}
 
 	public String encode(String data) {
@@ -256,7 +256,7 @@ public class AES {
 	}
 
 	public byte[] decodeString(String value) {
-		return converter.decode( decode( value));
+		return converter.decode(decode(value));
 	}
 
 	/**

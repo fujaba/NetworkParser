@@ -353,7 +353,7 @@ public class Column {
 			this.numberFormat = "[" +value+ "]";
 			return this;
 		}
-		this.numberFormat= this.numberFormat.substring(0, this.numberFormat.length()-1)+ "," +value+ "]";
+		this.numberFormat= this.numberFormat.substring(0, this.numberFormat.length()-1) + "," +value+ "]";
 		return this;
 	}
 }

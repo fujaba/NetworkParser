@@ -43,7 +43,7 @@ public class Or implements Condition, SendableEntityCreator {
 	public boolean matches(ValuesSimple values) {
 		boolean result = true;
 		for (Condition condition : list) {
-			if (!condition.matches( values)) {
+			if (!condition.matches(values)) {
 				result = false;
 			}
 		}
@@ -54,7 +54,7 @@ public class Or implements Condition, SendableEntityCreator {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		for (Condition condition : list) {
-			sb.append("[" +condition.toString()+ " ");
+			sb.append("[" + condition.toString() + " ");
 		}
 		sb.trimToSize();
 		sb.append("]");

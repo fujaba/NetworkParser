@@ -597,7 +597,7 @@ public class ByteIdMap extends IdMap {
 				}
 				ArrayList<Object> values= new ArrayList<Object>();
 				while (start+len-buffer.position()>0) {
-					values.add( decodeValue(buffer, start+len-buffer.position()));
+					values.add(decodeValue(buffer, start+len-buffer.position()));
 				}
 				return values;
 			}

@@ -198,7 +198,7 @@ public class JsonTokener extends Tokener {
 			}
 			c = nextStartClean();
 			if (c == '=') {
-				if (charAt(position()+1) == '>') {
+				if (charAt(position() +1) == '>') {
 					next();
 				}
 			} else if (c != ':') {
@@ -240,7 +240,7 @@ public class JsonTokener extends Tokener {
 					return;
 				default:
 					if (logger.error(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entityList)) {
-						throw new RuntimeException("Expected a ',' or ']' not '" +getCurrentChar()+ "'");
+						throw new RuntimeException("Expected a ',' or ']' not '" +getCurrentChar() + "'");
 					}
 					return;
 				}

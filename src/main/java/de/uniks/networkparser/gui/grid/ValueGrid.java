@@ -183,7 +183,7 @@ public class ValueGrid {
 		GridStyle[] items = children.keySet().toArray(new GridStyle[children.size()]);
 		for (GridStyle cell : items) {
 			if (cell.getRow()>=offset) {
-				cell.withRow(cell.getRow()+1);
+				cell.withRow(cell.getRow() +1);
 				if (guiElement!=null) {
 					guiElement.move(cell);
 				}

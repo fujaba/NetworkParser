@@ -25,12 +25,12 @@ package de.uniks.networkparser.calculator;
 public class RegExParser {
 	public static Boolean regex(String str, String pattern)
 	    {
-	        if ( str == null || str.isEmpty() || pattern == null || pattern.isEmpty()) {
+	        if (str == null || str.isEmpty() || pattern == null || pattern.isEmpty()) {
 	            return false;
 	        }
 
 	        for (int i = 0; i < str.length(); i++) {
-	            if ( match(str.substring(i), pattern)) {
+	            if (match(str.substring(i), pattern)) {
 	                return true;
 	            }
 	        }
@@ -40,14 +40,14 @@ public class RegExParser {
 
 	    private static Boolean match(String str, String pattern)
 	    {
-	        if ( pattern.length() == 2 && pattern.charAt(1) == '*') {
+	        if (pattern.length() == 2 && pattern.charAt(1) == '*') {
 	            return true;
 	        }
-	        else if ( str.isEmpty()  || pattern.isEmpty()) {
+	        else if (str.isEmpty()  || pattern.isEmpty()) {
 	            return false;
 	        }
 	        else {
-	            if ( (pattern.length() > 1 && pattern.charAt(1) == '*')) {
+	            if ((pattern.length() > 1 && pattern.charAt(1) == '*')) {
 	                int index = 0;
 	                while (index < str.length()  &&
 	                       (pattern.charAt(0) == str.charAt(index) || pattern.charAt(0) == '.')) {
@@ -58,7 +58,7 @@ public class RegExParser {
 	                }
 	                return match(str, pattern.substring(2)) || pattern.length() == 2;
 	            }
-	            else if ( (pattern.length() > 1 && pattern.charAt(1) == '+') )
+	            else if ((pattern.length() > 1 && pattern.charAt(1) == '+') )
 	            {
 	                int index = 0;
 	                boolean match = false;
@@ -73,7 +73,7 @@ public class RegExParser {
 	                return match && match(str.substring(1), pattern.substring(2)) || match && pattern.length() == 2;
 
 	            }
-	            else if ( pattern.charAt(0) == str.charAt(0) || pattern.charAt(0) == '.') {
+	            else if (pattern.charAt(0) == str.charAt(0) || pattern.charAt(0) == '.') {
 	                if (pattern.length() == 1) {
 	                    return true;
 	                }

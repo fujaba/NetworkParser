@@ -149,7 +149,7 @@ public class Filter {
 		}
 		for (Object item : visitedObject) {
 			if (item != null) {
-				this.visitedObjects.add( item);
+				this.visitedObjects.add(item);
 			}
 		}
 		return this;

@@ -50,10 +50,10 @@ public abstract class AbstractEntity<K, V> implements BaseItem, Entry<K, V>, Sen
 	private V value;
 
 	@SuppressWarnings("unchecked")
-	public <ST extends AbstractEntity<K,V>> ST with(K key, V value) {
+	public <ST extends AbstractEntity<K, V>> ST with(K key, V value) {
 		this.key = key;
 		this.value = value;
-		return (ST)this;
+		return (ST) this;
 	}
 
 	public abstract AbstractEntity<K, V> withKeyItem(Object key);
@@ -88,9 +88,9 @@ public abstract class AbstractEntity<K, V> implements BaseItem, Entry<K, V>, Sen
 
 	public String getKeyString() {
 		if (key instanceof String) {
-			return "" +key;
+			return "" + key;
 		}
-		throw new RuntimeException("Key is not a String <" +key+ ">");
+		throw new RuntimeException("Key is not a String <"  + key + ">");
 	}
 
 	@Override

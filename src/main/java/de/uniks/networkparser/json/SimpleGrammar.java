@@ -83,9 +83,9 @@ public class SimpleGrammar extends Grammar{
 		int pos = name.lastIndexOf(".");
 		counter.withPrefixId(null);
 		if (pos>0) {
-			return name.substring(pos+1)+counter.getSplitter()+counter.getId(obj);
+			return name.substring(pos+1) +counter.getSplitter() +counter.getId(obj);
 		} else {
-			return name+counter.getSplitter()+counter.getId(obj);
+			return name+counter.getSplitter() +counter.getId(obj);
 		}
 	}
 
