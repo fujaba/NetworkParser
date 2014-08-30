@@ -139,9 +139,9 @@ public class JsonIdMap extends IdMap {
 			return null;
 		}
 		if (creator instanceof SendableEntityCreatorNoIndex) {
-		}else if (!filter.isId(this, entity, className)) {
+		} else if (!filter.isId(this, entity, className)) {
 			filter.withObjects(entity);
-		}else{
+		} else {
 			id = getId(entity);
 			filter.withObjects(id);
 		}
@@ -656,7 +656,7 @@ public class JsonIdMap extends IdMap {
 					jsonArray.add(jsonObject);
 				}
 			}
-		}else if (!filter.hasObjects(entity)) {
+		} else if (!filter.hasObjects(entity)) {
 			jsonObject.put(CLASS, className);
 			if (!sortedArray) {
 				jsonArray.add(jsonObject);
@@ -673,7 +673,7 @@ public class JsonIdMap extends IdMap {
 		String[] properties = creator.getProperties();
 		if (isId) {
 			filter.withObjects(id);
-		}else{
+		} else {
 			filter.withObjects(entity);
 		}
 
@@ -811,7 +811,7 @@ public class JsonIdMap extends IdMap {
 	public void garbageCollection(List<String> classCounts) {
 		for (String id : this.keyValue.keySet()) {
 			if (!classCounts.contains(id)) {
-				this.keyValue.without(id, this.keyValue.getValue(id));
+				this.keyValue.without(id, this.keyValue.getValueItem(id));
 			}
 		}
 	}

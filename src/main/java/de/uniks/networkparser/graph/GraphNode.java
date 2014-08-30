@@ -51,7 +51,7 @@ public class GraphNode extends AbstractEntityList<GraphMember> {
 	public String getTyp(String typ, boolean shortName) {
 		if (typ.equals(GraphIdMap.OBJECT)) {
 			return getId();
-		}else if (typ.equals(GraphIdMap.CLASS)) {
+		} else if (typ.equals(GraphIdMap.CLASS)) {
 			return getClassName(shortName);
 		}
 		return "";
@@ -60,7 +60,7 @@ public class GraphNode extends AbstractEntityList<GraphMember> {
 	public GraphNode withTyp(String typ, String value) {
 		if (typ.equals(GraphIdMap.OBJECT)) {
 			withId(value);
-		}else if (typ.equals(GraphIdMap.CLASS)) {
+		} else if (typ.equals(GraphIdMap.CLASS)) {
 			withClassName(value);
 		}
 		return this;

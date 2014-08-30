@@ -23,8 +23,13 @@ package de.uniks.networkparser.xml;
 */
 import de.uniks.networkparser.gui.Style;
 
+/**
+ * Style Element of XML.
+ * @author Stefan
+ */
 public class XMLStyledEntity extends XMLEntity  {
-	private Style style= new Style();
+	/** The Styles of XMLStyledEntity. */
+	private Style style = new Style();
 
 	@Override
 	protected void toStringChildren(StringBuilder sb, int indentFactor, int intent) {
@@ -46,7 +51,12 @@ public class XMLStyledEntity extends XMLEntity  {
 		}
 	}
 
-
+	/**
+	 * Set new Value of Attribute.
+	 * @param attribute The Attribute Key
+	 * @param value The new Value of Attribute
+	 * @return succes of set of the Value
+	 */
 	public boolean set(String attribute, Object value) {
 		if (style.set(attribute, value)) {
 			return true;
@@ -54,20 +64,26 @@ public class XMLStyledEntity extends XMLEntity  {
 		return false;
 	}
 
+	/** Get The Value of Attribute.
+	 * @param key The Key of Attribute
+	 * @return The Value of Attribute
+	 */
 	public Object get(String key) {
-		Object attrValue=style.get(key);
-		if (attrValue!=null) {
+		Object attrValue = style.get(key);
+		if (attrValue != null) {
 			return attrValue;
 		}
 		return super.get(key);
 	}
 
-
+	/** @return Is XML is Bold */
 	public boolean isBold() {
 		return style.isBold();
 	}
 
-
+	/**
+	 * @param value The new Option of Bold
+	 */
 	public void setBold(boolean value) {
 		style.withBold(value);
 	}

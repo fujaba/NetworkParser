@@ -21,9 +21,9 @@ public class Change {
 		}
 		if (attribute.equalsIgnoreCase(PROPERTY_KEY)) {
 			return getKey();
-		}else if (attribute.equalsIgnoreCase(PROPERTY_VALUE)) {
+		} else if (attribute.equalsIgnoreCase(PROPERTY_VALUE)) {
 			return getValue();
-		}else if(attribute.equalsIgnoreCase(PROPERTY_LIST)) {
+		} else if(attribute.equalsIgnoreCase(PROPERTY_LIST)) {
 			return getList();
 		}
 		return null;
@@ -33,10 +33,10 @@ public class Change {
 		if (attribute.equalsIgnoreCase(PROPERTY_KEY)) {
 			setKey((Long) value);
 			return true;
-		}else if (attribute.equalsIgnoreCase(PROPERTY_VALUE)) {
+		} else if (attribute.equalsIgnoreCase(PROPERTY_VALUE)) {
 			setValue((JsonObject) value);
 			return true;
-		}else if(attribute.equalsIgnoreCase(PROPERTY_LIST)) {
+		} else if(attribute.equalsIgnoreCase(PROPERTY_LIST)) {
 			setList((JsonArray) value);
 			return true;
 		}

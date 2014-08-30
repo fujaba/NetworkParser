@@ -129,7 +129,7 @@ public class DateTimeEntity  {
 		long temp=yearMillis;
 		long day=0;
 		if (isLeapYear(year)) {
-			while(temp>0) {
+			while (temp>0) {
 				temp -= getMonthLengthLP(month++)*ONE_DAY;
 			}
 			day = (temp + getMonthLengthLP(month-1)*ONE_DAY)/ONE_DAY;
@@ -137,8 +137,8 @@ public class DateTimeEntity  {
 				temp += getMonthLengthLP(--month)*ONE_DAY;
 				day = (temp + getMonthLengthLP(month-1)*ONE_DAY)/ONE_DAY;
 			}
-		}else{
-			while(temp>0) {
+		} else {
+			while (temp>0) {
 				temp -= MONTH_LENGTH[month++]*ONE_DAY;
 			}
 			day = (temp + MONTH_LENGTH[month-1]*ONE_DAY)/ONE_DAY;
@@ -151,7 +151,7 @@ public class DateTimeEntity  {
 		long daymillis=time % ONE_DAY;
 		if (daymillis>ONE_DAY/2) {
 			this.fields.put(DateField.AMPM, 1L);
-		}else{
+		} else {
 			this.fields.put(DateField.AMPM, 0L);
 		}
 		long hour=daymillis/ONE_HOUR;
@@ -162,11 +162,11 @@ public class DateTimeEntity  {
 		if (calc) {
 			if (month>3&&month<10) {
 				return true;
-			}else if (month==3&&leftDays<7) {
+			} else if (month==3&&leftDays<7) {
 				if ((7-dayOfWeek)>=leftDays || (dayOfWeek==7 && hour>=3)) {
 					return true;
 				}
-			}else if (month==10&&leftDays<7 || (dayOfWeek==7 && hour<3)) {
+			} else if (month==10&&leftDays<7 || (dayOfWeek==7 && hour<3)) {
 				if ((7-dayOfWeek)<leftDays) {
 					return true;
 				}
@@ -268,7 +268,7 @@ public class DateTimeEntity  {
 	
 		if (oldValue!=null) {
 			set(field, oldValue + value);
-		}else{
+		} else {
 			set(field, value);
 		}
 	}

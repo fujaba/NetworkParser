@@ -57,7 +57,7 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator>{
 	 */
 	public SendableEntityCreator getCreator(String clazz, boolean fullName) {
 		if (fullName) {
-			return (SendableEntityCreator) this.creators.getValue(clazz);
+			return (SendableEntityCreator) this.creators.getValueItem(clazz);
 		}
 		clazz = "." + clazz;
 		for (Iterator<Entry<String, SendableEntityCreator>> i = this.creators

@@ -49,7 +49,7 @@ public class EMFGrammar extends Grammar{
 			SendableEntityCreator result = getCreator(value, map);
 			if(result!=null){
 				props.put(key, new JsonObject().withValue(SRC, value));
-			}else{
+			} else {
 				props.put(key, value);
 			}
 		}

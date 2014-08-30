@@ -348,7 +348,7 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 				if (value instanceof AbstractEntity<?,?>) {
 					AbstractEntity<?,?> item = (AbstractEntity<?, ?>) value;
 					this.put(item.getKeyString(), item.getValue());
-				}else if (value instanceof Map<?,?>) {
+				} else if (value instanceof Map<?,?>) {
 					this.withMap( (Map<?,?>) value);
 				}
 			}
@@ -401,7 +401,7 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 		if (pos>=0) {
 	    	if (this.hashTableValues != null) {
 	    		this.hashTableValues[pos] = value;
-	    		pos = transformIndex(pos, key);
+	    		pos = transformIndexKey(pos, key);
 	    	}
 			return this.values.set(pos, value);
 		}

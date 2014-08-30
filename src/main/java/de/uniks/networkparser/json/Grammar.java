@@ -41,7 +41,7 @@ public class Grammar {
 			if (jsonObject.has(JsonIdMap.JSON_PROPS)) {
 				return jsonObject.getJsonObject(JsonIdMap.JSON_PROPS);
 			}
-		}else{
+		} else {
 			JsonObject props= new JsonObject();
 			for (int i=0;i<jsonObject.size();i++) {
 				if (!JsonIdMap.CLASS.equalsIgnoreCase(jsonObject.get(i))) {

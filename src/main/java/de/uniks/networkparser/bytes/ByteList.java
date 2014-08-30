@@ -95,7 +95,7 @@ public class ByteList extends AbstractEntityList<ByteItem> implements ByteItem, 
 		byte typ;
 		if (isPrimitive) {
 			typ=ByteIdMap.DATATYPE_CLAZZSTREAM;
-		}else{
+		} else {
 			typ = ByteUtil.getTyp(getTyp(), size, last);
 		}
 		ByteUtil.writeByteHeader(buffer, typ, size);
@@ -129,7 +129,7 @@ public class ByteList extends AbstractEntityList<ByteItem> implements ByteItem, 
 			// HEADER + VALUE
 			isPrimitive = isPrimitive && this.keys.get(0).getTyp()==ByteIdMap.DATATYPE_CLAZZTYP;
 			if (this.keys.get(size-1).getTyp()==ByteIdMap.DATATYPE_NULL) {nullerBytes++;}
-		}else{
+		} else {
 			isPrimitive=false;
 		}
 		length=this.keys.get(size-1).calcLength(isDynamic, true);

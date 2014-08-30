@@ -41,7 +41,7 @@ public class SourceItem {
 			FilePart activ=headerBBuilder;
 			String line=in.readLine();
 			
-			while(line!=null){
+			while (line!=null){
 				if(line.startsWith("package ")){
 					packageBuilder.append(line+CRLF);
 					line=in.readLine();
@@ -101,9 +101,9 @@ public class SourceItem {
 			if(pos>0){
 				custom = comment.substring(pos);
 			}
-		}else if(comment.startsWith(STARTCOMMENT)){
+		} else if(comment.startsWith(STARTCOMMENT)){
 			custom = comment.substring(STARTCOMMENT.length());
-		}else if(comment.startsWith(STARTCOMMENTEXT)){
+		} else if(comment.startsWith(STARTCOMMENTEXT)){
 			custom = comment.substring(STARTCOMMENTEXT.length());
 		}
 

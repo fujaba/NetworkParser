@@ -58,7 +58,7 @@ public class McCabe {
             index = 0;
             for (int i = 0; i < allText.length(); i++)
             {
-                    index = allText.indexOf("while(", index);
+                    index = allText.indexOf("while (", index);
                     if(index != -1)
                     {
                             if(checkQuotes(allText, index))

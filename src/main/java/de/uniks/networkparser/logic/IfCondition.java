@@ -65,7 +65,7 @@ public class IfCondition implements Condition, SendableEntityCreator {
 			if (trueCondition!=null) {
 				return trueCondition.matches(values);
 			}
-		}else{
+		} else {
 			if (falseCondition!=null) {
 				return falseCondition.matches(values);
 			}

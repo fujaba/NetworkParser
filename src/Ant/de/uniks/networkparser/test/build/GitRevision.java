@@ -40,7 +40,7 @@ public class GitRevision {
 		commitInfo(map, repository, headID, null);
 		
 		int count=0;
-		while(headID!=null){
+		while (headID!=null){
 			count++;
 			ObjectId oldId = headID;
 			headID = repository.resolve(headID.getName()+ "^1");
@@ -95,7 +95,7 @@ public class GitRevision {
 							FileMode mode =entry.getNewMode(); 
 							if(FileMode.MISSING==mode){
 								files.add(new JsonObject().withValue("REM", entry.getNewPath()));
-							}else{
+							} else {
 								files.add(new JsonObject().withValue("CHANGE", entry.getNewPath()));
 							}
 						}

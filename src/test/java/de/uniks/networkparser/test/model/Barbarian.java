@@ -17,7 +17,7 @@ public class Barbarian {
 	public Object get(String attribute) {
 		if(PROPERTY_POSITION.equalsIgnoreCase(attribute)){
 			return getPosition();
-		}else if(PROPERTY_GAME.equalsIgnoreCase(attribute)){
+		} else if(PROPERTY_GAME.equalsIgnoreCase(attribute)){
 			return getGame();
 		}
 
@@ -27,7 +27,7 @@ public class Barbarian {
 		if(PROPERTY_POSITION.equalsIgnoreCase(attribute)){
 			setPosition((Integer.valueOf("" +value)));
 			return true;
-		}else if(PROPERTY_GAME.equalsIgnoreCase(attribute)){
+		} else if(PROPERTY_GAME.equalsIgnoreCase(attribute)){
 			this.setGame((Game) value);
 			return true;
 		}

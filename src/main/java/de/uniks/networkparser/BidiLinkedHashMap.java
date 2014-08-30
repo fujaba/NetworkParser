@@ -75,7 +75,7 @@ public class BidiLinkedHashMap implements BidiMap<String, Object>{
 	}
 
 	@Override
-	public Object getValue(Object key) {
+	public Object getValueItem(Object key) {
 		return keyValue.get(key);
 	}
 

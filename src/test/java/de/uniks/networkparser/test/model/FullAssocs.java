@@ -57,9 +57,9 @@ public class FullAssocs {
 			return getPasswords();
 		} else if (attribute.equalsIgnoreCase(PROPERTY_ANSWER)) {
 			return getAnswer();
-		}else if(PROPERTY_FULLMAP.equalsIgnoreCase(attribute)){
+		} else if(PROPERTY_FULLMAP.equalsIgnoreCase(attribute)){
 			return getFullMap();
-		}else if(PROPERTY_MESSAGE.equalsIgnoreCase(attribute)){
+		} else if(PROPERTY_MESSAGE.equalsIgnoreCase(attribute)){
 			return getMessage();
 		}
 		return null;
@@ -78,14 +78,14 @@ public class FullAssocs {
 		if (attribute.equalsIgnoreCase(PROPERTY_PERSONS)) {
 			if(value instanceof ArrayList<?>){
 				setPersons((List<String>) value);
-			}else if(value instanceof String){
+			} else if(value instanceof String){
 				addPerson((String) value);
 			}
 			return true;
 		} else if (attribute.equalsIgnoreCase(PROPERTY_PASSWORDS)) {
 			if(value instanceof Map<?,?>){
 				setPasswords((Map<String, String>) value);
-			}else if(value instanceof Entry<?,?>){
+			} else if(value instanceof Entry<?,?>){
 				Entry<Object, Object> entry=(Entry<Object, Object>) value;
 				passwords.put("" +entry.getKey(), "" +entry.getValue());
 			}
@@ -93,15 +93,15 @@ public class FullAssocs {
 		} else if (attribute.equalsIgnoreCase(PROPERTY_ANSWER)) {
 			setAnswer((Integer)value);
 			return true;
-		}else if(PROPERTY_FULLMAP.equalsIgnoreCase(attribute)){
+		} else if(PROPERTY_FULLMAP.equalsIgnoreCase(attribute)){
 			if(value instanceof Map<?,?>){
 				setFullMap((LinkedHashMap<FullAssocs, FullAssocs>) value);
-			}else if(value instanceof Entry<?,?>){
+			} else if(value instanceof Entry<?,?>){
 				Entry<Object, Object> entry=(Entry<Object, Object>) value;
 				fullMap.put((FullAssocs)entry.getKey(), (FullAssocs)entry.getValue());
 			}
 			return true;
-		}else if(PROPERTY_MESSAGE.equalsIgnoreCase(attribute)){
+		} else if(PROPERTY_MESSAGE.equalsIgnoreCase(attribute)){
 			setMessage((StringMessage)value);
 			return true;
 		}

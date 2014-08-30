@@ -57,7 +57,7 @@ public class CompareTo implements Condition, SendableEntityCreator {
 				Comparable<?> comparatorValue = (Comparable<?>) entityValue;
 				if (compare<0) {
 					return this.value.compareTo(comparatorValue)<=compare;
-				}else{
+				} else {
 					return this.value.compareTo(comparatorValue)>=compare;
 				}
 			}

@@ -21,32 +21,22 @@ package de.uniks.networkparser.xml;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import java.util.HashMap;
+import de.uniks.networkparser.ArrayEntityList;
 
+/**
+ * HTML Entity for transform Element for HTML. Encoding String.
+ * @author Stefan Lindel
+ */
 public class HTMLEntities {
 	/**
 	 * Map to convert extended characters in html entities.
 	 */
-	private HashMap<Integer, String> htmlentities_map = new HashMap<Integer, String>();
-
-	/**
-	 * Map to convert html entities in exteden characters.
-	 */
-	private HashMap<String, Integer> unhtmlentities_map = new HashMap<String, Integer>();
+	private ArrayEntityList<String, Integer> entities = new ArrayEntityList<String, Integer>();
 
 	/**
 	 * Initialize HTML translation maps.
 	 */
 	public HTMLEntities() {
-		init();
-	}
-
-	private void addEntity(String value, int key) {
-		this.htmlentities_map.put(Integer.valueOf(key), value);
-		this.unhtmlentities_map.put(value, Integer.valueOf(key));
-	}
-
-	public void init() {
 		addEntity("&Aacute;", 193);
 		addEntity("&aacute;", 225);
 		addEntity("&Acirc;", 194);
@@ -300,7 +290,14 @@ public class HTMLEntities {
 		// extra data
 		addEntity("&lt;", 60);
 		addEntity("&gt;", 62);
+	}
 
+	/** Add a Element to HTML List.
+	 * @param value String Value
+	 * @param key Integer of Char
+	 */
+	private void addEntity(String value, int key) {
+		this.entities.put(value, Integer.valueOf(key));
 	}
 
 	/**
@@ -319,7 +316,7 @@ public class HTMLEntities {
 
 		for (int i = 0; i < str.length(); ++i) {
 			char ch = str.charAt(i);
-			String entity = this.htmlentities_map.get(Integer.valueOf(ch)); // get equivalent html entity
+			String entity = this.entities.getKey(Integer.valueOf(ch)); // get equivalent html entity
 			if (entity == null) { // if entity has not been found
 				if (ch > 128) { // check if is an extended character
 					buf.append("&#" + ((int) ch) + ";"); // convert extended
@@ -368,7 +365,7 @@ public class HTMLEntities {
 								entity.length() - 1));
 					}
 				} else {
-					iso = this.unhtmlentities_map.get(entity);
+					iso = this.entities.getValue(entity);
 				}
 				if (iso == null) {
 					buf.append(entity);

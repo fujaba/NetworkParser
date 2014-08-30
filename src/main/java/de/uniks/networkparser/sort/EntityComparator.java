@@ -180,11 +180,17 @@ public class EntityComparator<V> implements Comparator<V> {
 		return cellCreator;
 	}
 
-	public EntityComparator<V> withCellCreator(EntityValueFactory cellCreator) {
-		this.cellCreator = cellCreator;
+	/**
+	 * The new Creator for Cells
+	 * @param value The cellCreator
+	 * @return EntityComparator Instance
+	 */
+	public EntityComparator<V> withCellCreator(EntityValueFactory value) {
+		this.cellCreator = value;
 		return this;
 	}
 
+	/** @return Change SortDiraction */
 	public SortingDirection changeDirection() {
 		this.direction = direction.changeDirection();
 		return direction;

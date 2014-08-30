@@ -54,7 +54,7 @@ public class YUMLConverter implements Converter {
 			ArrayList<GraphNode> visited,
 			ArrayEntityList<String, Object> links, boolean shortName) {
 		String key = item.getTyp(typ, shortName);
-		ArraySimpleList<?> showedLinks = (ArraySimpleList<?>) links.getValue(key);
+		ArraySimpleList<?> showedLinks = (ArraySimpleList<?>) links.getValueItem(key);
 		if (showedLinks == null) {
 			if (sb.length()<1) {
 				sb.append(parseEntity(item, visited, typ, shortName));
@@ -78,7 +78,7 @@ public class YUMLConverter implements Converter {
 			GraphNode target = targetIterator.next();
 			sb.append(parseEntity(target, visited, typ, shortName));
 		
-			while(targetIterator.hasNext()) {
+			while (targetIterator.hasNext()) {
 				sb.append(parseEntity(item, visited, typ, shortName));
 				sb.append("-");
 				target = targetIterator.next();

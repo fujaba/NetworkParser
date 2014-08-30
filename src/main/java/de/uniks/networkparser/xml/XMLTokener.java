@@ -30,10 +30,15 @@ import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 
+/**
+ * Tokener for parsing XML-Files.
+ * @author Stefan Lindel
+ */
 public class XMLTokener extends Tokener {
 	/** The stack. */
-	protected ArrayList<ReferenceObject> stack = new ArrayList<ReferenceObject>();
-	private boolean isAllowQuote=false;
+	private ArrayList<ReferenceObject> stack = new ArrayList<ReferenceObject>();
+	/** Variable of AllowQuote. */
+	private boolean isAllowQuote = false;
 
 	/** The prefix. */
 	private String prefix;
@@ -41,6 +46,9 @@ public class XMLTokener extends Tokener {
 	/**
 	 * Get the next value. The value can be a Boolean, Double, Integer,
      * BaseEntity, Long, or String.
+	 * @param creator The new Creator
+	 * @param allowQuote is in Text allow Quote
+	 * @param c The Terminate Char
 	 *
 	 * @return An object.
 	 */
@@ -54,11 +62,11 @@ public class XMLTokener extends Tokener {
 		case '<':
 			back();
 			if (creator instanceof FactoryEntity) {
-				BaseItem element = ((FactoryEntity)creator).getNewObject();
-				if (element instanceof AbstractKeyValueList<?,?>) {
-					parseToEntity((AbstractKeyValueList<?,?>)element);
-				}else if (element instanceof AbstractList<?>) {
-					parseToEntity((AbstractList<?>)element);
+				BaseItem element = ((FactoryEntity) creator).getNewObject();
+				if (element instanceof AbstractKeyValueList<?, ?>) {
+					parseToEntity((AbstractKeyValueList<?, ?>) element);
+				} else if (element instanceof AbstractList<?>) {
+					parseToEntity((AbstractList<?>) element);
 				}
 				return element;
 			}
@@ -66,19 +74,19 @@ public class XMLTokener extends Tokener {
 			break;
 		}
 //		back();
-		if (c=='"') {
+		if (c == '"') {
 //			next();
 			next();
 			return "";
 		}
-		return super.nextValue(creator,allowQuote, c);
+		return super.nextValue(creator, allowQuote, c);
 	}
 
 	@Override
-	public void parseToEntity(AbstractKeyValueList<?,?> entity) {
-		char c=getCurrentChar();
+	public void parseToEntity(AbstractKeyValueList<?, ?> entity) {
+		char c = getCurrentChar();
 
-		if (c!= '<') {
+		if (c != '<') {
 			c = nextClean();
 		}
 		if (c != '<') {
@@ -91,27 +99,26 @@ public class XMLTokener extends Tokener {
 			if (logger.error(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
 				throw new RuntimeException("Parse only XMLEntity");
 			}
-		
 			return;
 		}
 		XMLEntity xmlEntity = (XMLEntity) entity;
 		if (buffer.isCache()) {
 			c = nextClean();
-			int pos=position();
-			while (c >= ' ' && getStopChars().indexOf(c) < 0 && c!='>') {
+			int pos = position();
+			while (c >= ' ' && getStopChars().indexOf(c) < 0 && c != '>') {
 				c = next();
 			}
-			xmlEntity.withTag(buffer.substring(pos, position()-pos));
-		}else{
+			xmlEntity.withTag(buffer.substring(pos, position() - pos));
+		} else {
 			StringBuilder sb = new StringBuilder();
 			c = nextClean();
-			while (c >= ' ' && getStopChars().indexOf(c) < 0 && c!='>') {
+			while (c >= ' ' && getStopChars().indexOf(c) < 0 && c != '>') {
 				sb.append(c);
 				c = next();
 			}
 			xmlEntity.withTag(sb.toString());
 		}
-	
+
 		XMLEntity child;
 		while (true) {
 			c = nextStartClean();
@@ -119,7 +126,7 @@ public class XMLTokener extends Tokener {
 				break;
 			} else if (c == '>') {
 				c = nextClean();
-				if (c==0) {
+				if (c == 0) {
 					return;
 				}
 				if (c != '<') {
@@ -129,7 +136,7 @@ public class XMLTokener extends Tokener {
 			}
 
 			if (c == '<') {
-				if (charAt(position()+1) == '/') {
+				if (charAt(position() + 1) == '/') {
 					stepPos(">", false, false);
 					break;
 				} else {
@@ -146,13 +153,16 @@ public class XMLTokener extends Tokener {
 				break;
 			} else {
 				String key = nextValue(xmlEntity, false, c).toString();
-				if ( key.length()>0) {
+				if (key.length() > 0) {
 					xmlEntity.put(key, nextValue(xmlEntity, isAllowQuote, nextClean()));
 				}
 			}
 		}
 	}
 
+	/**
+	 * Skip the Current Entity to >.
+	 */
 	protected void skipEntity() {
 		stepPos(">", false, false);
 		// Skip >
@@ -170,19 +180,36 @@ public class XMLTokener extends Tokener {
 		// Do Nothing
 	}
 
+	/**
+	 * Get the Prefix from Tokener my be seperated by &.
+	 * @return the Prefix
+	 */
 	public String getPrefix() {
 		return prefix;
 	}
 
-	public XMLTokener withPrefix(String prefix) {
-		this.prefix = prefix;
+	/**
+	 * @param value set Prefix.
+	 * @return XMLTokener Instance
+	 */
+	public XMLTokener withPrefix(String value) {
+		this.prefix = value;
 		return this;
 	}
-	public XMLTokener addPrefix(String prefix) {
-		this.prefix += prefix;
+	/**
+	 * @param value add Prefix to Existing.
+	 * @return XMLTokener Instance
+	 */
+	public XMLTokener addPrefix(String value) {
+		this.prefix += value;
 		return this;
 	}
 
+	/**
+	 * Add a new Reference Object to Stack.
+	 * @param item new Reference Object
+	 * @return XMLTokener Instance
+	 */
 	public XMLTokener withStack(ReferenceObject item) {
 		this.stack.add(item);
 		this.prefix = "";

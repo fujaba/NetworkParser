@@ -35,17 +35,17 @@ public class ByteUtil {
 					if (lenSize==1) {
 						if (typ==ByteIdMap.DATATYPE_CLAZZNAME || ByteUtil.getSubGroup(typ)==ByteIdMap.LEN_LITTLE) {
 							buffer.put((byte)(valueLength+ByteIdMap.SPLITTER));
-						}else{
+						} else {
 							buffer.put((byte)valueLength);
 						}
-					}else if (lenSize==2) {
+					} else if (lenSize==2) {
 						buffer.put((short)valueLength);
-					}else if (lenSize==4) {
+					} else if (lenSize==4) {
 						buffer.put((int)valueLength);
 					}
 				}
 			}
-		}else{
+		} else {
 			buffer.put(ByteIdMap.DATATYPE_NULL);
 		}
 	}
@@ -211,7 +211,7 @@ public class ByteUtil {
 
 			if (subgroup == ByteIdMap.LEN_LITTLE) {
 				result += "LITTLE";
-			}else if (subgroup == ByteIdMap.LEN_SHORT) {
+			} else if (subgroup == ByteIdMap.LEN_SHORT) {
 				result += "SHORT";
 			} else if (subgroup == ByteIdMap.LEN_MID) {
 				result += "MID";

@@ -44,7 +44,7 @@ public class NetworkParserSources {
 		for (File child : listFiles){
 			if(child.isDirectory()){
 				getSources(sourcePath+child.getName()+ "/", items);
-			}else{
+			} else {
 				if(!child.getAbsolutePath().endsWith(".java")){
 					continue;
 				}
@@ -74,7 +74,7 @@ public class NetworkParserSources {
 		for (File child : listFiles){
 			if(child.isDirectory()){
 				copiedFile(sourcePath+ "/" +child.getName(), targetPath+ "/" +child.getName(), createDirectory, createFiles);
-			}else{
+			} else {
 				copiedFile(child, targetPath, createDirectory, createFiles);
 			}
 		}
@@ -125,7 +125,7 @@ public class NetworkParserSources {
 			System.out.println("File: " +source.getFileName()+ " does not match " +target.getFileName());
 			target.write();
 			change++;
-		}else{
+		} else {
 			ok++;
 		}
 	}
@@ -171,7 +171,7 @@ public class NetworkParserSources {
 		for (File child : listFiles){
 			if(child.isDirectory()){
 				createdComment(sourcePath+child.getName()+ "/", commentFile, projectName);
-			}else{
+			} else {
 				if(!child.getAbsolutePath().endsWith(".java")){
 					continue;
 				}
@@ -193,7 +193,7 @@ public class NetworkParserSources {
 					change++;
 					
 					source.write();
-				}else{
+				} else {
 					ok++;
 				}
 			}

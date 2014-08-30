@@ -171,7 +171,7 @@ public class AES {
 
 	public String encode(String data) {
 		StringBuilder sb = new StringBuilder(data);
-		while((sb.length() % 32) != 0) {
+		while ((sb.length() % 32) != 0) {
 			sb.append(" ");
 		}
 		return cryptAll(sb, 1);

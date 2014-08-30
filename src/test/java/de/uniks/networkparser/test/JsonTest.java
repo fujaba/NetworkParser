@@ -169,7 +169,7 @@ public class JsonTest {
 		child.put("child", new JsonObject().withValue("id", "42"));
 		test.put("child", child);
 		assertEquals("{\"child\":{\"id\":\"test\",\"value\":2,\"child\":{\"id\":\"42\"}}}", test.toString());
-		test.setValue("child.value", 42);
+		test.setValueItem("child.value", 42);
 		assertEquals("{\"child\":{\"id\":\"test\",\"value\":42,\"child\":{\"id\":\"42\"}}}", test.toString());
 	}
 

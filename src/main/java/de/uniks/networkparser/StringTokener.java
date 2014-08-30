@@ -35,7 +35,7 @@ public class StringTokener extends Tokener {
 			} else {
 				isString = !isString;
 			}
-		}else if (getCurrentChar()=='"') {
+		} else if (getCurrentChar()=='"') {
 			isString = true;
 			String sub = "";
 			StringBuilder sb = new StringBuilder();
@@ -44,7 +44,7 @@ public class StringTokener extends Tokener {
 				sb.append(sub);
 				if (sub.length()>0&&!sub.endsWith("\"")) {
 					sb.append(",");
-				}else{
+				} else {
 					break;
 				}
 			}
@@ -66,11 +66,11 @@ public class StringTokener extends Tokener {
     	if (getCurrentChar()==start) {
     		pos=buffer.position();
     		isString = true;
-    	}else{
+    	} else {
     		isString = !isString;
     		pos=buffer.position()-1;
     	}
-		while(!isEnd()) {
+		while (!isEnd()) {
 			current = next();
 			if (current.compareTo(end)==0) {
 				count--;
@@ -115,11 +115,11 @@ public class StringTokener extends Tokener {
 			if (sub.length()>0) {
 				if (isString()) {
 					list.add("\"" +sub+ "\"");
-				}else{
+				} else {
 					list.add(sub);
 				}
 			}
-		}while(sub.length()>0);
+		}while (sub.length()>0);
 		return list;
 	}
 

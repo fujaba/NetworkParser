@@ -210,7 +210,7 @@ public class UpdateListener implements PropertyChangeListener {
 
 		if (gc != null && this.garbageCollection != null) {
 			if (this.garbageCollection.containsKey(gc)) {
-				Object value = this.garbageCollection.getValue(gc);
+				Object value = this.garbageCollection.getValueItem(gc);
 				int newAssocValue = ((Integer)value) - 1;
 				if (newAssocValue > 0) {
 					this.garbageCollection.put(gc, newAssocValue);
@@ -446,7 +446,7 @@ public class UpdateListener implements PropertyChangeListener {
 				String id = (String) message.get(JsonIdMap.ID);
 				if (this.garbageCollection.containsKey(id)) {
 					this.garbageCollection.put(id,
-							(Integer)this.garbageCollection.getValue(id) + 1);
+							(Integer)this.garbageCollection.getValueItem(id) + 1);
 				} else {
 					this.garbageCollection.put(id, 1);
 				}

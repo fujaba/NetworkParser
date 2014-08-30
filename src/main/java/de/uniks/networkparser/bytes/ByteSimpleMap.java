@@ -51,7 +51,7 @@ public class ByteSimpleMap extends AbstractMap {
 			if (entry.isTyp(BitEntity.BIT_REFERENCE)) {
 				String propertyName = entry.getPropertyName();
 				if (values.containsKey(propertyName)) {
-					return values.getValue(propertyName);
+					return values.getValueItem(propertyName);
 				}
 			} else if (entry.isTyp(BitEntity.BIT_BYTE, BitEntity.BIT_NUMBER,
 					BitEntity.BIT_STRING)) {

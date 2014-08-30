@@ -59,9 +59,9 @@ public class JabberBindMessage {
 			return getType();
 		} else if (attribute.equalsIgnoreCase(PROPERTY_RESOURCE)) {
 			return getResource();
-		}else if (attribute.equalsIgnoreCase(PROPERTY_JID)) {
+		} else if (attribute.equalsIgnoreCase(PROPERTY_JID)) {
 			return getJid();
-		}else if (attribute.equalsIgnoreCase(PROPERTY_BINDXMLNS)) {
+		} else if (attribute.equalsIgnoreCase(PROPERTY_BINDXMLNS)) {
 			return getXmlns();
 		}
 			
@@ -78,7 +78,7 @@ public class JabberBindMessage {
 		} else if (attribute.equalsIgnoreCase(PROPERTY_RESOURCE)) {
 			setResource((String) value);
 			return true;
-		}else if (attribute.equalsIgnoreCase(PROPERTY_JID)) {
+		} else if (attribute.equalsIgnoreCase(PROPERTY_JID)) {
 			setJid((String) value);
 			return true;
 		}

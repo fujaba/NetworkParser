@@ -78,14 +78,14 @@ public class RegCalculator {
     		if (value!=null&&tokener.position()==tokener.length()) {
     			tokener.setIndex(1);
     			tokener.setLength(tokener.length()-1);
-    		}else{
+    		} else {
     			tokener.setIndex(pos);
     		}
     	
     	}
     	Character current = tokener.getCurrentChar();
     	boolean defaultMulti=false;
-    	while(!tokener.isEnd()) {
+    	while (!tokener.isEnd()) {
     		if (current==null) {
     			current = tokener.nextClean();
     		}
@@ -106,7 +106,7 @@ public class RegCalculator {
 					}
 					if (pos>0) {
 						parts.add( "(" +value.substring(1, value.length()-1)+ ")");
-					}else{
+					} else {
 						parts.add( value);
 					}
 					tokener.back();
@@ -119,7 +119,7 @@ public class RegCalculator {
 			StringBuilder sb = new StringBuilder();
 		
 			if ( Character.isDigit( current) || current == '.') {
-				while(Character.isDigit( current) || current == '.') {
+				while (Character.isDigit( current) || current == '.') {
 					sb.append(current);
 					current = tokener.next();
 					if (current==null) {
@@ -136,7 +136,7 @@ public class RegCalculator {
 			if (current!=' ') {
 				sb.append(current);
 			}
-			while(!tokener.isEnd()) {
+			while (!tokener.isEnd()) {
 				if (addOperator(sb.toString(), tokener, parts)) {
 					sb = new StringBuilder();
 					defaultMulti=false;
@@ -154,7 +154,7 @@ public class RegCalculator {
    
     	// Parsing Funciton & Parsing (
     	int z=parts.size()-1;
-    	while(z>=0) {
+    	while (z>=0) {
     		pos=parts.get(z).indexOf("(");
     		if (pos<0) {
     			// Check for Vorzeichen
@@ -171,7 +171,7 @@ public class RegCalculator {
     					}
 						if (operator.getTag().equals("-")) {
 							parts.set(z-1, "" +(Double.valueOf(parts.get(z))*-1));
-						}else{
+						} else {
 							parts.set(z-1, "" +(Double.valueOf(parts.get(z))));
 						}
 						parts.remove(z);
@@ -217,7 +217,7 @@ public class RegCalculator {
     	if (constants.containsKey(value)) {
 			// Its constants
 			return parts.add( "" +constants.get(value));
-		}else if (operators.containsKey(value)) {
+		} else if (operators.containsKey(value)) {
 			if (operators.get(value).getPriority()==FUNCTION) {
 				tokener.next();
 				return parts.add( value + tokener.getStringPart('(', ')'));

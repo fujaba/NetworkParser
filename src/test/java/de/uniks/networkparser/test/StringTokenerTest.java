@@ -41,7 +41,7 @@ public class StringTokenerTest {
 				if(sub.length()>0){
 					System.out.println(count++ + ": #" +sub+ "# -- " +tokener.isString());
 				}
-			}while(sub.length()>0);
+			}while (sub.length()>0);
 		}
 	}
 	
@@ -63,7 +63,7 @@ public class StringTokenerTest {
 			if(sub.length()>0){
 				System.out.println(count++ + ": #" +sub+ "# -- " +tokener.isString());
 			}
-		}while(sub.length()>0);
+		}while (sub.length()>0);
 		System.out.println();
 	}
 	
@@ -78,7 +78,7 @@ public class StringTokenerTest {
 				temp=temp.substring(0, temp.length()-1);
 				searchList.addAll(stringTokener.getString(temp.trim(), true));
 				searchList.add("-" +stringList.get(++i).trim());
-			}else{
+			} else {
 				searchList.addAll(stringTokener.getString(stringList.get(i), true));
 			}
 		}

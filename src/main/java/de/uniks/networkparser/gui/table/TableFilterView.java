@@ -79,7 +79,7 @@ public class TableFilterView {
 				temp=temp.substring(0, temp.length()-1);
 				searchList.addAll(stringTokener.getString(temp.trim(), true));
 				searchList.add("-" +stringList.get(++i).trim());
-			}else{
+			} else {
 				searchList.addAll(stringTokener.getString(stringList.get(i), true));
 			}
 		}
@@ -127,14 +127,14 @@ public class TableFilterView {
 								return false;
 							}
 						}
-					}else{
+					} else {
 						return false;
 					}
 				} else if (word.startsWith("-") && word.length() > 1) {
 					if (fullText.indexOf(word.substring(1)) >= 0) {
 						return false;
 					}
-				} else{
+				} else {
 					if (fullText.indexOf(word) < 0) {
 						// no this search word is not found in full text
 						return false;

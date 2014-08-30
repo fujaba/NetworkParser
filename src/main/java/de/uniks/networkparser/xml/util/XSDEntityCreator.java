@@ -64,7 +64,7 @@ public class XSDEntityCreator implements SendableEntityCreatorXML, XMLGrammar {
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		return ((XSDEntity) entity).getValue(attribute);
+		return ((XSDEntity) entity).getValueItem(attribute);
 	}
 
 	@Override
@@ -103,9 +103,9 @@ public class XSDEntityCreator implements SendableEntityCreatorXML, XMLGrammar {
 			String lastTag = this.privateStack
 					.get(this.privateStack.size() - 1);
 			if (lastTag.equals(XSDEntity.PROPERTY_CHOICE)) {
-				((XSDEntity) parent).setValue(XSDEntity.PROPERTY_CHOICE, child);
+				((XSDEntity) parent).setValueItem(XSDEntity.PROPERTY_CHOICE, child);
 			} else if (lastTag.equals(XSDEntity.PROPERTY_SEQUENCE)) {
-				((XSDEntity) parent).setValue(XSDEntity.PROPERTY_SEQUENCE,
+				((XSDEntity) parent).setValueItem(XSDEntity.PROPERTY_SEQUENCE,
 						child);
 			}
 

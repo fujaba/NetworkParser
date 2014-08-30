@@ -60,16 +60,16 @@ public class JsonPeer2PeerTest implements MapUpdateListener{
 			assertEquals(2, secondMap.size());
 			secondRoot=(SortedMsg) secondMap.getObject(firstMap.getKey(firstRoot));
 //			System.out.println(secondMap.size());
-		}else if(z==1){
+		} else if(z==1){
 			System.out.println(jsonObject.toString(2));
 			assertEquals(3, secondMap.size());
 //			System.out.println(secondMap.size());
 			z++;
-		}else if(z==2){
+		} else if(z==2){
 			System.out.println(jsonObject.toString(2));
 			z++;
 //			System.out.println(secondMap.size());
-		}else if(z==3){
+		} else if(z==3){
 			System.out.println(jsonObject.toString(2));
 			z++;
 //			System.out.println(secondMap.size());

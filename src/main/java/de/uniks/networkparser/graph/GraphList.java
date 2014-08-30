@@ -86,10 +86,10 @@ public class GraphList extends AbstractKeyValueList<String, GraphNode> {
 		for (GraphEdge element : edges) {
 			for (GraphNode node : element.values()) {
 				String key = node.getTyp(typ, false);
-				ArraySimpleList<?> value = (ArraySimpleList<?>)links.getValue(key);
+				ArraySimpleList<?> value = (ArraySimpleList<?>)links.getValueItem(key);
 				if (value!=null) {
 					value.with(element);
-				}else{
+				} else {
 					ArraySimpleList<GraphEdge> simpleList = new ArraySimpleList<GraphEdge>();
 					simpleList.add(element);
 					links.put(key, simpleList);
