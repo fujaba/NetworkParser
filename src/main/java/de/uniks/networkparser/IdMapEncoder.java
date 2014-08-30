@@ -328,7 +328,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 			for (String property : properties) {
 				Object value = creatorClass.getValue(reference, property);
 				if (value instanceof Collection<?>) {
-					if ( filter.isFullSeriation()) {
+					if (filter.isFullSeriation()) {
 						Collection<?> list = (Collection<?>) value;
 						for (Object item : list) {
 							Object refValue = filter.getRefByEntity(item);

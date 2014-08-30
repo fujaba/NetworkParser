@@ -79,9 +79,9 @@ public class BrushSass extends Brush {
     addRule(new RegExpressions("(^|\\n)\\s*=.*", "functions")); // short mixin declarations
     addRule(new RegExpressions("(^|\\n)\\s*\\+.*", "functions")); // short mixin call
     addRule(new RegExpressions("&amp;", "keyword")); // &
-    addRule(new RegExpressions("#(\\w|-|_)+ ", "color2")); // ids
+    addRule(new RegExpressions("#(\\w|-|_) + ", "color2")); // ids
     // original code uses 'color4' which do not exist yet, here uses color1 as a temporary replacement
-    addRule(new RegExpressions("(\\.(\\w|-|_)+)", "color1")); // classes
+    addRule(new RegExpressions("(\\.(\\w|-|_) +)", "color1")); // classes
     addRule(new RegExpressions(getKeywordsCSS(keywords), Pattern.MULTILINE, "keyword")); // keywords
     addRule(new RegExpressions(getKeywordsPrependedBy(keywords, ":"), "keyword")); // :keyword value
     addRule(new RegExpressions(getValuesCSS(values), "value")); // values

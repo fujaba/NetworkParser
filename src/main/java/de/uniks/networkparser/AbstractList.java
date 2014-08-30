@@ -555,7 +555,7 @@ public abstract class AbstractList<V> implements BaseItem {
 			if (index>this.keys.size()) {
 				diff = this.keys.size() - 1;
 			}
-    		while ( this.keys.get(diff)!=key) {
+    		while (this.keys.get(diff)!=key) {
     			diff--;
     		}
 			if (index - diff > 1000) {
@@ -622,7 +622,7 @@ public abstract class AbstractList<V> implements BaseItem {
      * @return the position of the Entity or -1
      */
     public int getIndex(Object key) {
-    	return transformIndexKey( getPositionKey(key), key);
+    	return transformIndexKey(getPositionKey(key), key);
     }
    
     protected int transformIndexKey(int index, Object key) {
@@ -712,7 +712,7 @@ public abstract class AbstractList<V> implements BaseItem {
     public boolean containsAll(Collection<?> c) {
        for (Object o : c)
        {
-          if ( ! this.contains(o)) return false;
+          if (! this.contains(o)) return false;
        }
        return true;
     }
@@ -799,8 +799,8 @@ public abstract class AbstractList<V> implements BaseItem {
     }
 
 	public AbstractList<V> clone(AbstractList<V> newInstance) {
-		newInstance.withComparator( this.cpr);
-		newInstance.withAllowDuplicate( isAllowDuplicate());
+		newInstance.withComparator(this.cpr);
+		newInstance.withAllowDuplicate(isAllowDuplicate());
 		newInstance.withList(this.keys);
 		return newInstance;
 	}

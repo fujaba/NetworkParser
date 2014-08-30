@@ -92,7 +92,7 @@ public class RegCalculator {
     		if (current==null) {
     			break;
     		}
-			if ( current==',') {
+			if (current==',') {
 				current=null;
 				defaultMulti=false;
 				continue;
@@ -105,9 +105,9 @@ public class RegCalculator {
 						parts.add("*");
 					}
 					if (pos>0) {
-						parts.add( "(" +value.substring(1, value.length()-1)+ ")");
+						parts.add("(" +value.substring(1, value.length()-1) + ")");
 					} else {
-						parts.add( value);
+						parts.add(value);
 					}
 					tokener.back();
 					defaultMulti=true;
@@ -118,8 +118,8 @@ public class RegCalculator {
 		
 			StringBuilder sb = new StringBuilder();
 		
-			if ( Character.isDigit( current) || current == '.') {
-				while (Character.isDigit( current) || current == '.') {
+			if (Character.isDigit(current) || current == '.') {
+				while (Character.isDigit(current) || current == '.') {
 					sb.append(current);
 					current = tokener.next();
 					if (current==null) {
@@ -129,7 +129,7 @@ public class RegCalculator {
 				if (defaultMulti) {
 					parts.add("*");
 				}
-				parts.add( sb.toString());
+				parts.add(sb.toString());
 				defaultMulti=true;
 				continue;
 			}
@@ -216,13 +216,13 @@ public class RegCalculator {
     private boolean addOperator(String value, StringTokener tokener, ArrayList<String> parts) {
     	if (constants.containsKey(value)) {
 			// Its constants
-			return parts.add( "" +constants.get(value));
+			return parts.add("" +constants.get(value));
 		} else if (operators.containsKey(value)) {
 			if (operators.get(value).getPriority()==FUNCTION) {
 				tokener.next();
-				return parts.add( value + tokener.getStringPart('(', ')'));
+				return parts.add(value + tokener.getStringPart('(', ')'));
 			}
-			return parts.add( value);
+			return parts.add(value);
 		}
     	return false;
     }

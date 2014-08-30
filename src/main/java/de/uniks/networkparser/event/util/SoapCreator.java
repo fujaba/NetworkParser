@@ -55,7 +55,7 @@ public class SoapCreator implements SendableEntityCreatorXML{
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (attribute.toLowerCase().endsWith(":" +SoapObject.PROPERTY_BODY.toLowerCase())) {
-			((SoapObject)entity).withBody( new XMLEntity().withValue("" + value));
+			((SoapObject)entity).withBody(new XMLEntity().withValue("" + value));
 			return true;
 		}
 		return false;

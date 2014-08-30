@@ -124,9 +124,9 @@ public class EntityUtil {
 
 	private static char fromHex(char... values) {
 		return (char) (
-				(HEXVAL.indexOf(values[0])<<24)+
-				(HEXVAL.indexOf(values[1])<<16)+
-				(HEXVAL.indexOf(values[2])<<8)+
+				(HEXVAL.indexOf(values[0])<<24) +
+				(HEXVAL.indexOf(values[1])<<16) +
+				(HEXVAL.indexOf(values[2])<<8) +
 				HEXVAL.indexOf(values[3]));
 	}
 

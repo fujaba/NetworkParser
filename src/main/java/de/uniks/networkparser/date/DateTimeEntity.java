@@ -124,7 +124,7 @@ public class DateTimeEntity  {
 		long years = time/ONE_YEAR+1970;
 		long schaltjahre=((years-1)-1968)/4 - ((years-1)-1900)/100 + ((years-1)-1600)/400;
 		long yearMillis = (time-(schaltjahre-1)*ONE_DAY) % ONE_YEAR;
-		int year=(int)((time-schaltjahre*ONE_DAY)/ONE_YEAR)+1970;
+		int year=(int)((time-schaltjahre*ONE_DAY)/ONE_YEAR) +1970;
 		int month=0;
 		long temp=yearMillis;
 		long day=0;
@@ -212,7 +212,7 @@ public class DateTimeEntity  {
 
 	public long get(DateField field) {
 		if (time==null) {
-			time = System.currentTimeMillis()+ONE_HOUR;
+			time = System.currentTimeMillis() +ONE_HOUR;
 			this.dirty = true;
 		}
 		if (isDirty()) {
@@ -341,9 +341,9 @@ public class DateTimeEntity  {
 	 * @return Itself
 	 */
 	public DateTimeEntity withValue(String date) {
-		this.withYear( Integer.parseInt( date.substring(6, 9)));
-		this.withMonth( Integer.parseInt( date.substring(3, 4)));
-		this.withDate( Integer.parseInt( date.substring(0, 1)));
+		this.withYear(Integer.parseInt(date.substring(6, 9)));
+		this.withMonth(Integer.parseInt(date.substring(3, 4)));
+		this.withDate(Integer.parseInt(date.substring(0, 1)));
 		return this;
 	}
 
@@ -474,7 +474,7 @@ public class DateTimeEntity  {
 
 	@Override
 	public String toString() {
-		return this.fields.get(DateField.DAY_OF_MONTH)+ "." +this.fields.get(DateField.MONTH)+ "." +this.fields.get(DateField.YEAR);
+		return this.fields.get(DateField.DAY_OF_MONTH) + "." +this.fields.get(DateField.MONTH) + "." +this.fields.get(DateField.YEAR);
 	}
 
 	// SETTER

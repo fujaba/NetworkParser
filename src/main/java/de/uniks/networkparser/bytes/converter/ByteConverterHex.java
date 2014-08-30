@@ -48,7 +48,7 @@ public class ByteConverterHex extends ByteConverter {
 					value += 256;
 				}
 				returnValue.append("" + hexVal.charAt(value / 16)
-						+ hexVal.charAt(value % 16)+step);
+						+ hexVal.charAt(value % 16) +step);
 			}
 		}
 		return returnValue.toString();

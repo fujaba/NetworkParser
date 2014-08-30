@@ -50,7 +50,7 @@ public abstract class AbstractEntityList<V> extends AbstractList<V> implements L
 	}
 
 	public void add(int index, V element) {
-    	if ( ! contains(element)) {
+    	if (! contains(element)) {
     		keys.add(index, element);
     		hashTableAddKey(element, index);
     		V beforeValue = null;

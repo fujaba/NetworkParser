@@ -25,6 +25,6 @@ package de.uniks.networkparser.calculator;
 public interface Operator {
 	public int getPriority();
 	public int getValues();
-    public double calculate( Double[] values);
+    public double calculate(Double[] values);
     public String getTag();
 }

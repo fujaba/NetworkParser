@@ -139,7 +139,7 @@ public class GraphConverter implements Converter {
 				} else {
 					Attribute attribute = new Attribute().with(props.get(i));
 					if (props.getValue(i) != null) {
-						attribute.with(DataType.ref(props.getValue(i).getClass())).withValue( props.getValue(i).toString());
+						attribute.with(DataType.ref(props.getValue(i).getClass())).withValue(props.getValue(i).toString());
 					}
 					if (attributes.get(graphNode)==null) {
 						attributes.put(graphNode, new ArrayList<Attribute>());
@@ -179,7 +179,7 @@ public class GraphConverter implements Converter {
 						child.put(TARGET, target.getId() + " : " + target.getClassName(shortName));
 						result.add(child);
 					} else {
-						String id = source.getClassName(false)+ ":" +edge.getProperty()+target.getClassName(false)+ ":" +edge.getOther().getProperty();
+						String id = source.getClassName(false) + ":" +edge.getProperty() +target.getClassName(false) + ":" +edge.getOther().getProperty();
 						if (!ids.contains(id)) {
 							child.put(SOURCE, source.getClassName(shortName));
 							child.put(TARGET, target.getClassName(shortName));

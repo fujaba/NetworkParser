@@ -24,10 +24,10 @@ package de.uniks.networkparser.logic;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class InstanceOf extends ConditionMap implements SendableEntityCreator {
-	public static final String CLAZZNAME="clazzname";
-	public static final String PROPERTY="property";
-	public static final String CLAZZ="clazz";
-	public static final String VALUE="value";
+	public static final String CLAZZNAME = "clazzname";
+	public static final String PROPERTY = "property";
+	public static final String CLAZZ = "clazz";
+	public static final String VALUE = "value";
 	private Class<?> clazzName;
 	private Object clazz;
 	private String property;
@@ -64,7 +64,7 @@ public class InstanceOf extends ConditionMap implements SendableEntityCreator {
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
 		if (CLAZZNAME.equalsIgnoreCase(attribute)) {
-			((InstanceOf)entity).withClazzName((Class<?>)value);
+			((InstanceOf)entity).withClazzName((Class<?>) value);
 			return true;
 		}
 		if (CLAZZ.equalsIgnoreCase(attribute)) {
@@ -72,7 +72,7 @@ public class InstanceOf extends ConditionMap implements SendableEntityCreator {
 			return true;
 		}
 		if (PROPERTY.equalsIgnoreCase(attribute)) {
-			((InstanceOf)entity).withProperty("" +value);
+			((InstanceOf)entity).withProperty("" + value);
 			return true;
 		}
 		if (VALUE.equalsIgnoreCase(attribute)) {
@@ -133,15 +133,15 @@ public class InstanceOf extends ConditionMap implements SendableEntityCreator {
 
 	@Override
 	public boolean matches(ValuesMap values) {
-		if (this.clazzName!=null && values.entity.getClass()!=this.clazzName) {
+		if (this.clazzName != null && values.entity.getClass() != this.clazzName) {
 			return true;
 		}
-		if (this.clazz!=null && values.entity!=this.clazz) {
+		if (this.clazz != null && values.entity != this.clazz) {
 			return true;
 		}
 		if (!this.property.equalsIgnoreCase(values.property)) {
 			return true;
 		}
-		return (this.value != null && this.value==values.value);
+		return (this.value != null && this.value == values.value);
 	}
 }

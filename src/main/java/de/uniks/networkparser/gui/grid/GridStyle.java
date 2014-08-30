@@ -69,7 +69,7 @@ public class GridStyle extends Style implements SendableEntity{
 			return end;
 		}
 
-		return getRow()+getRowSpan()-1;
+		return getRow() +getRowSpan()-1;
 	}
 	public int getColumnEnd() {
 		if (widthExpression!=null) {
@@ -81,7 +81,7 @@ public class GridStyle extends Style implements SendableEntity{
 			withColumnSpan(end-column);
 			return end;
 		}
-		return getColumn()+getColumnSpan()-1;
+		return getColumn() +getColumnSpan()-1;
 	}
 
 	public GridStyle withGrid(ValueGrid grid) {
@@ -91,14 +91,14 @@ public class GridStyle extends Style implements SendableEntity{
 
 	public int getColumnSpan() {
 		if (widthExpression!=null) {
-			return getColumnEnd()-getColumn()+1;
+			return getColumnEnd()-getColumn() +1;
 		}
 		return columnSpan;
 	}
 
 	public int getRowSpan() {
 		if (heightExpression!=null) {
-			return getRowEnd()-getRow()+1;
+			return getRowEnd()-getRow() +1;
 		}
 		return rowSpan;
 	}

@@ -42,7 +42,7 @@ public abstract class Value implements BaseItem
 
 	public Value with(DataType value)
    {
-	   if (( this.type==null && value!=null) || (this.type!=null && this.type!=value))
+	   if ((this.type==null && value!=null) || (this.type!=null && this.type!=value))
       {
          this.type = value;
       }

@@ -149,9 +149,9 @@ public class BytesBuffer implements BufferedBytes {
 	public int getInt() {
 		byte[] bytes= converter(Integer.SIZE);
 		return (int) (
-				(bytes[0]<<24)+
-				(bytes[1]<<16)+
-				(bytes[2]<<8)+
+				(bytes[0]<<24) +
+				(bytes[1]<<16) +
+				(bytes[2]<<8) +
 				bytes[3]);
 	}
 

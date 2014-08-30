@@ -228,7 +228,7 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 			prefix = CRLF;
 		}
 
-		if ( length == 1) {
+		if (length == 1) {
 			sb = new StringBuilder("{");
 		} else {
 			sb = new StringBuilder("{" + prefix + step);
@@ -245,7 +245,7 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 			sb.append(EntityUtil.valueToString(getValue(i), indentFactor,
 					newindent, false, this));
 		}
-		if ( length == 1) {
+		if (length == 1) {
 			sb.append("}");
 		} else {
 			sb.append(prefix + "}");
@@ -349,7 +349,7 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 					AbstractEntity<?,?> item = (AbstractEntity<?, ?>) value;
 					this.put(item.getKeyString(), item.getValue());
 				} else if (value instanceof Map<?,?>) {
-					this.withMap( (Map<?,?>) value);
+					this.withMap((Map<?,?>) value);
 				}
 			}
 		}

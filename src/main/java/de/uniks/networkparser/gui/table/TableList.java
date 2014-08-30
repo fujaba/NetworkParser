@@ -232,7 +232,7 @@ public class TableList extends AbstractEntityList<Object> implements SendableEnt
 
 	@Override
 	public String toString() {
-		return "TableList with " +size()+ " Elements";
+		return "TableList with " +size() + " Elements";
 	}
 
 	@Override
