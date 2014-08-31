@@ -25,14 +25,33 @@ import java.util.Collection;
 
 import de.uniks.networkparser.IdMapEncoder;
 
-public class ValuesMap extends ValuesSimple{
+/**
+ * Logic Clazz for MapValues.
+ * @author Stefan Lindel
+ */
+public class ValuesMap extends ValuesSimple {
+	/** Variable for IdMap. */
 	public IdMapEncoder map;
+	/** Variable for Enitity. */
 	public Object entity;
+	/** Variable for Property. */
 	public String property;
+	/** Variable for Value. */
 	public Object value;
+	/** Variable for Assoc Typ toOne or ToMany. */
 	public boolean isMany;
+	/** Variable for Deep from Root. */
 	public int deep;
 
+	/**
+	 * @param map The Encoder
+	 * @param entity The Entity of Map
+	 * @param property The Attribute
+	 * @param value The current Value
+	 * @param isMany Is Assoc is to 1 or toMany
+	 * @param deep depp value from root
+	 * @return ValuesMap Instance
+	 */
 	public static ValuesMap with(IdMapEncoder map, Object entity, String property,
 			Object value, boolean isMany, int deep) {
 		ValuesMap mapCondition = new ValuesMap();
@@ -44,6 +63,12 @@ public class ValuesMap extends ValuesSimple{
 		mapCondition.deep = deep;
 		return mapCondition;
 	}
+	/**
+	 * @param map The Encoder
+	 * @param entity The Entity of Map
+	 * @param property The Attribute
+	 * @return ValuesMap Instance
+	 */
 	public static ValuesMap with(IdMapEncoder map, Object entity, String property) {
 		ValuesMap mapCondition = new ValuesMap();
 		mapCondition.map = map;
@@ -51,6 +76,12 @@ public class ValuesMap extends ValuesSimple{
 		mapCondition.property = property;
 		return mapCondition;
 	}
+	/**
+	 * @param entity The Entity of Map
+	 * @param property The Attribute
+	 * @param value The current Value
+	 * @return ValuesMap Instance
+	 */
 	public static ValuesMap with(Object entity, String property, Object value) {
 		ValuesMap mapCondition = new ValuesMap();
 		mapCondition.entity = entity;

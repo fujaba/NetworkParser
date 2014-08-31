@@ -74,7 +74,7 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 			if (pos>=0) {
 		    	if (this.hashTableValues != null) {
 		    		this.hashTableValues[pos] = value;
-		    		pos = transformIndexKey(pos, key);
+		    		pos = transformIndex(pos, key, this.hashTableKeys, this.keys);
 		    	}
 				return this.values.set(pos, value);
 			}
@@ -276,46 +276,25 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K> impleme
 	}
 
 	/** Get the Key of a Value.
-	 * @param obj The Value
+	 * @param value The Value
 	 * @return The Key
 	 */
-	public K getKey(V obj) {
-		int index = getPositionValue(obj);
+	public K getKey(V value) {
+		int index = transformIndex(getPositionValue(value), value, this.hashTableValues, this.values);
 		if(index >= 0){
-			index = transformIndexValue(index, obj);
 			return this.keys.get(index);
-
 		}
 		return null;
 	}
 	
-    protected int transformIndexValue(int index, Object value) {
-        if (this.hashTableValues != null&& index >=0) {
-           if (this.entitySize==2) {
-              index = (int) this.hashTableValues[index + 1];
-              if (index >= this.values.size()) {
-                 index = this.values.size() - 1;
-              }
-              while (this.values.get(index) != value) {
-                 index--;
-              }
-              return index;
-           }
-        }
-        return index;
-     }
-
-	
 	/** Get the Value of a Key.
-	 * @param obj The Key
+	 * @param key The Key
 	 * @return The Value
 	 */
-	public V getValue(K obj) {
-		int index = getPositionKey(obj);
+	public V getValue(K key) {
+		int index = transformIndex(getPositionKey(key), key, this.hashTableKeys, this.keys);
 		if(index >= 0){
-			index = transformIndexKey(index, obj);
 			return this.values.get(index);
-
 		}
 		return null;
 	}

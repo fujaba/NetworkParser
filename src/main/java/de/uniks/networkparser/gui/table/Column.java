@@ -349,7 +349,7 @@ public class Column {
 	}
 
 	public Column withComboValue(String value) {
-		if (this.numberFormat == null || !this.numberFormat.startsWith("[") || numberFormat.length()==2) {
+		if (this.numberFormat == null || !this.numberFormat.startsWith("[") || numberFormat.length() ==2) {
 			this.numberFormat = "[" +value+ "]";
 			return this;
 		}

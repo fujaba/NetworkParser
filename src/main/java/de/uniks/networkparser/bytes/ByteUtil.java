@@ -33,7 +33,7 @@ public class ByteUtil {
 					int lenSize=ByteUtil.getTypLen(typ, valueLength, true);
 
 					if (lenSize==1) {
-						if (typ==ByteIdMap.DATATYPE_CLAZZNAME || ByteUtil.getSubGroup(typ)==ByteIdMap.LEN_LITTLE) {
+						if (typ==ByteIdMap.DATATYPE_CLAZZNAME || ByteUtil.getSubGroup(typ) ==ByteIdMap.LEN_LITTLE) {
 							buffer.put((byte)(valueLength+ByteIdMap.SPLITTER));
 						} else {
 							buffer.put((byte)valueLength);
@@ -128,7 +128,7 @@ public class ByteUtil {
 	 * @return the boolean
 	 */
 	public static boolean isGroup(byte typ) {
-		return (typ & 0x08)==0x08;
+		return (typ & 0x08) == 0x08;
 	}
 
 	public static String getStringTyp(byte typ) {

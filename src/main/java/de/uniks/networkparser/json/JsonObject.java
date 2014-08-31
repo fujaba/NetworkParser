@@ -22,6 +22,7 @@ package de.uniks.networkparser.json;
  permissions and limitations under the Licence.
 */
 import java.util.Map;
+
 import de.uniks.networkparser.AbstractEntity;
 import de.uniks.networkparser.AbstractKeyValueList;
 import de.uniks.networkparser.AbstractList;
@@ -393,15 +394,11 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 
 	@Override
 	public Object put(String key, Object value) {
-		int pos;
-		if (!isAllowDuplicate()) {
-			key = key.toLowerCase();
-		}
-		pos = getPositionKey(key);
+		int pos = getPositionKey(key);
 		if (pos>=0) {
 	    	if (this.hashTableValues != null) {
 	    		this.hashTableValues[pos] = value;
-	    		pos = transformIndexKey(pos, key);
+	    		pos = transformIndex(pos, key, this.hashTableKeys, this.keys);
 	    	}
 			return this.values.set(pos, value);
 		}
@@ -416,5 +413,43 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 			key = ("" +key).toLowerCase();
 		}
 		return super.get(key);
+	}
+
+	@Override
+	protected int addKey(int pos, String newValue) {
+		if (pos==-1) {
+			if (!this.keys.add(newValue)){
+				return -1;
+			}
+			pos = this.keys.size();
+			if (!isAllowDuplicate()) {
+				this.hashTableAddKey(newValue.toLowerCase(), pos);
+			}else{
+				this.hashTableAddKey(newValue, pos);
+			}
+			this.hashTableAddKey(newValue, pos);
+			return pos;
+		}
+		this.keys.add(pos, newValue);
+		this.hashTableAddKey(newValue, pos);
+		return -1;
+	}
+	
+	@Override
+	public int getPositionKey(Object o) {
+		if( o instanceof String && !isAllowDuplicate()){
+			return super.getPositionKey(("" +  o).toLowerCase());
+		}
+		return super.getPositionKey(o);
+	}
+	
+	public JsonObject withValue(String key, Object value) {
+		int index = getIndex(key);
+		if (index >= 0){
+			setValueItem(key, value);
+			return this;
+		}
+		super.withValue(key, value);
+		return this;
 	}
 }

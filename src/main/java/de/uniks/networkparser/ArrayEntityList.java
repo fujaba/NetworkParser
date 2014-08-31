@@ -35,7 +35,7 @@ public class ArrayEntityList<K, V> extends AbstractKeyValueList<K, V> implements
 		if (values==null) {
 			return this;
 		}
-		if (values.length%2==0) {
+		if (values.length%2== 0) {
 			for (int i=0;i<values.length;i+=2) {
 				this.withValue(values[i], values[i + 1]);
 			}

@@ -184,7 +184,7 @@ public class TableList extends AbstractEntityList<Object> implements SendableEnt
 		if (creator != null &&  column != null) {
 			Object[] returnValues= new Object[super.size()];
 			EntityValueFactory cellCreator = comparator.getCellCreator();
-			if (comparator.getDirection()==SortingDirection.ASC) {
+			if (comparator.getDirection() ==SortingDirection.ASC) {
 				int pos=0;
 				for (Iterator<Object> i = iterator();i.hasNext();) {
 					Object item = i.next();

@@ -190,10 +190,10 @@ public abstract class Tokener {
 	 * @return A String.
 	 */
 	public String nextString(char quote, boolean allowCRLF, boolean allowQuote, boolean mustQuote, boolean nextStep) {
-		if (getCurrentChar()==0) {
+		if (getCurrentChar() == 0) {
 			return "";
 		}
-		if (getCurrentChar()==quote) {
+		if (getCurrentChar() ==quote) {
 			if (nextStep) {
 				next();
 			}

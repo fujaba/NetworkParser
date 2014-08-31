@@ -594,5 +594,12 @@ public class JsonTest {
 		item2.withValue(json);
 		Assert.assertEquals(item2.get("Number"), 42);
 		Assert.assertEquals(item2.get("number"), 42);
+		
+		JsonObject item3 = new JsonObject();
+		
+		item3.put("id", "23");
+		item3.put("id", "42");
+		
+		System.out.println(item3.toString());
 	}
 }

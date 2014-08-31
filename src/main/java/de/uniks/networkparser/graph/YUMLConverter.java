@@ -99,7 +99,7 @@ public class YUMLConverter implements Converter {
 		}
 		if (typ==null) {
 			typ = GraphIdMap.OBJECT;
-			if (entity.getId()==null) {
+			if (entity.getId() ==null) {
 				typ = GraphIdMap.CLASS;
 			}
 		}

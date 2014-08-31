@@ -97,7 +97,7 @@ public class ValueGrid {
 		}
 		for (Iterator<Entry<GridStyle, Object>> iterator = children.entrySet().iterator();iterator.hasNext();) {
 			Entry<GridStyle, Object> item = iterator.next();
-			if (item.getValue()==result) {
+			if (item.getValue() ==result) {
 				return item.getKey();
 			}
 		}
@@ -110,7 +110,7 @@ public class ValueGrid {
 		}
 		for (Iterator<Entry<PropertyChangeListener, Object>> iterator = container.entrySet().iterator();iterator.hasNext();) {
 			Entry<PropertyChangeListener, Object> item = iterator.next();
-			if (item.getValue()==node) {
+			if (item.getValue() ==node) {
 				return item.getKey();
 			}
 		}

@@ -20,9 +20,18 @@ express or implied.
 See the Licence for the specific language governing
 permissions and limitations under the Licence.
 */
+/**
+ * Logicclass for simple Check of Value.
+ * @author Stefan Lindel
+ */
 public class ValuesSimple {
+	/** The Variable of value. */
 	public Object value;
 
+	/**
+	 * @param value The new Value
+	 * @return ValuesSimple Instance
+	 */
 	public static ValuesSimple with(Object value) {
 		ValuesSimple simple = new ValuesSimple();
 		simple.value = value;
