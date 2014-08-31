@@ -317,7 +317,7 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 
 	@Override
 	public boolean isEmpty() {
-		return getTyp()==ByteIdMap.DATATYPE_NULL;
+		return getTyp() ==ByteIdMap.DATATYPE_NULL;
 	}
 
 	@Override

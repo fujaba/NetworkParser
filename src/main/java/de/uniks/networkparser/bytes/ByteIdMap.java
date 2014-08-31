@@ -216,7 +216,7 @@ public class ByteIdMap extends IdMap {
             int pos = clazzName.lastIndexOf(".");
             if (pos>0) {
             	String lastClazz = bf.getLastClazz();
-            	if (lastClazz!=null && lastClazz.lastIndexOf(".")==pos)
+            	if (lastClazz!=null && lastClazz.lastIndexOf(".") ==pos)
             	if (clazzName.substring(0, pos).equals(lastClazz.substring(0, pos))) {
             		 byte[] bytes = clazzName.substring(pos+1).getBytes(bf.getCharset());
             		 msg.add(new ByteEntity().withValue(DATATYPE_CLAZZPACKAGE, bytes));
@@ -582,7 +582,7 @@ public class ByteIdMap extends IdMap {
 					Object subValues = decodeValue(buffer, start+len-buffer.position());
 					if (subValues!=null && subValues instanceof List<?>) {
 						List<?> list=(List<?>) subValues;
-						if (list.size()==2) {
+						if (list.size() ==2) {
 							values.add(new ObjectMapEntry().with(list.get(0), list.get(1)));
 						}
 					} else {

@@ -192,7 +192,7 @@ public class ByteSimpleMap extends AbstractMap {
 		// Set the Typ
 		Object element = null;
 
-		if (entry.getTyp()== BitEntity.BIT_BYTE) {
+		if (entry.getTyp() == BitEntity.BIT_BYTE) {
 			byte[] array = result.array();
 			if (array.length == 1) {
 				element = Byte.valueOf(array[0]);

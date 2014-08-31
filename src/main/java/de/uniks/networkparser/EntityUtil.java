@@ -97,18 +97,18 @@ public class EntityUtil {
 		char c;
 		for (int i=0;i<value.length();i++) {
 			c = value.charAt(i);
-			if (c=='\\') {
+			if (c== '\\') {
 				if (i+1==value.length()) {
 					sb.append('\\');
 					break;
 				}
 				c = value.charAt(++i);
-			    if (c=='u') {
+			    if (c== 'u') {
 			    	char no = fromHex(value.charAt(++i), value.charAt(++i), value.charAt(++i), value.charAt(++i));
 			        sb.append((char)no);
 			        continue;
 			    }
-			    else if (c=='"')
+			    else if (c== '"')
 			    {
 			       // remove the backslash
 			    }
@@ -153,7 +153,7 @@ public class EntityUtil {
 		sb.append('"');
 		for (i = 0; i < len; i += 1) {
 			c = string.charAt(i);
-			if (c=='"' && b!='\\') {
+			if (c== '"' && b!='\\') {
 				sb.append("\\\"");
 				continue;
 			}

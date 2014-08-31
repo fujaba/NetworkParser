@@ -127,8 +127,8 @@ public class ByteList extends AbstractEntityList<ByteItem> implements ByteItem, 
 		int nullerBytes=0;
 		if (this.keys.get(size-1) instanceof ByteEntity) {
 			// HEADER + VALUE
-			isPrimitive = isPrimitive && this.keys.get(0).getTyp()==ByteIdMap.DATATYPE_CLAZZTYP;
-			if (this.keys.get(size-1).getTyp()==ByteIdMap.DATATYPE_NULL) {nullerBytes++;}
+			isPrimitive = isPrimitive && this.keys.get(0).getTyp() ==ByteIdMap.DATATYPE_CLAZZTYP;
+			if (this.keys.get(size-1).getTyp() ==ByteIdMap.DATATYPE_NULL) {nullerBytes++;}
 		} else {
 			isPrimitive=false;
 		}
@@ -137,8 +137,8 @@ public class ByteList extends AbstractEntityList<ByteItem> implements ByteItem, 
 		for (int i = size - 2; i >= 0; i--) {
 			int len = this.keys.get(i).calcLength(isDynamic, false);
 			if (isPrimitive) {
-				if (this.keys.get(i).getTyp()==ByteIdMap.DATATYPE_NULL) {nullerBytes++;}
-				isPrimitive = (this.keys.get(i).size()==len - 1);
+				if (this.keys.get(i).getTyp() ==ByteIdMap.DATATYPE_NULL) {nullerBytes++;}
+				isPrimitive = (this.keys.get(i).size() ==len - 1);
 			}
 			length += len;
  		}

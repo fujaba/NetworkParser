@@ -133,7 +133,7 @@ public class DateTimeEntity  {
 				temp -= getMonthLengthLP(month++)*ONE_DAY;
 			}
 			day = (temp + getMonthLengthLP(month-1)*ONE_DAY)/ONE_DAY;
-			if (day==0) {
+			if (day== 0) {
 				temp += getMonthLengthLP(--month)*ONE_DAY;
 				day = (temp + getMonthLengthLP(month-1)*ONE_DAY)/ONE_DAY;
 			}
@@ -142,7 +142,7 @@ public class DateTimeEntity  {
 				temp -= MONTH_LENGTH[month++]*ONE_DAY;
 			}
 			day = (temp + MONTH_LENGTH[month-1]*ONE_DAY)/ONE_DAY;
-			if (day==0) {
+			if (day== 0) {
 				temp += MONTH_LENGTH[--month]*ONE_DAY;
 				day = (temp + MONTH_LENGTH[month-1]*ONE_DAY)/ONE_DAY;
 			}

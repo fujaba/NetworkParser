@@ -27,20 +27,39 @@ import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.gui.table.TableList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
+/**
+ * Compare Value for GUI.
+ * @author Stefan Lindel
+ *
+ * @param <V> Generic Parameter for all Types
+ */
 public class EntityComparator<V> implements Comparator<V> {
+	/** Constant of IDMAP. */
 	public static final String IDMAP = "%idmap%";
+	/** Constant of HASHCODE. */
 	public static final String HASHCODE = "%hashcode%";
+	/** Constant of LIST. */
 	public static final String LIST = "%list%";
 
+	/** Variable of Direction. */
 	private SortingDirection direction = SortingDirection.ASC;
+	/** Variable of Column. */
 	private String column = IDMAP;
+	/** Variable of IdMap. */
 	private IdMapEncoder map;
+	/** Variable of Factory. */
 	private EntityValueFactory cellCreator = new EntityValueFactory();
+	/** Variable of TableList. */
 	private TableList owner;
-	protected SendableEntityCreator creator;
+	/** Variable of creator. */
+	private SendableEntityCreator creator;
 
-	public EntityComparator<V> withTableList(TableList owner) {
-		this.owner = owner;
+	/** Set a GUI TableList.
+	 * @param value The new TbaleList
+	 * @return EntityComparator Instance
+	 */
+	public EntityComparator<V> withTableList(TableList value) {
+		this.owner = value;
 		this.column = LIST;
 		return this;
 	}
@@ -50,6 +69,11 @@ public class EntityComparator<V> implements Comparator<V> {
 		return direction.getDirection() * compareValue(o2, o1);
 	}
 
+	/**
+	 * @param o1 object for compare
+	 * @param o2 object for compare
+	 * @return compare result
+	 */
 	public int compareValue(Object o1, Object o2) {
 		if (map != null) {
 			creator = map.getCreatorClass(o1);
@@ -70,9 +94,14 @@ public class EntityComparator<V> implements Comparator<V> {
 			}
 			return checkValues(v1, v2);
 		}
-		return checkValues(v2, v1)*-1;
+		return checkValues(v2, v1) * -1;
 	}
 
+	/** Compare values of v1 and v2.
+	 * @param v1 value for compare
+	 * @param v2 value for compare
+	 * @return compare Result
+	 */
 	private int checkValues(Object v1, Object v2) {
 		if (v1 instanceof String) {
 			String valueA = (String) v1;
@@ -117,6 +146,14 @@ public class EntityComparator<V> implements Comparator<V> {
 		return 1;
 	}
 
+	/**
+	 * Compare o1 and o2.
+	 * @param o1 object for compare
+	 * @param o2 object for compare
+	 * @return Int value < 0 o1 is smaller
+	 * 0 o1 == o2 o1 is the same
+	 * 1 o2 is bigger
+	 */
 	private int checkIntern(Object o1, Object o2) {
 		// SAME OBJECT MUST BE 0
 		if (o2 == null) {
@@ -131,9 +168,9 @@ public class EntityComparator<V> implements Comparator<V> {
 		if (o1.equals(o2)) {
 			return 0;
 		}
-	
+
 		if (LIST.equalsIgnoreCase(column) && owner != null) {
-			return owner.indexOf(o1)-owner.indexOf(o2);
+			return owner.indexOf(o1) - owner.indexOf(o2);
 		}
 
 		// KEY IN IDMAP
@@ -149,39 +186,61 @@ public class EntityComparator<V> implements Comparator<V> {
 		return -1;
 	}
 
+	/** @return The Sortdirection */
 	public SortingDirection getDirection() {
 		return direction;
 	}
 
-	public EntityComparator<V> withDirection(SortingDirection direction) {
-		this.direction = direction;
+	/**
+	 * Set a new Direction.
+	 * @param value Direction for set
+	 * @return EntityComparator Instance
+	 */
+	public EntityComparator<V> withDirection(SortingDirection value) {
+		this.direction = value;
 		return this;
 	}
 
+	/** @return The Current Column */
 	public String getColumn() {
 		return column;
 	}
 
-	public EntityComparator<V> withColumn(String column) {
-		this.column = column;
+	/**
+	 * @param value The new Column for checking
+	 * @return EntityComparator Instance
+	 */
+	public EntityComparator<V> withColumn(String value) {
+		this.column = value;
 		return this;
 	}
 
+	/**
+	 * Set a new IdMap for comunicate between GUI and Model.
+	 * @param value The IdMap
+	 * @return EntityComparator Instance
+	 */
 	public EntityComparator<V> withMap(IdMapEncoder value) {
 		this.map = value;
 		return this;
 	}
 
+	/**
+	 * @return The Current IdMap.
+	 */
 	public IdMapEncoder getMap() {
 		return map;
 	}
 
+	/**
+	 * @return Return the Current Cell Creator.
+	 */
 	public EntityValueFactory getCellCreator() {
 		return cellCreator;
 	}
 
 	/**
-	 * The new Creator for Cells
+	 * The new Creator for Cells.
 	 * @param value The cellCreator
 	 * @return EntityComparator Instance
 	 */

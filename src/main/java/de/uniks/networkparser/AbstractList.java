@@ -251,7 +251,7 @@ public abstract class AbstractList<V> implements BaseItem {
 		// MUST COPY
 		for (int pos=0;pos<size();pos++) {
 			int compare = compare(get(pos), toElement);
-			if (compare==0) {
+			if (compare== 0) {
 				if (inclusive) {
 					copyEntity(newList, pos);
 				}
@@ -282,7 +282,7 @@ public abstract class AbstractList<V> implements BaseItem {
 		int pos=0;
 		for (;pos<size();pos++) {
 			int compare = compare(get(pos), fromElement);
-			if (compare==0) {
+			if (compare== 0) {
 				if (inclusive) {
 					copyEntity(newList, pos);
 				}
@@ -622,17 +622,25 @@ public abstract class AbstractList<V> implements BaseItem {
      * @return the position of the Entity or -1
      */
     public int getIndex(Object key) {
-    	return transformIndexKey(getPositionKey(key), key);
+    	return transformIndex( getPositionKey(key), key, this.hashTableKeys, this.keys);
     }
    
-    protected int transformIndexKey(int index, Object key) {
-       if (this.hashTableKeys != null&& index >=0) {
+    /**
+     * Transform a Value to the real Index of List. 
+     * @param index The Index for search
+     * @param value Value for search
+     * @param array The Array of Items
+     * @param list The List
+     * @return The Index of Key
+     */
+    protected int transformIndex(int index, Object value, Object[] array, List<?> list) {
+    	if (array != null && index >=0) {
           if (this.entitySize==2) {
-             index = (int) this.hashTableKeys[index + 1];
-             if (index >= this.keys.size()) {
-                index = this.keys.size() - 1;
+             index = (int) array[index + 1];
+             if (index >= list.size()) {
+                index = list.size() - 1;
              }
-             while (!this.keys.get(index).equals(key)) {
+             while (!value.equals(list.get(index))) {
                 index--;
              }
              return index;
@@ -640,7 +648,7 @@ public abstract class AbstractList<V> implements BaseItem {
        }
        return index;
     }
-
+    
     public AbstractList<V> withCopyList(List<V> reference) {
         this.keys = reference;
         return this;
@@ -661,6 +669,9 @@ public abstract class AbstractList<V> implements BaseItem {
 	
     public int getPositionKey(Object o)
     {
+    	if(o == null){
+    		return-1;
+    	}
         if (this.hashTableKeys != null)
         {
            int hashKey = hashKey(o.hashCode(), hashTableKeys.length);

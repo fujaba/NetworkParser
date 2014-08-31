@@ -29,13 +29,13 @@ public class StringTokener extends Tokener {
 	@Override
 	public String nextString(char quote, boolean allowCRLF, boolean allowQuote, boolean mustQuote, boolean nextStep) {
 
-		if (quote=='"') {
+		if (quote== '"') {
 			if (getCurrentChar() == quote) {
 				isString = true;
 			} else {
 				isString = !isString;
 			}
-		} else if (getCurrentChar()=='"') {
+		} else if (getCurrentChar() == '"') {
 			isString = true;
 			String sub = "";
 			StringBuilder sb = new StringBuilder();
@@ -63,7 +63,7 @@ public class StringTokener extends Tokener {
     	int count=1;
     	Character current = null;
     	int pos;
-    	if (getCurrentChar()==start) {
+    	if (getCurrentChar() == start) {
     		pos=buffer.position();
     		isString = true;
     	} else {
@@ -72,15 +72,15 @@ public class StringTokener extends Tokener {
     	}
 		while (!isEnd()) {
 			current = next();
-			if (current.compareTo(end)==0) {
+			if (current.compareTo(end) == 0) {
 				count--;
-				if (count==0) {
+				if (count== 0) {
 					next();
 					return buffer.substring(pos, buffer.position()-pos);
 				}
 				continue;
 			}
-			if (current.compareTo(start)==0) {
+			if (current.compareTo(start) == 0) {
 				count++;
 			}
 		}

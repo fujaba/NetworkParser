@@ -72,10 +72,10 @@ public class RegCalculator {
 
     	ArrayList<String> parts = new ArrayList<String>();
     	int pos;
-    	if (tokener.getCurrentChar()=='('&&tokener.charAt(tokener.length()-1)==')') {
+    	if (tokener.getCurrentChar() == '('&&tokener.charAt(tokener.length()-1) == ')') {
     		pos = tokener.position();
     		String value = tokener.getStringPart('(', ')');
-    		if (value!=null&&tokener.position()==tokener.length()) {
+    		if (value!=null&&tokener.position() ==tokener.length()) {
     			tokener.setIndex(1);
     			tokener.setLength(tokener.length()-1);
     		} else {
@@ -92,7 +92,7 @@ public class RegCalculator {
     		if (current==null) {
     			break;
     		}
-			if (current==',') {
+			if (current== ',') {
 				current=null;
 				defaultMulti=false;
 				continue;
@@ -160,7 +160,7 @@ public class RegCalculator {
     			// Check for Vorzeichen
     			if (z>0) {
     				Operator operator = operators.get(parts.get(z-1));
-    				if (operator!=null && operator.getPriority()==LINE) {
+    				if (operator!=null && operator.getPriority() ==LINE) {
     					if (z>1) {
     						// Exist Pre Pre
     						Operator preOperator = operators.get(parts.get(z-2));
@@ -197,7 +197,7 @@ public class RegCalculator {
     	for (int prio=3;prio>0;prio--) {
     		for (int i=0;i<parts.size();i++) {
         		Operator operator = operators.get(parts.get(i));
-        		if (operator!=null&&operator.getPriority()==prio) {
+        		if (operator!=null&&operator.getPriority() ==prio) {
         			parts.set(i-1, "" +operator.calculate(new Double[]{Double.valueOf(parts.get(i-1)), Double.valueOf(parts.get(i+1))}));
         			parts.remove(i);
         			parts.remove(i);
@@ -218,7 +218,7 @@ public class RegCalculator {
 			// Its constants
 			return parts.add("" +constants.get(value));
 		} else if (operators.containsKey(value)) {
-			if (operators.get(value).getPriority()==FUNCTION) {
+			if (operators.get(value).getPriority() ==FUNCTION) {
 				tokener.next();
 				return parts.add(value + tokener.getStringPart('(', ')'));
 			}

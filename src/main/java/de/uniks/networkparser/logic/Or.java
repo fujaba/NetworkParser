@@ -24,10 +24,20 @@ package de.uniks.networkparser.logic;
 import java.util.ArrayList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
+/**
+ * Or Clazz for Or Conditions.
+ * @author Stefan Lindel
+ */
 public class Or implements Condition, SendableEntityCreator {
-	public static final String CHILD="childs";
+	/** Constant of CHILD. */
+	public static final String CHILD = "childs";
+	/** Variable of Conditions. */
 	private ArrayList<Condition> list = new ArrayList<Condition>();
 
+	/**
+	 * @param conditions All Conditions.
+	 * @return Or Instance
+	 */
 	public Or add(Condition... conditions) {
 		for (Condition condition : conditions) {
 			this.list.add(condition);
@@ -35,6 +45,7 @@ public class Or implements Condition, SendableEntityCreator {
 		return this;
 	}
 
+	/** @return List of Condition. */
 	private ArrayList<Condition> getList() {
 		return list;
 	}
@@ -74,7 +85,7 @@ public class Or implements Condition, SendableEntityCreator {
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if (CHILD.equalsIgnoreCase(attribute)) {
-			return ((Or)entity).getList();
+			return ((Or) entity).getList();
 		}
 		return null;
 	}
@@ -83,7 +94,7 @@ public class Or implements Condition, SendableEntityCreator {
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
 		if (CHILD.equalsIgnoreCase(attribute)) {
-			((Or)entity).add((Condition) value);
+			((Or) entity).add((Condition) value);
 			return true;
 		}
 		return false;

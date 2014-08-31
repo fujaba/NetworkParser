@@ -131,7 +131,7 @@ public class GraphConverter implements Converter {
 					}
 					if (sb.length()>0) {
 						Attribute attribute = new Attribute().with(props.get(i)).with(props.getValue(i).getClass().getName()).withValue(sb.toString());
-						if (attributes.get(graphNode)==null) {
+						if (attributes.get(graphNode) ==null) {
 							attributes.put(graphNode, new ArrayList<Attribute>());
 						}
 						attributes.get(graphNode).add(attribute);
@@ -141,7 +141,7 @@ public class GraphConverter implements Converter {
 					if (props.getValue(i) != null) {
 						attribute.with(DataType.ref(props.getValue(i).getClass())).withValue(props.getValue(i).toString());
 					}
-					if (attributes.get(graphNode)==null) {
+					if (attributes.get(graphNode) ==null) {
 						attributes.put(graphNode, new ArrayList<Attribute>());
 					}
 					attributes.get(graphNode).add(attribute);
@@ -215,7 +215,7 @@ public class GraphConverter implements Converter {
 	public JsonObject parseEntity(String typ, GraphNode entity, boolean shortName) {
 		if (typ==null) {
 			typ = GraphIdMap.OBJECT;
-			if (entity.getId()==null) {
+			if (entity.getId() ==null) {
 				typ = GraphIdMap.CLASS;
 			}
 		}

@@ -23,8 +23,14 @@ package de.uniks.networkparser.logic;
 */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
+/**
+ * Not Clazz for neg. Condition.
+ * @author Stefan Lindel
+ */
 public class Not implements Condition, SendableEntityCreator {
-	public final String ITEM="item";
+	/** Constant for ITEM. */
+	public static final String ITEM = "item";
+	/** Varibale for Condition. */
 	private Condition item;
 
 	@Override
@@ -32,12 +38,19 @@ public class Not implements Condition, SendableEntityCreator {
 		return !item.matches(values);
 	}
 
+	/**
+	 * @return Not Conditino
+	 */
 	public Condition getItem() {
 		return item;
 	}
 
-	public Not withItem(Condition item) {
-		this.item = item;
+	/**
+	 * @param value for new Condition
+	 * @return Not Instance
+	 */
+	public Not withItem(Condition value) {
+		this.item = value;
 		return this;
 	}
 
@@ -54,7 +67,7 @@ public class Not implements Condition, SendableEntityCreator {
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if (ITEM.equalsIgnoreCase(attribute)) {
-			((Not)entity).getItem();
+			((Not) entity).getItem();
 		}
 		return null;
 	}
@@ -63,7 +76,7 @@ public class Not implements Condition, SendableEntityCreator {
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
 		if (ITEM.equalsIgnoreCase(attribute)) {
-			((Not)entity).withItem((Condition)value);
+			((Not) entity).withItem((Condition) value);
 		}
 		return false;
 	}
