@@ -20,11 +20,12 @@ package de.uniks.networkparser;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import java.util.Map;
 import de.uniks.networkparser.interfaces.BidiMap;
 
-public class ArrayEntityList<K, V> extends AbstractKeyValueList<K, V> implements BidiMap<K, V>{
+public class ArrayEntityList<K, V> extends AbstractKeyValueList<K, V> implements
+		BidiMap<K, V> {
 	@Override
 	public ArrayEntityList<K, V> getNewInstance() {
 		return new ArrayEntityList<K, V>();
@@ -32,17 +33,17 @@ public class ArrayEntityList<K, V> extends AbstractKeyValueList<K, V> implements
 
 	@Override
 	public AbstractList<K> with(Object... values) {
-		if (values==null) {
+		if (values == null) {
 			return this;
 		}
-		if (values.length%2== 0) {
-			for (int i=0;i<values.length;i+=2) {
+		if (values.length % 2 == 0) {
+			for (int i = 0; i < values.length; i += 2) {
 				this.withValue(values[i], values[i + 1]);
 			}
 		} else {
-			for (int i=0;i<values.length;i++) {
+			for (int i = 0; i < values.length; i++) {
 				if (values[i] instanceof Map<?, ?>) {
-					this.withMap((Map<?, ?>)values[i]);
+					this.withMap((Map<?, ?>) values[i]);
 				} else if (values[i] instanceof AbstractEntity) {
 					addEntity((AbstractEntity<?, ?>) values[i]);
 				}
@@ -73,7 +74,7 @@ public class ArrayEntityList<K, V> extends AbstractKeyValueList<K, V> implements
 		this.put(key, value);
 		return this;
 	}
-	
+
 	protected void hashTableAddValues(Object newValue, int pos) {
 		this.hashTableValues = hashTableAdd(this.hashTableValues, this.values,
 				newValue, pos);

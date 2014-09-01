@@ -20,8 +20,9 @@ package de.uniks.networkparser;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.interfaces.IdMapCounter;
+
 /**
  * The Class SimpleIdCounter.
  */

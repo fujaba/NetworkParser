@@ -20,11 +20,14 @@ package de.uniks.networkparser.calculator;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 
 public interface Operator {
 	public int getPriority();
+
 	public int getValues();
-    public double calculate(Double[] values);
-    public String getTag();
+
+	public double calculate(Double[] values);
+
+	public String getTag();
 }

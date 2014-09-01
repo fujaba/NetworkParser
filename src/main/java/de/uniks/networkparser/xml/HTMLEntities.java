@@ -20,11 +20,12 @@ package de.uniks.networkparser.xml;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.ArrayEntityList;
 
 /**
  * HTML Entity for transform Element for HTML. Encoding String.
+ *
  * @author Stefan Lindel
  */
 public class HTMLEntities {
@@ -292,9 +293,13 @@ public class HTMLEntities {
 		addEntity("&gt;", 62);
 	}
 
-	/** Add a Element to HTML List.
-	 * @param value String Value
-	 * @param key Integer of Char
+	/**
+	 * Add a Element to HTML List.
+	 *
+	 * @param value
+	 *            String Value
+	 * @param key
+	 *            Integer of Char
 	 */
 	private void addEntity(String value, int key) {
 		this.entities.put(value, Integer.valueOf(key));
@@ -302,6 +307,7 @@ public class HTMLEntities {
 
 	/**
 	 * Convert special and extended characters into HTML entitities.
+	 *
 	 * @param str
 	 *            input string
 	 * @return formatted string
@@ -316,7 +322,10 @@ public class HTMLEntities {
 
 		for (int i = 0; i < str.length(); ++i) {
 			char ch = str.charAt(i);
-			String entity = this.entities.getKey(Integer.valueOf(ch)); // get equivalent html entity
+			String entity = this.entities.getKey(Integer.valueOf(ch)); // get
+																		// equivalent
+																		// html
+																		// entity
 			if (entity == null) { // if entity has not been found
 				if (ch > 128) { // check if is an extended character
 					buf.append("&#" + ((int) ch) + ";"); // convert extended

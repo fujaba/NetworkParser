@@ -20,12 +20,11 @@ package de.uniks.networkparser.xml;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import java.util.ArrayList;
 
 /**
- * @author Stefan
- * The XSD Entity
+ * @author Stefan The XSD Entity
  */
 public class XSDEntity extends XMLEntity {
 	/** Constant of Choice. */
@@ -55,7 +54,10 @@ public class XSDEntity extends XMLEntity {
 		return choice;
 	}
 
-	/** @param value Elements of Choice. */
+	/**
+	 * @param value
+	 *            Elements of Choice.
+	 */
 	public void setChoice(ArrayList<XSDEntity> value) {
 		this.choice = value;
 	}
@@ -65,7 +67,10 @@ public class XSDEntity extends XMLEntity {
 		return sequence;
 	}
 
-	/** @param values Set the Sequence. */
+	/**
+	 * @param values
+	 *            Set the Sequence.
+	 */
 	public void setSequence(ArrayList<XSDEntity> values) {
 		this.sequence = values;
 	}
@@ -75,7 +80,10 @@ public class XSDEntity extends XMLEntity {
 		return attribute;
 	}
 
-	/** @param values Set All Attributes. */
+	/**
+	 * @param values
+	 *            Set All Attributes.
+	 */
 	public void setAttribute(ArrayList<String> values) {
 		this.attribute = values;
 	}
@@ -85,17 +93,23 @@ public class XSDEntity extends XMLEntity {
 		return minOccurs;
 	}
 
-	/** @param value The Minimum of Elements. */
+	/**
+	 * @param value
+	 *            The Minimum of Elements.
+	 */
 	public void setMinOccurs(String value) {
 		this.minOccurs = value;
 	}
 
-	/**@return The Maximum of Elements. */
+	/** @return The Maximum of Elements. */
 	public String getMaxOccurs() {
 		return maxOccurs;
 	}
 
-	/** @param value the Maximum of Elements. */
+	/**
+	 * @param value
+	 *            the Maximum of Elements.
+	 */
 	public void setMaxOccurs(String value) {
 		this.maxOccurs = value;
 	}

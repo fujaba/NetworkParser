@@ -20,9 +20,9 @@ package de.uniks.networkparser.interfaces;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 
-public interface ByteItem extends BaseItem{
+public interface ByteItem extends BaseItem {
 	/**
 	 * @return the ByteItem as String
 	 */
@@ -30,36 +30,48 @@ public interface ByteItem extends BaseItem{
 	public String toString();
 
 	/**
-	 * @param converter ByteConverter for Format
+	 * @param converter
+	 *            ByteConverter for Format
 	 * @return the ByteItem as String with converter
 	 */
 	public String toString(ByteConverter converter);
 
 	/**
-	 * @param converter ByteConverter for Format
-	 * @param isDynamic ByteStream for minimize output
+	 * @param converter
+	 *            ByteConverter for Format
+	 * @param isDynamic
+	 *            ByteStream for minimize output
 	 * @return the ByteItem as String
 	 */
 	public String toString(ByteConverter converter, boolean isDynamic);
 
 	/**
-	 * @param isDynamic ByteStream for minimize output
+	 * @param isDynamic
+	 *            ByteStream for minimize output
 	 * @return ByteStream
 	 */
 	public BufferedBytes getBytes(boolean isDynamic);
 
 	/**
 	 * Write the Entity to the buffer
-	 * @param buffer for writing
-	 * @param isDynamic dynamic switsch
-	 * @param lastEntity is the entity is the last of a list
-	 * @param isPrimitive need the entity no datatyp
+	 *
+	 * @param buffer
+	 *            for writing
+	 * @param isDynamic
+	 *            dynamic switsch
+	 * @param lastEntity
+	 *            is the entity is the last of a list
+	 * @param isPrimitive
+	 *            need the entity no datatyp
 	 */
-	public void writeBytes(BufferedBytes buffer, boolean isDynamic, boolean lastEntity, boolean isPrimitive);
+	public void writeBytes(BufferedBytes buffer, boolean isDynamic,
+			boolean lastEntity, boolean isPrimitive);
 
 	/**
-	 * @param isDynamic ByteStream for minimize output
-	 * @param isLast is the Element is the Last of Group
+	 * @param isDynamic
+	 *            ByteStream for minimize output
+	 * @param isLast
+	 *            is the Element is the Last of Group
 	 * @return the Size of Bytes
 	 */
 	public int calcLength(boolean isDynamic, boolean isLast);

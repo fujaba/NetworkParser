@@ -20,7 +20,7 @@ package de.uniks.networkparser.interfaces;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 /**
  * INterface for Buffer For Tokener to parse some Values
  *
@@ -31,24 +31,40 @@ public interface Buffer {
 	 * @return the length of the buffer
 	 */
 	public int length();
+
 	public byte byteAt(int index);
+
 	public char charAt(int index);
+
 	public char getChar();
+
 	/**
-	 * @param start startindex for parsing
-	 * @param length the length of Substring
+	 * @param start
+	 *            startindex for parsing
+	 * @param length
+	 *            the length of Substring
 	 * @return the Substring
 	 */
 	public String substring(int start, int length);
+
 	public Buffer withLength(int length);
+
 	public int position();
+
 	public int remaining();
+
 	public void back();
+
 	public boolean isEnd();
+
 	public Buffer withPosition(int index);
+
 	@Override
 	public String toString();
+
 	public String toText();
+
 	public byte[] toArray();
+
 	public boolean isCache();
 }

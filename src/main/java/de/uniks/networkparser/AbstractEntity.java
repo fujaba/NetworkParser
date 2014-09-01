@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
@@ -27,23 +28,27 @@ import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 
 /**
  * AbstractEntity is a Simple KeyValue - Object.
  *
  * @author Stefan Lindel
  *
- * @param <K> Key-Element
- * @param <V> Value Element
+ * @param <K>
+ *            Key-Element
+ * @param <V>
+ *            Value Element
  */
-public abstract class AbstractEntity<K, V> implements BaseItem, Entry<K, V>, SendableEntityCreator, SendableEntityCreatorNoIndex {
+public abstract class AbstractEntity<K, V> implements BaseItem, Entry<K, V>,
+		SendableEntityCreator, SendableEntityCreatorNoIndex {
 	/** Constant for KEY. */
 	public static final String PROPERTY_KEY = "key";
 	/** Constant for VALUE. */
 	public static final String PROPERTY_VALUE = "value";
 	/** Propertys for Values. */
-	private final String[] properties = new String[] {PROPERTY_KEY, PROPERTY_VALUE};
+	private final String[] properties = new String[] {PROPERTY_KEY,
+			PROPERTY_VALUE };
 	/** The Variable of Key. */
 	private K key;
 	/** The Variable of Value. */
@@ -57,6 +62,7 @@ public abstract class AbstractEntity<K, V> implements BaseItem, Entry<K, V>, Sen
 	}
 
 	public abstract AbstractEntity<K, V> withKeyItem(Object key);
+
 	public abstract AbstractEntity<K, V> withValueItem(Object value);
 
 	/**
@@ -68,7 +74,8 @@ public abstract class AbstractEntity<K, V> implements BaseItem, Entry<K, V>, Sen
 	 */
 	public AbstractEntity<K, V> with(Map<Object, Object> collection) {
 		if (collection != null) {
-			Iterator<Entry<Object, Object>> i = collection.entrySet().iterator();
+			Iterator<Entry<Object, Object>> i = collection.entrySet()
+					.iterator();
 			while (i.hasNext()) {
 				Entry<Object, Object> e = i.next();
 				Object value = e.getValue();
@@ -90,7 +97,7 @@ public abstract class AbstractEntity<K, V> implements BaseItem, Entry<K, V>, Sen
 		if (key instanceof String) {
 			return "" + key;
 		}
-		throw new RuntimeException("Key is not a String <"  + key + ">");
+		throw new RuntimeException("Key is not a String <" + key + ">");
 	}
 
 	@Override
@@ -172,7 +179,7 @@ public abstract class AbstractEntity<K, V> implements BaseItem, Entry<K, V>, Sen
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
 		if (entity instanceof AbstractEntity) {
-			AbstractEntity<?, ?>  entry = (AbstractEntity<?, ?>) entity;
+			AbstractEntity<?, ?> entry = (AbstractEntity<?, ?>) entity;
 			if (PROPERTY_KEY.equalsIgnoreCase(attribute)) {
 				entry.withKeyItem(value);
 				return true;
@@ -182,8 +189,8 @@ public abstract class AbstractEntity<K, V> implements BaseItem, Entry<K, V>, Sen
 					if (map == null) {
 						map = new ArrayEntityList<String, Object>();
 					}
-					if (map instanceof ArrayEntityList<?,?>) {
-						((ArrayEntityList<?,?>) map).with(value);
+					if (map instanceof ArrayEntityList<?, ?>) {
+						((ArrayEntityList<?, ?>) map).with(value);
 					}
 					entry.withValueItem(map);
 				} else {

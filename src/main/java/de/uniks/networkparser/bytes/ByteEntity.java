@@ -20,7 +20,7 @@ package de.uniks.networkparser.bytes;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import de.uniks.networkparser.bytes.converter.ByteConverterHTTP;
@@ -28,11 +28,12 @@ import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteConverter;
 import de.uniks.networkparser.interfaces.ByteItem;
 import de.uniks.networkparser.interfaces.FactoryEntity;
+
 /**
  * The Class ByteEntity.
  */
 
-public class ByteEntity implements ByteItem, FactoryEntity{
+public class ByteEntity implements ByteItem, FactoryEntity {
 	/** The Constant BIT OF A BYTE. */
 	public final static int BITOFBYTE = 8;
 	public final static int TYPBYTE = 1;
@@ -55,7 +56,8 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 	/**
 	 * Sets the value.
 	 *
-	 * @param typ the new Typ
+	 * @param typ
+	 *            the new Typ
 	 * @param value
 	 *            the new value
 	 * @return Itself
@@ -69,24 +71,25 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 	/**
 	 * Sets the value.
 	 *
-	 * @param typ The Typ of Element
+	 * @param typ
+	 *            The Typ of Element
 	 * @param value
 	 *            the new value
 	 * @return Itself
 	 */
 	public ByteEntity withValue(byte typ, byte value) {
 		this.typ = typ;
-		this.values = new byte[]{value};
+		this.values = new byte[] {value };
 		return this;
 	}
 
 	public ByteEntity withValue(byte typ, int value) {
-      this.typ = typ;
-      BytesBuffer msgValue = new BytesBuffer().withLength(4);
-      msgValue.put(value);
-      this.values = msgValue.flip();
-      return this;
-   }
+		this.typ = typ;
+		BytesBuffer msgValue = new BytesBuffer().withLength(4);
+		msgValue.put(value);
+		this.values = msgValue.flip();
+		return this;
+	}
 
 	/**
 	 * Byte to unsigned byte.
@@ -134,23 +137,29 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 	public String toString(ByteConverter converter, boolean dynamic) {
 		if (converter == null) {
 			converter = new ByteConverterHTTP();
-			}
+		}
 		return converter.toString(this, dynamic);
 	}
 
 	/**
 	 * Gets the bytes.
-	 * @param buffer The Buffer to write
-	 * @param isDynamic is short the Stream for message
-	 * @param isLast is the Element is the last of Group
-	 * @param isPrimitive is the Element is the StreamClazz
+	 *
+	 * @param buffer
+	 *            The Buffer to write
+	 * @param isDynamic
+	 *            is short the Stream for message
+	 * @param isLast
+	 *            is the Element is the last of Group
+	 * @param isPrimitive
+	 *            is the Element is the StreamClazz
 	 */
 	@Override
-	public void writeBytes(BufferedBytes buffer, boolean isDynamic, boolean isLast, boolean isPrimitive) {
+	public void writeBytes(BufferedBytes buffer, boolean isDynamic,
+			boolean isLast, boolean isPrimitive) {
 		byte[] value = this.values;
 
-		byte typ=getTyp();
-		if (value==null) {
+		byte typ = getTyp();
+		if (value == null) {
 			typ = ByteUtil.getTyp(typ, 0, isLast);
 			ByteUtil.writeByteHeader(buffer, typ, 0);
 			return;
@@ -161,7 +170,7 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 				if (bufferValue >= Byte.MIN_VALUE
 						&& bufferValue <= Byte.MAX_VALUE) {
 					typ = ByteIdMap.DATATYPE_BYTE;
-					value = new byte[] { (byte) bufferValue };
+					value = new byte[] {(byte) bufferValue };
 				}
 			} else if (typ == ByteIdMap.DATATYPE_INTEGER
 					|| typ == ByteIdMap.DATATYPE_LONG) {
@@ -169,20 +178,22 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 				if (bufferValue >= Byte.MIN_VALUE
 						&& bufferValue <= Byte.MAX_VALUE) {
 					typ = ByteIdMap.DATATYPE_BYTE;
-					value = new byte[] { (byte) bufferValue };
+					value = new byte[] {(byte) bufferValue };
 				} else if (bufferValue >= Short.MIN_VALUE
 						&& bufferValue <= Short.MAX_VALUE) {
 					typ = ByteIdMap.DATATYPE_BYTE;
-					BytesBuffer bbShort = BytesBuffer.allocate(Short.SIZE / BITOFBYTE);
+					BytesBuffer bbShort = BytesBuffer.allocate(Short.SIZE
+							/ BITOFBYTE);
 					bbShort.put((short) bufferValue);
 					bbShort.flip();
 					value = bbShort.array();
 				}
 			}
 		}
-		if (!isPrimitive || typ==ByteIdMap.DATATYPE_CLAZZTYP || typ==ByteIdMap.DATATYPE_CLAZZTYPLONG) {
+		if (!isPrimitive || typ == ByteIdMap.DATATYPE_CLAZZTYP
+				|| typ == ByteIdMap.DATATYPE_CLAZZTYPLONG) {
 			typ = ByteUtil.getTyp(typ, value.length, isLast);
-	 		ByteUtil.writeByteHeader(buffer, typ, value.length);
+			ByteUtil.writeByteHeader(buffer, typ, value.length);
 		}
 		// SAVE Length
 		buffer.put(value);
@@ -192,7 +203,7 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 	public BufferedBytes getBytes(boolean isDynamic) {
 		int len = calcLength(isDynamic, true);
 		BufferedBytes buffer = ByteUtil.getBuffer(len);
-		writeBytes(buffer, isDynamic, true, false);	
+		writeBytes(buffer, isDynamic, true, false);
 		buffer.flip();
 		return buffer;
 	}
@@ -280,7 +291,7 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 	@Override
 	public int calcLength(boolean isDynamic, boolean isLast) {
 		// Length calculate Sonderfaelle ermitteln
-		if (this.values==null) {
+		if (this.values == null) {
 			return TYPBYTE;
 		}
 		if (isDynamic) {
@@ -302,7 +313,8 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 				}
 			}
 		}
- 		return TYPBYTE + ByteUtil.getTypLen(typ, values.length, isLast) + this.values.length;
+		return TYPBYTE + ByteUtil.getTypLen(typ, values.length, isLast)
+				+ this.values.length;
 	}
 
 	@Override
@@ -317,12 +329,12 @@ public class ByteEntity implements ByteItem, FactoryEntity{
 
 	@Override
 	public boolean isEmpty() {
-		return getTyp() ==ByteIdMap.DATATYPE_NULL;
+		return getTyp() == ByteIdMap.DATATYPE_NULL;
 	}
 
 	@Override
 	public int size() {
-		if (values==null) {
+		if (values == null) {
 			return 0;
 		}
 		return values.length;

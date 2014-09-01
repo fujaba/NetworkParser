@@ -20,20 +20,22 @@ package de.uniks.networkparser.gui.table;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 
 public enum FieldTyp {
-	ASSOC(1), DATE(2), CHECKBOX(3), COMBOBOX(4), DOUBLE(5), INTEGER(6), TEXT(7), PASSWORD(8), VALUEFROMDROPDOWNLIST(9);
+	ASSOC(1), DATE(2), CHECKBOX(3), COMBOBOX(4), DOUBLE(5), INTEGER(6), TEXT(7), PASSWORD(
+			8), VALUEFROMDROPDOWNLIST(9);
 
 	private int value;
 
 	FieldTyp(int value) {
 		this.setValue(value);
-    }
-	 
-	  public int getValue() {
+	}
+
+	public int getValue() {
 		return value;
 	}
+
 	public void setValue(int value) {
 		this.value = value;
 	}

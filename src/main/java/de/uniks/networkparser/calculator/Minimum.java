@@ -20,7 +20,7 @@ package de.uniks.networkparser.calculator;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 
 public class Minimum implements Operator {
 	@Override
@@ -30,7 +30,7 @@ public class Minimum implements Operator {
 
 	@Override
 	public double calculate(Double[] values) {
-		if (values[0]<values[1]) {
+		if (values[0] < values[1]) {
 			return values[0];
 		} else {
 			return values[1];

@@ -18,10 +18,10 @@
 package de.uniks.networkparser;
 
 /**
- * A simple logging interface abstracting logging APIs.  In order to be
+ * A simple logging interface abstracting logging APIs. In order to be
  * instantiated successfully by Apache Common Logging, classes that implement
- * this interface must have a constructor that takes a single String
- * parameter representing the "name" of this Log.
+ * this interface must have a constructor that takes a single String parameter
+ * representing the "name" of this Log.
  * <p>
  * The six logging levels used by <code>Log</code> are (in order):
  * <ol>
@@ -33,17 +33,14 @@ package de.uniks.networkparser;
  * <li>fatal (the most serious)</li>
  * </ol>
  * The mapping of these log levels to the concepts used by the underlying
- * logging system is implementation dependent.
- * The implementation should ensure, though, that this ordering behaves
- * as expected.
+ * logging system is implementation dependent. The implementation should ensure,
+ * though, that this ordering behaves as expected.
  * <p>
- * Performance is often a logging concern.
- * By examining the appropriate property,
- * a component can avoid expensive operations (producing information
+ * Performance is often a logging concern. By examining the appropriate
+ * property, a component can avoid expensive operations (producing information
  * to be logged).
  * <p>
- * For example,
- * <code>
+ * For example, <code>
  *    if (log.isDebugEnabled()) {
  *        ... do something expensive ...
  *        log.debug(theResult);
@@ -51,69 +48,85 @@ package de.uniks.networkparser;
  * </code>
  * <p>
  * Configuration of the underlying logging system will generally be done
- * external to the Logging APIs, through whatever mechanism is supported by
- * that system.
+ * external to the Logging APIs, through whatever mechanism is supported by that
+ * system.
  *
  * @version $Id: Log.java 1432663 2013-01-13 17:24:18Z tn $
  */
 public class NetworkParserLog {
-	public static final String ERROR_TYP_PARSING="PARSING";
-	public static final String ERROR_TYP_CONCURRENTMODIFICATION="CONCURRENTMODIFICATION";
-	public static final String ERROR_TYP_NOCREATOR="NOCREATORFOUND";
-	public static final String ERROR_TYP_DUPPLICATE="DUPPLICATE";
-	private boolean isError=true;
-    /**
-     * Log a message with debug log level.
-     *
-     * @param owner The Element with call the Methods
-     * @param method The Caller-Method
-     * @param message log this message
-     */
-    public void debug(Object owner, String method, String message) {
-    	System.out.println("DEBUG: " +message);
-    }
+	public static final String ERROR_TYP_PARSING = "PARSING";
+	public static final String ERROR_TYP_CONCURRENTMODIFICATION = "CONCURRENTMODIFICATION";
+	public static final String ERROR_TYP_NOCREATOR = "NOCREATORFOUND";
+	public static final String ERROR_TYP_DUPPLICATE = "DUPPLICATE";
+	private boolean isError = true;
 
-    /**
-     * Log a message with info log level.
-     *
-     * @param owner The Element with call the Methods
-     * @param method The Caller-Method
-     * @param message log this message
-     */
-    public void info(Object owner, String method, String message) {
-    	System.out.println("INFO: " +message);
-    }
+	/**
+	 * Log a message with debug log level.
+	 *
+	 * @param owner
+	 *            The Element with call the Methods
+	 * @param method
+	 *            The Caller-Method
+	 * @param message
+	 *            log this message
+	 */
+	public void debug(Object owner, String method, String message) {
+		System.out.println("DEBUG: " + message);
+	}
 
-    /**
-     * Log a message with warn log level.
-     *
-     * @param owner The Element with call the Methods
-     * @param method The Caller-Method
-     * @param message log this message
-     */
-    public void warn(Object owner, String method, String message) {
-    	System.err.println("WARN: " +message);
-    }
+	/**
+	 * Log a message with info log level.
+	 *
+	 * @param owner
+	 *            The Element with call the Methods
+	 * @param method
+	 *            The Caller-Method
+	 * @param message
+	 *            log this message
+	 */
+	public void info(Object owner, String method, String message) {
+		System.out.println("INFO: " + message);
+	}
 
-    /**
-     * Log a message with error log level.
-     *
-     * @param owner The Element with call the Methods
-     * @param method The Caller-Method
-     * @param typ Typ of Log Value
-     * @param params The Original Parameters
-     * @return boolean if method must Cancel
-     */
-    public boolean error(Object owner, String method, String typ, Object... params) {
-    	return this.isError;
-    }
-   
+	/**
+	 * Log a message with warn log level.
+	 *
+	 * @param owner
+	 *            The Element with call the Methods
+	 * @param method
+	 *            The Caller-Method
+	 * @param message
+	 *            log this message
+	 */
+	public void warn(Object owner, String method, String message) {
+		System.err.println("WARN: " + message);
+	}
+
+	/**
+	 * Log a message with error log level.
+	 *
+	 * @param owner
+	 *            The Element with call the Methods
+	 * @param method
+	 *            The Caller-Method
+	 * @param typ
+	 *            Typ of Log Value
+	 * @param params
+	 *            The Original Parameters
+	 * @return boolean if method must Cancel
+	 */
+	public boolean error(Object owner, String method, String typ,
+			Object... params) {
+		return this.isError;
+	}
+
 	public boolean isError() {
 		return isError;
 	}
 
 	/**
-	 * @param value is Break for Error
+	 * @param value
+	 *            is Break for Error
 	 * @return Itself
 	 */
 	public NetworkParserLog withError(boolean value) {

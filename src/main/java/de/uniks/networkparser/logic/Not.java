@@ -20,11 +20,12 @@ package de.uniks.networkparser.logic;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 /**
  * Not Clazz for neg. Condition.
+ *
  * @author Stefan Lindel
  */
 public class Not implements Condition, SendableEntityCreator {
@@ -46,7 +47,8 @@ public class Not implements Condition, SendableEntityCreator {
 	}
 
 	/**
-	 * @param value for new Condition
+	 * @param value
+	 *            for new Condition
 	 * @return Not Instance
 	 */
 	public Not withItem(Condition value) {
@@ -56,7 +58,7 @@ public class Not implements Condition, SendableEntityCreator {
 
 	@Override
 	public String[] getProperties() {
-		return new String[]{ITEM};
+		return new String[] {ITEM };
 	}
 
 	@Override

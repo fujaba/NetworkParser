@@ -20,7 +20,7 @@ package de.uniks.networkparser.gui.grid;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import java.beans.PropertyChangeListener;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -28,40 +28,40 @@ import java.util.Map.Entry;
 import de.uniks.networkparser.interfaces.GUIPosition;
 
 public class ValueGrid {
-	private int maxRows=0;
-	private int maxColumns=0;
-	private LinkedHashMap<GridStyle, Object> children= new LinkedHashMap<GridStyle, Object>();
-	private LinkedHashMap<PropertyChangeListener, Object> container= new LinkedHashMap<PropertyChangeListener, Object>();
+	private int maxRows = 0;
+	private int maxColumns = 0;
+	private LinkedHashMap<GridStyle, Object> children = new LinkedHashMap<GridStyle, Object>();
+	private LinkedHashMap<PropertyChangeListener, Object> container = new LinkedHashMap<PropertyChangeListener, Object>();
 	private GridStyle selectedCell;
 	private GridGUITable guiElement;
-
 
 	public ValueGrid withGridTable(GridGUITable value) {
 		this.guiElement = value;
 		return this;
 	}
 
-	public GridStyle add(Object node, int col, int row, String width, String height) {
+	public GridStyle add(Object node, int col, int row, String width,
+			String height) {
 		GridStyle cell = add(node, col, row);
 		cell.withHeight(height).withWidth(width);
 		return cell;
 	}
 
 	public GridStyle add(Object node, int col, int row) {
-		boolean refresh=false;
+		boolean refresh = false;
 
-		if (col>=maxColumns) {
+		if (col >= maxColumns) {
 			maxColumns = col;
-			refresh=true;
+			refresh = true;
 		}
-		if (row>=maxRows) {
+		if (row >= maxRows) {
 			maxRows = row;
-			refresh=true;
+			refresh = true;
 		}
 
 		GridStyle guiCell = null;
 		if (guiElement != null) {
-			guiCell=guiElement.getNewStyle();
+			guiCell = guiElement.getNewStyle();
 			PropertyChangeListener child;
 			if (node instanceof PropertyChangeListener) {
 				child = (PropertyChangeListener) node;
@@ -73,13 +73,12 @@ public class ValueGrid {
 			guiCell.withGrid(this);
 			guiCell.withColumn(col);
 			guiCell.withRow(row);
-		
+
 			children.put(guiCell, node);
-			if (guiElement!=null) {
+			if (guiElement != null) {
 				guiElement.add(child);
 			}
 		}
-	
 
 		if (refresh) {
 			refreshLines();
@@ -91,13 +90,14 @@ public class ValueGrid {
 		if (node instanceof GridStyle) {
 			return (GridStyle) node;
 		}
-		Object result=container.get(node);
-		if (result==null) {
+		Object result = container.get(node);
+		if (result == null) {
 			result = node;
 		}
-		for (Iterator<Entry<GridStyle, Object>> iterator = children.entrySet().iterator();iterator.hasNext();) {
+		for (Iterator<Entry<GridStyle, Object>> iterator = children.entrySet()
+				.iterator(); iterator.hasNext();) {
 			Entry<GridStyle, Object> item = iterator.next();
-			if (item.getValue() ==result) {
+			if (item.getValue() == result) {
 				return item.getKey();
 			}
 		}
@@ -108,9 +108,10 @@ public class ValueGrid {
 		if (node instanceof GridStyle) {
 			return children.get(node);
 		}
-		for (Iterator<Entry<PropertyChangeListener, Object>> iterator = container.entrySet().iterator();iterator.hasNext();) {
+		for (Iterator<Entry<PropertyChangeListener, Object>> iterator = container
+				.entrySet().iterator(); iterator.hasNext();) {
 			Entry<PropertyChangeListener, Object> item = iterator.next();
-			if (item.getValue() ==node) {
+			if (item.getValue() == node) {
 				return item.getKey();
 			}
 		}
@@ -120,7 +121,7 @@ public class ValueGrid {
 	public void setSpanRow(Object node, int row) {
 		GridStyle cell = getGridStyle(node);
 
-		if (cell!=null) {
+		if (cell != null) {
 			cell.withRowSpan(row);
 			refreshLines();
 		}
@@ -129,44 +130,44 @@ public class ValueGrid {
 	public void setSpanColumn(Object node, int column) {
 		GridStyle cell = getGridStyle(node);
 
-		if (cell!=null) {
+		if (cell != null) {
 			cell.withColumnSpan(column);
 			refreshLines();
 		}
 	}
 
 	public void refreshLines() {
-		 for (GridStyle n: children.keySet()) {
-			 int rowEnd = n.getRowEnd();
-			 int colEnd = n.getColumnEnd();
+		for (GridStyle n : children.keySet()) {
+			int rowEnd = n.getRowEnd();
+			int colEnd = n.getColumnEnd();
 
-			 n.setBorder(GUIPosition.NORTH, "1", "black");
-			 n.setBorder(GUIPosition.WEST, "1", "black");
-			 if (rowEnd>=maxRows) {
-				 n.setBorder(GUIPosition.SOUTH, "1", "black");
-			 } else {
-				 n.setBorder(GUIPosition.SOUTH, null, null);
-			 }
-			 if (colEnd>=maxColumns) {
-				 n.setBorder(GUIPosition.EAST, "1", "black");
-			 } else {
-				 n.setBorder(GUIPosition.EAST, null, null);
+			n.setBorder(GUIPosition.NORTH, "1", "black");
+			n.setBorder(GUIPosition.WEST, "1", "black");
+			if (rowEnd >= maxRows) {
+				n.setBorder(GUIPosition.SOUTH, "1", "black");
+			} else {
+				n.setBorder(GUIPosition.SOUTH, null, null);
+			}
+			if (colEnd >= maxColumns) {
+				n.setBorder(GUIPosition.EAST, "1", "black");
+			} else {
+				n.setBorder(GUIPosition.EAST, null, null);
 
-			 }
+			}
 		}
 	}
 
 	public boolean selectCell(GridStyle cell) {
-		if (selectedCell==cell) {
+		if (selectedCell == cell) {
 			return true;
 		}
-		if (selectedCell!=null) {
+		if (selectedCell != null) {
 			selectedCell.deselect();
-			selectedCell=null;
+			selectedCell = null;
 		}
-		if (cell!=null) {
+		if (cell != null) {
 			cell.select();
-			this.selectedCell=cell;
+			this.selectedCell = cell;
 			return true;
 		}
 		return false;
@@ -175,16 +176,18 @@ public class ValueGrid {
 	public int getCountColumns() {
 		return maxColumns;
 	}
+
 	public int getCountRows() {
 		return maxRows;
 	}
 
 	public void insertRow(int offset) {
-		GridStyle[] items = children.keySet().toArray(new GridStyle[children.size()]);
+		GridStyle[] items = children.keySet().toArray(
+				new GridStyle[children.size()]);
 		for (GridStyle cell : items) {
-			if (cell.getRow()>=offset) {
-				cell.withRow(cell.getRow() +1);
-				if (guiElement!=null) {
+			if (cell.getRow() >= offset) {
+				cell.withRow(cell.getRow() + 1);
+				if (guiElement != null) {
 					guiElement.move(cell);
 				}
 			}

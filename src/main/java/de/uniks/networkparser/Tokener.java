@@ -20,11 +20,12 @@ package de.uniks.networkparser;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Buffer;
-/**parseToEntity
- * The Class Tokener.
+
+/**
+ * parseToEntity The Class Tokener.
  */
 
 public abstract class Tokener {
@@ -33,12 +34,13 @@ public abstract class Tokener {
 	/** BUFFER */
 	protected Buffer buffer;
 
-	protected NetworkParserLog logger= new NetworkParserLog();
+	protected NetworkParserLog logger = new NetworkParserLog();
 
 	/**
 	 * Reset the Tokener
 	 *
-	 * @param value The Text for parsing
+	 * @param value
+	 *            The Text for parsing
 	 * @return Itself
 	 */
 	public Tokener withText(String value) {
@@ -54,7 +56,8 @@ public abstract class Tokener {
 	public void back() {
 		if (this.buffer.length() <= 0) {
 			if (logger.error(this, "back", NetworkParserLog.ERROR_TYP_PARSING)) {
-				throw new RuntimeException("Stepping back two steps is not supported");
+				throw new RuntimeException(
+						"Stepping back two steps is not supported");
 			}
 			return;
 		}
@@ -92,11 +95,12 @@ public abstract class Tokener {
 	 */
 	public String getNextString(int n) {
 		int pos = 0;
-		if (n<-1) {
-			n=n*-1;
+		if (n < -1) {
+			n = n * -1;
 			char[] chars = new char[n];
 			while (pos < n) {
-				chars[pos] = this.buffer.charAt(this.buffer.position() - (n-pos++));
+				chars[pos] = this.buffer.charAt(this.buffer.position()
+						- (n - pos++));
 			}
 			return new String(chars);
 		} else if (n == -1) {
@@ -135,7 +139,8 @@ public abstract class Tokener {
 		while (pos < n) {
 			chars[pos] = next();
 			if (isEnd()) {
-				if (logger.error(this, "skipPos", NetworkParserLog.ERROR_TYP_PARSING, n)) {
+				if (logger.error(this, "skipPos",
+						NetworkParserLog.ERROR_TYP_PARSING, n)) {
 					throw new RuntimeException("Substring bounds error");
 				}
 				return null;
@@ -151,17 +156,17 @@ public abstract class Tokener {
 	 * @return A character, or 0 if there are no more characters.
 	 */
 	public char nextClean() {
-		char c=getCurrentChar();
-		do{
+		char c = getCurrentChar();
+		do {
 			c = next();
-		}while (c!=0 && c <= ' ');
+		} while (c != 0 && c <= ' ');
 		return c;
 	}
 
 	public char nextStartClean() {
-		char c=getCurrentChar();
-		if (c!=0 && c <= ' ') {
-			c=nextClean();
+		char c = getCurrentChar();
+		if (c != 0 && c <= ' ') {
+			c = nextClean();
 		}
 		return c;
 	}
@@ -169,6 +174,7 @@ public abstract class Tokener {
 	public String nextString(char quote, boolean allowCRLF) {
 		return nextString(quote, allowCRLF, false, false, true);
 	}
+
 	/**
 	 * Return the characters up to the next close quote character. Backslash
 	 * processing is done. The formal JSON format does not allow strings in
@@ -184,16 +190,17 @@ public abstract class Tokener {
 	 *            is allow Quote in Stream
 	 * @param mustQuote
 	 *            must find Quote in Stream
-
+	 *
 	 * @param nextStep
 	 *            must i step next after find Text
 	 * @return A String.
 	 */
-	public String nextString(char quote, boolean allowCRLF, boolean allowQuote, boolean mustQuote, boolean nextStep) {
+	public String nextString(char quote, boolean allowCRLF, boolean allowQuote,
+			boolean mustQuote, boolean nextStep) {
 		if (getCurrentChar() == 0) {
 			return "";
 		}
-		if (getCurrentChar() ==quote) {
+		if (getCurrentChar() == quote) {
 			if (nextStep) {
 				next();
 			}
@@ -202,106 +209,105 @@ public abstract class Tokener {
 		if (buffer.isCache()) {
 			return getString(quote, allowCRLF, allowQuote, mustQuote, nextStep);
 		}
-		return getStringBuffer(quote, allowCRLF, allowQuote, mustQuote, nextStep);
+		return getStringBuffer(quote, allowCRLF, allowQuote, mustQuote,
+				nextStep);
 	}
 
-	private String getString(char quote, boolean allowCRLF, boolean allowQuote, boolean mustQuote, boolean nextStep) {
+	private String getString(char quote, boolean allowCRLF, boolean allowQuote,
+			boolean mustQuote, boolean nextStep) {
 		int startpos = this.buffer.position();
-	      char c;
-	      boolean isQuote=false;
-	      char b = 0;
-	      do
-	      {
-	         c = next();
-	         switch (c)
-	         {
-	         case 0:
-	         case '\n':
-	         case '\r':
-	            if (!allowCRLF)
-	            {
-	            	if (logger.error(this, "getString", NetworkParserLog.ERROR_TYP_PARSING, quote, allowCRLF, allowQuote, mustQuote, nextStep)) {
-	            		throw new RuntimeException("Unterminated string");
-	            	}
-	            	return null;
-	            }
-	         default:
-	            if (b == '\\')
-	            {
-					if (c == '\\')
-					{
-						c = 1;
-						isQuote = false;
-					}
-	            	if (allowQuote) {
-		               b = c;
-		               c = 1;
-		               continue;
-	            	}
-	            	isQuote = true;
-	            }
-	         }
-	         b = c;
-	      }
-	      while (c != 0 && c != quote);
-
-	      int endPos = this.buffer.position();
-	      if (nextStep) {
-	    	  next();
-	      }
-	      if ((isQuote && allowQuote) || mustQuote) {
-	    	  return this.buffer.substring(startpos, endPos - startpos - 1);
-	      }
-
-	      return this.buffer.substring(startpos, endPos - startpos);
-	}
-
-	private String getStringBuffer(char quote, boolean allowCRLF, boolean allowQuote, boolean mustQuote, boolean nextStep) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(getCurrentChar());
-
-		char c, b = 0;
-		boolean isQuote=false;
-		do{
+		char c;
+		boolean isQuote = false;
+		char b = 0;
+		do {
 			c = next();
 			switch (c) {
 			case 0:
 			case '\n':
 			case '\r':
 				if (!allowCRLF) {
-					if (logger.error(this, "getStringBuffer", NetworkParserLog.ERROR_TYP_PARSING, quote, allowCRLF, allowQuote, mustQuote, nextStep)) {
+					if (logger.error(this, "getString",
+							NetworkParserLog.ERROR_TYP_PARSING, quote,
+							allowCRLF, allowQuote, mustQuote, nextStep)) {
 						throw new RuntimeException("Unterminated string");
 					}
 					return null;
 				}
 			default:
-				if (b == '\\')
-	            {
-	            	if (allowQuote) {
-	            		sb.append(c);
-	            		if (c == '\\') {
-	            			c = 1;
-	            		}
-	            		b = c;
-	            		c = 1;
-	            		continue;
-	            	} else if (c == '\\')
-					{
+				if (b == '\\') {
+					if (c == '\\') {
+						c = 1;
+						isQuote = false;
+					}
+					if (allowQuote) {
+						b = c;
+						c = 1;
+						continue;
+					}
+					isQuote = true;
+				}
+			}
+			b = c;
+		} while (c != 0 && c != quote);
+
+		int endPos = this.buffer.position();
+		if (nextStep) {
+			next();
+		}
+		if ((isQuote && allowQuote) || mustQuote) {
+			return this.buffer.substring(startpos, endPos - startpos - 1);
+		}
+
+		return this.buffer.substring(startpos, endPos - startpos);
+	}
+
+	private String getStringBuffer(char quote, boolean allowCRLF,
+			boolean allowQuote, boolean mustQuote, boolean nextStep) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(getCurrentChar());
+
+		char c, b = 0;
+		boolean isQuote = false;
+		do {
+			c = next();
+			switch (c) {
+			case 0:
+			case '\n':
+			case '\r':
+				if (!allowCRLF) {
+					if (logger.error(this, "getStringBuffer",
+							NetworkParserLog.ERROR_TYP_PARSING, quote,
+							allowCRLF, allowQuote, mustQuote, nextStep)) {
+						throw new RuntimeException("Unterminated string");
+					}
+					return null;
+				}
+			default:
+				if (b == '\\') {
+					if (allowQuote) {
+						sb.append(c);
+						if (c == '\\') {
+							c = 1;
+						}
+						b = c;
+						c = 1;
+						continue;
+					} else if (c == '\\') {
 						c = 1;
 					}
-	            	isQuote = true;
-	            }
+					isQuote = true;
+				}
 				if (c != quote) {
 					sb.append(c);
 				}
 				b = c;
 			}
-		}while (c != 0 && c != quote);
+		} while (c != 0 && c != quote);
 		if (nextStep) {
 			next();
-	    }
+		}
 		if (isQuote || mustQuote) {
-	    	  return sb.substring(0, sb.length()-1);
+			return sb.substring(0, sb.length() - 1);
 		}
 		return sb.toString();
 	}
@@ -314,8 +320,10 @@ public abstract class Tokener {
 	 * Accumulate characters until we reach the end of the text or a formatting
 	 * character.
 	 *
-	 * @param creator The creatorobject
-	 * @param allowQuote is allow Quote in Strem
+	 * @param creator
+	 *            The creatorobject
+	 * @param allowQuote
+	 *            is allow Quote in Strem
 	 * @return the new Element
 	 */
 	public Object nextValue(BaseItem creator, boolean allowQuote) {
@@ -325,7 +333,7 @@ public abstract class Tokener {
 	public Object nextValue(BaseItem creator, boolean allowQuote, char c) {
 		String value;
 		if (buffer.isCache()) {
-			int start=buffer.position();
+			int start = buffer.position();
 			while (c >= ' ' && getStopChars().indexOf(c) < 0) {
 				c = next();
 			}
@@ -338,9 +346,10 @@ public abstract class Tokener {
 			}
 			value = sb.toString().trim();
 		}
-	
-		if (value.length()<1) {
-			if (logger.error(this, "nextValue", NetworkParserLog.ERROR_TYP_PARSING, creator, allowQuote, c)) {
+
+		if (value.length() < 1) {
+			if (logger.error(this, "nextValue",
+					NetworkParserLog.ERROR_TYP_PARSING, creator, allowQuote, c)) {
 				throw new RuntimeException("Missing value");
 			}
 			return null;
@@ -369,7 +378,7 @@ public abstract class Tokener {
 		if ((b >= '0' && b <= '9') || b == '.' || b == '-' || b == '+') {
 			try {
 				if (value.indexOf('.') > -1 || value.indexOf('e') > -1
-					|| value.indexOf('E') > -1) {
+						|| value.indexOf('E') > -1) {
 					d = Double.valueOf(value);
 					if (!d.isInfinite() && !d.isNaN()) {
 						return d;
@@ -378,11 +387,11 @@ public abstract class Tokener {
 					Long myLong = Long.valueOf(value);
 					if (myLong.longValue() == myLong.intValue()) {
 						return Integer.valueOf(myLong.intValue());
-						}
-						return myLong;
 					}
+					return myLong;
+				}
 			} catch (Exception ignore) {
-			// DO nothing
+				// DO nothing
 			}
 		}
 		return value;
@@ -485,7 +494,8 @@ public abstract class Tokener {
 	/**
 	 * Char at.
 	 *
-	 * @param pos the Position of the bufferarray
+	 * @param pos
+	 *            the Position of the bufferarray
 	 * @return the char
 	 */
 	public char charAt(int pos) {
@@ -498,7 +508,7 @@ public abstract class Tokener {
 	 * @return the current char
 	 */
 	public char getCurrentChar() {
-		if (buffer.remaining()>0) {
+		if (buffer.remaining() > 0) {
 			return this.buffer.charAt(this.buffer.position());
 		}
 		return 0;
@@ -508,11 +518,11 @@ public abstract class Tokener {
 	 * @param positions
 	 *            first is start Position, second is Endposition
 	 *
-	 *            Absolut fix Start and End start&gt;0 StartPosition end&gt;Start
-	 *            EndPosition
+	 *            Absolut fix Start and End start&gt;0 StartPosition
+	 *            end&gt;Start EndPosition
 	 *
-	 *            Absolut from fix Position Start&gt;0 Position end NULL To End end
-	 *            -1 To this.index
+	 *            Absolut from fix Position Start&gt;0 Position end NULL To End
+	 *            end -1 To this.index
 	 *
 	 *            Relativ from indexPosition Start Position from this.index +
 	 *            (-Start) End = 0 current Position
@@ -544,7 +554,7 @@ public abstract class Tokener {
 		if (start < 0 || end <= 0 || start > end) {
 			return "";
 		}
-		return this.buffer.substring(start, end-start);
+		return this.buffer.substring(start, end - start);
 	}
 
 	/**
@@ -568,7 +578,8 @@ public abstract class Tokener {
 		nextClean();
 		int startTag = this.buffer.position();
 		if (stepPos(" >//<", false, true)) {
-			return this.buffer.substring(startTag, this.buffer.position()-startTag);
+			return this.buffer.substring(startTag, this.buffer.position()
+					- startTag);
 		}
 		return "";
 	}
@@ -592,7 +603,7 @@ public abstract class Tokener {
 	}
 
 	public Tokener withBuffer(Buffer buffer) {
-		this.buffer=buffer;
+		this.buffer = buffer;
 		return this;
 	}
 

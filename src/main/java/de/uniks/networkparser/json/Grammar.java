@@ -20,7 +20,7 @@ package de.uniks.networkparser.json;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.interfaces.IdMapCounter;
@@ -29,25 +29,30 @@ import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 
 public class Grammar {
 	/**
-	 * @param jsonObject The Object for read
-	 * @param map The IdMap
-	 * @param filter The filter
-	 * @param isId The isReadId
+	 * @param jsonObject
+	 *            The Object for read
+	 * @param map
+	 *            The IdMap
+	 * @param filter
+	 *            The filter
+	 * @param isId
+	 *            The isReadId
 	 *
 	 * @return the props of theJsonObject
 	 */
-	public JsonObject getReadProperties(JsonObject jsonObject, IdMapEncoder map, Filter filter, boolean isId) {
+	public JsonObject getReadProperties(JsonObject jsonObject,
+			IdMapEncoder map, Filter filter, boolean isId) {
 		if (isId) {
 			if (jsonObject.has(JsonIdMap.JSON_PROPS)) {
 				return jsonObject.getJsonObject(JsonIdMap.JSON_PROPS);
 			}
 		} else {
-			JsonObject props= new JsonObject();
-			for (int i=0;i<jsonObject.size();i++) {
+			JsonObject props = new JsonObject();
+			for (int i = 0; i < jsonObject.size(); i++) {
 				if (!JsonIdMap.CLASS.equalsIgnoreCase(jsonObject.get(i))) {
 					props.put(jsonObject.get(i), jsonObject.getValue(i));
 				}
-			
+
 			}
 			return props;
 		}
@@ -55,8 +60,10 @@ public class Grammar {
 	}
 
 	/**
-	 * @param jsonObject The Object for read
-	 * @param map The IdMap
+	 * @param jsonObject
+	 *            The Object for read
+	 * @param map
+	 *            The IdMap
 	 * @return the Creator for this JsonObject
 	 */
 	public SendableEntityCreator getReadCreator(JsonObject jsonObject,
@@ -66,9 +73,12 @@ public class Grammar {
 	}
 
 	/**
-	 * @param modelItem Item for write
-	 * @param className String className
-	 * @param map The IdMap
+	 * @param modelItem
+	 *            Item for write
+	 * @param className
+	 *            String className
+	 * @param map
+	 *            The IdMap
 	 *
 	 * @return the Creator for this JsonObject
 	 */
@@ -77,12 +87,14 @@ public class Grammar {
 		return map.getCreator(className, true);
 	}
 
-	public JsonObject getWriteObject(IdMapEncoder map, SendableEntityCreator prototyp,
-			String className, String id, JsonObject jsonProp, Filter filter) {
+	public JsonObject getWriteObject(IdMapEncoder map,
+			SendableEntityCreator prototyp, String className, String id,
+			JsonObject jsonProp, Filter filter) {
 		JsonObject json = new JsonObject();
 		json.put(JsonIdMap.CLASS, className);
-		if (prototyp instanceof SendableEntityCreatorNoIndex || !filter.isId(map, jsonProp, className)) {
-			for (int i=0;i<jsonProp.size();i++) {
+		if (prototyp instanceof SendableEntityCreatorNoIndex
+				|| !filter.isId(map, jsonProp, className)) {
+			for (int i = 0; i < jsonProp.size(); i++) {
 				json.put(jsonProp.get(i), jsonProp.getValue(i));
 			}
 			return json;
@@ -97,6 +109,7 @@ public class Grammar {
 	public boolean hasReadValue(JsonObject json, String property) {
 		return json.has(property);
 	}
+
 	public String getReadValue(JsonObject json, String property) {
 		return json.getString(property);
 	}

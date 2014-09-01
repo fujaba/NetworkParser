@@ -20,8 +20,9 @@ package de.uniks.networkparser;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.interfaces.Buffer;
+
 /**
  * Buffer of String for alternative for StringBuffer.
  *
@@ -80,7 +81,7 @@ public abstract class TextBuffer implements Buffer {
 
 	@Override
 	public String toString() {
-		return " at " + this.position + " [character " + this.character + " line "
-				+ this.line + "]";
+		return " at " + this.position + " [character " + this.character
+				+ " line " + this.line + "]";
 	}
 }

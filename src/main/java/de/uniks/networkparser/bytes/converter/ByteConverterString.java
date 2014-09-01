@@ -20,7 +20,7 @@ package de.uniks.networkparser.bytes.converter;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.interfaces.ByteConverter;
 
 public class ByteConverterString extends ByteConverter {
@@ -29,7 +29,8 @@ public class ByteConverterString extends ByteConverter {
 	 *
 	 * @param values
 	 *            the bytes
-	 * @param size The len of values
+	 * @param size
+	 *            The len of values
 	 * @return the string
 	 */
 	@Override

@@ -20,7 +20,7 @@ package de.uniks.networkparser.bytes.converter;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.interfaces.ByteConverter;
 
@@ -28,14 +28,17 @@ public class ByteConverterHex extends ByteConverter {
 	/**
 	 * To hex string.
 	 *
-	 * @param values the bytes
-	 * @param size The Size of values
+	 * @param values
+	 *            the bytes
+	 * @param size
+	 *            The Size of values
 	 * @return the string
 	 */
 	@Override
 	public String toString(byte[] values, int size) {
 		return toString(values, size, 0);
 	}
+
 	public String toString(byte[] values, int size, int space) {
 		String hexVal = "0123456789ABCDEF";
 
@@ -48,7 +51,7 @@ public class ByteConverterHex extends ByteConverter {
 					value += 256;
 				}
 				returnValue.append("" + hexVal.charAt(value / 16)
-						+ hexVal.charAt(value % 16) +step);
+						+ hexVal.charAt(value % 16) + step);
 			}
 		}
 		return returnValue.toString();

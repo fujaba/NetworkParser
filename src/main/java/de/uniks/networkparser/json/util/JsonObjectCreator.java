@@ -20,14 +20,15 @@ package de.uniks.networkparser.json.util;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.json.JsonObject;
 
-public class JsonObjectCreator implements SendableEntityCreator, SendableEntityCreatorNoIndex {
-	private final static String VALUE="VALUE";
-	private final String[] properties = new String[] { VALUE };
+public class JsonObjectCreator implements SendableEntityCreator,
+		SendableEntityCreatorNoIndex {
+	private final static String VALUE = "VALUE";
+	private final String[] properties = new String[] {VALUE };
 
 	@Override
 	public String[] getProperties() {
@@ -44,7 +45,7 @@ public class JsonObjectCreator implements SendableEntityCreator, SendableEntityC
 		if (VALUE.equalsIgnoreCase(attribute)) {
 			return entity.toString();
 		}
-		return ((JsonObject)entity).getValueItem(attribute);
+		return ((JsonObject) entity).getValueItem(attribute);
 	}
 
 	@Override

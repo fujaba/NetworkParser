@@ -20,25 +20,28 @@ package de.uniks.networkparser.sort;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 
 /**
  * Enum for Sortdirection.
+ *
  * @author Stefan Lindel
  *
  */
 public enum SortingDirection {
 	/**
-	 * The Sortdirection Options.
-	 * ASC from small to BIG and
-	 * DESC from BIG to small
+	 * The Sortdirection Options. ASC from small to BIG and DESC from BIG to
+	 * small
 	 */
 	ASC(1), DESC(-1);
 
 	/** The Variable of Direction. */
 	private int direction;
 
-	/** @param value The new Sortdirection */
+	/**
+	 * @param value
+	 *            The new Sortdirection
+	 */
 	SortingDirection(int value) {
 		this.setDirection(value);
 	}
@@ -50,13 +53,17 @@ public enum SortingDirection {
 
 	/**
 	 * Set the new Direction.
-	 * @param value The new Sortdirection
+	 *
+	 * @param value
+	 *            The new Sortdirection
 	 */
 	public void setDirection(int value) {
 		this.direction = value;
 	}
+
 	/**
 	 * Change Sort Direction.
+	 *
 	 * @return The new SortingDirection
 	 */
 	public SortingDirection changeDirection() {

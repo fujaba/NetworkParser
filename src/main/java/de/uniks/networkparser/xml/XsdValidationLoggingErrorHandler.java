@@ -20,15 +20,14 @@ package de.uniks.networkparser.xml;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import java.util.ArrayList;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 /**
- * @author Stefan
- * XSD Validation Error Class.
+ * @author Stefan XSD Validation Error Class.
  */
 public class XsdValidationLoggingErrorHandler implements ErrorHandler {
 	/** Variable of Document valid. */
@@ -37,6 +36,7 @@ public class XsdValidationLoggingErrorHandler implements ErrorHandler {
 	private ArrayList<String> warnings = new ArrayList<String>();
 	/** Variable of all Errors. */
 	private ArrayList<String> errors = new ArrayList<String>();
+
 	@Override
 	public void warning(SAXParseException ex) throws SAXException {
 		isValid = false;
@@ -68,6 +68,7 @@ public class XsdValidationLoggingErrorHandler implements ErrorHandler {
 	public ArrayList<String> getErrors() {
 		return errors;
 	}
+
 	/**
 	 * @return the ErrorText.
 	 */
@@ -79,6 +80,7 @@ public class XsdValidationLoggingErrorHandler implements ErrorHandler {
 		sb.append("ERRORS: " + errors.size());
 		return sb.toString();
 	}
+
 	/**
 	 * @return List of Warnings.
 	 */

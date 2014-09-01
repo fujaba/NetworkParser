@@ -20,23 +20,22 @@ package de.uniks.networkparser.graph;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 public enum Cardinality
 
 {
 	ONE("1"), MANY("n");
 
-   private String value;
-  
-   private Cardinality(String value) {
-	   this.value = value;
-   }
-  
-   @Override
-   public String toString()
-   {
-      return super.toString().toLowerCase();
-   }
+	private String value;
+
+	private Cardinality(String value) {
+		this.value = value;
+	}
+
+	@Override
+	public String toString() {
+		return super.toString().toLowerCase();
+	}
 
 	public String getValue() {
 		return value;

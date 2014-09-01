@@ -20,12 +20,12 @@ package de.uniks.networkparser.graph;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 
 public class Attribute extends Value implements GraphMember {
-	public static final String PROPERTY_CLAZZ="clazz";
-	public static final String PROPERTY_VALUE="value";
-	public static final String PROPERTY_VISIBILITY="visibility";
+	public static final String PROPERTY_CLAZZ = "clazz";
+	public static final String PROPERTY_VALUE = "value";
+	public static final String PROPERTY_VISIBILITY = "visibility";
 
 	private GraphNode clazz = null;
 	private String value = null;
@@ -34,19 +34,24 @@ public class Attribute extends Value implements GraphMember {
 	public String getValue() {
 		return value;
 	}
+
 	public Attribute withValue(String value) {
 		this.value = value;
 		return this;
 	}
+
 	public Visibility getVisibility() {
 		return visibility;
 	}
+
 	public void with(Visibility visibility) {
 		this.visibility = visibility;
 	}
+
 	public GraphNode getClazz() {
 		return clazz;
 	}
+
 	public void setClazz(GraphNode clazz) {
 		this.clazz = clazz;
 	}
@@ -57,17 +62,18 @@ public class Attribute extends Value implements GraphMember {
 		super.with(value);
 		return this;
 	}
+
 	@Override
 	public Attribute with(DataType value) {
 		super.with(value);
 		return this;
 	}
 
-   public String getValue(String typ, boolean shortName) {
-	   if (typ.equals(GraphIdMap.OBJECT)) {
-		   return this.value;
-	   }
-	   return getType(shortName);
-   }
+	public String getValue(String typ, boolean shortName) {
+		if (typ.equals(GraphIdMap.OBJECT)) {
+			return this.value;
+		}
+		return getType(shortName);
+	}
 
 }

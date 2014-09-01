@@ -20,12 +20,13 @@ package de.uniks.networkparser.graph;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import java.util.Collection;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+
 /**
  * The Class YUMLIdParser.
  */
@@ -37,8 +38,8 @@ public class GraphIdMap extends IdMapEncoder {
 	/** The Constant for OBJECT Diagramms. */
 	public static final String OBJECT = "object";
 
-	private GraphIdMapFilter filter = new GraphIdMapFilter().withShowCardinality(
-			true).withTyp(CLASS);
+	private GraphIdMapFilter filter = new GraphIdMapFilter()
+			.withShowCardinality(true).withTyp(CLASS);
 
 	/**
 	 * Parses the object.
@@ -48,8 +49,8 @@ public class GraphIdMap extends IdMapEncoder {
 	 * @return the string
 	 */
 	public String parseObject(Object object) {
-		return parse(object, filter.clone(new GraphIdMapFilter())
-				.withTyp(OBJECT));
+		return parse(object,
+				filter.clone(new GraphIdMapFilter()).withTyp(OBJECT));
 	}
 
 	/**
@@ -60,7 +61,8 @@ public class GraphIdMap extends IdMapEncoder {
 	 * @return the string
 	 */
 	public String parseClass(Object object) {
-		return parse(object, filter.clone(new GraphIdMapFilter()).withTyp(CLASS));
+		return parse(object, filter.clone(new GraphIdMapFilter())
+				.withTyp(CLASS));
 	}
 
 	public String parse(Object object, GraphIdMapFilter filter) {
@@ -104,7 +106,7 @@ public class GraphIdMap extends IdMapEncoder {
 		list.add(element);
 		if (prototyp != null) {
 			for (String property : prototyp.getProperties()) {
-  				Object value = prototyp.getValue(object, property);
+				Object value = prototyp.getValue(object, property);
 				if (value == null) {
 					continue;
 				}
@@ -138,8 +140,8 @@ public class GraphIdMap extends IdMapEncoder {
 		SendableEntityCreator valueCreater = getCreatorClass(item);
 		if (valueCreater != null) {
 			GraphNode subId = parse(item, filter, list, deep + 1);
-			list.addEdge(new GraphEdge().with(element)
-					.with(new GraphEdge(subId, cardinality, property)));
+			list.addEdge(new GraphEdge().with(element).with(
+					new GraphEdge(subId, cardinality, property)));
 		} else {
 			element.addValue(property, DataType.ref(item.getClass()), "" + item);
 		}
@@ -178,7 +180,6 @@ public class GraphIdMap extends IdMapEncoder {
 		String className = object.getClass().getName();
 		return className.substring(className.lastIndexOf('.') + 1);
 	}
-
 
 	@Override
 	public BaseItem getPrototyp() {

@@ -20,7 +20,7 @@ package de.uniks.networkparser;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import java.util.TreeMap;
 import de.uniks.networkparser.interfaces.LocalisationInterface;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -87,14 +87,15 @@ public class TextItems implements SendableEntityCreator, LocalisationInterface {
 
 	@Override
 	public String[] getProperties() {
-		return new String[] { PROPERTY_VALUE };
+		return new String[] {PROPERTY_VALUE };
 	}
 
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new TextItems();
 	}
+
 	public void setCustomLanguage(LocalisationInterface value) {
-		this.customLanguage=value;
+		this.customLanguage = value;
 	}
 }

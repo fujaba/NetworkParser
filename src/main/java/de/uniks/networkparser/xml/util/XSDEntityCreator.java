@@ -20,7 +20,7 @@ package de.uniks.networkparser.xml.util;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import java.util.ArrayList;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorXML;
@@ -28,8 +28,7 @@ import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XSDEntity;
 
 /**
- * @author Stefan
- * XSD Entity is a Creator for Structore of XML-XSD.
+ * @author Stefan XSD Entity is a Creator for Structore of XML-XSD.
  */
 public class XSDEntityCreator implements SendableEntityCreatorXML, XMLGrammar {
 	/** NameSpace of XML. */
@@ -103,7 +102,8 @@ public class XSDEntityCreator implements SendableEntityCreatorXML, XMLGrammar {
 			String lastTag = this.privateStack
 					.get(this.privateStack.size() - 1);
 			if (lastTag.equals(XSDEntity.PROPERTY_CHOICE)) {
-				((XSDEntity) parent).setValueItem(XSDEntity.PROPERTY_CHOICE, child);
+				((XSDEntity) parent).setValueItem(XSDEntity.PROPERTY_CHOICE,
+						child);
 			} else if (lastTag.equals(XSDEntity.PROPERTY_SEQUENCE)) {
 				((XSDEntity) parent).setValueItem(XSDEntity.PROPERTY_SEQUENCE,
 						child);

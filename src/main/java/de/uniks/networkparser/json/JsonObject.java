@@ -20,7 +20,7 @@ package de.uniks.networkparser.json;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import java.util.Map;
 
 import de.uniks.networkparser.AbstractEntity;
@@ -32,8 +32,8 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
-/* Copyright (c) 2002 JSON.org */
 
+/* Copyright (c) 2002 JSON.org */
 
 /**
  * A JsonObject is an unordered collection of name/value pairs. Its external
@@ -64,9 +64,9 @@ import de.uniks.networkparser.interfaces.StringItem;
  * myString = new JsonObject().put(&quot;JSON&quot;, &quot;Hello, World!&quot;).toString();
  * </pre>
  *
-
+ *
  * produces the string <code>{"JSON": "Hello, World"}</code>.
-	* <p>
+ * <p>
  * The texts produced by the <code>toString</code> methods strictly conform to
  * the JSON syntax rules. The constructors are more forgiving in the texts they
  * will accept:
@@ -78,11 +78,11 @@ import de.uniks.networkparser.interfaces.StringItem;
  * <li>Strings do not need to be quoted at all if they do not begin with a quote
  * or single quote, and if they do not contain leading or trailing spaces, and
  * if they do not contain any of these characters:
- * <code>{ } [ ] / \ : , = ; #</code> and if they do not look like numbers and
+ * <code>{} [ ] / \ : , = ; #</code> and if they do not look like numbers and
  * if they are not the reserved words <code>true</code>, <code>false</code>, or
  * <code>null</code>.</li>
- * <li>Keys can be followed by <code>=</code> or <code>=&gt;</code> as well as by
- * <code>:</code>.</li>
+ * <li>Keys can be followed by <code>=</code> or <code>=&gt;</code> as well as
+ * by <code>:</code>.</li>
  * <li>Values can be followed by <code>;</code> <small>(semicolon)</small> as
  * well as by <code>,</code> <small>(comma)</small>.</li>
  * </ul>
@@ -90,16 +90,17 @@ import de.uniks.networkparser.interfaces.StringItem;
  * @author JSON.org
  * @version 2011-11-24
  */
-public class JsonObject extends AbstractKeyValueList<String, Object> implements StringItem, FactoryEntity, Entity{
-	private boolean visible=true;
+public class JsonObject extends AbstractKeyValueList<String, Object> implements
+		StringItem, FactoryEntity, Entity {
+	private boolean visible = true;
 
 	/**
 	 * Get the JsonArray value associated with a key.
 	 *
 	 * @param key
 	 *            A key string.
-	 * @return A JsonArray which is the value.
-	 *             if the key is not found or if the value is not a JsonArray.
+	 * @return A JsonArray which is the value. if the key is not found or if the
+	 *         value is not a JsonArray.
 	 */
 	public JsonArray getJsonArray(String key) {
 		Object object = this.get(key);
@@ -128,28 +129,25 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 				+ "] is not a JsonObject.");
 	}
 
-   /**
-    * Get the JsonObject value associated with a key.
-    *
-    * @param key
-    *            A key string.
-    * @return A JsonObject which is the value.
-    * @throws RuntimeException
-    *             if the key is not found or if the value is not a JsonObject.
-    */
-   public long getLong(String key) {
-      Object object = this.get(key);
-      if (object instanceof Long) {
-         return (long) object;
-      }
-      else if (object instanceof Integer)
-      {
-         return 0l + (Integer) object;
-      }
-      throw new RuntimeException("JsonObject[" + EntityUtil.quote(key)
-            + "] is not a JsonObject.");
-   }
-
+	/**
+	 * Get the JsonObject value associated with a key.
+	 *
+	 * @param key
+	 *            A key string.
+	 * @return A JsonObject which is the value.
+	 * @throws RuntimeException
+	 *             if the key is not found or if the value is not a JsonObject.
+	 */
+	public long getLong(String key) {
+		Object object = this.get(key);
+		if (object instanceof Long) {
+			return (long) object;
+		} else if (object instanceof Integer) {
+			return 0l + (Integer) object;
+		}
+		throw new RuntimeException("JsonObject[" + EntityUtil.quote(key)
+				+ "] is not a JsonObject.");
+	}
 
 	/**
 	 * Make a JSON text of this JsonObject. For compactness, no whitespace is
@@ -177,7 +175,7 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 		sb.append(EntityUtil.quote(get(0).toString()));
 		sb.append(":");
 		sb.append(EntityUtil.valueToString(getValue(0), false, this));
-		for (int i=1;i<size();i++) {
+		for (int i = 1; i < size(); i++) {
 			sb.append(",");
 			sb.append(EntityUtil.quote(get(i).toString()));
 			sb.append(":");
@@ -237,9 +235,9 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 
 		sb.append(EntityUtil.quote(get(0).toString()));
 		sb.append(":");
-		sb.append(EntityUtil.valueToString(getValue(0), indentFactor, newindent,
-				false, this));
-		for (int i=1; i<length;i++) {
+		sb.append(EntityUtil.valueToString(getValue(0), indentFactor,
+				newindent, false, this));
+		for (int i = 1; i < length; i++) {
 			sb.append("," + prefix + step);
 			sb.append(EntityUtil.quote(get(i).toString()));
 			sb.append(":");
@@ -269,7 +267,7 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 			}
 			return this;
 		}
-		if (values.length>0) {
+		if (values.length > 0) {
 			new JsonTokener().withText(values[0]).parseToEntity(this);
 		}
 		return this;
@@ -342,21 +340,19 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 	}
 
 	@Override
-	public JsonObject with(
-			Object... values) {
+	public JsonObject with(Object... values) {
 		if (values != null) {
 			for (Object value : values) {
-				if (value instanceof AbstractEntity<?,?>) {
-					AbstractEntity<?,?> item = (AbstractEntity<?, ?>) value;
+				if (value instanceof AbstractEntity<?, ?>) {
+					AbstractEntity<?, ?> item = (AbstractEntity<?, ?>) value;
 					this.put(item.getKeyString(), item.getValue());
-				} else if (value instanceof Map<?,?>) {
-					this.withMap((Map<?,?>) value);
+				} else if (value instanceof Map<?, ?>) {
+					this.withMap((Map<?, ?>) value);
 				}
 			}
 		}
 		return this;
 	}
-
 
 	/**
 	 * Accumulate values under a key. It is similar to the put method except
@@ -378,7 +374,9 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 	public JsonObject addToList(String key, Object value) {
 		Object object = this.get(key);
 		if (object == null) {
-			this.put(key, value instanceof AbstractList ? getNewArray().with(value) : value);
+			this.put(key,
+					value instanceof AbstractList ? getNewArray().with(value)
+							: value);
 		} else if (object instanceof AbstractList) {
 			((AbstractList<?>) object).with(value);
 		} else {
@@ -395,36 +393,36 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 	@Override
 	public Object put(String key, Object value) {
 		int pos = getPositionKey(key);
-		if (pos>=0) {
-	    	if (this.hashTableValues != null) {
-	    		this.hashTableValues[pos] = value;
-	    		pos = transformIndex(pos, key, this.hashTableKeys, this.keys);
-	    	}
+		if (pos >= 0) {
+			if (this.hashTableValues != null) {
+				this.hashTableValues[pos] = value;
+				pos = transformIndex(pos, key, this.hashTableKeys, this.keys);
+			}
 			return this.values.set(pos, value);
 		}
 		addEntity(key, value);
-	
+
 		return value;
 	}
 
 	@Override
 	public Object get(Object key) {
 		if (!isAllowDuplicate() && key instanceof String) {
-			key = ("" +key).toLowerCase();
+			key = ("" + key).toLowerCase();
 		}
 		return super.get(key);
 	}
 
 	@Override
 	protected int addKey(int pos, String newValue) {
-		if (pos==-1) {
-			if (!this.keys.add(newValue)){
+		if (pos == -1) {
+			if (!this.keys.add(newValue)) {
 				return -1;
 			}
 			pos = this.keys.size();
 			if (!isAllowDuplicate()) {
 				this.hashTableAddKey(newValue.toLowerCase(), pos);
-			}else{
+			} else {
 				this.hashTableAddKey(newValue, pos);
 			}
 			this.hashTableAddKey(newValue, pos);
@@ -434,18 +432,18 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements 
 		this.hashTableAddKey(newValue, pos);
 		return -1;
 	}
-	
+
 	@Override
 	public int getPositionKey(Object o) {
-		if( o instanceof String && !isAllowDuplicate()){
-			return super.getPositionKey(("" +  o).toLowerCase());
+		if (o instanceof String && !isAllowDuplicate()) {
+			return super.getPositionKey(("" + o).toLowerCase());
 		}
 		return super.getPositionKey(o);
 	}
-	
+
 	public JsonObject withValue(String key, Object value) {
 		int index = getIndex(key);
-		if (index >= 0){
+		if (index >= 0) {
 			setValueItem(key, value);
 			return this;
 		}

@@ -20,7 +20,7 @@ package de.uniks.networkparser.xml;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import java.util.ArrayList;
 import java.util.Collection;
 import de.uniks.networkparser.Filter;
@@ -35,6 +35,7 @@ import de.uniks.networkparser.xml.util.XSDEntityCreator;
 
 /**
  * A Simple XMLIdMap for Decoding and Encoding XML Elements.
+ *
  * @author Stefan Lindel
  */
 public class XMLSimpleIdMap extends IdMap {
@@ -72,7 +73,9 @@ public class XMLSimpleIdMap extends IdMap {
 
 	/**
 	 * Add new Stopwords to List.
-	 * @param values The List for add
+	 *
+	 * @param values
+	 *            The List for add
 	 * @return XMLSimpleIdMap Instance
 	 */
 	public XMLSimpleIdMap withStopwords(String... values) {
@@ -89,13 +92,17 @@ public class XMLSimpleIdMap extends IdMap {
 
 	@Override
 	public Object decode(BaseItem value) {
-		return decode((XMLTokener) new XMLTokener().withText(value.toString()), null);
+		return decode((XMLTokener) new XMLTokener().withText(value.toString()),
+				null);
 	}
 
 	/**
 	 * Decoding Teh XMLTokener with XMLGrammar.
-	 * @param tokener The XMLTokener
-	 * @param factory The XMLGrammar for Structure
+	 *
+	 * @param tokener
+	 *            The XMLTokener
+	 * @param factory
+	 *            The XMLGrammar for Structure
 	 * @return teh Model-Instance
 	 */
 	public Object decode(XMLTokener tokener, XMLGrammar factory) {
@@ -115,7 +122,9 @@ public class XMLSimpleIdMap extends IdMap {
 
 	/**
 	 * Read Json Automatic create JsonArray or JsonObject.
-	 * @param value Decoding Value
+	 *
+	 * @param value
+	 *            Decoding Value
 	 * @return the object
 	 */
 	@Override
@@ -125,7 +134,7 @@ public class XMLSimpleIdMap extends IdMap {
 
 	@Override
 	public XMLEntity encode(Object value) {
-		return encode(value,  filter.cloneObj());
+		return encode(value, filter.cloneObj());
 	}
 
 	@Override
@@ -151,8 +160,8 @@ public class XMLSimpleIdMap extends IdMap {
 			for (String property : properties) {
 				Object value = createrProtoTyp.getValue(entity, property);
 				if (value != null) {
-						Object refValue = createrProtoTyp.getValue(
-								referenceObject, property);
+					Object refValue = createrProtoTyp.getValue(referenceObject,
+							property);
 					boolean encoding = !value.equals(refValue);
 					if (encoding) {
 						if (value instanceof Collection<?>) {
@@ -176,7 +185,9 @@ public class XMLSimpleIdMap extends IdMap {
 
 	/**
 	 * Find tag.
-	 * @param entity The Entity
+	 *
+	 * @param entity
+	 *            The Entity
 	 *
 	 * @param tokener
 	 *            the tokener
@@ -184,7 +195,8 @@ public class XMLSimpleIdMap extends IdMap {
 	 *            the grammar
 	 * @return the object
 	 */
-	protected Object parse(XMLEntity entity, XMLTokener tokener, XMLGrammar grammar) {
+	protected Object parse(XMLEntity entity, XMLTokener tokener,
+			XMLGrammar grammar) {
 		if (entity != null) {
 			// Parsing attributes
 			char myChar = tokener.getCurrentChar();
@@ -212,7 +224,8 @@ public class XMLSimpleIdMap extends IdMap {
 			}
 
 			// Add to StackTrace
-			tokener.withStack(new ReferenceObject().withProperty(entity.getTag()).withEntity(entity));
+			tokener.withStack(new ReferenceObject().withProperty(
+					entity.getTag()).withEntity(entity));
 
 			// Parsing next Element
 			if (tokener.stepPos("/>", false, false)) {
@@ -228,7 +241,8 @@ public class XMLSimpleIdMap extends IdMap {
 				char quote = (char) ITEMSTART;
 				// Skip >
 				tokener.next();
-				String strvalue = tokener.nextString(quote, true, false, false, false);
+				String strvalue = tokener.nextString(quote, true, false, false,
+						false);
 				strvalue = strvalue.trim();
 				XMLEntity newTag;
 				if (tokener.getCurrentChar() == ITEMSTART) {
@@ -256,8 +270,7 @@ public class XMLSimpleIdMap extends IdMap {
 								}
 								return entity;
 							}
-							if (grammar.parseChild(entity, newTag,
-									tokener)) {
+							if (grammar.parseChild(entity, newTag, tokener)) {
 								// Skip >
 								saveValue = false;
 								tokener.next();
@@ -301,7 +314,8 @@ public class XMLSimpleIdMap extends IdMap {
 		boolean isEmpty = true;
 		do {
 			if (tokener.getCurrentChar() != ITEMSTART) {
-				String strValue = tokener.nextString(ITEMSTART, true, false, false, false);
+				String strValue = tokener.nextString(ITEMSTART, true, false,
+						false, false);
 				if (strValue != null) {
 					strValue = strValue.trim();
 					isEmpty = strValue.isEmpty();

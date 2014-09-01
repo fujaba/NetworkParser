@@ -20,26 +20,26 @@ package de.uniks.networkparser.bytes;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.AbstractKeyValueList;
 import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.Tokener;
 
-public class ByteTokener extends Tokener{
+public class ByteTokener extends Tokener {
 	@Override
 	public void parseToEntity(AbstractKeyValueList<?, ?> entity) {
-//		buffer
-//		if (typ == ByteIdMap.DATATYPE_CLAZZ) {
-//			String clazz = (String) getDecodeObject(ByteIdMap.DATATYPE_CLAZZ,
-//					in);
-	
+		// buffer
+		// if (typ == ByteIdMap.DATATYPE_CLAZZ) {
+		// String clazz = (String) getDecodeObject(ByteIdMap.DATATYPE_CLAZZ,
+		// in);
+
 	}
 
 	@Override
 	public void parseToEntity(AbstractList<?> entityList) {
 
 		// TODO Auto-generated method stub
-	
+
 	}
 
 }

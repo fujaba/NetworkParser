@@ -20,9 +20,9 @@ package de.uniks.networkparser;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 
-public class ArraySimpleList<V> extends AbstractEntityList<V>{
+public class ArraySimpleList<V> extends AbstractEntityList<V> {
 	@Override
 	public AbstractList<V> getNewInstance() {
 		return new ArraySimpleList<V>();

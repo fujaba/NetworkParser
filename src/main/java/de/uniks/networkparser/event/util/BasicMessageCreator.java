@@ -20,16 +20,17 @@ package de.uniks.networkparser.event.util;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.event.BasicMessage;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorByte;
+
 /**
  * The Class BasicMessageCreator.
  */
 
 public class BasicMessageCreator implements SendableEntityCreatorByte {
 	/** The properties. */
-	protected final String[] properties = new String[] { BasicMessage.PROPERTY_VALUE };
+	protected final String[] properties = new String[] {BasicMessage.PROPERTY_VALUE };
 
 	/*
 	 * return the Properties

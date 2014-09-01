@@ -20,7 +20,7 @@ package de.uniks.networkparser;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import java.util.ArrayList;
 import de.uniks.networkparser.logic.Condition;
 import de.uniks.networkparser.logic.ValuesMap;
@@ -45,12 +45,11 @@ public class Filter {
 	}
 
 	public boolean isId(IdMapEncoder map, Object entity, String className) {
-		if (idFilter!=null) {
+		if (idFilter != null) {
 			return idFilter.matches(ValuesMap.with(map, entity, className));
 		}
 		return true;
 	}
-
 
 	/**
 	 * Serialization the Full object inclusive null value
@@ -69,36 +68,40 @@ public class Filter {
 	public Condition getConvertable() {
 		return convertable;
 	}
+
 	public Filter withConvertable(Condition convertable) {
 		this.convertable = convertable;
 		return this;
 	}
+
 	public Condition getPropertyRegard() {
 		return property;
 	}
+
 	public Filter withPropertyRegard(Condition property) {
 		this.property = property;
 		return this;
 	}
+
 	public Filter withStandard(Filter referenceFilter) {
-		if (idFilter== null) {
+		if (idFilter == null) {
 			idFilter = referenceFilter.getIdFilter();
 		}
-		if (convertable== null) {
+		if (convertable == null) {
 			convertable = referenceFilter.getConvertable();
 		}
-		if (property== null) {
+		if (property == null) {
 			property = referenceFilter.getPropertyRegard();
 		}
-		visitedObjects= new ArrayList<Object>();
+		visitedObjects = new ArrayList<Object>();
 		refs = new ArrayList<ReferenceObject>();
-		if (full==null) {
+		if (full == null) {
 			full = referenceFilter.isFullSeriation();
-			if (full==null) {
-				full=false;
+			if (full == null) {
+				full = false;
 			}
 		}
-	
+
 		return this;
 	}
 
@@ -111,7 +114,8 @@ public class Filter {
 	}
 
 	public Filter clone(Filter newInstance) {
-		return newInstance.withConvertable(convertable).withIdFilter(idFilter).withPropertyRegard(property);
+		return newInstance.withConvertable(convertable).withIdFilter(idFilter)
+				.withPropertyRegard(property);
 	}
 
 	public boolean hasObjects(Object element) {
@@ -119,28 +123,29 @@ public class Filter {
 	}
 
 	public int getIndexVisitedObjects(Object element) {
-	   int pos=0;
-	   if (visitedObjects==null) {
-	      visitedObjects = new ArrayList<Object>();
-	   }
-	   for (Object item : visitedObjects) {
-	      if (item==element) {
-	         return pos;
-	      }
-	      pos++;
-	   }
-      return -1;
-   }
+		int pos = 0;
+		if (visitedObjects == null) {
+			visitedObjects = new ArrayList<Object>();
+		}
+		for (Object item : visitedObjects) {
+			if (item == element) {
+				return pos;
+			}
+			pos++;
+		}
+		return -1;
+	}
 
 	public Object getVisitedObjects(int index) {
-	   if (visitedObjects!=null) {
-	      return visitedObjects.get(index);
-	   }
-	   return null;
+		if (visitedObjects != null) {
+			return visitedObjects.get(index);
+		}
+		return null;
 	}
 
 	/**
-	 * @param visitedObject Visited Object to Add to List
+	 * @param visitedObject
+	 *            Visited Object to Add to List
 	 * @return Filter
 	 */
 	public Filter withObjects(Object... visitedObject) {
@@ -157,16 +162,18 @@ public class Filter {
 
 	public boolean isPropertyRegard(IdMapEncoder map, Object entity,
 			String property, Object value, boolean isMany, int deep) {
-		if (this.property!=null) {
-			return this.property.matches(ValuesMap.with(map, entity, property, value, isMany, deep));
+		if (this.property != null) {
+			return this.property.matches(ValuesMap.with(map, entity, property,
+					value, isMany, deep));
 		}
 		return true;
 	}
 
 	public boolean isConvertable(IdMapEncoder map, Object entity,
 			String property, Object value, boolean isMany, int deep) {
-		if (this.convertable!=null) {
-			return this.convertable.matches(ValuesMap.with(map, entity, property, value, isMany, deep));
+		if (this.convertable != null) {
+			return this.convertable.matches(ValuesMap.with(map, entity,
+					property, value, isMany, deep));
 		}
 		return true;
 	}
@@ -181,7 +188,7 @@ public class Filter {
 	}
 
 	public Object getRefByEntity(Object value) {
-		for (int i=0; i < visitedObjects.size(); i += 2) {
+		for (int i = 0; i < visitedObjects.size(); i += 2) {
 			if (visitedObjects.get(i) == value) {
 				return visitedObjects.get(i + 1);
 			}

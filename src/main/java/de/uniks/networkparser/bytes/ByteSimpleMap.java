@@ -20,7 +20,7 @@ package de.uniks.networkparser.bytes;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import java.util.ArrayList;
 import java.util.Iterator;
 import de.uniks.networkparser.AbstractMap;
@@ -73,7 +73,7 @@ public class ByteSimpleMap extends AbstractMap {
 
 			int temp = Integer.parseInt(""
 					+ getEntity(buffer, bitValue.getStart(), values));
-  			int posOfByte = temp / 8;
+			int posOfByte = temp / 8;
 			int posOfBit = (8 - ((temp + 1) % 8)) % 8;
 
 			int length = Integer.parseInt(""

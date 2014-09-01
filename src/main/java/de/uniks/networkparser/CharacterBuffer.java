@@ -20,7 +20,7 @@ package de.uniks.networkparser;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 /**
  * Buffer of String for alternative for StringBuffer.
  *
@@ -49,7 +49,8 @@ public class CharacterBuffer extends TextBuffer {
 	}
 
 	/**
-	 * @param value String of Value
+	 * @param value
+	 *            String of Value
 	 * @return the CharacterBuffer
 	 */
 	public CharacterBuffer withValue(String value) {
@@ -96,6 +97,7 @@ public class CharacterBuffer extends TextBuffer {
 		}
 		return c;
 	}
+
 	@Override
 	public boolean isCache() {
 		return true;

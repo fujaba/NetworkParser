@@ -20,19 +20,21 @@ package de.uniks.networkparser;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+
 /**
- *AbstractIdMap embedded all methods for all formats.
+ * AbstractIdMap embedded all methods for all formats.
  *
  */
 
-public abstract class AbstractMap implements Iterable<SendableEntityCreator>{
+public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 	/** The creators. */
-	protected ArrayEntityList<String, SendableEntityCreator> creators = new ArrayEntityList<String, SendableEntityCreator>().withAllowDuplicate(false);
+	protected ArrayEntityList<String, SendableEntityCreator> creators = new ArrayEntityList<String, SendableEntityCreator>()
+			.withAllowDuplicate(false);
 
 	/**
 	 * Gets the creator class.
@@ -51,8 +53,10 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator>{
 	/**
 	 * Gets the creator classes.
 	 *
-	 * @param clazz Clazzname for search
-	 * @param fullName if the clazzName is the Fullname for search
+	 * @param clazz
+	 *            Clazzname for search
+	 * @param fullName
+	 *            if the clazzName is the Fullname for search
 	 * @return return a Creator class for a clazz name
 	 */
 	public SendableEntityCreator getCreator(String clazz, boolean fullName) {
@@ -63,8 +67,9 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator>{
 		for (Iterator<Entry<String, SendableEntityCreator>> i = this.creators
 				.entrySet().iterator(); i.hasNext();) {
 			Entry<String, SendableEntityCreator> entry = i.next();
-			if (entry.getKey().endsWith(clazz) && entry.getValue() instanceof SendableEntityCreator) {
-				return (SendableEntityCreator)entry.getValue();
+			if (entry.getKey().endsWith(clazz)
+					&& entry.getValue() instanceof SendableEntityCreator) {
+				return (SendableEntityCreator) entry.getValue();
 			}
 		}
 		return null;
@@ -73,7 +78,8 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator>{
 	/**
 	 * Adds the creator.
 	 *
-	 * @param creatorSet the creater class
+	 * @param creatorSet
+	 *            the creater class
 	 * @return return a Creator class for a clazz name
 	 */
 	public AbstractMap withCreator(Collection<SendableEntityCreator> creatorSet) {
@@ -86,11 +92,13 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator>{
 	/**
 	 * Adds the creator.
 	 *
-	 * @param iterator the creater classes
+	 * @param iterator
+	 *            the creater classes
 	 * @return return a Creator class for a clazz name
 	 */
 	public AbstractMap withCreator(Iterable<SendableEntityCreator> iterator) {
-		for (Iterator<SendableEntityCreator> i = iterator.iterator();i.hasNext();) {
+		for (Iterator<SendableEntityCreator> i = iterator.iterator(); i
+				.hasNext();) {
 			withCreator(i.next());
 		}
 		return this;
@@ -105,7 +113,8 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator>{
 	 *            the creator
 	 * @return AbstractIdMap to interlink arguments
 	 */
-	public AbstractMap withCreator(String className, SendableEntityCreator creator) {
+	public AbstractMap withCreator(String className,
+			SendableEntityCreator creator) {
 		this.creators.addEntity(className, creator);
 		return this;
 	}

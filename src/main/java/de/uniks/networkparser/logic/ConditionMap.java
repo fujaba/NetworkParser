@@ -20,8 +20,11 @@ package de.uniks.networkparser.logic;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 
+/**
+ * @author Stefan Lindel ConditionMap Clazz
+ */
 public abstract class ConditionMap implements Condition {
 	@Override
 	public boolean matches(ValuesSimple values) {
@@ -31,5 +34,10 @@ public abstract class ConditionMap implements Condition {
 		return false;
 	}
 
+	/**
+	 * @param values
+	 *            The Value of Match-Question
+	 * @return booelan if match
+	 */
 	public abstract boolean matches(ValuesMap values);
 }

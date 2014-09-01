@@ -20,7 +20,7 @@ package de.uniks.networkparser.gui.brush;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -77,8 +77,8 @@ public class RegExRule {
 	}
 
 	public void addToGroupOperation(Object... values) {
-		int startIndex=groupOperations.size();
-		for (int i=0;i<values.length;i++) {
+		int startIndex = groupOperations.size();
+		for (int i = 0; i < values.length; i++) {
 			this.groupOperations.put(startIndex++, values[i]);
 		}
 	}

@@ -20,7 +20,7 @@ package de.uniks.networkparser.gui;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 
 public class GUILine {
 	/** The Font-Size-Family value. */

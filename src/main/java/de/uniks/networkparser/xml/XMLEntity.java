@@ -20,7 +20,7 @@ package de.uniks.networkparser.xml;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import java.util.ArrayList;
 import de.uniks.networkparser.AbstractKeyValueList;
 import de.uniks.networkparser.AbstractList;
@@ -31,10 +31,12 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
+
 /**
  * The Class XMLEntity.
  */
-public class XMLEntity extends AbstractKeyValueList<String, Object> implements StringItem, FactoryEntity, Entity {
+public class XMLEntity extends AbstractKeyValueList<String, Object> implements
+		StringItem, FactoryEntity, Entity {
 	/** Constant of TAG. */
 	public static final String PROPERTY_TAG = "tag";
 	/** Constant of VALUE. */
@@ -103,8 +105,11 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements S
 		return getChildren().add(child);
 	}
 
-	/**Method to add a new Child to List.
-	 * @param value the new Child
+	/**
+	 * Method to add a new Child to List.
+	 *
+	 * @param value
+	 *            the new Child
 	 * @return XMLEntity Instance
 	 */
 	public XMLEntity withChild(XMLEntity value) {
@@ -140,7 +145,8 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements S
 	/**
 	 * Sets the tag.
 	 *
-	 * @param value the new Tag
+	 * @param value
+	 *            the new Tag
 	 * @return the instance XMLEntity
 	 */
 	public XMLEntity withTag(String value) {
@@ -199,11 +205,16 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements S
 
 	/**
 	 * Add The Children to StringBuilder.
-	 * @param sb The StringBuilder where The Children add
-	 * @param indentFactor IntentFactor for indent
-	 * @param intent Current Intent
+	 *
+	 * @param sb
+	 *            The StringBuilder where The Children add
+	 * @param indentFactor
+	 *            IntentFactor for indent
+	 * @param intent
+	 *            Current Intent
 	 */
-	protected void toStringChildren(StringBuilder sb, int indentFactor, int intent) {
+	protected void toStringChildren(StringBuilder sb, int indentFactor,
+			int intent) {
 		// parse Children
 		if (this.children != null && this.children.size() > 0) {
 			sb.append(">");
@@ -271,7 +282,9 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements S
 
 	/**
 	 * Static Method to generate XMLEntity.
-	 * @param tag Tagname
+	 *
+	 * @param tag
+	 *            Tagname
 	 * @return a new Instance of XMLEntity
 	 */
 	public static XMLEntity TAG(String tag) {

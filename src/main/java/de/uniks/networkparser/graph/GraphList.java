@@ -20,7 +20,7 @@ package de.uniks.networkparser.graph;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import java.util.ArrayList;
 import java.util.Iterator;
 import de.uniks.networkparser.AbstractKeyValueList;
@@ -54,20 +54,24 @@ public class GraphList extends AbstractKeyValueList<String, GraphNode> {
 		this.typ = typ;
 		return this;
 	}
+
 	public GraphList withEdge(GraphEdge edge) {
-		 addEdge(edge);
-		 return this;
+		addEdge(edge);
+		return this;
 	}
+
 	public GraphList withEdge(String sourceName, String targetName) {
-		GraphEdge edge = new GraphEdge().with(sourceName).with(new GraphEdge().with(targetName));
+		GraphEdge edge = new GraphEdge().with(sourceName).with(
+				new GraphEdge().with(targetName));
 		addEdge(edge);
 		return this;
 	}
 
 	public boolean addEdge(GraphEdge edge) {
-		for (Iterator<GraphEdge> i = this.edges.iterator();i.hasNext();) {
+		for (Iterator<GraphEdge> i = this.edges.iterator(); i.hasNext();) {
 			GraphEdge item = i.next();
-			if (item.contains(edge.getOther().values()) && item.getOther().containsAll(edge.values())) {
+			if (item.contains(edge.getOther().values())
+					&& item.getOther().containsAll(edge.values())) {
 				// Back again
 				item.with(edge.getOther().getCardinality());
 				item.with(edge.getOther().getProperty());
@@ -86,8 +90,9 @@ public class GraphList extends AbstractKeyValueList<String, GraphNode> {
 		for (GraphEdge element : edges) {
 			for (GraphNode node : element.values()) {
 				String key = node.getTyp(typ, false);
-				ArraySimpleList<?> value = (ArraySimpleList<?>)links.getValueItem(key);
-				if (value!=null) {
+				ArraySimpleList<?> value = (ArraySimpleList<?>) links
+						.getValueItem(key);
+				if (value != null) {
 					value.with(element);
 				} else {
 					ArraySimpleList<GraphEdge> simpleList = new ArraySimpleList<GraphEdge>();
@@ -113,7 +118,7 @@ public class GraphList extends AbstractKeyValueList<String, GraphNode> {
 		if (values != null) {
 			for (Object value : values) {
 				if (value instanceof GraphNode) {
-					this.add((GraphNode)value);
+					this.add((GraphNode) value);
 				}
 			}
 		}

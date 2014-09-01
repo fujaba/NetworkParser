@@ -20,18 +20,21 @@ package de.uniks.networkparser;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.interfaces.BaseItem;
 
-public abstract class IdMap extends IdMapEncoder{
+public abstract class IdMap extends IdMapEncoder {
 	public abstract Object decode(BaseItem value);
+
 	public abstract Object decode(String value);
 
-	private boolean caseSensitive=false;
+	private boolean caseSensitive = false;
 
 	/**
 	 * For setting the Option of checking the CaseSensitive of the Properties
-	 * @param value the new Value of CaseSensitive
+	 *
+	 * @param value
+	 *            the new Value of CaseSensitive
 	 * @return XMLGrammar Instance
 	 */
 	public IdMap withCaseSensitive(boolean value) {

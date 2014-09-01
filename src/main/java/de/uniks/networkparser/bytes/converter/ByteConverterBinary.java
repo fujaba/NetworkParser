@@ -20,18 +20,18 @@ package de.uniks.networkparser.bytes.converter;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.interfaces.ByteConverter;
 
 public class ByteConverterBinary extends ByteConverter {
 	public static String toString(byte value) {
 		ByteConverterBinary converter = new ByteConverterBinary();
-		return converter.toString(new byte[] { value }, 1);
+		return converter.toString(new byte[] {value }, 1);
 	}
 
 	public static String toString(int value) {
 		ByteConverterBinary converter = new ByteConverterBinary();
-		return converter.toString(new byte[] { (byte) value }, 1);
+		return converter.toString(new byte[] {(byte) value }, 1);
 	}
 
 	/**
@@ -39,7 +39,8 @@ public class ByteConverterBinary extends ByteConverter {
 	 *
 	 * @param values
 	 *            the bytes
-	 * @param size The size of values
+	 * @param size
+	 *            The size of values
 	 * @return the string
 	 */
 	@Override
@@ -47,7 +48,7 @@ public class ByteConverterBinary extends ByteConverter {
 		StringBuilder sb = new StringBuilder();
 		for (int z = 0; z < size; z++) {
 			int number = values[z];
-			char[] bits = new char[] { '0', '0', '0', '0', '0', '0', '0', '0' };
+			char[] bits = new char[] {'0', '0', '0', '0', '0', '0', '0', '0' };
 			int i = 7;
 			if (number < 0) {
 				number += 256;

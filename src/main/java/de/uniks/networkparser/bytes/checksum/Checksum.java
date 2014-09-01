@@ -20,7 +20,7 @@ package de.uniks.networkparser.bytes.checksum;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 /**
  * Checksum Abstract Class
  */
@@ -47,7 +47,9 @@ public abstract class Checksum {
 
 	/**
 	 * Updates the checksum with the specified byte.
-	 * @param b the byte
+	 *
+	 * @param b
+	 *            the byte
 	 */
 	public void update(int b) {
 		length++;
@@ -55,7 +57,9 @@ public abstract class Checksum {
 
 	/**
 	 * Updates the checksum with the specified byte.
-	 * @param b the item to update
+	 *
+	 * @param b
+	 *            the item to update
 	 */
 	public void update(byte b) {
 		update((int) (b & 0xFF));
@@ -79,7 +83,9 @@ public abstract class Checksum {
 
 	/**
 	 * Updates the current checksum with the specified array of bytes.
-	 * @param bytes bytearray of items
+	 *
+	 * @param bytes
+	 *            bytearray of items
 	 */
 	public void update(byte[] bytes) {
 		update(bytes, 0, bytes.length);
@@ -103,6 +109,7 @@ public abstract class Checksum {
 
 	/**
 	 * Returns the length of the processed bytes.
+	 *
 	 * @return the length of checksum
 	 */
 	public long getLength() {
@@ -111,6 +118,7 @@ public abstract class Checksum {
 
 	/**
 	 * Returns the result of the computation as byte array.
+	 *
 	 * @return a new ByteArray
 	 */
 	public byte[] getByteArray() {
@@ -124,7 +132,7 @@ public abstract class Checksum {
 			value = value >> 8; // um 1 Byte shiften
 		}
 		if (count == 0) {
-			return new byte[] { 0x00 };
+			return new byte[] {0x00 };
 		}
 		byte[] result = new byte[count];
 		for (int z = 0; z < count; z++) {

@@ -20,8 +20,9 @@ package de.uniks.networkparser.interfaces;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import java.beans.PropertyChangeListener;
+
 /**
  * The Interface SendableEntity. Add this Interface to your Modellentity to
  * activate the propertyChange Notification

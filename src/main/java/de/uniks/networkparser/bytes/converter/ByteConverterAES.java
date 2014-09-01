@@ -20,15 +20,15 @@ package de.uniks.networkparser.bytes.converter;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.bytes.checksum.AES;
 import de.uniks.networkparser.interfaces.ByteConverter;
 
-public class ByteConverterAES extends ByteConverter{
+public class ByteConverterAES extends ByteConverter {
 	private AES aes;
 
 	public void setKey(String value) {
-		if (this.aes==null) {
+		if (this.aes == null) {
 			this.aes = new AES();
 		}
 		this.aes.setKey(value);

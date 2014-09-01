@@ -20,22 +20,22 @@ package de.uniks.networkparser.gui.theme;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 
 public class StyleConstants {
-	public final static String STYLE_BOLD="bold";
-	public final static String STYLE_PLAIN="plain";
-	public final static String STYLE_COMMENTS="comments";
-	public final static String STYLE_STRING="string";
-	public final static String STYLE_KEYWORD="keyword";
-	public final static String STYLE_PREPROCESSOR="preprocessor";
-	public final static String STYLE_VARIABLE="variable";
-	public final static String STYLE_VALUE="value";
-	public final static String STYLE_FUNCTIONS="functions";
-	public final static String STYLE_CONSTANTS="constants";
-	public final static String STYLE_SCRIPT="script";
-	public final static String STYLE_COLOR1="color1";
-	public final static String STYLE_COLOR2="color2";
-	public final static String STYLE_COLOR3="color3";
-	public final static String STYLE_HIGHTLIGHTED="hightlighted";
+	public final static String STYLE_BOLD = "bold";
+	public final static String STYLE_PLAIN = "plain";
+	public final static String STYLE_COMMENTS = "comments";
+	public final static String STYLE_STRING = "string";
+	public final static String STYLE_KEYWORD = "keyword";
+	public final static String STYLE_PREPROCESSOR = "preprocessor";
+	public final static String STYLE_VARIABLE = "variable";
+	public final static String STYLE_VALUE = "value";
+	public final static String STYLE_FUNCTIONS = "functions";
+	public final static String STYLE_CONSTANTS = "constants";
+	public final static String STYLE_SCRIPT = "script";
+	public final static String STYLE_COLOR1 = "color1";
+	public final static String STYLE_COLOR2 = "color2";
+	public final static String STYLE_COLOR3 = "color3";
+	public final static String STYLE_HIGHTLIGHTED = "hightlighted";
 }

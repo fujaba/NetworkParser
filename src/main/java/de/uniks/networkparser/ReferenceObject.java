@@ -20,8 +20,9 @@ package de.uniks.networkparser;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+
 /**
  * The Class ReferenceObject.
  */
@@ -61,14 +62,17 @@ public class ReferenceObject {
 
 	/**
 	 * Execute.
-	 * @param map The IdMap for Execute
+	 *
+	 * @param map
+	 *            The IdMap for Execute
 	 *
 	 * @return true, if successful
 	 */
 	public boolean execute(IdMapEncoder map) {
 		Object assoc = map.getObject(this.jsonId);
 		if (assoc != null) {
-			this.creator.setValue(this.entity, this.property, assoc, IdMapEncoder.NEW);
+			this.creator.setValue(this.entity, this.property, assoc,
+					IdMapEncoder.NEW);
 			return true;
 		}
 		return false;

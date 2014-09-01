@@ -20,7 +20,7 @@ package de.uniks.networkparser.gui.table;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Comparator;
@@ -35,7 +35,8 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.sort.EntityComparator;
 import de.uniks.networkparser.sort.SortingDirection;
 
-public class TableList extends AbstractEntityList<Object> implements SendableEntity, List<Object>  {
+public class TableList extends AbstractEntityList<Object> implements
+		SendableEntity, List<Object> {
 	public static final String PROPERTY_ITEMS = "items";
 	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
 
@@ -46,28 +47,30 @@ public class TableList extends AbstractEntityList<Object> implements SendableEnt
 
 	public void setIdMap(IdMapEncoder map) {
 		if (cpr instanceof EntityComparator<?>) {
-			((EntityComparator<?>)this.cpr).withMap(map);
+			((EntityComparator<?>) this.cpr).withMap(map);
 		}
 	}
 
-    public boolean setValue(String attrName, Object value) {
-        if (PROPERTY_ITEMS.equalsIgnoreCase(attrName)) {
-            add(value);
-            return true;
-        } else if ((PROPERTY_ITEMS+IdMapEncoder.REMOVE).equalsIgnoreCase(attrName)) {
-            remove(value);
-            return true;
-        }
-        return false;
-    }
-   
-    @Override
-    protected void fireProperty(Object oldValue, Object newValue,
-    		Object beforeValue, Object value) {
-    	super.fireProperty(oldValue, newValue, beforeValue,value);
-   
-    	getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEMS, oldValue, newValue);
-    }
+	public boolean setValue(String attrName, Object value) {
+		if (PROPERTY_ITEMS.equalsIgnoreCase(attrName)) {
+			add(value);
+			return true;
+		} else if ((PROPERTY_ITEMS + IdMapEncoder.REMOVE)
+				.equalsIgnoreCase(attrName)) {
+			remove(value);
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	protected void fireProperty(Object oldValue, Object newValue,
+			Object beforeValue, Object value) {
+		super.fireProperty(oldValue, newValue, beforeValue, value);
+
+		getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEMS, oldValue,
+				newValue);
+	}
 
 	public boolean addAll(TableList list) {
 		for (Object item : keys) {
@@ -81,8 +84,8 @@ public class TableList extends AbstractEntityList<Object> implements SendableEnt
 	@Override
 	public ListIterator<Object> listIterator(int index) {
 		ListIterator<Object> iterator = listIterator();
-		if (index>=0&&index<=size()) {
-			for (int z=0;z<index;z++) {
+		if (index >= 0 && index <= size()) {
+			for (int z = 0; z < index; z++) {
 				iterator.next();
 			}
 		}
@@ -99,17 +102,19 @@ public class TableList extends AbstractEntityList<Object> implements SendableEnt
 			if (!remove(item)) {
 				return false;
 			}
-			getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEMS, item, null);
+			getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEMS, item,
+					null);
 		}
 		return true;
 	}
 
-	public TableList withSort(String field, SortingDirection direction, EntityValueFactory cellValueCreator) {
+	public TableList withSort(String field, SortingDirection direction,
+			EntityValueFactory cellValueCreator) {
 		EntityComparator<Object> comparator = comparator();
 		if (comparator == null) {
 			comparator = new EntityComparator<Object>();
 			this.cpr = comparator;
-		
+
 		}
 		comparator.withColumn(field);
 		comparator.withDirection(direction);
@@ -139,20 +144,21 @@ public class TableList extends AbstractEntityList<Object> implements SendableEnt
 	}
 
 	public void refreshSort() {
-//		ArrayList<Object> oldValue = list;
-//	
-//		list = getItems(true);
-//		int size = oldValue.size();
-//		Object[] array = oldValue.toArray(new Object[size]);
-//		for (int i=0;i<size;i++) {
-//			list.add(array[i]);
-//		}
+		// ArrayList<Object> oldValue = list;
+		//
+		// list = getItems(true);
+		// int size = oldValue.size();
+		// Object[] array = oldValue.toArray(new Object[size]);
+		// for (int i=0;i<size;i++) {
+		// list.add(array[i]);
+		// }
 	}
 
 	public void setSort(String field) {
 		EntityComparator<Object> comparator = comparator();
-		if (comparator!=null) {
-			if (comparator.getColumn() != null && comparator.getColumn().equals(field)) {
+		if (comparator != null) {
+			if (comparator.getColumn() != null
+					&& comparator.getColumn().equals(field)) {
 				comparator.changeDirection();
 			} else {
 				comparator.withColumn(field);
@@ -163,7 +169,7 @@ public class TableList extends AbstractEntityList<Object> implements SendableEnt
 
 	public SortingDirection changeDirection() {
 		EntityComparator<Object> comparator = comparator();
-		if (comparator!=null) {
+		if (comparator != null) {
 			return comparator.changeDirection();
 		}
 		return null;
@@ -171,7 +177,7 @@ public class TableList extends AbstractEntityList<Object> implements SendableEnt
 
 	public Object[] getSortedIndex() {
 		EntityComparator<Object> comparator = comparator();
-		if (comparator==null) {
+		if (comparator == null) {
 			return null;
 		}
 		IdMapEncoder map = comparator.getMap();
@@ -181,25 +187,27 @@ public class TableList extends AbstractEntityList<Object> implements SendableEnt
 			creator = map.getCreatorClass(iterator.next());
 		}
 		String column = comparator.getColumn();
-		if (creator != null &&  column != null) {
-			Object[] returnValues= new Object[super.size()];
+		if (creator != null && column != null) {
+			Object[] returnValues = new Object[super.size()];
 			EntityValueFactory cellCreator = comparator.getCellCreator();
-			if (comparator.getDirection() ==SortingDirection.ASC) {
-				int pos=0;
-				for (Iterator<Object> i = iterator();i.hasNext();) {
+			if (comparator.getDirection() == SortingDirection.ASC) {
+				int pos = 0;
+				for (Iterator<Object> i = iterator(); i.hasNext();) {
 					Object item = i.next();
-					returnValues[pos++] = cellCreator.getCellValue(item, creator, column);
+					returnValues[pos++] = cellCreator.getCellValue(item,
+							creator, column);
 				}
 			} else {
-				int pos=super.size()-1;
-				for (Iterator<Object> i = iterator();i.hasNext();) {
+				int pos = super.size() - 1;
+				for (Iterator<Object> i = iterator(); i.hasNext();) {
 					Object item = i.next();
-					returnValues[pos--] = cellCreator.getCellValue(item, creator, column);
+					returnValues[pos--] = cellCreator.getCellValue(item,
+							creator, column);
 				}
 			}
 			return returnValues;
 		}
-	
+
 		return null;
 	}
 
@@ -232,7 +240,7 @@ public class TableList extends AbstractEntityList<Object> implements SendableEnt
 
 	@Override
 	public String toString() {
-		return "TableList with " +size() + " Elements";
+		return "TableList with " + size() + " Elements";
 	}
 
 	@Override

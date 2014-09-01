@@ -20,7 +20,7 @@ package de.uniks.networkparser.bytes.checksum;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 
 public class Sum16 extends Sum8 {
 	@Override

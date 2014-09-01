@@ -20,28 +20,30 @@ package de.uniks.networkparser.bytes;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.interfaces.BufferedBytes;
 
 public class ByteUtil {
-	public static void writeByteHeader(BufferedBytes buffer, byte typ, int valueLength) {
-		if (valueLength>0) {
+	public static void writeByteHeader(BufferedBytes buffer, byte typ,
+			int valueLength) {
+		if (valueLength > 0) {
 			// Save Typ
-			if (typ!=0) {
+			if (typ != 0) {
 				buffer.put(typ);
-				if (getSubGroup(typ)!=ByteIdMap.LEN_LAST) {
-					int lenSize=ByteUtil.getTypLen(typ, valueLength, true);
+				if (getSubGroup(typ) != ByteIdMap.LEN_LAST) {
+					int lenSize = ByteUtil.getTypLen(typ, valueLength, true);
 
-					if (lenSize==1) {
-						if (typ==ByteIdMap.DATATYPE_CLAZZNAME || ByteUtil.getSubGroup(typ) ==ByteIdMap.LEN_LITTLE) {
-							buffer.put((byte)(valueLength+ByteIdMap.SPLITTER));
+					if (lenSize == 1) {
+						if (typ == ByteIdMap.DATATYPE_CLAZZNAME
+								|| ByteUtil.getSubGroup(typ) == ByteIdMap.LEN_LITTLE) {
+							buffer.put((byte) (valueLength + ByteIdMap.SPLITTER));
 						} else {
-							buffer.put((byte)valueLength);
+							buffer.put((byte) valueLength);
 						}
-					} else if (lenSize==2) {
-						buffer.put((short)valueLength);
-					} else if (lenSize==4) {
-						buffer.put((int)valueLength);
+					} else if (lenSize == 2) {
+						buffer.put((short) valueLength);
+					} else if (lenSize == 4) {
+						buffer.put((int) valueLength);
 					}
 				}
 			}
@@ -50,10 +52,10 @@ public class ByteUtil {
 		}
 	}
 
-
 	public static byte getTyp(byte group, byte subGroup) {
-		return (byte) (group+subGroup);
+		return (byte) (group + subGroup);
 	}
+
 	public static byte getTyp(byte typ, int len, boolean isLast) {
 		if (isGroup(typ)) {
 			if (isLast) {
@@ -75,7 +77,7 @@ public class ByteUtil {
 
 	public static int getTypLen(byte typ, int len, boolean isLast) {
 		if (isGroup(typ)) {
-			int ref = typ % 16  - 10;
+			int ref = typ % 16 - 10;
 			if (ref == 0) {
 				typ = getTyp(typ, len, isLast);
 				ref = typ % 16 - 10;
@@ -89,7 +91,7 @@ public class ByteUtil {
 			if (ref == ByteIdMap.LEN_BIG) {
 				return 4;
 			}
-//			if (ref == ByteIdMap.LEN_LAST) {
+			// if (ref == ByteIdMap.LEN_LAST) {
 			return 0;
 		}
 		if (typ == ByteIdMap.DATATYPE_CLAZZNAME) {
@@ -99,12 +101,14 @@ public class ByteUtil {
 		if (typ == ByteIdMap.DATATYPE_CLAZZNAMELONG) {
 			return 4;
 		}
-//		if (typ == ByteIdMap.DATATYPE_CLAZZTYP || typ == ByteIdMap.DATATYPE_ASSOC) {
-//		   return 1;
-//		}
-//		if (typ == ByteIdMap.DATATYPE_CLAZZTYPLONG || typ == ByteIdMap.DATATYPE_ASSOCLONG) {
-//			   return 4;
-//		}
+		// if (typ == ByteIdMap.DATATYPE_CLAZZTYP || typ ==
+		// ByteIdMap.DATATYPE_ASSOC) {
+		// return 1;
+		// }
+		// if (typ == ByteIdMap.DATATYPE_CLAZZTYPLONG || typ ==
+		// ByteIdMap.DATATYPE_ASSOCLONG) {
+		// return 4;
+		// }
 		return 0;
 	}
 
@@ -112,12 +116,12 @@ public class ByteUtil {
 		if (len < 1) {
 			return null;
 		}
-		BufferedBytes message=BytesBuffer.allocate(len);
+		BufferedBytes message = BytesBuffer.allocate(len);
 		return message;
 	}
 
 	public static boolean isPrimitive(byte typ) {
-		return ((typ>=ByteIdMap.DATATYPE_SHORT && typ<=ByteIdMap.DATATYPE_BYTE) || typ<=ByteIdMap.DATATYPE_CHAR);
+		return ((typ >= ByteIdMap.DATATYPE_SHORT && typ <= ByteIdMap.DATATYPE_BYTE) || typ <= ByteIdMap.DATATYPE_CHAR);
 	}
 
 	/**
@@ -192,7 +196,7 @@ public class ByteUtil {
 		if (typ == ByteIdMap.DATATYPE_CLAZZSTREAM) {
 			return "DATATYPE_CLAZZSTREAM";
 		}
-	
+
 		if (isGroup(typ)) {
 			byte group = getGroup(typ);
 			byte subgroup = getSubGroup(typ);
@@ -224,10 +228,12 @@ public class ByteUtil {
 		}
 		return null;
 	}
+
 	public static byte getGroup(byte typ) {
-		return  (byte)((typ/16)*16+10);
+		return (byte) ((typ / 16) * 16 + 10);
 	}
+
 	public static byte getSubGroup(byte typ) {
-		return (byte)((typ%16)-10);
+		return (byte) ((typ % 16) - 10);
 	}
 }

@@ -20,12 +20,15 @@ package de.uniks.networkparser.gui.grid;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import java.beans.PropertyChangeListener;
 
 public interface GridGUITable {
 	public void add(Object cell);
+
 	public void move(Object cell);
+
 	public GridStyle getNewStyle();
+
 	public PropertyChangeListener getNewCell(Object node);
 }

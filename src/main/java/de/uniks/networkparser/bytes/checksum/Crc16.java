@@ -20,7 +20,7 @@ package de.uniks.networkparser.bytes.checksum;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 /**
  * A class that can be used to compute the CRC-16 of a data stream. This is a
  * 100% Java implementation.
