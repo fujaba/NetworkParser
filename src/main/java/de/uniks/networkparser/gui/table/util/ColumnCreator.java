@@ -20,24 +20,19 @@ package de.uniks.networkparser.gui.table.util;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.gui.table.Column;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class ColumnCreator implements SendableEntityCreator{
-	private static final String[] properties= new String[]{Column.PROPERTY_ATTRNAME,
-		Column.PROPERTY_NUMBERFORMAT,
-		Column.PROPERTY_EDITCOLUMN,
-		Column.PROPERTY_LABEL,
-		Column.PROPERTY_DEFAULTTEXT,
-		Column.PROPERTY_RESIZE,
-		Column.PROPERTY_VISIBLE,
-		Column.PROPERTY_MOVABLE,
-		Column.PROPERTY_ALTTEXT,
-		Column.PROPERTY_BROWSERID,
-		Column.PROPERTY_FIELDTYP,
-		Column.PROPERTY_STYLE,
-		Column.PROPERTY_ACTIVESTYLE};
+public class ColumnCreator implements SendableEntityCreator {
+	private static final String[] properties = new String[] {
+			Column.PROPERTY_ATTRNAME, Column.PROPERTY_NUMBERFORMAT,
+			Column.PROPERTY_EDITCOLUMN, Column.PROPERTY_LABEL,
+			Column.PROPERTY_DEFAULTTEXT, Column.PROPERTY_RESIZE,
+			Column.PROPERTY_VISIBLE, Column.PROPERTY_MOVABLE,
+			Column.PROPERTY_ALTTEXT, Column.PROPERTY_BROWSERID,
+			Column.PROPERTY_FIELDTYP, Column.PROPERTY_STYLE,
+			Column.PROPERTY_ACTIVESTYLE };
 
 	@Override
 	public String[] getProperties() {
@@ -51,13 +46,13 @@ public class ColumnCreator implements SendableEntityCreator{
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		return ((Column)entity).get(attribute);
+		return ((Column) entity).get(attribute);
 	}
 
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
-		return ((Column)entity).set(attribute, value);
+		return ((Column) entity).set(attribute, value);
 	}
 
 }

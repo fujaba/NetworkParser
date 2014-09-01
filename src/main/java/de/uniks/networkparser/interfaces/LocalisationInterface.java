@@ -20,7 +20,7 @@ package de.uniks.networkparser.interfaces;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 
 public interface LocalisationInterface {
 	public String getText(String label, Object model, Object gui);

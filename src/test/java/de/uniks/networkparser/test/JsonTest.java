@@ -599,7 +599,6 @@ public class JsonTest {
 		
 		item3.put("id", "23");
 		item3.put("id", "42");
-		
-		System.out.println(item3.toString());
+		Assert.assertEquals("{\"id\":\"42\"}", item3.toString());
 	}
 }

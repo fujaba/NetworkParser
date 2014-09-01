@@ -22,47 +22,56 @@ package de.uniks.networkparser.gui.brush;
  LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
+ */
 
 import java.util.regex.Pattern;
 
 /**
  * Python brush.
+ *
  * @author Chan Wai Shing (cws1989@gmail.com)
  */
 public class BrushPython extends Brush {
 
-  public BrushPython() {
-    super();
+	public BrushPython() {
+		super();
 
-    // Contributed by Gheorghe Milas and Ahmad Sherif
+		// Contributed by Gheorghe Milas and Ahmad Sherif
 
-    String keywords = "and assert break class continue def del elif else "
-            + "except exec finally for from global if import in is "
-            + "lambda not or pass print raise return try yield while";
-    String funcs = "__import__ abs all any apply basestring bin bool buffer callable "
-            + "chr classmethod cmp coerce compile complex delattr dict dir "
-            + "divmod enumerate eval execfile file filter float format frozenset "
-            + "getattr globals hasattr hash help hex id input int intern "
-            + "isinstance issubclass iter len list locals long map max min next "
-            + "object oct open ord pow print property range raw_input reduce "
-            + "reload repr reversed round set setattr slice sorted staticmethod "
-            + "str sum super tuple type type unichr unicode vars xrange zip";
-    String special = "None True False self cls class_";
+		String keywords = "and assert break class continue def del elif else "
+				+ "except exec finally for from global if import in is "
+				+ "lambda not or pass print raise return try yield while";
+		String funcs = "__import__ abs all any apply basestring bin bool buffer callable "
+				+ "chr classmethod cmp coerce compile complex delattr dict dir "
+				+ "divmod enumerate eval execfile file filter float format frozenset "
+				+ "getattr globals hasattr hash help hex id input int intern "
+				+ "isinstance issubclass iter len list locals long map max min next "
+				+ "object oct open ord pow print property range raw_input reduce "
+				+ "reload repr reversed round set setattr slice sorted staticmethod "
+				+ "str sum super tuple type type unichr unicode vars xrange zip";
+		String special = "None True False self cls class_";
 
-    addRule(new RegExpressions(RegExpressions.singleLinePerlComments, "comments"));
-    addRule(new RegExpressions("^\\s*@\\w+ ", Pattern.MULTILINE, "color2"));
-    addRule(new RegExpressions("(['\\\"]{3})([^['\\\"]{3}])*?['\\\"]{3}", Pattern.MULTILINE, "comments"));
-    addRule(new RegExpressions("\"(?!\")(?:\\.|\\\\\\\"|[^\\\"\"\\n])*\"", Pattern.MULTILINE, "string"));
-    addRule(new RegExpressions("'(?!')(?:\\.|(\\\\\\')|[^\\''\\n])*'", Pattern.MULTILINE, "string"));
-    addRule(new RegExpressions("\\+|\\-|\\*|\\/|\\%|=|==", Pattern.MULTILINE, "keyword"));
-    addRule(new RegExpressions("\\b\\d+\\.?\\w*", "value"));
-    addRule(new RegExpressions(getKeywords(funcs), Pattern.MULTILINE | Pattern.CASE_INSENSITIVE, "functions"));
-    addRule(new RegExpressions(getKeywords(keywords), Pattern.MULTILINE, "keyword"));
-    addRule(new RegExpressions(getKeywords(special), Pattern.MULTILINE, "color1"));
+		addRule(new RegExpressions(RegExpressions.singleLinePerlComments,
+				"comments"));
+		addRule(new RegExpressions("^\\s*@\\w+ ", Pattern.MULTILINE, "color2"));
+		addRule(new RegExpressions("(['\\\"]{3})([^['\\\"]{3}])*?['\\\"]{3}",
+				Pattern.MULTILINE, "comments"));
+		addRule(new RegExpressions("\"(?!\")(?:\\.|\\\\\\\"|[^\\\"\"\\n])*\"",
+				Pattern.MULTILINE, "string"));
+		addRule(new RegExpressions("'(?!')(?:\\.|(\\\\\\')|[^\\''\\n])*'",
+				Pattern.MULTILINE, "string"));
+		addRule(new RegExpressions("\\+|\\-|\\*|\\/|\\%|=|==",
+				Pattern.MULTILINE, "keyword"));
+		addRule(new RegExpressions("\\b\\d+\\.?\\w*", "value"));
+		addRule(new RegExpressions(getKeywords(funcs), Pattern.MULTILINE
+				| Pattern.CASE_INSENSITIVE, "functions"));
+		addRule(new RegExpressions(getKeywords(keywords), Pattern.MULTILINE,
+				"keyword"));
+		addRule(new RegExpressions(getKeywords(special), Pattern.MULTILINE,
+				"color1"));
 
-    addRule(HTMLRegExRule.aspScriptTags);
+		addRule(HTMLRegExRule.aspScriptTags);
 
-    setCommonFileExtensionList("py");
-  }
+		setCommonFileExtensionList("py");
+	}
 }

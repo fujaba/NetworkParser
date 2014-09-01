@@ -20,45 +20,44 @@ package de.uniks.networkparser.gui.table;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import java.util.Comparator;
 import de.uniks.networkparser.EntityValueFactory;
 import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.interfaces.GUIPosition;
 
 public class Column {
-	public static final int AUTOWIDTH=-1;
-	public static final String PROPERTY_STYLE="style";
-	public static final String PROPERTY_ACTIVESTYLE="activeStyle";
-	public static final String PROPERTY_ATTRNAME="attrName";
-	public static final String PROPERTY_NUMBERFORMAT="numberformat";
-	public static final String PROPERTY_EDITCOLUMN="editColumn";
-	public static final String PROPERTY_LABEL="label";
-	public static final String PROPERTY_DEFAULTTEXT="defaulttext";
-	public static final String PROPERTY_RESIZE="resize";
-	public static final String PROPERTY_VISIBLE="visible";
-	public static final String PROPERTY_MOVABLE="movable";
-	public static final String PROPERTY_ALTTEXT="altText";
-	public static final String PROPERTY_BROWSERID="browserid";
-	public static final String PROPERTY_FIELDTYP="fieldTyp";
+	public static final int AUTOWIDTH = -1;
+	public static final String PROPERTY_STYLE = "style";
+	public static final String PROPERTY_ACTIVESTYLE = "activeStyle";
+	public static final String PROPERTY_ATTRNAME = "attrName";
+	public static final String PROPERTY_NUMBERFORMAT = "numberformat";
+	public static final String PROPERTY_EDITCOLUMN = "editColumn";
+	public static final String PROPERTY_LABEL = "label";
+	public static final String PROPERTY_DEFAULTTEXT = "defaulttext";
+	public static final String PROPERTY_RESIZE = "resize";
+	public static final String PROPERTY_VISIBLE = "visible";
+	public static final String PROPERTY_MOVABLE = "movable";
+	public static final String PROPERTY_ALTTEXT = "altText";
+	public static final String PROPERTY_BROWSERID = "browserid";
+	public static final String PROPERTY_FIELDTYP = "fieldTyp";
 
 	private Style style;
 	private Style activestyle;
 
 	private String attrName;
 	private String numberFormat;
-	private boolean isEditable=false;
+	private boolean isEditable = false;
 	private String label;
 	private String defaultText;
-	private boolean isResizable=true;
-	private boolean isVisible=true;
-	private boolean isMovable=true;
+	private boolean isResizable = true;
+	private boolean isVisible = true;
+	private boolean isMovable = true;
 	private String altAttribute;
 	private FieldTyp fieldTyp;
-	private GUIPosition browserId=GUIPosition.CENTER;
+	private GUIPosition browserId = GUIPosition.CENTER;
 	protected ColumnListener handler;
 	private Comparator<TableCellValue> comparator;
-
 
 	/**
 	 * @return the label
@@ -68,14 +67,15 @@ public class Column {
 	}
 
 	public String getLabelOrAttrName() {
-		if (label==null) {
+		if (label == null) {
 			return attrName;
 		}
 		return label;
 	}
 
 	/**
-	 * @param label the label to set
+	 * @param label
+	 *            the label to set
 	 * @return Itself
 	 */
 	public Column withLabel(String label) {
@@ -91,21 +91,25 @@ public class Column {
 	}
 
 	/**
-	 * @param attrName Attribute Name for display
+	 * @param attrName
+	 *            Attribute Name for display
 	 * @return Itself
 	 */
 	public Column withAttrName(String attrName) {
 		this.attrName = attrName;
 		return this;
 	}
+
 	/**
-	 * @param attrName Attribute Name for display
-	 * @param edit is the Column is editable
+	 * @param attrName
+	 *            Attribute Name for display
+	 * @param edit
+	 *            is the Column is editable
 	 * @return this
 	 */
 	public Column withAttrName(String attrName, boolean edit) {
 		this.attrName = attrName;
-		if (label==null) {
+		if (label == null) {
 			label = attrName;
 		}
 		this.isEditable = edit;
@@ -120,7 +124,8 @@ public class Column {
 	}
 
 	/**
-	 * @param value the NumberFormat to set
+	 * @param value
+	 *            the NumberFormat to set
 	 * @return Itself
 	 */
 	public Column withNumberFormat(String value) {
@@ -136,7 +141,8 @@ public class Column {
 	}
 
 	/**
-	 * @param value the editColumn to set
+	 * @param value
+	 *            the editColumn to set
 	 * @return Itself
 	 */
 	public Column withEditable(boolean value) {
@@ -167,7 +173,7 @@ public class Column {
 	}
 
 	public Column withAltAttribute(String altAttribute) {
-		this.altAttribute=altAttribute;
+		this.altAttribute = altAttribute;
 		return this;
 	}
 
@@ -205,6 +211,7 @@ public class Column {
 	public String getDefaultText() {
 		return defaultText;
 	}
+
 	public Column withDefaultText(String defaultText) {
 		this.defaultText = defaultText;
 		return this;
@@ -293,11 +300,11 @@ public class Column {
 			return true;
 		}
 		if (attribute.equalsIgnoreCase(PROPERTY_BROWSERID)) {
-			withBrowserId(GUIPosition.valueOf((String)value));
+			withBrowserId(GUIPosition.valueOf((String) value));
 			return true;
 		}
 		if (attribute.equalsIgnoreCase(PROPERTY_FIELDTYP)) {
-			withFieldTyp(FieldTyp.valueOf("" +value));
+			withFieldTyp(FieldTyp.valueOf("" + value));
 			return true;
 		}
 		return false;
@@ -329,7 +336,7 @@ public class Column {
 	}
 
 	public ColumnListener getListener() {
-		if (handler==null) {
+		if (handler == null) {
 			withListener(getDefaultListener());
 		}
 		return handler;
@@ -349,11 +356,14 @@ public class Column {
 	}
 
 	public Column withComboValue(String value) {
-		if (this.numberFormat == null || !this.numberFormat.startsWith("[") || numberFormat.length() ==2) {
-			this.numberFormat = "[" +value+ "]";
+		if (this.numberFormat == null || !this.numberFormat.startsWith("[")
+				|| numberFormat.length() == 2) {
+			this.numberFormat = "[" + value + "]";
 			return this;
 		}
-		this.numberFormat= this.numberFormat.substring(0, this.numberFormat.length()-1) + "," +value+ "]";
+		this.numberFormat = this.numberFormat.substring(0,
+				this.numberFormat.length() - 1)
+				+ "," + value + "]";
 		return this;
 	}
 }

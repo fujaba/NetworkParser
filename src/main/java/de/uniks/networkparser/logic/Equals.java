@@ -20,18 +20,28 @@ package de.uniks.networkparser.logic;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.interfaces.Buffer;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
+/**
+ * @author Stefan Lindel Clazz of EqualsCondition
+ */
 public class Equals extends ConditionMap implements SendableEntityCreator {
-	public static final String STRINGVALUE="stringvalue";
-	public static final String POSITION="position";
-	public static final String BYTEVALUE="bytevalue";
+	/** Constant of StrValue. */
+	public static final String STRINGVALUE = "stringvalue";
+	/** Constant of Position. */
+	public static final String POSITION = "position";
+	/** Constant of ByteValue. */
+	public static final String BYTEVALUE = "bytevalue";
 
+	/** Variable of StrValue. */
 	private String strValue;
-	// Position of the Byte or -1 for currentPosition
+	/**
+	 * Variable of Position. Position of the Byte or -1 for currentPosition
+	 */
 	private int position = -1;
+	/** Variable of ByteValue. */
 	private Byte bytevalue;
 
 	@Override
@@ -46,49 +56,72 @@ public class Equals extends ConditionMap implements SendableEntityCreator {
 			}
 			return buffer.byteAt(pos) == bytevalue;
 		}
-		if (values.value==null) {
-			return (strValue==null);
+		if (values.value == null) {
+			return (strValue == null);
 		}
 		return values.value.equals(strValue);
 	}
 
+	/**
+	 * @param value
+	 *            The new Position
+	 * @return Equals Instance
+	 */
 	public Equals withPosition(int value) {
 		this.position = value;
 		return this;
 	}
 
+	/**
+	 * @return The Position
+	 */
 	public int getPosition() {
 		return position;
 	}
 
+	/**
+	 * @param value
+	 *            The new ByteValue
+	 * @return Equals Instance
+	 */
 	public Equals withValue(Byte value) {
 		this.bytevalue = value;
 		return this;
 	}
+
+	/**
+	 * @return The ByteValue
+	 */
 	public Byte getBytevalue() {
 		return bytevalue;
 	}
 
+	/**
+	 * @param value
+	 *            The new StringValue
+	 * @return Equals Instance
+	 */
 	public Equals withValue(String value) {
 		this.strValue = value;
 		return this;
 	}
 
+	/** @return The StringVlaue */
 	public String getStringvalue() {
 		return strValue;
 	}
 
 	@Override
 	public String toString() {
-		if (strValue!=null) {
-			return "==" +strValue+ " ";
+		if (strValue != null) {
+			return "==" + strValue + " ";
 		}
-		return "==" +bytevalue+ " ";
+		return "==" + bytevalue + " ";
 	}
 
 	@Override
 	public String[] getProperties() {
-		return new String[]{STRINGVALUE, POSITION, BYTEVALUE};
+		return new String[] {STRINGVALUE, POSITION, BYTEVALUE };
 	}
 
 	@Override
@@ -99,13 +132,13 @@ public class Equals extends ConditionMap implements SendableEntityCreator {
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if (STRINGVALUE.equalsIgnoreCase(attribute)) {
-			return ((Equals)entity).getStringvalue();
+			return ((Equals) entity).getStringvalue();
 		}
 		if (POSITION.equalsIgnoreCase(attribute)) {
-			return ((Equals)entity).getPosition();
+			return ((Equals) entity).getPosition();
 		}
 		if (BYTEVALUE.equalsIgnoreCase(attribute)) {
-			return ((Equals)entity).getBytevalue();
+			return ((Equals) entity).getBytevalue();
 		}
 		return null;
 	}
@@ -114,15 +147,15 @@ public class Equals extends ConditionMap implements SendableEntityCreator {
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
 		if (STRINGVALUE.equalsIgnoreCase(attribute)) {
-			((Equals)entity).withValue(String.valueOf(value));
+			((Equals) entity).withValue(String.valueOf(value));
 			return true;
 		}
 		if (POSITION.equalsIgnoreCase(attribute)) {
-			((Equals)entity).withPosition(Integer.parseInt("" +value));
+			((Equals) entity).withPosition(Integer.parseInt("" + value));
 			return true;
 		}
 		if (BYTEVALUE.equalsIgnoreCase(attribute)) {
-			((Equals)entity).withValue((Byte) value);
+			((Equals) entity).withValue((Byte) value);
 			return true;
 		}
 		return false;

@@ -20,11 +20,14 @@ package de.uniks.networkparser.logic;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 
+/**
+ * @author Stefan Lindel Condition Clazz.
+ */
 public interface Condition {
 	/**
-	 * checks if a telegram fulfills this condition
+	 * checks if a telegram fulfills this condition.
 	 *
 	 * @param value
 	 *            the telegram to be checked

@@ -20,16 +20,24 @@ package de.uniks.networkparser.gui.table;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 
 public interface CellEditorElement {
 	public CellEditorElement withColumn(Column column);
+
 	public void cancel();
+
 	public boolean setFocus(boolean value);
+
 	public boolean onActive(boolean value);
+
 	public boolean nextFocus();
+
 	public void apply();
+
 	public void dispose();
+
 	public Object getValue(boolean convert);
+
 	public CellEditorElement withValue(Object value);
 }

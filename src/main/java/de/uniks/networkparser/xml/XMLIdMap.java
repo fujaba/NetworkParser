@@ -20,7 +20,7 @@ package de.uniks.networkparser.xml;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -34,6 +34,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorXML;
 import de.uniks.networkparser.logic.BooleanCondition;
 import de.uniks.networkparser.xml.util.XMLGrammar;
+
 /**
  * The Class XMLIdMap.
  */
@@ -59,13 +60,16 @@ public class XMLIdMap extends XMLSimpleIdMap {
 	}
 
 	/**
-	 * @param createrClass new Creator
+	 * @param createrClass
+	 *            new Creator
 	 * @return Boolean for add the new Creator
 	 */
 	public boolean addCreator(SendableEntityCreator createrClass) {
 		if (createrClass instanceof SendableEntityCreatorXML) {
 			if (this.decoderMap != null) {
-				if (this.decoderMap.containsKey(((SendableEntityCreatorXML) createrClass).getTag())) {
+				if (this.decoderMap
+						.containsKey(((SendableEntityCreatorXML) createrClass)
+								.getTag())) {
 					return false;
 				}
 			}
@@ -146,8 +150,8 @@ public class XMLIdMap extends XMLSimpleIdMap {
 			for (String property : properties) {
 				Object value = createrProtoTyp.getValue(entity, property);
 				if (value != null) {
-						Object refValue = createrProtoTyp.getValue(
-								referenceObject, property);
+					Object refValue = createrProtoTyp.getValue(referenceObject,
+							property);
 					boolean encoding = !value.equals(refValue);
 					if (encoding) {
 						if (property.startsWith(XMLIdMap.ENTITYSPLITTER)) {
@@ -240,7 +244,8 @@ public class XMLIdMap extends XMLSimpleIdMap {
 	 *            the tokener
 	 * @return true, if successful
 	 */
-	public boolean stepEmptyPos(String newPrefix, Object entity, String tag, XMLTokener tokener) {
+	public boolean stepEmptyPos(String newPrefix, Object entity, String tag,
+			XMLTokener tokener) {
 		boolean exit = false;
 		boolean empty = true;
 
@@ -310,13 +315,17 @@ public class XMLIdMap extends XMLSimpleIdMap {
 	/**
 	 * Find tag.
 	 *
-	 * @param entity The Entity
-	 * @param tokener the Tokener
-	 * @param grammar the grammar of XML.
+	 * @param entity
+	 *            The Entity
+	 * @param tokener
+	 *            the Tokener
+	 * @param grammar
+	 *            the grammar of XML.
 	 * @return the object
 	 */
 	@Override
-	protected Object parse(XMLEntity entity, XMLTokener tokener, XMLGrammar grammar) {
+	protected Object parse(XMLEntity entity, XMLTokener tokener,
+			XMLGrammar grammar) {
 		String tag = entity.getTag();
 		if (tag.length() < 1) {
 			return null;
@@ -342,7 +351,8 @@ public class XMLIdMap extends XMLSimpleIdMap {
 					XMLEntity item = getEntity(grammar, tokener);
 					if (item != null) {
 						tag += XMLIdMap.ENTITYSPLITTER + item.getTag();
-						for (Iterator<SendableEntityCreatorXML> i = filter.iterator(); i.hasNext();) {
+						for (Iterator<SendableEntityCreatorXML> i = filter
+								.iterator(); i.hasNext();) {
 							if (!i.next().getTag().startsWith(tag)) {
 								i.remove();
 							}
@@ -352,19 +362,27 @@ public class XMLIdMap extends XMLSimpleIdMap {
 			}
 		}
 		if (filter.size() == 1) {
-			return parseIdEntity(entity, grammar, tokener.withPrefix(""), filter.get(0));
+			return parseIdEntity(entity, grammar, tokener.withPrefix(""),
+					filter.get(0));
 		}
 		return null;
 	}
 
-	/** Parse a Element with IdCreater.
-	 * @param entity    The Entity
-	 * @param grammar	The Grammar of XML
-	 * @param tokener	The XML-Tokener
-	 * @param creator The Entity-Factory
+	/**
+	 * Parse a Element with IdCreater.
+	 *
+	 * @param entity
+	 *            The Entity
+	 * @param grammar
+	 *            The Grammar of XML
+	 * @param tokener
+	 *            The XML-Tokener
+	 * @param creator
+	 *            The Entity-Factory
 	 * @return the Object
 	 */
-	protected Object parseIdEntity(XMLEntity entity, XMLGrammar grammar, XMLTokener tokener, SendableEntityCreatorXML creator) {
+	protected Object parseIdEntity(XMLEntity entity, XMLGrammar grammar,
+			XMLTokener tokener, SendableEntityCreatorXML creator) {
 		boolean plainvalue = false;
 		Object item = null;
 
@@ -399,7 +417,8 @@ public class XMLIdMap extends XMLSimpleIdMap {
 						item = referenceObject.getEntity();
 						plainvalue = true;
 						break;
-					} else if (prop.toLowerCase().startsWith(tokener.getPrefix().toLowerCase())) {
+					} else if (prop.toLowerCase().startsWith(
+							tokener.getPrefix().toLowerCase())) {
 						// it is a Child
 						item = referenceObject.getEntity();
 						break;
@@ -413,10 +432,8 @@ public class XMLIdMap extends XMLSimpleIdMap {
 			}
 		} else {
 			item = creator.getSendableInstance(false);
-			tokener.withStack(new ReferenceObject()
-						.withCreator(creator)
-						.withProperty(tag)
-						.withEntity(item));
+			tokener.withStack(new ReferenceObject().withCreator(creator)
+					.withProperty(tag).withEntity(item));
 			newPrefix = XMLIdMap.ENTITYSPLITTER;
 		}
 		if (item == null) {
@@ -446,8 +463,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 		} else {
 			if (!plainvalue) {
 				// Parse Attributes
-				while (!tokener.isEnd()
-						&& tokener.getCurrentChar() != ITEMEND) {
+				while (!tokener.isEnd() && tokener.getCurrentChar() != ITEMEND) {
 					if (tokener.getCurrentChar() == ENDTAG) {
 						break;
 					}
@@ -461,8 +477,8 @@ public class XMLIdMap extends XMLSimpleIdMap {
 							if (tokener.stepPos("\"", false, true)) {
 								String value = tokener.substring(start, -1);
 								tokener.next();
-								creator.setValue(item,
-										tokener.getPrefix() + key, value, IdMapEncoder.NEW);
+								creator.setValue(item, tokener.getPrefix()
+										+ key, value, IdMapEncoder.NEW);
 							}
 						}
 					}
@@ -475,7 +491,8 @@ public class XMLIdMap extends XMLSimpleIdMap {
 							XMLEntity nextTag = getEntity(null, tokener);
 
 							if (nextTag != null) {
-								Object result = parse(nextTag, tokener.withPrefix(newPrefix), grammar);
+								Object result = parse(nextTag,
+										tokener.withPrefix(newPrefix), grammar);
 
 								if (result != null) {
 									ReferenceObject refObject = null;
@@ -488,8 +505,10 @@ public class XMLIdMap extends XMLSimpleIdMap {
 										if (refObject != null) {
 											SendableEntityCreator parentCreator = refObject
 													.getCreater();
-											parentCreator.setValue(refObject.getEntity(),
-													nextTag.getTag(), result, IdMapEncoder.NEW);
+											parentCreator.setValue(
+													refObject.getEntity(),
+													nextTag.getTag(), result,
+													IdMapEncoder.NEW);
 											if (tokener.getStackSize() > 0) {
 												tokener.popStack();
 											}
@@ -519,9 +538,11 @@ public class XMLIdMap extends XMLSimpleIdMap {
 				tokener.next();
 				int start = tokener.position();
 				tokener.stepPos(ITEMSTART + "/" + tag, true, true);
-				String value = tokener.substring(start, tokener.position() - tag.length() - 1);
-				creator.setValue(item, tokener.getPrefix(), value, IdMapEncoder.NEW);
-//				tokener.stepPos("" + ITEMSTART, false, false);
+				String value = tokener.substring(start, tokener.position()
+						- tag.length() - 1);
+				creator.setValue(item, tokener.getPrefix(), value,
+						IdMapEncoder.NEW);
+				// tokener.stepPos("" + ITEMSTART, false, false);
 				tokener.stepPos("" + ITEMEND, false, false);
 			}
 			return null;

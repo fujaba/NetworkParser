@@ -20,14 +20,14 @@ package de.uniks.networkparser.json;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMapEncoder;
 
 public class UpdateFilter extends Filter {
 	@Override
-	public boolean isConvertable(IdMapEncoder map, Object entity, String property,
-			Object value, boolean isMany, int deep) {
+	public boolean isConvertable(IdMapEncoder map, Object entity,
+			String property, Object value, boolean isMany, int deep) {
 		return map.getKey(entity) == null;
 	}
 }

@@ -20,15 +20,15 @@ package de.uniks.networkparser.interfaces;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 
 public abstract class ByteConverter {
 	public String encode(BaseItem entity) {
 		if (entity instanceof ByteItem) {
-			return toString(((ByteItem)entity).getBytes(true));
+			return toString(((ByteItem) entity).getBytes(true));
 		}
 		if (entity instanceof StringItem) {
-			return toString(((StringItem)entity).toString(2).getBytes());
+			return toString(((StringItem) entity).toString(2).getBytes());
 		}
 		return toString(entity.toString().getBytes());
 	}

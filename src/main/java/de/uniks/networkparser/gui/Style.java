@@ -20,11 +20,11 @@ package de.uniks.networkparser.gui;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import java.util.HashMap;
 import de.uniks.networkparser.interfaces.GUIPosition;
 
-public class Style implements Cloneable{
+public class Style implements Cloneable {
 	/** The Constant PROPERTY_BOLD for Bold Attribute */
 	public static final String PROPERTY_BOLD = "bold";
 	/** The Bold value. */
@@ -77,7 +77,7 @@ public class Style implements Cloneable{
 
 	public static final String PROPERTY_BORDER = "borders";
 
-	protected HashMap<GUIPosition, GUILine> borders= new HashMap<GUIPosition, GUILine>();
+	protected HashMap<GUIPosition, GUILine> borders = new HashMap<GUIPosition, GUILine>();
 
 	public boolean isBold() {
 		return bold;
@@ -184,13 +184,13 @@ public class Style implements Cloneable{
 			withUnderline((Boolean) value);
 			return true;
 		} else if (attribute.equalsIgnoreCase(PROPERTY_ALIGNMENT)) {
-			withAlignment((String)value);
+			withAlignment((String) value);
 			return true;
 		} else if (attribute.equalsIgnoreCase(PROPERTY_WIDTH)) {
-			withWidth(Double.valueOf("" +value));
+			withWidth(Double.valueOf("" + value));
 			return true;
 		} else if (attribute.equalsIgnoreCase(PROPERTY_HEIGHT)) {
-			withHeight(Double.valueOf("" +value));
+			withHeight(Double.valueOf("" + value));
 			return true;
 		}
 		return false;
@@ -224,19 +224,11 @@ public class Style implements Cloneable{
 	}
 
 	public Style clone(Style prototyp) {
-		return prototyp.withFontFamily(fontfamily)
-				.withFontSize(fontsize)
-				.withForground(forground)
-				.withBackground(background)
-				.withBold(bold)
-				.withItalic(italic)
-				.withAlignment(alignment)
-				.withUnderline(underline)
-				.withWidth(width)
-				.withHeight(height);
+		return prototyp.withFontFamily(fontfamily).withFontSize(fontsize)
+				.withForground(forground).withBackground(background)
+				.withBold(bold).withItalic(italic).withAlignment(alignment)
+				.withUnderline(underline).withWidth(width).withHeight(height);
 	}
-
-
 
 	public boolean isUnderline() {
 		return underline;
@@ -255,10 +247,11 @@ public class Style implements Cloneable{
 
 	public Style withAlignment(GUIPosition value) {
 		String oldValue = this.alignment;
-		this.alignment = "" +value;
+		this.alignment = "" + value;
 		propertyChange(PROPERTY_ALIGNMENT, oldValue, value);
 		return this;
 	}
+
 	public Style withAlignment(String value) {
 		String oldValue = this.alignment;
 		this.alignment = value;
@@ -288,7 +281,6 @@ public class Style implements Cloneable{
 		return this;
 	}
 
-
 	public Style withBorder(GUIPosition position, GUILine line) {
 		getBorders().put(position, line);
 		propertyChange(PROPERTY_BORDER, null, position);
@@ -297,9 +289,10 @@ public class Style implements Cloneable{
 
 	public void setBorder(GUIPosition position, String width, String color) {
 		GUILine border = this.borders.get(position);
-		if (width!=null) {
-			if (border==null) {
-				this.borders.put(position, new GUILine().withColor(color).withWidth(width));
+		if (width != null) {
+			if (border == null) {
+				this.borders.put(position, new GUILine().withColor(color)
+						.withWidth(width));
 				this.propertyChange(PROPERTY_BORDER, null, this.borders);
 			} else {
 				if (!border.isCustomLine()) {
@@ -308,7 +301,7 @@ public class Style implements Cloneable{
 					this.propertyChange(PROPERTY_BORDER, null, this.borders);
 				}
 			}
-		} else if (border!=null) {
+		} else if (border != null) {
 			if (!border.isCustomLine()) {
 				this.borders.remove(position);
 				this.propertyChange(PROPERTY_BORDER, null, this.borders);
@@ -322,12 +315,11 @@ public class Style implements Cloneable{
 
 	public Style withOutBorder(GUIPosition position) {
 		GUILine removedItem = getBorders().remove(position);
-		if (removedItem!=null) {
+		if (removedItem != null) {
 			propertyChange(PROPERTY_BORDER, position, null);
 		}
 		return this;
 	}
-
 
 	public void propertyChange(String property, Object oldValue, Object newValue) {
 	}

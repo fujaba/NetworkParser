@@ -20,12 +20,13 @@ package de.uniks.networkparser.logic;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import java.util.ArrayList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 /**
  * Or Clazz for Or Conditions.
+ *
  * @author Stefan Lindel
  */
 public class Or implements Condition, SendableEntityCreator {
@@ -35,7 +36,8 @@ public class Or implements Condition, SendableEntityCreator {
 	private ArrayList<Condition> list = new ArrayList<Condition>();
 
 	/**
-	 * @param conditions All Conditions.
+	 * @param conditions
+	 *            All Conditions.
 	 * @return Or Instance
 	 */
 	public Or add(Condition... conditions) {
@@ -74,7 +76,7 @@ public class Or implements Condition, SendableEntityCreator {
 
 	@Override
 	public String[] getProperties() {
-		return new String[]{CHILD};
+		return new String[] {CHILD };
 	}
 
 	@Override

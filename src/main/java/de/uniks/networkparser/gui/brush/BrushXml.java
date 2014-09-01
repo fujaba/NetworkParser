@@ -22,39 +22,45 @@ package de.uniks.networkparser.gui.brush;
  LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
+ */
 
 import java.util.regex.Pattern;
 
 /**
  * General XML (include HTML) brush.
+ *
  * @author Chan Wai Shing (cws1989@gmail.com)
  */
 public class BrushXml extends Brush {
 
-  public BrushXml() {
-    super();
+	public BrushXml() {
+		super();
 
+		addRule(new RegExpressions(
+				"(\\&lt;|<)\\!\\[[\\w\\s]*?\\[(.|\\s)*?\\]\\](\\&gt;|>)",
+				Pattern.MULTILINE, "color2")); // <![ ... [ ... ]]>
+		addRule(new RegExpressions(RegExpressions.xmlComments, "comments")); // <!--
+																				// ...
+																				// -->
 
-    addRule(new RegExpressions("(\\&lt;|<)\\!\\[[\\w\\s]*?\\[(.|\\s)*?\\]\\](\\&gt;|>)", Pattern.MULTILINE, "color2")); // <![ ... [ ... ]]>
-    addRule(new RegExpressions(RegExpressions.xmlComments, "comments")); // <!-- ... -->
+		// regular expression for highlighting the tag
+		RegExpressions tagRegExpRule = new RegExpressions(
+				"(?:&lt;|<)[\\s\\/\\?]*([:\\w-\\.]+)", Pattern.COMMENTS);
+		// highlight the tag only, not including the symbols at the start, 1
+		// means the group 1 of the matched results
+		tagRegExpRule.addToGroupOperation("keyword");
 
-    // regular expression for highlighting the tag
-    RegExpressions tagRegExpRule = new RegExpressions("(?:&lt;|<)[\\s\\/\\?]*([:\\w-\\.]+)", Pattern.COMMENTS);
-    // highlight the tag only, not including the symbols at the start, 1 means the group 1 of the matched results
-    tagRegExpRule.addToGroupOperation("keyword");
+		// regular expression for highlighting the variable assignment
+		RegExpressions valueRegExpRule = new RegExpressions("([\\w:\\-\\.]+)"
+				+ "\\s*=\\s*" + "(\".*?\"|'.*?'|\\w+)", Pattern.COMMENTS);
+		valueRegExpRule.addToGroupOperation("color1", "string");
 
-    // regular expression for highlighting the variable assignment
-    RegExpressions valueRegExpRule = new RegExpressions("([\\w:\\-\\.]+)"
-            + "\\s*=\\s*"
-            + "(\".*?\"|'.*?'|\\w+)", Pattern.COMMENTS);
-    valueRegExpRule.addToGroupOperation("color1", "string");
-   
+		RegExpressions _regExpRule = new RegExpressions(
+				"((?:&lt;|<)[\\s\\/\\?]*(?:\\w+))(.*?)[\\s\\/\\?]*(?:&gt;|>)",
+				Pattern.DOTALL);
+		_regExpRule.addToGroupOperation(tagRegExpRule, valueRegExpRule);
+		addRule(_regExpRule);
 
-    RegExpressions _regExpRule = new RegExpressions("((?:&lt;|<)[\\s\\/\\?]*(?:\\w+))(.*?)[\\s\\/\\?]*(?:&gt;|>)", Pattern.DOTALL);
-    _regExpRule.addToGroupOperation(tagRegExpRule, valueRegExpRule);
-    addRule(_regExpRule);
-
-    setCommonFileExtensionList("xml", "html", "xhtml", "xslt");
-  }
+		setCommonFileExtensionList("xml", "html", "xhtml", "xslt");
+	}
 }

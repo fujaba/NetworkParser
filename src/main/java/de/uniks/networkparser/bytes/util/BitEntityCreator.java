@@ -20,7 +20,7 @@ package de.uniks.networkparser.bytes.util;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.bytes.BitEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 

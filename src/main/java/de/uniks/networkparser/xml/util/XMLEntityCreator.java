@@ -20,18 +20,18 @@ package de.uniks.networkparser.xml.util;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.xml.XMLEntity;
 
 /**
- * @author Stefan
- * Creator for XML Entity.
+ * @author Stefan Creator for XML Entity.
  */
 public class XMLEntityCreator implements SendableEntityCreator, XMLGrammar {
 	/** The properties. */
-	private final String[] properties = new String[] {XMLEntity.PROPERTY_TAG, XMLEntity.PROPERTY_VALUE};
+	private final String[] properties = new String[] {XMLEntity.PROPERTY_TAG,
+			XMLEntity.PROPERTY_VALUE };
 
 	@Override
 	public String[] getProperties() {

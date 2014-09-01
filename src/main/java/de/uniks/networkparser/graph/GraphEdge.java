@@ -1,32 +1,33 @@
 package de.uniks.networkparser.graph;
 
 /*
-NetworkParser
-Copyright (c) 2011 - 2013, Stefan Lindel
-All rights reserved.
+ NetworkParser
+ Copyright (c) 2011 - 2013, Stefan Lindel
+ All rights reserved.
 
-Licensed under the EUPL, Version 1.1 or (as soon they
-will be approved by the European Commission) subsequent
-versions of the EUPL (the "Licence");
-You may not use this work except in compliance with the Licence.
-You may obtain a copy of the Licence at:
+ Licensed under the EUPL, Version 1.1 or (as soon they
+ will be approved by the European Commission) subsequent
+ versions of the EUPL (the "Licence");
+ You may not use this work except in compliance with the Licence.
+ You may obtain a copy of the Licence at:
 
-http://ec.europa.eu/idabc/eupl5
+ http://ec.europa.eu/idabc/eupl5
 
-Unless required by applicable law or agreed to in
-writing, software distributed under the Licence is
-distributed on an "AS IS" basis,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
-express or implied.
-See the Licence for the specific language governing
-permissions and limitations under the Licence.
-*/
+ Unless required by applicable law or agreed to in
+ writing, software distributed under the Licence is
+ distributed on an "AS IS" basis,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ express or implied.
+ See the Licence for the specific language governing
+ permissions and limitations under the Licence.
+ */
 import java.util.List;
 
 import de.uniks.networkparser.AbstractEntityList;
 import de.uniks.networkparser.AbstractList;
 
-public class GraphEdge extends AbstractEntityList<GraphNode> implements List<GraphNode>{
+public class GraphEdge extends AbstractEntityList<GraphNode> implements
+		List<GraphNode> {
 	public static final String PROPERTY_NODE = "node";
 	public static final String PROPERTY_CARDINALITY = "cardinality";
 	public static final String PROPERTY_PROPERTY = "property";
@@ -35,7 +36,7 @@ public class GraphEdge extends AbstractEntityList<GraphNode> implements List<Gra
 	private GraphEdge other;
 
 	public GraphEdge() {
-	
+
 	}
 
 	public GraphEdge(GraphNode node, Cardinality cardinality, String property) {
@@ -43,8 +44,6 @@ public class GraphEdge extends AbstractEntityList<GraphNode> implements List<Gra
 		with(cardinality);
 		with(property);
 	}
-
-
 
 	public Cardinality getCardinality() {
 		return cardinality;
@@ -57,13 +56,14 @@ public class GraphEdge extends AbstractEntityList<GraphNode> implements List<Gra
 	public String getProperty() {
 		return property;
 	}
+
 	public GraphEdge with(String property) {
 		this.property = property;
 		return this;
 	}
 
 	public String getInfo() {
-		return property+ "<br>0.." +this.cardinality;
+		return property + "<br>0.." + this.cardinality;
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public class GraphEdge extends AbstractEntityList<GraphNode> implements List<Gra
 
 	@Override
 	public GraphEdge with(Object... values) {
-		if (values==null) {
+		if (values == null) {
 			return this;
 		}
 		for (Object value : values) {
@@ -81,22 +81,22 @@ public class GraphEdge extends AbstractEntityList<GraphNode> implements List<Gra
 				add((GraphNode) value);
 			}
 			if (value instanceof GraphEdge) {
-				with((GraphEdge)value);
+				with((GraphEdge) value);
 			}
 			if (value instanceof Cardinality) {
-				with((Cardinality)value);
+				with((Cardinality) value);
 			}
 		}
 		return this;
 	}
 
 	public GraphEdge with(GraphEdge value) {
-		 if (this.getOther() == value) {
-	         return this;
-	      }
-		 this.other = value;
-		 getOther().with(this);
-		 return this;
+		if (this.getOther() == value) {
+			return this;
+		}
+		this.other = value;
+		getOther().with(this);
+		return this;
 	}
 
 	public GraphEdge with(Cardinality cardinality) {
@@ -118,7 +118,7 @@ public class GraphEdge extends AbstractEntityList<GraphNode> implements List<Gra
 
 	@Override
 	public boolean remove(Object value) {
-		return removeItemByObject((GraphNode)value)>=0;
+		return removeItemByObject((GraphNode) value) >= 0;
 	}
 
 	public List<GraphNode> values() {

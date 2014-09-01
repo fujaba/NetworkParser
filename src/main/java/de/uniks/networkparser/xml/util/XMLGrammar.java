@@ -20,22 +20,24 @@ package de.uniks.networkparser.xml.util;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.xml.XMLEntity;
 
 /**
- * @author Stefan
- * Interface for Grammar of XML reading.
+ * @author Stefan Interface for Grammar of XML reading.
  */
 public interface XMLGrammar extends SendableEntityCreator {
 	/**
 	 * Methgod to parse Children.
 	 *
-	 * @param entity the Entity
-	 * @param child the new Child
-	 * @param value the Tokener
+	 * @param entity
+	 *            the Entity
+	 * @param child
+	 *            the new Child
+	 * @param value
+	 *            the Tokener
 	 * @return boolean for parsing Child
 	 */
 	public boolean parseChild(XMLEntity entity, XMLEntity child, Tokener value);
@@ -43,15 +45,18 @@ public interface XMLGrammar extends SendableEntityCreator {
 	/**
 	 * Add a Child to parent Element.
 	 *
-	 * @param parent the Parent Element
-	 * @param child	the new Child
+	 * @param parent
+	 *            the Parent Element
+	 * @param child
+	 *            the new Child
 	 */
 	public void addChildren(XMLEntity parent, XMLEntity child);
 
 	/**
 	 * Set the EndTag of Child.
 	 *
-	 * @param tag the End Tag
+	 * @param tag
+	 *            the End Tag
 	 */
 	public void endChild(String tag);
 }

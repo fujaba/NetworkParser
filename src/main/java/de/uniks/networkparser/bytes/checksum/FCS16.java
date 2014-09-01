@@ -20,7 +20,7 @@ package de.uniks.networkparser.bytes.checksum;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 // ftp://ftp.rfc-editor.org/in-notes/rfc1331.txt
 
 public class FCS16 extends Checksum {
@@ -39,7 +39,7 @@ public class FCS16 extends Checksum {
 		return result;
 	}
 
-	public final static int crctab[] = { 0x0000, 0x1189, 0x2312, 0x329B,
+	public final static int crctab[] = {0x0000, 0x1189, 0x2312, 0x329B,
 			0x4624, 0x57AD, 0x6536, 0x74BF, 0x8C48, 0x9DC1, 0xAF5A, 0xBED3,
 			0xCA6C, 0xDBE5, 0xE97E, 0xF8F7, 0x1081, 0x0108, 0x3393, 0x221A,
 			0x56A5, 0x472C, 0x75B7, 0x643E, 0x9CC9, 0x8D40, 0xBFDB, 0xAE52,

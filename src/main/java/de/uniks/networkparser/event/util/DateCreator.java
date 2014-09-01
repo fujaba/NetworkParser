@@ -20,15 +20,17 @@ package de.uniks.networkparser.event.util;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import java.util.Date;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+
 /**
  * The Class DateCreator.
  */
 
-public class DateCreator implements SendableEntityCreator, SendableEntityCreatorNoIndex {
+public class DateCreator implements SendableEntityCreator,
+		SendableEntityCreatorNoIndex {
 	/** The Constant VALUE. */
 	public static final String VALUE = "value";
 
@@ -37,7 +39,7 @@ public class DateCreator implements SendableEntityCreator, SendableEntityCreator
 	 */
 	@Override
 	public String[] getProperties() {
-		return new String[] {VALUE};
+		return new String[] {VALUE };
 	}
 
 	/*

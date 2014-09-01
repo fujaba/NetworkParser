@@ -20,12 +20,12 @@ package de.uniks.networkparser.logic;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class Between implements Condition, SendableEntityCreator {
-	public static final String FROM="from";
-	public static final String TO="to";
+	public static final String FROM = "from";
+	public static final String TO = "to";
 
 	private double fromValue;
 	private double toValue;
@@ -56,15 +56,15 @@ public class Between implements Condition, SendableEntityCreator {
 
 	@Override
 	public boolean matches(ValuesSimple values) {
-		if (values.value instanceof Number) {
-			return (((Double)values.value)>=fromValue && ((Double)values.value)<=toValue);
+		if (values.getValue() instanceof Number) {
+			return (((Double) values.getValue()) >= fromValue && ((Double) values.getValue()) <= toValue);
 		}
 		return false;
 	}
 
 	@Override
 	public String[] getProperties() {
-		return new String[]{FROM, TO};
+		return new String[] {FROM, TO };
 	}
 
 	@Override
@@ -75,10 +75,10 @@ public class Between implements Condition, SendableEntityCreator {
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if (FROM.equalsIgnoreCase(attribute)) {
-			return ((Between)entity).getFrom();
+			return ((Between) entity).getFrom();
 		}
 		if (TO.equalsIgnoreCase(attribute)) {
-			return ((Between)entity).getTo();
+			return ((Between) entity).getTo();
 		}
 		return null;
 	}
@@ -87,11 +87,11 @@ public class Between implements Condition, SendableEntityCreator {
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
 		if (FROM.equalsIgnoreCase(attribute)) {
-			((Between)entity).withFrom((Double) value);
+			((Between) entity).withFrom((Double) value);
 			return true;
 		}
 		if (TO.equalsIgnoreCase(attribute)) {
-			((Between)entity).withTo((Double) value);
+			((Between) entity).withTo((Double) value);
 			return true;
 		}
 		return false;

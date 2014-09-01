@@ -20,12 +20,12 @@ package de.uniks.networkparser.logic;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import java.util.ArrayList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class And implements Condition, SendableEntityCreator {
-	public static final String CHILD="childs";
+	public static final String CHILD = "childs";
 	private ArrayList<Condition> list = new ArrayList<Condition>();
 
 	public And add(Condition... conditions) {
@@ -51,7 +51,7 @@ public class And implements Condition, SendableEntityCreator {
 
 	@Override
 	public String[] getProperties() {
-		return new String[]{CHILD};
+		return new String[] {CHILD };
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class And implements Condition, SendableEntityCreator {
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if (CHILD.equalsIgnoreCase(attribute)) {
-			return ((And)entity).getList();
+			return ((And) entity).getList();
 		}
 		return null;
 	}
@@ -71,7 +71,7 @@ public class And implements Condition, SendableEntityCreator {
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
 		if (CHILD.equalsIgnoreCase(attribute)) {
-			((And)entity).add((Condition) value);
+			((And) entity).add((Condition) value);
 			return true;
 		}
 		return false;

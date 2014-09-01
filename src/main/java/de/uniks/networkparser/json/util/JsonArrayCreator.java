@@ -20,13 +20,14 @@ package de.uniks.networkparser.json.util;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonArray;
 
-public class JsonArrayCreator implements SendableEntityCreator, SendableEntityCreatorNoIndex {
-	private final String[] properties = new String[] { "VALUE" };
+public class JsonArrayCreator implements SendableEntityCreator,
+		SendableEntityCreatorNoIndex {
+	private final String[] properties = new String[] {"VALUE" };
 
 	@Override
 	public String[] getProperties() {

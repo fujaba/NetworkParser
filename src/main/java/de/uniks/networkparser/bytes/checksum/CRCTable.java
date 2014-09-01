@@ -20,13 +20,15 @@ package de.uniks.networkparser.bytes.checksum;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 
-public abstract class CRCTable extends CRC{
+public abstract class CRCTable extends CRC {
 	/** The fast CRC table. Computed once when the CRC32 class is loaded. */
 	protected int[] crc_table = getGenTable();
 
-	/** Make the table for a fast CRC.
+	/**
+	 * Make the table for a fast CRC.
+	 *
 	 * @return the GenTable
 	 * */
 

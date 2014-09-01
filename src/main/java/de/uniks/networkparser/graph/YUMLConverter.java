@@ -20,7 +20,7 @@ package de.uniks.networkparser.graph;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -54,9 +54,10 @@ public class YUMLConverter implements Converter {
 			ArrayList<GraphNode> visited,
 			ArrayEntityList<String, Object> links, boolean shortName) {
 		String key = item.getTyp(typ, shortName);
-		ArraySimpleList<?> showedLinks = (ArraySimpleList<?>) links.getValueItem(key);
+		ArraySimpleList<?> showedLinks = (ArraySimpleList<?>) links
+				.getValueItem(key);
 		if (showedLinks == null) {
-			if (sb.length()<1) {
+			if (sb.length() < 1) {
 				sb.append(parseEntity(item, visited, typ, shortName));
 			}
 			return;
@@ -73,11 +74,11 @@ public class YUMLConverter implements Converter {
 			}
 			sb.append(parseEntity(item, visited, typ, shortName));
 			sb.append("-");
-		
+
 			Iterator<GraphNode> targetIterator = element.getOther().iterator();
 			GraphNode target = targetIterator.next();
 			sb.append(parseEntity(target, visited, typ, shortName));
-		
+
 			while (targetIterator.hasNext()) {
 				sb.append(parseEntity(item, visited, typ, shortName));
 				sb.append("-");
@@ -87,40 +88,47 @@ public class YUMLConverter implements Converter {
 		}
 	}
 
-
 	// ##################################### Entity
-	public String parseEntity(GraphNode entity, ArrayList<GraphNode> visited, boolean shortName) {
+	public String parseEntity(GraphNode entity, ArrayList<GraphNode> visited,
+			boolean shortName) {
 		return parseEntity(entity, visited, null, shortName);
 	}
-	public String parseEntity(GraphNode entity, ArrayList<GraphNode> visited, String typ, boolean shortName) {
+
+	public String parseEntity(GraphNode entity, ArrayList<GraphNode> visited,
+			String typ, boolean shortName) {
 		boolean shortString = visited.contains(entity);
 		if (!shortString) {
 			visited.add(entity);
 		}
-		if (typ==null) {
+		if (typ == null) {
 			typ = GraphIdMap.OBJECT;
-			if (entity.getId() ==null) {
+			if (entity.getId() == null) {
 				typ = GraphIdMap.CLASS;
 			}
 		}
 		if (typ == GraphIdMap.OBJECT) {
-//				String text = entity.getId() + " : " + entity.getClassName();
-//				return "["
-//						+ text
-//						+ "\\n"
-//						+ new String(new char[text.length()]).replace("\0",	"&oline;") + "]";
-			return "[" + entity.getId() + " : " + entity.getClassName(shortName) + parseEntityValues(entity,typ, shortString) + "]";
+			// String text = entity.getId() + " : " + entity.getClassName();
+			// return "["
+			// + text
+			// + "\\n"
+			// + new String(new char[text.length()]).replace("\0", "&oline;") +
+			// "]";
+			return "[" + entity.getId() + " : "
+					+ entity.getClassName(shortName)
+					+ parseEntityValues(entity, typ, shortString) + "]";
 		}
-		return "[" + entity.getClassName(shortName) + parseEntityValues(entity, typ, shortString) + "]";
+		return "[" + entity.getClassName(shortName)
+				+ parseEntityValues(entity, typ, shortString) + "]";
 	}
 
-	public String parseEntityValues(GraphNode entity, String typ, boolean shortName) {
+	public String parseEntityValues(GraphNode entity, String typ,
+			boolean shortName) {
 		if (shortName) {
 			return "";
 		}
 		StringBuilder sb = new StringBuilder();
-	
-		Iterator<GraphMember> i =  entity.iterator();
+
+		Iterator<GraphMember> i = entity.iterator();
 		if (i.hasNext()) {
 			String splitter = "";
 			if (typ.equals(GraphIdMap.OBJECT)) {
@@ -133,8 +141,9 @@ public class YUMLConverter implements Converter {
 			Object element = i.next();
 			Attribute attribute;
 			if (element instanceof Attribute) {
-				attribute =(Attribute) element;
-				sb.append(attribute.getName() + splitter + attribute.getValue(typ, shortName));	/// without Typ
+				attribute = (Attribute) element;
+				sb.append(attribute.getName() + splitter
+						+ attribute.getValue(typ, shortName)); // / without Typ
 			}
 
 			while (i.hasNext()) {
@@ -142,11 +151,11 @@ public class YUMLConverter implements Converter {
 				if (!(element instanceof Attribute)) {
 					continue;
 				}
-				attribute =(Attribute) element;
-			
-			
+				attribute = (Attribute) element;
+
 				sb.append(";");
-				sb.append(attribute.getName() + splitter + attribute.getValue(typ, shortName));
+				sb.append(attribute.getName() + splitter
+						+ attribute.getValue(typ, shortName));
 			}
 		}
 		return sb.toString();

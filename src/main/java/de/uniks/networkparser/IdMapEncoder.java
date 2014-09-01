@@ -20,7 +20,7 @@ package de.uniks.networkparser;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,11 +38,13 @@ import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.TypList;
 import de.uniks.networkparser.json.UpdateListener;
+
 /**
  * The Class IdMap.
  */
 
-public abstract class IdMapEncoder extends AbstractMap implements Map<String, Object> {
+public abstract class IdMapEncoder extends AbstractMap implements
+		Map<String, Object> {
 	/** The Constant ID. */
 	public static final String ID = "id";
 
@@ -71,8 +73,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 
 	protected BidiMap<String, Object> keyValue;
 
-	protected Filter filter= new Filter();
-
+	protected Filter filter = new Filter();
 
 	protected NetworkParserLog logger = new NetworkParserLog();
 
@@ -85,14 +86,15 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 
 	/**
 	 * Set the Current Logger for Infos
-	 * @param logger the new Logger
+	 *
+	 * @param logger
+	 *            the new Logger
 	 * @return Itself
 	 */
 	public IdMapEncoder withLogger(NetworkParserLog logger) {
 		this.logger = logger;
 		return this;
 	}
-
 
 	/**
 	 * Instantiates a new id map.
@@ -160,10 +162,11 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	 */
 	public String getKey(Object obj) {
 		String result = null;
-		try{
+		try {
 			result = this.keyValue.getKey(obj);
-		}catch(ConcurrentModificationException e) {
-			if (this.logger.error(this, "getKey", NetworkParserLog.ERROR_TYP_CONCURRENTMODIFICATION, obj)) {
+		} catch (ConcurrentModificationException e) {
+			if (this.logger.error(this, "getKey",
+					NetworkParserLog.ERROR_TYP_CONCURRENTMODIFICATION, obj)) {
 				throw e;
 			}
 		}
@@ -179,10 +182,11 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	 */
 	public Object getObject(String key) {
 		Object result = null;
-		try{
+		try {
 			result = this.keyValue.getValueItem(key);
-		}catch(ConcurrentModificationException e) {
-			if (this.logger.error(this, "getObject", NetworkParserLog.ERROR_TYP_CONCURRENTMODIFICATION, key)) {
+		} catch (ConcurrentModificationException e) {
+			if (this.logger.error(this, "getObject",
+					NetworkParserLog.ERROR_TYP_CONCURRENTMODIFICATION, key)) {
 				throw e;
 			}
 		}
@@ -244,7 +248,8 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	 */
 	public boolean addListener(Object object) {
 		if (object instanceof SendableEntity) {
-			return ((SendableEntity) object).addPropertyChangeListener(getUpdateListener());
+			return ((SendableEntity) object)
+					.addPropertyChangeListener(getUpdateListener());
 		}
 		return false;
 	}
@@ -259,8 +264,10 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	/**
 	 * Removes the Entity from List or Destroy them
 	 *
-	 * @param oldValue the old Value
-	 * @param destroy destroy the missed Element
+	 * @param oldValue
+	 *            the old Value
+	 * @param destroy
+	 *            destroy the missed Element
 	 * @return boolean if success
 	 */
 	public boolean removeObj(Object oldValue, boolean destroy) {
@@ -333,16 +340,18 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 						for (Object item : list) {
 							Object refValue = filter.getRefByEntity(item);
 							if (refValue != null) {
-								creatorClass.setValue(newObject, property, refValue, IdMapEncoder.NEW);
+								creatorClass.setValue(newObject, property,
+										refValue, IdMapEncoder.NEW);
 							} else {
 								SendableEntityCreator childCreatorClass = getCreatorClass(item);
 								if (childCreatorClass != null) {
 									if (!filter.isConvertable(this, reference,
 											property, item, true, deep)) {
 										creatorClass.setValue(newObject,
-												property, item, IdMapEncoder.NEW);
+												property, item,
+												IdMapEncoder.NEW);
 									} else {
-										cloneObject(item, filter, deep-1);
+										cloneObject(item, filter, deep - 1);
 									}
 								} else {
 									creatorClass.setValue(newObject, property,
@@ -354,19 +363,21 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 				} else {
 					Object refValue = filter.getRefByEntity(value);
 					if (refValue != null) {
-						creatorClass.setValue(newObject, property, refValue, IdMapEncoder.NEW);
+						creatorClass.setValue(newObject, property, refValue,
+								IdMapEncoder.NEW);
 					} else {
 						SendableEntityCreator childCreatorClass = getCreatorClass(value);
 						if (childCreatorClass != null) {
 							if (!filter.isConvertable(this, reference,
 									property, value, false, deep)) {
-								creatorClass.setValue(newObject,
-										property, value, IdMapEncoder.NEW);
+								creatorClass.setValue(newObject, property,
+										value, IdMapEncoder.NEW);
 							} else {
-								cloneObject(value, filter, deep-1);
+								cloneObject(value, filter, deep - 1);
 							}
 						} else {
-							creatorClass.setValue(newObject, property, value, IdMapEncoder.NEW);
+							creatorClass.setValue(newObject, property, value,
+									IdMapEncoder.NEW);
 						}
 					}
 
@@ -377,7 +388,8 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	}
 
 	@Override
-	public AbstractMap withCreator(String className, SendableEntityCreator creator) {
+	public AbstractMap withCreator(String className,
+			SendableEntityCreator creator) {
 		return super.withCreator(className, creator);
 	}
 
@@ -472,7 +484,7 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 
 	@Override
 	public boolean containsKey(Object key) {
-		return this.keyValue.containKey("" +key);
+		return this.keyValue.containKey("" + key);
 	}
 
 	@Override
@@ -510,21 +522,25 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 		this.keyValue.clear();
 	}
 
-    /* Not Good because copy values to new List use iterator
-     * @see java.util.Map#keySet()
-     */
+	/*
+	 * Not Good because copy values to new List use iterator
+	 *
+	 * @see java.util.Map#keySet()
+	 */
 	@Override
-    public Set<String> keySet() {
-        return keyValue.keySet();
-    }
+	public Set<String> keySet() {
+		return keyValue.keySet();
+	}
 
-    /* Not Good because copy values to new List use iterator
-     * @see java.util.Map#values()
-     */
+	/*
+	 * Not Good because copy values to new List use iterator
+	 *
+	 * @see java.util.Map#values()
+	 */
 	@Override
 	public Collection<Object> values() {
-        return keyValue.values();
-    }
+		return keyValue.values();
+	}
 
 	public IdMapEncoder withUpdateMsgListener(PropertyChangeListener listener) {
 		this.updatePropertylistener = listener;
@@ -537,12 +553,14 @@ public abstract class IdMapEncoder extends AbstractMap implements Map<String, Ob
 	}
 
 	public abstract BaseItem encode(Object value);
+
 	public abstract BaseItem encode(Object value, Filter filter);
+
 	public abstract BaseItem getPrototyp();
 
 	@Override
 	public Set<java.util.Map.Entry<String, Object>> entrySet() {
-		LinkedHashSet<java.util.Map.Entry<String, Object>> list= new LinkedHashSet<java.util.Map.Entry<String, Object>>();
+		LinkedHashSet<java.util.Map.Entry<String, Object>> list = new LinkedHashSet<java.util.Map.Entry<String, Object>>();
 		for (String key : keyValue.keySet()) {
 			list.add(new MapEntry().with(key, keyValue.getValueItem(key)));
 		}

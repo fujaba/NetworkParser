@@ -20,13 +20,18 @@ package de.uniks.networkparser.interfaces;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 
 public interface Entity {
 	public boolean has(String key);
+
 	public String getString(String key);
+
 	public boolean getBoolean(String key);
+
 	public double getDouble(String key);
+
 	public int getInt(String key);
+
 	public Object get(Object key);
 }

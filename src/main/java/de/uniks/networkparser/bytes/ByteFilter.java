@@ -20,7 +20,7 @@ package de.uniks.networkparser.bytes;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.Filter;
 
 public class ByteFilter extends Filter {
@@ -37,42 +37,43 @@ public class ByteFilter extends Filter {
 
 	@Override
 	public Filter cloneObj() {
-	   return clone(new ByteFilter());
+		return clone(new ByteFilter());
 	}
 
 	@Override
-	public Filter clone(Filter newInstance)
-	{
-	   ByteFilter result = (ByteFilter) super.clone(newInstance);
-	   return result.withLenCheck(this.isLenCheck);
+	public Filter clone(Filter newInstance) {
+		ByteFilter result = (ByteFilter) super.clone(newInstance);
+		return result.withLenCheck(this.isLenCheck);
 	}
 
 	public String getCharset() {
 		return "UTF-8";
 	}
 
-  public int getIndexOfClazz(String clazzName) {
-     int pos=0;
-     for (Object item : visitedObjects) {
-        if (clazzName.equalsIgnoreCase(item.getClass().getName())) {
-           return pos;
-        }
-        pos++;
-     }
-     return -1;
-  }
-  public String getClazz(int pos) {
-	  Object item = visitedObjects.get(pos);
-	  if (item instanceof String) {
-		  return "" +item;
-	  }
-	  return null;
-  }
- 
-  public String getLastClazz() {
-	  if (visitedObjects.size()>0) {
-		  return visitedObjects.get(visitedObjects.size() - 1).getClass().getName();
-	  }
-	  return null;
-  }
+	public int getIndexOfClazz(String clazzName) {
+		int pos = 0;
+		for (Object item : visitedObjects) {
+			if (clazzName.equalsIgnoreCase(item.getClass().getName())) {
+				return pos;
+			}
+			pos++;
+		}
+		return -1;
+	}
+
+	public String getClazz(int pos) {
+		Object item = visitedObjects.get(pos);
+		if (item instanceof String) {
+			return "" + item;
+		}
+		return null;
+	}
+
+	public String getLastClazz() {
+		if (visitedObjects.size() > 0) {
+			return visitedObjects.get(visitedObjects.size() - 1).getClass()
+					.getName();
+		}
+		return null;
+	}
 }

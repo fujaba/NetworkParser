@@ -23,21 +23,21 @@ package de.uniks.networkparser.graph;
 
 import de.uniks.networkparser.AbstractList;
 
-public class Method extends AbstractList<Parameter> implements GraphMember
-{
-   public static final String PROPERTY_RETURNTYPE = "returnType";
-   public static final String PROPERTY_PARAMETER = "parameter";
-   public static final String PROPERTY_NODE = "node";
-   public static final String PROPERTY_MODIFIER = "modifier";
-  
-   private Visibility modifier = Visibility.PUBLIC;
-   private GraphNode node = null;
-   private DataType returnType = DataType.VOID;
-   private String name;
+public class Method extends AbstractList<Parameter> implements GraphMember {
+	public static final String PROPERTY_RETURNTYPE = "returnType";
+	public static final String PROPERTY_PARAMETER = "parameter";
+	public static final String PROPERTY_NODE = "node";
+	public static final String PROPERTY_MODIFIER = "modifier";
+
+	private Visibility modifier = Visibility.PUBLIC;
+	private GraphNode node = null;
+	private DataType returnType = DataType.VOID;
+	private String name;
 
 	public String getName() {
 		return name;
 	}
+
 	public Method with(String name) {
 		this.name = name;
 		return this;
@@ -71,109 +71,95 @@ public class Method extends AbstractList<Parameter> implements GraphMember
 		sb.append(")");
 		return sb.toString();
 	}
-  
-   private String getParameterSignature(boolean includeName, Parameter parameter, int i) {
-      String param=parameter.getType().getValue();
-      if (!includeName) {
-         return param;
-      }
-      String name="";
-      if (parameter.getName()!=null) {
-         name = parameter.getName().trim();
-      }
-      if (name!="") {
-         return param+ " " +name;
-      }
-      return param+ " p" + i;
-   }
-    
-   public Method() { }
-  
-   public Method(String name, DataType returnType, Parameter... parameters)
-   {
-      this.with(name);
-      this.with(parameters);
-      this.with(returnType);
-   }
-  
-   public Method(String name, Parameter... parameters)
-   {
-      this.with(parameters);
-      this.with(name);
-   }
-  
-   public Method with(Parameter... value)
-   {
-      if (value==null) {
-         return this;
-      }
-      for (Parameter item : value)
-      {
-         if (item != null)
-         {
-        	 this.addEntity(item);
-         }
-      }
-      return this;
-   }
-  
-   public Method withParameter(String paramName, DataType dataType)
-   {
-      new Parameter(paramName, dataType).with(this);
-      return this;
-   }
 
-   public Visibility getModifier()
-   {
-      return this.modifier;
-   }
+	private String getParameterSignature(boolean includeName,
+			Parameter parameter, int i) {
+		String param = parameter.getType().getValue();
+		if (!includeName) {
+			return param;
+		}
+		String name = "";
+		if (parameter.getName() != null) {
+			name = parameter.getName().trim();
+		}
+		if (name != "") {
+			return param + " " + name;
+		}
+		return param + " p" + i;
+	}
 
+	public Method() {
+	}
 
-   public Method with(Visibility value)
-   {
-      this.modifier = value;
-      return this;
-   }
+	public Method(String name, DataType returnType, Parameter... parameters) {
+		this.with(name);
+		this.with(parameters);
+		this.with(returnType);
+	}
 
-   public DataType getReturnType()
-   {
-      return this.returnType;
-   }
-  
-   public Method with(DataType value)
-   {
-	   this.returnType = value;
-	   return this;
-   }
-  
-   public Parameter createParameter(DataType type)
-   {
-      return new Parameter(type).with(this);
-   }
+	public Method(String name, Parameter... parameters) {
+		this.with(parameters);
+		this.with(name);
+	}
 
-   public Method with(GraphNode value)
-   {
-      if (this.node != value)
-      {
-//         GraphNode oldValue = this.clazz;
-         if (this.node != null)
-         {
-            this.node = null;
-            node.without(this);
-         }
-         this.node = value;
-         if (value != null)
-         {
-            value.with(this);
-         }
-      }
+	public Method with(Parameter... value) {
+		if (value == null) {
+			return this;
+		}
+		for (Parameter item : value) {
+			if (item != null) {
+				this.addEntity(item);
+			}
+		}
+		return this;
+	}
 
-      return this;
-   }
-  
-   public GraphNode getNode() {
-	   return node;
-   }
+	public Method withParameter(String paramName, DataType dataType) {
+		new Parameter(paramName, dataType).with(this);
+		return this;
+	}
+
+	public Visibility getModifier() {
+		return this.modifier;
+	}
+
+	public Method with(Visibility value) {
+		this.modifier = value;
+		return this;
+	}
+
+	public DataType getReturnType() {
+		return this.returnType;
+	}
+
+	public Method with(DataType value) {
+		this.returnType = value;
+		return this;
+	}
+
+	public Parameter createParameter(DataType type) {
+		return new Parameter(type).with(this);
+	}
+
+	public Method with(GraphNode value) {
+		if (this.node != value) {
+			// GraphNode oldValue = this.clazz;
+			if (this.node != null) {
+				this.node = null;
+				node.without(this);
+			}
+			this.node = value;
+			if (value != null) {
+				value.with(this);
+			}
+		}
+
+		return this;
+	}
+
+	public GraphNode getNode() {
+		return node;
+	}
 
 	@Override
 	public Method getNewInstance() {
@@ -182,11 +168,11 @@ public class Method extends AbstractList<Parameter> implements GraphMember
 
 	@Override
 	public Method with(Object... values) {
-		if (values==null) {
+		if (values == null) {
 			return this;
 		}
 		for (Object value : values) {
-			if (value!=null && value instanceof Parameter) {
+			if (value != null && value instanceof Parameter) {
 				this.addEntity((Parameter) value);
 			}
 		}

@@ -20,12 +20,12 @@ package de.uniks.networkparser.event;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 /**
  * The Class ByteMessage.
  */
 
-public class ByteMessage  {
+public class ByteMessage {
 	/** The Constant PROPERTY_VALUE. */
 	public static final String PROPERTY_VALUE = "value";
 

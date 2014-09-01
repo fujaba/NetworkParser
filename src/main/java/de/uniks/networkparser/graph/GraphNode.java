@@ -20,7 +20,7 @@ package de.uniks.networkparser.graph;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.AbstractEntityList;
 
 public class GraphNode extends AbstractEntityList<GraphMember> {
@@ -29,7 +29,7 @@ public class GraphNode extends AbstractEntityList<GraphMember> {
 
 	// GETTER AND SETTER
 	public String getClassName(boolean shortName) {
-		if (!shortName || className==null || className.lastIndexOf(".")<0) {
+		if (!shortName || className == null || className.lastIndexOf(".") < 0) {
 			return className;
 		}
 		return className.substring(className.lastIndexOf(".") + 1);
@@ -77,7 +77,7 @@ public class GraphNode extends AbstractEntityList<GraphMember> {
 
 	@Override
 	public String toString() {
-		if (id==null) {
+		if (id == null) {
 			return className;
 		}
 		return id;

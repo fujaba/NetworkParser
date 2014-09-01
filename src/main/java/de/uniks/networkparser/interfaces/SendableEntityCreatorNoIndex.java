@@ -20,7 +20,7 @@ package de.uniks.networkparser.interfaces;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 /**
  * Integrate this Interface to your Modellentity to disable the creating of Id
  * of the serialized elements and no creating for subelement for Props

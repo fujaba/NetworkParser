@@ -20,7 +20,7 @@ package de.uniks.networkparser.json;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.AbstractKeyValueList;
 import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.EntityUtil;
@@ -32,7 +32,7 @@ import de.uniks.networkparser.xml.XMLEntity;
 
 public class JsonTokener extends Tokener {
 	public final static String STOPCHARS = ",:]}/\\\"[{;=# ";
-	private boolean allowCRLF=false;
+	private boolean allowCRLF = false;
 
 	public boolean isAllowCRLF() {
 		return allowCRLF;
@@ -50,7 +50,8 @@ public class JsonTokener extends Tokener {
 		switch (c) {
 		case '"':
 			next();
-			return EntityUtil.unQuote(nextString(c, isAllowCRLF(), allowQuote, false, true));
+			return EntityUtil.unQuote(nextString(c, isAllowCRLF(), allowQuote,
+					false, true));
 		case '\\':
 			// Must be unquote
 			next();
@@ -58,25 +59,25 @@ public class JsonTokener extends Tokener {
 			return nextString('"', isAllowCRLF(), allowQuote, true, true);
 		case '{':
 			if (creator instanceof FactoryEntity) {
-				BaseItem element = ((FactoryEntity)creator).getNewObject();
-				if (element instanceof AbstractKeyValueList<?,?>) {
-					this.parseToEntity((AbstractKeyValueList<?,?>)element);
+				BaseItem element = ((FactoryEntity) creator).getNewObject();
+				if (element instanceof AbstractKeyValueList<?, ?>) {
+					this.parseToEntity((AbstractKeyValueList<?, ?>) element);
 				}
-			
+
 				return element;
 			}
 		case '[':
 			if (creator instanceof FactoryEntity) {
-				BaseItem element = ((FactoryEntity)creator).getNewArray();
+				BaseItem element = ((FactoryEntity) creator).getNewArray();
 				if (element instanceof AbstractList<?>) {
-					this.parseToEntity((AbstractList<?>)element);
+					this.parseToEntity((AbstractList<?>) element);
 				}
 				return element;
 			}
 		default:
 			break;
 		}
-//		back();
+		// back();
 		return super.nextValue(creator, allowQuote);
 	}
 
@@ -85,7 +86,8 @@ public class JsonTokener extends Tokener {
 		return STOPCHARS;
 	}
 
-	public JsonObject parseEntity(JsonObject parent, AbstractKeyValueList<?, ?> newValue) {
+	public JsonObject parseEntity(JsonObject parent,
+			AbstractKeyValueList<?, ?> newValue) {
 		if (newValue instanceof XMLEntity) {
 			XMLEntity xmlEntity = (XMLEntity) newValue;
 			parent.put(JsonIdMap.CLASS, xmlEntity.getTag());
@@ -94,8 +96,8 @@ public class JsonTokener extends Tokener {
 					&& xmlEntity.getValueItem().length() > 0) {
 				parent.put(JsonIdMap.VALUE, xmlEntity.getValueItem());
 			}
-		
-			for (int i=0;i<xmlEntity.size();i++) {
+
+			for (int i = 0; i < xmlEntity.size(); i++) {
 				parseEntityProp(props, xmlEntity.getValue(i), xmlEntity.get(i));
 			}
 			for (XMLEntity children : xmlEntity.getChildren()) {
@@ -137,11 +139,14 @@ public class JsonTokener extends Tokener {
 	/**
 	 * Cross compiling
 	 *
-	 * @param parent the parent Element
-	 * @param newValue the newValue
+	 * @param parent
+	 *            the parent Element
+	 * @param newValue
+	 *            the newValue
 	 * @return Itself
 	 */
-	public JsonObject parseToEntity(JsonObject parent, AbstractKeyValueList<?, ?> newValue) {
+	public JsonObject parseToEntity(JsonObject parent,
+			AbstractKeyValueList<?, ?> newValue) {
 		if (newValue instanceof XMLEntity) {
 			XMLEntity xmlEntity = (XMLEntity) newValue;
 			parent.put(JsonIdMap.CLASS, xmlEntity.getTag());
@@ -150,8 +155,8 @@ public class JsonTokener extends Tokener {
 					&& xmlEntity.getValueItem().length() > 0) {
 				parent.put(JsonIdMap.VALUE, xmlEntity.getValueItem());
 			}
-		
-			for (int i=0;i<xmlEntity.size();i++) {
+
+			for (int i = 0; i < xmlEntity.size(); i++) {
 				parseEntityProp(props, xmlEntity.getValue(i), xmlEntity.get(i));
 			}
 			for (XMLEntity children : xmlEntity.getChildren()) {
@@ -163,22 +168,26 @@ public class JsonTokener extends Tokener {
 	}
 
 	@Override
-	public void parseToEntity(AbstractKeyValueList<?,?> entity) {
+	public void parseToEntity(AbstractKeyValueList<?, ?> entity) {
 		char c;
 		String key;
 		if (nextStartClean() != '{') {
-			if (logger.error(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
-				throw new RuntimeException("A JsonObject text must begin with '{'");
+			if (logger.error(this, "parseToEntity",
+					NetworkParserLog.ERROR_TYP_PARSING, entity)) {
+				throw new RuntimeException(
+						"A JsonObject text must begin with '{'");
 			}
 		}
 		next();
-		boolean isQuote=true;
+		boolean isQuote = true;
 		for (;;) {
 			c = nextStartClean();
 			switch (c) {
 			case 0:
-				if (logger.error(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
-					throw new RuntimeException("A JsonObject text must end with '}'");
+				if (logger.error(this, "parseToEntity",
+						NetworkParserLog.ERROR_TYP_PARSING, entity)) {
+					throw new RuntimeException(
+							"A JsonObject text must end with '}'");
 				}
 				return;
 			case '\\':
@@ -198,32 +207,36 @@ public class JsonTokener extends Tokener {
 			}
 			c = nextStartClean();
 			if (c == '=') {
-				if (charAt(position() +1) == '>') {
+				if (charAt(position() + 1) == '>') {
 					next();
 				}
 			} else if (c != ':') {
-				if (logger.error(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
-					throw new RuntimeException("Expected a ':' after a key [" + getNextString(30) + "]");
+				if (logger.error(this, "parseToEntity",
+						NetworkParserLog.ERROR_TYP_PARSING, entity)) {
+					throw new RuntimeException("Expected a ':' after a key ["
+							+ getNextString(30) + "]");
 				}
 				return;
 			}
 			next();
-			entity.withValue(key, nextValue(entity,isQuote));
+			entity.withValue(key, nextValue(entity, isQuote));
 		}
 	}
 
 	@Override
 	public void parseToEntity(AbstractList<?> entityList) {
-		char c=nextStartClean();
+		char c = nextStartClean();
 		if (c != '[') {
-			if (logger.error(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entityList)) {
-				throw new RuntimeException("A JSONArray text must start with '['");
+			if (logger.error(this, "parseToEntity",
+					NetworkParserLog.ERROR_TYP_PARSING, entityList)) {
+				throw new RuntimeException(
+						"A JSONArray text must start with '['");
 			}
 			return;
 		}
 		if ((nextClean()) != ']') {
 			for (;;) {
-				c=getCurrentChar();
+				c = getCurrentChar();
 				if (c != ',') {
 					entityList.with(nextValue(entityList, false));
 				}
@@ -239,8 +252,11 @@ public class JsonTokener extends Tokener {
 					next();
 					return;
 				default:
-					if (logger.error(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entityList)) {
-						throw new RuntimeException("Expected a ',' or ']' not '" +getCurrentChar() + "'");
+					if (logger.error(this, "parseToEntity",
+							NetworkParserLog.ERROR_TYP_PARSING, entityList)) {
+						throw new RuntimeException(
+								"Expected a ',' or ']' not '"
+										+ getCurrentChar() + "'");
 					}
 					return;
 				}

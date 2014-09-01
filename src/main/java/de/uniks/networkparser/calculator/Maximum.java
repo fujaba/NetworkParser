@@ -20,7 +20,7 @@ package de.uniks.networkparser.calculator;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 
 public class Maximum implements Operator {
 	@Override
@@ -30,10 +30,10 @@ public class Maximum implements Operator {
 
 	@Override
 	public double calculate(Double[] values) {
-		double max=values[0];
-		for (int i=1;i<values.length;i++) {
-			if (values[i]>max) {
-				max=values[i];
+		double max = values[0];
+		for (int i = 1; i < values.length; i++) {
+			if (values[i] > max) {
+				max = values[i];
 			}
 		}
 		return max;

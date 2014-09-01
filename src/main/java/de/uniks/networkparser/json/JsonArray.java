@@ -20,7 +20,7 @@ package de.uniks.networkparser.json;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import java.util.Iterator;
 import de.uniks.networkparser.AbstractEntityList;
 import de.uniks.networkparser.EntityUtil;
@@ -28,6 +28,7 @@ import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
+
 /**
  * A JSONArray is an ordered sequence of values. Its external text form is a
  * string wrapped in square brackets with commas separating the values. The
@@ -59,9 +60,9 @@ import de.uniks.networkparser.interfaces.StringItem;
  * <li>Strings do not need to be quoted at all if they do not begin with a quote
  * or single quote, and if they do not contain leading or trailing spaces, and
  * if they do not contain any of these characters:
-
- * <code>{ } [ ] / \ : , = ; #</code> and if they do not look like numbers and
-	* if they are not the reserved words <code>true</code>, <code>false</code>, or
+ *
+ * <code>{} [ ] / \ : , = ; #</code> and if they do not look like numbers and
+ * if they are not the reserved words <code>true</code>, <code>false</code>, or
  * <code>null</code>.</li>
  * <li>Values can be separated by <code>;</code> <small>(semicolon)</small> as
  * well as by <code>,</code> <small>(comma)</small>.</li>
@@ -72,8 +73,10 @@ import de.uniks.networkparser.interfaces.StringItem;
  * @version 2010-12-28
  */
 
-public class JsonArray extends AbstractEntityList<Object> implements StringItem, FactoryEntity {
-	private boolean visible=true;
+public class JsonArray extends AbstractEntityList<Object> implements
+		StringItem, FactoryEntity {
+	private boolean visible = true;
+
 	/**
 	 * Get the JSONArray associated with an index.
 	 *
@@ -89,7 +92,8 @@ public class JsonArray extends AbstractEntityList<Object> implements StringItem,
 		if (object instanceof JsonArray) {
 			return (JsonArray) object;
 		}
-		throw new RuntimeException("JSONArray[" + index + "] is not a JSONArray.");
+		throw new RuntimeException("JSONArray[" + index
+				+ "] is not a JSONArray.");
 	}
 
 	/**
@@ -145,7 +149,7 @@ public class JsonArray extends AbstractEntityList<Object> implements StringItem,
 	 */
 	@Override
 	public String toString() {
-		return toString(0,0);
+		return toString(0, 0);
 	}
 
 	/**
@@ -181,8 +185,8 @@ public class JsonArray extends AbstractEntityList<Object> implements StringItem,
 		StringBuilder sb;
 		String step = EntityUtil.repeat(' ', indentFactor);
 		String prefix = "";
-		int newindent =0;
-		if (indent>0) {
+		int newindent = 0;
+		if (indent > 0) {
 			newindent = indent + indentFactor;
 		}
 
@@ -231,7 +235,7 @@ public class JsonArray extends AbstractEntityList<Object> implements StringItem,
 	 *            A JSONTokener
 	 * @return Itself
 	 */
-	public JsonArray withValue(Tokener x)  {
+	public JsonArray withValue(Tokener x) {
 		x.parseToEntity(this);
 		return this;
 	}
@@ -250,12 +254,12 @@ public class JsonArray extends AbstractEntityList<Object> implements StringItem,
 		return this;
 	}
 
-
 	public JsonObject get(String id) {
 		for (Object item : keys) {
 			if (item instanceof JsonObject) {
 				JsonObject json = (JsonObject) item;
-				if (json.has(JsonIdMap.ID) && json.getString(JsonIdMap.ID).equals(id)) {
+				if (json.has(JsonIdMap.ID)
+						&& json.getString(JsonIdMap.ID).equals(id)) {
 					return json;
 				}
 			}

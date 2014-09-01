@@ -20,7 +20,7 @@ package de.uniks.networkparser.gui.table;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
@@ -33,7 +33,7 @@ public class ColumnListener {
 	}
 
 	public Object getValue(Object entity, SendableEntityCreator creator) {
-		if (creator!=null && column!=null) {
+		if (creator != null && column != null) {
 			return creator.getValue(entity, column.getAttrName());
 		}
 		return null;
@@ -43,7 +43,8 @@ public class ColumnListener {
 		return column.isEditable();
 	}
 
-	public void onSelection(Object entity, SendableEntityCreator creator, int x, int y) {
+	public void onSelection(Object entity, SendableEntityCreator creator,
+			int x, int y) {
 	}
 
 	public CellEditorElement onEdit(Object entity, SendableEntityCreator creator) {
@@ -54,15 +55,19 @@ public class ColumnListener {
 		return false;
 	}
 
-	public boolean setValue(Object controll, Object entity, SendableEntityCreator creator, Object value) {
-		if (creator==null) {
+	public boolean setValue(Object controll, Object entity,
+			SendableEntityCreator creator, Object value) {
+		if (creator == null) {
 			return false;
 		}
-		return creator.setValue(entity, column.getAttrName(), value, IdMapEncoder.UPDATE);
+		return creator.setValue(entity, column.getAttrName(), value,
+				IdMapEncoder.UPDATE);
 	}
+
 	public void dispose() {
-	
+
 	}
+
 	public boolean updateWidth(int oldWidth, int newWidth) {
 		return true;
 	}

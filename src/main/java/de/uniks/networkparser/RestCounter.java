@@ -20,14 +20,14 @@ package de.uniks.networkparser;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 
-public class RestCounter extends SimpleIdCounter{
+public class RestCounter extends SimpleIdCounter {
 	public RestCounter(String path) {
 		if (path.endsWith("/")) {
 			this.prefixId = path;
 		} else {
-			this.prefixId = path+ "/";
+			this.prefixId = path + "/";
 		}
 	}
 

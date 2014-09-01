@@ -20,69 +20,76 @@ package de.uniks.networkparser.gui.brush;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import java.util.regex.Pattern;
 
-public class HTMLRegExRule extends RegExRule{
+public class HTMLRegExRule extends RegExRule {
 	/**
-	   * Common HTML script RegExp.
-	   */
-	  public static final HTMLRegExRule phpScriptTags = new HTMLRegExRule("(?:&lt;|<)\\?=?", "\\?(?:&gt;|>)");
-	  /**
-	   * Common HTML script RegExp.
-	   */
-	  public static final HTMLRegExRule aspScriptTags = new HTMLRegExRule("(?:&lt;|<)%=?", "%(?:&gt;|>)");
-	  /**
-	   * Common HTML script RegExp.
-	   */
-	  public static final HTMLRegExRule scriptScriptTags = new HTMLRegExRule("(?:&lt;|<)\\s*script.*?(?:&gt;|>)", "(?:&lt;|<)\\/\\s*script\\s*(?:&gt;|>)");
-	  /**
-	   * The regular expression of the left tag.
-	   */
-	  protected String left;
-	  /**
-	   * The regular expression of the right tag.
-	   */
-	  protected String right;
+	 * Common HTML script RegExp.
+	 */
+	public static final HTMLRegExRule phpScriptTags = new HTMLRegExRule(
+			"(?:&lt;|<)\\?=?", "\\?(?:&gt;|>)");
+	/**
+	 * Common HTML script RegExp.
+	 */
+	public static final HTMLRegExRule aspScriptTags = new HTMLRegExRule(
+			"(?:&lt;|<)%=?", "%(?:&gt;|>)");
+	/**
+	 * Common HTML script RegExp.
+	 */
+	public static final HTMLRegExRule scriptScriptTags = new HTMLRegExRule(
+			"(?:&lt;|<)\\s*script.*?(?:&gt;|>)",
+			"(?:&lt;|<)\\/\\s*script\\s*(?:&gt;|>)");
+	/**
+	 * The regular expression of the left tag.
+	 */
+	protected String left;
+	/**
+	 * The regular expression of the right tag.
+	 */
+	protected String right;
 
-	  /**
-	   * Constructor.
-	   * @param left the regular expression of the left tag, cannot be null
-	   * @param right the regular expression of the right tag, cannot be null
-	   */
-	  public HTMLRegExRule(String left, String right) {
-	    this.left = left;
-	    this.right = right;
-	  }
+	/**
+	 * Constructor.
+	 *
+	 * @param left
+	 *            the regular expression of the left tag, cannot be null
+	 * @param right
+	 *            the regular expression of the right tag, cannot be null
+	 */
+	public HTMLRegExRule(String left, String right) {
+		this.left = left;
+		this.right = right;
+	}
 
-	  /**
-	   * Get the pattern of this HTML script RegExp.
-	   * It is a combination of left and right tag and some pattern to match the
-	   * in-between content. Group 1 is the left tag, group 2 is the inner content,
-	   * group 3 is the right tag.
-	   *
-	   * @return the pattern with flags: CASE_INSENSITIVE and DOTALL
-	   */
-	  @Override
+	/**
+	 * Get the pattern of this HTML script RegExp. It is a combination of left
+	 * and right tag and some pattern to match the in-between content. Group 1
+	 * is the left tag, group 2 is the inner content, group 3 is the right tag.
+	 *
+	 * @return the pattern with flags: CASE_INSENSITIVE and DOTALL
+	 */
+	@Override
 	public Pattern getPattern() {
-	    return Pattern.compile("(" + left + ")(.*?)(" + right + ")", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-	  }
-	 
-	  /**
-	   * {@inheritDoc}
-	   */
-	  @Override
-	  public String toString() {
-	    StringBuilder sb = new StringBuilder();
+		return Pattern.compile("(" + left + ")(.*?)(" + right + ")",
+				Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+	}
 
-	    sb.append(getClass().getName());
-	    sb.append(":[");
-	    sb.append("left: ");
-	    sb.append(left);
-	    sb.append("right: ");
-	    sb.append(right);
-	    sb.append("]");
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
 
-	    return sb.toString();
-	  }
+		sb.append(getClass().getName());
+		sb.append(":[");
+		sb.append("left: ");
+		sb.append(left);
+		sb.append("right: ");
+		sb.append(right);
+		sb.append("]");
+
+		return sb.toString();
+	}
 }

@@ -20,15 +20,17 @@ package de.uniks.networkparser;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class EntityValueFactory {
 	public Object getCellValue(Object value) {
 		return getCellValue(value, null, null);
 	}
-	public Object getCellValue(Object value, SendableEntityCreator creator, String property) {
-		if (creator!=null&&property!=null) {
+
+	public Object getCellValue(Object value, SendableEntityCreator creator,
+			String property) {
+		if (creator != null && property != null) {
 			return creator.getValue(value, property);
 		}
 		return null;

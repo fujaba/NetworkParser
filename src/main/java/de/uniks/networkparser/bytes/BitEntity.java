@@ -20,7 +20,7 @@ package de.uniks.networkparser.bytes;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.AbstractEntityList;
 import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -29,11 +29,12 @@ import de.uniks.networkparser.interfaces.ByteConverter;
 import de.uniks.networkparser.interfaces.ByteItem;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 
-public class BitEntity extends AbstractEntityList<BitValue> implements ByteItem, FactoryEntity {
+public class BitEntity extends AbstractEntityList<BitValue> implements
+		ByteItem, FactoryEntity {
 	public static final byte BIT_STRING = 0x53; // S = String;
 	public static final byte BIT_NUMBER = 0x4E; // N = Number
-	public static final byte BIT_BYTE = 0x42;    // B = Byte
-	public static final byte BIT_REFERENCE = 0x52;	// R = Reference
+	public static final byte BIT_BYTE = 0x42; // B = Byte
+	public static final byte BIT_REFERENCE = 0x52; // R = Reference
 
 	// Can be a Typ
 	protected String property;
@@ -69,11 +70,11 @@ public class BitEntity extends AbstractEntityList<BitValue> implements ByteItem,
 	}
 
 	public boolean isTyp(byte... referenceTyp) {
-		if (referenceTyp==null) {
+		if (referenceTyp == null) {
 			return false;
 		}
 		for (byte typ : referenceTyp) {
-			if (this.typ== typ) {
+			if (this.typ == typ) {
 				return true;
 			}
 		}
@@ -85,10 +86,10 @@ public class BitEntity extends AbstractEntityList<BitValue> implements ByteItem,
 			this.property = "" + value;
 			return true;
 		} else if (PROPERTY_TYP.equalsIgnoreCase(attribute)) {
-			this.typ = (byte)value;
+			this.typ = (byte) value;
 			return true;
 		} else if (PROPERTY_ORIENTATION.equalsIgnoreCase(attribute)) {
-			this.orientation = Integer.parseInt("" +value);
+			this.orientation = Integer.parseInt("" + value);
 			return true;
 		}
 		return false;
@@ -119,10 +120,11 @@ public class BitEntity extends AbstractEntityList<BitValue> implements ByteItem,
 	public BufferedBytes getBytes(boolean isDynamic) {
 		return null;
 	}
-	@Override
-	public void writeBytes(BufferedBytes buffer, boolean isDynamic, boolean last, boolean isPrimitive) {
-	}
 
+	@Override
+	public void writeBytes(BufferedBytes buffer, boolean isDynamic,
+			boolean last, boolean isPrimitive) {
+	}
 
 	@Override
 	public int calcLength(boolean isDynamic, boolean isLast) {
@@ -189,6 +191,6 @@ public class BitEntity extends AbstractEntityList<BitValue> implements ByteItem,
 
 	@Override
 	public boolean remove(Object value) {
-		return removeItemByObject((BitValue) value)>=0;
+		return removeItemByObject((BitValue) value) >= 0;
 	}
 }

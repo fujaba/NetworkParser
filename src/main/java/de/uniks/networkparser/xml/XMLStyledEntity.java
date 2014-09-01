@@ -20,19 +20,21 @@ package de.uniks.networkparser.xml;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.gui.Style;
 
 /**
  * Style Element of XML.
+ *
  * @author Stefan
  */
-public class XMLStyledEntity extends XMLEntity  {
+public class XMLStyledEntity extends XMLEntity {
 	/** The Styles of XMLStyledEntity. */
 	private Style style = new Style();
 
 	@Override
-	protected void toStringChildren(StringBuilder sb, int indentFactor, int intent) {
+	protected void toStringChildren(StringBuilder sb, int indentFactor,
+			int intent) {
 		// Starttag
 		if (style.isBold()) {
 			sb.append("<b>");
@@ -53,8 +55,11 @@ public class XMLStyledEntity extends XMLEntity  {
 
 	/**
 	 * Set new Value of Attribute.
-	 * @param attribute The Attribute Key
-	 * @param value The new Value of Attribute
+	 *
+	 * @param attribute
+	 *            The Attribute Key
+	 * @param value
+	 *            The new Value of Attribute
 	 * @return succes of set of the Value
 	 */
 	public boolean set(String attribute, Object value) {
@@ -64,8 +69,11 @@ public class XMLStyledEntity extends XMLEntity  {
 		return false;
 	}
 
-	/** Get The Value of Attribute.
-	 * @param key The Key of Attribute
+	/**
+	 * Get The Value of Attribute.
+	 *
+	 * @param key
+	 *            The Key of Attribute
 	 * @return The Value of Attribute
 	 */
 	public Object get(String key) {
@@ -82,7 +90,8 @@ public class XMLStyledEntity extends XMLEntity  {
 	}
 
 	/**
-	 * @param value The new Option of Bold
+	 * @param value
+	 *            The new Option of Bold
 	 */
 	public void setBold(boolean value) {
 		style.withBold(value);

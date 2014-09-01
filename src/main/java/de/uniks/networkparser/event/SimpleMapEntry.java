@@ -20,10 +20,10 @@ package de.uniks.networkparser.event;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.AbstractEntity;
 
-public class SimpleMapEntry<K, V> extends AbstractEntity<K, V>{
+public class SimpleMapEntry<K, V> extends AbstractEntity<K, V> {
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new SimpleMapEntry<K, V>();
@@ -32,14 +32,14 @@ public class SimpleMapEntry<K, V> extends AbstractEntity<K, V>{
 	@Override
 	@SuppressWarnings("unchecked")
 	public SimpleMapEntry<K, V> withKeyItem(Object key) {
-		withKey((K)key);
+		withKey((K) key);
 		return this;
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public SimpleMapEntry<K, V> withValueItem(Object value) {
-		this.withValue((V)value);
+		this.withValue((V) value);
 		return this;
 	}
 }

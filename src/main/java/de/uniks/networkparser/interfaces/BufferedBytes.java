@@ -20,9 +20,9 @@ package de.uniks.networkparser.interfaces;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 
-public interface BufferedBytes extends Buffer{
+public interface BufferedBytes extends Buffer {
 	public byte getByte();
 
 	public short getShort();
@@ -48,7 +48,7 @@ public interface BufferedBytes extends Buffer{
 	public void put(int value);
 
 	public void put(long value);
-	
+
 	public void put(byte[] value);
 
 	public void put(char value);
@@ -64,6 +64,5 @@ public interface BufferedBytes extends Buffer{
 	public BufferedBytes getNewBuffer(int capacity);
 
 	public BufferedBytes getNewBuffer(byte[] array);
-
 
 }

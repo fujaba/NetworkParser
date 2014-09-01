@@ -20,7 +20,7 @@ package de.uniks.networkparser.bytes.checksum;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 
 public class SHA1 extends Checksum {
 	private int H0, H1, H2, H3, H4;

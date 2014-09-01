@@ -20,7 +20,7 @@ package de.uniks.networkparser.gui.brush;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import java.util.regex.Pattern;
 import de.uniks.networkparser.gui.Style;
 
@@ -150,7 +150,8 @@ public class RegExpressions extends RegExRule {
 	 * @param style
 	 *            the style for settings
 	 */
-	public RegExpressions(String regExp, int regFlags, String styleKey, Style style) {
+	public RegExpressions(String regExp, int regFlags, String styleKey,
+			Style style) {
 		this.pattern = Pattern.compile(regExp, regFlags);
 		this.style = style;
 		setStyleKey(styleKey);

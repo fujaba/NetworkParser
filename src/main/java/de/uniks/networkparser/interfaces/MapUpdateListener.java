@@ -20,33 +20,41 @@ package de.uniks.networkparser.interfaces;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.json.JsonObject;
+
 /**
  * The listener interface for receiving mapUpdate events. The class that is
  * interested in processing a mapUpdate event implements this interface, and the
  * object created with that class is registered with a component using the
- * component's <code>addMapUpdateListener</code> method. When
- * the mapUpdate event occurs, that object's appropriate
- * method is invoked.
+ * component's <code>addMapUpdateListener</code> method. When the mapUpdate
+ * event occurs, that object's appropriate method is invoked.
  */
 
 public interface MapUpdateListener {
 	/**
 	 * Send update msg.
-	 * @param target The Object of UpdateMsg
-	 * @param property Which property is changed
-	 * @param oldObj The oldValue
-	 * @param newObject The newValue
+	 *
+	 * @param target
+	 *            The Object of UpdateMsg
+	 * @param property
+	 *            Which property is changed
+	 * @param oldObj
+	 *            The oldValue
+	 * @param newObject
+	 *            The newValue
 	 * @param jsonObject
 	 *            the json object
 	 * @return true, if successful
 	 */
-	public boolean sendUpdateMsg(Object target, String property, Object oldObj, Object newObject,
-			JsonObject jsonObject);
+	public boolean sendUpdateMsg(Object target, String property, Object oldObj,
+			Object newObject, JsonObject jsonObject);
 
-	public boolean isReadMessages(String key, Object element, JsonObject props, String type);
-	public boolean readMessages(String key, Object element, Object value, JsonObject props, String type);
+	public boolean isReadMessages(String key, Object element, JsonObject props,
+			String type);
+
+	public boolean readMessages(String key, Object element, Object value,
+			JsonObject props, String type);
 
 	public boolean skipCollision(Object masterObj, String key, Object value,
 			JsonObject removeJson, JsonObject updateJson);

@@ -20,20 +20,22 @@ package de.uniks.networkparser.event.util;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.event.SoapObject;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorXML;
 import de.uniks.networkparser.xml.XMLEntity;
 
-public class SoapCreator implements SendableEntityCreatorXML{
-	public static String XMLNS_XSI="http://www.w3.org/2001/XMLSchema-instance";
-	public static String XMLNS_XSD="http://www.w3.org/2001/XMLSchema";
-	public static String XMLNS_SOAP="http://schemas.xmlsoap.org/soap/envelope/";
-	private String nameSpace="s";
-		
+public class SoapCreator implements SendableEntityCreatorXML {
+	public static String XMLNS_XSI = "http://www.w3.org/2001/XMLSchema-instance";
+	public static String XMLNS_XSD = "http://www.w3.org/2001/XMLSchema";
+	public static String XMLNS_SOAP = "http://schemas.xmlsoap.org/soap/envelope/";
+	private String nameSpace = "s";
+
 	@Override
 	public String[] getProperties() {
-		return new String[]{"&" +nameSpace+ ":" +SoapObject.PROPERTY_HEADER, "&" +nameSpace+ ":" +SoapObject.PROPERTY_BODY};
+		return new String[] {
+				"&" + nameSpace + ":" + SoapObject.PROPERTY_HEADER,
+				"&" + nameSpace + ":" + SoapObject.PROPERTY_BODY };
 	}
 
 	@Override
@@ -43,19 +45,22 @@ public class SoapCreator implements SendableEntityCreatorXML{
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if (attribute.endsWith(":" +SoapObject.PROPERTY_HEADER)) {
-			return ((SoapObject)entity).getHeader();
+		if (attribute.endsWith(":" + SoapObject.PROPERTY_HEADER)) {
+			return ((SoapObject) entity).getHeader();
 		}
-		if (attribute.endsWith(":" +SoapObject.PROPERTY_BODY)) {
-			return ((SoapObject)entity).getBody();
+		if (attribute.endsWith(":" + SoapObject.PROPERTY_BODY)) {
+			return ((SoapObject) entity).getBody();
 		}
 		return null;
 	}
 
 	@Override
-	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if (attribute.toLowerCase().endsWith(":" +SoapObject.PROPERTY_BODY.toLowerCase())) {
-			((SoapObject)entity).withBody(new XMLEntity().withValue("" + value));
+	public boolean setValue(Object entity, String attribute, Object value,
+			String type) {
+		if (attribute.toLowerCase().endsWith(
+				":" + SoapObject.PROPERTY_BODY.toLowerCase())) {
+			((SoapObject) entity).withBody(new XMLEntity()
+					.withValue("" + value));
 			return true;
 		}
 		return false;
@@ -63,7 +68,7 @@ public class SoapCreator implements SendableEntityCreatorXML{
 
 	@Override
 	public String getTag() {
-		return nameSpace+ ":Envelope";
+		return nameSpace + ":Envelope";
 	}
 
 	public SoapCreator withNamespace(String value) {

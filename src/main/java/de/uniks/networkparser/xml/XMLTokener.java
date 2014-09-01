@@ -20,7 +20,7 @@ package de.uniks.networkparser.xml;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import java.util.ArrayList;
 import de.uniks.networkparser.AbstractKeyValueList;
 import de.uniks.networkparser.AbstractList;
@@ -32,6 +32,7 @@ import de.uniks.networkparser.interfaces.FactoryEntity;
 
 /**
  * Tokener for parsing XML-Files.
+ *
  * @author Stefan Lindel
  */
 public class XMLTokener extends Tokener {
@@ -45,10 +46,14 @@ public class XMLTokener extends Tokener {
 
 	/**
 	 * Get the next value. The value can be a Boolean, Double, Integer,
-     * BaseEntity, Long, or String.
-	 * @param creator The new Creator
-	 * @param allowQuote is in Text allow Quote
-	 * @param c The Terminate Char
+	 * BaseEntity, Long, or String.
+	 *
+	 * @param creator
+	 *            The new Creator
+	 * @param allowQuote
+	 *            is in Text allow Quote
+	 * @param c
+	 *            The Terminate Char
 	 *
 	 * @return An object.
 	 */
@@ -73,9 +78,9 @@ public class XMLTokener extends Tokener {
 		default:
 			break;
 		}
-//		back();
+		// back();
 		if (c == '"') {
-//			next();
+			// next();
 			next();
 			return "";
 		}
@@ -90,13 +95,15 @@ public class XMLTokener extends Tokener {
 			c = nextClean();
 		}
 		if (c != '<') {
-			if (logger.error(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
+			if (logger.error(this, "parseToEntity",
+					NetworkParserLog.ERROR_TYP_PARSING, entity)) {
 				throw new RuntimeException("A XML text must begin with '<'");
 			}
 			return;
 		}
 		if (!(entity instanceof XMLEntity)) {
-			if (logger.error(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
+			if (logger.error(this, "parseToEntity",
+					NetworkParserLog.ERROR_TYP_PARSING, entity)) {
 				throw new RuntimeException("Parse only XMLEntity");
 			}
 			return;
@@ -130,7 +137,8 @@ public class XMLTokener extends Tokener {
 					return;
 				}
 				if (c != '<') {
-					xmlEntity.withValueItem(nextString('<', false, false, false, false));
+					xmlEntity.withValueItem(nextString('<', false, false,
+							false, false));
 					continue;
 				}
 			}
@@ -145,7 +153,8 @@ public class XMLTokener extends Tokener {
 						parseToEntity(child);
 						xmlEntity.addChild(child);
 					} else {
-						xmlEntity.withValueItem(nextString('<', false, false, false, false));
+						xmlEntity.withValueItem(nextString('<', false, false,
+								false, false));
 					}
 				}
 			} else if (c == '/') {
@@ -154,7 +163,8 @@ public class XMLTokener extends Tokener {
 			} else {
 				String key = nextValue(xmlEntity, false, c).toString();
 				if (key.length() > 0) {
-					xmlEntity.put(key, nextValue(xmlEntity, isAllowQuote, nextClean()));
+					xmlEntity.put(key,
+							nextValue(xmlEntity, isAllowQuote, nextClean()));
 				}
 			}
 		}
@@ -176,12 +186,13 @@ public class XMLTokener extends Tokener {
 	}
 
 	@Override
-	public void parseToEntity(AbstractList<?>  entityList) {
+	public void parseToEntity(AbstractList<?> entityList) {
 		// Do Nothing
 	}
 
 	/**
 	 * Get the Prefix from Tokener my be seperated by &.
+	 *
 	 * @return the Prefix
 	 */
 	public String getPrefix() {
@@ -189,15 +200,18 @@ public class XMLTokener extends Tokener {
 	}
 
 	/**
-	 * @param value set Prefix.
+	 * @param value
+	 *            set Prefix.
 	 * @return XMLTokener Instance
 	 */
 	public XMLTokener withPrefix(String value) {
 		this.prefix = value;
 		return this;
 	}
+
 	/**
-	 * @param value add Prefix to Existing.
+	 * @param value
+	 *            add Prefix to Existing.
 	 * @return XMLTokener Instance
 	 */
 	public XMLTokener addPrefix(String value) {
@@ -207,7 +221,9 @@ public class XMLTokener extends Tokener {
 
 	/**
 	 * Add a new Reference Object to Stack.
-	 * @param item new Reference Object
+	 *
+	 * @param item
+	 *            new Reference Object
 	 * @return XMLTokener Instance
 	 */
 	public XMLTokener withStack(ReferenceObject item) {
@@ -227,8 +243,10 @@ public class XMLTokener extends Tokener {
 	public int getStackSize() {
 		return this.stack.size();
 	}
+
 	/**
-	 * @param offset Offset from Last
+	 * @param offset
+	 *            Offset from Last
 	 * @return The Stack Element - offset
 	 */
 	public ReferenceObject getStackLast(int offset) {
@@ -236,7 +254,8 @@ public class XMLTokener extends Tokener {
 	}
 
 	/**
-	 * @param value of AllowQuote
+	 * @param value
+	 *            of AllowQuote
 	 * @return XMLTokener Instance
 	 */
 	public XMLTokener withAllowQuote(boolean value) {

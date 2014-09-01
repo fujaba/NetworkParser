@@ -20,19 +20,22 @@ package de.uniks.networkparser.interfaces;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 
 public enum GUIPosition {
-	CENTER("Center"), EAST("East"), NORTH("North"), NORTHWEST("NorthWest"), NORTHEAST("NorthEast"), SOUTH("South"), SOUTHWEST("SouthWest"), SOUTHEAST("SouthEast"), WEST("West"), ALL("All");
+	CENTER("Center"), EAST("East"), NORTH("North"), NORTHWEST("NorthWest"), NORTHEAST(
+			"NorthEast"), SOUTH("South"), SOUTHWEST("SouthWest"), SOUTHEAST(
+			"SouthEast"), WEST("West"), ALL("All");
 	private String value;
 
 	GUIPosition(String value) {
 		this.setValue(value);
-    }
-	 
-	  public String getValue() {
+	}
+
+	public String getValue() {
 		return value;
 	}
+
 	public void setValue(String value) {
 		this.value = value;
 	}

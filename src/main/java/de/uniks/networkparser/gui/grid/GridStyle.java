@@ -20,7 +20,7 @@ package de.uniks.networkparser.gui.grid;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Iterator;
@@ -30,25 +30,25 @@ import de.uniks.networkparser.calculator.RegCalculator;
 import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.interfaces.SendableEntity;
 
-public class GridStyle extends Style implements SendableEntity{
+public class GridStyle extends Style implements SendableEntity {
 	public static final String PROPERTY_ROW = "gridpane-row";
 	public static final String PROPERTY_COLUMN = "gridpane-column";
 	public static final String PROPERTY_ROWSPAN = "gridpane-row-span";
 	public static final String PROPERTY_COLUMNSPAN = "gridpane-column-span";
-	public static final String PROPERTY_HEIGHTEXPRESSION="height_expression";
-	public static final String PROPERTY_WIDTHEXPRESSION="width_expression";
-	public static final String COUNT="count";
-	public static final String POSITION="position";
-	public static final String MAXIMIZE="maximize";
+	public static final String PROPERTY_HEIGHTEXPRESSION = "height_expression";
+	public static final String PROPERTY_WIDTHEXPRESSION = "width_expression";
+	public static final String COUNT = "count";
+	public static final String POSITION = "position";
+	public static final String MAXIMIZE = "maximize";
 	private String heightExpression;
 	private String widthExpression;
-	private int rowSpan=1;
-	private int columnSpan=1;
+	private int rowSpan = 1;
+	private int columnSpan = 1;
 	private int column;
 	private int row;
 	private ValueGrid grid;
-	private ArrayEntityList<String, Object> listeners= new ArrayEntityList<String, Object>();
-	private String selectedBackground=null;
+	private ArrayEntityList<String, Object> listeners = new ArrayEntityList<String, Object>();
+	private String selectedBackground = null;
 
 	public int getColumn() {
 		return column;
@@ -57,48 +57,49 @@ public class GridStyle extends Style implements SendableEntity{
 	public int getRow() {
 		return row;
 	}
-	
+
 	public int getRowEnd() {
-		if (heightExpression!=null) {
-			RegCalculator calculator= new RegCalculator().withStandard();
+		if (heightExpression != null) {
+			RegCalculator calculator = new RegCalculator().withStandard();
 			calculator.withConstants(COUNT, grid.getCountRows());
 			calculator.withConstants(POSITION, row);
-			double result = (double)calculator.calculate(heightExpression);
-			int end = (int)result;
-			withRowSpan(end-row);
+			double result = (double) calculator.calculate(heightExpression);
+			int end = (int) result;
+			withRowSpan(end - row);
 			return end;
 		}
 
-		return getRow() +getRowSpan()-1;
+		return getRow() + getRowSpan() - 1;
 	}
+
 	public int getColumnEnd() {
-		if (widthExpression!=null) {
-			RegCalculator calculator= new RegCalculator().withStandard();
+		if (widthExpression != null) {
+			RegCalculator calculator = new RegCalculator().withStandard();
 			calculator.withConstants(COUNT, grid.getCountColumns());
 			calculator.withConstants(POSITION, column);
-			double result = (double)calculator.calculate(widthExpression);
-			int end = (int)result;
-			withColumnSpan(end-column);
+			double result = (double) calculator.calculate(widthExpression);
+			int end = (int) result;
+			withColumnSpan(end - column);
 			return end;
 		}
-		return getColumn() +getColumnSpan()-1;
+		return getColumn() + getColumnSpan() - 1;
 	}
 
 	public GridStyle withGrid(ValueGrid grid) {
-		this.grid=grid;
+		this.grid = grid;
 		return this;
 	}
 
 	public int getColumnSpan() {
-		if (widthExpression!=null) {
-			return getColumnEnd()-getColumn() +1;
+		if (widthExpression != null) {
+			return getColumnEnd() - getColumn() + 1;
 		}
 		return columnSpan;
 	}
 
 	public int getRowSpan() {
-		if (heightExpression!=null) {
-			return getRowEnd()-getRow() +1;
+		if (heightExpression != null) {
+			return getRowEnd() - getRow() + 1;
 		}
 		return rowSpan;
 	}
@@ -132,7 +133,7 @@ public class GridStyle extends Style implements SendableEntity{
 	}
 
 	public GridStyle withRowSpan(int value) {
-		if (value<1) {
+		if (value < 1) {
 			return this;
 		}
 		int oldValue = rowSpan;
@@ -142,10 +143,10 @@ public class GridStyle extends Style implements SendableEntity{
 	}
 
 	public GridStyle withColumnSpan(int value) {
-		if (value<1) {
+		if (value < 1) {
 			return this;
 		}
-	
+
 		int oldValue = columnSpan;
 		this.columnSpan = value;
 		propertyChange(PROPERTY_COLUMNSPAN, oldValue, value);
@@ -153,18 +154,22 @@ public class GridStyle extends Style implements SendableEntity{
 	}
 
 	@Override
-	public void propertyChange(String propertyName, Object oldValue, Object newValue) {
+	public void propertyChange(String propertyName, Object oldValue,
+			Object newValue) {
 		super.propertyChange(propertyName, oldValue, newValue);
-	
-		if ((oldValue==null && newValue!=null)||(oldValue!=null && !oldValue.equals(newValue))) {
-			PropertyChangeEvent change = new PropertyChangeEvent(this, propertyName, oldValue, newValue);
+
+		if ((oldValue == null && newValue != null)
+				|| (oldValue != null && !oldValue.equals(newValue))) {
+			PropertyChangeEvent change = new PropertyChangeEvent(this,
+					propertyName, oldValue, newValue);
 			executeEvent(change, null);
 			executeEvent(change, propertyName);
 		}
 	}
 
 	private void executeEvent(PropertyChangeEvent change, String key) {
-		PropertyChangeListenerList list = (PropertyChangeListenerList) listeners.getValueItem(key);
+		PropertyChangeListenerList list = (PropertyChangeListenerList) listeners
+				.getValueItem(key);
 		if (list != null) {
 			for (PropertyChangeListener listener : list) {
 				listener.propertyChange(change);
@@ -175,8 +180,9 @@ public class GridStyle extends Style implements SendableEntity{
 	@Override
 	public boolean addPropertyChangeListener(String propertyName,
 			PropertyChangeListener listener) {
-		PropertyChangeListenerList list = (PropertyChangeListenerList) listeners.getValueItem(propertyName);
-		if (list==null) {
+		PropertyChangeListenerList list = (PropertyChangeListenerList) listeners
+				.getValueItem(propertyName);
+		if (list == null) {
 			list = new PropertyChangeListenerList();
 			listeners.put(propertyName, list);
 		}
@@ -185,8 +191,9 @@ public class GridStyle extends Style implements SendableEntity{
 
 	@Override
 	public boolean addPropertyChangeListener(PropertyChangeListener listener) {
-		PropertyChangeListenerList list = (PropertyChangeListenerList) listeners.getValueItem(null);
-		if (list==null) {
+		PropertyChangeListenerList list = (PropertyChangeListenerList) listeners
+				.getValueItem(null);
+		if (list == null) {
 			list = new PropertyChangeListenerList();
 			listeners.put(null, list);
 		}
@@ -195,18 +202,21 @@ public class GridStyle extends Style implements SendableEntity{
 
 	@Override
 	public boolean removePropertyChangeListener(PropertyChangeListener listener) {
-		boolean result=false;
-		for (Iterator<Entry<String, Object>> iterator = listeners.entrySet().iterator();iterator.hasNext();) {
+		boolean result = false;
+		for (Iterator<Entry<String, Object>> iterator = listeners.entrySet()
+				.iterator(); iterator.hasNext();) {
 			Entry<String, Object> item = iterator.next();
-			PropertyChangeListenerList list = (PropertyChangeListenerList)item.getValue();
-			for (Iterator<PropertyChangeListener> i = list.iterator();i.hasNext();) {
+			PropertyChangeListenerList list = (PropertyChangeListenerList) item
+					.getValue();
+			for (Iterator<PropertyChangeListener> i = list.iterator(); i
+					.hasNext();) {
 				PropertyChangeListener propertyChangeListener = i.next();
-				if (propertyChangeListener==listener) {
+				if (propertyChangeListener == listener) {
 					i.remove();
-					result=true;
+					result = true;
 				}
 			}
-			if (list.size()<1) {
+			if (list.size() < 1) {
 				iterator.remove();
 			}
 		}
@@ -214,7 +224,7 @@ public class GridStyle extends Style implements SendableEntity{
 	}
 
 	public void select() {
-		if (selectedBackground==null) {
+		if (selectedBackground == null) {
 			selectedBackground = this.getBackground();
 			withBackground("#d8f0f3");
 		}
@@ -241,13 +251,10 @@ public class GridStyle extends Style implements SendableEntity{
 		super.clone(prototyp);
 		if (prototyp instanceof GridStyle) {
 			GridStyle style = (GridStyle) prototyp;
-			style
-				.withRowSpan(this.rowSpan)
-				.withColumnSpan(this.columnSpan)
-				.withHeight(this.heightExpression)
-				.withWidth(this.widthExpression)
-				.withColumn(this.column)
-				.withRow(this.row);
+			style.withRowSpan(this.rowSpan).withColumnSpan(this.columnSpan)
+					.withHeight(this.heightExpression)
+					.withWidth(this.widthExpression).withColumn(this.column)
+					.withRow(this.row);
 			return style;
 		}
 		return prototyp;

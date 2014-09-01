@@ -20,7 +20,7 @@ package de.uniks.networkparser.bytes;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.interfaces.Buffer;
 import de.uniks.networkparser.interfaces.BufferedBytes;
 
@@ -48,16 +48,16 @@ public class BytesBuffer implements BufferedBytes {
 
 	@Override
 	public String substring(int startTag, int length) {
-		byte[] sub= new byte[length];
-		for (int i=0;i<length;i++) {
-			sub[i]=buffer[startTag+length];
+		byte[] sub = new byte[length];
+		for (int i = 0; i < length; i++) {
+			sub[i] = buffer[startTag + length];
 		}
 		return String.valueOf(sub);
 	}
 
 	@Override
 	public BytesBuffer withLength(int length) {
-		this.buffer= new byte[length];
+		this.buffer = new byte[length];
 		return this;
 	}
 
@@ -73,7 +73,7 @@ public class BytesBuffer implements BufferedBytes {
 
 	@Override
 	public void back() {
-		if (index>0) {
+		if (index > 0) {
 			index--;
 		}
 	}
@@ -104,12 +104,11 @@ public class BytesBuffer implements BufferedBytes {
 		return this.buffer[index++];
 	}
 
-
 	private byte[] converter(int bits) {
-		int len = bits/8;
-		byte[] buffer= new byte[len];
-	
-		for (int i=0;i<len;i++) {
+		int len = bits / 8;
+		byte[] buffer = new byte[len];
+
+		for (int i = 0; i < len; i++) {
 			buffer[i] = this.buffer[index++];
 		}
 		return buffer;
@@ -117,15 +116,15 @@ public class BytesBuffer implements BufferedBytes {
 
 	@Override
 	public char getChar() {
-		byte[] bytes= converter(Character.SIZE);
-		char result=(char)bytes[0];
-		result = (char) (result<<8 + (char)bytes[1]);
+		byte[] bytes = converter(Character.SIZE);
+		char result = (char) bytes[0];
+		result = (char) (result << 8 + (char) bytes[1]);
 		return result;
 	}
 
 	@Override
 	public short getShort() {
-		byte[] bytes= converter(Short.SIZE);
+		byte[] bytes = converter(Short.SIZE);
 		short result = bytes[0];
 		result = (short) (result << 8 + bytes[1]);
 		return result;
@@ -133,26 +132,22 @@ public class BytesBuffer implements BufferedBytes {
 
 	@Override
 	public long getLong() {
-		byte[] bytes= converter(Long.SIZE);
-		long result=bytes[0];
-		result = result<<8+bytes[1];
-		result = result<<8+bytes[2];
-		result = result<<8+bytes[3];
-		result = result<<8+bytes[4];
-		result = result<<8+bytes[5];
-		result = result<<8+bytes[6];
-		result = result<<8+bytes[7];
+		byte[] bytes = converter(Long.SIZE);
+		long result = bytes[0];
+		result = result << 8 + bytes[1];
+		result = result << 8 + bytes[2];
+		result = result << 8 + bytes[3];
+		result = result << 8 + bytes[4];
+		result = result << 8 + bytes[5];
+		result = result << 8 + bytes[6];
+		result = result << 8 + bytes[7];
 		return result;
 	}
 
 	@Override
 	public int getInt() {
-		byte[] bytes= converter(Integer.SIZE);
-		return (int) (
-				(bytes[0]<<24) +
-				(bytes[1]<<16) +
-				(bytes[2]<<8) +
-				bytes[3]);
+		byte[] bytes = converter(Integer.SIZE);
+		return (int) ((bytes[0] << 24) + (bytes[1] << 16) + (bytes[2] << 8) + bytes[3]);
 	}
 
 	@Override
@@ -163,27 +158,26 @@ public class BytesBuffer implements BufferedBytes {
 
 	@Override
 	public double getDouble() {
-		long asLong=getLong();
+		long asLong = getLong();
 		return Double.longBitsToDouble(asLong);
 	}
 
 	@Override
 	public byte[] getValue(int len) {
 		byte[] array = new byte[len];
-		for (int i=0;i<len;i++) {
-			array[i]=getByte();
+		for (int i = 0; i < len; i++) {
+			array[i] = getByte();
 		}
 		return array;
 	}
-
 
 	@Override
 	public byte[] getValue(int start, int len) {
 		this.withPosition(start);
 
 		byte[] array = new byte[len];
-		for (int i=0;i<len;i++) {
-			array[i]=getByte();
+		for (int i = 0; i < len; i++) {
+			array[i] = getByte();
 		}
 		return array;
 	}
@@ -233,43 +227,42 @@ public class BytesBuffer implements BufferedBytes {
 	@Override
 	public void put(float value) {
 		int bits = Float.floatToIntBits(value);
-		this.buffer[index++] = (byte)(bits & 0xff);
-		this.buffer[index++] = (byte)((bits >> 8) & 0xff);
-		this.buffer[index++] = (byte)((bits >> 16) & 0xff);
-		this.buffer[index++] = (byte)((bits >> 24) & 0xff);
+		this.buffer[index++] = (byte) (bits & 0xff);
+		this.buffer[index++] = (byte) ((bits >> 8) & 0xff);
+		this.buffer[index++] = (byte) ((bits >> 16) & 0xff);
+		this.buffer[index++] = (byte) ((bits >> 24) & 0xff);
 	}
 
 	@Override
 	public void put(double value) {
 		long bits = Double.doubleToLongBits(value);
-		this.buffer[index++] = (byte)((bits >> 56) & 0xff);
-		this.buffer[index++] = (byte)((bits >> 48) & 0xff);
-		this.buffer[index++] = (byte)((bits >> 40) & 0xff);
-		this.buffer[index++] = (byte)((bits >> 32) & 0xff);
-		this.buffer[index++] = (byte)((bits >> 24) & 0xff);
-		this.buffer[index++] = (byte)((bits >> 16) & 0xff);
-		this.buffer[index++] = (byte)((bits >> 8) & 0xff);
-		this.buffer[index++] = (byte)((bits >> 0) & 0xff);
+		this.buffer[index++] = (byte) ((bits >> 56) & 0xff);
+		this.buffer[index++] = (byte) ((bits >> 48) & 0xff);
+		this.buffer[index++] = (byte) ((bits >> 40) & 0xff);
+		this.buffer[index++] = (byte) ((bits >> 32) & 0xff);
+		this.buffer[index++] = (byte) ((bits >> 24) & 0xff);
+		this.buffer[index++] = (byte) ((bits >> 16) & 0xff);
+		this.buffer[index++] = (byte) ((bits >> 8) & 0xff);
+		this.buffer[index++] = (byte) ((bits >> 0) & 0xff);
 	}
-
 
 	@Override
 	public void put(byte[] value) {
-		for (int i=0;i<value.length;i++) {
+		for (int i = 0; i < value.length; i++) {
 			put(value[i]);
 		}
 	}
 
 	@Override
 	public void put(byte[] value, int offset, int length) {
-		for (int i=0;i<length;i++) {
-			put(value[offset+i]);
+		for (int i = 0; i < length; i++) {
+			put(value[offset + i]);
 		}
 	}
 
 	@Override
 	public byte[] flip() {
-		this.index=0;
+		this.index = 0;
 		return buffer;
 	}
 
@@ -290,7 +283,7 @@ public class BytesBuffer implements BufferedBytes {
 	}
 
 	public BytesBuffer with(byte[] array) {
-		this.buffer=array.clone();
+		this.buffer = array.clone();
 		return this;
 	}
 

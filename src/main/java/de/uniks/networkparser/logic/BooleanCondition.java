@@ -20,11 +20,11 @@ package de.uniks.networkparser.logic;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class BooleanCondition implements Condition, SendableEntityCreator {
-	public static final String VALUE="value";
+	public static final String VALUE = "value";
 	private boolean value;
 
 	@Override
@@ -47,7 +47,7 @@ public class BooleanCondition implements Condition, SendableEntityCreator {
 
 	@Override
 	public String[] getProperties() {
-		return new String[]{VALUE};
+		return new String[] {VALUE };
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class BooleanCondition implements Condition, SendableEntityCreator {
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if (VALUE.equalsIgnoreCase(attribute)) {
-			return ((BooleanCondition)entity).getValue();
+			return ((BooleanCondition) entity).getValue();
 		}
 		return null;
 	}
@@ -67,7 +67,7 @@ public class BooleanCondition implements Condition, SendableEntityCreator {
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
 		if (VALUE.equalsIgnoreCase(attribute)) {
-			((BooleanCondition)entity).withValue((Boolean) value);
+			((BooleanCondition) entity).withValue((Boolean) value);
 			return true;
 		}
 		return false;

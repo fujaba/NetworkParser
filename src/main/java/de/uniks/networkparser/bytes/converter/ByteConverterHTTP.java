@@ -20,7 +20,7 @@ package de.uniks.networkparser.bytes.converter;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.bytes.ByteIdMap;
 import de.uniks.networkparser.bytes.BytesBuffer;
 import de.uniks.networkparser.interfaces.ByteConverter;
@@ -54,7 +54,7 @@ public class ByteConverterHTTP extends ByteConverter {
 	@Override
 	public byte[] decode(String value) {
 		int len = value.length();
-		BytesBuffer buffer=BytesBuffer.allocate(len);
+		BytesBuffer buffer = BytesBuffer.allocate(len);
 		for (int i = 0; i < len; i++) {
 			int c = value.charAt(i);
 			if (c == ByteIdMap.SPLITTER) {

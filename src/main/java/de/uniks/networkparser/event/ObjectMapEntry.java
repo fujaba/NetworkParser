@@ -20,10 +20,10 @@ package de.uniks.networkparser.event;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.AbstractEntity;
 
-public class ObjectMapEntry extends AbstractEntity<Object, Object>{
+public class ObjectMapEntry extends AbstractEntity<Object, Object> {
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new ObjectMapEntry();

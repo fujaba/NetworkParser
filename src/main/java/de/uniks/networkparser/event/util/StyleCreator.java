@@ -20,14 +20,17 @@ package de.uniks.networkparser.event.util;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
-*/
+ */
 import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class StyleCreator implements SendableEntityCreator{
-	private static final String[] props= new String[]{Style.PROPERTY_BOLD, Style.PROPERTY_ITALIC, Style.PROPERTY_FONTFAMILY,
-													Style.PROPERTY_FONTSIZE, Style.PROPERTY_FORGROUND, Style.PROPERTY_BACKGROUND,
-													Style.PROPERTY_UNDERLINE, Style.PROPERTY_ALIGNMENT, Style.PROPERTY_WIDTH, Style.PROPERTY_HEIGHT};
+public class StyleCreator implements SendableEntityCreator {
+	private static final String[] props = new String[] {Style.PROPERTY_BOLD,
+			Style.PROPERTY_ITALIC, Style.PROPERTY_FONTFAMILY,
+			Style.PROPERTY_FONTSIZE, Style.PROPERTY_FORGROUND,
+			Style.PROPERTY_BACKGROUND, Style.PROPERTY_UNDERLINE,
+			Style.PROPERTY_ALIGNMENT, Style.PROPERTY_WIDTH,
+			Style.PROPERTY_HEIGHT };
 
 	@Override
 	public String[] getProperties() {
@@ -41,13 +44,13 @@ public class StyleCreator implements SendableEntityCreator{
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		return ((Style)entity).get(attribute);
+		return ((Style) entity).get(attribute);
 	}
 
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
-		return ((Style)entity).set(attribute, value);
+		return ((Style) entity).set(attribute, value);
 	}
 
 }
