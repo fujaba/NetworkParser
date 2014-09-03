@@ -1,4 +1,6 @@
-package de.uniks.networkparser.graph;
+package de.uniks.networkparser.interfaces;
+
+import de.uniks.networkparser.graph.GraphList;
 
 /*
  NetworkParser

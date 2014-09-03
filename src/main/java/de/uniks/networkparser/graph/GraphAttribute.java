@@ -22,29 +22,29 @@ package de.uniks.networkparser.graph;
  permissions and limitations under the Licence.
  */
 
-public class Attribute extends Value implements GraphMember {
+public class GraphAttribute extends GraphValue implements GraphMember {
 	public static final String PROPERTY_CLAZZ = "clazz";
 	public static final String PROPERTY_VALUE = "value";
 	public static final String PROPERTY_VISIBILITY = "visibility";
 
 	private GraphNode clazz = null;
 	private String value = null;
-	private Visibility visibility = Visibility.PRIVATE;
+	private GraphVisibility visibility = GraphVisibility.PRIVATE;
 
 	public String getValue() {
 		return value;
 	}
 
-	public Attribute withValue(String value) {
+	public GraphAttribute withValue(String value) {
 		this.value = value;
 		return this;
 	}
 
-	public Visibility getVisibility() {
+	public GraphVisibility getVisibility() {
 		return visibility;
 	}
 
-	public void with(Visibility visibility) {
+	public void with(GraphVisibility visibility) {
 		this.visibility = visibility;
 	}
 
@@ -58,13 +58,13 @@ public class Attribute extends Value implements GraphMember {
 
 	// Redirect
 	@Override
-	public Attribute with(String value) {
+	public GraphAttribute with(String value) {
 		super.with(value);
 		return this;
 	}
 
 	@Override
-	public Attribute with(DataType value) {
+	public GraphAttribute with(GraphDataType value) {
 		super.with(value);
 		return this;
 	}

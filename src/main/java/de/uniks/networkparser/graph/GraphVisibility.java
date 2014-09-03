@@ -21,21 +21,21 @@ package de.uniks.networkparser.graph;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
  */
-public class Visibility
+public class GraphVisibility
 
 {
-	public static final Visibility PUBLIC = new Visibility("public");
-	public static final Visibility PACKAGE = new Visibility("");
-	public static final Visibility PROTECTED = new Visibility("protected");
-	public static final Visibility PRIVATE = new Visibility("private");
+	public static final GraphVisibility PUBLIC = new GraphVisibility("public");
+	public static final GraphVisibility PACKAGE = new GraphVisibility("");
+	public static final GraphVisibility PROTECTED = new GraphVisibility("protected");
+	public static final GraphVisibility PRIVATE = new GraphVisibility("private");
 
-	public static final Visibility FINAL = new Visibility(" final");
-	public static final Visibility ABSTRACT = new Visibility(" abstract");
-	public static final Visibility STATIC = new Visibility(" static");
+	public static final GraphVisibility FINAL = new GraphVisibility(" final");
+	public static final GraphVisibility ABSTRACT = new GraphVisibility(" abstract");
+	public static final GraphVisibility STATIC = new GraphVisibility(" static");
 
 	private String value;
 
-	Visibility(String value) {
+	GraphVisibility(String value) {
 		this.setValue(value);
 	}
 
@@ -47,19 +47,19 @@ public class Visibility
 		this.value = value;
 	}
 
-	public Visibility withValue(String value) {
+	public GraphVisibility withValue(String value) {
 		this.value = value;
 		return this;
 	}
 
-	public static Visibility ref(String value) {
-		return new Visibility(value);
+	public static GraphVisibility ref(String value) {
+		return new GraphVisibility(value);
 	}
 
-	public static Visibility ref(Visibility... value) {
-		Visibility first = PUBLIC;
+	public static GraphVisibility ref(GraphVisibility... value) {
+		GraphVisibility first = PUBLIC;
 		String seconds = "";
-		for (Visibility item : value) {
+		for (GraphVisibility item : value) {
 			if (item == PUBLIC || item == PACKAGE || item == PROTECTED
 					|| item == PRIVATE) {
 				first = item;
@@ -67,14 +67,14 @@ public class Visibility
 			}
 			seconds += item.getValue();
 		}
-		return new Visibility(first + seconds);
+		return new GraphVisibility(first + seconds);
 	}
 
-	public boolean same(Visibility other) {
+	public boolean same(GraphVisibility other) {
 		return this.getValue().equalsIgnoreCase(other.getValue());
 	}
 
-	public boolean has(Visibility other) {
+	public boolean has(GraphVisibility other) {
 		return this.getValue().contains(other.getValue());
 	}
 

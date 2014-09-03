@@ -23,22 +23,22 @@ package de.uniks.networkparser.graph;
 
 import de.uniks.networkparser.AbstractList;
 
-public class Method extends AbstractList<Parameter> implements GraphMember {
+public class GraphMethod extends AbstractList<GraphParameter> implements GraphMember {
 	public static final String PROPERTY_RETURNTYPE = "returnType";
 	public static final String PROPERTY_PARAMETER = "parameter";
 	public static final String PROPERTY_NODE = "node";
 	public static final String PROPERTY_MODIFIER = "modifier";
 
-	private Visibility modifier = Visibility.PUBLIC;
+	private GraphVisibility modifier = GraphVisibility.PUBLIC;
 	private GraphNode node = null;
-	private DataType returnType = DataType.VOID;
+	private GraphDataType returnType = GraphDataType.VOID;
 	private String name;
 
 	public String getName() {
 		return name;
 	}
 
-	public Method with(String name) {
+	public GraphMethod with(String name) {
 		this.name = name;
 		return this;
 	}
@@ -50,7 +50,7 @@ public class Method extends AbstractList<Parameter> implements GraphMember {
 		boolean first = true;
 		int i = 0;
 
-		for (Parameter parameter : keys) {
+		for (GraphParameter parameter : keys) {
 
 			if (first) {
 				sb.append(getParameterSignature(includeName, parameter, i));
@@ -73,7 +73,7 @@ public class Method extends AbstractList<Parameter> implements GraphMember {
 	}
 
 	private String getParameterSignature(boolean includeName,
-			Parameter parameter, int i) {
+			GraphParameter parameter, int i) {
 		String param = parameter.getType().getValue();
 		if (!includeName) {
 			return param;
@@ -88,25 +88,25 @@ public class Method extends AbstractList<Parameter> implements GraphMember {
 		return param + " p" + i;
 	}
 
-	public Method() {
+	public GraphMethod() {
 	}
 
-	public Method(String name, DataType returnType, Parameter... parameters) {
+	public GraphMethod(String name, GraphDataType returnType, GraphParameter... parameters) {
 		this.with(name);
 		this.with(parameters);
 		this.with(returnType);
 	}
 
-	public Method(String name, Parameter... parameters) {
+	public GraphMethod(String name, GraphParameter... parameters) {
 		this.with(parameters);
 		this.with(name);
 	}
 
-	public Method with(Parameter... value) {
+	public GraphMethod with(GraphParameter... value) {
 		if (value == null) {
 			return this;
 		}
-		for (Parameter item : value) {
+		for (GraphParameter item : value) {
 			if (item != null) {
 				this.addEntity(item);
 			}
@@ -114,34 +114,34 @@ public class Method extends AbstractList<Parameter> implements GraphMember {
 		return this;
 	}
 
-	public Method withParameter(String paramName, DataType dataType) {
-		new Parameter(paramName, dataType).with(this);
+	public GraphMethod withParameter(String paramName, GraphDataType dataType) {
+		new GraphParameter(paramName, dataType).with(this);
 		return this;
 	}
 
-	public Visibility getModifier() {
+	public GraphVisibility getModifier() {
 		return this.modifier;
 	}
 
-	public Method with(Visibility value) {
+	public GraphMethod with(GraphVisibility value) {
 		this.modifier = value;
 		return this;
 	}
 
-	public DataType getReturnType() {
+	public GraphDataType getReturnType() {
 		return this.returnType;
 	}
 
-	public Method with(DataType value) {
+	public GraphMethod with(GraphDataType value) {
 		this.returnType = value;
 		return this;
 	}
 
-	public Parameter createParameter(DataType type) {
-		return new Parameter(type).with(this);
+	public GraphParameter createParameter(GraphDataType type) {
+		return new GraphParameter(type).with(this);
 	}
 
-	public Method with(GraphNode value) {
+	public GraphMethod with(GraphNode value) {
 		if (this.node != value) {
 			// GraphNode oldValue = this.clazz;
 			if (this.node != null) {
@@ -162,18 +162,18 @@ public class Method extends AbstractList<Parameter> implements GraphMember {
 	}
 
 	@Override
-	public Method getNewInstance() {
-		return new Method();
+	public GraphMethod getNewInstance() {
+		return new GraphMethod();
 	}
 
 	@Override
-	public Method with(Object... values) {
+	public GraphMethod with(Object... values) {
 		if (values == null) {
 			return this;
 		}
 		for (Object value : values) {
-			if (value != null && value instanceof Parameter) {
-				this.addEntity((Parameter) value);
+			if (value != null && value instanceof GraphParameter) {
+				this.addEntity((GraphParameter) value);
 			}
 		}
 		return this;

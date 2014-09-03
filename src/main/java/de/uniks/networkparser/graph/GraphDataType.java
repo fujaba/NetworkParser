@@ -23,22 +23,22 @@ package de.uniks.networkparser.graph;
  */
 import java.beans.PropertyChangeSupport;
 
-public class DataType
+public class GraphDataType
 
 {
 	public static final String PROPERTY_VALUE = "value";
 
-	public static final DataType VOID = new DataType("void");
-	public static final DataType INT = new DataType("int");
-	public static final DataType LONG = new DataType("long");
-	public static final DataType DOUBLE = new DataType("double");
-	public static final DataType STRING = new DataType("String");
-	public static final DataType BOOLEAN = new DataType("boolean");
-	public static final DataType OBJECT = new DataType("Object");
+	public static final GraphDataType VOID = new GraphDataType("void");
+	public static final GraphDataType INT = new GraphDataType("int");
+	public static final GraphDataType LONG = new GraphDataType("long");
+	public static final GraphDataType DOUBLE = new GraphDataType("double");
+	public static final GraphDataType STRING = new GraphDataType("String");
+	public static final GraphDataType BOOLEAN = new GraphDataType("boolean");
+	public static final GraphDataType OBJECT = new GraphDataType("Object");
 
 	private String value;
 
-	DataType(String value) {
+	GraphDataType(String value) {
 		this.with(value);
 	}
 
@@ -53,21 +53,21 @@ public class DataType
 		return value.substring(value.lastIndexOf(".") + 1);
 	}
 
-	public DataType with(String value) {
+	public GraphDataType with(String value) {
 		this.value = value;
 		return this;
 	}
 
-	public static DataType ref(String value) {
-		return new DataType(value);
+	public static GraphDataType ref(String value) {
+		return new GraphDataType(value);
 	}
 
-	public static DataType ref(Class<?> value) {
-		return new DataType(value.getName().replace("$", "."));
+	public static GraphDataType ref(Class<?> value) {
+		return new GraphDataType(value.getName().replace("$", "."));
 	}
 
-	public static DataType ref(GraphNode value) {
-		return new DataType(value.getClassName());
+	public static GraphDataType ref(GraphNode value) {
+		return new GraphDataType(value.getClassName());
 	}
 
 	@Override

@@ -26,6 +26,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
+
+import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
@@ -60,7 +62,7 @@ public class GraphConverter implements Converter {
 	public JsonObject convertToJson(String typ, JsonArray list,
 			boolean removePackage) {
 		GraphList root = new GraphList().withTyp(typ);
-		HashMap<GraphNode, ArrayList<Attribute>> attributes = new HashMap<GraphNode, ArrayList<Attribute>>();
+		HashMap<GraphNode, ArrayList<GraphAttribute>> attributes = new HashMap<GraphNode, ArrayList<GraphAttribute>>();
 		for (Object item : list) {
 			if (item instanceof JsonObject) {
 				parseJsonObject(root, (JsonObject) item, attributes);
@@ -68,10 +70,10 @@ public class GraphConverter implements Converter {
 		}
 
 		// Iteration of all primitive Attributes
-		for (Iterator<Entry<GraphNode, ArrayList<Attribute>>> iterator = attributes
+		for (Iterator<Entry<GraphNode, ArrayList<GraphAttribute>>> iterator = attributes
 				.entrySet().iterator(); iterator.hasNext();) {
-			Entry<GraphNode, ArrayList<Attribute>> node = iterator.next();
-			for (Attribute attribute : node.getValue()) {
+			Entry<GraphNode, ArrayList<GraphAttribute>> node = iterator.next();
+			for (GraphAttribute attribute : node.getValue()) {
 				boolean addValue = true;
 				for (GraphEdge edge : root.getEdges()) {
 
@@ -98,7 +100,7 @@ public class GraphConverter implements Converter {
 	}
 
 	public GraphNode parseJsonObject(GraphList root, JsonObject node,
-			HashMap<GraphNode, ArrayList<Attribute>> attributes) {
+			HashMap<GraphNode, ArrayList<GraphAttribute>> attributes) {
 		String id = node.getString(JsonIdMap.ID);
 		GraphNode graphNode = root.get(id);
 		if (graphNode == null) {
@@ -143,25 +145,25 @@ public class GraphConverter implements Converter {
 						}
 					}
 					if (sb.length() > 0) {
-						Attribute attribute = new Attribute()
+						GraphAttribute attribute = new GraphAttribute()
 								.with(props.get(i))
 								.with(props.getValue(i).getClass().getName())
 								.withValue(sb.toString());
 						if (attributes.get(graphNode) == null) {
 							attributes.put(graphNode,
-									new ArrayList<Attribute>());
+									new ArrayList<GraphAttribute>());
 						}
 						attributes.get(graphNode).add(attribute);
 					}
 				} else {
-					Attribute attribute = new Attribute().with(props.get(i));
+					GraphAttribute attribute = new GraphAttribute().with(props.get(i));
 					if (props.getValue(i) != null) {
 						attribute.with(
-								DataType.ref(props.getValue(i).getClass()))
+								GraphDataType.ref(props.getValue(i).getClass()))
 								.withValue(props.getValue(i).toString());
 					}
 					if (attributes.get(graphNode) == null) {
-						attributes.put(graphNode, new ArrayList<Attribute>());
+						attributes.put(graphNode, new ArrayList<GraphAttribute>());
 					}
 					attributes.get(graphNode).add(attribute);
 				}
@@ -285,10 +287,10 @@ public class GraphConverter implements Converter {
 			splitter = ":";
 		}
 		for (GraphMember item : list) {
-			if (!(item instanceof Attribute)) {
+			if (!(item instanceof GraphAttribute)) {
 				continue;
 			}
-			Attribute attribute = (Attribute) item;
+			GraphAttribute attribute = (GraphAttribute) item;
 			result.add(attribute.getName() + splitter
 					+ attribute.getValue(typ, shortName));
 		}

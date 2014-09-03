@@ -21,30 +21,30 @@
 
 package de.uniks.networkparser.graph;
 
-public class Parameter extends Value {
+public class GraphParameter extends GraphValue {
 	public static final String PROPERTY_METHOD = "method";
-	private Method method = null;
+	private GraphMethod method = null;
 
-	protected Parameter() {
+	protected GraphParameter() {
 
 	}
 
-	public Parameter(DataType type) {
+	public GraphParameter(GraphDataType type) {
 		with(type);
 	}
 
-	public Parameter(String name, DataType type) {
+	public GraphParameter(String name, GraphDataType type) {
 		with(name);
 		with(type);
 	}
 
-	public Method getMethod() {
+	public GraphMethod getMethod() {
 		return this.method;
 	}
 
-	public Parameter with(Method value) {
+	public GraphParameter with(GraphMethod value) {
 		if (this.method != value) {
-			Method oldValue = this.method;
+			GraphMethod oldValue = this.method;
 
 			if (this.method != null) {
 				this.method = null;
@@ -62,13 +62,13 @@ public class Parameter extends Value {
 
 	// Redirect
 	@Override
-	public Parameter with(String string) {
+	public GraphParameter with(String string) {
 		super.with(string);
 		return this;
 	}
 
 	@Override
-	public Parameter with(DataType value) {
+	public GraphParameter with(GraphDataType value) {
 		super.with(value);
 		return this;
 	}
