@@ -19,8 +19,8 @@ import de.uniks.networkparser.test.model.util.PersonSet;
 
 public class HashTableTest
 {
-	public static final int COUNT=1000 * 1000 ;
-//	public static final int COUNT=1000 ;
+//	public static final int COUNT=1000 * 1000 ;
+	public static final int COUNT=1000 ;
 	public static final String FORMAT="%5d";
 	private static ArrayList<Person> items = new ArrayList<Person>();
 	@BeforeClass

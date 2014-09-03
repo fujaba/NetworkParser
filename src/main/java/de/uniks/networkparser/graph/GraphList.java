@@ -27,6 +27,7 @@ import de.uniks.networkparser.AbstractKeyValueList;
 import de.uniks.networkparser.ArrayEntityList;
 import de.uniks.networkparser.ArraySimpleList;
 import de.uniks.networkparser.event.SimpleMapEntry;
+import de.uniks.networkparser.interfaces.Converter;
 
 public class GraphList extends AbstractKeyValueList<String, GraphNode> {
 	private ArrayList<GraphEdge> edges = new ArrayList<GraphEdge>();

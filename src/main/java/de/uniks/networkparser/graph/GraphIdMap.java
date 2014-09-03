@@ -143,7 +143,7 @@ public class GraphIdMap extends IdMapEncoder {
 			list.addEdge(new GraphEdge().with(element).with(
 					new GraphEdge(subId, cardinality, property)));
 		} else {
-			element.addValue(property, DataType.ref(item.getClass()), "" + item);
+			element.addValue(property, GraphDataType.ref(item.getClass()), "" + item);
 		}
 		return;
 	}

@@ -23,25 +23,25 @@ package de.uniks.networkparser.graph;
  */
 import de.uniks.networkparser.interfaces.BaseItem;
 
-public abstract class Value implements BaseItem
+public abstract class GraphValue implements BaseItem
 
 {
 	public static final String PROPERTY_INITIALIZATION = "initialization";
 	public static final String PROPERTY_TYPE = "type";
 
-	protected DataType type = null;
+	protected GraphDataType type = null;
 	protected String name;
 
 	public String getName() {
 		return name;
 	}
 
-	public Value with(String value) {
+	public GraphValue with(String value) {
 		this.name = value;
 		return this;
 	}
 
-	public Value with(DataType value) {
+	public GraphValue with(GraphDataType value) {
 		if ((this.type == null && value != null)
 				|| (this.type != null && this.type != value)) {
 			this.type = value;
@@ -49,7 +49,7 @@ public abstract class Value implements BaseItem
 		return this;
 	}
 
-	public DataType getType() {
+	public GraphDataType getType() {
 		return type;
 	}
 

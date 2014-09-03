@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import de.uniks.networkparser.ArrayEntityList;
 import de.uniks.networkparser.ArraySimpleList;
+import de.uniks.networkparser.interfaces.Converter;
 
 public class YUMLConverter implements Converter {
 	/** The Constant URL. */
@@ -139,19 +140,19 @@ public class YUMLConverter implements Converter {
 			}
 			sb.append("|");
 			Object element = i.next();
-			Attribute attribute;
-			if (element instanceof Attribute) {
-				attribute = (Attribute) element;
+			GraphAttribute attribute;
+			if (element instanceof GraphAttribute) {
+				attribute = (GraphAttribute) element;
 				sb.append(attribute.getName() + splitter
 						+ attribute.getValue(typ, shortName)); // / without Typ
 			}
 
 			while (i.hasNext()) {
 				element = i.next();
-				if (!(element instanceof Attribute)) {
+				if (!(element instanceof GraphAttribute)) {
 					continue;
 				}
-				attribute = (Attribute) element;
+				attribute = (GraphAttribute) element;
 
 				sb.append(";");
 				sb.append(attribute.getName() + splitter

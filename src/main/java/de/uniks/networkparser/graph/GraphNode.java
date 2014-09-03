@@ -71,8 +71,8 @@ public class GraphNode extends AbstractEntityList<GraphMember> {
 		return this;
 	}
 
-	public void addValue(String property, DataType clazz, String value) {
-		keys.add(new Attribute().withValue(value).with(property).with(clazz));
+	public void addValue(String property, GraphDataType clazz, String value) {
+		keys.add(new GraphAttribute().withValue(value).with(property).with(clazz));
 	}
 
 	@Override
@@ -92,8 +92,8 @@ public class GraphNode extends AbstractEntityList<GraphMember> {
 	public GraphNode with(Object... values) {
 		if (values != null) {
 			for (Object value : values) {
-				if (value instanceof Attribute) {
-					add((Attribute) value);
+				if (value instanceof GraphAttribute) {
+					add((GraphAttribute) value);
 				}
 			}
 		}
