@@ -178,4 +178,19 @@ public class GraphMethod extends AbstractList<GraphParameter> implements GraphMe
 		}
 		return this;
 	}
+	
+	public String getParameterString(boolean shortName){
+		StringBuilder sb=new StringBuilder();
+		for(int i=0;i<size();i++) {
+			if(i>0) {
+				sb.append(", ");
+			}
+			if(get(i).getName() == null) {
+				sb.append("p"+i+" : "+get(i).getType(shortName));
+			}else{
+				sb.append(get(i).getName()+" : "+get(i).getType(shortName));
+			}
+		}
+		return sb.toString();
+	}
 }

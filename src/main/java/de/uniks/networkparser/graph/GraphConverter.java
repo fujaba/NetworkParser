@@ -39,6 +39,7 @@ public class GraphConverter implements Converter {
 	public static final String EDGE = "edge";
 	public static final String ID = "id";
 	public static final String ATTRIBUTES = "attributes";
+	public static final String METHODS = "methods";
 	public static final String NODES = "nodes";
 	public static final String EDGES = "edges";
 	public static final String SOURCE = "source";
@@ -102,11 +103,12 @@ public class GraphConverter implements Converter {
 	public GraphNode parseJsonObject(GraphList root, JsonObject node,
 			HashMap<GraphNode, ArrayList<GraphAttribute>> attributes) {
 		String id = node.getString(JsonIdMap.ID);
-		GraphNode graphNode = root.get(id);
+		GraphClazz graphNode = (GraphClazz) root.get(id);
 		if (graphNode == null) {
-			graphNode = new GraphNode().withId(id);
+			graphNode = new GraphClazz().withId(id);
 			root.add(graphNode);
 		}
+		
 		if (node.containsKey(JsonIdMap.CLASS)) {
 			graphNode.withClassName(node.getString(JsonIdMap.CLASS));
 		}
@@ -122,8 +124,8 @@ public class GraphConverter implements Converter {
 					// Must be a Link to 1
 					GraphNode newNode = parseJsonObject(root,
 							(JsonObject) props.getValue(i), attributes);
-					root.addEdge(new GraphEdge().with(graphNode).with(
-							new GraphEdge(newNode, Cardinality.ONE, props
+					root.add(new GraphEdge().with(graphNode).with(
+							new GraphEdge(newNode, GraphCardinality.ONE, props
 									.get(i))));
 				} else if (props.getValue(i) instanceof JsonArray) {
 					// Must be a Link to n
@@ -133,8 +135,8 @@ public class GraphConverter implements Converter {
 						if (entity instanceof JsonObject) {
 							GraphNode newNode = parseJsonObject(root,
 									(JsonObject) entity, attributes);
-							root.addEdge(new GraphEdge().with(graphNode).with(
-									new GraphEdge(newNode, Cardinality.MANY,
+							root.add(new GraphEdge().with(graphNode).with(
+									new GraphEdge(newNode, GraphCardinality.MANY,
 											props.get(i))));
 						} else {
 							if (sb.length() > 0) {
@@ -190,6 +192,7 @@ public class GraphConverter implements Converter {
 
 		for (GraphEdge edge : edges) {
 			for (GraphNode source : edge.values()) {
+				GraphClazz sourceClazz = (GraphClazz) source;
 				for (GraphNode target : edge.getOther().values()) {
 					JsonObject child = new JsonObject().withValue(TYP, EDGE);
 					child.put(SOURCECARDINALITY, edge.getCardinality());
@@ -197,24 +200,26 @@ public class GraphConverter implements Converter {
 							.getCardinality());
 					child.put(SOURCEPROPERTY, edge.getProperty());
 					child.put(TARGETPROPERTY, edge.getOther().getProperty());
+					
+					GraphClazz targetClazz = (GraphClazz) target;
 					if (typ.equals(GraphIdMap.OBJECT)) {
 						child.put(
 								SOURCE,
 								source.getId() + " : "
-										+ source.getClassName(shortName));
+										+ sourceClazz.getClassName(shortName));
 						child.put(
 								TARGET,
 								target.getId() + " : "
-										+ target.getClassName(shortName));
+										+ sourceClazz.getClassName(shortName));
 						result.add(child);
 					} else {
-						String id = source.getClassName(false) + ":"
+						String id = sourceClazz.getClassName(false) + ":"
 								+ edge.getProperty()
-								+ target.getClassName(false) + ":"
+								+ targetClazz.getClassName(false) + ":"
 								+ edge.getOther().getProperty();
 						if (!ids.contains(id)) {
-							child.put(SOURCE, source.getClassName(shortName));
-							child.put(TARGET, target.getClassName(shortName));
+							child.put(SOURCE, sourceClazz.getClassName(shortName));
+							child.put(TARGET, targetClazz.getClassName(shortName));
 							result.add(child);
 							ids.add(id);
 						}
@@ -258,13 +263,16 @@ public class GraphConverter implements Converter {
 		if (nodeHeader != null) {
 			item.put(HEADIMAGE, nodeHeader);
 		}
+		
+		GraphClazz entityClazz = (GraphClazz) entity;
 		if (typ == GraphIdMap.OBJECT) {
 			item.put(ID,
-					entity.getId() + " : " + entity.getClassName(shortName));
+					entity.getId() + " : " + entityClazz.getClassName(shortName));
 		} else {
-			item.put(ID, entity.getClassName(shortName));
+			item.put(ID, entityClazz.getClassName(shortName));
 		}
 		item.put(ATTRIBUTES, parseAttributes(typ, entity.values(), shortName));
+		item.put(METHODS, parseMethods(entity.values(), shortName));
 		return item;
 	}
 
@@ -293,6 +301,18 @@ public class GraphConverter implements Converter {
 			GraphAttribute attribute = (GraphAttribute) item;
 			result.add(attribute.getName() + splitter
 					+ attribute.getValue(typ, shortName));
+		}
+		return result;
+	}
+	
+	private JsonArray parseMethods(Collection<GraphMember> list, boolean shortName) {
+		JsonArray result = new JsonArray();
+		for (GraphMember item : list) {
+			if (!(item instanceof GraphMethod)) {
+				continue;
+			}
+			GraphMethod method = (GraphMethod) item;
+			result.add( method.getName() + "(" + method.getParameterString(shortName)+")");
 		}
 		return result;
 	}

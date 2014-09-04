@@ -66,7 +66,7 @@ public class GraphDataType
 		return new GraphDataType(value.getName().replace("$", "."));
 	}
 
-	public static GraphDataType ref(GraphNode value) {
+	public static GraphDataType ref(GraphClazz value) {
 		return new GraphDataType(value.getClassName());
 	}
 

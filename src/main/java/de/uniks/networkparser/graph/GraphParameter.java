@@ -72,5 +72,4 @@ public class GraphParameter extends GraphValue {
 		super.with(value);
 		return this;
 	}
-
 }
