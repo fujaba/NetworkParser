@@ -21,14 +21,14 @@ package de.uniks.networkparser.graph;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
  */
-public enum Cardinality
+public enum GraphCardinality
 
 {
 	ONE("1"), MANY("n");
 
 	private String value;
 
-	private Cardinality(String value) {
+	private GraphCardinality(String value) {
 		this.value = value;
 	}
 
@@ -41,7 +41,7 @@ public enum Cardinality
 		return value;
 	}
 
-	public Cardinality withValue(String value) {
+	public GraphCardinality withValue(String value) {
 		this.value = value;
 		return this;
 	}

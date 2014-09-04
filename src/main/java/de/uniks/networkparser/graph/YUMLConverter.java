@@ -76,7 +76,7 @@ public class YUMLConverter implements Converter {
 			sb.append(parseEntity(item, visited, typ, shortName));
 			sb.append("-");
 
-			Iterator<GraphNode> targetIterator = element.getOther().iterator();
+			Iterator<GraphClazz> targetIterator = element.getOther().iterator();
 			GraphNode target = targetIterator.next();
 			sb.append(parseEntity(target, visited, typ, shortName));
 
@@ -97,13 +97,18 @@ public class YUMLConverter implements Converter {
 
 	public String parseEntity(GraphNode entity, ArrayList<GraphNode> visited,
 			String typ, boolean shortName) {
-		boolean shortString = visited.contains(entity);
+		if(!(entity instanceof GraphClazz)){
+			return "";
+		}
+		GraphClazz clazzEntity = (GraphClazz) entity;
+		
+		boolean shortString = visited.contains(clazzEntity);
 		if (!shortString) {
-			visited.add(entity);
+			visited.add(clazzEntity);
 		}
 		if (typ == null) {
 			typ = GraphIdMap.OBJECT;
-			if (entity.getId() == null) {
+			if (clazzEntity.getId() == null) {
 				typ = GraphIdMap.CLASS;
 			}
 		}
@@ -114,12 +119,12 @@ public class YUMLConverter implements Converter {
 			// + "\\n"
 			// + new String(new char[text.length()]).replace("\0", "&oline;") +
 			// "]";
-			return "[" + entity.getId() + " : "
-					+ entity.getClassName(shortName)
-					+ parseEntityValues(entity, typ, shortString) + "]";
+			return "[" + clazzEntity.getId() + " : "
+					+ clazzEntity.getClassName(shortName)
+					+ parseEntityValues(clazzEntity, typ, shortString) + "]";
 		}
-		return "[" + entity.getClassName(shortName)
-				+ parseEntityValues(entity, typ, shortString) + "]";
+		return "[" + clazzEntity.getClassName(shortName)
+				+ parseEntityValues(clazzEntity, typ, shortString) + "]";
 	}
 
 	public String parseEntityValues(GraphNode entity, String typ,

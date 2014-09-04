@@ -31,6 +31,15 @@ public class GraphAttribute extends GraphValue implements GraphMember {
 	private String value = null;
 	private GraphVisibility visibility = GraphVisibility.PRIVATE;
 
+	public GraphAttribute() {
+	}
+
+	public GraphAttribute(String name, GraphDataType datatyp) {
+		this.with(name);
+		this.with(datatyp);
+	}
+	
+	
 	public String getValue() {
 		return value;
 	}

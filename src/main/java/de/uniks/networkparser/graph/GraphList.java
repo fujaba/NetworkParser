@@ -23,6 +23,7 @@ package de.uniks.networkparser.graph;
  */
 import java.util.ArrayList;
 import java.util.Iterator;
+
 import de.uniks.networkparser.AbstractKeyValueList;
 import de.uniks.networkparser.ArrayEntityList;
 import de.uniks.networkparser.ArraySimpleList;
@@ -31,7 +32,7 @@ import de.uniks.networkparser.interfaces.Converter;
 
 public class GraphList extends AbstractKeyValueList<String, GraphNode> {
 	private ArrayList<GraphEdge> edges = new ArrayList<GraphEdge>();
-	private String typ;
+	private String typ=GraphIdMap.CLASS;
 
 	public boolean add(GraphNode value) {
 		put(value.getId(), value);
@@ -57,18 +58,18 @@ public class GraphList extends AbstractKeyValueList<String, GraphNode> {
 	}
 
 	public GraphList withEdge(GraphEdge edge) {
-		addEdge(edge);
+		add(edge);
 		return this;
 	}
 
 	public GraphList withEdge(String sourceName, String targetName) {
 		GraphEdge edge = new GraphEdge().with(sourceName).with(
 				new GraphEdge().with(targetName));
-		addEdge(edge);
+		add(edge);
 		return this;
 	}
 
-	public boolean addEdge(GraphEdge edge) {
+	public boolean add(GraphEdge edge) {
 		for (Iterator<GraphEdge> i = this.edges.iterator(); i.hasNext();) {
 			GraphEdge item = i.next();
 			if (item.contains(edge.getOther().values())
@@ -121,11 +122,32 @@ public class GraphList extends AbstractKeyValueList<String, GraphNode> {
 				if (value instanceof GraphNode) {
 					this.add((GraphNode) value);
 				}
+				if (value instanceof GraphEdge) {
+					this.add((GraphEdge)value);
+				}
 			}
 		}
 		return this;
 	}
 
+	public GraphClazz with(GraphClazz value) {
+		if (value != null) {
+			if(value.getId()==null){
+				value.withId(value.getClassName());
+			}
+			add(value);
+		}
+		return value;
+	}
+	
+	public GraphEdge with(GraphEdge value) {
+		if (value != null) {
+			add(value);
+		}
+		return value;
+	}
+	
+	
 	@Override
 	public GraphNode remove(Object key) {
 		return removeItem(key);

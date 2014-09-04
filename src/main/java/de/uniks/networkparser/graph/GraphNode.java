@@ -24,45 +24,21 @@ package de.uniks.networkparser.graph;
 import de.uniks.networkparser.AbstractEntityList;
 
 public class GraphNode extends AbstractEntityList<GraphMember> {
-	private String className;
 	private String id;
 
 	// GETTER AND SETTER
-	public String getClassName(boolean shortName) {
-		if (!shortName || className == null || className.lastIndexOf(".") < 0) {
-			return className;
-		}
-		return className.substring(className.lastIndexOf(".") + 1);
-	}
-
-	public GraphNode withClassName(String className) {
-		this.className = className;
-		return this;
-	}
-
-	public String getClassName() {
-		return className;
-	}
+	
 
 	public String getId() {
 		return id;
 	}
 
 	public String getTyp(String typ, boolean shortName) {
-		if (typ.equals(GraphIdMap.OBJECT)) {
-			return getId();
-		} else if (typ.equals(GraphIdMap.CLASS)) {
-			return getClassName(shortName);
-		}
-		return "";
+		return getId();
 	}
 
 	public GraphNode withTyp(String typ, String value) {
-		if (typ.equals(GraphIdMap.OBJECT)) {
-			withId(value);
-		} else if (typ.equals(GraphIdMap.CLASS)) {
-			withClassName(value);
-		}
+		withId(value);
 		return this;
 	}
 
@@ -77,9 +53,6 @@ public class GraphNode extends AbstractEntityList<GraphMember> {
 
 	@Override
 	public String toString() {
-		if (id == null) {
-			return className;
-		}
 		return id;
 	}
 
@@ -94,6 +67,9 @@ public class GraphNode extends AbstractEntityList<GraphMember> {
 			for (Object value : values) {
 				if (value instanceof GraphAttribute) {
 					add((GraphAttribute) value);
+				}
+				if (value instanceof GraphMethod) {
+					add((GraphMethod) value);
 				}
 			}
 		}

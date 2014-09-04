@@ -26,12 +26,12 @@ import java.util.List;
 import de.uniks.networkparser.AbstractEntityList;
 import de.uniks.networkparser.AbstractList;
 
-public class GraphEdge extends AbstractEntityList<GraphNode> implements
-		List<GraphNode> {
+public class GraphEdge extends AbstractEntityList<GraphClazz> implements
+		List<GraphClazz> {
 	public static final String PROPERTY_NODE = "node";
 	public static final String PROPERTY_CARDINALITY = "cardinality";
 	public static final String PROPERTY_PROPERTY = "property";
-	private Cardinality cardinality;
+	private GraphCardinality cardinality;
 	private String property;
 	private GraphEdge other;
 
@@ -39,22 +39,34 @@ public class GraphEdge extends AbstractEntityList<GraphNode> implements
 
 	}
 
-	public GraphEdge(GraphNode node, Cardinality cardinality, String property) {
+	public GraphEdge(GraphNode node, GraphCardinality cardinality, String property) {
 		with(node);
 		with(cardinality);
 		with(property);
 	}
 
-	public Cardinality getCardinality() {
-		return cardinality;
+	public GraphCardinality getCardinality() {
+		if(cardinality != null) {
+			return cardinality;
+		}
+		if(this.size() > 1){
+			return GraphCardinality.MANY;
+		}
+		return GraphCardinality.ONE;
 	}
-
+	
 	public String getCardinalityText() {
 		return cardinality.getValue();
 	}
 
 	public String getProperty() {
-		return property;
+		if(property != null) {
+			return property;
+		}
+		if(this.size() == 1) {
+			return this.get(0).getClassName().toLowerCase();
+		}
+		return "";
 	}
 
 	public GraphEdge with(String property) {
@@ -67,7 +79,7 @@ public class GraphEdge extends AbstractEntityList<GraphNode> implements
 	}
 
 	@Override
-	public AbstractList<GraphNode> getNewInstance() {
+	public AbstractList<GraphClazz> getNewInstance() {
 		return new GraphEdge();
 	}
 
@@ -77,14 +89,14 @@ public class GraphEdge extends AbstractEntityList<GraphNode> implements
 			return this;
 		}
 		for (Object value : values) {
-			if (value instanceof GraphNode) {
-				add((GraphNode) value);
+			if (value instanceof GraphClazz) {
+				add((GraphClazz) value);
 			}
 			if (value instanceof GraphEdge) {
 				with((GraphEdge) value);
 			}
-			if (value instanceof Cardinality) {
-				with((Cardinality) value);
+			if (value instanceof GraphCardinality) {
+				with((GraphCardinality) value);
 			}
 		}
 		return this;
@@ -99,13 +111,13 @@ public class GraphEdge extends AbstractEntityList<GraphNode> implements
 		return this;
 	}
 
-	public GraphEdge with(Cardinality cardinality) {
+	public GraphEdge with(GraphCardinality cardinality) {
 		this.cardinality = cardinality;
 		return this;
 	}
 
 	@Override
-	public boolean add(GraphNode newValue) {
+	public boolean add(GraphClazz newValue) {
 		if (super.addEntity(newValue)) {
 			newValue.with(this);
 		}
@@ -121,7 +133,13 @@ public class GraphEdge extends AbstractEntityList<GraphNode> implements
 		return removeItemByObject((GraphNode) value) >= 0;
 	}
 
-	public List<GraphNode> values() {
+	public List<GraphClazz> values() {
 		return keys;
+	}
+	
+	public static GraphEdge create(GraphClazz source, GraphClazz target){
+		GraphEdge edge = new GraphEdge().with(source);
+		edge.with(new GraphEdge().with(target));
+		return edge;
 	}
 }

@@ -100,10 +100,10 @@ public class GraphIdMap extends IdMapEncoder {
 		String className = object.getClass().getName();
 		className = className.substring(className.lastIndexOf('.') + 1);
 
-		element = new GraphNode();
-		element.withId(mainKey);
-		element.withClassName(className);
-		list.add(element);
+		GraphClazz newElement = new GraphClazz();
+		newElement.withId(mainKey);
+		newElement.withClassName(className);
+		list.add(newElement);
 		if (prototyp != null) {
 			for (String property : prototyp.getProperties()) {
 				Object value = prototyp.getValue(object, property);
@@ -112,21 +112,21 @@ public class GraphIdMap extends IdMapEncoder {
 				}
 				if (value instanceof Collection<?>) {
 					for (Object containee : ((Collection<?>) value)) {
-						parsePropertyValue(object, filter, list, deep, element,
-								property, containee, Cardinality.MANY);
+						parsePropertyValue(object, filter, list, deep, newElement,
+								property, containee, GraphCardinality.MANY);
 					}
 				} else {
-					parsePropertyValue(object, filter, list, deep, element,
-							property, value, Cardinality.ONE);
+					parsePropertyValue(object, filter, list, deep, newElement,
+							property, value, GraphCardinality.ONE);
 				}
 			}
 		}
-		return element;
+		return newElement;
 	}
 
 	private void parsePropertyValue(Object entity, GraphIdMapFilter filter,
 			GraphList list, int deep, GraphNode element, String property,
-			Object item, Cardinality cardinality) {
+			Object item, GraphCardinality cardinality) {
 		if (item == null) {
 			return;
 		}
@@ -140,7 +140,7 @@ public class GraphIdMap extends IdMapEncoder {
 		SendableEntityCreator valueCreater = getCreatorClass(item);
 		if (valueCreater != null) {
 			GraphNode subId = parse(item, filter, list, deep + 1);
-			list.addEdge(new GraphEdge().with(element).with(
+			list.add(new GraphEdge().with(element).with(
 					new GraphEdge(subId, cardinality, property)));
 		} else {
 			element.addValue(property, GraphDataType.ref(item.getClass()), "" + item);
