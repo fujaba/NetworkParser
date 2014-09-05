@@ -171,7 +171,7 @@ public class XMLTokener extends Tokener {
 	}
 
 	/**
-	 * Skip the Current Entity to >.
+	 * Skip the Current Entity to &gt;.
 	 */
 	protected void skipEntity() {
 		stepPos(">", false, false);
@@ -191,7 +191,7 @@ public class XMLTokener extends Tokener {
 	}
 
 	/**
-	 * Get the Prefix from Tokener my be seperated by &.
+	 * Get the Prefix from Tokener my be seperated by &amp;.
 	 *
 	 * @return the Prefix
 	 */
