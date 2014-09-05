@@ -1,13 +1,11 @@
-import java.text.SimpleDateFormat
-
 apply plugin: 'java'
 apply plugin: 'maven'
 apply from: 'gradle/ide.gradle'
+apply from: 'gradle/version.gradle'
 
 // only for jenkins
 if(project.hasProperty('jenkins')) {
 	apply from: 'gradle/artifactory.gradle'
-	apply from: 'gradle/version.gradle'
     apply plugin: 'jacoco'
 	
 	//tbd - need configuration
@@ -36,45 +34,86 @@ dependencies {
 }
 
 jar {
-	from sourceSets.main.allJava
+	from sourceSets.main.output
 
 	manifest {
-		attributes 'Specification-Version': "4.2.23.${revisionNumber()} ${today()}",
+		attributes 'Specification-Version': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision,
 			'Implementation-Title': 'Networkparser',
 			'Specification-Title': 'Networkparser',
-			'Built-Time': today(),
-			'Created-By': "4.2.23.${revisionNumber()} ${today()} ${System.properties['user.name']}",
+			'Built-Time': gitVersion.buildTime,
+			'Created-By': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision+" "+System.properties['user.name'],
 			'Built-By': "${System.properties['user.name']}",
 			'Location': "${System.properties['user.language']}",
+			'Version': gitVersion.revision,
 			'Author': 'Stefan Lindel',
-			'Version': revisionNumber(),
-			'Implementation-Version': "4.2.23.${revisionNumber()} ${today()}",
-			//'GIT-Branch': branchName(),
-			//'GIT-CommitId': '${LastCommit}',
-			'GIT-Revision': revisionNumber(),
+			'Implementation-Version': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision,
+			'GIT-Revision': gitVersion.revision,
 			'Java-Version': "${System.properties['java.version']}",
 			'Bundle-Description': 'NetworkParser',
 			'Bundle-ClassPath': '.'
 	}
 }
 
-def revisionNumber() {
-    def gitFolder = "$projectDir/.git/"
-    def takeFromHash = 12
-
-    def head = new File(gitFolder + "HEAD").text.split(":")
-    def isCommit = head.length == 1
- 
-    if(isCommit) return head[0].trim().take(takeFromHash)
- 
-    def refHead = new File(gitFolder + head[1].trim())
-    refHead.text.trim().take takeFromHash
+task sourceJar(type: Jar) { 
+	from (sourceSets.main.allSource + sourceSets.main.output ); classifier = 'sources'
+	manifest {
+		attributes 'Specification-Version': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision,
+			'Implementation-Title': 'Networkparser',
+			'Specification-Title': 'Networkparser',
+			'Built-Time': gitVersion.buildTime,
+			'Created-By': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision+" "+System.properties['user.name'],
+			'Built-By': "${System.properties['user.name']}",
+			'Location': "${System.properties['user.language']}",
+			'Version': gitVersion.revision,
+			'Author': 'Stefan Lindel',
+			'Implementation-Version': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision,
+			'GIT-Revision': gitVersion.revision,
+			'Java-Version': "${System.properties['java.version']}",
+			'Bundle-Description': 'NetworkParser',
+			'Bundle-ClassPath': '.'
+	}
+}
+task javadocJar(type: Jar) {
+	from javadoc.outputs.files; classifier = 'javadoc'
+	manifest {
+		attributes 'Specification-Version': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision,
+			'Implementation-Title': 'Networkparser',
+			'Specification-Title': 'Networkparser',
+			'Built-Time': gitVersion.buildTime,
+			'Created-By': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision+" "+System.properties['user.name'],
+			'Built-By': "${System.properties['user.name']}",
+			'Location': "${System.properties['user.language']}",
+			'Version': gitVersion.revision,
+			'Author': 'Stefan Lindel',
+			'Implementation-Version': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision,
+			'GIT-Revision': gitVersion.revision,
+			'Java-Version': "${System.properties['java.version']}",
+			'Bundle-Description': 'NetworkParser',
+			'Bundle-ClassPath': '.'
+	}
 }
 
-def today() {
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-    Date date = new Date()
-    sdf.format(date)
+task fatJar(type: Jar) {
+	manifest {
+		attributes 'Specification-Version': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision,
+			'Implementation-Title': 'Networkparser',
+			'Specification-Title': 'Networkparser',
+			'Built-Time': gitVersion.buildTime,
+			'Created-By': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision+" "+System.properties['user.name'],
+			'Built-By': "${System.properties['user.name']}",
+			'Location': "${System.properties['user.language']}",
+			'Version': gitVersion.revision,
+			'Author': 'Stefan Lindel',
+			'Implementation-Version': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision,
+			'GIT-Revision': gitVersion.revision,
+			'Java-Version': "${System.properties['java.version']}",
+			'Bundle-Description': 'NetworkParser',
+			'Bundle-ClassPath': '.'
+	}
+	from {(
+			sourceSets.main.output +
+			sourceSets.main.allSource +
+			javadoc.outputs.files
+			)}
+	classifier = 'all'
 }
-
-
