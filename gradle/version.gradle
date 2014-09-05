@@ -1,6 +1,7 @@
 // MAJOR VERSION - Manually set
 //----------------------
 def majorNumber = 4
+group = 'de.uniks'
 //----------------------
 
 import java.text.SimpleDateFormat
@@ -16,7 +17,7 @@ version = new GITVersion(major: majorNumber,minor: getGitTag(), revision: revisi
 ext{
 	gitVersion = new GITVersion(major: majorNumber,minor: getGitTag(), revision: revisionNumber(), hash: revisionHash(), buildTime: buildTime() )
 }
-group = 'org.sdmlib'
+
 // Define a method using a closure as the method body
 public class GITVersion {
 	// MAJOR VERSION - Manually set
