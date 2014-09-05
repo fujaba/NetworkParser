@@ -256,25 +256,44 @@ SVGDrawer.prototype.setSize = function(item, x, y){item.style.width = x;item.sty
 SVGDrawer.prototype.getWidth = function(label, calculate){
 	var text = this.createObject("http://www.w3.org/2000/svg", "text");
 	text.appendChild(document.createTextNode(label));
-	text.style.fontSize=this.graph.options.fontsize * "px";
+	text.setAttribute("fontSize", this.graph.options.fontsize + "px");
+	text.setAttribute("width", "5px");
 	this.graph.board.appendChild(text);
-	var width =text.getBoundingClientRect().width;
+	var width = text.getBoundingClientRect().width;
 	this.graph.board.removeChild(text);
 	return width;
 }
 SVGDrawer.prototype.getHTMLNode = function(node, calculate){
-	var group = this.createObject("http://www.w3.org/2000/svg", "g");
-	group.setAttribute('transform', "translate("+node.x+" "+node.y+")");
-	var width=0;
-	var height=30;
 	if(node.typ!="node"){
 		return new SymbolLibary().draw(this, node, calculate);
 	}
-	if(this.graph.typ=="object"){
-		width = Math.max(width, this.getWidth(node.id.charAt(0).toLowerCase() + node.id.slice(1)));
-	}else{
-		width = Math.max(width, this.getWidth(node.id));
+	if(node.content_src){
+		return this.createElement({id:"image", height: node.height, width: node.width, content_src: node.content_src});
 	}
+	if(node.content_svg){
+		var group = this.createObject("http://www.w3.org/2000/svg", "g");
+		group.setAttribute('transform', "translate("+node.x+" "+node.y+")");
+		group.innerHTML = node.content_svg;return group;
+	}
+
+	
+	if(node.content_plain){
+		var text = this.createElement({id:"text", "text-anchor":"left", "x": (node.x + 10), "y":y});
+		text.setAttribute("font-size", this.graph.options.fontsize+"px");
+		text.appendChild( document.createTextNode(node.content_plain) );
+		return text;
+	}
+
+	var width=0;
+	var height=30;
+	var textWidth;
+
+	if(this.graph.typ=="object"){
+		textWidth = this.getWidth(node.id.charAt(0).toLowerCase() + node.id.slice(1));
+	}else{
+		textWidth = this.getWidth(node.id);
+	}
+	width = Math.max(width, textWidth);
 	if(node.attributes){
 		height = height + node.attributes.length*20;
 		for(var a=0; a<node.attributes.length;a++){
@@ -294,39 +313,27 @@ SVGDrawer.prototype.getHTMLNode = function(node, calculate){
 		height += 40;
 	}
 	width += 20;
-	var textwidth=width-10;
 
-	if(node.content_src){
-		group.appendChild(this.createElement({id:"image", height: node.height, width: node.width, content_src: node.content_src}));
-		return group;
-	}
-	if(node.content_svg){
-		group.innerHTML = node.content_svg;return group;
-	}
-	if(node.content_plain){
-		var text = this.createElement({id:"text", "text-anchor":"left", x:"10"});
-		text.setAttribute("style", "font-size:"+this.graph.options.fontsize+"px;");
-		var textNode = document.createTextNode(node.content_plain)
-		text.appendChild(textNode);
-		group.appendChild(text);
-		return group;
-	}
-	group.appendChild(this.createElement({id:"rect", "width":width, "height":height}));
-	var text = this.createElement({id:"text", "text-anchor":"middle", x:width/2, y:20, width:textwidth});
+	var y = node.y;
+	var group = this.createObject("http://www.w3.org/2000/svg", "g");
+	group.appendChild(this.createElement({id:"rect", "width":width, "height":height, "x":node.x, "y":y}));
+	//var text = this.createElement({id:"text", "text-anchor":"middle", "x":node.x+(width-textWidth)/2, "y":y+20, "width":textWidth});
+	var text = this.createElement({id:"text", "text-anchor":"right", "x":node.x+width/2-textWidth/2, "y":y+20, "width":textWidth});
+	text.setAttribute("font-size", this.graph.options.fontsize+"px");
 	if(this.graph.typ=="object"){
-		text.setAttribute("style", "text-decoration: underline;font-size:"+this.graph.options.fontsize+"px;");
+		text.setAttribute("text-decoration", "underline");
 		text.appendChild(document.createTextNode(node.id.charAt(0).toLowerCase() + node.id.slice(1)));
 	}else{
-		text.setAttribute("style", "font-size: "+this.graph.options.fontsize+"px;");
 		text.appendChild(document.createTextNode(node.id));
 	}
 	group.appendChild(text);
-	group.appendChild( this.createElement({id:"line", x1:0, y1:30, x2: width, y2: 30, style:"stroke:#000;"}) );
-	var y = 50;
+	group.appendChild( this.createElement({id:"line", x1:node.x, y1:y + 30, x2: node.x + width, y2: y + 30, stroke:"#000"}) );
+	y += 50;
+
 	if(node.attributes){
 		for(var a=0;a<node.attributes.length;a++){
 			var attribute = node.attributes[a];
-			var text = this.createElement({id:"text", "text-anchor":"left", "width": textwidth, x:10, "y":y, "style": "font-size:"+this.graph.options.fontsize+"px;"});
+			var text = this.createElement({id:"text", "text-anchor":"left", "width": width, "x":(node.x+10), "y": y, "font-size":this.graph.options.fontsize+"px"});
 			text.appendChild(document.createTextNode(attribute));
 			group.appendChild(text);
 			y += 20;
@@ -336,11 +343,11 @@ SVGDrawer.prototype.getHTMLNode = function(node, calculate){
 		}
 	}
 	if(node.methods && node.methods.length > 0){
-		group.appendChild( this.createElement({id:"line", x1:0, y1:y, x2: width, y2: y, style:"stroke:#000;"}) );
+		group.appendChild( this.createElement({id:"line", x1:node.x, y1: y, x2: node.x + width, y2: y, stroke:"#000"}) );
 		y+=20;
 		for(var m=0;m<node.methods.length;m++){
 			var method = node.methods[m];
-			var text = this.createElement({id:"text", "text-anchor":"left", "width": textwidth, x:10, "y":y, "style": "font-size:"+this.graph.options.fontsize+"px;"});
+			var text = this.createElement({id:"text", "text-anchor":"left", "width": width, x:node.x + 10, "y": y, "font-size":this.graph.options.fontsize+"px"});
 			text.appendChild(document.createTextNode(method));
 			group.appendChild(text);
 			y += 20;
@@ -351,8 +358,9 @@ SVGDrawer.prototype.getHTMLNode = function(node, calculate){
 
 SVGDrawer.prototype.createElement = function(node){
 	var element = this.createObject("http://www.w3.org/2000/svg", node.id);
-	//if(node.id=="rect" || node.id=="ellipse" || node.id=="circle" || node.id=="line"){
-	element.setAttribute("style", "fill:none;stroke:#000;stroke-width:1px;");
+	element.setAttribute("fill", "none");
+	element.setAttribute("stroke","#000");
+	element.setAttribute("stroke-width", "1px");
 	//}
 	if(node.id=="path"){
 		element.setAttribute('fill', "rgb(255, 255, 255)");
@@ -377,10 +385,10 @@ SVGDrawer.prototype.createInfo = function(x, y, text, calculate){
 
 SVGDrawer.prototype.createLine = function(x1, y1, x2, y2, style){
 	var line = this.createElement({id:"line", 'x1': x1, 'y1': y1, 'x2': x2, 'y2': y2});
+	line.setAttribute("stroke","#000");
 	if(style=="DOTTED"){
-		line.setAttribute('style', "stroke:#000;stroke-miterlimit:4;stroke-dasharray:1, 1;");
-	}else{
-		line.setAttribute('style', "stroke:#000;");
+		line.setAttribute("stroke-miterlimit",4);
+		line.setAttribute("stroke-dasharray","1,1");
 	}
 	return line;
 };

@@ -1,0 +1,25 @@
+<html><head>
+<script type="text/javascript" src="../../../src/resources/de/uniks/networkparser/graph/jspdf.source.js"></script>
+<script type="text/javascript" src="../../../src/resources/de/uniks/networkparser/graph/svgToPdf.js"></script>
+<script type="text/javascript" src="../../../src/resources/de/uniks/networkparser/graph/jquery-1.11.1.min.js"></script>
+</head><body>
+<script>
+//var doc = new jsPDF();
+var pdf = new jsPDF('l', 'pt', 'a4');
+//doc.text(20, 20, 'Hello world!');
+//doc.text(20, 30, 'This is client-side Javascript, pumping out a PDF.');
+//pdf.addPage();
+//doc.text(20, 20, 'Do you like that?');
+//pdf.addToFontDictionary("F1", "Helvetica", "normal");
+svg = "<svg xmlns=\"http://www.w3.org/2000/svg\" style=\"width: 630.0546875px; height: 405px;\"><g><rect fill=\"none\" stroke=\"#000\" stroke-width=\"1px\" width=\"58.203125\" height=\"70\" x=\"42.9921875\" y=\"165\"/><text fill=\"none\" stroke=\"#000\" stroke-width=\"1px\" text-anchor=\"right\" x=\"52.9921875\" y=\"185\" width=\"38.203125\" font-size=\"12px\">Space</text><line fill=\"none\" stroke=\"#000\" stroke-width=\"1px\" x1=\"42.9921875\" y1=\"195\" x2=\"101.1953125\" y2=\"195\"/></g><g><rect fill=\"none\" stroke=\"#000\" stroke-width=\"1px\" width=\"109.78125\" height=\"70\" x=\"275.8515625\" y=\"45\"/><text fill=\"none\" stroke=\"#000\" stroke-width=\"1px\" text-anchor=\"right\" x=\"285.8515625\" y=\"65\" width=\"89.78125\" font-size=\"12px\">ModelHistory</text><line fill=\"none\" stroke=\"#000\" stroke-width=\"1px\" x1=\"275.8515625\" y1=\"75\" x2=\"385.6328125\" y2=\"75\"/></g><g><rect fill=\"none\" stroke=\"#000\" stroke-width=\"1px\" width=\"309.734375\" height=\"90\" x=\"275.8515625\" y=\"165\"/><text fill=\"none\" stroke=\"#000\" stroke-width=\"1px\" text-anchor=\"right\" x=\"385.3984375\" y=\"185\" width=\"90.640625\" font-size=\"12px\">NetworkNode</text><line fill=\"none\" stroke=\"#000\" stroke-width=\"1px\" x1=\"275.8515625\" y1=\"195\" x2=\"585.5859375\" y2=\"195\"/><text fill=\"none\" stroke=\"#000\" stroke-width=\"1px\" text-anchor=\"left\" width=\"309.734375\" x=\"285.8515625\" y=\"215\" font-size=\"12px\">online:boolean</text><line fill=\"none\" stroke=\"#000\" stroke-width=\"1px\" x1=\"275.8515625\" y1=\"225\" x2=\"585.5859375\" y2=\"225\"/><text fill=\"none\" stroke=\"#000\" stroke-width=\"1px\" text-anchor=\"left\" width=\"309.734375\" x=\"285.8515625\" y=\"245\" font-size=\"12px\">sendMessage(p0 : Message, p1 : NodeProxy)</text></g><g><rect fill=\"none\" stroke=\"#000\" stroke-width=\"1px\" width=\"62.65625\" height=\"70\" x=\"275.8515625\" y=\"285\"/><text fill=\"none\" stroke=\"#000\" stroke-width=\"1px\" text-anchor=\"right\" x=\"285.8515625\" y=\"305\" width=\"42.65625\" font-size=\"12px\">IdMap</text><line fill=\"none\" stroke=\"#000\" stroke-width=\"1px\" x1=\"275.8515625\" y1=\"315\" x2=\"338.5078125\" y2=\"315\"/></g><g><rect fill=\"none\" stroke=\"#000\" stroke-width=\"1px\" width=\"92.890625\" height=\"70\" x=\"517.1640625\" y=\"165\"/><text fill=\"none\" stroke=\"#000\" stroke-width=\"1px\" text-anchor=\"right\" x=\"527.1640625\" y=\"185\" width=\"72.890625\" font-size=\"12px\">NodeProxy</text><line fill=\"none\" stroke=\"#000\" stroke-width=\"1px\" x1=\"517.1640625\" y1=\"195\" x2=\"610.0546875\" y2=\"195\"/></g><g><rect fill=\"none\" stroke=\"#000\" stroke-width=\"1px\" width=\"75.984375\" height=\"70\" x=\"42.9921875\" y=\"275\"/><text fill=\"none\" stroke=\"#000\" stroke-width=\"1px\" text-anchor=\"right\" x=\"52.9921875\" y=\"295\" width=\"55.984375\" font-size=\"12px\">Message</text><line fill=\"none\" stroke=\"#000\" stroke-width=\"1px\" x1=\"42.9921875\" y1=\"305\" x2=\"118.9765625\" y2=\"305\"/></g><line fill=\"none\" stroke=\"#000\" stroke-width=\"1px\" x1=\"101.1953125\" y1=\"186.4983236173619\" x2=\"275.8515625\" y2=\"105.46651765487661\"/><line fill=\"none\" stroke=\"#000\" stroke-width=\"1px\" x1=\"101.1953125\" y1=\"200.81147612408503\" x2=\"275.8515625\" y2=\"205.68163994423142\"/><line fill=\"none\" stroke=\"#000\" stroke-width=\"1px\" x1=\"101.1953125\" y1=\"214.85494001528696\" x2=\"275.8515625\" y2=\"304.0085075271676\"/><line fill=\"none\" stroke=\"#000\" stroke-width=\"1px\" x1=\"585.5859375\" y1=\"198.34626690182245\" x2=\"610.0546875\" y2=\"196.50499706055263\"/></svg>";
+
+//pdf.addSVG(svg, 20,20, 20, 20);
+svgElementToPdf(svg, pdf, {removeInvalid: false});
+//svgElementToPdf(svg, pdf, {
+//    scale: 72/96, // this is the ratio of px to pt units
+//    removeInvalid: true // this removes elements that could not be translated to pdf from the source svg
+//});
+//doc.save('Test.pdf');
+pdf.save('Test.pdf');
+</Script>
+</body></html>
