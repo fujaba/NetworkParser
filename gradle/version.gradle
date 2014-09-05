@@ -30,12 +30,14 @@ public class GITVersion {
     // change, if release is needed some day: boolean release
     // also change version above to accept release property
     boolean release = false
+	boolean lecture = project.hasProperty('lectureBuild')
 
     String toString() {
 		if (System.getenv().BUILD_NUMBER) {
 			revision = System.getenv().BUILD_NUMBER as int
 		}
-        "$major.$minor.$revision${release ? '' : '-SNAPSHOT'}"
+		
+		"$major.$minor.$revision${release ? '' : (lecture ? '-LECTURE' : '-SNAPSHOT')}"
     }
 }
 
