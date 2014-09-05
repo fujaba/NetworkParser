@@ -49,10 +49,13 @@ public class SVGDrawerTest {
 		
 		StringBuilder sb=new StringBuilder();
 		sb.append("<html><head>"+CRLF);
-		sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"../lib/js/classmodel/diagramstyle.css\">"+CRLF);
-		sb.append("\t<script src=\"../lib/js/classmodel/graph.js\"></script>"+CRLF);
-		sb.append("\t<script src=\"../lib/js/classmodel/dagre.js\"></script>"+CRLF);
-		sb.append("\t<script src=\"../lib/js/classmodel/drawer.js\"></script>"+CRLF);
+		sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"../src/main/resources/de/uniks/networkparser/graph/diagramstyle.css\">"+CRLF);
+		sb.append("\t<script src=\"../src/main/resources/de/uniks/networkparser/graph/graph.js\"></script>"+CRLF);
+		sb.append("\t<script src=\"../src/main/resources/de/uniks/networkparser/graph/dagre.js\"></script>"+CRLF);
+		sb.append("\t<script src=\"../src/main/resources/de/uniks/networkparser/graph/drawer.js\"></script>"+CRLF);
+		sb.append("\t<script src=\"../src/main/resources/de/uniks/networkparser/graph/jquery-1.11.1.min.js\"></script>"+CRLF);
+		sb.append("\t<script src=\"../src/main/resources/de/uniks/networkparser/graph/jspdf.source.js\"></script>"+CRLF);
+		sb.append("\t<script src=\"../src/main/resources/de/uniks/networkparser/graph/svgToPdf.js\"></script>"+CRLF);
 		sb.append("</head><body>"+CRLF);
 		sb.append("<script language=\"Javascript\">"+CRLF);
 		sb.append("\tvar json="+converter.convertToJson(map, false).toString(2)+";"+CRLF);
