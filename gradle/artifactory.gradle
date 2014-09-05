@@ -108,4 +108,4 @@ task fatJar(type: Jar) {
 	classifier = 'all'
 }
 
-artifacts { archives sourceJar, javadocJar. fatJar}
+artifacts { archives sourceJar, javadocJar, fatJar}
