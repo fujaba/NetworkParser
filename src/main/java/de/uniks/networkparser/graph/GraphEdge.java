@@ -34,6 +34,7 @@ public class GraphEdge extends AbstractEntityList<GraphClazz> implements
 	private GraphCardinality cardinality;
 	private String property;
 	private GraphEdge other;
+	private GraphEdgeTypes typ = GraphEdgeTypes.EDGE;
 
 	public GraphEdge() {
 
@@ -141,5 +142,14 @@ public class GraphEdge extends AbstractEntityList<GraphClazz> implements
 		GraphEdge edge = new GraphEdge().with(source);
 		edge.with(new GraphEdge().with(target));
 		return edge;
+	}
+
+	public GraphEdgeTypes getTyp() {
+		return typ;
+	}
+
+	public GraphEdge withTyp(GraphEdgeTypes typ) {
+		this.typ = typ;
+		return this;
 	}
 }

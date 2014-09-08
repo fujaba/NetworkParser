@@ -14,6 +14,7 @@ import de.uniks.networkparser.graph.GraphEdge;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphMethod;
 import de.uniks.networkparser.graph.GraphParameter;
+import de.uniks.networkparser.json.JsonObject;
 
 public class SVGDrawerTest {
 	public static final String CRLF = "\r\n";
@@ -46,7 +47,32 @@ public class SVGDrawerTest {
 		map.with( GraphEdge.create(networkNode, nodeProxy) );
 		
 		GraphConverter converter=new GraphConverter();
+		writeJson("clazzModel.html", converter.convertToJson(map, false));
+	}
+	
+	
+	@Test
+	public void testPetaF() throws IOException {
+		GraphList map = new GraphList();
 		
+		
+		GraphClazz networkParser=map.with(new GraphClazz().withClassName("NetworkParser"));
+		GraphClazz networkParserfx=map.with(new GraphClazz().withClassName("NetworkParserFX"));
+		GraphClazz petaf=map.with(new GraphClazz().withClassName("PetaF"));
+		GraphClazz policy=map.with(new GraphClazz().withClassName("Policy"));
+		
+		
+		map.with( GraphEdge.create(networkParser, networkParserfx) );
+		map.with( GraphEdge.create(networkParser, petaf) );
+		map.with( GraphEdge.create(petaf, policy) );
+		
+		GraphConverter converter=new GraphConverter();
+		writeJson("petaf.html", converter.convertToJson(map, false));
+		
+	}
+	
+			
+	private void writeJson(String fileName, JsonObject item) throws IOException {
 		StringBuilder sb=new StringBuilder();
 		sb.append("<html><head>"+CRLF);
 		sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"../src/main/resources/de/uniks/networkparser/graph/diagramstyle.css\">"+CRLF);
@@ -58,12 +84,12 @@ public class SVGDrawerTest {
 		sb.append("\t<script src=\"../src/main/resources/de/uniks/networkparser/graph/svgToPdf.js\"></script>"+CRLF);
 		sb.append("</head><body>"+CRLF);
 		sb.append("<script language=\"Javascript\">"+CRLF);
-		sb.append("\tvar json="+converter.convertToJson(map, false).toString(2)+";"+CRLF);
+		sb.append("\tvar json="+item.toString(2)+";"+CRLF);
 		sb.append("\tnew Graph(json).layout();"+CRLF);
 		sb.append("</script></body></html>");
 		
 		
-		FileWriter fstream = new FileWriter("build/clazzModel.html");
+		FileWriter fstream = new FileWriter("build/"+fileName);
 		BufferedWriter out = new BufferedWriter(fstream);
 		out.write(sb.toString());
 		//Close the output stream
