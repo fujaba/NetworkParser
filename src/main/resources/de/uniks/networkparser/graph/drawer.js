@@ -83,7 +83,7 @@ HTMLDrawer.prototype.createImage = function(model){
 HTMLDrawer.prototype.createCell = function(parent, tag){
 	var tr = document.createElement('tr');
 	var cell = document.createElement(tag);
-	cell.style.fontSize=this.graph.options.fontsize;
+	cell.style.fontSize=this.graph.options.font["font-size"];
 	tr.appendChild(cell);
 	parent.appendChild(tr);
 	return cell;
@@ -192,7 +192,7 @@ HTMLDrawer.prototype.getHTMLNode = function(node, calculate){
 HTMLDrawer.prototype.createInfo = function(x, y, text, calculate){
 	var info = document.createElement("div");
 	info.className="EdgeInfo";
-	info.style.fontSize = this.graph.options.fontsize;
+	info.style.fontSize = this.graph.options.font["font-size"];
 	this.setPos(info, x, y);
 	info.innerHTML = text;
 	return info;
@@ -242,6 +242,17 @@ HTMLDrawer.prototype.onFinishImage = function(event){
 
 SVGDrawer = function() {};
 SVGDrawer.prototype = Object_create(Drawer.prototype);
+
+SVGDrawer.prototype.addFontAttributes = function(node){
+	if(this.graph.options.font){
+		for (var key in this.graph.options.font) {
+			if(this.graph.options.font[key]){
+				node.setAttribute(key, this.graph.options.font[key]);
+			}
+		}
+	}
+};
+
 SVGDrawer.prototype.createContainer = function(graph){
 	this.graph = graph;
 	var board = this.createObject("http://www.w3.org/2000/svg", "svg");
@@ -256,7 +267,8 @@ SVGDrawer.prototype.setSize = function(item, x, y){item.style.width = x;item.sty
 SVGDrawer.prototype.getWidth = function(label, calculate){
 	var text = this.createObject("http://www.w3.org/2000/svg", "text");
 	text.appendChild(document.createTextNode(label));
-	text.setAttribute("fontSize", this.graph.options.fontsize + "px");
+	this.addFontAttributes(text);
+
 	text.setAttribute("width", "5px");
 	this.graph.board.appendChild(text);
 	var width = text.getBoundingClientRect().width;
@@ -276,10 +288,9 @@ SVGDrawer.prototype.getHTMLNode = function(node, calculate){
 		group.innerHTML = node.content_svg;return group;
 	}
 
-	
 	if(node.content_plain){
 		var text = this.createElement({id:"text", "text-anchor":"left", "x": (node.x + 10), "y":y});
-		text.setAttribute("font-size", this.graph.options.fontsize+"px");
+		this.addFontAttributes(text);
 		text.appendChild( document.createTextNode(node.content_plain) );
 		return text;
 	}
@@ -316,10 +327,10 @@ SVGDrawer.prototype.getHTMLNode = function(node, calculate){
 
 	var y = node.y;
 	var group = this.createObject("http://www.w3.org/2000/svg", "g");
-	group.appendChild(this.createElement({id:"rect", "width":width, "height":height, "x":node.x, "y":y}));
+	group.appendChild(this.createElement({id:"rect", "width":width, "height":height, "x":node.x, "y":y, "fill":"none"}));
 	//var text = this.createElement({id:"text", "text-anchor":"middle", "x":node.x+(width-textWidth)/2, "y":y+20, "width":textWidth});
 	var text = this.createElement({id:"text", "text-anchor":"right", "x":node.x+width/2-textWidth/2, "y":y+20, "width":textWidth});
-	text.setAttribute("font-size", this.graph.options.fontsize+"px");
+
 	if(this.graph.typ=="object"){
 		text.setAttribute("text-decoration", "underline");
 		text.appendChild(document.createTextNode(node.id.charAt(0).toLowerCase() + node.id.slice(1)));
@@ -333,7 +344,7 @@ SVGDrawer.prototype.getHTMLNode = function(node, calculate){
 	if(node.attributes){
 		for(var a=0;a<node.attributes.length;a++){
 			var attribute = node.attributes[a];
-			var text = this.createElement({id:"text", "text-anchor":"left", "width": width, "x":(node.x+10), "y": y, "font-size":this.graph.options.fontsize+"px"});
+			var text = this.createElement({id:"text", "text-anchor":"left", "width": width, "x":(node.x+10), "y": y});
 			text.appendChild(document.createTextNode(attribute));
 			group.appendChild(text);
 			y += 20;
@@ -347,7 +358,7 @@ SVGDrawer.prototype.getHTMLNode = function(node, calculate){
 		y+=20;
 		for(var m=0;m<node.methods.length;m++){
 			var method = node.methods[m];
-			var text = this.createElement({id:"text", "text-anchor":"left", "width": width, x:node.x + 10, "y": y, "font-size":this.graph.options.fontsize+"px"});
+			var text = this.createElement({id:"text", "text-anchor":"left", "width": width, x:node.x + 10, "y": y});
 			text.appendChild(document.createTextNode(method));
 			group.appendChild(text);
 			y += 20;
@@ -358,19 +369,21 @@ SVGDrawer.prototype.getHTMLNode = function(node, calculate){
 
 SVGDrawer.prototype.createElement = function(node){
 	var element = this.createObject("http://www.w3.org/2000/svg", node.id);
-	element.setAttribute("fill", "none");
-	element.setAttribute("stroke","#000");
-	element.setAttribute("stroke-width", "1px");
-	//}
 	if(node.id=="path"){
 		element.setAttribute('fill', "rgb(255, 255, 255)");
 		//element.setAttribute('style', "stroke:#000;");
 	}
-	
+	if(node.id=="rect"){
+		element.setAttribute("stroke","#000");
+	}
+	this.addFontAttributes(element);
+
 	for (var key in node) {
 		if(key=='id')continue;
 		if(key=='content_src'&& node.id=="image") continue;
-		element.setAttribute(key, node[key]);
+		if(node[key]){
+			element.setAttribute(key, node[key]);
+		}
 	}
 	if(node.id=="image"){
 		element.setAttribute('xmlns:xlink', "http://www.w3.org/1999/xlink");
@@ -379,8 +392,20 @@ SVGDrawer.prototype.createElement = function(node){
 	return element;
 };
 
-SVGDrawer.prototype.createInfo = function(x, y, text, calculate){
-	return null;
+SVGDrawer.prototype.createInfo = function(x, y, text, calculate, height){
+	var items = text.split("\n");
+	if(!calculate && items.length>1){
+		var group = this.createObject("http://www.w3.org/2000/svg", "g");
+		for(var i = 0;i<items.length;i++) {
+			var item = this.createElement({id:"text", "text-anchor":"left", "x": x, "y": y+(height*i)});
+			item.appendChild(document.createTextNode(items[i]));
+			group.appendChild(item);
+		}
+		return group;
+	}
+	var item = this.createElement({id:"text", "text-anchor":"left", "x": x, "y": y});
+	item.appendChild(document.createTextNode(text));
+	return item;
 };
 
 SVGDrawer.prototype.createLine = function(x1, y1, x2, y2, style){
@@ -427,7 +452,7 @@ CanvasDrawer.prototype.createContainer = function(graph){
 };
 CanvasDrawer.prototype.getWidth = function(text){
 	var context = this.graph.board.getContext('2d');
-	context.font = this.graph.options.fontsize+"px Arial";
+	context.font = this.graph.options.font["font-size"]+" "+this.graph.options.font["font-family"];
 	var metrics = context.measureText(text);
 	return metrics.width;
 
@@ -472,7 +497,7 @@ CanvasDrawer.prototype.getHTMLNode = function(node, calculate){
 		return null;
 	}
 	if(node.content_plain){
-		context.font = this.graph.options.fontsize+"px Arial";
+		context.font = this.graph.options.fontSize+"px Arial";
 		context.fillText(node.content_plain, node.x, node.y);
 		return null;
 	}
@@ -486,7 +511,7 @@ CanvasDrawer.prototype.getHTMLNode = function(node, calculate){
 	this.createLine(node.x, node.y+20, node.x + node.width, node.y+20);
 
 	var context = canvas.getContext('2d');
-	context.font = this.graph.options.fontsize+"px Arial";
+	context.font = this.graph.options.fontSize+"px Arial";
 	var text="";
 	if(this.graph.typ=="object"){
 		text = node.id.charAt(0).toLowerCase() + node.id.slice(1);
@@ -502,7 +527,7 @@ CanvasDrawer.prototype.getHTMLNode = function(node, calculate){
 		for(var a=0;a<node.attributes.length;a++){
 			var attribute = node.attributes[a];
 			var context = canvas.getContext('2d');
-			context.font = this.graph.options.fontsize+"px Arial";
+			context.font = this.graph.options.fontSize+"px Arial";
 			context.fillText(attribute, node.x + 10, y);
 			y += 20;
 		}

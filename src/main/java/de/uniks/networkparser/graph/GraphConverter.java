@@ -36,7 +36,6 @@ public class GraphConverter implements Converter {
 	public static final String TYP = "typ";
 	public static final String VALUE = "value";
 	public static final String NODE = "node";
-	public static final String EDGE = "edge";
 	public static final String ID = "id";
 	public static final String ATTRIBUTES = "attributes";
 	public static final String METHODS = "methods";
@@ -194,7 +193,7 @@ public class GraphConverter implements Converter {
 			for (GraphNode source : edge.values()) {
 				GraphClazz sourceClazz = (GraphClazz) source;
 				for (GraphNode target : edge.getOther().values()) {
-					JsonObject child = new JsonObject().withValue(TYP, EDGE);
+					JsonObject child = new JsonObject().withValue(TYP, edge.getTyp());
 					child.put(SOURCECARDINALITY, edge.getCardinality());
 					child.put(TARGETCARDINALITY, edge.getOther()
 							.getCardinality());
