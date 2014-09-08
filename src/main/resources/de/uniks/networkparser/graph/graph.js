@@ -39,12 +39,16 @@ Options = function(){
 	// Options
 	this.raster = false;
 	this.display = "svg";
-	this.fontsize=12;
+	this.font={};
+	this.font["font-size"] = "10px";
+	this.font["font-family"] = "Verdana";
 	this.rank = "LR";			// Dagre TB, LR
 	this.nodeSep = 20;
 	this.infobox = false;
-	/*this.buttons = ["HTML", "SVG", "SVG-Export", "PNG-Export", "PDF"];*/
-	this.buttons = ["HTML", "SVG", "SVG-Export", "PNG-Export", "PDF"];
+	this.CardinalityInfo = true;
+	this.PropertyInfo = true;
+	/*this.buttons = ["HTML", "SVG", "CANVAS", "SVG-Export", "PNG", "PDF"];*/
+	this.buttons = ["HTML", "CANVAS", "SVG"];
 }
 
 /* Node */
@@ -103,8 +107,12 @@ Graph = function(json, options) {
 			edge = new Edge();
 		}
 		edge.source = this.getNode(e.source);
-		edge.sourceproperty = e.sourceproperty;
-		edge.targetproperty = e.targetproperty;
+		edge.sourceInfo = new Item(new Pos(0,0), new Pos(0,0) );
+		edge.sourceInfo.property = e.sourceproperty;
+		edge.sourceInfo.cardinality = e.sourcecardinality;
+		edge.targetInfo = new Item(new Pos(0,0), new Pos(0,0) );
+		edge.targetInfo.property = e.targetproperty;
+		edge.targetInfo.cardinality = e.targetcardinality;
 		edge.source.edges.push(edge);
 
 		edge.target = this.getNode(e.target);
@@ -171,23 +179,27 @@ Graph.prototype.initGraph = function(){
 
 	for (var i=0; i<this.edges.length;i++) {
 		var edge = this.edges[i];
-		edge.sourceinfo = new Item(new Pos(0,0), new Pos(0,0) );
-		edge.targetinfo = new Item(new Pos(0,0), new Pos(0,0) );
-		if(edge.sourceproperty){
-			var html = this.drawer.createInfo(0, 0, edge.sourceproperty, true);
-			if(html){
-				edge.sourceinfo.size = this.getDimension(html);
-			}
-		}
-		if(edge.targetproperty){
-			var html = this.drawer.createInfo(0, 0, edge.targetproperty, true);
-			if(html){
-				edge.targetinfo.size = this.getDimension(html);
-			}
-		}
+		this.initInfo(edge, edge.sourceInfo);
+		this.initInfo(edge, edge.targetInfo);
 	}
 	this.drawer.clearBoard();
 };
+
+Graph.prototype.initInfo = function(edge, info){
+	if(!this.options.CardinalityInfo && !this.options.PropertyInfo){
+		return null;
+	}
+
+	var infoTxt = edge.getInfo(info, this.options.CardinalityInfo, this.options.PropertyInfo);
+	if(infoTxt.length > 0) {
+		var html = this.drawer.createInfo(0, 0, infoTxt, true);
+		if(html){
+			info.size = this.getDimension(html);
+		}
+	}
+	return infoTxt;
+};
+
 Graph.prototype.clearBoard = function(){
 	if(this.board){
 		this.clearLines();
@@ -294,10 +306,10 @@ Graph.prototype.drawLines = function(){
 	for(var i = 0; i < ownAssoc.length; i++) {
 		ownAssoc[i].calcOwnEdge();
 		var sourcePos = ownAssoc[i].getCenterPosition(ownAssoc[i].source, ownAssoc[i].start);
-		ownAssoc[i].calcInfoPos( sourcePos, ownAssoc[i].source, ownAssoc[i].sourceinfo);
+		ownAssoc[i].calcInfoPos( sourcePos, ownAssoc[i].source, ownAssoc[i].sourceInfo);
 		
 		sourcePos = ownAssoc[i].getCenterPosition(ownAssoc[i].target, ownAssoc[i].end);
-		ownAssoc[i].calcInfoPos( sourcePos, ownAssoc[i].target, ownAssoc[i].targetinfo);
+		ownAssoc[i].calcInfoPos( sourcePos, ownAssoc[i].target, ownAssoc[i].targetInfo);
 	}
 
 	for(var i = 0; i < this.edges.length; i++) {
@@ -566,7 +578,12 @@ Graph.prototype.optionButton = function(event){
 		btn.graph.board.height = size.y;
 		btn.graph.root.appendChild(img);
 		//window.open("data:image/svg+xml," + escape(btn.graph.board.outerHTML));
-	}else if(btn.innerHTML=="PNG-Export"){
+	}else if(btn.innerHTML=="CANVAS"){
+		this.drawer = new CanvasDrawer();
+		btn.graph.options.display = "canvas";
+		btn.graph.initGraph();
+		btn.graph.drawGraph(0,0)
+	}else if(btn.innerHTML=="PNG"){
 		var oldDrawer = this.drawer;
 		this.drawer = new CanvasDrawer();
 		this.loader.init(false);
@@ -692,19 +709,37 @@ Edge.prototype.draw = function(board, drawer){
 	for(var i=0;i<this.path.length;i++){
 		this.addElement(board, this.htmlElement, drawer.createLine(this.path[i].source.x, this.path[i].source.y, this.path[i].target.x, this.path[i].target.y, this.path[i].style));
 	}
-	if(this.sourceproperty){
-		this.addElement(board, this.htmlElement, drawer.createInfo(this.sourceinfo.pos.x, this.sourceinfo.pos.y, this.sourceproperty, false));
+	var options = drawer.graph.options;
+	var infoTxt = this.getInfo(this.sourceInfo, options.CardinalityInfo, options.PropertyInfo);
+	if(infoTxt.length > 0 ){
+		this.addElement(board, this.htmlElement, drawer.createInfo(this.sourceInfo.pos.x, this.sourceInfo.pos.y, infoTxt, false, this.sourceInfo.size.y));
 	}
-	if(this.targetproperty){
-		this.addElement(board, this.htmlElement, drawer.createInfo(this.targetinfo.pos.x, this.targetinfo.pos.y, this.targetproperty, false));
+	infoTxt = this.getInfo(this.targetInfo, options.CardinalityInfo, options.PropertyInfo);
+	if(infoTxt.length > 0 ){
+		this.addElement(board, this.htmlElement, drawer.createInfo(this.targetInfo.pos.x, this.targetInfo.pos.y, infoTxt, false, this.sourceInfo.size.y));
 	}
 };
 Edge.prototype.endPos = function(){
 	return this.path[this.path.length-1];
 }
+
+Edge.prototype.edgePosition = function() {
+	var pos=0;
+	for(var i=0;i < this.source.edges.length; i++) {
+		if(this.source.edges[i] == this){
+			return pos;
+		}
+		if(this.source.edges[i].target == this.target){
+			pos ++;
+		}
+	}
+	return pos;
+};
 Edge.prototype.calcCenterLine = function(){
 	var divisor = (this.target.center.x - this.source.center.x);
 	var sourcePos,targetPos;
+	var edgePos = this.edgePosition() * 10;
+
 	this.path = new Array();
 	if(divisor==0){
 		if(this.source==this.target){
@@ -714,42 +749,61 @@ Edge.prototype.calcCenterLine = function(){
 		// Must be UP_DOWN or DOWN_UP
 		if(this.source.center.y<this.target.center.y){
 			// UP_DOWN
-			sourcePos = this.getCenterPosition(this.source, Edge.Position.DOWN);
-			targetPos = this.getCenterPosition(this.target, Edge.Position.UP);
+			sourcePos = this.getCenterPosition(this.source, Edge.Position.DOWN, edgePos);
+			targetPos = this.getCenterPosition(this.target, Edge.Position.UP, edgePos);
 		}else{
-			sourcePos = this.getCenterPosition(this.source, Edge.Position.UP);
-			targetPos = this.getCenterPosition(this.source, Edge.Position.DOWN);
+			sourcePos = this.getCenterPosition(this.source, Edge.Position.UP, edgePos);
+			targetPos = this.getCenterPosition(this.source, Edge.Position.DOWN, edgePos);
 		}
 	}else{
 		this.m = (this.target.center.y - this.source.center.y) / divisor;
 		this.n = this.source.center.y - (this.source.center.x * this.m);
-		sourcePos = this.getPosition(this.m,this.n, this.source, this.target.center);
-		targetPos = this.getPosition(this.m,this.n, this.target, sourcePos);
+		sourcePos = this.getPosition(this.m,this.n, this.source, this.target.center, edgePos);
+		targetPos = this.getPosition(this.m,this.n, this.target, sourcePos, edgePos);
 	}
 	if(sourcePos&&targetPos){
-		this.calcInfoPos( sourcePos, this.source, this.sourceinfo);
-		this.calcInfoPos( targetPos, this.target, this.targetinfo);
+		this.calcInfoPos( sourcePos, this.source, this.sourceInfo, edgePos);
+		this.calcInfoPos( targetPos, this.target, this.targetInfo, edgePos);
 		this.addEdgeToNode(this.source, sourcePos.id);
 		this.addEdgeToNode(this.target, targetPos.id);
 		this.path.push ( new Line(sourcePos, targetPos, this.lineStyle));
 	}
 	return true;
 };
-Edge.prototype.getCenterPosition = function(node, pos){
+Edge.prototype.getCenterPosition = function(node, pos, offset){
+	if (!offset) {
+		offset = 0;
+	}
 	if(pos==Edge.Position.DOWN){
-		return new Pos(node.center.x, (node.y+node.height), Edge.Position.DOWN);
+		return new Pos(node.center.x + offset, (node.y+node.height), Edge.Position.DOWN);
 	}
 	if(pos==Edge.Position.UP){
-		return new Pos(node.center.x, node.y, Edge.Position.UP);
+		return new Pos(node.center.x + offset, node.y, Edge.Position.UP);
 	}
 	if(pos==Edge.Position.LEFT){
-		return new Pos(node.x, node.center.y, Edge.Position.LEFT);
+		return new Pos(node.x, node.center.y + offset, Edge.Position.LEFT);
 	}
 	if(pos==Edge.Position.RIGHT){
-		return new Pos(node.x+node.width, node.center.y, Edge.Position.RIGHT);
+		return new Pos(node.x+node.width, node.center.y + offset, Edge.Position.RIGHT);
 	}
 }
-
+Edge.prototype.getInfo = function(info, showCardinality, showProperty){
+	var infoTxt = "";
+	if(showCardinality && info.property){
+		infoTxt = info.property;
+	}
+	if(showProperty && info.cardinality){
+		if(infoTxt.length > 0 ){
+			infoTxt += "\n";
+		}
+		if(info.cardinality.toLowerCase() == "one"){
+			infoTxt += "0..1";
+		}else if(info.cardinality.toLowerCase() == "many"){
+			infoTxt += "0..*";
+		}
+	}
+	return infoTxt;
+}
 Edge.prototype.calcOwnEdge = function(){
 	//this.source
 	var offset = 20;
@@ -860,60 +914,66 @@ Edge.prototype.getFree = function(node){
 	return "";
 }
 
-Edge.prototype.calcInfoPos = function(linePos, item, info){
+Edge.prototype.calcInfoPos = function(linePos, item, info, offset){
+	if(!offset){
+		offset = 0;
+	}
 	var newY = linePos.y;
 	var newX = linePos.x;
 	var yoffset =0;
 	if(linePos.id==Edge.Position.UP){
-		newY = newY - info.size.y -5;
+		newY = newY - info.size.y -5 + (offset);
 		if(this.m>0){
-			newX = (newY-this.n) / this.m + 5;
+			newX = (newY-this.n) / this.m + 5 + offset;
 		}else{
-			newX += 5;
+			newX += 5 + offset;
 		}
 	}else if(linePos.id==Edge.Position.DOWN){
-		newY = newY + 5;
+		newY = newY + 5 + (offset);
 		if(this.m>0){
-			newX = (newY-this.n) / this.m + 5;
+			newX = (newY-this.n) / this.m + 5 + offset;
 		}else{
-			newX += 5;
+			newX += 5 + offset;
 		}
 	}else if(linePos.id==Edge.Position.LEFT){
 		newX -= info.size.x - 5;
-		newY = (this.m * newX)+ this.n;
+		newY = (this.m * newX)+ this.n + offset;
 	}else if(linePos.id==Edge.Position.DOWN){
 		newX += info.size.x + 5;
-		newY = (this.m * newX)+ this.n;
+		newY = (this.m * newX)+ this.n + offset;
 	}
 	info.pos = new Pos(newX, newY);
 };
 
-Edge.prototype.getPosition= function(m , n, entity, refCenter){
+Edge.prototype.getPosition= function(m , n, entity, refCenter, offset){
+	if (!offset) {
+		offset = 0;
+	}
 	var x,y;
 	var pos=new Array();
 	var distance=new Array();
 	x = entity.x+entity.width;
 	y = m*x+n;
 	if(y>=entity.y && y<=(entity.y+entity.height)){
-		pos.push(new Pos(x , y, Edge.Position.RIGHT));
+		pos.push(new Pos(x , y + offset, Edge.Position.RIGHT));
 		distance.push(Math.sqrt((refCenter.x-x)*(refCenter.x-x)+(refCenter.y-y)*(refCenter.y-y)));
 	}
 	y = entity.y;
 	x = (y-n)/m;
 	if(x>=entity.x && x<=(entity.x+entity.width)){
-		pos.push(new Pos(x , y, Edge.Position.UP));
+		pos.push(new Pos(x  + offset, y, Edge.Position.UP));
 		distance.push(Math.sqrt((refCenter.x-x)*(refCenter.x-x)+(refCenter.y-y)*(refCenter.y-y)));
 	}
 	x = entity.x;
 	y = m*x+n;
 	if(y>=entity.y && y<=(entity.y+entity.height)){
-		pos.push(new Pos(x , y, Edge.Position.LEFT));
+		pos.push(new Pos(x , y + offset, Edge.Position.LEFT));
 		distance.push(Math.sqrt((refCenter.x-x)*(refCenter.x-x)+(refCenter.y-y)*(refCenter.y-y)));
 	}
 	y = entity.y+entity.height;
 	x = (y-n)/m;
 	if(x>=entity.x && x<=(entity.x+entity.width)){
-		pos.push(new Pos(x , y, Edge.Position.DOWN));
+		pos.push(new Pos(x + offset, y, Edge.Position.DOWN));
 		distance.push(Math.sqrt((refCenter.x-x)*(refCenter.x-x)+(refCenter.y-y)*(refCenter.y-y)));
 	}
 	var min=999999999;
