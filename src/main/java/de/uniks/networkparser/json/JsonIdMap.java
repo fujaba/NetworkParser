@@ -526,9 +526,13 @@ public class JsonIdMap extends IdMap {
 						String jsonId = (String) child.get(ID);
 						if (className == null && jsonId != null) {
 							// It is a Ref
-							filter.with(new ReferenceObject().withId(jsonId)
-									.withCreator(creator)
-									.withProperty(property).withEntity(target));
+						   //try to get the real Object
+						   ReferenceObject item = new ReferenceObject().withId(jsonId)
+                           .withCreator(creator)
+                           .withProperty(property).withEntity(target);
+						   if( !item.execute(this)) {
+						      filter.with(item); 
+						   }
 						} else {
 							creator.setValue(target, property,
 									decoding((JsonObject) kid, filter), NEW);
@@ -575,9 +579,12 @@ public class JsonIdMap extends IdMap {
 						}
 					} else if (className == null && jsonId != null) {
 						// It is a Ref
-						filter.with(new ReferenceObject().withId(jsonId)
-								.withCreator(creator).withProperty(property)
-								.withEntity(target));
+					   ReferenceObject item = new ReferenceObject().withId(jsonId)
+                        .withCreator(creator)
+                        .withProperty(property).withEntity(target);
+                  if( !item.execute(this)) {
+                     filter.with(item); 
+                  }
 					} else {
 						creator.setValue(target, property,
 								decoding(child, filter), NEW);
