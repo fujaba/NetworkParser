@@ -2,7 +2,7 @@ package de.uniks.networkparser.graph;
 
 /*
  NetworkParser
- Copyright (c) 2011 - 2013, Stefan Lindel
+ Copyright (c) 2011 - 2014, Stefan Lindel
  All rights reserved.
 
  Licensed under the EUPL, Version 1.1 or (as soon they
@@ -33,6 +33,7 @@ import de.uniks.networkparser.interfaces.Converter;
 public class GraphList extends AbstractKeyValueList<String, GraphNode> {
 	private ArrayList<GraphEdge> edges = new ArrayList<GraphEdge>();
 	private String typ=GraphIdMap.CLASS;
+	private GraphOptions options;
 
 	public boolean add(GraphNode value) {
 		put(value.getId(), value);
@@ -151,5 +152,14 @@ public class GraphList extends AbstractKeyValueList<String, GraphNode> {
 	@Override
 	public GraphNode remove(Object key) {
 		return removeItem(key);
+	}
+
+	public GraphOptions getOptions() {
+		return options;
+	}
+
+	public GraphList withOptions(GraphOptions options) {
+		this.options = options;
+		return this;
 	}
 }
