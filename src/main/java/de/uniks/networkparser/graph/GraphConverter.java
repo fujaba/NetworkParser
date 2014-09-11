@@ -2,7 +2,7 @@ package de.uniks.networkparser.graph;
 
 /*
  NetworkParser
- Copyright (c) 2011 - 2013, Stefan Lindel
+ Copyright (c) 2011 - 2014, Stefan Lindel
  All rights reserved.
 
  Licensed under the EUPL, Version 1.1 or (as soon they
@@ -48,6 +48,7 @@ public class GraphConverter implements Converter {
 	public static final String SOURCEPROPERTY = "sourceproperty";
 	public static final String TARGETPROPERTY = "targetproperty";
 	public static final String HEADIMAGE = "headimage";
+	public static final String OPTIONS = "options";
 
 	@Override
 	public String convert(GraphList root, boolean removePackage) {
@@ -177,6 +178,11 @@ public class GraphConverter implements Converter {
 	public JsonObject convertToJson(GraphList root, boolean removePackage) {
 		String typ = root.getTyp();
 		JsonObject jsonRoot = new JsonObject().withValue(TYP, typ);
+		
+		if(root.getOptions() != null) {
+			jsonRoot.add(OPTIONS, root.getOptions().getJson());
+		}
+		
 		JsonObject value = new JsonObject();
 		value.put(NODES, parseEntities(typ, root.values(), removePackage));
 		value.put(EDGES, parseEdges(typ, root.getEdges(), removePackage));

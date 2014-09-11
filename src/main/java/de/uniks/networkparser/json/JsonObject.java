@@ -2,7 +2,7 @@ package de.uniks.networkparser.json;
 
 /*
  NetworkParser
- Copyright (c) 2011 - 2013, Stefan Lindel
+ Copyright (c) 2011 - 2014, Stefan Lindel
  All rights reserved.
 
  Licensed under the EUPL, Version 1.1 or (as soon they
@@ -260,10 +260,12 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements
 	 * @return Itself
 	 */
 	public JsonObject withValue(String... values) {
-		this.values.clear();
 		if (values.length % 2 == 0) {
 			for (int z = 0; z < values.length; z += 2) {
-				put(values[z], values[z + 1]);
+				if(values[z + 1]!= null) {
+					// Only add value != null
+					put(values[z], values[z + 1]);
+				}
 			}
 			return this;
 		}
@@ -341,14 +343,15 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements
 
 	@Override
 	public JsonObject with(Object... values) {
-		if (values != null) {
-			for (Object value : values) {
-				if (value instanceof AbstractEntity<?, ?>) {
-					AbstractEntity<?, ?> item = (AbstractEntity<?, ?>) value;
-					this.put(item.getKeyString(), item.getValue());
-				} else if (value instanceof Map<?, ?>) {
-					this.withMap((Map<?, ?>) value);
-				}
+		if (values == null) {
+			return this;
+		}
+		for (Object value : values) {
+			if (value instanceof AbstractEntity<?, ?>) {
+				AbstractEntity<?, ?> item = (AbstractEntity<?, ?>) value;
+				this.put(item.getKeyString(), item.getValue());
+			} else if (value instanceof Map<?, ?>) {
+				this.withMap((Map<?, ?>) value);
 			}
 		}
 		return this;
@@ -442,12 +445,15 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements
 	}
 
 	public JsonObject withValue(String key, Object value) {
-		int index = getIndex(key);
-		if (index >= 0) {
-			setValueItem(key, value);
-			return this;
+		if(value != null) {
+			// Only add value != null
+			int index = getIndex(key);
+			if (index >= 0) {
+				setValueItem(key, value);
+				return this;
+			}
+			super.withValue(key, value);
 		}
-		super.withValue(key, value);
 		return this;
 	}
 }
