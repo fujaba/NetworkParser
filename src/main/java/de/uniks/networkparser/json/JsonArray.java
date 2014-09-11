@@ -2,7 +2,7 @@ package de.uniks.networkparser.json;
 
 /*
  NetworkParser
- Copyright (c) 2011 - 2013, Stefan Lindel
+ Copyright (c) 2011 - 2014, Stefan Lindel
  All rights reserved.
 
  Licensed under the EUPL, Version 1.1 or (as soon they
@@ -280,10 +280,11 @@ public class JsonArray extends AbstractEntityList<Object> implements
 
 	@Override
 	public JsonArray with(Object... values) {
-		if (values != null) {
-			for (Object item : values) {
-				add(item);
-			}
+		if (values == null) {
+			return this;
+		}
+		for (Object item : values) {
+			add(item);
 		}
 		return this;
 	}
