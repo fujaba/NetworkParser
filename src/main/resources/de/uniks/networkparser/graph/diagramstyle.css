@@ -101,3 +101,27 @@
 	border: 1px solid rgb(187, 187, 187);
 	position: absolute; 
 }
+.draggable {
+	cursor: move;
+	
+}
+.saveBtn:hover{
+	opacity:0.75;
+	cursor: hand;
+}
+
+.saveBtn{
+	fill:url(#reflect);
+	filter: drop-shadow(5px 5px 2px black);
+}
+
+.draggable{
+}
+
+.draggable:hover{
+	border:1px dashed black;
+	-moz-border-radius: 8px;-webkit-border-radius: 8px;border-radius: 8px;
+	cursor: move;
+	opacity:0.50;
+	fill:#ddd;
+}
