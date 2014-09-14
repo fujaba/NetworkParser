@@ -53,8 +53,9 @@ public class GraphAttribute extends GraphValue implements GraphMember {
 		return visibility;
 	}
 
-	public void with(GraphVisibility visibility) {
+	public GraphAttribute with(GraphVisibility visibility) {
 		this.visibility = visibility;
+		return this;
 	}
 
 	public GraphNode getClazz() {
@@ -78,6 +79,13 @@ public class GraphAttribute extends GraphValue implements GraphMember {
 		return this;
 	}
 
+	public GraphAttribute with(String name, GraphDataType typ) {
+		this.with(typ);
+		this.with(name);
+		return this;
+	}
+
+	
 	public String getValue(String typ, boolean shortName) {
 		if (typ.equals(GraphIdMap.OBJECT)) {
 			return this.value;
