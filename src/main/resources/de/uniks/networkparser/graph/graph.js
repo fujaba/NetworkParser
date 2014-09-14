@@ -29,7 +29,11 @@ Pos = function(x, y, id) {this.x = x; this.y = y; if(id){this.id = id;} }
 Item = function(pos, size) { this.pos = pos; this.size = size; this.center=new Pos(0,0); }
 
 /* Info */
-Info = function(property, cardinality, parent, edge) { this.typ = "Info"; this.x = 0; this.y = 0; this.size = new Pos(0,0); this.property = property; this.cardinality = cardinality; this.center=new Pos(0,0); this.custom = false; this.parent = parent; this.edge = edge;}
+Info = function(info, parent, edge) { 
+	this.property = info.property; 
+	this.cardinality = info.cardinality; 
+	this.id = info.id; 
+	this.typ = "Info"; this.x = 0; this.y = 0; this.size = new Pos(0,0); this.center=new Pos(0,0); this.custom = false; this.parent = parent; this.edge = edge;}
 
 Line = function(source, target, style) {this.source = source; this.target = target; this.style = style;}
 Line.Format={SOLID:"SOLID", DOTTED:"DOTTED"};
@@ -60,8 +64,8 @@ GraphNode = function(id, content){
 	this.id = id;
 	this.x = 0;
 	this.y = 0;
-	this.width=0;
-	this.height=0;
+	this.width = 0;
+	this.height = 0;
 	this.edges = [];
 	this.attributes = [];
 	this.methods = [];
@@ -87,8 +91,8 @@ Graph = function(json, options) {
 	}
 	this.minSize = new Pos(0, 0);
 
-	for (var i = 0; i < json.value.nodes.length; i++) {
-		var node = json.value.nodes[i];
+	for (var i = 0; i < json.nodes.length; i++) {
+		var node = json.nodes[i];
 		node.x = node.x || 0;
 		node.y = node.y || 0;
 		node.startWidth = node.width;
@@ -99,8 +103,8 @@ Graph = function(json, options) {
 		node.RIGHT = node.LEFT = node.UP = node.DOWN=0;
 		this.insertNode(node, i);
 	}
-	for (var i = 0; i < json.value.edges.length; i++){
-		var e = json.value.edges[i];
+	for (var i = 0; i < json.edges.length; i++){
+		var e = json.edges[i];
 		var edge;
 		if(e.typ.toLowerCase()=="generalisation"){
 			edge = new Generalisation();
@@ -109,12 +113,12 @@ Graph = function(json, options) {
 		}else{
 			edge = new Edge();
 		}
-		edge.source = this.getNode(e.source);
-		edge.sourceInfo = new Info(e.sourceproperty, e.sourcecardinality, this, edge);
-		edge.targetInfo = new Info(e.targetproperty, e.targetcardinality, this, edge);
+		edge.source = this.getNode(e.source.id);
+		edge.sourceInfo = new Info(e.source, this, edge);
+		edge.targetInfo = new Info(e.target, this, edge);
 		edge.source.edges.push(edge);
 
-		edge.target = this.getNode(e.target);
+		edge.target = this.getNode(e.target.id);
 		edge.target.edges.push(edge);
 		this.edges.push(edge);
 	}
@@ -648,17 +652,78 @@ Graph.prototype.utf8_to_b64 = function( str ) {
 }
 
 Graph.prototype.SaveAs = function () {
+	this.Save("image/svg+xml", this.serializeXmlNode(this.board), "download.svg");
+}
+Graph.prototype.Save = function (typ, data, name) {
 	var a = document.createElement("a");
 	document.body.appendChild(a);
 	a.style = "display: none";
-	
-	var data = this.serializeXmlNode(this.board);
-	var url = window.URL.createObjectURL(new Blob([data], {type: "image/svg+xml"}));
+	var url = window.URL.createObjectURL(new Blob([data], {type: typ}));
 	a.href = url;
-	a.download = "download.svg";
+	a.download = name;
 	a.click();
 	document.body.removeChild(a);
 }
+
+Graph.prototype.Export = function () {
+	var result = {};
+	result.typ = this.typ;
+	result.options = {};
+	result.value = {};
+	
+
+	for (var key in this.options) {
+		if(this.options[key] != null) {
+			result.options[key] = this.options[key];
+		}
+	}
+	var items = [];
+	var add = false;
+	for (var i in this.nodes) {
+		var n = this.nodes[i];
+		var newNode = {typ:n.typ, id:n.id, x: n.x, y:n.y, width:n.width, height:n.height };
+		if(n.attributes && n.attributes.length > 0){
+			newNode.attributes=[];
+			for(var a=0;a<n.attributes.length;a++){
+				newNode.attributes.push(n.attributes[a]);
+			}
+		}
+		if(n.methods && n.methods.length > 0){
+			newNode.methods=[];
+			for(var m=0;m<n.methods.length;m++){
+				newNode.methods.push(n.methods[m]);
+			}
+		}
+		items.push(newNode);
+		add = true;
+	}
+	if(add){result.value.nodes=items;}
+	items =[];add=false;
+	for (var i=0;i< this.edges.length;i++) {
+		var e = this.edges[i];
+		var newEdge = {typ:e.typ, source: {id: e.source.id}, target: {id: e.target.id}};
+		
+		if(e.sourceInfo.cardinality){
+			newEdge.source["cardinality"] = e.sourceInfo.cardinality;
+		}
+		if(e.sourceInfo.property){
+			newEdge.source["property"] = e.sourceInfo.property;
+		}
+		if(e.targetInfo.cardinality){
+			newEdge.target["cardinality"] = e.targetInfo.cardinality;
+		}
+		if(e.targetInfo.property){
+			newEdge.target["property"] = e.targetInfo.property;
+		}
+		items.push(newEdge);
+		add = true;
+	}
+	if(add){result.value.edges=items;}
+
+	var data="<html><head>"+document.head.innerHTML.trim()+"</head><body><script>"
+		+"new Graph("+JSON.stringify(result, null, "\t") +").layout();</script></body></html>";
+	this.Save("text/json", data, "download.html");
+}		
 
 //					######################################################### GraphLayout-Dagre #########################################################
 DagreLayout = function() {};
@@ -721,7 +786,7 @@ Loader.prototype.appendImg = function(img){
 }
 
 //					######################################################### LINES #########################################################
-Edge = function() {this.init();}
+Edge = function() {this.init();this.typ="EDGE";}
 Edge.prototype.init = function(){
 	this.path = [];
 	this.source=null;
@@ -864,16 +929,16 @@ Edge.prototype.calcOwnEdge = function(){
 		this.end = this.getFree(this.source);
 		if(this.end.length<1){
 			if(this.start==Edge.Position.UP){
-				node.RIGHT+=1;
+				this.source.RIGHT+=1;
 				this.end = Edge.Position.RIGHT;
 			}else if(this.start==Edge.Position.DOWN){
-				node.LEFT+=1;
+				this.source.LEFT+=1;
 				this.end = Edge.Position.LEFT;
 			}else if(this.start==Edge.Position.RIGHT){
-				node.DOWN+=1;
+				this.source.DOWN+=1;
 				this.end = Edge.Position.DOWN;
 			}else{
-				node.UP+=1;
+				this.source.UP+=1;
 				this.end = Edge.Position.UP;
 			}
 		}
@@ -1043,7 +1108,7 @@ Edge.prototype.getPosition= function(m , n, entity, refCenter, offset){
 	}
 	return position;
 };
-Generalisation = function() { this.init();};
+Generalisation = function() { this.init();this.typ="Generalisation";};
 Generalisation.prototype = Object_create(Edge.prototype);
 Generalisation.prototype.constructor = Generalisation;
 Generalisation.prototype.initEdge = Generalisation.prototype.init;
@@ -1077,7 +1142,7 @@ Generalisation.prototype.draw = function(board, drawer){
 	this.addElement(board, drawer.createLine(this.top.x, this.top.y, this.bot.x, this.bot.y, this.lineStyle));
 };
 
-Implements = function() { this.init(); }
+Implements = function() { this.init();this.typ="Implements";}
 Implements.prototype = Object_create(Generalisation.prototype);
 Implements.prototype.constructor = Implements;
 Implements.prototype.initGeneralisation = Implements.prototype.init;
