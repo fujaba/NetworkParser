@@ -34,7 +34,6 @@ import de.uniks.networkparser.json.JsonObject;
 
 public class GraphConverter implements Converter {
 	public static final String TYP = "typ";
-	public static final String VALUE = "value";
 	public static final String NODE = "node";
 	public static final String ID = "id";
 	public static final String ATTRIBUTES = "attributes";
@@ -43,10 +42,8 @@ public class GraphConverter implements Converter {
 	public static final String EDGES = "edges";
 	public static final String SOURCE = "source";
 	public static final String TARGET = "target";
-	public static final String SOURCECARDINALITY = "sourcecardinality";
-	public static final String TARGETCARDINALITY = "targetcardinality";
-	public static final String SOURCEPROPERTY = "sourceproperty";
-	public static final String TARGETPROPERTY = "targetproperty";
+	public static final String CARDINALITY = "cardinality";
+	public static final String PROPERTY = "property";
 	public static final String HEADIMAGE = "headimage";
 	public static final String OPTIONS = "options";
 
@@ -183,10 +180,8 @@ public class GraphConverter implements Converter {
 			jsonRoot.add(OPTIONS, root.getOptions().getJson());
 		}
 		
-		JsonObject value = new JsonObject();
-		value.put(NODES, parseEntities(typ, root.values(), removePackage));
-		value.put(EDGES, parseEdges(typ, root.getEdges(), removePackage));
-		jsonRoot.put("value", value);
+		jsonRoot.put(NODES, parseEntities(typ, root.values(), removePackage));
+		jsonRoot.put(EDGES, parseEdges(typ, root.getEdges(), removePackage));
 		return jsonRoot;
 	}
 
@@ -200,39 +195,34 @@ public class GraphConverter implements Converter {
 				GraphClazz sourceClazz = (GraphClazz) source;
 				for (GraphNode target : edge.getOther().values()) {
 					JsonObject child = new JsonObject().withValue(TYP, edge.getTyp());
-					child.put(SOURCECARDINALITY, edge.getCardinality());
-					child.put(TARGETCARDINALITY, edge.getOther()
-							.getCardinality());
-					child.put(SOURCEPROPERTY, edge.getProperty());
-					child.put(TARGETPROPERTY, edge.getOther().getProperty());
-					
 					GraphClazz targetClazz = (GraphClazz) target;
 					if (typ.equals(GraphIdMap.OBJECT)) {
-						child.put(
-								SOURCE,
-								source.getId() + " : "
-										+ sourceClazz.getClassName(shortName));
-						child.put(
-								TARGET,
-								target.getId() + " : "
-										+ sourceClazz.getClassName(shortName));
+						child.put(SOURCE, addInfo(edge).withValue(ID, source.getId() + " : "
+								+ sourceClazz.getClassName(shortName)));
+						child.put(TARGET, addInfo(edge.getOther()).withValue(ID, target.getId() + " : "
+								+ targetClazz.getClassName(shortName)));
 						result.add(child);
-					} else {
+					}else{
 						String id = sourceClazz.getClassName(false) + ":"
 								+ edge.getProperty()
 								+ targetClazz.getClassName(false) + ":"
 								+ edge.getOther().getProperty();
 						if (!ids.contains(id)) {
-							child.put(SOURCE, sourceClazz.getClassName(shortName));
-							child.put(TARGET, targetClazz.getClassName(shortName));
+							child.put(SOURCE, addInfo(edge).withValue(ID, sourceClazz.getClassName(shortName)));
+							child.put(TARGET, addInfo(edge.getOther()).withValue(ID, targetClazz.getClassName(shortName)));
 							result.add(child);
 							ids.add(id);
 						}
+
 					}
 				}
 			}
 		}
 		return result;
+	}
+	
+	private JsonObject addInfo(GraphEdge edge) {
+		return new JsonObject().withValue(CARDINALITY, edge.getCardinality()).withValue(PROPERTY, edge.getProperty());
 	}
 
 	public JsonArray parseEntities(String typ, Collection<GraphNode> nodes,
@@ -276,8 +266,14 @@ public class GraphConverter implements Converter {
 		} else {
 			item.put(ID, entityClazz.getClassName(shortName));
 		}
-		item.put(ATTRIBUTES, parseAttributes(typ, entity.values(), shortName));
-		item.put(METHODS, parseMethods(entity.values(), shortName));
+		JsonArray items = parseAttributes(typ, entity.values(), shortName);
+		if(items.size()>0){
+			item.put(ATTRIBUTES, items);
+		}
+		items = parseMethods(entity.values(), shortName);
+		if(items.size()>0){
+			item.put(METHODS, items);
+		}
 		return item;
 	}
 

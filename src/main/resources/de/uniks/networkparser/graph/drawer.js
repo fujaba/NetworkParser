@@ -274,12 +274,8 @@ SVGDrawer.prototype.createButton = function(board){
 	def.appendChild( child );
 	board.appendChild( def );
 
-	var rect = this.createElement({tag:"rect", rx: 8, ry: 6, width:60, height:28, stroke:"#000", filter:"url(#drop-shadow)", class:"saveBtn"});
-	var text = this.createElement({tag:"text", x:18, y:18, fill:"black"});
-
-	text.appendChild(document.createTextNode("Save"));
-	btn.appendChild( rect );
-	btn.appendChild( text );
+	btn.appendChild( this.createElement({tag:"rect", rx: 8, width:60, height:28, stroke:"#000", filter:"url(#drop-shadow)", class:"saveBtn"}));
+	btn.appendChild( this.createElement({tag:"text", x:18, y:18, fill:"black", value:"Save", class:"hand"}));
 
 	btn.onclick =(function (event) {
 		board.removeChild( board.savebtn );
@@ -287,6 +283,17 @@ SVGDrawer.prototype.createButton = function(board){
 	});
 	
 	board.savebtn = btn;
+
+	btn = this.createElement({tag:"g"});
+	btn.appendChild( this.createElement({tag:"rect", rx:8, x: 76, width:60, height:28, stroke:"#000", filter:"url(#drop-shadow)", class:"saveBtn"}));
+	btn.appendChild( this.createElement({tag:"text", x:88, y:18, fill:"black", value:"Export", class:"hand"}));
+
+	btn.onclick =(function (event) {
+		board.removeChild( board.exportbtn );
+		board.graph.Export();
+	});
+	
+	board.exportbtn = btn;
 };
 
 SVGDrawer.prototype.createContainer = function(graph){
@@ -298,10 +305,10 @@ SVGDrawer.prototype.createContainer = function(graph){
 	board.graph = graph;
 
 	board.saveShow=false;
-	board.onmouseover = (function (event) { board.appendChild( board.savebtn); });
+	board.onmouseover = (function (event) { board.appendChild( board.savebtn); board.appendChild( board.exportbtn);});
 	board.onmouseout = (function (event) {
-		if(!(event.x<70 && event.y <70) )
-			{ board.removeChild( board.savebtn ); }
+		if(!(event.x<140 && event.y <70) )
+			{ board.removeChild( board.savebtn ); board.removeChild( board.exportbtn);}
 		});
 	return board;
 };
@@ -393,9 +400,7 @@ SVGDrawer.prototype.getHTMLNode = function(node, calculate){
 	if(node.attributes){
 		for(var a=0;a<node.attributes.length;a++){
 			var attribute = node.attributes[a];
-			var text = this.createElement({tag:"text", "text-anchor":"left", "width": width, "x":(node.x+10), "y": y});
-			text.appendChild(document.createTextNode(attribute));
-			group.appendChild(text);
+			group.appendChild(this.createElement({tag:"text", "text-anchor":"left", "width": width, "x":(node.x+10), "y": y, value:attribute}));
 			y += 20;
 		}
 		if(node.attributes.length>0) {
@@ -407,9 +412,7 @@ SVGDrawer.prototype.getHTMLNode = function(node, calculate){
 		y+=20;
 		for(var m=0;m<node.methods.length;m++){
 			var method = node.methods[m];
-			var text = this.createElement({tag:"text", "text-anchor":"left", "width": width, x:node.x + 10, "y": y});
-			text.appendChild(document.createTextNode(method));
-			group.appendChild(text);
+			group.appendChild(this.createElement({tag:"text", "text-anchor":"left", "width": width, x:node.x + 10, "y": y, value:method}));
 			y += 20;
 		}
 	}
@@ -430,9 +433,13 @@ SVGDrawer.prototype.createElement = function(node){
 	for (var key in node) {
 		if(key=='tag')continue;
 		if(key=='content_src'&& node.tag=="image") continue;
+		if(key=='value'&& node.tag=="text") continue;
 		if(node[key] != null) {
 			element.setAttribute(key, node[key]);
 		}
+	}
+	if(node.tag=="text" && node.value){
+		element.appendChild(document.createTextNode(node.value));
 	}
 	if(node.tag=="image"){
 		element.setAttribute('xmlns:xlink', "http://www.w3.org/1999/xlink");
@@ -453,9 +460,7 @@ SVGDrawer.prototype.createInfo = function(item, calculate, text) {
 		this.graph.addNodeLister(group, item);
 		return group;
 	}
-	var child = this.createElement({tag:"text", "text-anchor":"left", "x": item.x, "y": item.y});
-	child.appendChild(document.createTextNode(text));
-	return child;
+	return this.createElement({tag:"text", "text-anchor":"left", "x": item.x, "y": item.y, value:text});
 };
 
 SVGDrawer.prototype.createLine = function(x1, y1, x2, y2, style){
