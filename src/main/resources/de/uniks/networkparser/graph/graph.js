@@ -669,7 +669,6 @@ Graph.prototype.Export = function () {
 	var result = {};
 	result.typ = this.typ;
 	result.options = {};
-	result.value = {};
 	
 
 	for (var key in this.options) {
@@ -697,7 +696,7 @@ Graph.prototype.Export = function () {
 		items.push(newNode);
 		add = true;
 	}
-	if(add){result.value.nodes=items;}
+	if(add){result.nodes=items;}
 	items =[];add=false;
 	for (var i=0;i< this.edges.length;i++) {
 		var e = this.edges[i];
@@ -718,7 +717,7 @@ Graph.prototype.Export = function () {
 		items.push(newEdge);
 		add = true;
 	}
-	if(add){result.value.edges=items;}
+	if(add){result.edges=items;}
 
 	var data="<html><head>"+document.head.innerHTML.trim()+"</head><body><script>"
 		+"new Graph("+JSON.stringify(result, null, "\t") +").layout();</script></body></html>";
