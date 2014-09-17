@@ -391,14 +391,15 @@ Graph.prototype.drawGraph = function(width, height){
 	}
 	this.resize();
 
+	this.drawLines();
+	
 	for(var i in this.nodes) {
 		this.nodes[i].htmlNode = this.drawer.getHTMLNode(this.nodes[i], false);
 		if(this.nodes[i].htmlNode){
 			this.board.appendChild( this.nodes[i].htmlNode );
 		}
 	}
-	this.drawLines();
-
+	
 	if(this.drawer.showInfoBox() && this.options.infobox){
 		this.infoBox.id = "infobox";
 		this.infoBox.style.left = this.board.offsetWidth-200;
@@ -652,17 +653,27 @@ Graph.prototype.utf8_to_b64 = function( str ) {
 }
 
 Graph.prototype.SaveAs = function () {
+	var image = new Image();
+	image.src = 'data:image/svg+xml;base64,' + this.utf8_to_b64(this.serializeXmlNode(this.board));
+	image.onload = function(e) {
+		var canvas = document.createElement('canvas');
+		canvas.width = image.width;
+		canvas.height = image.height;
+		var context = canvas.getContext('2d');
+		context.drawImage(image, 0, 0);
+	    var a = document.createElement('a');
+		a.download = "download.png";
+		a.href = canvas.toDataURL('image/png');
+		a.click();
+	};
 	this.Save("image/svg+xml", this.serializeXmlNode(this.board), "download.svg");
-}
+};
 Graph.prototype.Save = function (typ, data, name) {
 	var a = document.createElement("a");
-	document.body.appendChild(a);
-	a.style = "display: none";
 	var url = window.URL.createObjectURL(new Blob([data], {type: typ}));
 	a.href = url;
 	a.download = name;
 	a.click();
-	document.body.removeChild(a);
 }
 
 Graph.prototype.Export = function () {
@@ -1057,10 +1068,18 @@ Edge.prototype.calcInfoPos = function(linePos, item, info, offset){
 		}
 	}else if(linePos.id==Edge.Position.LEFT){
 		newX -= info.size.x - 5;
-		newY = (this.m * newX)+ this.n + offset;
+		if(this.m>0){
+			newY = (this.m * newX)+ this.n + offset;
+		}else{
+			newY += 5 + offset;
+		}
 	}else if(linePos.id==Edge.Position.DOWN){
 		newX += info.size.x + 5;
-		newY = (this.m * newX)+ this.n + offset;
+		if(this.m>0){
+			newY = (this.m * newX)+ this.n + offset;
+		}else{
+			newY += 5 + offset;
+		}
 	}
 	info.x = newX;
 	info.y = newY;
