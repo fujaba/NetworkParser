@@ -81,4 +81,9 @@ public class ComboEditControl extends EditControl<ComboBox<Object>>{
 		}
 		return control;
 	}
+	public ComboEditControl addChoiceList(Object value) {
+		control.getItems().add(value);
+		return this;
+	}
+	
 }

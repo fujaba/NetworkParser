@@ -44,14 +44,12 @@ public class UpdateSearchList implements PropertyChangeListener {
 	
 	public void addItem(Object item){
 		if (item instanceof SendableEntity) {
-//			System.out.println("ADD"+item);
 			((SendableEntity) item).addPropertyChangeListener(this);
 		}
 	}
 	
 	public void removeItem(Object item){
 		if (item instanceof SendableEntity) {
-//			System.out.println("REM"+item);
 			((SendableEntity) item).removePropertyChangeListener(this);
 		}
 	}

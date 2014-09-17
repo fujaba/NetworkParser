@@ -4,7 +4,7 @@ import java.util.HashSet;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.IdMapEncoder;
-import de.uniks.networkparser.event.creator.DateCreator;
+import de.uniks.networkparser.event.util.DateCreator;
 import de.uniks.networkparser.gui.table.CellEditorElement;
 import de.uniks.networkparser.gui.table.Column;
 import de.uniks.networkparser.gui.table.FieldTyp;
@@ -119,12 +119,12 @@ public class EditFieldMap {
 		}
 		if(value instanceof Integer){
 			if(column.getNumberFormat()==null){
-				column.withNumberFormat("###");
+				column.withNumberFormat("#####");
 			}
 			return FieldTyp.INTEGER;
 		}else if(value instanceof Double){
 			if(column.getNumberFormat()==null){
-				column.withNumberFormat("###.##");
+				column.withNumberFormat("#####.##");
 			}
 			return FieldTyp.DOUBLE;
 		}else if(value instanceof String){

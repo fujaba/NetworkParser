@@ -152,16 +152,20 @@ public abstract class ModelListenerProperty<T> implements javafx.beans.property.
     }
     
 	@Override
-	@SuppressWarnings("unchecked")
     public void propertyChange(PropertyChangeEvent evt) {
         for(ChangeListener<? super T> listener: listeners) {
         	SimpleObjectProperty<T> objectProperty = new SimpleObjectProperty<T>();
-        	objectProperty.setValue((T)evt.getSource());
+        	//objectProperty.setValue(parseValue(evt.getSource()));
         	
-        	listener.changed(objectProperty, (T)evt.getOldValue(), (T)evt.getNewValue());
+        	listener.changed(objectProperty, parseValue(evt.getOldValue()), parseValue(evt.getNewValue()));
         }
         for(InvalidationListener listener : invalidationListeners) {
         	listener.invalidated(this);
         }
     }
+	
+	@SuppressWarnings("unchecked")
+	public T parseValue(Object value){
+		return (T)value;
+	}
 }

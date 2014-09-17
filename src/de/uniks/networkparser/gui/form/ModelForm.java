@@ -62,6 +62,17 @@ public class ModelForm extends BorderPane{
 		return items;
 	}
 	
+	public ModelForm withValue(IdMap map, Object item){
+		this.map = map;
+		this.item = item;
+		SendableEntityCreator creator = map.getCreatorClass(item);
+		if(creator != null){
+			this.setCenter(items);
+		}
+		return this;
+	}
+
+	
 	public ModelForm withDataBinding(IdMap map, Object item, boolean addCommandBtn){
 		this.map = map;
 		this.item = item;
@@ -70,53 +81,66 @@ public class ModelForm extends BorderPane{
 		SendableEntityCreator creator = map.getCreatorClass(item);
 		if(creator != null){
 			this.setCenter(items);
-			
-			double max=0;
-			for(String property : creator.getProperties()){
-				PropertyComposite propertyComposite = new PropertyComposite();
-				Column column = propertyComposite.getColumn();
-				if(this.textClazz!=null){
-					column.withLabel(this.textClazz.getText(property, item, this));
-					propertyComposite.withLabelOrientation(GUIPosition.WEST);
-				}
-				column.withAttrName(property);
-				
-				propertyComposite.withDataBinding(map, item, column);
-				getItems().getChildren().add(propertyComposite);
-
-//				double temp = propertyComposite.getLabelControl();
-				double temp = propertyComposite.getLabelWidth();
-				if(temp>max){
-					max = temp; 
-				}
-			}
-			for(Iterator<Node> iterator = getItems().getChildren().iterator();iterator.hasNext();){
-				Node node = iterator.next();
-				if(node instanceof PropertyComposite) {
-					((PropertyComposite)node).setLabelLength(max);
-				}
-			}
-			
-			if(addCommandBtn){
-				this.saveBtn = new Button(getText(DefaultTextItems.SAVE));
-				this.saveBtn.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(ActionEvent event) {
-						save();						
-					}
-				});
-				this.reloadBtn = new Button(getText(DefaultTextItems.RELOAD));
-				this.reloadBtn.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(ActionEvent event) {
-						reload();						
-					}
-				});
-
-				this.withActionComponente(this.saveBtn, this.reloadBtn);
-			}
+			withDataBinding(addCommandBtn, creator.getProperties());
 		}
 		return this;
+	}
+	public ModelForm withDataBinding(boolean addCommandBtn, String[] fields){
+		double max=0;
+		for(String property : fields){
+			PropertyComposite propertyComposite = new PropertyComposite();
+			Column column = propertyComposite.getColumn();
+			if(this.textClazz!=null){
+				column.withLabel(this.textClazz.getText(property, item, this));
+				propertyComposite.withLabelOrientation(GUIPosition.WEST);
+			}
+			column.withAttrName(property);
+			
+			propertyComposite.withDataBinding(map, item, column);
+			getItems().getChildren().add(propertyComposite);
+			double temp = propertyComposite.getLabelWidth();
+			if(temp>max){
+				max = temp; 
+			}
+		}
+		for(Iterator<Node> iterator = getItems().getChildren().iterator();iterator.hasNext();){
+			Node node = iterator.next();
+			if(node instanceof PropertyComposite) {
+				((PropertyComposite)node).setLabelLength(max);
+			}
+		}
+		
+		if(addCommandBtn){
+			this.saveBtn = new Button(getText(DefaultTextItems.SAVE));
+			this.saveBtn.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					save();						
+				}
+			});
+			this.reloadBtn = new Button(getText(DefaultTextItems.RELOAD));
+			this.reloadBtn.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					reload();						
+				}
+			});
+
+			this.withActionComponente(this.saveBtn, this.reloadBtn);
+		}
+		return this;
+	}
+	
+	public PropertyComposite getPropertyComponente(String item){
+		for(Node child : getItems().getChildren()){
+			if(child instanceof PropertyComposite){
+				PropertyComposite property = (PropertyComposite) child;
+				if(property.getColumn().getAttrName().equalsIgnoreCase(item)){
+					return property;
+				}
+			}
+		}
+		return null;
 	}
 	
 	private String getText(String label){
@@ -190,53 +214,7 @@ public class ModelForm extends BorderPane{
 	}
 	
 	
-	
-	
-	
-	
-	
-	
 	//FIXME
-//	public void setPreSize(){
-//		int max=0;
-//		
-//		for(Iterator<PropertyComposite> iterator = properties.iterator();iterator.hasNext();){
-//			int temp = iterator.next().getLabelLength();
-//			if(temp>max){
-//				max = temp; 
-//			}
-//		}
-//		for(Iterator<PropertyComposite> iterator = properties.iterator();iterator.hasNext();){
-//			iterator.next().setLabelLength(max);
-//		}
-//	}
-
-//	public void finishDataBinding(){
-//		for(Iterator<PropertyComposite> iterator = properties.iterator();iterator.hasNext();){
-//			iterator.next().setDataBinding(map, item);
-//		}	
-//	}
-//	
-//	public void dispose(){
-//		for(Iterator<PropertyComposite> iterator = properties.iterator();iterator.hasNext();){
-//			iterator.next().dispose();
-//		}	
-//	}
-//	
-//	public void addProperty(PropertyComposite propertyComposite){
-//		this.properties.add(propertyComposite);
-//	}
-//	
-//	public PropertyComposite getProperty(String property){
-//		for(Iterator<PropertyComposite> iterator = properties.iterator();iterator.hasNext();){
-//			PropertyComposite item = iterator.next();
-//			if(item.getProperty()!=null && item.getProperty().equals(property)){
-//				return item;
-//			}
-//		}
-//		return null;
-//	}
-//
 //	public boolean focusnext() {
 //		if(currentFocus!=null){
 //			Iterator<PropertyComposite> iterator = properties.iterator();
