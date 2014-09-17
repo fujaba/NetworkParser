@@ -1,8 +1,8 @@
-package de.uniks.networkparser.test.build;
+package de.uniks.networkparser.test.ant;
 
 import java.io.File;
 
-import de.uniks.networkparser.test.build.sources.NetworkParserSources;
+import de.uniks.networkparser.test.ant.sources.NetworkParserSources;
 
 public class CopyRightSetter {
 	String source;

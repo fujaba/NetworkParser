@@ -1,4 +1,4 @@
-package de.uniks.networkparser.test.build;
+package de.uniks.networkparser.test.ant;
 
 import java.io.File;
 import java.io.FileWriter;

@@ -1,6 +1,6 @@
-package de.uniks.networkparser.test.build;
+package de.uniks.networkparser.test.ant;
 
-import de.uniks.networkparser.test.build.sources.NetworkParserSources;
+import de.uniks.networkparser.test.ant.sources.NetworkParserSources;
 
 public class CopyStation {
 	String source;

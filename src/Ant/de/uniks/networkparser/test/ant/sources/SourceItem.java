@@ -1,4 +1,4 @@
-package de.uniks.networkparser.test.build.sources;
+package de.uniks.networkparser.test.ant.sources;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
