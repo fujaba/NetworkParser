@@ -57,7 +57,6 @@ public class TextEditorControl extends EditControl<TextField>{
 	                	if(t.getCode()==KeyCode.ENTER){
 	                		apply();
 	                	}
-//	                    System.out.println("char = '" + t.getCharacter() + "'");
 	                }
 	            });
 		return textField;

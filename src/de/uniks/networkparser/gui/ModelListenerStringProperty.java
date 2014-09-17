@@ -37,4 +37,9 @@ public class ModelListenerStringProperty extends ModelListenerProperty<String> {
 	public String getValue() {
 		return String.valueOf(getItemValue());
     }
+	
+	@Override
+	public String parseValue(Object value) {
+		return ""+value;
+	}
 }

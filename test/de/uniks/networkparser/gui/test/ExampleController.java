@@ -11,7 +11,7 @@ import de.uniks.networkparser.gui.table.Column;
 import de.uniks.networkparser.gui.table.SearchTableComponent;
 import de.uniks.networkparser.gui.table.TableCellValue;
 import de.uniks.networkparser.gui.table.TableList;
-import de.uniks.networkparser.gui.table.creator.TableListCreator;
+import de.uniks.networkparser.gui.table.util.TableListCreator;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.json.JsonIdMap;
 

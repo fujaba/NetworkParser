@@ -13,12 +13,12 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import de.uniks.networkparser.gui.ModelListenerStringProperty;
-import de.uniks.networkparser.test.model.Data;
-import de.uniks.networkparser.test.model.creator.DataCreator;
+import de.uniks.networkparser.test.model.GUIEntity;
+import de.uniks.networkparser.test.model.util.GUIEntityCreator;
 
 public class ClickCounter extends Application
 {
-   private Data data = new Data();
+   private GUIEntity data = new GUIEntity();
    private TextField field;
 	   
    public static void main(String[] args)
@@ -42,10 +42,10 @@ public class ClickCounter extends Application
             
       dataLabel.setTextAlignment(TextAlignment.RIGHT);
       
-      dataLabel.textProperty().bind(new ModelListenerStringProperty(new DataCreator(), data, Data.PROPERTY_NUM));
+      dataLabel.textProperty().bind(new ModelListenerStringProperty(new GUIEntityCreator(), data, GUIEntity.PROPERTY_NUMBER));
       
       field = new TextField();
-      field.textProperty().bindBidirectional(new ModelListenerStringProperty(new DataCreator(), data, Data.PROPERTY_NUM));
+      field.textProperty().bindBidirectional(new ModelListenerStringProperty(new GUIEntityCreator(), data, GUIEntity.PROPERTY_NUMBER));
 
       Button button = new Button("Clicke Me");
       root.getChildren().addAll(box, field, button);
@@ -56,8 +56,8 @@ public class ClickCounter extends Application
          @Override
          public void handle(ActionEvent arg0)
          {
-            data.setNum(data.getNum() + 1);
-            System.out.println("now: " + data.getNum());
+            data.withNumber(data.getNumber() + 1);
+            System.out.println("now: " + data.getNumber());
          }
       });
       

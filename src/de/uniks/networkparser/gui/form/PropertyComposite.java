@@ -56,11 +56,9 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 	private Label eastLabel;
 	private GUIPosition labelOrientation=GUIPosition.WEST;
 	private String labelPostText=": ";
-//	private EditFieldMap field=new EditFieldMap().withOwner(this);
 	private Object item;
 	private Column column;
 	private SendableEntityCreator creator;
-	private boolean init;
 	private EditFieldMap field=new EditFieldMap();
 	private EditControl<?> editControl;
 
@@ -92,16 +90,26 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 		return this;
 	}
 	
+	
+
+	public PropertyComposite withFieldTyp(FieldTyp value) {
+		getColumn().withFieldTyp(value);
+		editControl = this.field.getControl(null, column, getItemValue(), this);
+		 editControl.withValue(getItemValue());
+		 if(this.centerComposite != null) {
+			 this.getChildren().remove(this.centerComposite);
+		 }
+		 this.centerComposite = editControl.getControl(); 
+		this.getChildren().add(1, this.centerComposite);
+		return this;
+	}
+	
 	public PropertyComposite withFieldType(FieldTyp type){
 		getColumn().withFieldTyp(type);
 		return this;
 	}
 
 	 private PropertyComposite withDataBinding() {
-		 if(init){
-			 return this;
-		 }
-		 this.init = true;
 		 initLabel();
 		 editControl.withValue(getItemValue() );
 		 if(item instanceof SendableEntity) {
@@ -248,6 +256,13 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 		return this;
 	}
 	
+	public EditControl<?> getEditControl(){
+		return editControl;
+	}
+	
+	
+	
+	
 	
 	
 	
@@ -301,6 +316,7 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 	public Object getValue(boolean convert) {
 		return editControl.getValue(convert);
 	}
+
 
 	//FIXME
 //	public String getLabelPostText() {

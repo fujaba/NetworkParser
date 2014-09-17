@@ -123,6 +123,7 @@ public class NumberTextField extends TextField implements CellEditorElement {
     	}else{
     		nf.setMaximumFractionDigits(0);
     		nf.setMaximumIntegerDigits(numberFormat.length());
+    		nf.setGroupingUsed(false);
     	}
     	nf.setMinimumIntegerDigits(1);
     	return this;
@@ -171,7 +172,6 @@ public class NumberTextField extends TextField implements CellEditorElement {
             this.init = true;
     	}
 		this.value = newValue;
-		System.out.println("NEW VALUE: "+value);
         if(nf!=null){
     		setText(nf.format(newValue));
     	}
