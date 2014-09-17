@@ -1,10 +1,10 @@
-package de.uniks.networkparser.test.build;
+package de.uniks.networkparser.test.ant;
 
 import java.io.File;
 import java.util.HashSet;
 
-import de.uniks.networkparser.test.build.sources.NetworkParserSources;
-import de.uniks.networkparser.test.build.sources.SourceItem;
+import de.uniks.networkparser.test.ant.sources.NetworkParserSources;
+import de.uniks.networkparser.test.ant.sources.SourceItem;
 
 public class TestCopyRight {
 

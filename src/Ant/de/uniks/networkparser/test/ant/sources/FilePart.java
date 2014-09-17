@@ -1,4 +1,4 @@
-package de.uniks.networkparser.test.build.sources;
+package de.uniks.networkparser.test.ant.sources;
 
 public interface FilePart {
 	public void append(String value);
