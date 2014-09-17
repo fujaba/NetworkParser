@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="buildCommit" name="Create Jar for NetworkParserFX">
+	<target name="init">
+		<taskdef name="Path" classname="de.uniks.networkparser.gui.test.TestRunner" classpath="bin">
+   		</taskdef>
+<!--		<script language="javascript"><![CDATA[
+			importPackage(java.lang);
+			var classpath = System.getProperty("java.class.path").split(";");
+			
+			for(i=0;i< classpath.length;i++){
+			System.out.println(classpath[i]);
+				if(classpath[i].endsWith("NetworkParser/bin")){
+					project.setProperty("NetworkParserPath", classpath[i]);
+				}
+			}
+			]]>
+		</script>-->
+		<script language="javascript"><![CDATA[
+			importPackage(java.lang);
+			importPackage(java.io);
+			
+			var config=new File(".classpath");
+			 if(config.exists()){
+					var binr = new BufferedReader(new FileReader(config));
+					var zeile = null;
+					while ((zeile = binr.readLine()) != null) {
+						if(zeile.indexOf("NetworkParser")>0){
+							var pos = zeile.indexOf("path=");
+							zeile = zeile.substring(pos+6);
+							zeile = zeile.substring(0, zeile.lastIndexOf("\""));
+							if(zeile.charAt(0)==47){
+								project.setProperty("NetworkParserPath", ".."+zeile);
+							}else{
+								project.setProperty("NetworkParserPath", zeile);
+							}
+						}
+					}
+					binr.close();
+			 }
+		]]>
+		</script>
+	</target>
+	<target name="initBuildAnt" depends="init">
+		<mkdir dir="build/temp/" />
+		<javac srcdir="${NetworkParserPath}/Ant" destdir="build/temp"  includeantruntime="false">
+			<classpath><pathelement location="${NetworkParserPath}/lib/git/org.eclipse.jgit-3.1.0.201310021548-r.jar"/></classpath>
+		</javac>
+	</target>
+	
+	<target name="buildCommit" depends="initBuildAnt">
+	   <tstamp/>
+   		<taskdef name="CopyStation" classname="de.uniks.networkparser.test.build.CopyStation" classpath="build/temp" />
+		<taskdef name="CopyRightSetter" classname="de.uniks.networkparser.test.build.CopyRightSetter" classpath="build/temp" />
+		
+		<CopyRightSetter projectName="NetworkParser" source="src/de/uniks/networkparser/" file="${NetworkParserPath}/Ant/de/uniks/networkparser/test/build/Copyright.txt"/>
+		
+		<delete dir="build/temp"></delete>
+	</target>
+
+</project>

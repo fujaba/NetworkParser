@@ -1,0 +1,4 @@
+TableFilterView  -> verallgemeinern
+
+
+TableCOmponentIOnterface besser machen
