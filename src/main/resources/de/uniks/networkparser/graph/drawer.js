@@ -279,6 +279,7 @@ SVGDrawer.prototype.createButton = function(board){
 
 	btn.onclick =(function (event) {
 		board.removeChild( board.savebtn );
+		board.removeChild( board.exportbtn );
 		board.graph.SaveAs();
 	});
 	
@@ -289,7 +290,6 @@ SVGDrawer.prototype.createButton = function(board){
 	btn.appendChild( this.createElement({tag:"text", x:88, y:18, fill:"black", value:"Export", class:"hand"}));
 
 	btn.onclick =(function (event) {
-		board.removeChild( board.exportbtn );
 		board.graph.Export();
 	});
 	
@@ -350,7 +350,7 @@ SVGDrawer.prototype.getHTMLNode = function(node, calculate){
 	}
 
 	var width=0;
-	var height=30;
+	var height=40;
 	var textWidth;
 
 	if(this.graph.typ=="object"){
@@ -359,24 +359,23 @@ SVGDrawer.prototype.getHTMLNode = function(node, calculate){
 		textWidth = this.getWidth(node.id);
 	}
 	width = Math.max(width, textWidth);
-	if(node.attributes){
+	if(node.attributes && node.attributes.length > 0 ){
 		height = height + node.attributes.length*20;
 		for(var a=0; a<node.attributes.length;a++){
 			var attribute = node.attributes[a];
 			width = Math.max(width, this.getWidth(attribute));
 		}
-	} 
+	}else{
+		height += 20;
+	}
 	
 	if(node.methods && node.methods.length > 0){
-		height = 30 + height + node.methods.length*20;
+		height = height + node.methods.length*20;
 		for(var m=0; m<node.methods.length;m++){
 			var method = node.methods[m];
 			width = Math.max(width, this.getWidth(method));
 		}
 	} 
-	if(height == 30) {
-		height += 40;
-	}
 	width += 20;
 
 	var y = node.y;
