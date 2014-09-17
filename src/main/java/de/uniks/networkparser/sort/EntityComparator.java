@@ -54,7 +54,7 @@ public class EntityComparator<V> implements Comparator<V> {
 	/** Variable of TableList. */
 	private TableList owner;
 	/** Variable of creator. */
-	private SendableEntityCreator creator;
+	protected SendableEntityCreator creator;
 
 	/**
 	 * Set a GUI TableList.
