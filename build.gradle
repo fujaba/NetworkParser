@@ -1,7 +1,8 @@
+// -PlectureBuild -Pjenkins clean --refresh-dependencies build artifactoryPublish
 apply plugin: 'java'
 apply plugin: 'maven'
-apply from: 'gradle/ide.gradle'
 apply from: 'gradle/version.gradle'
+apply from: 'gradle/tasks.gradle'
 
 // only for jenkins
 if(project.hasProperty('jenkins')) {
@@ -11,7 +12,37 @@ if(project.hasProperty('jenkins')) {
 	//tbd - need configuration
 	//apply plugin: 'checkstyle'
 	//apply plugin: 'findbugs'
+} else {
+	apply from: 'gradle/ide.gradle'
 }
+
+
+if(project.hasProperty('networkParserFX')) {
+	sourceSets {
+		main {
+			java {
+				srcDir 'NetworkParser/src/main/java'
+			}
+			resources {
+				srcDir 'NetworkParser/src/main/resources'
+			}
+			output.classesDir 'NetworkParser/bin'
+		}
+	}
+}else{
+	sourceSets {
+		main {
+			java {
+				srcDir 'NetworkParser/src/main/java'
+			}
+			resources {
+				srcDir 'NetworkParser/src/main/resources'
+			}
+			output.classesDir 'NetworkParser/bin'
+		}
+	}
+}
+
 
 buildscript {
     repositories {
@@ -31,26 +62,5 @@ repositories {
 
 dependencies {
 	testCompile group: 'junit', name: 'junit', version: '4.+'
-}
-
-jar {
-	from sourceSets.main.output
-
-	manifest {
-		attributes 'Specification-Version': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision,
-			'Implementation-Title': 'Networkparser',
-			'Specification-Title': 'Networkparser',
-			'Built-Time': gitVersion.buildTime,
-			'Created-By': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision+" "+System.properties['user.name'],
-			'Built-By': "${System.properties['user.name']}",
-			'Location': "${System.properties['user.language']}",
-			'Version': gitVersion.revision,
-			'Author': 'Stefan Lindel',
-			'Implementation-Version': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision,
-			'GIT-Revision': gitVersion.revision,
-			'Java-Version': "${System.properties['java.version']}",
-			'Bundle-Description': 'NetworkParser',
-			'Bundle-ClassPath': '.'
-	}
 }
 
