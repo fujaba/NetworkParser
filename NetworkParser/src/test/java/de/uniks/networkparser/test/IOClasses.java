@@ -10,8 +10,20 @@ public static String CRLF="\r\n";
 	
 	public StringBuffer readFile(String file){
 		BufferedReader bufferedReader;
+		String path = IOClasses.class.getResource("IOClasses.class").getPath();
+		
+		int pos = path.lastIndexOf("bin/");
+		if(pos>0){
+			path = path.substring(0, pos)+"src/test/resources/" ;
+		}else{
+			pos = path.lastIndexOf("build/classes");
+			if(pos>0){
+				path = path.substring(0, pos + 6)+"resources/test/";
+			}
+		}
+		System.out.println("IOCLASSES-PATH: "+path);
 		try {
-			bufferedReader = new BufferedReader(new FileReader(file));
+			bufferedReader = new BufferedReader(new FileReader(path+file));
 			StringBuffer indexText = new StringBuffer();
 			String line = bufferedReader.readLine();
 			while (line != null)

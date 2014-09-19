@@ -12,7 +12,7 @@ public class JISMEngineTest extends IOClasses{
 	
 	@Test
 	public void testJISMEngine(){
-		StringBuffer stringBuffer = readFile("src/test/resources/template.html");
+		StringBuffer stringBuffer = readFile("test/template.html");
 		
 		
 		XMLSimpleIdMap decoder= new XMLSimpleIdMap();
