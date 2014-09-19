@@ -148,12 +148,12 @@ Graph = function(json, options) {
 
 Graph.prototype.merge = function(ref, sourceA, sourceB){
 	if(sourceA){
-		for(var i = 0;i<sourceA.length;i++){
+		for(var i in sourceA){
 			ref[i] = sourceA[i];
 		}
 	}
 	if(sourceB){
-		for(var i = 0;i<sourceB.length;i++){
+		for(var i in sourceB){
 			ref[i] = sourceB[i];
 		}
 	}
@@ -1073,7 +1073,7 @@ Edge.prototype.calcInfoPos = function(linePos, item, info, offset){
 		}else{
 			newY += 5 + offset;
 		}
-	}else if(linePos.id==Edge.Position.DOWN){
+	}else if(linePos.id==Edge.Position.RIGHT){
 		newX += info.size.x + 5;
 		if(this.m>0){
 			newY = (this.m * newX)+ this.n + offset;

@@ -1,6 +1,7 @@
 package de.uniks.networkparser.test;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -89,6 +90,7 @@ public class SVGDrawerTest {
 		sb.append("</script></body></html>");
 		
 		
+		System.out.println(new File("build/").mkdir());
 		FileWriter fstream = new FileWriter("build/"+fileName);
 		BufferedWriter out = new BufferedWriter(fstream);
 		out.write(sb.toString());
