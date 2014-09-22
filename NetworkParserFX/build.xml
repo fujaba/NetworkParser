@@ -16,6 +16,7 @@
 			]]>
 		</script>-->
 		<script language="javascript"><![CDATA[
+			load('nashorn:mozilla_compat.js')
 			importPackage(java.lang);
 			importPackage(java.io);
 			
@@ -28,7 +29,7 @@
 							var pos = zeile.indexOf("path=");
 							zeile = zeile.substring(pos+6);
 							zeile = zeile.substring(0, zeile.lastIndexOf("\""));
-							if(zeile.charAt(0)==47){
+							if( zeile.charAt(0)=='/' ){
 								project.setProperty("NetworkParserPath", ".."+zeile);
 							}else{
 								project.setProperty("NetworkParserPath", zeile);
@@ -42,17 +43,20 @@
 	</target>
 	<target name="initBuildAnt" depends="init">
 		<mkdir dir="build/temp/" />
-		<javac srcdir="${NetworkParserPath}/Ant" destdir="build/temp"  includeantruntime="false">
-			<classpath><pathelement location="${NetworkParserPath}/lib/git/org.eclipse.jgit-3.1.0.201310021548-r.jar"/></classpath>
+		<javac srcdir="${NetworkParserPath}/src/Ant" destdir="build/temp"  includeantruntime="false">
+			<classpath>
+				<pathelement location="${NetworkParserPath}/lib/git/org.eclipse.jgit-3.4.1.201406201815-r.jar"/>
+				<pathelement path="${NetworkParserPath}/bin"/>
+			</classpath>
 		</javac>
 	</target>
 	
 	<target name="buildCommit" depends="initBuildAnt">
 	   <tstamp/>
-   		<taskdef name="CopyStation" classname="de.uniks.networkparser.test.build.CopyStation" classpath="build/temp" />
-		<taskdef name="CopyRightSetter" classname="de.uniks.networkparser.test.build.CopyRightSetter" classpath="build/temp" />
+   		<!--<taskdef name="CopyStation" classname="de.uniks.networkparser.test.ant.CopyStation" classpath="build/temp" />-->
+		<taskdef name="CopyRightSetter" classname="de.uniks.networkparser.test.ant.CopyRightSetter" classpath="build/temp" />
 		
-		<CopyRightSetter projectName="NetworkParser" source="src/de/uniks/networkparser/" file="${NetworkParserPath}/Ant/de/uniks/networkparser/test/build/Copyright.txt"/>
+		<CopyRightSetter projectName="NetworkParser" source="src/main/java/de/uniks/networkparser/gui/" file="${NetworkParserPath}/src/Ant/de/uniks/networkparser/test/ant/Licence.txt"/>
 		
 		<delete dir="build/temp"></delete>
 	</target>

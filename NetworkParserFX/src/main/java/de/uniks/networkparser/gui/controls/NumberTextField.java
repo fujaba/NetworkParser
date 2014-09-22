@@ -2,11 +2,11 @@ package de.uniks.networkparser.gui.controls;
 
 /*
  NetworkParser
- Copyright (c) 2011 - 2013, Stefan Lindel
+ Copyright (c) 2011 - 2014, Stefan Lindel
  All rights reserved.
- 
- Licensed under the EUPL, Version 1.1 or – as soon they
- will be approved by the European Commission - subsequent
+
+ Licensed under the EUPL, Version 1.1 or (as soon they
+ will be approved by the European Commission) subsequent
  versions of the EUPL (the "Licence");
  You may not use this work except in compliance with the Licence.
  You may obtain a copy of the Licence at:
@@ -24,7 +24,6 @@ package de.uniks.networkparser.gui.controls;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
-
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;

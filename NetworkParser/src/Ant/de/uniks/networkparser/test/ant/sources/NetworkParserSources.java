@@ -167,8 +167,20 @@ public class NetworkParserSources {
 	}
 	private void createdComment(String sourcePath, SourceItem commentFile, String projectName){
 		File path= new File(sourcePath);
+		if(path == null) {
+			return;
+		}
+		System.out.println("TESTE: "+sourcePath);
+
 		File[] listFiles = path.listFiles();
+		if(listFiles == null) {
+			return;
+		}
 		for (File child : listFiles){
+			if(child == null) {
+				continue;
+			}
+
 			if(child.isDirectory()){
 				createdComment(sourcePath+child.getName()+ "/", commentFile, projectName);
 			} else {
