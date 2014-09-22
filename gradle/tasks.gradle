@@ -101,3 +101,32 @@ task fatJar(type: Jar) {
 	classifier = 'all'
 	exclude '**/test/**'
 }
+
+task testJar(type: Jar) {
+	if(project.hasProperty('JarName')){
+		apply from: 'gradle/'+project.getProperty('JarName')+'.gradle'
+		baseName = project.getProperty('JarName')
+	}
+	manifest {
+		attributes 'Specification-Version': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision,
+			'Implementation-Title': 'Networkparser',
+			'Specification-Title': 'Networkparser',
+			'Built-Time': gitVersion.buildTime,
+			'Created-By': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision+" "+System.properties['user.name'],
+			'Built-By': "${System.properties['user.name']}",
+			'Location': "${System.properties['user.language']}",
+			'Version': gitVersion.revision,
+			'Author': 'Stefan Lindel',
+			'Implementation-Version': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision,
+			'GIT-Revision': gitVersion.revision,
+			'Java-Version': "${System.properties['java.version']}",
+			'Bundle-Description': 'NetworkParser',
+			'Bundle-ClassPath': '.'
+	}
+	from {(
+			sourceSets.main.output +
+			sourceSets.main.allJava +
+			javadoc.outputs.files
+			)}
+	classifier = 'test'
+}
