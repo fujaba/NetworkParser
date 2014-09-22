@@ -12,7 +12,7 @@ task printVersion {
     }
 }
 
-version = new GITVersion(major: majorNumber,minor: getGitTag(), revision: revisionNumber(), hash: revisionHash(), buildTime: buildTime(), lecture: project.hasProperty('lectureBuild'))
+version = new GITVersion(major: majorNumber,minor: getGitTag(), revision: revisionNumber(), hash: revisionHash(), buildTime: buildTime(), lecture: project.hasProperty('lectureBuild'), isFX: project.hasProperty('NetworkParserFX'))
 
 ext{
 	gitVersion = new GITVersion(major: majorNumber,minor: getGitTag(), revision: revisionNumber(), hash: revisionHash(), buildTime: buildTime() )
@@ -31,10 +31,15 @@ public class GITVersion {
     // also change version above to accept release property
     boolean release = false
 	boolean lecture
+	boolean isFX
+	String prefix = ""
 
     String toString() {
 		if (System.getenv().BUILD_NUMBER) {
 			revision = System.getenv().BUILD_NUMBER as int
+		}
+		if(isFX) {
+			prefix = "FX"
 		}
 		
 		"$major.$minor.$revision${release ? '' : (lecture ? '-LECTURE' : '-SNAPSHOT')}"
@@ -92,7 +97,8 @@ def revisionHash() {
     refHead.text.trim().take takeFromHash
 }
 def buildTime() {
-	def df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'") //you can change it
+	//def df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'") //you can change it
+	def df = new SimpleDateFormat("yyyyMMdd'T'HHmmss") //you can change it
 	df.setTimeZone(TimeZone.getTimeZone("UTC"))
 	return df.format(new Date())
- }
+}
