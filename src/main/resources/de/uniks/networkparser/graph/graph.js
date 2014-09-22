@@ -148,12 +148,12 @@ Graph = function(json, options) {
 
 Graph.prototype.merge = function(ref, sourceA, sourceB){
 	if(sourceA){
-		for(var i = 0;i<sourceA.length;i++){
+		for(var i in sourceA){
 			ref[i] = sourceA[i];
 		}
 	}
 	if(sourceB){
-		for(var i = 0;i<sourceB.length;i++){
+		for(var i in sourceB){
 			ref[i] = sourceB[i];
 		}
 	}
