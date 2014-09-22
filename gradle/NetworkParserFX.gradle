@@ -1,0 +1,19 @@
+sourceSets {
+	main {
+		java { 
+			srcDir 'NetworkParserFX/src/main/java'
+		}
+		resources {
+			srcDir 'NetworkParserFX/src/main/resources'
+		}
+		output.classesDir 'NetworkParserFX/bin'
+	}
+	test{
+		java {
+			srcDir 'NetworkParserFX/src/test/java'
+		}
+		resources {
+			srcDir 'NetworkParserFX/src/test/resources'
+		}
+	}
+}
