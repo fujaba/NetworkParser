@@ -17,4 +17,3 @@ sourceSets {
 		}
 	}
 }
-baseName = 'NetworkParserFX'

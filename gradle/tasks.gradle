@@ -1,4 +1,8 @@
 jar {
+	if(project.hasProperty('JarName')){
+		apply from: 'gradle/'+project.getProperty('JarName')+'.gradle'
+		baseName = project.getProperty('JarName')
+	}
 	from sourceSets.main.output
 	manifest {
 		attributes 'Specification-Version': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision,
@@ -22,6 +26,7 @@ jar {
 task sourceJar(type: Jar) {
 	if(project.hasProperty('JarName')){
 		apply from: 'gradle/'+project.getProperty('JarName')+'.gradle'
+		baseName = project.getProperty('JarName')
 	}
 	from (sourceSets.main.allJava + sourceSets.main.output ); classifier = 'sources'
 	manifest {
@@ -45,6 +50,7 @@ task sourceJar(type: Jar) {
 task javadocJar(type: Jar) {
 	if(project.hasProperty('JarName')){
 		apply from: 'gradle/'+project.getProperty('JarName')+'.gradle'
+		baseName = project.getProperty('JarName')
 	}
 	from javadoc.outputs.files; classifier = 'javadoc'
 	manifest {

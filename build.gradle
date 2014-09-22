@@ -19,25 +19,10 @@ if(project.hasProperty('jenkins')) {
 } else {
 	apply from: 'gradle/ide.gradle'
 }
-
-sourceSets {
-	main {
-		java { 
-			srcDir 'NetworkParser/src/main/java'
-		}
-		resources {
-			srcDir 'NetworkParser/src/main/resources'
-		}
-		output.classesDir 'NetworkParser/bin'
-	}
-	test{
-		java {
-			srcDir 'NetworkParser/src/test/java'
-		}
-		resources {
-			srcDir 'NetworkParser/src/test/resources'
-		}
-	}
+if(project.hasProperty('JarName')){
+	apply from: 'gradle/'+project.getProperty('JarName')+'.gradle'
+} else {
+	apply from: 'gradle/NetworkParser.gradle'
 }
 
 buildscript {
