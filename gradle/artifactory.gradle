@@ -44,4 +44,4 @@ artifactory {
     }
 }
 
-artifacts { archives sourceJar, javadocJar, fatJar, testJar}
+artifacts { archives sourceJar, javadocJar, fatJar, fullJar}

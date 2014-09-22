@@ -102,7 +102,7 @@ task fatJar(type: Jar) {
 	exclude '**/test/**'
 }
 
-task testJar(type: Jar) {
+task fullJar(type: Jar) {
 	if(project.hasProperty('JarName')){
 		apply from: 'gradle/'+project.getProperty('JarName')+'.gradle'
 		baseName = project.getProperty('JarName')
@@ -128,5 +128,5 @@ task testJar(type: Jar) {
 			sourceSets.main.allJava +
 			javadoc.outputs.files
 			)}
-	classifier = 'test'
+	classifier = 'full'
 }

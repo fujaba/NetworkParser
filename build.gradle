@@ -55,12 +55,3 @@ dependencies {
 		compile 'de.uniks:Networkparser:4.2+:testJar'
 	}
 }
-subprojects {
-    task hello << { task -> println "I'm $task.project.name" }
-}
-
-task all(type: Jar) {
-	tasks.sourceJar.execute() 
-	tasks.javadocJar.execute() 
-	tasks.fatJar.execute() 
-}
