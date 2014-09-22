@@ -37,6 +37,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -182,7 +183,6 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		}
 		browserView.getColumns().add(columnFX);
 
-		System.out.println("ADD");
 		// Recalculate Width
 		TableViewFX table = (TableViewFX) browserView;
 		showScrollbar(table);
@@ -377,35 +377,43 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
-		if (event != null) {
-			boolean refreshColumn = false;
-			if (source.equals(event.getSource())) {
-				if (event.getOldValue() == null && event.getNewValue() != null && event.getPropertyName().equals(property)) {
-					addItem(event.getNewValue());
+		
+		if (event == null) {
+			return;
+		}
+		Platform.runLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				boolean refreshColumn = false;
+				if (source.equals(event.getSource())) {
+					if (event.getOldValue() == null && event.getNewValue() != null && event.getPropertyName().equals(property)) {
+						addItem(event.getNewValue());
+					}else{
+						refreshColumn=true;
+					}
+				}else if (sourceList.equals(event.getSource())) {
+					if (event.getOldValue() == null && event.getNewValue() != null) {
+						addItem(event.getNewValue());
+					}else if (event.getPropertyName().equals(TableList.PROPERTY_ITEMS)) {
+						if (event.getOldValue() != null && event.getNewValue() == null) {
+							removeItem(event.getOldValue());
+						}
+					}
 				}else{
 					refreshColumn=true;
 				}
-			}else if (sourceList.equals(event.getSource())) {
-				if (event.getOldValue() == null && event.getNewValue() != null) {
-					addItem(event.getNewValue());
-				}else if (event.getPropertyName().equals(TableList.PROPERTY_ITEMS)) {
-					if (event.getOldValue() != null && event.getNewValue() == null) {
-						removeItem(event.getOldValue());
-					}
-				}
-			}else{
-				refreshColumn=true;
-			}
-			if(refreshColumn){
-				for(Iterator<TableColumnFX> iterator = this.columns.iterator();iterator.hasNext();){
-					TableColumnFX column = iterator.next();
-					if(column.getColumn().getAttrName().equals(event.getPropertyName())){
-						column.setVisible(false);
-						column.setVisible(true);
+				if(refreshColumn){
+					for(Iterator<TableColumnFX> iterator = TableComponent.this.columns.iterator();iterator.hasNext();){
+						TableColumnFX column = iterator.next();
+						if(column.getColumn().getAttrName().equals(event.getPropertyName())){
+							column.setVisible(false);
+							column.setVisible(true);
+						}
 					}
 				}
 			}
-		}
+		});
 	}
 
 	@Override
