@@ -42,7 +42,7 @@ public class GITVersion {
 			prefix = "FX"
 		}
 		
-		"$major.$minor.$revision"
+		"$major.$minor.$revision${release ? '' : (lecture ? '-LECTURE' : '-SNAPSHOT')}"
     }
 }
 
