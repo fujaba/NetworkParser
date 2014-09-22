@@ -381,39 +381,11 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		if (event == null) {
 			return;
 		}
-		Platform.runLater(new Runnable() {
-			
-			@Override
-			public void run() {
-				boolean refreshColumn = false;
-				if (source.equals(event.getSource())) {
-					if (event.getOldValue() == null && event.getNewValue() != null && event.getPropertyName().equals(property)) {
-						addItem(event.getNewValue());
-					}else{
-						refreshColumn=true;
-					}
-				}else if (sourceList.equals(event.getSource())) {
-					if (event.getOldValue() == null && event.getNewValue() != null) {
-						addItem(event.getNewValue());
-					}else if (event.getPropertyName().equals(TableList.PROPERTY_ITEMS)) {
-						if (event.getOldValue() != null && event.getNewValue() == null) {
-							removeItem(event.getOldValue());
-						}
-					}
-				}else{
-					refreshColumn=true;
-				}
-				if(refreshColumn){
-					for(Iterator<TableColumnFX> iterator = TableComponent.this.columns.iterator();iterator.hasNext();){
-						TableColumnFX column = iterator.next();
-						if(column.getColumn().getAttrName().equals(event.getPropertyName())){
-							column.setVisible(false);
-							column.setVisible(true);
-						}
-					}
-				}
-			}
-		});
+		Platform.runLater(new TablePropertyChange(this, event, source, property, sourceList));
+	}
+	
+	public Iterator<TableColumnFX> getColumnIterator() {
+		return columns.iterator();
 	}
 
 	@Override
