@@ -13,8 +13,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import de.uniks.networkparser.gui.databinding.ModelListenerStringProperty;
-import de.uniks.networkparser.test.model.GUIEntity;
-import de.uniks.networkparser.test.model.util.GUIEntityCreator;
+import de.uniks.networkparser.gui.test.model.GUIEntity;
+import de.uniks.networkparser.gui.test.model.util.GUIEntityCreator;
 
 public class ClickCounter extends Application
 {
