@@ -20,7 +20,7 @@ if(project.hasProperty('jenkins')) {
 }
 if(project.hasProperty('JarName')){
 	apply from: 'gradle/'+project.getProperty('JarName')+'.gradle'
-	
+	project.archivesBaseName = project.getProperty('JarName')
 } else {
 	apply from: 'gradle/NetworkParser.gradle'
 }
