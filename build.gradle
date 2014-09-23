@@ -34,6 +34,10 @@ buildscript {
     }
 }
 
+jacoco {
+	toolVersion = '0.7.1.201405082137'
+}
+
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
