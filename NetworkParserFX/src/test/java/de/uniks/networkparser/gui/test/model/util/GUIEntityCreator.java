@@ -1,7 +1,7 @@
-package de.uniks.networkparser.test.model.util;
+package de.uniks.networkparser.gui.test.model.util;
 
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.test.model.GUIEntity;
+import de.uniks.networkparser.gui.test.model.GUIEntity;
 
 public class GUIEntityCreator implements SendableEntityCreator{
 
