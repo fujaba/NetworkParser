@@ -1,6 +1,5 @@
 jar {
 	if(project.hasProperty('JarName')){
-		apply from: 'gradle/'+project.getProperty('JarName')+'.gradle'
 		baseName = project.getProperty('JarName')
 	}
 	from sourceSets.main.output
@@ -25,7 +24,6 @@ jar {
 
 task sourceJar(type: Jar) {
 	if(project.hasProperty('JarName')){
-		apply from: 'gradle/'+project.getProperty('JarName')+'.gradle'
 		baseName = project.getProperty('JarName')
 	}
 	from (sourceSets.main.allJava + sourceSets.main.output ); classifier = 'sources'
@@ -49,7 +47,6 @@ task sourceJar(type: Jar) {
 }
 task javadocJar(type: Jar) {
 	if(project.hasProperty('JarName')){
-		apply from: 'gradle/'+project.getProperty('JarName')+'.gradle'
 		baseName = project.getProperty('JarName')
 	}
 	from javadoc.outputs.files; classifier = 'javadoc'
@@ -74,7 +71,6 @@ task javadocJar(type: Jar) {
 
 task fullJar(type: Jar) {
 	if(project.hasProperty('JarName')){
-		apply from: 'gradle/'+project.getProperty('JarName')+'.gradle'
 		baseName = project.getProperty('JarName')
 	}
 	manifest {
