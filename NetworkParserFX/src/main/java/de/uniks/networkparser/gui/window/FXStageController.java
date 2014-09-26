@@ -53,12 +53,12 @@ public abstract class FXStageController implements StageEvent{
 		this.stage = value;
 		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 	          public void handle(WindowEvent we) {
-	        	  stageClosing(we);
+	        	  stageClosing(we, stage);
 	          }
 		});
 		stage.setOnShowing(new EventHandler<WindowEvent>() {
 	          public void handle(WindowEvent we) {
-	        	  stageShowing(we);
+	        	  stageShowing(we, stage);
 	          }
 		});
 		
@@ -66,16 +66,16 @@ public abstract class FXStageController implements StageEvent{
 	}
 	
 	@Override
-	public void stageClosing(WindowEvent event) {
+	public void stageClosing(WindowEvent event, Stage stage) {
 		if(this.pane instanceof StageEvent) {
-			((StageEvent)this.pane).stageClosing(event);
+			((StageEvent)this.pane).stageClosing(event, stage);
 		}
 	}
 
 	@Override
-	public void stageShowing(WindowEvent event) {
+	public void stageShowing(WindowEvent event, Stage stage) {
 		if(this.pane instanceof StageEvent) {
-			((StageEvent)this.pane).stageClosing(event);
+			((StageEvent)this.pane).stageClosing(event, stage);
 		}
 	}
 	

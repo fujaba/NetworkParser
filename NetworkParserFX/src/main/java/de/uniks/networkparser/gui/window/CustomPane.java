@@ -23,6 +23,7 @@ package de.uniks.networkparser.gui.window;
 */
 import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 public class CustomPane extends BorderPane implements StageEvent{
@@ -36,16 +37,16 @@ public class CustomPane extends BorderPane implements StageEvent{
 	}
 		
 	@Override
-	public void stageClosing(WindowEvent event) {
+	public void stageClosing(WindowEvent event, Stage stage) {
 		if(this.center instanceof StageEvent) {
-			((StageEvent)this.center).stageClosing(event);
+			((StageEvent)this.center).stageClosing(event, stage);
 		}		
 	}
 
 	@Override
-	public void stageShowing(WindowEvent event) {
+	public void stageShowing(WindowEvent event, Stage stage) {
 		if(this.center instanceof StageEvent) {
-			((StageEvent)this.center).stageClosing(event);
+			((StageEvent)this.center).stageClosing(event, stage);
 		}
 	}
 }

@@ -51,7 +51,7 @@ public abstract class MasterShell extends Application {
 	protected String errorPath;
 	protected RootFXStageController controller;
 	
-	protected abstract Pane createContents();
+	protected abstract Pane createContents(RootFXStageController value);
 	
 	public void closeWindow() {
 		this.controller.close();
@@ -69,7 +69,7 @@ public abstract class MasterShell extends Application {
 			   defaultCharsetField.set(null, null);
 		   }
 		   this.controller = new RootFXStageController(primaryStage);
-		   this.controller.withCenter( createContents() );
+		   this.controller.withCenter( createContents( this.controller ) );
 		   this.controller.show();
 	       withIcon(null);
 	   }catch(Exception e){
