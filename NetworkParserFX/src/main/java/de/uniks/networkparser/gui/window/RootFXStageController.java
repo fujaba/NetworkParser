@@ -24,24 +24,43 @@ package de.uniks.networkparser.gui.window;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Node;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-public class RootFXStageController extends FXStageController{
+public class RootFXStageController extends FXStageController implements WindowListener{
+	private KeyListenerMap listener = new KeyListenerMap(this);
+
 	public RootFXStageController(Stage newStage){
 		this.withStage(newStage);
-		this.pane = new BorderPane();
+		this.withPane(new BorderPane());
 		this.createScene(pane);
 	}
 	
-	public RootFXStageController(String fxmlFile, ResourceBundle resources) throws IOException{
-		if(this.getStage() == null){
-			this.withStage( new Stage());
-		}
+	public BorderPane createBorderPane() {
+		BorderPane value = new BorderPane();
+		this.withPane(value);
+		return value;
+	}
+
+	public GridPane createGridPane() {
+		GridPane value = new GridPane();
+		this.withPane(value);
+		return value;
+	}
+
+	
+	public Pane create(String fxmlFile) {
+		return create(fxmlFile, null);
+	}
+	
+	public Pane create(String fxmlFile, ResourceBundle resources)  {
 		URL location = RootFXStageController.class.getResource(fxmlFile);
 		FXMLLoader fxmlLoader;
 		if(resources!=null){
@@ -49,8 +68,20 @@ public class RootFXStageController extends FXStageController{
 		}else {
 			fxmlLoader = new FXMLLoader(location);
 		}
-		this.pane = fxmlLoader.load(location.openStream());
+		try {
+			this.withPane(fxmlLoader.load(location.openStream()));
+		} catch (IOException e) {
+			return null;
+		}
 		this.withController(fxmlLoader.getController()); 
+		return pane;
+	}
+	
+	public RootFXStageController(String fxmlFile, ResourceBundle resources) {
+		if(this.getStage() == null){
+			this.withStage( new Stage());
+		}
+		create(fxmlFile, resources);
 	}
 	
 	public Pane getPane() {
@@ -78,7 +109,17 @@ public class RootFXStageController extends FXStageController{
 		
 		this.createScene(newPane);
 		this.show();
-		this.pane = newPane;
+		this.withPane(newPane);
 		oldStage.close();
+	}
+	
+	public RootFXStageController withPane(Pane value) {
+		this.pane = value;
+		this.pane.addEventFilter(KeyEvent.ANY, listener);
+		return this;
+	}
+
+	public KeyListenerMap getListener() {
+		return listener;
 	}
 }

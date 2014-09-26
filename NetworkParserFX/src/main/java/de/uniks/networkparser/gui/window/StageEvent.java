@@ -1,5 +1,6 @@
 package de.uniks.networkparser.gui.window;
 
+import javafx.stage.Stage;
 /*
  NetworkParser
  Copyright (c) 2011 - 2014, Stefan Lindel
@@ -24,6 +25,6 @@ package de.uniks.networkparser.gui.window;
 import javafx.stage.WindowEvent;
 
 public interface StageEvent {
-	public void stageClosing(WindowEvent event);
-	public void stageShowing(WindowEvent event);
+	public void stageClosing(WindowEvent event, Stage stage);
+	public void stageShowing(WindowEvent event, Stage stage);
 }

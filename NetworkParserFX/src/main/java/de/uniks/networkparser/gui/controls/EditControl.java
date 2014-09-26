@@ -31,6 +31,7 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.gui.table.CellEditorElement;
 import de.uniks.networkparser.gui.table.Column;
 import de.uniks.networkparser.gui.table.FieldTyp;
+import de.uniks.networkparser.gui.window.KeyListenerMap;
 
 public abstract class EditControl<T extends Node> implements CellEditorElement, EventHandler<KeyEvent>, ChangeListener<Boolean> {
 	protected T control;
@@ -39,6 +40,7 @@ public abstract class EditControl<T extends Node> implements CellEditorElement, 
 	protected Column column;
 	protected IdMap map;
 	protected Object value;
+	protected KeyListenerMap keyListener;
 	
 	
 	@Override
@@ -79,6 +81,9 @@ public abstract class EditControl<T extends Node> implements CellEditorElement, 
 	protected void registerListener(){
 		control.setOnKeyPressed(this);
 		control.focusedProperty().addListener(this);
+		if(keyListener!= null) {
+			control.addEventFilter(KeyEvent.ANY, keyListener);
+		}
 	}
 	
 	public EditControl<T> withListener(EditFieldMap owner){
@@ -186,5 +191,10 @@ public abstract class EditControl<T extends Node> implements CellEditorElement, 
 			apply();
 		}
 		
+	}
+
+	public EditControl<T> withListener(KeyListenerMap value) {
+		this.keyListener = value;
+		return this;
 	}
 }

@@ -93,43 +93,6 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 		cancel();
 	}
 	
-	// @Override
-	// public Color getBackground(Object element) {
-	// return colors.getColor(column.getBackgroundColor());
-	// }
-	// @Override
-	// public Color getForeground(Object element) {
-	// return colors.getColor(column.getForgroundColor());
-	// }
-	// public Color getForgroundColorActiv() {
-	// return colors.getColor(column.getForgroundColorActiv());
-	// }
-	//
-	// public Color getBackgroundColorActiv() {
-	// return colors.getColor(column.getBackgroundColorActiv());
-	// }
-	//
-	// @Override
-	// public String getToolTipText(Object element) {
-	// String altAttribute = column.getAltAttribute();
-	// if (altAttribute != null) {
-	// if(altAttribute.startsWith("\"")){
-	// return altAttribute.substring(1, altAttribute.length()-1);
-	// }
-	// SendableEntityCreator creatorClass =
-	// owner.getMap().getCreatorClass(element);
-	// if (creatorClass != null) {
-	// String text = ""
-	// + creatorClass.getValue(element, altAttribute);
-	// if (text.equals("")) {
-	// return null;
-	// }
-	// return text;
-	// }
-	// }
-	// return getTextValue(element);
-	// }
-
 	@Override
 	public void cancel() {
 		setText(""+getItem());
@@ -176,4 +139,43 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	
+	// @Override
+		// public Color getBackground(Object element) {
+		// return colors.getColor(column.getBackgroundColor());
+		// }
+		// @Override
+		// public Color getForeground(Object element) {
+		// return colors.getColor(column.getForgroundColor());
+		// }
+		// public Color getForgroundColorActiv() {
+		// return colors.getColor(column.getForgroundColorActiv());
+		// }
+		//
+		// public Color getBackgroundColorActiv() {
+		// return colors.getColor(column.getBackgroundColorActiv());
+		// }
+		//
+		// @Override
+		// public String getToolTipText(Object element) {
+		// String altAttribute = column.getAltAttribute();
+		// if (altAttribute != null) {
+		// if(altAttribute.startsWith("\"")){
+		// return altAttribute.substring(1, altAttribute.length()-1);
+		// }
+		// SendableEntityCreator creatorClass =
+		// owner.getMap().getCreatorClass(element);
+		// if (creatorClass != null) {
+		// String text = ""
+		// + creatorClass.getValue(element, altAttribute);
+		// if (text.equals("")) {
+		// return null;
+		// }
+		// return text;
+		// }
+		// }
+		// return getTextValue(element);
+		// }
+
 }

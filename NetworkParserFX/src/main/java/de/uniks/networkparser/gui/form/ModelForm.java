@@ -45,6 +45,7 @@ import de.uniks.networkparser.DefaultTextItems;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.TextItems;
 import de.uniks.networkparser.gui.table.Column;
+import de.uniks.networkparser.gui.window.KeyListenerMap;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
@@ -56,7 +57,7 @@ public class ModelForm extends BorderPane{
 	private Object item;
 	private HBox actionComposite;
 	private VBox items = new VBox();
-	
+	private KeyListenerMap listener;
 
 	public VBox getItems(){
 		return items;
@@ -89,6 +90,7 @@ public class ModelForm extends BorderPane{
 		double max=0;
 		for(String property : fields){
 			PropertyComposite propertyComposite = new PropertyComposite();
+			propertyComposite.withListener(listener);
 			Column column = propertyComposite.getColumn();
 			if(this.textClazz!=null){
 				column.withLabel(this.textClazz.getText(property, item, this));
@@ -210,6 +212,11 @@ public class ModelForm extends BorderPane{
 			this.actionComposite.getChildren().add(btn);
 			count++;
 		}
+		return this;
+	}
+
+	public ModelForm withListener(KeyListenerMap value) {
+		this.listener = value;
 		return this;
 	}
 	
