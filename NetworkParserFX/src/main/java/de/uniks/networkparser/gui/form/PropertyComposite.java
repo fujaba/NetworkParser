@@ -45,6 +45,7 @@ import de.uniks.networkparser.gui.controls.EditFieldMap;
 import de.uniks.networkparser.gui.table.CellEditorElement;
 import de.uniks.networkparser.gui.table.Column;
 import de.uniks.networkparser.gui.table.FieldTyp;
+import de.uniks.networkparser.gui.window.KeyListenerMap;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -61,6 +62,7 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 	private SendableEntityCreator creator;
 	private EditFieldMap field=new EditFieldMap();
 	private EditControl<?> editControl;
+	private KeyListenerMap listener;
 
 	public String getLabelText() {
 		if(getColumn().getLabel()!= null){
@@ -95,6 +97,7 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 	public PropertyComposite withFieldTyp(FieldTyp value) {
 		getColumn().withFieldTyp(value);
 		editControl = this.field.getControl(null, column, getItemValue(), this);
+		editControl.withListener(listener);
 		 editControl.withValue(getItemValue());
 		 if(this.centerComposite != null) {
 			 this.getChildren().remove(this.centerComposite);
@@ -260,6 +263,10 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 		return editControl;
 	}
 	
+	public PropertyComposite withListener(KeyListenerMap listener) {
+		this.listener = listener;
+		return this;
+	}
 	
 	
 	
@@ -316,7 +323,6 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 	public Object getValue(boolean convert) {
 		return editControl.getValue(convert);
 	}
-
 
 	//FIXME
 //	public String getLabelPostText() {
