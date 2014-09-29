@@ -33,8 +33,14 @@ public class ColumnListener {
 	}
 
 	public Object getValue(Object entity, SendableEntityCreator creator) {
+		String attrName = column.getAttrName();
+		if(attrName != null) {
+			if(attrName.startsWith("\"")) {
+				return attrName.substring(1, attrName.length() - 1);
+			}
+		}
 		if (creator != null && column != null) {
-			return creator.getValue(entity, column.getAttrName());
+			return creator.getValue(entity, attrName);
 		}
 		return null;
 	}

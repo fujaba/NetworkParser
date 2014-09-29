@@ -3,6 +3,7 @@ package de.uniks.networkparser.gui.dialog;
 
 import java.net.URL;
 import java.util.ArrayList;
+
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.css.PseudoClass;
 import javafx.geometry.Pos;
@@ -12,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToolBar;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -23,8 +25,11 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
+
 import com.sun.javafx.tk.Toolkit;
+
 import de.uniks.networkparser.gui.dialog.DialogButton.Grafik;
+import de.uniks.networkparser.gui.window.KeyListenerMap;
 
 public class DialogBox {
 	protected static final PseudoClass ACTIVE_PSEUDO_CLASS = PseudoClass.getPseudoClass("active");
@@ -88,7 +93,7 @@ public class DialogBox {
         }else{
         	return null;
         }
-		installCSSInScene();
+		configScene();
         
         // modify scene root to install opaque layer and the dialog
         originalParent = scene.getRoot();
@@ -326,7 +331,7 @@ public class DialogBox {
         scene = new Scene(root);
         scene.setFill(Color.TRANSPARENT);
         stage.setScene(scene);
-        installCSSInScene();
+        configScene();
         
         if(modal) {
         	stage.setAlwaysOnTop(alwaysOnTop);
@@ -353,23 +358,25 @@ public class DialogBox {
     }
 
 	
-	  private void installCSSInScene() {
-	        String dialogsCssUrl = DIALOGS_CSS_URL.toExternalForm();
-	        if (scene != null) {
-	            // install CSS
-	            if(!scene.getStylesheets().contains(dialogsCssUrl)){
-	                scene.getStylesheets().addAll(dialogsCssUrl);
-	            }
-	        } else if (owner != null) {
-	            Scene _scene = owner.getScene();
-	            if (_scene != null) {
-	                // install CSS
-	                if(!scene.getStylesheets().contains(dialogsCssUrl)){
-	                    _scene.getStylesheets().addAll(dialogsCssUrl);
-	                }
-	            }
-	        }
-	    }
+	  private void configScene() {
+		Scene element = scene;
+		String dialogsCssUrl = DIALOGS_CSS_URL.toExternalForm();
+		if (scene != null) {
+			// install CSS
+			if (!scene.getStylesheets().contains(dialogsCssUrl)) {
+				scene.getStylesheets().addAll(dialogsCssUrl);
+			}
+		} else if (owner != null) {
+			element = owner.getScene();
+			if (element != null) {
+				// install CSS
+				if (!element.getStylesheets().contains(dialogsCssUrl)) {
+					element.getStylesheets().addAll(dialogsCssUrl);
+				}
+			}
+		}
+		element.addEventHandler(KeyEvent.ANY, new KeyListenerMap() );
+	}
 	
 	public void createContent(){
         root = new BorderPane();
@@ -517,6 +524,20 @@ public class DialogBox {
 			.withCenterQuestion(text)
 			.withActionButton(new DialogButton().withName("Yes").withAction(Grafik.close), new DialogButton().withName("No").withAction(Grafik.close))
 			.show(parent);
+	}
+	public static boolean createQuestionCheck(Window parent, String title, String text, String... check) {
+		DialogButton action = createQuestion(parent, title, text);
+		if(action==null) {
+			return false;
+		}
+		for(String item : check){
+			if(item != null) {
+				if(item.equalsIgnoreCase(action.getText())){
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	public DialogButton getAction() {
