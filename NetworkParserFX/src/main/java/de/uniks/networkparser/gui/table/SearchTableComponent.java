@@ -21,8 +21,12 @@ package de.uniks.networkparser.gui.table;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import de.uniks.networkparser.DefaultTextItems;
 import de.uniks.networkparser.gui.resource.Styles;
 
@@ -56,7 +60,27 @@ public class SearchTableComponent extends TableComponent{
 			northComponents.setCenter(searchText);
 		}
 	}
-
+	
+	public SearchTableComponent withElement(Node... elements) {
+		Node element = this.northComponents.getRight();
+		if(element == null) {
+			HBox hBox = new HBox();
+			hBox.setAlignment(Pos.CENTER);
+			element  = hBox;
+			this.northComponents.setRight(element);
+		}
+		if(element instanceof HBox) {
+			HBox parent = (HBox) element;
+			for(Node item : elements) {
+				parent.getChildren().add(item);
+				HBox.setMargin(item, new Insets(0, 5, 0, 5));
+			}
+		}
+		return this;
+	}
+	
+	
+//TODO REMOVE
 //	public void refreshNorthLayout(){
 //		if(firstNorth!=null){
 //			if(firstNorth.getChildren().length<1){

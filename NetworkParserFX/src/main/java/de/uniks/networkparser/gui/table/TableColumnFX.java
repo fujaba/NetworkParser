@@ -73,9 +73,6 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 		});
 		return this;
 	}
-	public void sort() {
-		System.out.println("JJJ");
-	}
 	
 	@Override
 	public Column getColumn() {
@@ -93,6 +90,7 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 			}
 		}
 	}
+	//FIXME REMOVE
 //	@Override
 //	public ObservableValue<TableCellValue> call(
 //			CellDataFeatures<Object, TableCellValue> arg0) {
