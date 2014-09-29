@@ -21,12 +21,14 @@ package de.uniks.networkparser.gui.table;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.TableCell;
 import javafx.scene.text.Font;
 import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.gui.controls.EditControl;
 import de.uniks.networkparser.gui.controls.EditFieldMap;
+import de.uniks.networkparser.interfaces.GUIPosition;
 
 public class TableCellFX extends TableCell<Object, TableCellValue> implements CellEditorElement{
 	private EditFieldMap fieldMap;
@@ -41,6 +43,20 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 	@Override
 	public TableCellFX withColumn(Column column) {
 		this.field = column;
+		if(field.getStyle().getAlignment() == null) {
+			return this;
+		}
+		GUIPosition alignment = GUIPosition.valueOf( field.getStyle().getAlignment() );
+		if(alignment != null) {
+			if(alignment==GUIPosition.CENTER) {
+				this.setAlignment(Pos.CENTER);		
+			}else if(alignment==GUIPosition.WEST) {
+				this.setAlignment(Pos.CENTER_LEFT);
+			}else if(alignment==GUIPosition.EAST) {
+				this.setAlignment(Pos.CENTER_RIGHT);
+			}
+		}
+		
 		return this;
 	}
 
@@ -141,6 +157,7 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 	}
 	
 	
+//TODO REMOVE
 	// @Override
 		// public Color getBackground(Object element) {
 		// return colors.getColor(column.getBackgroundColor());
