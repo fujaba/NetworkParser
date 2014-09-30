@@ -331,8 +331,12 @@ public class Column {
 	public Column withListener(ColumnListener handler) {
 		this.handler = handler;
 		this.handler.withColumn(this);
-		this.withEditable(true);
+		this.isEditable = true;
 		return this;
+	}
+	
+	public boolean isListener() {
+		return this.handler!=null && !this.handler.isDefaultListener();
 	}
 
 	public ColumnListener getListener() {
@@ -343,7 +347,7 @@ public class Column {
 	}
 
 	public ColumnListener getDefaultListener() {
-		return new ColumnListener();
+		return new ColumnListener().withDefaultListener(true);
 	}
 
 	public Comparator<TableCellValue> getComparator() {
