@@ -26,6 +26,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class ColumnListener {
 	protected Column column;
+	private boolean defaultListener;
 
 	public ColumnListener withColumn(Column column) {
 		this.column = column;
@@ -84,4 +85,12 @@ public class ColumnListener {
 	public void startEdit(CellEditorElement editField) {
 	}
 
+	public boolean isDefaultListener() {
+		return defaultListener;
+	}
+
+	public ColumnListener withDefaultListener(boolean value) {
+		this.defaultListener = value;
+		return this;
+	}
 }
