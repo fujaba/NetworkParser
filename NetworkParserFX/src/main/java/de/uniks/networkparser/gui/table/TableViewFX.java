@@ -33,7 +33,6 @@ public class TableViewFX extends TableView<Object> {
 	private TableComponent parent;
 	private GUIPosition position;
 	
-	
 	public TableViewFX withPosition(GUIPosition position){
 		this.position = position;
 		return this;

@@ -40,35 +40,44 @@ public class StyleFX extends GridStyle{
 
 	@Override
 	public String toString() {
-		String style="";
-		if(getBackground()!=null){
-			style="-fx-background-color: "+getBackground()+";";
+		String style="", item;
+		item =getBackground(); 
+		if(item != null){
+			if(item.startsWith("#")){
+				style +="-fx-background-color: "+item+";";
+			}else{
+				style +="-fx-background-color: #"+item+";";
+			}
 		}
-//		if(getForground()!=null){
-//			style+="-fx-f-color: "+getForground()+";";
-//		}
+		item =getForground(); 
+		if(item != null){
+			if(item.startsWith("#")){
+				style +="-fx-text-fill: "+item+";";
+			}else{
+				style +="-fx-text-fill: #"+item+";";
+			}
+		}
 		if(getBorders().size()>0){
-			
 			String[] isBorders=new String[]{"0","0","0","0"};
 			String[] colors=new String[]{"black","black","black","black"};
 			for(Iterator<Entry<GUIPosition, GUILine>> iterator = getBorders().entrySet().iterator();iterator.hasNext();){
-				Entry<GUIPosition, GUILine> item = iterator.next();
-				switch(item.getKey()){
+				Entry<GUIPosition, GUILine> border = iterator.next();
+				switch(border.getKey()){
 					case NORTH:
-						isBorders[0] = item.getValue().getWidth();
-						colors[0] = item.getValue().getColor();
+						isBorders[0] = border.getValue().getWidth();
+						colors[0] = border.getValue().getColor();
 						break;
 					case EAST:
-						isBorders[1] = item.getValue().getWidth();
-						colors[1] = item.getValue().getColor();
+						isBorders[1] = border.getValue().getWidth();
+						colors[1] = border.getValue().getColor();
 						break;
 					case SOUTH:
-						isBorders[2] = item.getValue().getWidth();
-						colors[2] = item.getValue().getColor();
+						isBorders[2] = border.getValue().getWidth();
+						colors[2] = border.getValue().getColor();
 						break;
 					case WEST:
-						isBorders[3] = item.getValue().getWidth();
-						colors[3] = item.getValue().getColor();
+						isBorders[3] = border.getValue().getWidth();
+						colors[3] = border.getValue().getColor();
 						break;
 					default:
 						break;
@@ -87,6 +96,9 @@ public class StyleFX extends GridStyle{
 		}
 		if(cursor!=null){
 			style+="-fx-cursor:"+cursor+";";
+		}
+		if(this.getAlignment()!= null) {
+			style+="-fx-text-alignment:"+this.getAlignment()+";";
 		}
 		return style;
 	}
