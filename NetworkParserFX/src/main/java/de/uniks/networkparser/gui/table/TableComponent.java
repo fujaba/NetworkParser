@@ -392,6 +392,11 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	public SendableEntityCreator getCreator(Object entity) {
 		return getMap().getCreatorClass(entity);
 	}
+	
+	public Object getElement(int row) {
+		return list.get(row);
+	}
+	
 	@Override
 	public void refreshViewer() {
 	}
@@ -421,4 +426,5 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	public EditFieldMap getFieldFactory() {
 		return field;
 	}
+	
 }

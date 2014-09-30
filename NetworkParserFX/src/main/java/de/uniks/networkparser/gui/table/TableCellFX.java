@@ -21,19 +21,27 @@ package de.uniks.networkparser.gui.table;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.TableCell;
+import javafx.scene.control.TablePosition;
 import javafx.scene.text.Font;
 import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.gui.controls.EditControl;
 import de.uniks.networkparser.gui.controls.EditFieldMap;
+import de.uniks.networkparser.gui.grid.StyleFX;
 import de.uniks.networkparser.interfaces.GUIPosition;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class TableCellFX extends TableCell<Object, TableCellValue> implements CellEditorElement{
 	private EditFieldMap fieldMap;
 	private Column field;
 	private EditControl<? extends Node> control;
+	private TableComponent tableComponent;
 
 	public TableCellFX withEditFieldMap(EditFieldMap fieldMap) {
 		this.fieldMap = fieldMap;
@@ -43,19 +51,29 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 	@Override
 	public TableCellFX withColumn(Column column) {
 		this.field = column;
-		if(field.getStyle().getAlignment() == null) {
-			return this;
+		if(this.field.getStyle() instanceof StyleFX){
+			this.setStyle(this.field.getStyle().toString());
 		}
-		GUIPosition alignment = GUIPosition.valueOf( field.getStyle().getAlignment() );
-		if(alignment != null) {
-			if(alignment==GUIPosition.CENTER) {
-				this.setAlignment(Pos.CENTER);		
-			}else if(alignment==GUIPosition.WEST) {
-				this.setAlignment(Pos.CENTER_LEFT);
-			}else if(alignment==GUIPosition.EAST) {
-				this.setAlignment(Pos.CENTER_RIGHT);
+		if(this.field.isListener()){
+			this.setCursor(Cursor.HAND);
+		}
+		
+		if(field.getStyle().getAlignment() != null) {
+			GUIPosition alignment = GUIPosition.valueOf( field.getStyle().getAlignment() );
+			if(alignment != null) {
+				if(alignment==GUIPosition.CENTER) {
+					this.setAlignment(Pos.CENTER);		
+				}else if(alignment==GUIPosition.WEST) {
+					this.setAlignment(Pos.CENTER_LEFT);
+				}else if(alignment==GUIPosition.EAST) {
+					this.setAlignment(Pos.CENTER_RIGHT);
+				}
 			}
 		}
+		//explorer.withLabel("Explorer").withStyle(new Style().withWidth(80).withForground("00A18F").withBackground("D4D4D4").withAlignment(GUIPosition.CENTER));
+		//explorer.withResizable(false);
+		//explorer.withListener(new ExplorerFilesButtonEditingSupport(this));
+
 		
 		return this;
 	}
@@ -85,7 +103,12 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 
 	@Override
 	public void startEdit() {
-		if (!isEmpty()) {
+		TablePosition<Object, ?> editingCell = getTableView().getEditingCell();
+		int row = editingCell.getRow();
+		Object entity = tableComponent.getElement(row);
+		SendableEntityCreator creator = tableComponent.getCreator(entity);
+		
+		if (!isEmpty() && this.field.getListener().canEdit(entity, creator)) {
 			super.startEdit();
 			Object value = getItem().getCreator().getValue(getItem().getItem(), this.field.getAttrName());
 			FieldTyp typ = fieldMap.getControllForTyp(field, value);
@@ -94,6 +117,8 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 				setText(null);
 				setGraphic(control.getControl());
 			}
+		}else if(this.field.isListener()) {
+			this.field.getListener().onEdit(entity, creator);
 		}
 	}
 	
@@ -139,6 +164,11 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 		control.withValue(value);
 		return this;
 	}
+	
+	public TableCellFX withTableComponent(TableComponent value) {
+		this.tableComponent = value;
+		return this;
+	}
 
 	@Override
 	public void dispose() {
@@ -155,6 +185,8 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	
 	
 	
 //TODO REMOVE

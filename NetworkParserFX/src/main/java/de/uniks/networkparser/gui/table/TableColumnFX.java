@@ -24,10 +24,14 @@ package de.uniks.networkparser.gui.table;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TreeTableView;
+import javafx.scene.control.TreeTableView.EditEvent;
+import javafx.scene.control.TreeView;
 import javafx.util.Callback;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
@@ -50,13 +54,12 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 		menueItem.setOnAction(this);
 		visibleItems.getItems().add(menueItem);
 		
-
-		
 		setCellFactory(new Callback<TableColumn<Object,TableCellValue>, TableCell<Object,TableCellValue>>() {
 			@Override
 			public TableCell<Object, TableCellValue> call(
 					TableColumn<Object, TableCellValue> arg0) {
-				return new TableCellFX().withColumn(TableColumnFX.this.column).withEditFieldMap(TableColumnFX.this.tableComponent.getFieldFactory());
+				System.out.println(arg0); 
+				return new TableCellFX().withTableComponent(tableComponent).withColumn(TableColumnFX.this.column).withEditFieldMap(TableColumnFX.this.tableComponent.getFieldFactory());
 			}
 		});
 		setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Object,TableCellValue>, ObservableValue<TableCellValue>>() {
@@ -71,6 +74,15 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 						.withCreator(creator);
 			}
 		});
+		
+		this.setOnEditStart(new EventHandler<TableColumn.CellEditEvent<Object, TableCellValue>>() {
+	        @Override
+	        public void handle(TableColumn.CellEditEvent<Object, TableCellValue> t) {
+	        	System.out.println(t);
+	        }
+	    });
+
+		
 		return this;
 	}
 	
@@ -90,6 +102,10 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 			}
 		}
 	}
+	
+	
+	
+	
 	//FIXME REMOVE
 //	@Override
 //	public ObservableValue<TableCellValue> call(
