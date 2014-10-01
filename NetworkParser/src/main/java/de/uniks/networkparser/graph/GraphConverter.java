@@ -222,7 +222,8 @@ public class GraphConverter implements Converter {
 	}
 	
 	private JsonObject addInfo(GraphEdge edge) {
-		return new JsonObject().withValue(CARDINALITY, edge.getCardinality()).withValue(PROPERTY, edge.getProperty());
+	   String edgeProperty = edge.getProperty();
+		return new JsonObject().withValue(CARDINALITY, edge.getCardinality()).withValue(PROPERTY, edgeProperty);
 	}
 
 	public JsonArray parseEntities(String typ, Collection<GraphNode> nodes,
