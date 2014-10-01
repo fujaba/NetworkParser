@@ -65,7 +65,7 @@ public class GraphEdge extends AbstractEntityList<GraphClazz> implements
 			return property;
 		}
 		if(this.size() == 1) {
-			return this.get(0).getClassName().toLowerCase();
+			return this.get(0).getClassName(true).toLowerCase();
 		}
 		return "";
 	}
