@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project default="buildAnt">
+<project default="buildAnt" name="NPAnt" basedir=".">
 	<target name="buildAnt">
 		<mkdir dir="build/temp/" />
 		<javac srcdir="src/Ant" destdir="build/temp"  includeantruntime="false" debug="true" sourcepath="Ant" listfiles="true">
@@ -12,15 +12,18 @@
             <fileset dir="./build/temp"/>
         </jar>
 
-		<taskdef name="GitRevision" classname="de.uniks.networkparser.test.build.GitRevision" classpath="bin:build/ant.jar">
+		<taskdef name="GitRevision" classname="de.uniks.networkparser.test.ant.GitRevision" classpath="bin:build/temp/:build/ant.jar">
 			<classpath>
 				<pathelement location="lib/git/org.eclipse.jgit-3.4.1.201406201815-r.jar"/>
 				<pathelement location="bin"></pathelement>
 			</classpath>
 		</taskdef>
 		<GitRevision/>
+		<property name="version" value="${java.class.version}" />
 		<script language="javascript">
-			load('nashorn:mozilla_compat.js')
+			if(project.getProperty("version")>51.0) {
+				load('nashorn:mozilla_compat.js')
+			}
 			importPackage(java.lang);
 			project.setProperty("Branchname", System.getProperty("Branchname"));
 			project.setProperty("LastCommit", System.getProperty("LastCommit"));
