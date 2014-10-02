@@ -102,7 +102,7 @@ public abstract class IdMapEncoder extends AbstractMap implements
 	 */
 	public IdMapEncoder() {
 		super();
-		this.keyValue = new BidiLinkedHashMap<String, Object>();
+		this.keyValue = new ArrayEntityList<String, Object>();
 		this.withCreator(new TextItems());
 	}
 
