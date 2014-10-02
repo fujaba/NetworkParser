@@ -12,7 +12,7 @@ public abstract class AbstractBidiMap<K, V> implements BidiMap<K, V>
    protected Map<K, V> keyValue;
    protected Map<V, K> valueKey;
    
-   public AbstractBidiMap(final Map<K, V> keyValue, final Map<V, K> valueKey)
+   protected AbstractBidiMap(final Map<K, V> keyValue, final Map<V, K> valueKey)
    {
       this.keyValue = keyValue;
       this.valueKey = valueKey;
@@ -50,7 +50,7 @@ public abstract class AbstractBidiMap<K, V> implements BidiMap<K, V>
    }
 
    @Override
-   public BidiMap<K, V> without(K key, V value)
+   public BidiMap<K, V> without(Object key, Object value)
    {
       keyValue.remove(key, value);
       valueKey.remove(value, key); 
