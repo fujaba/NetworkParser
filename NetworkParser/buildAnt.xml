@@ -12,15 +12,15 @@
             <fileset dir="./build/temp"/>
         </jar>
 
-		<taskdef name="GitRevision" classname="de.uniks.networkparser.test.build.GitRevision" classpath="bin:build/ant.jar">
+		<taskdef name="GitRevision" classname="de.uniks.networkparser.test.ant.GitRevision" classpath="build/temp">
 			<classpath>
 				<pathelement location="lib/git/org.eclipse.jgit-3.4.1.201406201815-r.jar"/>
-				<pathelement location="bin"></pathelement>
+								<pathelement location="bin"></pathelement>
 			</classpath>
 		</taskdef>
 		<GitRevision/>
 		<script language="javascript">
-			load('nashorn:mozilla_compat.js')
+			//load('nashorn:mozilla_compat.js')
 			importPackage(java.lang);
 			project.setProperty("Branchname", System.getProperty("Branchname"));
 			project.setProperty("LastCommit", System.getProperty("LastCommit"));
