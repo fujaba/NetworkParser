@@ -11,7 +11,6 @@
         <jar destfile="build/ant.jar">
             <fileset dir="./build/temp"/>
         </jar>
-
 		<taskdef name="GitRevision" classname="de.uniks.networkparser.test.ant.GitRevision" classpath="bin:build/temp/:build/ant.jar">
 			<classpath>
 				<pathelement location="lib/git/org.eclipse.jgit-3.4.1.201406201815-r.jar"/>
