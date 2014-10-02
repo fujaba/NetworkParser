@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+
 import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.gui.table.TableList;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -101,7 +102,7 @@ public abstract class IdMapEncoder extends AbstractMap implements
 	 */
 	public IdMapEncoder() {
 		super();
-		this.keyValue = new BidiLinkedHashMap();
+		this.keyValue = new BidiLinkedHashMap<String, Object>();
 		this.withCreator(new TextItems());
 	}
 

@@ -21,67 +21,25 @@ package de.uniks.networkparser;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
  */
-import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.Set;
 
-import de.uniks.networkparser.interfaces.BidiMap;
+public class BidiLinkedHashMap<K, V> extends AbstractBidiMap<K, V>
+{
 
-public class BidiLinkedHashMap implements BidiMap<String, Object> {
-	protected LinkedHashMap<String, Object> keyValue = new LinkedHashMap<String, Object>();
-	protected LinkedHashMap<Object, String> valueKey = new LinkedHashMap<Object, String>();
+   public BidiLinkedHashMap()
+   {
+      super(new LinkedHashMap<K, V>(), new LinkedHashMap<V, K>());
+   }
 
-	@Override
-	public int size() {
-		return keyValue.size();
-	}
+   @Override
+   public BidiLinkedHashMap<K, V> without(K key, V value)
+   {
+      return (BidiLinkedHashMap<K, V>) super.without(key, value);
+   }
 
-	@Override
-	public void clear() {
-		keyValue.clear();
-		valueKey.clear();
-	}
+   public BidiLinkedHashMap<K, V> with(K key, V value)
+   {
+      return (BidiLinkedHashMap<K, V>) super.with(key, value);
+   }
 
-	@Override
-	public Collection<Object> values() {
-		return keyValue.values();
-	}
-
-	@Override
-	public Set<String> keySet() {
-		return keyValue.keySet();
-	}
-
-	@Override
-	public boolean containKey(String key) {
-		return keyValue.containsKey(key);
-	}
-
-	@Override
-	public boolean containValue(Object value) {
-		return valueKey.containsKey(value);
-	}
-
-	@Override
-	public BidiLinkedHashMap without(String key, Object value) {
-		this.keyValue.remove(key);
-		this.valueKey.remove(value);
-		return this;
-	}
-
-	public BidiLinkedHashMap with(String key, Object value) {
-		this.keyValue.put(key, value);
-		this.valueKey.put(value, key);
-		return this;
-	}
-
-	@Override
-	public Object getValueItem(Object key) {
-		return keyValue.get(key);
-	}
-
-	@Override
-	public String getKey(Object key) {
-		return valueKey.get(key);
-	}
 }
