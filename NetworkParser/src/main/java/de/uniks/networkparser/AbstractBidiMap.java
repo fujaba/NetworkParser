@@ -8,7 +8,6 @@ import de.uniks.networkparser.interfaces.BidiMap;
 
 public abstract class AbstractBidiMap<K, V> implements BidiMap<K, V>
 {
-
    protected Map<K, V> keyValue;
    protected Map<V, K> valueKey;
    
@@ -50,6 +49,15 @@ public abstract class AbstractBidiMap<K, V> implements BidiMap<K, V>
    }
 
    @Override
+   public BidiMap<K, V> without(K key, V value)
+   {
+      keyValue.remove(key);
+      valueKey.remove(value); 
+      return this;
+   }
+
+
+   @Override   
    public BidiMap<K, V> with(K key, V value)
    {
       keyValue.put(key, value);
