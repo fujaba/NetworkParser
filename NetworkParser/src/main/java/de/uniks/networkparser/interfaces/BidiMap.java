@@ -37,7 +37,7 @@ public interface BidiMap<K, V> {
 
 	public boolean containValue(V value);
 
-	public BidiMap<K, V> without(K key, V value);
+	public BidiMap<K, V> without(Object key, Object value);
 
 	public BidiMap<K, V> with(K key, V value);
 

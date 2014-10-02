@@ -17,9 +17,9 @@ public class BidiHashMap<K, V> extends AbstractBidiMap<K, V>
    }
 
    @Override
-   public BidiHashMap<K, V> without(K key, V value)
+   public BidiHashMap<K, V> without(Object key, Object value)
    {
-      return (BidiHashMap<K, V>) super.with(key, value);
+      return (BidiHashMap<K, V>) super.without(key, value);
    }
 
 }

@@ -64,7 +64,7 @@ public class ArrayEntityList<K, V> extends AbstractKeyValueList<K, V> implements
 	}
 
 	@Override
-	public BidiMap<K, V> without(K key, V value) {
+	public BidiMap<K, V> without(Object key, Object value) {
 		super.removeItemByObject(key);
 		return this;
 	}
