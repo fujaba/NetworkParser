@@ -4,8 +4,11 @@ package de.uniks.networkparser.gui.dialog;
 import java.net.URL;
 import java.util.ArrayList;
 
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.css.PseudoClass;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -14,6 +17,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ToolBar;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -382,10 +386,14 @@ public class DialogBox {
         root = new BorderPane();
         root.getStyleClass().addAll("dialog", "decorated-root");
         
-        stage.focusedProperty().addListener(valueModel -> {                
-            boolean active = ((ReadOnlyBooleanProperty)valueModel).get();
-            root.pseudoClassStateChanged(ACTIVE_PSEUDO_CLASS, active);
-        });	        
+        stage.focusedProperty().addListener(new InvalidationListener () {
+
+			@Override
+			public void invalidated(Observable valueModel) {
+				 boolean active = ((ReadOnlyBooleanProperty)valueModel).get();
+		         root.pseudoClassStateChanged(ACTIVE_PSEUDO_CLASS, active);
+			}
+        });
         
         // --- titlebar (only used for cross-platform look)
         dialogTitleBar = new ToolBar();
@@ -396,26 +404,32 @@ public class DialogBox {
         for(DialogElement element : titleElements) {
 	        dialogTitleBar.getItems().add((Node) element.withOwner(this));
         }
-        dialogTitleBar.setOnMousePressed(event -> {
-        	if(isInline) {
-        		mouseDragDeltaX = event.getSceneX();
-        		mouseDragDeltaY = event.getSceneY();
-        	}else{
-        		mouseDragDeltaX = event.getSceneX();
-        		mouseDragDeltaY = event.getSceneY();
-        	}
-        });
-        dialogTitleBar.setOnMouseDragged(event -> {
-        	if(isInline) {
-        		root.setLayoutX(root.getLayoutX() + (event.getSceneX() - mouseDragDeltaX));
-        		root.setLayoutY(root.getLayoutY() + (event.getSceneY() - mouseDragDeltaY));
-        		mouseDragDeltaX = event.getSceneX();
-        		mouseDragDeltaY = event.getSceneY();
-        		
-        	}else{
-	            stage.setX(event.getScreenX() - mouseDragDeltaX);
-	            stage.setY(event.getScreenY() - mouseDragDeltaY);
-        	}
+        dialogTitleBar.setOnMousePressed(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				if(isInline) {
+	        		mouseDragDeltaX = event.getSceneX();
+	        		mouseDragDeltaY = event.getSceneY();
+	        	}else{
+	        		mouseDragDeltaX = event.getSceneX();
+	        		mouseDragDeltaY = event.getSceneY();
+	        	}				
+			}
+    	});
+        dialogTitleBar.setOnMouseDragged(new EventHandler<MouseEvent>() {
+        	@Override
+			public void handle(MouseEvent event) {
+	        	if(isInline) {
+	        		root.setLayoutX(root.getLayoutX() + (event.getSceneX() - mouseDragDeltaX));
+	        		root.setLayoutY(root.getLayoutY() + (event.getSceneY() - mouseDragDeltaY));
+	        		mouseDragDeltaX = event.getSceneX();
+	        		mouseDragDeltaY = event.getSceneY();
+	        		
+	        	}else{
+		            stage.setX(event.getScreenX() - mouseDragDeltaX);
+		            stage.setY(event.getScreenY() - mouseDragDeltaY);
+	        	}
+	        }
         });
         root.setTop(dialogTitleBar);
         root.setCenter(center);

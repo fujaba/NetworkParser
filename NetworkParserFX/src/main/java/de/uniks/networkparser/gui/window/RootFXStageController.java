@@ -69,7 +69,7 @@ public class RootFXStageController extends FXStageController implements WindowLi
 			fxmlLoader = new FXMLLoader(location);
 		}
 		try {
-			this.withPane(fxmlLoader.load(location.openStream()));
+			this.withPane((Pane) fxmlLoader.load(location.openStream()));
 		} catch (IOException e) {
 			return null;
 		}
