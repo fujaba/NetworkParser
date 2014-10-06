@@ -21,9 +21,6 @@ package de.uniks.networkparser.gui.table;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;

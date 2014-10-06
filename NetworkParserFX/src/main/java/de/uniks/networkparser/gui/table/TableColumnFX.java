@@ -24,14 +24,10 @@ package de.uniks.networkparser.gui.table;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TreeTableView;
-import javafx.scene.control.TreeTableView.EditEvent;
-import javafx.scene.control.TreeView;
 import javafx.util.Callback;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
@@ -40,9 +36,9 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 	private CheckMenuItem menueItem;
 	private TableComponent tableComponent;
 
-	public TableColumnFX withColumn(Column column, Menu visibleItems, TableComponent tableComponent){
+	public TableColumnFX withColumn(Column column, Menu visibleItems, TableComponent value){
 		this.column = column;
-		this.tableComponent = tableComponent;
+		this.tableComponent = value;
 		if(column.getComparator()!=null){
 			this.setComparator(column.getComparator());
 		}
@@ -58,7 +54,6 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 			@Override
 			public TableCell<Object, TableCellValue> call(
 					TableColumn<Object, TableCellValue> arg0) {
-				System.out.println(arg0); 
 				return new TableCellFX().withTableComponent(tableComponent).withColumn(TableColumnFX.this.column).withEditFieldMap(TableColumnFX.this.tableComponent.getFieldFactory());
 			}
 		});
