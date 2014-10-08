@@ -114,41 +114,55 @@ public class TableFilterView {
 		Boolean matches = true;
 		for (String word : lastSearchCriteriaItems) {
 			if (!"".equals(word)) {
-				int pos = word.indexOf(":");
-				if (word.startsWith("#") && pos > 1) {
-					String propString = word.substring(1, pos);
-
-					if (searchProperties.contains(propString)) {
-						String value = word.substring(pos + 1);
-						Object objValue = creatorClass.getValue(item,
-								word.substring(1, pos));
-						if (objValue != null) {
-							String itemValue = objValue.toString()
-									.toLowerCase();
-							// Search for simple Property
-							if (itemValue.indexOf(value) < 0) {
-								return false;
-							}
+				if(word.indexOf("|")>0){
+					String[] orWords=word.split("|");
+					for(String orWord : orWords) {
+						if( simpleSearch(fullText, orWord, creatorClass, item)) {
+							return true;
 						}
-					} else {
-						return false;
-					}
-				} else if (word.startsWith("-") && word.length() > 1) {
-					if (fullText.indexOf(word.substring(1)) >= 0) {
-						return false;
-					}
-				} else {
-					if (fullText.indexOf(word) < 0) {
-						// no this search word is not found in full text
-						return false;
 					}
 				}
+				return simpleSearch(fullText, word, creatorClass, item);
+				
 			}
 		}
 
 		return matches;
 	}
 
+	private boolean simpleSearch(StringBuilder fullText, String word, SendableEntityCreator creatorClass, Object item) {
+		int pos = word.indexOf(":");
+		if (word.startsWith("#") && pos > 1) {
+			String propString = word.substring(1, pos);
+
+			if (searchProperties.contains(propString)) {
+				String value = word.substring(pos + 1);
+				Object objValue = creatorClass.getValue(item,
+						word.substring(1, pos));
+				if (objValue != null) {
+					String itemValue = objValue.toString()
+							.toLowerCase();
+					// Search for simple Property
+					if (itemValue.indexOf(value) < 0) {
+						return false;
+					}
+				}
+			} else {
+				return false;
+			}
+		} else if (word.startsWith("-") && word.length() > 1) {
+			if (fullText.indexOf(word.substring(1)) >= 0) {
+				return false;
+			}
+		} else {
+			if (fullText.indexOf(word) < 0) {
+				// no this search word is not found in full text
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	public boolean setCounterField(Column column) {
 		this.updateField = column;
 		refreshCounter();
