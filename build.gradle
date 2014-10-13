@@ -34,7 +34,9 @@ buildscript {
     }
 }
 
-
+jacoco {
+    toolVersion = "0.7.0.201403182114"
+}
 task codeCoverageReport(type: JacocoReport) {
 
     // Gather execution data from all subprojects
