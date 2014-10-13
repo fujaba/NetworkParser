@@ -129,9 +129,8 @@ public abstract class EditControl<T extends Node> implements CellEditorElement, 
 	
 	@Override
 	public void dispose(){
-		if(isActive()){
-//			control.di();
-		}
+//		if(isActive()){
+//		}
 		control=null;
 	}
 	
@@ -152,7 +151,7 @@ public abstract class EditControl<T extends Node> implements CellEditorElement, 
 	public abstract T createControl(Column column);
 	@Override
 	public abstract CellEditorElement withValue(Object value);
-//	public abstract boolean isCorrect(Object value, EditFields field) throws ParseException;
+//FIXME	public abstract boolean isCorrect(Object value, EditFields field) throws ParseException;
 	
 //	public Point getLocation(){
 //		if(control!=null){
@@ -181,6 +180,9 @@ public abstract class EditControl<T extends Node> implements CellEditorElement, 
 	
 	@Override
 	public boolean nextFocus(){
+		if(owner != null){
+			return owner.nextFocus();
+		}
 		return false;
 	}
 	@Override
@@ -196,5 +198,9 @@ public abstract class EditControl<T extends Node> implements CellEditorElement, 
 	public EditControl<T> withListener(KeyListenerMap value) {
 		this.keyListener = value;
 		return this;
+	}
+
+	public boolean isFocus() {
+		return control.isFocused();
 	}
 }

@@ -28,6 +28,7 @@ import javafx.stage.WindowEvent;
 
 public class CustomPane extends BorderPane implements StageEvent{
 	private Node center;
+	private Stage stage;
 
 	public CustomPane(Node centerNode) {
 		super();
@@ -45,8 +46,13 @@ public class CustomPane extends BorderPane implements StageEvent{
 
 	@Override
 	public void stageShowing(WindowEvent event, Stage stage) {
+		this.stage = stage;
 		if(this.center instanceof StageEvent) {
 			((StageEvent)this.center).stageClosing(event, stage);
 		}
+	}
+
+	public Stage getStage() {
+		return stage;
 	}
 }

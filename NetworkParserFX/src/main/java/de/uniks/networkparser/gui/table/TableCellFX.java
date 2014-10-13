@@ -183,9 +183,6 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 		return false;
 	}
 
-	
-	
-	
 //TODO REMOVE
 	// @Override
 		// public Color getBackground(Object element) {

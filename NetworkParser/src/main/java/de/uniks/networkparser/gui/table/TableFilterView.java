@@ -163,20 +163,17 @@ public class TableFilterView {
 		return true;
 	}
 	
-	public boolean setCounterField(Column column) {
+	public TableFilterView withCounterColumn(Column column) {
 		this.updateField = column;
 		refreshCounter();
-		return true;
+		return this;
 	}
 
 	public void refreshCounter() {
 		if (updateField != null) {
 			TableColumnInterface column = component.getColumn(updateField);
 			if (column != null) {
-				// column.UpdateCount()
-				// FIXME column.getTableColumn().setText(updateField.getLabel()
-				// + " (" +
-				// component.getTable(GUIPosition.CENTER).getItemCount() + ")");
+				column.UpdateCount();
 			}
 		}
 	}

@@ -51,7 +51,7 @@ import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 
-public class PropertyComposite extends HBox implements PropertyChangeListener, CellEditorElement{
+public class PropertyComposite extends HBox implements PropertyChangeListener, CellEditorElement {
 	private Label westLabel;
 	private Node centerComposite;
 	private Label eastLabel;
@@ -60,10 +60,23 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 	private Object item;
 	private Column column;
 	private SendableEntityCreator creator;
-	private EditFieldMap field=new EditFieldMap();
+	private EditFieldMap fields;
 	private EditControl<?> editControl;
 	private KeyListenerMap listener;
+	private ModelForm owner;
 
+	public EditFieldMap getField() {
+		if(fields == null) {
+			fields = new EditFieldMap();
+		}
+		return fields;
+	}
+	
+	public PropertyComposite withEditorField(EditFieldMap value) {
+		this.fields = value;
+		return this;
+	}
+	
 	public String getLabelText() {
 		if(getColumn().getLabel()!= null){
 			return getColumn().getLabel();
@@ -79,8 +92,8 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 
 	public PropertyComposite withLabel(String value) {
 		if(value != null){
-			if(field.getMap()!=null){
-				TextItems textClazz = (TextItems) field.getMap().getCreator(TextItems.class.getName(), true);
+			if(getField().getMap()!=null){
+				TextItems textClazz = (TextItems) getField().getMap().getCreator(TextItems.class.getName(), true);
 				if(textClazz !=null){
 					getColumn().withLabel(textClazz.getText(value, item, this));
 				}
@@ -92,11 +105,16 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 		return this;
 	}
 	
-	
+	public boolean isFocus() {
+		if(editControl != null ) {
+			return editControl.isFocus();
+		}
+		return false;
+	}
 
 	public PropertyComposite withFieldTyp(FieldTyp value) {
 		getColumn().withFieldTyp(value);
-		editControl = this.field.getControl(null, column, getItemValue(), this);
+		editControl = getField().getControl(null, column, getItemValue(), this);
 		editControl.withListener(listener);
 		 editControl.withValue(getItemValue());
 		 if(this.centerComposite != null) {
@@ -124,7 +142,7 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 	 public PropertyComposite withDataBinding(IdMap map, Object item, Column column) {
 		 this.item = item;
 		 this.column =  column;
-		 this.field.withMap(map);
+		 getField().withMap(map);
 		 if(map!=null){
 			 this.creator = map.getCreatorClass(item);
 		 }
@@ -138,7 +156,7 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 			this.getChildren().add(westLabel);
 		}
 		 if(this.centerComposite==null){
-			 editControl = this.field.getControl(null, column, getItemValue(), this);
+			 editControl = getField().getControl(null, column, getItemValue(), this);
 			 editControl.withValue(getItemValue());
 			 this.centerComposite = editControl.getControl(); 
 			this.getChildren().add(1, centerComposite);
@@ -223,10 +241,7 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 	
 	@Override
 	public boolean setFocus(boolean value) {
-		if(field!=null){
-			return field.setFocus(value);
-		}
-		return false;
+		return getField().setFocus(value);
 	}
 	
 	@Override
@@ -268,11 +283,27 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 		return this;
 	}
 	
+	@Override
+	public boolean nextFocus() {
+		if(owner != null) {
+			return this.getOwner().focusnext();
+		}
+		return false;
+	}
 	
-	
-	
-	
-	
+	@Override
+	public Object getValue(boolean convert) {
+		return editControl.getValue(convert);
+	}
+
+	public ModelForm getOwner() {
+		return owner;
+	}
+
+	public PropertyComposite withOwner(ModelForm owner) {
+		this.owner = owner;
+		return this;
+	}	
 	
 	
 	
@@ -297,11 +328,7 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 		return false;
 	}
 
-	@Override
-	public boolean nextFocus() {
-//FIXME		this.owner.focusnext();
-		return false;
-	}
+	
 
 	@Override
 	public void apply() {
@@ -319,10 +346,7 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 		}
 	}
 
-	@Override
-	public Object getValue(boolean convert) {
-		return editControl.getValue(convert);
-	}
+
 
 	//FIXME
 //	public String getLabelPostText() {
