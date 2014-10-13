@@ -534,6 +534,9 @@ Graph.prototype.stopDrag = function(evt) {
 	if(!this.objDrag){
 		return;
 	}
+	if(evt.ctrlKey) {
+		return;
+	}
 	var item = this.objDrag;
 	this.objDrag = null;
 	if(item.node){
@@ -936,22 +939,7 @@ Edge.prototype.calcOwnEdge = function(){
 	var offset = 20;
 	this.start = this.getFree(this.source);
 	if(this.start.length>0){
-		this.end = this.getFree(this.source);
-		if(this.end.length<1){
-			if(this.start==Edge.Position.UP){
-				this.source.RIGHT+=1;
-				this.end = Edge.Position.RIGHT;
-			}else if(this.start==Edge.Position.DOWN){
-				this.source.LEFT+=1;
-				this.end = Edge.Position.LEFT;
-			}else if(this.start==Edge.Position.RIGHT){
-				this.source.DOWN+=1;
-				this.end = Edge.Position.DOWN;
-			}else{
-				this.source.UP+=1;
-				this.end = Edge.Position.UP;
-			}
-		}
+		this.end = this.getFreeOwn(this.source, this.start);
 	}else{
 		this.start = Edge.Position.RIGHT;
 		this.end = Edge.Position.DOWN;
@@ -1039,6 +1027,27 @@ Edge.prototype.getFree = function(node){
 		return Edge.Position.LEFT;
 	}
 	return "";
+}
+
+Edge.prototype.getFreeOwn = function(node, start){
+	var list = new Array(Edge.Position.UP, Edge.Position.RIGHT, Edge.Position.DOWN, 
+		Edge.Position.LEFT, Edge.Position.UP, Edge.Position.RIGHT, Edge.Position.DOWN);
+	var result = new Array();
+	var id=0;
+	for(var i=0;i<list.length;i++) {
+		if(list[i]==start) {
+			id =i;
+			break;
+		}
+	}
+	if(node[list[id + 1]] == 0  || node[list[id + 1]] < node[list[id + 3]]) {
+		node[list[id + 1]] ++;
+		return list[id + 1];
+	}
+	//if(node[list[id + 3]] == 0 ) {
+	node[list[id + 3]]++;
+	return list[id + 3];
+	//}
 }
 
 Edge.prototype.calcInfoPos = function(linePos, item, info, offset){

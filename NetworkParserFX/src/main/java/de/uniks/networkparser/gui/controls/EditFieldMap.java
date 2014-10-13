@@ -77,7 +77,7 @@ public class EditFieldMap {
 		newFieldControl.withColumn(column);
 		newFieldControl.withMap(map);
 		
-		// Set the value to the Controll
+		// Set the value to the Control
 		if(value!=null){
 			newFieldControl.withValue(value);
 		}

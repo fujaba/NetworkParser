@@ -89,8 +89,7 @@ public class ModelForm extends BorderPane{
 	public ModelForm withDataBinding(boolean addCommandBtn, String[] fields){
 		double max=0;
 		for(String property : fields){
-			PropertyComposite propertyComposite = new PropertyComposite();
-			propertyComposite.withListener(listener);
+			PropertyComposite propertyComposite = new PropertyComposite().withOwner(this).withListener(listener);
 			Column column = propertyComposite.getColumn();
 			if(this.textClazz!=null){
 				column.withLabel(this.textClazz.getText(property, item, this));
@@ -221,23 +220,22 @@ public class ModelForm extends BorderPane{
 	}
 	
 	
-	//FIXME
-//	public boolean focusnext() {
-//		if(currentFocus!=null){
-//			Iterator<PropertyComposite> iterator = properties.iterator();
-//			while(iterator.hasNext()){
-//				if(iterator.next()==currentFocus){
-//					break;
-//				}
-//			}
-//			if(iterator.hasNext()){
-//				return iterator.next().setFocus();
-//			}
-//			currentFocus = null;
-//		}
-//		return false;
-//	}
+	public boolean focusnext() {
+
+		for(Iterator<Node> i = getItems().getChildren().iterator();i.hasNext();){
+			Node child  = i.next();
+			if(child instanceof PropertyComposite) {
+				PropertyComposite item = (PropertyComposite) child;
+				if(item.isFocus() && i.hasNext()) {
+					child  = i.next();
+					((PropertyComposite) child).setFocus(true);
+				}
+			}
+		}
+		return false;
+	}
 //
+	//FIXME
 //	public void onFocus(PropertyComposite propertyComposite) {
 //		this.currentFocus=propertyComposite;
 //	}

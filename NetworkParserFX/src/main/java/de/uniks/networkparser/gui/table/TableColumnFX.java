@@ -21,6 +21,7 @@ package de.uniks.networkparser.gui.table;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -29,6 +30,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.util.Callback;
+import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class TableColumnFX extends TableColumn<Object, TableCellValue> implements TableColumnInterface, EventHandler<ActionEvent>{
@@ -43,7 +45,7 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 			this.setComparator(column.getComparator());
 		}
 		this.setText(column.getLabelOrAttrName());
-			
+		this.setResizable(column.isResizable());
 		menueItem = new CheckMenuItem();
 		menueItem.setSelected(true);
 		menueItem.setText(column.getLabelOrAttrName());
@@ -96,6 +98,16 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 				this.setVisible(true);
 			}
 		}
+	}
+
+	@Override
+	public void UpdateCount() {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				TableColumnFX.this.setText(column.getLabel() + " (" + tableComponent.getBrowserView(GUIPosition.CENTER).getItems().size() + ")");
+			}
+		});
 	}
 	
 	
