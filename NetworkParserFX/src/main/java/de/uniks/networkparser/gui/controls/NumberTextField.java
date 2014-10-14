@@ -99,9 +99,9 @@ public class NumberTextField extends TextField implements CellEditorElement {
 	}
 
 	@Override
-	public void apply() {
+	public void apply(APPLYACTION action) {
 		if(owner!=null){
-			owner.apply();
+			owner.apply(action);
 		}
 	}
 
@@ -146,7 +146,7 @@ public class NumberTextField extends TextField implements CellEditorElement {
                 @Override
                 public void handle(ActionEvent arg0) {
                 	format();
-                	apply();
+                	apply(APPLYACTION.SAVE);
                 }
             });
 
@@ -164,7 +164,7 @@ public class NumberTextField extends TextField implements CellEditorElement {
 						public void handle(KeyEvent t)
     	                {
     	                	if(t.getCode()==KeyCode.ENTER){
-    	                		apply();
+    	                		apply(APPLYACTION.ENTER);
     	                	}
     	                }
     	            });

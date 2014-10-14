@@ -33,6 +33,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class RootFXStageController extends FXStageController implements WindowListener{
 	private KeyListenerMap listener = new KeyListenerMap(this);
@@ -105,6 +106,11 @@ public class RootFXStageController extends FXStageController implements WindowLi
 			newPane = (Pane) value;
 		}else{
 			newPane = new CustomPane(value);
+		}
+		
+		if(value instanceof StageEvent) {
+			Stage myStage = getStage();
+			((StageEvent)value).stageShowing(new WindowEvent(myStage, WindowEvent.WINDOW_SHOWING), myStage);
 		}
 		
 		this.createScene(newPane);

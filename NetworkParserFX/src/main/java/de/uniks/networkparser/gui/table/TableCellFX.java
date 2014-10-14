@@ -122,7 +122,7 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 	@Override
 	public void commitEdit(TableCellValue arg0) {
 		super.commitEdit(arg0);
-		apply();
+		apply(APPLYACTION.SAVE);
 	}
 	
 	@Override
@@ -144,7 +144,7 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 	}
 
 	@Override
-	public void apply() {
+	public void apply(APPLYACTION action) {
 		Object value = control.getValue(false);
 		getItem().getColumn().getListener().setValue(this, getItem().getItem(), getItem().getCreator(), value);
 		setText(""+value);
@@ -183,9 +183,6 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 		return false;
 	}
 
-	
-	
-	
 //TODO REMOVE
 	// @Override
 		// public Color getBackground(Object element) {

@@ -339,4 +339,10 @@ public class ByteEntity implements ByteItem, FactoryEntity {
 		}
 		return values.length;
 	}
+	
+	public static ByteEntity create(Object value) {
+		ByteEntity item = new ByteEntity();
+		item.setValues(value);
+		return item;
+	}
 }

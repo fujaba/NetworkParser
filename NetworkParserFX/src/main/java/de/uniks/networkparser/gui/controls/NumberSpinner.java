@@ -22,6 +22,7 @@ package de.uniks.networkparser.gui.controls;
  permissions and limitations under the Licence.
 */
 import java.math.BigDecimal;
+
 import javafx.beans.binding.NumberBinding;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -211,9 +212,9 @@ public class NumberSpinner extends HBox implements CellEditorElement {
 	}
 
 	@Override
-	public void apply() {
+	public void apply(APPLYACTION action) {
 		if(owner!=null){
-			owner.apply();
+			owner.apply(action);
 		}
 	}
 

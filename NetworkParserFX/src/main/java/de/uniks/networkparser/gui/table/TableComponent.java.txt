@@ -98,10 +98,6 @@ public class TableComponent extends Composite implements Listener, PropertyChang
 
 	}
 
-	public boolean setCounterField(Column column) {
-		return tableFilterView.setCounterField(column);
-	}
-
 	public void clearColumns(GUIPosition browser) {
 		TableColumnView[] array = this.columns
 				.toArray(new TableColumnView[this.columns.size()]);

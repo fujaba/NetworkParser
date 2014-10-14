@@ -22,12 +22,14 @@ package de.uniks.networkparser.gui.controls;
  permissions and limitations under the Licence.
 */
 import java.util.HashSet;
+
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.event.util.DateCreator;
 import de.uniks.networkparser.gui.table.CellEditorElement;
 import de.uniks.networkparser.gui.table.Column;
 import de.uniks.networkparser.gui.table.FieldTyp;
+import de.uniks.networkparser.gui.table.CellEditorElement.APPLYACTION;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class EditFieldMap {
@@ -77,7 +79,7 @@ public class EditFieldMap {
 		newFieldControl.withColumn(column);
 		newFieldControl.withMap(map);
 		
-		// Set the value to the Controll
+		// Set the value to the Control
 		if(value!=null){
 			newFieldControl.withValue(value);
 		}
@@ -111,9 +113,9 @@ public class EditFieldMap {
 		return false;
 	}
 
-	public void apply() {
+	public void apply(APPLYACTION action) {
 		if(owner!=null){
-			this.owner.apply();
+			owner.apply(action);
 		}
 	}
 

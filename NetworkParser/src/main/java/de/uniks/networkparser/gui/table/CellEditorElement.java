@@ -1,5 +1,6 @@
 package de.uniks.networkparser.gui.table;
 
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
@@ -23,6 +24,7 @@ package de.uniks.networkparser.gui.table;
  */
 
 public interface CellEditorElement {
+	public enum APPLYACTION{SAVE,TAB, ENTER, FOCUS};
 	public CellEditorElement withColumn(Column column);
 
 	public void cancel();
@@ -33,7 +35,7 @@ public interface CellEditorElement {
 
 	public boolean nextFocus();
 
-	public void apply();
+	public void apply(APPLYACTION action);
 
 	public void dispose();
 
