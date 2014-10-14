@@ -71,7 +71,7 @@ public class DateTimeEditControl extends EditControl<DatePicker>{
 			@Override
 			public void handle(KeyEvent event) {
 				if(event.getCode().equals(KeyCode.ENTER)){
-					apply();
+					apply(APPLYACTION.ENTER);
 				}
 			}
 		});

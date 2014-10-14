@@ -42,6 +42,7 @@ public class SpinnerIntegerEditControl extends EditControl<NumberSpinner>{
 
 	@Override
 	public SpinnerIntegerEditControl withValue(Object value) {
+		this.value = value;
 		getControl().withValue(value);
 		return this;
 	}

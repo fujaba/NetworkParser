@@ -426,5 +426,8 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	public EditFieldMap getFieldFactory() {
 		return field;
 	}
-	
+	public TableComponent withCounterColumn(Column column) {
+		tableFilterView.withCounterColumn(column);
+		return this;
+	}	
 }

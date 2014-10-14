@@ -56,6 +56,11 @@ public abstract class FXStageController implements StageEvent{
 	        	  stageClosing(we, stage);
 	          }
 		});
+//		stage.setOnHiding(new EventHandler<WindowEvent>() {
+//	          public void handle(WindowEvent we) {
+//	        	  stageClosing(we, stage);
+//	          }
+//		});
 		stage.setOnShowing(new EventHandler<WindowEvent>() {
 	          public void handle(WindowEvent we) {
 	        	  stageShowing(we, stage);

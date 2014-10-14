@@ -32,4 +32,5 @@ package de.uniks.networkparser.gui.table;
 
 public interface TableColumnInterface {
 	public Column getColumn();
+	public void UpdateCount();
 }

@@ -129,9 +129,8 @@ public abstract class EditControl<T extends Node> implements CellEditorElement, 
 	
 	@Override
 	public void dispose(){
-		if(isActive()){
-//			control.di();
-		}
+//		if(isActive()){
+//		}
 		control=null;
 	}
 	
@@ -143,16 +142,16 @@ public abstract class EditControl<T extends Node> implements CellEditorElement, 
 	}
 
 	@Override
-	public void apply() {
+	public void apply(APPLYACTION action) {
 		if(owner != null){
-			owner.apply();
+			owner.apply(action);
 		}
 	}
-	
+
 	public abstract T createControl(Column column);
 	@Override
 	public abstract CellEditorElement withValue(Object value);
-//	public abstract boolean isCorrect(Object value, EditFields field) throws ParseException;
+//FIXME	public abstract boolean isCorrect(Object value, EditFields field) throws ParseException;
 	
 //	public Point getLocation(){
 //		if(control!=null){
@@ -164,9 +163,9 @@ public abstract class EditControl<T extends Node> implements CellEditorElement, 
 	@Override
 	public void handle(KeyEvent event) {
 		if(event.getCode().equals(KeyCode.ENTER)){
-			apply();
+			apply(APPLYACTION.ENTER);
 		}else if(event.getCode().equals(KeyCode.TAB)){
-			apply();
+			apply(APPLYACTION.TAB);
 			nextFocus();
 		}
 	}
@@ -181,6 +180,9 @@ public abstract class EditControl<T extends Node> implements CellEditorElement, 
 	
 	@Override
 	public boolean nextFocus(){
+		if(owner != null){
+			return owner.nextFocus();
+		}
 		return false;
 	}
 	@Override
@@ -188,7 +190,10 @@ public abstract class EditControl<T extends Node> implements CellEditorElement, 
 			Boolean oldValue, Boolean newValue) {
 		// FOCUSLost
 		if(newValue==false){
-			apply();
+			Object newControlValue = getValue(false);
+			if((value == null && newControlValue!= null) || (value != null && !value.equals(newControlValue))) {
+				apply(APPLYACTION.FOCUS);
+			}
 		}
 		
 	}
@@ -196,5 +201,9 @@ public abstract class EditControl<T extends Node> implements CellEditorElement, 
 	public EditControl<T> withListener(KeyListenerMap value) {
 		this.keyListener = value;
 		return this;
+	}
+
+	public boolean isFocus() {
+		return control.isFocused();
 	}
 }

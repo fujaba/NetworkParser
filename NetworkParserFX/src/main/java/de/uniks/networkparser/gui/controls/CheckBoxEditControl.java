@@ -38,6 +38,7 @@ public class CheckBoxEditControl extends EditControl<CheckBox>{
 
 	@Override
 	public CheckBoxEditControl withValue(Object value) {
+		this.value = value;
 		getControl().setSelected((boolean)value);
 		return this;
 	}
