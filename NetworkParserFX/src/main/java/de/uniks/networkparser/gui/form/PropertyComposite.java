@@ -304,8 +304,13 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 		this.owner = owner;
 		return this;
 	}	
-	
-	
+
+	@Override
+	public void apply(APPLYACTION action) {
+		if(owner != null) {
+			owner.apply(action);
+		}
+	}
 	
 	
 	
@@ -329,13 +334,6 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 	}
 
 	
-
-	@Override
-	public void apply() {
-		// TODO Auto-generated method stub
-		
-	}
-
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if(evt.getPropertyName()!=null){

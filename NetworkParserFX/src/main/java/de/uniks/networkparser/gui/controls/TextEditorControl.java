@@ -38,6 +38,7 @@ public class TextEditorControl extends EditControl<TextField>{
 
 	@Override
 	public TextEditorControl withValue(Object value) {
+		this.value = value;
 		getControl().setText(""+value);
 		getControl().selectAll();
 		return this;
