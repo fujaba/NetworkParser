@@ -840,15 +840,23 @@ Edge.prototype.draw = function(board, drawer){
 		this.addElement(board, drawer.createLine(this.path[i].source.x, this.path[i].source.y, this.path[i].target.x, this.path[i].target.y, this.path[i].style));
 	}
 	var options = drawer.graph.options;
+	this.drawSourceText(board, drawer, options);
+	this.drawTargetText(board, drawer, options);
+};
+Edge.prototype.drawSourceText = function(board, drawer, options){
 	var infoTxt = this.getInfo(this.sourceInfo, options.CardinalityInfo, options.PropertyInfo);
 	if(infoTxt.length > 0 ){
 		this.addElement(board, drawer.createInfo(this.sourceInfo, false, infoTxt));
 	}
-	infoTxt = this.getInfo(this.targetInfo, options.CardinalityInfo, options.PropertyInfo);
+}
+Edge.prototype.drawTargetText = function(board, drawer, options){
+	var infoTxt = this.getInfo(this.targetInfo, options.CardinalityInfo, options.PropertyInfo);
 	if(infoTxt.length > 0 ){
 		this.addElement(board, drawer.createInfo(this.targetInfo, false, infoTxt));
 	}
-};
+}
+
+
 Edge.prototype.endPos = function(){
 	return this.path[this.path.length-1];
 }
@@ -1168,6 +1176,8 @@ Generalisation.prototype.draw = function(board, drawer){
 	this.addElement(board, drawer.createLine(this.bot.x, this.bot.y, this.end.x, this.end.y, this.lineStyle));
 	this.addElement(board, drawer.createLine(this.top.x, this.top.y, this.bot.x, this.bot.y, this.lineStyle));
 };
+Generalisation.prototype.drawSourceText = function(board, drawer, options){};
+Generalisation.prototype.drawTargetText = function(board, drawer, options){};
 
 Implements = function() { this.init();this.typ="Implements";}
 Implements.prototype = Object_create(Generalisation.prototype);

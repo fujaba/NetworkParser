@@ -38,6 +38,7 @@ public class PasswordEditControl extends EditControl<PasswordField>{
 
 	@Override
 	public PasswordEditControl withValue(Object value) {
+		this.value = value;
 		getControl().setText(""+value);
 		return this;
 	}

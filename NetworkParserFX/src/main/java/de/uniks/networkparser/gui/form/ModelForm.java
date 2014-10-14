@@ -44,6 +44,7 @@ import javafx.scene.layout.VBox;
 import de.uniks.networkparser.DefaultTextItems;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.TextItems;
+import de.uniks.networkparser.gui.table.CellEditorElement.APPLYACTION;
 import de.uniks.networkparser.gui.table.Column;
 import de.uniks.networkparser.gui.window.KeyListenerMap;
 import de.uniks.networkparser.interfaces.GUIPosition;
@@ -58,6 +59,7 @@ public class ModelForm extends BorderPane{
 	private HBox actionComposite;
 	private VBox items = new VBox();
 	private KeyListenerMap listener;
+	private Button defaultButton;
 
 	public VBox getItems(){
 		return items;
@@ -221,7 +223,6 @@ public class ModelForm extends BorderPane{
 	
 	
 	public boolean focusnext() {
-
 		for(Iterator<Node> i = getItems().getChildren().iterator();i.hasNext();){
 			Node child  = i.next();
 			if(child instanceof PropertyComposite) {
@@ -234,6 +235,20 @@ public class ModelForm extends BorderPane{
 		}
 		return false;
 	}
+	
+	public ModelForm withDefaultButton(Button value) {
+		this.defaultButton = value;
+		return this;
+	}
+
+	public void apply(APPLYACTION action) {
+		if(action==APPLYACTION.ENTER) {
+			if(defaultButton != null) {
+				defaultButton.fire();
+			}
+		}
+	}
+	
 //
 	//FIXME
 //	public void onFocus(PropertyComposite propertyComposite) {
@@ -275,4 +290,5 @@ public class ModelForm extends BorderPane{
 //		super.addKeyListener(listener);
 //		this.keyListener = listener;
 //	}
+
 }

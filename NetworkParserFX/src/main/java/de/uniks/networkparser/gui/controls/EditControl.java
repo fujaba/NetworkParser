@@ -142,12 +142,12 @@ public abstract class EditControl<T extends Node> implements CellEditorElement, 
 	}
 
 	@Override
-	public void apply() {
+	public void apply(APPLYACTION action) {
 		if(owner != null){
-			owner.apply();
+			owner.apply(action);
 		}
 	}
-	
+
 	public abstract T createControl(Column column);
 	@Override
 	public abstract CellEditorElement withValue(Object value);
@@ -163,9 +163,9 @@ public abstract class EditControl<T extends Node> implements CellEditorElement, 
 	@Override
 	public void handle(KeyEvent event) {
 		if(event.getCode().equals(KeyCode.ENTER)){
-			apply();
+			apply(APPLYACTION.ENTER);
 		}else if(event.getCode().equals(KeyCode.TAB)){
-			apply();
+			apply(APPLYACTION.TAB);
 			nextFocus();
 		}
 	}
@@ -190,7 +190,10 @@ public abstract class EditControl<T extends Node> implements CellEditorElement, 
 			Boolean oldValue, Boolean newValue) {
 		// FOCUSLost
 		if(newValue==false){
-			apply();
+			Object newControlValue = getValue(false);
+			if((value == null && newControlValue!= null) || (value != null && !value.equals(newControlValue))) {
+				apply(APPLYACTION.FOCUS);
+			}
 		}
 		
 	}
