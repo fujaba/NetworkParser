@@ -93,7 +93,12 @@ import de.uniks.networkparser.interfaces.StringItem;
 public class JsonObject extends AbstractKeyValueList<String, Object> implements
 		StringItem, FactoryEntity, Entity {
 	private boolean visible = true;
-
+	protected boolean caseSensitive=true;
+	
+	public JsonObject() {
+		this.allowDuplicate = false;
+	}
+	
 	/**
 	 * Get the JsonArray value associated with a key.
 	 *
@@ -148,7 +153,7 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements
 		throw new RuntimeException("JsonObject[" + EntityUtil.quote(key)
 				+ "] is not a JsonObject.");
 	}
-
+	
 	/**
 	 * Make a JSON text of this JsonObject. For compactness, no whitespace is
 	 * added. If this would not result in a syntactically correct JSON text,
@@ -383,7 +388,7 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements
 		} else if (object instanceof AbstractList) {
 			((AbstractList<?>) object).with(value);
 		} else {
-			this.put(key, getNewArray().with(object).with(value));
+			this.put(key, getNewArray().with(object, value));
 		}
 		return this;
 	}
@@ -393,28 +398,20 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements
 		return removeItemByObject((String) key);
 	}
 
-	@Override
-	public Object put(String key, Object value) {
-		int pos = getPositionKey(key);
-		if (pos >= 0) {
-			if (this.hashTableValues != null) {
-				this.hashTableValues[pos] = value;
-				pos = transformIndex(pos, key, this.hashTableKeys, this.keys);
-			}
-			return this.values.set(pos, value);
-		}
-		addEntity(key, value);
-
-		return value;
-	}
-
-	@Override
-	public Object get(Object key) {
-		if (!isAllowDuplicate() && key instanceof String) {
-			key = ("" + key).toLowerCase();
-		}
-		return super.get(key);
-	}
+//FIXME	@Override
+//	public Object put(String key, Object value) {
+//		int pos = getPositionKey(key);
+//		if (pos >= 0) {
+//			if (this.hashTableValues != null) {
+//				this.hashTableValues[pos] = value;
+//				pos = transformIndex(pos, key, this.hashTableKeys, this.keys);
+//			}
+//			return this.values.set(pos, value);
+//		}
+//		addEntity(key, value);
+//
+//		return value;
+//	}
 
 	@Override
 	protected int addKey(int pos, String newValue) {
@@ -437,11 +434,13 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements
 	}
 
 	@Override
-	public int getPositionKey(Object o) {
-		if (o instanceof String && !isAllowDuplicate()) {
-			return super.getPositionKey(("" + o).toLowerCase());
+	protected boolean checkValue(Object a, Object b) {
+		if(!caseSensitive) {
+			if (a instanceof String && b instanceof String ) {
+				return ((String)a).equalsIgnoreCase((String)b);
+			}
 		}
-		return super.getPositionKey(o);
+		return a.equals(b);
 	}
 
 	public JsonObject withValue(String key, Object value) {
@@ -454,6 +453,11 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements
 			}
 			super.withValue(key, value);
 		}
+		return this;
+	}
+
+	public JsonObject withCaseSensitive(boolean value) {
+		this.caseSensitive = value;
 		return this;
 	}
 }

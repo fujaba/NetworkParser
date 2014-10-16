@@ -34,6 +34,7 @@ import java.util.Iterator;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -197,8 +198,9 @@ public class ModelForm extends BorderPane{
 		}
 		if(this.actionComposite==null){
 			this.actionComposite = new HBox();
-			this.setBottom(actionComposite);
 			this.actionComposite.setAlignment(Pos.BASELINE_RIGHT);
+			BorderPane.setMargin(actionComposite, new Insets(0, 30, 20, 0));
+			this.setBottom(actionComposite);
 		}
 		
 		int count = this.actionComposite.getChildren().size();

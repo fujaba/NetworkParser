@@ -150,6 +150,7 @@ public class JsonIdMap extends IdMap {
 		}
 
 		JsonObject jsonProp = getPrototyp();
+		jsonProp.withAllowEmpty(filter.isFullSeriation());
 
 		String[] properties = creator.getProperties();
 		if (properties != null) {
@@ -707,6 +708,7 @@ public class JsonIdMap extends IdMap {
 
 		if (properties != null) {
 			JsonObject jsonProps = getPrototyp();
+			jsonProps.withAllowEmpty(filter.isFullSeriation());
 			for (String property : properties) {
 				if (jsonProps.has(property)) {
 					if (logger.error(this, "toJsonArray",

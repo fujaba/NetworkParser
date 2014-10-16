@@ -34,8 +34,12 @@ import de.uniks.networkparser.json.JsonObject;
 
 public class GraphConverter implements Converter {
 	public static final String TYP = "typ";
-	public static final String NODE = "node";
 	public static final String ID = "id";
+	
+	public static final String NODE = "node";
+	public static final String PATTERN = "patternobject";
+	public static final String SUBGRAPH = "subgraph";
+
 	public static final String ATTRIBUTES = "attributes";
 	public static final String METHODS = "methods";
 	public static final String NODES = "nodes";
@@ -46,6 +50,9 @@ public class GraphConverter implements Converter {
 	public static final String PROPERTY = "property";
 	public static final String HEADIMAGE = "headimage";
 	public static final String OPTIONS = "options";
+	private static final String STYLE = "style";
+	private static final String GRAPH = "graph";
+	private static final String INFO = "info";
 
 	@Override
 	public String convert(GraphList root, boolean removePackage) {
@@ -100,7 +107,7 @@ public class GraphConverter implements Converter {
 	public GraphNode parseJsonObject(GraphList root, JsonObject node,
 			HashMap<GraphNode, ArrayList<GraphAttribute>> attributes) {
 		String id = node.getString(JsonIdMap.ID);
-		GraphClazz graphNode = (GraphClazz) root.get(id);
+		GraphClazz graphNode = (GraphClazz) root.getByObject(id);
 		if (graphNode == null) {
 			graphNode = new GraphClazz().withId(id);
 			root.add(graphNode);
@@ -192,28 +199,10 @@ public class GraphConverter implements Converter {
 
 		for (GraphEdge edge : edges) {
 			for (GraphNode source : edge.values()) {
-				GraphClazz sourceClazz = (GraphClazz) source;
 				for (GraphNode target : edge.getOther().values()) {
-					JsonObject child = new JsonObject().withValue(TYP, edge.getTyp());
-					GraphClazz targetClazz = (GraphClazz) target;
-					if (typ.equals(GraphIdMap.OBJECT)) {
-						child.put(SOURCE, addInfo(edge).withValue(ID, source.getId() + " : "
-								+ sourceClazz.getClassName(shortName)));
-						child.put(TARGET, addInfo(edge.getOther()).withValue(ID, target.getId() + " : "
-								+ targetClazz.getClassName(shortName)));
+					JsonObject child =  parseEdge(typ, source, target, edge, shortName, ids);
+					if(child != null) {
 						result.add(child);
-					}else{
-						String id = sourceClazz.getClassName(false) + ":"
-								+ edge.getProperty()
-								+ targetClazz.getClassName(false) + ":"
-								+ edge.getOther().getProperty();
-						if (!ids.contains(id)) {
-							child.put(SOURCE, addInfo(edge).withValue(ID, sourceClazz.getClassName(shortName)));
-							child.put(TARGET, addInfo(edge.getOther()).withValue(ID, targetClazz.getClassName(shortName)));
-							result.add(child);
-							ids.add(id);
-						}
-
 					}
 				}
 			}
@@ -221,19 +210,66 @@ public class GraphConverter implements Converter {
 		return result;
 	}
 	
-	private JsonObject addInfo(GraphEdge edge) {
-	   String edgeProperty = edge.getProperty();
-		return new JsonObject().withValue(CARDINALITY, edge.getCardinality()).withValue(PROPERTY, edgeProperty);
+	private JsonObject parseEdge(String typ, GraphNode source, GraphNode target, GraphEdge edge, boolean shortName, ArrayList<String> ids) {
+		if(source instanceof GraphClazz && target instanceof GraphClazz ) {
+			return parseEdge(typ, (GraphClazz) source, (GraphClazz) target, edge, shortName, ids);
+		}
+		if(source instanceof GraphPattern && target instanceof GraphPattern ) {
+			return parseEdge(typ, (GraphPattern) source, (GraphPattern) target, edge, shortName, ids);
+		}
+		return null;
 	}
 
-	public JsonArray parseEntities(String typ, Collection<GraphNode> nodes,
+	private JsonObject parseEdge(String typ, GraphClazz source, GraphClazz target, GraphEdge edge, boolean shortName, ArrayList<String> ids) {
+		JsonObject child = new JsonObject().withValue(TYP, edge.getTyp());
+		if (typ.equals(GraphIdMap.OBJECT)) {
+			child.put(SOURCE, addInfo(edge, true).withValue(ID, source.getId() + " : "
+					+ source.getClassName(shortName)));
+			child.put(TARGET, addInfo(edge.getOther(), true).withValue(ID, target.getId() + " : "
+					+ target.getClassName(shortName)));
+			return child;
+		}else{
+			String id = source.getClassName(false) + ":"
+					+ edge.getProperty()
+					+ target.getClassName(false) + ":"
+					+ edge.getOther().getProperty();
+			if (!ids.contains(id)) {
+				child.put(SOURCE, addInfo(edge, true).withValue(ID, source.getClassName(shortName)));
+				child.put(TARGET, addInfo(edge.getOther(), true).withValue(ID, target.getClassName(shortName)));
+				return child;
+			}
+		}
+		return null;
+	}
+	
+	private JsonObject parseEdge(String typ, GraphPattern source, GraphPattern target, GraphEdge edge, boolean shortName, ArrayList<String> ids) {
+		JsonObject child = new JsonObject().withValue(TYP, edge.getTyp());
+		child.put(SOURCE, addInfo(edge, false).withValue(ID, source.getId()));
+		child.put(TARGET, addInfo(edge.getOther(), false).withValue(ID, target.getId()));
+		GraphLabel info = edge.getInfo();
+		if(info != null) {
+			child.put(INFO, info.getValue());
+			child.put(STYLE, info.getStyle());
+		}
+		return child;
+	}
+	
+	private JsonObject addInfo(GraphEdge edge, boolean cardinality) {
+		if(cardinality) {
+			return new JsonObject().withValue(CARDINALITY, edge.getCardinality()).withValue(PROPERTY, edge.getProperty());
+		}
+		return new JsonObject().withValue(PROPERTY, edge.getProperty());
+	}
+
+	public JsonArray parseEntities(String typ, Collection<GraphMember> nodes,
 			boolean shortName) {
 		JsonArray result = new JsonArray();
 		ArrayList<String> ids = new ArrayList<String>();
-		for (GraphNode entity : nodes) {
+		
+		for (GraphMember entity : nodes) {
 			JsonObject item = parseEntity(typ, entity, shortName);
 			if (item != null) {
-				if (typ == GraphIdMap.CLASS) {
+				if (typ == GraphIdMap.CLASS && item.has(ID)) {
 					String key = item.getString(ID);
 					if (ids.contains(key)) {
 						continue;
@@ -246,7 +282,7 @@ public class GraphConverter implements Converter {
 		return result;
 	}
 
-	public JsonObject parseEntity(String typ, GraphNode entity,
+	public JsonObject parseEntity(String typ, GraphMember entity,
 			boolean shortName) {
 		if (typ == null) {
 			typ = GraphIdMap.OBJECT;
@@ -254,30 +290,47 @@ public class GraphConverter implements Converter {
 				typ = GraphIdMap.CLASS;
 			}
 		}
-		JsonObject item = new JsonObject().withValue(TYP, NODE);
-		GraphNodeImage nodeHeader = getNodeHeader(entity);
+		JsonObject item = new JsonObject();
+
+		if(entity instanceof GraphClazz) {
+			item.put(TYP, NODE);
+			GraphClazz element = (GraphClazz) entity;
+			if (typ == GraphIdMap.OBJECT) {
+				item.put(ID,
+						entity.getId() + " : " + element.getClassName(shortName));
+			} else {
+				item.put(ID, element.getClassName(shortName));
+			}
+		}else if(entity instanceof GraphPattern) {
+			item.put(TYP, PATTERN);
+			item.put(STYLE, ((GraphPattern) entity).getBounds() );
+		} else if(entity instanceof GraphList) {
+			item.put(TYP, SUBGRAPH);
+			item.put(GRAPH , convertToJson((GraphList) entity, shortName));
+			return item;
+		}
+		if(!(entity instanceof GraphNode)) {
+			return null;
+		}
+		
+		GraphNode element = (GraphNode) entity;
+		item.put(ID, entity.getId());
+		
+		GraphNodeImage nodeHeader = getNodeHeader(element);
 		if (nodeHeader != null) {
 			item.put(HEADIMAGE, nodeHeader);
 		}
-		
-		GraphClazz entityClazz = (GraphClazz) entity;
-		if (typ == GraphIdMap.OBJECT) {
-			item.put(ID,
-					entity.getId() + " : " + entityClazz.getClassName(shortName));
-		} else {
-			item.put(ID, entityClazz.getClassName(shortName));
-		}
-		JsonArray items = parseAttributes(typ, entity.values(), shortName);
+		JsonArray items = parseAttributes(typ, element.values(), shortName);
 		if(items.size()>0){
 			item.put(ATTRIBUTES, items);
 		}
-		items = parseMethods(entity.values(), shortName);
+		items = parseMethods(element.values(), shortName);
 		if(items.size()>0){
 			item.put(METHODS, items);
 		}
 		return item;
 	}
-
+	
 	public GraphNodeImage getNodeHeader(GraphNode entity) {
 		for (GraphMember member : entity.values()) {
 			if (member instanceof GraphNodeImage) {
