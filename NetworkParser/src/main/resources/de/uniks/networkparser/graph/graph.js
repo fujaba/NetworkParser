@@ -166,7 +166,7 @@ Graph.prototype.initGraph = function(){
 	this.initDragAndDrop();
 	this.root.appendChild(this.board);
 
-	for (var i in this.nodes) {
+	for (var i = 0; i < this.nodes.length; i++) {
 		var node = this.nodes[i];
 		var html = this.drawer.getHTMLNode(node, true);
 		if(html){
