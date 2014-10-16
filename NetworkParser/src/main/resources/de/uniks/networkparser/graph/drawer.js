@@ -103,7 +103,7 @@ HTMLDrawer.prototype.getHTMLNode = function(node, calculate){
 		htmlElement.className="patternElement";
 	} else if(symbolLib.isSymbol(node)) {
 		return symbolLib.draw(null, node, calculate);
-	} else if(this.graph.typ=="object") {
+	} else if(this.graph.typ.toLowerCase()=="objectdiagram") {
 		htmlElement.className="objectElement";
 	} else {
 		htmlElement.className="classElement";
@@ -112,7 +112,7 @@ HTMLDrawer.prototype.getHTMLNode = function(node, calculate){
 	htmlElement.style.zIndex=5000;
 	this.graph.addNodeLister(htmlElement, node);
 
-	if(typ=="subgraph"){
+	if(typ=="objectdiagram" || typ=="classdiagram"){
 		this.createSubGraph(node, htmlElement);
 		htmlElement.style.width = node.g.board.style.width;
 		htmlElement.style.height = node.g.board.style.height;
@@ -153,7 +153,7 @@ HTMLDrawer.prototype.getHTMLNode = function(node, calculate){
 		cell.className="head";
 		cell.innerHTML = node.headinfo;
 	}
-	if(this.graph.typ=="object"){
+	if(this.graph.typ.toLowerCase()=="objectdiagram"){
 		info = "<u>"+ node.id.charAt(0).toLowerCase() + node.id.slice(1) + "</u>";
 	}else{
 		info = node.id;
@@ -356,7 +356,7 @@ SVGDrawer.prototype.getHTMLNode = function(node, calculate){
 	var height=40;
 	var textWidth;
 
-	if(this.graph.typ=="object"){
+	if(this.graph.typ.toLowerCase()=="objectdiagram"){
 		textWidth = this.getWidth(node.id.charAt(0).toLowerCase() + node.id.slice(1));
 	}else{
 		textWidth = this.getWidth(node.id);
@@ -396,7 +396,7 @@ SVGDrawer.prototype.getHTMLNode = function(node, calculate){
 
 	var text = this.createElement({tag:"text", "text-anchor":"right", "x":node.x+width/2-textWidth/2, "y":y+20, "width":textWidth});
 
-	if(this.graph.typ=="object"){
+	if(this.graph.typ.toLowerCase()=="objectdiagram"){
 		text.setAttribute("text-decoration", "underline");
 		text.appendChild(document.createTextNode(node.id.charAt(0).toLowerCase() + node.id.slice(1)));
 	}else{
@@ -431,24 +431,25 @@ SVGDrawer.prototype.getHTMLNode = function(node, calculate){
 
 SVGDrawer.prototype.createElement = function(node){
 	var element = this.createObject("http://www.w3.org/2000/svg", node.tag);
-	if(node.tag=="path"){
+	if(node.tag.toLowerCase()=="path"){
 		element.setAttribute('fill', "rgb(255, 255, 255)");
 		//element.setAttribute('style', "stroke:#000;");
 	}
 	this.addFontAttributes(element);
 
 	for (var key in node) {
+		key = key.toLowerCase();
 		if(key=='tag')continue;
-		if(key=='content_src'&& node.tag=="image") continue;
-		if(key=='value'&& node.tag=="text") continue;
+		if(key=='content_src'&& node.tag.toLowerCase()=="image") continue;
+		if(key=='value'&& node.tag.toLowerCase()=="text") continue;
 		if(node[key] != null) {
 			element.setAttribute(key, node[key]);
 		}
 	}
-	if(node.tag=="text" && node.value){
+	if(node.tag.toLowerCase()=="text" && node.value){
 		element.appendChild(document.createTextNode(node.value));
 	}
-	if(node.tag=="image"){
+	if(node.tag.toLowerCase()=="image"){
 		element.setAttribute('xmlns:xlink', "http://www.w3.org/1999/xlink");
 		element.setAttributeNS("http://www.w3.org/1999/xlink", 'href',node["content_src"]);
 	}
@@ -470,7 +471,7 @@ SVGDrawer.prototype.createInfo = function(item, calculate, text) {
 	return this.createElement({tag:"text", "text-anchor":"left", "x": item.x, "y": item.y, value:text});
 };
 SVGDrawer.prototype.getColor =  function(style) {
-	if(style ) {
+	if(style) {
 		if(style.toLowerCase()=="create") {
 			return "#008000";
 		}
@@ -484,7 +485,7 @@ SVGDrawer.prototype.createLine = function(x1, y1, x2, y2, lineStyle, style){
 	var line = this.createElement({tag:"line", 'x1': x1, 'y1': y1, 'x2': x2, 'y2': y2});
 	line.setAttribute("stroke",this.getColor(style));
 
-	if(style=="DOTTED"){
+	if(style.toLowerCase()=="dotted"){
 		line.setAttribute("stroke-miterlimit",4);
 		line.setAttribute("stroke-dasharray","1,1");
 	}
@@ -548,7 +549,7 @@ CanvasDrawer.prototype.getHTMLNode = function(node, calculate){
 	// Calculate Height
 	var width=0;
 	var height=20;
-	if(this.graph.typ=="object"){
+	if(this.graph.typ=="objectdiagram"){
 		width = Math.max(width, this.getWidth(node.id.charAt(0).toLowerCase() + node.id.slice(1)));
 	}else{
 		width = Math.max(width, this.getWidth(node.id));
@@ -598,7 +599,7 @@ CanvasDrawer.prototype.getHTMLNode = function(node, calculate){
 	var context = canvas.getContext('2d');
 	context.font = this.graph.options.fontSize+"px Arial";
 	var text="";
-	if(this.graph.typ=="object"){
+	if(this.graph.typ=="objectdiagram"){
 		text = node.id.charAt(0).toLowerCase() + node.id.slice(1);
 		var start = node.x + (node.width - this.getWidth(text))/2;
 		this.createLine(start, node.y+16, start + this.getWidth(text), node.y+16);
@@ -625,7 +626,7 @@ CanvasDrawer.prototype.createInfo = function(item, calculate, text) {
 CanvasDrawer.prototype.createLine = function(x1, y1, x2, y2, style){
 	var canvas = this.graph.board;
 	var context = canvas.getContext('2d');
-	if(style=="DOTTED"){
+	if(style.toLowerCase()=="dotted"){
 		context.setLineDash([1,2]);
 	}
 	context.moveTo(x1, y1);

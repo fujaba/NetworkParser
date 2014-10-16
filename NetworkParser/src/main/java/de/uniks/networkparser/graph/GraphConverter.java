@@ -51,7 +51,6 @@ public class GraphConverter implements Converter {
 	public static final String HEADIMAGE = "headimage";
 	public static final String OPTIONS = "options";
 	private static final String STYLE = "style";
-	private static final String GRAPH = "graph";
 	private static final String INFO = "info";
 
 	@Override
@@ -181,7 +180,7 @@ public class GraphConverter implements Converter {
 
 	public JsonObject convertToJson(GraphList root, boolean removePackage) {
 		String typ = root.getTyp();
-		JsonObject jsonRoot = new JsonObject().withValue(TYP, typ);
+		JsonObject jsonRoot = new JsonObject().withValue(TYP, typ).withValue(ID, root.getId());
 		
 		if(root.getOptions() != null) {
 			jsonRoot.add(OPTIONS, root.getOptions().getJson());
@@ -312,10 +311,7 @@ public class GraphConverter implements Converter {
 			item.put(STYLE, ((GraphPattern) entity).getBounds() );
 			item.put(ID, entity.getId());
 		}else if(entity instanceof GraphList) {
-			item.put(TYP, SUBGRAPH);
-			item.put(GRAPH , convertToJson((GraphList) entity, shortName));
-			item.put(ID, entity.getId());
-			return item;
+			return convertToJson((GraphList) entity, shortName);
 		}
 		if(!(entity instanceof GraphNode)) {
 			return null;
