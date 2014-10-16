@@ -26,13 +26,14 @@ import java.util.List;
 import de.uniks.networkparser.AbstractEntityList;
 import de.uniks.networkparser.AbstractList;
 
-public class GraphEdge extends AbstractEntityList<GraphClazz> implements
-		List<GraphClazz> {
+public class GraphEdge extends AbstractEntityList<GraphNode> implements
+		List<GraphNode> {
 	public static final String PROPERTY_NODE = "node";
 	public static final String PROPERTY_CARDINALITY = "cardinality";
 	public static final String PROPERTY_PROPERTY = "property";
 	private GraphCardinality cardinality;
-	private String property;
+	private GraphLabel property;
+	private GraphLabel info;
 	private GraphEdge other;
 	private GraphEdgeTypes typ = GraphEdgeTypes.EDGE;
 
@@ -56,31 +57,63 @@ public class GraphEdge extends AbstractEntityList<GraphClazz> implements
 		return GraphCardinality.ONE;
 	}
 	
-	public String getCardinalityText() {
+	public String getCardinalityValue() {
 		return cardinality.getValue();
+	}
+	
+	public String getCardinalityText() {
+		return property + "<br>0.." + this.cardinality;
 	}
 
 	public String getProperty() {
 		if(property != null) {
-			return property;
+			return property.getValue();
 		}
 		if(this.size() == 1) {
-			return this.get(0).getClassName(true).toLowerCase();
+			GraphNode item = this.get(0);
+			if(item instanceof GraphClazz) {
+				return ((GraphClazz)item).getClassName(true).toLowerCase();	
+			}
+			
 		}
 		return "";
 	}
 
-	public GraphEdge with(String property) {
-		this.property = property;
+	public GraphEdge with(String value) {
+		this.property = GraphLabel.create(value);
 		return this;
 	}
-
-	public String getInfo() {
-		return property + "<br>0.." + this.cardinality;
+	
+	public GraphEdge withInfo(String value) {
+		if(info != null) {
+			this.info.withValue(value);
+			return this;
+		}
+		this.info = GraphLabel.create(value);
+		return this;
+	}
+	
+	public GraphEdge withInfo(GraphLabel value) {
+		this.info = value;
+		return this;
+	}
+	
+	public GraphEdge withSyte(String value) {
+		if(info != null) {
+			this.info.withStyle(value);
+			return this;
+		}
+		this.info = new GraphLabel().withStyle(value);
+		return this;
+	}
+	
+	public GraphLabel getInfo() {
+		return info;
 	}
 
+
 	@Override
-	public AbstractList<GraphClazz> getNewInstance() {
+	public AbstractList<GraphNode> getNewInstance() {
 		return new GraphEdge();
 	}
 
@@ -90,8 +123,8 @@ public class GraphEdge extends AbstractEntityList<GraphClazz> implements
 			return this;
 		}
 		for (Object value : values) {
-			if (value instanceof GraphClazz) {
-				add((GraphClazz) value);
+			if (value instanceof GraphNode) {
+				add((GraphNode) value);
 			}
 			if (value instanceof GraphEdge) {
 				with((GraphEdge) value);
@@ -118,7 +151,7 @@ public class GraphEdge extends AbstractEntityList<GraphClazz> implements
 	}
 
 	@Override
-	public boolean add(GraphClazz newValue) {
+	public boolean add(GraphNode newValue) {
 		if (super.addEntity(newValue)) {
 			newValue.with(this);
 		}
@@ -134,11 +167,11 @@ public class GraphEdge extends AbstractEntityList<GraphClazz> implements
 		return removeItemByObject((GraphNode) value) >= 0;
 	}
 
-	public List<GraphClazz> values() {
+	public List<GraphNode> values() {
 		return keys;
 	}
 	
-	public static GraphEdge create(GraphClazz source, GraphClazz target){
+	public static GraphEdge create(GraphNode source, GraphNode target){
 		GraphEdge edge = new GraphEdge().with(source);
 		edge.with(new GraphEdge().with(target));
 		return edge;

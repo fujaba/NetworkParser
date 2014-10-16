@@ -590,7 +590,7 @@ public class JsonTest {
 		
 
 		// Dont allow Duplicate
-		JsonObject item2 = new JsonObject().withAllowDuplicate(false);
+		JsonObject item2 = new JsonObject().withCaseSensitive(false);
 		item2.withValue(json);
 		Assert.assertEquals(item2.get("Number"), 42);
 		Assert.assertEquals(item2.get("number"), 42);

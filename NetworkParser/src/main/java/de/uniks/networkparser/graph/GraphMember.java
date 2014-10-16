@@ -1,5 +1,6 @@
 package de.uniks.networkparser.graph;
 
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
@@ -23,4 +24,5 @@ package de.uniks.networkparser.graph;
  */
 
 public interface GraphMember {
+	public String getId();
 }

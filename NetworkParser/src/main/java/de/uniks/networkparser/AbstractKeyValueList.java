@@ -36,6 +36,7 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K>
 		implements Map<K, V>, Iterable<K> {
 	protected ArrayList<V> values = new ArrayList<V>();
 	protected Object[] hashTableValues = null;
+	protected boolean allowEmptyValue=false;
 
 	public AbstractKeyValueList() {
 		this.entitySize = 2;
@@ -69,6 +70,9 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K>
 	 */
 	@Override
 	public V put(K key, V value) {
+		if(!allowEmptyValue && value == null) {
+			return null;
+		}
 		if (!isAllowDuplicate()) {
 			int pos = getPositionKey(key);
 			if (pos >= 0) {
@@ -425,6 +429,7 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K>
 			if (this.hashTableValues != null && position >= 0) {
 				this.hashTableValues[position] = value;
 			}
+			return this;
 		}
 		if (!(key instanceof String)) {
 			return this;
@@ -660,5 +665,10 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K>
 		}
 		this.values.add(pos, value);
 		return -1;
+	}
+	
+	public AbstractKeyValueList<K, V> withAllowEmpty(Boolean fullSeriation) {
+		this.allowEmptyValue = true;
+		return this;
 	}
 }

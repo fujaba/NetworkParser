@@ -48,12 +48,12 @@ public class SearchTableComponent extends TableComponent{
 			withAnchor(northComponents);
 			
 			searchText = new TextField();
-			System.out.println(Styles.getPath());
 	        searchText.getStylesheets().add(Styles.getPath());
 	        searchText.getStyleClass().add("searchbox");
 	        searchText.setPromptText(getText(DefaultTextItems.SEARCH));
 	        searchText.setMinHeight(24);
 	        searchText.setPrefSize(200, 24);
+	        searchText.setEditable(true);
 	        
 			searchText.textProperty().addListener(filter);
 			withAnchor(searchText);

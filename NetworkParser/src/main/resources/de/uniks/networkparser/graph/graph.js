@@ -35,7 +35,7 @@ Info = function(info, parent, edge) {
 	this.id = info.id; 
 	this.typ = "Info"; this.x = 0; this.y = 0; this.size = new Pos(0,0); this.center=new Pos(0,0); this.custom = false; this.parent = parent; this.edge = edge;}
 
-Line = function(source, target, style) {this.source = source; this.target = target; this.style = style;}
+Line = function(source, target, line, style) {this.source = source; this.target = target; this.line = line; this.style = style;}
 Line.Format={SOLID:"SOLID", DOTTED:"DOTTED"};
 /* Options */
 Options = function(){
@@ -114,6 +114,8 @@ Graph = function(json, options) {
 			edge = new Edge();
 		}
 		edge.source = this.getNode(e.source.id);
+		edge.info = e.info;
+		edge.style = e.style;
 		edge.sourceInfo = new Info(e.source, this, edge);
 		edge.targetInfo = new Info(e.target, this, edge);
 		edge.source.edges.push(edge);
@@ -480,6 +482,12 @@ Graph.prototype.showinfo = function(event){
 };
 Graph.prototype.startDrag = function(event) {
 	this.objDrag = event.currentTarget;
+	var graph = this.objDrag.parentElement;
+	if(graph) {
+		for(var i=0;i<graph.children.length;i++) {
+			graph.children[i].setAttribute("unselectable", "on");
+		}
+	}
 	this.offset.x = this.mouse.x - this.drawer.getX(this.objDrag);
 	this.offset.y = this.mouse.y - this.drawer.getY(this.objDrag);
 };
@@ -539,6 +547,12 @@ Graph.prototype.stopDrag = function(evt) {
 	}
 	var item = this.objDrag;
 	this.objDrag = null;
+	var graph = item.parentElement;
+	if(graph) {
+		for(var i=0;i<graph.children.length;i++) {
+			graph.children[i].setAttribute("unselectable", "off");
+		}
+	}
 	if(item.node){
 		if(this.options.display=="svg"){
 			if(item.getAttributeNS(null, "transform")){
@@ -837,7 +851,8 @@ Edge.prototype.calculate = function(board, drawer){
 }
 Edge.prototype.draw = function(board, drawer){
 	for(var i=0;i<this.path.length;i++){
-		this.addElement(board, drawer.createLine(this.path[i].source.x, this.path[i].source.y, this.path[i].target.x, this.path[i].target.y, this.path[i].style));
+		var p = this.path[i];
+		this.addElement(board, drawer.createLine(p.source.x, p.source.y, p.target.x, p.target.y, p.line, p.style));
 	}
 	var options = drawer.graph.options;
 	this.drawSourceText(board, drawer, options);
@@ -904,7 +919,7 @@ Edge.prototype.calcCenterLine = function(){
 		this.calcInfoPos( targetPos, this.target, this.targetInfo, edgePos);
 		this.addEdgeToNode(this.source, sourcePos.id);
 		this.addEdgeToNode(this.target, targetPos.id);
-		this.path.push ( new Line(sourcePos, targetPos, this.lineStyle));
+		this.path.push ( new Line(sourcePos, targetPos, this.lineStyle, this.style));
 	}
 	return true;
 };
