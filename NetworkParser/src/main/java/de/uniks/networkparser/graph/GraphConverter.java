@@ -207,6 +207,9 @@ public class GraphConverter implements Converter {
 				}
 			}
 		}
+		if(result.size()<1){
+			return null;
+		}
 		return result;
 	}
 	
@@ -278,6 +281,9 @@ public class GraphConverter implements Converter {
 				}
 				result.add(item);
 			}
+		}
+		if(result.size()<1){
+			return null;
 		}
 		return result;
 	}

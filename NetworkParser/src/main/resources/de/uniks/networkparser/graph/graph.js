@@ -91,38 +91,42 @@ Graph = function(json, options) {
 	}
 	this.minSize = new Pos(0, 0);
 
-	for (var i = 0; i < json.nodes.length; i++) {
-		var node = json.nodes[i];
-		node.x = node.x || 0;
-		node.y = node.y || 0;
-		node.startWidth = node.width;
-		node.startHeight = node.height;
-		node.width = node.width || 0;
-		node.height = node.height || 0;
-		node.edges = [];
-		node.RIGHT = node.LEFT = node.UP = node.DOWN=0;
-		this.insertNode(node, i);
-	}
-	for (var i = 0; i < json.edges.length; i++){
-		var e = json.edges[i];
-		var edge;
-		if(e.typ.toLowerCase()=="generalisation"){
-			edge = new Generalisation();
-		}else if(e.typ.toLowerCase()=="implements"){
-			edge = new Implements();
-		}else{
-			edge = new Edge();
+	if(json.nodes) {
+		for (var i = 0; i < json.nodes.length; i++) {
+			var node = json.nodes[i];
+			node.x = node.x || 0;
+			node.y = node.y || 0;
+			node.startWidth = node.width;
+			node.startHeight = node.height;
+			node.width = node.width || 0;
+			node.height = node.height || 0;
+			node.edges = [];
+			node.RIGHT = node.LEFT = node.UP = node.DOWN=0;
+			this.insertNode(node, i);
 		}
-		edge.source = this.getNode(e.source.id);
-		edge.info = e.info;
-		edge.style = e.style;
-		edge.sourceInfo = new Info(e.source, this, edge);
-		edge.targetInfo = new Info(e.target, this, edge);
-		edge.source.edges.push(edge);
+	}
+	if(json.edges) {
+		for (var i = 0; i < json.edges.length; i++){
+			var e = json.edges[i];
+			var edge;
+			if(e.typ.toLowerCase()=="generalisation"){
+				edge = new Generalisation();
+			}else if(e.typ.toLowerCase()=="implements"){
+				edge = new Implements();
+			}else{
+				edge = new Edge();
+			}
+			edge.source = this.getNode(e.source.id);
+			edge.info = e.info;
+			edge.style = e.style;
+			edge.sourceInfo = new Info(e.source, this, edge);
+			edge.targetInfo = new Info(e.target, this, edge);
+			edge.source.edges.push(edge);
 
-		edge.target = this.getNode(e.target.id);
-		edge.target.edges.push(edge);
-		this.edges.push(edge);
+			edge.target = this.getNode(e.target.id);
+			edge.target.edges.push(edge);
+			this.edges.push(edge);
+		}
 	}
 	if(this.options.canvasid){
 		this.root = document.getElementById(this.options.canvasid);
