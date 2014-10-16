@@ -35,10 +35,10 @@ public class YUMLConverter implements Converter {
 	@Override
 	public String convert(GraphList root, boolean removePackage) {
 		String typ = root.getTyp();
-		Collection<GraphNode> children = root.values();
+		Collection<GraphMember> children = root.values();
 		if (children.size() > 0) {
 			StringBuilder sb = new StringBuilder();
-			Iterator<GraphNode> i = children.iterator();
+			Iterator<GraphMember> i = children.iterator();
 
 			ArrayList<GraphNode> visitedObj = new ArrayList<GraphNode>();
 			ArrayEntityList<String, Object> links = root.getLinks();
@@ -51,6 +51,13 @@ public class YUMLConverter implements Converter {
 		return null;
 	}
 
+	public void parse(String typ, GraphMember item, StringBuilder sb,
+			ArrayList<GraphNode> visited,
+			ArrayEntityList<String, Object> links, boolean shortName) {
+		if(item instanceof GraphNode) {
+			parse(typ, (GraphNode) item, sb, visited, links, shortName);
+		}
+	}
 	public void parse(String typ, GraphNode item, StringBuilder sb,
 			ArrayList<GraphNode> visited,
 			ArrayEntityList<String, Object> links, boolean shortName) {
@@ -76,7 +83,7 @@ public class YUMLConverter implements Converter {
 			sb.append(parseEntity(item, visited, typ, shortName));
 			sb.append("-");
 
-			Iterator<GraphClazz> targetIterator = element.getOther().iterator();
+			Iterator<GraphNode> targetIterator = element.getOther().iterator();
 			GraphNode target = targetIterator.next();
 			sb.append(parseEntity(target, visited, typ, shortName));
 

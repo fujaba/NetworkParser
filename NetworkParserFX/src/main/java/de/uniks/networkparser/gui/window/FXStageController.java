@@ -56,11 +56,6 @@ public abstract class FXStageController implements StageEvent{
 	        	  stageClosing(we, stage);
 	          }
 		});
-//		stage.setOnHiding(new EventHandler<WindowEvent>() {
-//	          public void handle(WindowEvent we) {
-//	        	  stageClosing(we, stage);
-//	          }
-//		});
 		stage.setOnShowing(new EventHandler<WindowEvent>() {
 	          public void handle(WindowEvent we) {
 	        	  stageShowing(we, stage);
@@ -97,8 +92,14 @@ public abstract class FXStageController implements StageEvent{
 		return this;
 	}
 	
-	public void close(){
-		this.stage.close();
+	public boolean close(){
+		WindowEvent event = new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST);
+		stageClosing(event, stage);
+		if(!event.isConsumed()) {
+			this.stage.close();
+			return true;
+		}
+		return false;
 	}
 	public void show(){
 		this.stage.show();

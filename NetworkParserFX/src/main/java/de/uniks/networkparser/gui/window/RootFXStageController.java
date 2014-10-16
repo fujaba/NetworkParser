@@ -121,11 +121,13 @@ public class RootFXStageController extends FXStageController implements WindowLi
 	
 	public RootFXStageController withPane(Pane value) {
 		this.pane = value;
-		this.pane.addEventFilter(KeyEvent.ANY, listener);
+		this.pane.addEventFilter(KeyEvent.KEY_PRESSED, listener);
 		return this;
 	}
-
-	public KeyListenerMap getListener() {
-		return listener;
+	
+	public RootFXStageController withSize(int width, int height) {
+		getStage().setWidth(width);
+		getStage().setHeight(height);
+		return this;
 	}
 }

@@ -91,9 +91,9 @@ public class GraphIdMap extends IdMapEncoder {
 		}
 
 		String mainKey = getId(object);
-		GraphNode element = list.get(mainKey);
-		if (element != null) {
-			return element;
+		GraphMember element = list.getByObject(mainKey);
+		if (element != null && element instanceof GraphNode) {
+			return (GraphNode)element;
 		}
 
 		SendableEntityCreator prototyp = getCreatorClass(object);

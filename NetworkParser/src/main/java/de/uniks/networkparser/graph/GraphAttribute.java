@@ -39,6 +39,10 @@ public class GraphAttribute extends GraphValue implements GraphMember {
 		this.with(datatyp);
 	}
 	
+	@Override
+	public String getId() {
+		return getName();
+	}
 	
 	public String getValue() {
 		return value;

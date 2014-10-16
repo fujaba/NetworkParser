@@ -151,14 +151,6 @@ public abstract class EditControl<T extends Node> implements CellEditorElement, 
 	public abstract T createControl(Column column);
 	@Override
 	public abstract CellEditorElement withValue(Object value);
-//FIXME	public abstract boolean isCorrect(Object value, EditFields field) throws ParseException;
-	
-//	public Point getLocation(){
-//		if(control!=null){
-//			return control.getLocation();
-//		}
-//		return null;
-//	}
 
 	@Override
 	public void handle(KeyEvent event) {

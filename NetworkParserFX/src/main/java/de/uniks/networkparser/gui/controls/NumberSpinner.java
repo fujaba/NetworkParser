@@ -95,7 +95,7 @@ public class NumberSpinner extends HBox implements CellEditorElement {
 	public NumberSpinner withColumn(Column column) {
 		this.column = column;
 		// TextField
-        numberField = new NumberTextField().withColumn(column).withOwner(this);
+        numberField = new NumberTextField().withColumn(column).withOwner(this).withWidth(124);
 
         // Enable arrow keys for dec/inc
         numberField.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
@@ -126,7 +126,7 @@ public class NumberSpinner extends HBox implements CellEditorElement {
         arrowDown.setMouseTransparent(true);
 
         // the spinner buttons scale with the textfield size
-        // TODO: the following approach leads to the desired result, but it is 
+        // the following approach leads to the desired result, but it is 
         // not fully understood why and obviously it is not quite elegant
         buttonHeight = numberField.heightProperty().subtract(3).divide(2);
         // give unused space in the buttons VBox to the incrementBUtton
