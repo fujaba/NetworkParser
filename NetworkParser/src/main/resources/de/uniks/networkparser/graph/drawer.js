@@ -57,8 +57,8 @@ HTMLDrawer.prototype.showInfoBox = function(){return true;}
 HTMLDrawer.prototype.isShowRaster = function(){return true;}
 HTMLDrawer.prototype.getX = function(node){return node.offsetLeft;};
 HTMLDrawer.prototype.getY = function(node){return node.offsetTop;};
-HTMLDrawer.prototype.setPos = function(item, x, y){item.style.left = x;item.style.top = y;};
-HTMLDrawer.prototype.setSize = function(item, x, y){item.style.width = x;item.style.height = y;};
+HTMLDrawer.prototype.setPos = function(item, x, y){item.style.left = x+"px";item.style.top = y+"px";};
+HTMLDrawer.prototype.setSize = function(item, x, y){item.style.width = x+"px";item.style.height = y+"px";};
 HTMLDrawer.prototype.createContainer = function(graph){
 	this.graph = graph;	
 	var board = document.createElement("div");
