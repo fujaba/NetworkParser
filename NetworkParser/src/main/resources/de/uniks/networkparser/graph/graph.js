@@ -345,7 +345,7 @@ Graph.prototype.resize = function(){
 	for (var i in this.nodes) {
 		var node = this.nodes[i];
 
-		this.NodeMoveRaster(node);
+		this.moveToRaster(node);
 
 		maxx=Math.max(maxx,node.x+node.width);
 		maxy=Math.max(maxy,node.y+node.height);
@@ -433,7 +433,7 @@ Graph.prototype.showInfoText = function(text){
 	this.infoBox.style.KhtmlOpacity = 100;
 	this.infoBox.style.display="";
 };
-Graph.prototype.NodeMoveRaster = function(node){
+Graph.prototype.moveToRaster = function(node){
 	if(this.options.raster){
 		node.x = parseInt(node.x / 10) * 10;
 		node.y = parseInt(node.y / 10) * 10;

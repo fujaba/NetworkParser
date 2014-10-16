@@ -33,10 +33,10 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class GraphIdMap extends IdMapEncoder {
 	/** The Constant for CLASS Diagramms. */
-	public static final String CLASS = "class";
+	public static final String CLASS = "classdiagram";
 
 	/** The Constant for OBJECT Diagramms. */
-	public static final String OBJECT = "object";
+	public static final String OBJECT = "objectdiagram";
 
 	private GraphIdMapFilter filter = new GraphIdMapFilter()
 			.withShowCardinality(true).withTyp(CLASS);
