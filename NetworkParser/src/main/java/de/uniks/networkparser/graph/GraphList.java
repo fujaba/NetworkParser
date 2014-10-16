@@ -24,20 +24,43 @@ package de.uniks.networkparser.graph;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import de.uniks.networkparser.AbstractKeyValueList;
+import de.uniks.networkparser.AbstractEntityList;
 import de.uniks.networkparser.ArrayEntityList;
 import de.uniks.networkparser.ArraySimpleList;
 import de.uniks.networkparser.event.SimpleMapEntry;
 import de.uniks.networkparser.interfaces.Converter;
 
-public class GraphList extends AbstractKeyValueList<String, GraphNode> {
+public class GraphList extends AbstractEntityList<GraphMember> implements GraphMember{
 	private ArrayList<GraphEdge> edges = new ArrayList<GraphEdge>();
 	private String typ=GraphIdMap.CLASS;
+	private String style;
+	private String id;
 	private GraphOptions options;
 
-	public boolean add(GraphNode value) {
-		put(value.getId(), value);
+	public boolean add(GraphMember value) {
+		with(value);
 		return true;
+	}
+	
+	@Override
+	protected boolean checkValue(Object a, Object b) {
+		String idA = ((GraphMember)a).getId();
+		String idB;
+		if(b instanceof String) {
+			idB = (String)b;
+		}else {
+			idB = ((GraphMember)b).getId();
+		}
+		return idA.equalsIgnoreCase(idB);
+	}
+
+	@Override
+	public boolean remove(Object o) {
+		int index = super.getIndex(o);
+		if(index>=0) {
+			return super.remove(index) != null;
+		}
+		return false;
 	}
 
 	@Override
@@ -118,19 +141,10 @@ public class GraphList extends AbstractKeyValueList<String, GraphNode> {
 
 	@Override
 	public GraphList with(Object... values) {
-		if (values != null) {
-			for (Object value : values) {
-				if (value instanceof GraphNode) {
-					this.add((GraphNode) value);
-				}
-				if (value instanceof GraphEdge) {
-					this.add((GraphEdge)value);
-				}
-			}
-		}
+		super.with(values);
 		return this;
 	}
-
+	
 	public GraphClazz with(GraphClazz value) {
 		if (value != null) {
 			if(value.getId()==null){
@@ -140,26 +154,41 @@ public class GraphList extends AbstractKeyValueList<String, GraphNode> {
 		}
 		return value;
 	}
-	
+
+	public GraphPattern with(GraphPattern value) {
+		add(value);
+		return value;
+	}
+
 	public GraphEdge with(GraphEdge value) {
-		if (value != null) {
-			add(value);
-		}
+		add(value);
 		return value;
 	}
 	
-	
-	@Override
-	public GraphNode remove(Object key) {
-		return removeItem(key);
-	}
-
 	public GraphOptions getOptions() {
 		return options;
 	}
 
 	public GraphList withOptions(GraphOptions options) {
 		this.options = options;
+		return this;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public GraphList withId(String value) {
+		this.id = value;
+		return this;
+	}
+
+	public String getStyle() {
+		return style;
+	}
+
+	public GraphList withStyle(String style) {
+		this.style = style;
 		return this;
 	}
 }

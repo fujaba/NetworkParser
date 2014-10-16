@@ -21,11 +21,17 @@ package de.uniks.networkparser.gui.controls;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
+import java.util.List;
+
+import javafx.event.EventHandler;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import de.uniks.networkparser.gui.table.Column;
 import de.uniks.networkparser.gui.table.FieldTyp;
 
 public class TextEditorControl extends EditControl<TextField>{
+	private AutoCompletion<?> completion;
+
 	@Override
 	public Object getValue(boolean convert) {
 		return this.control.getText();
@@ -47,7 +53,21 @@ public class TextEditorControl extends EditControl<TextField>{
 	@Override
 	public TextField createControl(Column column) {
 		TextField textField = new TextField();
+		textField.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent event) {
+				AutoCompletion<?> listener = TextEditorControl.this.completion;
+				if(listener != null) {
+					List<?> list = listener.items(event.getText());
+					
+				}
+			}
+		});
 		return textField;
 	}
-
+	
+	public TextEditorControl withAutoCompleting(AutoCompletion<?> value) {
+		this.completion = value;
+		return this;
+	}
 }

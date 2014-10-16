@@ -184,4 +184,9 @@ public class NumberTextField extends TextField implements CellEditorElement {
 	public Column getColumn() {
 		return column;
 	}
+
+	public NumberTextField withWidth(int value) {
+		this.setPrefWidth(value);
+		return this;
+	}
 }

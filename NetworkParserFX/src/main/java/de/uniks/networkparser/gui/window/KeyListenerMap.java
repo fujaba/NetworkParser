@@ -29,6 +29,7 @@ import javafx.scene.input.KeyEvent;
 public class KeyListenerMap implements EventHandler<KeyEvent>{
 	private WindowListener parent;
 	private ArrayList<KeyListener> listener = new ArrayList<KeyListener>();
+	private boolean isClosing;
 
 	public KeyListenerMap() {
 		withKeyListener(new KeyListener(KeyCode.ESCAPE, new Runnable() {
@@ -36,7 +37,9 @@ public class KeyListenerMap implements EventHandler<KeyEvent>{
 			@Override
 			public void run() {
 				if(KeyListenerMap.this.parent != null) {
-					KeyListenerMap.this.parent.close();
+					if(KeyListenerMap.this.parent.close()) {
+						isClosing = true;
+					}
 				}
 			}
 		}));
@@ -53,6 +56,9 @@ public class KeyListenerMap implements EventHandler<KeyEvent>{
 			if(listener.matches(event)){
 				listener.getRunnable().run();
 			}
+		}
+		if(isClosing) {
+			event.consume();
 		}
 	}
 

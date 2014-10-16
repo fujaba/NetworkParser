@@ -23,6 +23,7 @@ package de.uniks.networkparser.gui.dialog;
 */
 import java.net.URL;
 import java.util.ArrayList;
+
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.ReadOnlyBooleanProperty;
@@ -35,7 +36,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToolBar;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -48,9 +48,10 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
+
 import com.sun.javafx.tk.Toolkit;
+
 import de.uniks.networkparser.gui.dialog.DialogButton.Grafik;
-import de.uniks.networkparser.gui.window.KeyListenerMap;
 
 public class DialogBox {
 	protected static final PseudoClass ACTIVE_PSEUDO_CLASS = PseudoClass.getPseudoClass("active");
@@ -396,7 +397,7 @@ public class DialogBox {
 				}
 			}
 		}
-		element.addEventHandler(KeyEvent.ANY, new KeyListenerMap() );
+//		element.addEventHandler(KeyEvent.KEY_PRESSED, new KeyListenerMap() );
 	}
 	
 	public void createContent(){

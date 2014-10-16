@@ -42,6 +42,11 @@ public class GraphMethod extends AbstractList<GraphParameter> implements GraphMe
 		this.name = name;
 		return this;
 	}
+	
+	@Override
+	public String getId() {
+		return name;
+	}
 
 	public String getName(boolean includeName) {
 		StringBuilder sb = new StringBuilder();

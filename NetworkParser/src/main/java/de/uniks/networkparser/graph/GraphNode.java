@@ -23,7 +23,7 @@ package de.uniks.networkparser.graph;
  */
 import de.uniks.networkparser.AbstractEntityList;
 
-public class GraphNode extends AbstractEntityList<GraphMember> {
+public class GraphNode extends AbstractEntityList<GraphMember> implements GraphMember{
 	private String id;
 
 	// GETTER AND SETTER

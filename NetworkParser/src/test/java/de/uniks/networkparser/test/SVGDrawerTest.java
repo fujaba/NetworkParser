@@ -15,12 +15,14 @@ import de.uniks.networkparser.graph.GraphEdge;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphMethod;
 import de.uniks.networkparser.graph.GraphParameter;
+import de.uniks.networkparser.graph.GraphPattern;
 import de.uniks.networkparser.json.JsonObject;
 
 public class SVGDrawerTest {
 	public static final String CRLF = "\r\n";
+
 	@Test
-	public void testDraw() throws IOException {
+	public void testDrawClazz() throws IOException {
 		GraphList map = new GraphList();
 		
 		
@@ -51,6 +53,26 @@ public class SVGDrawerTest {
 		writeJson("clazzModel.html", converter.convertToJson(map, false));
 	}
 	
+	@Test
+	public void testPattern() throws IOException {
+		GraphList map = new GraphList();
+		
+		GraphPattern space = map.with(new GraphPattern().withId("Space"));
+		GraphPattern modelHistory = map.with(new GraphPattern().withId("Item").withBounds("create"));
+		map.with(new GraphPattern().withId("ModelHistory").withBounds("delete"));
+		
+		map.with( GraphEdge.create(space, modelHistory).withSyte("create") );
+
+		GraphList subGraph = new GraphList();
+		subGraph.with(new GraphPattern().withId("Person"));
+		
+		map.with(subGraph);
+		
+		GraphConverter converter=new GraphConverter();
+		writeJson("pattern.html", converter.convertToJson(map, false));
+	}
+	
+	
 	
 	@Test
 	public void testPetaF() throws IOException {
@@ -66,6 +88,7 @@ public class SVGDrawerTest {
 		map.with( GraphEdge.create(networkParser, networkParserfx) );
 		map.with( GraphEdge.create(networkParser, petaf) );
 		map.with( GraphEdge.create(petaf, policy) );
+		
 		
 		GraphConverter converter=new GraphConverter();
 		writeJson("petaf.html", converter.convertToJson(map, false));

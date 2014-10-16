@@ -649,6 +649,14 @@ public abstract class AbstractList<V> implements BaseItem {
 		return transformIndex(getPositionKey(key), key, this.hashTableKeys,
 				this.keys);
 	}
+	
+	public V getByObject(Object key) {
+		int index = getIndex(key);
+		if(index<0) {
+			return null;
+		}
+		return get(index);
+	}
 
 	/**
 	 * Transform a Value to the real Index of List.
@@ -708,7 +716,7 @@ public abstract class AbstractList<V> implements BaseItem {
 				Object value = hashTableKeys[hashKey];
 				if (value == null)
 					return -1;
-				if (value.equals(o))
+				if (checkValue(value, o))
 					return hashKey;
 				hashKey = (hashKey + entitySize) % hashTableKeys.length;
 			}
@@ -718,12 +726,16 @@ public abstract class AbstractList<V> implements BaseItem {
 		// have just been added to the end
 		int pos = this.keys.size() - 1;
 		for (ListIterator<V> i = reverseListIterator(); i.hasPrevious();) {
-			if (i.previous().equals(o)) {
+			if (checkValue(i.previous(), o)) {
 				return pos;
 			}
 			pos--;
 		}
 		return -1;
+	}
+	
+	protected boolean checkValue(Object a, Object b) {
+		return a.equals(b);
 	}
 
 	/**
