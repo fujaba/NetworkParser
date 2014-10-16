@@ -304,9 +304,11 @@ public class GraphConverter implements Converter {
 		}else if(entity instanceof GraphPattern) {
 			item.put(TYP, PATTERN);
 			item.put(STYLE, ((GraphPattern) entity).getBounds() );
-		} else if(entity instanceof GraphList) {
+			item.put(ID, entity.getId());
+		}else if(entity instanceof GraphList) {
 			item.put(TYP, SUBGRAPH);
 			item.put(GRAPH , convertToJson((GraphList) entity, shortName));
+			item.put(ID, entity.getId());
 			return item;
 		}
 		if(!(entity instanceof GraphNode)) {
@@ -314,7 +316,6 @@ public class GraphConverter implements Converter {
 		}
 		
 		GraphNode element = (GraphNode) entity;
-		item.put(ID, entity.getId());
 		
 		GraphNodeImage nodeHeader = getNodeHeader(element);
 		if (nodeHeader != null) {
