@@ -99,6 +99,10 @@ HTMLDrawer.prototype.getHTMLNode = function(node, calculate){
 		htmlElement.className="patternElement";
 	} else if(symbolLib.isSymbol(node)) {
 		return symbolLib.draw(null, node, calculate);
+	} else if(node.typ=="classdiagram") {
+		htmlElement.className="classdiagram";
+	} else if(node.typ=="objectdiagram") {
+		htmlElement.className="objectdiagram";
 	} else if(this.graph.typ.toLowerCase()=="objectdiagram") {
 		htmlElement.className="objectElement";
 	} else {
@@ -351,8 +355,12 @@ SVGDrawer.prototype.getHTMLNode = function(node, calculate){
 		var width = this.getNumber(node.board.style.width);
 		var height = this.getNumber(node.board.style.height);
 		group.setAttribute("class", "draggable");
+		if(node.style && node.style.toLowerCase()=="nac"){
+			group.appendChild(this.createGroup(node, symbolLib.drawStop(node)));
+		}
+		
 		this.graph.addNodeLister(group, node);
-		group.appendChild( this.createElement({tag:"rect", "width":width, "height":height, "fill":"none", "strokeWidth":"1px", "stroke":"#CCC", "x":node.getX(), "y":node.getY()}));
+		group.appendChild( this.createElement({tag:"rect", "width":width, "height":height, "fill":"none", "strokeWidth":"1px", "stroke":this.getColor(node.style, "#CCC"), "x":node.getX(), "y":node.getY()}));
 		this.setSize(group, width, height);
 		return group;
 	}
@@ -454,7 +462,9 @@ SVGDrawer.prototype.createElement = function(node){
 		if(key=='tag')continue;
 		if(key=='content_src'&& node.tag.toLowerCase()=="image") continue;
 		if(key=='value'&& node.tag.toLowerCase()=="text") continue;
-		if(node[key] != null) {
+		if(key.indexOf("-")>=0){
+			element.style[key] = node[key];
+		}else if(node[key] != null) {
 			element.setAttribute(key, node[key]);
 		}
 	}
@@ -482,14 +492,17 @@ SVGDrawer.prototype.createInfo = function(item, calculate, text) {
 	}
 	return this.createElement({tag:"text", "text-anchor":"left", "x": item.x, "y": item.y, value:text});
 };
-SVGDrawer.prototype.getColor = function(style) {
+SVGDrawer.prototype.getColor = function(style, defaultColor) {
 	if(style) {
 		if(style.toLowerCase()=="create") {
 			return "#008000";
 		}
-		if(style.toLowerCase()=="delete") {
+		if(style.toLowerCase()=="nac") {
 			return "#FE3E3E";
 		}
+	}
+	if(defaultColor) {
+		return defaultColor;
 	}
 	return "#000";
 }
@@ -804,7 +817,6 @@ SymbolLibary.prototype.drawStop = function(node, calculte){
 		width:30,
 		height:30,
 		items:[
-			{tag:"path", fill:"#FFF", strokeWidth:"37", stroke:"#B00", d:"M86,88a230,230 0 1,0 1-1zL412,412"}
-		
+			{tag:"path", fill:"#FFF", "stroke-width":"2", stroke:"#B00", d:"m "+node.getX()+","+node.getY()+" a 14.626977,14.967462 0 1 0 0.0636,-0.065 z m 0,0 20.73215,21.0846"}		
 		]};
 };
