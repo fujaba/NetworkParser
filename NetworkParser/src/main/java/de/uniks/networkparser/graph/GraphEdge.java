@@ -98,7 +98,7 @@ public class GraphEdge extends AbstractEntityList<GraphNode> implements
 		return this;
 	}
 	
-	public GraphEdge withSyte(String value) {
+	public GraphEdge withStyle(String value) {
 		if(info != null) {
 			this.info.withStyle(value);
 			return this;

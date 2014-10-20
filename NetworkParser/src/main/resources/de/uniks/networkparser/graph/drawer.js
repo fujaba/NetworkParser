@@ -27,21 +27,12 @@ Drawer.prototype.clearBoard = function(){};
 Drawer.prototype.onLoadImage = function(){};
 Drawer.prototype.onFinishImage = function(){};
 Drawer.prototype.setPos = function(item, x, y){item.x = x;item.y = y;};
-Drawer.prototype.getX = function(node){return node.x;};
-Drawer.prototype.getY = function(node){return node.y;};
 Drawer.prototype.createText = function(text){return document.createTextNode(text);}
-Drawer.prototype.createSubGraph = function(node, element){
-	var options = new Options();
-	options.rootElement = element;
-	if(this.graph.options) {
-		options.display = this.graph.options.display;
-	}
-	options.buttons = [];
-	options.parent = this.graph;
-	node.g = new Graph(node.graph, options);
-	node.g.layout();
-};
 Drawer.prototype.setSize = function(item, x, y){item.width = x;item.height = y;};
+Drawer.prototype.createSubGraph = function(node, element){
+	node.board = element;
+	node.layoutCalculate();
+};
 Drawer.prototype.createObject= function(ns, tag){
 	if(document.createElementNS){
 		return document.createElementNS(ns, tag);
@@ -50,6 +41,13 @@ Drawer.prototype.createObject= function(ns, tag){
 	e.setAttribute('xmlns', ns);
 	return e;
 };
+Drawer.prototype.getBoard = function(graph){
+	if(graph.parent){
+		return this.getBoard(graph.parent);
+	}
+	return graph.board;
+};
+Drawer.prototype.getNumber = function(num) {return Number(num.toString().replace("px",''));}
 
 HTMLDrawer = function() {};
 HTMLDrawer.prototype = Object_create(Drawer.prototype);
@@ -67,7 +65,6 @@ HTMLDrawer.prototype.createContainer = function(graph){
 	board.rasterElements=[];
 	return board;
 };
-
 HTMLDrawer.prototype.createImage = function(model){
 	var img = new Image();
 	img.src = model.src;
@@ -98,8 +95,7 @@ HTMLDrawer.prototype.createCell = function(parent, tag){
 HTMLDrawer.prototype.getHTMLNode = function(node, calculate){
 	var htmlElement = document.createElement("div");
 	var symbolLib = new SymbolLibary();
-	var typ = node.typ.toLowerCase();
-	if(typ=="patternobject") {
+	if(node.typ=="patternobject") {
 		htmlElement.className="patternElement";
 	} else if(symbolLib.isSymbol(node)) {
 		return symbolLib.draw(null, node, calculate);
@@ -110,14 +106,13 @@ HTMLDrawer.prototype.getHTMLNode = function(node, calculate){
 	}
 	this.setPos(htmlElement, node.x, node.y);
 	htmlElement.style.zIndex=5000;
-	this.graph.addNodeLister(htmlElement, node);
 
-	if(typ=="objectdiagram" || typ=="classdiagram"){
+	if(node.typ=="objectdiagram" || node.typ=="classdiagram"){
 		this.createSubGraph(node, htmlElement);
-		htmlElement.style.width = node.g.board.style.width;
-		htmlElement.style.height = node.g.board.style.height;
+		this.setSize(htmlElement, node.board.style.width, node.board.style.height);
 		return htmlElement;
 	}
+	this.graph.addNodeLister(htmlElement, node);
 	if(node.content_src){
 		if(!node.content_img){
 			node.content_img = {};
@@ -315,20 +310,24 @@ SVGDrawer.prototype.createContainer = function(graph){
 	return board;
 };
 SVGDrawer.prototype.setSize = function(item, x, y){
+	x = this.getNumber(x);
+	y = this.getNumber(y);
 	item.setAttribute("width", Math.ceil(x));
 	item.setAttribute("height", Math.ceil(y));
 	item.style.width=Math.ceil(x);
 	item.style.height=Math.ceil(y);
 };
+
 SVGDrawer.prototype.getWidth = function(label, calculate){
 	var text = this.createObject("http://www.w3.org/2000/svg", "text");
 	text.appendChild(document.createTextNode(label));
 	this.addFontAttributes(text);
 
 	text.setAttribute("width", "5px");
-	this.graph.board.appendChild(text);
+	var board = this.getBoard(this.graph);
+	board.appendChild(text);
 	var width = text.getBoundingClientRect().width;
-	this.graph.board.removeChild(text);
+	board.removeChild(text);
 	return width;
 }
 SVGDrawer.prototype.getHTMLNode = function(node, calculate){
@@ -343,6 +342,19 @@ SVGDrawer.prototype.getHTMLNode = function(node, calculate){
 		var group = this.createObject("http://www.w3.org/2000/svg", "g");
 		group.setAttribute('transform', "translate("+node.x+" "+node.y+")");
 		group.innerHTML = node.content_svg;return group;
+	}
+	var group = this.createElement({tag:"g"});
+	group.model = node;
+	if(node.typ=="objectdiagram" || node.typ=="classdiagram"){
+		this.createSubGraph(node, group);
+		
+		var width = this.getNumber(node.board.style.width);
+		var height = this.getNumber(node.board.style.height);
+		group.setAttribute("class", "draggable");
+		this.graph.addNodeLister(group, node);
+		group.appendChild( this.createElement({tag:"rect", "width":width, "height":height, "fill":"none", "strokeWidth":"1px", "stroke":"#CCC", "x":node.getX(), "y":node.getY()}));
+		this.setSize(group, width, height);
+		return group;
 	}
 
 	if(node.content_plain){
@@ -381,11 +393,11 @@ SVGDrawer.prototype.getHTMLNode = function(node, calculate){
 	} 
 	width += 20;
 
-	var y = node.y;
-	var group = this.createElement({tag:"g"});
-	group.model = node;
+	var y = node.getY();
+	var x = node.getX();
+
 	this.graph.addNodeLister(group, node);
-	var rect = {tag:"rect", "width":width, "height":height, "x":node.x, "y":y, "fill":"none", class:"draggable"};
+	var rect = {tag:"rect", "width":width, "height":height, "x":x, "y":y, "fill":"none", class:"draggable"};
 	var typ = node.typ.toLowerCase();
 	if(typ=="patternobject") {
 		rect["fill"] = "lightblue";
@@ -394,7 +406,7 @@ SVGDrawer.prototype.getHTMLNode = function(node, calculate){
 	rect["stroke"] = strokeColor;
 	group.appendChild( this.createElement(rect) );
 
-	var text = this.createElement({tag:"text", "text-anchor":"right", "x":node.x+width/2-textWidth/2, "y":y+20, "width":textWidth});
+	var text = this.createElement({tag:"text", "text-anchor":"right", "x":x+width/2-textWidth/2, "y":y+20, "width":textWidth});
 
 	if(this.graph.typ.toLowerCase()=="objectdiagram"){
 		text.setAttribute("text-decoration", "underline");
@@ -404,13 +416,13 @@ SVGDrawer.prototype.getHTMLNode = function(node, calculate){
 	}
 
 	group.appendChild(text);
-	group.appendChild( this.createElement({tag:"line", x1:node.x, y1:y + 30, x2: node.x + width, y2: y + 30, stroke:strokeColor}) );
+	group.appendChild( this.createElement({tag:"line", x1:x, y1:y + 30, x2: x + width, y2: y + 30, stroke:strokeColor}) );
 	y += 50;
 
 	if(node.attributes){
 		for(var a=0;a<node.attributes.length;a++){
 			var attribute = node.attributes[a];
-			group.appendChild(this.createElement({tag:"text", "text-anchor":"left", "width": width, "x":(node.x+10), "y": y, value:attribute}));
+			group.appendChild(this.createElement({tag:"text", "text-anchor":"left", "width": width, "x":(x+10), "y": y, value:attribute}));
 			y += 20;
 		}
 		if(node.attributes.length>0) {
@@ -418,11 +430,11 @@ SVGDrawer.prototype.getHTMLNode = function(node, calculate){
 		}
 	}
 	if(node.methods && node.methods.length > 0){
-		group.appendChild( this.createElement({tag:"line", x1:node.x, y1: y, x2: node.x + width, y2: y, stroke:"#000"}) );
+		group.appendChild( this.createElement({tag:"line", x1:x, y1: y, x2: x + width, y2: y, stroke:"#000"}) );
 		y+=20;
 		for(var m=0;m<node.methods.length;m++){
 			var method = node.methods[m];
-			group.appendChild(this.createElement({tag:"text", "text-anchor":"left", "width": width, x:node.x + 10, "y": y, value:method}));
+			group.appendChild(this.createElement({tag:"text", "text-anchor":"left", "width": width, "x": x + 10, "y": y, value:method}));
 			y += 20;
 		}
 	}
@@ -470,7 +482,7 @@ SVGDrawer.prototype.createInfo = function(item, calculate, text) {
 	}
 	return this.createElement({tag:"text", "text-anchor":"left", "x": item.x, "y": item.y, value:text});
 };
-SVGDrawer.prototype.getColor =  function(style) {
+SVGDrawer.prototype.getColor = function(style) {
 	if(style) {
 		if(style.toLowerCase()=="create") {
 			return "#008000";
@@ -485,7 +497,7 @@ SVGDrawer.prototype.createLine = function(x1, y1, x2, y2, lineStyle, style){
 	var line = this.createElement({tag:"line", 'x1': x1, 'y1': y1, 'x2': x2, 'y2': y2});
 	line.setAttribute("stroke",this.getColor(style));
 
-	if(style.toLowerCase()=="dotted"){
+	if(style && style.toLowerCase()=="dotted"){
 		line.setAttribute("stroke-miterlimit",4);
 		line.setAttribute("stroke-dasharray","1,1");
 	}
@@ -504,18 +516,6 @@ SVGDrawer.prototype.createGroup = function(node, group){
 		entity.appendChild( this.createElement( group.items[i] ) );
 	}
 	return entity;
-};
-SVGDrawer.prototype.getX = function(node){
-	if(node.x!=null){
-		return node.x;
-	}
-	return 0;
-};
-SVGDrawer.prototype.getY = function(node){
-	if(node.y!=null){
-		return node.y;
-	}
-	return 0;
 };
 
 // ######################################################           CANVAS           ####################################################################################
@@ -577,7 +577,7 @@ CanvasDrawer.prototype.getHTMLNode = function(node, calculate){
 	var context = canvas.getContext('2d');
 	if(node.content_src){
 		var img = document.createElement("img");
-		img.src =  node.content_src;
+		img.src = node.content_src;
 		img.node = node;
 		this.graph.loader.appendImg(img);
 		return null;
@@ -648,7 +648,7 @@ CanvasDrawer.prototype.onLoadImage = function(event){
 CanvasDrawer.prototype.onFinishImage = function(event){
 	try{
 		var img = document.createElement("img");
-		img.src =  this.graph.board.toDataURL();
+		img.src = this.graph.board.toDataURL();
 		this.graph.clearBoard();
 		this.graph.board = img;
 		this.graph.root.appendChild(img);
@@ -671,15 +671,15 @@ CanvasDrawer.prototype.onFinishImage = function(event){
 SymbolLibary = function(){};
 SymbolLibary.prototype.upFirstChar = function(txt)
 {
-    return txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase();
+	return txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase();
 };
 
 SymbolLibary.prototype.isSymbol = function(node){
-	var fn  = this["draw" + this.upFirstChar(node.typ)];
+	var fn = this["draw" + this.upFirstChar(node.typ)];
 	return typeof fn === "function";
 };
 SymbolLibary.prototype.draw = function(drawer, node, calculate){
-	var fn  = this["draw" + this.upFirstChar(node.typ)];
+	var fn = this["draw" + this.upFirstChar(node.typ)];
 	if(typeof fn === "function"){
 		var group = fn.apply(this, [node, calculate]);
 		if( !drawer){
