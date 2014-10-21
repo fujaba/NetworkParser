@@ -172,7 +172,7 @@ Graph = function(json, options) {
 			if(this.options.canvasid){
 				this.root.id = this.options.canvasid;
 			}
-			document.body.appendChild(this.root);
+			document.body.appendChild(this.root);document.body.appendChild(this.root);
 		}
 		if(this.options.buttons.length>0){
 			this.optionbar = document.createElement("div");
@@ -592,6 +592,7 @@ Graph.prototype.initDragAndDrop = function(){
 	this.objDrag = null;
 	this.mouse = new Pos(0,0);
 	this.offset= new Pos(0,0);
+	this.startObj= new Pos(0,0);
 	var that = this;
 	// its Root = this.board
 	this.board.onmousemove = function(e){that.doDrag(e);};
@@ -626,6 +627,12 @@ Graph.prototype.setSelectable = function(node, value) {
 };
 
 Graph.prototype.startDrag = function(event) {
+	if(!event.currentTarget.isdraggable){
+		return;
+	}
+	if(this.objDrag){
+		return;
+	}
 	this.objDrag = event.currentTarget;
 	var graph = this.objDrag.parentElement;
 	if(graph) {
@@ -633,8 +640,10 @@ Graph.prototype.startDrag = function(event) {
 			this.setSelectable(graph.children[i], "on");
 		}
 	}
-	this.offset.x = this.mouse.x - this.objDrag.node.getRoot().x;
-	this.offset.y = this.mouse.y - this.objDrag.node.getRoot().y;
+	this.offset.x = (IE) ? window.event.clientX : event.pageX;
+	this.offset.y = (IE) ? window.event.clientY : event.pageY;
+	this.startObj.x = this.objDrag.node.x;
+	this.startObj.y = this.objDrag.node.y;
 };
 
 Graph.prototype.doDrag = function(event) {
@@ -642,10 +651,12 @@ Graph.prototype.doDrag = function(event) {
 	this.mouse.y = (IE) ? window.event.clientY : event.pageY;
 
 	if (this.objDrag != null) {
-		var x =(this.mouse.x - this.offset.x);
-		var y =(this.mouse.y - this.offset.y);
+		var x =(this.mouse.x - this.offset.x) + this.startObj.x;
+		var y =(this.mouse.y - this.offset.y) + this.startObj.y;
 
 		if(this.options.display=="svg"){
+			x = x - this.startObj.x;
+			y = y - this.startObj.y;
 			this.objDrag.setAttribute('transform', "translate("+x+" "+y+")");
 		} else {
 			this.drawer.setPos(this.objDrag, x, y);
@@ -657,37 +668,11 @@ Graph.prototype.doDrag = function(event) {
 		}
 	}
 }
-
-Graph.prototype.getGraphNode = function(objElement){
-	var obj=objElement;
-	while(obj&&!obj.node){
-		if(!obj.node){
-			obj=obj.parentNode;
-		}else{
-			break;
-		}
-	}
-	if(obj&&obj.node){
-		return obj.node;
-	}
-	return null;
-};
-
-Graph.prototype.fadein = function(evt){
-	if(this.infoBox){this.infoBox.fader=false;}
-}
-Graph.prototype.fadeout = function(evt){
-	if(this.infoBox&&!this.infoBox.fader){
-		this.infoBox.fader=100;
-		var that = this;
-		setTimeout(function(){that.fadeOutTimer();}, 2000);
-	}
-};
-Graph.prototype.stopDrag = function(evt) {
+Graph.prototype.stopDrag = function(event) {
 	if(!this.objDrag){
 		return;
 	}
-	if(evt.ctrlKey) {
+	if(!(event.type=="mouseup"||event.type=="mouseout")&&!event.currentTarget.isdraggable){
 		return;
 	}
 	var item = this.objDrag;
@@ -730,6 +715,32 @@ Graph.prototype.stopDrag = function(evt) {
 		item.node.parent.resize();
 	}
 }
+
+Graph.prototype.getGraphNode = function(objElement){
+	var obj=objElement;
+	while(obj&&!obj.node){
+		if(!obj.node){
+			obj=obj.parentNode;
+		}else{
+			break;
+		}
+	}
+	if(obj&&obj.node){
+		return obj.node;
+	}
+	return null;
+};
+
+Graph.prototype.fadein = function(evt){
+	if(this.infoBox){this.infoBox.fader=false;}
+}
+Graph.prototype.fadeout = function(evt){
+	if(this.infoBox&&!this.infoBox.fader){
+		this.infoBox.fader=100;
+		var that = this;
+		setTimeout(function(){that.fadeOutTimer();}, 2000);
+	}
+};
 
 Graph.prototype.fadeOutTimer= function(){
 	var item=this.infoBox;
