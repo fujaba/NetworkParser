@@ -59,12 +59,13 @@ public class SVGDrawerTest {
 		
 		GraphPattern space = map.with(new GraphPattern().withId("Space"));
 		GraphPattern modelHistory = map.with(new GraphPattern().withId("Item").withBounds("create"));
-		map.with(new GraphPattern().withId("ModelHistory").withBounds("delete"));
+		map.with(new GraphPattern().withId("ModelHistory").withBounds("nac"));
 		
 		map.with( GraphEdge.create(space, modelHistory).withStyle("create") );
 
 		GraphList subGraph = new GraphList();
 		GraphPattern person = subGraph.with(new GraphPattern().withId("Person"));
+		subGraph.withStyle("nac");
 		
 		map.with(GraphEdge.create(space, person));
 		map.with(subGraph);

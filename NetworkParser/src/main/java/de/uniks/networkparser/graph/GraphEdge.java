@@ -76,7 +76,7 @@ public class GraphEdge extends AbstractEntityList<GraphNode> implements
 			}
 			
 		}
-		return "";
+		return null;
 	}
 
 	public GraphEdge with(String value) {

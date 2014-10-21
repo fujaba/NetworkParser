@@ -53,8 +53,6 @@ HTMLDrawer = function() {};
 HTMLDrawer.prototype = Object_create(Drawer.prototype);
 HTMLDrawer.prototype.showInfoBox = function(){return true;}
 HTMLDrawer.prototype.isShowRaster = function(){return true;}
-HTMLDrawer.prototype.getX = function(node){return node.offsetLeft;};
-HTMLDrawer.prototype.getY = function(node){return node.offsetTop;};
 HTMLDrawer.prototype.setPos = function(item, x, y){item.style.left = x+"px";item.style.top = y+"px";};
 HTMLDrawer.prototype.setSize = function(item, x, y){item.style.width = x+"px";item.style.height = y+"px";};
 HTMLDrawer.prototype.createContainer = function(graph){
@@ -94,11 +92,16 @@ HTMLDrawer.prototype.createCell = function(parent, tag){
 };
 HTMLDrawer.prototype.getHTMLNode = function(node, calculate){
 	var htmlElement = document.createElement("div");
+	htmlElement["isdraggable"]=true;
 	var symbolLib = new SymbolLibary();
 	if(node.typ=="patternobject") {
 		htmlElement.className="patternElement";
 	} else if(symbolLib.isSymbol(node)) {
 		return symbolLib.draw(null, node, calculate);
+	} else if(node.typ=="classdiagram") {
+		htmlElement.className="classdiagram";
+	} else if(node.typ=="objectdiagram") {
+		htmlElement.className="objectdiagram";
 	} else if(this.graph.typ.toLowerCase()=="objectdiagram") {
 		htmlElement.className="objectElement";
 	} else {
@@ -194,13 +197,13 @@ HTMLDrawer.prototype.getHTMLNode = function(node, calculate){
 
 HTMLDrawer.prototype.createInfo = function(item, calculate, text) {
 	var info = document.createElement("div");
+	info["isdraggable"]=true;
 	info.className="EdgeInfo";
 	info.style.fontSize = this.graph.options.font["font-size"];
 	this.setPos(info, item.x, item.y);
 	info.innerHTML = text;
 	return info;
 };
-
 
 HTMLDrawer.prototype.createLine = function(x1, y1, x2, y2, lineStyle, style){
 	if (x2 < x1 ){
@@ -245,7 +248,7 @@ HTMLDrawer.prototype.onFinishImage = function(event){
 SVGDrawer = function() {};
 SVGDrawer.prototype = Object_create(Drawer.prototype);
 SVGDrawer.prototype.addFontAttributes = function(node){
-	if(this.graph.options.font){
+	if(this.graph && this.graph.options.font){
 		for (var key in this.graph.options.font) {
 			if(this.graph.options.font[key]){
 				node.setAttribute(key, this.graph.options.font[key]);
@@ -336,23 +339,25 @@ SVGDrawer.prototype.getHTMLNode = function(node, calculate){
 		return symbolLib.draw(this, node, calculate);
 	}
 	if(node.content_src){
-		return this.createElement({tag:"image", height: node.height, width: node.width, content_src: node.content_src});
+		return this.createElement({tag:"image", height: node.height, width: node.width, content_src: node.content_src, isdraggable:true});
 	}
+	var group = this.createElement({tag:"g", "class":"draggable", isdraggable:true});
 	if(node.content_svg){
-		var group = this.createObject("http://www.w3.org/2000/svg", "g");
 		group.setAttribute('transform', "translate("+node.x+" "+node.y+")");
 		group.innerHTML = node.content_svg;return group;
 	}
-	var group = this.createElement({tag:"g"});
 	group.model = node;
 	if(node.typ=="objectdiagram" || node.typ=="classdiagram"){
 		this.createSubGraph(node, group);
 		
 		var width = this.getNumber(node.board.style.width);
 		var height = this.getNumber(node.board.style.height);
-		group.setAttribute("class", "draggable");
+		if(node.style && node.style.toLowerCase()=="nac"){
+			group.appendChild(this.createGroup(node, symbolLib.drawStop(node)));
+		}
+		
 		this.graph.addNodeLister(group, node);
-		group.appendChild( this.createElement({tag:"rect", "width":width, "height":height, "fill":"none", "strokeWidth":"1px", "stroke":"#CCC", "x":node.getX(), "y":node.getY()}));
+		group.appendChild( this.createElement({tag:"rect", "width":width, "height":height, "fill":"none", "strokeWidth":"1px", "stroke":this.getColor(node.style, "#CCC"), "x":node.getX(), "y":node.getY()}));
 		this.setSize(group, width, height);
 		return group;
 	}
@@ -375,7 +380,7 @@ SVGDrawer.prototype.getHTMLNode = function(node, calculate){
 	}
 	width = Math.max(width, textWidth);
 	if(node.attributes && node.attributes.length > 0 ){
-		height = height + node.attributes.length*20;
+		height = height + node.attributes.length*25;
 		for(var a=0; a<node.attributes.length;a++){
 			var attribute = node.attributes[a];
 			width = Math.max(width, this.getWidth(attribute));
@@ -385,7 +390,7 @@ SVGDrawer.prototype.getHTMLNode = function(node, calculate){
 	}
 	
 	if(node.methods && node.methods.length > 0){
-		height = height + node.methods.length*20;
+		height = height + node.methods.length*25;
 		for(var m=0; m<node.methods.length;m++){
 			var method = node.methods[m];
 			width = Math.max(width, this.getWidth(method));
@@ -454,8 +459,11 @@ SVGDrawer.prototype.createElement = function(node){
 		if(key=='tag')continue;
 		if(key=='content_src'&& node.tag.toLowerCase()=="image") continue;
 		if(key=='value'&& node.tag.toLowerCase()=="text") continue;
-		if(node[key] != null) {
+		if(key.indexOf("-")>=0){
+			element.style[key] = node[key];
+		}else if(node[key] != null) {
 			element.setAttribute(key, node[key]);
+			element[key] = node[key];
 		}
 	}
 	if(node.tag.toLowerCase()=="text" && node.value){
@@ -471,7 +479,7 @@ SVGDrawer.prototype.createElement = function(node){
 SVGDrawer.prototype.createInfo = function(item, calculate, text) {
 	var items = text.split("\n");
 	if(!calculate && items.length>1){
-		var group = this.createElement({tag:"g", class:"draggable"});
+		var group = this.createElement({tag:"g", class:"draggable", isdraggable:true});
 		for(var i = 0;i<items.length;i++) {
 			var child = this.createElement({tag:"text", "text-anchor":"left", "x": item.x, "y": item.y+(item.size.y*i)});
 			child.appendChild(document.createTextNode(items[i]));
@@ -480,16 +488,19 @@ SVGDrawer.prototype.createInfo = function(item, calculate, text) {
 		this.graph.addNodeLister(group, item);
 		return group;
 	}
-	return this.createElement({tag:"text", "text-anchor":"left", "x": item.x, "y": item.y, value:text});
+	return this.createElement({tag:"text", "text-anchor":"left", "x": item.x, "y": item.y, value:text, isdraggable:true});
 };
-SVGDrawer.prototype.getColor = function(style) {
+SVGDrawer.prototype.getColor = function(style, defaultColor) {
 	if(style) {
 		if(style.toLowerCase()=="create") {
 			return "#008000";
 		}
-		if(style.toLowerCase()=="delete") {
+		if(style.toLowerCase()=="nac") {
 			return "#FE3E3E";
 		}
+	}
+	if(defaultColor) {
+		return defaultColor;
 	}
 	return "#000";
 }
@@ -804,7 +815,6 @@ SymbolLibary.prototype.drawStop = function(node, calculte){
 		width:30,
 		height:30,
 		items:[
-			{tag:"path", fill:"#FFF", strokeWidth:"37", stroke:"#B00", d:"M86,88a230,230 0 1,0 1-1zL412,412"}
-		
+			{tag:"path", fill:"#FFF", "stroke-width":"2", stroke:"#B00", d:"m "+node.getX()+","+node.getY()+" a 14,14 0 1 0 0.0636,-0.065 z m 0,0 20.73215,21.0846"}		
 		]};
 };
