@@ -35,17 +35,29 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.FloatProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.LongProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.scene.Node;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ColorPicker;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.IdMapEncoder;
+import de.uniks.networkparser.gui.GenericCreator;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public abstract class ModelListenerProperty<T> implements javafx.beans.property.Property<T>, PropertyChangeListener, ObservableValue<T>, InvalidationListener{
+	public enum PROPERTYTYPE{STRING, COLOR, BOOLEAN, INT, LONG, FLOAT, DOUBLE};
+	
 	protected Object item;
 	protected String property;
     protected SendableEntityCreator creator;
@@ -175,44 +187,91 @@ public abstract class ModelListenerProperty<T> implements javafx.beans.property.
 	public T parseValue(Object value){
 		return (T)value;
 	}
+	
+	public static ModelListenerProperty<?> create(Node node, Object item, String field){
+		GenericCreator creator = new GenericCreator(item);
+		if(node instanceof ColorPicker) {
+			return createProperty(PROPERTYTYPE.COLOR, ((ColorPicker)node).valueProperty(), creator, item, field);
+		}
+		if(node instanceof TextField) {
+			return createProperty(PROPERTYTYPE.STRING, ((TextField)node).textProperty(), creator, item, field);
+		}
+		if(node instanceof ComboBox) {
+			return createProperty(PROPERTYTYPE.STRING, ((ComboBox<?>)node).valueProperty(), creator, item, field);
+		}
+		if(node instanceof CheckBox) {
+			return createProperty(PROPERTYTYPE.BOOLEAN, ((CheckBox)node).selectedProperty(), creator, item, field);
+		}
+		if(node instanceof RadioButton) {
+			return createProperty(PROPERTYTYPE.BOOLEAN, ((RadioButton)node).selectedProperty(), creator, item, field);
+		}
+		return null;
+	}
+	
+	public static ModelListenerProperty<?> create(Label node, Object item, String field){
+		return createProperty(PROPERTYTYPE.STRING, node.textProperty(), new GenericCreator(item), item, field);
+	}
+	
 	public static ModelListenerProperty<?> create(Property<?> property, IdMap map, Object item, String field){
 		return create(property, map.getCreatorClass(item), item, field);
 	}
 	public static ModelListenerProperty<?> create(Property<?> property, SendableEntityCreator creator, Object item, String field){
-		if(property instanceof StringProperty) {
-			StringProperty target=(StringProperty)property;
-			ModelListenerStringProperty listener = new ModelListenerStringProperty(creator, item, field);
-			target.bindBidirectional(listener);
-			return listener;
+		if(property instanceof StringProperty){
+			return createProperty(PROPERTYTYPE.STRING, property, creator, item, field);
 		}
-		if(property instanceof BooleanProperty) {
-			BooleanProperty target=(BooleanProperty)property;
-			ModelListenerBooleanProperty listener = new ModelListenerBooleanProperty(creator, item, field);
-			target.bindBidirectional(listener);
-			return listener;
+		if(property instanceof BooleanProperty){
+			return createProperty(PROPERTYTYPE.BOOLEAN, property, creator, item, field);
 		}
 		if(property instanceof IntegerProperty){
-			IntegerProperty target=(IntegerProperty)property;
-			ModelListenerNumberProperty listener = new ModelListenerNumberProperty(creator, item, field);
-			target.bindBidirectional(listener);
-			return listener;
+			return createProperty(PROPERTYTYPE.INT, property, creator, item, field);
 		}
 		if(property instanceof LongProperty){
-			LongProperty target=(LongProperty)property;
-			ModelListenerNumberProperty listener = new ModelListenerNumberProperty(creator, item, field);
-			target.bindBidirectional(listener);
-			return listener;
+			return createProperty(PROPERTYTYPE.LONG, property, creator, item, field);
 		}
 		if(property instanceof FloatProperty){
-			FloatProperty target=(FloatProperty)property;
-			ModelListenerNumberProperty listener = new ModelListenerNumberProperty(creator, item, field);
-			target.bindBidirectional(listener);
-			return listener;
+			return createProperty(PROPERTYTYPE.FLOAT, property, creator, item, field);
 		}
 		if(property instanceof DoubleProperty){
-			DoubleProperty target=(DoubleProperty)property;
+			return createProperty(PROPERTYTYPE.DOUBLE, property, creator, item, field);
+		}
+		return null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	private static ModelListenerProperty<?> createProperty(PROPERTYTYPE typ, Property<?> property, SendableEntityCreator creator, Object item, String field){
+		if(PROPERTYTYPE.STRING==typ) {
+			ModelListenerStringProperty listener = new ModelListenerStringProperty(creator, item, field);
+			((StringProperty)property).bindBidirectional(listener);
+			return listener;
+		}
+		if(PROPERTYTYPE.COLOR==typ) {
+			ModelListenerColorProperty listener = new ModelListenerColorProperty(creator, item, field);
+			((ObjectProperty<Color>)property).bindBidirectional(listener);
+			return listener;
+		}
+		if(PROPERTYTYPE.BOOLEAN==typ) {
+			ModelListenerBooleanProperty listener = new ModelListenerBooleanProperty(creator, item, field);
+			((BooleanProperty)property).bindBidirectional(listener);
+			return listener;
+		}
+		if(PROPERTYTYPE.INT==typ) {
 			ModelListenerNumberProperty listener = new ModelListenerNumberProperty(creator, item, field);
-			target.bindBidirectional(listener);
+			((IntegerProperty)property).bindBidirectional(listener);
+			return listener;
+		}
+		if(PROPERTYTYPE.LONG==typ) {
+			ModelListenerNumberProperty listener = new ModelListenerNumberProperty(creator, item, field);
+			((LongProperty)property).bindBidirectional(listener);
+			return listener;
+		}
+		if(PROPERTYTYPE.FLOAT==typ) {
+			ModelListenerNumberProperty listener = new ModelListenerNumberProperty(creator, item, field);
+			((FloatProperty)property).bindBidirectional(listener);
+			return listener;
+		}
+		if(PROPERTYTYPE.DOUBLE==typ) {
+			ModelListenerNumberProperty listener = new ModelListenerNumberProperty(creator, item, field);
+			((DoubleProperty)property).bindBidirectional(listener);
 			return listener;
 		}
 		return null;
