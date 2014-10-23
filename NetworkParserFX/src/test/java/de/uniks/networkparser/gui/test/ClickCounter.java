@@ -6,12 +6,14 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import de.uniks.networkparser.gui.databinding.ModelListenerProperty;
 import de.uniks.networkparser.gui.databinding.ModelListenerStringProperty;
 import de.uniks.networkparser.gui.test.model.GUIEntity;
 import de.uniks.networkparser.gui.test.model.util.GUIEntityCreator;
@@ -45,7 +47,10 @@ public class ClickCounter extends Application
       dataLabel.textProperty().bind(new ModelListenerStringProperty(new GUIEntityCreator(), data, GUIEntity.PROPERTY_NUMBER));
       
       field = new TextField();
-      field.textProperty().bindBidirectional(new ModelListenerStringProperty(new GUIEntityCreator(), data, GUIEntity.PROPERTY_NUMBER));
+      
+//      field.textProperty().bindBidirectional(new ModelListenerStringProperty(new GUIEntityCreator(), data, GUIEntity.PROPERTY_NUMBER));
+      
+      ModelListenerProperty.create(field.textProperty(), new GUIEntityCreator(), data, GUIEntity.PROPERTY_NUMBER);
 
       Button button = new Button("Clicke Me");
       root.getChildren().addAll(box, field, button);

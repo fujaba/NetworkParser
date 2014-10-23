@@ -27,12 +27,20 @@ import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.LinkedHashSet;
+
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.FloatProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.LongProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -166,5 +174,47 @@ public abstract class ModelListenerProperty<T> implements javafx.beans.property.
 	@SuppressWarnings("unchecked")
 	public T parseValue(Object value){
 		return (T)value;
+	}
+	public static ModelListenerProperty<?> create(Property<?> property, IdMap map, Object item, String field){
+		return create(property, map.getCreatorClass(item), item, field);
+	}
+	public static ModelListenerProperty<?> create(Property<?> property, SendableEntityCreator creator, Object item, String field){
+		if(property instanceof StringProperty) {
+			StringProperty target=(StringProperty)property;
+			ModelListenerStringProperty listener = new ModelListenerStringProperty(creator, item, field);
+			target.bindBidirectional(listener);
+			return listener;
+		}
+		if(property instanceof BooleanProperty) {
+			BooleanProperty target=(BooleanProperty)property;
+			ModelListenerBooleanProperty listener = new ModelListenerBooleanProperty(creator, item, field);
+			target.bindBidirectional(listener);
+			return listener;
+		}
+		if(property instanceof IntegerProperty){
+			IntegerProperty target=(IntegerProperty)property;
+			ModelListenerNumberProperty listener = new ModelListenerNumberProperty(creator, item, field);
+			target.bindBidirectional(listener);
+			return listener;
+		}
+		if(property instanceof LongProperty){
+			LongProperty target=(LongProperty)property;
+			ModelListenerNumberProperty listener = new ModelListenerNumberProperty(creator, item, field);
+			target.bindBidirectional(listener);
+			return listener;
+		}
+		if(property instanceof FloatProperty){
+			FloatProperty target=(FloatProperty)property;
+			ModelListenerNumberProperty listener = new ModelListenerNumberProperty(creator, item, field);
+			target.bindBidirectional(listener);
+			return listener;
+		}
+		if(property instanceof DoubleProperty){
+			DoubleProperty target=(DoubleProperty)property;
+			ModelListenerNumberProperty listener = new ModelListenerNumberProperty(creator, item, field);
+			target.bindBidirectional(listener);
+			return listener;
+		}
+		return null;
 	}
 }
