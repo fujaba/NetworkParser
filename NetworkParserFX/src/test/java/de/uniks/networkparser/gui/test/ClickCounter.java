@@ -6,7 +6,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
@@ -38,19 +37,24 @@ public class ClickCounter extends Application
       Label dataLabel = new Label();
       
       box.getChildren().addAll(label, dataLabel);
-      
-//      JavaBeanIntegerProperty beanProperty = JavaBeanIntegerPropertyBuilder.create().bean(data).name(Data.PROPERTY_NUM).build();
-//      dataLabel.textProperty().bind(beanProperty.asString());
-            
+  
       dataLabel.setTextAlignment(TextAlignment.RIGHT);
       
       dataLabel.textProperty().bind(new ModelListenerStringProperty(new GUIEntityCreator(), data, GUIEntity.PROPERTY_NUMBER));
       
       field = new TextField();
+//FIRST
+//		JavaBeanIntegerProperty beanProperty = JavaBeanIntegerPropertyBuilder.create().bean(data).name(GUIEntity.PROPERTY_NUMBER).build();
+//      field.textProperty().bind(beanProperty.asString());
       
+//SECOND SDMLIB
 //      field.textProperty().bindBidirectional(new ModelListenerStringProperty(new GUIEntityCreator(), data, GUIEntity.PROPERTY_NUMBER));
-      
-      ModelListenerProperty.create(field.textProperty(), new GUIEntityCreator(), data, GUIEntity.PROPERTY_NUMBER);
+
+//SIMPLE
+//      ModelListenerProperty.create(field.textProperty(), new GUIEntityCreator(), data, GUIEntity.PROPERTY_NUMBER);
+
+// TEST SIMPLE      
+      ModelListenerProperty.create(field, data, GUIEntity.PROPERTY_NUMBER);
 
       Button button = new Button("Clicke Me");
       root.getChildren().addAll(box, field, button);
