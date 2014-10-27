@@ -55,7 +55,7 @@ Drawer.prototype.getColor = function(style, defaultColor) {
 	return "#000";
 };
 Drawer.prototype.addFontAttributes = function(node){
-	if(this.graph && this.graph.options.font){
+	if(this.graph && this.graph.options.font && (!this.noFonts || this.noFonts.indexOf(node.localName.toLowerCase())<0)){
 		for (var key in this.graph.options.font) {
 			if(this.graph.options.font[key]){
 				if(node.style ){
@@ -122,7 +122,7 @@ Drawer.prototype.createBoard = function(node, graph, listener) {
 	for(var i=0;i<listener.length;i++) {
 		this.toolitems.push(listener[i]);
 	}
-	var board =this.createObject(node);
+	var board = this.createElement(node);
 	board.className="Board";
 	board.rasterElements=[];
 	board.graph = graph;
@@ -282,9 +282,7 @@ HTMLDrawer.prototype.getHTMLNode = function(node, calculate){
 };
 
 HTMLDrawer.prototype.createInfo = function(item, calculate, text) {
-	var info = document.createElement("div");
-	info["isdraggable"]=true;
-	info.className="EdgeInfo";
+	var info = this.createElement({tag:"div", isdraggable:true, className:"EdgeInfo"});
 	info.style.fontSize = this.graph.options.font["font-size"];
 	this.setPos(info, item.x, item.y);
 	info.innerHTML = text;
@@ -336,13 +334,18 @@ HTMLDrawer.prototype.drawButton = function(text, action){
 	btn.tool.y = 8;
 	btn.tool.height = btn.height;
 	btn.tool.width = btn.width;
+	btn.appendChild(this.createText(text));
 	btn.onclick = action;
 	btn.close = function(){};
 	return btn;
 };
-
+HTMLDrawer.prototype.createElement = function(node){
+		return this.createObject(node);
+};
 // ######################################################           SVG           ####################################################################################
-SVGDrawer = function() {};
+SVGDrawer = function() {
+	this.noFonts=["fegaussianblur", "feoffset", "defs", "filter", "svg", "feblend"];
+};
 SVGDrawer.prototype = Object_create(Drawer.prototype);
 SVGDrawer.prototype.drawDef = function(){
 	var def = this.createObject({tag:"defs"}, "http://www.w3.org/2000/svg");
@@ -368,7 +371,7 @@ SVGDrawer.prototype.drawButton = function(text, action){
 	btn.tool.height = 28;
 	btn.tool.width = 60;
 	btn.appendChild( this.createElement({tag:"rect", rx:8, x: btn.tool.x, y:btn.tool.y, width:btn.tool.width, height:btn.tool.height, stroke:"#000", filter:"url(#drop-shadow)", class:"saveBtn"}));
-	btn.appendChild( this.createElement({tag:"text", x:(btn.tool.x+12), y:(btn.tool.y+18), fill:"black", value:text, class:"hand"}));
+	btn.appendChild( this.createElement({tag:"text", x:(btn.tool.x+10), y:(btn.tool.y+18), fill:"black", value:text, class:"hand"}));
 	btn.onclick = action;
 	btn.close = function(){};
 	return btn;
@@ -442,7 +445,7 @@ SVGDrawer.prototype.drawComboBox = function(elements, activText, action){
 };
 
 SVGDrawer.prototype.createContainer = function(graph){
-	var that = this;
+    var that = this;
 	var board = this.createBoard({tag:"svg", xmlns:"http://www.w3.org/2000/svg", "xmlns:svg":"http://www.w3.org/2000/svg", "xmlns:xlink":"http://www.w3.org/1999/xlink"}, graph, 
 		[
 		this.drawButton("HTML", (function (e) {that.graph.setTyp("HTML");})),
