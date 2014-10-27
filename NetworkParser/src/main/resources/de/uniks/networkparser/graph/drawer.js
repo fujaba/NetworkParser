@@ -295,7 +295,7 @@ SVGDrawer.prototype.drawComboBox = function(elements, activText, action){
 	g.tool.width = 80;
 	if(elements){
 		var choicebox = this.createElement({tag:"g"});
-		var h = elements.length * 24+6;
+		var h = elements.length * 25+6;
 		choicebox.appendChild( this.createElement({tag:"rect", rx:0, x: 0, y: g.tool.y+28, width:60, height:h, stroke:"#000", fill:"#fff", opacity:"0.7"}));
 		g.tool.maxheight = h + g.tool.minheight;
 		
