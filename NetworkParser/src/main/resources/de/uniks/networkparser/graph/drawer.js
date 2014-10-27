@@ -33,14 +33,6 @@ Drawer.prototype.createSubGraph = function(node, element){
 	node.board = element;
 	node.layoutCalculate();
 };
-Drawer.prototype.createObject= function(ns, tag){
-	if(document.createElementNS){
-		return document.createElementNS(ns, tag);
-	}
-	var e = document.createElement(tag);
-	e.setAttribute('xmlns', ns);
-	return e;
-};
 Drawer.prototype.getBoard = function(graph){
 	if(graph.parent){
 		return this.getBoard(graph.parent);
@@ -48,7 +40,105 @@ Drawer.prototype.getBoard = function(graph){
 	return graph.board;
 };
 Drawer.prototype.getNumber = function(num) {return Number(num.toString().replace("px",''));}
+Drawer.prototype.getColor = function(style, defaultColor) {
+	if(style) {
+		if(style.toLowerCase()=="create") {
+			return "#008000";
+		}
+		if(style.toLowerCase()=="nac") {
+			return "#FE3E3E";
+		}
+	}
+	if(defaultColor) {
+		return defaultColor;
+	}
+	return "#000";
+};
+Drawer.prototype.addFontAttributes = function(node){
+	if(this.graph && this.graph.options.font){
+		for (var key in this.graph.options.font) {
+			if(this.graph.options.font[key]){
+				if(node.style ){
+					node.style[key] = this.graph.options.font[key];
+				}else{
+					node.setAttribute(key, this.graph.options.font[key]);
+				}
+			}
+		}
+	}
+};
+Drawer.prototype.createObject= function(node, ns){
+	var element;
+	if(document.createElementNS && ns){
+		element =  document.createElementNS(ns, node.tag);
+	}else {
+		element = document.createElement(node.tag);
+		if(ns){
+			element.setAttribute('xmlns', ns);
+		}
+	}
+	this.addFontAttributes(element);
+	for (var key in node) {
+		key = key.toLowerCase();
+		if(key=='tag')continue;
+		if(key=='content_src'&& node.tag.toLowerCase()=="image") continue;
+		if(key=='value'&& node.tag.toLowerCase()=="text") continue;
+		if(key.indexOf("-")>=0){
+			element.style[key] = node[key];
+		}else if(node[key] != null) {
+			element.setAttribute(key, node[key]);
+			element[key] = node[key];
+		}
+	}
+	return element;
+};
+Drawer.prototype.removeToolItems = function(board) {
+	for(var i=0;i<this.toolitems.length;i++){
+		this.toolitems[i].close();
+		board.removeChild( this.toolitems[i] );
+	}
+}
+Drawer.prototype.showToolItems = function(board) {
+	for(var i=0;i<this.toolitems.length;i++){
+		board.appendChild( this.toolitems[i] );
+	}
+};
 
+Drawer.prototype.isInTool = function(x, y, ox, oy) {
+	for(var i=0;i<this.toolitems.length;i++){
+		var g = this.toolitems[i];
+		if(x>=(g.tool.x+ox) && x<=(g.tool.x+g.tool.width+ox) && y>=(g.tool.y+oy) && y<=(g.tool.y+g.tool.height+oy)) {
+			return true;
+		}
+	}
+	return false;
+};
+Drawer.prototype.createBoard = function(node, graph, listener) {
+	var that = this;
+	
+	this.graph = graph;	
+	this.toolitems=[];
+	
+	for(var i=0;i<listener.length;i++) {
+		this.toolitems.push(listener[i]);
+	}
+	var board =this.createObject(node);
+	board.className="Board";
+	board.rasterElements=[];
+	board.graph = graph;
+	board.saveShow=false;
+	board.onmouseover = (function (event) {
+		that.showToolItems(board);
+	});
+	board.onmouseout = (function (event) {
+		if(!that.isInTool(event.x, event.y, board.offsetLeft, board.offsetTop)){
+			that.removeToolItems(board);
+		}
+	});
+	return board;
+};
+
+// ######################################################           HTMLDrawer           ####################################################################################
 HTMLDrawer = function() {};
 HTMLDrawer.prototype = Object_create(Drawer.prototype);
 HTMLDrawer.prototype.showInfoBox = function(){return true;}
@@ -56,12 +146,10 @@ HTMLDrawer.prototype.isShowRaster = function(){return true;}
 HTMLDrawer.prototype.setPos = function(item, x, y){item.style.left = x+"px";item.style.top = y+"px";};
 HTMLDrawer.prototype.setSize = function(item, x, y){item.style.width = x+"px";item.style.height = y+"px";};
 HTMLDrawer.prototype.createContainer = function(graph){
-	this.graph = graph;	
-	var board = document.createElement("div");
-	board.className="Board";
-	board.graph = graph;
-	board.rasterElements=[];
-	return board;
+	var that = this;
+	return this.createBoard({tag:"div"}, graph,
+		[this.drawButton("SVG", (function (e) {that.graph.setTyp("SVG");}))]
+	);
 };
 HTMLDrawer.prototype.createImage = function(model){
 	var img = new Image();
@@ -83,16 +171,14 @@ HTMLDrawer.prototype.createImage = function(model){
 };
 
 HTMLDrawer.prototype.createCell = function(parent, tag){
-	var tr = document.createElement('tr');
-	var cell = document.createElement(tag);
-	cell.style.fontSize=this.graph.options.font["font-size"];
+	var tr = this.createObject({"tag":'tr'});
+	var cell = this.createObject({"tag":tag});
 	tr.appendChild(cell);
-	parent.appendChild(tr);
+	parent.appendChild(cell);
 	return cell;
 };
 HTMLDrawer.prototype.getHTMLNode = function(node, calculate){
-	var htmlElement = document.createElement("div");
-	htmlElement["isdraggable"]=true;
+	var htmlElement = this.createObject({tag:"div", isdraggable:true});
 	var symbolLib = new SymbolLibary();
 	if(node.typ=="patternobject") {
 		htmlElement.className="patternElement";
@@ -244,20 +330,22 @@ HTMLDrawer.prototype.onLoadImage = function(event){
 HTMLDrawer.prototype.onFinishImage = function(event){
 	this.graph.layouting();
 }
+HTMLDrawer.prototype.drawButton = function(text, action){
+	var btn = this.createObject({tag:"button", tool:{}, width:60, height:28});
+	btn.tool.x = 0;
+	btn.tool.y = 8;
+	btn.tool.height = btn.height;
+	btn.tool.width = btn.width;
+	btn.onclick = action;
+	btn.close = function(){};
+	return btn;
+};
+
 // ######################################################           SVG           ####################################################################################
 SVGDrawer = function() {};
 SVGDrawer.prototype = Object_create(Drawer.prototype);
-SVGDrawer.prototype.addFontAttributes = function(node){
-	if(this.graph && this.graph.options.font){
-		for (var key in this.graph.options.font) {
-			if(this.graph.options.font[key]){
-				node.setAttribute(key, this.graph.options.font[key]);
-			}
-		}
-	}
-};
 SVGDrawer.prototype.drawDef = function(){
-	var def = this.createObject("http://www.w3.org/2000/svg", "defs");
+	var def = this.createObject({tag:"defs"}, "http://www.w3.org/2000/svg");
 
 	var child = this.createElement({tag:"filter", id:"drop-shadow"});
 	child.appendChild( this.createElement({tag:"feGaussianBlur", in:"SourceAlpha", result:"blur-out", stdDeviation:2}));
@@ -272,10 +360,15 @@ SVGDrawer.prototype.drawDef = function(){
 	return def;
 
 };
-SVGDrawer.prototype.drawButton = function(action){
+SVGDrawer.prototype.drawButton = function(text, action){
 	var btn = this.createElement({tag:"g"});
-	btn.appendChild( this.createElement({tag:"rect", rx:8, x: 86, y:8, width:60, height:28, stroke:"#000", filter:"url(#drop-shadow)", class:"saveBtn"}));
-	btn.appendChild( this.createElement({tag:"text", x:98, y:26, fill:"black", value:"Save", class:"hand"}));
+	btn.tool={};
+	btn.tool.x = 0;
+	btn.tool.y = 8;
+	btn.tool.height = 28;
+	btn.tool.width = 60;
+	btn.appendChild( this.createElement({tag:"rect", rx:8, x: btn.tool.x, y:btn.tool.y, width:btn.tool.width, height:btn.tool.height, stroke:"#000", filter:"url(#drop-shadow)", class:"saveBtn"}));
+	btn.appendChild( this.createElement({tag:"text", x:(btn.tool.x+12), y:(btn.tool.y+18), fill:"black", value:text, class:"hand"}));
 	btn.onclick = action;
 	btn.close = function(){};
 	return btn;
@@ -283,31 +376,31 @@ SVGDrawer.prototype.drawButton = function(action){
 SVGDrawer.prototype.drawComboBox = function(elements, activText, action){
 	var g = this.createElement({tag:"g"});
 	g.tool={};
-	g.tool.x = 0;
+	g.tool.x = 66;
 	g.tool.y = 8;
 	g.status="close";
 	g.appendChild( this.createElement({tag:"rect", rx:0, x: g.tool.x, y: g.tool.y, width:60, height:28, stroke:"#000", fill:"none"}));
 	g.appendChild( this.createElement({tag:"rect", rx:2, x: g.tool.x+60, y: g.tool.y, width:20, height:28, stroke:"#000", class:"saveBtn"}));
 	g.appendChild( this.createElement({tag:"path", style:"fill:#000000;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1",
-									d:"m 65,"+(g.tool.y+13)+" 10,0 L 70,"+(g.tool.y+20)+" z"}));
+									d:"m "+(g.tool.x+65)+","+(g.tool.y+13)+" 10,0 L "+(g.tool.x+70)+","+(g.tool.y+20)+" z"}));
 	g.tool.minheight = 28;
 	g.tool.maxheight = 28;
 	g.tool.width = 80;
 	if(elements){
 		var choicebox = this.createElement({tag:"g"});
 		var h = elements.length * 25+6;
-		choicebox.appendChild( this.createElement({tag:"rect", rx:0, x: 0, y: g.tool.y+28, width:60, height:h, stroke:"#000", fill:"#fff", opacity:"0.7"}));
+		choicebox.appendChild( this.createElement({tag:"rect", rx:0, x: g.tool.x, y: g.tool.y+28, width:60, height:h, stroke:"#000", fill:"#fff", opacity:"0.7"}));
 		g.tool.maxheight = h + g.tool.minheight;
 		
 		g.elements=elements;
-		g.activ = this.createElement({tag:"text", "text-anchor":"left", "width": 60, "x": 10, "y": g.tool.y+20, value: activText})
+		g.activ = this.createElement({tag:"text", "text-anchor":"left", "width": 60, "x": (g.tool.x+10), "y": g.tool.y+20, value: activText})
 		g.appendChild(g.activ);
 		var y = 46+g.tool.y;
 		var yr = 28+g.tool.y;
 		for(var e=0;e<elements.length;e++){
 			var element = elements[e];
-			choicebox.appendChild(this.createElement({tag:"text", "text-anchor":"left", "width": 60, "x": 10, "y": y, value:element}));
-			var item = choicebox.appendChild( this.createElement({tag:"rect", rx:0, x: 0, y: yr, width:60, height:24, stroke:"none", class:"selection"}));
+			choicebox.appendChild(this.createElement({tag:"text", "text-anchor":"left", "width": 60, "x": (g.tool.x+10), "y": y, value:element}));
+			var item = choicebox.appendChild( this.createElement({tag:"rect", rx:0, x: g.tool.x, y: yr, width:60, height:24, stroke:"none", class:"selection"}));
 			item.value = element;
 			if(action) {
 				item.onclick = action;
@@ -347,49 +440,15 @@ SVGDrawer.prototype.drawComboBox = function(elements, activText, action){
 	g.close();
 	return g;
 };
-SVGDrawer.prototype.removeToolItems = function(board) {
-	for(var i=0;i<this.toolitems.length;i++){
-		this.toolitems[i].close();
-		board.removeChild( this.toolitems[i] );
-	}
-}
-SVGDrawer.prototype.showToolItems = function(board) {
-	for(var i=0;i<this.toolitems.length;i++){
-		board.appendChild( this.toolitems[i] );
-	}
-};
-
-SVGDrawer.prototype.isInTool = function(x, y, ox, oy) {
-	for(var i=0;i<this.toolitems.length;i++){
-		var g = this.toolitems[i];
-		if(x>=(g.tool.x+ox) && x<=(g.tool.x+g.tool.width+ox) && y>=(g.tool.y+oy) && y<=(g.tool.y+g.tool.height+oy)) {
-			return true;
-		}
-	}
-	return false;
-};
 
 SVGDrawer.prototype.createContainer = function(graph){
-	this.graph = graph;
-	var board = this.createElement({tag:"svg", xmlns:"http://www.w3.org/2000/svg", "xmlns:svg":"http://www.w3.org/2000/svg", "xmlns:xlink":"http://www.w3.org/1999/xlink"});
-
 	var that = this;
+	var board = this.createBoard({tag:"svg", xmlns:"http://www.w3.org/2000/svg", "xmlns:svg":"http://www.w3.org/2000/svg", "xmlns:xlink":"http://www.w3.org/1999/xlink"}, graph, 
+		[
+		this.drawButton("HTML", (function (e) {that.graph.setTyp("HTML");})),
+		this.drawComboBox(["HTML", "SVG", "PNG", "PDF"], "Save", (function (e) {that.removeToolItems(board);that.graph.SaveAs(e.currentTarget.value);}))
+		]);
 	board.appendChild( this.drawDef() );
-	this.toolitems=[];
-	this.toolitems.push(this.drawComboBox(["HTML", "SVG", "PNG", "PDF"], "Save", (function (e) {that.removeToolItems(board);that.graph.SaveAs(e.currentTarget.value);})));
-
-	board.rasterElements=[];
-	board.graph = graph;
-
-	board.saveShow=false;
-	board.onmouseover = (function (event) {
-		that.showToolItems(board);
-	});
-	board.onmouseout = (function (event) {
-		if(!that.isInTool(event.x, event.y, board.offsetLeft, board.offsetTop)){
-			that.removeToolItems(board);
-		}
-		});
 	return board;
 };
 SVGDrawer.prototype.setSize = function(item, x, y){
@@ -402,10 +461,8 @@ SVGDrawer.prototype.setSize = function(item, x, y){
 };
 
 SVGDrawer.prototype.getWidth = function(label, calculate){
-	var text = this.createObject("http://www.w3.org/2000/svg", "text");
+	var text = this.createObject({tag:"text"}, "http://www.w3.org/2000/svg");
 	text.appendChild(document.createTextNode(label));
-	this.addFontAttributes(text);
-
 	text.setAttribute("width", "5px");
 	var board = this.getBoard(this.graph);
 	board.appendChild(text);
@@ -527,24 +584,9 @@ SVGDrawer.prototype.getHTMLNode = function(node, calculate){
 };
 
 SVGDrawer.prototype.createElement = function(node){
-	var element = this.createObject("http://www.w3.org/2000/svg", node.tag);
+	var element = this.createObject(node, "http://www.w3.org/2000/svg");
 	if(node.tag.toLowerCase()=="path"){
 		element.setAttribute('fill', "rgb(255, 255, 255)");
-		//element.setAttribute('style', "stroke:#000;");
-	}
-	this.addFontAttributes(element);
-
-	for (var key in node) {
-		key = key.toLowerCase();
-		if(key=='tag')continue;
-		if(key=='content_src'&& node.tag.toLowerCase()=="image") continue;
-		if(key=='value'&& node.tag.toLowerCase()=="text") continue;
-		if(key.indexOf("-")>=0){
-			element.style[key] = node[key];
-		}else if(node[key] != null) {
-			element.setAttribute(key, node[key]);
-			element[key] = node[key];
-		}
 	}
 	if(node.tag.toLowerCase()=="text" && node.value){
 		element.appendChild(document.createTextNode(node.value));
@@ -570,20 +612,6 @@ SVGDrawer.prototype.createInfo = function(item, calculate, text) {
 	}
 	return this.createElement({tag:"text", "text-anchor":"left", "x": item.x, "y": item.y, value:text, isdraggable:true});
 };
-SVGDrawer.prototype.getColor = function(style, defaultColor) {
-	if(style) {
-		if(style.toLowerCase()=="create") {
-			return "#008000";
-		}
-		if(style.toLowerCase()=="nac") {
-			return "#FE3E3E";
-		}
-	}
-	if(defaultColor) {
-		return defaultColor;
-	}
-	return "#000";
-}
 SVGDrawer.prototype.createLine = function(x1, y1, x2, y2, lineStyle, style){
 	var line = this.createElement({tag:"line", 'x1': x1, 'y1': y1, 'x2': x2, 'y2': y2});
 	line.setAttribute("stroke",this.getColor(style));
@@ -617,8 +645,10 @@ CanvasDrawer.prototype.clearBoard = function(){
 		return;
 	}
 	var canvas = this.graph.board;
-	var context = canvas.getContext('2d');
-	context.clearRect(0, 0, canvas.width, canvas.height);
+	if(canvas) {
+		var context = canvas.getContext('2d');
+		context.clearRect(0, 0, canvas.width, canvas.height);
+	}
 };
 CanvasDrawer.prototype.createContainer = function(graph){
 	this.graph = graph;	
@@ -636,6 +666,10 @@ CanvasDrawer.prototype.getWidth = function(text){
 };
 CanvasDrawer.prototype.getHTMLNode = function(node, calculate){
 	var canvas = this.graph.board;
+	var symbolLib = new SymbolLibary();
+	if(symbolLib.isSymbol(node)) {
+		return symbolLib.draw(this, node, calculate);
+	}
 
 	// Calculate Height
 	var width=0;
@@ -714,10 +748,10 @@ CanvasDrawer.prototype.getHTMLNode = function(node, calculate){
 CanvasDrawer.prototype.createInfo = function(item, calculate, text) {
 	return null;
 };
-CanvasDrawer.prototype.createLine = function(x1, y1, x2, y2, style){
+CanvasDrawer.prototype.createLine = function(x1, y1, x2, y2, lineStyle, style){
 	var canvas = this.graph.board;
 	var context = canvas.getContext('2d');
-	if(style.toLowerCase()=="dotted"){
+	if(style && style.toLowerCase()=="dotted"){
 		context.setLineDash([1,2]);
 	}
 	context.moveTo(x1, y1);

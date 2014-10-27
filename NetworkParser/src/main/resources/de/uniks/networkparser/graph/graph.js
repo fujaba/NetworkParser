@@ -54,8 +54,8 @@ Options = function(){
 	this.infobox = false;
 	this.CardinalityInfo = true;
 	this.PropertyInfo = true;
-	/*this.buttons = ["HTML", "SVG", "CANVAS", "SVG-Export", "PNG", "PDF"];*/
-	this.buttons = ["HTML", "CANVAS", "SVG"];
+	/*this.buttons = ["HTML", "SVG", "CANVAS", "PNG", "PDF"];*/
+	this.buttons = [];
 }
 
 /* Node */
@@ -330,7 +330,7 @@ Graph.prototype.getButton = function(label){
 	button.className="ToolButton";
 	button.graph = this;
 	var that = this;
-	bindEvent(button, "click", function(e){that.optionButton(e);});
+	bindEvent(button, "click", function(e){that.setTyp(e.innerHTML);});
 	return button;
 }
 
@@ -768,35 +768,33 @@ Graph.prototype.initDrawer = function(typ){
 };
 
 
-Graph.prototype.optionButton = function(event){
-	var btn = event.currentTarget;
-	if(btn.innerHTML=="HTML"){
-		btn.graph.initDrawer(btn.innerHTML);
-		btn.graph.loader.init(true);
-		btn.graph.initGraph();
-		btn.graph.drawGraph(0,0);
-	}else if(btn.innerHTML=="SVG"){
-		btn.graph.initDrawer(btn.innerHTML);
-		btn.graph.initGraph();
-		btn.graph.drawGraph(0,0);
-	}else if(btn.innerHTML=="SVG-Export"){
-		btn.graph.drawer = new SVGDrawer();
-		btn.graph.initGraph();
-		btn.graph.drawGraph(0,0);
-		var size = btn.graph.resize();
+Graph.prototype.setTyp = function(typ){
+	if(typ=="HTML"){
+		this.initDrawer(typ);
+		this.loader.init(true);
+		this.initGraph();
+		this.drawGraph(0,0);
+	}else if(typ=="SVG"){
+		this.initDrawer(typ);
+		this.initGraph();
+		this.drawGraph(0,0);
+	}else if(typ=="SVG-Export"){
+		this.drawer = new SVGDrawer();
+		this.initGraph();
+		this.drawGraph(0,0);
+		var size = this.resize();
 		var img = document.createElement("img");
-		img.src = "data:image/svg+xml;base64," + this.utf8_to_b64(this.serializeXmlNode(btn.graph.board));
-		btn.graph.clearBoard();
-		btn.graph.board = img;
-		btn.graph.board.width = size.x;
-		btn.graph.board.height = size.y;
-		btn.graph.root.appendChild(img);
-		//window.open("data:image/svg+xml," + escape(btn.graph.board.outerHTML));
-	}else if(btn.innerHTML=="CANVAS"){
-		btn.graph.initDrawer(btn.innerHTML);
-		btn.graph.initGraph();
-		btn.graph.drawGraph(0,0)
-	}else if(btn.innerHTML=="PNG"){
+		img.src = "data:image/svg+xml;base64," + this.utf8_to_b64(this.serializeXmlNode(this.board));
+		this.clearBoard();
+		this.board = img;
+		this.board.width = size.x;
+		this.board.height = size.y;
+		this.root.appendChild(img);
+	}else if(typ=="CANVAS"){
+		this.initDrawer(typ);
+		this.initGraph();
+		this.drawGraph(0,0)
+	}else if(typ=="PNG"){
 		var oldDrawer = this.drawer;
 		this.drawer = new CanvasDrawer();
 		this.loader.init(false);
@@ -804,8 +802,8 @@ Graph.prototype.optionButton = function(event){
 		this.initGraph();
 		this.drawGraph(0,0);
 		this.loader.resetDrawer();
-	}else if(btn.innerHTML=="PDF"){
-		btn.graph.ExportPDF();
+	}else if(typ=="PDF"){
+		this.ExportPDF();
 	}
 }
 
