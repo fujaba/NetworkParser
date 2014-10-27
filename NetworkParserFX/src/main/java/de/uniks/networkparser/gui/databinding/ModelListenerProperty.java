@@ -190,6 +190,9 @@ public abstract class ModelListenerProperty<T> implements javafx.beans.property.
 	
 	public static ModelListenerProperty<?> create(Node node, Object item, String field){
 		GenericCreator creator = new GenericCreator(item);
+		if(field == null) {
+			field = node.getId();
+		}
 		if(node instanceof ColorPicker) {
 			return createProperty(PROPERTYTYPE.COLOR, ((ColorPicker)node).valueProperty(), creator, item, field);
 		}

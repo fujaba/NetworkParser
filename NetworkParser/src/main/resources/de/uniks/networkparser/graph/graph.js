@@ -49,8 +49,8 @@ Options = function(){
 	this.font={};
 	this.font["font-size"] = "10px";
 	this.font["font-family"] = "Verdana";
-	this.rank = "LR";			// Dagre TB, LR
-	this.nodeSep = 20;
+	this.rank = "TB";			// Dagre TB, LR
+	this.nodeSep = 10;
 	this.infobox = false;
 	this.CardinalityInfo = true;
 	this.PropertyInfo = true;
@@ -858,6 +858,8 @@ Graph.prototype.SaveAs = function (typ) {
 		this.Save("image/svg+xml", this.serializeXmlNode(this.board), "download.svg");
 	}else if(typ=="html") {
 		this.ExportHTML();
+	}else if(typ=="htmlx") {
+		this.ExportHTMLStandalone();
 	}else if(typ=="png") {
 		this.ExportPNG();
 	}else if(typ=="pdf") {
@@ -873,13 +875,29 @@ Graph.prototype.Save = function (typ, data, name) {
 }
 
 Graph.prototype.ExportHTML = function () {
+	var json = this.getHTML();
+	var data="<html><head>"+document.head.innerHTML.trim()+"</head><body><script>"
+		+"new Graph("+JSON.stringify(json, null, "\t") +").layout();</script></body></html>";
+	this.Save("text/json", data, "download.html");
+}
+
+Graph.prototype.ExportHTMLStandalone = function () {
+	var json = this.getHTML();
+
+	var data="<html><head>"+document.head.innerHTML.trim()+"</head><body><script>"
+		+"new Graph("+JSON.stringify(json, null, "\t") +").layout();</script></body></html>";
+	this.Save("text/json", data, "download.html");
+}
+
+Graph.prototype.getHTML = function () {
 	var result = {};
 	result.typ = this.typ;
 	result.options = {};
 	
 
 	for (var key in this.options) {
-		if(this.options[key] != null) {
+		if(key!="subgraphs" && key!="parent" && this.options[key] != null) {
+			
 			result.options[key] = this.options[key];
 		}
 	}
@@ -887,18 +905,24 @@ Graph.prototype.ExportHTML = function () {
 	var add = false;
 	for (var i in this.nodes) {
 		var n = this.nodes[i];
-		var newNode = {typ:n.typ, id:n.id, x: n.x, y:n.y, width:n.width, height:n.height };
-		if(n.attributes && n.attributes.length > 0){
-			newNode.attributes=[];
-			for(var a=0;a<n.attributes.length;a++){
-				newNode.attributes.push(n.attributes[a]);
+		var newNode = {typ:n.typ, id:n.id, x: n.x, y:n.y, width:n.width, height:n.height, style:n.style };
+		if(n instanceof GraphNode) {
+			if(n.attributes && n.attributes.length > 0){
+				newNode.attributes=[];
+				for(var a=0;a<n.attributes.length;a++){
+					newNode.attributes.push(n.attributes[a]);
+				}
+			}
+			if(n.methods && n.methods.length > 0){
+				newNode.methods=[];
+				for(var m=0;m<n.methods.length;m++){
+					newNode.methods.push(n.methods[m]);
+				}
 			}
 		}
-		if(n.methods && n.methods.length > 0){
-			newNode.methods=[];
-			for(var m=0;m<n.methods.length;m++){
-				newNode.methods.push(n.methods[m]);
-			}
+		if(n instanceof Graph) {
+			var sub = n.getHTML();
+			this.copy(sub, newNode);
 		}
 		items.push(newNode);
 		add = true;
@@ -925,36 +949,32 @@ Graph.prototype.ExportHTML = function () {
 		add = true;
 	}
 	if(add){result.edges=items;}
-
-	var data="<html><head>"+document.head.innerHTML.trim()+"</head><body><script>"
-		+"new Graph("+JSON.stringify(result, null, "\t") +").layout();</script></body></html>";
-	this.Save("text/json", data, "download.html");
-}		
+	return result;
+};
 
 //					######################################################### GraphLayout-Dagre #########################################################
 DagreLayout = function() {};
 DagreLayout.prototype.layout = function(width, height) {
-	this.g = new dagre.Digraph();
+	this.g = new dagre.graphlib.Graph({nodesep:this.graph.options.nodeSep, rankDir:this.graph.options.rank, directed:false});
+	this.g.setGraph({});
+	this.g.setDefaultEdgeLabel(function() { return {}; });
 	for (var i in this.graph.nodes) {
 		var node = this.graph.nodes[i];
-		this.g.addNode(node.id, {label: node.id, width:node.width+10, height:node.height+20, x:node.x, y:node.y});
+		this.g.setNode(node.id, {label: node.id, width:node.width, height:node.height, x:node.x, y:node.y});
+		
 	}
 	for (var i = 0; i < this.graph.edges.length; i++) {
 		var edges = this.graph.edges[i];
-		edges.id = i;
-		this.g.addEdge(i, this.getRootNode(edges.source).id, this.getRootNode(edges.target).id);
+		this.g.setEdge(this.getRootNode(edges.source).id, this.getRootNode(edges.target).id);
 	}
 
-	var layout = dagre.layout()
-					.nodeSep(this.graph.options.nodeSep)
-					.rankDir(this.graph.options.rank)
-					.run(this.g);
+	dagre.layout(this.g);
 	// Set the layouting back
 	for (var i in this.graph.nodes) {
 		var node = this.graph.nodes[i];
-		var layoutNode = layout._nodes[node.id];
-		node.x = layoutNode.value.x;
-		node.y = layoutNode.value.y;
+		var layoutNode = this.g.node(node.id);
+		node.x = layoutNode.x;
+		node.y = layoutNode.y;
 	}
 	this.graph.drawGraph(width, height);
 }
@@ -999,6 +1019,7 @@ Loader.prototype.appendImg = function(img){
 	img.onload = function(e){that.onLoadImage(e);};
 	this.images.push(img);
 }
+
 
 //					######################################################### LINES #########################################################
 Edge = function() {this.init();this.typ="EDGE";}
