@@ -272,6 +272,9 @@ Graph.prototype.initGraph = function(){
 				node.height=pos.y;
 			}
 		}
+		if(node.typ=="objectdiagram" || node.typ=="classdiagram"){
+			node.board=null;
+		}
 	}
 
 	for (var i=0; i<this.edges.length;i++) {
@@ -826,8 +829,17 @@ Graph.prototype.ExportPDF = function () {
 	this.drawGraph(0,0);
 	
 	var svg = this.serializeXmlNode(this.board);
-	var pdf = new jsPDF('l', 'pt', 'a4');
-	svgElementToPdf(svg, pdf, {removeInvalid: false});
+	//var svg ='data:image/svg+xml;base64,' + this.utf8_to_b64(this.serializeXmlNode(this.board));
+	// You'll need to make your image into a Data URL
+// Use http://dataurl.net/#dataurlmaker
+//var doc = new jsPDF ();
+//doc.setFontSize(40);
+//doc.text(35, 25, "Paranyan loves jsPDF");
+
+	
+	var pdf = new jsPDF('l', 'px', 'a4');
+	//doc.addSVG(svg, 35 ,30, 50, 50);
+	svgElementToPdf(svg, pdf, {removeInvalid: true});
 	pdf.save('Download.pdf');
 
 	this.drawer = oldDrawer;

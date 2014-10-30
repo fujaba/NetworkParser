@@ -30,6 +30,9 @@ Drawer.prototype.setPos = function(item, x, y){item.x = x;item.y = y;};
 Drawer.prototype.createText = function(text){return document.createTextNode(text);}
 Drawer.prototype.setSize = function(item, x, y){item.width = x;item.height = y;};
 Drawer.prototype.createSubGraph = function(node, element){
+	if(node.board) {
+		node.root.removeChild(node.board);
+	}
 	node.board = element;
 	node.layoutCalculate();
 };
@@ -344,7 +347,7 @@ HTMLDrawer.prototype.createElement = function(node){
 };
 // ######################################################           SVG           ####################################################################################
 SVGDrawer = function() {
-	this.noFonts=["fegaussianblur", "feoffset", "defs", "filter", "svg", "feblend"];
+	this.noFonts=["svg", "g", "line", "fegaussianblur", "feoffset", "stop", "defs", "filter", "feblend"];
 };
 SVGDrawer.prototype = Object_create(Drawer.prototype);
 SVGDrawer.prototype.drawDef = function(){
@@ -446,12 +449,17 @@ SVGDrawer.prototype.drawComboBox = function(elements, activText, action){
 
 SVGDrawer.prototype.createContainer = function(graph){
     var that = this;
-	var board = this.createBoard({tag:"svg", xmlns:"http://www.w3.org/2000/svg", "xmlns:svg":"http://www.w3.org/2000/svg", "xmlns:xlink":"http://www.w3.org/1999/xlink"}, graph, 
+	var board;
+	if(graph.parent){
+		board = this.createBoard({tag:"g"}, graph, []);
+	}else{
+		board = this.createBoard({tag:"svg", xmlns:"http://www.w3.org/2000/svg", "xmlns:svg":"http://www.w3.org/2000/svg", "xmlns:xlink":"http://www.w3.org/1999/xlink"}, graph, 
 		[
 		this.drawButton("HTML", (function (e) {that.graph.setTyp("HTML");})),
 		this.drawComboBox(["HTML", "SVG", "PNG", "PDF"], "Save", (function (e) {that.removeToolItems(board);that.graph.SaveAs(e.currentTarget.value);}))
 		]);
-	board.appendChild( this.drawDef() );
+		board.appendChild( this.drawDef() );
+	}
 	return board;
 };
 SVGDrawer.prototype.setSize = function(item, x, y){
