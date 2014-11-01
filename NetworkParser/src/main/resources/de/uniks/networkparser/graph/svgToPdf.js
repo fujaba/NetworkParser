@@ -44,7 +44,6 @@ var svgElementToPdf = function(element, pdf, options) {
 	for(var i=0;i<element.children.length;i++) {
 		var n = element.children[i];
 		var hasFillColor = false;
-		var hasStrokeColor = false;
 		if('g,line,rect,ellipse,circle,text'.indexOf(n.tagName)>=0) {
             var fillColor = n.getAttribute('fill');
             if(fillColor) {
@@ -61,25 +60,29 @@ var svgElementToPdf = function(element, pdf, options) {
             if(hasFillColor) {
 				pdf.setFillColor(fillRGB.r, fillRGB.g, fillRGB.b);
 			}
-            if(n.getAttribute('stroke-width')) {
-                pdf.setLineWidth(k * parseInt(n.getAttribute('stroke-width')));
-            }
-            var strokeColor = n.getAttribute('stroke');
+
+			var strokeColor = n.getAttribute('stroke');
+			var strokeWidth = n.getAttribute('stroke-width');
+            if(strokeWidth) {
+                pdf.setLineWidth(k * parseInt(strokeWidth));
+			}
+            
             if(strokeColor) {
                 var strokeRGB = new RGBColor(strokeColor);
                 if(strokeRGB.ok) {
-					hasStrokeColor = true;
                     pdf.setDrawColor(strokeRGB.r, strokeRGB.g, strokeRGB.b);
                     if(colorMode == 'F') {
                         colorMode = 'FD';
-                    } else {
-                        colorMode = null;
+                    } else if(!hasFillColor) {
+                        colorMode = 'S';
                     }
                 } else {
                     colorMode = null;
                 }
             }
 		}
+		
+		console.log("write "+n.tagName);
         switch(n.tagName.toLowerCase()) {
             case 'svg':
             case 'a':
@@ -87,6 +90,8 @@ var svgElementToPdf = function(element, pdf, options) {
                 svgElementToPdf(n, pdf, options);
                 break;
             case 'line':
+				console.log(k*parseInt(n.getAttribute('x1'))+":"+k*parseInt(n.getAttribute('y1'))+"-"+k*parseInt(n.getAttribute('x2'))+":"+k*parseInt(n.getAttribute('y2'))+"="
+					+colorMode+ " "+strokeColor+"-"+strokeWidth);
                 pdf.line(
                     k*parseInt(n.getAttribute('x1')),
                     k*parseInt(n.getAttribute('y1')),
@@ -173,6 +178,7 @@ var svgElementToPdf = function(element, pdf, options) {
                 if(remove) {
                     console.log("can't translate to pdf:", n);
                     element.removeChild(n);
+					i--;
                 }
         }
     }
