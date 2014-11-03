@@ -92,6 +92,9 @@ public class GraphAttribute extends GraphValue implements GraphMember {
 	
 	public String getValue(String typ, boolean shortName) {
 		if (typ.equals(GraphIdMap.OBJECT)) {
+			if(GraphDataType.STRING == getType() && !this.value.startsWith("\"")){
+				return "\""+ this.value + "\"";
+			}
 			return this.value;
 		}
 		return getType(shortName);

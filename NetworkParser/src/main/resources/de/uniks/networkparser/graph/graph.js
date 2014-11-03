@@ -1,6 +1,6 @@
 /*
  NetworkParser
- Copyright (c) 2011 - 2013, Stefan Lindel
+ Copyright (c) 2011 - 2014, Stefan Lindel
  All rights reserved.
  
  Licensed under the EUPL, Version 1.1 or (as soon they
@@ -170,6 +170,7 @@ Graph = function(json, options) {
 			edge.sourceInfo = new Info(e.source, this, edge);
 			edge.targetInfo = new Info(e.target, this, edge);
 			edge.source.edges.push(edge);
+			edge.graph = this;
 
 			edge.target = this.getNode(e.target.id);
 			edge.target.edges.push(edge);
@@ -283,8 +284,8 @@ Graph.prototype.initInfo = function(edge, info){
 	if(!this.options.CardinalityInfo && !this.options.PropertyInfo){
 		return null;
 	}
-
-	var infoTxt = edge.getInfo(info, this.options.CardinalityInfo, this.options.PropertyInfo);
+	
+	var infoTxt = edge.getInfo(info);
 	if(infoTxt.length > 0) {
 		var html = this.drawer.createInfo(info, true, infoTxt);
 		if(html){
@@ -600,14 +601,14 @@ Graph.prototype.showinfo = function(event){
 	}
 };
 Graph.prototype.setSelectable = function(node, value) {
-    if (node.nodeType == 1) {
-        node.setAttribute("unselectable", value);
-    }
-    var child = node.firstChild;
-    while (child) {
-        this.setSelectable(child, value);
-        child = child.nextSibling;
-    }
+	if (node.nodeType == 1) {
+		node.setAttribute("unselectable", value);
+	}
+	var child = node.firstChild;
+	while (child) {
+		this.setSelectable(child, value);
+		child = child.nextSibling;
+	}
 };
 
 Graph.prototype.startDrag = function(event) {
@@ -683,8 +684,7 @@ Graph.prototype.stopDrag = function(event) {
 			if(item.node.typ=="Info") {
 				item.node.custom = true;
 				item.node.edge.removeElement(item);
-				var options = this.drawer.graph.options;
-				var infoTxt = item.node.edge.getInfo(item.node, options.CardinalityInfo, options.PropertyInfo);
+				var infoTxt = item.node.edge.getInfo(item.node);
 				item.node.edge.addElement(this.board, this.drawer.createInfo(item.node, false, infoTxt));
 			}else{
 				item.node.htmlNode = this.drawer.getHTMLNode(item.node, false);
@@ -1064,13 +1064,13 @@ Edge.prototype.draw = function(board, drawer){
 	this.drawTargetText(board, drawer, options);
 };
 Edge.prototype.drawSourceText = function(board, drawer, options){
-	var infoTxt = this.getInfo(this.sourceInfo, options.CardinalityInfo, options.PropertyInfo);
+	var infoTxt = this.getInfo(this.sourceInfo);
 	if(infoTxt.length > 0 ){
 		this.addElement(board, drawer.createInfo(this.sourceInfo, false, infoTxt));
 	}
 }
 Edge.prototype.drawTargetText = function(board, drawer, options){
-	var infoTxt = this.getInfo(this.targetInfo, options.CardinalityInfo, options.PropertyInfo);
+	var infoTxt = this.getInfo(this.targetInfo);
 	if(infoTxt.length > 0 ){
 		this.addElement(board, drawer.createInfo(this.targetInfo, false, infoTxt));
 	}
@@ -1145,12 +1145,16 @@ Edge.prototype.getCenterPosition = function(node, pos, offset){
 		return new Pos(node.x+node.width, node.center.y + offset, Edge.Position.RIGHT);
 	}
 }
-Edge.prototype.getInfo = function(info, showCardinality, showProperty){
+Edge.prototype.getInfo = function(info){
 	var infoTxt = "";
-	if(showCardinality && info.property){
+	
+	var isCardinality = this.graph.typ=="classdiagram" && this.graph.options.CardinalityInfo;
+	var isProperty = this.graph.options.PropertyInfo;
+
+	if(isProperty && info.property){
 		infoTxt = info.property;
 	}
-	if(showProperty && info.cardinality){
+	if(isCardinality && info.cardinality){
 		if(infoTxt.length > 0 ){
 			infoTxt += "\n";
 		}
@@ -1268,7 +1272,7 @@ Edge.prototype.getFreeOwn = function(node, start){
 			break;
 		}
 	}
-	if(node[list[id + 1]] == 0  || node[list[id + 1]] < node[list[id + 3]]) {
+	if(node[list[id + 1]] == 0 || node[list[id + 1]] < node[list[id + 3]]) {
 		node[list[id + 1]] ++;
 		return list[id + 1];
 	}
@@ -1338,7 +1342,7 @@ Edge.prototype.getPosition= function(m , n, entity, refCenter, offset){
 	y = entity.getY();
 	x = (y-n)/m;
 	if(x>=entity.getX() && x<=(entity.getX()+entity.width)){
-		pos.push(new Pos(x  + offset, y, Edge.Position.UP));
+		pos.push(new Pos(x + offset, y, Edge.Position.UP));
 		distance.push(Math.sqrt((refCenter.x-x)*(refCenter.x-x)+(refCenter.y-y)*(refCenter.y-y)));
 	}
 	x = entity.getX();
@@ -1415,11 +1419,11 @@ function isIE () {
 	return (myNav.indexOf('msie') != -1 || myNav.endsWith('like gecko') );
 }
 function bindEvent(el, eventName, eventHandler) {
-  if (el.addEventListener){
-    el.addEventListener(eventName, eventHandler, false); 
-  } else if (el.attachEvent){
-    el.attachEvent('on'+eventName, eventHandler);
-  }
+	if (el.addEventListener){
+		el.addEventListener(eventName, eventHandler, false); 
+	} else if (el.attachEvent){
+		el.attachEvent('on'+eventName, eventHandler);
+	}
 }
 
 
@@ -1514,12 +1518,12 @@ function RGBColor(value)
 		wheat: 'f5deb3', white: 'ffffff',
 		whitesmoke: 'f5f5f5', yellow: 'ffff00',
 		yellowgreen: '9acd32'
-    };
+	};
 	if(simple_colors[value]){
 		value = simple_colors[value];
 	}
 	// array of color definition objects
-    var color_defs = [
+	var color_defs = [
 		{
 			re: /^rgb\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)$/,
 			example: ['rgb(123, 234, 45)', 'rgb(255,234,245)'],
