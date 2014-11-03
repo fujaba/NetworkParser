@@ -34,7 +34,7 @@ Drawer.prototype.createSubGraph = function(node, element){
 		node.root.removeChild(node.board);
 	}
 	node.board = element;
-	node.layoutCalculate();
+	node.layout();
 };
 Drawer.prototype.getBoard = function(graph){
 	if(graph.parent){
@@ -393,8 +393,14 @@ SVGDrawer.prototype.drawComboBox = function(elements, activText, action){
 	g.tool.maxheight = 28;
 	g.tool.width = 80;
 	if(elements){
+		var len=0;
+		for(var i=0;i<elements.length;i++) {
+			if(elements[i] && elements[i].length>0){
+				len++;
+			}
+		}
 		var choicebox = this.createElement({tag:"g"});
-		var h = elements.length * 25+6;
+		var h = len * 25+6;
 		choicebox.appendChild( this.createElement({tag:"rect", rx:0, x: g.tool.x, y: g.tool.y+28, width:60, height:h, stroke:"#000", fill:"#fff", opacity:"0.7"}));
 		g.tool.maxheight = h + g.tool.minheight;
 		
@@ -404,6 +410,9 @@ SVGDrawer.prototype.drawComboBox = function(elements, activText, action){
 		var y = 46+g.tool.y;
 		var yr = 28+g.tool.y;
 		for(var e=0;e<elements.length;e++){
+			if(!elements[e] || elements[e].length<1){
+				continue;
+			}
 			var element = elements[e];
 			choicebox.appendChild(this.createElement({tag:"text", "text-anchor":"left", "width": 60, "x": (g.tool.x+10), "y": y, value:element}));
 			var item = choicebox.appendChild( this.createElement({tag:"rect", rx:0, x: g.tool.x, y: yr, width:60, height:24, stroke:"none", class:"selection"}));
@@ -456,7 +465,7 @@ SVGDrawer.prototype.createContainer = function(graph){
 		board = this.createBoard({tag:"svg", xmlns:"http://www.w3.org/2000/svg", "xmlns:svg":"http://www.w3.org/2000/svg", "xmlns:xlink":"http://www.w3.org/1999/xlink"}, graph, 
 		[
 		this.drawButton("HTML", (function (e) {that.graph.setTyp("HTML");})),
-		this.drawComboBox(["HTML", "SVG", "PNG", "PDF"], "Save", (function (e) {that.removeToolItems(board);that.graph.SaveAs(e.currentTarget.value);}))
+		this.drawComboBox(["HTML", "SVG", "PNG", typeof(svgElementToPdf)!="undefined" ? "PDF" : ""], "Save", (function (e) {that.removeToolItems(board);that.graph.SaveAs(e.currentTarget.value);}))
 		]);
 		board.appendChild( this.drawDef() );
 	}

@@ -42,7 +42,7 @@ Options = function(){
 	this.canvasid = null;
 	this.parent = null;
 	this.subgraphs = [];
-	
+	this.layout= "Dagre";
 	// Options
 	this.raster = false;
 	this.display = "svg";
@@ -114,15 +114,16 @@ Graph = function(json, options) {
 	this.init();
 	this.nodeCount=0;
 	this.nodes = {};
+	this.layouts = 
 	this.edges = [];
 	this.typ = json.typ;
+	this.initLayouts();
 	if(json.info){
 		this.info = json.info;
 	}
 	if(json.style){
 		this.style = json.style;
 	}
-	this.layouter = new DagreLayout();
 	this.options = this.merge(new Options(), json.options, options);
 	this.parent = this.options.parent;
 	this.loader = new Loader(this);
@@ -134,6 +135,18 @@ Graph = function(json, options) {
 		this.options.display = "svg";
 	}
 	this.minSize = new Pos(0, 0);
+	var layout;
+
+	for(var i=0;i<this.layouts.length;i++){
+		if(this.layouts[i]["name"] === this.options.layout.toLowerCase()){
+			layout = this.layouts[i];
+			break;
+		}
+	}
+	if(!layout){
+		layout = this.layouts[0];
+	}
+	this.layouter = layout.value;
 
 	if(json.nodes) {
 		for (var i = 0; i < json.nodes.length; i++) {
@@ -186,31 +199,12 @@ Graph = function(json, options) {
 		this.initGraph();
 	}
 };
-Graph.prototype.getX = function(){
-	if(this.parent){
-		return this.x + this.parent.getX();
-	}
-	if(this.x!=null){
-		return this.x;
-	}
-	return 0;
-};
-Graph.prototype.getY = function(){
-	if(this.parent){
-		return this.y + this.parent.getY();
-	}
-	if(this.y!=null){
-		return this.y;
-	}
-	return 0;
-};
-Graph.prototype.getRoot = function() {
-	if(this.parent){
-		return this.parent.getRoot();
-	}
-	return this;
-}
 Graph.prototype = Object_create(GraphNode.prototype);
+
+Graph.prototype.initLayouts=function(){
+	this.layouts=[{name:"dagre", value:new DagreLayout()}];
+};
+
 Graph.prototype.copy = function(source, target){
 	for (var key in source) {
 		target[key] = source[key];
@@ -572,23 +566,11 @@ Graph.prototype.moveToRaster = function(node){
 }
 
 Graph.prototype.layout = function(minwidth, minHeight){
-	if(this.layouter){
-		this.layouter.graph = this;
-		this.layouter.layout(minwidth || 0, minHeight || 0);
-	}
+	this.layouter.layout(this, Math.max(minwidth || 0, 100), Math.max(minHeight || 0, 100));
 }
 Graph.prototype.layouting = function(){
-	if(this.layouter){
-		this.initGraph();
-		this.layouter.graph = this;
-		this.layouter.layout(this.minSize.x, this.minSize.y);
-	}
-}
-Graph.prototype.layoutCalculate = function(){
-	if(this.layouter){
-		this.layouter.graph = this;
-		this.layouter.layout(this.minSize.x || 0, this.minSize.y || 0);
-	}
+	this.initGraph();
+	this.layout(this.minSize.x, this.minSize.y);
 }
 //					######################################################### DRAG AND DROP #########################################################
 Graph.prototype.initDragAndDrop = function(){
@@ -694,6 +676,9 @@ Graph.prototype.stopDrag = function(event) {
 			}
 			
 			this.board.removeChild(item);
+			if(item.model.board) {
+				item.model.board = null;
+			}
 
 			if(item.node.typ=="Info") {
 				item.node.custom = true;
@@ -964,7 +949,8 @@ Graph.prototype.getHTML = function () {
 
 //					######################################################### GraphLayout-Dagre #########################################################
 DagreLayout = function() {};
-DagreLayout.prototype.layout = function(width, height) {
+DagreLayout.prototype.layout = function(graph, width, height) {
+	this.graph = graph;
 	this.g = new dagre.graphlib.Graph({nodesep:this.graph.options.nodeSep, rankDir:this.graph.options.rank, directed:false});
 	this.g.setGraph({});
 	this.g.setDefaultEdgeLabel(function() { return {}; });

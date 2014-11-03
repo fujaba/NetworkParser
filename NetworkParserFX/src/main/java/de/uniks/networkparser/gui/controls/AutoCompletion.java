@@ -1,7 +1,7 @@
 package de.uniks.networkparser.gui.controls;
 
-import java.util.List;
+import java.util.Set;
 
 public interface AutoCompletion<T> {
-	public List<T> items(String text);
+	public Set<T> items(String text, boolean caseSensitive);
 }
