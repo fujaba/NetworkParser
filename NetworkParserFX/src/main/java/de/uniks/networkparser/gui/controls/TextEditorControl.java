@@ -21,7 +21,7 @@ package de.uniks.networkparser.gui.controls;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import java.util.List;
+import java.util.Set;
 
 import javafx.event.EventHandler;
 import javafx.scene.control.TextField;
@@ -58,7 +58,7 @@ public class TextEditorControl extends EditControl<TextField>{
 			public void handle(KeyEvent event) {
 				AutoCompletion<?> listener = TextEditorControl.this.completion;
 				if(listener != null) {
-					List<?> list = listener.items(event.getText());
+					Set<?> list = listener.items(event.getText(), true);
 					
 				}
 			}
