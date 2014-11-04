@@ -33,9 +33,18 @@ Info = function(info, parent, edge) {
 	this.property = info.property; 
 	this.cardinality = info.cardinality; 
 	this.id = info.id; 
-	this.typ = "Info"; this.x = 0; this.y = 0; this.size = new Pos(0,0); this.center=new Pos(0,0); this.custom = false; this.parent = parent; this.edge = edge;}
+	this.typ = "Info";
+	this.x = this.y = 0;
+	this.size = new Pos(0,0);
+	this.center=new Pos(0,0);
+	this.custom = false;
+	this.parent = parent;
+	this.edge = edge;
+	this.isdraggable = true;
+};
 
 Line = function(source, target, line, style) {this.source = source; this.target = target; this.line = line; this.style = style;}
+
 Line.Format={SOLID:"SOLID", DOTTED:"DOTTED"};
 /* Options */
 Options = function(){
@@ -76,6 +85,7 @@ GraphNode.prototype.init = function() {
 	this.attributes = [];
 	this.methods = [];
 	this.RIGHT = this.LEFT = this.UP = this.DOWN=0;
+	this.isdraggable = true;
 };
 
 GraphNode.prototype.removeFromBoard = function(board){
@@ -170,7 +180,7 @@ Graph = function(json, options) {
 			edge.sourceInfo = new Info(e.source, this, edge);
 			edge.targetInfo = new Info(e.target, this, edge);
 			edge.source.edges.push(edge);
-			edge.graph = this;
+			edge.model = this;
 
 			edge.target = this.getNode(e.target.id);
 			edge.target.edges.push(edge);
@@ -254,7 +264,7 @@ Graph.prototype.initGraph = function(){
 		if(node.typ=="objectdiagram" || node.typ=="classdiagram"){
 			node.root = this.board;
 			node.initDrawer(this.options.display);
-			node.drawer.graph = node;
+			node.drawer.model = node;
 			node.initGraph();
 		}
 		var html = this.drawer.getHTMLNode(node, true);
@@ -268,6 +278,7 @@ Graph.prototype.initGraph = function(){
 			}
 		}
 		if(node.typ=="objectdiagram" || node.typ=="classdiagram"){
+			node.center = new Pos(node.x + (node.width / 2), node.y + (node.height / 2));
 			node.board=null;
 		}
 	}
@@ -326,7 +337,7 @@ Graph.prototype.getButton = function(label){
 	var button = document.createElement("button");
 	button.innerHTML = label;
 	button.className="ToolButton";
-	button.graph = this;
+	button.model = this;
 	var that = this;
 	bindEvent(button, "click", function(e){that.setTyp(e.innerHTML);});
 	return button;
@@ -573,7 +584,7 @@ Graph.prototype.layouting = function(){
 	this.initGraph();
 	this.layout(this.minSize.x, this.minSize.y);
 }
-//					######################################################### DRAG AND DROP #########################################################
+//				######################################################### DRAG AND DROP #########################################################
 Graph.prototype.initDragAndDrop = function(){
 	this.objDrag = null;
 	this.mouse = new Pos(0,0);
@@ -602,7 +613,11 @@ Graph.prototype.showinfo = function(event){
 };
 Graph.prototype.setSelectable = function(node, value) {
 	if (node.nodeType == 1) {
-		node.setAttribute("unselectable", value);
+		if(value){
+			node.setAttribute("unselectable", value);
+		}else{
+			node.removeAttribute("unselectable");
+		}
 	}
 	var child = node.firstChild;
 	while (child) {
@@ -610,15 +625,29 @@ Graph.prototype.setSelectable = function(node, value) {
 		child = child.nextSibling;
 	}
 };
-
+Graph.prototype.getDragNode = function(node) {
+	if(node.model){
+		if(!node.model.isdraggable){
+			return null;
+		}
+		return node;
+	}else if(node.parentElement.model) {
+		if(!node.parentElement.model.isdraggable){
+			return null;
+		}
+		return node.parentElement;
+	}
+	return null;
+}
 Graph.prototype.startDrag = function(event) {
-	if(!event.currentTarget.isdraggable){
+	var n = this.getDragNode(event.currentTarget);
+	if(!n){
 		return;
 	}
 	if(this.objDrag){
 		return;
 	}
-	this.objDrag = event.currentTarget;
+	this.objDrag = n;
 	var graph = this.objDrag.parentElement;
 	if(graph) {
 		for(var i=0;i<graph.children.length;i++) {
@@ -627,8 +656,8 @@ Graph.prototype.startDrag = function(event) {
 	}
 	this.offset.x = (IE) ? window.event.clientX : event.pageX;
 	this.offset.y = (IE) ? window.event.clientY : event.pageY;
-	this.startObj.x = this.objDrag.node.x;
-	this.startObj.y = this.objDrag.node.y;
+	this.startObj.x = this.objDrag.model.x;
+	this.startObj.y = this.objDrag.model.y;
 };
 
 Graph.prototype.doDrag = function(event) {
@@ -645,10 +674,10 @@ Graph.prototype.doDrag = function(event) {
 			this.objDrag.setAttribute('transform', "translate("+x+" "+y+")");
 		} else {
 			this.drawer.setPos(this.objDrag, x, y);
-			if(this.objDrag.node){
-				this.objDrag.node.x = x;
-				this.objDrag.node.y = y;
-				this.objDrag.node.parent.drawLines();
+			if(this.objDrag.model){
+				this.objDrag.model.x = x;
+				this.objDrag.model.y = y;
+				this.objDrag.model.parent.drawLines();
 			}
 		}
 	}
@@ -665,43 +694,62 @@ Graph.prototype.stopDrag = function(event) {
 	var graph = item.parentElement;
 	if(graph) {
 		for(var i=0;i<graph.children.length;i++) {
-			this.setSelectable(graph.children[i], "");
+			this.setSelectable(graph.children[i], null);
 		}
 	}
-	if(item.node){
+	if(item.model){
 		if(this.options.display=="svg"){
 			if(item.getAttributeNS(null, "transform")){
 				var pos = item.getAttributeNS(null, "transform").slice(10,-1).split(' ');
-				item.node.x = item.node.x + Number(pos[0]);
-				item.node.y = item.node.y + Number(pos[1]);
+				item.model.x = item.model.x + Number(pos[0]);
+				item.model.y = item.model.y + Number(pos[1]);
 			}
+			item.model.center = new Pos(item.model.x + (item.model.width / 2), item.model.y + (item.model.height / 2));
 			
 			this.board.removeChild(item);
 			if(item.model.board) {
 				item.model.board = null;
 			}
 
-			if(item.node.typ=="Info") {
-				item.node.custom = true;
-				item.node.edge.removeElement(item);
-				var infoTxt = item.node.edge.getInfo(item.node);
-				item.node.edge.addElement(this.board, this.drawer.createInfo(item.node, false, infoTxt));
+			if(item.model.typ=="Info") {
+				item.model.custom = true;
+				item.model.edge.removeElement(item);
+				var infoTxt = item.model.edge.getInfo(item.model);
+				item.model.edge.addElement(this.board, this.drawer.createInfo(item.model, false, infoTxt));
 			}else{
-				item.node.htmlNode = this.drawer.getHTMLNode(item.node, false);
-				if(item.node.htmlNode){
-					this.board.appendChild( item.node.htmlNode );
+				item.model.htmlNode = this.drawer.getHTMLNode(item.model, false);
+				if(item.model.htmlNode){
+					this.board.appendChild( item.model.htmlNode );
 				}
-				for(var i=0;i<item.node.edges.length;i++){
-					var edge = item.node.edges[i];
+				for(var i=0;i<item.model.edges.length;i++){
+					var edge = item.model.edges[i];
 					edge.sourceInfo.custom = false;
 					edge.targetInfo.custom = false;
 				}
 			}
 		}
-		item.node.parent.drawLines();
-		item.node.parent.resize();
+		item.model.parent.drawLines();
+		item.model.parent.resize();
 	}
 }
+Graph.prototype.redrawNode = function(node){
+	this.board.removeChild(node.htmlNode);
+	if(node.board) {
+		node.board = null;
+	}
+	if(node.typ=="Info") {
+		var infoTxt = node.edge.getInfo(node.node);
+		node.edge.addElement(this.board, this.drawer.createInfo(node, false, infoTxt));
+	}else{
+		node.htmlNode = this.drawer.getHTMLNode(node, false);
+		if(node.htmlNode){
+			this.board.appendChild( node.htmlNode );
+		}
+	}
+	node.center = new Pos(node.x + (node.width / 2), node.y + (node.height / 2));
+	
+	node.parent.drawLines();
+};
 
 Graph.prototype.getGraphNode = function(objElement){
 	var obj=objElement;
@@ -808,28 +856,9 @@ Graph.prototype.utf8_to_b64 = function( str ) {
 }
 
 Graph.prototype.ExportPDF = function () {
-	var oldDrawer = this.drawer;
-	this.drawer = new SVGDrawer();
-	this.initGraph();
-	this.drawGraph(0,0);
-	
-	var svg = this.serializeXmlNode(this.board);
-	//var svg ='data:image/svg+xml;base64,' + this.utf8_to_b64(this.serializeXmlNode(this.board));
-	// You'll need to make your image into a Data URL
-// Use http://dataurl.net/#dataurlmaker
-//var doc = new jsPDF ();
-//doc.setFontSize(40);
-//doc.text(35, 25, "Paranyan loves jsPDF");
-
-	
 	var pdf = new jsPDF('l', 'px', 'a4');
-	//doc.addSVG(svg, 35 ,30, 50, 50);
-	svgElementToPdf(svg, pdf, {removeInvalid: true});
+	svgElementToPdf(this.board, pdf, {removeInvalid: true});
 	pdf.save('Download.pdf');
-
-	this.drawer = oldDrawer;
-	this.initGraph();
-	this.drawGraph(0,0);
 };
 Graph.prototype.ExportPNG = function () {
 	var image = new Image();
@@ -947,7 +976,7 @@ Graph.prototype.getHTML = function () {
 	return result;
 };
 
-//					######################################################### GraphLayout-Dagre #########################################################
+//				######################################################### GraphLayout-Dagre #########################################################
 DagreLayout = function() {};
 DagreLayout.prototype.layout = function(graph, width, height) {
 	this.graph = graph;
@@ -1017,7 +1046,7 @@ Loader.prototype.appendImg = function(img){
 }
 
 
-//					######################################################### LINES #########################################################
+//				######################################################### LINES #########################################################
 Edge = function() {this.init();this.typ="EDGE";}
 Edge.prototype.init = function(){
 	this.path = [];
@@ -1059,7 +1088,7 @@ Edge.prototype.draw = function(board, drawer){
 		var p = this.path[i];
 		this.addElement(board, drawer.createLine(p.source.x, p.source.y, p.target.x, p.target.y, p.line, p.style));
 	}
-	var options = drawer.graph.options;
+	var options = drawer.model.options;
 	this.drawSourceText(board, drawer, options);
 	this.drawTargetText(board, drawer, options);
 };
@@ -1075,7 +1104,6 @@ Edge.prototype.drawTargetText = function(board, drawer, options){
 		this.addElement(board, drawer.createInfo(this.targetInfo, false, infoTxt));
 	}
 }
-
 
 Edge.prototype.endPos = function(){
 	return this.path[this.path.length-1];
@@ -1093,12 +1121,23 @@ Edge.prototype.edgePosition = function() {
 	}
 	return pos;
 };
+Edge.prototype.getTarget = function(node, startNode){
+	if(node instanceof Graph){
+		if(node.status=="close") {
+			return node;
+		}
+		return startNode;
+	}
+	return this.getTarget(node.parent, startNode);
+};
+
 Edge.prototype.calcCenterLine = function(){
 	var divisor = (this.target.center.x - this.source.center.x);
 	var sourcePos,targetPos;
 	var edgePos = this.edgePosition() * 10;
 
 	this.path = new Array();
+	var source = this.getTarget(this.source, this.source), target = this.getTarget(this.target, this.target);
 	if(divisor==0){
 		if(this.source==this.target){
 			/* OwnAssoc */
@@ -1107,23 +1146,23 @@ Edge.prototype.calcCenterLine = function(){
 		// Must be UP_DOWN or DOWN_UP
 		if(this.source.center.y<this.target.center.y){
 			// UP_DOWN
-			sourcePos = this.getCenterPosition(this.source, Edge.Position.DOWN, edgePos);
-			targetPos = this.getCenterPosition(this.target, Edge.Position.UP, edgePos);
+			sourcePos = this.getCenterPosition(source, Edge.Position.DOWN, edgePos);
+			targetPos = this.getCenterPosition(target, Edge.Position.UP, edgePos);
 		}else{
-			sourcePos = this.getCenterPosition(this.source, Edge.Position.UP, edgePos);
-			targetPos = this.getCenterPosition(this.source, Edge.Position.DOWN, edgePos);
+			sourcePos = this.getCenterPosition(source, Edge.Position.UP, edgePos);
+			targetPos = this.getCenterPosition(target, Edge.Position.DOWN, edgePos);
 		}
 	}else{
-		this.m = (this.target.center.y - this.source.center.y) / divisor;
-		this.n = this.source.center.y - (this.source.center.x * this.m);
-		sourcePos = this.getPosition(this.m,this.n, this.source, this.target.center, edgePos);
-		targetPos = this.getPosition(this.m,this.n, this.target, sourcePos, edgePos);
+		this.m = (target.center.y - source.center.y) / divisor;
+		this.n = source.center.y - (source.center.x * this.m);
+		sourcePos = this.getPosition(this.m,this.n, source, target.center, edgePos);
+		targetPos = this.getPosition(this.m,this.n, target, sourcePos, edgePos);
 	}
 	if(sourcePos&&targetPos){
-		this.calcInfoPos( sourcePos, this.source, this.sourceInfo, edgePos);
-		this.calcInfoPos( targetPos, this.target, this.targetInfo, edgePos);
-		this.addEdgeToNode(this.source, sourcePos.id);
-		this.addEdgeToNode(this.target, targetPos.id);
+		this.calcInfoPos( sourcePos, source, this.sourceInfo, edgePos);
+		this.calcInfoPos( targetPos, target, this.targetInfo, edgePos);
+		this.addEdgeToNode(source, sourcePos.id);
+		this.addEdgeToNode(target, targetPos.id);
 		this.path.push ( new Line(sourcePos, targetPos, this.lineStyle, this.style));
 	}
 	return true;
@@ -1148,8 +1187,8 @@ Edge.prototype.getCenterPosition = function(node, pos, offset){
 Edge.prototype.getInfo = function(info){
 	var infoTxt = "";
 	
-	var isCardinality = this.graph.typ=="classdiagram" && this.graph.options.CardinalityInfo;
-	var isProperty = this.graph.options.PropertyInfo;
+	var isCardinality = this.model.typ=="classdiagram" && this.model.options.CardinalityInfo;
+	var isProperty = this.model.options.PropertyInfo;
 
 	if(isProperty && info.property){
 		infoTxt = info.property;
@@ -1284,44 +1323,36 @@ Edge.prototype.getFreeOwn = function(node, start){
 
 Edge.prototype.calcInfoPos = function(linePos, item, info, offset){
 	// Manuell move the InfoTag
+	var spaceA = 20;
+	var spaceB = 10;
 	if(info.custom){
 		return;
 	}
-	if(!offset){
-		offset = 0;
-	}
 	var newY = linePos.y;
 	var newX = linePos.x;
-	var yoffset =0;
+	var yoffset = 0;
 	if(linePos.id==Edge.Position.UP){
-		newY = newY - info.size.y -5 + (offset);
-		if(this.m>0){
-			newX = (newY-this.n) / this.m + 5 + offset;
-		}else{
-			newX += 5 + offset;
+		newY = newY - info.size.y - offset - spaceA;
+		if(this.m!=0){
+			newX = (newY-this.n) / this.m + spaceB;
 		}
 	}else if(linePos.id==Edge.Position.DOWN){
-		newY = newY + 5 + (offset);
-		if(this.m>0){
-			newX = (newY-this.n) / this.m + 5 + offset;
-		}else{
-			newX += 5 + offset;
+		newY = newY + offset + spaceA;
+		if(this.m!=0){
+			newX = (newY-this.n) / this.m + spaceB;
 		}
 	}else if(linePos.id==Edge.Position.LEFT){
-		newX -= info.size.x - 5;
-		if(this.m>0){
-			newY = (this.m * newX)+ this.n + offset;
-		}else{
-			newY += 5 + offset;
+		newX = newX - info.size.x - offset - spaceA;
+		if(this.m!=0){
+			newY = (this.m * newX)+ this.n;
 		}
 	}else if(linePos.id==Edge.Position.RIGHT){
-		newX += info.size.x + 5;
-		if(this.m>0){
-			newY = (this.m * newX)+ this.n + offset;
-		}else{
-			newY += 5 + offset;
+		newX += offset + spaceA;
+		if(this.m!=0){
+			newY = (this.m * newX)+ this.n;
 		}
 	}
+	info.id = linePos.id;
 	info.x = newX;
 	info.y = newY;
 };
@@ -1425,7 +1456,6 @@ function bindEvent(el, eventName, eventHandler) {
 		el.attachEvent('on'+eventName, eventHandler);
 	}
 }
-
 
 
 /**

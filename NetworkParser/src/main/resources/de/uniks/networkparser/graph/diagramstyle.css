@@ -138,6 +138,11 @@
 	cursor: hand;
 }
 
+.btn:hover{
+	opacity:0.75;
+	cursor: hand;
+}
+
 .hand{
 	cursor: hand;
 }
