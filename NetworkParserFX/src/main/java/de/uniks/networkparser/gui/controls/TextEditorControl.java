@@ -26,6 +26,7 @@ import java.util.Set;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
+import javafx.geometry.Side;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import de.uniks.networkparser.gui.table.Column;
@@ -56,11 +57,9 @@ public class TextEditorControl extends EditControl<TextField>{
 	@Override
 	public TextField createControl(Column column) {
 		TextField textField = new TextField();
-//		autoCompleteContextMenu = new AutoCompleteContextMenu(textField);
+		autoCompleteContextMenu = new AutoCompleteContextMenu(textField);
 
 		textField.addEventHandler(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>() {
-			private AutoCompletePopup showing;
-
 			@Override
 			public void handle(KeyEvent event) {
 				AutoCompletionList listener = TextEditorControl.this.completion;
@@ -69,13 +68,8 @@ public class TextEditorControl extends EditControl<TextField>{
 					Set<String> list = listener.items(control.getText());
 					
 					if(list.size()>0) {
-						if(showing==null) {
-							showing = new AutoCompletePopup().showing(control, list);
-						}else{
-							showing.showing(control, list);
-						}
-//						autoCompleteContextMenu.show(control, Side.BOTTOM, 0,0);
-//						autoCompleteContextMenu.withSuggestions(list);
+						autoCompleteContextMenu.show(control, Side.BOTTOM, 0,0);
+						autoCompleteContextMenu.withSuggestions(list);
 					}
 				}
 			}

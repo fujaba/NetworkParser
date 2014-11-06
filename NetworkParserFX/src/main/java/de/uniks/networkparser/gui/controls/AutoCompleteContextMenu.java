@@ -5,6 +5,7 @@ import java.util.Set;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import de.uniks.networkparser.gui.resource.Styles;
@@ -24,12 +25,17 @@ public class AutoCompleteContextMenu extends ContextMenu{
 		getItems().clear();
 		int i=1;
 		for(String item : values) {
-			MenuItem menuItem = new MenuItem(item);
+			MenuItem menuItem = new MenuItem();
 			if(i % 2 == 1) {
 				menuItem.getStyleClass().add("suggestionscell");
 			}else{
 				menuItem.getStyleClass().add("suggestionscellodd");
 			}
+			Label label = new Label(item);
+			label.setPrefWidth(control.getWidth()-30);
+			label.setMaxWidth(control.getWidth()-30);
+			menuItem.setGraphic(label);
+			
 			menuItem.setOnAction(new EventHandler<ActionEvent>() {
 			    public void handle(ActionEvent e) {
 			    	MenuItem mnu = (MenuItem) e.getSource();
