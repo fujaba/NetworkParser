@@ -23,7 +23,11 @@ package de.uniks.networkparser.gui.resource;
 */
 
 public class Styles {
+	public static String custom;
 	public static String getPath(){
+		if(custom!=null){
+			return custom;
+		}
 		return Styles.class.getResource("styles.css").toExternalForm();
 	}
 }

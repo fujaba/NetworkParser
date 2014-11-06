@@ -42,6 +42,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 
+import de.uniks.networkparser.gui.Os;
 import javafx.application.Application;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -74,6 +75,9 @@ public abstract class MasterShell extends Application {
 	       withIcon(null);
 	   }catch(Exception e){
 		   this.saveException(e);
+		   if(new Os().isEclipse()) {
+			   throw e;
+		   }
 	   }
    }
    

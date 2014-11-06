@@ -54,3 +54,19 @@
 .table-row-cell:empty .table-cell {
     -fx-border-width: 0px;
 }
+
+.suggestionscell {
+   -fx-background-color: white;
+}
+.suggestionscell:hover {
+   -fx-background-color: #CCFFFF;
+   -fx-text-fill: #333;
+   
+}
+.suggestionscellodd {
+   -fx-background-color: #F9F9F9;
+}
+.suggestionscellodd:hover {
+   -fx-background-color: #CCFFFF;
+   -fx-text-fill: #333;
+}
