@@ -6,6 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import de.uniks.networkparser.gui.controls.AutoCompletionList;
 import de.uniks.networkparser.gui.controls.TextEditorControl;
 
 public class AutoCompletion extends Application {
@@ -21,6 +22,7 @@ public class AutoCompletion extends Application {
 		label.setFont(Font.font("Arial", 50));
 		
 		TextEditorControl control = new TextEditorControl();
+		control.withAutoCompleting(new AutoCompletionList().with("Hey", "Hello", "Hello World", "Apple", "Cool", "Costa", "Cola", "Coca Cola"));
 		
 		gridPane.add(label, 0, 0);
 		gridPane.add(control.getControl(), 1, 0);

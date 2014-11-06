@@ -23,14 +23,17 @@ package de.uniks.networkparser.gui.controls;
 */
 import java.util.Set;
 
+import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import de.uniks.networkparser.gui.table.Column;
 import de.uniks.networkparser.gui.table.FieldTyp;
 
 public class TextEditorControl extends EditControl<TextField>{
-	private AutoCompletion<?> completion;
+	private AutoCompletionList completion;
+	private AutoCompleteContextMenu autoCompleteContextMenu;
 
 	@Override
 	public Object getValue(boolean convert) {
@@ -53,21 +56,39 @@ public class TextEditorControl extends EditControl<TextField>{
 	@Override
 	public TextField createControl(Column column) {
 		TextField textField = new TextField();
-		textField.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+//		autoCompleteContextMenu = new AutoCompleteContextMenu(textField);
+
+		textField.addEventHandler(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>() {
+			private AutoCompletePopup showing;
+
 			@Override
 			public void handle(KeyEvent event) {
-				AutoCompletion<?> listener = TextEditorControl.this.completion;
+				AutoCompletionList listener = TextEditorControl.this.completion;
 				if(listener != null) {
-					Set<?> list = listener.items(event.getText(), true);
+					TextField control = TextEditorControl.this.getControl();
+					Set<String> list = listener.items(control.getText());
 					
+					if(list.size()>0) {
+						if(showing==null) {
+							showing = new AutoCompletePopup().showing(control, list);
+						}else{
+							showing.showing(control, list);
+						}
+//						autoCompleteContextMenu.show(control, Side.BOTTOM, 0,0);
+//						autoCompleteContextMenu.withSuggestions(list);
+					}
 				}
 			}
 		});
 		return textField;
 	}
 	
-	public TextEditorControl withAutoCompleting(AutoCompletion<?> value) {
+	public TextEditorControl withAutoCompleting(AutoCompletionList value) {
 		this.completion = value;
 		return this;
+	}
+
+	public <T extends Event> void addEventHandler(EventType<T> eventType, EventHandler<T> eventHandler) {
+		getControl().addEventHandler(eventType, eventHandler);
 	}
 }
