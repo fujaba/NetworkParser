@@ -21,7 +21,6 @@
 */
 Object_create = Object.create || function (o) {var F = function() {};F.prototype = o; return new F();};
 Drawer = function(){};
-Drawer.prototype.isShowRaster = function(){return false;}
 Drawer.prototype.showInfoBox = function(){return false;}
 Drawer.prototype.clearBoard = function(){};
 Drawer.prototype.onLoadImage = function(){};
@@ -50,6 +49,9 @@ Drawer.prototype.getColor = function(style, defaultColor) {
 		}
 		if(style.toLowerCase()=="nac") {
 			return "#FE3E3E";
+		}
+		if(style.indexOf("#")==0){
+			return style;
 		}
 	}
 	if(defaultColor) {
@@ -151,7 +153,6 @@ Drawer.prototype.createBoard = function(node, graph, listener) {
 HTMLDrawer = function() {};
 HTMLDrawer.prototype = Object_create(Drawer.prototype);
 HTMLDrawer.prototype.showInfoBox = function(){return true;}
-HTMLDrawer.prototype.isShowRaster = function(){return true;}
 HTMLDrawer.prototype.setPos = function(item, x, y){item.style.left = x+"px";item.style.top = y+"px";};
 HTMLDrawer.prototype.setSize = function(item, x, y){item.style.width = x+"px";item.style.height = y+"px";};
 HTMLDrawer.prototype.createContainer = function(graph){
@@ -189,7 +190,7 @@ HTMLDrawer.prototype.createCell = function(parent, tag, innerHTML){
 	parent.appendChild(tr);
 	return cell;
 };
-HTMLDrawer.prototype.getHTMLNode = function(node, calculate){
+HTMLDrawer.prototype.getNode = function(node, calculate){
 	var htmlElement = this.createObject({tag:"div"}, node);
 	var symbolLib = new SymbolLibary();
 	if(node.typ=="patternobject") {
@@ -257,6 +258,7 @@ HTMLDrawer.prototype.getHTMLNode = function(node, calculate){
 	}
 	this.createCell(table, "th", info);
 
+	cell = null;
 	if(node.attributes){
 		var first=true;
 		for(var a = 0; a < node.attributes.length; a++){
@@ -281,6 +283,9 @@ HTMLDrawer.prototype.getHTMLNode = function(node, calculate){
 				first=false;
 			}
 		}
+	}
+	if(!cell){
+		this.createCell(table, "td", "&nbsp;").className = 'first';
 	}
 	htmlElement.appendChild(table);
 	htmlElement.node = node;
@@ -362,6 +367,11 @@ SVGDrawer.prototype.drawDef = function(){
 	child = this.createObject({tag:"linearGradient", id:"reflect", x1:"0%", x2:"0%", y1:"50%", y2:"0%", spreadMethod:"reflect"});
 	child.appendChild( this.createObject({tag:"stop", "stop-color":"#aaa",offset:"0%"}) );
 	child.appendChild( this.createObject({tag:"stop", "stop-color":"#eee",offset:"100%"}) );
+	def.appendChild( child );
+
+	child = this.createObject({tag:"linearGradient", id:"classelement", x1:"0%", x2:"100%", y1:"100%", y2:"0%"});
+	child.appendChild( this.createObject({tag:"stop", "stop-color":"#ffffff",offset:"0"}) );
+	child.appendChild( this.createObject({tag:"stop", "stop-color":"#d3d3d3",offset:"1"}) );
 	def.appendChild( child );
 	return def;
 
@@ -490,7 +500,7 @@ SVGDrawer.prototype.getWidth = function(label, calculate){
 	board.removeChild(text);
 	return width;
 }
-SVGDrawer.prototype.getHTMLNode = function(node, calculate){
+SVGDrawer.prototype.getNode = function(node, calculate){
 	var symbolLib = new SymbolLibary();
 	if(symbolLib.isSymbol(node)) {
 		return symbolLib.draw(this, node, calculate);
@@ -498,27 +508,27 @@ SVGDrawer.prototype.getHTMLNode = function(node, calculate){
 	if(node.content_src){
 		return this.createObject({tag:"image", height: node.height, width: node.width, content_src: node.content_src});
 	}
-	var group = this.createObject({tag:"g"}, node);
+	var g = this.createObject({tag:"g"}, node);
 	if(node.content_svg){
-		group.setAttribute('transform', "translate("+node.x+" "+node.y+")");
-		group.innerHTML = node.content_svg;return group;
+		g.setAttribute('transform', "translate("+node.x+" "+node.y+")");
+		g.innerHTML = node.content_svg;return g;
 	}
 	if(node.typ=="objectdiagram" || node.typ=="classdiagram"){
 		var width,height;
 		if(node.status=="close"){
 			width = this.getWidth(node.id) + 30;
 			height = 40;
-			this.addChild(node, group, this.createObject({tag:"text", "text-anchor":"left", "x": (node.x +2), "y":node.y+12, value:node.id}));
+			this.addChild(node, g, this.createObject({tag:"text", "text-anchor":"left", "x": (node.x +2), "y":node.y+12, value:node.id}));
 		}else {
-			this.createSubGraph(node, group);
+			this.createSubGraph(node, g);
 			width = this.getNumber(node.board.style.width);
 			height = this.getNumber(node.board.style.height);
 			if(node.style && node.style.toLowerCase()=="nac"){
-				this.addChild(node, group, this.createGroup(node, symbolLib.drawStop(node)));
+				this.addChild(node, g, this.createGroup(node, symbolLib.drawStop(node)));
 			}
 		}
-		this.setSize(group, width, height);
-		this.addChild(node, group, this.createObject({tag:"rect", "width":width, "height":height, "fill":"none", "strokeWidth":"1px", "stroke":this.getColor(node.style, "#CCC"), "x":node.getX(), "y":node.getY()}));
+		this.setSize(g, width, height);
+		this.addChild(node, g, this.createObject({tag:"rect", "width":width, "height":height, "fill":"none", "strokeWidth":"1px", "stroke":this.getColor(node.style, "#CCC"), "x":node.getX(), "y":node.getY()}));
 		if(width>0 && width!=node.width) {node.width = width;}
 		var btn;
 		if(node.status=="close"){
@@ -538,8 +548,8 @@ SVGDrawer.prototype.getHTMLNode = function(node, calculate){
 				that.model.redrawNode(node);
 			}
 		});
-		group.appendChild( btn );
-		return group;
+		g.appendChild( btn );
+		return g;
 	}
 
 	if(node.content_plain){
@@ -565,7 +575,6 @@ SVGDrawer.prototype.getHTMLNode = function(node, calculate){
 	}else{
 		height += 20;
 	}
-	
 	if(node.methods && node.methods.length > 0){
 		height = height + node.methods.length*25;
 		for(var m=0; m<node.methods.length;m++){
@@ -578,15 +587,19 @@ SVGDrawer.prototype.getHTMLNode = function(node, calculate){
 	var y = node.getY();
 	var x = node.getX();
 
-	this.model.addNodeLister(group, node);
-	var rect = {tag:"rect", "width":width, "height":height, "x":x, "y":y, "fill":"none", class:"draggable"};
+	this.model.addNodeLister(g, node);
+	var rect = {tag:"rect", "width":width, "height":height, "x":x, "y":y, "fill":"#fff", class:"draggable"};
 	var typ = node.typ.toLowerCase();
 	if(typ=="patternobject") {
 		rect["fill"] = "lightblue";
 	}
 	var strokeColor = this.getColor(node["style"]);
 	rect["stroke"] = strokeColor;
-	group.appendChild( this.createObject(rect) );
+	g.appendChild( this.createObject(rect) );
+
+	if(typ!="patternobject" && this.model.options.design.toLowerCase()=="color"){
+		g.appendChild( this.createObject({tag:"rect", rx:0, "x": x, "y": y, "width":width, height:30, fill:"none", style:"fill:url(#classelement);"}));
+	}
 
 	var text = this.createObject({tag:"text", "text-anchor":"right", "x":x+width/2-textWidth/2, "y":y+20, "width":textWidth});
 
@@ -597,14 +610,14 @@ SVGDrawer.prototype.getHTMLNode = function(node, calculate){
 		text.appendChild(document.createTextNode(node.id));
 	}
 
-	group.appendChild(text);
-	group.appendChild( this.createObject({tag:"line", x1:x, y1:y + 30, x2: x + width, y2: y + 30, stroke:strokeColor}) );
+	g.appendChild(text);
+	g.appendChild( this.createObject({tag:"line", x1:x, y1:y + 30, x2: x + width, y2: y + 30, stroke:strokeColor}) );
 	y += 50;
 
 	if(node.attributes){
 		for(var a=0;a<node.attributes.length;a++){
 			var attribute = node.attributes[a];
-			group.appendChild(this.createObject({tag:"text", "text-anchor":"left", "width": width, "x":(x+10), "y": y, value:attribute}));
+			g.appendChild(this.createObject({tag:"text", "text-anchor":"left", "width": width, "x":(x+10), "y": y, value:attribute}));
 			y += 20;
 		}
 		if(node.attributes.length>0) {
@@ -612,15 +625,15 @@ SVGDrawer.prototype.getHTMLNode = function(node, calculate){
 		}
 	}
 	if(node.methods && node.methods.length > 0){
-		group.appendChild( this.createObject({tag:"line", x1:x, y1: y, x2: x + width, y2: y, stroke:"#000"}) );
+		g.appendChild( this.createObject({tag:"line", x1:x, y1: y, x2: x + width, y2: y, stroke:"#000"}) );
 		y+=20;
 		for(var m=0;m<node.methods.length;m++){
 			var method = node.methods[m];
-			group.appendChild(this.createObject({tag:"text", "text-anchor":"left", "width": width, "x": x + 10, "y": y, value:method}));
+			g.appendChild(this.createObject({tag:"text", "text-anchor":"left", "width": width, "x": x + 10, "y": y, value:method}));
 			y += 20;
 		}
 	}
-	return group;
+	return g;
 };
 SVGDrawer.prototype.addChild = function(node, parent, child){
 	child.setAttribute("class", "draggable");
@@ -648,7 +661,7 @@ SVGDrawer.prototype.createInfo = function(item, calculate, text) {
 	if(!calculate && items.length>1){
 		var group = this.createObject({tag:"g", class:"draggable"}, item);
 		for(var i = 0;i<items.length;i++) {
-			var child = this.createObject({tag:"text", "text-anchor":"left", "x": item.x, "y": item.y+(item.size.y*i)});
+			var child = this.createObject({tag:"text", "text-anchor":"left", "x": item.x, "y": item.y+(item.height*i)});
 			child.appendChild(document.createTextNode(items[i]));
 			group.appendChild(child);
 		}
@@ -712,7 +725,7 @@ CanvasDrawer.prototype.getWidth = function(text){
 	return metrics.width;
 
 };
-CanvasDrawer.prototype.getHTMLNode = function(node, calculate){
+CanvasDrawer.prototype.getNode = function(node, calculate){
 	var canvas = this.model.board;
 	var symbolLib = new SymbolLibary();
 	if(symbolLib.isSymbol(node)) {

@@ -103,7 +103,9 @@
 	padding-left:10px;
 	padding-right:10px;
 }
-
+.patternElement .first{
+	border-top: 1px solid black;
+}
 .lineElement {
 	z-index : 42;
 	border-bottom: 1px solid black;
