@@ -24,9 +24,7 @@ IE = document.all&&!window.opera;
 DOM = document.getElementById&&!IE;
 
 /* Pos */
-Pos = function(x, y, id) {this.x = x; this.y = y; if(id){this.id = id;} }
-/* Item */
-Item = function(pos, size) { this.pos = pos; this.size = size; this.center=new Pos(0,0); }
+Pos = function(x, y, id) {this.x = x || 0; this.y = y || 0; if(id){this.id = id;} }
 
 /* Info */
 Info = function(info, parent, edge) { 
@@ -34,9 +32,8 @@ Info = function(info, parent, edge) {
 	this.cardinality = info.cardinality; 
 	this.id = info.id; 
 	this.typ = "Info";
-	this.x = this.y = 0;
-	this.size = new Pos(0,0);
-	this.center=new Pos(0,0);
+	this.x = this.y = this.width = this.height = 0;
+	this.center=new Pos();
 	this.custom = false;
 	this.parent = parent;
 	this.edge = edge;
@@ -44,7 +41,6 @@ Info = function(info, parent, edge) {
 };
 
 Line = function(source, target, line, style) {this.source = source; this.target = target; this.line = line; this.style = style;}
-
 Line.Format={SOLID:"SOLID", DOTTED:"DOTTED"};
 /* Options */
 Options = function(){
@@ -52,7 +48,6 @@ Options = function(){
 	this.parent = null;
 	this.subgraphs = [];
 	this.layout= "Dagre";
-	// Options
 	this.raster = false;
 	this.display = "svg";
 	this.font={};
@@ -60,27 +55,21 @@ Options = function(){
 	this.font["font-family"] = "Verdana";
 	this.rank = "TB";			// Dagre TB, LR
 	this.nodeSep = 10;
-	this.infobox = false;
 	this.CardinalityInfo = true;
 	this.PropertyInfo = true;
 	/*this.buttons = ["HTML", "SVG", "CANVAS", "PNG", "PDF"];*/
 	this.buttons = [];
+	this.design="color" // Flat, Color
 }
 
 /* Node */
-GraphNode = function(id, content) {
+GraphNode = function(id) {
 	this.init();
 	this.typ = "node";
 	this.id = id;
-	if(content){
-		this.content = content;
-	}
 }
 GraphNode.prototype.init = function() {
-	this.x = 0;
-	this.y = 0;
-	this.width = 0;
-	this.height = 0;
+	this.x = this.y = this.width = this.height=0;
 	this.edges = [];
 	this.attributes = [];
 	this.methods = [];
@@ -98,19 +87,13 @@ GraphNode.prototype.getX = function(){
 	if(this.parent){
 		return this.x + this.parent.getX();
 	}
-	if(this.x!=null){
-		return this.x;
-	}
-	return 0;
+	return this.x;
 };
 GraphNode.prototype.getY = function(){
 	if(this.parent){
 		return this.y + this.parent.getY();
 	}
-	if(this.y!=null){
-		return this.y;
-	}
-	return 0;
+	return this.y;
 };
 GraphNode.prototype.getRoot = function() {
 	if(this.parent){
@@ -144,8 +127,7 @@ Graph = function(json, options) {
 		this.drawer = new SVGDrawer();
 		this.options.display = "svg";
 	}
-	this.minSize = new Pos(0, 0);
-	var layout;
+	var layout = this.layouts[0];
 
 	for(var i=0;i<this.layouts.length;i++){
 		if(this.layouts[i]["name"] === this.options.layout.toLowerCase()){
@@ -153,14 +135,11 @@ Graph = function(json, options) {
 			break;
 		}
 	}
-	if(!layout){
-		layout = this.layouts[0];
-	}
 	this.layouter = layout.value;
 
 	if(json.nodes) {
 		for (var i = 0; i < json.nodes.length; i++) {
-			this.insertNode(json.nodes[i], i);
+			this.addNode(json.nodes[i], i);
 		}
 	}
 	if(json.edges) {
@@ -211,11 +190,7 @@ Graph = function(json, options) {
 	}
 };
 Graph.prototype = Object_create(GraphNode.prototype);
-
-Graph.prototype.initLayouts=function(){
-	this.layouts=[{name:"dagre", value:new DagreLayout()}];
-};
-
+Graph.prototype.initLayouts=function(){ this.layouts=[{name:"dagre", value:new DagreLayout()}];};
 Graph.prototype.copy = function(source, target){
 	for (var key in source) {
 		target[key] = source[key];
@@ -228,7 +203,6 @@ Graph.prototype.copy = function(source, target){
 	}
 	return target;
 };
-
 Graph.prototype.removeFromBoard = function(board){
 	if(this.htmlNode){
 		board.removeChild(this.htmlNode);
@@ -236,7 +210,6 @@ Graph.prototype.removeFromBoard = function(board){
 	}
 	this.board = null;
 };
-
 Graph.prototype.merge = function(ref, sourceA, sourceB) {
 	if(sourceA){
 		for(var i in sourceA){
@@ -249,8 +222,7 @@ Graph.prototype.merge = function(ref, sourceA, sourceB) {
 		}
 	}
 	return ref;
-}
-
+};
 Graph.prototype.initGraph = function(){
 	if(this.root){
 		this.clearBoard();
@@ -267,7 +239,7 @@ Graph.prototype.initGraph = function(){
 			node.drawer.model = node;
 			node.initGraph();
 		}
-		var html = this.drawer.getHTMLNode(node, true);
+		var html = this.drawer.getNode(node, true);
 		if(html){
 			var pos = this.getDimension(html);
 			if(!node.startWidth){
@@ -290,33 +262,30 @@ Graph.prototype.initGraph = function(){
 	}
 	this.drawer.clearBoard();
 };
-
 Graph.prototype.initInfo = function(edge, info){
 	if(!this.options.CardinalityInfo && !this.options.PropertyInfo){
 		return null;
-	}
-	
+	}	
 	var infoTxt = edge.getInfo(info);
 	if(infoTxt.length > 0) {
 		var html = this.drawer.createInfo(info, true, infoTxt);
 		if(html){
-			info.size = this.getDimension(html);
+			var pos = this.getDimension(html);
+			info.width = pos.x;
+			info.height = pos.y;
 		}
 	}
 	return infoTxt;
 };
-
 Graph.prototype.clearBoard = function(){
 	if(this.board){
 		this.clearLines();
 		for(var i in this.nodes) {
-			this.nodes[i].removeFromBoard(this.board);
+			var n=this.nodes[i];
+			n.removeFromBoard(this.board);
+			n.RIGHT = n.LEFT = n.UP = n.DOWN=0;
 		}
 		this.root.removeChild(this.board);
-	}
-	if(this.infoBox){
-		this.board.removeChild(this.infoBox);
-		this.infoBox=null;
 	}
 	this.drawer.clearBoard();
 };
@@ -341,23 +310,6 @@ Graph.prototype.getButton = function(label){
 	var that = this;
 	bindEvent(button, "click", function(e){that.setTyp(e.innerHTML);});
 	return button;
-}
-
-/* 
- add a node
- @id		the node's ID (string or number)
- @content	(optional, dictionary) can contain any information that is
-			being interpreted by the layout algorithm or the graph
-			representation
-*/
-Graph.prototype.addNode = function(id, content) {
-	/* testing if node is already existing in the graph */
-	if(this.nodes[id] == undefined) {
-		this.nodes[id] = new GraphNode(id, content);
-		this.nodes[id].parent = this;
-		this.nodeCount++;
-	}
-	return this.nodes[id];
 };
 Graph.prototype.getNode = function(id, isSub) {
 	if(this.nodes[id]) {
@@ -376,8 +328,7 @@ Graph.prototype.getNode = function(id, isSub) {
 		return this.nodes[id];
 	}
 	return null;
-}
-
+};
 Graph.prototype.addSubGraph = function(subgraph) {
 	this.options.subgraphs.push(subgraph);
 	if(this.parent) {
@@ -385,7 +336,7 @@ Graph.prototype.addSubGraph = function(subgraph) {
 	}
 };
 
-Graph.prototype.insertNode = function(node, pos) {
+Graph.prototype.addNode = function(node, pos) {
 	/* testing if node is already existing in the graph */
 	node.typ = node.typ.toLowerCase();
 	if(node.typ=="objectdiagram" || node.typ=="classdiagram") {
@@ -402,7 +353,7 @@ Graph.prototype.insertNode = function(node, pos) {
 		node = this.copy(node, new GraphNode());
 	}
 	if(!(node.id)){
-		node.id = node.typ+"_"+pos;
+		node.id = node.typ+"_"+(pos || 0);
 	}
 	if(this.nodes[node.id] == undefined) {
 		this.nodes[node.id] = node;
@@ -433,9 +384,11 @@ Graph.prototype.removeNode = function(id) {
 		}
 	}
 };
-Graph.prototype.drawLines = function(){
-	this.clearLines();
+Graph.prototype.calcLines = function(){
 	var ownAssoc = [];
+	for(var i in this.nodes) {
+		this.nodes[i].RIGHT = this.nodes[i].LEFT = this.nodes[i].UP = this.nodes[i].DOWN=0;
+	}
 	for(var i = 0; i < this.edges.length; i++) {
 		if(!this.edges[i].calculate(this.board, this.drawer)){
 			ownAssoc.push(this.edges[i]);
@@ -449,11 +402,12 @@ Graph.prototype.drawLines = function(){
 		sourcePos = ownAssoc[i].getCenterPosition(ownAssoc[i].target, ownAssoc[i].end);
 		ownAssoc[i].calcInfoPos( sourcePos, ownAssoc[i].target, ownAssoc[i].targetInfo);
 	}
-
+};
+Graph.prototype.drawLines = function(){
+	this.clearLines();
 	for(var i = 0; i < this.edges.length; i++) {
 		this.edges[i].draw(this.board, this.drawer);
 	}
-
 };
 Graph.prototype.clearLines = function(){
 	for(var i=0; i<this.edges.length;i++) {
@@ -464,33 +418,34 @@ Graph.prototype.clearLines = function(){
 			}
 		}
 	}
-	for(var i in this.nodes) {
-		this.nodes[i].RIGHT = this.nodes[i].LEFT = this.nodes[i].UP = this.nodes[i].DOWN=0;
-	}
+	
+};
+Graph.prototype.MinMax = function(node, min, max){
+	max.x = Math.max(max.x,node.x+node.width+10);
+	max.y=Math.max(max.y,node.y+node.height+10);
+	min.x=Math.max(min.x,node.x);
+	min.y=Math.max(min.y,node.y);
 };
 Graph.prototype.resize = function(){
-	var maxx=0, maxy=0;
-	var minx=0, miny=0;
+	var min=new Pos();
+	var max=new Pos(this.minSize.x, this.minSize.y);
 	for (var i in this.nodes) {
 		var node = this.nodes[i];
-
 		this.moveToRaster(node);
-
-		maxx=Math.max(maxx,node.x+node.width);
-		maxy=Math.max(maxy,node.y+node.height);
-		minx=Math.max(minx,node.x);
-		miny=Math.max(miny,node.y);
+		this.MinMax(node, min, max);
 	}
-	var size = new Pos(Math.max(this.minSize.x, maxx+20), Math.max(this.minSize.y, maxy+50));
-	this.drawer.setSize(this.board, size.x, size.y);
-	if(this.drawer.showInfoBox() && this.options.infobox){
-		this.infoBox.style.left = this.board.offsetWidth-200;
-		this.infoBox.style.top = this.board.offsetHeight-42;
+	this.calcLines();
+	for(var i=0;i<this.edges.length;i++){
+		var edge=this.edges[i];
+		this.MinMax(edge.sourceInfo, min, max);
+		this.MinMax(edge.targetInfo, min, max);
 	}
-	if(this.drawer.isShowRaster() && this.options.raster){
+	this.drawer.setSize(this.board, max.x, max.y);
+	if(this.options.raster){
 		this.drawRaster();
 	}
-	return size;
+	this.drawLines();
+	return max;
 };
 Graph.prototype.drawRaster = function(){
 	while(this.board.rasterElements.length>0){
@@ -499,20 +454,16 @@ Graph.prototype.drawRaster = function(){
 	var width = this.board.style.width.replace("px","");
 	var height = this.board.style.height.replace("px","");
 	for(var i=10;i<width;i+=10){
-		var item = document.createElement("div");
-		item.className="lineRaster";
-		item.style.height = height + "px";
-		item.style.left = i+"px";
-		this.board.rasterElements.push(item);
-		this.board.appendChild(item);
+		var line = this.drawer.createLine(i, 0, i, height, null, "#ccc");
+		line.className="lineRaster";
+		this.board.rasterElements.push(line);
+		this.board.appendChild(line);
 	}
 	for(var i=10;i<height;i+=10){
-		var item = document.createElement("div");
-		item.className="lineRaster";
-		item.style.width = width + "px";
-		item.style.top = i+"px";
-		this.board.rasterElements.push(item);
-		this.board.appendChild(item);
+		var line = this.drawer.createLine(0, i, width, i, null, "#ccc");
+		line.className="lineRaster";
+		this.board.rasterElements.push(line);
+		this.board.appendChild(line);
 	}
 };
 Graph.prototype.drawGraph = function(width, height){
@@ -520,59 +471,25 @@ Graph.prototype.drawGraph = function(width, height){
 	if(this.loader.abort && this.loader.images.length>0){
 		return;
 	}
-
-	if(this.drawer.showInfoBox() && this.options.infobox){
-		this.infoBox = document.createElement("div");
-	}
 	if(!this.board) {
 		this.initGraph();
 	}
 	this.resize();
 
-	this.drawLines();
-	
 	for(var i in this.nodes) {
 		var node = this.nodes[i];
-		node.htmlNode = this.drawer.getHTMLNode(node, false);
+		node.htmlNode = this.drawer.getNode(node, false);
 		if(node.htmlNode){
 			this.board.appendChild( node.htmlNode );
 		}
 	}
-	
-	if(this.drawer.showInfoBox() && this.options.infobox){
-		this.infoBox.id = "infobox";
-		this.infoBox.style.left = this.board.offsetWidth-200;
-		this.infoBox.style.top = this.board.offsetHeight-42;
-		this.infoBox.style.width = 200;
-		this.infoBox.style.height = 42;
-		this.infoBox.className = "infoBox";
-		this.infoBox.style.display="none";
-		this.infoBox.fader=false;
-		var that = this;
-		this.infoBox.onmouseout = function (evt) {that.fadeout(evt);};
-		this.infoBox.onmouseover= function (evt) {that.fadein(evt);};
-
-		this.board.appendChild(this.infoBox);
-	}
-};
-Graph.prototype.showInfoText = function(text){
-	if(!this.infoBox){
-		return;
-	}
-	this.infoBox.fader=false;
-	this.infoBox.innerHTML = text;
-	this.infoBox.style.opacity = 100;
-	this.infoBox.style.MozOpacity = 100;
-	this.infoBox.style.KhtmlOpacity = 100;
-	this.infoBox.style.display="";
 };
 Graph.prototype.moveToRaster = function(node){
 	if(this.options.raster){
 		node.x = parseInt(node.x / 10) * 10;
 		node.y = parseInt(node.y / 10) * 10;
 		if(node.htmlNode){
-			node.htmlNode.style.left = node.x+"px";
-			node.htmlNode.style.top = node.y+"px";
+			this.drawer.setPos(node.htmlNode, node.x, node.y);
 		}
 	}
 }
@@ -587,9 +504,9 @@ Graph.prototype.layouting = function(){
 //				######################################################### DRAG AND DROP #########################################################
 Graph.prototype.initDragAndDrop = function(){
 	this.objDrag = null;
-	this.mouse = new Pos(0,0);
-	this.offset= new Pos(0,0);
-	this.startObj= new Pos(0,0);
+	this.mouse = new Pos();
+	this.offset= new Pos();
+	this.startObj= new Pos();
 	var that = this;
 	bindEvent(this.board, "mousemove", function(e){that.doDrag(e);});
 	bindEvent(this.board, "mouseup", function(e){that.stopDrag(e);});
@@ -599,8 +516,6 @@ Graph.prototype.addNodeLister = function(element, node){
 	var that = this;
 	element.node = node;
 	bindEvent(element, "mousedown", function(e){that.startDrag(e);});
-	bindEvent(element, "mouseover", function(e){that.showinfo(e);});
-	bindEvent(element, "mouseout", function(e){that.fadeout(e);});
 };
 Graph.prototype.showinfo = function(event){
 	var objElem = event.currentTarget;
@@ -677,7 +592,7 @@ Graph.prototype.doDrag = function(event) {
 			if(this.objDrag.model){
 				this.objDrag.model.x = x;
 				this.objDrag.model.y = y;
-				this.objDrag.model.parent.drawLines();
+				this.objDrag.model.parent.resize();
 			}
 		}
 	}
@@ -717,7 +632,7 @@ Graph.prototype.stopDrag = function(event) {
 				var infoTxt = item.model.edge.getInfo(item.model);
 				item.model.edge.addElement(this.board, this.drawer.createInfo(item.model, false, infoTxt));
 			}else{
-				item.model.htmlNode = this.drawer.getHTMLNode(item.model, false);
+				item.model.htmlNode = this.drawer.getNode(item.model, false);
 				if(item.model.htmlNode){
 					this.board.appendChild( item.model.htmlNode );
 				}
@@ -728,10 +643,9 @@ Graph.prototype.stopDrag = function(event) {
 				}
 			}
 		}
-		item.model.parent.drawLines();
 		item.model.parent.resize();
 	}
-}
+};
 Graph.prototype.redrawNode = function(node){
 	this.board.removeChild(node.htmlNode);
 	if(node.board) {
@@ -741,14 +655,13 @@ Graph.prototype.redrawNode = function(node){
 		var infoTxt = node.edge.getInfo(node.node);
 		node.edge.addElement(this.board, this.drawer.createInfo(node, false, infoTxt));
 	}else{
-		node.htmlNode = this.drawer.getHTMLNode(node, false);
+		node.htmlNode = this.drawer.getNode(node, false);
 		if(node.htmlNode){
 			this.board.appendChild( node.htmlNode );
 		}
 	}
 	node.center = new Pos(node.x + (node.width / 2), node.y + (node.height / 2));
-	
-	node.parent.drawLines();
+	node.parent.resize();
 };
 
 Graph.prototype.getGraphNode = function(objElement){
@@ -765,32 +678,6 @@ Graph.prototype.getGraphNode = function(objElement){
 	}
 	return null;
 };
-
-Graph.prototype.fadein = function(evt){
-	if(this.infoBox){this.infoBox.fader=false;}
-}
-Graph.prototype.fadeout = function(evt){
-	if(this.infoBox&&!this.infoBox.fader){
-		this.infoBox.fader=100;
-		var that = this;
-		setTimeout(function(){that.fadeOutTimer();}, 2000);
-	}
-};
-
-Graph.prototype.fadeOutTimer= function(){
-	var item=this.infoBox;
-	if(item && item.fader>0.00){
-			item.style.opacity = (item.fader / 100);
-			item.style.MozOpacity = (item.fader / 100);
-			item.style.KhtmlOpacity = (item.fader / 100);
-			item.fader-=5;
-			var that = this;
-			setTimeout(function(){that.fadeOutTimer()}, 20);
-	}else{
-		item.fader=0;
-		item.style.display="none";
-	}
-}
 Graph.prototype.initDrawer = function(typ){
 	typ = typ.toLowerCase();
 	this.options.display = typ;
@@ -802,8 +689,6 @@ Graph.prototype.initDrawer = function(typ){
 		this.drawer = new CanvasDrawer();
 	}
 };
-
-
 Graph.prototype.setTyp = function(typ){
 	if(typ=="HTML"){
 		this.initDrawer(typ);
@@ -842,7 +727,6 @@ Graph.prototype.setTyp = function(typ){
 		this.ExportPDF();
 	}
 }
-
 Graph.prototype.serializeXmlNode = function(xmlNode) {
 	if (typeof window.XMLSerializer != "undefined") {
 		return (new window.XMLSerializer()).serializeToString(xmlNode);
@@ -854,7 +738,6 @@ Graph.prototype.serializeXmlNode = function(xmlNode) {
 Graph.prototype.utf8_to_b64 = function( str ) {
 	return window.btoa(unescape(encodeURIComponent( str )));
 }
-
 Graph.prototype.ExportPDF = function () {
 	var pdf = new jsPDF('l', 'px', 'a4');
 	svgElementToPdf(this.board, pdf, {removeInvalid: true});
@@ -897,14 +780,12 @@ Graph.prototype.Save = function (typ, data, name) {
 	a.download = name;
 	a.click();
 }
-
 Graph.prototype.ExportHTML = function () {
 	var json = this.getHTML();
 	var data="<html><head>"+document.head.innerHTML.trim()+"</head><body><script>"
 		+"new Graph("+JSON.stringify(json, null, "\t") +").layout();</script></body></html>";
 	this.Save("text/json", data, "download.html");
 }
-
 Graph.prototype.ExportHTMLStandalone = function () {
 	var json = this.getHTML();
 
@@ -912,16 +793,13 @@ Graph.prototype.ExportHTMLStandalone = function () {
 		+"new Graph("+JSON.stringify(json, null, "\t") +").layout();</script></body></html>";
 	this.Save("text/json", data, "download.html");
 }
-
 Graph.prototype.getHTML = function () {
 	var result = {};
 	result.typ = this.typ;
 	result.options = {};
-	
 
 	for (var key in this.options) {
 		if(key!="subgraphs" && key!="parent" && this.options[key] != null) {
-			
 			result.options[key] = this.options[key];
 		}
 	}
@@ -956,7 +834,7 @@ Graph.prototype.getHTML = function () {
 	for (var i=0;i< this.edges.length;i++) {
 		var e = this.edges[i];
 		var newEdge = {typ:e.typ, source: {id: e.source.id}, target: {id: e.target.id}};
-		
+
 		if(e.sourceInfo.cardinality){
 			newEdge.source["cardinality"] = e.sourceInfo.cardinality;
 		}
@@ -1012,7 +890,7 @@ DagreLayout.prototype.getRootNode = function(node, child) {
 	}
 	return child;
 };
-
+//				######################################################### Loader #########################################################
 Loader = function(graph) {this.init(false);this.graph=graph;};
 Loader.prototype.init = function(abort){
 	this.images = [];
@@ -1026,9 +904,7 @@ Loader.prototype.resetDrawer = function(){
 		this.graph.root.appendChild(img);
 	}
 };
-Loader.prototype.remove = function(img){
-	this.images.remove(img);
-}
+Loader.prototype.remove = function(img){this.images.remove(img);}
 Loader.prototype.onLoad = function(img){
 	var idx = this.images.indexOf(img);
 	if (idx != -1) {
@@ -1044,7 +920,6 @@ Loader.prototype.appendImg = function(img){
 	img.onload = function(e){that.onLoadImage(e);};
 	this.images.push(img);
 }
-
 
 //				######################################################### LINES #########################################################
 Edge = function() {this.init();this.typ="EDGE";}
@@ -1077,7 +952,6 @@ Edge.prototype.removeElement = function(element){
 		}
 	}
 };
-
 Edge.prototype.calculate = function(board, drawer){
 	this.source.center = new Pos(this.source.getX() + (this.source.width / 2), this.source.getY() + (this.source.height / 2));
 	this.target.center = new Pos(this.target.getX() + (this.target.width / 2), this.target.getY() + (this.target.height / 2));
@@ -1104,11 +978,7 @@ Edge.prototype.drawTargetText = function(board, drawer, options){
 		this.addElement(board, drawer.createInfo(this.targetInfo, false, infoTxt));
 	}
 }
-
-Edge.prototype.endPos = function(){
-	return this.path[this.path.length-1];
-}
-
+Edge.prototype.endPos = function(){return this.path[this.path.length-1];}
 Edge.prototype.edgePosition = function() {
 	var pos=0;
 	for(var i=0;i < this.source.edges.length; i++) {
@@ -1130,11 +1000,10 @@ Edge.prototype.getTarget = function(node, startNode){
 	}
 	return this.getTarget(node.parent, startNode);
 };
-
 Edge.prototype.calcCenterLine = function(){
 	var divisor = (this.target.center.x - this.source.center.x);
 	var sourcePos,targetPos;
-	var edgePos = this.edgePosition() * 10;
+	var edgePos = this.edgePosition() * 20;
 
 	this.path = new Array();
 	var source = this.getTarget(this.source, this.source), target = this.getTarget(this.target, this.target);
@@ -1168,9 +1037,7 @@ Edge.prototype.calcCenterLine = function(){
 	return true;
 };
 Edge.prototype.getCenterPosition = function(node, pos, offset){
-	if (!offset) {
-		offset = 0;
-	}
+	offset = offset || 0;
 	if(pos==Edge.Position.DOWN){
 		return new Pos(node.center.x + offset, (node.y+node.height), Edge.Position.DOWN);
 	}
@@ -1186,7 +1053,6 @@ Edge.prototype.getCenterPosition = function(node, pos, offset){
 }
 Edge.prototype.getInfo = function(info){
 	var infoTxt = "";
-	
 	var isCardinality = this.model.typ=="classdiagram" && this.model.options.CardinalityInfo;
 	var isProperty = this.model.options.PropertyInfo;
 
@@ -1315,14 +1181,12 @@ Edge.prototype.getFreeOwn = function(node, start){
 		node[list[id + 1]] ++;
 		return list[id + 1];
 	}
-	//if(node[list[id + 3]] == 0 ) {
 	node[list[id + 3]]++;
 	return list[id + 3];
-	//}
 }
-
 Edge.prototype.calcInfoPos = function(linePos, item, info, offset){
 	// Manuell move the InfoTag
+	offset = offset || 0;
 	var spaceA = 20;
 	var spaceB = 10;
 	if(info.custom){
@@ -1332,7 +1196,7 @@ Edge.prototype.calcInfoPos = function(linePos, item, info, offset){
 	var newX = linePos.x;
 	var yoffset = 0;
 	if(linePos.id==Edge.Position.UP){
-		newY = newY - info.size.y - offset - spaceA;
+		newY = newY - info.height - offset - spaceA;
 		if(this.m!=0){
 			newX = (newY-this.n) / this.m + spaceB;
 		}
@@ -1342,7 +1206,7 @@ Edge.prototype.calcInfoPos = function(linePos, item, info, offset){
 			newX = (newY-this.n) / this.m + spaceB;
 		}
 	}else if(linePos.id==Edge.Position.LEFT){
-		newX = newX - info.size.x - offset - spaceA;
+		newX = newX - info.width - offset - spaceA;
 		if(this.m!=0){
 			newY = (this.m * newX)+ this.n;
 		}
@@ -1356,7 +1220,6 @@ Edge.prototype.calcInfoPos = function(linePos, item, info, offset){
 	info.x = newX;
 	info.y = newY;
 };
-
 Edge.prototype.getPosition= function(m , n, entity, refCenter, offset){
 	if (!offset) {
 		offset = 0;
@@ -1445,10 +1308,6 @@ Implements.prototype.init =function(){
 
 String.prototype.endsWith = function(suffix) {return this.indexOf(suffix, this.length - suffix.length) !== -1;};
 
-function isIE () {
-	var myNav = navigator.userAgent.toLowerCase();
-	return (myNav.indexOf('msie') != -1 || myNav.endsWith('like gecko') );
-}
 function bindEvent(el, eventName, eventHandler) {
 	if (el.addEventListener){
 		el.addEventListener(eventName, eventHandler, false); 
@@ -1576,7 +1435,6 @@ function RGBColor(value)
 			}
 		}
 	];
-
 	// search through the definitions to find a match
 	for (var i = 0; i < color_defs.length; i++) {
 		var re = color_defs[i].re;
