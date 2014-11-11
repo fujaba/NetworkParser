@@ -35,7 +35,7 @@ Info = function(info, parent, edge) {
 	this.x = this.y = this.width = this.height = 0;
 	this.center=new Pos();
 	this.custom = false;
-	this.parent = parent;
+	this._parent = parent;
 	this.edge = edge;
 	this.isdraggable = true;
 };
@@ -45,21 +45,15 @@ Line.Format={SOLID:"SOLID", DOTTED:"DOTTED"};
 /* Options */
 Options = function(){
 	this.canvasid = null;
-	this.parent = null;
-	this.subgraphs = [];
-	this.layout= "Dagre";
+	this._parent = null;
+	this._subgraphs = [];
 	this.raster = false;
 	this.display = "svg";
-	this.font={};
-	this.font["font-size"] = "10px";
-	this.font["font-family"] = "Verdana";
-	this.rank = "TB";			// Dagre TB, LR
-	this.nodeSep = 10;
+	this.font={"font-size":"10px", "font-family": "Verdana"};
+	this.layout= {name:"Dagre", rank:"TB", nodesep:10}	// Dagre TB, LR
 	this.CardinalityInfo = true;
 	this.PropertyInfo = true;
-	/*this.buttons = ["HTML", "SVG", "CANVAS", "PNG", "PDF"];*/
-	this.buttons = [];
-	this.design="color" // Flat, Color
+	this.buttons = [];	// ["HTML", "SVG", "CANVAS", "PNG", "PDF"]
 }
 
 /* Node */
@@ -84,20 +78,20 @@ GraphNode.prototype.removeFromBoard = function(board){
 	}
 };
 GraphNode.prototype.getX = function(){
-	if(this.parent){
-		return this.x + this.parent.getX();
+	if(this._parent){
+		return this.x + this._parent.getX();
 	}
 	return this.x;
 };
 GraphNode.prototype.getY = function(){
-	if(this.parent){
-		return this.y + this.parent.getY();
+	if(this._parent){
+		return this.y + this._parent.getY();
 	}
 	return this.y;
 };
 GraphNode.prototype.getRoot = function() {
-	if(this.parent){
-		return this.parent.getRoot();
+	if(this._parent){
+		return this._parent.getRoot();
 	}
 	return this;
 }
@@ -107,7 +101,6 @@ Graph = function(json, options) {
 	this.init();
 	this.nodeCount=0;
 	this.nodes = {};
-	this.layouts = 
 	this.edges = [];
 	this.typ = json.typ;
 	this.initLayouts();
@@ -117,8 +110,8 @@ Graph = function(json, options) {
 	if(json.style){
 		this.style = json.style;
 	}
-	this.options = this.merge(new Options(), json.options, options);
-	this.parent = this.options.parent;
+	this.options = this.merge(this.merge(new Options(), json.options), options, true);
+	this._parent = this.options._parent;
 	this.loader = new Loader(this);
 	if((""+this.options.display).toLowerCase()=="html"){
 		this.drawer = new HTMLDrawer();
@@ -130,7 +123,7 @@ Graph = function(json, options) {
 	var layout = this.layouts[0];
 
 	for(var i=0;i<this.layouts.length;i++){
-		if(this.layouts[i]["name"] === this.options.layout.toLowerCase()){
+		if(this.layouts[i]["name"] === this.options.layout.name.toLowerCase()){
 			layout = this.layouts[i];
 			break;
 		}
@@ -166,7 +159,7 @@ Graph = function(json, options) {
 			this.edges.push(edge);
 		}
 	}
-	if(!this.options.parent){
+	if(!this.options._parent){
 		if(this.options.canvasid){
 			this.root = document.getElementById(this.options.canvasid);
 		}
@@ -191,18 +184,6 @@ Graph = function(json, options) {
 };
 Graph.prototype = Object_create(GraphNode.prototype);
 Graph.prototype.initLayouts=function(){ this.layouts=[{name:"dagre", value:new DagreLayout()}];};
-Graph.prototype.copy = function(source, target){
-	for (var key in source) {
-		target[key] = source[key];
-	}
-	if(source.width){
-		target.startWidth = source.width;
-	}
-	if(source.height){
-		node.startHeight = node.height;
-	}
-	return target;
-};
 Graph.prototype.removeFromBoard = function(board){
 	if(this.htmlNode){
 		board.removeChild(this.htmlNode);
@@ -210,18 +191,27 @@ Graph.prototype.removeFromBoard = function(board){
 	}
 	this.board = null;
 };
-Graph.prototype.merge = function(ref, sourceA, sourceB) {
-	if(sourceA){
-		for(var i in sourceA){
-			ref[i] = sourceA[i];
-		}
-	}
-	if(sourceB){
-		for(var i in sourceB){
-			ref[i] = sourceB[i];
+Graph.prototype.merge = function(ref, src, full) {
+	if(src){
+		for(var i in src){
+			if(i.charAt(0)=="_"){
+				if(full){ref[i] = src[i];}
+				continue;
+			}
+			if(typeof(src[i])=="object" && typeof(ref[i])=="object"){
+				this.merge(ref[i], src[i])
+			}else{
+				ref[i] = src[i];
+			}
 		}
 	}
 	return ref;
+};
+Graph.prototype.copy = function(source, target){
+	this.merge(target, source);
+	if(source.width){target.startWidth = source.width;}
+	if(source.height){node.startHeight = node.height;}
+	return target;
 };
 Graph.prototype.initGraph = function(){
 	if(this.root){
@@ -290,8 +280,8 @@ Graph.prototype.clearBoard = function(){
 	this.drawer.clearBoard();
 };
 Graph.prototype.getDimension = function(html){
-	if(this.parent){
-		return this.parent.getDimension(html);
+	if(this._parent){
+		return this._parent.getDimension(html);
 	}
 	if(!this.board){
 		return new Pos();
@@ -315,24 +305,24 @@ Graph.prototype.getNode = function(id, isSub) {
 	if(this.nodes[id]) {
 		return this.nodes[id];
 	}
-	for(var i = 0;i < this.options.subgraphs.length;i++){
-		var r = this.options.subgraphs[i].getNode(id, true);
+	for(var i = 0;i < this.options._subgraphs.length;i++){
+		var r = this.options._subgraphs[i].getNode(id, true);
 		if(r) {
 			return r;
 		}
 	}
 	if(!isSub){
 		this.nodes[id] = new GraphNode(id);
-		this.nodes[id].parent = this;
+		this.nodes[id]._parent = this;
 		this.nodeCount++;
 		return this.nodes[id];
 	}
 	return null;
 };
 Graph.prototype.addSubGraph = function(subgraph) {
-	this.options.subgraphs.push(subgraph);
-	if(this.parent) {
-		this.parent.addSubGraph(subgraph);
+	this.options._subgraphs.push(subgraph);
+	if(this._parent) {
+		this._parent.addSubGraph(subgraph);
 	}
 };
 
@@ -344,10 +334,8 @@ Graph.prototype.addNode = function(node, pos) {
 			return;
 		}
 		var options = new Options();
-		options.parent = this;
-		options = this.merge(options, node.options);
+		options._parent = this;
 		node = new Graph(node, options);
-		options.rootElement = node;
 		this.addSubGraph(node);
 	}else {
 		node = this.copy(node, new GraphNode());
@@ -357,7 +345,7 @@ Graph.prototype.addNode = function(node, pos) {
 	}
 	if(this.nodes[node.id] == undefined) {
 		this.nodes[node.id] = node;
-		node.parent = this;
+		node._parent = this;
 		this.nodeCount++;
 	}
 	return this.nodes[node.id];
@@ -523,7 +511,7 @@ Graph.prototype.showinfo = function(event){
 	if(node){
 		var x = Math.round( objElem.style.left.substring(0,objElem.style.left.length-2) * 100)/100;
 		var y = Math.round( objElem.style.top.substring(0,objElem.style.top.length-2) * 100)/100;
-		node.parent.showInfoText("Box-Position: " + x + ":" + y);
+		node._parent.showInfoText("Box-Position: " + x + ":" + y);
 	}
 };
 Graph.prototype.setSelectable = function(node, value) {
@@ -592,7 +580,7 @@ Graph.prototype.doDrag = function(event) {
 			if(this.objDrag.model){
 				this.objDrag.model.x = x;
 				this.objDrag.model.y = y;
-				this.objDrag.model.parent.resize();
+				this.objDrag.model._parent.resize();
 			}
 		}
 	}
@@ -643,7 +631,7 @@ Graph.prototype.stopDrag = function(event) {
 				}
 			}
 		}
-		item.model.parent.resize();
+		item.model._parent.resize();
 	}
 };
 Graph.prototype.redrawNode = function(node){
@@ -661,7 +649,7 @@ Graph.prototype.redrawNode = function(node){
 		}
 	}
 	node.center = new Pos(node.x + (node.width / 2), node.y + (node.height / 2));
-	node.parent.resize();
+	node._parent.resize();
 };
 
 Graph.prototype.getGraphNode = function(objElement){
@@ -740,9 +728,16 @@ Graph.prototype.utf8_to_b64 = function( str ) {
 }
 Graph.prototype.ExportPDF = function () {
 	var pdf = new jsPDF('l', 'px', 'a4');
-	svgElementToPdf(this.board, pdf, {removeInvalid: true});
+	new svgConverter(this.board, pdf, {removeInvalid: false});
 	pdf.save('Download.pdf');
 };
+
+Graph.prototype.ExportEPS = function () {
+	var doc = new jsEPS({inverting:true});
+	var converter = new svgConverter(this.board, doc);
+	doc.save();
+};
+
 Graph.prototype.ExportPNG = function () {
 	var image = new Image();
 	image.src = 'data:image/svg+xml;base64,' + this.utf8_to_b64(this.serializeXmlNode(this.board));
@@ -771,6 +766,8 @@ Graph.prototype.SaveAs = function (typ) {
 		this.ExportPNG();
 	}else if(typ=="pdf") {
 		this.ExportPDF();
+	}else if(typ=="eps") {
+		this.ExportEPS();
 	}
 };
 Graph.prototype.Save = function (typ, data, name) {
@@ -780,6 +777,7 @@ Graph.prototype.Save = function (typ, data, name) {
 	a.download = name;
 	a.click();
 }
+
 Graph.prototype.ExportHTML = function () {
 	var json = this.getHTML();
 	var data="<html><head>"+document.head.innerHTML.trim()+"</head><body><script>"
@@ -799,7 +797,7 @@ Graph.prototype.getHTML = function () {
 	result.options = {};
 
 	for (var key in this.options) {
-		if(key!="subgraphs" && key!="parent" && this.options[key] != null) {
+		if(key.charAt(0)!="_" && this.options[key] != null) {
 			result.options[key] = this.options[key];
 		}
 	}
@@ -858,7 +856,8 @@ Graph.prototype.getHTML = function () {
 DagreLayout = function() {};
 DagreLayout.prototype.layout = function(graph, width, height) {
 	this.graph = graph;
-	this.g = new dagre.graphlib.Graph({nodesep:this.graph.options.nodeSep, rankDir:this.graph.options.rank, directed:false});
+	
+	this.g = new dagre.graphlib.Graph(graph.merge({directed:false}, this.graph.options.layout));
 	this.g.setGraph({});
 	this.g.setDefaultEdgeLabel(function() { return {}; });
 	for (var i in this.graph.nodes) {
@@ -876,14 +875,14 @@ DagreLayout.prototype.layout = function(graph, width, height) {
 	for (var i in this.graph.nodes) {
 		var node = this.graph.nodes[i];
 		var layoutNode = this.g.node(node.id);
-		node.x = layoutNode.x;
-		node.y = layoutNode.y;
+		node.x = layoutNode.x - (node.width/2);
+		node.y = layoutNode.y - (node.height/2);
 	}
 	this.graph.drawGraph(width, height);
 }
 DagreLayout.prototype.getRootNode = function(node, child) {
-	if(node.parent){
-		return this.getRootNode(node.parent, node);
+	if(node._parent){
+		return this.getRootNode(node._parent, node);
 	}
 	if(!child){
 		return node;
@@ -998,7 +997,7 @@ Edge.prototype.getTarget = function(node, startNode){
 		}
 		return startNode;
 	}
-	return this.getTarget(node.parent, startNode);
+	return this.getTarget(node._parent, startNode);
 };
 Edge.prototype.calcCenterLine = function(){
 	var divisor = (this.target.center.x - this.source.center.x);
@@ -1054,7 +1053,7 @@ Edge.prototype.getCenterPosition = function(node, pos, offset){
 Edge.prototype.getInfo = function(info){
 	var infoTxt = "";
 	var isCardinality = this.model.typ=="classdiagram" && this.model.options.CardinalityInfo;
-	var isProperty = this.model.options.PropertyInfo;
+	var isProperty = this.model.typ=="classdiagram" && this.model.options.PropertyInfo;
 
 	if(isProperty && info.property){
 		infoTxt = info.property;
@@ -1315,156 +1314,34 @@ function bindEvent(el, eventName, eventHandler) {
 		el.attachEvent('on'+eventName, eventHandler);
 	}
 }
-
-
-/**
- * A class to parse color values
- * @author Stoyan Stefanov <sstoo@gmail.com>
- * @link   http://www.phpied.com/rgb-color-parser-in-javascript/
- * @license Use it if you like it
- */
-function RGBColor(value)
-{
+function RGBColor(value){
 	this.ok = false;
-	// strip any leading #
-	if (value.charAt(0) == '#') { // remove # if any
-		value = value.substr(1,6);
+	if(value=="none"){
+		return;
 	}
-	value = value.replace(/ /g,'').toLowerCase();
+	var div = document.createElement("div");
+	div.style.backgroundColor = value;
+	document.body.appendChild(div);
+	var computedColor = window.getComputedStyle(div).backgroundColor;
+	// cleanup temporary div.
+	document.body.removeChild(div);
+	this.convert(computedColor);
+};
+RGBColor.prototype.convert = function(value){
+	var regex = /rgb *\( *([0-9]{1,3}) *, *([0-9]{1,3}) *, *([0-9]{1,3}) *\)/;
+	var values = regex.exec(value);
+	this.r = parseInt(values[1]);
+	this.g = parseInt(values[2]);
+	this.b = parseInt(values[3]);
+	this.ok = true;
+};
 
-	// before getting into regexps, try simple matches
-	// and overwrite the input
-	var simple_colors = {
-		aliceblue: 'f0f8ff', antiquewhite: 'faebd7',
-		aqua: '00ffff', aquamarine: '7fffd4',
-		azure: 'f0ffff', beige: 'f5f5dc',
-		bisque: 'ffe4c4', black: '000000',
-		blanchedalmond: 'ffebcd', blue: '0000ff',
-		blueviolet: '8a2be2', brown: 'a52a2a',
-		burlywood: 'deb887', cadetblue: '5f9ea0',
-		chartreuse: '7fff00', chocolate: 'd2691e',
-		coral: 'ff7f50', cornflowerblue: '6495ed',
-		cornsilk: 'fff8dc', crimson: 'dc143c',
-		cyan: '00ffff', darkblue: '00008b',
-		darkcyan: '008b8b', darkgoldenrod: 'b8860b',
-		darkgray: 'a9a9a9', darkgreen: '006400',
-		darkkhaki: 'bdb76b', darkmagenta: '8b008b',
-		darkolivegreen: '556b2f', darkorange: 'ff8c00',
-		darkorchid: '9932cc', darkred: '8b0000',
-		darksalmon: 'e9967a', darkseagreen: '8fbc8f',
-		darkslateblue: '483d8b', darkslategray: '2f4f4f',
-		darkturquoise: '00ced1', darkviolet: '9400d3',
-		deeppink: 'ff1493', deepskyblue: '00bfff',
-		dimgray: '696969', dodgerblue: '1e90ff',
-		feldspar: 'd19275', firebrick: 'b22222',
-		floralwhite: 'fffaf0', forestgreen: '228b22',
-		fuchsia: 'ff00ff', gainsboro: 'dcdcdc',
-		ghostwhite: 'f8f8ff', gold: 'ffd700',
-		goldenrod: 'daa520', gray: '808080', 
-		green: '008000', greenyellow: 'adff2f',
-		honeydew: 'f0fff0', hotpink: 'ff69b4',
-		indianred : 'cd5c5c', indigo : '4b0082',
-		ivory: 'fffff0', khaki: 'f0e68c',
-		lavender: 'e6e6fa', lavenderblush: 'fff0f5',
-		lawngreen: '7cfc00', lemonchiffon: 'fffacd',
-		lightblue: 'add8e6', lightcoral: 'f08080',
-		lightcyan: 'e0ffff', lightgoldenrodyellow: 'fafad2',
-		lightgrey: 'd3d3d3', lightgreen: '90ee90',
-		lightpink: 'ffb6c1', lightsalmon: 'ffa07a',
-		lightseagreen: '20b2aa', lightskyblue: '87cefa',
-		lightslateblue: '8470ff', lightslategray: '778899',
-		lightsteelblue: 'b0c4de', lightyellow: 'ffffe0',
-		lime: '00ff00', limegreen: '32cd32',
-		linen: 'faf0e6', magenta: 'ff00ff',
-		maroon: '800000', mediumaquamarine: '66cdaa',
-		mediumblue: '0000cd', mediumorchid: 'ba55d3',
-		mediumpurple: '9370d8', mediumseagreen: '3cb371',
-		mediumslateblue: '7b68ee', mediumspringgreen: '00fa9a',
-		mediumturquoise: '48d1cc', mediumvioletred: 'c71585',
-		midnightblue: '191970', mintcream: 'f5fffa',
-		mistyrose: 'ffe4e1', moccasin: 'ffe4b5',
-		navajowhite: 'ffdead', navy: '000080',
-		oldlace: 'fdf5e6', olive: '808000',
-		olivedrab: '6b8e23', orange: 'ffa500',
-		orangered: 'ff4500', orchid: 'da70d6',
-		palegoldenrod: 'eee8aa', palegreen: '98fb98',
-		paleturquoise: 'afeeee', palevioletred: 'd87093',
-		papayawhip: 'ffefd5', peachpuff: 'ffdab9',
-		peru: 'cd853f', pink: 'ffc0cb',
-		plum: 'dda0dd', powderblue: 'b0e0e6',
-		purple: '800080', red: 'ff0000',
-		rosybrown: 'bc8f8f', royalblue: '4169e1',
-		saddlebrown: '8b4513', salmon: 'fa8072',
-		sandybrown: 'f4a460', seagreen: '2e8b57',
-		seashell: 'fff5ee', sienna: 'a0522d',
-		silver: 'c0c0c0', skyblue: '87ceeb',
-		slateblue: '6a5acd', slategray: '708090',
-		snow: 'fffafa', springgreen: '00ff7f',
-		steelblue: '4682b4', tan: 'd2b48c',
-		teal: '008080', thistle: 'd8bfd8',
-		tomato: 'ff6347', turquoise: '40e0d0',
-		violet: 'ee82ee', violetred: 'd02090',
-		wheat: 'f5deb3', white: 'ffffff',
-		whitesmoke: 'f5f5f5', yellow: 'ffff00',
-		yellowgreen: '9acd32'
-	};
-	if(simple_colors[value]){
-		value = simple_colors[value];
-	}
-	// array of color definition objects
-	var color_defs = [
-		{
-			re: /^rgb\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)$/,
-			example: ['rgb(123, 234, 45)', 'rgb(255,234,245)'],
-			process: function (bits){
-				return [ parseInt(bits[1]), parseInt(bits[2]), parseInt(bits[3]) ];
-			}
-		},
-		{
-			re: /^(\w{2})(\w{2})(\w{2})$/,
-			example: ['#00ff00', '336699'],
-			process: function (bits){
-				return [ parseInt(bits[1], 16), parseInt(bits[2], 16), parseInt(bits[3], 16) ];
-			}
-		},
-		{
-			re: /^(\w{1})(\w{1})(\w{1})$/,
-			example: ['#fb0', 'f0f'],
-			process: function (bits){
-				return [ parseInt(bits[1] + bits[1], 16), parseInt(bits[2] + bits[2], 16), parseInt(bits[3] + bits[3], 16) ];
-			}
-		}
-	];
-	// search through the definitions to find a match
-	for (var i = 0; i < color_defs.length; i++) {
-		var re = color_defs[i].re;
-		var processor = color_defs[i].process;
-		var bits = re.exec(value);
-		if (bits) {
-			channels = processor(bits);
-			this.r = channels[0];
-			this.g = channels[1];
-			this.b = channels[2];
-			this.ok = true;
-		}
-	}
-
-	// validate/cleanup values
-	this.r = (this.r < 0 || isNaN(this.r)) ? 0 : ((this.r > 255) ? 255 : this.r);
-	this.g = (this.g < 0 || isNaN(this.g)) ? 0 : ((this.g > 255) ? 255 : this.g);
-	this.b = (this.b < 0 || isNaN(this.b)) ? 0 : ((this.b > 255) ? 255 : this.b);
-
-	// some getters
-	this.toRGB = function () {
-		return 'rgb(' + this.r + ', ' + this.g + ', ' + this.b + ')';
-	}
-	this.toHex = function () {
-		var r = this.r.toString(16);
-		var g = this.g.toString(16);
-		var b = this.b.toString(16);
-		if (r.length == 1) r = '0' + r;
-		if (g.length == 1) g = '0' + g;
-		if (b.length == 1) b = '0' + b;
-		return '#' + r + g + b;
-	}
-}
+RGBColor.prototype.toRGB = function () {
+	return 'rgb(' + this.r + ', ' + this.g + ', ' + this.b + ')';
+};
+RGBColor.prototype.toHex = function () {
+	return "#" 
+	+ (this.r + 0x10000).toString(16).substring(3).toUpperCase() 
+	+ (this.g + 0x10000).toString(16).substring(3).toUpperCase()
+	+ (this.b + 0x10000).toString(16).substring(3).toUpperCase();
+};

@@ -40,6 +40,10 @@ public class TextEditorControl extends EditControl<TextField>{
 	public Object getValue(boolean convert) {
 		return this.control.getText();
 	}
+	
+	public String getText() {
+		return this.control.getText();
+	}
 
 	@Override
 	public FieldTyp getControllForTyp(Object value) {

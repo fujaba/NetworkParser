@@ -429,5 +429,9 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	public TableComponent withCounterColumn(Column column) {
 		tableFilterView.withCounterColumn(column);
 		return this;
-	}	
+	}
+	
+	public ObservableList<Object> getSelection() {
+		return getBrowserView(GUIPosition.CENTER).getSelectionModel().getSelectedItems();
+	}
 }

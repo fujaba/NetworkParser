@@ -151,32 +151,26 @@ SpringLayout = function() {
 	this.maxRepulsiveForceDistance = 6;
 	this.k = 2;
 	this.c = 0.01;
-	this.maxVertexMovement = 0.5;
+	this.maxVertexMovement = 5;
 	this.radius = 40;
 };
 SpringLayout.prototype = {
 	layout: function(graph, width, height) {
 		this.graph = graph;
-		forceNodes = {}
+		forceNodes = [];
 		for (var i in this.graph.nodes) {
 			var node = this.getNode(i);
-			forceNodes[node.id] = {"id": node.id,"x":0,"y":0};
+			// layoutPosX = X , layoutPosY, Y
+			forceNodes.push({"id": node.id,x:0,y:0,layoutForceX:0,layoutForceY:0});
 		}
-
 		for (var i = 0; i < this.iterations; i++) {
 			this.layoutIteration(forceNodes);
 		}
-		this.layoutCalcBounds();
 
-		this.width = width;
-		this.height = height;
-		this.factorX = (width - 2 * this.radius) / (this.graph.layoutMaxX - this.graph.layoutMinX);
-		this.factorY = (height - 2 * this.radius) / (this.graph.layoutMaxY - this.graph.layoutMinY);
-		var list = this.graph.nodes;
-		for (var i in list) {
-			var n = list[i];
-			n.x = (n.x - this.graph.layoutMinX) * this.factorX + this.radius;
-			n.y = (n.y - this.graph.layoutMinY) * this.factorY + this.radius;
+		for (var i=0;i<forceNodes.length;i++) {
+			var node=this.getNode(forceNodes[i].id);
+			node.x = forceNodes[i].x;
+			node.y = forceNodes[i].y;
 		}
 		this.graph.drawGraph(width, height);
 	},
@@ -186,59 +180,27 @@ SpringLayout.prototype = {
 	getEdge: function(pos) {
 		return this.graph.edges[pos];
 	},
-	layoutCalcBounds: function() {
-		var minx = Infinity, maxx = -Infinity, miny = Infinity, maxy = -Infinity;
-		var mX=0, mY=0;
-		for (i in this.graph.nodes) {
-			var n = this.getNode(i);
-			// moving
-			if( n.x < 0 && n.x < mX) {
-				mX = n.x;
-			}
-			if( n.y < 0 && n.y < mY) {
-				mY = n.y;
-			}
-		}
-		for (i in this.graph.nodes) {
-			var n = this.getNode(i);
-			n.x = n.x - mX;
-			n.y = n.y - mY;
-			if((n.x+n.width) > maxx) maxx = (n.x+n.width);
-			if(n.x < minx) minx = n.x;
-			if((n.y+n.height) > maxy) maxy = (n.y+n.height);
-			if(n.y < miny) miny = n.y;
-		}
-		this.graph.layoutMinX = minx;
-		this.graph.layoutMaxX = maxx;
-		this.graph.layoutMinY = miny;
-		this.graph.layoutMaxY = maxy;
-	},
 	layoutIteration: function(forceNodes) {
 		// Forces on nodes due to node-node repulsions
-		var prev = new Array();
-		var forceList = new Array();
-		for(var pos1 in this.graph.nodes) {
-			var node1 = this.graph.nodes[pos1];
-			var forceNode1 = forceNodes[pos1];
-			for (var pos2 in prev) {
-				var node2 = prev[pos2];
-				var forceNode2 = forceList[pos2];
-				this.layoutRepulsive(node1, node2, forceNode1, forceNode2);
+		//var prev = new Array();
+		//var forceList = new Array();
+		for (var i = 0; i < forceNodes.length; i++) {
+			var node1 = forceNodes[i];
+			for (var j = i + 1; j < forceNodes.length; j++) {
+				var node2 = forceNodes[j];
+				this.layoutRepulsive(node1, node2);
 			}
-			prev.push(node1);
-			forceList.push(forceNode1);
 		}
-		// Forces on nodes due to edge attractions
-		for (var i in this.graph.edges){
+		for (var i=0;i<this.graph.edges.length;i++){
 			this.layoutAttractive(this.getEdge(i), forceNodes);
 		}
 
 		// Move by the given force
-		for (i in this.graph.nodes) {
-			var node = this.graph.nodes[i];
+		for (var i=0;i<forceNodes.length;i++) {
+			//var node = this.graph.nodes[i];
 			var force = forceNodes[i];
-			var xmove = this.c * force.x;
-			var ymove = this.c * force.y;
+			var xmove = this.c * force.layoutForceX;
+			var ymove = this.c * force.layoutForceY;
 
 			var max = this.maxVertexMovement;
 			if(xmove > max) xmove = max;
@@ -246,35 +208,43 @@ SpringLayout.prototype = {
 			if(ymove > max) ymove = max;
 			if(ymove < -max) ymove = -max;
 
-			node.x += xmove;
-			node.y += ymove;
+			force.x = Math.max(0, force.x + xmove);
+			force.y = Math.max(0, force.y + ymove);
+			force.layoutForceX =0;
+			force.layoutForceY =0;
 		}
 	},
-	layoutRepulsive: function(node1, node2, forceNode1, forceNode2) {
-		if (typeof node1 == 'undefined' || typeof node2 == 'undefined')
-			return;
+	layoutRepulsive: function(node1, node2) {
 		var dx = node2.x - node1.x;
 		var dy = node2.y - node1.y;
 		var d2 = dx * dx + dy * dy;
 		if(d2 < 0.01) {
 			dx = 0.1 * Math.random() + 0.1;
 			dy = 0.1 * Math.random() + 0.1;
-			var d2 = dx * dx + dy * dy;
+			d2 = dx * dx + dy * dy;
 		}
 		var d = Math.sqrt(d2);
 		if(d < this.maxRepulsiveForceDistance) {
 			var repulsiveForce = this.k * this.k / d;
-			forceNode2.x += repulsiveForce * dx / d;
-			forceNode2.y += repulsiveForce * dy / d;
-			forceNode1.x -= repulsiveForce * dx / d;
-			forceNode1.y -= repulsiveForce * dy / d;
+			node2.layoutForceX += repulsiveForce * dx / d;
+			node2.layoutForceY += repulsiveForce * dy / d;
+			node1.layoutForceX -= repulsiveForce * dx / d;
+			node1.layoutForceY -= repulsiveForce * dy / d;
 		}
+	},
+	getForceNode: function(forceNodes, id) {
+		for (var i=0;i<forceNodes.length;i++) {
+			if(forceNodes[i].id==id){
+				return forceNodes[i];
+			}
+		}
+		return null;
 	},
 	layoutAttractive: function(edge, forceNodes) {
 		var node1 = edge.source;
 		var node2 = edge.target;
-		var force1 = forceNodes[node1.id];
-		var force2 = forceNodes[node2.id];
+		var force1 = this.getForceNode(forceNodes, node1.id);
+		var force2 = this.getForceNode(forceNodes, node2.id);
 		if(!force1 || !force2){
 			return;
 		}
@@ -285,7 +255,7 @@ SpringLayout.prototype = {
 		if(d2 < 0.01) {
 			dx = 0.1 * Math.random() + 0.1;
 			dy = 0.1 * Math.random() + 0.1;
-			var d2 = dx * dx + dy * dy;
+			d2 = dx * dx + dy * dy;
 		}
 		var d = Math.sqrt(d2);
 		if(d > this.maxRepulsiveForceDistance) {
@@ -296,9 +266,9 @@ SpringLayout.prototype = {
 		if(edge.attraction == undefined) edge.attraction = 1;
 		attractiveForce *= Math.log(edge.attraction) * 0.5 + 1;
 
-		force2.x -= attractiveForce * dx / d;
-		force2.y -= attractiveForce * dy / d;
-		force1.x += attractiveForce * dx / d;
-		force1.y += attractiveForce * dy / d;
+		force2.x = Math.max(0, force2.x - attractiveForce * dx / d);
+		force2.y = Math.max(0, force2.y - attractiveForce * dy / d);
+		force1.x = Math.max(0, force1.x + attractiveForce * dx / d);
+		force1.y = Math.max(0, force1.y +attractiveForce * dy / d);
 	}
 };

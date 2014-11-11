@@ -36,8 +36,8 @@ Drawer.prototype.createSubGraph = function(node, element){
 	node.layout();
 };
 Drawer.prototype.getBoard = function(graph){
-	if(graph.parent){
-		return this.getBoard(graph.parent);
+	if(graph._parent){
+		return this.getBoard(graph._parent);
 	}
 	return graph.board;
 };
@@ -469,13 +469,19 @@ SVGDrawer.prototype.drawComboBox = function(elements, activText, action){
 SVGDrawer.prototype.createContainer = function(graph){
 	var that = this;
 	var board;
-	if(graph.parent){
+	if(graph._parent){
 		board = this.createBoard({tag:"g"}, graph, []);
 	}else{
+		var list = ["HTML", "SVG", "PNG"];
+		if( typeof(svgConverter)!="undefined"){
+			list.push(typeof(jsEPS)!="undefined" ? "EPS" : "");
+			list.push(typeof(jsPDF)!="undefined" ? "PDF" : "");
+		}
+
 		board = this.createBoard({tag:"svg", xmlns:"http://www.w3.org/2000/svg", "xmlns:svg":"http://www.w3.org/2000/svg", "xmlns:xlink":"http://www.w3.org/1999/xlink"}, graph, 
 		[
 		this.drawButton("HTML", (function (e) {that.model.setTyp("HTML");})),
-		this.drawComboBox(["HTML", "SVG", "PNG", typeof(svgElementToPdf)!="undefined" ? "PDF" : ""], "Save", (function (e) {that.removeToolItems(board);that.model.SaveAs(e.currentTarget.value);}))
+		this.drawComboBox(list, "Save", (function (e) {that.removeToolItems(board);that.model.SaveAs(e.currentTarget.value);}))
 		]);
 		board.appendChild( this.drawDef() );
 	}
@@ -597,7 +603,7 @@ SVGDrawer.prototype.getNode = function(node, calculate){
 	rect["stroke"] = strokeColor;
 	g.appendChild( this.createObject(rect) );
 
-	if(typ!="patternobject" && this.model.options.design.toLowerCase()=="color"){
+	if(typ!="patternobject"){
 		g.appendChild( this.createObject({tag:"rect", rx:0, "x": x, "y": y, "width":width, height:30, fill:"none", style:"fill:url(#classelement);"}));
 	}
 
