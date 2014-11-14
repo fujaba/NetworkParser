@@ -99,6 +99,8 @@ GraphNode.prototype.getRoot = function() {
 /* Graph */
 Graph = function(json, options) {
 	this.init();
+	this.left=0;
+	this.top=0;
 	this.nodeCount=0;
 	this.nodes = {};
 	this.edges = [];
@@ -386,7 +388,7 @@ Graph.prototype.calcLines = function(){
 		ownAssoc[i].calcOwnEdge();
 		var sourcePos = ownAssoc[i].getCenterPosition(ownAssoc[i].source, ownAssoc[i].start);
 		ownAssoc[i].calcInfoPos( sourcePos, ownAssoc[i].source, ownAssoc[i].sourceInfo);
-		
+
 		sourcePos = ownAssoc[i].getCenterPosition(ownAssoc[i].target, ownAssoc[i].end);
 		ownAssoc[i].calcInfoPos( sourcePos, ownAssoc[i].target, ownAssoc[i].targetInfo);
 	}
@@ -420,8 +422,11 @@ Graph.prototype.resize = function(){
 	for (var i in this.nodes) {
 		var node = this.nodes[i];
 		this.moveToRaster(node);
+
 		this.MinMax(node, min, max);
 	}
+	this.left = this.top = 0;
+
 	this.calcLines();
 	for(var i=0;i<this.edges.length;i++){
 		var edge=this.edges[i];
@@ -473,6 +478,10 @@ Graph.prototype.drawGraph = function(width, height){
 	}
 };
 Graph.prototype.moveToRaster = function(node){
+	if(this.left>0 || this.top > 0) {
+		node.x += this.left;
+		node.y = this.top;
+	}
 	if(this.options.raster){
 		node.x = parseInt(node.x / 10) * 10;
 		node.y = parseInt(node.y / 10) * 10;
@@ -480,6 +489,7 @@ Graph.prototype.moveToRaster = function(node){
 			this.drawer.setPos(node.htmlNode, node.x, node.y);
 		}
 	}
+
 }
 
 Graph.prototype.layout = function(minwidth, minHeight){
@@ -963,6 +973,9 @@ Edge.prototype.draw = function(board, drawer){
 	}
 	var options = drawer.model.options;
 	this.drawSourceText(board, drawer, options);
+	if(this.info) {
+		this.addElement(board, drawer.createInfo(this.infoPos, false, this.info));
+	}
 	this.drawTargetText(board, drawer, options);
 };
 Edge.prototype.drawSourceText = function(board, drawer, options){
@@ -1032,6 +1045,7 @@ Edge.prototype.calcCenterLine = function(){
 		this.addEdgeToNode(source, sourcePos.id);
 		this.addEdgeToNode(target, targetPos.id);
 		this.path.push ( new Line(sourcePos, targetPos, this.lineStyle, this.style));
+		this.infoPos = new Pos( (sourcePos.x + targetPos.x)/2, (sourcePos.y + targetPos.y)/2 );
 	}
 	return true;
 };
@@ -1113,6 +1127,8 @@ Edge.prototype.calcOwnEdge = function(){
 		sPos = tPos;
 		tPos = new Pos(sPos.x, this.source.center.y);
 		this.path.push (new Line(sPos, tPos, this.lineStyle));
+
+		this.infoPos = new Pos( (sPos.x + tPos.x)/2, sPos.y );
 	}else if(this.end==Edge.Position.UP || this.end==Edge.Position.DOWN){
 		if(this.start==Edge.Position.UP){
 			sPos = tPos;
@@ -1133,6 +1149,8 @@ Edge.prototype.calcOwnEdge = function(){
 		sPos = tPos;
 		tPos = new Pos(this.source.center.x, sPos.y);
 		this.path.push (new Line(sPos, tPos, this.lineStyle));
+
+		this.infoPos = new Pos( sPos.x , (sPos.y + tPos.y)/2 );
 	}
 	sPos = tPos;
 	this.path.push (new Line(sPos, this.getCenterPosition(this.source, this.end), this.lineStyle));
