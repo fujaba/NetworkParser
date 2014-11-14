@@ -32,6 +32,8 @@ Drawer.prototype.createSubGraph = function(node, element){
 	if(node.board) {
 		node.root.removeChild(node.board);
 	}
+	node.left= 30;
+	node.top= 30;
 	node.board = element;
 	node.layout();
 };

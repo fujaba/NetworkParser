@@ -163,7 +163,6 @@ svgConverter.prototype.attr = function(node, name){return this.k * parseInt(node
 
 jsEPS=function(options) {
 	this.max = 0;
-	
 	this.inverting = (options && typeof(options.inverting) != 'undefined' ? options.inverting : true);
 	this.output=["%!PS-Adobe-3.0 EPSF-3.0", "1 setlinewidth"];
 	this.out("/FSD {findfont exch scalefont def} bind def % In the document prolog: define");
@@ -172,6 +171,7 @@ jsEPS=function(options) {
 	this.out("/F1  10  /Helvetica  FSD % At the start of the script: set up");
 	this.font=1;
 };
+
 jsEPS.prototype.setFillColor = function(r, g, b){/*FIXME*/};
 jsEPS.prototype.setDrawColor = function(r, g, b){/*FIXME*/};
 jsEPS.prototype.ellipse = function(cx, cy, rx, ry, colorMode){/*FIXME*/};
@@ -186,11 +186,13 @@ jsEPS.prototype.line = function(x1, y1, x2, y2) {this.out("newpath "+x1+" "+this
 jsEPS.prototype.moveto = function(x, y) {this.out(x+" "+this.y(y)+" moveto");}
 jsEPS.prototype.lineto = function(x, y) {this.out(x+" "+this.y(y)+" lineto");this.out("stroke");}
 jsEPS.prototype.rect = function(x, y, width, height, style) {
-	y = y + this.inverting ? height : 0;
-	
-	if(style.indexOf("fill:url(#classelement); ")>0){
+	y = y + (this.inverting ? height : 0);
+	if(style.indexOf("fill:url(#classelement);")>=0){
+		this.out("gsave 0.93 0.93 0.93 setrgbcolor newpath "+x+" "+this.y(y)+" "+width+" "+height+" rectfill grestore");
+	}else{
+		this.out("newpath "+x+" "+this.y(y)+" "+width+" "+height+" rectstroke");
 	}
-	this.out("newpath "+x+" "+this.y(y)+" "+width+" "+height+" rectstroke");
+
 }
 jsEPS.prototype.text = function(x, y, text) {this.out("("+text+") "+x+" "+this.y(y)+" F1 SMS");};
 jsEPS.prototype.save =function (name) {
