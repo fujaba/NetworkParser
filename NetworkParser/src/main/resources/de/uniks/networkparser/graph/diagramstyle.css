@@ -152,14 +152,13 @@
 	opacity:0.75;
 	cursor: hand;
 }
-
 .btn:hover{
 	opacity:0.75;
-	cursor: hand;
+	cursor: pointer;
 }
 
 .hand{
-	cursor: hand;
+	cursor: pointer;
 }
 .saveBtn{
 	fill:url(#reflect);
