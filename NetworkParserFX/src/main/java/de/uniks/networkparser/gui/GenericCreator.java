@@ -53,7 +53,7 @@ public class GenericCreator implements SendableEntityCreator{
 		this.item = value;
 
 		// Init all Values
-		if(this.clazz==null){
+		if(this.item==null){
    		 	this.properties = new String[0];
    	 	}else{
    	 		this.clazz = item.getClass();
@@ -115,7 +115,7 @@ public class GenericCreator implements SendableEntityCreator{
 
 	private boolean setNewValue(Object entity, String methodName, Object value) {
 		try {
-			this.clazz.getMethod("set" + methodName, value.getClass()).invoke(entity, value);
+			this.clazz.getMethod(methodName, value.getClass()).invoke(entity, value);
 			return true;
 		} catch (Exception e) { }
 		// maybe a number

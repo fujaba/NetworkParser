@@ -62,7 +62,7 @@ Drawer.prototype.getColor = function(style, defaultColor) {
 	return "#000";
 };
 Drawer.prototype.addFontAttributes = function(node){
-	if(this.model && this.model.options.font && (!this.noFonts || this.noFonts.indexOf(node.localName.toLowerCase())<0)){
+	if(this.model && this.model.options && this.model.options.font && (!this.noFonts || this.noFonts.indexOf(node.localName.toLowerCase())<0)){
 		for (var key in this.model.options.font) {
 			if(this.model.options.font[key]){
 				if(node.style ){
@@ -89,6 +89,12 @@ Drawer.prototype.createObject = function(node, model, ns){
 	for (var key in node) {
 		var k = key.toLowerCase();
 		if(k=='tag')continue;
+		if(k=='rotate'){
+			if(node[key]!=0){
+				element.setAttribute("transform", "rotate("+node[key]+","+node.x+","+node.y+")");
+			}
+			continue;
+		}
 		if(k=='content_src'&& tag=="image") continue;
 		if(k=='value'&& tag=="text") continue;
 		if(k.indexOf("-")>=0){
@@ -132,9 +138,10 @@ Drawer.prototype.createBoard = function(node, graph, listener) {
 	
 	this.model = graph;	
 	this.toolitems=[];
-	
-	for(var i=0;i<listener.length;i++) {
-		this.toolitems.push(listener[i]);
+	if(listener){
+		for(var i=0;i<listener.length;i++) {
+			this.toolitems.push(listener[i]);
+		}
 	}
 	var board = this.createObject(node, graph);
 	board.className="Board";
@@ -157,11 +164,19 @@ HTMLDrawer.prototype = Object_create(Drawer.prototype);
 HTMLDrawer.prototype.showInfoBox = function(){return true;}
 HTMLDrawer.prototype.setPos = function(item, x, y){item.style.left = x+"px";item.style.top = y+"px";};
 HTMLDrawer.prototype.setSize = function(item, x, y){item.style.width = x+"px";item.style.height = y+"px";};
+HTMLDrawer.prototype.getSize = function(item){return {x:item.clientWidth, y:item.clientHeight};};
 HTMLDrawer.prototype.createContainer = function(graph){
 	var that = this;
-	return this.createBoard({tag:"div"}, graph,
-		[this.drawButton("SVG", (function (e) {that.model.setTyp("SVG");}))]
-	);
+	var buttons = [];
+	if(graph && graph.options){
+		for(var i=0;i<graph.options.buttons.length;i++){
+			var typ = graph.options.buttons[i];
+			if(typ!="HTML"){
+				buttons.push(this.drawButton(typ, (function (e) {that.model.setTyp(typ);})));
+			}
+		}
+	}
+	return this.createBoard({tag:"div"}, graph, buttons);
 };
 HTMLDrawer.prototype.createImage = function(model){
 	var img = new Image();
@@ -182,12 +197,13 @@ HTMLDrawer.prototype.createImage = function(model){
 	return img;
 };
 
-HTMLDrawer.prototype.createCell = function(parent, tag, innerHTML){
+HTMLDrawer.prototype.createCell = function(parent, tag, innerHTML, typ){
 	var tr = this.createObject({"tag":'tr'});
 	var cell = this.createObject({"tag":tag});
 	if(innerHTML) {
 		cell.innerHTML = innerHTML;
 	}
+	this.model.createElement(cell, typ);
 	tr.appendChild(cell);
 	parent.appendChild(tr);
 	return cell;
@@ -234,6 +250,8 @@ HTMLDrawer.prototype.getNode = function(node, calculate){
 		htmlElement.appendChild(this.createText(node.content_plain));return htmlElement;
 	}
 	var table = this.createObject({tag:'table', border:"0"});
+	table.style.width="100%";
+	table.style.height="100%";
 	htmlElement.appendChild(table);
 	var cell;
 	if(node.head_src){
@@ -258,13 +276,13 @@ HTMLDrawer.prototype.getNode = function(node, calculate){
 	if(node.href){
 		info = "<a href=\""+node.href+"\">" + info + "</a>";
 	}
-	this.createCell(table, "th", info);
+	this.createCell(table, "th", info, "id");
 
 	cell = null;
 	if(node.attributes){
 		var first=true;
 		for(var a = 0; a < node.attributes.length; a++){
-			cell = this.createCell(table, "td", node.attributes[a]);
+			cell = this.createCell(table, "td", node.attributes[a], "attribute");
 			if(!first){
 				cell.className = 'attributes';
 			}else{
@@ -277,7 +295,7 @@ HTMLDrawer.prototype.getNode = function(node, calculate){
 		var first=true;
 		for(var m=0;m < node.methods.length;m++){
 			var method = node.methods[m];
-			cell = this.createCell(table, "td", node.methods[m]);
+			cell = this.createCell(table, "td", node.methods[m], "method");
 			if(!first){
 				cell.className = 'methods';
 			}else{
@@ -295,7 +313,7 @@ HTMLDrawer.prototype.getNode = function(node, calculate){
 	return htmlElement;
 };
 
-HTMLDrawer.prototype.createInfo = function(item, calculate, text) {
+HTMLDrawer.prototype.createInfo = function(item, calculate, text, angle) {
 	var info = this.createObject({tag:"div"}, item);
 	info.className="EdgeInfo";
 	info.style.fontSize = this.model.options.font["font-size"];
@@ -651,9 +669,6 @@ SVGDrawer.prototype.addChild = function(node, parent, child){
 SVGDrawer.prototype.supercreateObject = SVGDrawer.prototype.createObject;
 SVGDrawer.prototype.createObject = function(node, model, ns){
 	var element = this.supercreateObject(node, model, "http://www.w3.org/2000/svg");
-	if(node.tag.toLowerCase()=="path"){
-		element.setAttribute('fill', "rgb(255, 255, 255)");
-	}
 	if(node.tag.toLowerCase()=="text" && node.value){
 		element.appendChild(document.createTextNode(node.value));
 	}
@@ -664,10 +679,10 @@ SVGDrawer.prototype.createObject = function(node, model, ns){
 	return element;
 };
 
-SVGDrawer.prototype.createInfo = function(item, calculate, text) {
+SVGDrawer.prototype.createInfo = function(item, calculate, text, angle) {
 	var items = text.split("\n");
 	if(!calculate && items.length>1){
-		var group = this.createObject({tag:"g", class:"draggable"}, item);
+		var group = this.createObject({tag:"g", class:"draggable", rotate:angle}, item);
 		for(var i = 0;i<items.length;i++) {
 			var child = this.createObject({tag:"text", "text-anchor":"left", "x": item.x, "y": item.y+(item.height*i)});
 			child.appendChild(document.createTextNode(items[i]));
@@ -676,7 +691,7 @@ SVGDrawer.prototype.createInfo = function(item, calculate, text) {
 		this.model.addNodeLister(group, item);
 		return group;
 	}
-	var group = this.createObject({tag:"text", "text-anchor":"left", "x": item.x, "y": item.y, value:text, "id": item.id, class:"draggable"}, item);
+	var group = this.createObject({tag:"text", "text-anchor":"left", "x": item.x, "y": item.y, value:text, "id": item.id, class:"draggable", rotate:angle}, item);
 	if(!calculate){
 		this.model.addNodeLister(group, item);
 	}
@@ -694,11 +709,11 @@ SVGDrawer.prototype.createLine = function(x1, y1, x2, y2, lineStyle, style){
 };
 SVGDrawer.prototype.createGroup = function(node, group){
 	var entity = this.createObject({tag:"g"});
-	if(group.scale){
-		entity.setAttribute('transform', "translate("+group.x+" "+group.y+") scale("+group.scale+")");
-	}else{
-		entity.setAttribute('transform', "translate("+group.x+" "+group.y+")");
-	}
+	
+	var transform = "translate("+group.x+" "+group.y+")";
+	if(group.scale){ transform += " scale("+group.scale+")";}
+	if(group.rotate){ transform += " rotate("+group.rotate+")";}
+	entity.setAttribute('transform', transform);
 	entity.setAttribute("height", group.height);
 	entity.setAttribute("width", group.width);
 	for (var i = 0; i < group.items.length; ++i){
@@ -811,7 +826,7 @@ CanvasDrawer.prototype.getNode = function(node, calculate){
 	}
 	return null;
 };
-CanvasDrawer.prototype.createInfo = function(item, calculate, text) {
+CanvasDrawer.prototype.createInfo = function(item, calculate, text, angle) {
 	return null;
 };
 CanvasDrawer.prototype.createLine = function(x1, y1, x2, y2, lineStyle, style){
@@ -845,7 +860,7 @@ CanvasDrawer.prototype.onFinishImage = function(event){
 	} catch (e) {
 		this.model.clearBoard();
 		this.model.drawer = this.oldDrawer;
-		this.model.drawGraph(0,0);
+		this.model.draw(0,0);
 		alert("Browser nicht unterstuetzt");
 	}
 };
@@ -863,7 +878,12 @@ SymbolLibary.prototype.upFirstChar = function(txt)
 {
 	return txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase();
 };
-
+SymbolLibary.prototype.create = function(node, drawer){
+	if(this.isSymbol(node)) {
+		return this.draw(drawer, node, false);
+	}
+	return null;
+};
 SymbolLibary.prototype.isSymbol = function(node){
 	var fn = this["draw" + this.upFirstChar(node.typ)];
 	return typeof fn === "function";
@@ -1007,6 +1027,16 @@ SymbolLibary.prototype.drawMin = function(node, calculte){
 			{tag:"path", fill: "none", stroke:"#000", "stroke-width":0.2, "stroke-linejoin":"round", d:"m 0,0 19.47716,0 0,19.47716 -19.47716,0 z"},
 			{tag:"path", fill: "none", stroke:"#000", "stroke-width":"1px", "stroke-linejoin":"miter", d:"m 4,10 13.48215,-0.0446"}
 		]};
+};
+SymbolLibary.prototype.drawArrow = function(node, calculte){
+	return {
+		x: node.x,
+		y:node.y,
+		width:20,
+		height:20,
+		rotate: node.rotate,
+		items:[ {tag:"path", fill: "#000", stroke:"#000", d:"M 0,0 10,4 0,9 z"} ]
+	}
 };
 SymbolLibary.prototype.drawMax = function(node, calculte){
 	return {
