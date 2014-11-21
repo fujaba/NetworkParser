@@ -74,6 +74,9 @@ public class GraphMethod extends AbstractList<GraphParameter> implements GraphMe
 			i++;
 		}
 		sb.append(")");
+		if(returnType!=null && returnType!= GraphDataType.VOID){
+			sb.append(" "+returnType.getValue());
+		}
 		return sb.toString();
 	}
 

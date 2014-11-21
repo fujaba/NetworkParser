@@ -77,7 +77,7 @@ OrderedLayout.prototype = {
 			node.x = Math.max((node.x - this.graph.layoutMinX), 1) * this.factorX + this.radius;
 			node.y = Math.max((node.y - this.graph.layoutMinY), 1) * this.factorY + this.radius;
 		}
-	this.graph.drawGraph(width, height);
+	this.graph.draw(width, height);
 	}
 };
 //	######################################################### FIXED #########################################################
@@ -111,7 +111,7 @@ FixedLayout.prototype = {
 		this.height = height;
 		this.factorX = (width - 2 * this.radius) / (g.layoutMaxX - g.layoutMinX);
 		this.factorY = (height - 2 * this.radius) / (g.layoutMaxY - g.layoutMinY);
-		this.graph.drawGraph(width, height);
+		this.graph.draw(width, height);
 	}
 };
 //	######################################################### CIRCULAR #########################################################
@@ -142,7 +142,7 @@ CircularLayout.prototype = {
 		this.width = width;
 		this.height = height;
 		this.postlayout();
-		this.graph.drawGraph(width, height);
+		this.graph.draw(width, height);
 	}
 };
 //	######################################################### SPRING #########################################################
@@ -172,7 +172,7 @@ SpringLayout.prototype = {
 			node.x = forceNodes[i].x;
 			node.y = forceNodes[i].y;
 		}
-		this.graph.drawGraph(width, height);
+		this.graph.draw(width, height);
 	},
 	getNode: function(pos) {
 		return this.graph.nodes[pos];

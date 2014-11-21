@@ -163,6 +163,7 @@ svgConverter.prototype.attr = function(node, name){return this.k * parseInt(node
 
 jsEPS=function(options) {
 	this.max = 0;
+	this.min = 999;
 	this.inverting = (options && typeof(options.inverting) != 'undefined' ? options.inverting : true);
 	this.output=["%!PS-Adobe-3.0 EPSF-3.0", "1 setlinewidth"];
 	this.out("/FSD {findfont exch scalefont def} bind def % In the document prolog: define");
@@ -180,7 +181,7 @@ jsEPS.prototype.setFont = function(value) {this.out("/F"+(this.font++)+" 10 /"+v
 jsEPS.prototype.setTextColor = function(r, g, b){/*FIXME*/};
 
 jsEPS.prototype.setLineWidth = function(value){this.out(value+" setlinewidth");};
-jsEPS.prototype.y = function(value){this.max=Math.max(this.max, value);return this.inverting ? "%y("+value+")" : value;}
+jsEPS.prototype.y = function(value){this.max=Math.max(this.max, value);this.min=Math.min(this.min, value);return this.inverting ? "%y("+value+")" : value;}
 jsEPS.prototype.out =function(value) {this.output.push(value);};
 jsEPS.prototype.line = function(x1, y1, x2, y2) {this.out("newpath "+x1+" "+this.y(y1)+" moveto "+x2+" "+this.y(y2)+" lineto stroke");}
 jsEPS.prototype.moveto = function(x, y) {this.out(x+" "+this.y(y)+" moveto");}
@@ -194,12 +195,14 @@ jsEPS.prototype.rect = function(x, y, width, height, style) {
 	}
 
 }
-jsEPS.prototype.text = function(x, y, text) {this.out("("+text+") "+x+" "+this.y(y)+" F1 SMS");};
+jsEPS.prototype.text = function(x, y, text) {this.out("("+text.replace("&lt;", "<").replace("&gt;",">") +") "+x+" "+this.y(y)+" F1 SMS");};
 jsEPS.prototype.save =function (name) {
 	var typ = "application/postscript";
 	var a = document.createElement("a");
 	var data="";
 	var pos;
+	console.log(this.min);
+	console.log(this.max);
 	for(var i=0;i<this.output.length;i++){
 		var text = this.output[i];
 		if(this.inverting) {
