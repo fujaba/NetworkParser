@@ -28,6 +28,14 @@ Drawer.prototype.onFinishImage = function(){};
 Drawer.prototype.setPos = function(item, x, y){item.x = x;item.y = y;};
 Drawer.prototype.createText = function(text){return document.createTextNode(text);}
 Drawer.prototype.setSize = function(item, x, y){item.width = x;item.height = y;};
+Drawer.prototype.isIE = function() {return document.all&&!window.opera;}
+Drawer.prototype.bindEvent = function(el, eventName, eventHandler) {
+	if (el.addEventListener){
+		el.addEventListener(eventName, eventHandler, false); 
+	} else if (el.attachEvent){
+		el.attachEvent('on'+eventName, eventHandler);
+	}
+};
 Drawer.prototype.createSubGraph = function(node, element){
 	if(node.board) {
 		node.root.removeChild(node.board);
@@ -115,12 +123,16 @@ Drawer.prototype.createObject = function(node, model, ns){
 Drawer.prototype.removeToolItems = function(board) {
 	for(var i=0;i<this.toolitems.length;i++){
 		this.toolitems[i].close();
-		board.removeChild( this.toolitems[i] );
+		if(this.toolitems[i].showed) {
+			board.removeChild( this.toolitems[i] );
+			this.toolitems[i].showed = false;
+		}
 	}
 }
 Drawer.prototype.showToolItems = function(board) {
 	for(var i=0;i<this.toolitems.length;i++){
 		board.appendChild( this.toolitems[i] );
+		 this.toolitems[i].showed = true;
 	}
 };
 
@@ -151,7 +163,10 @@ Drawer.prototype.createBoard = function(node, graph, listener) {
 		that.showToolItems(board);
 	});
 	board.onmouseout = (function (event) {
-		if(!that.isInTool(event.x, event.y, board.offsetLeft, board.offsetTop)){
+		var left = board.offsetLeft, top =  board.offsetTop, x = event.pageX, y = event.pageY;
+		if(!left){left = board.parentNode.offsetLeft;}
+		if(!top){top = board.parentNode.offsetTop;}
+		if(!that.isInTool(x, y, left, top)){
 			that.removeToolItems(board);
 		}
 	});
@@ -172,7 +187,7 @@ HTMLDrawer.prototype.createContainer = function(graph){
 		for(var i=0;i<graph.options.buttons.length;i++){
 			var typ = graph.options.buttons[i];
 			if(typ!="HTML"){
-				buttons.push(this.drawButton(typ, (function (e) {that.model.setTyp(typ);})));
+				buttons.push(this.drawButton(typ, (function () {that.model.setTyp(typ);})));
 			}
 		}
 	}
@@ -362,13 +377,15 @@ HTMLDrawer.prototype.onFinishImage = function(event){
 	this.model.layouting();
 }
 HTMLDrawer.prototype.drawButton = function(text, action){
-	var btn = this.createObject({tag:"button", tool:{}, width:60, height:28});
+	var btn = this.createObject({tag:"button", tool:{}, width:60, height:28, style:"cursor: pointer;"});
+	btn.style.cursor="hand";
 	btn.tool.x = 0;
 	btn.tool.y = 8;
 	btn.tool.height = btn.height;
 	btn.tool.width = btn.width;
 	btn.appendChild(this.createText(text));
-	btn.onclick = action;
+	
+	this.bindEvent(btn, "mousedown", action);
 	btn.close = function(){};
 	return btn;
 };
@@ -405,7 +422,7 @@ SVGDrawer.prototype.drawButton = function(text, action){
 	btn.tool.width = 60;
 	btn.appendChild( this.createObject({tag:"rect", rx:8, x: btn.tool.x, y:btn.tool.y, width:btn.tool.width, height:btn.tool.height, stroke:"#000", filter:"url(#drop-shadow)", class:"saveBtn"}));
 	btn.appendChild( this.createObject({tag:"text", x:(btn.tool.x+10), y:(btn.tool.y+18), fill:"black", value:text, class:"hand"}));
-	btn.onclick = action;
+	this.bindEvent(btn, "mousedown", action);
 	btn.close = function(){};
 	return btn;
 };
