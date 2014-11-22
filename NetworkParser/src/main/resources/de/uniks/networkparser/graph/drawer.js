@@ -139,6 +139,7 @@ Drawer.prototype.showToolItems = function(board) {
 Drawer.prototype.isInTool = function(x, y, ox, oy) {
 	for(var i=0;i<this.toolitems.length;i++){
 		var g = this.toolitems[i];
+		console.log("X: "+(g.tool.x+ox)+"<"+x+"<"+(g.tool.x+g.tool.width+ox)+",Y: "+(g.tool.y+oy)+"<"+y+"<"+(g.tool.y+g.tool.height+oy));
 		if(x>=(g.tool.x+ox) && x<=(g.tool.x+g.tool.width+ox) && y>=(g.tool.y+oy) && y<=(g.tool.y+g.tool.height+oy)) {
 			return true;
 		}
@@ -163,9 +164,10 @@ Drawer.prototype.createBoard = function(node, graph, listener) {
 		that.showToolItems(board);
 	});
 	board.onmouseout = (function (event) {
-		var left = board.offsetLeft, top =  board.offsetTop, x = event.pageX, y = event.pageY;
+		var left = board.offsetLeft, top =  board.offsetTop, x = Math.floor(event.pageX), y = Math.floor(event.pageY);
 		if(!left){left = board.parentNode.offsetLeft;}
 		if(!top){top = board.parentNode.offsetTop;}
+		//console.log("x:"+x+" ,y:"+y+", left: "+left+", top:"+top);
 		if(!that.isInTool(x, y, left, top)){
 			that.removeToolItems(board);
 		}
