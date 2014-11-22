@@ -1,18 +1,28 @@
-import java.text.SimpleDateFormat
-
+// -PlectureBuild -Pjenkins clean --refresh-dependencies build artifactoryPublish
+// gradlew clean test build jar build javadocJar build fatJar
+// gradlew clean test build jar build javadocJar build fatJar -PNetworkParserFX 
+// gradlew javadoc all
 apply plugin: 'java'
 apply plugin: 'maven'
-apply from: 'gradle/ide.gradle'
+apply from: 'gradle/version.gradle'
+apply from: 'gradle/tasks.gradle'
 
 // only for jenkins
 if(project.hasProperty('jenkins')) {
 	apply from: 'gradle/artifactory.gradle'
-	apply from: 'gradle/version.gradle'
     apply plugin: 'jacoco'
 	
 	//tbd - need configuration
 	//apply plugin: 'checkstyle'
 	//apply plugin: 'findbugs'
+} else {
+	apply from: 'gradle/ide.gradle'
+}
+if(project.hasProperty('JarName')){
+	apply from: 'gradle/'+project.getProperty('JarName')+'.gradle'
+	project.archivesBaseName = project.getProperty('JarName')
+} else {
+	apply from: 'gradle/NetworkParser.gradle'
 }
 
 buildscript {
@@ -24,57 +34,54 @@ buildscript {
     }
 }
 
+jacoco {
+    toolVersion = "0.7.0.201403182114"
+}
+task codeCoverageReport(type: JacocoReport) {
+
+    // Gather execution data from all subprojects
+    // (change this if you e.g. want to calculate uni test/integration test coverage separately)
+    // executionData
+fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
+
+    // Add all relevant sourcesets from the subprojects
+    subprojects.each {
+       sourceSets it.sourceSets.main
+    }
+
+    reports {
+      xml.enabled true
+      html.enabled true
+      html.destination "${buildDir}/reports/jacoco"
+      csv.enabled false
+    }
+}
+
+// always run the tests before generating the report
+codeCoverageReport.dependsOn {
+    subprojects*.test
+}
+
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
+
 repositories {
 	mavenCentral()
+	if(project.hasProperty('JarName')){
+		// NetworkParser
+		if(project.hasProperty('lectureBuild')) {
+			maven { url "https://se.cs.uni-kassel.de/artifactory/lecture" }
+		}else{
+			maven { url "https://se.cs.uni-kassel.de/artifactory/libs-snapshot-local" }
+		}
+	}
 }
 
 dependencies {
 	testCompile group: 'junit', name: 'junit', version: '4.+'
-}
-
-jar {
-	from sourceSets.main.allJava
-
-	manifest {
-		attributes 'Specification-Version': "4.2.23.${revisionNumber()} ${today()}",
-			'Implementation-Title': 'Networkparser',
-			'Specification-Title': 'Networkparser',
-			'Built-Time': today(),
-			'Created-By': "4.2.23.${revisionNumber()} ${today()} ${System.properties['user.name']}",
-			'Built-By': "${System.properties['user.name']}",
-			'Location': "${System.properties['user.language']}",
-			'Author': 'Stefan Lindel',
-			'Version': revisionNumber(),
-			'Implementation-Version': "4.2.23.${revisionNumber()} ${today()}",
-			//'GIT-Branch': branchName(),
-			//'GIT-CommitId': '${LastCommit}',
-			'GIT-Revision': revisionNumber(),
-			'Java-Version': "${System.properties['java.version']}",
-			'Bundle-Description': 'NetworkParser',
-			'Bundle-ClassPath': '.'
+	if(project.hasProperty('JarName')){
+		compile 'de.uniks:NetworkParser:4.2+:full'
 	}
 }
-
-def revisionNumber() {
-    def gitFolder = "$projectDir/.git/"
-    def takeFromHash = 12
-
-    def head = new File(gitFolder + "HEAD").text.split(":")
-    def isCommit = head.length == 1
- 
-    if(isCommit) return head[0].trim().take(takeFromHash)
- 
-    def refHead = new File(gitFolder + head[1].trim())
-    refHead.text.trim().take takeFromHash
-}
-
-def today() {
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-    Date date = new Date()
-    sdf.format(date)
-}
-
 
