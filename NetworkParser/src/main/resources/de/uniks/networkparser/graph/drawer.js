@@ -29,7 +29,7 @@ Drawer.prototype.setPos = function(item, x, y){item.x = x;item.y = y;};
 Drawer.prototype.createText = function(text){return document.createTextNode(text);}
 Drawer.prototype.setSize = function(item, x, y){item.width = x;item.height = y;};
 Drawer.prototype.isIE = function() {return document.all&&!window.opera;}
-Drawer.prototype.bindEvent = function(el, eventName, eventHandler) {
+Drawer.prototype.bind = function(el, eventName, eventHandler) {
 	if (el.addEventListener){
 		el.addEventListener(eventName, eventHandler, false); 
 	} else if (el.attachEvent){
@@ -139,7 +139,6 @@ Drawer.prototype.showToolItems = function(board) {
 Drawer.prototype.isInTool = function(x, y, ox, oy) {
 	for(var i=0;i<this.toolitems.length;i++){
 		var g = this.toolitems[i];
-		console.log("X: "+(g.tool.x+ox)+"<"+x+"<"+(g.tool.x+g.tool.width+ox)+",Y: "+(g.tool.y+oy)+"<"+y+"<"+(g.tool.y+g.tool.height+oy));
 		if(x>=(g.tool.x+ox) && x<=(g.tool.x+g.tool.width+ox) && y>=(g.tool.y+oy) && y<=(g.tool.y+g.tool.height+oy)) {
 			return true;
 		}
@@ -387,9 +386,12 @@ HTMLDrawer.prototype.drawButton = function(text, action){
 	btn.tool.width = btn.width;
 	btn.appendChild(this.createText(text));
 	
-	this.bindEvent(btn, "mousedown", action);
+	this.bind(btn, "mousedown", action);
 	btn.close = function(){};
 	return btn;
+};
+HTMLDrawer.prototype.createRect = function(x, y, width, height, fill, rotate){
+	return this.createObject({tag:"div", style:"position:absolute;background:"+fill+";width:"+width+";height:"+height+";left:"+x+";top:"+y+";transform: rotate("+rotate+"deg) skew(170deg, 170deg);"});
 };
 //				###################################################### SVG ####################################################################################
 SVGDrawer = function() {this.noFonts=["svg", "g", "line", "fegaussianblur", "feoffset", "stop", "defs", "filter", "feblend"];};
@@ -424,7 +426,7 @@ SVGDrawer.prototype.drawButton = function(text, action){
 	btn.tool.width = 60;
 	btn.appendChild( this.createObject({tag:"rect", rx:8, x: btn.tool.x, y:btn.tool.y, width:btn.tool.width, height:btn.tool.height, stroke:"#000", filter:"url(#drop-shadow)", class:"saveBtn"}));
 	btn.appendChild( this.createObject({tag:"text", x:(btn.tool.x+10), y:(btn.tool.y+18), fill:"black", value:text, class:"hand"}));
-	this.bindEvent(btn, "mousedown", action);
+	this.bind(btn, "mousedown", action);
 	btn.close = function(){};
 	return btn;
 };
@@ -720,12 +722,17 @@ SVGDrawer.prototype.createLine = function(x1, y1, x2, y2, lineStyle, style){
 	var line = this.createObject({tag:"line", 'x1': x1, 'y1': y1, 'x2': x2, 'y2': y2});
 	line.setAttribute("stroke",this.getColor(style));
 
-	if(style && style.toLowerCase()=="dotted"){
+	if(lineStyle && lineStyle.toLowerCase()=="dotted"){
 		line.setAttribute("stroke-miterlimit",4);
 		line.setAttribute("stroke-dasharray","1,1");
 	}
 	return line;
 };
+SVGDrawer.prototype.createRect = function(x, y, width, height, fill, rotate){
+	x = Math.round(x,0)+2;
+	y = Math.round(y,0)+6;
+	return this.createObject({tag:"rect", rx:0, "width":width, "height":height, "fill":fill, stroke:"#000", transform:"rotate("+rotate+","+x+","+y+") translate("+x+","+y+") skewY(170) skewX(170)"});
+}
 SVGDrawer.prototype.createGroup = function(node, group){
 	var entity = this.createObject({tag:"g"});
 	
