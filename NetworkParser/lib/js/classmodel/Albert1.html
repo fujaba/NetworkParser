@@ -3,11 +3,11 @@
 <html>
 <head><meta http-equiv="X-UA-Compatible" content="IE=9">
 <meta charset="utf-8">
-<link href="../../../src/resources/de/uniks/networkparser/graph/diagramstyle.css" rel="stylesheet" type="text/css">
+<link href="../../../src/main/resources/de/uniks/networkparser/graph/diagramstyle.css" rel="stylesheet" type="text/css">
 
-<script src="../../../src/resources/de/uniks/networkparser/graph/dagre.js"></script>
-<script src="../../../src/resources/de/uniks/networkparser/graph/graph.js"></script>
-<script src="../../../src/resources/de/uniks/networkparser/graph/drawer.js"></script>
+<script src="../../../src/main/resources/de/uniks/networkparser/graph/dagre.min.js"></script>
+<script src="../../../src/main/resources/de/uniks/networkparser/graph/graph.js"></script>
+<script src="../../../src/main/resources/de/uniks/networkparser/graph/drawer.js"></script>
 </head><body>
 <p>Storyboard <a href='../examples/org/sdmlib/examples/studyrightWithAssignments/StoryboardTests.java' type='text/x-java'>StudyRight with assignments storyboard</a></p>
 <p>StudyRight with assignments storyboard</p>
@@ -16,7 +16,6 @@ in the math room. Karli has no credits yet and still a motivation of 214. </p>
 <script>
    var json = {
    "typ":"object",
-   "value":{
       "nodes":[
       {
             "typ":"node",
@@ -1575,7 +1574,6 @@ in the math room. Karli has no credits yet and still a motivation of 214. </p>
             "target":"placeToBe : Room"
          }
       ]
-   }
 }   ;
    json["options"]={"canvasid":"canvas3"};   var g = new Graph(json);
    g.layout(100,100);
