@@ -390,9 +390,27 @@ HTMLDrawer.prototype.drawButton = function(text, action){
 	btn.close = function(){};
 	return btn;
 };
-HTMLDrawer.prototype.createRect = function(x, y, width, height, fill, rotate){
-	return this.createObject({tag:"div", style:"position:absolute;background:"+fill+";width:"+width+";height:"+height+";left:"+x+";top:"+y+";transform: rotate("+rotate+"deg) skew(170deg, 170deg);"});
-};
+HTMLDrawer.prototype.createPath = function(close, fill, path){
+	if(fill==="none") {
+		var line = this.createObject({tag: "div"});
+		for(var i=1;i<path.length;i++) {
+			line.appendChild(this.createLine(path[i-1].x, path[i-1].y, path[i].x, path[i].y));
+		}
+		if(close) {
+			line.appendChild(this.createLine(path[path.length-1].x, path[path.length-1].y, path[0].x, path[0].y));
+		}
+		return line;
+	}
+	//var d="M"+path[0].x+" "+path[0].y;
+	//for(var i=1;i<path.length;i++) {
+	//	d = d + "L "+path[i].x + " "+ path[i].y;
+	//}
+	//if(close) {
+	//	d = d +" Z";
+	//}
+	//return this.createObject({tag:"path", "d":d, "fill": fill, stroke:"#000", "stroke-width":"1px"});
+	return this.createObject({tag:"div", "style":"left:"+path[0].x+";top:"+path[0].y, class:"composition"});
+}
 //				###################################################### SVG ####################################################################################
 SVGDrawer = function() {this.noFonts=["svg", "g", "line", "fegaussianblur", "feoffset", "stop", "defs", "filter", "feblend"];};
 SVGDrawer.prototype = Object_create(Drawer.prototype);
@@ -728,10 +746,15 @@ SVGDrawer.prototype.createLine = function(x1, y1, x2, y2, lineStyle, style){
 	}
 	return line;
 };
-SVGDrawer.prototype.createRect = function(x, y, width, height, fill, rotate){
-	x = Math.round(x,0)+2;
-	y = Math.round(y,0)+6;
-	return this.createObject({tag:"rect", rx:0, "width":width, "height":height, "fill":fill, stroke:"#000", transform:"rotate("+rotate+","+x+","+y+") translate("+x+","+y+") skewY(170) skewX(170)"});
+SVGDrawer.prototype.createPath = function(close, fill, path){
+	var d="M"+path[0].x+" "+path[0].y;
+	for(var i=1;i<path.length;i++) {
+		d = d + "L "+path[i].x + " "+ path[i].y;
+	}
+	if(close) {
+		d = d +" Z";
+	}
+	return this.createObject({tag:"path", "d":d, "fill": fill, stroke:"#000", "stroke-width":"1px"});
 }
 SVGDrawer.prototype.createGroup = function(node, group){
 	var entity = this.createObject({tag:"g"});
