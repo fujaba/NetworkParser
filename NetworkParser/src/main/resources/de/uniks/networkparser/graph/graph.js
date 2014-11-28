@@ -1272,12 +1272,15 @@ Edge.prototype.calcMoveLine = function(size, angle, move){
 	// h is the line length of a side of the arrow head
 	var h=Math.abs(size/Math.cos(angle));
 	var angle1=lineangle+Math.PI+angle;
+	var hCenter=Math.abs((size/2)/Math.cos(angle));
+
 	this.top = new Pos(this.end.x+Math.cos(angle1)*h, this.end.y+Math.sin(angle1)*h);
+	this.topCenter = new Pos(this.end.x+Math.cos(angle1)*hCenter, this.end.y+Math.sin(angle1)*hCenter);
 	var angle2=lineangle+Math.PI-angle;
 	this.bot = new Pos(this.end.x+Math.cos(angle2)*h, this.end.y+Math.sin(angle2)*h);
+	this.botCenter = new Pos(this.end.x+Math.cos(angle2)*hCenter, this.end.y+Math.sin(angle2)*hCenter);
 	if(move) {
-		var pos = new Pos((this.top.x + this.bot.x) / 2, (this.top.y + this.bot.y) / 2);
-		this.endPos().target = pos;
+		this.endPos().target = new Pos((this.top.x + this.bot.x) / 2, (this.top.y + this.bot.y) / 2);
 	}
 }
 Generalization = function() { this.init();this.typ="Generalization";};
@@ -1324,32 +1327,18 @@ Aggregation.prototype.calculate = function(board, drawer){
 		return false;
 	}
 	this.size=16;
-	this.calcMoveLine(this.size, 50, true);
+	this.calcMoveLine(this.size, 49.8, true);
 	return true;
 };
 Aggregation.prototype.draw = function(board, drawer){
 	this.drawSuper(board, drawer);
-	this.addElement(board, drawer.createRect(this.top.x, this.top.y, this.size/2, this.size/2, "none", this.calcAngle()));
-}
-Aggregation.prototype.calcAngle = function(){
-	var start	= this.endPos().source;
-	var end = this.endPos().target;
-	var a = Math.round((start.y - end.y) / (end.x - start.x), 0);
-	var h=0;
-	if(a<0){
-		h = 180 - Math.atan(a)*100;
-	}else{
-		h = Math.atan(a)*100;
-	}
-	console.log(this.typ+":"+a+"="+h);
-	return h;
+	this.addElement(board, drawer.createPath(true, "none", [this.endPos().target, this.topCenter, this.end, this.botCenter]));
 }
 Composition = function() { this.init();this.typ="Composition";}
 Composition.prototype = Object_create(Aggregation.prototype);
 Composition.prototype.draw = function(board, drawer){
 	this.drawSuper(board, drawer);
-	console.log(this.typ+":"+this.h);
-	this.addElement(board, drawer.createRect(this.top.x, this.top.y, this.size/2, this.size/2, "filled", this.calcAngle()));
+	this.addElement(board, drawer.createPath(true, "#000", [this.endPos().target, this.topCenter, this.end, this.botCenter]));
 }
 function RGBColor(value){
 	this.ok = false;

@@ -52,7 +52,6 @@
 }
 .ChoiceBox{
 	position:absolute;
-	width:200px;
 	height:80px;
 	border:1px solid black;
 	overflow-y: scroll;
@@ -229,3 +228,4 @@
 	opacity:0.50;
 	fill:#ddd;
 }
+
