@@ -1338,7 +1338,13 @@ Composition = function() { this.init();this.typ="Composition";}
 Composition.prototype = Object_create(Aggregation.prototype);
 Composition.prototype.draw = function(board, drawer){
 	this.drawSuper(board, drawer);
-	this.addElement(board, drawer.createPath(true, "#000", [this.endPos().target, this.topCenter, this.end, this.botCenter]));
+
+	var start    = this.endPos().source;
+	var end = this.endPos().target;
+	var a = (start.y - end.y) / (end.x - start.x);
+	var h = Math.atan(a)*100;
+
+	this.addElement(board, drawer.createPath(true, "#000", [this.endPos().target, this.topCenter, this.end, this.botCenter], h));
 }
 function RGBColor(value){
 	this.ok = false;
