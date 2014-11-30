@@ -93,14 +93,15 @@ Drawer.prototype.create = function(node){
 		}
 	} else {
 		item = document.createElement(tag);
-		if(node.xmlns){
+	}
+if(node.xmlns && tag=="svg"){
 			item.setAttribute('xmlns', node.xmlns);
 		}
-	}
-	this.addFontAttributes(item);
+		this.addFontAttributes(item);
 	for (var key in node) {
 		var k = key.toLowerCase();
 		if(node[key] == null) continue;
+		if(k=='xmlns') continue;
 		if(k=='tag' || k=='content_src' || k=='_parent') continue;
 		if(k=='rotate'){
 			item.setAttribute("transform", "rotate("+node[key]+","+node.x+","+node.y+")");

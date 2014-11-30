@@ -100,6 +100,7 @@ Graph = function(json, options) {
 	this.nodeCount=0;
 	this.nodes = {};
 	this.edges = [];
+	json = json || {};
 	this.typ = json.typ || "classdiagram";
 	this.initLayouts();
 	if(json.info){
