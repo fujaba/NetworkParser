@@ -87,22 +87,18 @@ Drawer.prototype.create = function(node){
 	var tag = node.tag.toLowerCase();
 	if(document.createElementNS && (node.xmlns || this.ns )){
 		if(node.xmlns) {
-			item = document.createElementNS(node.xmlns, tag);
+			item = document.createElementNS(node.xmlns, node.tag);
 		} else {
-			item = document.createElementNS(this.ns, tag);
+			item = document.createElementNS(this.ns, node.tag);
 		}
 	} else {
-		item = document.createElement(tag);
+		item = document.createElement(node.tag);
 	}
-if(node.xmlns && tag=="svg"){
-			item.setAttribute('xmlns', node.xmlns);
-		}
-		this.addFontAttributes(item);
+	this.addFontAttributes(item);
 	for (var key in node) {
 		var k = key.toLowerCase();
 		if(node[key] == null) continue;
-		if(k=='xmlns') continue;
-		if(k=='tag' || k=='content_src' || k=='_parent') continue;
+		if(k=='tag' || k=='content_src' || k=='_parent' || k=='model') continue;
 		if(k=='rotate'){
 			item.setAttribute("transform", "rotate("+node[key]+","+node.x+","+node.y+")");
 			continue;
@@ -124,7 +120,9 @@ if(node.xmlns && tag=="svg"){
 			continue;
 		}
 		if(k.indexOf("-")>=0){
+			//item.style[key] = node[key];
 			item.style[key] = node[key];
+			//item.style.setProperty(key, node[key]);
 		}else {
 			if(k=="style" && typeof(node[key])=="object"){
 				for (var style in node[key]) {
@@ -133,14 +131,15 @@ if(node.xmlns && tag=="svg"){
 							item.style.transform = node[key][style];
 							item.style.msTransform = item.style.MozTransform = item.style.WebkitTransform = item.style.OTransform= node[key][style];
 						} else {
-							item.style[style] = node[key][style];
-							item.style.setProperty(style, node[key][style]);
+							//item.style[style] = node[key][style];
+							item.style[key] = node[key][style];
+							//console.log(key+":"+node[key][style]);
+							//item.style.setProperty(style, node[key][style]);
 						}
 					}
 				}
 			}else{
 				item.setAttribute(key, node[key]);
-				//item[key] = node[key];
 			}
 		}
 	}
@@ -150,6 +149,9 @@ if(node.xmlns && tag=="svg"){
 	if(tag=="image" && node["content_src"]) {
 		item.setAttribute('xmlns:xlink', "http://www.w3.org/1999/xlink");
 		item.setAttributeNS("http://www.w3.org/1999/xlink", 'href', node["content_src"]);
+	}
+	if(node.model) {
+		item.model = node.model;
 	}
 	return item;
 };
@@ -575,7 +577,7 @@ SVGDrawer.prototype.createContainer = function(graph){
 			list.push(typeof(jsPDF)!="undefined" ? "PDF" : "");
 		}
 
-		board = this.createBoard({tag:"svg", xmlns:"http://www.w3.org/2000/svg", "xmlns:svg":"http://www.w3.org/2000/svg", "xmlns:xlink":"http://www.w3.org/1999/xlink"}, graph, 
+		board = this.createBoard({tag:"svg", "xmlns:svg":"http://www.w3.org/2000/svg", "xmlns:xlink":"http://www.w3.org/1999/xlink"}, graph, 
 		[
 		this.drawButton("HTML", (function (e) {that.model.setTyp("HTML");})),
 		this.drawComboBox(list, "Save", (function (e) {that.removeToolItems(board);that.model.SaveAs(e.currentTarget.value);}))
