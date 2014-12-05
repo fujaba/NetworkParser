@@ -664,12 +664,16 @@ SVGDrawer.prototype.getNode = function(node, calculate){
 	var width=0;
 	var height=40;
 	var textWidth;
-
+	var id;
 	if(this.model.typ.toLowerCase()=="objectdiagram"){
-		textWidth = this.getWidth(node.id.charAt(0).toLowerCase() + node.id.slice(1));
+		id = node.id.charAt(0).toLowerCase() + node.id.slice(1);
 	}else{
-		textWidth = this.getWidth(node.id);
+		id = node.id;
+		if(node.counter) {
+			id += " ("+node.counter+")";
+		}
 	}
+	textWidth = this.getWidth(id);
 	width = Math.max(width, textWidth);
 	if(node.attributes && node.attributes.length > 0 ){
 		height = height + node.attributes.length*25;
@@ -710,10 +714,8 @@ SVGDrawer.prototype.getNode = function(node, calculate){
 
 	if(this.model.typ.toLowerCase()=="objectdiagram"){
 		text.setAttribute("text-decoration", "underline");
-		text.appendChild(document.createTextNode(node.id.charAt(0).toLowerCase() + node.id.slice(1)));
-	}else{
-		text.appendChild(document.createTextNode(node.id));
 	}
+	text.appendChild(document.createTextNode(id));
 
 	g.appendChild(text);
 	g.appendChild( this.create({tag:"line", x1:x, y1:y + 30, x2: x + width, y2: y + 30, stroke:strokeColor}) );
