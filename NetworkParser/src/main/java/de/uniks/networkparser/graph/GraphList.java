@@ -191,4 +191,8 @@ public class GraphList extends AbstractEntityList<GraphMember> implements GraphM
 		this.style = style;
 		return this;
 	}
+
+	public GraphList withMain(GraphNode parse) {
+		return this;
+	}
 }

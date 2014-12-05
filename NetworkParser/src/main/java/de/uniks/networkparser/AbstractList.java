@@ -44,7 +44,7 @@ public abstract class AbstractList<V> implements BaseItem {
 
 	protected static final int hashTableStartHashingThreshold = 420;
 	protected static final float hashTableLoadThreshold = 0.7f;
-	protected int entitySize = 1;
+	protected byte entitySize = 1;
 
 	public Comparator<V> comparator() {
 		if (this.cpr == null) {

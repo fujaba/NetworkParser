@@ -101,6 +101,13 @@ public abstract class FXStageController implements StageEvent{
 		}
 		return false;
 	}
+	public void show(Stage stage){
+		this.withStage(stage);
+		Scene scene = new Scene(this.pane);
+		stage.setScene(scene);
+		this.stage.show();
+	}
+	
 	public void show(){
 		this.stage.show();
 	}

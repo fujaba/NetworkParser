@@ -63,7 +63,7 @@ public class GraphConverter implements Converter {
 		return convertToJson(GraphIdMap.OBJECT, list, removePackage);
 	}
 
-	public JsonObject convertToJson(String typ, JsonArray list,
+	public GraphList convertGraphList(String typ, JsonArray list,
 			boolean removePackage) {
 		GraphList root = new GraphList().withTyp(typ);
 		HashMap<GraphNode, ArrayList<GraphAttribute>> attributes = new HashMap<GraphNode, ArrayList<GraphAttribute>>();
@@ -100,6 +100,13 @@ public class GraphConverter implements Converter {
 				}
 			}
 		}
+		return root;
+	}
+	
+	
+	public JsonObject convertToJson(String typ, JsonArray list,
+			boolean removePackage) {
+		GraphList root = convertGraphList(typ, list, removePackage);
 		return convertToJson(root, removePackage);
 	}
 

@@ -36,6 +36,7 @@ public class GraphEdge extends AbstractEntityList<GraphNode> implements
 	private GraphLabel info;
 	private GraphEdge other;
 	private GraphEdgeTypes typ = GraphEdgeTypes.EDGE;
+	private int count;
 
 	public GraphEdge() {
 
@@ -184,5 +185,25 @@ public class GraphEdge extends AbstractEntityList<GraphNode> implements
 	public GraphEdge withTyp(GraphEdgeTypes typ) {
 		this.typ = typ;
 		return this;
+	}
+
+	public int getCount() {
+		return count;
+	}
+
+	public GraphEdge withCount(int count) {
+		this.count = count;
+		return this;
+	}
+	
+	public GraphNode getNode() {
+		if(size()>0) {
+			return get(0);
+		}
+		return null;
+	}
+
+	public void addCounter() {
+		this.count++;
 	}
 }
