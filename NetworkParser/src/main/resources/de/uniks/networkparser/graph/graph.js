@@ -19,119 +19,174 @@
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-Object_create = Object.create || function (o) { var F = function() {};F.prototype = o; return new F();};
-IE = document.all&&!window.opera;
-DOM = document.getElementById&&!IE;
-
+Object_create = Object.create || function (o) { var F = function() {};F.prototype = o; return new F();}
 /* Pos */
 Pos = function(x, y, id) {this.x = x || 0; this.y = y || 0; if(id){this.id = id;} }
-
-/* Info */
-Info = function(info, parent, edge) { 
-	if(typeof(info)==="string"){
-		this.id = info; 
-	}else{
-		this.property = info.property; 
-		this.cardinality = info.cardinality; 
-		this.id = info.id; 
+/* GraphUtil */
+GraphUtil = function(ns){if(ns) {this.ns = ns;}}
+GraphUtil.prototype.copy = function(ref, src, full) {
+	if(src){
+		for(var i in src){
+			if(i.charAt(0)=="_" || i == "htmlElement"){
+				if(full){ref[i] = src[i];}
+				continue;
+			}
+			if(typeof(src[i])=="object") {
+				if(!ref[i]){
+					if(src[i] instanceof Array) {
+						ref[i] = [];
+					}else{
+						ref[i] = {};
+					}
+				}
+				this.copy(ref[i], src[i], full);
+			}else{
+				ref[i] = src[i];
+			}
+		}
 	}
-	this.typ = "Info";
-	this.x = this.y = this.width = this.height = 0;
-	this.center=new Pos();
-	this.custom = false;
-	this._parent = parent;
-	this.edge = edge;
-	this.isdraggable = true;
-};
-
-Line = function(source, target, line, style) {this.source = source; this.target = target; this.line = line; this.style = style;}
-Line.Format={SOLID:"SOLID", DOTTED:"DOTTED"};
-/* Options */
-Options = function(){
-	this.canvasid = null;
-	this._parent = null;
-	this._subgraphs = [];
-	this.raster = false;
-	this.display = "svg";
-	this.font={"font-size":"10px", "font-family": "Verdana"};
-	this.layout= {name:"Dagre", rank:"TB", nodesep:10}	// Dagre TB, LR
-	this.CardinalityInfo = true;
-	this.PropertyInfo = true;
-	this.rotateText = true;
-	this.buttons = ["HTML", "SVG"];	// ["HTML", "SVG", "CANVAS", "PNG", "PDF"]
+	return ref;
 }
-
-/* Node */
-GraphNode = function(id) { this.init();this.typ = "node";this.id = id;}
-GraphNode.prototype.init = function() {
-	this.x = this.y = this.width = this.height=0;
-	this.edges = [];
-	this.attributes = [];
-	this.methods = [];
-	this.RIGHT = this.LEFT = this.UP = this.DOWN=0;
-	this.isdraggable = true;
-};
-GraphNode.prototype.bind = function(el, eventName, eventHandler) {
+GraphUtil.prototype.bind = function(el, eventName, eventHandler) {
 	if (el.addEventListener){
 		el.addEventListener(eventName, eventHandler, false); 
 	} else if (el.attachEvent){
 		el.attachEvent('on'+eventName, eventHandler);
 	}
 }
-GraphNode.prototype.removeFromBoard = function(board){if(this.htmlNode){board.removeChild(this.htmlNode);this.htmlNode = null;}};
-GraphNode.prototype.getX = function(){
-	if(this._parent){return this.x + this._parent.getX();}
+GraphUtil.prototype.create = function(node){
+	var item;
+	
+	if(document.createElementNS && (node.xmlns || this.ns )){
+		if(node.xmlns) {
+			item = document.createElementNS(node.xmlns, node.tag);
+		} else {
+			item = document.createElementNS(this.ns, node.tag);
+		}
+	} else {
+		item = document.createElement(node.tag);
+	}
+	var tag = node.tag.toLowerCase();
+	for (var key in node) {
+		var k = key.toLowerCase();
+		if(node[key] == null) continue;
+		if(k=='tag' || k=='content_src' || k.charAt(0)=='_'	|| k=='model') continue;
+		if(k=='rotate'){
+			item.setAttribute("transform", "rotate("+node[key]+","+node.x+","+node.y+")");
+			continue;
+		}
+		if(k=='value'){
+			if(tag!="input"){
+				if(tag=="text") {// SVG
+					item.appendChild(document.createTextNode(node[key]));
+				}else{
+					item.innerHTML = node[key];
+				}
+			}else {
+				item[key] = node[key];
+			}
+			continue;
+		}
+		if(k.indexOf("on") == 0) {
+			this.bind(item, k.substring(2), node[key]);
+			continue;
+		}
+		if(k.indexOf("-")>=0){
+			item.style[key] = node[key];
+		}else {
+			if(k=="style" && typeof(node[key])=="object"){
+				for (var style in node[key]) {
+					if(node[key][style]){
+						if("transform"===style){
+							item.style.transform = node[key][style];
+							item.style.msTransform = item.style.MozTransform = item.style.WebkitTransform = item.style.OTransform= node[key][style];
+						} else {
+							item.style[style] = node[key][style];
+						}
+					}
+				}
+			}else{
+				item.setAttribute(key, node[key]);
+			}
+		}
+	}
+	if(node._font) {
+		if(this.model && this.model.options && this.model.options.font) {
+			for (var key in this.model.options.font) {
+				if(this.model.options.font[key]){
+					if(item.style){
+						item.style[key] = this.model.options.font[key];
+					}else{
+						item.setAttribute(key, this.model.options.font[key]);
+					}
+				}
+			}
+		}
+	}
+
+	if(node._parent) {
+		node._parent.appendChild(item);
+	}
+	if(tag=="image" && node["content_src"]) {
+		item.setAttribute('xmlns:xlink', "http://www.w3.org/1999/xlink");
+		item.setAttributeNS("http://www.w3.org/1999/xlink", 'href', node["content_src"]);
+	}
+	if(node.model) {
+		item.model = node.model;
+	}
+	return item;
+}
+GraphUtil.prototype.getModel = function(element) {
+	while(!element.model) {
+		if(element.parentElement){
+			return this.getModel(element.parentElement);
+		}
+		return null;
+	}
+	return element;
+}
+GraphUtil.prototype.getValue = function(value) {return parseInt(("0"+value).replace("px",""));}
+GraphUtil.prototype.isIE = function() {return document.all&&!window.opera;}
+
+//FIXME
+GraphItem = function(id) { this.init();this.typ = "node";this.id = id;}
+GraphItem.prototype = Object_create(GraphUtil.prototype);
+GraphItem.prototype.getX = function(){
+	if(this._graph){return this.x + this._graph.getX();}
 	return this.x;
-};
-GraphNode.prototype.getY = function(){
-	if(this._parent){return this.y + this._parent.getY();}
+}
+GraphItem.prototype.getY = function(){
+	if(this._graph){return this.y + this._graph.getY();}
 	return this.y;
-};
-GraphNode.prototype.getRoot = function() {
-	if(this._parent){return this._parent.getRoot();}
+}
+GraphItem.prototype.getRoot = function() {
+	if(this._graph){return this._graph.getRoot();}
 	return this;
 }
 
-/* Graph */
-Graph = function(json, options) {
-	this.init();
-	this.left=0;
-	this.top=60;
+GraphModel=function(json, options, parent){
+	this.typ = "classdiagram";
+	this._parent = parent;
+	json = json || {};
+	this.left=json.left || 0;
+	this.top=json.top || 0;
+	this.x = this.y = this.width = this.height=0;
 	this.nodeCount=0;
 	this.nodes = {};
 	this.edges = [];
 	json = json || {};
 	this.typ = json.typ || "classdiagram";
-	this.initLayouts();
+	this.options = this.merge(this.merge(new Options(), json.options), options, true);
+	this.package = "";
 	if(json.info){
 		this.info = json.info;
 	}
 	if(json.style){
 		this.style = json.style;
 	}
-	this.options = this.merge(this.merge(new Options(), json.options), options, true);
-	this._parent = this.options._parent;
-	this.loader = new Loader(this);
-	if((""+this.options.display).toLowerCase()=="html"){
-		this.drawer = new HTMLDrawer();
-		this.loader.init(true);
-	}else{
-		this.drawer = new SVGDrawer();
-		this.options.display = "svg";
-	}
-	var layout = this.layouts[0];
-
-	for(var i=0;i<this.layouts.length;i++){
-		if(this.layouts[i]["name"] === this.options.layout.name.toLowerCase()){
-			layout = this.layouts[i];
-			break;
-		}
-	}
-	this.layouter = layout.value;
-
 	if(json.nodes) {
 		for (var i = 0; i < json.nodes.length; i++) {
-			this.addNode(json.nodes[i], i);
+			this.addNode(json.nodes[i]);
 		}
 	}
 	if(json.edges) {
@@ -151,36 +206,14 @@ Graph = function(json, options) {
 			edge.style = e.style;
 			edge.source.edges.push(edge);
 			edge.model = this;
-
 			edge.target = this.getNode(edge.targetInfo.id);
 			edge.target.edges.push(edge);
 			this.edges.push(edge);
 		}
 	}
-	if(!this.options._parent){
-		if(this.options.canvasid){
-			this.root = document.getElementById(this.options.canvasid);
-		}
-		if(!this.root){
-			this.root = document.createElement("div");
-			if(this.options.canvasid){
-				this.root.id = this.options.canvasid;
-			}
-			document.body.appendChild(this.root);document.body.appendChild(this.root);
-		}
-		this.initGraph();
-	}
-};
-Graph.prototype = Object_create(GraphNode.prototype);
-Graph.prototype.initLayouts=function(){ this.layouts=[{name:"dagre", value:new DagreLayout()}];};
-Graph.prototype.removeFromBoard = function(board){
-	if(this.htmlNode){
-		board.removeChild(this.htmlNode);
-		this.htmlNode = null;
-	}
-	this.board = null;
-};
-Graph.prototype.merge = function(ref, src, full) {
+}
+GraphModel.prototype = Object_create(GraphItem.prototype);
+GraphModel.prototype.merge = function(ref, src, full) {
 	if(src){
 		for(var i in src){
 			if(i.charAt(0)=="_"){
@@ -195,54 +228,179 @@ Graph.prototype.merge = function(ref, src, full) {
 		}
 	}
 	return ref;
-};
+}
+GraphModel.prototype.addNode = function(node) {
+	/* testing if node is already existing in the graph */
+	if(typeof(node)=="string"){
+		node = {id:node, typ:"node"};
+	}
+	node.typ = node.typ.toLowerCase();
+	if(!(node.id)){
+		node.id = node.typ+"_"+(this.nodeCount+1);
+	}
+	if(this.nodes[node.id] != undefined) {
+		return this.nodes[node.id];
+	}
+	if(node.typ.indexOf("diagram", node.typ.length - 7) !== -1) {
+		node = new GraphModel(this._graph, node, new Options(this));
+	}else{
+		node = this.copy(new GraphNode(), node);
+	}
+	this.nodes[node.id] = node;
+	node._parent = this;
+	this.nodeCount++;
+	return this.nodes[node.id];
+}
+GraphModel.prototype.addEdge = function(source, target) {
+	var edge = new Edge();
+	edge.source = this.addNode(source);
+	edge.target = this.addNode(target);
+	edge.source.edges.push(edge);
+	this.edges.push(edge);
+	edge.target.edges.push(edge);
+	return edge;
+}
+GraphModel.prototype.removeNode = function(id) {
+	if(this.nodes[id].htmlNode){
+		this._board.removeChild(this.nodes[id].htmlNode);
+	}
+	delete(this.nodes[id]);
+
+	for(var i = 0; i < this.edges.length; i++) {
+		if (this.edges[i].source.id == id || this.edges[i].target.id == id) {
+			this.edges.splice(i, 1);
+			i--;
+		}
+	}
+}
+GraphModel.prototype.getNode = function(id, isSub) {
+	if(this.nodes[id]) {
+		return this.nodes[id];
+	}
+	for(var i = 0;i < this.options._subgraphs.length;i++){
+		var r = this.options._subgraphs[i].getNode(id, true);
+		if(r) {
+			return r;
+		}
+	}
+	if(!isSub){
+		return this.addNode(id);
+	}
+	return null;
+}
+GraphModel.prototype.toJson = function() {return this.copy({}, this);}
+GraphModel.prototype.createElement = function(element, typ){this._parent.createElement(element, typ);}
+GraphModel.prototype.removeFromBoard = function(board){if(this.htmlNode){board.removeChild(this.htmlNode);this.htmlNode = null;}}
+/* Info */
+Info = function(info, parent, edge) { 
+	if(typeof(info)==="string"){
+		this.id = info; 
+	}else{
+		this.property = info.property; 
+		this.cardinality = info.cardinality; 
+		this.id = info.id; 
+	}
+	this.typ = "Info";
+	this.x = this.y = this.width = this.height = 0;
+	this.center=new Pos();
+	this.custom = false;
+	this._parent = parent;
+	this.edge = edge;
+	this.isdraggable = true;
+}
+
+Line = function(source, target, line, style) {this.source = source; this.target = target; this.line = line; this.style = style;}
+Line.Format={SOLID:"SOLID", DOTTED:"DOTTED"}
+/* Options */
+Options = function(){
+	this.canvasid = null;
+	this.raster = false;
+	this.display = "svg";
+	this.font={"font-size":"10px", "font-family": "Verdana"};
+	this.layout= {name:"Dagre", rank:"TB", nodesep:10}	// Dagre TB, LR
+	this.CardinalityInfo = true;
+	this.PropertyInfo = true;
+	this.rotateText = true;
+	this.buttons = ["HTML", "SVG"];	// ["HTML", "SVG", "PNG", "PDF"]
+}
+/* Node */
+GraphNode = function(id) { this.init();this.typ = "node";this.id = id;}
+GraphNode.prototype = Object_create(GraphItem.prototype);
+GraphNode.prototype.init = function() {
+	this.edges = [];
+	this.attributes = [];
+	this.methods = [];
+	this.RIGHT = this.LEFT = this.UP = this.DOWN=0;
+	this.x = this.y = this.width = this.height=0;
+	this.isdraggable = true;
+}
+GraphNode.prototype.removeFromBoard = function(board){if(this.htmlNode){board.removeChild(this.htmlNode);this.htmlNode = null;}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//				######################################################### Graph #########################################################
+Graph = function(json, options) {
+	this.init();
+	this.model = new GraphModel(json, options);
+	this.initLayouts();
+	this.loader = new Loader(this);
+	this.htmlNodes = {};
+	if((""+this.model.options.display).toLowerCase()=="html"){
+		this.drawer = new HTMLDrawer();
+		this.loader.init(true);
+	}else{
+		this.drawer = new SVGDrawer();
+		this.model.options.display = "svg";
+	}
+	var layout = this.layouts[0];
+
+	for(var i=0;i<this.layouts.length;i++){
+		if(this.layouts[i]["name"] === this.model.options.layout.name.toLowerCase()){
+			layout = this.layouts[i];
+			break;
+		}
+	}
+	this.layouter = layout.value;
+	this.subgraphs = [];
+	if(this.model.options.canvasid){
+		this.root = document.getElementById(this.model.options.canvasid);
+	}
+	if(!this.root){
+		this.root = document.createElement("div");
+		if(this.model.options.canvasid){
+			this.root.id = this.model.options.canvasid;
+		}
+		document.body.appendChild(this.root);document.body.appendChild(this.root);
+	}
+}
+Graph.prototype = Object_create(GraphNode.prototype);
+Graph.prototype.initLayouts=function(){ this.layouts=[{name:"dagre", value:new DagreLayout()}];}
+Graph.prototype.removeFromBoard = function(board){
+	if(this.htmlNode){
+		board.removeChild(this.htmlNode);
+		this.htmlNode = null;
+	}
+	this.board = null;
+}
 Graph.prototype.copy = function(source, target){
 	this.merge(target, source);
 	if(source.width){target.startWidth = source.width;}
 	if(source.height){target.startHeight = source.height;}
 	return target;
-};
-Graph.prototype.initGraph = function(){
-	if(this.root){
-		this.clearBoard();
-		this.board = this.drawer.createContainer(this);
-		this.initDragAndDrop();
-		this.root.appendChild(this.board);
-	}
-
-	for (var i in this.nodes) {
-		var node = this.nodes[i];
-		if(node.typ=="objectdiagram" || node.typ=="classdiagram"){
-			node.root = this.board;
-			node.initDrawer(this.options.display);
-			node.drawer.model = node;
-			node.initGraph();
-		}
-		var html = this.drawer.getNode(node, true);
-		if(html){
-			var pos = this.getDimension(html);
-			if(!node.startWidth){
-				node.width=pos.x;
-			}
-			if(!node.startHeight){
-				node.height=pos.y;
-			}
-		}
-		if(node.typ=="objectdiagram" || node.typ=="classdiagram"){
-			node.center = new Pos(node.x + (node.width / 2), node.y + (node.height / 2));
-			node.board=null;
-		}
-	}
-
-	for (var i=0; i<this.edges.length;i++) {
-		var edge = this.edges[i];
-		this.initInfo(edge, edge.sourceInfo);
-		this.initInfo(edge, edge.targetInfo);
-	}
-	this.drawer.clearBoard();
-};
+}
 Graph.prototype.initInfo = function(edge, info){
-	if(!this.options.CardinalityInfo && !this.options.PropertyInfo){
+	if(!this.model.options.CardinalityInfo && !this.model.options.PropertyInfo){
 		return null;
 	}	
 	var infoTxt = edge.getInfo(info);
@@ -255,19 +413,19 @@ Graph.prototype.initInfo = function(edge, info){
 		}
 	}
 	return infoTxt;
-};
+}
 Graph.prototype.clearBoard = function(){
 	if(this.board){
 		this.clearLines();
-		for(var i in this.nodes) {
-			var n=this.nodes[i];
+		for(var i in this.model.nodes) {
+			var n=this.model.nodes[i];
 			n.removeFromBoard(this.board);
 			n.RIGHT = n.LEFT = n.UP = n.DOWN=0;
 		}
 		this.root.removeChild(this.board);
 	}
 	this.drawer.clearBoard();
-};
+}
 Graph.prototype.getDimension = function(html){
 	if(this._parent){
 		return this._parent.getDimension(html);
@@ -280,86 +438,19 @@ Graph.prototype.getDimension = function(html){
 	var pos = new Pos(rect.width, rect.height);
 	this.board.removeChild(html);
 	return pos;
-};
-Graph.prototype.getNode = function(id, isSub) {
-	if(this.nodes[id]) {
-		return this.nodes[id];
-	}
-	for(var i = 0;i < this.options._subgraphs.length;i++){
-		var r = this.options._subgraphs[i].getNode(id, true);
-		if(r) {
-			return r;
-		}
-	}
-	if(!isSub){
-		this.nodes[id] = new GraphNode(id);
-		this.nodes[id]._parent = this;
-		this.nodeCount++;
-		return this.nodes[id];
-	}
-	return null;
-};
-Graph.prototype.addSubGraph = function(subgraph) {
-	this.options._subgraphs.push(subgraph);
-	if(this._parent) {
-		this._parent.addSubGraph(subgraph);
-	}
-};
-
-Graph.prototype.addNode = function(node, pos) {
-	/* testing if node is already existing in the graph */
-	node.typ = node.typ.toLowerCase();
-	if(node.typ=="objectdiagram" || node.typ=="classdiagram") {
-		if(!this.options) {
-			return;
-		}
-		var options = new Options();
-		options._parent = this;
-		node = new Graph(node, options);
-		this.addSubGraph(node);
-	}else {
-		node = this.copy(node, new GraphNode());
-	}
-	if(!(node.id)){
-		node.id = node.typ+"_"+(pos || 0);
-	}
-	if(this.nodes[node.id] == undefined) {
-		this.nodes[node.id] = node;
-		node._parent = this;
-		this.nodeCount++;
-	}
-	return this.nodes[node.id];
-};
-Graph.prototype.addEdge = function(source, target) {
-	var edge = new Edge();
-	edge.source = this.addNode(source);
-	edge.target = this.addNode(target);
-	edge.source.edges.push(edge);
-	this.edges.push(edge);
-	// NOTE: Even directed edges are added to both nodes.
-	edge.target.edges.push(edge);
-};
-Graph.prototype.removeNode = function(id) {
-	if(this.nodes[id].htmlNode){
-		this.board.removeChild(this.nodes[id].htmlNode);
-	}
-	delete(this.nodes[id]);
-
-	for(var i = 0; i < this.edges.length; i++) {
-		if (this.edges[i].source.id == id || this.edges[i].target.id == id) {
-			this.edges.splice(i, 1);
-			i--;
-		}
-	}
-};
+}
+Graph.prototype.addNode = function(node) {return this.model.addNode(node);}
+Graph.prototype.addEdge = function(source, target) {return this.model.addEdge(source, target);}
+Graph.prototype.removeNode = function(id) {return this.model.removeNode(id);}
 Graph.prototype.calcLines = function(){
 	var ownAssoc = [];
-	for(var i in this.nodes) {
-		this.nodes[i].RIGHT = this.nodes[i].LEFT = this.nodes[i].UP = this.nodes[i].DOWN=0;
+	for(var i in this.model.nodes) {
+		var n = this.model.nodes[i];
+		n.RIGHT = n.LEFT = n.UP = n.DOWN=0;
 	}
-	for(var i = 0; i < this.edges.length; i++) {
-		if(!this.edges[i].calculate(this.board, this.drawer)){
-			ownAssoc.push(this.edges[i]);
+	for(var i = 0; i < this.model.edges.length; i++) {
+		if(!this.model.edges[i].calculate(this.board, this.drawer)){
+			ownAssoc.push(this.model.edges[i]);
 		}
 	}
 	for(var i = 0; i < ownAssoc.length; i++) {
@@ -370,53 +461,50 @@ Graph.prototype.calcLines = function(){
 		sourcePos = ownAssoc[i].getCenterPosition(ownAssoc[i].target, ownAssoc[i].end);
 		ownAssoc[i].calcInfoPos( sourcePos, ownAssoc[i].target, ownAssoc[i].targetInfo);
 	}
-};
-Graph.prototype.drawLines = function(){
-	this.clearLines();
-	for(var i = 0; i < this.edges.length; i++) {
-		this.edges[i].draw(this.board, this.drawer);
+}
+Graph.prototype.drawLines = function(model){
+	this.clearLines(model);
+	for(var i = 0; i < model.edges.length; i++) {
+		model.edges[i].draw(model._board, this.drawer);
 	}
-};
-Graph.prototype.clearLines = function(){
-	for(var i=0; i<this.edges.length;i++) {
-		var edge = this.edges[i];
-		if(edge.htmlElement){
-			while(edge.htmlElement.length>0){
-				this.board.removeChild(edge.htmlElement.pop());
+}
+Graph.prototype.clearLines = function(model){
+	for(var i=0; i<model.edges.length;i++) {
+		var e = model.edges[i];
+		if(e.htmlElement){
+			while(e.htmlElement.length>0){
+				model._board.removeChild(e.htmlElement.pop());
 			}
 		}
 	}
-	
-};
+}
 Graph.prototype.MinMax = function(node, min, max){
 	max.x = Math.max(max.x,node.x+node.width+10);
 	max.y=Math.max(max.y,node.y+node.height+10);
 	min.x=Math.max(min.x,node.x);
 	min.y=Math.max(min.y,node.y);
-};
-Graph.prototype.resize = function(){
+}
+Graph.prototype.resize = function(model){
 	var min=new Pos();
-	var max=new Pos(this.minSize.x, this.minSize.y);
-	for (var i in this.nodes) {
-		var node = this.nodes[i];
-		this.moveToRaster(node);
-
-		this.MinMax(node, min, max);
+	var max=new Pos(model.minSize.x, model.minSize.y);
+	for (var i in model.nodes) {
+		var n = model.nodes[i];
+		this.moveToRaster(n);
+		this.MinMax(n, min, max);
 	}
-
 	this.calcLines();
-	for(var i=0;i<this.edges.length;i++){
-		var edge=this.edges[i];
-		this.MinMax(edge.sourceInfo, min, max);
-		this.MinMax(edge.targetInfo, min, max);
+	for(var i=0;i<model.edges.length;i++){
+		var e=model.edges[i];
+		this.MinMax(e.sourceInfo, min, max);
+		this.MinMax(e.targetInfo, min, max);
 	}
-	this.drawer.setSize(this.board, max.x, max.y);
-	if(this.options.raster){
+	this.drawer.setSize(model._board, max.x, max.y);
+	if(model.options.raster){
 		this.drawRaster();
 	}
-	this.drawLines();
+	this.drawLines(model);
 	return max;
-};
+}
 Graph.prototype.drawRaster = function(){
 	while(this.board.rasterElements.length>0){
 		this.board.removeChild(this.board.rasterElements.pop());
@@ -435,55 +523,79 @@ Graph.prototype.drawRaster = function(){
 		this.board.rasterElements.push(line);
 		this.board.appendChild(line);
 	}
-};
-
-Graph.prototype.draw = function(width, height){
-	for(var i in this.nodes) {
-		var n = this.nodes[i];
-		if(this.left>0 || this.top > 0) {
-			n.x += this.left;
-			n.y += this.top;
+}
+Graph.prototype.draw = function(model, width, height){
+	for(var i in model.nodes) {
+		var n = model.nodes[i];
+		if(model.left>0 || model.top > 0) {
+			n.x += model.left;
+			n.y += model.top;
 		}
 	}
-	this.drawGraph(width, height);
-};
-Graph.prototype.drawGraph = function(width, height){
-	this.minSize = new Pos(width, height);
+	this.drawGraph(model, width, height);
+}
+Graph.prototype.drawGraph = function(model, width, height){
+	model.minSize = new Pos(width || 0, height || 0);
 	if(this.loader.abort && this.loader.images.length>0){
 		return;
 	}
-	if(!this.board) {
-		this.initGraph();
+	if(!model._board) {
+		this.initGraph(model);
 	}
-	this.resize();
+	this.resize(model);
 
-	for(var i in this.nodes) {
-		var node = this.nodes[i];
-		node.htmlNode = this.drawer.getNode(node, false);
-		if(node.htmlNode){
-			this.board.appendChild( node.htmlNode );
+	for(var i in model.nodes) {
+		var n = model.nodes[i];
+		n.htmlNode = this.drawer.getNode(n);
+		if(n.htmlNode){
+			model._board.appendChild( n.htmlNode );
 		}
 	}
-};
+}
 Graph.prototype.moveToRaster = function(node){
-	if(this.options.raster){
+	if(this.model.options.raster){
 		node.x = parseInt(node.x / 10) * 10;
 		node.y = parseInt(node.y / 10) * 10;
 		if(node.htmlNode){
 			this.drawer.setPos(node.htmlNode, node.x, node.y);
 		}
 	}
+}
+Graph.prototype.layout = function(minwidth, minHeight, model){
+	model = model || this.model;
+	for (var i in model.nodes) {
+		var n = model.nodes[i];
+		var isDiag = n.typ.indexOf("diagram", n.typ.length - 7) !== -1;
+		if(isDiag) {
+			this.initGraph(n);
+		}
+		var html = this.drawer.getNode(n);
+		if(html){
+			var pos = this.getDimension(html);
+			if(!n.startWidth){
+				n.width=pos.x;
+			}
+			if(!n.startHeight){
+				n.height=pos.y;
+			}
+			this.htmlNodes[n.id] =html;
+			// FIXME
+					this.options._subgraphs.push(node);
 
+		}
+		if(isDiag){
+			n.center = new Pos(n.x + (n.width / 2), n.y + (n.height / 2));
+		}
+	}
+	for (var i=0; i< model.edges.length;i++) {
+		var e = model.edges[i];
+		this.initInfo(e, e.sourceInfo);
+		this.initInfo(e, e.targetInfo);
+	}
+	this.layouter.layout(this, model, Math.max(minwidth || 0, 100), Math.max(minHeight || 0, 100));
 }
-
-Graph.prototype.layout = function(minwidth, minHeight){
-	this.layouter.layout(this, Math.max(minwidth || 0, 100), Math.max(minHeight || 0, 100));
+Graph.prototype.createElement = function(element, typ){
 }
-Graph.prototype.layouting = function(){
-	this.initGraph();
-	this.layout(this.minSize.x, this.minSize.y);
-}
-Graph.prototype.createElement = function(element, typ){};
 //				######################################################### DRAG AND DROP #########################################################
 Graph.prototype.initDragAndDrop = function(){
 	this.objDrag = null;
@@ -491,24 +603,15 @@ Graph.prototype.initDragAndDrop = function(){
 	this.offset= new Pos();
 	this.startObj= new Pos();
 	var that = this;
-	this.bind(this.board, "mousemove", function(e){that.doDrag(e);});
-	this.bind(this.board, "mouseup", function(e){that.stopDrag(e);});
-	this.bind(this.board, "mouseout", function(e){that.stopDrag(e);});
-};
+	this.bind(this.model._board, "mousemove", function(e){that.doDrag(e);});
+	this.bind(this.model._board, "mouseup", function(e){that.stopDrag(e);});
+	this.bind(this.model._board, "mouseout", function(e){that.stopDrag(e);});
+}
 Graph.prototype.addNodeLister = function(element, node){
 	var that = this;
 	element.node = node;
 	this.bind(element, "mousedown", function(e){that.startDrag(e);});
-};
-Graph.prototype.showinfo = function(event){
-	var objElem = event.currentTarget;
-	var node=this.getGraphNode(objElem);
-	if(node){
-		var x = Math.round( objElem.style.left.substring(0,objElem.style.left.length-2) * 100)/100;
-		var y = Math.round( objElem.style.top.substring(0,objElem.style.top.length-2) * 100)/100;
-		node._parent.showInfoText("Box-Position: " + x + ":" + y);
-	}
-};
+}
 Graph.prototype.setSelectable = function(node, value) {
 	if (node.nodeType == 1) {
 		if(value){
@@ -522,7 +625,7 @@ Graph.prototype.setSelectable = function(node, value) {
 		this.setSelectable(child, value);
 		child = child.nextSibling;
 	}
-};
+}
 Graph.prototype.getDragNode = function(node) {
 	if(node.model){
 		if(!node.model.isdraggable){
@@ -552,21 +655,20 @@ Graph.prototype.startDrag = function(event) {
 			this.setSelectable(graph.children[i], "on");
 		}
 	}
-	this.offset.x = (IE) ? window.event.clientX : event.pageX;
-	this.offset.y = (IE) ? window.event.clientY : event.pageY;
+	this.offset.x = this.isIE ? window.event.clientX : event.pageX;
+	this.offset.y = this.isIE ? window.event.clientY : event.pageY;
 	this.startObj.x = this.objDrag.model.x;
 	this.startObj.y = this.objDrag.model.y;
-};
-
+}
 Graph.prototype.doDrag = function(event) {
-	this.mouse.x = (IE) ? window.event.clientX : event.pageX;
-	this.mouse.y = (IE) ? window.event.clientY : event.pageY;
+	this.mouse.x = this.isIE ? window.event.clientX : event.pageX;
+	this.mouse.y = this.isIE ? window.event.clientY : event.pageY;
 
 	if (this.objDrag != null) {
 		var x =(this.mouse.x - this.offset.x) + this.startObj.x;
 		var y =(this.mouse.y - this.offset.y) + this.startObj.y;
 
-		if(this.options.display=="svg"){
+		if(this.model.options.display=="svg"){
 			x = x - this.startObj.x;
 			y = y - this.startObj.y;
 			this.objDrag.setAttribute('transform', "translate("+x+" "+y+")");
@@ -575,7 +677,7 @@ Graph.prototype.doDrag = function(event) {
 			if(this.objDrag.model){
 				this.objDrag.model.x = x;
 				this.objDrag.model.y = y;
-				this.objDrag.model._parent.resize();
+				this.objDrag.model._parent.resize(this.model);
 			}
 		}
 	}
@@ -596,7 +698,7 @@ Graph.prototype.stopDrag = function(event) {
 		}
 	}
 	if(item.model){
-		if(this.options.display=="svg"){
+		if(this.model.options.display=="svg"){
 			if(item.getAttributeNS(null, "transform")){
 				var pos = item.getAttributeNS(null, "transform").slice(10,-1).split(' ');
 				item.model.x = item.model.x + Number(pos[0]);
@@ -615,7 +717,7 @@ Graph.prototype.stopDrag = function(event) {
 				var infoTxt = item.model.edge.getInfo(item.model);
 				item.model.edge.addElement(this.board, this.drawer.createInfo(item.model, false, infoTxt));
 			}else{
-				item.model.htmlNode = this.drawer.getNode(item.model, false);
+				item.model.htmlNode = this.drawer.getNode(item.model);
 				if(item.model.htmlNode){
 					this.board.appendChild( item.model.htmlNode );
 				}
@@ -626,9 +728,9 @@ Graph.prototype.stopDrag = function(event) {
 				}
 			}
 		}
-		item.model._parent.resize();
+		this.resize(this.model);
 	}
-};
+}
 Graph.prototype.redrawNode = function(node){
 	this.board.removeChild(node.htmlNode);
 	if(node.board) {
@@ -638,15 +740,14 @@ Graph.prototype.redrawNode = function(node){
 		var infoTxt = node.edge.getInfo(node.node);
 		node.edge.addElement(this.board, this.drawer.createInfo(node, false, infoTxt));
 	}else{
-		node.htmlNode = this.drawer.getNode(node, false);
+		node.htmlNode = this.drawer.getNode(node);
 		if(node.htmlNode){
 			this.board.appendChild( node.htmlNode );
 		}
 	}
 	node.center = new Pos(node.x + (node.width / 2), node.y + (node.height / 2));
-	node._parent.resize();
-};
-
+	node._parent.resize(this.model);
+}
 Graph.prototype.getGraphNode = function(objElement){
 	var obj=objElement;
 	while(obj&&!obj.node){
@@ -660,10 +761,17 @@ Graph.prototype.getGraphNode = function(objElement){
 		return obj.node;
 	}
 	return null;
-};
+}
 Graph.prototype.initDrawer = function(typ){
 	typ = typ.toLowerCase();
-	this.options.display = typ;
+	if(this.model.options.display==typ) {
+		return;
+	}
+	this.clearBoard();
+	model.htmlNode = this.drawer.createContainer(this);
+	this.initDragAndDrop();
+	this.root.appendChild(this.board);
+	this.model.options.display = typ;
 	if(typ=="html"){
 		this.drawer = new HTMLDrawer();
 	}else if(typ=="svg"){
@@ -671,40 +779,24 @@ Graph.prototype.initDrawer = function(typ){
 	}else if(typ=="canvas"){
 		this.drawer = new CanvasDrawer();
 	}
-};
+}
 Graph.prototype.setTyp = function(typ){
 	if(typ=="HTML"){
 		this.initDrawer(typ);
 		this.loader.init(true);
-		this.initGraph();
-		this.drawGraph(0,0);
+		this.initGraph(this.model);
+		this.drawGraph(this.model);
 	}else if(typ=="SVG"){
 		this.initDrawer(typ);
-		this.initGraph();
-		this.drawGraph(0,0);
-	}else if(typ=="SVG-Export"){
-		this.drawer = new SVGDrawer();
-		this.initGraph();
-		this.drawGraph(0,0);
-		var size = this.resize();
-		var img = document.createElement("img");
-		img.src = "data:image/svg+xml;base64," + this.utf8_to_b64(this.serializeXmlNode(this.board));
-		this.clearBoard();
-		this.board = img;
-		this.board.width = size.x;
-		this.board.height = size.y;
-		this.root.appendChild(img);
-	}else if(typ=="CANVAS"){
-		this.initDrawer(typ);
-		this.initGraph();
-		this.drawGraph(0,0)
+		this.initGraph(this.model);
+		this.drawGraph(this.model);
 	}else if(typ=="PNG"){
 		var oldDrawer = this.drawer;
 		this.drawer = new CanvasDrawer();
 		this.loader.init(false);
 		this.loader.oldDrawer = oldDrawer;
-		this.initGraph();
-		this.drawGraph(0,0);
+		this.initGraph(this.model);
+		this.drawGraph(this.model);
 		this.loader.resetDrawer();
 	}else if(typ=="PDF"){
 		this.ExportPDF();
@@ -725,14 +817,12 @@ Graph.prototype.ExportPDF = function () {
 	var pdf = new jsPDF('l', 'px', 'a4');
 	new svgConverter(this.board, pdf, {removeInvalid: false});
 	pdf.save('Download.pdf');
-};
-
+}
 Graph.prototype.ExportEPS = function () {
 	var doc = new jsEPS({inverting:true});
 	var converter = new svgConverter(this.board, doc);
 	doc.save();
-};
-
+}
 Graph.prototype.ExportPNG = function () {
 	var image = new Image();
 	image.src = 'data:image/svg+xml;base64,' + this.utf8_to_b64(this.serializeXmlNode(this.board));
@@ -764,7 +854,7 @@ Graph.prototype.SaveAs = function (typ) {
 	}else if(typ=="eps") {
 		this.ExportEPS();
 	}
-};
+}
 Graph.prototype.Save = function (typ, data, name) {
 	var a = document.createElement("a");
 	var url = window.URL.createObjectURL(new Blob([data], {type: typ}));
@@ -772,108 +862,79 @@ Graph.prototype.Save = function (typ, data, name) {
 	a.download = name;
 	a.click();
 }
-
 Graph.prototype.ExportHTML = function () {
-	var json = this.getHTML();
+	var json = this.model.toJson();
 	var data="<html><head>"+document.head.innerHTML.trim()+"</head><body><script>"
 		+"new Graph("+JSON.stringify(json, null, "\t") +").layout();</script></body></html>";
 	this.Save("text/json", data, "download.html");
 }
 Graph.prototype.ExportHTMLStandalone = function () {
-	var json = this.getHTML();
+	var json = this.model.toJson();
 
 	var data="<html><head>"+document.head.innerHTML.trim()+"</head><body><script>"
 		+"new Graph("+JSON.stringify(json, null, "\t") +").layout();</script></body></html>";
 	this.Save("text/json", data, "download.html");
 }
-Graph.prototype.getHTML = function () {
-	var result = {};
-	result.typ = this.typ;
-	result.options = {};
 
-	for (var key in this.options) {
-		if(key.charAt(0)!="_" && this.options[key] != null) {
-			result.options[key] = this.options[key];
-		}
-	}
-	var items = [];
-	var add = false;
-	for (var i in this.nodes) {
-		var n = this.nodes[i];
-		var newNode = {typ:n.typ, id:n.id, x: n.x, y:n.y, width:n.width, height:n.height, style:n.style };
-		if(n instanceof GraphNode) {
-			if(n.attributes && n.attributes.length > 0){
-				newNode.attributes=[];
-				for(var a=0;a<n.attributes.length;a++){
-					newNode.attributes.push(n.attributes[a]);
-				}
-			}
-			if(n.methods && n.methods.length > 0){
-				newNode.methods=[];
-				for(var m=0;m<n.methods.length;m++){
-					newNode.methods.push(n.methods[m]);
-				}
-			}
-		}
-		if(n instanceof Graph) {
-			var sub = n.getHTML();
-			this.copy(sub, newNode);
-		}
-		items.push(newNode);
-		add = true;
-	}
-	if(add){result.nodes=items;}
-	items =[];add=false;
-	for (var i=0;i< this.edges.length;i++) {
-		var e = this.edges[i];
-		var newEdge = {typ:e.typ, source: {id: e.source.id}, target: {id: e.target.id}};
 
-		if(e.sourceInfo.cardinality){
-			newEdge.source["cardinality"] = e.sourceInfo.cardinality;
-		}
-		if(e.sourceInfo.property){
-			newEdge.source["property"] = e.sourceInfo.property;
-		}
-		if(e.targetInfo.cardinality){
-			newEdge.target["cardinality"] = e.targetInfo.cardinality;
-		}
-		if(e.targetInfo.property){
-			newEdge.target["property"] = e.targetInfo.property;
-		}
-		items.push(newEdge);
-		add = true;
-	}
-	if(add){result.edges=items;}
-	return result;
-};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //				######################################################### GraphLayout-Dagre #########################################################
-DagreLayout = function() {};
-DagreLayout.prototype.layout = function(graph, width, height) {
-	this.graph = graph;
-	
-	this.g = new dagre.graphlib.Graph(graph.merge({directed:false}, this.graph.options.layout));
-	this.g.setGraph({});
-	this.g.setDefaultEdgeLabel(function() { return {}; });
-	for (var i in this.graph.nodes) {
-		var node = this.graph.nodes[i];
-		this.g.setNode(node.id, {label: node.id, width:node.width, height:node.height, x:node.x, y:node.y});
-		
+DagreLayout = function() {}
+DagreLayout.prototype.layout = function(graph, node, width, height) {
+	var g = new dagre.graphlib.Graph(node.merge({directed:false}, node.options.layout));
+	g.setGraph({});
+	g.setDefaultEdgeLabel(function() { return {}; });
+	for (var i in node.nodes) {
+		var n = node.nodes[i];
+		g.setNode(n.id, {label: n.id, width:n.width, height:n.height, x:n.x, y:n.y});
 	}
-	for (var i = 0; i < this.graph.edges.length; i++) {
-		var edges = this.graph.edges[i];
-		this.g.setEdge(this.getRootNode(edges.source).id, this.getRootNode(edges.target).id);
+	for (var i = 0; i < node.edges.length; i++) {
+		var e = node.edges[i];
+		g.setEdge(this.getRootNode(e.source).id, this.getRootNode(e.target).id);
 	}
 
-	dagre.layout(this.g);
+	dagre.layout(g);
 	// Set the layouting back
-	for (var i in this.graph.nodes) {
-		var node = this.graph.nodes[i];
-		var layoutNode = this.g.node(node.id);
-		node.x = layoutNode.x - (node.width/2);
-		node.y = layoutNode.y - (node.height/2);
+	for (var i in node.nodes) {
+		var n = node.nodes[i];
+		var layoutNode = g.node(n.id);
+		n.x = layoutNode.x - (n.width/2);
+		n.y = layoutNode.y - (n.height/2);
 	}
-	this.graph.draw(width, height);
+	graph.draw(node, width, height);
 }
 DagreLayout.prototype.getRootNode = function(node, child) {
 	if(node._parent){
@@ -883,9 +944,9 @@ DagreLayout.prototype.getRootNode = function(node, child) {
 		return node;
 	}
 	return child;
-};
+}
 //				######################################################### Loader #########################################################
-Loader = function(graph) {this.init(false);this.graph=graph;};
+Loader = function(graph) {this.init(false);this.graph=graph;}
 Loader.prototype.init = function(abort){
 	this.images = [];
 	this.abort=abort;
@@ -897,7 +958,7 @@ Loader.prototype.resetDrawer = function(){
 		var img = this.images.pop();
 		this.graph.root.appendChild(img);
 	}
-};
+}
 Loader.prototype.remove = function(img){this.images.remove(img);}
 Loader.prototype.onLoad = function(img){
 	var idx = this.images.indexOf(img);
@@ -907,14 +968,13 @@ Loader.prototype.onLoad = function(img){
 	if(this.images.length==0){
 		this.graph.drawer.onFinishImage();
 	}
-};
+}
 Loader.prototype.appendImg = function(img){
 	img.crossOrigin = 'anonymous';
 	var that = this.graph.drawer;
 	img.onload = function(e){that.onLoadImage(e);};
 	this.images.push(img);
 }
-
 //				######################################################### LINES #########################################################
 Edge = function() {this.init();this.typ="EDGE";}
 Edge.prototype.init = function(){
@@ -927,15 +987,14 @@ Edge.prototype.init = function(){
 	this.m = 0;
 	this.n = 0;
 	this.lineStyle = Line.Format.SOLID;
-};
-Edge.Layout ={ DIAG : 1, RECT : 0 };
-Edge.Position={UP:"UP", LEFT:"LEFT", RIGHT:"RIGHT", DOWN:"DOWN"};
-
+}
+Edge.Layout ={ DIAG : 1, RECT : 0 }
+Edge.Position={UP:"UP", LEFT:"LEFT", RIGHT:"RIGHT", DOWN:"DOWN"}
 Edge.prototype.addElement = function(board, element){
 	if(element){
 		this.htmlElement.push(element);board.appendChild(element);
 	}
-};
+}
 Edge.prototype.removeElement = function(element){
 	if(element){
 		for(var i=0;i<this.htmlElement.length;i++){
@@ -945,7 +1004,7 @@ Edge.prototype.removeElement = function(element){
 			}
 		}
 	}
-};
+}
 Edge.prototype.calculate = function(board, drawer){
 	this.source.center = new Pos(this.source.getX() + (this.source.width / 2), this.source.getY() + (this.source.height / 2));
 	this.target.center = new Pos(this.target.getX() + (this.target.width / 2), this.target.getY() + (this.target.height / 2));
@@ -964,7 +1023,7 @@ Edge.prototype.draw = function(board, drawer){
 		this.addElement(board, new SymbolLibary().create({typ:"Arrow",x:this.infoPos.x,y:this.infoPos.y, rotate:angle}, drawer));
 	}
 	this.drawTargetText(board, drawer, options);
-};
+}
 Edge.prototype.drawSourceText = function(board, drawer, options){
 	var infoTxt = this.getInfo(this.sourceInfo);
 	if(infoTxt.length > 0 ){
@@ -989,16 +1048,16 @@ Edge.prototype.edgePosition = function() {
 		}
 	}
 	return pos;
-};
+}
 Edge.prototype.getTarget = function(node, startNode){
-	if(node instanceof Graph){
+	if(node instanceof GraphModel){
 		if(node.status=="close") {
 			return node;
 		}
 		return startNode;
 	}
 	return this.getTarget(node._parent, startNode);
-};
+}
 Edge.prototype.calcCenterLine = function(){
 	var divisor = (this.target.center.x - this.source.center.x);
 	var sourcePos,targetPos;
@@ -1035,7 +1094,7 @@ Edge.prototype.calcCenterLine = function(){
 		this.infoPos = new Pos( (sourcePos.x + targetPos.x)/2, (sourcePos.y + targetPos.y)/2 );
 	}
 	return true;
-};
+}
 Edge.prototype.getCenterPosition = function(node, pos, offset){
 	offset = offset || 0;
 	if(pos==Edge.Position.DOWN){
@@ -1141,7 +1200,7 @@ Edge.prototype.calcOwnEdge = function(){
 	}
 	sPos = tPos;
 	this.path.push (new Line(sPos, this.getCenterPosition(this.source, this.end), this.lineStyle));
-};
+}
 Edge.prototype.addEdgeToNode=function(node, pos){
 	if(pos==Edge.Position.UP){
 		node.UP+=1;
@@ -1152,7 +1211,7 @@ Edge.prototype.addEdgeToNode=function(node, pos){
 	}else if(pos==Edge.Position.LEFT){
 		node.LEFT+=1;
 	}
-};
+}
 Edge.prototype.getFree = function(node){
 	if(node.UP==0 ){
 		node.UP +=1;
@@ -1169,7 +1228,6 @@ Edge.prototype.getFree = function(node){
 	}
 	return "";
 }
-
 Edge.prototype.getFreeOwn = function(node, start){
 	var list = new Array(Edge.Position.UP, Edge.Position.RIGHT, Edge.Position.DOWN, 
 		Edge.Position.LEFT, Edge.Position.UP, Edge.Position.RIGHT, Edge.Position.DOWN);
@@ -1223,7 +1281,7 @@ Edge.prototype.calcInfoPos = function(linePos, item, info, offset){
 	info.id = linePos.id;
 	info.x = newX;
 	info.y = newY;
-};
+}
 Edge.prototype.getPosition= function(m , n, entity, refCenter, offset){
 	if (!offset) {
 		offset = 0;
@@ -1264,7 +1322,7 @@ Edge.prototype.getPosition= function(m , n, entity, refCenter, offset){
 		}
 	}
 	return position;
-};
+}
 Edge.prototype.calcMoveLine = function(size, angle, move){
 	var startArrow	= this.endPos().source;
 	this.end = this.endPos().target;
@@ -1284,7 +1342,7 @@ Edge.prototype.calcMoveLine = function(size, angle, move){
 		this.endPos().target = new Pos((this.top.x + this.bot.x) / 2, (this.top.y + this.bot.y) / 2);
 	}
 }
-Generalization = function() { this.init();this.typ="Generalization";};
+Generalization = function() { this.init();this.typ="Generalization";}
 Generalization.prototype = Object_create(Edge.prototype);
 Generalization.prototype.calculateEdge = Generalization.prototype.calculate;
 Generalization.prototype.calculate = function(board, drawer){
@@ -1293,16 +1351,16 @@ Generalization.prototype.calculate = function(board, drawer){
 	}
 	this.calcMoveLine(16, 50, true);
 	return true;
-};
+}
 Generalization.prototype.drawSuper = Generalization.prototype.draw;
 Generalization.prototype.draw = function(board, drawer){
 	this.drawSuper(board, drawer);
 	this.addElement(board, drawer.createLine(this.top.x, this.top.y, this.end.x, this.end.y, this.lineStyle));
 	this.addElement(board, drawer.createLine(this.bot.x, this.bot.y, this.end.x, this.end.y, this.lineStyle));
 	this.addElement(board, drawer.createLine(this.top.x, this.top.y, this.bot.x, this.bot.y, this.lineStyle));
-};
-Generalization.prototype.drawSourceText = function(board, drawer, options){};
-Generalization.prototype.drawTargetText = function(board, drawer, options){};
+}
+Generalization.prototype.drawSourceText = function(board, drawer, options){}
+Generalization.prototype.drawTargetText = function(board, drawer, options){}
 
 Implements = function() { this.init();this.typ="Implements";this.lineStyle = Line.Format.DOTTED;}
 Implements.prototype = Object_create(Generalization.prototype);
@@ -1315,7 +1373,7 @@ Unidirectional.prototype.calculate = function(board, drawer){
 	}
 	this.calcMoveLine(16, 50, false);
 	return true;
-};
+}
 Unidirectional.prototype.draw = function(board, drawer){
 	this.drawSuper(board, drawer);
 	this.addElement(board, drawer.createLine(this.top.x, this.top.y, this.end.x, this.end.y, this.lineStyle));
@@ -1330,7 +1388,7 @@ Aggregation.prototype.calculate = function(board, drawer){
 	this.size=16;
 	this.calcMoveLine(this.size, 49.8, true);
 	return true;
-};
+}
 Aggregation.prototype.draw = function(board, drawer){
 	this.drawSuper(board, drawer);
 	this.addElement(board, drawer.createPath(true, "none", [this.endPos().target, this.topCenter, this.end, this.botCenter]));
@@ -1340,7 +1398,7 @@ Composition.prototype = Object_create(Aggregation.prototype);
 Composition.prototype.draw = function(board, drawer){
 	this.drawSuper(board, drawer);
 
-	var start    = this.endPos().source;
+	var start = this.endPos().source;
 	var end = this.endPos().target;
 	var a = (start.y - end.y) / (end.x - start.x);
 	var h = Math.atan(a)*100;
@@ -1359,7 +1417,7 @@ function RGBColor(value){
 	// cleanup temporary div.
 	document.body.removeChild(div);
 	this.convert(computedColor);
-};
+}
 RGBColor.prototype.convert = function(value){
 	var regex = /rgb *\( *([0-9]{1,3}) *, *([0-9]{1,3}) *, *([0-9]{1,3}) *\)/;
 	var values = regex.exec(value);
@@ -1367,12 +1425,11 @@ RGBColor.prototype.convert = function(value){
 	this.g = parseInt(values[2]);
 	this.b = parseInt(values[3]);
 	this.ok = true;
-};
-
-RGBColor.prototype.toRGB = function () {return 'rgb(' + this.r + ', ' + this.g + ', ' + this.b + ')';};
+}
+RGBColor.prototype.toRGB = function () {return 'rgb(' + this.r + ', ' + this.g + ', ' + this.b + ')';}
 RGBColor.prototype.toHex = function () {
 	return "#" 
 	+ (this.r + 0x10000).toString(16).substring(3).toUpperCase() 
 	+ (this.g + 0x10000).toString(16).substring(3).toUpperCase()
 	+ (this.b + 0x10000).toString(16).substring(3).toUpperCase();
-};
+}
