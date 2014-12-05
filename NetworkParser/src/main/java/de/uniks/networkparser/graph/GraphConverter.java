@@ -52,6 +52,7 @@ public class GraphConverter implements Converter {
 	public static final String OPTIONS = "options";
 	private static final String STYLE = "style";
 	private static final String INFO = "info";
+	private static final String COUNTER = "counter";
 
 	@Override
 	public String convert(GraphList root, boolean removePackage) {
@@ -243,6 +244,9 @@ public class GraphConverter implements Converter {
 					+ target.getClassName(false) + ":"
 					+ edge.getOther().getProperty();
 			if (!ids.contains(id)) {
+				if(edge.getCount()>0) {
+					child.put(COUNTER, edge.getCount());
+				}
 				child.put(SOURCE, addInfo(edge, true).withValue(ID, source.getClassName(shortName)));
 				child.put(TARGET, addInfo(edge.getOther(), true).withValue(ID, target.getClassName(shortName)));
 				return child;
@@ -255,6 +259,7 @@ public class GraphConverter implements Converter {
 		JsonObject child = new JsonObject().withValue(TYP, edge.getTyp());
 		child.put(SOURCE, addInfo(edge, false).withValue(ID, source.getId()));
 		child.put(TARGET, addInfo(edge.getOther(), false).withValue(ID, target.getId()));
+		
 		GraphLabel info = edge.getInfo();
 		if(info != null) {
 			child.put(INFO, info.getValue());
@@ -337,6 +342,9 @@ public class GraphConverter implements Converter {
 		items = parseMethods(element.values(), shortName);
 		if(items.size()>0){
 			item.put(METHODS, items);
+		}
+		if(element.getCount()>0) {
+			item.put(COUNTER, element.getCount());
 		}
 		return item;
 	}

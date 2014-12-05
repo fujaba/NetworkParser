@@ -151,6 +151,9 @@ Graph = function(json, options) {
 			edge.style = e.style;
 			edge.source.edges.push(edge);
 			edge.model = this;
+			if(e.counter) {
+				edge.counter = e.counter;
+			}
 
 			edge.target = this.getNode(edge.targetInfo.id);
 			edge.target.edges.push(edge);
@@ -1069,6 +1072,10 @@ Edge.prototype.getInfo = function(info){
 			infoTxt += "0..*";
 		}
 	}
+	if(info.edge.counter && info.edge.counter>0) {
+		infoTxt +=" ("+info.edge.counter+")";
+	}
+
 	return infoTxt;
 }
 Edge.prototype.calcOwnEdge = function(){
