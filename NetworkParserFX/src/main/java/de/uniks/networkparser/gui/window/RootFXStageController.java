@@ -23,11 +23,13 @@ package de.uniks.networkparser.gui.window;
 */
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -37,6 +39,7 @@ import javafx.stage.WindowEvent;
 
 public class RootFXStageController extends FXStageController implements WindowListener{
 	private KeyListenerMap listener = new KeyListenerMap(this);
+	private HashMap<String, Node> nodes=new HashMap<String, Node>();  
 
 	public RootFXStageController(Stage newStage){
 		this.withStage(newStage);
@@ -62,7 +65,9 @@ public class RootFXStageController extends FXStageController implements WindowLi
 	}
 	
 	public Pane create(String fxmlFile, ResourceBundle resources)  {
-		URL location = RootFXStageController.class.getResource(fxmlFile);
+		return create(RootFXStageController.class.getResource(fxmlFile), resources);
+	}
+	public Pane create(URL location, ResourceBundle resources)  {
 		FXMLLoader fxmlLoader;
 		if(resources!=null){
 			fxmlLoader = new FXMLLoader(location, resources, new JavaFXBuilderFactory());
@@ -71,11 +76,16 @@ public class RootFXStageController extends FXStageController implements WindowLi
 		}
 		try {
 			this.withPane((Pane) fxmlLoader.load(location.openStream()));
+			
 		} catch (IOException e) {
 			return null;
 		}
 		this.withController(fxmlLoader.getController()); 
 		return pane;
+	}
+	
+	public Node getElementById(String id) {
+		return nodes.get(id);
 	}
 	
 	public RootFXStageController(String fxmlFile, ResourceBundle resources) {
@@ -85,6 +95,10 @@ public class RootFXStageController extends FXStageController implements WindowLi
 		create(fxmlFile, resources);
 	}
 	
+	public RootFXStageController() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public Pane getPane() {
 		return pane;
 	}
@@ -119,8 +133,20 @@ public class RootFXStageController extends FXStageController implements WindowLi
 		oldStage.close();
 	}
 	
+	public void initNode(Parent node) {
+		for(Node item : node.getChildrenUnmodifiable()) {
+			if(item.getId() != null && item.getId().length() > 0 ) {
+				this.nodes.put(item.getId(), item);
+				if(item instanceof Parent) {
+					this.initNode((Parent) item);
+				}
+			}
+		}
+	}
+	
 	public RootFXStageController withPane(Pane value) {
 		this.pane = value;
+		this.initNode(pane);
 		this.pane.addEventFilter(KeyEvent.KEY_PRESSED, listener);
 		return this;
 	}
@@ -129,5 +155,14 @@ public class RootFXStageController extends FXStageController implements WindowLi
 		getStage().setWidth(width);
 		getStage().setHeight(height);
 		return this;
+	}
+	
+	public static RootFXStageController load(String fxml) {
+		return new RootFXStageController(fxml, null);
+	}
+	public static RootFXStageController load(String fxml, Class<?> path) {
+		RootFXStageController controller = new RootFXStageController();
+		controller.create(path.getResource(fxml), null);
+		return controller;
 	}
 }

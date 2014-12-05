@@ -57,6 +57,7 @@ public class ClickCounter extends Application
       ModelListenerProperty.create(field, data, GUIEntity.PROPERTY_NUMBER);
 
       Button button = new Button("Clicke Me");
+      
       root.getChildren().addAll(box, field, button);
       
       button.setOnAction(new EventHandler<ActionEvent>()

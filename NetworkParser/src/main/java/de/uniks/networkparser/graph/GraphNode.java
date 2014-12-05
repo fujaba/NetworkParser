@@ -25,10 +25,9 @@ import de.uniks.networkparser.AbstractEntityList;
 
 public class GraphNode extends AbstractEntityList<GraphMember> implements GraphMember{
 	private String id;
+	private int count;
 
 	// GETTER AND SETTER
-	
-
 	public String getId() {
 		return id;
 	}
@@ -84,5 +83,16 @@ public class GraphNode extends AbstractEntityList<GraphMember> implements GraphM
 	@Override
 	public boolean remove(Object value) {
 		return removeItemByObject((GraphMember) value) >= 0;
+	}
+	
+	public int getCount() {
+		return count;
+	}
+	public void addCounter() {
+		this.count++;
+	}
+	public GraphNode withCount(int count) {
+		this.count = count;
+		return this;
 	}
 }

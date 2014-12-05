@@ -45,4 +45,14 @@ public enum GraphCardinality
 		this.value = value;
 		return this;
 	}
+	
+	public static GraphCardinality create(String value) {
+		if("one".equalsIgnoreCase(value) || "1".equalsIgnoreCase(value) ) {
+			return ONE;
+		}
+		if("many".equalsIgnoreCase(value) || "n".equalsIgnoreCase(value) ) {
+			return MANY;
+		}
+		return null;
+	}
 }
