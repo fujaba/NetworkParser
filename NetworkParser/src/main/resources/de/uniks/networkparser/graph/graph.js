@@ -1057,7 +1057,7 @@ Edge.prototype.getCenterPosition = function(node, pos, offset){
 Edge.prototype.getInfo = function(info){
 	var infoTxt = "";
 	var isCardinality = this.model.typ=="classdiagram" && this.model.options.CardinalityInfo;
-	var isProperty = this.model.typ=="classdiagram" && this.model.options.PropertyInfo;
+	var isProperty = this.model.options.PropertyInfo;
 
 	if(isProperty && info.property){
 		infoTxt = info.property;
