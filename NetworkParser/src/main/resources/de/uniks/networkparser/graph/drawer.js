@@ -415,6 +415,7 @@ HTMLDrawer.prototype.onFinishImage = function(event){
 HTMLDrawer.prototype.drawButton = function(text, action){
 	var btn = this.create({tag:"button", tool:{}, width:60, height:28, style:"cursor: pointer;"});
 	btn.style.cursor="hand";
+	btn.tool = {};
 	btn.tool.x = 0;
 	btn.tool.y = 8;
 	btn.tool.height = btn.height;
