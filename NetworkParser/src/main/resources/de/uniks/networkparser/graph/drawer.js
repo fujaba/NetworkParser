@@ -27,13 +27,6 @@ Drawer.prototype.onLoadImage = function(){}
 Drawer.prototype.onFinishImage = function(){}
 Drawer.prototype.setPos = function(item, x, y){item.x = x;item.y = y;}
 Drawer.prototype.setSize = function(item, x, y){item.width = x;item.height = y;}
-//FIXME
-Drawer.prototype.getBoard = function(graph){
-	if(graph._parent){
-		return this.getBoard(graph._parent);
-	}
-	return graph.model._board;
-}
 Drawer.prototype.getColor = function(style, defaultColor) {
 	if(style) {
 		if(style.toLowerCase()=="create") {
@@ -78,7 +71,7 @@ Drawer.prototype.isInTool = function(x, y, ox, oy) {
 Drawer.prototype.createBoard = function(node, graph, listener) {
 	var that = this;
 	
-	this.model = graph;	
+	this.model = graph;
 	this.toolitems=[];
 	if(listener){
 		for(var i=0;i<listener.length;i++) {
@@ -104,7 +97,22 @@ Drawer.prototype.createBoard = function(node, graph, listener) {
 	});
 	return board;
 }
-
+Drawer.prototype.getButtons = function(graph, notTyp) {
+	var buttons = [];
+	var that = this;
+	if(graph && graph.model.options){
+		var o = graph.model.options.buttons;
+		for(var i=0;i<o.length;i++){
+			var typ = o[i];
+			if(typ != notTyp){
+				buttons.push(this.drawButton(typ, (function (e) {
+					var t=e.target.typ || e.target.parentElement.typ;
+					that.model.initDrawer(t);that.model.layout();})));
+			}
+		}
+	}
+	return buttons;
+}
 //				###################################################### HTMLDrawer ####################################################################################
 HTMLDrawer = function() {this.util = new GraphUtil();}
 HTMLDrawer.prototype = Object_create(Drawer.prototype);
@@ -113,16 +121,7 @@ HTMLDrawer.prototype.setSize = function(item, x, y){item.style.width = x+"px";it
 HTMLDrawer.prototype.getSize = function(item){return {x:item.clientWidth, y:item.clientHeight};}
 HTMLDrawer.prototype.createContainer = function(graph){
 	var that = this;
-	var buttons = [];
-	if(graph && graph.options){
-		for(var i=0;i<graph.options.buttons.length;i++){
-			var typ = graph.options.buttons[i];
-			if(typ!="HTML"){
-				buttons.push(this.drawButton(typ, (function () {that.model.setTyp(typ);})));
-			}
-		}
-	}
-	return this.createBoard({tag:"div"}, graph, buttons);
+	return this.createBoard({tag:"div"}, graph, this.getButtons(graph, "HTML"));
 }
 HTMLDrawer.prototype.createImage = function(model){
 	var img = new Image();
@@ -299,6 +298,7 @@ HTMLDrawer.prototype.onFinishImage = function(event){
 HTMLDrawer.prototype.drawButton = function(text, action){
 	var btn = this.util.create({tag:"button", _font:true, width:60, height:28, style:"cursor: pointer;", value:text, "onMousedown":action});
 	btn.tool = {x:0, y:8, height:28, width:60};
+	btn.typ = text;
 	btn.close = function(){};
 	return btn;
 }
@@ -306,10 +306,10 @@ HTMLDrawer.prototype.createPath = function(close, fill, path, angle){
 	if(fill==="none") {
 		var line = this.util.create({tag: "div"});
 		for(var i=1;i<path.length;i++) {
-			line.appendChild(this.util.createLine(path[i-1].x, path[i-1].y, path[i].x, path[i].y));
+			line.appendChild(this.createLine(path[i-1].x, path[i-1].y, path[i].x, path[i].y));
 		}
 		if(close) {
-			line.appendChild(this.util.createLine(path[path.length-1].x, path[path.length-1].y, path[0].x, path[0].y));
+			line.appendChild(this.createLine(path[path.length-1].x, path[path.length-1].y, path[0].x, path[0].y));
 		}
 		return line;
 	}
@@ -323,7 +323,7 @@ SVGDrawer.prototype = Object_create(Drawer.prototype);
 SVGDrawer.prototype.getWidth = function(label, calculate){
 	var text = this.util.create({tag:"text", _font:true, value:label});
 	text.setAttribute("width", "5px");
-	var board = this.getBoard(this.model);
+	var board = this.model.board;
 	board.appendChild(text);
 	var width = text.getBoundingClientRect().width;
 	board.removeChild(text);
@@ -351,7 +351,7 @@ SVGDrawer.prototype.drawDef = function(){
 
 }
 SVGDrawer.prototype.drawButton = function(text, action){
-	var btn = this.util.create({tag:"g"});
+	var btn = this.util.create({tag:"g", "#typ": text});
 	btn.tool={x:0, y: 8, height: 28, width: 60};
 	var rect = this.util.create({tag:"rect", rx:8, x: btn.tool.x, y:btn.tool.y, width:btn.tool.width, height:btn.tool.height, stroke:"#000", filter:"url(#drop-shadow)", class:"saveBtn"});
 	
@@ -439,11 +439,11 @@ SVGDrawer.prototype.createContainer = function(graph){
 		list.push(typeof(jsEPS)!="undefined" ? "EPS" : "");
 		list.push(typeof(jsPDF)!="undefined" ? "PDF" : "");
 	}
-	var board = this.createBoard({tag:"svg", "xmlns:svg":"http://www.w3.org/2000/svg", "xmlns:xlink":"http://www.w3.org/1999/xlink"}, graph, 
-	[
-	this.drawButton("HTML", (function (e) {that.model.setTyp("HTML");})),
-	this.drawComboBox(list, "Save", (function (e) {that.removeToolItems(board);that.model.SaveAs(e.currentTarget.value);}))
-	]);
+
+	var buttons = this.getButtons(graph, "SVG");
+	buttons.push(this.drawComboBox(list, "Save", (function (e) {that.removeToolItems(board);that.model.SaveAs(e.currentTarget.value);})));
+
+	var board = this.createBoard({tag:"svg", "xmlns:svg":"http://www.w3.org/2000/svg", "xmlns:xlink":"http://www.w3.org/1999/xlink"}, graph, buttons);
 	board.appendChild( this.drawDef() );
 	return board;
 }
@@ -458,7 +458,7 @@ SVGDrawer.prototype.setSize = function(item, x, y){
 SVGDrawer.prototype.getNode = function(node){
 	var symbolLib = new SymbolLibary();
 	if(symbolLib.isSymbol(node)) {
-		return symbolLib.draw(this, node, calculate);
+		return symbolLib.draw(this, node);
 	}
 	if(node.content_src){
 		return this.util.create({tag:"image", height: node.height, width: node.width, content_src: node.content_src});
