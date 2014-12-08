@@ -476,11 +476,11 @@ SVGDrawer.prototype.getNode = function(node){
 			this.addChild(node, g, this.util.create({tag:"text", _font:true, "text-anchor":"left", "x": (node.x +2), "y":node.y+12, value:node.id}));
 		}else {
 			node.left = node.top = 30;
-			node.htmlNode = g;
+			node._gui = g;
 			this.model.layout(0, 0, node);
 
-			width = this.util.getValue(node.htmlNode.style.width);
-			height = this.util.getValue(node.htmlNode.style.height);
+			width = this.util.getValue(node._gui.style.width);
+			height = this.util.getValue(node._gui.style.height);
 			if(node.style && node.style.toLowerCase()=="nac"){
 				this.addChild(node, g, this.createGroup(node, symbolLib.drawStop(node)));
 			}
@@ -491,9 +491,9 @@ SVGDrawer.prototype.getNode = function(node){
 		var btn;
 		if(node.status=="close"){
 			// Open Button
-			btn = this.createGroup(node, symbolLib.drawMax(node, calculate));
+			btn = this.createGroup(node, symbolLib.drawMax(node));
 		} else {
-			btn = this.createGroup(node, symbolLib.drawMin(node, calculate));
+			btn = this.createGroup(node, symbolLib.drawMin(node));
 		}
 		var that = this;
 		btn.setAttribute("class", "btn");
@@ -517,12 +517,18 @@ SVGDrawer.prototype.getNode = function(node){
 	var width=0;
 	var height=40;
 	var textWidth;
+	
+	var id;
+    if(this.model.model.typ.toLowerCase()=="objectdiagram"){
+        id = node.id.charAt(0).toLowerCase() + node.id.slice(1);
+    }else{
+        id = node.id;
+        if(node.counter) {
+            id += " ("+node.counter+")";
+        }
+    }
+    textWidth = this.getWidth(id);
 
-	if(this.model.model.typ.toLowerCase()=="objectdiagram"){
-		textWidth = this.getWidth(node.id.charAt(0).toLowerCase() + node.id.slice(1));
-	}else{
-		textWidth = this.getWidth(node.id);
-	}
 	width = Math.max(width, textWidth);
 	if(node.attributes && node.attributes.length > 0 ){
 		height = height + node.attributes.length*25;
@@ -563,10 +569,8 @@ SVGDrawer.prototype.getNode = function(node){
 
 	if(this.model.model.typ.toLowerCase()=="objectdiagram"){
 		text.setAttribute("text-decoration", "underline");
-		text.appendChild(document.createTextNode(node.id.charAt(0).toLowerCase() + node.id.slice(1)));
-	}else{
-		text.appendChild(document.createTextNode(node.id));
 	}
+	text.appendChild(document.createTextNode(id));
 
 	g.appendChild(text);
 	g.appendChild( this.util.create({tag:"line", x1:x, y1:y + 30, x2: x + width, y2: y + 30, stroke:strokeColor}) );
