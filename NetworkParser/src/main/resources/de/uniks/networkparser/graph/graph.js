@@ -19,15 +19,20 @@
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-Object_create = Object.create || function (o) { var F = function() {};F.prototype = o; return new F();}
+"use strict";
+var Object_create = Object.create || function (o) { var F = function() {};F.prototype = o; return new F();};
 /* Pos */
-Pos = function(x, y, id) {this.x = x || 0; this.y = y || 0; if(id){this.id = id;} }
+var Pos = function(x, y, id) {this.x = x || 0; this.y = y || 0; if(id){this.id = id;} };
 /* GraphUtil */
-GraphUtil = function(ns){if(ns) {this.ns = ns;}}
+var GraphUtil = function(ns){if(ns) {this.ns = ns;}};
 GraphUtil.prototype.copy = function(ref, src, full) {
 	if(src){
-		for(var i in src){
-			if(i.charAt(0)=="_"){
+		var i;
+		for(i in src){
+			if(!src.hasOwnProperty(i)){
+				continue;
+			}
+			if(i.charAt(0)==="_"){
 				if(full){ref[i] = src[i];}
 				continue;
 			}
@@ -48,14 +53,14 @@ GraphUtil.prototype.copy = function(ref, src, full) {
 		if(src.height){ref._startHeight = src.height;}
 	}
 	return ref;
-}
+};
 GraphUtil.prototype.bind = function(el, eventName, eventHandler) {
 	if (el.addEventListener){
 		el.addEventListener(eventName, eventHandler, false); 
 	} else if (el.attachEvent){
 		el.attachEvent('on'+eventName, eventHandler);
 	}
-}
+};
 GraphUtil.prototype.create = function(node){
 	var item;
 	
@@ -69,7 +74,11 @@ GraphUtil.prototype.create = function(node){
 		item = document.createElement(node.tag);
 	}
 	var tag = node.tag.toLowerCase();
-	for (var key in node) {
+	var key;
+	for (key in node) {
+		if(!node.hasOwnProperty(key)) {
+			continue;
+		}
 		var k = key.toLowerCase();
 		if(node[key] == null) continue;
 		if(k=='tag' || k=='content_src' || k.charAt(0)=='_'	|| k=='model') continue;
@@ -102,6 +111,9 @@ GraphUtil.prototype.create = function(node){
 		}else {
 			if(k=="style" && typeof(node[key])=="object"){
 				for (var style in node[key]) {
+					if(!node[key].hasOwnProperty(style)) {
+						continue;
+					}
 					if(node[key][style]){
 						if("transform"===style){
 							item.style.transform = node[key][style];
@@ -118,7 +130,10 @@ GraphUtil.prototype.create = function(node){
 	}
 	if(node._font) {
 		if(this.model && this.model.options && this.model.options.font) {
-			for (var key in this.model.options.font) {
+			for (key in this.model.options.font) {
+				if(!this.model.options.font.hasOwnProperty(key)){
+					continue;
+				}
 				if(this.model.options.font[key]){
 					if(item.style){
 						item.style[key] = this.model.options.font[key];
@@ -140,7 +155,7 @@ GraphUtil.prototype.create = function(node){
 		item.model = node.model;
 	}
 	return item;
-}
+};
 GraphUtil.prototype.getModel = function(element) {
 	while(!element.model) {
 		if(element.parentElement){
@@ -149,28 +164,30 @@ GraphUtil.prototype.getModel = function(element) {
 		return null;
 	}
 	return element;
-}
-GraphUtil.prototype.getValue = function(value) {return parseInt(("0"+value).replace("px",""));}
-GraphUtil.prototype.isIE = function() {return document.all&&!window.opera;}
+};
+GraphUtil.prototype.getValue = function(value) {return parseInt(("0"+value).replace("px",""));};
+GraphUtil.prototype.isIE = function() {return document.all&&!window.opera;};
 
 /* Node */
-GraphNode = function(id) { 
+var GraphNode = function(id) {
 	this.typ = "node";
 	this.id = id;
 	this.edges = [];
 	this.attributes = [];
 	this.methods = [];
+	this._parent=null;
 	this._RIGHT = this._LEFT = this._UP = this._DOWN=0;
 	this.x = this.y = this.width = this.height=0;
 	this._isdraggable = true;
-}
+};
 GraphNode.prototype = Object_create(GraphUtil.prototype);
-GraphNode.prototype.getX = function(){return this.x;}
-GraphNode.prototype.getY = function(){return this.y;}
-GraphNode.prototype.removeFromBoard = function(board){if(this._gui){board.removeChild(this._gui);this._gui = null;}}
+GraphNode.prototype.getX = function(){if(this._parent){return this._parent.getX()+this.x;}return this.x;};
+GraphNode.prototype.getY = function(){if(this._parent){return this._parent.getY()+this.y;}return this.y;};
+GraphNode.prototype.removeFromBoard = function(board){if(this._gui){board.removeChild(this._gui);this._gui = null;}};
 
-GraphModel=function(json, options){
+var GraphModel=function(json, options){
 	this.typ = "classdiagram";
+	this._isdraggable = true;
 	json = json || {};
 	this.left=json.left || 0;
 	this.top=json.top || 0;
@@ -180,6 +197,9 @@ GraphModel=function(json, options){
 	this.edges = [];
 	json = json || {};
 	this.typ = json.typ || "classdiagram";
+	if(json.id) {
+		this.id = json.id;
+	}
 	this.options = this.copy(this.copy(new Options(), json.options), options, true);
 	this.package = "";
 	if(json.info){
@@ -188,13 +208,14 @@ GraphModel=function(json, options){
 	if(json.style){
 		this.style = json.style;
 	}
+	var i;
 	if(json.nodes) {
-		for (var i = 0; i < json.nodes.length; i++) {
+		for (i = 0; i < json.nodes.length; i++) {
 			this.addNode(json.nodes[i]);
 		}
 	}
 	if(json.edges) {
-		for (var i = 0; i < json.edges.length; i++){
+		for (i = 0; i < json.edges.length; i++){
 			var e = json.edges[i];
 			var edge;
 			var typ=e.typ.charAt(0).toUpperCase()+e.typ.substring(1).toLowerCase();
@@ -208,17 +229,17 @@ GraphModel=function(json, options){
             }
 			edge.sourceInfo = new Info(e.source, this, edge);
 			edge.targetInfo = new Info(e.target, this, edge);
-			edge.source = this.getNode(edge.sourceInfo.id);
+			edge.source = this.getNode(edge.sourceInfo.id, true);
 			edge.info = e.info;
 			edge.style = e.style;
 			edge.source.edges.push(edge);
 			edge.model = this;
-			edge.target = this.getNode(edge.targetInfo.id);
+			edge.target = this.getNode(edge.targetInfo.id, true);
 			edge.target.edges.push(edge);
 			this.edges.push(edge);
 		}
 	}
-}
+};
 GraphModel.prototype = Object_create(GraphNode.prototype);
 GraphModel.prototype.addNode = function(node) {
 	/* testing if node is already existing in the graph */
@@ -241,7 +262,7 @@ GraphModel.prototype.addNode = function(node) {
 	node._parent = this;
 	this.nodeCount++;
 	return this.nodes[node.id];
-}
+};
 GraphModel.prototype.addEdge = function(source, target) {
 	var edge = new Edge();
 	edge.source = this.addNode(source);
@@ -250,7 +271,7 @@ GraphModel.prototype.addEdge = function(source, target) {
 	this.edges.push(edge);
 	edge.target.edges.push(edge);
 	return edge;
-}
+};
 GraphModel.prototype.removeNode = function(id) {
 	delete(this.nodes[id]);
 
@@ -260,7 +281,7 @@ GraphModel.prototype.removeNode = function(id) {
 			i--;
 		}
 	}
-}
+};
 GraphModel.prototype.getNode = function(id, isSub) {
 	if(this.nodes[id]) {
 		return this.nodes[id];
@@ -269,24 +290,25 @@ GraphModel.prototype.getNode = function(id, isSub) {
 		return this.addNode(id);
 	}
 	for(var i in this.nodes) {
+
 		var n = this.nodes[i];
 		if(n instanceof GraphModel) {
-			var r = n.Node(id, isSub);
+			var r = n.getNode(id, isSub);
 			if(r) {
 				return r;
 			}
 		}
 	}
 	return null;
-}
-GraphModel.prototype.toJson = function() {return this.copy({}, this);}
-GraphModel.prototype.createElement = function(element, typ){this._parent.createElement(element, typ);}
+};
+GraphModel.prototype.toJson = function() {return this.copy({}, this);};
+GraphModel.prototype.createElement = function(element, typ){this._parent.createElement(element, typ);};
 GraphModel.prototype.removeFromBoard = function(board){
 	if(this._gui)
 		{board.removeChild(this._gui);this._gui = null;}
-	}
+};
 /* Info */
-Info = function(info, parent, edge) { 
+var Info = function(info, parent, edge) {
 	if(typeof(info)==="string"){
 		this.id = info; 
 	}else{
@@ -301,22 +323,22 @@ Info = function(info, parent, edge) {
 	this._parent = parent;
 	this.edge = edge;
 	this._isdraggable = true;
-}
+};
 
-Line = function(source, target, line, style) {this.source = source; this.target = target; this.line = line; this.style = style;}
-Line.Format={SOLID:"SOLID", DOTTED:"DOTTED"}
+var Line = function(source, target, line, style) {this.source = source; this.target = target; this.line = line; this.style = style;}
+Line.Format={SOLID:"SOLID", DOTTED:"DOTTED"};
 /* Options */
-Options = function(){
+var Options = function(){
 	this.canvasid = null;
 	this.raster = false;
 	this.display = "svg";
 	this.font={"font-size":"10px", "font-family": "Verdana"};
-	this.layout= {name:"Dagre", rank:"TB", nodesep:10}	// Dagre TB, LR
+	this.layout= {name:"Dagre", rank:"TB", nodesep:10};	// Dagre TB, LR
 	this.CardinalityInfo = true;
 	this.PropertyInfo = true;
 	this.rotateText = true;
 	this.buttons = ["HTML", "SVG"];	// ["HTML", "SVG", "PNG", "PDF"]
-}
+};
 
 
 
@@ -332,7 +354,7 @@ Options = function(){
 
 
 //				######################################################### Graph #########################################################
-Graph = function(json, options) {
+var Graph = function(json, options) {
 	this.x = this.y = this.width = this.height=0;
 	json.top=json.top || 50;
 	json.left=json.left || 10;
@@ -341,7 +363,6 @@ Graph = function(json, options) {
 	this.loader = new Loader(this);
 	if((""+this.model.options.display).toLowerCase()=="html"){
 		this.drawer = new HTMLDrawer();
-		this.loader.init(true);
 	}else{
 		this.initDrawer("svg");
 	}
@@ -364,7 +385,7 @@ Graph = function(json, options) {
 		}
 		document.body.appendChild(this.root);document.body.appendChild(this.root);
 	}
-}
+};
 Graph.prototype = Object_create(GraphNode.prototype);
 Graph.prototype.initLayouts=function(){ this.layouts=[{name:"dagre", value:new DagreLayout()}];}
 Graph.prototype.initInfo = function(edge, info){
@@ -381,7 +402,7 @@ Graph.prototype.initInfo = function(edge, info){
 		}
 	}
 	return infoTxt;
-}
+};
 Graph.prototype.clearBoard = function(){
 	if(this.board){
 		this.clearLines(this.model);
@@ -395,7 +416,7 @@ Graph.prototype.clearBoard = function(){
 	if(this.drawer) {
 		this.drawer.clearBoard();
 	}
-}
+};
 Graph.prototype.getDimension = function(html){
 	if(this._parent){
 		return this._parent.getDimension(html);
@@ -408,10 +429,10 @@ Graph.prototype.getDimension = function(html){
 	var pos = new Pos(rect.width, rect.height);
 	this.board.removeChild(html);
 	return pos;
-}
-Graph.prototype.addNode = function(node) {return this.model.addNode(node);}
-Graph.prototype.addEdge = function(source, target) {return this.model.addEdge(source, target);}
-Graph.prototype.removeNode = function(id) {return this.model.removeNode(id);}
+};
+Graph.prototype.addNode = function(node) {return this.model.addNode(node);};
+Graph.prototype.addEdge = function(source, target) {return this.model.addEdge(source, target);};
+Graph.prototype.removeNode = function(id) {return this.model.removeNode(id);};
 Graph.prototype.calcLines = function(model){
 	var ownAssoc = [];
 	model = model || this.model;
@@ -432,13 +453,13 @@ Graph.prototype.calcLines = function(model){
 		sourcePos = ownAssoc[i].getCenterPosition(ownAssoc[i].target, ownAssoc[i].end);
 		ownAssoc[i].calcInfoPos( sourcePos, ownAssoc[i].target, ownAssoc[i].targetInfo);
 	}
-}
+};
 Graph.prototype.drawLines = function(model){
 	this.clearLines(model);
 	for(var i = 0; i < model.edges.length; i++) {
 		model.edges[i].draw(this.board, this.drawer);
 	}
-}
+};
 Graph.prototype.clearLines = function(model){
 	for(var i=0; i<model.edges.length;i++) {
 		var e = model.edges[i];
@@ -448,13 +469,13 @@ Graph.prototype.clearLines = function(model){
 			}
 		}
 	}
-}
+};
 Graph.prototype.MinMax = function(node, min, max){
 	max.x = Math.max(max.x,node.x+node.width+10);
 	max.y=Math.max(max.y,node.y+node.height+10);
 	min.x=Math.max(min.x,node.x);
 	min.y=Math.max(min.y,node.y);
-}
+};
 Graph.prototype.resize = function(model){
 	var min=new Pos();
 	var max=new Pos(model.minSize.x, model.minSize.y);
@@ -469,35 +490,39 @@ Graph.prototype.resize = function(model){
 		this.MinMax(e.sourceInfo, min, max);
 		this.MinMax(e.targetInfo, min, max);
 	}
+	model.height = max.y;
+	model.width = max.x;
 	this.drawer.setSize(model._gui, max.x, max.y);
 	if(model.options.raster){
 		this.drawRaster();
 	}
 	this.drawLines(model);
 	return max;
-}
+};
 Graph.prototype.drawRaster = function(){
 	while(this.board.rasterElements.length>0){
 		this.board.removeChild(this.board.rasterElements.pop());
 	}
 	var width = this.board.style.width.replace("px","");
 	var height = this.board.style.height.replace("px","");
-	for(var i=10;i<width;i+=10){
-		var line = this.drawer.createLine(i, 0, i, height, null, "#ccc");
+	var line, i;
+	for(i=10;i<width;i+=10){
+		line = this.drawer.createLine(i, 0, i, height, null, "#ccc");
 		line.className="lineRaster";
 		this.board.rasterElements.push(line);
 		this.board.appendChild(line);
 	}
-	for(var i=10;i<height;i+=10){
-		var line = this.drawer.createLine(0, i, width, i, null, "#ccc");
+	for(i=10;i<height;i+=10){
+		line = this.drawer.createLine(0, i, width, i, null, "#ccc");
 		line.className="lineRaster";
 		this.board.rasterElements.push(line);
 		this.board.appendChild(line);
 	}
-}
+};
 Graph.prototype.draw = function(model, width, height){
-	for(var i in model.nodes) {
-		var n = model.nodes[i];
+	var i,n;
+	for(i in model.nodes) {
+		n = model.nodes[i];
 		if(model.left>0 || model.top > 0) {
 			n.x += model.left;
 			n.y += model.top;
@@ -508,12 +533,12 @@ Graph.prototype.draw = function(model, width, height){
 		return;
 	}
 	this.resize(model);
-	for(var i in model.nodes) {
-		var n = model.nodes[i];
+	for(i in model.nodes) {
+		n = model.nodes[i];
 		n._gui = this.drawer.getNode(n);
-		this.board.appendChild( n._gui );
+		model._gui.appendChild( n._gui );
 	}
-}
+};
 Graph.prototype.moveToRaster = function(node){
 	if(this.model.options.raster){
 		node.x = parseInt(node.x / 10) * 10;
@@ -522,9 +547,10 @@ Graph.prototype.moveToRaster = function(node){
 			this.drawer.setPos(node._gui, node.x, node.y);
 		}
 	}
-}
+};
 Graph.prototype.initGraph = function(model){
-	for (var i in model.nodes) {
+	var i;
+	for (i in model.nodes) {
 		var n = model.nodes[i];
 		var isDiag = n.typ.indexOf("diagram", n.typ.length - 7) !== -1;
 		if(isDiag) {
@@ -544,12 +570,12 @@ Graph.prototype.initGraph = function(model){
 			}
 		}
 	}
-	for (var i=0; i< model.edges.length;i++) {
+	for (i=0; i< model.edges.length;i++) {
 		var e = model.edges[i];
 		this.initInfo(e, e.sourceInfo);
 		this.initInfo(e, e.targetInfo);
 	}
-}
+};
 Graph.prototype.layout = function(minwidth, minHeight, model){
 	if(model) {
 		this.initGraph(model);
@@ -558,10 +584,19 @@ Graph.prototype.layout = function(minwidth, minHeight, model){
 		this.initDrawer();
 		this.initGraph(model);
 	}
-	this.layouter.layout(this, model, Math.max(minwidth || 0, 100), Math.max(minHeight || 0, 100));
-}
+	if(this.loader.images.length<1) {
+		this.layouter.layout(this, model, Math.max(minwidth || 0, 100), Math.max(minHeight || 0, 100));
+	}else{
+		this.loader.width = minwidth;
+		this.loader.height = minHeight;
+	}
+};
 Graph.prototype.createElement = function(element, typ){
+};
+Graph.prototype.appendImage = function(img){
+	this.loader.add(img);
 }
+
 //				######################################################### DRAG AND DROP #########################################################
 Graph.prototype.initDragAndDrop = function(){
 	this.objDrag = null;
@@ -572,12 +607,12 @@ Graph.prototype.initDragAndDrop = function(){
 	this.bind(this.board, "mousemove", function(e){that.doDrag(e);});
 	this.bind(this.board, "mouseup", function(e){that.stopDrag(e);});
 	this.bind(this.board, "mouseout", function(e){that.stopDrag(e);});
-}
+};
 Graph.prototype.addNodeLister = function(element, node){
 	var that = this;
 	element.node = node;
 	this.bind(element, "mousedown", function(e){that.startDrag(e);});
-}
+};
 Graph.prototype.setSelectable = function(node, value) {
 	if (node.nodeType == 1) {
 		if(value){
@@ -591,7 +626,7 @@ Graph.prototype.setSelectable = function(node, value) {
 		this.setSelectable(child, value);
 		child = child.nextSibling;
 	}
-}
+};
 Graph.prototype.getDragNode = function(node) {
 	if(node.model){
 		if(!node.model._isdraggable){
@@ -605,7 +640,7 @@ Graph.prototype.getDragNode = function(node) {
 		return node.parentElement;
 	}
 	return null;
-}
+};
 Graph.prototype.startDrag = function(event) {
 	var n = this.getDragNode(event.currentTarget);
 	if(!n){
@@ -625,7 +660,7 @@ Graph.prototype.startDrag = function(event) {
 	this.offset.y = this.isIE ? window.event.clientY : event.pageY;
 	this.startObj.x = this.objDrag.model.x;
 	this.startObj.y = this.objDrag.model.y;
-}
+};
 Graph.prototype.doDrag = function(event) {
 	this.mouse.x = this.isIE ? window.event.clientX : event.pageX;
 	this.mouse.y = this.isIE ? window.event.clientY : event.pageY;
@@ -647,7 +682,7 @@ Graph.prototype.doDrag = function(event) {
 			}
 		}
 	}
-}
+};
 Graph.prototype.stopDrag = function(event) {
 	if(!this.objDrag){
 		return;
@@ -658,11 +693,13 @@ Graph.prototype.stopDrag = function(event) {
 	var item = this.objDrag;
 	this.objDrag = null;
 	var graph = item.parentElement;
+	var i;
 	if(graph) {
-		for(var i=0;i<graph.children.length;i++) {
+		for(i=0;i<graph.children.length;i++) {
 			this.setSelectable(graph.children[i], null);
 		}
 	}
+	var parent = item.parentElement;
 	if(item.model){
 		if(this.model.options.display=="svg"){
 			if(item.getAttributeNS(null, "transform")){
@@ -672,7 +709,7 @@ Graph.prototype.stopDrag = function(event) {
 			}
 			item.model._center = new Pos(item.model.x + (item.model.width / 2), item.model.y + (item.model.height / 2));
 			
-			this.board.removeChild(item);
+			parent.removeChild(item);
 			if(item.model.board) {
 				item.model.board = null;
 			}
@@ -685,20 +722,33 @@ Graph.prototype.stopDrag = function(event) {
 			}else{
 				item.model._gui = this.drawer.getNode(item.model);
 				if(item.model._gui){
-					this.board.appendChild( item.model._gui );
+					parent.appendChild( item.model._gui );
 				}
-				for(var i=0;i<item.model.edges.length;i++){
+				for(i=0;i<item.model.edges.length;i++){
 					var edge = item.model.edges[i];
 					edge.sourceInfo.custom = false;
 					edge.targetInfo.custom = false;
 				}
 			}
 		}
-		this.resize(this.model);
+		var n = item.model._parent;
+		var resize=n;
+		while(resize) {
+			this.resize(resize);
+			resize = resize._parent;
+		}
+		if(n._parent){
+			this.redrawNode(n, true);
+			this.resize(this.model);
+		}else{
+			this.resize(n);
+		}
+		
 	}
-}
-Graph.prototype.redrawNode = function(node){
-	this.board.removeChild(node._gui);
+};
+Graph.prototype.redrawNode = function(node, draw){
+	var parent = node._gui.parentElement;
+	parent.removeChild(node._gui);
 	if(node.board) {
 		node.board = null;
 	}
@@ -706,16 +756,15 @@ Graph.prototype.redrawNode = function(node){
 		var infoTxt = node.edge.getInfo(node.node);
 		node.edge.addElement(this.board, this.drawer.createInfo(node, false, infoTxt));
 	}else{
-		node._gui = this.drawer.getNode(node);
+		node._gui = this.drawer.getNode(node, draw);
 		if(node._gui){
-			this.board.appendChild( node._gui );
+			parent.appendChild( node._gui );
 		}
 	}
 	node._center = new Pos(node.x + (node.width / 2), node.y + (node.height / 2));
-	node._parent.resize(this.model);
-}
-Graph.prototype.getGraphNode = function(objElement){
-	var obj=objElement;
+	this.resize(node._parent);
+};
+Graph.prototype.getGraphNode = function(obj){
 	while(obj&&!obj.node){
 		if(!obj.node){
 			obj=obj.parentNode;
@@ -727,7 +776,7 @@ Graph.prototype.getGraphNode = function(objElement){
 		return obj.node;
 	}
 	return null;
-}
+};
 Graph.prototype.initDrawer = function(typ){
 	if(typ) {
 		typ = typ.toLowerCase();
@@ -739,18 +788,16 @@ Graph.prototype.initDrawer = function(typ){
 		typ = this.model.options.display;
 	}
 	this.clearBoard();
-	if(typ=="html"){
+	if(typ==="html"){
 		this.drawer = new HTMLDrawer();
 	}else if(typ=="svg"){
 		this.drawer = new SVGDrawer();
-	}else if(typ=="canvas"){
-		this.drawer = new CanvasDrawer();
 	}
 	this.board = this.drawer.createContainer(this);
 	this.model._gui = this.board;
 	this.initDragAndDrop();
 	this.root.appendChild(this.board);
-}
+};
 Graph.prototype.serializeXmlNode = function(xmlNode) {
 	if (typeof window.XMLSerializer != "undefined") {
 		return (new window.XMLSerializer()).serializeToString(xmlNode);
@@ -758,20 +805,20 @@ Graph.prototype.serializeXmlNode = function(xmlNode) {
 		return xmlNode.xml;
 	}
 	return xmlNode.outerHTML;
-}
+};
 Graph.prototype.utf8_to_b64 = function( str ) {
 	return window.btoa(unescape(encodeURIComponent( str )));
-}
+};
 Graph.prototype.ExportPDF = function () {
 	var pdf = new jsPDF('l', 'px', 'a4');
 	new svgConverter(this.board, pdf, {removeInvalid: false});
 	pdf.save('Download.pdf');
-}
+};
 Graph.prototype.ExportEPS = function () {
 	var doc = new jsEPS({inverting:true});
 	var converter = new svgConverter(this.board, doc);
 	doc.save();
-}
+};
 Graph.prototype.ExportPNG = function () {
 	var image = new Image();
 	image.src = 'data:image/svg+xml;base64,' + this.utf8_to_b64(this.serializeXmlNode(this.board));
@@ -787,7 +834,7 @@ Graph.prototype.ExportPNG = function () {
 		a.href = canvas.toDataURL('image/png');
 		a.click();
 	};
-}
+};
 Graph.prototype.SaveAs = function (typ) {
 	typ = typ.toLowerCase();
 	if(typ=="svg") {
@@ -801,20 +848,19 @@ Graph.prototype.SaveAs = function (typ) {
 	}else if(typ=="eps") {
 		this.ExportEPS();
 	}
-}
+};
 Graph.prototype.Save = function (typ, data, name) {
 	var a = document.createElement("a");
-	var url = window.URL.createObjectURL(new Blob([data], {type: typ}));
-	a.href = url;
+	a.href = window.URL.createObjectURL(new Blob([data], {type: typ}));
 	a.download = name;
 	a.click();
-}
+};
 Graph.prototype.ExportHTML = function () {
 	var json = this.model.toJson();
 	var data="<html><head>"+document.head.innerHTML.trim()+"</head><body><script>"
 		+"new Graph("+JSON.stringify(json, null, "\t") +").layout();</script></body></html>";
 	this.Save("text/json", data, "download.html");
-}
+};
 
 
 
@@ -851,30 +897,31 @@ Graph.prototype.ExportHTML = function () {
 
 
 //				######################################################### GraphLayout-Dagre #########################################################
-DagreLayout = function() {}
+var DagreLayout = function() {};
 DagreLayout.prototype.layout = function(graph, node, width, height) {
 	var g = new dagre.graphlib.Graph(node.copy({directed:false}, node.options.layout));
 	g.setGraph({});
 	g.setDefaultEdgeLabel(function() { return {}; });
-	for (var i in node.nodes) {
+	var i;
+	for (i in node.nodes) {
 		var n = node.nodes[i];
 		g.setNode(n.id, {label: n.id, width:n.width, height:n.height, x:n.x, y:n.y});
 	}
-	for (var i = 0; i < node.edges.length; i++) {
+	for (i = 0; i < node.edges.length; i++) {
 		var e = node.edges[i];
 		g.setEdge(this.getRootNode(e.source).id, this.getRootNode(e.target).id);
 	}
 
 	dagre.layout(g);
 	// Set the layouting back
-	for (var i in node.nodes) {
+	for (i in node.nodes) {
 		var n = node.nodes[i];
 		var layoutNode = g.node(n.id);
 		n.x = layoutNode.x - (n.width/2);
 		n.y = layoutNode.y - (n.height/2);
 	}
 	graph.draw(node, width, height);
-}
+};
 DagreLayout.prototype.getRootNode = function(node, child) {
 	if(node._parent){
 		return this.getRootNode(node._parent, node);
@@ -883,57 +930,55 @@ DagreLayout.prototype.getRootNode = function(node, child) {
 		return node;
 	}
 	return child;
-}
+};
 //				######################################################### Loader #########################################################
-Loader = function(graph) {this.init(false);this.graph=graph;}
-Loader.prototype.init = function(abort){
-	this.images = [];
-	this.abort=abort;
-}
-Loader.prototype.resetDrawer = function(){
+var Loader = function(graph) {this.images = [];this.graph=graph;this.abort=false;}
+Loader.prototype.execute = function(){
 	if(this.images.length==0){
-		this.graph.drawer.onFinishImage();
+		this.graph.layout(this.width, this.height);
 	}else{
-		var img = this.images.pop();
+		var img = this.images[0];
 		this.graph.root.appendChild(img);
 	}
-}
-Loader.prototype.remove = function(img){this.images.remove(img);}
-Loader.prototype.onLoad = function(img){
+};
+Loader.prototype.onLoad = function(e){
+	var img = e.target;
 	var idx = this.images.indexOf(img);
+	img.model.width = img.width;
+	img.model.height = img.height;
+	this.graph.root.removeChild(img);
 	if (idx != -1) {
 		this.images.splice(idx, 1);
 	}
-	if(this.images.length==0){
-		this.graph.drawer.onFinishImage();
-	}
-}
-Loader.prototype.appendImg = function(img){
-	img.crossOrigin = 'anonymous';
-	var that = this.graph.drawer;
-	img.onload = function(e){that.onLoadImage(e);};
+	this.execute();
+};
+Loader.prototype.add = function(img){
+	//img.crossOrigin = 'anonymous';
+	var that = this;
+	this.graph.bind(img, "load", (function(e){that.onLoad(e);}));
 	this.images.push(img);
-}
+	this.execute();
+};
 //				######################################################### LINES #########################################################
-Edge = function() {this.init();this.typ="EDGE";}
+var Edge = function() {this.init();this.typ="EDGE";};
 Edge.prototype.init = function(){
 	this.path = [];
 	this.source=null;
 	this.target=null;
 	this.start = null;
 	this.end = null;
-	this._gui = new Array();
+	this._gui = [];
 	this.m = 0;
 	this.n = 0;
 	this.lineStyle = Line.Format.SOLID;
-}
-Edge.Layout ={ DIAG : 1, RECT : 0 }
-Edge.Position={UP:"UP", LEFT:"LEFT", RIGHT:"RIGHT", DOWN:"DOWN"}
+};
+Edge.Layout ={ DIAG : 1, RECT : 0 };
+Edge.Position={UP:"UP", LEFT:"LEFT", RIGHT:"RIGHT", DOWN:"DOWN"};
 Edge.prototype.addElement = function(board, element){
 	if(element){
 		this._gui.push(element);board.appendChild(element);
 	}
-}
+};
 Edge.prototype.removeElement = function(element){
 	if(element){
 		for(var i=0;i<this._gui.length;i++){
@@ -943,12 +988,12 @@ Edge.prototype.removeElement = function(element){
 			}
 		}
 	}
-}
-Edge.prototype.calculate = function(board, drawer){
+};
+Edge.prototype.calculate = function(){
 	this.source._center = new Pos(this.source.getX() + (this.source.width / 2), this.source.getY() + (this.source.height / 2));
 	this.target._center = new Pos(this.target.getX() + (this.target.width / 2), this.target.getY() + (this.target.height / 2));
 	return this.calcCenterLine();
-}//FIXME
+};
 Edge.prototype.draw = function(board, drawer){
 	for(var i=0;i<this.path.length;i++){
 		var p = this.path[i];
@@ -962,20 +1007,20 @@ Edge.prototype.draw = function(board, drawer){
 		this.addElement(board, new SymbolLibary().create({typ:"Arrow",x:this.infoPos.x,y:this.infoPos.y, rotate:angle}, drawer));
 	}
 	this.drawTargetText(board, drawer, options);
-}
-Edge.prototype.drawSourceText = function(board, drawer, options){
+};
+Edge.prototype.drawSourceText = function(board, drawer){
 	var infoTxt = this.getInfo(this.sourceInfo);
 	if(infoTxt.length > 0 ){
 		this.addElement(board, drawer.createInfo(this.sourceInfo, false, infoTxt));
 	}
-}
-Edge.prototype.drawTargetText = function(board, drawer, options){
+};
+Edge.prototype.drawTargetText = function(board, drawer){
 	var infoTxt = this.getInfo(this.targetInfo);
 	if(infoTxt.length > 0 ){
 		this.addElement(board, drawer.createInfo(this.targetInfo, false, infoTxt));
 	}
-}
-Edge.prototype.endPos = function(){return this.path[this.path.length-1];}
+};
+Edge.prototype.endPos = function(){return this.path[this.path.length-1];};
 Edge.prototype.edgePosition = function() {
 	var pos=0;
 	for(var i=0;i < this.source.edges.length; i++) {
@@ -987,7 +1032,7 @@ Edge.prototype.edgePosition = function() {
 		}
 	}
 	return pos;
-}
+};
 Edge.prototype.getTarget = function(node, startNode){
 	if(node instanceof GraphModel){
 		if(node.status=="close") {
@@ -996,13 +1041,13 @@ Edge.prototype.getTarget = function(node, startNode){
 		return startNode;
 	}
 	return this.getTarget(node._parent, startNode);
-}
+};
 Edge.prototype.calcCenterLine = function(){
 	var divisor = (this.target._center.x - this.source._center.x);
 	var sourcePos,targetPos;
 	var edgePos = this.edgePosition() * 20;
 
-	this.path = new Array();
+	this.path = [];
 	var source = this.getTarget(this.source, this.source), target = this.getTarget(this.target, this.target);
 	if(divisor==0){
 		if(this.source==this.target){
@@ -1033,7 +1078,7 @@ Edge.prototype.calcCenterLine = function(){
 		this.infoPos = new Pos( (sourcePos.x + targetPos.x)/2, (sourcePos.y + targetPos.y)/2 );
 	}
 	return true;
-}
+};
 Edge.prototype.getCenterPosition = function(node, pos, offset){
 	offset = offset || 0;
 	if(pos==Edge.Position.DOWN){
@@ -1048,7 +1093,7 @@ Edge.prototype.getCenterPosition = function(node, pos, offset){
 	if(pos==Edge.Position.RIGHT){
 		return new Pos(node.x+node.width, node._center.y + offset, Edge.Position.RIGHT);
 	}
-}
+};
 Edge.prototype.getInfo = function(info){
 	var infoTxt = "";
 	var isCardinality = this.model.typ=="classdiagram" && this.model.options.CardinalityInfo;
@@ -1071,7 +1116,7 @@ Edge.prototype.getInfo = function(info){
         infoTxt +=" ("+info.edge.counter+")";
     }
 	return infoTxt;
-}
+};
 Edge.prototype.calcOwnEdge = function(){
 	//this.source
 	var offset = 20;
@@ -1142,7 +1187,7 @@ Edge.prototype.calcOwnEdge = function(){
 	}
 	sPos = tPos;
 	this.path.push (new Line(sPos, this.getCenterPosition(this.source, this.end), this.lineStyle));
-}
+};
 Edge.prototype.addEdgeToNode=function(node, pos){
 	if(pos==Edge.Position.UP){
 		node._UP+=1;
@@ -1153,7 +1198,7 @@ Edge.prototype.addEdgeToNode=function(node, pos){
 	}else if(pos==Edge.Position.LEFT){
 		node._LEFT+=1;
 	}
-}
+};
 Edge.prototype.getFree = function(node){
 	if(node._UP==0 ){
 		node._UP +=1;
@@ -1169,11 +1214,9 @@ Edge.prototype.getFree = function(node){
 		return Edge.Position.LEFT;
 	}
 	return "";
-}
+};
 Edge.prototype.getFreeOwn = function(node, start){
-	var list = new Array(Edge.Position.UP, Edge.Position.RIGHT, Edge.Position.DOWN, 
-		Edge.Position.LEFT, Edge.Position.UP, Edge.Position.RIGHT, Edge.Position.DOWN);
-	var result = new Array();
+	var list = [Edge.Position.UP, Edge.Position.RIGHT, Edge.Position.DOWN, Edge.Position.LEFT, Edge.Position.UP, Edge.Position.RIGHT, Edge.Position.DOWN];
 	var id=0;
 	for(var i=0;i<list.length;i++) {
 		if(list[i]==start) {
@@ -1187,7 +1230,7 @@ Edge.prototype.getFreeOwn = function(node, start){
 	}
 	node[list[id + 3]]++;
 	return list[id + 3];
-}
+};
 Edge.prototype.calcInfoPos = function(linePos, item, info, offset){
 	// Manuell move the InfoTag
 	offset = offset || 0;
@@ -1198,7 +1241,6 @@ Edge.prototype.calcInfoPos = function(linePos, item, info, offset){
 	}
 	var newY = linePos.y;
 	var newX = linePos.x;
-	var yoffset = 0;
 	if(linePos.id==Edge.Position.UP){
 		newY = newY - info.height - offset - spaceA;
 		if(this.m!=0){
@@ -1223,14 +1265,14 @@ Edge.prototype.calcInfoPos = function(linePos, item, info, offset){
 	info.id = linePos.id;
 	info.x = newX;
 	info.y = newY;
-}
+};
 Edge.prototype.getPosition= function(m , n, entity, refCenter, offset){
 	if (!offset) {
 		offset = 0;
 	}
 	var x,y;
-	var pos=new Array();
-	var distance=new Array();
+	var pos=[];
+	var distance=[];
 	x = entity.getX()+entity.width;
 	y = m*x+n;
 	if(y>=entity.getY() && y<=(entity.getY()+entity.height)){
@@ -1264,7 +1306,7 @@ Edge.prototype.getPosition= function(m , n, entity, refCenter, offset){
 		}
 	}
 	return position;
-}
+};
 Edge.prototype.calcMoveLine = function(size, angle, move){
 	var startArrow	= this.endPos().source;
 	this.end = this.endPos().target;
@@ -1283,8 +1325,8 @@ Edge.prototype.calcMoveLine = function(size, angle, move){
 	if(move) {
 		this.endPos().target = new Pos((this.top.x + this.bot.x) / 2, (this.top.y + this.bot.y) / 2);
 	}
-}
-Generalization = function() { this.init();this.typ="Generalization";}
+};
+var Generalization = function() { this.init();this.typ="Generalization";};
 Generalization.prototype = Object_create(Edge.prototype);
 Generalization.prototype.calculateEdge = Generalization.prototype.calculate;
 Generalization.prototype.calculate = function(board, drawer){
@@ -1293,21 +1335,21 @@ Generalization.prototype.calculate = function(board, drawer){
 	}
 	this.calcMoveLine(16, 50, true);
 	return true;
-}
+};
 Generalization.prototype.drawSuper = Generalization.prototype.draw;
 Generalization.prototype.draw = function(board, drawer){
 	this.drawSuper(board, drawer);
 	this.addElement(board, drawer.createLine(this.top.x, this.top.y, this.end.x, this.end.y, this.lineStyle));
 	this.addElement(board, drawer.createLine(this.bot.x, this.bot.y, this.end.x, this.end.y, this.lineStyle));
 	this.addElement(board, drawer.createLine(this.top.x, this.top.y, this.bot.x, this.bot.y, this.lineStyle));
-}
-Generalization.prototype.drawSourceText = function(board, drawer, options){}
-Generalization.prototype.drawTargetText = function(board, drawer, options){}
+};
+Generalization.prototype.drawSourceText = function(board, drawer, options){};
+Generalization.prototype.drawTargetText = function(board, drawer, options){};
 
-Implements = function() { this.init();this.typ="Implements";this.lineStyle = Line.Format.DOTTED;}
+var Implements = function() { this.init();this.typ="Implements";this.lineStyle = Line.Format.DOTTED;};
 Implements.prototype = Object_create(Generalization.prototype);
 
-Unidirectional = function() { this.init();this.typ="Unidirectional";}
+var Unidirectional = function() { this.init();this.typ="Unidirectional";};
 Unidirectional.prototype = Object_create(Generalization.prototype);
 Unidirectional.prototype.calculate = function(board, drawer){
 	if(!this.calculateEdge(board, drawer)){
@@ -1315,13 +1357,13 @@ Unidirectional.prototype.calculate = function(board, drawer){
 	}
 	this.calcMoveLine(16, 50, false);
 	return true;
-}
+};
 Unidirectional.prototype.draw = function(board, drawer){
 	this.drawSuper(board, drawer);
 	this.addElement(board, drawer.createLine(this.top.x, this.top.y, this.end.x, this.end.y, this.lineStyle));
 	this.addElement(board, drawer.createLine(this.bot.x, this.bot.y, this.end.x, this.end.y, this.lineStyle));
-}
-Aggregation = function() { this.init();this.typ="Aggregation";}
+};
+var Aggregation = function() { this.init();this.typ="Aggregation";};
 Aggregation.prototype = Object_create(Generalization.prototype);
 Aggregation.prototype.calculate = function(board, drawer){
 	if(!this.calculateEdge(board, drawer)){
@@ -1330,12 +1372,12 @@ Aggregation.prototype.calculate = function(board, drawer){
 	this.size=16;
 	this.calcMoveLine(this.size, 49.8, true);
 	return true;
-}
+};
 Aggregation.prototype.draw = function(board, drawer){
 	this.drawSuper(board, drawer);
 	this.addElement(board, drawer.createPath(true, "none", [this.endPos().target, this.topCenter, this.end, this.botCenter]));
-}
-Composition = function() { this.init();this.typ="Composition";}
+};
+var Composition = function() { this.init();this.typ="Composition";};
 Composition.prototype = Object_create(Aggregation.prototype);
 Composition.prototype.draw = function(board, drawer){
 	this.drawSuper(board, drawer);
@@ -1346,7 +1388,7 @@ Composition.prototype.draw = function(board, drawer){
 	var h = Math.atan(a)*100;
 
 	this.addElement(board, drawer.createPath(true, "#000", [this.endPos().target, this.topCenter, this.end, this.botCenter], h));
-}
+};
 function RGBColor(value){
 	this.ok = false;
 	if(value=="none"){
@@ -1367,11 +1409,11 @@ RGBColor.prototype.convert = function(value){
 	this.g = parseInt(values[2]);
 	this.b = parseInt(values[3]);
 	this.ok = true;
-}
-RGBColor.prototype.toRGB = function () {return 'rgb(' + this.r + ', ' + this.g + ', ' + this.b + ')';}
+};
+RGBColor.prototype.toRGB = function () {return 'rgb(' + this.r + ', ' + this.g + ', ' + this.b + ')';};
 RGBColor.prototype.toHex = function () {
 	return "#" 
 	+ (this.r + 0x10000).toString(16).substring(3).toUpperCase() 
 	+ (this.g + 0x10000).toString(16).substring(3).toUpperCase()
 	+ (this.b + 0x10000).toString(16).substring(3).toUpperCase();
-}
+};
