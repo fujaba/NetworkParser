@@ -31,7 +31,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -41,9 +41,9 @@ public abstract class FXStageController implements StageEvent{
 	private Stage stage;
 	private Scene scene;
 	private Object controller;
-	protected Pane pane;
+	protected Region pane;
 
-	public void createScene(Pane pane){
+	public void createScene(Region pane){
 		this.scene = new Scene(pane, 600, 400);
 		stage.setScene(scene);
 	}

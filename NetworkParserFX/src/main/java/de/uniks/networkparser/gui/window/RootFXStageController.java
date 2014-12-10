@@ -34,6 +34,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -61,14 +62,14 @@ public class RootFXStageController extends FXStageController implements WindowLi
 	}
 
 	
-	public Pane create(String fxmlFile) {
+	public Region create(String fxmlFile) {
 		return create(fxmlFile, null);
 	}
 	
-	public Pane create(String fxmlFile, ResourceBundle resources)  {
+	public Region create(String fxmlFile, ResourceBundle resources)  {
 		return create(RootFXStageController.class.getResource(fxmlFile), resources);
 	}
-	public Pane create(URL location, ResourceBundle resources)  {
+	public Region create(URL location, ResourceBundle resources)  {
 		FXMLLoader fxmlLoader;
 		if(location == null) {
 			System.out.println("FXML not found");
@@ -80,7 +81,7 @@ public class RootFXStageController extends FXStageController implements WindowLi
 			fxmlLoader = new FXMLLoader(location);
 		}
 		try {
-			this.withPane((Pane) fxmlLoader.load(location.openStream()));
+			this.withPane((Region) fxmlLoader.load(location.openStream()));
 			
 		} catch (IOException e) {
 			System.out.println("FXML Load Error:" +e.getMessage());
@@ -104,7 +105,7 @@ public class RootFXStageController extends FXStageController implements WindowLi
 	public RootFXStageController() {
 	}
 
-	public Pane getPane() {
+	public Region getPane() {
 		return pane;
 	}
 	
@@ -185,7 +186,7 @@ public class RootFXStageController extends FXStageController implements WindowLi
 		}
 	}
 	
-	public RootFXStageController withPane(Pane value) {
+	public RootFXStageController withPane(Region value) {
 		this.pane = value;
 		this.initNode(pane);
 		this.pane.addEventFilter(KeyEvent.KEY_PRESSED, listener);
