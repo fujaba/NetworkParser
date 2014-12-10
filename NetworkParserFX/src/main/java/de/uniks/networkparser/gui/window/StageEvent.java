@@ -25,6 +25,6 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 public interface StageEvent {
-	public void stageClosing(WindowEvent event, Stage stage);
-	public void stageShowing(WindowEvent event, Stage stage);
+	public void stageClosing(WindowEvent event, Stage stage, FXStageController controller);
+	public void stageShowing(WindowEvent event, Stage stage, FXStageController controller);
 }
