@@ -38,17 +38,17 @@ public class CustomPane extends BorderPane implements StageEvent{
 	}
 		
 	@Override
-	public void stageClosing(WindowEvent event, Stage stage) {
+	public void stageClosing(WindowEvent event, Stage stage, FXStageController controller) {
 		if(this.center instanceof StageEvent) {
-			((StageEvent)this.center).stageClosing(event, stage);
+			((StageEvent)this.center).stageClosing(event, stage, controller);
 		}		
 	}
 
 	@Override
-	public void stageShowing(WindowEvent event, Stage stage) {
+	public void stageShowing(WindowEvent event, Stage stage, FXStageController controller) {
 		this.stage = stage;
 		if(this.center instanceof StageEvent) {
-			((StageEvent)this.center).stageClosing(event, stage);
+			((StageEvent)this.center).stageClosing(event, stage,controller);
 		}
 	}
 
