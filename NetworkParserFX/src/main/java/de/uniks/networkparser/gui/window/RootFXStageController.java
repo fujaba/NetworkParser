@@ -39,7 +39,8 @@ import javafx.stage.WindowEvent;
 
 public class RootFXStageController extends FXStageController implements WindowListener{
 	private KeyListenerMap listener = new KeyListenerMap(this);
-	private HashMap<String, Node> nodes=new HashMap<String, Node>();  
+	private HashMap<String, Node> nodes=new HashMap<String, Node>(); 
+	private Object model;
 
 	public RootFXStageController(Stage newStage){
 		this.withStage(newStage);
@@ -69,6 +70,10 @@ public class RootFXStageController extends FXStageController implements WindowLi
 	}
 	public Pane create(URL location, ResourceBundle resources)  {
 		FXMLLoader fxmlLoader;
+		if(location == null) {
+			System.out.println("FXML not found");
+			return null;
+		}
 		if(resources!=null){
 			fxmlLoader = new FXMLLoader(location, resources, new JavaFXBuilderFactory());
 		}else {
@@ -78,6 +83,7 @@ public class RootFXStageController extends FXStageController implements WindowLi
 			this.withPane((Pane) fxmlLoader.load(location.openStream()));
 			
 		} catch (IOException e) {
+			System.out.println("FXML Load Error:" +e.getMessage());
 			return null;
 		}
 		this.withController(fxmlLoader.getController()); 
@@ -96,7 +102,6 @@ public class RootFXStageController extends FXStageController implements WindowLi
 	}
 	
 	public RootFXStageController() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public Pane getPane() {
@@ -110,6 +115,42 @@ public class RootFXStageController extends FXStageController implements WindowLi
 		return this;
 	}
 
+	public void showNewStage(String fxml, Class<?> path) {
+		loadNewStage(fxml, path);
+		this.show();
+	}
+	
+	public Stage loadNewStage(String fxml, Class<?> path) {
+		Stage oldStage = this.getStage();
+		this.withStage(new Stage());
+		URL location;
+		if(path==null){
+			location = this.getClass().getResource(fxml);
+		}else{
+			location = path.getResource(fxml);
+		}
+		if(location != null) {
+			FXMLLoader fxmlLoader = new FXMLLoader(location);
+			Pane value=null;
+			try {
+				value = (Pane) fxmlLoader.load(location.openStream());
+			} catch (IOException e) {
+				System.out.println("FXML Load Error:" +e.getMessage());
+				return null;
+			}
+			this.withPane(value);
+			this.withController(fxmlLoader.getController()); 
+			
+			if(value instanceof StageEvent) {
+				Stage myStage = getStage();
+				((StageEvent)value).stageShowing(new WindowEvent(myStage, WindowEvent.WINDOW_SHOWING), myStage, this);
+			}
+			this.createScene(value);
+		}
+		oldStage.close();
+		return this.getStage();
+	}
+	
 	public void showNewStage(Node value) {
 		Stage oldStage = this.getStage();
 		
@@ -124,7 +165,7 @@ public class RootFXStageController extends FXStageController implements WindowLi
 		
 		if(value instanceof StageEvent) {
 			Stage myStage = getStage();
-			((StageEvent)value).stageShowing(new WindowEvent(myStage, WindowEvent.WINDOW_SHOWING), myStage);
+			((StageEvent)value).stageShowing(new WindowEvent(myStage, WindowEvent.WINDOW_SHOWING), myStage, this);
 		}
 		
 		this.createScene(newPane);
@@ -164,5 +205,24 @@ public class RootFXStageController extends FXStageController implements WindowLi
 		RootFXStageController controller = new RootFXStageController();
 		controller.create(path.getResource(fxml), null);
 		return controller;
+	}
+
+	public static RootFXStageController show(Stage stage, String fxml, Class<?> path) {
+		RootFXStageController controller = new RootFXStageController();
+		controller.create(path.getResource(fxml), null);
+		controller.show(stage);
+		return controller;
+	}
+
+	public Object getModel() {
+		return model;
+	}
+
+	public void setModel(Object model) {
+		this.model = model;
+	}
+	public RootFXStageController withModel(Object model) {
+		this.model = model;
+		return this;
 	}
 }

@@ -26,12 +26,15 @@ import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
+
 import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+
 import javax.imageio.ImageIO;
 
 public abstract class FXStageController implements StageEvent{
@@ -53,12 +56,12 @@ public abstract class FXStageController implements StageEvent{
 		this.stage = value;
 		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 	          public void handle(WindowEvent we) {
-	        	  stageClosing(we, stage);
+	        	  stageClosing(we, stage, FXStageController.this);
 	          }
 		});
 		stage.setOnShowing(new EventHandler<WindowEvent>() {
 	          public void handle(WindowEvent we) {
-	        	  stageShowing(we, stage);
+	        	  stageShowing(we, stage, FXStageController.this);
 	          }
 		});
 		
@@ -66,17 +69,33 @@ public abstract class FXStageController implements StageEvent{
 	}
 	
 	@Override
-	public void stageClosing(WindowEvent event, Stage stage) {
+	public void stageClosing(WindowEvent event, Stage stage, FXStageController controller) {
 		if(this.pane instanceof StageEvent) {
-			((StageEvent)this.pane).stageClosing(event, stage);
+			((StageEvent)this.pane).stageClosing(event, stage, controller);
+		}
+		if(this.controller instanceof StageEvent) {
+			((StageEvent)this.controller).stageClosing(event, stage, controller);
 		}
 	}
 
 	@Override
-	public void stageShowing(WindowEvent event, Stage stage) {
+	public void stageShowing(WindowEvent event, Stage stage, FXStageController controller) {
 		if(this.pane instanceof StageEvent) {
-			((StageEvent)this.pane).stageClosing(event, stage);
+			((StageEvent)this.pane).stageShowing(event, stage, controller);
 		}
+		if(this.controller instanceof StageEvent) {
+			((StageEvent)this.controller).stageShowing(event, stage, controller);
+		}
+	}
+	
+	public void showNewStage(String fxml, Class<?> path) {
+	}
+	
+	public void showNewStage(Node value) {
+	}
+	
+	public Stage loadNewStage(String fxml, Class<?> path) {
+		return this.stage;
 	}
 	
 	public Scene getScene() {
@@ -94,7 +113,7 @@ public abstract class FXStageController implements StageEvent{
 	
 	public boolean close(){
 		WindowEvent event = new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST);
-		stageClosing(event, stage);
+		stageClosing(event, stage, this);
 		if(!event.isConsumed()) {
 			this.stage.close();
 			return true;
@@ -103,11 +122,13 @@ public abstract class FXStageController implements StageEvent{
 	}
 	public void show(Stage stage){
 		this.withStage(stage);
-		Scene scene = new Scene(this.pane);
-		stage.setScene(scene);
-		this.stage.show();
+		if(this.pane!= null) {
+			Scene scene = new Scene(this.pane);
+			stage.setScene(scene);
+			this.stage.show();
+		}
 	}
-	
+
 	public void show(){
 		this.stage.show();
 	}
