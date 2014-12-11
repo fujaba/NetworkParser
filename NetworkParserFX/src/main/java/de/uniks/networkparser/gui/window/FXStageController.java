@@ -42,6 +42,7 @@ public abstract class FXStageController implements StageEvent{
 	private Scene scene;
 	private Object controller;
 	protected Region pane;
+	private boolean wait;
 
 	public void createScene(Region pane){
 		this.scene = new Scene(pane, 600, 400);
@@ -125,12 +126,18 @@ public abstract class FXStageController implements StageEvent{
 		if(this.pane!= null) {
 			Scene scene = new Scene(this.pane);
 			stage.setScene(scene);
+			showing();
+		}
+	}
+	private void showing() {
+		if(wait) {
+			this.stage.showAndWait();
+		}else{
 			this.stage.show();
 		}
 	}
-
 	public void show(){
-		this.stage.show();
+		showing();
 	}
 	public Exception saveScreenShoot(String fullScreenFileName, String windowScreenFileName) {
 		// Save Screenshot
@@ -168,6 +175,15 @@ public abstract class FXStageController implements StageEvent{
 				stage.getIcons().add(new Image("file:" + value));
 			}
 		}
+		return this;
+	}
+
+	public boolean isWait() {
+		return wait;
+	}
+
+	public FXStageController withWait(boolean value) {
+		this.wait = value;
 		return this;
 	}
 }
