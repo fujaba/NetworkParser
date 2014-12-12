@@ -26,6 +26,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+
 import de.uniks.networkparser.ArrayEntityList;
 import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -150,8 +151,9 @@ public class UpdateListener implements PropertyChangeListener {
 			return;
 		}
 
-		JsonObject jsonObject = new JsonObject().withValue(JsonIdMap.ID,
-				this.map.getId(source));
+		JsonObject jsonObject = new JsonObject()
+		.withValue(JsonIdMap.ID, this.map.getId(source))
+		.withValue(JsonIdMap.CLASS, source.getClass().getName());
 
 		Object oldValue = evt.getOldValue();
 		Object newValue = evt.getNewValue();
@@ -252,6 +254,21 @@ public class UpdateListener implements PropertyChangeListener {
 		JsonObject update = (JsonObject) updateMessage.get(JsonIdMap.UPDATE);
 		Object prio = updateMessage.get(JsonIdMap.PRIO);
 		Object masterObj = this.map.getObject(id);
+		if (masterObj == null)
+		{
+		   String masterObjClassName = (String) updateMessage.get(JsonIdMap.CLASS);
+		   
+		   if (masterObjClassName != null)
+		   {
+		      // cool, lets make it
+		      SendableEntityCreator creator = this.map.getCreator(masterObjClassName, true);
+		      masterObj = creator.getSendableInstance(false);
+		      if (masterObj != null)
+		      {
+		         this.map.put(id, masterObj);
+		      }
+		   }
+		}
 		if (masterObj != null) {
 			SendableEntityCreator creator = this.map.getCreatorClass(masterObj);
 			if (remove == null && update != null) {
