@@ -1,4 +1,4 @@
-package de.uniks.networkparser.gui.databinding;
+package de.uniks.networkparser.gui.controller;
 
 /*
  NetworkParser
@@ -21,6 +21,8 @@ package de.uniks.networkparser.gui.databinding;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
+import java.beans.PropertyChangeEvent;
+
 import javafx.beans.Observable;
 import javafx.scene.paint.Color;
 import de.uniks.networkparser.IdMapEncoder;
@@ -36,6 +38,16 @@ public class ModelListenerColorProperty extends ModelListenerProperty<Color> {
 		System.out.println(observable);
 	}
 
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if(evt.getNewValue() instanceof String) {
+			Color color = Color.web((String) evt.getNewValue());
+			super.propertyChange(new PropertyChangeEvent(evt.getSource(), evt.getPropertyName(), evt.getOldValue(), color));
+			return;
+		}
+		super.propertyChange(evt);
+	}
+	
 	@Override
 	public Color getValue() {
 		Object value = creator.getValue(item, property);
