@@ -179,9 +179,9 @@ public class RootFXStageController extends FXStageController implements WindowLi
 		for(Node item : node.getChildrenUnmodifiable()) {
 			if(item.getId() != null && item.getId().length() > 0 ) {
 				this.nodes.put(item.getId(), item);
-				if(item instanceof Parent) {
-					this.initNode((Parent) item);
-				}
+			}
+			if(item instanceof Parent) {
+				this.initNode((Parent) item);
 			}
 		}
 	}
