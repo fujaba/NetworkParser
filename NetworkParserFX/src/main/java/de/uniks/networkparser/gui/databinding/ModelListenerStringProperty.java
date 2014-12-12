@@ -30,12 +30,16 @@ public class ModelListenerStringProperty extends ModelListenerProperty<String> {
     }
 
 	@Override
-	public void invalidated(Observable observable) {		
+	public void invalidated(Observable observable) {	
 	}
 
 	@Override
 	public String getValue() {
-		return String.valueOf(getItemValue());
+		Object item = getItemValue();
+		if(item!=null){
+			return (String) item;
+		}
+		return "";
     }
 	
 	@Override
