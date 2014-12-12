@@ -1,4 +1,4 @@
-package de.uniks.networkparser.gui.controls;
+package de.uniks.networkparser.gui.controller;
 
 import java.util.ArrayList;
 
@@ -7,12 +7,12 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 
-public class PointPanel {
+public class PointPaneController {
 	private Pane pane;
 	private ArrayList<Circle> children = new ArrayList<Circle>();
 	private String color="BLACK";
 
-	public PointPanel(Node value) {
+	public PointPaneController(Node value) {
 		if (value instanceof Pane) {
 			this.pane = (Pane) value;
 		}
@@ -109,7 +109,7 @@ public class PointPanel {
 		return color;
 	}
 
-	public PointPanel withColor(String color) {
+	public PointPaneController withColor(String color) {
 		this.color = color;
 		return this;
 	}
