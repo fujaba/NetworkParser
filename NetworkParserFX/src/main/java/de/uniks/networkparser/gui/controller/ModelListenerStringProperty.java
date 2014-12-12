@@ -1,4 +1,4 @@
-package de.uniks.networkparser.gui.databinding;
+package de.uniks.networkparser.gui.controller;
 
 /*
  NetworkParser
@@ -24,21 +24,26 @@ package de.uniks.networkparser.gui.databinding;
 import javafx.beans.Observable;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class ModelListenerNumberProperty extends ModelListenerProperty<Number> {
-	public ModelListenerNumberProperty(SendableEntityCreator creator, Object item, String property) {
+public class ModelListenerStringProperty extends ModelListenerProperty<String> {
+	public ModelListenerStringProperty(SendableEntityCreator creator, Object item, String property) {
         super(creator, item, property);
     }
 
 	@Override
-	public void invalidated(Observable arg0) {
+	public void invalidated(Observable observable) {	
 	}
 
 	@Override
-	public Number getValue() {
-		Object value = getItemValue();
-		if(value instanceof Number){
-			return (Number)value;
+	public String getValue() {
+		Object item = getItemValue();
+		if(item!=null){
+			return (String) item;
 		}
-		return Double.valueOf(""+value);
+		return "";
+    }
+	
+	@Override
+	public String parseValue(Object value) {
+		return ""+value;
 	}
 }

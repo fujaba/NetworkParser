@@ -12,7 +12,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import de.uniks.networkparser.gui.Style;
-import de.uniks.networkparser.gui.databinding.ModelListenerStringProperty;
+import de.uniks.networkparser.gui.controller.ModelListenerStringProperty;
 import de.uniks.networkparser.gui.table.Column;
 import de.uniks.networkparser.gui.table.SearchTableComponent;
 import de.uniks.networkparser.gui.table.TableComponent;
