@@ -1,4 +1,4 @@
-package de.uniks.networkparser.gui.databinding;
+package de.uniks.networkparser.gui.controller;
 
 /*
  NetworkParser
