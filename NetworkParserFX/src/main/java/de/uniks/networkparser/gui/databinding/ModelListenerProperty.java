@@ -83,6 +83,15 @@ public abstract class ModelListenerProperty<T> implements javafx.beans.property.
 			return;
 		} catch (Exception e) {
 		}
+
+		try {
+			Method method = item.getClass().getMethod("getPropertyChangeSupport");
+			PropertyChangeSupport pc = (PropertyChangeSupport) method.invoke(item);
+			pc.addPropertyChangeListener(property, this);
+			return;
+		} catch (Exception e) {
+		}
+
 		
 		try {
 			Method method = item.getClass().getMethod("addPropertyChangeListener", java.beans.PropertyChangeListener.class );
