@@ -140,23 +140,6 @@ public abstract class AbstractList<V> implements BaseItem {
 		return object;
 	}
 
-	/**
-	 * Compares the two specified Object values. The sign of the integer value
-	 * returned is the same as that of the integer that would be returned by the
-	 * call: new Object(o1).compareTo(new Object(o2))
-	 *
-	 * @param o1
-	 *            the first Object to compare
-	 * @param o2
-	 *            the second Object to compare
-	 * @return the value 0 if o1 is numerically equal to o2; a value less than 0
-	 *         if o1 is numerically less than o2; and a value greater than 0 if
-	 *         o1 is numerically greater than o2.
-	 */
-	public int compare(V o1, V o2) {
-		return comparator().compare(o1, o2);
-	}
-
 	public abstract AbstractList<V> getNewInstance();
 
 	public void copyEntity(AbstractList<V> target, int pos) {
@@ -168,7 +151,7 @@ public abstract class AbstractList<V> implements BaseItem {
 			return false;
 		if (cpr != null) {
 			for (int i = 0; i < size(); i++) {
-				int result = compare(get(i), newValue);
+				int result = comparator().compare(get(i), newValue);
 				if (result >= 0) {
 					if (!isAllowDuplicate() && get(i) == newValue) {
 						return false;
@@ -208,7 +191,7 @@ public abstract class AbstractList<V> implements BaseItem {
 		int pos = 0;
 		int size = size();
 		while (pos < size) {
-			if (compare(get(pos), fromElement) >= 0) {
+			if (comparator().compare(get(pos), fromElement) >= 0) {
 				copyEntity(newList, pos);
 				break;
 			}
@@ -217,7 +200,7 @@ public abstract class AbstractList<V> implements BaseItem {
 
 		// MUST COPY
 		while (pos < size) {
-			if (compare(get(pos), toElement) >= 0) {
+			if (comparator().compare(get(pos), toElement) >= 0) {
 				break;
 			}
 			copyEntity(newList, pos++);
@@ -273,7 +256,7 @@ public abstract class AbstractList<V> implements BaseItem {
 
 		// MUST COPY
 		for (int pos = 0; pos < size(); pos++) {
-			int compare = compare(get(pos), toElement);
+			int compare = comparator().compare(get(pos), toElement);
 			if (compare == 0) {
 				if (inclusive) {
 					copyEntity(newList, pos);
@@ -306,7 +289,7 @@ public abstract class AbstractList<V> implements BaseItem {
 		// PRE WHILE
 		int pos = 0;
 		for (; pos < size(); pos++) {
-			int compare = compare(get(pos), fromElement);
+			int compare = comparator().compare(get(pos), fromElement);
 			if (compare == 0) {
 				if (inclusive) {
 					copyEntity(newList, pos);
@@ -725,7 +708,7 @@ public abstract class AbstractList<V> implements BaseItem {
 		// search from the end as in models we frequently ask for elements that
 		// have just been added to the end
 		int pos = this.keys.size() - 1;
-		for (ListIterator<V> i = reverseListIterator(); i.hasPrevious();) {
+		for (ListIterator<V> i = listIteratorReverseL(); i.hasPrevious();) {
 			if (checkValue(i.previous(), o)) {
 				return pos;
 			}
@@ -748,14 +731,14 @@ public abstract class AbstractList<V> implements BaseItem {
 	 *            the max Length of all Hashvalues
 	 * @return the hasKey
 	 */
-	public int hashKey(int hashKey, int len) {
+	protected int hashKey(int hashKey, int len) {
 		int tmp = (hashKey + hashKey % entitySize) % len;
 
 		return (tmp < 0) ? -tmp : tmp;
 	}
 
 	public Iterator<V> iterator() {
-		return keys.iterator();
+		return keys.listIterator();
 	}
 
 	public Object[] toArray() {
@@ -887,7 +870,7 @@ public abstract class AbstractList<V> implements BaseItem {
 		return keys.listIterator(index);
 	}
 
-	public ListIterator<V> reverseListIterator() {
+	public ListIterator<V> listIteratorReverseL() {
 		return keys.listIterator(keys.size());
 	}
 

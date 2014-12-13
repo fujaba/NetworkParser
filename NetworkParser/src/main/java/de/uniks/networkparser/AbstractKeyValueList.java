@@ -107,7 +107,7 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K>
 			return false;
 		if (cpr != null) {
 			for (int i = 0; i < size(); i++) {
-				int result = compare(get(i), key);
+				int result = comparator().compare(get(i), key);
 				if (result >= 0) {
 					if (!isAllowDuplicate() && get(i) == key) {
 						return false;
