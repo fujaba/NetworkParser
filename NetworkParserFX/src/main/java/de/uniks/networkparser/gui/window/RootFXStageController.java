@@ -81,7 +81,8 @@ public class RootFXStageController extends FXStageController implements WindowLi
 			this.withPane((Region) fxmlLoader.load(location.openStream()));
 			
 		} catch (IOException e) {
-			System.out.println("FXML Load Error:" +e.getMessage());
+			System.err.println("FXML Load Error:" +e.getMessage());
+			System.err.println("FXML Load Error:" +e.getCause().toString());
 			return null;
 		}
 		this.withController(fxmlLoader.getController()); 
