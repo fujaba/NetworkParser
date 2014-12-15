@@ -23,13 +23,11 @@ package de.uniks.networkparser.gui.window;
 */
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.ResourceBundle;
 
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -40,7 +38,6 @@ import javafx.stage.WindowEvent;
 
 public class RootFXStageController extends FXStageController implements WindowListener{
 	private KeyListenerMap listener = new KeyListenerMap(this);
-	private HashMap<String, Node> nodes=new HashMap<String, Node>(); 
 	private Object model;
 
 	public RootFXStageController(Stage newStage){
@@ -92,9 +89,12 @@ public class RootFXStageController extends FXStageController implements WindowLi
 	}
 	
 	public Node getElementById(String id) {
-		return nodes.get(id);
+		if(this.pane!= null) {
+			return this.pane.lookup(id);
+		}
+		return null;
 	}
-	
+
 	public RootFXStageController(String fxmlFile, ResourceBundle resources) {
 		if(this.getStage() == null){
 			this.withStage( new Stage());
@@ -175,20 +175,8 @@ public class RootFXStageController extends FXStageController implements WindowLi
 		oldStage.close();
 	}
 	
-	public void initNode(Parent node) {
-		for(Node item : node.getChildrenUnmodifiable()) {
-			if(item.getId() != null && item.getId().length() > 0 ) {
-				this.nodes.put(item.getId(), item);
-			}
-			if(item instanceof Parent) {
-				this.initNode((Parent) item);
-			}
-		}
-	}
-	
 	public RootFXStageController withPane(Region value) {
 		this.pane = value;
-		this.initNode(pane);
 		this.pane.addEventFilter(KeyEvent.KEY_PRESSED, listener);
 		return this;
 	}
