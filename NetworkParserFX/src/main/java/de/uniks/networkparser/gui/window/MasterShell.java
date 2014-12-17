@@ -50,9 +50,9 @@ import javafx.stage.Stage;
 public abstract class MasterShell extends Application {
 	protected String icon;
 	protected String errorPath;
-	protected RootFXStageController controller;
+	protected FXStageController controller;
 	
-	protected abstract Pane createContents(RootFXStageController value);
+	protected abstract Pane createContents(FXStageController value);
 	
 	public void closeWindow() {
 		this.controller.close();
@@ -69,7 +69,7 @@ public abstract class MasterShell extends Application {
 			   defaultCharsetField.setAccessible(true);
 			   defaultCharsetField.set(null, null);
 		   }
-		   this.controller = new RootFXStageController(primaryStage);
+		   this.controller = new FXStageController(primaryStage);
 		   this.controller.withCenter( createContents( this.controller ) );
 		   this.controller.show();
 	       withIcon(null);

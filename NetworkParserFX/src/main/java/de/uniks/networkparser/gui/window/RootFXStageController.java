@@ -36,6 +36,7 @@ import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+@Deprecated
 public class RootFXStageController extends FXStageController implements WindowListener{
 	private KeyListenerMap listener = new KeyListenerMap(this);
 	private Object model;
@@ -203,6 +204,12 @@ public class RootFXStageController extends FXStageController implements WindowLi
 		controller.show(stage);
 		return controller;
 	}
+	
+	@Override
+	protected void showing() {
+		this.stage.show();
+	}
+
 
 	public Object getModel() {
 		return model;

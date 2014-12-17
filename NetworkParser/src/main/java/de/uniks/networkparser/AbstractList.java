@@ -853,6 +853,33 @@ public abstract class AbstractList<V> implements BaseItem {
 		}
 		return (ST) this;
 	}
+	
+	@SuppressWarnings("unchecked")
+	public <ST extends AbstractList<V>> ST getFirstItems(int size) {
+		AbstractList<V> newInstance = getNewInstance();
+		if(size<0) {
+			size = this.size();
+		}
+		int i=0;
+		while(i<size) {
+			newInstance.with(get(i++));	
+		}
+		return (ST) newInstance;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <ST extends AbstractList<V>> ST getLastItems(int size) {
+		AbstractList<V> newInstance = getNewInstance();
+		int count = this.size();
+		if(size<0) {
+			size = count;
+		}
+		int i=count  - size;
+		while(i<count) {
+			newInstance.with(get(i++));	
+		}
+		return (ST) newInstance;
+	}
 
 	public int indexOf(Object o) {
 		return keys.indexOf(o);
