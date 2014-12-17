@@ -1,5 +1,7 @@
 package de.uniks.networkparser.gui.controller;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 
 import javafx.scene.Node;
@@ -7,7 +9,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 
-public class PointPaneController {
+public class PointPaneController extends AbstractModelController implements PropertyChangeListener{
 	private Pane pane;
 	private ArrayList<Circle> children = new ArrayList<Circle>();
 	private String color="BLACK";
@@ -21,59 +23,32 @@ public class PointPaneController {
 	public void setValue(int number) {
 		this.reset();
 		if (number == 1) {
-			this.addCircle(getCircle(2, 2));
+			this.addCircle(2, 2);
 		} else if (number == 2) {
-			this.addCircle(getCircle(1, 1));
-			this.addCircle(getCircle(3, 3));
+			this.addCircle(1, 1, 3, 3);
 		} else if (number == 3) {
-			this.addCircle(getCircle(1, 1));
-			this.addCircle(getCircle(2, 2));
-			this.addCircle(getCircle(3, 3));
+			this.addCircle(1, 1, 2, 2, 3, 3);
 		} else if (number == 4) {
-			this.addCircle(getCircle(1, 1));
-			this.addCircle(getCircle(1, 3));
-			this.addCircle(getCircle(3, 1));
-			this.addCircle(getCircle(3, 3));
+			this.addCircle(1, 1, 1, 3, 3, 1, 3, 3);
 		} else if (number == 5) {
-			this.addCircle(getCircle(1, 1));
-			this.addCircle(getCircle(1, 3));
-			this.addCircle(getCircle(2, 2));
-			this.addCircle(getCircle(3, 1));
-			this.addCircle(getCircle(3, 3));
+			this.addCircle(1, 1, 1, 3, 2, 2, 3, 1, 3, 3);
 		} else if (number == 6) {
-			this.addCircle(getCircle(1, 1));
-			this.addCircle(getCircle(1, 2));
-			this.addCircle(getCircle(1, 3));
-			this.addCircle(getCircle(3, 1));
-			this.addCircle(getCircle(3, 2));
-			this.addCircle(getCircle(3, 3));
+			this.addCircle(1, 1, 1, 2, 1, 3, 3, 1, 3, 2, 3, 3);
 		} else if (number == 7) {
-			this.addCircle(getCircle(1, 1));
-			this.addCircle(getCircle(1, 2));
-			this.addCircle(getCircle(1, 3));
-			this.addCircle(getCircle(2, 2));
-			this.addCircle(getCircle(3, 1));
-			this.addCircle(getCircle(3, 2));
-			this.addCircle(getCircle(3, 3));
+			this.addCircle(1, 1, 1, 2, 1, 3, 2, 2, 3, 1, 3, 2, 3, 3);
 		} else if (number == 8) {
-			this.addCircle(getCircle(1, 1));
-			this.addCircle(getCircle(1, 2));
-			this.addCircle(getCircle(1, 3));
-			this.addCircle(getCircle(2, 1));
-			this.addCircle(getCircle(2, 3));
-			this.addCircle(getCircle(3, 1));
-			this.addCircle(getCircle(3, 2));
-			this.addCircle(getCircle(3, 3));
+			this.addCircle(1, 1, 1, 2, 1, 3, 2, 1, 2, 3, 3, 1, 3, 2, 3, 3);
 		} else if (number == 9) {
-			this.addCircle(getCircle(1, 1));
-			this.addCircle(getCircle(1, 2));
-			this.addCircle(getCircle(1, 3));
-			this.addCircle(getCircle(2, 1));
-			this.addCircle(getCircle(2, 2));
-			this.addCircle(getCircle(2, 3));
-			this.addCircle(getCircle(3, 1));
-			this.addCircle(getCircle(3, 2));
-			this.addCircle(getCircle(3, 3));
+			this.addCircle(1, 1, 1, 2, 1, 3, 2, 1, 2, 2, 2, 3, 3, 1, 3, 2, 3, 3);
+		}
+	}
+	
+	public void addCircle(int... values) {
+		if(values.length%2>0){
+			return;
+		}
+		for(int i=0;i<values.length;i+=2){
+			this.addCircle(getCircle(values[i], values[i+1]));
 		}
 	}
 
@@ -112,6 +87,21 @@ public class PointPaneController {
 	public PointPaneController withColor(String color) {
 		this.color = color;
 		return this;
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if(evt != null){
+			int val = 0;
+			if(evt.getNewValue() != null) {
+				val=(int)evt.getNewValue();
+			}
+			this.setValue(val);
+		}
+	}
+
+	@Override
+	public void initPropertyChange(Object model, Node gui) {
 	}
 
 }
