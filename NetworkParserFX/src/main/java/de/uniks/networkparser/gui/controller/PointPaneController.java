@@ -79,7 +79,7 @@ public class PointPaneController {
 
 	private void reset() {
 		while (this.children.size() > 0) {
-			Circle circle = children.get(0);
+			Circle circle = children.remove(0);
 			this.pane.getChildren().remove(circle);
 		}
 	}
