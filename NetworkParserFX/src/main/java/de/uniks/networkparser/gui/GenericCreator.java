@@ -21,7 +21,6 @@ package de.uniks.networkparser.gui;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
  */
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.LinkedHashSet;
 

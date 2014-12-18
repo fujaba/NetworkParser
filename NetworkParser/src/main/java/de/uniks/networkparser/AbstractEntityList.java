@@ -93,17 +93,15 @@ public abstract class AbstractEntityList<V> extends AbstractList<V> implements
 	}
 
 	@SuppressWarnings("unchecked")
-	public AbstractList<V> withAll(V... values) {
+	public <ST extends AbstractList<V>> ST withAll(V... values) {
 		if (values == null) {
-			return this;
+			return (ST) this;
 		}
 		for (V item : values) {
 			this.addEntity(item);
 		}
-		return this;
+		return (ST) this;
 	}
-
-	
 	
 	public Collection<V> values() {
 		return keys;
