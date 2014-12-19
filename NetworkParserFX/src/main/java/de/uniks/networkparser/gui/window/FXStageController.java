@@ -67,7 +67,7 @@ public class FXStageController implements StageEvent, WindowListener {
 
 
 	public void createScene(Region pane) {
-		this.scene = new Scene(pane, 600, 400);
+		this.scene = new Scene(pane);
 		stage.setScene(scene);
 	}
 
@@ -236,10 +236,12 @@ public class FXStageController implements StageEvent, WindowListener {
 	}
 
 	public FXStageController withFXML(URL fxmlFile, ResourceBundle resources) {
+		Region root = create(fxmlFile, null);
 		if (this.getStage() == null) {
 			this.withStage(new Stage());
+			this.createScene(root);
+			this.stage.setScene(this.scene);
 		}
-		create(fxmlFile, null);
 		return this;
 	}
 	
@@ -314,6 +316,7 @@ public class FXStageController implements StageEvent, WindowListener {
 						WindowEvent.WINDOW_SHOWING), myStage, this);
 			}
 			this.createScene(value);
+			this.stage.setScene(this.scene);
 		}
 		oldStage.close();
 		return this.getStage();
