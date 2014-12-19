@@ -72,7 +72,10 @@ public class FXStageController implements StageEvent, WindowListener {
 	}
 
 	public Stage getStage() {
-		return stage;
+	if (stage == null) {
+		this.withStage(new Stage());
+	}
+	return stage;
 	}
 
 	public FXStageController withStage(Stage value) {
@@ -141,14 +144,17 @@ public class FXStageController implements StageEvent, WindowListener {
 
 	public void show(Stage stage) {
 		this.withStage(stage);
-		if (this.pane != null) {
-			Scene scene = new Scene(this.pane);
-			stage.setScene(scene);
-			showing();
-		}
+		showing();
+		
 	}
 
 	protected void showing() {
+		if (this.pane == null) {
+			return;
+		}
+		if(getStage().getScene()==null){
+			this.createScene(pane);
+		}
 		if (wait && this.stage.getOwner() != null) {
 			this.stage.showAndWait();
 		} else {
@@ -228,20 +234,12 @@ public class FXStageController implements StageEvent, WindowListener {
 	}
 	
 	public FXStageController withFXML(String fxmlFile) {
-		if (this.getStage() == null) {
-			this.withStage(new Stage());
-		}
 		create(FXStageController.class.getResource(fxmlFile), null);
 		return this;
 	}
-
-	public FXStageController withFXML(URL fxmlFile, ResourceBundle resources) {
-		Region root = create(fxmlFile, null);
-		if (this.getStage() == null) {
-			this.withStage(new Stage());
-			this.createScene(root);
-			this.stage.setScene(this.scene);
-		}
+	
+	public FXStageController withFXML(URL urlfxmlFile) {
+		create(urlfxmlFile, null);
 		return this;
 	}
 	
@@ -316,7 +314,6 @@ public class FXStageController implements StageEvent, WindowListener {
 						WindowEvent.WINDOW_SHOWING), myStage, this);
 			}
 			this.createScene(value);
-			this.stage.setScene(this.scene);
 		}
 		oldStage.close();
 		return this.getStage();
@@ -376,12 +373,12 @@ public class FXStageController implements StageEvent, WindowListener {
 	}
 
 	public static FXStageController load(String fxml, Class<?> path) {
-		return new FXStageController().withFXML(path.getResource(fxml), null);
+		return new FXStageController().withFXML(path.getResource(fxml));
 	}
 
 	public static FXStageController show(Stage stage, String fxml,
 			Class<?> path) {
-		FXStageController controller = new FXStageController().withFXML(path.getResource(fxml), null);
+		FXStageController controller = new FXStageController().withFXML(path.getResource(fxml));
 		controller.show(stage);
 		return controller;
 	}
