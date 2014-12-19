@@ -2,15 +2,15 @@ package de.uniks.networkparser.gui.test;
 
 import javafx.scene.layout.Pane;
 import de.uniks.networkparser.gui.form.ModelForm;
+import de.uniks.networkparser.gui.window.FXStageController;
 import de.uniks.networkparser.gui.window.MasterShell;
-import de.uniks.networkparser.gui.window.RootFXStageController;
 import de.uniks.networkparser.json.JsonIdMap;
 
 public class FormGUI extends MasterShell {
     public static void main(String[] args) { launch(args); }
 
 	@Override
-	protected Pane createContents(RootFXStageController value) {
+	protected Pane createContents(FXStageController value) {
         JsonIdMap map = new  JsonIdMap();
         map.withCreator(new PersonCreator());
         PersonGUI albert= new PersonGUI().withName("Albert");
