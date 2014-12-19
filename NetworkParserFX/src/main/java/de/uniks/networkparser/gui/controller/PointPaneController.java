@@ -4,7 +4,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 
+import javafx.event.EventHandler;
 import javafx.scene.Node;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
@@ -13,6 +15,7 @@ public class PointPaneController extends AbstractModelController implements Prop
 	private Pane pane;
 	private ArrayList<Circle> children = new ArrayList<Circle>();
 	private String color="BLACK";
+	private EventHandler<MouseEvent> mouseHandler;
 
 	public PointPaneController(Node value) {
 		if (value instanceof Pane) {
@@ -104,4 +107,11 @@ public class PointPaneController extends AbstractModelController implements Prop
 	public void initPropertyChange(Object model, Node gui) {
 	}
 
+	public PointPaneController addMouseListener(EventHandler<MouseEvent> listener) {
+		this.mouseHandler = listener;
+		if(this.pane!=null){
+			this.pane.setOnMouseClicked(mouseHandler);
+		}
+		return this;
+	}
 }
