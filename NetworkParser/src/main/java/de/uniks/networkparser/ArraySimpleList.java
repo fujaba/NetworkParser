@@ -29,11 +29,6 @@ public class ArraySimpleList<V> extends AbstractEntityList<V> {
 	}
 
 	@Override
-	public boolean add(V e) {
-		return addEntity(e);
-	}
-
-	@Override
 	@SuppressWarnings("unchecked")
 	public boolean remove(Object value) {
 		return removeItemByObject((V) value) >= 0;

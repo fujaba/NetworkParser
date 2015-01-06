@@ -27,6 +27,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+
 import de.uniks.networkparser.AbstractEntityList;
 import de.uniks.networkparser.EntityValueFactory;
 import de.uniks.networkparser.IdMapEncoder;
@@ -40,15 +41,14 @@ public class TableList extends AbstractEntityList<Object> implements
 	public static final String PROPERTY_ITEMS = "items";
 	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
 
-	@Override
-	public EntityComparator<Object> comparator() {
-		return (EntityComparator<Object>) cpr;
-	}
-
-	public void setIdMap(IdMapEncoder map) {
-		if (cpr instanceof EntityComparator<?>) {
-			((EntityComparator<?>) this.cpr).withMap(map);
+	public boolean setIdMap(IdMapEncoder map) {
+		if(items == null) {
+			return false;
 		}
+		if (items.comparator() instanceof EntityComparator<?>) {
+			((EntityComparator<?>) items.comparator()).withMap(map);
+		}
+		return false;
 	}
 
 	public boolean setValue(String attrName, Object value) {
@@ -73,7 +73,10 @@ public class TableList extends AbstractEntityList<Object> implements
 	}
 
 	public boolean addAll(TableList list) {
-		for (Object item : keys) {
+		if(items==null){
+			return false;
+		}
+		for (Object item : items) {
 			if (!add(item)) {
 				return false;
 			}
@@ -110,15 +113,21 @@ public class TableList extends AbstractEntityList<Object> implements
 
 	public TableList withSort(String field, SortingDirection direction,
 			EntityValueFactory cellValueCreator) {
-		EntityComparator<Object> comparator = comparator();
-		if (comparator == null) {
-			comparator = new EntityComparator<Object>();
-			this.cpr = comparator;
-
+		if(items==null){
+			return this;
 		}
-		comparator.withColumn(field);
-		comparator.withDirection(direction);
-		comparator.withCellCreator(cellValueCreator);
+		
+		Comparator<Object> comparator = items.comparator();
+		EntityComparator<Object> cpr;
+		if (comparator != null && comparator instanceof EntityComparator<?>) {
+			cpr = new EntityComparator<Object>();
+			items.withComparator(cpr);
+		}else{
+			cpr = (EntityComparator<Object>) comparator;
+		}
+		cpr.withColumn(field);
+		cpr.withDirection(direction);
+		cpr.withCellCreator(cellValueCreator);
 		refreshSort();
 		return this;
 	}
@@ -132,13 +141,17 @@ public class TableList extends AbstractEntityList<Object> implements
 	}
 
 	public TableList withSort(String field, SortingDirection direction) {
-		EntityComparator<Object> comparator = comparator();
-		if (comparator == null) {
-			comparator = new EntityComparator<Object>();
-			this.cpr = comparator;
+		if(items == null) {
+			return this;
 		}
-		comparator.withColumn(field);
-		comparator.withDirection(direction);
+		Comparator<Object> comparator = items.comparator();
+		if (comparator == null || !(comparator instanceof EntityComparator<?>)) {
+			comparator = new EntityComparator<Object>();
+			items.withComparator(comparator);
+		}
+		EntityComparator<?> cpr = (EntityComparator<?>) comparator;
+		cpr.withColumn(field);
+		cpr.withDirection(direction);
 		refreshSort();
 		return this;
 	}
@@ -155,28 +168,38 @@ public class TableList extends AbstractEntityList<Object> implements
 	}
 
 	public void setSort(String field) {
-		EntityComparator<Object> comparator = comparator();
-		if (comparator != null) {
-			if (comparator.getColumn() != null
-					&& comparator.getColumn().equals(field)) {
-				comparator.changeDirection();
+		if(items ==null ){
+			return;
+		}
+		Comparator<Object> comparator = items.comparator();
+		if (comparator != null && comparator instanceof EntityComparator) {
+			EntityComparator<?> cpr = (EntityComparator<?>) comparator;
+			if (cpr.getColumn() != null
+					&& cpr.getColumn().equals(field)) {
+				cpr.changeDirection();
 			} else {
-				comparator.withColumn(field);
+				cpr.withColumn(field);
 			}
 			refreshSort();
 		}
 	}
 
 	public SortingDirection changeDirection() {
-		EntityComparator<Object> comparator = comparator();
-		if (comparator != null) {
-			return comparator.changeDirection();
+		if(items ==null ){
+			return null;
+		}
+		Comparator<Object> comparator = items.comparator();
+		if (comparator != null && comparator instanceof EntityComparator) {
+			return ((EntityComparator<?>)comparator).changeDirection();
 		}
 		return null;
 	}
 
 	public Object[] getSortedIndex() {
-		EntityComparator<Object> comparator = comparator();
+		if(items ==null || !(items.comparator() instanceof EntityComparator<?>)){
+			return null;
+		}
+		EntityComparator<Object> comparator = (EntityComparator<Object>) items.comparator();
 		if (comparator == null) {
 			return null;
 		}
@@ -264,11 +287,6 @@ public class TableList extends AbstractEntityList<Object> implements
 	}
 
 	public List<Object> values() {
-		return keys;
-	}
-
-	@Override
-	public boolean add(Object e) {
-		return addEntity(e);
+		return items;
 	}
 }

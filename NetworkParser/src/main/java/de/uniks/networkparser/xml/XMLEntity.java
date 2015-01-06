@@ -43,8 +43,6 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements
 	public static final String PROPERTY_VALUE = "value";
 	/** The children. */
 	private ArrayList<XMLEntity> children;
-	/** Value fo Visible of Item. */
-	private boolean visible = true;
 
 	/** The tag. */
 	private String tag;
@@ -54,7 +52,7 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements
 
 	/** Simple Constructor. */
 	public XMLEntity() {
-		this.allowDuplicate = false;
+		this.withAllowDuplicate(false);
 	}
 
 	/**
@@ -245,17 +243,6 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements
 	}
 
 	@Override
-	public BaseItem withVisible(boolean value) {
-		this.visible = value;
-		return this;
-	}
-
-	@Override
-	public boolean isVisible() {
-		return visible;
-	}
-
-	@Override
 	public AbstractList<?> getNewArray() {
 		return new XMLEntity();
 	}
@@ -294,6 +281,15 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements
 	@Override
 	public XMLEntity withValue(Object key, Object value) {
 		super.withValue(key, value);
+		return this;
+	}
+
+	@Override
+	public BaseItem withVisible(boolean value) {
+		if(items==null){
+			newSmallList();
+		}
+		this.items.withVisible(value);
 		return this;
 	}
 }

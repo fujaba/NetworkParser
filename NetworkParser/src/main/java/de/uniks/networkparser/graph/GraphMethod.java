@@ -55,7 +55,7 @@ public class GraphMethod extends AbstractList<GraphParameter> implements GraphMe
 		boolean first = true;
 		int i = 0;
 
-		for (GraphParameter parameter : keys) {
+		for (GraphParameter parameter : items) {
 
 			if (first) {
 				sb.append(getParameterSignature(includeName, parameter, i));
@@ -64,7 +64,7 @@ public class GraphMethod extends AbstractList<GraphParameter> implements GraphMe
 				sb.append(getParameterSignature(includeName, parameter, i));
 			}
 
-			if (i < keys.size() - 1) {
+			if (i < items.size() - 1) {
 				if (includeName) {
 					sb.append(", ");
 				} else {
@@ -116,7 +116,7 @@ public class GraphMethod extends AbstractList<GraphParameter> implements GraphMe
 		}
 		for (GraphParameter item : value) {
 			if (item != null) {
-				this.addEntity(item);
+				this.add(item);
 			}
 		}
 		return this;
@@ -181,7 +181,7 @@ public class GraphMethod extends AbstractList<GraphParameter> implements GraphMe
 		}
 		for (Object value : values) {
 			if (value != null && value instanceof GraphParameter) {
-				this.addEntity((GraphParameter) value);
+				this.add((GraphParameter) value);
 			}
 		}
 		return this;

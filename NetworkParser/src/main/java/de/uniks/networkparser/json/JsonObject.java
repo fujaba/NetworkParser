@@ -92,11 +92,10 @@ import de.uniks.networkparser.interfaces.StringItem;
  */
 public class JsonObject extends AbstractKeyValueList<String, Object> implements
 		StringItem, FactoryEntity, Entity {
-	private boolean visible = true;
 	protected boolean caseSensitive=true;
 	
 	public JsonObject() {
-		this.allowDuplicate = false;
+		this.withAllowDuplicate(false);
 	}
 	
 	/**
@@ -322,13 +321,13 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements
 
 	@Override
 	public BaseItem withVisible(boolean value) {
-		this.visible = value;
+		this.items.withVisible(value);
 		return this;
 	}
 
 	@Override
 	public boolean isVisible() {
-		return visible;
+		return this.items.isVisible();
 	}
 
 	public boolean has(String key) {
@@ -398,50 +397,25 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements
 		return removeItemByObject((String) key);
 	}
 
-//FIXME	@Override
-//	public Object put(String key, Object value) {
-//		int pos = getPositionKey(key);
-//		if (pos >= 0) {
-//			if (this.hashTableValues != null) {
-//				this.hashTableValues[pos] = value;
-//				pos = transformIndex(pos, key, this.hashTableKeys, this.keys);
+//FIXME OLD???	@Override
+//	protected int addKey(int pos, String newValue) {
+//		if (pos == -1) {
+//			if (!this.keys.add(newValue)) {
+//				return -1;
 //			}
-//			return this.values.set(pos, value);
+//			pos = this.keys.size();
+//			if (!isAllowDuplicate()) {
+//				this.hashTableAddKey(newValue.toLowerCase(), pos);
+//			} else {
+//				this.hashTableAddKey(newValue, pos);
+//			}
+//			this.hashTableAddKey(newValue, pos);
+//			return pos;
 //		}
-//		addEntity(key, value);
-//
-//		return value;
+//		this.items.add(pos, newValue);
+//		this.hashTableAddKey(newValue, pos);
+//		return -1;
 //	}
-
-	@Override
-	protected int addKey(int pos, String newValue) {
-		if (pos == -1) {
-			if (!this.keys.add(newValue)) {
-				return -1;
-			}
-			pos = this.keys.size();
-			if (!isAllowDuplicate()) {
-				this.hashTableAddKey(newValue.toLowerCase(), pos);
-			} else {
-				this.hashTableAddKey(newValue, pos);
-			}
-			this.hashTableAddKey(newValue, pos);
-			return pos;
-		}
-		this.keys.add(pos, newValue);
-		this.hashTableAddKey(newValue, pos);
-		return -1;
-	}
-
-	@Override
-	protected boolean checkValue(Object a, Object b) {
-		if(!caseSensitive) {
-			if (a instanceof String && b instanceof String ) {
-				return ((String)a).equalsIgnoreCase((String)b);
-			}
-		}
-		return a.equals(b);
-	}
 
 	public JsonObject withValue(String key, Object value) {
 		if(value != null) {

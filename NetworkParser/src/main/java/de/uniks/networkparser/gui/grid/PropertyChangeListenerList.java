@@ -57,9 +57,4 @@ public class PropertyChangeListenerList extends
 	public boolean remove(Object value) {
 		return removeItemByObject((PropertyChangeListener) value) >= 0;
 	}
-
-	@Override
-	public boolean add(PropertyChangeListener e) {
-		return addEntity(e);
-	}
 }
