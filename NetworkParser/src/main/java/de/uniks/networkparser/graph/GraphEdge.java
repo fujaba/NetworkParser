@@ -153,7 +153,7 @@ public class GraphEdge extends AbstractEntityList<GraphNode> implements
 
 	@Override
 	public boolean add(GraphNode newValue) {
-		if (super.addEntity(newValue)) {
+		if (super.add(newValue)) {
 			newValue.with(this);
 		}
 		return true;
@@ -169,7 +169,7 @@ public class GraphEdge extends AbstractEntityList<GraphNode> implements
 	}
 
 	public List<GraphNode> values() {
-		return keys;
+		return items;
 	}
 	
 	public static GraphEdge create(GraphNode source, GraphNode target){

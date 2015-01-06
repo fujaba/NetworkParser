@@ -51,7 +51,7 @@ public class BitEntity extends AbstractEntityList<BitValue> implements
 	}
 
 	public BitEntity withStartLen(int start, int len) {
-		this.keys.add(new BitValue(start, len));
+		this.items.add(new BitValue(start, len));
 		return this;
 	}
 
@@ -182,11 +182,6 @@ public class BitEntity extends AbstractEntityList<BitValue> implements
 	@Override
 	public AbstractList<BitValue> getNewInstance() {
 		return new BitEntity();
-	}
-
-	@Override
-	public boolean add(BitValue e) {
-		return addEntity(e);
 	}
 
 	@Override

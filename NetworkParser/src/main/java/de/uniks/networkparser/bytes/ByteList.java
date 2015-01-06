@@ -102,9 +102,9 @@ public class ByteList extends AbstractEntityList<ByteItem> implements ByteItem,
 		}
 		ByteUtil.writeByteHeader(buffer, typ, size);
 
-		for (int i = 0; i < keys.size(); i++) {
-			((ByteItem) keys.get(i)).writeBytes(buffer, isDynamic,
-					i == keys.size() - 1, isPrimitive);
+		for (int i = 0; i < items.size(); i++) {
+			((ByteItem) items.get(i)).writeBytes(buffer, isDynamic,
+					i == items.size() - 1, isPrimitive);
 		}
 	}
 
@@ -129,25 +129,25 @@ public class ByteList extends AbstractEntityList<ByteItem> implements ByteItem,
 		}
 		boolean isPrimitive = isDynamic;
 		int nullerBytes = 0;
-		if (this.keys.get(size - 1) instanceof ByteEntity) {
+		if (this.items.get(size - 1) instanceof ByteEntity) {
 			// HEADER + VALUE
 			isPrimitive = isPrimitive
-					&& this.keys.get(0).getTyp() == ByteIdMap.DATATYPE_CLAZZTYP;
-			if (this.keys.get(size - 1).getTyp() == ByteIdMap.DATATYPE_NULL) {
+					&& this.items.get(0).getTyp() == ByteIdMap.DATATYPE_CLAZZTYP;
+			if (this.items.get(size - 1).getTyp() == ByteIdMap.DATATYPE_NULL) {
 				nullerBytes++;
 			}
 		} else {
 			isPrimitive = false;
 		}
-		length = this.keys.get(size - 1).calcLength(isDynamic, true);
+		length = this.items.get(size - 1).calcLength(isDynamic, true);
 		// length=len+ByteUtil.getTypLen(valueList[size-1].getTyp(), len - 1);
 		for (int i = size - 2; i >= 0; i--) {
-			int len = this.keys.get(i).calcLength(isDynamic, false);
+			int len = this.items.get(i).calcLength(isDynamic, false);
 			if (isPrimitive) {
-				if (this.keys.get(i).getTyp() == ByteIdMap.DATATYPE_NULL) {
+				if (this.items.get(i).getTyp() == ByteIdMap.DATATYPE_NULL) {
 					nullerBytes++;
 				}
-				isPrimitive = (this.keys.get(i).size() == len - 1);
+				isPrimitive = (this.items.get(i).size() == len - 1);
 			}
 			length += len;
 		}
@@ -165,18 +165,18 @@ public class ByteList extends AbstractEntityList<ByteItem> implements ByteItem,
 		if (!isDynamic) {
 			return false;
 		}
-		if (this.keys.size() < 1) {
+		if (this.items.size() < 1) {
 			return false;
 		}
-		if (!(this.keys.get(this.keys.size() - 1) instanceof ByteEntity)) {
+		if (!(this.items.get(this.items.size() - 1) instanceof ByteEntity)) {
 			return false;
 		}
-		if (this.keys.get(0).getTyp() != ByteIdMap.DATATYPE_CLAZZTYP) {
+		if (this.items.get(0).getTyp() != ByteIdMap.DATATYPE_CLAZZTYP) {
 			return false;
 		}
-		for (int i = 1; i < this.keys.size(); i++) {
-			int len = this.keys.get(i).calcLength(isDynamic, false);
-			if ((this.keys.get(i).size() != len - 1)) {
+		for (int i = 1; i < this.items.size(); i++) {
+			int len = this.items.get(i).calcLength(isDynamic, false);
+			if ((this.items.get(i).size() != len - 1)) {
 				return false;
 			}
 		}
@@ -215,11 +215,6 @@ public class ByteList extends AbstractEntityList<ByteItem> implements ByteItem,
 			}
 		}
 		return this;
-	}
-
-	@Override
-	public boolean add(ByteItem e) {
-		return addEntity(e);
 	}
 
 	@Override
