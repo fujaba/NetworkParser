@@ -34,14 +34,6 @@ public interface SendableEntityCreator {
 	 */
 	public String[] getProperties();
 
-	/**
-	 * Gets the sendable instance.
-	 *
-	 * @param prototyp
-	 *            the prototyp
-	 * @return the sendable instance
-	 */
-	public Object getSendableInstance(boolean prototyp);
 
 	/**
 	 * Gets the value.
@@ -69,4 +61,13 @@ public interface SendableEntityCreator {
 	 */
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type);
+
+	  /**
+    * Gets the sendable instance.
+    *
+    * @param prototyp
+    *            the prototyp
+    * @return the sendable instance
+    */
+   Object getSendableInstance(boolean reference, Class<?> refClass);
 }
