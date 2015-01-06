@@ -64,10 +64,9 @@ public interface SendableEntityCreator {
 
 	  /**
     * Gets the sendable instance.
-    *
     * @param prototyp
     *            the prototyp
     * @return the sendable instance
     */
-   Object getSendableInstance(boolean reference);
+   Object getSendableInstance(boolean prototyp);
 }
