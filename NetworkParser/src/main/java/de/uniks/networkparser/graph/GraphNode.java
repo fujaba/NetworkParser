@@ -47,7 +47,7 @@ public class GraphNode extends AbstractEntityList<GraphMember> implements GraphM
 	}
 
 	public void addValue(String property, GraphDataType clazz, String value) {
-		keys.add(new GraphAttribute().withValue(value).with(property).with(clazz));
+		add(new GraphAttribute().withValue(value).with(property).with(clazz));
 	}
 
 	@Override
@@ -73,11 +73,6 @@ public class GraphNode extends AbstractEntityList<GraphMember> implements GraphM
 			}
 		}
 		return this;
-	}
-
-	@Override
-	public boolean add(GraphMember e) {
-		return addEntity(e);
 	}
 
 	@Override

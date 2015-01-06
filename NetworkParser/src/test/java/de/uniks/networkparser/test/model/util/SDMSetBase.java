@@ -12,7 +12,7 @@ public class SDMSetBase<T> extends ItemList<T>
 	 * Simple Constructor
 	 */
 	public SDMSetBase(){
-		this.allowDuplicate = false;
+		this.withAllowDuplicate(false);
 	}
 //   @Override
 //   public String toString()

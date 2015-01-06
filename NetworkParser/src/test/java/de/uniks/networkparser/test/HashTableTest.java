@@ -19,12 +19,18 @@ import de.uniks.networkparser.test.model.util.PersonSet;
 
 public class HashTableTest
 {
-//	public static final int COUNT=1000 * 1000 ;
-	public static final int COUNT=1000 ;
 	public static final String FORMAT="%5d";
 	private static ArrayList<Person> items = new ArrayList<Person>();
+	public static int COUNT;
 	@BeforeClass
 	public static void initDummy(){
+		// VM Arg
+		// -Dcount=1000000
+		if(System.getProperty("count")!=null){
+			HashTableTest.COUNT = Integer.valueOf((String)System.getProperty("count"));
+		}else{
+			HashTableTest.COUNT = 1000;
+		}
 		for (int i = 0; i < COUNT; i++) {
 			items.add(new Person().withName("p" + i));
 		}

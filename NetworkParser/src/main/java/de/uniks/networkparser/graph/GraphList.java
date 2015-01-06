@@ -37,23 +37,21 @@ public class GraphList extends AbstractEntityList<GraphMember> implements GraphM
 	private String id;
 	private GraphOptions options;
 
+	@Override
+	protected void newSmallList() {
+		this.items = new GraphSmallList<GraphMember>();
+	}
+	
+	@Override
+	protected void newBigList() {
+		this.items = new GraphBigList<GraphMember>();
+	}
+	
 	public boolean add(GraphMember value) {
 		with(value);
 		return true;
 	}
 	
-	@Override
-	protected boolean checkValue(Object a, Object b) {
-		String idA = ((GraphMember)a).getId();
-		String idB;
-		if(b instanceof String) {
-			idB = (String)b;
-		}else {
-			idB = ((GraphMember)b).getId();
-		}
-		return idA.equalsIgnoreCase(idB);
-	}
-
 	@Override
 	public boolean remove(Object o) {
 		int index = super.getIndex(o);
