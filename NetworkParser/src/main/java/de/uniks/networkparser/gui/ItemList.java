@@ -71,6 +71,6 @@ public abstract class ItemList<E> extends AbstractEntityList<E> implements
 		if (readonly) {
 			throw new UnsupportedOperationException("add()");
 		}
-		return super.addEntity(newValue);
+		return super.add(newValue);
 	}
 }

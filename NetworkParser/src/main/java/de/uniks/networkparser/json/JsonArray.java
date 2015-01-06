@@ -75,7 +75,6 @@ import de.uniks.networkparser.interfaces.StringItem;
 
 public class JsonArray extends AbstractEntityList<Object> implements
 		StringItem, FactoryEntity {
-	private boolean visible = true;
 
 	/**
 	 * Get the JSONArray associated with an index.
@@ -255,7 +254,7 @@ public class JsonArray extends AbstractEntityList<Object> implements
 	}
 
 	public JsonObject get(String id) {
-		for (Object item : keys) {
+		for (Object item : items) {
 			if (item instanceof JsonObject) {
 				JsonObject json = (JsonObject) item;
 				if (json.has(JsonIdMap.ID)
@@ -269,13 +268,13 @@ public class JsonArray extends AbstractEntityList<Object> implements
 
 	@Override
 	public BaseItem withVisible(boolean value) {
-		this.visible = value;
+		this.items.withVisible(value);
 		return this;
 	}
 
 	@Override
 	public boolean isVisible() {
-		return visible;
+		return items.isVisible();
 	}
 
 	@Override
@@ -323,11 +322,6 @@ public class JsonArray extends AbstractEntityList<Object> implements
 	@Override
 	public JsonArray getNewInstance() {
 		return new JsonArray();
-	}
-
-	@Override
-	public boolean add(Object e) {
-		return addEntity(e);
 	}
 
 	@Override
