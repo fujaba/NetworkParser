@@ -69,5 +69,5 @@ public interface SendableEntityCreator {
     *            the prototyp
     * @return the sendable instance
     */
-   Object getSendableInstance(boolean reference, Class<?> refClass);
+   Object getSendableInstance(boolean reference);
 }

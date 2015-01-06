@@ -128,10 +128,12 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 	 */
 	public AbstractMap withCreator(SendableEntityCreator... createrClass) {
 		for (SendableEntityCreator creator : createrClass) {
-			Object reference = creator.getSendableInstance(true);
-			if (reference != null) {
-				withCreator(reference.getClass().getName(), creator);
-			}
+			try{
+				Object reference = creator.getSendableInstance(true);
+				if (reference != null) {
+					withCreator(reference.getClass().getName(), creator);
+				}
+			}catch(Exception e){}
 		}
 		return this;
 	}
