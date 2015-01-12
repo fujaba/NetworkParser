@@ -30,8 +30,6 @@ import java.util.ListIterator;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.list.SimpleBigList;
 import de.uniks.networkparser.list.SimpleSmallList;
-import de.uniks.networkparser.sort.EntityComparator;
-import de.uniks.networkparser.sort.SortingDirection;
 
 /**
  * The Class EntityList.
@@ -70,7 +68,7 @@ public abstract class AbstractList<V> implements BaseItem {
 			return;
 		}
 		
-		if (items.usedSize() < items.realSize() / 20) {
+		if (items.usedSize() < items.realSize() * SimpleSmallList.MINUSEDLIST) {
 			// shrink hashTable size to a loadThreshold of 33%
 			if(items.calcNewSize(items.size()) > SimpleBigList.MINHASHINGSIZE ){
 				newBigList();
@@ -657,25 +655,32 @@ public abstract class AbstractList<V> implements BaseItem {
 		}
 		return items.indexOf(o);
 	}
-	//TODO CHECK BIS HIERHIN FUER NULLPOINTER
-
 	public int lastIndexOf(Object o) {
-		if(items == null){
-			return -1;
-		}
 		return items.lastIndexOf(o);
 	}
 
 	public ListIterator<V> listIterator() {
-		return keys.listIterator();
+		if(items == null){
+			//FIXME CREATE OWN ITERATOR
+			return null;
+		}
+		return items.listIterator();
 	}
 
 	public ListIterator<V> listIterator(int index) {
-		return keys.listIterator(index);
+		if(items == null){
+			//FIXME CREATE OWN ITERATOR
+			return null;
+		}
+		return items.listIterator(index);
 	}
 
-	public ListIterator<V> listIteratorReverseL() {
-		return keys.listIterator(keys.size());
+	public ListIterator<V> listIteratorReverse() {
+		if(items == null){
+			//FIXME CREATE OWN ITERATOR
+			return null;
+		}
+		return items.listIterator(items.size());
 	}
 
 	public int size() {
