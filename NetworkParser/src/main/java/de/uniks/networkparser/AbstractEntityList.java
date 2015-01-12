@@ -39,7 +39,7 @@ public abstract class AbstractEntityList<V> extends AbstractList<V> implements
 		while (list.hasNext()) {
 			V item = list.next();
 			if (item != null) {
-				if (!addEntity(item)) {
+				if (!add(item)) {
 					return false;
 				}
 			}
@@ -51,15 +51,10 @@ public abstract class AbstractEntityList<V> extends AbstractList<V> implements
 		return add(list.iterator());
 	}
 
+	@Override
 	public void add(int index, V element) {
-		if (!contains(element)) {
-			keys.add(index, element);
-			hashTableAddKey(element, index);
-			V beforeValue = null;
-			if (index > 0) {
-				beforeValue = get(index - 1);
-				fireProperty(null, element, beforeValue, null);
-			}
+		if(items!=null) {
+			items.add(index, element);
 		}
 	}
 
@@ -87,7 +82,7 @@ public abstract class AbstractEntityList<V> extends AbstractList<V> implements
 			return this;
 		}
 		for (Object item : values) {
-			this.addEntity((V) item);
+			this.add((V) item);
 		}
 		return this;
 	}
@@ -98,12 +93,12 @@ public abstract class AbstractEntityList<V> extends AbstractList<V> implements
 			return (ST) this;
 		}
 		for (V item : values) {
-			this.addEntity(item);
+			this.add(item);
 		}
 		return (ST) this;
 	}
 	
 	public Collection<V> values() {
-		return keys;
+		return items;
 	}
 }
