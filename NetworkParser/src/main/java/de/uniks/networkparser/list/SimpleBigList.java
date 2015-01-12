@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Iterator;
 
 public class SimpleBigList<V> extends SimpleSmallList<V>{
-	private static final long serialVersionUID = 1L;
 	protected Object[] items = null;
     public static final int MINHASHINGSIZE = 420;
     
@@ -14,6 +13,9 @@ public class SimpleBigList<V> extends SimpleSmallList<V>{
     /** Constructor with Collection */
     public SimpleBigList(Collection<V> list){
 		resize(calcNewSize(list.size()), list);
+    	if(list instanceof SimpleSmallList<?>){
+    		this.flag = ((SimpleSmallList<?>)list).getFlag();
+    	}
     }
     
     @Override
