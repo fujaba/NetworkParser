@@ -1,6 +1,6 @@
 package de.uniks.networkparser.list;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -9,16 +9,25 @@ import java.util.ListIterator;
 import de.uniks.networkparser.sort.EntityComparator;
 import de.uniks.networkparser.sort.SortingDirection;
 
-public class SimpleSmallList<V> extends ArrayList<V> {
+public class SimpleSmallList<V> implements SimpleInterface<V>{
 	// FOR EXTENDS ARRAYLIST
-	private static final long serialVersionUID = 1L;
 	public static final float MAXUSEDLIST = 0.7f;
 	public static final byte ALLOWDUPLICATE=0x04;
 	public static final byte ALLOWEMPTYVALUE=0x08;
-	public static final byte VISIBLE=0x16;
-	public static final byte CASESENSITIVE =0x32;
+	public static final byte VISIBLE=0x10;
+	public static final byte CASESENSITIVE =0x20;
+	public static final float MINUSEDLIST = 0.2f;
 	protected Comparator<V> cpr;
 	protected byte flag=1; // SIZE
+	/**
+     * The array buffer into which the elements of the ArrayList are stored.
+     * The capacity of the ArrayList is the length of this array buffer. Any
+     * empty ArrayList with elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA
+     * will be expanded to DEFAULT_CAPACITY when the first element is added.
+     */
+	Object[] elementData; // non-private to simplify nested class access
+    /** The size of the ArrayList (the number of elements it contains).  */
+    private int size;
 	
 	/** Standard Constructor */
     public SimpleSmallList(){}
@@ -28,6 +37,9 @@ public class SimpleSmallList<V> extends ArrayList<V> {
     	for(Iterator<V> i = list.iterator();i.hasNext();) {
     		this.add(i.next());
     	}
+    	if(list instanceof SimpleSmallList<?>){
+    		this.flag = ((SimpleSmallList<?>)list).getFlag();
+    	}
     }
 	
     public int minSize(){
@@ -36,6 +48,10 @@ public class SimpleSmallList<V> extends ArrayList<V> {
 
 	public int entitySize() {
 		return flag & 0x03;
+	}
+	
+	public byte getFlag(){
+		return flag;
 	}
 	
 	public int calcNewSize(int listSize) {
@@ -51,7 +67,7 @@ public class SimpleSmallList<V> extends ArrayList<V> {
 	 * @return the SIze of Array
 	 */
 	public int realSize() {
-		return super.size();
+		return elementData.length;
 	}
 	/**
 	 * Is Allow Duplicate Entity in the List
@@ -248,7 +264,7 @@ public class SimpleSmallList<V> extends ArrayList<V> {
 		if (index < 0) {
 			return -1;
 		}
-		remove(index);
+		removeByIndex(index);
 		return index;
 	}
 	
@@ -259,7 +275,7 @@ public class SimpleSmallList<V> extends ArrayList<V> {
 		// search from the end as in models we frequently ask for elements that
 		// have just been added to the end
 		int pos = this.size() - 1;
-		for (ListIterator<V> i = listIteratorReverse(); i.hasPrevious();) {
+		for (ListIterator<V> i = iteratorReverse(); i.hasPrevious();) {
 			if (checkValue(i.previous(), o)) {
 				return pos;
 			}
@@ -277,150 +293,182 @@ public class SimpleSmallList<V> extends ArrayList<V> {
 		return a.equals(b);
 	}
 	
-	public ListIterator<V> listIteratorReverse() {
-		return listIterator(size());
-	}
-	
 	public int transformIndex(int index, Object value) {
 		return index;
 	}
 
-//TODO	public void clone(){
-//		
-//	}
+	@Override
+	public int size() {
+		return size;
+	}
 	
-//	@Override
-//	public int size() {
-//		return size;
-//	}
-//
-//	@Override
-//	public boolean isEmpty() {
-//        return size == 0;
-//    }
-//
-//	@Override
-//	public boolean contains(Object o) {
-//        return indexOf(o) >= 0;
-//	}
-//
-//	@Override
-//	public Iterator<V> iterator() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public Object[] toArray() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public <T> T[] toArray(T[] a) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public boolean add(V e) {
-//		// TODO Auto-generated method stub
-//		return false;
-//	}
-//
-//	@Override
-//	public boolean remove(Object o) {
-//		// TODO Auto-generated method stub
-//		return false;
-//	}
-//
-//	@Override
-//	public boolean containsAll(Collection<?> c) {
-//		// TODO Auto-generated method stub
-//		return false;
-//	}
-//
-//	@Override
-//	public boolean addAll(Collection<? extends V> c) {
-//		// TODO Auto-generated method stub
-//		return false;
-//	}
-//
-//	@Override
-//	public boolean addAll(int index, Collection<? extends V> c) {
-//		// TODO Auto-generated method stub
-//		return false;
-//	}
-//
-//	@Override
-//	public boolean removeAll(Collection<?> c) {
-//		// TODO Auto-generated method stub
-//		return false;
-//	}
-//
-//	@Override
-//	public boolean retainAll(Collection<?> c) {
-//		// TODO Auto-generated method stub
-//		return false;
-//	}
-//
-//	@Override
-//	public void clear() {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//
-//	@Override
-//	public V get(int index) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public V set(int index, V element) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public void add(int index, V element) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//
-//	@Override
-//	public V remove(int index) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public int indexOf(Object o) {
-//		// TODO Auto-generated method stub
-//		return 0;
-//	}
-//
-//	@Override
-//	public int lastIndexOf(Object o) {
-//		// TODO Auto-generated method stub
-//		return 0;
-//	}
-//
-//	@Override
-//	public ListIterator<V> listIterator() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public ListIterator<V> listIterator(int index) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public List<V> subList(int fromIndex, int toIndex) {
-//		// TODO Auto-generated method stub
-//		return null;
+	
+	@Override
+	public boolean isEmpty() {
+        return size == 0;
+    }
+
+	@Override
+	public boolean contains(Object o) {
+        return indexOf(o) >= 0;
+	}
+	
+    /**
+     * Returns the index of the first occurrence of the specified element
+     * in this list, or -1 if this list does not contain the element.
+     * More formally, returns the lowest index <tt>i</tt> such that
+     * <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>,
+     * or -1 if there is no such index.
+     */
+    public int indexOf(Object o) {
+        if (o == null) {
+            for (int i = 0; i < size; i++)
+                if (elementData[i]==null)
+                    return i;
+        } else {
+            for (int i = 0; i < size; i++)
+                if (o.equals(elementData[i]))
+                    return i;
+        }
+        return -1;
+    }
+    
+	@Override
+	public Object set(int index, V element) {
+		Object oldValue = elementData[index];
+        elementData[index] = element;
+        return oldValue;
+	}
+
+	public void add(int index, V element) {
+		int i = size()+1;
+		while(i>index) {
+			elementData[i] = elementData[i - 1]; 	
+		}
+        elementData[index] = element;
+        size++;
+    }
+    
+	@Override
+	public Iterator<V> iterator() {
+		return new SimpleIterator<V>(this);
+	}
+
+	public ListIterator<V> iteratorReverse() {
+		return new SimpleIterator<V>(this, size());
+	}
+	
+	@Override
+	public Object[] toArray() {
+        return Arrays.copyOf(elementData, elementData.length);
+	}
+	
+	@Override
+	public boolean add(V e) {
+		grow(size, elementData);
+		elementData[size++] = e;
+		return true;
+	}
+	
+	private Object grow(int minCapacity, Object[] elements) {
+		Object[] result;
+		if(minCapacity > elements.length * SimpleSmallList.MAXUSEDLIST) {
+			// bigger
+			result = new Object[elements.length*2];
+		} else if (minCapacity < elements.length * SimpleSmallList.MINUSEDLIST) {
+			// smaller
+			result = new Object[minCapacity*2];
+		}else{
+			return elements;
+		}
+		for(int i=0;i<minCapacity;i++) {
+			result[i] = elements[i];
+		}
+		return result;
+    }
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public V get(int index) {
+		if(index<0) {
+			index = size + 1 - index;
+		}
+		if(index>=0 && index<size){
+			return (V) elementData[index];
+		}
+		return null;
+	}
+
+	@Override
+	public void clear() {
+		grow(0, new Object[10]);
+		size = 0;
+	}
+	
+	@Override
+	public boolean remove(Object o) {
+		return removeItemByObject(o)>=0;
+	}
+
+	private void removeByIndex(int index) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+    
+    
+    
+    
+    //FIXME
+
+
+
+	@Override
+	public <T> T[] toArray(T[] a) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+
+	
+
+	@Override
+	public boolean containsAll(Collection<?> c) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean addAll(Collection<? extends V> c) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean retainAll(Collection<?> c) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean removeAll(Collection<?> c) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	
+//TODO	public void clone(){
 //	}
 }
