@@ -172,7 +172,7 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements
 			return "{}";
 		}
 		if (!isVisible()) {
-			return "{Item with " + values.size() + " values}";
+			return "{Item with " + size() + " values}";
 		}
 
 		StringBuilder sb = new StringBuilder("{");
@@ -214,7 +214,7 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements
 		}
 
 		if (!isVisible()) {
-			return "{" + values.size() + " values}";
+			return "{" + size() + " values}";
 		}
 
 		int newindent = indent + indentFactor;
