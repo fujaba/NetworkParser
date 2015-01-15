@@ -299,8 +299,8 @@ public class JsonArray extends AbstractEntityList<Object> implements
 	}
 
 	@Override
-	public JsonArray subSet(Object fromElement, Object toElement) {
-		return (JsonArray) super.subSet(fromElement, toElement);
+	public JsonArray subSetItems(Object fromElement, Object toElement) {
+		return (JsonArray) super.subSetItems(fromElement, toElement);
 	}
 
 	/**

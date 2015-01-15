@@ -71,7 +71,7 @@ public class debugTest {
 //			System.out.println(v);
 //		}
 		
-		JsonArray subSet = values.subSet(2, 4);
+		JsonArray subSet = values.subSetItems(2, 4);
 		System.out.print("NEW subSet:");
 		for (Object v : subSet){
 			System.out.print(v+ " ");
