@@ -50,6 +50,11 @@ public class SimpleSmallList<V> implements SimpleInterface<V>{
 		return flag & 0x03;
 	}
 	
+	public SimpleSmallList<V> withEntitySize(int size) {
+		flag = (byte) (flag - (flag & 0x03) + size);
+		return this;
+	}
+	
 	public byte getFlag(){
 		return flag;
 	}
@@ -348,10 +353,25 @@ public class SimpleSmallList<V> implements SimpleInterface<V>{
         elementData[index] = element;
         size++;
     }
+	
+	@SuppressWarnings("unchecked")
+	public SimpleSmallList<V> with(Object... elements) {
+		if(elements == null) {
+			return this;
+		}
+		for(Object item : elements) {
+			add((V)item);
+		}
+        return this;
+    }
     
 	@Override
 	public Iterator<V> iterator() {
 		return new SimpleIterator<V>(this);
+	}
+	
+	public ListIterator<V> iteratorList(int index) {
+		return new SimpleIterator<V>(this, index);
 	}
 
 	public ListIterator<V> iteratorReverse() {
@@ -410,65 +430,158 @@ public class SimpleSmallList<V> implements SimpleInterface<V>{
 		return removeItemByObject(o)>=0;
 	}
 
-	private void removeByIndex(int index) {
-		// TODO Auto-generated method stub
-		
+	@SuppressWarnings("unchecked")
+	public V removeByIndex(int index) {
+		V oldValue = (V) elementData[index];
+		while(index<size) {
+			elementData[index] = elementData[++index];
+		}
+		size--;
+		elementData[index] = null;
+		return oldValue;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-    
-    
-    
-    
-    //FIXME
-
-
-
-	@Override
-	public <T> T[] toArray(T[] a) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-
-
-	
 
 	@Override
 	public boolean containsAll(Collection<?> c) {
-		// TODO Auto-generated method stub
-		return false;
+		for (Object e : c)
+			if (!contains(e))
+				return false;
+		return true;
 	}
-
-	@Override
-	public boolean addAll(Collection<? extends V> c) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean retainAll(Collection<?> c) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean removeAll(Collection<?> c) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 	
-//TODO	public void clone(){
-//	}
+    /**
+     * {@inheritDoc}
+     *
+     * <p>This implementation iterates over the specified collection, and adds
+     * each object returned by the iterator to this collection, in turn.
+     *
+     * <p>Note that this implementation will throw an
+     * <tt>UnsupportedOperationException</tt> unless <tt>add</tt> is
+     * overridden (assuming the specified collection is non-empty).
+     *
+     * @throws UnsupportedOperationException {@inheritDoc}
+     * @throws ClassCastException            {@inheritDoc}
+     * @throws NullPointerException          {@inheritDoc}
+     * @throws IllegalArgumentException      {@inheritDoc}
+     * @throws IllegalStateException         {@inheritDoc}
+     *
+     * @see #add(Object)
+     */
+    public boolean addAll(Collection<? extends V> c) {
+        boolean modified = false;
+        for (V e : c)
+            if (add(e))
+                modified = true;
+        return modified;
+    }
+	
+    /**
+     * {@inheritDoc}
+     *
+     * <p>This implementation iterates over this collection, checking each
+     * element returned by the iterator in turn to see if it's contained
+     * in the specified collection.  If it's not so contained, it's removed
+     * from this collection with the iterator's <tt>remove</tt> method.
+     *
+     * <p>Note that this implementation will throw an
+     * <tt>UnsupportedOperationException</tt> if the iterator returned by the
+     * <tt>iterator</tt> method does not implement the <tt>remove</tt> method
+     * and this collection contains one or more elements not present in the
+     * specified collection.
+     *
+     * @throws UnsupportedOperationException {@inheritDoc}
+     * @throws ClassCastException            {@inheritDoc}
+     * @throws NullPointerException          {@inheritDoc}
+     *
+     * @see #remove(Object)
+     * @see #contains(Object)
+     */
+    public boolean retainAll(Collection<?> c) {
+    	if(c==null){
+    		return false;
+    	}
+        boolean modified = false;
+        Iterator<V> it = iterator();
+        while (it.hasNext()) {
+            if (!c.contains(it.next())) {
+                it.remove();
+                modified = true;
+            }
+        }
+        return modified;
+    }
+	
+	  /**
+     * {@inheritDoc}
+     *
+     * <p>This implementation iterates over this collection, checking each
+     * element returned by the iterator in turn to see if it's contained
+     * in the specified collection.  If it's so contained, it's removed from
+     * this collection with the iterator's <tt>remove</tt> method.
+     *
+     * <p>Note that this implementation will throw an
+     * <tt>UnsupportedOperationException</tt> if the iterator returned by the
+     * <tt>iterator</tt> method does not implement the <tt>remove</tt> method
+     * and this collection contains one or more elements in common with the
+     * specified collection.
+     *
+     * @throws UnsupportedOperationException {@inheritDoc}
+     * @throws ClassCastException            {@inheritDoc}
+     * @throws NullPointerException          {@inheritDoc}
+     *
+     * @see #remove(Object)
+     * @see #contains(Object)
+     */
+    public boolean removeAll(Collection<?> c) {
+    	if(c==null){
+    		return false;
+    	}
+        boolean modified = false;
+        Iterator<?> it = iterator();
+        while (it.hasNext()) {
+            if (c.contains(it.next())) {
+                it.remove();
+                modified = true;
+            }
+        }
+        return modified;
+    }
+
+	public Object clone() {
+		return new SimpleSmallList<V>(this);
+	}
+    
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T[] toArray(T[] a) {
+		int len = this.size;
+		if(a.length<len) {
+			len = a.length;
+		}
+		for(int i=0;i<len;i++) {
+			a[i] = (T) elementData[i];
+		}
+		return a;
+	}
+
+	public Collection<V> subList(int fromIndex, int toIndex) {
+		SimpleSmallList<V> list = new SimpleSmallList<V>(this);
+		while(fromIndex<=toIndex) {
+			list.with(elementData[fromIndex]);
+		}
+		return list;
+	}
+
+	public int lastIndexOf(Object o) {
+	  if (o == null) {
+            for (int i = size - 1; i >= 0; i--)
+                if (elementData[i]==null)
+                    return i;
+        } else {
+            for (int i = size - 1; i >= 0 ; i--)
+                if (o.equals(elementData[i]))
+                    return i;
+        }
+        return -1;
+	}
 }

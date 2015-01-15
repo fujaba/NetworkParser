@@ -1,5 +1,7 @@
 package de.uniks.networkparser;
 
+import java.util.Collection;
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
@@ -23,6 +25,14 @@ package de.uniks.networkparser;
  */
 
 public class ArraySimpleList<V> extends AbstractEntityList<V> {
+	public ArraySimpleList() {
+		
+	}
+
+	public ArraySimpleList(Collection<V> subList) {
+		this.addAll(subList);
+	}
+
 	@Override
 	public AbstractList<V> getNewInstance() {
 		return new ArraySimpleList<V>();
