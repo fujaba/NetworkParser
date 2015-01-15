@@ -106,7 +106,7 @@ public abstract class AbstractList<V> implements BaseItem {
 		return items.add(element);
 	}
 	
-	public AbstractList<V> subSet(V fromElement, V toElement) {
+	public AbstractList<V> subSetItems(V fromElement, V toElement) {
 		AbstractList<V> newList = getNewInstance();
 
 		// PRE WHILE
@@ -152,9 +152,9 @@ public abstract class AbstractList<V> implements BaseItem {
 	 */
 	public List<V> subList(int fromIndex, int toIndex) {
 		if(items==null){
-			return new SimpleSmallList<V>();
+			return new ArraySimpleList<V>();
 		}
-		return this.items.subList(fromIndex, toIndex);
+		return new ArraySimpleList<V>(this.items.subList(fromIndex, toIndex));
 	}
 
 	/**
@@ -418,6 +418,18 @@ public abstract class AbstractList<V> implements BaseItem {
 		}
 		return this.items.isAllowDuplicate();
 	}
+	
+	/**
+	 * Is Allow Duplicate Entity in the List
+	 *
+	 * @return boolean if the List allow duplicate Entities
+	 */
+	public boolean isAllowEmptyValue() {
+		if(items == null) {
+			return false;
+		}
+		return this.items.isAllowEmptyValue();
+	}
 
 	@SuppressWarnings("unchecked")
 	public <ST extends AbstractList<V>> ST withAllowDuplicate(
@@ -445,7 +457,7 @@ public abstract class AbstractList<V> implements BaseItem {
 		if (index < 0 || items == null) {
 			return null;
 		}
-		return items.remove(index);
+		return items.removeByIndex(index);
 	}
 
 	
@@ -506,7 +518,7 @@ public abstract class AbstractList<V> implements BaseItem {
 		if(items == null) {
 			return null;
 		}
-		return items.listIterator();
+		return items.iterator();
 	}
 
 	public Object[] toArray() {
@@ -547,11 +559,12 @@ public abstract class AbstractList<V> implements BaseItem {
 		removeAll(iterator());
 	}
 
+	@SuppressWarnings("unchecked")
 	public V set(int index, V element) {
 		if(items == null) {
 			return null;
 		}
-		return items.set(index, element);
+		return (V) items.set(index, element);
 	}
 
 	/**
@@ -609,6 +622,9 @@ public abstract class AbstractList<V> implements BaseItem {
 	public AbstractList<V> clone() {
 		return clone(getNewInstance());
 	}
+	
+	
+	@SuppressWarnings("unchecked")
 	public AbstractList<V> clone(AbstractList<V> newInstance) {
 		newInstance.withCopyList((SimpleSmallList<V>) this.items.clone());
 		return newInstance;
@@ -664,7 +680,7 @@ public abstract class AbstractList<V> implements BaseItem {
 			//FIXME CREATE OWN ITERATOR
 			return null;
 		}
-		return items.listIterator();
+		return items.iteratorList(0);
 	}
 
 	public ListIterator<V> listIterator(int index) {
@@ -672,7 +688,7 @@ public abstract class AbstractList<V> implements BaseItem {
 			//FIXME CREATE OWN ITERATOR
 			return null;
 		}
-		return items.listIterator(index);
+		return items.iteratorList(index);
 	}
 
 	public ListIterator<V> listIteratorReverse() {
@@ -680,7 +696,7 @@ public abstract class AbstractList<V> implements BaseItem {
 			//FIXME CREATE OWN ITERATOR
 			return null;
 		}
-		return items.listIterator(items.size());
+		return items.iteratorList(items.size());
 	}
 
 	public int size() {
