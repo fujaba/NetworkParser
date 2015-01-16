@@ -303,7 +303,7 @@ public class DialogBox {
             
             @Override public void centerOnScreen() {
                 Window owner = getOwner();
-                if (owner != null) {
+                if (owner != null && owner.getScene() != null) {
                     Scene scene = owner.getScene();
                     
                     // scene.getY() seems to represent the y-offset from the top of the titlebar to the
