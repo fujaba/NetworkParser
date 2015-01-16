@@ -23,6 +23,7 @@ package de.uniks.networkparser.gui.table;
  */
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -286,7 +287,7 @@ public class TableList extends AbstractEntityList<Object> implements
 		return removeItemByObject(value) >= 0;
 	}
 
-	public List<Object> values() {
+	public Collection<Object> values() {
 		return items;
 	}
 }
