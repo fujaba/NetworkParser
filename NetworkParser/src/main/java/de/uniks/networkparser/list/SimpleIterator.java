@@ -1,6 +1,5 @@
 package de.uniks.networkparser.list;
 
-import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
@@ -33,7 +32,6 @@ public class SimpleIterator<E> implements ListIterator<E> {
         return cursor - 1;
     }
 
-    @SuppressWarnings("unchecked")
     public E previous() {
         int i = cursor - 1;
         if (i < 0)
@@ -69,29 +67,28 @@ public class SimpleIterator<E> implements ListIterator<E> {
 		return cursor<list.size();
 	}
 		
-		@Override
-		@SuppressWarnings("unchecked")
-		public E next() {
-			 int i = cursor;
-            if (i >= list.size())
-                throw new NoSuchElementException();
-            if (i >= list.size())
-                throw new ConcurrentModificationException();
-            cursor = i + 1;
-            return list.get(lastRet = i);
-		}
+	@Override
+	public E next() {
+		 int i = cursor;
+        if (i >= list.size())
+            throw new NoSuchElementException();
+        if (i >= list.size())
+            throw new ConcurrentModificationException();
+        cursor = i + 1;
+        return list.get(lastRet = i);
+	}
 
-		@Override
-		public void remove() {
-			if (lastRet < 0)
-                throw new IllegalStateException();
-            try {
-                list.remove(lastRet);
-                cursor = lastRet;
-                lastRet = -1;
-            } catch (IndexOutOfBoundsException ex) {
-                throw new ConcurrentModificationException();
-            }
-		}
-    }
+	@Override
+	public void remove() {
+		if (lastRet < 0)
+            throw new IllegalStateException();
+        try {
+            list.remove(lastRet);
+            cursor = lastRet;
+            lastRet = -1;
+        } catch (IndexOutOfBoundsException ex) {
+            throw new ConcurrentModificationException();
+        }
+	}
+}
 

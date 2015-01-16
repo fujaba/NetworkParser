@@ -21,6 +21,7 @@ package de.uniks.networkparser.graph;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
  */
+import java.util.Collection;
 import java.util.List;
 
 import de.uniks.networkparser.AbstractEntityList;
@@ -168,7 +169,7 @@ public class GraphEdge extends AbstractEntityList<GraphNode> implements
 		return removeItemByObject((GraphNode) value) >= 0;
 	}
 
-	public List<GraphNode> values() {
+	public Collection<GraphNode> values() {
 		return items;
 	}
 	
