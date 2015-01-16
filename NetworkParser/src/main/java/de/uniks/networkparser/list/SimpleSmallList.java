@@ -25,7 +25,7 @@ public class SimpleSmallList<V> implements SimpleInterface<V>{
      * empty ArrayList with elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA
      * will be expanded to DEFAULT_CAPACITY when the first element is added.
      */
-	Object[] elementData; // non-private to simplify nested class access
+	Object[] elementKey; // non-private to simplify nested class access
     /** The size of the ArrayList (the number of elements it contains).  */
     private int size;
 	
@@ -72,7 +72,7 @@ public class SimpleSmallList<V> implements SimpleInterface<V>{
 	 * @return the SIze of Array
 	 */
 	public int realSize() {
-		return elementData.length;
+		return elementKey.length;
 	}
 	/**
 	 * Is Allow Duplicate Entity in the List
@@ -219,7 +219,7 @@ public class SimpleSmallList<V> implements SimpleInterface<V>{
 		return false;
 	}
 
-	private void fireProperty(Object object, V newValue, V beforeElement,
+	protected void fireProperty(Object object, V newValue, V beforeElement,
 			Object object2) {
 		// TODO Auto-generated method stub
 	}
@@ -328,11 +328,11 @@ public class SimpleSmallList<V> implements SimpleInterface<V>{
     public int indexOf(Object o) {
         if (o == null) {
             for (int i = 0; i < size; i++)
-                if (elementData[i]==null)
+                if (elementKey[i]==null)
                     return i;
         } else {
             for (int i = 0; i < size; i++)
-                if (o.equals(elementData[i]))
+                if (o.equals(elementKey[i]))
                     return i;
         }
         return -1;
@@ -340,17 +340,17 @@ public class SimpleSmallList<V> implements SimpleInterface<V>{
     
 	@Override
 	public Object set(int index, V element) {
-		Object oldValue = elementData[index];
-        elementData[index] = element;
+		Object oldValue = elementKey[index];
+        elementKey[index] = element;
         return oldValue;
 	}
 
 	public void add(int index, V element) {
 		int i = size()+1;
 		while(i>index) {
-			elementData[i] = elementData[i - 1]; 	
+			elementKey[i] = elementKey[i - 1]; 	
 		}
-        elementData[index] = element;
+        elementKey[index] = element;
         size++;
     }
 	
@@ -380,13 +380,13 @@ public class SimpleSmallList<V> implements SimpleInterface<V>{
 	
 	@Override
 	public Object[] toArray() {
-        return Arrays.copyOf(elementData, elementData.length);
+        return Arrays.copyOf(elementKey, elementKey.length);
 	}
 	
 	@Override
 	public boolean add(V e) {
-		grow(size, elementData);
-		elementData[size++] = e;
+		grow(size, elementKey);
+		elementKey[size++] = e;
 		return true;
 	}
 	
@@ -414,7 +414,7 @@ public class SimpleSmallList<V> implements SimpleInterface<V>{
 			index = size + 1 - index;
 		}
 		if(index>=0 && index<size){
-			return (V) elementData[index];
+			return (V) elementKey[index];
 		}
 		return null;
 	}
@@ -432,12 +432,12 @@ public class SimpleSmallList<V> implements SimpleInterface<V>{
 
 	@SuppressWarnings("unchecked")
 	public V removeByIndex(int index) {
-		V oldValue = (V) elementData[index];
+		V oldValue = (V) elementKey[index];
 		while(index<size) {
-			elementData[index] = elementData[++index];
+			elementKey[index] = elementKey[++index];
 		}
 		size--;
-		elementData[index] = null;
+		elementKey[index] = null;
 		return oldValue;
 	}
 
@@ -559,7 +559,7 @@ public class SimpleSmallList<V> implements SimpleInterface<V>{
 			len = a.length;
 		}
 		for(int i=0;i<len;i++) {
-			a[i] = (T) elementData[i];
+			a[i] = (T) elementKey[i];
 		}
 		return a;
 	}
@@ -567,7 +567,7 @@ public class SimpleSmallList<V> implements SimpleInterface<V>{
 	public Collection<V> subList(int fromIndex, int toIndex) {
 		SimpleSmallList<V> list = new SimpleSmallList<V>(this);
 		while(fromIndex<=toIndex) {
-			list.with(elementData[fromIndex]);
+			list.with(elementKey[fromIndex]);
 		}
 		return list;
 	}
@@ -575,11 +575,11 @@ public class SimpleSmallList<V> implements SimpleInterface<V>{
 	public int lastIndexOf(Object o) {
 	  if (o == null) {
             for (int i = size - 1; i >= 0; i--)
-                if (elementData[i]==null)
+                if (elementKey[i]==null)
                     return i;
         } else {
             for (int i = size - 1; i >= 0 ; i--)
-                if (o.equals(elementData[i]))
+                if (o.equals(elementKey[i]))
                     return i;
         }
         return -1;
