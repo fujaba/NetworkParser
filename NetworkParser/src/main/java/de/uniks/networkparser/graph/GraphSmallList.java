@@ -1,6 +1,6 @@
 package de.uniks.networkparser.graph;
 
-import de.uniks.networkparser.list.SimpleSmallList;
+import de.uniks.networkparser.listold.SimpleSmallList;
 
 public class GraphSmallList<V> extends SimpleSmallList<V>{
 	@Override
