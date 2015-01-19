@@ -28,15 +28,15 @@ import java.util.List;
 import java.util.ListIterator;
 
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.list.SimpleBigList;
-import de.uniks.networkparser.list.SimpleSmallList;
+import de.uniks.networkparser.listold.SimpleBigList;
+import de.uniks.networkparser.listold.SimpleSmallList;
 
 /**
  * The Class EntityList.
  */
 
 public abstract class AbstractList<V> implements BaseItem {
-	protected SimpleSmallList<V> items = new SimpleSmallList<V>();
+	protected SimpleSmallList<V> items;
 
 	protected void newBigList(){
 		this.items = new SimpleBigList<V>(items);

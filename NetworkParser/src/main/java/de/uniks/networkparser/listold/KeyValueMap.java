@@ -1,4 +1,4 @@
-package de.uniks.networkparser.interfaces;
+package de.uniks.networkparser.listold;
 
 import java.util.Map;
 
