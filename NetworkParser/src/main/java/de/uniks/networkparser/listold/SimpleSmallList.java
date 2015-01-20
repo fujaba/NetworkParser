@@ -143,6 +143,25 @@ public class SimpleSmallList<V> implements SimpleInterface<V>{
 		return this;
 	}
 
+	@Override
+	public int size() {
+		return size;
+	}
+	
+	
+	@Override
+	public boolean isEmpty() {
+        return size == 0;
+    }
+
+	@Override
+	public void clear() {
+		grow(0, new Object[10]);
+		size = 0;
+	}
+	
+	
+	//TODO BIS HIER
 	/**
 	 * Get the HashKey from a Object with Max HashTableIndex and StepSize of
 	 * EntitySize
@@ -221,7 +240,6 @@ public class SimpleSmallList<V> implements SimpleInterface<V>{
 
 	protected void fireProperty(Object object, V newValue, V beforeElement,
 			Object object2) {
-		// TODO Auto-generated method stub
 	}
 
 	/**
@@ -302,16 +320,6 @@ public class SimpleSmallList<V> implements SimpleInterface<V>{
 		return index;
 	}
 
-	@Override
-	public int size() {
-		return size;
-	}
-	
-	
-	@Override
-	public boolean isEmpty() {
-        return size == 0;
-    }
 
 	@Override
 	public boolean contains(Object o) {
@@ -419,11 +427,6 @@ public class SimpleSmallList<V> implements SimpleInterface<V>{
 		return null;
 	}
 
-	@Override
-	public void clear() {
-		grow(0, new Object[10]);
-		size = 0;
-	}
 	
 	@Override
 	public boolean remove(Object o) {

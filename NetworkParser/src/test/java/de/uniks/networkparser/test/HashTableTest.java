@@ -29,7 +29,7 @@ public class HashTableTest
 		if(System.getProperty("count")!=null){
 			HashTableTest.COUNT = Integer.valueOf((String)System.getProperty("count"));
 		}else{
-			HashTableTest.COUNT = 1000;
+			HashTableTest.COUNT = 1000 * 1000;
 		}
 		for (int i = 0; i < COUNT; i++) {
 			items.add(new Person().withName("p" + i));
