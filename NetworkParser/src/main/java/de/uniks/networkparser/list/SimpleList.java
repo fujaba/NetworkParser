@@ -1,15 +1,17 @@
 package de.uniks.networkparser.list;
 
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+public class SimpleList<V> extends AbstractList implements List<V>{
 
-public class SortedList<V> extends AbstractList implements List<V>{
-	protected Comparator<V> cpr;
-
+	@Override
+	public boolean contains(Object o) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 	@Override
 	public Iterator<V> iterator() {
