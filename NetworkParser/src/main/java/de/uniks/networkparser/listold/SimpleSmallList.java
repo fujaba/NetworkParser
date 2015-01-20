@@ -160,8 +160,6 @@ public class SimpleSmallList<V> implements SimpleInterface<V>{
 		size = 0;
 	}
 	
-	
-	//TODO BIS HIER
 	/**
 	 * Get the HashKey from a Object with Max HashTableIndex and StepSize of
 	 * EntitySize
@@ -177,6 +175,9 @@ public class SimpleSmallList<V> implements SimpleInterface<V>{
 
 		return (tmp < 0) ? -tmp : tmp;
 	}
+	
+	//TODO BIS HIER
+
 	
 	/** @return the First Element of the List */
 	public V first() {
@@ -291,21 +292,6 @@ public class SimpleSmallList<V> implements SimpleInterface<V>{
 		return index;
 	}
 	
-	public int getPositionKey(Object o) {
-		if (o == null) {
-			return -1;
-		}
-		// search from the end as in models we frequently ask for elements that
-		// have just been added to the end
-		int pos = this.size() - 1;
-		for (ListIterator<V> i = iteratorReverse(); i.hasPrevious();) {
-			if (checkValue(i.previous(), o)) {
-				return pos;
-			}
-			pos--;
-		}
-		return -1;
-	}
 	
 	protected boolean checkValue(Object a, Object b) {
 		if(!isCaseSensitive()) {
