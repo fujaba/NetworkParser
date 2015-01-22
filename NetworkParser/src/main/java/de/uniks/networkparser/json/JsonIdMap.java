@@ -201,7 +201,7 @@ public class JsonIdMap extends IdMap {
 				SendableEntityCreator referenceCreator = getCreatorClass(value);
 				if (value instanceof Collection<?> && referenceCreator == null) {
 					// Simple List or Assocs
-					AbstractList<Object> subValues = getPrototyp()
+					AbstractArray<Object> subValues = getPrototyp()
 							.getNewArray();
 					// jsonArray.getNewArray();
 					for (Object containee : ((Collection<?>) value)) {
@@ -217,7 +217,7 @@ public class JsonIdMap extends IdMap {
 				} else if (value instanceof Map<?, ?>
 						&& referenceCreator == null) {
 					// Maps
-					AbstractList<Object> subValues = getPrototyp()
+					AbstractArray<Object> subValues = getPrototyp()
 							.getNewArray();
 					Map<?, ?> map = (Map<?, ?>) value;
 					String packageName = ObjectMapEntry.class.getName();

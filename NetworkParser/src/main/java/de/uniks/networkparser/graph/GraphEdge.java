@@ -115,7 +115,7 @@ public class GraphEdge extends AbstractEntityList<GraphNode> implements
 
 
 	@Override
-	public AbstractList<GraphNode> getNewInstance() {
+	public AbstractArray<GraphNode> getNewInstance() {
 		return new GraphEdge();
 	}
 

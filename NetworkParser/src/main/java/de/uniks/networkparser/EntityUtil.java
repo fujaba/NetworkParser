@@ -24,9 +24,11 @@ package de.uniks.networkparser;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 
 public class EntityUtil {
 	private static final String HEXVAL = "0123456789abcdef";
@@ -202,7 +204,7 @@ public class EntityUtil {
 			return ((StringItem) value).toString(indentFactor, intent);
 		}
 		if (value instanceof Map) {
-			BaseItem item = ((AbstractKeyValueList<?, ?>) reference
+			BaseItem item = ((SimpleKeyValueList<?, ?>) reference
 					.getNewArray()).with((Map<?, ?>) value);
 			if (item instanceof StringItem) {
 				return ((StringItem) item).toString(indentFactor, intent);
@@ -210,7 +212,7 @@ public class EntityUtil {
 			return ((StringItem) item).toString();
 		}
 		if (value instanceof Collection) {
-			AbstractList<?> item = reference.getNewArray().with(
+			AbstractArray<?> item = reference.getNewArray().with(
 					(Collection<?>) value);
 			if (item instanceof StringItem) {
 				return ((StringItem) item).toString(indentFactor, intent);
@@ -223,7 +225,7 @@ public class EntityUtil {
 			for (Object item : items) {
 				arrayList.add(item);
 			}
-			AbstractList<?> item = reference.getNewArray().with(arrayList);
+			AbstractArray<?> item = reference.getNewArray().with(arrayList);
 			if (item instanceof StringItem) {
 				return ((StringItem) item).toString(indentFactor, intent);
 			}
@@ -246,8 +248,8 @@ public class EntityUtil {
 		if (value instanceof Boolean) {
 			return value.toString();
 		}
-		if (value instanceof AbstractList) {
-			return ((AbstractList<?>) value).toString();
+		if (value instanceof AbstractArray) {
+			return ((AbstractArray<?>) value).toString();
 		}
 		if (value instanceof Map) {
 			return ((AbstractKeyValueList<?, ?>) reference.getNewArray()).with(
@@ -263,7 +265,7 @@ public class EntityUtil {
 			for (Object item : items) {
 				arrayList.add(item);
 			}
-			return ((AbstractList<?>) reference.getNewObject()).with(arrayList)
+			return ((AbstractArray<?>) reference.getNewObject()).with(arrayList)
 					.toString();
 		}
 		if (simpleText) {
@@ -292,7 +294,7 @@ public class EntityUtil {
 				return null;
 			}
 
-			if (object instanceof AbstractList || object instanceof Byte
+			if (object instanceof AbstractArray || object instanceof Byte
 					|| object instanceof Character || object instanceof Short
 					|| object instanceof Integer || object instanceof Long
 					|| object instanceof Boolean || object instanceof Float
@@ -301,11 +303,11 @@ public class EntityUtil {
 			}
 
 			if (object instanceof Collection) {
-				return ((AbstractList<?>) reference.getNewObject())
+				return ((AbstractArray<?>) reference.getNewObject())
 						.with((Collection<?>) object);
 			}
 			if (object.getClass().isArray()) {
-				return ((AbstractList<?>) reference.getNewObject())
+				return ((AbstractArray<?>) reference.getNewObject())
 						.with((Collection<?>) object);
 			}
 			if (object instanceof Map) {

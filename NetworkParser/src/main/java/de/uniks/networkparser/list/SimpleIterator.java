@@ -1,8 +1,11 @@
-package de.uniks.networkparser.listold;
+package de.uniks.networkparser.list;
 
+import java.util.Collection;
 import java.util.ConcurrentModificationException;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
+
 
 /**
  * An optimized version of AbstractList.ListItr
@@ -10,13 +13,13 @@ import java.util.NoSuchElementException;
 public class SimpleIterator<E> implements ListIterator<E> {
 	private int cursor;       // index of next element to return
 	private int lastRet = -1; // index of last element returned; -1 if no such
-	private SimpleInterface<E> list;
+	private AbstractList<E> list;
 
-	public SimpleIterator(SimpleInterface<E> list) {
+	public SimpleIterator(AbstractList<E> list) {
         this.list = list;
 	}
 	
-	public SimpleIterator(SimpleInterface<E> list, int index) {
+	public SimpleIterator(AbstractList<E> list, int index) {
         this.cursor = index;
         this.list = list;
 	}

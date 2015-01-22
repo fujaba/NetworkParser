@@ -193,7 +193,7 @@ public class ByteList extends AbstractEntityList<ByteItem> implements ByteItem,
 		return this;
 	}
 
-	public AbstractList<ByteItem> withValue(String value) {
+	public AbstractArray<ByteItem> withValue(String value) {
 		ByteConverterString converter = new ByteConverterString();
 		this.add(getNewObject().withValue(ByteIdMap.DATATYPE_FIXED,
 				converter.decode(value)));
@@ -201,7 +201,7 @@ public class ByteList extends AbstractEntityList<ByteItem> implements ByteItem,
 	}
 
 	@Override
-	public AbstractList<ByteItem> getNewInstance() {
+	public AbstractArray<ByteItem> getNewInstance() {
 		return new ByteList();
 	}
 

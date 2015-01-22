@@ -243,7 +243,7 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements
 	}
 
 	@Override
-	public AbstractList<?> getNewArray() {
+	public AbstractArray<?> getNewArray() {
 		return new XMLEntity();
 	}
 

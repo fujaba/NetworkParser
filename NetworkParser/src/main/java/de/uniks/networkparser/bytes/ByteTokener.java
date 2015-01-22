@@ -36,7 +36,7 @@ public class ByteTokener extends Tokener {
 	}
 
 	@Override
-	public void parseToEntity(AbstractList<?> entityList) {
+	public void parseToEntity(AbstractArray<?> entityList) {
 
 		// TODO Auto-generated method stub
 

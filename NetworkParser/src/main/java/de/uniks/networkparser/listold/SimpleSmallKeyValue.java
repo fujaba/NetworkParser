@@ -2,6 +2,8 @@ package de.uniks.networkparser.listold;
 
 import java.util.Map;
 
+import de.uniks.networkparser.listold.not.KeyValueMap;
+
 public class SimpleSmallKeyValue<K, V> extends SimpleSmallList<K> implements KeyValueMap<K, V> {
 	Object[] elementValue; // non-private to simplify nested class access
 	/**

@@ -36,7 +36,7 @@ public abstract class ItemList<E> extends AbstractEntityList<E> implements
 	}
 
 	@SuppressWarnings("unchecked")
-	public <ST extends AbstractList<E>> ST withReadonly(boolean readonly) {
+	public <ST extends AbstractArray<E>> ST withReadonly(boolean readonly) {
 		this.readonly = readonly;
 		return (ST) this;
 	}

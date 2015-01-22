@@ -49,7 +49,7 @@ public class PropertyChangeListenerList extends
 	}
 
 	@Override
-	public AbstractList<PropertyChangeListener> getNewInstance() {
+	public AbstractArray<PropertyChangeListener> getNewInstance() {
 		return new PropertyChangeListenerList();
 	}
 
