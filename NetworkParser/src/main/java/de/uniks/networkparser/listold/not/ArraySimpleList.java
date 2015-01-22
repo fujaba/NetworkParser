@@ -1,6 +1,7 @@
-package de.uniks.networkparser;
+package de.uniks.networkparser.listold.not;
 
-import java.util.Collection;
+import de.uniks.networkparser.listold.AbstractEntityList;
+import de.uniks.networkparser.listold.AbstractList;
 
 /*
  NetworkParser
@@ -25,17 +26,14 @@ import java.util.Collection;
  */
 
 public class ArraySimpleList<V> extends AbstractEntityList<V> {
-	public ArraySimpleList() {
-		
-	}
-
-	public ArraySimpleList(Collection<V> subList) {
-		this.addAll(subList);
+	@Override
+	public AbstractArray<V> getNewInstance() {
+		return new ArraySimpleList<V>();
 	}
 
 	@Override
-	public AbstractList<V> getNewInstance() {
-		return new ArraySimpleList<V>();
+	public boolean add(V e) {
+		return addEntity(e);
 	}
 
 	@Override

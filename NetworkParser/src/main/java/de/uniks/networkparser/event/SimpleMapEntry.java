@@ -21,9 +21,9 @@ package de.uniks.networkparser.event;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
  */
-import de.uniks.networkparser.AbstractEntity;
+import de.uniks.networkparser.list.SimpleEntity;
 
-public class SimpleMapEntry<K, V> extends AbstractEntity<K, V> {
+public class SimpleMapEntry<K, V> extends SimpleEntity<K, V> {
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new SimpleMapEntry<K, V>();

@@ -69,8 +69,8 @@ public class JsonTokener extends Tokener {
 		case '[':
 			if (creator instanceof FactoryEntity) {
 				BaseItem element = ((FactoryEntity) creator).getNewArray();
-				if (element instanceof AbstractList<?>) {
-					this.parseToEntity((AbstractList<?>) element);
+				if (element instanceof AbstractArray<?>) {
+					this.parseToEntity((AbstractArray<?>) element);
 				}
 				return element;
 			}
@@ -224,7 +224,7 @@ public class JsonTokener extends Tokener {
 	}
 
 	@Override
-	public void parseToEntity(AbstractList<?> entityList) {
+	public void parseToEntity(AbstractArray<?> entityList) {
 		char c = nextStartClean();
 		if (c != '[') {
 			if (logger.error(this, "parseToEntity",

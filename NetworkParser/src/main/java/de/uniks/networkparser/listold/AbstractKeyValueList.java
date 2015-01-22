@@ -31,26 +31,16 @@ import java.util.Set;
 
 import de.uniks.networkparser.event.SimpleMapEntry;
 import de.uniks.networkparser.interfaces.FactoryEntity;
+import de.uniks.networkparser.list.SimpleEntity;
 
-public abstract class AbstractKeyValueList<K, V> extends AbstractList<K>
+public abstract class AbstractKeyValueList<K, V> extends AbstractArray<K>
 		implements Map<K, V>, Iterable<K> {
+	protected ArrayList<V> values = new ArrayList<V>();
+	protected Object[] hashTableValues = null;
+	protected boolean allowEmptyValue=false;
 
 	public AbstractKeyValueList() {
-		this.items.withEntitySize(2);
-	}
-
-	public AbstractKeyValueList<K, V> withMap(Map<?, ?> map) {
-		if (map != null) {
-			for (Iterator<?> i = map.entrySet().iterator(); i.hasNext();) {
-				java.util.Map.Entry<?, ?> mapEntry = (Entry<?, ?>) i.next();
-				Object item = mapEntry.getValue();
-				Object key = mapEntry.getKey();
-				if (item != null) {
-					this.withValue(key, item);
-				}
-			}
-		}
-		return this;
+		this.entitySize = 2;
 	}
 
 	/**
@@ -67,7 +57,7 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K>
 	 */
 	@Override
 	public V put(K key, V value) {
-		if(!isAllowEmptyValue() && value == null) {
+		if(!allowEmptyValue && value == null) {
 			return null;
 		}
 		if (!isAllowDuplicate()) {
@@ -140,7 +130,7 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K>
 	}
 
 	@SuppressWarnings("unchecked")
-	protected boolean addEntity(AbstractEntity<?, ?> item) {
+	protected boolean addEntity(SimpleEntity<?, ?> item) {
 		return addEntity((K) item.getKey(), (V) item.getValue());
 	}
 
@@ -315,96 +305,7 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K>
 		return null;
 	}
 
-	public Object getValueItem(Object key) {
-		int pos = getIndex(key);
-		if (pos >= 0) {
-			return this.values.get(pos);
-		}
-		if (!(key instanceof String)) {
-			return null;
-		}
-		String keyString = "" + key;
-		int len = 0;
-		int end = 0;
-		int id = 0;
-		for (; len < keyString.length(); len++) {
-			char temp = keyString.charAt(len);
-			if (temp == '[') {
-				for (end = len + 1; end < keyString.length(); end++) {
-					temp = keyString.charAt(end);
-					if (keyString.charAt(end) == ']') {
-						end++;
-						break;
-					} else if (temp > 47 && temp < 58 && id >= 0) {
-						id = id * 10 + temp - 48;
-					} else if (temp == 'L') {
-						id = -2;
-					}
-				}
-				if (end == keyString.length()) {
-					end = 0;
-				}
-				break;
-			} else if (temp == '.') {
-				end = len;
-				id = -1;
-				break;
-			}
-		}
-		if (end == 0 && len == keyString.length()) {
-			id = -1;
-		}
 
-		Object child = get(keyString.substring(0, len));
-		if (child != null) {
-			if (end == 0) {
-				if (id >= 0 || id == -2) {
-					if (child instanceof AbstractList<?>) {
-						AbstractList<?> list = (AbstractList<?>) child;
-						if (id == -2) {
-							id = list.size() - 1;
-						}
-						if (list.size() >= id) {
-							return list.get(id);
-						}
-					}
-				} else {
-					return child;
-				}
-			} else {
-				if (id >= 0 || id == -2) {
-					if (child instanceof AbstractList) {
-						if (end == len + 2) {
-							// Get List
-							if (this instanceof FactoryEntity) {
-								AbstractList<?> result = (AbstractList<?>) ((FactoryEntity) this)
-										.getNewArray();
-								AbstractList<?> items = (AbstractList<?>) child;
-								for (int z = 0; z < items.size(); z++) {
-									result.with(((AbstractKeyValueList<?, ?>) items
-											.get(z)).getValueItem(keyString
-											.substring(end + 1)));
-								}
-								return result;
-							}
-						}
-						AbstractList<?> list = (AbstractList<?>) child;
-						if (id == -2) {
-							id = list.size() - 1;
-						}
-						if (list.size() >= id) {
-							return ((AbstractKeyValueList<?, ?>) list.get(id))
-									.getValueItem(keyString.substring(end + 1));
-						}
-					}
-				} else {
-					return ((AbstractKeyValueList<?, ?>) child)
-							.getValueItem(keyString.substring(end + 1));
-				}
-			}
-		}
-		return null;
-	}
 
 	/**
 	 * Set a Value to Entity With this Method it is possible to set a Value of a
@@ -468,8 +369,8 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K>
 		if (child != null) {
 			if (end == 0) {
 				if (id >= 0 || id == -2) {
-					if (child instanceof AbstractList) {
-						AbstractList<Object> list = (AbstractList<Object>) child;
+					if (child instanceof AbstractArray) {
+						AbstractArray<Object> list = (AbstractArray<Object>) child;
 						if (id == -2) {
 							id = list.size() - 1;
 						}
@@ -490,8 +391,8 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K>
 				}
 			} else {
 				if (id >= 0 || id == -2) {
-					if (child instanceof AbstractList) {
-						AbstractList<?> list = (AbstractList<?>) child;
+					if (child instanceof AbstractArray) {
+						AbstractArray<?> list = (AbstractArray<?>) child;
 						if (id == -2) {
 							id = list.size() - 1;
 						}
@@ -664,8 +565,8 @@ public abstract class AbstractKeyValueList<K, V> extends AbstractList<K>
 		return -1;
 	}
 	
-	public AbstractKeyValueList<K, V> withAllowEmpty(Boolean value) {
-		this.items.withAllowEmptyValue(value);
+	public AbstractKeyValueList<K, V> withAllowEmpty(Boolean fullSeriation) {
+		this.allowEmptyValue = true;
 		return this;
 	}
 }

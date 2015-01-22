@@ -23,7 +23,6 @@ package de.uniks.networkparser.json;
  */
 import java.util.Map;
 
-import de.uniks.networkparser.AbstractEntity;
 import de.uniks.networkparser.AbstractKeyValueList;
 import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.EntityUtil;
@@ -32,6 +31,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
+import de.uniks.networkparser.list.SimpleEntity;
 
 /* Copyright (c) 2002 JSON.org */
 
@@ -351,8 +351,8 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements
 			return this;
 		}
 		for (Object value : values) {
-			if (value instanceof AbstractEntity<?, ?>) {
-				AbstractEntity<?, ?> item = (AbstractEntity<?, ?>) value;
+			if (value instanceof SimpleEntity<?, ?>) {
+				SimpleEntity<?, ?> item = (SimpleEntity<?, ?>) value;
 				this.put(item.getKeyString(), item.getValue());
 			} else if (value instanceof Map<?, ?>) {
 				this.withMap((Map<?, ?>) value);
@@ -382,10 +382,10 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements
 		Object object = this.get(key);
 		if (object == null) {
 			this.put(key,
-					value instanceof AbstractList ? getNewArray().with(value)
+					value instanceof AbstractArray ? getNewArray().with(value)
 							: value);
-		} else if (object instanceof AbstractList) {
-			((AbstractList<?>) object).with(value);
+		} else if (object instanceof AbstractArray) {
+			((AbstractArray<?>) object).with(value);
 		} else {
 			this.put(key, getNewArray().with(object, value));
 		}

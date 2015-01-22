@@ -23,7 +23,7 @@ package de.uniks.networkparser.graph;
 
 import de.uniks.networkparser.AbstractList;
 
-public class GraphMethod extends AbstractList<GraphParameter> implements GraphMember {
+public class GraphMethod extends AbstractArray<GraphParameter> implements GraphMember {
 	public static final String PROPERTY_RETURNTYPE = "returnType";
 	public static final String PROPERTY_PARAMETER = "parameter";
 	public static final String PROPERTY_NODE = "node";
