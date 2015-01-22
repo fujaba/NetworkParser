@@ -70,8 +70,8 @@ public class XMLTokener extends Tokener {
 				BaseItem element = ((FactoryEntity) creator).getNewObject();
 				if (element instanceof AbstractKeyValueList<?, ?>) {
 					parseToEntity((AbstractKeyValueList<?, ?>) element);
-				} else if (element instanceof AbstractList<?>) {
-					parseToEntity((AbstractList<?>) element);
+				} else if (element instanceof AbstractArray<?>) {
+					parseToEntity((AbstractArray<?>) element);
 				}
 				return element;
 			}
@@ -186,7 +186,7 @@ public class XMLTokener extends Tokener {
 	}
 
 	@Override
-	public void parseToEntity(AbstractList<?> entityList) {
+	public void parseToEntity(AbstractArray<?> entityList) {
 		// Do Nothing
 	}
 

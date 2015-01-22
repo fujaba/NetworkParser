@@ -180,7 +180,7 @@ public class BitEntity extends AbstractEntityList<BitValue> implements
 	}
 
 	@Override
-	public AbstractList<BitValue> getNewInstance() {
+	public AbstractArray<BitValue> getNewInstance() {
 		return new BitEntity();
 	}
 

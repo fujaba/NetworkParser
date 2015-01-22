@@ -24,7 +24,11 @@ package de.uniks.networkparser;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map.Entry;
+
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.listold.ArrayEntityList;
 
 /**
  * AbstractIdMap embedded all methods for all formats.
@@ -33,7 +37,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 	/** The creators. */
-	protected ArrayEntityList<String, SendableEntityCreator> creators = new ArrayEntityList<String, SendableEntityCreator>()
+	protected SimpleKeyValueList<String, SendableEntityCreator> creators = new SimpleKeyValueList<String, SendableEntityCreator>()
 			.withAllowDuplicate(false);
 
 	/**

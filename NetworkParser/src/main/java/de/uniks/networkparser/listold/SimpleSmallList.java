@@ -6,179 +6,12 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.ListIterator;
 
+import de.uniks.networkparser.list.SimpleIterator;
+import de.uniks.networkparser.listold.not.SimpleInterface;
 import de.uniks.networkparser.sort.EntityComparator;
 import de.uniks.networkparser.sort.SortingDirection;
 
 public class SimpleSmallList<V> implements SimpleInterface<V>{
-	// FOR EXTENDS ARRAYLIST
-	public static final float MAXUSEDLIST = 0.7f;
-	public static final byte ALLOWDUPLICATE=0x04;
-	public static final byte ALLOWEMPTYVALUE=0x08;
-	public static final byte VISIBLE=0x10;
-	public static final byte CASESENSITIVE =0x20;
-	public static final float MINUSEDLIST = 0.2f;
-	protected Comparator<V> cpr;
-	protected byte flag=1; // SIZE
-	/**
-     * The array buffer into which the elements of the ArrayList are stored.
-     * The capacity of the ArrayList is the length of this array buffer. Any
-     * empty ArrayList with elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA
-     * will be expanded to DEFAULT_CAPACITY when the first element is added.
-     */
-	Object[] elementKey; // non-private to simplify nested class access
-    /** The size of the ArrayList (the number of elements it contains).  */
-    private int size;
-	
-	/** Standard Constructor */
-    public SimpleSmallList(){}
-
-    /** Constructor with list*/
-    public SimpleSmallList(Collection<V> list){
-    	for(Iterator<V> i = list.iterator();i.hasNext();) {
-    		this.add(i.next());
-    	}
-    	if(list instanceof SimpleSmallList<?>){
-    		this.flag = ((SimpleSmallList<?>)list).getFlag();
-    	}
-    }
-	
-    public int minSize(){
-    	return 0;
-    }
-
-	public int entitySize() {
-		return flag & 0x03;
-	}
-	
-	public SimpleSmallList<V> withEntitySize(int size) {
-		flag = (byte) (flag - (flag & 0x03) + size);
-		return this;
-	}
-	
-	public byte getFlag(){
-		return flag;
-	}
-	
-	public int calcNewSize(int listSize) {
-		return listSize * entitySize() * 2;
-	}
-	
-	
-	public int usedSize(){
-		return size() * (flag & 0x03);
-	}
-	
-	/**
-	 * @return the SIze of Array
-	 */
-	public int realSize() {
-		return elementKey.length;
-	}
-	/**
-	 * Is Allow Duplicate Entity in the List
-	 *
-	 * @return boolean if the List allow duplicate Entities
-	 */
-	public boolean isAllowEmptyValue() {
-		return (flag & ALLOWEMPTYVALUE)==ALLOWEMPTYVALUE;
-	}
-
-	public SimpleSmallList<V> withAllowEmptyValue(boolean value) {
-		this.flag = (byte) (this.flag | ALLOWEMPTYVALUE);
-		if(!value) {
-			this.flag -= ALLOWEMPTYVALUE;
-		}
-		return this;
-	}
-
-	/**
-	 * Is Visible Entity 
-	 *
-	 * @return boolean if the List is Visible
-	 */
-	public boolean isVisible() {
-		return (flag & VISIBLE)==VISIBLE;
-	}
-
-	public SimpleSmallList<V> withVisible(boolean value) {
-		this.flag = (byte) (this.flag | VISIBLE);
-		if(!value) {
-			this.flag -= VISIBLE;
-		}
-		return this;
-	}
-
-	/**
-	 * Is Item is CaseSensitive 
-	 *
-	 * @return boolean if the List is CaseSentive
-	 */
-	public boolean isCaseSensitive() {
-		return (flag & CASESENSITIVE)==CASESENSITIVE;
-	}
-
-	public SimpleSmallList<V> withCaseSensitive(boolean value) {
-		this.flag = (byte) (this.flag | CASESENSITIVE);
-		if(!value) {
-			this.flag -= CASESENSITIVE;
-		}
-		return this;
-	}
-	
-	/**
-	 * Is Allow Duplicate Entity in the List
-	 *
-	 * @return boolean if the List allow duplicate Entities
-	 */
-	public boolean isAllowDuplicate() {
-		return (flag & ALLOWDUPLICATE)==ALLOWDUPLICATE;
-	}
-
-	public SimpleSmallList<V> withAllowDuplicate(
-			boolean allowDuplicate) {
-		this.flag = (byte) (this.flag | ALLOWDUPLICATE);
-		if(!allowDuplicate) {
-			this.flag -= ALLOWDUPLICATE;
-		}
-		return this;
-	}
-
-	@Override
-	public int size() {
-		return size;
-	}
-	
-	
-	@Override
-	public boolean isEmpty() {
-        return size == 0;
-    }
-
-	@Override
-	public void clear() {
-		grow(0, new Object[10]);
-		size = 0;
-	}
-	
-	/**
-	 * Get the HashKey from a Object with Max HashTableIndex and StepSize of
-	 * EntitySize
-	 *
-	 * @param hashKey
-	 *            the hashKey of a Object
-	 * @param len
-	 *            the max Length of all Hashvalues
-	 * @return the hasKey
-	 */
-	protected int hashKey(int hashKey, int len) {
-		int tmp = (hashKey + hashKey % entitySize()) % len;
-
-		return (tmp < 0) ? -tmp : tmp;
-	}
-	
-	//TODO BIS HIER
-
-	
 	/** @return the First Element of the List */
 	public V first() {
 		if (this.size() > 0) {
@@ -260,29 +93,6 @@ public class SimpleSmallList<V> implements SimpleInterface<V>{
 		return pos;
 	}
 	
-	public Comparator<V> comparator() {
-		if (this.cpr == null) {
-			withComparator(new EntityComparator<V>().withColumn(
-					EntityComparator.LIST).withDirection(SortingDirection.ASC));
-		}
-		return cpr;
-	}
-	
-	public boolean isComparator() {
-		return (this.cpr != null);
-	}
-
-	public SimpleSmallList<V> withComparator(Comparator<V> comparator) {
-		this.cpr = comparator;
-		return this;
-	}
-
-	public SimpleSmallList<V> withComparator(String column) {
-		this.cpr = new EntityComparator<V>().withColumn(column).withDirection(
-				SortingDirection.ASC);
-		return this;
-	}
-
 	public int removeItemByObject(Object key) {
 		int index = getPositionKey(key);
 		if (index < 0) {
@@ -293,25 +103,11 @@ public class SimpleSmallList<V> implements SimpleInterface<V>{
 	}
 	
 	
-	protected boolean checkValue(Object a, Object b) {
-		if(!isCaseSensitive()) {
-			if (a instanceof String && b instanceof String ) {
-				return ((String)a).equalsIgnoreCase((String)b);
-			}
-		}
-		return a.equals(b);
-	}
-	
 	public int transformIndex(int index, Object value) {
 		return index;
 	}
 
 
-	@Override
-	public boolean contains(Object o) {
-        return indexOf(o) >= 0;
-	}
-	
     /**
      * Returns the index of the first occurrence of the specified element
      * in this list, or -1 if this list does not contain the element.
@@ -372,18 +168,6 @@ public class SimpleSmallList<V> implements SimpleInterface<V>{
 		return new SimpleIterator<V>(this, size());
 	}
 	
-	@Override
-	public Object[] toArray() {
-        return Arrays.copyOf(elementKey, elementKey.length);
-	}
-	
-	@Override
-	public boolean add(V e) {
-		grow(size, elementKey);
-		elementKey[size++] = e;
-		return true;
-	}
-	
 	private Object grow(int minCapacity, Object[] elements) {
 		Object[] result;
 		if(minCapacity > elements.length * SimpleSmallList.MAXUSEDLIST) {
@@ -437,32 +221,6 @@ public class SimpleSmallList<V> implements SimpleInterface<V>{
 				return false;
 		return true;
 	}
-	
-    /**
-     * {@inheritDoc}
-     *
-     * <p>This implementation iterates over the specified collection, and adds
-     * each object returned by the iterator to this collection, in turn.
-     *
-     * <p>Note that this implementation will throw an
-     * <tt>UnsupportedOperationException</tt> unless <tt>add</tt> is
-     * overridden (assuming the specified collection is non-empty).
-     *
-     * @throws UnsupportedOperationException {@inheritDoc}
-     * @throws ClassCastException            {@inheritDoc}
-     * @throws NullPointerException          {@inheritDoc}
-     * @throws IllegalArgumentException      {@inheritDoc}
-     * @throws IllegalStateException         {@inheritDoc}
-     *
-     * @see #add(Object)
-     */
-    public boolean addAll(Collection<? extends V> c) {
-        boolean modified = false;
-        for (V e : c)
-            if (add(e))
-                modified = true;
-        return modified;
-    }
 	
     /**
      * {@inheritDoc}

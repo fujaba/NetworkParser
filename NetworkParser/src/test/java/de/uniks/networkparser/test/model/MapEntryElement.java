@@ -2,7 +2,7 @@ package de.uniks.networkparser.test.model;
 
 import java.util.HashMap;
 
-import de.uniks.networkparser.AbstractEntity;
+import de.uniks.networkparser.list.SimpleEntity;
 
 public class MapEntryElement {
 	public static final String PROPERTY_VALUE="value";
@@ -35,8 +35,8 @@ public class MapEntryElement {
 		if (PROPERTY_VALUE.equalsIgnoreCase(attrName)) {
 			if(value instanceof HashMap<?, ?>){
 				setValue((HashMap<String, Object>) value);	
-			} else if(value instanceof AbstractEntity){
-				AbstractEntity<?,?> item=(AbstractEntity<?,?>) value;
+			} else if(value instanceof SimpleEntity){
+				SimpleEntity<?,?> item=(SimpleEntity<?,?>) value;
 				addToValue((String) item.getKey(), item.getValue());
 			}
 			return true;

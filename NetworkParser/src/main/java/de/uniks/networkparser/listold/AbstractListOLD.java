@@ -1,4 +1,4 @@
-package de.uniks.networkparser;
+package de.uniks.networkparser.listold;
 
 /*
  NetworkParser
@@ -21,61 +21,64 @@ package de.uniks.networkparser;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
  */
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.listold.SimpleBigList;
-import de.uniks.networkparser.listold.SimpleSmallList;
 
 /**
  * The Class EntityList.
  */
 
-public abstract class AbstractList<V> implements BaseItem {
-	protected SimpleSmallList<V> items;
+public abstract class AbstractListOLD<V> implements BaseItem {
+	protected void hashTableAddKey(Object newValue, int pos) {
+		this.hashTableKeys = hashTableAdd(this.hashTableKeys, this.keys,
+				newValue, pos);
+	}
 
-	protected void newBigList(){
-		this.items = new SimpleBigList<V>(items);
-	}
-	
-	protected void newSmallList(){
-		this.items = new SimpleSmallList<V>(items);
-	}
-	
-	protected void resize() {
-		// if no Items is Set
-		if(items == null) {
-			newSmallList();
-			return;
-		}
+	protected Object[] hashTableAdd(Object[] hashTable, List<?> items,
+			Object newValue, int pos) {
 		// EnsureCapacity
-		if(items.usedSize()>=SimpleBigList.MINHASHINGSIZE && items.minSize()==0){
-			// It is a small List must be copy to new one
-			newBigList();
-			return;
+		if (hashTable == null) {
+			if (items.size() * entitySize <= hashTableStartHashingThreshold) {
+				return null;
+			}
+			return hashAdd(
+					hashTableResize(hashTableStartHashingThreshold * entitySize
+							* 3, items), newValue, pos);
 		}
-		if (items.usedSize() > items.realSize() * SimpleSmallList.MAXUSEDLIST) {
+		if (items.size() * entitySize < hashTableStartHashingThreshold / 10) {
+			return null;
+		}
+		if (items.size() * entitySize > hashTable.length
+				* hashTableLoadThreshold) {
 			// double hashTable size
-			if(items.calcNewSize(items.size()) > SimpleBigList.MINHASHINGSIZE ){
-				newBigList();
-			}else{
-				newSmallList();
-			}
-			return;
+			return hashAdd(hashTableResize(hashTable.length * 2, items),
+					newValue, pos);
 		}
-		
-		if (items.usedSize() < items.realSize() * SimpleSmallList.MINUSEDLIST) {
+
+		if (items.size() * entitySize < hashTable.length / 20) {
 			// shrink hashTable size to a loadThreshold of 33%
-			if(items.calcNewSize(items.size()) > SimpleBigList.MINHASHINGSIZE ){
-				newBigList();
-			}else{
-				newSmallList();
+			return hashAdd(
+					hashTableResize(items.size() * entitySize * 3, items),
+					newValue, pos);
+		}
+		return hashAdd(hashTable, newValue, pos);
+	}
+
+	protected Object[] hashAdd(Object[] hashTable, Object newValue, int pos) {
+		int hashKey = hashKey(newValue.hashCode(), hashTable.length);
+		while (true) {
+			Object oldEntry = hashTable[hashKey];
+			if (oldEntry == null) {
+				hashTable[hashKey] = newValue;
+				if (entitySize == 2) {
+					hashTable[hashKey + 1] = pos;
+				}
+				return hashTable;
 			}
-			return;
+
+			if (oldEntry.equals(newValue))
+				return hashTable;
+
+			hashKey = (hashKey + entitySize) % hashTable.length;
 		}
 	}
 
@@ -89,32 +92,64 @@ public abstract class AbstractList<V> implements BaseItem {
 	 *             If there is no value for the index.
 	 */
 	public V get(int index) throws RuntimeException {
-		if(items==null){
-			return null;
-		}
-		V object = this.items.get(index);
+		V object = this.keys.get(index);
 		if (object == null) {
 			throw new RuntimeException("EntityList[" + index + "] not found.");
 		}
 		return object;
 	}
 
-	public abstract AbstractList<V> getNewInstance();
-
-	public boolean add(V element) {
-		resize();
-		return items.add(element);
+	public void copyEntity(AbstractArray<V> target, int pos) {
+		target.addEntity(get(pos));
 	}
-	
-	public AbstractList<V> subSetItems(V fromElement, V toElement) {
-		AbstractList<V> newList = getNewInstance();
+
+	protected boolean addEntity(V newValue) {
+		if (newValue == null)
+			return false;
+		if (cpr != null) {
+			for (int i = 0; i < size(); i++) {
+				int result = comparator().compare(get(i), newValue);
+				if (result >= 0) {
+					if (!isAllowDuplicate() && get(i) == newValue) {
+						return false;
+					}
+					addKey(i, newValue);
+					V beforeElement = null;
+					if (i > 0) {
+						beforeElement = this.keys.get(i - 1);
+					}
+					fireProperty(null, newValue, beforeElement, null);
+					return true;
+				}
+			}
+		}
+
+		if (!isAllowDuplicate()) {
+			if (this.contains(newValue)) {
+				return false;
+			}
+		}
+
+		if (addKey(-1, newValue) >= 0) {
+			V beforeElement = null;
+			if (size() > 1) {
+				beforeElement = this.keys.get(size() - 1);
+			}
+			fireProperty(null, newValue, beforeElement, null);
+			return true;
+		}
+		return false;
+	}
+
+	public AbstractArray<V> subSet(V fromElement, V toElement) {
+		AbstractArray<V> newList = getNewInstance();
 
 		// PRE WHILE
 		int pos = 0;
 		int size = size();
 		while (pos < size) {
 			if (comparator().compare(get(pos), fromElement) >= 0) {
-				newList.add(get(pos));
+				copyEntity(newList, pos);
 				break;
 			}
 			pos++;
@@ -125,7 +160,7 @@ public abstract class AbstractList<V> implements BaseItem {
 			if (comparator().compare(get(pos), toElement) >= 0) {
 				break;
 			}
-			newList.add(get(pos++));
+			copyEntity(newList, pos++);
 		}
 		return newList;
 	}
@@ -151,10 +186,7 @@ public abstract class AbstractList<V> implements BaseItem {
 	 * @return a view of the specified range within this list
 	 */
 	public List<V> subList(int fromIndex, int toIndex) {
-		if(items==null){
-			return new ArraySimpleList<V>();
-		}
-		return new ArraySimpleList<V>(this.items.subList(fromIndex, toIndex));
+		return this.keys.subList(fromIndex, toIndex);
 	}
 
 	/**
@@ -176,19 +208,19 @@ public abstract class AbstractList<V> implements BaseItem {
 	 * @return result a list with less item then the key
 	 *
 	 */
-	public AbstractList<V> headSet(V toElement, boolean inclusive) {
-		AbstractList<V> newList = getNewInstance();
+	public AbstractArray<V> headSet(V toElement, boolean inclusive) {
+		AbstractArray<V> newList = getNewInstance();
 
 		// MUST COPY
 		for (int pos = 0; pos < size(); pos++) {
 			int compare = comparator().compare(get(pos), toElement);
 			if (compare == 0) {
 				if (inclusive) {
-					newList.add(get(pos));
+					copyEntity(newList, pos);
 				}
 				break;
 			} else if (compare > 0) {
-				newList.add(get(pos));
+				copyEntity(newList, pos);
 				break;
 			}
 		}
@@ -208,8 +240,8 @@ public abstract class AbstractList<V> implements BaseItem {
 	 *         equal to, if {@code inclusive} is true) {@code fromKey}
 	 *
 	 */
-	public AbstractList<V> tailSet(V fromElement, boolean inclusive) {
-		AbstractList<V> newList = getNewInstance();
+	public AbstractArray<V> tailSet(V fromElement, boolean inclusive) {
+		AbstractArray<V> newList = getNewInstance();
 
 		// PRE WHILE
 		int pos = 0;
@@ -217,38 +249,42 @@ public abstract class AbstractList<V> implements BaseItem {
 			int compare = comparator().compare(get(pos), fromElement);
 			if (compare == 0) {
 				if (inclusive) {
-					newList.add(get(pos));
+					copyEntity(newList, pos);
 				}
 				break;
 			} else if (compare > 0) {
-				newList.add(get(pos));
+				copyEntity(newList, pos);
 				break;
 			}
 		}
 
 		// MUST COPY
 		while (pos < size()) {
-			newList.add(get(pos++));
+			copyEntity(newList, pos++);
 		}
 		return newList;
 	}
-	
-	/** @return the First Element of the List */
+
+	/**
+	 * @return the First Element of the List
+	 */
 	public V first() {
-		if(items==null){
-			return null;
+		if (this.keys.size() > 0) {
+			return this.keys.get(0);
 		}
-		return this.items.first();
+		return null;
 	}
 
-	/** @return the Last Element of the List */
+	/**
+	 * @return the Last Element of the List
+	 */
 	public V last() {
-		if(items==null){
-			return null;
+		if (this.keys.size() > 0) {
+			return this.keys.get(this.size() - 1);
 		}
-		return this.items.last();
-	}
 
+		return null;
+	}
 
 	/**
 	 * @param index
@@ -256,10 +292,10 @@ public abstract class AbstractList<V> implements BaseItem {
 	 * @return the entity
 	 */
 	public Object getKey(int index) {
-		if (index < 0 || this.items == null || index > this.items.size()) {
+		if (index < 0 || index > this.keys.size()) {
 			return null;
 		}
-		return this.items.get(index);
+		return this.keys.get(index);
 	}
 
 	/**
@@ -377,7 +413,7 @@ public abstract class AbstractList<V> implements BaseItem {
 	 *
 	 * @param index
 	 *            The subscript.
-	 * @param value
+	 * @param key
 	 *            The value to put into the array. The value should be a
 	 *            Boolean, Double, Integer, EntityList, Entity, Long, or String
 	 *            object.
@@ -386,59 +422,28 @@ public abstract class AbstractList<V> implements BaseItem {
 	 *             If the index is negative or if the the value is an invalid
 	 *             number.
 	 */
-	public AbstractList<V> put(int index, V value) throws RuntimeException {
+	public AbstractArray<V> put(int index, V key) throws RuntimeException {
 		if (index < 0) {
 			throw new RuntimeException("EntityList[" + index + "] not found.");
 		}
 		if (index < size()) {
+
 			V oldValue = null;
 			if (index > 0) {
-				resize();
-				oldValue = this.items.get(index - 1);
-				int position = items.getPositionKey(oldValue);
+				oldValue = this.keys.get(index - 1);
+				int position = getPositionKey(oldValue);
 				if (position >= 0) {
 					// Replace in List
-					this.items.set(position, value);
+					this.hashTableKeys[position] = key;
 				}
 			}
+			// Replace old Vlaue
+			this.keys.set(index, key);
+			fireProperty(oldValue, key, null, null);
 		} else {
-			add(value);
+			addEntity(key);
 		}
 		return this;
-	}
-
-	/**
-	 * Is Allow Duplicate Entity in the List
-	 *
-	 * @return boolean if the List allow duplicate Entities
-	 */
-	public boolean isAllowDuplicate() {
-		if(items == null) {
-			return false;
-		}
-		return this.items.isAllowDuplicate();
-	}
-	
-	/**
-	 * Is Allow Duplicate Entity in the List
-	 *
-	 * @return boolean if the List allow duplicate Entities
-	 */
-	public boolean isAllowEmptyValue() {
-		if(items == null) {
-			return false;
-		}
-		return this.items.isAllowEmptyValue();
-	}
-
-	@SuppressWarnings("unchecked")
-	public <ST extends AbstractList<V>> ST withAllowDuplicate(
-			boolean allowDuplicate) {
-		if(items == null){
-			return (ST) this;
-		}
-		this.items.withAllowDuplicate(allowDuplicate);
-		return (ST) this;
 	}
 
 	/**
@@ -454,18 +459,107 @@ public abstract class AbstractList<V> implements BaseItem {
 	}
 
 	protected V removeItemByIndex(int index) {
-		if (index < 0 || items == null) {
+		if (index < 0) {
 			return null;
 		}
-		return items.removeByIndex(index);
+		V oldValue = get(index);
+		V beforeValue = null;
+		if (index > 0) {
+			beforeValue = get(index - 1);
+		}
+		listRemove(index);
+		hashTableRemove(oldValue);
+		fireProperty(oldValue, null, beforeValue, null);
+
+		return oldValue;
 	}
 
-	
-	public int removeItemByObject(Object key) {
-		if(items==null){
-			return -1;
+	protected void listRemove(int index) {
+		this.keys.remove(index);
+	}
+
+	protected Object[] hashTableResize(int size, List<?> keys) {
+		Object[] items = new Object[size];
+		for (int i = 0; i < keys.size(); i++) {
+			hashAdd(items, keys.get(i), i);
 		}
-		return items.removeItemByObject(key);
+		return items;
+	}
+
+	protected int removeItemByObject(Object key) {
+		int index;
+		if (this.hashTableKeys != null) {
+			if (entitySize == 1) {
+				// change hashTable to Object with ids
+				this.entitySize = 2;
+				this.hashTableKeys = hashTableResize(
+						this.hashTableKeys.length * 2, keys);
+			}
+			index = getPositionKey(key);
+			if (index < 0) {
+				return -1;
+			}
+			index = (int) this.hashTableKeys[index + 1];
+			int diff = index;
+			if (index > this.keys.size()) {
+				diff = this.keys.size() - 1;
+			}
+			while (this.keys.get(diff) != key) {
+				diff--;
+			}
+			if (index - diff > 1000) {
+				removeItemByIndex(diff);
+				this.hashTableKeys = hashTableResize(this.hashTableKeys.length,
+						keys);
+				return diff;
+			}
+			index = diff;
+		} else {
+			index = getPositionKey(key);
+			if (index < 0) {
+				return -1;
+			}
+		}
+		removeItemByIndex(index);
+		return index;
+
+	}
+
+	private void hashTableRemove(V oldValue) {
+		if (hashTableKeys == null)
+			return;
+
+		int hashKey = hashKey(oldValue.hashCode(), hashTableKeys.length);
+
+		while (true) {
+			Object oldEntry = hashTableKeys[hashKey];
+			if (oldEntry == null)
+				return;
+			if (oldEntry.equals(oldValue)) {
+				int gapIndex = hashKey;
+				int lastIndex = gapIndex;
+
+				// search later element to put in this gap
+				while (true) {
+					hashKey = (hashKey + entitySize) % hashTableKeys.length;
+					oldEntry = hashTableKeys[hashKey];
+					if (oldEntry == null) {
+						hashTableKeys[gapIndex] = hashTableKeys[lastIndex];
+						hashTableKeys[lastIndex] = null;
+						if (entitySize == 2) {
+							hashTableKeys[gapIndex + 1] = hashTableKeys[lastIndex + 1];
+							hashTableKeys[lastIndex + 1] = null;
+						}
+						return;
+					}
+
+					if (hashKey(oldEntry.hashCode(), hashTableKeys.length) <= gapIndex) {
+						lastIndex = hashKey;
+					}
+				}
+			}
+			hashKey = (hashKey + entitySize) % hashTableKeys.length;
+		}
 	}
 
 	/**
@@ -476,63 +570,108 @@ public abstract class AbstractList<V> implements BaseItem {
 	 * @return the position of the Entity or -1
 	 */
 	public int getIndex(Object key) {
-		if(items == null){
-			return -1;
-		}
-		return items.transformIndex(items.getPositionKey(key), key);
+		return transformIndex(getPositionKey(key), key, this.hashTableKeys,
+				this.keys);
 	}
-	
+
 	public V getByObject(Object key) {
 		int index = getIndex(key);
-		if(index<0) {
+		if (index < 0) {
 			return null;
 		}
 		return get(index);
 	}
 
-	public AbstractList<V> withCopyList(SimpleSmallList<V> reference) {
-		this.items = reference;
+	/**
+	 * Transform a Value to the real Index of List.
+	 *
+	 * @param index
+	 *            The Index for search
+	 * @param value
+	 *            Value for search
+	 * @param array
+	 *            The Array of Items
+	 * @param list
+	 *            The List
+	 * @return The Index of Key
+	 */
+	protected int transformIndex(int index, Object value, Object[] array,
+			List<?> list) {
+		if (array != null && index >= 0) {
+			if (this.entitySize == 2) {
+				index = (int) array[index + 1];
+				if (index >= list.size()) {
+					index = list.size() - 1;
+				}
+				while (!value.equals(list.get(index))) {
+					index--;
+				}
+				return index;
+			}
+		}
+		return index;
+	}
+
+	public AbstractArray<V> withCopyList(List<V> reference) {
+		this.keys = reference;
 		return this;
 	}
 
+	public int getPositionKey(Object o) {
+		if (o == null) {
+			return -1;
+		}
+		if (this.hashTableKeys != null) {
+			int hashKey = hashKey(o.hashCode(), hashTableKeys.length);
+			while (true) {
+				Object value = hashTableKeys[hashKey];
+				if (value == null)
+					return -1;
+				if (checkValue(value, o))
+					return hashKey;
+				hashKey = (hashKey + entitySize) % hashTableKeys.length;
+			}
+		}
+
+		// search from the end as in models we frequently ask for elements that
+		// have just been added to the end
+		int pos = this.keys.size() - 1;
+		for (ListIterator<V> i = listIteratorReverseL(); i.hasPrevious();) {
+			if (checkValue(i.previous(), o)) {
+				return pos;
+			}
+			pos--;
+		}
+		return -1;
+	}
+
+	protected boolean checkValue(Object a, Object b) {
+		return a.equals(b);
+	}
+
 	/**
-	 * If the List is Empty
+	 * Get the HashKey from a Object with Max HashTableIndex and StepSize of
+	 * EntitySize
 	 *
-	 * @return boolean of size
+	 * @param hashKey
+	 *            the hashKey of a Object
+	 * @param len
+	 *            the max Length of all Hashvalues
+	 * @return the hasKey
 	 */
-	public boolean isEmpty() {
-		if(items == null) {
-			return true;
-		}
-		return items.isEmpty();
+	protected int hashKey(int hashKey, int len) {
+		int tmp = (hashKey + hashKey % entitySize) % len;
+
+		return (tmp < 0) ? -tmp : tmp;
 	}
 
-	public boolean contains(Object o) {
-		if(items == null) {
-			return false;
-		}
-		return items.getPositionKey(o) >= 0;
-	}
-	
 	public Iterator<V> iterator() {
-		if(items == null) {
-			return null;
-		}
-		return items.iterator();
+		return keys.listIterator();
 	}
 
-	public Object[] toArray() {
-		if(items == null) {
-			return new Object[0];
-		}
-		return items.toArray();
-	}
 
 	public <T> T[] toArray(T[] a) {
-		if(items == null) {
-			return null;
-		}
-		return items.toArray(a);
+		return keys.toArray(a);
 	}
 
 	public boolean containsAll(Collection<?> c) {
@@ -559,12 +698,8 @@ public abstract class AbstractList<V> implements BaseItem {
 		removeAll(iterator());
 	}
 
-	@SuppressWarnings("unchecked")
 	public V set(int index, V element) {
-		if(items == null) {
-			return null;
-		}
-		return (V) items.set(index, element);
+		return keys.set(index, element);
 	}
 
 	/**
@@ -576,19 +711,16 @@ public abstract class AbstractList<V> implements BaseItem {
 	 *            element before the element
 	 * @return the List
 	 */
-	public AbstractList<V> withInsert(V element, V beforeElement) {
-		if(items == null) {
-			newSmallList();
-		}
+	public AbstractArray<V> withInsert(V element, V beforeElement) {
 		int index = getIndex(beforeElement);
-		this.items.add(index, element);
+		add(index, element);
 		return this;
 	}
 
-	public abstract AbstractList<V> with(Object... values);
+	public abstract AbstractArray<V> with(Object... values);
 
 	@SuppressWarnings("unchecked")
-	public <ST extends AbstractList<V>> ST withoutList(Collection<?> values) {
+	public <ST extends AbstractArray<V>> ST withoutList(Collection<?> values) {
 		for (Iterator<?> i = values.iterator(); i.hasNext();) {
 			without(i.next());
 		}
@@ -596,7 +728,7 @@ public abstract class AbstractList<V> implements BaseItem {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <ST extends AbstractList<V>> ST without(Object... values) {
+	public <ST extends AbstractArray<V>> ST without(Object... values) {
 		if (values == null) {
 			return null;
 		}
@@ -619,127 +751,105 @@ public abstract class AbstractList<V> implements BaseItem {
 	}
 
 	@Override
-	public AbstractList<V> clone() {
+	public AbstractArray<V> clone() {
 		return clone(getNewInstance());
 	}
-	
-	
-	@SuppressWarnings("unchecked")
-	public AbstractList<V> clone(AbstractList<V> newInstance) {
-		newInstance.withCopyList((SimpleSmallList<V>) this.items.clone());
+
+	public void add(int index, V element) {
+		addKey(index, element);
+		V beforeValue = null;
+		if (index > 0) {
+			beforeValue = get(index - 1);
+			fireProperty(null, element, beforeValue, element);
+		}
+	}
+
+	public AbstractArray<V> clone(AbstractArray<V> newInstance) {
+		newInstance.withComparator(this.cpr);
+		newInstance.withAllowDuplicate(isAllowDuplicate());
+		newInstance.withList(this.keys);
 		return newInstance;
 	}
 
 	@SuppressWarnings("unchecked")
-	public <ST extends AbstractList<V>> ST withList(Collection<?> values) {
+	public <ST extends AbstractArray<V>> ST withList(Collection<?> values) {
 		for (Iterator<?> i = values.iterator(); i.hasNext();) {
 			with(i.next());
 		}
 		return (ST) this;
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public <ST extends AbstractList<V>> ST getFirstItems(int size) {
-		AbstractList<V> newInstance = getNewInstance();
-		if(size<0) {
+	public <ST extends AbstractArray<V>> ST getFirstItems(int size) {
+		AbstractArray<V> newInstance = getNewInstance();
+		if (size < 0) {
 			size = this.size();
 		}
-		int i=0;
-		while(i<size) {
-			newInstance.with(get(i++));	
+		int i = 0;
+		while (i < size) {
+			newInstance.with(get(i++));
 		}
 		return (ST) newInstance;
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public <ST extends AbstractList<V>> ST getLastItems(int size) {
-		AbstractList<V> newInstance = getNewInstance();
+	public <ST extends AbstractArray<V>> ST getLastItems(int size) {
+		AbstractArray<V> newInstance = getNewInstance();
 		int count = this.size();
-		if(size<0) {
+		if (size < 0) {
 			size = count;
 		}
-		int i=count  - size;
-		while(i<count) {
-			newInstance.with(get(i++));	
+		int i = count - size;
+		while (i < count) {
+			newInstance.with(get(i++));
 		}
 		return (ST) newInstance;
 	}
 
 	public int indexOf(Object o) {
-		if(items == null){
-			return -1;
-		}
-		return items.indexOf(o);
+		return keys.indexOf(o);
 	}
+
 	public int lastIndexOf(Object o) {
-		return items.lastIndexOf(o);
+		return keys.lastIndexOf(o);
 	}
 
 	public ListIterator<V> listIterator() {
-		if(items == null){
-			//FIXME CREATE OWN ITERATOR
-			return null;
-		}
-		return items.iteratorList(0);
+		return keys.listIterator();
 	}
 
 	public ListIterator<V> listIterator(int index) {
-		if(items == null){
-			//FIXME CREATE OWN ITERATOR
-			return null;
-		}
-		return items.iteratorList(index);
+		return keys.listIterator(index);
 	}
 
-	public ListIterator<V> listIteratorReverse() {
-		if(items == null){
-			//FIXME CREATE OWN ITERATOR
-			return null;
-		}
-		return items.iteratorList(items.size());
+	public ListIterator<V> listIteratorReverseL() {
+		return keys.listIterator(keys.size());
 	}
 
-	public int size() {
-		if(items==null){
-			return 0;
+	/**
+	 * Add a Key to internal List and Array if nesessary
+	 *
+	 * @param newValue
+	 *            the new Value
+	 * @param pos
+	 *            the new Position -1 = End
+	 * @return if value is added
+	 */
+	protected int addKey(int pos, V newValue) {
+		if (pos == -1) {
+			if (!this.keys.add(newValue)) {
+				return -1;
+			}
+			pos = this.keys.size();
+			this.hashTableAddKey(newValue, pos);
+			return pos;
 		}
-		return this.items.size();
+		this.keys.add(pos, newValue);
+		this.hashTableAddKey(newValue, pos);
+		return -1;
 	}
 
 	protected void fireProperty(Object oldElement, Object newElement,
 			Object beforeElement, Object value) {
-	}
-	
-	public Comparator<V> comparator() {
-		return items.comparator();
-	}
-
-	public boolean isComparator() {
-		if(this.items == null){
-			return false;
-		}
-		return items.isComparator();
-	}
-
-	public AbstractList<V> withComparator(Comparator<V> comparator) {
-		if(this.items == null){
-			return this;
-		}
-		this.items.withComparator(comparator);
-		return this;
-	}
-	public AbstractList<V> withComparator(String column) {
-		if(this.items == null){
-			return this;
-		}
-		this.items.withComparator(column);
-		return this;
-	}
-	
-	public boolean isVisible() {
-		if(this.items == null){
-			return false;
-		}
-		return this.items.isVisible();
 	}
 }

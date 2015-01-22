@@ -98,7 +98,7 @@ public class StringTokener extends Tokener {
 	}
 
 	@Override
-	public void parseToEntity(AbstractList<?> entity) {
+	public void parseToEntity(AbstractArray<?> entity) {
 	}
 
 	public boolean isString() {

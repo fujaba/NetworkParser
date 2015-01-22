@@ -25,7 +25,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-public abstract class AbstractEntityList<V> extends AbstractList<V> implements
+public abstract class AbstractEntityList<V> extends AbstractArray<V> implements
 		List<V> {
 	public boolean addAll(int index, Collection<? extends V> c) {
 		for (Iterator<? extends V> i = c.iterator(); i.hasNext();) {
@@ -39,7 +39,7 @@ public abstract class AbstractEntityList<V> extends AbstractList<V> implements
 		while (list.hasNext()) {
 			V item = list.next();
 			if (item != null) {
-				if (!add(item)) {
+				if (!addEntity(item)) {
 					return false;
 				}
 			}
@@ -51,10 +51,15 @@ public abstract class AbstractEntityList<V> extends AbstractList<V> implements
 		return add(list.iterator());
 	}
 
-	@Override
 	public void add(int index, V element) {
-		if(items!=null) {
-			items.add(index, element);
+		if (!contains(element)) {
+			keys.add(index, element);
+			hashTableAddKey(element, index);
+			V beforeValue = null;
+			if (index > 0) {
+				beforeValue = get(index - 1);
+				fireProperty(null, element, beforeValue, null);
+			}
 		}
 	}
 
@@ -77,28 +82,28 @@ public abstract class AbstractEntityList<V> extends AbstractList<V> implements
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public AbstractList<V> with(Object... values) {
+	public AbstractArray<V> with(Object... values) {
 		if (values == null) {
 			return this;
 		}
 		for (Object item : values) {
-			this.add((V) item);
+			this.addEntity((V) item);
 		}
 		return this;
 	}
 
 	@SuppressWarnings("unchecked")
-	public <ST extends AbstractList<V>> ST withAll(V... values) {
+	public <ST extends AbstractArray<V>> ST withAll(V... values) {
 		if (values == null) {
 			return (ST) this;
 		}
 		for (V item : values) {
-			this.add(item);
+			this.addEntity(item);
 		}
 		return (ST) this;
 	}
 	
 	public Collection<V> values() {
-		return items;
+		return keys;
 	}
 }
