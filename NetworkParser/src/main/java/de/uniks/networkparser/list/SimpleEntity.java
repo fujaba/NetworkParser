@@ -1,4 +1,4 @@
-package de.uniks.networkparser;
+package de.uniks.networkparser.list;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
+import de.uniks.networkparser.listold.ArrayEntityList;
 
 /*
  NetworkParser
@@ -31,7 +32,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
  */
 
 /**
- * AbstractEntity is a Simple KeyValue - Object.
+ * SimpleEntity is a Simple KeyValue - Object.
  *
  * @author Stefan Lindel
  *
@@ -40,7 +41,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
  * @param <V>
  *            Value Element
  */
-public abstract class AbstractEntity<K, V> implements BaseItem, Entry<K, V>,
+public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 		SendableEntityCreator, SendableEntityCreatorNoIndex {
 	/** Constant for KEY. */
 	public static final String PROPERTY_KEY = "key";
@@ -55,15 +56,23 @@ public abstract class AbstractEntity<K, V> implements BaseItem, Entry<K, V>,
 	private V value;
 
 	@SuppressWarnings("unchecked")
-	public <ST extends AbstractEntity<K, V>> ST with(K key, V value) {
+	public <ST extends SimpleEntity<K, V>> ST with(K key, V value) {
 		this.key = key;
 		this.value = value;
 		return (ST) this;
 	}
 
-	public abstract AbstractEntity<K, V> withKeyItem(Object key);
+	@SuppressWarnings("unchecked")
+	public SimpleEntity<K, V> withKeyItem(Object key) {
+		withKey((K) key);
+		return this;
+	}
 
-	public abstract AbstractEntity<K, V> withValueItem(Object value);
+	@SuppressWarnings("unchecked")
+	public SimpleEntity<K, V> withValueItem(Object value) {
+		withValue((V) value);
+		return this;
+	}
 
 	/**
 	 * add the Values of the map to AbstractKeyValueEntry&lt;K, V&gt;
@@ -72,7 +81,7 @@ public abstract class AbstractEntity<K, V> implements BaseItem, Entry<K, V>,
 	 *            a map of key-values
 	 * @return Itself
 	 */
-	public AbstractEntity<K, V> with(Map<Object, Object> collection) {
+	public SimpleEntity<K, V> with(Map<Object, Object> collection) {
 		if (collection != null) {
 			Iterator<Entry<Object, Object>> i = collection.entrySet()
 					.iterator();
@@ -145,12 +154,12 @@ public abstract class AbstractEntity<K, V> implements BaseItem, Entry<K, V>,
 		return key + "=" + value;
 	}
 
-	public AbstractEntity<K, V> withKey(K key) {
+	public SimpleEntity<K, V> withKey(K key) {
 		this.key = key;
 		return this;
 	}
 
-	public AbstractEntity<K, V> withValue(V value) {
+	public SimpleEntity<K, V> withValue(V value) {
 		this.value = value;
 		return this;
 	}
@@ -178,8 +187,8 @@ public abstract class AbstractEntity<K, V> implements BaseItem, Entry<K, V>,
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
-		if (entity instanceof AbstractEntity) {
-			AbstractEntity<?, ?> entry = (AbstractEntity<?, ?>) entity;
+		if (entity instanceof SimpleEntity) {
+			SimpleEntity<?, ?> entry = (SimpleEntity<?, ?>) entity;
 			if (PROPERTY_KEY.equalsIgnoreCase(attribute)) {
 				entry.withKeyItem(value);
 				return true;
@@ -189,9 +198,9 @@ public abstract class AbstractEntity<K, V> implements BaseItem, Entry<K, V>,
 					if (map == null) {
 						map = new ArrayEntityList<String, Object>();
 					}
-					if (map instanceof ArrayEntityList<?, ?>) {
-						((ArrayEntityList<?, ?>) map).with(value);
-					}
+//FIXME					if (map instanceof ArrayEntityList<?, ?>) {
+//						((ArrayEntityList<?, ?>) map).with(value);
+//					}
 					entry.withValueItem(map);
 				} else {
 					entry.withValueItem(value);
@@ -200,5 +209,10 @@ public abstract class AbstractEntity<K, V> implements BaseItem, Entry<K, V>,
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public Object getSendableInstance(boolean prototyp) {
+		return new SimpleEntity<>();
 	}
 }

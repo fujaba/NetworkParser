@@ -18,43 +18,6 @@ public class SimpleBigList<V> extends SimpleSmallList<V>{
     	}
     }
     
-    @Override
-    public int minSize(){
-    	return MINHASHINGSIZE;
-    }
-    
-    public int realSize() {
-    	return items.length;
-    }
-    
-	/**
-	 * Add a Key to internal List and Array if nesessary
-	 *
-	 * @param newValue
-	 *            the new Value
-	 * @param pos
-	 *            the new Position -1 = End
-	 * @return  ths pos
-	 */
-	protected int addKey(int pos, Object newValue) {
-		int hashKey = hashKey(newValue.hashCode(), items.length);
-		while (true) {
-			Object oldEntry = items[hashKey];
-			if (oldEntry == null) {
-				items[hashKey] = newValue;
-				if (entitySize() == 2) {
-					items[hashKey + 1] = pos;
-				}
-				return hashKey;
-			}
-
-			if (oldEntry.equals(newValue))
-				return -1;
-
-			hashKey = (hashKey + entitySize()) % items.length;
-		}
-	}
-	
 	protected void resize(int size, Collection<?> keys) {
 		this.items = new Object[size];
 		int count = 0;
@@ -92,22 +55,6 @@ public class SimpleBigList<V> extends SimpleSmallList<V>{
 			resize(items.length, this);
 		}
 		return diff;	
-	}
-
-	@Override
-	public int getPositionKey(Object o) {
-		if (o == null) {
-			return -1;
-		}
-		int hashKey = hashKey(o.hashCode(), items.length);
-		while (true) {
-			Object value = items[hashKey];
-			if (value == null)
-				return -1;
-			if (checkValue(value, o))
-				return hashKey;
-			hashKey = (hashKey + entitySize()) % items.length;
-		}
 	}
 
 	@Override
