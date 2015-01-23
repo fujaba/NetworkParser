@@ -42,15 +42,30 @@ public abstract class AbstractList<V> extends AbstractArray {
 	 * @return  this boolean if success
 	 */
 	public boolean add(V e) {
-		grow(size + 1);
-
-//		elementKey[size++] = e;
+		addKey(e);
 		return true;
 	}
     
 	public Iterator<V> iterator() {
 		return new SimpleIterator<V>(this);
 	}
+	
+	/** @return the First Element of the List */
+	public V first() {
+		if (this.size() > 0) {
+			return this.get(0);
+		}
+		return null;
+	}
+
+	/** @return the Last Element of the List */
+	public V last() {
+		if (this.size() > 0) {
+			return this.get(this.size() - 1);
+		}
+		return null;
+	}
+	
 
 	public <T> T[] toArray(T[] a) {
 		// TODO Auto-generated method stub
