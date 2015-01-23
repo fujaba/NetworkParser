@@ -2,6 +2,7 @@ package de.uniks.networkparser.list;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 
 public class AbstractArray {
@@ -288,6 +289,13 @@ public class AbstractArray {
 		return (tmp < 0) ? -tmp : tmp;
 	}
 	
+	public Comparator<?> comparator(){
+		return null;
+	}
+	public boolean isComparator() {
+		return false;
+	}
+	
 	/**
 	 * Add a Key to internal List and Array if nesessary
 	 *
@@ -333,25 +341,27 @@ public class AbstractArray {
 		if(arrayFlag== 1 && minCapacity<MINHASHINGSIZE) {
 			if(minCapacity >= elements.length * MAXUSEDLIST) {
 				// resize Array
-				
+				elements =resizeSmall(minCapacity, elements);
 			}
 			return;
 		}
 		if(arrayFlag != elements.length) {
+			// Change Single to BigList
+			Object[] old = elements;
+			elements = new Object[arrayFlag];
+			elements[SMALL_KEY] = old;
 			
+			return;
 		}
 		
 		
-		if(isBig()) {
-			if (minCapacity >= ((Object[])elements[BIG_KEY]).length * MAXUSEDLIST){
-				resizeBig(minCapacity, BIG_KEY);
-				if(arrayFlag > 4){
-					resizeBig(minCapacity, BIG_VALUE);
-				}
+		if (elements[BIG_KEY]== null || minCapacity >= ((Object[])elements[BIG_KEY]).length * MAXUSEDLIST){
+			resizeBig(minCapacity, BIG_KEY);
+			if(arrayFlag > 4){
+				resizeBig(minCapacity, BIG_VALUE);
 			}
-		} else if (minCapacity <= elements.length * MINHASHINGSIZE){
+			elements[DELETED] = null;
 		}
-//		resize(minCapacity);
 	}
 	
 	void resizeBig(int minCapacity, int index) {
@@ -362,75 +372,158 @@ public class AbstractArray {
 			addHashItem(pos, items[pos], newItems);
 		}
 	}
-	void resizeSmall(int minCapacity, Object[] oldValue) {
-		Object[] newItems = new Object[minCapacity*entitySize()*2]; 
-		elements[index] = newItems;
-		for(int pos=0;pos<items.length;pos++) {
-			addHashItem(pos, items[pos], newItems);
+	Object[] resizeSmall(int minCapacity, Object[] items) {
+		Object[] dest = new Object[size];
+		System.arraycopy(items, 0, dest, 0, size);
+		return dest;
+	}
+
+	/**
+	 * Add a Element to the List
+	 * 
+	 * @param element to add a Value
+	 * @return boolean if success add the Value
+	 */
+	protected boolean addKey(Object element){
+		grow(size + 1);
+		if (element == null && !isAllowEmptyValue())
+			return false;
+		if (isComparator()) {
+			for (int i = 0; i < size(); i++) {
+//FIXME				int result = comparator().compare(get(i), newValue);
+//				if (result >= 0) {
+//						if (!isAllowDuplicate() && get(i) == newValue) {
+//							return false;
+//						}
+//						addKey(i, newValue);
+//						V beforeElement = null;
+//						if (i > 0) {
+//							beforeElement = this.get(i - 1);
+//						}
+//						fireProperty(null, newValue, beforeElement, null);
+//						return true;
+//					}
+//				}
+			}
+			if (!isAllowDuplicate()) {
+				if (this.contains(element)) {
+					return false;
+				}
+			}
+
+			elem
+			if(isBig()){
+				
+			}
+			
+			if (addKey(-1, element) >= 0) {
+				Object beforeElement = null;
+//FIXME				if (size() > 1) {
+//					beforeElement = this.get(size() - 1);
+//				}
+				fireProperty(null, element, beforeElement, null);
+				return true;
+			}
 		}
+		return false;
 	}
 	
+	/**
+	 * Add a Key to internal List and Array if nesessary
+	 *
+	 * @param newValue
+	 *            the new Value
+	 * @param pos
+	 *            the new Position -1 = End
+	 */
+//	protected int addKey(int pos, Object newValue) {
+//		if (pos == -1) {
+//			this.add(newValue);
+//			return size(); 
+//		}
+//		this.add(pos, newValue);
+//		return pos;
+//	}
+//	
+//	public void add(int index, V element) {
+//		int i = size()+1;
+//		while(i>index) {
+//			elementKey[i] = elementKey[i - 1]; 	
+//		}
+//        elementKey[index] = element;
+//        size++;
+//    }
+//	
 	
-	void resizeSmallOLD(int minCapacity) {
-		int arrayFlag = getArrayFlag();
-		Object[] keys = null;
-		Object[] values = null;
+	
+	protected void addKeyValue(Object element){
+//		this
 		
-		if(elements.length>5) {
-			keys = elements;
-		}else{
-			keys = (Object[]) elements[SMALL_KEY];
-			if(elements.length>3){
-				values = (Object[]) elements[SMALL_VALUE];
-			}
-		}
-		elements = new Object[arrayFlag];
-		if(arrayFlag== 0){
-			// Null-Value
-			return;
-		}
-		if(arrayFlag>=3){
-			// LIST
-			elements[SMALL_KEY] = addSmallItem(minCapacity+minCapacity/2+4, keys);
-			if(size>MINHASHINGSIZE) {
-				if(keys != null) {
-					Object[] newItems = new Object[minCapacity*entitySize()*2];
-					elements[1] = newItems;
-					for(int pos=0;pos<keys.length;pos++) {
-						addHashItem(pos, keys[pos], newItems);
-					}
-				}
-			}
-//			elements[2] = new Object[MAXDELETED];
-		}
-		if(arrayFlag>=4){
-			//MAP
-			elements[SMALL_VALUE] = addSmallItem(minCapacity+minCapacity/2+4, values);
-		}
-		if(arrayFlag>4){
-			// BIDI-MAP
-			if(values != null) {
-				Object[] newItems = new Object[minCapacity*entitySize()*2]; 
-				elements[4] = newItems;
-				for(int pos=0;pos<values.length;pos++) {
-					addHashItem(pos, values[pos], newItems);
-				}
-			}
-		}
-		// create Old Values
-		if(size>MINHASHINGSIZE){
-			if(keys != null) {
-				for(int pos=0;pos<keys.length;pos++) {
-					addHashItem(pos, keys[pos], keys);
-				}
-			}
-			if(values != null) {
-				for(int pos=0;pos<values.length;pos++) {
-					addHashItem(pos, values[pos], keys);
-				}
-			}
-		}
-    }
+	}
+	
+//REMOVE	void resizeSmallOLD(int minCapacity) {
+//		int arrayFlag = getArrayFlag();
+//		Object[] keys = null;
+//		Object[] values = null;
+//
+//		if (elements.length > 5) {
+//			keys = elements;
+//		} else {
+//			keys = (Object[]) elements[SMALL_KEY];
+//			if (elements.length > 3) {
+//				values = (Object[]) elements[SMALL_VALUE];
+//			}
+//		}
+//		elements = new Object[arrayFlag];
+//		if (arrayFlag == 0) {
+//			// Null-Value
+//			return;
+//		}
+//		if (arrayFlag >= 3) {
+//			// LIST
+//			elements[SMALL_KEY] = addSmallItem(minCapacity + minCapacity / 2
+//					+ 4, keys);
+//			if (size > MINHASHINGSIZE) {
+//				if (keys != null) {
+//					Object[] newItems = new Object[minCapacity * entitySize()
+//							* 2];
+//					elements[1] = newItems;
+//					for (int pos = 0; pos < keys.length; pos++) {
+//						addHashItem(pos, keys[pos], newItems);
+//					}
+//				}
+//			}
+//			// elements[2] = new Object[MAXDELETED];
+//		}
+//		if (arrayFlag >= 4) {
+//			// MAP
+//			elements[SMALL_VALUE] = addSmallItem(minCapacity + minCapacity / 2
+//					+ 4, values);
+//		}
+//		if (arrayFlag > 4) {
+//			// BIDI-MAP
+//			if (values != null) {
+//				Object[] newItems = new Object[minCapacity * entitySize() * 2];
+//				elements[4] = newItems;
+//				for (int pos = 0; pos < values.length; pos++) {
+//					addHashItem(pos, values[pos], newItems);
+//				}
+//			}
+//		}
+//		// create Old Values
+//		if (size > MINHASHINGSIZE) {
+//			if (keys != null) {
+//				for (int pos = 0; pos < keys.length; pos++) {
+//					addHashItem(pos, keys[pos], keys);
+//				}
+//			}
+//			if (values != null) {
+//				for (int pos = 0; pos < values.length; pos++) {
+//					addHashItem(pos, values[pos], keys);
+//				}
+//			}
+//		}
+//	}
 	
 	public String flag() {
 		StringBuilder sb = new StringBuilder();
@@ -459,11 +552,6 @@ public class AbstractArray {
 		}
 		sb.append("E"+entitySize());
 		return sb.toString();
-	}
-
-	protected void addItem(Object element){
-//		this
-		
 	}
 
 	public AbstractArray with(Object item) {
