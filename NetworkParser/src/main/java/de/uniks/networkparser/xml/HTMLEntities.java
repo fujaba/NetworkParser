@@ -21,7 +21,7 @@ package de.uniks.networkparser.xml;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
  */
-import de.uniks.networkparser.ArrayEntityList;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 
 /**
  * HTML Entity for transform Element for HTML. Encoding String.
@@ -32,7 +32,7 @@ public class HTMLEntities {
 	/**
 	 * Map to convert extended characters in html entities.
 	 */
-	private ArrayEntityList<String, Integer> entities = new ArrayEntityList<String, Integer>();
+	private SimpleKeyValueList<String, Integer> entities = new SimpleKeyValueList<String, Integer>();
 
 	/**
 	 * Initialize HTML translation maps.
