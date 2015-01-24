@@ -21,13 +21,12 @@ package de.uniks.networkparser.json;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
  */
-import de.uniks.networkparser.AbstractKeyValueList;
-import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.FactoryEntity;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.xml.XMLEntity;
 
 public class JsonTokener extends Tokener {
@@ -87,7 +86,7 @@ public class JsonTokener extends Tokener {
 	}
 
 	public JsonObject parseEntity(JsonObject parent,
-			AbstractKeyValueList<?, ?> newValue) {
+			SimpleKeyValueList<?, ?> newValue) {
 		if (newValue instanceof XMLEntity) {
 			XMLEntity xmlEntity = (XMLEntity) newValue;
 			parent.put(JsonIdMap.CLASS, xmlEntity.getTag());

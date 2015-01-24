@@ -1,5 +1,6 @@
 package de.uniks.networkparser.graph;
 
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
@@ -21,9 +22,8 @@ package de.uniks.networkparser.graph;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
  */
-import de.uniks.networkparser.AbstractEntityList;
 
-public class GraphNode extends AbstractEntityList<GraphMember> implements GraphMember{
+public class GraphNode extends GraphSimpleList<GraphMember> implements GraphMember{
 	private String id;
 	private int count;
 

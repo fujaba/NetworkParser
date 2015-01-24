@@ -39,6 +39,7 @@ import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.TypList;
 import de.uniks.networkparser.json.UpdateListener;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 
 /**
  * The Class IdMap.
@@ -102,7 +103,7 @@ public abstract class IdMapEncoder extends AbstractMap implements
 	 */
 	public IdMapEncoder() {
 		super();
-		this.keyValue = new ArrayEntityList<String, Object>();
+		this.keyValue = new SimpleKeyValueList<String, Object>();
 		this.withCreator(new TextItems());
 	}
 

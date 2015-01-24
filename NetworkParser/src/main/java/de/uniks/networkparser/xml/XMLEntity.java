@@ -22,8 +22,7 @@ package de.uniks.networkparser.xml;
  permissions and limitations under the Licence.
  */
 import java.util.ArrayList;
-import de.uniks.networkparser.AbstractKeyValueList;
-import de.uniks.networkparser.AbstractList;
+
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.event.MapEntry;
@@ -31,11 +30,13 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
+import de.uniks.networkparser.list.AbstractArray;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 
 /**
  * The Class XMLEntity.
  */
-public class XMLEntity extends AbstractKeyValueList<String, Object> implements
+public class XMLEntity extends SimpleKeyValueList<String, Object> implements
 		StringItem, FactoryEntity, Entity {
 	/** Constant of TAG. */
 	public static final String PROPERTY_TAG = "tag";
