@@ -25,8 +25,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-public abstract class AbstractEntityList<V> extends AbstractArray<V> implements
-		List<V> {
+public abstract class AbstractEntityList<V> extends AbstractArray<V>
+		{
 	public boolean addAll(int index, Collection<? extends V> c) {
 		for (Iterator<? extends V> i = c.iterator(); i.hasNext();) {
 			V item = i.next();

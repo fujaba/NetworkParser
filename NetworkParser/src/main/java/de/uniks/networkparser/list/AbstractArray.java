@@ -92,7 +92,7 @@ public class AbstractArray {
     }
     
     boolean isBig() {
-    	return size>MINHASHINGSIZE && elements.length<= (BIG_VALUE+1);
+    	return size>MINHASHINGSIZE && elements.length <= (BIG_VALUE+1);
     }
     
 	int getArrayFlag() {
@@ -289,7 +289,7 @@ public class AbstractArray {
 		return (tmp < 0) ? -tmp : tmp;
 	}
 	
-	public Comparator<?> comparator(){
+	public Comparator<Object> comparator(){
 		return null;
 	}
 	public boolean isComparator() {
@@ -333,7 +333,7 @@ public class AbstractArray {
 	
 	void grow(int minCapacity) {
 		if (elements == null){
-			elements = new Object[minCapacity];
+			elements = new Object[minCapacity + minCapacity / 2	+ 4];
 			return;
 		}
 		int arrayFlag = getArrayFlag();
@@ -341,7 +341,7 @@ public class AbstractArray {
 		if(arrayFlag== 1 && minCapacity<MINHASHINGSIZE) {
 			if(minCapacity >= elements.length * MAXUSEDLIST) {
 				// resize Array
-				elements =resizeSmall(minCapacity, elements);
+				elements =resizeSmall(minCapacity + minCapacity / 2	+ 4, elements);
 			}
 			return;
 		}
@@ -384,146 +384,73 @@ public class AbstractArray {
 	 * @param element to add a Value
 	 * @return boolean if success add the Value
 	 */
-	protected boolean addKey(Object element){
+	protected int checkKey(Object element){
 		grow(size + 1);
 		if (element == null && !isAllowEmptyValue())
-			return false;
+			return -1;
 		if (isComparator()) {
+			boolean keyId = !isAllowDuplicate(); 
 			for (int i = 0; i < size(); i++) {
-//FIXME				int result = comparator().compare(get(i), newValue);
-//				if (result >= 0) {
-//						if (!isAllowDuplicate() && get(i) == newValue) {
-//							return false;
-//						}
-//						addKey(i, newValue);
-//						V beforeElement = null;
-//						if (i > 0) {
-//							beforeElement = this.get(i - 1);
-//						}
-//						fireProperty(null, newValue, beforeElement, null);
-//						return true;
-//					}
-//				}
+				int result = comparator().compare(get(i), element);
+				if (result >= 0) {
+					if (keyId && get(i) == element) {
+						return -1;
+					}
+					return i;
+				}
 			}
 			if (!isAllowDuplicate()) {
 				if (this.contains(element)) {
-					return false;
+					return -1;
 				}
 			}
-
-			elem
-			if(isBig()){
-				
-			}
-			
-			if (addKey(-1, element) >= 0) {
-				Object beforeElement = null;
-//FIXME				if (size() > 1) {
-//					beforeElement = this.get(size() - 1);
-//				}
-				fireProperty(null, element, beforeElement, null);
-				return true;
-			}
 		}
-		return false;
+		return size;
+	}
+
+	public Object get(int index) {
+		if(index<0) {
+			index = size + 1 - index;
+		}
+		if(index>=0 && index<size){
+			if(isBig()) {
+				return ((Object[])elements[SMALL_KEY])[index];
+			}
+			return elements[index];
+		}
+		return null;
 	}
 	
 	/**
 	 * Add a Key to internal List and Array if nesessary
 	 *
-	 * @param newValue
+	 * @param element
 	 *            the new Value
 	 * @param pos
 	 *            the new Position -1 = End
+	 * @return if value is added
 	 */
-//	protected int addKey(int pos, Object newValue) {
-//		if (pos == -1) {
-//			this.add(newValue);
-//			return size(); 
-//		}
-//		this.add(pos, newValue);
-//		return pos;
-//	}
-//	
-//	public void add(int index, V element) {
-//		int i = size()+1;
-//		while(i>index) {
-//			elementKey[i] = elementKey[i - 1]; 	
-//		}
-//        elementKey[index] = element;
-//        size++;
-//    }
-//	
-	
-	
-	protected void addKeyValue(Object element){
-//		this
-		
+	protected int addKey(int pos, Object element) {
+		int i = size();
+		Object[] keys;
+		if(isBig()) {
+			keys = (Object[]) elements[SMALL_KEY];
+			addHashItem(pos, element, (Object[])elements[BIG_KEY]);
+		}else{
+			keys = elements;
+		}
+		while(i>pos) {
+			keys[i] = keys[--i]; 	
+		}
+		keys[pos] = element;
+        size++;
+        Object beforeElement = null;
+        if (size() > 1) {
+        	beforeElement = this.get(size() - 1);
+      	}
+        fireProperty(null, element, beforeElement, null);
+		return pos;
 	}
-	
-//REMOVE	void resizeSmallOLD(int minCapacity) {
-//		int arrayFlag = getArrayFlag();
-//		Object[] keys = null;
-//		Object[] values = null;
-//
-//		if (elements.length > 5) {
-//			keys = elements;
-//		} else {
-//			keys = (Object[]) elements[SMALL_KEY];
-//			if (elements.length > 3) {
-//				values = (Object[]) elements[SMALL_VALUE];
-//			}
-//		}
-//		elements = new Object[arrayFlag];
-//		if (arrayFlag == 0) {
-//			// Null-Value
-//			return;
-//		}
-//		if (arrayFlag >= 3) {
-//			// LIST
-//			elements[SMALL_KEY] = addSmallItem(minCapacity + minCapacity / 2
-//					+ 4, keys);
-//			if (size > MINHASHINGSIZE) {
-//				if (keys != null) {
-//					Object[] newItems = new Object[minCapacity * entitySize()
-//							* 2];
-//					elements[1] = newItems;
-//					for (int pos = 0; pos < keys.length; pos++) {
-//						addHashItem(pos, keys[pos], newItems);
-//					}
-//				}
-//			}
-//			// elements[2] = new Object[MAXDELETED];
-//		}
-//		if (arrayFlag >= 4) {
-//			// MAP
-//			elements[SMALL_VALUE] = addSmallItem(minCapacity + minCapacity / 2
-//					+ 4, values);
-//		}
-//		if (arrayFlag > 4) {
-//			// BIDI-MAP
-//			if (values != null) {
-//				Object[] newItems = new Object[minCapacity * entitySize() * 2];
-//				elements[4] = newItems;
-//				for (int pos = 0; pos < values.length; pos++) {
-//					addHashItem(pos, values[pos], newItems);
-//				}
-//			}
-//		}
-//		// create Old Values
-//		if (size > MINHASHINGSIZE) {
-//			if (keys != null) {
-//				for (int pos = 0; pos < keys.length; pos++) {
-//					addHashItem(pos, keys[pos], keys);
-//				}
-//			}
-//			if (values != null) {
-//				for (int pos = 0; pos < values.length; pos++) {
-//					addHashItem(pos, values[pos], keys);
-//				}
-//			}
-//		}
-//	}
 	
 	public String flag() {
 		StringBuilder sb = new StringBuilder();
@@ -554,11 +481,30 @@ public class AbstractArray {
 		return sb.toString();
 	}
 
-	public AbstractArray with(Object item) {
-		//FIXME
+	
+	public AbstractArray with(Object... values) {
+		if(values==null){
+			return this;
+		}
+		for (Object value : values) {
+			int pos = checkKey(value);
+			if(pos>=0) {
+				this.addKey(pos, value);
+			}
+		}
 		return this;
 	}
 	
+	public AbstractArray without(Object... values) {
+		if(values==null){
+			return this;
+		}
+		for (Object value : values) {
+			this.removeByObject(value);
+		}
+		return this;
+	}
+
 	public void withAll(Collection<?> list) {
     	grow(list.size());
     	for(Iterator<?> i = list.iterator();i.hasNext();) {
@@ -644,13 +590,186 @@ public class AbstractArray {
     	}
 		return indexOf(o) >= 0;
 	}
+
+	public boolean containsAll(Collection<?> c) {
+		for (Object e : c)
+			if (!contains(e))
+				return false;
+		return true;
+	}
+	
+	  /**
+     * {@inheritDoc}
+     *
+     * <p>This implementation iterates over this collection, checking each
+     * element returned by the iterator in turn to see if it's contained
+     * in the specified collection.  If it's so contained, it's removed from
+     * this collection with the iterator's <tt>remove</tt> method.
+     *
+     * <p>Note that this implementation will throw an
+     * <tt>UnsupportedOperationException</tt> if the iterator returned by the
+     * <tt>iterator</tt> method does not implement the <tt>remove</tt> method
+     * and this collection contains one or more elements in common with the
+     * specified collection.
+     *
+     * @throws UnsupportedOperationException {@inheritDoc}
+     * @throws ClassCastException            {@inheritDoc}
+     * @throws NullPointerException          {@inheritDoc}
+     *
+     * @see #remove(Object)
+     * @see #contains(Object)
+     */
+	public boolean removeAll(Collection<?> c) {
+		if (c == null) {
+			return false;
+		}
+		boolean modified = false;
+		for (Object i : c) {
+			if (contains(i)) {
+				removeByObject(i);
+				modified = true;
+			}
+		}
+		return modified;
+	}
+	
+	public int removeByObject(Object key) {
+		int index = getPositionKey(key);
+		if (index < 0) {
+			return -1;
+		}
+		removeByIndex(index);
+		return index;
+	}
+	
+	// FIXME
+	public Object removeByIndex(int index) {
+		Object oldValue = null;
+//		Object[] elementKey
+//		Object oldValue = elementKey[index];
+//		while(index<size) {
+//			elementKey[index] = elementKey[++index];
+//		}
+//		size--;
+//		elementKey[index] = null;
+		return oldValue;
+	}
+
 	
 	public Object[] toArray() {
 		if(isBig()) {
 			return Arrays.copyOf((Object[])elements[SMALL_KEY], size);	
 		}
 		return Arrays.copyOf(elements, size);
-        
+	}
+	
+	/**
+	 * Get the boolean value associated with an index. The string values "true"
+	 * and "false" are converted to boolean.
+	 *
+	 * @param index
+	 *            The index must be between 0 and length() - 1.
+	 * @return The truth.
+	 * @throws RuntimeException
+	 *             If there is no value for the index or if the value is not
+	 *             convertible to boolean.
+	 */
+	public boolean getBoolean(int index) throws RuntimeException {
+		if (index == -1) {
+			return false;
+		}
+		Object object = get(index);
+		if (object.equals(Boolean.FALSE)
+				|| (object instanceof String && ((String) object)
+						.equalsIgnoreCase("false"))) {
+			return false;
+		} else if (object.equals(Boolean.TRUE)
+				|| (object instanceof String && ((String) object)
+						.equalsIgnoreCase("true"))) {
+			return true;
+		}
+		throw new RuntimeException("AbstractList[" + index
+				+ "] is not a boolean.");
+	}
+
+	/**
+	 * Get the double value associated with an index.
+	 *
+	 * @param index
+	 *            The index must be between 0 and length() - 1.
+	 * @return The value.
+	 * @throws RuntimeException
+	 *             If the key is not found or if the value cannot be converted
+	 *             to a number.
+	 */
+	public double getDouble(int index) throws RuntimeException {
+		Object object = get(index);
+		try {
+			return object instanceof Number ? ((Number) object).doubleValue()
+					: Double.parseDouble((String) object);
+		} catch (Exception e) {
+			throw new RuntimeException("EntityList[" + index
+					+ "] is not a number.");
+		}
+	}
+	
+	/**
+	 * Get the int value associated with an index.
+	 *
+	 * @param index
+	 *            The index must be between 0 and length() - 1.
+	 * @return The value.
+	 * @throws RuntimeException
+	 *             If the key is not found or if the value is not a number.
+	 */
+	public int getInt(int index) throws RuntimeException {
+		Object object = get(index);
+		try {
+			return object instanceof Number ? ((Number) object).intValue()
+					: Integer.parseInt((String) object);
+		} catch (Exception e) {
+			throw new RuntimeException("EntityList[" + index
+					+ "] is not a number.");
+		}
+	}
+	
+	/**
+	 * Get the long value associated with an index.
+	 *
+	 * @param index
+	 *            The index must be between 0 and length() - 1.
+	 * @return The value.
+	 * @throws RuntimeException
+	 *             If the key is not found or if the value cannot be converted
+	 *             to a number.
+	 */
+	public long getLong(int index) throws RuntimeException {
+		Object object = get(index);
+		try {
+			return object instanceof Number ? ((Number) object).longValue()
+					: Long.parseLong((String) object);
+		} catch (Exception e) {
+			throw new RuntimeException("EntityList[" + index
+					+ "] is not a number.");
+		}
+	}
+	
+	/**
+	 * Get the string associated with an index.
+	 *
+	 * @param index
+	 *            The index must be between 0 and length() - 1.
+	 * @return A string value.
+	 * @throws RuntimeException
+	 *             If there is no value for the index.
+	 */
+	public String getString(int index) throws RuntimeException {
+		return get(index).toString();
+	}
+
+	public int getIndex(Object o) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 	
 	protected void fireProperty(Object oldElement, Object newElement,

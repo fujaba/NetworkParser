@@ -7,12 +7,14 @@ import de.uniks.networkparser.sort.SortingDirection;
 
 public class SortedList<V> extends SimpleList<V> {
 	protected Comparator<V> cpr;
-	public Comparator<V> comparator() {
+	
+	@SuppressWarnings("unchecked")
+	public Comparator<Object> comparator() {
 		if (this.cpr == null) {
 			withComparator(new EntityComparator<V>().withColumn(
 					EntityComparator.LIST).withDirection(SortingDirection.ASC));
 		}
-		return cpr;
+		return (Comparator<Object>) cpr;
 	}
 	
 	public boolean isComparator() {

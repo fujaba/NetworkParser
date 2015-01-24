@@ -21,13 +21,11 @@ package de.uniks.networkparser.graph;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
  */
-import java.util.Collection;
 import java.util.List;
 
-import de.uniks.networkparser.AbstractEntityList;
-import de.uniks.networkparser.AbstractList;
+import de.uniks.networkparser.list.SimpleList;
 
-public class GraphEdge extends AbstractEntityList<GraphNode> implements
+public class GraphEdge extends GraphSimpleList<GraphNode> implements
 		List<GraphNode> {
 	public static final String PROPERTY_NODE = "node";
 	public static final String PROPERTY_CARDINALITY = "cardinality";
@@ -115,7 +113,7 @@ public class GraphEdge extends AbstractEntityList<GraphNode> implements
 
 
 	@Override
-	public AbstractArray<GraphNode> getNewInstance() {
+	public SimpleList<GraphNode> getNewInstance() {
 		return new GraphEdge();
 	}
 
@@ -169,10 +167,6 @@ public class GraphEdge extends AbstractEntityList<GraphNode> implements
 		return removeItemByObject((GraphNode) value) >= 0;
 	}
 
-	public Collection<GraphNode> values() {
-		return items;
-	}
-	
 	public static GraphEdge create(GraphNode source, GraphNode target){
 		GraphEdge edge = new GraphEdge().with(source);
 		edge.with(new GraphEdge().with(target));

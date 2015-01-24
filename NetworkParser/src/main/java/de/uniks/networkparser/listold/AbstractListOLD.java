@@ -82,63 +82,8 @@ public abstract class AbstractListOLD<V> implements BaseItem {
 		}
 	}
 
-	/**
-	 * Get the object value associated with an index.
-	 *
-	 * @param index
-	 *            The index must be between 0 and length() - 1.
-	 * @return An object value.
-	 * @throws RuntimeException
-	 *             If there is no value for the index.
-	 */
-	public V get(int index) throws RuntimeException {
-		V object = this.keys.get(index);
-		if (object == null) {
-			throw new RuntimeException("EntityList[" + index + "] not found.");
-		}
-		return object;
-	}
-
 	public void copyEntity(AbstractArray<V> target, int pos) {
 		target.addEntity(get(pos));
-	}
-
-	protected boolean addEntity(V newValue) {
-		if (newValue == null)
-			return false;
-		if (cpr != null) {
-			for (int i = 0; i < size(); i++) {
-				int result = comparator().compare(get(i), newValue);
-				if (result >= 0) {
-					if (!isAllowDuplicate() && get(i) == newValue) {
-						return false;
-					}
-					addKey(i, newValue);
-					V beforeElement = null;
-					if (i > 0) {
-						beforeElement = this.keys.get(i - 1);
-					}
-					fireProperty(null, newValue, beforeElement, null);
-					return true;
-				}
-			}
-		}
-
-		if (!isAllowDuplicate()) {
-			if (this.contains(newValue)) {
-				return false;
-			}
-		}
-
-		if (addKey(-1, newValue) >= 0) {
-			V beforeElement = null;
-			if (size() > 1) {
-				beforeElement = this.keys.get(size() - 1);
-			}
-			fireProperty(null, newValue, beforeElement, null);
-			return true;
-		}
-		return false;
 	}
 
 	public AbstractArray<V> subSet(V fromElement, V toElement) {
@@ -266,27 +211,6 @@ public abstract class AbstractListOLD<V> implements BaseItem {
 	}
 
 	/**
-	 * @return the First Element of the List
-	 */
-	public V first() {
-		if (this.keys.size() > 0) {
-			return this.keys.get(0);
-		}
-		return null;
-	}
-
-	/**
-	 * @return the Last Element of the List
-	 */
-	public V last() {
-		if (this.keys.size() > 0) {
-			return this.keys.get(this.size() - 1);
-		}
-
-		return null;
-	}
-
-	/**
 	 * @param index
 	 *            of value
 	 * @return the entity
@@ -298,112 +222,8 @@ public abstract class AbstractListOLD<V> implements BaseItem {
 		return this.keys.get(index);
 	}
 
-	/**
-	 * Get the boolean value associated with an index. The string values "true"
-	 * and "false" are converted to boolean.
-	 *
-	 * @param index
-	 *            The index must be between 0 and length() - 1.
-	 * @return The truth.
-	 * @throws RuntimeException
-	 *             If there is no value for the index or if the value is not
-	 *             convertible to boolean.
-	 */
-	public boolean getBoolean(int index) throws RuntimeException {
-		if (index == -1) {
-			return false;
-		}
-		Object object = getItem(index);
-		if (object.equals(Boolean.FALSE)
-				|| (object instanceof String && ((String) object)
-						.equalsIgnoreCase("false"))) {
-			return false;
-		} else if (object.equals(Boolean.TRUE)
-				|| (object instanceof String && ((String) object)
-						.equalsIgnoreCase("true"))) {
-			return true;
-		}
-		throw new RuntimeException("EntityList[" + index
-				+ "] is not a boolean.");
-	}
-
-	/**
-	 * Get the double value associated with an index.
-	 *
-	 * @param index
-	 *            The index must be between 0 and length() - 1.
-	 * @return The value.
-	 * @throws RuntimeException
-	 *             If the key is not found or if the value cannot be converted
-	 *             to a number.
-	 */
-	public double getDouble(int index) throws RuntimeException {
-		Object object = getItem(index);
-		try {
-			return object instanceof Number ? ((Number) object).doubleValue()
-					: Double.parseDouble((String) object);
-		} catch (Exception e) {
-			throw new RuntimeException("EntityList[" + index
-					+ "] is not a number.");
-		}
-	}
-
 	protected Object getItem(int index) {
 		return getKey(index);
-	}
-
-	/**
-	 * Get the int value associated with an index.
-	 *
-	 * @param index
-	 *            The index must be between 0 and length() - 1.
-	 * @return The value.
-	 * @throws RuntimeException
-	 *             If the key is not found or if the value is not a number.
-	 */
-	public int getInt(int index) throws RuntimeException {
-		Object object = getItem(index);
-		try {
-			return object instanceof Number ? ((Number) object).intValue()
-					: Integer.parseInt((String) object);
-		} catch (Exception e) {
-			throw new RuntimeException("EntityList[" + index
-					+ "] is not a number.");
-		}
-	}
-
-	/**
-	 * Get the long value associated with an index.
-	 *
-	 * @param index
-	 *            The index must be between 0 and length() - 1.
-	 * @return The value.
-	 * @throws RuntimeException
-	 *             If the key is not found or if the value cannot be converted
-	 *             to a number.
-	 */
-	public long getLong(int index) throws RuntimeException {
-		Object object = getItem(index);
-		try {
-			return object instanceof Number ? ((Number) object).longValue()
-					: Long.parseLong((String) object);
-		} catch (Exception e) {
-			throw new RuntimeException("EntityList[" + index
-					+ "] is not a number.");
-		}
-	}
-
-	/**
-	 * Get the string associated with an index.
-	 *
-	 * @param index
-	 *            The index must be between 0 and length() - 1.
-	 * @return A string value.
-	 * @throws RuntimeException
-	 *             If there is no value for the index.
-	 */
-	public String getString(int index) throws RuntimeException {
-		return getItem(index).toString();
 	}
 
 	/**
@@ -665,25 +485,12 @@ public abstract class AbstractListOLD<V> implements BaseItem {
 		return (tmp < 0) ? -tmp : tmp;
 	}
 
-	public Iterator<V> iterator() {
-		return keys.listIterator();
-	}
-
-
-	public <T> T[] toArray(T[] a) {
-		return keys.toArray(a);
-	}
-
 	public boolean containsAll(Collection<?> c) {
 		for (Object o : c) {
 			if (!this.contains(o))
 				return false;
 		}
 		return true;
-	}
-
-	public boolean removeAll(Collection<?> c) {
-		return removeAll(c.iterator());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -804,52 +611,5 @@ public abstract class AbstractListOLD<V> implements BaseItem {
 			newInstance.with(get(i++));
 		}
 		return (ST) newInstance;
-	}
-
-	public int indexOf(Object o) {
-		return keys.indexOf(o);
-	}
-
-	public int lastIndexOf(Object o) {
-		return keys.lastIndexOf(o);
-	}
-
-	public ListIterator<V> listIterator() {
-		return keys.listIterator();
-	}
-
-	public ListIterator<V> listIterator(int index) {
-		return keys.listIterator(index);
-	}
-
-	public ListIterator<V> listIteratorReverseL() {
-		return keys.listIterator(keys.size());
-	}
-
-	/**
-	 * Add a Key to internal List and Array if nesessary
-	 *
-	 * @param newValue
-	 *            the new Value
-	 * @param pos
-	 *            the new Position -1 = End
-	 * @return if value is added
-	 */
-	protected int addKey(int pos, V newValue) {
-		if (pos == -1) {
-			if (!this.keys.add(newValue)) {
-				return -1;
-			}
-			pos = this.keys.size();
-			this.hashTableAddKey(newValue, pos);
-			return pos;
-		}
-		this.keys.add(pos, newValue);
-		this.hashTableAddKey(newValue, pos);
-		return -1;
-	}
-
-	protected void fireProperty(Object oldElement, Object newElement,
-			Object beforeElement, Object value) {
 	}
 }

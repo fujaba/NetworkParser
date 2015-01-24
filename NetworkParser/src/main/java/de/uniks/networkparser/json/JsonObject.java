@@ -23,8 +23,6 @@ package de.uniks.networkparser.json;
  */
 import java.util.Map;
 
-import de.uniks.networkparser.AbstractKeyValueList;
-import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -32,6 +30,8 @@ import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
 import de.uniks.networkparser.list.SimpleEntity;
+import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.list.SimpleList;
 
 /* Copyright (c) 2002 JSON.org */
 
@@ -90,7 +90,7 @@ import de.uniks.networkparser.list.SimpleEntity;
  * @author JSON.org
  * @version 2011-11-24
  */
-public class JsonObject extends AbstractKeyValueList<String, Object> implements
+public class JsonObject extends SimpleKeyValueList<String, Object> implements
 		StringItem, FactoryEntity, Entity {
 	protected boolean caseSensitive=true;
 	
