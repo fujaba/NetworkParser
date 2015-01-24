@@ -1,5 +1,6 @@
 package de.uniks.networkparser.list;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -42,7 +43,10 @@ public abstract class AbstractList<V> extends AbstractArray {
 	 * @return  this boolean if success
 	 */
 	public boolean add(V e) {
-		addKey(e);
+		int pos = checkKey(e);
+		if(pos>=0) {
+			addKey(pos, e);
+		}
 		return true;
 	}
     
@@ -65,29 +69,113 @@ public abstract class AbstractList<V> extends AbstractArray {
 		}
 		return null;
 	}
+
+	@SuppressWarnings("unchecked")
+	public V get(int index) {
+		return (V) super.get(index);
+	}
 	
+    /**
+     * Returns an array containing all of the elements in this list in proper
+     * sequence (from first to last element); the runtime type of the returned
+     * array is that of the specified array.  If the list fits in the
+     * specified array, it is returned therein.  Otherwise, a new array is
+     * allocated with the runtime type of the specified array and the size of
+     * this list.
+     *
+     * <p>If the list fits in the specified array with room to spare
+     * (i.e., the array has more elements than the list), the element in
+     * the array immediately following the end of the collection is set to
+     * <tt>null</tt>.  (This is useful in determining the length of the
+     * list <i>only</i> if the caller knows that the list does not contain
+     * any null elements.)
+     *
+     * @param a the array into which the elements of the list are to
+     *          be stored, if it is big enough; otherwise, a new array of the
+     *          same runtime type is allocated for this purpose.
+     * @return an array containing the elements of the list
+     * @throws ArrayStoreException if the runtime type of the specified array
+     *         is not a supertype of the runtime type of every element in
+     *         this list
+     * @throws NullPointerException if the specified array is null
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T[] toArray(T[] a) {
+    	Object[] elementData;
+    	if(isBig()) {
+    		elementData = (Object[]) elements[SMALL_KEY];
+    	}else{
+    		elementData = elements;
+    	}
+        if (a.length < size) {
+            // Make a new array of a's runtime type, but my contents:
+            return (T[]) Arrays.copyOf(elementData, size, a.getClass());
+        }
+        System.arraycopy(elementData, 0, a, 0, size);
+        if (a.length > size)
+            a[size] = null;
+        return a;
+    }
 
-	public <T> T[] toArray(T[] a) {
-		// TODO Auto-generated method stub
-		return null;
+    public ListIterator<V> listIterator() {
+		return new SimpleIterator<V>(this);
 	}
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>This implementation iterates over this collection, checking each
+     * element returned by the iterator in turn to see if it's contained
+     * in the specified collection.  If it's not so contained, it's removed
+     * from this collection with the iterator's <tt>remove</tt> method.
+     *
+     * <p>Note that this implementation will throw an
+     * <tt>UnsupportedOperationException</tt> if the iterator returned by the
+     * <tt>iterator</tt> method does not implement the <tt>remove</tt> method
+     * and this collection contains one or more elements not present in the
+     * specified collection.
+     *
+     * @throws UnsupportedOperationException {@inheritDoc}
+     * @throws ClassCastException            {@inheritDoc}
+     * @throws NullPointerException          {@inheritDoc}
+     *
+     * @see #remove(Object)
+     * @see #contains(Object)
+     */
+    public boolean retainAll(Collection<?> c) {
+    	if(c==null){
+    		return false;
+    	}
+        boolean modified = false;
+        Iterator<V> it = iterator();
+        while (it.hasNext()) {
+            if (!c.contains(it.next())) {
+                it.remove();
+                modified = true;
+            }
+        }
+        return modified;
+    }
+
+	public ListIterator<V> listIterator(int index) {
+		return new SimpleIterator<V>(this);
+	}
+
+	public ListIterator<V> iteratorReverse() {
+		return new SimpleIterator<V>(this, size());
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public boolean remove(Object o) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public boolean containsAll(Collection<?> c) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public boolean removeAll(Collection<?> c) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public boolean retainAll(Collection<?> c) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -97,26 +185,11 @@ public abstract class AbstractList<V> extends AbstractArray {
 		return 0;
 	}
 
-	public ListIterator<V> listIterator() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public ListIterator<V> listIterator(int index) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-
 	public boolean addAll(int index, Collection<? extends V> c) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	public V get(int index) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	public V set(int index, V element) {
 		// TODO Auto-generated method stub
@@ -137,4 +210,9 @@ public abstract class AbstractList<V> extends AbstractArray {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	public int removeItemByObject(V value) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

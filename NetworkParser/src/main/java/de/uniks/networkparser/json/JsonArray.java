@@ -22,12 +22,13 @@ package de.uniks.networkparser.json;
  permissions and limitations under the Licence.
  */
 import java.util.Iterator;
-import de.uniks.networkparser.AbstractEntityList;
+
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
+import de.uniks.networkparser.list.SimpleList;
 
 /**
  * A JSONArray is an ordered sequence of values. Its external text form is a
@@ -73,7 +74,7 @@ import de.uniks.networkparser.interfaces.StringItem;
  * @version 2010-12-28
  */
 
-public class JsonArray extends AbstractEntityList<Object> implements
+public class JsonArray extends SimpleList<Object> implements
 		StringItem, FactoryEntity {
 
 	/**

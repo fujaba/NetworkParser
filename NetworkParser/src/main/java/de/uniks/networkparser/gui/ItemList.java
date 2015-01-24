@@ -23,11 +23,9 @@ package de.uniks.networkparser.gui;
  */
 
 import java.util.List;
+import de.uniks.networkparser.list.SimpleList;
 
-import de.uniks.networkparser.AbstractEntityList;
-import de.uniks.networkparser.AbstractList;
-
-public abstract class ItemList<E> extends AbstractEntityList<E> implements
+public abstract class ItemList<E> extends SimpleList<E> implements
 		List<E> {
 	private boolean readonly = false;
 
@@ -36,7 +34,7 @@ public abstract class ItemList<E> extends AbstractEntityList<E> implements
 	}
 
 	@SuppressWarnings("unchecked")
-	public <ST extends AbstractArray<E>> ST withReadonly(boolean readonly) {
+	public <ST extends SimpleList<E>> ST withReadonly(boolean readonly) {
 		this.readonly = readonly;
 		return (ST) this;
 	}

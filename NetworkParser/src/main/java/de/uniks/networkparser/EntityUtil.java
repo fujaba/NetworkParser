@@ -29,6 +29,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
 import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.list.SimpleList;
 
 public class EntityUtil {
 	private static final String HEXVAL = "0123456789abcdef";
@@ -212,7 +213,7 @@ public class EntityUtil {
 			return ((StringItem) item).toString();
 		}
 		if (value instanceof Collection) {
-			AbstractArray<?> item = reference.getNewArray().with(
+			SimpleList<?> item = reference.getNewArray().with(
 					(Collection<?>) value);
 			if (item instanceof StringItem) {
 				return ((StringItem) item).toString(indentFactor, intent);

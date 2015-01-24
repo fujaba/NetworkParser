@@ -24,29 +24,18 @@ package de.uniks.networkparser.graph;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import de.uniks.networkparser.AbstractEntityList;
-import de.uniks.networkparser.ArrayEntityList;
-import de.uniks.networkparser.ArraySimpleList;
 import de.uniks.networkparser.event.SimpleMapEntry;
 import de.uniks.networkparser.interfaces.Converter;
+import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.list.SimpleList;
 
-public class GraphList extends AbstractEntityList<GraphMember> implements GraphMember{
+public class GraphList extends GraphSimpleList<GraphMember> implements GraphMember{
 	private ArrayList<GraphEdge> edges = new ArrayList<GraphEdge>();
 	private String typ=GraphIdMap.CLASS;
 	private String style;
 	private String id;
 	private GraphOptions options;
 
-	@Override
-	protected void newSmallList() {
-		this.items = new GraphSmallList<GraphMember>();
-	}
-	
-	@Override
-	protected void newBigList() {
-		this.items = new GraphBigList<GraphMember>();
-	}
-	
 	public boolean add(GraphMember value) {
 		with(value);
 		return true;
@@ -109,17 +98,17 @@ public class GraphList extends AbstractEntityList<GraphMember> implements GraphM
 		return edges;
 	}
 
-	public ArrayEntityList<String, Object> getLinks() {
-		ArrayEntityList<String, Object> links = new ArrayEntityList<String, Object>();
+	public SimpleKeyValueList<String, Object> getLinks() {
+		SimpleKeyValueList<String, Object> links = new SimpleKeyValueList<String, Object>();
 		for (GraphEdge element : edges) {
 			for (GraphNode node : element.values()) {
 				String key = node.getTyp(typ, false);
-				ArraySimpleList<?> value = (ArraySimpleList<?>) links
+				SimpleList<?> value = (SimpleList<?>) links
 						.getValueItem(key);
 				if (value != null) {
 					value.with(element);
 				} else {
-					ArraySimpleList<GraphEdge> simpleList = new ArraySimpleList<GraphEdge>();
+					SimpleList<GraphEdge> simpleList = new SimpleList<GraphEdge>();
 					simpleList.add(element);
 					links.put(key, simpleList);
 				}

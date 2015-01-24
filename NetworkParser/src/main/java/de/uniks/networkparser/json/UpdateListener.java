@@ -27,9 +27,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import de.uniks.networkparser.ArrayEntityList;
 import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 
 /**
  * The listener interface for receiving update events. The class that is
@@ -48,7 +48,7 @@ public class UpdateListener implements PropertyChangeListener {
 	private ArrayList<String> suspendIdList;
 
 	/** The garbage collection. */
-	private ArrayEntityList<String, Object> garbageCollection = null;
+	private SimpleKeyValueList<String, Object> garbageCollection = null;
 
 	/** The class counts. */
 	private ArrayList<String> classCounts;
@@ -75,7 +75,7 @@ public class UpdateListener implements PropertyChangeListener {
 	 * @return the json object
 	 */
 	public JsonObject startGarbageColection(Object root) {
-		this.garbageCollection = new ArrayEntityList<String, Object>();
+		this.garbageCollection = new SimpleKeyValueList<String, Object>();
 		this.classCounts = new ArrayList<String>();
 		JsonObject initField = this.map.toJsonObject(root);
 		countMessage(initField);
@@ -91,7 +91,7 @@ public class UpdateListener implements PropertyChangeListener {
 	 */
 	public JsonObject garbageCollection(Object root) {
 		boolean isStarted = this.garbageCollection != null;
-		this.garbageCollection = new ArrayEntityList<String, Object>();
+		this.garbageCollection = new SimpleKeyValueList<String, Object>();
 		this.classCounts = new ArrayList<String>();
 		JsonObject initField = this.map.toJsonObject(root);
 		countMessage(initField);

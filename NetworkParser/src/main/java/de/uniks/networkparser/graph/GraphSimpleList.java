@@ -1,8 +1,8 @@
 package de.uniks.networkparser.graph;
 
-import de.uniks.networkparser.listold.SimpleSmallList;
+import de.uniks.networkparser.list.SimpleList;
 
-public class GraphSmallList<V> extends SimpleSmallList<V>{
+public class GraphSimpleList<V> extends SimpleList<V>{
 	@Override
 	protected boolean checkValue(Object a, Object b) {
 		String idA = ((GraphMember)a).getId();

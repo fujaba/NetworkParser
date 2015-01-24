@@ -25,11 +25,10 @@ package de.uniks.networkparser.gui.grid;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
-import de.uniks.networkparser.AbstractEntityList;
-import de.uniks.networkparser.AbstractList;
+import de.uniks.networkparser.list.SimpleList;
 
 public class PropertyChangeListenerList extends
-		AbstractEntityList<PropertyChangeListener> implements
+		SimpleList<PropertyChangeListener> implements
 		List<PropertyChangeListener> {
 	@Override
 	public String toString() {
@@ -49,7 +48,7 @@ public class PropertyChangeListenerList extends
 	}
 
 	@Override
-	public AbstractArray<PropertyChangeListener> getNewInstance() {
+	public SimpleList<PropertyChangeListener> getNewInstance() {
 		return new PropertyChangeListenerList();
 	}
 
