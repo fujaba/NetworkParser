@@ -23,8 +23,8 @@ package de.uniks.networkparser;
  */
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Buffer;
+import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
-import de.uniks.networkparser.list.SimpleList;
 
 /**
  * parseToEntity The Class Tokener.
@@ -611,5 +611,5 @@ public abstract class Tokener {
 
 	public abstract void parseToEntity(SimpleKeyValueList<?, ?> entity);
 
-	public abstract void parseToEntity(SimpleList<?> entityList);
+	public abstract void parseToEntity(AbstractList<?> entityList);
 }

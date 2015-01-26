@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.IdMapEncoder;
@@ -41,6 +42,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.json.util.JsonArrayCreator;
 import de.uniks.networkparser.json.util.JsonObjectCreator;
+import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.logic.Deep;
 import de.uniks.networkparser.sort.EntityComparator;
 
@@ -149,7 +151,7 @@ public class JsonIdMap extends IdMap {
 		}
 
 		JsonObject jsonProp = getPrototyp();
-		jsonProp.withAllowEmpty(filter.isFullSeriation());
+		jsonProp.withAllowEmptyValue(filter.isFullSeriation());
 
 		String[] properties = creator.getProperties();
 		if (properties != null) {
@@ -200,7 +202,7 @@ public class JsonIdMap extends IdMap {
 				SendableEntityCreator referenceCreator = getCreatorClass(value);
 				if (value instanceof Collection<?> && referenceCreator == null) {
 					// Simple List or Assocs
-					AbstractArray<Object> subValues = getPrototyp()
+					AbstractList<Object> subValues = getPrototyp()
 							.getNewArray();
 					// jsonArray.getNewArray();
 					for (Object containee : ((Collection<?>) value)) {
@@ -216,7 +218,7 @@ public class JsonIdMap extends IdMap {
 				} else if (value instanceof Map<?, ?>
 						&& referenceCreator == null) {
 					// Maps
-					AbstractArray<Object> subValues = getPrototyp()
+					AbstractList<Object> subValues = getPrototyp()
 							.getNewArray();
 					Map<?, ?> map = (Map<?, ?>) value;
 					String packageName = ObjectMapEntry.class.getName();
@@ -552,7 +554,7 @@ public class JsonIdMap extends IdMap {
 					Object refValue = creator.getValue(ref_Obj, property);
 					if (refValue instanceof Map<?, ?>) {
 						JsonObject json = (JsonObject) value;
-						Iterator<String> i = json.keys();
+						Iterator<String> i = json.keySet().iterator();
 						while (i.hasNext()) {
 							String key = i.next();
 							Object entryValue = json.get(key);
@@ -707,7 +709,7 @@ public class JsonIdMap extends IdMap {
 
 		if (properties != null) {
 			JsonObject jsonProps = getPrototyp();
-			jsonProps.withAllowEmpty(filter.isFullSeriation());
+			jsonProps.withAllowEmptyValue(filter.isFullSeriation());
 			for (String property : properties) {
 				if (jsonProps.has(property)) {
 					if (logger.error(this, "toJsonArray",

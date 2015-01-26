@@ -29,6 +29,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
+import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleEntity;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
@@ -298,7 +299,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 	 *            entity to add values with the tokener
 	 * @return Itself
 	 */
-	public JsonObject withEntity(AbstractKeyValueList<?, ?> entity) {
+	public JsonObject withEntity(SimpleKeyValueList<?, ?> entity) {
 		new JsonTokener().parseToEntity(this, entity);
 		return this;
 	}
@@ -317,17 +318,6 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 	@Override
 	public JsonArray getNewArray() {
 		return new JsonArray();
-	}
-
-	@Override
-	public BaseItem withVisible(boolean value) {
-		this.items.withVisible(value);
-		return this;
-	}
-
-	@Override
-	public boolean isVisible() {
-		return this.items.isVisible();
 	}
 
 	public boolean has(String key) {
@@ -382,10 +372,10 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 		Object object = this.get(key);
 		if (object == null) {
 			this.put(key,
-					value instanceof AbstractArray ? getNewArray().with(value)
+					value instanceof AbstractList ? getNewArray().with(value)
 							: value);
-		} else if (object instanceof AbstractArray) {
-			((AbstractArray<?>) object).with(value);
+		} else if (object instanceof AbstractList) {
+			((AbstractList<?>) object).with(value);
 		} else {
 			this.put(key, getNewArray().with(object, value));
 		}

@@ -72,7 +72,7 @@ public abstract class AbstractList<V> extends AbstractArray {
 
 	@SuppressWarnings("unchecked")
 	public V get(int index) {
-		return (V) super.get(index);
+		return (V) super.getKey(index);
 	}
 	
     /**
@@ -213,6 +213,10 @@ public abstract class AbstractList<V> extends AbstractArray {
 	public int removeItemByObject(V value) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+	public AbstractList<V> getByObject(String id2) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

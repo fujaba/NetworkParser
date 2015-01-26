@@ -274,7 +274,7 @@ public class UpdateListener implements PropertyChangeListener {
 			if (remove == null && update != null) {
 				// create Message
 				Object refObject = creator.getSendableInstance(true);
-				Iterator<String> keys = update.keys();
+				Iterator<String> keys = update.keySet().iterator();
 				while (keys.hasNext()) {
 					String key = keys.next();
 					Object value = creator.getValue(masterObj, key);
@@ -312,7 +312,7 @@ public class UpdateListener implements PropertyChangeListener {
 			} else if (update == null && remove != null) {
 				// delete Message
 				Object refObject = creator.getSendableInstance(true);
-				Iterator<String> keys = remove.keys();
+				Iterator<String> keys = remove.keyIterator();
 				while (keys.hasNext()) {
 					String key = keys.next();
 					Object value = creator.getValue(masterObj, key);
@@ -344,7 +344,7 @@ public class UpdateListener implements PropertyChangeListener {
 				return true;
 			} else if (update != null) {
 				// update Message
-				Iterator<String> keys = update.keys();
+				Iterator<String> keys = update.keyIterator();
 				while (keys.hasNext()) {
 					String key = keys.next();
 					// CHECK WITH REMOVE key
