@@ -408,7 +408,7 @@ public class AbstractArray {
 		return size;
 	}
 
-	public Object get(int index) {
+	public Object getKey(int index) {
 		if(index<0) {
 			index = size + 1 - index;
 		}
@@ -417,6 +417,16 @@ public class AbstractArray {
 				return ((Object[])elements[SMALL_KEY])[index];
 			}
 			return elements[index];
+		}
+		return null;
+	}
+	
+	public Object getValue(int index) {
+		if(index<0) {
+			index = size + 1 - index;
+		}
+		if(index>=0 && index<size){
+			return ((Object[])elements[SMALL_VALUE])[index];
 		}
 		return null;
 	}
