@@ -144,8 +144,12 @@ public class FXStageController implements StageEvent, WindowListener {
 
 	public void show(Stage stage) {
 		this.withStage(stage);
+		if(this.stage != null && this.stage.getScene()!=null) {
+			if(this.stage.getScene().getRoot() != this.getPane()) {
+				this.createScene(this.pane);
+			}
+		}
 		showing();
-		
 	}
 
 	protected void showing() {
