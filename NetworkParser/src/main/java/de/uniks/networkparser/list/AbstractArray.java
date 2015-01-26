@@ -92,6 +92,14 @@ public class AbstractArray implements BaseItem {
     	return (ST) this;
     }
     
+    public AbstractArray withFlag(int value)  {
+    	this.flag = (byte) (this.flag & value);
+    	if(value == BIDI){
+    		this.flag = (byte) (this.flag & MAP);
+    	}
+    	return this;
+    }
+    
     boolean isBig() {
     	return size>MINHASHINGSIZE && elements.length <= (BIG_VALUE+1);
     }
@@ -392,9 +400,9 @@ public class AbstractArray implements BaseItem {
 		if (isComparator()) {
 			boolean keyId = !isAllowDuplicate(); 
 			for (int i = 0; i < size(); i++) {
-				int result = comparator().compare(get(i), element);
+				int result = comparator().compare(getKey(i), element);
 				if (result >= 0) {
-					if (keyId && get(i) == element) {
+					if (keyId && getKey(i) == element) {
 						return -1;
 					}
 					return i;
@@ -457,7 +465,7 @@ public class AbstractArray implements BaseItem {
         size++;
         Object beforeElement = null;
         if (size() > 1) {
-        	beforeElement = this.get(size() - 1);
+        	beforeElement = this.getKey(size() - 1);
       	}
         fireProperty(null, element, beforeElement, null);
 		return pos;
@@ -690,7 +698,7 @@ public class AbstractArray implements BaseItem {
 		if (index == -1) {
 			return false;
 		}
-		Object object = get(index);
+		Object object = getKey(index);
 		if (object.equals(Boolean.FALSE)
 				|| (object instanceof String && ((String) object)
 						.equalsIgnoreCase("false"))) {
@@ -715,7 +723,7 @@ public class AbstractArray implements BaseItem {
 	 *             to a number.
 	 */
 	public double getDouble(int index) throws RuntimeException {
-		Object object = get(index);
+		Object object = getKey(index);
 		try {
 			return object instanceof Number ? ((Number) object).doubleValue()
 					: Double.parseDouble((String) object);
@@ -735,7 +743,7 @@ public class AbstractArray implements BaseItem {
 	 *             If the key is not found or if the value is not a number.
 	 */
 	public int getInt(int index) throws RuntimeException {
-		Object object = get(index);
+		Object object = getKey(index);
 		try {
 			return object instanceof Number ? ((Number) object).intValue()
 					: Integer.parseInt((String) object);
@@ -756,7 +764,7 @@ public class AbstractArray implements BaseItem {
 	 *             to a number.
 	 */
 	public long getLong(int index) throws RuntimeException {
-		Object object = get(index);
+		Object object = getKey(index);
 		try {
 			return object instanceof Number ? ((Number) object).longValue()
 					: Long.parseLong((String) object);
@@ -776,7 +784,7 @@ public class AbstractArray implements BaseItem {
 	 *             If there is no value for the index.
 	 */
 	public String getString(int index) throws RuntimeException {
-		return get(index).toString();
+		return getKey(index).toString();
 	}
 
 	public int getIndex(Object o) {
