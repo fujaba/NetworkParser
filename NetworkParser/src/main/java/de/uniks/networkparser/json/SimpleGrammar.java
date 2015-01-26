@@ -83,7 +83,7 @@ public class SimpleGrammar extends Grammar {
 
 		if (jsonProp.size() > 0) {
 			for (int i = 0; i < jsonProp.size(); i++) {
-				json.put(jsonProp.get(i), jsonProp.getValue(i));
+				json.put(jsonProp.getKey(i), jsonProp.getValue(i));
 			}
 		}
 		return json;

@@ -56,7 +56,7 @@ public class GraphOptions {
 		result.withValue("cardinalityInfo", cardinalityInfo);
 		result.withValue("propertyInfo", propertyInfo);
 		if(buttons != null){
-			result.withValue("buttons", new JsonArray().withList(buttons));
+			result.withValue("buttons", new JsonArray().withAll(buttons));
 		}
 		return result;
 	}

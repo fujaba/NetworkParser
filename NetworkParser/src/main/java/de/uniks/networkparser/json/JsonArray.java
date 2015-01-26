@@ -255,7 +255,7 @@ public class JsonArray extends SimpleList<Object> implements
 	}
 
 	public JsonObject get(String id) {
-		for (Object item : items) {
+		for (Object item : this) {
 			if (item instanceof JsonObject) {
 				JsonObject json = (JsonObject) item;
 				if (json.has(JsonIdMap.ID)
@@ -265,17 +265,6 @@ public class JsonArray extends SimpleList<Object> implements
 			}
 		}
 		return null;
-	}
-
-	@Override
-	public BaseItem withVisible(boolean value) {
-		this.items.withVisible(value);
-		return this;
-	}
-
-	@Override
-	public boolean isVisible() {
-		return items.isVisible();
 	}
 
 	@Override

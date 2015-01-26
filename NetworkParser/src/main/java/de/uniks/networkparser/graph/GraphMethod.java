@@ -54,7 +54,7 @@ public class GraphMethod extends GraphSimpleList<GraphParameter> implements Grap
 		boolean first = true;
 		int i = 0;
 
-		for (GraphParameter parameter : items) {
+		for (GraphParameter parameter : this) {
 
 			if (first) {
 				sb.append(getParameterSignature(includeName, parameter, i));
@@ -63,7 +63,7 @@ public class GraphMethod extends GraphSimpleList<GraphParameter> implements Grap
 				sb.append(getParameterSignature(includeName, parameter, i));
 			}
 
-			if (i < items.size() - 1) {
+			if (i < size() - 1) {
 				if (includeName) {
 					sb.append(", ");
 				} else {

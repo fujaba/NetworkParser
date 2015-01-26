@@ -26,6 +26,7 @@ import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.FactoryEntity;
+import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.xml.XMLEntity;
 
@@ -59,8 +60,8 @@ public class JsonTokener extends Tokener {
 		case '{':
 			if (creator instanceof FactoryEntity) {
 				BaseItem element = ((FactoryEntity) creator).getNewObject();
-				if (element instanceof AbstractKeyValueList<?, ?>) {
-					this.parseToEntity((AbstractKeyValueList<?, ?>) element);
+				if (element instanceof SimpleKeyValueList<?, ?>) {
+					this.parseToEntity((SimpleKeyValueList<?, ?>) element);
 				}
 
 				return element;
@@ -68,8 +69,8 @@ public class JsonTokener extends Tokener {
 		case '[':
 			if (creator instanceof FactoryEntity) {
 				BaseItem element = ((FactoryEntity) creator).getNewArray();
-				if (element instanceof AbstractArray<?>) {
-					this.parseToEntity((AbstractArray<?>) element);
+				if (element instanceof AbstractList<?>) {
+					this.parseToEntity((AbstractList<?>) element);
 				}
 				return element;
 			}
@@ -145,7 +146,7 @@ public class JsonTokener extends Tokener {
 	 * @return Itself
 	 */
 	public JsonObject parseToEntity(JsonObject parent,
-			AbstractKeyValueList<?, ?> newValue) {
+			SimpleKeyValueList<?, ?> newValue) {
 		if (newValue instanceof XMLEntity) {
 			XMLEntity xmlEntity = (XMLEntity) newValue;
 			parent.put(JsonIdMap.CLASS, xmlEntity.getTag());
@@ -167,7 +168,7 @@ public class JsonTokener extends Tokener {
 	}
 
 	@Override
-	public void parseToEntity(AbstractKeyValueList<?, ?> entity) {
+	public void parseToEntity(SimpleKeyValueList<?, ?> entity) {
 		char c;
 		String key;
 		if (nextStartClean() != '{') {
@@ -223,7 +224,7 @@ public class JsonTokener extends Tokener {
 	}
 
 	@Override
-	public void parseToEntity(AbstractArray<?> entityList) {
+	public void parseToEntity(AbstractList<?> entityList) {
 		char c = nextStartClean();
 		if (c != '[') {
 			if (logger.error(this, "parseToEntity",

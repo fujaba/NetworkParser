@@ -4,11 +4,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import de.uniks.networkparser.interfaces.FactoryEntity;
-import de.uniks.networkparser.listold.AbstractArray;
-import de.uniks.networkparser.listold.AbstractKeyValueList;
+import de.uniks.networkparser.xml.XMLEntity;
 
 public class SimpleKeyValueList<K, V> extends AbstractArray implements Map<K, V> {
 	public Object getValueItem(Object key) {
@@ -217,6 +215,21 @@ public class SimpleKeyValueList<K, V> extends AbstractArray implements Map<K, V>
 		}
 		return new SimpleSet<K>().init(this.elements);
 	}
+	
+	public Iterator<K> keyIterator() {
+		return keySet().iterator();
+	}
+
+	public SimpleKeyValueList<K, V> getNewInstance() {
+		return new SimpleKeyValueList<K, V>();
+	}
+	
+	
+	
+	
+	
+	
+	
 
 	@Override
 	public boolean containsKey(Object key) {

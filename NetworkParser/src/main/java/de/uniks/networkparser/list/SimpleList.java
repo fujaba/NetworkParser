@@ -9,4 +9,9 @@ public class SimpleList<V> extends AbstractList<V> implements List<V> {
 	public SimpleList<V> getNewInstance() {
 		return new SimpleList<V>();
 	}
+	
+	@Override
+	protected SimpleList<V> clone() {
+		return getNewInstance();
+	}
 }

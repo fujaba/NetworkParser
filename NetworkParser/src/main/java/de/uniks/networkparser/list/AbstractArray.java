@@ -4,8 +4,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
+import de.uniks.networkparser.interfaces.BaseItem;
 
-public class AbstractArray {
+public class AbstractArray implements BaseItem {
 	/** Is Allow Duplicate Items in List	 */
 	public static final byte ALLOWDUPLICATE = 0x04;
 	/** Is Allow Empty Value in List (null)  */
@@ -515,11 +516,12 @@ public class AbstractArray {
 		return this;
 	}
 
-	public void withAll(Collection<?> list) {
+	public AbstractArray withAll(Collection<?> list) {
     	grow(list.size());
     	for(Iterator<?> i = list.iterator();i.hasNext();) {
     		this.with(i.next());
     	}
+    	return this;
 	}
 	
     /**
