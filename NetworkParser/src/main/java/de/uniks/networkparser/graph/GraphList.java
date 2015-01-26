@@ -83,8 +83,8 @@ public class GraphList extends GraphSimpleList<GraphMember> implements GraphMemb
 	public boolean add(GraphEdge edge) {
 		for (Iterator<GraphEdge> i = this.edges.iterator(); i.hasNext();) {
 			GraphEdge item = i.next();
-			if (item.contains(edge.getOther().values())
-					&& item.getOther().containsAll(edge.values())) {
+			if (item.contains(edge.getOther())
+					&& item.getOther().containsAll(edge)) {
 				// Back again
 				item.with(edge.getOther().getCardinality());
 				item.with(edge.getOther().getProperty());
@@ -101,7 +101,7 @@ public class GraphList extends GraphSimpleList<GraphMember> implements GraphMemb
 	public SimpleKeyValueList<String, Object> getLinks() {
 		SimpleKeyValueList<String, Object> links = new SimpleKeyValueList<String, Object>();
 		for (GraphEdge element : edges) {
-			for (GraphNode node : element.values()) {
+			for (GraphNode node : element) {
 				String key = node.getTyp(typ, false);
 				SimpleList<?> value = (SimpleList<?>) links
 						.getValueItem(key);
