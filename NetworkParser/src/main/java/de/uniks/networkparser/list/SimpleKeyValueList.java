@@ -73,28 +73,28 @@ public class SimpleKeyValueList<K, V> extends AbstractArray implements Map<K, V>
 						if (end == len + 2) {
 							// Get List
 							if (this instanceof FactoryEntity) {
-								AbstractArray<?> result = (AbstractArray<?>) ((FactoryEntity) this)
+								AbstractList<?> result = (AbstractList<?>) ((FactoryEntity) this)
 										.getNewArray();
-								AbstractArray<?> items = (AbstractArray<?>) child;
+								AbstractList<?> items = (AbstractList<?>) child;
 								for (int z = 0; z < items.size(); z++) {
-									result.with(((AbstractKeyValueList<?, ?>) items
+									result.with(((SimpleKeyValueList<?, ?>) items
 											.get(z)).getValueItem(keyString
 											.substring(end + 1)));
 								}
 								return result;
 							}
 						}
-						AbstractArray<?> list = (AbstractArray<?>) child;
+						AbstractList<?> list = (AbstractList<?>) child;
 						if (id == -2) {
 							id = list.size() - 1;
 						}
 						if (list.size() >= id) {
-							return ((AbstractKeyValueList<?, ?>) list.get(id))
+							return ((SimpleKeyValueList<?, ?>) list.get(id))
 									.getValueItem(keyString.substring(end + 1));
 						}
 					}
 				} else {
-					return ((AbstractKeyValueList<?, ?>) child)
+					return ((SimpleKeyValueList<?, ?>) child)
 							.getValueItem(keyString.substring(end + 1));
 				}
 			}
@@ -102,11 +102,6 @@ public class SimpleKeyValueList<K, V> extends AbstractArray implements Map<K, V>
 		return null;
 	}
 	
-	private int getIndex(Object key) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
 	/**
 	 * Set a Value to Entity With this Method it is possible to set a Value of a
 	 * Set by using a [Number] or [L] for Last
@@ -118,7 +113,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray implements Map<K, V>
 	 * @return Itself
 	 */
 	@SuppressWarnings("unchecked")
-	public AbstractKeyValueList<K, V> setValueItem(Object key, Object value) {
+	public SimpleKeyValueList<K, V> setValueItem(Object key, Object value) {
 		int pos = getIndex(key);
 		if (pos >= 0) {
 			V oldValue = this.values.get(pos);
@@ -170,7 +165,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray implements Map<K, V>
 			if (end == 0) {
 				if (id >= 0 || id == -2) {
 					if (child instanceof AbstractArray) {
-						AbstractArray<Object> list = (AbstractArray<Object>) child;
+						AbstractList<Object> list = (AbstractList<Object>) child;
 						if (id == -2) {
 							id = list.size() - 1;
 						}
@@ -192,19 +187,19 @@ public class SimpleKeyValueList<K, V> extends AbstractArray implements Map<K, V>
 			} else {
 				if (id >= 0 || id == -2) {
 					if (child instanceof AbstractArray) {
-						AbstractArray<?> list = (AbstractArray<?>) child;
+						AbstractList<?> list = (AbstractList<?>) child;
 						if (id == -2) {
 							id = list.size() - 1;
 						}
 						if (list.size() >= id) {
-							((AbstractKeyValueList<K, ?>) list.get(id))
+							((SimpleKeyValueList<K, ?>) list.get(id))
 									.setValueItem(
 											(K) keyString.substring(end + 1),
 											value);
 						}
 					}
 				} else {
-					((AbstractKeyValueList<K, ?>) child).setValueItem(
+					((SimpleKeyValueList<K, ?>) child).setValueItem(
 							(K) keyString.substring(end + 1), value);
 				}
 			}
@@ -237,7 +232,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray implements Map<K, V>
 
 	@Override
 	public V get(Object key) {
-		// TODO Auto-generated method stub
+//		return super.getValue(key);
 		return null;
 	}
 
@@ -258,7 +253,6 @@ public class SimpleKeyValueList<K, V> extends AbstractArray implements Map<K, V>
 		// TODO Auto-generated method stub
 
 	}
-
 
 	@Override
 	public Collection<V> values() {
@@ -286,9 +280,23 @@ public class SimpleKeyValueList<K, V> extends AbstractArray implements Map<K, V>
 		return this;
 	}
 
+	//Methode for Type Casting
 	@Override
 	public SimpleKeyValueList<K, V> withAllowDuplicate(boolean allowDuplicate) {
 		super.withAllowDuplicate(allowDuplicate);
 		return this;
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public K getKey(int index) {
+		return (K) super.getKey(index);
+	}
+
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public V getValue(int index) {
+		return (V) super.getValue(index);
 	}
 }
