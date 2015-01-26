@@ -2,6 +2,7 @@ package de.uniks.networkparser.interfaces;
 
 import de.uniks.networkparser.list.AbstractList;
 
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel

@@ -550,6 +550,14 @@ public class DialogBox {
 			.show(parent);
 	}
 	
+	public static DialogButton showInfo(String title, String text) {
+		return new DialogBox()
+			.withTitle(title)
+			.withCenterInfo(text)
+			.withActionButton(new DialogButton().withName("OK").withAction(Grafik.close))
+			.show(null);
+	}
+	
 	public static DialogButton showQuestion(Window parent, String title, String text) {
 		return new DialogBox()
 			.withTitle(title)

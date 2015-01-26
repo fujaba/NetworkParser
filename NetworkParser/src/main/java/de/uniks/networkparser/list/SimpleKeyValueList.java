@@ -5,10 +5,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.xml.XMLEntity;
 
-public class SimpleKeyValueList<K, V> extends AbstractArray implements Map<K, V> {
+public class SimpleKeyValueList<K, V> extends AbstractArray implements Map<K, V>, FactoryEntity {
 	public Object getValueItem(Object key) {
 		int pos = getIndex(key);
 		if (pos >= 0) {
@@ -311,5 +312,32 @@ public class SimpleKeyValueList<K, V> extends AbstractArray implements Map<K, V>
 	@SuppressWarnings("unchecked")
 	public V getValue(int index) {
 		return (V) super.getValue(index);
+	}
+
+	public boolean containKey(String string) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean containValue(Object value) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public String getKeyByObject(Object obj) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public AbstractList<?> getNewArray() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public BaseItem getNewObject() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
