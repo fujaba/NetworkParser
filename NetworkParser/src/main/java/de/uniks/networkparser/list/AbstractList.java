@@ -6,7 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-public abstract class AbstractList<V> extends AbstractArray {
+import de.uniks.networkparser.interfaces.BaseList;
+
+public abstract class AbstractList<V> extends AbstractArray implements BaseList {
     /**
      * {@inheritDoc}
      *
@@ -165,6 +167,11 @@ public abstract class AbstractList<V> extends AbstractArray {
 		return new SimpleIterator<V>(this, size());
 	}
 	
+	@Override
+	public AbstractList<V> with(Object... values) {
+		super.with(values);
+		return this;
+	}
 	
 	
 	
@@ -214,7 +221,7 @@ public abstract class AbstractList<V> extends AbstractArray {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-	public AbstractList<V> getByObject(String id2) {
+	public V getByObject(String id2) {
 		// TODO Auto-generated method stub
 		return null;
 	}

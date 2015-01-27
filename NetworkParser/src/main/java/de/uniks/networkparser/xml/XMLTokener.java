@@ -28,6 +28,7 @@ import de.uniks.networkparser.ReferenceObject;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.FactoryEntity;
+import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 
@@ -187,7 +188,7 @@ public class XMLTokener extends Tokener {
 	}
 
 	@Override
-	public void parseToEntity(SimpleList<?> entityList) {
+	public void parseToEntity(AbstractList<?> entityList) {
 		// Do Nothing
 	}
 

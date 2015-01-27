@@ -325,8 +325,8 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 	}
 
 	@Override
-	public JsonObject withValue(Object key, Object value) {
-		super.withValue(key, value);
+	public JsonObject withKeyValue(Object key, Object value) {
+		super.withKeyValue(key, value);
 		return this;
 	}
 
@@ -407,7 +407,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 //		return -1;
 //	}
 
-	public JsonObject withValue(String key, Object value) {
+	public JsonObject withKeyValue(String key, Object value) {
 		if(value != null) {
 			// Only add value != null
 			int index = getIndex(key);
@@ -415,7 +415,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 				setValueItem(key, value);
 				return this;
 			}
-			super.withValue(key, value);
+			super.withKeyValue(key, value);
 		}
 		return this;
 	}

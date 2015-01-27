@@ -21,7 +21,6 @@ package de.uniks.networkparser.xml;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
  */
-import java.util.AbstractList;
 import java.util.ArrayList;
 
 import de.uniks.networkparser.EntityUtil;
@@ -31,7 +30,6 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
-import de.uniks.networkparser.list.AbstractArray;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
 /**
@@ -266,7 +264,8 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements
 
 	@Override
 	public Object remove(Object key) {
-		return removeItemByObject("" + key);
+		removeByObject("" + key);
+		return key;
 	}
 
 	/**
@@ -281,8 +280,8 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements
 	}
 
 	@Override
-	public XMLEntity withValue(Object key, Object value) {
-		super.withValue(key, value);
+	public XMLEntity withKeyValue(Object key, Object value) {
+		super.withKeyValue(key, value);
 		return this;
 	}
 }

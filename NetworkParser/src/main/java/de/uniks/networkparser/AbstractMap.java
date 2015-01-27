@@ -27,8 +27,6 @@ import java.util.Map.Entry;
 
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
-import de.uniks.networkparser.list.SimpleList;
-import de.uniks.networkparser.listold.ArrayEntityList;
 
 /**
  * AbstractIdMap embedded all methods for all formats.
@@ -119,7 +117,7 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 	 */
 	public AbstractMap withCreator(String className,
 			SendableEntityCreator creator) {
-		this.creators.addEntity(className, creator);
+		this.creators.add(className, creator);
 		return this;
 	}
 

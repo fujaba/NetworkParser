@@ -98,7 +98,7 @@ public class JsonTokener extends Tokener {
 			}
 
 			for (int i = 0; i < xmlEntity.size(); i++) {
-				parseEntityProp(props, xmlEntity.getValue(i), xmlEntity.get(i));
+				parseEntityProp(props, xmlEntity.getValue(i), xmlEntity.getKey(i));
 			}
 			for (XMLEntity children : xmlEntity.getChildren()) {
 				parseEntityProp(props, children, children.getTag());
@@ -157,7 +157,7 @@ public class JsonTokener extends Tokener {
 			}
 
 			for (int i = 0; i < xmlEntity.size(); i++) {
-				parseEntityProp(props, xmlEntity.getValue(i), xmlEntity.get(i));
+				parseEntityProp(props, xmlEntity.getValue(i), xmlEntity.getKey(i));
 			}
 			for (XMLEntity children : xmlEntity.getChildren()) {
 				parseEntityProp(props, children, children.getTag());
@@ -219,7 +219,7 @@ public class JsonTokener extends Tokener {
 				return;
 			}
 			next();
-			entity.withValue(key, nextValue(entity, isQuote));
+			entity.withKeyValue(key, nextValue(entity, isQuote));
 		}
 	}
 

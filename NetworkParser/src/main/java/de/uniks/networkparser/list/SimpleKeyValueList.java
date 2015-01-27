@@ -5,11 +5,12 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.BaseList;
 import de.uniks.networkparser.interfaces.FactoryEntity;
-import de.uniks.networkparser.xml.XMLEntity;
 
-public class SimpleKeyValueList<K, V> extends AbstractArray implements Map<K, V>, FactoryEntity {
+public class SimpleKeyValueList<K, V> extends AbstractArray implements Map<K, V>, FactoryEntity, Iterable<K>, BaseList {
 	public Object getValueItem(Object key) {
 		int pos = getIndex(key);
 		if (pos >= 0) {
@@ -225,12 +226,198 @@ public class SimpleKeyValueList<K, V> extends AbstractArray implements Map<K, V>
 		return new SimpleKeyValueList<K, V>();
 	}
 	
+	/**
+	 * Get the boolean value associated with an index. The string values "true"
+	 * and "false" are converted to boolean.
+	 *
+	 * @param key
+	 *            The Value 
+	 * @return The truth.
+	 * @throws RuntimeException
+	 *             If there is no value for the index or if the value is not
+	 *             convertible to boolean.
+	 */
+	public boolean getBoolean(K key) throws RuntimeException {
+		Object value = get(key);
+			
+		if (Boolean.FALSE.equals(value)
+				|| (value instanceof String && ((String) value)
+						.equalsIgnoreCase("false"))) {
+			return false;
+		} else if (Boolean.TRUE.equals(value)
+				|| (value instanceof String && ((String) value)
+						.equalsIgnoreCase("true"))) {
+			return true;
+		}
+		throw new RuntimeException("SimpleKeyValueList is not a boolean.");
+	}
+
+	/**
+	 * Get the double value associated with an index.
+	 *
+	 * @param key  The Value
+	 * @return The value.
+	 * @throws RuntimeException
+	 *             If the key is not found or if the value cannot be converted
+	 *             to a number.
+	 */
+	public double getDouble(K key) throws RuntimeException {
+		Object object = get(key);
+		try {
+			return object instanceof Number ? ((Number) object).doubleValue()
+					: Double.parseDouble((String) object);
+		} catch (Exception e) {
+			throw new RuntimeException("SimpleKeyValueList is not a number.");
+		}
+	}
+	
+	/**
+	 * Get the int value associated with an index.
+	 *
+	 * @param key  The Value
+	 * @return The value.
+	 * @throws RuntimeException
+	 *             If the key is not found or if the value is not a number.
+	 */
+	public int getInt(K key) throws RuntimeException {
+		Object object = get(key);
+		try {
+			return object instanceof Number ? ((Number) object).intValue()
+					: Integer.parseInt((String) object);
+		} catch (Exception e) {
+			throw new RuntimeException("SimpleKeyValueList is not a number.");
+		}
+	}
+	
+	/**
+	 * Get the long value associated with an index.
+	 *
+	 * @param key  The Value
+	 * @return The value.
+	 * @throws RuntimeException
+	 *             If the key is not found or if the value cannot be converted
+	 *             to a number.
+	 */
+	public long getLong(K key) throws RuntimeException {
+		Object object = get(key);
+		try {
+			return object instanceof Number ? ((Number) object).longValue()
+					: Long.parseLong((String) object);
+		} catch (Exception e) {
+			throw new RuntimeException("SimpleKeyValueList is not a number.");
+		}
+	}
+	
+	/**
+	 * Get the string associated with an index.
+	 *
+	 * @param key  The Value
+	 * @return A string value.
+	 * @throws RuntimeException
+	 *             If there is no value for the index.
+	 */
+	public String getString(K key) throws RuntimeException {
+		Object object = get(key);
+		if(object==null){
+			return "";
+		}
+		return object.toString();
+	}
+	
+	/**
+	 * Get the string associated with an index.
+	 *
+	 * @param key
+	 *            The index must be between 0 and length() - 1.
+	 * @param defaultValue
+	 *            The defaultValue
+	 * @return A string value.
+	 * @throws RuntimeException
+	 *             If there is no value for the index.
+	 */
+	public String getString(K key, String defaultValue) {
+		if(key==null){
+			return defaultValue;
+		}
+		int pos = getIndex(key);
+		if (pos < 0) {
+			return defaultValue;
+		}
+		return getValue(pos).toString();
+	}
+	
+	/**
+	 * Increment a property of a Entity. If there is no such property, create
+	 * one with a value of 1. If there is such a property, and if it is an
+	 * Integer, Long, Double, or Float, then add one to it.
+	 *
+	 * @param key
+	 *            A key string.
+	 * @return this.
+	 * @throws RuntimeException
+	 *             If there is already a property with this name that is not an
+	 *             Integer, Long, Double, or Float.
+	 */
+	public SimpleKeyValueList<K, V> increment(K key) throws RuntimeException {
+		Object value = this.get(key);
+		if (value == null) {
+			setValueItem(key, 1);
+			return this;
+		}
+		if (value instanceof Integer) {
+			setValueItem(key, ((Integer) value).intValue() + 1);
+			return this;
+		}
+		if (value instanceof Long) {
+			setValueItem(key, ((Long) value).longValue() + 1);
+			return this;
+		}
+		if (value instanceof Double) {
+			setValueItem(key, ((Double) value).doubleValue() + 1);
+			return this;
+		}
+		if (value instanceof Float) {
+			setValueItem(key, ((Float) value).floatValue() + 1);
+			return this;
+		}
+		if (value instanceof String) {
+			try {
+				setValueItem(key, "" + (getInt(key) + 1));
+				return this;
+			} catch (Exception e) {
+			}
+			try {
+				setValueItem(key, "" + (getDouble(key) + 1));
+				return this;
+			} catch (Exception e) {
+				throw new RuntimeException("Unable to increment ["
+						+ EntityUtil.quote("" + key) + "].");
+			}
+		}
+		throw new RuntimeException("Unable to increment ["
+				+ EntityUtil.quote("" + key) + "].");
+	}
+	
+	@Override
+	public BaseList getNewArray() {
+		return new SimpleKeyValueList<K, V>();
+	}
 	
 	
 	
 	
 	
 	
+	
+	public boolean add(int pos, K key, V value) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+	public boolean add(K key, V value) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 	@Override
 	public boolean containsKey(Object key) {
@@ -330,14 +517,23 @@ public class SimpleKeyValueList<K, V> extends AbstractArray implements Map<K, V>
 	}
 
 	@Override
-	public AbstractList<?> getNewArray() {
+	public BaseItem getNewObject() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public BaseItem getNewObject() {
+	public Iterator<K> iterator() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public SimpleKeyValueList<K, V> withKeyValue(Object key, Object value) {
+		// TODO Auto-generated method stub
+		return this;
+	}
+	public SimpleKeyValueList<K, V> with(Object... values) {
+		// TODO Auto-generated method stub
+		return this;
 	}
 }

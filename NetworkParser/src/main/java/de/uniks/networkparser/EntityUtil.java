@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.BaseList;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
 import de.uniks.networkparser.list.AbstractArray;
@@ -215,7 +216,7 @@ public class EntityUtil {
 			return ((StringItem) item).toString();
 		}
 		if (value instanceof Collection) {
-			SimpleList<?> item = reference.getNewArray().with(
+			BaseList item = reference.getNewArray().with(
 					(Collection<?>) value);
 			if (item instanceof StringItem) {
 				return ((StringItem) item).toString(indentFactor, intent);
@@ -228,7 +229,7 @@ public class EntityUtil {
 			for (Object item : items) {
 				arrayList.add(item);
 			}
-			AbstractList<?> item = reference.getNewArray().with(arrayList);
+			BaseList item = reference.getNewArray().with(arrayList);
 			if (item instanceof StringItem) {
 				return ((StringItem) item).toString(indentFactor, intent);
 			}
@@ -255,7 +256,7 @@ public class EntityUtil {
 			return ((AbstractList<?>) value).toString();
 		}
 		if (value instanceof Map) {
-			return ((SimpleKeyValueList<?, ?>) reference.getNewArray()).with(
+			return ((SimpleList<?>) reference.getNewArray()).with(
 					(Map<?, ?>) value).toString();
 		}
 		if (value instanceof Collection) {

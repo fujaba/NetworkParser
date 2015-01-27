@@ -7,7 +7,6 @@ import java.util.Map.Entry;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
-import de.uniks.networkparser.listold.ArrayEntityList;
 
 /*
  NetworkParser
@@ -196,7 +195,7 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 				if (value instanceof Entry<?, ?>) {
 					Object map = entry.getValue();
 					if (map == null) {
-						map = new ArrayEntityList<String, Object>();
+						map = new SimpleKeyValueList<String, Object>();
 					}
 //FIXME					if (map instanceof ArrayEntityList<?, ?>) {
 //						((ArrayEntityList<?, ?>) map).with(value);
