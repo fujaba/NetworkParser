@@ -29,6 +29,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.list.SortedList;
 
 /**
  * A JSONArray is an ordered sequence of values. Its external text form is a
@@ -74,7 +75,7 @@ import de.uniks.networkparser.list.SimpleList;
  * @version 2010-12-28
  */
 
-public class JsonArray extends SimpleList<Object> implements
+public class JsonArray extends SortedList<Object> implements
 		StringItem, FactoryEntity {
 
 	/**

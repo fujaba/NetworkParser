@@ -231,7 +231,7 @@ public class GraphConverter implements Converter {
 	}
 
 	private JsonObject parseEdge(String typ, GraphClazz source, GraphClazz target, GraphEdge edge, boolean shortName, ArrayList<String> ids) {
-		JsonObject child = new JsonObject().withValue(TYP, edge.getTyp());
+		JsonObject child = new JsonObject().withKeyValue(TYP, edge.getTyp());
 		if (typ.equals(GraphIdMap.OBJECT)) {
 			child.put(SOURCE, addInfo(edge, true).withValue(ID, source.getId() + " : "
 					+ source.getClassName(shortName)));
@@ -256,7 +256,7 @@ public class GraphConverter implements Converter {
 	}
 	
 	private JsonObject parseEdge(String typ, GraphPattern source, GraphPattern target, GraphEdge edge, boolean shortName, ArrayList<String> ids) {
-		JsonObject child = new JsonObject().withValue(TYP, edge.getTyp());
+		JsonObject child = new JsonObject().withKeyValue(TYP, edge.getTyp());
 		child.put(SOURCE, addInfo(edge, false).withValue(ID, source.getId()));
 		child.put(TARGET, addInfo(edge.getOther(), false).withValue(ID, target.getId()));
 		
@@ -270,7 +270,7 @@ public class GraphConverter implements Converter {
 	
 	private JsonObject addInfo(GraphEdge edge, boolean cardinality) {
 		if(cardinality) {
-			return new JsonObject().withValue(CARDINALITY, edge.getCardinality()).withValue(PROPERTY, edge.getProperty());
+			return new JsonObject().withKeyValue(CARDINALITY, edge.getCardinality()).withValue(PROPERTY, edge.getProperty());
 		}
 		return new JsonObject().withValue(PROPERTY, edge.getProperty());
 	}

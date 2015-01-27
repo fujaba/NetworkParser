@@ -1,4 +1,7 @@
 package de.uniks.networkparser.interfaces;
+
+
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
@@ -20,9 +23,10 @@ package de.uniks.networkparser.interfaces;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
  */
+/**
+ * The Class BaseEntity.
+ */
 
-public interface FactoryEntity {
-	public BaseList getNewArray();
-
-	public BaseItem getNewObject();
+public interface BaseList extends BaseItem{
+	BaseList with(Object... values);
 }

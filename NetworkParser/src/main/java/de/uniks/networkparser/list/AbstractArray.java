@@ -4,9 +4,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
+
 import de.uniks.networkparser.interfaces.BaseItem;
 
-public class AbstractArray implements BaseItem {
+public class AbstractArray implements BaseItem  {
 	/** Is Allow Duplicate Items in List	 */
 	public static final byte ALLOWDUPLICATE = 0x04;
 	/** Is Allow Empty Value in List (null)  */
@@ -545,16 +546,14 @@ public class AbstractArray implements BaseItem {
         		return -1;
         	}
         	if(size>MINHASHINGSIZE && entitySize()==2) {
-        		int index = getPositionKey(o);
-        		return transformIndex(index);
+        		return getPositionKey(o);
         	}
             for (int i = 0; i < size; i++)
                 if (elements[i]==null)
                     return i;
         } else {
         	if(size>MINHASHINGSIZE && entitySize()==2) {
-        		int index = getPositionKey(o);
-        		return transformIndex(index);
+        		return getPositionKey(o);
         	}
             for (int i = 0; i < size; i++)
                 if (o.equals(elements[i]))
@@ -563,12 +562,21 @@ public class AbstractArray implements BaseItem {
         return -1;
     }
     
-    private int transformIndex(int index) {
-    	if(index<0){
-    		return index;
-    	}
-    	if(elements[DELETED] != null) {
-    		Object[] items = (Object[]) elements[DELETED];
+	public int getPositionKey(Object o) {
+		if (o == null) {
+			return -1;
+		}
+		Object[] items = (Object[])elements[SMALL_KEY];
+		int index = hashKey(o.hashCode(), items.length);
+		Object value = items[index];;
+		while (!checkValue(value, o)) {
+			if (value == null)
+				return -1;
+			index = (index + entitySize()) % items.length;
+			value = items[index];
+		}
+		if(elements[DELETED] != null) {
+    		items = (Object[]) elements[DELETED];
     		for(int i=0;i<items.length;i++){
     			if(((int)items[i])>index){
     				break;
@@ -576,23 +584,7 @@ public class AbstractArray implements BaseItem {
 				index += (int)items[i];
     		}
     	}
-    	return index;
-    }
-
-	public int getPositionKey(Object o) {
-		if (o == null) {
-			return -1;
-		}
-		Object[] items = (Object[])elements[SMALL_KEY];
-		int hashKey = hashKey(o.hashCode(), items.length);
-		while (true) {
-			Object value = items[hashKey];
-			if (value == null)
-				return -1;
-			if (checkValue(value, o))
-				return hashKey;
-			hashKey = (hashKey + entitySize()) % items.length;
-		}
+		return index;
 	}
 	
 	protected boolean checkValue(Object a, Object b) {
@@ -683,110 +675,6 @@ public class AbstractArray implements BaseItem {
 		return Arrays.copyOf(elements, size);
 	}
 	
-	/**
-	 * Get the boolean value associated with an index. The string values "true"
-	 * and "false" are converted to boolean.
-	 *
-	 * @param index
-	 *            The index must be between 0 and length() - 1.
-	 * @return The truth.
-	 * @throws RuntimeException
-	 *             If there is no value for the index or if the value is not
-	 *             convertible to boolean.
-	 */
-	public boolean getBoolean(int index) throws RuntimeException {
-		if (index == -1) {
-			return false;
-		}
-		Object object = getKey(index);
-		if (object.equals(Boolean.FALSE)
-				|| (object instanceof String && ((String) object)
-						.equalsIgnoreCase("false"))) {
-			return false;
-		} else if (object.equals(Boolean.TRUE)
-				|| (object instanceof String && ((String) object)
-						.equalsIgnoreCase("true"))) {
-			return true;
-		}
-		throw new RuntimeException("AbstractList[" + index
-				+ "] is not a boolean.");
-	}
-
-	/**
-	 * Get the double value associated with an index.
-	 *
-	 * @param index
-	 *            The index must be between 0 and length() - 1.
-	 * @return The value.
-	 * @throws RuntimeException
-	 *             If the key is not found or if the value cannot be converted
-	 *             to a number.
-	 */
-	public double getDouble(int index) throws RuntimeException {
-		Object object = getKey(index);
-		try {
-			return object instanceof Number ? ((Number) object).doubleValue()
-					: Double.parseDouble((String) object);
-		} catch (Exception e) {
-			throw new RuntimeException("EntityList[" + index
-					+ "] is not a number.");
-		}
-	}
-	
-	/**
-	 * Get the int value associated with an index.
-	 *
-	 * @param index
-	 *            The index must be between 0 and length() - 1.
-	 * @return The value.
-	 * @throws RuntimeException
-	 *             If the key is not found or if the value is not a number.
-	 */
-	public int getInt(int index) throws RuntimeException {
-		Object object = getKey(index);
-		try {
-			return object instanceof Number ? ((Number) object).intValue()
-					: Integer.parseInt((String) object);
-		} catch (Exception e) {
-			throw new RuntimeException("EntityList[" + index
-					+ "] is not a number.");
-		}
-	}
-	
-	/**
-	 * Get the long value associated with an index.
-	 *
-	 * @param index
-	 *            The index must be between 0 and length() - 1.
-	 * @return The value.
-	 * @throws RuntimeException
-	 *             If the key is not found or if the value cannot be converted
-	 *             to a number.
-	 */
-	public long getLong(int index) throws RuntimeException {
-		Object object = getKey(index);
-		try {
-			return object instanceof Number ? ((Number) object).longValue()
-					: Long.parseLong((String) object);
-		} catch (Exception e) {
-			throw new RuntimeException("EntityList[" + index
-					+ "] is not a number.");
-		}
-	}
-	
-	/**
-	 * Get the string associated with an index.
-	 *
-	 * @param index
-	 *            The index must be between 0 and length() - 1.
-	 * @return A string value.
-	 * @throws RuntimeException
-	 *             If there is no value for the index.
-	 */
-	public String getString(int index) throws RuntimeException {
-		return getKey(index).toString();
-	}
-
 	public int getIndex(Object o) {
 		// TODO Auto-generated method stub
 		return 0;

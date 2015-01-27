@@ -374,7 +374,7 @@ public class HTMLEntities {
 								entity.length() - 1));
 					}
 				} else {
-					iso = this.entities.getValue(entity);
+					iso = this.entities.get(entity);
 				}
 				if (iso == null) {
 					buf.append(entity);
