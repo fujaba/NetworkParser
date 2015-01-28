@@ -71,7 +71,7 @@ public class AbstractArray implements BaseItem  {
     /** Init-List with Collection */
     @SuppressWarnings("unchecked")
 	public <ST extends AbstractArray> ST init(Collection<?> list){
-    	withAll(list);
+    	withList(list);
     	if(list instanceof AbstractArray){
     		this.flag = ((AbstractArray)list).getFlag();
     	}
@@ -502,7 +502,7 @@ public class AbstractArray implements BaseItem  {
 	}
 
 	
-	public AbstractArray with(Object... values) {
+	public AbstractArray withAll(Object... values) {
 		if(values==null){
 			return this;
 		}
@@ -525,10 +525,10 @@ public class AbstractArray implements BaseItem  {
 		return this;
 	}
 
-	public AbstractArray withAll(Collection<?> list) {
+	public AbstractArray withList(Collection<?> list) {
     	grow(list.size());
     	for(Iterator<?> i = list.iterator();i.hasNext();) {
-    		this.with(i.next());
+    		this.withAll(i.next());
     	}
     	return this;
 	}

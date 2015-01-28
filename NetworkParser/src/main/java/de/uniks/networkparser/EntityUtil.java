@@ -21,7 +21,6 @@ package de.uniks.networkparser;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
  */
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
@@ -209,14 +208,14 @@ public class EntityUtil {
 		}
 		if (value instanceof Map) {
 			BaseItem item = ((SimpleKeyValueList<?, ?>) reference
-					.getNewArray()).with((Map<?, ?>) value);
+					.getNewArray()).withList((Map<?, ?>) value);
 			if (item instanceof StringItem) {
 				return ((StringItem) item).toString(indentFactor, intent);
 			}
 			return ((StringItem) item).toString();
 		}
 		if (value instanceof Collection) {
-			BaseList item = reference.getNewArray().with(
+			BaseList item = reference.getNewArray().withList(
 					(Collection<?>) value);
 			if (item instanceof StringItem) {
 				return ((StringItem) item).toString(indentFactor, intent);
@@ -225,11 +224,10 @@ public class EntityUtil {
 		}
 		if (value.getClass().isArray()) {
 			Object[] items = (Object[]) value;
-			ArrayList<Object> arrayList = new ArrayList<Object>();
-			for (Object item : items) {
-				arrayList.add(item);
+			BaseList item = reference.getNewArray();
+			for (Object entity : items) {
+				item.withAll(entity);
 			}
-			BaseList item = reference.getNewArray().with(arrayList);
 			if (item instanceof StringItem) {
 				return ((StringItem) item).toString(indentFactor, intent);
 			}
@@ -256,20 +254,15 @@ public class EntityUtil {
 			return ((AbstractList<?>) value).toString();
 		}
 		if (value instanceof Map) {
-			return ((SimpleList<?>) reference.getNewArray()).with(
+			return ((SimpleList<?>) reference.getNewArray()).withMap(
 					(Map<?, ?>) value).toString();
 		}
 		if (value instanceof Collection) {
-			return reference.getNewArray().with((Collection<?>) value)
+			return reference.getNewArray().withList((Collection<?>) value)
 					.toString();
 		}
 		if (value.getClass().isArray()) {
-			Object[] items = (Object[]) value;
-			ArrayList<Object> arrayList = new ArrayList<Object>();
-			for (Object item : items) {
-				arrayList.add(item);
-			}
-			return ((AbstractList<?>) reference.getNewObject()).with(arrayList)
+			return ((AbstractList<?>) reference.getNewObject()).withAll(value)
 					.toString();
 		}
 		if (simpleText) {
@@ -308,15 +301,15 @@ public class EntityUtil {
 
 			if (object instanceof Collection) {
 				return ((AbstractList<?>) reference.getNewObject())
-						.with((Collection<?>) object);
+						.withList((Collection<?>) object);
 			}
 			if (object.getClass().isArray()) {
 				return ((AbstractList<?>) reference.getNewObject())
-						.with((Collection<?>) object);
+						.withList((Collection<?>) object);
 			}
 			if (object instanceof Map) {
 				return ((SimpleKeyValueList<?, ?>) reference.getNewObject())
-						.with((Map<?, ?>) object);
+						.withList((Map<?, ?>) object);
 			}
 			if (object.getClass().getName().startsWith("java.")
 					|| object.getClass().getName().startsWith("javax.")) {

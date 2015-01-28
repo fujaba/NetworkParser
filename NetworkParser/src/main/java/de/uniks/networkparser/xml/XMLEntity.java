@@ -233,16 +233,6 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements
 	}
 
 	@Override
-	public XMLEntity with(Object... values) {
-		for (Object value : values) {
-			if (value instanceof XMLEntity) {
-				addChild((XMLEntity) value);
-			}
-		}
-		return this;
-	}
-
-	@Override
 	public XMLEntity getNewArray() {
 		return new XMLEntity();
 	}

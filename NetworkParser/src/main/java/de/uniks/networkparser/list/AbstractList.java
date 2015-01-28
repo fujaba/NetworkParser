@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 
 import de.uniks.networkparser.interfaces.BaseList;
 
@@ -167,12 +168,27 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
 		return new SimpleIterator<V>(this, size());
 	}
 	
-	@Override
-	public AbstractList<V> with(Object... values) {
-		super.with(values);
+	@SuppressWarnings("unchecked")
+	public <ST extends AbstractList<V>> ST with(V... values) {
+		super.withAll(values);
+		return (ST) this;
+	}
+	
+	public AbstractList<V> withAll(Object... values) {
+		super.withAll(values);
 		return this;
 	}
 	
+	public AbstractList<V> withList(Collection<?> values) {
+		super.withList(values);
+		return this;
+	}
+	
+	public AbstractList<V> withMap(Map<?, ?> value) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 	
 	

@@ -1,5 +1,7 @@
 package de.uniks.networkparser.interfaces;
 
+import java.util.Collection;
+
 
 
 /*
@@ -28,5 +30,6 @@ package de.uniks.networkparser.interfaces;
  */
 
 public interface BaseList extends BaseItem{
-	BaseList with(Object... values);
+	BaseList withAll(Object... values);
+	BaseList withList(Collection<?> value);
 }

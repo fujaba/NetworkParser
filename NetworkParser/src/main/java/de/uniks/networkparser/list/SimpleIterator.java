@@ -1,8 +1,6 @@
 package de.uniks.networkparser.list;
 
-import java.util.Collection;
 import java.util.ConcurrentModificationException;
-import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 

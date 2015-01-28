@@ -205,7 +205,7 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem,
 	}
 
 	@Override
-	public ByteList with(Object... values) {
+	public ByteList withAll(Object... values) {
 		if (values != null) {
 			for (Object value : values) {
 				if (value instanceof ByteItem) {

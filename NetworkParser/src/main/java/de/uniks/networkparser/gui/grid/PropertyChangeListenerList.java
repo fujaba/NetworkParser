@@ -36,18 +36,6 @@ public class PropertyChangeListenerList extends
 	}
 
 	@Override
-	public PropertyChangeListenerList with(Object... values) {
-		if (values != null) {
-			for (Object value : values) {
-				if (value instanceof PropertyChangeListener) {
-					add((PropertyChangeListener) value);
-				}
-			}
-		}
-		return this;
-	}
-
-	@Override
 	public SimpleList<PropertyChangeListener> getNewInstance() {
 		return new PropertyChangeListenerList();
 	}

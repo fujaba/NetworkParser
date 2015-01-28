@@ -14,9 +14,4 @@ public class SimpleList<V> extends AbstractList<V> implements List<V> {
 	public SimpleList<V> clone() {
 		return getNewInstance();
 	}
-	
-	public SimpleList<V> with(Object... values) {
-		super.with(values);
-		return this;
-	}
 }

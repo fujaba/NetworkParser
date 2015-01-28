@@ -61,7 +61,7 @@ public class GraphNode extends GraphSimpleList<GraphMember> implements GraphMemb
 	}
 
 	@Override
-	public GraphNode with(Object... values) {
+	public GraphNode withAll(Object... values) {
 		if (values != null) {
 			for (Object value : values) {
 				if (value instanceof GraphAttribute) {

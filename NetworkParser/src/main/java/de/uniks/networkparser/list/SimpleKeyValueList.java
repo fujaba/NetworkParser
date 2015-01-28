@@ -403,8 +403,21 @@ public class SimpleKeyValueList<K, V> extends AbstractArray implements Map<K, V>
 		return new SimpleKeyValueList<K, V>();
 	}
 	
+	public SimpleKeyValueList<K, V> withList(Collection<?> values) {
+		super.withList(values);
+		return this;
+	}
 	
+	public SimpleKeyValueList<K, V> withAll(Object... values) {
+		super.withAll(values);
+		return this;
+	}
 	
+	@SuppressWarnings("unchecked")
+	public <ST extends SimpleKeyValueList<K, V>> ST with(K key, V value) {
+		// TODO Auto-generated method stub
+		return (ST)this;
+	}
 	
 	
 	
@@ -467,14 +480,14 @@ public class SimpleKeyValueList<K, V> extends AbstractArray implements Map<K, V>
 		return null;
 	}
 
-	public SimpleKeyValueList<K, V> withMap(Map<?, ?> map) {
+	public SimpleKeyValueList<K, V> withList(Map<?, ?> map) {
 		if (map != null) {
 			for (Iterator<?> i = map.entrySet().iterator(); i.hasNext();) {
 				java.util.Map.Entry<?, ?> mapEntry = (Entry<?, ?>) i.next();
 				Object item = mapEntry.getValue();
 				Object key = mapEntry.getKey();
 				if (item != null) {
-					this.withValue(key, item);
+					this.withKeyValue(key, item);
 				}
 			}
 		}
@@ -529,10 +542,6 @@ public class SimpleKeyValueList<K, V> extends AbstractArray implements Map<K, V>
 	}
 
 	public SimpleKeyValueList<K, V> withKeyValue(Object key, Object value) {
-		// TODO Auto-generated method stub
-		return this;
-	}
-	public SimpleKeyValueList<K, V> with(Object... values) {
 		// TODO Auto-generated method stub
 		return this;
 	}

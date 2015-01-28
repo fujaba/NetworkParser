@@ -28,7 +28,6 @@ import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
-import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SortedList;
 
 /**
@@ -132,7 +131,7 @@ public class JsonArray extends SortedList<Object> implements
 		}
 		JsonObject jo = new JsonObject();
 		for (int i = 0; i < names.size(); i += 1) {
-			jo.put(names.getString(i), this.get(i));
+			jo.put(""+names.getKey(i), this.get(i));
 		}
 		return jo;
 	}
@@ -266,32 +265,6 @@ public class JsonArray extends SortedList<Object> implements
 			}
 		}
 		return null;
-	}
-
-	@Override
-	public JsonArray with(Object... values) {
-		if (values == null) {
-			return this;
-		}
-		for (Object item : values) {
-			add(item);
-		}
-		return this;
-	}
-
-	@Override
-	public JsonArray tailSet(Object fromElement, boolean inclusive) {
-		return (JsonArray) super.tailSet(fromElement, inclusive);
-	}
-
-	@Override
-	public JsonArray headSet(Object toElement, boolean inclusive) {
-		return (JsonArray) super.headSet(toElement, inclusive);
-	}
-
-	@Override
-	public JsonArray subSetItems(Object fromElement, Object toElement) {
-		return (JsonArray) super.subSetItems(fromElement, toElement);
 	}
 
 	/**

@@ -103,10 +103,10 @@ public class GraphList extends GraphSimpleList<GraphMember> implements GraphMemb
 		for (GraphEdge element : edges) {
 			for (GraphNode node : element) {
 				String key = node.getTyp(typ, false);
-				SimpleList<?> value = (SimpleList<?>) links
+				SimpleList<?> value = (SimpleList<?>)links
 						.getValueItem(key);
 				if (value != null) {
-					value.with(element);
+					value.withAll(element);
 				} else {
 					SimpleList<GraphEdge> simpleList = new SimpleList<GraphEdge>();
 					simpleList.add(element);
@@ -127,8 +127,8 @@ public class GraphList extends GraphSimpleList<GraphMember> implements GraphMemb
 	}
 
 	@Override
-	public GraphList with(Object... values) {
-		super.with(values);
+	public GraphList withAll(Object... values) {
+		super.withAll(values);
 		return this;
 	}
 	
