@@ -118,7 +118,7 @@ public class GraphEdge extends GraphSimpleList<GraphNode> implements
 	}
 
 	@Override
-	public GraphEdge with(Object... values) {
+	public GraphEdge withAll(Object... values) {
 		if (values == null) {
 			return this;
 		}
@@ -153,7 +153,7 @@ public class GraphEdge extends GraphSimpleList<GraphNode> implements
 	@Override
 	public boolean add(GraphNode newValue) {
 		if (super.add(newValue)) {
-			newValue.with(this);
+			newValue.withList(this);
 		}
 		return true;
 	}

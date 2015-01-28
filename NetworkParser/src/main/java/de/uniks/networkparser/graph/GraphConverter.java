@@ -135,7 +135,7 @@ public class GraphConverter implements Converter {
 					// Must be a Link to 1
 					GraphNode newNode = parseJsonObject(root,
 							(JsonObject) props.getValue(i), attributes);
-					root.add(new GraphEdge().with(graphNode).with(
+					root.add(new GraphEdge().withAll(graphNode, 
 							new GraphEdge(newNode, GraphCardinality.ONE, props
 									.getKey(i))));
 				} else if (props.getValue(i) instanceof JsonArray) {
@@ -146,7 +146,7 @@ public class GraphConverter implements Converter {
 						if (entity instanceof JsonObject) {
 							GraphNode newNode = parseJsonObject(root,
 									(JsonObject) entity, attributes);
-							root.add(new GraphEdge().with(graphNode).with(
+							root.add(new GraphEdge().withAll(graphNode, 
 									new GraphEdge(newNode, GraphCardinality.MANY,
 											props.getKey(i))));
 						} else {

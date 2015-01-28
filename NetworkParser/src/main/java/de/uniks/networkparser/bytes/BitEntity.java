@@ -146,7 +146,7 @@ public class BitEntity extends SimpleList<BitValue> implements
 	}
 
 	@Override
-	public BitEntity with(Object... values) {
+	public BitEntity withAll(Object... values) {
 		for (Object value : values) {
 			if (value instanceof Byte) {
 				this.typ = BIT_BYTE;

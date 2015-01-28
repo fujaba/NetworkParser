@@ -21,18 +21,13 @@ package de.uniks.networkparser.json;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
  */
-import java.util.Map;
-
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Tokener;
-import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
 import de.uniks.networkparser.list.AbstractList;
-import de.uniks.networkparser.list.SimpleEntity;
 import de.uniks.networkparser.list.SimpleKeyValueList;
-import de.uniks.networkparser.list.SimpleList;
 
 /* Copyright (c) 2002 JSON.org */
 
@@ -335,22 +330,6 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 		return new JsonObject();
 	}
 
-	@Override
-	public JsonObject with(Object... values) {
-		if (values == null) {
-			return this;
-		}
-		for (Object value : values) {
-			if (value instanceof SimpleEntity<?, ?>) {
-				SimpleEntity<?, ?> item = (SimpleEntity<?, ?>) value;
-				this.put(item.getKeyString(), item.getValue());
-			} else if (value instanceof Map<?, ?>) {
-				this.withMap((Map<?, ?>) value);
-			}
-		}
-		return this;
-	}
-
 	/**
 	 * Accumulate values under a key. It is similar to the put method except
 	 * that if there is already an object stored under the key then a EntityList
@@ -375,37 +354,12 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 					value instanceof AbstractList ? getNewArray().with(value)
 							: value);
 		} else if (object instanceof AbstractList) {
-			((AbstractList<?>) object).with(value);
+			((AbstractList<?>) object).withAll(value);
 		} else {
 			this.put(key, getNewArray().with(object, value));
 		}
 		return this;
 	}
-
-	@Override
-	public Object remove(Object key) {
-		return removeItemByObject((String) key);
-	}
-
-//FIXME OLD???	@Override
-//	protected int addKey(int pos, String newValue) {
-//		if (pos == -1) {
-//			if (!this.keys.add(newValue)) {
-//				return -1;
-//			}
-//			pos = this.keys.size();
-//			if (!isAllowDuplicate()) {
-//				this.hashTableAddKey(newValue.toLowerCase(), pos);
-//			} else {
-//				this.hashTableAddKey(newValue, pos);
-//			}
-//			this.hashTableAddKey(newValue, pos);
-//			return pos;
-//		}
-//		this.items.add(pos, newValue);
-//		this.hashTableAddKey(newValue, pos);
-//		return -1;
-//	}
 
 	public JsonObject withKeyValue(String key, Object value) {
 		if(value != null) {

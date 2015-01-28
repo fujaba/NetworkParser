@@ -238,7 +238,7 @@ public class JsonTokener extends Tokener {
 			for (;;) {
 				c = getCurrentChar();
 				if (c != ',') {
-					entityList.with(nextValue(entityList, false));
+					entityList.withAll(nextValue(entityList, false));
 				}
 				c = nextStartClean();
 				switch (c) {

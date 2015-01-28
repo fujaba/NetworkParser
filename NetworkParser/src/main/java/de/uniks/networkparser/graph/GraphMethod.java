@@ -109,18 +109,6 @@ public class GraphMethod extends GraphSimpleList<GraphParameter> implements Grap
 		this.with(name);
 	}
 
-	public GraphMethod with(GraphParameter... value) {
-		if (value == null) {
-			return this;
-		}
-		for (GraphParameter item : value) {
-			if (item != null) {
-				this.add(item);
-			}
-		}
-		return this;
-	}
-
 	public GraphMethod withParameter(String paramName, GraphDataType dataType) {
 		new GraphParameter(paramName, dataType).with(this);
 		return this;
@@ -174,7 +162,7 @@ public class GraphMethod extends GraphSimpleList<GraphParameter> implements Grap
 	}
 
 	@Override
-	public GraphMethod with(Object... values) {
+	public GraphMethod withAll(Object... values) {
 		if (values == null) {
 			return this;
 		}
