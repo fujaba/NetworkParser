@@ -252,12 +252,6 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements
 		return new XMLEntity();
 	}
 
-	@Override
-	public Object remove(Object key) {
-		removeByObject("" + key);
-		return key;
-	}
-
 	/**
 	 * Static Method to generate XMLEntity.
 	 *

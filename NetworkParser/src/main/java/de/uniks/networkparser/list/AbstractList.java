@@ -3,13 +3,14 @@ package de.uniks.networkparser.list;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
 import de.uniks.networkparser.interfaces.BaseList;
+import de.uniks.networkparser.interfaces.FactoryEntity;
 
 public abstract class AbstractList<V> extends AbstractArray implements BaseList {
+	public abstract AbstractList<V> getNewInstance();
     /**
      * {@inheritDoc}
      *
@@ -183,6 +184,224 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
 		super.withList(values);
 		return this;
 	}
+
+	public void copyEntity(AbstractList<V> target, int pos) {
+		target.add(get(pos));
+	}
+
+	public AbstractList<V> subSet(V fromElement, V toElement) {
+		AbstractList<V> newList = getNewInstance();
+		// PRE WHILE
+		int pos = 0;
+		int size = size();
+		while (pos < size) {
+			V item = get(pos);
+			if (comparator().compare(item, fromElement) >= 0) {
+				copyEntity(newList, pos++);
+				break;
+			}
+		}
+		// MUST COPY
+		while (pos < size) {
+			V item = get(pos);
+			if (comparator().compare(item, toElement) >= 0) {
+				break;
+			}
+			copyEntity(newList, pos++);
+		}
+		return newList;
+	}
+	
+	
+	/**
+	 * Returns a view of the portion of this map whose keys are greater than (or
+	 * equal to, if {@code inclusive} is true) {@code fromKey}.
+	 *
+	 * @param fromElement
+	 *            low endpoint of the keys in the returned map
+	 * @param inclusive
+	 *            {@code true} if the low endpoint is to be included in the
+	 *            returned view
+	 * @return a view of the portion of this map whose keys are greater than (or
+	 *         equal to, if {@code inclusive} is true) {@code fromKey}
+	 *
+	 */
+	@SuppressWarnings("unchecked")
+	public <ST extends AbstractList<V>> ST tailSet(V fromElement, boolean inclusive) { 
+		AbstractList<V> newList = getNewInstance();
+
+		// PRE WHILE
+		int pos = 0;
+		for (; pos < size(); pos++) {
+			int compare = comparator().compare(get(pos), fromElement);
+			if (compare == 0) {
+				if (inclusive) {
+					copyEntity(newList, pos);
+				}
+				break;
+			} else if (compare > 0) {
+				copyEntity(newList, pos);
+				break;
+			}
+		}
+
+		// MUST COPY
+		while (pos < size()) {
+			copyEntity(newList, pos++);
+		}
+		return (ST) newList;
+	}
+	
+	/**
+	 * Returns a view of the portion of this map whose keys are less than (or
+	 * equal to, if {@code inclusive} is true) {@code toKey}. The returned map
+	 * is backed by this map, so changes in the returned map are reflected in
+	 * this map, and vice-versa. The returned map supports all optional map
+	 * operations that this map supports.
+	 *
+	 * <p>
+	 * The returned map will throw an {@code IllegalArgumentException} on an
+	 * attempt to insert a key outside its range.
+	 *
+	 * @param toElement
+	 *            high endpoint of the keys in the returned map
+	 * @param inclusive
+	 *            {@code true} if the high endpoint is to be included in the
+	 *            returned view
+	 * @return result a list with less item then the key
+	 *
+	 */
+	@SuppressWarnings("unchecked")
+	public <ST extends AbstractList<V>> ST headSet(V toElement, boolean inclusive) {
+		AbstractList<V> newList = getNewInstance();
+
+		// MUST COPY
+		for (int pos = 0; pos < size(); pos++) {
+			int compare = comparator().compare(get(pos), toElement);
+			if (compare == 0) {
+				if (inclusive) {
+					copyEntity(newList, pos);
+				}
+				break;
+			} else if (compare > 0) {
+				copyEntity(newList, pos);
+				break;
+			}
+		}
+		return (ST) newList;
+	}
+	
+	public Object getValueItem(Object key) {
+		int pos = getIndex(key);
+		if (pos >= 0) {
+			return this.get(pos);
+		}
+		if (!(key instanceof String)) {
+			return null;
+		}
+		String keyString = "" + key;
+		int len = 0;
+		int end = 0;
+		int id = 0;
+		for (; len < keyString.length(); len++) {
+			char temp = keyString.charAt(len);
+			if (temp == '[') {
+				for (end = len + 1; end < keyString.length(); end++) {
+					temp = keyString.charAt(end);
+					if (keyString.charAt(end) == ']') {
+						end++;
+						break;
+					} else if (temp > 47 && temp < 58 && id >= 0) {
+						id = id * 10 + temp - 48;
+					} else if (temp == 'L') {
+						id = -2;
+					}
+				}
+				if (end == keyString.length()) {
+					end = 0;
+				}
+				break;
+			} else if (temp == '.') {
+				end = len;
+				id = -1;
+				break;
+			}
+		}
+		if (end == 0 && len == keyString.length()) {
+			id = -1;
+		}
+
+		Object child = get(getIndex(keyString.substring(0, len)));
+		if (child != null) {
+			if (end == 0) {
+				if (id >= 0 || id == -2) {
+					if (child instanceof AbstractList<?>) {
+						AbstractList<?> list = (AbstractList<?>) child;
+						if (id == -2) {
+							id = list.size() - 1;
+						}
+						if (list.size() >= id) {
+							return list.get(id);
+						}
+					}
+				} else {
+					return child;
+				}
+			} else {
+				if (id >= 0 || id == -2) {
+					if (child instanceof AbstractArray) {
+						if (end == len + 2) {
+							// Get List
+							if (this instanceof FactoryEntity) {
+								AbstractList<?> result = (AbstractList<?>) ((FactoryEntity) this)
+										.getNewArray();
+								AbstractList<?> items = (AbstractList<?>) child;
+								for (int z = 0; z < items.size(); z++) {
+									result.withAll(((AbstractList<?>) items
+											.get(z)).getValueItem(keyString
+											.substring(end + 1)));
+								}
+								return result;
+							}
+						}
+						AbstractList<?> list = (AbstractList<?>) child;
+						if (id == -2) {
+							id = list.size() - 1;
+						}
+						if (list.size() >= id) {
+							return ((SimpleKeyValueList<?, ?>) list.get(id))
+									.getValueItem(keyString.substring(end + 1));
+						}
+					}
+				} else {
+					return ((SimpleKeyValueList<?, ?>) child)
+							.getValueItem(keyString.substring(end + 1));
+				}
+			}
+		}
+		return null;
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	public AbstractList<V> withMap(Map<?, ?> value) {
 		// TODO Auto-generated method stub
@@ -198,11 +417,6 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
 	
 	
 	
-	public boolean remove(Object o) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 	public int lastIndexOf(Object o) {
 		// TODO Auto-generated method stub
 		return 0;
@@ -224,15 +438,6 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
 		
 	}
 
-	public V remove(int index) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public List<V> subList(int fromIndex, int toIndex) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	public int removeItemByObject(V value) {
 		// TODO Auto-generated method stub
 		return 0;
@@ -241,5 +446,8 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	public V remove(int index) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

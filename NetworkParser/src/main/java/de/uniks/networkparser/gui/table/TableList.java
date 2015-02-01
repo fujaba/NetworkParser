@@ -23,7 +23,6 @@ package de.uniks.networkparser.gui.table;
  */
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -33,7 +32,6 @@ import de.uniks.networkparser.EntityValueFactory;
 import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SortedList;
 import de.uniks.networkparser.sort.EntityComparator;
 import de.uniks.networkparser.sort.SortingDirection;
@@ -44,11 +42,11 @@ public class TableList extends SortedList<Object> implements
 	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
 
 	public boolean setIdMap(IdMapEncoder map) {
-		if(items == null) {
+		if(!isComparator() ) {
 			return false;
 		}
-		if (items.comparator() instanceof EntityComparator<?>) {
-			((EntityComparator<?>) items.comparator()).withMap(map);
+		if (comparator() instanceof EntityComparator<?>) {
+			((EntityComparator<?>) comparator()).withMap(map);
 		}
 		return false;
 	}
@@ -72,18 +70,6 @@ public class TableList extends SortedList<Object> implements
 
 		getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEMS, oldValue,
 				newValue);
-	}
-
-	public boolean addAll(TableList list) {
-		if(items==null){
-			return false;
-		}
-		for (Object item : items) {
-			if (!add(item)) {
-				return false;
-			}
-		}
-		return true;
 	}
 
 	@Override
@@ -115,17 +101,14 @@ public class TableList extends SortedList<Object> implements
 
 	public TableList withSort(String field, SortingDirection direction,
 			EntityValueFactory cellValueCreator) {
-		if(items==null){
-			return this;
-		}
+
 		
-		Comparator<Object> comparator = items.comparator();
 		EntityComparator<Object> cpr;
-		if (comparator != null && comparator instanceof EntityComparator<?>) {
-			cpr = new EntityComparator<Object>();
-			items.withComparator(cpr);
+		if (isComparator() && comparator() instanceof EntityComparator<?>) {
+			cpr = (EntityComparator<Object>) comparator();
 		}else{
-			cpr = (EntityComparator<Object>) comparator;
+			cpr = new EntityComparator<Object>();
+			withComparator(cpr);
 		}
 		cpr.withColumn(field);
 		cpr.withDirection(direction);
@@ -139,19 +122,16 @@ public class TableList extends SortedList<Object> implements
 		super.withComparator(comparator);
 		refreshSort();
 		return this;
-
 	}
 
 	public TableList withSort(String field, SortingDirection direction) {
-		if(items == null) {
-			return this;
+		EntityComparator<Object> cpr;
+		if (isComparator() && comparator() instanceof EntityComparator<?>) {
+			cpr = (EntityComparator<Object>) comparator();
+		} else {
+			cpr = new EntityComparator<Object>();
+			withComparator(cpr);
 		}
-		Comparator<Object> comparator = items.comparator();
-		if (comparator == null || !(comparator instanceof EntityComparator<?>)) {
-			comparator = new EntityComparator<Object>();
-			items.withComparator(comparator);
-		}
-		EntityComparator<?> cpr = (EntityComparator<?>) comparator;
 		cpr.withColumn(field);
 		cpr.withDirection(direction);
 		refreshSort();
@@ -170,12 +150,8 @@ public class TableList extends SortedList<Object> implements
 	}
 
 	public void setSort(String field) {
-		if(items ==null ){
-			return;
-		}
-		Comparator<Object> comparator = items.comparator();
-		if (comparator != null && comparator instanceof EntityComparator) {
-			EntityComparator<?> cpr = (EntityComparator<?>) comparator;
+		if (isComparator() && comparator() instanceof EntityComparator) {
+			EntityComparator<?> cpr = (EntityComparator<?>) comparator();
 			if (cpr.getColumn() != null
 					&& cpr.getColumn().equals(field)) {
 				cpr.changeDirection();
@@ -187,21 +163,18 @@ public class TableList extends SortedList<Object> implements
 	}
 
 	public SortingDirection changeDirection() {
-		if(items ==null ){
-			return null;
-		}
-		Comparator<Object> comparator = items.comparator();
-		if (comparator != null && comparator instanceof EntityComparator) {
-			return ((EntityComparator<?>)comparator).changeDirection();
+		if(isComparator() && comparator() instanceof EntityComparator) {
+			return ((EntityComparator<?>)comparator()).changeDirection();
+			
 		}
 		return null;
 	}
 
 	public Object[] getSortedIndex() {
-		if(items ==null || !(items.comparator() instanceof EntityComparator<?>)){
+		if(!(comparator() instanceof EntityComparator<?>)){
 			return null;
 		}
-		EntityComparator<Object> comparator = (EntityComparator<Object>) items.comparator();
+		EntityComparator<Object> comparator = (EntityComparator<Object>) comparator();
 		if (comparator == null) {
 			return null;
 		}
@@ -274,21 +247,7 @@ public class TableList extends SortedList<Object> implements
 	}
 
 	@Override
-	public TableList with(Object... values) {
-		if (values != null) {
-			for (Object value : values) {
-				this.add(value);
-			}
-		}
-		return this;
-	}
-
-	@Override
 	public boolean remove(Object value) {
 		return removeItemByObject(value) >= 0;
-	}
-
-	public Collection<Object> values() {
-		return items;
 	}
 }
