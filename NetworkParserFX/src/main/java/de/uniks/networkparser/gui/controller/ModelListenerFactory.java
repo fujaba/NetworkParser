@@ -81,7 +81,11 @@ public class ModelListenerFactory {
 	private static ModelListenerProperty<?> createProperty(PROPERTYTYPE typ, Property<?> property, SendableEntityCreator creator, Object item, String field){
 		if(PROPERTYTYPE.STRING==typ) {
 			ModelListenerStringProperty listener = new ModelListenerStringProperty(creator, item, field);
-			((StringProperty)property).bindBidirectional(listener);
+			if(property instanceof StringProperty) {
+				((StringProperty)property).bindBidirectional(listener);
+			}else if(property instanceof ObjectProperty) {
+				((ObjectProperty<String>)property).bindBidirectional(listener);
+			}
 			return listener;
 		}
 		if(PROPERTYTYPE.COLOR==typ) {
@@ -91,27 +95,47 @@ public class ModelListenerFactory {
 		}
 		if(PROPERTYTYPE.BOOLEAN==typ) {
 			ModelListenerBooleanProperty listener = new ModelListenerBooleanProperty(creator, item, field);
-			((BooleanProperty)property).bindBidirectional(listener);
+			if(property instanceof BooleanProperty) {
+				((BooleanProperty)property).bindBidirectional(listener);
+			}else if(property instanceof ObjectProperty) {
+				((ObjectProperty<Boolean>)property).bindBidirectional(listener);
+			}
 			return listener;
 		}
 		if(PROPERTYTYPE.INT==typ) {
 			ModelListenerNumberProperty listener = new ModelListenerNumberProperty(creator, item, field);
-			((IntegerProperty)property).bindBidirectional(listener);
+			if(property instanceof IntegerProperty) {
+				((IntegerProperty)property).bindBidirectional(listener);
+			}else if(property instanceof ObjectProperty) {
+				((ObjectProperty<Number>)property).bindBidirectional(listener);
+			}
 			return listener;
 		}
 		if(PROPERTYTYPE.LONG==typ) {
 			ModelListenerNumberProperty listener = new ModelListenerNumberProperty(creator, item, field);
-			((LongProperty)property).bindBidirectional(listener);
+			if(property instanceof LongProperty) {
+				((LongProperty)property).bindBidirectional(listener);
+			}else if(property instanceof ObjectProperty) {
+				((ObjectProperty<Number>)property).bindBidirectional(listener);
+			}
 			return listener;
 		}
 		if(PROPERTYTYPE.FLOAT==typ) {
 			ModelListenerNumberProperty listener = new ModelListenerNumberProperty(creator, item, field);
-			((FloatProperty)property).bindBidirectional(listener);
+			if(property instanceof FloatProperty) {
+				((FloatProperty)property).bindBidirectional(listener);
+			}else if(property instanceof ObjectProperty) {
+				((ObjectProperty<Number>)property).bindBidirectional(listener);
+			}
 			return listener;
 		}
 		if(PROPERTYTYPE.DOUBLE==typ) {
 			ModelListenerNumberProperty listener = new ModelListenerNumberProperty(creator, item, field);
-			((DoubleProperty)property).bindBidirectional(listener);
+			if(property instanceof DoubleProperty) {
+				((DoubleProperty)property).bindBidirectional(listener);
+			}else if(property instanceof ObjectProperty) {
+				((ObjectProperty<Number>)property).bindBidirectional(listener);
+			}
 			return listener;
 		}
 		return null;
