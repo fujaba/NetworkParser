@@ -12,6 +12,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import de.uniks.networkparser.gui.controller.ModelListenerFactory;
 import de.uniks.networkparser.gui.controller.ModelListenerProperty;
 import de.uniks.networkparser.gui.controller.ModelListenerStringProperty;
 import de.uniks.networkparser.gui.test.model.GUIEntity;
@@ -54,7 +55,7 @@ public class ClickCounter extends Application
 //      ModelListenerProperty.create(field.textProperty(), new GUIEntityCreator(), data, GUIEntity.PROPERTY_NUMBER);
 
 // TEST SIMPLE      
-      ModelListenerProperty.create(field, data, GUIEntity.PROPERTY_NUMBER);
+      ModelListenerFactory.create(field, data, GUIEntity.PROPERTY_NUMBER);
 
       Button button = new Button("Clicke Me");
       
