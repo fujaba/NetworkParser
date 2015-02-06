@@ -70,7 +70,8 @@ public abstract class MasterShell extends Application {
 			   defaultCharsetField.set(null, null);
 		   }
 		   this.controller = new FXStageController(primaryStage);
-		   this.controller.withCenter( createContents( this.controller ) );
+		   Pane pane = createContents( this.controller );
+		   this.controller.withCenter( pane );
 		   this.controller.show();
 	       withIcon(null);
 	   }catch(Exception e){

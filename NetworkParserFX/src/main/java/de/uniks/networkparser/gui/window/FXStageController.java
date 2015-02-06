@@ -48,49 +48,40 @@ import javax.imageio.ImageIO;
 
 public class FXStageController implements StageEvent, WindowListener {
 	private KeyListenerMap listener = new KeyListenerMap(this);
-	private Object model;
-
 	protected Stage stage;
 	private Scene scene;
 	private Object controller;
 	protected Region pane;
 	private boolean wait;
 
+	public FXStageController(){}
+
 	public FXStageController(Stage newStage){
 		this.withStage(newStage);
 		this.withPane(new BorderPane());
-		this.createScene(pane);
-	}
-	
-	public FXStageController(){
-	}
-
-
-	public void createScene(Region pane) {
-		this.scene = new Scene(pane);
-		stage.setScene(scene);
 	}
 
 	public Stage getStage() {
-	if (stage == null) {
-		this.withStage(new Stage());
-	}
-	return stage;
+		if (stage == null) {
+			this.withStage(new Stage());
+		}
+		return stage;
 	}
 
 	public FXStageController withStage(Stage value) {
 		this.stage = value;
-		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-			public void handle(WindowEvent we) {
-				stageClosing(we, stage, FXStageController.this);
-			}
-		});
-		stage.setOnShowing(new EventHandler<WindowEvent>() {
-			public void handle(WindowEvent we) {
-				stageShowing(we, stage, FXStageController.this);
-			}
-		});
-
+		if(value != null) { 
+			stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+				public void handle(WindowEvent we) {
+					stageClosing(we, stage, FXStageController.this);
+				}
+			});
+			stage.setOnShowing(new EventHandler<WindowEvent>() {
+				public void handle(WindowEvent we) {
+					stageShowing(we, stage, FXStageController.this);
+				}
+			});
+		}
 		return this;
 	}
 
@@ -144,20 +135,12 @@ public class FXStageController implements StageEvent, WindowListener {
 
 	public void show(Stage stage) {
 		this.withStage(stage);
-		if(this.stage != null && this.stage.getScene()!=null) {
-			if(this.stage.getScene().getRoot() != this.getPane()) {
-				this.createScene(this.pane);
-			}
-		}
 		showing();
 	}
 
 	protected void showing() {
 		if (this.pane == null) {
 			return;
-		}
-		if(getStage().getScene()==null){
-			this.createScene(pane);
 		}
 		if (wait && this.stage.getOwner() != null) {
 			this.stage.showAndWait();
@@ -194,8 +177,9 @@ public class FXStageController implements StageEvent, WindowListener {
 		return null;
 	}
 
-	public void setTitle(String value) {
+	public FXStageController withTitle(String value) {
 		this.stage.setTitle(value);
+		return this;
 	}
 
 	public FXStageController withIcon(String value) {
@@ -286,9 +270,10 @@ public class FXStageController implements StageEvent, WindowListener {
 		return this;
 	}
 
-	public void showNewStage(String fxml, Class<?> path) {
+	public Stage showNewStage(String fxml, Class<?> path) {
 		loadNewStage(fxml, path);
 		this.show();
+		return stage;
 	}
 
 	public Stage loadNewStage(String fxml, Class<?> path) {
@@ -317,13 +302,31 @@ public class FXStageController implements StageEvent, WindowListener {
 				((StageEvent) value).stageShowing(new WindowEvent(myStage,
 						WindowEvent.WINDOW_SHOWING), myStage, this);
 			}
-			this.createScene(value);
 		}
 		oldStage.close();
 		return this.getStage();
 	}
 
-	public void showNewStage(Node value) {
+	public Stage showNewView(StageEvent value) {
+		if(value instanceof Node){
+			return showNewStage((Node) value);
+		}
+		if (value instanceof StageEvent) {
+			Stage myStage = getStage();
+			((StageEvent) value).stageShowing(new WindowEvent(myStage,
+					WindowEvent.WINDOW_SHOWING), myStage, this);
+		}
+		Stage oldStage=stage;
+		
+		this.withPane(null);
+		this.withStage(null);
+
+		oldStage.close();
+		
+		return stage;
+	}
+
+	public Stage showNewStage(Node value) {
 		Stage oldStage = this.getStage();
 
 		this.withStage(new Stage());
@@ -341,34 +344,27 @@ public class FXStageController implements StageEvent, WindowListener {
 					WindowEvent.WINDOW_SHOWING), myStage, this);
 		}
 
-		this.createScene(newPane);
 		this.show();
 		this.withPane(newPane);
 		oldStage.close();
+		return stage;
 	}
-
+	
 	public FXStageController withPane(Region value) {
 		this.pane = value;
-		this.pane.addEventFilter(KeyEvent.KEY_PRESSED, listener);
+		if(value!=null) {
+			this.pane.addEventFilter(KeyEvent.KEY_PRESSED, listener);
+			this.scene = new Scene(pane);
+			stage.setScene(scene);
+		}else{
+			this.scene = null;
+		}
 		return this;
 	}
 
 	public FXStageController withSize(int width, int height) {
 		getStage().setWidth(width);
 		getStage().setHeight(height);
-		return this;
-	}
-
-	public Object getModel() {
-		return model;
-	}
-
-	public void setModel(Object model) {
-		this.model = model;
-	}
-
-	public FXStageController withModel(Object model) {
-		this.model = model;
 		return this;
 	}
 
