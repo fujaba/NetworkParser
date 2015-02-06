@@ -83,7 +83,7 @@ public abstract class AbstractList<V> implements BaseItem {
 			}
 			return hashAdd(
 					hashTableResize(hashTableStartHashingThreshold * entitySize
-							* 3, items), newValue, pos);
+							* 3, items), newValue, pos, items);
 		}
 		if (items.size() * entitySize < hashTableStartHashingThreshold / 10) {
 			return null;
@@ -92,21 +92,29 @@ public abstract class AbstractList<V> implements BaseItem {
 				* hashTableLoadThreshold) {
 			// double hashTable size
 			return hashAdd(hashTableResize(hashTable.length * 2, items),
-					newValue, pos);
+					newValue, pos, items);
 		}
 
 		if (items.size() * entitySize < hashTable.length / 20) {
 			// shrink hashTable size to a loadThreshold of 33%
 			return hashAdd(
 					hashTableResize(items.size() * entitySize * 3, items),
-					newValue, pos);
+					newValue, pos, items);
 		}
-		return hashAdd(hashTable, newValue, pos);
+		return hashAdd(hashTable, newValue, pos, items);
 	}
 
-	protected Object[] hashAdd(Object[] hashTable, Object newValue, int pos) {
+	protected Object[] hashAdd(Object[] hashTable, Object newValue, int pos, List<?> items) {
 		int hashKey = hashKey(newValue.hashCode(), hashTable.length);
+		int noOfTries = 0;
 		while (true) {
+		   if (noOfTries > hashTable.length)
+		   {
+		      // resize TODO this is just a fix because we have seen a full hash table. Christian and Albert
+		      hashTable = hashTableResize(hashTable.length * 2, items);
+		      hashKey = hashKey(newValue.hashCode(), hashTable.length);
+		      noOfTries = 0;
+		   }
 			Object oldEntry = hashTable[hashKey];
 			if (oldEntry == null) {
 				hashTable[hashKey] = newValue;
@@ -116,10 +124,11 @@ public abstract class AbstractList<V> implements BaseItem {
 				return hashTable;
 			}
 
-			if (oldEntry.equals(newValue))
+			if (oldEntry.equals(newValue)) 
 				return hashTable;
-
+			
 			hashKey = (hashKey + entitySize) % hashTable.length;
+			noOfTries++;
 		}
 	}
 
@@ -540,7 +549,7 @@ public abstract class AbstractList<V> implements BaseItem {
 	protected Object[] hashTableResize(int size, List<?> keys) {
 		Object[] items = new Object[size];
 		for (int i = 0; i < keys.size(); i++) {
-			hashAdd(items, keys.get(i), i);
+			hashAdd(items, keys.get(i), i, keys);
 		}
 		return items;
 	}
