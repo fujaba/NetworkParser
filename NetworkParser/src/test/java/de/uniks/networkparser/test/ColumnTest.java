@@ -16,9 +16,9 @@ public class ColumnTest {
 	@Test
 	public void testColumn(){
 		Column column= new Column();
-		Assert.assertTrue("Must be True", column.getListener().canEdit(null, null));
-		column.withEditable(false);
 		Assert.assertFalse("Must be False", column.getListener().canEdit(null, null));
+		column.withEditable(true);
+		Assert.assertTrue("Must be True", column.getListener().canEdit(null, null));
 	}
 
 	@Test
