@@ -112,7 +112,7 @@ public class Column {
 		if (label == null) {
 			label = attrName;
 		}
-		this.isEditable = edit;
+		withEditable(edit);
 		return this;
 	}
 
@@ -331,7 +331,6 @@ public class Column {
 	public Column withListener(ColumnListener handler) {
 		this.handler = handler;
 		this.handler.withColumn(this);
-		this.isEditable = true;
 		return this;
 	}
 	

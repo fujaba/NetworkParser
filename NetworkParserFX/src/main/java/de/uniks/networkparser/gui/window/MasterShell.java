@@ -94,6 +94,11 @@ public abstract class MasterShell extends Application {
 	   return this;
    }
    
+   public MasterShell withTitle(String value){
+	   this.controller.withTitle(value);
+	   return this;
+   }
+   
    public MasterShell withIconPath(String path){
 	   return withIcon(this.getClass().getResource(path).getPath());
    }

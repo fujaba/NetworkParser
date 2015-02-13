@@ -22,6 +22,7 @@ package de.uniks.networkparser.gui.window;
  permissions and limitations under the Licence.
 */
 import java.util.ArrayList;
+
 import javafx.event.EventHandler;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -42,7 +43,7 @@ public class KeyListenerMap implements EventHandler<KeyEvent>{
 					}
 				}
 			}
-		}));
+		}).withInTableComponent(true));
 	}
 	
 	public KeyListenerMap(WindowListener value) {
