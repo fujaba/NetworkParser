@@ -43,7 +43,7 @@ public class GraphList extends GraphSimpleList<GraphMember> implements GraphMemb
 	
 	@Override
 	public boolean remove(Object o) {
-		int index = super.getIndex(o);
+		int index = super.indexOf(o);
 		if(index>=0) {
 			return super.remove(index) != null;
 		}
@@ -181,5 +181,17 @@ public class GraphList extends GraphSimpleList<GraphMember> implements GraphMemb
 
 	public GraphList withMain(GraphNode parse) {
 		return this;
+	}
+
+	public GraphMember getByObject(String id) {
+		if(id==null){
+			return null;
+		}
+		for(GraphMember item : this) {
+			if(id.equalsIgnoreCase(item.getId())){
+				return item;
+			}
+		}
+		return null;
 	}
 }

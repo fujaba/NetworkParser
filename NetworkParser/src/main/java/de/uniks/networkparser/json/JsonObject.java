@@ -364,7 +364,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 	public JsonObject withKeyValue(String key, Object value) {
 		if(value != null) {
 			// Only add value != null
-			int index = getIndex(key);
+			int index = indexOf(key);
 			if (index >= 0) {
 				setValueItem(key, value);
 				return this;

@@ -14,43 +14,8 @@ public class SDMSetBase<T> extends ItemList<T>
 	public SDMSetBase(){
 		this.withAllowDuplicate(false);
 	}
-//   @Override
-//   public String toString()
-//   {
-//      StringList stringList = new StringList();
-//      
-//      for (T elem : this)
-//      {
-//         stringList.add(elem.toString());
-//      }
-//      
-//      return "(" + stringList.concat(", ") + ")";
-//   }
-   
-//   public <ST extends SDMSetBase<T>> ST instanceOf(ST target)
-//   {
-//      String className = target.getClass().getName();
-//      className = CGUtil.baseClassName(className, "Set");
-//      try
-//      {
-//         Class<?> targetClass = target.getClass().getClassLoader().loadClass(className);
-//         for (T elem : this)
-//         {
-//            if (targetClass.isAssignableFrom(elem.getClass()))
-//            {
-//               target.add(elem);
-//            }
-//         }
-//      }
-//      catch (ClassNotFoundException e)
-//      {
-//         // TODO Auto-generated catch block
-//         e.printStackTrace();
-//      }
-//      return target;
-//   }
-//   
-   public <ST extends SDMSetBase<T>> ST union(ST other)
+
+	public <ST extends SDMSetBase<T>> ST union(ST other)
    {
       @SuppressWarnings("unchecked")
       ST result = (ST) this.getNewInstance();
@@ -145,17 +110,5 @@ public class SDMSetBase<T> extends ItemList<T>
 	@Override
 	public boolean remove(Object value) {
 		return removeItemByObject((T)value) >= 0;
-	}
-
-	@Override
-	public boolean addAll(Collection<? extends T> c) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean addAll(int index, Collection<? extends T> c) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 }

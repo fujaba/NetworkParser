@@ -10,7 +10,6 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 
 	@Override
 	public boolean remove(Object o) {
-		// TODO Auto-generated method stub
-		return false;
+		return super.removeByObject(o)>=0;
 	}
 }

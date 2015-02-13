@@ -35,6 +35,9 @@ public class AbstractArray implements BaseItem  {
 	public static final int SMALL_VALUE = 3;
 	public static final int BIG_VALUE = 4;
 
+	protected static final byte FLAG_LIST=1;
+	protected static final byte FLAG_MAP=0x41;
+	
 	/**
 	 * The Flag of List. It contains the options
 	 * EntitySize 1,2,3
@@ -45,7 +48,7 @@ public class AbstractArray implements BaseItem  {
 	 * @see MAP
 	 * @see BIDI
 	 */
-	protected byte flag=1; // Flag of
+	private byte flag=initFlag(); // Flag of
 	/**
      * The array buffer into which the elements of the ArrayList are stored.
      * The capacity of the ArrayList is the length of this array buffer. Any
@@ -67,6 +70,10 @@ public class AbstractArray implements BaseItem  {
 
 	/** The size of the ArrayList (the number of elements it contains).  */
     int size;
+    
+    public byte initFlag() {
+    	return FLAG_LIST;
+    }
     
     /** Init-List with Collection */
     @SuppressWarnings("unchecked")
@@ -471,6 +478,44 @@ public class AbstractArray implements BaseItem  {
         fireProperty(null, element, beforeElement, null);
 		return pos;
 	}
+
+	/**
+	 * Add a Key to internal List and Array if nesessary
+	 *
+	 * @param element
+	 *            the new Value
+	 * @param pos
+	 *            the new Position -1 = End
+	 * @return if boolean if all added
+	 */
+	protected boolean addAllKeys(int pos, Collection<?> values) {
+		int size = values.size();
+		int i = pos+size;
+		grow(i);
+		
+		Object[] keys;
+		if(isBig()) {
+			keys = (Object[]) elements[SMALL_KEY];
+			for(Object element : values) {
+				addHashItem(pos, element, (Object[])elements[BIG_KEY]);
+			}
+		}else{
+			keys = elements;
+		}
+		while(i>pos) {
+			keys[i] = keys[--i-size]; 	
+		}
+		for(Object element : values) {
+			keys[pos] = element;
+			size++;
+			Object beforeElement = null;
+			if (size > 1) {
+				beforeElement = this.getKey(size - 1);
+			}
+			fireProperty(null, element, beforeElement, null);
+		}
+		return true;
+	}
 	
 	public String flag() {
 		StringBuilder sb = new StringBuilder();
@@ -562,13 +607,39 @@ public class AbstractArray implements BaseItem  {
         return -1;
     }
     
+    /**
+     * Returns the index of the first occurrence of the specified element
+     * in this list, or -1 if this list does not contain the element.
+     * More formally, returns the lowest index <tt>i</tt> such that
+     * <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>,
+     * or -1 if there is no such index.
+     */
+    public int lastindexOf(Object o) {
+        if (o == null) {
+        	if(!isAllowEmptyValue()) {
+        		return -1;
+        	}
+            for (int i = size - 1; i >= 0; i--)
+                if (elements[i]==null)
+                    return i;
+        } else {
+        	if(size>MINHASHINGSIZE && entitySize()==2) {
+        		return getLastPositionKey(o);
+        	}
+        	for (int i = size - 1; i >= 0; i--)
+                if (o.equals(elements[i]))
+                    return i;
+        }
+        return -1;
+    }
+    
 	public int getPositionKey(Object o) {
 		if (o == null) {
 			return -1;
 		}
 		Object[] items = (Object[])elements[SMALL_KEY];
 		int index = hashKey(o.hashCode(), items.length);
-		Object value = items[index];;
+		Object value = items[index];
 		while (!checkValue(value, o)) {
 			if (value == null)
 				return -1;
@@ -586,6 +657,33 @@ public class AbstractArray implements BaseItem  {
     	}
 		return index;
 	}
+
+	public int getLastPositionKey(Object o) {
+		if (o == null) {
+			return -1;
+		}
+		Object[] items = (Object[])elements[SMALL_KEY];
+		int index = hashKey(o.hashCode(), items.length);
+		Object value = items[index];
+		int found=-1;
+		while (!checkValue(value, o)) {
+			if (value == null)
+				return found;
+			index = (index + entitySize()) % items.length;
+			value = items[index];
+		}
+		if(elements[DELETED] != null) {
+    		items = (Object[]) elements[DELETED];
+    		for(int i=0;i<items.length;i++){
+    			if(((int)items[i])>index){
+    				break;
+    			}
+				index += (int)items[i];
+    		}
+    	}
+		return index;
+	}
+
 	
 	protected boolean checkValue(Object a, Object b) {
 		if(!isCaseSensitive()) {
@@ -673,11 +771,6 @@ public class AbstractArray implements BaseItem  {
 			return Arrays.copyOf((Object[])elements[SMALL_KEY], size);	
 		}
 		return Arrays.copyOf(elements, size);
-	}
-	
-	public int getIndex(Object o) {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 	
 	protected void fireProperty(Object oldElement, Object newElement,

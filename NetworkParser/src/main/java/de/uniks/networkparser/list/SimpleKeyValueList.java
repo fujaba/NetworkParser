@@ -11,6 +11,12 @@ import de.uniks.networkparser.interfaces.BaseList;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 
 public class SimpleKeyValueList<K, V> extends AbstractList<K> implements Map<K, V>, FactoryEntity, Iterable<K>, BaseList {
+
+	@Override
+	public byte initFlag() {
+		return FLAG_MAP;
+	}
+	
 	/**
 	 * Set a Value to Entity With this Method it is possible to set a Value of a
 	 * Set by using a [Number] or [L] for Last
@@ -23,7 +29,7 @@ public class SimpleKeyValueList<K, V> extends AbstractList<K> implements Map<K, 
 	 */
 	@SuppressWarnings("unchecked")
 	public SimpleKeyValueList<K, V> setValueItem(Object key, Object value) {
-		int pos = getIndex(key);
+		int pos = indexOf(key);
 		if (pos >= 0) {
 //			V oldValue = this.getValue(pos);
 			this.setValue(pos, (V) value);
@@ -252,7 +258,7 @@ public class SimpleKeyValueList<K, V> extends AbstractList<K> implements Map<K, 
 		if(key==null){
 			return defaultValue;
 		}
-		int pos = getIndex(key);
+		int pos = indexOf(key);
 		if (pos < 0) {
 			return defaultValue;
 		}
