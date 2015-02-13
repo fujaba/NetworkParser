@@ -21,8 +21,10 @@ package de.uniks.networkparser.gui.window;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
+import javafx.scene.Parent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import de.uniks.networkparser.gui.table.TableCellFX;
 
 public class KeyListener {
 	private Runnable runnable;
@@ -32,6 +34,7 @@ public class KeyListener {
 	private boolean isControl;
 	private boolean isMetaKey;
 	private boolean isShortcut;
+	private boolean isInTableComponent;
 
 	public KeyListener(KeyCode keycode, Runnable runnable){
 		this.keyCode = keycode;
@@ -94,6 +97,11 @@ public class KeyListener {
 		this.isShortcut = value;
 		return this;
 	}
+	
+	public KeyListener withInTableComponent(boolean value) {
+		this.isInTableComponent = value;
+		return this;
+	}
 
 	public boolean matches(KeyEvent event) {
 		if(keyCode!=event.getCode()){
@@ -114,6 +122,17 @@ public class KeyListener {
 		if(isShortcut!=event.isShortcutDown()){
 			return false;
 		}
+		if(event.getTarget() instanceof Parent && isInTableComponent) {
+			Parent n = ((Parent) event.getTarget());
+			if(isInTableComponent==(n instanceof TableCellFX)){
+				return false;
+			}
+			n = n.getParent();
+			if(isInTableComponent==(n instanceof TableCellFX)){
+				return false;
+			}
+		}
+		
 		return true;
 	}
 }
