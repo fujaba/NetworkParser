@@ -292,7 +292,7 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
 	}
 	
 	public Object getValueItem(Object key) {
-		int pos = getIndex(key);
+		int pos = indexOf(key);
 		if (pos >= 0) {
 			return this.get(pos);
 		}
@@ -331,7 +331,7 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
 			id = -1;
 		}
 
-		Object child = get(getIndex(keyString.substring(0, len)));
+		Object child = get(indexOf(keyString.substring(0, len)));
 		if (child != null) {
 			if (end == 0) {
 				if (id >= 0 || id == -2) {
@@ -382,8 +382,23 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
+	public V remove(int index) {
+		return (V)super.removeByIndex(index);
+	}
 	
-	
+	public int removeItemByObject(V value) {
+		return super.removeByObject(value);
+	}
+
+	public int lastIndexOf(Object o) {
+		return super.lastindexOf(o);
+	}
+
+	public void add(int index, V element) {
+		super.addKey(index, element);
+	}
+
 	
 	
 	
@@ -408,45 +423,12 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
 		return null;
 	}
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public int lastIndexOf(Object o) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
 	public boolean addAll(int index, Collection<? extends V> c) {
-		// TODO Auto-generated method stub
-		return false;
+		return super.addAllKeys(index, c);
 	}
 
 
 	public V set(int index, V element) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void add(int index, V element) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public int removeItemByObject(V value) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	public V getByObject(String id2) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	public V remove(int index) {
 		// TODO Auto-generated method stub
 		return null;
 	}

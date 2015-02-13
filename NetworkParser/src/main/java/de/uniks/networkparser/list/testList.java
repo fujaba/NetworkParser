@@ -10,5 +10,11 @@ public class testList {
 		simpleList.add("Hallo");
 		
 		System.out.println(simpleList.get(0));
+		
+		
+		SimpleKeyValueList<String, Integer> map = new SimpleKeyValueList<String, Integer>();
+		map.add("Stefan", 42);
+		
+		System.out.println(map);
 	}
 }

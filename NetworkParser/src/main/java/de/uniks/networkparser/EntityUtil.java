@@ -95,9 +95,6 @@ public class EntityUtil {
 		if (value == null || value.length() == 0) {
 			return "";
 		}
-		// FIXME STEFAN if (!value.startsWith(""")) {
-		// return value;
-		// }
 		StringBuilder sb = new StringBuilder(value.length());
 		char c;
 		for (int i = 0; i < value.length(); i++) {

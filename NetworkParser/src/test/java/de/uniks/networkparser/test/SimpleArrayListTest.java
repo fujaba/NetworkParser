@@ -29,7 +29,7 @@ public class SimpleArrayListTest
       
       for (int i = 0 ; i < simpleArrayList.size() ; i++)
       {
-         assertEquals(i, simpleArrayList.getIndex(list.get(i)));
+         assertEquals(i, simpleArrayList.indexOf(list.get(i)));
       }
       
       
