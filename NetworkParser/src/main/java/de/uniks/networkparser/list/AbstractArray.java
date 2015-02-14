@@ -569,6 +569,18 @@ public class AbstractArray implements BaseItem  {
 		}
 		return this;
 	}
+	
+	//FIXME
+	public void setValue(int pos, Object value, int offset) {
+		if(getArrayFlag()>1){
+			Object[] items = (Object[]) elements[offset];
+			Object oldValue = items[pos];
+			items[pos] = value;
+			
+			return;
+		}
+		elements[pos] = value;
+	}
 
 	public AbstractArray withList(Collection<?> list) {
     	grow(list.size());
