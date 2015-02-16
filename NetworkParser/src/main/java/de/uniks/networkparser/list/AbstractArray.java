@@ -37,7 +37,6 @@ public class AbstractArray implements BaseItem  {
 	public static final int SMALL_VALUE = 3;
 	public static final int BIG_VALUE = 4;
 
-	
 	/**
 	 * The Flag of List. It contains the options
 	 * EntitySize 1,2,3
@@ -359,15 +358,12 @@ public class AbstractArray implements BaseItem  {
 				elements = new Object[minCapacity + minCapacity / 2	+ 4];
 				return;
 			}
-			elements = new Object[getArrayFlag(1)];
+			elements = new Object[getArrayFlag(minCapacity)];
 			elements[SMALL_KEY] = new Object[minCapacity + minCapacity / 2 + 4];
 			elements[SMALL_VALUE] = new Object[minCapacity + minCapacity / 2 + 4];
 			return;
 		}
-		int arrayFlag = getArrayFlag(size);
-		if(arrayFlag==0){
-			return;
-		}
+		int arrayFlag = getArrayFlag( minCapacity );
 		// elements wrong size
 		if(arrayFlag== 1 && minCapacity<MINHASHINGSIZE) {
 			if(minCapacity >= elements.length * MAXUSEDLIST) {
