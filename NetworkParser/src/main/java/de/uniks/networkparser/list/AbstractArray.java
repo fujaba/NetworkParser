@@ -414,24 +414,24 @@ public class AbstractArray implements BaseItem  {
 	protected int checkKey(Object element){
 		if (element == null)
 			return -1;
-		grow(size + 1);
 		if (isComparator()) {
-			boolean keyId = !isAllowDuplicate(); 
 			for (int i = 0; i < size(); i++) {
 				int result = comparator().compare(getKey(i), element);
 				if (result >= 0) {
-					if (keyId && getKey(i) == element) {
+					if (!isAllowDuplicate() && getKey(i) == element) {
 						return -1;
 					}
+					grow(size + 1);
 					return i;
 				}
 			}
-			if (!isAllowDuplicate()) {
-				if (this.contains(element)) {
-					return -1;
-				}
+		}
+		if (!isAllowDuplicate()) {
+			if (this.contains(element)) {
+				return -1;
 			}
 		}
+		grow(size + 1);
 		return size;
 	}
 

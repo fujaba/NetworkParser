@@ -35,7 +35,7 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>>{
 
 	@Override
 	public Iterator<Entry<K, V>> iterator() {
-//		return new SimpleIterator<Entry<K,V>>((AbstractList<Entry<K, V>>) map);
+//		return new SimpleIterator<Entry<K,V>>(this);
 		return null;
 	}
 
