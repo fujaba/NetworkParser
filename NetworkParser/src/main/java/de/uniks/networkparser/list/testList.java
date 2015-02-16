@@ -25,10 +25,22 @@ public class testList {
 	{
 		// create a set of some 42 names
 		SimpleList<Integer> simpleList = new SimpleList<Integer>();
-		
+
 		Integer int_01 = new Integer(1);
+		
+		assertEquals("List should be empty", 0, simpleList.size());
+		assertTrue("List should not yet contain added element", ! simpleList.contains(int_01));
+		
 		simpleList.add(int_01);
 		
+		assertEquals("List should contain 1 element", 1, simpleList.size());
+		assertTrue("List should contain added element", simpleList.contains(int_01));
+		
+		// add it again
+		simpleList.add(int_01);
+		
+		// should have no effect
+		assertEquals("List should contain 1 element", 1, simpleList.size());
 		assertTrue("List should contain added element", simpleList.contains(int_01));
 		
 	}
