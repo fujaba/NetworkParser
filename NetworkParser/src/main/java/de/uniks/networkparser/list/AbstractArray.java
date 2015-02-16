@@ -355,7 +355,7 @@ public class AbstractArray implements BaseItem  {
 	
 	void grow(int minCapacity) {
 		if (elements == null){
-			if((flag & MAP)<0){
+			if((flag & MAP)==0){
 				elements = new Object[minCapacity + minCapacity / 2	+ 4];
 				return;
 			}
