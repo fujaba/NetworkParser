@@ -365,6 +365,9 @@ public class AbstractArray implements BaseItem  {
 			return;
 		}
 		int arrayFlag = getArrayFlag(size);
+		if(arrayFlag==0){
+			return;
+		}
 		// elements wrong size
 		if(arrayFlag== 1 && minCapacity<MINHASHINGSIZE) {
 			if(minCapacity >= elements.length * MAXUSEDLIST) {
