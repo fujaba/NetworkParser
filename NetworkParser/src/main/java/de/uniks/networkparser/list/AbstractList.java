@@ -174,11 +174,13 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
 		return (ST) this;
 	}
 	
+	@Override
 	public AbstractList<V> withAll(Object... values) {
 		super.withAll(values);
 		return this;
 	}
 	
+	@Override
 	public AbstractList<V> withList(Collection<?> values) {
 		super.withList(values);
 		return this;
