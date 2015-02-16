@@ -23,7 +23,7 @@ package de.uniks.networkparser.interfaces;
  */
 
 public interface Entity {
-	public boolean containKey(String key);
+	public boolean containsKey(Object key);
 
 	public String getString(String key);
 

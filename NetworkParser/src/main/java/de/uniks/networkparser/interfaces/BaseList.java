@@ -1,7 +1,6 @@
 package de.uniks.networkparser.interfaces;
 
 import java.util.Collection;
-import java.util.Map;
 
 
 
@@ -33,5 +32,4 @@ import java.util.Map;
 public interface BaseList extends BaseItem{
 	BaseList withAll(Object... values);
 	BaseList withList(Collection<?> value);
-	BaseList withMap(Map<?, ?> value);
 }

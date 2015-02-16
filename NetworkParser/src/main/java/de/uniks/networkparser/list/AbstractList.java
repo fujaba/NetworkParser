@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.ListIterator;
-import java.util.Map;
 
 import de.uniks.networkparser.interfaces.BaseList;
 import de.uniks.networkparser.interfaces.FactoryEntity;
@@ -384,7 +383,7 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
 
 	@SuppressWarnings("unchecked")
 	public V remove(int index) {
-		return (V)super.removeByIndex(index);
+		return (V)super.removeByIndex(index, SMALL_KEY);
 	}
 	
 	public int removeItemByObject(V value) {
@@ -399,37 +398,13 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
 		super.addKey(index, element);
 	}
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	public AbstractList<V> withMap(Map<?, ?> value) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public boolean addAll(int index, Collection<? extends V> c) {
 		return super.addAllKeys(index, c);
 	}
 
 
 	public V set(int index, V element) {
-		// TODO Auto-generated method stub
-		return null;
+		super.setValue(index, element, SMALL_KEY);
+		return element;
 	}
 }
