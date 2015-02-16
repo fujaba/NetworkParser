@@ -29,32 +29,27 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>>{
 
 	@Override
 	public boolean contains(Object o) {
-		// TODO Auto-generated method stub
-		return false;
+		return this.map.contains(o);
 	}
 
 	@Override
 	public Iterator<Entry<K, V>> iterator() {
-//		return new SimpleIterator<Entry<K,V>>(this);
-		return null;
+		return new SimpleIteratorSet<K,V>(map);
 	}
 
 	@Override
 	public Object[] toArray() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.map.toArray();
 	}
 
 	@Override
 	public <T> T[] toArray(T[] a) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.map.toArray(a);
 	}
 
 	@Override
 	public boolean add(Entry<K, V> e) {
-		// TODO Auto-generated method stub
-		return false;
+		return this.map.add(e.getKey(), e.getValue());
 	}
 
 	@Override
@@ -89,7 +84,6 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>>{
 
 	@Override
 	public void clear() {
-		// TODO Auto-generated method stub
-		
+		this.map.clear();
 	}
 }

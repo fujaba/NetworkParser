@@ -21,7 +21,8 @@ public class SimpleIterator<E> implements ListIterator<E> {
         this.cursor = index;
         this.list = list;
 	}
-    public boolean hasPrevious() {
+
+	public boolean hasPrevious() {
         return cursor != 0;
     }
 

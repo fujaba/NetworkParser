@@ -9,7 +9,7 @@ public class SimpleList<V> extends AbstractList<V> implements List<V> {
 	
 	@Override
 	public SimpleList<V> clone() {
-		return getNewInstance();
+		return getNewInstance().init(this);
 	}
 	
 	public SimpleList<V> subList(int fromIndex, int toIndex) {

@@ -113,7 +113,7 @@ public class AbstractArray implements BaseItem  {
     }
 
     boolean isComplex() {
-    	return (flag & MAP) < 1 && size < MINHASHINGSIZE;
+    	return (flag & MAP) > 0 || size > MINHASHINGSIZE;
     }
     
 	int getArrayFlag(int size) {
@@ -776,7 +776,7 @@ public class AbstractArray implements BaseItem  {
 	}
 	
 	public int removeByObject(Object key) {
-		int index = getPositionKey(key);
+		int index = indexOf(key);
 		if (index < 0) {
 			return -1;
 		}
