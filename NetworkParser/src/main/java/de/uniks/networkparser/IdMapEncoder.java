@@ -486,12 +486,12 @@ public abstract class IdMapEncoder extends AbstractMap implements
 
 	@Override
 	public boolean containsKey(Object key) {
-		return this.keyValue.containKey("" + key);
+		return this.keyValue.containsKey("" + key);
 	}
 
 	@Override
 	public boolean containsValue(Object value) {
-		return this.keyValue.containValue(value);
+		return this.keyValue.containsValue(value);
 	}
 
 	@Override

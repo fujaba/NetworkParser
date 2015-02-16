@@ -14,7 +14,7 @@ public class SimpleKeyValueList<K, V> extends AbstractList<K> implements Map<K, 
 
 	@Override
 	public byte initFlag() {
-		return FLAG_MAP;
+		return MAP;
 	}
 	
 	/**
@@ -121,8 +121,7 @@ public class SimpleKeyValueList<K, V> extends AbstractList<K> implements Map<K, 
 	}
 
 	private void setValue(int pos, V value) {
-		// TODO Auto-generated method stub
-		
+		super.setValue(pos, value, SMALL_VALUE);
 	}
 
 	public void copyEntity(SimpleKeyValueList<K, V> target, int pos) {
@@ -334,63 +333,56 @@ public class SimpleKeyValueList<K, V> extends AbstractList<K> implements Map<K, 
 	
 	@SuppressWarnings("unchecked")
 	public <ST extends SimpleKeyValueList<K, V>> ST with(K key, V value) {
-		// TODO Auto-generated method stub
+		add(key, value);
 		return (ST)this;
 	}
 	
-	
-	
-	
-	public boolean add(int pos, K key, V value) {
-		// TODO Auto-generated method stub
+	public boolean add(K key, V value) {
+		int pos = checkKey(key);
+		if(pos>=0) {
+			super.addKeyValue(pos, key, value);
+			return true;
+		}
 		return false;
 	}
 	
-	public boolean add(K key, V value) {
-		// TODO Auto-generated method stub
+	public boolean add(int pos, K key, V value) {
+		if(checkKey(key)>=0) {
+			super.addKeyValue(pos, key, value);
+			return true;
+		}
 		return false;
 	}
 
+	
+	@Override
+	public V put(K key, V value) {
+		int pos = checkKey(key);
+		if(pos>=0) {
+			super.addKeyValue(pos, key, value);
+			return value;
+		}
+		return null;
+	}
+	
 	@Override
 	public boolean containsKey(Object key) {
-		// TODO Auto-generated method stub
-		return false;
+		return super.contains(key);
 	}
 
 	@Override
 	public boolean containsValue(Object value) {
-		// TODO Auto-generated method stub
+		if(value==null){
+			return false;
+		}
+		if(isBig()) {
+    		return getPositionValue(value)>=0;
+    	}
+		Object[] items = (Object[]) elements[SMALL_VALUE];
+		for (int i = 0; i < size; i++)
+            if (value.equals(items[i]))
+                return true;
 		return false;
-	}
-
-	@Override
-	public V get(Object key) {
-//		return super.getValue(key);
-		return null;
-	}
-
-	@Override
-	public V put(K key, V value) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void putAll(Map<? extends K, ? extends V> m) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public Collection<V> values() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Set<java.util.Map.Entry<K, V>> entrySet() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	public SimpleKeyValueList<K, V> withList(Map<?, ?> map) {
@@ -407,6 +399,11 @@ public class SimpleKeyValueList<K, V> extends AbstractList<K> implements Map<K, 
 		return this;
 	}
 
+	@Override
+	public Iterator<K> iterator() {
+		return new SimpleIterator<K>(this);
+	}
+	
 	//Methode for Type Casting
 	@Override
 	public SimpleKeyValueList<K, V> withAllowDuplicate(boolean allowDuplicate) {
@@ -426,42 +423,66 @@ public class SimpleKeyValueList<K, V> extends AbstractList<K> implements Map<K, 
 	public V getValue(int index) {
 		return (V) super.getValue(index);
 	}
-
-	public boolean containKey(String string) {
-		// TODO Auto-generated method stub
-		return false;
+	
+	@SuppressWarnings("unchecked")
+	public V remove(Object key) {
+		int pos = super.removeByObject(key);
+		if(pos>=0) {
+			return (V) super.removeByIndex(pos, SMALL_VALUE);
+		}
+		return null;
+	}
+	
+	@Override
+	public BaseItem getNewObject() {
+		return new SimpleEntity<K, V>();
 	}
 
-	public boolean containValue(Object value) {
+	@Override
+	public void putAll(Map<? extends K, ? extends V> values) {
+		for (java.util.Map.Entry<? extends K, ? extends V> entry : values.entrySet()) {
+			add(entry.getKey(), entry.getValue());
+        }
+	}
+	
+	public SimpleKeyValueList<K, V> withMap(Map<?, ?> value) {
+		for (java.util.Map.Entry<?, ?> entry : value.entrySet()) {
+			withKeyValue(entry.getKey(), entry.getValue());
+		}
+		return this;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public V get(Object key) {
+		int pos = indexOf(key);
+		if(pos>=0) {
+			return (V) super.getValue(pos);
+		}
+		return null;
+	}
+	
+	@Override
+	public Collection<V> values() {
+		return new SimpleList<V>().init((Object[])elements[SMALL_VALUE]);
+	}
+
+	public SimpleKeyValueList<K, V> withKeyValue(Object key, Object value) {
+		int pos = checkKey(key);
+		if(pos>=0) {
+			super.addKeyValue(pos, key, value);
+		}
+		return this;
+	}
+
+	@Override
+	public Set<java.util.Map.Entry<K, V>> entrySet() {
 		// TODO Auto-generated method stub
-		return false;
+		return null;
 	}
 
 	public String getKeyByObject(Object obj) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public BaseItem getNewObject() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Iterator<K> iterator() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public SimpleKeyValueList<K, V> withKeyValue(Object key, Object value) {
-		// TODO Auto-generated method stub
-		return this;
-	}
-
-	public V remove(Object o) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

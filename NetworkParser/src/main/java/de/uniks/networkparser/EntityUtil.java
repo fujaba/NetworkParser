@@ -31,7 +31,6 @@ import de.uniks.networkparser.interfaces.StringItem;
 import de.uniks.networkparser.list.AbstractArray;
 import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
-import de.uniks.networkparser.list.SimpleList;
 
 public class EntityUtil {
 	private static final String HEXVAL = "0123456789abcdef";
@@ -251,7 +250,7 @@ public class EntityUtil {
 			return ((AbstractList<?>) value).toString();
 		}
 		if (value instanceof Map) {
-			return ((SimpleList<?>) reference.getNewArray()).withMap(
+			return ((SimpleKeyValueList<?, ?>) reference.getNewArray()).withMap(
 					(Map<?, ?>) value).toString();
 		}
 		if (value instanceof Collection) {
