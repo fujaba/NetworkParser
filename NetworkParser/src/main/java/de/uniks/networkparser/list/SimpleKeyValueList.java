@@ -477,8 +477,7 @@ public class SimpleKeyValueList<K, V> extends AbstractList<K> implements Map<K, 
 
 	@Override
 	public Set<java.util.Map.Entry<K, V>> entrySet() {
-		// TODO Auto-generated method stub
-		return null;
+		return new SimpleEntrySet<K, V>(this);
 	}
 
 	public String getKeyByObject(Object obj) {
