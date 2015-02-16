@@ -384,6 +384,17 @@ public class SimpleKeyValueList<K, V> extends AbstractList<K> implements Map<K, 
                 return true;
 		return false;
 	}
+	
+	public int indexOfValue(Object value){
+		if(isBig()) {
+    		return getPositionValue(value);
+    	}
+		Object[] items = (Object[]) elements[SMALL_VALUE];
+		for (int i = 0; i < size; i++)
+            if (value.equals(items[i]))
+                return i;
+		return -1;
+	}
 
 	public SimpleKeyValueList<K, V> withList(Map<?, ?> map) {
 		if (map != null) {
@@ -478,10 +489,5 @@ public class SimpleKeyValueList<K, V> extends AbstractList<K> implements Map<K, 
 	@Override
 	public Set<java.util.Map.Entry<K, V>> entrySet() {
 		return new SimpleEntrySet<K, V>(this);
-	}
-
-	public String getKeyByObject(Object obj) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }
