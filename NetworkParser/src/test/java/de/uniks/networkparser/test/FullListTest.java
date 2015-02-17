@@ -1,15 +1,16 @@
 package de.uniks.networkparser.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ListIterator;
-import java.util.NoSuchElementException;
 
 import org.junit.Test;
 
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
-import static org.junit.Assert.*;
 
-public class testList {
+public class FullListTest {
 
 	@Test
 	public void list() {
