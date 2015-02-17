@@ -485,10 +485,10 @@ public class UpdateListener implements PropertyChangeListener {
 					JsonObject props = (JsonObject) message
 							.get(JsonIdMap.JSON_PROPS);
 					for (int i = 0; i < props.size(); i++) {
-						if (props.getValue(i) instanceof JsonObject) {
-							countMessage((JsonObject) props.getValue(i));
-						} else if (props.getValue(i) instanceof JsonArray) {
-							countMessage((JsonArray) props.getValue(i));
+						if (props.getValueByIndex(i) instanceof JsonObject) {
+							countMessage((JsonObject) props.getValueByIndex(i));
+						} else if (props.getValueByIndex(i) instanceof JsonArray) {
+							countMessage((JsonArray) props.getValueByIndex(i));
 						}
 					}
 				}

@@ -29,7 +29,8 @@ public class HashTableTest
 		if(System.getProperty("count")!=null){
 			HashTableTest.COUNT = Integer.valueOf((String)System.getProperty("count"));
 		}else{
-			HashTableTest.COUNT = 1000 * 1000;
+//			HashTableTest.COUNT = 1000 * 1000;
+			HashTableTest.COUNT = 1000;
 		}
 		for (int i = 0; i < COUNT; i++) {
 			items.add(new Person().withName("p" + i));
@@ -40,6 +41,9 @@ public class HashTableTest
 		long currentTimeMillis = System.currentTimeMillis();
 		
 		for (int i = 0; i < COUNT; i++) {
+			if(i==419){
+				System.out.println("break");
+			}
 			list.add(items.get(i));
 		}
 		

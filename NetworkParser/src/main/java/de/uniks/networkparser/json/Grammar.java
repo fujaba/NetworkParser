@@ -49,8 +49,8 @@ public class Grammar {
 		} else {
 			JsonObject props = new JsonObject();
 			for (int i = 0; i < jsonObject.size(); i++) {
-				if (!JsonIdMap.CLASS.equalsIgnoreCase(jsonObject.getKey(i))) {
-					props.put(jsonObject.getKey(i), jsonObject.getValue(i));
+				if (!JsonIdMap.CLASS.equalsIgnoreCase(jsonObject.getKeyByIndex(i))) {
+					props.put(jsonObject.getKeyByIndex(i), jsonObject.getValueByIndex(i));
 				}
 
 			}
@@ -95,7 +95,7 @@ public class Grammar {
 		if (prototyp instanceof SendableEntityCreatorNoIndex
 				|| !filter.isId(map, jsonProp, className)) {
 			for (int i = 0; i < jsonProp.size(); i++) {
-				json.put(jsonProp.getKey(i), jsonProp.getValue(i));
+				json.put(jsonProp.getKeyByIndex(i), jsonProp.getValueByIndex(i));
 			}
 			return json;
 		}

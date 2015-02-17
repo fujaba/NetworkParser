@@ -125,15 +125,15 @@ public class SimpleKeyValueList<K, V> extends AbstractList<K> implements Map<K, 
 	}
 
 	public void copyEntity(SimpleKeyValueList<K, V> target, int pos) {
-		target.add(this.get(pos), this.getValue(pos));
+		target.add(this.get(pos), this.getValueByIndex(pos));
 	}
 	
 	@Override
 	public Set<K> keySet() {
-		if(isBig()) {
-			return new SimpleSet<K>().init((Object[])this.elements[SMALL_KEY]);
+		if(isComplex()) {
+			return new SimpleSet<K>().init((Object[])this.elements[SMALL_KEY], size);
 		}
-		return new SimpleSet<K>().init(this.elements);
+		return new SimpleSet<K>().init(this.elements, size);
 	}
 	
 	public Iterator<K> keyIterator() {
@@ -261,7 +261,7 @@ public class SimpleKeyValueList<K, V> extends AbstractList<K> implements Map<K, 
 		if (pos < 0) {
 			return defaultValue;
 		}
-		return getValue(pos).toString();
+		return getValueByIndex(pos).toString();
 	}
 	
 	/**
@@ -389,6 +389,9 @@ public class SimpleKeyValueList<K, V> extends AbstractList<K> implements Map<K, 
 		if(isBig()) {
     		return getPositionValue(value);
     	}
+		if(elements==null){
+			return -1;
+		}
 		Object[] items = (Object[]) elements[SMALL_VALUE];
 		for (int i = 0; i < size; i++)
             if (value.equals(items[i]))
@@ -424,15 +427,15 @@ public class SimpleKeyValueList<K, V> extends AbstractList<K> implements Map<K, 
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public K getKey(int index) {
-		return (K) super.getKey(index);
+	public K getKeyByIndex(int index) {
+		return (K) super.getKeyByIndex(index);
 	}
 
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public V getValue(int index) {
-		return (V) super.getValue(index);
+	public V getValueByIndex(int index) {
+		return (V) super.getValueByIndex(index);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -468,14 +471,14 @@ public class SimpleKeyValueList<K, V> extends AbstractList<K> implements Map<K, 
 	public V get(Object key) {
 		int pos = indexOf(key);
 		if(pos>=0) {
-			return (V) super.getValue(pos);
+			return (V) super.getValueByIndex(pos);
 		}
 		return null;
 	}
 	
 	@Override
 	public Collection<V> values() {
-		return new SimpleList<V>().init((Object[])elements[SMALL_VALUE]);
+		return new SimpleList<V>().init((Object[])elements[SMALL_VALUE], size);
 	}
 
 	public SimpleKeyValueList<K, V> withKeyValue(Object key, Object value) {
@@ -489,5 +492,14 @@ public class SimpleKeyValueList<K, V> extends AbstractList<K> implements Map<K, 
 	@Override
 	public Set<java.util.Map.Entry<K, V>> entrySet() {
 		return new SimpleEntrySet<K, V>(this);
+	}
+
+	@SuppressWarnings("unchecked")
+	public K getKey(V value) {
+		int pos = indexOfValue(value);
+		if(pos<0) {
+			return null;
+		}
+		return (K)super.getKeyByIndex(pos);
 	}
 }
