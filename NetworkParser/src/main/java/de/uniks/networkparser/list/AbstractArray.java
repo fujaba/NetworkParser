@@ -112,7 +112,10 @@ public class AbstractArray implements BaseItem  {
     }
 
     boolean isComplex() {
-    	return (flag & MAP) == MAP || size > MINHASHINGSIZE;
+    	return isComplex(size);
+    }
+    boolean isComplex(int size) {
+    	return (flag & MAP) == MAP || size >= MINHASHINGSIZE;
     }
     
 	int getArrayFlag(int size) {
@@ -120,7 +123,7 @@ public class AbstractArray implements BaseItem  {
 			return 0;
 		}
 		if((flag & BIDI)>0){
-			if(size>MINHASHINGSIZE){
+			if(size>=MINHASHINGSIZE){
 				return 5;
 			}else {
 				return 4;
@@ -129,7 +132,7 @@ public class AbstractArray implements BaseItem  {
 		if((flag & MAP)>0){
 			return 4;
 		}
-		if(size>MINHASHINGSIZE) {
+		if(size>=MINHASHINGSIZE) {
 			return 3;
 		}
 		return 1;
@@ -354,6 +357,7 @@ public class AbstractArray implements BaseItem  {
 		if(minCapacity >= elements.length * MINHASHINGSIZE) {
 			return;
 		}
+		
 		if(isComplex()) {
 			
 		}else{
@@ -413,6 +417,9 @@ public class AbstractArray implements BaseItem  {
 		Object[] newItems = new Object[minCapacity*entitySize()*2]; 
 		elements[index] = newItems;
 		for(int pos=0;pos<items.length;pos++) {
+			if(items[pos]==null){
+				break;
+			}
 			addHashItem(pos, items[pos], newItems);
 		}
 	}
@@ -448,6 +455,7 @@ public class AbstractArray implements BaseItem  {
 				return -1;
 			}
 		}
+		//FIXME 604==size
 		grow(size + 1);
 		return size;
 	}
@@ -509,9 +517,12 @@ public class AbstractArray implements BaseItem  {
 	protected int addKey(int pos, Object element) {
 		int i = size();
 		Object[] keys;
-		if(isComplex()) {
+		
+		if(isComplex(i + 1)) {
 			keys = (Object[]) elements[SMALL_KEY];
-			addHashItem(pos, element, (Object[])elements[BIG_KEY]);
+			if(elements[BIG_KEY]!= null){
+				addHashItem(pos, element, (Object[])elements[BIG_KEY]);
+			}
 		}else{
 			keys = elements;
 		}
@@ -520,11 +531,11 @@ public class AbstractArray implements BaseItem  {
 		}
 		keys[pos] = element;
         Object beforeElement = null;
+        size++;
         if (pos > 0)
         {
         	beforeElement = this.getKeyByIndex(pos-1);
         }
-        size++;
         fireProperty(null, element, beforeElement, null);
 		return pos;
 	}
@@ -651,7 +662,7 @@ public class AbstractArray implements BaseItem  {
        		return -1;
 
         Object[] items = elements;
-    	if(size>MINHASHINGSIZE || (flag & MAP)==MAP) {
+    	if(size>=MINHASHINGSIZE || (flag & MAP)==MAP) {
     		if(entitySize()==2) {
     			return getPositionKey(o);
     		}
