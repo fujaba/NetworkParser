@@ -8,22 +8,22 @@ import java.util.Iterator;
 import de.uniks.networkparser.interfaces.BaseItem;
 
 public class AbstractArray implements BaseItem  {
-	/** Is ENTITYSIZE in Flag */
-	public static final byte ENTITYSIZE = 0x01;
+//	/** Is ENTITYSIZE in Flag */
+//	public static final byte ENTITYSIZE = 0x01;
 	/** Is Allow Duplicate Items in List	 */
-	public static final byte ALLOWDUPLICATE = 0x02;
+	public static final byte ALLOWDUPLICATE = 0x01;
 	/** Is Allow Empty Value in List (null)  */
-	public static final byte ALLOWEMPTYVALUE = 0x04;
+	public static final byte ALLOWEMPTYVALUE = 0x02;
 	/** Is The List is Visible for Tree Editors  */
-    public static final byte VISIBLE = 0x08;
+    public static final byte VISIBLE = 0x04;
 	/** Is Key is String and is Allow Casesensitive  */
-	public static final byte CASESENSITIVE = 0x10;
+	public static final byte CASESENSITIVE = 0x08;
 	/** Is List is ReadOnly */
-	public static final byte READONLY = 0x20;
+	public static final byte READONLY = 0x10;
 	/** Is The List has Key,Value */
-	public static final byte MAP = 0x40;
+	public static final byte MAP = 0x20;
 	/** Is List is Key,Value and Value, Key */
-	public static final byte BIDI = (byte) 0x80;
+	public static final byte BIDI = 0x40;
 		
 	public static final byte MINSIZE = 4;
 	public static final int MAXDELETED = 42;
@@ -77,10 +77,10 @@ public class AbstractArray implements BaseItem  {
     /** Init-List with Collection */
     @SuppressWarnings("unchecked")
 	public <ST extends AbstractArray> ST init(Collection<?> list){
-    	withList(list);
     	if(list instanceof AbstractArray){
     		this.flag = ((AbstractArray)list).getFlag();
     	}
+    	withList(list);
     	return (ST)this;
     }
     
@@ -93,16 +93,16 @@ public class AbstractArray implements BaseItem  {
 
     /** Init-List with Size-Integer */
     @SuppressWarnings("unchecked")
-	public <ST extends AbstractArray> ST init(Object[] items){
+	public <ST extends AbstractArray> ST init(Object[] items, int size){
     	elements = items;
-    	size = items.length;
+    	this.size = size;
     	return (ST) this;
     }
     
     public AbstractArray withFlag(int value)  {
-    	this.flag = (byte) (this.flag & value);
+    	this.flag = (byte) (this.flag | value);
     	if(value == BIDI){
-    		this.flag = (byte) (this.flag & MAP);
+    		this.flag = (byte) (this.flag | MAP);
     	}
     	return this;
     }
@@ -136,13 +136,19 @@ public class AbstractArray implements BaseItem  {
 	}
     
 	public int entitySize() {
-		return (flag & ENTITYSIZE) + 1;
+		if(elements==null) {
+			return 1;
+		}
+		if((flag & MAP)==MAP && elements[DELETED]!=null){
+			return 2;
+		}
+		return 1;
 	}
     
-	public AbstractArray withEntitySize(int size) {
-		flag = (byte) (flag - (flag & ENTITYSIZE) + size);
-		return this;
-	}
+//	public AbstractArray withEntitySize(int size) {
+//		flag = (byte) (flag - (flag & ENTITYSIZE) + size);
+//		return this;
+//	}
 	
 	public byte getFlag(){
 		return flag;
@@ -348,6 +354,12 @@ public class AbstractArray implements BaseItem  {
 		if(minCapacity >= elements.length * MINHASHINGSIZE) {
 			return;
 		}
+		if(isComplex()) {
+			
+		}else{
+			
+//			elements[SMALL_KEY] =resizeSmall(minCapacity + minCapacity / 2	+ 4, (Object[]) elements[SMALL_KEY]);
+		}
 		//FIXME SHRINK
 //		resize(minCapacity);
 	}
@@ -365,8 +377,15 @@ public class AbstractArray implements BaseItem  {
 		}
 		int arrayFlag = getArrayFlag( minCapacity );
 		// elements wrong size
-		if(arrayFlag== 1 && minCapacity<MINHASHINGSIZE) {
-			if(minCapacity >= elements.length * MAXUSEDLIST) {
+		if(minCapacity<MINHASHINGSIZE) {
+			if((flag & MAP)==MAP) {
+				if(minCapacity >= ((Object[])elements[SMALL_KEY]).length * MAXUSEDLIST) {
+					// resize Array
+					elements[SMALL_KEY] =resizeSmall(minCapacity + minCapacity / 2	+ 4, (Object[]) elements[SMALL_KEY]);
+					elements[SMALL_VALUE] =resizeSmall(minCapacity + minCapacity / 2	+ 4, (Object[]) elements[SMALL_VALUE]);
+					
+				}
+			}else if(minCapacity >= elements.length * MAXUSEDLIST) {
 				// resize Array
 				elements =resizeSmall(minCapacity + minCapacity / 2	+ 4, elements);
 			}
@@ -379,8 +398,6 @@ public class AbstractArray implements BaseItem  {
 			elements[SMALL_KEY] = old;
 			return;
 		}
-		
-		
 		if (elements[BIG_KEY]== null || minCapacity >= ((Object[])elements[BIG_KEY]).length * MAXUSEDLIST){
 			resizeBig(minCapacity, BIG_KEY);
 			if(arrayFlag > 4){
@@ -399,7 +416,7 @@ public class AbstractArray implements BaseItem  {
 		}
 	}
 	Object[] resizeSmall(int minCapacity, Object[] items) {
-		Object[] dest = new Object[size];
+		Object[] dest = new Object[minCapacity];
 		System.arraycopy(items, 0, dest, 0, size);
 		return dest;
 	}
@@ -415,9 +432,9 @@ public class AbstractArray implements BaseItem  {
 			return -1;
 		if (isComparator()) {
 			for (int i = 0; i < size(); i++) {
-				int result = comparator().compare(getKey(i), element);
+				int result = comparator().compare(getKeyByIndex(i), element);
 				if (result >= 0) {
-					if (!isAllowDuplicate() && getKey(i) == element) {
+					if (!isAllowDuplicate() && getKeyByIndex(i) == element) {
 						return -1;
 					}
 					grow(size + 1);
@@ -434,12 +451,12 @@ public class AbstractArray implements BaseItem  {
 		return size;
 	}
 
-	public Object getKey(int index) {
+	public Object getKeyByIndex(int index) {
 		if(index<0) {
 			index = size + 1 - index;
 		}
 		if(index>=0 && index<size){
-			if(isBig()) {
+			if(isComplex()) {
 				return ((Object[])elements[SMALL_KEY])[index];
 			}
 			return elements[index];
@@ -447,7 +464,7 @@ public class AbstractArray implements BaseItem  {
 		return null;
 	}
 	
-	public Object getValue(int index) {
+	public Object getValueByIndex(int index) {
 		if(index<0) {
 			index = size + 1 - index;
 		}
@@ -472,7 +489,7 @@ public class AbstractArray implements BaseItem  {
 		}
 		keys[pos] = key;
 		values[pos] = value;
-        Object beforeKey = this.getKey(size);
+        Object beforeKey = this.getKeyByIndex(size);
         size++;
         fireProperty(null, key, beforeKey, value);
 		return pos;
@@ -491,7 +508,7 @@ public class AbstractArray implements BaseItem  {
 	protected int addKey(int pos, Object element) {
 		int i = size();
 		Object[] keys;
-		if(isBig()) {
+		if(isComplex()) {
 			keys = (Object[]) elements[SMALL_KEY];
 			addHashItem(pos, element, (Object[])elements[BIG_KEY]);
 		}else{
@@ -501,7 +518,7 @@ public class AbstractArray implements BaseItem  {
 			keys[i] = keys[--i]; 	
 		}
 		keys[pos] = element;
-        Object beforeElement = this.getKey(size);
+        Object beforeElement = this.getKeyByIndex(size);
         size++;
         fireProperty(null, element, beforeElement, null);
 		return pos;
@@ -538,7 +555,7 @@ public class AbstractArray implements BaseItem  {
 			size++;
 			Object beforeElement = null;
 			if (size > 1) {
-				beforeElement = this.getKey(size - 1);
+				beforeElement = this.getKeyByIndex(size - 1);
 			}
 			fireProperty(null, element, beforeElement, null);
 		}
@@ -625,14 +642,18 @@ public class AbstractArray implements BaseItem  {
      * or -1 if there is no such index.
      */
     public int indexOf(Object o) {
-        if (o == null)
+        if (o == null || elements == null)
        		return -1;
 
-    	if(size>MINHASHINGSIZE && entitySize()==2) {
-    		return getPositionKey(o);
+        Object[] items = elements;
+    	if(size>MINHASHINGSIZE || (flag & MAP)==MAP) {
+    		if(entitySize()==2) {
+    			return getPositionKey(o);
+    		}
+    		items = (Object[]) elements[SMALL_KEY];
     	}
         for (int i = 0; i < size; i++)
-            if (o.equals(elements[i]))
+            if (o.equals(items[i]))
                 return i;
         return -1;
     }
@@ -671,7 +692,7 @@ public class AbstractArray implements BaseItem  {
 		Object[] items = (Object[])elements[offset];
 		int index = hashKey(o.hashCode(), items.length);
 		Object value = items[index];
-		while (!checkValue(value, o)) {
+		while (!checkValue(o, value)) {
 			if (value == null)
 				return -1;
 			index = (index + entitySize()) % items.length;

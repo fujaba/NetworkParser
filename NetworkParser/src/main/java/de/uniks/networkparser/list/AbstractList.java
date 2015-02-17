@@ -75,7 +75,7 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
 
 	@SuppressWarnings("unchecked")
 	public V get(int index) {
-		return (V) super.getKey(index);
+		return (V) super.getKeyByIndex(index);
 	}
 	
     /**
@@ -295,7 +295,7 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
 	public Object getValueItem(Object key) {
 		int pos = indexOf(key);
 		if (pos >= 0) {
-			return this.get(pos);
+			return this.getValueByIndex(pos);
 		}
 		if (!(key instanceof String)) {
 			return null;

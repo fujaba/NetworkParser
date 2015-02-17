@@ -54,32 +54,31 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>>{
 
 	@Override
 	public boolean remove(Object o) {
-		// TODO Auto-generated method stub
-		return false;
+		return this.map.removeByObject(o)>=0;
 	}
 
 	@Override
 	public boolean containsAll(Collection<?> c) {
-		// TODO Auto-generated method stub
-		return false;
+		return this.map.containsAll(c);
 	}
 
 	@Override
-	public boolean addAll(Collection<? extends Entry<K, V>> c) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean addAll(Collection<? extends Entry<K, V>> collection) {
+		boolean result=true;
+		for(Entry<K, V> item : collection) {
+			result = result && this.map.add(item.getKey(), item.getValue());
+		}
+		return result;
 	}
 
 	@Override
-	public boolean retainAll(Collection<?> c) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean retainAll(Collection<?> collection) {
+		return this.map.retainAll(collection);
 	}
 
 	@Override
-	public boolean removeAll(Collection<?> c) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean removeAll(Collection<?> collection) {
+		return this.map.removeAll(collection);
 	}
 
 	@Override

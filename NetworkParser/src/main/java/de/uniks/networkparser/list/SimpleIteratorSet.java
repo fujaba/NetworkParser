@@ -22,8 +22,8 @@ public class SimpleIteratorSet<K,V> implements ListIterator<Entry<K, V>>{
 	public Entry<K, V> next() {
 		cursor++;
 		
-		this.currentEntry.setKey(this.list.getKey(cursor));
-		this.currentEntry.setValue(this.list.getValue(cursor));
+		this.currentEntry.setKey(this.list.getKeyByIndex(cursor));
+		this.currentEntry.setValue(this.list.getValueByIndex(cursor));
 		return this.currentEntry;
 	}
 
@@ -34,8 +34,11 @@ public class SimpleIteratorSet<K,V> implements ListIterator<Entry<K, V>>{
 
 	@Override
 	public Entry<K, V> previous() {
-		// TODO Auto-generated method stub
-		return null;
+		cursor--;
+		
+		this.currentEntry.setKey(this.list.getKeyByIndex(cursor));
+		this.currentEntry.setValue(this.list.getValueByIndex(cursor));
+		return this.currentEntry;
 	}
 
 	@Override
@@ -50,19 +53,19 @@ public class SimpleIteratorSet<K,V> implements ListIterator<Entry<K, V>>{
 
 	@Override
 	public void remove() {
-		// TODO Auto-generated method stub
-		
+		this.list.remove(cursor);
 	}
 
 	@Override
 	public void set(Entry<K, V> e) {
-		// TODO Auto-generated method stub
-		
+		cursor = this.list.getPositionKey(e.getKey());
+
+		this.currentEntry.setKey(e.getKey());
+		this.currentEntry.setValue(e.getValue());
 	}
 
 	@Override
 	public void add(Entry<K, V> e) {
-		// TODO Auto-generated method stub
-		
+		this.list.add(e.getKey(), e.getValue());
 	}
 }
