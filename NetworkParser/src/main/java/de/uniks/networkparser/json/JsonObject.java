@@ -174,12 +174,12 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 		StringBuilder sb = new StringBuilder("{");
 		sb.append(EntityUtil.quote(get(0).toString()));
 		sb.append(":");
-		sb.append(EntityUtil.valueToString(getValue(0), false, this));
+		sb.append(EntityUtil.valueToString(getValueByIndex(0), false, this));
 		for (int i = 1; i < size(); i++) {
 			sb.append(",");
 			sb.append(EntityUtil.quote(get(i).toString()));
 			sb.append(":");
-			sb.append(EntityUtil.valueToString(getValue(i), false, this));
+			sb.append(EntityUtil.valueToString(getValueByIndex(i), false, this));
 		}
 		sb.append("}");
 		return sb.toString();
@@ -235,13 +235,13 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 
 		sb.append(EntityUtil.quote(get(0).toString()));
 		sb.append(":");
-		sb.append(EntityUtil.valueToString(getValue(0), indentFactor,
+		sb.append(EntityUtil.valueToString(getValueByIndex(0), indentFactor,
 				newindent, false, this));
 		for (int i = 1; i < length; i++) {
 			sb.append("," + prefix + step);
 			sb.append(EntityUtil.quote(get(i).toString()));
 			sb.append(":");
-			sb.append(EntityUtil.valueToString(getValue(i), indentFactor,
+			sb.append(EntityUtil.valueToString(getValueByIndex(i), indentFactor,
 					newindent, false, this));
 		}
 		if (length == 1) {

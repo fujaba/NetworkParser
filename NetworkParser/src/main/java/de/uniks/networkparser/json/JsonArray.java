@@ -131,7 +131,7 @@ public class JsonArray extends SortedList<Object> implements
 		}
 		JsonObject jo = new JsonObject();
 		for (int i = 0; i < names.size(); i += 1) {
-			jo.put(""+names.getKey(i), this.get(i));
+			jo.put(""+names.getKeyByIndex(i), this.get(i));
 		}
 		return jo;
 	}

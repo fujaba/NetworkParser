@@ -167,7 +167,7 @@ public abstract class IdMapEncoder extends AbstractMap implements
 		try {
 			int pos = this.keyValue.indexOfValue(obj);
 			if(pos>=0) {
-				return this.keyValue.getKey(pos);
+				return this.keyValue.getKeyByIndex(pos);
 			}
 		} catch (ConcurrentModificationException e) {
 			if (this.logger.error(this, "getKey",
