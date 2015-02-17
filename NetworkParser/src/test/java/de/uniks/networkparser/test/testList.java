@@ -1,7 +1,9 @@
-package de.uniks.networkparser.list;
+package de.uniks.networkparser.test;
 
 import org.junit.Test;
 
+import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.list.SimpleList;
 import static org.junit.Assert.*;
 
 public class testList {
@@ -50,6 +52,7 @@ public class testList {
 		int counter = 0;
 		for (Integer integer : simpleList) {
 			counter++;
+			System.out.println(integer);
 		}
 		
 		assertEquals("iteration should have counted one element", 1, counter);
@@ -85,6 +88,7 @@ public class testList {
 		counter = 0;
 		for (Integer integer : simpleList) {
 			counter++;
+			System.out.println(integer);
 		}
 		
 		assertEquals("iteration should have counted zero elements", 0, counter);
