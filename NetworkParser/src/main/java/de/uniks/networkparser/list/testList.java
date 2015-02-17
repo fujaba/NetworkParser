@@ -95,7 +95,23 @@ public class testList {
 		assertEquals("List should be empty", 0, simpleList.size());
 		assertTrue("List should not yet contain added element", ! simpleList.contains(int_01));
 		
-		
+		// some small list for testing sublist
+		for (int i = 1; i <= 42; i++)
+		{
+			simpleList.add(new Integer(i));
+		}
 
+		SimpleList<Integer> subList = simpleList.subList(10, 20);
+		
+		assertEquals("sublist[0] should be 10", new Integer(11), subList.get(0));
+		
+		subList = simpleList.subList(42, 20);
+		
+		assertEquals("sublist should be empty", 0, subList.size());
+		
+		subList = simpleList.subList(40, 42);
+		
+		assertEquals("sublist should have one element", 1, subList.size());
+		
 	}
 }
