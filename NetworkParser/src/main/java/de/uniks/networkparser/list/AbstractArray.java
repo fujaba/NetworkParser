@@ -377,6 +377,7 @@ public class AbstractArray implements BaseItem  {
 		}
 		int arrayFlag = getArrayFlag( minCapacity );
 		// elements wrong size
+
 		if(minCapacity<MINHASHINGSIZE) {
 			if((flag & MAP)==MAP) {
 				if(minCapacity >= ((Object[])elements[SMALL_KEY]).length * MAXUSEDLIST) {
@@ -415,8 +416,8 @@ public class AbstractArray implements BaseItem  {
 			addHashItem(pos, items[pos], newItems);
 		}
 	}
-	Object[] resizeSmall(int minCapacity, Object[] items) {
-		Object[] dest = new Object[minCapacity];
+	Object[] resizeSmall(int newCapacity, Object[] items) {
+		Object[] dest = new Object[newCapacity];
 		System.arraycopy(items, 0, dest, 0, size);
 		return dest;
 	}
@@ -518,7 +519,11 @@ public class AbstractArray implements BaseItem  {
 			keys[i] = keys[--i]; 	
 		}
 		keys[pos] = element;
-        Object beforeElement = this.getKeyByIndex(size);
+        Object beforeElement = null;
+        if (pos > 0)
+        {
+        	beforeElement = this.getKeyByIndex(pos-1);
+        }
         size++;
         fireProperty(null, element, beforeElement, null);
 		return pos;
