@@ -108,7 +108,7 @@ public class AbstractArray implements BaseItem  {
     }
     
     boolean isBig() {
-    	return size>MINHASHINGSIZE && elements.length <= (BIG_VALUE+1);
+    	return size>(BIG_VALUE+1) && elements.length <= (BIG_VALUE+1);
     }
 
     boolean isComplex() {
@@ -363,21 +363,23 @@ public class AbstractArray implements BaseItem  {
 			elements[SMALL_VALUE] = new Object[minCapacity + minCapacity / 2 + 4];
 			return;
 		}
+		
 		int arrayFlag = getArrayFlag( minCapacity );
+		
 		// elements wrong size
-		if(arrayFlag== 1 && minCapacity<MINHASHINGSIZE) {
+		if(arrayFlag== 1 && minCapacity<=MINHASHINGSIZE) {
 			if(minCapacity > elements.length) {
 				// resize Array
 				elements =resizeSmall(minCapacity + minCapacity / 2	+ 4, elements);
 			}
 			return;
 		}
+		
 		if(arrayFlag != elements.length) {
 			// Change Single to BigList
 			Object[] old = elements;
 			elements = new Object[arrayFlag];
 			elements[SMALL_KEY] = old;
-			return;
 		}
 		
 		
@@ -394,7 +396,7 @@ public class AbstractArray implements BaseItem  {
 		Object[] items = (Object[]) elements[index - 1];
 		Object[] newItems = new Object[minCapacity*entitySize()*2]; 
 		elements[index] = newItems;
-		for(int pos=0;pos<items.length;pos++) {
+		for(int pos=0;pos<this.size;pos++) {
 			addHashItem(pos, items[pos], newItems);
 		}
 	}
@@ -661,7 +663,7 @@ public class AbstractArray implements BaseItem  {
     }
     
 	public int getPositionKey(Object o) {
-		return getPosition(o, SMALL_KEY);
+		return getPosition(o, BIG_KEY);
 	}
 	
 	public int getPositionValue(Object o) {
@@ -675,6 +677,8 @@ public class AbstractArray implements BaseItem  {
 		Object[] items = (Object[])elements[offset];
 		int index = hashKey(o.hashCode(), items.length);
 		Object value = items[index];
+		if (value == null)
+			return -1;
 		while (!checkValue(value, o)) {
 			if (value == null)
 				return -1;
@@ -800,6 +804,7 @@ public class AbstractArray implements BaseItem  {
 		oldValue = items[index];
 		System.arraycopy(items, index + 1, items, index, size - index);
 		
+		items = ((Object[])elements[offset+1]);
 		int indexPos = hashKey(oldValue.hashCode(), items.length);
 		Object value = items[indexPos];
 		size--;
@@ -812,7 +817,7 @@ public class AbstractArray implements BaseItem  {
 		}
 		items[indexPos] = null;
 		
-		if(elements[DELETED]==null) {
+		if(elements[DELETED]==null) { // FIXME: do we need this for simple list?
 			elements[DELETED]=new Integer[]{index};
 		}else{
 			Integer[] positions=new Integer[((Object[])elements[DELETED]).length+1];

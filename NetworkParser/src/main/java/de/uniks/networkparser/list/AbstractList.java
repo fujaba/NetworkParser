@@ -161,7 +161,7 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
     }
 
 	public ListIterator<V> listIterator(int index) {
-		return new SimpleIterator<V>(this);
+		return new SimpleIterator<V>(this, index);
 	}
 
 	public ListIterator<V> iteratorReverse() {
@@ -196,16 +196,16 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
 		int pos = 0;
 		int size = size();
 		while (pos < size) {
-			V item = get(pos);
-			if (comparator().compare(item, fromElement) >= 0) {
-				copyEntity(newList, pos++);
+			V item = get(pos++);
+			if (checkValue(item, fromElement)) {
+				copyEntity(newList, pos-1);
 				break;
 			}
 		}
 		// MUST COPY
 		while (pos < size) {
 			V item = get(pos);
-			if (comparator().compare(item, toElement) >= 0) {
+			if (checkValue(item, toElement)) {
 				break;
 			}
 			copyEntity(newList, pos++);
@@ -292,6 +292,7 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
 		return (ST) newList;
 	}
 	
+	// FIXME: does this method belong in this class? AZ
 	public Object getValueItem(Object key) {
 		int pos = indexOf(key);
 		if (pos >= 0) {
