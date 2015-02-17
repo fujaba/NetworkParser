@@ -5,27 +5,31 @@ import java.util.Map.Entry;
 
 public class SimpleIteratorSet<K,V> implements ListIterator<Entry<K, V>>{
 	private SimpleKeyValueList<K, V> list;
+	private SimpleEntity<K,V> currentEntry;
+	private int cursor;
 
 	public SimpleIteratorSet(SimpleKeyValueList<K, V> list) {
 		this.list = list;
+		this.currentEntry = new SimpleEntity<K, V>();
 	}
 
 	@Override
 	public boolean hasNext() {
-		// TODO Auto-generated method stub
-		return false;
+		return cursor<this.list.size();
 	}
 
 	@Override
 	public Entry<K, V> next() {
-		// TODO Auto-generated method stub
-		return null;
+		cursor++;
+		
+		this.currentEntry.setKey(this.list.getKey(cursor));
+		this.currentEntry.setValue(this.list.getValue(cursor));
+		return this.currentEntry;
 	}
 
 	@Override
 	public boolean hasPrevious() {
-		// TODO Auto-generated method stub
-		return false;
+		return cursor>0;
 	}
 
 	@Override
@@ -36,14 +40,12 @@ public class SimpleIteratorSet<K,V> implements ListIterator<Entry<K, V>>{
 
 	@Override
 	public int nextIndex() {
-		// TODO Auto-generated method stub
-		return 0;
+		return cursor + 1;
 	}
 
 	@Override
 	public int previousIndex() {
-		// TODO Auto-generated method stub
-		return 0;
+		return cursor - 1;
 	}
 
 	@Override
