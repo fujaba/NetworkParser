@@ -365,12 +365,12 @@ public class AbstractArray implements BaseItem  {
 			return;
 		}
 		int arrayFlag = getArrayFlag(size);
-		if(arrayFlag==0){
+		if(arrayFlag <= 1 && minCapacity <= elements.length){
 			return;
 		}
 		// elements wrong size
 		if(arrayFlag== 1 && minCapacity<MINHASHINGSIZE) {
-			if(minCapacity >= elements.length * MAXUSEDLIST) {
+			if(minCapacity > elements.length) {
 				// resize Array
 				elements =resizeSmall(minCapacity + minCapacity / 2	+ 4, elements);
 			}
@@ -402,8 +402,8 @@ public class AbstractArray implements BaseItem  {
 			addHashItem(pos, items[pos], newItems);
 		}
 	}
-	Object[] resizeSmall(int minCapacity, Object[] items) {
-		Object[] dest = new Object[size];
+	Object[] resizeSmall(int newCapacity, Object[] items) {
+		Object[] dest = new Object[newCapacity];
 		System.arraycopy(items, 0, dest, 0, size);
 		return dest;
 	}
@@ -505,7 +505,11 @@ public class AbstractArray implements BaseItem  {
 			keys[i] = keys[--i]; 	
 		}
 		keys[pos] = element;
-        Object beforeElement = this.getKey(size);
+        Object beforeElement = null;
+        if (pos > 0)
+        {
+        	beforeElement = this.getKey(pos-1);
+        }
         size++;
         fireProperty(null, element, beforeElement, null);
 		return pos;

@@ -14,7 +14,7 @@ public class SimpleList<V> extends AbstractList<V> implements List<V> {
 	
 	public SimpleList<V> subList(int fromIndex, int toIndex) {
 		SimpleList<V> newInstance = getNewInstance();
-		if(fromIndex>toIndex && fromIndex>=size()){
+		if(fromIndex>toIndex || fromIndex>=size()){
 			return newInstance;
 		}
 		if(toIndex >= size()) {
@@ -22,7 +22,7 @@ public class SimpleList<V> extends AbstractList<V> implements List<V> {
 		}
 		
 		while(fromIndex<toIndex) {
-			get(fromIndex++);
+			newInstance.add(get(fromIndex++));
 		}
 		return newInstance;
 	}
