@@ -83,6 +83,9 @@ public class SimpleIterator<E> implements ListIterator<E> {
 		if (lastRet < 0)
 			throw new IllegalStateException();
 		try {
+			if(list.size()==419){
+				System.out.println("dskak");
+			}
 			list.remove(lastRet);
 			cursor = lastRet;
 			lastRet = -1;
