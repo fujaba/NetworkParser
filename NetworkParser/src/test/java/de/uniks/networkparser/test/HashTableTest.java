@@ -41,12 +41,6 @@ public class HashTableTest
 		long currentTimeMillis = System.currentTimeMillis();
 		
 		for (int i = 0; i < COUNT; i++) {
-			if(i==603 && list instanceof PersonSet){
-				System.out.println("break");
-			}
-			if(i==0 && list instanceof PersonSet){
-				System.out.println("break");
-			}
 			list.add(items.get(i));
 		}
 		
@@ -59,9 +53,7 @@ public class HashTableTest
 	private void contains(String label, List<Person> list){
 		int step=100;
 		long currentTimeMillis = System.currentTimeMillis();
-		if(list instanceof PersonSet){
-			System.out.println("break");
-		}
+
 		for (int i = 0; i < items.size(); i += step) {
 			Assert.assertTrue("not in list: "+i, list.contains(items.get(i)));
 		}
@@ -117,11 +109,19 @@ public class HashTableTest
 	
 	private void removeObject(String label, Collection<Person> list){
 		long currentTimeMillis = System.currentTimeMillis();
+
 		for (int i = 0; i < items.size(); i += 100) {
 			list.remove(items.get(i));
 		}
 		for (Iterator<Person> i = list.iterator();i.hasNext();){
-			Assert.assertNotNull(i.next());
+			Person item = i.next();
+			if(item==null){
+				PersonSet ps=(PersonSet) list;
+				ps.get(999);
+				System.out.println("KK");
+			}
+			Assert.assertNotNull(item);
+//			Assert.assertNotNull(i.next());
 		}
 		String end = String.format(FORMAT, (System.currentTimeMillis() - currentTimeMillis));
 		System.out.println(label+ " removeObject: " + end+ "(" +list.size()+ ")");
@@ -149,7 +149,18 @@ public class HashTableTest
 		test("PersonSet    :", new PersonSet());
 	}
 	
-//   @Test
+   @Test
+   public void testSmallList() {
+	   PersonSet personSet = new PersonSet();
+	   Person newValue = new Person();
+	   personSet.add(newValue);
+	   personSet.add(new Person());
+	   personSet.remove(newValue);
+	   System.out.println(personSet.size());
+   }
+	
+	
+   @Test
    public void testInsertion()
    {
 	   long currentTimeMillis = System.currentTimeMillis();

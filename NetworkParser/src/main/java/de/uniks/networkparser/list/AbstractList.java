@@ -196,16 +196,16 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
 		int pos = 0;
 		int size = size();
 		while (pos < size) {
-			V item = get(pos++);
-			if (checkValue(item, fromElement)) {
-				copyEntity(newList, pos-1);
+			V item = get(pos);
+			if (comparator().compare(item, fromElement) >= 0) {
+				copyEntity(newList, pos++);
 				break;
 			}
 		}
 		// MUST COPY
 		while (pos < size) {
 			V item = get(pos);
-			if (checkValue(item, toElement)) {
+			if (comparator().compare(item, toElement) >= 0) {
 				break;
 			}
 			copyEntity(newList, pos++);
@@ -292,7 +292,6 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
 		return (ST) newList;
 	}
 	
-	// FIXME: does this method belong in this class? AZ
 	public Object getValueItem(Object key) {
 		int pos = indexOf(key);
 		if (pos >= 0) {
