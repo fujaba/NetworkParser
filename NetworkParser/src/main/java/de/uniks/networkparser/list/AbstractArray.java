@@ -711,16 +711,21 @@ public class AbstractArray implements BaseItem  {
 		if(hashCodes[index]==null){
 			return -1;
 		}
-		Object value = items[transformIndex((int)hashCodes[index])];
-
-		while (!checkValue(o, value)) {
+		
+		Object value = null;
+		int indexHash = (int)hashCodes[index];
+		if(indexHash>-1){
+			value = items[transformIndex(indexHash)];
+		}
+		while(!checkValue(o, value)){
+			index = (index + 1) % items.length;
+			indexHash = (int)hashCodes[index];
+			if(indexHash==-1){
+				continue;
+			}
+			value = items[indexHash];
 			if (value == null)
 				return -1;
-			index = (index + 1) % items.length;
-			if(hashCodes[index]==null){
-				return -1;
-			}
-			value = items[transformIndex((int)hashCodes[index])];
 		}
 		return index;
 	}
@@ -826,38 +831,51 @@ public class AbstractArray implements BaseItem  {
 		if(!isComplex()){
 			// One Dimension
 			oldValue = elements[index];
+			isComplex();
 			System.arraycopy(elements, index + 1, elements, index, size - index);
 			size--;
 			return oldValue;
 		}
 		
-		Object[] hashCodes = ((Object[])elements[offset + 1]);
 		Object[] items = ((Object[])elements[offset]);
-		
-		
 		oldValue = items[index];
+		if(oldValue == null ) {
+			return null;
+		}
+		if(offset<elements.length){
+			System.arraycopy(items, index + 1, elements[offset], index, size - index);
+			size--;
+			return oldValue;
+		}
+		Object[] hashCodes = ((Object[])elements[offset + 1]);
+		if(hashCodes == null) {
+			System.arraycopy(items, index + 1, elements[offset], index, size - index);
+			size--;
+			return oldValue;
+		}
 		
 		int indexPos = hashKey(oldValue.hashCode(), items.length);
-		if(hashCodes[indexPos]!=null){
-			Object value = items[transformIndex((int)hashCodes[indexPos])];
-	//FIXME
-			
-			if(value==null) {
-				System.out.println("ERROR");
+		Object value = null;
+		int indexHash = (int)hashCodes[indexPos];
+		if(indexHash>-1){
+			value = items[transformIndex(indexHash)];
+		}
+		while(!checkValue(value, oldValue)){
+			indexPos = (indexPos + 1) % items.length;
+			indexHash = (int)hashCodes[indexPos];
+			if(indexHash==-1){
+				continue;
 			}
-			while (!checkValue(value, oldValue)) {
-				indexPos = (indexPos + 1) % items.length;
-				
-				value = items[transformIndex((int)hashCodes[indexPos])];
-				if(value==null) {
-//				if(hashCodes[indexPos]==null){
-					indexPos=-1;
-					break;
-				}
+			value = items[indexHash];
+			if (value == null) {
+				indexPos=-1;
+				break;
 			}
-			if(indexPos>=0) {
-				hashCodes[indexPos] = null;
-			}
+		}
+		
+	
+		if(indexPos>=0) {
+			hashCodes[indexPos] = -1;
 		}
 		System.arraycopy(items, index + 1, items, index, size - index);
 		size--;
