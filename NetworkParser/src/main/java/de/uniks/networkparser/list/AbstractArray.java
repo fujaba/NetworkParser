@@ -118,7 +118,7 @@ public class AbstractArray implements BaseItem  {
     }
     boolean isComplex(int size) {
 //        return size>(BIG_VALUE+1) && elements.length <= (BIG_VALUE+1);
-    	return (flag & MAP) == MAP || size >= MINHASHINGSIZE;
+    	return (flag & MAP) == MAP || size >= MINHASHINGSIZE || (size >= 6 && elements.length < 6);
     }
     
 	int getArrayFlag(int size ) {
@@ -840,12 +840,16 @@ public class AbstractArray implements BaseItem  {
 		int indexPos = hashKey(oldValue.hashCode(), items.length);
 		if(hashCodes[indexPos]!=null){
 			Object value = items[transformIndex((int)hashCodes[indexPos])];
-	
+	//FIXME
+			
+			if(value==null) {
+				System.out.println("ERROR");
+			}
 			while (!checkValue(value, oldValue)) {
 				indexPos = (indexPos + 1) % items.length;
 				
 				value = items[transformIndex((int)hashCodes[indexPos])];
-				if(value==null){
+				if(value==null) {
 //				if(hashCodes[indexPos]==null){
 					indexPos=-1;
 					break;
