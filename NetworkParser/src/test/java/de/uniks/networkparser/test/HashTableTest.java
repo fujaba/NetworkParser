@@ -41,7 +41,10 @@ public class HashTableTest
 		long currentTimeMillis = System.currentTimeMillis();
 		
 		for (int i = 0; i < COUNT; i++) {
-			if(i==419){
+			if(i==603 && list instanceof PersonSet){
+				System.out.println("break");
+			}
+			if(i==0 && list instanceof PersonSet){
 				System.out.println("break");
 			}
 			list.add(items.get(i));
@@ -56,8 +59,11 @@ public class HashTableTest
 	private void contains(String label, List<Person> list){
 		int step=100;
 		long currentTimeMillis = System.currentTimeMillis();
+		if(list instanceof PersonSet){
+			System.out.println("break");
+		}
 		for (int i = 0; i < items.size(); i += step) {
-			Assert.assertTrue("not in list", list.contains(items.get(i)));
+			Assert.assertTrue("not in list: "+i, list.contains(items.get(i)));
 		}
 		String end = String.format(FORMAT, (System.currentTimeMillis() - currentTimeMillis));
 		System.out.println(label+ " contains:     " +end+ " for " +list.size()/step + " Objects");

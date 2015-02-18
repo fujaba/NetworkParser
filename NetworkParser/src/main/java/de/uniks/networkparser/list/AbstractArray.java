@@ -7,6 +7,8 @@ import java.util.Iterator;
 
 import de.uniks.networkparser.interfaces.BaseItem;
 
+
+//FIXME delete Action HashArray [OBJ, OBJ] change to [ [OBJ, INDEX, ...]]
 public class AbstractArray implements BaseItem  {
 //	/** Is ENTITYSIZE in Flag */
 //	public static final byte ENTITYSIZE = 0x01;
@@ -118,7 +120,7 @@ public class AbstractArray implements BaseItem  {
     	return (flag & MAP) == MAP || size >= MINHASHINGSIZE;
     }
     
-	int getArrayFlag(int size) {
+	int getArrayFlag(int size ) {
 		if(size==0) {
 			return 0;
 		}
@@ -138,34 +140,14 @@ public class AbstractArray implements BaseItem  {
 		return 1;
 	}
     
-	public int entitySize() {
-		if(elements==null) {
-			return 1;
-		}
-		if((flag & MAP)==MAP && elements[DELETED]!=null){
-			return 2;
-		}
-		return 1;
-	}
-    
-//	public AbstractArray withEntitySize(int size) {
-//		flag = (byte) (flag - (flag & ENTITYSIZE) + size);
-//		return this;
-//	}
-	
 	public byte getFlag(){
 		return flag;
 	}
 	
 	public int calcNewSize(int listSize) {
-		return listSize * entitySize() * 2;
+		return listSize * 2;
 	}
 	
-	
-	public int usedSize(){
-		return size() * entitySize();
-	}
-
 	public int size() {
 		return size;
 	}
@@ -313,7 +295,7 @@ public class AbstractArray implements BaseItem  {
 	 * @return the hasKey
 	 */
 	protected int hashKey(int hashKey, int len) {
-		int tmp = (hashKey + hashKey % entitySize()) % len;
+		int tmp = hashKey  % len;
 
 		return (tmp < 0) ? -tmp : tmp;
 	}
@@ -339,17 +321,10 @@ public class AbstractArray implements BaseItem  {
 		while (true) {
 			Object oldEntry = items[hashKey];
 			if (oldEntry == null) {
-				items[hashKey] = newValue;
-				if (entitySize() == 2) {
-					items[hashKey + 1] = pos;
-				}
+				items[hashKey] = pos;
 				return hashKey;
 			}
-
-			if (oldEntry.equals(newValue))
-				return -1;
-
-			hashKey = (hashKey + entitySize()) % items.length;
+			hashKey = (hashKey + 1) % items.length;
 		}
 	}
 	
@@ -369,52 +344,76 @@ public class AbstractArray implements BaseItem  {
 	}
 	
 	void grow(int minCapacity) {
-		if (elements == null){
-			if((flag & MAP)==0){
-				elements = new Object[minCapacity + minCapacity / 2	+ 4];
+		int newSize = minCapacity + minCapacity / 2 + 4;
+		int arrayFlag = getArrayFlag( minCapacity );
+		if(elements == null ){
+			// Init List
+			if(arrayFlag==1){
+				elements = new Object[newSize];
 				return;
 			}
-			elements = new Object[getArrayFlag(minCapacity)];
-			elements[SMALL_KEY] = new Object[minCapacity + minCapacity / 2 + 4];
-			elements[SMALL_VALUE] = new Object[minCapacity + minCapacity / 2 + 4];
-			return;
-		}
-		int arrayFlag = getArrayFlag( minCapacity );
-		// elements wrong size
-
-		if(minCapacity<MINHASHINGSIZE) {
-			if((flag & MAP)==MAP) {
-				if(minCapacity >= ((Object[])elements[SMALL_KEY]).length * MAXUSEDLIST) {
-					// resize Array
-					elements[SMALL_KEY] =resizeSmall(minCapacity + minCapacity / 2	+ 4, (Object[]) elements[SMALL_KEY]);
-					elements[SMALL_VALUE] =resizeSmall(minCapacity + minCapacity / 2	+ 4, (Object[]) elements[SMALL_VALUE]);
-					
-				}
-			}else if(minCapacity >= elements.length * MAXUSEDLIST) {
-				// resize Array
-				elements =resizeSmall(minCapacity + minCapacity / 2	+ 4, elements);
+			elements = new Object[arrayFlag];
+			if((flag & MAP)==MAP){
+				elements[SMALL_KEY] = new Object[newSize];
+				elements[SMALL_VALUE] = new Object[newSize];
 			}
 			return;
 		}
-		if(arrayFlag != elements.length) {
+		if(size>415){ //TODO RAUS
+			System.out.println(size);
+		}
+		if( arrayFlag > 1 && arrayFlag != elements.length) {
 			// Change Single to BigList
 			Object[] old = elements;
 			elements = new Object[arrayFlag];
 			elements[SMALL_KEY] = old;
-			return;
-		}
-		if (elements[BIG_KEY]== null || minCapacity >= ((Object[])elements[BIG_KEY]).length * MAXUSEDLIST){
-			resizeBig(minCapacity, BIG_KEY);
-			if(arrayFlag > 4){
-				resizeBig(minCapacity, BIG_VALUE);
+			if((flag & MAP)==MAP){
+				elements[SMALL_VALUE] = new Object[newSize];
 			}
-			elements[DELETED] = null;
 		}
+
+		// Array has wrong size
+		if(isComplex()) {
+			if(minCapacity >= ((Object[])elements[SMALL_KEY]).length * MAXUSEDLIST) {
+				// resize Array
+				elements[SMALL_KEY] =resizeSmall(newSize, (Object[]) elements[SMALL_KEY]);
+				if((flag & MAP)==MAP) {
+					elements[SMALL_VALUE] =resizeSmall(newSize, (Object[]) elements[SMALL_VALUE]);
+				}
+			}
+		} else if(size < MINHASHINGSIZE) {
+			if(minCapacity >= elements.length * MAXUSEDLIST) {
+				elements =resizeSmall(newSize, elements);
+			}
+		}
+//FIXME		if((flag & MAP)==MAP) {
+//				elements[SMALL_VALUE] =resizeSmall(minCapacity + minCapacity / 2	+ 4, (Object[]) elements[SMALL_VALUE]);
+//			}
+//			return;
+//		}else if(minCapacity >= elements.length * MAXUSEDLIST) {
+//			// resize Array
+//			elements =resizeSmall(minCapacity + minCapacity / 2	+ 4, elements);
+//			return;
+//		}
+//		if(arrayFlag != elements.length) {
+//			// Change Single to BigList
+//			Object[] old = elements;
+//			elements = new Object[arrayFlag];
+//			elements[SMALL_KEY] = old;
+//			return;
+//		}
+//		if (elements[BIG_KEY]== null || minCapacity >= ((Object[])elements[BIG_KEY]).length * MAXUSEDLIST){
+//			resizeBig(minCapacity, BIG_KEY);
+//			if(arrayFlag > 4){
+//				resizeBig(minCapacity, BIG_VALUE);
+//			}
+//			elements[DELETED] = null;
+//		}
 	}
 	
 	void resizeBig(int minCapacity, int index) {
 		Object[] items = (Object[]) elements[index - 1];
-		Object[] newItems = new Object[minCapacity*entitySize()*2]; 
+		Object[] newItems = new Object[minCapacity*2]; 
 		elements[index] = newItems;
 		for(int pos=0;pos<items.length;pos++) {
 			if(items[pos]==null){
@@ -455,7 +454,6 @@ public class AbstractArray implements BaseItem  {
 				return -1;
 			}
 		}
-		//FIXME 604==size
 		grow(size + 1);
 		return size;
 	}
@@ -600,7 +598,6 @@ public class AbstractArray implements BaseItem  {
 		if(isCaseSensitive()) {
 			sb.append("CaseSensitive ");
 		}
-		sb.append("E"+entitySize());
 		return sb.toString();
 	}
 
@@ -661,12 +658,14 @@ public class AbstractArray implements BaseItem  {
         if (o == null || elements == null)
        		return -1;
 
-        Object[] items = elements;
-    	if(size>=MINHASHINGSIZE || (flag & MAP)==MAP) {
-    		if(entitySize()==2) {
-    			return getPositionKey(o);
-    		}
+    	if(size>=MINHASHINGSIZE ) {
+   			return getPositionKey(o);
+    	}
+    	Object[] items;
+    	if((flag & MAP)==MAP) {
     		items = (Object[]) elements[SMALL_KEY];
+    	}else{
+    		items = elements;
     	}
         for (int i = 0; i < size; i++)
             if (o.equals(items[i]))
@@ -684,7 +683,7 @@ public class AbstractArray implements BaseItem  {
     public int lastindexOf(Object o) {
         if (o == null)
         	return -1;
-    	if(size>MINHASHINGSIZE && entitySize()==2) {
+    	if(size>MINHASHINGSIZE) {
     		return getLastPositionKey(o);
     	}
     	for (int i = size - 1; i >= 0; i--)
@@ -701,21 +700,9 @@ public class AbstractArray implements BaseItem  {
 		return getPosition(o, SMALL_VALUE);
 	}
 	
-	private int getPosition(Object o, int offset) {
-		if (o == null) {
-			return -1;
-		}
-		Object[] items = (Object[])elements[offset];
-		int index = hashKey(o.hashCode(), items.length);
-		Object value = items[index];
-		while (!checkValue(o, value)) {
-			if (value == null)
-				return -1;
-			index = (index + entitySize()) % items.length;
-			value = items[index];
-		}
+	private int transformIndex(int index){
 		if(elements[DELETED] != null) {
-    		items = (Object[]) elements[DELETED];
+			Object[] items = (Object[]) elements[DELETED];
     		for(int i=0;i<items.length;i++){
     			if(((int)items[i])>index){
     				break;
@@ -723,6 +710,25 @@ public class AbstractArray implements BaseItem  {
 				index += (int)items[i];
     		}
     	}
+		return index;
+	}
+	
+	private int getPosition(Object o, int offset) {
+		if (o == null) {
+			return -1;
+		}
+		Object[] hashCodes = (Object[])elements[offset + 1];
+		Object[] items = (Object[])elements[offset];
+		int index = hashKey(o.hashCode(), hashCodes.length);
+
+		Object value = items[transformIndex((int)hashCodes[index])];
+
+		while (!checkValue(o, value)) {
+			if (value == null)
+				return -1;
+			index = (index + 1) % items.length;
+			value = items[transformIndex((int)hashCodes[index])];
+		}
 		return index;
 	}
 
@@ -737,7 +743,7 @@ public class AbstractArray implements BaseItem  {
 		while (!checkValue(value, o)) {
 			if (value == null)
 				return found;
-			index = (index + entitySize()) % items.length;
+			index = (index + 1) % items.length;
 			value = items[index];
 		}
 		if(elements[DELETED] != null) {
@@ -829,19 +835,23 @@ public class AbstractArray implements BaseItem  {
 			size--;
 			return oldValue;
 		}
+		
+		Object[] hashCodes = ((Object[])elements[offset + 1]);
 		Object[] items = ((Object[])elements[offset]);
+		
+		
 		oldValue = items[index];
 		System.arraycopy(items, index + 1, items, index, size - index);
 		
 		int indexPos = hashKey(oldValue.hashCode(), items.length);
-		Object value = items[indexPos];
+		Object value = items[transformIndex((int)hashCodes[indexPos])];
 		size--;
 		
 		while (!checkValue(value, oldValue)) {
 			if (value == null)
 				return oldValue;
-			indexPos = (indexPos + entitySize()) % items.length;
-			value = items[indexPos];
+			indexPos = (indexPos + 1) % items.length;
+			value = items[transformIndex((int)hashCodes[indexPos])];
 		}
 		items[indexPos] = null;
 		
