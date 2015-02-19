@@ -14,7 +14,7 @@ public class SimpleKeyValueList<K, V> extends AbstractList<K> implements Map<K, 
 
 	@Override
 	public byte initFlag() {
-		return MAP;
+		return MAP+VISIBLE+CASESENSITIVE;
 	}
 	
 	/**
@@ -361,6 +361,8 @@ public class SimpleKeyValueList<K, V> extends AbstractList<K> implements Map<K, 
 		if(pos>=0) {
 			super.addKeyValue(pos, key, value);
 			return value;
+		}else if (pos==-2) {
+			setValue(indexOf(key), value);
 		}
 		return null;
 	}
@@ -486,6 +488,8 @@ public class SimpleKeyValueList<K, V> extends AbstractList<K> implements Map<K, 
 		int pos = checkKey(key);
 		if(pos>=0) {
 			super.addKeyValue(pos, key, value);
+		}else if(pos==-2) {
+			super.setValue(indexOf(key), value, SMALL_VALUE);
 		}
 		return this;
 	}

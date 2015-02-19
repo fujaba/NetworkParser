@@ -294,6 +294,6 @@ public class JsonArray extends SortedList<Object> implements
 	}
 	@Override
 	public JsonArray subList(int fromIndex, int toIndex) {
-		return subList(fromIndex, toIndex);
+		return (JsonArray) super.subList(fromIndex, toIndex);
 	}
 }

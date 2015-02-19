@@ -2,7 +2,6 @@ package de.uniks.networkparser.list;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.ListIterator;
 
@@ -320,7 +319,7 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
 			id = -1;
 		}
 
-		Object child = get(indexOf(keyString.substring(0, len)));
+		Object child = getValueByIndex(indexOf(keyString.substring(0, len)));
 		if (child != null) {
 			if (end == 0) {
 				if (id >= 0 || id == -2) {

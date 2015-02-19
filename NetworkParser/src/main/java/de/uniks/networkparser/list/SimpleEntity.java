@@ -197,9 +197,8 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 					if (map == null) {
 						map = new SimpleKeyValueList<String, Object>();
 					}
-//FIXME					if (map instanceof ArrayEntityList<?, ?>) {
-//						((ArrayEntityList<?, ?>) map).with(value);
-//					}
+					SimpleKeyValueList<?, ?> mapValue = (SimpleKeyValueList<?, ?>) map;
+					mapValue.withKeyValue(((Entry<?,?>) value).getKey(), ((Entry<?,?>) value).getValue());
 					entry.withValueItem(map);
 				} else {
 					entry.withValueItem(value);
