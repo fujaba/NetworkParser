@@ -144,8 +144,8 @@ public class HashTableTest
 
 	@Test
 	public void testLists(){
-		test("ArrayList    :", new ArrayList<Person>());
-		test("LinkedHashSet:", new LinkedHashSet<Person>());
+//FIXME		test("ArrayList    :", new ArrayList<Person>());
+//		test("LinkedHashSet:", new LinkedHashSet<Person>());
 		test("PersonSet    :", new PersonSet());
 	}
 	

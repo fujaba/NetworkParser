@@ -88,7 +88,6 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
  */
 public class JsonObject extends SimpleKeyValueList<String, Object> implements
 		StringItem, FactoryEntity, Entity {
-	protected boolean caseSensitive=true;
 	
 	public JsonObject() {
 		this.withAllowDuplicate(false);
@@ -375,7 +374,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 	}
 
 	public JsonObject withCaseSensitive(boolean value) {
-		this.caseSensitive = value;
+		super.withCaseSensitive(value);
 		return this;
 	}
 }

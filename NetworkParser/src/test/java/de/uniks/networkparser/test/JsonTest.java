@@ -73,7 +73,7 @@ public class JsonTest {
 		item.addToList("id", 23);
 		assertEquals(item.toString(), "{\"id\":23}");
 		item.addToList("id", 42);
-		assertEquals(item.toString(), "{\"id\":[23,42]}");
+		assertEquals("{\"id\":[23,42]}", item.toString());
 	}
 	
 	
@@ -460,7 +460,7 @@ public class JsonTest {
 		assertEquals(itemNew.getValue().size(), 1);
 		Object passNew = itemNew.getValue().get("passwords");
 		if(passNew instanceof Map<?, ?>){
-			assertEquals(((Map<?, ?>)passNew).size(), 2);
+			assertEquals(2, ((Map<?, ?>)passNew).size());
 		}
 //		System.out.println(json);
 	}
@@ -585,15 +585,15 @@ public class JsonTest {
 		
 		JsonObject item = new JsonObject().withValue(json);
 		// Duplicate allow
-		Assert.assertEquals(item.get("Number"), 42);
-		Assert.assertEquals(item.get("number"), 23);
+		Assert.assertEquals(42, item.get("Number"));
+		Assert.assertEquals(23, item.get("number"));
 		
 
 		// Dont allow Duplicate
 		JsonObject item2 = new JsonObject().withCaseSensitive(false);
 		item2.withValue(json);
-		Assert.assertEquals(item2.get("Number"), 42);
-		Assert.assertEquals(item2.get("number"), 42);
+		Assert.assertEquals(42, item2.get("Number"));
+		Assert.assertEquals(42, item2.get("number"));
 		
 		JsonObject item3 = new JsonObject();
 		

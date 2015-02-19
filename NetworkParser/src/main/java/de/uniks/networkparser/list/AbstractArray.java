@@ -73,7 +73,7 @@ public class AbstractArray implements BaseItem  {
     int size;
     
     public byte initFlag() {
-    	return 0;
+    	return 0+VISIBLE+CASESENSITIVE;
     }
     
     /** Init-List with Collection */
@@ -212,9 +212,10 @@ public class AbstractArray implements BaseItem  {
 	}
 
 	public AbstractArray withCaseSensitive(boolean value) {
-		this.flag = (byte) (this.flag | CASESENSITIVE);
-		if(!value) {
-			this.flag -= CASESENSITIVE;
+		if(value) {
+			this.flag = (byte) (this.flag | CASESENSITIVE);
+		} else {
+			this.flag = (byte) (this.flag & (0xff - CASESENSITIVE));
 		}
 		return this;
 	}
@@ -460,7 +461,7 @@ public class AbstractArray implements BaseItem  {
 		}
 		if (!isAllowDuplicate()) {
 			if (this.contains(element)) {
-				return -1;
+				return -2;
 			}
 		}
 		grow(size + 1);
@@ -642,9 +643,11 @@ public class AbstractArray implements BaseItem  {
 			Object[] items = (Object[]) elements[offset];
 			Object oldValue = items[pos];
 			items[pos] = value;
-			int position = getPositionKey(oldValue);
-			if(position>=0) {
-				items = ((Object[]) elements[offset+1]);
+			if(elements.length > offset+1) {
+				int position = getPositionKey(oldValue);
+				if(position>=0) {
+					items = ((Object[]) elements[offset+1]);
+				}
 			}
 			return;
 		}
@@ -679,9 +682,10 @@ public class AbstractArray implements BaseItem  {
     	}else{
     		items = elements;
     	}
-        for (int i = 0; i < size; i++)
-            if (o.equals(items[i]))
+        for (int i = 0; i < size; i++) {
+        	if(checkValue(o, items[i]))
                 return i;
+        }
         return -1;
     }
     
@@ -740,24 +744,23 @@ public class AbstractArray implements BaseItem  {
 		}
 		
 		Object value = null;
-		int indexHash = (int)hashCodes[index];
-		if(indexHash>-1){
-			value = items[transformIndex(indexHash, items.length) ];
+		int indexItem=-1;
+		if((int)hashCodes[index]>-1){
+			indexItem = transformIndex((int)hashCodes[index], items.length);
+			value = items[ indexItem ];
 		}
 		while(!checkValue(o, value)){
 			index = (index + 1) % items.length;
 			if(hashCodes[index]==null) {
 				return -1;
 			}
-			indexHash = (int)hashCodes[index];
-			if(indexHash==-1){
+			if((int)hashCodes[index]==-1){
 				continue;
 			}
-			value = items[indexHash];
-			if (value == null)
-				return -1;
+			indexItem = transformIndex((int)hashCodes[index], items.length);
+			value = items[indexItem];
 		}
-		return index;
+		return indexItem;
 	}
 
 	public int getLastPositionKey(Object o) {
@@ -867,7 +870,7 @@ public class AbstractArray implements BaseItem  {
 				}else{
 					Integer[] oldPos = (Integer[]) elements[DELETED]; 
 					int i=0;
-					while(i<oldPos.length && oldPos[i]>index){
+					while(i<oldPos.length && oldPos[i]<=index){
 						i++;
 					}
 					Integer[] positions=new Integer[((Object[])elements[DELETED]).length+1];
