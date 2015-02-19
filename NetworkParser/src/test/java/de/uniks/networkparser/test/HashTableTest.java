@@ -32,6 +32,7 @@ public class HashTableTest
 //			HashTableTest.COUNT = 1000 * 1000;
 			HashTableTest.COUNT = 1000;
 		}
+		System.out.println("Run test for "+HashTableTest.COUNT+" items");
 		for (int i = 0; i < COUNT; i++) {
 			items.add(new Person().withName("p" + i));
 		}
@@ -46,7 +47,7 @@ public class HashTableTest
 		
 		String end = String.format(FORMAT, (System.currentTimeMillis() - currentTimeMillis));
 		
-		System.out.println(label+ " Add:          " +end+ " = number of persons: " + list.size());	
+		System.out.println(label+ " Add:          " +end+ "ms = number of persons: " + list.size());	
 		return list;
 	}
 
@@ -55,10 +56,10 @@ public class HashTableTest
 		long currentTimeMillis = System.currentTimeMillis();
 
 		for (int i = 0; i < items.size(); i += step) {
-			Assert.assertTrue("not in list: "+i, list.contains(items.get(i)));
+			Assert.assertTrue("not in list: "+i+"="+items.get(i), list.contains(items.get(i)));
 		}
 		String end = String.format(FORMAT, (System.currentTimeMillis() - currentTimeMillis));
-		System.out.println(label+ " contains:     " +end+ " for " +list.size()/step + " Objects");
+		System.out.println(label+ " contains:     " +end+ "ms for " +list.size()/step + " Objects");
 	}
 	
 	private void getter(String label, List<Person> list){
@@ -68,7 +69,7 @@ public class HashTableTest
 			Assert.assertNotNull("not in list", list.get(i));
 		}
 		String end = String.format(FORMAT, (System.currentTimeMillis() - currentTimeMillis));
-		System.out.println(label+ " getter(index):" +end+ " for " +list.size()/step + " Objects");
+		System.out.println(label+ " getter(index):" +end+ "ms for " +list.size()/step + " Objects");
 	}
 	
 	private void getter(String label, Set<Person> list){
@@ -77,7 +78,7 @@ public class HashTableTest
 			int pos=0;
 			for (Iterator<Person> iterator = list.iterator();iterator.hasNext();) {
 				if(pos==i){
-					Assert.assertNotNull("not in list", iterator.next());
+					Assert.assertNotNull("not in list "+ i , iterator.next());
 					break;
 				} else {
 					iterator.next();
@@ -144,8 +145,8 @@ public class HashTableTest
 
 	@Test
 	public void testLists(){
-//FIXME		test("ArrayList    :", new ArrayList<Person>());
-//		test("LinkedHashSet:", new LinkedHashSet<Person>());
+		test("ArrayList    :", new ArrayList<Person>());
+		test("LinkedHashSet:", new LinkedHashSet<Person>());
 		test("PersonSet    :", new PersonSet());
 	}
 	
@@ -156,7 +157,7 @@ public class HashTableTest
 	   personSet.add(newValue);
 	   personSet.add(new Person());
 	   personSet.remove(newValue);
-	   System.out.println(personSet.size());
+	   Assert.assertEquals(1, personSet.size());
    }
 	
 	
