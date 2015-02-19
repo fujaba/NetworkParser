@@ -320,8 +320,7 @@ public class AbstractArray implements BaseItem  {
 	protected int addHashItem(int pos, Object newValue, Object[] items) {
 		int hashKey = hashKey(newValue.hashCode(), items.length);
 		while (true) {
-			Object oldEntry = items[hashKey];
-			if (oldEntry == null) {
+			if (items[hashKey] == null || (int)items[hashKey] == -1) {
 				items[hashKey] = pos;
 				return hashKey;
 			}
@@ -329,19 +328,41 @@ public class AbstractArray implements BaseItem  {
 		}
 	}
 	
-	void shrink(int minCapacity) {
-		if(minCapacity >= elements.length * MINHASHINGSIZE) {
-			return;
+	boolean shrink(int minCapacity) {
+		//Shrink the Array
+		if(minCapacity==0){
+			elements = null;
+			return true;
 		}
-		
+
+		int newSize = minCapacity + minCapacity / 2 + 4;
 		if(isComplex()) {
-			
-		}else{
-			
-//			elements[SMALL_KEY] =resizeSmall(minCapacity + minCapacity / 2	+ 4, (Object[]) elements[SMALL_KEY]);
+			if((flag & MAP)==MAP) {
+				// MAP
+				boolean change=false;
+				if(minCapacity < ((Object[])elements[SMALL_KEY]).length * MINUSEDLIST) {
+					resizeSmall(newSize, SMALL_KEY);
+					resizeSmall(newSize, SMALL_VALUE);
+					change = true;
+				}
+				if(minCapacity < ((Object[])elements[SMALL_VALUE]).length * MINUSEDLIST) {
+					change = true;
+					resizeBig(newSize, BIG_KEY);
+					if(elements[BIG_VALUE]!= null) {
+						resizeBig(newSize, BIG_VALUE);
+					}
+				}
+				return change;
+			}else if(minCapacity < ((Object[])elements[SMALL_KEY]).length * MINUSEDLIST) {
+				// Change Simple Complexlist to SImpleList
+				elements = (Object[]) elements[SMALL_KEY];
+				return true;
+			}
+		}else if(minCapacity < elements.length * MINUSEDLIST) {
+			resizeSmall(newSize);
+			return true;
 		}
-		//FIXME SHRINK
-//		resize(minCapacity);
+		return false;
 	}
 	
 	void grow(int minCapacity) {
@@ -614,6 +635,9 @@ public class AbstractArray implements BaseItem  {
 	}
 	
 	protected void setValue(int pos, Object value, int offset) {
+		if(pos>=size){
+			grow(pos + 1);
+		}
 		if(getArrayFlag(size)>1){
 			Object[] items = (Object[]) elements[offset];
 			Object oldValue = items[pos];
@@ -688,16 +712,19 @@ public class AbstractArray implements BaseItem  {
 		return getPosition(o, SMALL_VALUE);
 	}
 	
-	private int transformIndex(int index){
+	private int transformIndex(int index, int size){
 		if(elements[DELETED] != null) {
 			Object[] items = (Object[]) elements[DELETED];
     		for(int i=0;i<items.length;i++){
     			if(((int)items[i])>index){
     				break;
     			}
-				index += (int)items[i];
+				index --;
     		}
     	}
+		if(index<0){
+			index += size;
+		}
 		return index;
 	}
 	
@@ -715,10 +742,13 @@ public class AbstractArray implements BaseItem  {
 		Object value = null;
 		int indexHash = (int)hashCodes[index];
 		if(indexHash>-1){
-			value = items[transformIndex(indexHash)];
+			value = items[transformIndex(indexHash, items.length) ];
 		}
 		while(!checkValue(o, value)){
 			index = (index + 1) % items.length;
+			if(hashCodes[index]==null) {
+				return -1;
+			}
 			indexHash = (int)hashCodes[index];
 			if(indexHash==-1){
 				continue;
@@ -827,13 +857,39 @@ public class AbstractArray implements BaseItem  {
 	}
 	
 	protected Object removeByIndex(int index, int offset) {
+		Object item = removeItem(index, offset);
+		if(item != null){
+
+			size--;
+			if(!shrink(size) && isComplex() ){
+				if(elements[DELETED]==null) {
+					elements[DELETED]=new Integer[]{index};
+				}else{
+					Integer[] oldPos = (Integer[]) elements[DELETED]; 
+					int i=0;
+					while(i<oldPos.length && oldPos[i]>index){
+						i++;
+					}
+					Integer[] positions=new Integer[((Object[])elements[DELETED]).length+1];
+					System.arraycopy(oldPos, 0, positions, 0, i);
+					positions[i]=index;
+					System.arraycopy(oldPos, i, positions, i + 1, positions.length - i - 1);
+					elements[DELETED] = positions;
+				}
+			}
+		}
+		return item;
+	}
+	
+	Object removeItem(int index, int offset) {
 		Object oldValue = null;
 		if(!isComplex()){
 			// One Dimension
 			oldValue = elements[index];
-			isComplex();
+			if(oldValue==null){
+				return null;
+			}
 			System.arraycopy(elements, index + 1, elements, index, size - index);
-			size--;
 			return oldValue;
 		}
 		
@@ -844,13 +900,11 @@ public class AbstractArray implements BaseItem  {
 		}
 		if(offset<elements.length){
 			System.arraycopy(items, index + 1, elements[offset], index, size - index);
-			size--;
 			return oldValue;
 		}
 		Object[] hashCodes = ((Object[])elements[offset + 1]);
 		if(hashCodes == null) {
 			System.arraycopy(items, index + 1, elements[offset], index, size - index);
-			size--;
 			return oldValue;
 		}
 		
@@ -858,7 +912,7 @@ public class AbstractArray implements BaseItem  {
 		Object value = null;
 		int indexHash = (int)hashCodes[indexPos];
 		if(indexHash>-1){
-			value = items[transformIndex(indexHash)];
+			value = items[transformIndex(indexHash, items.length)];
 		}
 		while(!checkValue(value, oldValue)){
 			indexPos = (indexPos + 1) % items.length;
@@ -878,22 +932,8 @@ public class AbstractArray implements BaseItem  {
 			hashCodes[indexPos] = -1;
 		}
 		System.arraycopy(items, index + 1, items, index, size - index);
-		size--;
-		
-		if(elements[DELETED]==null) {
-			elements[DELETED]=new Integer[]{index};
-		}else{
-			Integer[] oldPos = (Integer[]) elements[DELETED]; 
-			int i=0;
-			while(i<oldPos.length && oldPos[i]<=index){
-				i++;
-			}
-			Integer[] positions=new Integer[((Object[])elements[DELETED]).length+1];
-			System.arraycopy(oldPos, 0, positions, 0, i);
-			positions[i]=index;
-			System.arraycopy(oldPos, i, positions, i + 1, positions.length - i - 1);
-			elements[DELETED] = positions;
-		}
+ 		
+
 		return oldValue;
 	}
 

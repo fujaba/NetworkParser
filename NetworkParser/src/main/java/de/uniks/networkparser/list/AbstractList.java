@@ -2,6 +2,7 @@ package de.uniks.networkparser.list;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.ListIterator;
 
@@ -192,23 +193,10 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
 
 	public AbstractList<V> subSet(V fromElement, V toElement) {
 		AbstractList<V> newList = getNewInstance();
-		// PRE WHILE
-		int pos = 0;
-		int size = size();
-		while (pos < size) {
-			V item = get(pos);
-			if (comparator().compare(item, fromElement) >= 0) {
-				copyEntity(newList, pos++);
-				break;
-			}
-		}
+		int end = indexOf(toElement);
 		// MUST COPY
-		while (pos < size) {
-			V item = get(pos);
-			if (comparator().compare(item, toElement) >= 0) {
-				break;
-			}
-			copyEntity(newList, pos++);
+		for(int pos = indexOf(fromElement);pos<end;pos++){
+			copyEntity(newList, pos);
 		}
 		return newList;
 	}
@@ -397,7 +385,10 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
 	}
 
 	public void add(int index, V element) {
-		super.addKey(index, element);
+		int pos = checkKey(element);
+		if(pos>=0) {
+			addKey(index, element);
+		}
 	}
 
 	public boolean addAll(int index, Collection<? extends V> c) {
