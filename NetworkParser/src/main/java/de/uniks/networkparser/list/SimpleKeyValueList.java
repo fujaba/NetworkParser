@@ -440,11 +440,12 @@ public class SimpleKeyValueList<K, V> extends AbstractList<K> implements Map<K, 
 	
 	@SuppressWarnings("unchecked")
 	public V remove(Object key) {
-		int pos = super.removeByObject(key);
-		if(pos>=0) {
-			return (V) super.removeByIndex(pos, SMALL_VALUE);
+		int index = indexOf(key);
+		if (index < 0) {
+			return null;
 		}
-		return null;
+		removeItem(index, SMALL_KEY);
+		return (V) removeByIndex(index, SMALL_VALUE);
 	}
 	
 	@Override
