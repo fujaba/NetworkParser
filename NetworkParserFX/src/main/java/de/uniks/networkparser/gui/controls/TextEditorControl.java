@@ -64,15 +64,17 @@ public class TextEditorControl extends EditControl<TextField>{
 		autoCompleteContextMenu = new AutoCompleteContextMenu(textField);
 
 		textField.addEventHandler(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>() {
+			
 			@Override
 			public void handle(KeyEvent event) {
+				
 				AutoCompletionList listener = TextEditorControl.this.completion;
 				if(listener != null) {
 					TextField control = TextEditorControl.this.getControl();
 					Set<String> list = listener.items(control.getText());
 					
-					if(list.size()>0) {
-						autoCompleteContextMenu.show(control, Side.BOTTOM, 0,0);
+					if(list.size()>0 && !autoCompleteContextMenu.isShowing()) {
+						autoCompleteContextMenu.show(control, Side.BOTTOM, -11.0, -4.0);
 						autoCompleteContextMenu.withSuggestions(list);
 					}
 				}
