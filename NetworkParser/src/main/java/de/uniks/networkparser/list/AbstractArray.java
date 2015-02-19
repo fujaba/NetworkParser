@@ -750,7 +750,7 @@ public class AbstractArray implements BaseItem  {
 			value = items[ indexItem ];
 		}
 		while(!checkValue(o, value)){
-			index = (index + 1) % items.length;
+			index = (index + 1) % hashCodes.length;
 			if(hashCodes[index]==null) {
 				return -1;
 			}
