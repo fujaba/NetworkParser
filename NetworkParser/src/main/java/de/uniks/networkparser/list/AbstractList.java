@@ -221,7 +221,7 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
 		// PRE WHILE
 		int pos = 0;
 		for (; pos < size(); pos++) {
-			int compare = comparator().compare(get(pos), fromElement);
+			int compare = comparator().compare(get(pos), fromElement); // FIXME we do not always have a comparator. AZ
 			if (compare == 0) {
 				if (inclusive) {
 					copyEntity(newList, pos);
@@ -265,7 +265,7 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
 
 		// MUST COPY
 		for (int pos = 0; pos < size(); pos++) {
-			int compare = comparator().compare(get(pos), toElement);
+			int compare = comparator().compare(get(pos), toElement); // FIXME we do not always have a comparator. AZ
 			if (compare == 0) {
 				if (inclusive) {
 					copyEntity(newList, pos);

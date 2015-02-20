@@ -243,5 +243,13 @@ public class FullListTest {
 		assertEquals("wrong number of elements", 2, clone.size());
 		assertEquals("clone[0] is wrong", 23, 0 + clone.first());
 		
+		clone.removeItemByObject(clone.first());
+
+		assertEquals("wrong number of elements", 1, clone.size());
+		assertEquals("clone[0] is wrong", 24, 0 + clone.first());
+
+		int lastIndexOf = clone.lastIndexOf(clone.first());
+		assertEquals("wrong index", 0, lastIndexOf);
+
 	}
 }

@@ -118,7 +118,7 @@ public class AbstractArray implements BaseItem  {
     }
     boolean isComplex(int size) {
 //        return size>(BIG_VALUE+1) && elements.length <= (BIG_VALUE+1);
-    	return (flag & MAP) == MAP || size >= MINHASHINGSIZE || (size >= 6 && elements.length < 6);
+    	return (flag & MAP) == MAP || size >= MINHASHINGSIZE || (this.size >= 6 && elements.length < 6);
     }
     
 	int getArrayFlag(int size ) {
@@ -408,7 +408,7 @@ public class AbstractArray implements BaseItem  {
 				elements[DELETED] = null;
 			}
 		} else if(size < MINHASHINGSIZE) {
-			if(minCapacity >= elements.length * MAXUSEDLIST) {
+			if(minCapacity >= elements.length) {
 				resizeSmall(newSize);
 			}
 		}
@@ -558,9 +558,9 @@ public class AbstractArray implements BaseItem  {
 	 * @return if boolean if all added
 	 */
 	protected boolean addAllKeys(int pos, Collection<?> values) {
-		int size = values.size();
-		int i = pos+size;
-		grow(i);
+		int valuesSize = values.size();
+		int i = this.size;
+		grow(this.size + valuesSize);
 		
 		Object[] keys;
 		if(isBig()) {
@@ -571,16 +571,20 @@ public class AbstractArray implements BaseItem  {
 		}else{
 			keys = elements;
 		}
-		while(i>pos) {
-			keys[i] = keys[--i-size]; 	
-		}
+		
+		System.arraycopy(keys, pos, keys, pos + valuesSize, this.size - pos);
+		
+		// FIXME This loop inserts the values without checking whether they 
+		//       are already contained. No good. AZ 
+		//       I also cannot find a usage of this method. Is it dead code?
 		for(Object element : values) {
 			keys[pos] = element;
-			size++;
+			this.size++;
 			Object beforeElement = null;
-			if (size > 1) {
-				beforeElement = this.getKeyByIndex(size - 1);
+			if (pos >= 1) {
+				beforeElement = this.getKeyByIndex(pos);
 			}
+			pos++;
 			fireProperty(null, element, beforeElement, null);
 		}
 		return true;
