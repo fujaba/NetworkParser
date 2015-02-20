@@ -44,6 +44,10 @@ public class TextEditorControl extends EditControl<TextField>{
 	public String getText() {
 		return this.control.getText();
 	}
+	
+	public void setText(String value) {
+		this.control.setText(value);
+	}
 
 	@Override
 	public FieldTyp getControllForTyp(Object value) {
