@@ -115,6 +115,25 @@ public class JsonArray extends SortedList<Object> implements
 				+ "] is not a JSONObject.");
 	}
 
+   /**
+    * Get the JSONObject associated with an index.
+    *
+    * @param index
+    *            subscript
+    * @return A JSONObject value.
+    * @throws RuntimeException
+    *             If there is no value for the index or if the value is not a
+    *             JSONObject
+    */
+   public String getString(int index) {
+      Object object = get(index);
+      if (object instanceof String) {
+         return (String) object;
+      }
+      throw new RuntimeException("JSONArray[" + index
+            + "] is not a String.");
+   }
+
 	/**
 	 * Produce a JSONObject by combining a JSONArray of names with the values of
 	 * this JSONArray.
