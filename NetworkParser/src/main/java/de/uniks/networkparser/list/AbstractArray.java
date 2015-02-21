@@ -80,7 +80,7 @@ public class AbstractArray implements BaseItem  {
     @SuppressWarnings("unchecked")
 	public <ST extends AbstractArray> ST init(Collection<?> list){
     	if(list instanceof AbstractArray){
-    		this.flag = ((AbstractArray)list).getFlag();
+    		this.flag = ((AbstractArray)list).getSignalFlag();
     	}
     	withList(list);
     	return (ST)this;
@@ -141,7 +141,7 @@ public class AbstractArray implements BaseItem  {
 		return 1;
 	}
     
-	public byte getFlag(){
+	public byte getSignalFlag(){
 		return flag;
 	}
 	
@@ -944,10 +944,15 @@ public class AbstractArray implements BaseItem  {
 		return oldValue;
 	}
 
+	public static Object[] emptyArray = new Object[] {};
 	
 	public Object[] toArray() {
 		if(isBig()) {
 			return Arrays.copyOf((Object[])elements[SMALL_KEY], size);	
+		}
+		if (elements == null)
+		{
+		   return emptyArray;
 		}
 		return Arrays.copyOf(elements, size);
 	}

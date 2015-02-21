@@ -49,8 +49,9 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
 		int pos = checkKey(e);
 		if(pos>=0) {
 			addKey(pos, e);
+			return true;
 		}
-		return true;
+		return false;
 	}
     
 	public Iterator<V> iterator() {
@@ -114,12 +115,16 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
             // Make a new array of a's runtime type, but my contents:
             return (T[]) Arrays.copyOf(elementData, size, a.getClass());
         }
+        if (elementData == null)
+        {
+           return a; // should be empty
+        }
         System.arraycopy(elementData, 0, a, 0, size);
         if (a.length > size)
             a[size] = null;
         return a;
     }
-
+    
     public ListIterator<V> listIterator() {
 		return new SimpleIterator<V>(this);
 	}
