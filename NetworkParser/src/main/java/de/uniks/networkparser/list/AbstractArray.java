@@ -10,8 +10,6 @@ import de.uniks.networkparser.interfaces.BaseItem;
 
 //FIXME delete Action HashArray [OBJ, OBJ] change to [ [OBJ, INDEX, ...]]
 public class AbstractArray implements BaseItem  {
-//	/** Is ENTITYSIZE in Flag */
-//	public static final byte ENTITYSIZE = 0x01;
 	/** Is Allow Duplicate Items in List	 */
 	public static final byte ALLOWDUPLICATE = 0x01;
 	/** Is Allow Empty Value in List (null)  */
@@ -117,7 +115,6 @@ public class AbstractArray implements BaseItem  {
     	return isComplex(size);
     }
     boolean isComplex(int size) {
-//        return size>(BIG_VALUE+1) && elements.length <= (BIG_VALUE+1);
     	return (flag & MAP) == MAP || size >= MINHASHINGSIZE || (this.size >= 6 && elements.length < 6);
     }
     
@@ -145,10 +142,6 @@ public class AbstractArray implements BaseItem  {
 		return flag;
 	}
 	
-	public int calcNewSize(int listSize) {
-		return listSize * 2;
-	}
-	
 	public int size() {
 		return size;
 	}
@@ -162,12 +155,6 @@ public class AbstractArray implements BaseItem  {
         return size == 0;
     }
 	
-	/**
-	 * @return the Size of Array
-	 */
-	public int realSize() {
-		return elements.length;
-	}
 	/**
 	 * Is Allow Duplicate Entity in the List
 	 *
@@ -230,10 +217,11 @@ public class AbstractArray implements BaseItem  {
 	}
 
 	public AbstractArray withAllowDuplicate(
-			boolean allowDuplicate) {
-		this.flag = (byte) (this.flag | ALLOWDUPLICATE);
-		if(!allowDuplicate) {
-			this.flag -= ALLOWDUPLICATE;
+			boolean value) {
+		if(value) {
+			this.flag = (byte) (this.flag | ALLOWDUPLICATE);
+		} else {
+			this.flag = (byte) (this.flag & (0xff - ALLOWDUPLICATE));
 		}
 		return this;
 	}
@@ -249,9 +237,10 @@ public class AbstractArray implements BaseItem  {
 
 	public AbstractArray withReadOnly(
 			boolean value) {
-		this.flag = (byte) (this.flag | READONLY);
-		if(!value) {
-			this.flag -= READONLY;
+		if(value) {
+			this.flag = (byte) (this.flag | READONLY);
+		} else {
+			this.flag = (byte) (this.flag & (0xff - READONLY));
 		}
 		return this;
 	}
@@ -444,6 +433,7 @@ public class AbstractArray implements BaseItem  {
 	 * @param element to add a Value
 	 * @return boolean if success add the Value
 	 */
+	//FIXME Speed up to change return value and grow outside 
 	protected int checkKey(Object element){
 		if (element == null)
 			return -1;
