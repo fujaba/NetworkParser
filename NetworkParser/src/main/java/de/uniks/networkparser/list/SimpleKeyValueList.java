@@ -338,8 +338,9 @@ public class SimpleKeyValueList<K, V> extends AbstractList<K> implements Map<K, 
 	}
 	
 	public boolean add(K key, V value) {
-		int pos = checkKey(key);
+		int pos = hasKey(key, size);
 		if(pos>=0) {
+			grow(size + 1);
 			super.addKeyValue(pos, key, value);
 			return true;
 		}
@@ -347,7 +348,8 @@ public class SimpleKeyValueList<K, V> extends AbstractList<K> implements Map<K, 
 	}
 	
 	public boolean add(int pos, K key, V value) {
-		if(checkKey(key)>=0) {
+		if(hasKey(key, size)>=0) {
+			grow(size + 1);
 			super.addKeyValue(pos, key, value);
 			return true;
 		}
@@ -357,14 +359,17 @@ public class SimpleKeyValueList<K, V> extends AbstractList<K> implements Map<K, 
 	
 	@Override
 	public V put(K key, V value) {
-		int pos = checkKey(key);
-		if(pos>=0) {
-			super.addKeyValue(pos, key, value);
-			return value;
-		}else if (pos==-2) {
-			setValue(indexOf(key), value);
+		int pos = hasKeyAndPos(key);
+		if(pos<0) {
+			return null;
 		}
-		return null;
+		if(pos==size || getKeyByIndex(pos, size) != key) {
+			grow(size + 1);
+			super.addKeyValue(pos, key, value);
+		}else {
+			super.setValue(pos, value, SMALL_VALUE);
+		}
+		return value;
 	}
 	
 	@Override
@@ -485,11 +490,15 @@ public class SimpleKeyValueList<K, V> extends AbstractList<K> implements Map<K, 
 	}
 
 	public SimpleKeyValueList<K, V> withKeyValue(Object key, Object value) {
-		int pos = checkKey(key);
-		if(pos>=0) {
+		int pos = hasKeyAndPos(key);
+		if(pos<0) {
+			return this;
+		}
+		if(pos==size || getKeyByIndex(pos, size) != key) {
+			grow(size + 1);
 			super.addKeyValue(pos, key, value);
-		}else if(pos==-2) {
-			super.setValue(indexOf(key), value, SMALL_VALUE);
+		}else {
+			super.setValue(pos, value, SMALL_VALUE);
 		}
 		return this;
 	}
@@ -499,12 +508,11 @@ public class SimpleKeyValueList<K, V> extends AbstractList<K> implements Map<K, 
 		return new SimpleEntrySet<K, V>(this);
 	}
 
-	@SuppressWarnings("unchecked")
 	public K getKey(V value) {
 		int pos = indexOfValue(value);
 		if(pos<0) {
 			return null;
 		}
-		return (K)super.getKeyByIndex(pos);
+		return getKeyByIndex(pos);
 	}
 }

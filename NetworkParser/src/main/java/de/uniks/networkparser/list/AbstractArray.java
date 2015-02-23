@@ -7,8 +7,6 @@ import java.util.Iterator;
 
 import de.uniks.networkparser.interfaces.BaseItem;
 
-
-//FIXME delete Action HashArray [OBJ, OBJ] change to [ [OBJ, INDEX, ...]]
 public class AbstractArray implements BaseItem  {
 	/** Is Allow Duplicate Items in List	 */
 	public static final byte ALLOWDUPLICATE = 0x01;
@@ -115,7 +113,7 @@ public class AbstractArray implements BaseItem  {
     	return isComplex(size);
     }
     boolean isComplex(int size) {
-    	return (flag & MAP) == MAP || size >= MINHASHINGSIZE || (this.size >= 6 && elements.length < 6);
+    	return (flag & MAP) == MAP || size >= MINHASHINGSIZE || (size >= 6 && elements.length < 6);
     }
     
 	int getArrayFlag(int size ) {
@@ -365,8 +363,11 @@ public class AbstractArray implements BaseItem  {
 				return;
 			}
 			elements = new Object[arrayFlag];
+			elements[SMALL_KEY] = new Object[newSize];
+			if(newSize>MINHASHINGSIZE) {
+				resizeBig(minCapacity*2, BIG_KEY);
+			}
 			if((flag & MAP)==MAP){
-				elements[SMALL_KEY] = new Object[newSize];
 				elements[SMALL_VALUE] = new Object[newSize];
 			}
 			return;
@@ -431,39 +432,67 @@ public class AbstractArray implements BaseItem  {
 	 * Add a Element to the List
 	 * 
 	 * @param element to add a Value
-	 * @return boolean if success add the Value
+	 * @return int the Position of the insert
 	 */
-	//FIXME Speed up to change return value and grow outside 
-	protected int checkKey(Object element){
-		if (element == null)
+	protected int hasKey(Object element, int size){
+		if (element == null || isReadOnly())
 			return -1;
 		if (isComparator()) {
 			for (int i = 0; i < size(); i++) {
-				int result = comparator().compare(getKeyByIndex(i), element);
-				if (result >= 0) {
-					if (!isAllowDuplicate() && getKeyByIndex(i) == element) {
+				if (comparator().compare(getKeyByIndex(i, size), element) >= 0) {
+					if (!isAllowDuplicate() && getKeyByIndex(i, size) == element) {
 						return -1;
 					}
-					grow(size + 1);
 					return i;
 				}
 			}
+			return this.size;
 		}
 		if (!isAllowDuplicate()) {
-			if (this.contains(element)) {
-				return -2;
+			int pos = indexOf(element, size);
+			if(pos>=0) {
+				return -1;
 			}
 		}
-		grow(size + 1);
+		return this.size;
+	}
+	
+	/**
+	 * Add a Element to the List
+	 * 
+	 * @param element to add a Value
+	 * @return boolean if success add the Value
+	 */
+	protected int hasKeyAndPos(Object element){
+		if (element == null || isReadOnly())
+			return -1;
+		if (isComparator()) {
+			for (int i = 0; i < size(); i++) {
+				if (comparator().compare(getKeyByIndex(i), element) >= 0) {
+					return i;
+				}
+			}
+			return size;
+		}
+		if (!isAllowDuplicate()) {
+			int pos = indexOf(element, size);
+			if(pos>=0) {
+				return pos;
+			}
+		}
 		return size;
 	}
 
 	public Object getKeyByIndex(int index) {
+		return getKeyByIndex(index, size);
+	}
+	
+	protected Object getKeyByIndex(int index, int size) {
 		if(index<0) {
 			index = size + 1 - index;
 		}
 		if(index>=0 && index<size){
-			if(isComplex()) {
+			if(isComplex(size)) {
 				return ((Object[])elements[SMALL_KEY])[index];
 			}
 			return elements[index];
@@ -496,7 +525,7 @@ public class AbstractArray implements BaseItem  {
 		}
 		keys[pos] = key;
 		values[pos] = value;
-        Object beforeKey = this.getKeyByIndex(size);
+        Object beforeKey = this.getKeyByIndex(size, size);
         size++;
         fireProperty(null, key, beforeKey, value);
 		return pos;
@@ -505,6 +534,7 @@ public class AbstractArray implements BaseItem  {
 	
 	/**
 	 * Add a Key to internal List and Array if nesessary
+	 * Method to manipulate Array
 	 *
 	 * @param element
 	 *            the new Value
@@ -512,11 +542,10 @@ public class AbstractArray implements BaseItem  {
 	 *            the new Position -1 = End
 	 * @return if value is added
 	 */
-	protected int addKey(int pos, Object element) {
-		int i = size();
+	protected int addKey(int pos, Object element, int size) {
 		Object[] keys;
 		
-		if(isComplex(i + 1)) {
+		if(isComplex(size + 1)) {
 			keys = (Object[]) elements[SMALL_KEY];
 			if(elements[BIG_KEY]!= null){
 				addHashItem(pos, element, (Object[])elements[BIG_KEY]);
@@ -524,62 +553,21 @@ public class AbstractArray implements BaseItem  {
 		}else{
 			keys = elements;
 		}
+		int i = this.size;
 		while(i>pos) {
 			keys[i] = keys[--i]; 	
 		}
 		keys[pos] = element;
         Object beforeElement = null;
-        size++;
+        this.size++;
         if (pos > 0)
         {
-        	beforeElement = this.getKeyByIndex(pos-1);
+        	beforeElement = this.getKeyByIndex(pos-1, size);
         }
         fireProperty(null, element, beforeElement, null);
 		return pos;
 	}
 
-	/**
-	 * Add a Key to internal List and Array if nesessary
-	 *
-	 * @param element
-	 *            the new Value
-	 * @param pos
-	 *            the new Position -1 = End
-	 * @return if boolean if all added
-	 */
-	protected boolean addAllKeys(int pos, Collection<?> values) {
-		int valuesSize = values.size();
-		int i = this.size;
-		grow(this.size + valuesSize);
-		
-		Object[] keys;
-		if(isBig()) {
-			keys = (Object[]) elements[SMALL_KEY];
-			for(Object element : values) {
-				addHashItem(pos, element, (Object[])elements[BIG_KEY]);
-			}
-		}else{
-			keys = elements;
-		}
-		
-		System.arraycopy(keys, pos, keys, pos + valuesSize, this.size - pos);
-		
-		// FIXME This loop inserts the values without checking whether they 
-		//       are already contained. No good. AZ 
-		//       I also cannot find a usage of this method. Is it dead code?
-		for(Object element : values) {
-			keys[pos] = element;
-			this.size++;
-			Object beforeElement = null;
-			if (pos >= 1) {
-				beforeElement = this.getKeyByIndex(pos);
-			}
-			pos++;
-			fireProperty(null, element, beforeElement, null);
-		}
-		return true;
-	}
-	
 	public String flag() {
 		StringBuilder sb = new StringBuilder();
 		
@@ -610,10 +598,12 @@ public class AbstractArray implements BaseItem  {
 		if(values==null){
 			return this;
 		}
+		int newSize = size + values.length; 
+		grow(newSize);
 		for (Object value : values) {
-			int pos = checkKey(value);
+			int pos = hasKey(value, newSize);
 			if(pos>=0) {
-				this.addKey(pos, value);
+				this.addKey(pos, value, newSize);
 			}
 		}
 		return this;
@@ -649,9 +639,14 @@ public class AbstractArray implements BaseItem  {
 	}
 
 	public AbstractArray withList(Collection<?> list) {
-    	grow(list.size());
+		int newSize = this.size + list.size();
+		grow(newSize);
     	for(Iterator<?> i = list.iterator();i.hasNext();) {
-    		this.withAll(i.next());
+    		Object item = i.next();
+    		int pos = hasKey(item, newSize);
+			if(pos>=0) {
+				this.addKey(pos, item, newSize);
+			}
     	}
     	return this;
 	}
@@ -663,7 +658,11 @@ public class AbstractArray implements BaseItem  {
      * <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>,
      * or -1 if there is no such index.
      */
-    public int indexOf(Object o) {
+	public int indexOf(Object o) {
+		return indexOf(o, size);
+	}
+	
+    public int indexOf(Object o, int size) {
         if (o == null || elements == null)
        		return -1;
 
@@ -676,7 +675,7 @@ public class AbstractArray implements BaseItem  {
     	}else{
     		items = elements;
     	}
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < this.size; i++) {
         	if(checkValue(o, items[i]))
                 return i;
         }
@@ -796,10 +795,7 @@ public class AbstractArray implements BaseItem  {
 	}
     
 	public boolean contains(Object o) {
-		if(isBig()) {
-    		return getPositionKey(o)>=0;
-    	}
-		return indexOf(o) >= 0;
+		return indexOf(o, size) >= 0;
 	}
 	
 	public boolean containsAll(Collection<?> c) {
@@ -845,7 +841,7 @@ public class AbstractArray implements BaseItem  {
 	}
 	
 	public int removeByObject(Object key) {
-		int index = indexOf(key);
+		int index = indexOf(key, size);
 		if (index < 0) {
 			return -1;
 		}
