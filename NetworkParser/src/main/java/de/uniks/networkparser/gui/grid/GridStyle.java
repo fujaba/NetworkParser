@@ -25,10 +25,11 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Iterator;
 import java.util.Map.Entry;
-import de.uniks.networkparser.ArrayEntityList;
+
 import de.uniks.networkparser.calculator.RegCalculator;
 import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.interfaces.SendableEntity;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 
 public class GridStyle extends Style implements SendableEntity {
 	public static final String PROPERTY_ROW = "gridpane-row";
@@ -47,7 +48,7 @@ public class GridStyle extends Style implements SendableEntity {
 	private int column;
 	private int row;
 	private ValueGrid grid;
-	private ArrayEntityList<String, Object> listeners = new ArrayEntityList<String, Object>();
+	private SimpleKeyValueList<String, Object> listeners = new SimpleKeyValueList<String, Object>();
 	private String selectedBackground = null;
 
 	public int getColumn() {

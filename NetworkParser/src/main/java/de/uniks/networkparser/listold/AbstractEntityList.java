@@ -25,8 +25,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-public abstract class AbstractEntityList<V> extends AbstractList<V> implements
-		List<V> {
+public abstract class AbstractEntityList<V> extends AbstractArray<V>
+		{
 	public boolean addAll(int index, Collection<? extends V> c) {
 		for (Iterator<? extends V> i = c.iterator(); i.hasNext();) {
 			V item = i.next();
@@ -82,7 +82,7 @@ public abstract class AbstractEntityList<V> extends AbstractList<V> implements
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public AbstractList<V> with(Object... values) {
+	public AbstractArray<V> with(Object... values) {
 		if (values == null) {
 			return this;
 		}
@@ -93,7 +93,7 @@ public abstract class AbstractEntityList<V> extends AbstractList<V> implements
 	}
 
 	@SuppressWarnings("unchecked")
-	public <ST extends AbstractList<V>> ST withAll(V... values) {
+	public <ST extends AbstractArray<V>> ST withAll(V... values) {
 		if (values == null) {
 			return (ST) this;
 		}

@@ -22,17 +22,14 @@ package de.uniks.networkparser;
  permissions and limitations under the Licence.
  */
 import java.util.Map;
+
 import de.uniks.networkparser.interfaces.BidiMap;
+import de.uniks.networkparser.list.SimpleEntity;
 
 public class ArrayEntityList<K, V> extends AbstractKeyValueList<K, V> implements
 		BidiMap<K, V> {
 	@Override
-	public ArrayEntityList<K, V> getNewInstance() {
-		return new ArrayEntityList<K, V>();
-	}
-
-	@Override
-	public AbstractList<K> with(Object... values) {
+	public AbstractArray<K> with(Object... values) {
 		if (values == null) {
 			return this;
 		}
@@ -44,39 +41,12 @@ public class ArrayEntityList<K, V> extends AbstractKeyValueList<K, V> implements
 			for (int i = 0; i < values.length; i++) {
 				if (values[i] instanceof Map<?, ?>) {
 					this.withMap((Map<?, ?>) values[i]);
-				} else if (values[i] instanceof AbstractEntity) {
-					addEntity((AbstractEntity<?, ?>) values[i]);
+				} else if (values[i] instanceof SimpleEntity) {
+					addEntity((SimpleEntity<?, ?>) values[i]);
 				}
 			}
 		}
 		return this;
 	}
 
-	// Methods for BidiMap
-	@Override
-	public boolean containKey(K key) {
-		return super.contains(key);
-	}
-
-	@Override
-	public boolean containValue(V value) {
-		return super.containsValue(value);
-	}
-
-	@Override
-	public BidiMap<K, V> without(Object key, Object value) {
-		super.removeItemByObject(key);
-		return this;
-	}
-
-	@Override
-	public BidiMap<K, V> with(K key, V value) {
-		this.put(key, value);
-		return this;
-	}
-
-	protected void hashTableAddValues(Object newValue, int pos) {
-		this.hashTableValues = hashTableAdd(this.hashTableValues, this.values,
-				newValue, pos);
-	}
 }

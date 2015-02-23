@@ -28,8 +28,8 @@ public class BitValue {
 	private int orientation = 1;
 
 	public BitValue(int start, int len) {
-		this.start = new BitEntity().with(start);
-		this.len = new BitEntity().with(len);
+		this.start = new BitEntity().withAll(start);
+		this.len = new BitEntity().withAll(len);
 	}
 
 	public BitValue(byte startTyp, String startValue, byte lentyp,

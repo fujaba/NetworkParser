@@ -21,16 +21,15 @@ package de.uniks.networkparser.bytes;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
  */
-import de.uniks.networkparser.AbstractEntityList;
-import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.bytes.converter.ByteConverterHTTP;
 import de.uniks.networkparser.bytes.converter.ByteConverterString;
 import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteConverter;
 import de.uniks.networkparser.interfaces.ByteItem;
 import de.uniks.networkparser.interfaces.FactoryEntity;
+import de.uniks.networkparser.list.SimpleList;
 
-public class ByteList extends AbstractEntityList<ByteItem> implements ByteItem,
+public class ByteList extends SimpleList<ByteItem> implements ByteItem,
 		FactoryEntity {
 	/** The children of the ByteEntity. */
 	private byte typ = 0;
@@ -102,9 +101,9 @@ public class ByteList extends AbstractEntityList<ByteItem> implements ByteItem,
 		}
 		ByteUtil.writeByteHeader(buffer, typ, size);
 
-		for (int i = 0; i < keys.size(); i++) {
-			((ByteItem) keys.get(i)).writeBytes(buffer, isDynamic,
-					i == keys.size() - 1, isPrimitive);
+		for (int i = 0; i < size(); i++) {
+			((ByteItem) get(i)).writeBytes(buffer, isDynamic,
+					i == size() - 1, isPrimitive);
 		}
 	}
 
@@ -129,25 +128,25 @@ public class ByteList extends AbstractEntityList<ByteItem> implements ByteItem,
 		}
 		boolean isPrimitive = isDynamic;
 		int nullerBytes = 0;
-		if (this.keys.get(size - 1) instanceof ByteEntity) {
+		if (this.get(size - 1) instanceof ByteEntity) {
 			// HEADER + VALUE
 			isPrimitive = isPrimitive
-					&& this.keys.get(0).getTyp() == ByteIdMap.DATATYPE_CLAZZTYP;
-			if (this.keys.get(size - 1).getTyp() == ByteIdMap.DATATYPE_NULL) {
+					&& this.get(0).getTyp() == ByteIdMap.DATATYPE_CLAZZTYP;
+			if (this.get(size - 1).getTyp() == ByteIdMap.DATATYPE_NULL) {
 				nullerBytes++;
 			}
 		} else {
 			isPrimitive = false;
 		}
-		length = this.keys.get(size - 1).calcLength(isDynamic, true);
+		length = this.get(size - 1).calcLength(isDynamic, true);
 		// length=len+ByteUtil.getTypLen(valueList[size-1].getTyp(), len - 1);
 		for (int i = size - 2; i >= 0; i--) {
-			int len = this.keys.get(i).calcLength(isDynamic, false);
+			int len = this.get(i).calcLength(isDynamic, false);
 			if (isPrimitive) {
-				if (this.keys.get(i).getTyp() == ByteIdMap.DATATYPE_NULL) {
+				if (this.get(i).getTyp() == ByteIdMap.DATATYPE_NULL) {
 					nullerBytes++;
 				}
-				isPrimitive = (this.keys.get(i).size() == len - 1);
+				isPrimitive = (this.get(i).size() == len - 1);
 			}
 			length += len;
 		}
@@ -165,18 +164,18 @@ public class ByteList extends AbstractEntityList<ByteItem> implements ByteItem,
 		if (!isDynamic) {
 			return false;
 		}
-		if (this.keys.size() < 1) {
+		if (this.size() < 1) {
 			return false;
 		}
-		if (!(this.keys.get(this.keys.size() - 1) instanceof ByteEntity)) {
+		if (!(this.get(this.size() - 1) instanceof ByteEntity)) {
 			return false;
 		}
-		if (this.keys.get(0).getTyp() != ByteIdMap.DATATYPE_CLAZZTYP) {
+		if (this.get(0).getTyp() != ByteIdMap.DATATYPE_CLAZZTYP) {
 			return false;
 		}
-		for (int i = 1; i < this.keys.size(); i++) {
-			int len = this.keys.get(i).calcLength(isDynamic, false);
-			if ((this.keys.get(i).size() != len - 1)) {
+		for (int i = 1; i < this.size(); i++) {
+			int len = this.get(i).calcLength(isDynamic, false);
+			if ((this.get(i).size() != len - 1)) {
 				return false;
 			}
 		}
@@ -193,7 +192,7 @@ public class ByteList extends AbstractEntityList<ByteItem> implements ByteItem,
 		return this;
 	}
 
-	public AbstractList<ByteItem> withValue(String value) {
+	public SimpleList<ByteItem> withValue(String value) {
 		ByteConverterString converter = new ByteConverterString();
 		this.add(getNewObject().withValue(ByteIdMap.DATATYPE_FIXED,
 				converter.decode(value)));
@@ -201,12 +200,12 @@ public class ByteList extends AbstractEntityList<ByteItem> implements ByteItem,
 	}
 
 	@Override
-	public AbstractList<ByteItem> getNewInstance() {
+	public ByteList getNewInstance() {
 		return new ByteList();
 	}
 
 	@Override
-	public ByteList with(Object... values) {
+	public ByteList withAll(Object... values) {
 		if (values != null) {
 			for (Object value : values) {
 				if (value instanceof ByteItem) {
@@ -215,11 +214,6 @@ public class ByteList extends AbstractEntityList<ByteItem> implements ByteItem,
 			}
 		}
 		return this;
-	}
-
-	@Override
-	public boolean add(ByteItem e) {
-		return addEntity(e);
 	}
 
 	@Override

@@ -13,7 +13,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import de.uniks.networkparser.gui.controller.ModelListenerFactory;
-import de.uniks.networkparser.gui.controller.ModelListenerProperty;
 import de.uniks.networkparser.gui.controller.ModelListenerStringProperty;
 import de.uniks.networkparser.gui.test.model.GUIEntity;
 import de.uniks.networkparser.gui.test.model.util.GUIEntityCreator;

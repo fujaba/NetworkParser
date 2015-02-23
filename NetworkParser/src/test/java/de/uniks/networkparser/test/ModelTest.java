@@ -5,9 +5,9 @@ import java.util.Iterator;
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.uniks.networkparser.ArrayEntityList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonIdMap;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.test.model.Person;
 import de.uniks.networkparser.test.model.util.PersonCreator;
 import de.uniks.networkparser.test.model.util.PersonSet;
@@ -33,7 +33,7 @@ public class ModelTest {
 	
 	@Test
 	public void testMap(){
-		ArrayEntityList<String, Integer> values= new ArrayEntityList<String, Integer>();
+		SimpleKeyValueList<String, Integer> values= new SimpleKeyValueList<String, Integer>();
 		
 		values.with("Albert", 42);
 		values.with("Stefan", 23);

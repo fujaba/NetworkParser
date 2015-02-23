@@ -1,5 +1,4 @@
 package de.uniks.networkparser.interfaces;
-
 /*
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
@@ -21,10 +20,9 @@ package de.uniks.networkparser.interfaces;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
  */
-import de.uniks.networkparser.AbstractList;
 
 public interface FactoryEntity {
-	public AbstractList<?> getNewArray();
+	public BaseList getNewArray();
 
 	public BaseItem getNewObject();
 }

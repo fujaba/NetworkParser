@@ -23,10 +23,9 @@ package de.uniks.networkparser.graph;
  */
 import java.util.List;
 
-import de.uniks.networkparser.AbstractEntityList;
-import de.uniks.networkparser.AbstractList;
+import de.uniks.networkparser.list.SimpleList;
 
-public class GraphEdge extends AbstractEntityList<GraphNode> implements
+public class GraphEdge extends GraphSimpleList<GraphNode> implements
 		List<GraphNode> {
 	public static final String PROPERTY_NODE = "node";
 	public static final String PROPERTY_CARDINALITY = "cardinality";
@@ -114,12 +113,12 @@ public class GraphEdge extends AbstractEntityList<GraphNode> implements
 
 
 	@Override
-	public AbstractList<GraphNode> getNewInstance() {
+	public SimpleList<GraphNode> getNewInstance() {
 		return new GraphEdge();
 	}
 
 	@Override
-	public GraphEdge with(Object... values) {
+	public GraphEdge withAll(Object... values) {
 		if (values == null) {
 			return this;
 		}
@@ -153,8 +152,8 @@ public class GraphEdge extends AbstractEntityList<GraphNode> implements
 
 	@Override
 	public boolean add(GraphNode newValue) {
-		if (super.addEntity(newValue)) {
-			newValue.with(this);
+		if (super.add(newValue)) {
+			newValue.withList(this);
 		}
 		return true;
 	}
@@ -168,10 +167,6 @@ public class GraphEdge extends AbstractEntityList<GraphNode> implements
 		return removeItemByObject((GraphNode) value) >= 0;
 	}
 
-	public List<GraphNode> values() {
-		return keys;
-	}
-	
 	public static GraphEdge create(GraphNode source, GraphNode target){
 		GraphEdge edge = new GraphEdge().with(source);
 		edge.with(new GraphEdge().with(target));
