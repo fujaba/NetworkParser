@@ -641,6 +641,10 @@ public class AbstractArray implements BaseItem  {
 
 	public AbstractArray withList(Collection<?> list) {
 		int newSize = this.size + list.size();
+		if (newSize == 0)
+		{
+		   return this;
+		}
 		grow(newSize);
     	for(Iterator<?> i = list.iterator();i.hasNext();) {
     		Object item = i.next();
