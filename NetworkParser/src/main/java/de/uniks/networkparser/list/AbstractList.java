@@ -39,17 +39,15 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
 	/**
 	 * Add a Value to internal List and Array if nesessary
 	 *
-	 * @param newValue
+	 * @param value
 	 *            the new Value
-	 * @param pos
-	 *            the new Position -1 = End
 	 * @return  this boolean if success
 	 */
-	public boolean add(V e) {
-		int pos = hasKey(e, size);
+	public boolean add(V value) {
+		int pos = hasKey(value, size);
 		if(pos>=0) {
 			grow(size + 1);
-			addKey(pos, e, size);
+			addKey(pos, value, size);
 			return true;
 		}
 		return false;
@@ -98,6 +96,7 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
      * @param a the array into which the elements of the list are to
      *          be stored, if it is big enough; otherwise, a new array of the
      *          same runtime type is allocated for this purpose.
+     * @param <T> the ContainerClass
      * @return an array containing the elements of the list
      * @throws ArrayStoreException if the runtime type of the specified array
      *         is not a supertype of the runtime type of every element in
@@ -148,7 +147,6 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
      * @throws ClassCastException            {@inheritDoc}
      * @throws NullPointerException          {@inheritDoc}
      *
-     * @see #remove(Object)
      * @see #contains(Object)
      */
     public boolean retainAll(Collection<?> c) {
@@ -216,6 +214,9 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
 	 * @param inclusive
 	 *            {@code true} if the low endpoint is to be included in the
 	 *            returned view
+	 * @param <ST> the ContainerClass
+	 * 
+	 *             
 	 * @return a view of the portion of this map whose keys are greater than (or
 	 *         equal to, if {@code inclusive} is true) {@code fromKey}
 	 *
@@ -262,6 +263,8 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
 	 * @param inclusive
 	 *            {@code true} if the high endpoint is to be included in the
 	 *            returned view
+	 * @param <ST> the ContainerClass 
+	 * 
 	 * @return result a list with less item then the key
 	 *
 	 */
