@@ -39,17 +39,15 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
 	/**
 	 * Add a Value to internal List and Array if nesessary
 	 *
-	 * @param newValue
+	 * @param value
 	 *            the new Value
-	 * @param pos
-	 *            the new Position -1 = End
 	 * @return  this boolean if success
 	 */
-	public boolean add(V e) {
-		int pos = hasKey(e, size);
+	public boolean add(V value) {
+		int pos = hasKey(value, size);
 		if(pos>=0) {
 			grow(size + 1);
-			addKey(pos, e, size);
+			addKey(pos, value, size);
 			return true;
 		}
 		return false;
@@ -149,7 +147,6 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
      * @throws ClassCastException            {@inheritDoc}
      * @throws NullPointerException          {@inheritDoc}
      *
-     * @see #remove(Object)
      * @see #contains(Object)
      */
     public boolean retainAll(Collection<?> c) {
