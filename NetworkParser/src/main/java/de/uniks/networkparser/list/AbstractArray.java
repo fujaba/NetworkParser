@@ -548,7 +548,8 @@ public class AbstractArray implements BaseItem  {
 		if(isComplex(size + 1)) {
 			keys = (Object[]) elements[SMALL_KEY];
 			if(elements[BIG_KEY]!= null){
-				addHashItem(pos, element, (Object[])elements[BIG_KEY]);
+				int newPos = retransformIndex(pos, size);
+				addHashItem(newPos, element, (Object[])elements[BIG_KEY]);
 			}
 		}else{
 			keys = elements;
@@ -722,6 +723,19 @@ public class AbstractArray implements BaseItem  {
 		if(index<0){
 			index += size;
 		}
+		return index;
+	}
+	
+	private int retransformIndex(int index, int size){
+		if(elements[DELETED] != null) {
+			Object[] items = (Object[]) elements[DELETED];
+    		for(int i=0;i<items.length;i++){
+    			if(((int)items[i])>index){
+    				break;
+    			}
+				index++;
+    		}
+    	}
 		return index;
 	}
 	
