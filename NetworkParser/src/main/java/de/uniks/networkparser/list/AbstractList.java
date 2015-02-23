@@ -46,9 +46,10 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
 	 * @return  this boolean if success
 	 */
 	public boolean add(V e) {
-		int pos = checkKey(e);
+		int pos = hasKey(e, size);
 		if(pos>=0) {
-			addKey(pos, e);
+			grow(size + 1);
+			addKey(pos, e, size);
 			return true;
 		}
 		return false;
@@ -76,7 +77,7 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
 
 	@SuppressWarnings("unchecked")
 	public V get(int index) {
-		return (V) super.getKeyByIndex(index);
+		return (V) super.getKeyByIndex(index, size);
 	}
 	
     /**
@@ -389,16 +390,24 @@ public abstract class AbstractList<V> extends AbstractArray implements BaseList 
 	}
 
 	public void add(int index, V element) {
-		int pos = checkKey(element);
+		int pos = hasKey(element, size);
 		if(pos>=0) {
-			addKey(index, element);
+			grow(size + 1);
+			addKey(index, element,size + 1);
 		}
 	}
 
-	public boolean addAll(int index, Collection<? extends V> c) {
-		return super.addAllKeys(index, c);
+	public boolean addAll(int index, Collection<? extends V> values) {
+		boolean allAdded=true;
+		int newSize = size + values.size();
+		grow(newSize);
+		for(Iterator<? extends V> i = values.iterator();i.hasNext();){
+			if(addKey(index++, i.next(), newSize)<0){
+				allAdded=false;
+			}
+		}
+		return allAdded;
 	}
-
 
 	public V set(int index, V element) {
 		super.setValue(index, element, SMALL_KEY);
