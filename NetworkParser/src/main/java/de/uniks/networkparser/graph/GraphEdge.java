@@ -169,7 +169,7 @@ public class GraphEdge extends GraphSimpleList<GraphNode> implements
 
 	public static GraphEdge create(GraphNode source, GraphNode target){
 		GraphEdge edge = new GraphEdge().with(source);
-		edge.with(new GraphEdge().with(target));
+		edge.withAll(new GraphEdge().with(target));
 		return edge;
 	}
 
