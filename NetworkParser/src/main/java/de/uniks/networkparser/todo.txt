@@ -1,3 +1,0 @@
-create own arrayList
-create own iterator
-let AbstactList implements Set
