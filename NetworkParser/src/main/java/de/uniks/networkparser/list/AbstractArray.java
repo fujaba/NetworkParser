@@ -72,7 +72,11 @@ public class AbstractArray implements BaseItem  {
     	return 0+VISIBLE+CASESENSITIVE;
     }
     
-    /** Init-List with Collection */
+    /** Init-List with Collection
+     * 
+	 * @param list add all new Items
+	 * @return return self 
+     */
     @SuppressWarnings("unchecked")
 	public <ST extends AbstractArray> ST init(Collection<?> list){
     	if(list instanceof AbstractArray){
@@ -82,14 +86,24 @@ public class AbstractArray implements BaseItem  {
     	return (ST)this;
     }
     
-    /** Init-List with Size-Integer */
+    /** Init-List with Size-Integer
+     * 
+     * 
+	 * @param initSize the new Size of the List
+	 * @return return self
+     */
     @SuppressWarnings("unchecked")
 	public <ST extends AbstractArray> ST init(int initSize){
     	grow(initSize);
     	return (ST)this;
     }
 
-    /** Init-List with Size-Integer */
+    /** Init-List with Size-Integer 
+     * 
+     * @param items Array of the new List
+	 * @param size the new Size of the List
+	 * @return return self
+     * */
     @SuppressWarnings("unchecked")
 	public <ST extends AbstractArray> ST init(Object[] items, int size){
     	elements = items;
@@ -303,6 +317,8 @@ public class AbstractArray implements BaseItem  {
 	 *            the new Value
 	 * @param pos
 	 *            the new Position -1 = End
+	 * @param items the HashList for searching
+	 * 
 	 * @return  ths pos
 	 */
 	protected int addHashItem(int pos, Object newValue, Object[] items) {
@@ -432,6 +448,7 @@ public class AbstractArray implements BaseItem  {
 	 * Add a Element to the List
 	 * 
 	 * @param element to add a Value
+	 * @param size the new Size of the List
 	 * @return int the Position of the insert
 	 */
 	protected int hasKey(Object element, int size){
@@ -540,6 +557,7 @@ public class AbstractArray implements BaseItem  {
 	 *            the new Value
 	 * @param pos
 	 *            the new Position -1 = End
+	 * @param size the newSize of the List
 	 * @return if value is added
 	 */
 	protected int addKey(int pos, Object element, int size) {
@@ -658,6 +676,9 @@ public class AbstractArray implements BaseItem  {
      * More formally, returns the lowest index <tt>i</tt> such that
      * <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>,
      * or -1 if there is no such index.
+	 *
+     * @param o Element for search
+     * @return the index of the first found index of the element
      */
 	public int indexOf(Object o) {
 		return indexOf(o, size);
@@ -689,6 +710,9 @@ public class AbstractArray implements BaseItem  {
      * More formally, returns the lowest index <tt>i</tt> such that
      * <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>,
      * or -1 if there is no such index.
+     * 
+     * @param o Element for search
+     * @return the index of the last found index of the element
      */
     public int lastindexOf(Object o) {
         if (o == null)
@@ -837,7 +861,6 @@ public class AbstractArray implements BaseItem  {
      * @throws ClassCastException            {@inheritDoc}
      * @throws NullPointerException          {@inheritDoc}
      *
-     * @see #remove(Object)
      * @see #contains(Object)
      */
 	public boolean removeAll(Collection<?> c) {
