@@ -75,6 +75,7 @@ public class AbstractArray implements BaseItem  {
     /** Init-List with Collection
      * 
 	 * @param list add all new Items
+	 * @param <ST> Container Class
 	 * @return return self 
      */
     @SuppressWarnings("unchecked")
@@ -90,6 +91,7 @@ public class AbstractArray implements BaseItem  {
      * 
      * 
 	 * @param initSize the new Size of the List
+	 * @param <ST> Container Class
 	 * @return return self
      */
     @SuppressWarnings("unchecked")
@@ -102,6 +104,7 @@ public class AbstractArray implements BaseItem  {
      * 
      * @param items Array of the new List
 	 * @param size the new Size of the List
+	 * @param <ST> Container Class
 	 * @return return self
      * */
     @SuppressWarnings("unchecked")
