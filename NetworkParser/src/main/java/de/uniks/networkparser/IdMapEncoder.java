@@ -33,12 +33,12 @@ import java.util.Set;
 import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.gui.table.TableList;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.BidiMap;
 import de.uniks.networkparser.interfaces.IdMapCounter;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.TypList;
 import de.uniks.networkparser.json.UpdateListener;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 
 /**
  * The Class IdMap.
@@ -72,7 +72,7 @@ public abstract class IdMapEncoder extends AbstractMap implements
 	/** The updatelistener for Notification changes. */
 	protected PropertyChangeListener updatePropertylistener;
 
-	protected BidiMap<String, Object> keyValue;
+	protected SimpleKeyValueList<String, Object> keyValue;
 
 	protected Filter filter = new Filter();
 
@@ -102,7 +102,8 @@ public abstract class IdMapEncoder extends AbstractMap implements
 	 */
 	public IdMapEncoder() {
 		super();
-		this.keyValue = new ArrayEntityList<String, Object>();
+		this.keyValue = new SimpleKeyValueList<String, Object>();
+		this.keyValue.withFlag(SimpleKeyValueList.BIDI);
 		this.withCreator(new TextItems());
 	}
 
@@ -113,7 +114,7 @@ public abstract class IdMapEncoder extends AbstractMap implements
 	 *            the parent-List of Items
 	 * @return the Map
 	 */
-	public IdMapEncoder withKeyValue(BidiMap<String, Object> parent) {
+	public IdMapEncoder withKeyValue(SimpleKeyValueList<String, Object> parent) {
 		this.keyValue = parent;
 		return this;
 	}
@@ -164,7 +165,10 @@ public abstract class IdMapEncoder extends AbstractMap implements
 	public String getKey(Object obj) {
 		String result = null;
 		try {
-			result = this.keyValue.getKey(obj);
+			int pos = this.keyValue.indexOfValue(obj);
+			if(pos>=0) {
+				return this.keyValue.getKeyByIndex(pos);
+			}
 		} catch (ConcurrentModificationException e) {
 			if (this.logger.error(this, "getKey",
 					NetworkParserLog.ERROR_TYP_CONCURRENTMODIFICATION, obj)) {
@@ -485,12 +489,12 @@ public abstract class IdMapEncoder extends AbstractMap implements
 
 	@Override
 	public boolean containsKey(Object key) {
-		return this.keyValue.containKey("" + key);
+		return this.keyValue.containsKey("" + key);
 	}
 
 	@Override
 	public boolean containsValue(Object value) {
-		return this.keyValue.containValue(value);
+		return this.keyValue.containsValue(value);
 	}
 
 	@Override
@@ -506,7 +510,7 @@ public abstract class IdMapEncoder extends AbstractMap implements
 		return null;
 	}
 
-	public BidiMap<String, Object> getKeyValue() {
+	public SimpleKeyValueList<String, Object> getKeyValue() {
 		return keyValue;
 	}
 

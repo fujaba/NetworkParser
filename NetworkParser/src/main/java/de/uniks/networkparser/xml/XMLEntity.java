@@ -22,8 +22,7 @@ package de.uniks.networkparser.xml;
  permissions and limitations under the Licence.
  */
 import java.util.ArrayList;
-import de.uniks.networkparser.AbstractKeyValueList;
-import de.uniks.networkparser.AbstractList;
+
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.event.MapEntry;
@@ -31,11 +30,12 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 
 /**
  * The Class XMLEntity.
  */
-public class XMLEntity extends AbstractKeyValueList<String, Object> implements
+public class XMLEntity extends SimpleKeyValueList<String, Object> implements
 		StringItem, FactoryEntity, Entity {
 	/** Constant of TAG. */
 	public static final String PROPERTY_TAG = "tag";
@@ -43,8 +43,6 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements
 	public static final String PROPERTY_VALUE = "value";
 	/** The children. */
 	private ArrayList<XMLEntity> children;
-	/** Value fo Visible of Item. */
-	private boolean visible = true;
 
 	/** The tag. */
 	private String tag;
@@ -54,7 +52,7 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements
 
 	/** Simple Constructor. */
 	public XMLEntity() {
-		this.allowDuplicate = false;
+		this.withAllowDuplicate(false);
 	}
 
 	/**
@@ -196,7 +194,7 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements
 
 		int size = size();
 		for (int i = 0; i < size; i++) {
-			sb.append(" " + get(i) + "=" + EntityUtil.quote("" + getValue(i)));
+			sb.append(" " + get(i) + "=" + EntityUtil.quote("" + getValueByIndex(i)));
 		}
 
 		toStringChildren(sb, indentFactor, intent + indentFactor);
@@ -235,28 +233,7 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements
 	}
 
 	@Override
-	public XMLEntity with(Object... values) {
-		for (Object value : values) {
-			if (value instanceof XMLEntity) {
-				addChild((XMLEntity) value);
-			}
-		}
-		return this;
-	}
-
-	@Override
-	public BaseItem withVisible(boolean value) {
-		this.visible = value;
-		return this;
-	}
-
-	@Override
-	public boolean isVisible() {
-		return visible;
-	}
-
-	@Override
-	public AbstractList<?> getNewArray() {
+	public XMLEntity getNewArray() {
 		return new XMLEntity();
 	}
 
@@ -275,11 +252,6 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements
 		return new XMLEntity();
 	}
 
-	@Override
-	public Object remove(Object key) {
-		return removeItemByObject("" + key);
-	}
-
 	/**
 	 * Static Method to generate XMLEntity.
 	 *
@@ -292,8 +264,8 @@ public class XMLEntity extends AbstractKeyValueList<String, Object> implements
 	}
 
 	@Override
-	public XMLEntity withValue(Object key, Object value) {
-		super.withValue(key, value);
+	public XMLEntity withKeyValue(Object key, Object value) {
+		super.withKeyValue(key, value);
 		return this;
 	}
 }

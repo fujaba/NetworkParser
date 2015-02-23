@@ -45,18 +45,18 @@ public class GraphOptions {
 	public JsonObject getJson(){
 		JsonObject result = new JsonObject();
 		
-		result.withValue("display", display);
-		result.withValue("raster", raster);
-		result.withValue("canvasid", canvasid);
-		result.withValue("fontSize", fontSize);
-		result.withValue("fontFamily", fontFamily);
-		result.withValue("rank", rank);
-		result.withValue("nodeSep", nodeSep);
-		result.withValue("infobox", infobox);
-		result.withValue("cardinalityInfo", cardinalityInfo);
-		result.withValue("propertyInfo", propertyInfo);
+		result.withKeyValue("display", display);
+		result.withKeyValue("raster", raster);
+		result.withKeyValue("canvasid", canvasid);
+		result.withKeyValue("fontSize", fontSize);
+		result.withKeyValue("fontFamily", fontFamily);
+		result.withKeyValue("rank", rank);
+		result.withKeyValue("nodeSep", nodeSep);
+		result.withKeyValue("infobox", infobox);
+		result.withKeyValue("cardinalityInfo", cardinalityInfo);
+		result.withKeyValue("propertyInfo", propertyInfo);
 		if(buttons != null){
-			result.withValue("buttons", new JsonArray().withList(buttons));
+			result.withKeyValue("buttons", new JsonArray().withAll(buttons));
 		}
 		return result;
 	}

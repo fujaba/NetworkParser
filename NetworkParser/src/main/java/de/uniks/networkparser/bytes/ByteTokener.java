@@ -21,13 +21,13 @@ package de.uniks.networkparser.bytes;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
  */
-import de.uniks.networkparser.AbstractKeyValueList;
-import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.Tokener;
+import de.uniks.networkparser.list.AbstractList;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 
 public class ByteTokener extends Tokener {
 	@Override
-	public void parseToEntity(AbstractKeyValueList<?, ?> entity) {
+	public void parseToEntity(SimpleKeyValueList<?, ?> entity) {
 		// buffer
 		// if (typ == ByteIdMap.DATATYPE_CLAZZ) {
 		// String clazz = (String) getDecodeObject(ByteIdMap.DATATYPE_CLAZZ,
@@ -37,7 +37,6 @@ public class ByteTokener extends Tokener {
 
 	@Override
 	public void parseToEntity(AbstractList<?> entityList) {
-
 		// TODO Auto-generated method stub
 
 	}

@@ -27,9 +27,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import de.uniks.networkparser.ArrayEntityList;
 import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 
 /**
  * The listener interface for receiving update events. The class that is
@@ -48,7 +48,7 @@ public class UpdateListener implements PropertyChangeListener {
 	private ArrayList<String> suspendIdList;
 
 	/** The garbage collection. */
-	private ArrayEntityList<String, Object> garbageCollection = null;
+	private SimpleKeyValueList<String, Object> garbageCollection = null;
 
 	/** The class counts. */
 	private ArrayList<String> classCounts;
@@ -75,7 +75,7 @@ public class UpdateListener implements PropertyChangeListener {
 	 * @return the json object
 	 */
 	public JsonObject startGarbageColection(Object root) {
-		this.garbageCollection = new ArrayEntityList<String, Object>();
+		this.garbageCollection = new SimpleKeyValueList<String, Object>();
 		this.classCounts = new ArrayList<String>();
 		JsonObject initField = this.map.toJsonObject(root);
 		countMessage(initField);
@@ -91,7 +91,7 @@ public class UpdateListener implements PropertyChangeListener {
 	 */
 	public JsonObject garbageCollection(Object root) {
 		boolean isStarted = this.garbageCollection != null;
-		this.garbageCollection = new ArrayEntityList<String, Object>();
+		this.garbageCollection = new SimpleKeyValueList<String, Object>();
 		this.classCounts = new ArrayList<String>();
 		JsonObject initField = this.map.toJsonObject(root);
 		countMessage(initField);
@@ -274,7 +274,7 @@ public class UpdateListener implements PropertyChangeListener {
 			if (remove == null && update != null) {
 				// create Message
 				Object refObject = creator.getSendableInstance(true);
-				Iterator<String> keys = update.keys();
+				Iterator<String> keys = update.keySet().iterator();
 				while (keys.hasNext()) {
 					String key = keys.next();
 					Object value = creator.getValue(masterObj, key);
@@ -312,7 +312,7 @@ public class UpdateListener implements PropertyChangeListener {
 			} else if (update == null && remove != null) {
 				// delete Message
 				Object refObject = creator.getSendableInstance(true);
-				Iterator<String> keys = remove.keys();
+				Iterator<String> keys = remove.keyIterator();
 				while (keys.hasNext()) {
 					String key = keys.next();
 					Object value = creator.getValue(masterObj, key);
@@ -344,7 +344,7 @@ public class UpdateListener implements PropertyChangeListener {
 				return true;
 			} else if (update != null) {
 				// update Message
-				Iterator<String> keys = update.keys();
+				Iterator<String> keys = update.keyIterator();
 				while (keys.hasNext()) {
 					String key = keys.next();
 					// CHECK WITH REMOVE key
@@ -485,10 +485,10 @@ public class UpdateListener implements PropertyChangeListener {
 					JsonObject props = (JsonObject) message
 							.get(JsonIdMap.JSON_PROPS);
 					for (int i = 0; i < props.size(); i++) {
-						if (props.getValue(i) instanceof JsonObject) {
-							countMessage((JsonObject) props.getValue(i));
-						} else if (props.getValue(i) instanceof JsonArray) {
-							countMessage((JsonArray) props.getValue(i));
+						if (props.getValueByIndex(i) instanceof JsonObject) {
+							countMessage((JsonObject) props.getValueByIndex(i));
+						} else if (props.getValueByIndex(i) instanceof JsonArray) {
+							countMessage((JsonArray) props.getValueByIndex(i));
 						}
 					}
 				}

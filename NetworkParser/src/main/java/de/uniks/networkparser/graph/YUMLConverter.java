@@ -24,9 +24,10 @@ package de.uniks.networkparser.graph;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import de.uniks.networkparser.ArrayEntityList;
-import de.uniks.networkparser.ArraySimpleList;
+
 import de.uniks.networkparser.interfaces.Converter;
+import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.list.SimpleList;
 
 public class YUMLConverter implements Converter {
 	/** The Constant URL. */
@@ -35,13 +36,13 @@ public class YUMLConverter implements Converter {
 	@Override
 	public String convert(GraphList root, boolean removePackage) {
 		String typ = root.getTyp();
-		Collection<GraphMember> children = root.values();
+		Collection<GraphMember> children = root;
 		if (children.size() > 0) {
 			StringBuilder sb = new StringBuilder();
 			Iterator<GraphMember> i = children.iterator();
 
 			ArrayList<GraphNode> visitedObj = new ArrayList<GraphNode>();
-			ArrayEntityList<String, Object> links = root.getLinks();
+			SimpleKeyValueList <String, Object> links = root.getLinks();
 			parse(typ, i.next(), sb, visitedObj, links, removePackage);
 			while (i.hasNext()) {
 				parse(typ, i.next(), sb, visitedObj, links, removePackage);
@@ -53,16 +54,16 @@ public class YUMLConverter implements Converter {
 
 	public void parse(String typ, GraphMember item, StringBuilder sb,
 			ArrayList<GraphNode> visited,
-			ArrayEntityList<String, Object> links, boolean shortName) {
+			SimpleKeyValueList<String, Object> links, boolean shortName) {
 		if(item instanceof GraphNode) {
 			parse(typ, (GraphNode) item, sb, visited, links, shortName);
 		}
 	}
 	public void parse(String typ, GraphNode item, StringBuilder sb,
 			ArrayList<GraphNode> visited,
-			ArrayEntityList<String, Object> links, boolean shortName) {
+			SimpleKeyValueList<String, Object> links, boolean shortName) {
 		String key = item.getTyp(typ, shortName);
-		ArraySimpleList<?> showedLinks = (ArraySimpleList<?>) links
+		SimpleList<?> showedLinks = (SimpleList<?>) links
 				.getValueItem(key);
 		if (showedLinks == null) {
 			if (sb.length() < 1) {

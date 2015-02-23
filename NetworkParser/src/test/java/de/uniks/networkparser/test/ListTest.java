@@ -6,29 +6,30 @@ import java.util.Comparator;
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.uniks.networkparser.ArraySimpleList;
+import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.list.SortedList;
 
 public class ListTest {
 	@Test
 	public void retainAll(){
-		ArraySimpleList<String> item = new ArraySimpleList<String>();
+		SimpleList<String> item = new SimpleList<String>();
 		item.with("Stefan", "Alex", "Albert");
 		
 		
-		ArraySimpleList<String> itemB = new ArraySimpleList<String>();
+		SimpleList<String> itemB = new SimpleList<String>();
 		itemB.with("Stefan", "Alex", "Christian");
 		
 		item.retainAll(itemB);
 		
 		Assert.assertEquals(2, item.size());
 		
-		ArraySimpleList<String> clone =  (ArraySimpleList<String>)item.clone();
+		SimpleList<String> clone =  (SimpleList<String>)item.clone();
 		Assert.assertEquals(2, clone.size());
 	}
 	
 	@Test
 	public void Comparator(){
-		ArraySimpleList<String> item = new ArraySimpleList<String>();
+		SortedList<String> item = new SortedList<String>();
 		item.withComparator(new Comparator<String>() {
 			
 			@Override

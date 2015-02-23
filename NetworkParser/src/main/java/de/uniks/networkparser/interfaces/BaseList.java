@@ -1,4 +1,8 @@
-package de.uniks.networkparser;
+package de.uniks.networkparser.interfaces;
+
+import java.util.Collection;
+
+
 
 /*
  NetworkParser
@@ -21,21 +25,11 @@ package de.uniks.networkparser;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
  */
+/**
+ * The Class BaseEntity.
+ */
 
-public class ArraySimpleList<V> extends AbstractEntityList<V> {
-	@Override
-	public AbstractList<V> getNewInstance() {
-		return new ArraySimpleList<V>();
-	}
-
-	@Override
-	public boolean add(V e) {
-		return addEntity(e);
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public boolean remove(Object value) {
-		return removeItemByObject((V) value) >= 0;
-	}
+public interface BaseList extends BaseItem{
+	BaseList withAll(Object... values);
+	BaseList withList(Collection<?> value);
 }

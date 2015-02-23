@@ -1,4 +1,7 @@
-package de.uniks.networkparser.interfaces;
+package de.uniks.networkparser.listold.not;
+
+import de.uniks.networkparser.listold.AbstractEntityList;
+import de.uniks.networkparser.listold.AbstractList;
 
 /*
  NetworkParser
@@ -21,27 +24,21 @@ package de.uniks.networkparser.interfaces;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
  */
-import java.util.Collection;
-import java.util.Set;
 
-public interface BidiMap<K, V> {
-	public int size();
+public class ArraySimpleList<V> extends AbstractEntityList<V> {
+	@Override
+	public AbstractArray<V> getNewInstance() {
+		return new ArraySimpleList<V>();
+	}
 
-	public void clear();
+	@Override
+	public boolean add(V e) {
+		return addEntity(e);
+	}
 
-	public Collection<V> values();
-
-	public Set<K> keySet();
-
-	public boolean containKey(K key);
-
-	public boolean containValue(V value);
-
-	public BidiMap<K, V> without(K key, V value);
-
-	public BidiMap<K, V> with(K key, V value);
-
-	public Object getValueItem(Object key);
-
-	public K getKey(V key);
+	@Override
+	@SuppressWarnings("unchecked")
+	public boolean remove(Object value) {
+		return removeItemByObject((V) value) >= 0;
+	}
 }

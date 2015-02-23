@@ -17,7 +17,7 @@ public class SoapTest {
 		SoapObject item = new SoapObject().withNamespace("soap");
 		item.withBody(
 				XMLEntity.TAG("GetMatchByMatchID")
-					.withValue("xmlns", "http://msiggi.de/Sportsdata/Webservices")
+					.withKeyValue("xmlns", "http://msiggi.de/Sportsdata/Webservices")
 					.withChild(XMLEntity.TAG("MatchID").withValueItem("28682"))
 				);
 		
