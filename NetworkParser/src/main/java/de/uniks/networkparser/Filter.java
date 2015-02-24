@@ -107,7 +107,7 @@ public class Filter {
 		return this;
 	}
 
-	public Filter cloneObj() {
+	public Filter clone() {
 		Filter reference = new Filter();
 		if (reference.getClass().getName().equals(this.getClass().getName())) {
 			return clone(new Filter());
@@ -115,7 +115,7 @@ public class Filter {
 		return this;
 	}
 
-	public Filter clone(Filter newInstance) {
+	protected Filter clone(Filter newInstance) {
 		return newInstance.withConvertable(convertable).withIdFilter(idFilter)
 				.withPropertyRegard(property);
 	}

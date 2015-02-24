@@ -62,7 +62,7 @@ public class GraphIdMapFilter extends Filter {
 	}
 
 	@Override
-	public GraphIdMapFilter clone(Filter newInstance) {
+	protected GraphIdMapFilter clone(Filter newInstance) {
 		return (GraphIdMapFilter) super.clone(newInstance);
 	}
 

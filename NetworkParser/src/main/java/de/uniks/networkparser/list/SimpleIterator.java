@@ -47,7 +47,7 @@ public class SimpleIterator<E> implements ListIterator<E> {
 		if (lastRet < 0)
 			throw new IllegalStateException();
 		try {
-			list.set(lastRet, e);
+			list.setValue(lastRet, e, AbstractArray.SMALL_KEY);
 		} catch (IndexOutOfBoundsException ex) {
 			throw new ConcurrentModificationException();
 		}
@@ -55,10 +55,14 @@ public class SimpleIterator<E> implements ListIterator<E> {
 
 	public void add(E e) {
 		try {
-			int i = cursor;
-			list.add(i, e);
-			cursor = i + 1;
-			lastRet = -1;
+			int size = list.size();
+			int pos = list.hasKey(e, size);
+			if(pos>=0) {
+				list.grow(size + 1);
+				list.addKey(cursor, e, size + 1);
+				cursor++;
+				lastRet = -1;
+			}
 		} catch (IndexOutOfBoundsException ex) {
 			throw new ConcurrentModificationException();
 		}
@@ -83,10 +87,7 @@ public class SimpleIterator<E> implements ListIterator<E> {
 		if (lastRet < 0)
 			throw new IllegalStateException();
 		try {
-			if(list.size()==419){
-				System.out.println("dskak");
-			}
-			list.remove(lastRet);
+			list.removeByIndex(lastRet, AbstractArray.SMALL_KEY);
 			cursor = lastRet;
 			lastRet = -1;
 		} catch (IndexOutOfBoundsException ex) {

@@ -8,7 +8,7 @@ import java.util.Iterator;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 
-public class AbstractArray<V> implements BaseItem  {
+public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	/** Is Allow Duplicate Items in List	 */
 	public static final byte ALLOWDUPLICATE = 0x01;
 	/** Is Allow Empty Value in List (null)  */
@@ -556,15 +556,6 @@ public class AbstractArray<V> implements BaseItem  {
 		return pos;
 	}
 	
-	public void add(int index, V element) {
-		int pos = hasKey(element, size);
-		if(pos>=0) {
-			grow(size + 1);
-			addKey(index, element,size + 1);
-		}
-	}
-	
-	
 	/**
 	 * Add a Key to internal List and Array if nesessary
 	 * Method to manipulate Array
@@ -856,6 +847,8 @@ public class AbstractArray<V> implements BaseItem  {
 	}
 	
 	public boolean containsAll(Collection<?> c) {
+		if(c==null)
+			return true;
 		for (Object e : c)
 			if (!contains(e))
 				return false;
@@ -933,6 +926,9 @@ public class AbstractArray<V> implements BaseItem  {
 	Object removeItem(int index, int offset) {
 		Object oldValue = null;
 		if(!isComplex()){
+			if(elements==null) {
+				return null;
+			}
 			// One Dimension
 			oldValue = elements[index];
 			if(oldValue==null){
@@ -1156,6 +1152,8 @@ public class AbstractArray<V> implements BaseItem  {
      */
     @SuppressWarnings("unchecked")
     public <T> T[] toArray(T[] a) {
+    	if(a==null)
+    		return null;
     	Object[] elementData;
     	if(isBig()) {
     		elementData = (Object[]) elements[SMALL_KEY];
@@ -1181,16 +1179,6 @@ public class AbstractArray<V> implements BaseItem  {
 		return (V) getKeyByIndex(index, size);
 	}
 
-	public V set(int index, V element) {
-		setValue(index, element, SMALL_KEY);
-		return element;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public V remove(int index) {
-		return (V)removeByIndex(index, SMALL_KEY);
-	}
-	
 	/** @return the First Element of the List */
 	public V first() {
 		if (this.size() > 0) {

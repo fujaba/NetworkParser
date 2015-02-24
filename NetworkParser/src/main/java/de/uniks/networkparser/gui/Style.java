@@ -234,7 +234,7 @@ public class Style implements Cloneable {
 		return underline;
 	}
 
-	public Style withUnderline(Boolean value) {
+	public Style withUnderline(boolean value) {
 		Boolean oldValue = this.underline;
 		this.underline = value;
 		propertyChange(PROPERTY_UNDERLINE, oldValue, value);
