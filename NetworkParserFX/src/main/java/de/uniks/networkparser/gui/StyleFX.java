@@ -1,4 +1,4 @@
-package de.uniks.networkparser.gui.grid;
+package de.uniks.networkparser.gui;
 
 /*
  NetworkParser
@@ -23,10 +23,12 @@ package de.uniks.networkparser.gui.grid;
 */
 import java.util.Iterator;
 import java.util.Map.Entry;
+
 import de.uniks.networkparser.gui.GUILine;
+import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.interfaces.GUIPosition;
 
-public class StyleFX extends GridStyle{
+public class StyleFX extends Style{
 	public static final String PROPERTY_CURSOR="cursor";
 	private String cursor;
 

@@ -23,7 +23,7 @@ package de.uniks.networkparser.logic;
  */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class BooleanCondition implements Condition, SendableEntityCreator {
+public class BooleanCondition implements Condition<ValuesSimple>, SendableEntityCreator {
 	public static final String VALUE = "value";
 	private boolean value;
 

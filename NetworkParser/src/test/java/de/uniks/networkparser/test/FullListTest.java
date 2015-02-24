@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ListIterator;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -193,7 +194,7 @@ public class FullListTest {
 		assertEquals("simpleList should have 550 elements", 550, simpleList.size());
 		
 		// try to add 42, again
-		boolean add = simpleList.add(simpleList.get(41));
+		Assert.assertFalse(simpleList.add(simpleList.get(41)));
 
 		assertEquals("simpleList should still have 550 elements", 550, simpleList.size());
 		
