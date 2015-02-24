@@ -125,12 +125,13 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	}
 
 	public void copyEntity(SimpleKeyValueList<K, V> target, int pos) {
-		target.withKeyValue(this.get(pos), this.getValueByIndex(pos));
+		if(target != null)
+			target.withKeyValue(this.get(pos), this.getValueByIndex(pos));
 	}
 	
 	@Override
 	public Set<K> keySet() {
-		if(isComplex()) {
+		if(isComplex() && this.elements!=null) {
 			return new SimpleSet<K>().init((Object[])this.elements[SMALL_KEY], size);
 		}
 		return new SimpleSet<K>().init(this.elements, size);
@@ -463,12 +464,18 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	
 	@Override
 	public void putAll(Map<? extends K, ? extends V> values) {
+		if(values==null) {
+			return;
+		}
 		for (java.util.Map.Entry<? extends K, ? extends V> entry : values.entrySet()) {
 			add(entry.getKey(), entry.getValue());
         }
 	}
 	
 	public SimpleKeyValueList<K, V> withMap(Map<?, ?> value) {
+		if(value==null) {
+			return this;
+		}
 		for (java.util.Map.Entry<?, ?> entry : value.entrySet()) {
 			withKeyValue(entry.getKey(), entry.getValue());
 		}

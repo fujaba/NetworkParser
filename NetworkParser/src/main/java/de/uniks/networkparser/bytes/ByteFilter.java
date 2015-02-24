@@ -36,12 +36,12 @@ public class ByteFilter extends Filter {
 	}
 
 	@Override
-	public Filter cloneObj() {
+	public Filter clone() {
 		return clone(new ByteFilter());
 	}
 
 	@Override
-	public Filter clone(Filter newInstance) {
+	protected Filter clone(Filter newInstance) {
 		ByteFilter result = (ByteFilter) super.clone(newInstance);
 		return result.withLenCheck(this.isLenCheck);
 	}

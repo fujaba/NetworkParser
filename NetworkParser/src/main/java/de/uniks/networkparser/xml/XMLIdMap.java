@@ -118,7 +118,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 	 */
 	@Override
 	public XMLEntity encode(Object entity) {
-		return encode(entity, filter.cloneObj());
+		return encode(entity, filter.clone());
 	}
 
 	@Override
