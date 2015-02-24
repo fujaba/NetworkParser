@@ -254,14 +254,15 @@ public class AbstractArray<V> implements BaseItem  {
 		return (flag & READONLY)==READONLY;
 	}
 
-	public AbstractArray<V> withReadOnly(
+	@SuppressWarnings("unchecked")
+	public <ST extends AbstractArray<V>> ST withReadOnly(
 			boolean value) {
 		if(value) {
 			this.flag = (byte) (this.flag | READONLY);
 		} else {
 			this.flag = (byte) (this.flag & (0xff - READONLY));
 		}
-		return this;
+		return (ST) this;
 	}
 	
 	public void clear() {
