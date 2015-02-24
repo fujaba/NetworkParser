@@ -233,12 +233,12 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements
 	}
 
 	@Override
-	public XMLEntity getNewArray() {
+	public XMLEntity getNewMap() {
 		return new XMLEntity();
 	}
 
 	@Override
-	public BaseItem getNewObject() {
+	public BaseItem getNewList() {
 		return new XMLEntity();
 	}
 

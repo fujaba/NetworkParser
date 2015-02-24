@@ -69,7 +69,7 @@ public class XMLTokener extends Tokener {
 		case '<':
 			back();
 			if (creator instanceof FactoryEntity) {
-				BaseItem element = ((FactoryEntity) creator).getNewObject();
+				BaseItem element = ((FactoryEntity) creator).getNewList();
 				if (element instanceof SimpleKeyValueList<?, ?>) {
 					parseToEntity((SimpleKeyValueList<?, ?>) element);
 				} else if (element instanceof SimpleList<?>) {
@@ -151,7 +151,7 @@ public class XMLTokener extends Tokener {
 					break;
 				} else {
 					if (getCurrentChar() == '<') {
-						child = (XMLEntity) xmlEntity.getNewArray();
+						child = (XMLEntity) xmlEntity.getNewMap();
 						parseToEntity(child);
 						xmlEntity.addChild(child);
 					} else {

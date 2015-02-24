@@ -290,7 +290,7 @@ public class JsonArray extends SortedList<Object> implements
 	 * Get a new Instance of a JsonArray
 	 */
 	@Override
-	public JsonArray getNewArray() {
+	public JsonArray getNewMap() {
 		return new JsonArray();
 	}
 
@@ -298,7 +298,7 @@ public class JsonArray extends SortedList<Object> implements
 	 * Get a new Instance of a JsonObject
 	 */
 	@Override
-	public JsonObject getNewObject() {
+	public JsonObject getNewList() {
 		return new JsonObject();
 	}
 

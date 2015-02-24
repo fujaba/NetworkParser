@@ -35,12 +35,12 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem,
 	private byte typ = 0;
 
 	@Override
-	public ByteList getNewArray() {
+	public ByteList getNewMap() {
 		return new ByteList();
 	}
 
 	@Override
-	public ByteEntity getNewObject() {
+	public ByteEntity getNewList() {
 		return new ByteEntity();
 	}
 
@@ -194,7 +194,7 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem,
 
 	public SimpleList<ByteItem> withValue(String value) {
 		ByteConverterString converter = new ByteConverterString();
-		this.add(getNewObject().withValue(ByteIdMap.DATATYPE_FIXED,
+		this.add(getNewList().withValue(ByteIdMap.DATATYPE_FIXED,
 				converter.decode(value)));
 		return this;
 	}

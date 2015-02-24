@@ -169,12 +169,12 @@ public class BitEntity extends SimpleList<BitValue> implements
 	}
 
 	@Override
-	public BaseItem getNewObject() {
+	public BaseItem getNewList() {
 		return new BitEntity();
 	}
 
 	@Override
-	public BitEntity getNewArray() {
+	public BitEntity getNewMap() {
 		return new BitEntity();
 	}
 

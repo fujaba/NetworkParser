@@ -11,13 +11,13 @@ import java.util.NoSuchElementException;
 public class SimpleIterator<E> implements ListIterator<E> {
 	private int cursor;       // index of next element to return
 	private int lastRet = -1; // index of last element returned; -1 if no such
-	private AbstractList<E> list;
+	private AbstractArray<E> list;
 
-	public SimpleIterator(AbstractList<E> list) {
+	public SimpleIterator(AbstractArray<E> list) {
 		this.list = list;
 	}
 
-	public SimpleIterator(AbstractList<E> list, int index) {
+	public SimpleIterator(AbstractArray<E> list, int index) {
 		this.cursor = index;
 		this.list = list;
 	}
@@ -75,7 +75,7 @@ public class SimpleIterator<E> implements ListIterator<E> {
 		if (i >= list.size())
 			throw new ConcurrentModificationException();
 		cursor = i + 1;
-		return list.get(lastRet = i);
+		return (E) list.get(lastRet = i);
 	}
 
 	@Override

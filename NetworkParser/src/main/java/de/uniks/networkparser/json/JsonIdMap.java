@@ -203,7 +203,7 @@ public class JsonIdMap extends IdMap {
 				if (value instanceof Collection<?> && referenceCreator == null) {
 					// Simple List or Assocs
 					AbstractList<Object> subValues = getPrototyp()
-							.getNewArray();
+							.getNewMap();
 					// jsonArray.getNewArray();
 					for (Object containee : ((Collection<?>) value)) {
 						Object item = parseItem(entity, filter, containee,
@@ -219,7 +219,7 @@ public class JsonIdMap extends IdMap {
 						&& referenceCreator == null) {
 					// Maps
 					AbstractList<Object> subValues = getPrototyp()
-							.getNewArray();
+							.getNewMap();
 					Map<?, ?> map = (Map<?, ?>) value;
 					String packageName = ObjectMapEntry.class.getName();
 					for (Iterator<?> i = map.entrySet().iterator(); i.hasNext();) {
@@ -310,7 +310,7 @@ public class JsonIdMap extends IdMap {
 	@Override
 	public Object decode(String value) {
 		if (value.startsWith("[")) {
-			return decode(getPrototyp().getNewArray().withValue(value));
+			return decode(getPrototyp().getNewMap().withValue(value));
 		}
 		return decode(getPrototyp().withValue(value));
 	}
@@ -619,7 +619,7 @@ public class JsonIdMap extends IdMap {
 	 * @return the json array
 	 */
 	public JsonArray toJsonArray(Object object, Filter filter) {
-		JsonArray jsonArray = getPrototyp().getNewArray();
+		JsonArray jsonArray = getPrototyp().getNewMap();
 		if (filter == null) {
 			filter = this.filter.cloneObj();
 		}
@@ -673,7 +673,7 @@ public class JsonIdMap extends IdMap {
 		String className = entity.getClass().getName();
 		String id = getId(entity);
 
-		JsonObject jsonObject = jsonArray.getNewObject();
+		JsonObject jsonObject = jsonArray.getNewList();
 		boolean sortedArray = jsonArray.isComparator();
 		boolean isId = filter.isId(this, entity, className);
 		if (isId) {
@@ -820,7 +820,7 @@ public class JsonIdMap extends IdMap {
 	 */
 	public void toJsonArrayByIds(ArrayList<String> suspendIdList) {
 		JsonObject sendObj = getPrototyp();
-		JsonArray children = sendObj.getNewArray();
+		JsonArray children = sendObj.getNewMap();
 		for (String childId : suspendIdList) {
 			children.add(toJsonObjectById(childId));
 		}

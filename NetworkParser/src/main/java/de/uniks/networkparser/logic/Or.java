@@ -55,10 +55,10 @@ public class Or implements Condition<ValuesSimple>, SendableEntityCreator {
 	}
 
 	@Override
-	public boolean matches(ValuesSimple values) {
+	public boolean check(ValuesSimple values) {
 		boolean result = true;
 		for (Condition<ValuesSimple> condition : list) {
-			if (!condition.matches(values)) {
+			if (!condition.check(values)) {
 				result = false;
 			}
 		}

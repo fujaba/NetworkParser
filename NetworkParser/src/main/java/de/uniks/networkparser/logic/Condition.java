@@ -34,5 +34,5 @@ public interface Condition<T> {
 	 *            the telegram to be checked
 	 * @return true if the telegram fulfills this condition, false otherwise
 	 */
-	public boolean matches(T value);
+	public boolean check(T value);
 }

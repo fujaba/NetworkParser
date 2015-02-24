@@ -10,7 +10,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BaseList;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 
-public class SimpleKeyValueList<K, V> extends AbstractList<K> implements Map<K, V>, FactoryEntity, Iterable<K>, BaseList {
+public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K, V>, FactoryEntity, Iterable<K>, BaseList {
 
 	@Override
 	public byte initFlag() {
@@ -125,7 +125,7 @@ public class SimpleKeyValueList<K, V> extends AbstractList<K> implements Map<K, 
 	}
 
 	public void copyEntity(SimpleKeyValueList<K, V> target, int pos) {
-		target.add(this.get(pos), this.getValueByIndex(pos));
+		target.withKeyValue(this.get(pos), this.getValueByIndex(pos));
 	}
 	
 	@Override
@@ -317,10 +317,16 @@ public class SimpleKeyValueList<K, V> extends AbstractList<K> implements Map<K, 
 	}
 	
 	@Override
-	public BaseList getNewArray() {
+	public BaseList getNewMap() {
 		return new SimpleKeyValueList<K, V>();
 	}
 	
+	@Override
+	public BaseItem getNewList() {
+		return new SimpleEntity<K, V>();
+	}
+	
+	@Override
 	public SimpleKeyValueList<K, V> withList(Collection<?> values) {
 		super.withList(values);
 		return this;
@@ -455,11 +461,6 @@ public class SimpleKeyValueList<K, V> extends AbstractList<K> implements Map<K, 
 		return (V) removeByIndex(index, SMALL_VALUE);
 	}
 	
-	@Override
-	public BaseItem getNewObject() {
-		return new SimpleEntity<K, V>();
-	}
-
 	@Override
 	public void putAll(Map<? extends K, ? extends V> values) {
 		for (java.util.Map.Entry<? extends K, ? extends V> entry : values.entrySet()) {
