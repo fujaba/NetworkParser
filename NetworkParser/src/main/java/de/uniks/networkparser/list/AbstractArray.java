@@ -6,8 +6,9 @@ import java.util.Comparator;
 import java.util.Iterator;
 
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.FactoryEntity;
 
-public class AbstractArray implements BaseItem  {
+public class AbstractArray<V> implements BaseItem  {
 	/** Is Allow Duplicate Items in List	 */
 	public static final byte ALLOWDUPLICATE = 0x01;
 	/** Is Allow Empty Value in List (null)  */
@@ -79,9 +80,9 @@ public class AbstractArray implements BaseItem  {
 	 * @return return self 
      */
     @SuppressWarnings("unchecked")
-	public <ST extends AbstractArray> ST init(Collection<?> list){
+	public <ST extends AbstractArray<V>> ST init(Collection<?> list){
     	if(list instanceof AbstractArray){
-    		this.flag = ((AbstractArray)list).getSignalFlag();
+    		this.flag = ((AbstractArray<V>)list).getSignalFlag();
     	}
     	withList(list);
     	return (ST)this;
@@ -95,7 +96,7 @@ public class AbstractArray implements BaseItem  {
 	 * @return return self
      */
     @SuppressWarnings("unchecked")
-	public <ST extends AbstractArray> ST init(int initSize){
+	public <ST extends AbstractArray<V>> ST init(int initSize){
     	grow(initSize);
     	return (ST)this;
     }
@@ -108,13 +109,13 @@ public class AbstractArray implements BaseItem  {
 	 * @return return self
      * */
     @SuppressWarnings("unchecked")
-	public <ST extends AbstractArray> ST init(Object[] items, int size){
+	public <ST extends AbstractArray<V>> ST init(Object[] items, int size){
     	elements = items;
     	this.size = size;
     	return (ST) this;
     }
     
-    public AbstractArray withFlag(int value)  {
+    public AbstractArray<V> withFlag(int value)  {
     	this.flag = (byte) (this.flag | value);
     	if(value == BIDI){
     		this.flag = (byte) (this.flag | MAP);
@@ -179,7 +180,7 @@ public class AbstractArray implements BaseItem  {
 		return (flag & ALLOWEMPTYVALUE)==ALLOWEMPTYVALUE;
 	}
 
-	public AbstractArray withAllowEmptyValue(boolean value) {
+	public AbstractArray<V> withAllowEmptyValue(boolean value) {
 		this.flag = (byte) (this.flag | ALLOWEMPTYVALUE);
 		if(!value) {
 			this.flag -= ALLOWEMPTYVALUE;
@@ -196,7 +197,7 @@ public class AbstractArray implements BaseItem  {
 		return (flag & VISIBLE)==VISIBLE;
 	}
 
-	public AbstractArray withVisible(boolean value) {
+	public AbstractArray<V> withVisible(boolean value) {
 		this.flag = (byte) (this.flag | VISIBLE);
 		if(!value) {
 			this.flag -= VISIBLE;
@@ -213,7 +214,7 @@ public class AbstractArray implements BaseItem  {
 		return (flag & CASESENSITIVE)==CASESENSITIVE;
 	}
 
-	public AbstractArray withCaseSensitive(boolean value) {
+	public AbstractArray<V> withCaseSensitive(boolean value) {
 		if(value) {
 			this.flag = (byte) (this.flag | CASESENSITIVE);
 		} else {
@@ -231,7 +232,7 @@ public class AbstractArray implements BaseItem  {
 		return (flag & ALLOWDUPLICATE)==ALLOWDUPLICATE;
 	}
 
-	public AbstractArray withAllowDuplicate(
+	public AbstractArray<V> withAllowDuplicate(
 			boolean value) {
 		if(value) {
 			this.flag = (byte) (this.flag | ALLOWDUPLICATE);
@@ -250,7 +251,7 @@ public class AbstractArray implements BaseItem  {
 		return (flag & READONLY)==READONLY;
 	}
 
-	public AbstractArray withReadOnly(
+	public AbstractArray<V> withReadOnly(
 			boolean value) {
 		if(value) {
 			this.flag = (byte) (this.flag | READONLY);
@@ -551,6 +552,14 @@ public class AbstractArray implements BaseItem  {
 		return pos;
 	}
 	
+	public void add(int index, V element) {
+		int pos = hasKey(element, size);
+		if(pos>=0) {
+			grow(size + 1);
+			addKey(index, element,size + 1);
+		}
+	}
+	
 	
 	/**
 	 * Add a Key to internal List and Array if nesessary
@@ -616,7 +625,7 @@ public class AbstractArray implements BaseItem  {
 	}
 
 	
-	public AbstractArray withAll(Object... values) {
+	public AbstractArray<V> withAll(Object... values) {
 		if(values==null){
 			return this;
 		}
@@ -631,7 +640,7 @@ public class AbstractArray implements BaseItem  {
 		return this;
 	}
 	
-	public AbstractArray without(Object... values) {
+	public AbstractArray<V> without(Object... values) {
 		if(values==null){
 			return this;
 		}
@@ -660,7 +669,7 @@ public class AbstractArray implements BaseItem  {
 		elements[pos] = value;
 	}
 
-	public AbstractArray withList(Collection<?> list) {
+	public AbstractArray<V> withList(Collection<?> list) {
 		int newSize = this.size + list.size();
 		if (newSize == 0)
 		{
@@ -986,6 +995,215 @@ public class AbstractArray implements BaseItem  {
 		}
 		return Arrays.copyOf(elements, size);
 	}
+	
+	public Object getValueItem(Object key) {
+		int pos = indexOf(key);
+		if (pos >= 0) {
+			return this.getValueByIndex(pos);
+		}
+		if (!(key instanceof String)) {
+			return null;
+		}
+		String keyString = "" + key;
+		int len = 0;
+		int end = 0;
+		int id = 0;
+		for (; len < keyString.length(); len++) {
+			char temp = keyString.charAt(len);
+			if (temp == '[') {
+				for (end = len + 1; end < keyString.length(); end++) {
+					temp = keyString.charAt(end);
+					if (keyString.charAt(end) == ']') {
+						end++;
+						break;
+					} else if (temp > 47 && temp < 58 && id >= 0) {
+						id = id * 10 + temp - 48;
+					} else if (temp == 'L') {
+						id = -2;
+					}
+				}
+				if (end == keyString.length()) {
+					end = 0;
+				}
+				break;
+			} else if (temp == '.') {
+				end = len;
+				id = -1;
+				break;
+			}
+		}
+		if (end == 0 && len == keyString.length()) {
+			id = -1;
+		}
+
+		Object child = getValueByIndex(indexOf(keyString.substring(0, len)));
+		if (child != null) {
+			if (end == 0) {
+				if (id >= 0 || id == -2) {
+					if (child instanceof AbstractList<?>) {
+						AbstractList<?> list = (AbstractList<?>) child;
+						if (id == -2) {
+							id = list.size() - 1;
+						}
+						if (list.size() >= id) {
+							return list.get(id);
+						}
+					}
+				} else {
+					return child;
+				}
+			} else {
+				if (id >= 0 || id == -2) {
+					if (child instanceof AbstractArray) {
+						if (end == len + 2) {
+							// Get List
+							if (this instanceof FactoryEntity) {
+								AbstractList<?> result = (AbstractList<?>) ((FactoryEntity) this)
+										.getNewMap();
+								AbstractList<?> items = (AbstractList<?>) child;
+								for (int z = 0; z < items.size(); z++) {
+									result.withAll(((AbstractList<?>) items
+											.get(z)).getValueItem(keyString
+											.substring(end + 1)));
+								}
+								return result;
+							}
+						}
+						AbstractList<?> list = (AbstractList<?>) child;
+						if (id == -2) {
+							id = list.size() - 1;
+						}
+						if (list.size() >= id) {
+							return ((SimpleKeyValueList<?, ?>) list.get(id))
+									.getValueItem(keyString.substring(end + 1));
+						}
+					}
+				} else {
+					return ((SimpleKeyValueList<?, ?>) child)
+							.getValueItem(keyString.substring(end + 1));
+				}
+			}
+		}
+		return null;
+	}
+	
+    /**
+     * {@inheritDoc}
+     *
+     * <p>This implementation iterates over this collection, checking each
+     * element returned by the iterator in turn to see if it's contained
+     * in the specified collection.  If it's not so contained, it's removed
+     * from this collection with the iterator's <tt>remove</tt> method.
+     *
+     * <p>Note that this implementation will throw an
+     * <tt>UnsupportedOperationException</tt> if the iterator returned by the
+     * <tt>iterator</tt> method does not implement the <tt>remove</tt> method
+     * and this collection contains one or more elements not present in the
+     * specified collection.
+     *
+     * @throws UnsupportedOperationException {@inheritDoc}
+     * @throws ClassCastException            {@inheritDoc}
+     * @throws NullPointerException          {@inheritDoc}
+     *
+     * @see #contains(Object)
+     */
+    public boolean retainAll(Collection<?> c) {
+    	if(c==null){
+    		return false;
+    	}
+        boolean modified = false;
+        Iterator<?> it = iterator();
+        while (it.hasNext()) {
+            if (!c.contains(it.next())) {
+                it.remove();
+                modified = true;
+            }
+        }
+        return modified;
+    }
+    
+    public Iterator<V> iterator() {
+		return new SimpleIterator<V>(this);
+	}
+    
+    /**
+     * Returns an array containing all of the elements in this list in proper
+     * sequence (from first to last element); the runtime type of the returned
+     * array is that of the specified array.  If the list fits in the
+     * specified array, it is returned therein.  Otherwise, a new array is
+     * allocated with the runtime type of the specified array and the size of
+     * this list.
+     *
+     * <p>If the list fits in the specified array with room to spare
+     * (i.e., the array has more elements than the list), the element in
+     * the array immediately following the end of the collection is set to
+     * <tt>null</tt>.  (This is useful in determining the length of the
+     * list <i>only</i> if the caller knows that the list does not contain
+     * any null elements.)
+     *
+     * @param a the array into which the elements of the list are to
+     *          be stored, if it is big enough; otherwise, a new array of the
+     *          same runtime type is allocated for this purpose.
+     * @param <T> the ContainerClass
+     * @return an array containing the elements of the list
+     * @throws ArrayStoreException if the runtime type of the specified array
+     *         is not a supertype of the runtime type of every element in
+     *         this list
+     * @throws NullPointerException if the specified array is null
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T[] toArray(T[] a) {
+    	Object[] elementData;
+    	if(isBig()) {
+    		elementData = (Object[]) elements[SMALL_KEY];
+    	}else{
+    		elementData = elements;
+    	}
+        if (a.length < size) {
+            // Make a new array of a's runtime type, but my contents:
+            return (T[]) Arrays.copyOf(elementData, size, a.getClass());
+        }
+        if (elementData == null)
+        {
+           return a; // should be empty
+        }
+        System.arraycopy(elementData, 0, a, 0, size);
+        if (a.length > size)
+            a[size] = null;
+        return a;
+    }
+    
+	@SuppressWarnings("unchecked")
+	public V get(int index) {
+		return (V) getKeyByIndex(index, size);
+	}
+
+	public V set(int index, V element) {
+		setValue(index, element, SMALL_KEY);
+		return element;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public V remove(int index) {
+		return (V)removeByIndex(index, SMALL_KEY);
+	}
+	
+	/** @return the First Element of the List */
+	public V first() {
+		if (this.size() > 0) {
+			return this.get(0);
+		}
+		return null;
+	}
+
+	/** @return the Last Element of the List */
+	public V last() {
+		if (this.size() > 0) {
+			return this.get(this.size() - 1);
+		}
+		return null;
+	}
+	
 	
 	protected void fireProperty(Object oldElement, Object newElement,
 			Object beforeElement, Object value) {

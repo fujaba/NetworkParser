@@ -42,9 +42,9 @@ public class And implements Condition<ValuesSimple>, SendableEntityCreator {
 	}
 
 	@Override
-	public boolean matches(ValuesSimple values) {
+	public boolean check(ValuesSimple values) {
 		for (Condition<ValuesSimple> condition : list) {
-			if (!condition.matches(values)) {
+			if (!condition.check(values)) {
 				return false;
 			}
 		}

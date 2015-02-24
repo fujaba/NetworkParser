@@ -40,7 +40,7 @@ public class ModelListenerBooleanProperty extends ModelListenerProperty<Boolean>
 	public Boolean getValue() {
 		Object value = creator.getValue(item, property);
 		if(condition!=null){
-			return condition.matches(ValuesMap.with(item, property, value));
+			return condition.check(ValuesMap.with(item, property, value));
 		}
 		return false;
     }

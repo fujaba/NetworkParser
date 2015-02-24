@@ -302,7 +302,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 	 * Get a new Instance of JsonArray
 	 */
 	@Override
-	public JsonObject getNewObject() {
+	public JsonObject getNewList() {
 		return new JsonObject();
 	}
 
@@ -310,7 +310,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 	 * Get a new Instance of JsonObject
 	 */
 	@Override
-	public JsonArray getNewArray() {
+	public JsonArray getNewMap() {
 		return new JsonArray();
 	}
 
@@ -350,12 +350,12 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 		Object object = this.get(key);
 		if (object == null) {
 			this.put(key,
-					value instanceof AbstractList ? getNewArray().with(value)
+					value instanceof AbstractList ? getNewMap().with(value)
 							: value);
 		} else if (object instanceof AbstractList) {
 			((AbstractList<?>) object).withAll(value);
 		} else {
-			this.put(key, getNewArray().with(object, value));
+			this.put(key, getNewMap().with(object, value));
 		}
 		return this;
 	}

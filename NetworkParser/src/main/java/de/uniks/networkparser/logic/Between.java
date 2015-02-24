@@ -55,7 +55,7 @@ public class Between implements Condition<ValuesSimple>, SendableEntityCreator {
 	}
 
 	@Override
-	public boolean matches(ValuesSimple values) {
+	public boolean check(ValuesSimple values) {
 		if (values.getValue() instanceof Number) {
 			return (((Double) values.getValue()) >= fromValue && ((Double) values.getValue()) <= toValue);
 		}

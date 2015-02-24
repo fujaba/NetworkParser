@@ -59,7 +59,7 @@ public class JsonTokener extends Tokener {
 			return nextString('"', isAllowCRLF(), allowQuote, true, true);
 		case '{':
 			if (creator instanceof FactoryEntity) {
-				BaseItem element = ((FactoryEntity) creator).getNewObject();
+				BaseItem element = ((FactoryEntity) creator).getNewList();
 				if (element instanceof SimpleKeyValueList<?, ?>) {
 					this.parseToEntity((SimpleKeyValueList<?, ?>) element);
 				}
@@ -68,7 +68,7 @@ public class JsonTokener extends Tokener {
 			}
 		case '[':
 			if (creator instanceof FactoryEntity) {
-				BaseItem element = ((FactoryEntity) creator).getNewArray();
+				BaseItem element = ((FactoryEntity) creator).getNewMap();
 				if (element instanceof AbstractList<?>) {
 					this.parseToEntity((AbstractList<?>) element);
 				}

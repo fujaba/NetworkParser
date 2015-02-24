@@ -35,8 +35,8 @@ public class Not implements Condition<ValuesSimple>, SendableEntityCreator {
 	private Condition<ValuesSimple> item;
 
 	@Override
-	public boolean matches(ValuesSimple values) {
-		return !item.matches(values);
+	public boolean check(ValuesSimple values) {
+		return !item.check(values);
 	}
 
 	/**

@@ -28,7 +28,7 @@ public class BooleanCondition implements Condition<ValuesSimple>, SendableEntity
 	private boolean value;
 
 	@Override
-	public boolean matches(ValuesSimple values) {
+	public boolean check(ValuesSimple values) {
 		return this.value;
 	}
 

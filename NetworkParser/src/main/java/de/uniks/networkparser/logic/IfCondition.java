@@ -87,14 +87,14 @@ public class IfCondition implements Condition<ValuesSimple>, SendableEntityCreat
 	}
 
 	@Override
-	public boolean matches(ValuesSimple values) {
-		if (expression.matches(values)) {
+	public boolean check(ValuesSimple values) {
+		if (expression.check(values)) {
 			if (trueCondition != null) {
-				return trueCondition.matches(values);
+				return trueCondition.check(values);
 			}
 		} else {
 			if (falseCondition != null) {
-				return falseCondition.matches(values);
+				return falseCondition.check(values);
 			}
 		}
 		return false;

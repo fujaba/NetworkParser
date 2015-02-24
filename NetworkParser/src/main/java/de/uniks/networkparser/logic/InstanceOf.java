@@ -199,7 +199,7 @@ public class InstanceOf extends ConditionMap implements SendableEntityCreator {
 	}
 
 	@Override
-	public boolean matches(ValuesMap values) {
+	public boolean check(ValuesMap values) {
 		if (this.clazzName != null
 				&& values.entity.getClass() != this.clazzName) {
 			return true;

@@ -27,9 +27,9 @@ package de.uniks.networkparser.logic;
  */
 public abstract class ConditionMap implements Condition<ValuesSimple> {
 	@Override
-	public boolean matches(ValuesSimple values) {
+	public boolean check(ValuesSimple values) {
 		if (values instanceof ValuesMap) {
-			return matches((ValuesMap) values);
+			return check((ValuesMap) values);
 		}
 		return false;
 	}
@@ -39,5 +39,5 @@ public abstract class ConditionMap implements Condition<ValuesSimple> {
 	 *            The Value of Match-Question
 	 * @return booelan if match
 	 */
-	public abstract boolean matches(ValuesMap values);
+	public abstract boolean check(ValuesMap values);
 }

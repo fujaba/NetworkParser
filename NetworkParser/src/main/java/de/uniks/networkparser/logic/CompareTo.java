@@ -51,7 +51,7 @@ public class CompareTo implements Condition<ValuesSimple>, SendableEntityCreator
 	}
 
 	@Override
-	public boolean matches(ValuesSimple value) {
+	public boolean check(ValuesSimple value) {
 		Object entityValue = value.getValue();
 		if (entityValue != null) {
 			if (entityValue instanceof Comparable<?>) {

@@ -318,12 +318,12 @@ public class ByteEntity implements ByteItem, FactoryEntity {
 	}
 
 	@Override
-	public ByteList getNewArray() {
+	public ByteList getNewMap() {
 		return new ByteList();
 	}
 
 	@Override
-	public ByteEntity getNewObject() {
+	public ByteEntity getNewList() {
 		return new ByteEntity();
 	}
 
