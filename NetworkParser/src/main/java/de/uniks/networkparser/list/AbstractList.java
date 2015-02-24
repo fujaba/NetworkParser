@@ -27,6 +27,9 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements BaseLi
      * @see #add(Object)
      */
     public boolean addAll(Collection<? extends V> c) {
+    	if(c==null){
+    		return false;
+    	}
         boolean modified = false;
         for (V e : c)
             if (add(e))
@@ -82,7 +85,8 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements BaseLi
 	}
 
 	public void copyEntity(AbstractList<V> target, int pos) {
-		target.add(get(pos));
+		if(target != null)
+			target.add(get(pos));
 	}
 
 	public AbstractList<V> subSet(V fromElement, V toElement) {
@@ -188,6 +192,9 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements BaseLi
 	}
 
 	public boolean addAll(int index, Collection<? extends V> values) {
+		if(values==null) {
+			return false;
+		}
 		boolean allAdded=true;
 		int newSize = size + values.size();
 		grow(newSize);

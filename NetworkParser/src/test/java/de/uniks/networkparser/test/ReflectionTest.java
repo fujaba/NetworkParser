@@ -57,6 +57,9 @@ public class ReflectionTest {
 						if(ignoreMethods.contains(m.getName())) {
 							continue;
 						}
+						if(m.getDeclaringClass().isInterface()) {
+							continue;
+						}
 						Object[] params = getParametersNull(m);
 						try {
 							// mit Null as Parameter
@@ -66,12 +69,11 @@ public class ReflectionTest {
 						}catch(Exception e) {
 //							System.out.println(m.getName());
 //							e.printStackTrace();
-							int line =getLine(e, clazz.getName());
-							String state="";
-							if(Modifier.isPublic(m.getModifiers())) {
-								state = "public";
+							String line =getLine(e, clazz.getName());
+							if(line.length()<1) {
+								line = clazz.getName()+".java:1";
 							}
-							itemError.append("("+clazz.getName()+".java:"+line+") :"+state+" "+getSignature(m) +" "+ e.getCause()+"\n");
+							itemError.append("("+line+") : "+getSignature(m) +" "+ e.getCause()+"\n");
 							errorCount++;
 						}
 					}
@@ -132,25 +134,26 @@ public class ReflectionTest {
 		return objects;
 	}
 	
-	private int getLine(Exception e, String clazzName) {
+	private String getLine(Exception e, String clazzName) {
 		Throwable cause = e.getCause();
 		if(cause!=null) {
-			int line = getLineFromThrowable(cause, clazzName);
-			if(line>=0) {
+			String line = getLineFromThrowable(cause, clazzName);
+			if(line.length()>0) {
 				return line;
 			}
 		}
 		return getLineFromThrowable(e, clazzName);
 	}
 	
-	private int getLineFromThrowable(Throwable e, String clazzName) {
+	private String getLineFromThrowable(Throwable e, String clazzName) {
 		StackTraceElement[] stackTrace = e.getStackTrace();
 		for(StackTraceElement ste : stackTrace) {
-			if(ste.getClassName().equalsIgnoreCase(clazzName)) {
-				return ste.getLineNumber();
+			String name = ste.getClassName();
+			if(name.startsWith("de.uniks.networkparser") && !name.startsWith("de.uniks.networkparser.test")) {
+				return name+".java:"+ste.getLineNumber();
 			}
 		}
-		return -1;
+		return "";
 	}
 	
 	private String getSignature(Method m) {

@@ -97,6 +97,9 @@ public class AbstractArray<V> implements BaseItem  {
      */
     @SuppressWarnings("unchecked")
 	public <ST extends AbstractArray<V>> ST init(int initSize){
+    	if(initSize<1){
+    		return (ST)this;
+    	}
     	grow(initSize);
     	return (ST)this;
     }
@@ -670,11 +673,10 @@ public class AbstractArray<V> implements BaseItem  {
 	}
 
 	public AbstractArray<V> withList(Collection<?> list) {
-		int newSize = this.size + list.size();
-		if (newSize == 0)
-		{
-		   return this;
+		if(list==null || this.size + list.size()== 0 ){
+			return this;
 		}
+		int newSize = this.size + list.size();
 		grow(newSize);
     	for(Iterator<?> i = list.iterator();i.hasNext();) {
     		Object item = i.next();
