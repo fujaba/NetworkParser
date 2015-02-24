@@ -487,6 +487,9 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	
 	@Override
 	public Collection<V> values() {
+		if(elements== null) {
+			return new SimpleList<V>();
+		}
 		return new SimpleList<V>().init((Object[])elements[SMALL_VALUE], size);
 	}
 

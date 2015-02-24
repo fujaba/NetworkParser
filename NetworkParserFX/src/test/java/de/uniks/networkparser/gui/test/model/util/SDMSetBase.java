@@ -3,10 +3,10 @@ package de.uniks.networkparser.gui.test.model.util;
 import java.util.Collection;
 import java.util.Iterator;
 
-import de.uniks.networkparser.gui.ItemList;
+import de.uniks.networkparser.list.SimpleList;
 
 
-public class SDMSetBase<T> extends ItemList<T>
+public class SDMSetBase<T> extends SimpleList<T>
 {
 	/**
 	 * Simple Constructor
