@@ -23,7 +23,7 @@ package de.uniks.networkparser.logic;
  */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class Between implements Condition, SendableEntityCreator {
+public class Between implements Condition<ValuesSimple>, SendableEntityCreator {
 	public static final String FROM = "from";
 	public static final String TO = "to";
 

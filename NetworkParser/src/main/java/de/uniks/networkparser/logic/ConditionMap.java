@@ -25,7 +25,7 @@ package de.uniks.networkparser.logic;
 /**
  * @author Stefan Lindel ConditionMap Clazz
  */
-public abstract class ConditionMap implements Condition {
+public abstract class ConditionMap implements Condition<ValuesSimple> {
 	@Override
 	public boolean matches(ValuesSimple values) {
 		if (values instanceof ValuesMap) {

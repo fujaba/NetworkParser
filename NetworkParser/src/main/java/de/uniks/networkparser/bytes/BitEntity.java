@@ -98,18 +98,18 @@ public class BitEntity extends SimpleList<BitValue> implements
 	 * Generic Getter for Attributes
 	 */
 	public Object get(String attrName) {
-		String attribute;
+		if(attrName==null) {
+			return null;
+		}
 		int pos = attrName.indexOf(".");
 		if (pos > 0) {
-			attribute = attrName.substring(0, pos);
-		} else {
-			attribute = attrName;
+			attrName = attrName.substring(0, pos);
 		}
-		if (PROPERTY_PROPERTY.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_PROPERTY.equalsIgnoreCase(attrName)) {
 			return this.property;
-		} else if (PROPERTY_TYP.equalsIgnoreCase(attribute)) {
+		} else if (PROPERTY_TYP.equalsIgnoreCase(attrName)) {
 			return this.typ;
-		} else if (PROPERTY_ORIENTATION.equalsIgnoreCase(attribute)) {
+		} else if (PROPERTY_ORIENTATION.equalsIgnoreCase(attrName)) {
 			return this.orientation;
 		}
 		return null;

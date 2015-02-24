@@ -22,24 +22,26 @@ package de.uniks.networkparser;
  permissions and limitations under the Licence.
  */
 import java.util.ArrayList;
+
 import de.uniks.networkparser.logic.Condition;
 import de.uniks.networkparser.logic.ValuesMap;
+import de.uniks.networkparser.logic.ValuesSimple;
 
 public class Filter {
-	protected Condition idFilter;
-	protected Condition convertable;
-	protected Condition property;
+	protected Condition<ValuesSimple> idFilter;
+	protected Condition<ValuesSimple> convertable;
+	protected Condition<ValuesSimple> property;
 
 	// Temporary variables
 	protected ArrayList<Object> visitedObjects;
 	protected ArrayList<ReferenceObject> refs;
 	protected Boolean full;
 
-	public Condition getIdFilter() {
+	public Condition<ValuesSimple> getIdFilter() {
 		return idFilter;
 	}
 
-	public Filter withIdFilter(Condition idFilter) {
+	public Filter withIdFilter(Condition<ValuesSimple> idFilter) {
 		this.idFilter = idFilter;
 		return this;
 	}
@@ -65,20 +67,20 @@ public class Filter {
 		return this;
 	}
 
-	public Condition getConvertable() {
+	public Condition<ValuesSimple> getConvertable() {
 		return convertable;
 	}
 
-	public Filter withConvertable(Condition convertable) {
+	public Filter withConvertable(Condition<ValuesSimple> convertable) {
 		this.convertable = convertable;
 		return this;
 	}
 
-	public Condition getPropertyRegard() {
+	public Condition<ValuesSimple> getPropertyRegard() {
 		return property;
 	}
 
-	public Filter withPropertyRegard(Condition property) {
+	public Filter withPropertyRegard(Condition<ValuesSimple> property) {
 		this.property = property;
 		return this;
 	}
@@ -196,7 +198,7 @@ public class Filter {
 		return null;
 	}
 
-	public static Filter regard(Condition convertable) {
+	public static Filter regard(Condition<ValuesSimple> convertable) {
 		return new Filter().withPropertyRegard(convertable);
 	}
 }

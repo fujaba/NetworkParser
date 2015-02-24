@@ -28,9 +28,9 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TablePosition;
 import javafx.scene.text.Font;
 import de.uniks.networkparser.gui.Style;
+import de.uniks.networkparser.gui.StyleFX;
 import de.uniks.networkparser.gui.controls.EditControl;
 import de.uniks.networkparser.gui.controls.EditFieldMap;
-import de.uniks.networkparser.gui.grid.StyleFX;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
