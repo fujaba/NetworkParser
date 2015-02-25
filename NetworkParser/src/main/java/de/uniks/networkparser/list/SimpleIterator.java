@@ -66,13 +66,13 @@ public class SimpleIterator<E> implements ListIterator<E> {
 
 	@Override
 	public boolean hasNext() {
-		return cursor<list.size();
+		return cursor<list.size;
 	}
 
 	@Override
 	public E next() {
 		int i = cursor;
-		if (i >= list.size())
+		if (i >= list.size)
 			throw new ConcurrentModificationException();
 		cursor = i + 1;
 		return (E) list.get(lastRet = i);
