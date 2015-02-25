@@ -26,7 +26,7 @@ import de.uniks.networkparser.interfaces.BufferedBytes;
 public class ByteUtil {
 	public static void writeByteHeader(BufferedBytes buffer, byte typ,
 			int valueLength) {
-		if (valueLength > 0) {
+		if (valueLength > 0 ) {
 			// Save Typ
 			if (typ != 0) {
 				buffer.put(typ);
@@ -47,7 +47,7 @@ public class ByteUtil {
 					}
 				}
 			}
-		} else {
+		} else if(buffer!=null){
 			buffer.put(ByteIdMap.DATATYPE_NULL);
 		}
 	}

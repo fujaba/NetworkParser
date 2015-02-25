@@ -14,36 +14,24 @@ import java.util.Enumeration;
 import org.junit.Test;
 
 public class ReflectionTest {
-	
 	private ArrayList<String> ignoreMethods=new ArrayList<String>();
 	@Test
 	public void testReflection() throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		ArrayList<Class<?>> classesForPackage = getClassesForPackage("de.uniks.networkparser");
 		StringBuilder error=new StringBuilder();
-		StringBuilder success=new StringBuilder();
 		int errorCount=0;
 		int successCount=0;
 		ignoreMethods.add("wait");
 		ignoreMethods.add("notify");
 		ignoreMethods.add("notifyAll");
 		
-		error.append("Start\n");
+		error.append("Start: ("+this.getClass().getName()+".java:1) \n");
 		
 		for(Class<?> clazz : classesForPackage) {
 			StringBuilder item=new StringBuilder();
 			item.append( clazz.getName()+": ");
 			Constructor<?>[] constructors = clazz.getConstructors();
-			if(clazz.isEnum() ) {
-				item.append("ENUM");
-				success.append(item.toString()+"\n");
-				continue;
-			} else if(clazz.isInterface() ) {
-				item.append("Interface");
-				success.append(item.toString()+"\n");
-				continue;
-			} else if(Modifier.isAbstract(clazz.getModifiers()) ) {
-				item.append("Abstract");
-				success.append(item.toString()+"\n");
+			if(clazz.isEnum() || clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers()) ) {
 				continue;
 			}
 			for(Constructor<?> c : constructors) {
@@ -51,7 +39,6 @@ public class ReflectionTest {
 //					item.append("test :\n");
 					Object obj = c.newInstance(new Object[0]);
 					StringBuilder itemError=new StringBuilder();
-					StringBuilder itemSuccess=new StringBuilder();
 					
 					for(Method m : clazz.getMethods()){
 						if(ignoreMethods.contains(m.getName())) {
@@ -60,39 +47,31 @@ public class ReflectionTest {
 						if(m.getDeclaringClass().isInterface()) {
 							continue;
 						}
-						Object[] params = getParametersNull(m);
 						try {
 							// mit Null as Parameter
-							m.invoke(obj, params);
-							itemSuccess.append("       "+getSignature(m) + " ok\n");
+							m.invoke(obj, getParametersNull(m));
 							successCount++;
+							m.invoke(obj, getParametersMinValues(m));
+							successCount++;
+//							m.invoke(obj, getParametersMaxValues(m));
+//							successCount++;
 						}catch(Exception e) {
-//							System.out.println(m.getName());
-//							e.printStackTrace();
+           
 							String line =getLine(e, clazz.getName());
 							if(line.length()<1) {
 								line = clazz.getName()+".java:1";
 							}
-							itemError.append("("+line+") : "+getSignature(m) +" "+ e.getCause()+"\n");
+							itemError.append("("+line+") : "+clazz.getName()+":"+getSignature(m) +" "+ e.getCause()+"\n");
 							errorCount++;
 						}
 					}
 					// add all Results to List
-//					success.append(item.toString());
-					success.append(itemSuccess.toString());
-					
-//					error.append(item.toString());
 					error.append(itemError.toString());
 				}
 			}
-//			if(errorCount>100) {
-//				break;
-//			}
 		}
-		
 		// Write out all Results
 		System.err.println(error.toString());
-		
 		System.err.println(errorCount+ "/" + (errorCount+ successCount));
 	}
 	
@@ -127,6 +106,72 @@ public class ReflectionTest {
 					break;
 				case "String":
 					objects[i] = null;
+					break;
+				}
+			}
+		}
+		return objects;
+	}
+	private Object[] getParametersMinValues(Method m) {
+		Object[] objects = getParametersNull(m);
+		int length = m.getParameterTypes().length;
+		for (int i = 0; i < length; i++) {
+			Class<?> clazz = m.getParameterTypes()[i];
+			if (clazz.isPrimitive()) {
+				switch (clazz.getName()) {
+				case "byte":
+					objects[i] = Byte.MIN_VALUE;
+					break;
+				case "int":
+					objects[i] = Integer.MIN_VALUE;
+					break;
+				case "short":
+					objects[i] = Short.MIN_VALUE;
+					break;
+				case "long":
+					objects[i] = Long.MIN_VALUE;
+					break;
+				case "char":
+					objects[i] = Character.MIN_VALUE;
+					break;
+				case "float":
+					objects[i] = Float.MIN_VALUE;
+					break;
+				case "double":
+					objects[i] = Double.MIN_VALUE;
+					break;
+				}
+			}
+		}
+		return objects;
+	}
+	private Object[] getParametersMaxValues(Method m) {
+		Object[] objects = getParametersNull(m);
+		int length = m.getParameterTypes().length;
+		for (int i = 0; i < length; i++) {
+			Class<?> clazz = m.getParameterTypes()[i];
+			if (clazz.isPrimitive()) {
+				switch (clazz.getName()) {
+				case "byte":
+					objects[i] = Byte.MAX_VALUE;
+					break;
+				case "int":
+					objects[i] = Integer.MAX_VALUE;
+					break;
+				case "short":
+					objects[i] = Short.MAX_VALUE;
+					break;
+				case "long":
+					objects[i] = Long.MAX_VALUE;
+					break;
+				case "char":
+					objects[i] = Character.MAX_VALUE;
+					break;
+				case "float":
+					objects[i] = Float.MAX_VALUE;
+					break;
+				case "double":
+					objects[i] = Double.MAX_VALUE;
 					break;
 				}
 			}
@@ -170,33 +215,20 @@ public class ReflectionTest {
 		r.append(")");
 		return r.toString();
 	}
-	/**
-	 * Private helper method
-	 * 
-	 * @param directory
-	 *            The directory to start with
-	 * @param pckgname
-	 *            The package name to search for. Will be needed for getting the
-	 *            Class object.
-	 * @param classes
-	 *            if a file isn't loaded but still is in the directory
-	 * @throws ClassNotFoundException
-	 */
+
 	private static void checkDirectory(File directory, String pckgname,
 	        ArrayList<Class<?>> classes) throws ClassNotFoundException {
 	    File tmpDirectory;
 
 	    if (directory.exists() && directory.isDirectory()) {
-	        final String[] files = directory.list();
-
-	        for (final String file : files) {
+	        String[] files = directory.list();
+	        for (String file : files) {
 	            if (file.endsWith(".class")) {
 	                try {
 	                    classes.add(Class.forName(pckgname + '.'
 	                            + file.substring(0, file.length() - 6)));
-	                } catch (final NoClassDefFoundError e) {
-	                    // do nothing. this class hasn't been found by the
-	                    // loader, and we don't care.
+	                } catch (NoClassDefFoundError e) {
+	                    // do nothing. this class hasn't been found by the loader, and we don't care.
 	                }
 	            } else if ((tmpDirectory = new File(directory, file))
 	                    .isDirectory() && !file.equalsIgnoreCase("test")) {
@@ -205,7 +237,6 @@ public class ReflectionTest {
 	        }
 	    }
 	}
-	  
 	/**
 	 * Attempts to list all the classes in the specified package as determined
 	 * by the context class loader
@@ -224,11 +255,8 @@ public class ReflectionTest {
                 .getContextClassLoader();
 	    
 	    Enumeration<URL> resources = cld.getResources(pckgname.replace('.', '/'));
-        for (URL url = null; resources.hasMoreElements()
-                && ((url = resources.nextElement()) != null);) {
-                checkDirectory(
-	                                new File(URLDecoder.decode(url.getPath(),
-	                                        "UTF-8")), pckgname, classes);
+        for (URL url = null; resources.hasMoreElements() && ((url = resources.nextElement()) != null);) {
+                checkDirectory(new File(URLDecoder.decode(url.getPath(), "UTF-8")), pckgname, classes);
 	    }
         return classes;
 	}
