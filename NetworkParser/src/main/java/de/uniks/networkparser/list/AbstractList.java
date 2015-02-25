@@ -6,7 +6,7 @@ import java.util.ListIterator;
 
 import de.uniks.networkparser.interfaces.BaseList;
 
-public abstract class AbstractList<V> extends AbstractArray<V> implements BaseList {
+public abstract class AbstractList<V> extends AbstractArray<V> implements BaseList, Iterable<V>   {
 	public abstract AbstractList<V> getNewInstance();
     /**
      * {@inheritDoc}
