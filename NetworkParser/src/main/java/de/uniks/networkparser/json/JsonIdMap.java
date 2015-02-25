@@ -98,7 +98,7 @@ public class JsonIdMap extends IdMap {
 	 * @return the json object
 	 */
 	public JsonObject toJsonObject(Object object) {
-		return toJsonObject(object, filter.cloneObj());
+		return toJsonObject(object, filter.clone());
 	}
 
 	/**
@@ -339,7 +339,7 @@ public class JsonIdMap extends IdMap {
 		Object result = null;
 		int len = jsonArray.size() - 1;
 		// Add all Objects
-		Filter filter = this.filter.cloneObj();
+		Filter filter = this.filter.clone();
 		for (int i = 0; i <= len; i++) {
 			JsonObject kidObject = jsonArray.getJSONObject(i);
 			Object tmp = decoding(kidObject, filter);
@@ -363,7 +363,7 @@ public class JsonIdMap extends IdMap {
 	 * @return the object
 	 */
 	public Object decode(JsonObject jsonObject) {
-		if (jsonObject.has(UPDATE) || jsonObject.has(REMOVE)) {
+		if (jsonObject!=null && (jsonObject.has(UPDATE) || jsonObject.has(REMOVE))) {
 			// Must be an update
 			if (executeUpdateMsg(jsonObject)) {
 				String id = jsonObject.getString(JsonIdMap.ID);
@@ -400,7 +400,7 @@ public class JsonIdMap extends IdMap {
 	 */
 	public Object decode(Object target, JsonObject jsonObject, Filter filter) {
 		if (filter == null) {
-			filter = this.filter.cloneObj();
+			filter = this.filter.clone();
 		}
 		Object mainItem = decoding(target, jsonObject,
 				filter.withStandard(this.filter));
@@ -425,7 +425,7 @@ public class JsonIdMap extends IdMap {
 				this);
 
 		if (filter == null) {
-			filter = this.filter.cloneObj();
+			filter = this.filter.clone();
 		}
 
 		if (typeInfo != null) {
@@ -621,7 +621,7 @@ public class JsonIdMap extends IdMap {
 	public JsonArray toJsonArray(Object object, Filter filter) {
 		JsonArray jsonArray = getPrototyp().getNewMap();
 		if (filter == null) {
-			filter = this.filter.cloneObj();
+			filter = this.filter.clone();
 		}
 
 		if (object instanceof Collection<?>) {

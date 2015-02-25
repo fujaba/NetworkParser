@@ -50,6 +50,8 @@ public class ByteEntity implements ByteItem, FactoryEntity {
 	 * @return the value
 	 */
 	public byte[] getValue() {
+		if(values==null)
+			return null;
 		return this.values.clone();
 	}
 
@@ -64,7 +66,9 @@ public class ByteEntity implements ByteItem, FactoryEntity {
 	 */
 	public ByteEntity withValue(byte typ, byte[] value) {
 		this.typ = typ;
-		this.values = value.clone();
+		if(value != null){
+			this.values = value.clone();
+		}
 		return this;
 	}
 
