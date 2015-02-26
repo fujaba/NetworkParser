@@ -382,4 +382,8 @@ public class FXStageController implements StageEvent, WindowListener {
 		controller.show(stage);
 		return controller;
 	}
+
+	public void withIcon(URL resource) {
+		withIcon(resource.getPath());
+	}
 }

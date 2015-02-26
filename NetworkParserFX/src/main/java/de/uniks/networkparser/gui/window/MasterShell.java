@@ -73,7 +73,6 @@ public abstract class MasterShell extends Application {
 		   Pane pane = createContents( this.controller );
 		   this.controller.withCenter( pane );
 		   this.controller.show();
-	       withIcon(null);
 	   }catch(Exception e){
 		   this.saveException(e);
 		   if(new Os().isEclipse()) {
@@ -87,20 +86,14 @@ public abstract class MasterShell extends Application {
    }
    
    public MasterShell withIcon(String value){
-	   if(icon!=null){
-		   this.controller.withIcon(value);
-		   this.icon = value;
-	   }
+	   this.controller.withIcon(value);
+	   this.icon = value;
 	   return this;
    }
    
    public MasterShell withTitle(String value){
 	   this.controller.withTitle(value);
 	   return this;
-   }
-   
-   public MasterShell withIconPath(String path){
-	   return withIcon(this.getClass().getResource(path).getPath());
    }
    
 	public static boolean checkSystemTray() {
