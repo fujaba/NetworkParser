@@ -408,16 +408,16 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 
 		// Array has wrong size
 		if(isComplex(minCapacity)) {
-			if(minCapacity >= ((Object[])elements[SMALL_KEY]).length * MAXUSEDLIST) {
+			if(minCapacity >= ((Object[])elements[SMALL_KEY]).length) {
 				resizeSmall(newSize, SMALL_KEY);
 				if((flag & MAP)==MAP) {
 					resizeSmall(newSize, SMALL_VALUE);
 				}
 			}
 			if(minCapacity>=MINHASHINGSIZE && (elements[BIG_KEY]==null || minCapacity >= ((Object[])elements[BIG_KEY]).length * MAXUSEDLIST)) {
-				resizeBig(minCapacity*2, BIG_KEY);
+				resizeBig((int)(minCapacity*2.5), BIG_KEY);
 				if((flag & MAP)==MAP) {
-					resizeBig(minCapacity*2, BIG_VALUE);
+					resizeBig((int)(minCapacity*2.5), BIG_VALUE);
 				}
 				elements[DELETED] = null;
 			}
