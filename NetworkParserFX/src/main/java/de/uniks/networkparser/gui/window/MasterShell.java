@@ -37,6 +37,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.management.ManagementFactory;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -88,6 +89,12 @@ public abstract class MasterShell extends Application {
    public MasterShell withIcon(String value){
 	   this.controller.withIcon(value);
 	   this.icon = value;
+	   return this;
+   }
+   
+   public MasterShell withIcon(URL value){
+	   System.out.println(value.toString());
+	   withIcon(value.toString());
 	   return this;
    }
    

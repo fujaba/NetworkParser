@@ -187,7 +187,7 @@ public class FXStageController implements StageEvent, WindowListener {
 
 	public FXStageController withIcon(String value) {
 		if (this.stage != null) {
-			if (value.startsWith("file")) {
+			if (value.startsWith("file") || value.startsWith("jar")) {
 				stage.getIcons().add(new Image(value));
 			} else {
 				stage.getIcons().add(new Image("file:" + value));
@@ -401,6 +401,6 @@ public class FXStageController implements StageEvent, WindowListener {
 	}
 
 	public void withIcon(URL resource) {
-		withIcon(resource.getPath());
+		withIcon(resource.toString());
 	}
 }
