@@ -117,13 +117,16 @@ public class TableFilterView {
 				if(word.indexOf("|")>0){
 					String[] orWords=word.split("|");
 					for(String orWord : orWords) {
-						if( simpleSearch(fullText, orWord, creatorClass, item)) {
-							return true;
+						if( !simpleSearch(fullText, orWord, creatorClass, item)) {
+							matches = false;
+							break;
 						}
 					}
 				}
-				return simpleSearch(fullText, word, creatorClass, item);
-				
+				if(!simpleSearch(fullText, word, creatorClass, item)) {
+					matches = false;
+					break;
+				}
 			}
 		}
 
