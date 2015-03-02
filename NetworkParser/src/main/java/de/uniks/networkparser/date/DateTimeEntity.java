@@ -169,7 +169,7 @@ public class DateTimeEntity {
 		long hour = daymillis / ONE_HOUR;
 
 		// 01.01.70 is Tuersday
-		long dayOfWeek = (time / ONE_DAY - 3) % 7;
+		long dayOfWeek = (time / ONE_DAY + 4) % 7;
 		long leftDays = 31 - day;
 		if (calc) {
 			if (month > 3 && month < 10) {
@@ -214,16 +214,18 @@ public class DateTimeEntity {
 	}
 
 	public void calculate() {
-		Long time = getTimeWithTimeZone();
-		this.fields.put(DateField.MILLISECONDS, time);
-		this.fields.put(DateField.MILLISECOND, time % ONE_SECOND);
-
-		if (internCalculate(time, true)) {
-			time += ONE_HOUR;
-			internCalculate(time, false);
+		if(this.dirty) {
+			Long time = getTimeWithTimeZone();
+			this.fields.put(DateField.MILLISECONDS, time);
+			this.fields.put(DateField.MILLISECOND, time % ONE_SECOND);
+	
+			if (internCalculate(time, true)) {
+				time += ONE_HOUR;
+				internCalculate(time, false);
+			}
+	
+			this.dirty = false;
 		}
-
-		this.dirty = false;
 	}
 
 	public long get(DateField field) {
@@ -250,8 +252,7 @@ public class DateTimeEntity {
 	}
 
 	public DateTimeEntity withTime(Long value) {
-		if ((this.time == null && value != null)
-				|| (this.time != null && !this.time.equals(value))) {
+		if (value != null && this.time != value ) {
 			this.time = value;
 			this.dirty = true;
 		}
@@ -460,6 +461,7 @@ public class DateTimeEntity {
 	 */
 	public String toString(String dateFormat) {
 		initDate();
+		calculate();
 		StringBuilder sb = new StringBuilder();
 		String sub;
 		StringTokener tokener = new StringTokener();
