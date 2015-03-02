@@ -93,7 +93,6 @@ public abstract class MasterShell extends Application {
    }
    
    public MasterShell withIcon(URL value){
-	   System.out.println(value.toString());
 	   withIcon(value.toString());
 	   return this;
    }
