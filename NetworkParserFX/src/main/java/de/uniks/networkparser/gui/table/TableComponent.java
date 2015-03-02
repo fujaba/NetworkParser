@@ -245,7 +245,12 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 			contextMenu = new ContextMenu();
 			visibleItems = new Menu();
 			visibleItems.setText(getText(DefaultTextItems.COLUMNS));
+			
+			Menu saveAs= new Menu(getText(DefaultTextItems.SAVEAS));
+			saveAs.getItems().addAll(new CSVExporter(this), new ExcelExporter(this));
+			
 			contextMenu.getItems().add(visibleItems);
+			contextMenu.getItems().add(saveAs);
 		}
 
 		if(list==null){
@@ -407,6 +412,10 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 			return sourceList;
 		}
 		return list;
+	}
+	
+	public ArrayList<TableColumnFX> getColumns() {
+		return columns;
 	}
 	
 	@Override

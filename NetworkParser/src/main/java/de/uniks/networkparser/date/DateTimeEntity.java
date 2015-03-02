@@ -27,9 +27,10 @@ import de.uniks.networkparser.StringTokener;
 import de.uniks.networkparser.TextItems;
 
 public class DateTimeEntity {
+	public static final String W3CDTF_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
 	private boolean dirty;
 	private Long time;
-	private Long timeZone = 1L;
+	private Byte timeZone = 1;
 	private HashMap<DateField, Long> fields = new HashMap<DateField, Long>();
 	private TextItems items;
 
@@ -227,7 +228,7 @@ public class DateTimeEntity {
 
 	public long get(DateField field) {
 		if (time == null) {
-			time = System.currentTimeMillis() + ONE_HOUR;
+			time = System.currentTimeMillis();
 			this.dirty = true;
 		}
 		if (isDirty()) {
@@ -265,11 +266,11 @@ public class DateTimeEntity {
 		return this;
 	}
 
-	public Long getTimezone() {
+	public byte getTimezone() {
 		return this.timeZone;
 	}
 
-	public DateTimeEntity withTimezone(Long value) {
+	public DateTimeEntity withTimezone(Byte value) {
 		if ((this.timeZone == null && value != null)
 				|| (this.timeZone != null && !this.timeZone.equals(value))) {
 			this.timeZone = value;
@@ -315,7 +316,7 @@ public class DateTimeEntity {
 						- oldValue);
 				break;
 			case TIMEZONE:
-				withTimezone(value);
+				withTimezone((byte) value);
 				break;
 			default:
 				fields.put(field, value);
@@ -462,13 +463,15 @@ public class DateTimeEntity {
 		StringBuilder sb = new StringBuilder();
 		String sub;
 		StringTokener tokener = new StringTokener();
+		dateFormat = dateFormat.replaceAll("'", "\"");
 		tokener.withText(dateFormat);
 		do {
-			sub = tokener.nextString('"', true);
+			sub = tokener.nextString('"', true, false, false, true);
 			if (sub.length() > 0 && !tokener.isString()) {
 				// System.out.println(count++
 				// + ": #" +sub+ "# -- " +tokener.isString());
 				// Time
+				sub = sub.replace("HZ", strZero(get(DateField.HOUR_OF_DAY) - getTimezone(), 2));
 				sub = sub.replace("HH", strZero(get(DateField.HOUR_OF_DAY), 2));
 				sub = sub.replace("H",
 						String.valueOf(get(DateField.HOUR_OF_DAY)));
