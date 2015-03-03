@@ -28,7 +28,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.IdMapEncoder;
@@ -37,7 +36,8 @@ import de.uniks.networkparser.ReferenceObject;
 import de.uniks.networkparser.event.ObjectMapEntry;
 import de.uniks.networkparser.event.util.DateCreator;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.MapUpdateListener;
+import de.uniks.networkparser.interfaces.UpdateListenerRead;
+import de.uniks.networkparser.interfaces.UpdateListenerSend;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.json.util.JsonArrayCreator;
@@ -66,7 +66,10 @@ public class JsonIdMap extends IdMap {
 	protected Grammar grammar = new Grammar();
 
 	/** The updatelistener. */
-	private MapUpdateListener updatelistener;
+	private UpdateListenerRead readlistener;
+
+	/** The updatelistener. */
+	private UpdateListenerSend sendlistener;
 
 	/** If this is true the IdMap save the Typ of primary datatypes. */
 	protected boolean typSave;
@@ -743,20 +746,37 @@ public class JsonIdMap extends IdMap {
 	 *            the new update msg listener
 	 * @return JsonIdMap
 	 */
-	public JsonIdMap withUpdateMsgListener(MapUpdateListener listener) {
-		this.updatelistener = listener;
+	public JsonIdMap withUpdateListenerRead(UpdateListenerRead listener) {
+		this.readlistener = listener;
 		if (listener instanceof PropertyChangeListener) {
-			super.withUpdateMsgListener((PropertyChangeListener) listener);
+			super.withUpdateListener((PropertyChangeListener) listener);
 		}
 		return this;
 	}
 
+	/**
+	 * Sets the update msg listener.
+	 *
+	 * @param listener
+	 *            the new update msg listener
+	 * @return JsonIdMap
+	 */
+	public JsonIdMap withUpdateListenerSend(UpdateListenerSend listener) {
+		this.sendlistener = listener;
+		if (listener instanceof PropertyChangeListener) {
+			super.withUpdateListener((PropertyChangeListener) listener);
+		}
+		return this;
+	}
+	
 	@Override
-	public IdMapEncoder withUpdateMsgListener(PropertyChangeListener listener) {
-		super.withUpdateMsgListener(listener);
-		if (listener instanceof MapUpdateListener) {
-
-			this.updatelistener = (MapUpdateListener) listener;
+	public IdMapEncoder withUpdateListener(PropertyChangeListener listener) {
+		super.withUpdateListener(listener);
+		if (listener instanceof UpdateListenerRead) {
+			this.readlistener = (UpdateListenerRead) listener;
+		}
+		if (listener instanceof UpdateListenerSend) {
+			this.sendlistener = (UpdateListenerSend) listener;
 		}
 		return this;
 	}
@@ -770,32 +790,27 @@ public class JsonIdMap extends IdMap {
 	 *            the json object
 	 * @return true, if successful
 	 */
-	public boolean sendUpdateMsg(PropertyChangeEvent evt, JsonObject jsonObject) {
-		if (updatePropertylistener != null && evt != null) {
+	boolean sendUpdateMsg(PropertyChangeEvent evt, JsonObject jsonObject) {
+		if(evt == null) {
+			return true;
+		}
+		if (updatePropertylistener != null ) {
 			updatePropertylistener.propertyChange(evt);
 		}
 
-		if (this.updatelistener != null && evt != null) {
-			return this.updatelistener.sendUpdateMsg(evt.getSource(),
+		if (this.sendlistener != null ) {
+			return this.sendlistener.sendUpdateMsg(evt.getSource(),
 					evt.getPropertyName(), evt.getOldValue(),
 					evt.getNewValue(), jsonObject);
 		}
 		return true;
 	}
 
-	public boolean readMessages(String key, Object element, Object value,
+	boolean readMessages(String key, Object element, Object value,
 			JsonObject props, String typ) {
-		if (this.updatelistener != null) {
-			return this.updatelistener.readMessages(key, element, value, props,
+		if (this.readlistener != null) {
+			return this.readlistener.readMessages(key, element, value, props,
 					typ);
-		}
-		return true;
-	}
-
-	public boolean isReadMessages(String key, Object element, JsonObject props,
-			String typ) {
-		if (this.updatelistener != null) {
-			return this.updatelistener.isReadMessages(key, element, props, typ);
 		}
 		return true;
 	}
@@ -863,15 +878,6 @@ public class JsonIdMap extends IdMap {
 	@Override
 	public String toString() {
 		return this.getClass().getName() + " (" + this.size() + ")";
-	}
-
-	public boolean skipCollision(Object masterObj, String key, Object value,
-			JsonObject removeJson, JsonObject updateJson) {
-		if (this.updatelistener != null) {
-			return this.updatelistener.skipCollision(masterObj, key, value,
-					removeJson, updateJson);
-		}
-		return true;
 	}
 
 	/**
