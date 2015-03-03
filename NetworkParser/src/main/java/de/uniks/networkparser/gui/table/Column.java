@@ -41,6 +41,7 @@ public class Column {
 	public static final String PROPERTY_ALTTEXT = "altText";
 	public static final String PROPERTY_BROWSERID = "browserid";
 	public static final String PROPERTY_FIELDTYP = "fieldTyp";
+	public static final String FORMAT_DATE = "HH:MM:SS";
 
 	private Style style;
 	private Style activestyle;

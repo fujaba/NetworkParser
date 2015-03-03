@@ -77,8 +77,10 @@ public class TextEditorControl extends EditControl<TextField>{
 					TextField control = TextEditorControl.this.getControl();
 					Set<String> list = listener.items(control.getText());
 					
-					if(list.size()>0 && !autoCompleteContextMenu.isShowing()) {
-						autoCompleteContextMenu.show(control, Side.BOTTOM, -11.0, -4.0);
+					if(list.size()>0 ) {
+						if(!autoCompleteContextMenu.isShowing()) {
+							autoCompleteContextMenu.show(control, Side.BOTTOM, 0, 0.0);
+						}
 						autoCompleteContextMenu.withSuggestions(list);
 					}
 				}

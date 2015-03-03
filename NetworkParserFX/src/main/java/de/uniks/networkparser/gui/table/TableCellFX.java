@@ -55,7 +55,7 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 			this.setCursor(Cursor.HAND);
 		}
 		
-		if(field.getStyle().getAlignment() != null) {
+		if(field.getStyle()!= null && field.getStyle().getAlignment() != null) {
 			GUIPosition alignment = GUIPosition.valueOf( field.getStyle().getAlignment() );
 			if(alignment != null) {
 				if(alignment==GUIPosition.CENTER) {

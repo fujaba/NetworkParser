@@ -16,7 +16,7 @@ public class FormGUI extends MasterShell {
         PersonGUI albert= new PersonGUI().withName("Albert");
         
         ModelForm form = new ModelForm().withDataBinding(map, albert, true);
-        withIconPath("iconform.png");
+        withIcon(this.getClass().getResource("iconform.png").getPath());
         return form;
 	}
 }

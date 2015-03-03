@@ -27,9 +27,10 @@ import de.uniks.networkparser.StringTokener;
 import de.uniks.networkparser.TextItems;
 
 public class DateTimeEntity {
+	public static final String W3CDTF_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
 	private boolean dirty;
 	private Long time;
-	private Long timeZone = 1L;
+	private Byte timeZone = 1;
 	private HashMap<DateField, Long> fields = new HashMap<DateField, Long>();
 	private TextItems items;
 
@@ -168,7 +169,7 @@ public class DateTimeEntity {
 		long hour = daymillis / ONE_HOUR;
 
 		// 01.01.70 is Tuersday
-		long dayOfWeek = (time / ONE_DAY - 3) % 7;
+		long dayOfWeek = (time / ONE_DAY + 4) % 7;
 		long leftDays = 31 - day;
 		if (calc) {
 			if (month > 3 && month < 10) {
@@ -213,21 +214,23 @@ public class DateTimeEntity {
 	}
 
 	public void calculate() {
-		Long time = getTimeWithTimeZone();
-		this.fields.put(DateField.MILLISECONDS, time);
-		this.fields.put(DateField.MILLISECOND, time % ONE_SECOND);
-
-		if (internCalculate(time, true)) {
-			time += ONE_HOUR;
-			internCalculate(time, false);
+		if(this.dirty) {
+			Long time = getTimeWithTimeZone();
+			this.fields.put(DateField.MILLISECONDS, time);
+			this.fields.put(DateField.MILLISECOND, time % ONE_SECOND);
+	
+			if (internCalculate(time, true)) {
+				time += ONE_HOUR;
+				internCalculate(time, false);
+			}
+	
+			this.dirty = false;
 		}
-
-		this.dirty = false;
 	}
 
 	public long get(DateField field) {
 		if (time == null) {
-			time = System.currentTimeMillis() + ONE_HOUR;
+			time = System.currentTimeMillis();
 			this.dirty = true;
 		}
 		if (isDirty()) {
@@ -249,8 +252,7 @@ public class DateTimeEntity {
 	}
 
 	public DateTimeEntity withTime(Long value) {
-		if ((this.time == null && value != null)
-				|| (this.time != null && !this.time.equals(value))) {
+		if (value != null && this.time != value ) {
 			this.time = value;
 			this.dirty = true;
 		}
@@ -265,11 +267,11 @@ public class DateTimeEntity {
 		return this;
 	}
 
-	public Long getTimezone() {
+	public byte getTimezone() {
 		return this.timeZone;
 	}
 
-	public DateTimeEntity withTimezone(Long value) {
+	public DateTimeEntity withTimezone(Byte value) {
 		if ((this.timeZone == null && value != null)
 				|| (this.timeZone != null && !this.timeZone.equals(value))) {
 			this.timeZone = value;
@@ -315,7 +317,7 @@ public class DateTimeEntity {
 						- oldValue);
 				break;
 			case TIMEZONE:
-				withTimezone(value);
+				withTimezone((byte) value);
 				break;
 			default:
 				fields.put(field, value);
@@ -459,16 +461,19 @@ public class DateTimeEntity {
 	 */
 	public String toString(String dateFormat) {
 		initDate();
+		calculate();
 		StringBuilder sb = new StringBuilder();
 		String sub;
 		StringTokener tokener = new StringTokener();
+		dateFormat = dateFormat.replaceAll("'", "\"");
 		tokener.withText(dateFormat);
 		do {
-			sub = tokener.nextString('"', true);
+			sub = tokener.nextString('"', true, false, false, true);
 			if (sub.length() > 0 && !tokener.isString()) {
 				// System.out.println(count++
 				// + ": #" +sub+ "# -- " +tokener.isString());
 				// Time
+				sub = sub.replace("HZ", strZero(get(DateField.HOUR_OF_DAY) - getTimezone(), 2));
 				sub = sub.replace("HH", strZero(get(DateField.HOUR_OF_DAY), 2));
 				sub = sub.replace("H",
 						String.valueOf(get(DateField.HOUR_OF_DAY)));

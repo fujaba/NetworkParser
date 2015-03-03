@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
@@ -46,6 +47,7 @@ import javafx.stage.WindowEvent;
 
 import javax.imageio.ImageIO;
 
+
 public class FXStageController implements StageEvent, WindowListener {
 	private KeyListenerMap listener = new KeyListenerMap(this);
 	protected Stage stage;
@@ -53,6 +55,7 @@ public class FXStageController implements StageEvent, WindowListener {
 	private Object controller;
 	protected Region pane;
 	private boolean wait;
+	private AWTContainer awtContainer;
 
 	public FXStageController(){}
 
@@ -184,7 +187,7 @@ public class FXStageController implements StageEvent, WindowListener {
 
 	public FXStageController withIcon(String value) {
 		if (this.stage != null) {
-			if (value.startsWith("file")) {
+			if (value.startsWith("file") || value.startsWith("jar")) {
 				stage.getIcons().add(new Image(value));
 			} else {
 				stage.getIcons().add(new Image("file:" + value));
@@ -307,27 +310,8 @@ public class FXStageController implements StageEvent, WindowListener {
 		return this.getStage();
 	}
 
-	public Stage showNewView(StageEvent value) {
-		if(value instanceof Node){
-			return showNewStage((Node) value);
-		}
-		if (value instanceof StageEvent) {
-			Stage myStage = getStage();
-			((StageEvent) value).stageShowing(new WindowEvent(myStage,
-					WindowEvent.WINDOW_SHOWING), myStage, this);
-		}
-		Stage oldStage=stage;
-		
-		this.withPane(null);
-		this.withStage(null);
-
-		oldStage.close();
-		
-		return stage;
-	}
-
 	public Stage showNewStage(Node value) {
-		Stage oldStage = this.getStage();
+		Stage oldStage = this.stage;
 
 		this.withStage(new Stage());
 
@@ -344,9 +328,42 @@ public class FXStageController implements StageEvent, WindowListener {
 					WindowEvent.WINDOW_SHOWING), myStage, this);
 		}
 
-		this.show();
 		this.withPane(newPane);
-		oldStage.close();
+		this.show();
+		close(oldStage);
+		return stage;
+	}
+	
+	private void close(Stage oldStage) {
+		if(oldStage!=null) {
+			oldStage.close();
+		}
+		if(awtContainer!=null) {
+			awtContainer.exit();
+		}
+	}
+	
+	public Stage showNewView(StageEvent value) {
+		if(value instanceof Node){
+			return showNewStage((Node) value);
+		}
+
+		if (value instanceof StageEvent) {
+			Stage myStage = getStage();
+			((StageEvent) value).stageShowing(new WindowEvent(myStage,
+					WindowEvent.WINDOW_SHOWING), myStage, this);
+		}
+		Stage oldStage=stage;
+		
+		this.withPane(null);
+		this.withStage(null);
+
+		// Close
+		close(oldStage);
+
+		awtContainer = new AWTContainer(value);
+		Platform.runLater(awtContainer);
+		
 		return stage;
 	}
 	
@@ -381,5 +398,9 @@ public class FXStageController implements StageEvent, WindowListener {
 		FXStageController controller = new FXStageController().withFXML(path.getResource(fxml));
 		controller.show(stage);
 		return controller;
+	}
+
+	public void withIcon(URL resource) {
+		withIcon(resource.toString());
 	}
 }
