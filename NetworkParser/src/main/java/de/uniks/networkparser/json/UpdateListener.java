@@ -279,32 +279,18 @@ public class UpdateListener implements PropertyChangeListener {
 					String key = keys.next();
 					Object value = creator.getValue(masterObj, key);
 					if (value == null) {
-						if (creator.getValue(refObject, key) == null) {
-							// Old Value is Standard
-							return setValue(creator, masterObj, key,
-									update.get(key), IdMapEncoder.NEW);
-						}
-						// ERROR
-						if (!this.map.skipCollision(masterObj, key, value,
-								remove, update)) {
-							if (checkPrio(prio)) {
-								return setValue(creator, masterObj, key,
-										update.get(key), IdMapEncoder.NEW);
-							}
-						}
-					} else if (creator.getValue(masterObj, key).equals(
-							creator.getValue(refObject, key))) {
-						// Old Value is standard
+						// Old Value is Standard
+						return setValue(creator, masterObj, key,
+								update.get(key), IdMapEncoder.NEW);
+					} else if (value.equals(creator.getValue(refObject, key))) {
+						// Old Value is Standard
 						return setValue(creator, masterObj, key,
 								update.get(key), IdMapEncoder.NEW);
 					} else {
 						// ERROR
-						if (!this.map.skipCollision(masterObj, key, value,
-								remove, update)) {
-							if (checkPrio(prio)) {
-								return setValue(creator, masterObj, key,
-										update.get(key), IdMapEncoder.NEW);
-							}
+						if (checkPrio(prio)) {
+							return setValue(creator, masterObj, key,
+									update.get(key), IdMapEncoder.COLLISION);
 						}
 					}
 				}
@@ -365,7 +351,6 @@ public class UpdateListener implements PropertyChangeListener {
 					}
 				}
 				return true;
-
 			}
 		}
 		return false;
@@ -438,23 +423,14 @@ public class UpdateListener implements PropertyChangeListener {
 			String key, Object newValue, String typ) {
 		if (newValue instanceof JsonObject) {
 			JsonObject json = (JsonObject) newValue;
-			SendableEntityCreator typeInfo = this.map.getCreator(
-					json.getString(JsonIdMap.CLASS, ""), true);
-			if (typeInfo != null) {
-				// notify in readJson
-			} else {
-				if (!this.map.isReadMessages(key, element, json, typ)) {
-					return false;
-				}
-			}
 			Object value = this.map.decode(json);
 			if (value != null) {
 				creator.setValue(element, key, value, typ);
-				this.map.readMessages(key, element, value, json, typ);
+				return this.map.readMessages(key, element, value, json, typ);
 			}
 		} else {
 			creator.setValue(element, key, newValue, typ);
-			this.map.readMessages(key, element, newValue, null, typ);
+			return this.map.readMessages(key, element, newValue, null, typ);
 		}
 		return true;
 	}

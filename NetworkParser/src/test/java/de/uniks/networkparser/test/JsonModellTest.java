@@ -5,7 +5,8 @@ import java.math.BigInteger;
 import org.junit.Test;
 
 import de.uniks.networkparser.Filter;
-import de.uniks.networkparser.interfaces.MapUpdateListener;
+import de.uniks.networkparser.interfaces.UpdateListenerRead;
+import de.uniks.networkparser.interfaces.UpdateListenerSend;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.logic.InstanceOf;
@@ -15,7 +16,7 @@ import de.uniks.networkparser.test.model.SortedMsg;
 import de.uniks.networkparser.test.model.util.PersonCreator;
 import de.uniks.networkparser.test.model.util.SortedMsgCreator;
 
-public class JsonModellTest implements MapUpdateListener{
+public class JsonModellTest implements UpdateListenerRead, UpdateListenerSend {
 
 	private JsonIdMap secondMap;
 
@@ -36,7 +37,8 @@ public class JsonModellTest implements MapUpdateListener{
 	@Test
 	public void testModell(){
 		JsonIdMap map= new JsonIdMap();
-		map.withUpdateMsgListener(this);
+		map.withUpdateListenerRead(this);
+		map.withUpdateListenerSend(this);
 		map.withCreator(new SortedMsgCreator());
 		SortedMsg first= new SortedMsg();
 		first.setNumber(1);
@@ -59,20 +61,14 @@ public class JsonModellTest implements MapUpdateListener{
 		// convert to big integer
 		BigInteger number = new BigInteger(text.getBytes());
 		
-		System.out.println(number);
-		System.out.println(number.toString());
-
 		// convert back
 		String textBack = new String(number.toByteArray());
-		System.out.println("And back = " + textBack);
-
 		
 		this.secondMap= new JsonIdMap();
-		secondMap.withUpdateMsgListener(this);
+		secondMap.withUpdateListenerRead(this);
+		secondMap.withUpdateListenerSend(this);
 		secondMap.withCreator(new SortedMsgCreator());
 
-		System.out.println("MAP");
-		System.out.println("OBJECT");
 		JsonObject jsonObject=map.toJsonObject(first);
 		System.out.println(jsonObject.toString(2));
 		secondMap.getUpdateListener().execute(jsonObject);
@@ -109,19 +105,6 @@ public class JsonModellTest implements MapUpdateListener{
 		System.out.println("Send: " +jsonObject);
 		secondMap.getUpdateListener().execute(jsonObject);
 		return true;
-	}
-
-	@Override
-	public boolean skipCollision(Object masterObj, String key, Object value,
-			JsonObject removeJson, JsonObject updateJson) {
-		return false;
-	}
-
-	@Override
-	public boolean isReadMessages(String key, Object element, JsonObject props,
-			String type) {
-		System.out.println("Receive: Typ:" +type+ "value:" +props);
-		return false;
 	}
 
 	@Override

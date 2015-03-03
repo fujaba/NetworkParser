@@ -58,6 +58,9 @@ public abstract class IdMapEncoder extends AbstractMap implements
 	/** The Constant NEW. */
 	public static final String NEW = "new";
 
+	/** The Constant COLLISION. */
+	public static final String COLLISION = "collision";
+	
 	/** The Constant PRIO. */
 	public static final String PRIO = "prio";
 
@@ -547,7 +550,7 @@ public abstract class IdMapEncoder extends AbstractMap implements
 		return keyValue.values();
 	}
 
-	public IdMapEncoder withUpdateMsgListener(PropertyChangeListener listener) {
+	public IdMapEncoder withUpdateListener(PropertyChangeListener listener) {
 		this.updatePropertylistener = listener;
 		return this;
 	}

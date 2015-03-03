@@ -4,13 +4,14 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import de.uniks.networkparser.interfaces.MapUpdateListener;
+import de.uniks.networkparser.interfaces.UpdateListenerRead;
+import de.uniks.networkparser.interfaces.UpdateListenerSend;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.test.model.SortedMsg;
 import de.uniks.networkparser.test.model.util.SortedMsgCreator;
 
-public class JsonPeer2PeerTest implements MapUpdateListener{
+public class JsonPeer2PeerTest implements UpdateListenerRead, UpdateListenerSend{
 	private JsonIdMap firstMap;
 	private JsonIdMap secondMap;
 	private int z;
@@ -21,7 +22,8 @@ public class JsonPeer2PeerTest implements MapUpdateListener{
 	public void testModel(){
 		
 		firstMap = new JsonIdMap();
-		firstMap.withUpdateMsgListener(this);
+		firstMap.withUpdateListenerRead(this);
+		firstMap.withUpdateListenerSend(this);
 		
 		firstMap.withCreator(new SortedMsgCreator());
 		
@@ -88,19 +90,6 @@ public class JsonPeer2PeerTest implements MapUpdateListener{
 			System.out.println(secondMap.size());
 		}
 		return result;
-	}
-
-
-	@Override
-	public boolean skipCollision(Object masterObj, String key, Object value,
-			JsonObject removeJson, JsonObject updateJson) {
-		return false;
-	}
-
-	@Override
-	public boolean isReadMessages(String key, Object element, JsonObject props,
-			String type) {
-		return false;
 	}
 
 	@Override
