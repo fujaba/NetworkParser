@@ -22,6 +22,7 @@ package de.uniks.networkparser.gui.table;
  permissions and limitations under the Licence.
  */
 import de.uniks.networkparser.IdMapEncoder;
+import de.uniks.networkparser.date.DateTimeEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class ColumnListener {
@@ -41,7 +42,13 @@ public class ColumnListener {
 			}
 		}
 		if (creator != null && column != null) {
-			return creator.getValue(entity, attrName);
+			Object value = creator.getValue(entity, attrName);
+			if(column.getNumberFormat()!=null && value instanceof Long) {
+				DateTimeEntity item = new DateTimeEntity();
+				item.withValue((long) value);
+				return item.toString(column.getNumberFormat()); 
+			}
+			return value;
 		}
 		return null;
 	}

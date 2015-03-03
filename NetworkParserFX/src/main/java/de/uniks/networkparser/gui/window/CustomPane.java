@@ -48,7 +48,7 @@ public class CustomPane extends BorderPane implements StageEvent{
 	public void stageShowing(WindowEvent event, Stage stage, FXStageController controller) {
 		this.stage = stage;
 		if(this.center instanceof StageEvent) {
-			((StageEvent)this.center).stageClosing(event, stage,controller);
+			((StageEvent)this.center).stageShowing(event, stage,controller);
 		}
 	}
 

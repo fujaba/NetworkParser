@@ -16,10 +16,10 @@ public class AutoCompleteContextMenu extends ContextMenu{
 	public AutoCompleteContextMenu(TextField control){
         this.control = control;
         control.setContextMenu(this);
+        AutoCompleteContextMenu.this.getScene().getStylesheets().add(Styles.getPath());
     }
 	
 	public AutoCompleteContextMenu withSuggestions(Set<String> values) {
-        AutoCompleteContextMenu.this.getScene().getStylesheets().add(Styles.getPath());
 		getItems().clear();
 		int i=1;
 		for(String item : values) {
@@ -30,7 +30,7 @@ public class AutoCompleteContextMenu extends ContextMenu{
 				menuItem.getStyleClass().add("suggestionscellodd");
 			}
 			Label text = new Label(item);
-			text.setMinWidth(control.getWidth());
+			text.setMinWidth(control.getWidth()-30);
 			
 			menuItem.setGraphic(text);
 			menuItem.setOnAction(new EventHandler<ActionEvent>() {
@@ -39,6 +39,7 @@ public class AutoCompleteContextMenu extends ContextMenu{
 			    	onSuggestionChoosen(((Label)mnu.getGraphic()).getText());
 			    }
 			});
+			
 			getItems().add(menuItem);
 			i++;
 		}

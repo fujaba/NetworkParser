@@ -145,39 +145,39 @@ public class ReflectionTest {
 		}
 		return objects;
 	}
-	private Object[] getParametersMaxValues(Method m) {
-		Object[] objects = getParametersNull(m);
-		int length = m.getParameterTypes().length;
-		for (int i = 0; i < length; i++) {
-			Class<?> clazz = m.getParameterTypes()[i];
-			if (clazz.isPrimitive()) {
-				switch (clazz.getName()) {
-				case "byte":
-					objects[i] = Byte.MAX_VALUE;
-					break;
-				case "int":
-					objects[i] = Integer.MAX_VALUE;
-					break;
-				case "short":
-					objects[i] = Short.MAX_VALUE;
-					break;
-				case "long":
-					objects[i] = Long.MAX_VALUE;
-					break;
-				case "char":
-					objects[i] = Character.MAX_VALUE;
-					break;
-				case "float":
-					objects[i] = Float.MAX_VALUE;
-					break;
-				case "double":
-					objects[i] = Double.MAX_VALUE;
-					break;
-				}
-			}
-		}
-		return objects;
-	}
+//	private Object[] getParametersMaxValues(Method m) {
+//		Object[] objects = getParametersNull(m);
+//		int length = m.getParameterTypes().length;
+//		for (int i = 0; i < length; i++) {
+//			Class<?> clazz = m.getParameterTypes()[i];
+//			if (clazz.isPrimitive()) {
+//				switch (clazz.getName()) {
+//				case "byte":
+//					objects[i] = Byte.MAX_VALUE;
+//					break;
+//				case "int":
+//					objects[i] = Integer.MAX_VALUE;
+//					break;
+//				case "short":
+//					objects[i] = Short.MAX_VALUE;
+//					break;
+//				case "long":
+//					objects[i] = Long.MAX_VALUE;
+//					break;
+//				case "char":
+//					objects[i] = Character.MAX_VALUE;
+//					break;
+//				case "float":
+//					objects[i] = Float.MAX_VALUE;
+//					break;
+//				case "double":
+//					objects[i] = Double.MAX_VALUE;
+//					break;
+//				}
+//			}
+//		}
+//		return objects;
+//	}
 	
 	private String getLine(Exception e, String clazzName) {
 		Throwable cause = e.getCause();
