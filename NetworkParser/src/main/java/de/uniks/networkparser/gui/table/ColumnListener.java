@@ -45,7 +45,7 @@ public class ColumnListener {
 			Object value = creator.getValue(entity, attrName);
 			if(column.getNumberFormat()!=null && value instanceof Long) {
 				DateTimeEntity item = new DateTimeEntity();
-				item.withValue((long) value);
+				item.withValue((Long) value);
 				return item.toString(column.getNumberFormat()); 
 			}
 			return value;

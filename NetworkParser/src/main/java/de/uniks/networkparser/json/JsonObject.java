@@ -140,7 +140,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 	public long getLong(String key) {
 		Object object = this.get(key);
 		if (object instanceof Long) {
-			return (long) object;
+			return (Long) object;
 		} else if (object instanceof Integer) {
 			return 0l + (Integer) object;
 		}

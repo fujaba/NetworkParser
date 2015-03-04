@@ -332,7 +332,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	protected int addHashItem(int pos, Object newValue, Object[] items) {
 		int hashKey = hashKey(newValue.hashCode(), items.length);
 		while (true) {
-			if (items[hashKey] == null || (int)items[hashKey] == -1) {
+			if (items[hashKey] == null || (Integer)items[hashKey] == -1) {
 				items[hashKey] = pos;
 				return hashKey;
 			}
@@ -748,7 +748,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		if(elements[DELETED] != null) {
 			Object[] items = (Object[]) elements[DELETED];
     		for(int i=0;i<items.length;i++){
-    			if(((int)items[i])>index){
+    			if(((Integer)items[i])>index){
     				break;
     			}
 				index --;
@@ -764,7 +764,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		if(elements[DELETED] != null) {
 			Object[] items = (Object[]) elements[DELETED];
     		for(int i=0;i<items.length;i++){
-    			if(((int)items[i])>index){
+    			if(((Integer)items[i])>index){
     				break;
     			}
 				index++;
@@ -786,8 +786,8 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		
 		Object value = null;
 		int indexItem=-1;
-		if((int)hashCodes[index]>-1){
-			indexItem = transformIndex((int)hashCodes[index], items.length);
+		if((Integer)hashCodes[index]>-1){
+			indexItem = transformIndex((Integer)hashCodes[index], items.length);
 			value = items[ indexItem ];
 		}
 		while(!checkValue(o, value)){
@@ -795,10 +795,10 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 			if(hashCodes[index]==null) {
 				return -1;
 			}
-			if((int)hashCodes[index]==-1){
+			if((Integer)hashCodes[index]==-1){
 				continue;
 			}
-			indexItem = transformIndex((int)hashCodes[index], items.length);
+			indexItem = transformIndex((Integer)hashCodes[index], items.length);
 			value = items[indexItem];
 		}
 		return indexItem;
@@ -823,10 +823,10 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		if(elements[DELETED] != null) {
     		items = (Object[]) elements[DELETED];
     		for(int i=0;i<items.length;i++){
-    			if(((int)items[i])>index){
+    			if(((Integer)items[i])>index){
     				break;
     			}
-				index += (int)items[i];
+				index += (Integer)items[i];
     		}
     	}
 		return index;
@@ -955,13 +955,13 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		
 		int indexPos = hashKey(oldValue.hashCode(), items.length);
 		Object value = null;
-		int indexHash = (int)hashCodes[indexPos];
+		int indexHash = (Integer)hashCodes[indexPos];
 		if(indexHash>-1){
 			value = items[transformIndex(indexHash, items.length)];
 		}
 		while(!checkValue(value, oldValue)){
 			indexPos = (indexPos + 1) % items.length;
-			indexHash = (int)hashCodes[indexPos];
+			indexHash = (Integer)hashCodes[indexPos];
 			if(indexHash==-1){
 				continue;
 			}

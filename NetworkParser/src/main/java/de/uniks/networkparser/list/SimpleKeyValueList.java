@@ -131,10 +131,13 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	
 	@Override
 	public Set<K> keySet() {
+		SimpleSet<K> item = new SimpleSet<K>();
 		if(isComplex() && this.elements!=null) {
-			return new SimpleSet<K>().init((Object[])this.elements[SMALL_KEY], size);
+			item.init((Object[])this.elements[SMALL_KEY], size);
+		}else if(this.elements!=null) {
+			item.init(this.elements, size);
 		}
-		return new SimpleSet<K>().init(this.elements, size);
+		return item;
 	}
 	
 	public Iterator<K> keyIterator() {
@@ -494,10 +497,12 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	
 	@Override
 	public Collection<V> values() {
-		if(elements== null) {
-			return new SimpleList<V>();
+		SimpleList<V> item = new SimpleList<V>();
+		if(elements == null) {
+			return item;
 		}
-		return new SimpleList<V>().init((Object[])elements[SMALL_VALUE], size);
+		item.init((Object[])elements[SMALL_VALUE], size);
+		return item;
 	}
 
 	public SimpleKeyValueList<K, V> withKeyValue(Object key, Object value) {
