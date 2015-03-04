@@ -81,32 +81,22 @@ public class ReflectionTest {
 		for (int i = 0; i < length; i++) {
 			Class<?> clazz = m.getParameterTypes()[i];
 			if (clazz.isPrimitive()) {
-				switch (clazz.getName()) {
-				case "boolean":
+				if("boolean".equals(clazz.getName())) {
 					objects[i] = false;
-					break;
-				case "byte":
+				} else if("byte".equals(clazz.getName())) {
 					objects[i] = (byte) 0;
-					break;
-				case "int":
-				case "short":
+				} else if("short".equals(clazz.getName()) || "int".equals(clazz.getName())) {
 					objects[i] = 0;
-					break;
-				case "long":
+				} else if("long".equals(clazz.getName())) {
 					objects[i] = 0L;
-					break;
-				case "char":
+				} else if("char".equals(clazz.getName())) {
 					objects[i] = '\u0000';
-					break;
-				case "float":
+				} else if("float".equals(clazz.getName())) {
 					objects[i] = 0.0f;
-					break;
-				case "double":
+				} else if("double".equals(clazz.getName())) {
 					objects[i] = 0.0d;
-					break;
-				case "String":
+				} else if("String".equals(clazz.getName())) {
 					objects[i] = null;
-					break;
 				}
 			}
 		}
@@ -118,28 +108,21 @@ public class ReflectionTest {
 		for (int i = 0; i < length; i++) {
 			Class<?> clazz = m.getParameterTypes()[i];
 			if (clazz.isPrimitive()) {
-				switch (clazz.getName()) {
-				case "byte":
+				if("byte".equals(clazz.getName())) {
 					objects[i] = Byte.MIN_VALUE;
-					break;
-				case "int":
+				} else if("int".equals(clazz.getName())) {
 					objects[i] = Integer.MIN_VALUE;
-					break;
-				case "short":
+				} else if("short".equals(clazz.getName())) {
 					objects[i] = Short.MIN_VALUE;
 					break;
-				case "long":
+				} else if("long".equals(clazz.getName())) {
 					objects[i] = Long.MIN_VALUE;
-					break;
-				case "char":
+				} else if("char".equals(clazz.getName())) {
 					objects[i] = Character.MIN_VALUE;
-					break;
-				case "float":
+				} else if("float".equals(clazz.getName())) {
 					objects[i] = Float.MIN_VALUE;
-					break;
-				case "double":
+				} else if("double".equals(clazz.getName())) {
 					objects[i] = Double.MIN_VALUE;
-					break;
 				}
 			}
 		}
