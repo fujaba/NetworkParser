@@ -62,10 +62,13 @@ if(project.hasProperty('jenkins')) {
 		subprojects*.test
 	}
 }
-
-sourceCompatibility = 1.6
-targetCompatibility = 1.6
-
+if(project.hasProperty('JarName') && project.getProperty('JarName')=="NetworkParserFX"){
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
+} else {
+	sourceCompatibility = 1.6
+	targetCompatibility = 1.6
+}
 
 repositories {
 	mavenCentral()
