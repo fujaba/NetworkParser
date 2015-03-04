@@ -85,7 +85,7 @@ public class BitEntity extends SimpleList<BitValue> implements
 			this.property = "" + value;
 			return true;
 		} else if (PROPERTY_TYP.equalsIgnoreCase(attribute)) {
-			this.typ = (byte) value;
+			this.typ = (Byte) value;
 			return true;
 		} else if (PROPERTY_ORIENTATION.equalsIgnoreCase(attribute)) {
 			this.orientation = Integer.parseInt("" + value);

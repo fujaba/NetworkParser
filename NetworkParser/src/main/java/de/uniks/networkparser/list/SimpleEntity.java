@@ -211,6 +211,6 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
-		return new SimpleEntity<>();
+		return new SimpleEntity<K, V>();
 	}
 }
