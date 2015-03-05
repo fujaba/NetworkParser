@@ -130,9 +130,6 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
     	return size>MINHASHINGSIZE && elements.length <= (BIG_VALUE+1);
     }
 
-    boolean isComplex() {
-    	return isComplex(size);
-    }
     boolean isComplex(int size) {
     	return (flag & MAP) == MAP || size >= MINHASHINGSIZE || (size >= 6 && elements.length < 6);
     }
@@ -348,7 +345,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		}
 
 		int newSize = minCapacity + minCapacity / 2 + 4;
-		if(isComplex()) {
+		if(isComplex(size)) {
 			if((flag & MAP)==MAP) {
 				// MAP
 				boolean change=false;
@@ -903,7 +900,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		if(item != null){
 
 			size--;
-			if(!shrink(size) && isComplex() ){
+			if(!shrink(size) && isComplex(size) ){
 				if(elements[DELETED]==null) {
 					elements[DELETED]=new Integer[]{index};
 				}else{
@@ -925,7 +922,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	
 	Object removeItem(int index, int offset) {
 		Object oldValue = null;
-		if(!isComplex()){
+		if(!isComplex(size)){
 			if(elements==null) {
 				return null;
 			}
@@ -1195,6 +1192,27 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		return null;
 	}
 	
+	public AbstractArray<V> getNewInstance() {
+		return new AbstractArray<V>();
+	}
+
+	public AbstractArray<V> subList(int fromIndex, int toIndex) {
+		AbstractArray<V> newInstance = getNewInstance();
+		if(fromIndex<0) {
+			fromIndex += size;
+		}
+		if(toIndex >= size() || toIndex == 0) {
+			toIndex = size() - 1;	
+		}
+		if( fromIndex<0 || fromIndex>toIndex ){
+			return newInstance;
+		}
+		
+		while(fromIndex<toIndex) {
+			newInstance.withAll(get(fromIndex++));
+		}
+		return newInstance;
+	}
 	
 	protected void fireProperty(Object oldElement, Object newElement,
 			Object beforeElement, Object value) {

@@ -132,7 +132,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	@Override
 	public Set<K> keySet() {
 		SimpleSet<K> item = new SimpleSet<K>();
-		if(isComplex() && this.elements!=null) {
+		if(isComplex(size) && this.elements!=null) {
 			item.init((Object[])this.elements[SMALL_KEY], size);
 		}else if(this.elements!=null) {
 			item.init(this.elements, size);
