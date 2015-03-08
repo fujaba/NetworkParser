@@ -213,4 +213,16 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 	public Object getSendableInstance(boolean prototyp) {
 		return new SimpleEntity<K, V>();
 	}
+
+	@Override
+	public BaseItem withAll(Object... values) {
+		if(values == null) {
+			return this;
+		}
+		if(values.length==2) {
+			withKeyItem(values[0]);
+			withValueItem(values[1]);
+		}
+		return this;
+	}
 }

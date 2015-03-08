@@ -22,7 +22,7 @@ package de.uniks.networkparser.interfaces;
  */
 
 public interface FactoryEntity {
-	public BaseList getNewMap();
+	public BaseItem getNewMap();
 
 	public BaseItem getNewList();
 }

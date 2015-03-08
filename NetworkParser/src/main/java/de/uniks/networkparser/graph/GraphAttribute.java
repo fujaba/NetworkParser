@@ -1,5 +1,7 @@
 package de.uniks.networkparser.graph;
 
+import de.uniks.networkparser.interfaces.BaseItem;
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
@@ -99,5 +101,4 @@ public class GraphAttribute extends GraphValue implements GraphMember {
 		}
 		return getType(shortName);
 	}
-
 }
