@@ -30,4 +30,8 @@ public interface BaseItem {
 
 	@Override
 	public String toString();
+	
+	BaseItem withAll(Object... values);
+//	BaseList withList(Collection<?> value);
+
 }

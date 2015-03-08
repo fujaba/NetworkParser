@@ -57,4 +57,20 @@ public abstract class GraphValue implements BaseItem {
 		}
 		return type.getValue(shortName);
 	}
+
+	@Override
+	public BaseItem withAll(Object... values) {
+		if(values==null){
+			return this;
+		}
+		for(Object item : values) {
+			if(item instanceof String) {
+				with((String) item);	
+			} else if(item instanceof GraphDataType) {
+				with((GraphDataType) item);
+			}
+		}
+		return this;
+	}
+
 }

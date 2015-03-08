@@ -7,10 +7,9 @@ import java.util.Set;
 
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.BaseList;
 import de.uniks.networkparser.interfaces.FactoryEntity;
 
-public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K, V>, FactoryEntity, Iterable<K>, BaseList {
+public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K, V>, FactoryEntity, Iterable<K> {
 
 	@Override
 	public byte initFlag() {
@@ -321,7 +320,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	}
 	
 	@Override
-	public BaseList getNewMap() {
+	public BaseItem getNewMap() {
 		return new SimpleKeyValueList<K, V>();
 	}
 	

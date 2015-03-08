@@ -23,7 +23,9 @@ package de.uniks.networkparser.bytes;
  */
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
+
 import de.uniks.networkparser.bytes.converter.ByteConverterHTTP;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteConverter;
 import de.uniks.networkparser.interfaces.ByteItem;
@@ -348,5 +350,20 @@ public class ByteEntity implements ByteItem, FactoryEntity {
 		ByteEntity item = new ByteEntity();
 		item.setValues(value);
 		return item;
+	}
+
+	@Override
+	public BaseItem withAll(Object... values) {
+		if(values==null){
+			return this;
+		}
+		if(values.length>1) {
+			byte[] value = new byte[values.length-1];
+			for(int i=1;i<values.length;i++) {
+				value[i-1] = (byte) values[i];
+			}
+			withValue((byte)values[0], value);
+		}
+		return this;
 	}
 }
