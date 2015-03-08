@@ -56,7 +56,7 @@ public class GraphNode extends GraphSimpleList<GraphMember> implements GraphMemb
 	}
 
 	@Override
-	public GraphNode getNewInstance() {
+	public GraphNode getNewList(boolean keyValue) {
 		return new GraphNode();
 	}
 

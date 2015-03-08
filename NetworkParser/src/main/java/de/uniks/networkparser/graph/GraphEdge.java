@@ -23,7 +23,7 @@ package de.uniks.networkparser.graph;
  */
 import java.util.List;
 
-import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.interfaces.BaseItem;
 
 public class GraphEdge extends GraphSimpleList<GraphNode> implements
 		List<GraphNode> {
@@ -113,7 +113,7 @@ public class GraphEdge extends GraphSimpleList<GraphNode> implements
 
 
 	@Override
-	public SimpleList<GraphNode> getNewInstance() {
+	public BaseItem getNewList(boolean keyValue) {
 		return new GraphEdge();
 	}
 

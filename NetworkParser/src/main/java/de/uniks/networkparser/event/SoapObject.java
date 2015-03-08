@@ -124,4 +124,9 @@ public class SoapObject implements StringItem, BaseItem {
 		}
 		return null;
 	}
+
+	@Override
+	public SoapObject getNewList(boolean keyValue) {
+		return new SoapObject();
+	}
 }

@@ -1,6 +1,5 @@
 package de.uniks.networkparser.graph;
 
-import de.uniks.networkparser.interfaces.BaseItem;
 
 /*
  NetworkParser
@@ -100,5 +99,10 @@ public class GraphAttribute extends GraphValue implements GraphMember {
 			return this.value;
 		}
 		return getType(shortName);
+	}
+
+	@Override
+	public GraphAttribute getNewList(boolean keyValue) {
+		return new GraphAttribute();
 	}
 }

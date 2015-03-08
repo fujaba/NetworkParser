@@ -26,7 +26,6 @@ import java.util.Iterator;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
 import de.uniks.networkparser.list.SortedList;
 
@@ -75,7 +74,7 @@ import de.uniks.networkparser.list.SortedList;
  */
 
 public class JsonArray extends SortedList<Object> implements
-		StringItem, FactoryEntity {
+		StringItem {
 
 	/**
 	 * Get the JSONArray associated with an index.
@@ -287,23 +286,13 @@ public class JsonArray extends SortedList<Object> implements
 	}
 
 	/**
-	 * Get a new Instance of a JsonArray
-	 */
-	@Override
-	public JsonArray getNewMap() {
-		return new JsonArray();
-	}
-
-	/**
 	 * Get a new Instance of a JsonObject
 	 */
 	@Override
-	public JsonObject getNewList() {
-		return new JsonObject();
-	}
-
-	@Override
-	public JsonArray getNewInstance() {
+	public BaseItem getNewList(boolean keyValue) {
+		if(keyValue) {
+			return new JsonObject();
+		}
 		return new JsonArray();
 	}
 

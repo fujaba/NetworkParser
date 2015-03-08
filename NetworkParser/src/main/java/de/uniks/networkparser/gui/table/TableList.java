@@ -242,7 +242,7 @@ public class TableList extends SortedList<Object> implements
 	}
 
 	@Override
-	public TableList getNewInstance() {
+	public TableList getNewList(boolean keyValue) {
 		return new TableList();
 	}
 

@@ -32,6 +32,6 @@ public interface BaseItem {
 	public String toString();
 	
 	BaseItem withAll(Object... values);
-//	BaseList withList(Collection<?> value);
-
+	
+	public BaseItem getNewList(boolean keyValue);
 }
