@@ -225,4 +225,9 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 		}
 		return this;
 	}
+
+	@Override
+	public BaseItem getNewList(boolean keyValue) {
+		return new SimpleEntity<K, V>();
+	}
 }

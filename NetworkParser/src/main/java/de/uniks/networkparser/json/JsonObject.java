@@ -23,8 +23,8 @@ package de.uniks.networkparser.json;
  */
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Tokener;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
-import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
 import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -87,7 +87,7 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
  * @version 2011-11-24
  */
 public class JsonObject extends SimpleKeyValueList<String, Object> implements
-		StringItem, FactoryEntity, Entity {
+		StringItem, Entity {
 	
 	public JsonObject() {
 		this.withAllowDuplicate(false);
@@ -171,12 +171,14 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 		}
 
 		StringBuilder sb = new StringBuilder("{");
-		sb.append(EntityUtil.quote(get(0).toString()));
+		Object item = getKeyByIndex(0);
+		sb.append(EntityUtil.quote(item.toString()));
 		sb.append(":");
 		sb.append(EntityUtil.valueToString(getValueByIndex(0), false, this));
 		for (int i = 1; i < size(); i++) {
 			sb.append(",");
-			sb.append(EntityUtil.quote(get(i).toString()));
+			Object value = get(i);
+			sb.append(EntityUtil.quote(value.toString()));
 			sb.append(":");
 			sb.append(EntityUtil.valueToString(getValueByIndex(i), false, this));
 		}
@@ -299,18 +301,13 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 	}
 
 	/**
-	 * Get a new Instance of JsonArray
+	 * Get a new Instance of JsonArray, JsonObject
 	 */
 	@Override
-	public JsonObject getNewList() {
-		return new JsonObject();
-	}
-
-	/**
-	 * Get a new Instance of JsonObject
-	 */
-	@Override
-	public JsonArray getNewMap() {
+	public BaseItem getNewList(boolean keyValue) {
+		if(keyValue) {
+			return new JsonObject();
+		}
 		return new JsonArray();
 	}
 
@@ -322,11 +319,6 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 	public JsonObject withKeyValue(Object key, Object value) {
 		super.withKeyValue(key, value);
 		return this;
-	}
-
-	@Override
-	public JsonObject getNewInstance() {
-		return new JsonObject();
 	}
 
 	/**
@@ -350,12 +342,12 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 		Object object = this.get(key);
 		if (object == null) {
 			this.put(key,
-					value instanceof AbstractList ? getNewMap().with(value)
+					value instanceof AbstractList ? getNewList(true).withAll(value)
 							: value);
 		} else if (object instanceof AbstractList) {
 			((AbstractList<?>) object).withAll(value);
 		} else {
-			this.put(key, getNewMap().with(object, value));
+			this.put(key, getNewList(false).withAll(object, value));
 		}
 		return this;
 	}

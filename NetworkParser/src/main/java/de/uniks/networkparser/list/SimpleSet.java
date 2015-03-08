@@ -4,7 +4,7 @@ import java.util.Set;
 
 public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 	@Override
-	public AbstractList<V> getNewInstance() {
+	public AbstractList<V> getNewList(boolean keyValue) {
 		return new SimpleSet<V>();
 	}
 

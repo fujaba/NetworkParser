@@ -25,7 +25,6 @@ import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.xml.XMLEntity;
@@ -58,22 +57,17 @@ public class JsonTokener extends Tokener {
 			next();
 			return nextString('"', isAllowCRLF(), allowQuote, true, true);
 		case '{':
-			if (creator instanceof FactoryEntity) {
-				BaseItem element = ((FactoryEntity) creator).getNewList();
-				if (element instanceof SimpleKeyValueList<?, ?>) {
-					this.parseToEntity((SimpleKeyValueList<?, ?>) element);
-				}
-
-				return element;
+			BaseItem element = creator.getNewList(true);
+			if (element instanceof SimpleKeyValueList<?, ?>) {
+				this.parseToEntity((SimpleKeyValueList<?, ?>) element);
 			}
+			return element;
 		case '[':
-			if (creator instanceof FactoryEntity) {
-				BaseItem element = ((FactoryEntity) creator).getNewMap();
-				if (element instanceof AbstractList<?>) {
-					this.parseToEntity((AbstractList<?>) element);
-				}
-				return element;
+			BaseItem item = creator.getNewList(false);
+			if (item instanceof AbstractList<?>) {
+				this.parseToEntity((AbstractList<?>) item);
 			}
+			return item;
 		default:
 			break;
 		}

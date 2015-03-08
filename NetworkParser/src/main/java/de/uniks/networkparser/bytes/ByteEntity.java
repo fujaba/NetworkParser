@@ -29,13 +29,12 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteConverter;
 import de.uniks.networkparser.interfaces.ByteItem;
-import de.uniks.networkparser.interfaces.FactoryEntity;
 
 /**
  * The Class ByteEntity.
  */
 
-public class ByteEntity implements ByteItem, FactoryEntity {
+public class ByteEntity implements ByteItem, BaseItem {
 	/** The Constant BIT OF A BYTE. */
 	public final static int BITOFBYTE = 8;
 	public final static int TYPBYTE = 1;
@@ -324,13 +323,11 @@ public class ByteEntity implements ByteItem, FactoryEntity {
 	}
 
 	@Override
-	public ByteList getNewMap() {
+	public BaseItem getNewList(boolean keyValue) {
+		if(keyValue) {
+			return new ByteEntity();
+		}
 		return new ByteList();
-	}
-
-	@Override
-	public ByteEntity getNewList() {
-		return new ByteEntity();
 	}
 
 	@Override

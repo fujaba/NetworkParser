@@ -7,9 +7,8 @@ import java.util.Set;
 
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.FactoryEntity;
 
-public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K, V>, FactoryEntity, Iterable<K> {
+public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K, V>, Iterable<K> {
 
 	@Override
 	public byte initFlag() {
@@ -143,10 +142,6 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return keySet().iterator();
 	}
 
-	public SimpleKeyValueList<K, V> getNewInstance() {
-		return new SimpleKeyValueList<K, V>();
-	}
-	
 	/**
 	 * Get the boolean value associated with an index. The string values "true"
 	 * and "false" are converted to boolean.
@@ -320,15 +315,9 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	}
 	
 	@Override
-	public BaseItem getNewMap() {
+	public BaseItem getNewList(boolean keyValue) {
 		return new SimpleKeyValueList<K, V>();
 	}
-	
-	@Override
-	public BaseItem getNewList() {
-		return new SimpleEntity<K, V>();
-	}
-	
 	@Override
 	public SimpleKeyValueList<K, V> withList(Collection<?> values) {
 		super.withList(values);

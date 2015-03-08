@@ -6,7 +6,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.FactoryEntity;
 
 public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	/** Is Allow Duplicate Items in List	 */
@@ -126,15 +125,15 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
     	return this;
     }
     
-    boolean isBig() {
+    final boolean isBig() {
     	return size>MINHASHINGSIZE && elements.length <= (BIG_VALUE+1);
     }
 
-    boolean isComplex(int size) {
+    final boolean isComplex(int size) {
     	return (flag & MAP) == MAP || size >= MINHASHINGSIZE || (size >= 6 && elements.length < 6);
     }
     
-	int getArrayFlag(int size ) {
+    final int getArrayFlag(int size ) {
 		if(size==0) {
 			return 0;
 		}
@@ -1053,17 +1052,14 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 					if (child instanceof AbstractArray) {
 						if (end == len + 2) {
 							// Get List
-							if (this instanceof FactoryEntity) {
-								AbstractList<?> result = (AbstractList<?>) ((FactoryEntity) this)
-										.getNewMap();
-								AbstractList<?> items = (AbstractList<?>) child;
-								for (int z = 0; z < items.size(); z++) {
-									result.withAll(((AbstractList<?>) items
-											.get(z)).getValueItem(keyString
-											.substring(end + 1)));
-								}
-								return result;
+							BaseItem result = this.getNewList(true);
+							AbstractList<?> items = (AbstractList<?>) child;
+							for (int z = 0; z < items.size(); z++) {
+								result.withAll(((AbstractList<?>) items
+										.get(z)).getValueItem(keyString
+										.substring(end + 1)));
 							}
+							return result;
 						}
 						AbstractList<?> list = (AbstractList<?>) child;
 						if (id == -2) {
@@ -1192,12 +1188,12 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		return null;
 	}
 	
-	public AbstractArray<V> getNewInstance() {
+	public BaseItem getNewList(boolean keyValue) {
 		return new AbstractArray<V>();
 	}
 
-	public AbstractArray<V> subList(int fromIndex, int toIndex) {
-		AbstractArray<V> newInstance = getNewInstance();
+	public BaseItem subList(int fromIndex, int toIndex) {
+		BaseItem newInstance = getNewList(false);
 		if(fromIndex<0) {
 			fromIndex += size;
 		}
