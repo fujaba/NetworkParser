@@ -43,9 +43,9 @@ public interface UpdateListener {
 	 *            the json object
 	 * @param typ
 	 *            the typ of Message: NEW UPDATE, REMOVE or SENDUPDATE
-	 * @param oldObj
+	 * @param oldValue
 	 *            The oldValue
-	 * @param newObject
+	 * @param newValue
 	 *            The newValue
 	 * @return true, if successful
 	 */
