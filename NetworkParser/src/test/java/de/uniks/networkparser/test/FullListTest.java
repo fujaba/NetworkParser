@@ -28,6 +28,7 @@ public class FullListTest {
 		System.out.println(map);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void simpleListFunctionality()
 	{

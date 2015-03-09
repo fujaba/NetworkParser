@@ -52,6 +52,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import de.uniks.networkparser.DefaultTextItems;
+import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.TextItems;
@@ -59,6 +60,9 @@ import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.gui.controls.EditFieldMap;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.json.JsonArray;
+import de.uniks.networkparser.json.JsonIdMap;
+import de.uniks.networkparser.logic.InstanceOf;
 //TODO ADD ALL FUNCTIONALITY FROM TABLECOMPONENT.JAVA.TXT
 public class TableComponent extends BorderPane implements PropertyChangeListener, TableComponentInterface, ChangeListener<Number> {
 	private ArrayList<TableColumnFX> columns = new ArrayList<TableColumnFX>();
@@ -443,4 +447,29 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	public ObservableList<Object> getSelection() {
 		return getBrowserView(GUIPosition.CENTER).getSelectionModel().getSelectedItems();
 	}
+	
+	public JsonArray saveColumns() {
+		JsonArray list=new JsonArray();
+		for(TableColumnFX column : columns) {
+			list.add(map.encode(column.getColumn(), Filter.regard(InstanceOf.value(Style.class))));
+		}
+		return list;
+	}
+	
+	public boolean loadColumns(JsonArray columns) {
+		if(columns==null || columns.size()<this.columns.size()) {
+			return false;
+		}
+		if(!(map instanceof JsonIdMap)) {
+			return false;
+		}
+		JsonIdMap jsonMap = (JsonIdMap) map;
+		for(int i=0;i<this.columns.size();i++) {
+			TableColumnFX column = this.columns.get(i);
+			jsonMap.decode(column.getColumn(), columns.getJSONObject(i));
+			column.refresh();
+		}
+		return true;
+	}
+
 }

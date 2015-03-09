@@ -27,7 +27,7 @@ import de.uniks.networkparser.logic.Condition;
 import de.uniks.networkparser.logic.ValuesMap;
 
 public class ModelListenerBooleanProperty extends ModelListenerProperty<Boolean> {
-	private Condition condition;
+	private Condition<ValuesMap> condition;
 	public ModelListenerBooleanProperty(SendableEntityCreator creator, Object item, String property) {
         super(creator, item, property);
     }
@@ -53,7 +53,7 @@ public class ModelListenerBooleanProperty extends ModelListenerProperty<Boolean>
 		}
 	}
 	
-	public ModelListenerBooleanProperty withCondition(Condition condition){
+	public ModelListenerBooleanProperty withCondition(Condition<ValuesMap> condition){
 		this.condition = condition;
 		return this;
 	}

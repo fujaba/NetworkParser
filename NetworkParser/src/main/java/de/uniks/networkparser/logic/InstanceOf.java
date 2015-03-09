@@ -33,14 +33,11 @@ public class InstanceOf extends ConditionMap implements SendableEntityCreator {
 	public static final String CLAZZNAME = "clazzname";
 	/** Constant of PROPERTY. */
 	public static final String PROPERTY = "property";
-	/** Constant of CLAZZ. */
-	public static final String CLAZZ = "clazz";
 	/** Constant of VALUE. */
 	public static final String VALUE = "value";
 	/** Variable of ClazzName. */
 	private Class<?> clazzName;
-	/** Variable of Clazz. */
-	private Object clazz;
+
 	/** Variable of Property. */
 	private String property;
 	/** Variable of Item. */
@@ -48,7 +45,7 @@ public class InstanceOf extends ConditionMap implements SendableEntityCreator {
 
 	@Override
 	public String[] getProperties() {
-		return new String[] {CLAZZNAME, CLAZZ, PROPERTY, VALUE };
+		return new String[] {CLAZZNAME, PROPERTY, VALUE };
 	}
 
 	@Override
@@ -60,9 +57,6 @@ public class InstanceOf extends ConditionMap implements SendableEntityCreator {
 	public Object getValue(Object entity, String attribute) {
 		if (CLAZZNAME.equalsIgnoreCase(attribute)) {
 			return ((InstanceOf) entity).getClazzName();
-		}
-		if (CLAZZ.equalsIgnoreCase(attribute)) {
-			return ((InstanceOf) entity).getClazz();
 		}
 		if (PROPERTY.equalsIgnoreCase(attribute)) {
 			return ((InstanceOf) entity).getProperty();
@@ -78,10 +72,6 @@ public class InstanceOf extends ConditionMap implements SendableEntityCreator {
 			String type) {
 		if (CLAZZNAME.equalsIgnoreCase(attribute)) {
 			((InstanceOf) entity).withClazzName((Class<?>) value);
-			return true;
-		}
-		if (CLAZZ.equalsIgnoreCase(attribute)) {
-			((InstanceOf) entity).withClazz(value);
 			return true;
 		}
 		if (PROPERTY.equalsIgnoreCase(attribute)) {
@@ -100,29 +90,10 @@ public class InstanceOf extends ConditionMap implements SendableEntityCreator {
 	 *
 	 * @param clazzName
 	 *            The ClazzName
-	 * @param property
-	 *            The PropertyName
-	 * @param element
-	 *            The Element for search
 	 * @return The new Instance
 	 */
-	public static InstanceOf value(Class<?> clazzName, String property,
-			Object element) {
-		return new InstanceOf().withClazzName(clazzName).withProperty(property)
-				.withValue(element);
-	}
-
-	/**
-	 * Static Method for instance a new Instance of InstanceOf Object.
-	 *
-	 * @param clazzName
-	 *            The ClazzName
-	 * @param property
-	 *            The PropertyName
-	 * @return The new Instance
-	 */
-	public static InstanceOf value(Class<?> clazzName, String property) {
-		return new InstanceOf().withClazzName(clazzName).withProperty(property);
+	public static InstanceOf value(Class<?> clazzName) {
+		return new InstanceOf().withClazzName(clazzName);
 	}
 
 	/**
@@ -135,7 +106,7 @@ public class InstanceOf extends ConditionMap implements SendableEntityCreator {
 	 * @return The new Instance
 	 */
 	public static InstanceOf value(Object clazz, String property) {
-		return new InstanceOf().withClazz(clazz).withProperty(property);
+		return new InstanceOf().withClazzName(clazz.getClass()).withProperty(property);
 	}
 
 	/** @return The ClazzName */
@@ -150,21 +121,6 @@ public class InstanceOf extends ConditionMap implements SendableEntityCreator {
 	 */
 	public InstanceOf withClazzName(Class<?> value) {
 		this.clazzName = value;
-		return this;
-	}
-
-	/** @return The Clazz Property */
-	public Object getClazz() {
-		return clazz;
-	}
-
-	/**
-	 * @param value
-	 *            The new Clazz
-	 * @return InstanceOf Instance
-	 */
-	public InstanceOf withClazz(Object value) {
-		this.clazz = value;
 		return this;
 	}
 
@@ -200,16 +156,13 @@ public class InstanceOf extends ConditionMap implements SendableEntityCreator {
 
 	@Override
 	public boolean check(ValuesMap values) {
-		if (this.clazzName != null
-				&& values.entity.getClass() != this.clazzName) {
-			return true;
+		// Filter for ClazzTyp
+		if (this.clazzName != null && values.value.getClass() == this.clazzName) {
+			if(this.property==null || this.property.equalsIgnoreCase(values.property)) {
+				return false;
+			}
 		}
-		if (this.clazz != null && values.entity != this.clazz) {
-			return true;
-		}
-		if (!this.property.equalsIgnoreCase(values.property)) {
-			return true;
-		}
-		return (this.item != null && this.item == values.value);
+		// Filter for one item
+		return (this.item == null || this.item != values.value);
 	}
 }

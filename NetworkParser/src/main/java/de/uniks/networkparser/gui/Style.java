@@ -22,9 +22,11 @@ package de.uniks.networkparser.gui;
  permissions and limitations under the Licence.
  */
 import java.util.HashMap;
-import de.uniks.networkparser.interfaces.GUIPosition;
 
-public class Style implements Cloneable {
+import de.uniks.networkparser.interfaces.GUIPosition;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
+
+public class Style implements Cloneable, SendableEntityCreator {
 	/** The Constant PROPERTY_BOLD for Bold Attribute */
 	public static final String PROPERTY_BOLD = "bold";
 	/** The Bold value. */
@@ -322,5 +324,26 @@ public class Style implements Cloneable {
 	}
 
 	public void propertyChange(String property, Object oldValue, Object newValue) {
+	}
+
+	@Override
+	public String[] getProperties() {
+		return null;
+	}
+
+	@Override
+	public Object getValue(Object entity, String attribute) {
+		return null;
+	}
+
+	@Override
+	public boolean setValue(Object entity, String attribute, Object value,
+			String type) {
+		return false;
+	}
+
+	@Override
+	public Object getSendableInstance(boolean prototyp) {
+		return new Style();
 	}
 }

@@ -69,12 +69,6 @@ public class TableCellValueFX extends SimpleObjectProperty<TableCellValue> imple
 
 	@Override
 	public Object getSimpleValue() {
-//		Object value = getCreator().getValue(item, getColumn().getAttrName());
-//		if(value instanceof String){
-//			return new ModelListenerStringProperty(getCreator(), item, getColumn().getAttrName());
-//		}else if(value instanceof Number){
-//			return new ModelListenerNumberProperty(getCreator(), item, getColumn().getAttrName());
-//		}
 		if(creator==null){
 			return "";
 		}

@@ -105,6 +105,8 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 		Object object = this.get(key);
 		if (object instanceof JsonArray) {
 			return (JsonArray) object;
+		} else if(object instanceof String) {
+			return new JsonArray().withValue(""+object);
 		}
 		throw new RuntimeException("JsonObject[" + EntityUtil.quote(key)
 				+ "] is not a JsonArray.");
@@ -123,6 +125,8 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 		Object object = this.get(key);
 		if (object instanceof JsonObject) {
 			return (JsonObject) object;
+		} else if(object instanceof String) {
+			return new JsonObject().withValue(""+object);
 		}
 		throw new RuntimeException("JsonObject[" + EntityUtil.quote(key)
 				+ "] is not a JsonObject.");
