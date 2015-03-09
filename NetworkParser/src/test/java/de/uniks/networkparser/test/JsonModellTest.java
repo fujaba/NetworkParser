@@ -62,7 +62,7 @@ public class JsonModellTest implements UpdateListener {
 		BigInteger number = new BigInteger(text.getBytes());
 		
 		// convert back
-		String textBack = new String(number.toByteArray());
+		new String(number.toByteArray());
 		
 		this.secondMap= new JsonIdMap();
 		secondMap.withUpdateListenerRead(this);

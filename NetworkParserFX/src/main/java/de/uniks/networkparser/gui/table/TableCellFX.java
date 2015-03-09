@@ -67,11 +67,6 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 				}
 			}
 		}
-		//explorer.withLabel("Explorer").withStyle(new Style().withWidth(80).withForground("00A18F").withBackground("D4D4D4").withAlignment(GUIPosition.CENTER));
-		//explorer.withResizable(false);
-		//explorer.withListener(new ExplorerFilesButtonEditingSupport(this));
-
-		
 		return this;
 	}
 

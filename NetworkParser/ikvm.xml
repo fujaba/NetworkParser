@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE project>
 <project default="ikvm" name="Create DLL for NetworkParser">
 	<property name="ikvmVersion" value="7.4.5148" />
 	<import file="buildAnt.xml" as="Ant"/>

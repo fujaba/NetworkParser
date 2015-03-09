@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE project>
 <!--  sadaskjd -->
 <pnet:Net xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pnet="http://uam.es/PetriNets" xsi:schemaLocation="http://uam.es/PetriNets ../metamodels/PetriNets.ecore" xmi:id="$25">
 <places xmi:id="$9" name="p10" pret=" $C $D"></places>

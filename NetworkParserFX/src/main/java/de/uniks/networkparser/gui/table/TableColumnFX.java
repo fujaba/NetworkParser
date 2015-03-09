@@ -110,33 +110,12 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 		});
 	}
 	
-	
-	
-	
-	//FIXME REMOVE
-//	@Override
-//	public ObservableValue<TableCellValue> call(
-//			CellDataFeatures<Object, TableCellValue> arg0) {
-//		return new TableCellFX().withColumn(column).withTableComponent(tableComponent);
-//////	.withCreator(tableComponent.getCreatorClass(arg0.getValue()));
-//	}
-
-//	@Override
-//	public ObservableValue<TableCellValue> call(CellDataFeatures<Object, TableCellValue> arg0) {
-//	public TableCell<Object, TableCellValue> call(TableColumn<Object, TableCellValue> arg0) {
-//		return new TableCellFX().withColumn(column).withTableComponent(tableComponent);
-//setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Object,TableCellValue>, ObservableValue<TableCellValue>>() {
-//			
-//			@Override
-//			public ObservableValue<TableCellValue> call(CellDataFeatures<Object, TableCellValue> arg0) {
-//				 return new TableCellValueFX().withItem(arg0.getValue()).withColumn(TableColumnFX.this.column).withCreator(TableColumnFX.this.tableComponent.getMap().getCreatorClass(arg0.getValue()));
-//			}
-//		});
-//	}
-//	public TableCell<Object, TableCellValue> call(
-//			TableColumn<Object, TableCellValue> arg0) {
-//		System.out.println(arg0);
-//		arg0.get
-//		
-//	}
+	public void refresh() {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				TableColumnFX.this.setText(column.getLabel() );
+			}
+		});
+	}
 }

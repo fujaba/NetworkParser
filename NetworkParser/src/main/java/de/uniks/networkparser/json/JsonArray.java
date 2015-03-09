@@ -90,6 +90,8 @@ public class JsonArray extends SortedList<Object> implements
 		Object object = get(index);
 		if (object instanceof JsonArray) {
 			return (JsonArray) object;
+		} else if(object instanceof String) {
+			return new JsonArray().withValue(""+object);
 		}
 		throw new RuntimeException("JSONArray[" + index
 				+ "] is not a JSONArray.");
@@ -109,6 +111,8 @@ public class JsonArray extends SortedList<Object> implements
 		Object object = get(index);
 		if (object instanceof JsonObject) {
 			return (JsonObject) object;
+		} else if(object instanceof String) {
+			return new JsonObject().withValue(""+object);
 		}
 		throw new RuntimeException("JSONArray[" + index
 				+ "] is not a JSONObject.");

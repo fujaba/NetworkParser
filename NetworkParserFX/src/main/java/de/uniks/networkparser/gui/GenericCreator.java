@@ -23,7 +23,6 @@ package de.uniks.networkparser.gui;
  */
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.LinkedHashSet;
 
 import de.uniks.networkparser.interfaces.SendableEntityCreator;

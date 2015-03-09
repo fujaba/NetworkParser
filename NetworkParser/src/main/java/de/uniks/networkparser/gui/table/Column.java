@@ -22,11 +22,13 @@ package de.uniks.networkparser.gui.table;
  permissions and limitations under the Licence.
  */
 import java.util.Comparator;
+
 import de.uniks.networkparser.EntityValueFactory;
 import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.interfaces.GUIPosition;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class Column {
+public class Column implements SendableEntityCreator {
 	public static final int AUTOWIDTH = -1;
 	public static final String PROPERTY_STYLE = "style";
 	public static final String PROPERTY_ACTIVESTYLE = "activeStyle";
@@ -42,6 +44,15 @@ public class Column {
 	public static final String PROPERTY_BROWSERID = "browserid";
 	public static final String PROPERTY_FIELDTYP = "fieldTyp";
 	public static final String FORMAT_DATE = "HH:MM:SS";
+	
+	private static final String[] properties = new String[] {
+		Column.PROPERTY_ATTRNAME, Column.PROPERTY_NUMBERFORMAT,
+		Column.PROPERTY_EDITCOLUMN, Column.PROPERTY_LABEL,
+		Column.PROPERTY_DEFAULTTEXT, Column.PROPERTY_RESIZE,
+		Column.PROPERTY_VISIBLE, Column.PROPERTY_MOVABLE,
+		Column.PROPERTY_ALTTEXT, Column.PROPERTY_BROWSERID,
+		Column.PROPERTY_FIELDTYP, Column.PROPERTY_STYLE,
+		Column.PROPERTY_ACTIVESTYLE };
 
 	private Style style;
 	private Style activestyle;
@@ -218,99 +229,6 @@ public class Column {
 		return this;
 	}
 
-	public Object get(String attribute) {
-		String attrName;
-		int pos = attribute.indexOf(".");
-		if (pos > 0) {
-			attrName = attribute.substring(0, pos);
-		} else {
-			attrName = attribute;
-		}
-		if (attrName.equalsIgnoreCase(PROPERTY_ATTRNAME))
-			return this.getAttrName();
-		if (attrName.equalsIgnoreCase(PROPERTY_NUMBERFORMAT))
-			return this.getNumberFormat();
-		if (attrName.equalsIgnoreCase(PROPERTY_EDITCOLUMN))
-			return this.isEditable();
-		if (attrName.equalsIgnoreCase(PROPERTY_LABEL))
-			return this.getLabel();
-		if (attrName.equalsIgnoreCase(PROPERTY_DEFAULTTEXT))
-			return this.getDefaultText();
-		if (attrName.equalsIgnoreCase(PROPERTY_STYLE))
-			return this.getStyle();
-		if (attrName.equalsIgnoreCase(PROPERTY_ACTIVESTYLE))
-			return this.getActiveStyle();
-		if (attrName.equalsIgnoreCase(PROPERTY_RESIZE))
-			return this.isResizable();
-		if (attrName.equalsIgnoreCase(PROPERTY_VISIBLE))
-			return this.isVisible();
-		if (attrName.equalsIgnoreCase(PROPERTY_MOVABLE))
-			return this.isMovable();
-		if (attrName.equalsIgnoreCase(PROPERTY_ALTTEXT))
-			return this.getAltAttribute();
-		if (attrName.equalsIgnoreCase(PROPERTY_BROWSERID))
-			return this.getBrowserId();
-		if (attrName.equalsIgnoreCase(PROPERTY_FIELDTYP))
-			return this.getFieldTyp();
-		return null;
-	}
-
-	public boolean set(String attribute, Object value) {
-		if (attribute.equalsIgnoreCase(PROPERTY_ATTRNAME)) {
-			withAttrName((String) value);
-			return true;
-		}
-		if (attribute.equalsIgnoreCase(PROPERTY_NUMBERFORMAT)) {
-			withNumberFormat((String) value);
-			return true;
-		}
-		if (attribute.equalsIgnoreCase(PROPERTY_EDITCOLUMN)) {
-			withEditable((Boolean) value);
-			return true;
-		}
-		if (attribute.equalsIgnoreCase(PROPERTY_LABEL)) {
-			withLabel((String) value);
-			return true;
-		}
-		if (attribute.equalsIgnoreCase(PROPERTY_DEFAULTTEXT)) {
-			withDefaultText((String) value);
-			return true;
-		}
-		if (attrName.equalsIgnoreCase(PROPERTY_STYLE)) {
-			withStyle((Style) value);
-			return true;
-		}
-		if (attrName.equalsIgnoreCase(PROPERTY_ACTIVESTYLE)) {
-			withActiveStyle((Style) value);
-			return true;
-		}
-		if (attribute.equalsIgnoreCase(PROPERTY_RESIZE)) {
-			withResizable((Boolean) value);
-			return true;
-		}
-		if (attribute.equalsIgnoreCase(PROPERTY_VISIBLE)) {
-			withVisible((Boolean) value);
-			return true;
-		}
-		if (attribute.equalsIgnoreCase(PROPERTY_MOVABLE)) {
-			withMovable((Boolean) value);
-			return true;
-		}
-		if (attribute.equalsIgnoreCase(PROPERTY_ALTTEXT)) {
-			withAltAttribute((String) value);
-			return true;
-		}
-		if (attribute.equalsIgnoreCase(PROPERTY_BROWSERID)) {
-			withBrowserId(GUIPosition.valueOf((String) value));
-			return true;
-		}
-		if (attribute.equalsIgnoreCase(PROPERTY_FIELDTYP)) {
-			withFieldTyp(FieldTyp.valueOf("" + value));
-			return true;
-		}
-		return false;
-	}
-
 	public Style getStyle() {
 		return style;
 	}
@@ -369,5 +287,117 @@ public class Column {
 				this.numberFormat.length() - 1)
 				+ "," + value + "]";
 		return this;
+	}
+	
+	@Override
+	public String[] getProperties() {
+		return properties;
+	}
+	
+	@Override
+	public Object getSendableInstance(boolean prototyp) {
+		return new Column();
+	}
+
+	@Override
+	public Object getValue(Object entity, String attribute) {
+		String attrName;
+		int pos = attribute.indexOf(".");
+		if (pos > 0) {
+			attrName = attribute.substring(0, pos);
+		} else {
+			attrName = attribute;
+		}
+		Column that = (Column) entity;
+		if (attrName.equalsIgnoreCase(PROPERTY_ATTRNAME))
+			return that.getAttrName();
+		if (attrName.equalsIgnoreCase(PROPERTY_NUMBERFORMAT))
+			return that.getNumberFormat();
+		if (attrName.equalsIgnoreCase(PROPERTY_EDITCOLUMN))
+			return that.isEditable();
+		if (attrName.equalsIgnoreCase(PROPERTY_LABEL))
+			return that.getLabel();
+		if (attrName.equalsIgnoreCase(PROPERTY_DEFAULTTEXT))
+			return that.getDefaultText();
+		if (attrName.equalsIgnoreCase(PROPERTY_STYLE))
+			return that.getStyle();
+		if (attrName.equalsIgnoreCase(PROPERTY_ACTIVESTYLE))
+			return that.getActiveStyle();
+		if (attrName.equalsIgnoreCase(PROPERTY_RESIZE))
+			return that.isResizable();
+		if (attrName.equalsIgnoreCase(PROPERTY_VISIBLE))
+			return that.isVisible();
+		if (attrName.equalsIgnoreCase(PROPERTY_MOVABLE))
+			return that.isMovable();
+		if (attrName.equalsIgnoreCase(PROPERTY_ALTTEXT))
+			return that.getAltAttribute();
+		if (attrName.equalsIgnoreCase(PROPERTY_BROWSERID))
+			return that.getBrowserId();
+		if (attrName.equalsIgnoreCase(PROPERTY_FIELDTYP))
+			return that.getFieldTyp();
+		return null;
+	}
+
+	@Override
+	public boolean setValue(Object entity, String attribute, Object value,
+			String type) {
+		Column that = (Column) entity;
+		if (attribute.equalsIgnoreCase(PROPERTY_ATTRNAME)) {
+			that.withAttrName((String) value);
+			return true;
+		}
+		if (attribute.equalsIgnoreCase(PROPERTY_NUMBERFORMAT)) {
+			that.withNumberFormat((String) value);
+			return true;
+		}
+		if (attribute.equalsIgnoreCase(PROPERTY_EDITCOLUMN)) {
+			that.withEditable((Boolean) value);
+			return true;
+		}
+		if (attribute.equalsIgnoreCase(PROPERTY_LABEL)) {
+			that.withLabel((String) value);
+			return true;
+		}
+		if (attribute.equalsIgnoreCase(PROPERTY_DEFAULTTEXT)) {
+			that.withDefaultText((String) value);
+			return true;
+		}
+		if (attribute.equalsIgnoreCase(PROPERTY_STYLE)) {
+			if(value instanceof Style) {
+				that.withStyle((Style) value);
+			}else{
+				System.out.println("FIXME");
+			}
+			return true;
+		}
+		if (attribute.equalsIgnoreCase(PROPERTY_ACTIVESTYLE)) {
+			that.withActiveStyle((Style) value);
+			return true;
+		}
+		if (attribute.equalsIgnoreCase(PROPERTY_RESIZE)) {
+			that.withResizable((Boolean) value);
+			return true;
+		}
+		if (attribute.equalsIgnoreCase(PROPERTY_VISIBLE)) {
+			that.withVisible((Boolean) value);
+			return true;
+		}
+		if (attribute.equalsIgnoreCase(PROPERTY_MOVABLE)) {
+			that.withMovable((Boolean) value);
+			return true;
+		}
+		if (attribute.equalsIgnoreCase(PROPERTY_ALTTEXT)) {
+			that.withAltAttribute((String) value);
+			return true;
+		}
+		if (attribute.equalsIgnoreCase(PROPERTY_BROWSERID)) {
+			that.withBrowserId(GUIPosition.valueOf((String) value));
+			return true;
+		}
+		if (attribute.equalsIgnoreCase(PROPERTY_FIELDTYP)) {
+			that.withFieldTyp(FieldTyp.valueOf("" + value));
+			return true;
+		}
+		return false;
 	}
 }
