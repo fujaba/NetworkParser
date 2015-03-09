@@ -2,6 +2,7 @@
 <project name="gource" default="make-film" basedir=".">
 	<property name="title" value="NetworkParser"/> 
 	<target name="unpack">
+		<mkdir dir="build" />
 		<mkdir dir="build/avi" />
 		<unzip src="lib/gource-0.42.win32.zip" dest="build/avi" />
 	</target>

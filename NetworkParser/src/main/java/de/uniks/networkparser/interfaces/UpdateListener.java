@@ -31,7 +31,23 @@ import de.uniks.networkparser.json.JsonObject;
 * event occurs, that object's appropriate method is invoked.
 */
 @FunctionalInterface
-public interface UpdateListenerRead {
-	public boolean readMessages(String key, Object element, Object value,
-			JsonObject props, String type);
+public interface UpdateListener {
+	/**
+	 * Send update msg.
+	 *
+	 * @param target
+	 *            The Object of UpdateMsg
+	 * @param property
+	 *            Which property is changed
+	 * @param jsonObject
+	 *            the json object
+	 * @param typ
+	 *            the typ of Message: NEW UPDATE, REMOVE or SENDUPDATE
+	 * @param oldObj
+	 *            The oldValue
+	 * @param newObject
+	 *            The newValue
+	 * @return true, if successful
+	 */
+	public boolean update(Object target, String property, JsonObject jsonObject, String typ, Object oldValue, Object newValue);
 }

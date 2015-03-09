@@ -5,8 +5,8 @@ import java.math.BigInteger;
 import org.junit.Test;
 
 import de.uniks.networkparser.Filter;
-import de.uniks.networkparser.interfaces.UpdateListenerRead;
-import de.uniks.networkparser.interfaces.UpdateListenerSend;
+import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.logic.InstanceOf;
@@ -16,7 +16,7 @@ import de.uniks.networkparser.test.model.SortedMsg;
 import de.uniks.networkparser.test.model.util.PersonCreator;
 import de.uniks.networkparser.test.model.util.SortedMsgCreator;
 
-public class JsonModellTest implements UpdateListenerRead, UpdateListenerSend {
+public class JsonModellTest implements UpdateListener {
 
 	private JsonIdMap secondMap;
 
@@ -100,17 +100,14 @@ public class JsonModellTest implements UpdateListenerRead, UpdateListenerSend {
 	}
 
 	@Override
-	public boolean sendUpdateMsg(Object target, String property, Object oldObj, Object newObject,
-			JsonObject jsonObject) {
-		System.out.println("Send: " +jsonObject);
-		secondMap.getUpdateListener().execute(jsonObject);
-		return true;
-	}
-
-	@Override
-	public boolean readMessages(String key, Object element, Object value,
-			JsonObject props, String type) {
-		System.out.println("ReceiveOBJ: Typ:" +key+ "value:" +value);
+	public boolean update(Object target, String property,
+			JsonObject jsonObject, String typ, Object oldValue, Object newValue) {
+		if(IdMap.SENDUPDATE.equals(typ)) {
+			System.out.println("Send: " +jsonObject);
+			secondMap.getUpdateListener().execute(jsonObject);
+			return true;
+		}
+		System.out.println("ReceiveOBJ: Typ:" +property+ "value:" +newValue);
 		return false;
 	}
 }
