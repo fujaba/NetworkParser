@@ -357,9 +357,9 @@ public class ByteEntity implements ByteItem, BaseItem {
 		if(values.length>1) {
 			byte[] value = new byte[values.length-1];
 			for(int i=1;i<values.length;i++) {
-				value[i-1] = (byte) values[i];
+				value[i-1] = (Byte) values[i];
 			}
-			withValue((byte)values[0], value);
+			withValue((Byte)values[0], value);
 		}
 		return this;
 	}
