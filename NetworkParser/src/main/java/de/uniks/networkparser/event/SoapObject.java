@@ -115,7 +115,7 @@ public class SoapObject implements StringItem, BaseItem {
 		}
 		for(Object item : values) {
 			if(item instanceof Boolean) {
-				withVisible((boolean) item);
+				withVisible((Boolean) item);
 			} else if(item instanceof String) {
 				withNamespace((String) item);
 			} else if(item instanceof XMLEntity) {
