@@ -37,7 +37,7 @@ import de.uniks.networkparser.interfaces.IdMapCounter;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.TypList;
-import de.uniks.networkparser.json.UpdateListener;
+import de.uniks.networkparser.json.UpdateListenerJson;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
 /**
@@ -64,11 +64,15 @@ public abstract class IdMapEncoder extends AbstractMap implements
 	/** The Constant PRIO. */
 	public static final String PRIO = "prio";
 
+	/** The Constant PRIO. */
+	public static final String SENDUPDATE = "sendupdate";
+
+	
 	/** The counter. */
 	private IdMapCounter counter;
 
 	/** The update listener. */
-	protected UpdateListener updateListener;
+	protected UpdateListenerJson updateListener;
 
 	protected ArrayList<TypList> typList;
 
@@ -262,9 +266,9 @@ public abstract class IdMapEncoder extends AbstractMap implements
 		return false;
 	}
 
-	public UpdateListener getUpdateListener() {
+	public UpdateListenerJson getUpdateListener() {
 		if (this.updateListener == null) {
-			this.updateListener = new UpdateListener(this);
+			this.updateListener = new UpdateListenerJson(this);
 		}
 		return this.updateListener;
 	}
@@ -409,7 +413,7 @@ public abstract class IdMapEncoder extends AbstractMap implements
 	 */
 	public void startCarbageCollection(Object root) {
 		if (this.updateListener == null) {
-			this.updateListener = new UpdateListener(this);
+			this.updateListener = new UpdateListenerJson(this);
 		}
 		this.updateListener.startGarbageColection(root);
 	}
@@ -422,7 +426,7 @@ public abstract class IdMapEncoder extends AbstractMap implements
 	 */
 	public void garbageCollection(Object root) {
 		if (this.updateListener == null) {
-			this.updateListener = new UpdateListener(this);
+			this.updateListener = new UpdateListenerJson(this);
 		}
 		this.updateListener.garbageCollection(root);
 	}

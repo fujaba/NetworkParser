@@ -40,7 +40,7 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
  *
  */
 
-public class UpdateListener implements PropertyChangeListener {
+public class UpdateListenerJson implements PropertyChangeListener {
 	/** The map. */
 	private JsonIdMap map;
 
@@ -61,7 +61,7 @@ public class UpdateListener implements PropertyChangeListener {
 	 * @param map
 	 *            the map
 	 */
-	public UpdateListener(IdMapEncoder map) {
+	public UpdateListenerJson(IdMapEncoder map) {
 		if (map instanceof JsonIdMap) {
 			this.map = (JsonIdMap) map;
 		}
