@@ -179,12 +179,13 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		return (flag & ALLOWEMPTYVALUE)==ALLOWEMPTYVALUE;
 	}
 
-	public AbstractArray<V> withAllowEmptyValue(boolean value) {
+	@SuppressWarnings("unchecked")
+	public <ST extends AbstractArray<V>> ST  withAllowEmptyValue(boolean value) {
 		this.flag = (byte) (this.flag | ALLOWEMPTYVALUE);
 		if(!value) {
 			this.flag -= ALLOWEMPTYVALUE;
 		}
-		return this;
+		return (ST) this;
 	}
 
 	/**
@@ -213,13 +214,14 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		return (flag & CASESENSITIVE)==CASESENSITIVE;
 	}
 
-	public AbstractArray<V> withCaseSensitive(boolean value) {
+	@SuppressWarnings("unchecked")
+	public <ST extends AbstractArray<V>> ST  withCaseSensitive(boolean value) {
 		if(value) {
 			this.flag = (byte) (this.flag | CASESENSITIVE);
 		} else {
 			this.flag = (byte) (this.flag & (0xff - CASESENSITIVE));
 		}
-		return this;
+		return (ST) this;
 	}
 	
 	/**
@@ -231,14 +233,15 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		return (flag & ALLOWDUPLICATE)==ALLOWDUPLICATE;
 	}
 
-	public AbstractArray<V> withAllowDuplicate(
+	@SuppressWarnings("unchecked")
+	public <ST extends AbstractArray<V>> ST withAllowDuplicate(
 			boolean value) {
 		if(value) {
 			this.flag = (byte) (this.flag | ALLOWDUPLICATE);
 		} else {
 			this.flag = (byte) (this.flag & (0xff - ALLOWDUPLICATE));
 		}
-		return this;
+		return (ST) this;
 	}
 	
 	/**

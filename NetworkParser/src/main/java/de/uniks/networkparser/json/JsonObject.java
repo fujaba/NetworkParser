@@ -364,9 +364,4 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 		}
 		return this;
 	}
-
-	public JsonObject withCaseSensitive(boolean value) {
-		super.withCaseSensitive(value);
-		return this;
-	}
 }

@@ -23,25 +23,22 @@ package de.uniks.networkparser.bytes;
  */
 import de.uniks.networkparser.bytes.converter.ByteConverterHTTP;
 import de.uniks.networkparser.bytes.converter.ByteConverterString;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteConverter;
 import de.uniks.networkparser.interfaces.ByteItem;
-import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.list.SimpleList;
 
-public class ByteList extends SimpleList<ByteItem> implements ByteItem,
-		FactoryEntity {
+public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 	/** The children of the ByteEntity. */
 	private byte typ = 0;
 
 	@Override
-	public ByteList getNewMap() {
+	public BaseItem getNewList(boolean keyValue) {
+		if(keyValue) {
+			return new ByteEntity();
+		}
 		return new ByteList();
-	}
-
-	@Override
-	public ByteEntity getNewList() {
-		return new ByteEntity();
 	}
 
 	@Override
@@ -194,14 +191,9 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem,
 
 	public SimpleList<ByteItem> withValue(String value) {
 		ByteConverterString converter = new ByteConverterString();
-		this.add(getNewList().withValue(ByteIdMap.DATATYPE_FIXED,
+		this.add(((ByteEntity)getNewList(false)).withValue(ByteIdMap.DATATYPE_FIXED,
 				converter.decode(value)));
 		return this;
-	}
-
-	@Override
-	public ByteList getNewInstance() {
-		return new ByteList();
 	}
 
 	@Override
