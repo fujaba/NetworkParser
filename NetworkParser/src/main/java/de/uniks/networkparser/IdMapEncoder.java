@@ -564,8 +564,6 @@ public abstract class IdMapEncoder extends AbstractMap implements
 
 	public abstract BaseItem encode(Object value, Filter filter);
 
-	public abstract BaseItem getPrototyp();
-
 	@Override
 	public Set<java.util.Map.Entry<String, Object>> entrySet() {
 		LinkedHashSet<java.util.Map.Entry<String, Object>> list = new LinkedHashSet<java.util.Map.Entry<String, Object>>();

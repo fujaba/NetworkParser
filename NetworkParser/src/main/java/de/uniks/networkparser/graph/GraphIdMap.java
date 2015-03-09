@@ -197,11 +197,6 @@ public class GraphIdMap extends IdMapEncoder {
 		return className.substring(className.lastIndexOf('.') + 1);
 	}
 
-	@Override
-	public BaseItem getPrototyp() {
-		return new GraphList();
-	}
-
 	public GraphList createList() {
 		return new GraphList();
 	}

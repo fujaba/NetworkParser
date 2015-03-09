@@ -129,7 +129,7 @@ public class XMLSimpleIdMap extends IdMap {
 	 */
 	@Override
 	public Object decode(String value) {
-		return decode(getPrototyp().withValue(value));
+		return decode(new XMLEntity().withValue(value));
 	}
 
 	@Override
@@ -339,10 +339,5 @@ public class XMLSimpleIdMap extends IdMap {
 		}
 		entity.withTag(tag);
 		return entity;
-	}
-
-	@Override
-	public XMLEntity getPrototyp() {
-		return new XMLEntity();
 	}
 }

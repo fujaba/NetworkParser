@@ -423,13 +423,6 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return new SimpleIterator<K>(this);
 	}
 	
-	//Methode for Type Casting
-	@Override
-	public SimpleKeyValueList<K, V> withAllowDuplicate(boolean allowDuplicate) {
-		super.withAllowDuplicate(allowDuplicate);
-		return this;
-	}
-	
 	@Override
 	@SuppressWarnings("unchecked")
 	public K getKeyByIndex(int index) {
