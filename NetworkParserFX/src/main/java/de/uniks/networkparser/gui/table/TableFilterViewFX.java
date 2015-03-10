@@ -23,11 +23,12 @@ package de.uniks.networkparser.gui.table;
 */
 import java.util.Iterator;
 import java.util.List;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
 public class TableFilterViewFX extends TableFilterView implements ChangeListener<String>{
-	public TableFilterViewFX(TableComponentInterface tableComponent) {
+	public TableFilterViewFX(TableComponent tableComponent) {
 		super(tableComponent);
 	}
 

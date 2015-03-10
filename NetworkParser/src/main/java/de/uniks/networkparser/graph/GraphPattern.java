@@ -5,7 +5,7 @@ public class GraphPattern extends GraphNode {
 	private String bounds;
 	// GETTER AND SETTER
 	@Override
-	public GraphPattern getNewInstance() {
+	public GraphPattern getNewList(boolean keyValue) {
 		return new GraphPattern();
 	}
 	

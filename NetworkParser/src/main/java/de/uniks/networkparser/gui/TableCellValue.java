@@ -1,4 +1,4 @@
-package de.uniks.networkparser.gui.table.util;
+package de.uniks.networkparser.gui;
 
 /*
  NetworkParser
@@ -21,6 +21,14 @@ package de.uniks.networkparser.gui.table.util;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
  */
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class ColumnListCreator {
+public interface TableCellValue {
+	public Column getColumn();
+
+	public SendableEntityCreator getCreator();
+
+	public Object getItem();
+
+	public Object getSimpleValue();
 }

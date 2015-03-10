@@ -26,9 +26,7 @@ import java.util.ArrayList;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.event.MapEntry;
-import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
-import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
@@ -36,7 +34,7 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
  * The Class XMLEntity.
  */
 public class XMLEntity extends SimpleKeyValueList<String, Object> implements
-		StringItem, FactoryEntity, Entity {
+		StringItem, Entity {
 	/** Constant of TAG. */
 	public static final String PROPERTY_TAG = "tag";
 	/** Constant of VALUE. */
@@ -232,23 +230,13 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements
 		}
 	}
 
-	@Override
-	public XMLEntity getNewMap() {
-		return new XMLEntity();
-	}
-
-	@Override
-	public BaseItem getNewList() {
-		return new XMLEntity();
-	}
-
 	/** @return a new Instance of MapEntry */
 	public MapEntry getNewEntity() {
 		return new MapEntry();
 	}
 
 	@Override
-	public XMLEntity getNewInstance() {
+	public XMLEntity getNewList(boolean keyValue) {
 		return new XMLEntity();
 	}
 

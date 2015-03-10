@@ -2,6 +2,7 @@ package de.uniks.networkparser.list;
 
 import java.util.Comparator;
 
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.sort.EntityComparator;
 import de.uniks.networkparser.sort.SortingDirection;
 
@@ -54,7 +55,7 @@ public class SortedList<V> extends SimpleList<V> {
 		if(!isComparator()) {
 			return null;
 		}
-		SimpleList<V> newList = getNewInstance();
+		BaseItem newList = getNewList(false);
 		// PRE WHILE
 		int pos = 0;
 		for (; pos < size(); pos++) {
@@ -103,7 +104,7 @@ public class SortedList<V> extends SimpleList<V> {
 		if(!isComparator()) {
 			return null;
 		}
-		SimpleList<V> newList = getNewInstance();
+		BaseItem newList = getNewList(false);
 		// MUST COPY
 		for (int pos = 0; pos < size(); pos++) {
 			int compare = comparator().compare(get(pos), toElement);

@@ -1,4 +1,4 @@
-package de.uniks.networkparser.gui.table;
+package de.uniks.networkparser.gui;
 
 /*
  NetworkParser
@@ -28,6 +28,10 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 public class ColumnListener {
 	protected Column column;
 	private boolean defaultListener;
+	private CellHandler cellHandler;
+	public static final String SELECTION="selection";
+	public static final String EDIT="edit";
+	
 
 	public ColumnListener withColumn(Column column) {
 		this.column = column;
@@ -45,7 +49,7 @@ public class ColumnListener {
 			Object value = creator.getValue(entity, attrName);
 			if(column.getNumberFormat()!=null && value instanceof Long) {
 				DateTimeEntity item = new DateTimeEntity();
-				item.withValue((long) value);
+				item.withValue((Long) value);
 				return item.toString(column.getNumberFormat()); 
 			}
 			return value;
@@ -54,14 +58,23 @@ public class ColumnListener {
 	}
 
 	public boolean canEdit(Object entity, SendableEntityCreator creator) {
+		if(cellHandler != null) {
+			return false;
+		}
 		return column.isEditable();
 	}
 
-	public void onSelection(Object entity, SendableEntityCreator creator,
-			int x, int y) {
+	public CellEditorElement onSelection(Object entity, SendableEntityCreator creator, double x, double y) {
+		if(cellHandler!=null) {
+			return cellHandler.onAction(SELECTION, entity, creator, x, y);
+		}
+		return null;
 	}
 
-	public CellEditorElement onEdit(Object entity, SendableEntityCreator creator) {
+	public CellEditorElement onEdit(Object entity, SendableEntityCreator creator, double x, double y) {
+		if(cellHandler!=null) {
+			return cellHandler.onAction(EDIT, entity, creator, x, y);
+		}
 		return null;
 	}
 
@@ -78,18 +91,8 @@ public class ColumnListener {
 				IdMapEncoder.UPDATE);
 	}
 
-	public void dispose() {
-
-	}
-
 	public boolean updateWidth(int oldWidth, int newWidth) {
 		return true;
-	}
-
-	public void refresh(Object cell) {
-	}
-
-	public void startEdit(CellEditorElement editField) {
 	}
 
 	public boolean isDefaultListener() {
@@ -98,6 +101,11 @@ public class ColumnListener {
 
 	public ColumnListener withDefaultListener(boolean value) {
 		this.defaultListener = value;
+		return this;
+	}
+
+	public ColumnListener withActionListener(CellHandler handler) {
+		this.cellHandler = handler;
 		return this;
 	}
 }

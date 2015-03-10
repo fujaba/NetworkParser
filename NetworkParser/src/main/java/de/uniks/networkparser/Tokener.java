@@ -220,7 +220,7 @@ public abstract class Tokener {
 		int startpos = this.buffer.position();
 		char c;
 		boolean isQuote = false;
-		char b = 0;
+		char b = getCurrentChar();
 		do {
 			c = next();
 			switch (c) {

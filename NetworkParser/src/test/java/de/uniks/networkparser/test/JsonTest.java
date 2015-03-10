@@ -56,16 +56,24 @@ public class JsonTest {
 		
 		JsonObject jsonObject= new JsonObject();
 		new JsonTokener().withAllowCRLF(true).withText(functionJson).parseToEntity(jsonObject);
-		System.out.println(jsonObject.toString(2));
+		Assert.assertEquals("{\"body\":\"public main() {\\u000d\\u000a\\u0009console.log(\'Hallo Welt\');\\u000a\\u0009}\"}", jsonObject.toString(2));
 	}
-
 	
 	@Test
 	public void testJSONInsert(){
 		JsonObject item = new JsonObject().withValue("id", "K444", "value", "42");
 		item.add(0, "class", "JsonObject");
-		System.out.println(item.toString());
+		Assert.assertEquals("{\"class\":\"JsonObject\",\"id\":\"K444\",\"value\":\"42\"}", item.toString());
 	}
+
+	@Test
+	public void testJSONString(){
+		JsonObject item = new JsonObject().withValue("{name:\"\\\"Stefan\\\"\", value:42}");
+		item.add(0, "class", "JsonObject");
+		Assert.assertEquals("{\"class\":\"JsonObject\",\"name\":\"\\\"Stefan\\\"\",\"value\":42}", item.toString());
+	}
+
+	
 	@Test
 	public void testJSONList(){
 		JsonObject item = new JsonObject();
@@ -135,8 +143,8 @@ public class JsonTest {
 		
 		JsonIdMap mapReserve= new JsonIdMap();
 		mapReserve.withCreator(new ChangeCreator());
-		System.out.println(jsonObject.toString());
 		Change item = (Change) mapReserve.decode(jsonObject.toString());
+		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.Change\",\"id\":\"J1.C1\",\"prop\":{\"value\":{\"class\":\"de.uniks.networkparser.json.JsonObject\",\"VALUE\":\"{\\\"id\\\":\\\"name\\\",\\\"value\\\":\\\"42\\\"}\"}}}", jsonObject.toString());
 		assertEquals(item.getValue().getString("value"), "42");
 	}
 	

@@ -46,6 +46,14 @@ public class Filter {
 		return this;
 	}
 
+	/**
+	 * Filter for encoding ID of Element
+	 * 
+	 * @param map the Map
+	 * @param entity Entity for Show Id
+	 * @param className ClassName
+	 * @return Boolean if encoding ID
+	 */
 	public boolean isId(IdMapEncoder map, Object entity, String className) {
 		if (idFilter != null) {
 			return idFilter.check(ValuesMap.with(map, entity, className));
@@ -198,7 +206,22 @@ public class Filter {
 		return null;
 	}
 
+	/**
+	 * Create a new Filter for Regard Filter (Encoding Object or remove link)
+	 * 
+	 * @param convertable Condition
+	 * @return a new Filter for regard the model 
+	 */
 	public static Filter regard(Condition<ValuesSimple> convertable) {
 		return new Filter().withPropertyRegard(convertable);
+	}
+	/**
+	 * Create a new Filter for Converting Filter (Encoding Object or set only the Id)
+	 * 
+	 * @param convertable Condition
+	 * @return a new Filter for Filter with Convertable Items 
+	 */
+	public static Filter convertable(Condition<ValuesSimple> convertable) {
+		return new Filter().withConvertable(convertable);
 	}
 }

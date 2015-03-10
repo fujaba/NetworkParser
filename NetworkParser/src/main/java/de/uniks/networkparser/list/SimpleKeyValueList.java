@@ -7,10 +7,8 @@ import java.util.Set;
 
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.BaseList;
-import de.uniks.networkparser.interfaces.FactoryEntity;
 
-public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K, V>, FactoryEntity, Iterable<K>, BaseList {
+public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K, V>, Iterable<K> {
 
 	@Override
 	public byte initFlag() {
@@ -131,20 +129,19 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	
 	@Override
 	public Set<K> keySet() {
-		if(isComplex() && this.elements!=null) {
-			return new SimpleSet<K>().init((Object[])this.elements[SMALL_KEY], size);
+		SimpleSet<K> item = new SimpleSet<K>();
+		if(isComplex(size) && this.elements!=null) {
+			item.init((Object[])this.elements[SMALL_KEY], size);
+		}else if(this.elements!=null) {
+			item.init(this.elements, size);
 		}
-		return new SimpleSet<K>().init(this.elements, size);
+		return item;
 	}
 	
 	public Iterator<K> keyIterator() {
 		return keySet().iterator();
 	}
 
-	public SimpleKeyValueList<K, V> getNewInstance() {
-		return new SimpleKeyValueList<K, V>();
-	}
-	
 	/**
 	 * Get the boolean value associated with an index. The string values "true"
 	 * and "false" are converted to boolean.
@@ -318,15 +315,9 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	}
 	
 	@Override
-	public BaseList getNewMap() {
+	public BaseItem getNewList(boolean keyValue) {
 		return new SimpleKeyValueList<K, V>();
 	}
-	
-	@Override
-	public BaseItem getNewList() {
-		return new SimpleEntity<K, V>();
-	}
-	
 	@Override
 	public SimpleKeyValueList<K, V> withList(Collection<?> values) {
 		super.withList(values);
@@ -432,13 +423,6 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return new SimpleIterator<K>(this);
 	}
 	
-	//Methode for Type Casting
-	@Override
-	public SimpleKeyValueList<K, V> withAllowDuplicate(boolean allowDuplicate) {
-		super.withAllowDuplicate(allowDuplicate);
-		return this;
-	}
-	
 	@Override
 	@SuppressWarnings("unchecked")
 	public K getKeyByIndex(int index) {
@@ -494,10 +478,12 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	
 	@Override
 	public Collection<V> values() {
-		if(elements== null) {
-			return new SimpleList<V>();
+		SimpleList<V> item = new SimpleList<V>();
+		if(elements == null) {
+			return item;
 		}
-		return new SimpleList<V>().init((Object[])elements[SMALL_VALUE], size);
+		item.init((Object[])elements[SMALL_VALUE], size);
+		return item;
 	}
 
 	public SimpleKeyValueList<K, V> withKeyValue(Object key, Object value) {

@@ -1,4 +1,4 @@
-package de.uniks.networkparser.gui.table;
+package de.uniks.networkparser.gui;
 
 /*
  NetworkParser
@@ -25,8 +25,6 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
 
 import de.uniks.networkparser.EntityValueFactory;
 import de.uniks.networkparser.IdMapEncoder;
@@ -37,9 +35,37 @@ import de.uniks.networkparser.sort.EntityComparator;
 import de.uniks.networkparser.sort.SortingDirection;
 
 public class TableList extends SortedList<Object> implements
-		SendableEntity, List<Object> {
+		SendableEntity, SendableEntityCreator {
 	public static final String PROPERTY_ITEMS = "items";
+	public static final String[] properties = new String[] {PROPERTY_ITEMS };
 	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
+
+	@Override
+	public String[] getProperties() {
+		return properties;
+	}
+
+	@Override
+	public Object getSendableInstance(boolean prototyp) {
+		return new TableList();
+	}
+
+	@Override
+	public Object getValue(Object entity, String attribute) {
+		if (TableList.PROPERTY_ITEMS.equalsIgnoreCase(attribute)) {
+			return entity;
+		}
+		return null;
+	}
+
+	@Override
+	public boolean setValue(Object entity, String attribute, Object value,
+			String type) {
+		if (IdMapEncoder.REMOVE.equalsIgnoreCase(type)) {
+			attribute += IdMapEncoder.REMOVE;
+		}
+		return ((TableList) entity).setValue(attribute, value);
+	}
 
 	public boolean setIdMap(IdMapEncoder map) {
 		if(!isComparator() ) {
@@ -72,17 +98,6 @@ public class TableList extends SortedList<Object> implements
 				newValue);
 	}
 
-	@Override
-	public ListIterator<Object> listIterator(int index) {
-		ListIterator<Object> iterator = listIterator();
-		if (index >= 0 && index <= size()) {
-			for (int z = 0; z < index; z++) {
-				iterator.next();
-			}
-		}
-		return iterator;
-	}
-
 	public PropertyChangeSupport getPropertyChangeSupport() {
 		return listeners;
 	}
@@ -113,14 +128,12 @@ public class TableList extends SortedList<Object> implements
 		cpr.withColumn(field);
 		cpr.withDirection(direction);
 		cpr.withCellCreator(cellValueCreator);
-		refreshSort();
 		return this;
 	}
 
 	@Override
 	public TableList withComparator(Comparator<Object> comparator) {
 		super.withComparator(comparator);
-		refreshSort();
 		return this;
 	}
 
@@ -134,32 +147,7 @@ public class TableList extends SortedList<Object> implements
 		}
 		cpr.withColumn(field);
 		cpr.withDirection(direction);
-		refreshSort();
 		return this;
-	}
-
-	public void refreshSort() {
-		// ArrayList<Object> oldValue = list;
-		//
-		// list = getItems(true);
-		// int size = oldValue.size();
-		// Object[] array = oldValue.toArray(new Object[size]);
-		// for (int i=0;i<size;i++) {
-		// list.add(array[i]);
-		// }
-	}
-
-	public void setSort(String field) {
-		if (isComparator() && comparator() instanceof EntityComparator) {
-			EntityComparator<?> cpr = (EntityComparator<?>) comparator();
-			if (cpr.getColumn() != null
-					&& cpr.getColumn().equals(field)) {
-				cpr.changeDirection();
-			} else {
-				cpr.withColumn(field);
-			}
-			refreshSort();
-		}
 	}
 
 	public SortingDirection changeDirection() {
@@ -242,12 +230,7 @@ public class TableList extends SortedList<Object> implements
 	}
 
 	@Override
-	public TableList getNewInstance() {
+	public TableList getNewList(boolean keyValue) {
 		return new TableList();
-	}
-
-	@Override
-	public boolean remove(Object value) {
-		return removeItemByObject(value) >= 0;
 	}
 }

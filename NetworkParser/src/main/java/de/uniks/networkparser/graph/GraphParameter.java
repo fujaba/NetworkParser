@@ -21,6 +21,7 @@
 
 package de.uniks.networkparser.graph;
 
+
 public class GraphParameter extends GraphValue {
 	public static final String PROPERTY_METHOD = "method";
 	private GraphMethod method = null;
@@ -71,5 +72,10 @@ public class GraphParameter extends GraphValue {
 	public GraphParameter with(GraphDataType value) {
 		super.with(value);
 		return this;
+	}
+
+	@Override
+	public GraphParameter getNewList(boolean keyValue) {
+		return new GraphParameter();
 	}
 }

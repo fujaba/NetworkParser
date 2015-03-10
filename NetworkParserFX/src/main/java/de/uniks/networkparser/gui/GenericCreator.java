@@ -21,6 +21,7 @@ package de.uniks.networkparser.gui;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
  */
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.LinkedHashSet;
 
@@ -111,6 +112,20 @@ public class GenericCreator implements SendableEntityCreator {
 			return invoke;
 		} catch (Exception e2) {
 		}
+		// No Method Found
+		try {
+			Field field = this.clazz.getDeclaredField(attribute);
+			if(!field.isAccessible()) {
+				field.setAccessible(true);
+				Object invoke = field.get(entity);
+				field.setAccessible(false);
+				return invoke;
+			}
+			Object invoke = field.get(entity);
+			return invoke;
+		} catch (Exception e2) {
+			System.out.println(e2);
+		}
 		return null;
 	}
 
@@ -157,7 +172,24 @@ public class GenericCreator implements SendableEntityCreator {
 		if (setNewValue(entity, "set" + this.getMethodName(attribute), value)) {
 			return true;
 		}
-		return setNewValue(entity, "with" + this.getMethodName(attribute),
-				value);
+		if (setNewValue(entity, "with" + this.getMethodName(attribute),
+				value)){
+			return true;
+		}
+		// No Method Found
+		try {
+			Field field = this.clazz.getDeclaredField(attribute);
+			if(!field.isAccessible()) {
+				field.setAccessible(true);
+				field.set(entity, value);
+				field.setAccessible(false);
+				return true;
+			}
+			field.set(entity, value);
+			return true;
+		} catch (Exception e2) {
+			System.out.println(e2);
+		}
+		return false;
 	}
 }

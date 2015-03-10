@@ -34,15 +34,15 @@ buildscript {
     }
 }
 
-jacoco {
-    toolVersion = "0.7.0.201403182114"
-}
-task codeCoverageReport(type: JacocoReport) {
-
+if(project.hasProperty('jenkins')) {
+	jacoco {
+		toolVersion = "0.7.0.201403182114"
+	}
+	task codeCoverageReport(type: JacocoReport) {
     // Gather execution data from all subprojects
     // (change this if you e.g. want to calculate uni test/integration test coverage separately)
     // executionData
-fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
+	fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
 
     // Add all relevant sourcesets from the subprojects
     subprojects.each {
@@ -55,16 +55,20 @@ fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
       html.destination "${buildDir}/reports/jacoco"
       csv.enabled false
     }
+	}
+
+	// always run the tests before generating the report
+	codeCoverageReport.dependsOn {
+		subprojects*.test
+	}
 }
-
-// always run the tests before generating the report
-codeCoverageReport.dependsOn {
-    subprojects*.test
+if(project.hasProperty('JarName') && project.getProperty('JarName')=="NetworkParserFX"){
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
+} else {
+	sourceCompatibility = 1.6
+	targetCompatibility = 1.6
 }
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
 
 repositories {
 	mavenCentral()

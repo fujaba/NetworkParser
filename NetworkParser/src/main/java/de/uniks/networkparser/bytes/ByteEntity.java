@@ -23,17 +23,18 @@ package de.uniks.networkparser.bytes;
  */
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
+
 import de.uniks.networkparser.bytes.converter.ByteConverterHTTP;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteConverter;
 import de.uniks.networkparser.interfaces.ByteItem;
-import de.uniks.networkparser.interfaces.FactoryEntity;
 
 /**
  * The Class ByteEntity.
  */
 
-public class ByteEntity implements ByteItem, FactoryEntity {
+public class ByteEntity implements ByteItem, BaseItem {
 	/** The Constant BIT OF A BYTE. */
 	public final static int BITOFBYTE = 8;
 	public final static int TYPBYTE = 1;
@@ -322,13 +323,11 @@ public class ByteEntity implements ByteItem, FactoryEntity {
 	}
 
 	@Override
-	public ByteList getNewMap() {
+	public BaseItem getNewList(boolean keyValue) {
+		if(keyValue) {
+			return new ByteEntity();
+		}
 		return new ByteList();
-	}
-
-	@Override
-	public ByteEntity getNewList() {
-		return new ByteEntity();
 	}
 
 	@Override
@@ -348,5 +347,20 @@ public class ByteEntity implements ByteItem, FactoryEntity {
 		ByteEntity item = new ByteEntity();
 		item.setValues(value);
 		return item;
+	}
+
+	@Override
+	public BaseItem withAll(Object... values) {
+		if(values==null){
+			return this;
+		}
+		if(values.length>1) {
+			byte[] value = new byte[values.length-1];
+			for(int i=1;i<values.length;i++) {
+				value[i-1] = (Byte) values[i];
+			}
+			withValue((Byte)values[0], value);
+		}
+		return this;
 	}
 }
