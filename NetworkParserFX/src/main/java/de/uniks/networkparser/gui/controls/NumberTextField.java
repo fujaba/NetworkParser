@@ -24,6 +24,7 @@ package de.uniks.networkparser.gui.controls;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -31,9 +32,9 @@ import javafx.event.EventHandler;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import de.uniks.networkparser.gui.table.CellEditorElement;
-import de.uniks.networkparser.gui.table.Column;
-import de.uniks.networkparser.gui.table.FieldTyp;
+import de.uniks.networkparser.gui.CellEditorElement;
+import de.uniks.networkparser.gui.Column;
+import de.uniks.networkparser.gui.FieldTyp;
 
 public class NumberTextField extends TextField implements CellEditorElement {
 	private NumberFormat nf;

@@ -11,17 +11,17 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.Style;
+import de.uniks.networkparser.gui.TableList;
 import de.uniks.networkparser.gui.controller.ModelListenerStringProperty;
-import de.uniks.networkparser.gui.table.Column;
 import de.uniks.networkparser.gui.table.SearchTableComponent;
 import de.uniks.networkparser.gui.table.TableComponent;
-import de.uniks.networkparser.gui.table.util.TableListCreator;
-import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.gui.test.model.GroupAccount;
 import de.uniks.networkparser.gui.test.model.Person;
 import de.uniks.networkparser.gui.test.model.util.GroupAccountCreator;
 import de.uniks.networkparser.gui.test.model.util.PersonCreator;
+import de.uniks.networkparser.json.JsonIdMap;
 
 public class GroupAccountGUI extends Application {
 	private GroupAccount groupAccount;
@@ -36,7 +36,7 @@ public class GroupAccountGUI extends Application {
 	        TableComponent tableView = new SearchTableComponent();
 	        
 	        JsonIdMap map = new  JsonIdMap();
-	        map.withCreator(new TableListCreator());
+	        map.withCreator(new TableList());
 	        map.withCreator(new PersonCreator());
 	        map.withCreator(new GroupAccountCreator());
 	        

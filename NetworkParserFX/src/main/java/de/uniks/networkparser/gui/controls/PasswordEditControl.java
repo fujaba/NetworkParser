@@ -22,8 +22,8 @@ package de.uniks.networkparser.gui.controls;
  permissions and limitations under the Licence.
 */
 import javafx.scene.control.PasswordField;
-import de.uniks.networkparser.gui.table.Column;
-import de.uniks.networkparser.gui.table.FieldTyp;
+import de.uniks.networkparser.gui.Column;
+import de.uniks.networkparser.gui.FieldTyp;
 
 public class PasswordEditControl extends EditControl<PasswordField>{
 	@Override

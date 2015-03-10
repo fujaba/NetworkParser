@@ -22,6 +22,8 @@ package de.uniks.networkparser.gui.table;
  permissions and limitations under the Licence.
 */
 import javafx.beans.property.SimpleObjectProperty;
+import de.uniks.networkparser.gui.Column;
+import de.uniks.networkparser.gui.TableCellValue;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class TableCellValueFX extends SimpleObjectProperty<TableCellValue> implements TableCellValue{

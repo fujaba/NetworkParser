@@ -1,4 +1,6 @@
-package de.uniks.networkparser.gui.table;
+package de.uniks.networkparser.gui;
+
+
 
 /*
  NetworkParser
@@ -21,14 +23,24 @@ package de.uniks.networkparser.gui.table;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
  */
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public interface TableCellValue {
-	public Column getColumn();
+public interface CellEditorElement {
+	public enum APPLYACTION{SAVE,TAB, ENTER, FOCUS};
+	public CellEditorElement withColumn(Column column);
 
-	public SendableEntityCreator getCreator();
+	public void cancel();
 
-	public Object getItem();
+	public boolean setFocus(boolean value);
 
-	public Object getSimpleValue();
+	public boolean onActive(boolean value);
+
+	public boolean nextFocus();
+
+	public void apply(APPLYACTION action);
+
+	public void dispose();
+
+	public Object getValue(boolean convert);
+
+	public CellEditorElement withValue(Object value);
 }

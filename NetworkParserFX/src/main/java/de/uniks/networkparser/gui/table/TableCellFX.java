@@ -27,8 +27,12 @@ import javafx.scene.Node;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TablePosition;
 import javafx.scene.text.Font;
+import de.uniks.networkparser.gui.CellEditorElement;
+import de.uniks.networkparser.gui.Column;
+import de.uniks.networkparser.gui.FieldTyp;
 import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.gui.StyleFX;
+import de.uniks.networkparser.gui.TableCellValue;
 import de.uniks.networkparser.gui.controls.EditControl;
 import de.uniks.networkparser.gui.controls.EditFieldMap;
 import de.uniks.networkparser.interfaces.GUIPosition;
@@ -110,7 +114,8 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 				setGraphic(control.getControl());
 			}
 		}else if(this.field.isListener()) {
-			this.field.getListener().onEdit(entity, creator);
+			
+			this.field.getListener().onEdit(entity, creator, getTableView().getLayoutX(), getTableView().getLayoutY());
 		}
 	}
 	

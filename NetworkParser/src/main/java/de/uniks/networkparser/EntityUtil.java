@@ -200,10 +200,8 @@ public class EntityUtil {
 		if (value instanceof StringItem) {
 			return ((StringItem) value).toString(indentFactor, intent);
 		}
-//FIXME MAP
 		if (value instanceof Map) {
-			BaseItem item = ((SimpleKeyValueList<?, ?>) reference
-					.getNewList(true)).withList((Map<?, ?>) value);
+			BaseItem item = reference.getNewList(true).withAll((Map<?, ?>) value);
 			if (item instanceof StringItem) {
 				return ((StringItem) item).toString(indentFactor, intent);
 			}

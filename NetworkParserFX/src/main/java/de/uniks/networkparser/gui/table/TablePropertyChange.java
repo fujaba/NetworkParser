@@ -24,6 +24,8 @@ package de.uniks.networkparser.gui.table;
 import java.beans.PropertyChangeEvent;
 import java.util.Iterator;
 
+import de.uniks.networkparser.gui.TableList;
+
 public class TablePropertyChange implements Runnable{
 	private PropertyChangeEvent event;
 	private TableComponent table;

@@ -25,7 +25,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 
 public abstract class IdMap extends IdMapEncoder {
 	public abstract Object decode(BaseItem value);
-
+	
 	public abstract Object decode(String value);
 
 	private boolean caseSensitive = false;

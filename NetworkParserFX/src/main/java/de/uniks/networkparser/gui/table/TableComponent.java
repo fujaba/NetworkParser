@@ -53,22 +53,23 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import de.uniks.networkparser.DefaultTextItems;
 import de.uniks.networkparser.Filter;
-import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.TextItems;
+import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.Style;
+import de.uniks.networkparser.gui.TableList;
 import de.uniks.networkparser.gui.controls.EditFieldMap;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.logic.InstanceOf;
-//TODO ADD ALL FUNCTIONALITY FROM TABLECOMPONENT.JAVA.TXT
-public class TableComponent extends BorderPane implements PropertyChangeListener, TableComponentInterface, ChangeListener<Number> {
+
+public class TableComponent extends BorderPane implements PropertyChangeListener, ChangeListener<Number> {
 	private ArrayList<TableColumnFX> columns = new ArrayList<TableColumnFX>();
 	public static final String PROPERTY_COLUMN = "column";
 	public static final String PROPERTY_ITEM = "item";
-	protected IdMapEncoder map;
+	protected JsonIdMap map;
 	protected Object source;
 	protected SendableEntityCreator sourceCreator;
 	private String property;
@@ -84,7 +85,6 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	private SelectionListener listener;
 	private EditFieldMap field=new EditFieldMap();
 	
-	@Override
 	public IdMapEncoder getMap() {
 		return map;
 	}
@@ -97,7 +97,6 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		return node;
 	}
 	
-	@Override
 	public TableComponent createFromCreator(SendableEntityCreator creator, boolean edit) {
 		if(creator==null){
 			Iterator<Object> iterator = list.iterator();
@@ -156,7 +155,6 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		return resultTableViewer;
 	}
 
-	@Override
 	public TableComponent withScrollPosition(double pos){
 		for(TableViewFX table : tableViewer){
 			if(table!=null){
@@ -166,7 +164,6 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		return this;
 	}
 
-	@Override
 	public TableComponent withColumn(Column column) {
 		init();
 		TableView<Object> browserView = getBrowserView(column.getBrowserId());
@@ -225,13 +222,12 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	}
 
 	
-	public TableComponent withMap(IdMap map){
+	public TableComponent withMap(JsonIdMap map){
 		this.map = map;
 		this.field.withMap(map);
 		return this;
 	}
 
-	@Override
 	public TableComponent withSearchProperties(String... searchProperties) {
 		if(tableFilterView==null){
 			init();
@@ -241,7 +237,6 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		return this;
 	}
 	
-	@Override
 	public void init(){
 		withAnchor(this);
 		
@@ -280,7 +275,6 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		}
 	}
 
-	@Override
 	public boolean addItem(Object item) {
 		if(sourceList==null){
 			init();
@@ -302,7 +296,6 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		return false;
 	}
 
-	@Override
 	public boolean removeItem(Object item) {
 		if (sourceList.contains(item)) {
 			sourceCreator.setValue(source, property, item, IdMapEncoder.REMOVE);
@@ -319,12 +312,10 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		return false;
 	}
 	
-	@Override
 	public TableComponent withList(TableList item) {
 		return withList(item, TableList.PROPERTY_ITEMS);
 	}
 	
-	@Override
 	public TableComponent withList(Object item, String property) {
 		if (map == null) {
 			return this;
@@ -349,12 +340,11 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		return this;
 	}
 	
-	@Override
-	public TableColumnInterface getColumn(Column column) {
+	public TableColumnFX getColumn(Column column) {
 		if (column != null) {
 			for (Iterator<TableColumnFX> i = this.columns.iterator(); i
 					.hasNext();) {
-				TableColumnInterface item = i.next();
+				TableColumnFX item = i.next();
 				if (item.getColumn().equals(column)) {
 					return item;
 				}
@@ -362,12 +352,10 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		}
 		return null;
 	}
-	@Override
 	public void addUpdateListener(Object list) {
 		this.updateItemListener.addItem(list);
 	}
 
-	@Override
 	public String getProperty() {
 		return property;
 	}
@@ -397,7 +385,6 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		return columns.iterator();
 	}
 
-	@Override
 	public SendableEntityCreator getCreator(Object entity) {
 		return getMap().getCreatorClass(entity);
 	}
@@ -406,11 +393,9 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		return list.get(row);
 	}
 	
-	@Override
 	public void refreshViewer() {
 	}
 
-	@Override
 	public List<Object> getItems(boolean all) {
 		if(all){
 			return sourceList;
@@ -463,10 +448,9 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		if(!(map instanceof JsonIdMap)) {
 			return false;
 		}
-		JsonIdMap jsonMap = (JsonIdMap) map;
 		for(int i=0;i<this.columns.size();i++) {
 			TableColumnFX column = this.columns.get(i);
-			jsonMap.decode(column.getColumn(), columns.getJSONObject(i));
+			map.decode(column.getColumn(), columns.getJSONObject(i));
 			column.refresh();
 		}
 		return true;
