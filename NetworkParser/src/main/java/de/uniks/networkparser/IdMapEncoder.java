@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.Set;
 
 import de.uniks.networkparser.event.MapEntry;
-import de.uniks.networkparser.gui.table.TableList;
+import de.uniks.networkparser.gui.TableList;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.IdMapCounter;
 import de.uniks.networkparser.interfaces.SendableEntity;

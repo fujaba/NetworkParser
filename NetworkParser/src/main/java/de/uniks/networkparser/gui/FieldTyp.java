@@ -1,5 +1,4 @@
-package de.uniks.networkparser.gui.table;
-
+package de.uniks.networkparser.gui;
 
 /*
  NetworkParser
@@ -23,23 +22,21 @@ package de.uniks.networkparser.gui.table;
  permissions and limitations under the Licence.
  */
 
-public interface CellEditorElement {
-	public enum APPLYACTION{SAVE,TAB, ENTER, FOCUS};
-	public CellEditorElement withColumn(Column column);
+public enum FieldTyp {
+	ASSOC(1), DATE(2), CHECKBOX(3), COMBOBOX(4), DOUBLE(5), INTEGER(6), TEXT(7), PASSWORD(
+			8), VALUEFROMDROPDOWNLIST(9);
 
-	public void cancel();
+	private int value;
 
-	public boolean setFocus(boolean value);
+	FieldTyp(int value) {
+		this.setValue(value);
+	}
 
-	public boolean onActive(boolean value);
+	public int getValue() {
+		return value;
+	}
 
-	public boolean nextFocus();
-
-	public void apply(APPLYACTION action);
-
-	public void dispose();
-
-	public Object getValue(boolean convert);
-
-	public CellEditorElement withValue(Object value);
+	public void setValue(int value) {
+		this.value = value;
+	}
 }

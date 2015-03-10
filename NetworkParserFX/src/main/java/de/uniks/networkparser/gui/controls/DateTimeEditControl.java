@@ -23,12 +23,13 @@ package de.uniks.networkparser.gui.controls;
 */
 import java.time.LocalDate;
 import java.util.GregorianCalendar;
+
 import javafx.event.EventHandler;
 import javafx.scene.control.DatePicker;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import de.uniks.networkparser.gui.table.Column;
-import de.uniks.networkparser.gui.table.FieldTyp;
+import de.uniks.networkparser.gui.Column;
+import de.uniks.networkparser.gui.FieldTyp;
 
 public class DateTimeEditControl extends EditControl<DatePicker>{
 	@Override

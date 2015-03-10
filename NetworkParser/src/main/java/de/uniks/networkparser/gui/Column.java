@@ -1,4 +1,4 @@
-package de.uniks.networkparser.gui.table;
+package de.uniks.networkparser.gui;
 
 /*
  NetworkParser
@@ -24,7 +24,6 @@ package de.uniks.networkparser.gui.table;
 import java.util.Comparator;
 
 import de.uniks.networkparser.EntityValueFactory;
-import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
@@ -250,6 +249,13 @@ public class Column implements SendableEntityCreator {
 	public Column withListener(ColumnListener handler) {
 		this.handler = handler;
 		this.handler.withColumn(this);
+		return this;
+	}
+	
+	public Column withActionHandler(CellHandler handler) {
+		if(getListener().isDefaultListener()) {
+			getListener().withActionListener(handler);
+		}
 		return this;
 	}
 	

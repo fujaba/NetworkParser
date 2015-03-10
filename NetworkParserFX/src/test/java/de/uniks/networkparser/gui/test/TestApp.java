@@ -14,12 +14,11 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import de.uniks.networkparser.gui.table.Column;
+import de.uniks.networkparser.gui.Column;
+import de.uniks.networkparser.gui.TableCellValue;
+import de.uniks.networkparser.gui.TableList;
 import de.uniks.networkparser.gui.table.SearchTableComponent;
-import de.uniks.networkparser.gui.table.TableCellValue;
 import de.uniks.networkparser.gui.table.TableComponent;
-import de.uniks.networkparser.gui.table.TableList;
-import de.uniks.networkparser.gui.table.util.TableListCreator;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.json.JsonIdMap;
 
@@ -76,7 +75,7 @@ public class TestApp extends Application {
 
         
         JsonIdMap map = new  JsonIdMap();
-        map.withCreator(new TableListCreator());
+        map.withCreator(tableList);
         map.withCreator(new PersonGUICreator());
         
         tableView.withMap(map).withList(tableList);

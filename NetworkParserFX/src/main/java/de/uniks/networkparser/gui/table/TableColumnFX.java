@@ -30,10 +30,12 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.util.Callback;
+import de.uniks.networkparser.gui.Column;
+import de.uniks.networkparser.gui.TableCellValue;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class TableColumnFX extends TableColumn<Object, TableCellValue> implements TableColumnInterface, EventHandler<ActionEvent>{
+public class TableColumnFX extends TableColumn<Object, TableCellValue> implements EventHandler<ActionEvent>{
 	private Column column;
 	private CheckMenuItem menueItem;
 	private TableComponent tableComponent;
@@ -83,7 +85,6 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 		return this;
 	}
 	
-	@Override
 	public Column getColumn() {
 		return column;
 	}
@@ -93,14 +94,15 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 		Object source = event.getSource();
 		if(source==menueItem){
 			if(!menueItem.isSelected()){
+				column.withVisible(false);
 				this.setVisible(false);	
 			}else{
+				column.withVisible(true);
 				this.setVisible(true);
 			}
 		}
 	}
 
-	@Override
 	public void UpdateCount() {
 		Platform.runLater(new Runnable() {
 			@Override
@@ -114,7 +116,13 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				TableColumnFX.this.setText(column.getLabel() );
+				// COLUMN
+				TableColumnFX.this.setText( column.getLabel() );
+				setVisible(column.isVisible());
+				
+				// Menue
+				menueItem.setText( column.getLabel() );
+				menueItem.setSelected(column.isVisible());
 			}
 		});
 	}

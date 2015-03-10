@@ -24,9 +24,9 @@ package de.uniks.networkparser.gui.controls;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ComboBox;
 import de.uniks.networkparser.StringTokener;
-import de.uniks.networkparser.gui.table.Column;
-import de.uniks.networkparser.gui.table.FieldTyp;
-import de.uniks.networkparser.gui.table.TableList;
+import de.uniks.networkparser.gui.Column;
+import de.uniks.networkparser.gui.FieldTyp;
+import de.uniks.networkparser.gui.TableList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class ComboEditControl extends EditControl<ComboBox<Object>>{

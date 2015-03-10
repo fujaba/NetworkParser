@@ -33,17 +33,18 @@ package de.uniks.networkparser.gui.table;
 import java.util.ArrayList;
 
 import de.uniks.networkparser.StringTokener;
+import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class TableFilterView {
 	private String[] lastSearchCriteriaItems;
 	private ArrayList<String> searchProperties = new ArrayList<String>();
-	protected TableComponentInterface component;
+	protected TableComponent component;
 	private Column updateField;
 	protected boolean lastSearchDetails;
 	protected String lastSearchCriteria = "##";
 
-	public TableFilterView(TableComponentInterface tableComponent) {
+	public TableFilterView(TableComponent tableComponent) {
 		this.component = tableComponent;
 	}
 
@@ -174,7 +175,7 @@ public class TableFilterView {
 
 	public void refreshCounter() {
 		if (updateField != null) {
-			TableColumnInterface column = component.getColumn(updateField);
+			TableColumnFX column = component.getColumn(updateField);
 			if (column != null) {
 				column.UpdateCount();
 			}

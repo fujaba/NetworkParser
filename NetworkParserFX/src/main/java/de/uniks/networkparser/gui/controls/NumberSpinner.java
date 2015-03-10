@@ -36,9 +36,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
-import de.uniks.networkparser.gui.table.CellEditorElement;
-import de.uniks.networkparser.gui.table.Column;
-import de.uniks.networkparser.gui.table.FieldTyp;
+import de.uniks.networkparser.gui.CellEditorElement;
+import de.uniks.networkparser.gui.Column;
+import de.uniks.networkparser.gui.FieldTyp;
 
 public class NumberSpinner extends HBox implements CellEditorElement {
 	private final double ARROW_SIZE = 4;

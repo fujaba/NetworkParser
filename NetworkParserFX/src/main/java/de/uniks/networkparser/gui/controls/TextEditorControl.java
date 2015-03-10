@@ -29,8 +29,8 @@ import javafx.event.EventType;
 import javafx.geometry.Side;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
-import de.uniks.networkparser.gui.table.Column;
-import de.uniks.networkparser.gui.table.FieldTyp;
+import de.uniks.networkparser.gui.Column;
+import de.uniks.networkparser.gui.FieldTyp;
 
 public class TextEditorControl extends EditControl<TextField>{
 	private AutoCompletionList completion;
