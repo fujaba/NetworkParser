@@ -46,7 +46,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	 * @see MAP
 	 * @see BIDI
 	 */
-	private byte flag=initFlag(); // Flag of
+	public byte flag=initFlag(); // Flag of
 	/**
      * The array buffer into which the elements of the ArrayList are stored.
      * The capacity of the ArrayList is the length of this array buffer. Any
@@ -64,7 +64,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	 * 		BigList<V + Index> for BIDIMAP 
 	 * ]
 	 */ 
-	Object[] elements; // non-private to simplify nested class access
+	public Object[] elements; // non-private to simplify nested class access
 
 	/** The size of the ArrayList (the number of elements it contains).  */
     int size;
@@ -389,7 +389,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 			elements = new Object[arrayFlag];
 			elements[SMALL_KEY] = new Object[newSize];
 			if(newSize>MINHASHINGSIZE) {
-				resizeBig(minCapacity*2, BIG_KEY);
+				resizeBig(newSize*2, BIG_KEY);
 			}
 			if((flag & MAP)==MAP){
 				elements[SMALL_VALUE] = new Object[newSize];
@@ -415,9 +415,9 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 				}
 			}
 			if(minCapacity>=MINHASHINGSIZE && (elements[BIG_KEY]==null || minCapacity >= ((Object[])elements[BIG_KEY]).length * MAXUSEDLIST)) {
-				resizeBig((int)(minCapacity*2.5), BIG_KEY);
+				resizeBig(newSize*2, BIG_KEY);
 				if((flag & MAP)==MAP) {
-					resizeBig((int)(minCapacity*2.5), BIG_VALUE);
+					resizeBig(newSize*2, BIG_VALUE);
 				}
 				elements[DELETED] = null;
 			}
