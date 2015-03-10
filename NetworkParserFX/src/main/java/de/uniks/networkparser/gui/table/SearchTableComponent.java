@@ -30,7 +30,7 @@ import javafx.scene.layout.HBox;
 import de.uniks.networkparser.DefaultTextItems;
 import de.uniks.networkparser.gui.resource.Styles;
 
-public class SearchTableComponent extends TableComponent{
+public class SearchTableComponent extends TableComponent {
 	private BorderPane northComponents;
 	private TextField searchText;
 	private TableFilterViewFX filter;
@@ -78,67 +78,4 @@ public class SearchTableComponent extends TableComponent{
 		}
 		return this;
 	}
-	
-	
-//TODO REMOVE
-//	public void refreshNorthLayout(){
-//		if(firstNorth!=null){
-//			if(firstNorth.getChildren().length<1){
-//				firstNorth.setVisible(false);
-//				firstNorth.dispose();
-//				firstNorth=null;
-//			}
-//			northComponents.setLayout(new GridLayout(northComponents.getChildren().length, false));
-//			this.layout(true);
-//		}
-//	}
-//	
-//	public boolean finishDataBinding(Object item, String property) {
-//		boolean result=super.finishDataBinding(item, property);
-//		refreshNorthLayout();
-//		
-//		return result;
-//	}
-//	
-//	public Composite getNorth() {
-//		return northComponents;
-//	}
-//
-//	public Composite getFirstNorth() {
-//		return firstNorth;
-//	}
-//
-//	@Override
-//	public void executeEvent(PropertyChangeEvent event) {
-//		super.executeEvent(event);
-//		
-//		if (event != null && source.equals(event.getSource()) ){
-//			if(getProperty()!=null && getProperty().equals(event.getPropertyName())) {
-//				if(event.getNewValue()==null){
-//					if(event.getOldValue()!=null){
-//						//REMOVE ENTRY
-//						removeItem(event.getOldValue());
-//
-//					}
-//				}else if(event.getOldValue()==null){
-//					// add Item
-//					addItem(event.getNewValue());
-//				}
-//			}
-//		}
-//	}
-//
-//	public void setKeyListener(KeyListener listener) {
-//		searchText.addKeyListener(listener);
-//	}
-//	
-//	public Text getSearchField() {
-//		return searchText;
-//	}
-//	@Override
-//	public void addKeyListener(KeyListener listener) {
-//		super.addKeyListener(listener);
-//		getSearchField().addKeyListener(listener);
-//	}
-
 }

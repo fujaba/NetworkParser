@@ -395,8 +395,8 @@ public class FXStageController implements StageEvent, WindowListener {
 
 	public static FXStageController show(Stage stage, String fxml,
 			Class<?> path) {
-		FXStageController controller = new FXStageController().withFXML(path.getResource(fxml));
-		controller.show(stage);
+		FXStageController controller = new FXStageController().withStage(stage).withFXML(path.getResource(fxml));
+		controller.show();
 		return controller;
 	}
 

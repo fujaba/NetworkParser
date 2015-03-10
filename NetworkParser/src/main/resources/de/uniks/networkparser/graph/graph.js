@@ -21,6 +21,7 @@
 */
 "use strict";
 var Object_create = Object.create || function (o) { var F = function() {};F.prototype = o; return new F();};
+function isIE () {var myNav = navigator.userAgent.toLowerCase();return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;}
 /* Pos */
 var Pos = function(x, y, id) {this.x = x || 0; this.y = y || 0; if(id){this.id = id;} };
 /* GraphUtil */
@@ -913,7 +914,7 @@ DagreLayout.prototype.layout = function(graph, node, width, height) {
 	graph.draw(node, width, height);
 	if(error) {
 		//node._gui.style.visibility="hidden";
-		node._gui.innerHTML="<h2>Please show in external Browser</h2>"+node._gui.innerHTML;
+		node._gui.innerHTML="<h2>Please show in external Browser V:"+isIE()+"</h2>"+node._gui.innerHTML;
 	}
 };
 DagreLayout.prototype.getRootNode = function(node, child) {

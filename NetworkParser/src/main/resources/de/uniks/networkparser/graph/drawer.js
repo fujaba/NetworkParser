@@ -21,7 +21,6 @@
 */
 "use strict";
 var Object_create = Object.create || function (o) { var F = function() {};F.prototype = o; return new F();};
-
 var Drawer = function(){this.util = new GraphUtil();};
 Drawer.prototype.clearBoard = function(){};
 Drawer.prototype.setPos = function(item, x, y){item.x = x;item.y = y;};
@@ -297,7 +296,17 @@ HTMLDrawer.prototype.createLine = function(x1, y1, x2, y2, lineStyle){
 	line.style.left = cx - 0.5*length + "px";
 	line.style.transform="rotate("+angle+"rad)";
 	line.style.msTransform = line.style.MozTransform = line.style.WebkitTransform = line.style.OTransform= "rotate(" + angle + "rad)";
+	x1 = isIE();
+	if(x1==7 || x1==8 ) {
+		this.setRotateIE(line, angle);
+	}
 	return line;
+};
+HTMLDrawer.prototype.setRotateIE = function(obj, rad) {
+	var costheta = Math.cos(rad);
+	var sintheta = Math.sin(rad);
+	var filter = "progid:DXImageTransform.Microsoft.Matrix(M11="+costheta+", M12="+(-sintheta)+", M21="+sintheta+", M22="+costheta+", sizingMethod='auto expand')";
+	obj.style.filter = filter;
 };
 HTMLDrawer.prototype.onLoadImage = function(event){
 	var img = event.target;

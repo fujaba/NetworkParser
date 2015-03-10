@@ -1,8 +1,4 @@
-package de.uniks.networkparser.interfaces;
-
-import java.util.Collection;
-
-
+package de.uniks.networkparser.gui;
 
 /*
  NetworkParser
@@ -25,11 +21,22 @@ import java.util.Collection;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
  */
-/**
- * The Class BaseEntity.
- */
 
-public interface BaseList extends BaseItem{
-	BaseList withAll(Object... values);
-	BaseList withList(Collection<?> value);
+public enum FieldTyp {
+	ASSOC(1), DATE(2), CHECKBOX(3), COMBOBOX(4), DOUBLE(5), INTEGER(6), TEXT(7), PASSWORD(
+			8), VALUEFROMDROPDOWNLIST(9);
+
+	private int value;
+
+	FieldTyp(int value) {
+		this.setValue(value);
+	}
+
+	public int getValue() {
+		return value;
+	}
+
+	public void setValue(int value) {
+		this.value = value;
+	}
 }

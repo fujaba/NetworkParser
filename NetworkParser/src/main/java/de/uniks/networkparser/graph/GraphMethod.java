@@ -157,7 +157,7 @@ public class GraphMethod extends GraphSimpleList<GraphParameter> implements Grap
 	}
 
 	@Override
-	public GraphMethod getNewInstance() {
+	public GraphMethod getNewList(boolean keyValue) {
 		return new GraphMethod();
 	}
 

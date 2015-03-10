@@ -28,9 +28,9 @@ import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.gui.table.CellEditorElement;
-import de.uniks.networkparser.gui.table.Column;
-import de.uniks.networkparser.gui.table.FieldTyp;
+import de.uniks.networkparser.gui.CellEditorElement;
+import de.uniks.networkparser.gui.Column;
+import de.uniks.networkparser.gui.FieldTyp;
 import de.uniks.networkparser.gui.window.KeyListenerMap;
 
 public abstract class EditControl<T extends Node> implements CellEditorElement, EventHandler<KeyEvent>, ChangeListener<Boolean> {

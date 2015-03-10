@@ -107,4 +107,26 @@ public class SoapObject implements StringItem, BaseItem {
 	public SimpleKeyValueList<String, String> getHeader() {
 		return headers;
 	}
+
+	@Override
+	public BaseItem withAll(Object... values) {
+		if(values==null) {
+			return this;
+		}
+		for(Object item : values) {
+			if(item instanceof Boolean) {
+				withVisible((Boolean) item);
+			} else if(item instanceof String) {
+				withNamespace((String) item);
+			} else if(item instanceof XMLEntity) {
+				withBody((XMLEntity) item);
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public SoapObject getNewList(boolean keyValue) {
+		return new SoapObject();
+	}
 }

@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import de.uniks.networkparser.event.SimpleMapEntry;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
@@ -117,12 +118,11 @@ public class GraphList extends GraphSimpleList<GraphMember> implements GraphMemb
 		return links;
 	}
 
-	public SimpleMapEntry<String, GraphNode> getNewEntity() {
-		return new SimpleMapEntry<String, GraphNode>();
-	}
-
 	@Override
-	public GraphList getNewInstance() {
+	public BaseItem getNewList(boolean keyValue) {
+		if(keyValue) {
+			return new SimpleMapEntry<String, GraphNode>();
+		}
 		return new GraphList();
 	}
 

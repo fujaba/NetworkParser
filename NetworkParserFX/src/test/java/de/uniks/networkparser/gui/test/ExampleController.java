@@ -7,11 +7,10 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.AnchorPane;
-import de.uniks.networkparser.gui.table.Column;
+import de.uniks.networkparser.gui.Column;
+import de.uniks.networkparser.gui.TableCellValue;
+import de.uniks.networkparser.gui.TableList;
 import de.uniks.networkparser.gui.table.SearchTableComponent;
-import de.uniks.networkparser.gui.table.TableCellValue;
-import de.uniks.networkparser.gui.table.TableList;
-import de.uniks.networkparser.gui.table.util.TableListCreator;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.json.JsonIdMap;
 
@@ -30,7 +29,7 @@ public class ExampleController implements Initializable{
 	        tableList.add(new PersonGUI("Michael",   "Brown",    "michael.brown@example.com", 122));
 	        
 	        JsonIdMap map = new  JsonIdMap();
-	        map.withCreator(new TableListCreator());
+	        map.withCreator(new TableList());
 	        map.withCreator(new PersonGUICreator());
 	        SearchTableComponent tableView = (SearchTableComponent) table.getChildren().get(0);
 //	        SearchTableComponent tableView = ((SearchTableController)table).getTable();

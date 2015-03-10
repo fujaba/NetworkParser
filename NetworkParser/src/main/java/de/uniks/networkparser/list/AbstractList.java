@@ -4,10 +4,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.ListIterator;
 
-import de.uniks.networkparser.interfaces.BaseList;
+import de.uniks.networkparser.interfaces.BaseItem;
 
-public abstract class AbstractList<V> extends AbstractArray<V> implements BaseList, Iterable<V>   {
-	public abstract AbstractList<V> getNewInstance();
+public abstract class AbstractList<V> extends AbstractArray<V> implements Iterable<V>   {
     /**
      * {@inheritDoc}
      *
@@ -84,13 +83,13 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements BaseLi
 		return this;
 	}
 
-	public void copyEntity(AbstractList<V> target, int pos) {
+	public void copyEntity(BaseItem target, int pos) {
 		if(target != null)
-			target.add(get(pos));
+			target.withAll(get(pos));
 	}
 
-	public AbstractList<V> subSet(V fromElement, V toElement) {
-		AbstractList<V> newList = getNewInstance();
+	public BaseItem subSet(V fromElement, V toElement) {
+		BaseItem newList = getNewList(false);
 		int end = indexOf(toElement);
 		// MUST COPY
 		for(int pos = indexOf(fromElement);pos<end;pos++){

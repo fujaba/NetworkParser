@@ -30,10 +30,12 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.util.Callback;
+import de.uniks.networkparser.gui.Column;
+import de.uniks.networkparser.gui.TableCellValue;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class TableColumnFX extends TableColumn<Object, TableCellValue> implements TableColumnInterface, EventHandler<ActionEvent>{
+public class TableColumnFX extends TableColumn<Object, TableCellValue> implements EventHandler<ActionEvent>{
 	private Column column;
 	private CheckMenuItem menueItem;
 	private TableComponent tableComponent;
@@ -83,7 +85,6 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 		return this;
 	}
 	
-	@Override
 	public Column getColumn() {
 		return column;
 	}
@@ -93,14 +94,15 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 		Object source = event.getSource();
 		if(source==menueItem){
 			if(!menueItem.isSelected()){
+				column.withVisible(false);
 				this.setVisible(false);	
 			}else{
+				column.withVisible(true);
 				this.setVisible(true);
 			}
 		}
 	}
 
-	@Override
 	public void UpdateCount() {
 		Platform.runLater(new Runnable() {
 			@Override
@@ -110,33 +112,18 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 		});
 	}
 	
-	
-	
-	
-	//FIXME REMOVE
-//	@Override
-//	public ObservableValue<TableCellValue> call(
-//			CellDataFeatures<Object, TableCellValue> arg0) {
-//		return new TableCellFX().withColumn(column).withTableComponent(tableComponent);
-//////	.withCreator(tableComponent.getCreatorClass(arg0.getValue()));
-//	}
-
-//	@Override
-//	public ObservableValue<TableCellValue> call(CellDataFeatures<Object, TableCellValue> arg0) {
-//	public TableCell<Object, TableCellValue> call(TableColumn<Object, TableCellValue> arg0) {
-//		return new TableCellFX().withColumn(column).withTableComponent(tableComponent);
-//setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Object,TableCellValue>, ObservableValue<TableCellValue>>() {
-//			
-//			@Override
-//			public ObservableValue<TableCellValue> call(CellDataFeatures<Object, TableCellValue> arg0) {
-//				 return new TableCellValueFX().withItem(arg0.getValue()).withColumn(TableColumnFX.this.column).withCreator(TableColumnFX.this.tableComponent.getMap().getCreatorClass(arg0.getValue()));
-//			}
-//		});
-//	}
-//	public TableCell<Object, TableCellValue> call(
-//			TableColumn<Object, TableCellValue> arg0) {
-//		System.out.println(arg0);
-//		arg0.get
-//		
-//	}
+	public void refresh() {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				// COLUMN
+				TableColumnFX.this.setText( column.getLabel() );
+				setVisible(column.isVisible());
+				
+				// Menue
+				menueItem.setText( column.getLabel() );
+				menueItem.setSelected(column.isVisible());
+			}
+		});
+	}
 }

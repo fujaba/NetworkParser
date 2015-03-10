@@ -25,8 +25,6 @@ import java.util.Collection;
 import java.util.Map;
 
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.BaseList;
-import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
 import de.uniks.networkparser.list.AbstractArray;
 import de.uniks.networkparser.list.AbstractList;
@@ -189,7 +187,7 @@ public class EntityUtil {
 	 *         brace)</small>.
 	 */
 	public static String valueToString(Object value, int indentFactor,
-			int intent, boolean simpleText, FactoryEntity reference) {
+			int intent, boolean simpleText, BaseItem reference) {
 		if (value == null) {
 			return "null";
 		}
@@ -203,16 +201,17 @@ public class EntityUtil {
 			return ((StringItem) value).toString(indentFactor, intent);
 		}
 		if (value instanceof Map) {
-			BaseItem item = ((SimpleKeyValueList<?, ?>) reference
-					.getNewMap()).withList((Map<?, ?>) value);
+			BaseItem item = reference.getNewList(true).withAll((Map<?, ?>) value);
 			if (item instanceof StringItem) {
 				return ((StringItem) item).toString(indentFactor, intent);
 			}
 			return ((StringItem) item).toString();
 		}
 		if (value instanceof Collection) {
-			BaseList item = reference.getNewMap().withList(
-					(Collection<?>) value);
+			BaseItem item = reference.getNewList(true);
+			if(item instanceof SimpleKeyValueList<?,?>) {
+				return ((SimpleKeyValueList<?,?>) item).withList((Map<?, ?>) value).toString();
+			}
 			if (item instanceof StringItem) {
 				return ((StringItem) item).toString(indentFactor, intent);
 			}
@@ -220,7 +219,7 @@ public class EntityUtil {
 		}
 		if (value.getClass().isArray()) {
 			Object[] items = (Object[]) value;
-			BaseList item = reference.getNewMap();
+			BaseItem item = reference.getNewList(false);
 			for (Object entity : items) {
 				item.withAll(entity);
 			}
@@ -236,7 +235,7 @@ public class EntityUtil {
 	}
 
 	public static String valueToString(Object value, boolean simpleText,
-			FactoryEntity reference) {
+			BaseItem reference) {
 		if (value == null) {
 			return "null";
 		}
@@ -249,18 +248,32 @@ public class EntityUtil {
 		if (value instanceof AbstractArray<?>) {
 			return ((AbstractArray<?>) value).toString();
 		}
-		if (value instanceof Map) {
-			return ((SimpleKeyValueList<?, ?>) reference.getNewList()).withMap(
-					(Map<?, ?>) value).toString();
-		}
+//FIXME MAP
 		if (value instanceof Collection) {
-			return reference.getNewMap().withList((Collection<?>) value)
-					.toString();
+			return reference.getNewList(false).withAll(
+			(Collection<?>) value).toString();
 		}
 		if (value.getClass().isArray()) {
-			return ((AbstractList<?>) reference.getNewList()).withAll(value)
-					.toString();
+			return reference.getNewList(false).withAll(
+			(Map<?, ?>) value).toString();
 		}
+			//		if (value instanceof Map) {
+//			BaseItem newList = reference.getNewList();
+//			if(newList instanceof SimpleKeyValueList<?, ?>) {
+//				return ((SimpleKeyValueList<?, ?>) newList).withMap(
+//						(Map<?, ?>) value).toString();
+//			}
+//		}
+//		if (value instanceof Collection) {
+//			BaseItem newList = reference.getNewList();
+//			if(newList instanceof SimpleKeyValueList<?,?>) {
+//				return ((SimpleKeyValueList<?,?>) newList).withList((Map<?, ?>) value).toString();
+//			}
+//		}
+//		if (value.getClass().isArray()) {
+//			return ((AbstractList<?>) reference.getNewList()).withAll(value)
+//					.toString();
+//		}
 		if (simpleText) {
 			return value.toString();
 		}
@@ -281,7 +294,7 @@ public class EntityUtil {
 	 *            The reference
 	 * @return The wrapped value
 	 */
-	public static Object wrap(Object object, FactoryEntity reference) {
+	public static Object wrap(Object object, BaseItem reference) {
 		try {
 			if (object == null) {
 				return null;
@@ -296,15 +309,15 @@ public class EntityUtil {
 			}
 
 			if (object instanceof Collection) {
-				return ((AbstractList<?>) reference.getNewList())
+				return ((AbstractList<?>) reference.getNewList(false))
 						.withList((Collection<?>) object);
 			}
 			if (object.getClass().isArray()) {
-				return ((AbstractList<?>) reference.getNewList())
+				return ((AbstractList<?>) reference.getNewList(false))
 						.withList((Collection<?>) object);
 			}
 			if (object instanceof Map) {
-				return ((SimpleKeyValueList<?, ?>) reference.getNewList())
+				return ((SimpleKeyValueList<?, ?>) reference.getNewList(false))
 						.withList((Map<?, ?>) object);
 			}
 			if (object.getClass().getName().startsWith("java.")

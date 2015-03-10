@@ -38,7 +38,7 @@ public class SimpleArrayListTest
 
    private ArrayList<TestObject> gtTestList()
    {
-      ArrayList<TestObject> list =  new ArrayList<>();
+      ArrayList<TestObject> list =  new ArrayList<TestObject>();
       TestObject obj0 = new TestObject(Integer.MIN_VALUE);
       list.add(obj0);
       TestObject obj1 = new TestObject(-10);

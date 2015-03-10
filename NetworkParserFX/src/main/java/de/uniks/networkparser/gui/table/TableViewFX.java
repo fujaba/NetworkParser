@@ -64,15 +64,6 @@ public class TableViewFX extends TableView<Object> {
 				if(bar != TableViewFX.this.scrollbar){
 					this.scrollbar = bar;
 					bar.valueProperty().addListener(parent);
-					
-	//				this.scrollbar.needsLayoutProperty().addListener(new ChangeListener<Boolean>() {
-	//					@Override
-	//					public void changed(
-	//							ObservableValue<? extends Boolean> arg0,
-	//							Boolean arg1, Boolean arg2) {
-	//						TableViewFX.this.showScrollbar(arg2);
-	//					}
-	//				});
 				}
 			}
 			parent.showScrollbar(this);

@@ -2,29 +2,24 @@ package de.uniks.networkparser.list;
 
 import java.util.List;
 
+import de.uniks.networkparser.interfaces.BaseItem;
+
 public class SimpleList<V> extends AbstractList<V> implements List<V> {
-	public SimpleList<V> getNewInstance() {
+	
+	@Override
+	public BaseItem getNewList(boolean keyValue) {
 		return new SimpleList<V>();
 	}
 	
 	@Override
+	@SuppressWarnings("unchecked")
 	public SimpleList<V> clone() {
-		return getNewInstance().init(this);
+		return ((SimpleList<V>)getNewList(false)).init(this);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public SimpleList<V> subList(int fromIndex, int toIndex) {
-		SimpleList<V> newInstance = getNewInstance();
-		if(fromIndex>toIndex || fromIndex>=size()){
-			return newInstance;
-		}
-		if(toIndex >= size()) {
-			toIndex = size() - 1;	
-		}
-		
-		while(fromIndex<toIndex) {
-			newInstance.add(get(fromIndex++));
-		}
-		return newInstance;
+		return (SimpleList<V>) super.subList(fromIndex, toIndex);
 	}
 
 	@Override

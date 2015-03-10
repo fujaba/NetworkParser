@@ -1,4 +1,5 @@
-package de.uniks.networkparser.gui.table;
+package de.uniks.networkparser.gui;
+
 
 
 /*

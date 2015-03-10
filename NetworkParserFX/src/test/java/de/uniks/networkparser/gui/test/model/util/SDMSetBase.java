@@ -53,7 +53,7 @@ public class SDMSetBase<T> extends SimpleList<T>
    public <ST extends SDMSetBase<T>> ST union(ST other)
    {
       @SuppressWarnings("unchecked")
-      ST result = (ST) this.getNewInstance();
+      ST result = (ST) this.getNewList(false);
       result.addAll(other);
       
       return result;
@@ -63,7 +63,7 @@ public class SDMSetBase<T> extends SimpleList<T>
    public <ST extends SDMSetBase<T>> ST intersection(ST other)
    {
       @SuppressWarnings("unchecked")
-      ST result = (ST) this.getNewInstance();
+      ST result = (ST) this.getNewList(false);
       result.retainAll(other);
       return result;
    }
@@ -72,7 +72,7 @@ public class SDMSetBase<T> extends SimpleList<T>
    @SuppressWarnings("unchecked")
    public <ST extends SDMSetBase<T>> ST minus(Object other)
    {
-      ST result = (ST) this.getNewInstance();
+      ST result = (ST) this.getNewList(false);
       result.addAll(this);
       
       if (other instanceof Collection)
@@ -90,7 +90,7 @@ public class SDMSetBase<T> extends SimpleList<T>
    @SuppressWarnings("unchecked")
    public <ST extends SDMSetBase<T>> ST has(Condition condition)
    {
-      ST result = (ST) this.getNewInstance();
+      ST result = (ST) this.getNewList(false);
       
       for (T elem : this)
       {
@@ -116,21 +116,17 @@ public class SDMSetBase<T> extends SimpleList<T>
       public abstract boolean check(T elem);
    }
    
-   @SuppressWarnings("unchecked")
-@Override
-   public SDMSetBase<T> getNewInstance() 
-   {
-      SDMSetBase<T> result = null;
-      try
-      {
-         result = this.getClass().newInstance();
-      }
-      catch (Exception e)
-      {
-         e.printStackTrace();
-      }
-      return result;
-   }
+	@Override
+	@SuppressWarnings("unchecked")
+	public SDMSetBase<T> getNewList(boolean keyValue) {
+		SDMSetBase<T> result = null;
+		try {
+			result = this.getClass().newInstance();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
 
    @SuppressWarnings("unchecked")
    @Override

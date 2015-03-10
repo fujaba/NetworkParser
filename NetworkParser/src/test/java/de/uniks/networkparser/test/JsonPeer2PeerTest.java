@@ -4,13 +4,13 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import de.uniks.networkparser.interfaces.MapUpdateListener;
+import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.test.model.SortedMsg;
 import de.uniks.networkparser.test.model.util.SortedMsgCreator;
 
-public class JsonPeer2PeerTest implements MapUpdateListener{
+public class JsonPeer2PeerTest implements UpdateListener{
 	private JsonIdMap firstMap;
 	private JsonIdMap secondMap;
 	private int z;
@@ -21,7 +21,8 @@ public class JsonPeer2PeerTest implements MapUpdateListener{
 	public void testModel(){
 		
 		firstMap = new JsonIdMap();
-		firstMap.withUpdateMsgListener(this);
+		firstMap.withUpdateListenerRead(this);
+		firstMap.withUpdateListenerSend(this);
 		
 		firstMap.withCreator(new SortedMsgCreator());
 		
@@ -38,7 +39,7 @@ public class JsonPeer2PeerTest implements MapUpdateListener{
 //		System.out.println(firstMap.toJsonObject(first).toString(2));
 		firstMap.startCarbageCollection(firstRoot);
 		System.out.println("SEND ALL");
-		sendUpdateMsg(null, null, null, null, firstMap.toJsonObject(firstRoot));
+		update(null, null, firstMap.toJsonObject(firstRoot), null, null, null);
 		
 		SortedMsg third= new SortedMsg();
 		third.setNumber(4);
@@ -51,8 +52,8 @@ public class JsonPeer2PeerTest implements MapUpdateListener{
 	}
 
 	@Override
-	public boolean sendUpdateMsg(Object target, String property, Object oldObj, Object newObject,
-			JsonObject jsonObject) {
+	public boolean update(Object target, String property,
+			JsonObject jsonObject, String typ, Object oldValue, Object newValue) {
 		boolean result=secondMap.executeUpdateMsg(jsonObject);
 //		System.out.println(secondMap.size());
 		if(z==0){
@@ -88,24 +89,5 @@ public class JsonPeer2PeerTest implements MapUpdateListener{
 			System.out.println(secondMap.size());
 		}
 		return result;
-	}
-
-
-	@Override
-	public boolean skipCollision(Object masterObj, String key, Object value,
-			JsonObject removeJson, JsonObject updateJson) {
-		return false;
-	}
-
-	@Override
-	public boolean isReadMessages(String key, Object element, JsonObject props,
-			String type) {
-		return false;
-	}
-
-	@Override
-	public boolean readMessages(String key, Object element, Object value,
-			JsonObject props, String type) {
-		return false;
 	}
 }

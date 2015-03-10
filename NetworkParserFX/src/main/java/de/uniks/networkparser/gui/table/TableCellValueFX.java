@@ -22,6 +22,8 @@ package de.uniks.networkparser.gui.table;
  permissions and limitations under the Licence.
 */
 import javafx.beans.property.SimpleObjectProperty;
+import de.uniks.networkparser.gui.Column;
+import de.uniks.networkparser.gui.TableCellValue;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class TableCellValueFX extends SimpleObjectProperty<TableCellValue> implements TableCellValue{
@@ -69,12 +71,6 @@ public class TableCellValueFX extends SimpleObjectProperty<TableCellValue> imple
 
 	@Override
 	public Object getSimpleValue() {
-//		Object value = getCreator().getValue(item, getColumn().getAttrName());
-//		if(value instanceof String){
-//			return new ModelListenerStringProperty(getCreator(), item, getColumn().getAttrName());
-//		}else if(value instanceof Number){
-//			return new ModelListenerNumberProperty(getCreator(), item, getColumn().getAttrName());
-//		}
 		if(creator==null){
 			return "";
 		}
