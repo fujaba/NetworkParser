@@ -26,10 +26,12 @@ import java.beans.PropertyChangeSupport;
 
 import de.uniks.networkparser.gui.test.model.util.ItemSet;
 import de.uniks.networkparser.gui.test.model.util.PersonSet;
+import de.uniks.networkparser.gui.test.model.util.StrUtil;
 
 public class GroupAccount 
 {
-
+	   public static final String PROPERTY_NAME = "name";
+	   private String name;
    
    //==========================================================================
    
@@ -44,15 +46,17 @@ public class GroupAccount
    public void updateBalances(  )
    {
       // compute share
-      double totalExpenses = this.getItem().getValue().sum();
-      double share = totalExpenses / this.getItem().size();
+	   ItemSet allItems = this.getPersons().getItem();
+      double totalExpenses = allItems.getValue().sum();
+      double share = totalExpenses / this.getPersons().size();
       
       for (Person person : this.getPersons())
       {
+    	  double personExpenses=0;
     	  if(person.getItem()!=null) {
-	         double personExpenses  = person.getItem().getValue().sum();
-	         person.setBalance(personExpenses - share);
+	         personExpenses  = person.getItem().getValue().sum();
     	  }
+    	  person.setBalance(personExpenses - share);
       }
    }
 
@@ -221,6 +225,22 @@ public class GroupAccount
       return this;
    }
 
+ //==========================================================================
+   public String getName()
+   {
+      return this.name;
+   }
+   
+   public void setName(String value)
+   {
+      if ( ! StrUtil.stringEquals(this.name, value))
+      {
+         String oldValue = this.name;
+         this.name = value;
+         getPropertyChangeSupport().firePropertyChange(PROPERTY_NAME, oldValue, value);
+      }
+   }
+   
    public Item createItem()
    {
       Item value = new Item();

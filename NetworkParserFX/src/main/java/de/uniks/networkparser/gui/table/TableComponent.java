@@ -32,6 +32,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -60,6 +62,7 @@ import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.gui.TableList;
 import de.uniks.networkparser.gui.controls.EditFieldMap;
 import de.uniks.networkparser.interfaces.GUIPosition;
+import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonIdMap;
@@ -73,7 +76,6 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	protected Object source;
 	protected SendableEntityCreator sourceCreator;
 	private String property;
-	protected UpdateSearchList updateItemListener;
 	protected TableViewFX[] tableViewer=new TableViewFX[3];
 	protected boolean isToolTip;
 	protected ContextMenu contextMenu;
@@ -269,10 +271,6 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		if(tableFilterView==null){
 			tableFilterView = new TableFilterView(this);
 		}
-		
-		if(this.updateItemListener==null){
-			this.updateItemListener = new UpdateSearchList(this);
-		}
 	}
 
 	public boolean addItem(Object item) {
@@ -289,7 +287,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 				}
 				this.list.add(item);
 			}
-			this.updateItemListener.addItem(item);
+			this.addUpdateListener(item);
 			tableFilterView.refreshCounter();
 			return true;
 		}
@@ -299,7 +297,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	public boolean removeItem(Object item) {
 		if (sourceList.contains(item)) {
 			sourceCreator.setValue(source, property, item, IdMapEncoder.REMOVE);
-			this.updateItemListener.removeItem(item);
+			this.removeUpdateListener(item);
 			sourceList.remove(item);
 			if (getParent() instanceof PropertyChangeListener) {
 				((PropertyChangeListener) getParent())
@@ -352,8 +350,35 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		}
 		return null;
 	}
-	public void addUpdateListener(Object list) {
-		this.updateItemListener.addItem(list);
+	
+	void addUpdateListener(Object item){
+		if (item instanceof SendableEntity) {
+			((SendableEntity) item).addPropertyChangeListener(this);
+		} else if(item instanceof PropertyChangeSupport){
+			((PropertyChangeSupport) item).addPropertyChangeListener(this);
+		}else {
+			try {
+				Method method = item.getClass().getMethod("addPropertyChangeListener", java.beans.PropertyChangeListener.class );
+				method.invoke(item, this);
+			} catch (Exception e) {
+				
+			}
+		}
+	}
+	
+	void removeUpdateListener(Object item){
+		if (item instanceof SendableEntity) {
+			((SendableEntity) item).removePropertyChangeListener(this);
+		} else if(item instanceof PropertyChangeSupport){
+			((PropertyChangeSupport) item).removePropertyChangeListener(this);
+		}else {
+			try {
+				Method method = item.getClass().getMethod("removePropertyChangeListener", java.beans.PropertyChangeListener.class );
+				method.invoke(item, this);
+			} catch (Exception e) {
+				
+			}
+		}
 	}
 
 	public String getProperty() {

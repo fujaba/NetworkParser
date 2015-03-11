@@ -142,16 +142,4 @@ public class SDMSetBase<T> extends SimpleList<T>
 	public boolean remove(Object value) {
 		return removeItemByObject((T)value) >= 0;
 	}
-
-	@Override
-	public boolean addAll(Collection<? extends T> c) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean addAll(int index, Collection<? extends T> c) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 }
