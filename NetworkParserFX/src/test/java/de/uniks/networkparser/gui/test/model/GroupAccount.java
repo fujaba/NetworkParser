@@ -49,8 +49,10 @@ public class GroupAccount
       
       for (Person person : this.getPersons())
       {
-         double personExpenses  = person.getItem().getValue().sum();
-         person.setBalance(personExpenses - share);
+    	  if(person.getItem()!=null) {
+	         double personExpenses  = person.getItem().getValue().sum();
+	         person.setBalance(personExpenses - share);
+    	  }
       }
    }
 

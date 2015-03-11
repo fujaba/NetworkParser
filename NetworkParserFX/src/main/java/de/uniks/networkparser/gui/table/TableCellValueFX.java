@@ -66,7 +66,7 @@ public class TableCellValueFX extends SimpleObjectProperty<TableCellValue> imple
 		if(creator==null){
 			return "";
 		}
-		return ""+this.column.getListener().getValue(item, creator);
+		return ""+this.column.getValue(item, creator);
 	}
 
 	@Override

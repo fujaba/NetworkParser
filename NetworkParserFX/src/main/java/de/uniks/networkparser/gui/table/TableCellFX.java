@@ -104,7 +104,7 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 		Object entity = tableComponent.getElement(row);
 		SendableEntityCreator creator = tableComponent.getCreator(entity);
 		
-		if (!isEmpty() && this.field.getListener().canEdit(entity, creator)) {
+		if(this.field.getListener().onAction(entity, creator, getTableView().getLayoutX(), getTableView().getLayoutY())) {
 			super.startEdit();
 			Object value = getItem().getCreator().getValue(getItem().getItem(), this.field.getAttrName());
 			FieldTyp typ = fieldMap.getControllForTyp(field, value);
@@ -113,9 +113,6 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 				setText(null);
 				setGraphic(control.getControl());
 			}
-		}else if(this.field.isListener()) {
-			
-			this.field.getListener().onEdit(entity, creator, getTableView().getLayoutX(), getTableView().getLayoutY());
 		}
 	}
 	
@@ -146,7 +143,7 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 	@Override
 	public void apply(APPLYACTION action) {
 		Object value = control.getValue(false);
-		getItem().getColumn().getListener().setValue(this, getItem().getItem(), getItem().getCreator(), value);
+		getItem().getColumn().setValue(this, getItem().getItem(), getItem().getCreator(), value);
 		setText(""+value);
 		setGraphic(null);		
 	}
