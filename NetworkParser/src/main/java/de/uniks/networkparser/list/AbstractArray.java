@@ -56,11 +56,11 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	/** May be 
 	 * [...] elements for simple List or 
 	 * [
-	 * 		SimpleList<K>, 
-	 * 		BigList<K + Index>, 
-	 * 		DeleteItem<Index-Sorted>, 
-	 * 		SimpleValue<V>, 
-	 * 		BigList<V + Index> for BIDIMAP 
+	 * 		SimpleList&lt;K&gt;, 
+	 * 		BigList&lt;K + Index&gt;, 
+	 * 		DeleteItem&lt;Index-Sorted&gt;, 
+	 * 		SimpleValue&lt;V&gt;, 
+	 * 		BigList&lt;V + Index&gt; for BIDIMAP 
 	 * ]
 	 */ 
 	Object[] elements; // non-private to simplify nested class access

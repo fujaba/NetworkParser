@@ -24,6 +24,8 @@ package de.uniks.networkparser.gui;
 import java.util.Comparator;
 
 import de.uniks.networkparser.EntityValueFactory;
+import de.uniks.networkparser.IdMapEncoder;
+import de.uniks.networkparser.date.DateTimeEntity;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
@@ -67,7 +69,7 @@ public class Column implements SendableEntityCreator {
 	private String altAttribute;
 	private FieldTyp fieldTyp;
 	private GUIPosition browserId = GUIPosition.CENTER;
-	protected ColumnListener handler;
+	protected CellHandler handler;
 	private Comparator<TableCellValue> comparator;
 
 	/**
@@ -246,34 +248,28 @@ public class Column implements SendableEntityCreator {
 		return this;
 	}
 
-	public Column withListener(ColumnListener handler) {
-		this.handler = handler;
-		this.handler.withColumn(this);
-		return this;
-	}
-	
 	public Column withActionHandler(CellHandler handler) {
-		if(getListener().isDefaultListener()) {
-			getListener().withActionListener(handler);
-		}
+		this.handler = handler;
 		return this;
 	}
 	
-	public boolean isListener() {
-		return this.handler!=null && !this.handler.isDefaultListener();
-	}
-
-	public ColumnListener getListener() {
+	public CellHandler getListener() {
 		if (handler == null) {
-			withListener(getDefaultListener());
+			handler = new CellHandler() {
+				@Override
+				public boolean onAction(Object entity,
+						SendableEntityCreator creator, double x, double y) {
+					return false;
+				}
+			};
 		}
 		return handler;
 	}
 
-	public ColumnListener getDefaultListener() {
-		return new ColumnListener().withDefaultListener(true);
+	public boolean isListener() {
+		return handler != null;
 	}
-
+	
 	public Comparator<TableCellValue> getComparator() {
 		return comparator;
 	}
@@ -405,5 +401,32 @@ public class Column implements SendableEntityCreator {
 			return true;
 		}
 		return false;
+	}
+
+	public Object getValue(Object entity, SendableEntityCreator creator) {
+		String attrName = getAttrName();
+		if(attrName != null) {
+			if(attrName.startsWith("\"")) {
+				return attrName.substring(1, attrName.length() - 1);
+			}
+		}
+		if (creator != null ) {
+			Object value = creator.getValue(entity, attrName);
+			if(getNumberFormat()!=null && value instanceof Long) {
+				DateTimeEntity item = new DateTimeEntity();
+				item.withValue((Long) value);
+				return item.toString(getNumberFormat()); 
+			}
+			return value;
+		}
+		return null;
+	}
+	
+	public boolean setValue(Object controll, Object entity,
+			SendableEntityCreator creator, Object value) {
+		if (creator == null) {
+			return false;
+		}
+		return creator.setValue(entity, getAttrName(), value, IdMapEncoder.UPDATE);
 	}
 }
