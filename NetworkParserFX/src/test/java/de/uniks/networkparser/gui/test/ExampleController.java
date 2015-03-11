@@ -1,14 +1,12 @@
 package de.uniks.networkparser.gui.test;
 
 import java.net.URL;
-import java.util.Comparator;
 import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.AnchorPane;
 import de.uniks.networkparser.gui.Column;
-import de.uniks.networkparser.gui.TableCellValue;
 import de.uniks.networkparser.gui.TableList;
 import de.uniks.networkparser.gui.table.SearchTableComponent;
 import de.uniks.networkparser.interfaces.GUIPosition;
@@ -41,14 +39,10 @@ public class ExampleController implements Initializable{
 	        tableView.withColumn(new Column().withAttrName(PersonGUI.PROPERTY_LASTNAME));
 	        tableView.withColumn(new Column().withAttrName(PersonGUI.PROPERTY_EMAIL).withBrowserId(GUIPosition.WEST));
 	        
-	        tableView.withColumn(new Column().withAttrName(PersonGUI.PROPERTY_DISTANCE).withComparator(new Comparator<TableCellValue>() {
-				
-				@Override
-				public int compare(TableCellValue o1, TableCellValue o2) {
-					PersonGUI item1 = (PersonGUI)o1.getItem();
-					PersonGUI item2 = (PersonGUI)o2.getItem();
-					return item1.getDistance().compareTo(item2.getDistance());
-				}
+	        tableView.withColumn(new Column().withAttrName(PersonGUI.PROPERTY_DISTANCE).withComparator((o1, o2) -> {
+				PersonGUI item1 = (PersonGUI)o1.getItem();
+				PersonGUI item2 = (PersonGUI)o2.getItem();
+				return item1.getDistance().compareTo(item2.getDistance());
 			}));
 	}
 

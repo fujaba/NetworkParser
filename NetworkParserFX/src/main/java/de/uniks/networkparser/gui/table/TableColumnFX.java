@@ -68,9 +68,7 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 //				System.out.println(arg0.getTableColumn());;
 				SendableEntityCreator creator = TableColumnFX.this.tableComponent.getCreator(arg0.getValue());
 				return new TableCellValueFX()
-						.withItem(arg0.getValue())
-						.withColumn(TableColumnFX.this.column)
-						.withCreator(creator);
+						.withInit(TableColumnFX.this.tableComponent, TableColumnFX.this.column, creator, arg0.getValue());
 			}
 		});
 		

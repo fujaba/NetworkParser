@@ -87,7 +87,7 @@ public class TestApp extends Application {
         tableView.withColumn(new Column().withAttrName(PersonGUI.PROPERTY_FIRSTNAME));
         tableView.withColumn(new Column().withAttrName(PersonGUI.PROPERTY_LASTNAME));
         tableView.withColumn(new Column().withAttrName(PersonGUI.PROPERTY_EMAIL).withBrowserId(GUIPosition.WEST));
-        
+        tableView.withColumn(new Column().withAttrName(PersonGUI.PROPERTY_DISTANCE));
         tableView.withColumn(new Column().withAttrName(PersonGUI.PROPERTY_DISTANCE).withComparator(new Comparator<TableCellValue>() {
 			
 			@Override
