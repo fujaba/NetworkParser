@@ -259,7 +259,7 @@ public class Column implements SendableEntityCreator {
 				@Override
 				public boolean onAction(Object entity,
 						SendableEntityCreator creator, double x, double y) {
-					return false;
+					return isEditable;
 				}
 			};
 		}
