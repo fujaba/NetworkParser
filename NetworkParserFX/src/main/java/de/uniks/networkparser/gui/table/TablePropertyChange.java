@@ -43,6 +43,7 @@ public class TablePropertyChange implements Runnable{
 	
 	@Override
 	public void run() {
+		System.out.println(event);
 		boolean refreshColumn = false;
 		if (this.source.equals(event.getSource())) {
 			if (event.getOldValue() == null && event.getNewValue() != null && event.getPropertyName().equals(property)) {

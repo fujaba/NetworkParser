@@ -44,6 +44,8 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
@@ -51,8 +53,9 @@ import javafx.scene.control.ScrollBar;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import de.uniks.networkparser.DefaultTextItems;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMapEncoder;
@@ -61,6 +64,7 @@ import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.gui.TableList;
 import de.uniks.networkparser.gui.controls.EditFieldMap;
+import de.uniks.networkparser.gui.resource.Styles;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -82,22 +86,17 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 
 	protected TableList sourceList;
 	private ObservableList<Object> list;
-	protected TableFilterView tableFilterView;
+	private TableFilterView tableFilterView;
 	private Menu visibleItems;
 	private SelectionListener listener;
 	private EditFieldMap field=new EditFieldMap();
+	private BorderPane northComponents;
+	private TextField searchText;
 	
 	public IdMapEncoder getMap() {
 		return map;
 	}
-	
-	public Node withAnchor(Node node){
-		AnchorPane.setTopAnchor(node, 0.0);
-		AnchorPane.setLeftAnchor(node, 0.0);
-		AnchorPane.setRightAnchor(node, 0.0);
-		AnchorPane.setBottomAnchor(node, 0.0);
-		return node;
-	}
+
 	
 	public TableComponent createFromCreator(SendableEntityCreator creator, boolean edit) {
 		if(creator==null){
@@ -231,16 +230,51 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	}
 
 	public TableComponent withSearchProperties(String... searchProperties) {
-		if(tableFilterView==null){
-			init();
+		if(searchText == null) {
+			createNothElement();
+			searchText = new TextField();
+	        searchText.getStylesheets().add(Styles.getPath());
+	        searchText.getStyleClass().add("searchbox");
+	        searchText.setPromptText(getText(DefaultTextItems.SEARCH));
+	        searchText.setMinHeight(24);
+	        searchText.setPrefSize(200, 24);
+	        searchText.setEditable(true);
+	        searchText.textProperty().addListener(tableFilterView);
+	        northComponents.setCenter(searchText);
 		}
-		tableFilterView.setSearchProperties(searchProperties);
-		tableFilterView.refresh();
+	    tableFilterView.setSearchProperties(searchProperties);
+	    tableFilterView.refresh();
 		return this;
 	}
 	
-	public void init(){
-		withAnchor(this);
+	void createNothElement() {
+		if(northComponents==null){
+			this.setTop(northComponents = new BorderPane());
+//			withAnchor(northComponents);
+		}
+	}
+	
+	public TableComponent withElement(Node... elements) {
+		createNothElement();
+		Node element = this.northComponents.getRight();
+		if(element == null) {
+			HBox hBox = new HBox();
+			hBox.setAlignment(Pos.CENTER);
+			element  = hBox;
+			this.northComponents.setRight(element);
+		}
+		if(element instanceof HBox) {
+			HBox parent = (HBox) element;
+			for(Node item : elements) {
+				parent.getChildren().add(item);
+				HBox.setMargin(item, new Insets(0, 5, 0, 5));
+			}
+		}
+		return this;
+	}
+	
+	void init(){
+//		withAnchor(this);
 		
 		if(contextMenu==null){
 			contextMenu = new ContextMenu();
@@ -417,9 +451,6 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	public Object getElement(int row) {
 		return list.get(row);
 	}
-	
-	public void refreshViewer() {
-	}
 
 	public List<Object> getItems(boolean all) {
 		if(all){
@@ -438,7 +469,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		withScrollPosition((Double) arg2);
 	}
 	
-	public void findAllScrollBars() {
+	void findAllScrollBars() {
 		for(TableViewFX table : tableViewer){
 			if(table!=null){
 				table.getScrollbar();

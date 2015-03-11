@@ -17,7 +17,6 @@ import javafx.stage.Stage;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.TableCellValue;
 import de.uniks.networkparser.gui.TableList;
-import de.uniks.networkparser.gui.table.SearchTableComponent;
 import de.uniks.networkparser.gui.table.TableComponent;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.json.JsonIdMap;
@@ -52,7 +51,7 @@ public class TestApp extends Application {
 
 //        emailCol.setCellValueFactory(new PropertyValueFactory("email"));
 //        TableComponent tableView = new TableComponent();
-        TableComponent tableView = new SearchTableComponent();
+        TableComponent tableView = new TableComponent();
         tableList = new TableList();
         tableList.add(new PersonGUI("Jacob",     "Smith",    "jacob.smith@example.com", 1));
         tableList.add(new PersonGUI("Isabella",  "Johnson",  "isabella.johnson@example.com", 2));

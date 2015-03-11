@@ -15,14 +15,12 @@ import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.gui.TableList;
 import de.uniks.networkparser.gui.controller.ModelListenerStringProperty;
-import de.uniks.networkparser.gui.table.SearchTableComponent;
 import de.uniks.networkparser.gui.table.TableComponent;
 import de.uniks.networkparser.gui.test.model.GroupAccount;
 import de.uniks.networkparser.gui.test.model.Person;
 import de.uniks.networkparser.gui.test.model.Wallet;
 import de.uniks.networkparser.gui.test.model.util.GroupAccountCreator;
 import de.uniks.networkparser.gui.test.model.util.PersonCreator;
-import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.json.JsonIdMap;
 
 public class GroupAccountGUI extends Application {
@@ -36,7 +34,7 @@ public class GroupAccountGUI extends Application {
 
 	        primaryStage.setScene(new Scene(root));
 
-	        TableComponent tableView = new SearchTableComponent();
+	        TableComponent tableView = new TableComponent();
 	        
 	        JsonIdMap map = new  JsonIdMap();
 	        map.withCreator(new TableList());

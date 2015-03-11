@@ -8,7 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.layout.AnchorPane;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.TableList;
-import de.uniks.networkparser.gui.table.SearchTableComponent;
+import de.uniks.networkparser.gui.table.TableComponent;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.json.JsonIdMap;
 
@@ -29,7 +29,7 @@ public class ExampleController implements Initializable{
 	        JsonIdMap map = new  JsonIdMap();
 	        map.withCreator(new TableList());
 	        map.withCreator(new PersonGUICreator());
-	        SearchTableComponent tableView = (SearchTableComponent) table.getChildren().get(0);
+	        TableComponent tableView = (TableComponent) table.getChildren().get(0);
 //	        SearchTableComponent tableView = ((SearchTableController)table).getTable();
 	        tableView.withMap(map).withList(tableList);
 	        

@@ -341,19 +341,6 @@ var Options = function(){
 	this.buttons = ["HTML", "SVG"];	// ["HTML", "SVG", "PNG", "PDF"]
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 //				######################################################### Graph #########################################################
 var Graph = function(json, options) {
 	this.x = this.y = this.width = this.height=0;
@@ -428,7 +415,7 @@ Graph.prototype.getDimension = function(html){
 	this.board.appendChild(html);
 	var rect = null;
 	try {
-		rect = elem.getBoundingClientRect();
+		rect = html.getBoundingClientRect();
 	} catch(e) {
 		rect = { top: 10, left: 10, width: 150, height: 100};
 	}
@@ -454,10 +441,10 @@ Graph.prototype.calcLines = function(model){
 	for(var i = 0; i < ownAssoc.length; i++) {
 		ownAssoc[i].calcOwnEdge();
 		var sourcePos = ownAssoc[i].getCenterPosition(ownAssoc[i].source, ownAssoc[i].start);
-		ownAssoc[i].calcInfoPos( sourcePos, ownAssoc[i].source, ownAssoc[i].sourceInfo);
+		ownAssoc[i].calcInfoPos( sourcePos, ownAssoc[i].source, ownAssoc[i].sourceInfo, -1);
 
 		sourcePos = ownAssoc[i].getCenterPosition(ownAssoc[i].target, ownAssoc[i].end);
-		ownAssoc[i].calcInfoPos( sourcePos, ownAssoc[i].target, ownAssoc[i].targetInfo);
+		ownAssoc[i].calcInfoPos( sourcePos, ownAssoc[i].target, ownAssoc[i].targetInfo, -1);
 	}
 };
 Graph.prototype.drawLines = function(model){
@@ -665,14 +652,14 @@ Graph.prototype.startDrag = function(event) {
 			this.setSelectable(graph.children[i], "on");
 		}
 	}
-	this.offset.x = this.isIE ? window.event.clientX : event.pageX;
-	this.offset.y = this.isIE ? window.event.clientY : event.pageY;
+	this.offset.x = this.isIE() ? window.event.clientX : event.pageX;
+	this.offset.y = this.isIE() ? window.event.clientY : event.pageY;
 	this.startObj.x = this.objDrag.model.x;
 	this.startObj.y = this.objDrag.model.y;
 };
 Graph.prototype.doDrag = function(event) {
-	this.mouse.x = this.isIE ? window.event.clientX : event.pageX;
-	this.mouse.y = this.isIE ? window.event.clientY : event.pageY;
+	this.mouse.x = this.isIE() ? window.event.clientX : event.pageX;
+	this.mouse.y = this.isIE() ? window.event.clientY : event.pageY;
 
 	if (this.objDrag != null) {
 		var x =(this.mouse.x - this.offset.x) + this.startObj.x;
@@ -1065,8 +1052,15 @@ Edge.prototype.calcCenterLine = function(){
 		targetPos = this.getPosition(this.m,this.n, target, sourcePos, edgePos);
 	}
 	if(sourcePos&&targetPos){
-		this.calcInfoPos( sourcePos, source, this.sourceInfo, edgePos);
-		this.calcInfoPos( targetPos, target, this.targetInfo, edgePos);
+		var x2 = sourcePos.x;
+		var x1 = targetPos.x;
+		var y2 = sourcePos.y;
+		var y1 = targetPos.y;
+		var d = (x2-x1)*(x2-x1) + (y2-y1)*(y2-y1);
+		if(d>0) {d = Math.sqrt(d);}
+		var height = this.sourceInfo.height+this.targetInfo.height;
+		this.calcInfoPos( sourcePos, source, this.sourceInfo, edgePos, d, height);
+		this.calcInfoPos( targetPos, target, this.targetInfo, edgePos, d, height);
 		this.addEdgeToNode(source, sourcePos.id);
 		this.addEdgeToNode(target, targetPos.id);
 		this.path.push ( new Line(sourcePos, targetPos, this.lineStyle, this.style));
@@ -1226,22 +1220,29 @@ Edge.prototype.getFreeOwn = function(node, start){
 	node[list[id + 3]]++;
 	return list[id + 3];
 };
-Edge.prototype.calcInfoPos = function(linePos, item, info, offset){
+Edge.prototype.calcInfoPos = function(linePos, item, info, offset, d, height){
 	// Manuell move the InfoTag
 	offset = offset || 0;
 	var spaceA = 20;
 	var spaceB = 10;
+	
 	if(info.custom){
 		return;
 	}
 	var newY = linePos.y;
 	var newX = linePos.x;
 	if(linePos.id==Edge.Position.UP){
+		if(d>0 && spaceA*2+height>d) {
+			spaceA = 4;
+		}
 		newY = newY - info.height - offset - spaceA;
 		if(this.m!=0){
 			newX = (newY-this.n) / this.m + spaceB;
 		}
 	}else if(linePos.id==Edge.Position.DOWN){
+		if(d>0 && spaceA*2+height>d) {
+			spaceA = 4;
+		}
 		newY = newY + offset + spaceA;
 		if(this.m!=0){
 			newX = (newY-this.n) / this.m + spaceB;

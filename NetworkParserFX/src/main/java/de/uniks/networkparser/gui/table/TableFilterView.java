@@ -31,12 +31,16 @@ package de.uniks.networkparser.gui.table;
  */
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import de.uniks.networkparser.StringTokener;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class TableFilterView {
+public class TableFilterView implements ChangeListener<String>{
 	private String[] lastSearchCriteriaItems;
 	private ArrayList<String> searchProperties = new ArrayList<String>();
 	protected TableComponent component;
@@ -90,8 +94,26 @@ public class TableFilterView {
 		refreshCounter();
 	}
 
-	public void refreshSearch() {
-		component.refreshViewer();
+	public void refreshSearch(){
+		List<Object> resultList = component.getItems(false);
+		for(Iterator<Object> iterator = resultList.iterator();iterator.hasNext();){
+			if(!matchesSearchCriteria( iterator.next() )){
+				iterator.remove();
+			}
+		}
+		if(!lastSearchDetails){
+			List<Object> sourceList = component.getItems(true);
+			
+			// and now the other way round
+			for(Iterator<Object> iterator = sourceList.iterator();iterator.hasNext();){
+				Object item = iterator.next();
+				if (!resultList.contains(item)) {
+					if (matchesSearchCriteria(item)) {
+						resultList.add(item);
+					}
+				}
+			}
+		}
 	}
 
 	public boolean matchesSearchCriteria(Object item) {
@@ -180,5 +202,11 @@ public class TableFilterView {
 				column.UpdateCount();
 			}
 		}
+	}
+	
+	@Override
+	public void changed(ObservableValue<? extends String> property, String oldValue,
+			String newValue) {
+		refresh(newValue);
 	}
 }
