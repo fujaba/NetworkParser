@@ -48,12 +48,12 @@ import javafx.application.Application;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-public abstract class MasterShell extends Application {
+public abstract class SimpleShell extends Application {
 	protected String icon;
 	protected String errorPath;
 	protected FXStageController controller;
 	
-	protected abstract Pane createContents(FXStageController value);
+	protected abstract Pane createContents(FXStageController value, Parameters args);
 	
 	public void closeWindow() {
 		this.controller.close();
@@ -71,7 +71,7 @@ public abstract class MasterShell extends Application {
 			   defaultCharsetField.set(null, null);
 		   }
 		   this.controller = new FXStageController(primaryStage);
-		   Pane pane = createContents( this.controller );
+		   Pane pane = createContents( this.controller , this.getParameters());
 		   this.controller.withCenter( pane );
 		   this.controller.show();
 	   }catch(Exception e){
@@ -86,18 +86,18 @@ public abstract class MasterShell extends Application {
 	   return "UTF-8";
    }
    
-   public MasterShell withIcon(String value){
+   public SimpleShell withIcon(String value){
 	   this.controller.withIcon(value);
 	   this.icon = value;
 	   return this;
    }
    
-   public MasterShell withIcon(URL value){
+   public SimpleShell withIcon(URL value){
 	   withIcon(value.toString());
 	   return this;
    }
    
-   public MasterShell withTitle(String value){
+   public SimpleShell withTitle(String value){
 	   this.controller.withTitle(value);
 	   return this;
    }
@@ -214,7 +214,7 @@ public abstract class MasterShell extends Application {
 	}
 
 	protected String getVersion() {
-		String result = MasterShell.class.getPackage()
+		String result = SimpleShell.class.getPackage()
 				.getImplementationVersion();
 
 		if (result == null) {
