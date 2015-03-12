@@ -201,4 +201,26 @@ public class GraphEdge extends GraphSimpleList<GraphNode> implements
 	public void addCounter() {
 		this.count++;
 	}
+	
+	@Override
+	public String toString() {
+		return getIds()+"-"+getOther().getIds();
+	}
+	public String getIds() {
+		StringBuilder sb=new StringBuilder();
+		if(size()>1) {
+			sb.append("[");
+			sb.append(get(0).getId());
+			for(int i=1;i<size();i++) {
+				sb.append(","+get(1).getId());
+			}
+			sb.append("]");
+		}else if(size()>0) {
+			sb.append(get(0).getId());
+		}else{
+			sb.append("[]");
+		}
+		
+		return sb.toString();
+	}
 }

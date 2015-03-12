@@ -84,7 +84,7 @@ public class GraphList extends GraphSimpleList<GraphMember> implements GraphMemb
 	public boolean add(GraphEdge edge) {
 		for (Iterator<GraphEdge> i = this.edges.iterator(); i.hasNext();) {
 			GraphEdge item = i.next();
-			if (item.contains(edge.getOther())
+			if (item.containsAll(edge.getOther())
 					&& item.getOther().containsAll(edge)) {
 				// Back again
 				item.with(edge.getOther().getCardinality());
