@@ -437,7 +437,30 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		if (event == null) {
 			return;
 		}
-		Platform.runLater(new TablePropertyChange(this, event, source, property, sourceList));
+		
+		if (this.source.equals(event.getSource())) {
+			if (event.getOldValue() == null && event.getNewValue() != null && event.getPropertyName().equals(property)) {
+				addItem(event.getNewValue());
+			}
+		}else if (this.sourceList.equals(event.getSource())) {
+			if (event.getOldValue() == null && event.getNewValue() != null) {
+				addItem(event.getNewValue());
+			}else if (event.getPropertyName().equals(TableList.PROPERTY_ITEMS)) {
+				if (event.getOldValue() != null && event.getNewValue() == null) {
+					removeItem(event.getOldValue());
+				}
+			}
+		}else{
+			//Refresh
+			for(Iterator<TableColumnFX> iterator = this.getColumnIterator();iterator.hasNext();){
+				TableColumnFX column = iterator.next();
+				if(column.getColumn().getAttrName().equals(event.getPropertyName())){
+					System.out.println(column.getColumn().getAttrName());
+					column.setVisible(false);
+					column.setVisible(true);
+				}
+			}
+		}
 	}
 	
 	public Iterator<TableColumnFX> getColumnIterator() {
