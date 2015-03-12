@@ -93,7 +93,11 @@ Drawer.prototype.createBoard = function(node, graph, listener) {
 	
 	var board = this.util.create(node);
 	node.model=graph;
-	board.className="Board";
+	try {
+		board.className = "Board";
+	}catch(e) {
+		board.classList.add("Board");
+	}
 	board.rasterElements=[];
 	board.saveShow=false;
 	board.onmouseover = (function () {

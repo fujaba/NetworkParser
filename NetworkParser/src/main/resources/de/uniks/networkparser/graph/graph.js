@@ -1322,31 +1322,31 @@ Edge.prototype.calcMoveLine = function(size, angle, move){
 		this.endPos().target = new Pos((this.top.x + this.bot.x) / 2, (this.top.y + this.bot.y) / 2);
 	}
 };
-var Generalization = function() { this.init();this.typ="Generalization";};
-Generalization.prototype = Object_create(Edge.prototype);
-Generalization.prototype.calculateEdge = Generalization.prototype.calculate;
-Generalization.prototype.calculate = function(board, drawer){
+var Generalisation = function() { this.init();this.typ="Generalisation";};
+Generalisation.prototype = Object_create(Edge.prototype);
+Generalisation.prototype.calculateEdge = Generalisation.prototype.calculate;
+Generalisation.prototype.calculate = function(board, drawer){
 	if(!this.calculateEdge(board, drawer)){
 		return false;
 	}
 	this.calcMoveLine(16, 50, true);
 	return true;
 };
-Generalization.prototype.drawSuper = Generalization.prototype.draw;
-Generalization.prototype.draw = function(board, drawer){
+Generalisation.prototype.drawSuper = Generalisation.prototype.draw;
+Generalisation.prototype.draw = function(board, drawer){
 	this.drawSuper(board, drawer);
 	this.addElement(board, drawer.createLine(this.top.x, this.top.y, this.end.x, this.end.y, this.lineStyle));
 	this.addElement(board, drawer.createLine(this.bot.x, this.bot.y, this.end.x, this.end.y, this.lineStyle));
 	this.addElement(board, drawer.createLine(this.top.x, this.top.y, this.bot.x, this.bot.y, this.lineStyle));
 };
-Generalization.prototype.drawSourceText = function(board, drawer, options){};
-Generalization.prototype.drawTargetText = function(board, drawer, options){};
+Generalisation.prototype.drawSourceText = function(board, drawer, options){};
+Generalisation.prototype.drawTargetText = function(board, drawer, options){};
 
 var Implements = function() { this.init();this.typ="Implements";this.lineStyle = Line.Format.DOTTED;};
-Implements.prototype = Object_create(Generalization.prototype);
+Implements.prototype = Object_create(Generalisation.prototype);
 
 var Unidirectional = function() { this.init();this.typ="Unidirectional";};
-Unidirectional.prototype = Object_create(Generalization.prototype);
+Unidirectional.prototype = Object_create(Generalisation.prototype);
 Unidirectional.prototype.calculate = function(board, drawer){
 	if(!this.calculateEdge(board, drawer)){
 		return false;
@@ -1360,7 +1360,7 @@ Unidirectional.prototype.draw = function(board, drawer){
 	this.addElement(board, drawer.createLine(this.bot.x, this.bot.y, this.end.x, this.end.y, this.lineStyle));
 };
 var Aggregation = function() { this.init();this.typ="Aggregation";};
-Aggregation.prototype = Object_create(Generalization.prototype);
+Aggregation.prototype = Object_create(Generalisation.prototype);
 Aggregation.prototype.calculate = function(board, drawer){
 	if(!this.calculateEdge(board, drawer)){
 		return false;
