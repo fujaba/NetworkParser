@@ -39,7 +39,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -444,7 +443,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 			}
 		}else if (this.sourceList.equals(event.getSource())) {
 			if (event.getOldValue() == null && event.getNewValue() != null) {
-				addItem(event.getNewValue());
+//				addItem(event.getNewValue()); TODO: Maybe usefull but called twice SEB
 			}else if (event.getPropertyName().equals(TableList.PROPERTY_ITEMS)) {
 				if (event.getOldValue() != null && event.getNewValue() == null) {
 					removeItem(event.getOldValue());
@@ -452,14 +451,9 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 			}
 		}else{
 			//Refresh
-			for(Iterator<TableColumnFX> iterator = this.getColumnIterator();iterator.hasNext();){
-				TableColumnFX column = iterator.next();
-				if(column.getColumn().getAttrName().equals(event.getPropertyName())){
-					System.out.println(column.getColumn().getAttrName());
-					column.setVisible(false);
-					column.setVisible(true);
-				}
-			}
+			list.remove(event.getSource());
+			list.add(event.getSource());
+			
 		}
 	}
 	

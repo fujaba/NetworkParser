@@ -65,7 +65,6 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 			@Override
 			public ObservableValue<TableCellValue> call(
 					javafx.scene.control.TableColumn.CellDataFeatures<Object, TableCellValue> arg0) {
-//				System.out.println(arg0.getTableColumn());;
 				SendableEntityCreator creator = TableColumnFX.this.tableComponent.getCreator(arg0.getValue());
 				return new TableCellValueFX()
 						.withInit(TableColumnFX.this.tableComponent, TableColumnFX.this.column, creator, arg0.getValue());
