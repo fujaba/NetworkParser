@@ -22,16 +22,15 @@ package de.uniks.networkparser.gui.table;
  permissions and limitations under the Licence.
 */
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableValue;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.TableCellValue;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class TableCellValueFX extends SimpleObjectProperty<TableCellValue> implements TableCellValue{
+
 	private Column column;
 	private SendableEntityCreator creator;
 	private Object item;
-	private TableComponent tableComponent;
 	
 	public TableCellValueFX withItem(Object item) {
 		this.item = item;
@@ -76,29 +75,11 @@ public class TableCellValueFX extends SimpleObjectProperty<TableCellValue> imple
 		if(creator==null){
 			return "";
 		}
-		return getCreator().getValue(item, getColumn().getAttrName());
+		return this.column.getValue(item, creator);
+//		return getCreator().getValue(item, getColumn().getAttrName());
 	}
-
-	public ObservableValue<TableCellValue> withInit(TableComponent tableComponent, Column column,
-			SendableEntityCreator creator, Object value) {
-		this.withTableComponent(tableComponent);
-		this.withColumn(column);
-		this.withCreator(creator);
-		this.withItem(value);
-		
-		String attrName = getColumn().getAttrName();
-		int pos = attrName.lastIndexOf(".");
-		if(pos > 0) {
-			Object item = getCreator().getValue(value, attrName.substring(0, pos));
-			if(item!=null) {
-				this.tableComponent.addUpdateListener(item);
-			}
-		}
-		return this;
-	}
-
-	private TableCellValueFX withTableComponent(TableComponent tableComponent) {
-		this.tableComponent = tableComponent;
-		return this;
+	
+	public void refresh() {
+		fireValueChangedEvent();
 	}
 }

@@ -32,6 +32,8 @@ public class GroupAccountGUI extends Application {
 	private void init(Stage primaryStage) {
 		 AnchorPane root = new AnchorPane();
 
+		 
+		 
 	        primaryStage.setScene(new Scene(root));
 
 	        TableComponent tableView = new TableComponent();
@@ -52,7 +54,7 @@ public class GroupAccountGUI extends Application {
 	        tableView.withColumn(new Column().withAttrName(Person.PROPERTY_NAME).withStyle(new Style().withWidth(100)));
 	        
 	        tableView.withColumn(new Column().withAttrName(Person.PROPERTY_BALANCE).withStyle(new Style().withWidth(100)));
-	        tableView.withColumn(new Column().withLabel("Money").withAttrName(Person.PROPERTY_WALLET+"."+Wallet.PROPERTY_BALANCE).withStyle(new Style().withWidth(100)));
+	        tableView.withColumn(new Column().withLabel("Money").withAttrName(Person.PROPERTY_WALLET+"."+Wallet.PROPERTY_SUM).withStyle(new Style().withWidth(100)));
 	        
 	        tableView.withSearchProperties(Person.PROPERTY_NAME);
 	        tableView.withList(groupAccount,  GroupAccount.PROPERTY_PERSONS);
@@ -76,8 +78,8 @@ public class GroupAccountGUI extends Application {
 //					groupAccount.createItem().withBuyer(albert).withDescription("Bier").withValue(12.0);
 					albert.createItem().withDescription("Bier").withValue(12.0);
 					groupAccount.updateBalances();
-					albert.getWallet().setBalance(albert.getBalance());
-					nina.getWallet().setBalance(nina.getBalance());
+					albert.getWallet().setSum(albert.getBalance());
+					nina.getWallet().setSum(nina.getBalance());
 				}
 			});
 	        
@@ -86,7 +88,7 @@ public class GroupAccountGUI extends Application {
 				@Override
 				public void handle(ActionEvent arg0) {
 //					albert.setBalance(albert.getBalance()+1);
-					albert.getWallet().setBalance(albert.getBalance() + 1);
+					albert.getWallet().setSum(albert.getBalance() + 1);
 				}
 			});
 	        
