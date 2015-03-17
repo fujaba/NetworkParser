@@ -60,7 +60,7 @@ public class PersonCreator implements SendableEntityCreator
 		   if(attribute.equals(attrName)) {
 	         return ((Person)target).getWallet();
 		   }else {
-			   return ((Person)target).getWallet().getBalance();
+			   return ((Person)target).getWallet().getSum();
 		   }
 	      }
 	   if (Person.PROPERTY_ITEM.equalsIgnoreCase(attribute))

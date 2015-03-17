@@ -21,19 +21,30 @@ package de.uniks.networkparser.gui.table;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
+import com.sun.javafx.scene.control.skin.TableHeaderRow;
+import com.sun.javafx.scene.control.skin.TableRowSkin;
+import com.sun.javafx.scene.control.skin.TableViewSkin;
+import com.sun.javafx.scene.control.skin.VirtualFlow;
+
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.IndexedCell;
 import javafx.scene.control.Menu;
+import javafx.scene.control.Skin;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.util.Callback;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.TableCellValue;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 
 public class TableColumnFX extends TableColumn<Object, TableCellValue> implements EventHandler<ActionEvent>{
 	private Column column;
@@ -58,7 +69,8 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 			@Override
 			public TableCell<Object, TableCellValue> call(
 					TableColumn<Object, TableCellValue> arg0) {
-				return new TableCellFX().withTableComponent(tableComponent).withColumn(TableColumnFX.this.column).withEditFieldMap(TableColumnFX.this.tableComponent.getFieldFactory());
+				TableCellFX cell = new TableCellFX().withTableComponent(tableComponent).withColumn(TableColumnFX.this.column).withEditFieldMap(TableColumnFX.this.tableComponent.getFieldFactory());
+				return cell;
 			}
 		});
 		setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Object,TableCellValue>, ObservableValue<TableCellValue>>() {
@@ -66,8 +78,7 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 			public ObservableValue<TableCellValue> call(
 					javafx.scene.control.TableColumn.CellDataFeatures<Object, TableCellValue> arg0) {
 				SendableEntityCreator creator = TableColumnFX.this.tableComponent.getCreator(arg0.getValue());
-				return new TableCellValueFX()
-						.withInit(TableColumnFX.this.tableComponent, TableColumnFX.this.column, creator, arg0.getValue());
+				return new TableCellValueFX().withColumn(TableColumnFX.this.column).withCreator(creator).withItem(arg0.getValue());
 			}
 		});
 		
@@ -77,8 +88,6 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 	        	System.out.println(t);
 	        }
 	    });
-
-		
 		return this;
 	}
 	
@@ -122,5 +131,28 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 				menueItem.setSelected(column.isVisible());
 			}
 		});
+	}
+	
+	
+	public void refreshCell(int row) {
+		TableView<Object> browserView = tableComponent.getBrowserView(GUIPosition.CENTER);
+        TableViewSkin<?> tvs = (TableViewSkin<?>) browserView.getSkin();
+        ObservableList<Node> children = tvs.getChildren();
+        for(Node node : children) {
+        	if(node instanceof VirtualFlow<?>) {
+        		VirtualFlow<?> vf = (VirtualFlow<?>) node;
+        		IndexedCell<?> cell = vf.getCell(row);
+        		Skin<?> skin = cell.getSkin();
+        		if(skin instanceof TableRowSkin<?>) {
+        			TableRowSkin<?> trs = (TableRowSkin<?>) skin;
+        			for(Node trsc : trs.getChildren() ) {
+        				if(trsc instanceof TableCellFX) {
+        					((TableCellFX)trsc).updateIndex(row);
+        				}
+        			}
+        			System.out.println(trs.getChildren());
+        		}
+        	}
+        }
 	}
 }
