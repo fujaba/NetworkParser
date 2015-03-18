@@ -120,7 +120,7 @@ public class ExcelExporter extends MenuItem implements EventHandler<ActionEvent>
 			labels.add(tableColumn.getColumn().getLabelOrAttrName());
 			attributes.add(tableColumn.getColumn().getAttrName());
 		}
-		List<Object> items = tableComponent.getItems(false);
+		List<Object> items = tableComponent.getItems();
 		
 		StringBuilder sb=new StringBuilder();
 		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");

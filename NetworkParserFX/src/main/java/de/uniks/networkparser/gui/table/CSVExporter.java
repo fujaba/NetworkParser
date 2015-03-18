@@ -43,7 +43,7 @@ public class CSVExporter extends MenuItem implements EventHandler<ActionEvent>{
 				}
 				writer.write(line.toString()+CRLF);
 				
-				List<Object> items = tableComponent.getItems(false);
+				List<Object> items = tableComponent.getItems();
 				for(Object item : items) {
 					SendableEntityCreator creator = tableComponent.getCreator(item);
 					if(creator != null) {

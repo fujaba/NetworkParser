@@ -38,6 +38,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import de.uniks.networkparser.StringTokener;
 import de.uniks.networkparser.gui.Column;
+import de.uniks.networkparser.gui.TableList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class TableFilterView implements ChangeListener<String>{
@@ -47,9 +48,13 @@ public class TableFilterView implements ChangeListener<String>{
 	private Column updateField;
 	protected boolean lastSearchDetails;
 	protected String lastSearchCriteria = "##";
+	protected TableList sourceFullList;
 
 	public TableFilterView(TableComponent tableComponent) {
 		this.component = tableComponent;
+		this.sourceFullList = new TableList();
+		this.sourceFullList.addPropertyChangeListener(component);
+		this.sourceFullList.setIdMap(component.getMap());
 	}
 
 	public void setSearchProperties(String... searchProperties) {
@@ -95,17 +100,15 @@ public class TableFilterView implements ChangeListener<String>{
 	}
 
 	public void refreshSearch(){
-		List<Object> resultList = component.getItems(false);
+		List<Object> resultList = component.getItems();
 		for(Iterator<Object> iterator = resultList.iterator();iterator.hasNext();){
 			if(!matchesSearchCriteria( iterator.next() )){
 				iterator.remove();
 			}
 		}
 		if(!lastSearchDetails){
-			List<Object> sourceList = component.getItems(true);
-			
 			// and now the other way round
-			for(Iterator<Object> iterator = sourceList.iterator();iterator.hasNext();){
+			for(Iterator<Object> iterator = sourceFullList.iterator();iterator.hasNext();){
 				Object item = iterator.next();
 				if (!resultList.contains(item)) {
 					if (matchesSearchCriteria(item)) {
@@ -208,5 +211,31 @@ public class TableFilterView implements ChangeListener<String>{
 	public void changed(ObservableValue<? extends String> property, String oldValue,
 			String newValue) {
 		refresh(newValue);
+	}
+
+	public boolean addItem(Object item) {
+		if(!sourceFullList.contains(item)) {
+			sourceFullList.add(item);
+			if (matchesSearchCriteria(item)) {
+				component.getItems().add(item);
+			}
+			return true;
+		}
+		return false;
+	}
+
+	public TableList getFulList() {
+		return sourceFullList;
+	}
+
+	public boolean removeItem(Object item) {
+		if(sourceFullList.contains(item)) {
+			sourceFullList.remove(item);
+			if (matchesSearchCriteria(item)) {
+				component.getItems().remove(item);
+			}
+			return true;
+		}
+		return false;
 	}
 }
