@@ -76,10 +76,5 @@ public class TableCellValueFX extends SimpleObjectProperty<TableCellValue> imple
 			return "";
 		}
 		return this.column.getValue(item, creator);
-//		return getCreator().getValue(item, getColumn().getAttrName());
-	}
-	
-	public void refresh() {
-		fireValueChangedEvent();
 	}
 }

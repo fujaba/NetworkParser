@@ -233,6 +233,13 @@ public class Column implements SendableEntityCreator {
 	public Style getStyle() {
 		return style;
 	}
+	
+	public Style getOrCreateStyle() {
+		if(style == null) {
+			style = new Style();
+		}
+		return style;
+	}
 
 	public Column withStyle(Style style) {
 		this.style = style;

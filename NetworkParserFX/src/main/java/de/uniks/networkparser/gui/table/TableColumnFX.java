@@ -21,30 +21,27 @@ package de.uniks.networkparser.gui.table;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import com.sun.javafx.scene.control.skin.TableHeaderRow;
-import com.sun.javafx.scene.control.skin.TableRowSkin;
-import com.sun.javafx.scene.control.skin.TableViewSkin;
-import com.sun.javafx.scene.control.skin.VirtualFlow;
-
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.CheckMenuItem;
-import javafx.scene.control.IndexedCell;
 import javafx.scene.control.Menu;
-import javafx.scene.control.Skin;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.util.Callback;
+
+import com.sun.javafx.scene.control.skin.TableRowSkin;
+import com.sun.javafx.scene.control.skin.TableViewSkin;
+import com.sun.javafx.scene.control.skin.VirtualFlow;
+
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.TableCellValue;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.list.SimpleKeyValueList;
 
 public class TableColumnFX extends TableColumn<Object, TableCellValue> implements EventHandler<ActionEvent>{
 	private Column column;
@@ -88,6 +85,11 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 	        	System.out.println(t);
 	        }
 	    });
+		
+		widthProperty().addListener((ChangeListener<Number>) (observableValue, oldWidth, newWidth) -> TableColumnFX.this.getColumn().getOrCreateStyle().withWidth(newWidth.doubleValue()));
+		if(column.getStyle() != null) {
+			this.setPrefWidth(getColumn().getStyle().getWidth());
+		}
 		return this;
 	}
 	
@@ -135,22 +137,22 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 	
 	
 	public void refreshCell(int row) {
-		TableView<Object> browserView = tableComponent.getBrowserView(GUIPosition.CENTER);
-        TableViewSkin<?> tvs = (TableViewSkin<?>) browserView.getSkin();
-        ObservableList<Node> children = tvs.getChildren();
+		TableViewSkin<?> skin = (TableViewSkin<?>) this.getTableView().getSkin();
+		int columnId = this.getTableView().getVisibleLeafIndex(this);
+        ObservableList<Node> children = skin.getChildren();
         for(Node node : children) {
         	if(node instanceof VirtualFlow<?>) {
         		VirtualFlow<?> vf = (VirtualFlow<?>) node;
-        		IndexedCell<?> cell = vf.getCell(row);
-        		Skin<?> skin = cell.getSkin();
-        		if(skin instanceof TableRowSkin<?>) {
-        			TableRowSkin<?> trs = (TableRowSkin<?>) skin;
-        			for(Node trsc : trs.getChildren() ) {
-        				if(trsc instanceof TableCellFX) {
-        					((TableCellFX)trsc).updateIndex(row);
-        				}
+        		if(row >= 0) {
+        			TableRowSkin<?> cellSkin = (TableRowSkin<?>) vf.getCell(row).getSkin();
+        			TableCellFX tableCell = (TableCellFX) (cellSkin).getChildren().get(columnId);
+    				tableCell.updateIndex(row);
+        		} else {
+        			for(int i=0;i<vf.getCellCount();i++) {
+	        			TableRowSkin<?> cellSkin = (TableRowSkin<?>) vf.getCell(i).getSkin();
+	        			TableCellFX tableCell = (TableCellFX) (cellSkin).getChildren().get(columnId);
+	        			tableCell.updateIndex(i);
         			}
-        			System.out.println(trs.getChildren());
         		}
         	}
         }
