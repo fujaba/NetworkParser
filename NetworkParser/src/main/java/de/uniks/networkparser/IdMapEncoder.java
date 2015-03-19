@@ -22,7 +22,6 @@ package de.uniks.networkparser;
  permissions and limitations under the Licence.
  */
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
@@ -36,7 +35,6 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.IdMapCounter;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.interfaces.TypList;
 import de.uniks.networkparser.json.UpdateListenerJson;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
@@ -73,8 +71,6 @@ public abstract class IdMapEncoder extends AbstractMap implements
 
 	/** The update listener. */
 	protected UpdateListenerJson updateListener;
-
-	protected ArrayList<TypList> typList;
 
 	/** The updatelistener for Notification changes. */
 	protected PropertyChangeListener updatePropertylistener;
@@ -234,23 +230,7 @@ public abstract class IdMapEncoder extends AbstractMap implements
 	public Object put(String jsonId, Object object) {
 		this.keyValue.with(jsonId, object);
 		addListener(object);
-		addTypList(object);
 		return object;
-	}
-
-	private void addTypList(Object object) {
-		if (this.typList != null) {
-			for (TypList list : this.typList) {
-				list.addObject(object);
-			}
-		}
-	}
-
-	public void addToTypList(TypList typList) {
-		if (typList == null) {
-			this.typList = new ArrayList<TypList>();
-		}
-		this.typList.add(typList);
 	}
 
 	/**
@@ -306,11 +286,6 @@ public abstract class IdMapEncoder extends AbstractMap implements
 		}
 		if (key != null) {
 			this.keyValue.without(key, oldValue);
-			if (this.typList != null) {
-				for (TypList list : this.typList) {
-					list.removeObject(oldValue);
-				}
-			}
 			return true;
 		}
 		return false;
