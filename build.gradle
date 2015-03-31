@@ -15,31 +15,12 @@ if(project.hasProperty('jenkins')) {
 
 	apply plugin: 'jacoco'
 	jacoco {
-		toolVersion = "0.7.0.201403182114"
+		toolVersion = "0.7.1.201405082137"
 	}
 	
 } else {
 	apply from: 'gradle/ide.gradle'
 }
-
-apply plugin: 'jacoco'
-jacoco {
-	toolVersion = "0.7.1.201405082137"
-}
-
-//TASK
-task codeCoverageReport(type: JacocoReport) {
-	executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
-	sourceSets sourceSets.main
-	reports {
-		xml.enabled true
-		xml.destination "${buildDir}/test-results/jacoco.xml"
-		html.enabled true
-		html.destination "${buildDir}/reports/jacoco"
-		csv.enabled true
-	}
-}
-
 
 buildscript {
     repositories {

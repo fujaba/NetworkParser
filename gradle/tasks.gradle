@@ -39,6 +39,17 @@ task fullJar(type: Jar) {
 	classifier = 'full'
 	exclude '**/test/**'
 }
+task codeCoverageReport(type: JacocoReport) {
+	executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
+	sourceSets sourceSets.main
+	reports {
+		xml.enabled true
+		xml.destination "${buildDir}/test-results/jacoco.xml"
+		html.enabled true
+		html.destination "${buildDir}/reports/jacoco"
+		csv.enabled true
+	}
+}
 
 def getManifest(gitVersion) {
 	manifest {
@@ -58,4 +69,3 @@ def getManifest(gitVersion) {
 			'Bundle-ClassPath': '.'
 	}
 }
-
