@@ -20,7 +20,7 @@ if(project.hasProperty('jenkins')) {
 	}
 	task codeCoverageReport(type: JacocoReport) {
 		fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
-		// Add all relevant sourcesets from the subprojects
+		sourceSets sourceSets.main
 		reports {
 			xml.enabled true
 			html.enabled true
