@@ -224,7 +224,7 @@ public class TableFilterView implements ChangeListener<String>{
 		return false;
 	}
 
-	public TableList getFulList() {
+	public TableList getFullList() {
 		return sourceFullList;
 	}
 
