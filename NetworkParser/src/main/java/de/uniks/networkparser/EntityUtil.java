@@ -101,16 +101,13 @@ public class EntityUtil {
 					sb.append('\\');
 					break;
 				}
-				c = value.charAt(++i);
+				i++;
+				c = value.charAt(i);
 				if (c == 'u') {
 					char no = fromHex(value.charAt(++i), value.charAt(++i),
 							value.charAt(++i), value.charAt(++i));
 					sb.append((char) no);
 					continue;
-				} else if (c == '"') {
-					// remove the backslash
-				} else {
-					sb.append('\\');
 				}
 			}
 			sb.append(c);
@@ -143,23 +140,27 @@ public class EntityUtil {
 		int i;
 		int len = string.length();
 		StringBuilder sb = new StringBuilder(len + 4);
-		char b = 0, c;
+		char c;
 		String hhhh;
 		sb.append('"');
 		for (i = 0; i < len; i += 1) {
 			c = string.charAt(i);
-			if (c == '"' && b != '\\') {
+			if (c == '\\')
+			{
+			   // add two backslashes to the output
+			   sb.append('\\').append('\\');
+			}
+			else if (c == '"') {
 				sb.append("\\\"");
 				continue;
 			}
-			if (c < ' ' || (c >= '\u0080' && c < '\u00a0')
+			else if (c < ' ' || (c >= '\u0080' && c < '\u00a0')
 					|| (c >= '\u2000' && c < '\u2100')) {
 				hhhh = "000" + Integer.toHexString(c);
 				sb.append("\\u" + hhhh.substring(hhhh.length() - 4));
 			} else {
 				sb.append(c);
 			}
-			b = c;
 		}
 		sb.append('"');
 		return sb.toString();
