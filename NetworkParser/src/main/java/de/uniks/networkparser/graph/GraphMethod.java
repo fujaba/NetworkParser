@@ -21,9 +21,8 @@
 
 package de.uniks.networkparser.graph;
 
-import de.uniks.networkparser.AbstractList;
 
-public class GraphMethod extends AbstractList<GraphParameter> implements GraphMember {
+public class GraphMethod extends GraphSimpleList<GraphParameter> implements GraphMember {
 	public static final String PROPERTY_RETURNTYPE = "returnType";
 	public static final String PROPERTY_PARAMETER = "parameter";
 	public static final String PROPERTY_NODE = "node";
@@ -55,7 +54,7 @@ public class GraphMethod extends AbstractList<GraphParameter> implements GraphMe
 		boolean first = true;
 		int i = 0;
 
-		for (GraphParameter parameter : keys) {
+		for (GraphParameter parameter : this) {
 
 			if (first) {
 				sb.append(getParameterSignature(includeName, parameter, i));
@@ -64,7 +63,7 @@ public class GraphMethod extends AbstractList<GraphParameter> implements GraphMe
 				sb.append(getParameterSignature(includeName, parameter, i));
 			}
 
-			if (i < keys.size() - 1) {
+			if (i < size() - 1) {
 				if (includeName) {
 					sb.append(", ");
 				} else {
@@ -108,18 +107,6 @@ public class GraphMethod extends AbstractList<GraphParameter> implements GraphMe
 	public GraphMethod(String name, GraphParameter... parameters) {
 		this.with(parameters);
 		this.with(name);
-	}
-
-	public GraphMethod with(GraphParameter... value) {
-		if (value == null) {
-			return this;
-		}
-		for (GraphParameter item : value) {
-			if (item != null) {
-				this.addEntity(item);
-			}
-		}
-		return this;
 	}
 
 	public GraphMethod withParameter(String paramName, GraphDataType dataType) {
@@ -170,18 +157,18 @@ public class GraphMethod extends AbstractList<GraphParameter> implements GraphMe
 	}
 
 	@Override
-	public GraphMethod getNewInstance() {
+	public GraphMethod getNewList(boolean keyValue) {
 		return new GraphMethod();
 	}
 
 	@Override
-	public GraphMethod with(Object... values) {
+	public GraphMethod withAll(Object... values) {
 		if (values == null) {
 			return this;
 		}
 		for (Object value : values) {
 			if (value != null && value instanceof GraphParameter) {
-				this.addEntity((GraphParameter) value);
+				this.add((GraphParameter) value);
 			}
 		}
 		return this;

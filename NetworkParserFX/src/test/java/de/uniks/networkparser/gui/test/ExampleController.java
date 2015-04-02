@@ -1,17 +1,14 @@
 package de.uniks.networkparser.gui.test;
 
 import java.net.URL;
-import java.util.Comparator;
 import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.AnchorPane;
-import de.uniks.networkparser.gui.table.Column;
-import de.uniks.networkparser.gui.table.SearchTableComponent;
-import de.uniks.networkparser.gui.table.TableCellValue;
-import de.uniks.networkparser.gui.table.TableList;
-import de.uniks.networkparser.gui.table.util.TableListCreator;
+import de.uniks.networkparser.gui.Column;
+import de.uniks.networkparser.gui.TableList;
+import de.uniks.networkparser.gui.table.TableComponent;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.json.JsonIdMap;
 
@@ -30,9 +27,9 @@ public class ExampleController implements Initializable{
 	        tableList.add(new PersonGUI("Michael",   "Brown",    "michael.brown@example.com", 122));
 	        
 	        JsonIdMap map = new  JsonIdMap();
-	        map.withCreator(new TableListCreator());
+	        map.withCreator(new TableList());
 	        map.withCreator(new PersonGUICreator());
-	        SearchTableComponent tableView = (SearchTableComponent) table.getChildren().get(0);
+	        TableComponent tableView = (TableComponent) table.getChildren().get(0);
 //	        SearchTableComponent tableView = ((SearchTableController)table).getTable();
 	        tableView.withMap(map).withList(tableList);
 	        
@@ -42,14 +39,10 @@ public class ExampleController implements Initializable{
 	        tableView.withColumn(new Column().withAttrName(PersonGUI.PROPERTY_LASTNAME));
 	        tableView.withColumn(new Column().withAttrName(PersonGUI.PROPERTY_EMAIL).withBrowserId(GUIPosition.WEST));
 	        
-	        tableView.withColumn(new Column().withAttrName(PersonGUI.PROPERTY_DISTANCE).withComparator(new Comparator<TableCellValue>() {
-				
-				@Override
-				public int compare(TableCellValue o1, TableCellValue o2) {
-					PersonGUI item1 = (PersonGUI)o1.getItem();
-					PersonGUI item2 = (PersonGUI)o2.getItem();
-					return item1.getDistance().compareTo(item2.getDistance());
-				}
+	        tableView.withColumn(new Column().withAttrName(PersonGUI.PROPERTY_DISTANCE).withComparator((o1, o2) -> {
+				PersonGUI item1 = (PersonGUI)o1.getItem();
+				PersonGUI item2 = (PersonGUI)o2.getItem();
+				return item1.getDistance().compareTo(item2.getDistance());
 			}));
 	}
 

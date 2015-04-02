@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import de.uniks.networkparser.ArraySimpleList;
+import de.uniks.networkparser.list.SimpleList;
 
 
 public class SimpleArrayListTest
@@ -16,7 +16,7 @@ public class SimpleArrayListTest
    public void test()
    {
       ArrayList<TestObject> list = gtTestList();
-      ArraySimpleList<TestObject> simpleArrayList = new ArraySimpleList<SimpleArrayListTest.TestObject>();
+      SimpleList<TestObject> simpleArrayList = new SimpleList<SimpleArrayListTest.TestObject>();
       for (TestObject testObject : list)
       {
          simpleArrayList.add(testObject);
@@ -29,7 +29,7 @@ public class SimpleArrayListTest
       
       for (int i = 0 ; i < simpleArrayList.size() ; i++)
       {
-         assertEquals(i, simpleArrayList.getIndex(list.get(i)));
+         assertEquals(i, simpleArrayList.indexOf(list.get(i)));
       }
       
       
@@ -38,7 +38,7 @@ public class SimpleArrayListTest
 
    private ArrayList<TestObject> gtTestList()
    {
-      ArrayList<TestObject> list =  new ArrayList<>();
+      ArrayList<TestObject> list =  new ArrayList<TestObject>();
       TestObject obj0 = new TestObject(Integer.MIN_VALUE);
       list.add(obj0);
       TestObject obj1 = new TestObject(-10);

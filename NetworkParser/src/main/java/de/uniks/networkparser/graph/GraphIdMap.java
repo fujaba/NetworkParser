@@ -22,6 +22,7 @@ package de.uniks.networkparser.graph;
  permissions and limitations under the Licence.
  */
 import java.util.Collection;
+
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -52,6 +53,18 @@ public class GraphIdMap extends IdMapEncoder {
 		return parse(object,
 				filter.clone(new GraphIdMapFilter()).withTyp(OBJECT));
 	}
+	
+	/**
+	 * Parses the object.
+	 *
+	 * @param object
+	 *            the object
+	 * @return the string
+	 */
+	public GraphList parsingObject(Object object) {
+		return parsing(object,
+				filter.clone(new GraphIdMapFilter()).withTyp(OBJECT));
+	}
 
 	/**
 	 * Parses the class.
@@ -66,9 +79,13 @@ public class GraphIdMap extends IdMapEncoder {
 	}
 
 	public String parse(Object object, GraphIdMapFilter filter) {
-		GraphList list = new GraphList().withTyp(filter.getTyp());
-		parse(object, filter, list, 0);
-		return list.toString();
+		return parsing(object, filter).toString();
+	}
+	
+	public GraphList parsing(Object object, GraphIdMapFilter filter) {
+		GraphList list = this.createList().withTyp(filter.getTyp());
+		list.withMain(parse(object, filter, list, 0));
+		return list;
 	}
 
 	/**
@@ -100,7 +117,7 @@ public class GraphIdMap extends IdMapEncoder {
 		String className = object.getClass().getName();
 		className = className.substring(className.lastIndexOf('.') + 1);
 
-		GraphClazz newElement = new GraphClazz();
+		GraphClazz newElement = this.createClazz();
 		newElement.withId(mainKey);
 		newElement.withClassName(className);
 		list.add(newElement);
@@ -140,8 +157,7 @@ public class GraphIdMap extends IdMapEncoder {
 		SendableEntityCreator valueCreater = getCreatorClass(item);
 		if (valueCreater != null) {
 			GraphNode subId = parse(item, filter, list, deep + 1);
-			list.add(new GraphEdge().with(element).with(
-					new GraphEdge(subId, cardinality, property)));
+			list.add(this.createEdge().withAll(element, this.createEdge(subId, cardinality, property)));
 		} else {
 			element.addValue(property, GraphDataType.ref(item.getClass()), "" + item);
 		}
@@ -181,8 +197,22 @@ public class GraphIdMap extends IdMapEncoder {
 		return className.substring(className.lastIndexOf('.') + 1);
 	}
 
-	@Override
-	public BaseItem getPrototyp() {
+	public GraphList createList() {
 		return new GraphList();
+	}
+
+	public GraphEdge createEdge() {
+		return new GraphEdge();
+	}
+	
+	public GraphEdge createEdge(GraphNode node, GraphCardinality cardinality, String property) {
+		return new GraphEdge(node, cardinality, property);
+	}
+	
+	public GraphClazz createClazz() {
+		return new GraphClazz();
+	}
+	public GraphAttribute createAttribute() {
+		return new GraphAttribute();
 	}
 }

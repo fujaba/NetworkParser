@@ -727,6 +727,11 @@ package de.uniks.networkparser.test;
  * @spec        JSR-51
  */
 
+public class TodoPatternTests
+{
+   
+}
+
 //public class Pattern
 //    implements java.io.Serializable
 //{

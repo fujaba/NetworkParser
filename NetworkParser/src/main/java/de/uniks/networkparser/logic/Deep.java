@@ -50,7 +50,7 @@ public class Deep extends ConditionMap implements SendableEntityCreator {
 	}
 
 	@Override
-	public boolean matches(ValuesMap values) {
+	public boolean check(ValuesMap values) {
 		return values.deep <= this.deep;
 	}
 

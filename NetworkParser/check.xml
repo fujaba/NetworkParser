@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE project>
 <project default="checkStyle" name="Create Jar for NetworkParser" xmlns:cs="antlib:com.puppycrawl.tools.checkstyle">
 	<target name="checkStyle">
 		<taskdef resource="checkstyletask.properties" classpath="lib/checkstyle-5.7/checkstyle-5.7-all.jar" />

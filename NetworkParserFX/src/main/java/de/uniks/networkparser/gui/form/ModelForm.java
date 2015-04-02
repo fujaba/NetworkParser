@@ -45,8 +45,8 @@ import javafx.scene.layout.VBox;
 import de.uniks.networkparser.DefaultTextItems;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.TextItems;
-import de.uniks.networkparser.gui.table.CellEditorElement.APPLYACTION;
-import de.uniks.networkparser.gui.table.Column;
+import de.uniks.networkparser.gui.Column;
+import de.uniks.networkparser.gui.CellEditorElement.APPLYACTION;
 import de.uniks.networkparser.gui.window.KeyListenerMap;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -58,9 +58,8 @@ public class ModelForm extends BorderPane{
 	private Button reloadBtn;
 	private Object item;
 	private HBox actionComposite;
-	private VBox items = new VBox();
+	private VBox items = new VBox(6);
 	private KeyListenerMap listener;
-	private Button defaultButton;
 
 	public VBox getItems(){
 		return items;
@@ -199,7 +198,7 @@ public class ModelForm extends BorderPane{
 		if(this.actionComposite==null){
 			this.actionComposite = new HBox();
 			this.actionComposite.setAlignment(Pos.BASELINE_RIGHT);
-			BorderPane.setMargin(actionComposite, new Insets(0, 30, 20, 0));
+			this.actionComposite.setPadding(new Insets(20, 30, 20, 0));
 			this.setBottom(actionComposite);
 		}
 		
@@ -239,58 +238,10 @@ public class ModelForm extends BorderPane{
 	}
 	
 	public ModelForm withDefaultButton(Button value) {
-		this.defaultButton = value;
+		value.setDefaultButton(true);
 		return this;
 	}
 
 	public void apply(APPLYACTION action) {
-		if(action==APPLYACTION.ENTER) {
-			if(defaultButton != null) {
-				defaultButton.fire();
-			}
-		}
 	}
-	
-//
-	//FIXME
-//	public void onFocus(PropertyComposite propertyComposite) {
-//		this.currentFocus=propertyComposite;
-//	}
-//	
-//	public void onFocusLost(PropertyComposite propertyComposite) {
-//		if(this.currentFocus==propertyComposite){
-//			this.currentFocus=null;
-//		}
-//	}
-//
-//	public void onKeyPressed(KeyEvent event) {
-//		if(keyListener!=null){
-//			keyListener.keyPressed(event);
-//		}
-//	}
-//	public void onKeyReleased(KeyEvent event){
-//		if(event.keyCode == SWT.CR && event.stateMask == 0){
-//			// ENTER
-//			focusnext();
-//		}else if(event.keyCode == SWT.ESC && event.stateMask == 0){
-//			// EXIT
-//		}
-//		if(keyListener!=null){
-//			keyListener.keyReleased(event);
-//		}
-//	}
-//	public void onKeyTraversed(KeyEvent event){
-//		if(event.keyCode == SWT.TAB && event.stateMask == 0){
-//			// TAB
-//			event.doit=false;
-//			System.out.println(event.time);
-//			focusnext();
-//		}	
-//	}
-//	@Override
-//	public void addKeyListener(KeyListener listener) {
-//		super.addKeyListener(listener);
-//		this.keyListener = listener;
-//	}
-
 }

@@ -7,8 +7,8 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import de.uniks.networkparser.gui.databinding.ModelListenerColorProperty;
-import de.uniks.networkparser.gui.databinding.ModelListenerStringProperty;
+import de.uniks.networkparser.gui.controller.ModelListenerColorProperty;
+import de.uniks.networkparser.gui.controller.ModelListenerStringProperty;
 import de.uniks.networkparser.gui.test.model.GUIEntity;
 import de.uniks.networkparser.gui.test.model.util.GUIEntityCreator;
 

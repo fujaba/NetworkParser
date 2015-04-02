@@ -303,7 +303,7 @@ public class DialogBox {
             
             @Override public void centerOnScreen() {
                 Window owner = getOwner();
-                if (owner != null) {
+                if (owner != null && owner.getScene() != null) {
                     Scene scene = owner.getScene();
                     
                     // scene.getY() seems to represent the y-offset from the top of the titlebar to the
@@ -542,7 +542,7 @@ public class DialogBox {
 		return this;
 	}
 	
-	public static DialogButton createInfo(Window parent, String title, String text) {
+	public static DialogButton showInfo(Window parent, String title, String text) {
 		return new DialogBox()
 			.withTitle(title)
 			.withCenterInfo(text)
@@ -550,7 +550,15 @@ public class DialogBox {
 			.show(parent);
 	}
 	
-	public static DialogButton createQuestion(Window parent, String title, String text) {
+	public static DialogButton showInfo(String title, String text) {
+		return new DialogBox()
+			.withTitle(title)
+			.withCenterInfo(text)
+			.withActionButton(new DialogButton().withName("OK").withAction(Grafik.close))
+			.show(null);
+	}
+	
+	public static DialogButton showQuestion(Window parent, String title, String text) {
 		return new DialogBox()
 			.withTitle(title)
 			.withCenterQuestion(text)
@@ -558,7 +566,7 @@ public class DialogBox {
 			.show(parent);
 	}
 	public static boolean createQuestionCheck(Window parent, String title, String text, String... check) {
-		DialogButton action = createQuestion(parent, title, text);
+		DialogButton action = showQuestion(parent, title, text);
 		if(action==null) {
 			return false;
 		}

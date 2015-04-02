@@ -39,7 +39,7 @@ public class EntityTest {
 		map.put("destroy", "false");
 		map.put("int", "23");
 		map.put("double", "23.5");
-		JsonObject cloneEntity = (JsonObject) new JsonObject().with(map);
+		JsonObject cloneEntity = (JsonObject) new JsonObject().withMap(map);
 		assertEquals("Must be 23", "23", cloneEntity.getString("id"));
 		assertTrue("Must be True", cloneEntity.getBoolean("init"));
 		assertFalse("Must be False", cloneEntity.getBoolean("destroy"));

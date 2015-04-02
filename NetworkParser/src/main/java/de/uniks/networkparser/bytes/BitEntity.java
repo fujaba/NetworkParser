@@ -21,16 +21,13 @@ package de.uniks.networkparser.bytes;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
  */
-import de.uniks.networkparser.AbstractEntityList;
-import de.uniks.networkparser.AbstractList;
-import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteConverter;
 import de.uniks.networkparser.interfaces.ByteItem;
-import de.uniks.networkparser.interfaces.FactoryEntity;
+import de.uniks.networkparser.list.SimpleList;
 
-public class BitEntity extends AbstractEntityList<BitValue> implements
-		ByteItem, FactoryEntity {
+public class BitEntity extends SimpleList<BitValue> implements
+		ByteItem {
 	public static final byte BIT_STRING = 0x53; // S = String;
 	public static final byte BIT_NUMBER = 0x4E; // N = Number
 	public static final byte BIT_BYTE = 0x42; // B = Byte
@@ -51,7 +48,7 @@ public class BitEntity extends AbstractEntityList<BitValue> implements
 	}
 
 	public BitEntity withStartLen(int start, int len) {
-		this.keys.add(new BitValue(start, len));
+		this.add(new BitValue(start, len));
 		return this;
 	}
 
@@ -86,7 +83,7 @@ public class BitEntity extends AbstractEntityList<BitValue> implements
 			this.property = "" + value;
 			return true;
 		} else if (PROPERTY_TYP.equalsIgnoreCase(attribute)) {
-			this.typ = (byte) value;
+			this.typ = (Byte) value;
 			return true;
 		} else if (PROPERTY_ORIENTATION.equalsIgnoreCase(attribute)) {
 			this.orientation = Integer.parseInt("" + value);
@@ -99,18 +96,18 @@ public class BitEntity extends AbstractEntityList<BitValue> implements
 	 * Generic Getter for Attributes
 	 */
 	public Object get(String attrName) {
-		String attribute;
+		if(attrName==null) {
+			return null;
+		}
 		int pos = attrName.indexOf(".");
 		if (pos > 0) {
-			attribute = attrName.substring(0, pos);
-		} else {
-			attribute = attrName;
+			attrName = attrName.substring(0, pos);
 		}
-		if (PROPERTY_PROPERTY.equalsIgnoreCase(attribute)) {
+		if (PROPERTY_PROPERTY.equalsIgnoreCase(attrName)) {
 			return this.property;
-		} else if (PROPERTY_TYP.equalsIgnoreCase(attribute)) {
+		} else if (PROPERTY_TYP.equalsIgnoreCase(attrName)) {
 			return this.typ;
-		} else if (PROPERTY_ORIENTATION.equalsIgnoreCase(attribute)) {
+		} else if (PROPERTY_ORIENTATION.equalsIgnoreCase(attrName)) {
 			return this.orientation;
 		}
 		return null;
@@ -147,7 +144,10 @@ public class BitEntity extends AbstractEntityList<BitValue> implements
 	}
 
 	@Override
-	public BitEntity with(Object... values) {
+	public BitEntity withAll(Object... values) {
+		if(values==null){
+			return this;
+		}
 		for (Object value : values) {
 			if (value instanceof Byte) {
 				this.typ = BIT_BYTE;
@@ -170,23 +170,8 @@ public class BitEntity extends AbstractEntityList<BitValue> implements
 	}
 
 	@Override
-	public BaseItem getNewObject() {
+	public BitEntity getNewList(boolean keyValue) {
 		return new BitEntity();
-	}
-
-	@Override
-	public BitEntity getNewArray() {
-		return new BitEntity();
-	}
-
-	@Override
-	public AbstractList<BitValue> getNewInstance() {
-		return new BitEntity();
-	}
-
-	@Override
-	public boolean add(BitValue e) {
-		return addEntity(e);
 	}
 
 	@Override

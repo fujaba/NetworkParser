@@ -45,7 +45,7 @@ public class Equals extends ConditionMap implements SendableEntityCreator {
 	private Byte bytevalue;
 
 	@Override
-	public boolean matches(ValuesMap values) {
+	public boolean check(ValuesMap values) {
 		if (values.entity instanceof Buffer) {
 			Buffer buffer = (Buffer) values.entity;
 			int pos;

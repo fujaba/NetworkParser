@@ -22,13 +22,14 @@ package de.uniks.networkparser.xml;
  permissions and limitations under the Licence.
  */
 import java.util.ArrayList;
-import de.uniks.networkparser.AbstractKeyValueList;
-import de.uniks.networkparser.AbstractList;
+
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.ReferenceObject;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.FactoryEntity;
+import de.uniks.networkparser.list.AbstractList;
+import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.list.SimpleList;
 
 /**
  * Tokener for parsing XML-Files.
@@ -66,15 +67,13 @@ public class XMLTokener extends Tokener {
 			return nextString(c, false, allowQuote, false, true);
 		case '<':
 			back();
-			if (creator instanceof FactoryEntity) {
-				BaseItem element = ((FactoryEntity) creator).getNewObject();
-				if (element instanceof AbstractKeyValueList<?, ?>) {
-					parseToEntity((AbstractKeyValueList<?, ?>) element);
-				} else if (element instanceof AbstractList<?>) {
-					parseToEntity((AbstractList<?>) element);
-				}
-				return element;
+			BaseItem element = creator.getNewList(false);
+			if (element instanceof SimpleKeyValueList<?, ?>) {
+				parseToEntity((SimpleKeyValueList<?, ?>) element);
+			} else if (element instanceof SimpleList<?>) {
+				parseToEntity((SimpleList<?>) element);
 			}
+			return element;
 		default:
 			break;
 		}
@@ -88,7 +87,7 @@ public class XMLTokener extends Tokener {
 	}
 
 	@Override
-	public void parseToEntity(AbstractKeyValueList<?, ?> entity) {
+	public void parseToEntity(SimpleKeyValueList<?, ?> entity) {
 		char c = getCurrentChar();
 
 		if (c != '<') {
@@ -149,7 +148,7 @@ public class XMLTokener extends Tokener {
 					break;
 				} else {
 					if (getCurrentChar() == '<') {
-						child = (XMLEntity) xmlEntity.getNewArray();
+						child = (XMLEntity) xmlEntity.getNewList(true);
 						parseToEntity(child);
 						xmlEntity.addChild(child);
 					} else {

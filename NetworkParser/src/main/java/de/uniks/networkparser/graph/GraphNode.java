@@ -1,5 +1,6 @@
 package de.uniks.networkparser.graph;
 
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
@@ -21,14 +22,12 @@ package de.uniks.networkparser.graph;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
  */
-import de.uniks.networkparser.AbstractEntityList;
 
-public class GraphNode extends AbstractEntityList<GraphMember> implements GraphMember{
+public class GraphNode extends GraphSimpleList<GraphMember> implements GraphMember{
 	private String id;
+	private int count;
 
 	// GETTER AND SETTER
-	
-
 	public String getId() {
 		return id;
 	}
@@ -48,7 +47,7 @@ public class GraphNode extends AbstractEntityList<GraphMember> implements GraphM
 	}
 
 	public void addValue(String property, GraphDataType clazz, String value) {
-		keys.add(new GraphAttribute().withValue(value).with(property).with(clazz));
+		add(new GraphAttribute().withValue(value).with(property).with(clazz));
 	}
 
 	@Override
@@ -57,12 +56,12 @@ public class GraphNode extends AbstractEntityList<GraphMember> implements GraphM
 	}
 
 	@Override
-	public GraphNode getNewInstance() {
+	public GraphNode getNewList(boolean keyValue) {
 		return new GraphNode();
 	}
 
 	@Override
-	public GraphNode with(Object... values) {
+	public GraphNode withAll(Object... values) {
 		if (values != null) {
 			for (Object value : values) {
 				if (value instanceof GraphAttribute) {
@@ -77,12 +76,18 @@ public class GraphNode extends AbstractEntityList<GraphMember> implements GraphM
 	}
 
 	@Override
-	public boolean add(GraphMember e) {
-		return addEntity(e);
-	}
-
-	@Override
 	public boolean remove(Object value) {
 		return removeItemByObject((GraphMember) value) >= 0;
+	}
+	
+	public int getCount() {
+		return count;
+	}
+	public void addCounter() {
+		this.count++;
+	}
+	public GraphNode withCount(int count) {
+		this.count = count;
+		return this;
 	}
 }

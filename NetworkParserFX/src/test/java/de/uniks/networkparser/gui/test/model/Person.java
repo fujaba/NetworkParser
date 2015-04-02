@@ -35,10 +35,12 @@ public class Person
    public static final String PROPERTY_BALANCE = "balance";
    public static final String PROPERTY_PARENT = "parent";
    public static final String PROPERTY_ITEM = "item";
+   public static final String PROPERTY_WALLET = "wallet";
 
    private ItemSet item = null;
    private GroupAccount parent = null;
    private double balance;
+   private Wallet wallet = new Wallet();
    
    private String name;
 	   
@@ -128,7 +130,7 @@ public class Person
    } 
 
    
-   public static final PersonSet EMPTY_SET = new PersonSet().withReadonly(true);
+   public static final PersonSet EMPTY_SET = new PersonSet().withReadOnly(true);
 
    
    /********************************************************************
@@ -254,6 +256,18 @@ public class Person
       Item value = new Item();
       withItem(value);
       return value;
-   } 
+   }
+
+	public Wallet getWallet() {
+		return wallet;
+	}
+	
+	public void setWallet(Wallet wallet) {
+		this.wallet = wallet;
+	} 
+	public Person withWallet(Wallet wallet) {
+		this.wallet = wallet;
+		return this;
+	} 
 }
 

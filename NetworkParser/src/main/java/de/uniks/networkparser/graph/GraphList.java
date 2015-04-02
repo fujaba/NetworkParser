@@ -24,13 +24,13 @@ package de.uniks.networkparser.graph;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import de.uniks.networkparser.AbstractEntityList;
-import de.uniks.networkparser.ArrayEntityList;
-import de.uniks.networkparser.ArraySimpleList;
 import de.uniks.networkparser.event.SimpleMapEntry;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
+import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.list.SimpleList;
 
-public class GraphList extends AbstractEntityList<GraphMember> implements GraphMember{
+public class GraphList extends GraphSimpleList<GraphMember> implements GraphMember{
 	private ArrayList<GraphEdge> edges = new ArrayList<GraphEdge>();
 	private String typ=GraphIdMap.CLASS;
 	private String style;
@@ -43,20 +43,8 @@ public class GraphList extends AbstractEntityList<GraphMember> implements GraphM
 	}
 	
 	@Override
-	protected boolean checkValue(Object a, Object b) {
-		String idA = ((GraphMember)a).getId();
-		String idB;
-		if(b instanceof String) {
-			idB = (String)b;
-		}else {
-			idB = ((GraphMember)b).getId();
-		}
-		return idA.equalsIgnoreCase(idB);
-	}
-
-	@Override
 	public boolean remove(Object o) {
-		int index = super.getIndex(o);
+		int index = super.indexOf(o);
 		if(index>=0) {
 			return super.remove(index) != null;
 		}
@@ -96,8 +84,8 @@ public class GraphList extends AbstractEntityList<GraphMember> implements GraphM
 	public boolean add(GraphEdge edge) {
 		for (Iterator<GraphEdge> i = this.edges.iterator(); i.hasNext();) {
 			GraphEdge item = i.next();
-			if (item.contains(edge.getOther().values())
-					&& item.getOther().containsAll(edge.values())) {
+			if (item.containsAll(edge.getOther())
+					&& item.getOther().containsAll(edge)) {
 				// Back again
 				item.with(edge.getOther().getCardinality());
 				item.with(edge.getOther().getProperty());
@@ -111,17 +99,17 @@ public class GraphList extends AbstractEntityList<GraphMember> implements GraphM
 		return edges;
 	}
 
-	public ArrayEntityList<String, Object> getLinks() {
-		ArrayEntityList<String, Object> links = new ArrayEntityList<String, Object>();
+	public SimpleKeyValueList<String, Object> getLinks() {
+		SimpleKeyValueList<String, Object> links = new SimpleKeyValueList<String, Object>();
 		for (GraphEdge element : edges) {
-			for (GraphNode node : element.values()) {
+			for (GraphNode node : element) {
 				String key = node.getTyp(typ, false);
-				ArraySimpleList<?> value = (ArraySimpleList<?>) links
+				SimpleList<?> value = (SimpleList<?>)links
 						.getValueItem(key);
 				if (value != null) {
-					value.with(element);
+					value.withAll(element);
 				} else {
-					ArraySimpleList<GraphEdge> simpleList = new ArraySimpleList<GraphEdge>();
+					SimpleList<GraphEdge> simpleList = new SimpleList<GraphEdge>();
 					simpleList.add(element);
 					links.put(key, simpleList);
 				}
@@ -130,18 +118,17 @@ public class GraphList extends AbstractEntityList<GraphMember> implements GraphM
 		return links;
 	}
 
-	public SimpleMapEntry<String, GraphNode> getNewEntity() {
-		return new SimpleMapEntry<String, GraphNode>();
-	}
-
 	@Override
-	public GraphList getNewInstance() {
+	public BaseItem getNewList(boolean keyValue) {
+		if(keyValue) {
+			return new SimpleMapEntry<String, GraphNode>();
+		}
 		return new GraphList();
 	}
 
 	@Override
-	public GraphList with(Object... values) {
-		super.with(values);
+	public GraphList withAll(Object... values) {
+		super.withAll(values);
 		return this;
 	}
 	
@@ -190,5 +177,21 @@ public class GraphList extends AbstractEntityList<GraphMember> implements GraphM
 	public GraphList withStyle(String style) {
 		this.style = style;
 		return this;
+	}
+
+	public GraphList withMain(GraphNode parse) {
+		return this;
+	}
+
+	public GraphMember getByObject(String id) {
+		if(id==null){
+			return null;
+		}
+		for(GraphMember item : this) {
+			if(id.equalsIgnoreCase(item.getId())){
+				return item;
+			}
+		}
+		return null;
 	}
 }

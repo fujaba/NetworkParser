@@ -31,23 +31,42 @@ public class PersonCreator implements SendableEntityCreator
    @Override
    public Object getValue(Object target, String attrName)
    {
-	   if (Person.PROPERTY_NAME.equalsIgnoreCase(attrName))
+	   int pos = attrName.indexOf('.');
+	      String attribute = attrName;
+	      
+	      if (pos > 0)
+	      {
+	         attribute = attrName.substring(0, pos);
+	      }
+	   
+	   if (Person.PROPERTY_NAME.equalsIgnoreCase(attribute))
       {
          return ((Person)target).getName();
       }
-	   if (Person.PROPERTY_BALANCE.equalsIgnoreCase(attrName))
+	   if (Person.PROPERTY_BALANCE.equalsIgnoreCase(attribute))
 	      {
 	         return ((Person)target).getBalance();
 	      }
-	   if (Person.PROPERTY_PARENT.equalsIgnoreCase(attrName))
+	   if (Person.PROPERTY_PARENT.equalsIgnoreCase(attribute))
 	      {
+		   if(attribute.equals(attrName)) {
 	         return ((Person)target).getParent();
+		   }else {
+			   return ((Person)target).getParent().getName();
+		   }
 	      }
-	   if (Person.PROPERTY_ITEM.equalsIgnoreCase(attrName))
+	   if (Person.PROPERTY_WALLET.equalsIgnoreCase(attribute))
+	      {
+		   if(attribute.equals(attrName)) {
+	         return ((Person)target).getWallet();
+		   }else {
+			   return ((Person)target).getWallet().getSum();
+		   }
+	      }
+	   if (Person.PROPERTY_ITEM.equalsIgnoreCase(attribute))
 	      {
 	         return ((Person)target).getItem();
 	      }
-	
 	      return null;
 	   }
    

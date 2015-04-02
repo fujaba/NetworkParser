@@ -21,18 +21,18 @@ package de.uniks.networkparser.event;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
  */
-import de.uniks.networkparser.ArrayEntityList;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.event.util.SoapCreator;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.StringItem;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.xml.XMLEntity;
 
 public class SoapObject implements StringItem, BaseItem {
 	public static final String PROPERTY_HEADER = "Header";
 	public static final String PROPERTY_BODY = "BODY";
 	private String namespace = "s";
-	private ArrayEntityList<String, String> headers;
+	private SimpleKeyValueList<String, String> headers;
 	private XMLEntity body;
 	private boolean visible = true;
 
@@ -104,7 +104,29 @@ public class SoapObject implements StringItem, BaseItem {
 		return visible;
 	}
 
-	public ArrayEntityList<String, String> getHeader() {
+	public SimpleKeyValueList<String, String> getHeader() {
 		return headers;
+	}
+
+	@Override
+	public BaseItem withAll(Object... values) {
+		if(values==null) {
+			return this;
+		}
+		for(Object item : values) {
+			if(item instanceof Boolean) {
+				withVisible((Boolean) item);
+			} else if(item instanceof String) {
+				withNamespace((String) item);
+			} else if(item instanceof XMLEntity) {
+				withBody((XMLEntity) item);
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public SoapObject getNewList(boolean keyValue) {
+		return new SoapObject();
 	}
 }

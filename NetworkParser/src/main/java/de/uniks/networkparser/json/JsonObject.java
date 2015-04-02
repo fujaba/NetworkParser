@@ -21,17 +21,13 @@ package de.uniks.networkparser.json;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
  */
-import java.util.Map;
-
-import de.uniks.networkparser.AbstractEntity;
-import de.uniks.networkparser.AbstractKeyValueList;
-import de.uniks.networkparser.AbstractList;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
-import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
+import de.uniks.networkparser.list.AbstractList;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 
 /* Copyright (c) 2002 JSON.org */
 
@@ -90,13 +86,11 @@ import de.uniks.networkparser.interfaces.StringItem;
  * @author JSON.org
  * @version 2011-11-24
  */
-public class JsonObject extends AbstractKeyValueList<String, Object> implements
-		StringItem, FactoryEntity, Entity {
-	private boolean visible = true;
-	protected boolean caseSensitive=true;
+public class JsonObject extends SimpleKeyValueList<String, Object> implements
+		StringItem, Entity {
 	
 	public JsonObject() {
-		this.allowDuplicate = false;
+		this.withAllowDuplicate(false);
 	}
 	
 	/**
@@ -111,6 +105,8 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements
 		Object object = this.get(key);
 		if (object instanceof JsonArray) {
 			return (JsonArray) object;
+		} else if(object instanceof String) {
+			return new JsonArray().withValue(""+object);
 		}
 		throw new RuntimeException("JsonObject[" + EntityUtil.quote(key)
 				+ "] is not a JsonArray.");
@@ -129,6 +125,8 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements
 		Object object = this.get(key);
 		if (object instanceof JsonObject) {
 			return (JsonObject) object;
+		} else if(object instanceof String) {
+			return new JsonObject().withValue(""+object);
 		}
 		throw new RuntimeException("JsonObject[" + EntityUtil.quote(key)
 				+ "] is not a JsonObject.");
@@ -146,7 +144,7 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements
 	public long getLong(String key) {
 		Object object = this.get(key);
 		if (object instanceof Long) {
-			return (long) object;
+			return (Long) object;
 		} else if (object instanceof Integer) {
 			return 0l + (Integer) object;
 		}
@@ -173,18 +171,20 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements
 			return "{}";
 		}
 		if (!isVisible()) {
-			return "{Item with " + values.size() + " values}";
+			return "{Item with " + size() + " values}";
 		}
 
 		StringBuilder sb = new StringBuilder("{");
-		sb.append(EntityUtil.quote(get(0).toString()));
+		Object item = getKeyByIndex(0);
+		sb.append(EntityUtil.quote(item.toString()));
 		sb.append(":");
-		sb.append(EntityUtil.valueToString(getValue(0), false, this));
+		sb.append(EntityUtil.valueToString(getValueByIndex(0), false, this));
 		for (int i = 1; i < size(); i++) {
 			sb.append(",");
-			sb.append(EntityUtil.quote(get(i).toString()));
+			Object value = get(i);
+			sb.append(EntityUtil.quote(value.toString()));
 			sb.append(":");
-			sb.append(EntityUtil.valueToString(getValue(i), false, this));
+			sb.append(EntityUtil.valueToString(getValueByIndex(i), false, this));
 		}
 		sb.append("}");
 		return sb.toString();
@@ -215,7 +215,7 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements
 		}
 
 		if (!isVisible()) {
-			return "{" + values.size() + " values}";
+			return "{" + size() + " values}";
 		}
 
 		int newindent = indent + indentFactor;
@@ -240,13 +240,13 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements
 
 		sb.append(EntityUtil.quote(get(0).toString()));
 		sb.append(":");
-		sb.append(EntityUtil.valueToString(getValue(0), indentFactor,
+		sb.append(EntityUtil.valueToString(getValueByIndex(0), indentFactor,
 				newindent, false, this));
 		for (int i = 1; i < length; i++) {
 			sb.append("," + prefix + step);
 			sb.append(EntityUtil.quote(get(i).toString()));
 			sb.append(":");
-			sb.append(EntityUtil.valueToString(getValue(i), indentFactor,
+			sb.append(EntityUtil.valueToString(getValueByIndex(i), indentFactor,
 					newindent, false, this));
 		}
 		if (length == 1) {
@@ -299,36 +299,20 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements
 	 *            entity to add values with the tokener
 	 * @return Itself
 	 */
-	public JsonObject withEntity(AbstractKeyValueList<?, ?> entity) {
+	public JsonObject withEntity(SimpleKeyValueList<?, ?> entity) {
 		new JsonTokener().parseToEntity(this, entity);
 		return this;
 	}
 
 	/**
-	 * Get a new Instance of JsonArray
+	 * Get a new Instance of JsonArray, JsonObject
 	 */
 	@Override
-	public JsonObject getNewObject() {
-		return new JsonObject();
-	}
-
-	/**
-	 * Get a new Instance of JsonObject
-	 */
-	@Override
-	public JsonArray getNewArray() {
+	public BaseItem getNewList(boolean keyValue) {
+		if(keyValue) {
+			return new JsonObject();
+		}
 		return new JsonArray();
-	}
-
-	@Override
-	public BaseItem withVisible(boolean value) {
-		this.visible = value;
-		return this;
-	}
-
-	@Override
-	public boolean isVisible() {
-		return visible;
 	}
 
 	public boolean has(String key) {
@@ -336,29 +320,8 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements
 	}
 
 	@Override
-	public JsonObject withValue(Object key, Object value) {
-		super.withValue(key, value);
-		return this;
-	}
-
-	@Override
-	public JsonObject getNewInstance() {
-		return new JsonObject();
-	}
-
-	@Override
-	public JsonObject with(Object... values) {
-		if (values == null) {
-			return this;
-		}
-		for (Object value : values) {
-			if (value instanceof AbstractEntity<?, ?>) {
-				AbstractEntity<?, ?> item = (AbstractEntity<?, ?>) value;
-				this.put(item.getKeyString(), item.getValue());
-			} else if (value instanceof Map<?, ?>) {
-				this.withMap((Map<?, ?>) value);
-			}
-		}
+	public JsonObject withKeyValue(Object key, Object value) {
+		super.withKeyValue(key, value);
 		return this;
 	}
 
@@ -383,81 +346,26 @@ public class JsonObject extends AbstractKeyValueList<String, Object> implements
 		Object object = this.get(key);
 		if (object == null) {
 			this.put(key,
-					value instanceof AbstractList ? getNewArray().with(value)
+					value instanceof AbstractList ? getNewList(true).withAll(value)
 							: value);
 		} else if (object instanceof AbstractList) {
-			((AbstractList<?>) object).with(value);
+			((AbstractList<?>) object).withAll(value);
 		} else {
-			this.put(key, getNewArray().with(object, value));
+			this.put(key, getNewList(false).withAll(object, value));
 		}
 		return this;
 	}
 
-	@Override
-	public Object remove(Object key) {
-		return removeItemByObject((String) key);
-	}
-
-//FIXME	@Override
-//	public Object put(String key, Object value) {
-//		int pos = getPositionKey(key);
-//		if (pos >= 0) {
-//			if (this.hashTableValues != null) {
-//				this.hashTableValues[pos] = value;
-//				pos = transformIndex(pos, key, this.hashTableKeys, this.keys);
-//			}
-//			return this.values.set(pos, value);
-//		}
-//		addEntity(key, value);
-//
-//		return value;
-//	}
-
-	@Override
-	protected int addKey(int pos, String newValue) {
-		if (pos == -1) {
-			if (!this.keys.add(newValue)) {
-				return -1;
-			}
-			pos = this.keys.size();
-			if (!isAllowDuplicate()) {
-				this.hashTableAddKey(newValue.toLowerCase(), pos);
-			} else {
-				this.hashTableAddKey(newValue, pos);
-			}
-			this.hashTableAddKey(newValue, pos);
-			return pos;
-		}
-		this.keys.add(pos, newValue);
-		this.hashTableAddKey(newValue, pos);
-		return -1;
-	}
-
-	@Override
-	protected boolean checkValue(Object a, Object b) {
-		if(!caseSensitive) {
-			if (a instanceof String && b instanceof String ) {
-				return ((String)a).equalsIgnoreCase((String)b);
-			}
-		}
-		return a.equals(b);
-	}
-
-	public JsonObject withValue(String key, Object value) {
+	public JsonObject withKeyValue(String key, Object value) {
 		if(value != null) {
 			// Only add value != null
-			int index = getIndex(key);
+			int index = indexOf(key);
 			if (index >= 0) {
 				setValueItem(key, value);
 				return this;
 			}
-			super.withValue(key, value);
+			super.withKeyValue(key, value);
 		}
-		return this;
-	}
-
-	public JsonObject withCaseSensitive(boolean value) {
-		this.caseSensitive = value;
 		return this;
 	}
 }

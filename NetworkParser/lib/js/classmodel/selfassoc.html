@@ -1,15 +1,14 @@
 <html>
 <head>
-	<link rel="stylesheet" type="text/css" href="../../../src/resources/de/uniks/networkparser/graph/diagramstyle.css">
-	<script src="../../../src/resources/de/uniks/networkparser/graph/graph.js"></script>
-	<script src="../../../src/resources/de/uniks/networkparser/graph/dagre.js"></script>
-	<script src="../../../src/resources/de/uniks/networkparser/graph/drawer.js"></script>
+	<link rel="stylesheet" type="text/css" href="../../../src/main/resources/de/uniks/networkparser/graph/diagramstyle.css">
+	<script src="../../../src/main/resources/de/uniks/networkparser/graph/graph.js"></script>
+	<script src="../../../src/main/resources/de/uniks/networkparser/graph/dagre.min.js"></script>
+	<script src="../../../src/main/resources/de/uniks/networkparser/graph/drawer.js"></script>
 </head>
 <body>
 <script>
    var json = {
    "typ":"class",
-   "value":{
       "nodes":[
       {
             "typ":"node",
@@ -77,7 +76,6 @@
             "target":"Room"
          }
       ]
-   }
 }   ;
    json["options"]={"canvasid":"canvasStudyRight with assignments class generationClassDiagram8", "display":"html", "fontsize":10,"bar":true};   var g = new Graph(json);
    g.layout(100,100);

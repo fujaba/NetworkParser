@@ -32,16 +32,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
@@ -49,54 +52,55 @@ import javafx.scene.control.ScrollBar;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import de.uniks.networkparser.DefaultTextItems;
-import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.TextItems;
+import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.Style;
+import de.uniks.networkparser.gui.TableList;
 import de.uniks.networkparser.gui.controls.EditFieldMap;
+import de.uniks.networkparser.gui.resource.Styles;
 import de.uniks.networkparser.interfaces.GUIPosition;
+import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-//TODO ADD ALL FUNCTIONALITY FROM TABLECOMPONENT.JAVA.TXT
-public class TableComponent extends BorderPane implements PropertyChangeListener, TableComponentInterface, ChangeListener<Number> {
+import de.uniks.networkparser.json.JsonArray;
+import de.uniks.networkparser.json.JsonIdMap;
+import de.uniks.networkparser.logic.InstanceOf;
+
+public class TableComponent extends BorderPane implements PropertyChangeListener, ChangeListener<Number> {
 	private ArrayList<TableColumnFX> columns = new ArrayList<TableColumnFX>();
 	public static final String PROPERTY_COLUMN = "column";
 	public static final String PROPERTY_ITEM = "item";
-	protected IdMapEncoder map;
+	protected JsonIdMap map;
 	protected Object source;
-	protected SendableEntityCreator sourceCreator;
 	private String property;
-	protected UpdateSearchList updateItemListener;
+	protected SendableEntityCreator sourceCreator;
+	private ObservableList<Object> items;
+
 	protected TableViewFX[] tableViewer=new TableViewFX[3];
 	protected boolean isToolTip;
 	protected ContextMenu contextMenu;
-
-	protected TableList sourceList;
-	private ObservableList<Object> list;
-	protected TableFilterView tableFilterView;
 	private Menu visibleItems;
 	private SelectionListener listener;
 	private EditFieldMap field=new EditFieldMap();
 	
-	@Override
+	// SearchComponent
+	private TableFilterView tableFilterView;
+	private BorderPane northComponents;
+	private TextField searchText;
+	
 	public IdMapEncoder getMap() {
 		return map;
 	}
+
 	
-	public Node withAnchor(Node node){
-		AnchorPane.setTopAnchor(node, 0.0);
-		AnchorPane.setLeftAnchor(node, 0.0);
-		AnchorPane.setRightAnchor(node, 0.0);
-		AnchorPane.setBottomAnchor(node, 0.0);
-		return node;
-	}
-	
-	@Override
 	public TableComponent createFromCreator(SendableEntityCreator creator, boolean edit) {
 		if(creator==null){
-			Iterator<Object> iterator = list.iterator();
+			Iterator<Object> iterator = items.iterator();
 			if(iterator.hasNext()){
 				Object value = iterator.next();
 				creator = map.getCreatorClass(value);
@@ -143,7 +147,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	}
 	private TableViewFX getBrowser(){
 		TableViewFX resultTableViewer=new TableViewFX();
-		resultTableViewer.withListener(this).withItems(list);
+		resultTableViewer.withListener(this).withItems(items);
 		resultTableViewer.setEditable(true);
 		
 		resultTableViewer.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE); // just in case you didnt already set the selection model to multiple selection.
@@ -152,7 +156,6 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		return resultTableViewer;
 	}
 
-	@Override
 	public TableComponent withScrollPosition(double pos){
 		for(TableViewFX table : tableViewer){
 			if(table!=null){
@@ -162,7 +165,6 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		return this;
 	}
 
-	@Override
 	public TableComponent withColumn(Column column) {
 		init();
 		TableView<Object> browserView = getBrowserView(column.getBrowserId());
@@ -186,8 +188,33 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		// Recalculate Width
 		TableViewFX table = (TableViewFX) browserView;
 		showScrollbar(table);
-		
+
+		String attrName = column.getAttrName();
+		if(attrName != null ) {
+			int pos = attrName.lastIndexOf(".");
+			if(pos > 0 ) {
+				// Alle
+				List<Object> fullList = getFulList();
+				for(Object item : fullList) {
+					SendableEntityCreator creator = this.getCreator(item);
+					if(creator != null ) {
+						Object value = creator.getValue(item, attrName.substring(0, pos));
+						if(value!=null) {
+							addUpdateListener(value, attrName.substring(pos+1));
+						}
+					}
+				}
+			}
+		}
 		return this;
+	}
+	
+	public List<Object> getFulList() {
+		if(tableFilterView!=null) {
+			return tableFilterView.getFulList();
+		}
+		return items;
+
 	}
 
 	public void showScrollbar(TableViewFX table) {
@@ -221,84 +248,125 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	}
 
 	
-	public TableComponent withMap(IdMap map){
+	public TableComponent withMap(JsonIdMap map){
 		this.map = map;
 		this.field.withMap(map);
 		return this;
 	}
 
-	@Override
 	public TableComponent withSearchProperties(String... searchProperties) {
 		if(tableFilterView==null){
-			init();
+			tableFilterView = new TableFilterView(this);
 		}
-		tableFilterView.setSearchProperties(searchProperties);
-		tableFilterView.refresh();
+		if(searchText == null) {
+			createNothElement();
+			searchText = new TextField();
+	        searchText.getStylesheets().add(Styles.getPath());
+	        searchText.getStyleClass().add("searchbox");
+	        searchText.setPromptText(getText(DefaultTextItems.SEARCH));
+	        searchText.setMinHeight(24);
+	        searchText.setPrefSize(200, 24);
+	        searchText.setEditable(true);
+	        searchText.textProperty().addListener(tableFilterView);
+	        northComponents.setCenter(searchText);
+		}
+	    tableFilterView.setSearchProperties(searchProperties);
+	    tableFilterView.refresh();
 		return this;
 	}
 	
-	@Override
-	public void init(){
-		withAnchor(this);
-		
+	void createNothElement() {
+		if(northComponents==null){
+			this.setTop(northComponents = new BorderPane());
+		}
+	}
+	
+	public TableComponent withElement(Node... elements) {
+		createNothElement();
+		Node element = this.northComponents.getRight();
+		if(element == null) {
+			HBox hBox = new HBox();
+			hBox.setAlignment(Pos.CENTER);
+			element  = hBox;
+			this.northComponents.setRight(element);
+		}
+		if(element instanceof HBox) {
+			HBox parent = (HBox) element;
+			for(Node item : elements) {
+				parent.getChildren().add(item);
+				HBox.setMargin(item, new Insets(0, 5, 0, 5));
+			}
+		}
+		return this;
+	}
+	
+	void init(){
 		if(contextMenu==null){
 			contextMenu = new ContextMenu();
 			visibleItems = new Menu();
 			visibleItems.setText(getText(DefaultTextItems.COLUMNS));
+			
+			Menu saveAs= new Menu(getText(DefaultTextItems.SAVEAS));
+			saveAs.getItems().addAll(new CSVExporter(this), new ExcelExporter(this));
+			
 			contextMenu.getItems().add(visibleItems);
+			contextMenu.getItems().add(saveAs);
 		}
 
-		if(list==null){
-			this.list = FXCollections.observableArrayList();
+		if(items==null){
+			this.items = FXCollections.observableArrayList();
 		}
 		
 		if(listener==null){
 			this.listener = new SelectionListener();
 		}
-		
-		if(sourceList==null){
-			this.sourceList = new TableList();
-			this.sourceList.addPropertyChangeListener(this);
-			this.sourceList.setIdMap(map);
-		}
-
-		if(tableFilterView==null){
-			tableFilterView = new TableFilterView(this);
-		}
-		
-		if(this.updateItemListener==null){
-			this.updateItemListener = new UpdateSearchList(this);
-		}
 	}
 
-	@Override
 	public boolean addItem(Object item) {
-		if(sourceList==null){
+		if(items==null){
 			init();
 		}
-		if (!sourceList.contains(item)) {
-			sourceList.add(item);
-			if (tableFilterView.matchesSearchCriteria(item)) {
-				if (getParent() instanceof PropertyChangeListener) {
-					((PropertyChangeListener) getParent())
-							.propertyChange(new PropertyChangeEvent(this,
-									PROPERTY_ITEM, null, item));
-				}
-				this.list.add(item);
-			}
-			this.updateItemListener.addItem(item);
+		boolean added = false;
+		if(tableFilterView!=null) {
+			added = tableFilterView.addItem(item);
+			
+		} else if(!items.contains(item)) {
+			added = items.add(item);
+		}
+		if(added) {
+			this.addUpdateListener(item, null);
 			tableFilterView.refreshCounter();
+			SendableEntityCreator creator = this.getCreator(item);
+			if(creator != null ) {
+				for(TableColumnFX column : columns) {
+					String attrName = column.getColumn().getAttrName();
+					if(attrName != null ) {
+						int pos = attrName.lastIndexOf(".");
+						if(pos > 0 ) {
+							Object value = creator.getValue(item, attrName.substring(0, pos));
+							if(value!=null) {
+								addUpdateListener(value, attrName.substring(pos+1));
+							}
+						}
+					}
+				}
+			}
 			return true;
 		}
 		return false;
 	}
 
-	@Override
 	public boolean removeItem(Object item) {
-		if (sourceList.contains(item)) {
+		boolean removed = false;
+		if(tableFilterView!=null) {
+			removed = tableFilterView.removeItem(item);
+			
+		} else if(!items.contains(item)) {
+			removed = items.remove(item);
+		}
+		if (removed) {
 			sourceCreator.setValue(source, property, item, IdMapEncoder.REMOVE);
-			this.updateItemListener.removeItem(item);
-			sourceList.remove(item);
+			this.removeUpdateListener(item);
 			if (getParent() instanceof PropertyChangeListener) {
 				((PropertyChangeListener) getParent())
 						.propertyChange(new PropertyChangeEvent(this,
@@ -310,12 +378,10 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		return false;
 	}
 	
-	@Override
 	public TableComponent withList(TableList item) {
 		return withList(item, TableList.PROPERTY_ITEMS);
 	}
 	
-	@Override
 	public TableComponent withList(Object item, String property) {
 		if (map == null) {
 			return this;
@@ -336,16 +402,15 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 				addItem(entity);
 			}
 		}
-		addUpdateListener(source);
+		addUpdateListener(source, property);
 		return this;
 	}
 	
-	@Override
-	public TableColumnInterface getColumn(Column column) {
+	public TableColumnFX getColumn(Column column) {
 		if (column != null) {
 			for (Iterator<TableColumnFX> i = this.columns.iterator(); i
 					.hasNext();) {
-				TableColumnInterface item = i.next();
+				TableColumnFX item = i.next();
 				if (item.getColumn().equals(column)) {
 					return item;
 				}
@@ -353,12 +418,58 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		}
 		return null;
 	}
-	@Override
-	public void addUpdateListener(Object list) {
-		this.updateItemListener.addItem(list);
+	
+	boolean addUpdateListener(Object item, String property){
+		if (item instanceof SendableEntity) {
+			if(property == null) {
+				((SendableEntity) item).addPropertyChangeListener(this);
+			} else {
+				((SendableEntity) item).addPropertyChangeListener(property, this);
+			}
+			return true;
+		}
+		if(item instanceof PropertyChangeSupport){
+			if(property == null) {
+				((PropertyChangeSupport) item).addPropertyChangeListener(this);
+			} else {
+				((PropertyChangeSupport) item).addPropertyChangeListener(property, this);
+			}
+			return true;
+		}
+		if(property != null) {
+			try {
+				Method method = item.getClass().getMethod("addPropertyChangeListener", String.class, java.beans.PropertyChangeListener.class );
+				method.invoke(item, property, this);
+				return true;
+			} catch (Exception e) {				
+			}
+		}
+			
+		try {
+			Method method = item.getClass().getMethod("addPropertyChangeListener", java.beans.PropertyChangeListener.class );
+			method.invoke(item, this);
+			return true;
+		} catch (Exception e) {
+			
+		}
+		return false;
+	}
+	
+	void removeUpdateListener(Object item){
+		if (item instanceof SendableEntity) {
+			((SendableEntity) item).removePropertyChangeListener(this);
+		} else if(item instanceof PropertyChangeSupport){
+			((PropertyChangeSupport) item).removePropertyChangeListener(this);
+		}else {
+			try {
+				Method method = item.getClass().getMethod("removePropertyChangeListener", java.beans.PropertyChangeListener.class );
+				method.invoke(item, this);
+			} catch (Exception e) {
+				
+			}
+		}
 	}
 
-	@Override
 	public String getProperty() {
 		return property;
 	}
@@ -377,36 +488,64 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
-		
 		if (event == null) {
 			return;
 		}
-		Platform.runLater(new TablePropertyChange(this, event, source, property, sourceList));
+		
+		if (this.source.equals(event.getSource())) {
+			if (event.getOldValue() == null && event.getNewValue() != null && event.getPropertyName().equals(property)) {
+				addItem(event.getNewValue());
+			}
+		}else{
+			// refresh Item
+			ArrayList<TableColumnFX> columns=new ArrayList<TableColumnFX>();
+			ArrayList<TableColumnFX> subColumns=new ArrayList<TableColumnFX>();
+			String subItem = "."+event.getPropertyName();
+            for(Iterator<TableColumnFX> iterator = this.getColumnIterator();iterator.hasNext();){
+                TableColumnFX column = iterator.next();
+                String attrName = column.getColumn().getAttrName();
+				if(attrName.equals(event.getPropertyName())){
+                	columns.add(column);
+                }else if(attrName.endsWith(subItem)) {
+                	subColumns.add(column);
+                }
+            }
+            if((columns.size() + subColumns.size())<1) {
+            	System.out.println("FIXME DONT FIND COLUMN: " + event.getPropertyName());
+            }else {
+            	for(TableColumnFX column  : columns ) {
+                	Object item = event.getSource();
+                	int index = items.indexOf(item);
+                	
+                	if(index >= 0) {
+                		column.refreshCell(index);
+                	}
+            	}
+            	for(TableColumnFX column  : subColumns ) {
+            		column.refreshCell(-1);
+            	}
+            }
+		}
 	}
 	
 	public Iterator<TableColumnFX> getColumnIterator() {
 		return columns.iterator();
 	}
 
-	@Override
 	public SendableEntityCreator getCreator(Object entity) {
 		return getMap().getCreatorClass(entity);
 	}
 	
 	public Object getElement(int row) {
-		return list.get(row);
-	}
-	
-	@Override
-	public void refreshViewer() {
+		return items.get(row);
 	}
 
-	@Override
-	public List<Object> getItems(boolean all) {
-		if(all){
-			return sourceList;
-		}
-		return list;
+	public List<Object> getItems() {
+		return items;
+	}
+	
+	public ArrayList<TableColumnFX> getColumns() {
+		return columns;
 	}
 	
 	@Override
@@ -415,7 +554,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		withScrollPosition((Double) arg2);
 	}
 	
-	public void findAllScrollBars() {
+	void findAllScrollBars() {
 		for(TableViewFX table : tableViewer){
 			if(table!=null){
 				table.getScrollbar();
@@ -434,4 +573,28 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	public ObservableList<Object> getSelection() {
 		return getBrowserView(GUIPosition.CENTER).getSelectionModel().getSelectedItems();
 	}
+	
+	public JsonArray saveColumns() {
+		JsonArray list=new JsonArray();
+		for(TableColumnFX column : columns) {
+			list.add(map.encode(column.getColumn(), Filter.regard(InstanceOf.value(Style.class))));
+		}
+		return list;
+	}
+	
+	public boolean loadColumns(JsonArray columns) {
+		if(columns==null || columns.size()<this.columns.size()) {
+			return false;
+		}
+		if(!(map instanceof JsonIdMap)) {
+			return false;
+		}
+		for(int i=0;i<this.columns.size();i++) {
+			TableColumnFX column = this.columns.get(i);
+			map.decode(column.getColumn(), columns.getJSONObject(i));
+			column.refresh();
+		}
+		return true;
+	}
+
 }

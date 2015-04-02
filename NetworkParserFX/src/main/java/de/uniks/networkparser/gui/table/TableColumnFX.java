@@ -22,18 +22,28 @@ package de.uniks.networkparser.gui.table;
  permissions and limitations under the Licence.
 */
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.util.Callback;
+
+import com.sun.javafx.scene.control.skin.TableRowSkin;
+import com.sun.javafx.scene.control.skin.TableViewSkin;
+import com.sun.javafx.scene.control.skin.VirtualFlow;
+
+import de.uniks.networkparser.gui.Column;
+import de.uniks.networkparser.gui.TableCellValue;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class TableColumnFX extends TableColumn<Object, TableCellValue> implements TableColumnInterface, EventHandler<ActionEvent>{
+public class TableColumnFX extends TableColumn<Object, TableCellValue> implements EventHandler<ActionEvent>{
 	private Column column;
 	private CheckMenuItem menueItem;
 	private TableComponent tableComponent;
@@ -56,19 +66,16 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 			@Override
 			public TableCell<Object, TableCellValue> call(
 					TableColumn<Object, TableCellValue> arg0) {
-				return new TableCellFX().withTableComponent(tableComponent).withColumn(TableColumnFX.this.column).withEditFieldMap(TableColumnFX.this.tableComponent.getFieldFactory());
+				TableCellFX cell = new TableCellFX().withTableComponent(tableComponent).withColumn(TableColumnFX.this.column).withEditFieldMap(TableColumnFX.this.tableComponent.getFieldFactory());
+				return cell;
 			}
 		});
 		setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Object,TableCellValue>, ObservableValue<TableCellValue>>() {
 			@Override
 			public ObservableValue<TableCellValue> call(
 					javafx.scene.control.TableColumn.CellDataFeatures<Object, TableCellValue> arg0) {
-//				System.out.println(arg0.getTableColumn());;
 				SendableEntityCreator creator = TableColumnFX.this.tableComponent.getCreator(arg0.getValue());
-				return new TableCellValueFX()
-						.withItem(arg0.getValue())
-						.withColumn(TableColumnFX.this.column)
-						.withCreator(creator);
+				return new TableCellValueFX().withColumn(TableColumnFX.this.column).withCreator(creator).withItem(arg0.getValue());
 			}
 		});
 		
@@ -78,12 +85,14 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 	        	System.out.println(t);
 	        }
 	    });
-
 		
+		widthProperty().addListener((ChangeListener<Number>) (observableValue, oldWidth, newWidth) -> TableColumnFX.this.getColumn().getOrCreateStyle().withWidth(newWidth.doubleValue()));
+		if(column.getStyle() != null) {
+			this.setPrefWidth(getColumn().getStyle().getWidth());
+		}
 		return this;
 	}
 	
-	@Override
 	public Column getColumn() {
 		return column;
 	}
@@ -93,14 +102,15 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 		Object source = event.getSource();
 		if(source==menueItem){
 			if(!menueItem.isSelected()){
+				column.withVisible(false);
 				this.setVisible(false);	
 			}else{
+				column.withVisible(true);
 				this.setVisible(true);
 			}
 		}
 	}
 
-	@Override
 	public void UpdateCount() {
 		Platform.runLater(new Runnable() {
 			@Override
@@ -110,33 +120,41 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 		});
 	}
 	
+	public void refresh() {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				// COLUMN
+				TableColumnFX.this.setText( column.getLabel() );
+				setVisible(column.isVisible());
+				
+				// Menue
+				menueItem.setText( column.getLabel() );
+				menueItem.setSelected(column.isVisible());
+			}
+		});
+	}
 	
 	
-	
-	//FIXME REMOVE
-//	@Override
-//	public ObservableValue<TableCellValue> call(
-//			CellDataFeatures<Object, TableCellValue> arg0) {
-//		return new TableCellFX().withColumn(column).withTableComponent(tableComponent);
-//////	.withCreator(tableComponent.getCreatorClass(arg0.getValue()));
-//	}
-
-//	@Override
-//	public ObservableValue<TableCellValue> call(CellDataFeatures<Object, TableCellValue> arg0) {
-//	public TableCell<Object, TableCellValue> call(TableColumn<Object, TableCellValue> arg0) {
-//		return new TableCellFX().withColumn(column).withTableComponent(tableComponent);
-//setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Object,TableCellValue>, ObservableValue<TableCellValue>>() {
-//			
-//			@Override
-//			public ObservableValue<TableCellValue> call(CellDataFeatures<Object, TableCellValue> arg0) {
-//				 return new TableCellValueFX().withItem(arg0.getValue()).withColumn(TableColumnFX.this.column).withCreator(TableColumnFX.this.tableComponent.getMap().getCreatorClass(arg0.getValue()));
-//			}
-//		});
-//	}
-//	public TableCell<Object, TableCellValue> call(
-//			TableColumn<Object, TableCellValue> arg0) {
-//		System.out.println(arg0);
-//		arg0.get
-//		
-//	}
+	public void refreshCell(int row) {
+		TableViewSkin<?> skin = (TableViewSkin<?>) this.getTableView().getSkin();
+		int columnId = this.getTableView().getVisibleLeafIndex(this);
+        ObservableList<Node> children = skin.getChildren();
+        for(Node node : children) {
+        	if(node instanceof VirtualFlow<?>) {
+        		VirtualFlow<?> vf = (VirtualFlow<?>) node;
+        		if(row >= 0) {
+        			TableRowSkin<?> cellSkin = (TableRowSkin<?>) vf.getCell(row).getSkin();
+        			TableCellFX tableCell = (TableCellFX) (cellSkin).getChildren().get(columnId);
+    				tableCell.updateIndex(row);
+        		} else {
+        			for(int i=0;i<vf.getCellCount();i++) {
+	        			TableRowSkin<?> cellSkin = (TableRowSkin<?>) vf.getCell(i).getSkin();
+	        			TableCellFX tableCell = (TableCellFX) (cellSkin).getChildren().get(columnId);
+	        			tableCell.updateIndex(i);
+        			}
+        		}
+        	}
+        }
+	}
 }

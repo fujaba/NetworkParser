@@ -27,10 +27,14 @@ import javafx.scene.Node;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TablePosition;
 import javafx.scene.text.Font;
+import de.uniks.networkparser.gui.CellEditorElement;
+import de.uniks.networkparser.gui.Column;
+import de.uniks.networkparser.gui.FieldTyp;
 import de.uniks.networkparser.gui.Style;
+import de.uniks.networkparser.gui.StyleFX;
+import de.uniks.networkparser.gui.TableCellValue;
 import de.uniks.networkparser.gui.controls.EditControl;
 import de.uniks.networkparser.gui.controls.EditFieldMap;
-import de.uniks.networkparser.gui.grid.StyleFX;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
@@ -55,7 +59,7 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 			this.setCursor(Cursor.HAND);
 		}
 		
-		if(field.getStyle().getAlignment() != null) {
+		if(field.getStyle()!= null && field.getStyle().getAlignment() != null) {
 			GUIPosition alignment = GUIPosition.valueOf( field.getStyle().getAlignment() );
 			if(alignment != null) {
 				if(alignment==GUIPosition.CENTER) {
@@ -67,11 +71,6 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 				}
 			}
 		}
-		//explorer.withLabel("Explorer").withStyle(new Style().withWidth(80).withForground("00A18F").withBackground("D4D4D4").withAlignment(GUIPosition.CENTER));
-		//explorer.withResizable(false);
-		//explorer.withListener(new ExplorerFilesButtonEditingSupport(this));
-
-		
 		return this;
 	}
 
@@ -105,7 +104,7 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 		Object entity = tableComponent.getElement(row);
 		SendableEntityCreator creator = tableComponent.getCreator(entity);
 		
-		if (!isEmpty() && this.field.getListener().canEdit(entity, creator)) {
+		if(this.field.getListener().onAction(entity, creator, getTableView().getLayoutX(), getTableView().getLayoutY())) {
 			super.startEdit();
 			Object value = getItem().getCreator().getValue(getItem().getItem(), this.field.getAttrName());
 			FieldTyp typ = fieldMap.getControllForTyp(field, value);
@@ -114,8 +113,6 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 				setText(null);
 				setGraphic(control.getControl());
 			}
-		}else if(this.field.isListener()) {
-			this.field.getListener().onEdit(entity, creator);
 		}
 	}
 	
@@ -146,7 +143,7 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 	@Override
 	public void apply(APPLYACTION action) {
 		Object value = control.getValue(false);
-		getItem().getColumn().getListener().setValue(this, getItem().getItem(), getItem().getCreator(), value);
+		getItem().getColumn().setValue(this, getItem().getItem(), getItem().getCreator(), value);
 		setText(""+value);
 		setGraphic(null);		
 	}

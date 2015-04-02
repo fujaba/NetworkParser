@@ -25,7 +25,8 @@ package de.uniks.networkparser.logic;
 /**
  * @author Stefan Lindel Condition Clazz.
  */
-public interface Condition {
+@FunctionalInterface
+public interface Condition<T> {
 	/**
 	 * checks if a telegram fulfills this condition.
 	 *
@@ -33,5 +34,5 @@ public interface Condition {
 	 *            the telegram to be checked
 	 * @return true if the telegram fulfills this condition, false otherwise
 	 */
-	public boolean matches(ValuesSimple value);
+	public boolean check(T value);
 }

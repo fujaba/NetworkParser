@@ -22,12 +22,12 @@ package de.uniks.networkparser.json;
  permissions and limitations under the Licence.
  */
 import java.util.Iterator;
-import de.uniks.networkparser.AbstractEntityList;
+
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
+import de.uniks.networkparser.list.SortedList;
 
 /**
  * A JSONArray is an ordered sequence of values. Its external text form is a
@@ -73,9 +73,8 @@ import de.uniks.networkparser.interfaces.StringItem;
  * @version 2010-12-28
  */
 
-public class JsonArray extends AbstractEntityList<Object> implements
-		StringItem, FactoryEntity {
-	private boolean visible = true;
+public class JsonArray extends SortedList<Object> implements
+		StringItem {
 
 	/**
 	 * Get the JSONArray associated with an index.
@@ -91,6 +90,8 @@ public class JsonArray extends AbstractEntityList<Object> implements
 		Object object = get(index);
 		if (object instanceof JsonArray) {
 			return (JsonArray) object;
+		} else if(object instanceof String) {
+			return new JsonArray().withValue(""+object);
 		}
 		throw new RuntimeException("JSONArray[" + index
 				+ "] is not a JSONArray.");
@@ -110,10 +111,31 @@ public class JsonArray extends AbstractEntityList<Object> implements
 		Object object = get(index);
 		if (object instanceof JsonObject) {
 			return (JsonObject) object;
+		} else if(object instanceof String) {
+			return new JsonObject().withValue(""+object);
 		}
 		throw new RuntimeException("JSONArray[" + index
 				+ "] is not a JSONObject.");
 	}
+
+   /**
+    * Get the JSONObject associated with an index.
+    *
+    * @param index
+    *            subscript
+    * @return A JSONObject value.
+    * @throws RuntimeException
+    *             If there is no value for the index or if the value is not a
+    *             JSONObject
+    */
+   public String getString(int index) {
+      Object object = get(index);
+      if (object instanceof String) {
+         return (String) object;
+      }
+      throw new RuntimeException("JSONArray[" + index
+            + "] is not a String.");
+   }
 
 	/**
 	 * Produce a JSONObject by combining a JSONArray of names with the values of
@@ -131,7 +153,7 @@ public class JsonArray extends AbstractEntityList<Object> implements
 		}
 		JsonObject jo = new JsonObject();
 		for (int i = 0; i < names.size(); i += 1) {
-			jo.put(names.getString(i), this.get(i));
+			jo.put(""+names.getKeyByIndex(i), this.get(i));
 		}
 		return jo;
 	}
@@ -255,7 +277,7 @@ public class JsonArray extends AbstractEntityList<Object> implements
 	}
 
 	public JsonObject get(String id) {
-		for (Object item : keys) {
+		for (Object item : this) {
 			if (item instanceof JsonObject) {
 				JsonObject json = (JsonObject) item;
 				if (json.has(JsonIdMap.ID)
@@ -267,71 +289,23 @@ public class JsonArray extends AbstractEntityList<Object> implements
 		return null;
 	}
 
-	@Override
-	public BaseItem withVisible(boolean value) {
-		this.visible = value;
-		return this;
-	}
-
-	@Override
-	public boolean isVisible() {
-		return visible;
-	}
-
-	@Override
-	public JsonArray with(Object... values) {
-		if (values == null) {
-			return this;
-		}
-		for (Object item : values) {
-			add(item);
-		}
-		return this;
-	}
-
-	@Override
-	public JsonArray tailSet(Object fromElement, boolean inclusive) {
-		return (JsonArray) super.tailSet(fromElement, inclusive);
-	}
-
-	@Override
-	public JsonArray headSet(Object toElement, boolean inclusive) {
-		return (JsonArray) super.headSet(toElement, inclusive);
-	}
-
-	@Override
-	public JsonArray subSet(Object fromElement, Object toElement) {
-		return (JsonArray) super.subSet(fromElement, toElement);
-	}
-
-	/**
-	 * Get a new Instance of a JsonArray
-	 */
-	@Override
-	public JsonArray getNewArray() {
-		return new JsonArray();
-	}
-
 	/**
 	 * Get a new Instance of a JsonObject
 	 */
 	@Override
-	public JsonObject getNewObject() {
-		return new JsonObject();
-	}
-
-	@Override
-	public JsonArray getNewInstance() {
+	public BaseItem getNewList(boolean keyValue) {
+		if(keyValue) {
+			return new JsonObject();
+		}
 		return new JsonArray();
-	}
-
-	@Override
-	public boolean add(Object e) {
-		return addEntity(e);
 	}
 
 	@Override
 	public boolean remove(Object value) {
 		return removeItemByObject(value) >= 0;
+	}
+	@Override
+	public JsonArray subList(int fromIndex, int toIndex) {
+		return (JsonArray) super.subList(fromIndex, toIndex);
 	}
 }

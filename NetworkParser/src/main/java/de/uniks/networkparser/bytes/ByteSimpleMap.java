@@ -23,15 +23,16 @@ package de.uniks.networkparser.bytes;
  */
 import java.util.ArrayList;
 import java.util.Iterator;
+
 import de.uniks.networkparser.AbstractMap;
-import de.uniks.networkparser.ArrayEntityList;
 import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.bytes.util.BitEntityCreator;
 import de.uniks.networkparser.interfaces.BufferedBytes;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 
 public class ByteSimpleMap extends AbstractMap {
 	public Object decode(BufferedBytes buffer, BitEntityCreator creator) {
-		ArrayEntityList<String, Object> values = new ArrayEntityList<String, Object>();
+		SimpleKeyValueList<String, Object> values = new SimpleKeyValueList<String, Object>();
 		BitEntity[] bitProperties = creator.getBitProperties();
 		Object newInstance = creator.getSendableInstance(false);
 		for (BitEntity entity : bitProperties) {
@@ -45,7 +46,7 @@ public class ByteSimpleMap extends AbstractMap {
 	}
 
 	public Object getEntity(BufferedBytes buffer, BitEntity entry,
-			ArrayEntityList<String, Object> values) {
+			SimpleKeyValueList<String, Object> values) {
 		if (entry.size() < 1) {
 			// Reference or Value
 			if (entry.isTyp(BitEntity.BIT_REFERENCE)) {

@@ -630,9 +630,4 @@ public class ByteIdMap extends IdMap {
 		}
 		return null;
 	}
-
-	@Override
-	public ByteEntity getPrototyp() {
-		return new ByteEntity();
-	}
 }

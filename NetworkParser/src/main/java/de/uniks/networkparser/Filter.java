@@ -22,31 +22,41 @@ package de.uniks.networkparser;
  permissions and limitations under the Licence.
  */
 import java.util.ArrayList;
+
 import de.uniks.networkparser.logic.Condition;
 import de.uniks.networkparser.logic.ValuesMap;
+import de.uniks.networkparser.logic.ValuesSimple;
 
 public class Filter {
-	protected Condition idFilter;
-	protected Condition convertable;
-	protected Condition property;
+	protected Condition<ValuesSimple> idFilter;
+	protected Condition<ValuesSimple> convertable;
+	protected Condition<ValuesSimple> property;
 
 	// Temporary variables
 	protected ArrayList<Object> visitedObjects;
 	protected ArrayList<ReferenceObject> refs;
 	protected Boolean full;
 
-	public Condition getIdFilter() {
+	public Condition<ValuesSimple> getIdFilter() {
 		return idFilter;
 	}
 
-	public Filter withIdFilter(Condition idFilter) {
+	public Filter withIdFilter(Condition<ValuesSimple> idFilter) {
 		this.idFilter = idFilter;
 		return this;
 	}
 
+	/**
+	 * Filter for encoding ID of Element
+	 * 
+	 * @param map the Map
+	 * @param entity Entity for Show Id
+	 * @param className ClassName
+	 * @return Boolean if encoding ID
+	 */
 	public boolean isId(IdMapEncoder map, Object entity, String className) {
 		if (idFilter != null) {
-			return idFilter.matches(ValuesMap.with(map, entity, className));
+			return idFilter.check(ValuesMap.with(map, entity, className));
 		}
 		return true;
 	}
@@ -65,20 +75,20 @@ public class Filter {
 		return this;
 	}
 
-	public Condition getConvertable() {
+	public Condition<ValuesSimple> getConvertable() {
 		return convertable;
 	}
 
-	public Filter withConvertable(Condition convertable) {
+	public Filter withConvertable(Condition<ValuesSimple> convertable) {
 		this.convertable = convertable;
 		return this;
 	}
 
-	public Condition getPropertyRegard() {
+	public Condition<ValuesSimple> getPropertyRegard() {
 		return property;
 	}
 
-	public Filter withPropertyRegard(Condition property) {
+	public Filter withPropertyRegard(Condition<ValuesSimple> property) {
 		this.property = property;
 		return this;
 	}
@@ -105,7 +115,7 @@ public class Filter {
 		return this;
 	}
 
-	public Filter cloneObj() {
+	public Filter clone() {
 		Filter reference = new Filter();
 		if (reference.getClass().getName().equals(this.getClass().getName())) {
 			return clone(new Filter());
@@ -113,7 +123,7 @@ public class Filter {
 		return this;
 	}
 
-	public Filter clone(Filter newInstance) {
+	protected Filter clone(Filter newInstance) {
 		return newInstance.withConvertable(convertable).withIdFilter(idFilter)
 				.withPropertyRegard(property);
 	}
@@ -163,7 +173,7 @@ public class Filter {
 	public boolean isPropertyRegard(IdMapEncoder map, Object entity,
 			String property, Object value, boolean isMany, int deep) {
 		if (this.property != null) {
-			return this.property.matches(ValuesMap.with(map, entity, property,
+			return this.property.check(ValuesMap.with(map, entity, property,
 					value, isMany, deep));
 		}
 		return true;
@@ -172,7 +182,7 @@ public class Filter {
 	public boolean isConvertable(IdMapEncoder map, Object entity,
 			String property, Object value, boolean isMany, int deep) {
 		if (this.convertable != null) {
-			return this.convertable.matches(ValuesMap.with(map, entity,
+			return this.convertable.check(ValuesMap.with(map, entity,
 					property, value, isMany, deep));
 		}
 		return true;
@@ -196,7 +206,22 @@ public class Filter {
 		return null;
 	}
 
-	public static Filter regard(Condition convertable) {
+	/**
+	 * Create a new Filter for Regard Filter (Encoding Object or remove link)
+	 * 
+	 * @param convertable Condition
+	 * @return a new Filter for regard the model 
+	 */
+	public static Filter regard(Condition<ValuesSimple> convertable) {
 		return new Filter().withPropertyRegard(convertable);
+	}
+	/**
+	 * Create a new Filter for Converting Filter (Encoding Object or set only the Id)
+	 * 
+	 * @param convertable Condition
+	 * @return a new Filter for Filter with Convertable Items 
+	 */
+	public static Filter convertable(Condition<ValuesSimple> convertable) {
+		return new Filter().withConvertable(convertable);
 	}
 }

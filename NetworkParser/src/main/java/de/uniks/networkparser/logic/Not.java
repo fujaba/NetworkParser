@@ -28,21 +28,21 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
  *
  * @author Stefan Lindel
  */
-public class Not implements Condition, SendableEntityCreator {
+public class Not implements Condition<ValuesSimple>, SendableEntityCreator {
 	/** Constant for ITEM. */
 	public static final String ITEM = "item";
 	/** Varibale for Condition. */
-	private Condition item;
+	private Condition<ValuesSimple> item;
 
 	@Override
-	public boolean matches(ValuesSimple values) {
-		return !item.matches(values);
+	public boolean check(ValuesSimple values) {
+		return !item.check(values);
 	}
 
 	/**
 	 * @return Not Conditino
 	 */
-	public Condition getItem() {
+	public Condition<ValuesSimple> getItem() {
 		return item;
 	}
 
@@ -51,7 +51,7 @@ public class Not implements Condition, SendableEntityCreator {
 	 *            for new Condition
 	 * @return Not Instance
 	 */
-	public Not withItem(Condition value) {
+	public Not withItem(Condition<ValuesSimple> value) {
 		this.item = value;
 		return this;
 	}
@@ -74,11 +74,12 @@ public class Not implements Condition, SendableEntityCreator {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
 		if (ITEM.equalsIgnoreCase(attribute)) {
-			((Not) entity).withItem((Condition) value);
+			((Not) entity).withItem((Condition<ValuesSimple>) value);
 		}
 		return false;
 	}

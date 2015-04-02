@@ -2,23 +2,18 @@
 <head>
 	<link rel="stylesheet" type="text/css" href="../../../src/main/resources/de/uniks/networkparser/graph/diagramstyle.css">
 	<script src="../../../src/main/resources/de/uniks/networkparser/graph/graph.js"></script>
-	<!--<script src="../../../src/resources/de/uniks/networkparser/graph/layout_circular.js"></script>
-	<script src="../../../src/resources/de/uniks/networkparser/graph/layout_spring.js"></script>
-	<script src="../../../src/resources/de/uniks/networkparser/graph/layout_ordered.js"></script>
-	<script src="../../../src/resources/de/uniks/networkparser/graph/layout_fix.js"></script>-->
-	<script src="../../../src/main/resources/de/uniks/networkparser/graph/dagre.js"></script>
+	<script src="../../../src/main/resources/de/uniks/networkparser/graph/dagre.min.js"></script>
 	<script src="../../../src/main/resources/de/uniks/networkparser/graph/drawer.js"></script>
 	
 	<!-- PDF -->
-	<script type="text/javascript" src="../../../src/main/resources/de/uniks/networkparser/graph/jspdf.source.js"></script>
-	<script type="text/javascript" src="../../../src/main/resources/de/uniks/networkparser/graph/svgToPdf.js"></script>
-	<script type="text/javascript" src="../../../src/main/resources/de/uniks/networkparser/graph/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="../../../src/main/resources/de/uniks/networkparser/graph/jspdf.min.js"></script>
+	<script type="text/javascript" src="../../../src/main/resources/de/uniks/networkparser/graph/svgToEPS.js"></script>
 </head>
 <body>
 <script> // class, object
-	var json = {"typ":"object", "options":{"bar":true, "raster":false, "canvasid":"42","fontsize":12},"value":{
+	var json = {"typ":"object", "options":{"bar":true, "raster":false, "canvasid":"42","fontsize":12},
 		"nodes":[
-			{typ:"node", id:"Albert:Student", href:"Student.java", height:138, attributes:["age:int", "name:String"],methods:["toString()"]},
+			{typ:"node", id:"Albert:Student", href:"Student.java", attributes:["age:int", "name:String"],methods:["toString()"]},
 			{typ:"node", id:"CS 32"},
 			{typ:"node", id:"CS 34",attributes:["age:int", "name:String"],methods:["toString()"]},
 			{typ:"node", id:"CS 35"},
@@ -27,24 +22,24 @@
 			{typ:"node", id:"CS 2"},
 			//{typ:"node", id:"CS x", content_plain:"Hallo Welt"},
 			//{typ:"wall"},
-			//{typ:"Wall"},
-			/*{typ:"node", id:"CS s", content_src:"karli.png", width:60, height:60}*/
+			{typ:"Wall"},
+			{typ:"node", id:"CS s", content_src:"karli.png", width:60, height:60}
 			/*{typ:"subgraph", id:"CS b", graph:{"typ":"classdiagramm","value":{"edges":[{"typ":"edge", "source":"Auto","target":"Reifen"}]}}},*/
 			//{typ:"patternObject", id:"g1 : GraphPO", headinfo:"&laquo;bound&raquo;"}
 			/*{typ:"patternObject", id:"g1 : GraphPO", headinfo:"«bound», «create», «delete»"}*/
 			/*{"typ":"node", "id":"CS x", "content":"Hallo World", "x":"200", y:10, width:200, height:200}*/
 		],
 		"edges":[
-			{"typ":"edge", "source":"Albert:Student","target": "CS 32", "sourceproperty":"0..1", "targetproperty":"1..1"},
+			{"typ":"edge", "source":{id:"Albert:Student", "property":"0..1"},"target": {id:"CS 32", "property":"1..1"}},
 			{"typ":"edge", "source":"CS 32","target":"CS 33"},
 			{"typ":"edge", "source":"CS 32","target":"CS 34"},
 			{"typ":"edge", "source":"CS 35","target":"CS 34"},
 			{"typ":"edge", "source":"CS 1","target":"CS 1"},
 			{"typ":"Implements", "source":"CS 36","target":"CS 34"},
-			{"typ":"edge", "source":"CS 1","target":"CS 2","sourceproperty":"1..2", "targetproperty":"3..4"},
+			{"typ":"edge", "source":{id:"CS 1", "property":"1..2"},"target":{id:"CS 2", "property":"3..4"}},
 			{"typ":"generalisation", "source":"CS 2","target":"Albert:Student"}
 		]
-	}};
+	};
 
 	var g = new Graph(json);
 	g.layout(100,100);

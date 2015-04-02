@@ -22,9 +22,10 @@ package de.uniks.networkparser.sort;
  permissions and limitations under the Licence.
  */
 import java.util.Comparator;
+
 import de.uniks.networkparser.EntityValueFactory;
 import de.uniks.networkparser.IdMapEncoder;
-import de.uniks.networkparser.gui.table.TableList;
+import de.uniks.networkparser.gui.TableList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 /**

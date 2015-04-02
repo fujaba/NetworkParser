@@ -24,7 +24,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
  permissions and limitations under the Licence.
  */
 
-public class CompareTo implements Condition, SendableEntityCreator {
+public class CompareTo implements Condition<ValuesSimple>, SendableEntityCreator {
 	public static final String VALUE = "value";
 	public static final String COMPARE = "compare";
 	public static final int GREATER = 1;
@@ -51,7 +51,7 @@ public class CompareTo implements Condition, SendableEntityCreator {
 	}
 
 	@Override
-	public boolean matches(ValuesSimple value) {
+	public boolean check(ValuesSimple value) {
 		Object entityValue = value.getValue();
 		if (entityValue != null) {
 			if (entityValue instanceof Comparable<?>) {

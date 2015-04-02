@@ -21,12 +21,14 @@ package de.uniks.networkparser;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
  */
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.FactoryEntity;
 import de.uniks.networkparser.interfaces.StringItem;
+import de.uniks.networkparser.list.AbstractArray;
+import de.uniks.networkparser.list.AbstractList;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 
 public class EntityUtil {
 	private static final String HEXVAL = "0123456789abcdef";
@@ -90,9 +92,6 @@ public class EntityUtil {
 		if (value == null || value.length() == 0) {
 			return "";
 		}
-		// FIXME STEFAN if (!value.startsWith(""")) {
-		// return value;
-		// }
 		StringBuilder sb = new StringBuilder(value.length());
 		char c;
 		for (int i = 0; i < value.length(); i++) {
@@ -102,16 +101,13 @@ public class EntityUtil {
 					sb.append('\\');
 					break;
 				}
-				c = value.charAt(++i);
+				i++;
+				c = value.charAt(i);
 				if (c == 'u') {
 					char no = fromHex(value.charAt(++i), value.charAt(++i),
 							value.charAt(++i), value.charAt(++i));
 					sb.append((char) no);
 					continue;
-				} else if (c == '"') {
-					// remove the backslash
-				} else {
-					sb.append('\\');
 				}
 			}
 			sb.append(c);
@@ -144,23 +140,27 @@ public class EntityUtil {
 		int i;
 		int len = string.length();
 		StringBuilder sb = new StringBuilder(len + 4);
-		char b = 0, c;
+		char c;
 		String hhhh;
 		sb.append('"');
 		for (i = 0; i < len; i += 1) {
 			c = string.charAt(i);
-			if (c == '"' && b != '\\') {
+			if (c == '\\')
+			{
+			   // add two backslashes to the output
+			   sb.append('\\').append('\\');
+			}
+			else if (c == '"') {
 				sb.append("\\\"");
 				continue;
 			}
-			if (c < ' ' || (c >= '\u0080' && c < '\u00a0')
+			else if (c < ' ' || (c >= '\u0080' && c < '\u00a0')
 					|| (c >= '\u2000' && c < '\u2100')) {
 				hhhh = "000" + Integer.toHexString(c);
 				sb.append("\\u" + hhhh.substring(hhhh.length() - 4));
 			} else {
 				sb.append(c);
 			}
-			b = c;
 		}
 		sb.append('"');
 		return sb.toString();
@@ -188,7 +188,7 @@ public class EntityUtil {
 	 *         brace)</small>.
 	 */
 	public static String valueToString(Object value, int indentFactor,
-			int intent, boolean simpleText, FactoryEntity reference) {
+			int intent, boolean simpleText, BaseItem reference) {
 		if (value == null) {
 			return "null";
 		}
@@ -202,16 +202,17 @@ public class EntityUtil {
 			return ((StringItem) value).toString(indentFactor, intent);
 		}
 		if (value instanceof Map) {
-			BaseItem item = ((AbstractKeyValueList<?, ?>) reference
-					.getNewArray()).with((Map<?, ?>) value);
+			BaseItem item = reference.getNewList(true).withAll((Map<?, ?>) value);
 			if (item instanceof StringItem) {
 				return ((StringItem) item).toString(indentFactor, intent);
 			}
 			return ((StringItem) item).toString();
 		}
 		if (value instanceof Collection) {
-			AbstractList<?> item = reference.getNewArray().with(
-					(Collection<?>) value);
+			BaseItem item = reference.getNewList(true);
+			if(item instanceof SimpleKeyValueList<?,?>) {
+				return ((SimpleKeyValueList<?,?>) item).withList((Map<?, ?>) value).toString();
+			}
 			if (item instanceof StringItem) {
 				return ((StringItem) item).toString(indentFactor, intent);
 			}
@@ -219,11 +220,10 @@ public class EntityUtil {
 		}
 		if (value.getClass().isArray()) {
 			Object[] items = (Object[]) value;
-			ArrayList<Object> arrayList = new ArrayList<Object>();
-			for (Object item : items) {
-				arrayList.add(item);
+			BaseItem item = reference.getNewList(false);
+			for (Object entity : items) {
+				item.withAll(entity);
 			}
-			AbstractList<?> item = reference.getNewArray().with(arrayList);
 			if (item instanceof StringItem) {
 				return ((StringItem) item).toString(indentFactor, intent);
 			}
@@ -236,7 +236,7 @@ public class EntityUtil {
 	}
 
 	public static String valueToString(Object value, boolean simpleText,
-			FactoryEntity reference) {
+			BaseItem reference) {
 		if (value == null) {
 			return "null";
 		}
@@ -246,26 +246,35 @@ public class EntityUtil {
 		if (value instanceof Boolean) {
 			return value.toString();
 		}
-		if (value instanceof AbstractList) {
-			return ((AbstractList<?>) value).toString();
+		if (value instanceof AbstractArray<?>) {
+			return ((AbstractArray<?>) value).toString();
 		}
-		if (value instanceof Map) {
-			return ((AbstractKeyValueList<?, ?>) reference.getNewArray()).with(
-					(Map<?, ?>) value).toString();
-		}
+//FIXME MAP
 		if (value instanceof Collection) {
-			return reference.getNewArray().with((Collection<?>) value)
-					.toString();
+			return reference.getNewList(false).withAll(
+			(Collection<?>) value).toString();
 		}
 		if (value.getClass().isArray()) {
-			Object[] items = (Object[]) value;
-			ArrayList<Object> arrayList = new ArrayList<Object>();
-			for (Object item : items) {
-				arrayList.add(item);
-			}
-			return ((AbstractList<?>) reference.getNewObject()).with(arrayList)
-					.toString();
+			return reference.getNewList(false).withAll(
+			(Map<?, ?>) value).toString();
 		}
+			//		if (value instanceof Map) {
+//			BaseItem newList = reference.getNewList();
+//			if(newList instanceof SimpleKeyValueList<?, ?>) {
+//				return ((SimpleKeyValueList<?, ?>) newList).withMap(
+//						(Map<?, ?>) value).toString();
+//			}
+//		}
+//		if (value instanceof Collection) {
+//			BaseItem newList = reference.getNewList();
+//			if(newList instanceof SimpleKeyValueList<?,?>) {
+//				return ((SimpleKeyValueList<?,?>) newList).withList((Map<?, ?>) value).toString();
+//			}
+//		}
+//		if (value.getClass().isArray()) {
+//			return ((AbstractList<?>) reference.getNewList()).withAll(value)
+//					.toString();
+//		}
 		if (simpleText) {
 			return value.toString();
 		}
@@ -286,13 +295,13 @@ public class EntityUtil {
 	 *            The reference
 	 * @return The wrapped value
 	 */
-	public static Object wrap(Object object, FactoryEntity reference) {
+	public static Object wrap(Object object, BaseItem reference) {
 		try {
 			if (object == null) {
 				return null;
 			}
 
-			if (object instanceof AbstractList || object instanceof Byte
+			if (object instanceof AbstractArray || object instanceof Byte
 					|| object instanceof Character || object instanceof Short
 					|| object instanceof Integer || object instanceof Long
 					|| object instanceof Boolean || object instanceof Float
@@ -301,16 +310,16 @@ public class EntityUtil {
 			}
 
 			if (object instanceof Collection) {
-				return ((AbstractList<?>) reference.getNewObject())
-						.with((Collection<?>) object);
+				return ((AbstractList<?>) reference.getNewList(false))
+						.withList((Collection<?>) object);
 			}
 			if (object.getClass().isArray()) {
-				return ((AbstractList<?>) reference.getNewObject())
-						.with((Collection<?>) object);
+				return ((AbstractList<?>) reference.getNewList(false))
+						.withList((Collection<?>) object);
 			}
 			if (object instanceof Map) {
-				return ((AbstractKeyValueList<?, ?>) reference.getNewObject())
-						.with((Map<?, ?>) object);
+				return ((SimpleKeyValueList<?, ?>) reference.getNewList(false))
+						.withList((Map<?, ?>) object);
 			}
 			if (object.getClass().getName().startsWith("java.")
 					|| object.getClass().getName().startsWith("javax.")) {

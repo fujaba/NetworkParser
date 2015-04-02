@@ -2,58 +2,22 @@ package de.uniks.networkparser.test.model.util;
 
 import java.util.Collection;
 import java.util.Iterator;
+import de.uniks.networkparser.list.SimpleList;
 
-import de.uniks.networkparser.gui.ItemList;
 
-
-public class SDMSetBase<T> extends ItemList<T>
+public class SDMSetBase<T> extends SimpleList<T>
 {
 	/**
 	 * Simple Constructor
 	 */
 	public SDMSetBase(){
-		this.allowDuplicate = false;
+		this.withAllowDuplicate(false);
 	}
-//   @Override
-//   public String toString()
-//   {
-//      StringList stringList = new StringList();
-//      
-//      for (T elem : this)
-//      {
-//         stringList.add(elem.toString());
-//      }
-//      
-//      return "(" + stringList.concat(", ") + ")";
-//   }
-   
-//   public <ST extends SDMSetBase<T>> ST instanceOf(ST target)
-//   {
-//      String className = target.getClass().getName();
-//      className = CGUtil.baseClassName(className, "Set");
-//      try
-//      {
-//         Class<?> targetClass = target.getClass().getClassLoader().loadClass(className);
-//         for (T elem : this)
-//         {
-//            if (targetClass.isAssignableFrom(elem.getClass()))
-//            {
-//               target.add(elem);
-//            }
-//         }
-//      }
-//      catch (ClassNotFoundException e)
-//      {
-//         // TODO Auto-generated catch block
-//         e.printStackTrace();
-//      }
-//      return target;
-//   }
-//   
-   public <ST extends SDMSetBase<T>> ST union(ST other)
+
+	public <ST extends SDMSetBase<T>> ST union(ST other)
    {
       @SuppressWarnings("unchecked")
-      ST result = (ST) this.getNewInstance();
+      ST result = (ST) this.getNewList(false);
       result.addAll(other);
       
       return result;
@@ -63,7 +27,7 @@ public class SDMSetBase<T> extends ItemList<T>
    public <ST extends SDMSetBase<T>> ST intersection(ST other)
    {
       @SuppressWarnings("unchecked")
-      ST result = (ST) this.getNewInstance();
+      ST result = (ST) this.getNewList(false);
       result.retainAll(other);
       return result;
    }
@@ -72,7 +36,7 @@ public class SDMSetBase<T> extends ItemList<T>
    @SuppressWarnings("unchecked")
    public <ST extends SDMSetBase<T>> ST minus(Object other)
    {
-      ST result = (ST) this.getNewInstance();
+      ST result = (ST) this.getNewList(false);
       result.addAll(this);
       
       if (other instanceof Collection)
@@ -90,7 +54,7 @@ public class SDMSetBase<T> extends ItemList<T>
    @SuppressWarnings("unchecked")
    public <ST extends SDMSetBase<T>> ST has(Condition condition)
    {
-      ST result = (ST) this.getNewInstance();
+      ST result = (ST) this.getNewList(false);
       
       for (T elem : this)
       {
@@ -118,8 +82,7 @@ public class SDMSetBase<T> extends ItemList<T>
    
    @SuppressWarnings("unchecked")
 @Override
-   public SDMSetBase<T> getNewInstance() 
-   {
+   public SDMSetBase<T> getNewList(boolean keyValue) {
       SDMSetBase<T> result = null;
       try
       {
@@ -145,17 +108,5 @@ public class SDMSetBase<T> extends ItemList<T>
 	@Override
 	public boolean remove(Object value) {
 		return removeItemByObject((T)value) >= 0;
-	}
-
-	@Override
-	public boolean addAll(Collection<? extends T> c) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean addAll(int index, Collection<? extends T> c) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 }

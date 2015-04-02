@@ -58,17 +58,31 @@
 .suggestionscell {
    -fx-background-color: white;
 }
+
 .suggestionscell:hover {
    -fx-background-color: #0B2161;
-   -fx-text-fill: #333;
+  -fx-text-fill: #333;
    -fx-cursor: hand;
    
 }
+
+.suggestionscell:focused {
+   -fx-background-color: #0B2161;
+   -fx-text-fill: #333;
+}
+
 .suggestionscellodd {
    -fx-background-color: #F9F9F9;
 }
+
 .suggestionscellodd:hover {
    -fx-background-color: #0B2161;
    -fx-text-fill: #333;
    -fx-cursor: hand;
 }
+
+.suggestionscellodd:focused {
+   -fx-background-color: #0B2161;
+   -fx-text-fill: #333;
+}
+

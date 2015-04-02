@@ -12,16 +12,14 @@ import de.uniks.networkparser.gui.resource.Styles;
 
 public class AutoCompleteContextMenu extends ContextMenu{
 	private TextField control;
-	
+
 	public AutoCompleteContextMenu(TextField control){
         this.control = control;
-        this.prefWidthProperty().bind(control.widthProperty());
         control.setContextMenu(this);
+        AutoCompleteContextMenu.this.getScene().getStylesheets().add(Styles.getPath());
     }
 	
-	
 	public AutoCompleteContextMenu withSuggestions(Set<String> values) {
-        AutoCompleteContextMenu.this.getScene().getStylesheets().add(Styles.getPath());
 		getItems().clear();
 		int i=1;
 		for(String item : values) {
@@ -31,17 +29,17 @@ public class AutoCompleteContextMenu extends ContextMenu{
 			}else{
 				menuItem.getStyleClass().add("suggestionscellodd");
 			}
-			Label label = new Label(item);
-			label.setPrefWidth(control.getWidth()-30);
-			label.setMaxWidth(control.getWidth()-30);
-			menuItem.setGraphic(label);
+			Label text = new Label(item);
+			text.setMinWidth(control.getWidth()-30);
 			
+			menuItem.setGraphic(text);
 			menuItem.setOnAction(new EventHandler<ActionEvent>() {
 			    public void handle(ActionEvent e) {
 			    	MenuItem mnu = (MenuItem) e.getSource();
-			    	onSuggestionChoosen(mnu.getText());
+			    	onSuggestionChoosen(((Label)mnu.getGraphic()).getText());
 			    }
 			});
+			
 			getItems().add(menuItem);
 			i++;
 		}
