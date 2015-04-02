@@ -29,6 +29,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.IndexedCell;
 import javafx.scene.control.Menu;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -79,13 +80,6 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 			}
 		});
 		
-		this.setOnEditStart(new EventHandler<TableColumn.CellEditEvent<Object, TableCellValue>>() {
-	        @Override
-	        public void handle(TableColumn.CellEditEvent<Object, TableCellValue> t) {
-	        	System.out.println(t);
-	        }
-	    });
-		
 		widthProperty().addListener((ChangeListener<Number>) (observableValue, oldWidth, newWidth) -> TableColumnFX.this.getColumn().getOrCreateStyle().withWidth(newWidth.doubleValue()));
 		if(column.getStyle() != null) {
 			this.setPrefWidth(getColumn().getStyle().getWidth());
@@ -135,16 +129,25 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 		});
 	}
 	
-	
-	public void refreshCell(int row) {
+	public synchronized void refreshCell(int row) {
 		TableViewSkin<?> skin = (TableViewSkin<?>) this.getTableView().getSkin();
 		int columnId = this.getTableView().getVisibleLeafIndex(this);
         ObservableList<Node> children = skin.getChildren();
         for(Node node : children) {
         	if(node instanceof VirtualFlow<?>) {
         		VirtualFlow<?> vf = (VirtualFlow<?>) node;
-        		if(row >= 0) {
-        			TableRowSkin<?> cellSkin = (TableRowSkin<?>) vf.getCell(row).getSkin();
+        		
+        		if(row >= 0 ) {
+        			IndexedCell<?> cell;
+        			try{
+        				cell = vf.getVisibleCell(row);
+        				if(cell == null) {
+	        				continue;
+	            		}
+        			}catch(Exception e) {
+        				continue;
+        			}
+        			TableRowSkin<?> cellSkin = (TableRowSkin<?>)cell.getSkin();
         			TableCellFX tableCell = (TableCellFX) (cellSkin).getChildren().get(columnId);
     				tableCell.updateIndex(row);
         		} else {

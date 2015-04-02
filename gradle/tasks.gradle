@@ -3,23 +3,9 @@ jar {
 		baseName = project.getProperty('JarName')
 	}
 	from sourceSets.main.output
-	manifest {
-		attributes 'Specification-Version': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision,
-			'Implementation-Title': 'Networkparser',
-			'Specification-Title': 'Networkparser',
-			'Built-Time': gitVersion.buildTime,
-			'Created-By': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision+" "+System.properties['user.name'],
-			'Built-By': "${System.properties['user.name']}",
-			'Location': "${System.properties['user.language']}",
-			'Version': gitVersion.revision,
-			'Author': 'Stefan Lindel',
-			'Implementation-Version': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision,
-			'GIT-Revision': gitVersion.revision,
-			'Java-Version': "${System.properties['java.version']}",
-			'Bundle-Description': 'NetworkParser',
-			'Bundle-ClassPath': '.'
-	}
-	 exclude '**/test/**'
+	getManifest(gitVersion)
+
+	exclude '**/test/**'
 }
 
 task sourceJar(type: Jar) {
@@ -27,22 +13,8 @@ task sourceJar(type: Jar) {
 		baseName = project.getProperty('JarName')
 	}
 	from (sourceSets.main.allJava + sourceSets.main.output ); classifier = 'sources'
-	manifest {
-		attributes 'Specification-Version': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision,
-			'Implementation-Title': 'Networkparser',
-			'Specification-Title': 'Networkparser',
-			'Built-Time': gitVersion.buildTime,
-			'Created-By': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision+" "+System.properties['user.name'],
-			'Built-By': "${System.properties['user.name']}",
-			'Location': "${System.properties['user.language']}",
-			'Version': gitVersion.revision,
-			'Author': 'Stefan Lindel',
-			'Implementation-Version': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision,
-			'GIT-Revision': gitVersion.revision,
-			'Java-Version': "${System.properties['java.version']}",
-			'Bundle-Description': 'NetworkParser',
-			'Bundle-ClassPath': '.'
-	}
+	getManifest(gitVersion)
+
 	exclude '**/test/**'
 }
 task javadocJar(type: Jar) {
@@ -50,22 +22,7 @@ task javadocJar(type: Jar) {
 		baseName = project.getProperty('JarName')
 	}
 	from javadoc.outputs.files; classifier = 'javadoc'
-	manifest {
-		attributes 'Specification-Version': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision,
-			'Implementation-Title': 'Networkparser',
-			'Specification-Title': 'Networkparser',
-			'Built-Time': gitVersion.buildTime,
-			'Created-By': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision+" "+System.properties['user.name'],
-			'Built-By': "${System.properties['user.name']}",
-			'Location': "${System.properties['user.language']}",
-			'Version': gitVersion.revision,
-			'Author': 'Stefan Lindel',
-			'Implementation-Version': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision,
-			'GIT-Revision': gitVersion.revision,
-			'Java-Version': "${System.properties['java.version']}",
-			'Bundle-Description': 'NetworkParser',
-			'Bundle-ClassPath': '.'
-	}
+	getManifest(gitVersion)
 	exclude '**/test/**'
 }
 
@@ -73,6 +30,28 @@ task fullJar(type: Jar) {
 	if(project.hasProperty('JarName')){
 		baseName = project.getProperty('JarName')
 	}
+	getManifest(gitVersion)
+	from {(
+			sourceSets.main.output +
+			sourceSets.main.allJava +
+			javadoc.outputs.files
+			)}
+	classifier = 'full'
+	exclude '**/test/**'
+}
+task codeCoverageReport(type: JacocoReport) {
+	executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
+	sourceSets sourceSets.main
+	reports {
+		xml.enabled true
+		xml.destination "${buildDir}/test-results/jacoco.xml"
+		html.enabled true
+		html.destination "${buildDir}/reports/jacoco"
+		csv.enabled true
+	}
+}
+
+def getManifest(gitVersion) {
 	manifest {
 		attributes 'Specification-Version': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision,
 			'Implementation-Title': 'Networkparser',
@@ -89,11 +68,4 @@ task fullJar(type: Jar) {
 			'Bundle-Description': 'NetworkParser',
 			'Bundle-ClassPath': '.'
 	}
-	from {(
-			sourceSets.main.output +
-			sourceSets.main.allJava +
-			javadoc.outputs.files
-			)}
-	classifier = 'full'
-	exclude '**/test/**'
 }

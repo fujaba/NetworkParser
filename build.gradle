@@ -9,20 +9,17 @@ apply from: 'gradle/tasks.gradle'
 
 // only for jenkins
 if(project.hasProperty('jenkins')) {
+	//Artifactory
 	apply from: 'gradle/artifactory.gradle'
-    apply plugin: 'jacoco'
 	
-	//tbd - need configuration
-	//apply plugin: 'checkstyle'
-	//apply plugin: 'findbugs'
+
+	apply plugin: 'jacoco'
+	jacoco {
+		toolVersion = "0.7.1.201405082137"
+	}
+	
 } else {
 	apply from: 'gradle/ide.gradle'
-}
-if(project.hasProperty('JarName')){
-	apply from: 'gradle/'+project.getProperty('JarName')+'.gradle'
-	project.archivesBaseName = project.getProperty('JarName')
-} else {
-	apply from: 'gradle/NetworkParser.gradle'
 }
 
 buildscript {
@@ -34,58 +31,29 @@ buildscript {
     }
 }
 
-if(project.hasProperty('jenkins')) {
-	jacoco {
-		toolVersion = "0.7.0.201403182114"
-	}
-	task codeCoverageReport(type: JacocoReport) {
-    // Gather execution data from all subprojects
-    // (change this if you e.g. want to calculate uni test/integration test coverage separately)
-    // executionData
-	fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
-
-    // Add all relevant sourcesets from the subprojects
-    subprojects.each {
-       sourceSets it.sourceSets.main
-    }
-
-    reports {
-      xml.enabled true
-      html.enabled true
-      html.destination "${buildDir}/reports/jacoco"
-      csv.enabled false
-    }
-	}
-
-	// always run the tests before generating the report
-	codeCoverageReport.dependsOn {
-		subprojects*.test
-	}
-}
-if(project.hasProperty('JarName') && project.getProperty('JarName')=="NetworkParserFX"){
-	sourceCompatibility = 1.8
-	targetCompatibility = 1.8
-} else {
-	sourceCompatibility = 1.6
-	targetCompatibility = 1.6
-}
-
 repositories {
 	mavenCentral()
-	if(project.hasProperty('JarName')){
-		// NetworkParser
-		if(project.hasProperty('lectureBuild')) {
-			maven { url "https://se.cs.uni-kassel.de/artifactory/lecture" }
-		}else{
-			maven { url "https://se.cs.uni-kassel.de/artifactory/libs-snapshot-local" }
+	//Artifactory
+	if(project.hasProperty('JarName')){ // It is NetworkParserFX
+		if(project.hasProperty('jenkins')) { // Its run on Jenkins
+			// NetworkParser
+			if(project.hasProperty('lectureBuild')) {
+				maven { url "https://se.cs.uni-kassel.de/artifactory/lecture" }
+			}else{
+				maven { url "https://se.cs.uni-kassel.de/artifactory/libs-snapshot-local" }
+			}
+		}else {
+			mavenLocal()
 		}
 	}
 }
-
 dependencies {
 	testCompile group: 'junit', name: 'junit', version: '4.+'
-	if(project.hasProperty('JarName')){
-		compile 'de.uniks:NetworkParser:4.2+:full'
-	}
 }
 
+if(project.hasProperty('JarName')){
+	apply from: 'gradle/'+project.getProperty('JarName')+'.gradle'
+	project.archivesBaseName = project.getProperty('JarName')
+} else {
+	apply from: 'gradle/NetworkParser.gradle'
+}
