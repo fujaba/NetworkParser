@@ -39,6 +39,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -96,7 +97,6 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	public IdMapEncoder getMap() {
 		return map;
 	}
-
 	
 	public TableComponent createFromCreator(SendableEntityCreator creator, boolean edit) {
 		if(creator==null){
@@ -194,7 +194,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 			int pos = attrName.lastIndexOf(".");
 			if(pos > 0 ) {
 				// Alle
-				List<Object> fullList = getFulList();
+				List<Object> fullList = getFullList();
 				for(Object item : fullList) {
 					SendableEntityCreator creator = this.getCreator(item);
 					if(creator != null ) {
@@ -209,9 +209,9 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		return this;
 	}
 	
-	public List<Object> getFulList() {
+	public List<Object> getFullList() {
 		if(tableFilterView!=null) {
-			return tableFilterView.getFulList();
+			return tableFilterView.getFullList();
 		}
 		return items;
 
@@ -255,23 +255,28 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	}
 
 	public TableComponent withSearchProperties(String... searchProperties) {
-		if(tableFilterView==null){
-			tableFilterView = new TableFilterView(this);
-		}
-		if(searchText == null) {
-			createNothElement();
-			searchText = new TextField();
-	        searchText.getStylesheets().add(Styles.getPath());
-	        searchText.getStyleClass().add("searchbox");
-	        searchText.setPromptText(getText(DefaultTextItems.SEARCH));
-	        searchText.setMinHeight(24);
-	        searchText.setPrefSize(200, 24);
-	        searchText.setEditable(true);
-	        searchText.textProperty().addListener(tableFilterView);
-	        northComponents.setCenter(searchText);
-		}
-	    tableFilterView.setSearchProperties(searchProperties);
-	    tableFilterView.refresh();
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				if(tableFilterView==null){
+					tableFilterView = new TableFilterView(TableComponent.this);
+				}
+				if(searchText == null) {
+					createNothElement();
+					searchText = new TextField();
+					searchText.getStylesheets().add(Styles.getPath());
+					searchText.getStyleClass().add("searchbox");
+					searchText.setPromptText(getText(DefaultTextItems.SEARCH));
+					searchText.setMinHeight(24);
+					searchText.setPrefSize(200, 24);
+					searchText.setEditable(true);
+					searchText.textProperty().addListener(tableFilterView);
+					northComponents.setCenter(searchText);
+				}
+				tableFilterView.setSearchProperties(searchProperties);
+				tableFilterView.refresh();
+			}
+		});
 		return this;
 	}
 	
@@ -320,6 +325,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		if(listener==null){
 			this.listener = new SelectionListener();
 		}
+		getBrowserView(GUIPosition.CENTER).setStyle("-fx-background-color:transparent,-fx-box-border,-fx-control-inner-background");
 	}
 
 	public boolean addItem(Object item) {
@@ -511,7 +517,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
                 }
             }
             if((columns.size() + subColumns.size())<1) {
-            	System.out.println("FIXME DONT FIND COLUMN: " + event.getPropertyName());
+//            	System.out.println("FIXME DONT FIND COLUMN: " + event.getPropertyName());
             }else {
             	for(TableColumnFX column  : columns ) {
                 	Object item = event.getSource();
@@ -566,6 +572,9 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		return field;
 	}
 	public TableComponent withCounterColumn(Column column) {
+		if(tableFilterView==null){
+			tableFilterView = new TableFilterView(this);
+		}
 		tableFilterView.withCounterColumn(column);
 		return this;
 	}

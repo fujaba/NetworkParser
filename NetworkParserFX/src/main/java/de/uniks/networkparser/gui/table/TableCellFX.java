@@ -21,6 +21,7 @@ package de.uniks.networkparser.gui.table;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -78,7 +79,12 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 	protected void updateItem(TableCellValue arg0, boolean empty) {
 		super.updateItem(arg0, empty);
 		if (arg0 != null) {
-			setText("" + arg0);
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					setText("" + arg0);
+				}
+			});
 
 			if (this.field.getStyle() != null) {
 				Style myStyle = this.field.getStyle();
@@ -93,7 +99,12 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 				}
 			}
 		}else if(empty){
-			setText("");
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					setText("");
+				}
+			});
 		}
 	}
 
