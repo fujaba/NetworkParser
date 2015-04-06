@@ -22,11 +22,13 @@ package de.uniks.networkparser.gui.table;
  permissions and limitations under the Licence.
 */
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TablePosition;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
 import de.uniks.networkparser.gui.CellEditorElement;
 import de.uniks.networkparser.gui.Column;
@@ -39,7 +41,7 @@ import de.uniks.networkparser.gui.controls.EditFieldMap;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class TableCellFX extends TableCell<Object, TableCellValue> implements CellEditorElement{
+public class TableCellFX extends TableCell<Object, TableCellValue> implements CellEditorElement, EventHandler<MouseEvent> {
 	private EditFieldMap fieldMap;
 	private Column field;
 	private EditControl<? extends Node> control;
@@ -72,6 +74,8 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 				}
 			}
 		}
+		this.setOnMouseClicked( this);
+		
 		return this;
 	}
 
@@ -107,15 +111,19 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 			});
 		}
 	}
-
-	@Override
-	public void startEdit() {
+	
+	public boolean isOnAction() {
 		TablePosition<Object, ?> editingCell = getTableView().getEditingCell();
 		int row = editingCell.getRow();
 		Object entity = tableComponent.getElement(row);
 		SendableEntityCreator creator = tableComponent.getCreator(entity);
 		
-		if(this.field.getListener().onAction(entity, creator, getTableView().getLayoutX(), getTableView().getLayoutY())) {
+		return this.field.getListener().onAction(entity, creator, 2, getTableView().getLayoutX(), getTableView().getLayoutY());
+	}
+	
+	@Override
+	public void startEdit() {
+		if(isOnAction()) {
 			super.startEdit();
 			Object value = getItem().getCreator().getValue(getItem().getItem(), this.field.getAttrName());
 			FieldTyp typ = fieldMap.getControllForTyp(field, value);
@@ -143,12 +151,6 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 	public void cancel() {
 		setText(""+getItem());
 		setGraphic(null);
-	}
-
-	@Override
-	public boolean nextFocus() {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	@Override
@@ -181,34 +183,33 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 
 	@Override
 	public boolean setFocus(boolean value) {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
-
+	
+	@Override
+	public void handle(MouseEvent event) {
+		TablePosition<?, ?> editingCell = getTableView().getFocusModel().getFocusedCell();
+		int row = editingCell.getRow();
+		Object entity = tableComponent.getElement(row);
+		SendableEntityCreator creator = tableComponent.getCreator(entity);
+		
+		this.field.getListener().onAction(entity, creator, 1, getTableView().getLayoutX(), getTableView().getLayoutY());
+	}
+	
 	@Override
 	public boolean onActive(boolean value) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-//TODO REMOVE
+
+	@Override
+	public boolean nextFocus() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	// @Override
-		// public Color getBackground(Object element) {
-		// return colors.getColor(column.getBackgroundColor());
-		// }
-		// @Override
-		// public Color getForeground(Object element) {
-		// return colors.getColor(column.getForgroundColor());
-		// }
-		// public Color getForgroundColorActiv() {
-		// return colors.getColor(column.getForgroundColorActiv());
-		// }
-		//
-		// public Color getBackgroundColorActiv() {
-		// return colors.getColor(column.getBackgroundColorActiv());
-		// }
-		//
-		// @Override
 		// public String getToolTipText(Object element) {
 		// String altAttribute = column.getAltAttribute();
 		// if (altAttribute != null) {

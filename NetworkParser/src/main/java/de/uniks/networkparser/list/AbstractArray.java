@@ -138,11 +138,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 			return 0;
 		}
 		if((flag & BIDI)>0){
-			if(size>=MINHASHINGSIZE){
-				return 5;
-			}else {
-				return 4;
-			}
+			return 5;
 		}
 		if((flag & MAP)>0){
 			return 4;
