@@ -9,8 +9,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import de.uniks.networkparser.gui.controller.ModelListenerFactory;
-import de.uniks.networkparser.gui.dialog.DialogBox;
+import de.uniks.networkparser.gui.javafx.controller.ModelListenerFactory;
+import de.uniks.networkparser.gui.javafx.dialog.DialogBox;
 
 public class TextItemGUI extends Application{
 		private String name="bla";
