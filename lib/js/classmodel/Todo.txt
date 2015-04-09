@@ -1,0 +1,6 @@
+- Pathnodes
+- Rechteckige Pfeile
+- Nodes ausblenden
+- beschriftung
+- PatternObject
+- Alle nodes in SVG und Canvas

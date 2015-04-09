@@ -1,0 +1,69 @@
+<div id="canvasDiv" style="border:1px solid blue;width:500px;height:300px"></div>
+
+<script language="Javascript">
+
+
+Editor = function(element){
+	this.board = element;
+	this.offsetLeft = element.offsetLeft;
+	this.offsetTop = element.offsetTop;
+	this.paint=false;
+	this.points = [];
+	var that = this;
+	this.bindEvent(element, "mousedown", function(e){that.startEdit(e);});
+	this.bindEvent(element, "mouseup", function(e){that.endEdit(e);});
+	this.bindEvent(element, "mouseleave", function(e){that.endEdit(e);});
+	
+	this.bindEvent(element, "mousemove", function(e){that.mouseMove(e);});
+	
+	// TEST
+	this.canvas = document.createElement('canvas');
+	this.canvas.setAttribute('width', this.board.style.width);
+	this.canvas.setAttribute('height', this.board.style.height);
+	this.canvas.setAttribute('id', 'canvas');
+	this.board.appendChild(this.canvas);
+	this.context = this.canvas.getContext("2d");
+	
+};
+Editor.prototype.startEdit = function(e){ 
+	this.points.push({x:e.pageX - this.offsetLeft,y:e.pageY - this.offsetTop, click:true});
+	this.paint=true;
+};
+Editor.prototype.endEdit = function(element){ this.paint=false; };
+
+Editor.prototype.mouseMove = function(e){
+	if(this.paint){
+		this.points.push({x:e.pageX - this.offsetLeft,y:e.pageY - this.offsetTop, click:false});
+		this.draw();
+	}
+};
+
+Editor.prototype.bindEvent = function(el, eventName, eventHandler) {
+	if (el.addEventListener){
+		el.addEventListener(eventName, eventHandler, false); 
+	} else if (el.attachEvent){
+		el.attachEvent('on'+eventName, eventHandler);
+	}
+};
+Editor.prototype.draw = function(){
+	this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height); // Clears the canvas
+	this.context.strokeStyle = "#df4b26";
+	this.context.lineJoin = "round";
+	this.context.lineWidth = 5;
+	for(var i=0; i < this.points.length; i++) {
+		this.context.beginPath();
+		if(this.points[i].click && i){
+			this.context.moveTo(this.points[i-1].x, this.points[i-1].y);
+		} else {
+			this.context.moveTo(this.points[i].x-1, this.points[i].y);
+		}
+		this.context.lineTo(this.points[i].x, this.points[i].y);
+		this.context.closePath();
+		this.context.stroke();
+	}
+};
+
+
+// EXECUTE
+new Editor( document.getElementById("canvasDiv") );
+</script>

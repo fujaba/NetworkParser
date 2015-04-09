@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE project>
+<project default="buildAnt" name="NPAnt" basedir=".">
+	<target name="buildAnt">
+		<mkdir dir="build/temp/" />
+		<javac srcdir="src/Ant" destdir="build/temp"  includeantruntime="false" debug="true" sourcepath="Ant" listfiles="true">
+			<classpath>
+				<pathelement location="lib/git/org.eclipse.jgit-3.4.1.201406201815-r.jar"/>
+				<pathelement location="bin"></pathelement>
+			</classpath>
+		</javac>
+        <jar destfile="build/ant.jar">
+            <fileset dir="./build/temp"/>
+        </jar>
+		<taskdef name="GitRevision" classname="de.uniks.networkparser.test.ant.GitRevision" classpath="bin:build/temp/:build/ant.jar">
+			<classpath>
+				<pathelement location="lib/git/org.eclipse.jgit-3.4.1.201406201815-r.jar"/>
+				<pathelement location="bin"></pathelement>
+			</classpath>
+		</taskdef>
+		<GitRevision/>
+		<property name="version" value="${java.class.version}" />
+		<script language="javascript">
+			if(project.getProperty("version")>51.0) {
+				load('nashorn:mozilla_compat.js')
+			}
+			importPackage(java.lang);
+			project.setProperty("Branchname", System.getProperty("Branchname"));
+			project.setProperty("LastCommit", System.getProperty("LastCommit"));
+			project.setProperty("Revisionnumber", System.getProperty("Revisionnumber"));
+		</script>
+		<echo>${Revisionnumber}</echo>
+		<tstamp><format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss" /></tstamp>
+        <property name="version" value="${revisionVersion}" />
+   		<property name="file.encoding" value="utf-8"/>
+		<delete dir="build/temp/" />
+		<echo file="build/MANIFEST.MF">Manifest-Version: 1.0
+Specification-Version: 4.2.23.${Revisionnumber} ${TODAY}
+Implementation-Title: Networkparser
+Specification-Title: Networkparser
+Built-Time: ${TODAY}
+Created-By: 4.2.23.${Revisionnumber} ${TODAY} ${user.name}
+Built-By: ${user.name}
+Location: ${user.language}
+Author: Stefan Lindel
+Version: ${Revisionnumber}
+Implementation-Version: 4.2.23.${Revisionnumber} ${TODAY}
+GIT-Branch: ${Branchname}
+GIT-CommitId: ${LastCommit}
+GIT-Revision: ${Revisionnumber}
+Ant-Version: ${ant.version}
+Java-Version: ${java.version}
+Bundle-Description: NetworkParser
+Bundle-ClassPath: .
+</echo>
+	</target>
+</project>

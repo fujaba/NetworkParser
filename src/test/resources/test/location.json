@@ -1,0 +1,58 @@
+{
+   "results" : [
+      {
+         "address_components" : [
+            {
+               "long_name" : "Lollar",
+               "short_name" : "Lollar",
+               "types" : [ "transit_station", "establishment" ]
+            },
+            {
+               "long_name" : "Lollar",
+               "short_name" : "Lollar",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "Giessen",
+               "short_name" : "GI",
+               "types" : [ "administrative_area_level_2", "political" ]
+            },
+            {
+               "long_name" : "Hesse",
+               "short_name" : "HE",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "Germany",
+               "short_name" : "DE",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "35457",
+               "short_name" : "35457",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "Lollar, 35457 Lollar, Germany",
+         "geometry" : {
+            "location" : {
+               "lat" : 50.64793599999999,
+               "lng" : 8.701739999999999
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 50.64928498029149,
+                  "lng" : 8.703088980291502
+               },
+               "southwest" : {
+                  "lat" : 50.64658701970849,
+                  "lng" : 8.700391019708498
+               }
+            }
+         },
+         "types" : [ "transit_station", "establishment" ]
+      }
+   ],
+   "status" : "OK"
+}
