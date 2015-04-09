@@ -19,14 +19,14 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
  */
    
-package de.uniks.networkparser.gui.test.model;
+package de.uniks.networkparser.gui.javafx.test.model;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-import de.uniks.networkparser.gui.test.model.util.ItemSet;
-import de.uniks.networkparser.gui.test.model.util.PersonSet;
-import de.uniks.networkparser.gui.test.model.util.StrUtil;
+import de.uniks.networkparser.gui.javafx.test.model.util.ItemSet;
+import de.uniks.networkparser.gui.javafx.test.model.util.PersonSet;
+import de.uniks.networkparser.gui.javafx.test.model.util.StrUtil;
 
 public class GroupAccount 
 {

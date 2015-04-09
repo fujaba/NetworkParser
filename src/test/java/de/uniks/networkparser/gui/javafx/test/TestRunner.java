@@ -1,4 +1,4 @@
-package de.uniks.networkparser.gui.test;
+package de.uniks.networkparser.gui.javafx.test;
 
 import java.io.BufferedReader;
 import java.io.File;

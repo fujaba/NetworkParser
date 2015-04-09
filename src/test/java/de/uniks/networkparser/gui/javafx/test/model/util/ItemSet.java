@@ -19,11 +19,11 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
  */
    
-package de.uniks.networkparser.gui.test.model.util;
+package de.uniks.networkparser.gui.javafx.test.model.util;
 
-import de.uniks.networkparser.gui.test.model.GroupAccount;
-import de.uniks.networkparser.gui.test.model.Item;
-import de.uniks.networkparser.gui.test.model.Person;
+import de.uniks.networkparser.gui.javafx.test.model.GroupAccount;
+import de.uniks.networkparser.gui.javafx.test.model.Item;
+import de.uniks.networkparser.gui.javafx.test.model.Person;
 
 public class ItemSet extends SDMSetBase<Item>
 {
