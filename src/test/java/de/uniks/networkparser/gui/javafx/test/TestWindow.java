@@ -1,4 +1,4 @@
-package de.uniks.networkparser.gui.test;
+package de.uniks.networkparser.gui.javafx.test;
 
 import de.uniks.networkparser.gui.GUILine;
 import de.uniks.networkparser.gui.StyleFX;

@@ -1,4 +1,4 @@
-package de.uniks.networkparser.gui.test.model;
+package de.uniks.networkparser.gui.javafx.test.model;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;

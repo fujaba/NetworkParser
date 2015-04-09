@@ -1,4 +1,4 @@
-package de.uniks.networkparser.gui.test.model.util;
+package de.uniks.networkparser.gui.javafx.test.model.util;
 
 
 public class doubleList extends SDMSetBase<Double>

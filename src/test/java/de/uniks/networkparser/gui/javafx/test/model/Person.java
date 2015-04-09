@@ -19,21 +19,34 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
  */
    
-package de.uniks.networkparser.gui.test.model;
+package de.uniks.networkparser.gui.javafx.test.model;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-import de.uniks.networkparser.gui.test.model.util.StrUtil;
-import de.uniks.networkparser.gui.test.model.util.ItemSet;
+import de.uniks.networkparser.gui.javafx.test.model.util.ItemSet;
+import de.uniks.networkparser.gui.javafx.test.model.util.PersonSet;
+import de.uniks.networkparser.gui.javafx.test.model.util.StrUtil;
 
-public class Item 
+public class Person 
 {
+	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
+   public static final String PROPERTY_NAME = "name";
+   public static final String PROPERTY_BALANCE = "balance";
+   public static final String PROPERTY_PARENT = "parent";
+   public static final String PROPERTY_ITEM = "item";
+   public static final String PROPERTY_WALLET = "wallet";
 
+   private ItemSet item = null;
+   private GroupAccount parent = null;
+   private double balance;
+   private Wallet wallet = new Wallet();
+   
+   private String name;
+	   
    
    //==========================================================================
    
-   protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
    
    public PropertyChangeSupport getPropertyChangeSupport()
    {
@@ -52,35 +65,30 @@ public class Item
    public void removeYou()
    {
       setParent(null);
-      setBuyer(null);
+       withoutItem(this.getItem().toArray(new Item[this.getItem().size()]));
       getPropertyChangeSupport().firePropertyChange("REMOVE_YOU", this, null);
    }
 
    
    //==========================================================================
-   
-   public static final String PROPERTY_DESCRIPTION = "description";
-   
-   private String description;
-
-   public String getDescription()
+   public String getName()
    {
-      return this.description;
+      return this.name;
    }
    
-   public void setDescription(String value)
+   public void setName(String value)
    {
-      if ( ! StrUtil.stringEquals(this.description, value))
+      if ( ! StrUtil.stringEquals(this.name, value))
       {
-         String oldValue = this.description;
-         this.description = value;
-         getPropertyChangeSupport().firePropertyChange(PROPERTY_DESCRIPTION, oldValue, value);
+         String oldValue = this.name;
+         this.name = value;
+         getPropertyChangeSupport().firePropertyChange(PROPERTY_NAME, oldValue, value);
       }
    }
    
-   public Item withDescription(String value)
+   public Person withName(String value)
    {
-      setDescription(value);
+      setName(value);
       return this;
    } 
 
@@ -90,8 +98,8 @@ public class Item
    {
       StringBuilder r = new StringBuilder();
       
-      r.append(" ").append(this.getDescription());
-      r.append(" ").append(this.getValue());
+      r.append(" ").append(this.getName());
+      r.append(" ").append(this.getBalance());
       return r.substring(1);
    }
 
@@ -99,46 +107,40 @@ public class Item
    
    //==========================================================================
    
-   public static final String PROPERTY_VALUE = "value";
-   
-   private double value;
 
-   public double getValue()
+   public double getBalance()
    {
-      return this.value;
+      return this.balance;
    }
    
-   public void setValue(double value)
+   public void setBalance(double value)
    {
-      if (this.value != value)
+      if (this.balance != value)
       {
-         double oldValue = this.value;
-         this.value = value;
-         getPropertyChangeSupport().firePropertyChange(PROPERTY_VALUE, oldValue, value);
+         double oldValue = this.balance;
+         this.balance = value;
+         getPropertyChangeSupport().firePropertyChange(PROPERTY_BALANCE, oldValue, value);
       }
    }
    
-   public Item withValue(double value)
+   public Person withBalance(double value)
    {
-      setValue(value);
+      setBalance(value);
       return this;
    } 
 
    
-   public static final ItemSet EMPTY_SET = new ItemSet().withReadOnly(true);
+   public static final PersonSet EMPTY_SET = new PersonSet().withReadOnly(true);
 
    
    /********************************************************************
     * <pre>
     *              many                       one
-    * Item ----------------------------------- GroupAccount
-    *              item                   parent
+    * Person ----------------------------------- GroupAccount
+    *              persons                   parent
     * </pre>
     */
    
-   public static final String PROPERTY_PARENT = "parent";
-
-   private GroupAccount parent = null;
 
    public GroupAccount getParent()
    {
@@ -156,14 +158,14 @@ public class Item
          if (this.parent != null)
          {
             this.parent = null;
-            oldValue.withoutItem(this);
+            oldValue.withoutPersons(this);
          }
          
          this.parent = value;
          
          if (value != null)
          {
-            value.withItem(this);
+            value.withPersons(this);
          }
          
          getPropertyChangeSupport().firePropertyChange(PROPERTY_PARENT, oldValue, value);
@@ -173,7 +175,7 @@ public class Item
       return changed;
    }
 
-   public Item withParent(GroupAccount value)
+   public Person withParent(GroupAccount value)
    {
       setParent(value);
       return this;
@@ -189,60 +191,83 @@ public class Item
    
    /********************************************************************
     * <pre>
-    *              many                       one
-    * Item ----------------------------------- Person
-    *              item                   buyer
+    *              one                       many
+    * Person ----------------------------------- Item
+    *              buyer                   item
     * </pre>
     */
    
-   public static final String PROPERTY_BUYER = "buyer";
-
-   private Person buyer = null;
-
-   public Person getBuyer()
+   
+   public ItemSet getItem()
    {
-      return this.buyer;
-   }
-
-   public boolean setBuyer(Person value)
-   {
-      boolean changed = false;
-      
-      if (this.buyer != value)
+      if (this.item == null)
       {
-         Person oldValue = this.buyer;
-         
-         if (this.buyer != null)
-         {
-            this.buyer = null;
-            oldValue.withoutItem(this);
-         }
-         
-         this.buyer = value;
-         
-         if (value != null)
-         {
-            value.withItem(this);
-         }
-         
-         getPropertyChangeSupport().firePropertyChange(PROPERTY_BUYER, oldValue, value);
-         changed = true;
+         return null;
       }
-      
-      return changed;
+   
+      return this.item;
    }
 
-   public Item withBuyer(Person value)
+   public Person withItem(Item... value)
    {
-      setBuyer(value);
+      if(value==null){
+         return this;
+      }
+      for (Item item : value)
+      {
+         if (item != null)
+         {
+            if (this.item == null)
+            {
+               this.item = new ItemSet();
+            }
+            
+            boolean changed = this.item.add (item);
+
+            if (changed)
+            {
+               item.withBuyer(this);
+               getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEM, null, item);
+            }
+         }
+      }
       return this;
    } 
 
-   public Person createBuyer()
+   public Person withoutItem(Item... value)
    {
-      Person value = new Person();
-      withBuyer(value);
+      for (Item item : value)
+      {
+         if ((this.item != null) && (item != null))
+         {
+            if (this.item.remove(item))
+            {
+               item.setBuyer(null);
+               getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEM, item, null);
+            }
+         }
+         
+      }
+      return this;
+   }
+
+   public Item createItem()
+   {
+      Item value = new Item();
+      withItem(value);
       return value;
-   } 
+   }
+
+	public Wallet getWallet() {
+		return wallet;
+	}
+	
+	public void setWallet(Wallet wallet) {
+		this.wallet = wallet;
+	} 
+	public Person withWallet(Wallet wallet) {
+		this.wallet = wallet;
+		return this;
+	} 
 }
 
