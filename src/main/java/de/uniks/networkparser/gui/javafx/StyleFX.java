@@ -24,8 +24,8 @@ package de.uniks.networkparser.gui.javafx;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import de.uniks.networkparser.gui.GUILine;
-import de.uniks.networkparser.gui.Style;
+import de.uniks.networkparser.event.GUILine;
+import de.uniks.networkparser.event.Style;
 import de.uniks.networkparser.interfaces.GUIPosition;
 
 public class StyleFX extends Style{

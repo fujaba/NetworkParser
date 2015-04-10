@@ -22,7 +22,7 @@ package de.uniks.networkparser.xml.util;
  permissions and limitations under the Licence.
  */
 import de.uniks.networkparser.Tokener;
-import de.uniks.networkparser.gui.Style;
+import de.uniks.networkparser.event.Style;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XMLStyledEntity;

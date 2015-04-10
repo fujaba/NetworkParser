@@ -21,7 +21,7 @@ package de.uniks.networkparser.event.util;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
  */
-import de.uniks.networkparser.gui.Style;
+import de.uniks.networkparser.event.Style;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class StyleCreator implements SendableEntityCreator {

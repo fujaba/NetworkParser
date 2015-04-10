@@ -26,6 +26,7 @@ import java.util.Comparator;
 import de.uniks.networkparser.EntityValueFactory;
 import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.date.DateTimeEntity;
+import de.uniks.networkparser.event.Style;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 

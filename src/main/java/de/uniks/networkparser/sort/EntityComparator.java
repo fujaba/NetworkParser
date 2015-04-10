@@ -25,8 +25,8 @@ import java.util.Comparator;
 
 import de.uniks.networkparser.EntityValueFactory;
 import de.uniks.networkparser.IdMapEncoder;
-import de.uniks.networkparser.gui.TableList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.list.SimpleList;
 
 /**
  * Compare Value for GUI.
@@ -53,7 +53,7 @@ public class EntityComparator<V> implements Comparator<V> {
 	/** Variable of Factory. */
 	private EntityValueFactory cellCreator = new EntityValueFactory();
 	/** Variable of TableList. */
-	private TableList owner;
+	private SimpleList<Object> owner;
 	/** Variable of creator. */
 	protected SendableEntityCreator creator;
 
@@ -64,7 +64,7 @@ public class EntityComparator<V> implements Comparator<V> {
 	 *            The new TbaleList
 	 * @return EntityComparator Instance
 	 */
-	public EntityComparator<V> withTableList(TableList value) {
+	public EntityComparator<V> withTableList(SimpleList<Object> value) {
 		this.owner = value;
 		this.column = LIST;
 		return this;

@@ -28,9 +28,10 @@ import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.FieldTyp;
 import de.uniks.networkparser.gui.TableList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.list.SimpleList;
 
 public class ComboEditControl extends EditControl<ComboBox<Object>>{
-	private TableList list;
+	private SimpleList<Object> list;
 
 	@Override
 	public Object getValue(boolean convert) {
