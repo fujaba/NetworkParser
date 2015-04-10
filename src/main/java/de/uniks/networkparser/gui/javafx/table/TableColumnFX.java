@@ -80,7 +80,11 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 			}
 		});
 		
-		widthProperty().addListener((ChangeListener<Number>) (observableValue, oldWidth, newWidth) -> TableColumnFX.this.getColumn().getOrCreateStyle().withWidth(newWidth.doubleValue()));
+		widthProperty().addListener(new ChangeListener<Number>() {
+			public void changed(javafx.beans.value.ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				TableColumnFX.this.getColumn().getOrCreateStyle().withWidth(newValue.doubleValue());
+			};
+		});
 		if(column.getStyle() != null) {
 			this.setPrefWidth(getColumn().getStyle().getWidth());
 		}

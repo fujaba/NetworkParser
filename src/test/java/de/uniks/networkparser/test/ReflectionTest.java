@@ -37,7 +37,12 @@ public class ReflectionTest {
 			for(Constructor<?> c : constructors) {
 				if(c.getParameterTypes().length==0) {
 //					item.append("test :\n");
-					Object obj = c.newInstance(new Object[0]);
+					Object obj;
+					try{
+						obj = c.newInstance(new Object[0]);
+					}catch(Exception e) {
+						break;
+					}
 					StringBuilder itemError=new StringBuilder();
 					
 					for(Method m : clazz.getMethods()){
@@ -208,9 +213,12 @@ public class ReflectionTest {
 	        for (String file : files) {
 	            if (file.endsWith(".class")) {
 	                try {
+//	                	System.out.println(pckgname + '.'
+//	                            + file.substring(0, file.length() - 6));
 	                    classes.add(Class.forName(pckgname + '.'
 	                            + file.substring(0, file.length() - 6)));
 	                } catch (NoClassDefFoundError e) {
+	                } catch (ExceptionInInitializerError e) {
 	                    // do nothing. this class hasn't been found by the loader, and we don't care.
 	                }
 	            } else if ((tmpDirectory = new File(directory, file))

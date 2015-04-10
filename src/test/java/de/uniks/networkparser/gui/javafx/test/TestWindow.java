@@ -1,6 +1,6 @@
 package de.uniks.networkparser.gui.javafx.test;
 
-import de.uniks.networkparser.gui.GUILine;
+import de.uniks.networkparser.event.GUILine;
 import de.uniks.networkparser.gui.javafx.StyleFX;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import javafx.application.Application;

@@ -98,7 +98,7 @@ public class PointPaneController extends AbstractModelController implements Prop
 		if(evt != null){
 			int val = 0;
 			if(evt.getNewValue() != null) {
-				val=(int)evt.getNewValue();
+				val=(Integer)evt.getNewValue();
 			}
 			this.setValue(val);
 		}

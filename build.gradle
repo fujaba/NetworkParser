@@ -1,7 +1,6 @@
 // -PlectureBuild -Pjenkins clean --refresh-dependencies build artifactoryPublish
 // gradlew clean test build jar build javadocJar build fatJar
 // gradlew clean test build jar build javadocJar build fatJar -PNetworkParserFX 
-// gradlew javadoc all
 apply plugin: 'java'
 apply plugin: 'maven'
 apply from: 'gradle/version.gradle'
@@ -11,7 +10,6 @@ apply from: 'gradle/tasks.gradle'
 if(project.hasProperty('jenkins')) {
 	//Artifactory
 	apply from: 'gradle/artifactory.gradle'
-	
 
 	apply plugin: 'jacoco'
 	jacoco {
@@ -33,27 +31,15 @@ buildscript {
 
 repositories {
 	mavenCentral()
-	//Artifactory
-	if(project.hasProperty('JarName')){ // It is NetworkParserFX
-		if(project.hasProperty('jenkins')) { // Its run on Jenkins
-			// NetworkParser
-			if(project.hasProperty('lectureBuild')) {
-				maven { url "https://se.cs.uni-kassel.de/artifactory/lecture" }
-			}else{
-				maven { url "https://se.cs.uni-kassel.de/artifactory/libs-snapshot-local" }
-			}
-		}else {
-			mavenLocal()
-		}
-	}
 }
 dependencies {
 	testCompile group: 'junit', name: 'junit', version: '4.+'
 }
 
-if(project.hasProperty('JarName')){
-	apply from: 'gradle/'+project.getProperty('JarName')+'.gradle'
-	project.archivesBaseName = project.getProperty('JarName')
-} else {
-	apply from: 'gradle/NetworkParser.gradle'
-}
+sourceSets.main.output.classesDir 'build/classes/main'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+defaultTasks 'clean', 'test', 'all'
+

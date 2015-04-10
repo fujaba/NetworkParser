@@ -85,7 +85,7 @@ public class XMLTest {
 	public void simpleXMLDOM(){
 		String xml="<chatmsg sender=\"Stefan (\\\"Eraser\\\")\"><child item=\"child\">Value</child><child item=\"2.Kind\"/></chatmsg>";
 		XMLEntity xmlEntity = new XMLEntity().withValue(new XMLTokener().withText(xml).withAllowQuote(true));
-
+		xmlEntity.toString();
 		assertEquals(1, xmlEntity.size());
 		assertEquals(xml, xmlEntity.toString());
 	}

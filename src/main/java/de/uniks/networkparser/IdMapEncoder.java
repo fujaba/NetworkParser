@@ -30,13 +30,13 @@ import java.util.Map;
 import java.util.Set;
 
 import de.uniks.networkparser.event.MapEntry;
-import de.uniks.networkparser.gui.TableList;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.IdMapCounter;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.UpdateListenerJson;
 import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.list.SimpleList;
 
 /**
  * The Class IdMap.
@@ -417,11 +417,11 @@ public abstract class IdMapEncoder extends AbstractMap implements
 		return null;
 	}
 
-	public TableList getTypList(SendableEntityCreator creator) {
+	public SimpleList<Object> getTypList(SendableEntityCreator creator) {
 		if (creator == null) {
 			return null;
 		}
-		TableList result = new TableList();
+		SimpleList<Object> result = new SimpleList<Object>();
 		String clazzName = creator.getSendableInstance(true).getClass()
 				.getName();
 		for (Object item : this.keyValue.values()) {
@@ -447,7 +447,7 @@ public abstract class IdMapEncoder extends AbstractMap implements
 			return false;
 		}
 		boolean result = false;
-		TableList oldValues = getTypList(creator);
+		SimpleList<Object> oldValues = getTypList(creator);
 		for (Object obj : oldValues) {
 			if (obj instanceof Comparable<?>) {
 				@SuppressWarnings("unchecked")

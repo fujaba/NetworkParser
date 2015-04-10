@@ -30,10 +30,10 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TablePosition;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
+import de.uniks.networkparser.event.Style;
 import de.uniks.networkparser.gui.CellEditorElement;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.FieldTyp;
-import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.gui.TableCellValue;
 import de.uniks.networkparser.gui.javafx.StyleFX;
 import de.uniks.networkparser.gui.javafx.controls.EditControl;
@@ -82,11 +82,12 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 	@Override
 	protected void updateItem(TableCellValue arg0, boolean empty) {
 		super.updateItem(arg0, empty);
+		final String text = "" + arg0;
 		if (arg0 != null) {
 			Platform.runLater(new Runnable() {
 				@Override
 				public void run() {
-					setText("" + arg0);
+					setText(text);
 				}
 			});
 

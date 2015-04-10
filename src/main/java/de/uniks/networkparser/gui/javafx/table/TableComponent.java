@@ -60,8 +60,8 @@ import de.uniks.networkparser.DefaultTextItems;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.TextItems;
+import de.uniks.networkparser.event.Style;
 import de.uniks.networkparser.gui.Column;
-import de.uniks.networkparser.gui.Style;
 import de.uniks.networkparser.gui.TableList;
 import de.uniks.networkparser.gui.javafx.controls.EditFieldMap;
 import de.uniks.networkparser.gui.javafx.resource.Styles;
@@ -255,12 +255,13 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	}
 
 	public TableComponent withSearchProperties(String... searchProperties) {
+		if(tableFilterView==null){
+			tableFilterView = new TableFilterView(TableComponent.this);
+		}
+		tableFilterView.setSearchProperties(searchProperties);
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				if(tableFilterView==null){
-					tableFilterView = new TableFilterView(TableComponent.this);
-				}
 				if(searchText == null) {
 					createNothElement();
 					searchText = new TextField();
@@ -273,7 +274,6 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 					searchText.textProperty().addListener(tableFilterView);
 					northComponents.setCenter(searchText);
 				}
-				tableFilterView.setSearchProperties(searchProperties);
 				tableFilterView.refresh();
 			}
 		});

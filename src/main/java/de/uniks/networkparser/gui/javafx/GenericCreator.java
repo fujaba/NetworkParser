@@ -84,7 +84,8 @@ public class GenericCreator implements SendableEntityCreator {
 		if (item != null) {
 			try {
 				return item.getClass().newInstance();
-			} catch (InstantiationException | IllegalAccessException e) {
+			} catch (InstantiationException e) {
+			} catch (IllegalAccessException e) {
 			}
 		}
 		return null;
