@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE project>
 <project default="buildAnt" name="NPAnt" basedir=".">
 	<target name="buildAnt">
+		<property name="gitjar" value="lib/git/org.eclipse.jgit-3.7.0.201502260915-r.jar" />
 		<mkdir dir="build/temp/" />
 		<javac srcdir="src/Ant" destdir="build/temp"  includeantruntime="false" debug="true" sourcepath="Ant" listfiles="true">
 			<classpath>
-				<pathelement location="lib/git/org.eclipse.jgit-3.4.1.201406201815-r.jar"/>
+				<pathelement location="${gitjar}"/>
 				<pathelement location="bin"></pathelement>
 			</classpath>
 		</javac>
@@ -13,11 +14,14 @@
         </jar>
 		<taskdef name="GitRevision" classname="de.uniks.networkparser.test.ant.GitRevision" classpath="bin:build/temp/:build/ant.jar">
 			<classpath>
-				<pathelement location="lib/git/org.eclipse.jgit-3.4.1.201406201815-r.jar"/>
+				<pathelement location="${gitjar}"/>
+				<pathelement location="lib/git/log4j-over-slf4j-1.7.10.jar"/>
+				<pathelement location="lib/git/slf4j-api-1.7.10.jar"/>
+				<pathelement location="lib/git/slf4j-nop-1.7.10.jar"/>
 				<pathelement location="bin"></pathelement>
 			</classpath>
 		</taskdef>
-		<GitRevision/>
+		<GitRevision />
 		<property name="version" value="${java.class.version}" />
 		<script language="javascript">
 			if(project.getProperty("version")>51.0) {
