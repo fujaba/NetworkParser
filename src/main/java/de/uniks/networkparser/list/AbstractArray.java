@@ -325,7 +325,10 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	 * @return  ths pos
 	 */
 	protected int addHashItem(int pos, Object newValue, Object[] items) {
-		int hashKey = hashKey(newValue.hashCode(), items.length);
+		int hashKey = 0;
+		if(newValue != null) {
+			hashKey = hashKey(newValue.hashCode(), items.length);
+		}
 		while (true) {
 			if (items[hashKey] == null || (Integer)items[hashKey] == -1) {
 				items[hashKey] = pos;
