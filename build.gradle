@@ -4,6 +4,14 @@ apply plugin: 'maven'
 apply from: 'gradle/version.gradle'
 apply from: 'gradle/tasks.gradle'
 
+repositories {
+	jcenter()
+	mavenCentral()
+}
+dependencies {
+	testCompile group: 'junit', name: 'junit', version: '4.+'
+}
+
 // only for jenkins
 if(project.hasProperty('jenkins')) {
 	//Artifactory
@@ -20,18 +28,9 @@ if(project.hasProperty('jenkins')) {
 	apply from: 'gradle/ide.gradle'
 }
 
-repositories {
-	jcenter()
-	mavenCentral()
-}
-dependencies {
-	testCompile group: 'junit', name: 'junit', version: '4.+'
-}
-
 sourceSets.main.output.classesDir 'build/classes/main'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 defaultTasks 'clean', 'test', 'all'
-
