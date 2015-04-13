@@ -41,4 +41,13 @@ artifactory {
 	}
 }
 
-artifacts { archives coreJar, coreJar16, coreJar17, sourceJar, sourceJar16, sourceJar17, javadocJar, fullJar}
+artifacts { 
+	archives coreJar
+	archives coreJar16
+	archives coreJar17
+	archives sourceJar
+	archives sourceJar16
+	archives sourceJar17
+	archives javadocJar
+	archives fullJar
+}
