@@ -7,11 +7,11 @@ apply from: 'gradle/tasks.gradle'
 // only for jenkins
 if(project.hasProperty('jenkins')) {
 	//Artifactory
-	apply from: 'gradle/artifactory.gradle'
-
-	buildscript.dependencies {
+	dependencies {
 		classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '2.2.4')
 	}
+	
+	apply from: 'gradle/artifactory.gradle'
 	apply plugin: 'jacoco'
 	jacoco {
 		toolVersion = "0.7.1.201405082137"
