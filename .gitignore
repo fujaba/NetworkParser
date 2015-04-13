@@ -5,3 +5,5 @@
 **/.settings
 **/.gradle
 *.*~
+.classpath
+.project
