@@ -1,44 +1,76 @@
-jar {
-	if(project.hasProperty('JarName')){
-		baseName = project.getProperty('JarName')
-	}
-	from sourceSets.main.output
-	getManifest(gitVersion)
+gradle.projectsEvaluated {
+    compileJava.dependsOn(compileJava16)
+	compileJava.dependsOn(compileJava17)
+}
 
+task compileJava16(type: JavaCompile) {
+	source = fileTree(dir: 'src', exclude: ['**/gui/**', '**/test/**'])
+	destinationDir = file('build/classes/main16')
+	sourceCompatibility = '1.6'
+	targetCompatibility = '1.6'
+	classpath = files('build/classes/main16')
+}
+task compileJava17(type: JavaCompile) {
+	source = fileTree(dir: 'src', exclude: ['**/gui/**', '**/test/**'])
+	destinationDir = file('build/classes/main17')
+	sourceCompatibility = '1.7'
+	targetCompatibility = '1.7'
+	classpath = files('build/classes/main17')
+}
+
+task coreJar(type: Jar) {
+	from sourceSets.main.output
 	exclude '**/test/**'
+	getManifest(gitVersion)
+}
+
+task coreJar16(type: Jar) {
+	from fileTree(dir: 'build/classes/main16'); classifier = 'core16'
+	getManifest(gitVersion)
+}
+
+task coreJar17(type: Jar) {
+	from fileTree(dir: 'build/classes/main17'); classifier = 'core17'
+	getManifest(gitVersion)
 }
 
 task sourceJar(type: Jar) {
-	if(project.hasProperty('JarName')){
-		baseName = project.getProperty('JarName')
-	}
-	from (sourceSets.main.allJava + sourceSets.main.output ); classifier = 'sources'
-	getManifest(gitVersion)
-
+	from (sourceSets.main.allJava + sourceSets.main.output); classifier = 'sources'
 	exclude '**/test/**'
+	getManifest(gitVersion)
 }
-task javadocJar(type: Jar) {
-	if(project.hasProperty('JarName')){
-		baseName = project.getProperty('JarName')
-	}
-	from javadoc.outputs.files; classifier = 'javadoc'
-	getManifest(gitVersion)
+
+task sourceJar16(type: Jar) {
+	from (sourceSets.main.allJava + fileTree(dir: 'build/classes/main16')); classifier = 'sources16'
 	exclude '**/test/**'
+	exclude '**/gui/**'
+	getManifest(gitVersion)
+}
+
+task sourceJar17(type: Jar) {
+	from (sourceSets.main.allJava + fileTree(dir: 'build/classes/main17')); classifier = 'sources17'
+	exclude '**/test/**'
+	exclude '**/gui/**'
+	getManifest(gitVersion)
+}
+
+task javadocJar(type: Jar) {
+	from javadoc.outputs.files; classifier = 'javadoc'
+	exclude '**/test/**'
+	getManifest(gitVersion)
 }
 
 task fullJar(type: Jar) {
-	if(project.hasProperty('JarName')){
-		baseName = project.getProperty('JarName')
-	}
-	getManifest(gitVersion)
-	from {(
-			sourceSets.main.output +
-			sourceSets.main.allJava +
-			javadoc.outputs.files
-			)}
-	classifier = 'full'
+	from {(sourceSets.main.output + sourceSets.main.allJava + javadoc.outputs.files )}; classifier = 'full'
 	exclude '**/test/**'
+	getManifest(gitVersion)
 }
+
+task all(type: Jar) << {
+    println "Build all Jars"
+}
+all.dependsOn coreJar, coreJar16, coreJar17, sourceJar, sourceJar16, sourceJar17, javadocJar, fullJar
+
 task codeCoverageReport(type: JacocoReport) {
 	executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
 	sourceSets sourceSets.main
