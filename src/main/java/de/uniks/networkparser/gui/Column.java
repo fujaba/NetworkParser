@@ -266,7 +266,7 @@ public class Column implements SendableEntityCreator {
 			handler = new CellHandler() {
 				@Override
 				public boolean onAction(Object entity,
-						SendableEntityCreator creator, int clickcount, double x, double y) {
+						SendableEntityCreator creator, double x, double y) {
 					return isEditable;
 				}
 			};

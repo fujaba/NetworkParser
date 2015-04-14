@@ -15,9 +15,9 @@ public class ColumnTest {
 	@Test
 	public void testColumn(){
 		Column column= new Column();
-		Assert.assertFalse("Must be False", column.getListener().onAction(null, null, 1, 0, 0));
+		Assert.assertFalse("Must be False", column.getListener().onAction(null, null, 0, 0));
 		column.withEditable(true);
-		Assert.assertTrue("Must be True", column.getListener().onAction(null, null, 1, 0, 0));
+		Assert.assertTrue("Must be True", column.getListener().onAction(null, null, 0, 0));
 	}
 
 	@Test
@@ -39,10 +39,10 @@ public class ColumnTest {
 			
 			@Override
 			public boolean onAction(Object entity,
-					SendableEntityCreator creator, int clickcount, double x, double y) {
+					SendableEntityCreator creator, double x, double y) {
 				return false;
 			}
 		});
-		Assert.assertFalse("Must be False", column.getListener().onAction(null, null, 1, 0, 0));
+		Assert.assertFalse("Must be False", column.getListener().onAction(null, null, 0, 0));
 	}
 }

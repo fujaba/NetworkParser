@@ -1,0 +1,1 @@
+{"changeMsg":"{\"id\":\"tester.S1\",\"upd\":{\"observedObjects\":{\"class\":\"org.sdmlib.storyboards.StoryboardStep\",\"prop\":{\"text\":\"<script>\u000a   var json = {\u000d\u000a   \"typ\":\"objectdiagram\",\u000d\u000a   \"style\":null,\u000d\u000a}   ;\u000a</script>\u000a\",\"storyboard\":{\"class\":\"org.sdmlib.storyboards.Storyboard\"}}}}}"}
