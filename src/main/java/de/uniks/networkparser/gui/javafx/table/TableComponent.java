@@ -341,7 +341,9 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		}
 		if(added) {
 			this.addUpdateListener(item, null);
-			tableFilterView.refreshCounter();
+			if(tableFilterView!=null) {
+				tableFilterView.refreshCounter();
+			}
 			SendableEntityCreator creator = this.getCreator(item);
 			if(creator != null ) {
 				for(TableColumnFX column : columns) {

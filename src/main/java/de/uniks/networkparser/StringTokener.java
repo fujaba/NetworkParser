@@ -30,7 +30,7 @@ public class StringTokener extends Tokener {
 	private boolean isString = true;
 
 	@Override
-	public String nextString(char quote, boolean allowCRLF, boolean allowQuote,
+	public String nextString(char quote, boolean allowCRLF, int allowQuote,
 			boolean mustQuote, boolean nextStep) {
 
 		if (quote == '"') {
