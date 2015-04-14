@@ -43,14 +43,13 @@ public class JsonTokener extends Tokener {
 	}
 
 	@Override
-	public Object nextValue(BaseItem creator, int allowQuote) {
+	public Object nextValue(BaseItem creator, boolean allowQuote) {
 		char c = nextStartClean();
 
 		switch (c) {
 		case '"':
 			next();
-			return EntityUtil.unQuote(nextString(c, isAllowCRLF(), allowQuote,
-					false, true));
+			return EntityUtil.unQuote(nextString(c, isAllowCRLF(), allowQuote, false, true));
 		case '\\':
 			// Must be unquote
 			next();
@@ -173,7 +172,7 @@ public class JsonTokener extends Tokener {
 			}
 		}
 		next();
-		int isQuote = 0;
+		boolean isQuote = true;
 		for (;;) {
 			c = nextStartClean();
 			switch (c) {
@@ -187,7 +186,7 @@ public class JsonTokener extends Tokener {
 			case '\\':
 				// unquote
 				next();
-				isQuote = -1;
+				isQuote = false;
 				continue;
 			case '}':
 				next();
@@ -232,7 +231,7 @@ public class JsonTokener extends Tokener {
 			for (;;) {
 				c = getCurrentChar();
 				if (c != ',') {
-					entityList.withAll(nextValue(entityList, -1));
+					entityList.withAll(nextValue(entityList, false));
 				}
 				c = nextStartClean();
 				switch (c) {
