@@ -113,18 +113,18 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 		}
 	}
 	
-	public boolean isOnAction() {
-		TablePosition<Object, ?> editingCell = getTableView().getEditingCell();
-		int row = editingCell.getRow();
-		Object entity = tableComponent.getElement(row);
-		SendableEntityCreator creator = tableComponent.getCreator(entity);
-		
-		return this.field.getListener().onAction(entity, creator, 2, getTableView().getLayoutX(), getTableView().getLayoutY());
-	}
+//	public boolean isOnAction() {
+//		TablePosition<Object, ?> editingCell = getTableView().getEditingCell();
+//		int row = editingCell.getRow();
+//		Object entity = tableComponent.getElement(row);
+//		SendableEntityCreator creator = tableComponent.getCreator(entity);
+//		
+//		return this.field.getListener().onAction(entity, creator, 2, getTableView().getLayoutX(), getTableView().getLayoutY());
+//	}
 	
 	@Override
 	public void startEdit() {
-		if(isOnAction()) {
+		if(isEditable()) {
 			super.startEdit();
 			Object value = getItem().getCreator().getValue(getItem().getItem(), this.field.getAttrName());
 			FieldTyp typ = fieldMap.getControllForTyp(field, value);
@@ -194,7 +194,7 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 		Object entity = tableComponent.getElement(row);
 		SendableEntityCreator creator = tableComponent.getCreator(entity);
 		
-		this.field.getListener().onAction(entity, creator, 1, getTableView().getLayoutX(), getTableView().getLayoutY());
+		this.field.getListener().onAction(entity, creator, getTableView().getLayoutX(), getTableView().getLayoutY());
 	}
 	
 	@Override

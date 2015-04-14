@@ -174,7 +174,7 @@ public abstract class Tokener {
 	}
 
 	public String nextString(char quote, boolean allowCRLF) {
-		return nextString(quote, allowCRLF, false, false, true);
+		return nextString(quote, allowCRLF, -1, false, true);
 	}
 
 	/**
@@ -197,7 +197,7 @@ public abstract class Tokener {
 	 *            must i step next after find Text
 	 * @return A String.
 	 */
-	public String nextString(char quote, boolean allowCRLF, boolean allowQuote,
+	public String nextString(char quote, boolean allowCRLF, int allowQuote,
 			boolean mustQuote, boolean nextStep) {
 		if (getCurrentChar() == 0) {
 			return "";
@@ -215,7 +215,7 @@ public abstract class Tokener {
 				nextStep);
 	}
 
-	private String getString(char quote, boolean allowCRLF, boolean allowQuote,
+	private String getString(char quote, boolean allowCRLF, int allowQuote,
 			boolean mustQuote, boolean nextStep) {
 		int startpos = this.buffer.position();
 		char c;
@@ -241,7 +241,7 @@ public abstract class Tokener {
 						c = 1;
 						isQuote = false;
 					}
-					if (allowQuote) {
+					if (allowQuote==0) {
 						b = c;
 						c = 1;
 						continue;
@@ -256,7 +256,7 @@ public abstract class Tokener {
 		if (nextStep) {
 			next();
 		}
-		if ((isQuote && allowQuote) || mustQuote) {
+		if ((isQuote && allowQuote==0) || mustQuote) {
 			return this.buffer.substring(startpos, endPos - startpos - 1);
 		}
 
@@ -264,7 +264,7 @@ public abstract class Tokener {
 	}
 
 	private String getStringBuffer(char quote, boolean allowCRLF,
-			boolean allowQuote, boolean mustQuote, boolean nextStep) {
+			int allowQuote, boolean mustQuote, boolean nextStep) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(getCurrentChar());
 
@@ -286,7 +286,7 @@ public abstract class Tokener {
 				}
 			default:
 				if (b == '\\') {
-					if (allowQuote) {
+					if (allowQuote==0) {
 						sb.append(c);
 						if (c == '\\') {
 							c = 1;
@@ -328,11 +328,11 @@ public abstract class Tokener {
 	 *            is allow Quote in Strem
 	 * @return the new Element
 	 */
-	public Object nextValue(BaseItem creator, boolean allowQuote) {
+	public Object nextValue(BaseItem creator, int allowQuote) {
 		return nextValue(creator, allowQuote, nextStartClean());
 	}
 
-	public Object nextValue(BaseItem creator, boolean allowQuote, char c) {
+	public Object nextValue(BaseItem creator, int allowQuote, char c) {
 		String value;
 		if (buffer.isCache()) {
 			int start = buffer.position();

@@ -49,7 +49,7 @@ import de.uniks.networkparser.test.model.util.SortedMsgCreator;
 import de.uniks.networkparser.test.model.util.StringMessageCreator;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
 
-public class JsonTest {
+public class JsonTest extends IOClasses{
 	@Test
 	public void testJSONFunction(){
 		String functionJson="{body:\"public main() {\r\n\tconsole.log('Hallo Welt');\n\t}\"}";
@@ -609,4 +609,36 @@ public class JsonTest {
 		item3.put("id", "42");
 		Assert.assertEquals("{\"id\":\"42\"}", item3.toString());
 	}
+	
+	
+	@Test
+	public void testJSONInJson(){
+		JsonObject subsubItem=new JsonObject().withKeyValue("value", "Hallo Welt");
+		JsonObject subItem=new JsonObject().withKeyValue("id", subsubItem.toString());
+		JsonObject item=new JsonObject().withKeyValue("item", subItem.toString());
+		
+		String itemString = item.toString();
+		System.out.println(itemString);
+		
+		//FIXME STefan
+//		JsonObject newItem = new JsonObject().withValue(itemString);
+//		String newItemString = newItem.getString("item");
+//		JsonObject newSubItem = new JsonObject().withValue(newItemString);
+//		System.out.println(newSubItem);
+		
+
+		
+		
+//		StringBuffer readFile = readFile("test/StringThatDoesNotUnquote2.txt");
+//		System.out.println(readFile.toString());
+//		String stringValue = "{\"id\": \"zuenFamilyChatServerSpace.R61\",\"prop\": {\"isToManyProperty\": true,";
+//		stringValue +="\"changeMsg\": \"{\\\"\"upd\\\"\":{\\\"\"observedObjects\\\"\":{\\\"\"prop\\\"\":{\\\"\"text\\\"\":\\\"\"<script>\\\"u000a   var json = {\\\"u000d\\\"u000a   \\\"\"typ\\\"\":\\\"\"objectdiagram\\\"\",\\\"u000d\\\"u000a   \\\"\"style\\\"\":null\\\"u000d\\\"u000a};</script>\\\"u000a\\\"\",\\\"\"storyboard\\\"\":{\\\"\"class\\\"\":\\\"\"org.sdmlib.storyboards.Storyboard\\\"\",\\\"\"id\\\"\":\\\"\"tester.S2\\\"\"}}}}}\"}}";
+//		JsonObject newItemFile= new JsonObject().withValue(readFile.toString());
+//		Object object = newItemFile.get("changeMsg");
+//		System.out.println(object);
+//		System.out.println(withValue);
+//		JsonObject withValue = new JsonObject().withValue(readFile.toString());
+//		System.out.println(withValue);
+	}
+
 }
