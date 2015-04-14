@@ -36,17 +36,20 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.ProcessBuilder.Redirect;
 import java.lang.management.ManagementFactory;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.List;
 
-import de.uniks.networkparser.gui.javafx.Os;
 import javafx.application.Application;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import de.uniks.networkparser.gui.javafx.Os;
 
 public abstract class SimpleShell extends Application {
 	protected String icon;
@@ -61,6 +64,114 @@ public abstract class SimpleShell extends Application {
 	
    @Override
    public void start(Stage primaryStage) throws Exception {
+	   System.out.println("Start");
+	   List<String> raw = getParameters().getRaw();
+	   String debugPort = null;
+	   boolean isWaitFor=false;
+	   for(String item : raw) {
+		   if(item.startsWith("--")) {
+			   item = item.substring(2);
+		   }
+		   int pos=item.indexOf(":");
+		   int posEnter = item.indexOf("=");
+		   if(posEnter>0 && (posEnter < pos || pos==-1)) {
+			   pos = posEnter;
+		   }
+		   String key;
+		   String value;
+		   if(pos>0) {
+			   key = item.substring(0, pos);
+			   value = item.substring(pos + 1);
+		   }else {
+			   key = item;
+			   value = null;
+		   }
+		   if (key.equalsIgnoreCase("debug")) {
+			   debugPort = value;
+		   }else if (key.equalsIgnoreCase("waitfor")) {
+				isWaitFor = true;
+		   }
+		}
+
+	   if(debugPort != null) {
+			ArrayList<String> items = new ArrayList<String>();
+			if(new Os().isMac()){
+				items.add( System.getProperty("java.home").replace("\\", "/")+ "/bin/java");
+			}else{
+				items.add("\""+ System.getProperty("java.home").replace("\\", "/")+ "/bin/java\"");
+			}
+			
+			items.add("-Xdebug");
+			items.add("-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=" + debugPort);
+			items.add("-jar");
+			String fileName = new Os().getFilename().toLowerCase();
+			items.add(fileName);
+
+			ProcessBuilder processBuilder = new ProcessBuilder( items );
+			if(isWaitFor) {
+				processBuilder.redirectErrorStream(true);
+				processBuilder.redirectOutput(Redirect.INHERIT);
+			}
+			Process process = processBuilder.start();
+			if(isWaitFor) {
+				process.waitFor();
+//				OutPutStream std = new OutPutStream(process.getInputStream (), "Stdout");
+//				std.start();
+//
+//				OutPutStream error = new OutPutStream(process.getErrorStream(), "Error");
+//				error.start();
+//
+//				System.out.println("RETURN VALUE: "+process.waitFor());
+//				
+//				std.cancel();
+//				error.cancel();
+			}
+			System.exit(0);
+	   }
+//		long mbMemory = ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getTotalPhysicalMemorySize()/(1014*1024);
+//		System.out.println("Total:"+ ((com.sun.management.OperatingSystemMXBean)ManagementFactory.getOperatingSystemMXBean()).getTotalPhysicalMemorySize());
+//		params.put("-Xmx", "-Xmx"+mbMemory/4+"m");
+//		System.out.println("Set MaxMemory: "+mbMemory/4+"m");
+//
+//		if (args == null || args.length < 1) {
+//			for(;start<args.length;start++){
+//				boolean found = false;
+//				for(Iterator<Entry<String, String>> iterator = params.entrySet().iterator();iterator.hasNext();){
+//					Entry<String, String> item = iterator.next();
+//					if(args[start].startsWith(item.getKey())){
+//						System.out.println("Change value from "+item.getKey()+" to "+args[start]);
+//						params.put(item.getKey(), args[start]);
+//						found=true;
+//						break;
+//					}
+//				}
+//				if(!found){
+//					System.out.println("Add value "+args[start]);
+//					params.put(args[start], args[start]);
+//				}
+//			}
+//		}
+//		
+//		try {
+//			ArrayList<String> items = new ArrayList<String>(params.values());
+//			for(String item : items){
+//				System.out.println("PARAM: "+item);
+//			}
+//			ProcessBuilder processBuilder = new ProcessBuilder( items );
+//			Process process = processBuilder.start();
+//			if(DEBUG.equals(typ)){
+//				OutPutStream std = new OutPutStream(process.getInputStream (), "Stdout");
+//				std.start();
+//
+//				OutPutStream error = new OutPutStream(process.getErrorStream(), "Error");
+//				error.start();
+//
+//				System.out.println("RETURN VALUE: "+process.waitFor());
+//				
+//				std.cancel();
+//				error.cancel();
+//			}
+	   
 	   try{
 		   if(getDefaultString()!=null && !getDefaultString().equalsIgnoreCase(System.getProperty("file.encoding"))){
 			   System.setProperty("file.encoding", getDefaultString());

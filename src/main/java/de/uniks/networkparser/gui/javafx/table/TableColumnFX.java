@@ -57,6 +57,7 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 		}
 		this.setText(column.getLabelOrAttrName());
 		this.setResizable(column.isResizable());
+		this.setEditable(column.isEditable());
 		menueItem = new CheckMenuItem();
 		menueItem.setSelected(true);
 		menueItem.setText(column.getLabelOrAttrName());
