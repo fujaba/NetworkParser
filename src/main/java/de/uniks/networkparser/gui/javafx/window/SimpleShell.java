@@ -108,7 +108,7 @@ public abstract class SimpleShell extends Application {
 				   debugPort = "4223";
 			   }
 		   }else if (key.equalsIgnoreCase("output")) {
-			   if(value != null) {
+			   if(value == null) {
 				   outputRedirect = "INHERIT";
 			   }else {
 				   outputRedirect = value;

@@ -296,11 +296,16 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 			this.northComponents.setRight(element);
 		}
 		if(element instanceof HBox) {
-			HBox parent = (HBox) element;
-			for(Node item : elements) {
-				parent.getChildren().add(item);
-				HBox.setMargin(item, new Insets(0, 5, 0, 5));
-			}
+			final HBox parent = (HBox) element;
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					for(Node item : elements) {
+						parent.getChildren().add(item);
+						HBox.setMargin(item, new Insets(0, 5, 0, 5));
+					}
+				}
+			});
 		}
 		return this;
 	}
