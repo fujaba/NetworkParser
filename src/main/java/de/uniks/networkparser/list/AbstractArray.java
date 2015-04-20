@@ -126,7 +126,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
     }
     
     final boolean isBig() {
-    	return size>MINHASHINGSIZE && elements.length <= (BIG_VALUE+1);
+    	return size>=MINHASHINGSIZE && elements.length <= (BIG_VALUE+1);
     }
 
     final boolean isComplex(int size) {
@@ -538,10 +538,6 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		Object[] keys, values;
 		keys = (Object[]) elements[SMALL_KEY];
 		values = (Object[]) elements[SMALL_VALUE];
-		if(isBig()) {
-			addHashItem(pos, key, (Object[])elements[BIG_KEY]);
-			addHashItem(pos, value, (Object[])elements[BIG_VALUE]);
-		}
 		while(i>pos) {
 			keys[i] = keys[i-1];
 			values[i] = values[--i];
@@ -550,6 +546,10 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		values[pos] = value;
         Object beforeKey = this.getKeyByIndex(size, size);
         size++;
+		if(isBig()) {
+			addHashItem(pos, key, (Object[])elements[BIG_KEY]);
+			addHashItem(pos, value, (Object[])elements[BIG_VALUE]);
+		}
         fireProperty(null, key, beforeKey, value);
 		return pos;
 	}
@@ -772,10 +772,13 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	}
 	
 	private int getPosition(Object o, int offset) {
-		if (o == null) {
+		if (o == null || elements == null) {
 			return -1;
 		}
 		Object[] hashCodes = (Object[])elements[offset + 1];
+		if(hashCodes == null) {
+			return -1;
+		}
 		Object[] items = (Object[])elements[offset];
 		int index = hashKey(o.hashCode(), hashCodes.length);
 		if(hashCodes[index]==null){
