@@ -118,6 +118,36 @@ public class EntityUtil {
 		return sb.toString();
 	}
 
+   public static String basicUnQuote(String value) {
+      if (value == null || value.length() == 0) {
+         return "";
+      }
+      StringBuilder sb = new StringBuilder(value.length());
+      char c;
+      for (int i = 0; i < value.length(); i++) {
+         c = value.charAt(i);
+         if (c == '\\') {
+            if (i + 1 == value.length()) {
+               sb.append('\\');
+               break;
+            }
+            c = value.charAt(++i);
+            if (c == 'u') {
+               char no = fromHex(value.charAt(++i), value.charAt(++i),
+                     value.charAt(++i), value.charAt(++i));
+               sb.append((char) no);
+               continue;
+               //            } else if (c == '"') {
+               //               // remove the backslash
+               //            } else {
+               //               sb.append('\\');
+            }
+         }
+         sb.append(c);
+      }
+      return sb.toString();
+   }
+
 	private static char fromHex(char... values) {
 		return (char) ((HEXVAL.indexOf(values[0]) << 24)
 				+ (HEXVAL.indexOf(values[1]) << 16)

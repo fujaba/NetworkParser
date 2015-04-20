@@ -353,15 +353,20 @@ public class JsonIdMap extends IdMap {
 	 *            the json object
 	 * @return the object
 	 */
-	public Object decode(JsonObject jsonObject) {
-		if (jsonObject!=null && (jsonObject.has(UPDATE) || jsonObject.has(REMOVE))) {
+	public Object decode(JsonObject jsonObject) 
+	{
+		if (jsonObject!=null && (jsonObject.has(UPDATE) || jsonObject.has(REMOVE))) 
+		{
 			// Must be an update
-			if (executeUpdateMsg(jsonObject)) {
+			if (executeUpdateMsg(jsonObject)) 
+			{
 				String id = jsonObject.getString(JsonIdMap.ID);
 				return getObject(id);
 			}
+			
 			return null;
 		}
+		
 		return decoding(jsonObject, null);
 	}
 

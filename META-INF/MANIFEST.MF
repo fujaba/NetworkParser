@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: NetworkParser
-Bundle-SymbolicName: NetworkParser
+Bundle-SymbolicName: NetworkParser;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Export-Package: de.uniks.networkparser,
  de.uniks.networkparser.bytes,
