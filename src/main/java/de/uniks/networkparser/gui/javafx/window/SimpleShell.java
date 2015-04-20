@@ -139,8 +139,14 @@ public abstract class SimpleShell extends Application {
 					processBuilder.redirectErrorStream(true);
 					processBuilder.redirectOutput(Redirect.INHERIT);
 				} else {
-					processBuilder.redirectError(new File(outputRedirect));
-					processBuilder.redirectOutput(new File(outputRedirect));
+					int pos=outputRedirect.lastIndexOf(".");
+					if(pos>0) {
+						processBuilder.redirectError(new File(outputRedirect.substring(0, pos)+"_error"+outputRedirect.substring(pos)));
+						processBuilder.redirectOutput(new File(outputRedirect.substring(0, pos)+"_stdout"+outputRedirect.substring(pos)));
+					} else {
+						processBuilder.redirectError(new File(outputRedirect+"_error.txt"));
+						processBuilder.redirectOutput(new File(outputRedirect+"_stdout.txt"));
+					}
 				}
 			}
 			Process process = processBuilder.start();
