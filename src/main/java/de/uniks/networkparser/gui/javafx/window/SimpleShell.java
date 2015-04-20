@@ -150,10 +150,10 @@ public abstract class SimpleShell extends Application {
 				}
 			}
 			Process process = processBuilder.start();
-			if(outputRedirect != null) {
-				int waitFor = process.waitFor();
-				System.out.println("Resultstatus: "+waitFor);
-			}
+//			if(outputRedirect != null) {
+//				int waitFor = process.waitFor();
+//				System.out.println("Resultstatus: "+waitFor);
+//			}
 			System.exit(0);
 	   }
 //		long mbMemory = ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getTotalPhysicalMemorySize()/(1014*1024);

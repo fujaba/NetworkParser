@@ -30,7 +30,9 @@ import de.uniks.networkparser.interfaces.GUIPosition;
 
 public class StyleFX extends Style{
 	public static final String PROPERTY_CURSOR="cursor";
+	public static final String PROPERTY_NAME="name";
 	private String cursor;
+	private String name;
 
 	public String getCursor() {
 		return cursor;
@@ -103,5 +105,13 @@ public class StyleFX extends Style{
 			style+="-fx-text-alignment:"+this.getAlignment()+";";
 		}
 		return style;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	public StyleFX withName(String name) {
+		this.name = name;
+		return this;
 	}
 }
