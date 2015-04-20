@@ -27,6 +27,10 @@ import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class Style implements Cloneable, SendableEntityCreator {
+	/**  The Constant PROPERTY_NAME for Name of Style */
+	public static final String PROPERTY_NAME="name";
+	private String name;
+	
 	/** The Constant PROPERTY_BOLD for Bold Attribute */
 	public static final String PROPERTY_BOLD = "bold";
 	/** The Bold value. */
@@ -123,79 +127,6 @@ public class Style implements Cloneable, SendableEntityCreator {
 		this.fontsize = value;
 		propertyChange(PROPERTY_FONTSIZE, oldValue, value);
 		return this;
-	}
-
-	/*
-	 * Generic Getter for Attributes
-	 */
-	public Object get(String attrName) {
-		String attribute;
-		int pos = attrName.indexOf(".");
-		if (pos > 0) {
-			attribute = attrName.substring(0, pos);
-		} else {
-			attribute = attrName;
-		}
-		if (attribute.equalsIgnoreCase(PROPERTY_BOLD)) {
-			return isBold();
-		} else if (attribute.equalsIgnoreCase(PROPERTY_ITALIC)) {
-			return isItalic();
-		} else if (attribute.equalsIgnoreCase(PROPERTY_FONTFAMILY)) {
-			return getFontFamily();
-		} else if (attribute.equalsIgnoreCase(PROPERTY_FONTSIZE)) {
-			return getFontSize();
-		} else if (attribute.equalsIgnoreCase(PROPERTY_FORGROUND)) {
-			return getForground();
-		} else if (attribute.equalsIgnoreCase(PROPERTY_BACKGROUND)) {
-			return getBackground();
-		} else if (attribute.equalsIgnoreCase(PROPERTY_UNDERLINE)) {
-			return isUnderline();
-		} else if (attribute.equalsIgnoreCase(PROPERTY_ALIGNMENT)) {
-			return getAlignment();
-		} else if (attribute.equalsIgnoreCase(PROPERTY_WIDTH)) {
-			return getWidth();
-		} else if (attribute.equalsIgnoreCase(PROPERTY_HEIGHT)) {
-			return getHeight();
-		}
-		return null;
-	}
-
-	/*
-	 * Generic Setter for Attributes
-	 */
-	public boolean set(String attribute, Object value) {
-		if (attribute.equalsIgnoreCase(PROPERTY_BOLD)) {
-			withBold((Boolean) value);
-			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_ITALIC)) {
-			withItalic((Boolean) value);
-			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_FONTFAMILY)) {
-			withFontFamily((String) value);
-			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_FONTSIZE)) {
-			withFontSize(value.toString());
-			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_FORGROUND)) {
-			withForground((String) value);
-			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_BACKGROUND)) {
-			withBackground((String) value);
-			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_UNDERLINE)) {
-			withUnderline((Boolean) value);
-			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_ALIGNMENT)) {
-			withAlignment((String) value);
-			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_WIDTH)) {
-			withWidth(Double.valueOf("" + value));
-			return true;
-		} else if (attribute.equalsIgnoreCase(PROPERTY_HEIGHT)) {
-			withHeight(Double.valueOf("" + value));
-			return true;
-		}
-		return false;
 	}
 
 	public String getForground() {
@@ -328,22 +259,96 @@ public class Style implements Cloneable, SendableEntityCreator {
 
 	@Override
 	public String[] getProperties() {
-		return null;
+		return new String[]{
+				PROPERTY_NAME, PROPERTY_FONTFAMILY, PROPERTY_FONTSIZE, PROPERTY_FORGROUND, PROPERTY_BACKGROUND, PROPERTY_BOLD, PROPERTY_ITALIC, PROPERTY_UNDERLINE, PROPERTY_ALIGNMENT, PROPERTY_WIDTH, PROPERTY_HEIGHT
+		};
 	}
 
 	@Override
-	public Object getValue(Object entity, String attribute) {
+	public Object getValue(Object entity, String attrName) {
+		String attribute;
+		int pos = attrName.indexOf(".");
+		if (pos > 0) {
+			attribute = attrName.substring(0, pos);
+		} else {
+			attribute = attrName;
+		}
+		if (attribute.equalsIgnoreCase(PROPERTY_BOLD)) {
+			return isBold();
+		} else if (attribute.equalsIgnoreCase(PROPERTY_ITALIC)) {
+			return isItalic();
+		} else if (attribute.equalsIgnoreCase(PROPERTY_FONTFAMILY)) {
+			return getFontFamily();
+		} else if (attribute.equalsIgnoreCase(PROPERTY_FONTSIZE)) {
+			return getFontSize();
+		} else if (attribute.equalsIgnoreCase(PROPERTY_FORGROUND)) {
+			return getForground();
+		} else if (attribute.equalsIgnoreCase(PROPERTY_BACKGROUND)) {
+			return getBackground();
+		} else if (attribute.equalsIgnoreCase(PROPERTY_UNDERLINE)) {
+			return isUnderline();
+		} else if (attribute.equalsIgnoreCase(PROPERTY_ALIGNMENT)) {
+			return getAlignment();
+		} else if (attribute.equalsIgnoreCase(PROPERTY_WIDTH)) {
+			return getWidth();
+		} else if (attribute.equalsIgnoreCase(PROPERTY_HEIGHT)) {
+			return getHeight();
+		} else if (attribute.equalsIgnoreCase(PROPERTY_NAME)) {
+			return getName();
+		}
 		return null;
 	}
 
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
+		if (attribute.equalsIgnoreCase(PROPERTY_BOLD)) {
+			withBold((Boolean) value);
+			return true;
+		} else if (attribute.equalsIgnoreCase(PROPERTY_ITALIC)) {
+			withItalic((Boolean) value);
+			return true;
+		} else if (attribute.equalsIgnoreCase(PROPERTY_FONTFAMILY)) {
+			withFontFamily((String) value);
+			return true;
+		} else if (attribute.equalsIgnoreCase(PROPERTY_FONTSIZE)) {
+			withFontSize(value.toString());
+			return true;
+		} else if (attribute.equalsIgnoreCase(PROPERTY_FORGROUND)) {
+			withForground((String) value);
+			return true;
+		} else if (attribute.equalsIgnoreCase(PROPERTY_BACKGROUND)) {
+			withBackground((String) value);
+			return true;
+		} else if (attribute.equalsIgnoreCase(PROPERTY_UNDERLINE)) {
+			withUnderline((Boolean) value);
+			return true;
+		} else if (attribute.equalsIgnoreCase(PROPERTY_ALIGNMENT)) {
+			withAlignment((String) value);
+			return true;
+		} else if (attribute.equalsIgnoreCase(PROPERTY_WIDTH)) {
+			withWidth(Double.valueOf("" + value));
+			return true;
+		} else if (attribute.equalsIgnoreCase(PROPERTY_HEIGHT)) {
+			withHeight(Double.valueOf("" + value));
+			return true;
+		} else if (attribute.equalsIgnoreCase(PROPERTY_NAME)) {
+			withName(""+value);
+			return true;
+		}
 		return false;
 	}
 
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new Style();
+	}
+
+	public String getName() {
+		return name;
+	}
+	public Style withName(String name) {
+		this.name = name;
+		return this;
 	}
 }
