@@ -322,13 +322,13 @@ public class FXStageController implements StageEvent, WindowListener {
 			newPane = new CustomPane(value);
 		}
 
+		this.withPane(newPane);
 		if (value instanceof StageEvent) {
 			Stage myStage = getStage();
 			((StageEvent) value).stageShowing(new WindowEvent(myStage,
 					WindowEvent.WINDOW_SHOWING), myStage, this);
 		}
 
-		this.withPane(newPane);
 		this.show();
 		close(oldStage);
 		return stage;

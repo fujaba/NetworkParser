@@ -40,7 +40,7 @@ public class XMLTokener extends Tokener {
 	/** The stack. */
 	private ArrayList<ReferenceObject> stack = new ArrayList<ReferenceObject>();
 	/** Variable of AllowQuote. */
-	private int isAllowQuote = -1;
+	private boolean isAllowQuote;
 
 	/** The prefix. */
 	private String prefix;
@@ -59,7 +59,7 @@ public class XMLTokener extends Tokener {
 	 * @return An object.
 	 */
 	@Override
-	public Object nextValue(BaseItem creator, int allowQuote, char c) {
+	public Object nextValue(BaseItem creator, boolean allowQuote, char c) {
 		switch (c) {
 		case '"':
 		case '\'':
@@ -136,8 +136,7 @@ public class XMLTokener extends Tokener {
 					return;
 				}
 				if (c != '<') {
-					xmlEntity.withValueItem(nextString('<', false, -1,
-							false, false));
+					xmlEntity.withValueItem(nextString('<', false, false, false, false));
 					continue;
 				}
 			}
@@ -152,15 +151,14 @@ public class XMLTokener extends Tokener {
 						parseToEntity(child);
 						xmlEntity.addChild(child);
 					} else {
-						xmlEntity.withValueItem(nextString('<', false, -1,
-								false, false));
+						xmlEntity.withValueItem(nextString('<', false, false, false, false));
 					}
 				}
 			} else if (c == '/') {
 				next();
 				break;
 			} else {
-				String key = nextValue(xmlEntity, -1, c).toString();
+				String key = nextValue(xmlEntity, false, c).toString();
 				if (key.length() > 0) {
 					xmlEntity.put(key,
 							nextValue(xmlEntity, isAllowQuote, nextClean()));
@@ -258,11 +256,7 @@ public class XMLTokener extends Tokener {
 	 * @return XMLTokener Instance
 	 */
 	public XMLTokener withAllowQuote(boolean value) {
-		if(value) {
-			this.isAllowQuote = 0;
-		}else{
-			this.isAllowQuote = -1;
-		}
+		this.isAllowQuote = value;
 		return this;
 	}
 }

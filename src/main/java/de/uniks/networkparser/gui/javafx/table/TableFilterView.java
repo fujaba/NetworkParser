@@ -101,21 +101,25 @@ public class TableFilterView implements ChangeListener<String>{
 
 	public void refreshSearch(){
 		List<Object> resultList = component.getItems();
-		for(Iterator<Object> iterator = resultList.iterator();iterator.hasNext();){
-			if(!matchesSearchCriteria( iterator.next() )){
-				iterator.remove();
+		try {
+			for(Iterator<Object> iterator = resultList.iterator();iterator.hasNext();){
+				if(!matchesSearchCriteria( iterator.next() )){
+					iterator.remove();
+				}
 			}
-		}
-		if(!lastSearchDetails){
-			// and now the other way round
-			for(Iterator<Object> iterator = sourceFullList.iterator();iterator.hasNext();){
-				Object item = iterator.next();
-				if (!resultList.contains(item)) {
-					if (matchesSearchCriteria(item)) {
-						resultList.add(item);
+			if(!lastSearchDetails){
+				// and now the other way round
+				for(Iterator<Object> iterator = sourceFullList.iterator();iterator.hasNext();){
+					Object item = iterator.next();
+					if (!resultList.contains(item)) {
+						if (matchesSearchCriteria(item)) {
+							resultList.add(item);
+						}
 					}
 				}
 			}
+		}catch(Exception e) {
+			
 		}
 	}
 

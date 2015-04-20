@@ -1,5 +1,6 @@
 package de.uniks.networkparser.xml;
 
+import de.uniks.networkparser.IdMap;
 /*
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
@@ -63,7 +64,7 @@ public class XMLStyledEntity extends XMLEntity {
 	 * @return succes of set of the Value
 	 */
 	public boolean set(String attribute, Object value) {
-		if (style.set(attribute, value)) {
+		if (style.setValue(style, attribute, value, IdMap.NEW)) {
 			return true;
 		}
 		return false;
@@ -77,7 +78,7 @@ public class XMLStyledEntity extends XMLEntity {
 	 * @return The Value of Attribute
 	 */
 	public Object get(String key) {
-		Object attrValue = style.get(key);
+		Object attrValue = style.getValue(style, key);
 		if (attrValue != null) {
 			return attrValue;
 		}
