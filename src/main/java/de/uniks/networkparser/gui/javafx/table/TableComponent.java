@@ -508,6 +508,10 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		if (this.source.equals(event.getSource())) {
 			if (event.getOldValue() == null && event.getNewValue() != null && event.getPropertyName().equals(property)) {
 				addItem(event.getNewValue());
+			} else if(event.getOldValue() != null && event.getNewValue() == null && event.getPropertyName().equals(property)) {
+			    
+			    removeItem(event.getOldValue());
+			    
 			}
 		}else{
 			// refresh Item
