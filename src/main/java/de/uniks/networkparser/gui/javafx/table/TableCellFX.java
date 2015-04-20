@@ -55,13 +55,10 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 	@Override
 	public TableCellFX withColumn(Column column) {
 		this.field = column;
-		if(this.field.getStyle() instanceof StyleFX){
-			StyleFX style = (StyleFX) this.field.getStyle();
-			if(style.getName() != null) {
-				this.getStyleClass().add(style.getName());
-			}else {
-				this.setStyle(this.field.getStyle().toString());
-			}
+		if(this.field.getStyle().getName() != null) {
+			this.getStyleClass().add(this.field.getStyle().getName());
+		}else if(this.field.getStyle() instanceof StyleFX){
+			this.setStyle(this.field.getStyle().toString());
 		}
 		if(this.field.isListener()){
 			this.setCursor(Cursor.HAND);
