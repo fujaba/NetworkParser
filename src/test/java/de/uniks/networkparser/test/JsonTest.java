@@ -503,7 +503,7 @@ public class JsonTest extends IOClasses{
 		String msg = jsonObject.toString();
 		System.out.println(msg);
 		
-		String reference="{\"class\":\"de.uniks.networkparser.test.model.StringMessage\",\"id\":\"J1.S1\",\"prop\":{\"value\":\"C:\\TEST\\MY\\WORLD.TXT\"}}";
+		String reference="{\"class\":\"de.uniks.networkparser.test.model.StringMessage\",\"id\":\"J1.S1\",\"prop\":{\"value\":\"C:\\\\TEST\\\\MY\\\\WORLD.TXT\"}}";
 
 		Assert.assertEquals(reference, msg);
 		
@@ -620,11 +620,10 @@ public class JsonTest extends IOClasses{
 		String itemString = item.toString();
 		System.out.println(itemString);
 		
-		//FIXME STefan
-//		JsonObject newItem = new JsonObject().withValue(itemString);
-//		String newItemString = newItem.getString("item");
-//		JsonObject newSubItem = new JsonObject().withValue(newItemString);
-//		System.out.println(newSubItem);
+		JsonObject newItem = new JsonObject().withValue(itemString);
+		String newItemString = newItem.getString("item");
+		JsonObject newSubItem = new JsonObject().withValue(newItemString);
+		System.out.println(newSubItem);
 		
 
 		

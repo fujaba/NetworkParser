@@ -64,10 +64,25 @@ public abstract class SimpleShell extends Application {
 	
    @Override
    public void start(Stage primaryStage) throws Exception {
-	   System.out.println("Start");
 	   List<String> raw = getParameters().getRaw();
 	   String debugPort = null;
-	   boolean isWaitFor=false;
+	   String outputRedirect=null;
+
+		try {
+			if (getDefaultString() != null
+					&& !getDefaultString().equalsIgnoreCase(
+							System.getProperty("file.encoding"))) {
+				System.setProperty("file.encoding", getDefaultString());
+				Class<Charset> c = Charset.class;
+
+				java.lang.reflect.Field defaultCharsetField = c
+						.getDeclaredField("defaultCharset");
+				defaultCharsetField.setAccessible(true);
+				defaultCharsetField.set(null, null);
+			}
+		} catch (Exception e) {
+		}
+	   
 	   for(String item : raw) {
 		   if(item.startsWith("--")) {
 			   item = item.substring(2);
@@ -87,9 +102,20 @@ public abstract class SimpleShell extends Application {
 			   value = null;
 		   }
 		   if (key.equalsIgnoreCase("debug")) {
-			   debugPort = value;
-		   }else if (key.equalsIgnoreCase("waitfor")) {
-				isWaitFor = true;
+			   if(value != null) {
+				   debugPort = value;
+			   }else{
+				   debugPort = "4223";
+			   }
+		   }else if (key.equalsIgnoreCase("output")) {
+			   if(value == null) {
+				   outputRedirect = "INHERIT";
+			   }else {
+				   outputRedirect = value;
+			   }
+		   } else if(key.equalsIgnoreCase("-?")) {
+			   System.out.println(getCommandHelp());
+			   System.exit(0);
 		   }
 		}
 
@@ -108,79 +134,33 @@ public abstract class SimpleShell extends Application {
 			items.add(fileName);
 
 			ProcessBuilder processBuilder = new ProcessBuilder( items );
-			if(isWaitFor) {
-				processBuilder.redirectErrorStream(true);
-				processBuilder.redirectOutput(Redirect.INHERIT);
+			if(outputRedirect != null) {
+				if(outputRedirect.equalsIgnoreCase("inherit")) {
+					processBuilder.redirectErrorStream(true);
+					processBuilder.redirectOutput(Redirect.INHERIT);
+				} else {
+					int pos=outputRedirect.lastIndexOf(".");
+					if(pos>0) {
+						processBuilder.redirectError(new File(outputRedirect.substring(0, pos)+"_error"+outputRedirect.substring(pos)));
+						processBuilder.redirectOutput(new File(outputRedirect.substring(0, pos)+"_stdout"+outputRedirect.substring(pos)));
+					} else {
+						processBuilder.redirectError(new File(outputRedirect+"_error.txt"));
+						processBuilder.redirectOutput(new File(outputRedirect+"_stdout.txt"));
+					}
+				}
 			}
 			Process process = processBuilder.start();
-			if(isWaitFor) {
-				process.waitFor();
-//				OutPutStream std = new OutPutStream(process.getInputStream (), "Stdout");
-//				std.start();
-//
-//				OutPutStream error = new OutPutStream(process.getErrorStream(), "Error");
-//				error.start();
-//
-//				System.out.println("RETURN VALUE: "+process.waitFor());
-//				
-//				std.cancel();
-//				error.cancel();
-			}
+//			if(outputRedirect != null) {
+//				int waitFor = process.waitFor();
+//				System.out.println("Resultstatus: "+waitFor);
+//			}
 			System.exit(0);
 	   }
 //		long mbMemory = ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getTotalPhysicalMemorySize()/(1014*1024);
 //		System.out.println("Total:"+ ((com.sun.management.OperatingSystemMXBean)ManagementFactory.getOperatingSystemMXBean()).getTotalPhysicalMemorySize());
 //		params.put("-Xmx", "-Xmx"+mbMemory/4+"m");
 //		System.out.println("Set MaxMemory: "+mbMemory/4+"m");
-//
-//		if (args == null || args.length < 1) {
-//			for(;start<args.length;start++){
-//				boolean found = false;
-//				for(Iterator<Entry<String, String>> iterator = params.entrySet().iterator();iterator.hasNext();){
-//					Entry<String, String> item = iterator.next();
-//					if(args[start].startsWith(item.getKey())){
-//						System.out.println("Change value from "+item.getKey()+" to "+args[start]);
-//						params.put(item.getKey(), args[start]);
-//						found=true;
-//						break;
-//					}
-//				}
-//				if(!found){
-//					System.out.println("Add value "+args[start]);
-//					params.put(args[start], args[start]);
-//				}
-//			}
-//		}
-//		
-//		try {
-//			ArrayList<String> items = new ArrayList<String>(params.values());
-//			for(String item : items){
-//				System.out.println("PARAM: "+item);
-//			}
-//			ProcessBuilder processBuilder = new ProcessBuilder( items );
-//			Process process = processBuilder.start();
-//			if(DEBUG.equals(typ)){
-//				OutPutStream std = new OutPutStream(process.getInputStream (), "Stdout");
-//				std.start();
-//
-//				OutPutStream error = new OutPutStream(process.getErrorStream(), "Error");
-//				error.start();
-//
-//				System.out.println("RETURN VALUE: "+process.waitFor());
-//				
-//				std.cancel();
-//				error.cancel();
-//			}
-	   
 	   try{
-		   if(getDefaultString()!=null && !getDefaultString().equalsIgnoreCase(System.getProperty("file.encoding"))){
-			   System.setProperty("file.encoding", getDefaultString());
-			   Class<Charset> c = Charset.class;
-			   
-			   java.lang.reflect.Field defaultCharsetField = c.getDeclaredField("defaultCharset");
-			   defaultCharsetField.setAccessible(true);
-			   defaultCharsetField.set(null, null);
-		   }
 		   this.controller = new FXStageController(primaryStage);
 		   Pane pane = createContents( this.controller , this.getParameters());
 		   this.controller.withCenter( pane );
@@ -192,6 +172,19 @@ public abstract class SimpleShell extends Application {
 		   }
 	   }
    }
+
+	protected String getCommandHelp(){
+		StringBuilder sb=new StringBuilder();
+		sb.append("Help for the Commandline - ");
+		sb.append(getCaption());
+		sb.append("\n\n");
+		
+		sb.append("Debug\t\tDebug with <port> for debugging. Default is 4223\n");
+		sb.append("Output\t\tOutput the debug output in standard-outputstream or file\n");
+		
+		
+		return sb.toString();
+	}
    
    protected String getDefaultString(){
 	   return "UTF-8";
@@ -334,183 +327,5 @@ public abstract class SimpleShell extends Application {
 
 		return result;
 	}
-	
-
-		
-//	protected String getCommandHelp(){
-//		return "Help for the Commandline - "+ getCaption()+"\n\n";
-//	}
-//	
-//	public static final void startSecond(String[] args, MasterShell shell){
-//		Os os = new Os();
-//		String typ;
-//		String fileName = os.getFilename().toLowerCase();
-//		
-//		// NOT Eclipse and not UTF-8
-//		// try to load data from config file
-//		if (args == null || args.length < 1) {
-//			if (os.isMac()) {
-//				typ = SECOND_MAC;
-//			} else {
-//				typ = SECOND;
-//			}
-//		}else{
-//			typ = args[0];
-//		}
-//		System.out.println("TYP:"+typ);
-//
-//		if ("-?".equalsIgnoreCase(typ)) {
-//			if(shell!=null){
-//				shell.getCommandHelp();
-//			}
-//			return;
-//		}
-//
-//		LinkedHashMap<String, String>  params=new LinkedHashMap<String, String>();
-//		int start=0;
-//		if(os.isMac()){
-//			params.put("PATH", System.getProperty("java.home").replace("\\", "/")+ "/bin/java");
-//		}else{
-//			params.put("PATH", "\""+ System.getProperty("java.home").replace("\\", "/")+ "/bin/java\"");
-//		}
-//		params.put("-Dfile.encoding", "-Dfile.encoding=UTF8");
-//
-//		if (DEBUG.equalsIgnoreCase(typ)) {
-//			System.out.println("DEBUG-MODE: Port 4223");
-//			params.put("-Xdebug", "-Xdebug");
-//			params.put("-Xrunjdwp", "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=4223");
-//			start=1;
-//		} else if (SECOND.equalsIgnoreCase(typ)) {
-//			System.out.println("STANDARD-MODE");
-//			start=1;
-//		} else if (SECOND_MAC.equalsIgnoreCase(typ)) {
-//			System.out.println("STANDARD-MODE-MAC");
-//			params.put("-XstartOnFirstThread", "-XstartOnFirstThread");
-//			start=1;
-//		}
-//		
-//		long mbMemory = ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getTotalPhysicalMemorySize()/(1014*1024);
-//		System.out.println("Total:"+ ((com.sun.management.OperatingSystemMXBean)ManagementFactory.getOperatingSystemMXBean()).getTotalPhysicalMemorySize());
-//		params.put("-Xmx", "-Xmx"+mbMemory/4+"m");
-//		System.out.println("Set MaxMemory: "+mbMemory/4+"m");
-//
-//		params.put("-jar", "-jar");
-//		params.put("FILE", fileName);
-//
-//		
-//		if (args == null || args.length < 1) {
-//			for(;start<args.length;start++){
-//				boolean found = false;
-//				for(Iterator<Entry<String, String>> iterator = params.entrySet().iterator();iterator.hasNext();){
-//					Entry<String, String> item = iterator.next();
-//					if(args[start].startsWith(item.getKey())){
-//						System.out.println("Change value from "+item.getKey()+" to "+args[start]);
-//						params.put(item.getKey(), args[start]);
-//						found=true;
-//						break;
-//					}
-//				}
-//				if(!found){
-//					System.out.println("Add value "+args[start]);
-//					params.put(args[start], args[start]);
-//				}
-//			}
-//		}
-//		
-//		try {
-//			ArrayList<String> items = new ArrayList<String>(params.values());
-//			for(String item : items){
-//				System.out.println("PARAM: "+item);
-//			}
-//			ProcessBuilder processBuilder = new ProcessBuilder( items );
-//			Process process = processBuilder.start();
-//			if(DEBUG.equals(typ)){
-//				OutPutStream std = new OutPutStream(process.getInputStream (), "Stdout");
-//				std.start();
-//
-//				OutPutStream error = new OutPutStream(process.getErrorStream(), "Error");
-//				error.start();
-//
-//				System.out.println("RETURN VALUE: "+process.waitFor());
-//				
-//				std.cancel();
-//				error.cancel();
-//			}
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
-//		System.out.println("EXIT");
-//	}
-//	
-//	public boolean openSecond(String[] args){
-//		Os os = new Os();
-//		String fileName = os.getFilename().toLowerCase();
-//
-//		if (!fileName.endsWith(".jar") && !fileName.endsWith(".exe")){
-//			// ECLIPSE
-//			System.out.println("MAY BE ECLIPSE");
-//			initShell();
-//		}else if(os.isUTF8()){
-//			System.out.println("FOUND UTF-8");
-//		}else{
-//			MasterShell.startSecond(args, this);
-//			return false;
-//		}
-//		
-//		initFromParams(args);
-//		
-//		// Everything ok
-//		Display display = Display.getDefault();
-//				
-//		display.syncExec(new Runnable() {
-//			@Override
-//			public void run() {
-//				MasterShell.this.open();
-//			}
-//		});
-//		return true;
-//	}
-//	
-//	public void initFromParams(String[] params){
-//		
-//	}
-//
-//	public void open() {
-//		open(!os.isEclipse());
-//	}
-//	
-//	protected void preOpen() {
-//	}
-//	public void open(boolean catchError) {
-//		try {
-//			if(isInit){
-//				return;
-//			}
-//			createContents();
-//			isInit=true;
-//			if (isDisposed()) {
-//				return;
-//			}
-//			super.open();
-//			
-//			preOpen();
-//		
-//			layout();
-//			while (!isDisposed()) {
-//				if (!getDisplay().readAndDispatch()) {
-//					getDisplay().sleep();
-//					refreshGUI();
-//				}
-//			}
-//		} catch (Exception e) {
-//			catchError=true;
-//			if (!catchError) {
-//				throw new RuntimeException(e);
-//			}
-//			saveException(e, true, null);
-//		}
-//	}
 }
 

@@ -94,10 +94,16 @@ public class EntityUtil {
 		}
 		StringBuilder sb = new StringBuilder(value.length());
 		char c;
-		for (int i = 0; i < value.length(); i++) {
+		int i = 0;
+		int len = value.length();
+		if(value.charAt(0)=='\"'){
+			i++;
+			len--;
+		}
+		for (; i < len; i++) {
 			c = value.charAt(i);
 			if (c == '\\') {
-				if (i + 1 == value.length()) {
+				if (i + 1 == len) {
 					sb.append('\\');
 					break;
 				}
@@ -107,7 +113,7 @@ public class EntityUtil {
 							value.charAt(++i), value.charAt(++i));
 					sb.append((char) no);
 					continue;
-				} else if (c == '"') {
+				} else if (c == '"' || c == '\\') {
 					// remove the backslash
 				} else {
 					sb.append('\\');
@@ -173,12 +179,17 @@ public class EntityUtil {
 		int i;
 		int len = string.length();
 		StringBuilder sb = new StringBuilder(len + 4);
-		char b = 0, c;
+//		char b = 0, c;
+		char c;
 		String hhhh;
 		sb.append('"');
 		for (i = 0; i < len; i += 1) {
 			c = string.charAt(i);
-			if (c == '"' && b != '\\') {
+			if (c == '\\') {
+				sb.append("\\\\");
+				continue;
+			}
+			if (c == '"' ) {
 				sb.append("\\\"");
 				continue;
 			}
@@ -189,7 +200,7 @@ public class EntityUtil {
 			} else {
 				sb.append(c);
 			}
-			b = c;
+//			b = c;
 		}
 		sb.append('"');
 		return sb.toString();
@@ -278,7 +289,6 @@ public class EntityUtil {
 		if (value instanceof AbstractArray<?>) {
 			return ((AbstractArray<?>) value).toString();
 		}
-//FIXME MAP
 		if (value instanceof Collection) {
 			return reference.getNewList(false).withAll(
 			(Collection<?>) value).toString();
@@ -287,23 +297,6 @@ public class EntityUtil {
 			return reference.getNewList(false).withAll(
 			(Map<?, ?>) value).toString();
 		}
-			//		if (value instanceof Map) {
-//			BaseItem newList = reference.getNewList();
-//			if(newList instanceof SimpleKeyValueList<?, ?>) {
-//				return ((SimpleKeyValueList<?, ?>) newList).withMap(
-//						(Map<?, ?>) value).toString();
-//			}
-//		}
-//		if (value instanceof Collection) {
-//			BaseItem newList = reference.getNewList();
-//			if(newList instanceof SimpleKeyValueList<?,?>) {
-//				return ((SimpleKeyValueList<?,?>) newList).withList((Map<?, ?>) value).toString();
-//			}
-//		}
-//		if (value.getClass().isArray()) {
-//			return ((AbstractList<?>) reference.getNewList()).withAll(value)
-//					.toString();
-//		}
 		if (simpleText) {
 			return value.toString();
 		}

@@ -32,6 +32,7 @@ public class StyleFX extends Style{
 	public static final String PROPERTY_CURSOR="cursor";
 	private String cursor;
 
+
 	public String getCursor() {
 		return cursor;
 	}
