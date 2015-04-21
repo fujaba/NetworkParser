@@ -23,6 +23,7 @@ package de.uniks.networkparser.xml;
  */
 import java.util.ArrayList;
 
+import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.ReferenceObject;
 import de.uniks.networkparser.Tokener;
@@ -64,7 +65,9 @@ public class XMLTokener extends Tokener {
 		case '"':
 		case '\'':
 			next();
-			return nextString(c, false, allowQuote, false, true);
+			String v = nextString(c, false, allowQuote, false, true);
+			String g = EntityUtil.unQuote(v); 
+			return g;
 		case '<':
 			back();
 			BaseItem element = creator.getNewList(false);
@@ -160,7 +163,7 @@ public class XMLTokener extends Tokener {
 			} else {
 				String key = nextValue(xmlEntity, false, c).toString();
 				if (key.length() > 0) {
-					xmlEntity.put(key,
+					xmlEntity.put(key, 
 							nextValue(xmlEntity, isAllowQuote, nextClean()));
 				}
 			}
