@@ -14,7 +14,7 @@ public class FileTest {
 	@Test
 	public void fileWriterXM() throws IOException{
 		XMLEntity xmlEntity = new XMLEntity().withValue("<chatmsg folder=\"C:\\temp\\\\\" />");
-		assertEquals("C:\\temp\\\\", xmlEntity.get("folder"));
+		assertEquals("C:\\temp\\", xmlEntity.get("folder"));
 		File file = new File("build/test.txt");
 		file.getParentFile().mkdirs();
 		FileWriter fileWriter = new FileWriter(file);
