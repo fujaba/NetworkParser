@@ -921,7 +921,7 @@ Graph.prototype.Save = function (typ, data, name) {
 Graph.prototype.ExportHTML = function () {
 	var json = this.model.toJson();
 	var data="<html><head>"+document.head.innerHTML.trim()+"</head><body><script>"
-		+"new Graph("+JSON.stringify(json, null, "\t") +").layout();</script></body></html>";
+		+"new Graph("+JSON.stringify(json, null, "\t") +").layout();<"+"/script></body></html>";
 	this.Save("text/json", data, "download.html");
 };
 //				######################################################### GraphLayout-Dagre #########################################################
@@ -1593,6 +1593,9 @@ ClassEditor.prototype.generate = function() {
 	var data = JSON.stringify(result, null, "\t");
 	java.generate( data );
 };
+ClassEditor.prototype.close = function() {
+	java.exit();
+};
 ClassEditor.prototype.loadModel= function(model, file) {
 	this.model = model;
 	var i;
@@ -1649,6 +1652,7 @@ ClassEditor.prototype.maxToolbar = function() {
 	this.create({tag:'button', _parent:cell, style:"margin-left:10px;", value:"Save", onClick:function(){that.save();}});
 	if(typeof(java)!="undefined") {
 		this.create({tag:'button', _parent:cell, style:"margin-left:10px;", value:"Generate", onClick:function(){that.generate();}});
+		this.create({tag:'button', _parent:cell, style:"margin-left:10px;", value:"Exit", onClick:function(){that.close();}});
 	}
 };
 ClassEditor.prototype.createInputField = function(option){
