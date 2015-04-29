@@ -1460,7 +1460,7 @@ RGBColor.prototype.toHex = function () {
 
 
 // Validate input
-
+// TODO
 // Create Assocs
 // Edit Assocs
 // Delete Assocs
@@ -2249,6 +2249,8 @@ EditNode.prototype.change = function(e, control) {
 				break;
 			}
 		}
+	} else if(control.typ=="info" ) {
+		node.model["property"] = value;
 	}
 	control.innerHTML = value;
 };

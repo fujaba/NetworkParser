@@ -5,73 +5,74 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.MalformedURLException;
 
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.json.JsonObject;
-import javafx.application.Application;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker;
 import javafx.concurrent.Worker.State;
-import javafx.scene.Scene;
-import javafx.scene.paint.Color;
+import javafx.scene.Parent;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-import javafx.stage.Stage;
 import netscape.javascript.JSObject;
 
-public class DiagramEditor extends Application {
+public class DiagramEditor extends SimpleShell {
 	private final String CRLF="\r\n";
-    private Scene scene;
 	private WebView browser;
 	private WebEngine webEngine;
  
-    @Override
-    public void start(Stage stage) throws MalformedURLException {
-        // create scene
-        stage.setTitle("ClassdiagrammEditor");
+	@Override
+	protected Parent createContents(FXStageController controller, Parameters args) {
+		controller.withTitle("ClassdiagrammEditor");
+		controller.withSize(900, 600);
+		
+		this.enableError("errors");
+		
         browser = new WebView();
         webEngine = browser.getEngine();
         
-        scene = new Scene(browser, 900, 600, Color.web("#666970"));
-        stage.setScene(scene);
-        
-//        copyFile("drawer.js");
-//        copyFile("graph.js");
-//        copyFile("diagramstyle.css");
-//        copyFile("Editor.html");
-//        URL resource = new File("Editor.html").toURL();
-//        webEngine.load(resource.toString());
-
+        SimpleKeyValueList<String, String> map = getParameterMap();
         StringBuilder content=new StringBuilder("<html><head>"+CRLF);
         
-        // Add external Files 
-        content.append(readFile("drawer.js"));
-        content.append(readFile("graph.js"));
-        content.append(readFile("diagramstyle.css"));
-
-        content.append("</head><body>"+CRLF);
-        content.append("<script language=\"Javascript\">"+CRLF);
-        content.append("new ClassEditor(\"board\");"+CRLF);
-        content.append("</script></body></html>");
-        webEngine.loadContent(content.toString());
-//        System.out.println(content.toString());
-//        writeFile("Editor.html", content.toString());
-        
-        webEngine.getLoadWorker().stateProperty().addListener(new ChangeListener<State>() {
+        String body = "</head><body>"+CRLF + "<script language=\"Javascript\">new ClassEditor(\"board\");</script></body></html>"; 
+        if(map.containsKey("export")) {
+        	content.append("<script src=\"drawer.js\"></script>"+CRLF);
+        	content.append("<script src=\"graph.js\"></script>"+CRLF);
+        	content.append("<link href=\"diagramstyle.css\" rel=\"stylesheet\" type=\"text/css\">"+CRLF);
+        	content.append(body);
+        	copyFile("drawer.js");
+            copyFile("graph.js");
+            copyFile("diagramstyle.css");
+            writeFile("Editor.html", content.toString());
+            try {
+				webEngine.load(new File("Editor.html").toURI().toURL().toString());
+			} catch (MalformedURLException e) {
+			}
+        }else {
+        	// Add external Files 
+        	content.append(readFile("drawer.js"));
+        	content.append(readFile("graph.js"));
+        	content.append(readFile("diagramstyle.css"));
+        	content.append(body);
+            webEngine.loadContent(content.toString());
+        }
+      webEngine.getLoadWorker().stateProperty().addListener(new ChangeListener<State>() {
 			@Override
 			public void changed(ObservableValue<? extends State> observable, State oldValue, State newValue) {
 				if (newValue == Worker.State.SUCCEEDED) {
-	                  System.out.println("called: "+webEngine.getLocation());
-                  JSObject win = (JSObject) webEngine.executeScript("window");
-                  win.setMember("java", new JavaApp(DiagramEditor.this));
-              }				
+					System.out.println("called: " + webEngine.getLocation());
+					JSObject win = (JSObject) webEngine.executeScript("window");
+					win.setMember("java", new JavaApp(DiagramEditor.this));
+				}
 			}
-          });
-        stage.show();
-    }
+        });
+		return browser;
+	}
     
     protected void writeFile(String file, String content) {
     	File target=new File(file);
@@ -155,20 +156,6 @@ public class DiagramEditor extends Application {
 	}
 	
 	public void generate(JsonObject model) {
-//		JsonObject model=new JsonObject().withValue((String)value);
-//    	JsonArray nodes = model.getJsonArray("nodes");
-//    	 ClassModel classModel=new ClassModel(model.getString("package"));
-//    	 for(Iterator<Object> i = nodes.iterator();i.hasNext();){
-//    		 Object item = i.next();
-//    		 if(item instanceof JsonObject) {
-//    			 JsonObject node = (JsonObject) item;
-//            	 classModel.createClazz(node.getString("id"));
-//            	 JsonArray attributes = node.getJsonArray("attributes");
-//            	 
-//    		 }
-//    	 }
-//    	 
-//    	 classModel.generate("gen");
 	}
 	
 	public class JavaApp {
@@ -183,7 +170,20 @@ public class DiagramEditor extends Application {
         }
         
         public void generate(Object value) {
-        	this.owner.generate(new JsonObject().withValue((String)value));
+        	try {
+        		Thread.currentThread().setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+    				public void uncaughtException(Thread t, Throwable e) {
+    					JavaApp.this.owner.saveException(e);
+    				}
+    			});
+        		this.owner.generate(new JsonObject().withValue((String)value));
+        	}catch(RuntimeException e){
+				this.owner.saveException(e);
+			}catch(Exception e){
+				this.owner.saveException(e);
+			}catch(Throwable e){
+				this.owner.saveException(e);
+			}
         }
     }
 }

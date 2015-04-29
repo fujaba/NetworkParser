@@ -58,7 +58,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import de.uniks.networkparser.DefaultTextItems;
 import de.uniks.networkparser.Filter;
-import de.uniks.networkparser.IdMapEncoder;
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.TextItems;
 import de.uniks.networkparser.event.Style;
 import de.uniks.networkparser.gui.Column;
@@ -94,7 +94,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	private BorderPane northComponents;
 	private TextField searchText;
 	
-	public IdMapEncoder getMap() {
+	public IdMap getMap() {
 		return map;
 	}
 	
@@ -378,7 +378,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 			removed = items.remove(item);
 		}
 		if (removed) {
-			sourceCreator.setValue(source, property, item, IdMapEncoder.REMOVE);
+			sourceCreator.setValue(source, property, item, IdMap.REMOVE);
 			this.removeUpdateListener(item);
 			if (getParent() instanceof PropertyChangeListener) {
 				((PropertyChangeListener) getParent())

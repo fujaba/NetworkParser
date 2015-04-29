@@ -23,11 +23,12 @@ package de.uniks.networkparser.xml;
  */
 import java.util.ArrayList;
 import java.util.Collection;
+
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.ReferenceObject;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.IdMapDecoder;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorXML;
 import de.uniks.networkparser.xml.util.XMLGrammar;
@@ -38,7 +39,7 @@ import de.uniks.networkparser.xml.util.XSDEntityCreator;
  *
  * @author Stefan Lindel
  */
-public class XMLSimpleIdMap extends IdMap {
+public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
 	/** The Constant ENDTAG. */
 	public static final char ENDTAG = '/';
 
@@ -215,7 +216,7 @@ public class XMLSimpleIdMap extends IdMap {
 							String value = tokener.substring(start, -1);
 							tokener.next();
 							grammar.setValue(entity, key, value,
-									IdMapEncoder.NEW);
+									IdMap.NEW);
 						}
 					}
 				} else {

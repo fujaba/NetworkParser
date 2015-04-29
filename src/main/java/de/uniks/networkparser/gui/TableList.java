@@ -27,7 +27,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 
 import de.uniks.networkparser.EntityValueFactory;
-import de.uniks.networkparser.IdMapEncoder;
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SortedList;
@@ -61,13 +61,13 @@ public class TableList extends SortedList<Object> implements
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
-		if (IdMapEncoder.REMOVE.equalsIgnoreCase(type)) {
-			attribute += IdMapEncoder.REMOVE;
+		if (IdMap.REMOVE.equalsIgnoreCase(type)) {
+			attribute += IdMap.REMOVE;
 		}
 		return ((TableList) entity).setValue(attribute, value);
 	}
 
-	public boolean setIdMap(IdMapEncoder map) {
+	public boolean setIdMap(IdMap map) {
 		if(!isComparator() ) {
 			return false;
 		}
@@ -81,7 +81,7 @@ public class TableList extends SortedList<Object> implements
 		if (PROPERTY_ITEMS.equalsIgnoreCase(attrName)) {
 			add(value);
 			return true;
-		} else if ((PROPERTY_ITEMS + IdMapEncoder.REMOVE)
+		} else if ((PROPERTY_ITEMS + IdMap.REMOVE)
 				.equalsIgnoreCase(attrName)) {
 			remove(value);
 			return true;
@@ -166,7 +166,7 @@ public class TableList extends SortedList<Object> implements
 		if (comparator == null) {
 			return null;
 		}
-		IdMapEncoder map = comparator.getMap();
+		IdMap map = comparator.getMap();
 		Iterator<Object> iterator = iterator();
 		SendableEntityCreator creator = null;
 		if (iterator.hasNext()) {

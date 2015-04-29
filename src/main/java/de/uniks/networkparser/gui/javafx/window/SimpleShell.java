@@ -37,6 +37,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.ProcessBuilder.Redirect;
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.management.ManagementFactory;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -46,171 +47,177 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import javafx.application.Application;
-import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
 import de.uniks.networkparser.gui.javafx.Os;
+import de.uniks.networkparser.list.SimpleKeyValueList;
+import javafx.application.Application;
+import javafx.scene.Parent;
+import javafx.stage.Stage;
 
 public abstract class SimpleShell extends Application {
 	protected String icon;
-	protected String errorPath;
+	private String errorPath;
 	protected FXStageController controller;
-	
-	protected abstract Pane createContents(FXStageController value, Parameters args);
-	
+
+	protected abstract Parent createContents(FXStageController value, Parameters args);
+
 	public void closeWindow() {
 		this.controller.close();
 	}
-	
-   @Override
-   public void start(Stage primaryStage) throws Exception {
-	   List<String> raw = getParameters().getRaw();
-	   String debugPort = null;
-	   String outputRedirect=null;
 
+	public SimpleKeyValueList<String, String> getParameterMap() {
+		SimpleKeyValueList<String, String> map = new SimpleKeyValueList<String, String>();
+		List<String> raw = getParameters().getRaw();
+		for (String item : raw) {
+			if (item.startsWith("--")) {
+				item = item.substring(2);
+			}
+			int pos = item.indexOf(":");
+			int posEnter = item.indexOf("=");
+			if (posEnter > 0 && (posEnter < pos || pos == -1)) {
+				pos = posEnter;
+			}
+			if (pos > 0) {
+				map.add(item.substring(0, pos), item.substring(pos + 1));
+			} else {
+				map.add(item, null);
+			}
+		}
+		return map;
+	}
+
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+
+		String debugPort = null;
+		String outputRedirect = null;
 		try {
 			if (getDefaultString() != null
-					&& !getDefaultString().equalsIgnoreCase(
-							System.getProperty("file.encoding"))) {
+					&& !getDefaultString().equalsIgnoreCase(System.getProperty("file.encoding"))) {
 				System.setProperty("file.encoding", getDefaultString());
 				Class<Charset> c = Charset.class;
 
-				java.lang.reflect.Field defaultCharsetField = c
-						.getDeclaredField("defaultCharset");
+				java.lang.reflect.Field defaultCharsetField = c.getDeclaredField("defaultCharset");
 				defaultCharsetField.setAccessible(true);
 				defaultCharsetField.set(null, null);
 			}
 		} catch (Exception e) {
 		}
-	   
-	   for(String item : raw) {
-		   if(item.startsWith("--")) {
-			   item = item.substring(2);
-		   }
-		   int pos=item.indexOf(":");
-		   int posEnter = item.indexOf("=");
-		   if(posEnter>0 && (posEnter < pos || pos==-1)) {
-			   pos = posEnter;
-		   }
-		   String key;
-		   String value;
-		   if(pos>0) {
-			   key = item.substring(0, pos);
-			   value = item.substring(pos + 1);
-		   }else {
-			   key = item;
-			   value = null;
-		   }
-		   if (key.equalsIgnoreCase("debug")) {
-			   if(value != null) {
-				   debugPort = value;
-			   }else{
-				   debugPort = "4223";
-			   }
-		   }else if (key.equalsIgnoreCase("output")) {
-			   if(value == null) {
-				   outputRedirect = "INHERIT";
-			   }else {
-				   outputRedirect = value;
-			   }
-		   } else if(key.equalsIgnoreCase("-?")) {
-			   System.out.println(getCommandHelp());
-			   System.exit(0);
-		   }
-		}
-
-	   if(debugPort != null) {
-			ArrayList<String> items = new ArrayList<String>();
-			if(new Os().isMac()){
-				items.add( System.getProperty("java.home").replace("\\", "/")+ "/bin/java");
-			}else{
-				items.add("\""+ System.getProperty("java.home").replace("\\", "/")+ "/bin/java\"");
+		SimpleKeyValueList<String, String> params = getParameterMap();
+		for (int i = 0; i < params.size(); i++) {
+			String key = params.get(i);
+			String value = params.getValueByIndex(i);
+			if (key.equalsIgnoreCase("debug")) {
+				if (value != null) {
+					debugPort = value;
+				} else {
+					debugPort = "4223";
+				}
+			} else if (key.equalsIgnoreCase("output")) {
+				if (value == null) {
+					outputRedirect = "INHERIT";
+				} else {
+					outputRedirect = value;
+				}
+			} else if (key.equalsIgnoreCase("-?")) {
+				System.out.println(getCommandHelp());
+				System.exit(0);
 			}
-			
+		}
+		if (debugPort != null) {
+			ArrayList<String> items = new ArrayList<String>();
+			if (new Os().isMac()) {
+				items.add(System.getProperty("java.home").replace("\\", "/") + "/bin/java");
+			} else {
+				items.add("\"" + System.getProperty("java.home").replace("\\", "/") + "/bin/java\"");
+			}
+
 			items.add("-Xdebug");
 			items.add("-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=" + debugPort);
 			items.add("-jar");
 			String fileName = new Os().getFilename().toLowerCase();
 			items.add(fileName);
 
-			ProcessBuilder processBuilder = new ProcessBuilder( items );
-			if(outputRedirect != null) {
-				if(outputRedirect.equalsIgnoreCase("inherit")) {
+			ProcessBuilder processBuilder = new ProcessBuilder(items);
+			if (outputRedirect != null) {
+				if (outputRedirect.equalsIgnoreCase("inherit")) {
 					processBuilder.redirectErrorStream(true);
 					processBuilder.redirectOutput(Redirect.INHERIT);
 				} else {
-					int pos=outputRedirect.lastIndexOf(".");
-					if(pos>0) {
-						processBuilder.redirectError(new File(outputRedirect.substring(0, pos)+"_error"+outputRedirect.substring(pos)));
-						processBuilder.redirectOutput(new File(outputRedirect.substring(0, pos)+"_stdout"+outputRedirect.substring(pos)));
+					int pos = outputRedirect.lastIndexOf(".");
+					if (pos > 0) {
+						processBuilder.redirectError(
+								new File(outputRedirect.substring(0, pos) + "_error" + outputRedirect.substring(pos)));
+						processBuilder.redirectOutput(
+								new File(outputRedirect.substring(0, pos) + "_stdout" + outputRedirect.substring(pos)));
 					} else {
-						processBuilder.redirectError(new File(outputRedirect+"_error.txt"));
-						processBuilder.redirectOutput(new File(outputRedirect+"_stdout.txt"));
+						processBuilder.redirectError(new File(outputRedirect + "_error.txt"));
+						processBuilder.redirectOutput(new File(outputRedirect + "_stdout.txt"));
 					}
 				}
 			}
 			processBuilder.start();
-//			if(outputRedirect != null) {
-//				int waitFor = process.waitFor();
-//				System.out.println("Resultstatus: "+waitFor);
-//			}
+			// if(outputRedirect != null) {
+			// int waitFor = process.waitFor();
+			// System.out.println("Resultstatus: "+waitFor);
+			// }
 			System.exit(0);
-	   }
-//		long mbMemory = ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getTotalPhysicalMemorySize()/(1014*1024);
-//		System.out.println("Total:"+ ((com.sun.management.OperatingSystemMXBean)ManagementFactory.getOperatingSystemMXBean()).getTotalPhysicalMemorySize());
-//		params.put("-Xmx", "-Xmx"+mbMemory/4+"m");
-//		System.out.println("Set MaxMemory: "+mbMemory/4+"m");
-	   try{
-		   this.controller = new FXStageController(primaryStage);
-		   Pane pane = createContents( this.controller , this.getParameters());
-		   this.controller.withCenter( pane );
-		   this.controller.show();
-	   }catch(Exception e){
-		   this.saveException(e);
-		   if(new Os().isEclipse()) {
-			   throw e;
-		   }
-	   }
-   }
+		}
+		// long mbMemory = ((com.sun.management.OperatingSystemMXBean)
+		// ManagementFactory.getOperatingSystemMXBean()).getTotalPhysicalMemorySize()/(1014*1024);
+		// System.out.println("Total:"+
+		// ((com.sun.management.OperatingSystemMXBean)ManagementFactory.getOperatingSystemMXBean()).getTotalPhysicalMemorySize());
+		// params.put("-Xmx", "-Xmx"+mbMemory/4+"m");
+		// System.out.println("Set MaxMemory: "+mbMemory/4+"m");
+		try {
+			this.controller = new FXStageController(primaryStage);
+			Parent pane = createContents(this.controller, this.getParameters());
+			this.controller.withCenter(pane);
+			this.controller.show();
+		} catch (Exception e) {
+			this.saveException(e);
+			if (new Os().isEclipse()) {
+				throw e;
+			}
+		}
+	}
 
-	protected String getCommandHelp(){
-		StringBuilder sb=new StringBuilder();
+	protected String getCommandHelp() {
+		StringBuilder sb = new StringBuilder();
 		sb.append("Help for the Commandline - ");
 		sb.append(getCaption());
 		sb.append("\n\n");
-		
+
 		sb.append("Debug\t\tDebug with <port> for debugging. Default is 4223\n");
 		sb.append("Output\t\tOutput the debug output in standard-outputstream or file\n");
-		
-		
+
 		return sb.toString();
 	}
-   
-   protected String getDefaultString(){
-	   return "UTF-8";
-   }
-   
-   public SimpleShell withIcon(String value){
-	   this.controller.withIcon(value);
-	   this.icon = value;
-	   return this;
-   }
-   
-   public SimpleShell withIcon(URL value){
-	   withIcon(value.toString());
-	   return this;
-   }
-   
-   public SimpleShell withTitle(String value){
-	   this.controller.withTitle(value);
-	   return this;
-   }
-   
+
+	protected String getDefaultString() {
+		return "UTF-8";
+	}
+
+	public SimpleShell withIcon(String value) {
+		this.controller.withIcon(value);
+		this.icon = value;
+		return this;
+	}
+
+	public SimpleShell withIcon(URL value) {
+		withIcon(value.toString());
+		return this;
+	}
+
+	public SimpleShell withTitle(String value) {
+		this.controller.withTitle(value);
+		return this;
+	}
+
 	public static boolean checkSystemTray() {
 		return SystemTray.isSupported();
 	}
 
-	public void saveException(Exception e, Object... extra) {
+	public void saveException(Throwable e, Object... extra) {
 		// Generate Error.txt
 		if (errorPath == null) {
 			return;
@@ -222,32 +229,32 @@ public abstract class SimpleShell extends Application {
 		writeModel(prefixName);
 		this.controller.saveScreenShoot(errorPath + prefixName + "Full.jpg", errorPath + prefixName + "App.jpg");
 	}
-	
-	protected void writeModel(String prefixName){
-		
+
+	protected void writeModel(String prefixName) {
+
 	}
-	
-	protected boolean writeErrorFile(String fileName, Exception e, Object... extra){
+
+	protected boolean writeErrorFile(String fileName, Throwable e, Object... extra) {
 		boolean success;
 		try {
-			errorPath=createDir(errorPath);
-			if(!errorPath.endsWith("/")){
-				errorPath+="/";
+			errorPath = createDir(errorPath);
+			if (!errorPath.endsWith("/")) {
+				errorPath += "/";
 			}
-			String fullfilename=errorPath+fileName;
+			String fullfilename = errorPath + fileName;
 
-			File file=new File(fullfilename);
-			if(!file.exists()){
+			File file = new File(fullfilename);
+			if (!file.exists()) {
 				file.createNewFile();
 			}
-			FileOutputStream networkFile = new FileOutputStream(errorPath+"/"+fileName);
-			
-			PrintStream ps = new PrintStream( networkFile );
-			ps.println("Error: "+e.getMessage());
-			if(extra!=null){
-				ps.println("Extra: "+extra.toString());
+			FileOutputStream networkFile = new FileOutputStream(errorPath + "/" + fileName);
+
+			PrintStream ps = new PrintStream(networkFile);
+			ps.println("Error: " + e.getMessage());
+			if (extra != null) {
+				ps.println("Extra: " + extra.toString());
 			}
-			ps.println("Thread: "+Thread.currentThread().getName());
+			ps.println("Thread: " + Thread.currentThread().getName());
 			ps.println("------------ SYSTEM-INFO ------------");
 			printProperty(ps, "java.class.version");
 			printProperty(ps, "java.runtime.version");
@@ -262,24 +269,26 @@ public abstract class SimpleShell extends Application {
 			printProperty(ps, "user.name");
 			printProperty(ps, "user.timezone");
 			ps.println("");
-			
-			Runtime r=Runtime.getRuntime();
+
+			Runtime r = Runtime.getRuntime();
 			ps.println("Prozessoren :       " + r.availableProcessors());
 			ps.println("Freier Speicher JVM:    " + r.freeMemory());
 			ps.println("Maximaler Speicher JVM: " + r.maxMemory());
 			ps.println("Gesamter Speicher JVM:  " + r.totalMemory());
-			ps.println("Gesamter Speicher Java:  " + ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getTotalSwapSpaceSize() );
+			ps.println("Gesamter Speicher Java:  "
+					+ ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean())
+							.getTotalSwapSpaceSize());
 
 			ps.println("***  ***");
-			
+
 			ps.println();
 			e.printStackTrace(ps);
 			ps.close();
-			success=true;
+			success = true;
 		} catch (FileNotFoundException exception) {
-			success=false;
+			success = false;
 		} catch (IOException exception) {
-			success=false;
+			success = false;
 		}
 		return success;
 	}
@@ -297,29 +306,43 @@ public abstract class SimpleShell extends Application {
 		return null;
 	}
 
-	private void printProperty(PrintStream ps, String property){
-		ps.println(property+": "+System.getProperty(property));
+	private void printProperty(PrintStream ps, String property) {
+		ps.println(property + ": " + System.getProperty(property));
 	}
-	
-	
-	protected String getCaptionPrefix(){
+
+	protected String getCaptionPrefix() {
 		return null;
 	}
-	
+
 	public String getCaption() {
 		String caption = "";
 		String temp = getCaptionPrefix();
 		if (temp != null) {
 			caption = temp + " ";
 		}
-		return caption + getVersion() + " ("
-				+ System.getProperty("file.encoding") + " - "
+		return caption + getVersion() + " (" + System.getProperty("file.encoding") + " - "
 				+ System.getProperty("sun.arch.data.model") + "-Bit)";
+	}
+	
+	protected SimpleShell enableError(String path) {
+		this.errorPath = path;
+		if(Thread.getDefaultUncaughtExceptionHandler()==null){
+			Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+				public void uncaughtException(Thread t, Throwable e) {
+					SimpleShell.this.saveException(e);
+				}
+			});
+			Thread.currentThread().setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+				public void uncaughtException(Thread t, Throwable e) {
+					SimpleShell.this.saveException(e);
+				}
+			});
+		}
+		return this;
 	}
 
 	protected String getVersion() {
-		String result = SimpleShell.class.getPackage()
-				.getImplementationVersion();
+		String result = SimpleShell.class.getPackage().getImplementationVersion();
 
 		if (result == null) {
 			result = "0.42.DEBUG";
@@ -328,4 +351,3 @@ public abstract class SimpleShell extends Application {
 		return result;
 	}
 }
-
