@@ -24,7 +24,7 @@ package de.uniks.networkparser.logic;
 
 import java.util.Collection;
 
-import de.uniks.networkparser.IdMapEncoder;
+import de.uniks.networkparser.IdMap;
 
 /**
  * Logic Clazz for MapValues.
@@ -33,7 +33,7 @@ import de.uniks.networkparser.IdMapEncoder;
  */
 public class ValuesMap extends ValuesSimple {
 	/** Variable for IdMap. */
-	public IdMapEncoder map;
+	public IdMap map;
 	/** Variable for Enitity. */
 	public Object entity;
 	/** Variable for Property. */
@@ -60,7 +60,7 @@ public class ValuesMap extends ValuesSimple {
 	 *            depp value from root
 	 * @return ValuesMap Instance
 	 */
-	public static ValuesMap with(IdMapEncoder map, Object entity,
+	public static ValuesMap with(IdMap map, Object entity,
 			String property, Object value, boolean isMany, int deep) {
 		ValuesMap mapCondition = new ValuesMap();
 		mapCondition.map = map;
@@ -81,7 +81,7 @@ public class ValuesMap extends ValuesSimple {
 	 *            The Attribute
 	 * @return ValuesMap Instance
 	 */
-	public static ValuesMap with(IdMapEncoder map, Object entity,
+	public static ValuesMap with(IdMap map, Object entity,
 			String property) {
 		ValuesMap mapCondition = new ValuesMap();
 		mapCondition.map = map;

@@ -28,7 +28,7 @@ import java.util.Iterator;
 import de.uniks.networkparser.AbstractMap;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Filter;
-import de.uniks.networkparser.IdMapEncoder;
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ReferenceObject;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorXML;
@@ -306,7 +306,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 				}
 				SendableEntityCreator parentCreator = refObject.getCreater();
 				parentCreator.setValue(refObject.getEntity(), newPrefix, value,
-						IdMapEncoder.NEW);
+						IdMap.NEW);
 			}
 		}
 		return exit;
@@ -478,7 +478,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 								String value = tokener.substring(start, -1);
 								tokener.next();
 								creator.setValue(item, tokener.getPrefix()
-										+ key, value, IdMapEncoder.NEW);
+										+ key, value, IdMap.NEW);
 							}
 						}
 					}
@@ -508,7 +508,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 											parentCreator.setValue(
 													refObject.getEntity(),
 													nextTag.getTag(), result,
-													IdMapEncoder.NEW);
+													IdMap.NEW);
 											if (tokener.getStackSize() > 0) {
 												tokener.popStack();
 											}
@@ -541,7 +541,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 				String value = tokener.substring(start, tokener.position()
 						- tag.length() - 1);
 				creator.setValue(item, tokener.getPrefix(), value,
-						IdMapEncoder.NEW);
+						IdMap.NEW);
 				// tokener.stepPos("" + ITEMSTART, false, false);
 				tokener.stepPos("" + ITEMEND, false, false);
 			}

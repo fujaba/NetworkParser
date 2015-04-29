@@ -68,11 +68,11 @@ public class ReferenceObject {
 	 *
 	 * @return true, if successful
 	 */
-	public boolean execute(IdMapEncoder map) {
+	public boolean execute(IdMap map) {
 		Object assoc = map.getObject(this.jsonId);
 		if (assoc != null) {
 			this.creator.setValue(this.entity, this.property, assoc,
-					IdMapEncoder.NEW);
+					IdMap.NEW);
 			return true;
 		}
 		return false;

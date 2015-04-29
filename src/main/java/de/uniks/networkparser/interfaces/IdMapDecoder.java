@@ -1,4 +1,4 @@
-package de.uniks.networkparser.json;
+package de.uniks.networkparser.interfaces;
 
 /*
  NetworkParser
@@ -21,13 +21,12 @@ package de.uniks.networkparser.json;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
  */
-import de.uniks.networkparser.Filter;
-import de.uniks.networkparser.IdMap;
+/**
+ * The Interface IdMapDecoder.
+ */
 
-public class UpdateFilter extends Filter {
-	@Override
-	public boolean isConvertable(IdMap map, Object entity,
-			String property, Object value, boolean isMany, int deep) {
-		return map.getKey(entity) == null;
-	}
+public interface IdMapDecoder {
+	public abstract Object decode(BaseItem value);
+	
+	public abstract Object decode(String value);
 }
