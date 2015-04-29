@@ -1,7 +1,9 @@
 package de.uniks.networkparser.gui.javafx.window;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 
@@ -36,27 +38,33 @@ public class DiagramEditor extends Application {
         scene = new Scene(browser, 900, 600, Color.web("#666970"));
         stage.setScene(scene);
         
-        copyFile("", "drawer.js");
-        copyFile("", "graph.js");
-        copyFile("", "diagramstyle.css");
-        
+//        copyFile("drawer.js");
+//        copyFile("graph.js");
+//        copyFile("diagramstyle.css");
+//        copyFile("Editor.html");
+//        URL resource = new File("Editor.html").toURL();
+//        webEngine.load(resource.toString());
+
         StringBuilder content=new StringBuilder("<html><head>"+CRLF);
-        content.append("<script src=\"drawer.js\"></script>"+CRLF);
-        content.append("<script src=\"graph.js\"></script>"+CRLF);
-        content.append("<link href=\"diagramstyle.css\" rel=\"stylesheet\" type=\"text/css\">"+CRLF);
+        
+        // Add external Files 
+        content.append(readFile("drawer.js"));
+        content.append(readFile("graph.js"));
+        content.append(readFile("diagramstyle.css"));
+
         content.append("</head><body>"+CRLF);
         content.append("<script language=\"Javascript\">"+CRLF);
         content.append("new ClassEditor(\"board\");"+CRLF);
         content.append("</script></body></html>");
         webEngine.loadContent(content.toString());
-        System.out.println(content.toString());
+//        System.out.println(content.toString());
+//        writeFile("Editor.html", content.toString());
         
         webEngine.getLoadWorker().stateProperty().addListener(new ChangeListener<State>() {
 			@Override
 			public void changed(ObservableValue<? extends State> observable, State oldValue, State newValue) {
 				if (newValue == Worker.State.SUCCEEDED) {
-                  stage.setTitle(webEngine.getLocation());
-                  System.out.println("called");
+	                  System.out.println("called: "+webEngine.getLocation());
                   JSObject win = (JSObject) webEngine.executeScript("window");
                   win.setMember("java", new JavaApp(DiagramEditor.this));
               }				
@@ -64,8 +72,57 @@ public class DiagramEditor extends Application {
           });
         stage.show();
     }
-    private void copyFile(String targetFolder, String file) {
-		File target = new File(targetFolder + file);
+    
+    protected void writeFile(String file, String content) {
+    	File target=new File(file);
+        if (!target.exists()) {
+			try {
+				target.createNewFile();
+			} catch (IOException e) {
+			}
+		}
+		try {
+			FileOutputStream out = new FileOutputStream(target);
+			byte[] bytes = content.getBytes();
+			out.write(bytes, 0, bytes.length);
+			out.close();
+		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
+		}
+    }
+    
+    protected StringBuilder readFile(String file) {
+    	InputStream is = GraphList.class.getResourceAsStream(file);
+    	StringBuilder sb=new StringBuilder();
+    	if(file.endsWith(".js")) {
+    		sb.append("<script language=\"Javascript\">"+CRLF);
+    	} else if(file.endsWith(".css")) {
+    		sb.append("<style>"+CRLF);
+    	}
+		if (is != null) {
+			final int BUFF_SIZE = 5 * 1024; // 5KB
+			final byte[] buffer = new byte[BUFF_SIZE];
+			try {
+			while (true) {
+				int count;
+					count = is.read(buffer);
+					if (count == -1)
+						break;
+					sb.append(new String(buffer, 0, count));
+				}
+				is.close();
+			} catch (IOException e) {
+			}
+		}
+		if(file.endsWith(".js")) {
+    		sb.append("</script>"+CRLF);
+    	} else if(file.endsWith(".css")) {
+    		sb.append("</style>"+CRLF);
+    	}
+		return sb;
+    }
+    protected void copyFile(String file) {
+		File target = new File(file);
 
 		InputStream is = GraphList.class.getResourceAsStream(file);
 
