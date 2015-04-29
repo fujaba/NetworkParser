@@ -149,7 +149,7 @@ public abstract class SimpleShell extends Application {
 					}
 				}
 			}
-			Process process = processBuilder.start();
+			processBuilder.start();
 //			if(outputRedirect != null) {
 //				int waitFor = process.waitFor();
 //				System.out.println("Resultstatus: "+waitFor);
