@@ -414,7 +414,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 			}
 			if(minCapacity>=MINHASHINGSIZE && (elements[BIG_KEY]==null || minCapacity >= ((Object[])elements[BIG_KEY]).length * MAXUSEDLIST)) {
 				resizeBig(newSize*2, BIG_KEY);
-				if((flag & MAP)==MAP) {
+				if((flag & BIDI)==BIDI) {
 					resizeBig(newSize*2, BIG_VALUE);
 				}
 				elements[DELETED] = null;
@@ -548,7 +548,10 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
         size++;
 		if(isBig()) {
 			addHashItem(pos, key, (Object[])elements[BIG_KEY]);
-			addHashItem(pos, value, (Object[])elements[BIG_VALUE]);
+			if ((flag & BIDI)==BIDI)
+			{
+			   addHashItem(pos, value, (Object[])elements[BIG_VALUE]);
+			}
 		}
         fireProperty(null, key, beforeKey, value);
 		return pos;
