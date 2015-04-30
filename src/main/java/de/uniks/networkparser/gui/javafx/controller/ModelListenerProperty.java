@@ -34,7 +34,7 @@ import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import de.uniks.networkparser.IdMapEncoder;
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
@@ -116,7 +116,7 @@ public abstract class ModelListenerProperty<T> implements javafx.beans.property.
 
     @Override
     public void setValue(T value) {
-        creator.setValue(item, property, value, IdMapEncoder.NEW);
+        creator.setValue(item, property, value, IdMap.NEW);
     }
 
     @Override

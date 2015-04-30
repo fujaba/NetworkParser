@@ -24,7 +24,7 @@ package de.uniks.networkparser.gui;
 import java.util.Comparator;
 
 import de.uniks.networkparser.EntityValueFactory;
-import de.uniks.networkparser.IdMapEncoder;
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.date.DateTimeEntity;
 import de.uniks.networkparser.event.Style;
 import de.uniks.networkparser.interfaces.GUIPosition;
@@ -435,6 +435,6 @@ public class Column implements SendableEntityCreator {
 		if (creator == null) {
 			return false;
 		}
-		return creator.setValue(entity, getAttrName(), value, IdMapEncoder.UPDATE);
+		return creator.setValue(entity, getAttrName(), value, IdMap.UPDATE);
 	}
 }

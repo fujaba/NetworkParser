@@ -24,7 +24,7 @@ package de.uniks.networkparser.graph;
 import java.util.Collection;
 
 import de.uniks.networkparser.Filter;
-import de.uniks.networkparser.IdMapEncoder;
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
@@ -32,7 +32,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
  * The Class YUMLIdParser.
  */
 
-public class GraphIdMap extends IdMapEncoder {
+public class GraphIdMap extends IdMap {
 	/** The Constant for CLASS Diagramms. */
 	public static final String CLASS = "classdiagram";
 

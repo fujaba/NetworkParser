@@ -29,10 +29,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import de.uniks.networkparser.AbstractMap;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.bytes.converter.ByteConverterHTTP;
 import de.uniks.networkparser.event.BasicMessage;
@@ -43,6 +43,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteConverter;
 import de.uniks.networkparser.interfaces.ByteItem;
+import de.uniks.networkparser.interfaces.IdMapDecoder;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorByte;
 
@@ -50,7 +51,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreatorByte;
  * The Class ByteIdMap.
  */
 
-public class ByteIdMap extends IdMap {
+public class ByteIdMap extends IdMap implements IdMapDecoder{
 	/** The SPLITTER. */
 	public static final char SPLITTER = ' ';
 
@@ -462,11 +463,11 @@ public class ByteIdMap extends IdMap {
 						for (Iterator<?> i = list.iterator(); i.hasNext();) {
 							Object item = i.next();
 							eventCreater.setValue(entity, property, item,
-									IdMapEncoder.NEW);
+									IdMap.NEW);
 						}
 					} else {
 						eventCreater.setValue(entity, property, value,
-								IdMapEncoder.NEW);
+								IdMap.NEW);
 					}
 				}
 			}

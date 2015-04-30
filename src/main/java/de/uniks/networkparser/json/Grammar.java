@@ -22,7 +22,7 @@ package de.uniks.networkparser.json;
  permissions and limitations under the Licence.
  */
 import de.uniks.networkparser.Filter;
-import de.uniks.networkparser.IdMapEncoder;
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.IdMapCounter;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
@@ -41,7 +41,7 @@ public class Grammar {
 	 * @return the props of theJsonObject
 	 */
 	public JsonObject getReadProperties(JsonObject jsonObject,
-			IdMapEncoder map, Filter filter, boolean isId) {
+			IdMap map, Filter filter, boolean isId) {
 		if (isId) {
 			if (jsonObject.has(JsonIdMap.JSON_PROPS)) {
 				return jsonObject.getJsonObject(JsonIdMap.JSON_PROPS);
@@ -67,7 +67,7 @@ public class Grammar {
 	 * @return the Creator for this JsonObject
 	 */
 	public SendableEntityCreator getReadCreator(JsonObject jsonObject,
-			IdMapEncoder map) {
+			IdMap map) {
 		Object className = jsonObject.get(JsonIdMap.CLASS);
 		return map.getCreator((String) className, true);
 	}
@@ -83,11 +83,11 @@ public class Grammar {
 	 * @return the Creator for this JsonObject
 	 */
 	public SendableEntityCreator getWriteCreator(Object modelItem,
-			String className, IdMapEncoder map) {
+			String className, IdMap map) {
 		return map.getCreator(className, true);
 	}
 
-	public JsonObject getWriteObject(IdMapEncoder map,
+	public JsonObject getWriteObject(IdMap map,
 			SendableEntityCreator prototyp, String className, String id,
 			JsonObject jsonProp, Filter filter) {
 		JsonObject json = new JsonObject();
@@ -99,7 +99,7 @@ public class Grammar {
 			}
 			return json;
 		}
-		json.put(IdMapEncoder.ID, id);
+		json.put(IdMap.ID, id);
 		if (jsonProp.size() > 0) {
 			json.put(JsonIdMap.JSON_PROPS, jsonProp);
 		}

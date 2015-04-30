@@ -25,7 +25,7 @@ import java.beans.PropertyChangeEvent;
 
 import javafx.beans.Observable;
 import javafx.scene.paint.Color;
-import de.uniks.networkparser.IdMapEncoder;
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class ModelListenerColorProperty extends ModelListenerProperty<Color> {
@@ -73,7 +73,7 @@ public class ModelListenerColorProperty extends ModelListenerProperty<Color> {
 
          String hexColor = "#"+redString+greenString+blueString;
 		
-		creator.setValue(item, property, hexColor, IdMapEncoder.NEW);
+		creator.setValue(item, property, hexColor, IdMap.NEW);
 //		super.setValue(value);
 	}
 }

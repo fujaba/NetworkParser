@@ -70,7 +70,7 @@ public class FXStageController implements StageEvent, WindowListener {
 		}
 		return stage;
 	}
-
+	
 	public FXStageController withStage(Stage value) {
 		this.stage = value;
 		if(value != null) { 
@@ -181,7 +181,7 @@ public class FXStageController implements StageEvent, WindowListener {
 	}
 
 	public FXStageController withTitle(String value) {
-		this.stage.setTitle(value);
+		getStage().setTitle(value);
 		return this;
 	}
 

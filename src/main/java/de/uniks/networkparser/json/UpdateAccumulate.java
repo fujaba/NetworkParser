@@ -22,7 +22,6 @@ package de.uniks.networkparser.json;
  permissions and limitations under the Licence.
  */
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class UpdateAccumulate {
@@ -48,9 +47,9 @@ public class UpdateAccumulate {
 			JsonObject child;
 
 			// OldValue
-			if (!change.has(IdMapEncoder.REMOVE)) {
-				child = change.getJsonObject(IdMapEncoder.REMOVE);
-				change.put(IdMapEncoder.REMOVE, child);
+			if (!change.has(IdMap.REMOVE)) {
+				child = change.getJsonObject(IdMap.REMOVE);
+				change.put(IdMap.REMOVE, child);
 			} else {
 				child = new JsonObject();
 			}
@@ -66,9 +65,9 @@ public class UpdateAccumulate {
 			}
 
 			// NewValue
-			if (!change.has(IdMapEncoder.UPDATE)) {
-				child = change.getJsonObject(IdMapEncoder.UPDATE);
-				change.put(IdMapEncoder.UPDATE, child);
+			if (!change.has(IdMap.UPDATE)) {
+				child = change.getJsonObject(IdMap.UPDATE);
+				change.put(IdMap.UPDATE, child);
 			} else {
 				child = new JsonObject();
 			}
@@ -116,9 +115,9 @@ public class UpdateAccumulate {
 			JsonObject child;
 
 			// OldValue
-			if (change.has(IdMapEncoder.REMOVE)) {
-				child = change.getJsonObject(IdMapEncoder.REMOVE);
-				change.put(IdMapEncoder.REMOVE, child);
+			if (change.has(IdMap.REMOVE)) {
+				child = change.getJsonObject(IdMap.REMOVE);
+				change.put(IdMap.REMOVE, child);
 			} else {
 				child = new JsonObject();
 			}
@@ -134,9 +133,9 @@ public class UpdateAccumulate {
 			}
 
 			// NewValue
-			if (change.has(IdMapEncoder.UPDATE)) {
-				child = change.getJsonObject(IdMapEncoder.UPDATE);
-				change.put(IdMapEncoder.UPDATE, child);
+			if (change.has(IdMap.UPDATE)) {
+				child = change.getJsonObject(IdMap.UPDATE);
+				change.put(IdMap.UPDATE, child);
 			} else {
 				child = new JsonObject();
 			}
