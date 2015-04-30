@@ -64,7 +64,6 @@ public abstract class IdMap extends AbstractMap implements
 
 	/** The Constant PRIO. */
 	public static final String SENDUPDATE = "sendupdate";
-
 	
 	/** The counter. */
 	private IdMapCounter counter;
@@ -75,7 +74,7 @@ public abstract class IdMap extends AbstractMap implements
 	/** The updatelistener for Notification changes. */
 	protected PropertyChangeListener updatePropertylistener;
 
-	protected SimpleKeyValueList<String, Object> keyValue;
+	protected SimpleKeyValueList<String, Object> keyValue = new SimpleKeyValueList<String, Object>().withFlag(SimpleKeyValueList.BIDI);
 
 	protected Filter filter = new Filter();
 
@@ -105,8 +104,6 @@ public abstract class IdMap extends AbstractMap implements
 	 */
 	public IdMap() {
 		super();
-		this.keyValue = new SimpleKeyValueList<String, Object>();
-		this.keyValue.withFlag(SimpleKeyValueList.BIDI);
 		this.withCreator(new TextItems());
 	}
 
