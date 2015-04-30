@@ -399,7 +399,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 			tokener.addPrefix(tag);
 			if (isCaseSensitive()) {
 				for (String prop : properties) {
-					if (prop.equals(tokener.getPrefix())) {
+					if (prop.equalsIgnoreCase(tokener.getPrefix())) {
 						// It is a Attribute
 						item = referenceObject.getEntity();
 						plainvalue = true;
