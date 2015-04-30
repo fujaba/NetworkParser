@@ -117,12 +117,13 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
     	return (ST) this;
     }
     
-    public AbstractArray<V> withFlag(int value)  {
+    @SuppressWarnings("unchecked")
+	public <ST extends AbstractArray<V>> ST withFlag(int value)  {
     	this.flag = (byte) (this.flag | value);
     	if(value == BIDI){
     		this.flag = (byte) (this.flag | MAP);
     	}
-    	return this;
+    	return (ST) this;
     }
     
     final boolean isBig() {

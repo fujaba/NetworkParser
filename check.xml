@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE project>
 <project default="checkStyle" name="Create Jar for NetworkParser" xmlns:cs="antlib:com.puppycrawl.tools.checkstyle">
 	<target name="checkStyle">
-		<taskdef resource="checkstyletask.properties" classpath="lib/checkstyle-5.7/checkstyle-5.7-all.jar" />
-		<checkstyle config="lib/checkstyle-5.7/sun_checks.xml" >
+		<taskdef resource="checkstyletask.properties" classpath="lib/checkstyle/checkstyle-6.5-all.jar" />
+		<mkdir dir="build/" />
+		<checkstyle config="lib/checkstyle/sun_checks.xml" >
 			<fileset dir="src/main/java" includes="**/*.java"/>
 			<!-- Location of cache-file. Something that is project specific -->
 			<property key="checkstyle.cache.file" file="target/cachefile"/>
