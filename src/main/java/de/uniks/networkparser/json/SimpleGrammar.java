@@ -23,7 +23,7 @@ package de.uniks.networkparser.json;
  */
 import java.util.Iterator;
 import de.uniks.networkparser.Filter;
-import de.uniks.networkparser.IdMapEncoder;
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.IdMapCounter;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
@@ -43,7 +43,7 @@ public class SimpleGrammar extends Grammar {
 	 */
 	@Override
 	public JsonObject getReadProperties(JsonObject jsonObject,
-			IdMapEncoder map, Filter filter, boolean isId) {
+			IdMap map, Filter filter, boolean isId) {
 		jsonObject.remove(ID);
 		return jsonObject;
 	}
@@ -55,7 +55,7 @@ public class SimpleGrammar extends Grammar {
 	 */
 	@Override
 	public SendableEntityCreator getReadCreator(JsonObject jsonObject,
-			IdMapEncoder map) {
+			IdMap map) {
 		String idString = jsonObject.getString(ID);
 		String className = "."
 				+ idString.substring(0,
@@ -74,7 +74,7 @@ public class SimpleGrammar extends Grammar {
 	}
 
 	@Override
-	public JsonObject getWriteObject(IdMapEncoder map,
+	public JsonObject getWriteObject(IdMap map,
 			SendableEntityCreator prototyp, String className, String id,
 			JsonObject jsonProp, Filter filter) {
 		JsonObject json = new JsonObject();

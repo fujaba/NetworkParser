@@ -31,12 +31,12 @@ import java.util.Map;
 
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.ReferenceObject;
 import de.uniks.networkparser.event.ObjectMapEntry;
 import de.uniks.networkparser.event.util.DateCreator;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.IdMapDecoder;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.interfaces.UpdateListener;
@@ -49,7 +49,7 @@ import de.uniks.networkparser.sort.EntityComparator;
  * The Class JsonIdMap.
  */
 
-public class JsonIdMap extends IdMap {
+public class JsonIdMap extends IdMap implements IdMapDecoder{
 	/** The Constant CLASS. */
 	public static final String CLASS = "class";
 
@@ -763,7 +763,7 @@ public class JsonIdMap extends IdMap {
 	}
 	
 	@Override
-	public IdMapEncoder withUpdateListener(PropertyChangeListener listener) {
+	public IdMap withUpdateListener(PropertyChangeListener listener) {
 		super.withUpdateListener(listener);
 		
 		return this;
@@ -826,7 +826,7 @@ public class JsonIdMap extends IdMap {
 		for (String childId : suspendIdList) {
 			children.add(toJsonObjectById(childId));
 		}
-		sendObj.put(IdMapEncoder.UPDATE, children);
+		sendObj.put(IdMap.UPDATE, children);
 		sendUpdateMsg(null, sendObj);
 	}
 

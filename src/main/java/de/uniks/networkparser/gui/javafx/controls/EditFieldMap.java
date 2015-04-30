@@ -24,12 +24,11 @@ package de.uniks.networkparser.gui.javafx.controls;
 import java.util.HashSet;
 
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.IdMapEncoder;
 import de.uniks.networkparser.event.util.DateCreator;
 import de.uniks.networkparser.gui.CellEditorElement;
+import de.uniks.networkparser.gui.CellEditorElement.APPLYACTION;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.FieldTyp;
-import de.uniks.networkparser.gui.CellEditorElement.APPLYACTION;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class EditFieldMap {
@@ -173,7 +172,7 @@ public class EditFieldMap {
 		return this;
 	}
 
-	public IdMapEncoder getMap() {
+	public IdMap getMap() {
 		return map;
 	}
 }
