@@ -33,14 +33,25 @@ if(project.hasProperty('jenkins')) {
 jacoco {
 	toolVersion = "0.7.4.201502262128"
 }
-
 jacocoTestReport {
-	reports {
-		xml.enabled true
-		xml.destination "${buildDir}/reports/jacoco.xml"
-		html.enabled true
-	}
+    group = "Reporting"
+    description = "Generate Jacoco coverage reports after running tests."
+    executionData = files("$buildDir/jacoco/test.exec")
+    reports {
+        xml {
+            enabled true
+            //Following value is a file
+            destination "${buildDir}/reports/jacoco/jacoco.xml"
+        }
+        csv.enabled false
+        html {
+            enabled true
+            //Following value is a folder
+            destination "${buildDir}/reports/jacoco"
+        }
+    }
 }
+jacocoTestReport.dependsOn test
 
 sourceSets.main.output.classesDir 'build/classes/main'
 
