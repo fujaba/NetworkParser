@@ -2,9 +2,6 @@ gradle.projectsEvaluated {
     compileJava.dependsOn(compileJava16)
 	compileJava.dependsOn(compileJava17)
 }
-gradle.projectsEvaluated {
-    test.dependsOn(codeCoverageReport)
-}
 jar {
 	exclude '**/gui/**'
 	exclude '**/test/**'
@@ -79,17 +76,6 @@ task all(type: Jar) << {
     println "Build all Jars"
 }
 all.dependsOn coreJar, coreJar16, coreJar17, sourceJar, sourceJar16, sourceJar17, javadocJar, fullJar
-
-task codeCoverageReport(type: JacocoReport) {
-	executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
-	sourceSets sourceSets.main
-	reports {
-		xml.enabled true
-		xml.destination "${buildDir}/reports/jacoco.xml"
-		html.enabled true
-		html.destination "${buildDir}/reports/jacoco"
-	}
-}
 
 def getManifest(gitVersion) {
 	manifest {
