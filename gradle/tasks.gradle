@@ -2,7 +2,9 @@ gradle.projectsEvaluated {
     compileJava.dependsOn(compileJava16)
 	compileJava.dependsOn(compileJava17)
 }
-
+gradle.projectsEvaluated {
+    test.dependsOn(codeCoverageReport)
+}
 jar {
 	exclude '**/gui/**'
 	exclude '**/test/**'
@@ -83,10 +85,9 @@ task codeCoverageReport(type: JacocoReport) {
 	sourceSets sourceSets.main
 	reports {
 		xml.enabled true
-		xml.destination "${buildDir}/test-results/jacoco.xml"
+		xml.destination "${buildDir}/reports/jacoco.xml"
 		html.enabled true
 		html.destination "${buildDir}/reports/jacoco"
-		csv.enabled true
 	}
 }
 

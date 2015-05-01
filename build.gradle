@@ -3,6 +3,7 @@ apply plugin: 'java'
 apply plugin: 'maven'
 apply from: 'gradle/version.gradle'
 apply from: 'gradle/tasks.gradle'
+apply plugin: 'jacoco'
 
 repositories {
 	jcenter()
@@ -29,22 +30,15 @@ if(project.hasProperty('jenkins')) {
 	apply from: 'gradle/ide.gradle'
 }
 
-apply plugin: 'jacoco'
 jacoco {
 	toolVersion = "0.7.4.201502262128"
-	reportsDir = file("$buildDir/test-results")
 }
 
 jacocoTestReport {
-additionalSourceDirs = files(sourceSets.main.allSource.srcDirs)
-        sourceDirectories = files(sourceSets.main.allSource.srcDirs)
-        classDirectories =  files(sourceSets.main.output)
 	reports {
 		xml.enabled true
-		xml.destination "${buildDir}/test-results/xml"
+		xml.destination "${buildDir}/reports/jacoco.xml"
 		html.enabled true
-		html.destination "${buildDir}/test-results/html"
-		csv.enabled true
 	}
 }
 
