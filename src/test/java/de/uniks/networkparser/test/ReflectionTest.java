@@ -222,7 +222,7 @@ public class ReflectionTest {
 	                    // do nothing. this class hasn't been found by the loader, and we don't care.
 	                }
 	            } else if ((tmpDirectory = new File(directory, file))
-	                    .isDirectory() && !file.equalsIgnoreCase("test")) {
+	                    .isDirectory() && !file.equalsIgnoreCase("test") && !file.equalsIgnoreCase("javafx")) {
 	                checkDirectory(tmpDirectory, pckgname + "." + file, classes);
 	            }
 	        }
