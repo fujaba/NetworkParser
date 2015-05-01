@@ -41,7 +41,7 @@ jacocoTestReport {
         xml {
             enabled true
             //Following value is a file
-            destination "src/main/resources/jacoco.xml"
+            destination "${buildDir}/reports/jacoco/jacoco.xml"
         }
         csv.enabled false
         html {
