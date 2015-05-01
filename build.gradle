@@ -31,7 +31,7 @@ if(project.hasProperty('jenkins')) {
 }
 
 jacoco {
-	toolVersion = "0.7.4.201502262128"
+	toolVersion = "0.7.1.201405082137"
 }
 jacocoTestReport {
     group = "Reporting"
@@ -41,7 +41,7 @@ jacocoTestReport {
         xml {
             enabled true
             //Following value is a file
-            destination "${buildDir}/reports/jacoco/jacoco.xml"
+            destination "src/main/resources/jacoco.xml"
         }
         csv.enabled false
         html {
@@ -50,15 +50,6 @@ jacocoTestReport {
             destination "${buildDir}/reports/jacoco"
         }
     }
-	def readFile = new File("src/main/resources/report.dtd");
-	def reader = new FileReader(readFile);
-    def chars = new char[(int) readFile.length()];
-    reader.read(chars);
-    reader.close();
-	def file = new File("${buildDir}/reports/jacoco/jacoco.dtd")
-	def stringsFile = new FileWriter(file, false)
-	stringsFile.write(new String(chars))
-	stringsFile.close()
 }
 
 sourceSets.main.output.classesDir 'build/classes/main'
