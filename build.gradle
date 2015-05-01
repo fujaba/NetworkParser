@@ -51,7 +51,6 @@ jacocoTestReport {
         }
     }
 }
-jacocoTestReport.dependsOn test
 
 sourceSets.main.output.classesDir 'build/classes/main'
 
