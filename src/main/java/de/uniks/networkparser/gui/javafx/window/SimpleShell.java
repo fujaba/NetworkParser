@@ -120,7 +120,7 @@ public abstract class SimpleShell extends Application {
 				}
 			} else if (key.equalsIgnoreCase("-?")) {
 				System.out.println(getCommandHelp());
-				System.exit(0);
+				System.exit(1);
 			}
 		}
 		if (debugPort != null) {
@@ -160,7 +160,7 @@ public abstract class SimpleShell extends Application {
 			// int waitFor = process.waitFor();
 			// System.out.println("Resultstatus: "+waitFor);
 			// }
-			System.exit(0);
+			System.exit(1);
 		}
 		// long mbMemory = ((com.sun.management.OperatingSystemMXBean)
 		// ManagementFactory.getOperatingSystemMXBean()).getTotalPhysicalMemorySize()/(1014*1024);
