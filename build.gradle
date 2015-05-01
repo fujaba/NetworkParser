@@ -50,6 +50,15 @@ jacocoTestReport {
             destination "${buildDir}/reports/jacoco"
         }
     }
+	def readFile = new File("src/main/resources/report.dtd");
+	def reader = new FileReader(readFile);
+    def chars = new char[(int) readFile.length()];
+    reader.read(chars);
+    reader.close();
+	def file = new File("${buildDir}/reports/jacoco/jacoco.dtd")
+	def stringsFile = new FileWriter(file, false)
+	stringsFile.write(new String(chars))
+	stringsFile.close()
 }
 
 sourceSets.main.output.classesDir 'build/classes/main'
