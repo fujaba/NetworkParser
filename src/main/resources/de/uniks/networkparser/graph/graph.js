@@ -1588,8 +1588,7 @@ ClassEditor.prototype.save= function() {
 	}
 };
 ClassEditor.prototype.generate = function() {
-	var result = {};
-	this.copy(result, this.model);
+	var result = this.minJson({}, this.model);
 	var data = JSON.stringify(result, null, "\t");
 	java.generate( data );
 };
