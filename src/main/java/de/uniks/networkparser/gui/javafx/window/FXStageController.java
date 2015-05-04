@@ -401,6 +401,8 @@ public class FXStageController implements StageEvent, WindowListener {
 	}
 
 	public void withIcon(URL resource) {
-		withIcon(resource.toString());
+		if(resource != null) {
+			withIcon(resource.toString());
+		}
 	}
 }
