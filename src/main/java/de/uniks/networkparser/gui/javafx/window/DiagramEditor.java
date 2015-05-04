@@ -53,6 +53,17 @@ public class DiagramEditor extends SimpleShell {
 				webEngine.load(new File("Editor.html").toURI().toURL().toString());
 			} catch (MalformedURLException e) {
 			}
+        }else if(map.containsKey("exportall")) {
+        	// Add external Files 
+        	content.append(readFile("drawer.js"));
+        	content.append(readFile("graph.js"));
+        	content.append(readFile("diagramstyle.css"));
+        	content.append(body);
+			writeFile("Editor.html", content.toString());
+			try {
+				webEngine.load(new File("Editor.html").toURI().toURL().toString());
+			} catch (MalformedURLException e) {
+			}
         }else {
         	// Add external Files 
         	content.append(readFile("drawer.js"));
