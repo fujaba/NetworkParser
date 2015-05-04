@@ -35,6 +35,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	public static final int SMALL_VALUE = 3;
 	public static final int BIG_VALUE = 4;
 
+	private int index;
 	/**
 	 * The Flag of List. It contains the options
 	 * EntitySize 1,2,3
@@ -441,13 +442,30 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	
 	void resizeSmall(int newCapacity, int index) {
 		Object[] dest = new Object[newCapacity];
-		System.arraycopy(elements[index], 0, dest, 0, size);
+		if(this.index==0) {
+			System.arraycopy(elements[index], 0, dest, 0, size);
+		} else {
+			//FIXME this.index=4  count = 8 size=6
+			int len = ((Object[])elements[index]).length;
+			if(size > len - this.index) {
+				System.arraycopy(elements[index], this.index, dest, 0, len - this.index);
+				System.arraycopy(elements[index], 0, dest, size - this.index, len - size - this.index);
+			}else {
+				System.arraycopy(elements[index], this.index, dest, 0, size);
+			}
+		}
 		elements[index] = dest;
 	}
 	
 	void resizeSmall(int newCapacity) {
 		Object[] dest = new Object[newCapacity];
-		System.arraycopy(elements, 0, dest, 0, size);
+		//FIXME this.index=4  count = 8 size=6
+		if(size > elements.length - this.index) {
+			System.arraycopy(elements, this.index, dest, 0, size - this.index);
+			System.arraycopy(elements, this.index, dest, size - this.index, elements.length - size - this.index);
+		}else{
+			System.arraycopy(elements, this.index, dest, 0, size);
+		}
 		elements = dest;
 	}
 
