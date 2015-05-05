@@ -62,10 +62,16 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 	 * @return return a Creator class for a clazz name
 	 */
 	public SendableEntityCreator getCreator(String clazz, boolean fullName) {
-		if (fullName) {
-			return (SendableEntityCreator) this.creators.getValueItem(clazz);
+		Object creator = this.creators.getValueItem(clazz);
+		if (creator != null || fullName ) {
+			return (SendableEntityCreator) creator;
 		}
-		clazz = "." + clazz;
+		
+		if(clazz.lastIndexOf(".")>=0) {
+			clazz = "."+clazz.substring(clazz.lastIndexOf(".")+1);
+		} else {
+			clazz = "." + clazz;
+		}
 		for (Iterator<Entry<String, SendableEntityCreator>> i = this.creators
 				.entrySet().iterator(); i.hasNext();) {
 			Entry<String, SendableEntityCreator> entry = i.next();
