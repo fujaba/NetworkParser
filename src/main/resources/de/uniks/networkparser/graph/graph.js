@@ -1273,7 +1273,7 @@ Edge.prototype.getFreeOwn = function(node, start){
 Edge.prototype.calcInfoPos = function(linePos, item, info, offset){
 	// Manuell move the InfoTag
 	offset = offset || 0;
-	var spaceA=0, spaceB=0;
+	var spaceA=20, spaceB=0;
 	if(item._parent.options && !item._parent.options.rotateText) {
 		spaceA = 20;
 		spaceB = 10;

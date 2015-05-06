@@ -29,6 +29,7 @@ import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.StringItem;
 import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.list.SimpleList;
 
 /**
  * The Class XMLEntity.
@@ -129,6 +130,22 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements
 		return null;
 	}
 
+	/**
+	 * Return all Children with Filter
+	 * @param key The key of Filter
+	 * @param value The Value of Filter
+	 * @return all Children where match the Filter
+	 */
+	public SimpleList<XMLEntity> getChildren(String key, String value) {
+		SimpleList<XMLEntity> children=new SimpleList<XMLEntity>();
+		for (XMLEntity entity : getChildren()) {
+			if(value.equalsIgnoreCase(entity.getString(key))) {
+				children.add(entity);
+			}
+		}
+		return children;
+	}
+	
 	/**
 	 * Gets the tag.
 	 *

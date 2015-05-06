@@ -278,7 +278,7 @@ HTMLDrawer.prototype.createLine = function(x1, y1, x2, y2, lineStyle){
 	// http://www.mathopenref.com/coorddist.html
 	var length = Math.sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
 
-	var line = this.util.create({tag: "div", class:"lineElement", style:{width:length, position:"absolute", zIndex:42}});
+	var line = this.util.create({tag: "div", class:"lineElement", style:{width:length+"px", position:"absolute", zIndex:42}});
 	line.style.borderBottomStyle= lineStyle;
 
 	var angle = Math.atan((y1-y2)/(x1-x2));
