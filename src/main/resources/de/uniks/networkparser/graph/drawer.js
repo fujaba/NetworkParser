@@ -166,6 +166,9 @@ HTMLDrawer.prototype.getNode = function(node, draw){
 		node._gui = htmlElement;
 		if(draw) {
 			this.model.draw(node);
+			if(node.style && node.style.toLowerCase()=="nac"){
+				htmlElement.appendChild(symbolLib.draw(null, {typ:"stop", x:0, y:0}));
+			}
 		}else{
 			this.model.layout(0, 0, node);
 		}
@@ -801,8 +804,8 @@ SymbolLibary.prototype.drawLamp = function(){
 };
 SymbolLibary.prototype.drawStop = function(node){
 	return {
-		x:node.getX(),
-		y:node.getY(),
+		x:node.x,
+		y:node.y,
 		width:30,
 		height:30,
 		items:[
