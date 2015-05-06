@@ -1,6 +1,7 @@
 package de.uniks.networkparser.test;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -10,20 +11,10 @@ public static String CRLF="\r\n";
 	
 	public StringBuffer readFile(String file){
 		BufferedReader bufferedReader;
-		String path = IOClasses.class.getResource("IOClasses.class").getPath();
-		
-		int pos = path.lastIndexOf("bin/");
-		if(pos>0){
-			path = path.substring(0, pos)+"src/test/resources/" ;
-		}else{
-			pos = path.lastIndexOf("build/classes");
-			if(pos>0){
-				path = path.substring(0, pos + 6)+"resources/test/";
-			}
-		}
-		System.out.println("IOCLASSES-PATH: "+path);
+		File path = new File(IOClasses.class.getResource("IOClasses.class").getPath());
+		path = path.getParentFile();
 		try {
-			bufferedReader = new BufferedReader(new FileReader(path+file));
+			bufferedReader = new BufferedReader(new FileReader(path+File.separator+file));
 			StringBuffer indexText = new StringBuffer();
 			String line = bufferedReader.readLine();
 			while (line != null)

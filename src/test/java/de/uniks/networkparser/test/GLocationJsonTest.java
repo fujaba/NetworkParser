@@ -11,7 +11,7 @@ import de.uniks.networkparser.json.JsonObject;
 public class GLocationJsonTest extends IOClasses{
 	@Test
 	public void testImport(){
-		StringBuffer result=readFile("test/location.json");
+		StringBuffer result=readFile("location.json");
 		JsonObject item = new JsonObject().withValue(result.toString());
 		assertEquals(((JsonArray)item.get("results")).size(), 1);
 	}

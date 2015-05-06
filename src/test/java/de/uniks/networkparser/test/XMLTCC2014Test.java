@@ -12,7 +12,7 @@ import de.uniks.networkparser.xml.XMLIdMap;
 public class XMLTCC2014Test extends IOClasses{
 	@Test
 	public void testPattern() {
-		String XMLText = readFile("test/test3.xml").toString();
+		String XMLText = readFile("test3.xml").toString();
 		
 		XMLIdMap map= new XMLIdMap();
 		map.withCreator(new FIXMLMessageCreator());
@@ -36,7 +36,7 @@ public class XMLTCC2014Test extends IOClasses{
 
 	@Test
 	public void testSimpleXMLEntity(){
-		String str = readFile("test/test3.xml").toString();
+		String str = readFile("test3.xml").toString();
 		
 		
 		XMLEntity item= new XMLEntity();
