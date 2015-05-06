@@ -516,7 +516,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 			index = size + 1 - index;
 		}
 		if(index>=0 && index<size){
-			if(isComplex(size)) {
+			if(isComplex(size) && elements.length<MINHASHINGSIZE) {
 				return ((Object[])elements[SMALL_KEY])[index];
 			}
 			return elements[index];
@@ -572,7 +572,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	protected int addKey(int pos, Object element, int size) {
 		Object[] keys;
 		
-		if(isComplex(size + 1)) {
+		if(isComplex(size)) {
 			keys = (Object[]) elements[SMALL_KEY];
 			if(elements[BIG_KEY]!= null){
 				int newPos = retransformIndex(pos, size);
