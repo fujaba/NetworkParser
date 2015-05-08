@@ -437,6 +437,11 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	}
 	
 	@SuppressWarnings("unchecked")
+	public V getValue(K key) {
+		return (V) super.getValueItem(key);
+	}
+	
+	@SuppressWarnings("unchecked")
 	public V remove(Object key) {
 		int index = indexOf(key);
 		if (index < 0) {

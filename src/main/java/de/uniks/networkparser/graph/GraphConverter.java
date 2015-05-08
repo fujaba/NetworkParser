@@ -114,7 +114,7 @@ public class GraphConverter implements Converter {
 	public GraphNode parseJsonObject(GraphList root, JsonObject node,
 			HashMap<GraphNode, ArrayList<GraphAttribute>> attributes) {
 		String id = node.getString(JsonIdMap.ID);
-		GraphClazz graphNode = (GraphClazz) root.getByObject(id);
+		GraphClazz graphNode = (GraphClazz) root.getByObject(id, true);
 		if (graphNode == null) {
 			graphNode = new GraphClazz().withId(id);
 			root.add(graphNode);

@@ -30,11 +30,10 @@ import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 
-public class GraphList extends GraphSimpleList<GraphMember> implements GraphMember{
+public class GraphList extends GraphNode{
 	private ArrayList<GraphEdge> edges = new ArrayList<GraphEdge>();
 	private String typ=GraphIdMap.CLASS;
 	private String style;
-	private String id;
 	private GraphOptions options;
 
 	public boolean add(GraphMember value) {
@@ -87,8 +86,10 @@ public class GraphList extends GraphSimpleList<GraphMember> implements GraphMemb
 			if (item.containsAll(edge.getOther())
 					&& item.getOther().containsAll(edge)) {
 				// Back again
-				item.with(edge.getOther().getCardinality());
-				item.with(edge.getOther().getProperty());
+				if(edge.getOther() != null ) {	
+					item.with(edge.getOther().getCardinality());
+					item.with(edge.getOther().getProperty());
+				}
 				return false;
 			}
 		}
@@ -161,15 +162,6 @@ public class GraphList extends GraphSimpleList<GraphMember> implements GraphMemb
 		return this;
 	}
 
-	public String getId() {
-		return id;
-	}
-
-	public GraphList withId(String value) {
-		this.id = value;
-		return this;
-	}
-
 	public String getStyle() {
 		return style;
 	}
@@ -183,15 +175,16 @@ public class GraphList extends GraphSimpleList<GraphMember> implements GraphMemb
 		return this;
 	}
 
-	public GraphMember getByObject(String id) {
+	public GraphNode getNode(String id) {
 		if(id==null){
 			return null;
 		}
 		for(GraphMember item : this) {
-			if(id.equalsIgnoreCase(item.getId())){
-				return item;
+			if(item instanceof GraphNode && id.equalsIgnoreCase(item.getId())){
+				return (GraphNode)item;
 			}
 		}
 		return null;
 	}
+	
 }

@@ -1,8 +1,8 @@
 package de.uniks.networkparser.graph;
 
-public class GraphClazz extends GraphNode{
+public class GraphClazz extends GraphNode {
 	private String className;
-	
+
 	public String getClassName(boolean shortName) {
 		if (!shortName || className == null || className.lastIndexOf(".") < 0) {
 			return className;
@@ -18,7 +18,7 @@ public class GraphClazz extends GraphNode{
 	public String getClassName() {
 		return className;
 	}
-	
+
 	public String getTyp(String typ, boolean shortName) {
 		if (typ.equals(GraphIdMap.OBJECT)) {
 			return getId();
@@ -37,7 +37,7 @@ public class GraphClazz extends GraphNode{
 		}
 		return this;
 	}
-	
+
 	@Override
 	public String toString() {
 		if (getId() == null) {
@@ -45,9 +45,14 @@ public class GraphClazz extends GraphNode{
 		}
 		return getId();
 	}
-	
+
 	public GraphClazz withId(String id) {
 		super.withId(id);
+		return this;
+	}
+	
+	public GraphClazz withParent(GraphNode value) {
+		super.withParent(value);
 		return this;
 	}
 }

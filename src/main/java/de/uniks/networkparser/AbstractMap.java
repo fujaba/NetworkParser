@@ -23,7 +23,6 @@ package de.uniks.networkparser;
  */
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Map.Entry;
 
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -72,12 +71,12 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 		} else {
 			clazz = "." + clazz;
 		}
-		for (Iterator<Entry<String, SendableEntityCreator>> i = this.creators
-				.entrySet().iterator(); i.hasNext();) {
-			Entry<String, SendableEntityCreator> entry = i.next();
-			if (entry.getKey().endsWith(clazz)
-					&& entry.getValue() instanceof SendableEntityCreator) {
-				return (SendableEntityCreator) entry.getValue();
+		for(int i=0;i<this.creators.size();i++) {
+			String key = this.creators.getKeyByIndex(i);
+			SendableEntityCreator value = this.creators.getValueByIndex(i);
+			if (key.endsWith(clazz)
+					&& value instanceof SendableEntityCreator) {
+				return value;
 			}
 		}
 		return null;
