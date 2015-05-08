@@ -108,7 +108,7 @@ public class GraphIdMap extends IdMap {
 		}
 
 		String mainKey = getId(object);
-		GraphMember element = list.getByObject(mainKey);
+		GraphMember element = list.getByObject(mainKey, true);
 		if (element != null && element instanceof GraphNode) {
 			return (GraphNode)element;
 		}

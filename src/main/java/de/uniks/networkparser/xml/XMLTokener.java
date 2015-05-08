@@ -181,6 +181,13 @@ public class XMLTokener extends Tokener {
 
 	@Override
 	public XMLTokener withText(String value) {
+		int pos = 0;
+		while (value.substring(pos, pos + 2).equals("<?")) {
+			pos = value.indexOf("?>", pos) + 2;
+		}
+		if (pos > 0) {
+			value = value.substring(pos);
+		}
 		super.withText(value);
 		return this;
 	}
