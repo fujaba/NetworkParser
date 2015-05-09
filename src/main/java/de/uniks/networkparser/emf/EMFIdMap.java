@@ -294,12 +294,6 @@ public class EMFIdMap extends XMLIdMap {
 				if(edge != null) {
 					typeName = edge.getOther().getNode().getId(); 
 				}
-//					typeName = EMFUtil.firstUpName(kidEntity.getTag());
-//					 Method getMethod = rootObject.getClass().getMethod("get" +
-//							 EMFUtil.upFirstChar(tag));
-//					 typeName = getMethod.getReturnType().getName();
-//					 typeName += "Set";
-//					 typeName = CGUtil.baseClassName(typeName, "Set");
 			}
 
 			if (kidEntity.contains(XSI_TYPE)) {

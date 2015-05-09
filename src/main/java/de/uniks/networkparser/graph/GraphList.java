@@ -189,13 +189,11 @@ public class GraphList extends GraphNode{
 
 	public GraphEdge getEdge(GraphNode node, String property) {
 		for(GraphEdge edge : getEdges()) {
-			if(edge.getNode()==node && property.equals(edge.getProperty())) {
+			GraphEdge oEdge = edge.getOther();
+			if(edge.getNode()==node && property.equals(oEdge.getProperty())) {
 				return edge;
-			}else if(edge.getOther() != null) {
-				GraphEdge oEdge = edge.getOther();
-				if(oEdge.getNode()==node && property.equals(oEdge.getProperty())) {
-					return oEdge;
-				}
+			}else if(oEdge.getNode()==node && property.equals(edge.getProperty())) {
+				return oEdge;
 			}
 		}
 		return null;
