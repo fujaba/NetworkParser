@@ -72,7 +72,10 @@ public class GraphEdge extends GraphSimpleList<GraphNode> implements
 		if(this.size() == 1) {
 			GraphNode item = this.get(0);
 			if(item instanceof GraphClazz) {
-				return ((GraphClazz)item).getClassName(true).toLowerCase();	
+				String className = ((GraphClazz)item).getClassName(true);
+				if(className != null) {
+					return className.toLowerCase();
+				}
 			}
 			
 		}

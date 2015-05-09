@@ -73,7 +73,6 @@ public class GraphNode extends GraphSimpleList<GraphMember> implements GraphMemb
 				}else  if (value instanceof GraphClazz) {
 					GraphClazz child = (GraphClazz) value;
 					add(child);
-					child.withParent(this);
 				}
 			}
 		}
