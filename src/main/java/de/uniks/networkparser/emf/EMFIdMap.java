@@ -7,7 +7,6 @@ import java.util.Iterator;
 import de.uniks.networkparser.graph.GraphClazz;
 import de.uniks.networkparser.graph.GraphEdge;
 import de.uniks.networkparser.graph.GraphList;
-import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.xml.XMLEntity;
@@ -291,10 +290,9 @@ public class EMFIdMap extends XMLIdMap {
 				typeName = tag.split(":")[1];
 			} else {
 				GraphClazz clazz = (GraphClazz) model.getByObject(rootObject.getClass().getName(), false);
-				for(GraphEdge edge : model.getEdges()) {
-					if(edge.getNode()==clazz && tag.equals(edge.getProperty())) {
-						typeName = edge.getOther().getNode().getId();
-					}
+				GraphEdge edge = model.getEdge(clazz, tag);
+				if(edge != null) {
+					typeName = edge.getOther().getNode().getId(); 
 				}
 //					typeName = EMFUtil.firstUpName(kidEntity.getTag());
 //					 Method getMethod = rootObject.getClass().getMethod("get" +
