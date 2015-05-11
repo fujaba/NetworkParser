@@ -47,7 +47,7 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements Iterab
 		int pos = hasKey(value, size);
 		if(pos>=0) {
 			grow(size + 1);
-			addKey(pos, value, size);
+			addKey(pos, value, size + 1);
 			return true;
 		}
 		return false;
