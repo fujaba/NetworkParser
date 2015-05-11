@@ -5,7 +5,6 @@ import java.util.List;
 import de.uniks.networkparser.interfaces.BaseItem;
 
 public class SimpleList<V> extends AbstractList<V> implements List<V> {
-	
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
 		return new SimpleList<V>();

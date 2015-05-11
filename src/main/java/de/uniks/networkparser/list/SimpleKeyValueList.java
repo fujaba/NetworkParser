@@ -10,9 +10,8 @@ import de.uniks.networkparser.interfaces.BaseItem;
 
 public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K, V>, Iterable<K> {
 
-	@Override
-	public byte initFlag() {
-		return MAP+VISIBLE+CASESENSITIVE;
+	public SimpleKeyValueList() {
+		super((byte)(MAP+VISIBLE+CASESENSITIVE));
 	}
 	
 	/**
@@ -361,7 +360,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		if(pos<0) {
 			return null;
 		}
-		if(pos==size || getKeyByIndex(pos, size) != key) {
+		if(pos==size || getByIndex(SMALL_KEY, pos, size) != key) {
 			grow(size + 1);
 			super.addKeyValue(pos, key, value);
 		}else {
@@ -429,11 +428,9 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return (K) super.getKeyByIndex(index);
 	}
 
-
-	@Override
 	@SuppressWarnings("unchecked")
 	public V getValueByIndex(int index) {
-		return (V) super.getValueByIndex(index);
+		return (V) super.getByIndex(SMALL_VALUE, index, size);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -471,7 +468,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	public V get(Object key) {
 		int pos = indexOf(key);
 		if(pos>=0) {
-			return (V) super.getValueByIndex(pos);
+			return (V) super.getByIndex(SMALL_VALUE, pos, size);
 		}
 		return null;
 	}
@@ -491,7 +488,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		if(pos<0) {
 			return this;
 		}
-		if(pos==size || getKeyByIndex(pos, size) != key) {
+		if(pos==size || getByIndex(SMALL_KEY, pos, size) != key) {
 			grow(size + 1);
 			super.addKeyValue(pos, key, value);
 		}else {

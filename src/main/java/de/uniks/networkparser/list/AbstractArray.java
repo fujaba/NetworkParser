@@ -22,7 +22,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	public static final byte MAP = 0x20;
 	/** Is List is Key,Value and Value, Key */
 	public static final byte BIDI = 0x40;
-		
+
 	public static final byte MINSIZE = 4;
 	public static final int MAXDELETED = 42;
 	public static final int MINHASHINGSIZE = 420;
@@ -35,7 +35,10 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	public static final int SMALL_VALUE = 3;
 	public static final int BIG_VALUE = 4;
 
-	private int index;
+	/**
+	 * Start index of Elements-Array
+	 */
+	int index;
 	/**
 	 * The Flag of List. It contains the options
 	 * EntitySize 1,2,3
@@ -46,7 +49,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	 * @see MAP
 	 * @see BIDI
 	 */
-	public byte flag=initFlag(); // Flag of
+	public byte flag; // Flag of
 	/**
      * The array buffer into which the elements of the ArrayList are stored.
      * The capacity of the ArrayList is the length of this array buffer. Any
@@ -69,10 +72,15 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	/** The size of the ArrayList (the number of elements it contains).  */
     int size;
     
-    public byte initFlag() {
-    	return 0+VISIBLE+CASESENSITIVE;
-    }
+    public AbstractArray() {
+//    	this.getClass().isAssignableFrom()
+    	this.flag = 0+VISIBLE+CASESENSITIVE;
+	}
     
+    public AbstractArray(byte flag) {
+    	this.flag = flag;
+	}
+
     /** Init-List with Collection
      * 
 	 * @param list add all new Items
@@ -81,6 +89,8 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
      */
     @SuppressWarnings("unchecked")
 	public <ST extends AbstractArray<V>> ST init(Collection<?> list){
+    	this.getClass().isAssignableFrom(Short.class);
+    	
     	if(list instanceof AbstractArray){
     		this.flag = ((AbstractArray<V>)list).getSignalFlag();
     	}
@@ -269,14 +279,14 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 			this.elements = null;
 			return;
 		}
-		Object beforeElement = null;
 		if(arrayFlag==1) {
-			for(Object item : elements) {
-				fireProperty(item, null, beforeElement, null);
-				beforeElement = item;
+			for(int i=elements.length - 1;i > 0;i--) {
+				fireProperty(elements[i], null, elements[i - 1], null);
 			}
+			fireProperty(elements[0], null, null, null);
 			return;
 		}
+		Object beforeElement = null;
 		Object[] items = (Object[]) elements[SMALL_KEY];
 		if(arrayFlag>3) {
 			for(Object item : items) {
@@ -290,6 +300,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 			beforeElement = item;
 		}
 		this.elements = null;
+		this.index = 0;
 	}
 	
 	/**
@@ -462,8 +473,8 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		Object[] dest = new Object[newCapacity];
 		//FIXME this.index=4  count = 8 size=6
 		if(size > elements.length - this.index) {
-			System.arraycopy(elements, this.index, dest, 0, size - this.index);
-			System.arraycopy(elements, this.index, dest, size - this.index, elements.length - size - this.index);
+			System.arraycopy(elements, this.index, dest, 0, size - this.index + 1);
+			System.arraycopy(elements, this.index, dest, size - this.index, elements.length - size - this.index + 1);
 		}else{
 			System.arraycopy(elements, this.index, dest, 0, size);
 		}
@@ -482,8 +493,8 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 			return -1;
 		if (isComparator()) {
 			for (int i = 0; i < size(); i++) {
-				if (comparator().compare(getKeyByIndex(i, size), element) >= 0) {
-					if (!isAllowDuplicate() && getKeyByIndex(i, size) == element) {
+				if (comparator().compare(getByIndex(SMALL_KEY, i, size), element) >= 0) {
+					if (!isAllowDuplicate() && getByIndex(SMALL_KEY, i, size) == element) {
 						return -1;
 					}
 					return i;
@@ -527,45 +538,50 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	}
 
 	public Object getKeyByIndex(int index) {
-		return getKeyByIndex(index, size);
+		return getByIndex(SMALL_KEY, index, size);
 	}
 	
-	protected Object getKeyByIndex(int index, int size) {
-//		index =
+	protected Object getByIndex(int offset, int index, int size) {
+		if(size==0) {
+			return null;
+		}
+		index += this.index;
 		if(index<0) {
-			index = size + 1 - index;
+			index = size + 1 + index;
 		}
-		if(index>=0 && index<size){
-			if(isComplex(size)) {
-				return ((Object[])elements[SMALL_KEY])[index];
-			}
-			return elements[index];
+		Object[] items;
+		if(isComplex(size)) {
+			items = ((Object[])elements[offset]);
+		}else {
+			items = elements;
 		}
-		return null;
+		if(index >= items.length ) {
+			index = index % items.length;
+		}
+		return items[index];
 	}
-	
-	public Object getValueByIndex(int index) {
-		if(index<0) {
-			index = size + 1 - index;
-		}
-		if(index>=0 && index<size){
-			return ((Object[])elements[SMALL_VALUE])[index];
-		}
-		return null;
-	}
-	
+		
 	protected int addKeyValue(int pos, Object key, Object value) {
-		int i = size();
-		Object[] keys, values;
-		keys = (Object[]) elements[SMALL_KEY];
-		values = (Object[]) elements[SMALL_VALUE];
-		while(i>pos) {
-			keys[i] = keys[i-1];
-			values[i] = values[--i];
+		Object[] keys = (Object[]) elements[SMALL_KEY];
+		Object[] values = (Object[]) elements[SMALL_VALUE];
+		if(pos == 0 && this.size>0) {
+			if(this.index == 0) {
+				this.index = keys.length - 1;
+			}else {
+				this.index--;
+			}
+			pos = this.index;
+		}else {
+			pos = (this.index + pos) % keys.length;
+			int i = size();
+			while(i>pos) {
+				keys[i] = keys[i-1];
+				values[i] = values[--i];
+			}
 		}
 		keys[pos] = key;
 		values[pos] = value;
-        Object beforeKey = this.getKeyByIndex(size, size);
+        Object beforeKey = this.getByIndex(SMALL_KEY, size, size);
         size++;
 		if(isBig()) {
 			addHashItem(pos, key, (Object[])elements[BIG_KEY]);
@@ -590,6 +606,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	 * @return if value is added
 	 */
 	protected int addKey(int pos, Object element, int size) {
+		//FIXME POS == 0
 		Object[] keys;
 		
 		if(isComplex(size)) {
@@ -601,16 +618,27 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		}else{
 			keys = elements;
 		}
-		int i = this.size;
-		while(i>pos) {
-			keys[i] = keys[--i]; 	
+		
+		if(pos == 0 && this.size>0) {
+			if(this.index == 0) {
+				this.index = keys.length - 1;
+			}else {
+				this.index--;
+			}
+			pos = this.index;
+		}else {
+			pos = (this.index + pos) % keys.length;
+			int i = this.size;
+			while(i>pos) {
+				keys[i] = keys[--i]; 	
+			}
 		}
 		keys[pos] = element;
         Object beforeElement = null;
         this.size++;
         if (pos > 0)
         {
-        	beforeElement = this.getKeyByIndex(pos-1, size);
+        	beforeElement = this.getByIndex(SMALL_KEY, pos-1, size);
         }
         fireProperty(null, element, beforeElement, null);
 		return pos;
@@ -803,19 +831,16 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		if(hashCodes == null) {
 			return -1;
 		}
-		Object[] items = (Object[])elements[offset];
 		int index = hashKey(o.hashCode(), hashCodes.length);
 		if(hashCodes[index]==null){
 			return -1;
 		}
-		
-		Object value = null;
+		int len = ((Object[]) elements[offset]).length;
 		int indexItem=-1;
 		if((Integer)hashCodes[index]>-1){
-			indexItem = transformIndex((Integer)hashCodes[index], items.length);
-			value = items[ indexItem ];
+			indexItem = transformIndex((Integer)hashCodes[index], len);
 		}
-		while(!checkValue(o, value)){
+		while(!checkValue(o, getByIndex(offset, indexItem, size))){
 			index = (index + 1) % hashCodes.length;
 			if(hashCodes[index]==null) {
 				return -1;
@@ -823,27 +848,22 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 			if((Integer)hashCodes[index]==-1){
 				continue;
 			}
-			indexItem = transformIndex((Integer)hashCodes[index], items.length);
-			value = items[indexItem];
+			indexItem = transformIndex((Integer)hashCodes[index], len);
 		}
 		return indexItem;
 	}
 
 	public int getLastPositionKey(Object o) {
-		//FIXME transformIndex
 		if (o == null) {
 			return -1;
 		}
 		Object[] items = (Object[])elements[SMALL_KEY];
 		int index = hashKey(o.hashCode(), items.length);
-		Object value = items[index];
 		int found=-1;
-		while (!checkValue(value, o)) {
-			if (value == null)
+		while (!checkValue(getKeyByIndex(index), o)) {
+			if (getKeyByIndex(index) == null)
 				return found;
 			index = (index + 1) % items.length;
-			value = items[index];
-//			value = items[transformIndex((int)items[index])];
 		}
 		if(elements[DELETED] != null) {
     		items = (Object[]) elements[DELETED];
@@ -1023,7 +1043,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	public Object getValueItem(Object key) {
 		int pos = indexOf(key);
 		if (pos >= 0) {
-			return this.getValueByIndex(pos);
+			return this.getByIndex(SMALL_VALUE, pos, size);
 		}
 		if (!(key instanceof String)) {
 			return null;
@@ -1060,7 +1080,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 			id = -1;
 		}
 
-		Object child = getValueByIndex(indexOf(keyString.substring(0, len)));
+		Object child = getByIndex(SMALL_VALUE, indexOf(keyString.substring(0, len)), size);
 		if (child != null) {
 			if (end == 0) {
 				if (id >= 0 || id == -2) {
@@ -1198,7 +1218,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
     
 	@SuppressWarnings("unchecked")
 	public V get(int index) {
-		return (V) getKeyByIndex(index, size);
+		return (V) getByIndex(SMALL_KEY, index, size);
 	}
 
 	/** @return the First Element of the List */
@@ -1218,7 +1238,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	}
 	
 	public BaseItem getNewList(boolean keyValue) {
-		return new AbstractArray<V>();
+		return new AbstractArray<V>(this.flag);
 	}
 
 	public BaseItem subList(int fromIndex, int toIndex) {

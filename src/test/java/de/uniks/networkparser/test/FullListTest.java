@@ -8,6 +8,7 @@ import java.util.ListIterator;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.uniks.networkparser.list.AbstractArray;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 
@@ -228,6 +229,7 @@ public class FullListTest {
 		assertEquals("clone should have 1 elements", 1, clone.size());
 		assertEquals("clone[0] should be 12", 2, 0 + clone.first());
 		
+		//FIXME TEST ELEMENTS ARE NOT NULL
 		simpleList.clear();
 		
 		for (int i = 1; i <= 42; i++)
@@ -252,6 +254,19 @@ public class FullListTest {
 
 		int lastIndexOf = clone.lastIndexOf(clone.first());
 		assertEquals("wrong index", 0, lastIndexOf);
-
+	}
+	
+	@Test
+	public void simpleListQueue()
+	{
+		SimpleList<Integer> queue=new SimpleList<Integer>();
+		for(int i=1;i<500;i++) {
+			queue.add(i);
+		}
+		Assert.assertEquals(499, queue.size());
+		
+		new AbstractArray<Integer>();
+		
+		
 	}
 }
