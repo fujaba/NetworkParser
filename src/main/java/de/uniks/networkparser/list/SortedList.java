@@ -10,7 +10,8 @@ public class SortedList<V> extends SimpleList<V> {
 	protected Comparator<V> cpr;
 	
 	@SuppressWarnings("unchecked")
-	public Comparator<Object> comparator() {
+	@Override
+	Comparator<Object> comparator() {
 		if (this.cpr == null) {
 			withComparator(new EntityComparator<V>().withColumn(
 					EntityComparator.LIST).withDirection(SortingDirection.ASC));
@@ -18,7 +19,8 @@ public class SortedList<V> extends SimpleList<V> {
 		return (Comparator<Object>) cpr;
 	}
 	
-	public boolean isComparator() {
+	@Override
+	boolean isComparator() {
 		return (this.cpr != null);
 	}
 	
