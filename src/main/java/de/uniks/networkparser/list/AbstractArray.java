@@ -127,12 +127,12 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
     	return (ST) this;
     }
     
-//FIXME REMOVE???    final boolean isBig() {
-//    	return size>=MINHASHINGSIZE && elements.length <= (BIG_VALUE+1);
-//    }
+    final boolean isBig() {
+    	return size>=MINHASHINGSIZE && elements.length <= (BIG_VALUE+1);
+    }
 
     final boolean isComplex(int size) {
-    	return (flag & MAP) == MAP || size >= MINHASHINGSIZE || size >= MINHASHINGSIZE;
+    	return (flag & MAP) == MAP || size >= MINHASHINGSIZE;
     }
     
     final int getArrayFlag(int size ) {
@@ -308,11 +308,11 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		return (tmp < 0) ? -tmp : tmp;
 	}
 	
-	Comparator<Object> comparator(){
+	public Comparator<Object> comparator(){
 		return null;
 	}
 	
-	boolean isComparator() {
+	public boolean isComparator() {
 		return false;
 	}
 	
@@ -531,7 +531,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	}
 	
 	protected Object getKeyByIndex(int index, int size) {
-		index = 
+//		index =
 		if(index<0) {
 			index = size + 1 - index;
 		}
@@ -592,7 +592,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	protected int addKey(int pos, Object element, int size) {
 		Object[] keys;
 		
-		if(isComplex(size + 1)) {
+		if(isComplex(size)) {
 			keys = (Object[]) elements[SMALL_KEY];
 			if(elements[BIG_KEY]!= null){
 				int newPos = retransformIndex(pos, size);
