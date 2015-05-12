@@ -3,6 +3,7 @@ package de.uniks.networkparser.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.lang.reflect.Field;
 import java.util.ListIterator;
 
 import org.junit.Assert;
@@ -255,18 +256,48 @@ public class FullListTest {
 		int lastIndexOf = clone.lastIndexOf(clone.first());
 		assertEquals("wrong index", 0, lastIndexOf);
 	}
-	
+
 	@Test
-	public void simpleListQueue()
+	public void simpleListNoHash() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
 	{
-		SimpleList<Integer> queue=new SimpleList<Integer>();
+		SimpleList<Integer> queue=new SimpleList<Integer>().withAllowDuplicate(true);
 		for(int i=1;i<500;i++) {
 			queue.add(i);
 		}
-		Assert.assertEquals(499, queue.size());
-		
-		new AbstractArray<Integer>();
-		
-		
+		Field declaredField = queue.getClass().getField("elements");
+		Object[] object = (Object[]) declaredField.get(queue);
+		Assert.assertNull(object[AbstractArray.BIG_KEY]);
+	}
+
+	@Test
+	public void simpleKeyValueList() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
+	{
+		SimpleKeyValueList<Integer, Integer> queue=new SimpleKeyValueList<Integer, Integer>().addFlag(SimpleKeyValueList.BIDI).withAllowDuplicate(true);
+		for(int i=1;i<500;i++) {
+			if(i==1) {
+				System.out.println("BREAK");
+			}
+			queue.add(i, i);
+		}
+		Field declaredField = queue.getClass().getField("elements");
+		Object[] object = (Object[]) declaredField.get(queue);
+		Assert.assertNull(object[AbstractArray.BIG_KEY]);
+		Assert.assertNull(object[AbstractArray.BIG_VALUE]);
+	}
+	
+	@Test
+	public void simpleListQueue() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
+	{
+		SimpleList<Integer> queue=new SimpleList<Integer>();
+		for(int i=1;i<500;i++) {
+			if(i==420) {
+				System.out.println("BREAK");
+			}
+			queue.add(i);
+		}
+//		Field declaredField = queue.getClass().getField("elements");
+//		Object[] object = (Object[]) declaredField.get(queue);
+//		Assert.assertNull(object[AbstractArray.BIG_KEY]);
+
 	}
 }

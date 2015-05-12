@@ -125,7 +125,7 @@ public class Item
    } 
 
    
-   public static final ItemSet EMPTY_SET = new ItemSet().withReadOnly(true);
+   public static final ItemSet EMPTY_SET = new ItemSet().addFlag(ItemSet.READONLY);
 
    
    /********************************************************************

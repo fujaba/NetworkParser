@@ -289,8 +289,6 @@ public class DateTimeEntity {
 
 		if (oldValue != null) {
 			set(field, oldValue + value);
-		} else {
-			set(field, value);
 		}
 	}
 
