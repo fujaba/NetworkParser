@@ -274,33 +274,34 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	
 	public void clear() {
 		int arrayFlag = getArrayFlag(size);
-		size = 0;
 		if(arrayFlag<1) {
 			this.elements = null;
 			return;
 		}
+		size = 0;
+		this.index = 0;
 		if(arrayFlag==1) {
 			for(int i=elements.length - 1;i > 0;i--) {
 				fireProperty(elements[i], null, elements[i - 1], null);
 			}
 			fireProperty(elements[0], null, null, null);
+			this.elements = null;
 			return;
 		}
-		Object beforeElement = null;
 		Object[] items = (Object[]) elements[SMALL_KEY];
 		if(arrayFlag>3) {
-			for(Object item : items) {
-				fireProperty(item, null, beforeElement, elements[SMALL_VALUE]);
-				beforeElement = item;
+			for(int i=items.length - 1;i > 0;i--) {
+				fireProperty(items[i], null, items[i - 1], ((Object[])elements[SMALL_VALUE])[i]);	
 			}
+			fireProperty(items[0], null, null, ((Object[])elements[SMALL_VALUE])[0]);
+			this.elements = null;
 			return;
 		}
-		for(Object item : items) {
-			fireProperty(item, null, beforeElement, null);
-			beforeElement = item;
+		for(int i=items.length - 1;i > 0;i--) {
+			fireProperty(items[i], null, items[i - 1], null);	
 		}
+		fireProperty(items[0], null, null, null);
 		this.elements = null;
-		this.index = 0;
 	}
 	
 	/**
@@ -444,11 +445,13 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		Object[] items = (Object[]) elements[index - 1];
 		Object[] newItems = new Object[minCapacity]; 
 		elements[index] = newItems;
-		for(int pos=0;pos<items.length;pos++) {
-			if(items[pos]==null){
-				break;
+		int i=this.index;
+		for(int pos=0;pos<size;pos++) {
+			if(i==items.length) {
+				i=0;
 			}
-			addHashItem(pos, items[pos], newItems);
+			addHashItem(i, items[i], newItems);
+			i++;
 		}
 	}
 	
@@ -749,7 +752,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
        		return -1;
 
     	if(size>=MINHASHINGSIZE ) {
-   			return getPositionKey(o);
+   			return getPosition(o, SMALL_KEY);
     	}
     	Object[] items;
     	if((flag & MAP)==MAP) {
