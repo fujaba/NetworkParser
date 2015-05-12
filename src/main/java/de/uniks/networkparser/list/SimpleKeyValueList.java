@@ -11,7 +11,8 @@ import de.uniks.networkparser.interfaces.BaseItem;
 public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K, V>, Iterable<K> {
 
 	public SimpleKeyValueList() {
-		super((byte)(MAP+VISIBLE+CASESENSITIVE));
+		super();
+		addFlag(MAP);
 	}
 	
 	/**

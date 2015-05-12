@@ -49,7 +49,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	 * @see MAP
 	 * @see BIDI
 	 */
-	public byte flag; // Flag of
+	public byte flag = VISIBLE+CASESENSITIVE; // Flag of
 	/**
      * The array buffer into which the elements of the ArrayList are stored.
      * The capacity of the ArrayList is the length of this array buffer. Any
@@ -72,14 +72,11 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	/** The size of the ArrayList (the number of elements it contains).  */
     int size;
     
-    public AbstractArray() {
-//    	this.getClass().isAssignableFrom()
-    	this.flag = 0+VISIBLE+CASESENSITIVE;
-	}
-    
-    public AbstractArray(byte flag) {
-    	this.flag = flag;
-	}
+    @SuppressWarnings("unchecked")
+	public <ST extends AbstractArray<V>> ST addFlag(byte flag){
+    	this.flag = (byte) (this.flag | flag);
+    	return (ST)this;
+    }
 
     /** Init-List with Collection
      * 
@@ -260,17 +257,6 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	public boolean isReadOnly() {
 		return (flag & READONLY)==READONLY;
 	}
-
-	@SuppressWarnings("unchecked")
-	public <ST extends AbstractArray<V>> ST withReadOnly(
-			boolean value) {
-		if(value) {
-			this.flag = (byte) (this.flag | READONLY);
-		} else {
-			this.flag = (byte) (this.flag & (0xff - READONLY));
-		}
-		return (ST) this;
-	}
 	
 	public void clear() {
 		int arrayFlag = getArrayFlag(size);
@@ -401,9 +387,6 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 			}
 			elements = new Object[arrayFlag];
 			elements[SMALL_KEY] = new Object[newSize];
-			if(newSize>MINHASHINGSIZE) {
-				resizeBig(newSize*2, BIG_KEY);
-			}
 			if((flag & MAP)==MAP){
 				elements[SMALL_VALUE] = new Object[newSize];
 			}
@@ -427,9 +410,11 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 					resizeSmall(newSize, SMALL_VALUE);
 				}
 			}
-			if(minCapacity>=MINHASHINGSIZE && (elements[BIG_KEY]==null || minCapacity >= ((Object[])elements[BIG_KEY]).length * MAXUSEDLIST)) {
-				resizeBig(newSize*2, BIG_KEY);
-				if((flag & BIDI)==BIDI) {
+			if(minCapacity>=MINHASHINGSIZE) {
+				if(elements[BIG_KEY] != null && minCapacity >= ((Object[])elements[BIG_KEY]).length * MAXUSEDLIST) {
+					resizeBig(newSize*2, BIG_KEY);
+				}
+				if((flag & BIDI)==BIDI && elements[BIG_VALUE] != null && minCapacity >= ((Object[])elements[BIG_VALUE]).length * MAXUSEDLIST) {
 					resizeBig(newSize*2, BIG_VALUE);
 				}
 				elements[DELETED] = null;
@@ -587,8 +572,10 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
         Object beforeKey = this.getByIndex(SMALL_KEY, size, size);
         size++;
 		if(isBig()) {
-			addHashItem(pos, key, (Object[])elements[BIG_KEY]);
-			if ((flag & BIDI)==BIDI)
+			if(elements[BIG_KEY]!= null){
+				addHashItem(pos, key, (Object[])elements[BIG_KEY]);
+			}
+			if ((flag & BIDI)==BIDI && elements[BIG_VALUE] != null)
 			{
 			   addHashItem(pos, value, (Object[])elements[BIG_VALUE]);
 			}
@@ -832,7 +819,10 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		}
 		Object[] hashCodes = (Object[])elements[offset + 1];
 		if(hashCodes == null) {
-			return -1;
+			int len = ((Object[])elements[offset]).length;
+			resizeBig(len*2, BIG_KEY);
+			hashCodes = (Object[])elements[offset + 1];
+//			return -1;
 		}
 		int index = hashKey(o.hashCode(), hashCodes.length);
 		if(hashCodes[index]==null){
@@ -1241,7 +1231,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	}
 	
 	public BaseItem getNewList(boolean keyValue) {
-		return new AbstractArray<V>(this.flag);
+		return new AbstractArray<V>().addFlag(this.flag);
 	}
 
 	public BaseItem subList(int fromIndex, int toIndex) {
