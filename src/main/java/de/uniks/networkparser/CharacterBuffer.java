@@ -54,8 +54,10 @@ public class CharacterBuffer extends TextBuffer {
 	 * @return the CharacterBuffer
 	 */
 	public CharacterBuffer withValue(String value) {
-		this.buffer = value.toCharArray();
-		this.length = buffer.length;
+		if(value != null) {
+			this.buffer = value.toCharArray();
+			this.length = buffer.length;
+		}
 		return this;
 	}
 
