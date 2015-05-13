@@ -185,7 +185,8 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 	}
 
 	public ByteList withTyp(Byte value) {
-		this.typ = value;
+		if(value != null)
+			this.typ = value;
 		return this;
 	}
 

@@ -231,8 +231,10 @@ public class BytesBuffer implements BufferedBytes {
 
 	@Override
 	public void put(char value) {
-		this.buffer[index++] = (byte) (value >>> 8);
-		this.buffer[index++] = (byte) value;
+		if(this.buffer!=null) {
+			this.buffer[index++] = (byte) (value >>> 8);
+			this.buffer[index++] = (byte) value;
+		}
 	}
 
 	@Override

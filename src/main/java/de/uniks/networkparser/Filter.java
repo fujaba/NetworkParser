@@ -103,7 +103,6 @@ public class Filter {
 		if (property == null && referenceFilter != null) {
 			property = referenceFilter.getPropertyRegard();
 		}
-		visitedObjects = new ArrayList<Object>();
 		refs = new ArrayList<ReferenceObject>();
 		if (full == null && referenceFilter != null) {
 			full = referenceFilter.isFullSeriation();
@@ -129,15 +128,18 @@ public class Filter {
 	}
 
 	public boolean hasObjects(Object element) {
-		return visitedObjects.contains(element);
+		return getVisitedObjects().contains(element);
 	}
 
-	public int getIndexVisitedObjects(Object element) {
-		int pos = 0;
+	ArrayList<Object> getVisitedObjects() {
 		if (visitedObjects == null) {
 			visitedObjects = new ArrayList<Object>();
 		}
-		for (Object item : visitedObjects) {
+		return visitedObjects;
+	}
+	public int getIndexVisitedObjects(Object element) {
+		int pos = 0;
+		for (Object item : getVisitedObjects()) {
 			if (item == element) {
 				return pos;
 			}
@@ -147,8 +149,8 @@ public class Filter {
 	}
 
 	public Object getVisitedObjects(int index) {
-		if (visitedObjects != null) {
-			return visitedObjects.get(index);
+		if (index>=0 && index < getVisitedObjects().size()) {
+			return getVisitedObjects().get(index);
 		}
 		return null;
 	}
