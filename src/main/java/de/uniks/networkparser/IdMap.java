@@ -115,7 +115,8 @@ public abstract class IdMap extends AbstractMap implements
 	 * @return the Map
 	 */
 	public IdMap withKeyValue(SimpleKeyValueList<String, Object> parent) {
-		this.keyValue = parent;
+		if(parent != null)
+			this.keyValue = parent;
 		return this;
 	}
 

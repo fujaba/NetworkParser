@@ -53,6 +53,9 @@ public class ByteConverterString extends ByteConverter {
 	 */
 	@Override
 	public byte[] decode(String value) {
+		if(value == null) {
+			return null;
+		}
 		byte[] out = new byte[value.length()];
 		int n = value.length();
 

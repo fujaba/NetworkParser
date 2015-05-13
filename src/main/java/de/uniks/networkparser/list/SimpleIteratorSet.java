@@ -15,11 +15,14 @@ public class SimpleIteratorSet<K,V> implements ListIterator<Entry<K, V>>{
 
 	@Override
 	public boolean hasNext() {
-		return cursor<this.list.size();
+		return cursor<(this.list.size() - 1);
 	}
 
 	@Override
 	public Entry<K, V> next() {
+		if(!hasNext()) {
+			return null;
+		}
 		cursor++;
 		
 		this.currentEntry.setKey(this.list.getKeyByIndex(cursor));
