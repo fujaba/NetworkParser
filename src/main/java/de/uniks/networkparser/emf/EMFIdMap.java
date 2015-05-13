@@ -99,7 +99,7 @@ public class EMFIdMap extends XMLIdMap {
 
 		runningNumbers = new SimpleKeyValueList<String, Integer>();
 
-		addXMIIds(xmlEntity, "$root", "");
+		addXMIIds(xmlEntity, null);
 
 		addChildren(xmlEntity, rootFactory, rootObject);
 
@@ -108,10 +108,25 @@ public class EMFIdMap extends XMLIdMap {
 		return rootObject;
 	}
 
-	private void addXMIIds(XMLEntity xmlEntity, String rootId, String parentId) {
+	private void addXMIIds(XMLEntity xmlEntity, String rootId) {
 		if (xmlEntity.contains(XMI_ID)) {
 			return;
 		}
+		String tag = xmlEntity.getTag();
+		if (rootId != null) {
+			rootId += tag;
+			Integer num = runningNumbers.get(rootId);
+			if (num == null) {
+				num = 0;
+			} else {
+				num++;
+			}
+			runningNumbers.put(rootId, num);
+			rootId += num;
+		} else {
+			rootId = "$";
+		}
+		// kid.put(XMI_ID, "$" + tag + num);
 
 		if (xmlEntity.contains("href")) {
 			// might point to another xml file already loaded
@@ -129,31 +144,10 @@ public class EMFIdMap extends XMLIdMap {
 			}
 
 		}
-		if (rootId != null) {
-			xmlEntity.put(XMI_ID, rootId);
-		}
-		String localParent = "";
+		xmlEntity.put(XMI_ID, rootId);
 
 		for (XMLEntity kid : xmlEntity.getChildren()) {
-			if (kid.contains(XMI_ID)) {
-				continue;
-			}
-
-			String tag = kid.getTag();
-			localParent = parentId + tag;
-
-			Integer num = runningNumbers.get(localParent);
-
-			if (num == null) {
-				num = 0;
-				runningNumbers.put(localParent, 0);
-			} else {
-				num++;
-				runningNumbers.put(localParent, num);
-			}
-			localParent += num;
-
-			addXMIIds(kid, "$" + localParent, localParent);
+			addXMIIds(kid, rootId);
 		}
 	}
 
@@ -188,10 +182,10 @@ public class EMFIdMap extends XMLIdMap {
 					} else {
 						myRef = "_" + myRef.subSequence(0, 1) + "0";
 					}
-	                Object object = getObject(myRef);
-	                if (object != null) {
-	                    rootFactory.setValue(rootObject, key, object, "");
-	                }
+					Object object = getObject(myRef);
+					if (object != null) {
+						rootFactory.setValue(rootObject, key, object, "");
+					}
 				}
 			} else if (value.startsWith("/")) {
 				// maybe multiple separated by blanks
