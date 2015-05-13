@@ -191,7 +191,7 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 
 	public SimpleList<ByteItem> withValue(String value) {
 		ByteConverterString converter = new ByteConverterString();
-		this.add(((ByteEntity)getNewList(false)).withValue(ByteIdMap.DATATYPE_FIXED,
+		this.add(((ByteEntity)getNewList(true)).withValue(ByteIdMap.DATATYPE_FIXED,
 				converter.decode(value)));
 		return this;
 	}

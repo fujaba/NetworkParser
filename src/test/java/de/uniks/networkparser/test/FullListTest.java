@@ -288,16 +288,17 @@ public class FullListTest {
 	@Test
 	public void simpleListQueue() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
 	{
-		SimpleList<Integer> queue=new SimpleList<Integer>();
+		SimpleList<Integer> queue=new SimpleList<Integer>().withAllowDuplicate(true);
 		for(int i=1;i<500;i++) {
-			if(i==420) {
-				System.out.println("BREAK");
-			}
 			queue.add(i);
 		}
-//		Field declaredField = queue.getClass().getField("elements");
-//		Object[] object = (Object[]) declaredField.get(queue);
-//		Assert.assertNull(object[AbstractArray.BIG_KEY]);
-
+		Field declaredField = queue.getClass().getField("elements");
+		Object[] object = (Object[]) declaredField.get(queue);
+		
+		queue.remove(0);
+		Assert.assertEquals(queue.size(), 498);
+		Integer integer = queue.get(0);
+		Assert.assertEquals(integer, new Integer(2));
+		
 	}
 }

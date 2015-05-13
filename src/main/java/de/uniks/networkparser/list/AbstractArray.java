@@ -536,12 +536,18 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		index += this.index;
 		if(index<0) {
 			index = size + 1 + index;
+			if(index<0) {
+				return null;
+			}
 		}
 		Object[] items;
 		if(isComplex(size)) {
 			items = ((Object[])elements[offset]);
 		}else {
 			items = elements;
+		}
+		if(items == null ){
+			return null;
 		}
 		if(index >= items.length ) {
 			index = index % items.length;
@@ -962,60 +968,53 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	}
 	
 	Object removeItem(int index, int offset) {
-		Object oldValue = null;
-		if(!isComplex(size)){
-			if(elements==null) {
-				return null;
-			}
-			// One Dimension
-			oldValue = elements[index];
-			if(oldValue==null){
-				return null;
-			}
-			System.arraycopy(elements, index + 1, elements, index, size - index);
-			return oldValue;
-		}
-		
-		Object[] items = ((Object[])elements[offset]);
-		oldValue = items[index];
-		if(oldValue == null ) {
+		if(elements==null) {
 			return null;
 		}
-		if(offset<elements.length){
-			System.arraycopy(items, index + 1, elements[offset], index, size - index);
-			return oldValue;
-		}
-		Object[] hashCodes = ((Object[])elements[offset + 1]);
-		if(hashCodes == null) {
-			System.arraycopy(items, index + 1, elements[offset], index, size - index);
-			return oldValue;
-		}
-		
-		int indexPos = hashKey(oldValue.hashCode(), items.length);
-		Object value = null;
-		int indexHash = (Integer)hashCodes[indexPos];
-		if(indexHash>-1){
-			value = items[transformIndex(indexHash, items.length)];
-		}
-		while(!checkValue(value, oldValue)){
-			indexPos = (indexPos + 1) % items.length;
-			indexHash = (Integer)hashCodes[indexPos];
-			if(indexHash==-1){
-				continue;
-			}
-			value = items[indexHash];
-			if (value == null) {
-				indexPos=-1;
-				break;
-			}
+		Object[] items;
+		int complex = getArrayFlag(size);
+		if(complex>1){
+			items = ((Object[])elements[offset]);
+		} else {
+			// One Dimension
+			items = elements;
+		} 
+		Object oldValue = items[index];
+		if(oldValue==null){
+			return null;
 		}
 		
-	
-		if(indexPos>=0) {
-			hashCodes[indexPos] = -1;
+		// REMOVE FROM HASH-Codes
+		if(complex > 1 && complex>(offset+1) && elements[offset + 1] != null) {
+			Object[] hashCodes = ((Object[])elements[offset + 1]);
+			int indexPos = hashKey(oldValue.hashCode(), items.length);
+			int indexHash = (Integer)hashCodes[indexPos];
+			int pos = transformIndex(indexHash, items.length); 
+			while(pos != index) {
+				indexPos = (indexPos + 1) % items.length;
+				if(hashCodes[indexPos] == null) {
+					break;
+				}
+				indexHash = (Integer)hashCodes[indexPos];
+				if(indexHash==-1){
+					continue;
+				}
+				pos = transformIndex(indexHash, items.length);
+			}
+			if(pos == index) {
+				hashCodes[indexPos] = -1;
+			}
+		}
+
+		if(index == 0) {
+			items[index] = null;
+			this.index++;
+			if(this.index==items.length) {
+				this.index = 0;
+			}
+			return oldValue;
 		}
 		System.arraycopy(items, index + 1, items, index, size - index);
- 		
 
 		return oldValue;
 	}

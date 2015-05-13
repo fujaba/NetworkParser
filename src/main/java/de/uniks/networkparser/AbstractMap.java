@@ -85,6 +85,9 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 	 * @return return a Creator class for a clazz name
 	 */
 	public AbstractMap withCreator(Collection<SendableEntityCreator> creatorSet) {
+		if(creatorSet == null) {
+			return this;
+		}
 		for (SendableEntityCreator sendableEntityCreator : creatorSet) {
 			withCreator(sendableEntityCreator);
 		}
@@ -99,6 +102,9 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 	 * @return return a Creator class for a clazz name
 	 */
 	public AbstractMap withCreator(Iterable<SendableEntityCreator> iterator) {
+		if(iterator == null) {
+			return null;
+		}
 		for (Iterator<SendableEntityCreator> i = iterator.iterator(); i
 				.hasNext();) {
 			withCreator(i.next());
@@ -129,7 +135,12 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 	 * @return AbstractIdMap to interlink arguments
 	 */
 	public AbstractMap withCreator(SendableEntityCreator... createrClass) {
+		if(createrClass == null) {
+			return this;
+		}
 		for (SendableEntityCreator creator : createrClass) {
+			if(creator == null)
+				continue;
 			try{
 				Object reference = creator.getSendableInstance(true);
 				if (reference != null) {

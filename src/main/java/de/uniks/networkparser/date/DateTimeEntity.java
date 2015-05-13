@@ -94,6 +94,9 @@ public class DateTimeEntity {
 		if (month == 1) {
 			return MONTH_LENGTH[month] + 1;
 		}
+		if(month<0 || month>11) {
+			return 0;
+		}
 		return MONTH_LENGTH[month];
 	}
 

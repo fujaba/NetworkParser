@@ -394,7 +394,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		if(isBig()) {
     		return getPositionValue(value);
     	}
-		if(elements==null){
+		if(elements==null || value == null){
 			return -1;
 		}
 		Object[] items = (Object[]) elements[SMALL_VALUE];
