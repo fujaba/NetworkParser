@@ -201,6 +201,8 @@ public class Filter {
 	}
 
 	public Object getRefByEntity(Object value) {
+		if(visitedObjects == null)
+			return null;
 		for (int i = 0; i < visitedObjects.size(); i += 2) {
 			if (visitedObjects.get(i) == value) {
 				return visitedObjects.get(i + 1);

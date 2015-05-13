@@ -849,7 +849,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 			}
 			indexItem = transformIndex((Integer)hashCodes[index], len);
 		}
-		return indexItem;
+		return indexItem + this.index;
 	}
 
 	public int getLastPositionKey(Object o) {

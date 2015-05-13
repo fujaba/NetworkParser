@@ -101,7 +101,10 @@ public class BytesBuffer implements BufferedBytes {
 
 	@Override
 	public byte getByte() {
-		return this.buffer[index++];
+		if(this.buffer != null) {
+			return this.buffer[index++];
+		}
+		return 0;
 	}
 
 	private byte[] converter(int bits) {
@@ -189,33 +192,41 @@ public class BytesBuffer implements BufferedBytes {
 
 	@Override
 	public void put(byte value) {
-		this.buffer[index++] = value;
+		if(this.buffer != null) {
+			this.buffer[index++] = value;
+		}
 	}
 
 	@Override
 	public void put(short value) {
-		this.buffer[index++] = (byte) (value >>> 8);
-		this.buffer[index++] = (byte) value;
+		if(this.buffer != null) {
+			this.buffer[index++] = (byte) (value >>> 8);
+			this.buffer[index++] = (byte) value;
+		}
 	}
 
 	@Override
 	public void put(int value) {
-		this.buffer[index++] = (byte) (value >>> 24);
-		this.buffer[index++] = (byte) (value >>> 16);
-		this.buffer[index++] = (byte) (value >>> 8);
-		this.buffer[index++] = (byte) value;
+		if(this.buffer != null) {
+			this.buffer[index++] = (byte) (value >>> 24);
+			this.buffer[index++] = (byte) (value >>> 16);
+			this.buffer[index++] = (byte) (value >>> 8);
+			this.buffer[index++] = (byte) value;
+		}
 	}
 
 	@Override
 	public void put(long value) {
-		this.buffer[index++] = (byte) (value >>> 56);
-		this.buffer[index++] = (byte) (value >>> 48);
-		this.buffer[index++] = (byte) (value >>> 40);
-		this.buffer[index++] = (byte) (value >>> 32);
-		this.buffer[index++] = (byte) (value >>> 24);
-		this.buffer[index++] = (byte) (value >>> 16);
-		this.buffer[index++] = (byte) (value >>> 8);
-		this.buffer[index++] = (byte) value;
+		if(this.buffer != null) {
+			this.buffer[index++] = (byte) (value >>> 56);
+			this.buffer[index++] = (byte) (value >>> 48);
+			this.buffer[index++] = (byte) (value >>> 40);
+			this.buffer[index++] = (byte) (value >>> 32);
+			this.buffer[index++] = (byte) (value >>> 24);
+			this.buffer[index++] = (byte) (value >>> 16);
+			this.buffer[index++] = (byte) (value >>> 8);
+			this.buffer[index++] = (byte) value;
+		}
 	}
 
 	@Override
@@ -227,29 +238,35 @@ public class BytesBuffer implements BufferedBytes {
 	@Override
 	public void put(float value) {
 		int bits = Float.floatToIntBits(value);
-		this.buffer[index++] = (byte) (bits & 0xff);
-		this.buffer[index++] = (byte) ((bits >> 8) & 0xff);
-		this.buffer[index++] = (byte) ((bits >> 16) & 0xff);
-		this.buffer[index++] = (byte) ((bits >> 24) & 0xff);
+		if(this.buffer != null) {
+			this.buffer[index++] = (byte) (bits & 0xff);
+			this.buffer[index++] = (byte) ((bits >> 8) & 0xff);
+			this.buffer[index++] = (byte) ((bits >> 16) & 0xff);
+			this.buffer[index++] = (byte) ((bits >> 24) & 0xff);
+		}
 	}
 
 	@Override
 	public void put(double value) {
 		long bits = Double.doubleToLongBits(value);
-		this.buffer[index++] = (byte) ((bits >> 56) & 0xff);
-		this.buffer[index++] = (byte) ((bits >> 48) & 0xff);
-		this.buffer[index++] = (byte) ((bits >> 40) & 0xff);
-		this.buffer[index++] = (byte) ((bits >> 32) & 0xff);
-		this.buffer[index++] = (byte) ((bits >> 24) & 0xff);
-		this.buffer[index++] = (byte) ((bits >> 16) & 0xff);
-		this.buffer[index++] = (byte) ((bits >> 8) & 0xff);
-		this.buffer[index++] = (byte) ((bits >> 0) & 0xff);
+		if(this.buffer != null) {
+			this.buffer[index++] = (byte) ((bits >> 56) & 0xff);
+			this.buffer[index++] = (byte) ((bits >> 48) & 0xff);
+			this.buffer[index++] = (byte) ((bits >> 40) & 0xff);
+			this.buffer[index++] = (byte) ((bits >> 32) & 0xff);
+			this.buffer[index++] = (byte) ((bits >> 24) & 0xff);
+			this.buffer[index++] = (byte) ((bits >> 16) & 0xff);
+			this.buffer[index++] = (byte) ((bits >> 8) & 0xff);
+			this.buffer[index++] = (byte) ((bits >> 0) & 0xff);
+		}
 	}
 
 	@Override
 	public void put(byte[] value) {
-		for (int i = 0; i < value.length; i++) {
-			put(value[i]);
+		if(value!=null) {
+			for (int i = 0; i < value.length; i++) {
+				put(value[i]);
+			}
 		}
 	}
 
