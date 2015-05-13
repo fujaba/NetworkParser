@@ -409,6 +409,7 @@ GraphModel.prototype.removeFromBoard = function(board){
 	if(this._gui)
 		{board.removeChild(this._gui);this._gui = null;}
 };
+GraphModel.prototype.resize = function(mode){};
 GraphModel.prototype.calcLines = function(drawer){
 	var ownAssoc = [];
 	var i;
@@ -768,6 +769,13 @@ Graph.prototype.stopDrag = function(event) {
 	}
 	if(!(event.type=="mouseup"||event.type=="mouseout")&&!event.currentTarget.isdraggable){
 		return;
+	}
+	if(event.type=="mouseout") {
+		var x = this.isIE ? window.event.clientX : event.pageX;
+		var y = this.isIE ? window.event.clientY : event.pageY;
+		if(x<this.board.offsetWidth && y<this.board.offsetHeight) {
+			return;
+		}
 	}
 	var item = this.objDrag;
 	this.objDrag = null;
