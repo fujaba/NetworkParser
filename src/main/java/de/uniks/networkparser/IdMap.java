@@ -225,9 +225,6 @@ public abstract class IdMap extends AbstractMap implements
 	 */
 	@Override
 	public Object put(String jsonId, Object object) {
-		if(jsonId.startsWith("192.168.2.181:8000;T") || jsonId.startsWith("192.168.2.183:8000;T")) {
-			System.out.println("ERROR");
-		}
 		this.keyValue.with(jsonId, object);
 		addListener(object);
 		return object;
@@ -498,6 +495,9 @@ public abstract class IdMap extends AbstractMap implements
 
 	@Override
 	public void putAll(Map<? extends String, ? extends Object> map) {
+		if(map == null) {
+			return;
+		}
 		for (Iterator<?> i = map.entrySet().iterator(); i.hasNext();) {
 			java.util.Map.Entry<?, ?> mapEntity = (Entry<?, ?>) i.next();
 			put("" + mapEntity.getKey(), mapEntity.getValue());

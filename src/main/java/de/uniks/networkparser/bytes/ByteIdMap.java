@@ -360,6 +360,9 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 	 * @return the creator decoder class
 	 */
 	public SendableEntityCreatorByte getCreatorDecoderClass(byte typ) {
+		if(this.decoderMap == null) {
+			return null;
+		}
 		return this.decoderMap.get(Byte.valueOf(typ));
 	}
 
@@ -385,6 +388,9 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 	 * @return the object
 	 */
 	public Object decode(String value, ByteConverter converter) {
+		if(converter == null) {
+			return null;
+		}
 		byte[] decodeBytes = converter.decode(value);
 		return decode(decodeBytes);
 	}
@@ -421,6 +427,9 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 	 * @return the object
 	 */
 	public Object decode(BufferedBytes buffer) {
+		if(buffer == null) {
+			return null;
+		}
 		if (buffer.remaining() < 1) {
 			if (logger.error(this, "decode",
 					NetworkParserLog.ERROR_TYP_PARSING, buffer)) {
@@ -445,7 +454,8 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 			SendableEntityCreator eventCreater) {
 		if (eventCreater == null) {
 			UnknownMessage e = new UnknownMessage();
-			e.set(UnknownMessage.PROPERTY_VALUE, buffer.array());
+			if(buffer != null)
+				e.set(UnknownMessage.PROPERTY_VALUE, buffer.array());
 			return e;
 		}
 		Object entity = eventCreater.getSendableInstance(false);
@@ -485,7 +495,7 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 	 * @return the decode object
 	 */
 	public Object decodeValue(BufferedBytes buffer, int end) {
-		if (buffer.remaining() < 1) {
+		if (buffer == null || buffer.remaining() < 1) {
 			return null;
 		}
 		byte typ = buffer.getByte();

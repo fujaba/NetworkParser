@@ -53,6 +53,9 @@ public class ByteConverterHTTP extends ByteConverter {
 	 */
 	@Override
 	public byte[] decode(String value) {
+		if(value == null) {
+			return null;
+		}
 		int len = value.length();
 		BytesBuffer buffer = BytesBuffer.allocate(len);
 		for (int i = 0; i < len; i++) {

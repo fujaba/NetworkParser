@@ -94,18 +94,18 @@ public class Filter {
 	}
 
 	public Filter withStandard(Filter referenceFilter) {
-		if (idFilter == null) {
+		if (idFilter == null && referenceFilter != null) {
 			idFilter = referenceFilter.getIdFilter();
 		}
-		if (convertable == null) {
+		if (convertable == null && referenceFilter != null) {
 			convertable = referenceFilter.getConvertable();
 		}
-		if (property == null) {
+		if (property == null && referenceFilter != null) {
 			property = referenceFilter.getPropertyRegard();
 		}
 		visitedObjects = new ArrayList<Object>();
 		refs = new ArrayList<ReferenceObject>();
-		if (full == null) {
+		if (full == null && referenceFilter != null) {
 			full = referenceFilter.isFullSeriation();
 			if (full == null) {
 				full = false;
@@ -193,6 +193,9 @@ public class Filter {
 	}
 
 	public Filter with(ReferenceObject item) {
+		if(refs == null) {
+			return this;
+		}
 		refs.add(item);
 		return this;
 	}
