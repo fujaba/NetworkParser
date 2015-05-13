@@ -71,7 +71,7 @@ public class EMFIdMap extends XMLIdMap {
 			}
 		}
 	}
-	
+
 	public EMFIdMap withModel(GraphList model) {
 		this.model = model;
 		return this;
@@ -99,7 +99,7 @@ public class EMFIdMap extends XMLIdMap {
 
 		runningNumbers = new SimpleKeyValueList<String, Integer>();
 
-		addXMIIds(xmlEntity, "$root");
+		addXMIIds(xmlEntity, "$root", "");
 
 		addChildren(xmlEntity, rootFactory, rootObject);
 
@@ -108,7 +108,7 @@ public class EMFIdMap extends XMLIdMap {
 		return rootObject;
 	}
 
-	private void addXMIIds(XMLEntity xmlEntity, String rootId) {
+	private void addXMIIds(XMLEntity xmlEntity, String rootId, String parentId) {
 		if (xmlEntity.contains(XMI_ID)) {
 			return;
 		}
@@ -132,23 +132,28 @@ public class EMFIdMap extends XMLIdMap {
 		if (rootId != null) {
 			xmlEntity.put(XMI_ID, rootId);
 		}
+		String localParent = "";
+
 		for (XMLEntity kid : xmlEntity.getChildren()) {
 			if (kid.contains(XMI_ID)) {
 				continue;
 			}
 
 			String tag = kid.getTag();
+			localParent = parentId + tag;
 
-			Integer num = runningNumbers.get(tag);
+			Integer num = runningNumbers.get(localParent);
 
 			if (num == null) {
 				num = 0;
-				runningNumbers.put(tag, 0);
+				runningNumbers.put(localParent, 0);
 			} else {
 				num++;
-				runningNumbers.put(tag, num);
+				runningNumbers.put(localParent, num);
 			}
-			addXMIIds(kid, "$" + tag + num);
+			localParent += num;
+
+			addXMIIds(kid, "$" + localParent, localParent);
 		}
 	}
 
@@ -177,18 +182,16 @@ public class EMFIdMap extends XMLIdMap {
 
 			if (value.startsWith("//@")) {
 				for (String ref : value.split(" ")) {
-					String myRef = ref.substring(3);
-					int dotPos = myRef.indexOf('.');
-					if (dotPos >= 0) {
-						String[] split = myRef.split("\\.");
-						myRef = "_" + split[0] + split[1];
+					String myRef = "_" + ref.substring(3);
+					if (myRef.indexOf('.') > 0) {
+						myRef = myRef.replaceAll("\\.|/@", "");
 					} else {
 						myRef = "_" + myRef.subSequence(0, 1) + "0";
 					}
-
-					if (getObject(myRef) != null) {
-						rootFactory.setValue(rootObject, key, getObject(myRef), "");
-					}
+	                Object object = getObject(myRef);
+	                if (object != null) {
+	                    rootFactory.setValue(rootObject, key, object, "");
+	                }
 				}
 			} else if (value.startsWith("/")) {
 				// maybe multiple separated by blanks
@@ -291,8 +294,8 @@ public class EMFIdMap extends XMLIdMap {
 			} else {
 				GraphClazz clazz = (GraphClazz) model.getByObject(rootObject.getClass().getName(), false);
 				GraphEdge edge = model.getEdge(clazz, tag);
-				if(edge != null) {
-					typeName = edge.getOther().getNode().getId(); 
+				if (edge != null) {
+					typeName = edge.getOther().getNode().getId();
 				}
 			}
 
@@ -303,7 +306,7 @@ public class EMFIdMap extends XMLIdMap {
 
 			if (typeName != null) {
 				SendableEntityCreator kidFactory = getCreator(typeName, false);
-				if(kidFactory == null && typeName.endsWith("s")) {
+				if (kidFactory == null && typeName.endsWith("s")) {
 					kidFactory = getCreator(typeName.substring(0, typeName.length() - 1), false);
 				}
 				Object kidObject = kidFactory.getSendableInstance(false);
