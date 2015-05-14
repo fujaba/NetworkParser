@@ -1,7 +1,5 @@
 package de.uniks.networkparser.interfaces;
 
-import de.uniks.networkparser.list.AbstractArray;
-
 /**
 * The listener interface for receiving mapUpdate events. The class that is
 * interested in processing a mapUpdate event implements this interface, and the
@@ -28,5 +26,5 @@ public interface UpdateListener {
 	 *            The newValue
 	 * @return true, if successful
 	 */
-	public boolean update(String typ, AbstractArray<String> source, Object target, String property, Object oldValue, Object newValue);
+	public boolean update(String typ, BaseItem source, Object target, String property, Object oldValue, Object newValue);
 }

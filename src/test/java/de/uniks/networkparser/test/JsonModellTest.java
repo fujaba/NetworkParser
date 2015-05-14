@@ -6,10 +6,10 @@ import org.junit.Test;
 
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
-import de.uniks.networkparser.list.AbstractArray;
 import de.uniks.networkparser.logic.InstanceOf;
 import de.uniks.networkparser.test.model.GroupAccount;
 import de.uniks.networkparser.test.model.Person;
@@ -101,7 +101,7 @@ public class JsonModellTest implements UpdateListener {
 	}
 
 	@Override
-	public boolean update(String typ, AbstractArray<String> source, Object target, String property,
+	public boolean update(String typ, BaseItem source, Object target, String property,
 			Object oldValue, Object newValue) {
 		if(IdMap.SENDUPDATE.equals(typ)) {
 			JsonObject jsonObject = (JsonObject) source;

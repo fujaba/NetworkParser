@@ -4,10 +4,10 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
-import de.uniks.networkparser.list.AbstractArray;
 import de.uniks.networkparser.test.model.SortedMsg;
 import de.uniks.networkparser.test.model.util.SortedMsgCreator;
 
@@ -53,7 +53,7 @@ public class JsonPeer2PeerTest implements UpdateListener{
 	}
 
 	@Override
-	public boolean update(String typ, AbstractArray<String> source, Object target, String property,
+	public boolean update(String typ, BaseItem source, Object target, String property,
 			Object oldValue, Object newValue) {
 		JsonObject jsonObject = (JsonObject) source;
 		boolean result=secondMap.executeUpdateMsg(jsonObject);

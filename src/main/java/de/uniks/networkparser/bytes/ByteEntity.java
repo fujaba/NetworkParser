@@ -363,4 +363,15 @@ public class ByteEntity implements ByteItem, BaseItem {
 		}
 		return this;
 	}
+
+	@Override
+	public Object getValueItem(Object key) {
+		if("TYP".equals(key)) {
+			return typ;
+		}
+		if("VALUE".equals(key)) {
+			return values;
+		}
+		return null;
+	}
 }

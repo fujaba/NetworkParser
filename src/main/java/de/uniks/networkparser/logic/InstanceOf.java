@@ -157,8 +157,12 @@ public class InstanceOf extends ConditionMap implements SendableEntityCreator {
 	@Override
 	public boolean check(ValuesMap values) {
 		// Filter for ClazzTyp
-		if (this.clazzName != null && this.clazzName.isInstance(values.value)) {
-			if(this.property==null || this.property.equalsIgnoreCase(values.property)) {
+		if (this.clazzName != null ) {
+			if(!this.clazzName.isInstance(values.value)) {
+				return false;
+			}else if(this.property==null) {
+				return true;
+			}else if(this.property.equalsIgnoreCase(values.property)) {
 				return false;
 			}
 		}
