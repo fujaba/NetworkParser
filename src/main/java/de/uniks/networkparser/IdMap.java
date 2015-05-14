@@ -1,6 +1,5 @@
 package de.uniks.networkparser;
 
-import java.beans.PropertyChangeEvent;
 /*
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
