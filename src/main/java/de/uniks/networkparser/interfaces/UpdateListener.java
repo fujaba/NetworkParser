@@ -1,27 +1,6 @@
 package de.uniks.networkparser.interfaces;
 
-/*
-NetworkParser
-Copyright (c) 2011 - 2013, Stefan Lindel
-All rights reserved.
-
-Licensed under the EUPL, Version 1.1 or (as soon they
-will be approved by the European Commission) subsequent
-versions of the EUPL (the "Licence");
-You may not use this work except in compliance with the Licence.
-You may obtain a copy of the Licence at:
-
-http://ec.europa.eu/idabc/eupl5
-
-Unless required by applicable law or agreed to in
-writing, software distributed under the Licence is
-distributed on an "AS IS" basis,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
-express or implied.
-See the Licence for the specific language governing
-permissions and limitations under the Licence.
-*/
-import de.uniks.networkparser.json.JsonObject;
+import de.uniks.networkparser.list.AbstractArray;
 
 /**
 * The listener interface for receiving mapUpdate events. The class that is
@@ -35,19 +14,19 @@ public interface UpdateListener {
 	/**
 	 * Send update msg.
 	 *
+	 * @param typ
+	 *            the typ of Message: NEW UPDATE, REMOVE or SENDUPDATE
+	 * @param source
+	 *            the Source Element
 	 * @param target
 	 *            The Object of UpdateMsg
 	 * @param property
 	 *            Which property is changed
-	 * @param jsonObject
-	 *            the json object
-	 * @param typ
-	 *            the typ of Message: NEW UPDATE, REMOVE or SENDUPDATE
 	 * @param oldValue
 	 *            The oldValue
 	 * @param newValue
 	 *            The newValue
 	 * @return true, if successful
 	 */
-	public boolean update(Object target, String property, JsonObject jsonObject, String typ, Object oldValue, Object newValue);
+	public boolean update(String typ, AbstractArray<String> source, Object target, String property, Object oldValue, Object newValue);
 }

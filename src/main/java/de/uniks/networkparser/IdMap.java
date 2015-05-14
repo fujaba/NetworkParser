@@ -1,5 +1,6 @@
 package de.uniks.networkparser;
 
+import java.beans.PropertyChangeEvent;
 /*
  NetworkParser
  Copyright (c) 2011 - 2013, Stefan Lindel
@@ -34,6 +35,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.IdMapCounter;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.UpdateListenerJson;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
@@ -62,9 +64,12 @@ public abstract class IdMap extends AbstractMap implements
 	/** The Constant PRIO. */
 	public static final String PRIO = "prio";
 
-	/** The Constant PRIO. */
+	/** The Constant SENDUPDATE. */
 	public static final String SENDUPDATE = "sendupdate";
-	
+
+	/** The Constant ITEMS. */
+	public static final String ITEMS = "items";
+
 	/** The counter. */
 	private IdMapCounter counter;
 
@@ -79,6 +84,9 @@ public abstract class IdMap extends AbstractMap implements
 	protected Filter filter = new Filter();
 
 	protected NetworkParserLog logger = new NetworkParserLog();
+
+	/** The updatelistener. */
+	private UpdateListener idListener;
 
 	/**
 	 * @return the CurrentLogger
@@ -229,6 +237,10 @@ public abstract class IdMap extends AbstractMap implements
 			System.out.println("ERROR");
 		}
 		this.keyValue.with(jsonId, object);
+		if (this.idListener != null) {
+			this.idListener.update(NEW, null, this, ITEMS, null, object);
+//FOR THE FIRST ONE ONLY NULL FOR ID			this.idListener.update(NEW, jsonId, this, ITEMS, null, object);
+		}
 		addListener(object);
 		return object;
 	}
@@ -539,6 +551,18 @@ public abstract class IdMap extends AbstractMap implements
 		return this;
 	}
 
+	/**
+	 * Sets the update ID listener.
+	 *
+	 * @param listener
+	 *            the new update msg listener
+	 * @return IdMap
+	 */
+	public IdMap withIdListener(UpdateListener listener) {
+		this.idListener = listener;
+		return this;
+	}
+	
 	public abstract BaseItem encode(Object value);
 
 	public abstract BaseItem encode(Object value, Filter filter);
