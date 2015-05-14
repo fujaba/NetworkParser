@@ -105,4 +105,18 @@ public class GraphAttribute extends GraphValue implements GraphMember {
 	public GraphAttribute getNewList(boolean keyValue) {
 		return new GraphAttribute();
 	}
+
+	@Override
+	public Object getValueItem(Object key) {
+		if(PROPERTY_CLAZZ.equals(key)) {
+			return clazz;
+		}
+		if(PROPERTY_VALUE.equals(key)) {
+			return value;
+		}
+		if(PROPERTY_VISIBILITY.equals(key)) {
+			return visibility;
+		}
+		return null;
+	}
 }

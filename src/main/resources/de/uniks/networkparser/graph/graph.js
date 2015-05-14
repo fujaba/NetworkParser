@@ -1473,12 +1473,12 @@ RGBColor.prototype.toHex = function () {
 // Edit Assocs
 // Delete Assocs
 // ################################## ClassEditor ####################################################
-var ClassEditor = function(element){
+var ClassEditor = function(element, diagramTyp){
 	this.isIE = document.all&&!window.opera;
 	this.drawer = new HTMLDrawer();
 	this.inputEvent = true;
 	this.nodes={};
-	this.model = new GraphModel(this, {buttons:[]});
+	this.model = new GraphModel(this, {buttons:[], typ:diagramTyp});
 	if(element) {
 		if(typeof(element)=="string"){
 			this.board = document.getElementById(element);
@@ -1668,6 +1668,9 @@ ClassEditor.prototype.createInputField = function(option){
 	if(option._parent){
 		node._parent = option._parent;
 	}
+	if(option.onChange){
+		node.onChange = option.onChange;
+	}
 	return this.create(node);
 };
 ClassEditor.prototype.savePackage = function(e) {
@@ -1757,6 +1760,9 @@ ClassEditor.prototype.addNode = function(node) {
 	var that = this;
 	this.bind(html, "mouseup", function(e){that.selectNode(e);});
 };
+ClassEditor.prototype.removeNode = function(id) {
+	this.model.removeNode( id );
+}
 ClassEditor.prototype.clearLines = function(){
 	for(var i=0; i<this.model.edges.length;i++) {
 		this.model.edges[i].removeFromBoard(this.board);
@@ -2102,9 +2108,17 @@ InputNode.prototype.accept = function() {
 		n.model.methods.push(text);
 		return true;
 	}
-	n.model.id=text;
+	//typ ClassEditor
+	if(n.model._parent.typ=="classdiagram") {
+		n.model.id=this.fristUp(text);
+	} else {
+		n.model.id=text;	
+	}
 	return true;
 };
+InputNode.prototype.fristUp = function(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
 InputNode.prototype.changeText = function(e) {
 	if(!this.inputItem){
 		return;
@@ -2112,10 +2126,17 @@ InputNode.prototype.changeText = function(e) {
 	var close=false;
 	if(e.keyCode==27) {close=true;}
 	if(e.keyCode==13){
+		var n = this.inputItem.node;
+		var id= n.model.id;
 		if(this.accept()) {
-			var n = this.inputItem.node;
-			this._parent.board.removeChild(n);
-			this._parent.addNode(n.model);
+			if(id!=n.model.id) {
+				this._parent.removeNode(id);
+				//this._parent.board.removeChild(n);
+				this._parent.addNode(n.model);
+			}else {
+				this._parent.board.removeChild(n);
+				this._parent.addNode(n.model);
+			}
 			this._parent.getAction("Selector").refreshNode();
 			close = true;
 		}

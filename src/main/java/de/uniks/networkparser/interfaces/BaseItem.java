@@ -33,5 +33,7 @@ public interface BaseItem {
 	
 	BaseItem withAll(Object... values);
 	
+	public Object getValueItem(Object key);
+	
 	public BaseItem getNewList(boolean keyValue);
 }

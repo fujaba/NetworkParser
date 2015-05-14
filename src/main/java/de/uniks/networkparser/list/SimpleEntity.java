@@ -230,4 +230,15 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 	public BaseItem getNewList(boolean keyValue) {
 		return new SimpleEntity<K, V>();
 	}
+
+	@Override
+	public Object getValueItem(Object key) {
+		if(PROPERTY_KEY.equals(key)) {
+			return key;
+		}
+		if(PROPERTY_VALUE.equals(key)) {
+			return value;
+		}
+		return null;
+	}
 }

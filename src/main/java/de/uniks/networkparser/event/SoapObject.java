@@ -129,4 +129,15 @@ public class SoapObject implements StringItem, BaseItem {
 	public SoapObject getNewList(boolean keyValue) {
 		return new SoapObject();
 	}
+
+	@Override
+	public Object getValueItem(Object key) {
+		if(PROPERTY_HEADER.equals(key)){
+			return headers;
+		}
+		if(PROPERTY_BODY.equals(key)){
+			return body;
+		}
+		return null;
+	}
 }

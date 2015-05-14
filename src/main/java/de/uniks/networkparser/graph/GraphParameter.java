@@ -78,4 +78,12 @@ public class GraphParameter extends GraphValue {
 	public GraphParameter getNewList(boolean keyValue) {
 		return new GraphParameter();
 	}
+
+	@Override
+	public Object getValueItem(Object key) {
+		if(PROPERTY_METHOD.equals(key)) {
+			return method;
+		}
+		return null;
+	}
 }
