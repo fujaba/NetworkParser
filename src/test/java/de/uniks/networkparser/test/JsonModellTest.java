@@ -9,6 +9,7 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
+import de.uniks.networkparser.list.AbstractArray;
 import de.uniks.networkparser.logic.InstanceOf;
 import de.uniks.networkparser.test.model.GroupAccount;
 import de.uniks.networkparser.test.model.Person;
@@ -100,9 +101,10 @@ public class JsonModellTest implements UpdateListener {
 	}
 
 	@Override
-	public boolean update(Object target, String property,
-			JsonObject jsonObject, String typ, Object oldValue, Object newValue) {
+	public boolean update(String typ, AbstractArray<String> source, Object target, String property,
+			Object oldValue, Object newValue) {
 		if(IdMap.SENDUPDATE.equals(typ)) {
+			JsonObject jsonObject = (JsonObject) source;
 			System.out.println("Send: " +jsonObject);
 			secondMap.getUpdateListener().execute(jsonObject);
 			return true;

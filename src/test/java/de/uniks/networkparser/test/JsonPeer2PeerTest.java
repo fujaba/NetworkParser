@@ -7,6 +7,7 @@ import org.junit.Test;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
+import de.uniks.networkparser.list.AbstractArray;
 import de.uniks.networkparser.test.model.SortedMsg;
 import de.uniks.networkparser.test.model.util.SortedMsgCreator;
 
@@ -39,7 +40,7 @@ public class JsonPeer2PeerTest implements UpdateListener{
 //		System.out.println(firstMap.toJsonObject(first).toString(2));
 		firstMap.startCarbageCollection(firstRoot);
 		System.out.println("SEND ALL");
-		update(null, null, firstMap.toJsonObject(firstRoot), null, null, null);
+		update(null, firstMap.toJsonObject(firstRoot), null, null, null, null);
 		
 		SortedMsg third= new SortedMsg();
 		third.setNumber(4);
@@ -52,8 +53,9 @@ public class JsonPeer2PeerTest implements UpdateListener{
 	}
 
 	@Override
-	public boolean update(Object target, String property,
-			JsonObject jsonObject, String typ, Object oldValue, Object newValue) {
+	public boolean update(String typ, AbstractArray<String> source, Object target, String property,
+			Object oldValue, Object newValue) {
+		JsonObject jsonObject = (JsonObject) source;
 		boolean result=secondMap.executeUpdateMsg(jsonObject);
 //		System.out.println(secondMap.size());
 		if(z==0){

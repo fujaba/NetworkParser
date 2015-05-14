@@ -787,8 +787,8 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 		}
 
 		if (this.sendlistener != null ) {
-			return this.sendlistener.update(evt.getSource(),
-					evt.getPropertyName(), jsonObject,  SENDUPDATE, evt.getOldValue(),
+			return this.sendlistener.update(SENDUPDATE, jsonObject, evt.getSource(),
+					evt.getPropertyName(), evt.getOldValue(),
 					evt.getNewValue());
 		}
 		return true;
@@ -797,7 +797,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 	boolean readMessages(String key, Object element, Object value,
 			JsonObject props, String typ) {
 		if (this.readlistener != null) {
-			return this.sendlistener.update(element, key, props, typ, null, value);
+			return this.sendlistener.update(typ, props, element, key, null, value);
 		}
 		return true;
 	}
