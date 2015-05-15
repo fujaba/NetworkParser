@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.net.MalformedURLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.json.JsonObject;
@@ -179,6 +182,10 @@ public class DiagramEditor extends SimpleShell {
         	System.out.println("Exit");
             Platform.exit();
         }
+		
+		public void save(Object value) {
+			this.owner.save(new JsonObject().withValue((String)value));
+		}
         
         public void generate(Object value) {
         	try {
@@ -197,4 +204,14 @@ public class DiagramEditor extends SimpleShell {
 			}
         }
     }
+
+	public void save(JsonObject model) {
+		DateFormat formatter = new SimpleDateFormat("yyyyMMdd_HHmmss");
+		String name = model.getString("package");
+		if(name==null || name.length()<1) {
+			name = "model";
+		}
+		name = name + "_" + formatter.format(new Date().getTime())+".json";
+		writeFile(name, model.toString());
+	}
 }

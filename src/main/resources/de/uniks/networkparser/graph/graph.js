@@ -1570,9 +1570,7 @@ ClassEditor.prototype.dropModel= function(e) {
 			var that = this;
 			var reader = new FileReader();
 			reader.onload = function(e) {
-				var data = e.target.result;
-				var model = that.copy(new ClassModel(that), JSON.parse(data));
-				that.loadModel(model, f);
+				that.loadModel(JSON.parse(e.target.result), f);
 			};
 			reader.readAsText(f);
 			break;
@@ -1604,13 +1602,16 @@ ClassEditor.prototype.close = function() {
 	java.exit();
 };
 ClassEditor.prototype.loadModel= function(model, file) {
-	this.model = model;
+	if(model) {
+		this.model = new GraphModel(that, {buttons:[]});
+		//this.model = that.copy(newModel, model);
+	}
 	var i;
 	for(i=this.board.children.length-1;i>=0;i--){
 		this.board.removeChild(this.board.children[i]);
 	}
 	this.getAction("Selector").setNode(null);
-	for(i=0;i<model.nodes.length;i++) {
+	for(var i in model.nodes) {
 		this.addNode(model.nodes[i]);
 	}
 	var that = this;
