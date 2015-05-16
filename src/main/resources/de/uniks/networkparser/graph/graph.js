@@ -259,6 +259,15 @@ GraphUtil.prototype.sizeHTML = function(html, node){
 	}
 	return rect;
 };
+GraphUtil.prototype.hasClass = function(ele,cls) {return ele.className.match(new RegExp('(\\s|^)'+cls+'(\\s|$)'));}
+GraphUtil.prototype.addClass = function(ele,cls) {if (!this.hasClass(ele,cls)) ele.className += " "+cls;}
+GraphUtil.prototype.removeClass = function(ele,cls){
+	if (this.hasClass(ele,cls)) {
+		var reg = new RegExp('(\\s|^)'+cls+'(\\s|$)');
+		ele.className=ele.className.replace(reg,' ');
+	}
+}
+
 /* Node */
 var GraphNode = function(id) {
 	this.typ = "node";
@@ -1512,23 +1521,24 @@ ClassEditor.prototype = Object_create(GraphUtil.prototype);
 ClassEditor.prototype.dragStyler = function(e, typ) {
 	e.stopPropagation();
 	e.preventDefault();
+	this.removeClass(e.target, "Error");
+	this.removeClass(e.target, "Ok");
+	this.removeClass(e.target, "Add");
 	if(typ=="dragleave"){
-		e.target.className="ClassEditor";
 		if(e.target.errorText) {
 			e.target.removeChild(e.target.errorText);
 			e.target.errorText = null;
 		}
 		return true;
 	}
-	if(typ=="error"){
-		e.target.className = "ClassEditorError";
+	this.addClass(e.target, typ);
+	if(typ=="Error"){
 		if(!e.target.errorText){
 			e.target.errorText = this.create({tag:"div", style:"margin-top: 30%", value:"NO TEXTFILE"});
 			e.target.appendChild(e.target.errorText);
 		}
 		return true;
 	}
-	e.target.className = "ClassEditorOk";
 	return false;
 };
 ClassEditor.prototype.dragClass = function(e) {
@@ -1551,7 +1561,14 @@ ClassEditor.prototype.dragClass = function(e) {
 			}
 		}
 	}
-	this.dragStyler(e, error ? "error" : "ok");
+	if(error) {
+		this.dragStyler(e, "Error");
+	} else if(e.ctrlKey) {
+		this.dragStyler(e, "Add");
+	} else {
+		this.dragStyler(e, "Ok");
+	}
+
 };
 ClassEditor.prototype.dropModel= function(e) {
 	this.dragStyler(e, "dragleave");
@@ -1569,8 +1586,8 @@ ClassEditor.prototype.dropModel= function(e) {
 			// file.name
 			var that = this;
 			var reader = new FileReader();
-			reader.onload = function(e) {
-				that.loadModel(JSON.parse(e.target.result), f);
+			reader.onload = function(r) {
+				that.loadModel(JSON.parse(r.target.result), e.ctrlKey, f);
 			};
 			reader.readAsText(f);
 			break;
@@ -1601,16 +1618,19 @@ ClassEditor.prototype.generate = function() {
 ClassEditor.prototype.close = function() {
 	java.exit();
 };
-ClassEditor.prototype.loadModel= function(model, file) {
-	if(model) {
+ClassEditor.prototype.loadModel= function(model, addFile, file) {
+	if(!addFile) {
 		this.model = new GraphModel(that, {buttons:[]});
 		//this.model = that.copy(newModel, model);
 	}
+	this.getAction("Selector").setNode(null);
 	var i;
 	for(i=this.board.children.length-1;i>=0;i--){
 		this.board.removeChild(this.board.children[i]);
 	}
-	this.getAction("Selector").setNode(null);
+	for(var i in this.model.nodes) {
+		this.addNode(this.model.nodes[i]);
+	}
 	for(var i in model.nodes) {
 		this.addNode(model.nodes[i]);
 	}
@@ -2118,7 +2138,7 @@ InputNode.prototype.accept = function() {
 	return true;
 };
 InputNode.prototype.fristUp = function(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+	return string.charAt(0).toUpperCase() + string.slice(1);
 }
 InputNode.prototype.changeText = function(e) {
 	if(!this.inputItem){
