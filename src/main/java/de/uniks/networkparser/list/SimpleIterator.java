@@ -109,7 +109,7 @@ public class SimpleIterator<E> implements ListIterator<E> {
 		if (lastRet < 0)
 			throw new IllegalStateException();
 		try {
-			list.removeByIndex(lastRet, AbstractArray.SMALL_KEY);
+			list.removeByIndex(lastRet, AbstractArray.SMALL_KEY, list.index);
 			cursor = lastRet;
 			lastRet = -1;
 		} catch (IndexOutOfBoundsException ex) {

@@ -295,7 +295,7 @@ public class FullListTest {
 		}
 		Field declaredField = queue.getClass().getField("elements");
 		Object[] object = (Object[]) declaredField.get(queue);
-		
+		Assert.assertNull(object[AbstractArray.BIG_KEY]);
 		queue.remove(0);
 		Assert.assertEquals(queue.size(), 498);
 		Integer integer = queue.get(0);
