@@ -127,7 +127,7 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements Iterab
 		if(index<0 || index>size) {
 			return null;
 		}
-		return (V)removeByIndex(index, SMALL_KEY);
+		return (V)removeByIndex(index, SMALL_KEY, this.index);
 	}
 
 	public boolean addAll(int index, Collection<? extends V> values) {

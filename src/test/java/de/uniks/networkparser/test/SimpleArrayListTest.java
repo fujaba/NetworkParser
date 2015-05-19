@@ -3,7 +3,9 @@ package de.uniks.networkparser.test;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.list.SimpleList;
@@ -31,8 +33,23 @@ public class SimpleArrayListTest
       {
          assertEquals(i, simpleArrayList.indexOf(list.get(i)));
       }
-      
-      
+   }
+   
+   @Test
+   public void testRetainAll() {
+	   HashSet<Integer> itemA=new HashSet<Integer>();
+	   itemA.add(1);
+	   itemA.add(2);
+	   itemA.add(3);
+	   
+	   HashSet<Integer> itemB=new HashSet<Integer>();
+	   itemB.add(1);
+	   itemB.add(2);
+	   
+	   itemA.retainAll(itemB);
+	   Assert.assertEquals(2, itemA.size());
+	   Assert.assertEquals(2, itemB.size());
+	   
    }
 
 
