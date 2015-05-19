@@ -1,6 +1,5 @@
 package de.uniks.networkparser.list;
 
-import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
@@ -116,10 +115,6 @@ public class SimpleIterator<E> implements ListIterator<E> {
 		} catch (IndexOutOfBoundsException ex) {
 			throw new ConcurrentModificationException();
 		}
-	}
-
-	public AbstractArray<E> list() {
-		return list;
 	}
 }
 

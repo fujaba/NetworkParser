@@ -25,7 +25,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 
 	public static final byte MINSIZE = 4;
 	public static final int MAXDELETED = 42;
-	public static final int MINHASHINGSIZE = 420;
+	public static final int MINHASHINGSIZE = 420; // Minimum (SIZE_BIG: 5)
 	public static final float MINUSEDLIST = 0.2f;
 	public static final float MAXUSEDLIST = 0.7f;
 	
@@ -34,6 +34,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	public static final int DELETED = 2;
 	public static final int SMALL_VALUE = 3;
 	public static final int BIG_VALUE = 4;
+	public static final int SIZE_BIG = 5;
 
 	/**
 	 * Start index of Elements-Array
@@ -134,12 +135,8 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
     	return (ST) this;
     }
     
-    final boolean isBig() {
-    	return size>=MINHASHINGSIZE && elements.length <= (BIG_VALUE+1);
-    }
-
     final boolean isComplex(int size) {
-    	return (flag & MAP) == MAP || size >= MINHASHINGSIZE;
+    	return (flag & MAP) == MAP || size >= MINHASHINGSIZE || (size > SIZE_BIG && elements.length<=SIZE_BIG);
     }
     
     final int getArrayFlag(int size ) {
@@ -152,7 +149,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		if((flag & MAP)>0){
 			return 4;
 		}
-		if(size>=MINHASHINGSIZE) {
+		if(size>=MINHASHINGSIZE || (size > SIZE_BIG && elements.length<=SIZE_BIG)) {
 			return 3;
 		}
 		return 1;
@@ -366,12 +363,16 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 					}
 				}
 				return change;
-			}
-		} else if(size>BIDI && size < MINHASHINGSIZE && elements.length<BIDI ) { 
-//				(Object[])elements[SMALL_KEY]).length * MINUSEDLIST) {
-				// Change Simple Complexlist to SimpleList
-				elements = (Object[]) elements[SMALL_KEY];
+            }else if(minCapacity < ((Object[])elements[SMALL_KEY]).length * MINUSEDLIST) {
+                // Change Simple Complexlist to SImpleList
+            	elements = (Object[]) elements[SMALL_KEY];
 				return true;
+			}
+//		} else if(size>BIDI && size < MINHASHINGSIZE && elements.length<BIDI ) { 
+////				(Object[])elements[SMALL_KEY]).length * MINUSEDLIST) {
+//				// Change Simple Complexlist to SimpleList
+//				elements = (Object[]) elements[SMALL_KEY];
+//				return true;
 //		}else if((flag&MAP)elements.length<=BIDI && size>BIDI) {
 			// Rebuild
 		}else if(minCapacity < elements.length * MINUSEDLIST) {
@@ -583,7 +584,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		values[pos] = value;
         Object beforeKey = this.getByIndex(SMALL_KEY, size, size);
         size++;
-		if(isBig()) {
+		if(isComplex(size)) {
 			if(elements[BIG_KEY]!= null){
 				addHashItem(pos, key, (Object[])elements[BIG_KEY]);
 			}
@@ -795,7 +796,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
     }
     
 	public int getPositionKey(Object o) {
-		if(!isBig()) {
+		if(!isComplex(size)) {
 			return indexOf(o);
 		}
 		return getPosition(o, SMALL_KEY);
@@ -1055,7 +1056,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	public static Object[] emptyArray = new Object[] {};
 	
 	public Object[] toArray() {
-		if(isBig()) {
+		if(isComplex(size)) {
 			return Arrays.copyOf((Object[])elements[SMALL_KEY], size);	
 		}
 		if (elements == null)
@@ -1180,13 +1181,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
         boolean modified = false;
         Iterator<?> it = iterator();
         while (it.hasNext()) {
-        	SimpleIterator t = (SimpleIterator) it;
-        	if(t.list().size()==420){
-        		System.out.println("ERROR");
-        	}
-        	
-        	
-            if (!c.contains(it.next())) {
+        	if (!c.contains(it.next())) {
                 it.remove();
                 modified = true;
             }
@@ -1228,7 +1223,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
     	if(a==null)
     		return null;
     	Object[] elementData;
-    	if(isBig()) {
+    	if(isComplex(size)) {
     		elementData = (Object[]) elements[SMALL_KEY];
     	}else{
     		elementData = elements;
