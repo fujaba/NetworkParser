@@ -102,6 +102,7 @@ public class FullListTest {
 		assertEquals("iteration should have counted zero elements", 0, counter);
 
 		// remove again
+
 		simpleList.remove(int_01);
 
 		assertEquals("List should be empty", 0, simpleList.size());
@@ -215,7 +216,7 @@ public class FullListTest {
 		simpleList.retainAll(null);
 		
 		
-		assertEquals("simpleList should have 550 elements", 549, simpleList.size());
+		assertEquals("simpleList should have 549 elements", 549, simpleList.size());
 		assertEquals("simpleList[0] should be 2", 2, 0 + simpleList.first());
 		
 		simpleList = new SimpleList<Integer>();

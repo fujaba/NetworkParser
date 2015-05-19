@@ -30,7 +30,7 @@ public class HashTableTest
 			HashTableTest.COUNT = Integer.valueOf((String)System.getProperty("count"));
 		}else{
 //			HashTableTest.COUNT = 1000 * 1000;
-			HashTableTest.COUNT = 1000;
+			HashTableTest.COUNT = 10;
 		}
 		System.out.println("Run test for "+HashTableTest.COUNT+" items");
 		for (int i = 0; i < COUNT; i++) {
@@ -111,7 +111,7 @@ public class HashTableTest
 	private void removeObject(String label, Collection<Person> list){
 		long currentTimeMillis = System.currentTimeMillis();
 
-		for (int i = 0; i < items.size(); i += 100) {
+		for (int i = 0; i < items.size(); i += 5) {
 			list.remove(items.get(i));
 		}
 		for (Iterator<Person> i = list.iterator();i.hasNext();){
@@ -145,8 +145,8 @@ public class HashTableTest
 
 	@Test
 	public void testLists(){
-		test("ArrayList    :", new ArrayList<Person>());
-		test("LinkedHashSet:", new LinkedHashSet<Person>());
+//		test("ArrayList    :", new ArrayList<Person>());
+//		test("LinkedHashSet:", new LinkedHashSet<Person>());
 		test("PersonSet    :", new PersonSet());
 	}
 	

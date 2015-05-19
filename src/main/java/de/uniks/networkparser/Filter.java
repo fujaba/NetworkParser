@@ -166,7 +166,7 @@ public class Filter {
 		}
 		for (Object item : visitedObject) {
 			if (item != null) {
-				this.visitedObjects.add(item);
+				getVisitedObjects().add(item);
 			}
 		}
 		return this;
