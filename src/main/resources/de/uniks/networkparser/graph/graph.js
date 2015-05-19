@@ -2361,6 +2361,8 @@ CreateEdge.prototype.select = function(e) {
 	var t = e.innerHTML;
 	var edge;
 	if(t==this.list[0]) {
+		edge = this.graph.model.addEdgeModel({"typ":"Generalization", "source":{id:this.fromNode.id}, target:{id:this.toNode.id}});
+		this.graph.drawlines();
 	}
 	if(t==this.list[1]) {
 		edge = this.graph.model.addEdgeModel({"typ":"edge", "source":{id:this.fromNode.id, property:"from"}, target:{id:this.toNode.id, property:"to"}});
