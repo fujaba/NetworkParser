@@ -343,11 +343,13 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		//Shrink the Array
 		if(minCapacity==0){
 			elements = null;
+			this.index = 0;
 			return true;
 		}
 
+		int arrayFlag = getArrayFlag(size);
 		int newSize = minCapacity + minCapacity / 2 + 4;
-		if(isComplex(size)) {
+		if(arrayFlag > 1) {
 			if((flag & MAP)==MAP) {
 				// MAP
 				boolean change=false;
@@ -364,11 +366,14 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 					}
 				}
 				return change;
-			}else if(minCapacity < ((Object[])elements[SMALL_KEY]).length * MINUSEDLIST) {
-				// Change Simple Complexlist to SImpleList
+			}
+		} else if(size>BIDI && size < MINHASHINGSIZE && elements.length<BIDI ) { 
+//				(Object[])elements[SMALL_KEY]).length * MINUSEDLIST) {
+				// Change Simple Complexlist to SimpleList
 				elements = (Object[]) elements[SMALL_KEY];
 				return true;
-			}
+//		}else if((flag&MAP)elements.length<=BIDI && size>BIDI) {
+			// Rebuild
 		}else if(minCapacity < elements.length * MINUSEDLIST) {
 			resizeSmall(newSize);
 			return true;
@@ -467,6 +472,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 			System.arraycopy(elements, this.index, dest, 0, size);
 		}
 		elements = dest;
+		this.index = 0;
 	}
 
 	/**
@@ -740,7 +746,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		return indexOf(o, size);
 	}
 	
-    public int indexOf(Object o, int size) {
+    int indexOf(Object o, int size) {
         if (o == null || elements == null)
        		return -1;
 
@@ -753,9 +759,15 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
     	}else{
     		items = elements;
     	}
+    	int pos = this.index;
         for (int i = 0; i < this.size; i++) {
-        	if(checkValue(o, items[i]))
+        	if(pos==items.length) {
+        		pos=0;
+        	}
+        	if(checkValue(o, items[pos])) {
                 return i;
+        	}
+        	pos++;
         }
         return -1;
     }
@@ -783,10 +795,16 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
     }
     
 	public int getPositionKey(Object o) {
+		if(!isBig()) {
+			return indexOf(o);
+		}
 		return getPosition(o, SMALL_KEY);
 	}
 	
 	public int getPositionValue(Object o) {
+		if((this.flag & MAP)!=MAP) {
+			return -1;
+		}
 		return getPosition(o, SMALL_VALUE);
 	}
 	
@@ -803,7 +821,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		if(index<0){
 			index += size;
 		}
-		return index;
+		return index + this.index;
 	}
 	
 	private int retransformIndex(int index, int size){
@@ -849,7 +867,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 			}
 			indexItem = transformIndex((Integer)hashCodes[index], len);
 		}
-		return indexItem + this.index;
+		return indexItem;
 	}
 
 	public int getLastPositionKey(Object o) {
@@ -943,24 +961,29 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	}
 	
 	protected Object removeByIndex(int index, int offset) {
-		Object item = removeItem(index, offset);
+		int oldIndex = this.index;
+		Object item = removeItem(index + oldIndex, offset);
 		if(item != null){
-
 			size--;
-			if(!shrink(size) && isComplex(size) ){
-				if(elements[DELETED]==null) {
-					elements[DELETED]=new Integer[]{index};
-				}else{
-					Integer[] oldPos = (Integer[]) elements[DELETED]; 
-					int i=0;
-					while(i<oldPos.length && oldPos[i]<=index){
-						i++;
+			if(!shrink(size)){
+				if(oldIndex == index ) {
+					return item;
+				}
+				if(isComplex(size) ){
+					if(elements[DELETED]==null) {
+						elements[DELETED]=new Integer[]{index};
+					}else{
+						Integer[] oldPos = (Integer[]) elements[DELETED]; 
+						int i=0;
+						while(i<oldPos.length && oldPos[i]<=index){
+							i++;
+						}
+						Integer[] positions=new Integer[((Object[])elements[DELETED]).length+1];
+						System.arraycopy(oldPos, 0, positions, 0, i);
+						positions[i]=index;
+						System.arraycopy(oldPos, i, positions, i + 1, positions.length - i - 1);
+						elements[DELETED] = positions;
 					}
-					Integer[] positions=new Integer[((Object[])elements[DELETED]).length+1];
-					System.arraycopy(oldPos, 0, positions, 0, i);
-					positions[i]=index;
-					System.arraycopy(oldPos, i, positions, i + 1, positions.length - i - 1);
-					elements[DELETED] = positions;
 				}
 			}
 		}
@@ -987,11 +1010,11 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		// REMOVE FROM HASH-Codes
 		if(complex > 1 && complex>(offset+1) && elements[offset + 1] != null) {
 			Object[] hashCodes = ((Object[])elements[offset + 1]);
-			int indexPos = hashKey(oldValue.hashCode(), items.length);
-			int indexHash = (Integer)hashCodes[indexPos];
+			int indexPos = hashKey(oldValue.hashCode(), hashCodes.length);
+			int indexHash = (int) hashCodes[indexPos];
 			int pos = transformIndex(indexHash, items.length); 
 			while(pos != index) {
-				indexPos = (indexPos + 1) % items.length;
+				indexPos = (indexPos + 1) % hashCodes.length;
 				if(hashCodes[indexPos] == null) {
 					break;
 				}
@@ -1006,7 +1029,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 			}
 		}
 
-		if(index == 0) {
+		if(index == this.index) {
 			items[index] = null;
 			this.index++;
 			if(this.index==items.length) {
@@ -1017,6 +1040,16 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		System.arraycopy(items, index + 1, items, index, size - index);
 
 		return oldValue;
+	}
+	//FIXME REMOVE
+	int getIndexOfArray(Object[] array, int search) {
+		Integer item = search;
+		for(int i=0;i<array.length;i++) {
+			if(item.equals(array[i])) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	public static Object[] emptyArray = new Object[] {};
@@ -1147,6 +1180,12 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
         boolean modified = false;
         Iterator<?> it = iterator();
         while (it.hasNext()) {
+        	SimpleIterator t = (SimpleIterator) it;
+        	if(t.list().size()==420){
+        		System.out.println("ERROR");
+        	}
+        	
+        	
             if (!c.contains(it.next())) {
                 it.remove();
                 modified = true;
