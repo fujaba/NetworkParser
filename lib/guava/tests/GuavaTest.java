@@ -1,9 +1,10 @@
-package guavatests;
+package tests;
 
 
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import junit.framework.Test;
@@ -16,9 +17,7 @@ import com.google.common.collect.testing.TestsForSetsInJavaUtil;
 import com.google.common.collect.testing.features.CollectionFeature;
 import com.google.common.collect.testing.features.CollectionSize;
 import com.google.common.collect.testing.features.SetFeature;
-
 import de.uniks.networkparser.list.SimpleSet;
-
 
 public class GuavaTest {
 	protected Collection<Method> suppressForHashSet() {
@@ -29,7 +28,9 @@ public class GuavaTest {
 	        .using(new TestStringSetGenerator() {
 	            @SuppressWarnings("unchecked")
 				@Override public Set<String> create(String[] elements) {
-	              return (Set<String>) new SimpleSet<String>().withList(MinimalCollection.of(elements));
+	              Set<String> list = new HashSet<String>();
+	              list.addAll(MinimalCollection.of(elements));
+	              return list;
 	            }
 	          })
 	        .named("HashSet")
@@ -42,6 +43,26 @@ public class GuavaTest {
 //        CollectionFeature.ALLOWS_NULL_VALUES,
 //	    CollectionFeature.SERIALIZABLE,
 	  }
+	public Test testsForSimpleList() {
+	    return SetTestSuiteBuilder
+	        .using(new TestStringSetGenerator() {
+	            @SuppressWarnings("unchecked")
+				@Override public Set<String> create(String[] elements) {
+//	              return (Set<String>) new HashSet<String>();
+	            	return (Set<String>) new SimpleSet<String>().withList(MinimalCollection.of(elements));
+	            }
+	          })
+	        .named("SimpleList")
+	        .withFeatures(
+	            SetFeature.GENERAL_PURPOSE,
+	            CollectionFeature.FAILS_FAST_ON_CONCURRENT_MODIFICATION,
+	            CollectionSize.ANY)
+	        .suppressing(suppressForHashSet())
+	        .createTestSuite();
+//        CollectionFeature.ALLOWS_NULL_VALUES,
+//	    CollectionFeature.SERIALIZABLE,
+	  }
+	
 	
 	public static Test suite() {
 		return new GuavaTest().allTests();
@@ -52,7 +73,8 @@ public class GuavaTest {
 	    TestSuite suite = new TestSuite("java.util Sets");
 //	    suite.addTest(testsForEmptySet());
 //	    suite.addTest(testsForSingletonSet());
-	    suite.addTest(testsForHashSet());
+//	    suite.addTest(testsForHashSet());
+	    suite.addTest(testsForSimpleList());
 //	    suite.addTest(testsForLinkedHashSet());
 //	    suite.addTest(testsForEnumSet());
 //	    suite.addTest(testsForTreeSetNatural());
