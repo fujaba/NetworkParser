@@ -78,7 +78,7 @@ public abstract class IdMap extends AbstractMap implements
 	/** The updatelistener for Notification changes. */
 	protected PropertyChangeListener updatePropertylistener;
 
-	protected SimpleKeyValueList<String, Object> keyValue = new SimpleKeyValueList<String, Object>().withFlag(SimpleKeyValueList.BIDI);
+	protected SimpleKeyValueList<String, Object> keyValue = new SimpleKeyValueList<String, Object>().addFlag(SimpleKeyValueList.BIDI);
 
 	protected Filter filter = new Filter();
 
@@ -122,7 +122,8 @@ public abstract class IdMap extends AbstractMap implements
 	 * @return the Map
 	 */
 	public IdMap withKeyValue(SimpleKeyValueList<String, Object> parent) {
-		this.keyValue = parent;
+		if(parent != null)
+			this.keyValue = parent;
 		return this;
 	}
 
@@ -232,9 +233,6 @@ public abstract class IdMap extends AbstractMap implements
 	 */
 	@Override
 	public Object put(String jsonId, Object object) {
-		if(jsonId.startsWith("192.168.2.181:8000;T") || jsonId.startsWith("192.168.2.183:8000;T")) {
-			System.out.println("ERROR");
-		}
 		this.keyValue.with(jsonId, object);
 		if (this.idListener != null) {
 			this.idListener.update(NEW, null, this, ITEMS, null, object);
@@ -343,8 +341,7 @@ public abstract class IdMap extends AbstractMap implements
 							} else {
 								SendableEntityCreator childCreatorClass = getCreatorClass(item);
 								if (childCreatorClass != null) {
-									if (!filter.isConvertable(this, reference,
-											property, item, true, deep)) {
+									if (!filter.isConvertable(reference, property, item, deep)) {
 										creatorClass.setValue(newObject,
 												property, item,
 												IdMap.NEW);
@@ -366,8 +363,7 @@ public abstract class IdMap extends AbstractMap implements
 					} else {
 						SendableEntityCreator childCreatorClass = getCreatorClass(value);
 						if (childCreatorClass != null) {
-							if (!filter.isConvertable(this, reference,
-									property, value, false, deep)) {
+							if (!filter.isConvertable(reference, property, value, deep)) {
 								creatorClass.setValue(newObject, property,
 										value, IdMap.NEW);
 							} else {
@@ -509,6 +505,9 @@ public abstract class IdMap extends AbstractMap implements
 
 	@Override
 	public void putAll(Map<? extends String, ? extends Object> map) {
+		if(map == null) {
+			return;
+		}
 		for (Iterator<?> i = map.entrySet().iterator(); i.hasNext();) {
 			java.util.Map.Entry<?, ?> mapEntity = (Entry<?, ?>) i.next();
 			put("" + mapEntity.getKey(), mapEntity.getValue());

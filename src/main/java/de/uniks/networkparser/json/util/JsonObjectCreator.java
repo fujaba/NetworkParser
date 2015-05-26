@@ -45,6 +45,9 @@ public class JsonObjectCreator implements SendableEntityCreator,
 		if (VALUE.equalsIgnoreCase(attribute)) {
 			return entity.toString();
 		}
+		if(entity==null) {
+			return null;
+		}
 		return ((JsonObject) entity).getValueItem(attribute);
 	}
 

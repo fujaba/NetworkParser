@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE project>
+<project name="guava" default="guava" basedir=".">
+	<target name="guava">
+		<mkdir dir="build"/>
+		<mkdir dir="build/bin"/>
+		<mkdir dir="build/guava"/>
+		<unzip src="lib/guava/guavatests.jar" dest="build/guava" />
+		<javac destdir="build/bin" srcdir="lib/:build/guava:src/main/java" fork="true" includeantruntime="false">
+			<classpath>
+				<pathelement location="lib/jacoco-0.7.1.201405082137/junit.jar"/>
+				<pathelement location="lib/guava/guava-18.0.jar"/>
+				<pathelement location="lib/guava/truth-0.25.jar"></pathelement>
+				<pathelement location="lib/findbugs-3.0.0/lib/jsr305.jar"></pathelement>
+			</classpath>
+		</javac>
+		<junit includeantruntime="true">
+			<classpath>
+				<pathelement location="build/bin"/>
+				<pathelement location="lib/guava/guava-18.0.jar"/>
+				<pathelement location="lib/jacoco-0.7.1.201405082137/junit.jar"/>
+				<pathelement location="lib/guava/truth-0.25.jar"></pathelement>
+			</classpath>
+				<formatter type="xml"/>
+				<batchtest todir="build">
+					<fileset dir="lib/guava">
+						<include name="**/*Test*.java"/>
+					</fileset>
+				</batchtest>
+		</junit>
+	</target>
+</project>
+

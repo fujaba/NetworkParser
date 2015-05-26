@@ -7,7 +7,7 @@ import java.util.ListIterator;
 import de.uniks.networkparser.interfaces.BaseItem;
 
 public abstract class AbstractList<V> extends AbstractArray<V> implements Iterable<V>   {
-    /**
+	/**
      * {@inheritDoc}
      *
      * <p>This implementation iterates over the specified collection, and adds
@@ -47,7 +47,7 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements Iterab
 		int pos = hasKey(value, size);
 		if(pos>=0) {
 			grow(size + 1);
-			addKey(pos, value, size);
+			addKey(pos, value, size + 1);
 			return true;
 		}
 		return false;
@@ -127,7 +127,7 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements Iterab
 		if(index<0 || index>size) {
 			return null;
 		}
-		return (V)removeByIndex(index, SMALL_KEY);
+		return (V)removeByIndex(index, SMALL_KEY, this.index);
 	}
 
 	public boolean addAll(int index, Collection<? extends V> values) {

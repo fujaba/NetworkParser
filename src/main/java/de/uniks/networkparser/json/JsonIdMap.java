@@ -111,6 +111,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 		if (filter == null) {
 			filter = new Filter();
 		}
+		filter.initMapFilter(this);
 		return toJsonObject(entity, filter.withStandard(this.filter), entity
 				.getClass().getName(), 0);
 	}
@@ -145,8 +146,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 		}
 
 		JsonObject jsonProp = new JsonObject().withAllowEmptyValue(filter.isFullSeriation());
-
-		String[] properties = creator.getProperties();
+		String[] properties = filter.getProperties(creator);
 		if (properties != null) {
 			for (String property : properties) {
 				if (jsonProp.has(property)) {
@@ -236,8 +236,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 	protected Object parseItem(Object item, Filter filter, Object entity,
 			String property, JsonArray jsonArray, String className, int deep) {
 		if (item == null
-				|| !filter.isPropertyRegard(this, item, property, entity, true,
-						deep)) {
+				|| !filter.isPropertyRegard(item, property, entity, deep)) {
 			return null;
 		}
 		if (className == null) {
@@ -246,7 +245,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 		SendableEntityCreator valueCreater = getCreator(className, true);
 		boolean isId = filter.isId(this, entity, className);
 		if (valueCreater != null) {
-			if (filter.isConvertable(this, entity, property, item, true, deep)) {
+			if (filter.isConvertable(entity, property, item, deep)) {
 				String subId = this.getKey(entity);
 				if (valueCreater instanceof SendableEntityCreatorNoIndex
 						|| (isId && !filter.hasObjects(subId))
@@ -619,7 +618,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 		if (filter == null) {
 			filter = this.filter.clone();
 		}
-
+		filter.initMapFilter(this);
 		if (object instanceof Collection<?>) {
 			Collection<?> list = (Collection<?>) object;
 			Filter newFilter = filter.withStandard(this.filter);

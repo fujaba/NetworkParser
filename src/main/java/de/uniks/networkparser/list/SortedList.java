@@ -10,6 +10,7 @@ public class SortedList<V> extends SimpleList<V> {
 	protected Comparator<V> cpr;
 	
 	@SuppressWarnings("unchecked")
+	@Override
 	public Comparator<Object> comparator() {
 		if (this.cpr == null) {
 			withComparator(new EntityComparator<V>().withColumn(
@@ -119,5 +120,19 @@ public class SortedList<V> extends SimpleList<V> {
 			}
 		}
 		return (ST) newList;
+	}
+	
+	public V higher(V toElement) {
+		if(!isComparator()) {
+			return null;
+		}
+		for (int pos = 0; pos < size(); pos++) {
+			V item = get(pos);
+			int compare = comparator().compare(item, toElement);
+			if (compare > 0) {
+				return item;
+			}
+		}
+		return null;
 	}
 }

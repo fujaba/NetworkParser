@@ -40,19 +40,22 @@ public class XsdValidationLoggingErrorHandler implements ErrorHandler {
 	@Override
 	public void warning(SAXParseException ex) throws SAXException {
 		isValid = false;
-		warnings.add("Warnung: " + ex.getMessage());
+		if(ex!=null)
+			warnings.add("Warnung: " + ex.getMessage());
 	}
 
 	@Override
 	public void error(SAXParseException ex) throws SAXException {
 		isValid = false;
-		errors.add("Fehler: " + ex.getMessage());
+		if(ex!=null)
+			errors.add("Fehler: " + ex.getMessage());
 	}
 
 	@Override
 	public void fatalError(SAXParseException ex) throws SAXException {
 		isValid = false;
-		errors.add("Fataler Fehler: " + ex.getMessage());
+		if(ex!=null)
+			errors.add("Fataler Fehler: " + ex.getMessage());
 	}
 
 	/**

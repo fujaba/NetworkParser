@@ -10,9 +10,9 @@ import de.uniks.networkparser.interfaces.BaseItem;
 
 public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K, V>, Iterable<K> {
 
-	@Override
-	public byte initFlag() {
-		return MAP+VISIBLE+CASESENSITIVE;
+	public SimpleKeyValueList() {
+		super();
+		addFlag(MAP);
 	}
 	
 	/**
@@ -361,7 +361,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		if(pos<0) {
 			return null;
 		}
-		if(pos==size || getKeyByIndex(pos, size) != key) {
+		if(pos==size || getByIndex(SMALL_KEY, pos, size) != key) {
 			grow(size + 1);
 			super.addKeyValue(pos, key, value);
 		}else {
@@ -380,7 +380,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		if(value==null){
 			return false;
 		}
-		if(isBig()) {
+		if(isComplex(size)) {
     		return getPositionValue(value)>=0;
     	}
 		Object[] items = (Object[]) elements[SMALL_VALUE];
@@ -391,17 +391,13 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	}
 	
 	public int indexOfValue(Object value){
-		if(isBig()) {
-    		return getPositionValue(value);
-    	}
-		if(elements==null){
+		if(elements==null || value == null){
 			return -1;
 		}
-		Object[] items = (Object[]) elements[SMALL_VALUE];
-		for (int i = 0; i < size; i++)
-            if (value.equals(items[i]))
-                return i;
-		return -1;
+		if((this.flag & BIDI)!=BIDI || size<=MINHASHINGSIZE) {
+			return search((Object[]) elements[SMALL_VALUE], value);
+		}
+   		return getPositionValue(value);
 	}
 
 	public SimpleKeyValueList<K, V> withList(Map<?, ?> map) {
@@ -429,11 +425,9 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return (K) super.getKeyByIndex(index);
 	}
 
-
-	@Override
 	@SuppressWarnings("unchecked")
 	public V getValueByIndex(int index) {
-		return (V) super.getValueByIndex(index);
+		return (V) super.getByIndex(SMALL_VALUE, index + this.index, size);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -447,8 +441,9 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		if (index < 0) {
 			return null;
 		}
+		int oldIndex = this.index;
 		removeItem(index, SMALL_KEY);
-		return (V) removeByIndex(index, SMALL_VALUE);
+		return (V) removeByIndex(index, SMALL_VALUE, oldIndex);
 	}
 	
 	@Override
@@ -476,7 +471,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	public V get(Object key) {
 		int pos = indexOf(key);
 		if(pos>=0) {
-			return (V) super.getValueByIndex(pos);
+			return (V) super.getByIndex(SMALL_VALUE, pos + this.index, size);
 		}
 		return null;
 	}
@@ -496,7 +491,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		if(pos<0) {
 			return this;
 		}
-		if(pos==size || getKeyByIndex(pos, size) != key) {
+		if(pos==size || getByIndex(SMALL_KEY, pos, size) != key) {
 			grow(size + 1);
 			super.addKeyValue(pos, key, value);
 		}else {

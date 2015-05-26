@@ -363,6 +363,9 @@ public class EntityUtil {
 	 * @return a String
 	 */
 	public static String repeat(char ch, int repeat) {
+		if(repeat<0) {
+			return null;
+		}
 		char[] buf = new char[repeat];
 		for (int i = repeat - 1; i >= 0; i--) {
 			buf[i] = ch;

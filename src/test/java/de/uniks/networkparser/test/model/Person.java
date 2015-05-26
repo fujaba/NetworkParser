@@ -128,7 +128,7 @@ public class Person
    } 
 
    
-   public static final PersonSet EMPTY_SET = new PersonSet().withReadOnly(true);
+   public static final PersonSet EMPTY_SET = new PersonSet().addFlag(PersonSet.READONLY);
 
    
    /********************************************************************

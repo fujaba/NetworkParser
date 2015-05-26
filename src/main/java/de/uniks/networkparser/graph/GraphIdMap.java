@@ -147,11 +147,10 @@ public class GraphIdMap extends IdMap {
 		if (item == null) {
 			return;
 		}
-		if (!filter.isPropertyRegard(this, entity, property, item, true,
-				deep + 1)) {
+		if (!filter.isPropertyRegard(entity, property, item, deep + 1)) {
 			return;
 		}
-		if (!filter.isConvertable(this, entity, property, item, true, deep + 1)) {
+		if (!filter.isConvertable(entity, property, item, deep + 1)) {
 			return;
 		}
 		SendableEntityCreator valueCreater = getCreatorClass(item);

@@ -3,11 +3,13 @@ package de.uniks.networkparser.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.lang.reflect.Field;
 import java.util.ListIterator;
 
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.uniks.networkparser.list.AbstractArray;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 
@@ -100,6 +102,7 @@ public class FullListTest {
 		assertEquals("iteration should have counted zero elements", 0, counter);
 
 		// remove again
+
 		simpleList.remove(int_01);
 
 		assertEquals("List should be empty", 0, simpleList.size());
@@ -213,7 +216,7 @@ public class FullListTest {
 		simpleList.retainAll(null);
 		
 		
-		assertEquals("simpleList should have 550 elements", 549, simpleList.size());
+		assertEquals("simpleList should have 549 elements", 549, simpleList.size());
 		assertEquals("simpleList[0] should be 2", 2, 0 + simpleList.first());
 		
 		simpleList = new SimpleList<Integer>();
@@ -228,6 +231,7 @@ public class FullListTest {
 		assertEquals("clone should have 1 elements", 1, clone.size());
 		assertEquals("clone[0] should be 12", 2, 0 + clone.first());
 		
+		//FIXME TEST ELEMENTS ARE NOT NULL
 		simpleList.clear();
 		
 		for (int i = 1; i <= 42; i++)
@@ -252,6 +256,50 @@ public class FullListTest {
 
 		int lastIndexOf = clone.lastIndexOf(clone.first());
 		assertEquals("wrong index", 0, lastIndexOf);
+	}
 
+	@Test
+	public void simpleListNoHash() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
+	{
+		SimpleList<Integer> queue=new SimpleList<Integer>().withAllowDuplicate(true);
+		for(int i=1;i<500;i++) {
+			queue.add(i);
+		}
+		Field declaredField = queue.getClass().getField("elements");
+		Object[] object = (Object[]) declaredField.get(queue);
+		Assert.assertNull(object[AbstractArray.BIG_KEY]);
+	}
+
+	@Test
+	public void simpleKeyValueList() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
+	{
+		SimpleKeyValueList<Integer, Integer> queue=new SimpleKeyValueList<Integer, Integer>().addFlag(SimpleKeyValueList.BIDI).withAllowDuplicate(true);
+		for(int i=1;i<500;i++) {
+			if(i==1) {
+				System.out.println("BREAK");
+			}
+			queue.add(i, i);
+		}
+		Field declaredField = queue.getClass().getField("elements");
+		Object[] object = (Object[]) declaredField.get(queue);
+		Assert.assertNull(object[AbstractArray.BIG_KEY]);
+		Assert.assertNull(object[AbstractArray.BIG_VALUE]);
+	}
+	
+	@Test
+	public void simpleListQueue() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
+	{
+		SimpleList<Integer> queue=new SimpleList<Integer>().withAllowDuplicate(true);
+		for(int i=1;i<500;i++) {
+			queue.add(i);
+		}
+		Field declaredField = queue.getClass().getField("elements");
+		Object[] object = (Object[]) declaredField.get(queue);
+		Assert.assertNull(object[AbstractArray.BIG_KEY]);
+		queue.remove(0);
+		Assert.assertEquals(queue.size(), 498);
+		Integer integer = queue.get(0);
+		Assert.assertEquals(integer, new Integer(2));
+		
 	}
 }
