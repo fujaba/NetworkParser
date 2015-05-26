@@ -23,6 +23,7 @@ package de.uniks.networkparser;
  */
 import java.util.ArrayList;
 
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.logic.Condition;
 import de.uniks.networkparser.logic.ValuesMap;
 import de.uniks.networkparser.logic.ValuesSimple;
@@ -36,6 +37,7 @@ public class Filter {
 	protected ArrayList<Object> visitedObjects;
 	protected ArrayList<ReferenceObject> refs;
 	protected Boolean full;
+	protected ValuesMap filterMap;
 
 	public Condition<ValuesSimple> getIdFilter() {
 		return idFilter;
@@ -110,7 +112,6 @@ public class Filter {
 				full = false;
 			}
 		}
-
 		return this;
 	}
 
@@ -172,20 +173,26 @@ public class Filter {
 		return this;
 	}
 
-	public boolean isPropertyRegard(IdMap map, Object entity,
-			String property, Object value, boolean isMany, int deep) {
+	public String[] getProperties(SendableEntityCreator creator) {
+		return creator.getProperties();
+	}
+	
+	public void initMapFilter(IdMap map) {
+		this.filterMap = ValuesMap.withMap(map);
+	}
+	
+	public boolean isPropertyRegard(Object entity, String property, Object value, int deep) {
 		if (this.property != null) {
-			return this.property.check(ValuesMap.with(map, entity, property,
-					value, isMany, deep));
+			this.filterMap.withValues(entity, property, value, deep);
+			return this.property.check(filterMap);
 		}
 		return true;
 	}
-
-	public boolean isConvertable(IdMap map, Object entity,
-			String property, Object value, boolean isMany, int deep) {
+	
+	public boolean isConvertable(Object entity, String property, Object value, int deep) {
 		if (this.convertable != null) {
-			return this.convertable.check(ValuesMap.with(map, entity,
-					property, value, isMany, deep));
+			this.filterMap.withValues(entity, property, value, deep);
+			return this.convertable.check(filterMap);
 		}
 		return true;
 	}
