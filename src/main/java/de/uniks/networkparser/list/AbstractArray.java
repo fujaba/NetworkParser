@@ -1045,13 +1045,13 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	
 	public Object[] toArray() {
 		if(isComplex(size)) {
-			return Arrays.copyOf((Object[])elements[SMALL_KEY], size);	
+			return Arrays.copyOfRange((Object[])elements[SMALL_KEY], this.index, size + this.index);
 		}
 		if (elements == null)
 		{
 		   return emptyArray;
 		}
-		return Arrays.copyOf(elements, size);
+		return Arrays.copyOfRange(elements, this.index, size + this.index);
 	}
 	
 	public Object getValueItem(Object key) {
