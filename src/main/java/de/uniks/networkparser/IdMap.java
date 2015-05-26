@@ -330,8 +330,7 @@ public abstract class IdMap extends AbstractMap implements
 							} else {
 								SendableEntityCreator childCreatorClass = getCreatorClass(item);
 								if (childCreatorClass != null) {
-									if (!filter.isConvertable(this, reference,
-											property, item, true, deep)) {
+									if (!filter.isConvertable(reference, property, item, deep)) {
 										creatorClass.setValue(newObject,
 												property, item,
 												IdMap.NEW);
@@ -353,8 +352,7 @@ public abstract class IdMap extends AbstractMap implements
 					} else {
 						SendableEntityCreator childCreatorClass = getCreatorClass(value);
 						if (childCreatorClass != null) {
-							if (!filter.isConvertable(this, reference,
-									property, value, false, deep)) {
+							if (!filter.isConvertable(reference, property, value, deep)) {
 								creatorClass.setValue(newObject, property,
 										value, IdMap.NEW);
 							} else {
