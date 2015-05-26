@@ -1003,7 +1003,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		if(complex > 1 && complex>(offset+1) && elements[offset + 1] != null) {
 			Object[] hashCodes = ((Object[])elements[offset + 1]);
 			int indexPos = hashKey(oldValue.hashCode(), hashCodes.length);
-			int indexHash = (int) hashCodes[indexPos];
+			int indexHash = (Integer) hashCodes[indexPos];
 			int pos = transformIndex(indexHash, items.length); 
 			while(pos != index) {
 				indexPos = (indexPos + 1) % hashCodes.length;
