@@ -51,6 +51,9 @@ public class ByteFilter extends Filter {
 	}
 
 	public int getIndexOfClazz(String clazzName) {
+		if(visitedObjects == null) {
+			return -1;
+		}
 		int pos = 0;
 		for (Object item : visitedObjects) {
 			if (clazzName.equalsIgnoreCase(item.getClass().getName())) {
@@ -62,6 +65,9 @@ public class ByteFilter extends Filter {
 	}
 
 	public String getClazz(int pos) {
+		if(visitedObjects == null) {
+			return null;
+		}
 		Object item = visitedObjects.get(pos);
 		if (item instanceof String) {
 			return "" + item;
@@ -70,6 +76,9 @@ public class ByteFilter extends Filter {
 	}
 
 	public String getLastClazz() {
+		if(visitedObjects == null) {
+			return null;
+		}
 		if (visitedObjects.size() > 0) {
 			return visitedObjects.get(visitedObjects.size() - 1).getClass()
 					.getName();

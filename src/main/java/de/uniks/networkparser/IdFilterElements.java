@@ -23,7 +23,7 @@ public class IdFilterElements extends SimpleList<Object> implements UpdateListen
 	public boolean update(String typ, BaseItem source, Object target, String property, Object oldValue,
 			Object newValue) {
 		if(condition!=null) {
-			ValuesMap value = ValuesMap.with((IdMap)target, target, property, newValue, false, 0);
+			ValuesMap value = ValuesMap.with((IdMap)target, target, property, newValue, 0);
 			if(condition.check(value)) {
 				return add(newValue);
 			}

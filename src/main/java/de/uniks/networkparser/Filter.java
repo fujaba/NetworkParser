@@ -23,6 +23,7 @@ package de.uniks.networkparser;
  */
 import java.util.ArrayList;
 
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.logic.Condition;
 import de.uniks.networkparser.logic.ValuesMap;
 import de.uniks.networkparser.logic.ValuesSimple;
@@ -36,6 +37,7 @@ public class Filter {
 	protected ArrayList<Object> visitedObjects;
 	protected ArrayList<ReferenceObject> refs;
 	protected Boolean full;
+	protected ValuesMap filterMap;
 
 	public Condition<ValuesSimple> getIdFilter() {
 		return idFilter;
@@ -94,24 +96,22 @@ public class Filter {
 	}
 
 	public Filter withStandard(Filter referenceFilter) {
-		if (idFilter == null) {
+		if (idFilter == null && referenceFilter != null) {
 			idFilter = referenceFilter.getIdFilter();
 		}
-		if (convertable == null) {
+		if (convertable == null && referenceFilter != null) {
 			convertable = referenceFilter.getConvertable();
 		}
-		if (property == null) {
+		if (property == null && referenceFilter != null) {
 			property = referenceFilter.getPropertyRegard();
 		}
-		visitedObjects = new ArrayList<Object>();
 		refs = new ArrayList<ReferenceObject>();
-		if (full == null) {
+		if (full == null && referenceFilter != null) {
 			full = referenceFilter.isFullSeriation();
 			if (full == null) {
 				full = false;
 			}
 		}
-
 		return this;
 	}
 
@@ -129,15 +129,18 @@ public class Filter {
 	}
 
 	public boolean hasObjects(Object element) {
-		return visitedObjects.contains(element);
+		return getVisitedObjects().contains(element);
 	}
 
-	public int getIndexVisitedObjects(Object element) {
-		int pos = 0;
+	ArrayList<Object> getVisitedObjects() {
 		if (visitedObjects == null) {
 			visitedObjects = new ArrayList<Object>();
 		}
-		for (Object item : visitedObjects) {
+		return visitedObjects;
+	}
+	public int getIndexVisitedObjects(Object element) {
+		int pos = 0;
+		for (Object item : getVisitedObjects()) {
 			if (item == element) {
 				return pos;
 			}
@@ -147,8 +150,8 @@ public class Filter {
 	}
 
 	public Object getVisitedObjects(int index) {
-		if (visitedObjects != null) {
-			return visitedObjects.get(index);
+		if (index>=0 && index < getVisitedObjects().size()) {
+			return getVisitedObjects().get(index);
 		}
 		return null;
 	}
@@ -164,26 +167,32 @@ public class Filter {
 		}
 		for (Object item : visitedObject) {
 			if (item != null) {
-				this.visitedObjects.add(item);
+				getVisitedObjects().add(item);
 			}
 		}
 		return this;
 	}
 
-	public boolean isPropertyRegard(IdMap map, Object entity,
-			String property, Object value, boolean isMany, int deep) {
+	public String[] getProperties(SendableEntityCreator creator) {
+		return creator.getProperties();
+	}
+	
+	public void initMapFilter(IdMap map) {
+		this.filterMap = ValuesMap.withMap(map);
+	}
+	
+	public boolean isPropertyRegard(Object entity, String property, Object value, int deep) {
 		if (this.property != null) {
-			return this.property.check(ValuesMap.with(map, entity, property,
-					value, isMany, deep));
+			this.filterMap.withValues(entity, property, value, deep);
+			return this.property.check(filterMap);
 		}
 		return true;
 	}
-
-	public boolean isConvertable(IdMap map, Object entity,
-			String property, Object value, boolean isMany, int deep) {
+	
+	public boolean isConvertable(Object entity, String property, Object value, int deep) {
 		if (this.convertable != null) {
-			return this.convertable.check(ValuesMap.with(map, entity,
-					property, value, isMany, deep));
+			this.filterMap.withValues(entity, property, value, deep);
+			return this.convertable.check(filterMap);
 		}
 		return true;
 	}
@@ -193,11 +202,16 @@ public class Filter {
 	}
 
 	public Filter with(ReferenceObject item) {
+		if(refs == null) {
+			return this;
+		}
 		refs.add(item);
 		return this;
 	}
 
 	public Object getRefByEntity(Object value) {
+		if(visitedObjects == null)
+			return null;
 		for (int i = 0; i < visitedObjects.size(); i += 2) {
 			if (visitedObjects.get(i) == value) {
 				return visitedObjects.get(i + 1);

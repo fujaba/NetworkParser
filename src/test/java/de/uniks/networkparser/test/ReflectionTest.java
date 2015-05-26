@@ -30,6 +30,7 @@ public class ReflectionTest {
 		for(Class<?> clazz : classesForPackage) {
 			StringBuilder item=new StringBuilder();
 			item.append( clazz.getName()+": ");
+			
 			Constructor<?>[] constructors = clazz.getConstructors();
 			if(clazz.isEnum() || clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers()) ) {
 				continue;
@@ -62,11 +63,17 @@ public class ReflectionTest {
 //							successCount++;
 						}catch(Exception e) {
            
-							String line =getLine(e, clazz.getName());
+							String line =getLine(e, clazz.getSimpleName());
 							if(line.length()<1) {
 								line = clazz.getName()+".java:1";
 							}
 							itemError.append("("+line+") : "+clazz.getName()+":"+getSignature(m) +" "+ e.getCause()+"\n");
+							String shortName="";
+							if(line.lastIndexOf(".")>0) {
+								String[] split = line.split("\\.");
+								shortName = line.substring(0, line.lastIndexOf(":") - 4) +m.getName()+"("+split[split.length - 2] + "."+split[split.length - 1]+")";
+							}
+							System.out.println("at "+clazz.getName()+": "+e.getCause()+" "+shortName);
 							errorCount++;
 						}
 					}
@@ -76,7 +83,7 @@ public class ReflectionTest {
 			}
 		}
 		// Write out all Results
-		System.err.println(error.toString());
+//		System.out.println(error.toString());
 		System.err.println(errorCount+ "/" + (errorCount+ successCount));
 	}
 	
@@ -203,7 +210,7 @@ public class ReflectionTest {
 		r.append(")");
 		return r.toString();
 	}
-
+	
 	private static void checkDirectory(File directory, String pckgname,
 	        ArrayList<Class<?>> classes) throws ClassNotFoundException {
 	    File tmpDirectory;

@@ -75,6 +75,9 @@ public class UpdateListenerJson implements PropertyChangeListener {
 	 * @return the json object
 	 */
 	public JsonObject startGarbageColection(Object root) {
+		if(this.map == null) {
+			return null;
+		}
 		this.garbageCollection = new SimpleKeyValueList<String, Object>();
 		this.classCounts = new ArrayList<String>();
 		JsonObject initField = this.map.toJsonObject(root);
@@ -90,6 +93,9 @@ public class UpdateListenerJson implements PropertyChangeListener {
 	 * @return the json object
 	 */
 	public JsonObject garbageCollection(Object root) {
+		if(root == null) {
+			return null;
+		}
 		boolean isStarted = this.garbageCollection != null;
 		this.garbageCollection = new SimpleKeyValueList<String, Object>();
 		this.classCounts = new ArrayList<String>();

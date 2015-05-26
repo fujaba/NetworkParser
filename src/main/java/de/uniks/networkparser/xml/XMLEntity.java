@@ -75,7 +75,8 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements
 	 * @return Itself
 	 */
 	public XMLEntity withValue(Tokener tokener) {
-		tokener.parseToEntity(this);
+		if(tokener!=null)
+			tokener.parseToEntity(this);
 		return this;
 	}
 
@@ -122,6 +123,9 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements
 	 * @return the child
 	 */
 	public XMLEntity getChild(String value) {
+		if(value==null) {
+			return null;
+		}
 		for (XMLEntity entity : getChildren()) {
 			if (value.equals(entity.getTag())) {
 				return entity;

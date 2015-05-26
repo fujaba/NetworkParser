@@ -1,0 +1,10 @@
+diff a/src/test/java/de/uniks/networkparser/test/HashTableTest.java b/src/test/java/de/uniks/networkparser/test/HashTableTest.java	(rejected hunks)
+@@ -30,7 +30,7 @@
+ 			HashTableTest.COUNT = Integer.valueOf((String)System.getProperty("count"));
+ 		}else{
+ //			HashTableTest.COUNT = 1000 * 1000;
+-			HashTableTest.COUNT = 1000;
++			HashTableTest.COUNT = 10;
+ 		}
+ 		System.out.println("Run test for "+HashTableTest.COUNT+" items");
+ 		for (int i = 0; i < COUNT; i++) {

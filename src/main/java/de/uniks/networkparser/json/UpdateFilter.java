@@ -22,12 +22,11 @@ package de.uniks.networkparser.json;
  permissions and limitations under the Licence.
  */
 import de.uniks.networkparser.Filter;
-import de.uniks.networkparser.IdMap;
 
 public class UpdateFilter extends Filter {
 	@Override
-	public boolean isConvertable(IdMap map, Object entity,
-			String property, Object value, boolean isMany, int deep) {
-		return map.getKey(entity) == null;
+	public boolean isConvertable(Object entity,
+			String property, Object value, int deep) {
+		return filterMap.map.getKey(entity) == null;
 	}
 }
