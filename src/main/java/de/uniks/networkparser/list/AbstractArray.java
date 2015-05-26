@@ -149,7 +149,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		if((flag & MAP)>0){
 			return 4;
 		}
-		if(size>=MINHASHINGSIZE || (size > SIZE_BIG && elements.length<=SIZE_BIG)) {
+		if(size>=MINHASHINGSIZE || (size > SIZE_BIG && elements != null && elements.length<=SIZE_BIG)) {
 			return 3;
 		}
 		return 1;
@@ -459,7 +459,9 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		Object[] dest = new Object[newCapacity];
 		if(size > elements.length - this.index) {
 			System.arraycopy(elements, this.index, dest, 0, size - this.index + 1);
-			System.arraycopy(elements, this.index, dest, size - this.index, elements.length - size - this.index + 1);
+			int len =elements.length - size - this.index + 1;
+			if(len>0)
+				System.arraycopy(elements, this.index, dest, size - this.index, elements.length - size - this.index + 1);
 		}else{
 			System.arraycopy(elements, this.index, dest, 0, size);
 		}
