@@ -34,7 +34,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	public static final int DELETED = 2;
 	public static final int SMALL_VALUE = 3;
 	public static final int BIG_VALUE = 4;
-	public static final int SIZE_BIG = 5;
+	public static final int SIZE_BIG = 6;
 
 	/**
 	 * Start index of Elements-Array
@@ -136,7 +136,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
     }
     
     final boolean isComplex(int size) {
-    	return (flag & MAP) == MAP || size >= MINHASHINGSIZE || (size > SIZE_BIG && elements.length<=SIZE_BIG);
+    	return (flag & MAP) == MAP || size >= MINHASHINGSIZE || (size > SIZE_BIG && elements.length<SIZE_BIG);
     }
     
     final int getArrayFlag(int size ) {
@@ -149,7 +149,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		if((flag & MAP)>0){
 			return 4;
 		}
-		if(size>=MINHASHINGSIZE || (size > SIZE_BIG && elements != null && elements.length<=SIZE_BIG)) {
+		if(size>=MINHASHINGSIZE || (size > SIZE_BIG && elements != null && elements.length<SIZE_BIG)) {
 			return 3;
 		}
 		return 1;
@@ -419,7 +419,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 				elements[DELETED] = null;
 			}
 		} else if(size < MINHASHINGSIZE) {
-			if(minCapacity >= elements.length) {
+			if(minCapacity > elements.length) {
 				resizeSmall(newSize);
 			}
 		}
@@ -456,19 +456,23 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	}
 	
 	void resizeSmall(int newCapacity) {
-		Object[] dest = new Object[newCapacity];
-		if(size > elements.length - this.index) {
-			System.arraycopy(elements, this.index, dest, 0, size - this.index + 1);
-			int len =elements.length - size - this.index + 1;
-			if(len>0)
-				System.arraycopy(elements, this.index, dest, size - this.index, elements.length - size - this.index + 1);
-		}else{
-			System.arraycopy(elements, this.index, dest, 0, size);
-		}
-		elements = dest;
+		elements = arrayCopy(newCapacity);
 		this.index = 0;
 	}
 
+	Object[] arrayCopy(int newCapacity){
+		Object[] dest = new Object[newCapacity];
+		int end = elements.length - this.index;
+		if(size > end) {
+			System.arraycopy(elements, this.index, dest, 0, end);
+			int len = size - end;
+			System.arraycopy(elements, 0, dest, end, len);
+		}else{
+			System.arraycopy(elements, this.index, dest, 0, size);
+		}
+		return dest;
+	}
+	
 	/**
 	 * Add a Element to the List
 	 * 
@@ -621,10 +625,13 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 			}
 			pos = this.index;
 		}else {
+			int oldPos = pos;
 			pos = (this.index + pos) % keys.length;
-			int i = this.size;
-			while(i>pos) {
-				keys[i] = keys[--i]; 	
+			if(pos>oldPos) {
+				int i = this.size;
+				while(i>pos) {
+					keys[i] = keys[--i]; 	
+				}
 			}
 		}
 		keys[pos] = element;
@@ -1036,22 +1043,36 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 			}
 			return oldValue;
 		}
-		System.arraycopy(items, index + 1, items, index, size - index);
+		if(size - index==1) {
+			items[index] = null;
+		} else {
+			int end = items.length - this.index;
+			if(size > end) {
+				System.arraycopy(items,index + 1, items, index, end - index);
+				int len = size - end - 1;
+				items[end] = items[0];
+				System.arraycopy(items, 1, items, 0, len);
+				items[len] = null;
+			}else{
+				int len = size + this.index - index - 1;
+				if(len>0) {
+					System.arraycopy(items,index + 1, items, index,  len);
+				}
+				items[index + len] = null;
 
+			}
+		}
 		return oldValue;
 	}
 
 	public static final Object[] emptyArray = new Object[] {};
 	
 	public Object[] toArray() {
-		if(isComplex(size)) {
-			return Arrays.copyOfRange((Object[])elements[SMALL_KEY], this.index, size + this.index);
-		}
 		if (elements == null)
 		{
 		   return emptyArray;
 		}
-		return Arrays.copyOfRange(elements, this.index, size + this.index);
+		return arrayCopy(size);
 	}
 	
 	public Object getValueItem(Object key) {

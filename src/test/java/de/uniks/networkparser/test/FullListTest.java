@@ -300,6 +300,73 @@ public class FullListTest {
 		Assert.assertEquals(queue.size(), 498);
 		Integer integer = queue.get(0);
 		Assert.assertEquals(integer, new Integer(2));
+	}
+	
+	@Test
+	public void testdd() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+		SimpleList<Integer> list=new SimpleList<Integer>();
+		for(int i=1;i<6;i++) {
+			list.add(i);
+		}
+//		list.add(42);
+		Field declaredField = list.getClass().getField("elements");
+		Object[] object = (Object[]) declaredField.get(list);
+//		Assert.assertEquals(13, object.length);
+		Assert.assertEquals(5, object.length);
 		
+		list.remove(0);
+		list.remove(0);
+//		list.remove(0);
+//		list.remove(0);
+		
+		System.out.println(object);
+		
+		Object[] array = list.toArray();
+		
+		list.add(42);
+		
+		Object[] arrayB = list.toArray();
+		
+		Assert.assertEquals(array.length + 1, arrayB.length);
+	}
+	
+	@Test
+	public void testCicle() {
+		SimpleList<Integer> list=new SimpleList<Integer>();
+		list.add(1);
+		list.add(2);
+		list.add(3);
+		list.add(4);
+		list.add(5);
+		list.remove(0);
+		list.add(6);
+		list.removeByObject(3);
+		System.out.println(list.size());
+	}
+
+	@Test
+	public void testMiddle() {
+		SimpleList<Integer> list=new SimpleList<Integer>();
+		list.add(1);
+		list.add(2);
+		list.add(3);
+		list.add(4);
+		list.add(5);
+		list.removeByObject(3);
+		System.out.println(list.size());
+	}
+	
+	@Test
+	public void testFirstMiddle() {
+		SimpleList<Integer> list=new SimpleList<Integer>();
+		list.add(1);
+		list.add(2);
+		list.add(3);
+		list.add(4);
+		list.add(5);
+		list.remove(0);
+		list.removeByObject(3);
+		Assert.assertEquals(3, list.size());
+		Assert.assertEquals(new Integer(5), list.get(2));
 	}
 }

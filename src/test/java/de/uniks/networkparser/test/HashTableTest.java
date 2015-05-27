@@ -112,17 +112,17 @@ public class HashTableTest
 		long currentTimeMillis = System.currentTimeMillis();
 
 		for (int i = 0; i < items.size(); i += 100) {
+			System.out.println(i);
+			if(i==0) {
+				System.out.println("HH");
+			}
 			list.remove(items.get(i));
 		}
+		int c=0;
 		for (Iterator<Person> i = list.iterator();i.hasNext();){
 			Person item = i.next();
-			if(item==null){
-				PersonSet ps=(PersonSet) list;
-				ps.get(999);
-				System.out.println("KK");
-			}
-			Assert.assertNotNull(item);
-//			Assert.assertNotNull(i.next());
+			c++;
+			Assert.assertNotNull("Item "+c+"/"+list.size()+" are null", item);
 		}
 		String end = String.format(FORMAT, (System.currentTimeMillis() - currentTimeMillis));
 		System.out.println(label+ " removeObject: " + end+ "(" +list.size()+ ")");
@@ -145,8 +145,8 @@ public class HashTableTest
 
 	@Test
 	public void testLists(){
-		test("ArrayList    :", new ArrayList<Person>());
-		test("LinkedHashSet:", new LinkedHashSet<Person>());
+//		test("ArrayList    :", new ArrayList<Person>());
+//		test("LinkedHashSet:", new LinkedHashSet<Person>());
 		test("PersonSet    :", new PersonSet());
 	}
 	
