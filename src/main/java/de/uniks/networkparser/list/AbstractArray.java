@@ -456,19 +456,19 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	}
 	
 	void resizeSmall(int newCapacity) {
-		elements = arrayCopy(newCapacity);
+		elements = arrayCopy(elements, newCapacity);
 		this.index = 0;
 	}
 
-	Object[] arrayCopy(int newCapacity){
+	Object[] arrayCopy(Object[] source, int newCapacity){
 		Object[] dest = new Object[newCapacity];
-		int end = elements.length - this.index;
+		int end = source.length - this.index;
 		if(size > end) {
-			System.arraycopy(elements, this.index, dest, 0, end);
+			System.arraycopy(source, this.index, dest, 0, end);
 			int len = size - end;
-			System.arraycopy(elements, 0, dest, end, len);
+			System.arraycopy(source, 0, dest, end, len);
 		}else{
-			System.arraycopy(elements, this.index, dest, 0, size);
+			System.arraycopy(source, this.index, dest, 0, size);
 		}
 		return dest;
 	}
@@ -1072,7 +1072,10 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		{
 		   return emptyArray;
 		}
-		return arrayCopy(size);
+		if(isComplex(size)) {
+			return arrayCopy((Object[])elements[SMALL_KEY], size);
+		}
+		return arrayCopy(elements, size);
 	}
 	
 	public Object getValueItem(Object key) {
@@ -1292,6 +1295,35 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 			newInstance.withAll(get(fromIndex++));
 		}
 		return newInstance;
+	}
+	
+	public void pack(AbstractArray<V> items, boolean full) {
+		boolean complex = isComplex(size);
+		if((flag & MAP) == 0) {
+			if(complex) {
+				elements = arrayCopy((Object[])elements[SMALL_KEY], size);
+			} else {
+				elements = arrayCopy(elements, size);
+			}
+			this.index = 0;
+			if(items!=null){
+				items.addKey(size, this, size);
+			}
+			return;
+		}
+		elements[SMALL_KEY] = arrayCopy((Object[])elements[SMALL_KEY], size);
+		if(full) {
+			elements[BIG_KEY] = null;
+		}
+		elements[DELETED] = null;
+		elements[SMALL_VALUE] = arrayCopy((Object[])elements[SMALL_VALUE], size);
+		if(full && elements.length>BIG_VALUE){
+			elements[BIG_VALUE] = null;
+		}
+		this.index = 0;
+		if(items!=null){
+			items.addKey(size, this, size);
+		}
 	}
 	
 	protected void fireProperty(Object oldElement, Object newElement,
