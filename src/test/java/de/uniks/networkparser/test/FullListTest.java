@@ -369,4 +369,68 @@ public class FullListTest {
 		Assert.assertEquals(3, list.size());
 		Assert.assertEquals(new Integer(5), list.get(2));
 	}
+
+	@Test
+	public void testPackList() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+		SimpleList<Integer> list=new SimpleList<Integer>();
+		list.with(1,2,3);
+		
+		Field declaredField = list.getClass().getField("elements");
+		Object[] object = (Object[]) declaredField.get(list);
+		Assert.assertEquals(8, object.length);
+		
+		list.pack(null, true);
+		
+		object = (Object[]) declaredField.get(list);
+		
+		Assert.assertEquals(3, object.length);
+		
+		for(int i=4;i<501;i++) {
+			list.add(i);
+		}
+		Object[] items= (Object[]) declaredField.get(list);
+		object=(Object[])items[0];
+
+		Assert.assertEquals(508, object.length);
+		
+		list.pack(null, true);
+		
+		object= (Object[]) declaredField.get(list);
+		Assert.assertEquals(500, object.length);
+	}
+
+	@Test
+	public void testPackMap() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+		SimpleKeyValueList<Integer, Integer> list=new SimpleKeyValueList<Integer, Integer>();
+		list.with(1,1);
+		list.with(2, 2);
+		list.with(3, 3);
+		
+		Field declaredField = list.getClass().getField("elements");
+		Object[] items = (Object[]) declaredField.get(list);
+		Object[] object=(Object[])items[0];
+		
+		Assert.assertEquals(5, object.length);
+		
+		list.pack(null, true);
+		
+		object = (Object[]) declaredField.get(list);
+		
+		Assert.assertEquals(4, object.length);
+		
+		for(int i=4;i<501;i++) {
+			list.add(i, i);
+		}
+
+		items= (Object[]) declaredField.get(list);
+		object=(Object[])items[0];
+
+		Assert.assertEquals(673, object.length);
+		
+		list.pack(null, true);
+		
+		items= (Object[]) declaredField.get(list);
+		object=(Object[])items[0];
+		Assert.assertEquals(500, object.length);
+	}
 }
