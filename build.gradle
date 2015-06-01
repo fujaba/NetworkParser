@@ -25,7 +25,10 @@ buildscript {
 if(project.hasProperty('jenkins')) {
 	//Artifactory
 	apply from: 'gradle/artifactory.gradle'
-	
+	if(new File("secring.gpg").exists()) {
+		apply plugin: 'signing'
+		apply from: 'gradle/mavencentral.gradle'
+	}
 } else {
 	apply from: 'gradle/ide.gradle'
 }

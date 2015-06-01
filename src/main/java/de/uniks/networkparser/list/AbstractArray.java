@@ -1297,7 +1297,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		return newInstance;
 	}
 	
-	public void pack(AbstractArray<V> items, boolean full) {
+	public void pack() {
 		boolean complex = isComplex(size);
 		if((flag & MAP) == 0) {
 			if(complex) {
@@ -1306,24 +1306,16 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 				elements = arrayCopy(elements, size);
 			}
 			this.index = 0;
-			if(items!=null){
-				items.addKey(size, this, size);
-			}
 			return;
 		}
 		elements[SMALL_KEY] = arrayCopy((Object[])elements[SMALL_KEY], size);
-		if(full) {
-			elements[BIG_KEY] = null;
-		}
+		elements[BIG_KEY] = null;
 		elements[DELETED] = null;
 		elements[SMALL_VALUE] = arrayCopy((Object[])elements[SMALL_VALUE], size);
-		if(full && elements.length>BIG_VALUE){
+		if(elements.length>BIG_VALUE){
 			elements[BIG_VALUE] = null;
 		}
 		this.index = 0;
-		if(items!=null){
-			items.addKey(size, this, size);
-		}
 	}
 	
 	protected void fireProperty(Object oldElement, Object newElement,

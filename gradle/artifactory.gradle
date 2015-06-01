@@ -1,53 +1,58 @@
-apply plugin: 'artifactory'
-apply plugin: 'maven'
+import java.lang.ClassValue.Version;
 
-buildscript {
-	repositories {
-		maven {
-			url 'https://se.cs.uni-kassel.de/artifactory/plugins-release'
-			credentials {
+if(project.hasProperty("artifactory_user")) {
+	apply plugin: 'artifactory'
+	buildscript {
+		repositories {
+			maven {
+				url 'https://se.cs.uni-kassel.de/artifactory/plugins-release'
+				credentials {
+					username = "${artifactory_user}"
+					password = "${artifactory_password}"
+				}
+			}
+		}
+	}
+
+	artifactory {
+		contextUrl = "${artifactory_contextUrl}"   //The base Artifactory URL if not overridden by the publisher/resolver
+		publish {
+			repository {
+				if(project.hasProperty('lectureBuild')) {
+					repoKey = 'lecture'
+				} else {
+					repoKey = 'libs-snapshot-local'
+				}
 				username = "${artifactory_user}"
 				password = "${artifactory_password}"
+				maven = true
+			}
+		}
+		resolve {
+			repository {
+				if(project.hasProperty('lectureBuild')) {
+					repoKey = 'lecture'
+				} else {
+					repoKey = 'libs-release'
+				}
+				username = "${artifactory_user}"
+				password = "${artifactory_password}"
+				maven = true
 			}
 		}
 	}
-}
-
-artifactory {
-	contextUrl = "${artifactory_contextUrl}"   //The base Artifactory URL if not overridden by the publisher/resolver
-	publish {
-		repository {
-			if(project.hasProperty('lectureBuild')) {
-				repoKey = 'lecture'
-			} else {
-				repoKey = 'libs-snapshot-local'
-			}
-			username = "${artifactory_user}"
-			password = "${artifactory_password}"
-			maven = true
-		}
+	//artifacts { archives sourceJar, javadocJar, fullJar}
+	artifacts { 
+		archives coreJar
+		archives coreJar16
+		archives coreJar17
+		archives sourceJar
+		archives sourceJar16
+		archives sourceJar17
+		archives javadocJar
+		archives fullJar
 	}
-	resolve {
-		repository {
-			if(project.hasProperty('lectureBuild')) {
-				repoKey = 'lecture'
-			} else {
-				repoKey = 'libs-release'
-			}
-			username = "${artifactory_user}"
-			password = "${artifactory_password}"
-			maven = true
-		}
+} else {
+	task artifactoryPublish(type: Jar) {
 	}
-}
-//artifacts { archives sourceJar, javadocJar, fullJar}
-artifacts { 
-	archives coreJar
-	archives coreJar16
-	archives coreJar17
-	archives sourceJar
-	archives sourceJar16
-	archives sourceJar17
-	archives javadocJar
-	archives fullJar
 }
