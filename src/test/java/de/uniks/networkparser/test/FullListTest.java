@@ -379,7 +379,7 @@ public class FullListTest {
 		Object[] object = (Object[]) declaredField.get(list);
 		Assert.assertEquals(8, object.length);
 		
-		list.pack(null, true);
+		list.pack();
 		
 		object = (Object[]) declaredField.get(list);
 		
@@ -393,7 +393,7 @@ public class FullListTest {
 
 		Assert.assertEquals(508, object.length);
 		
-		list.pack(null, true);
+		list.pack();
 		
 		object= (Object[]) declaredField.get(list);
 		Assert.assertEquals(500, object.length);
@@ -412,7 +412,7 @@ public class FullListTest {
 		
 		Assert.assertEquals(5, object.length);
 		
-		list.pack(null, true);
+		list.pack();
 		
 		object = (Object[]) declaredField.get(list);
 		
@@ -427,7 +427,7 @@ public class FullListTest {
 
 		Assert.assertEquals(673, object.length);
 		
-		list.pack(null, true);
+		list.pack();
 		
 		items= (Object[]) declaredField.get(list);
 		object=(Object[])items[0];
