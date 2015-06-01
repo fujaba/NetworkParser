@@ -1,7 +1,14 @@
 import java.lang.ClassValue.Version;
 
 artifacts { 
-	archives sourceJar, javadocJar, fatJar, pmJar, pmJarVersion
+		archives coreJar
+		archives coreJar16
+		archives coreJar17
+		archives sourceJar
+		archives sourceJar16
+		archives sourceJar17
+		archives javadocJar
+		archives fullJar
 }
 
 def isReleaseBuild() {
