@@ -33,36 +33,41 @@ if(new File("secring.gpg").exists()) {
 					authentication(userName: ossrhUsername, password: ossrhPassword)
 				}
 
-				pom.project {
-				   name 'Networkparser'
-				   packaging 'jar'
-				   description 'Networkparser is a Framework for serialization to Json, XML and Byte.'
-				   url 'https://github.com/fujaba/Networkparser'
+				pom{
+					project {
+					   name 'Networkparser'
+					   packaging 'jar'
+					   description 'Networkparser is a Framework for serialization to Json, XML and Byte.'
+					   url 'https://github.com/fujaba/Networkparser'
 
-				   scm {
-					   url 'scm:git@github.com:fujaba/Networkparser.git'
-					   connection 'scm:git@github.com:fujaba/Networkparser.git'
-					   developerConnection 'scm:git@github.com:fujaba/Networkparser.git'
-				   }
+						scm {
+						   url 'scm:git@github.com:fujaba/Networkparser.git'
+						   connection 'scm:git@github.com:fujaba/Networkparser.git'
+						   developerConnection 'scm:git@github.com:fujaba/Networkparser.git'
+						}
 
-				   licenses {
-					   license {
-						   name 'Licensed under the EUPL'
-						   url 'http://opensource.org/licenses/EUPL-1.1'
+						licenses {
+						   license {
+								name 'Licensed under the EUPL'
+								url 'http://opensource.org/licenses/EUPL-1.1'
+							}
 					   }
-				   }
-
-				   developers {
-					   developer {
-						   id 'zuendorf'
-						   name 'Albert Zuendorf'
-					   }
-					   developer {
-						   id 'slin'
-						   name 'Stefan Lindel'
-					   }
-				   }
-				   dependencies {}
+						developers {
+						   developer {
+							   id 'zuendorf'
+							   name 'Albert Zuendorf'
+						   }
+						   developer {
+							   id 'slin'
+							   name 'Stefan Lindel'
+							}
+						}
+					}
+					whenConfigured {
+						p -> p.dependencies = p.dependencies.findAll { 
+							dep -> dep.artifactId != "junit" 
+						}
+					}
 			   }
 			}
 		}
