@@ -9,13 +9,13 @@ repositories {
 	jcenter()
 	mavenCentral()
 }
-dependencies {
-	compile(group: 'junit', name: 'junit', version: '4.+'){
-		transitive = false
+test {
+	// enable TestNG support (default is JUnit)
+	useJUnit {
+		dependencies {
+		compile(group: 'junit', name: 'junit', version: '4.+')
+		}
 	}
-}
-configurations.all {
-	transitive = false
 }
 buildscript {
 	repositories {
