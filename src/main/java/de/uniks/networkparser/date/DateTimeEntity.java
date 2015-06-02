@@ -23,6 +23,7 @@ package de.uniks.networkparser.date;
  */
 import java.util.HashMap;
 import de.uniks.networkparser.DefaultTextItems;
+import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.StringTokener;
 import de.uniks.networkparser.TextItems;
 
@@ -474,16 +475,16 @@ public class DateTimeEntity {
 				// System.out.println(count++
 				// + ": #" +sub+ "# -- " +tokener.isString());
 				// Time
-				sub = sub.replace("HZ", strZero(get(DateField.HOUR_OF_DAY) - getTimezone(), 2));
-				sub = sub.replace("HH", strZero(get(DateField.HOUR_OF_DAY), 2));
+				sub = sub.replace("HZ", EntityUtil.strZero(get(DateField.HOUR_OF_DAY) - getTimezone(), 2));
+				sub = sub.replace("HH", EntityUtil.strZero(get(DateField.HOUR_OF_DAY), 2));
 				sub = sub.replace("H",
 						String.valueOf(get(DateField.HOUR_OF_DAY)));
 				sub = sub.replace("MM",
-						strZero(get(DateField.MINUTE_OF_HOUR), 2));
+						EntityUtil.strZero(get(DateField.MINUTE_OF_HOUR), 2));
 				sub = sub.replace("M",
 						String.valueOf(get(DateField.MINUTE_OF_HOUR)));
 				sub = sub.replace("SS",
-						strZero(get(DateField.SECOND_OF_MINUTE), 2));
+						EntityUtil.strZero(get(DateField.SECOND_OF_MINUTE), 2));
 				sub = sub.replace("S",
 						String.valueOf(get(DateField.SECOND_OF_MINUTE)));
 				// Date
@@ -493,7 +494,7 @@ public class DateTimeEntity {
 						this.weekDays[(int) get(DateField.DAY_OF_WEEK)]
 								.substring(0, 2));
 				sub = sub
-						.replace("dd", strZero(get(DateField.DAY_OF_MONTH), 2));
+						.replace("dd", EntityUtil.strZero(get(DateField.DAY_OF_MONTH), 2));
 				sub = sub.replace("d",
 						String.valueOf(get(DateField.DAY_OF_MONTH)));
 				sub = sub.replace("mmmm",
@@ -501,12 +502,12 @@ public class DateTimeEntity {
 				sub = sub.replace("mmm",
 						this.monthOfYear[(int) get(DateField.MONTH) - 1]
 								.substring(0, 3));
-				sub = sub.replace("mm", strZero(get(DateField.MONTH), 2));
+				sub = sub.replace("mm", EntityUtil.strZero(get(DateField.MONTH), 2));
 				sub = sub.replace("m", String.valueOf(get(DateField.MONTH)));
 				sub = sub.replace("yyyy", String.valueOf(get(DateField.YEAR)));
 				sub = sub.replace("yyy", String.valueOf(get(DateField.YEAR)));
-				sub = sub.replace("yy", strZero(get(DateField.YEAR), 2, 2));
-				sub = sub.replace("y", strZero(get(DateField.YEAR), 1, 2));
+				sub = sub.replace("yy", EntityUtil.strZero(get(DateField.YEAR), 2, 2));
+				sub = sub.replace("y", EntityUtil.strZero(get(DateField.YEAR), 1, 2));
 			}
 			sb.append(sub);
 		} while (sub.length() > 0);
@@ -573,69 +574,6 @@ public class DateTimeEntity {
 			this.dirty = true;
 		}
 		return time;
-	}
-
-	/**
-	 * format a String with 0
-	 *
-	 * @param value
-	 *            the numericvalue
-	 * @param length
-	 *            the length of Value
-	 * @return a String of Value
-	 */
-	public String strZero(int value, int length) {
-		String result = String.valueOf(value);
-		while (result.length() < length) {
-			result = "0" + result;
-		}
-		return result;
-	}
-
-	public String strZero(long value, int length) {
-		String result = String.valueOf(value);
-		while (result.length() < length) {
-			result = "0" + result;
-		}
-		return result;
-	}
-
-	/**
-	 * Format a date with 0
-	 *
-	 * @param value
-	 *            the numericvalue
-	 * @param length
-	 *            the length of Value
-	 * @param max
-	 *            the maxValue
-	 * @return a String of Value with max value
-	 */
-	public String strZero(int value, int length, int max) {
-		String result = strZero(value, length);
-		if (result.length() > max) {
-			result = result.substring(0, max);
-		}
-		return result;
-	}
-
-	/**
-	 * Format a date with 0
-	 *
-	 * @param value
-	 *            the numericvalue
-	 * @param length
-	 *            the length of Value
-	 * @param max
-	 *            the maxValue
-	 * @return a String of Value with max value
-	 */
-	public String strZero(long value, int length, int max) {
-		String result = strZero(value, length);
-		if (result.length() > max) {
-			result = result.substring(0, max);
-		}
-		return result;
 	}
 
 	/**

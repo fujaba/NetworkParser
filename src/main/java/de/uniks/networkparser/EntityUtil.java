@@ -32,6 +32,7 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 
 public class EntityUtil {
 	private static final String HEXVAL = "0123456789abcdef";
+	public static final String NON_FILE_CHARSSIMPLE = "[\\\\/\\:\\;\\*\\?\"<>\\|!&', \u001F\u0084\u0093\u0094\u0096\u2013\u201E\u201C\u03B1 ]";
 
 	/**
 	 * Produce a string from a double. The string "null" will be returned if the
@@ -371,5 +372,107 @@ public class EntityUtil {
 			buf[i] = ch;
 		}
 		return new String(buf);
+	}
+	
+	
+	/**
+	 * format a String with 0
+	 *
+	 * @param value
+	 *            the numericvalue
+	 * @param length
+	 *            the length of Value
+	 * @return a String of Value
+	 */
+	public static String strZero(int value, int length) {
+		return strZero(String.valueOf(value), length, -1);
+	}
+	
+	/**
+	 * format a String with 0
+	 *
+	 * @param value
+	 *            the numericvalue
+	 * @param length
+	 *            the length of Value
+	 * @return a String of Value
+	 */
+	public static String strZero(long value, int length) {
+		return strZero(String.valueOf(value), length, -1);
+	}
+	
+	/**
+	 * format a String with 0
+	 *
+	 * @param value
+	 *            the numericvalue
+	 * @param length
+	 *            the length of Value
+	 * @return a String of Value
+	 */
+	public static String strZero(long value, int length, int max) {
+		return strZero(String.valueOf(value), length, max);
+	}
+	
+	/**
+	 * Format a date with 0
+	 *
+	 * @param value
+	 *            the numericvalue
+	 * @param length
+	 *            the length of Value
+	 * @param max
+	 *            the maxValue
+	 * @return a String of Value with max value
+	 */
+	public static String strZero(int value, int length, int max) {
+		return strZero(String.valueOf(value), length, max);
+	}
+	
+	public static String strZero(String value, int length, int max) {
+		if(max>0 && max<length) {
+			length = max;
+		}
+		StringBuilder sb=new StringBuilder();
+		if(length>value.length()) {
+			sb.ensureCapacity(length);
+			max = length - value.length();
+			while(max>0) {
+				sb.append("0");
+				max--;
+			}
+		}
+		sb.append(value);
+		return sb.toString();
+	}
+	
+	public static String getValidChars(String source, int maxLen) {
+		int i = source.length()-1;
+		StringBuilder sb=new StringBuilder();
+		if(i>0){
+			while (' '==source.charAt(i) || '.'==source.charAt(i)){
+				i--;
+			}
+		}
+		i++;
+		if(maxLen>0 && i > maxLen) {
+			String search = source.substring(0, maxLen);
+			int lastSpace = search.lastIndexOf(" ");
+			int lastComma = search.lastIndexOf(",");
+			if(lastSpace > lastComma ) {
+				i = lastSpace;
+			}else if(lastComma > lastSpace) {
+				i = lastComma;
+			}
+		}
+		
+		for(int k=0;k<i;k++) {
+			char charAt = source.charAt(k);
+			if(NON_FILE_CHARSSIMPLE.indexOf(charAt)<0 && charAt<55000) {
+				sb.append(charAt);
+			}
+		}
+		
+		return sb.toString();
 	}
 }
