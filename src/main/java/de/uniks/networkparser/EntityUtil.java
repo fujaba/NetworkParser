@@ -408,6 +408,8 @@ public class EntityUtil {
 	 *            the numericvalue
 	 * @param length
 	 *            the length of Value
+	 * @param max
+	 *            the maxValue
 	 * @return a String of Value
 	 */
 	public static String strZero(long value, int length, int max) {
@@ -472,7 +474,6 @@ public class EntityUtil {
 				sb.append(charAt);
 			}
 		}
-		
 		return sb.toString();
 	}
 }
