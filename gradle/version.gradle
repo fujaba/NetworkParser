@@ -1,7 +1,8 @@
 // MAJOR VERSION - Manually set
 //----------------------
 def majorNumber = 4
-group = 'de.uniks'
+//group = 'de.uniks'
+group = 'com.github.fujaba'
 //----------------------
 
 import java.text.SimpleDateFormat
