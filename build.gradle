@@ -10,7 +10,12 @@ repositories {
 	mavenCentral()
 }
 dependencies {
-	compile group: 'junit', name: 'junit', version: '4.+'
+	compile(group: 'junit', name: 'junit', version: '4.+'){
+		transitive = false
+	}
+}
+configurations.all {
+	transitive = false
 }
 buildscript {
 	repositories {
