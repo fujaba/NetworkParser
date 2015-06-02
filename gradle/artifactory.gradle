@@ -20,6 +20,8 @@ if(project.hasProperty("artifactory_user")) {
 			repository {
 				if(project.hasProperty('lectureBuild')) {
 					repoKey = 'lecture'
+				} else if(project.hasProperty('release')) {
+					repoKey = 'libs-release-local'
 				} else {
 					repoKey = 'libs-snapshot-local'
 				}
@@ -32,8 +34,10 @@ if(project.hasProperty("artifactory_user")) {
 			repository {
 				if(project.hasProperty('lectureBuild')) {
 					repoKey = 'lecture'
+				} else if(project.hasProperty('release')) {
+					repoKey = 'libs-release-local'
 				} else {
-					repoKey = 'libs-release'
+					repoKey = 'libs-snapshot-local'
 				}
 				username = "${artifactory_user}"
 				password = "${artifactory_password}"

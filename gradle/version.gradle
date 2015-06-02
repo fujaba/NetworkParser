@@ -12,29 +12,26 @@ task printVersion {
     }
 }
 
-version = new GITVersion(major: majorNumber,minor: getGitTag(), revision: revisionNumber(), hash: revisionHash(), buildTime: buildTime(), lecture: project.hasProperty('lectureBuild'), isFX: project.hasProperty('NetworkParserFX'))
+version = new GITVersion(major: majorNumber,minor: getGitTag(), revision: revisionNumber(), hash: revisionHash(), buildTime: buildTime(), lecture: project.hasProperty('lectureBuild'), isFX: project.hasProperty('NetworkParserFX'), release:project.hasProperty('release'))
 
 ext{
-	gitVersion = new GITVersion(major: majorNumber,minor: getGitTag(), revision: revisionNumber(), hash: revisionHash(), buildTime: buildTime() )
+	gitVersion = new GITVersion(major: majorNumber,minor: getGitTag(), revision: revisionNumber(), hash: revisionHash(), buildTime: buildTime(), release:project.hasProperty('release') )
 }
 
 // Define a method using a closure as the method body
 public class GITVersion {
 	// MAJOR VERSION - Manually set
-    int major = -1
-    int minor = -1
-    int revision = -1
-	
+	int major = -1
+	int minor = -1
+	int revision = -1
 	String buildTime
-    String hash = ""
-    // change, if release is needed some day: boolean release
-    // also change version above to accept release property
-    boolean release = false
+	String hash = ""
+	boolean release = false
 	boolean lecture
 	boolean isFX
 	String prefix = ""
 
-    String toString() {
+	String toString() {
 		if (System.getenv().BUILD_NUMBER) {
 			revision = System.getenv().BUILD_NUMBER as int
 		}
