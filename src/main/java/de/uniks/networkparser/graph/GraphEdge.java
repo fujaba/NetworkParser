@@ -2,7 +2,7 @@ package de.uniks.networkparser.graph;
 
 /*
  NetworkParser
- Copyright (c) 2011 - 2013, Stefan Lindel
+ Copyright (c) 2011 - 2015, Stefan Lindel
  All rights reserved.
 
  Licensed under the EUPL, Version 1.1 or (as soon they
@@ -20,12 +20,11 @@ package de.uniks.networkparser.graph;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
- */
+*/
 import java.util.List;
-
 import de.uniks.networkparser.interfaces.BaseItem;
-
 public class GraphEdge extends GraphSimpleList<GraphNode> implements
+
 		List<GraphNode> {
 	public static final String PROPERTY_NODE = "node";
 	public static final String PROPERTY_CARDINALITY = "cardinality";

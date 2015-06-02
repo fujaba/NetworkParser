@@ -2,7 +2,7 @@ package de.uniks.networkparser.gui.javafx.controls;
 
 /*
  NetworkParser
- Copyright (c) 2011 - 2014, Stefan Lindel
+ Copyright (c) 2011 - 2015, Stefan Lindel
  All rights reserved.
 
  Licensed under the EUPL, Version 1.1 or (as soon they
@@ -24,7 +24,6 @@ package de.uniks.networkparser.gui.javafx.controls;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
-
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;

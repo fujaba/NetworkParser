@@ -34,21 +34,21 @@ if(new File("secring.gpg").exists()) {
 				}
 
 				pom.project {
-				   name 'SDMLib'
+				   name 'Networkparser'
 				   packaging 'jar'
-				   description 'SDMLib is a light weight modeling library. SDMLib intentionally comes without any tool or editor.'
-				   url 'https://github.com/fujaba/SDMLib'
+				   description 'Networkparser is a Framework for serialization to Json, XML and Byte.'
+				   url 'https://github.com/fujaba/Networkparser'
 
 				   scm {
-					   url 'scm:git@github.com:fujaba/SDMLib.git'
-					   connection 'scm:git@github.com:fujaba/SDMLib.git'
-					   developerConnection 'scm:git@github.com:fujaba/SDMLib.git'
+					   url 'scm:git@github.com:fujaba/Networkparser.git'
+					   connection 'scm:git@github.com:fujaba/Networkparser.git'
+					   developerConnection 'scm:git@github.com:fujaba/Networkparser.git'
 				   }
 
 				   licenses {
 					   license {
-						   name 'The MIT License (MIT)'
-						   url 'http://opensource.org/licenses/MIT'
+						   name 'Licensed under the EUPL'
+						   url 'http://opensource.org/licenses/EUPL-1.1'
 					   }
 				   }
 
@@ -60,10 +60,6 @@ if(new File("secring.gpg").exists()) {
 					   developer {
 						   id 'slin'
 						   name 'Stefan Lindel'
-					   }
-					   developer {
-						   id 'smu'
-						   name 'Sascha Mueller'
 					   }
 				   }
 			   }

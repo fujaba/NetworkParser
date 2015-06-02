@@ -2,7 +2,7 @@ package de.uniks.networkparser.gui.javafx;
 
 /*
  NetworkParser
- Copyright (c) 2011 - 2014, Stefan Lindel
+ Copyright (c) 2011 - 2015, Stefan Lindel
  All rights reserved.
 
  Licensed under the EUPL, Version 1.1 or (as soon they
@@ -20,11 +20,10 @@ package de.uniks.networkparser.gui.javafx;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
- */
+*/
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.LinkedHashSet;
-
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class GenericCreator implements SendableEntityCreator {

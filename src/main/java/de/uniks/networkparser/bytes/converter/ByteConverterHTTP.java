@@ -2,7 +2,7 @@ package de.uniks.networkparser.bytes.converter;
 
 /*
  NetworkParser
- Copyright (c) 2011 - 2013, Stefan Lindel
+ Copyright (c) 2011 - 2015, Stefan Lindel
  All rights reserved.
 
  Licensed under the EUPL, Version 1.1 or (as soon they
@@ -20,7 +20,7 @@ package de.uniks.networkparser.bytes.converter;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
- */
+*/
 import de.uniks.networkparser.bytes.ByteIdMap;
 import de.uniks.networkparser.bytes.BytesBuffer;
 import de.uniks.networkparser.interfaces.ByteConverter;

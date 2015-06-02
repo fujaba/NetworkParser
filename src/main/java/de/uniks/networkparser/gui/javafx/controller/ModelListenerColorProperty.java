@@ -2,7 +2,7 @@ package de.uniks.networkparser.gui.javafx.controller;
 
 /*
  NetworkParser
- Copyright (c) 2011 - 2014, Stefan Lindel
+ Copyright (c) 2011 - 2015, Stefan Lindel
  All rights reserved.
 
  Licensed under the EUPL, Version 1.1 or (as soon they
@@ -22,7 +22,6 @@ package de.uniks.networkparser.gui.javafx.controller;
  permissions and limitations under the Licence.
 */
 import java.beans.PropertyChangeEvent;
-
 import javafx.beans.Observable;
 import javafx.scene.paint.Color;
 import de.uniks.networkparser.IdMap;

@@ -1,16 +1,8 @@
 package de.uniks.networkparser.list;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
-
 /*
  NetworkParser
- Copyright (c) 2011 - 2013, Stefan Lindel
+ Copyright (c) 2011 - 2015, Stefan Lindel
  All rights reserved.
 
  Licensed under the EUPL, Version 1.1 or (as soon they
@@ -28,8 +20,13 @@ import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
- */
-
+*/
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 /**
  * SimpleEntity is a Simple KeyValue - Object.
  *
@@ -41,6 +38,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
  *            Value Element
  */
 public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
+
 		SendableEntityCreator, SendableEntityCreatorNoIndex {
 	/** Constant for KEY. */
 	public static final String PROPERTY_KEY = "key";
