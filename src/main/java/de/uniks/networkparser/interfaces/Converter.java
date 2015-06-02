@@ -1,10 +1,8 @@
 package de.uniks.networkparser.interfaces;
 
-import de.uniks.networkparser.graph.GraphList;
-
 /*
  NetworkParser
- Copyright (c) 2011 - 2013, Stefan Lindel
+ Copyright (c) 2011 - 2015, Stefan Lindel
  All rights reserved.
 
  Licensed under the EUPL, Version 1.1 or (as soon they
@@ -22,7 +20,8 @@ import de.uniks.networkparser.graph.GraphList;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
- */
+*/
+import de.uniks.networkparser.graph.GraphList;
 
 public interface Converter {
 	public String convert(GraphList root, boolean removePackage);

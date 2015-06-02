@@ -2,7 +2,7 @@ package de.uniks.networkparser.json.util;
 
 /*
  NetworkParser
- Copyright (c) 2011 - 2013, Stefan Lindel
+ Copyright (c) 2011 - 2015, Stefan Lindel
  All rights reserved.
 
  Licensed under the EUPL, Version 1.1 or (as soon they
@@ -20,12 +20,12 @@ package de.uniks.networkparser.json.util;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
- */
+*/
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonArray;
-
 public class JsonArrayCreator implements SendableEntityCreator,
+
 		SendableEntityCreatorNoIndex {
 	private final String[] properties = new String[] {"VALUE" };
 

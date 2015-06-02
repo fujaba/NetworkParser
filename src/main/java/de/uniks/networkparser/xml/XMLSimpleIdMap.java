@@ -2,7 +2,7 @@ package de.uniks.networkparser.xml;
 
 /*
  NetworkParser
- Copyright (c) 2011 - 2013, Stefan Lindel
+ Copyright (c) 2011 - 2015, Stefan Lindel
  All rights reserved.
 
  Licensed under the EUPL, Version 1.1 or (as soon they
@@ -20,10 +20,9 @@ package de.uniks.networkparser.xml;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
- */
+*/
 import java.util.ArrayList;
 import java.util.Collection;
-
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ReferenceObject;
@@ -33,12 +32,12 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorXML;
 import de.uniks.networkparser.xml.util.XMLGrammar;
 import de.uniks.networkparser.xml.util.XSDEntityCreator;
-
 /**
  * A Simple XMLIdMap for Decoding and Encoding XML Elements.
  *
  * @author Stefan Lindel
  */
+
 public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
 	/** The Constant ENDTAG. */
 	public static final char ENDTAG = '/';

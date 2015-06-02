@@ -2,7 +2,7 @@ package de.uniks.networkparser.date;
 
 /*
  NetworkParser
- Copyright (c) 2011 - 2013, Stefan Lindel
+ Copyright (c) 2011 - 2015, Stefan Lindel
  All rights reserved.
 
  Licensed under the EUPL, Version 1.1 or (as soon they
@@ -20,7 +20,7 @@ package de.uniks.networkparser.date;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
- */
+*/
 
 public enum DateField {
 	MILLISECOND, MILLISECONDS, MILLISECONDSREAL, WINTERTIME, SUMMERTIME, MILLISECOND_OF_DAY, MILLISECOND_OF_YEAR, SECOND_OF_MINUTE, MINUTE_OF_HOUR, HOUR_OF_DAY, AMPM, TIMEZONE, DAY_OF_WEEK, DAY_OF_MONTH, DAY_OF_YEAR, WEEK_OF_MONTH, WEEK_OF_YEAR, MONTH, YEAR;

@@ -1,9 +1,8 @@
 package de.uniks.networkparser.interfaces;
 
-
 /*
  NetworkParser
- Copyright (c) 2011 - 2013, Stefan Lindel
+ Copyright (c) 2011 - 2015, Stefan Lindel
  All rights reserved.
 
  Licensed under the EUPL, Version 1.1 or (as soon they
@@ -21,10 +20,9 @@ package de.uniks.networkparser.interfaces;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
- */
+*/
 
 public interface StringItem	 {
-
 	public BaseItem withVisible(boolean value);
 
 	public boolean isVisible();

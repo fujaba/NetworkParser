@@ -2,7 +2,7 @@ package de.uniks.networkparser.gui.javafx.controller;
 
 /*
  NetworkParser
- Copyright (c) 2011 - 2014, Stefan Lindel
+ Copyright (c) 2011 - 2015, Stefan Lindel
  All rights reserved.
 
  Licensed under the EUPL, Version 1.1 or (as soon they
@@ -27,7 +27,6 @@ import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.LinkedHashSet;
-
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.Property;

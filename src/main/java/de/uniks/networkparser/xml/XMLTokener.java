@@ -2,7 +2,7 @@ package de.uniks.networkparser.xml;
 
 /*
  NetworkParser
- Copyright (c) 2011 - 2013, Stefan Lindel
+ Copyright (c) 2011 - 2015, Stefan Lindel
  All rights reserved.
 
  Licensed under the EUPL, Version 1.1 or (as soon they
@@ -20,9 +20,8 @@ package de.uniks.networkparser.xml;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
- */
+*/
 import java.util.ArrayList;
-
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.ReferenceObject;
@@ -31,12 +30,12 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
-
 /**
  * Tokener for parsing XML-Files.
  *
  * @author Stefan Lindel
  */
+
 public class XMLTokener extends Tokener {
 	/** The stack. */
 	private ArrayList<ReferenceObject> stack = new ArrayList<ReferenceObject>();

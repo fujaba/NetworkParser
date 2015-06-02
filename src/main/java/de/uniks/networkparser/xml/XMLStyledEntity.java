@@ -1,9 +1,8 @@
 package de.uniks.networkparser.xml;
 
-import de.uniks.networkparser.IdMap;
 /*
  NetworkParser
- Copyright (c) 2011 - 2013, Stefan Lindel
+ Copyright (c) 2011 - 2015, Stefan Lindel
  All rights reserved.
 
  Licensed under the EUPL, Version 1.1 or (as soon they
@@ -21,14 +20,15 @@ import de.uniks.networkparser.IdMap;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
- */
+*/
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.event.Style;
-
 /**
  * Style Element of XML.
  *
  * @author Stefan
  */
+
 public class XMLStyledEntity extends XMLEntity {
 	/** The Styles of XMLStyledEntity. */
 	private Style style = new Style();

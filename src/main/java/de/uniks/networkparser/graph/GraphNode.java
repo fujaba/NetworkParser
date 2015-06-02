@@ -1,10 +1,8 @@
 package de.uniks.networkparser.graph;
 
-import de.uniks.networkparser.interfaces.BaseItem;
-
 /*
  NetworkParser
- Copyright (c) 2011 - 2013, Stefan Lindel
+ Copyright (c) 2011 - 2015, Stefan Lindel
  All rights reserved.
 
  Licensed under the EUPL, Version 1.1 or (as soon they
@@ -22,7 +20,8 @@ import de.uniks.networkparser.interfaces.BaseItem;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
- */
+*/
+import de.uniks.networkparser.interfaces.BaseItem;
 
 public class GraphNode extends GraphSimpleList<GraphMember> implements GraphMember{
 	private String id;

@@ -2,7 +2,7 @@ package de.uniks.networkparser.xml;
 
 /*
  NetworkParser
- Copyright (c) 2011 - 2013, Stefan Lindel
+ Copyright (c) 2011 - 2015, Stefan Lindel
  All rights reserved.
 
  Licensed under the EUPL, Version 1.1 or (as soon they
@@ -20,9 +20,8 @@ package de.uniks.networkparser.xml;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
- */
+*/
 import java.util.ArrayList;
-
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.event.MapEntry;
@@ -30,11 +29,11 @@ import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.StringItem;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
-
 /**
  * The Class XMLEntity.
  */
 public class XMLEntity extends SimpleKeyValueList<String, Object> implements
+
 		StringItem, Entity {
 	/** Constant of TAG. */
 	public static final String PROPERTY_TAG = "tag";

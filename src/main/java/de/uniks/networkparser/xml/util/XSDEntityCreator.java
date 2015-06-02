@@ -2,7 +2,7 @@ package de.uniks.networkparser.xml.util;
 
 /*
  NetworkParser
- Copyright (c) 2011 - 2013, Stefan Lindel
+ Copyright (c) 2011 - 2015, Stefan Lindel
  All rights reserved.
 
  Licensed under the EUPL, Version 1.1 or (as soon they
@@ -20,16 +20,16 @@ package de.uniks.networkparser.xml.util;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
- */
+*/
 import java.util.ArrayList;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorXML;
 import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XSDEntity;
-
 /**
  * @author Stefan XSD Entity is a Creator for Structore of XML-XSD.
  */
+
 public class XSDEntityCreator implements SendableEntityCreatorXML, XMLGrammar {
 	/** NameSpace of XML. */
 	private String nameSpace = "";

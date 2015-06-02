@@ -2,7 +2,7 @@ package de.uniks.networkparser.json;
 
 /*
  NetworkParser
- Copyright (c) 2011 - 2014, Stefan Lindel
+ Copyright (c) 2011 - 2015, Stefan Lindel
  All rights reserved.
 
  Licensed under the EUPL, Version 1.1 or (as soon they
@@ -20,15 +20,13 @@ package de.uniks.networkparser.json;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
- */
+*/
 import java.util.Iterator;
-
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.StringItem;
 import de.uniks.networkparser.list.SortedList;
-
 /**
  * A JSONArray is an ordered sequence of values. Its external text form is a
  * string wrapped in square brackets with commas separating the values. The
@@ -61,8 +59,9 @@ import de.uniks.networkparser.list.SortedList;
  * or single quote, and if they do not contain leading or trailing spaces, and
  * if they do not contain any of these characters:
  *
+
  * <code>{} [ ] / \ : , = ; #</code> and if they do not look like numbers and
- * if they are not the reserved words <code>true</code>, <code>false</code>, or
+	* if they are not the reserved words <code>true</code>, <code>false</code>, or
  * <code>null</code>.</li>
  * <li>Values can be separated by <code>;</code> <small>(semicolon)</small> as
  * well as by <code>,</code> <small>(comma)</small>.</li>

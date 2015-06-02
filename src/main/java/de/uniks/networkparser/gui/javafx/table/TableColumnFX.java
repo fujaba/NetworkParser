@@ -2,7 +2,7 @@ package de.uniks.networkparser.gui.javafx.table;
 
 /*
  NetworkParser
- Copyright (c) 2011 - 2014, Stefan Lindel
+ Copyright (c) 2011 - 2015, Stefan Lindel
  All rights reserved.
 
  Licensed under the EUPL, Version 1.1 or (as soon they
@@ -34,11 +34,9 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.util.Callback;
-
 import com.sun.javafx.scene.control.skin.TableRowSkin;
 import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
-
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.TableCellValue;
 import de.uniks.networkparser.interfaces.GUIPosition;

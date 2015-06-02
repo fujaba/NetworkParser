@@ -2,7 +2,7 @@ package de.uniks.networkparser.gui;
 
 /*
  NetworkParser
- Copyright (c) 2011 - 2013, Stefan Lindel
+ Copyright (c) 2011 - 2015, Stefan Lindel
  All rights reserved.
 
  Licensed under the EUPL, Version 1.1 or (as soon they
@@ -20,12 +20,11 @@ package de.uniks.networkparser.gui;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
- */
+*/
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Comparator;
 import java.util.Iterator;
-
 import de.uniks.networkparser.EntityValueFactory;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntity;
@@ -33,8 +32,8 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SortedList;
 import de.uniks.networkparser.sort.EntityComparator;
 import de.uniks.networkparser.sort.SortingDirection;
-
 public class TableList extends SortedList<Object> implements
+
 		SendableEntity, SendableEntityCreator {
 	public static final String PROPERTY_ITEMS = "items";
 	public static final String[] properties = new String[] {PROPERTY_ITEMS };

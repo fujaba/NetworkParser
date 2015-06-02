@@ -2,7 +2,7 @@ package de.uniks.networkparser.xml.util;
 
 /*
  NetworkParser
- Copyright (c) 2011 - 2013, Stefan Lindel
+ Copyright (c) 2011 - 2015, Stefan Lindel
  All rights reserved.
 
  Licensed under the EUPL, Version 1.1 or (as soon they
@@ -20,18 +20,18 @@ package de.uniks.networkparser.xml.util;
  express or implied.
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
- */
+*/
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.event.Style;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XMLStyledEntity;
-
 /**
  * @author Stefan The XMLStyledEntityCreator is the Creator for Styled Element
  *         of XML.
  */
 public class XMLStyledEntityCreator implements SendableEntityCreator,
+
 		XMLGrammar {
 	/** The properties. */
 	private final String[] properties = new String[] {
