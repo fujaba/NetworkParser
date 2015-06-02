@@ -62,6 +62,7 @@ if(new File("secring.gpg").exists()) {
 						   name 'Stefan Lindel'
 					   }
 				   }
+				   dependencies {}
 			   }
 			}
 		}
