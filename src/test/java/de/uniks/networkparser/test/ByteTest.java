@@ -89,8 +89,9 @@ public class ByteTest{
 		uni.setName("Uni Kassel");
 		ByteItem data = map.encode(uni);
 		BufferedBytes byteBuffer = data.getBytes(false);
-		assertEquals("ALde.uniks.networkparser.test.model.UniversityOUni Kassel", data.toString(new ByteConverterString()));
-		assertEquals(57, byteBuffer.length());
+//		assertEquals("ALde.uniks.networkparser.test.model.UniversityOUni Kassel", data.toString(new ByteConverterString()));
+		assertEquals("#uOUni Kassel", data.toString(new ByteConverterString()));
+		assertEquals(13, byteBuffer.length());
 		University decodeObj = (University) map.decode(byteBuffer);
 		
 		assertEquals(uni.getName(), decodeObj.getName());
@@ -193,10 +194,10 @@ public class ByteTest{
 		
 		assertEquals(8, byteArray.length);
 		// normal String
-		assertEquals("# #\"OTest", encode.toString());
+		assertEquals("#p\"OTest", encode.toString());
 		
 		String hexString = encode.toString(new ByteConverterHex());
-		assertEquals("2302224F54657374", hexString);
+		assertEquals("2370224F54657374", hexString);
 		
 //		byte[] byteString = ByteIdMap.toByteString(hexString);
 //		int i = 0;

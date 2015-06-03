@@ -182,12 +182,14 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 
 		if (createrClass instanceof SendableEntityCreatorTag) {
 			SendableEntityCreatorTag byteCreator = (SendableEntityCreatorTag) createrClass;
-			if (this.decoderMap == null) {
-				this.decoderMap = new HashMap<Byte, SendableEntityCreatorTag>();
+			String tag = byteCreator.getTag();
+			if(tag!=null && tag.length() > 0 ) {
+				if (this.decoderMap == null) {
+					this.decoderMap = new HashMap<Byte, SendableEntityCreatorTag>();
+				}
+				this.decoderMap.put(tag.getBytes()[0],
+						byteCreator);
 			}
-
-			this.decoderMap.put(Byte.valueOf(byteCreator.getTag()),
-					byteCreator);
 		}
 		return this;
 	}
