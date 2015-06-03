@@ -23,14 +23,14 @@ package de.uniks.networkparser.xml.util;
 */
 import java.util.ArrayList;
 import de.uniks.networkparser.Tokener;
-import de.uniks.networkparser.interfaces.SendableEntityCreatorXML;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XSDEntity;
 /**
  * @author Stefan XSD Entity is a Creator for Structore of XML-XSD.
  */
 
-public class XSDEntityCreator implements SendableEntityCreatorXML, XMLGrammar {
+public class XSDEntityCreator implements SendableEntityCreatorTag, XMLGrammar {
 	/** NameSpace of XML. */
 	private String nameSpace = "";
 	/** Private Stack of Items. */

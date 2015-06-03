@@ -54,7 +54,12 @@ public class JsonObjectCreator implements SendableEntityCreator,
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String typ) {
-		((JsonObject) entity).withValue((String) value);
+		JsonObject json = (JsonObject) entity;
+		if(VALUE.equals(attribute)) {
+			json.withValue((String)value);
+		}else {
+			json.withKeyValue(attribute, value);
+		}
 		return true;
 	}
 }

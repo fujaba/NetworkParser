@@ -1,9 +1,9 @@
 package de.uniks.networkparser.test.model.util;
 
-import de.uniks.networkparser.interfaces.SendableEntityCreatorXML;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.test.model.JabberBindMessage;
 
-public class JabberBindMessageCreator implements SendableEntityCreatorXML {
+public class JabberBindMessageCreator implements SendableEntityCreatorTag {
 	public static final String[] props = new String[] {
 		JabberBindMessage.PROPERTY_ID, JabberBindMessage.PROPERTY_JID, JabberBindMessage.PROPERTY_TYPE, JabberBindMessage.PROPERTY_BINDXMLNS, JabberBindMessage.PROPERTY_RESOURCE};
 

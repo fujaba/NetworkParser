@@ -22,12 +22,12 @@ package de.uniks.networkparser.event.util;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.event.ByteMessage;
-import de.uniks.networkparser.interfaces.SendableEntityCreatorByte;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 /**
  * The Class ByteMessageCreator.
  */
 
-public class ByteMessageCreator implements SendableEntityCreatorByte {
+public class ByteMessageCreator implements SendableEntityCreatorTag {
 	/** The properties. */
 	private final String[] properties = new String[] {ByteMessage.PROPERTY_VALUE };
 
@@ -51,8 +51,8 @@ public class ByteMessageCreator implements SendableEntityCreatorByte {
 	 * Get the EventTyp of BasicMessage (0x01)
 	 */
 	@Override
-	public byte getEventTyp() {
-		return 0x01;
+	public String getTag() {
+		return new String(new byte[]{0x01});
 	}
 
 	/*

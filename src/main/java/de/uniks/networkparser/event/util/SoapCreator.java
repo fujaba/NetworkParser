@@ -22,10 +22,10 @@ package de.uniks.networkparser.event.util;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.event.SoapObject;
-import de.uniks.networkparser.interfaces.SendableEntityCreatorXML;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.xml.XMLEntity;
 
-public class SoapCreator implements SendableEntityCreatorXML {
+public class SoapCreator implements SendableEntityCreatorTag {
 	public static String XMLNS_XSI = "http://www.w3.org/2001/XMLSchema-instance";
 	public static String XMLNS_XSD = "http://www.w3.org/2001/XMLSchema";
 	public static String XMLNS_SOAP = "http://schemas.xmlsoap.org/soap/envelope/";

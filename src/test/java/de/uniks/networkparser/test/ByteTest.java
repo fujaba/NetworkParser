@@ -74,7 +74,7 @@ public class ByteTest{
 		byteMap.addCreator(new ChatMessageCreator());
 		ByteItem msg=byteMap.encode(chatMessage);
 //		String reference="C-Stefan ALindel\"FDies Aist Aeine ATestnachricht";
-		String reference=" ?B .Stefan ALindel\"FDies Aist Aeine ATestnachricht";
+		String reference="#cK-Stefan ALindel\"FDies Aist Aeine ATestnachricht";
 		String vergleich=msg.toString();
 		System.out.println(reference);
 		System.out.println(vergleich);

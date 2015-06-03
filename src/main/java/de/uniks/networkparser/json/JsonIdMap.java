@@ -38,6 +38,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.IdMapDecoder;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorWrapper;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.util.JsonArrayCreator;
 import de.uniks.networkparser.json.util.JsonObjectCreator;
@@ -435,7 +436,18 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 				readMessages(null, null, result, jsonObject, UPDATE);
 			}
 			filter.withStandard(this.filter);
-			if (typeInfo instanceof SendableEntityCreatorNoIndex) {
+			if (typeInfo instanceof SendableEntityCreatorWrapper) {
+				String[] properties = typeInfo.getProperties();
+				if (properties != null) {
+					JsonObjectCreator jsonCreator = new JsonObjectCreator();
+					JsonObject valueMap = new JsonObject();
+					for (String property : properties) {
+						Object value = jsonObject.get(property);
+						parseValue(valueMap, property, value, jsonCreator, filter);
+					}
+					result = ((SendableEntityCreatorWrapper)typeInfo).newInstance(valueMap);
+				}
+			} else if (typeInfo instanceof SendableEntityCreatorNoIndex) {
 				String[] properties = typeInfo.getProperties();
 				if (properties != null) {
 					for (String property : properties) {

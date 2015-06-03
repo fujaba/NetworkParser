@@ -1,11 +1,10 @@
 package de.uniks.networkparser.test.model.util;
 
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.interfaces.SendableEntityCreatorByte;
-import de.uniks.networkparser.interfaces.SendableEntityCreatorXML;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.test.model.ChatMessage;
 
-public class ChatMessageCreator implements SendableEntityCreator,SendableEntityCreatorByte, SendableEntityCreatorXML {
+public class ChatMessageCreator implements SendableEntityCreator, SendableEntityCreatorTag {
 	@Override
 	public String[] getProperties() {
 		return new String[] { ChatMessage.PROPERTY_SENDER,
@@ -25,11 +24,6 @@ public class ChatMessageCreator implements SendableEntityCreator,SendableEntityC
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String typ) {
 		return ((ChatMessage) entity).set(attribute, value);
-	}
-
-	@Override
-	public byte getEventTyp() {
-		return (byte)0x80;
 	}
 
 	@Override

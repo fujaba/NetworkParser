@@ -1,9 +1,9 @@
 package de.uniks.networkparser.test.model.util;
 
-import de.uniks.networkparser.interfaces.SendableEntityCreatorXML;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.test.model.JabberChatMessage;
 
-public class JabberChatMessageCreator implements SendableEntityCreatorXML {
+public class JabberChatMessageCreator implements SendableEntityCreatorTag {
 	public static final String[] props = new String[] {
 			JabberChatMessage.PROPERTY_FROM, JabberChatMessage.PROPERTY_TO,
 			JabberChatMessage.PROPERTY_ID, JabberChatMessage.PROPERTY_TYPE,

@@ -1,9 +1,9 @@
 package de.uniks.networkparser.test.model.util;
 
-import de.uniks.networkparser.interfaces.SendableEntityCreatorByte;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.test.model.SortedMsg;
 
-public class SortedMsgCreator implements SendableEntityCreatorByte{
+public class SortedMsgCreator implements SendableEntityCreatorTag{
 
 	@Override
 	public String[] getProperties() {
@@ -26,8 +26,8 @@ public class SortedMsgCreator implements SendableEntityCreatorByte{
 	}
 
 	@Override
-	public byte getEventTyp() {
-		return 0x42;
+	public String getTag() {
+		return new String(new byte[]{0x42});
 	}
 
 }
