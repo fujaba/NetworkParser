@@ -45,17 +45,6 @@ if(project.hasProperty("artifactory_user")) {
 			}
 		}
 	}
-	//artifacts { archives sourceJar, javadocJar, fullJar}
-	artifacts { 
-		archives coreJar
-		archives coreJar16
-		archives coreJar17
-		archives sourceJar
-		archives sourceJar16
-		archives sourceJar17
-		archives javadocJar
-		archives fullJar
-	}
 } else {
 	task artifactoryPublish(type: Jar) {
 	}

@@ -4,6 +4,17 @@ apply plugin: 'maven'
 apply from: 'gradle/version.gradle'
 apply from: 'gradle/tasks.gradle'
 apply plugin: 'jacoco'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply from: 'gradle/mavencentral.gradle'
+apply from: 'gradle/artifactory.gradle'
+
+idea {
+	project {
+		jdkName = '1.7'
+		languageLevel = '1.7'
+	}
+}
 
 repositories {
 	jcenter()
@@ -26,17 +37,17 @@ buildscript {
 	}
 }
 
-// only for jenkins
-if(project.hasProperty('jenkins')) {
-	//Artifactory
-	apply from: 'gradle/artifactory.gradle'
-	if(new File("secring.gpg").exists()) {
-		apply plugin: 'signing'
-		apply from: 'gradle/mavencentral.gradle'
-	}
-} else {
-	apply from: 'gradle/ide.gradle'
+artifacts { 
+	archives coreJar
+	archives coreJar16
+	archives coreJar17
+	archives sourceJar
+	archives sourceJar16
+	archives sourceJar17
+	archives javadocJar
+	archives fullJar
 }
+
 
 jacoco {
     toolVersion = "0.7.4.201502262128"

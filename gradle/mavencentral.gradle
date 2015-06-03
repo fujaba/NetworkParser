@@ -1,20 +1,11 @@
-import java.lang.ClassValue.Version;
-
-artifacts { 
-		archives coreJar
-		archives coreJar16
-		archives coreJar17
-		archives sourceJar
-		archives sourceJar16
-		archives sourceJar17
-		archives javadocJar
-		archives fullJar
-}
+// import java.lang.ClassValue.Version;
 
 def isReleaseBuild() {
     return "$version".contains("SNAPSHOT") == false || project.hasProperty('release')
 }
 if(new File("secring.gpg").exists()) {
+	apply plugin: 'signing'
+
 	signing {
 		required { isReleaseBuild() && gradle.taskGraph.hasTask("uploadArchives")}
 		sign configurations.archives
