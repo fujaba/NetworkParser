@@ -1,10 +1,10 @@
 package de.uniks.networkparser.test.model.util;
 
-import de.uniks.networkparser.interfaces.SendableEntityCreatorXML;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.test.model.FIXMLMessage;
 
-public class FIXMLMessageCreator implements SendableEntityCreatorXML {
+public class FIXMLMessageCreator implements SendableEntityCreatorTag {
 	private final String[] properties = new String[] { FIXMLMessage.PROPERTY_APPLICATIONMESSAGE, };
 
 	@Override

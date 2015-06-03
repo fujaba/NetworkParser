@@ -1,9 +1,9 @@
 package de.uniks.networkparser.test.model.util;
 
-import de.uniks.networkparser.interfaces.SendableEntityCreatorXML;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.test.model.XMLTestItem;
 
-public class XMLTestItemCreator implements SendableEntityCreatorXML{
+public class XMLTestItemCreator implements SendableEntityCreatorTag{
 
 	@Override
 	public String[] getProperties() {

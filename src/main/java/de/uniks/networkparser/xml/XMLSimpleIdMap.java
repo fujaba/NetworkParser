@@ -29,7 +29,7 @@ import de.uniks.networkparser.ReferenceObject;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.IdMapDecoder;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.interfaces.SendableEntityCreatorXML;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.xml.util.XMLGrammar;
 import de.uniks.networkparser.xml.util.XSDEntityCreator;
 /**
@@ -144,8 +144,8 @@ public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
 		if (createrProtoTyp == null) {
 			return null;
 		}
-		if (createrProtoTyp instanceof SendableEntityCreatorXML) {
-			SendableEntityCreatorXML xmlCreater = (SendableEntityCreatorXML) createrProtoTyp;
+		if (createrProtoTyp instanceof SendableEntityCreatorTag) {
+			SendableEntityCreatorTag xmlCreater = (SendableEntityCreatorTag) createrProtoTyp;
 			if (xmlCreater.getTag() != null) {
 				xmlEntity.withTag(xmlCreater.getTag());
 			} else {

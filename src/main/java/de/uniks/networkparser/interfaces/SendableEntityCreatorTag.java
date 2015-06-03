@@ -22,14 +22,14 @@ package de.uniks.networkparser.interfaces;
  permissions and limitations under the Licence.
 */
 /**
- * The Interface ByteEntityCreator.
+ * The Interface XMLEntityCreator.
  */
 
-public interface SendableEntityCreatorByte extends SendableEntityCreator {
+public interface SendableEntityCreatorTag extends SendableEntityCreator {
 	/**
-	 * Gets the event typ of ByteMessage.
+	 * Gets the tag of the XML Entity.
 	 *
-	 * @return the event typ
+	 * @return the tag
 	 */
-	public byte getEventTyp();
+	public String getTag();
 }
