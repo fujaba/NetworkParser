@@ -23,6 +23,11 @@ package de.uniks.networkparser.gui.javafx.dialog;
 */
 import java.net.URL;
 import java.util.ArrayList;
+
+import com.sun.javafx.tk.Toolkit;
+
+import de.uniks.networkparser.gui.javafx.dialog.DialogButton.Grafik;
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.ReadOnlyBooleanProperty;
@@ -41,14 +46,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.stage.Modality;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.stage.Window;
-import com.sun.javafx.tk.Toolkit;
-import de.uniks.networkparser.gui.javafx.dialog.DialogButton.Grafik;
 
 public class DialogBox {
 	protected static final PseudoClass ACTIVE_PSEUDO_CLASS = PseudoClass.getPseudoClass("active");
@@ -56,17 +55,20 @@ public class DialogBox {
 	protected static final URL DIALOGS_CSS_URL = DialogBox.class.getResource("dialogs.css");
     protected ToolBar dialogTitleBar;
    
-	private BorderPane root;
-	private Stage stage;
-	private Scene scene;
+	BorderPane root;
+	Stage stage;
+	boolean modal = true;
+	Scene scene;
+	boolean alwaysOnTop;
+	DialogButton action;
 	private Parent owner;
 	private TitleText titleElement = new TitleText();
 	private ArrayList<DialogElement> titleElements = new ArrayList<DialogElement>();
 	private ArrayList<DialogElement> actionElements = new ArrayList<DialogElement>();
-	private boolean modal = true;
+	
 	private double mouseDragDeltaY;
 	private double mouseDragDeltaX;
-	private boolean alwaysOnTop;
+	
 	
 	//Inline Show
 	private boolean isInline;
@@ -74,7 +76,6 @@ public class DialogBox {
 	private Pane dialogStack;
 	private Region opaqueLayer;
 	private boolean iconified;
-	private DialogButton action;
 	private Node center;
 	
 	public DialogBox() {
@@ -292,72 +293,13 @@ public class DialogBox {
     }
     
 	private DialogButton showExtern(Window owner) {
-		stage = new Stage(StageStyle.TRANSPARENT) {
-            @Override public void showAndWait() {
-                centerOnScreen();
-                super.showAndWait();
-            }
-            
-            @Override public void centerOnScreen() {
-                Window owner = getOwner();
-                if (owner != null && owner.getScene() != null) {
-                    Scene scene = owner.getScene();
-                    
-                    // scene.getY() seems to represent the y-offset from the top of the titlebar to the
-                    // start point of the scene, so it is the titlebar height
-                    final double titleBarHeight = scene.getY();
-                    
-                    // because Stage does not seem to centre itself over its owner, we
-                    // do it here.
-                    double x, y;
-                    
-                    final double dialogWidth = root.prefWidth(-1);
-                    final double dialogHeight = root.prefHeight(-1);
-                    
-                    if (owner.getX() < 0 || owner.getY() < 0) {
-                        // Fix for #165
-                        Screen screen = Screen.getPrimary(); // todo something more sensible
-                        double maxW = screen.getVisualBounds().getWidth();
-                        double maxH = screen.getVisualBounds().getHeight();
-                        
-                        x = maxW / 2.0 - dialogWidth / 2.0;
-                        y = maxH / 2.0 - dialogHeight / 2.0 + titleBarHeight;
-                    } else {
-                        x = owner.getX() + (scene.getWidth() / 2.0) - (dialogWidth / 2.0);
-                        y = owner.getY() +  titleBarHeight + (scene.getHeight() / 2.0) - (dialogHeight / 2.0);
-                    }
-                    
-                    setX(x);
-                    setY(y);
-                }
-            }
-        };
-
-        if (owner != null) {
-            stage.initOwner(owner);
-        }
-        if (modal) {
-            if (owner != null) {
-                stage.initModality(Modality.WINDOW_MODAL);
-            } else {
-                stage.initModality(Modality.APPLICATION_MODAL);
-            }
-        } else {
-            stage.initModality(Modality.NONE);
-        }
-        
-        createContent();
-        scene = new Scene(root);
-        scene.setFill(Color.TRANSPARENT);
-        stage.setScene(scene);
-        configScene();
-        
-        if(modal) {
-        	stage.setAlwaysOnTop(alwaysOnTop);
-        	stage.showAndWait();
-        	return action;
-        }
-        stage.show();
+		
+	    if(Toolkit.getToolkit().isFxUserThread()) {
+	    	new ShowTask(this, owner).run();
+	    	return action;
+	    }
+	    
+	    Platform.runLater(new ShowTask(this, owner));
         return null;
 	}
 
@@ -377,7 +319,7 @@ public class DialogBox {
     }
 
 	
-	  private void configScene() {
+	void configScene() {
 		Scene element = scene;
 		String dialogsCssUrl = DIALOGS_CSS_URL.toExternalForm();
 		if (scene != null) {
