@@ -26,6 +26,6 @@ package de.uniks.networkparser.interfaces;
  * of the serialized elements and no creating for subelement for Props
  */
 
-public interface SendableEntityCreatorNoIndex {
+public interface SendableEntityCreatorNoIndex extends SendableEntityCreator {
 	// Nothing
 }

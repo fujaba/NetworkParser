@@ -234,14 +234,16 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 
 	protected Object parseItem(Object item, Filter filter, Object entity,
 			String property, JsonArray jsonArray, String className, int deep) {
-		if (item == null
-				|| !filter.isPropertyRegard(item, property, entity, deep)) {
-			return null;
-		}
 		if (className == null) {
 			className = entity.getClass().getName();
 		}
 		SendableEntityCreator valueCreater = getCreator(className, true);
+		if (item == null ) {
+			return null;
+			
+		}else if(valueCreater!=null && !filter.isPropertyRegard(item, property, entity, deep)) {
+			return null;
+		}
 		boolean isId = filter.isId(this, entity, className);
 		if (valueCreater != null) {
 			if (filter.isConvertable(entity, property, item, deep)) {
@@ -586,18 +588,16 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 						}
 					} else if (className == null && jsonId != null) {
 						// It is a Ref
-					   ReferenceObject item = new ReferenceObject().withId(jsonId)
-                        .withCreator(creator)
-                        .withProperty(property).withEntity(target);
-                  if( !item.execute(this)) {
-                     filter.with(item); 
-                  }
+						ReferenceObject item = new ReferenceObject().withId(jsonId).withCreator(creator)
+								.withProperty(property).withEntity(target);
+						if (!item.execute(this)) {
+							filter.with(item);
+						}
 					} else {
-						creator.setValue(target, property,
-								decoding(child, filter), NEW);
+						creator.setValue(target, property, decoding(child, filter), filter.getStrategy());
 					}
 				} else {
-					creator.setValue(target, property, value, NEW);
+					creator.setValue(target, property, value, filter.getStrategy());
 				}
 			}
 		}

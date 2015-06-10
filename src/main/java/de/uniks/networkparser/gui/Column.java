@@ -28,8 +28,9 @@ import de.uniks.networkparser.date.DateTimeEntity;
 import de.uniks.networkparser.event.Style;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 
-public class Column implements SendableEntityCreator {
+public class Column implements SendableEntityCreatorNoIndex {
 	public static final int AUTOWIDTH = -1;
 	public static final String PROPERTY_STYLE = "style";
 	public static final String PROPERTY_ACTIVESTYLE = "activeStyle";
@@ -241,8 +242,8 @@ public class Column implements SendableEntityCreator {
 		return style;
 	}
 
-	public Column withStyle(Style style) {
-		this.style = style;
+	public Column withStyle(Style value) {
+		this.style = value;
 		return this;
 	}
 
@@ -373,7 +374,18 @@ public class Column implements SendableEntityCreator {
 		}
 		if (attribute.equalsIgnoreCase(PROPERTY_STYLE)) {
 			if(value instanceof Style) {
-				that.withStyle((Style) value);
+				Style style = (Style) value;
+				Style oldStyle = that.getStyle();
+				if(type==IdMap.MERGE && oldStyle != null){
+					for(String prop : style.getProperties()) {
+						if(oldStyle.getValue(oldStyle, prop) == null) {
+							oldStyle.setValue(oldStyle, prop, style.getValue(style, prop), IdMap.NEW);
+						}
+					}
+//					for(StyleCrea)
+				}else {
+					that.withStyle((Style) value);
+				}
 			}else{
 				System.out.println("FIXME");
 			}

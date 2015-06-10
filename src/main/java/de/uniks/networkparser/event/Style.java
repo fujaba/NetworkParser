@@ -24,8 +24,9 @@ package de.uniks.networkparser.event;
 import java.util.HashMap;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 
-public class Style implements Cloneable, SendableEntityCreator {
+public class Style implements Cloneable, SendableEntityCreatorNoIndex {
 	/**  The Constant PROPERTY_NAME for Name of Style */
 	public static final String PROPERTY_NAME="name";
 	private String name;
@@ -311,7 +312,9 @@ public class Style implements Cloneable, SendableEntityCreator {
 			withFontFamily((String) value);
 			return true;
 		} else if (attribute.equalsIgnoreCase(PROPERTY_FONTSIZE)) {
-			withFontSize(value.toString());
+			if(value != null) {
+				withFontSize(value.toString());
+			}
 			return true;
 		} else if (attribute.equalsIgnoreCase(PROPERTY_FORGROUND)) {
 			withForground((String) value);
