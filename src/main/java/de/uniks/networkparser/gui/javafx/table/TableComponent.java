@@ -39,6 +39,21 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import de.uniks.networkparser.DefaultTextItems;
+import de.uniks.networkparser.Filter;
+import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.TextItems;
+import de.uniks.networkparser.event.Style;
+import de.uniks.networkparser.gui.Column;
+import de.uniks.networkparser.gui.TableList;
+import de.uniks.networkparser.gui.javafx.controls.EditFieldMap;
+import de.uniks.networkparser.gui.javafx.resource.Styles;
+import de.uniks.networkparser.interfaces.GUIPosition;
+import de.uniks.networkparser.interfaces.SendableEntity;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.json.JsonArray;
+import de.uniks.networkparser.json.JsonIdMap;
+import de.uniks.networkparser.logic.InstanceOf;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -56,21 +71,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import de.uniks.networkparser.DefaultTextItems;
-import de.uniks.networkparser.Filter;
-import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.TextItems;
-import de.uniks.networkparser.event.Style;
-import de.uniks.networkparser.gui.Column;
-import de.uniks.networkparser.gui.TableList;
-import de.uniks.networkparser.gui.javafx.controls.EditFieldMap;
-import de.uniks.networkparser.gui.javafx.resource.Styles;
-import de.uniks.networkparser.interfaces.GUIPosition;
-import de.uniks.networkparser.interfaces.SendableEntity;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.json.JsonArray;
-import de.uniks.networkparser.json.JsonIdMap;
-import de.uniks.networkparser.logic.InstanceOf;
 
 public class TableComponent extends BorderPane implements PropertyChangeListener, ChangeListener<Number> {
 	private ArrayList<TableColumnFX> columns = new ArrayList<TableColumnFX>();
@@ -602,16 +602,20 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		return list;
 	}
 	
-	public boolean loadColumns(JsonArray columns) {
+	public boolean loadColumns(JsonArray columns, boolean merge) {
 		if(columns==null || columns.size()<this.columns.size()) {
 			return false;
 		}
 		if(!(map instanceof JsonIdMap)) {
 			return false;
 		}
+		Filter filter=new Filter();
+		if(merge) {
+			filter.withStrategy(IdMap.MERGE);
+		}
 		for(int i=0;i<this.columns.size();i++) {
 			TableColumnFX column = this.columns.get(i);
-			map.decode(column.getColumn(), columns.getJSONObject(i));
+			map.decode(column.getColumn(), columns.getJSONObject(i), filter);
 			column.refresh();
 		}
 		return true;

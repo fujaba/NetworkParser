@@ -56,6 +56,9 @@ public abstract class IdMap extends AbstractMap implements
 	/** The Constant NEW. */
 	public static final String NEW = "new";
 
+	/** The Constant MERGE. */
+	public static final String MERGE = "merge";
+	
 	/** The Constant COLLISION. */
 	public static final String COLLISION = "collision";
 	

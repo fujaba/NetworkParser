@@ -2,3 +2,8 @@ TableFilterView  -> verallgemeinern
 
 
 TableCOmponentIOnterface besser machen
+
+
+
+
+Merge von IDMap für Mergekonflikte

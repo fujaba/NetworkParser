@@ -29,7 +29,7 @@ public class ColumnTest {
 		
 		JsonIdMap map=(JsonIdMap) new JsonIdMap().withCreator(new Column());
 		
-		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.gui.Column\",\"id\":\"J1.C1\",\"prop\":{\"attrName\":\"Name\"}}", map.toJsonObject(column).toString());
+		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.gui.Column\",\"attrName\":\"Name\"}", map.toJsonObject(column).toString());
 	}
 	
 	

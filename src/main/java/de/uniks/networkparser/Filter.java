@@ -23,6 +23,7 @@ package de.uniks.networkparser;
 */
 import java.util.ArrayList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.logic.Condition;
 import de.uniks.networkparser.logic.ValuesMap;
 import de.uniks.networkparser.logic.ValuesSimple;
@@ -37,6 +38,7 @@ public class Filter {
 	protected ArrayList<ReferenceObject> refs;
 	protected Boolean full;
 	protected ValuesMap filterMap;
+	private String strategy = IdMap.NEW;
 
 	public Condition<ValuesSimple> getIdFilter() {
 		return idFilter;
@@ -58,6 +60,11 @@ public class Filter {
 	public boolean isId(IdMap map, Object entity, String className) {
 		if (idFilter != null) {
 			return idFilter.check(ValuesMap.with(map, entity, className));
+		}else {
+			SendableEntityCreator creator = map.getCreator(className, true);
+			if(creator!=null) {
+				return !(creator instanceof SendableEntityCreatorNoIndex);
+			}
 		}
 		return true;
 	}
@@ -236,5 +243,14 @@ public class Filter {
 	 */
 	public static Filter convertable(Condition<ValuesSimple> convertable) {
 		return new Filter().withConvertable(convertable);
+	}
+
+	public String getStrategy() {
+		return strategy;
+	}
+
+	public Filter withStrategy(String strategy) {
+		this.strategy = strategy;
+		return this;
 	}
 }
