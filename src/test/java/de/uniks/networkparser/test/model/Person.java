@@ -24,11 +24,12 @@ package de.uniks.networkparser.test.model;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
+import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.test.model.ludo.StrUtil;
 import de.uniks.networkparser.test.model.util.ItemSet;
 import de.uniks.networkparser.test.model.util.PersonSet;
 
-public class Person 
+public class Person  implements SendableEntity
 {
 	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
    public static final String PROPERTY_NAME = "name";
@@ -51,11 +52,23 @@ public class Person
       return listeners;
    }
    
-   public void addPropertyChangeListener(PropertyChangeListener listener) 
+   public boolean addPropertyChangeListener(PropertyChangeListener listener) 
    {
       getPropertyChangeSupport().addPropertyChangeListener(listener);
+      return true;
    }
 
+	@Override
+	public boolean addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+		getPropertyChangeSupport().addPropertyChangeListener(propertyName, listener);
+		return true;
+	}
+
+	@Override
+	public boolean removePropertyChangeListener(PropertyChangeListener listener) {
+		getPropertyChangeSupport().removePropertyChangeListener(listener);
+		return true;
+	} 
    
    //==========================================================================
    
@@ -166,6 +179,22 @@ public class Person
             value.withPersons(this);
          }
          
+         getPropertyChangeSupport().firePropertyChange(PROPERTY_PARENT, oldValue, value);
+         changed = true;
+      }
+      
+      return changed;
+   }
+   
+   public boolean setUnidirectionalParent(GroupAccount value)
+   {
+      boolean changed = false;
+      
+      if (this.parent != value)
+      {
+         GroupAccount oldValue = this.parent;
+         
+         this.parent = value;
          getPropertyChangeSupport().firePropertyChange(PROPERTY_PARENT, oldValue, value);
          changed = true;
       }

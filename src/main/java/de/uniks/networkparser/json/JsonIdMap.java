@@ -31,7 +31,6 @@ import java.util.Map;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.NetworkParserLog;
-import de.uniks.networkparser.ReferenceObject;
 import de.uniks.networkparser.event.ObjectMapEntry;
 import de.uniks.networkparser.event.util.DateCreator;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -259,7 +258,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 					this.toJsonArray(entity, jsonArray, filter, deep + 1);
 				}
 			}
-			return new JsonObject().withValue(ID, getId(entity));
+			return new JsonObject().withValue(ID, getId(entity), CLASS, entity.getClass().getName());
 		}
 		if (typSave) {
 			JsonObject returnValue = new JsonObject().withValue(CLASS, className);
@@ -340,9 +339,6 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 				result = tmp;
 			}
 		}
-		for (ReferenceObject ref : filter.getRefs()) {
-			ref.execute(this);
-		}
 		return result;
 	}
 
@@ -353,20 +349,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 	 *            the json object
 	 * @return the object
 	 */
-	public Object decode(JsonObject jsonObject) 
-	{
-		if (jsonObject!=null && (jsonObject.has(UPDATE) || jsonObject.has(REMOVE))) 
-		{
-			// Must be an update
-			if (executeUpdateMsg(jsonObject)) 
-			{
-				String id = jsonObject.getString(JsonIdMap.ID);
-				return getObject(id);
-			}
-			
-			return null;
-		}
-		
+	public Object decode(JsonObject jsonObject) {
 		return decoding(jsonObject, null);
 	}
 
@@ -400,9 +383,6 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 		}
 		Object mainItem = decoding(target, jsonObject,
 				filter.withStandard(this.filter));
-		for (ReferenceObject ref : filter.getRefs()) {
-			ref.execute(this);
-		}
 		return mainItem;
 	}
 
@@ -416,9 +396,17 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 	 * @return the object
 	 */
 	private Object decoding(JsonObject jsonObject, Filter filter) {
-		Object result = null;
-		SendableEntityCreator typeInfo = grammar.getReadCreator(jsonObject,
-				this);
+		if (jsonObject == null ){
+			return null;
+		}
+		if (this.updateListener == null) {
+			this.updateListener = new UpdateListenerJson(this);
+		}
+		Object result = this.updateListener.execute(jsonObject, filter);
+		if(result != null) {
+			return null;
+		}
+		SendableEntityCreator typeInfo = grammar.getReadCreator(jsonObject, this);
 
 		if (filter == null) {
 			filter = this.filter.clone();
@@ -530,22 +518,8 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 					Object kid = jsonArray.get(i);
 					if (kid instanceof JsonObject) {
 						// got a new kid, create it
-						JsonObject child = (JsonObject) kid;
-						String className = (String) child.get(CLASS);
-						String jsonId = (String) child.get(ID);
-						if (className == null && jsonId != null) {
-							// It is a Ref
-						   //try to get the real Object
-						   ReferenceObject item = new ReferenceObject().withId(jsonId)
-                           .withCreator(creator)
-                           .withProperty(property).withEntity(target);
-						   if( !item.execute(this)) {
-						      filter.with(item); 
-						   }
-						} else {
-							creator.setValue(target, property,
-									decoding((JsonObject) kid, filter), NEW);
-						}
+						creator.setValue(target, property,
+								decoding((JsonObject) kid, filter), NEW);
 					} else {
 						creator.setValue(target, property, kid, NEW);
 					}
@@ -554,8 +528,6 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 				if (value instanceof JsonObject) {
 					// // got a new kid, create it
 					JsonObject child = (JsonObject) value;
-					String className = (String) child.get(CLASS);
-					String jsonId = (String) child.get(ID);
 					// CHECK LIST AND MAPS
 					Object ref_Obj = creator.getSendableInstance(true);
 					Object refValue = creator.getValue(ref_Obj, property);
@@ -585,13 +557,6 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 										new ObjectMapEntry().with(key,
 												entryValue), NEW);
 							}
-						}
-					} else if (className == null && jsonId != null) {
-						// It is a Ref
-						ReferenceObject item = new ReferenceObject().withId(jsonId).withCreator(creator)
-								.withProperty(property).withEntity(target);
-						if (!item.execute(this)) {
-							filter.with(item);
 						}
 					} else {
 						creator.setValue(target, property, decoding(child, filter), filter.getStrategy());
@@ -837,20 +802,6 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 		}
 		sendObj.put(IdMap.UPDATE, children);
 		sendUpdateMsg(null, sendObj);
-	}
-
-	/**
-	 * Execute update msg.
-	 *
-	 * @param element
-	 *            the element
-	 * @return true, if successful
-	 */
-	public boolean executeUpdateMsg(JsonObject element) {
-		if (this.updateListener == null) {
-			this.updateListener = new UpdateListenerJson(this);
-		}
-		return this.updateListener.execute(element);
 	}
 
 	/*

@@ -23,9 +23,9 @@ package de.uniks.networkparser.xml;
 */
 import java.util.ArrayList;
 import java.util.Collection;
+
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.ReferenceObject;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.IdMapDecoder;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -224,8 +224,7 @@ public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
 			}
 
 			// Add to StackTrace
-			tokener.withStack(new ReferenceObject().withProperty(
-					entity.getTag()).withEntity(entity));
+			tokener.withStack(entity);
 
 			// Parsing next Element
 			if (tokener.stepPos("/>", false, false)) {

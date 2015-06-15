@@ -25,11 +25,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+
 import de.uniks.networkparser.AbstractMap;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.ReferenceObject;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.logic.BooleanCondition;
@@ -295,7 +295,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 		}
 		if (!empty && exit) {
 			String value = tokener.substring(start, -1);
-			ReferenceObject refObject = null;
+			Object refObject = null;
 			if (newPrefix.endsWith("&")) {
 				refObject = tokener.popStack();
 			}
@@ -303,8 +303,8 @@ public class XMLIdMap extends XMLSimpleIdMap {
 				if (newPrefix.length() > 1) {
 					newPrefix = newPrefix.substring(0, newPrefix.length() - 1);
 				}
-				SendableEntityCreator parentCreator = refObject.getCreater();
-				parentCreator.setValue(refObject.getEntity(), newPrefix, value,
+				SendableEntityCreator parentCreator = this.getCreatorClass(refObject);
+				parentCreator.setValue(refObject, newPrefix, value,
 						IdMap.NEW);
 			}
 		}
@@ -392,20 +392,20 @@ public class XMLIdMap extends XMLSimpleIdMap {
 				return null;
 			}
 			// Not found child creater
-			ReferenceObject referenceObject = tokener.getStackLast(0);
-			creator = (SendableEntityCreatorTag) referenceObject.getCreater();
+			Object refObject = tokener.getStackLast(0);
+			creator = (SendableEntityCreatorTag) this.getCreatorClass(refObject);
 			String[] properties = creator.getProperties();
 			tokener.addPrefix(tag);
 			if (isCaseSensitive()) {
 				for (String prop : properties) {
 					if (prop.equalsIgnoreCase(tokener.getPrefix())) {
 						// It is a Attribute
-						item = referenceObject.getEntity();
+						item = refObject;
 						plainvalue = true;
 						break;
 					} else if (prop.startsWith(tokener.getPrefix())) {
 						// it is a Child
-						item = referenceObject.getEntity();
+						item = refObject;
 						break;
 					}
 				}
@@ -413,13 +413,13 @@ public class XMLIdMap extends XMLSimpleIdMap {
 				for (String prop : properties) {
 					if (prop.equalsIgnoreCase(tokener.getPrefix())) {
 						// It is a Attribute
-						item = referenceObject.getEntity();
+						item = refObject;
 						plainvalue = true;
 						break;
 					} else if (prop.toLowerCase().startsWith(
 							tokener.getPrefix().toLowerCase())) {
 						// it is a Child
-						item = referenceObject.getEntity();
+						item = refObject;
 						break;
 					}
 				}
@@ -431,8 +431,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 			}
 		} else {
 			item = creator.getSendableInstance(false);
-			tokener.withStack(new ReferenceObject().withCreator(creator)
-					.withProperty(tag).withEntity(item));
+			tokener.withStack(item);
 			newPrefix = XMLIdMap.ENTITYSPLITTER;
 		}
 		if (item == null) {
@@ -494,7 +493,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 										tokener.withPrefix(newPrefix), grammar);
 
 								if (result != null) {
-									ReferenceObject refObject = null;
+									Object refObject = null;
 									if (result != item) {
 										if ("&".equals(newPrefix)) {
 											refObject = tokener.getStackLast(1);
@@ -502,10 +501,10 @@ public class XMLIdMap extends XMLSimpleIdMap {
 											refObject = tokener.getStackLast(0);
 										}
 										if (refObject != null) {
-											SendableEntityCreator parentCreator = refObject
-													.getCreater();
+											
+											SendableEntityCreator parentCreator = this.getCreatorClass(refObject);
 											parentCreator.setValue(
-													refObject.getEntity(),
+													refObject,
 													nextTag.getTag(), result,
 													IdMap.NEW);
 											if (tokener.getStackSize() > 0) {

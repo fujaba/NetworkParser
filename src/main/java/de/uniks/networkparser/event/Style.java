@@ -23,7 +23,6 @@ package de.uniks.networkparser.event;
 */
 import java.util.HashMap;
 import de.uniks.networkparser.interfaces.GUIPosition;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 
 public class Style implements Cloneable, SendableEntityCreatorNoIndex {

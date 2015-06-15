@@ -263,6 +263,11 @@ public abstract class IdMap extends AbstractMap implements
 		}
 		return this.updateListener;
 	}
+	
+	public IdMap withUpdateListener(UpdateListenerJson updateListener) {
+		this.updateListener = updateListener;
+		return this;
+	}
 
 	/**
 	 * Removes the Entity from List or Destroy them
@@ -387,19 +392,6 @@ public abstract class IdMap extends AbstractMap implements
 	public AbstractMap withCreator(String className,
 			SendableEntityCreator creator) {
 		return super.withCreator(className, creator);
-	}
-
-	/**
-	 * Start carbage collection.
-	 *
-	 * @param root
-	 *            the root
-	 */
-	public void startCarbageCollection(Object root) {
-		if (this.updateListener == null) {
-			this.updateListener = new UpdateListenerJson(this);
-		}
-		this.updateListener.startGarbageColection(root);
 	}
 
 	/**

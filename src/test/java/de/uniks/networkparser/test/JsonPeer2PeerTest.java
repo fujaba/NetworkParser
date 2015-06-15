@@ -38,7 +38,7 @@ public class JsonPeer2PeerTest implements UpdateListener{
 		firstRoot.setChild(second);
 		
 //		System.out.println(firstMap.toJsonObject(first).toString(2));
-		firstMap.startCarbageCollection(firstRoot);
+		firstMap.garbageCollection(firstRoot);
 		System.out.println("SEND ALL");
 		update(null, firstMap.toJsonObject(firstRoot), null, null, null, null);
 		
@@ -56,7 +56,7 @@ public class JsonPeer2PeerTest implements UpdateListener{
 	public boolean update(String typ, BaseItem source, Object target, String property,
 			Object oldValue, Object newValue) {
 		JsonObject jsonObject = (JsonObject) source;
-		boolean result=secondMap.executeUpdateMsg(jsonObject);
+		Object result=secondMap.decode(jsonObject);
 //		System.out.println(secondMap.size());
 		if(z==0){
 			z++;
@@ -90,6 +90,6 @@ public class JsonPeer2PeerTest implements UpdateListener{
 			secondMap.garbageCollection(secondRoot);
 			System.out.println(secondMap.size());
 		}
-		return result;
+		return result!=null;
 	}
 }
