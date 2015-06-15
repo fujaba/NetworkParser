@@ -4,6 +4,7 @@ TableFilterView  -> verallgemeinern
 TableCOmponentIOnterface besser machen
 
 
-
-
 Merge von IDMap für Mergekonflikte
+ExecuteUpdateNachricht und decode vereinigen
+Updatenachrichten um ClassName erweitern um Dummy_Objekte zu erstellen
+

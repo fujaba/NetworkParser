@@ -24,10 +24,11 @@ package de.uniks.networkparser.test.model;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
+import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.test.model.util.ItemSet;
 import de.uniks.networkparser.test.model.util.PersonSet;
 
-public class GroupAccount 
+public class GroupAccount implements SendableEntity
 {
 
    
@@ -64,10 +65,24 @@ public class GroupAccount
       return listeners;
    }
    
-   public void addPropertyChangeListener(PropertyChangeListener listener) 
+   public boolean addPropertyChangeListener(PropertyChangeListener listener) 
    {
       getPropertyChangeSupport().addPropertyChangeListener(listener);
+      return true;
    }
+
+	@Override
+	public boolean addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+		getPropertyChangeSupport().addPropertyChangeListener(propertyName, listener);
+		return true;
+	}
+
+
+	@Override
+	public boolean removePropertyChangeListener(PropertyChangeListener listener) {
+		getPropertyChangeSupport().removePropertyChangeListener(listener);
+		return true;
+	} 
 
    
    //==========================================================================
@@ -101,6 +116,31 @@ public class GroupAccount
       }
    
       return this.persons;
+   }
+   
+   public GroupAccount withUnidirectionalPersons(Person... value)
+   {
+      if(value==null){
+         return this;
+      }
+      for (Person item : value)
+      {
+         if (item != null)
+         {
+            if (this.persons == null)
+            {
+               this.persons = new PersonSet();
+            }
+            
+            boolean changed = this.persons.add (item);
+
+            if (changed)
+            {
+               getPropertyChangeSupport().firePropertyChange(PROPERTY_PERSONS, null, item);
+            }
+         }
+      }
+      return this;
    }
 
    public GroupAccount withPersons(Person... value)
@@ -224,5 +264,5 @@ public class GroupAccount
       Item value = new Item();
       withItem(value);
       return value;
-   } 
+   }
 }

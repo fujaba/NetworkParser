@@ -22,9 +22,9 @@ package de.uniks.networkparser.xml;
  permissions and limitations under the Licence.
 */
 import java.util.ArrayList;
+
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.NetworkParserLog;
-import de.uniks.networkparser.ReferenceObject;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.list.AbstractList;
@@ -38,7 +38,7 @@ import de.uniks.networkparser.list.SimpleList;
 
 public class XMLTokener extends Tokener {
 	/** The stack. */
-	private ArrayList<ReferenceObject> stack = new ArrayList<ReferenceObject>();
+	private ArrayList<Object> stack = new ArrayList<Object>();
 	/** Variable of AllowQuote. */
 	private boolean isAllowQuote;
 
@@ -232,7 +232,7 @@ public class XMLTokener extends Tokener {
 	 *            new Reference Object
 	 * @return XMLTokener Instance
 	 */
-	public XMLTokener withStack(ReferenceObject item) {
+	public XMLTokener withStack(Object item) {
 		this.stack.add(item);
 		this.prefix = "";
 		return this;
@@ -241,7 +241,7 @@ public class XMLTokener extends Tokener {
 	/**
 	 * @return The Last Element and remove it
 	 */
-	public ReferenceObject popStack() {
+	public Object popStack() {
 		return this.stack.remove(this.stack.size() - 1);
 	}
 
@@ -255,7 +255,7 @@ public class XMLTokener extends Tokener {
 	 *            Offset from Last
 	 * @return The Stack Element - offset
 	 */
-	public ReferenceObject getStackLast(int offset) {
+	public Object getStackLast(int offset) {
 		return this.stack.get(this.stack.size() - 1 - offset);
 	}
 

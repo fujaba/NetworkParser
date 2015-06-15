@@ -35,7 +35,6 @@ public class Filter {
 
 	// Temporary variables
 	protected ArrayList<Object> visitedObjects;
-	protected ArrayList<ReferenceObject> refs;
 	protected Boolean full;
 	protected ValuesMap filterMap;
 	private String strategy = IdMap.NEW;
@@ -111,7 +110,6 @@ public class Filter {
 		if (property == null && referenceFilter != null) {
 			property = referenceFilter.getPropertyRegard();
 		}
-		refs = new ArrayList<ReferenceObject>();
 		if (full == null && referenceFilter != null) {
 			full = referenceFilter.isFullSeriation();
 			if (full == null) {
@@ -201,18 +199,6 @@ public class Filter {
 			return this.convertable.check(filterMap);
 		}
 		return true;
-	}
-
-	public ArrayList<ReferenceObject> getRefs() {
-		return refs;
-	}
-
-	public Filter with(ReferenceObject item) {
-		if(refs == null) {
-			return this;
-		}
-		refs.add(item);
-		return this;
 	}
 
 	public Object getRefByEntity(Object value) {
