@@ -27,13 +27,13 @@ public class SimpleArrayListTest
    public void testReorderItems() {
       SimpleList<String> list=new SimpleList<String>();
       
-      list.add("Test");
-      list.add("Hello");
+      list.add("Test");	// ["Test"]
+      list.add("Hello");	// ["Test","Hello"]
       list.remove(1);
-      list.add(0, "Hello");
-      list.add("World");
+      list.add(0, "Hello"); // ["Hello", "Test"]
+      list.add("World"); 	// ["Hello", "Test", "World"]
       list.remove(2);
-      list.add(1, "World");
+      list.add(1, "World");	// ["Hello", "World", "Test"]
       ArrayList<String> newList=new ArrayList<String>(list);
       Assert.assertEquals("Test", newList.get(2));
       Assert.assertEquals(3, list.size());
@@ -59,7 +59,7 @@ public class SimpleArrayListTest
       list.add(0, "Test");
       list.add(0, "Hello");
       list.add(1, "World");
-      ArrayList<String> newList=new ArrayList<String>(list);
+      ArrayList<String> newList=new ArrayList<String>(list); // [Hello, World, Test, !]
       Assert.assertEquals("Test", newList.get(2));
       Assert.assertEquals(4, list.size());
    }
