@@ -645,43 +645,20 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 			}
 			pos = this.index;
 		}else {
-			int oldPos = pos;
+			//MOVE ALL ONE ELEMENT NEXT
+//			int oldPos = pos;
+//			pos = (this.index + pos) % keys.length;
 			pos = (this.index + pos) % keys.length;
-			if (this.index == 0)
-			{
-			   int i = this.size;
-            while(i>pos) {
-               keys[i] = keys[i-1];
-               i--;
-            }
-			}
-			else if(pos>oldPos) 
-			{
-			   // move elements to the left 
-			   this.index--;
-			   pos--;
-				int i = this.index;
-				while(i<pos) {
-					keys[i] = keys[i+1];
-					i++;
-				}
-			}
-			else if (this.index > 0)
-			{
-			   int elemsAtEnd = this.elements.length - this.index;
-			   int elemsAtFront = this.size - elemsAtEnd;
-			   int i = elemsAtFront;
-            while(i>pos) {
-               keys[i] = keys[i-1];
-               i--;
-            }
+			int sizePos = (this.index + this.size) % keys.length;
+			while(sizePos>pos) {
+				keys[sizePos] = keys[--sizePos];
 			}
 		}
-		keys[pos] = element; 
+		keys[pos] = element;
         Object beforeElement = null;
         this.size++;
         if (pos > 0)
-        {
+        { 
         	beforeElement = this.getByIndex(SMALL_KEY, pos-1, size);
         }
         fireProperty(null, element, beforeElement, null);
@@ -1041,12 +1018,13 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		Object[] items;
 		int complex = getArrayFlag(size);
 		if(complex>1){
-			items = ((Object[])elements[offset]); // TODO: Stefan: do you use this.index for complex things, too? Then there might be a problem with remove. See below. AZ
+			items = ((Object[])elements[offset]);
 		} else {
 			// One Dimension
 			items = elements;
-			index = index % items.length; // Fix for index+this.index > length
-		} 
+		}
+        index = index % items.length; // Fix for index+this.index > length
+
 		Object oldValue = items[index];
 		if(oldValue==null){
 			return null;
