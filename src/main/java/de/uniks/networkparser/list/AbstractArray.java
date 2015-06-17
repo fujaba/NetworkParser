@@ -647,14 +647,37 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		}else {
 			int oldPos = pos;
 			pos = (this.index + pos) % keys.length;
-			if(pos>oldPos) {
-				int i = this.size;
-				while(i>pos) {
-					keys[i] = keys[--i]; 	
+			if (this.index == 0)
+			{
+			   int i = this.size;
+            while(i>pos) {
+               keys[i] = keys[i-1];
+               i--;
+            }
+			}
+			else if(pos>oldPos) 
+			{
+			   // move elements to the left 
+			   this.index--;
+			   pos--;
+				int i = this.index;
+				while(i<pos) {
+					keys[i] = keys[i+1];
+					i++;
 				}
 			}
+			else if (this.index > 0)
+			{
+			   int elemsAtEnd = this.elements.length - this.index;
+			   int elemsAtFront = this.size - elemsAtEnd;
+			   int i = elemsAtFront;
+            while(i>pos) {
+               keys[i] = keys[i-1];
+               i--;
+            }
+			}
 		}
-		keys[pos] = element;
+		keys[pos] = element; 
         Object beforeElement = null;
         this.size++;
         if (pos > 0)
@@ -1018,10 +1041,11 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		Object[] items;
 		int complex = getArrayFlag(size);
 		if(complex>1){
-			items = ((Object[])elements[offset]);
+			items = ((Object[])elements[offset]); // TODO: Stefan: do you use this.index for complex things, too? Then there might be a problem with remove. See below. AZ
 		} else {
 			// One Dimension
 			items = elements;
+			index = index % items.length; // Fix for index+this.index > length
 		} 
 		Object oldValue = items[index];
 		if(oldValue==null){

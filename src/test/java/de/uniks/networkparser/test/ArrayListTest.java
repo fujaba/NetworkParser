@@ -25,9 +25,9 @@ public class ArrayListTest {
 		Assert.assertTrue(list.contains(5));
 		
 		
-		list.remove(4);
-		list.remove(3);
-		list.remove(2);
+		list.remove((Integer)4);
+		list.remove((Integer)3);
+		list.remove((Integer)2);
 		
 		
 		Assert.assertFalse(list.contains(3));

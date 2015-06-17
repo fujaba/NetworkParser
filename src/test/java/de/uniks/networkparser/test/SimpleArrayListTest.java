@@ -24,6 +24,48 @@ public class SimpleArrayListTest
 	
 	
    @Test
+   public void testReorderItems() {
+      SimpleList<String> list=new SimpleList<String>();
+      
+      list.add("Test");
+      list.add("Hello");
+      list.remove(1);
+      list.add(0, "Hello");
+      list.add("World");
+      list.remove(2);
+      list.add(1, "World");
+      ArrayList<String> newList=new ArrayList<String>(list);
+      Assert.assertEquals("Test", newList.get(2));
+      Assert.assertEquals(3, list.size());
+   }
+
+   @Test
+   public void testInsertItems() {
+      SimpleList<String> list=new SimpleList<String>();
+      
+      list.add("Hello");
+      list.add("Test");
+      list.add(1, "World");
+      ArrayList<String> newList=new ArrayList<String>(list);
+      Assert.assertEquals("Test", newList.get(2));
+      Assert.assertEquals(3, list.size());
+   }
+   
+   @Test
+   public void testInsertMoreItems() {
+      SimpleList<String> list=new SimpleList<String>();
+      
+      list.add("!");
+      list.add(0, "Test");
+      list.add(0, "Hello");
+      list.add(1, "World");
+      ArrayList<String> newList=new ArrayList<String>(list);
+      Assert.assertEquals("Test", newList.get(2));
+      Assert.assertEquals(4, list.size());
+   }
+   
+   
+   @Test
    public void test()
    {
       ArrayList<TestObject> list = gtTestList();
