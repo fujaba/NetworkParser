@@ -430,13 +430,18 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 				}
 			}
 			if(minCapacity>=MINHASHINGSIZE) {
+				boolean size=false;
 				if(elements[BIG_KEY] != null && minCapacity >= ((Object[])elements[BIG_KEY]).length * MAXUSEDLIST) {
 					resizeBig(newSize*2, BIG_KEY);
+					size = true;
 				}
 				if((flag & BIDI)==BIDI && elements[BIG_VALUE] != null && minCapacity >= ((Object[])elements[BIG_VALUE]).length * MAXUSEDLIST) {
 					resizeBig(newSize*2, BIG_VALUE);
+					size = true;
 				}
-				elements[DELETED] = null;
+				if(size) {
+					elements[DELETED] = null;
+				}
 			}
 		} else if(size < MINHASHINGSIZE) {
 			if(minCapacity > elements.length) {
@@ -646,12 +651,15 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 			pos = this.index;
 		}else {
 			//MOVE ALL ONE ELEMENT NEXT
-//			int oldPos = pos;
-//			pos = (this.index + pos) % keys.length;
 			pos = (this.index + pos) % keys.length;
 			int sizePos = (this.index + this.size) % keys.length;
-			while(sizePos>pos) {
-				keys[sizePos] = keys[--sizePos];
+			while(sizePos!=pos) {
+				if(sizePos==0) {
+					keys[sizePos] = keys[keys.length - 1];
+					sizePos = keys.length - 1;
+				}else{
+					keys[sizePos] = keys[--sizePos];
+				}
 			}
 		}
 		keys[pos] = element;
@@ -924,6 +932,19 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 			}
 		}
 		return a.equals(b);
+	}
+	
+	int pureIndexOf(Object element) {
+		Object[] items=elements;
+		if(isComplex(this.size)) {
+			items=(Object[]) elements[SMALL_KEY];	
+		}
+		for(int i=0;i<items.length;i++) {
+			if(items[i]!=null && items[i].equals(element)){
+				return i;
+			}
+		}
+		return -1;
 	}
     
 	public boolean contains(Object o) {
