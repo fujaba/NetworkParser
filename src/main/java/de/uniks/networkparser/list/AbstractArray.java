@@ -933,19 +933,6 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		}
 		return a.equals(b);
 	}
-	
-	int pureIndexOf(Object element) {
-		Object[] items=elements;
-		if(isComplex(this.size)) {
-			items=(Object[]) elements[SMALL_KEY];	
-		}
-		for(int i=0;i<items.length;i++) {
-			if(items[i]!=null && items[i].equals(element)){
-				return i;
-			}
-		}
-		return -1;
-	}
     
 	public boolean contains(Object o) {
 		return indexOf(o, size) >= 0;
