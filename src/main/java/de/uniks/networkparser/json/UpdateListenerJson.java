@@ -188,6 +188,13 @@ public class UpdateListenerJson implements PropertyChangeListener {
 		}
 	}
 	
+	/**
+	 * Execute.
+	 *
+	 * @param updateMessage
+	 *            the update message
+	 * @return the MasterObject, if successful
+	 */
 	public Object execute(JsonObject updateMessage) {
 		return execute(updateMessage, new Filter());
 	}
@@ -197,6 +204,7 @@ public class UpdateListenerJson implements PropertyChangeListener {
 	 *
 	 * @param updateMessage
 	 *            the update message
+	 * @param filter Filter for exclude UpdateMessages
 	 * @return the MasterObject, if successful
 	 */
 	public Object execute(JsonObject updateMessage, Filter filter) {
