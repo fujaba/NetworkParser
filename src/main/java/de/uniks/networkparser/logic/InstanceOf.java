@@ -106,7 +106,13 @@ public class InstanceOf extends ConditionMap implements SendableEntityCreator {
 	 * @return The new Instance
 	 */
 	public static InstanceOf value(Object clazz, String property) {
-		return new InstanceOf().withClazzName(clazz.getClass()).withProperty(property);
+		InstanceOf result = new InstanceOf().withProperty(property);
+		if(clazz instanceof Class<?>) {
+			result.withClazzName((Class<?>) clazz);
+		}else {
+			result.withClazzName(clazz.getClass());
+		}
+		return result;
 	}
 
 	/** @return The ClazzName */
