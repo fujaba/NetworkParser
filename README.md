@@ -15,11 +15,11 @@ The Framework have many other features like:
 - Date with holidays
 - UML-Layouting with Javascript or Webservice like YUML
 - JavaFX Container Classes:
-  -- for DataBinding
-  -- Table with Searchfield
-  -- Form
-  -- PopupDialog
-  -- Basic Shell-Class with Writing Errorfiles
+  - for DataBinding
+  - Table with Searchfield
+  - Form
+  - PopupDialog
+  - Basic Shell-Class with Writing Errorfiles
 - Logicstructure
 - SimpleList as universal solution for datamodels
 
