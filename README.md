@@ -25,7 +25,7 @@ The Framework have many other features like:
 
 
 ## Current Status ##
-[![Build Status](https://se.cs.uni-kassel.de/jenkins/buildStatus/icon?job=NetworkParser)
+![Build Status](https://se.cs.uni-kassel.de/jenkins/buildStatus/icon?job=NetworkParser)
 
 # Getting Started
 
