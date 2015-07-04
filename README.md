@@ -39,7 +39,7 @@ Maven artifacts are available at:
 
 #Usage
 Here are a simple Usage of JsonIdMap for serialization and deserialization and get UpdateMessages
-[SimpleJsonTest](src/test/java/de/uniks/networkparser/test/SimpleJsonTest.java "Sourcecode SimpleJsonTest.java")
+'''java
 	House house=new House();
 	house.setFloor(4);
 	house.setName("University");
@@ -61,12 +61,12 @@ Here are a simple Usage of JsonIdMap for serialization and deserialization and g
 
 	house.setFloor(42);
 
-[SimpleJsonTest](src/test/java/de/uniks/networkparser/test/SimpleJsonTest.java "Sourcecode SimpleJsonTest.java")
-[House](src/test/java/de/uniks/networkparser/test/model/House.java "Sourcecode House.java")
+- [SimpleJsonTest](src/test/java/de/uniks/networkparser/test/SimpleJsonTest.java "Sourcecode SimpleJsonTest.java")
+- [House](src/test/java/de/uniks/networkparser/test/model/House.java "Sourcecode House.java")
 
 ## Links
-The issue list: Head straight to https://github.com/fujaba/NetworkParser/issues for a list of all issues or click `Issues` in the navigation bar on the right.
-See also on Openhub https://www.openhub.net/p/NetworkParser
+- The issue list: Head straight to https://github.com/fujaba/NetworkParser/issues for a list of all issues or click `Issues` in the navigation bar on the right.
+- See also on Openhub https://www.openhub.net/p/NetworkParser
 
 # License
 NetworkParser is released under an [EuPL 1.1 license](Licence/EUPL v.1.1 - Lizenz.pdf).
