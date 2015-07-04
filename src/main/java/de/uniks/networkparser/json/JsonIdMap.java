@@ -28,6 +28,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import de.uniks.networkparser.AbstractMap;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.NetworkParserLog;
@@ -846,6 +848,11 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 	 */
 	public JsonIdMap withTypSave(boolean typSave) {
 		this.typSave = typSave;
+		return this;
+	}
+	
+	public JsonIdMap withCreator(SendableEntityCreator... createrClass) {
+		super.withCreator(createrClass);
 		return this;
 	}
 }
