@@ -137,7 +137,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return this;
 	}
 
-	private void setValue(int pos, V value) {
+	public void setValue(int pos, V value) {
 		super.setValue(pos, value, SMALL_VALUE);
 	}
 
