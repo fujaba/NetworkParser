@@ -33,4 +33,9 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 	public boolean remove(Object o) {
 		return super.removeByObject(o)>=0;
 	}
+	
+	@Override
+	public SimpleSet<V> clone() {
+		return ((SimpleSet<V>)getNewList(false)).init(this);
+	}
 }
