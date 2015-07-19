@@ -26,7 +26,7 @@ import java.util.Iterator;
 import java.util.ListIterator;
 import de.uniks.networkparser.interfaces.BaseItem;
 
-public abstract class AbstractList<V> extends AbstractArray<V> implements Iterable<V>   {
+public abstract class AbstractList<V> extends AbstractArray<V> {
 	/**
      * {@inheritDoc}
      *

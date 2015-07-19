@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
+
 import de.uniks.networkparser.interfaces.BaseItem;
 
 public class AbstractArray<V> implements BaseItem, Iterable<V>  {
@@ -107,15 +108,13 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
      */
     @SuppressWarnings("unchecked")
 	public <ST extends AbstractArray<V>> ST init(Collection<?> list){
-    	this.getClass().isAssignableFrom(Short.class);
-    	
     	if(list instanceof AbstractArray){
     		this.flag = ((AbstractArray<V>)list).getSignalFlag();
     	}
     	withList(list);
     	return (ST)this;
     }
-    
+
     /** Init-List with Size-Integer
      * 
      * 
