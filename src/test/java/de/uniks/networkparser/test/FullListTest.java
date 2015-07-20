@@ -12,6 +12,7 @@ import org.junit.Test;
 import de.uniks.networkparser.list.AbstractArray;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.list.SimpleSet;
 
 public class FullListTest {
 
@@ -35,7 +36,7 @@ public class FullListTest {
 	public void simpleListFunctionality()
 	{
 		// create a set of some 42 names
-		SimpleList<Integer> simpleList = new SimpleList<Integer>();
+		SimpleSet<Integer> simpleList = new SimpleSet<Integer>();
 
 		Integer int_01 = new Integer(1);
 		Integer int_02 = new Integer(2);
@@ -72,7 +73,7 @@ public class FullListTest {
 		assertTrue("List should contain added element", simpleList.contains(int_01));
 
 		// clone the list
-		SimpleList<Integer> clone = simpleList.clone();
+		SimpleSet<Integer> clone = simpleList.clone();
 
 		assertEquals("List should contain 1 element", 1, simpleList.size());
 		assertTrue("List should contain added element", simpleList.contains(int_01));
@@ -114,7 +115,7 @@ public class FullListTest {
 			simpleList.add(new Integer(i));
 		}
 
-		SimpleList<Integer> subList = simpleList.subList(10, 20);
+		SimpleSet<Integer> subList = simpleList.subList(10, 20);
 
 		assertEquals("sublist[0] should be 10", new Integer(11), subList.get(0));
 
@@ -186,7 +187,7 @@ public class FullListTest {
 		simpleList.toArray(new Integer[99]);
 		
 		// add more elements to make the list big
-		simpleList = new SimpleList<Integer>();
+		simpleList = new SimpleSet<Integer>();
 		
 		for (int i = 1; i <= 550; i++)
 		{
@@ -219,13 +220,13 @@ public class FullListTest {
 		assertEquals("simpleList should have 549 elements", 549, simpleList.size());
 		assertEquals("simpleList[0] should be 2", 2, 0 + simpleList.first());
 		
-		simpleList = new SimpleList<Integer>();
+		simpleList = new SimpleSet<Integer>();
 		
 		simpleList.with(int_01, int_02);
 		assertEquals("simpleList should have 2 elements", 2, simpleList.size());
 		assertEquals("simpleList[0] should be 1", 1, 0 + simpleList.first());
 		
-		clone = new SimpleList<Integer>();
+		clone = new SimpleSet<Integer>();
 		
 		simpleList.copyEntity(clone, 1);
 		assertEquals("clone should have 1 elements", 1, clone.size());
@@ -239,12 +240,12 @@ public class FullListTest {
 			simpleList.add(new Integer(i));
 		}
 		
-		clone = (SimpleList<Integer>) simpleList.subSet(new Integer(23), new Integer(25));
+		clone = (SimpleSet<Integer>) simpleList.subSet(new Integer(23), new Integer(25));
 		
 		assertEquals("wrong number of elements", 2, clone.size());
 		assertEquals("clone[0] is wrong", 23, 0 + clone.first());
 		
-		clone = (SimpleList<Integer>) simpleList.subList(22, 24);
+		clone = (SimpleSet<Integer>) simpleList.subList(22, 24);
 		
 		assertEquals("wrong number of elements", 2, clone.size());
 		assertEquals("clone[0] is wrong", 23, 0 + clone.first());

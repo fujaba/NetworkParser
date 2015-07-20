@@ -4,26 +4,27 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.list.SimpleSet;
 
 public class FullSmallListTest {
 	
 	@Test
 	public void testFullList() {
-		SimpleList<Integer> smallList;
+		SimpleSet<Integer> smallList;
 		smallList = createTest(3);
 		testList(smallList);
 		smallList = createTest(10);
 		testList(smallList);
 	}
-	private SimpleList<Integer> createTest(int size) {
-		SimpleList<Integer> smallList = new SimpleList<Integer>();
+	private SimpleSet<Integer> createTest(int size) {
+		SimpleSet<Integer> smallList = new SimpleSet<Integer>();
 		smallList.add(1);
 		smallList.add(1, 2);
 		smallList.add(1, 2);
 		smallList.with(new Integer(3));
 		return smallList;
 	}
-	private void testList(SimpleList<Integer> smallList) {
+	private void testList(SimpleSet<Integer> smallList) {
 		Integer theThree = new Integer(3);
 		Integer theOne = new Integer(1);
 		Assert.assertEquals(new Integer(1), smallList.first());

@@ -38,4 +38,9 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 	public SimpleSet<V> clone() {
 		return ((SimpleSet<V>)getNewList(false)).init(this);
 	}
+	
+	@SuppressWarnings("unchecked")
+	public SimpleSet<V> subList(int fromIndex, int toIndex) {
+		return (SimpleSet<V>) super.subList(fromIndex, toIndex);
+	}
 }
