@@ -472,7 +472,7 @@ public abstract class Tokener {
 	public int position() {
 		return this.buffer.position();
 	}
-
+	
 	/**
 	 * Gets the length.
 	 *

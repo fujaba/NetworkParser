@@ -27,6 +27,7 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 
 public class StringTokener extends Tokener {
 	private boolean isString = true;
+	private int startToken = -1;
 
 	@Override
 	public String nextString(char quote, boolean allowCRLF, boolean allowQuote,
@@ -149,4 +150,20 @@ public class StringTokener extends Tokener {
 		}
 		return result;
 	}
+	
+	public void startToken() {
+		this.startToken = this.buffer.position();
+	}
+	
+	public String getToken(String defaultText) {
+		if(this.startToken < 0) {
+			nextClean();
+			return defaultText;
+		}
+		String token = this.buffer.substring(startToken, this.buffer.position() - startToken);
+		this.startToken = -1;
+		nextClean();
+		return token;
+	}
+
 }
