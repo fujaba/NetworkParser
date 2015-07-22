@@ -38,7 +38,9 @@ public class GraphAnnotation implements IdMapDecoder{
 			this.value = new SimpleList<GraphAnnotation>();
 		}
 		for(GraphAnnotation item : values) {
-			this.value.add(0, item);
+			if(item != null) {
+				this.value.add(item);
+			}
 		}
 		return this;
 	}
@@ -47,7 +49,6 @@ public class GraphAnnotation implements IdMapDecoder{
 		tokener.startToken();
 		char item = tokener.getCurrentChar();
 		boolean charCount=false;
-			
 		while(item!=0 && item != endTag) {
 			if(item=='"') {
 				charCount=!charCount;
@@ -63,24 +64,34 @@ public class GraphAnnotation implements IdMapDecoder{
 			// Subannotation
 			if(item == '(' ) {
 				this.name = tokener.getToken(this.name);
-				addValue(new GraphAnnotation().decode(tokener, ')', this));
+				GraphAnnotation child = new GraphAnnotation();
+				addValue(child);
+				child.decode(tokener, ')', this);
 				return this;
 			} else if( item == '{') {
 				
 				this.name = tokener.getToken(this.name);
-				GraphAnnotation child = new GraphAnnotation().decode(tokener, '}', parent);
-//				if(this.name.length()<1 && child.getValue() == null) {
-//					return child;
-//				}
-				return child;
+//				GraphAnnotation child = new GraphAnnotation().decode(tokener, '}', parent);
+				decode(tokener, '}', parent);
+				return this;
+//				return child;
 			} else if( item == '='  ) {
 				this.name = tokener.getToken(this.name);
 				this.keyValue = true;
-				this.addValue(new GraphAnnotation().decode(tokener, endTag, parent));
-			} else if( item == ','  ) {
+				GraphAnnotation child = new GraphAnnotation();
+				addValue(child);
+				child.decode(tokener, endTag, parent);
+				item = tokener.getCurrentChar();
+				if(item!=',') {
+					break;
+				}
+			}
+			if( item == ','  ) {
 				this.name = tokener.getToken(this.name);
 				if(parent != null) {
-					parent.addValue(new GraphAnnotation().decode(tokener, endTag, parent));
+					GraphAnnotation child = new GraphAnnotation();
+					parent.addValue(child);
+					child.decode(tokener, endTag, parent);
 				}
 				break;
 			}
@@ -143,24 +154,26 @@ public class GraphAnnotation implements IdMapDecoder{
 	public GraphAnnotation next() {
 		return nextAnnotaton;
 	}
-	
 	public String getValue(String key) {
-		if(key == null || value != null) {
-			return null;
+		return getValue(key, null);
+	}
+	public String getValue(String key, String defaultText) {
+		if(key == null || value == null) {
+			return defaultText;
 		}
 		if( keyValue && value.size() == 1) { 
 			if(key.equalsIgnoreCase(getName())) {
 				return value.first().getName();
 			}else{
-				return null;
+				return defaultText;
 			}
 		}
 		for(GraphAnnotation item : value) {
-			String result = item.getValue(key);
-			if(result != null) {
+			String result = item.getValue(key, defaultText);
+			if(result != defaultText) {
 				return result;
 			}
 		}
-		return null;
+		return defaultText;
 	}
 }
