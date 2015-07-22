@@ -6,6 +6,15 @@ import de.uniks.networkparser.interfaces.IdMapDecoder;
 import de.uniks.networkparser.list.SimpleList;
 
 public class GraphAnnotation implements IdMapDecoder{
+	// ==========================================================================
+	public static final String DEPRECATED = "Deprecated";
+
+	// ==========================================================================
+	public static final String OVERRIDE = "Override";
+
+	// ==========================================================================
+	public static final String SUPPRESS_WARNINGS = "SuppressWarnings";
+
 	private String name;
 	private SimpleList<GraphAnnotation> value;
 	private boolean keyValue;

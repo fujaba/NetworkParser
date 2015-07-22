@@ -21,21 +21,21 @@ package de.uniks.networkparser.graph;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-public class GraphVisibility
+public class GraphModifier
 
 {
-	public static final GraphVisibility PUBLIC = new GraphVisibility("public");
-	public static final GraphVisibility PACKAGE = new GraphVisibility("");
-	public static final GraphVisibility PROTECTED = new GraphVisibility("protected");
-	public static final GraphVisibility PRIVATE = new GraphVisibility("private");
+	public static final GraphModifier PUBLIC = new GraphModifier("public");
+	public static final GraphModifier PACKAGE = new GraphModifier("");
+	public static final GraphModifier PROTECTED = new GraphModifier("protected");
+	public static final GraphModifier PRIVATE = new GraphModifier("private");
 
-	public static final GraphVisibility FINAL = new GraphVisibility(" final");
-	public static final GraphVisibility ABSTRACT = new GraphVisibility(" abstract");
-	public static final GraphVisibility STATIC = new GraphVisibility(" static");
+	public static final GraphModifier FINAL = new GraphModifier(" final");
+	public static final GraphModifier ABSTRACT = new GraphModifier(" abstract");
+	public static final GraphModifier STATIC = new GraphModifier(" static");
 
 	private String value;
 
-	GraphVisibility(String value) {
+	GraphModifier(String value) {
 		this.setValue(value);
 	}
 
@@ -47,19 +47,19 @@ public class GraphVisibility
 		this.value = value;
 	}
 
-	public GraphVisibility withValue(String value) {
+	public GraphModifier withValue(String value) {
 		this.value = value;
 		return this;
 	}
 
-	public static GraphVisibility ref(String value) {
-		return new GraphVisibility(value);
+	public static GraphModifier ref(String value) {
+		return new GraphModifier(value);
 	}
 
-	public static GraphVisibility ref(GraphVisibility... value) {
-		GraphVisibility first = PUBLIC;
+	public static GraphModifier ref(GraphModifier... value) {
+		GraphModifier first = PUBLIC;
 		String seconds = "";
-		for (GraphVisibility item : value) {
+		for (GraphModifier item : value) {
 			if (item == PUBLIC || item == PACKAGE || item == PROTECTED
 					|| item == PRIVATE) {
 				first = item;
@@ -67,14 +67,14 @@ public class GraphVisibility
 			}
 			seconds += item.getValue();
 		}
-		return new GraphVisibility(first + seconds);
+		return new GraphModifier(first + seconds);
 	}
 
-	public boolean same(GraphVisibility other) {
+	public boolean same(GraphModifier other) {
 		return this.getValue().equalsIgnoreCase(other.getValue());
 	}
 
-	public boolean has(GraphVisibility other) {
+	public boolean has(GraphModifier other) {
 		return this.getValue().contains(other.getValue());
 	}
 

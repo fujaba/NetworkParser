@@ -29,7 +29,7 @@ public class GraphAttribute extends GraphValue implements GraphMember {
 
 	private GraphNode clazz = null;
 	private String value = null;
-	private GraphVisibility visibility = GraphVisibility.PRIVATE;
+	private GraphModifier visibility = GraphModifier.PRIVATE;
 
 	public GraphAttribute() {
 	}
@@ -53,11 +53,11 @@ public class GraphAttribute extends GraphValue implements GraphMember {
 		return this;
 	}
 
-	public GraphVisibility getVisibility() {
+	public GraphModifier getVisibility() {
 		return visibility;
 	}
 
-	public GraphAttribute with(GraphVisibility visibility) {
+	public GraphAttribute with(GraphModifier visibility) {
 		this.visibility = visibility;
 		return this;
 	}
