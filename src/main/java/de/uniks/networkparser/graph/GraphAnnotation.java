@@ -143,4 +143,24 @@ public class GraphAnnotation implements IdMapDecoder{
 	public GraphAnnotation next() {
 		return nextAnnotaton;
 	}
+	
+	public String getValue(String key) {
+		if(key == null || value != null) {
+			return null;
+		}
+		if( keyValue && value.size() == 1) { 
+			if(key.equalsIgnoreCase(getName())) {
+				return value.first().getName();
+			}else{
+				return null;
+			}
+		}
+		for(GraphAnnotation item : value) {
+			String result = item.getValue(key);
+			if(result != null) {
+				return result;
+			}
+		}
+		return null;
+	}
 }
