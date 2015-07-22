@@ -21,17 +21,24 @@
 
 package de.uniks.networkparser.graph;
 
+import java.lang.annotation.Annotation;
+
+import de.uniks.networkparser.list.SimpleSet;
 
 public class GraphMethod extends GraphSimpleList<GraphParameter> implements GraphMember {
 	public static final String PROPERTY_RETURNTYPE = "returnType";
 	public static final String PROPERTY_PARAMETER = "parameter";
 	public static final String PROPERTY_NODE = "node";
 	public static final String PROPERTY_MODIFIER = "modifier";
+	public static final String PROPERTY_ANNOTATIONS = "annotations";
 
 	private GraphModifier modifier = GraphModifier.PUBLIC;
 	private GraphNode node = null;
 	private GraphDataType returnType = GraphDataType.VOID;
 	private String name;
+	private String body;
+	private SimpleSet<GraphAnnotation> annotations;
+	private String throwsTags;
 
 	public String getName() {
 		return name;
@@ -188,4 +195,69 @@ public class GraphMethod extends GraphSimpleList<GraphParameter> implements Grap
 		}
 		return sb.toString();
 	}
+
+	public String getBody() {
+		return this.body;
+	}
+
+	public boolean setBody(String value) {
+		if ((this.body == null && value != null) || (this.body != null && !this.body.equals(value))) {
+			this.body = value;
+			return true;
+		}
+		return false;
+	}
+
+	public GraphMethod withBody(String value) {
+		setBody(value);
+		return this;
+	}
+	
+	public String getThrowsTags() {
+		return this.throwsTags;
+	}
+
+	public boolean setThrowsTags(String value) {
+		if ((this.throwsTags == null && value != null) || (this.throwsTags != null && !this.throwsTags.equals(value))) {
+			this.throwsTags = value;
+			return true;
+		}
+		return false;
+	}
+
+	public GraphMethod withThrowsTags(String value) {
+		setThrowsTags(value);
+		return this;
+	}
+
+	public SimpleSet<GraphAnnotation> getAnnotations() {
+		if (this.annotations == null) {
+			return new SimpleSet<GraphAnnotation>().addFlag(SimpleSet.READONLY);
+		}
+		return this.annotations;
+	}
+
+	public GraphMethod withAnnotation(GraphAnnotation... value) {
+		if (value == null) {
+			return this;
+		}
+		for (GraphAnnotation item : value) {
+			if (item != null) {
+				if (this.annotations == null) {
+					this.annotations = new SimpleSet<GraphAnnotation>();
+				}
+				this.annotations.add(item);
+			}
+		}
+		return this;
+	}
+
+	public GraphMethod without(Annotation... value) {
+		for (Annotation item : value) {
+			if ((this.annotations != null) && (item != null)) {
+				this.annotations.remove(item);
+			}
+		}
+		return this;
+	}	
 }
