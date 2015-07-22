@@ -96,7 +96,7 @@ public class GraphConverter implements Converter {
 					}
 				}
 				if (addValue) {
-					node.getKey().add(attribute);
+					node.getKey().with(attribute);
 				}
 			}
 		}
@@ -134,7 +134,7 @@ public class GraphConverter implements Converter {
 					// Must be a Link to 1
 					GraphNode newNode = parseJsonObject(root,
 							(JsonObject) props.getValueByIndex(i), attributes);
-					root.add(new GraphEdge().withAll(graphNode, 
+					root.add(new GraphEdge().with(graphNode).with(
 							new GraphEdge(newNode, GraphCardinality.ONE, props
 									.getKeyByIndex(i))));
 				} else if (props.getValueByIndex(i) instanceof JsonArray) {
@@ -145,7 +145,7 @@ public class GraphConverter implements Converter {
 						if (entity instanceof JsonObject) {
 							GraphNode newNode = parseJsonObject(root,
 									(JsonObject) entity, attributes);
-							root.add(new GraphEdge().withAll(graphNode, 
+							root.add(new GraphEdge().with(graphNode).with( 
 									new GraphEdge(newNode, GraphCardinality.MANY,
 											props.getKeyByIndex(i))));
 						} else {
@@ -204,8 +204,8 @@ public class GraphConverter implements Converter {
 		ArrayList<String> ids = new ArrayList<String>();
 
 		for (GraphEdge edge : edges) {
-			for (GraphNode source : edge) {
-				for (GraphNode target : edge.getOther()) {
+			for (GraphNode source : edge.getNodes()) {
+				for (GraphNode target : edge.getOther().getNodes()) {
 					JsonObject child =  parseEdge(typ, source, target, edge, shortName, ids);
 					if(child != null) {
 						result.add(child);
@@ -274,12 +274,12 @@ public class GraphConverter implements Converter {
 		return new JsonObject().withValue(PROPERTY, edge.getProperty());
 	}
 
-	public JsonArray parseEntities(String typ, Collection<GraphMember> nodes,
+	public JsonArray parseEntities(String typ, GraphNode nodes,
 			boolean shortName) {
 		JsonArray result = new JsonArray();
 		ArrayList<String> ids = new ArrayList<String>();
 		
-		for (GraphMember entity : nodes) {
+		for (GraphMember entity : nodes.getChildren()) {
 			JsonObject item = parseEntity(typ, entity, shortName);
 			if (item != null) {
 				if (typ == GraphIdMap.CLASS && item.has(ID)) {
@@ -349,7 +349,7 @@ public class GraphConverter implements Converter {
 	}
 	
 	public GraphNodeImage getNodeHeader(GraphNode entity) {
-		for (GraphMember member : entity) {
+		for (GraphMember member : entity.getChildren()) {
 			if (member instanceof GraphNodeImage) {
 				return (GraphNodeImage) member;
 			}
@@ -357,7 +357,7 @@ public class GraphConverter implements Converter {
 		return null;
 	}
 
-	private JsonArray parseAttributes(String typ, Collection<GraphMember> list,
+	private JsonArray parseAttributes(String typ, GraphNode list,
 			boolean shortName) {
 		JsonArray result = new JsonArray();
 		String splitter = "";
@@ -366,7 +366,7 @@ public class GraphConverter implements Converter {
 		} else if (typ.equals(GraphIdMap.CLASS)) {
 			splitter = ":";
 		}
-		for (GraphMember item : list) {
+		for (GraphMember item : list.getChildren()) {
 			if (!(item instanceof GraphAttribute)) {
 				continue;
 			}
@@ -377,9 +377,9 @@ public class GraphConverter implements Converter {
 		return result;
 	}
 	
-	private JsonArray parseMethods(Collection<GraphMember> list, boolean shortName) {
+	private JsonArray parseMethods(GraphNode list, boolean shortName) {
 		JsonArray result = new JsonArray();
-		for (GraphMember item : list) {
+		for (GraphMember item : list.getChildren()) {
 			if (!(item instanceof GraphMethod)) {
 				continue;
 			}

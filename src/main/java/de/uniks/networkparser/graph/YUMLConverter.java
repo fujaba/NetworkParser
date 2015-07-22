@@ -22,8 +22,8 @@ package de.uniks.networkparser.graph;
  permissions and limitations under the Licence.
 */
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
+
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
@@ -35,10 +35,9 @@ public class YUMLConverter implements Converter {
 	@Override
 	public String convert(GraphList root, boolean removePackage) {
 		String typ = root.getTyp();
-		Collection<GraphMember> children = root;
-		if (children.size() > 0) {
+		if (root.getChildren().size() > 0) {
 			StringBuilder sb = new StringBuilder();
-			Iterator<GraphMember> i = children.iterator();
+			Iterator<GraphMember> i = root.getChildren().iterator();
 
 			ArrayList<GraphNode> visitedObj = new ArrayList<GraphNode>();
 			SimpleKeyValueList <String, Object> links = root.getLinks();
@@ -83,7 +82,7 @@ public class YUMLConverter implements Converter {
 			sb.append(parseEntity(item, visited, typ, shortName));
 			sb.append("-");
 
-			Iterator<GraphNode> targetIterator = element.getOther().iterator();
+			Iterator<GraphNode> targetIterator = element.getOther().getNodes().iterator();
 			GraphNode target = targetIterator.next();
 			sb.append(parseEntity(target, visited, typ, shortName));
 
@@ -141,7 +140,7 @@ public class YUMLConverter implements Converter {
 		}
 		StringBuilder sb = new StringBuilder();
 
-		Iterator<GraphMember> i = entity.iterator();
+		Iterator<GraphMember> i = entity.getChildren().iterator();
 		if (i.hasNext()) {
 			String splitter = "";
 			if (typ.equals(GraphIdMap.OBJECT)) {

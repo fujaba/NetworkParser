@@ -23,13 +23,14 @@ package de.uniks.networkparser.graph;
 */
 import java.util.ArrayList;
 import java.util.Iterator;
+
 import de.uniks.networkparser.event.SimpleMapEntry;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 
-public class GraphList extends GraphNode{
+public class GraphList extends GraphNode implements BaseItem{
 	private ArrayList<GraphEdge> edges = new ArrayList<GraphEdge>();
 	private String typ=GraphIdMap.CLASS;
 	private String style;
@@ -40,15 +41,6 @@ public class GraphList extends GraphNode{
 		return true;
 	}
 	
-	@Override
-	public boolean remove(Object o) {
-		int index = super.indexOf(o);
-		if(index>=0) {
-			return super.remove(index) != null;
-		}
-		return false;
-	}
-
 	@Override
 	public String toString() {
 		return toString(new YUMLConverter());
@@ -102,7 +94,7 @@ public class GraphList extends GraphNode{
 	public SimpleKeyValueList<String, Object> getLinks() {
 		SimpleKeyValueList<String, Object> links = new SimpleKeyValueList<String, Object>();
 		for (GraphEdge element : edges) {
-			for (GraphNode node : element) {
+			for (GraphNode node : element.getNodes()) {
 				String key = node.getTyp(typ, false);
 				SimpleList<?> value = (SimpleList<?>)links
 						.getValueItem(key);
@@ -118,20 +110,6 @@ public class GraphList extends GraphNode{
 		return links;
 	}
 
-	@Override
-	public BaseItem getNewList(boolean keyValue) {
-		if(keyValue) {
-			return new SimpleMapEntry<String, GraphNode>();
-		}
-		return new GraphList();
-	}
-
-	@Override
-	public GraphList withAll(Object... values) {
-		super.withAll(values);
-		return this;
-	}
-	
 	public GraphClazz with(GraphClazz value) {
 		if (value != null) {
 			if(value.getId()==null){
@@ -178,7 +156,7 @@ public class GraphList extends GraphNode{
 		if(id==null){
 			return null;
 		}
-		for(GraphMember item : this) {
+		for(GraphMember item : this.getChildren()) {
 			if(item instanceof GraphNode && id.equalsIgnoreCase(item.getId())){
 				return (GraphNode)item;
 			}
@@ -196,5 +174,24 @@ public class GraphList extends GraphNode{
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public BaseItem withAll(Object... values) {
+		this.children.withAll(values);
+        return this;
+    }
+
+	@Override
+	public Object getValueItem(Object key) {
+		return this.children.getValueItem(key);
+	}
+
+	@Override
+	public BaseItem getNewList(boolean keyValue) {
+        if(keyValue) {
+            return new SimpleMapEntry<String, GraphNode>();
+        }
+        return new GraphList();
 	}
 }

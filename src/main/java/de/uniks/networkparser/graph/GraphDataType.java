@@ -1,27 +1,5 @@
 package de.uniks.networkparser.graph;
 
-/*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
-
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
-
- http://ec.europa.eu/idabc/eupl5
-
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
-*/
-import java.beans.PropertyChangeSupport;
 public class GraphDataType
 
 {
@@ -34,26 +12,39 @@ public class GraphDataType
 	public static final GraphDataType STRING = new GraphDataType("String");
 	public static final GraphDataType BOOLEAN = new GraphDataType("boolean");
 	public static final GraphDataType OBJECT = new GraphDataType("Object");
+	public static final GraphDataType CHAR = new GraphDataType("char");
 
-	private String value;
+	private GraphClazz value;
 
 	GraphDataType(String value) {
 		this.with(value);
 	}
 
+	GraphDataType( GraphClazz value )
+	   {
+	      this.value = value;
+	   }
+	
 	public String getValue() {
-		return value;
+		if (this.value == null) {
+			return null;
+		}
+		return this.value.getId();
 	}
 
+	public GraphClazz getClazz() {
+		return value;
+	}
 	public String getValue(boolean shortName) {
-		if (!shortName || value == null || value.lastIndexOf(".") < 0) {
-			return value;
+		String result = getValue();
+		if (!shortName || result == null || result.lastIndexOf(".") < 0) {
+			return result;
 		}
-		return value.substring(value.lastIndexOf(".") + 1);
+		return result.substring(result.lastIndexOf(".") + 1);
 	}
 
 	public GraphDataType with(String value) {
-		this.value = value;
+		this.value = new GraphClazz().withId(value);
 		return this;
 	}
 
@@ -68,12 +59,38 @@ public class GraphDataType
 	public static GraphDataType ref(GraphClazz value) {
 		return new GraphDataType(value.getClassName());
 	}
+	
+	   public static GraphDataType ref(String value, boolean external) {
+		   return new GraphDataType(new GraphClazz().withId(value).withExternal(external));
+	   }
+
+	   public static GraphDataType ref(Class<?> value, boolean external) {
+		   GraphClazz clazz = new GraphClazz().withId(value.getName().replace("$", ".")).withExternal(external);
+		   return new GraphDataType(clazz);
+	   }
+	
+	public boolean equals(Object obj) {
+		if (!(obj instanceof GraphDataType)) {
+			return false;
+		}
+		GraphDataType other = (GraphDataType) obj;
+		if (this.getValue() == null) {
+			return other.getValue() == null;
+		}
+		return getValue().equals(other.getValue());
+	}
 
 	@Override
 	public String toString() {
-		return "DataType." + value.toUpperCase();
+		if ("void int long double String boolean Object".indexOf(this.getValue()) >= 0) {
+			return "DataType." + this.getValue().toUpperCase();
+		} else {
+			return "DataType.ref(\"" + this.getValue() + "\")";
+		}
 	}
 
-	protected final PropertyChangeSupport listeners = new PropertyChangeSupport(
-			this);
+//FIXME	   public static DataType ref(Enumeration value)
+//	   {
+//	      return new DataType(value.getFullName());
+//	   }
 }

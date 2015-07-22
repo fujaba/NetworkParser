@@ -28,7 +28,7 @@ public class GraphMethod extends GraphSimpleList<GraphParameter> implements Grap
 	public static final String PROPERTY_NODE = "node";
 	public static final String PROPERTY_MODIFIER = "modifier";
 
-	private GraphVisibility modifier = GraphVisibility.PUBLIC;
+	private GraphModifier modifier = GraphModifier.PUBLIC;
 	private GraphNode node = null;
 	private GraphDataType returnType = GraphDataType.VOID;
 	private String name;
@@ -114,11 +114,11 @@ public class GraphMethod extends GraphSimpleList<GraphParameter> implements Grap
 		return this;
 	}
 
-	public GraphVisibility getModifier() {
+	public GraphModifier getModifier() {
 		return this.modifier;
 	}
 
-	public GraphMethod with(GraphVisibility value) {
+	public GraphMethod with(GraphModifier value) {
 		this.modifier = value;
 		return this;
 	}

@@ -80,7 +80,7 @@ public class GraphIdMapDiff extends GraphIdMap{
 		HashMap<String, GraphClazz> clazzes = new HashMap<String, GraphClazz>();
 		
 		// Copy all Nodes
-		for(Iterator<GraphMember> i = clazzDiagram.iterator();i.hasNext();) {
+		for(Iterator<GraphMember> i = clazzDiagram.getChildren().iterator();i.hasNext();) {
 			GraphClazz item = (GraphClazz) i.next();
 			clazzes.put(item.getClassName(), item);
 		}
@@ -92,7 +92,7 @@ public class GraphIdMapDiff extends GraphIdMap{
 		}
 		
 		// Check all Clazzes of the objectdiagram
-		for(Iterator<GraphMember> i = objectDiagram.iterator();i.hasNext();) {
+		for(Iterator<GraphMember> i = objectDiagram.getChildren().iterator();i.hasNext();) {
 			GraphClazz item = (GraphClazz) i.next();
 			GraphClazz graphClazz = clazzes.get(item.getClassName());
 			if(graphClazz != null) {
@@ -130,7 +130,7 @@ public class GraphIdMapDiff extends GraphIdMap{
 	}
 
 	private void searchMatch(GraphClazzDiff master) {
-		master.iterator();
+		master.getChildren().iterator();
 	}
 
 	public GraphListDiff getMaster() {

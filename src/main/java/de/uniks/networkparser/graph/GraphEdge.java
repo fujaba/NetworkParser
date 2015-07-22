@@ -1,31 +1,6 @@
 package de.uniks.networkparser.graph;
 
-/*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
-
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
-
- http://ec.europa.eu/idabc/eupl5
-
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
-*/
-import java.util.List;
-import de.uniks.networkparser.interfaces.BaseItem;
-public class GraphEdge extends GraphSimpleList<GraphNode> implements
-
-		List<GraphNode> {
+public class GraphEdge  {
 	public static final String PROPERTY_NODE = "node";
 	public static final String PROPERTY_CARDINALITY = "cardinality";
 	public static final String PROPERTY_PROPERTY = "property";
@@ -35,6 +10,7 @@ public class GraphEdge extends GraphSimpleList<GraphNode> implements
 	private GraphEdge other;
 	private GraphEdgeTypes typ = GraphEdgeTypes.EDGE;
 	private int count;
+	private GraphSimpleList<GraphNode> nodes = new GraphSimpleList<GraphNode>(); 
 
 	public GraphEdge() {
 
@@ -50,7 +26,7 @@ public class GraphEdge extends GraphSimpleList<GraphNode> implements
 		if(cardinality != null) {
 			return cardinality;
 		}
-		if(this.size() > 1){
+		if(nodes.size() > 1){
 			return GraphCardinality.MANY;
 		}
 		return GraphCardinality.ONE;
@@ -68,8 +44,8 @@ public class GraphEdge extends GraphSimpleList<GraphNode> implements
 		if(property != null) {
 			return property.getValue();
 		}
-		if(this.size() == 1) {
-			GraphNode item = this.get(0);
+		if(nodes.size() == 1) {
+			GraphNode item = nodes.get(0);
 			if(item instanceof GraphClazz) {
 				String className = ((GraphClazz)item).getClassName(true);
 				if(className != null) {
@@ -113,30 +89,16 @@ public class GraphEdge extends GraphSimpleList<GraphNode> implements
 		return info;
 	}
 
-
-	@Override
-	public BaseItem getNewList(boolean keyValue) {
-		return new GraphEdge();
-	}
-
-	@Override
-	public GraphEdge withAll(Object... values) {
+	public GraphEdge with(GraphNode... values) {
 		if (values == null) {
 			return this;
 		}
-		for (Object value : values) {
-			if (value instanceof GraphNode) {
-				add((GraphNode) value);
-			}
-			if (value instanceof GraphEdge) {
-				with((GraphEdge) value);
-			}
-			if (value instanceof GraphCardinality) {
-				with((GraphCardinality) value);
-			}
+		for (GraphNode value : values) {
+			this.nodes.with(value);
 		}
 		return this;
 	}
+
 
 	public GraphEdge with(GraphEdge value) {
 		if (this.getOther() == value) {
@@ -151,27 +113,14 @@ public class GraphEdge extends GraphSimpleList<GraphNode> implements
 		this.cardinality = cardinality;
 		return this;
 	}
-
-	@Override
-	public boolean add(GraphNode newValue) {
-		if (super.add(newValue)) {
-			newValue.withList(this);
-		}
-		return true;
-	}
-
+	
 	public GraphEdge getOther() {
 		return other;
 	}
 
-	@Override
-	public boolean remove(Object value) {
-		return removeItemByObject((GraphNode) value) >= 0;
-	}
-
 	public static GraphEdge create(GraphNode source, GraphNode target){
 		GraphEdge edge = new GraphEdge().with(source);
-		edge.withAll(new GraphEdge().with(target));
+		edge.with(new GraphEdge().with(target));
 		return edge;
 	}
 
@@ -194,10 +143,14 @@ public class GraphEdge extends GraphSimpleList<GraphNode> implements
 	}
 	
 	public GraphNode getNode() {
-		if(size()>0) {
-			return get(0);
+		if(nodes.size()>0) {
+			return nodes.get(0);
 		}
 		return null;
+	}
+	
+	public GraphSimpleList<GraphNode> getNodes() {
+		return nodes;
 	}
 
 	public void addCounter() {
@@ -210,19 +163,28 @@ public class GraphEdge extends GraphSimpleList<GraphNode> implements
 	}
 	public String getIds() {
 		StringBuilder sb=new StringBuilder();
-		if(size()>1) {
+		if(nodes.size()>1) {
 			sb.append("[");
-			sb.append(get(0).getId());
-			for(int i=1;i<size();i++) {
-				sb.append(","+get(1).getId());
+			sb.append(nodes.get(0).getId());
+			for(int i=1;i<nodes.size();i++) {
+				sb.append(","+nodes.get(1).getId());
 			}
 			sb.append("]");
-		}else if(size()>0) {
-			sb.append(get(0).getId());
+		}else if(nodes.size()>0) {
+			sb.append(nodes.get(0).getId());
 		}else{
 			sb.append("[]");
 		}
 		
 		return sb.toString();
+	}
+
+	public boolean contains(GraphNode key) {
+		return nodes.contains(key);
+	}
+
+	public boolean containsAll(GraphEdge other2) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

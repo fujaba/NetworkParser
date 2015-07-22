@@ -141,7 +141,7 @@ public class EMFUtil {
 							continue;
 						}
 						literal.withKeyValue(key, child.get(key));
-						graphEnum.add(literal);
+						graphEnum.with(literal);
 					}
 				}
 			}

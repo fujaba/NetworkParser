@@ -28,6 +28,7 @@ public abstract class GraphValue implements BaseItem {
 	public static final String PROPERTY_TYPE = "type";
 
 	protected GraphDataType type = null;
+	protected String initialization = null;
 	protected String name;
 
 	public String getName() {
@@ -73,4 +74,21 @@ public abstract class GraphValue implements BaseItem {
 		return this;
 	}
 
+	public boolean setInitialization(String value) {
+		if ((this.initialization == null && value != null)
+				|| (this.initialization != null && !this.initialization.equals(value))) {
+			this.initialization = value;
+			return true;
+		}
+		return false;
+	}
+
+	public GraphValue withInitialization(String value) {
+		setInitialization(value);
+		return this;
+	}
+
+	public String getInitialization() {
+		return this.initialization;
+	}
 }
