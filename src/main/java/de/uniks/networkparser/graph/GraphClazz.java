@@ -39,4 +39,8 @@ public class GraphClazz extends GraphAbstractClazz {
 		super.withTyp(typ, value);
 		return this;
 	}
+	public GraphClazz withClassName(String className) {
+		super.withClassName(className);
+		return this;
+	}
 }
