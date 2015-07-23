@@ -185,4 +185,17 @@ public class GraphAnnotation implements IdMapDecoder{
 		}
 		return defaultText;
 	}
+	
+	public GraphAnnotation getAnnotation(String key) {
+		if(key==null) {
+			return null;
+		}
+		if(key.equalsIgnoreCase(getName())) {
+			return this;
+		}
+		if(nextAnnotaton == null) {
+			return this;
+		}
+		return nextAnnotaton.getAnnotation(key);
+	}
 }

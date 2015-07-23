@@ -26,7 +26,7 @@ import de.uniks.networkparser.graph.GraphCardinality;
 import de.uniks.networkparser.graph.GraphClazz;
 import de.uniks.networkparser.graph.GraphDataType;
 import de.uniks.networkparser.graph.GraphEdge;
-import de.uniks.networkparser.graph.GraphEnum;
+import de.uniks.networkparser.graph.GraphEnumeration;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphLiteral;
 import de.uniks.networkparser.graph.GraphNode;
@@ -132,7 +132,7 @@ public class EMFUtil {
 					superClazzes.add(eClassifier);
 				}
 			} else if (eClassifier.getString(EMFIdMap.XSI_TYPE).equals(EEnum)) {
-				GraphEnum graphEnum = new GraphEnum();
+				GraphEnumeration graphEnum = new GraphEnumeration();
 				graphEnum.withId(eClassifier.getString(EMFIdMap.NAME));
 				for(XMLEntity child : eClassifier.getChildren()) {
 					GraphLiteral literal = new GraphLiteral().withId(child.getString(EMFIdMap.NAME));
