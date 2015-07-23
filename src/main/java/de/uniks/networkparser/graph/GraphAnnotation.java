@@ -194,7 +194,7 @@ public class GraphAnnotation implements IdMapDecoder{
 			return this;
 		}
 		if(nextAnnotaton == null) {
-			return this;
+			return null;
 		}
 		return nextAnnotaton.getAnnotation(key);
 	}
