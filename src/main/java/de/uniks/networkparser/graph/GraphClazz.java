@@ -270,20 +270,20 @@ public class GraphClazz extends GraphAbstractClazz {
 		return this;
 	}
 
-	public GraphList getClassModel() {
-		return (GraphList) this.getParent();
+	public GraphModel getClassModel() {
+		return (GraphModel) this.getParent();
 	}
 
-	public boolean setClassModel(GraphList value) {
+	public boolean setClassModel(GraphModel value) {
 		return super.setParent(value);
 	}
 	
-	public GraphClazz withClassModel(GraphList value) {
+	public GraphClazz withClassModel(GraphModel value) {
 		setClassModel(value);
 		return this;
 	}
 
-	public GraphClazz with(GraphList value) {
+	public GraphClazz with(GraphModel value) {
 		setClassModel(value);
 		return this;
 	}

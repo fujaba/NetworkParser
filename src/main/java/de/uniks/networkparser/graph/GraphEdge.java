@@ -42,7 +42,7 @@ public class GraphEdge {
 
 	public String getProperty() {
 		if(property != null) {
-			return property.getValue();
+			return property.getId();
 		}
 		if(nodes.size() == 1) {
 			GraphNode item = nodes.get(0);
@@ -64,7 +64,7 @@ public class GraphEdge {
 	
 	public GraphEdge withInfo(String value) {
 		if(info != null) {
-			this.info.withValue(value);
+			this.info.withId(value);
 			return this;
 		}
 		this.info = GraphLabel.create(value);
