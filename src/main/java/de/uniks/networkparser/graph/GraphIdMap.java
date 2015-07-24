@@ -156,7 +156,7 @@ public class GraphIdMap extends IdMap {
 			GraphNode subId = parse(item, filter, list, deep + 1);
 			list.add(this.createEdge().with(element).with(this.createEdge(subId, cardinality, property)));
 		} else {
-			element.addValue(property, GraphDataType.ref(item.getClass()), "" + item);
+			element.addAttribute(property, GraphDataType.ref(item.getClass()), "" + item);
 		}
 		return;
 	}

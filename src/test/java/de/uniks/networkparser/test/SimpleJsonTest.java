@@ -1,5 +1,6 @@
 package de.uniks.networkparser.test;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -31,5 +32,7 @@ public class SimpleJsonTest {
 		House newHouse = (House) decodeMap.decode(string);
 
 		house.setFloor(42);
+		Assert.assertEquals(4, newHouse.getFloor());
+		Assert.assertEquals("University", newHouse.getName());
 	}
 }

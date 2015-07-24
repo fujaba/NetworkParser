@@ -22,8 +22,9 @@ package de.uniks.networkparser.graph;
  permissions and limitations under the Licence.
 */
 
+
 public enum GraphEdgeTypes {
-	ASSOC("assoc"), EDGE("edge"), GENERALISATION("generalisation");
+	ASSOCIATION("assoc"), EDGE("edge"), GENERALISATION("generalisation"), CHILD("child");
 	
 	private GraphEdgeTypes(String value) {
 		this.setValue(value);

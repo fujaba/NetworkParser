@@ -25,7 +25,7 @@ import java.lang.annotation.Annotation;
 
 import de.uniks.networkparser.list.SimpleSet;
 
-public class GraphMethod extends GraphSimpleList<GraphParameter> implements GraphMember {
+public class GraphMethod extends GraphNode implements GraphMember {
 	public static final String PROPERTY_RETURNTYPE = "returnType";
 	public static final String PROPERTY_PARAMETER = "parameter";
 	public static final String PROPERTY_NODE = "node";
@@ -33,12 +33,12 @@ public class GraphMethod extends GraphSimpleList<GraphParameter> implements Grap
 	public static final String PROPERTY_ANNOTATIONS = "annotations";
 
 	private GraphModifier modifier = GraphModifier.PUBLIC;
-	private GraphNode node = null;
 	private GraphDataType returnType = GraphDataType.VOID;
 	private String name;
 	private String body;
 	private SimpleSet<GraphAnnotation> annotations;
 	private String throwsTags;
+	private GraphNode parentNode;
 
 	public String getName() {
 		return name;
@@ -61,16 +61,19 @@ public class GraphMethod extends GraphSimpleList<GraphParameter> implements Grap
 		boolean first = true;
 		int i = 0;
 
-		for (GraphParameter parameter : this) {
-
+		for (GraphMember item : children) {
+			if((item instanceof GraphParameter) == false) {
+				continue;
+			}
+			GraphParameter param = (GraphParameter) item; 
 			if (first) {
-				sb.append(getParameterSignature(includeName, parameter, i));
+				sb.append(getParameterSignature(includeName, param, i));
 				first = false;
 			} else {
-				sb.append(getParameterSignature(includeName, parameter, i));
+				sb.append(getParameterSignature(includeName, param, i));
 			}
 
-			if (i < size() - 1) {
+			if (i < children.size() - 1) {
 				if (includeName) {
 					sb.append(", ");
 				} else {
@@ -93,8 +96,8 @@ public class GraphMethod extends GraphSimpleList<GraphParameter> implements Grap
 			return param;
 		}
 		String name = "";
-		if (parameter.getName() != null) {
-			name = parameter.getName().trim();
+		if (parameter.getId() != null) {
+			name = parameter.getId().trim();
 		}
 		if (name != "") {
 			return param + " " + name;
@@ -105,6 +108,10 @@ public class GraphMethod extends GraphSimpleList<GraphParameter> implements Grap
 	public GraphMethod() {
 	}
 
+	public GraphMethod(String name) {
+		this.with(name);
+	}
+	
 	public GraphMethod(String name, GraphDataType returnType, GraphParameter... parameters) {
 		this.with(name);
 		this.with(parameters);
@@ -144,53 +151,24 @@ public class GraphMethod extends GraphSimpleList<GraphParameter> implements Grap
 	}
 
 	public GraphMethod with(GraphNode value) {
-		if (this.node != value) {
-			// GraphNode oldValue = this.clazz;
-			if (this.node != null) {
-				this.node = null;
-				node.without(this);
-			}
-			this.node = value;
-			if (value != null) {
-				value.with(this);
-			}
-		}
-
+		withParent(value);
 		return this;
 	}
 
-	public GraphNode getNode() {
-		return node;
-	}
-
-	@Override
-	public GraphMethod getNewList(boolean keyValue) {
-		return new GraphMethod();
-	}
-
-	@Override
-	public GraphMethod withAll(Object... values) {
-		if (values == null) {
-			return this;
-		}
-		for (Object value : values) {
-			if (value != null && value instanceof GraphParameter) {
-				this.add((GraphParameter) value);
-			}
-		}
-		return this;
-	}
-	
 	public String getParameterString(boolean shortName){
 		StringBuilder sb=new StringBuilder();
-		for(int i=0;i<size();i++) {
+		for(int i=0;i<children.size();i++) {
+			if((children.get(i) instanceof GraphParameter)==false) {
+				continue;
+			}
+			GraphParameter param = (GraphParameter) children.get(i); 
 			if(i>0) {
 				sb.append(", ");
 			}
-			if(get(i).getName() == null) {
-				sb.append("p"+i+" : "+get(i).getType(shortName));
+			if(param.getId() == null) {
+				sb.append("p"+i+" : "+param.getType(shortName));
 			}else{
-				sb.append(get(i).getName()+" : "+get(i).getType(shortName));
+				sb.append(children.get(i).getId()+" : "+param.getType(shortName));
 			}
 		}
 		return sb.toString();
@@ -237,7 +215,7 @@ public class GraphMethod extends GraphSimpleList<GraphParameter> implements Grap
 		return this.annotations;
 	}
 
-	public GraphMethod withAnnotation(GraphAnnotation... value) {
+	public GraphMethod with(GraphAnnotation... value) {
 		if (value == null) {
 			return this;
 		}
@@ -246,7 +224,9 @@ public class GraphMethod extends GraphSimpleList<GraphParameter> implements Grap
 				if (this.annotations == null) {
 					this.annotations = new SimpleSet<GraphAnnotation>();
 				}
-				this.annotations.add(item);
+				if (this.annotations.add(item)) {
+					item.withParent(this);
+				}
 			}
 		}
 		return this;
@@ -256,6 +236,22 @@ public class GraphMethod extends GraphSimpleList<GraphParameter> implements Grap
 		for (Annotation item : value) {
 			if ((this.annotations != null) && (item != null)) {
 				this.annotations.remove(item);
+			}
+		}
+		return this;
+	}
+
+	@Override
+	public GraphMethod withParent(GraphNode value) {
+		if (this.parentNode != value) {
+			GraphNode oldValue = this.parentNode;
+			if (this.parentNode != null) {
+				this.parentNode = null;
+				oldValue.without(this);
+			}
+			this.parentNode = value;
+			if (value != null) {
+				value.with(this);
 			}
 		}
 		return this;

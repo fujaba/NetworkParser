@@ -26,6 +26,7 @@ public class GraphNodeImage implements GraphMember {
 	public static final String PROPERTY_VALUE = "value";
 	private String id;
 	private String value = null;
+	private GraphNode parentNode;
 
 	public String getValue() {
 		return value;
@@ -44,5 +45,21 @@ public class GraphNodeImage implements GraphMember {
 	@Override
 	public String getId() {
 		return id;
+	}
+
+	@Override
+	public GraphMember withParent(GraphNode value) {
+		if (this.parentNode != value) {
+			GraphNode oldValue = this.parentNode;
+			if (this.parentNode != null) {
+				this.parentNode = null;
+				oldValue.without(this);
+			}
+			this.parentNode = value;
+			if (value != null) {
+				value.with(this);
+			}
+		}
+		return this;
 	}
 }

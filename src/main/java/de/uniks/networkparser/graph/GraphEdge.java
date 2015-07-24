@@ -1,6 +1,6 @@
 package de.uniks.networkparser.graph;
 
-public class GraphEdge  {
+public class GraphEdge {
 	public static final String PROPERTY_NODE = "node";
 	public static final String PROPERTY_CARDINALITY = "cardinality";
 	public static final String PROPERTY_PROPERTY = "property";
@@ -10,7 +10,7 @@ public class GraphEdge  {
 	private GraphEdge other;
 	private GraphEdgeTypes typ = GraphEdgeTypes.EDGE;
 	private int count;
-	private GraphSimpleList<GraphNode> nodes = new GraphSimpleList<GraphNode>(); 
+	private GraphSimpleSet<GraphNode> nodes = new GraphSimpleSet<GraphNode>(); 
 
 	public GraphEdge() {
 
@@ -94,15 +94,24 @@ public class GraphEdge  {
 			return this;
 		}
 		for (GraphNode value : values) {
-			this.nodes.with(value);
+			if(this.nodes.add(value) ) {
+				value.with(this);
+			}
 		}
 		return this;
 	}
 
+	GraphEdge withOtherEdge(GraphEdge value) {
+		this.other = value;
+		return this;
+	}
 
 	public GraphEdge with(GraphEdge value) {
 		if (this.getOther() == value) {
 			return this;
+		}
+		if(this.other != null) {
+			this.other.withOtherEdge(null);
 		}
 		this.other = value;
 		getOther().with(this);
@@ -116,6 +125,13 @@ public class GraphEdge  {
 	
 	public GraphEdge getOther() {
 		return other;
+	}
+	
+	public GraphClazz getOtherClazz() {
+		if(other.getNode() instanceof GraphClazz) {
+			return (GraphClazz) other.getNode();
+		}
+		return null;
 	}
 
 	public static GraphEdge create(GraphNode source, GraphNode target){
@@ -149,7 +165,7 @@ public class GraphEdge  {
 		return null;
 	}
 	
-	public GraphSimpleList<GraphNode> getNodes() {
+	public GraphSimpleSet<GraphNode> getNodes() {
 		return nodes;
 	}
 
@@ -182,9 +198,21 @@ public class GraphEdge  {
 	public boolean contains(GraphNode key) {
 		return nodes.contains(key);
 	}
-
-	public boolean containsAll(GraphEdge other2) {
-		// TODO Auto-generated method stub
+	
+	public boolean containsOther(GraphNode key) {
+		if(other != null) {
+			return other.getNodes().contains(key);
+		}
 		return false;
+	}
+
+	public boolean containsAll(GraphEdge others, boolean both) {
+		if(! nodes.containsAll(others.getNodes()) ) {
+			return false;
+		}
+		if(getOther()!= null && both) {
+			return getOther().containsAll(others.getOther(), false);
+		}
+		return true;
 	}
 }

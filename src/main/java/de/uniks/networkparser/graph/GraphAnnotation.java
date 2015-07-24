@@ -5,7 +5,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.IdMapDecoder;
 import de.uniks.networkparser.list.SimpleList;
 
-public class GraphAnnotation implements IdMapDecoder{
+public class GraphAnnotation implements IdMapDecoder, GraphMember{
 	// ==========================================================================
 	public static final String DEPRECATED = "Deprecated";
 
@@ -15,10 +15,11 @@ public class GraphAnnotation implements IdMapDecoder{
 	// ==========================================================================
 	public static final String SUPPRESS_WARNINGS = "SuppressWarnings";
 
-	private String name;
+	private String id;
 	private SimpleList<GraphAnnotation> value;
 	private boolean keyValue;
 	private GraphAnnotation nextAnnotaton;
+	private GraphNode parentNode;
 
 	public static GraphAnnotation create(String value) {
 		GraphAnnotation annotation = new GraphAnnotation();
@@ -67,25 +68,25 @@ public class GraphAnnotation implements IdMapDecoder{
 				continue;
 			}
 			if( item == ' ') {
-				this.name = tokener.getToken(this.name);
+				this.id = tokener.getToken(this.id);
 				item = tokener.getCurrentChar();
 			}
 			// Subannotation
 			if(item == '(' ) {
-				this.name = tokener.getToken(this.name);
+				this.id = tokener.getToken(this.id);
 				GraphAnnotation child = new GraphAnnotation();
 				addValue(child);
 				child.decode(tokener, ')', this);
 				return this;
 			} else if( item == '{') {
 				
-				this.name = tokener.getToken(this.name);
+				this.id = tokener.getToken(this.id);
 //				GraphAnnotation child = new GraphAnnotation().decode(tokener, '}', parent);
 				decode(tokener, '}', parent);
 				return this;
 //				return child;
 			} else if( item == '='  ) {
-				this.name = tokener.getToken(this.name);
+				this.id = tokener.getToken(this.id);
 				this.keyValue = true;
 				GraphAnnotation child = new GraphAnnotation();
 				addValue(child);
@@ -96,7 +97,7 @@ public class GraphAnnotation implements IdMapDecoder{
 				}
 			}
 			if( item == ','  ) {
-				this.name = tokener.getToken(this.name);
+				this.id = tokener.getToken(this.id);
 				if(parent != null) {
 					GraphAnnotation child = new GraphAnnotation();
 					parent.addValue(child);
@@ -107,7 +108,7 @@ public class GraphAnnotation implements IdMapDecoder{
 			item = tokener.next();
 			
 			if( item == '@' ) {
-				this.name = tokener.getToken(this.name);
+				this.id = tokener.getToken(this.id);
 				tokener.back();
 				this.nextAnnotaton = new GraphAnnotation().decode(tokener, (char)0, null);
 				return this;
@@ -115,17 +116,17 @@ public class GraphAnnotation implements IdMapDecoder{
 
 		}
 		if(item==0 || item == endTag ) {
-			this.name = tokener.getToken(this.name);
+			this.id = tokener.getToken(this.id);
 		}
 		return this;
 	}
 
-	public String getName() {
-		return name;
+	public String getId() {
+		return id;
 	}
 
-	public GraphAnnotation withName(String name) {
-		this.name = name;
+	public GraphAnnotation withId(String name) {
+		this.id = name;
 		return this;
 	}
 
@@ -136,7 +137,7 @@ public class GraphAnnotation implements IdMapDecoder{
 	@Override
 	public String toString() {
 		StringBuilder sb=new StringBuilder();
-		sb.append(this.name);
+		sb.append(this.id);
 		if(value==null) {
 			return sb.toString();
 		}
@@ -171,8 +172,8 @@ public class GraphAnnotation implements IdMapDecoder{
 			return defaultText;
 		}
 		if( keyValue && value.size() == 1) { 
-			if(key.equalsIgnoreCase(getName())) {
-				return value.first().getName();
+			if(key.equalsIgnoreCase(getId())) {
+				return value.first().getId();
 			}else{
 				return defaultText;
 			}
@@ -190,12 +191,28 @@ public class GraphAnnotation implements IdMapDecoder{
 		if(key==null) {
 			return null;
 		}
-		if(key.equalsIgnoreCase(getName())) {
+		if(key.equalsIgnoreCase(getId())) {
 			return this;
 		}
 		if(nextAnnotaton == null) {
 			return null;
 		}
 		return nextAnnotaton.getAnnotation(key);
+	}
+
+	@Override
+	public GraphAnnotation withParent(GraphNode value) {
+		if (this.parentNode != value) {
+			GraphNode oldValue = this.parentNode;
+			if (this.parentNode != null) {
+				this.parentNode = null;
+				oldValue.without(this);
+			}
+			this.parentNode = value;
+			if (value != null) {
+				value.with(this);
+			}
+		}
+		return this;
 	}
 }

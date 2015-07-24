@@ -1,10 +1,13 @@
 package de.uniks.networkparser.graph;
 
+import de.uniks.networkparser.list.SimpleSet;
+
 public class GraphNode implements GraphMember{
 	private String id;
 	private int count;
-	private GraphNode parentNode;
-	protected GraphSimpleList<GraphMember> children=new GraphSimpleList<GraphMember>();
+	protected GraphNode parentNode;
+	protected GraphSimpleSet<GraphMember> children=new GraphSimpleSet<GraphMember>();
+	protected SimpleSet<GraphEdge> associations = new SimpleSet<GraphEdge>();
 
 	// GETTER AND SETTER
 	public String getId() {
@@ -25,8 +28,8 @@ public class GraphNode implements GraphMember{
 		return this;
 	}
 
-	public void addValue(String property, GraphDataType clazz, String value) {
-		children.add(new GraphAttribute().withValue(value).with(property).with(clazz));
+	public void addAttribute(String property, GraphDataType clazz, String value) {
+		with(new GraphAttribute().withValue(value).with(property).with(clazz));
 	}
 
 	@Override
@@ -35,55 +38,56 @@ public class GraphNode implements GraphMember{
 	}
 
 	public GraphNode with(GraphAttribute... values) {
-		if (values != null) {
-			for (GraphAttribute value : values) {
-				this.children.add(value);
-			}
-		}
-		return this;
+		return withMember(values);
 	}
 	public GraphNode with(GraphMethod... values) {
-		if (values != null) {
-			for (GraphMethod value : values) {
-				this.children.add(value);
-			}
-		}
-		return this;
+		return withMember(values);
 	}
+
 	public GraphNode with(GraphLiteral... values) {
-		if (values != null) {
-			for (GraphLiteral value : values) {
-				this.children.add(value);
-			}
-		}
-		return this;
+		return withMember(values);
 	}
 	public GraphNode with(GraphList... values) {
+		return withMember(values);
+	}
+	GraphNode with(GraphMember... values) {
+		return withMember(values);
+	}
+	
+	public GraphNode with(GraphEdge... values) {
 		if (values != null) {
-			for (GraphList value : values) {
-				this.children.add(value);
+			for (GraphEdge value : values) {
+				if(this.associations.add(value)) {
+					value.with(this);
+				}
 			}
 		}
 		return this;
 	}
 
-	GraphNode with(GraphMember... values) {
-		if (values != null) {
-			for (GraphMember value : values) {
-				this.children.add(value);
-			}
-		}
-		return this;
-	}
 	GraphNode without(GraphMember... values) {
 		if (values != null) {
 			for (GraphMember value : values) {
-				this.children.remove(value);
+				if(value != null) {
+					this.children.remove(value);
+					value.withParent(null);
+				}
 			}
 		}
 		return this;
 	}
 
+	GraphNode withMember(GraphMember... values) {
+		if (values != null) {
+			for (GraphMember value : values) {
+				if(value != null) {
+					this.children.add(value);
+					value.withParent(this);
+				}
+			}
+		}
+		return this;
+	}
 	
 	public GraphMember getByObject(String clazz, boolean fullName) {
 		if(clazz == null){
@@ -110,7 +114,7 @@ public class GraphNode implements GraphMember{
 		return null;
 	}
 	
-	public GraphNode withParent(GraphNode value) {
+	public boolean setParent(GraphNode value) {
 		if (this.parentNode != value) {
 			GraphNode oldValue = this.parentNode;
 			if (this.parentNode != null) {
@@ -121,11 +125,17 @@ public class GraphNode implements GraphMember{
 			if (value != null) {
 				value.with(this);
 			}
+			return true;
 		}
+		return false;
+	}
+	
+	public GraphNode withParent(GraphNode value) {
+		setParent(value);
 		return this;
 	}
 	
-	public GraphNode getParent(GraphNode value) {
+	public GraphNode getParent() {
 		return parentNode;
 	}
 
@@ -136,7 +146,7 @@ public class GraphNode implements GraphMember{
 		this.count++;
 	}
 
-	GraphSimpleList<GraphMember> getChildren() {
+	GraphSimpleSet<GraphMember> getChildren() {
 		return children;
 	}
 }

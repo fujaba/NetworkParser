@@ -26,6 +26,7 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 public class GraphLiteral implements GraphMember{
 	private String id;
 	private SimpleKeyValueList<String, Object> values=new SimpleKeyValueList<String, Object>();
+	private GraphNode parentNode;
 	
 	@Override
 	public String getId() {
@@ -38,6 +39,22 @@ public class GraphLiteral implements GraphMember{
 	}
 	public GraphLiteral withKeyValue(String key, Object value) {
 		this.values.put(key, value);
+		return this;
+	}
+
+	@Override
+	public GraphMember withParent(GraphNode value) {
+		if (this.parentNode != value) {
+			GraphNode oldValue = this.parentNode;
+			if (this.parentNode != null) {
+				this.parentNode = null;
+				oldValue.without(this);
+			}
+			this.parentNode = value;
+			if (value != null) {
+				value.with(this);
+			}
+		}
 		return this;
 	}
 }

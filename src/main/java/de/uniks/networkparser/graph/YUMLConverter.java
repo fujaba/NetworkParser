@@ -154,7 +154,7 @@ public class YUMLConverter implements Converter {
 			GraphAttribute attribute;
 			if (element instanceof GraphAttribute) {
 				attribute = (GraphAttribute) element;
-				sb.append(attribute.getName() + splitter
+				sb.append(attribute.getId() + splitter
 						+ attribute.getValue(typ, shortName)); // / without Typ
 			}
 
@@ -166,7 +166,7 @@ public class YUMLConverter implements Converter {
 				attribute = (GraphAttribute) element;
 
 				sb.append(";");
-				sb.append(attribute.getName() + splitter
+				sb.append(attribute.getId() + splitter
 						+ attribute.getValue(typ, shortName));
 			}
 		}
