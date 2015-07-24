@@ -3,8 +3,8 @@ package de.uniks.networkparser.graph;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class GraphNode implements GraphMember{
-	private String id;
-	private int count;
+	protected int count;
+	protected String id;
 	protected GraphNode parentNode;
 	protected GraphSimpleSet<GraphMember> children=new GraphSimpleSet<GraphMember>();
 	protected SimpleSet<GraphEdge> associations = new SimpleSet<GraphEdge>();
@@ -16,11 +16,6 @@ public class GraphNode implements GraphMember{
 
 	public String getTyp(String typ, boolean shortName) {
 		return getId();
-	}
-
-	public GraphNode withTyp(String typ, String value) {
-		withId(value);
-		return this;
 	}
 
 	public GraphNode withId(String id) {
@@ -44,9 +39,6 @@ public class GraphNode implements GraphMember{
 		return withMember(values);
 	}
 
-	public GraphNode with(GraphLiteral... values) {
-		return withMember(values);
-	}
 	public GraphNode with(GraphList... values) {
 		return withMember(values);
 	}

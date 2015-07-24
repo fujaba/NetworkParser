@@ -30,7 +30,6 @@ public abstract class GraphAbstractClazz extends GraphNode {
 		return "";
 	}
 
-	@Override
 	public GraphAbstractClazz withTyp(String typ, String value) {
 		if (typ.equals(GraphIdMap.OBJECT)) {
 			withId(value);

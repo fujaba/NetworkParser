@@ -38,4 +38,9 @@ public class GraphEnumeration extends GraphAbstractClazz {
 		super.withTyp(typ, value);
 		return this;
 	}
+	
+	public GraphEnumeration with(GraphLiteral... values) {
+		super.with(values);
+		return this;
+	}
 }

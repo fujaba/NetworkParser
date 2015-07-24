@@ -1,27 +1,5 @@
 package de.uniks.networkparser.graph;
 
-/*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
-
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
-
- http://ec.europa.eu/idabc/eupl5
-
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
-*/
-import java.util.ArrayList;
 import java.util.Iterator;
 
 import de.uniks.networkparser.event.SimpleMapEntry;
@@ -29,18 +7,13 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.list.SimpleSet;
 
-public class GraphList extends GraphNode implements BaseItem{
-	private ArrayList<GraphEdge> edges = new ArrayList<GraphEdge>();
+public class GraphList extends GraphModel implements BaseItem{
 	private String typ=GraphIdMap.CLASS;
 	private String style;
 	private GraphOptions options;
 
-	public boolean add(GraphMember value) {
-		with(value);
-		return true;
-	}
-	
 	@Override
 	public String toString() {
 		return toString(new YUMLConverter());
@@ -72,7 +45,7 @@ public class GraphList extends GraphNode implements BaseItem{
 	}
 
 	public boolean add(GraphEdge edge) {
-		for (Iterator<GraphEdge> i = this.edges.iterator(); i.hasNext();) {
+		for (Iterator<GraphEdge> i = this.associations.iterator(); i.hasNext();) {
 			GraphEdge item = i.next();
 			if (edge.getOther()!= null && item.containsAll(edge.getOther(), true)) {
 				// Back again
@@ -83,16 +56,13 @@ public class GraphList extends GraphNode implements BaseItem{
 				return false;
 			}
 		}
-		return this.edges.add(edge);
+		return this.associations.add(edge);
 	}
 
-	public ArrayList<GraphEdge> getEdges() {
-		return edges;
-	}
 
 	public SimpleKeyValueList<String, Object> getLinks() {
 		SimpleKeyValueList<String, Object> links = new SimpleKeyValueList<String, Object>();
-		for (GraphEdge element : edges) {
+		for (GraphEdge element : associations) {
 			for (GraphNode node : element.getNodes()) {
 				String key = node.getTyp(typ, false);
 				SimpleList<?> value = (SimpleList<?>)links
@@ -114,13 +84,13 @@ public class GraphList extends GraphNode implements BaseItem{
 			if(value.getId()==null){
 				value.withId(value.getClassName());
 			}
-			add(value);
+			super.with(value);
 		}
 		return value;
 	}
 
 	public GraphPattern with(GraphPattern value) {
-		add(value);
+		super.with(value);
 		return value;
 	}
 
@@ -162,9 +132,13 @@ public class GraphList extends GraphNode implements BaseItem{
 		}
 		return null;
 	}
+	
+	public SimpleSet<GraphEdge> getEdges() {
+		return associations;
+	}
 
 	public GraphEdge getEdge(GraphNode node, String property) {
-		for(GraphEdge edge : getEdges()) {
+		for(GraphEdge edge : associations) {
 			GraphEdge oEdge = edge.getOther();
 			if(edge.getNode()==node && property.equals(oEdge.getProperty())) {
 				return edge;

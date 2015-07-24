@@ -118,7 +118,7 @@ public class GraphIdMap extends IdMap {
 		GraphClazz newElement = this.createClazz();
 		newElement.withId(mainKey);
 		newElement.withClassName(className);
-		list.add(newElement);
+		list.with(newElement);
 		if (prototyp != null) {
 			for (String property : prototyp.getProperties()) {
 				Object value = prototyp.getValue(object, property);

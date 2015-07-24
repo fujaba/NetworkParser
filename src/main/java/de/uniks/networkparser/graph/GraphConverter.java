@@ -30,6 +30,7 @@ import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
+import de.uniks.networkparser.list.SimpleSet;
 
 public class GraphConverter implements Converter {
 	public static final String TYP = "typ";
@@ -116,7 +117,7 @@ public class GraphConverter implements Converter {
 		GraphClazz graphNode = (GraphClazz) root.getByObject(id, true);
 		if (graphNode == null) {
 			graphNode = new GraphClazz().withId(id);
-			root.add(graphNode);
+			root.with(graphNode);
 		}
 		
 		if (node.containsKey(JsonIdMap.CLASS)) {
@@ -198,7 +199,7 @@ public class GraphConverter implements Converter {
 		return jsonRoot;
 	}
 
-	private Collection<?> parseEdges(String typ, ArrayList<GraphEdge> edges,
+	private Collection<?> parseEdges(String typ, SimpleSet<GraphEdge> edges,
 			boolean shortName) {
 		JsonArray result = new JsonArray();
 		ArrayList<String> ids = new ArrayList<String>();
@@ -261,7 +262,7 @@ public class GraphConverter implements Converter {
 		
 		GraphLabel info = edge.getInfo();
 		if(info != null) {
-			child.put(INFO, info.getValue());
+			child.put(INFO, info.getId());
 			child.put(STYLE, info.getStyle());
 		}
 		return child;
