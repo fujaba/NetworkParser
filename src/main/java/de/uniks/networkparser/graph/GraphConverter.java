@@ -82,13 +82,13 @@ public class GraphConverter implements Converter {
 				for (GraphEdge edge : root.getEdges()) {
 
 					if (edge.contains(node.getKey())) {
-						if (attribute.getName().equals(edge.getProperty())) {
+						if (attribute.getId().equals(edge.getProperty())) {
 							addValue = false;
 							break;
 						}
 					}
 					if (edge.getOther().contains(node.getKey())) {
-						if (attribute.getName().equals(
+						if (attribute.getId().equals(
 								edge.getOther().getProperty())) {
 							addValue = false;
 							break;
@@ -371,7 +371,7 @@ public class GraphConverter implements Converter {
 				continue;
 			}
 			GraphAttribute attribute = (GraphAttribute) item;
-			result.add(attribute.getName() + splitter
+			result.add(attribute.getId() + splitter
 					+ attribute.getValue(typ, shortName));
 		}
 		return result;

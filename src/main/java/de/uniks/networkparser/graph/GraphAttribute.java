@@ -30,6 +30,7 @@ public class GraphAttribute extends GraphValue implements GraphMember {
 	private GraphNode clazz = null;
 	private String value = null;
 	private GraphModifier visibility = GraphModifier.PRIVATE;
+	private GraphAnnotation annotation;
 
 	public GraphAttribute() {
 	}
@@ -40,8 +41,9 @@ public class GraphAttribute extends GraphValue implements GraphMember {
 	}
 	
 	@Override
-	public String getId() {
-		return getName();
+	public GraphAttribute withInitialization(String value) {
+		super.withInitialization(value);
+		return this;
 	}
 	
 	public String getValue() {
@@ -62,12 +64,13 @@ public class GraphAttribute extends GraphValue implements GraphMember {
 		return this;
 	}
 
-	public GraphNode getClazz() {
+	public GraphNode getParent() {
 		return clazz;
 	}
 
-	public void setClazz(GraphNode clazz) {
+	public GraphAttribute withParent(GraphNode clazz) {
 		this.clazz = clazz;
+		return this;
 	}
 
 	// Redirect
@@ -117,5 +120,14 @@ public class GraphAttribute extends GraphValue implements GraphMember {
 			return visibility;
 		}
 		return null;
+	}
+	
+	public GraphAnnotation getAnnotations() {
+		return this.annotation;
+	}
+
+	public GraphAttribute with(GraphAnnotation value) {
+		this.annotation = value;
+		return this;
 	}
 }

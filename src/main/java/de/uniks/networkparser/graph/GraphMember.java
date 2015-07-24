@@ -24,4 +24,5 @@ package de.uniks.networkparser.graph;
 
 public interface GraphMember {
 	public String getId();
+	GraphMember withParent(GraphNode value);
 }

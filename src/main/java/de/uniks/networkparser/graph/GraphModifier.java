@@ -21,9 +21,7 @@ package de.uniks.networkparser.graph;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-public class GraphModifier
-
-{
+public class GraphModifier implements GraphMember{
 	public static final GraphModifier PUBLIC = new GraphModifier("public");
 	public static final GraphModifier PACKAGE = new GraphModifier("");
 	public static final GraphModifier PROTECTED = new GraphModifier("protected");
@@ -33,22 +31,24 @@ public class GraphModifier
 	public static final GraphModifier ABSTRACT = new GraphModifier(" abstract");
 	public static final GraphModifier STATIC = new GraphModifier(" static");
 
-	private String value;
+	private String id;
+	private GraphNode parentNode;
 
 	GraphModifier(String value) {
 		this.setValue(value);
 	}
 
-	public String getValue() {
-		return value;
+
+	public boolean setValue(String value) {
+		if(value != this.id) {
+			this.id = value;
+			return true;
+		}
+		return false;
 	}
 
-	public void setValue(String value) {
-		this.value = value;
-	}
-
-	public GraphModifier withValue(String value) {
-		this.value = value;
+	public GraphModifier withId(String value) {
+		this.id = value;
 		return this;
 	}
 
@@ -65,21 +65,42 @@ public class GraphModifier
 				first = item;
 				continue;
 			}
-			seconds += item.getValue();
+			seconds += item.getId();
 		}
 		return new GraphModifier(first + seconds);
 	}
 
 	public boolean same(GraphModifier other) {
-		return this.getValue().equalsIgnoreCase(other.getValue());
+		return this.getId().equalsIgnoreCase(other.getId());
 	}
 
 	public boolean has(GraphModifier other) {
-		return this.getValue().contains(other.getValue());
+		return this.getId().contains(other.getId());
 	}
 
 	@Override
 	public String toString() {
-		return this.value;
+		return this.id;
+	}
+
+	@Override
+	public String getId() {
+		return id;
+	}
+
+	@Override
+	public GraphModifier withParent(GraphNode value) {
+		if (this.parentNode != value) {
+			GraphNode oldValue = this.parentNode;
+			if (this.parentNode != null) {
+				this.parentNode = null;
+				oldValue.without(this);
+			}
+			this.parentNode = value;
+			if (value != null) {
+				value.with(this);
+			}
+		}
+		return this;
 	}
 }

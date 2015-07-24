@@ -3,6 +3,7 @@ package de.uniks.networkparser.graph;
 public abstract class GraphAbstractClazz extends GraphNode {
 	private String className;
 	private boolean external;
+	private GraphAnnotation annotation;
 
 	public String getClassName(boolean shortName) {
 		if (!shortName || className == null || className.lastIndexOf(".") < 0) {
@@ -61,6 +62,16 @@ public abstract class GraphAbstractClazz extends GraphNode {
 
 	public GraphAbstractClazz withExternal(boolean value) {
 		setExternal(value);
+		return this;
+	}
+	
+	
+	public GraphAnnotation getAnnotations() {
+		return this.annotation;
+	}
+
+	public GraphAbstractClazz with(GraphAnnotation value) {
+		this.annotation = value;
 		return this;
 	}
 }

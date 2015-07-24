@@ -74,8 +74,7 @@ public class GraphList extends GraphNode implements BaseItem{
 	public boolean add(GraphEdge edge) {
 		for (Iterator<GraphEdge> i = this.edges.iterator(); i.hasNext();) {
 			GraphEdge item = i.next();
-			if (edge.getOther()!= null && item.containsAll(edge.getOther())
-					&& item.getOther().containsAll(edge)) {
+			if (edge.getOther()!= null && item.containsAll(edge.getOther(), true)) {
 				// Back again
 				if(edge.getOther() != null ) {	
 					item.with(edge.getOther().getCardinality());

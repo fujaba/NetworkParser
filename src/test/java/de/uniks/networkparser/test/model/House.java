@@ -14,10 +14,10 @@ public class House implements SendableEntityCreator, SendableEntity{
 	private int floor;
 	public Object getValue(Object entity, String attribute) {
 		if(PROPERTY_NAME.equals(attribute)){
-			return getName();
+			return ((House)entity).getName();
 		}
 		if(PROPERTY_FLOOR.equals(attribute)){
-			return getFloor();
+			return ((House)entity).getFloor();
 		}
 		return null;
 	}

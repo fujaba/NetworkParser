@@ -29,14 +29,14 @@ public abstract class GraphValue implements BaseItem {
 
 	protected GraphDataType type = null;
 	protected String initialization = null;
-	protected String name;
+	protected String id;
 
-	public String getName() {
-		return name;
+	public String getId() {
+		return id;
 	}
 	
 	public GraphValue with(String value) {
-		this.name = value;
+		this.id = value;
 		return this;
 	}
 
