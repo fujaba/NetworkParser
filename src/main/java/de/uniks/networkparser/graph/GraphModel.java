@@ -59,7 +59,7 @@ public class GraphModel extends GraphNode {
 	/**
 	 * Set the Default Author
 	 * @param value The Authorname
-	 * @return true if success
+	 * @return Success for Setting the Autorname true if success
 	 */
 	public boolean setAuthorName(String value) {
 		if(this.defaultAuthorName != value) {
@@ -72,7 +72,7 @@ public class GraphModel extends GraphNode {
 	/**
 	 * Set the Default Author
 	 * @param value The Authorname
-	 * @return true if success
+	 * @return Success for Setting the Autorname true if success
 	 */
 	public void withAuthorName(String value) {
 		setAuthorName(value);
