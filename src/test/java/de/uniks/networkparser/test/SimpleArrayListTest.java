@@ -9,6 +9,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.list.SimpleSet;
 
 
 public class SimpleArrayListTest
@@ -22,7 +23,22 @@ public class SimpleArrayListTest
 		Assert.assertEquals("World", newList.get(0));
 	}
 	
-	
+	@Test
+	public void testSimpleList() {
+		SimpleSet<String> simpleSet = new SimpleSet<String>();
+		simpleSet.addFlag(SimpleSet.ALLOWDUPLICATE);
+		simpleSet.add("Hallo");
+		simpleSet.add("Welt");
+		simpleSet.add("Welt");
+		simpleSet.add("Simple");
+		Assert.assertEquals(1, simpleSet.getPositionKey("Welt", false));
+		Assert.assertEquals(2, simpleSet.getPositionKey("Welt", true));
+		for(int i=0;i<420;i++) {
+			simpleSet.add("!");
+		}
+		Assert.assertEquals(1, simpleSet.getPositionKey("Welt", false));
+		Assert.assertEquals(2, simpleSet.getPositionKey("Welt", true));
+	}
    @Test
    public void testReorderItems() {
       SimpleList<String> list=new SimpleList<String>();

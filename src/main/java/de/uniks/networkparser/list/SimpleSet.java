@@ -1,5 +1,6 @@
 package de.uniks.networkparser.list;
 
+import java.util.Collection;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -42,5 +43,20 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 	@SuppressWarnings("unchecked")
 	public SimpleSet<V> subList(int fromIndex, int toIndex) {
 		return (SimpleSet<V>) super.subList(fromIndex, toIndex);
+	}
+	
+	@Override
+	public boolean add(V value) {
+		return super.add(value);
+	}
+	
+	@Override
+	public boolean addAll(int index, Collection<? extends V> values) {
+		return super.addAll(index, values);
+	}
+	
+	@Override
+	public boolean addAll(Collection<? extends V> c) {
+		return super.addAll(c);
 	}
 }

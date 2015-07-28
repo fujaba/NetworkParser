@@ -393,6 +393,14 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	public boolean containsKey(Object key) {
 		return super.contains(key);
 	}
+	
+	public int getPositionValue(Object o) {
+		if((this.flag & MAP)!=MAP) {
+			return -1;
+		}
+		return getPosition(o, SMALL_VALUE, false);
+	}
+
 
 	@Override
 	public boolean containsValue(Object value) {

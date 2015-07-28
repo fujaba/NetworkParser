@@ -122,10 +122,6 @@ public abstract class AbstractList<V> extends AbstractArray<V> {
 		return super.removeByObject(value);
 	}
 
-	public int lastIndexOf(Object o) {
-		return super.lastindexOf(o);
-	}
-	
 	public void add(int index, V element) {
 		int pos = hasKey(element, size);
 		if(pos>=0) {

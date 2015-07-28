@@ -9,7 +9,6 @@ import java.util.ListIterator;
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.uniks.networkparser.list.AbstractArray;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
@@ -266,9 +265,10 @@ public class FullListTest {
 		for(int i=1;i<500;i++) {
 			queue.add(i);
 		}
-		Field declaredField = queue.getClass().getField("elements");
+		Field declaredField = queue.getClass().getSuperclass().getSuperclass().getDeclaredField("elements");
+		declaredField.setAccessible(true);
 		Object[] object = (Object[]) declaredField.get(queue);
-		Assert.assertNull(object[AbstractArray.BIG_KEY]);
+		Assert.assertNull(object[1]); //AbstractArray.BIG_KEY
 	}
 
 	@Test
@@ -281,10 +281,11 @@ public class FullListTest {
 			}
 			queue.add(i, i);
 		}
-		Field declaredField = queue.getClass().getField("elements");
+		Field declaredField = queue.getClass().getSuperclass().getDeclaredField("elements");
+		declaredField.setAccessible(true);
 		Object[] object = (Object[]) declaredField.get(queue);
-		Assert.assertNull(object[AbstractArray.BIG_KEY]);
-		Assert.assertNull(object[AbstractArray.BIG_VALUE]);
+		Assert.assertNull(object[1]); // AbstractArray.BIG_KEY
+		Assert.assertNull(object[4]); // AbstractArray.BIG_VALUE
 	}
 	
 	@Test
@@ -294,9 +295,10 @@ public class FullListTest {
 		for(int i=1;i<500;i++) {
 			queue.add(i);
 		}
-		Field declaredField = queue.getClass().getField("elements");
+		Field declaredField = queue.getClass().getSuperclass().getSuperclass().getDeclaredField("elements");
+		declaredField.setAccessible(true);
 		Object[] object = (Object[]) declaredField.get(queue);
-		Assert.assertNull(object[AbstractArray.BIG_KEY]);
+		Assert.assertNull(object[1]); // AbstractArray.BIG_KEY
 		queue.remove(0);
 		Assert.assertEquals(queue.size(), 498);
 		Integer integer = queue.get(0);
@@ -310,7 +312,8 @@ public class FullListTest {
 			list.add(i);
 		}
 //		list.add(42);
-		Field declaredField = list.getClass().getField("elements");
+		Field declaredField = list.getClass().getSuperclass().getSuperclass().getDeclaredField("elements");
+		declaredField.setAccessible(true);
 		Object[] object = (Object[]) declaredField.get(list);
 //		Assert.assertEquals(13, object.length);
 		Assert.assertEquals(5, object.length);
@@ -376,7 +379,8 @@ public class FullListTest {
 		SimpleList<Integer> list=new SimpleList<Integer>();
 		list.with(1,2,3);
 		
-		Field declaredField = list.getClass().getField("elements");
+		Field declaredField = list.getClass().getSuperclass().getSuperclass().getDeclaredField("elements");
+		declaredField.setAccessible(true);
 		Object[] object = (Object[]) declaredField.get(list);
 		Assert.assertEquals(8, object.length);
 		
@@ -407,7 +411,8 @@ public class FullListTest {
 		list.with(2, 2);
 		list.with(3, 3);
 		
-		Field declaredField = list.getClass().getField("elements");
+		Field declaredField = list.getClass().getSuperclass().getDeclaredField("elements");
+		declaredField.setAccessible(true);
 		Object[] items = (Object[]) declaredField.get(list);
 		Object[] object=(Object[])items[0];
 		

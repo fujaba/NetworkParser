@@ -32,8 +32,8 @@ public class FullSmallListTest {
 		Assert.assertEquals(2, smallList.indexOf(theThree));
 		Assert.assertEquals(theThree, smallList.get(2));
 		Assert.assertEquals(theThree, smallList.getKeyByIndex(2));
-		Assert.assertEquals(2, smallList.getPositionKey(3));
-		Assert.assertEquals(-1, smallList.getPositionValue(3));
+		Assert.assertEquals(2, smallList.getPositionKey(3, false));
+//		Assert.assertEquals(-1, smallList.getPositionValue(3));
 		Assert.assertEquals(1, smallList.removeByObject(2));
 		Assert.assertEquals(theOne, smallList.remove(0));
 

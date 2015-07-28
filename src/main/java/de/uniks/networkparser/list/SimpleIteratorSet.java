@@ -82,7 +82,7 @@ public class SimpleIteratorSet<K,V> implements ListIterator<Entry<K, V>>{
 
 	@Override
 	public void set(Entry<K, V> e) {
-		cursor = this.list.getPositionKey(e.getKey());
+		cursor = this.list.getPositionKey(e.getKey(), false);
 
 		this.currentEntry.setKey(e.getKey());
 		this.currentEntry.setValue(e.getValue());
