@@ -395,9 +395,6 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	}
 	
 	public int getPositionValue(Object o) {
-		if((this.flag & MAP)!=MAP) {
-			return -1;
-		}
 		return getPosition(o, SMALL_VALUE, false);
 	}
 
