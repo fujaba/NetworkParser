@@ -28,7 +28,7 @@ import java.util.Set;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.interfaces.BaseItem;
 
-public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K, V>, Iterable<K> {
+public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K, V> {
 	public SimpleKeyValueList() {
 		super();
 		addFlag(MAP);

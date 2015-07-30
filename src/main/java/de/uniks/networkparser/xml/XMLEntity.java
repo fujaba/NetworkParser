@@ -249,6 +249,13 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements
 			sb.append("/>");
 		}
 	}
+	
+	public XMLEntity withCloseTag() {
+		if(this.valueItem==null) {
+			this.valueItem = "";
+		}
+		return this;
+	}
 
 	/** @return a new Instance of MapEntry */
 	public MapEntry getNewEntity() {

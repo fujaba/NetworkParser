@@ -24,7 +24,7 @@ package de.uniks.networkparser.graph;
 
 
 public enum GraphEdgeTypes {
-	ASSOCIATION("assoc"), EDGE("edge"), GENERALISATION("generalisation"), CHILD("child");
+	ASSOCIATION("assoc"), EDGE("edge"), GENERALISATION("generalisation"), IMPLEMENTS("implements"), UNDIRECTIONAL("unidirectional"), AGGREGATION("aggregation"), COMPOSITION("Composition"), CHILD("child");
 	
 	private GraphEdgeTypes(String value) {
 		this.setValue(value);
