@@ -30,9 +30,9 @@ public class ArrayListTest {
       list.remove((Integer)2);
 
 
+      Assert.assertFalse(list.contains(2));
       Assert.assertFalse(list.contains(3));
       Assert.assertFalse(list.contains(4));
-      Assert.assertFalse(list.contains(5));
 
       list.add(3);
 
