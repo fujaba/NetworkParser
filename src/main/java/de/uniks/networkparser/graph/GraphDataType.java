@@ -13,6 +13,7 @@ public class GraphDataType
 	public static final GraphDataType BOOLEAN = new GraphDataType("boolean");
 	public static final GraphDataType OBJECT = new GraphDataType("Object");
 	public static final GraphDataType CHAR = new GraphDataType("char");
+	public static final GraphDataType BYTE = new GraphDataType("byte");
 
 	private GraphClazz value;
 

@@ -61,12 +61,32 @@ Here are a simple Usage of JsonIdMap for serialization and deserialization and g
 
 	house.setFloor(42);
 ```
+## Maven Snapshot
+### pom.xml
+```xml
+<dependency>
+	<groupId>com.github.fujaba</groupId>
+	<artifactId>NetworkParser</artifactId>
+	<version>4.2.*</version>
+</dependency>
+
+<repositories>
+	<repository>
+	    <releases><enabled>false</enabled></releases>
+        <snapshots><enabled>true</enabled></snapshots>
+	    <id>Sonatype Snapshots</id>
+	    <name>Sonatype Snapshots</name>
+	    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+	</repository>
+</repositories>
+```
 
 ## Links
 - [SimpleJsonTest](src/test/java/de/uniks/networkparser/test/SimpleJsonTest.java "Sourcecode SimpleJsonTest.java")
 - [House](src/test/java/de/uniks/networkparser/test/model/House.java "Sourcecode House.java")
 - The issue list: Head straight to https://github.com/fujaba/NetworkParser/issues for a list of all issues or click `Issues` in the navigation bar on the right.
 - See also on Openhub https://www.openhub.net/p/NetworkParser
+
 
 # License
 NetworkParser is released under an [EuPL 1.1 license](Licence/EUPL v.1.1 - Lizenz.pdf).

@@ -273,6 +273,13 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	public boolean isReadOnly() {
 		return (flag & READONLY)==READONLY;
 	}
+
+	public void reset() {
+		this.elements = null;
+		this.size = 0;
+		this.index = 0;
+		return;
+	}
 	
 	public void clear() {
 		int arrayFlag = getArrayFlag(size);
@@ -727,19 +734,19 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		if(pos>=size){
 			grow(pos + 1);
 		}
+		Object[] items;
 		if(getArrayFlag(size)>1){
-			Object[] items = (Object[]) elements[offset];
-			Object oldValue = items[pos];
-			items[pos] = value;
-			if(elements.length > offset+1) {
-				int position = getPositionKey(oldValue, false);
-				if(position>=0) {
-					items = ((Object[]) elements[offset+1]);
-				}
-			}
-			return;
+			items = (Object[]) elements[offset];
+		}else{
+			items = elements;
 		}
-		elements[pos] = value;
+		Object oldValue = items[pos];
+		items[pos] = value;
+		Object beforeElement = null;
+		if(pos>0) {
+			beforeElement = items[pos - 1];
+		}
+		fireProperty(oldValue, value, beforeElement, null);
 	}
 
 	public AbstractArray<V> withList(Collection<?> list) {

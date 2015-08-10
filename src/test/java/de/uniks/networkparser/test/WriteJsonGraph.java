@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import de.uniks.networkparser.graph.GraphClazz;
 import de.uniks.networkparser.graph.GraphConverter;
+import de.uniks.networkparser.graph.GraphDataType;
 import de.uniks.networkparser.graph.GraphEdge;
 import de.uniks.networkparser.graph.GraphEdgeTypes;
 import de.uniks.networkparser.graph.GraphIdMap;
@@ -29,6 +30,10 @@ public class WriteJsonGraph {
 		GraphList model = new GraphList().withTyp(GraphIdMap.CLASS);
 
 		GraphClazz abstractArray = model.with(new GraphClazz().withClassName("AbstractArray"));
+		abstractArray.withAttribute("elements", GraphDataType.ref("Object[]"));
+		abstractArray.withAttribute("size", GraphDataType.INT);
+		abstractArray.withAttribute("index", GraphDataType.INT);
+		abstractArray.withAttribute("flag", GraphDataType.BYTE);
 		GraphClazz baseItem = model.with(new GraphClazz().withClassName("BaseItem"));
 		GraphClazz iterable = model.with(new GraphClazz().withClassName("Iterable<V>"));
 		GraphClazz abstractList = model.with(new GraphClazz().withClassName("AbstractList<V>"));
@@ -58,6 +63,6 @@ public class WriteJsonGraph {
 		
 		
 		
-		docEnvironment.writeJson("simpleList.html", new GraphConverter().convertToJson(model, true));
+		docEnvironment.writeJson("simpleCollection.html", new GraphConverter().convertToJson(model, true));
 	}
 }
