@@ -1010,17 +1010,14 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	
 	Object removeItem(int index, int offset) 
 	{
-		if(elements==null) 
-		{
+		if(elements==null) {
 			return null;
 		}
-		
 		Object[] items;
 		
 		int complex = getArrayFlag(size);
 		
-		if(complex>1)
-		{
+		if(complex>1) {
 			items = ((Object[])elements[offset]);
 		} else {
 			// One Dimension
@@ -1030,7 +1027,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		index = index % items.length; // Fix for index+this.index > length
 
 		Object oldValue = items[index];
-		if(oldValue==null){
+		if(oldValue==null) {
 			return null;
 		}
 		
