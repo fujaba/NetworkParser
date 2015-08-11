@@ -64,7 +64,7 @@ public class SimpleIterator<E> implements ListIterator<E> {
 	public void add(E e) {
 		try {
 			int size = list.size();
-			int pos = list.hasKey(e, size);
+			int pos = list.hasKey(e);
 			if(pos>=0) {
 				list.grow(size + 1);
 				list.addKey(cursor, e, size + 1);

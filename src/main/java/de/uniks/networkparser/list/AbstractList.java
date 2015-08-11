@@ -64,7 +64,7 @@ public abstract class AbstractList<V> extends AbstractArray<V> {
 	 * @return  this boolean if success
 	 */
 	public boolean add(V value) {
-		int pos = hasKey(value, size);
+		int pos = hasKey(value);
 		if(pos<0) {
 			return false;
 		}
@@ -123,7 +123,7 @@ public abstract class AbstractList<V> extends AbstractArray<V> {
 	}
 
 	public void add(int index, V element) {
-		int pos = hasKey(element, size);
+		int pos = hasKey(element);
 		if(pos>=0) {
 			grow(size + 1);
 			addKey(index, element,size + 1);

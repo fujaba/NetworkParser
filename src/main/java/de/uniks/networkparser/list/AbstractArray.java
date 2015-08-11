@@ -511,13 +511,13 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	 * @param size the new Size of the List
 	 * @return int the Position of the insert
 	 */
-	protected int hasKey(Object element, int size){
+	protected int hasKey(Object element){
 		if (element == null || isReadOnly()) {
 			return -1;
 		}
 		if(isComparator()) {
 			boolean allowDuplicate = isAllowDuplicate();
-			for (int i = 0; i < size(); i++) {
+			for (int i = 0; i < this.size; i++) {
 				if (comparator().compare(getByIndex(SMALL_KEY, i, size), element) >= 0) {
 					if (!allowDuplicate && getByIndex(SMALL_KEY, i, size) == element) {
 						return -1;
@@ -527,13 +527,11 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 			}
 			return this.size;
 		}
-		if (isAllowDuplicate() ) {
-			return this.size;
-		}
-
-		int pos = indexOf(element, size);
-		if(pos>=0) {
-			return -1;
+		if (isAllowDuplicate() == false) {
+			int pos = indexOf(element, size);
+			if(pos>=0) {
+				return -1;
+			}
 		}
 		return this.size;
 	}
@@ -716,7 +714,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		int newSize = size + values.length; 
 		grow(newSize);
 		for (Object value : values) {
-			int pos = hasKey(value, newSize);
+			int pos = hasKey(value);
 			if(pos>=0) {
 				this.addKey(pos, value, newSize);
 			}
@@ -761,7 +759,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		grow(newSize);
     	for(Iterator<?> i = list.iterator();i.hasNext();) {
     		Object item = i.next();
-    		int pos = hasKey(item, newSize);
+    		int pos = hasKey(item);
 			if(pos>=0) {
 				this.addKey(pos, item, newSize);
 			}

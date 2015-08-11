@@ -355,7 +355,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	}
 	
 	public boolean add(K key, V value) {
-		int pos = hasKey(key, size);
+		int pos = hasKey(key);
 		if(pos>=0) {
 			grow(size + 1);
 			super.addKeyValue(pos, key, value);
@@ -365,7 +365,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	}
 	
 	public boolean add(int pos, K key, V value) {
-		if(hasKey(key, size)>=0) {
+		if(hasKey(key)>=0) {
 			grow(size + 1);
 			super.addKeyValue(pos, key, value);
 			return true;
