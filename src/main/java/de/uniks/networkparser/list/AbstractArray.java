@@ -515,13 +515,11 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		if (element == null || isReadOnly()) {
 			return -1;
 		}
-		if (isAllowDuplicate()) {
-			return this.size;
-		}
-		if (isComparator()) {
+		if(isComparator()) {
+			boolean allowDuplicate = isAllowDuplicate();
 			for (int i = 0; i < size(); i++) {
 				if (comparator().compare(getByIndex(SMALL_KEY, i, size), element) >= 0) {
-					if (getByIndex(SMALL_KEY, i, size) == element) {
+					if (!allowDuplicate && getByIndex(SMALL_KEY, i, size) == element) {
 						return -1;
 					}
 					return i;
@@ -529,6 +527,10 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 			}
 			return this.size;
 		}
+		if (isAllowDuplicate() ) {
+			return this.size;
+		}
+
 		int pos = indexOf(element, size);
 		if(pos>=0) {
 			return -1;
