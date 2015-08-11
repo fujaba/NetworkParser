@@ -65,12 +65,12 @@ public abstract class AbstractList<V> extends AbstractArray<V> {
 	 */
 	public boolean add(V value) {
 		int pos = hasKey(value, size);
-		if(pos>=0) {
-			grow(size + 1);
-			addKey(pos, value, size + 1);
-			return true;
+		if(pos<0) {
+			return false;
 		}
-		return false;
+		grow(size + 1);
+		addKey(pos, value, size + 1);
+		return true;
 	}
     
     public ListIterator<V> listIterator() {

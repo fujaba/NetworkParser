@@ -512,12 +512,16 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	 * @return int the Position of the insert
 	 */
 	protected int hasKey(Object element, int size){
-		if (element == null || isReadOnly())
+		if (element == null || isReadOnly()) {
 			return -1;
+		}
+		if (isAllowDuplicate()) {
+			return this.size;
+		}
 		if (isComparator()) {
 			for (int i = 0; i < size(); i++) {
 				if (comparator().compare(getByIndex(SMALL_KEY, i, size), element) >= 0) {
-					if (!isAllowDuplicate() && getByIndex(SMALL_KEY, i, size) == element) {
+					if (getByIndex(SMALL_KEY, i, size) == element) {
 						return -1;
 					}
 					return i;
@@ -525,11 +529,9 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 			}
 			return this.size;
 		}
-		if (!isAllowDuplicate()) {
-			int pos = indexOf(element, size);
-			if(pos>=0) {
-				return -1;
-			}
+		int pos = indexOf(element, size);
+		if(pos>=0) {
+			return -1;
 		}
 		return this.size;
 	}
