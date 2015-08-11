@@ -1008,19 +1008,26 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		return item;
 	}
 	
-	Object removeItem(int index, int offset) {
-		if(elements==null) {
+	Object removeItem(int index, int offset) 
+	{
+		if(elements==null) 
+		{
 			return null;
 		}
+		
 		Object[] items;
+		
 		int complex = getArrayFlag(size);
-		if(complex>1){
+		
+		if(complex>1)
+		{
 			items = ((Object[])elements[offset]);
 		} else {
 			// One Dimension
 			items = elements;
 		}
-        index = index % items.length; // Fix for index+this.index > length
+		
+		index = index % items.length; // Fix for index+this.index > length
 
 		Object oldValue = items[index];
 		if(oldValue==null){
@@ -1062,23 +1069,46 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 			}
 			return oldValue;
 		}
-		if(size - index==1) {
+		
+		if((this.index + size - 1) % items.length == index) 
+		{
 			items[index] = null;
-		} else {
-			int end = items.length - this.index;
-			if(size > end) {
-				System.arraycopy(items,index + 1, items, index, end - index);
-				int len = size - end - 1;
-				items[end] = items[0];
-				System.arraycopy(items, 1, items, 0, len);
-				items[len] = null;
-			}else{
-				int len = size + this.index - index - 1;
-				if(len>0) {
-					System.arraycopy(items,index + 1, items, index,  len);
-				}
+		} 
+		else 
+		{
+         if(index > this.index) 
+         {
+            // move later elements to the right, maybe wrap around 
+            // [ef____axcd] -> [f_____acde]
+            int end = (this.index + size - 1);
+            
+            if (end >= items.length)
+            {
+               // wrap
+               int len = items.length - index - 1;
+               System.arraycopy(items, index+1, items, index, len);
+               items[items.length-1] = items[0];
+               end = end % items.length;
+               System.arraycopy(items, 1, items, 0, end);
+               items[end] = null;
+            }
+            else
+            {
+               // no wrap
+               System.arraycopy(items, index+1, items, index, end-index);
+               items[end] = null;
+            }
+			}
+         else
+         {
+            // remove within the fraction of the data that is at the start of the array, move elements after index to the left
+            // [cdxf____ab] -> [cdf_____ab]
+				int end = (this.index + size - 1) % items.length;
+				int len = end - index;
+				
+				System.arraycopy(items, index+1, items, index, len);
+				
 				items[index + len] = null;
-
 			}
 		}
 		return oldValue;
