@@ -508,7 +508,6 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	 * Add a Element to the List
 	 * 
 	 * @param element to add a Value
-	 * @param size the new Size of the List
 	 * @return int the Position of the insert
 	 */
 	protected int hasKey(Object element){
