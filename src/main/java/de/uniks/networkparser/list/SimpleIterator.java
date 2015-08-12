@@ -9,27 +9,26 @@ import java.util.NoSuchElementException;
  * An optimized version of AbstractList.ListItr
  */
 public class SimpleIterator<E> implements ListIterator<E> {
-	private int cursor = 0;       // index of next element to return
-	private int lastRet = -1; // index of last element returned; -1 if no such
+	private int cursor;       // index of next element to return
+	private int lastRet; // index of last element returned; -1 if no such
 	private AbstractArray<E> list;
 
 	public SimpleIterator(AbstractArray<E> list) {
-		this.list = list;
+		this.with(list, 0);
 	}
 
 	public SimpleIterator(AbstractArray<E> list, int index) {
-		this.cursor = index;
-		this.list = list;
+		this.with(list, index);
 	}
 
-	public SimpleIterator<E> withList(AbstractArray<E> newList)
+	public SimpleIterator<E> with(AbstractArray<E> newList, int cursor)
 	{
-	   cursor = 0;
-	   lastRet = -1;
+	   this.cursor = cursor;
+	   this.lastRet = -1;
 	   this.list = newList;
 	   return this;
 	}
-	
+
 	public boolean hasPrevious() {
 		return cursor != 0;
 	}
@@ -78,30 +77,16 @@ public class SimpleIterator<E> implements ListIterator<E> {
 
 	@Override
 	public boolean hasNext() {
-	   if (cursor<list.size)
-	   {
-	      return true;
-	   }
-	   else 
-	   {
-	      // signal that this one is gone through its set
-	      lastRet = -2;
-	      return false;
-	   }
+	   return cursor<list.size;
 	}
 
-	public boolean isReusable()
-	{
-	   return lastRet == -2;
-	}
-	
 	@Override
 	public E next() {
-		int i = cursor;
-		if (i >= list.size)
+		if (cursor >= list.size)
 			throw new ConcurrentModificationException();
-		cursor = i + 1;
-		return (E) list.get(lastRet = i);
+		lastRet  = cursor;
+		cursor = cursor + 1;
+		return (E) list.get(lastRet);
 	}
 
 	@Override
@@ -117,4 +102,3 @@ public class SimpleIterator<E> implements ListIterator<E> {
 		}
 	}
 }
-
