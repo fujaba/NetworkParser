@@ -43,6 +43,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	public static final byte MAP = 0x20;
 	/** Is List is Key,Value and Value, Key */
 	public static final byte BIDI = 0x40;
+	public static final Integer REMOVED = -1;
 
 	static final byte MINSIZE = 4;
 	static final int MAXDELETED = 42;
@@ -355,7 +356,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 			hashKey = hashKey(newValue.hashCode(), items.length);
 		}
 		while (true) {
-			if (items[hashKey] == null || (Integer)items[hashKey] == -1) {
+			if (items[hashKey] == null || items[hashKey] == REMOVED) {
 				items[hashKey] = pos;
 				return hashKey;
 			}
@@ -516,14 +517,14 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	 */
 	final int hasKey(Object element){
 		if (element == null || isReadOnly()) {
-			return -1;
+			return REMOVED;
 		}
 		if(isComparator()) {
 			boolean allowDuplicate = isAllowDuplicate();
 			for (int i = 0; i < this.size; i++) {
 				if (comparator().compare(getByIndex(SMALL_KEY, i, size), element) >= 0) {
 					if (!allowDuplicate && getByIndex(SMALL_KEY, i, size) == element) {
-						return -1;
+						return REMOVED;
 					}
 					return i;
 				}
@@ -533,7 +534,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		if (isAllowDuplicate() == false) {
 			int pos = indexOf(element, size);
 			if(pos>=0) {
-				return -1;
+				return REMOVED;
 			}
 		}
 		return this.size;
@@ -547,7 +548,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	 */
 	protected int hasKeyAndPos(Object element){
 		if (element == null || isReadOnly())
-			return -1;
+			return REMOVED;
 		if (isComparator()) {
 			for (int i = 0; i < this.size; i++) {
 				if (comparator().compare(getKeyByIndex(i), element) >= 0) {
@@ -786,7 +787,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	
     int indexOf(Object o, int size) {
         if (o == null || elements == null)
-       		return -1;
+       		return REMOVED;
 
     	if(size>=MINHASHINGSIZE ) {
    			return getPosition(o, SMALL_KEY, false);
@@ -808,7 +809,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
         	}
         	pos++;
         }
-        return -1;
+        return REMOVED;
     }
     
     /**
@@ -823,14 +824,14 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
      */
     public int lastIndexOf(Object o) {
         if (o == null)
-        	return -1;
+        	return REMOVED;
     	if(size>MINHASHINGSIZE) {
     		return getPosition(o, SMALL_KEY, true);
     	}
     	for (int i = size - 1; i >= 0; i--)
             if (o.equals(get(i)))
                 return i;
-        return -1;
+        return REMOVED;
     }
     
 	public int getPositionKey(Object o, boolean last) {
@@ -874,7 +875,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	
 	int getPosition(Object o, int offset, boolean last) {
 		if (o == null || elements == null) {
-			return -1;
+			return REMOVED;
 		}
 		Object[] hashCodes;
 		if(elements[offset + 1] != null) {
@@ -886,14 +887,14 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		}
 		int index = hashKey(o.hashCode(), hashCodes.length);
 		if(hashCodes[index]==null){
-			return -1;
+			return REMOVED;
 		}
 		int len = ((Object[]) elements[offset]).length;
 		int indexItem=-1;
 		int lastIndex=-1;
 
 		while(hashCodes[index]!=null) {
-			if((Integer)hashCodes[index]==-1){
+			if(hashCodes[index]==REMOVED){
 				index = (index + 1) % hashCodes.length;
 				continue;
 			}
@@ -912,7 +913,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 			return lastIndex;
 		}
 		if(hashCodes[index]==null) {
-			return -1;
+			return REMOVED;
 		}
 		return indexItem;
 	}
@@ -976,7 +977,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	public int removeByObject(Object key) {
 		int index = indexOf(key, size);
 		if (index < 0) {
-			return -1;
+			return REMOVED;
 		}
 		removeByIndex(index, SMALL_KEY, this.index);
 		return index;
@@ -1046,7 +1047,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 					break;
 				}
 				indexHash = (Integer)hashCodes[indexPos];
-				if(indexHash==-1){
+				if(indexHash==REMOVED){
 					continue;
 				}
 				pos = transformIndex(indexHash, items.length);
