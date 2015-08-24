@@ -32,10 +32,9 @@ package de.uniks.networkparser.gui.javafx;
 
 import java.awt.SystemTray;
 import java.io.File;
-import com.sun.javafx.Utils;
 
 public class Os {
-    public enum PlatformType{ windows, mac, unix, unknown };
+    public enum PlatformType{ windows, mac, unix, android, unknown };
 	public boolean isWindows() {
 		String os = System.getProperty("os.name").toLowerCase();
 		// windows
@@ -86,9 +85,11 @@ public class Os {
 	}
 
     public static PlatformType getCurrentPlatform() {
-        if ( Utils.isWindows() ) return PlatformType.windows;
-        if ( Utils.isMac() )     return PlatformType.mac;
-        if ( Utils.isUnix() )    return PlatformType.unix;
+    	Os os = new Os();
+        if ( os.isWindows() ) return PlatformType.windows;
+        if ( os.isMac() )     return PlatformType.mac;
+        if ( os.isUnix() )    return PlatformType.unix;
+        if ( os.isAndroid() )    return PlatformType.android;
         return PlatformType.unknown;
     }
 

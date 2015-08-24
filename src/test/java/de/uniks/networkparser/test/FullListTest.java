@@ -318,7 +318,7 @@ public class FullListTest {
 		declaredField.setAccessible(true);
 		Object[] object = (Object[]) declaredField.get(list);
 //		Assert.assertEquals(13, object.length);
-		Assert.assertEquals(5, object.length);
+		Assert.assertEquals(6, object.length);
 		
 		list.remove(0);
 		list.remove(0);
@@ -384,7 +384,7 @@ public class FullListTest {
 		Field declaredField = list.getClass().getSuperclass().getSuperclass().getDeclaredField("elements");
 		declaredField.setAccessible(true);
 		Object[] object = (Object[]) declaredField.get(list);
-		Assert.assertEquals(8, object.length);
+		Assert.assertEquals(9, object.length);
 		
 		list.pack();
 		
@@ -398,7 +398,7 @@ public class FullListTest {
 		Object[] items= (Object[]) declaredField.get(list);
 		object=(Object[])items[0];
 
-		Assert.assertEquals(508, object.length);
+		Assert.assertEquals(596, object.length);
 		
 		list.pack();
 		
@@ -418,7 +418,7 @@ public class FullListTest {
 		Object[] items = (Object[]) declaredField.get(list);
 		Object[] object=(Object[])items[0];
 		
-		Assert.assertEquals(5, object.length);
+		Assert.assertEquals(6, object.length);
 		
 		list.pack();
 		
@@ -433,12 +433,23 @@ public class FullListTest {
 		items= (Object[]) declaredField.get(list);
 		object=(Object[])items[0];
 
-		Assert.assertEquals(673, object.length);
+		Assert.assertEquals(509, object.length);
 		
 		list.pack();
 		
 		items= (Object[]) declaredField.get(list);
 		object=(Object[])items[0];
 		Assert.assertEquals(500, object.length);
+	}
+	
+	@Test
+	public void testSimpleBigSet() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+		SimpleList<String> list=new SimpleList<String>().withSize(20);
+		Field declaredField = list.getClass().getSuperclass().getSuperclass().getDeclaredField("elements");
+		declaredField.setAccessible(true);
+		Object[] items = (Object[]) declaredField.get(list);
+		
+		// New Size: size + size / 2 + 5;
+		Assert.assertEquals(35, items.length);
 	}
 }

@@ -14,7 +14,6 @@ import de.uniks.networkparser.list.SimpleSet;
 
 public class SimpleArrayListTest
 {
-
 	@Test
 	public void testRemoveFirstItem() {
 		SimpleList<String> list=new SimpleList<String>().with("Hello", "World", "Test");
