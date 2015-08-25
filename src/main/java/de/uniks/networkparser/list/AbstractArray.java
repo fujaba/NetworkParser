@@ -383,10 +383,10 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 					resizeSmall(newSize, SMALL_VALUE);
 					change = true;
 				}
-				if(minCapacity < ((Object[])elements[SMALL_VALUE]).length * MINUSEDLIST) {
+				if(elements[BIG_KEY]!= null) {
 					change = true;
 					resizeBig(newSize, BIG_KEY);
-					if(elements[BIG_VALUE]!= null) {
+					if(elements.length>BIG_VALUE && elements[BIG_VALUE]!= null) {
 						resizeBig(newSize, BIG_VALUE);
 					}
 				}

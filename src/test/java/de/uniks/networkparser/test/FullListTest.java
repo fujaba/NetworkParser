@@ -452,4 +452,15 @@ public class FullListTest {
 		// New Size: size + size / 2 + 5;
 		Assert.assertEquals(35, items.length);
 	}
+	
+	@Test
+	public void testSimpleBigRemoved() {
+		SimpleKeyValueList<Integer, String> list=new SimpleKeyValueList<Integer, String>();
+		for(int i=0;i<500;i++) {
+			list.put(i, ""+i);	
+		}
+		for(int i=0;i<500;i+=2) {
+			list.removeByObject(i);
+		}
+	}
 }
