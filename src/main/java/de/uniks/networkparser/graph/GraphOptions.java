@@ -30,7 +30,9 @@ public class GraphOptions {
 	// Options
 	public enum TYP{HTML, CANVAS, SVG, PDF};
 	public enum RANK{LR, TB};
+	public enum LINETYP{CENTER, SQUARE};
 	private TYP display;
+	private LINETYP lineTyp;
 	private Boolean raster;
 	private String canvasid;
 	private Integer fontSize;
@@ -40,6 +42,7 @@ public class GraphOptions {
 	private Boolean infobox;
 	private Boolean cardinalityInfo;
 	private Boolean propertyInfo;
+	private Boolean rotateText;
 	private ArrayList<TYP> buttons;
 
 	public JsonObject getJson(){
@@ -54,7 +57,9 @@ public class GraphOptions {
 		result.withKeyValue("nodeSep", nodeSep);
 		result.withKeyValue("infobox", infobox);
 		result.withKeyValue("cardinalityInfo", cardinalityInfo);
-		result.withKeyValue("propertyInfo", propertyInfo);
+		result.withKeyValue("propertyinfo", propertyInfo);
+		result.withKeyValue("rotatetext", rotateText);
+		result.withKeyValue("linetyp", lineTyp);
 		if(buttons != null){
 			result.withKeyValue("buttons", new JsonArray().withAll(buttons));
 		}
@@ -163,8 +168,26 @@ public class GraphOptions {
 		return display;
 	}
 
-	public GraphOptions withDisplay(TYP display) {
-		this.display = display;
+	public GraphOptions withDisplay(TYP value) {
+		this.display = value;
+		return this;
+	}
+
+	public Boolean getRotateText() {
+		return rotateText;
+	}
+
+	public GraphOptions withRotateText(Boolean value) {
+		this.rotateText = value;
+		return this;
+	}
+
+	public LINETYP getLineTyp() {
+		return lineTyp;
+	}
+
+	public GraphOptions withLineTyp(LINETYP value) {
+		this.lineTyp = value;
 		return this;
 	}
 }

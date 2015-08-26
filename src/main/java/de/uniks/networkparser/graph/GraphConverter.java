@@ -320,7 +320,10 @@ public class GraphConverter implements Converter {
 			}
 		}else if(entity instanceof GraphPattern) {
 			item.put(TYP, PATTERN);
-			item.put(STYLE, ((GraphPattern) entity).getBounds() );
+			String bounds = ((GraphPattern) entity).getBounds();
+			if(bounds != null) {
+				item.put(STYLE,  bounds);
+			}
 			item.put(ID, entity.getId());
 		}else if(entity instanceof GraphList) {
 			return convertToJson((GraphList) entity, shortName);

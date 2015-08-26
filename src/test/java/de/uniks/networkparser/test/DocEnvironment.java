@@ -45,15 +45,15 @@ public class DocEnvironment {
 		copyDocFile(target, "diagramstyle.css");
 	}
 	
-	public void writeJson(String fileName, JsonObject item) throws IOException {
+	public void writeJson(String fileName, String path, JsonObject item) throws IOException {
 
 		StringBuilder sb=new StringBuilder();
 //		copyJS("build");
 		sb.append("<html><head>"+CRLF);
-		sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\"includes/diagramstyle.css\">"+CRLF);
-		sb.append("\t<script src=\"includes/graph.js\"></script>"+CRLF);
-		sb.append("\t<script src=\"includes/dagre.min.js\"></script>"+CRLF);
-		sb.append("\t<script src=\"includes/drawer.js\"></script>"+CRLF);
+		sb.append("\t<link rel=\"stylesheet\" type=\"text/css\" href=\""+path+"diagramstyle.css\">"+CRLF);
+		sb.append("\t<script src=\""+path+"graph.js\"></script>"+CRLF);
+		sb.append("\t<script src=\""+path+"dagre.min.js\"></script>"+CRLF);
+		sb.append("\t<script src=\""+path+"drawer.js\"></script>"+CRLF);
 		sb.append("</head><body>"+CRLF);
 		sb.append("<script language=\"Javascript\">"+CRLF);
 		sb.append("\tvar json="+item.toString(2)+";"+CRLF);

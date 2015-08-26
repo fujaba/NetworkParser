@@ -19,10 +19,10 @@ public class WriteJsonGraph {
 	public void testHTMLEntity() throws IOException {
 		HTMLEntity htmlEntity = new HTMLEntity();
 		
-		htmlEntity.withHeader("includes/diagramstyle.css");
-		htmlEntity.withHeader("includes/graph.js");
-		htmlEntity.withHeader("includes/dagre.min.js");
-		htmlEntity.withHeader("includes/drawer.js");
+		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/diagramstyle.css");
+		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/graph.js");
+		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/dagre.min.js");
+		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/drawer.js");
 		
 		System.out.println(htmlEntity.toString(2));
 
@@ -63,6 +63,6 @@ public class WriteJsonGraph {
 		
 		
 		
-		docEnvironment.writeJson("simpleCollection.html", new GraphConverter().convertToJson(model, true));
+		docEnvironment.writeJson("simpleCollection.html", "../src/main/resources/de/uniks/networkparser/graph/", new GraphConverter().convertToJson(model, true));
 	}
 }
