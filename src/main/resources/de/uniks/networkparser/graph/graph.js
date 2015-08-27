@@ -1104,7 +1104,6 @@ Edge.prototype.calculate = function () {
 				linetyp = options.linetyp;
 			}
 		}
-		linetyp = "Square";
 		var result = false;
 		if (linetyp === "Square") {
 			result = this.calcSquareLine();
