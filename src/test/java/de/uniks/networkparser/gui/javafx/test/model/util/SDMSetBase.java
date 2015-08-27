@@ -137,9 +137,8 @@ public class SDMSetBase<T> extends SimpleList<T>
       return this;
    }
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean remove(Object value) {
-		return removeItemByObject((T)value) >= 0;
+		return removeByObject(value) >= 0;
 	}
 }

@@ -26,7 +26,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 
 public class SimpleList<V> extends AbstractList<V> implements List<V> {
 	public SimpleList() {
-		addFlag(SimpleList.ALLOWDUPLICATE);
+		withFlag(SimpleList.ALLOWDUPLICATE);
 	}
 	
 	@Override

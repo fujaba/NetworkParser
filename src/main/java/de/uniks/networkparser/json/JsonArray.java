@@ -301,7 +301,7 @@ public class JsonArray extends SortedList<Object> implements
 
 	@Override
 	public boolean remove(Object value) {
-		return removeItemByObject(value) >= 0;
+		return removeByObject(value) >= 0;
 	}
 	@Override
 	public JsonArray subList(int fromIndex, int toIndex) {

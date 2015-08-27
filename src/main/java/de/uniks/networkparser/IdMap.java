@@ -80,7 +80,7 @@ public abstract class IdMap extends AbstractMap implements
 	/** The updatelistener for Notification changes. */
 	protected PropertyChangeListener updatePropertylistener;
 
-	protected SimpleKeyValueList<String, Object> keyValue = new SimpleKeyValueList<String, Object>().addFlag(SimpleKeyValueList.BIDI);
+	protected SimpleKeyValueList<String, Object> keyValue = new SimpleKeyValueList<String, Object>().withFlag(SimpleKeyValueList.BIDI);
 
 	protected Filter filter = new Filter();
 

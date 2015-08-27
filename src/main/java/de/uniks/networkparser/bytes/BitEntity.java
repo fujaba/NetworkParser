@@ -176,6 +176,6 @@ public class BitEntity extends SimpleList<BitValue> implements
 
 	@Override
 	public boolean remove(Object value) {
-		return removeItemByObject((BitValue) value) >= 0;
+		return removeByObject(value) >= 0;
 	}
 }

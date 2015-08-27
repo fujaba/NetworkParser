@@ -25,7 +25,7 @@ public class SimpleArrayListTest
 	@Test
 	public void testSimpleList() {
 		SimpleSet<String> simpleSet = new SimpleSet<String>();
-		simpleSet.addFlag(SimpleSet.ALLOWDUPLICATE);
+		simpleSet.withFlag(SimpleSet.ALLOWDUPLICATE);
 		simpleSet.add("Hallo");
 		simpleSet.add("Welt");
 		simpleSet.add("Welt");

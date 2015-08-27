@@ -117,10 +117,6 @@ public abstract class AbstractList<V> extends AbstractArray<V> {
 		}
 		return newList;
 	}
-	
-	public int removeItemByObject(V value) {
-		return super.removeByObject(value);
-	}
 
 	public void add(int index, V element) {
 		int pos = hasKey(element);

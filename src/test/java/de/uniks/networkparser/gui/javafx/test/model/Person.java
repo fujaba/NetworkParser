@@ -130,7 +130,7 @@ public class Person
    } 
 
    
-   public static final PersonSet EMPTY_SET = new PersonSet().addFlag(PersonSet.READONLY);
+   public static final PersonSet EMPTY_SET = new PersonSet().withFlag(PersonSet.READONLY);
 
    
    /********************************************************************

@@ -251,7 +251,7 @@ public class FullListTest {
 		assertEquals("wrong number of elements", 2, clone.size());
 		assertEquals("clone[0] is wrong", 23, 0 + clone.first());
 		
-		clone.removeItemByObject(clone.first());
+		clone.removeByObject(clone.first());
 
 		assertEquals("wrong number of elements", 1, clone.size());
 		assertEquals("clone[0] is wrong", 24, 0 + clone.first());
@@ -276,7 +276,7 @@ public class FullListTest {
 	@Test
 	public void simpleKeyValueList() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
 	{
-		SimpleKeyValueList<Integer, Integer> queue=new SimpleKeyValueList<Integer, Integer>().addFlag(SimpleKeyValueList.BIDI).withAllowDuplicate(true);
+		SimpleKeyValueList<Integer, Integer> queue=new SimpleKeyValueList<Integer, Integer>().withFlag(SimpleKeyValueList.BIDI).withAllowDuplicate(true);
 		for(int i=1;i<500;i++) {
 			if(i==1) {
 				System.out.println("BREAK");

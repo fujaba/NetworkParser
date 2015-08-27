@@ -211,6 +211,6 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 
 	@Override
 	public boolean remove(Object value) {
-		return removeItemByObject((ByteItem) value) >= 0;
+		return removeByObject(value) >= 0;
 	}
 }

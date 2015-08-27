@@ -95,12 +95,6 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	/** The size of the ArrayList (the number of elements it contains).  */
     int size;
     
-    @SuppressWarnings("unchecked")
-	public <ST extends AbstractArray<V>> ST addFlag(byte flag){
-    	this.flag = (byte) (this.flag | flag);
-    	return (ST)this;
-    }
-
     /** Init-List with Collection
      * 
 	 * @param list add all new Items
@@ -1340,7 +1334,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	}
 	
 	public BaseItem getNewList(boolean keyValue) {
-		return new AbstractArray<V>().addFlag(this.flag);
+		return new AbstractArray<V>().withFlag(this.flag);
 	}
 
 	public BaseItem subList(int fromIndex, int toIndex) {

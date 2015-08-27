@@ -210,7 +210,7 @@ public class GraphMethod extends GraphNode implements GraphMember {
 
 	public SimpleSet<GraphAnnotation> getAnnotations() {
 		if (this.annotations == null) {
-			return new SimpleSet<GraphAnnotation>().addFlag(SimpleSet.READONLY);
+			return new SimpleSet<GraphAnnotation>().withFlag(SimpleSet.READONLY);
 		}
 		return this.annotations;
 	}
