@@ -34,6 +34,20 @@ public class HTMLEntity implements StringItem, BaseItem {
 		return toString(indentFactor, 0);
 	}
 
+	public HTMLEntity withEncoding(String encoding) {
+		XMLEntity metaTag = new XMLEntity().withTag("meta");
+		metaTag.withKeyValue("http-equiv", "Content-Type");
+		metaTag.withKeyValue("content", "text/html;charset="+encoding);
+		this.header.addChild(metaTag);
+		return this;
+	}
+	
+	public HTMLEntity withTitle(String value) {
+		XMLEntity titleTag = new XMLEntity().withTag("title").withValue(value);
+		this.header.addChild(titleTag);
+		return this;
+	}
+	
 	@Override
 	public String toString(int indentFactor, int intent) {
 		StringBuilder sb = new StringBuilder();
