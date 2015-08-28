@@ -61,6 +61,7 @@ public class DocEnvironment {
 		sb.append("</script></body></html>");
 		
 		
+		new File("build").mkdir();
 		FileWriter fstream = new FileWriter("build/"+fileName);
 		BufferedWriter out = new BufferedWriter(fstream);
 		out.write(sb.toString());

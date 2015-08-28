@@ -142,6 +142,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 		if (filter.isId(this, entity, entity.getClass().getName())) {
 			xmlEntity.put(ID, getId(entity));
 		}
+		filter.withObjects(entity);
 
 		String[] properties = createrProtoTyp.getProperties();
 		if (properties != null) {
@@ -158,13 +159,19 @@ public class XMLIdMap extends XMLSimpleIdMap {
 						} else {
 							if (value instanceof Collection<?>) {
 								for (Object item : (Collection<?>) value) {
-									xmlEntity.addChild(encode(item));
+									if(filter.hasObjects(item)) {
+										continue;
+									}
+									xmlEntity.addChild(encode(item, filter));
 								}
 
 							} else {
 								SendableEntityCreator valueCreater = getCreatorClass(value);
 								if (valueCreater != null) {
-									xmlEntity.addChild(encode(value));
+									if(filter.hasObjects(value)) {
+										continue;
+									}
+									xmlEntity.addChild(encode(value, filter));
 								} else {
 									xmlEntity.put(property, value);
 								}

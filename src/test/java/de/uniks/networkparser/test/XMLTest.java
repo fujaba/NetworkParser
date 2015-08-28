@@ -11,6 +11,8 @@ import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.uniks.networkparser.test.model.Apple;
+import de.uniks.networkparser.test.model.AppleTree;
 import de.uniks.networkparser.test.model.ChatMessage;
 import de.uniks.networkparser.test.model.Entity;
 import de.uniks.networkparser.test.model.JabberBindMessage;
@@ -20,6 +22,8 @@ import de.uniks.networkparser.test.model.StringMessage;
 import de.uniks.networkparser.test.model.University;
 import de.uniks.networkparser.test.model.XMLTestEntity;
 import de.uniks.networkparser.test.model.XMLTestItem;
+import de.uniks.networkparser.test.model.util.AppleCreator;
+import de.uniks.networkparser.test.model.util.AppleTreeCreator;
 import de.uniks.networkparser.test.model.util.ChatMessageCreator;
 import de.uniks.networkparser.test.model.util.EntityCreator;
 import de.uniks.networkparser.test.model.util.JabberChatMessageCreator;
@@ -33,6 +37,21 @@ import de.uniks.networkparser.xml.XMLIdMap;
 import de.uniks.networkparser.xml.XMLTokener;
 
 public class XMLTest {
+	@Test
+	public void testSimpleExport(){
+		AppleTree appleTree = new AppleTree();
+		appleTree.addToHas(new Apple());
+		
+		XMLIdMap map=new XMLIdMap();
+		map.withCreator(new AppleTreeCreator());
+		map.withCreator(new AppleCreator());
+		
+		
+		System.out.println(map.encode(appleTree).toString());
+	}
+	
+	
+	
 	@Test
 	public void testSimple(){
 		String xml="<br/><br/>";
