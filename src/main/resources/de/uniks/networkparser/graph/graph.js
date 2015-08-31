@@ -295,7 +295,7 @@ var GraphNode = function (id) {
 	this.x = this.y = this.width = this.height = 0;
 	this._isdraggable = true;
 };
-GraphNode.prototype = new Object_create(GraphUtil.prototype);
+GraphNode.prototype = Object_create(GraphUtil.prototype);
 GraphNode.prototype.getX = function () {if (this._parent) {return this._parent.getX() + this.x; } return this.x; };
 GraphNode.prototype.getY = function () {if (this._parent) {return this._parent.getY() + this.y; } return this.y; };
 GraphNode.prototype.removeFromBoard = function (board) {if (this._gui) {board.removeChild(this._gui); this._gui = null; } };
@@ -329,7 +329,7 @@ var GraphModel = function (json, options) {
 		}
 	}
 };
-GraphModel.prototype = new Object_create(GraphNode.prototype);
+GraphModel.prototype = Object_create(GraphNode.prototype);
 GraphModel.prototype.addEdgeModel = function (e) {
 	var typ = e.typ.charAt(0).toUpperCase() + e.typ.substring(1).toLowerCase();
 	var edge;
@@ -526,7 +526,7 @@ var Graph = function (json, options) {
 		document.body.appendChild(this.root);
 	}
 };
-Graph.prototype = new Object_create(GraphNode.prototype);
+Graph.prototype = Object_create(GraphNode.prototype);
 Graph.prototype.initLayouts = function () { this.layouts = [{name: "dagre", value: new DagreLayout()}]; };
 Graph.prototype.initInfo = function (edge, info) {
 	if (!this.model.options.CardinalityInfo && !this.model.options.propertyinfo) {
@@ -1581,6 +1581,7 @@ RGBColor.prototype.toHex = function () {
 // Create Assocs
 // Edit Assocs
 // Delete Assocs
+// Edit Attribute and Methods
 // ################################## ClassEditor ####################################################
 var ClassEditor = function (element, diagramTyp) {
 	this.isIE = document.all && !window.opera;
@@ -1682,6 +1683,15 @@ ClassEditor.prototype.dropFile =  function (content, file) {
 };
 ClassEditor.prototype.dropModel = function (e) {
 	this.dragStyler(e, "dragleave");
+	
+	var data = event.dataTransfer.getData("Text");
+	if(data) {
+		var x = this.getEventX(e);
+		var y = this.getEventY(e);
+		this.getAction("CreateNode").setValue(x, y, x+100, y+100);
+		return;
+	}
+
 	var i, f, files = e.target.files || e.dataTransfer.files;
 	var that = this;
 	var func = function (r) { that.loadModel(JSON.parse(r.target.result), e.ctrlKey, f); };
@@ -1746,6 +1756,8 @@ ClassEditor.prototype.loadModel = function (model, addFile, file) {
 		this.addNode(model.nodes[i]);
 	}
 	this.toolbar = this.create({tag: "div", id: "toolbar", "class": "Toolbar", style: "width:6px;height:120px", onMouseOver: function () {that.maxToolbar(); }, onMouseOut: function (e) {that.minToolbar(e); }, _parent: this.board});
+
+	this.itembar = this.create({tag: "div", id: "itembar", "class": "Itembar", style: "width:6px;height:200px", onMouseOver: function () {that.maxItembar(); }, onMouseOut: function (e) {that.minItembar(e); }, _parent: this.board});
 	this.codeView = this.create({tag: "div", "class": "CodeView", _parent: this.board});
 	this.create({tag: "div", "class": "pi", _parent: this.codeView, value: "&pi;", onMouseOver: function () {that.maxCodeView(); }, onMouseOut: function (e) {that.minCodeView(e); }});
 };
@@ -1768,7 +1780,11 @@ ClassEditor.prototype.minCodeView = function () {
 	this.board.removeChild(this.codeViewer);
 	this.codeViewer = null;
 };
-
+ClassEditor.prototype.createCell = function (node, table) {
+	var tr = this.create({tag: 'tr', _parent: table});
+	node["_parent"] = tr;
+	return this.create(node);
+};
 ClassEditor.prototype.maxToolbar = function () {
 	if (this.toolbar.clientWidth > 100) {
 		return;
@@ -1778,20 +1794,53 @@ ClassEditor.prototype.maxToolbar = function () {
 	this.toolbar.minWidth = this.toolbar.clientWidth;
 	this.toolbar.style.width = 300;
 	var table = this.create({tag: "table", _parent: this.toolbar});
+	this.createCell({"tag": "th", colspan: 2, value: "Properties"}, table);
+
 	var tr = this.create({tag: 'tr', _parent: table});
-	this.create({"tag": "th", _parent: tr, colspan: 2, value: "Properties"});
-	tr = this.create({tag: 'tr', _parent: table});
 	this.create({"tag": "td", value: "Workspace:", _parent: tr});
 	var cell = this.create({"tag": "td", _parent: tr});
 	this.createInputField({value: this.model["package"], _parent: cell, onChange: function (e) {that.savePackage(e); }});
-	tr = this.create({tag: 'tr', _parent: table});
-	cell = this.create({"tag": "td", colspan: 2, style: "text-align:right;padding:10px 10px 0 0", _parent: tr});
+
+	cell = this.createCell({"tag": "td", colspan: 2, style: "text-align:right;padding:10px 10px 0 0"}, table);
 	this.create({tag: 'button', _parent: cell, style: "margin-left:10px;", value: "Save", onClick: function () {that.save(); }});
-	if (java !== undefined) {
+	if (typeof(java) != "undefined") {
 		this.create({tag: 'button', _parent: cell, style: "margin-left:10px;", value: "Generate", onClick: function () {that.generate(); }});
 		this.create({tag: 'button', _parent: cell, style: "margin-left:10px;", value: "Exit", onClick: function () {that.close(); }});
 	}
 };
+ClassEditor.prototype.maxItembar = function () {
+	if (this.itembar.clientWidth > 10) {
+		return;
+	}
+	var that = this;
+
+	this.itembar.minWidth = this.itembar.clientWidth;
+	this.itembar.style.width = 80;
+
+	var table = this.create({tag: "table", style: "padding-left:10px", _parent: this.itembar});
+	this.createCell({"tag": "th", value: "Item"}, table);
+	var th = this.createCell({"tag": "th"}, table);
+	var item = this.create({"tag": "table", id: "node", draggable: "true", cellspacing: "0", ondragstart: function (e) {that.startDrag(e);}, style: "border:1px solid #000;width:30px;height:30px;cursor: pointer", _parent: th});
+	this.createCell({"tag": "td", style: "height:10px;border-bottom:1px solid #000;"}, item);
+	this.createCell({"tag": "td"}, item);
+	var node = this.getAction("Selector").node
+
+	if(node) {
+		th = this.createCell({"tag": "th"}, table);
+		this.create({tag: "button", id: "Attribute", value: "Attribute", onclick: function(e){that.executeClassAdd(e);}, "style": "margin-top:5px;", _parent: th});
+		this.create({tag: "button", id: "Method", value: "Method", onclick: function(e){that.executeClassAdd(e);}, "style": "margin-top:5px;", _parent: th});
+	}
+};
+ClassEditor.prototype.executeClassAdd = function (e) {
+	var node = this.getAction("Selector").node
+	if(e.target.id === "Attribute") {
+		this.inputNode.accept("attribute:Object", node);
+	} else if(e.target.id === "Method") {
+		this.inputNode.accept("methods()", node);
+	}
+
+};
+ClassEditor.prototype.startDrag = function (e) {e.dataTransfer.setData("Text", e.target.id);}
 ClassEditor.prototype.createInputField = function (option) {
 	var that = this;
 	var node = this.copy({tag: "input", type: "text", width: "100%", onFocus: function () {that.inputEvent = false; }, onBlur: function () {that.inputEvent = true; }}, option);
@@ -1817,7 +1866,22 @@ ClassEditor.prototype.minToolbar = function (e) {
 	this.toolbar.style.width = this.toolbar.minWidth;
 	this.inputEvent = true;
 };
+ClassEditor.prototype.minItembar = function (e) {
+	if (this.itembar.clientWidth < 50 || this.getId(e.toElement, "itembar")) {
+		return;
+	}
+	var i;
+	for (i = this.itembar.children.length - 1; i >= 0; i -= 1) {
+		this.itembar.removeChild(this.itembar.children[i]);
+	}
+	this.itembar.style.width = this.itembar.minWidth;
+	this.inputEvent = true;
+};
+
 ClassEditor.prototype.getId = function (element, id) {
+	if(element == null) {
+		return false;
+	}
 	if (element.id === id) {
 		return true;
 	}
@@ -1960,6 +2024,16 @@ CreateNode.prototype.doAction = function (event) {
 	if (!this.createClass) {return; }
 	this.mouse.x = this.getEventX(event);
 	this.mouse.y = this.getEventY(event);
+	this.createNode();
+};
+CreateNode.prototype.setValue = function (x1, y1, x2, y2) {
+	this.offset.x = x1;
+	this.offset.y = y1;
+	this.mouse.x = x2;
+	this.mouse.y = y2;
+	this.createNode();
+};
+CreateNode.prototype.createNode = function () {
 	var width = Math.abs(this.mouse.x - this.offset.x);
 	var height = Math.abs(this.mouse.y - this.offset.y);
 	if (width > this.minSize && height > this.minSize) {
@@ -2223,31 +2297,46 @@ InputNode.prototype.keyup = function (e) {
 		}
 	}
 };
-InputNode.prototype.accept = function () {
-	var text = this.inputItem.value;
-	var n = this.inputItem.node;
+InputNode.prototype.accept = function (text, n) {
+	var model = n.model;
+	var id = n.model.id;
+	if( this.addValue(text, model) ) {
+		if (id !== n.model.id) {
+			this._parent.removeNode(id);
+			this._parent.addNode(n.model);
+		} else {
+			this._parent.board.removeChild(n);
+			this._parent.addNode(n.model);
+		}
+		this._parent.getAction("Selector").refreshNode();
+		return true;
+	}
+	return false;
+};
+
+InputNode.prototype.addValue = function (text, model) {
 	if (text.length < 1) {
 		return false;
 	}
 	if (text.indexOf(":") >= 0) {
-		if (!n.model.attributes) {
-			n.model.attributes = [];
+		if (!model.attributes) {
+			model.attributes = [];
 		}
-		n.model.attributes.push(text);
+		model.attributes.push(text);
 		return true;
 	}
 	if (text.indexOf("(") > 0) {
-		if (!n.model.methods) {
-			n.model.methods = [];
+		if (!model.methods) {
+			model.methods = [];
 		}
-		n.model.methods.push(text);
+		model.methods.push(text);
 		return true;
 	}
 	//typ ClassEditor
-	if (n.model._parent.typ === "classdiagram") {
-		n.model.id = this.fristUp(text);
+	if (model._parent.typ === "classdiagram") {
+		model.id = this.fristUp(text);
 	} else {
-		n.model.id = text;
+		model.id = text;
 	}
 	return true;
 };
@@ -2263,16 +2352,8 @@ InputNode.prototype.changeText = function (e) {
 	if (e.keyCode === 13) {
 		var n = this.inputItem.node;
 		var id = n.model.id;
-		if (this.accept()) {
-			if (id !== n.model.id) {
-				this._parent.removeNode(id);
-				//this._parent.board.removeChild(n);
-				this._parent.addNode(n.model);
-			} else {
-				this._parent.board.removeChild(n);
-				this._parent.addNode(n.model);
-			}
-			this._parent.getAction("Selector").refreshNode();
+		var text = this.inputItem.value;
+		if (this.accept(text, n)) {
 			close = true;
 		}
 	}
@@ -2369,9 +2450,6 @@ EditNode.prototype.addElement = function (element, typ) {
 EditNode.prototype.click = function (e, control, typ) {
 	if (!control.lastClick || control.lastClick < new Date().getTime() - 1000 || control.oldValue) {
 		control.lastClick = new Date().getTime();
-		return;
-	}
-	if (control.model && control.model.typ === "node") {
 		return;
 	}
 	var that = this;
