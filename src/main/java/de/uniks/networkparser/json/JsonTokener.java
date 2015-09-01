@@ -168,7 +168,7 @@ public class JsonTokener extends Tokener {
 			if (logger.error(this, "parseToEntity",
 					NetworkParserLog.ERROR_TYP_PARSING, entity)) {
 				throw new RuntimeException(
-						"A JsonObject text must begin with '{'");
+						"A JsonObject text must begin with '{' \n" + buffer);
 			}
 		}
 		next();
