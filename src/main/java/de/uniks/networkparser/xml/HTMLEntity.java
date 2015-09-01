@@ -1,6 +1,8 @@
 package de.uniks.networkparser.xml;
 
 import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.graph.GraphConverter;
+import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.StringItem;
 import de.uniks.networkparser.list.SimpleSet;
@@ -64,7 +66,18 @@ public class HTMLEntity implements StringItem, BaseItem {
 
 	@Override
 	public HTMLEntity withAll(Object... values) {
-		this.body.withAll(values);
+		if(values == null) {
+			return this;
+		}
+		if(values.length % 2 == 0) {
+			this.body.withAll(values);
+		} else {
+			for(Object item : values) {
+				if(item instanceof XMLEntity) {
+					this.body.withChild((XMLEntity) item);
+				}
+			}
+		}
 		return this;
 	}
 
@@ -99,5 +112,17 @@ public class HTMLEntity implements StringItem, BaseItem {
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
 		return new SimpleSet<XMLEntity>();
+	}
+
+	public HTMLEntity withGraph(GraphList value) {
+		XMLEntity script = new XMLEntity().withTag("script").withKeyValue("type", "text/javascript");
+		StringBuilder sb=new StringBuilder();
+		sb.append("var json=");
+		sb.append( value.toString(new GraphConverter()) );
+		sb.append(";"+CRLF);
+		sb.append("new Graph(json).layout();");
+		script.withValueItem(sb.toString());
+		withAll(script);
+		return this;
 	}
 }

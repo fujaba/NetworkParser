@@ -31,6 +31,7 @@ import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorHTML;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.logic.BooleanCondition;
 import de.uniks.networkparser.xml.util.XMLGrammar;
@@ -128,6 +129,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 		}
 		XMLEntity xmlEntity = new XMLEntity();
 
+//		SendableEntityCreatorHTML
 		if (createrProtoTyp instanceof SendableEntityCreatorTag) {
 			SendableEntityCreatorTag xmlCreater = (SendableEntityCreatorTag) createrProtoTyp;
 			if (xmlCreater.getTag() != null) {

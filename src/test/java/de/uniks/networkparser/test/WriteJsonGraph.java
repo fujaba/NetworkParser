@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import de.uniks.networkparser.graph.GraphCardinality;
 import de.uniks.networkparser.graph.GraphClazz;
 import de.uniks.networkparser.graph.GraphConverter;
 import de.uniks.networkparser.graph.GraphDataType;
@@ -24,7 +25,7 @@ public class WriteJsonGraph {
 		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/dagre.min.js");
 		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/drawer.js");
 		
-		System.out.println(htmlEntity.toString(2));
+//		System.out.println(htmlEntity.toString(2));
 
 		DocEnvironment docEnvironment = new DocEnvironment();
 		GraphList model = new GraphList().withTyp(GraphIdMap.CLASS);
@@ -64,5 +65,21 @@ public class WriteJsonGraph {
 		
 		
 		docEnvironment.writeJson("simpleCollection.html", "../src/main/resources/de/uniks/networkparser/graph/", new GraphConverter().convertToJson(model, true));
+	}
+	
+	@Test
+	public void testWriteSimpleHTML() {
+		HTMLEntity htmlEntity = new HTMLEntity();
+		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/diagramstyle.css");
+		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/graph.js");
+		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/dagre.min.js");
+		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/drawer.js");
+		
+		GraphList model = new GraphList().withTyp(GraphIdMap.CLASS);
+		GraphClazz uni = model.with(new GraphClazz().withClassName("University").withAttribute("name", GraphDataType.STRING));
+		GraphClazz person = model.with(new GraphClazz().withClassName("Person"));
+		
+		uni.withAssoc(person, "has", GraphCardinality.MANY, "studis", GraphCardinality.ONE);
+		System.out.println(htmlEntity.withGraph(model).toString(2));
 	}
 }

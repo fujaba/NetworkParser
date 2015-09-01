@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -36,7 +38,6 @@ import javafx.stage.FileChooser.ExtensionFilter;
 
 public class CSVExporter extends MenuItem implements EventHandler<ActionEvent>{
 	private static final String SEPERATOR = ";";
-	private static final String CRLF = "\n\r";
 	private TableComponent tableComponent;
 
 	public CSVExporter(TableComponent value) {
@@ -61,7 +62,7 @@ public class CSVExporter extends MenuItem implements EventHandler<ActionEvent>{
 					line.append(SEPERATOR);
 					attributes.add(tableColumn.getColumn().getAttrName());
 				}
-				writer.write(line.toString()+CRLF);
+				writer.write(line.toString()+BaseItem.CRLF);
 				
 				List<Object> items = tableComponent.getItems();
 				for(Object item : items) {
@@ -75,8 +76,8 @@ public class CSVExporter extends MenuItem implements EventHandler<ActionEvent>{
 							}
 							line.append(SEPERATOR);
 						}
-						line.append(CRLF);
-						writer.write(line.toString()+CRLF);
+						line.append(BaseItem.CRLF);
+						writer.write(line.toString()+BaseItem.CRLF);
 					}
 				}
 				writer.flush();

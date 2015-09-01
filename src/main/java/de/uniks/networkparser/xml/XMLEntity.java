@@ -212,7 +212,10 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements
 
 		int size = size();
 		for (int i = 0; i < size; i++) {
-			sb.append(" " + get(i) + "=" + EntityUtil.quote("" + getValueByIndex(i)));
+			Object value = getValueByIndex(i);
+			if(value != null) {
+				sb.append(" " + get(i) + "=" + EntityUtil.quote(value.toString()));	
+			}
 		}
 
 		toStringChildren(sb, indentFactor, intent + indentFactor);
