@@ -19,7 +19,9 @@
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-
+/*jslint node: true, vars: true */
+/*global document: false, RGBColor: false, Blob: false, jsEPS: false, window: false */
+"use strict";
 var epsSvgAttr = {
     // allowed attributes. all others are removed from the preview.
     g: ['stroke', 'fill', 'stroke-width'],
@@ -31,52 +33,54 @@ var epsSvgAttr = {
 	path: []
 };
 
-
-svgConverter=function(element, target, options) {
+var svgConverter = function (element, target, options) {
 	this.k = 1.0;
-	this.k = (options && typeof(options.scale) != 'undefined' ? options.scale : 1.0);
-	this.remove = (options && typeof(options.removeInvalid) != 'undefined' ? options.removeInvalid: false);
+	var hasScale = typeof (options.scale), hasRemoveInvalid = typeof (options.removeInvalid);
+	this.k = (options && hasScale !== 'undefined' ? options.scale : 1.0);
+	this.remove = (options && hasRemoveInvalid !== 'undefined' ? options.removeInvalid : false);
 	this.target = target;
 	this.parse(element);
-}
-svgConverter.prototype.parse = function(element) {
-	if(!element) {
+};
+svgConverter.prototype.parse = function (element) {
+	if (!element) {
 		return;
 	}
-	if(typeof element ==="string") {
+	if (typeof element === "string") {
 		var el = document.createElement('div');
 		el.innerHTML = element;
 		element = el.childNodes[0];
 	}
-	for(var i=0;i<element.children.length;i++) {
+	var i;
+	for (i = 0; i < element.children.length; i += 1) {
 		var n = element.children[i];
 		var colorMode = null;
 		var hasFillColor = false;
-		if('g,line,rect,ellipse,circle,text'.indexOf(n.tagName)>=0) {
+		var fillRGB;
+		if ('g,line,rect,ellipse,circle,text'.indexOf(n.tagName) >= 0) {
 			var fillColor = n.getAttribute('fill');
-			if(fillColor) {
-				var fillRGB = new RGBColor(fillColor);
-				if(fillRGB.ok) {
+			if (fillColor) {
+				fillRGB = new RGBColor(fillColor);
+				if (fillRGB.ok) {
 					hasFillColor = true;
 					colorMode = 'F';
 				}
 			}
 		}
-		if('g,line,rect,ellipse,circle'.indexOf(n.tagName)>=0) {
-			if(hasFillColor) {
+		if ('g,line,rect,ellipse,circle'.indexOf(n.tagName) >= 0) {
+			if (hasFillColor) {
 				this.target.setFillColor(fillRGB.r, fillRGB.g, fillRGB.b);
 			}
 			var strokeColor = n.getAttribute('stroke');
-            if(n.hasAttribute('stroke-width')) {
+            if (n.hasAttribute('stroke-width')) {
 				this.target.setLineWidth(this.attr(n, 'stroke-width'));
 			}
-			if(strokeColor) {
+			if (strokeColor) {
 				var strokeRGB = new RGBColor(strokeColor);
-				if(strokeRGB.ok) {
+				if (strokeRGB.ok) {
 					this.target.setDrawColor(strokeRGB.r, strokeRGB.g, strokeRGB.b);
-					if(colorMode == 'F') {
+					if (colorMode === 'F') {
 						colorMode = 'FD';
-					} else if(!hasFillColor) {
+					} else if (!hasFillColor) {
 						colorMode = 'S';
 					}
 				} else {
@@ -85,131 +89,141 @@ svgConverter.prototype.parse = function(element) {
 			}
 		}
 		//console.log("write "+n.tagName);
-		switch(n.tagName.toLowerCase()) {
-			case 'svg':
-			case 'a':
-			case 'g':
-				this.parse(n);
-				break;
-			case 'line':
-				this.target.line(this.attr(n, 'x1'), this.attr(n, 'y1'), this.attr(n, 'x2'), this.attr(n, 'y2'));
-				break;
-			case 'rect':
-				this.target.rect(this.attr(n, 'x'), this.attr(n, 'y'), this.attr(n, 'width'), this.attr(n, 'height'), n.getAttribute("style"));
-				break;
-			case 'ellipse':
-				this.target.ellipse(this.attr(n, 'cx'), this.attr(n, 'cy'), this.attr(n, 'rx'), this.attr(n, 'ry'), colorMode);
-				break;
-            case 'circle':
-				this.target.circle(this.attr(n, 'cx'), this.attr(n, 'cy'), this.attr(n, 'r'), colorMode);
-			case 'text':
-				if(n.hasAttribute('font-family')) {
-					switch(n.getAttribute('font-family').toLowerCase()) {
-						case 'serif': this.target.setFont('times'); break;
-						case 'monospace': this.target.setFont('courier'); break;
-						default:
-							n.getAttribute('font-family', 'sans-serif');
-							this.target.setFont('Helvetica');
-					}
+		switch (n.tagName.toLowerCase()) {
+		case 'svg':
+		case 'a':
+		case 'g':
+			this.parse(n);
+			break;
+		case 'line':
+			this.target.line(this.attr(n, 'x1'), this.attr(n, 'y1'), this.attr(n, 'x2'), this.attr(n, 'y2'));
+			break;
+		case 'rect':
+			this.target.rect(this.attr(n, 'x'), this.attr(n, 'y'), this.attr(n, 'width'), this.attr(n, 'height'), n.getAttribute("style"));
+			break;
+		case 'ellipse':
+			this.target.ellipse(this.attr(n, 'cx'), this.attr(n, 'cy'), this.attr(n, 'rx'), this.attr(n, 'ry'), colorMode);
+			break;
+		case 'circle':
+			this.target.circle(this.attr(n, 'cx'), this.attr(n, 'cy'), this.attr(n, 'r'), colorMode);
+			break;
+		case 'text':
+			if (n.hasAttribute('font-family')) {
+				switch (n.getAttribute('font-family').toLowerCase()) {
+				case 'serif':
+					this.target.setFont('times');
+					break;
+				case 'monospace':
+					this.target.setFont('courier');
+					break;
+				default:
+					n.getAttribute('font-family', 'sans-serif');
+					this.target.setFont('Helvetica');
 				}
-				if(hasFillColor) {
-					this.target.setTextColor(fillRGB.r, fillRGB.g, fillRGB.b);
+			}
+			if (hasFillColor) {
+				this.target.setTextColor(fillRGB.r, fillRGB.g, fillRGB.b);
+			}
+			if (this.target instanceof jsEPS) {
+				this.target.text(this.attr(n, 'x'), this.attr(n, 'y'), n.innerHTML);
+				break;
+			}
+			var fontType = "";
+			if (n.hasAttribute('font-weight')) {
+				if (n.getAttribute('font-weight') === "bold") {
+					fontType = "bold";
 				}
-				if(this.target instanceof jsEPS){
-					this.target.text(this.attr(n, 'x'), this.attr(n, 'y'), n.innerHTML);
+			}
+			if (n.hasAttribute('font-style')) {
+				if (n.getAttribute('font-style') === "italic") {
+					fontType += "italic";
+				}
+			}
+			this.target.setFontType(fontType);
+			var pdfFontSize = 16;
+			if (n.hasAttribute('font-size')) {
+				pdfFontSize = parseInt(n.getAttribute('font-size'), 10);
+			}
+			var box = n.getBBox();
+			//FIXME: use more accurate positioning!!
+			var x = this.attr(n, 'x'), y = this.attr(n, 'y'), xOffset = 0;
+			if (n.hasAttribute('text-anchor')) {
+				switch (n.getAttribute('text-anchor')) {
+				case 'end':
+					xOffset = box.width;
+					break;
+				case 'middle':
+					xOffset = box.width / 2;
+					break;
+				case 'start':
+					break;
+				case 'default':
+					n.getAttribute('text-anchor', 'start');
 					break;
 				}
-				var fontType = "";
-				if(n.hasAttribute('font-weight')) {
-					if(n.getAttribute('font-weight') == "bold") {
-						fontType = "bold";
-					}
-				}
-				if(n.hasAttribute('font-style')) {
-					if(n.getAttribute('font-style') == "italic") {
-						fontType += "italic";
-					}
-				}
-				this.target.setFontType(fontType);
-				var pdfFontSize = 16;
-				if(n.hasAttribute('font-size')) {
-					pdfFontSize = parseInt(n.getAttribute('font-size'));
-				}
-				var box = n.getBBox();
-				//FIXME: use more accurate positioning!!
-				var x=this.attr(n, 'x'), y=this.attr(n, 'y'), xOffset = 0;
-				if(n.hasAttribute('text-anchor')) {
-					switch(n.getAttribute('text-anchor')) {
-						case 'end': xOffset = box.width; break;
-						case 'middle': xOffset = box.width / 2; break;
-						case 'start': break;
-						case 'default': n.getAttribute('text-anchor', 'start');
-					}
-					x = x - (xOffset * this.k);
-				}
-				this.target.setFontSize(pdfFontSize).text(x, y, n.innerHTML);
-				break;
-			default:
-				if(this.remove) {
-					console.log("can't translate to target:", n);
-					element.removeChild(n);
-					i--;
-                }
+				x = x - (xOffset * this.k);
+			}
+			this.target.setFontSize(pdfFontSize).text(x, y, n.innerHTML);
+			break;
+		default:
+			if (this.remove) {
+				console.log("can't translate to target:", n);
+				element.removeChild(n);
+				i -= 1;
+			}
 		}
 	}
 };
-svgConverter.prototype.attr = function(node, name){return this.k * parseInt(node.getAttribute(name));}
+svgConverter.prototype.attr = function (node, name) {return this.k * parseInt(node.getAttribute(name), 10); };
 
-
-jsEPS=function(options) {
+var jsEPS = function (options) {
 	this.max = 0;
 	this.min = 999;
-	this.inverting = (options && typeof(options.inverting) != 'undefined' ? options.inverting : true);
-	this.output=["%!PS-Adobe-3.0 EPSF-3.0", "1 setlinewidth"];
+	var hasInverting = typeof (options.inverting);
+	this.inverting = (options && hasInverting !== 'undefined' ? options.inverting : true);
+	this.output = ["%!PS-Adobe-3.0 EPSF-3.0", "1 setlinewidth"];
 	this.out("/FSD {findfont exch scalefont def} bind def % In the document prolog: define");
 	this.out("/SMS {setfont moveto show} bind def % some useful procedures");
 	this.out("/MS {moveto show} bind def");
 	this.out("/F1  10  /Helvetica  FSD % At the start of the script: set up");
-	this.font=1;
+	this.font = 1;
 };
 
-jsEPS.prototype.setFillColor = function(r, g, b){/*FIXME*/};
-jsEPS.prototype.setDrawColor = function(r, g, b){/*FIXME*/};
-jsEPS.prototype.ellipse = function(cx, cy, rx, ry, colorMode){/*FIXME*/};
-jsEPS.prototype.circle = function(cx, cy, r, colorMode){/*FIXME*/};
-jsEPS.prototype.setFont = function(value) {this.out("/F"+(this.font++)+" 10 /"+value+" FSD");}
-jsEPS.prototype.setTextColor = function(r, g, b){/*FIXME*/};
+jsEPS.prototype.setFillColor = function (r, g, b) {/*FIXME*/};
+jsEPS.prototype.setDrawColor = function (r, g, b) {/*FIXME*/};
+jsEPS.prototype.ellipse = function (cx, cy, rx, ry, colorMode) {/*FIXME*/};
+jsEPS.prototype.circle = function (cx, cy, r, colorMode) {/*FIXME*/};
+jsEPS.prototype.setFont = function (value) {this.out("/F" + (this.font += 1) + " 10 /" + value + " FSD"); };
+jsEPS.prototype.setTextColor = function (r, g, b) {/*FIXME*/};
 
-jsEPS.prototype.setLineWidth = function(value){this.out(value+" setlinewidth");};
-jsEPS.prototype.y = function(value){this.max=Math.max(this.max, value);this.min=Math.min(this.min, value);return this.inverting ? "%y("+value+")" : value;}
-jsEPS.prototype.out =function(value) {this.output.push(value);};
-jsEPS.prototype.line = function(x1, y1, x2, y2) {this.out("newpath "+x1+" "+this.y(y1)+" moveto "+x2+" "+this.y(y2)+" lineto stroke");}
-jsEPS.prototype.moveto = function(x, y) {this.out(x+" "+this.y(y)+" moveto");}
-jsEPS.prototype.lineto = function(x, y) {this.out(x+" "+this.y(y)+" lineto");this.out("stroke");}
-jsEPS.prototype.rect = function(x, y, width, height, style) {
+jsEPS.prototype.setLineWidth = function (value) {this.out(value + " setlinewidth"); };
+jsEPS.prototype.y = function (value) {this.max = Math.max(this.max, value); this.min = Math.min(this.min, value); return this.inverting ? "%y(" + value + ")" : value; };
+jsEPS.prototype.out = function (value) {this.output.push(value); };
+jsEPS.prototype.line = function (x1, y1, x2, y2) {this.out("newpath " + x1 + " " + this.y(y1) + " moveto " + x2 + " " + this.y(y2) + " lineto stroke"); };
+jsEPS.prototype.moveto = function (x, y) {this.out(x + " " + this.y(y) + " moveto"); };
+jsEPS.prototype.lineto = function (x, y) {this.out(x + " " + this.y(y) + " lineto"); this.out("stroke"); };
+jsEPS.prototype.rect = function (x, y, width, height, style) {
 	y = y + (this.inverting ? height : 0);
-	if(style.indexOf("fill:url(#classelement);")>=0){
-		this.out("gsave 0.93 0.93 0.93 setrgbcolor newpath "+x+" "+this.y(y)+" "+width+" "+height+" rectfill grestore");
-	}else{
-		this.out("newpath "+x+" "+this.y(y)+" "+width+" "+height+" rectstroke");
+	if (style.indexOf("fill:url(#classelement);") >= 0) {
+		this.out("gsave 0.93 0.93 0.93 setrgbcolor newpath " + x + " " + this.y(y) + " " + width + " " + height + " rectfill grestore");
+	} else {
+		this.out("newpath " + x + " " + this.y(y) + " " + width + " " + height + " rectstroke");
 	}
-
-}
-jsEPS.prototype.text = function(x, y, text) {this.out("("+text.replace("&lt;", "<").replace("&gt;",">") +") "+x+" "+this.y(y)+" F1 SMS");};
-jsEPS.prototype.save =function (name) {
+};
+jsEPS.prototype.text = function (x, y, text) {this.out("(" + text.replace("&lt;", "<").replace("&gt;", ">") + ") " + x + " " + this.y(y) + " F1 SMS"); };
+jsEPS.prototype.save = function (name) {
 	var typ = "application/postscript";
 	var a = document.createElement("a");
-	var data="";
+	var data = "";
 	var pos;
-	console.log(this.min);
-	console.log(this.max);
-	for(var i=0;i<this.output.length;i++){
+	var i;
+	for (i = 0; i < this.output.length; i += 1) {
 		var text = this.output[i];
-		if(this.inverting) {
-			while((pos = text.indexOf("%y"))>=0){
-				var end = text.indexOf(")",pos);
-				var t = this.max - parseInt(text.substring(pos+3, end));
-				text = text.substring(0, pos)+t+text.substring(end+1);
+		if (this.inverting) {
+			while ((pos = text.indexOf("%y")) >= 0) {
+				var end = text.indexOf(")", pos);
+				var t = this.max - parseInt(text.substring(pos + 3, end), 10);
+				text = text.substring(0, pos) + t + text.substring(end + 1);
 			}
 		}
 		data = data + text + "\r\n";
@@ -218,4 +232,4 @@ jsEPS.prototype.save =function (name) {
 	a.href = url;
 	a.download = name || "download.eps";
 	a.click();
-}
+};

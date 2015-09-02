@@ -2,7 +2,7 @@ package de.uniks.networkparser.graph;
 
 import de.uniks.networkparser.list.SimpleSet;
 
-public class GraphModel extends GraphNode {
+public abstract class GraphModel extends GraphNode {
 	private String defaultAuthorName;
 
 	/**
