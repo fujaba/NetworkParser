@@ -115,6 +115,10 @@ public class HTMLEntity implements StringItem, BaseItem {
 	}
 
 	public HTMLEntity withGraph(GraphList value) {
+		return withGraph(value, null);
+	}
+
+	public HTMLEntity withGraph(GraphList value, String path) {
 		XMLEntity script = new XMLEntity().withTag("script").withKeyValue("type", "text/javascript");
 		StringBuilder sb=new StringBuilder();
 		sb.append("var json=");
@@ -123,6 +127,13 @@ public class HTMLEntity implements StringItem, BaseItem {
 		sb.append("new Graph(json).layout();");
 		script.withValueItem(sb.toString());
 		withAll(script);
+		if(path != null) {
+			// Add graph-framework
+			withHeader(path + "diagramstyle.css");
+			withHeader(path + "graph.js");
+			withHeader(path + "dagre.min.js");
+			withHeader(path + "drawer.js");
+		}
 		return this;
 	}
 }

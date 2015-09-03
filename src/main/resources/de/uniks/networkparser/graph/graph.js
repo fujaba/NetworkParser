@@ -28,8 +28,8 @@
 //	this.uniId = function () { return newId; };
 //	return newId;
 //};
-/*jslint forin:true, newcap:true, node: true, evil: true, nomen: true, continue: true, vars: true */
-/*jshint forin:true, laxbreak: true, newcap: false, node: true, evil: true, nomen: true, onevar: true, -W089, -W079 */
+/*jslint forin:true, newcap:true, node: true, nomen: true, continue: true, vars: true */
+/*jshint forin:true, laxbreak: true, newcap: false, node: true, nomen: true, onevar: true, -W089, -W079 */
 
 /*global document: false, window: false, Options: false, navigator: false, unescape: false, Edge: false, Info: false, Loader: false, HTMLDrawer: false, DagreLayout: false, SVGDrawer: false */
 /*global jsPDF: false, svgConverter: false, jsEPS: false, Image: false, Blob: false, dagre: false, SymbolLibary: false, InputNode: false */
@@ -334,7 +334,7 @@ GraphModel.prototype.addEdgeModel = function (e) {
 	var typ = e.typ.charAt(0).toUpperCase() + e.typ.substring(1).toLowerCase();
 	var edge;
 	if (typeof window[typ] === "function") {
-		edge = eval("new " + typ + "()");
+		edge = new window[typ]();
 	} else {
 		edge = new Edge();
 	}
