@@ -89,12 +89,12 @@ public class DotTest {
 		//Close the output stream
 		out.close();
 		
-//	     String[] command = new String[] { makeimageFile, , "." };
-		String path = "../GraphViz/win32/";
-	     String[] command = new String[] { path+"dot", "build/dotFile.dot", "-Tsvg", "-o", "build/dotFile.svg" };
-         ProcessBuilder processBuilder = new ProcessBuilder(command);
-         processBuilder.redirectErrorStream(true);
-         processBuilder.redirectOutput(Redirect.INHERIT);
-         processBuilder.start();
+      //		String[] command = new String[] { makeimageFile, , "." };
+		//		String path = "../GraphViz/win32/";
+		//	     String[] command = new String[] { path+"dot", "build/dotFile.dot", "-Tsvg", "-o", "build/dotFile.svg" };
+		//         ProcessBuilder processBuilder = new ProcessBuilder(command);
+		//         processBuilder.redirectErrorStream(true);
+		//         processBuilder.redirectOutput(Redirect.INHERIT);
+		//         processBuilder.start();
 	}
 }
