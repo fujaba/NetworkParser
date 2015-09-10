@@ -48,7 +48,7 @@ public class GraphConverter implements Converter {
 	public static final String TARGET = "target";
 	public static final String CARDINALITY = "cardinality";
 	public static final String PROPERTY = "property";
-	public static final String HEADIMAGE = "headimage";
+	public static final String HEADIMAGE = "head_src";
 	public static final String OPTIONS = "options";
 	private static final String STYLE = "style";
 	private static final String INFO = "info";
