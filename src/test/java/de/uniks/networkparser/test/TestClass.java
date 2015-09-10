@@ -20,14 +20,4 @@ public class TestClass {
 			System.out.println(i.next());
 		}
 	}
-	
-	@Test
-	public void testJson(){
-		JsonObject jsonA = new JsonObject().withValue("{id:42, no:23, list:[1,2], array:[1,2]}");
-		JsonObject jsonB = new JsonObject().withValue("{id:42, no:24, list:[1,2], array:[1,3]}");
-		System.out.println(UpdateListenerJson.compareJson(jsonA, jsonB));
-		System.out.println(jsonA);
-		System.out.println(jsonB);
-	}
-	
 }

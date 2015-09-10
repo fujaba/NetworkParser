@@ -19,6 +19,7 @@ import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.json.JsonTokener;
 import de.uniks.networkparser.json.SimpleGrammar;
+import de.uniks.networkparser.json.UpdateListenerJson;
 import de.uniks.networkparser.logic.BooleanCondition;
 import de.uniks.networkparser.logic.Deep;
 import de.uniks.networkparser.test.model.Apple;
@@ -639,5 +640,12 @@ public class JsonTest extends IOClasses{
 //		JsonObject withValue = new JsonObject().withValue(readFile.toString());
 //		System.out.println(withValue);
 	}
-
+	@Test
+	public void testJsonCompare(){
+		JsonObject jsonA = new JsonObject().withValue("{id:42, no:23, list:[1,2], array:[1,2]}");
+		JsonObject jsonB = new JsonObject().withValue("{id:42, no:24, list:[1,2], array:[1,3]}");
+		System.out.println(UpdateListenerJson.compareJson(jsonA, jsonB));
+		System.out.println(jsonA);
+		System.out.println(jsonB);
+	}
 }
