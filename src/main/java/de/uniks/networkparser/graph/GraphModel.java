@@ -16,16 +16,15 @@ public abstract class GraphModel extends GraphNode {
 	 *              parent                   clazz
 	 *         </pre>
 	 */
-	public SimpleSet<GraphClazz> getAttributes() {
+	public SimpleSet<GraphClazz> getClazzes() {
 		SimpleSet<GraphClazz> collection = new SimpleSet<GraphClazz>();
 		if (children == null) {
 			return collection;
 		}
 		for (GraphMember child : children) {
-			if ((child instanceof GraphClazz) == false) {
-				continue;
+			if (child instanceof GraphClazz)  {
+				collection.add((GraphClazz) child);
 			}
-			collection.add((GraphClazz) child);
 		}
 		return collection;
 	}

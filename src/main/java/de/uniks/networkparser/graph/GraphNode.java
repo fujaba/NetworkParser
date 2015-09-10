@@ -26,7 +26,7 @@ public class GraphNode implements GraphMember{
 	public void addAttribute(String property, GraphDataType clazz, String value) {
 		with(new GraphAttribute().withValue(value).with(property).with(clazz));
 	}
-
+	
 	@Override
 	public String toString() {
 		return id;

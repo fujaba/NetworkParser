@@ -240,8 +240,8 @@ public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
 				char quote = (char) ITEMSTART;
 				// Skip >
 				tokener.next();
-				String strvalue = tokener.nextString(quote, true, false, false,
-						false);
+				String strvalue = tokener.nextString(true, false, false,
+						false, quote);
 				strvalue = strvalue.trim();
 				XMLEntity newTag;
 				if (tokener.getCurrentChar() == ITEMSTART) {
@@ -313,8 +313,8 @@ public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
 		boolean isEmpty = true;
 		do {
 			if (tokener.getCurrentChar() != ITEMSTART) {
-				String strValue = tokener.nextString(ITEMSTART, true, false,
-						false, false);
+				String strValue = tokener.nextString(true, false,
+						false, false, ITEMSTART);
 				if (strValue != null) {
 					strValue = strValue.trim();
 					isEmpty = strValue.isEmpty();

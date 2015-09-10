@@ -64,7 +64,7 @@ public class XMLTokener extends Tokener {
 		case '"':
 		case '\'':
 			next();
-			String v = nextString(c, false, allowQuote, false, true);
+			String v = nextString(false, allowQuote, false, true, c);
 			String g = EntityUtil.unQuote(v); 
 			return g;
 		case '<':
@@ -138,7 +138,7 @@ public class XMLTokener extends Tokener {
 					return;
 				}
 				if (c != '<') {
-					xmlEntity.withValueItem(nextString('<', false, false, false, false));
+					xmlEntity.withValueItem(nextString(false, false, false, false, '<'));
 					continue;
 				}
 			}
@@ -153,7 +153,7 @@ public class XMLTokener extends Tokener {
 						parseToEntity(child);
 						xmlEntity.addChild(child);
 					} else {
-						xmlEntity.withValueItem(nextString('<', false, false, false, false));
+						xmlEntity.withValueItem(nextString(false, false, false, false, '<'));
 					}
 				}
 			} else if (c == '/') {

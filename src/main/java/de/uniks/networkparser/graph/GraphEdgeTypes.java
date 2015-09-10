@@ -38,5 +38,17 @@ public enum GraphEdgeTypes {
 		this.value = value;
 	}
 
+	public static boolean isEdge(String value) {
+		if(value == null) {
+			return false;
+		}
+		return (value.equals(ASSOCIATION.getValue()) ||
+				value.equals(EDGE.getValue()) ||
+				value.equals(UNDIRECTIONAL.getValue()) ||
+				value.equals(AGGREGATION.getValue()) ||
+				value.equals(COMPOSITION.getValue())
+				);
+	}
+	
 	private String value;
 }

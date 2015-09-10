@@ -37,7 +37,7 @@ public class StringTokenerTest {
 			String sub;
 			//FIXME change to ""
 			do{
-				sub = tokener.nextString(',', true);
+				sub = tokener.nextString(true, ',');
 				if(sub.length()>0){
 					System.out.println(count++ + ": #" +sub+ "# -- " +tokener.isString());
 				}
@@ -59,7 +59,7 @@ public class StringTokenerTest {
 		System.out.println("zu parsen: " +value);
 		tokener.withText(value);
 		do{
-			sub=tokener.nextString('"', true);
+			sub=tokener.nextString(true, '"');
 			if(sub.length()>0){
 				System.out.println(count++ + ": #" +sub+ "# -- " +tokener.isString());
 			}
@@ -96,7 +96,7 @@ public class StringTokenerTest {
 		System.out.println((Character)test.charAt(0));
 		System.out.println(bytes[0]);
 		JsonTokener jsonTokener = (JsonTokener) new JsonTokener().withText(test);
-		System.out.println(jsonTokener.nextString('\"', true));
-		System.out.println(jsonTokener.nextString('\"', true));
+		System.out.println(jsonTokener.nextString(true, '\"'));
+		System.out.println(jsonTokener.nextString(true, '\"'));
 	}
 }

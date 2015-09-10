@@ -30,11 +30,11 @@ public class StringTokener extends Tokener {
 	private int startToken = -1;
 
 	@Override
-	public String nextString(char quote, boolean allowCRLF, boolean allowQuote,
-			boolean mustQuote, boolean nextStep) {
+	public String nextString(boolean allowCRLF, boolean allowQuote,
+			boolean mustQuote, boolean nextStep, char... quotes) {
 
-		if (quote == '"') {
-			if (getCurrentChar() == quote) {
+		if (isMatchChar('"', quotes)) {
+			if (isMatchChar(getCurrentChar(), quotes)) {
 				isString = true;
 			} else {
 				isString = !isString;
@@ -44,8 +44,8 @@ public class StringTokener extends Tokener {
 			String sub = "";
 			StringBuilder sb = new StringBuilder();
 			for (;;) {
-				sub = super.nextString(quote, allowCRLF, allowQuote, mustQuote,
-						nextStep);
+				sub = super.nextString(allowCRLF, allowQuote, mustQuote,
+						nextStep, quotes);
 				sb.append(sub);
 				if (sub.length() > 0 && !sub.endsWith("\"")) {
 					sb.append(",");
@@ -55,8 +55,8 @@ public class StringTokener extends Tokener {
 			}
 			return sb.toString();
 		}
-		return super.nextString(quote, allowCRLF, allowQuote, mustQuote,
-				nextStep);
+		return super.nextString(allowCRLF, allowQuote, mustQuote,
+				nextStep, quotes);
 	}
 
 	/**
@@ -119,7 +119,7 @@ public class StringTokener extends Tokener {
 		ArrayList<String> list = new ArrayList<String>();
 		String sub;
 		do {
-			sub = nextString('"', true);
+			sub = nextString(true, '"');
 			if (sub.length() > 0) {
 				if (isString()) {
 					list.add("\"" + sub + "\"");
@@ -153,6 +153,28 @@ public class StringTokener extends Tokener {
 	
 	public void startToken() {
 		this.startToken = this.buffer.position();
+	}
+	
+	public char skipChar(char... quotes) {
+		char c = getCurrentChar();
+		if(quotes == null) {
+			return c;
+		}
+		boolean found;
+		do {
+			found=false;
+			for(int i=0;i<quotes.length;i++) {
+				if(quotes[i] == c) {
+					found = true;
+					break;
+				}
+			}
+			if(found == false) {
+				break;
+			}
+			c = next();
+		} while(c!=0);
+		return c;
 	}
 	
 	public String getToken(String defaultText) {

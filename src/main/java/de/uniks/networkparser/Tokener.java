@@ -171,9 +171,40 @@ public abstract class Tokener {
 		}
 		return c;
 	}
-
-	public String nextString(char quote, boolean allowCRLF) {
-		return nextString(quote, allowCRLF, false, false, true);
+	/**
+	 * Return the characters up to the next close quote character. Backslash
+	 * processing is done. The formal JSON format does not allow strings in
+	 * single quotes, but an implementation is allowed to accept them.
+	 *
+	 * @param allowCRLF
+	 *            is allow CRLF in Stream
+	 * @param quotes
+	 *            The quoting character, either <code>"</code>
+	 *            &nbsp;<small>(double quote)</small> or <code>'</code>
+	 *            &nbsp;<small>(single quote)</small>.
+	 * @return A String.
+	 */
+	public String nextString(boolean allowCRLF, char... quotes) {
+		return nextString(allowCRLF, false, false, true, quotes);
+	}
+	
+	/**
+	 * Return the characters up to the next close quote character. Backslash
+	 * processing is done. The formal JSON format does not allow strings in
+	 * single quotes, but an implementation is allowed to accept them.
+	 *
+	 * @param allowCRLF
+	 *            is allow CRLF in Stream
+	 * @param nextStep
+	 *            must i step next after find Text
+	 * @param quotes
+	 *            The quoting character, either <code>"</code>
+	 *            &nbsp;<small>(double quote)</small> or <code>'</code>
+	 *            &nbsp;<small>(single quote)</small>.
+	 * @return A String.
+	 */
+	public String nextString(boolean allowCRLF, boolean nextStep, char... quotes) {
+		return nextString(allowCRLF, false, false, nextStep, quotes);
 	}
 
 	/**
@@ -181,10 +212,6 @@ public abstract class Tokener {
 	 * processing is done. The formal JSON format does not allow strings in
 	 * single quotes, but an implementation is allowed to accept them.
 	 *
-	 * @param quote
-	 *            The quoting character, either <code>"</code>
-	 *            &nbsp;<small>(double quote)</small> or <code>'</code>
-	 *            &nbsp;<small>(single quote)</small>.
 	 * @param allowCRLF
 	 *            is allow CRLF in Stream
 	 * @param allowQuote
@@ -194,28 +221,32 @@ public abstract class Tokener {
 	 *
 	 * @param nextStep
 	 *            must i step next after find Text
+	 * @param quotes
+	 *            The quoting character, either <code>"</code>
+	 *            &nbsp;<small>(double quote)</small> or <code>'</code>
+	 *            &nbsp;<small>(single quote)</small>.
 	 * @return A String.
 	 */
-	public String nextString(char quote, boolean allowCRLF, boolean allowQuote,
-			boolean mustQuote, boolean nextStep) {
-		if (getCurrentChar() == 0) {
+	public String nextString(boolean allowCRLF, boolean allowQuote,
+			boolean mustQuote, boolean nextStep, char... quotes) {
+		if (getCurrentChar() == 0 || quotes == null) {
 			return "";
 		}
-		if (getCurrentChar() == quote) {
+        if (isMatchChar(getCurrentChar(), quotes)) {
 			if (nextStep) {
 				next();
 			}
 			return "";
 		}
 		if (buffer.isCache()) {
-			return getString(quote, allowCRLF, allowQuote, mustQuote, nextStep);
+			return getString(allowCRLF, allowQuote, mustQuote, nextStep, quotes);
 		}
-		return getStringBuffer(quote, allowCRLF, allowQuote, mustQuote,
-				nextStep);
+		return getStringBuffer(allowCRLF, allowQuote, mustQuote,
+				nextStep, quotes);
 	}
 
-	private String getString(char quote, boolean allowCRLF, boolean allowQuote,
-			boolean mustQuote, boolean nextStep) {
+	private String getString(boolean allowCRLF, boolean allowQuote,
+			boolean mustQuote, boolean nextStep, char... quotes) {
 		int startpos = this.buffer.position();
 		char c;
 		boolean isQuote = false;
@@ -228,7 +259,7 @@ public abstract class Tokener {
 			case '\r':
 				if (!allowCRLF) {
 					if (logger.error(this, "getString",
-							NetworkParserLog.ERROR_TYP_PARSING, quote,
+							NetworkParserLog.ERROR_TYP_PARSING, quotes,
 							allowCRLF, allowQuote, mustQuote, nextStep)) {
 						throw new RuntimeException("Unterminated string");
 					}
@@ -249,7 +280,13 @@ public abstract class Tokener {
 				}
 			}
 			b = c;
-		} while (c != 0 && c != quote);
+			for(int i=0;i<quotes.length;i++) {
+				if(c == quotes[i]) {
+					c=0;
+					break;
+				}
+			}
+		} while (c != 0);
 
 		int endPos = this.buffer.position();
 		if (nextStep) {
@@ -262,8 +299,8 @@ public abstract class Tokener {
 		return this.buffer.substring(startpos, endPos - startpos);
 	}
 
-	private String getStringBuffer(char quote, boolean allowCRLF,
-			boolean allowQuote, boolean mustQuote, boolean nextStep) {
+	private String getStringBuffer(boolean allowCRLF,
+			boolean allowQuote, boolean mustQuote, boolean nextStep, char... quotes) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(getCurrentChar());
 
@@ -277,7 +314,7 @@ public abstract class Tokener {
 			case '\r':
 				if (!allowCRLF) {
 					if (logger.error(this, "getStringBuffer",
-							NetworkParserLog.ERROR_TYP_PARSING, quote,
+							NetworkParserLog.ERROR_TYP_PARSING, quotes,
 							allowCRLF, allowQuote, mustQuote, nextStep)) {
 						throw new RuntimeException("Unterminated string");
 					}
@@ -298,12 +335,18 @@ public abstract class Tokener {
 					}
 					isQuote = true;
 				}
-				if (c != quote) {
+				if (isMatchChar(c, quotes) == false) {
 					sb.append(c);
 				}
 				b = c;
 			}
-		} while (c != 0 && c != quote);
+			for(int i=0;i<quotes.length;i++) {
+				if(c == quotes[i]) {
+					c=0;
+					break;
+				}
+			}
+		} while (c != 0);
 		if (nextStep) {
 			next();
 		}
@@ -311,6 +354,15 @@ public abstract class Tokener {
 			return sb.substring(0, sb.length() - 1);
 		}
 		return sb.toString();
+	}
+	
+	boolean isMatchChar(char search, char... quotes) {
+		for(int i=0;i<quotes.length;i++) {
+			if(search == quotes[i]) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**

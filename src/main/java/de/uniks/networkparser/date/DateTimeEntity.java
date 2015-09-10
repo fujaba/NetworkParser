@@ -470,7 +470,7 @@ public class DateTimeEntity {
 		dateFormat = dateFormat.replaceAll("'", "\"");
 		tokener.withText(dateFormat);
 		do {
-			sub = tokener.nextString('"', true, false, false, true);
+			sub = tokener.nextString(true, false, false, true, '"');
 			if (sub.length() > 0 && !tokener.isString()) {
 				// System.out.println(count++
 				// + ": #" +sub+ "# -- " +tokener.isString());

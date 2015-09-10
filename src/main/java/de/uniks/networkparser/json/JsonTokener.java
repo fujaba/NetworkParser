@@ -49,12 +49,12 @@ public class JsonTokener extends Tokener {
 		switch (c) {
 		case '"':
 			next();
-			return EntityUtil.unQuote(nextString(c, isAllowCRLF(), allowQuote, false, true));
+			return EntityUtil.unQuote(nextString(isAllowCRLF(), allowQuote, false, true, c));
 		case '\\':
 			// Must be unquote
 			next();
 			next();
-			return nextString('"', isAllowCRLF(), allowQuote, true, true);
+			return nextString(isAllowCRLF(), allowQuote, true, true, '"');
 		case '{':
 			BaseItem element = creator.getNewList(true);
 			if (element instanceof SimpleKeyValueList<?, ?>) {

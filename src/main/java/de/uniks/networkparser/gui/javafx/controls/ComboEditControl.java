@@ -66,7 +66,7 @@ public class ComboEditControl extends EditControl<ComboBox<Object>>{
 			String sub;
 			this.list=new TableList();
 			do{
-				sub = tokener.nextString(',', true);
+				sub = tokener.nextString(true, ',');
 				if(sub.length()>0){
 					list.add(sub);
 				}

@@ -992,7 +992,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	}
 	
 	Object removeByIndex(int index, int offset, int offsetIndex) {
-		Object item = removeItem(index + offsetIndex, offset);
+		Object item = removeItem(index + offsetIndex, offset, offsetIndex);
 		if(item != null){
 			size--;
 			if(!shrink(size)){
@@ -1020,7 +1020,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		return item;
 	}
 	
-	Object removeItem(int index, int offset) 
+	Object removeItem(int index, int offset, int oldIndex) 
 	{
 		if(elements==null) {
 			return null;
@@ -1064,11 +1064,8 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 				hashCodes[indexPos] = -1;
 			}
 		}
-		if(offset>0) {
-			return oldValue;
-		}
 
-		if(index == this.index) {
+		if(index == oldIndex) {
 			items[index] = null;
 			if(offset==SMALL_KEY) {
 				this.index++;
