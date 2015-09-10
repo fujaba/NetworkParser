@@ -4,13 +4,11 @@ import java.util.Iterator;
 
 import org.junit.Test;
 
-import de.uniks.networkparser.json.JsonObject;
-import de.uniks.networkparser.json.UpdateListenerJson;
 import de.uniks.networkparser.list.SimpleList;
 
 public class TestClass {
 
-//	@Test
+	@Test
 	public void test(){
 		SimpleList<Integer> list=new SimpleList<>();
 		list.add(42);

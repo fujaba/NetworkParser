@@ -368,4 +368,9 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 		}
 		return this;
 	}
+
+	public Entity without(String key) {
+		remove(key);
+		return this;
+	}
 }

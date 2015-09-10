@@ -375,6 +375,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 				if(minCapacity < ((Object[])elements[SMALL_KEY]).length * MINUSEDLIST) {
 					resizeSmall(newSize, SMALL_KEY);
 					resizeSmall(newSize, SMALL_VALUE);
+					this.index = 0;
 					change = true;
 				}
 				if(elements[BIG_KEY]!= null) {
@@ -392,6 +393,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 			}
 		}else if(minCapacity < elements.length * MINUSEDLIST) {
 			resizeSmall(newSize);
+			this.index = 0;
 			return true;
 		}
 		return false;

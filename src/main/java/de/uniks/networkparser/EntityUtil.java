@@ -22,12 +22,16 @@ package de.uniks.networkparser;
  permissions and limitations under the Licence.
 */
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.StringItem;
+import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.list.AbstractArray;
 import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.xml.XMLEntity;
 
 public class EntityUtil {
 	private static final String HEXVAL = "0123456789abcdef";
@@ -474,5 +478,61 @@ public class EntityUtil {
 			}
 		}
 		return sb.toString();
+	}
+
+	public static boolean compareEntity(Entity entityA, Entity entityB) {
+		if(entityB == null) {
+			return entityA == null;
+		}
+		for(int i=entityA.size()- 1 ;i>=0;i--) {
+			String key = entityA.getKeyByIndex(i);
+			Object valueA = entityA.get(key);
+			Object valueB = entityB.get(key);
+			if(valueA == null) {
+				if(valueB == null) {
+					entityA.without(key);
+					entityB.without(key);
+				}
+				continue;
+			}
+			if(compareValue(valueA, valueB)) {
+				entityA.without(key);
+				entityB.without(key);
+			}
+		}
+		boolean isSamesize = entityA.size()<1 && entityB.size()<1;
+		if(entityA instanceof XMLEntity && entityB instanceof XMLEntity) {
+			XMLEntity xmlA = (XMLEntity) entityA;
+			XMLEntity xmlB = (XMLEntity) entityB;
+			compareEntity(xmlA.getChildren(), xmlB.getChildren());
+			return isSamesize && xmlA.getTag().equals(xmlB.getTag());
+		}
+		return isSamesize;
+	}
+
+	public static boolean compareEntity(List<?> jsonA, List<?> jsonB) {
+		if(jsonB == null) {
+			return jsonA == null;
+		}
+		for(int i=jsonA.size() - 1;i>=0;i--) {
+			Object valueA = jsonA.get(i);
+			if(jsonB.size()<i) {
+				continue;
+			}
+			Object valueB = jsonB.get(i);
+			if(compareValue(valueA, valueB)) {
+				jsonA.remove(i);
+				jsonB.remove(i);
+			}
+		}
+		return jsonA.size()<1 && jsonB.size()<1;
+	}
+	static boolean compareValue(Object valueA, Object valueB) {
+		if(valueA instanceof Entity && valueB instanceof Entity) {
+			return compareEntity((Entity)valueA, (Entity)valueB);
+		} else if(valueA instanceof JsonArray && valueB instanceof JsonArray) {
+			return compareEntity((JsonArray)valueA, (JsonArray)valueB);
+		}
+		return valueA.equals(valueB);
 	}
 }

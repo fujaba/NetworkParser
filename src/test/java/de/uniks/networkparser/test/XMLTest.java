@@ -11,6 +11,7 @@ import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.test.model.Apple;
 import de.uniks.networkparser.test.model.AppleTree;
 import de.uniks.networkparser.test.model.ChatMessage;
@@ -289,5 +290,21 @@ public class XMLTest {
 		Assert.assertEquals(item.getId(), newItem.getId());
 		Assert.assertEquals(item.getUser(), newItem.getUser());
 		Assert.assertEquals(item.getValue(), newItem.getValue());
+	}
+	
+	@Test
+	public void testXMLCompare(){
+		XMLEntity xmlA = new XMLEntity().withKeyValue("id", 42).withTag("p");
+		XMLEntity xmlB = new XMLEntity().withKeyValue("id", 42).withTag("p");
+		xmlA.withKeyValue("no", 23);
+		xmlB.withKeyValue("no", 24);
+		xmlA.withChild(new XMLEntity().withTag("1"));
+		xmlA.withChild(new XMLEntity().withTag("2"));
+		xmlB.withChild(new XMLEntity().withTag("1"));
+		xmlB.withChild(new XMLEntity().withTag("3"));
+				
+		Assert.assertFalse(EntityUtil.compareEntity(xmlA, xmlB));
+		Assert.assertEquals("<p no=\"23\"><2/></p>", xmlA.toString());
+		Assert.assertEquals("<p no=\"24\"><3/></p>", xmlB.toString());
 	}
 }
