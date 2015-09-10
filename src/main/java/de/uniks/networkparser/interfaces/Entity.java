@@ -34,4 +34,10 @@ public interface Entity {
 	public int getInt(String key);
 
 	public Object get(Object key);
+	
+	public int size();
+
+	public Entity without(String key);
+
+	public String getKeyByIndex(int pos);
 }

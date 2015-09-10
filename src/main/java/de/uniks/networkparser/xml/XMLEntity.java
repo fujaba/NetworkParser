@@ -32,9 +32,7 @@ import de.uniks.networkparser.list.SimpleList;
 /**
  * The Class XMLEntity.
  */
-public class XMLEntity extends SimpleKeyValueList<String, Object> implements
-
-		StringItem, Entity {
+public class XMLEntity extends SimpleKeyValueList<String, Object> implements StringItem, Entity {
 	/** Constant of TAG. */
 	public static final String PROPERTY_TAG = "tag";
 	/** Constant of VALUE. */
@@ -284,6 +282,11 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements
 	@Override
 	public XMLEntity withKeyValue(Object key, Object value) {
 		super.withKeyValue(key, value);
+		return this;
+	}
+	
+	public Entity without(String key) {
+		remove(key);
 		return this;
 	}
 }

@@ -29,6 +29,7 @@ import java.util.Iterator;
 
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 /**
@@ -448,53 +449,5 @@ public class UpdateListenerJson implements PropertyChangeListener {
 				countMessage((JsonObject) obj, classCounts, gc);
 			}
 		}
-	}
-	
-	public static boolean compareJson(JsonObject jsonA, JsonObject jsonB) {
-		if(jsonB == null) {
-			return jsonA == null;
-		}
-		for(int i=jsonA.size()- 1 ;i>=0;i--) {
-			String key = jsonA.getKeyByIndex(i);
-			Object valueA = jsonA.getValue(key);
-			Object valueB = jsonB.getValue(key);
-			if(valueA == null) {
-				if(valueB == null) {
-					jsonA.remove(key);
-					jsonB.remove(key);
-				}
-				continue;
-			}
-			if(compareValue(valueA, valueB)) {
-				jsonA.remove(key);
-				jsonB.remove(key);
-			}
-		}
-		return jsonA.size()<1 && jsonB.size()<1;
-	}
-	static boolean compareValue(Object valueA, Object valueB) {
-		if(valueA instanceof JsonObject && valueB instanceof JsonObject) {
-			return compareJson((JsonObject)valueA, (JsonObject)valueB);
-		} else if(valueA instanceof JsonArray && valueB instanceof JsonArray) {
-			return compareJson((JsonArray)valueA, (JsonArray)valueB);
-		}
-		return valueA.equals(valueB);
-	}
-	public static boolean compareJson(JsonArray jsonA, JsonArray jsonB) {
-		if(jsonB == null) {
-			return jsonA == null;
-		}
-		for(int i=jsonA.size() - 1;i>=0;i--) {
-			Object valueA = jsonA.get(i);
-			if(jsonB.size()<i) {
-				continue;
-			}
-			Object valueB = jsonB.get(i);
-			if(compareValue(valueA, valueB)) {
-				jsonA.remove(i);
-				jsonB.remove(i);
-			}
-		}
-		return jsonA.size()<1 && jsonB.size()<1;
 	}
 }
