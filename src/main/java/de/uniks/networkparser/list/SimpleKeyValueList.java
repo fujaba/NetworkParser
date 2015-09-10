@@ -466,7 +466,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 			return null;
 		}
 		int oldIndex = this.index;
-		removeItem(index, SMALL_KEY);
+		removeItem(index, SMALL_KEY, oldIndex);
 		return (V) removeByIndex(index, SMALL_VALUE, oldIndex);
 	}
 	

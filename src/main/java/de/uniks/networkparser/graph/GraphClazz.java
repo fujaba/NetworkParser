@@ -59,8 +59,6 @@ public class GraphClazz extends GraphAbstractClazz {
 		return this;
 	}
 	
-	
-	
 	@Override
 	public GraphClazz with(GraphAttribute... values) {
 		super.with(values);
@@ -122,7 +120,9 @@ public class GraphClazz extends GraphAbstractClazz {
 	 */
 	public GraphClazz withAssoc(GraphClazz tgtClass, String tgtRoleName, GraphCardinality tgtCard) {
 		GraphAssociation assoc = new GraphAssociation().withTarget(tgtClass, tgtRoleName, tgtCard);
-		this.with(assoc);
+		// Don't save bidirectional
+		this.associations.add(assoc); 
+//		this.with(assoc);
 		return this;
 	}
 
@@ -197,6 +197,19 @@ public class GraphClazz extends GraphAbstractClazz {
 	 */
 	public SimpleSet<GraphClazz> getKindClazzes() {
 		return getEdges(GraphEdgeTypes.CHILD);
+	}
+	
+	public SimpleSet<GraphEdge> getAllEdges() {
+		SimpleSet<GraphEdge> allEdges = new SimpleSet<GraphEdge>();
+		if (associations == null ) {
+			return allEdges;
+		}
+		for (GraphEdge assoc : associations) {
+			if(GraphEdgeTypes.isEdge(assoc.getTyp().getValue())) {
+				allEdges.add(assoc);
+			}
+		}
+		return allEdges;
 	}
 	
 	SimpleSet<GraphClazz> getEdges(GraphEdgeTypes typ) {
@@ -289,52 +302,49 @@ public class GraphClazz extends GraphAbstractClazz {
 	}
 
 	/**
-	 * get All Attributes
+	 * get All GraphAttributes
 	 * 
-	 * @return all Attributes of a Clazz
+	 * @return all GraphAttributes of a GraphNode
+	 * 
 	 *         <pre>
 	 *              one                       many
-	 * Clazz ----------------------------------- Attribute
-	 *              clazz                   attributes
+	 * GraphModel ----------------------------------- GraphAttributes
+	 *              parent                   clazz
 	 *         </pre>
 	 */
 	public SimpleSet<GraphAttribute> getAttributes() {
 		SimpleSet<GraphAttribute> collection = new SimpleSet<GraphAttribute>();
-		if (children == null ) {
+		if (children == null) {
 			return collection;
 		}
 		for (GraphMember child : children) {
-			if((child instanceof GraphAttribute) == false) {
-				continue;
+			if (child instanceof GraphAttribute)  {
+				collection.add((GraphAttribute) child);
 			}
-			collection.add((GraphAttribute) child);
 		}
 		return collection;
 	}
 
 	/**
-	 * get All Methods
+	 * get All GraphMethods
 	 * 
-	 * @return all Methods of a Clazz
-	 *         /****************************************************************
-	 *         ****
+	 * @return all GraphMethods of a GraphNode
 	 * 
 	 *         <pre>
 	 *              one                       many
-	 * Clazz ----------------------------------- Method
-	 *              clazz                   methods
+	 * GraphModel ----------------------------------- GraphMethods
+	 *              parent                   clazz
 	 *         </pre>
 	 */
 	public SimpleSet<GraphMethod> getMethods() {
 		SimpleSet<GraphMethod> collection = new SimpleSet<GraphMethod>();
-		if (children == null ) {
+		if (children == null) {
 			return collection;
 		}
 		for (GraphMember child : children) {
-			if((child instanceof GraphMethod) == false) {
-				continue;
+			if (child instanceof GraphMethod)  {
+				collection.add((GraphMethod) child);
 			}
-			collection.add((GraphMethod) child);
 		}
 		return collection;
 	}

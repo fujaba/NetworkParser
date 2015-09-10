@@ -99,6 +99,11 @@ public class GraphList extends GraphModel implements BaseItem{
 		return value;
 	}
 	
+	public GraphList withNode(GraphNode... value) {
+		super.with(value);
+		return this;
+	}
+	
 	public GraphOptions getOptions() {
 		return options;
 	}
@@ -131,6 +136,16 @@ public class GraphList extends GraphModel implements BaseItem{
 			}
 		}
 		return null;
+	}
+	
+	public SimpleSet<GraphNode> getNodes() {
+		SimpleSet<GraphNode> nodes = new SimpleSet<GraphNode>();
+		for(GraphMember item : this.getChildren()) {
+			if(item instanceof GraphNode ){
+				nodes.add((GraphNode)item);
+			}
+		}
+		return nodes;
 	}
 	
 	public SimpleSet<GraphEdge> getEdges() {
