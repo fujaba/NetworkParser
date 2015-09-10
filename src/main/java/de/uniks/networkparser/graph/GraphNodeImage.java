@@ -62,4 +62,10 @@ public class GraphNodeImage implements GraphMember {
 		}
 		return this;
 	}
+	
+	@Override
+	public String toString()
+	{
+	   return "" + value;
+	}
 }
