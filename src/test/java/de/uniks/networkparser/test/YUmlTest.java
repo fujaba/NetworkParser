@@ -6,7 +6,12 @@ import java.util.Date;
 
 import org.junit.Test;
 
+import de.uniks.networkparser.graph.GraphCardinality;
+import de.uniks.networkparser.graph.GraphClazz;
+import de.uniks.networkparser.graph.GraphDataType;
 import de.uniks.networkparser.graph.GraphIdMap;
+import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.graph.YUMLConverter;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.test.model.ChatMessage;
 import de.uniks.networkparser.test.model.Room;
@@ -52,4 +57,17 @@ public class YUmlTest {
 
 		assertEquals(url + "[University]", url + yumlParser.parseClass(uni));
 	}
+	
+	@Test
+	public void testSimpleGrahList() {
+		GraphList list = new GraphList();
+		GraphClazz uni = list.with(new GraphClazz().withId("UniKassel").withClassName("University"));
+		uni.withAttribute("name", GraphDataType.STRING);
+		uni.withMethod("init()");
+		GraphClazz student = list.with(new GraphClazz().withId("Stefan").withClassName("Student"));
+		student.withAssoc(uni, "owner", GraphCardinality.ONE);
+		YUMLConverter converter = new YUMLConverter();
+		System.out.println(converter.convert(list, true));
+	}	
+	
 }

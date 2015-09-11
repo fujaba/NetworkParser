@@ -12,8 +12,6 @@ import de.uniks.networkparser.graph.GraphNode;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.IdMapDecoder;
-import de.uniks.networkparser.list.SimpleKeyValueList;
-import de.uniks.networkparser.list.SimpleSet;
 
 //graph	:	[ strict ] (graph | digraph) [ ID ] '{' stmt_list '}'
 //stmt_list	:	[ stmt [ ';' ] [ stmt_list ] ]
@@ -205,7 +203,7 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 		sb.append("   compound=true;" + BaseItem.CRLF +BaseItem.CRLF);
 		boolean isObjectdiagram =false;
 		isObjectdiagram = GraphIdMap.OBJECT.equals(root.getTyp());
-		SimpleKeyValueList<GraphEdge, GraphNode> allEdges = new SimpleKeyValueList<GraphEdge, GraphNode>();
+
 		for(GraphNode node : root.getNodes()) {
 			sb.append(node.getId());
 			sb.append("[label=<<table border='0' cellborder='1' cellspacing='0'><tr><td><b>");
@@ -249,26 +247,20 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 				sb.append(BaseItem.CRLF+"</table></td></tr>");
 			}
 			sb.append("</table>>];"+BaseItem.CRLF);
-			SimpleSet<GraphEdge> childEdges = graphClazz.getAllEdges();
-			for(GraphEdge edge : childEdges) {
-				if(allEdges.contains(edge) == false && allEdges.contains(edge.getOther()) == false) {
-					allEdges.put(edge, graphClazz);
-				} else if(allEdges.get(edge) != graphClazz) {
-					allEdges.put(edge, graphClazz);
-				}
-			}
 		}
+		
+		root.initSubLinks();
 //		// now generate edges from edgeMap
-		for(GraphEdge edge : allEdges) {
+		for(GraphEdge edge : root.getEdges()) {
 			GraphEdge otherEdge = edge.getOther();
-			if(otherEdge  != null) {
+			if(otherEdge.getTyp()  != GraphEdgeTypes.EDGE) {
 				// It is bidiAssoc
 				sb.append(edge.getNode().getId() + " -- " + otherEdge.getNode().getId());
-				sb.append("[headlabel = \""+edge.getInfo().getId()+"\" taillabel = \""+otherEdge.getInfo().getId()+"\"];"+BaseItem.CRLF);
+				sb.append("[headlabel = \""+edge.getProperty()+"\" taillabel = \""+otherEdge.getProperty()+"\"];"+BaseItem.CRLF);
 			} else {
-				sb.append(edge.getNode().getId() + " -> " + allEdges.getValue(edge));
+				sb.append(edge.getNode().getId() + " -> " + otherEdge.getNode().getId());
 				graphTyp = "digraph";
-				sb.append("[taillabel = \""+edge.getInfo().getId()+"\"];"+BaseItem.CRLF);
+				sb.append("[taillabel = \""+edge.getProperty()+"\"];"+BaseItem.CRLF);
 			}
 				
 		}

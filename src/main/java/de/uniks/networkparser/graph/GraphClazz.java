@@ -105,9 +105,17 @@ public class GraphClazz extends GraphAbstractClazz {
 	 * @return The GraphCard Instance
 	 */
 	public GraphClazz withAssoc(GraphClazz tgtClass, String tgtRoleName, GraphCardinality tgtCard, String srcRoleName, GraphCardinality srcCard) {
-		GraphAssociation assoc = new GraphAssociation().withTarget(tgtClass, tgtRoleName, tgtCard).withSource(this, srcRoleName,
-				srcCard);
-		this.with(assoc);
+		// Target
+		GraphAssociation assocTarget = new GraphAssociation();
+		assocTarget.with(tgtClass, tgtCard, tgtRoleName);
+
+		// Source
+		GraphAssociation assocSource = new GraphAssociation();
+		assocSource.with(this, srcCard, srcRoleName);
+		
+		assocSource.with(assocTarget);
+
+		this.with(assocSource);
 		return this;
 	}
 
@@ -119,10 +127,17 @@ public class GraphClazz extends GraphAbstractClazz {
 	 * @return The GraphCard Instance
 	 */
 	public GraphClazz withAssoc(GraphClazz tgtClass, String tgtRoleName, GraphCardinality tgtCard) {
-		GraphAssociation assoc = new GraphAssociation().withTarget(tgtClass, tgtRoleName, tgtCard);
-		// Don't save bidirectional
-		this.associations.add(assoc); 
-//		this.with(assoc);
+		// Target
+		GraphAssociation assocTarget = new GraphAssociation();
+		assocTarget.withTyp(GraphEdgeTypes.UNDIRECTIONAL);
+		assocTarget.with(tgtClass, tgtCard, tgtRoleName);
+
+		// Source
+		GraphAssociation assocSource = new GraphAssociation();
+		assocSource.withTyp(GraphEdgeTypes.EDGE);
+		assocSource.with(assocTarget);
+
+		this.with(assocSource);
 		return this;
 	}
 

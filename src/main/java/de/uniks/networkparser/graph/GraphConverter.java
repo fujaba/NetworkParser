@@ -48,7 +48,8 @@ public class GraphConverter implements Converter {
 	public static final String TARGET = "target";
 	public static final String CARDINALITY = "cardinality";
 	public static final String PROPERTY = "property";
-	public static final String HEADIMAGE = "head_src";
+	public static final String HEAD = "head";
+	public static final String SRC = "src";
 	public static final String OPTIONS = "options";
 	private static final String STYLE = "style";
 	private static final String INFO = "info";
@@ -81,7 +82,6 @@ public class GraphConverter implements Converter {
 			for (GraphAttribute attribute : node.getValue()) {
 				boolean addValue = true;
 				for (GraphEdge edge : root.getEdges()) {
-
 					if (edge.contains(node.getKey())) {
 						if (attribute.getId().equals(edge.getProperty())) {
 							addValue = false;
@@ -123,9 +123,9 @@ public class GraphConverter implements Converter {
 		if (node.containsKey(JsonIdMap.CLASS)) {
 			graphNode.withClassName(node.getString(JsonIdMap.CLASS));
 		}
-		if (node.containsKey(HEADIMAGE)) {
+		if (node.containsKey(HEAD)) {
 			graphNode
-					.with(new GraphNodeImage().with(node.getString(HEADIMAGE)));
+					.with(new GraphNodeImage().with(node.getString(HEAD)));
 		}
 
 		if (node.containsKey(JsonIdMap.JSON_PROPS)) {
@@ -136,7 +136,7 @@ public class GraphConverter implements Converter {
 					GraphNode newNode = parseJsonObject(root,
 							(JsonObject) props.getValueByIndex(i), attributes);
 					root.add(new GraphEdge().with(graphNode).with(
-							new GraphEdge(newNode, GraphCardinality.ONE, props
+							new GraphEdge().with(newNode, GraphCardinality.ONE, props
 									.getKeyByIndex(i))));
 				} else if (props.getValueByIndex(i) instanceof JsonArray) {
 					// Must be a Link to n
@@ -147,7 +147,7 @@ public class GraphConverter implements Converter {
 							GraphNode newNode = parseJsonObject(root,
 									(JsonObject) entity, attributes);
 							root.add(new GraphEdge().with(graphNode).with( 
-									new GraphEdge(newNode, GraphCardinality.MANY,
+									new GraphEdge().with(newNode, GraphCardinality.MANY,
 											props.getKeyByIndex(i))));
 						} else {
 							if (sb.length() > 0) {
@@ -195,7 +195,7 @@ public class GraphConverter implements Converter {
 		}
 		jsonRoot.put(STYLE, root.getStyle());
 		jsonRoot.put(NODES, parseEntities(typ, root, removePackage));
-		jsonRoot.put(EDGES, parseEdges(typ, root.getEdges(), removePackage));
+		jsonRoot.withKeyValue(EDGES, parseEdges(typ, root.getEdges(), removePackage));
 		return jsonRoot;
 	}
 
@@ -336,7 +336,7 @@ public class GraphConverter implements Converter {
 		
 		GraphNodeImage nodeHeader = getNodeHeader(element);
 		if (nodeHeader != null) {
-			item.put(HEADIMAGE, nodeHeader);
+			item.put(HEAD, new JsonObject().withKeyValue(SRC, nodeHeader));
 		}
 		JsonArray items = parseAttributes(typ, element, shortName);
 		if(items.size()>0){

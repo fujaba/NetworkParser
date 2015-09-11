@@ -25,14 +25,6 @@ package de.uniks.networkparser.graph;
 public class GraphEdgeDiff extends GraphEdge{
 	private GraphEdgeDiff match;
 
-	public GraphEdgeDiff(GraphNode node, GraphCardinality cardinality, String property) {
-		super(node, cardinality, property);
-	}
-
-	public GraphEdgeDiff() {
-		super();
-	}
-
 	public GraphEdgeDiff getMatch() {
 		return match;
 	}
@@ -51,5 +43,4 @@ public class GraphEdgeDiff extends GraphEdge{
 		}
 		return this;
 	}
-
 }

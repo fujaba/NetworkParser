@@ -164,7 +164,7 @@ public class EMFUtil {
 			GraphNode tgtClazz = model.getNode(tgtClassName);
 			GraphEdge tgtAssoc = items.getValue(tgtClassName+":"+tgtRoleName);
 			if(tgtAssoc == null) {
-				tgtAssoc = new GraphEdge(tgtClazz, GraphCardinality.ONE, tgtRoleName);
+				tgtAssoc = new GraphEdge().with(tgtClazz, GraphCardinality.ONE, tgtRoleName);
 			}
 
 			if (eref.containsKey(UPPERBOUND)) {

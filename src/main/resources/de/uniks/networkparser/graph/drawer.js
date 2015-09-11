@@ -47,7 +47,8 @@
 "use strict";
 var Object_create = Object.create || function (o) { var F = function () {}; F.prototype = o; return new F(); };
 
-var Drawer = function () {this.util = new GraphUtil(); };
+var Drawer = function () {this.init(); };
+Drawer.prototype.init = function (typ) {this.util = new GraphUtil(typ); this.symbolLib = new SymbolLibary(); };
 Drawer.prototype.clearBoard = function () {};
 Drawer.prototype.setPos = function (item, x, y) {item.x = x; item.y = y; };
 Drawer.prototype.setSize = function (item, x, y) {item.width = x; item.height = y; };
@@ -80,10 +81,15 @@ Drawer.prototype.removeToolItems = function (board) {
 };
 Drawer.prototype.createImage = function (node) {
 	node.model = node;
+	if (this.symbolLib.isSymbol(node)) {
+		return this.symbolLib.draw(null, node);
+	}
 	var n = {tag: "img", model: node, src: node.src};
 	if (node.width || node.height) {
 		n.width = node.width;
 		n.height = node.height;
+	} else {
+		n.xmlns = "http://www.w3.org/1999/xhtml";
 	}
 	var img = this.util.create(n);
 	if (!node.width && !node.height) {
@@ -128,8 +134,20 @@ Drawer.prototype.createBoard = function (node, graph, listener) {
 	};
 	board.onmouseout = function (event) {
 		var left = board.offsetLeft, top = board.offsetTop, x = Math.floor(event.pageX), y = Math.floor(event.pageY);
-		if (!left) {left = board.parentNode.offsetLeft; }
-		if (!top) {top = board.parentNode.offsetTop; }
+		if (!left) {
+			if(board.parentNode) {
+				left = board.parentNode.offsetLeft;
+			} else {
+				left = 0;
+			}
+		}
+		if (!top) {
+			if(board.parentNode) {
+				top = board.parentNode.offsetTop;
+			} else {
+				top = 0;
+			}
+		}
 		if (!that.isInTool(x, y, left, top)) {
 			that.removeToolItems(board);
 		}
@@ -156,7 +174,7 @@ Drawer.prototype.getButtons = function (graph, notTyp) {
 	return buttons;
 };
 //				###################################################### HTMLDrawer ####################################################################################
-var HTMLDrawer = function () {this.util = new GraphUtil(); };
+var HTMLDrawer = function () { this.init(); };
 HTMLDrawer.prototype = Object_create(Drawer.prototype);
 HTMLDrawer.prototype.setPos = function (item, x, y) {item.style.left = x + "px"; item.style.top = y + "px"; };
 HTMLDrawer.prototype.setSize = function (item, x, y) {item.style.width = x + "px"; item.style.height = y + "px"; };
@@ -174,12 +192,11 @@ HTMLDrawer.prototype.createCell = function (parent, tag, node, innerHTML, typ) {
 };
 HTMLDrawer.prototype.getNode = function (node, draw) {
 	var htmlElement = this.util.create({tag: "div", model: node});
-	var symbolLib = new SymbolLibary();
 	var model = this.model.model;
 	if (node.typ === "patternobject") {
 		htmlElement.className = "patternElement";
-	} else if (symbolLib.isSymbol(node)) {
-		return symbolLib.draw(null, node);
+	} else if (this.symbolLib.isSymbol(node)) {
+		return this.symbolLib.draw(null, node);
 	}
 	if (node.typ === "classdiagram") {
 		htmlElement.className = "classdiagram";
@@ -200,7 +217,7 @@ HTMLDrawer.prototype.getNode = function (node, draw) {
 			this.model.draw(node);
 			htmlElement.style.borderColor = "red";
 			if (node.style && node.style.toLowerCase() === "nac") {
-				htmlElement.appendChild(symbolLib.draw(null, {typ: "stop", x: 0, y: 0}));
+				htmlElement.appendChild(this.symbolLib.draw(null, {typ: "stop", x: 0, y: 0}));
 			}
 		} else {
 			this.model.layout(0, 0, node);
@@ -209,11 +226,12 @@ HTMLDrawer.prototype.getNode = function (node, draw) {
 		return htmlElement;
 	}
 	this.model.createElement(htmlElement, "class", node);
+	var img;
 	if (node.content) {
 		node.content.width = node.content.width || 0;
 		node.content.height = node.content.height || 0;
 		if (node.content.src) {
-			var img = this.createImage(node.content);
+			img = this.createImage(node.content);
 			if (!img) {return null; }
 			htmlElement.appendChild(img);
 			return htmlElement;
@@ -237,8 +255,8 @@ HTMLDrawer.prototype.getNode = function (node, draw) {
 			node.head_img.width = node.head_width;
 			node.head_img.height = node.head_height;
 		}
-		var img = this.createImage(node.head_img);
-		if(img) {
+		img = this.createImage(node.head_img);
+		if (img) {
 			cell.appendChild(img);
 		}
 	}
@@ -358,7 +376,7 @@ HTMLDrawer.prototype.createPath = function (close, fill, path, angle) {
 	return line;
 };
 //				###################################################### SVG ####################################################################################
-var SVGDrawer = function () {this.util = new GraphUtil("http://www.w3.org/2000/svg"); this.showButton = true; };
+var SVGDrawer = function () {this.init("http://www.w3.org/2000/svg"); this.showButton = true; };
 SVGDrawer.prototype = Object_create(Drawer.prototype);
 SVGDrawer.prototype.getWidth = function (label) {
 	var text = this.util.create({tag: "text", _font: true, value: label});
@@ -733,11 +751,17 @@ SymbolLibary.prototype.create = function (node, drawer) {
 	return null;
 };
 SymbolLibary.prototype.isSymbol = function (node) {
-	var fn = this["draw" + this.upFirstChar(node.typ)];
+	var fn = this[this.getName(node)];
 	return typeof fn === "function";
 };
+SymbolLibary.prototype.getName = function (node) {
+	if (node.typ) {
+		return "draw" + this.upFirstChar(node.typ);
+	}
+	return "draw" + this.upFirstChar(node.src);
+};
 SymbolLibary.prototype.draw = function (drawer, node) {
-	var fn = this["draw" + this.upFirstChar(node.typ)];
+	var fn = this[this.getName(node)];
 	if (typeof fn === "function") {
 		var group = fn.apply(this, [node]);
 		if (!drawer) {
@@ -751,47 +775,43 @@ SymbolLibary.prototype.draw = function (drawer, node) {
 		return drawer.createGroup(node, group);
 	}
 };
-SymbolLibary.prototype.drawSmily = function () {
+SymbolLibary.prototype.drawSmily = function (node) {
 	return {
-		x: 0,
-		y: 0,
+		x: node.x || 0,
+		y: node.y || 0,
 		width: 100,
 		height: 100,
 		items: [
-			{tag: "path", d: "m 49.5002 25.0001a 24.5001 24.5000 0 1 1-49.0001 0 24.5001 24.5000 0 1 1 49.0001 0z"},
-			{tag: "path", d: "m 8.6239 30.9175c 15.9633 20 32.1560 0.3211 32.1560 0.3211"},
-			{tag: "path", d: "m 19.6330 19.6789a 1.7431 2.5229 0 1 1-3.4862 0 1.7431 2.5229 0 1 1 3.4862 0z"},
-			{tag: "path", d: "m 33.4862 19.6789a 1.7431 2.5229 0 1 1-3.4862 0 1.7431 2.5229 0 1 1 3.4862 0z"},
-			{tag: "path", d: "m 6.0550 31.0091c 3.3945 0.9175 4.0367-2.2017 4.0367-2.2017"},
-			{tag: "path", d: "m 43.5780 31.3761c-3.3945 0.9175-4.0367-2.2017-4.0367-2.2017"}
+			{tag: "path", stroke:"black", fill:"none", d:"m49.01774,25.64542a24.5001,24.5 0 1 1 -49.0001,0a24.5001,24.5 0 1 1 49.0001,0z"},
+			{tag: "path", d:"m8.14145,31.56282c15.9633,20 32.156,0.3211 32.156,0.3211"},
+			{tag: "path", d:"m19.15054,20.32422a1.7431,2.5229 0 1 1 -3.4862,0a1.7431,2.5229 0 1 1 3.4862,0z"},
+			{tag: "path", d:"m33.00374,20.32422a1.7431,2.5229 0 1 1 -3.4862,0a1.7431,2.5229 0 1 1 3.4862,0z"},
+			{tag: "path", d:"m5.57254,31.65442c3.3945,0.9175 4.0367,-2.2017 4.0367,-2.2017"},
+			{tag: "path", d:"m43.09554,32.02142c-3.3945,0.9175 -4.0367,-2.2017 -4.0367,-2.2017"}
 		]
 	};
 };
-SymbolLibary.prototype.drawDatabase = function () {
+SymbolLibary.prototype.drawDatabase = function (node) {
 	return {
-		x: 0,
-		y: 0,
+		x: node.x || 0,
+		y: node.y || 0,
 		width: 100,
 		height: 100,
 		items: [
-			{tag: "path", d: "M 650-252a 16 4 0 0 0 45 0"},
-			{tag: "rect", width: 46, height: 34},
-			{tag: "ellipse", width: 23, height: 4},
-			{tag: "line", x1: 650, y1: -286, x2: 650, y2: -252},
-			{tag: "line", x1: 696, y1: -286, x2: 696, y2: -252},
-			{tag: "rect", width: 46, height: 42}
+			{tag: "path", d: "m 0.7248,46.85199 c 0,-10.67 60,-10.67 60,0 l 0,44 c 0,10.67 -60,10.67 -60,0 z", stroke:"black", fill:"none"},
+			{tag: "path", d: "m 0.7248,46.85199 c 0,8 60,8 60,0 m -60,4 c 0,8 60,8 60,0 m -60,4 c 0,8 60,8 60,0", stroke:"black", fill:"none"}
 		]
 	};
 };
-SymbolLibary.prototype.drawLetter = function () {
+SymbolLibary.prototype.drawLetter = function (node) {
 	return {
-		x: 0,
-		y: 0,
+		x: node.x || 0,
+		y: node.y || 0,
 		width: 100,
-		height: 35,
+		height: 50,
 		items: [
-			{tag: "path", d: "m 1 1 98 0 0 48-98 0z"},
-			{tag: "path", d: "m 1.2684 1.4855 48.7259 23.3589 48.6202-23.676"}
+			{tag: "path", d: "m 1 1 98 0 0 48-98 0z", fill:"none", stroke:"black"},
+			{tag: "path", d: "m 1.2684 1.4855 48.7259 23.3589 48.6202-23.676", fill:"none", stroke:"black"}
 		]
 	};
 };
@@ -802,7 +822,7 @@ SymbolLibary.prototype.drawMobilphone = function () {
 		width: 25,
 		height: 50,
 		items: [
-			{tag: "path", d: "m 4.1937 0.5 15.6127 0c 2.0463 0 3.6937 1.6474 3.6937 3.6936l 0 41.6127c 0 2.0463-1.6474 3.6937-3.6937 3.6937l-15.6127 0c-2.0463 0-3.6937-1.6474-3.6937-3.6937l 0-41.6127c 0-2.0462 1.6474-3.6936 3.6937-3.6936z"},
+			{tag: "path", d: "m 4.1937 0.5 15.6127 0c 2.0463 0 3.6937 1.6474 3.6937 3.6936l 0 41.6127c 0 2.0463-1.6474 3.6937-3.6937 3.6937l-15.6127 0c-2.0463 0-3.6937-1.6474-3.6937-3.6937l 0-41.6127c 0-2.0462 1.6474-3.6936 3.6937-3.6936z", fill:"none", stroke:"black"},
 			{tag: "path", d: "m 12.5 2.7338a 0.5 0.5 0 1 1-1 0 0.5 0.5 0 1 1 1 0z"},
 			{tag: "path", d: "m 14 45.6882a 2 2.0000 0 1 1-4 0 2 2.0000 0 1 1 4 0z"},
 			{tag: "path", d: "m 8.3516 5.0581 7.2969 0"},
@@ -810,15 +830,15 @@ SymbolLibary.prototype.drawMobilphone = function () {
 		]
 	};
 };
-SymbolLibary.prototype.drawWall = function () {
+SymbolLibary.prototype.drawWall = function (node) {
 	return {
-		x: 0,
-		y: 0,
+		x: node.x || 0,
+		y: node.y || 0,
 		width: 25,
 		height: 50,
 		items: [
 			{tag: "path", d: "m 26.5000 45.9384-5.0389 3.5616-20.9610-9.0435 0.0000-36.3952 5.0389-3.5613 20.9611 9.0437z"},
-			{tag: "path", d: "m 2.7070 11.4274 18.3409 7.9133m-14.4589-12.5655 0 6.3473m 8.1631 21.7364 0 6.3472m-8.6393-9.9876 0 6.3472m 4.0923-10.6702 0 6.3473m 4.7743-10.2152 0 6.3473m-8.8666-10.2152 0 6.3472m 4.7743-10.2151 0 6.3472m-7.9572 14.4578 18.3409 7.9132m-18.3409-13.9132 18.3409 7.9132m-18.3409-13.9133 18.3409 7.9133m-18.3409-13.9133 18.3409 7.9132m-0.0000-13.0532-0.0001 34.0433m-18.2251-41.8406 18.2998 7.9024m 0 0.1115 4.9978-3.5723"}
+			{tag: "path", d: "m 2.7070 11.4274 18.3409 7.9133m-14.4589-12.5655 0 6.3473m 8.1631 21.7364 0 6.3472m-8.6393-9.9876 0 6.3472m 4.0923-10.6702 0 6.3473m 4.7743-10.2152 0 6.3473m-8.8666-10.2152 0 6.3472m 4.7743-10.2151 0 6.3472m-7.9572 14.4578 18.3409 7.9132m-18.3409-13.9132 18.3409 7.9132m-18.3409-13.9133 18.3409 7.9133m-18.3409-13.9133 18.3409 7.9132m-0.0000-13.0532-0.0001 34.0433m-18.2251-41.8406 18.2998 7.9024m 0 0.1115 4.9978-3.5723", stroke:"white"}
 		]
 	};
 };
@@ -829,11 +849,11 @@ SymbolLibary.prototype.drawActor = function () {
 		width: 25,
 		height: 50,
 		items: [
-			{tag: "line", x1: 12, y1: 5, x2: 12, y2: 25},
-			{tag: "circle", r: 5, cx: 12, cy: 0},
-			{tag: "line", x1: 0, y1: 13, x2: 25, y2: 13},
-			{tag: "line", x1: 12, y1: 25, x2: 5, y2: 34},
-			{tag: "line", x1: 12, y1: 25, x2: 20, y2: 34}
+			{tag: "line", x1: 12, y1: 5, x2: 12, y2: 25, stroke:"black"},
+			{tag: "circle", r: 5, cx: 12, cy: 0, stroke:"black"},
+			{tag: "line", x1: 0, y1: 13, x2: 25, y2: 13, stroke:"black"},
+			{tag: "line", x1: 12, y1: 25, x2: 5, y2: 34, stroke:"black"},
+			{tag: "line", x1: 12, y1: 25, x2: 20, y2: 34, stroke:"black"}
 		]
 	};
 };
@@ -844,7 +864,7 @@ SymbolLibary.prototype.drawLamp = function () {
 		width: 25,
 		height: 50,
 		items: [
-			{tag: "path", d: "m 22.4676 10.5797c-6.5690 0-11.8905 5.1708-11.8905 11.5437 0 2.3507 0.7376 4.538 1.9817 6.3616 2.0562 3.9241 4.3637 5.6306 4.4198 10.4001l 11.1459 0c 0.1160-4.9336 2.5455-6.7664 4.4319-10.4001 1.3930-1.5069 1.7799-4.4684 1.8016-6.3616 0-6.3729-5.3215-11.5437-11.8905-11.5437z"},
+			{tag: "path", d: "m 22.4676 10.5797c-6.5690 0-11.8905 5.1708-11.8905 11.5437 0 2.3507 0.7376 4.538 1.9817 6.3616 2.0562 3.9241 4.3637 5.6306 4.4198 10.4001l 11.1459 0c 0.1160-4.9336 2.5455-6.7664 4.4319-10.4001 1.3930-1.5069 1.7799-4.4684 1.8016-6.3616 0-6.3729-5.3215-11.5437-11.8905-11.5437z", fill:"white", stroke:"black"},
 			{tag: "path", d: "m 18.4085 40.0784 8.0294 0c 0.5820 0 1.0505 0.4685 1.0505 1.0504 0 0.582-0.4685 1.0505-1.0505 1.0505l-8.0294 0c-0.5820 0-1.0505-0.4685-1.0505-1.0505 0-0.5819 0.4685-1.0504 1.0505-1.0504z"},
 			{tag: "path", d: "m 18.4085 42.7311 8.0294 0c 0.5820 0 1.0505 0.4685 1.0505 1.0504 0 0.582-0.4685 1.0505-1.0505 1.0505l-8.0294 0c-0.5820 0-1.0505-0.4685-1.0505-1.0505 0-0.5819 0.4685-1.0504 1.0505-1.0504z"},
 			{tag: "path", d: "m 18.4411 45.2823 8.0294 0c 0.5820 0 1.0505 0.4685 1.0505 1.0505 0 0.582-0.4685 1.0505-1.0505 1.0505l-8.0294 0c-0.5820 0-1.0505-0.4685-1.0505-1.0505 0-0.582 0.4685-1.0505 1.0505-1.0505z"},

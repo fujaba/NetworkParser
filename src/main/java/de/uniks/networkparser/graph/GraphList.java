@@ -78,7 +78,25 @@ public class GraphList extends GraphModel implements BaseItem{
 		}
 		return links;
 	}
+	
+	public void initSubLinks() {
+		for(GraphNode node : getNodes()) {
+			if(node instanceof GraphClazz == false) {
+				continue;
+			}
+			GraphClazz graphClazz = (GraphClazz) node;
+			SimpleSet<GraphEdge> childEdges = graphClazz.getAllEdges();
+			for(GraphEdge edge : childEdges) {
+				if(associations.contains(edge) == false && associations.contains(edge.getOther()) == false) {
+					associations.add(edge);
+//				} else if(allEdges.get(edge) != graphClazz) {
+//					allEdges.put(edge, graphClazz);
+				}
+			}
+		}
+	}
 
+	
 	public GraphClazz with(GraphClazz value) {
 		if (value != null) {
 			if(value.getId()==null){
