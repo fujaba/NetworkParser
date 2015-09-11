@@ -35,6 +35,7 @@ public class GraphOptions {
 	private LINETYP lineTyp;
 	private Boolean raster;
 	private String canvasid;
+	private Boolean clearCanvas;
 	private Integer fontSize;
 	private String fontFamily;
 	private String rank;
@@ -188,6 +189,15 @@ public class GraphOptions {
 
 	public GraphOptions withLineTyp(LINETYP value) {
 		this.lineTyp = value;
+		return this;
+	}
+
+	public Boolean getClearCanvas() {
+		return clearCanvas;
+	}
+
+	public GraphOptions withClearCanvas(Boolean clearCanvas) {
+		this.clearCanvas = clearCanvas;
 		return this;
 	}
 }

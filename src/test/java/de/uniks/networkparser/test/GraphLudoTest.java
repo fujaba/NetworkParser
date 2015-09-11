@@ -109,7 +109,7 @@ public class GraphLudoTest
 	   
 	   JsonArray jsonArray = map.toJsonArray(root, new Filter().withFull(true));
 	   JsonObject item = jsonArray.get(map.getKey(root));
-	   item.put(GraphConverter.HEADIMAGE, "map.png");
+	   item.put(GraphConverter.HEAD, "map.png");
 	   GraphConverter graphConverter = new GraphConverter();
       JsonObject objectModel=graphConverter.convertToJson(GraphIdMap.OBJECT, jsonArray, true);
       System.out.println(objectModel.toString(2));

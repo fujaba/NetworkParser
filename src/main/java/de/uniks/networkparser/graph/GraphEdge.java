@@ -5,21 +5,20 @@ public class GraphEdge {
 	public static final String PROPERTY_CARDINALITY = "cardinality";
 	public static final String PROPERTY_PROPERTY = "property";
 	private GraphCardinality cardinality;
+	// The Source or Target Edge Info
 	private GraphLabel property;
+	// The Complete Edge Info
 	private GraphLabel info;
 	private GraphEdge other;
 	private GraphEdgeTypes typ = GraphEdgeTypes.EDGE;
 	private int count;
 	private GraphSimpleSet<GraphNode> nodes = new GraphSimpleSet<GraphNode>(); 
 
-	public GraphEdge() {
-
-	}
-
-	public GraphEdge(GraphNode node, GraphCardinality cardinality, String property) {
+	public GraphEdge with(GraphNode node, GraphCardinality cardinality, String property) {
 		with(node);
 		with(cardinality);
 		with(property);
+		return this;
 	}
 
 	public GraphCardinality getCardinality() {
@@ -143,6 +142,16 @@ public class GraphEdge {
 	public GraphEdgeTypes getTyp() {
 		return typ;
 	}
+	
+	public String getSeperator() {
+		if (getTyp() == GraphEdgeTypes.CHILD) {
+			return "-|>";
+		}
+		if (getOther().getTyp() == GraphEdgeTypes.EDGE) {
+			return "->";
+		}
+		return "-";
+	}
 
 	public GraphEdge withTyp(GraphEdgeTypes typ) {
 		this.typ = typ;
@@ -175,8 +184,9 @@ public class GraphEdge {
 	
 	@Override
 	public String toString() {
-		return getIds()+"-"+getOther().getIds();
+		return getIds()+getSeperator()+getOther().getIds();
 	}
+
 	public String getIds() {
 		StringBuilder sb=new StringBuilder();
 		if(nodes.size()>1) {

@@ -48,8 +48,10 @@ public class GraphIdMapDiff extends GraphIdMap{
 	}
 	
 	@Override
-	public GraphEdge createEdge(GraphNode node, GraphCardinality cardinality, String property) {
-		return new GraphEdgeDiff(node, cardinality, property);
+	public GraphEdgeDiff createEdge(GraphNode node, GraphCardinality cardinality, String property) {
+		GraphEdgeDiff edge = new GraphEdgeDiff();
+		edge.with(node, cardinality, property);
+		return edge;
 	}
 	
 	@Override

@@ -198,12 +198,12 @@ public class GraphIdMap extends IdMap {
 		return new GraphList();
 	}
 
-	public GraphEdge createEdge() {
+	GraphEdge createEdge() {
 		return new GraphEdge();
 	}
 	
-	public GraphEdge createEdge(GraphNode node, GraphCardinality cardinality, String property) {
-		return new GraphEdge(node, cardinality, property);
+	GraphEdge createEdge(GraphNode node, GraphCardinality cardinality, String property) {
+		return new GraphEdge().with(node, cardinality, property);
 	}
 	
 	public GraphClazz createClazz() {

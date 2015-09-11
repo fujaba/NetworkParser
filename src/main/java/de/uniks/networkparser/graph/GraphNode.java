@@ -42,6 +42,10 @@ public class GraphNode implements GraphMember{
 	public GraphNode with(GraphList... values) {
 		return withMember(values);
 	}
+	
+	public GraphNode with(GraphNodeImage... values) {
+		return withMember(values);
+	}
 	GraphNode with(GraphMember... values) {
 		return withMember(values);
 	}

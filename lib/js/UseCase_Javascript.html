@@ -1,0 +1,511 @@
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="../../src/main/resources/de/uniks/networkparser/graph/diagramstyle.css">
+	<script src="../../src/main/resources/de/uniks/networkparser/graph/graph.js"></script>
+	<script src="../../src/main/resources/de/uniks/networkparser/graph/dagre.min.js"></script>
+	<script src="../../src/main/resources/de/uniks/networkparser/graph/drawer.js"></script>
+</head>
+<body>
+<script language="Javascript">
+function addCase(label, json){
+	window.setTimeout(function(){addToUL(label, json);}, 100);
+};
+function addToUL(label, json) {
+	var ul = document.getElementById("CaseUL");
+
+	if(ul) {
+		var item = document.createElement("li");
+		if(!json["options"]) {
+			json["options"] = {};
+		}
+		json["options"]["canvasid"]="Demo";
+		json["options"]["clearCanvas"]=1;
+		item.appendChild( document.createTextNode((ul.children.length + 1)+". "+label+" "));
+		var btn = document.createElement("button");
+		btn.onclick = function(){new Graph(json).layout();};
+		btn.innerHTML = "+";
+		item.appendChild(btn);
+		ul.appendChild(item);
+	}
+};
+</script>
+
+<script>
+var json = {"typ":"class", "nodes":[
+				{"typ":"node", "content":{"src":"karli.png"}}
+]};
+json["options"]={"canvasid":"canvasStudyRight with assignments class generationClassDiagram8", "display":"html", "fontsize":10,"bar":true};
+addCase("Use Case Show Image karli.png", json);
+</script>
+<script>
+addCase("All Edgetypes", {
+		"edges":[
+			{"typ":"edge", "source":"CS 32","target":"CS 33"},
+			{"typ":"generalization", "source":"CS 32","target":"CS 34"},
+			{"typ":"implements", "source":"CS 32","target":"CS 36"},
+			{"typ":"unidirectional", "source":"CS 33","target":"CS 34"},
+			{"typ":"aggregation", "source":"CS 33","target":"CS 35"},
+			{"typ":"composition", "source":"CS 34","target":"CS 35"}
+		]
+	});
+</script>
+<script>
+	var json = {"typ":"object", "options":{"bar":true, "raster":false, "canvasid":"42","fontsize":12},
+		"nodes":[
+			{typ:"node", id:"Albert:Student", href:"Student.java", attributes:["age:int", "name:String"],methods:["toString()"]},
+			{typ:"node", id:"CS 32"},
+			{typ:"node", id:"CS 34",attributes:["age:int", "name:String"],methods:["toString()"]},
+			{typ:"node", id:"CS 35"},
+			{typ:"node", id:"CS 36"},
+			{typ:"node", id:"CS 1"},
+			{typ:"node", id:"CS 2"},
+			//{typ:"node", id:"CS x", content_plain:"Hallo Welt"},
+			//{typ:"wall"},
+			{typ:"Wall"},
+			{typ:"node", id:"CS s", content_src:"karli.png", width:60, height:60}
+			/*{typ:"subgraph", id:"CS b", graph:{"typ":"classdiagramm","value":{"edges":[{"typ":"edge", "source":"Auto","target":"Reifen"}]}}},*/
+			//{typ:"patternObject", id:"g1 : GraphPO", headinfo:"&laquo;bound&raquo;"}
+			/*{typ:"patternObject", id:"g1 : GraphPO", headinfo:"«bound», «create», «delete»"}*/
+			/*{"typ":"node", "id":"CS x", "content":"Hallo World", "x":"200", y:10, width:200, height:200}*/
+		],
+		"edges":[
+			{"typ":"edge", "source":{id:"Albert:Student", "property":"0..1"},"target": {id:"CS 32", "property":"1..1"}},
+			{"typ":"edge", "source":"CS 32","target":"CS 33"},
+			{"typ":"edge", "source":"CS 32","target":"CS 34"},
+			{"typ":"edge", "source":"CS 35","target":"CS 34"},
+			{"typ":"edge", "source":"CS 1","target":"CS 1"},
+			{"typ":"Implements", "source":"CS 36","target":"CS 34"},
+			{"typ":"edge", "source":{id:"CS 1", "property":"1..2"},"target":{id:"CS 2", "property":"3..4"}},
+			{"typ":"generalisation", "source":"CS 2","target":"Albert:Student"}
+		]
+	};
+addCase("Fulltest", json);
+	//var layouter = new GraphLayout.Ordered(g);
+	//var layouter = new Graph.LayoutDagre(g);
+	//var layouter = new GraphLayout.Spring(g);
+	//var layouter = new GraphLayout.Circular(g);
+	//var layouter = new GraphLayout.Fixed(g);
+	//layouter.addNode("Albert:Student", 311.66,183.55);
+	//layouter.addNode("CS 32", 340,97);
+	//layouter.addNode("CS 32", 214.99,204.97);
+	//layouter.addNode("CS 34", 200,250);
+</script>
+<script>
+var json = {"typ":"class", "nodes":[
+	  {
+			"typ":"node",
+			"id":"University",
+			"attributes":[
+			"name : String"
+			]
+		 },
+		 {
+			"typ":"node",
+			"id":"Student",
+			"attributes":[
+			"name : String",
+			   "id : String",
+			   "assignmentPoints : int",
+			   "motivation : int",
+			   "credits : int"
+			]
+		 },
+		 {
+			"typ":"node",
+			"id":"Room",
+			"attributes":[
+			"name : String",
+			   "topic : String",
+			   "credits : int"
+			]
+		 }
+	  ],
+	  "edges":[
+	  {
+			"typ":"edge",
+			"sourcecardinality":"one",
+			"targetcardinality":"many",
+			"sourceproperty":"university",
+			"targetproperty":"students",
+			"source":"University",
+			"target":"Student"
+		 },
+		 {
+			"typ":"edge",
+			"sourcecardinality":"one",
+			"targetcardinality":"many",
+			"sourceproperty":"university",
+			"targetproperty":"rooms",
+			"source":"University",
+			"target":"Room"
+		 },
+		 {
+			"typ":"edge",
+			"sourcecardinality":"many",
+			"targetcardinality":"one",
+			"sourceproperty":"students",
+			"targetproperty":"in",
+			"source":"Student",
+			"target":"Room"
+		 },
+		 {
+			"typ":"edge",
+			"sourcecardinality":"many",
+			"targetcardinality":"many",
+			"sourceproperty":"doors",
+			"targetproperty":"doors",
+			"source":"Room",
+			"target":"Room"
+		 }
+	]
+};
+json["options"]={"display":"html", "fontsize":10,"bar":true};
+addCase("Self Assoc", json);
+</script>
+<script>
+var json = {
+"typ":"objectdiagram",
+"style":null,
+"nodes":[
+{
+	 "typ":"node",
+	 "id":"studyRight : University",
+	 "attributes":[
+	 "name=StudyRight"
+	 ]
+  },
+  {
+	 "typ":"node",
+	 "id":"karli : Student",
+	 "head_src":"karli.png",
+	 "attributes":[
+	 "name=Karli",
+		"id=4242",
+		"assignmentPoints=0",
+		"motivation=0",
+		"credits=0"
+	 ]
+  },
+  {
+	 "typ":"node",
+	 "id":"mathRoom : Room",
+	 "attributes":[
+	 "name=senate",
+		"topic=math",
+		"credits=17"
+	 ]
+  },
+  {
+	 "typ":"node",
+	 "id":"artsRoom : Room",
+	 "attributes":[
+	 "name=7522",
+		"topic=arts",
+		"credits=16"
+	 ]
+  },
+  {
+	 "typ":"node",
+	 "id":"sportsRoom : Room",
+	 "attributes":[
+	 "name=gymnasium",
+		"topic=sports",
+		"credits=25"
+	 ]
+  },
+  {
+	 "typ":"node",
+	 "id":"examRoom : Room",
+	 "attributes":[
+	 "name=The End",
+		"topic=exam",
+		"credits=0"
+	 ]
+  },
+  {
+	 "typ":"node",
+	 "id":"placeToBe : Room",
+	 "attributes":[
+	 "name=7422",
+		"topic=Software Engineering",
+		"credits=42"
+	 ]
+  },
+  {
+	 "typ":"node",
+	 "id":"A1 : Assignment",
+	 "attributes":[
+	 "content=Matrix Multiplication",
+		"points=5"
+	 ]
+  },
+  {
+	 "typ":"node",
+	 "id":"A2 : Assignment",
+	 "attributes":[
+	 "content=Series",
+		"points=6"
+	 ]
+  },
+  {
+	 "typ":"node",
+	 "id":"A3 : Assignment",
+	 "head_src":"integralAssignment.png",
+	 "attributes":[
+	 "content=Integrals",
+		"points=8"
+	 ]
+  }
+],
+"edges":[
+{
+	 "typ":"EDGE",
+	 "source":{
+		"cardinality":"one",
+		"property":"university",
+		"id":"studyRight : University"
+	 },
+	 "target":{
+		"cardinality":"many",
+		"property":"students",
+		"id":"karli : Student"
+	 }
+  },
+  {
+	 "typ":"EDGE",
+	 "source":{
+		"cardinality":"one",
+		"property":"university",
+		"id":"studyRight : University"
+	 },
+	 "target":{
+		"cardinality":"many",
+		"property":"rooms",
+		"id":"mathRoom : Room"
+	 }
+  },
+  {
+	 "typ":"EDGE",
+	 "source":{
+		"cardinality":"one",
+		"property":"university",
+		"id":"studyRight : University"
+	 },
+	 "target":{
+		"cardinality":"many",
+		"property":"rooms",
+		"id":"artsRoom : Room"
+	 }
+  },
+  {
+	 "typ":"EDGE",
+	 "source":{
+		"cardinality":"one",
+		"property":"university",
+		"id":"studyRight : University"
+	 },
+	 "target":{
+		"cardinality":"many",
+		"property":"rooms",
+		"id":"sportsRoom : Room"
+	 }
+  },
+  {
+	 "typ":"EDGE",
+	 "source":{
+		"cardinality":"one",
+		"property":"university",
+		"id":"studyRight : University"
+	 },
+	 "target":{
+		"cardinality":"many",
+		"property":"rooms",
+		"id":"examRoom : Room"
+	 }
+  },
+  {
+	 "typ":"EDGE",
+	 "source":{
+		"cardinality":"one",
+		"property":"university",
+		"id":"studyRight : University"
+	 },
+	 "target":{
+		"cardinality":"many",
+		"property":"rooms",
+		"id":"placeToBe : Room"
+	 }
+  },
+  {
+	 "typ":"EDGE",
+	 "source":{
+		"cardinality":"many",
+		"property":"students",
+		"id":"karli : Student"
+	 },
+	 "target":{
+		"cardinality":"one",
+		"property":"in",
+		"id":"mathRoom : Room"
+	 }
+  },
+  {
+	 "typ":"EDGE",
+	 "source":{
+		"cardinality":"many",
+		"property":"doors",
+		"id":"mathRoom : Room"
+	 },
+	 "target":{
+		"cardinality":"many",
+		"property":"doors",
+		"id":"artsRoom : Room"
+	 }
+  },
+  {
+	 "typ":"EDGE",
+	 "source":{
+		"cardinality":"many",
+		"property":"doors",
+		"id":"mathRoom : Room"
+	 },
+	 "target":{
+		"cardinality":"many",
+		"property":"doors",
+		"id":"sportsRoom : Room"
+	 }
+  },
+  {
+	 "typ":"EDGE",
+	 "source":{
+		"cardinality":"one",
+		"property":"room",
+		"id":"mathRoom : Room"
+	 },
+	 "target":{
+		"cardinality":"many",
+		"property":"assignments",
+		"id":"A1 : Assignment"
+	 }
+  },
+  {
+	 "typ":"EDGE",
+	 "source":{
+		"cardinality":"one",
+		"property":"room",
+		"id":"mathRoom : Room"
+	 },
+	 "target":{
+		"cardinality":"many",
+		"property":"assignments",
+		"id":"A2 : Assignment"
+	 }
+  },
+  {
+	 "typ":"EDGE",
+	 "source":{
+		"cardinality":"one",
+		"property":"room",
+		"id":"mathRoom : Room"
+	 },
+	 "target":{
+		"cardinality":"many",
+		"property":"assignments",
+		"id":"A3 : Assignment"
+	 }
+  },
+  {
+	 "typ":"EDGE",
+	 "source":{
+		"cardinality":"many",
+		"property":"doors",
+		"id":"artsRoom : Room"
+	 },
+	 "target":{
+		"cardinality":"many",
+		"property":"doors",
+		"id":"sportsRoom : Room"
+	 }
+  },
+  {
+	 "typ":"EDGE",
+	 "source":{
+		"cardinality":"many",
+		"property":"doors",
+		"id":"artsRoom : Room"
+	 },
+	 "target":{
+		"cardinality":"many",
+		"property":"doors",
+		"id":"examRoom : Room"
+	 }
+  },
+  {
+	 "typ":"EDGE",
+	 "source":{
+		"cardinality":"many",
+		"property":"doors",
+		"id":"artsRoom : Room"
+	 },
+	 "target":{
+		"cardinality":"many",
+		"property":"doors",
+		"id":"placeToBe : Room"
+	 }
+  },
+  {
+	 "typ":"EDGE",
+	 "source":{
+		"cardinality":"many",
+		"property":"doors",
+		"id":"sportsRoom : Room"
+	 },
+	 "target":{
+		"cardinality":"many",
+		"property":"doors",
+		"id":"examRoom : Room"
+	 }
+  },
+  {
+	 "typ":"EDGE",
+	 "source":{
+		"cardinality":"many",
+		"property":"doors",
+		"id":"examRoom : Room"
+	 },
+	 "target":{
+		"cardinality":"many",
+		"property":"doors",
+		"id":"placeToBe : Room"
+	 }
+  }
+]
+};
+json["options"]={"display":"html", "fontsize":10,"bar":true};
+addCase("StudyRight with assignments storyboard", json);
+</script>
+<script>
+var json = {
+	"typ":"objectdiagram",
+	"style":null,
+	"nodes":[
+		{"typ":"Smily"},
+		{"typ":"Database", y:100},
+		{"typ":"Letter", y:50},
+		{"typ":"Mobilphone", x:100},
+		{"typ":"Wall"},
+		{"typ":"Actor"},
+		{"typ":"Lamp"},
+		{"typ":"Stop"},
+		{"typ":"Min"},
+		{"typ":"Arrow"},
+		{"typ":"Max"},
+		{"typ": "patternObject", id:"Hallo"}
+   ]
+};
+addCase("All Nodetypes", json);
+</script>
+
+<table><tr><td style="vertical-align:top;"><ul id="CaseUL" /></td><td><div style="min-width:100px;min-height:100px;border:1px solid black" id="Demo"/></td></tr></table>
+</body>
+</html>

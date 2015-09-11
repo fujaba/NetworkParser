@@ -40,6 +40,7 @@ public class YUMLConverter implements Converter {
 			Iterator<GraphMember> i = root.getChildren().iterator();
 
 			ArrayList<GraphNode> visitedObj = new ArrayList<GraphNode>();
+			root.initSubLinks();
 			SimpleKeyValueList <String, Object> links = root.getLinks();
 			parse(typ, i.next(), sb, visitedObj, links, removePackage);
 			while (i.hasNext()) {

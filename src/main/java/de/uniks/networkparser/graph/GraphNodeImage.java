@@ -25,23 +25,13 @@ package de.uniks.networkparser.graph;
 public class GraphNodeImage implements GraphMember {
 	public static final String PROPERTY_VALUE = "value";
 	private String id;
-	private String value = null;
 	private GraphNode parentNode;
 
-	public String getValue() {
-		return value;
-	}
-
 	public GraphNodeImage with(String value) {
-		this.value = value;
+		this.id = value;
 		return this;
 	}
 
-	public GraphNodeImage withId(String value) {
-		this.value = value;
-		return this;
-	}
-	
 	@Override
 	public String getId() {
 		return id;
@@ -66,6 +56,6 @@ public class GraphNodeImage implements GraphMember {
 	@Override
 	public String toString()
 	{
-	   return "" + value;
+	   return "" + id;
 	}
 }
