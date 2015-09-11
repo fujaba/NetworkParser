@@ -155,7 +155,7 @@ GraphUtil.prototype.create = function (node) {
 		if (node[key] === null) {
 			continue;
 		}
-		if (k === 'tag' || k === 'content_src' || k.charAt(0) === '_' || k === 'model') {
+		if (k === 'tag' || k.charAt(0) === '_' || k === 'model') {
 			continue;
 		}
 		if (k.charAt(0) === '#') {
