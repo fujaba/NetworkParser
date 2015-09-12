@@ -860,8 +860,8 @@ Graph.prototype.stopDrag = function (event) {
 				if (item.model._gui) {
 					parent.appendChild(item.model._gui);
 				}
-				for (i = 0; i < item.model._edges.length; i += 1) {
-					var e = item.model._edges[i];
+				for (i = 0; i < item.model.edges.length; i += 1) {
+					var e = item.model.edges[i];
 					e.source.custom = false;
 					e.target.custom = false;
 				}

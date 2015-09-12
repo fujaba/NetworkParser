@@ -644,7 +644,9 @@ public class JsonTest extends IOClasses{
 	public void testJsonCompare(){
 		JsonObject jsonA = new JsonObject().withValue("{id:42, no:23, list:[1,2], array:[1,2]}");
 		JsonObject jsonB = new JsonObject().withValue("{id:42, no:24, list:[1,2], array:[1,3]}");
-		Assert.assertFalse(EntityUtil.compareEntity(jsonA, jsonB));
+		JsonObject same = new JsonObject();
+		Assert.assertFalse(EntityUtil.compareEntity(jsonA, jsonB, same));
+		System.out.println(same.toString());
 		Assert.assertEquals("{\"no\":23,\"array\":[2]}", jsonA.toString());
 		Assert.assertEquals("{\"no\":24,\"array\":[3]}", jsonB.toString());
 	}

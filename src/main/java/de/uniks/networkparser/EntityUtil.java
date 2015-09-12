@@ -24,10 +24,10 @@ package de.uniks.networkparser;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.StringItem;
-import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.list.AbstractArray;
 import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -481,6 +481,9 @@ public class EntityUtil {
 	}
 
 	public static boolean compareEntity(Entity entityA, Entity entityB) {
+		return compareEntity(entityA, entityB, null);
+	}
+	public static boolean compareEntity(Entity entityA, Entity entityB, Entity sameObject) {
 		if(entityB == null) {
 			return entityA == null;
 		}
@@ -490,12 +493,20 @@ public class EntityUtil {
 			Object valueB = entityB.get(key);
 			if(valueA == null) {
 				if(valueB == null) {
+					Object oldValue = entityA.get(key);
+					if(sameObject != null) {
+						sameObject.withAll(key, oldValue);
+					}
 					entityA.without(key);
 					entityB.without(key);
 				}
 				continue;
 			}
-			if(compareValue(valueA, valueB)) {
+			Object oldValue = compareValue(valueA, valueB);
+			if(oldValue != null) {
+				if(sameObject != null) {
+					sameObject.withAll(key, oldValue);
+				}
 				entityA.without(key);
 				entityB.without(key);
 			}
@@ -511,6 +522,10 @@ public class EntityUtil {
 	}
 
 	public static boolean compareEntity(List<?> jsonA, List<?> jsonB) {
+		return compareEntity(jsonA, jsonB, null);
+	}
+
+	public static boolean compareEntity(List<?> jsonA, List<?> jsonB, BaseItem sameList) {
 		if(jsonB == null) {
 			return jsonA == null;
 		}
@@ -520,19 +535,36 @@ public class EntityUtil {
 				continue;
 			}
 			Object valueB = jsonB.get(i);
-			if(compareValue(valueA, valueB)) {
+			Object oldValue = compareValue(valueA, valueB); 
+			if(oldValue != null) {
 				jsonA.remove(i);
+				if(sameList != null) {
+					sameList.withAll(oldValue);
+				}
 				jsonB.remove(i);
 			}
 		}
 		return jsonA.size()<1 && jsonB.size()<1;
 	}
-	static boolean compareValue(Object valueA, Object valueB) {
+	
+	static Object compareValue(Object valueA, Object valueB) {
 		if(valueA instanceof Entity && valueB instanceof Entity) {
-			return compareEntity((Entity)valueA, (Entity)valueB);
-		} else if(valueA instanceof JsonArray && valueB instanceof JsonArray) {
-			return compareEntity((JsonArray)valueA, (JsonArray)valueB);
+			Entity entityA = (Entity)valueA;
+			Entity newKeyValue = (Entity) entityA.getNewList(true);
+			if(compareEntity(entityA, (Entity)valueB, newKeyValue)) {
+				return newKeyValue;
+			}
+			return null;
+		} else if(valueA instanceof BaseItem && valueB instanceof List<?>) {
+			BaseItem sameList = ((BaseItem)valueA).getNewList(false);
+			if(compareEntity((List<?>)valueA, (List<?>)valueB, sameList)) {
+				return sameList;
+			}
+			return null;
 		}
-		return valueA.equals(valueB);
+		if(valueA.equals(valueB)) {
+			return valueA;
+		}
+		return null;
 	}
 }
