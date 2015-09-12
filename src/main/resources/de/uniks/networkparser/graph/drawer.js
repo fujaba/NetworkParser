@@ -408,7 +408,7 @@ SVGDrawer.prototype.drawDef = function () {
 
 };
 SVGDrawer.prototype.drawButton = function (text, action) {
-	var btn = this.symbolLib.draw(this, {typ: "Button", value: text});
+	var btn = this.symbolLib.draw(this, {typ: "Button", value: text, y: 8});
 	btn.typ = text;
 	btn.tool = {x: 0, y: 8, height: 28, width: 60};
 	this.util.bind(btn, "mousedown", action);
@@ -416,13 +416,9 @@ SVGDrawer.prototype.drawButton = function (text, action) {
 	return btn;
 };
 SVGDrawer.prototype.drawComboBox = function (elements, activText, action) {
-	var g = this.util.create({tag: "g"});
+	var g = this.symbolLib.draw(this, {typ: "Dropdown", x: 66, y: 8});
 	g.tool = {x: 66, y: 8, minheight: 28, maxheight: 28, width: 80};
 	g.status = "close";
-	g.appendChild(this.util.create({tag: "rect", rx: 0, x: g.tool.x, y: g.tool.y, width: 60, height: 28, stroke: "#000", fill: "none"}));
-	g.appendChild(this.util.create({tag: "rect", rx: 2, x: g.tool.x + 60, y: g.tool.y, width: 20, height: 28, stroke: "#000", "class": "saveBtn"}));
-	g.appendChild(this.util.create({tag: "path", style: "fill:#000000;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1",
-								d: "m " + (g.tool.x + 65) + "," + (g.tool.y + 13) + " 10,0 L " + (g.tool.x + 70) + "," + (g.tool.y + 20) + " z"}));
 	if (elements) {
 		var len = 0, i;
 		for (i = 0; i < elements.length; i += 1) {
@@ -432,14 +428,14 @@ SVGDrawer.prototype.drawComboBox = function (elements, activText, action) {
 		}
 		var choicebox = this.util.create({tag: "g"});
 		var h = len * 25 + 6;
-		choicebox.appendChild(this.util.create({tag: "rect", rx: 0, x: g.tool.x, y: g.tool.y + 28, width: 60, height: h, stroke: "#000", fill: "#fff", opacity: "0.7"}));
+		choicebox.appendChild(this.util.create({tag: "rect", rx: 0, x: 0, y: 28, width: 60, height: h, stroke: "#000", fill: "#fff", opacity: "0.7"}));
 		g.tool.maxheight = h + g.tool.minheight;
 
 		g.elements = elements;
-		g.activ = this.util.create({tag: "text", _font: true, "text-anchor": "left", "width": 60, "x": (g.tool.x + 10), "y": g.tool.y + 20, value: activText});
+		g.activ = this.util.create({tag: "text", _font: true, "text-anchor": "left", "width": 60, "x": 10, "y": 20, value: activText});
 		g.appendChild(g.activ);
-		var y = 46 + g.tool.y;
-		var yr = 28 + g.tool.y;
+		var y = 46;
+		var yr = 28;
 		var e;
 		var func = function (event) {
 			g.activ.textContent = event.currentTarget.value;
@@ -449,8 +445,8 @@ SVGDrawer.prototype.drawComboBox = function (elements, activText, action) {
 				continue;
 			}
 			var element = elements[e];
-			choicebox.appendChild(this.util.create({tag: "text", _font: true, "text-anchor": "left", "width": 60, "x": (g.tool.x + 10), "y": y, value: element}));
-			var item = choicebox.appendChild(this.util.create({tag: "rect", rx: 0, x: g.tool.x, y: yr, width: 60, height: 24, stroke: "none", "class": "selection"}));
+			choicebox.appendChild(this.util.create({tag: "text", _font: true, "text-anchor": "left", "width": 60, "x": 10, "y": y, value: element}));
+			var item = choicebox.appendChild(this.util.create({tag: "rect", rx: 0, x: 0, y: yr, width: 60, height: 24, stroke: "none", "class": "selection"}));
 			item.value = element;
 			if (action) {
 				item.onclick = action;
@@ -497,13 +493,16 @@ SVGDrawer.prototype.createContainer = function (graph) {
 		list.push(hasPDF !== "undefined" ? "PDF" : "");
 	}
 	var buttons = [];
+
+
 	if (this.showButton) {
 		buttons = this.getButtons(graph, "SVG");
 		buttons.push(this.drawComboBox(list, "Save", function (e) {that.removeToolItems(that.board); that.model.SaveAs(e.currentTarget.value); }));
 	}
-
 	var board = this.createBoard({tag: "svg", "xmlns:svg": "http://www.w3.org/2000/svg", "xmlns:xlink": "http://www.w3.org/1999/xlink"}, graph, buttons);
 	board.appendChild(this.drawDef());
+	this.board = board;
+
 	return board;
 };
 SVGDrawer.prototype.setSize = function (item, x, y) {
@@ -568,12 +567,12 @@ SVGDrawer.prototype.getNode = function (node, draw) {
 		var btn;
 		if (node.status === "close") {
 			// Open Button
-			btn = this.createGroup(node, symbolLib.drawMax(node));
+			btn = this.createGroup(node, symbolLib.drawMax({x:(node.x + width - 20), y:node.y}));
 		} else {
-			btn = this.createGroup(node, symbolLib.drawMin(node));
+			btn = this.createGroup(node, symbolLib.drawMin({x:(node.x + width - 20), y:node.y}));
 		}
 		var that = this;
-		btn.setAttribute("class", "btn");
+		btn.setAttribute("class", "hand");
 
 		this.util.bind(btn, "mousedown", function (e) {
 			if (node.status === "close") {
@@ -944,17 +943,19 @@ SymbolLibary.prototype.drawButton = function (node) {
 	};
 };
 SymbolLibary.prototype.drawDropdown = function (node) {
+	var btnX = node.x || 0;
+	var btnY = node.y || 0;
+	var btnWidth = node.width || 60;
+	var btnHeight = node.height || 28;
 	return {
-		x: node.x || 0;
-		y: node.y || 0;
-		width: 60,
-		height: 28,
+		x: btnX,
+		y: btnY,
+		width: btnWidth,
+		height: btnHeight,
 		items: [
-			{tag: "rect", rx: 8, x: 0, y: 0, width: btnWidth, height: btnHeight, stroke: "#000", filter: "url(#drop-shadow)", "class": "saveBtn"},
-			{tag: "text", _font: true, x: 10, y: 18, fill: "black", value: btnValue, "class": "hand"}
-//	g.appendChild(this.util.create({tag: "rect", rx: 0, x: g.tool.x, y: g.tool.y, width: 60, height: 28, stroke: "#000", fill: "none"}));
-//	g.appendChild(this.util.create({tag: "rect", rx: 2, x: g.tool.x + 60, y: g.tool.y, width: 20, height: 28, stroke: "#000", "class": "saveBtn"}));
-//	g.appendChild(this.util.create({tag: "path", style: "fill:#000000;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1",
-//								d: "m " + (g.tool.x + 65) + "," + (g.tool.y + 13) + " 10,0 L " + (g.tool.x + 70) + "," + (g.tool.y + 20) + " z"}));
+			{tag: "rect", rx: 0, x: 0, y: 0, width: btnWidth, height: btnHeight, stroke: "#000", fill: "none"},
+			{tag: "rect", rx: 2, x: 60, y: 0, width: 20, height: 28, stroke: "#000", "class": "saveBtn"},
+			{tag: "path", style: "fill:#000000;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1", d: "m 65,13 10,0 L 70,20 z"}
 		]
+	};
 };

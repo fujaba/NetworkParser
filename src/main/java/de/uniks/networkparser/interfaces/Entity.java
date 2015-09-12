@@ -22,7 +22,7 @@ package de.uniks.networkparser.interfaces;
  permissions and limitations under the Licence.
 */
 
-public interface Entity {
+public interface Entity extends BaseItem{
 	public boolean containsKey(Object key);
 
 	public String getString(String key);

@@ -373,4 +373,19 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 		remove(key);
 		return this;
 	}
+	
+	@Override
+	public JsonObject withAll(Object... values) {
+		if(values == null) {
+			return this;
+		}
+		if(values.length % 2 == 0) {
+			for(int i=0;i<values.length; i+=2) {
+				withKeyValue(values[i], values[i+1]);
+			}
+			return this;
+		}
+		super.withAll(values);
+		return this;
+	}
 }
