@@ -658,6 +658,39 @@ var json = {"typ":"object", "nodes":[
 //  json["options"]={"canvasid":"canvasFerrymansProblemExamplePatternDiagram5", "display":"html", "fontsize":10,"bar":true};
 addCase("Ferrymans Problem ExamplePatternDiagram", json);
 </script>
+<script>
+var json = {"typ":"class", "nodes":[
+				{"typ":"node", id:"Albert:Student"},
+				{"typ":"node", id:"kassel:University"},
+				{"typ":"node", id:"lecture:ProgMeth"}
+], "edges":[
+	{
+		 "typ":"EDGE",
+		 "style":"#4A7023",
+		 "source":{
+			"property":"member",
+			"id":"Albert:Student"
+		 },
+		 "target":{
+			"property":"study",
+			"id":"kassel:University"
+		 }
+	  },{
+		 "typ":"EDGE",
+		 "source":{
+			"property":"lecture",
+			"id":"lecture:ProgMeth"
+		 },
+		 "target":{
+			"property":"on",
+			"id":"kassel:University"
+		 }
+	  }
+]
+};
+addCase("Show Edge with Color", json);
+</script>
+
 <table><tr><td style="vertical-align:top;"><ul id="CaseUL" /></td><td><div style="min-width:100px;min-height:100px;border:1px solid black" id="Demo"/></td></tr></table>
 </body>
 </html>

@@ -347,8 +347,8 @@ HTMLDrawer.prototype.getNode = function (node, draw) {
 	node._gui = htmlElement;
 	return htmlElement;
 };
-HTMLDrawer.prototype.createInfo = function (item, text, angle) {
-	var info = this.util.create({tag: "div", _font: true, model: item, "class": "EdgeInfo", value: text});
+HTMLDrawer.prototype.createInfo = function (item, text, angle, style) {
+	var info = this.util.create({tag: "div", _font: true, model: item, "class": "EdgeInfo", value: text, style: "color:"+this.getColor(style, "#CCC")});
 
 	if (angle !== 0) {
 		info.style.transform = "rotate(" + angle + "deg)";
@@ -635,20 +635,20 @@ SVGDrawer.prototype.addChild = function (node, parent, child) {
 	parent.appendChild(child);
 	this.model.createElement(child, "class", node);
 };
-SVGDrawer.prototype.createInfo = function (item, text, angle) {
+SVGDrawer.prototype.createInfo = function (item, text, angle, style) {
 	var items = text.split("\n");
 	var group, i;
 	if (items.length > 1) {
 		group = this.util.create({tag: "g", "class": "draggable", rotate: angle, model: item});
 		for (i = 0; i < items.length; i += 1) {
-			var child = this.util.create({tag: "text", _font: true, "text-anchor": "left", "x": item.x, "y": item.y + (item.height * i)});
+			var child = this.util.create({tag: "text", _font: true, "text-anchor": "left", "x": item.x, "y": item.y + (item.height * i), fill: this.getColor(style, "#CCC")});
 			child.appendChild(document.createTextNode(items[i]));
 			group.appendChild(child);
 		}
 		this.model.createElement(group, "info", item);
 		return group;
 	}
-	group = this.util.create({tag: "text", "#_font": true, "text-anchor": "left", "x": item.x, "y": item.y, value: text, "id": item.id, "class": "draggable", rotate: angle, model: item});
+	group = this.util.create({tag: "text", "#_font": true, "text-anchor": "left", "x": item.x, "y": item.y, value: text, "id": item.id, "class": "draggable", rotate: angle, model: item, fill: this.getColor(style, "#CCC")});
 	this.model.createElement(group, "info", item);
 	return group;
 };
