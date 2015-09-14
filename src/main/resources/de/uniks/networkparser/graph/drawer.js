@@ -106,10 +106,24 @@ Drawer.prototype.showToolItems = function (board) {
 	}
 };
 Drawer.prototype.isInTool = function (x, y, ox, oy) {
-	var i;
+	var i, g, gx, gy, gw, gh;
+	// Mode x,y
+	x -= ox;
+	y -= oy;
 	for (i = 0; i < this.toolitems.length; i += 1) {
-		var g = this.toolitems[i];
-		if (x >= (g.tool.x + ox) && x <= (g.tool.x + g.tool.width + ox) && y >= (g.tool.y + oy) && y <= (g.tool.y + g.tool.height + oy)) {
+		g = this.toolitems[i];
+		if (!g.offsetWidth && g.tool) {
+			gx = g.tool.x;
+			gy = g.tool.y;
+			gw = g.tool.width + gx;
+			gh = g.tool.height + gy;
+		} else {
+			gx = g.offsetLeft;
+			gy = g.offsetTop;
+			gw = g.offsetWidth + gx;
+			gh = g.offsetHeight + gy;
+		}
+		if (x >= gx && x <= gw && y >= gy && y <= gh) {
 			return true;
 		}
 	}
@@ -155,21 +169,40 @@ Drawer.prototype.createBoard = function (node, graph, listener) {
 	return board;
 };
 Drawer.prototype.getButtons = function (graph, notTyp) {
-	var i, buttons = [];
+	var i, buttons = [], btn, func;
 	var that = this;
 	if (graph && graph.model.options) {
 		var o = graph.model.options.buttons;
-		var func = function (e) {
-			var t = e.target.typ || e.target.parentElement.typ;
+		func = function (e) {
+			var t = e.currentTarget.typ;
 			that.model.initDrawer(t);
 			that.model.layout();
 		};
 		for (i = 0; i < o.length; i += 1) {
 			var typ = o[i];
 			if (typ !== notTyp) {
-				buttons.push(this.drawButton(typ, func));
+				var node = {typ: "Button", value: typ, y: 8, x: 2, height: 28, width: 60};
+				btn = this.symbolLib.draw(this, node);
+				btn.style.verticalAlign = "top";
+				this.util.bind(btn, "mousedown", func);
+				btn.typ = typ;
+				buttons.push(btn);
 			}
 		}
+	}
+	if (notTyp === "HTML") {
+		func = function (e) {
+			var t = e.currentTarget.value;
+			if (t === "Save") {
+				that.model.SavePosition();
+			} else if (t === "Load") {
+				that.model.LoadPosition();
+			}
+		};
+
+		btn = {typ: "Dropdown", x: 2, y: 8, width: 120, elements: ["Save", "Load"], activText: "Localstorage", action: func};
+		var g = this.symbolLib.draw(this, btn);
+		buttons.push(g);
 	}
 	return buttons;
 };
@@ -351,13 +384,6 @@ HTMLDrawer.prototype.createLine = function (x1, y1, x2, y2, lineStyle) {
 	line.style.msTransform = line.style.MozTransform = line.style.WebkitTransform = line.style.OTransform = "rotate(" + angle + "rad)";
 	return line;
 };
-HTMLDrawer.prototype.drawButton = function (text, action) {
-	var btn = this.util.create({tag: "button", _font: true, width: 60, height: 28, style: "cursor: pointer;", value: text, "onMousedown": action});
-	btn.tool = {x: 0, y: 8, height: 28, width: 60};
-	btn.typ = text;
-	btn.close = function () {};
-	return btn;
-};
 HTMLDrawer.prototype.createPath = function (close, fill, path, angle) {
 	var line;
 	if (fill === "none") {
@@ -407,81 +433,6 @@ SVGDrawer.prototype.drawDef = function () {
 	return def;
 
 };
-SVGDrawer.prototype.drawButton = function (text, action) {
-	var btn = this.symbolLib.draw(this, {typ: "Button", value: text, y: 8});
-	btn.typ = text;
-	btn.tool = {x: 0, y: 8, height: 28, width: 60};
-	this.util.bind(btn, "mousedown", action);
-	btn.close = function () {};
-	return btn;
-};
-SVGDrawer.prototype.drawComboBox = function (elements, activText, action) {
-	var g = this.symbolLib.draw(this, {typ: "Dropdown", x: 66, y: 8});
-	g.tool = {x: 66, y: 8, minheight: 28, maxheight: 28, width: 80};
-	g.status = "close";
-	if (elements) {
-		var len = 0, i;
-		for (i = 0; i < elements.length; i += 1) {
-			if (elements[i] && elements[i].length > 0) {
-				len += 1;
-			}
-		}
-		var choicebox = this.util.create({tag: "g"});
-		var h = len * 25 + 6;
-		choicebox.appendChild(this.util.create({tag: "rect", rx: 0, x: 0, y: 28, width: 60, height: h, stroke: "#000", fill: "#fff", opacity: "0.7"}));
-		g.tool.maxheight = h + g.tool.minheight;
-
-		g.elements = elements;
-		g.activ = this.util.create({tag: "text", _font: true, "text-anchor": "left", "width": 60, "x": 10, "y": 20, value: activText});
-		g.appendChild(g.activ);
-		var y = 46;
-		var yr = 28;
-		var e;
-		var func = function (event) {
-			g.activ.textContent = event.currentTarget.value;
-		};
-		for (e = 0; e < elements.length; e += 1) {
-			if (!elements[e] || elements[e].length < 1) {
-				continue;
-			}
-			var element = elements[e];
-			choicebox.appendChild(this.util.create({tag: "text", _font: true, "text-anchor": "left", "width": 60, "x": 10, "y": y, value: element}));
-			var item = choicebox.appendChild(this.util.create({tag: "rect", rx: 0, x: 0, y: yr, width: 60, height: 24, stroke: "none", "class": "selection"}));
-			item.value = element;
-			if (action) {
-				item.onclick = action;
-			} else {
-				item.onclick = func;
-			}
-			y += 26;
-			yr += 26;
-		}
-		g.choicebox = choicebox;
-	}
-	g.onclick = function () {
-		if (g.status === "close") {
-			g.open();
-		} else {
-			g.close();
-		}
-	};
-	g.close = function () {
-		if (g.status === "open") {
-			this.removeChild(this.choicebox);
-		}
-		this.status = "close";
-		this.tool.height = this.tool.minheight;
-	};
-	g.open = function () {
-		if (g.status === "close") {
-			this.appendChild(this.choicebox);
-		}
-		this.status = "open";
-		this.tool.height = this.tool.maxheight;
-	};
-	g.close();
-	return g;
-};
 SVGDrawer.prototype.createContainer = function (graph) {
 	var that = this;
 	var list = ["HTML", "SVG", "PNG"];
@@ -497,7 +448,8 @@ SVGDrawer.prototype.createContainer = function (graph) {
 
 	if (this.showButton) {
 		buttons = this.getButtons(graph, "SVG");
-		buttons.push(this.drawComboBox(list, "Save", function (e) {that.removeToolItems(that.board); that.model.SaveAs(e.currentTarget.value); }));
+		var node = {typ: "Dropdown", x: 66, y: 8, minheight: 28, maxheight: 28, width: 80, elements: list, activText: "Save", action: function (e) {that.removeToolItems(that.board); that.model.SaveAs(e.currentTarget.value); }};
+		buttons.push(this.symbolLib.draw(this, node));
 	}
 	var board = this.createBoard({tag: "svg", "xmlns:svg": "http://www.w3.org/2000/svg", "xmlns:xlink": "http://www.w3.org/1999/xlink"}, graph, buttons);
 	board.appendChild(this.drawDef());
@@ -567,9 +519,9 @@ SVGDrawer.prototype.getNode = function (node, draw) {
 		var btn;
 		if (node.status === "close") {
 			// Open Button
-			btn = this.createGroup(node, symbolLib.drawMax({x:(node.x + width - 20), y:node.y}));
+			btn = this.createGroup(node, symbolLib.drawMax({x: (node.x + width - 20), y: node.y}));
 		} else {
-			btn = this.createGroup(node, symbolLib.drawMin({x:(node.x + width - 20), y:node.y}));
+			btn = this.createGroup(node, symbolLib.drawMin({x: (node.x + width - 20), y: node.y}));
 		}
 		var that = this;
 		btn.setAttribute("class", "hand");
@@ -718,18 +670,99 @@ SVGDrawer.prototype.createPath = function (close, fill, path) {
 	}
 	return this.util.create({tag: "path", "d": d, "fill": fill, stroke: "#000", "stroke-width": "1px"});
 };
-SVGDrawer.prototype.createGroup = function (node, group) {
-	var i, entity = this.util.create({tag: "g"});
+SVGDrawer.prototype.createGroup = function (node, group, parent) {
+	var that = this;
+	var i, g = this.util.create({tag: "g"});
+	var offsetX = 0, offsetY = 0;
+	if (parent) {
+		offsetX = group.x;
+		offsetY = group.y;
+	} else {
+		parent = g;
+	}
 	var transform = "translate(" + group.x + " " + group.y + ")";
 	if (group.scale) { transform += " scale(" + group.scale + ")"; }
 	if (group.rotate) { transform += " rotate(" + group.rotate + ")"; }
-	entity.setAttribute('transform', transform);
-	entity.setAttribute("height", group.height);
-	entity.setAttribute("width", group.width);
+	g.setAttribute('transform', transform);
+	g.setAttribute("height", group.height);
+	g.setAttribute("width", group.width);
+
 	for (i = 0; i < group.items.length; i += 1) {
-		entity.appendChild(this.util.create(group.items[i]));
+		g.appendChild(this.util.create(group.items[i]));
 	}
-	return entity;
+	if (!node.height) {
+		node.height = group.height;
+	}
+	if (!node.minheight) {
+		node.minheight = node.height;
+	}
+	if (!node.maxheight) {
+		node.maxheight = node.height;
+	}
+
+	if (node.elements) {
+		for (i = 0; i < node.elements.length; i += 1) {
+			if (!node.elements[i] && node.elements[i].length < 1) {
+				node.elements.splice(i, 1);
+				i -= 1;
+			}
+		}
+		var choicebox = this.util.create({tag: "g"});
+		var h = node.elements.length * 25 + 6;
+		choicebox.appendChild(this.util.create({tag: "rect", rx: 0, x: offsetX, y: (offsetY + 28), width: 60, height: h, stroke: "#000", fill: "#fff", opacity: "0.7"}));
+		node.maxheight = h + node.minheight;
+
+		parent.elements = node.elements;
+		parent.activ = this.util.create({tag: "text", _font: true, "text-anchor": "left", "width": 60, "x": (10 + offsetX), "y": 20, value: node.activText});
+		g.appendChild(parent.activ);
+		var y = offsetY + 46;
+		var yr = offsetY + 28;
+		var e;
+		var func = function (event) {
+			parent.activ.textContent = event.currentTarget.value;
+		};
+		for (e = 0; e < node.elements.length; e += 1) {
+			var element = node.elements[e];
+			choicebox.appendChild(this.util.create({tag: "text", _font: true, "text-anchor": "left", "width": 60, "x": 10, "y": y, value: element}));
+			var item = choicebox.appendChild(this.util.create({tag: "rect", rx: 0, x: offsetX, y: yr, width: 60, height: 24, stroke: "none", "class": "selection"}));
+			item.value = element;
+			if (node.action) {
+				item.onclick = node.action;
+			} else {
+				item.onclick = func;
+			}
+			y += 26;
+			yr += 26;
+		}
+		parent.choicebox = choicebox;
+	}
+	parent.tool = node;
+	parent.onclick = function () {
+		if (parent.status === "close") {
+			parent.open();
+		} else {
+			parent.close();
+		}
+	};
+	parent.close = function () {
+		if (parent.status === "open") {
+			this.removeChild(parent.choicebox);
+		}
+		parent.status = "close";
+		parent.tool.height = parent.tool.minheight;
+		that.setSize(parent, parent.tool.width + parent.tool.x + 10, parent.tool.height + parent.tool.y + 10);
+	};
+	parent.open = function () {
+		if (parent.status === "close") {
+			this.appendChild(parent.choicebox);
+		}
+		parent.status = "open";
+		parent.tool.height = parent.tool.maxheight;
+		that.setSize(parent, parent.tool.width + parent.tool.x + 10, parent.tool.height + parent.tool.y + 10);
+	};
+	parent.close();
+
+	return g;
 };
 // Example Items
 // {tag: "path", d: ""}
@@ -743,7 +776,7 @@ var SymbolLibary = function () {};
 SymbolLibary.prototype.upFirstChar = function (txt) {return txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase(); };
 SymbolLibary.prototype.create = function (node, drawer) {
 	if (this.isSymbol(node)) {
-		return this.draw(drawer, node, false);
+		return this.draw(drawer, node);
 	}
 	return null;
 };
@@ -755,17 +788,22 @@ SymbolLibary.prototype.getName = function (node) {
 	if (node.typ) {
 		return "draw" + this.upFirstChar(node.typ);
 	}
-	return "draw" + this.upFirstChar(node.src);
+	if (node.src) {
+		return "draw" + this.upFirstChar(node.src);
+	}
+	return "drawNode";
 };
 SymbolLibary.prototype.draw = function (drawer, node) {
 	var fn = this[this.getName(node)];
 	if (typeof fn === "function") {
 		var group = fn.apply(this, [node]);
-		if (!drawer) {
+		if (!drawer || typeof drawer.createGroup !== "function") {
 			drawer = new SVGDrawer();
 			drawer.showButton = false;
 			var board = drawer.createContainer(null);
-			var element = drawer.createGroup(node, group);
+			board.setAttribute("style", "border:none;");
+			drawer.setSize(board, node.width + node.x + 10, node.height + node.y + 10);
+			var element = drawer.createGroup(node, group, board);
 			board.appendChild(element);
 			return board;
 		}
@@ -953,9 +991,9 @@ SymbolLibary.prototype.drawDropdown = function (node) {
 		width: btnWidth,
 		height: btnHeight,
 		items: [
-			{tag: "rect", rx: 0, x: 0, y: 0, width: btnWidth, height: btnHeight, stroke: "#000", fill: "none"},
-			{tag: "rect", rx: 2, x: 60, y: 0, width: 20, height: 28, stroke: "#000", "class": "saveBtn"},
-			{tag: "path", style: "fill:#000000;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1", d: "m 65,13 10,0 L 70,20 z"}
+			{tag: "rect", rx: 0, x: 0, y: 0, width: btnWidth - 20, height: btnHeight, stroke: "#000", fill: "none"},
+			{tag: "rect", rx: 2, x: btnWidth - 20, y: 0, width: 20, height: 28, stroke: "#000", "class": "saveBtn"},
+			{tag: "path", style: "fill:#000000;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1", d: "m " + (btnWidth - 15) + ",13 10,0 L " + (btnWidth - 10) + ",20 z"}
 		]
 	};
 };
