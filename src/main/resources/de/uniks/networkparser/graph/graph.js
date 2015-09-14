@@ -527,7 +527,7 @@ var Graph = function (json, options) {
 		this.root = document.getElementById(this.model.options.canvasid);
 	}
 	if (this.root) {
-		if(this.model.options.clearCanvas) {
+		if (this.model.options.clearCanvas) {
 			for (i = this.root.children.length - 1; i >= 0; i -= 1) {
 				this.root.removeChild(this.root.children[i]);
 			}
@@ -552,7 +552,7 @@ Graph.prototype.initInfo = function (edge, info) {
 	}
 	return infoTxt;
 };
-Graph.prototype.clearBoard = function () {
+Graph.prototype.clearBoard = function (onlyElements) {
 	if (this.board) {
 		var i;
 		this.clearLines(this.model);
@@ -566,9 +566,11 @@ Graph.prototype.clearBoard = function () {
 			}
 			n._RIGHT = n._LEFT = n._UP = n._DOWN = 0;
 		}
-		this.root.removeChild(this.board);
+		if (!onlyElements) {
+			this.root.removeChild(this.board);
+		}
 	}
-	if (this.drawer) {
+	if (!onlyElements && this.drawer) {
 		this.drawer.clearBoard();
 	}
 };
@@ -646,16 +648,18 @@ Graph.prototype.drawRaster = function () {
 		this.board.appendChild(line);
 	}
 };
-Graph.prototype.draw = function (model, width, height) {
+Graph.prototype.draw = function (model, width, height, absolute) {
 	var i, n, nodes = model.nodes;
-	for (i in nodes) {
-		if (!nodes.hasOwnProperty(i) || typeof (nodes[i]) === "function") {
-			continue;
-		}
-		n = nodes[i];
-		if (model.left > 0 || model.top > 0) {
-			n.x += model.left;
-			n.y += model.top;
+	if (!absolute) {
+		for (i in nodes) {
+			if (!nodes.hasOwnProperty(i) || typeof (nodes[i]) === "function") {
+				continue;
+			}
+			n = nodes[i];
+			if (model.left > 0 || model.top > 0) {
+				n.x += model.left;
+				n.y += model.top;
+			}
 		}
 	}
 	model.minSize = new Pos(width || 0, height || 0);
@@ -969,6 +973,34 @@ Graph.prototype.SaveAs = function (typ) {
 		this.ExportPDF();
 	} else if (typ === "eps") {
 		this.ExportEPS();
+	}
+};
+Graph.prototype.SavePosition = function () {
+	var data = [], node, id;
+	for (id in this.model.nodes) {
+		node = this.model.nodes[id];
+		data.push({id: node.id, x: node.x, y: node.y});
+	}
+	if (window.localStorage && this.model.id) {
+		window.localStorage.setItem(this.model.id, JSON.stringify(data));
+	}
+};
+Graph.prototype.LoadPosition = function () {
+	if (this.model.id && window.localStorage) {
+		var node, id;
+		var data = window.localStorage.getItem(this.model.id);
+		if (data) {
+			data = JSON.parse(data);
+			for (id in data) {
+				node = data[id];
+				if (this.model.nodes[node.id]) {
+					this.model.nodes[node.id].x = node.x;
+					this.model.nodes[node.id].y = node.y;
+				}
+			}
+			this.clearBoard(true);
+			this.draw(this.model, 0, 0, true);
+		}
 	}
 };
 Graph.prototype.Save = function (typ, data, name) {
