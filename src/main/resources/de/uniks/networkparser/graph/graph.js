@@ -306,6 +306,7 @@ var GraphNode = function (id) {
 GraphNode.prototype = Object_create(GraphUtil.prototype);
 GraphNode.prototype.getX = function () {if (this._parent) {return this._parent.getX() + this.x; } return this.x; };
 GraphNode.prototype.getY = function () {if (this._parent) {return this._parent.getY() + this.y; } return this.y; };
+GraphNode.prototype.getEdges = function () {return this._edges; };
 GraphNode.prototype.removeFromBoard = function (board) {if (this._gui) {board.removeChild(this._gui); this._gui = null; } };
 
 var GraphModel = function (json, options) {
@@ -446,6 +447,7 @@ GraphModel.prototype.removeFromBoard = function (board) {
 	}
 };
 GraphModel.prototype.resize = function (mode) {};
+GraphModel.prototype.getEdges = function () {return this.edges; };
 GraphModel.prototype.calcLines = function (drawer) {
 	var ownAssoc = [];
 	var i;
@@ -864,10 +866,10 @@ Graph.prototype.stopDrag = function (event) {
 				if (item.model._gui) {
 					parent.appendChild(item.model._gui);
 				}
-				for (i = 0; i < item.model.edges.length; i += 1) {
-					var e = item.model.edges[i];
-					e.source.custom = false;
-					e.target.custom = false;
+				var e = item.model.getEdges();
+				for (i = 0; i < e.length; i += 1) {
+					e[i].source.custom = false;
+					e[i].target.custom = false;
 				}
 			}
 		}
@@ -1248,14 +1250,14 @@ Edge.prototype.draw = function (board, drawer) {
 		this.addElement(board, drawer.createLine(p.source.x, p.source.y, p.target.x, p.target.y, p.line, p.style));
 	}
 	var options = drawer.model.options;
-	this.drawSourceText(board, drawer, options);
+	this.drawSourceText(board, drawer, p.style);
 	if (this.info) {
 		var angle = this.drawText(board, drawer, this.info, this.infoPos);
 		this.addElement(board, new SymbolLibary().create({typ: "Arrow", x: this.infoPos.x, y: this.infoPos.y, rotate: angle}, drawer));
 	}
-	this.drawTargetText(board, drawer, options);
+	this.drawTargetText(board, drawer, p.style);
 };
-Edge.prototype.drawText = function (board, drawer, text, pos) {
+Edge.prototype.drawText = function (board, drawer, text, pos, style) {
 	if (this._path.length < 1) {
 		return;
 	}
@@ -1265,19 +1267,19 @@ Edge.prototype.drawText = function (board, drawer, text, pos) {
 	if (options.rotatetext) {
 		angle = Math.atan((p.source.y - p.target.y) / (p.source.x - p.target.x)) * 60;
 	}
-	this.addElement(board, drawer.createInfo(pos, text, angle));
+	this.addElement(board, drawer.createInfo(pos, text, angle, style));
 	return angle;
 };
-Edge.prototype.drawSourceText = function (board, drawer) {
+Edge.prototype.drawSourceText = function (board, drawer, style) {
 	var infoTxt = this.getInfo(this.source);
 	if (infoTxt.length > 0) {
-		this.drawText(board, drawer, infoTxt, this.source);
+		this.drawText(board, drawer, infoTxt, this.source, style);
 	}
 };
-Edge.prototype.drawTargetText = function (board, drawer) {
+Edge.prototype.drawTargetText = function (board, drawer, style) {
 	var infoTxt = this.getInfo(this.target);
 	if (infoTxt.length > 0) {
-		this.drawText(board, drawer, infoTxt, this.target);
+		this.drawText(board, drawer, infoTxt, this.target, style);
 	}
 };
 Edge.prototype.endPos = function () {return this._path[this._path.length - 1]; };
@@ -1553,8 +1555,8 @@ Generalisation.prototype.draw = function (board, drawer) {
 	this.addElement(board, drawer.createLine(this._bot.x, this._bot.y, this._end.x, this._end.y, this._lineStyle));
 	this.addElement(board, drawer.createLine(this._top.x, this._top.y, this._bot.x, this._bot.y, this._lineStyle));
 };
-Generalisation.prototype.drawSourceText = function (board, drawer, options) {};
-Generalisation.prototype.drawTargetText = function (board, drawer, options) {};
+Generalisation.prototype.drawSourceText = function (board, drawer, style) {};
+Generalisation.prototype.drawTargetText = function (board, drawer, style) {};
 
 var Implements = function () { this.init(); this.typ = "Implements"; this._lineStyle = Line.Format.DOTTED; };
 Implements.prototype = Object_create(Generalisation.prototype);
