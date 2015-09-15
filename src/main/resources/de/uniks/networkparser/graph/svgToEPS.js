@@ -19,7 +19,7 @@
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-/*jslint node: true, vars: true */
+/*jslint node: true */
 /*global document: false, RGBColor: false, Blob: false, jsEPS: false, window: false */
 "use strict";
 var epsSvgAttr = {
@@ -42,22 +42,21 @@ var svgConverter = function (element, target, options) {
 	this.parse(element);
 };
 svgConverter.prototype.parse = function (element) {
+	var el, i, n, colorMode, hasFillColor, fillRGB, fillColor, strokeColor, strokeRGB, fontType, pdfFontSize, x, y, box, xOffset;
 	if (!element) {
 		return;
 	}
 	if (typeof element === "string") {
-		var el = document.createElement('div');
+		el = document.createElement('div');
 		el.innerHTML = element;
 		element = el.childNodes[0];
 	}
-	var i;
 	for (i = 0; i < element.children.length; i += 1) {
-		var n = element.children[i];
-		var colorMode = null;
-		var hasFillColor = false;
-		var fillRGB;
+		n = element.children[i];
+		colorMode = null;
+		hasFillColor = false;
 		if ('g,line,rect,ellipse,circle,text'.indexOf(n.tagName) >= 0) {
-			var fillColor = n.getAttribute('fill');
+			fillColor = n.getAttribute('fill');
 			if (fillColor) {
 				fillRGB = new RGBColor(fillColor);
 				if (fillRGB.ok) {
@@ -70,12 +69,12 @@ svgConverter.prototype.parse = function (element) {
 			if (hasFillColor) {
 				this.target.setFillColor(fillRGB.r, fillRGB.g, fillRGB.b);
 			}
-			var strokeColor = n.getAttribute('stroke');
+			strokeColor = n.getAttribute('stroke');
             if (n.hasAttribute('stroke-width')) {
 				this.target.setLineWidth(this.attr(n, 'stroke-width'));
 			}
 			if (strokeColor) {
-				var strokeRGB = new RGBColor(strokeColor);
+				strokeRGB = new RGBColor(strokeColor);
 				if (strokeRGB.ok) {
 					this.target.setDrawColor(strokeRGB.r, strokeRGB.g, strokeRGB.b);
 					if (colorMode === 'F') {
@@ -128,7 +127,7 @@ svgConverter.prototype.parse = function (element) {
 				this.target.text(this.attr(n, 'x'), this.attr(n, 'y'), n.innerHTML);
 				break;
 			}
-			var fontType = "";
+			fontType = "";
 			if (n.hasAttribute('font-weight')) {
 				if (n.getAttribute('font-weight') === "bold") {
 					fontType = "bold";
@@ -140,13 +139,15 @@ svgConverter.prototype.parse = function (element) {
 				}
 			}
 			this.target.setFontType(fontType);
-			var pdfFontSize = 16;
+			pdfFontSize = 16;
 			if (n.hasAttribute('font-size')) {
 				pdfFontSize = parseInt(n.getAttribute('font-size'), 10);
 			}
-			var box = n.getBBox();
+			box = n.getBBox();
 			//FIXME: use more accurate positioning!!
-			var x = this.attr(n, 'x'), y = this.attr(n, 'y'), xOffset = 0;
+			x = this.attr(n, 'x');
+			y = this.attr(n, 'y');
+			xOffset = 0;
 			if (n.hasAttribute('text-anchor')) {
 				switch (n.getAttribute('text-anchor')) {
 				case 'end':
@@ -204,7 +205,7 @@ jsEPS.prototype.moveto = function (x, y) {this.out(x + " " + this.y(y) + " movet
 jsEPS.prototype.lineto = function (x, y) {this.out(x + " " + this.y(y) + " lineto"); this.out("stroke"); };
 jsEPS.prototype.rect = function (x, y, width, height, style) {
 	y = y + (this.inverting ? height : 0);
-	if (style.indexOf("fill:url(#classelement);") >= 0) {
+	if (style && style.indexOf("fill:url(#classelement);") >= 0) {
 		this.out("gsave 0.93 0.93 0.93 setrgbcolor newpath " + x + " " + this.y(y) + " " + width + " " + height + " rectfill grestore");
 	} else {
 		this.out("newpath " + x + " " + this.y(y) + " " + width + " " + height + " rectstroke");
@@ -212,23 +213,19 @@ jsEPS.prototype.rect = function (x, y, width, height, style) {
 };
 jsEPS.prototype.text = function (x, y, text) {this.out("(" + text.replace("&lt;", "<").replace("&gt;", ">") + ") " + x + " " + this.y(y) + " F1 SMS"); };
 jsEPS.prototype.save = function (name) {
-	var typ = "application/postscript";
-	var a = document.createElement("a");
-	var data = "";
-	var pos;
-	var i;
+	var t, end, url, text, typ = "application/postscript", a = document.createElement("a"), data = "", pos, i;
 	for (i = 0; i < this.output.length; i += 1) {
-		var text = this.output[i];
+		text = this.output[i];
 		if (this.inverting) {
 			while ((pos = text.indexOf("%y")) >= 0) {
-				var end = text.indexOf(")", pos);
-				var t = this.max - parseInt(text.substring(pos + 3, end), 10);
+				end = text.indexOf(")", pos);
+				t = this.max - parseInt(text.substring(pos + 3, end), 10);
 				text = text.substring(0, pos) + t + text.substring(end + 1);
 			}
 		}
 		data = data + text + "\r\n";
 	}
-	var url = window.URL.createObjectURL(new Blob([data], {type: typ}));
+	url = window.URL.createObjectURL(new Blob([data], {type: typ}));
 	a.href = url;
 	a.download = name || "download.eps";
 	a.click();
