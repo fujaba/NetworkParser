@@ -696,7 +696,30 @@ var json = {"typ":"class", "nodes":[
 };
 addCase("Show Edge with Color", json);
 </script>
-
+<script>
+var json = {"typ":"class", "nodes":[
+				{"typ":"node", id:"risk:Game"},
+				{"typ":"node", id:"albert:Player"}
+], "edges":[
+	{
+		 "typ":"EDGE",
+		 "source":{"property":"currentGame", "id":"risk:Game"},
+		 "target":{"property":"currentPlayer","id":"albert:Player"}
+	},
+	{
+		 "typ":"EDGE",
+		 "source":{"property":"game", "id":"risk:Game"},
+		 "target":{"property":"player","id":"albert:Player"}
+	},
+	{
+		 "typ":"EDGE",
+		 "source":{"property":"wingame", "id":"risk:Game"},
+		 "target":{"property":"winner","id":"albert:Player"}
+	}
+]
+};
+addCase("Show Multi Assoc", json);
+</script>
 <table><tr><td style="vertical-align:top;"><ul id="CaseUL" /></td><td><div style="min-width:100px;min-height:100px;border:1px solid black" id="Demo"/></td></tr></table>
 </body>
 </html>
