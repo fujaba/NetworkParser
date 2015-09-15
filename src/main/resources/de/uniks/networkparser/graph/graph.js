@@ -846,9 +846,12 @@ Graph.prototype.stopDrag = function (event) {
 	if (item.model) {
 		if (this.model.options.display === "svg") {
 			if (item.getAttributeNS(null, "transform")) {
-				pos = item.getAttributeNS(null, "transform").slice(10, -1).split(' ');
-				item.model.x = item.model.x + Number(pos[0]);
-				item.model.y = item.model.y + Number(pos[1]);
+				z = item.getAttributeNS(null, "transform");
+				if (z.substring(0, 6) !== "rotate") {
+					pos = z.slice(10, -1).split(' ');
+					item.model.x = item.model.x + Number(pos[0]);
+					item.model.y = item.model.y + Number(pos[1]);
+				}
 			}
 			item.model._center = new Pos(item.model.x + (item.model.width / 2), item.model.y + (item.model.height / 2));
 			parent.removeChild(item);
@@ -1286,7 +1289,7 @@ Edge.prototype.edgePosition = function () {
 		if (this._sNode._edges[i] === this) {
 			return pos;
 		}
-		if (this._sNode._edges[i].target === this._tNode) {
+		if (this._sNode._edges[i]._tNode === this._tNode) {
 			pos += 1;
 		}
 	}
@@ -1452,14 +1455,14 @@ Edge.prototype.calcInfoPos = function (linePos, item, info, offset) {
 	newY = linePos.y;
 	newX = linePos.x;
 	if (linePos._id === Edge.Position.UP) {
-		newY = newY - info.height - offset - spaceA;
+		newY = newY - info.height - spaceA;
 		if (this._m !== 0) {
-			newX = (newY - this._n) / this._m + spaceB;
+			newX = (newY - this._n) / this._m + spaceB + offset;
 		}
 	} else if (linePos._id === Edge.Position.DOWN) {
-		newY = newY + offset + spaceA;
+		newY = newY + spaceA;
 		if (this._m !== 0) {
-			newX = (newY - this._n) / this._m + spaceB;
+			newX = (newY - this._n) / this._m + spaceB + offset;
 		}
 	} else if (linePos._id === Edge.Position.LEFT) {
 		newX = newX - info.width - offset - spaceA;
