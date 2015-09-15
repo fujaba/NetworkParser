@@ -4,6 +4,7 @@
 	<script src="../../src/main/resources/de/uniks/networkparser/graph/graph.js"></script>
 	<script src="../../src/main/resources/de/uniks/networkparser/graph/dagre.min.js"></script>
 	<script src="../../src/main/resources/de/uniks/networkparser/graph/drawer.js"></script>
+	<script src="../../src/main/resources/de/uniks/networkparser/graph/svgToEPS.js"></script>
 </head>
 <body>
 <script language="Javascript">
@@ -20,7 +21,7 @@ function addToUL(label, json) {
 		}
 		json["options"]["canvasid"]="Demo";
 		json["options"]["clearCanvas"]=1;
-		item.appendChild( document.createTextNode((ul.children.length + 1)+". "+label+" "));
+		item.appendChild( document.createTextNode(label+" "));
 		var btn = document.createElement("button");
 		btn.onclick = function(){new Graph(json).layout();};
 		btn.innerHTML = "+";
@@ -28,6 +29,11 @@ function addToUL(label, json) {
 		ul.appendChild(item);
 	}
 };
+</script>
+
+<script>
+var json = {"typ":"class", "nodes":[ {"typ":"node", id:"Albert:Simple"}],"options": {"display":"svg"} };
+addCase("Simple Model", json);
 </script>
 
 <script>
