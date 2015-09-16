@@ -8,3 +8,7 @@
 .classpath
 .project
 /bin/
+**/*.aux
+**/*.dvi
+**/*.synctex.gz
+**/*-eps-converted-to.pdf
