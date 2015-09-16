@@ -25,7 +25,7 @@
 // VERSION: 2015.09.15 10:40
 /*global GraphUtil: false, SymbolLibary: false, svgConverter: false, jsEPS: false, jsPDF: false, document:false */
 "use strict";
-var Object_create = Object.create || function (o) { var F = function () {}; F.prototype = o; return new F(); };
+var ObjectCreate = Object.create || function (o) { var F = function () {}; F.prototype = o; return new F(); };
 
 var Drawer = function () {this.init(); };
 Drawer.prototype.init = function (typ) {this.util = new GraphUtil(typ); this.symbolLib = new SymbolLibary(); };
@@ -188,7 +188,7 @@ Drawer.prototype.getButtons = function (graph, notTyp) {
 };
 //				###################################################### HTMLDrawer ####################################################################################
 var HTMLDrawer = function () { this.init(); };
-HTMLDrawer.prototype = Object_create(Drawer.prototype);
+HTMLDrawer.prototype = ObjectCreate(Drawer.prototype);
 HTMLDrawer.prototype.setPos = function (item, x, y) {item.style.left = x + "px"; item.style.top = y + "px"; };
 HTMLDrawer.prototype.setSize = function (item, x, y) {item.style.width = x + "px"; item.style.height = y + "px"; };
 HTMLDrawer.prototype.getSize = function (item) {return {x: item.clientWidth, y: item.clientHeight}; };
@@ -197,7 +197,7 @@ HTMLDrawer.prototype.getBoard = function (graph) {
 };
 HTMLDrawer.prototype.createCell = function (parent, tag, node, innerHTML, typ) {
 	var tr = this.util.create({"tag": 'tr'}), cell;
-	cell = this.util.create({"tag": tag, _font: true, value: innerHTML});
+	cell = this.util.create({"tag": tag, $font: true, value: innerHTML});
 	this.model.createElement(cell, typ, node);
 	tr.appendChild(cell);
 	parent.appendChild(tr);
@@ -225,7 +225,7 @@ HTMLDrawer.prototype.getNode = function (node, draw) {
 
 	if (node.typ === "objectdiagram" || node.typ === "classdiagram") {
 		node.left = node.top = 30;
-		node._gui = htmlElement;
+		node.$gui = htmlElement;
 		if (draw) {
 			this.model.draw(node);
 			htmlElement.style.borderColor = "red";
@@ -235,7 +235,7 @@ HTMLDrawer.prototype.getNode = function (node, draw) {
 		} else {
 			this.model.layout(0, 0, node);
 		}
-		this.setSize(htmlElement, node._gui.style.width, node._gui.style.height);
+		this.setSize(htmlElement, node.$gui.style.width, node.$gui.style.height);
 		return htmlElement;
 	}
 	this.model.createElement(htmlElement, "class", node);
@@ -257,16 +257,16 @@ HTMLDrawer.prototype.getNode = function (node, draw) {
 	item.style.width = "100%";
 	item.style.height = "100%";
 	htmlElement.appendChild(item);
-	if (node.head_src) {
+	if (node.head$src) {
 		cell = this.createCell(item, "td", node);
 		cell.style.textAlign = "center";
-		if (!node.head_img) {
-			node.head_img = {};
-			node.head_img.src = node.head_src;
-			node.head_img.width = node.head_width;
-			node.head_img.height = node.head_height;
+		if (!node.head$img) {
+			node.head$img = {};
+			node.head$img.src = node.head$src;
+			node.head$img.width = node.head$width;
+			node.head$img.height = node.head$height;
 		}
-		z = this.createImage(node.head_img);
+		z = this.createImage(node.head$img);
 		if (z) {
 			cell.appendChild(z);
 		}
@@ -319,11 +319,11 @@ HTMLDrawer.prototype.getNode = function (node, draw) {
 	}
 	htmlElement.appendChild(item);
 	htmlElement.node = node;
-	node._gui = htmlElement;
+	node.$gui = htmlElement;
 	return htmlElement;
 };
 HTMLDrawer.prototype.getInfo = function (item, text, angle, style) {
-	var info = this.util.create({tag: "div", _font: true, model: item, "class": "EdgeInfo", value: text, style: "color:" + this.getColor(style, "#CCC")});
+	var info = this.util.create({tag: "div", $font: true, model: item, "class": "EdgeInfo", value: text, style: "color:" + this.getColor(style, "#CCC")});
 
 	if (angle !== 0) {
 		info.style.transform = "rotate(" + angle + "deg)";
@@ -378,9 +378,9 @@ HTMLDrawer.prototype.createPath = function (close, fill, path, angle) {
 };
 //				###################################################### SVG ####################################################################################
 var SVGDrawer = function () {this.init("http://www.w3.org/2000/svg"); this.showButton = true; };
-SVGDrawer.prototype = Object_create(Drawer.prototype);
+SVGDrawer.prototype = ObjectCreate(Drawer.prototype);
 SVGDrawer.prototype.getWidth = function (label) {
-	var board, width, text = this.util.create({tag: "text", _font: true, value: label});
+	var board, width, text = this.util.create({tag: "text", $font: true, value: label});
 	text.setAttribute("width", "5px");
 	board = this.model.board;
 	board.appendChild(text);
@@ -456,12 +456,12 @@ SVGDrawer.prototype.getNode = function (node, draw) {
 		g = this.util.create({tag: "g", model: node});
 		if (node.content.svg) {
 			g.setAttribute('transform', "translate(" + node.x + " " + node.y + ")");
-			g.innerHTML = node.content_svg;
+			g.innerHTML = node.content$svg;
 			return g;
 		}
 		if (node.content.html) {
 			g.setAttribute('transform', "translate(" + node.x + " " + node.y + ")");
-			g.innerHTML = node.content_svg;
+			g.innerHTML = node.content$svg;
 			return g;
 		}
 	}
@@ -470,18 +470,18 @@ SVGDrawer.prototype.getNode = function (node, draw) {
 		if (node.status === "close") {
 			width = this.getWidth(node.id) + 30;
 			height = 40;
-			this.addChild(node, g, this.util.create({tag: "text", _font: true, "text-anchor": "left", "x": (node.x + 2), "y": node.y + 12, value: node.id}));
+			this.addChild(node, g, this.util.create({tag: "text", $font: true, "text-anchor": "left", "x": (node.x + 2), "y": node.y + 12, value: node.id}));
 		} else {
 			node.left = node.top = 30;
-			node._gui = g;
+			node.$gui = g;
 			if (draw) {
 				this.model.draw(node);
 			} else {
 				this.model.layout(0, 0, node);
 			}
 
-			width = this.util.getValue(node._gui.style.width);
-			height = this.util.getValue(node._gui.style.height);
+			width = this.util.getValue(node.$gui.style.width);
+			height = this.util.getValue(node.$gui.style.height);
 			if (node.style && node.style.toLowerCase() === "nac") {
 				this.addChild(node, g, this.createGroup(node, symbolLib.drawStop(node)));
 			}
@@ -513,8 +513,8 @@ SVGDrawer.prototype.getNode = function (node, draw) {
 		return g;
 	}
 
-	if (node.content_plain) {
-		return this.util.create({tag: "text", _font: true, "text-anchor": "left", "x": (node.x + 10), value: node.content_plain});
+	if (node.content$plain) {
+		return this.util.create({tag: "text", $font: true, "text-anchor": "left", "x": (node.x + 10), value: node.content$plain});
 	}
 
 	width = 0;
@@ -564,7 +564,7 @@ SVGDrawer.prototype.getNode = function (node, draw) {
 		g.appendChild(this.util.create({tag: "rect", rx: 0, "x": x, "y": y, "width": width, height: 30, fill: "none", style: "fill:url(#classelement);"}));
 	}
 
-	item = this.util.create({tag: "text", _font: true, "text-anchor": "right", "x": x + width / 2 - textWidth / 2, "y": y + 20, "width": textWidth});
+	item = this.util.create({tag: "text", $font: true, "text-anchor": "right", "x": x + width / 2 - textWidth / 2, "y": y + 20, "width": textWidth});
 
 	if (this.model.model.typ.toLowerCase() === "objectdiagram") {
 		item.setAttribute("text-decoration", "underline");
@@ -577,7 +577,7 @@ SVGDrawer.prototype.getNode = function (node, draw) {
 
 	if (node.attributes) {
 		for (z = 0; z < node.attributes.length; z += 1) {
-			g.appendChild(this.util.create({tag: "text", _font: true, "text-anchor": "left", "width": width, "x": (x + 10), "y": y, value: node.attributes[z]}));
+			g.appendChild(this.util.create({tag: "text", $font: true, "text-anchor": "left", "width": width, "x": (x + 10), "y": y, value: node.attributes[z]}));
 			y += 20;
 		}
 		if (node.attributes.length > 0) {
@@ -588,7 +588,7 @@ SVGDrawer.prototype.getNode = function (node, draw) {
 		g.appendChild(this.util.create({tag: "line", x1: x, y1: y, x2: x + width, y2: y, stroke: "#000"}));
 		y += 20;
 		for (z = 0; z < node.methods.length; z += 1) {
-			g.appendChild(this.util.create({tag: "text", _font: true, "text-anchor": "left", "width": width, "x": x + 10, "y": y, value: node.methods[z]}));
+			g.appendChild(this.util.create({tag: "text", $font: true, "text-anchor": "left", "width": width, "x": x + 10, "y": y, value: node.methods[z]}));
 			y += 20;
 		}
 	}
@@ -604,14 +604,14 @@ SVGDrawer.prototype.getInfo = function (item, text, angle, style) {
 	if (items.length > 1) {
 		group = this.util.create({tag: "g", "class": "draggable", rotate: angle, model: item});
 		for (i = 0; i < items.length; i += 1) {
-			child = this.util.create({tag: "text", _font: true, "text-anchor": "left", "x": item.x, "y": item.y + (item.height * i), fill: this.getColor(style, "#CCC")});
+			child = this.util.create({tag: "text", $font: true, "text-anchor": "left", "x": item.x, "y": item.y + (item.height * i), fill: this.getColor(style, "#CCC")});
 			child.appendChild(document.createTextNode(items[i]));
 			group.appendChild(child);
 		}
 		this.model.createElement(group, "info", item);
 		return group;
 	}
-	group = this.util.create({tag: "text", "#_font": true, "text-anchor": "left", "x": item.x, "y": item.y, value: text, "id": item.id, "class": "draggable", rotate: angle, model: item, fill: this.getColor(style, "#CCC")});
+	group = this.util.create({tag: "text", "#$font": true, "text-anchor": "left", "x": item.x, "y": item.y, value: text, "id": item.id, "class": "draggable", rotate: angle, model: item, fill: this.getColor(style, "#CCC")});
 	this.model.createElement(group, "info", item);
 	return group;
 };
@@ -674,7 +674,7 @@ SVGDrawer.prototype.createGroup = function (node, group, parent) {
 		node.maxheight = z + node.minheight;
 
 		parent.elements = node.elements;
-		parent.activ = this.util.create({tag: "text", _font: true, "text-anchor": "left", "width": 60, "x": (10 + offsetX), "y": 20, value: node.activText});
+		parent.activ = this.util.create({tag: "text", $font: true, "text-anchor": "left", "width": 60, "x": (10 + offsetX), "y": 20, value: node.activText});
 		g.appendChild(parent.activ);
 		y = offsetY + 46;
 		yr = offsetY + 28;
@@ -683,7 +683,7 @@ SVGDrawer.prototype.createGroup = function (node, group, parent) {
 			parent.activ.textContent = event.currentTarget.value;
 		};
 		for (z = 0; z < node.elements.length; z += 1) {
-			box.appendChild(this.util.create({tag: "text", _font: true, "text-anchor": "left", "width": 60, "x": 10, "y": y, value: node.elements[z]}));
+			box.appendChild(this.util.create({tag: "text", $font: true, "text-anchor": "left", "width": 60, "x": 10, "y": y, value: node.elements[z]}));
 			item = box.appendChild(this.util.create({tag: "rect", rx: 0, x: offsetX, y: yr, width: 60, height: 24, stroke: "none", "class": "selection"}));
 			item.value = node.elements[z];
 			if (node.action) {
@@ -730,7 +730,7 @@ SVGDrawer.prototype.createGroup = function (node, group, parent) {
 // {tag: "ellipse", width:23, height:4}
 // {tag: "line", x1:650, y1:-286, x2:650, y2:-252}
 // {tag: "circle", r:5, x:12, y:0}
-// {tag: "image", height: 30, width: 50, content_src: hallo}
+// {tag: "image", height: 30, width: 50, content$src: hallo}
 // {tag: "text", "text-anchor": "left", x: "10"}
 var SymbolLibary = function () {};
 SymbolLibary.prototype.upFirstChar = function (txt) {return txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase(); };
@@ -938,7 +938,7 @@ SymbolLibary.prototype.drawButton = function (node) {
 		height: 28,
 		items: [
 			{tag: "rect", rx: 8, x: 0, y: 0, width: btnWidth, height: btnHeight, stroke: "#000", filter: "url(#drop-shadow)", "class": "saveBtn"},
-			{tag: "text", _font: true, x: 10, y: 18, fill: "black", value: btnValue, "class": "hand"}
+			{tag: "text", $font: true, x: 10, y: 18, fill: "black", value: btnValue, "class": "hand"}
 		]
 	};
 };
