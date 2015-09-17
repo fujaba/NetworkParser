@@ -860,22 +860,25 @@ Graph.prototype.stopDrag = function (event) {
 			if (item.model.board) {
 				item.model.board = null;
 			}
+		}else {
+			this.board.removeChild(item);
+		}
 
-			if (item.model.typ === "Info") {
-				item.model.custom = true;
-				item.model.$edge.removeElement(item);
-				entry = item.model.$edge.getInfo(item.model);
-				item.model.$edge.drawText(this.board, this.drawer, entry, item.model);
-			} else {
-				item.model.$gui = this.drawer.getNode(item.model, true);
-				if (item.model.$gui) {
-					parent.appendChild(item.model.$gui);
-				}
-				entry = item.model.getEdges();
-				for (z = 0; z < entry.length; z += 1) {
-					entry[z].source.custom = false;
-					entry[z].target.custom = false;
-				}
+		if (item.model.typ === "Info") {
+			item.model.custom = true;
+			item.model.$edge.removeElement(item); 
+			
+			entry = item.model.$edge.getInfo(item.model);
+			item.model.$edge.drawText(this.board, this.drawer, entry, item.model);
+		} else {
+			item.model.$gui = this.drawer.getNode(item.model, true);
+			if (item.model.$gui) {
+				parent.appendChild(item.model.$gui);
+			}
+			entry = item.model.getEdges();
+			for (z = 0; z < entry.length; z += 1) {
+				entry[z].source.custom = false;
+				entry[z].target.custom = false;
 			}
 		}
 		parent = item.model.$parent;
