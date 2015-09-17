@@ -39,8 +39,8 @@ public class GITVersion {
 		if(isFX) {
 			prefix = "FX"
 		}
-		
-		"$major.$minor.$revision${release ? '' : (lecture ? '-LECTURE' : '-SNAPSHOT')}"
+		//"$major.$minor.$revision${release ? '' : (lecture ? '-LECTURE' : '-SNAPSHOT')}"
+		"$major.$minor.$revision$"
     }
 }
 
