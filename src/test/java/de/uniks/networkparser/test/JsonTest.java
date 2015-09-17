@@ -52,6 +52,12 @@ import de.uniks.networkparser.test.model.util.UniversityCreator;
 
 public class JsonTest extends IOClasses{
 	@Test
+	public void testJSONPath(){
+		JsonObject json = new JsonObject().withValue("{\"id\":\"D:\\\\Roellmedia\\\\\"\n\r}");
+		Assert.assertEquals("D:\\Roellmedia\\", json.get("id"));
+	}
+	
+	@Test
 	public void testJSONFunction(){
 		String functionJson="{body:\"public main() {\r\n\tconsole.log('Hallo Welt');\n\t}\"}";
 		

@@ -268,7 +268,9 @@ public abstract class Tokener {
 			default:
 				if (b == '\\') {
 					if (c == '\\') {
-//						c = 1;
+						if (allowQuote) {
+							c = 0;
+						}
 						isQuote = false;
 					}
 					if (allowQuote) {
