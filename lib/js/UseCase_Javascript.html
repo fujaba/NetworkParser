@@ -2,17 +2,17 @@
 <head>
 	<link rel="stylesheet" type="text/css" href="../../src/main/resources/de/uniks/networkparser/graph/diagramstyle.css">
 	<script src="../../src/main/resources/de/uniks/networkparser/graph/graph.js"></script>
-	<script src="../../src/main/resources/de/uniks/networkparser/graph/dagre.js"></script>
+	<script src="../../src/main/resources/de/uniks/networkparser/graph/dagre.min.js"></script>
 	<script src="../../src/main/resources/de/uniks/networkparser/graph/drawer.js"></script>
 	<script src="../../src/main/resources/de/uniks/networkparser/graph/svgToEPS.js"></script>
 	<style>
-	.SimpleLink {cursor:pointer;color:DarkBlue}
-	.SimpleLink:hover {cursor:pointer;color:DarkRed}
+	.SimpleLink {cursor:pointer; color: DarkBlue; }
+	.SimpleLink:hover {cursor:pointer; color: DarkRed; }
 	</style>
 </head>
 <body>
 <script language="Javascript">
-function addCase(label, json){
+function addCase(label, json) {
 	window.setTimeout(function(){addToUL(label, json);}, 100);
 };
 function addToUL(label, json) {
@@ -20,15 +20,19 @@ function addToUL(label, json) {
 
 	if(ul) {
 		var item = document.createElement("li");
-		if(!json["options"]) {
-			json["options"] = {};
-		}
-		json["options"]["canvasid"]="Demo";
-		json["options"]["clearCanvas"]=1;
 		var a = document.createElement("a");
 		a.className = "SimpleLink";
-		a.onclick = function(){new Graph(json).layout();};
-		a.innerHTML = label+" ";
+		a.innerHTML = label;
+		if (typeof json === "function") {
+			a.onclick = json;
+		} else {
+			if(!json["options"]) {
+				json["options"] = {};
+			}
+			json["options"]["canvasid"]="Demo";
+			json["options"]["clearCanvas"]=1;
+			a.onclick = function(){new Graph(json).layout();};
+		}
 		item.appendChild(a);
 		ul.appendChild(item);
 	}
@@ -742,6 +746,26 @@ var json = {"typ":"class", "nodes":[
 ]
 };
 addCase("Allocs", json);
+</script>
+<script>
+addCase("Manuell generate", function(){
+	var graph = new Graph();
+	graph.addNode({id:"Student", attributes:["name:String"]});
+	graph.addEdge({id:"Student"}, {id:"University"});
+	graph.addOption("canvasid", "Demo");
+	graph.addOption("clearCanvas", 1);
+	graph.layout();
+});
+//graph = new Graph();
+//ExportEPS, ExportHTML, ExportPDF, ExportPNG
+//LoadPosition, SavePosition
+//addEdge: (source, target)
+//addNode: (node)
+//clearBoard: (onlyElements)
+//clearLines: (model)
+//drawRaster: ()
+//layout: (minwidth, minHeight, model)
+
 </script>
 
 <table><tr><td style="vertical-align:top;"><ul id="CaseUL" /></td><td><div style="min-width:100px;min-height:100px;border:1px solid black" id="Demo"/></td></tr></table>

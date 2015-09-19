@@ -366,11 +366,18 @@ GraphModel.prototype.addEdgeModel = function (e) {
 	this.edges.push(edge);
 	return edge;
 };
+GraphModel.prototype.addEdge = function (source, target) {
+	var edge = new Edge();
+	edge.source = this.addNode(source);
+	edge.target = this.addNode(target);
+	return this.addEdgeModel(edge);
+};
 GraphModel.prototype.addNode = function (node) {
 	/* testing if node is already existing in the graph */
 	if (typeof (node) === "string") {
 		node = {id: node, typ: "node"};
 	}
+	node.typ = node.typ || "node";
 	node.typ = node.typ.toLowerCase();
 	if (!(node.id)) {
 		node.id = node.typ + "$" + (this.$nodeCount + 1);
@@ -387,17 +394,6 @@ GraphModel.prototype.addNode = function (node) {
 	node.$parent = this;
 	this.$nodeCount += 1;
 	return this.nodes[node.id];
-};
-GraphModel.prototype.addEdge = function (source, target) {
-	var edge = new Edge();
-	edge.$sNode = this.addNode(source);
-	edge.$sNode.$edges.push(edge);
-
-	edge.$tNode = this.addNode(target);
-	edge.$tNode.$edges.push(edge);
-
-	this.edges.push(edge);
-	return edge;
 };
 GraphModel.prototype.removeNode = function (id) {
 	delete (this.nodes[id]);
@@ -507,11 +503,17 @@ var Options = function () {
 //				######################################################### Graph #########################################################
 var Graph = function (json, options) {
 	this.x = this.y = this.width = this.height = 0;
+	json = json || {};
 	json.top = json.top || 50;
 	json.left = json.left || 10;
 	this.model = new GraphModel(json, options);
 	this.initLayouts();
 	this.loader = new Loader(this);
+	this.initOption();
+};
+Graph.prototype = ObjectCreate(GraphNode.prototype);
+Graph.prototype.initOption = function (typ, value) {
+	this.init = true;
 	if (this.model.options.display.toLowerCase() === "html") {
 		this.drawer = new HTMLDrawer();
 	} else {
@@ -543,7 +545,11 @@ var Graph = function (json, options) {
 		document.body.appendChild(this.root);
 	}
 };
-Graph.prototype = ObjectCreate(GraphNode.prototype);
+
+Graph.prototype.addOption = function (typ, value) {
+	this.model.options[typ] = value;
+	this.init = false;
+};
 Graph.prototype.initLayouts = function () { this.layouts = [{name: "dagre", value: new DagreLayout()}]; };
 Graph.prototype.initInfo = function (edge, info) {
 	if (!this.model.options.CardinalityInfo && !this.model.options.propertyinfo) {
@@ -640,20 +646,20 @@ Graph.prototype.drawRaster = function () {
 
 	for (i = 10; i < width; i += 10) {
 		line = this.drawer.getLine(i, 0, i, height, null, "#ccc");
-		line.className = "lineRaster";
+		line.setAttribute("className", "lineRaster");
 		this.board.rasterElements.push(line);
 		this.board.appendChild(line);
 	}
 	for (i = 10; i < height; i += 10) {
 		line = this.drawer.getLine(0, i, width, i, null, "#ccc");
-		line.className = "lineRaster";
+		line.setAttribute("className", "lineRaster");
 		this.board.rasterElements.push(line);
 		this.board.appendChild(line);
 	}
 };
 Graph.prototype.draw = function (model, width, height) {
 	var i, n, nodes = model.nodes;
-	if(model.options.addBorder) {
+	if (model.options.addBorder) {
 		for (i in nodes) {
 			if (!nodes.hasOwnProperty(i) || typeof (nodes[i]) === "function") {
 				continue;
@@ -715,6 +721,9 @@ Graph.prototype.initGraph = function (model) {
 	}
 };
 Graph.prototype.layout = function (minwidth, minHeight, model) {
+	if (!this.init) {
+		this.initOption();
+	}
 	if (model) {
 		this.initGraph(model);
 	} else {
@@ -860,14 +869,13 @@ Graph.prototype.stopDrag = function (event) {
 			if (item.model.board) {
 				item.model.board = null;
 			}
-		}else {
+		} else {
 			this.board.removeChild(item);
 		}
 
 		if (item.model.typ === "Info") {
 			item.model.custom = true;
-			item.model.$edge.removeElement(item); 
-			
+			item.model.$edge.removeElement(item);
 			entry = item.model.$edge.getInfo(item.model);
 			item.model.$edge.drawText(this.board, this.drawer, entry, item.model);
 		} else {
