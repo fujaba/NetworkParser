@@ -748,6 +748,38 @@ var json = {"typ":"class", "nodes":[
 addCase("Allocs", json);
 </script>
 <script>
+var json = {"typ":"class", "nodes":[
+	{"typ":"node", id:"RGBColor"}
+	], "edges":[
+	{"typ":"Generalisation", "source":{"id":"GraphNode"}, "target":{"id":"GraphUtil"} },
+	{"typ":"Generalisation", "source":{"id":"GraphModel"}, "target":{"id":"GraphNode"} },
+	{"typ":"Generalisation", "source":{"id":"Graph"}, "target":{"id":"GraphNode"} },
+	{"typ":"Generalisation", "source":{"id":"Generalisation"}, "target":{"id":"Edge"} },
+	{"typ":"Generalisation", "source":{"id":"Implements"}, "target":{"id":"Generalisation"} },
+	{"typ":"Generalisation", "source":{"id":"Unidirectional"}, "target":{"id":"Generalisation"} },
+	{"typ":"Generalisation", "source":{"id":"Aggregation"}, "target":{"id":"Generalisation"} },
+	{"typ":"Generalisation", "source":{"id":"Composition"}, "target":{"id":"Aggregation"} },
+	{"typ":"Generalisation", "source":{"id":"ClassEditor"}, "target":{"id":"GraphUtil"} },
+	{"typ":"Generalisation", "source":{"id":"CreateNode"}, "target":{"id":"GraphUtil"} },
+	{"typ":"Generalisation", "source":{"id":"Selector"}, "target":{"id":"GraphUtil"} },
+	{"typ":"Generalisation", "source":{"id":"MoveNode"}, "target":{"id":"GraphUtil"} },
+	{"typ":"Generalisation", "source":{"id":"InputNode"}, "target":{"id":"GraphUtil"} },
+	{"typ":"Generalisation", "source":{"id":"ChoiceBox"}, "target":{"id":"GraphUtil"} },
+	{"typ":"Generalisation", "source":{"id":"EditNode"}, "target":{"id":"GraphUtil"} },
+	{"typ":"Generalisation", "source":{"id":"CreateEdge"}, "target":{"id":"GraphUtil"} },
+	{"source":{property: "parent", "id":"Edge"}, "target":{property: "source", "id":"Info"} },
+	{"source":{property: "parent", "id":"Edge"}, "target":{property: "target", "id":"Info"} },
+	{"source":{property: "parent", "id":"GraphModel"}, "target":{property: "options", "id":"Options"} },
+	{typ: "Unidirectional", "source":{"id":"Graph"}, "target":{property: "layouts", "id":"DagreLayout"} },
+	{"source":{property: "graph", "id":"Graph"}, "target":{property: "loader", "id":"Loader"} },
+	{typ: "Unidirectional", "source":{"id":"Edge"}, "target":{property: "path", "id":"Line"} },
+	{"typ":"Generalisation", "source":{"id":"HTMLDrawer"}, "target":{"id":"Drawer"} },
+	{"typ":"Generalisation", "source":{"id":"SVGDrawer"}, "target":{"id":"Drawer"} },
+	{"typ":"Unidirectional", "source":{"id":"Drawer"}, "target":{property: "symbolLib", "id":"SymbolLibary"} },
+]};
+addCase("Javascript Struktur", json);
+
+</script><script>
 addCase("Manuell generate", function(){
 	var graph = new Graph();
 	graph.addNode({id:"Student", attributes:["name:String"]});

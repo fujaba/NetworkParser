@@ -338,7 +338,8 @@ var GraphModel = function (json, options) {
 };
 GraphModel.prototype = ObjectCreate(GraphNode.prototype);
 GraphModel.prototype.addEdgeModel = function (e) {
-	var edge, typ = e.typ.charAt(0).toUpperCase() + e.typ.substring(1).toLowerCase();
+	var edge, typ = e.typ || "edge";
+	typ = typ.charAt(0).toUpperCase() + typ.substring(1).toLowerCase();
 	if (typeof window[typ] === "function") {
 		edge = new window[typ]();
 	} else {
@@ -386,7 +387,7 @@ GraphModel.prototype.addNode = function (node) {
 		return this.nodes[node.id];
 	}
 	if (node.typ.indexOf("diagram", node.typ.length - 7) !== -1) {
-		node = new GraphModel(node, new Options(this));
+		node = new GraphModel(node, new Options());
 	} else {
 		node = this.copy(new GraphNode(), node);
 	}
@@ -545,7 +546,6 @@ Graph.prototype.initOption = function (typ, value) {
 		document.body.appendChild(this.root);
 	}
 };
-
 Graph.prototype.addOption = function (typ, value) {
 	this.model.options[typ] = value;
 	this.init = false;
@@ -1498,7 +1498,6 @@ Edge.prototype.calcInfoPos = function (linePos, item, info, offset) {
 	info.x = Math.round(newX);
 	info.y = Math.round(newY);
 };
-
 Edge.prototype.getPosition = function (m, n, entity, refCenter, offset) {
 	if (!offset) {
 		offset = 0;
@@ -1944,7 +1943,6 @@ ClassEditor.prototype.minItembar = function (e) {
 	this.itembar.style.width = this.itembar.minWidth;
 	this.inputEvent = true;
 };
-
 ClassEditor.prototype.getId = function (element, id) {
 	if (element === null) {
 		return false;
@@ -2052,7 +2050,6 @@ ClassEditor.prototype.drawlines = function () {
 		this.model.edges[i].draw(this.board, this.drawer);
 	}
 };
-
 ClassEditor.prototype.removeCurrentNode = function () {
 	var i, n, item, selector = this.getAction("Selector");
 	item = selector.node;
@@ -2136,7 +2133,6 @@ CreateNode.prototype.stopAction = function () {
 	this.$parent.addNode(node);
 	return true;
 };
-
 // ################################## SELECTOR ####################################################
 var Selector = function (parent) {
 	this.name = "Selector";
@@ -2222,7 +2218,6 @@ Selector.prototype.removeAll = function () {
 	}
 	this.nodes = {};
 };
-
 Selector.prototype.setNode = function (node) {
 	if (this.node) {
 		this.removeAll();
@@ -2250,7 +2245,6 @@ Selector.prototype.refreshNode = function () {
 	this.selector("se", x + width + 1, y + height + 1);
 	this.selector("e", x + width + 1, y + height / 2 - sh);
 };
-
 Selector.prototype.selector = function (id, x, y) {
 	var n = this.nodes[id], that = this;
 	if (!n) {
@@ -2276,7 +2270,6 @@ Selector.prototype.doAction = function (event) {
 	this.doit(event);
 	return true;
 };
-
 Selector.prototype.stopAction = function () {
 	if (this.resizeNode) {
 		this.resizeNode = false;
@@ -2284,7 +2277,6 @@ Selector.prototype.stopAction = function () {
 	}
 	return false;
 };
-
 // ################################## SELECTOR ####################################################
 var MoveNode = function (parent) { this.name = "MoveNode"; this.$parent = parent; this.mouse = new Pos(); this.offset = new Pos(); };
 MoveNode.prototype = ObjectCreate(GraphUtil.prototype);
@@ -2322,7 +2314,6 @@ MoveNode.prototype.stop = function () {
 	this.node = null;
 	this.$parent.drawlines();
 };
-
 // ################################## InputNode ####################################################
 var InputNode = function (parent) {this.name = "InputNode"; this.$parent = parent;
 	var that = this;
@@ -2376,7 +2367,6 @@ InputNode.prototype.accept = function (text, n) {
 	}
 	return false;
 };
-
 InputNode.prototype.addValue = function (text, model) {
 	if (text.length < 1) {
 		return false;
