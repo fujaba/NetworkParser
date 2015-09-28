@@ -612,12 +612,14 @@ Graph.prototype.calcLines = function (model) {
 };
 Graph.prototype.drawLines = function (model) {
 	this.clearLines(model);
-	var i, e, showed, items = [], id;
+	var i, e, startShow, endShow, items = [], id;
 	for (i = 0; i < model.edges.length; i += 1) {
 		e = model.edges[i];
-		showed = !(e.$sNode.isClosed() || e.$tNode.isClosed());
-		if (showed) {
+		startShow = !e.$sNode.isClosed();
+		endShow = !e.$tNode.isClosed();
+		if (startShow && endShow) {
 			e.draw(this.board, this.drawer);
+		} else if (!startShow && !endShow) {
 		} else {
 			id = e.$sNode.getShowed().id + "-" + e.$tNode.getShowed().id;
 			if (items.indexOf(id) < 0) {
