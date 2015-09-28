@@ -468,9 +468,9 @@ Drawer.SVGDrawer.prototype.getNode = function (node, draw) {
 	g = this.util.create({tag: "g", model: node});
 	if (node.typ === "objectdiagram" || node.typ === "classdiagram") {
 		if (node.status === "close") {
-			width = this.getWidth(node.id) + 30;
+			width = this.getWidth(node.minid || node.id ) + 30;
 			height = 40;
-			this.addChild(node, g, this.util.create({tag: "text", $font: true, "text-anchor": "left", "x": (node.x + 2), "y": node.y + 12, value: node.id}));
+			this.addChild(node, g, this.util.create({tag: "text", $font: true, "text-anchor": "left", "x": (node.x + 2), "y": node.y + 12, value: node.minid || node.id }));
 		} else {
 			node.left = node.top = 30;
 			node.$gui = g;

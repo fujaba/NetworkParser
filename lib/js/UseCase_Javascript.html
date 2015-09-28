@@ -62,7 +62,7 @@ addCase("Use Case Show Image karli.png", json);
 addCase("All Edgetypes", {
 		"edges":[
 			{"typ":"edge", "source":"CS 32","target":"CS 33"},
-			{"typ":"generalization", "source":"CS 32","target":"CS 34"},
+			{"typ":"generalisation", "source":"CS 32","target":"CS 34"},
 			{"typ":"implements", "source":"CS 32","target":"CS 36"},
 			{"typ":"unidirectional", "source":"CS 33","target":"CS 34"},
 			{"typ":"aggregation", "source":"CS 33","target":"CS 35"},
@@ -757,8 +757,8 @@ addCase("Allocs", json);
 <script>
 var json = {"typ":"classdiagramm", "nodes":[
 	{"typ":"node", id:"RGBColor"},
-	{"typ":"classdiagram", id:"ClassEditorDiagram", "nodes":["ClassEditor", "CreateEdge", "EditNode", "ChoiceBox", "CreateNode", "Selector", "MoveNode", "InputNode"]},
-	{"typ":"classdiagram", id:"DrawerDiagram", "nodes":["Drawer", "SVGDrawer", "HTMLDrawer"]}
+	{"typ":"classdiagram", id:"ClassEditorDiagram", minid:"ClassEditor", "nodes":["ClassEditor", "CreateEdge", "EditNode", "ChoiceBox", "CreateNode", "Selector", "MoveNode", "InputNode"]},
+	{"typ":"classdiagram", id:"DrawerDiagram", minid:"Drawer", "nodes":["Drawer", "SVGDrawer", "HTMLDrawer"]}
 	], "edges":[
 	{"typ":"Generalisation", "source":{"id":"GraphNode"}, "target":{"id":"GraphUtil"} },
 	{"typ":"Generalisation", "source":{"id":"GraphModel"}, "target":{"id":"GraphNode"} },

@@ -331,6 +331,9 @@ var GraphModel = function (json, options) {
 	this.left = json.left || 0;
 	this.top = json.top || 0;
 	this.x = this.y = this.width = this.height = 0;
+	if (json.minid) {
+		this.minid = json.minid;
+	}
 	this.$nodeCount = 0;
 	this.nodes = {};
 	this.edges = [];
@@ -619,8 +622,7 @@ Graph.prototype.drawLines = function (model) {
 		endShow = !e.$tNode.isClosed();
 		if (startShow && endShow) {
 			e.draw(this.board, this.drawer);
-		} else if (!startShow && !endShow) {
-		} else {
+		} else if ((startShow && !endShow) || (!startShow && endShow)) {
 			id = e.$sNode.getShowed().id + "-" + e.$tNode.getShowed().id;
 			if (items.indexOf(id) < 0) {
 				items.push(id);
