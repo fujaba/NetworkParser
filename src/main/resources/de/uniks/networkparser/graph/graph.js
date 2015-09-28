@@ -31,7 +31,7 @@
 /*jslint forin:true, newcap:true, node: true, continue: true */
 /*jshint forin:true, laxbreak: true, newcap: false, node: true, nomen: true, -W089, -W079 */
 
-/*global document: false, window: false, Options: false, navigator: false, unescape: false, Edge: false, Info: false, Loader: false, HTMLDrawer: false, DagreLayout: false, SVGDrawer: false */
+/*global document: false, window: false, Options: false, navigator: false, unescape: false, Edge: false, Info: false, Loader: false, DagreLayout: false, Drawer: false */
 /*global jsPDF: false, svgConverter: false, jsEPS: false, Image: false, Blob: false, dagre: false, SymbolLibary: false, InputNode: false */
 /*global EditNode: false, CreateEdge: false, Selector: false, MoveNode: false, CreateNode: false, FileReader:false, java:false, ChoiceBox:false */
 "use strict";
@@ -306,7 +306,24 @@ GraphNode.prototype.getX = function () {if (this.$parent) {return this.$parent.g
 GraphNode.prototype.getY = function () {if (this.$parent) {return this.$parent.getY() + this.y; } return this.y; };
 GraphNode.prototype.getEdges = function () {return this.$edges; };
 GraphNode.prototype.removeFromBoard = function (board) {if (this.$gui) {board.removeChild(this.$gui); this.$gui = null; } };
-
+GraphNode.prototype.isClosed = function () {
+	if (this.status === "close") {
+		return true;
+	}
+	if (this.$parent) {return this.$parent.isClosed(); }
+	return false;
+};
+GraphNode.prototype.getShowed = function () {
+	if (this.status === "close") {
+		if (!this.$parent.isClosed()) {
+			return this;
+		}
+	}
+	if (this.isClosed()) {
+		return this.$parent.getShowed();
+	}
+	return this;
+};
 var GraphModel = function (json, options) {
 	this.typ = "classdiagram";
 	this.$isdraggable = true;
@@ -443,7 +460,7 @@ GraphModel.prototype.removeFromBoard = function (board) {
 GraphModel.prototype.resize = function (mode) {};
 GraphModel.prototype.getEdges = function () {return this.edges; };
 GraphModel.prototype.calcLines = function (drawer) {
-	var i, n, sourcePos, ownAssoc = [];
+	var i, n, sourcePos, e, ownAssoc = [];
 	for (i in this.nodes) {
 		if (!this.nodes.hasOwnProperty(i) || typeof (this.nodes[i]) === "function") {
 			continue;
@@ -452,8 +469,9 @@ GraphModel.prototype.calcLines = function (drawer) {
 		n.$RIGHT = n.$LEFT = n.$UP = n.$DOWN = 0;
 	}
 	for (i = 0; i < this.edges.length; i += 1) {
-		if (!this.edges[i].calculate(this.$gui, drawer)) {
-			ownAssoc.push(this.edges[i]);
+		e = this.edges[i];
+		if (!e.calculate(this.$gui, drawer)) {
+			ownAssoc.push(e);
 		}
 	}
 	for (i = 0; i < ownAssoc.length; i += 1) {
@@ -465,7 +483,9 @@ GraphModel.prototype.calcLines = function (drawer) {
 		ownAssoc[i].calcInfoPos(sourcePos, ownAssoc[i].$tNode, ownAssoc[i].target);
 	}
 };
-
+GraphModel.prototype.validateModel = function (json) {
+	//TODO Validate Model
+};
 /* Info */
 var Info = function (info, parent, edge) {
 	this.typ = "Info";
@@ -516,7 +536,7 @@ Graph.prototype = ObjectCreate(GraphNode.prototype);
 Graph.prototype.initOption = function (typ, value) {
 	this.init = true;
 	if (this.model.options.display.toLowerCase() === "html") {
-		this.drawer = new HTMLDrawer();
+		this.drawer = new Drawer.HTMLDrawer();
 	} else {
 		this.initDrawer("svg");
 	}
@@ -592,9 +612,19 @@ Graph.prototype.calcLines = function (model) {
 };
 Graph.prototype.drawLines = function (model) {
 	this.clearLines(model);
-	var i;
+	var i, e, showed, items = [], id;
 	for (i = 0; i < model.edges.length; i += 1) {
-		model.edges[i].draw(this.board, this.drawer);
+		e = model.edges[i];
+		showed = !(e.$sNode.isClosed() || e.$tNode.isClosed());
+		if (showed) {
+			e.draw(this.board, this.drawer);
+		} else {
+			id = e.$sNode.getShowed().id + "-" + e.$tNode.getShowed().id;
+			if (items.indexOf(id) < 0) {
+				items.push(id);
+				e.draw(this.board, this.drawer);
+			}
+		}
 	}
 };
 Graph.prototype.clearLines = function (model) {
@@ -933,9 +963,9 @@ Graph.prototype.initDrawer = function (typ) {
 	}
 	this.clearBoard();
 	if (typ === "html") {
-		this.drawer = new HTMLDrawer();
+		this.drawer = new Drawer.HTMLDrawer();
 	} else if (typ === "svg") {
-		this.drawer = new SVGDrawer();
+		this.drawer = new Drawer.SVGDrawer();
 	}
 	this.board = this.drawer.getBoard(this);
 	this.model.$gui = this.board;
@@ -1143,22 +1173,27 @@ Edge.prototype.removeFromBoard = function (board) {
 // INFOTEXT DONT SHOW IF NO PLACE
 // INFOTEXT CALCULATE POSITION
 Edge.prototype.calculate = function () {
-	this.$sNode.$center = new Pos(this.$sNode.getX() + (this.$sNode.width / 2), this.$sNode.getY() + (this.$sNode.height / 2));
-	this.$tNode.$center = new Pos(this.$tNode.getX() + (this.$tNode.width / 2), this.$tNode.getY() + (this.$tNode.height / 2));
-	var result, options, linetyp, source, target, edgePos, sourcePos, targetPos, divisor;
+	var result, options, linetyp, source, target, edgePos, sourcePos, targetPos, divisor, startNode, endNode;
+
+	startNode = this.$sNode.getShowed();
+	endNode = this.$tNode.getShowed();
+
+	startNode.$center = new Pos(startNode.getX() + (startNode.width / 2), startNode.getY() + (startNode.height / 2));
+	endNode.$center = new Pos(endNode.getX() + (endNode.width / 2), endNode.getY() + (endNode.height / 2));
+
 	edgePos = this.edgePosition() * 20;
-	divisor = (this.$tNode.$center.x - this.$sNode.$center.x);
+	divisor = (endNode.$center.x - startNode.$center.x);
 	this.$path = [];
 
-	source = this.getTarget(this.$sNode, this.$sNode);
-	target = this.getTarget(this.$tNode, this.$tNode);
+	source = this.getTarget(startNode, startNode);
+	target = this.getTarget(endNode, endNode);
 	if (divisor === 0) {
-		if (this.$sNode === this.$tNode) {
+		if (startNode === endNode) {
 			/* OwnAssoc */
 			return false;
 		}
 		// Must be UP_DOWN or DOWN_UP
-		if (this.$sNode.$center.y < this.$tNode.$center.y) {
+		if (startNode.$center.y < endNode.$center.y) {
 			// UP_DOWN
 			sourcePos = this.getCenterPosition(source, Edge.Position.DOWN, edgePos);
 			targetPos = this.getCenterPosition(target, Edge.Position.UP, edgePos);
@@ -1536,7 +1571,11 @@ Edge.prototype.getPosition = function (m, n, entity, refCenter, offset) {
 	return position;
 };
 Edge.prototype.calcMoveLine = function (size, angle, move) {
-	var lineangle, h, angle1, angle2, hCenter, startArrow = this.endPos().source;
+	var lineangle, h, angle1, angle2, hCenter, startArrow;
+	if (this.$path.length < 1) {
+		return;
+	}
+	startArrow = this.endPos().source;
 	this.$end = this.endPos().target;
 	// calculate the angle of the line
 	lineangle = Math.atan2(this.$end.y - startArrow.y, this.$end.x - startArrow.x);
@@ -1567,9 +1606,11 @@ Generalisation.prototype.calculate = function (board, drawer) {
 Generalisation.prototype.drawSuper = Generalisation.prototype.draw;
 Generalisation.prototype.draw = function (board, drawer) {
 	this.drawSuper(board, drawer);
-	this.addElement(board, drawer.getLine(this.$top.x, this.$top.y, this.$end.x, this.$end.y, this.$lineStyle));
-	this.addElement(board, drawer.getLine(this.$bot.x, this.$bot.y, this.$end.x, this.$end.y, this.$lineStyle));
-	this.addElement(board, drawer.getLine(this.$top.x, this.$top.y, this.$bot.x, this.$bot.y, this.$lineStyle));
+	if (this.$path.length > 0) {
+		this.addElement(board, drawer.getLine(this.$top.x, this.$top.y, this.$end.x, this.$end.y, this.$lineStyle));
+		this.addElement(board, drawer.getLine(this.$bot.x, this.$bot.y, this.$end.x, this.$end.y, this.$lineStyle));
+		this.addElement(board, drawer.getLine(this.$top.x, this.$top.y, this.$bot.x, this.$bot.y, this.$lineStyle));
+	}
 };
 Generalisation.prototype.drawSourceText = function (board, drawer, style) {};
 Generalisation.prototype.drawTargetText = function (board, drawer, style) {};
@@ -1650,18 +1691,29 @@ RGBColor.prototype.toHex = function () {
 // Edit Attribute and Methods
 // ################################## ClassEditor ####################################################
 var ClassEditor = function (element, diagramTyp) {
+	var parent, that = this, i;
 	this.isIE = document.all && !window.opera;
-	this.drawer = new HTMLDrawer();
+	this.drawer = new Drawer.HTMLDrawer();
 	this.inputEvent = true;
 	this.nodes = {};
+	this.noButtons = true;
 	this.model = new GraphModel(this, {buttons: [], typ: diagramTyp});
 	if (element) {
 		if (typeof (element) === "string") {
-			this.board = document.getElementById(element);
-			if (!this.board) {
-				this.board = this.drawer.getBoard(this);
-				this.board.className = "ClassEditor";
+			this.board = this.drawer.getBoard(this);
+			this.board.className = "ClassEditor";
+			parent = document.getElementById(element);
+			if (!parent) {
 				document.body.appendChild(this.board);
+			} else {
+				for (i = parent.children.length - 1; i >= 0; i -= 1) {
+					parent.removeChild(parent.children[i]);
+				}
+				parent.appendChild(this.board);
+				parent.style.height = "100%";
+				parent.style["min-height"] = "";
+				parent.style["min-width"] = "";
+				parent.style.width = "100%";
 			}
 		} else {
 			this.board = element;
@@ -1669,12 +1721,11 @@ var ClassEditor = function (element, diagramTyp) {
 	} else {
 		this.board = document.body;
 	}
-	this.inputNode = new InputNode(this);
-	this.editNode = new EditNode(this);
-	this.createEdge = new CreateEdge(this);
-	this.actions = [ new Selector(this), new MoveNode(this), this.createEdge, new CreateNode(this)];
+	this.inputNode = new ClassEditor.InputNode(this);
+	this.editNode = new ClassEditor.EditNode(this);
+	this.createEdge = new ClassEditor.CreateEdge(this);
+	this.actions = [ new ClassEditor.Selector(this), new ClassEditor.MoveNode(this), this.createEdge, new ClassEditor.CreateNode(this)];
 
-	var that = this;
 	this.bind(this.board, "mousedown", function (e) {that.doAction(e, "startAction"); });
 	this.bind(this.board, "mousemove", function (e) {that.doAction(e, "doAction"); });
 	this.bind(this.board, "mouseup", function (e) {that.doAction(e, "stopAction"); });
@@ -2046,7 +2097,6 @@ ClassEditor.prototype.drawlines = function () {
 	}
 	this.model.calcLines(this.drawer);
 	for (i = 0; i < this.model.edges.length; i += 1) {
-		e = this.model.edges[i];
 		this.model.edges[i].draw(this.board, this.drawer);
 	}
 };
@@ -2066,7 +2116,7 @@ ClassEditor.prototype.removeCurrentNode = function () {
 	}
 };
 // ################################## CREATE ####################################################
-var CreateNode = function (parent) {
+ClassEditor.CreateNode = function (parent) {
 	this.name = "CreateNode";
 	this.$parent = parent;
 	this.minSize = 20;
@@ -2074,29 +2124,29 @@ var CreateNode = function (parent) {
 	this.mouse = new Pos();
 	this.createClass = false;
 };
-CreateNode.prototype = ObjectCreate(GraphUtil.prototype);
-CreateNode.prototype.startAction = function (event) {
+ClassEditor.CreateNode.prototype = ObjectCreate(GraphUtil.prototype);
+ClassEditor.CreateNode.prototype.startAction = function (event) {
 	if (event.button === 2) {return; }
 	if (event.target !== this.$parent.board) {return; }
 	this.createClass = true;
-	this.offset.x = this.mouse.x = this.getEventX(event);
-	this.offset.y = this.mouse.y = this.getEventY(event);
+	this.offset.x = this.mouse.x = this.getX(event);
+	this.offset.y = this.mouse.y = this.getY(event);
 	return true;
 };
-CreateNode.prototype.doAction = function (event) {
+ClassEditor.CreateNode.prototype.doAction = function (event) {
 	if (!this.createClass) {return; }
-	this.mouse.x = this.getEventX(event);
-	this.mouse.y = this.getEventY(event);
+	this.mouse.x = this.getX(event);
+	this.mouse.y = this.getY(event);
 	this.createNode();
 };
-CreateNode.prototype.setValue = function (x1, y1, x2, y2) {
+ClassEditor.CreateNode.prototype.setValue = function (x1, y1, x2, y2) {
 	this.offset.x = x1;
 	this.offset.y = y1;
 	this.mouse.x = x2;
 	this.mouse.y = y2;
 	this.createNode();
 };
-CreateNode.prototype.createNode = function () {
+ClassEditor.CreateNode.prototype.createNode = function () {
 	var height, width = Math.abs(this.mouse.x - this.offset.x);
 	height = Math.abs(this.mouse.y - this.offset.y);
 	if (width > this.minSize && height > this.minSize) {
@@ -2116,8 +2166,14 @@ CreateNode.prototype.createNode = function () {
 	}
 	return true;
 };
-CreateNode.prototype.outAction = function (event) {return this.stopAction(event); };
-CreateNode.prototype.stopAction = function () {
+ClassEditor.CreateNode.prototype.getX = function (event) {
+	return this.getEventX(event) - this.$parent.board.offsetLeft;
+};
+ClassEditor.CreateNode.prototype.getY = function (event) {
+	return this.getEventY(event) - this.$parent.board.offsetTop;
+};
+ClassEditor.CreateNode.prototype.outAction = function (event) {return this.stopAction(event); };
+ClassEditor.CreateNode.prototype.stopAction = function () {
 	this.createClass = false;
 	if (!this.newClass) {
 		return false;
@@ -2134,7 +2190,7 @@ CreateNode.prototype.stopAction = function () {
 	return true;
 };
 // ################################## SELECTOR ####################################################
-var Selector = function (parent) {
+ClassEditor.Selector = function (parent) {
 	this.name = "Selector";
 	this.$parent = parent;
 	this.size = 6;
@@ -2143,14 +2199,14 @@ var Selector = function (parent) {
 	this.offset = new Pos();
 	this.resizeNode = null;
 };
-Selector.prototype = ObjectCreate(GraphUtil.prototype);
-Selector.prototype.start = function (e) {
+ClassEditor.Selector.prototype = ObjectCreate(GraphUtil.prototype);
+ClassEditor.Selector.prototype.start = function (e) {
 	this.resizeNode = e.target.id;
 	this.sizeNode = new Pos(this.node.model.width, this.node.model.height);
 	this.offset.x = this.mouse.x = this.getEventX(e);
 	this.offset.y = this.mouse.y = this.getEventY(e);
 };
-Selector.prototype.doit = function (e) {
+ClassEditor.Selector.prototype.doit = function (e) {
 	if (!this.resizeNode) {
 		return;
 	}
@@ -2206,8 +2262,8 @@ Selector.prototype.doit = function (e) {
 	}
 	this.refreshNode();
 };
-Selector.prototype.stop = function () {this.resizeNode = null; };
-Selector.prototype.removeAll = function () {
+ClassEditor.Selector.prototype.stop = function () {this.resizeNode = null; };
+ClassEditor.Selector.prototype.removeAll = function () {
 	var i, select;
 	for (i in this.nodes) {
 		if (!this.nodes.hasOwnProperty(i)) {
@@ -2218,14 +2274,14 @@ Selector.prototype.removeAll = function () {
 	}
 	this.nodes = {};
 };
-Selector.prototype.setNode = function (node) {
+ClassEditor.Selector.prototype.setNode = function (node) {
 	if (this.node) {
 		this.removeAll();
 	}
 	this.node = node;
 	this.refreshNode();
 };
-Selector.prototype.refreshNode = function () {
+ClassEditor.Selector.prototype.refreshNode = function () {
 	if (!this.node) {
 		return;
 	}
@@ -2245,7 +2301,7 @@ Selector.prototype.refreshNode = function () {
 	this.selector("se", x + width + 1, y + height + 1);
 	this.selector("e", x + width + 1, y + height / 2 - sh);
 };
-Selector.prototype.selector = function (id, x, y) {
+ClassEditor.Selector.prototype.selector = function (id, x, y) {
 	var n = this.nodes[id], that = this;
 	if (!n) {
 		n = this.create({tag: "div", "id": id, style: "position:absolute;background:#00F;width:" + this.size + "px;height:" + this.size + "px;cursor:" + id + "-resize;"});
@@ -2258,19 +2314,19 @@ Selector.prototype.selector = function (id, x, y) {
 	n.style.left = x;
 	n.style.top = y;
 };
-Selector.prototype.startAction = function () {
+ClassEditor.Selector.prototype.startAction = function () {
 	if (!this.node) {
 		return false;
 	}
 };
-Selector.prototype.doAction = function (event) {
+ClassEditor.Selector.prototype.doAction = function (event) {
 	if (!this.resizeNode) {
 		return false;
 	}
 	this.doit(event);
 	return true;
 };
-Selector.prototype.stopAction = function () {
+ClassEditor.Selector.prototype.stopAction = function () {
 	if (this.resizeNode) {
 		this.resizeNode = false;
 		return true;
@@ -2278,9 +2334,9 @@ Selector.prototype.stopAction = function () {
 	return false;
 };
 // ################################## SELECTOR ####################################################
-var MoveNode = function (parent) { this.name = "MoveNode"; this.$parent = parent; this.mouse = new Pos(); this.offset = new Pos(); };
-MoveNode.prototype = ObjectCreate(GraphUtil.prototype);
-MoveNode.prototype.callBack = function (typ, e) {
+ClassEditor.MoveNode = function (parent) { this.name = "MoveNode"; this.$parent = parent; this.mouse = new Pos(); this.offset = new Pos(); };
+ClassEditor.MoveNode.prototype = ObjectCreate(GraphUtil.prototype);
+ClassEditor.MoveNode.prototype.callBack = function (typ, e) {
 	if (typ === "id") {
 		var th = e.target, that = this;
 		this.bind(th, "mousedown", function (e) {that.start(e); });
@@ -2288,15 +2344,15 @@ MoveNode.prototype.callBack = function (typ, e) {
 		this.bind(th, "mouseup", function (e) {that.stop(e); });
 	}
 };
-MoveNode.prototype.start = function (e) {
+ClassEditor.MoveNode.prototype.start = function (e) {
 	this.node = this.getModelNode(e.target).model;
 	this.posNode = new Pos(this.node.x, this.node.y);
 	// SAVE ID
 	this.offset.x = this.mouse.x = this.getEventX(e);
 	this.offset.y = this.mouse.y = this.getEventY(e);
 };
-MoveNode.prototype.doAction = function () {return this.node; };
-MoveNode.prototype.doit = function (e) {
+ClassEditor.MoveNode.prototype.doAction = function () {return this.node; };
+ClassEditor.MoveNode.prototype.doit = function (e) {
 	if (!this.node) {
 		return;
 	}
@@ -2310,19 +2366,19 @@ MoveNode.prototype.doit = function (e) {
 	this.node.y = this.node.$gui.style.top = newY;
 	this.$parent.getAction("Selector").refreshNode();
 };
-MoveNode.prototype.stop = function () {
+ClassEditor.MoveNode.prototype.stop = function () {
 	this.node = null;
 	this.$parent.drawlines();
 };
 // ################################## InputNode ####################################################
-var InputNode = function (parent) {this.name = "InputNode"; this.$parent = parent;
+ClassEditor.InputNode = function (parent) {this.name = "InputNode"; this.$parent = parent;
 	var that = this;
 	document.body.addEventListener("keyup", function (e) {
 		that.keyup(e);
 	});
 	};
-InputNode.prototype = ObjectCreate(GraphUtil.prototype);
-InputNode.prototype.keyup = function (e) {
+ClassEditor.InputNode.prototype = ObjectCreate(GraphUtil.prototype);
+ClassEditor.InputNode.prototype.keyup = function (e) {
 	if (!this.$parent.inputEvent) {
 		return;
 	}
@@ -2351,7 +2407,7 @@ InputNode.prototype.keyup = function (e) {
 		}
 	}
 };
-InputNode.prototype.accept = function (text, n) {
+ClassEditor.InputNode.prototype.accept = function (text, n) {
 	var id, model = n.model;
 	id = n.model.id;
 	if (this.addValue(text, model)) {
@@ -2367,7 +2423,7 @@ InputNode.prototype.accept = function (text, n) {
 	}
 	return false;
 };
-InputNode.prototype.addValue = function (text, model) {
+ClassEditor.InputNode.prototype.addValue = function (text, model) {
 	if (text.length < 1) {
 		return false;
 	}
@@ -2393,10 +2449,10 @@ InputNode.prototype.addValue = function (text, model) {
 	}
 	return true;
 };
-InputNode.prototype.fristUp = function (string) {
+ClassEditor.InputNode.prototype.fristUp = function (string) {
 	return string.charAt(0).toUpperCase() + string.slice(1);
 };
-InputNode.prototype.changeText = function (e) {
+ClassEditor.InputNode.prototype.changeText = function (e) {
 	if (!this.inputItem) {
 		return;
 	}
@@ -2420,20 +2476,20 @@ InputNode.prototype.changeText = function (e) {
 	}
 };
 // ################################## ChoiceBox ####################################################
-var ChoiceBox = function (field, graph) {
+ClassEditor.ChoiceBox = function (field, graph) {
 	this.field = field;
 	this.graph = graph;
 	this.list = [];
 	var that = this;
 	this.bind(field, "keyup", function (e) {that.change(e); });
 };
-ChoiceBox.prototype = ObjectCreate(GraphUtil.prototype);
-ChoiceBox.prototype.initAttributes = function () {
+ClassEditor.ChoiceBox.prototype = ObjectCreate(GraphUtil.prototype);
+ClassEditor.ChoiceBox.prototype.initAttributes = function () {
 	this.list = ["Boolean", "Byte", "Character", "Double", "Float", "Integer", "Long", "Number", "Object", "Short", "String"];
 	this.addFromGraph(this.graph.model, "nodes.id");
 	this.list.sort();
 };
-ChoiceBox.prototype.addFromGraph = function (item, filter) {
+ClassEditor.ChoiceBox.prototype.addFromGraph = function (item, filter) {
 	var i, z;
 	for (i in item) {
 		if (!item.hasOwnProperty(i)) {
@@ -2449,7 +2505,7 @@ ChoiceBox.prototype.addFromGraph = function (item, filter) {
 		}
 	}
 };
-ChoiceBox.prototype.change = function (e) {
+ClassEditor.ChoiceBox.prototype.change = function (e) {
 	if (this.div) {
 		this.graph.board.removeChild(this.div);
 		this.div = null;
@@ -2483,7 +2539,7 @@ ChoiceBox.prototype.change = function (e) {
 		this.graph.board.appendChild(div);
 	}
 };
-ChoiceBox.prototype.select = function (input) {
+ClassEditor.ChoiceBox.prototype.select = function (input) {
 	var pos = this.field.value.lastIndexOf(this.typ);
 	this.field.value = this.field.value.substring(0, pos + 1) + input.innerHTML;
 	if (this.div) {
@@ -2493,13 +2549,13 @@ ChoiceBox.prototype.select = function (input) {
 	this.field.focus();
 };
 // ################################## EditNode ####################################################
-var EditNode = function (graph) {this.graph = graph; };
-EditNode.prototype = ObjectCreate(GraphUtil.prototype);
-EditNode.prototype.addElement = function (element, typ) {
+ClassEditor.EditNode = function (graph) {this.graph = graph; };
+ClassEditor.EditNode.prototype = ObjectCreate(GraphUtil.prototype);
+ClassEditor.EditNode.prototype.addElement = function (element, typ) {
 	var that = this;
 	this.bind(element, "mouseup", function (e) {that.click(e, element, typ); });
 };
-EditNode.prototype.click = function (e, control, typ) {
+ClassEditor.EditNode.prototype.click = function (e, control, typ) {
 	if (!control.lastClick || control.lastClick < new Date().getTime() - 1000 || control.oldValue) {
 		control.lastClick = new Date().getTime();
 		return;
@@ -2512,7 +2568,7 @@ EditNode.prototype.click = function (e, control, typ) {
 	this.selectText(control);
 	control.onkeydown = function (e) {that.change(e, control); };
 };
-EditNode.prototype.change = function (e, control) {
+ClassEditor.EditNode.prototype.change = function (e, control) {
 	if (e.keyCode !== 27 && e.keyCode !== 13) {
 		return;
 	}
@@ -2549,20 +2605,20 @@ EditNode.prototype.change = function (e, control) {
 	control.innerHTML = value;
 };
 // ################################## CreateEdge ####################################################
-var CreateEdge = function (graph) {this.graph = graph; };
-CreateEdge.prototype = ObjectCreate(GraphUtil.prototype);
-CreateEdge.prototype.addElement = function (element, node) {
+ClassEditor.CreateEdge = function (graph) {this.graph = graph; };
+ClassEditor.CreateEdge.prototype = ObjectCreate(GraphUtil.prototype);
+ClassEditor.CreateEdge.prototype.addElement = function (element, node) {
 	var that = this;
 	this.bind(element, "mouseup", function (e) {that.up(e, element, node); });
 	this.bind(element, "mousedown", function (e) {that.down(e, element, node); });
 };
-CreateEdge.prototype.down = function (e, element, node) {
+ClassEditor.CreateEdge.prototype.down = function (e, element, node) {
 	this.fromElement = element;
 	this.fromNode = node;
 	this.x = e.x;
 	this.y = e.y;
 };
-CreateEdge.prototype.up = function (e, element, node) {
+ClassEditor.CreateEdge.prototype.up = function (e, element, node) {
 	if (!this.fromElement) {
 		return;
 	}
@@ -2596,13 +2652,13 @@ CreateEdge.prototype.up = function (e, element, node) {
 	this.div = div;
 	this.graph.board.appendChild(div);
 };
-CreateEdge.prototype.startAction = function (e) {
+ClassEditor.CreateEdge.prototype.startAction = function (e) {
 	if (e.target === this.graph.board && this.div) {
 		this.graph.board.removeChild(this.div);
 		this.div = null;
 	}
 };
-CreateEdge.prototype.select = function (e) {
+ClassEditor.CreateEdge.prototype.select = function (e) {
 	var edge, t = e.innerHTML;
 	if (t === this.list[0]) {
 		edge = this.graph.model.addEdgeModel({"typ": "Generalisation", "source": {id: this.fromNode.id}, target: {id: this.toNode.id}});

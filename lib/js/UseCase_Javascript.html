@@ -10,7 +10,7 @@
 	.SimpleLink:hover {cursor:pointer; color: DarkRed; }
 	</style>
 </head>
-<body>
+<body style="height:100%;margin:0">
 <script language="Javascript">
 function addCase(label, json) {
 	window.setTimeout(function(){addToUL(label, json);}, 100);
@@ -40,14 +40,21 @@ function addToUL(label, json) {
 </script>
 
 <script>
-var json = {"typ":"class", "nodes":[ {"typ":"node", id:"Albert:Simple"}],"options": {"display":"svg"} };
+var json = {"nodes":[ {"typ":"node", id:"Albert:Simple"}],"options": {"display":"svg"} };
 addCase("Simple Model", json);
 </script>
 
 <script>
-var json = {"typ":"class", "nodes":[
-				{"typ":"node", "content":{"src":"karli.png"}}
-]};
+var json = {"nodes":[ "Student", "University" ],"options": {"display":"svg"} };
+addCase("Short JsonModel Nodes", json);
+</script>
+<script>
+var json = {"edges":[ {source: "Student", target: "University"} ],"options": {"display":"svg"} };
+addCase("Short JsonModel Edges", json);
+</script>
+
+<script>
+var json = {"nodes":[ {"typ":"node", "content":{"src":"karli.png"}} ]};
 json["options"]={"canvasid":"canvasStudyRight with assignments class generationClassDiagram8", "display":"html", "fontsize":10,"bar":true};
 addCase("Use Case Show Image karli.png", json);
 </script>
@@ -64,7 +71,7 @@ addCase("All Edgetypes", {
 	});
 </script>
 <script>
-	var json = {"typ":"object", "options":{"bar":true, "raster":false, "canvasid":"42","fontsize":12},
+	var json = {"options":{"bar":true, "raster":false, "canvasid":"42","fontsize":12},
 		"nodes":[
 			{typ:"node", id:"Albert:Student", href:"Student.java", attributes:["age:int", "name:String"],methods:["toString()"]},
 			{typ:"node", id:"CS 32"},
@@ -105,7 +112,7 @@ addCase("Fulltest", json);
 	//layouter.addNode("CS 34", 200,250);
 </script>
 <script>
-var json = {"typ":"class", id:"Self Assoc", "nodes":[
+var json = {id:"Self Assoc", "nodes":[
 	  {
 			"typ":"node",
 			"id":"University",
@@ -523,7 +530,7 @@ var json = {
 addCase("All Nodetypes", json);
 </script>
 <script>
-var json = {"typ":"object", "nodes":[
+var json = {"typ":"objectdiagram", "nodes":[
 	{
 		 "typ":"patternObject",
 		 "id":"r1 : RiverPO",
@@ -673,7 +680,7 @@ var json = {"typ":"object", "nodes":[
 addCase("Ferrymans Problem ExamplePatternDiagram", json);
 </script>
 <script>
-var json = {"typ":"class", "nodes":[
+var json = {"typ":"objectdiagram", "nodes":[
 				{"typ":"node", id:"Albert:Student"},
 				{"typ":"node", id:"kassel:University"},
 				{"typ":"node", id:"lecture:ProgMeth"}
@@ -705,7 +712,7 @@ var json = {"typ":"class", "nodes":[
 addCase("Show Edge with Color", json);
 </script>
 <script>
-var json = {"typ":"class", "nodes":[
+var json = {"typ":"objectdiagram", "nodes":[
 				{"typ":"node", id:"risk:Game"},
 				{"typ":"node", id:"albert:Player"}
 ], "edges":[
@@ -729,7 +736,7 @@ var json = {"typ":"class", "nodes":[
 addCase("Show Multi Assoc", json);
 </script>
 <script>
-var json = {"typ":"class", "nodes":[
+var json = {"typ":"objectdiagram", "nodes":[
 				{"typ":"node", id:"risk:Game", x:20},
 				{"typ":"node", id:"albert:Player", x:160, y:100}
 ], "edges":[
@@ -748,8 +755,10 @@ var json = {"typ":"class", "nodes":[
 addCase("Allocs", json);
 </script>
 <script>
-var json = {"typ":"class", "nodes":[
-	{"typ":"node", id:"RGBColor"}
+var json = {"typ":"classdiagramm", "nodes":[
+	{"typ":"node", id:"RGBColor"},
+	{"typ":"classdiagram", id:"ClassEditorDiagram", "nodes":["ClassEditor", "CreateEdge", "EditNode", "ChoiceBox", "CreateNode", "Selector", "MoveNode", "InputNode"]},
+	{"typ":"classdiagram", id:"DrawerDiagram", "nodes":["Drawer", "SVGDrawer", "HTMLDrawer"]}
 	], "edges":[
 	{"typ":"Generalisation", "source":{"id":"GraphNode"}, "target":{"id":"GraphUtil"} },
 	{"typ":"Generalisation", "source":{"id":"GraphModel"}, "target":{"id":"GraphNode"} },
@@ -779,7 +788,14 @@ var json = {"typ":"class", "nodes":[
 ]};
 addCase("Javascript Struktur", json);
 
-</script><script>
+</script>
+<script>
+var json = {typ:"objectdiagram", "edges":[ {source: "albert:Prof", target: "uniKassel:University"} ],"options": {"display":"svg"} };
+addCase("ObjectDiagram", json);
+</script>
+
+
+<script>
 addCase("Manuell generate", function(){
 	var graph = new Graph();
 	graph.addNode({id:"Student", attributes:["name:String"]});
@@ -799,7 +815,12 @@ addCase("Manuell generate", function(){
 //layout: (minwidth, minHeight, model)
 
 </script>
+<script>
+addCase("Editor", function(){
+	var graph = new ClassEditor("Demo");
+});
+</script>
 
-<table><tr><td style="vertical-align:top;"><ul id="CaseUL" /></td><td><div style="min-width:100px;min-height:100px;border:1px solid black" id="Demo"/></td></tr></table>
+<table style="height:100%;width:100%"><tr><td style="vertical-align:top;width:50px"><ul id="CaseUL" /></td><td style="align:left; height:100%" id="Demo"></td></tr></table>
 </body>
 </html>
