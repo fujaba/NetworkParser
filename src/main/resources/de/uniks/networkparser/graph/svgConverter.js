@@ -20,7 +20,7 @@
  permissions and limitations under the Licence.
 */
 /*jslint node: true */
-/*global document: false, RGBColor: false, Blob: false, jsEPS: false, window: false */
+/*global document: false, Blob: false, window: false */
 "use strict";
 var epsSvgAttr = {
     // allowed attributes. all others are removed from the preview.
@@ -58,7 +58,7 @@ svgConverter.prototype.parse = function (element) {
 		if ('g,line,rect,ellipse,circle,text'.indexOf(n.tagName) >= 0) {
 			fillColor = n.getAttribute('fill');
 			if (fillColor) {
-				fillRGB = new RGBColor(fillColor);
+				fillRGB = new svgConverter.RGBColor(fillColor);
 				if (fillRGB.ok) {
 					hasFillColor = true;
 					colorMode = 'F';
@@ -74,7 +74,7 @@ svgConverter.prototype.parse = function (element) {
 				this.target.setLineWidth(this.attr(n, 'stroke-width'));
 			}
 			if (strokeColor) {
-				strokeRGB = new RGBColor(strokeColor);
+				strokeRGB = new svgConverter.RGBColor(strokeColor);
 				if (strokeRGB.ok) {
 					this.target.setDrawColor(strokeRGB.r, strokeRGB.g, strokeRGB.b);
 					if (colorMode === 'F') {
@@ -123,7 +123,7 @@ svgConverter.prototype.parse = function (element) {
 			if (hasFillColor) {
 				this.target.setTextColor(fillRGB.r, fillRGB.g, fillRGB.b);
 			}
-			if (this.target instanceof jsEPS) {
+			if (this.target instanceof svgConverter.jsEPS) {
 				this.target.text(this.attr(n, 'x'), this.attr(n, 'y'), n.innerHTML);
 				break;
 			}
@@ -176,8 +176,34 @@ svgConverter.prototype.parse = function (element) {
 	}
 };
 svgConverter.prototype.attr = function (node, name) {return this.k * parseInt(node.getAttribute(name), 10); };
-
-var jsEPS = function (options) {
+// ################################## RGBColor ####################################################
+svgConverter.RGBColor = function (value) {
+	this.ok = false;
+	if (value === "none") {
+		return;
+	}
+	var computedColor, div = document.createElement("div");
+	div.style.backgroundColor = value;
+	document.body.appendChild(div);
+	computedColor = window.getComputedStyle(div).backgroundColor;
+	// cleanup temporary div.
+	document.body.removeChild(div);
+	this.convert(computedColor);
+};
+svgConverter.RGBColor.prototype.convert = function (value) {
+	var values, regex = /rgb *\( *([0-9]{1,3}) *, *([0-9]{1,3}) *, *([0-9]{1,3}) *\)/;
+	values = regex.exec(value);
+	this.r = parseInt(values[1], 10);
+	this.g = parseInt(values[2], 10);
+	this.b = parseInt(values[3], 10);
+	this.ok = true;
+};
+svgConverter.RGBColor.prototype.toRGB = function () {return 'rgb(' + this.r + ', ' + this.g + ', ' + this.b + ')'; };
+svgConverter.RGBColor.prototype.toHex = function () {
+	return "#" + (this.r + 0x10000).toString(16).substring(3).toUpperCase() + (this.g + 0x10000).toString(16).substring(3).toUpperCase() + (this.b + 0x10000).toString(16).substring(3).toUpperCase();
+};
+// ################################## jsEPS ####################################################
+svgConverter.jsEPS = function (options) {
 	this.max = 0;
 	this.min = 999;
 	var hasInverting = typeof (options.inverting);
@@ -190,20 +216,19 @@ var jsEPS = function (options) {
 	this.font = 1;
 };
 
-jsEPS.prototype.setFillColor = function (r, g, b) {/*FIXME*/};
-jsEPS.prototype.setDrawColor = function (r, g, b) {/*FIXME*/};
-jsEPS.prototype.ellipse = function (cx, cy, rx, ry, colorMode) {/*FIXME*/};
-jsEPS.prototype.circle = function (cx, cy, r, colorMode) {/*FIXME*/};
-jsEPS.prototype.setFont = function (value) {this.out("/F" + (this.font += 1) + " 10 /" + value + " FSD"); };
-jsEPS.prototype.setTextColor = function (r, g, b) {/*FIXME*/};
-
-jsEPS.prototype.setLineWidth = function (value) {this.out(value + " setlinewidth"); };
-jsEPS.prototype.y = function (value) {this.max = Math.max(this.max, value); this.min = Math.min(this.min, value); return this.inverting ? "%y(" + value + ")" : value; };
-jsEPS.prototype.out = function (value) {this.output.push(value); };
-jsEPS.prototype.line = function (x1, y1, x2, y2) {this.out("newpath " + x1 + " " + this.y(y1) + " moveto " + x2 + " " + this.y(y2) + " lineto stroke"); };
-jsEPS.prototype.moveto = function (x, y) {this.out(x + " " + this.y(y) + " moveto"); };
-jsEPS.prototype.lineto = function (x, y) {this.out(x + " " + this.y(y) + " lineto"); this.out("stroke"); };
-jsEPS.prototype.rect = function (x, y, width, height, style) {
+svgConverter.jsEPS.prototype.setFillColor = function (r, g, b) {/*FIXME*/};
+svgConverter.jsEPS.prototype.setDrawColor = function (r, g, b) {/*FIXME*/};
+svgConverter.jsEPS.prototype.ellipse = function (cx, cy, rx, ry, colorMode) {/*FIXME*/};
+svgConverter.jsEPS.prototype.circle = function (cx, cy, r, colorMode) {/*FIXME*/};
+svgConverter.jsEPS.prototype.setFont = function (value) {this.out("/F" + (this.font += 1) + " 10 /" + value + " FSD"); };
+svgConverter.jsEPS.prototype.setTextColor = function (r, g, b) {/*FIXME*/};
+svgConverter.jsEPS.prototype.setLineWidth = function (value) {this.out(value + " setlinewidth"); };
+svgConverter.jsEPS.prototype.y = function (value) {this.max = Math.max(this.max, value); this.min = Math.min(this.min, value); return this.inverting ? "%y(" + value + ")" : value; };
+svgConverter.jsEPS.prototype.out = function (value) {this.output.push(value); };
+svgConverter.jsEPS.prototype.line = function (x1, y1, x2, y2) {this.out("newpath " + x1 + " " + this.y(y1) + " moveto " + x2 + " " + this.y(y2) + " lineto stroke"); };
+svgConverter.jsEPS.prototype.moveto = function (x, y) {this.out(x + " " + this.y(y) + " moveto"); };
+svgConverter.jsEPS.prototype.lineto = function (x, y) {this.out(x + " " + this.y(y) + " lineto"); this.out("stroke"); };
+svgConverter.jsEPS.prototype.rect = function (x, y, width, height, style) {
 	y = y + (this.inverting ? height : 0);
 	if (style && style.indexOf("fill:url(#classelement);") >= 0) {
 		this.out("gsave 0.93 0.93 0.93 setrgbcolor newpath " + x + " " + this.y(y) + " " + width + " " + height + " rectfill grestore");
@@ -211,8 +236,8 @@ jsEPS.prototype.rect = function (x, y, width, height, style) {
 		this.out("newpath " + x + " " + this.y(y) + " " + width + " " + height + " rectstroke");
 	}
 };
-jsEPS.prototype.text = function (x, y, text) {this.out("(" + text.replace("&lt;", "<").replace("&gt;", ">") + ") " + x + " " + this.y(y) + " F1 SMS"); };
-jsEPS.prototype.save = function (name) {
+svgConverter.jsEPS.prototype.text = function (x, y, text) {this.out("(" + text.replace("&lt;", "<").replace("&gt;", ">") + ") " + x + " " + this.y(y) + " F1 SMS"); };
+svgConverter.jsEPS.prototype.save = function (name) {
 	var t, end, url, text, typ = "application/postscript", a = document.createElement("a"), data = "", pos, i;
 	for (i = 0; i < this.output.length; i += 1) {
 		text = this.output[i];

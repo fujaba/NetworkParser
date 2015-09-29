@@ -4,7 +4,8 @@
 	<script src="../../src/main/resources/de/uniks/networkparser/graph/graph.js"></script>
 	<script src="../../src/main/resources/de/uniks/networkparser/graph/dagre.min.js"></script>
 	<script src="../../src/main/resources/de/uniks/networkparser/graph/drawer.js"></script>
-	<script src="../../src/main/resources/de/uniks/networkparser/graph/svgToEPS.js"></script>
+	<script src="../../src/main/resources/de/uniks/networkparser/graph/svgConverter.js"></script>
+	<script src="../../src/main/resources/de/uniks/networkparser/graph/jspdf.min.js"></script>
 	<style>
 	.SimpleLink {cursor:pointer; color: #008; }
 	.SimpleLink:hover {cursor:pointer; color: #800; }
@@ -70,6 +71,30 @@ addCase("All Edgetypes", {"edges": [
 	{"typ": "aggregation", "source": "CS 33", "target": "CS 35"},
 	{"typ": "composition", "source": "CS 34", "target": "CS 35"}
 ]});
+</script>
+<script>
+var json = {
+	"typ": "objectdiagram",
+	"style": null,
+	"nodes": [
+		{"typ": "Smily"},
+		{"typ": "Database"},
+		{"typ": "Letter"},
+		{"typ": "Mobilphone"},
+		{"typ": "Wall"},
+		{"typ": "Actor"},
+		{"typ": "Lamp"},
+		{"typ": "Stop"},
+		{"typ": "Min"},
+		{"typ": "Arrow"},
+		{"typ": "Max"},
+		{"typ": "Button", value: "Hallo Welt"},
+		{"typ": "Dropdown"},
+		{"typ": "patternObject", id: "Hallo"},
+		{"typ": "patternObject", id: "Hallo"}
+	]
+};
+addCase("All Nodetypes", json);
 </script>
 <script>
 var json = {"options": {"bar":  true, "raster": false, "canvasid": "42", "fontsize": 12},
@@ -503,30 +528,6 @@ json.options = {"display": "html", "fontsize": 10, "bar": true};
 addCase("StudyRight with assignments storyboard", json);
 </script>
 <script>
-var json = {
-	"typ": "objectdiagram",
-	"style": null,
-	"nodes": [
-		{"typ": "Smily"},
-		{"typ": "Database"},
-		{"typ": "Letter"},
-		{"typ": "Mobilphone"},
-		{"typ": "Wall"},
-		{"typ": "Actor"},
-		{"typ": "Lamp"},
-		{"typ": "Stop"},
-		{"typ": "Min"},
-		{"typ": "Arrow"},
-		{"typ": "Max"},
-		{"typ": "Button", value: "Hallo Welt"},
-		{"typ": "Dropdown"},
-		{"typ": "patternObject", id: "Hallo"},
-		{"typ": "patternObject", id: "Hallo"}
-	]
-};
-addCase("All Nodetypes", json);
-</script>
-<script>
 var json = {"typ": "objectdiagram", "nodes": [
 	{
 		"typ": "patternObject",
@@ -749,9 +750,11 @@ addCase("Allocs", json);
 </script>
 <script>
 var json = {"typ": "classdiagramm", "nodes": [
-	{"typ": "node", id: "RGBColor"},
+	{"typ": "node", id: "jsPDF"},
 	{"typ": "classdiagram", id: "ClassEditorDiagram", minid: "ClassEditor", "nodes": ["ClassEditor", "CreateEdge", "EditNode", "ChoiceBox", "CreateNode", "Selector", "MoveNode", "InputNode"]},
-	{"typ": "classdiagram", id: "DrawerDiagram", minid: "Drawer", "nodes": ["Drawer", "SVGDrawer", "HTMLDrawer"]}
+	{"typ": "classdiagram", id: "DrawerDiagram", minid: "Drawer", "nodes": ["Drawer", "SVGDrawer", "HTMLDrawer"]},
+	{"typ": "classdiagram", id: "GraphUtilDiagram", minid: "GraphUtil", "nodes": ["Loader", "Info", "Line", "Options"]},
+	{"typ": "classdiagram", id: "svgConverterDiagram", "nodes": ["svgConverter", "RGBColor", "jsEPS"]}
 ], "edges": [
 	{"typ": "Generalisation", "source": "GraphNode", "target": "GraphUtil" },
 	{"typ": "Generalisation", "source": {"id": "GraphModel"}, "target": {"id": "GraphNode"} },
@@ -774,6 +777,8 @@ var json = {"typ": "classdiagramm", "nodes": [
 	{"source": {property: "parent", "id": "GraphModel"}, "target": {property: "options", "id": "Options"} },
 	{typ: "Unidirectional", "source": "Graph", "target": {property: "layouts", "id": "DagreLayout"} },
 	{"source": {property: "graph", "id": "Graph"}, "target": {property: "loader", "id": "Loader"} },
+	{typ: "Unidirectional", "source": "Graph", "target": "svgConverter" },
+	{typ: "Unidirectional", "source": "Graph", "target": "jsPDF" },
 	{typ: "Unidirectional", "source": "Edge", "target": {property: "path", "id": "Line"} },
 	{"typ": "Generalisation", "source": "HTMLDrawer", "target": "Drawer" },
 	{"typ": "Generalisation", "source": "SVGDrawer", "target": "Drawer" },
@@ -812,6 +817,19 @@ addCase("Manuell generate", function () {
 addCase("Editor", function () {
 	var graph = new ClassEditor("Demo");
 });
+</script>
+<script>
+// "typ": "classdiagramm"
+var json = {"typ": "objectdiagram", "edges": [
+	{"source": {"property": "wingame", "id": "risk:Game"}, "target": {"property": "winner", "id": "albert:Player"} },
+	{"source": {"property": "game", "id": "risk:Game"}, "target": {"property": "player", "id": "albert:Player"} },
+	{"source": {"property": "game", "id": "risk:Game"}, "target": {"property": "player", "id": "stefan:Player"} }
+]};
+
+addCase("ObjectDiagram Risk", json);
+var jsonB = new GraphUtil().copy(json, {}, true);
+json.typ = "classdiagramm";
+addCase("ClassDiagram Risk", json);
 </script>
 
 <table style="height:100%; width:100%;"><tr><td style="vertical-align:top; width:50px;"><ul id="CaseUL"></ul></td><td style="height:100%;" id="Demo"></td></tr></table>

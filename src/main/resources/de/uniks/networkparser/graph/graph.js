@@ -31,9 +31,9 @@
 /*jslint forin:true, newcap:true, node: true, continue: true */
 /*jshint forin:true, laxbreak: true, newcap: false, node: true, nomen: true, -W089, -W079 */
 
-/*global document: false, window: false, Options: false, navigator: false, unescape: false, Edge: false, Info: false, Loader: false, DagreLayout: false, Drawer: false */
-/*global jsPDF: false, svgConverter: false, jsEPS: false, Image: false, Blob: false, dagre: false, SymbolLibary: false, InputNode: false */
-/*global EditNode: false, CreateEdge: false, Selector: false, MoveNode: false, CreateNode: false, FileReader:false, java:false, ChoiceBox:false */
+/*global document: false, window: false, navigator: false, unescape: false, Edge: false, DagreLayout: false, Drawer: false */
+/*global jsPDF: false, svgConverter: false, Image: false, Blob: false, dagre: false, SymbolLibary: false */
+/*global FileReader:false, java:false, ChoiceBox:false */
 "use strict";
 var ObjectCreate = Object.create || function (o) {var F = function () {}; F.prototype = o; return new F(); };
 
@@ -87,13 +87,13 @@ GraphUtil.prototype.minJson = function (target, src, ref) {
 			continue;
 		}
 		value = src[i];
-		if (value instanceof Options || ref !== null) {
+		if (value instanceof GraphUtil.Options || ref !== null) {
 			if (typeof (value) === "object") {
 				temp = (value instanceof Array) ? [] : {};
 				if (ref) {
 					value = this.minJson(temp, value, ref[i]);
 				} else {
-					value = this.minJson(temp, value, new Options());
+					value = this.minJson(temp, value, new GraphUtil.Options());
 				}
 			}
 			if (ref && value === ref[i]) {
@@ -289,7 +289,41 @@ GraphUtil.prototype.removeClass = function (ele, cls) {
 		ele.className = ele.className.replace(reg, ' ');
 	}
 };
+/* Info */
+GraphUtil.Info = function (info, parent, edge) {
+	this.typ = "Info";
+	if (typeof (info) === "string") {
+		this.id = info;
+	} else {
+		if (info.property) {this.property = info.property; }
+		if (info.cardinality) {this.cardinality = info.cardinality; }
+		this.id = info.id;
+	}
+	this.x = this.y = this.width = this.height = 0;
+	this.$center = new Pos();
+	this.custom = false;
+	this.$parent = parent;
+	this.$edge = edge;
+	this.$isdraggable = true;
+};
+GraphUtil.Info.prototype.getX = function () {return this.x; };
+GraphUtil.Info.prototype.getY = function () {return this.y; };
 
+GraphUtil.Line = function (source, target, line, style) {this.source = source; this.target = target; this.line = line; this.style = style; };
+GraphUtil.Line.Format = {SOLID: "SOLID", DOTTED: "DOTTED"};
+/* Options */
+GraphUtil.Options = function () {
+	this.raster = false;
+	this.addBorder = true;
+	this.display = "svg";
+	this.font = {"font-size": "10px", "font-family": "Verdana"};
+	this.layout = {name: "Dagre", rankDir: "TB", nodesep: 10};	// Dagre TB, LR
+	this.CardinalityInfo = true;
+	this.propertyinfo = true;
+	this.rotatetext = true;
+	this.linetyp = "center";
+	this.buttons = ["HTML", "SVG"];	// ["HTML", "SVG", "PNG", "PDF"]
+};
 /* Node */
 var GraphNode = function (id) {
 	this.typ = "node";
@@ -340,7 +374,7 @@ var GraphModel = function (json, options) {
 	json = json || {};
 	this.typ = json.typ || "classdiagram";
 	this.set("id", json.id);
-	this.options = this.copy(this.copy(new Options(), json.options), options, true, true);
+	this.options = this.copy(this.copy(new GraphUtil.Options(), json.options), options, true, true);
 	this["package"] = "";
 	this.set("info", json.info);
 	this.set("style", json.style);
@@ -365,8 +399,8 @@ GraphModel.prototype.addEdgeModel = function (e) {
 	} else {
 		edge = new Edge();
 	}
-	edge.source = new Info(e.source, this, edge);
-	edge.target = new Info(e.target, this, edge);
+	edge.source = new GraphUtil.Info(e.source, this, edge);
+	edge.target = new GraphUtil.Info(e.target, this, edge);
 	edge.$sNode = this.getNode(edge.source.id, true);
 	edge.$sNode.$edges.push(edge);
 
@@ -407,7 +441,7 @@ GraphModel.prototype.addNode = function (node) {
 		return this.nodes[node.id];
 	}
 	if (node.typ.indexOf("diagram", node.typ.length - 7) !== -1) {
-		node = new GraphModel(node, new Options());
+		node = new GraphModel(node, new GraphUtil.Options());
 	} else {
 		node = this.copy(new GraphNode(), node);
 	}
@@ -415,6 +449,19 @@ GraphModel.prototype.addNode = function (node) {
 	node.$parent = this;
 	this.$nodeCount += 1;
 	return this.nodes[node.id];
+};
+GraphModel.prototype.removeEdge = function (idSource, idTarget) {
+	var z, e;
+	for (z = 0; z < this.edges.length; z += 1) {
+		e = this.edges[z];
+		if (e.$sNode.id === idSource && e.$tNode.id === idTarget) {
+			this.edges.splice(z, 1);
+			z -= 1;
+		} else if (e.$tNode.id === idSource && e.$sNode.id === idTarget) {
+			this.edges.splice(z, 1);
+			z -= 1;
+		}
+	}
 };
 GraphModel.prototype.removeNode = function (id) {
 	delete (this.nodes[id]);
@@ -487,42 +534,27 @@ GraphModel.prototype.calcLines = function (drawer) {
 	}
 };
 GraphModel.prototype.validateModel = function (json) {
-	//TODO Validate Model
-};
-/* Info */
-var Info = function (info, parent, edge) {
-	this.typ = "Info";
-	if (typeof (info) === "string") {
-		this.id = info;
-	} else {
-		if (info.property) {this.property = info.property; }
-		if (info.cardinality) {this.cardinality = info.cardinality; }
-		this.id = info.id;
+	var z, n, id;
+	if (this.typ === "classdiagramm") {
+		for (z in this.nodes) {
+			if (!this.nodes.hasOwnProperty(z)) {
+				continue;
+			}
+			n = this.nodes[z];
+			if (n.id.indexOf(":") > 0) {
+				id = n.id.substring(n.id.indexOf(":") + 1);
+				this.removeNode(n.id);
+				if (!this.getNode(id, true, 1)) {
+					n.id = id;
+					this.addNode(n);
+				}
+			}
+		}
+		for (z in this.edges) {
+			
+		}
 	}
-	this.x = this.y = this.width = this.height = 0;
-	this.$center = new Pos();
-	this.custom = false;
-	this.$parent = parent;
-	this.$edge = edge;
-	this.$isdraggable = true;
-};
-Info.prototype.getX = function () {return this.x; };
-Info.prototype.getY = function () {return this.y; };
-
-var Line = function (source, target, line, style) {this.source = source; this.target = target; this.line = line; this.style = style; };
-Line.Format = {SOLID: "SOLID", DOTTED: "DOTTED"};
-/* Options */
-var Options = function () {
-	this.raster = false;
-	this.addBorder = true;
-	this.display = "svg";
-	this.font = {"font-size": "10px", "font-family": "Verdana"};
-	this.layout = {name: "Dagre", rankDir: "TB", nodesep: 10};	// Dagre TB, LR
-	this.CardinalityInfo = true;
-	this.propertyinfo = true;
-	this.rotatetext = true;
-	this.linetyp = "center";
-	this.buttons = ["HTML", "SVG"];	// ["HTML", "SVG", "PNG", "PDF"]
+	//TODO Validate Model
 };
 //				######################################################### Graph #########################################################
 var Graph = function (json, options) {
@@ -532,7 +564,7 @@ var Graph = function (json, options) {
 	json.left = json.left || 10;
 	this.model = new GraphModel(json, options);
 	this.initLayouts();
-	this.loader = new Loader(this);
+	this.loader = new GraphUtil.Loader(this);
 	this.initOption();
 };
 Graph.prototype = ObjectCreate(GraphNode.prototype);
@@ -765,6 +797,7 @@ Graph.prototype.layout = function (minwidth, minHeight, model) {
 		this.initDrawer();
 		this.initGraph(model);
 	}
+	model.validateModel();
 	if (this.loader.images.length < 1) {
 		this.layouter.layout(this, model, Math.max(minwidth || 0, 100), Math.max(minHeight || 0, 100));
 	} else {
@@ -994,7 +1027,7 @@ Graph.prototype.ExportPDF = function () {
 	pdf.save('Download.pdf');
 };
 Graph.prototype.ExportEPS = function () {
-	var converter, doc = new jsEPS({inverting: true});
+	var converter, doc = new svgConverter.jsEPS({inverting: true});
 	converter = new svgConverter(this.board, doc, {removeInvalid: false});
 	doc.save();
 };
@@ -1110,8 +1143,8 @@ DagreLayout.prototype.getRootNode = function (node, child) {
 	return child;
 };
 //				######################################################### Loader #########################################################
-var Loader = function (graph) {this.images = []; this.graph = graph; this.abort = false; };
-Loader.prototype.execute = function () {
+GraphUtil.Loader = function (graph) {this.images = []; this.graph = graph; this.abort = false; };
+GraphUtil.Loader.prototype.execute = function () {
 	if (this.images.length === 0) {
 		this.graph.layout(this.width, this.height);
 	} else {
@@ -1119,7 +1152,7 @@ Loader.prototype.execute = function () {
 		this.graph.root.appendChild(img);
 	}
 };
-Loader.prototype.onLoad = function (e) {
+GraphUtil.Loader.prototype.onLoad = function (e) {
 	var idx, img = e.target;
 	idx = this.images.indexOf(img);
 	img.model.width = img.width;
@@ -1130,7 +1163,7 @@ Loader.prototype.onLoad = function (e) {
 	}
 	this.execute();
 };
-Loader.prototype.add = function (img) {
+GraphUtil.Loader.prototype.add = function (img) {
 	//img.crossOrigin = 'anonymous';
 	var that = this, func = function (e) {that.onLoad(e); };
 	this.graph.bind(img, "load", func);
@@ -1146,7 +1179,7 @@ Edge.prototype.init = function () {
 	this.$gui = [];
 	this.$m = 0;
 	this.$n = 0;
-	this.$lineStyle = Line.Format.SOLID;
+	this.$lineStyle = GraphUtil.Line.Format.SOLID;
 };
 Edge.Layout = { DIAG : 1, RECT : 0 };
 Edge.Position = {UP: "UP", LEFT: "LEFT", RIGHT: "RIGHT", DOWN: "DOWN"};
@@ -1230,7 +1263,7 @@ Edge.prototype.calculate = function () {
 		this.calcInfoPos(targetPos, target, this.target, edgePos);
 		source["$" + sourcePos.$id] += 1;
 		target["$" + targetPos.$id] += 1;
-		this.$path.push(new Line(sourcePos, targetPos, this.$lineStyle, this.style));
+		this.$path.push(new GraphUtil.Line(sourcePos, targetPos, this.$lineStyle, this.style));
 		if (this.info) {
 			this.info.x = (sourcePos.x + targetPos.x) / 2;
 			this.info.y = (sourcePos.y + targetPos.y) / 2;
@@ -1247,7 +1280,7 @@ Edge.prototype.addLine = function (x1, y1, x2, y2) {
 		start = new Pos(x1, y1);
 		end = new Pos(x2, y2);
 	}
-	this.$path.push(new Line(start, end, this.$lineStyle, this.style));
+	this.$path.push(new GraphUtil.Line(start, end, this.$lineStyle, this.style));
 };
 Edge.prototype.addLineTo = function (x1, y1, x2, y2) {
 	var start, end;
@@ -1258,7 +1291,7 @@ Edge.prototype.addLineTo = function (x1, y1, x2, y2) {
 		start = new Pos(x1, y1);
 		end = new Pos(start.x + x2, start.y + y2);
 	}
-	this.$path.push(new Line(start, end, this.$lineStyle, this.style));
+	this.$path.push(new GraphUtil.Line(start, end, this.$lineStyle, this.style));
 };
 Edge.prototype.calcSquareLine = function () {
 	//	1. Case		/------\
@@ -1422,16 +1455,16 @@ Edge.prototype.calcOwnEdge = function () {
 	} else if (this.$start === Edge.Position.LEFT) {
 		tPos = new Pos(sPos.x - offset, sPos.y);
 	}
-	this.$path.push(new Line(sPos, tPos, this.$lineStyle));
+	this.$path.push(new GraphUtil.Line(sPos, tPos, this.$lineStyle));
 	if (this.$end === Edge.Position.LEFT || this.$end === Edge.Position.RIGHT) {
 		if (this.$start === Edge.Position.LEFT) {
 			sPos = tPos;
 			tPos = new Pos(sPos.x, this.$sNode.y - offset);
-			this.$path.push(new Line(sPos, tPos, this.$lineStyle));
+			this.$path.push(new GraphUtil.Line(sPos, tPos, this.$lineStyle));
 		} else if (this.$start === Edge.Position.RIGHT) {
 			sPos = tPos;
 			tPos = new Pos(sPos.x, this.$sNode.y + offset);
-			this.$path.push(new Line(sPos, tPos, this.$lineStyle));
+			this.$path.push(new GraphUtil.Line(sPos, tPos, this.$lineStyle));
 		}
 		sPos = tPos;
 		if (this.$end === Edge.Position.LEFT) {
@@ -1439,10 +1472,10 @@ Edge.prototype.calcOwnEdge = function () {
 		} else {
 			tPos = new Pos(this.$sNode.x + this.$sNode.width + offset, sPos.y);
 		}
-		this.$path.push(new Line(sPos, tPos, this.$lineStyle));
+		this.$path.push(new GraphUtil.Line(sPos, tPos, this.$lineStyle));
 		sPos = tPos;
 		tPos = new Pos(sPos.x, this.$sNode.$center.y);
-		this.$path.push(new Line(sPos, tPos, this.$lineStyle));
+		this.$path.push(new GraphUtil.Line(sPos, tPos, this.$lineStyle));
 		if (this.info) {
 			this.info.x = (sPos.x + tPos.x) / 2;
 			this.info.y = sPos.y;
@@ -1451,11 +1484,11 @@ Edge.prototype.calcOwnEdge = function () {
 		if (this.$start === Edge.Position.UP) {
 			sPos = tPos;
 			tPos = new Pos(this.$sNode.x + this.$sNode.width + offset, sPos.y);
-			this.$path.push(new Line(sPos, tPos, this.$lineStyle));
+			this.$path.push(new GraphUtil.Line(sPos, tPos, this.$lineStyle));
 		} else if (this.$start === Edge.Position.DOWN) {
 			sPos = tPos;
 			tPos = new Pos(this.$sNode.x - offset, sPos.y);
-			this.$path.push(new Line(sPos, tPos, this.$lineStyle));
+			this.$path.push(new GraphUtil.Line(sPos, tPos, this.$lineStyle));
 		}
 		sPos = tPos;
 		if (this.$end === Edge.Position.UP) {
@@ -1463,17 +1496,17 @@ Edge.prototype.calcOwnEdge = function () {
 		} else {
 			tPos = new Pos(sPos.x, this.$sNode.y + this.$sNode.height + offset);
 		}
-		this.$path.push(new Line(sPos, tPos, this.$lineStyle));
+		this.$path.push(new GraphUtil.Line(sPos, tPos, this.$lineStyle));
 		sPos = tPos;
 		tPos = new Pos(this.$sNode.$center.x, sPos.y);
-		this.$path.push(new Line(sPos, tPos, this.$lineStyle));
+		this.$path.push(new GraphUtil.Line(sPos, tPos, this.$lineStyle));
 		if (this.info) {
 			this.info.x = sPos.x;
 			this.info.y = (sPos.y + tPos.y) / 2;
 		}
 	}
 	sPos = tPos;
-	this.$path.push(new Line(sPos, this.getCenterPosition(this.$sNode, this.$end), this.$lineStyle));
+	this.$path.push(new GraphUtil.Line(sPos, this.getCenterPosition(this.$sNode, this.$end), this.$lineStyle));
 };
 Edge.prototype.getFree = function (node) {
 	var i;
@@ -1619,7 +1652,7 @@ Generalisation.prototype.draw = function (board, drawer) {
 Generalisation.prototype.drawSourceText = function (board, drawer, style) {};
 Generalisation.prototype.drawTargetText = function (board, drawer, style) {};
 
-var Implements = function () { this.init(); this.typ = "Implements"; this.$lineStyle = Line.Format.DOTTED; };
+var Implements = function () { this.init(); this.typ = "Implements"; this.$lineStyle = GraphUtil.Line.Format.DOTTED; };
 Implements.prototype = ObjectCreate(Generalisation.prototype);
 
 var Unidirectional = function () { this.init(); this.typ = "Unidirectional"; };
@@ -1661,32 +1694,6 @@ Composition.prototype.draw = function (board, drawer) {
 
 	this.addElement(board, drawer.createPath(true, "#000", [this.endPos().target, this.$topCenter, this.$end, this.$botCenter], h));
 };
-function RGBColor(value) {
-	this.ok = false;
-	if (value === "none") {
-		return;
-	}
-	var computedColor, div = document.createElement("div");
-	div.style.backgroundColor = value;
-	document.body.appendChild(div);
-	computedColor = window.getComputedStyle(div).backgroundColor;
-	// cleanup temporary div.
-	document.body.removeChild(div);
-	this.convert(computedColor);
-}
-RGBColor.prototype.convert = function (value) {
-	var values, regex = /rgb *\( *([0-9]{1,3}) *, *([0-9]{1,3}) *, *([0-9]{1,3}) *\)/;
-	values = regex.exec(value);
-	this.r = parseInt(values[1], 10);
-	this.g = parseInt(values[2], 10);
-	this.b = parseInt(values[3], 10);
-	this.ok = true;
-};
-RGBColor.prototype.toRGB = function () {return 'rgb(' + this.r + ', ' + this.g + ', ' + this.b + ')'; };
-RGBColor.prototype.toHex = function () {
-	return "#" + (this.r + 0x10000).toString(16).substring(3).toUpperCase() + (this.g + 0x10000).toString(16).substring(3).toUpperCase() + (this.b + 0x10000).toString(16).substring(3).toUpperCase();
-};
-
 // TODO
 // Validate input
 // Create Assocs

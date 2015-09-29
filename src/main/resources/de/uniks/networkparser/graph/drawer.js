@@ -23,7 +23,7 @@
 /*jslint node: true, newcap:true, nomen: true, continue: true */
 
 // VERSION: 2015.09.15 10:40
-/*global GraphUtil: false, SymbolLibary: false, svgConverter: false, jsEPS: false, jsPDF: false, document:false */
+/*global GraphUtil: false, SymbolLibary: false, svgConverter: false, jsPDF: false, document:false */
 "use strict";
 var ObjectCreate = Object.create || function (o) { var F = function () {}; F.prototype = o; return new F(); };
 
@@ -413,7 +413,7 @@ Drawer.SVGDrawer.prototype.getBoard = function (graph) {
 	list = ["HTML", "SVG", "PNG"];
 	hasJS = typeof (svgConverter);
 	if (hasJS !== "undefined") {
-		hasJS = typeof (jsEPS);
+		hasJS = typeof (svgConverter);
 		list.push(hasJS !== "undefined" ? "EPS" : "");
 		hasJS = typeof (jsPDF);
 		list.push(hasJS !== "undefined" ? "PDF" : "");
