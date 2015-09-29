@@ -6,100 +6,100 @@
 	<script src="../../src/main/resources/de/uniks/networkparser/graph/drawer.js"></script>
 	<script src="../../src/main/resources/de/uniks/networkparser/graph/svgToEPS.js"></script>
 	<style>
-	.SimpleLink {cursor:pointer; color: DarkBlue; }
-	.SimpleLink:hover {cursor:pointer; color: DarkRed; }
+	.SimpleLink {cursor:pointer; color: #008; }
+	.SimpleLink:hover {cursor:pointer; color: #800; }
 	</style>
 </head>
-<body style="height:100%;margin:0">
+<body style="height:100%; margin: 0;">
 <script language="Javascript">
-function addCase(label, json) {
-	window.setTimeout(function(){addToUL(label, json);}, 100);
-};
-function addToUL(label, json) {
-	var ul = document.getElementById("CaseUL");
+/*global document: false, window: false, Graph: false, ClassEditor: false */
+"use strict";
 
-	if(ul) {
-		var item = document.createElement("li");
-		var a = document.createElement("a");
+function addToUL(label, json) {
+	var item, a, ul = document.getElementById("CaseUL");
+
+	if (ul) {
+		item = document.createElement("li");
+		a = document.createElement("a");
 		a.className = "SimpleLink";
 		a.innerHTML = label;
 		if (typeof json === "function") {
 			a.onclick = json;
 		} else {
-			if(!json["options"]) {
-				json["options"] = {};
+			if (!json.options) {
+				json.options = {};
 			}
-			json["options"]["canvasid"]="Demo";
-			json["options"]["clearCanvas"]=1;
-			a.onclick = function(){new Graph(json).layout();};
+			json.options.canvasid = "Demo";
+			json.options.clearCanvas = 1;
+			a.onclick = function () {new Graph(json).layout(); };
 		}
 		item.appendChild(a);
 		ul.appendChild(item);
 	}
-};
+}
+function addCase(label, json) {
+	window.setTimeout(function () {addToUL(label, json); }, 100);
+}
 </script>
 
 <script>
-var json = {"nodes":[ {"typ":"node", id:"Albert:Simple"}],"options": {"display":"svg"} };
+var json = {"nodes": [ {"typ" : "node", id : "Albert:Simple"}], "options" : {"display" : "svg"} };
 addCase("Simple Model", json);
 </script>
 
 <script>
-var json = {"nodes":[ "Student", "University" ],"options": {"display":"svg"} };
+var json = {"nodes": [ "Student", "University" ], "options": {"display" : "svg"} };
 addCase("Short JsonModel Nodes", json);
 </script>
 <script>
-var json = {"edges":[ {source: "Student", target: "University"} ],"options": {"display":"svg"} };
+var json = {"edges": [ {source: "Student", target: "University"} ], "options": {"display": "svg"} };
 addCase("Short JsonModel Edges", json);
 </script>
 
 <script>
-var json = {"nodes":[ {"typ":"node", "content":{"src":"karli.png"}} ]};
-json["options"]={"canvasid":"canvasStudyRight with assignments class generationClassDiagram8", "display":"html", "fontsize":10,"bar":true};
+var json = {"nodes": [ {"typ": "node", "content" : {"src" : "karli.png"}} ]};
+json.options = {"canvasid" : "canvasStudyRight with assignments class generationClassDiagram8", "display" : "html", "fontsize" : 10, "bar": true};
 addCase("Use Case Show Image karli.png", json);
 </script>
 <script>
-addCase("All Edgetypes", {
-		"edges":[
-			{"typ":"edge", "source":"CS 32","target":"CS 33"},
-			{"typ":"generalisation", "source":"CS 32","target":"CS 34"},
-			{"typ":"implements", "source":"CS 32","target":"CS 36"},
-			{"typ":"unidirectional", "source":"CS 33","target":"CS 34"},
-			{"typ":"aggregation", "source":"CS 33","target":"CS 35"},
-			{"typ":"composition", "source":"CS 34","target":"CS 35"}
-		]
-	});
+addCase("All Edgetypes", {"edges": [
+	{"typ": "edge", "source": "CS 32", "target": "CS 33"},
+	{"typ": "generalisation", "source": "CS 32", "target": "CS 34"},
+	{"typ": "implements", "source": "CS 32", "target": "CS 36"},
+	{"typ": "unidirectional", "source": "CS 33", "target": "CS 34"},
+	{"typ": "aggregation", "source": "CS 33", "target": "CS 35"},
+	{"typ": "composition", "source": "CS 34", "target": "CS 35"}
+]});
 </script>
 <script>
-	var json = {"options":{"bar":true, "raster":false, "canvasid":"42","fontsize":12},
-		"nodes":[
-			{typ:"node", id:"Albert:Student", href:"Student.java", attributes:["age:int", "name:String"],methods:["toString()"]},
-			{typ:"node", id:"CS 32"},
-			{typ:"node", id:"CS 34",attributes:["age:int", "name:String"],methods:["toString()"]},
-			{typ:"node", id:"CS 35"},
-			{typ:"node", id:"CS 36"},
-			{typ:"node", id:"CS 1"},
-			{typ:"node", id:"CS 2"},
-			//{typ:"node", id:"CS x", content_plain:"Hallo Welt"},
-			//{typ:"wall"},
-			{typ:"Wall"},
-			{typ:"node", id:"CS s", content_src:"karli.png", width:60, height:60}
-			/*{typ:"subgraph", id:"CS b", graph:{"typ":"classdiagramm","value":{"edges":[{"typ":"edge", "source":"Auto","target":"Reifen"}]}}},*/
-			//{typ:"patternObject", id:"g1 : GraphPO", headinfo:"&laquo;bound&raquo;"}
-			/*{typ:"patternObject", id:"g1 : GraphPO", headinfo:"«bound», «create», «delete»"}*/
-			/*{"typ":"node", "id":"CS x", "content":"Hallo World", "x":"200", y:10, width:200, height:200}*/
-		],
-		"edges":[
-			{"typ":"edge", "source":{id:"Albert:Student", "property":"0..1"},"target": {id:"CS 32", "property":"1..1"}},
-			{"typ":"edge", "source":"CS 32","target":"CS 33"},
-			{"typ":"edge", "source":"CS 32","target":"CS 34"},
-			{"typ":"edge", "source":"CS 35","target":"CS 34"},
-			{"typ":"edge", "source":"CS 1","target":"CS 1"},
-			{"typ":"Implements", "source":"CS 36","target":"CS 34"},
-			{"typ":"edge", "source":{id:"CS 1", "property":"1..2"},"target":{id:"CS 2", "property":"3..4"}},
-			{"typ":"generalisation", "source":"CS 2","target":"Albert:Student"}
-		]
-	};
+var json = {"options": {"bar":  true, "raster": false, "canvasid": "42", "fontsize": 12},
+	"nodes": [
+		{typ: "node", id: "Albert:Student", href: "Student.java", attributes: ["age:int", "name:String"], methods: ["toString()"]},
+		{typ: "node", id: "CS 32"},
+		{typ: "node", id: "CS 34", attributes: ["age:int", "name:String"], methods: ["toString()"]},
+		{typ: "node", id: "CS 35"},
+		{typ: "node", id: "CS 36"},
+		{typ: "node", id: "CS 1"},
+		{typ: "node", id: "CS 2"},
+		//{typ:"node", id:"CS x", content_plain:"Hallo Welt"},
+		//{typ:"wall"},
+		{typ: "Wall"},
+		{typ: "node", id: "CS s", content_src: "karli.png", width: 60, height: 60}
+		/*{typ:"subgraph", id:"CS b", graph:{"typ":"classdiagramm","value":{"edges":[{"typ":"edge", "source":"Auto","target":"Reifen"}]}}},*/
+		//{typ:"patternObject", id:"g1 : GraphPO", headinfo:"&laquo;bound&raquo;"}
+		/*{typ:"patternObject", id:"g1 : GraphPO", headinfo:"«bound», «create», «delete»"}*/
+		/*{"typ":"node", "id":"CS x", "content":"Hallo World", "x":"200", y:10, width:200, height:200}*/
+	],
+	"edges": [
+		{"typ": "edge", "source": {id: "Albert:Student", "property": "0..1"}, "target": {id: "CS 32", "property": "1..1"}},
+		{"typ": "edge", "source": "CS 32", "target": "CS 33"},
+		{"typ": "edge", "source": "CS 32", "target": "CS 34"},
+		{"typ": "edge", "source": "CS 35", "target": "CS 34"},
+		{"typ": "edge", "source": "CS 1", "target": "CS 1"},
+		{"typ": "Implements", "source": "CS 36", "target": "CS 34"},
+		{"typ": "edge", "source": {id: "CS 1", "property": "1..2"}, "target": {id: "CS 2", "property": "3..4"}},
+		{"typ": "generalisation", "source": "CS 2", "target": "Albert:Student"}
+	]};
 addCase("Fulltest", json);
 	//var layouter = new GraphLayout.Ordered(g);
 	//var layouter = new Graph.LayoutDagre(g);
@@ -112,694 +112,687 @@ addCase("Fulltest", json);
 	//layouter.addNode("CS 34", 200,250);
 </script>
 <script>
-var json = {id:"Self Assoc", "nodes":[
-	  {
-			"typ":"node",
-			"id":"University",
-			"attributes":[
-			"name : String"
-			]
-		 },
-		 {
-			"typ":"node",
-			"id":"Student",
-			"attributes":[
+var json = {id: "Self Assoc", "nodes": [
+	{
+		"typ": "node",
+		"id": "University",
+		"attributes": [ "name : String"	]
+	},
+	{
+		"typ": "node",
+		"id": "Student",
+		"attributes": [
 			"name : String",
-			   "id : String",
-			   "assignmentPoints : int",
-			   "motivation : int",
-			   "credits : int"
-			]
-		 },
-		 {
-			"typ":"node",
-			"id":"Room",
-			"attributes":[
+			"id : String",
+			"assignmentPoints : int",
+			"motivation : int",
+			"credits : int"
+		]
+	},
+	{
+		"typ": "node",
+		"id": "Room",
+		"attributes": [
 			"name : String",
-			   "topic : String",
-			   "credits : int"
-			]
-		 }
-	  ],
-	  "edges":[
-	  {
-			"typ":"edge",
-			"sourcecardinality":"one",
-			"targetcardinality":"many",
-			"sourceproperty":"university",
-			"targetproperty":"students",
-			"source":"University",
-			"target":"Student"
-		 },
-		 {
-			"typ":"edge",
-			"sourcecardinality":"one",
-			"targetcardinality":"many",
-			"sourceproperty":"university",
-			"targetproperty":"rooms",
-			"source":"University",
-			"target":"Room"
-		 },
-		 {
-			"typ":"edge",
-			"sourcecardinality":"many",
-			"targetcardinality":"one",
-			"sourceproperty":"students",
-			"targetproperty":"in",
-			"source":"Student",
-			"target":"Room"
-		 },
-		 {
-			"typ":"edge",
-			"sourcecardinality":"many",
-			"targetcardinality":"many",
-			"sourceproperty":"doors",
-			"targetproperty":"doors",
-			"source":"Room",
-			"target":"Room"
-		 }
-	]
-};
-json["options"]={"display":"html", "fontsize":10,"bar":true};
+			"topic : String",
+			"credits : int"
+		]
+	}
+],
+	"edges": [
+		{
+			"typ": "edge",
+			"sourcecardinality": "one",
+			"targetcardinality": "many",
+			"sourceproperty": "university",
+			"targetproperty": "students",
+			"source": "University",
+			"target": "Student"
+		},
+		{
+			"typ": "edge",
+			"sourcecardinality": "one",
+			"targetcardinality": "many",
+			"sourceproperty": "university",
+			"targetproperty": "rooms",
+			"source": "University",
+			"target": "Room"
+		},
+		{
+			"typ": "edge",
+			"sourcecardinality": "many",
+			"targetcardinality": "one",
+			"sourceproperty": "students",
+			"targetproperty": "in",
+			"source": "Student",
+			"target": "Room"
+		},
+		{
+			"typ": "edge",
+			"sourcecardinality": "many",
+			"targetcardinality": "many",
+			"sourceproperty": "doors",
+			"targetproperty": "doors",
+			"source": "Room",
+			"target": "Room"
+		}
+	]};
+json.options = {"display": "html", "fontsize": 10, "bar": true};
 addCase("Self Assoc", json);
 </script>
 <script>
 var json = {
-"typ":"objectdiagram",
-"style":null,
-"nodes":[
-{
-	 "typ":"node",
-	 "id":"studyRight : University",
-	 "attributes":[
-	 "name=StudyRight"
-	 ]
-  },
-  {
-	 "typ":"node",
-	 "id":"karli : Student",
-	 "head_src":"karli.png",
-	 "attributes":[
-	 "name=Karli",
-		"id=4242",
-		"assignmentPoints=0",
-		"motivation=0",
-		"credits=0"
-	 ]
-  },
-  {
-	 "typ":"node",
-	 "id":"mathRoom : Room",
-	 "attributes":[
-	 "name=senate",
-		"topic=math",
-		"credits=17"
-	 ]
-  },
-  {
-	 "typ":"node",
-	 "id":"artsRoom : Room",
-	 "attributes":[
-	 "name=7522",
-		"topic=arts",
-		"credits=16"
-	 ]
-  },
-  {
-	 "typ":"node",
-	 "id":"sportsRoom : Room",
-	 "attributes":[
-	 "name=gymnasium",
-		"topic=sports",
-		"credits=25"
-	 ]
-  },
-  {
-	 "typ":"node",
-	 "id":"examRoom : Room",
-	 "attributes":[
-	 "name=The End",
-		"topic=exam",
-		"credits=0"
-	 ]
-  },
-  {
-	 "typ":"node",
-	 "id":"placeToBe : Room",
-	 "attributes":[
-	 "name=7422",
-		"topic=Software Engineering",
-		"credits=42"
-	 ]
-  },
-  {
-	 "typ":"node",
-	 "id":"A1 : Assignment",
-	 "attributes":[
-	 "content=Matrix Multiplication",
-		"points=5"
-	 ]
-  },
-  {
-	 "typ":"node",
-	 "id":"A2 : Assignment",
-	 "attributes":[
-	 "content=Series",
-		"points=6"
-	 ]
-  },
-  {
-	 "typ":"node",
-	 "id":"A3 : Assignment",
-	 "head_src":"integralAssignment.png",
-	 "attributes":[
-	 "content=Integrals",
-		"points=8"
-	 ]
-  }
-],
-"edges":[
-{
-	 "typ":"EDGE",
-	 "source":{
-		"cardinality":"one",
-		"property":"university",
-		"id":"studyRight : University"
-	 },
-	 "target":{
-		"cardinality":"many",
-		"property":"students",
-		"id":"karli : Student"
-	 }
-  },
-  {
-	 "typ":"EDGE",
-	 "source":{
-		"cardinality":"one",
-		"property":"university",
-		"id":"studyRight : University"
-	 },
-	 "target":{
-		"cardinality":"many",
-		"property":"rooms",
-		"id":"mathRoom : Room"
-	 }
-  },
-  {
-	 "typ":"EDGE",
-	 "source":{
-		"cardinality":"one",
-		"property":"university",
-		"id":"studyRight : University"
-	 },
-	 "target":{
-		"cardinality":"many",
-		"property":"rooms",
-		"id":"artsRoom : Room"
-	 }
-  },
-  {
-	 "typ":"EDGE",
-	 "source":{
-		"cardinality":"one",
-		"property":"university",
-		"id":"studyRight : University"
-	 },
-	 "target":{
-		"cardinality":"many",
-		"property":"rooms",
-		"id":"sportsRoom : Room"
-	 }
-  },
-  {
-	 "typ":"EDGE",
-	 "source":{
-		"cardinality":"one",
-		"property":"university",
-		"id":"studyRight : University"
-	 },
-	 "target":{
-		"cardinality":"many",
-		"property":"rooms",
-		"id":"examRoom : Room"
-	 }
-  },
-  {
-	 "typ":"EDGE",
-	 "source":{
-		"cardinality":"one",
-		"property":"university",
-		"id":"studyRight : University"
-	 },
-	 "target":{
-		"cardinality":"many",
-		"property":"rooms",
-		"id":"placeToBe : Room"
-	 }
-  },
-  {
-	 "typ":"EDGE",
-	 "source":{
-		"cardinality":"many",
-		"property":"students",
-		"id":"karli : Student"
-	 },
-	 "target":{
-		"cardinality":"one",
-		"property":"in",
-		"id":"mathRoom : Room"
-	 }
-  },
-  {
-	 "typ":"EDGE",
-	 "source":{
-		"cardinality":"many",
-		"property":"doors",
-		"id":"mathRoom : Room"
-	 },
-	 "target":{
-		"cardinality":"many",
-		"property":"doors",
-		"id":"artsRoom : Room"
-	 }
-  },
-  {
-	 "typ":"EDGE",
-	 "source":{
-		"cardinality":"many",
-		"property":"doors",
-		"id":"mathRoom : Room"
-	 },
-	 "target":{
-		"cardinality":"many",
-		"property":"doors",
-		"id":"sportsRoom : Room"
-	 }
-  },
-  {
-	 "typ":"EDGE",
-	 "source":{
-		"cardinality":"one",
-		"property":"room",
-		"id":"mathRoom : Room"
-	 },
-	 "target":{
-		"cardinality":"many",
-		"property":"assignments",
-		"id":"A1 : Assignment"
-	 }
-  },
-  {
-	 "typ":"EDGE",
-	 "source":{
-		"cardinality":"one",
-		"property":"room",
-		"id":"mathRoom : Room"
-	 },
-	 "target":{
-		"cardinality":"many",
-		"property":"assignments",
-		"id":"A2 : Assignment"
-	 }
-  },
-  {
-	 "typ":"EDGE",
-	 "source":{
-		"cardinality":"one",
-		"property":"room",
-		"id":"mathRoom : Room"
-	 },
-	 "target":{
-		"cardinality":"many",
-		"property":"assignments",
-		"id":"A3 : Assignment"
-	 }
-  },
-  {
-	 "typ":"EDGE",
-	 "source":{
-		"cardinality":"many",
-		"property":"doors",
-		"id":"artsRoom : Room"
-	 },
-	 "target":{
-		"cardinality":"many",
-		"property":"doors",
-		"id":"sportsRoom : Room"
-	 }
-  },
-  {
-	 "typ":"EDGE",
-	 "source":{
-		"cardinality":"many",
-		"property":"doors",
-		"id":"artsRoom : Room"
-	 },
-	 "target":{
-		"cardinality":"many",
-		"property":"doors",
-		"id":"examRoom : Room"
-	 }
-  },
-  {
-	 "typ":"EDGE",
-	 "source":{
-		"cardinality":"many",
-		"property":"doors",
-		"id":"artsRoom : Room"
-	 },
-	 "target":{
-		"cardinality":"many",
-		"property":"doors",
-		"id":"placeToBe : Room"
-	 }
-  },
-  {
-	 "typ":"EDGE",
-	 "source":{
-		"cardinality":"many",
-		"property":"doors",
-		"id":"sportsRoom : Room"
-	 },
-	 "target":{
-		"cardinality":"many",
-		"property":"doors",
-		"id":"examRoom : Room"
-	 }
-  },
-  {
-	 "typ":"EDGE",
-	 "source":{
-		"cardinality":"many",
-		"property":"doors",
-		"id":"examRoom : Room"
-	 },
-	 "target":{
-		"cardinality":"many",
-		"property":"doors",
-		"id":"placeToBe : Room"
-	 }
-  }
-]
+	"typ": "objectdiagram",
+	"style": null,
+	"nodes": [
+		{
+			"typ": "node",
+			"id": "studyRight : University",
+			"attributes": [
+				"name=StudyRight"
+			]
+		},
+		{
+			"typ": "node",
+			"id": "karli : Student",
+			"head_src": "karli.png",
+			"attributes": [
+				"name=Karli",
+				"id=4242",
+				"assignmentPoints=0",
+				"motivation=0",
+				"credits=0"
+			]
+		},
+		{
+			"typ": "node",
+			"id": "mathRoom : Room",
+			"attributes": [
+				"name=senate",
+				"topic=math",
+				"credits=17"
+			]
+		},
+		{
+			"typ": "node",
+			"id": "artsRoom : Room",
+			"attributes": [
+				"name=7522",
+				"topic=arts",
+				"credits=16"
+			]
+		},
+		{
+			"typ": "node",
+			"id": "sportsRoom : Room",
+			"attributes": [
+				"name=gymnasium",
+				"topic=sports",
+				"credits=25"
+			]
+		},
+		{
+			"typ": "node",
+			"id": "examRoom : Room",
+			"attributes": [
+				"name=The End",
+				"topic=exam",
+				"credits=0"
+			]
+		},
+		{
+			"typ": "node",
+			"id": "placeToBe : Room",
+			"attributes": [
+				"name=7422",
+				"topic=Software Engineering",
+				"credits=42"
+			]
+		},
+		{
+			"typ": "node",
+			"id": "A1 : Assignment",
+			"attributes": [
+				"content=Matrix Multiplication",
+				"points=5"
+			]
+		},
+		{
+			"typ": "node",
+			"id": "A2 : Assignment",
+			"attributes": [
+				"content=Series",
+				"points=6"
+			]
+		},
+		{
+			"typ": "node",
+			"id": "A3 : Assignment",
+			"head_src": "integralAssignment.png",
+			"attributes": [
+				"content=Integrals",
+				"points=8"
+			]
+		}
+	],
+	"edges": [
+		{
+			"typ": "EDGE",
+			"source": {
+				"cardinality": "one",
+				"property": "university",
+				"id": "studyRight : University"
+			},
+			"target": {
+				"cardinality": "many",
+				"property": "students",
+				"id": "karli : Student"
+			}
+		},
+		{
+			"typ": "EDGE",
+			"source": {
+				"cardinality": "one",
+				"property": "university",
+				"id": "studyRight : University"
+			},
+			"target": {
+				"cardinality": "many",
+				"property": "rooms",
+				"id": "mathRoom : Room"
+			}
+		},
+		{
+			"typ": "EDGE",
+			"source": {
+				"cardinality": "one",
+				"property": "university",
+				"id": "studyRight : University"
+			},
+			"target": {
+				"cardinality": "many",
+				"property": "rooms",
+				"id": "artsRoom : Room"
+			}
+		},
+		{
+			"typ": "EDGE",
+			"source": {
+				"cardinality": "one",
+				"property": "university",
+				"id": "studyRight : University"
+			},
+			"target": {
+				"cardinality": "many",
+				"property": "rooms",
+				"id": "sportsRoom : Room"
+			}
+		},
+		{
+			"typ": "EDGE",
+			"source": {
+				"cardinality": "one",
+				"property": "university",
+				"id": "studyRight : University"
+			},
+			"target": {
+				"cardinality": "many",
+				"property": "rooms",
+				"id": "examRoom : Room"
+			}
+		},
+		{
+			"typ": "EDGE",
+			"source": {
+				"cardinality": "one",
+				"property": "university",
+				"id": "studyRight : University"
+			},
+			"target": {
+				"cardinality": "many",
+				"property": "rooms",
+				"id": "placeToBe : Room"
+			}
+		},
+		{
+			"typ": "EDGE",
+			"source": {
+				"cardinality": "many",
+				"property": "students",
+				"id": "karli : Student"
+			},
+			"target": {
+				"cardinality": "one",
+				"property": "in",
+				"id": "mathRoom : Room"
+			}
+		},
+		{
+			"typ": "EDGE",
+			"source": {
+				"cardinality": "many",
+				"property": "doors",
+				"id": "mathRoom : Room"
+			},
+			"target": {
+				"cardinality": "many",
+				"property": "doors",
+				"id": "artsRoom : Room"
+			}
+		},
+		{
+			"typ": "EDGE",
+			"source": {
+				"cardinality": "many",
+				"property": "doors",
+				"id": "mathRoom : Room"
+			},
+			"target": {
+				"cardinality": "many",
+				"property": "doors",
+				"id": "sportsRoom : Room"
+			}
+		},
+		{
+			"typ": "EDGE",
+			"source": {
+				"cardinality": "one",
+				"property": "room",
+				"id": "mathRoom : Room"
+			},
+			"target": {
+				"cardinality": "many",
+				"property": "assignments",
+				"id": "A1 : Assignment"
+			}
+		},
+		{
+			"typ": "EDGE",
+			"source": {
+				"cardinality": "one",
+				"property": "room",
+				"id": "mathRoom : Room"
+			},
+			"target": {
+				"cardinality": "many",
+				"property": "assignments",
+				"id": "A2 : Assignment"
+			}
+		},
+		{
+			"typ": "EDGE",
+			"source": {
+				"cardinality": "one",
+				"property": "room",
+				"id": "mathRoom : Room"
+			},
+			"target":	{
+				"cardinality": "many",
+				"property": "assignments",
+				"id": "A3 : Assignment"
+			}
+		},
+		{
+			"typ": "EDGE",
+			"source": {
+				"cardinality": "many",
+				"property": "doors",
+				"id": "artsRoom : Room"
+			},
+			"target": {
+				"cardinality": "many",
+				"property": "doors",
+				"id": "sportsRoom : Room"
+			}
+		},
+		{
+			"typ": "EDGE",
+			"source": {
+				"cardinality": "many",
+				"property": "doors",
+				"id": "artsRoom : Room"
+			},
+			"target": {
+				"cardinality": "many",
+				"property": "doors",
+				"id": "examRoom : Room"
+			}
+		},
+		{
+			"typ": "EDGE",
+			"source": {
+				"cardinality": "many",
+				"property": "doors",
+				"id": "artsRoom : Room"
+			},
+			"target": {
+				"cardinality": "many",
+				"property": "doors",
+				"id": "placeToBe : Room"
+			}
+		},
+		{
+			"typ": "EDGE",
+			"source": {
+				"cardinality": "many",
+				"property": "doors",
+				"id": "sportsRoom : Room"
+			},
+			"target": {
+				"cardinality": "many",
+				"property": "doors",
+				"id": "examRoom : Room"
+			}
+		},
+		{
+			"typ": "EDGE",
+			"source": {
+				"cardinality": "many",
+				"property": "doors",
+				"id": "examRoom : Room"
+			},
+			"target": {
+				"cardinality": "many",
+				"property":	"doors",
+				"id": "placeToBe : Room"
+			}
+		}
+	]
 };
-json["options"]={"display":"html", "fontsize":10,"bar":true};
+json.options = {"display": "html", "fontsize": 10, "bar": true};
 addCase("StudyRight with assignments storyboard", json);
 </script>
 <script>
 var json = {
-	"typ":"objectdiagram",
-	"style":null,
-	"nodes":[
-		{"typ":"Smily"},
-		{"typ":"Database"},
-		{"typ":"Letter"},
-		{"typ":"Mobilphone"},
-		{"typ":"Wall"},
-		{"typ":"Actor"},
-		{"typ":"Lamp"},
-		{"typ":"Stop"},
-		{"typ":"Min"},
-		{"typ":"Arrow"},
-		{"typ":"Max"},
-		{"typ":"Button", value:"Hallo Welt"},
-		{"typ":"Dropdown"},
-		{"typ": "patternObject", id:"Hallo"},
-		{"typ": "patternObject", id:"Hallo"}
-   ]
+	"typ": "objectdiagram",
+	"style": null,
+	"nodes": [
+		{"typ": "Smily"},
+		{"typ": "Database"},
+		{"typ": "Letter"},
+		{"typ": "Mobilphone"},
+		{"typ": "Wall"},
+		{"typ": "Actor"},
+		{"typ": "Lamp"},
+		{"typ": "Stop"},
+		{"typ": "Min"},
+		{"typ": "Arrow"},
+		{"typ": "Max"},
+		{"typ": "Button", value: "Hallo Welt"},
+		{"typ": "Dropdown"},
+		{"typ": "patternObject", id: "Hallo"},
+		{"typ": "patternObject", id: "Hallo"}
+	]
 };
 addCase("All Nodetypes", json);
 </script>
 <script>
-var json = {"typ":"objectdiagram", "nodes":[
+var json = {"typ": "objectdiagram", "nodes": [
 	{
-		 "typ":"patternObject",
-		 "id":"r1 : RiverPO",
-		 "attributes":[
-		 "<< start >>"
-		 ]
-	  },
-	  {
-		 "typ":"patternObject",
-		 "id":"b2 : BoatPO",
-		 "attributes":[]
-	  },
-	  {
-		 "typ":"objectdiagram",
-		 "style":"nac",
-		 "info":"NegativeApplicationCondition",
-		 "nodes":[
-		 {
-			   "typ":"patternObject",
-			   "id":"c3 : CargoPO",
-			   "attributes":[]
+		"typ": "patternObject",
+		"id": "r1 : RiverPO",
+		"attributes": [
+			"<< start >>"
+		]
+	},
+	{
+		"typ": "patternObject",
+		"id": "b2 : BoatPO",
+		"attributes": []
+	},
+	{
+		"typ": "objectdiagram",
+		"style": "nac",
+		"info": "NegativeApplicationCondition",
+		"nodes": [
+			{
+				"typ": "patternObject",
+				"id": "c3 : CargoPO",
+				"attributes": []
 			}
-		 ]
-	  },
-	  {
-		 "typ":"patternObject",
-		 "id":"b4 : BankPO",
-		 "attributes":[]
-	  },
-	  {
-		 "typ":"patternObject",
-		 "id":"c5 : CargoPO",
-		 "attributes":[]
-	  },
-	  {
-		 "typ":"objectdiagram",
-		 "style":"nac",
-		 "info":"NegativeApplicationCondition",
-		 "nodes":[
-		 {
-			   "typ":"patternObject",
-			   "id":"c6 : CargoPO",
-			   "attributes":[
-			   "name == goat"
-			   ]
+		]
+	},
+	{
+		"typ": "patternObject",
+		"id": "b4 : BankPO",
+		"attributes": []
+	},
+	{
+		"typ": "patternObject",
+		"id": "c5 : CargoPO",
+		"attributes": []
+	},
+	{
+		"typ": "objectdiagram",
+		"style": "nac",
+		"info": "NegativeApplicationCondition",
+		"nodes": [
+			{
+				"typ": "patternObject",
+				"id": "c6 : CargoPO",
+				"attributes": [
+					"name == goat"
+				]
 			},
 			{
-			   "typ":"patternObject",
-			   "id":"c7 : CargoPO",
-			   "attributes":[]
+				"typ": "patternObject",
+				"id": "c7 : CargoPO",
+				"attributes": []
 			}
-		 ]
-	  }
-	],
-	"edges":[
-	{
-		 "typ":"EDGE",
-		 "source":{
-			"property":" ",
-			"id":"r1 : RiverPO"
-		 },
-		 "target":{
-			"property":"boat",
-			"id":"b2 : BoatPO"
-		 }
-	  },
-	  {
-		 "typ":"EDGE",
-		 "source":{
-			"property":" ",
-			"id":"b2 : BoatPO"
-		 },
-		 "target":{
-			"property":"cargo",
-			"id":"c3 : CargoPO"
-		 }
-	  },
-	  {
-		 "typ":"EDGE",
-		 "source":{
-			"property":" ",
-			"id":"b2 : BoatPO"
-		 },
-		 "target":{
-			"property":"bank",
-			"id":"b4 : BankPO"
-		 }
-	  },
-	  {
-		 "typ":"EDGE",
-		 "source":{
-			"property":" ",
-			"id":"b4 : BankPO"
-		 },
-		 "target":{
-			"property":"cargos",
-			"id":"c5 : CargoPO"
-		 }
-	  },
-	  {
-		 "typ":"EDGE",
-		 "source":{
-			"property":" ",
-			"id":"b4 : BankPO"
-		 },
-		 "target":{
-			"property":"cargos",
-			"id":"c6 : CargoPO"
-		 }
-	  },
-	  {
-		 "typ":"EDGE",
-		 "source":{
-			"property":" ",
-			"id":"b4 : BankPO"
-		 },
-		 "target":{
-			"property":"cargos",
-			"id":"c7 : CargoPO"
-		 }
-	  },
-	  {
-		 "typ":"EDGE",
-		 "source":{
-			"property":" ",
-			"id":"b4 : BankPO"
-		 },
-		 "target":{
-			"property":"cargos",
-			"id":"c5 : CargoPO"
-		 }
-	  },
-	  {
-		 "typ":"EDGE",
-		 "source":{
-			"property":" ",
-			"id":"b2 : BoatPO"
-		 },
-		 "target":{
-			"property":"cargo",
-			"id":"c5 : CargoPO"
-		 }
-	  }
-	]
-};
+		]
+	}
+],
+	"edges": [
+		{
+			"typ": "EDGE",
+			"source": {
+				"property": " ",
+				"id": "r1 : RiverPO"
+			},
+			"target": {
+				"property": "boat",
+				"id": "b2 : BoatPO"
+			}
+		},
+		{
+			"typ": "EDGE",
+			"source": {
+				"property": " ",
+				"id": "b2 : BoatPO"
+			},
+			"target": {
+				"property": "cargo",
+				"id": "c3 : CargoPO"
+			}
+		},
+		{
+			"typ": "EDGE",
+			"source": {
+				"property": " ",
+				"id": "b2 : BoatPO"
+			},
+			"target": {
+				"property": "bank",
+				"id": "b4 : BankPO"
+			}
+		},
+		{
+			"typ": "EDGE",
+			"source": {
+				"property": " ",
+				"id": "b4 : BankPO"
+			},
+			"target": {
+				"property": "cargos",
+				"id": "c5 : CargoPO"
+			}
+		},
+		{
+			"typ": "EDGE",
+			"source": {
+				"property": " ",
+				"id": "b4 : BankPO"
+			},
+			"target": {
+				"property": "cargos",
+				"id": "c6 : CargoPO"
+			}
+		},
+		{
+			"typ": "EDGE",
+			"source": {
+				"property": " ",
+				"id": "b4 : BankPO"
+			},
+			"target": {
+				"property": "cargos",
+				"id": "c7 : CargoPO"
+			}
+		},
+		{
+			"typ": "EDGE",
+			"source": {
+				"property": " ",
+				"id": "b4 : BankPO"
+			},
+			"target": {
+				"property": "cargos",
+				"id": "c5 : CargoPO"
+			}
+		},
+		{
+			"typ": "EDGE",
+			"source": {
+				"property": " ",
+				"id": "b2 : BoatPO"
+			},
+			"target": {
+				"property": "cargo",
+				"id": "c5 : CargoPO"
+			}
+		}
+	]};
 //  json["options"]={"canvasid":"canvasFerrymansProblemExamplePatternDiagram5", "display":"html", "fontsize":10,"bar":true};
 addCase("Ferrymans Problem ExamplePatternDiagram", json);
 </script>
 <script>
-var json = {"typ":"objectdiagram", "nodes":[
-				{"typ":"node", id:"Albert:Student"},
-				{"typ":"node", id:"kassel:University"},
-				{"typ":"node", id:"lecture:ProgMeth"}
-], "edges":[
+var json = {"typ": "objectdiagram", "nodes": [
+	{"typ": "node", id: "Albert:Student"},
+	{"typ": "node", id: "kassel:University"},
+	{"typ": "node", id: "lecture:ProgMeth"}
+], "edges": [
 	{
-		 "typ":"EDGE",
-		 "style":"#4A7023",
-		 "source":{
-			"property":"member",
-			"id":"Albert:Student"
-		 },
-		 "target":{
-			"property":"study",
-			"id":"kassel:University"
-		 }
-	  },{
-		 "typ":"EDGE",
-		 "source":{
-			"property":"lecture",
-			"id":"lecture:ProgMeth"
-		 },
-		 "target":{
-			"property":"on",
-			"id":"kassel:University"
-		 }
-	  }
-]
-};
+		"typ": "EDGE",
+		"style": "#4A7023",
+		"source": {
+			"property": "member",
+			"id": "Albert:Student"
+		},
+		"target": {
+			"property": "study",
+			"id": "kassel:University"
+		}
+	}, {
+		"typ": "EDGE",
+		"source": {
+			"property": "lecture",
+			"id": "lecture:ProgMeth"
+		},
+		"target": {
+			"property": "on",
+			"id": "kassel:University"
+		}
+	}
+]};
 addCase("Show Edge with Color", json);
 </script>
 <script>
-var json = {"typ":"objectdiagram", "nodes":[
-				{"typ":"node", id:"risk:Game"},
-				{"typ":"node", id:"albert:Player"}
-], "edges":[
+var json = {"typ": "objectdiagram", "nodes": [
+	{"typ": "node", id: "risk:Game"},
+	{"typ": "node", id: "albert:Player"}
+], "edges": [
 	{
-		 "typ":"EDGE",
-		 "source":{"property":"currentGame", "id":"risk:Game"},
-		 "target":{"property":"currentPlayer","id":"albert:Player"}
+		"typ": "EDGE",
+		"source": {"property": "currentGame", "id": "risk:Game"},
+		"target": {"property": "currentPlayer", "id": "albert:Player"}
 	},
 	{
-		 "typ":"EDGE",
-		 "source":{"property":"game", "id":"risk:Game"},
-		 "target":{"property":"player","id":"albert:Player"}
+		"typ": "EDGE",
+		"source": {"property": "game", "id": "risk:Game"},
+		"target": {"property": "player", "id": "albert:Player"}
 	},
 	{
-		 "typ":"EDGE",
-		 "source":{"property":"wingame", "id":"risk:Game"},
-		 "target":{"property":"winner","id":"albert:Player"}
+		"typ": "EDGE",
+		"source": {"property": "wingame", "id": "risk:Game"},
+		"target": {"property": "winner", "id": "albert:Player"}
 	}
-]
-};
+]};
 addCase("Show Multi Assoc", json);
 </script>
 <script>
-var json = {"typ":"objectdiagram", "nodes":[
-				{"typ":"node", id:"risk:Game", x:20},
-				{"typ":"node", id:"albert:Player", x:160, y:100}
-], "edges":[
+var json = {"typ": "objectdiagram", "nodes": [
+	{"typ": "node", id: "risk:Game", x: 20},
+	{"typ": "node", id: "albert:Player", x: 160, y: 100}
+], "edges": [
 	{
-		 "typ":"EDGE",
-		 "source":{"property":"currentGame", "id":"risk:Game"},
-		 "target":{"property":"currentPlayer","id":"albert:Player"}
+		"typ": "EDGE",
+		"source": {"property": "currentGame", "id": "risk:Game"},
+		"target": {"property": "currentPlayer", "id": "albert:Player"}
 	},
 	{
-		 "typ":"EDGE",
-		 "source":{"property":"game", "id":"risk:Game"},
-		 "target":{"property":"player","id":"albert:Player"}
+		"typ": "EDGE",
+		"source": {"property": "game", "id": "risk:Game"},
+		"target": {"property": "player", "id": "albert:Player"}
 	}
-]
-};
+]};
 addCase("Allocs", json);
 </script>
 <script>
-var json = {"typ":"classdiagramm", "nodes":[
-	{"typ":"node", id:"RGBColor"},
-	{"typ":"classdiagram", id:"ClassEditorDiagram", minid:"ClassEditor", "nodes":["ClassEditor", "CreateEdge", "EditNode", "ChoiceBox", "CreateNode", "Selector", "MoveNode", "InputNode"]},
-	{"typ":"classdiagram", id:"DrawerDiagram", minid:"Drawer", "nodes":["Drawer", "SVGDrawer", "HTMLDrawer"]}
-	], "edges":[
-	{"typ":"Generalisation", "source":{"id":"GraphNode"}, "target":{"id":"GraphUtil"} },
-	{"typ":"Generalisation", "source":{"id":"GraphModel"}, "target":{"id":"GraphNode"} },
-	{"typ":"Generalisation", "source":{"id":"Graph"}, "target":{"id":"GraphNode"} },
-	{"typ":"Generalisation", "source":{"id":"Generalisation"}, "target":{"id":"Edge"} },
-	{"typ":"Generalisation", "source":{"id":"Implements"}, "target":{"id":"Generalisation"} },
-	{"typ":"Generalisation", "source":{"id":"Unidirectional"}, "target":{"id":"Generalisation"} },
-	{"typ":"Generalisation", "source":{"id":"Aggregation"}, "target":{"id":"Generalisation"} },
-	{"typ":"Generalisation", "source":{"id":"Composition"}, "target":{"id":"Aggregation"} },
-	{"typ":"Generalisation", "source":{"id":"ClassEditor"}, "target":{"id":"GraphUtil"} },
-	{"typ":"Generalisation", "source":{"id":"CreateNode"}, "target":{"id":"GraphUtil"} },
-	{"typ":"Generalisation", "source":{"id":"Selector"}, "target":{"id":"GraphUtil"} },
-	{"typ":"Generalisation", "source":{"id":"MoveNode"}, "target":{"id":"GraphUtil"} },
-	{"typ":"Generalisation", "source":{"id":"InputNode"}, "target":{"id":"GraphUtil"} },
-	{"typ":"Generalisation", "source":{"id":"ChoiceBox"}, "target":{"id":"GraphUtil"} },
-	{"typ":"Generalisation", "source":{"id":"EditNode"}, "target":{"id":"GraphUtil"} },
-	{"typ":"Generalisation", "source":{"id":"CreateEdge"}, "target":{"id":"GraphUtil"} },
-	{"source":{property: "parent", "id":"Edge"}, "target":{property: "source", "id":"Info"} },
-	{"source":{property: "parent", "id":"Edge"}, "target":{property: "target", "id":"Info"} },
-	{"source":{property: "parent", "id":"GraphModel"}, "target":{property: "options", "id":"Options"} },
-	{typ: "Unidirectional", "source":{"id":"Graph"}, "target":{property: "layouts", "id":"DagreLayout"} },
-	{"source":{property: "graph", "id":"Graph"}, "target":{property: "loader", "id":"Loader"} },
-	{typ: "Unidirectional", "source":{"id":"Edge"}, "target":{property: "path", "id":"Line"} },
-	{"typ":"Generalisation", "source":{"id":"HTMLDrawer"}, "target":{"id":"Drawer"} },
-	{"typ":"Generalisation", "source":{"id":"SVGDrawer"}, "target":{"id":"Drawer"} },
-	{"typ":"Unidirectional", "source":{"id":"Drawer"}, "target":{property: "symbolLib", "id":"SymbolLibary"} },
+var json = {"typ": "classdiagramm", "nodes": [
+	{"typ": "node", id: "RGBColor"},
+	{"typ": "classdiagram", id: "ClassEditorDiagram", minid: "ClassEditor", "nodes": ["ClassEditor", "CreateEdge", "EditNode", "ChoiceBox", "CreateNode", "Selector", "MoveNode", "InputNode"]},
+	{"typ": "classdiagram", id: "DrawerDiagram", minid: "Drawer", "nodes": ["Drawer", "SVGDrawer", "HTMLDrawer"]}
+], "edges": [
+	{"typ": "Generalisation", "source": "GraphNode", "target": "GraphUtil" },
+	{"typ": "Generalisation", "source": {"id": "GraphModel"}, "target": {"id": "GraphNode"} },
+	{"typ": "Generalisation", "source": "Graph", "target": "GraphNode" },
+	{"typ": "Generalisation", "source": "Generalisation", "target": "Edge" },
+	{"typ": "Generalisation", "source": "Implements", "target": "Generalisation" },
+	{"typ": "Generalisation", "source": "Unidirectional", "target": "Generalisation" },
+	{"typ": "Generalisation", "source": "Aggregation", "target": "Generalisation" },
+	{"typ": "Generalisation", "source": "Composition", "target": "Aggregation" },
+	{"typ": "Generalisation", "source": "ClassEditor", "target": "GraphUtil" },
+	{"typ": "Generalisation", "source": "CreateNode", "target": "GraphUtil" },
+	{"typ": "Generalisation", "source": "Selector", "target": "GraphUtil" },
+	{"typ": "Generalisation", "source": "MoveNode", "target": "GraphUtil" },
+	{"typ": "Generalisation", "source": "InputNode", "target": "GraphUtil" },
+	{"typ": "Generalisation", "source": "ChoiceBox", "target": "GraphUtil" },
+	{"typ": "Generalisation", "source": "EditNode", "target": "GraphUtil" },
+	{"typ": "Generalisation", "source": "CreateEdge", "target": "GraphUtil" },
+	{"source": {property: "parent", "id": "Edge"}, "target": {property: "source", "id": "Info"} },
+	{"source": {property: "parent", "id": "Edge"}, "target": {property: "target", "id": "Info"} },
+	{"source": {property: "parent", "id": "GraphModel"}, "target": {property: "options", "id": "Options"} },
+	{typ: "Unidirectional", "source": "Graph", "target": {property: "layouts", "id": "DagreLayout"} },
+	{"source": {property: "graph", "id": "Graph"}, "target": {property: "loader", "id": "Loader"} },
+	{typ: "Unidirectional", "source": "Edge", "target": {property: "path", "id": "Line"} },
+	{"typ": "Generalisation", "source": "HTMLDrawer", "target": "Drawer" },
+	{"typ": "Generalisation", "source": "SVGDrawer", "target": "Drawer" },
+	{"typ": "Unidirectional", "source": "Drawer", "target": {property: "symbolLib", "id": "SymbolLibary"} }
 ]};
 addCase("Javascript Struktur", json);
 
 </script>
 <script>
-var json = {typ:"objectdiagram", "edges":[ {source: "albert:Prof", target: "uniKassel:University"} ],"options": {"display":"svg"} };
+var json = {typ: "objectdiagram", "edges": [ {source: "albert:Prof", target: "uniKassel:University"} ], "options": {"display": "svg"} };
 addCase("ObjectDiagram", json);
 </script>
 
 
 <script>
-addCase("Manuell generate", function(){
+addCase("Manuell generate", function () {
 	var graph = new Graph();
-	graph.addNode({id:"Student", attributes:["name:String"]});
-	graph.addEdge({id:"Student"}, {id:"University"});
+	graph.addNode({id: "Student", attributes: ["name:String"]});
+	graph.addEdge({id: "Student"}, {id: "University"});
 	graph.addOption("canvasid", "Demo");
 	graph.addOption("clearCanvas", 1);
 	graph.layout();
@@ -816,11 +809,11 @@ addCase("Manuell generate", function(){
 
 </script>
 <script>
-addCase("Editor", function(){
+addCase("Editor", function () {
 	var graph = new ClassEditor("Demo");
 });
 </script>
 
-<table style="height:100%;width:100%"><tr><td style="vertical-align:top;width:50px"><ul id="CaseUL" /></td><td style="align:left; height:100%" id="Demo"></td></tr></table>
+<table style="height:100%; width:100%;"><tr><td style="vertical-align:top; width:50px;"><ul id="CaseUL"></ul></td><td style="height:100%;" id="Demo"></td></tr></table>
 </body>
 </html>
