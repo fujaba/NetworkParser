@@ -1608,7 +1608,7 @@ Edge.prototype.getPosition = function (m, n, entity, refCenter, offset) {
 	return position;
 };
 Edge.prototype.calcMoveLine = function (size, angle, move) {
-	var lineangle, h, angle1, angle2, hCenter, startArrow;
+	var lineangle, angle1, angle2, hCenter, startArrow, h;
 	if (this.$path.length < 1) {
 		return;
 	}
@@ -1686,13 +1686,9 @@ var Composition = function () { this.init(); this.typ = "Composition"; };
 Composition.prototype = ObjectCreate(Aggregation.prototype);
 Composition.prototype.draw = function (board, drawer) {
 	this.drawSuper(board, drawer);
-
-	var a, h, end, start = this.endPos().source;
-	end = this.endPos().target;
-	a = (start.y - end.y) / (end.x - start.x);
-	h = Math.atan(a) * 100;
-
-	this.addElement(board, drawer.createPath(true, "#000", [this.endPos().target, this.$topCenter, this.$end, this.$botCenter], h));
+	var start = this.$path[0].source;
+	var lineangle = Math.atan2(this.$end.y - start.y, this.$end.x - start.x);
+	this.addElement(board, drawer.createPath(true, "#000", [this.endPos().target, this.$topCenter, this.$end, this.$botCenter], lineangle));
 };
 // TODO
 // Validate input
@@ -1898,7 +1894,7 @@ ClassEditor.prototype.maxCodeView = function () {
 	this.board.appendChild(html);
 	rect = html.getBoundingClientRect();
 	this.board.removeChild(html);
-	this.codeViewer = this.create({tag: "div", "class": "code$box", style: {width: rect.width, height: rect.height}, $parent: this.board, value: data});
+	this.codeViewer = this.create({tag: "div", "class": "code_box", style: {width: rect.width, height: rect.height}, $parent: this.board, value: data});
 };
 ClassEditor.prototype.minCodeView = function () {
 	if (!this.codeViewer) {
@@ -2012,10 +2008,7 @@ ClassEditor.prototype.getId = function (element, id) {
 	if (element.id === id) {
 		return true;
 	}
-	if (element.parentElement) {
-		return this.getId(element.parentElement, id);
-	}
-	return false;
+	return this.getId(element.parentElement, id);
 };
 ClassEditor.prototype.doAction = function (event, functionName) {
 	var i;
@@ -2410,7 +2403,7 @@ ClassEditor.InputNode.prototype.keyup = function (e) {
 			m = item.model;
 			this.inputItem = this.$parent.create({tag: "input", type: "text", "#node": item, "value": String.fromCharCode(x), style: "position:absolute;left:" + m.x + "px;top:" + (m.y + m.height) + "px;width:" + m.width});
 			this.$parent.board.appendChild(this.inputItem);
-			this.choiceBox = new ChoiceBox(this.inputItem, this.$parent);
+			this.choiceBox = new ClassEditor.ChoiceBox(this.inputItem, this.$parent);
 			this.inputItem.addEventListener("keyup", function (e) {
 				that.changeText(e);
 			});

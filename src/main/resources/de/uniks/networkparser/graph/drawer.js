@@ -372,7 +372,7 @@ Drawer.HTMLDrawer.prototype.createPath = function (close, fill, path, angle) {
 		}
 		return line;
 	}
-	line = this.util.create({tag: "div", style: {position: "absolute", left: path[0].x, top: path[0].y, transform: "rotate(" + angle + "rad)"}});
+	line = this.util.create({tag: "div", style: {position: "absolute", left: path[0].x - 8, top: path[0].y, transform: "rotate(" + angle + "rad)"}});
 	line.appendChild(this.util.create({tag: "div", style: {background: "#000", width: 8, height: 8, transform: "rotate(45rad) skew(170deg, 170deg)"}}));
 	return line;
 };
@@ -631,7 +631,7 @@ Drawer.SVGDrawer.prototype.getLine = function (x1, y1, x2, y2, lineStyle, style)
 	}
 	return line;
 };
-Drawer.SVGDrawer.prototype.createPath = function (close, fill, path) {
+Drawer.SVGDrawer.prototype.createPath = function (close, fill, path, angle) {
 	var i, d = "M" + path[0].x + " " + path[0].y;
 	for (i = 1; i < path.length; i += 1) {
 		d = d + "L " + path[i].x + " " + path[i].y;
@@ -966,6 +966,25 @@ SymbolLibary.prototype.drawDropdown = function (node) {
 			{tag: "rect", rx: 0, x: 0, y: 0, width: btnWidth - 20, height: btnHeight, stroke: "#000", fill: "none"},
 			{tag: "rect", rx: 2, x: btnWidth - 20, y: 0, width: 20, height: 28, stroke: "#000", "class": "saveBtn"},
 			{tag: "path", style: "fill:#000000;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1", d: "m " + (btnWidth - 15) + ",13 10,0 L " + (btnWidth - 10) + ",20 z"}
+		]
+	};
+};
+SymbolLibary.prototype.drawEdgeicon = function (node) {
+	var btnX, btnY, btnWidth, btnHeight;
+
+	btnX = node.x || 0;
+	btnY = node.y || 0;
+	btnWidth = node.width || 60;
+	btnHeight = node.height || 28;
+	return {
+		x: btnX,
+		y: btnY,
+		width: btnWidth,
+		height: btnHeight,
+		items: [
+			{tag: "path", d: "m0,0l10.78832,0l0,4.49982l-10.78832,0.19999l0,9.19963l10.78832,0l0,-9.49962l-10.78832,0.19999l0,-4.59982z", style: "fill:none;stroke:#000000;"},
+			{tag: "path", d: "m25.68807,0l10.78832,0l0,4.49982l-10.78832,0.19999l0,9.19963l10.78832,0l0,-9.49962l-10.78832,0.2l0,-4.59982z", style: "fill:none;stroke:#000000;"},
+			{tag: "line", x1: 11, y1: 7, x2: 25, y2: 7, stroke: "#000"}
 		]
 	};
 };
