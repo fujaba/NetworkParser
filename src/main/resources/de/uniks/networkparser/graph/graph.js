@@ -533,28 +533,66 @@ GraphModel.prototype.calcLines = function (drawer) {
 		ownAssoc[i].calcInfoPos(sourcePos, ownAssoc[i].$tNode, ownAssoc[i].target);
 	}
 };
-GraphModel.prototype.validateModel = function (json) {
-	var z, n, id;
-	if (this.typ === "classdiagramm") {
-		for (z in this.nodes) {
-			if (!this.nodes.hasOwnProperty(z)) {
-				continue;
+GraphModel.prototype.validateModel = function () {
+	var e, z, n, id, node, list;
+	if (this.typ === "classdiagram") {
+		list = this.edges;
+		for (e = 0; e < list.length; e += 1) {
+			node = list[e].$sNode;
+			z = node.id.indexOf(":");
+			if (z > 0) {
+				id = node.id.substring(z + 1);
+				n = this.getNode(id, true, 1);
+				delete (this.nodes[node.id]);
+				this.edges[e].source.id = id;
+				if (n) {
+					this.edges[e].$sNode = n;
+				} else {
+					node.id = id;
+					this.nodes[node.id] = node;
+				}
 			}
-			n = this.nodes[z];
-			if (n.id.indexOf(":") > 0) {
-				id = n.id.substring(n.id.indexOf(":") + 1);
-				this.removeNode(n.id);
-				if (!this.getNode(id, true, 1)) {
-					n.id = id;
-					this.addNode(n);
+			node = list[e].$tNode;
+			z = node.id.indexOf(":");
+			if (z > 0) {
+				id = node.id.substring(z + 1);
+				n = this.getNode(id, true, 1);
+				delete (this.nodes[node.id]);
+				this.edges[e].target.id = id;
+				if (n) {
+					this.edges[e].$tNode = n;
+				} else {
+					node.id = id;
+					this.nodes[node.id] = node;
+				}
+			}
+			if (!list[e].source.cardinality) {
+				list[e].source.cardinality = "one";
+			}
+			if (!list[e].target.cardinality) {
+				list[e].target.cardinality = "one";
+			}
+			// Refactoring Edges for same property and typ set cardinality
+			for (z = e + 1; z < list.length; z += 1) {
+				id = typeof (java);
+				if (!(id === typeof list[z])) {
+					continue;
+				}
+				if (this.validateEdge(list[e], list[z])) {
+					list[e].target.cardinality = "many";
+					list.splice(z, 1);
+					z -= 1;
+				} else if (this.validateEdge(list[z], list[e])) {
+					list[e].source.cardinality = "many";
+					list.splice(z, 1);
+					z -= 1;
 				}
 			}
 		}
-		for (z in this.edges) {
-			
-		}
 	}
-	//TODO Validate Model
+};
+GraphModel.prototype.validateEdge = function (sEdge, tEdge) {
+	return (sEdge.source.id === tEdge.source.id && sEdge.target.id === tEdge.target.id) && (sEdge.source.property === tEdge.source.property && sEdge.target.property === tEdge.target.property);
 };
 //				######################################################### Graph #########################################################
 var Graph = function (json, options) {
@@ -763,6 +801,7 @@ Graph.prototype.moveToRaster = function (node) {
 };
 Graph.prototype.initGraph = function (model) {
 	var i, n, isDiag, html, e;
+	model.validateModel();
 	for (i in model.nodes) {
 		if (typeof (model.nodes[i]) === "function") {
 			continue;
@@ -797,7 +836,6 @@ Graph.prototype.layout = function (minwidth, minHeight, model) {
 		this.initDrawer();
 		this.initGraph(model);
 	}
-	model.validateModel();
 	if (this.loader.images.length < 1) {
 		this.layouter.layout(this, model, Math.max(minwidth || 0, 100), Math.max(minHeight || 0, 100));
 	} else {
@@ -813,7 +851,6 @@ Graph.prototype.createElement = function (element, typ, node) {
 Graph.prototype.appendImage = function (img) {
 	this.loader.add(img);
 };
-
 //				######################################################### DRAG AND DROP #########################################################
 Graph.prototype.initDragAndDrop = function () {
 	this.objDrag = null;
@@ -1210,7 +1247,7 @@ Edge.prototype.removeFromBoard = function (board) {
 // INFOTEXT DONT SHOW IF NO PLACE
 // INFOTEXT CALCULATE POSITION
 Edge.prototype.calculate = function () {
-	var result, options, linetyp, source, target, edgePos, sourcePos, targetPos, divisor, startNode, endNode;
+	var result, options, linetyp, source, target, sourcePos, targetPos, divisor, startNode, endNode;
 
 	startNode = this.$sNode.getShowed();
 	endNode = this.$tNode.getShowed();
@@ -1218,7 +1255,6 @@ Edge.prototype.calculate = function () {
 	startNode.$center = new Pos(startNode.getX() + (startNode.width / 2), startNode.getY() + (startNode.height / 2));
 	endNode.$center = new Pos(endNode.getX() + (endNode.width / 2), endNode.getY() + (endNode.height / 2));
 
-	edgePos = this.edgePosition() * 20;
 	divisor = (endNode.$center.x - startNode.$center.x);
 	this.$path = [];
 
@@ -1232,11 +1268,11 @@ Edge.prototype.calculate = function () {
 		// Must be UP_DOWN or DOWN_UP
 		if (startNode.$center.y < endNode.$center.y) {
 			// UP_DOWN
-			sourcePos = this.getCenterPosition(source, Edge.Position.DOWN, edgePos);
-			targetPos = this.getCenterPosition(target, Edge.Position.UP, edgePos);
+			sourcePos = this.getCenterPosition(source, Edge.Position.DOWN);
+			targetPos = this.getCenterPosition(target, Edge.Position.UP);
 		} else {
-			sourcePos = this.getCenterPosition(source, Edge.Position.UP, edgePos);
-			targetPos = this.getCenterPosition(target, Edge.Position.DOWN, edgePos);
+			sourcePos = this.getCenterPosition(source, Edge.Position.UP);
+			targetPos = this.getCenterPosition(target, Edge.Position.DOWN);
 		}
 	} else {
 		// add switch from option or model
@@ -1254,13 +1290,13 @@ Edge.prototype.calculate = function () {
 		if (!result) {
 			this.$m = (target.$center.y - source.$center.y) / divisor;
 			this.$n = source.$center.y - (source.$center.x * this.$m);
-			sourcePos = this.getPosition(this.$m, this.$n, source, target.$center, edgePos);
-			targetPos = this.getPosition(this.$m, this.$n, target, sourcePos, edgePos);
+			sourcePos = this.getPosition(this.$m, this.$n, source, target.$center);
+			targetPos = this.getPosition(this.$m, this.$n, target, sourcePos);
 		}
 	}
 	if (sourcePos && targetPos) {
-		this.calcInfoPos(sourcePos, source, this.source, edgePos);
-		this.calcInfoPos(targetPos, target, this.target, edgePos);
+		this.calcInfoPos(sourcePos, source, this.source);
+		this.calcInfoPos(targetPos, target, this.target);
 		source["$" + sourcePos.$id] += 1;
 		target["$" + targetPos.$id] += 1;
 		this.$path.push(new GraphUtil.Line(sourcePos, targetPos, this.$lineStyle, this.style));
@@ -1396,19 +1432,19 @@ Edge.prototype.getTarget = function (node, startNode) {
 	}
 	return this.getTarget(node.$parent, startNode);
 };
-Edge.prototype.getCenterPosition = function (node, pos, offset) {
-	offset = offset || 0;
+Edge.prototype.getCenterPosition = function (node, pos) {
+	var offset = node["$" + pos];
 	if (pos === Edge.Position.DOWN) {
-		return new Pos(node.$center.x + offset, (node.y + node.height), Edge.Position.DOWN);
+		return new Pos(Math.min(node.$center.x + offset, node.x + node.width), (node.y + node.height), Edge.Position.DOWN);
 	}
 	if (pos === Edge.Position.UP) {
-		return new Pos(node.$center.x + offset, node.y, Edge.Position.UP);
+		return new Pos(Math.min(node.$center.x + offset, node.x + node.width), node.y, Edge.Position.UP);
 	}
 	if (pos === Edge.Position.LEFT) {
-		return new Pos(node.x, node.$center.y + offset, Edge.Position.LEFT);
+		return new Pos(node.x, Math.min(node.$center.y + offset, node.y + node.height), Edge.Position.LEFT);
 	}
 	if (pos === Edge.Position.RIGHT) {
-		return new Pos(node.x + node.width, node.$center.y + offset, Edge.Position.RIGHT);
+		return new Pos(node.x + node.width, Math.min(node.$center.y + offset, node.y + node.height), Edge.Position.RIGHT);
 	}
 };
 Edge.prototype.getInfo = function (info) {
@@ -1533,10 +1569,9 @@ Edge.prototype.getFreeOwn = function (node, start) {
 	node["$" + list[id + 3]] += 1;
 	return list[id + 3];
 };
-Edge.prototype.calcInfoPos = function (linePos, item, info, offset) {
+Edge.prototype.calcInfoPos = function (linePos, item, info) {
 	// Manuell move the InfoTag
-	offset = offset || 0;
-	var newY, newX, spaceA = 20, spaceB = 0;
+	var newY, newX, spaceA = 20, spaceB = 0, step = 15;
 	if (item.$parent.options && !item.$parent.options.rotatetext) {
 		spaceA = 20;
 		spaceB = 10;
@@ -1549,20 +1584,20 @@ Edge.prototype.calcInfoPos = function (linePos, item, info, offset) {
 	if (linePos.$id === Edge.Position.UP) {
 		newY = newY - info.height - spaceA;
 		if (this.$m !== 0) {
-			newX = (newY - this.$n) / this.$m + spaceB + offset;
+			newX = (newY - this.$n) / this.$m + spaceB + (item.$UP * step);
 		}
 	} else if (linePos.$id === Edge.Position.DOWN) {
 		newY = newY + spaceA;
 		if (this.$m !== 0) {
-			newX = (newY - this.$n) / this.$m + spaceB + offset;
+			newX = (newY - this.$n) / this.$m + spaceB + (item.$DOWN * step);
 		}
 	} else if (linePos.$id === Edge.Position.LEFT) {
-		newX = newX - info.width - offset - spaceA;
+		newX = newX - info.width - (item.$LEFT * step) - spaceA;
 		if (this.$m !== 0) {
 			newY = (this.$m * newX) + this.$n;
 		}
 	} else if (linePos.$id === Edge.Position.RIGHT) {
-		newX += offset + spaceA;
+		newX += (item.$RIGHT * step) + spaceA;
 		if (this.$m !== 0) {
 			newY = (this.$m * newX) + this.$n;
 		}
@@ -1570,34 +1605,65 @@ Edge.prototype.calcInfoPos = function (linePos, item, info, offset) {
 	info.x = Math.round(newX);
 	info.y = Math.round(newY);
 };
-Edge.prototype.getPosition = function (m, n, entity, refCenter, offset) {
-	if (!offset) {
-		offset = 0;
+Edge.prototype.getUDPosition = function (m, n, e, pos, step) {
+	var x, y = e.getY();
+	if (pos === Edge.Position.DOWN) {
+		y += e.height;
 	}
-	var x, y, pos = [], distance = [], min = 999999999, position, i;
-	x = entity.getX() + entity.width;
-	y = m * x + n + offset;
-	if (y >= entity.getY() && y <= (entity.getY() + entity.height)) {
-		pos.push(new Pos(x, y + offset, Edge.Position.RIGHT));
-		distance.push(Math.sqrt((refCenter.x - x) * (refCenter.x - x) + (refCenter.y - y) * (refCenter.y - y)));
-	}
-	y = entity.getY();
 	x = (y - n) / m;
-	if (x >= entity.getX() && x <= (entity.getX() + entity.width)) {
-		pos.push(new Pos(x + offset, y, Edge.Position.UP));
-		distance.push(Math.sqrt((refCenter.x - x) * (refCenter.x - x) + (refCenter.y - y) * (refCenter.y - y)));
+	if (step) {
+		x += e["$" + pos] * step;
+		if (x < e.getX()) {
+			x = e.getX();
+		} else if (x > (e.getX() + e.width)) {
+			x = e.getX() + e.width;
+		}
 	}
-	x = entity.getX();
+	return new Pos(x, y, pos);
+};
+Edge.prototype.getLRPosition = function (m, n, e, pos, step) {
+	var y, x = e.getX();
+	if (pos === Edge.Position.RIGHT) {
+		x += e.width;
+	}
 	y = m * x + n;
-	if (y >= entity.getY() && y <= (entity.getY() + entity.height)) {
-		pos.push(new Pos(x, y + offset, Edge.Position.LEFT));
-		distance.push(Math.sqrt((refCenter.x - x) * (refCenter.x - x) + (refCenter.y - y) * (refCenter.y - y)));
+	if (step) {
+		y += e["$" + pos] * step;
+		if (y < e.getY()) {
+			y = e.getY();
+		} else if (y > (e.getY() + e.height)) {
+			y = e.getY() + e.height;
+		}
 	}
-	y = entity.getY() + entity.height;
-	x = (y - n) / m;
-	if (x >= entity.getX() && x <= (entity.getX() + entity.width)) {
-		pos.push(new Pos(x + offset, y, Edge.Position.DOWN));
-		distance.push(Math.sqrt((refCenter.x - x) * (refCenter.x - x) + (refCenter.y - y) * (refCenter.y - y)));
+	return new Pos(x, y, pos);
+};
+Edge.prototype.getPosition = function (m, n, entity, refCenter) {
+	var t, pos = [], list, distance = [], min = 999999999, position, i, step = 15;
+	list = [Edge.Position.LEFT, Edge.Position.RIGHT];
+	for (i = 0; i < 2; i += 1) {
+		t = this.getLRPosition(m, n, entity, list[i]);
+		if (t.y >= entity.getY() && t.y <= (entity.getY() + entity.height)) {
+			t.y += (entity["$" + list[i]] * step);
+			if (t.y > (entity.getY() + entity.height)) {
+				// Alternative
+				t = this.getUDPosition(m, n, entity, Edge.Position.DOWN, step);
+			}
+			pos.push(t);
+			distance.push(Math.sqrt((refCenter.x - t.x) * (refCenter.x - t.x) + (refCenter.y - t.y) * (refCenter.y - t.y)));
+		}
+	}
+	list = [Edge.Position.UP, Edge.Position.DOWN];
+	for (i = 0; i < 2; i += 1) {
+		t = this.getUDPosition(m, n, entity, list[i]);
+		if (t.x >= entity.getX() && t.x <= (entity.getX() + entity.width)) {
+			t.x += (entity["$" + list[i]] * step);
+			if (t.x > (entity.getX() + entity.width)) {
+				// Alternative
+				t = this.getLRPosition(m, n, entity, Edge.Position.RIGHT, step);
+			}
+			pos.push(t);
+			distance.push(Math.sqrt((refCenter.x - t.x) * (refCenter.x - t.x) + (refCenter.y - t.y) * (refCenter.y - t.y)));
+		}
 	}
 	for (i = 0; i < pos.length; i += 1) {
 		if (distance[i] < min) {
@@ -1686,8 +1752,8 @@ var Composition = function () { this.init(); this.typ = "Composition"; };
 Composition.prototype = ObjectCreate(Aggregation.prototype);
 Composition.prototype.draw = function (board, drawer) {
 	this.drawSuper(board, drawer);
-	var start = this.$path[0].source;
-	var lineangle = Math.atan2(this.$end.y - start.y, this.$end.x - start.x);
+	var lineangle, start = this.$path[0].source;
+	lineangle = Math.atan2(this.$end.y - start.y, this.$end.x - start.x);
 	this.addElement(board, drawer.createPath(true, "#000", [this.endPos().target, this.$topCenter, this.$end, this.$botCenter], lineangle));
 };
 // TODO
@@ -2304,6 +2370,22 @@ ClassEditor.Selector.prototype.refreshNode = function () {
 	this.selector("s", x + (width / 2) - sh, y + height + 1);
 	this.selector("se", x + width + 1, y + height + 1);
 	this.selector("e", x + width + 1, y + height / 2 - sh);
+	this.addCreateAssoc(x + width, y);
+};
+ClassEditor.Selector.prototype.addCreateAssoc = function (x, y) {
+	var n = this.nodes.assoc, symbolLib, that = this;
+	if (!n) {
+		n = {typ: "EdgeIcon", transform: "scale(0.2)", style: "cursor:pointer;top: " + x + "px;left:" + y + "px;" };
+		symbolLib = new SymbolLibary();
+		n = symbolLib.draw(null, n);
+		n.style.left = x + 10;
+		n.style.width = 40;
+		n.style.height = 30;
+		n.style.position = "absolute";
+		n.style.top = y - 10;
+		this.nodes.assoc = n;
+		this.$parent.board.appendChild(n);
+	}
 };
 ClassEditor.Selector.prototype.selector = function (id, x, y) {
 	var n = this.nodes[id], that = this;

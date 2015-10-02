@@ -13,7 +13,7 @@
 </head>
 <body style="height:100%; margin: 0;">
 <script language="Javascript">
-/*global document: false, window: false, Graph: false, ClassEditor: false */
+/*global document: false, window: false, Graph: false, ClassEditor: false, GraphUtil: false */
 "use strict";
 
 function addToUL(label, json) {
@@ -42,6 +42,22 @@ function addCase(label, json) {
 	window.setTimeout(function () {addToUL(label, json); }, 100);
 }
 </script>
+
+<script>
+// "typ": "classdiagramm"
+//var json = {"typ": "objectdiagram", "nodes": ["Game", {id: "Player", x: 77, y:146}],
+var json = {"typ": "classdiagram", "nodes": ["Game", {id: "Player", x: 77, y: -10}],
+	edges: [
+		{"source": {"property": "wingame", "id": "Game"}, "target": {"property": "winner", "id": "Player"} },
+		{"source": {"property": "game", "id": "Game"}, "target": {"property": "player", "id": "Player"} },
+		{"source": {"property": "game", "id": "Game"}, "target": {"property": "player", "id": "Player"} }
+	]};
+
+addCase("Test", json);
+</script>
+
+
+
 
 <script>
 var json = {"nodes": [ {"typ" : "node", id : "Albert:Simple"}], "options" : {"display" : "svg"} };
@@ -828,9 +844,9 @@ var json = {"typ": "objectdiagram", "edges": [
 ]};
 
 addCase("ObjectDiagram Risk", json);
-var jsonB = new GraphUtil().copy(json, {}, true);
-json.typ = "classdiagramm";
-addCase("ClassDiagram Risk", json);
+var jsonB = new GraphUtil().copy({}, json, true);
+jsonB.typ = "classdiagram";
+addCase("ClassDiagram Risk", jsonB);
 </script>
 
 <table style="height:100%; width:100%;"><tr><td style="vertical-align:top; width:50px;"><ul id="CaseUL"></ul></td><td style="height:100%;" id="Demo"></td></tr></table>

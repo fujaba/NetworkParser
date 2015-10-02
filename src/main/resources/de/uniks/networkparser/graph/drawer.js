@@ -721,6 +721,9 @@ Drawer.SVGDrawer.prototype.createGroup = function (node, group, parent) {
 		that.setSize(parent, parent.tool.width + parent.tool.x + 10, parent.tool.height + parent.tool.y + 10);
 	};
 	parent.open = function () {
+		if (this.tagName === "svg") {
+			return;
+		}
 		if (parent.status === "close") {
 			this.appendChild(parent.choicebox);
 		}
@@ -969,7 +972,7 @@ SymbolLibary.prototype.drawDropdown = function (node) {
 		]
 	};
 };
-SymbolLibary.prototype.drawEdgeicon = function (node) {
+SymbolLibary.prototype.drawClassicon = function (node) {
 	var btnX, btnY, btnWidth, btnHeight;
 
 	btnX = node.x || 0;
@@ -985,6 +988,23 @@ SymbolLibary.prototype.drawEdgeicon = function (node) {
 			{tag: "path", d: "m0,0l10.78832,0l0,4.49982l-10.78832,0.19999l0,9.19963l10.78832,0l0,-9.49962l-10.78832,0.19999l0,-4.59982z", style: "fill:none;stroke:#000000;"},
 			{tag: "path", d: "m25.68807,0l10.78832,0l0,4.49982l-10.78832,0.19999l0,9.19963l10.78832,0l0,-9.49962l-10.78832,0.2l0,-4.59982z", style: "fill:none;stroke:#000000;"},
 			{tag: "line", x1: 11, y1: 7, x2: 25, y2: 7, stroke: "#000"}
+		]
+	};
+};
+SymbolLibary.prototype.drawEdgeicon = function (node) {
+	var btnX, btnY, btnWidth, btnHeight;
+
+	btnX = node.x || 0;
+	btnY = node.y || 0;
+	btnWidth = node.width || 30;
+	btnHeight = node.height || 35;
+	return {
+		x: btnX,
+		y: btnY,
+		width: btnWidth,
+		height: btnHeight,
+		items: [
+			{tag: "path", d: "M2,10 20,10 20,35 2,35 Z M2,17 20,17 M20,10 28,5 28,9 M 28.5,4.7 24,4", style: "fill:none;stroke:#000000;transform:scale(0.4);"}
 		]
 	};
 };
