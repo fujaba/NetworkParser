@@ -3,7 +3,7 @@
 	<target name="buildAnt">
 		<property name="gitjar" value="lib/git/org.eclipse.jgit-3.7.0.201502260915-r.jar" />
 		<mkdir dir="build/temp/" />
-		<javac srcdir="src/Ant" destdir="build/temp"  includeantruntime="false" debug="true" sourcepath="Ant" listfiles="true">
+		<javac srcdir="src/Ant" destdir="build/temp"  includeantruntime="true" debug="true" sourcepath="Ant" listfiles="true">
 			<classpath>
 				<pathelement location="${gitjar}"/>
 				<pathelement location="bin"></pathelement>

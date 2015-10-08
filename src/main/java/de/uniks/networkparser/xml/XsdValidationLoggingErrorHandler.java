@@ -22,14 +22,16 @@ package de.uniks.networkparser.xml;
  permissions and limitations under the Licence.
 */
 import java.util.ArrayList;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
+//import org.xml.sax.ErrorHandler;
+//import org.xml.sax.SAXException;
+//import org.xml.sax.SAXParseException;
 /**
  * @author Stefan XSD Validation Error Class.
  */
 
-public class XsdValidationLoggingErrorHandler implements ErrorHandler {
+public class XsdValidationLoggingErrorHandler { 
+//implements ErrorHandler {
+	//TODO VALIDATOR
 	/** Variable of Document valid. */
 	private boolean isValid = true;
 	/** Variable of all Warnings. */
@@ -37,26 +39,26 @@ public class XsdValidationLoggingErrorHandler implements ErrorHandler {
 	/** Variable of all Errors. */
 	private ArrayList<String> errors = new ArrayList<String>();
 
-	@Override
-	public void warning(SAXParseException ex) throws SAXException {
-		isValid = false;
-		if(ex!=null)
-			warnings.add("Warnung: " + ex.getMessage());
-	}
-
-	@Override
-	public void error(SAXParseException ex) throws SAXException {
-		isValid = false;
-		if(ex!=null)
-			errors.add("Fehler: " + ex.getMessage());
-	}
-
-	@Override
-	public void fatalError(SAXParseException ex) throws SAXException {
-		isValid = false;
-		if(ex!=null)
-			errors.add("Fataler Fehler: " + ex.getMessage());
-	}
+//	@Override
+//	public void warning(SAXParseException ex) throws SAXException {
+//		isValid = false;
+//		if(ex!=null)
+//			warnings.add("Warnung: " + ex.getMessage());
+//	}
+//
+//	@Override
+//	public void error(SAXParseException ex) throws SAXException {
+//		isValid = false;
+//		if(ex!=null)
+//			errors.add("Fehler: " + ex.getMessage());
+//	}
+//
+//	@Override
+//	public void fatalError(SAXParseException ex) throws SAXException {
+//		isValid = false;
+//		if(ex!=null)
+//			errors.add("Fataler Fehler: " + ex.getMessage());
+//	}
 
 	/**
 	 * @return is Document is Valid.

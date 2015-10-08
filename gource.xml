@@ -8,8 +8,7 @@
 	</target>
 	<target name="make-ppm" depends="unpack">
 		<echo>*** created a huge PPM file containing screenshots</echo>
-		<exec executable="build/avi/gource.exe" dir=".">
-			<env key="PATH" path="${basedir}\build\avi"/>
+		<exec executable="build/avi/gource.exe">
 			<arg line="-o build/${title}.ppm --title '${title}' -s 1 -a 1 -c 4"/>
 		</exec>
 	</target>

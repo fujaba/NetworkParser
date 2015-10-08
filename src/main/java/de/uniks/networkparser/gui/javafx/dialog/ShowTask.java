@@ -80,7 +80,7 @@ public class ShowTask implements Runnable{
         parent.configScene();
         
         if(parent.modal) {
-        	parent.stage.setAlwaysOnTop(parent.alwaysOnTop);
+//        	parent.stage.setAlwaysOnTop(parent.alwaysOnTop);
         	parent.stage.showAndWait();
         	return;
 //        	return parent.action;
