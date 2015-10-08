@@ -52,6 +52,9 @@ test {
     testLogging {
         events "failed"
         exceptionFormat "short"
+		showStackTraces	true
+		showStandardStreams true
+		showCauses true
     }
 }
 jacoco {
