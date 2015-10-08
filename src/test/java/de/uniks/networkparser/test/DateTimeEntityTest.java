@@ -12,7 +12,6 @@ import de.uniks.networkparser.date.DateField;
 import de.uniks.networkparser.date.DateTimeEntity;
 
 public class DateTimeEntityTest {
-	@Test
 	public void testDateComplete(){
 		DateTimeEntity date = new DateTimeEntity();
 		GregorianCalendar reference = new GregorianCalendar();
