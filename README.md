@@ -27,9 +27,9 @@ The Framework have many other features like:
 ## Current Status ##
 - Master
   - Jenkins: ![Build Status](https://se.cs.uni-kassel.de/jenkins/buildStatus/icon?job=NetworkParser)
-  - travis-ci: ![Build Status](https://travis-ci.org/fujaba/NetworkParser.svg?branch=master)(https://travis-ci.org/fujaba/NetworkParser)
+  - travis-ci: [![Build Status](https://travis-ci.org/fujaba/NetworkParser.svg?branch=master)](https://travis-ci.org/fujaba/NetworkParser)
 - Develop
-  - travis-ci: ![Build Status](https://travis-ci.org/fujaba/NetworkParser.svg?branch=develop)(https://travis-ci.org/fujaba/NetworkParser)
+  - travis-ci: [![Build Status](https://travis-ci.org/fujaba/NetworkParser.svg?branch=develop)](https://travis-ci.org/fujaba/NetworkParser)
 
 # Getting Started
 
