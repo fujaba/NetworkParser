@@ -68,7 +68,7 @@ public class TableFilterView implements ChangeListener<String>{
 		lastSearchCriteria = searchCriteria;
 
 		StringTokener stringTokener = new StringTokener();
-		stringTokener.withText(searchCriteria.toLowerCase());
+		stringTokener.withBuffer(searchCriteria.toLowerCase());
 		ArrayList<String> stringList = stringTokener.getStringList();
 		ArrayList<String> searchList = new ArrayList<String>();
 		for (int i = 0; i < stringList.size(); i++) {

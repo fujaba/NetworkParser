@@ -30,6 +30,7 @@ import de.uniks.networkparser.AbstractMap;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.interfaces.Buffer;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.logic.BooleanCondition;
@@ -235,7 +236,15 @@ public class XMLIdMap extends XMLSimpleIdMap {
 
 	@Override
 	public Object decode(String value) {
-		return decode((XMLTokener) new XMLTokener().withText(value), null);
+		XMLTokener tokener = new XMLTokener();
+		tokener.withBuffer(value);
+		return decode(tokener, null);
+	}
+	
+	public Object decode(Buffer value) {
+		XMLTokener tokener = new XMLTokener();
+		tokener.withBuffer(value);
+		return decode(tokener, null);
 	}
 
 	/**

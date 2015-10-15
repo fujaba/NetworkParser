@@ -92,7 +92,7 @@ public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
 
 	@Override
 	public Object decode(BaseItem value) {
-		return decode((XMLTokener) new XMLTokener().withText(value.toString()),
+		return decode((XMLTokener) new XMLTokener().withBuffer(value.toString()),
 				null);
 	}
 

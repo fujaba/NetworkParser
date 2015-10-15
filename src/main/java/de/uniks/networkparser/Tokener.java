@@ -44,7 +44,7 @@ public abstract class Tokener {
 	 *            The Text for parsing
 	 * @return Itself
 	 */
-	public Tokener withText(String value) {
+	public Tokener withBuffer(String value) {
 		this.buffer = new CharacterBuffer().withValue(value);
 		return this;
 	}

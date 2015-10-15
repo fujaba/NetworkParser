@@ -59,7 +59,10 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Str
 	 * @return Itself
 	 */
 	public XMLEntity withValue(String value) {
-		withValue(new XMLTokener().withText(value));
+		XMLTokener tokener = new XMLTokener();
+		tokener.withBuffer(value);
+		tokener.skipHeader();
+		withValue(tokener);
 		return this;
 	}
 

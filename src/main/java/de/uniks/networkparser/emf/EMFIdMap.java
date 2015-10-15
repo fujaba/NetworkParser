@@ -101,11 +101,12 @@ public class EMFIdMap extends XMLIdMap {
 		if (factory == null) {
 			factory = new XSDEntityCreator();
 		}
+		tokener.skipHeader();
 		XMLEntity xmlEntity = new XMLEntity().withValue(tokener);
 		// build root entity
 		String tag = xmlEntity.getTag();
-
-		String className = tag.split("\\:")[1];
+		String[] splitTag = tag.split("\\:");
+		String className = splitTag[1];
 		SendableEntityCreator rootFactory = getCreator(className, false);
 
 		Object rootObject = null;

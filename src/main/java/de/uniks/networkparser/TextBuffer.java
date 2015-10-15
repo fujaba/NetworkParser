@@ -80,7 +80,18 @@ public abstract class TextBuffer implements Buffer {
 
 	@Override
 	public String toString() {
-		return " at " + this.position + " [character " + this.character
+		return " at " + this.position + " / "+ this.length + "[character " + this.character
 				+ " line " + this.line + "]";
+	}
+	
+	public String nextString(int len) {
+		if(len<1) {
+			return "";
+		}
+		char[] values = new char[len];
+		for(int i = 0; i < len; i++) {
+			values[i] = getChar();
+		}
+		return new String(values); 
 	}
 }

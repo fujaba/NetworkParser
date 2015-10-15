@@ -71,7 +71,7 @@ public class RegCalculator {
 
 	public Double[] calculateFields(String formular) {
 		StringTokener tokener = new StringTokener();
-		tokener.withText(formular);
+		tokener.withBuffer(formular);
 
 		ArrayList<String> parts = new ArrayList<String>();
 		int pos;

@@ -177,18 +177,21 @@ public class XMLTokener extends Tokener {
 		// Skip >
 		next();
 	}
-
-	@Override
-	public XMLTokener withText(String value) {
-		int pos = 0;
-		while (value.substring(pos, pos + 2).equals("<?")) {
-			pos = value.indexOf("?>", pos) + 2;
-		}
-		if (pos > 0) {
-			value = value.substring(pos);
-		}
-		super.withText(value);
-		return this;
+	
+	public void skipHeader() {
+		boolean skip=false;
+		do {
+			String tag = buffer.substring(position(), 2);
+			if("<?".equals(tag)) {
+				skipEntity();
+				skip = true;
+			} else if("<!".equals(tag)) {
+				skipEntity();
+				skip = true;
+			} else {
+				skip = false;
+			}
+		}while(skip);
 	}
 
 	@Override
@@ -267,5 +270,11 @@ public class XMLTokener extends Tokener {
 	public XMLTokener withAllowQuote(boolean value) {
 		this.isAllowQuote = value;
 		return this;
+	}
+	
+	public XMLTokener withBuffer(String value) {
+		super.withBuffer(value);
+		return this;
+		
 	}
 }

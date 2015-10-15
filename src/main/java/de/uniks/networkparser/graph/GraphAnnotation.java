@@ -55,7 +55,7 @@ public class GraphAnnotation implements IdMapDecoder, GraphMember{
 	@Override
 	public GraphAnnotation decode(String value) {
 		StringTokener tokener = new StringTokener();
-		tokener.withText(value);
+		tokener.withBuffer(value);
 		decode(tokener, (char)0, null);
 		return this;
 	}
