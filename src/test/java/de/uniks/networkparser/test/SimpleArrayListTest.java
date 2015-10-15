@@ -8,6 +8,7 @@ import java.util.HashSet;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
@@ -42,12 +43,12 @@ public class SimpleArrayListTest
    public void testReorderItems() {
       SimpleList<String> list=new SimpleList<String>();
       
-      list.add("Test");	// ["Test"]
+      list.add("Test");		// ["Test"]
       list.add("Hello");	// ["Test","Hello"]
-      list.remove(1);
+      list.remove(1);		// ["Test"]
       list.add(0, "Hello"); // ["Hello", "Test"]
       list.add("World"); 	// ["Hello", "Test", "World"]
-      list.remove(2);
+      list.remove(2);		// ["Hello", "Test"]
       list.add(1, "World");	// ["Hello", "World", "Test"]
       ArrayList<String> newList=new ArrayList<String>(list);
       Assert.assertEquals("Test", newList.get(2));
@@ -161,5 +162,24 @@ public class SimpleArrayListTest
          return super.equals(obj);
       }
    }
-
+	@Test	
+	public void testListKeySet() {
+		SimpleKeyValueList<Integer, Integer> list = new SimpleKeyValueList<Integer, Integer>();
+		list.add(99, 99);
+		list.add(100, 100);
+		list.add(1, 1);
+		list.add(2, 2);
+		list.add(3, 3);
+		list.add(4, 4);
+		
+		list.remove(99);
+		list.remove(100);
+		list.add(5, 5);
+		System.out.println(list);
+		list.add(6, 6);
+		list.add(7, 7);
+		Object[] array = list.keySet().toArray();
+		Assert.assertEquals(7, array.length);
+		Assert.assertEquals(1, array[0]);
+	}
 }

@@ -134,9 +134,10 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	 * @return return self
      * */
     @SuppressWarnings("unchecked")
-	public <ST extends AbstractArray<V>> ST init(Object[] items, int size){
+	public <ST extends AbstractArray<V>> ST init(Object[] items, int size, int offset){
     	elements = items;
     	this.size = size;
+    	this.index = offset;
     	return (ST) this;
     }
     
@@ -994,7 +995,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	}
 	
 	Object removeByIndex(int index, int offset, int offsetIndex) {
-		Object item = removeItem(index + offsetIndex, offset, offsetIndex);
+		Object item = removeItem(index, offset, offsetIndex);
 		if(item != null){
 			size--;
 			if(!shrink(size)){
@@ -1038,7 +1039,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 			items = elements;
 		}
 		
-		index = index % items.length; // Fix for index+this.index > length
+		index = (index + oldIndex) % items.length; // Fix for index+this.index > length
 
 		Object oldValue = items[index];
 		if(oldValue==null) {
