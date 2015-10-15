@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE project>
-<project default="checkStyle" name="Create Jar for NetworkParser" xmlns:cs="antlib:com.puppycrawl.tools.checkstyle">
+<project default="coverage" name="Create Jar for NetworkParser" xmlns:cs="antlib:com.puppycrawl.tools.checkstyle">
 	<target name="checkStyle">
 		<taskdef resource="checkstyletask.properties" classpath="lib/checkstyle/checkstyle-6.5-all.jar" />
 		<mkdir dir="build/" />
@@ -14,20 +14,19 @@
 	<target name="findBugs">
 		<taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask" classpath="lib/findbugs-3.0.0/findbugs-ant.jar">
 			<classpath>
-			    <fileset dir="lib/findbugs-3.0.0/lib">
+			    <fileset dir="lib/findbugs">
 			      <include name="*.jar"/>
 			    </fileset>
 			  </classpath>
 		</taskdef>
 		<mkdir dir="build/" />
-		<findbugs home="lib/findbugs-3.0.0/" output="xml" outputFile="build/findbugs.xml">
+		<findbugs home="lib/findbugs/" output="xml" outputFile="build/findbugs.xml">
 			<sourcePath path="src" />
 			<fileset dir="./bin" excludes="de/uniks/networkparser/test/**,**/networkparser.gwt.xml" />
 		</findbugs>
 	</target>
-
-	<taskdef name="jacococoverage" classname="org.jacoco.ant.CoverageTask"><classpath path="lib\jacoco-0.7.1.201405082137\jacocoant.jar" /></taskdef>
-	<taskdef name="jacocoreport" classname="org.jacoco.ant.ReportTask"><classpath path="lib\jacoco-0.7.1.201405082137\jacocoant.jar"/></taskdef>
+	<taskdef name="jacococoverage" classname="org.jacoco.ant.CoverageTask"><classpath path="lib\jacoco\jacocoant-0.7.5.201505241946.jar" /></taskdef>
+	<taskdef name="jacocoreport" classname="org.jacoco.ant.ReportTask"><classpath path="lib\jacoco\jacocoant-0.7.5.201505241946.jar"/></taskdef>
 	<target name="coverage">
 		<mkdir dir="build/junit"/>
 		<jacococoverage output="file" destfile="build/networkparser.exec">
@@ -35,8 +34,8 @@
 				<!--<formatter type="plain" usefile="false" />-->
 				<formatter type="xml"/>
 				<classpath path="lib">
-					<pathelement location="lib/jacoco-0.7.1.201405082137/junit.jar" />
-					<pathelement location="lib/jacoco-0.7.1.201405082137/org.hamcrest.core_1.3.0.v201303031735.jar" />
+					<pathelement location="lib/jacoco/junit.jar" />
+					<pathelement location="lib/jacoco/org.hamcrest.core_2.0.0.0.jar" />
 					<pathelement location="./bin"/>
 				</classpath>
 				<batchtest todir="build/junit">
