@@ -480,7 +480,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 			int len = ((Object[])elements[index]).length;
 			if(size > len - this.index) {
 				System.arraycopy(elements[index], this.index, dest, 0, len - this.index);
-				System.arraycopy(elements[index], 0, dest, size - this.index, len - size - this.index);
+				System.arraycopy(elements[index], 0, dest, len - this.index, len - size);
 			}else {
 				System.arraycopy(elements[index], this.index, dest, 0, size);
 			}
@@ -603,7 +603,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 			pos = this.index;
 		}else {
 			pos = (this.index + pos) % keys.length;
-			int i = size();
+			int i = (size() + this.index) % keys.length;
 			while(i>pos) {
 				keys[i] = keys[i-1];
 				values[i] = values[--i];

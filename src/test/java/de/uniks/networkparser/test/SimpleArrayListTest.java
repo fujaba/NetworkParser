@@ -2,6 +2,7 @@ package de.uniks.networkparser.test;
 
 import static org.junit.Assert.assertEquals;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -181,5 +182,32 @@ public class SimpleArrayListTest
 		Object[] array = list.keySet().toArray();
 		Assert.assertEquals(7, array.length);
 		Assert.assertEquals(1, array[0]);
+	}
+	
+	@Test
+	public void testMap() throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+		SimpleKeyValueList<Integer, Integer> map = new SimpleKeyValueList<Integer, Integer>();
+		map.put(99, 99);
+		map.put(100, 100);
+		map.put(1, 1);
+		map.put(2, 2);
+		map.put(3, 3);
+		map.put(4, 4);
+		map.pack();
+		map.remove(99);
+		map.remove(100);
+		map.put(5, 5);
+		
+		Field declaredField = map.getClass().getSuperclass().getDeclaredField("elements");
+		declaredField.setAccessible(true);
+		Object[] items = (Object[]) declaredField.get(map);
+		Object[] keys = (Object[]) items[0];
+		
+		Assert.assertEquals(5, keys[0]);
+		Assert.assertEquals(null, keys[1]);
+		Assert.assertEquals(1, keys[2]);
+		Assert.assertEquals(2, keys[3]);
+		Assert.assertEquals(3, keys[4]);
+		Assert.assertEquals(4, keys[5]);
 	}
 }
