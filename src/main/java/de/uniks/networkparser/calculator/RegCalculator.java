@@ -81,7 +81,7 @@ public class RegCalculator {
 			String value = tokener.getStringPart('(', ')');
 			if (value != null && tokener.position() == tokener.length()) {
 				tokener.setIndex(1);
-				tokener.setLength(tokener.length() - 1);
+				tokener.withLength(tokener.length() - 1);
 			} else {
 				tokener.setIndex(pos);
 			}
@@ -91,7 +91,7 @@ public class RegCalculator {
 		boolean defaultMulti = false;
 		while (!tokener.isEnd()) {
 			if (current == null) {
-				current = tokener.nextClean();
+				current = tokener.nextClean(defaultMulti);
 			}
 			if (current == ',') {
 				current = null;
@@ -112,7 +112,6 @@ public class RegCalculator {
 					} else {
 						parts.add(value);
 					}
-					tokener.back();
 					defaultMulti = true;
 					current = null;
 					continue;
@@ -157,7 +156,7 @@ public class RegCalculator {
 		while (z >= 0) {
 			pos = parts.get(z).indexOf("(");
 			if (pos < 0) {
-				// Check for Vorzeichen
+				// Check for mathematical operators
 				if (z > 0) {
 					Operator operator = operators.get(parts.get(z - 1));
 					if (operator != null && operator.getPriority() == LINE) {

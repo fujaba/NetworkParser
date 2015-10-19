@@ -47,7 +47,7 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 		return decodeGraph(item);
 	}
 	Object decodeGraph(StringTokener value) {
-		char c = value.nextStartClean();
+		char c = value.nextClean(true);
 		StringBuilder sb=new StringBuilder();
 //		boolean isQuote = true;
 		boolean useStrict=false;
@@ -110,7 +110,7 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 		value.next();
 	}
 	GraphNode decodeNode(GraphList graph, StringTokener value) {
-		char c = value.nextStartClean();
+		char c = value.nextClean(true);
 		StringBuilder sb=new StringBuilder();
 		sb.append(c);
 //		boolean isQuote = true;
@@ -135,7 +135,7 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 				if(c == '\n') {
 					value.next();
 				}
-				value.nextStartClean();
+				value.nextClean(true);
 				c = 0;
 				break;
 			default:
@@ -165,7 +165,7 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 	}
 
 	String decodeValue(StringTokener value) {
-		char c = value.nextStartClean();
+		char c = value.nextClean(true);
 		StringBuilder sb=new StringBuilder();
 		sb.append(c);
 		do {

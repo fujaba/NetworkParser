@@ -64,7 +64,7 @@ public class AppleTree
       {
          if (this.has == null)
          {
-            this.has = new HashSet<Apple>();;
+            this.has = new HashSet<Apple>();
          }
          
          changed = this.has.add (value);

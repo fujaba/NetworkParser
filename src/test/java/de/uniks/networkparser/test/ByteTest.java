@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import de.uniks.networkparser.bytes.ByteBuffer;
 import de.uniks.networkparser.bytes.ByteEntity;
 import de.uniks.networkparser.bytes.ByteFilter;
 import de.uniks.networkparser.bytes.ByteIdMap;
@@ -15,7 +16,6 @@ import de.uniks.networkparser.bytes.converter.ByteConverterHex;
 import de.uniks.networkparser.bytes.converter.ByteConverterString;
 import de.uniks.networkparser.event.ByteMessage;
 import de.uniks.networkparser.event.util.ByteMessageCreator;
-import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteItem;
 import de.uniks.networkparser.test.model.ChatMessage;
 import de.uniks.networkparser.test.model.FullAssocs;
@@ -59,7 +59,7 @@ public class ByteTest{
 		ByteIdMap map= new ByteIdMap();
 		map.addCreator(new SortedMsgCreator());
 		ByteItem data = map.encode(msg);
-		BufferedBytes bytes = data.getBytes(false);
+		ByteBuffer bytes = data.getBytes(false);
 		SortedMsg newMsg = (SortedMsg) map.decode(bytes);
 		assertEquals("VALUE", 42, newMsg.getNumber());
 	}
@@ -88,7 +88,7 @@ public class ByteTest{
 		University uni = new University();
 		uni.setName("Uni Kassel");
 		ByteItem data = map.encode(uni);
-		BufferedBytes byteBuffer = data.getBytes(false);
+		ByteBuffer byteBuffer = data.getBytes(false);
 //		assertEquals("ALde.uniks.networkparser.test.model.UniversityOUni Kassel", data.toString(new ByteConverterString()));
 		assertEquals("#uOUni Kassel", data.toString(new ByteConverterString()));
 		assertEquals(13, byteBuffer.length());
@@ -121,7 +121,7 @@ public class ByteTest{
 		uni.addPerson("Schulz");
 		uni.setAnswer(42);
 		ByteItem msg = map.encode(uni);
-		BufferedBytes byteBuffer = msg.getBytes(false);
+		ByteBuffer byteBuffer = msg.getBytes(false);
 		outputStream(byteBuffer);
 		assertEquals(24, byteBuffer.length());
 		
@@ -142,7 +142,7 @@ public class ByteTest{
 		SortedMsg sortedMsg = new SortedMsg();
 		sortedMsg.setNumber(23);
 		ByteItem msg=map.encode(sortedMsg, new ByteFilter());
-		BufferedBytes bytesBuffer = msg.getBytes(false);
+		ByteBuffer bytesBuffer = msg.getBytes(false);
 
 //		outputStream(bytesBuffer);
 		
@@ -155,7 +155,7 @@ public class ByteTest{
 		assertEquals("Len of dynamic", 4, bytesBuffer.length());
 		
 	}
-	private void outputStream(BufferedBytes buffer){
+	private void outputStream(ByteBuffer buffer){
 		byte[] bytes=buffer.getValue(buffer.length()); 
 		
 		System.out.println("Length: " +bytes.length);
@@ -189,7 +189,7 @@ public class ByteTest{
 		map.addCreator(new StringMessageCreator());
 		ByteItem encode = map.encode(stringMessage);
 
-		BufferedBytes master = encode.getBytes(false);
+		ByteBuffer master = encode.getBytes(false);
 		byte[] byteArray=master.getValue(master.length());
 		
 		assertEquals(8, byteArray.length);
@@ -235,7 +235,7 @@ public class ByteTest{
 		map.addCreator(new StringMessageCreator());
 		
 		ByteItem data = map.encode(assocs);
-		BufferedBytes bytes = data.getBytes(false);
+		ByteBuffer bytes = data.getBytes(false);
 		outputStream(bytes);
 		assertEquals("Length", 36, bytes.length());
 		

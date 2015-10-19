@@ -32,7 +32,7 @@ public class StringTokenerTest {
 		StringTokener tokener = (StringTokener) new StringTokener().withBuffer("[1,\"2,3\",4]");
 		if(tokener.charAt(0)=='['&&tokener.charAt(tokener.length()-1)==']'){
 			tokener.setIndex(1);
-			tokener.setLength(tokener.length()-1);
+			tokener.withLength(tokener.length()-1);
 			int count=0;
 			String sub;
 			//FIXME change to ""

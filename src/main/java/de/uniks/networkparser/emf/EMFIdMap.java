@@ -23,12 +23,13 @@ package de.uniks.networkparser.emf;
 */
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+
 import de.uniks.networkparser.graph.GraphClazz;
 import de.uniks.networkparser.graph.GraphEdge;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XMLIdMap;
 import de.uniks.networkparser.xml.XMLTokener;
@@ -39,7 +40,8 @@ public class EMFIdMap extends XMLIdMap {
 	public static final String XSI_TYPE = "xsi:type";
 	public static final String XMI_ID = "xmi:id";
 	public static final String NAME = "name";
-	SimpleKeyValueList<String, Integer> runningNumbers = null;
+//	SimpleKeyValueList<String, Integer> runningNumbers = null;
+	HashMap<String, Integer> runningNumbers = null;
 	private GraphList model;
 
 	@Override
@@ -102,7 +104,8 @@ public class EMFIdMap extends XMLIdMap {
 			factory = new XSDEntityCreator();
 		}
 		tokener.skipHeader();
-		XMLEntity xmlEntity = new XMLEntity().withValue(tokener);
+		XMLEntity xmlEntity = new XMLEntity();
+		xmlEntity.withValue(tokener);
 		// build root entity
 		String tag = xmlEntity.getTag();
 		String[] splitTag = tag.split("\\:");
@@ -118,7 +121,7 @@ public class EMFIdMap extends XMLIdMap {
 			rootObject = new ArrayList<Object>();
 		}
 
-		runningNumbers = new SimpleKeyValueList<String, Integer>();
+		runningNumbers = new HashMap<String, Integer>();
 
 		addXMIIds(xmlEntity, null);
 
@@ -258,6 +261,7 @@ public class EMFIdMap extends XMLIdMap {
 	@SuppressWarnings("unchecked")
 	private void addChildren(XMLEntity xmlEntity, SendableEntityCreator rootFactory, Object rootObject) {
 		String id = (String) xmlEntity.get(XMI_ID);
+		int pos;
 
 		if (id.startsWith("$")) {
 			id = "_" + id.substring(1);
@@ -305,7 +309,12 @@ public class EMFIdMap extends XMLIdMap {
 			if (rootObject instanceof Collection) {
 				rootCollection = (Collection<Object>) rootObject;
 				// take the type name from the tag
-				typeName = tag.split(":")[1];
+				pos = tag.indexOf(":");
+				if(pos > 0) {
+					typeName = tag.substring(pos+1);
+				}else{
+					typeName = tag;
+				}
 			} else {
 				GraphClazz clazz = (GraphClazz) model.getByObject(rootObject.getClass().getName(), false);
 				GraphEdge edge = model.getEdge(clazz, tag);

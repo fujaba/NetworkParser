@@ -9,7 +9,7 @@ import org.junit.Test;
 import de.uniks.networkparser.bytes.BitEntity;
 import de.uniks.networkparser.bytes.BitValue;
 import de.uniks.networkparser.bytes.ByteSimpleMap;
-import de.uniks.networkparser.bytes.BytesBuffer;
+import de.uniks.networkparser.bytes.ByteBuffer;
 import de.uniks.networkparser.test.model.BitDate;
 import de.uniks.networkparser.test.model.NumberFormat;
 import de.uniks.networkparser.test.model.util.BitDateCreator;
@@ -25,7 +25,7 @@ public class BitMapTest {
 		//  8 = 001000
 		
 		ByteSimpleMap map= new ByteSimpleMap();
-		BytesBuffer buffer=BytesBuffer.allocate(2);
+		ByteBuffer buffer=ByteBuffer.allocate(2);
 		buffer.put(new byte[]{8});
 		buffer.put(new byte[]{42});
 		NumberFormatCreator createrClass = new NumberFormatCreator("len", 4, 4);
@@ -45,7 +45,7 @@ public class BitMapTest {
 		//         |Minute|   | hour|yL|  day |yU  |Month
 		// 15.01.13 12:37
 		ByteSimpleMap map= new ByteSimpleMap();
-		BytesBuffer buffer=BytesBuffer.allocate(4);
+		ByteBuffer buffer=ByteBuffer.allocate(4);
 		buffer.put(new byte[]{0x25,0x0C,(byte) 0xAF,0x11});
 		
 		BitDateCreator createrClass = new BitDateCreator();

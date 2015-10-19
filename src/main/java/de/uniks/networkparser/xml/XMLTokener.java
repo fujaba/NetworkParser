@@ -27,6 +27,7 @@ import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.BufferedBuffer;
 import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
@@ -41,6 +42,7 @@ public class XMLTokener extends Tokener {
 	private ArrayList<Object> stack = new ArrayList<Object>();
 	/** Variable of AllowQuote. */
 	private boolean isAllowQuote;
+
 
 	/** The prefix. */
 	private String prefix;
@@ -93,7 +95,7 @@ public class XMLTokener extends Tokener {
 		char c = getCurrentChar();
 
 		if (c != '<') {
-			c = nextClean();
+			c = nextClean(false);
 		}
 		if (c != '<') {
 			if (logger.error(this, "parseToEntity",
@@ -110,16 +112,16 @@ public class XMLTokener extends Tokener {
 			return;
 		}
 		XMLEntity xmlEntity = (XMLEntity) entity;
-		if (buffer.isCache()) {
-			c = nextClean();
+		if (buffer instanceof BufferedBuffer) {
+			c = nextClean(false);
 			int pos = position();
 			while (c >= ' ' && getStopChars().indexOf(c) < 0 && c != '>') {
 				c = next();
 			}
-			xmlEntity.withTag(buffer.substring(pos, position() - pos));
+			xmlEntity.withTag(((BufferedBuffer)this.buffer).substring(pos, position() - pos));
 		} else {
 			StringBuilder sb = new StringBuilder();
-			c = nextClean();
+			c = nextClean(false);
 			while (c >= ' ' && getStopChars().indexOf(c) < 0 && c != '>') {
 				sb.append(c);
 				c = next();
@@ -129,11 +131,11 @@ public class XMLTokener extends Tokener {
 
 		XMLEntity child;
 		while (true) {
-			c = nextStartClean();
+			c = nextClean(true);
 			if (c == 0) {
 				break;
 			} else if (c == '>') {
-				c = nextClean();
+				c = nextClean(false);
 				if (c == 0) {
 					return;
 				}
@@ -163,7 +165,7 @@ public class XMLTokener extends Tokener {
 				String key = nextValue(xmlEntity, false, c).toString();
 				if (key.length() > 0) {
 					xmlEntity.put(key, 
-							nextValue(xmlEntity, isAllowQuote, nextClean()));
+							nextValue(xmlEntity, isAllowQuote, nextClean(false)));
 				}
 			}
 		}
@@ -178,10 +180,11 @@ public class XMLTokener extends Tokener {
 		next();
 	}
 	
-	public void skipHeader() {
+	public String skipHeader() {
 		boolean skip=false;
+		String tag;
 		do {
-			String tag = buffer.substring(position(), 2);
+			tag = this.buffer.getString(2);
 			if("<?".equals(tag)) {
 				skipEntity();
 				skip = true;
@@ -192,6 +195,8 @@ public class XMLTokener extends Tokener {
 				skip = false;
 			}
 		}while(skip);
+		this.buffer.withLookAHead(tag);
+		return tag;
 	}
 
 	@Override

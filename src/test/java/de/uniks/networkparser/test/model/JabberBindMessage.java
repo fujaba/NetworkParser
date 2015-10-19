@@ -39,7 +39,7 @@ public class JabberBindMessage {
 		return type;
 	}
 	public void setType(String value) {
-		this.type=value;;
+		this.type=value;
 	}
 	public String getXmlns() {
 		return xmlns;

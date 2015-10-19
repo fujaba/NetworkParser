@@ -7,9 +7,7 @@ import java.io.IOException;
 
 public class IOClasses {
 public static String CRLF="\r\n";
-	
-	public StringBuffer readFile(String file){
-		BufferedReader bufferedReader;
+	public String getAbsolutePath(String file){
 		file = "test/"+file;
 		String path = IOClasses.class.getResource("IOClasses.class").getPath();
 		
@@ -22,9 +20,14 @@ public static String CRLF="\r\n";
 				path = path.substring(0, pos + 6)+"resources/test/";
 			}
 		}
-		System.out.println("IOCLASSES-PATH: "+path);
+		return path+file;
+	}
+	public StringBuffer readFile(String file){
+		BufferedReader bufferedReader;
+		String fullPath = getAbsolutePath(file);
+//		System.out.println("IOCLASSES-PATH: "+path);
 		try {
-			bufferedReader = new BufferedReader(new FileReader(path+file));
+			bufferedReader = new BufferedReader(new FileReader(fullPath));
 			StringBuffer indexText = new StringBuffer();
 			String line = bufferedReader.readLine();
 			while (line != null)

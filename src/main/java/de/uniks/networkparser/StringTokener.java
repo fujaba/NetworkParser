@@ -22,6 +22,8 @@ package de.uniks.networkparser;
  permissions and limitations under the Licence.
 */
 import java.util.ArrayList;
+
+import de.uniks.networkparser.interfaces.BufferedBuffer;
 import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
@@ -85,7 +87,7 @@ public class StringTokener extends Tokener {
 				count--;
 				if (count == 0) {
 					next();
-					return buffer.substring(pos, buffer.position() - pos);
+					return ((BufferedBuffer)this.buffer).substring(pos, buffer.position() - pos);
 				}
 				continue;
 			}
@@ -107,12 +109,14 @@ public class StringTokener extends Tokener {
 		return isString;
 	}
 
-	public void setString(boolean isString) {
+	public StringTokener withString(boolean isString) {
 		this.isString = isString;
+		return this;
 	}
 
-	public void setLength(int length) {
-		this.buffer.withLength(length);
+	public StringTokener withLength(int length) {
+		((BufferedBuffer)this.buffer).withLength(length);
+		return this;
 	}
 
 	public ArrayList<String> getStringList() {
@@ -179,12 +183,12 @@ public class StringTokener extends Tokener {
 	
 	public String getToken(String defaultText) {
 		if(this.startToken < 0) {
-			nextClean();
+			nextClean(false);
 			return defaultText;
 		}
-		String token = this.buffer.substring(startToken, this.buffer.position() - startToken);
+		String token = ((BufferedBuffer)this.buffer).substring(startToken, this.buffer.position() - startToken);
 		this.startToken = -1;
-		nextClean();
+		nextClean(false);
 		return token;
 	}
 

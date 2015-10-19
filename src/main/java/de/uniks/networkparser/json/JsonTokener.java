@@ -44,7 +44,7 @@ public class JsonTokener extends Tokener {
 
 	@Override
 	public Object nextValue(BaseItem creator, boolean allowQuote) {
-		char c = nextStartClean();
+		char c = nextClean(true);
 
 		switch (c) {
 		case '"':
@@ -164,7 +164,7 @@ public class JsonTokener extends Tokener {
 	public void parseToEntity(SimpleKeyValueList<?, ?> entity) {
 		char c;
 		String key;
-		if (nextStartClean() != '{') {
+		if (nextClean(true) != '{') {
 			if (logger.error(this, "parseToEntity",
 					NetworkParserLog.ERROR_TYP_PARSING, entity)) {
 				throw new RuntimeException(
@@ -174,7 +174,7 @@ public class JsonTokener extends Tokener {
 		next();
 		boolean isQuote = true;
 		for (;;) {
-			c = nextStartClean();
+			c = nextClean(true);
 			switch (c) {
 			case 0:
 				if (logger.error(this, "parseToEntity",
@@ -198,7 +198,7 @@ public class JsonTokener extends Tokener {
 			default:
 				key = nextValue(entity, isQuote).toString();
 			}
-			c = nextStartClean();
+			c = nextClean(true);
 			if (c == '=') {
 				if (charAt(position() + 1) == '>') {
 					next();
@@ -218,7 +218,7 @@ public class JsonTokener extends Tokener {
 
 	@Override
 	public void parseToEntity(AbstractList<?> entityList) {
-		char c = nextStartClean();
+		char c = nextClean(true);
 		if (c != '[') {
 			if (logger.error(this, "parseToEntity",
 					NetworkParserLog.ERROR_TYP_PARSING, entityList)) {
@@ -227,17 +227,17 @@ public class JsonTokener extends Tokener {
 			}
 			return;
 		}
-		if ((nextClean()) != ']') {
+		if ((nextClean(false)) != ']') {
 			for (;;) {
 				c = getCurrentChar();
 				if (c != ',') {
 					entityList.withAll(nextValue(entityList, false));
 				}
-				c = nextStartClean();
+				c = nextClean(true);
 				switch (c) {
 				case ';':
 				case ',':
-					if (nextClean() == ']') {
+					if (nextClean(false) == ']') {
 						return;
 					}
 					break;

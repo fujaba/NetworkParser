@@ -21,7 +21,6 @@ package de.uniks.networkparser.xml;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import java.util.ArrayList;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.event.MapEntry;
@@ -38,7 +37,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Str
 	/** Constant of VALUE. */
 	public static final String PROPERTY_VALUE = "value";
 	/** The children. */
-	private ArrayList<XMLEntity> children;
+	private SimpleList<XMLEntity> children;
 
 	/** The tag. */
 	private String tag;
@@ -75,8 +74,9 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Str
 	 * @return Itself
 	 */
 	public XMLEntity withValue(Tokener tokener) {
-		if(tokener!=null)
+		if(tokener!=null) {
 			tokener.parseToEntity(this);
+		}
 		return this;
 	}
 
@@ -85,9 +85,9 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Str
 	 *
 	 * @return the children
 	 */
-	public ArrayList<XMLEntity> getChildren() {
+	public SimpleList<XMLEntity> getChildren() {
 		if (this.children == null) {
-			this.children = new ArrayList<XMLEntity>();
+			this.children = new SimpleList<XMLEntity>();
 		}
 		return this.children;
 	}

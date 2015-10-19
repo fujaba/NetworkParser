@@ -40,7 +40,6 @@ import de.uniks.networkparser.event.ObjectMapEntry;
 import de.uniks.networkparser.event.UnknownMessage;
 import de.uniks.networkparser.event.util.BasicMessageCreator;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteConverter;
 import de.uniks.networkparser.interfaces.ByteItem;
 import de.uniks.networkparser.interfaces.IdMapDecoder;
@@ -407,10 +406,10 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 	 * @return the object
 	 */
 	public Object decode(Object value) {
-		if (value instanceof BufferedBytes) {
-			return decode((BufferedBytes) value);
+		if (value instanceof ByteBuffer) {
+			return decode((ByteBuffer) value);
 		} else if (value instanceof byte[]) {
-			return decode(new BytesBuffer().with((byte[]) value));
+			return decode(new ByteBuffer().with((byte[]) value));
 		}
 		return null;
 	}
@@ -430,7 +429,7 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 	 *            the in
 	 * @return the object
 	 */
-	public Object decode(BufferedBytes buffer) {
+	public Object decode(ByteBuffer buffer) {
 		if(buffer == null) {
 			return null;
 		}
@@ -454,7 +453,7 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 	 *            The Creator as Factory
 	 * @return the object
 	 */
-	public Object decodeClazz(BufferedBytes buffer,
+	public Object decodeClazz(ByteBuffer buffer,
 			SendableEntityCreator eventCreater) {
 		if (eventCreater == null) {
 			UnknownMessage e = new UnknownMessage();
@@ -498,7 +497,7 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 	 *            EndIndex
 	 * @return the decode object
 	 */
-	public Object decodeValue(BufferedBytes buffer, int end) {
+	public Object decodeValue(ByteBuffer buffer, int end) {
 		if (buffer == null || buffer.remaining() < 1) {
 			return null;
 		}

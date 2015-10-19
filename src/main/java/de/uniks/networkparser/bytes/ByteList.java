@@ -24,7 +24,6 @@ package de.uniks.networkparser.bytes;
 import de.uniks.networkparser.bytes.converter.ByteConverterHTTP;
 import de.uniks.networkparser.bytes.converter.ByteConverterString;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteConverter;
 import de.uniks.networkparser.interfaces.ByteItem;
 import de.uniks.networkparser.list.SimpleList;
@@ -76,16 +75,16 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 	}
 
 	@Override
-	public BufferedBytes getBytes(boolean isDynamic) {
+	public ByteBuffer getBytes(boolean isDynamic) {
 		int len = calcLength(isDynamic, true);
-		BufferedBytes buffer = ByteUtil.getBuffer(len);
+		ByteBuffer buffer = ByteUtil.getBuffer(len);
 		writeBytes(buffer, isDynamic, true, isPrimitive(isDynamic));
 		buffer.flip();
 		return buffer;
 	}
 
 	@Override
-	public void writeBytes(BufferedBytes buffer, boolean isDynamic,
+	public void writeBytes(ByteBuffer buffer, boolean isDynamic,
 			boolean last, boolean isPrimitive) {
 		// Override for each ByteList
 		isPrimitive = isPrimitive(isDynamic);

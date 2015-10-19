@@ -1,5 +1,7 @@
 package de.uniks.networkparser.interfaces;
 
+import de.uniks.networkparser.bytes.ByteBuffer;
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -37,7 +39,7 @@ public abstract class ByteConverter {
 		return toString(item.getBytes(dynamic));
 	}
 
-	public String toString(BufferedBytes bufferedBytes) {
+	public String toString(ByteBuffer bufferedBytes) {
 		return toString(bufferedBytes.array(), bufferedBytes.length());
 	}
 

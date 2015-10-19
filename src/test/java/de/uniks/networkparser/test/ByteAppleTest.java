@@ -2,8 +2,8 @@ package de.uniks.networkparser.test;
 
 import org.junit.Test;
 
+import de.uniks.networkparser.bytes.ByteBuffer;
 import de.uniks.networkparser.bytes.ByteIdMap;
-import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteItem;
 import de.uniks.networkparser.test.model.Apple;
 import de.uniks.networkparser.test.model.AppleTree;
@@ -44,7 +44,7 @@ public class ByteAppleTest {
 		map.withCreator(new AppleTreeCreator());
 		map.withCreator(new AppleCreator());
 		ByteItem item = map.encode(appleTree);
-		BufferedBytes bytes = item.getBytes(true);
+		ByteBuffer bytes = item.getBytes(true);
 		System.out.println(bytes.length());
 		String string = item.toString();
 //		System.out.println(string.length());
@@ -57,7 +57,7 @@ public class ByteAppleTest {
 		ByteIdMap map = new ByteIdMap();
 		map.withCreator(new AppleCreator());
 		ByteItem item = map.encode(apple);
-		BufferedBytes bytes = item.getBytes(true);
+		ByteBuffer bytes = item.getBytes(true);
 		System.out.println(bytes.length());
 	}
 	
@@ -73,7 +73,7 @@ public class ByteAppleTest {
 		ByteIdMap map = new ByteIdMap();
 		map.withCreator(new AppleCreator(), new AppleTreeCreator());
 		ByteItem item = map.encode(appleTree);
-		BufferedBytes bytes = item.getBytes(true);
+		ByteBuffer bytes = item.getBytes(true);
 		System.out.println(bytes.length());
 	}
 	@Test
@@ -84,7 +84,7 @@ public class ByteAppleTest {
 		ByteIdMap map = new ByteIdMap();
 		map.withCreator(new AppleCreator(), new AppleTreeCreator());
 		ByteItem item = map.encode(appleTree);
-		BufferedBytes bytes = item.getBytes(true);
+		ByteBuffer bytes = item.getBytes(true);
 		System.out.println(bytes.length());
 	}
 	
@@ -101,7 +101,7 @@ public class ByteAppleTest {
 //		map.withCreator(new AppleTreeCreator(), new AppleCreator());
 		ByteItem item = map.encode(appleTree);
 
-		BufferedBytes bytes = item.getBytes(true);
+		ByteBuffer bytes = item.getBytes(true);
 		System.out.println(bytes.length());
 		String string = item.toString();
 		System.out.println(string);

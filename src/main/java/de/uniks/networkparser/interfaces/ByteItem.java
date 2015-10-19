@@ -1,5 +1,7 @@
 package de.uniks.networkparser.interfaces;
 
+import de.uniks.networkparser.bytes.ByteBuffer;
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -50,7 +52,7 @@ public interface ByteItem extends BaseItem {
 	 *            ByteStream for minimize output
 	 * @return ByteStream
 	 */
-	public BufferedBytes getBytes(boolean isDynamic);
+	public ByteBuffer getBytes(boolean isDynamic);
 
 	/**
 	 * Write the Entity to the buffer
@@ -64,7 +66,7 @@ public interface ByteItem extends BaseItem {
 	 * @param isPrimitive
 	 *            need the entity no datatyp
 	 */
-	public void writeBytes(BufferedBytes buffer, boolean isDynamic,
+	public void writeBytes(ByteBuffer buffer, boolean isDynamic,
 			boolean lastEntity, boolean isPrimitive);
 
 	/**

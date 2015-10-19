@@ -74,7 +74,7 @@ public class CharacterBuffer extends TextBuffer {
 		}
 		return result;
 	}
-
+	
 	@Override
 	public char getChar() {
 		this.position++;
@@ -98,10 +98,5 @@ public class CharacterBuffer extends TextBuffer {
 			this.character += 1;
 		}
 		return c;
-	}
-
-	@Override
-	public boolean isCache() {
-		return true;
 	}
 }

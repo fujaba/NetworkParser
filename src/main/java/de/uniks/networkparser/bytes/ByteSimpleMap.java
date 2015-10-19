@@ -23,14 +23,14 @@ package de.uniks.networkparser.bytes;
 */
 import java.util.ArrayList;
 import java.util.Iterator;
+
 import de.uniks.networkparser.AbstractMap;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.bytes.util.BitEntityCreator;
-import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
 public class ByteSimpleMap extends AbstractMap {
-	public Object decode(BufferedBytes buffer, BitEntityCreator creator) {
+	public Object decode(ByteBuffer buffer, BitEntityCreator creator) {
 		SimpleKeyValueList<String, Object> values = new SimpleKeyValueList<String, Object>();
 		BitEntity[] bitProperties = creator.getBitProperties();
 		Object newInstance = creator.getSendableInstance(false);
@@ -44,7 +44,7 @@ public class ByteSimpleMap extends AbstractMap {
 		return newInstance;
 	}
 
-	public Object getEntity(BufferedBytes buffer, BitEntity entry,
+	public Object getEntity(ByteBuffer buffer, BitEntity entry,
 			SimpleKeyValueList<String, Object> values) {
 		if (entry.size() < 1) {
 			// Reference or Value
@@ -62,7 +62,7 @@ public class ByteSimpleMap extends AbstractMap {
 		// Wert ermitteln
 
 		// Init the Values
-		ArrayList<BufferedBytes> results = new ArrayList<BufferedBytes>();
+		ArrayList<ByteBuffer> results = new ArrayList<ByteBuffer>();
 		ArrayList<Integer> resultsLength = new ArrayList<Integer>();
 
 		for (Iterator<BitValue> i = entry.iterator(); i.hasNext();) {
@@ -84,7 +84,7 @@ public class ByteSimpleMap extends AbstractMap {
 			}
 
 			resultsLength.add(length);
-			BytesBuffer result = BytesBuffer.allocate(noOfByte);
+			ByteBuffer result = ByteBuffer.allocate(noOfByte);
 
 			int theByte = buffer.byteAt(posOfByte);
 			if (theByte < 0) {
@@ -156,13 +156,13 @@ public class ByteSimpleMap extends AbstractMap {
 		}
 		int number = length / 8 + ((length % 8 > 0) ? 1 : 0);
 
-		BytesBuffer result = new BytesBuffer();
+		ByteBuffer result = new ByteBuffer();
 		result.withLength(number);
 
 		int resultPos = 0;
 		number = 0;
 		for (int i = 0; i < results.size(); i++) {
-			BufferedBytes source = results.get(i);
+			ByteBuffer source = results.get(i);
 			length = resultsLength.get(i);
 			while (length > 0) {
 				byte theByte = source.getByte();

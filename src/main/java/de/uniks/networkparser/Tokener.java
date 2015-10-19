@@ -23,6 +23,7 @@ package de.uniks.networkparser;
 */
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Buffer;
+import de.uniks.networkparser.interfaces.BufferedBuffer;
 import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 /**
@@ -54,15 +55,19 @@ public abstract class Tokener {
 	 * that you can test for a digit or letter before attempting to parse the
 	 * next number or identifier.
 	 */
-	public void back() {
+	public boolean back() {
+		if(this.buffer instanceof BufferedBuffer == false) {
+			return false;
+		}
 		if (this.buffer.length() <= 0) {
 			if (logger.error(this, "back", NetworkParserLog.ERROR_TYP_PARSING)) {
 				throw new RuntimeException(
 						"Stepping back two steps is not supported");
 			}
-			return;
+			return false;
 		}
-		this.buffer.back();
+		((BufferedBuffer)this.buffer).back();
+		return true;
 	}
 
 	/**
@@ -95,12 +100,16 @@ public abstract class Tokener {
 	 *         n characters remaining in the source string.
 	 */
 	public String getNextString(int n) {
+		if(buffer instanceof BufferedBuffer == false) {
+			return null;
+		}
+		BufferedBuffer item = (BufferedBuffer) this.buffer;
 		int pos = 0;
 		if (n < -1) {
 			n = n * -1;
 			char[] chars = new char[n];
 			while (pos < n) {
-				chars[pos] = this.buffer.charAt(this.buffer.position()
+				chars[pos] = item.charAt(this.buffer.position()
 						- (n - pos++));
 			}
 			return new String(chars);
@@ -114,7 +123,7 @@ public abstract class Tokener {
 		char[] chars = new char[n];
 
 		while (pos < n) {
-			chars[pos] = this.buffer.charAt(this.buffer.position() + pos++);
+			chars[pos] = item.charAt(this.buffer.position() + pos++);
 		}
 		return new String(chars);
 	}
@@ -151,26 +160,26 @@ public abstract class Tokener {
 		return new String(chars);
 	}
 
+
+	
 	/**
 	 * Get the next char in the string, skipping whitespace.
+	  * @param currentValid
+	 *            is the current char also a valid character
 	 *
 	 * @return A character, or 0 if there are no more characters.
 	 */
-	public char nextClean() {
+	public char nextClean(boolean currentValid) {
 		char c = getCurrentChar();
+		if (currentValid && c > ' ') {
+			return c;
+		}
 		do {
 			c = next();
 		} while (c != 0 && c <= ' ');
 		return c;
 	}
-
-	public char nextStartClean() {
-		char c = getCurrentChar();
-		if (c != 0 && c <= ' ') {
-			c = nextClean();
-		}
-		return c;
-	}
+	
 	/**
 	 * Return the characters up to the next close quote character. Backslash
 	 * processing is done. The formal JSON format does not allow strings in
@@ -238,7 +247,7 @@ public abstract class Tokener {
 			}
 			return "";
 		}
-		if (buffer.isCache()) {
+		if (buffer instanceof BufferedBuffer) {
 			return getString(allowCRLF, allowQuote, mustQuote, nextStep, quotes);
 		}
 		return getStringBuffer(allowCRLF, allowQuote, mustQuote,
@@ -295,10 +304,10 @@ public abstract class Tokener {
 			next();
 		}
 		if ((isQuote && allowQuote) || mustQuote) {
-			return this.buffer.substring(startpos, endPos - startpos - 1);
+			return ((BufferedBuffer)this.buffer).substring(startpos, endPos - startpos - 1);
 		}
 
-		return this.buffer.substring(startpos, endPos - startpos);
+		return ((BufferedBuffer)this.buffer).substring(startpos, endPos - startpos);
 	}
 
 	private String getStringBuffer(boolean allowCRLF,
@@ -382,17 +391,17 @@ public abstract class Tokener {
 	 * @return the new Element
 	 */
 	public Object nextValue(BaseItem creator, boolean allowQuote) {
-		return nextValue(creator, allowQuote, nextStartClean());
+		return nextValue(creator, allowQuote, nextClean(true));
 	}
 
 	public Object nextValue(BaseItem creator, boolean allowQuote, char c) {
 		String value;
-		if (buffer.isCache()) {
+		if (buffer instanceof BufferedBuffer) {
 			int start = buffer.position();
 			while (c >= ' ' && getStopChars().indexOf(c) < 0) {
 				c = next();
 			}
-			value = buffer.substring(start, buffer.position() - start).trim();
+			value = ((BufferedBuffer)buffer).substring(start, buffer.position() - start).trim();
 		} else {
 			StringBuilder sb = new StringBuilder();
 			while (c >= ' ' && getStopChars().indexOf(c) < 0) {
@@ -491,7 +500,7 @@ public abstract class Tokener {
 		int len = buffer.length();
 		char lastChar = 0;
 		if (this.buffer.position() > 0 && this.buffer.position() < len) {
-			lastChar = this.buffer.charAt(this.buffer.position() - 1);
+			lastChar = ((BufferedBuffer)this.buffer).charAt(this.buffer.position() - 1);
 		}
 		while (this.buffer.position() < len) {
 			char currentChar = getCurrentChar();
@@ -554,7 +563,7 @@ public abstract class Tokener {
 	 * @return the char
 	 */
 	public char charAt(int pos) {
-		return this.buffer.charAt(pos);
+		return ((BufferedBuffer)this.buffer).charAt(pos);
 	}
 
 	/**
@@ -564,7 +573,7 @@ public abstract class Tokener {
 	 */
 	public char getCurrentChar() {
 		if (buffer.remaining() > 0) {
-			return this.buffer.charAt(this.buffer.position());
+			return ((BufferedBuffer)this.buffer).charAt(this.buffer.position());
 		}
 		return 0;
 	}
@@ -609,7 +618,7 @@ public abstract class Tokener {
 		if (start < 0 || end <= 0 || start > end) {
 			return "";
 		}
-		return this.buffer.substring(start, end - start);
+		return ((BufferedBuffer)this.buffer).substring(start, end - start);
 	}
 
 	/**
@@ -620,7 +629,7 @@ public abstract class Tokener {
 	 * @return true, if successful
 	 */
 	public boolean checkValues(char... items) {
-		char current = this.buffer.charAt(this.buffer.position());
+		char current = ((BufferedBuffer)this.buffer).charAt(this.buffer.position());
 		for (char item : items) {
 			if (current == item) {
 				return true;
@@ -630,10 +639,10 @@ public abstract class Tokener {
 	}
 
 	public String getNextTag() {
-		nextClean();
+		nextClean(false);
 		int startTag = this.buffer.position();
 		if (stepPos(" >//<", false, true)) {
-			return this.buffer.substring(startTag, this.buffer.position()
+			return ((BufferedBuffer)this.buffer).substring(startTag, this.buffer.position()
 					- startTag);
 		}
 		return "";
@@ -646,7 +655,9 @@ public abstract class Tokener {
 	 *            the new index
 	 */
 	public void setIndex(int index) {
-		this.buffer.withPosition(index);
+		if(this.buffer instanceof BufferedBuffer) {
+			((BufferedBuffer)this.buffer).withPosition(index);
+		}
 	}
 
 	public byte[] toArray() {

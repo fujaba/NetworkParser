@@ -26,45 +26,56 @@ package de.uniks.networkparser.interfaces;
  *
  */
 
-public interface Buffer {
+public abstract class Buffer {
+	/** The index. */
+	protected int position;
+
 	/**
 	 * @return the length of the buffer
 	 */
-	public int length();
-
-	public byte byteAt(int index);
-
-	public char charAt(int index);
-
-	public char getChar();
+	public abstract int length();
 
 	/**
-	 * @param start
-	 *            startindex for parsing
-	 * @param length
-	 *            the length of Substring
-	 * @return the Substring
+	 * @return The next Char
 	 */
-	public String substring(int start, int length);
+	public abstract char getChar();
 
-	public Buffer withLength(int length);
+	/**
+	 * @return The currentChar
+	 */
+	public abstract char getCurrentChar();
+	
+	public String getString(int len) {
+		if(len<1) {
+			return "";
+		}
+		char[] values = new char[len];
+		values[0] = getCurrentChar();
+		for(int i = 1; i < len; i++) {
+			values[i] = getChar();
+		}
+		return new String(values); 
+	}
 
-	public int position();
+	public int position() {
+		return position;
+	}
 
-	public int remaining();
+	public int remaining() {
+		return length() - position();
+	}
 
-	public void back();
+	public boolean isEnd() {
+		return position() >= length();
+	}
 
-	public boolean isEnd();
+	public abstract String toText();
 
-	public Buffer withPosition(int index);
-
-	@Override
-	public String toString();
-
-	public String toText();
-
-	public byte[] toArray();
-
-	public boolean isCache();
+	public abstract byte[] toArray();
+	
+	/**
+	 * @param lookahead The String for look A Head String. For Simple Buffer change position back to the length of String or Save the String.
+	 * @return Self Instance
+	 */
+	public abstract Buffer withLookAHead(String lookahead);
 }

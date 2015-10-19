@@ -23,9 +23,9 @@ package de.uniks.networkparser.bytes;
 */
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
+
 import de.uniks.networkparser.bytes.converter.ByteConverterHTTP;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.BufferedBytes;
 import de.uniks.networkparser.interfaces.ByteConverter;
 import de.uniks.networkparser.interfaces.ByteItem;
 /**
@@ -88,7 +88,7 @@ public class ByteEntity implements ByteItem, BaseItem {
 
 	public ByteEntity withValue(byte typ, int value) {
 		this.typ = typ;
-		BytesBuffer msgValue = new BytesBuffer().withLength(4);
+		ByteBuffer msgValue = new ByteBuffer().withLength(4);
 		msgValue.put(value);
 		this.values = msgValue.flip();
 		return this;
@@ -157,7 +157,7 @@ public class ByteEntity implements ByteItem, BaseItem {
 	 *            is the Element is the StreamClazz
 	 */
 	@Override
-	public void writeBytes(BufferedBytes buffer, boolean isDynamic,
+	public void writeBytes(ByteBuffer buffer, boolean isDynamic,
 			boolean isLast, boolean isPrimitive) {
 		byte[] value = this.values;
 
@@ -169,7 +169,7 @@ public class ByteEntity implements ByteItem, BaseItem {
 		}
 		if (isDynamic) {
 			if (typ == ByteIdMap.DATATYPE_SHORT) {
-				short bufferValue = new BytesBuffer().with(value).getShort();
+				short bufferValue = new ByteBuffer().with(value).getShort();
 				if (bufferValue >= Byte.MIN_VALUE
 						&& bufferValue <= Byte.MAX_VALUE) {
 					typ = ByteIdMap.DATATYPE_BYTE;
@@ -177,7 +177,7 @@ public class ByteEntity implements ByteItem, BaseItem {
 				}
 			} else if (typ == ByteIdMap.DATATYPE_INTEGER
 					|| typ == ByteIdMap.DATATYPE_LONG) {
-				int bufferValue = new BytesBuffer().with(value).getInt();
+				int bufferValue = new ByteBuffer().with(value).getInt();
 				if (bufferValue >= Byte.MIN_VALUE
 						&& bufferValue <= Byte.MAX_VALUE) {
 					typ = ByteIdMap.DATATYPE_BYTE;
@@ -185,7 +185,7 @@ public class ByteEntity implements ByteItem, BaseItem {
 				} else if (bufferValue >= Short.MIN_VALUE
 						&& bufferValue <= Short.MAX_VALUE) {
 					typ = ByteIdMap.DATATYPE_BYTE;
-					BytesBuffer bbShort = BytesBuffer.allocate(Short.SIZE
+					ByteBuffer bbShort = ByteBuffer.allocate(Short.SIZE
 							/ BITOFBYTE);
 					bbShort.put((short) bufferValue);
 					bbShort.flip();
@@ -203,9 +203,9 @@ public class ByteEntity implements ByteItem, BaseItem {
 	}
 
 	@Override
-	public BufferedBytes getBytes(boolean isDynamic) {
+	public ByteBuffer getBytes(boolean isDynamic) {
 		int len = calcLength(isDynamic, true);
-		BufferedBytes buffer = ByteUtil.getBuffer(len);
+		ByteBuffer buffer = ByteUtil.getBuffer(len);
 		writeBytes(buffer, isDynamic, true, false);
 		buffer.flip();
 		return buffer;
@@ -213,7 +213,7 @@ public class ByteEntity implements ByteItem, BaseItem {
 
 	public boolean setValues(Object value) {
 		byte typ = 0;
-		BytesBuffer msgValue = new BytesBuffer();
+		ByteBuffer msgValue = new ByteBuffer();
 		if (value == null) {
 			typ = ByteIdMap.DATATYPE_NULL;
 		}
@@ -299,14 +299,14 @@ public class ByteEntity implements ByteItem, BaseItem {
 		}
 		if (isDynamic) {
 			if (typ == ByteIdMap.DATATYPE_SHORT) {
-				Short bufferValue = new BytesBuffer().with(values).getShort();
+				Short bufferValue = new ByteBuffer().with(values).getShort();
 				if (bufferValue >= Byte.MIN_VALUE
 						&& bufferValue <= Byte.MAX_VALUE) {
 					return TYPBYTE + Byte.SIZE / BITOFBYTE;
 				}
 			} else if (typ == ByteIdMap.DATATYPE_INTEGER
 					|| typ == ByteIdMap.DATATYPE_LONG) {
-				Integer bufferValue = new BytesBuffer().with(values).getInt();
+				Integer bufferValue = new ByteBuffer().with(values).getInt();
 				if (bufferValue >= Byte.MIN_VALUE
 						&& bufferValue <= Byte.MAX_VALUE) {
 					return TYPBYTE + Byte.SIZE / BITOFBYTE;

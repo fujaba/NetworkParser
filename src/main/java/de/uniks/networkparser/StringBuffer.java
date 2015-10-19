@@ -34,7 +34,7 @@ public class StringBuffer extends TextBuffer {
 	public char charAt(int index) {
 		return buffer.charAt(index);
 	}
-
+	
 	@Override
 	public byte byteAt(int index) {
 		return (byte) buffer.charAt(index);
@@ -96,10 +96,5 @@ public class StringBuffer extends TextBuffer {
 			this.character += 1;
 		}
 		return c;
-	}
-
-	@Override
-	public boolean isCache() {
-		return true;
 	}
 }

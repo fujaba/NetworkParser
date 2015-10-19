@@ -238,6 +238,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 	public Object decode(String value) {
 		XMLTokener tokener = new XMLTokener();
 		tokener.withBuffer(value);
+		tokener.skipHeader();
 		return decode(tokener, null);
 	}
 	
