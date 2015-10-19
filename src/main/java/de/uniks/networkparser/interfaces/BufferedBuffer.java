@@ -54,4 +54,13 @@ public abstract class BufferedBuffer extends Buffer {
 		this.withPosition(this.position() - lookahead.length() + 1);
 		return this;
 	}
+	
+	@Override
+	public BufferedBuffer withLookAHead(char lookahead) {
+		if(lookahead < 0) {
+			return this;
+		}
+		this.withPosition(this.position() - 1);
+		return this;
+	}
 }

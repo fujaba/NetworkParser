@@ -78,4 +78,5 @@ public abstract class Buffer {
 	 * @return Self Instance
 	 */
 	public abstract Buffer withLookAHead(String lookahead);
+	public abstract Buffer withLookAHead(char current);
 }

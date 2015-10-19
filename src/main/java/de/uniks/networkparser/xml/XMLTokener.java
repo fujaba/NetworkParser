@@ -146,10 +146,12 @@ public class XMLTokener extends Tokener {
 			}
 
 			if (c == '<') {
-				if (charAt(position() + 1) == '/') {
+				char nextChar = buffer.getChar();
+				if (nextChar == '/') {
 					stepPos(">", false, false);
 					break;
 				} else {
+					buffer.withLookAHead(c);
 					if (getCurrentChar() == '<') {
 						child = (XMLEntity) xmlEntity.getNewList(true);
 						parseToEntity(child);
@@ -177,7 +179,7 @@ public class XMLTokener extends Tokener {
 	protected void skipEntity() {
 		stepPos(">", false, false);
 		// Skip >
-		next();
+		nextClean(false);
 	}
 	
 	public String skipHeader() {

@@ -500,7 +500,7 @@ public abstract class Tokener {
 		int len = buffer.length();
 		char lastChar = 0;
 		if (this.buffer.position() > 0 && this.buffer.position() < len) {
-			lastChar = ((BufferedBuffer)this.buffer).charAt(this.buffer.position() - 1);
+			lastChar = this.buffer.getCurrentChar();
 		}
 		while (this.buffer.position() < len) {
 			char currentChar = getCurrentChar();
@@ -573,7 +573,7 @@ public abstract class Tokener {
 	 */
 	public char getCurrentChar() {
 		if (buffer.remaining() > 0) {
-			return ((BufferedBuffer)this.buffer).charAt(this.buffer.position());
+			return this.buffer.getCurrentChar();
 		}
 		return 0;
 	}
