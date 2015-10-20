@@ -130,6 +130,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
      * 
      * @param items Array of the new List
 	 * @param size the new Size of the List
+	 * @param offset the startoffset of Items 
 	 * @param <ST> Container Class
 	 * @return return self
      * */
