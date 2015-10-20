@@ -8,7 +8,6 @@ import org.junit.Test;
 import de.uniks.networkparser.emf.EMFIdMap;
 import de.uniks.networkparser.emf.EMFUtil;
 import de.uniks.networkparser.graph.GraphList;
-import de.uniks.networkparser.gui.javafx.FileBuffer;
 
 public class EMFTest extends IOClasses{
 

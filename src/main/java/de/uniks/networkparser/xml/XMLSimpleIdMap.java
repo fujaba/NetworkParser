@@ -26,6 +26,7 @@ import java.util.Collection;
 
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.String.StringContainer;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.IdMapDecoder;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -240,9 +241,9 @@ public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
 				char quote = (char) ITEMSTART;
 				// Skip >
 				tokener.next();
-				String strvalue = tokener.nextString(true, false, false,
-						false, quote);
-				strvalue = strvalue.trim();
+				StringContainer sc=new StringContainer();
+				tokener.nextString(sc, true, false, false, false, quote);
+				sc.trim();
 				XMLEntity newTag;
 				if (tokener.getCurrentChar() == ITEMSTART) {
 					// show next Tag
@@ -252,7 +253,7 @@ public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
 						do {
 							newTag = getEntity(grammar, tokener);
 							if (newTag == null) {
-								entity.withValueItem(strvalue);
+								entity.withValueItem(sc.toString());
 								tokener.popStack();
 								tokener.skipEntity();
 								return entity;
@@ -313,13 +314,14 @@ public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
 		boolean isEmpty = true;
 		do {
 			if (tokener.getCurrentChar() != ITEMSTART) {
-				String strValue = tokener.nextString(true, false,
+				StringContainer sc = new StringContainer();
+				tokener.nextString(sc, true, false,
 						false, false, ITEMSTART);
-				if (strValue != null) {
-					strValue = strValue.trim();
-					isEmpty = strValue.isEmpty();
+				if (sc.isEmpty() == false) {
+					sc.trim();
+					isEmpty = sc.isEmpty();
 				}
-				entity.withValueItem(strValue);
+				entity.withValueItem(sc.toString());
 			}
 			tag = tokener.getNextTag();
 			if (tag != null) {

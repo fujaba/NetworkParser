@@ -1,5 +1,6 @@
 package de.uniks.networkparser;
 
+import de.uniks.networkparser.String.StringContainer;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -185,16 +186,16 @@ public abstract class Tokener {
 	 * processing is done. The formal JSON format does not allow strings in
 	 * single quotes, but an implementation is allowed to accept them.
 	 *
+	 * @param sc StringContainer for manage Chars
 	 * @param allowCRLF
 	 *            is allow CRLF in Stream
-	 * @param quotes
+	 * @param quote
 	 *            The quoting character, either <code>"</code>
 	 *            &nbsp;<small>(double quote)</small> or <code>'</code>
 	 *            &nbsp;<small>(single quote)</small>.
-	 * @return A String.
 	 */
-	public String nextString(boolean allowCRLF, char... quotes) {
-		return nextString(allowCRLF, false, false, true, quotes);
+	public StringContainer nextString(StringContainer sc, boolean allowCRLF, char quote) {
+		return nextString(sc, allowCRLF, false, false, true, quote);
 	}
 	
 	/**
@@ -202,25 +203,26 @@ public abstract class Tokener {
 	 * processing is done. The formal JSON format does not allow strings in
 	 * single quotes, but an implementation is allowed to accept them.
 	 *
+	 * @param sc StringContainer for manage Chars
 	 * @param allowCRLF
 	 *            is allow CRLF in Stream
 	 * @param nextStep
 	 *            must i step next after find Text
-	 * @param quotes
+	 * @param quote
 	 *            The quoting character, either <code>"</code>
 	 *            &nbsp;<small>(double quote)</small> or <code>'</code>
 	 *            &nbsp;<small>(single quote)</small>.
-	 * @return A String.
 	 */
-	public String nextString(boolean allowCRLF, boolean nextStep, char... quotes) {
-		return nextString(allowCRLF, false, false, nextStep, quotes);
+	public void nextString(StringContainer sc, boolean allowCRLF, boolean nextStep, char quote) {
+		nextString(sc, allowCRLF, false, false, nextStep, quote);
 	}
 
 	/**
 	 * Return the characters up to the next close quote character. Backslash
 	 * processing is done. The formal JSON format does not allow strings in
 	 * single quotes, but an implementation is allowed to accept them.
-	 *
+	 * 
+	 * @param sc StringContainer for manage Chars
 	 * @param allowCRLF
 	 *            is allow CRLF in Stream
 	 * @param allowQuote
@@ -234,28 +236,29 @@ public abstract class Tokener {
 	 *            The quoting character, either <code>"</code>
 	 *            &nbsp;<small>(double quote)</small> or <code>'</code>
 	 *            &nbsp;<small>(single quote)</small>.
-	 * @return A String.
 	 */
-	public String nextString(boolean allowCRLF, boolean allowQuote,
-			boolean mustQuote, boolean nextStep, char... quotes) {
-		if (getCurrentChar() == 0 || quotes == null) {
-			return "";
+	public StringContainer nextString(StringContainer sc, boolean allowCRLF, boolean allowQuote,
+			boolean mustQuote, boolean nextStep, char quote) {
+		if (getCurrentChar() == 0 ) {
+			return sc;
 		}
-        if (isMatchChar(getCurrentChar(), quotes)) {
+        if (getCurrentChar() == quote) {
 			if (nextStep) {
 				next();
 			}
-			return "";
+			return sc;
 		}
 		if (buffer instanceof BufferedBuffer) {
-			return getString(allowCRLF, allowQuote, mustQuote, nextStep, quotes);
+			getString(sc, allowCRLF, allowQuote, mustQuote, nextStep, quote);
+			return sc;
 		}
-		return getStringBuffer(allowCRLF, allowQuote, mustQuote,
-				nextStep, quotes);
+		getStringBuffer(sc, allowCRLF, allowQuote, mustQuote,
+				nextStep, quote);
+		return sc;
 	}
 
-	private String getString(boolean allowCRLF, boolean allowQuote,
-			boolean mustQuote, boolean nextStep, char... quotes) {
+	private void getString(StringContainer sc, boolean allowCRLF, boolean allowQuote,
+			boolean mustQuote, boolean nextStep, char quote) {
 		int startpos = this.buffer.position();
 		char c;
 		boolean isQuote = false;
@@ -268,11 +271,11 @@ public abstract class Tokener {
 			case '\r':
 				if (!allowCRLF) {
 					if (logger.error(this, "getString",
-							NetworkParserLog.ERROR_TYP_PARSING, quotes,
+							NetworkParserLog.ERROR_TYP_PARSING, quote,
 							allowCRLF, allowQuote, mustQuote, nextStep)) {
 						throw new RuntimeException("Unterminated string");
 					}
-					return null;
+					return;
 				}
 			default:
 				if (b == '\\') {
@@ -291,11 +294,8 @@ public abstract class Tokener {
 				}
 			}
 			b = c;
-			for(int i=0;i<quotes.length;i++) {
-				if(c == quotes[i]) {
-					c=0;
-					break;
-				}
+			if(c == quote) {
+				c=0;
 			}
 		} while (c != 0);
 
@@ -304,16 +304,15 @@ public abstract class Tokener {
 			next();
 		}
 		if ((isQuote && allowQuote) || mustQuote) {
-			return ((BufferedBuffer)this.buffer).substring(startpos, endPos - startpos - 1);
+			sc.with(((BufferedBuffer)this.buffer).substring(startpos, endPos - startpos - 1));
+			return;
 		}
-
-		return ((BufferedBuffer)this.buffer).substring(startpos, endPos - startpos);
+		sc.with(((BufferedBuffer)this.buffer).substring(startpos, endPos - startpos));
 	}
 
-	private String getStringBuffer(boolean allowCRLF,
-			boolean allowQuote, boolean mustQuote, boolean nextStep, char... quotes) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(getCurrentChar());
+	private void getStringBuffer(StringContainer sc, boolean allowCRLF,
+			boolean allowQuote, boolean mustQuote, boolean nextStep, char quote) {
+		sc.with(getCurrentChar());
 
 		char c, b = 0;
 		boolean isQuote = false;
@@ -325,16 +324,16 @@ public abstract class Tokener {
 			case '\r':
 				if (!allowCRLF) {
 					if (logger.error(this, "getStringBuffer",
-							NetworkParserLog.ERROR_TYP_PARSING, quotes,
+							NetworkParserLog.ERROR_TYP_PARSING, quote,
 							allowCRLF, allowQuote, mustQuote, nextStep)) {
 						throw new RuntimeException("Unterminated string");
 					}
-					return null;
+					return;
 				}
 			default:
 				if (b == '\\') {
 					if (allowQuote) {
-						sb.append(c);
+						sc.with(c);
 						if (c == '\\') {
 							c = 1;
 						}
@@ -346,36 +345,24 @@ public abstract class Tokener {
 					}
 					isQuote = true;
 				}
-				if (isMatchChar(c, quotes) == false) {
-					sb.append(c);
+				if (c != quote) {
+					sc.with(c);
 				}
 				b = c;
 			}
-			for(int i=0;i<quotes.length;i++) {
-				if(c == quotes[i]) {
-					c=0;
-					break;
-				}
+			if(c == quote) {
+				c=0;
 			}
 		} while (c != 0);
 		if (nextStep) {
 			next();
 		}
 		if (isQuote || mustQuote) {
-			return sb.substring(0, sb.length() - 1);
+			sc.remove(sc.length() - 1);
+			return;
 		}
-		return sb.toString();
 	}
 	
-	boolean isMatchChar(char search, char... quotes) {
-		for(int i=0;i<quotes.length;i++) {
-			if(search == quotes[i]) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	/**
 	 * Handle unquoted text. This could be the values true, false, or null, or
 	 * it can be a number. An implementation (such as this one) is allowed to

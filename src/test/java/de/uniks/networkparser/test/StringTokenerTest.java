@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.StringTokener;
+import de.uniks.networkparser.String.StringContainer;
 import de.uniks.networkparser.date.DateTimeEntity;
 import de.uniks.networkparser.json.JsonTokener;
 
@@ -34,14 +35,15 @@ public class StringTokenerTest {
 			tokener.setIndex(1);
 			tokener.withLength(tokener.length()-1);
 			int count=0;
-			String sub;
+			StringContainer sc;
 			//FIXME change to ""
 			do{
-				sub = tokener.nextString(true, ',');
-				if(sub.length()>0){
-					System.out.println(count++ + ": #" +sub+ "# -- " +tokener.isString());
+				sc = new StringContainer();
+				tokener.nextString(sc, true, ',');
+				if(sc.length()>0){
+					System.out.println(count++ + ": #" +sc.toString()+ "# -- " +tokener.isString());
 				}
-			}while (sub.length()>0);
+			}while (sc.length()>0);
 		}
 	}
 	
@@ -54,12 +56,13 @@ public class StringTokenerTest {
 	
 	public void showString(StringTokener tokener, String value){
 		int count=0;
-		String sub;
+		StringContainer sub;
 		
 		System.out.println("zu parsen: " +value);
 		tokener.withBuffer(value);
 		do{
-			sub=tokener.nextString(true, '"');
+			sub = new StringContainer();
+			tokener.nextString(sub, true, '"');
 			if(sub.length()>0){
 				System.out.println(count++ + ": #" +sub+ "# -- " +tokener.isString());
 			}
@@ -96,7 +99,7 @@ public class StringTokenerTest {
 		System.out.println((Character)test.charAt(0));
 		System.out.println(bytes[0]);
 		JsonTokener jsonTokener = (JsonTokener) new JsonTokener().withBuffer(test);
-		System.out.println(jsonTokener.nextString(true, '\"'));
-		System.out.println(jsonTokener.nextString(true, '\"'));
+		System.out.println(jsonTokener.nextString(new StringContainer(), true, '\"'));
+		System.out.println(jsonTokener.nextString(new StringContainer(), true, '\"'));
 	}
 }

@@ -24,6 +24,7 @@ package de.uniks.networkparser.gui.javafx.controls;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ComboBox;
 import de.uniks.networkparser.StringTokener;
+import de.uniks.networkparser.String.StringContainer;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.FieldTyp;
 import de.uniks.networkparser.gui.TableList;
@@ -63,10 +64,10 @@ public class ComboEditControl extends EditControl<ComboBox<Object>>{
 			tokener.withBuffer(column.getNumberFormat());
 			tokener.setIndex(1);
 			tokener.withLength(tokener.length()-1);
-			String sub;
+			StringContainer sub;
 			this.list=new TableList();
 			do{
-				sub = tokener.nextString(true, ',');
+				sub = tokener.nextString(new StringContainer(), true, ',');
 				if(sub.length()>0){
 					list.add(sub);
 				}

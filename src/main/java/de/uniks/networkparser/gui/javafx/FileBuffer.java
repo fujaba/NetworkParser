@@ -1,5 +1,6 @@
 package de.uniks.networkparser.gui.javafx;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -8,9 +9,10 @@ import java.io.IOException;
 import de.uniks.networkparser.interfaces.Buffer;
 
 public class FileBuffer extends Buffer{
-	private FileReader reader;
+	private BufferedReader reader;
 	private File file;
 	private String lookAHead;
+	private int length;
 	private char currentChar;
 
 	public FileBuffer withFile(String fileName) throws FileNotFoundException {
@@ -21,14 +23,15 @@ public class FileBuffer extends Buffer{
 	
 	public FileBuffer withFile(File file) throws FileNotFoundException {
 		this.file = file;
-		this.reader = new FileReader(this.file);
+		this.length = (int) this.file.length();
+		this.reader = new BufferedReader(new FileReader(this.file), 1024*1024);
 		this.position = 0;
 		return this;
 	}
 	
 	@Override
 	public int length() {
-		return (int) this.file.length();
+		return length;
 	}
 
 	@Override

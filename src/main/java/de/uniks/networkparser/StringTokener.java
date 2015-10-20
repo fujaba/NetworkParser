@@ -23,6 +23,7 @@ package de.uniks.networkparser;
 */
 import java.util.ArrayList;
 
+import de.uniks.networkparser.String.StringContainer;
 import de.uniks.networkparser.interfaces.BufferedBuffer;
 import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -32,33 +33,32 @@ public class StringTokener extends Tokener {
 	private int startToken = -1;
 
 	@Override
-	public String nextString(boolean allowCRLF, boolean allowQuote,
-			boolean mustQuote, boolean nextStep, char... quotes) {
+	public StringContainer nextString(StringContainer sc, boolean allowCRLF, boolean allowQuote,
+			boolean mustQuote, boolean nextStep, char quote) {
 
-		if (isMatchChar('"', quotes)) {
-			if (isMatchChar(getCurrentChar(), quotes)) {
+		if ('"' == quote) {
+			if (getCurrentChar() == quote) {
 				isString = true;
 			} else {
 				isString = !isString;
 			}
 		} else if (getCurrentChar() == '"') {
 			isString = true;
-			String sub = "";
-			StringBuilder sb = new StringBuilder();
 			for (;;) {
-				sub = super.nextString(allowCRLF, allowQuote, mustQuote,
-						nextStep, quotes);
-				sb.append(sub);
-				if (sub.length() > 0 && !sub.endsWith("\"")) {
-					sb.append(",");
+				int len = sc.length();
+				super.nextString(sc, allowCRLF, allowQuote, mustQuote,
+						nextStep, quote);
+				if (sc.length()>len && !sc.endsWith("\"")) {
+					sc.with(',');
 				} else {
 					break;
 				}
 			}
-			return sb.toString();
+			return sc;
 		}
-		return super.nextString(allowCRLF, allowQuote, mustQuote,
-				nextStep, quotes);
+		super.nextString(sc, allowCRLF, allowQuote, mustQuote,
+				nextStep, quote);
+		return sc;
 	}
 
 	/**
@@ -121,17 +121,18 @@ public class StringTokener extends Tokener {
 
 	public ArrayList<String> getStringList() {
 		ArrayList<String> list = new ArrayList<String>();
-		String sub;
+		StringContainer sc;
 		do {
-			sub = nextString(true, '"');
-			if (sub.length() > 0) {
+			sc= new StringContainer();
+			nextString(sc, true, '"');
+			if (sc.length() > 0) {
 				if (isString()) {
-					list.add("\"" + sub + "\"");
+					list.add("\"" + sc + "\"");
 				} else {
-					list.add(sub);
+					list.add(sc.toString());
 				}
 			}
-		} while (sub.length() > 0);
+		} while (sc.length() > 0);
 		return list;
 	}
 
