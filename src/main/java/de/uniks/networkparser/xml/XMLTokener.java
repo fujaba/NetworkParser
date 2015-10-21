@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.Tokener;
+import de.uniks.networkparser.String.StringContainer;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferedBuffer;
 import de.uniks.networkparser.list.AbstractList;
@@ -66,7 +67,7 @@ public class XMLTokener extends Tokener {
 		case '"':
 		case '\'':
 			next();
-			String v = nextString(false, allowQuote, false, true, c);
+			StringContainer v = nextString(new StringContainer(), false, allowQuote, false, true, c);
 			String g = EntityUtil.unQuote(v); 
 			return g;
 		case '<':
@@ -140,7 +141,7 @@ public class XMLTokener extends Tokener {
 					return;
 				}
 				if (c != '<') {
-					xmlEntity.withValueItem(nextString(false, false, false, false, '<'));
+					xmlEntity.withValueItem(nextString(new StringContainer(), false, '<').toString());
 					continue;
 				}
 			}
@@ -157,7 +158,7 @@ public class XMLTokener extends Tokener {
 						parseToEntity(child);
 						xmlEntity.addChild(child);
 					} else {
-						xmlEntity.withValueItem(nextString(false, false, false, false, '<'));
+						xmlEntity.withValueItem(nextString(new StringContainer(), false, '<').toString());
 					}
 				}
 			} else if (c == '/') {

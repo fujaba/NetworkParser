@@ -26,6 +26,7 @@ import de.uniks.networkparser.DefaultTextItems;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.StringTokener;
 import de.uniks.networkparser.TextItems;
+import de.uniks.networkparser.String.StringContainer;
 
 public class DateTimeEntity {
 	public static final String W3CDTF_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
@@ -470,7 +471,8 @@ public class DateTimeEntity {
 		dateFormat = dateFormat.replaceAll("'", "\"");
 		tokener.withBuffer(dateFormat);
 		do {
-			sub = tokener.nextString(true, false, false, true, '"');
+			sub = tokener.nextString(new StringContainer(), false, '"').toString();
+			//FIXME Change String to StringContainter
 			if (sub.length() > 0 && !tokener.isString()) {
 				// System.out.println(count++
 				// + ": #" +sub+ "# -- " +tokener.isString());

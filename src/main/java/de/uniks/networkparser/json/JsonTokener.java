@@ -24,6 +24,7 @@ package de.uniks.networkparser.json;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.Tokener;
+import de.uniks.networkparser.String.StringContainer;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -49,12 +50,12 @@ public class JsonTokener extends Tokener {
 		switch (c) {
 		case '"':
 			next();
-			return EntityUtil.unQuote(nextString(isAllowCRLF(), allowQuote, false, true, c));
+			return EntityUtil.unQuote(nextString(new StringContainer(), allowQuote, false, false, true, c));
 		case '\\':
 			// Must be unquote
 			next();
 			next();
-			return nextString(isAllowCRLF(), allowQuote, true, true, '"');
+			return nextString(new StringContainer(), allowQuote, true, '"');
 		case '{':
 			BaseItem element = creator.getNewList(true);
 			if (element instanceof SimpleKeyValueList<?, ?>) {

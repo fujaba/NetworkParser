@@ -92,7 +92,7 @@ public class EntityUtil {
 		return string;
 	}
 
-	public static String unQuote(String value) {
+	public static String unQuote(CharSequence value) {
 		if (value == null || value.length() == 0) {
 			return "";
 		}

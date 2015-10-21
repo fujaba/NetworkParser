@@ -212,9 +212,10 @@ public abstract class Tokener {
 	 *            The quoting character, either <code>"</code>
 	 *            &nbsp;<small>(double quote)</small> or <code>'</code>
 	 *            &nbsp;<small>(single quote)</small>.
+	 * @return 
 	 */
-	public void nextString(StringContainer sc, boolean allowCRLF, boolean nextStep, char quote) {
-		nextString(sc, allowCRLF, false, false, nextStep, quote);
+	public StringContainer nextString(StringContainer sc, boolean allowCRLF, boolean nextStep, char quote) {
+		return nextString(sc, allowCRLF, false, false, nextStep, quote);
 	}
 
 	/**
