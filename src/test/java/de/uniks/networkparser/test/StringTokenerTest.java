@@ -38,8 +38,7 @@ public class StringTokenerTest {
 			StringContainer sc;
 			//FIXME change to ""
 			do{
-				sc = new StringContainer();
-				tokener.nextString(sc, true, ',');
+				sc = tokener.nextString(new StringContainer(), true, ',');
 				if(sc.length()>0){
 					System.out.println(count++ + ": #" +sc.toString()+ "# -- " +tokener.isString());
 				}

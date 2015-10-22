@@ -58,23 +58,41 @@ public class CharList implements CharSequence{
 		        value = copy;
 		        this.start = 0;
 			}
-			System.arraycopy(values, start, this.value, count+start, end);
+			int len = values.length();
+			for(int c=0;c<len; c++) {
+				this.value[count+start+c] = values.charAt(c);
+			}
 		}
 		return this;
 	}
 	
 	/** Init the new CharList
-	 * @param values the reference CharSequence
+	 * @param items the reference CharSequence
 	 * @return the new CharList
 	 */
-	public CharList with(CharSequence src) {
+	public CharList with(CharSequence... items) {
+		if(items == null) {
+			return this;
+		}
 		if(this.value == null) {
-			this.value = new char[src.length()];
+			int newCapubility=0;
+			for( int i=0;i<items.length;i++) {
+				newCapubility += items[i].length();
+			}
+			this.value = new char[newCapubility];
 			start = 0;
 			count = this.value.length;
-			System.arraycopy(src, start, this.value, 0, count);
+			int pos = 0;
+			for( int i=0;i<items.length;i++) {
+				int len = items[i].length();
+				for(int c=0;c<len; c++) {
+					this.value[pos++] = items[i].charAt(c);
+				}
+			}
 		} else {
-			with(src, 0, src.length()); 
+			for(CharSequence item : items) {
+				with(item, 0, item.length());
+			}
 		}
 		return this;
 	}

@@ -8,11 +8,8 @@ public class StringContainer implements CharSequence {
 	 * The value is used for character storage.
 	 */
 	CharSequence value;
-
-	/**
-	 * The count is the number of characters used.
-	 */
-	int count;
+	
+	private final static String EMPTY="";
 
 	/**
 	 * Returns {@code true} if, and only if, {@link #length()} is {@code 0}.
@@ -34,7 +31,10 @@ public class StringContainer implements CharSequence {
 	 */
 	@Override
 	public int length() {
-		return count;
+		if(value==null) {
+			return 0;
+		}
+		return value.length();
 	}
 
 	/**
@@ -58,6 +58,9 @@ public class StringContainer implements CharSequence {
 	 * @return a string representation of this sequence of characters.
 	 */
 	public String toString() {
+		if(value == null) {
+			return EMPTY;
+		}
 		return this.value.toString();
 	}
 
@@ -119,7 +122,7 @@ public class StringContainer implements CharSequence {
 	 *             length of this object.
 	 */
 	public String substring(int start) {
-		return substring(start, count);
+		return substring(start, value.length());
 	}
 
 	/**
@@ -141,7 +144,7 @@ public class StringContainer implements CharSequence {
 	public String substring(int start, int end) {
 		if (start < 0)
 			throw new StringIndexOutOfBoundsException(start);
-		if (end > count)
+		if (end > value.length())
 			throw new StringIndexOutOfBoundsException(end);
 		if (start > end)
 			throw new StringIndexOutOfBoundsException(end - start);
@@ -267,6 +270,7 @@ public class StringContainer implements CharSequence {
     public final StringContainer with(char src) {
     	if(value == null) {
     		this.value = new CharList().with(src);
+    		
     	} else if(value instanceof CharList) {
     		((CharList)this.value).with(src);
     	} else {
