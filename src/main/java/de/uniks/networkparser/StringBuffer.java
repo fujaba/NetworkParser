@@ -42,6 +42,9 @@ public class StringBuffer extends TextBuffer {
 
 	@Override
 	public String substring(int start, int len) {
+        if(start<0) {
+            start = position();
+        }
 		if (start + len > buffer.length()) {
 			len = buffer.length() - start;
 		}

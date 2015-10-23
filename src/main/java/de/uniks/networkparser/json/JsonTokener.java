@@ -50,7 +50,7 @@ public class JsonTokener extends Tokener {
 		switch (c) {
 		case '"':
 			next();
-			return EntityUtil.unQuote(nextString(new StringContainer(), allowQuote, false, false, true, c));
+			return EntityUtil.unQuote(nextString(new StringContainer(), allowQuote, true, false, true, c));
 		case '\\':
 			// Must be unquote
 			next();

@@ -195,7 +195,7 @@ public abstract class Tokener {
 	 *            &nbsp;<small>(single quote)</small>.
 	 */
 	public StringContainer nextString(StringContainer sc, boolean allowCRLF, char quote) {
-		return nextString(sc, allowCRLF, false, false, true, quote);
+		return nextString(sc, allowCRLF, false, false, false, quote);
 	}
 	
 	/**
@@ -268,6 +268,8 @@ public abstract class Tokener {
 			c = next();
 			switch (c) {
 			case 0:
+				c=0;
+				break;
 			case '\n':
 			case '\r':
 				if (!allowCRLF) {

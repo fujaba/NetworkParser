@@ -20,6 +20,9 @@ public class StringContainer implements CharSequence {
 	 * @since 1.6
 	 */
 	public boolean isEmpty() {
+		if(value==null) {
+			return true;
+		}
 		return value.length() == 0;
 	}
 
