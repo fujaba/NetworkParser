@@ -55,6 +55,7 @@ public abstract class Tokener {
 	 * Back up one character. This provides a sort of lookahead capability, so
 	 * that you can test for a digit or letter before attempting to parse the
 	 * next number or identifier.
+	 * @return if Buffer is a Step back
 	 */
 	public boolean back() {
 		if(this.buffer instanceof BufferedBuffer == false) {
@@ -193,6 +194,7 @@ public abstract class Tokener {
 	 *            The quoting character, either <code>"</code>
 	 *            &nbsp;<small>(double quote)</small> or <code>'</code>
 	 *            &nbsp;<small>(single quote)</small>.
+	 * @return the StringContainer with the new Value
 	 */
 	public StringContainer nextString(StringContainer sc, boolean allowCRLF, char quote) {
 		return nextString(sc, allowCRLF, false, false, false, quote);
@@ -212,7 +214,7 @@ public abstract class Tokener {
 	 *            The quoting character, either <code>"</code>
 	 *            &nbsp;<small>(double quote)</small> or <code>'</code>
 	 *            &nbsp;<small>(single quote)</small>.
-	 * @return 
+	 * @return the StringContainer with the new Value
 	 */
 	public StringContainer nextString(StringContainer sc, boolean allowCRLF, boolean nextStep, char quote) {
 		return nextString(sc, allowCRLF, false, false, nextStep, quote);
@@ -230,13 +232,13 @@ public abstract class Tokener {
 	 *            is allow Quote in Stream
 	 * @param mustQuote
 	 *            must find Quote in Stream
-	 *
 	 * @param nextStep
 	 *            must i step next after find Text
-	 * @param quotes
+	 * @param quote
 	 *            The quoting character, either <code>"</code>
 	 *            &nbsp;<small>(double quote)</small> or <code>'</code>
 	 *            &nbsp;<small>(single quote)</small>.
+	 * @return the StringContainer with the new Value  
 	 */
 	public StringContainer nextString(StringContainer sc, boolean allowCRLF, boolean allowQuote,
 			boolean mustQuote, boolean nextStep, char quote) {

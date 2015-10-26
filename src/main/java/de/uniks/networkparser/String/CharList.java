@@ -98,7 +98,7 @@ public class CharList implements CharSequence{
 	}
 	
 	/** Init the new CharList
-	 * @param values the reference CharSequence
+	 * @param src the reference CharSequence
 	 * @return the new CharList
 	 */
 	public CharList with(char src) {
@@ -179,7 +179,6 @@ public class CharList implements CharSequence{
      *          if {@code start} or {@code end} are negative,
      *          if {@code end} is greater than {@code length()},
      *          or if {@code start} is greater than {@code end}
-     * @spec JSR-51
      */
 	@Override
 	 public final CharSequence subSequence(int start, int end) {

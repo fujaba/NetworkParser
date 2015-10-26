@@ -68,6 +68,7 @@ public class StringContainer implements CharSequence {
 	}
 
 	/**
+	 * @return The interal value
 	 * Needed by {@code String} for the contentEquals method.
 	 */
 	public CharSequence getValue() {
@@ -105,7 +106,6 @@ public class StringContainer implements CharSequence {
 	 *             if {@code start} or {@code end} are negative, if {@code end}
 	 *             is greater than {@code length()}, or if {@code start} is
 	 *             greater than {@code end}
-	 * @spec JSR-51
 	 */
 	@Override
 	public CharSequence subSequence(int start, int end) {
