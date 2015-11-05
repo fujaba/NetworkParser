@@ -77,6 +77,6 @@ public abstract class Buffer {
 	 * @param lookahead The String for look A Head String. For Simple Buffer change position back to the length of String or Save the String.
 	 * @return Self Instance
 	 */
-	public abstract Buffer withLookAHead(String lookahead);
+	public abstract Buffer withLookAHead(CharSequence lookahead);
 	public abstract Buffer withLookAHead(char current);
 }

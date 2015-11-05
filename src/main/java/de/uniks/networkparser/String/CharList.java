@@ -211,6 +211,11 @@ public class CharList implements CharSequence{
     public final int remaining() {
         return value.length - count - start;
     }
+    
+    public final void clear() {
+    	this.count = 0;
+    	this.start = 0;
+    }
 
 	public char remove(int position) {
 		char oldChar = this.value[position];
@@ -228,6 +233,11 @@ public class CharList implements CharSequence{
 		return oldChar;
 	}
 
+	public CharList addStart(int pos) {
+		this.start += pos;
+		return this;
+	}
+	
 	public CharSequence trim() {
 		int len = count+start;
 		while ((start < len) && (value[len - 1] <= ' ')) {
@@ -242,6 +252,34 @@ public class CharList implements CharSequence{
 	
 	public String toString() {
 		return new String(value, start, count);
-		
+	}
+	
+	/** Init the new CharList
+	 * @param items the reference CharSequence
+	 * @return the new CharList
+	 */
+	public CharList set(CharSequence value) {
+		this.start = 0;
+		this.count = value.length();
+		if(this.value.length < value.length()) {
+			this.value = new char[this.count];
+		}
+		for(int i=0; i < this.count;i++) {
+			this.value[i] = value.charAt(i);
+		}
+		return this;
+	}
+	/** Init the new CharList
+	 * @param items the reference CharSequence
+	 * @return the new CharList
+	 */
+	public CharList set(char value) {
+		this.start = 0;
+		this.count = 1;
+		if(this.value.length < 1) {
+			this.value = new char[1];
+		}
+		this.value[0] = value;
+		return this;
 	}
 }

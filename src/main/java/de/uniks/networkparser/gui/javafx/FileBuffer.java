@@ -6,12 +6,13 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+import de.uniks.networkparser.String.CharList;
 import de.uniks.networkparser.interfaces.Buffer;
 
 public class FileBuffer extends Buffer{
 	private BufferedReader reader;
 	private File file;
-	private String lookAHead;
+	private CharList lookAHead = new CharList();
 	private int length;
 	private char currentChar;
 
@@ -37,12 +38,12 @@ public class FileBuffer extends Buffer{
 	@Override
 	public char getChar() {
 		char value = 0;
-		if(lookAHead != null) {
+		if(lookAHead.length() > 0) {
 			value = lookAHead.charAt(0);
 			if(lookAHead.length() == 1) {
-				lookAHead = null;
+				lookAHead.clear();
 			}else {
-				lookAHead = lookAHead.substring(1);
+				lookAHead.addStart(1);
 			}
 			this.position++;
 			return value;
@@ -59,9 +60,8 @@ public class FileBuffer extends Buffer{
 	@Override
 	public String toText() {
 		char[] values = new char[remaining()];
-		int len = 0;
-		if(lookAHead != null) {
-			len = lookAHead.length();
+		int len = lookAHead.length();
+		if(len>0) {
 			for(int i = 0;i<len;i++) {
 				values[i] = lookAHead.charAt(i);
 			}
@@ -81,17 +81,17 @@ public class FileBuffer extends Buffer{
 
 
 	@Override
-	public FileBuffer withLookAHead(String lookahead) {
-		this.lookAHead = lookahead;
+	public FileBuffer withLookAHead(CharSequence lookahead) {
+		this.lookAHead.set(lookahead);
 		this.currentChar = lookahead.charAt(0);
-		lookahead = lookahead.substring(1);
-		this.position -= lookahead.length();
+		this.lookAHead.addStart(1);
+		this.position -= this.lookAHead.length();
 		return this;
 	}
 	
 	@Override
 	public FileBuffer withLookAHead(char current) {
-		this.lookAHead = ""+this.currentChar;
+		this.lookAHead.set(this.currentChar);
 		this.currentChar = current;
 		this.position--;
 		return this;

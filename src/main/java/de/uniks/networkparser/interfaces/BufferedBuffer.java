@@ -47,7 +47,7 @@ public abstract class BufferedBuffer extends Buffer {
 	public abstract String substring(int start, int length);
 	
 	@Override
-	public BufferedBuffer withLookAHead(String lookahead) {
+	public BufferedBuffer withLookAHead(CharSequence lookahead) {
 		if(lookahead == null) {
 			return this;
 		}

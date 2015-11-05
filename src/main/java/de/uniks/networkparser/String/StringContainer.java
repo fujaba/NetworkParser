@@ -101,17 +101,12 @@ public class StringContainer implements CharSequence {
 	 * @param end
 	 *            the end index, exclusive.
 	 * @return the specified subsequence.
-	 *
-	 * @throws IndexOutOfBoundsException
-	 *             if {@code start} or {@code end} are negative, if {@code end}
-	 *             is greater than {@code length()}, or if {@code start} is
-	 *             greater than {@code end}
 	 */
 	@Override
 	public CharSequence subSequence(int start, int end) {
 		return substring(start, end);
 	}
-
+	
 	/**
 	 * Returns a new {@code String} that contains a subsequence of characters
 	 * currently contained in this character sequence. The substring begins at
@@ -119,12 +114,9 @@ public class StringContainer implements CharSequence {
 	 *
 	 * @param start
 	 *            The beginning index, inclusive.
-	 * @return The new string.
-	 * @throws StringIndexOutOfBoundsException
-	 *             if {@code start} is less than zero, or greater than the
-	 *             length of this object.
+	 * @return The new CharSequence.
 	 */
-	public String substring(int start) {
+	public CharSequence substring(int start) {
 		return substring(start, value.length());
 	}
 
@@ -138,22 +130,32 @@ public class StringContainer implements CharSequence {
 	 *            The beginning index, inclusive.
 	 * @param end
 	 *            The ending index, exclusive.
-	 * @return The new string.
-	 * @throws StringIndexOutOfBoundsException
-	 *             if {@code start} or {@code end} are negative or greater than
-	 *             {@code length()}, or {@code start} is greater than
-	 *             {@code end}.
+	 * @return The new CharSequence.
 	 */
-	public String substring(int start, int end) {
+	public CharSequence substring(int start, int end) {
 		if (start < 0)
-			throw new StringIndexOutOfBoundsException(start);
+			start = 0;
 		if (end > value.length())
-			throw new StringIndexOutOfBoundsException(end);
+			end = value.length();
 		if (start > end)
-			throw new StringIndexOutOfBoundsException(end - start);
-		return new CharList().with(value, start, end).toString();
+			return EMPTY;
+		return new CharList().with(value, start, end);
 	}
 
+	/**
+	 * Set a new Startposition
+	 * @param start The new Start position relativ
+	 * @return this instance
+	 */
+	public CharSequence split(int start) {
+		if(value instanceof CharList) {
+			((CharList)value).addStart(start);
+		}else {
+			value = new CharList().with(value, start, value.length());
+		}
+		return this;
+	}
+	
 	/**
 	 * Returns the {@code char} value in this sequence at the specified index.
 	 * The first {@code char} value is at index {@code 0}, the next at index
