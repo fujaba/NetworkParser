@@ -255,7 +255,7 @@ public class CharList implements CharSequence{
 	}
 	
 	/** Init the new CharList
-	 * @param items the reference CharSequence
+	 * @param value the reference CharSequence
 	 * @return the new CharList
 	 */
 	public CharList set(CharSequence value) {
@@ -270,7 +270,7 @@ public class CharList implements CharSequence{
 		return this;
 	}
 	/** Init the new CharList
-	 * @param items the reference CharSequence
+	 * @param value the reference CharSequence
 	 * @return the new CharList
 	 */
 	public CharList set(char value) {
