@@ -1069,7 +1069,7 @@ Graph.prototype.utf8$to$b64 = function (str) {
 	return window.btoa(unescape(encodeURIComponent(str)));
 };
 Graph.prototype.ExportPDF = function () {
-	var converter, pdf = new jsPDF('l', 'px', 'a4');
+	var converter, pdf = new jsPDF('l','px',[this.model.width, this.model.height]);
 	converter = new svgConverter(this.board, pdf, {removeInvalid: false});
 	pdf.save('Download.pdf');
 };
