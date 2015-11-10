@@ -848,6 +848,16 @@ var jsonB = new GraphUtil().copy({}, json, true);
 jsonB.typ = "classdiagram";
 addCase("ClassDiagram Risk", jsonB);
 </script>
+<script>
+// "typ": "classdiagramm"
+var json = 	{"typ": "classdiagramm", "nodes": [
+	{"typ": "node", id: "jsPDF"},
+	{"typ": "classdiagram", id: "ClassEditorDiagram", minid: "ClassEditor", "nodes": ["ClassEditor", "CreateEdge"]},
+	{"typ": "classdiagram", id: "DrawerDiagram", minid: "Drawer", "nodes": ["Drawer"]}
+], "edges": [ {source: "ClassEditor", target: "Drawer"} ]};
+
+addCase("Error Assoc", json);
+</script>
 
 <table style="height:100%; width:100%;"><tr><td style="vertical-align:top; width:50px;"><ul id="CaseUL"></ul></td><td style="height:100%;" id="Demo"></td></tr></table>
 </body>

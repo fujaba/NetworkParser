@@ -339,6 +339,7 @@ GraphNode.prototype = ObjectCreate(GraphUtil.prototype);
 GraphNode.prototype.getX = function () {if (this.$parent) {return this.$parent.getX() + this.x; } return this.x; };
 GraphNode.prototype.getY = function () {if (this.$parent) {return this.$parent.getY() + this.y; } return this.y; };
 GraphNode.prototype.getEdges = function () {return this.$edges; };
+GraphNode.prototype.clear = function () {this.$RIGHT = this.$LEFT = this.$UP = this.$DOWN = 0; };
 GraphNode.prototype.removeFromBoard = function (board) {if (this.$gui) {board.removeChild(this.$gui); this.$gui = null; } };
 GraphNode.prototype.isClosed = function () {
 	if (this.status === "close") {
@@ -391,6 +392,16 @@ var GraphModel = function (json, options) {
 	}
 };
 GraphModel.prototype = ObjectCreate(GraphNode.prototype);
+GraphModel.prototype.clear = function () {
+	var i;
+	GraphNode.prototype.clear.call(this);
+	for (i in this.nodes) {
+		if (!this.nodes.hasOwnProperty(i)) {
+			continue;
+		}
+		this.nodes[i].clear();
+	}
+};
 GraphModel.prototype.addEdgeModel = function (e) {
 	var edge, typ = e.typ || "edge";
 	typ = typ.charAt(0).toUpperCase() + typ.substring(1).toLowerCase();
@@ -515,8 +526,7 @@ GraphModel.prototype.calcLines = function (drawer) {
 		if (!this.nodes.hasOwnProperty(i) || typeof (this.nodes[i]) === "function") {
 			continue;
 		}
-		n = this.nodes[i];
-		n.$RIGHT = n.$LEFT = n.$UP = n.$DOWN = 0;
+		this.nodes[i].clear();
 	}
 	for (i = 0; i < this.edges.length; i += 1) {
 		e = this.edges[i];
