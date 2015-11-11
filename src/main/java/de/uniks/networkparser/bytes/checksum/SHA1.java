@@ -1,5 +1,7 @@
 package de.uniks.networkparser.bytes.checksum;
 
+import de.uniks.networkparser.String.CharList;
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -62,8 +64,7 @@ public class SHA1 extends Checksum {
 
 			switch (currentPos & 3) {
 			case 0:
-				w[idx] = (((bytes[offset++] & 0xff) << 24)
-						| ((bytes[offset++] & 0xff) << 16)
+				w[idx] = (((bytes[offset++] & 0xff) << 24) | ((bytes[offset++] & 0xff) << 16)
 						| ((bytes[offset++] & 0xff) << 8) | (bytes[offset++] & 0xff));
 				length -= 4;
 				currentPos += 4;
@@ -74,9 +75,8 @@ public class SHA1 extends Checksum {
 				}
 				break;
 			case 1:
-				w[idx] = (w[idx] << 24)
-						| (((bytes[offset++] & 0xff) << 16)
-								| ((bytes[offset++] & 0xff) << 8) | (bytes[offset++] & 0xff));
+				w[idx] = (w[idx] << 24) | (((bytes[offset++] & 0xff) << 16) | ((bytes[offset++] & 0xff) << 8)
+						| (bytes[offset++] & 0xff));
 				length -= 3;
 				currentPos += 3;
 				currentLen += 24;
@@ -86,8 +86,7 @@ public class SHA1 extends Checksum {
 				}
 				break;
 			case 2:
-				w[idx] = (w[idx] << 16)
-						| (((bytes[offset++] & 0xff) << 8) | (bytes[offset++] & 0xff));
+				w[idx] = (w[idx] << 16) | (((bytes[offset++] & 0xff) << 8) | (bytes[offset++] & 0xff));
 				length -= 2;
 				currentPos += 2;
 				currentLen += 16;
@@ -111,10 +110,8 @@ public class SHA1 extends Checksum {
 			/* Now currentPos is a multiple of 4 - this is the place to be... */
 
 			while (length >= 8) {
-				w[currentPos >> 2] = ((bytes[offset++] & 0xff) << 24)
-						| ((bytes[offset++] & 0xff) << 16)
-						| ((bytes[offset++] & 0xff) << 8)
-						| (bytes[offset++] & 0xff);
+				w[currentPos >> 2] = ((bytes[offset++] & 0xff) << 24) | ((bytes[offset++] & 0xff) << 16)
+						| ((bytes[offset++] & 0xff) << 8) | (bytes[offset++] & 0xff);
 				currentPos += 4;
 
 				if (currentPos == 64) {
@@ -122,10 +119,8 @@ public class SHA1 extends Checksum {
 					currentPos = 0;
 				}
 
-				w[currentPos >> 2] = ((bytes[offset++] & 0xff) << 24)
-						| ((bytes[offset++] & 0xff) << 16)
-						| ((bytes[offset++] & 0xff) << 8)
-						| (bytes[offset++] & 0xff);
+				w[currentPos >> 2] = ((bytes[offset++] & 0xff) << 24) | ((bytes[offset++] & 0xff) << 16)
+						| ((bytes[offset++] & 0xff) << 8) | (bytes[offset++] & 0xff);
 
 				currentPos += 4;
 
@@ -140,10 +135,8 @@ public class SHA1 extends Checksum {
 
 			while (length < 0) // (len >= 4)
 			{
-				w[currentPos >> 2] = ((bytes[offset++] & 0xff) << 24)
-						| ((bytes[offset++] & 0xff) << 16)
-						| ((bytes[offset++] & 0xff) << 8)
-						| (bytes[offset++] & 0xff);
+				w[currentPos >> 2] = ((bytes[offset++] & 0xff) << 24) | ((bytes[offset++] & 0xff) << 16)
+						| ((bytes[offset++] & 0xff) << 8) | (bytes[offset++] & 0xff);
 				length -= 4;
 				currentPos += 4;
 				currentLen += 32;
@@ -262,8 +255,7 @@ public class SHA1 extends Checksum {
 
 		// Round 1
 		for (int i = 0; i < 20; i++) {
-			int temp = ((a << 5) | (a >>> (32 - 5))) + ((b & c) | ((~b) & d))
-					+ e + w[i] + round1_kt;
+			int temp = ((a << 5) | (a >>> (32 - 5))) + ((b & c) | ((~b) & d)) + e + w[i] + round1_kt;
 			e = d;
 			d = c;
 			c = ((b << 30) | (b >>> (32 - 30)));
@@ -273,8 +265,7 @@ public class SHA1 extends Checksum {
 
 		// Round 2
 		for (int i = 20; i < 40; i++) {
-			int temp = ((a << 5) | (a >>> (32 - 5))) + (b ^ c ^ d) + e + w[i]
-					+ round2_kt;
+			int temp = ((a << 5) | (a >>> (32 - 5))) + (b ^ c ^ d) + e + w[i] + round2_kt;
 			e = d;
 			d = c;
 			c = ((b << 30) | (b >>> (32 - 30)));
@@ -284,8 +275,7 @@ public class SHA1 extends Checksum {
 
 		// Round 3
 		for (int i = 40; i < 60; i++) {
-			int temp = ((a << 5) | (a >>> (32 - 5)))
-					+ ((b & c) | (b & d) | (c & d)) + e + w[i] + round3_kt;
+			int temp = ((a << 5) | (a >>> (32 - 5))) + ((b & c) | (b & d) | (c & d)) + e + w[i] + round3_kt;
 			e = d;
 			d = c;
 			c = ((b << 30) | (b >>> (32 - 30)));
@@ -295,8 +285,7 @@ public class SHA1 extends Checksum {
 
 		// Round 4
 		for (int i = 60; i < 80; i++) {
-			int temp = ((a << 5) | (a >>> (32 - 5))) + (b ^ c ^ d) + e + w[i]
-					+ round4_kt;
+			int temp = ((a << 5) | (a >>> (32 - 5))) + (b ^ c ^ d) + e + w[i] + round4_kt;
 			e = d;
 			d = c;
 			c = ((b << 30) | (b >>> (32 - 30)));
@@ -308,5 +297,39 @@ public class SHA1 extends Checksum {
 		H2 += c;
 		H3 += d;
 		H4 += e;
+	}
+
+	public static CharList value(CharSequence value) {
+		SHA1 sha1 = new SHA1();
+		sha1.update(toByteArray(value));
+		return convertToHex(sha1.getByteArray());
+	}
+
+	public static CharList convertToHex(byte[] data) {
+		CharList buf = new CharList();
+		for (int i = 0; i < data.length; i++) {
+			int halfbyte = (data[i] >>> 4) & 0x0F;
+			int two_halfs = 0;
+			do {
+				if ((0 <= halfbyte) && (halfbyte <= 9))
+					buf.with((char) ('0' + halfbyte));
+				else
+					buf.with((char) ('a' + (halfbyte - 10)));
+				halfbyte = data[i] & 0x0F;
+			} while (two_halfs++ < 1);
+		}
+		return buf;
+	}
+
+	public static byte[] toByteArray(CharSequence charSequence) {
+		if (charSequence == null) {
+			return null;
+		}
+		byte[] barr = new byte[charSequence.length()];
+		for (int i = 0; i < barr.length; i++) {
+			barr[i] = (byte) charSequence.charAt(i);
+		}
+
+		return barr;
 	}
 }

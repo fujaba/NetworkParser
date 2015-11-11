@@ -16,8 +16,21 @@ public class CharList implements CharSequence{
      */
     int start;
 
-    
     /** Init the new CharList
+	 * @param values the reference CharArray
+	 * @return the new CharList
+	 */
+	public CharList with(byte[] values) {
+		this.value = new char[values.length];
+		start = 0;
+		count = values.length;
+		for(int i=0;i<values.length;i++) {
+			this.value[i] = (char) values[i];
+		}
+		return this;
+	}
+
+	/** Init the new CharList
 	 * @param values the reference CharArray
 	 * @param start the Startposition for the new CharList
 	 * @param end the Endposition for the new CharList
@@ -97,6 +110,53 @@ public class CharList implements CharSequence{
 		return this;
 	}
 	
+	/** Init the new CharList
+	 * @param items the reference CharSequence
+	 * @return the new CharList
+	 */
+	public CharList withObjects(Object... items) {
+		if(items == null) {
+			return this;
+		}
+		if(this.value == null) {
+			int newCapubility=0;
+			for( int i=0;i<items.length;i++) {
+				if(items[i] != null) {
+					if((items[i] instanceof CharSequence) == false)  {
+						items[i] = items[i].toString();
+					}
+					newCapubility += ((CharSequence)items[i]).length();
+				}
+			}
+			this.value = new char[newCapubility];
+			start = 0;
+			count = this.value.length;
+			int pos = 0;
+			for( int i=0;i<items.length;i++) {
+				if(items[i] != null) {
+					CharSequence value = (CharSequence) items[i];
+					int len = value.length();
+					for(int c=0;c<len; c++) {
+						this.value[pos++] = value.charAt(c);
+					}
+				}
+			}
+		} else {
+			for(Object item : items) {
+				CharSequence value = null;
+				if(item instanceof CharSequence)  {
+					value = (CharSequence) item;
+				} else if(item != null) {
+					value = item.toString();
+				}
+				if(value != null) {
+					with(value, 0, value.length());
+				}
+			}
+		}
+		return this;
+	}
+
 	/** Init the new CharList
 	 * @param src the reference CharSequence
 	 * @return the new CharList
