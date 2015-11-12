@@ -12,7 +12,7 @@ import de.uniks.networkparser.json.JsonTokener;
 public class StringTokenerTest {
 	@Test
 	public void testString(){
-		StringTokener tokener=(StringTokener) new StringTokener().withText("Hallo Welt");
+		StringTokener tokener=(StringTokener) new StringTokener().withBuffer("Hallo Welt");
 		showString(tokener, "Hallo Welt");
 		
 		showString(tokener, "Hallo \"meine\" Welt");
@@ -29,7 +29,7 @@ public class StringTokenerTest {
 	
 	@Test
 	public void testStringSplit(){
-		StringTokener tokener = (StringTokener) new StringTokener().withText("[1,\"2,3\",4]");
+		StringTokener tokener = (StringTokener) new StringTokener().withBuffer("[1,\"2,3\",4]");
 		if(tokener.charAt(0)=='['&&tokener.charAt(tokener.length()-1)==']'){
 			tokener.setIndex(1);
 			tokener.setLength(tokener.length()-1);
@@ -57,7 +57,7 @@ public class StringTokenerTest {
 		String sub;
 		
 		System.out.println("zu parsen: " +value);
-		tokener.withText(value);
+		tokener.withBuffer(value);
 		do{
 			sub=tokener.nextString(true, '"');
 			if(sub.length()>0){
@@ -69,7 +69,7 @@ public class StringTokenerTest {
 	
 	@Test
 	public void testSearchText(){
-		StringTokener stringTokener = (StringTokener) new StringTokener().withText("-Harmonie -Illusion -\"E1 E2\"");
+		StringTokener stringTokener = (StringTokener) new StringTokener().withBuffer("-Harmonie -Illusion -\"E1 E2\"");
 		ArrayList<String> stringList = stringTokener.getStringList();
 		ArrayList<String> searchList= new ArrayList<String>();
 		for (int i=0;i<stringList.size();i++){
@@ -95,7 +95,7 @@ public class StringTokenerTest {
 		System.out.println(test.length());
 		System.out.println((Character)test.charAt(0));
 		System.out.println(bytes[0]);
-		JsonTokener jsonTokener = (JsonTokener) new JsonTokener().withText(test);
+		JsonTokener jsonTokener = (JsonTokener) new JsonTokener().withBuffer(test);
 		System.out.println(jsonTokener.nextString(true, '\"'));
 		System.out.println(jsonTokener.nextString(true, '\"'));
 	}

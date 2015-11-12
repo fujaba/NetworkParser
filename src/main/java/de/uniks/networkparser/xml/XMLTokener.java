@@ -179,7 +179,7 @@ public class XMLTokener extends Tokener {
 	}
 
 	@Override
-	public XMLTokener withText(String value) {
+	public XMLTokener withBuffer(String value) {
 		int pos = 0;
 		while (value.substring(pos, pos + 2).equals("<?")) {
 			pos = value.indexOf("?>", pos) + 2;
@@ -187,7 +187,7 @@ public class XMLTokener extends Tokener {
 		if (pos > 0) {
 			value = value.substring(pos);
 		}
-		super.withText(value);
+		super.withBuffer(value);
 		return this;
 	}
 

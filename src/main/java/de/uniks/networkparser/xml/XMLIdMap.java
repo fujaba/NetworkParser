@@ -235,7 +235,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 
 	@Override
 	public Object decode(String value) {
-		return decode((XMLTokener) new XMLTokener().withText(value), null);
+		return decode((XMLTokener) new XMLTokener().withBuffer(value), null);
 	}
 
 	/**

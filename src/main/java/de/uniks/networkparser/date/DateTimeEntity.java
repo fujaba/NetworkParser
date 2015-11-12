@@ -468,7 +468,7 @@ public class DateTimeEntity {
 		String sub;
 		StringTokener tokener = new StringTokener();
 		dateFormat = dateFormat.replaceAll("'", "\"");
-		tokener.withText(dateFormat);
+		tokener.withBuffer(dateFormat);
 		do {
 			sub = tokener.nextString(true, false, false, true, '"');
 			if (sub.length() > 0 && !tokener.isString()) {

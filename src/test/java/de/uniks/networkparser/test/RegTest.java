@@ -14,7 +14,7 @@ public class RegTest {
 	public void testRegEx(){
 		String reg="[abc]";
 		StringTokener item= new StringTokener();
-		item.withText(reg);
+		item.withBuffer(reg);
 		Condition<ValuesSimple> root = parseCurrentChar(item);
 		Assert.assertNotNull(root);
 	}

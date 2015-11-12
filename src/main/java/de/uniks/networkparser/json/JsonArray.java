@@ -245,7 +245,7 @@ public class JsonArray extends SortedList<Object> implements
 	 */
 	public JsonArray withValue(String value) {
 		clear();
-		new JsonTokener().withText(value).parseToEntity(this);
+		new JsonTokener().withBuffer(value).parseToEntity(this);
 		return this;
 	}
 

@@ -60,7 +60,7 @@ public class ComboEditControl extends EditControl<ComboBox<Object>>{
 			}
 		}else if(column.getNumberFormat()!=null && column.getNumberFormat().startsWith("[")){
 			StringTokener tokener=new StringTokener();
-			tokener.withText(column.getNumberFormat());
+			tokener.withBuffer(column.getNumberFormat());
 			tokener.setIndex(1);
 			tokener.setLength(tokener.length()-1);
 			String sub;

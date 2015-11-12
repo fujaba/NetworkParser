@@ -43,7 +43,7 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 	@Override
 	public Object decode(String value) {
 		StringTokener item = new StringTokener();
-		item.withText(value);
+		item.withBuffer(value);
 		return decodeGraph(item);
 	}
 	Object decodeGraph(StringTokener value) {

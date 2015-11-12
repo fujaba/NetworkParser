@@ -275,7 +275,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 			return this;
 		}
 		if (values.length > 0) {
-			new JsonTokener().withText(values[0]).parseToEntity(this);
+			new JsonTokener().withBuffer(values[0]).parseToEntity(this);
 		}
 		return this;
 	}
