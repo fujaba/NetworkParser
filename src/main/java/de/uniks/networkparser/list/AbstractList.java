@@ -26,6 +26,11 @@ import java.util.Iterator;
 import java.util.ListIterator;
 import de.uniks.networkparser.interfaces.BaseItem;
 
+/**
+ * @author Stefan
+ *
+ * @param <V>
+ */
 public abstract class AbstractList<V> extends AbstractArray<V> {
 	/**
      * {@inheritDoc}
@@ -116,6 +121,23 @@ public abstract class AbstractList<V> extends AbstractArray<V> {
 			copyEntity(newList, pos);
 		}
 		return newList;
+	}
+	
+	
+	/**
+	 * @param element Element for check
+	 * @param sameElement boolen for switch return sameElement
+	 * @return the element or higher Element
+	 */
+	public V ceiling(V element, boolean sameElement) {
+		int pos = indexOf(element);
+		if(pos < size) {
+			return get(pos + 1);
+		}
+		if(sameElement) {
+			return element;
+		}
+		return null;
 	}
 
 	public void add(int index, V element) {
