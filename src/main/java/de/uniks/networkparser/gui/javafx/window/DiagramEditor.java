@@ -287,14 +287,14 @@ public class DiagramEditor extends SimpleShell {
 			this.owner.save(new JsonObject().withValue((String) value));
 		}
 
-		public void generate(Object value) {
+		public String generate(String value) {
 			try {
 				Thread.currentThread().setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
 					public void uncaughtException(Thread t, Throwable e) {
 						JavaApp.this.owner.saveException(e);
 					}
 				});
-				this.owner.generate(new JsonObject().withValue((String) value));
+				this.owner.generate(new JsonObject().withValue(value));
 			} catch (RuntimeException e) {
 				this.owner.saveException(e);
 			} catch (Exception e) {
@@ -302,6 +302,7 @@ public class DiagramEditor extends SimpleShell {
 			} catch (Throwable e) {
 				this.owner.saveException(e);
 			}
+			return "";
 		}
 	}
 
