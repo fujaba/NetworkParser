@@ -29,7 +29,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 /**
  * @author Stefan
  *
- * @param <V>
+ * @param <V> generic Parameter for Simple-Collection
  */
 public abstract class AbstractList<V> extends AbstractArray<V> {
 	/**
