@@ -23,10 +23,10 @@ package de.uniks.networkparser;
 */
 import java.util.ArrayList;
 
-import de.uniks.networkparser.String.StringContainer;
 import de.uniks.networkparser.interfaces.BufferedBuffer;
 import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.string.StringContainer;
 
 public class StringTokener extends Tokener {
 	private boolean isString = true;

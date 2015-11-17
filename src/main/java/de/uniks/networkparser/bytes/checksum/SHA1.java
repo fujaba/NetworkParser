@@ -1,6 +1,6 @@
 package de.uniks.networkparser.bytes.checksum;
 
-import de.uniks.networkparser.String.CharList;
+import de.uniks.networkparser.string.CharList;
 
 /*
  NetworkParser

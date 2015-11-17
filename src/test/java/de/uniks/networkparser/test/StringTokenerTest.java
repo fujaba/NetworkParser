@@ -6,9 +6,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.StringTokener;
-import de.uniks.networkparser.String.StringContainer;
 import de.uniks.networkparser.date.DateTimeEntity;
 import de.uniks.networkparser.json.JsonTokener;
+import de.uniks.networkparser.string.StringContainer;
 
 public class StringTokenerTest {
 	@Test

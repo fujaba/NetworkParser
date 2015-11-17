@@ -24,12 +24,12 @@ package de.uniks.networkparser.gui.javafx.controls;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ComboBox;
 import de.uniks.networkparser.StringTokener;
-import de.uniks.networkparser.String.StringContainer;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.FieldTyp;
 import de.uniks.networkparser.gui.TableList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.string.StringContainer;
 
 public class ComboEditControl extends EditControl<ComboBox<Object>>{
 	private SimpleList<Object> list;

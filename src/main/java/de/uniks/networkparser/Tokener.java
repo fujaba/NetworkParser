@@ -1,6 +1,5 @@
 package de.uniks.networkparser;
 
-import de.uniks.networkparser.String.StringContainer;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -27,6 +26,7 @@ import de.uniks.networkparser.interfaces.Buffer;
 import de.uniks.networkparser.interfaces.BufferedBuffer;
 import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.string.StringContainer;
 /**
  * parseToEntity The Class Tokener.
  */

@@ -37,7 +37,8 @@ public class GraphConverter implements Converter {
 	public static final String ID = "id";
 	
 	public static final String NODE = "node";
-	public static final String PATTERN = "patternobject";
+	public static final String CLAZZ = "clazz";
+	public static final String PATTERN = "pattern";
 	public static final String SUBGRAPH = "subgraph";
 
 	public static final String ATTRIBUTES = "attributes";
@@ -180,7 +181,6 @@ public class GraphConverter implements Converter {
 	               attributes.get(graphNode).add(attribute);
 					}
 				}
-
 			}
 		}
 		return graphNode;
@@ -310,7 +310,7 @@ public class GraphConverter implements Converter {
 		JsonObject item = new JsonObject();
 
 		if(entity instanceof GraphClazz) {
-			item.put(TYP, NODE);
+			item.put(TYP, CLAZZ);
 			GraphClazz element = (GraphClazz) entity;
 			if (typ == GraphIdMap.OBJECT) {
 				item.put(ID,
@@ -327,6 +327,8 @@ public class GraphConverter implements Converter {
 			item.put(ID, entity.getId());
 		}else if(entity instanceof GraphList) {
 			return convertToJson((GraphList) entity, shortName);
+		} else {
+			item.put(TYP, NODE);
 		}
 		if(!(entity instanceof GraphNode)) {
 			return null;

@@ -6,8 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-import de.uniks.networkparser.String.CharList;
 import de.uniks.networkparser.interfaces.Buffer;
+import de.uniks.networkparser.string.CharList;
 
 public class FileBuffer extends Buffer{
 	private BufferedReader reader;

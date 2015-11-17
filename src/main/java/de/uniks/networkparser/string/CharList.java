@@ -1,4 +1,4 @@
-package de.uniks.networkparser.String;
+package de.uniks.networkparser.string;
 
 public class CharList implements CharSequence{
     /**
@@ -106,6 +106,18 @@ public class CharList implements CharSequence{
 			for(CharSequence item : items) {
 				with(item, 0, item.length());
 			}
+		}
+		return this;
+	}
+	
+	public CharList withStart(char item) {
+		if(start>0) {
+			this.value[--start] = item;
+		} else {
+			char[] oldValue = this.value;
+			this.value = new char[value.length + 1];
+			this.value[0] = item;
+			System.arraycopy(oldValue, start, this.value, 1, count);
 		}
 		return this;
 	}

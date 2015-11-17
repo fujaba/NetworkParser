@@ -26,11 +26,11 @@ import java.util.Collection;
 
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.String.StringContainer;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.IdMapDecoder;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
+import de.uniks.networkparser.string.StringContainer;
 import de.uniks.networkparser.xml.util.XMLGrammar;
 import de.uniks.networkparser.xml.util.XSDEntityCreator;
 /**

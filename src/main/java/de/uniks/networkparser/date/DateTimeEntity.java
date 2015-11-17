@@ -26,7 +26,7 @@ import de.uniks.networkparser.DefaultTextItems;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.StringTokener;
 import de.uniks.networkparser.TextItems;
-import de.uniks.networkparser.String.StringContainer;
+import de.uniks.networkparser.string.StringContainer;
 
 public class DateTimeEntity {
 	public static final String W3CDTF_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";

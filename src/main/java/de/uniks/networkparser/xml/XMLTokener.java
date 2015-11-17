@@ -26,12 +26,12 @@ import java.util.ArrayList;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.Tokener;
-import de.uniks.networkparser.String.StringContainer;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferedBuffer;
 import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.string.StringContainer;
 /**
  * Tokener for parsing XML-Files.
  *

@@ -1,4 +1,4 @@
-package de.uniks.networkparser.String;
+package de.uniks.networkparser.string;
 
 import java.nio.BufferOverflowException;
 import java.nio.ReadOnlyBufferException;
