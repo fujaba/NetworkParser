@@ -1343,8 +1343,8 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		if(fromIndex<0) {
 			fromIndex += size;
 		}
-		if(toIndex >= size() || toIndex == 0) {
-			toIndex = size() - 1;	
+		if(toIndex > size() || toIndex == 0) {
+			toIndex = size();	
 		}
 		if( fromIndex<0 || fromIndex>toIndex ){
 			return newInstance;
