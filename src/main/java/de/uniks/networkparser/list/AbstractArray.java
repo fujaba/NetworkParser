@@ -1338,6 +1338,16 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		return new AbstractArray<V>().withFlag(this.flag);
 	}
 
+    /**
+     * Returns a view of the portion of this list between the specified
+     * <tt>fromIndex</tt>, inclusive, and <tt>toIndex</tt>, exclusive.  (If
+     * <tt>fromIndex</tt> and <tt>toIndex</tt> are equal, the returned list is
+     * empty.)
+     *
+     * @param fromIndex low endpoint (inclusive) of the subList
+     * @param toIndex high endpoint (exclusive) of the subList
+     * @return a view of the specified range within this list
+     */
 	public BaseItem subList(int fromIndex, int toIndex) {
 		BaseItem newInstance = getNewList(false);
 		if(fromIndex<0) {
