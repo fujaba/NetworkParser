@@ -109,14 +109,14 @@ public class FullListTest {
 		assertTrue("List should not yet contain added element", ! simpleList.contains(int_01));
 
 		// some small list for testing sublist
-		for (int i = 1; i <= 42; i++)
+		for (int i = 0; i < 42; i++)
 		{
 			simpleList.add(new Integer(i));
 		}
 
 		SimpleSet<Integer> subList = simpleList.subList(10, 20);
 
-		assertEquals("sublist[0] should be 10", new Integer(11), subList.get(0));
+		assertEquals("sublist[0] should be 10", new Integer(10), subList.get(0));
 
 		subList = simpleList.subList(42, 20);
 
@@ -124,7 +124,7 @@ public class FullListTest {
 
 		subList = simpleList.subList(40, 42);
 
-		assertEquals("sublist should have one element", 1, subList.size());
+		assertEquals("sublist should have two elements", 2, subList.size());
 
 		// test iterator
 		ListIterator<Integer> iter = subList.iteratorReverse();
