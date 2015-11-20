@@ -2,6 +2,7 @@ package de.uniks.networkparser.test;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -37,17 +38,12 @@ public class JsonPeer2PeerTest implements UpdateListener{
 		second.setNumber(2);
 		firstRoot.setChild(second);
 		
-//		System.out.println(firstMap.toJsonObject(first).toString(2));
 		firstMap.garbageCollection(firstRoot);
-		System.out.println("SEND ALL");
 		update(null, firstMap.toJsonObject(firstRoot), null, null, null, null);
 		
 		SortedMsg third= new SortedMsg();
 		third.setNumber(4);
-		System.out.println("ADD THIRD");
-//		second.setChild(third);
 		third.setParent(second);
-		System.out.println("ADD THIRD END");
 		third.setNumber(42);
 		second.setChild(null);
 	}
@@ -57,38 +53,32 @@ public class JsonPeer2PeerTest implements UpdateListener{
 			Object oldValue, Object newValue) {
 		JsonObject jsonObject = (JsonObject) source;
 		Object result=secondMap.decode(jsonObject);
-//		System.out.println(secondMap.size());
 		if(z==0){
 			z++;
 			assertEquals(2, secondMap.size());
 			secondRoot=(SortedMsg) secondMap.getObject(firstMap.getKey(firstRoot));
-//			System.out.println(secondMap.size());
 		} else if(z==1){
-			System.out.println(jsonObject.toString(2));
+			Assert.assertEquals("===== add =====", 251, jsonObject.toString().length()); 
 			assertEquals(3, secondMap.size());
-//			System.out.println(secondMap.size());
 			z++;
 		} else if(z==2){
-			System.out.println(jsonObject.toString(2));
+			Assert.assertEquals("===== rem =====", "{\"id\":\"J1.S3\",\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"rem\":{\"number\":4},\"upd\":{\"number\":42}}", jsonObject.toString());
 			z++;
-//			System.out.println(secondMap.size());
+			assertEquals(3, secondMap.size());
 		} else if(z==3){
-			System.out.println(jsonObject.toString(2));
+			Assert.assertEquals("===== rem =====", "{\"id\":\"J1.S2\",\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"rem\":{\"child\":{\"id\":\"J1.S3\"}}}", jsonObject.toString());
 			z++;
-//			System.out.println(secondMap.size());
+			assertEquals(3, secondMap.size());
 		}
 		if(z>3){
-			System.out.println("===== FIRST =====");
-			System.out.println(firstMap.toJsonObject(firstRoot).toString(2));
+			Assert.assertEquals("===== FIRST =====",385, firstMap.toJsonObject(firstRoot).toString(2).length());
 			//LAST
-			System.out.println("===== SECOND =====");
 			Object secondRoot = secondMap.getObject("J1.S1");
-			System.out.println(secondMap.toJsonObject(secondRoot).toString(2));
-			System.out.println("===== SECOND =====");
-			System.out.println(firstMap.size());
-			System.out.println(secondMap.size());
+			Assert.assertEquals("===== SECOND =====",385, secondMap.toJsonObject(secondRoot).toString(2).length());
+			Assert.assertEquals("===== SIZE FIRST=====",3, firstMap.size());
+			Assert.assertEquals("===== SIZE SECOND=====",3, secondMap.size());
 			secondMap.garbageCollection(secondRoot);
-			System.out.println(secondMap.size());
+			Assert.assertEquals("===== SIZE SECOND=====",2, secondMap.size());
 		}
 		return result!=null;
 	}

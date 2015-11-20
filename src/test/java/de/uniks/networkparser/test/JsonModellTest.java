@@ -1,7 +1,9 @@
 package de.uniks.networkparser.test;
 
+import java.io.PrintStream;
 import java.math.BigInteger;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.Filter;
@@ -10,6 +12,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
+import de.uniks.networkparser.logic.Deep;
 import de.uniks.networkparser.logic.InstanceOf;
 import de.uniks.networkparser.test.model.GroupAccount;
 import de.uniks.networkparser.test.model.Person;
@@ -30,8 +33,7 @@ public class JsonModellTest implements UpdateListener {
 		
 		JsonIdMap map= new JsonIdMap();
 		map.withCreator(new PersonCreator());
-//		System.out.println(map.toJsonArray(account.getPersons(), new Filter().withPropertyRegard(InstanceOf.value(Person.class, Person.PROPERTY_PARENT))).toString(2));
-		System.out.println(map.toJsonArray(account.getPersons(), Filter.regard(InstanceOf.value(Person.class, Person.PROPERTY_PARENT))).toString(2));
+		Assert.assertEquals(377, map.toJsonArray(account.getPersons(), Filter.regard(InstanceOf.value(Person.class, Person.PROPERTY_PARENT))).toString(2).length());
 	}
 	
 	
@@ -52,12 +54,11 @@ public class JsonModellTest implements UpdateListener {
 		String sample="Hallo Welt";
 		
 	    byte[] dataByte = sample.getBytes();
-	    System.out.println("Compression Demo");
-	    System.out.println("Actual Size of String : " + dataByte.length);
+	    Assert.assertEquals("Actual Size of String", 10, dataByte.length);
 	    
 		// test string
 		String text = "Hello world!";
-		System.out.println("" + text+ "(" +text.length()+ ")");
+		Assert.assertEquals("" + text+ "(" +text.length()+ ")", 12, text.length());
 
 		// convert to big integer
 		BigInteger number = new BigInteger(text.getBytes());
@@ -71,33 +72,24 @@ public class JsonModellTest implements UpdateListener {
 		secondMap.withCreator(new SortedMsgCreator());
 
 		JsonObject jsonObject=map.toJsonObject(first);
-		System.out.println(jsonObject.toString(2));
+		Assert.assertEquals(385, jsonObject.toString(2).length());
 		secondMap.getUpdateListener().execute(jsonObject);
 		
 		SortedMsg third= new SortedMsg();
 		third.setNumber(4);
 		second.setChild(third);
 		// DEEP 0
-//		System.out.println(map.toJsonObject(first, new JsonFilter(0)).toString());
+		Assert.assertEquals(88, map.toJsonObject(first, Filter.regard(Deep.value(0))).toString().length());
+//		System.out.println();
 		// DEEP 1
-//		System.out.println(map.toJsonObject(first, new JsonFilter(1)).toString());
+		Assert.assertEquals(185, map.toJsonObject(first, Filter.regard(Deep.value(1))).toString().length());
 		// DEEP 2
-//		System.out.println(map.toJsonObject(first, new JsonFilter(2)).toString());
+		Assert.assertEquals(185, map.toJsonObject(first, Filter.regard(Deep.value(2))).toString().length());
 		third.updateNumber(2);
 		third.setNumber(5);
 		
-//		System.out.println(map.size());
+		Assert.assertEquals(3, map.size()); 
 		second.setChild(null);
-	}
-
-	@Test
-	public void testModellReplicator(){
-		System.out.println("9".compareTo("10")); //8
-		System.out.println("1".compareTo("2"));  //-1
-		System.out.println("10".compareTo("9"));  //-8
-		System.out.println(new Integer(1).compareTo(2)); //-1
-		System.out.println(new Integer(9).compareTo(10));//-1
-		System.out.println(new Integer(10).compareTo(9)); // 1
 	}
 
 	@Override
@@ -105,11 +97,17 @@ public class JsonModellTest implements UpdateListener {
 			Object oldValue, Object newValue) {
 		if(IdMap.SENDUPDATE.equals(typ)) {
 			JsonObject jsonObject = (JsonObject) source;
-			System.out.println("Send: " +jsonObject);
+			printToStream("Send: " +jsonObject, null);
 			secondMap.getUpdateListener().execute(jsonObject);
 			return true;
 		}
-		System.out.println("ReceiveOBJ: Typ:" +property+ "value:" +newValue);
+		printToStream("ReceiveOBJ: Typ:" +property+ "value:" +newValue, null);
 		return false;
+	}
+
+	void printToStream(String str, PrintStream stream) {
+		if(stream != null) {
+			stream.println(str);
+		}
 	}
 }

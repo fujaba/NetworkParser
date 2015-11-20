@@ -23,6 +23,7 @@ package de.uniks.networkparser.bytes.converter;
 */
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.interfaces.ByteConverter;
+import de.uniks.networkparser.string.CharList;
 
 public class ByteConverterHex extends ByteConverter {
 	/**
@@ -42,7 +43,7 @@ public class ByteConverterHex extends ByteConverter {
 	public String toString(byte[] values, int size, int space) {
 		String hexVal = "0123456789ABCDEF";
 
-		StringBuilder returnValue = new StringBuilder(size << 1);
+		CharList returnValue = new CharList().withLen(size << 1 + size * space);
 		String step = EntityUtil.repeat(' ', space);
 		if (values != null) {
 			for (int i = 0; i < size; i++) {
@@ -50,8 +51,9 @@ public class ByteConverterHex extends ByteConverter {
 				if (value < 0) {
 					value += 256;
 				}
-				returnValue.append("" + hexVal.charAt(value / 16)
-						+ hexVal.charAt(value % 16) + step);
+				returnValue.with(hexVal.charAt(value / 16));
+				returnValue.with(hexVal.charAt(value % 16));
+				returnValue.with(step); 
 			}
 		}
 		return returnValue.toString();

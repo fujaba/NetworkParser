@@ -29,6 +29,21 @@ public class CharList implements CharSequence{
 		}
 		return this;
 	}
+	
+	public CharList withLen(int len) {
+		if(value == null ) {
+			this.value = new char[len];
+		} else if (len >value.length) {
+			char[] oldValue = this.value;
+			this.value = new char[len];
+			int oldLen = count - start;
+			
+			System.arraycopy(oldValue, start, this.value, 0, count);
+			start = 0;
+			count = oldLen;
+		}
+		return this;
+	}
 
 	/** Init the new CharList
 	 * @param values the reference CharArray

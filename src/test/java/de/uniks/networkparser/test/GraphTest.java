@@ -1,5 +1,6 @@
 package de.uniks.networkparser.test;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.graph.GraphClazz;
@@ -17,6 +18,6 @@ public class GraphTest {
 		list.with(node);
 		
 		GraphConverter converter=new GraphConverter();
-		System.out.println(converter.convert(list, false));
+		Assert.assertEquals("{\"typ\":\"classdiagram\",\"style\":null,\"nodes\":[{\"typ\":\"clazz\",\"id\":\"Item\",\"head\":{\"src\":\"karli.png\"}}]}", converter.convert(list, false).toString()); 
 	}
 }

@@ -1,5 +1,7 @@
 package de.uniks.networkparser.test;
 
+import java.io.PrintStream;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -21,11 +23,39 @@ public class AESTest {
 		
 		ByteConverterHex converter = new ByteConverterHex();
 		
+		outputStream(encrypted.getBytes(), System.out);
 		String hex = converter.toString(encrypted.getBytes()).replace(" ", "");
 		Assert.assertEquals("Encrypted text (as hex) : [" +hex+ "] [" +hex.length()+ " bytes]", 128, hex.length());
 		
 		String unencrypted = aes.decode(encrypted);
 		Assert.assertEquals("Unencrypted text : [" +unencrypted+ "] [" +unencrypted.length()+ " bytes]", 38, unencrypted.length());
+	}
+	
+	void outputStream(byte[] bytes, PrintStream stream){
+		if(stream == null) {
+			return;
+		}
+		
+		boolean newline=false;
+		for (int i=0;i<bytes.length;i++){
+			if(bytes[i]<10){
+				stream.print(" 00" +(byte)bytes[i]);
+				newline=false;
+			} else if(bytes[i]<100){
+				stream.print(" 0" +(byte)bytes[i]);
+				newline=false;
+			} else {
+				stream.print(" " +(byte)bytes[i]);
+				newline=false;
+			}
+			if((i+1)%10==0){
+				newline=true;
+				stream.println("");
+			}
+		}
+		if(!newline){
+			stream.println("");
+		}
 	}
 	
 	@Test

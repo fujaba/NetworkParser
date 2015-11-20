@@ -25,7 +25,6 @@ public static String CRLF="\r\n";
 	public StringBuffer readFile(String file){
 		BufferedReader bufferedReader;
 		String fullPath = getAbsolutePath(file);
-//		System.out.println("IOCLASSES-PATH: "+path);
 		try {
 			bufferedReader = new BufferedReader(new FileReader(fullPath));
 			StringBuffer indexText = new StringBuffer();

@@ -21,6 +21,9 @@
    
 package de.uniks.networkparser.test;
    
+import java.io.PrintStream;
+
+import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.Filter;
@@ -87,13 +90,17 @@ public class GraphLudoTest
       sabine.createPawns().withColor(RED).withPos(tomStartField);
       
       JsonArray jsonArray = jsonIdMap.toJsonArray(ludo);
-      //System.out.println(jsonArray.toString());
-//      GraphIdMap docMap=new
       GraphConverter graphConverter = new GraphConverter();
       JsonObject converter=graphConverter.convertToJson(GraphIdMap.CLASS, jsonArray, true);
-      System.out.println("###############################");
-      System.out.println(converter.toString(2));
-      System.out.println("###############################");
+      showDebugInfos(converter, 4205, null);
+   }
+   private void showDebugInfos(JsonObject json, int len, PrintStream stream) {
+	   if(stream != null) {
+		   stream.println("###############################");
+		   stream.println(json.toString(2));
+		   stream.println("###############################");
+	   }
+	   Assert.assertEquals(len, json.toString(2).length());
    }
 
    @Test
@@ -112,10 +119,10 @@ public class GraphLudoTest
 	   item.put(GraphConverter.HEAD, "map.png");
 	   GraphConverter graphConverter = new GraphConverter();
       JsonObject objectModel=graphConverter.convertToJson(GraphIdMap.OBJECT, jsonArray, true);
-      System.out.println(objectModel.toString(2));
+      showDebugInfos(objectModel, 676, null);
       
       JsonObject clazzModel=graphConverter.convertToJson(GraphIdMap.CLASS, jsonArray, true);
-      System.out.println(clazzModel.toString(2));
+      showDebugInfos(clazzModel, 512, null);
  }
    
    

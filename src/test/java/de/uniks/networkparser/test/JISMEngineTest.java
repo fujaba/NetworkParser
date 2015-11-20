@@ -14,13 +14,10 @@ public class JISMEngineTest extends IOClasses{
 	public void testJISMEngine(){
 		StringBuffer stringBuffer = readFile("template.html");
 		
-		
 		XMLSimpleIdMap decoder= new XMLSimpleIdMap();
 		String data = stringBuffer.toString();
 		XMLStyledEntityCreator factory = new XMLStyledEntityCreator();
 		Object decode = decoder.decode(new XMLTokener().withBuffer(data), factory);
-		System.out.println(decode);
 		assertNotNull(decode);
 	}
-
 }
