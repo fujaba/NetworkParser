@@ -17,6 +17,7 @@ import de.uniks.networkparser.logic.InstanceOf;
 import de.uniks.networkparser.test.model.GroupAccount;
 import de.uniks.networkparser.test.model.Person;
 import de.uniks.networkparser.test.model.SortedMsg;
+import de.uniks.networkparser.test.model.util.GroupAccountCreator;
 import de.uniks.networkparser.test.model.util.PersonCreator;
 import de.uniks.networkparser.test.model.util.SortedMsgCreator;
 
@@ -33,7 +34,8 @@ public class JsonModellTest implements UpdateListener {
 		
 		JsonIdMap map= new JsonIdMap();
 		map.withCreator(new PersonCreator());
-		Assert.assertEquals(377, map.toJsonArray(account.getPersons(), Filter.regard(InstanceOf.value(Person.class, Person.PROPERTY_PARENT))).toString(2).length());
+		map.withCreator(new GroupAccountCreator());
+		Assert.assertEquals(211, map.toJsonArray(account.getPersons(), Filter.regard(InstanceOf.value(Person.class, Person.PROPERTY_PARENT))).toString(2).length());
 	}
 	
 	
