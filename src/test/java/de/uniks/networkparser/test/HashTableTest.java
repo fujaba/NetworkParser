@@ -39,7 +39,7 @@ public class HashTableTest
 			HashTableTest.COUNT = Integer.valueOf((String)System.getProperty("count"));
 		}else{
 //			HashTableTest.COUNT = 1000 * 1000;
-			HashTableTest.COUNT = 1000;
+			HashTableTest.COUNT = 100;
 		}
 //		HashTableTest.stream = System.out;
 		printToStream("Run test for "+HashTableTest.COUNT+" items");
