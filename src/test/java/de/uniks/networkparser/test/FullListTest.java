@@ -20,14 +20,13 @@ public class FullListTest {
 		SimpleList<String> simpleList = new SimpleList<String>();
 		simpleList.add("Hallo");
 
-		System.out.println(simpleList.get(0));
+		Assert.assertEquals("Hallo",simpleList.get(0));
 
 
 		SimpleKeyValueList<String, Integer> map = new SimpleKeyValueList<String, Integer>();
 		map.flag();
 		map.add("Stefan", 42);
-
-		System.out.println(map);
+		Assert.assertEquals("Map Visible CaseSensitive ",map.toString());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -60,7 +59,7 @@ public class FullListTest {
 		int counter = 0;
 		for (Integer integer : simpleList) {
 			counter++;
-			System.out.println(integer);
+			Assert.assertNotNull(integer);
 		}
 
 		assertEquals("iteration should have counted one element", 1, counter);
@@ -96,7 +95,7 @@ public class FullListTest {
 		counter = 0;
 		for (Integer integer : simpleList) {
 			counter++;
-			System.out.println(integer);
+			Assert.assertNotNull(integer);
 		}
 
 		assertEquals("iteration should have counted zero elements", 0, counter);
@@ -277,12 +276,14 @@ public class FullListTest {
 	public void simpleKeyValueList() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
 	{
 		SimpleKeyValueList<Integer, Integer> queue=new SimpleKeyValueList<Integer, Integer>().withFlag(SimpleKeyValueList.BIDI).withAllowDuplicate(true);
+		boolean found=false;
 		for(int i=1;i<500;i++) {
 			if(i==1) {
-				System.out.println("BREAK");
+				found = true;
 			}
 			queue.add(i, i);
 		}
+		Assert.assertTrue(found);
 		Field declaredField = queue.getClass().getSuperclass().getDeclaredField("elements");
 		declaredField.setAccessible(true);
 		Object[] object = (Object[]) declaredField.get(queue);
@@ -324,8 +325,7 @@ public class FullListTest {
 		list.remove(0);
 //		list.remove(0);
 //		list.remove(0);
-		
-		System.out.println(object);
+		Assert.assertNotNull(object);
 		
 		Object[] array = list.toArray();
 		
@@ -347,7 +347,7 @@ public class FullListTest {
 		list.remove(0);
 		list.add(6);
 		list.removeByObject(3);
-		System.out.println(list.size());
+		Assert.assertEquals(4, list.size());
 	}
 
 	@Test
@@ -359,7 +359,7 @@ public class FullListTest {
 		list.add(4);
 		list.add(5);
 		list.removeByObject(3);
-		System.out.println(list.size());
+		Assert.assertEquals(4, list.size());
 	}
 	
 	@Test

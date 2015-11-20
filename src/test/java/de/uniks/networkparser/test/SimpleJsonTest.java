@@ -20,7 +20,7 @@ public class SimpleJsonTest {
 			@Override
 			public boolean update(String typ, BaseItem source, Object target, String property, Object oldValue,
 					Object newValue) {
-				System.out.println(source);
+				Assert.assertEquals("{\"id\":\"J1.H1\",\"class\":\"de.uniks.networkparser.test.model.House\",\"rem\":{\"floor\":4},\"upd\":{\"floor\":42}}", source.toString());
 				return false;
 			}
 		});

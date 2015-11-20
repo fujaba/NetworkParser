@@ -2,10 +2,12 @@ package de.uniks.networkparser.test;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.bytes.checksum.CCITT16;
@@ -23,31 +25,29 @@ public class CheckSumTest {
 		CCITT16 crc16= new CCITT16();
 		ByteConverterHex converter= new ByteConverterHex();
 		byte[] array = converter.decode("030400FB0000000000000240000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
-		
-		
-//		crc16.update(array);
-//		System.out.println(converter.toString(crc16.getByteArray()));
-		System.out.println(array.length);
-	      Integer crc = 0x0000;          // initial value
-	        int polynomial = 0x1021;   // 0001 0000 0010 0001  (0, 5, 12) 
 
-//	        array = "123456789".getBytes("ASCII");
+		Assert.assertEquals(60, array.length);
+		Integer crc = 0x0000; // initial value
+		int polynomial = 0x1021; // 0001 0000 0010 0001 (0, 5, 12)
 
-	        for (byte b : array) {
-	            for (int i = 0; i < 8; i++) {
-	                boolean bit = ((b   >> (7-i) & 1) == 1);
-	                boolean c15 = ((crc >> 15    & 1) == 1);
-	                crc <<= 1;
-	                if (c15 ^ bit) crc ^= polynomial;
-	             }
-	        }
+		// array = "123456789".getBytes("ASCII");
 
-	        crc &= 0xffff;
-	        System.out.println("CRC16-CCITT = " + Integer.toHexString(crc));
-	        
-	        crc16.update(array);
-	        System.out.println(converter.toString(crc16.getByteArray()));
-	        
+		for (byte b : array) {
+			for (int i = 0; i < 8; i++) {
+				boolean bit = ((b >> (7 - i) & 1) == 1);
+				boolean c15 = ((crc >> 15 & 1) == 1);
+				crc <<= 1;
+				if (c15 ^ bit)
+					crc ^= polynomial;
+			}
+		}
+
+		crc &= 0xffff;
+		Assert.assertEquals("CRC16-CCITT", "98ec", Integer.toHexString(crc));
+
+		crc16.update(array);
+		Assert.assertEquals("CRC16-CCITT", "98EC", converter.toString(crc16.getByteArray()));
+
 	}
 	
 	// Albert
@@ -56,10 +56,6 @@ public class CheckSumTest {
 	public void testCRC8(){
 		Crc8 crc = new Crc8();
 
-//		for (int i=0;i<test.length;i++){
-//			System.out.printf("%1$H ", test[i]);
-//		}
-//		crc.update(new byte[]{0x41, 0x6C, 0x62, 0x65, 0x72, 0x74});
 		crc.update(test);
 		assertEquals(218,crc.getValue());
 	}
@@ -81,9 +77,9 @@ public class CheckSumTest {
 		assertEquals(19779,crc.getValue());
 	}
 	
-	public void printTables(int[] left, int[] right){
+	public void printTables(int[] left, int[] right, PrintStream stream){
 		for (int i=0;i<256;i++){
-			System.out.println(left[i]+ ":" +right[i]);
+			stream.println(left[i]+ ":" +right[i]);
 		}
 	}
 	
@@ -114,37 +110,10 @@ public class CheckSumTest {
 			SHA1 sha12 = new SHA1();
 			sha12.update(bytes);
 			byte[] value = sha12.getByteArray();
-			
-			System.out.println(converter.toString(digest, digest.length));
-			System.out.println(converter.toString(value, value.length));
+			Assert.assertEquals("E3500A442761EF40F1772C5D858397824B6FB5BD", converter.toString(digest, digest.length));
+			Assert.assertEquals("E3500A442761EF40F1772C5D858397824B6FB5BD", converter.toString(value, value.length));
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
 	}
-
-	//	
-//	
-//	CRC crctest= new CRC();
-//	int[] table=crctest.make_crc_table(0x107);
-//	for (int i=0;i<256;i++){
-//		System.out.println(Crc8.CRC8_TABLE[i]+ ":" +table[i]);
-//	}
-//	
-//	Crc16 crc = new Crc16();
-////	crc.calculate(new byte[]{0x42});
-////	System.out.println("CRC16: " +crc.crc16(new byte[]{0x65, 0x66}, 0, 2));
-//	
-////	crc.calculate(new byte[]{0x65, 0x66});
-////	System.out.println("CHEKCSUM: " +crc.checksum());
-//	
-//
-//	
-
-////	crc.add_bits(00101010, 8);
-//	System.out.println("CHEKCSUM: " +crc.getValue());
-//	
-//	// 38B4
-//	System.out.println("ENDE CRC");
-//	System.out.println("");
-//	System.out.println("");
 }

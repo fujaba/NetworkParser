@@ -3,8 +3,10 @@ package de.uniks.networkparser.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.io.PrintStream;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.bytes.ByteBuffer;
@@ -35,10 +37,9 @@ public class ByteTest{
 		entity.setValues(42);
 		//48=00110000 42=00101010
 		String value = entity.toString(new ByteConverterBinary(), true);
-		System.out.println(value);
 		assertEquals("0011011000101010", value);
 		
-		System.out.println(entity.getBytes(true).length());
+		Assert.assertEquals(2, entity.getBytes(true).length());
 	}
 	
 	@Test
@@ -74,10 +75,9 @@ public class ByteTest{
 		byteMap.addCreator(new ChatMessageCreator());
 		ByteItem msg=byteMap.encode(chatMessage);
 //		String reference="C-Stefan ALindel\"FDies Aist Aeine ATestnachricht";
-		String reference="#cK-Stefan ALindel\"FDies Aist Aeine ATestnachricht";
+		String reference="#cK-Stefan ALindel\"ODies Aist Aeine ATestnachricht";
 		String vergleich=msg.toString();
-		System.out.println(reference);
-		System.out.println(vergleich);
+		assertEquals("Wert vergleichen", reference, vergleich);
 		assertEquals("Wert vergleichen", reference.length(), vergleich.length());
 	}
 	
@@ -122,7 +122,7 @@ public class ByteTest{
 		uni.setAnswer(42);
 		ByteItem msg = map.encode(uni);
 		ByteBuffer byteBuffer = msg.getBytes(false);
-		outputStream(byteBuffer);
+		outputStream(byteBuffer, null);
 		assertEquals(24, byteBuffer.length());
 		
 //		outputStream(byteBuffer);
@@ -155,31 +155,33 @@ public class ByteTest{
 		assertEquals("Len of dynamic", 4, bytesBuffer.length());
 		
 	}
-	private void outputStream(ByteBuffer buffer){
-		byte[] bytes=buffer.getValue(buffer.length()); 
+	private void outputStream(ByteBuffer buffer, PrintStream stream){
+		byte[] bytes=buffer.getValue(buffer.length());
+		buffer.withPosition(0);
+		if(stream == null) {
+			return;
+		}
 		
-		System.out.println("Length: " +bytes.length);
 		boolean newline=false;
 		for (int i=0;i<bytes.length;i++){
 			if(bytes[i]<10){
-				System.out.print(" 00" +(byte)bytes[i]);
+				stream.print(" 00" +(byte)bytes[i]);
 				newline=false;
 			} else if(bytes[i]<100){
-				System.out.print(" 0" +(byte)bytes[i]);
+				stream.print(" 0" +(byte)bytes[i]);
 				newline=false;
 			} else {
-				System.out.print(" " +(byte)bytes[i]);
+				stream.print(" " +(byte)bytes[i]);
 				newline=false;
 			}
 			if((i+1)%10==0){
 				newline=true;
-				System.out.println("");
+				stream.println("");
 			}
 		}
 		if(!newline){
-			System.out.println("");
+			stream.println("");
 		}
-		buffer.withPosition(0);
 	}
 	
 	@Test
@@ -236,7 +238,7 @@ public class ByteTest{
 		
 		ByteItem data = map.encode(assocs);
 		ByteBuffer bytes = data.getBytes(false);
-		outputStream(bytes);
+		outputStream(bytes, null);
 		assertEquals("Length", 36, bytes.length());
 		
 		FullAssocs newAssocs=(FullAssocs) map.decode(bytes);

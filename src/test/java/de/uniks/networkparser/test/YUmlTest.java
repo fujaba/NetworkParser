@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.graph.GraphCardinality;
@@ -67,7 +68,6 @@ public class YUmlTest {
 		GraphClazz student = list.with(new GraphClazz().withId("Stefan").withClassName("Student"));
 		student.withAssoc(uni, "owner", GraphCardinality.ONE);
 		YUMLConverter converter = new YUMLConverter();
-		System.out.println(converter.convert(list, true));
+		Assert.assertEquals("[University|name:String]-[Student]", converter.convert(list, true));
 	}	
-	
 }

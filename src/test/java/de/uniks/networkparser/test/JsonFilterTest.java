@@ -12,24 +12,6 @@ import de.uniks.networkparser.test.model.util.LocationCreator;
 
 public class JsonFilterTest {
 	@Test
-	public void testJsonFilter(){
-//FIXME		JsonFilter filter= new JsonFilter(42, "Stefan", "Albert", "Flo");
-//		JsonIdMap map= new JsonIdMap();
-//		map.withCreator(new JsonFilterCreator());
-//		JsonObject jsonObject = map.toJsonObject(filter);
-//		assertNotNull(jsonObject);
-//		String string = jsonObject.toString();
-//		JsonObject newItem = new JsonObject(string);
-//		
-//		JsonIdMap mapB= new JsonIdMap();
-//		mapB.withCreator(new JsonFilterCreator());
-//		JsonFilter jsonFilterB = (JsonFilter) mapB.readJson(newItem);
-//		
-//		assertEquals(3, jsonFilterB.getItems().length);
-//		System.out.println(jsonObject.toString(2));
-	}
-	
-	@Test
 	public void testJsonFilterRegard(){
 		FullMessage fullMessage = new FullMessage();
 		fullMessage.setText("Hallo Welt");

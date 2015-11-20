@@ -113,7 +113,7 @@ public class SVGDrawerTest {
 		sb.append("</script></body></html>");
 		
 		
-		System.out.println(new File("build/").mkdir());
+		new File("build/").mkdir();
 		FileWriter fstream = new FileWriter("build/"+fileName);
 		BufferedWriter out = new BufferedWriter(fstream);
 		out.write(sb.toString());

@@ -83,11 +83,11 @@ public class SortedList<V> extends SimpleList<V> {
 			int compare = comparator().compare(get(pos), fromElement);
 			if (compare == 0) {
 				if (inclusive) {
-					copyEntity(newList, pos);
+					copyEntity(newList, pos++);
 				}
 				break;
 			} else if (compare > 0) {
-				copyEntity(newList, pos);
+				copyEntity(newList, pos++);
 				break;
 			}
 		}

@@ -1,8 +1,10 @@
 package de.uniks.networkparser.test;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.bytes.ByteBuffer;
+import de.uniks.networkparser.bytes.ByteFilter;
 import de.uniks.networkparser.bytes.ByteIdMap;
 import de.uniks.networkparser.interfaces.ByteItem;
 import de.uniks.networkparser.test.model.Apple;
@@ -45,11 +47,10 @@ public class ByteAppleTest {
 		map.withCreator(new AppleCreator());
 		ByteItem item = map.encode(appleTree);
 		ByteBuffer bytes = item.getBytes(true);
-		System.out.println(bytes.length());
+		Assert.assertEquals(167, bytes.length());
 		String string = item.toString();
-//		System.out.println(string.length());
-		System.out.println(string);
-//		System.out.println(map.encode(appleTree, new ByteFilter()));
+		Assert.assertEquals(267, string.length());
+		Assert.assertEquals(267, map.encode(appleTree, new ByteFilter()).toString().length());
 	}
 	@Test
 	public void testSimpleApple() {
@@ -58,7 +59,7 @@ public class ByteAppleTest {
 		map.withCreator(new AppleCreator());
 		ByteItem item = map.encode(apple);
 		ByteBuffer bytes = item.getBytes(true);
-		System.out.println(bytes.length());
+		Assert.assertEquals(61, bytes.length());
 	}
 	
 	@Test
@@ -74,7 +75,7 @@ public class ByteAppleTest {
 		map.withCreator(new AppleCreator(), new AppleTreeCreator());
 		ByteItem item = map.encode(appleTree);
 		ByteBuffer bytes = item.getBytes(true);
-		System.out.println(bytes.length());
+		Assert.assertEquals(94, bytes.length());
 	}
 	@Test
 	public void testSimpleAppleTreePrimitive() {
@@ -85,7 +86,7 @@ public class ByteAppleTest {
 		map.withCreator(new AppleCreator(), new AppleTreeCreator());
 		ByteItem item = map.encode(appleTree);
 		ByteBuffer bytes = item.getBytes(true);
-		System.out.println(bytes.length());
+		Assert.assertEquals(101, bytes.length());
 	}
 	
 	@Test
@@ -102,8 +103,8 @@ public class ByteAppleTest {
 		ByteItem item = map.encode(appleTree);
 
 		ByteBuffer bytes = item.getBytes(true);
-		System.out.println(bytes.length());
+		Assert.assertEquals(97, bytes.length());
 		String string = item.toString();
-		System.out.println(string);
+		Assert.assertEquals(132, string.length());
 	}
 }

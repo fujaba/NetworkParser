@@ -52,7 +52,6 @@ public class ModelTest {
 		JsonIdMap map= new JsonIdMap();
 		map.withCreator(new PersonCreator());
 		Assert.assertEquals(6, countMap(map));
-		System.out.println(countMap(map));
 		
 		JsonIdMap subMap= new JsonIdMap();
 		Assert.assertEquals(5, countMap(subMap));
