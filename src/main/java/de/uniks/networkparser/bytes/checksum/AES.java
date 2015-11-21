@@ -1,6 +1,7 @@
 package de.uniks.networkparser.bytes.checksum;
 
 import de.uniks.networkparser.bytes.converter.ByteConverterString;
+import de.uniks.networkparser.string.CharList;
 
 /**
  * AES - implementation of the AES block cipher in Java.
@@ -186,16 +187,34 @@ public class AES {
 				: 0;
 	}
 
-	public String encodeBytes(byte[] plain) {
-		return converter.toString(encode(plain));
+	public CharList encode(byte[] plain) {
+		CharList result = new CharList().withLen(plain.length);
+		byte[] partByte;
+		for (int p = 0; p < plain.length; p+=16) {
+			partByte = encodeBlock(plain, p);
+			for(int pos =0;pos < BLOCK_SIZE; pos++) {
+				result.with((char)partByte[pos]);
+			}
+		}
+		return result;
 	}
 
-	public String encode(String data) {
-		StringBuilder sb = new StringBuilder(data);
-		while ((sb.length() % 32) != 0) {
-			sb.append(" ");
+	public CharList encode(String data) {
+		CharList string = new CharList().with(data);
+		int rest = ((int) data.length() / 32) * 32;
+		if(rest < data.length()) {
+			rest = 32 - data.length() + rest;
+			string.withRepeat(" ", rest);
 		}
-		return cryptAll(sb, 1);
+		CharList result = new CharList().withLen(string.length());
+		byte[] partByte;
+		for (int p = 0; p < string.length(); p+=16) {
+			partByte = encodeBlock(string.value(), p);
+			for(int pos =0;pos < BLOCK_SIZE; pos++) {
+				result.with((char)partByte[pos]);
+			}
+		}
+		return result;
 	}
 
 	/**
@@ -207,25 +226,70 @@ public class AES {
 	 *
 	 * @param plain
 	 *            the 128-bit plaintext value to encrypt.
+	 * @param from
+	 *            fromIndex of Array
 	 * @return the encrypted 128-bit ciphertext value.
 	 */
-	public byte[] encode(byte[] plain) throws IllegalArgumentException {
+	public byte[] encodeBlock(byte[] plain, int from) {
+		byte[] Ker; // encrypt keys for current round
+		byte[] a = new byte[BLOCK_SIZE];
+		int i;
+		Ker = Ke[0];
+		for (i = 0; i < BLOCK_SIZE; i++) {
+			a[i] = (byte) (plain[i + from] ^ Ker[i]);
+		}
+		return encodeBlock(a);
+	}
+	
+	/**
+	 * AES encrypt 128-bit plaintext using key previously set.
+	 *
+	 * <p>
+	 * Follows cipher specification given in FIPS-197 section 5.1 See pseudo
+	 * code in Fig 5, and details in this section.
+	 *
+	 * @param plain
+	 *            the 128-bit plaintext value to encrypt.
+	 * @param from
+	 *            fromIndex of Array
+	 * @return the encrypted 128-bit ciphertext value.
+	 */
+	public byte[] encodeBlock(char[] plain, int from) {
+		byte[] Ker; // encrypt keys for current round
+		byte[] a = new byte[BLOCK_SIZE];
+		int i;
+		Ker = Ke[0];
+		for (i = 0; i < BLOCK_SIZE; i++) {
+			a[i] = (byte) (plain[i +from] ^ Ker[i]);
+		}
+		return encodeBlock(a);
+	}
+
+		
+	/**
+	 * AES encrypt 128-bit plaintext using key previously set.
+	 *
+	 * <p>
+	 * Follows cipher specification given in FIPS-197 section 5.1 See pseudo
+	 * code in Fig 5, and details in this section.
+	 *
+	 * @param plain
+	 *            the 128-bit plaintext value to encrypt.
+	 * @return the encrypted 128-bit ciphertext value.
+	 */
+	public byte[] encodeBlock(byte[] plain) {
+		// check for bad arguments
+		if (plain == null || plain.length != BLOCK_SIZE)
+			return null;
+
 		// define working variables
-		byte[] a = new byte[BLOCK_SIZE]; // AES state variable
 		byte[] ta = new byte[BLOCK_SIZE]; // AES temp state variable
 		byte[] Ker; // encrypt keys for current round
 		int i, k, row, col;
 
-		// check for bad arguments
-		if (plain == null)
-			throw new IllegalArgumentException("Empty plaintext");
-		if (plain.length != BLOCK_SIZE)
-			throw new IllegalArgumentException("Incorrect plaintext length");
 
 		// copy plaintext bytes into state and do initial AddRoundKey(state)
 		Ker = Ke[0];
-		for (i = 0; i < BLOCK_SIZE; i++)
-			a[i] = (byte) (plain[i] ^ Ker[i]);
 
 		// for each round except last, apply round transforms
 		for (int r = 1; r < numRounds; r++) {
@@ -233,7 +297,7 @@ public class AES {
 
 			// SubBytes(state) into ta using S-Box S
 			for (i = 0; i < BLOCK_SIZE; i++)
-				ta[i] = S[a[i] & 0xFF];
+				ta[i] = S[plain[i] & 0xFF];
 
 			// ShiftRows(state) into a
 			for (i = 0; i < BLOCK_SIZE; i++) {
@@ -242,7 +306,7 @@ public class AES {
 																	// shifted
 																	// byte
 																	// index
-				a[i] = ta[k];
+				plain[i] = ta[k];
 			}
 
 			// MixColumns(state) into ta
@@ -250,17 +314,17 @@ public class AES {
 			// see FIPS-197 section 5.1.3
 			for (col = 0; col < NUM_COLS; col++) {
 				i = col * COL_SIZE; // start index for this col
-				ta[i] = (byte) (mul(2, a[i]) ^ mul(3, a[i + 1]) ^ a[i + 2] ^ a[i + 3]);
-				ta[i + 1] = (byte) (a[i] ^ mul(2, a[i + 1]) ^ mul(3, a[i + 2]) ^ a[i + 3]);
-				ta[i + 2] = (byte) (a[i] ^ a[i + 1] ^ mul(2, a[i + 2]) ^ mul(3,
-						a[i + 3]));
-				ta[i + 3] = (byte) (mul(3, a[i]) ^ a[i + 1] ^ a[i + 2] ^ mul(2,
-						a[i + 3]));
+				ta[i] = (byte) (mul(2, plain[i]) ^ mul(3, plain[i + 1]) ^ plain[i + 2] ^ plain[i + 3]);
+				ta[i + 1] = (byte) (plain[i] ^ mul(2, plain[i + 1]) ^ mul(3, plain[i + 2]) ^ plain[i + 3]);
+				ta[i + 2] = (byte) (plain[i] ^ plain[i + 1] ^ mul(2, plain[i + 2]) ^ mul(3,
+						plain[i + 3]));
+				ta[i + 3] = (byte) (mul(3, plain[i]) ^ plain[i + 1] ^ plain[i + 2] ^ mul(2,
+						plain[i + 3]));
 			}
 
 			// AddRoundKey(state) into a
 			for (i = 0; i < BLOCK_SIZE; i++)
-				a[i] = (byte) (ta[i] ^ Ker[i]);
+				plain[i] = (byte) (ta[i] ^ Ker[i]);
 		}
 
 		// last round is special - only has SubBytes, ShiftRows and AddRoundKey
@@ -268,29 +332,67 @@ public class AES {
 
 		// SubBytes(state) into a using S-Box S
 		for (i = 0; i < BLOCK_SIZE; i++)
-			a[i] = S[a[i] & 0xFF];
+			plain[i] = S[plain[i] & 0xFF];
 
 		// ShiftRows(state) into ta
 		for (i = 0; i < BLOCK_SIZE; i++) {
 			row = i % COL_SIZE;
 			k = (i + (row_shift[row] * COL_SIZE)) % BLOCK_SIZE; // get shifted
 																// byte index
-			ta[i] = a[k];
+			ta[i] = plain[k];
 		}
 
 		// AddRoundKey(state) into a
 		for (i = 0; i < BLOCK_SIZE; i++)
-			a[i] = (byte) (ta[i] ^ Ker[i]);
-		return (a);
+			plain[i] = (byte) (ta[i] ^ Ker[i]);
+		return plain;
 	}
 
-	public String decode(String data) {
-		StringBuilder sb = new StringBuilder(data);
-		return cryptAll(sb, 2).trim();
+	public CharList decode(String data) {
+		CharList string = new CharList().with(data);
+		int rest = ((int) data.length() / 32) * 32;
+		if(rest < data.length()) {
+			rest = 32 - data.length() + rest;
+			string.withRepeat(" ", rest);
+		}
+		CharList result = new CharList().withLen(string.length());
+		byte[] partByte;
+		for (int p = 0; p < string.length(); p+=16) {
+			partByte = decodeBlock(string.value(), p);
+			for(int pos =0;pos < BLOCK_SIZE; pos++) {
+				result.with((char)partByte[pos]);
+			}
+		}
+		return result.trim();
 	}
-
+	
 	public byte[] decodeString(String value) {
-		return converter.decode(decode(value));
+		return decode(value).bytes();
+	}
+	
+	/**
+	 * AES encrypt 128-bit plaintext using key previously set.
+	 *
+	 * <p>
+	 * Follows cipher specification given in FIPS-197 section 5.1 See pseudo
+	 * code in Fig 5, and details in this section.
+	 *
+	 * @param plain
+	 *            the 128-bit plaintext value to encrypt.
+	 * @param from
+	 *            fromIndex of Array
+	 * @return the encrypted 128-bit ciphertext value.
+	 */
+	public byte[] decodeBlock(char[] plain, int from) {
+		byte[] 		// copy ciphertext bytes into state and do initial AddRoundKey(state)
+		Kdr = Kd[0];
+
+		byte[] a = new byte[BLOCK_SIZE];
+		int i;
+		for (i = 0; i < BLOCK_SIZE; i++) {
+			a[i] = (byte) (plain[i +from] ^ Kdr[i]);
+		}
+		return decodeBlock(a);
 	}
 
 	/**
@@ -304,23 +406,15 @@ public class AES {
 	 *            the 128-bit ciphertext value to decrypt.
 	 * @return the decrypted 128-bit plaintext value.
 	 */
-	public byte[] decode(byte[] cipher) throws IllegalArgumentException {
+	public byte[] decodeBlock(byte[] cipher) {
+		// check for bad arguments
+		if (cipher == null || cipher.length != BLOCK_SIZE) 
+			return null;
+
 		// define working variables
-		byte[] a = new byte[BLOCK_SIZE]; // AES state variable
 		byte[] ta = new byte[BLOCK_SIZE]; // AES temp state variable
 		byte[] Kdr; // encrypt keys for current round
 		int i, k, row, col;
-
-		// check for bad arguments
-		if (cipher == null)
-			throw new IllegalArgumentException("Empty ciphertext");
-		if (cipher.length != BLOCK_SIZE)
-			throw new IllegalArgumentException("Incorrect ciphertext length");
-
-		// copy ciphertext bytes into state and do initial AddRoundKey(state)
-		Kdr = Kd[0];
-		for (i = 0; i < BLOCK_SIZE; i++)
-			a[i] = (byte) (cipher[i] ^ Kdr[i]);
 
 		// for each round except last, apply round transforms
 		for (int r = 1; r < numRounds; r++) {
@@ -332,29 +426,29 @@ public class AES {
 				row = i % COL_SIZE;
 				// get shifted byte index
 				k = (i + BLOCK_SIZE - (row_shift[row] * COL_SIZE)) % BLOCK_SIZE;
-				ta[i] = a[k];
+				ta[i] = cipher[k];
 			}
 
 			// InvSubBytes(state) into a using inverse S-box Si
 			for (i = 0; i < BLOCK_SIZE; i++)
-				a[i] = Si[ta[i] & 0xFF];
+				cipher[i] = Si[ta[i] & 0xFF];
 
 			// AddRoundKey(state) into ta
 			for (i = 0; i < BLOCK_SIZE; i++)
-				ta[i] = (byte) (a[i] ^ Kdr[i]);
+				ta[i] = (byte) (cipher[i] ^ Kdr[i]);
 
 			// InvMixColumns(state) into a
 			// implemented by expanding matrix mult for each column
 			// see FIPS-197 section 5.3.3
 			for (col = 0; col < NUM_COLS; col++) {
 				i = col * COL_SIZE; // start index for this col
-				a[i] = (byte) (mul(0x0e, ta[i]) ^ mul(0x0b, ta[i + 1])
+				cipher[i] = (byte) (mul(0x0e, ta[i]) ^ mul(0x0b, ta[i + 1])
 						^ mul(0x0d, ta[i + 2]) ^ mul(0x09, ta[i + 3]));
-				a[i + 1] = (byte) (mul(0x09, ta[i]) ^ mul(0x0e, ta[i + 1])
+				cipher[i + 1] = (byte) (mul(0x09, ta[i]) ^ mul(0x0e, ta[i + 1])
 						^ mul(0x0b, ta[i + 2]) ^ mul(0x0d, ta[i + 3]));
-				a[i + 2] = (byte) (mul(0x0d, ta[i]) ^ mul(0x09, ta[i + 1])
+				cipher[i + 2] = (byte) (mul(0x0d, ta[i]) ^ mul(0x09, ta[i + 1])
 						^ mul(0x0e, ta[i + 2]) ^ mul(0x0b, ta[i + 3]));
-				a[i + 3] = (byte) (mul(0x0b, ta[i]) ^ mul(0x0d, ta[i + 1])
+				cipher[i + 3] = (byte) (mul(0x0b, ta[i]) ^ mul(0x0d, ta[i + 1])
 						^ mul(0x09, ta[i + 2]) ^ mul(0x0e, ta[i + 3]));
 			}
 		}
@@ -368,7 +462,7 @@ public class AES {
 			row = i % COL_SIZE;
 			// get shifted byte index
 			k = (i + BLOCK_SIZE - (row_shift[row] * COL_SIZE)) % BLOCK_SIZE;
-			ta[i] = a[k];
+			ta[i] = cipher[k];
 		}
 
 		// InvSubBytes(state) into ta using inverse S-box Si
@@ -377,8 +471,8 @@ public class AES {
 
 		// AddRoundKey(state) into a
 		for (i = 0; i < BLOCK_SIZE; i++)
-			a[i] = (byte) (ta[i] ^ Kdr[i]);
-		return (a);
+			cipher[i] = (byte) (ta[i] ^ Kdr[i]);
+		return cipher;
 	}
 
 	public void setKey(String key) {
@@ -477,29 +571,5 @@ public class AES {
 				i++;
 			}
 		}
-	}
-
-	public String cryptAll(StringBuilder data, int mode) {
-		if (data.length() / 16 > ((int) data.length() / 16)) {
-			int rest = data.length() - ((int) data.length() / 16) * 16;
-			for (int i = 0; i < rest; i++) {
-				data.append(" ");
-			}
-		}
-		int nParts = (int) data.length() / 16;
-		byte[] res = new byte[data.length()];
-		String partStr = "";
-		byte[] partByte = new byte[16];
-		for (int p = 0; p < nParts; p++) {
-			partStr = data.substring(p * 16, p * 16 + 16);
-			partByte = converter.decode(partStr);
-			if (mode == 1)
-				partByte = encode(partByte);
-			if (mode == 2)
-				partByte = decode(partByte);
-			for (int b = 0; b < 16; b++)
-				res[p * 16 + b] = partByte[b];
-		}
-		return converter.toString(res);
-	}
+	}	
 }

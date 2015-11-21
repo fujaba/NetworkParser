@@ -2,6 +2,7 @@ package de.uniks.networkparser.test;
 
 import static org.junit.Assert.*;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.test.model.util.ApplicationMessageCreator;
@@ -27,10 +28,8 @@ public class XMLTCC2014Test extends IOClasses{
 //		map.withCreator(new de.kassel.ttc2014.fixml.test3.creators.Rule80ACreator());
 //		map.withCreator(new de.kassel.ttc2014.fixml.test3.creators.LimitOrderCreator());
 		
-		
 		Object item = map.decode(XMLText);
 
-		System.out.println(item);
 		assertNotNull(item);
 	}
 
@@ -41,7 +40,6 @@ public class XMLTCC2014Test extends IOClasses{
 		
 		XMLEntity item= new XMLEntity();
 		item.withValue(str);
-		
-		System.out.println(item.toString());
+		Assert.assertEquals(505, item.toString().length());
 	}
 }

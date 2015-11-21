@@ -496,6 +496,9 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 
 	Object[] arrayCopy(Object[] source, int newCapacity){
 		Object[] dest = new Object[newCapacity];
+		if(source == null) {
+			return null;
+		}
 		int end = source.length - this.index;
 		if(size > end) {
 			System.arraycopy(source, this.index, dest, 0, end);

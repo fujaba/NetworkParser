@@ -169,7 +169,7 @@ public class JsonTest extends IOClasses{
 		
 		JsonObject jsonObject = map.toJsonObject(fullAssocs);
 		String data = jsonObject.toString(2);
-		System.out.println(data);
+		Assert.assertEquals(142, data.length());
 		
 		FullAssocs newfullAssocs = (FullAssocs) map.decode(data);
 		assertNotNull(newfullAssocs);
@@ -335,28 +335,19 @@ public class JsonTest extends IOClasses{
 
 		JsonIdMap map = UniversityCreator.createIdMap("s1");
 
-//		System.out.println("depth 1: ");
 		JsonArray jsonArray = map.toJsonArray(kassel, new Filter().withConvertable(Deep.value(1)));
-
 		String jsonString = jsonArray.toString(2);
-//		System.out.println(jsonString);
 		assertEquals(1980, jsonString.length());
 
-//		System.out.println(jsonString);
-
-//		System.out.println("depth 0: ");
 		jsonArray = map.toJsonArray(kassel, new Filter().withConvertable(new Deep().withDeep(0)));
 		
 		jsonString = jsonArray.toString(2);
 		assertEquals(569, jsonString.length());
-//		System.out.println(jsonString);
 
-//		System.out.println("Full depth: ");
 		jsonArray = map.toJsonArray(kassel);
 
 		jsonString = jsonArray.toString(2);
 
-//		System.out.println(jsonString);
 		assertEquals(2199, jsonString.length());
 
 		JsonIdMap readMap = UniversityCreator.createIdMap("s2");
@@ -376,7 +367,6 @@ public class JsonTest extends IOClasses{
 		jsonMap.withCreator(new ChatMessageCreator());
 		
 		String reference="{\r\n  \"class\":\"de.uniks.networkparser.test.model.ChatMessage\",\r\n  \"id\":\"J1.C1\",\r\n  \"prop\":{\r\n    \"sender\":\"Stefan Lindel\",\r\n    \"txt\":\"Dies ist eine Testnachricht\"\r\n  }\r\n}";
-		System.out.println(reference);
 		JsonObject actual=jsonMap.toJsonObject(chatMessage);
 		assertEquals("WERT Vergleichen", reference, actual.toString(2));
 		assertEquals(reference.length(), actual.toString(2).length());
@@ -387,7 +377,7 @@ public class JsonTest extends IOClasses{
 		map.withCreator(new ChatMessageCreator());
 		
 		ChatMessage newChatMsg = (ChatMessage) map.decode(new JsonObject().withValue(msg));
-		System.out.println(newChatMsg);
+		Assert.assertNotNull(newChatMsg);
 	}
 	
 	@Test
@@ -449,7 +439,6 @@ public class JsonTest extends IOClasses{
 		msg.setLocation(new Location(42, 23));
 		map.withCounter(new RestCounter("http://myname.org/rest/"));
 		JsonObject json = map.toJsonObject(msg, new Filter().withConvertable(new Deep().withDeep(0)));
-		System.out.println(json);
 		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.FullMessage\",\"id\":\"http://myname.org/rest/de.uniks.networkparser.test.model.fullmessage/1\",\"prop\":{\"txt\":\"Hallo Welt\",\"number\":42,\"location\":{\"id\":\"http://myname.org/rest/de.uniks.networkparser.test.model.location/2\",\"class\":\"de.uniks.networkparser.test.model.Location\"}}}", json.toString());
 	}
 	
@@ -477,7 +466,6 @@ public class JsonTest extends IOClasses{
 		if(passNew instanceof Map<?, ?>){
 			assertEquals(2, ((Map<?, ?>)passNew).size());
 		}
-//		System.out.println(json);
 	}
 	
 	@Test
@@ -508,7 +496,6 @@ public class JsonTest extends IOClasses{
 		
 		JsonObject jsonObject = map.toJsonObject(stringMessage);
 		String msg = jsonObject.toString();
-		System.out.println(msg);
 		
 		String reference="{\"class\":\"de.uniks.networkparser.test.model.StringMessage\",\"id\":\"J1.S1\",\"prop\":{\"value\":\"C:\\\\TEST\\\\MY\\\\WORLD.TXT\"}}";
 
@@ -563,7 +550,7 @@ public class JsonTest extends IOClasses{
 		encodeMap.withCreator(new PersonCreator());
 		Person person = new Person().withName("Albert").withBalance(42);
 		String shortString = encodeMap.toJsonObject(person).toString();
-		System.out.println(shortString);
+		Assert.assertEquals(48, shortString.length());
 		
 		JsonIdMap decodeMap= new JsonIdMap().withGrammar(new SimpleGrammar());
 		decodeMap.withCreator(new PersonCreator());
@@ -625,26 +612,20 @@ public class JsonTest extends IOClasses{
 		JsonObject item=new JsonObject().withKeyValue("item", subItem.toString());
 		
 		String itemString = item.toString();
-		System.out.println(itemString);
+		Assert.assertEquals(58, itemString.length());
 		
 		JsonObject newItem = new JsonObject().withValue(itemString);
 		String newItemString = newItem.getString("item");
 		JsonObject newSubItem = new JsonObject().withValue(newItemString);
-		System.out.println(newSubItem);
-		
-
+		Assert.assertEquals(35, newSubItem.toString().length());
 		
 		
 //		StringBuffer readFile = readFile("test/StringThatDoesNotUnquote2.txt");
-//		System.out.println(readFile.toString());
 //		String stringValue = "{\"id\": \"zuenFamilyChatServerSpace.R61\",\"prop\": {\"isToManyProperty\": true,";
 //		stringValue +="\"changeMsg\": \"{\\\"\"upd\\\"\":{\\\"\"observedObjects\\\"\":{\\\"\"prop\\\"\":{\\\"\"text\\\"\":\\\"\"<script>\\\"u000a   var json = {\\\"u000d\\\"u000a   \\\"\"typ\\\"\":\\\"\"objectdiagram\\\"\",\\\"u000d\\\"u000a   \\\"\"style\\\"\":null\\\"u000d\\\"u000a};</script>\\\"u000a\\\"\",\\\"\"storyboard\\\"\":{\\\"\"class\\\"\":\\\"\"org.sdmlib.storyboards.Storyboard\\\"\",\\\"\"id\\\"\":\\\"\"tester.S2\\\"\"}}}}}\"}}";
 //		JsonObject newItemFile= new JsonObject().withValue(readFile.toString());
 //		Object object = newItemFile.get("changeMsg");
-//		System.out.println(object);
-//		System.out.println(withValue);
 //		JsonObject withValue = new JsonObject().withValue(readFile.toString());
-//		System.out.println(withValue);
 	}
 	@Test
 	public void testJsonCompare(){
@@ -652,7 +633,7 @@ public class JsonTest extends IOClasses{
 		JsonObject jsonB = new JsonObject().withValue("{id:42, no:24, list:[1,2], array:[1,3]}");
 		JsonObject same = new JsonObject();
 		Assert.assertFalse(EntityUtil.compareEntity(jsonA, jsonB, same));
-		System.out.println(same.toString());
+		Assert.assertEquals("{\"list\":[2,1],\"id\":42}", same.toString());
 		Assert.assertEquals("{\"no\":23,\"array\":[2]}", jsonA.toString());
 		Assert.assertEquals("{\"no\":24,\"array\":[3]}", jsonB.toString());
 	}

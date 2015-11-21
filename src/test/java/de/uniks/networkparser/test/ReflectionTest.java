@@ -2,6 +2,7 @@ package de.uniks.networkparser.test;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -27,6 +28,7 @@ public class ReflectionTest {
 		ignoreMethods.add("wait");
 		ignoreMethods.add("notify");
 		ignoreMethods.add("notifyAll");
+		PrintStream stream = null; // System.out;
 		
 		error.append("Start: ("+this.getClass().getName()+".java:1) \n");
 		
@@ -65,7 +67,6 @@ public class ReflectionTest {
 //							m.invoke(obj, getParametersMaxValues(m));
 //							successCount++;
 						}catch(Exception e) {
-           
 							String line =getLine(e, clazz.getSimpleName());
 							if(line.length()<1) {
 								line = clazz.getName()+".java:1";
@@ -76,7 +77,7 @@ public class ReflectionTest {
 								String[] split = line.split("\\.");
 								shortName = line.substring(0, line.lastIndexOf(":") - 4) +m.getName()+"("+split[split.length - 2] + "."+split[split.length - 1]+")";
 							}
-							System.out.println("at "+clazz.getName()+": "+e.getCause()+" "+shortName);
+							output("at "+clazz.getName()+": "+e.getCause()+" "+shortName, stream);
 							errorCount++;
 						}
 					}
@@ -86,8 +87,14 @@ public class ReflectionTest {
 			}
 		}
 		// Write out all Results
-//		System.out.println(error.toString());
-		System.err.println(errorCount+ "/" + (errorCount+ successCount));
+		output(error.toString(), stream);
+		output(errorCount+ "/" + (errorCount+ successCount), System.err);
+	}
+	
+	static void output(String str, PrintStream stream) {
+		if(stream != null) {
+			stream.println(str);
+		}
 	}
 	
 	private Object[] getParametersNull(Method m) {
@@ -223,8 +230,7 @@ public class ReflectionTest {
 	        for (String file : files) {
 	            if (file.endsWith(".class")) {
 	                try {
-//	                	System.out.println(pckgname + '.'
-//	                            + file.substring(0, file.length() - 6));
+	                	output(pckgname + '.' + file.substring(0, file.length() - 6), null);
 	                    classes.add(Class.forName(pckgname + '.'
 	                            + file.substring(0, file.length() - 6)));
 	                } catch (NoClassDefFoundError e) {

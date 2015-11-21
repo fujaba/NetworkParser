@@ -82,7 +82,6 @@ public class JsonModellTest implements UpdateListener {
 		second.setChild(third);
 		// DEEP 0
 		Assert.assertEquals(88, map.toJsonObject(first, Filter.regard(Deep.value(0))).toString().length());
-//		System.out.println();
 		// DEEP 1
 		Assert.assertEquals(185, map.toJsonObject(first, Filter.regard(Deep.value(1))).toString().length());
 		// DEEP 2

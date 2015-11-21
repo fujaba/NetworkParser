@@ -18,18 +18,15 @@ public class AESTest {
 		String data = "Hello world, here is some sample text.";
 		Assert.assertEquals("Original text : [" +data+ "] [" +data.length()+ " bytes]", 38, data.length());
 		
-		System.out.println(System.getProperty("sun.arch.data.model"));
-		String encrypted = aes.encode(data);
+		String encrypted = aes.encode(data).toString();
 		Assert.assertEquals("Encrypted text : [" +encrypted+ "] [" +encrypted.length()+ " bytes]", 64, encrypted.length());
-		
 		ByteConverterHex converter = new ByteConverterHex();
 		
-		outputStream(encrypted.getBytes(), System.out);
+//		outputStream(encrypted.getBytes(), System.out);
 		String hex = converter.toString(encrypted.getBytes()).replace(" ", "");
-		System.out.println(hex);
 		Assert.assertEquals("Encrypted text (as hex) : [" +hex+ "] [" +hex.length()+ " bytes]", 128, hex.length());
 		
-		String unencrypted = aes.decode(encrypted);
+		String unencrypted = aes.decode(encrypted).toString();
 		Assert.assertEquals("Unencrypted text : [" +unencrypted+ "] [" +unencrypted.length()+ " bytes]", 38, unencrypted.length());
 	}
 	
@@ -68,7 +65,7 @@ public class AESTest {
 		String data = "Hello world, here is some sample text.";
 		Assert.assertEquals("Original text : [" +data+ "] [" +data.length()+ " bytes]", 38, data.length()); 
 		
-		String encrypted = aes.toString(data);
+		String encrypted = aes.toString(data).toString();
 		Assert.assertEquals("Encrypted text : [" +encrypted+ "] [" +encrypted.length()+ " bytes]", 64, encrypted.length()); 
 		
 		ByteConverterHex converter = new ByteConverterHex();
@@ -76,7 +73,7 @@ public class AESTest {
 		String hex = converter.toString(encrypted.getBytes()).replace(" ", "");
 		Assert.assertEquals("Encrypted text (as hex) : [" +hex+ "] [" +hex.length()+ " bytes]", 128, hex.length()); 
 		
-		String unencrypted = aes.decodeString(encrypted); 
+		String unencrypted = new String(aes.decode(encrypted)); 
 		Assert.assertEquals("Unencrypted text : [" +unencrypted+ "] [" +unencrypted.length()+ " bytes]", 38, unencrypted.length()); 
 	}
 }

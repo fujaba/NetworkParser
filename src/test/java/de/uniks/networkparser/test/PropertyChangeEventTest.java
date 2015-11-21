@@ -27,7 +27,6 @@ public class PropertyChangeEventTest {
 		PropertyChangeEvent propertyChange = new PropertyChangeEvent(person, "child", null, item);
 		
 		JsonObject encode = map.encode(propertyChange);
-//		System.out.println(encode.toString());
 
 		//Decode
 		JsonIdMap decodeMap=new JsonIdMap();
@@ -37,7 +36,6 @@ public class PropertyChangeEventTest {
 
 		
 		PropertyChangeEvent decode = (PropertyChangeEvent) decodeMap.decode(encode.toString());
-		System.out.println(decode);
 		Assert.assertEquals(person.getClass(), decode.getSource().getClass());
 		Assert.assertEquals("child", decode.getPropertyName());
 	}

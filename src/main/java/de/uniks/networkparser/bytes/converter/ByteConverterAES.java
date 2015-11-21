@@ -23,6 +23,7 @@ package de.uniks.networkparser.bytes.converter;
 */
 import de.uniks.networkparser.bytes.checksum.AES;
 import de.uniks.networkparser.interfaces.ByteConverter;
+import de.uniks.networkparser.string.CharList;
 
 public class ByteConverterAES extends ByteConverter {
 	private AES aes;
@@ -34,21 +35,17 @@ public class ByteConverterAES extends ByteConverter {
 		this.aes.setKey(value);
 	}
 
-	public String toString(String values) {
+	public CharList toString(String values) {
 		return aes.encode(values);
 	}
 
 	@Override
 	public String toString(byte[] values, int size) {
-		return this.aes.encodeBytes(values);
+		return this.aes.encode(values).toString();
 	}
 
 	@Override
 	public byte[] decode(String value) {
 		return aes.decodeString(value);
-	}
-
-	public String decodeString(String value) {
-		return aes.decode(value);
 	}
 }

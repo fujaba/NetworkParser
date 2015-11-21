@@ -1,5 +1,6 @@
 package de.uniks.networkparser.test;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 
 import org.junit.Assert;
@@ -25,7 +26,7 @@ public class StringTokenerTest {
 		
 		DateTimeEntity dateTime = new DateTimeEntity();
 		showString(tokener, "HH:MM:SS \"Sekunden\"");
-		System.out.println(dateTime.toString("HH:MM:SS \"Sekunden\""));
+		Assert.assertNotNull(dateTime.toString("HH:MM:SS \"Sekunden\""));
 	}
 	
 	@Test
@@ -36,11 +37,11 @@ public class StringTokenerTest {
 			tokener.withLength(tokener.length()-1);
 			int count=0;
 			StringContainer sc;
-			//FIXME change to ""
 			do{
 				sc = tokener.nextString(new StringContainer(), true, ',');
 				if(sc.length()>0){
-					System.out.println(count++ + ": #" +sc.toString()+ "# -- " +tokener.isString());
+					Assert.assertNotNull(count);
+					output(count++ + ": #" +sc.toString()+ "# -- " +tokener.isString(), null);
 				}
 			}while (sc.length()>0);
 		}
@@ -49,24 +50,31 @@ public class StringTokenerTest {
 	@Test
 	public void testToday(){
 		DateTimeEntity date= new DateTimeEntity();
-	   System.out.println(date.getTime());
-		System.out.println(date.toString("ddd. dd.mm.yyyy"));
+		Assert.assertNotNull(date.toString("ddd. dd.mm.yyyy"));
 	}
 	
 	public void showString(StringTokener tokener, String value){
 		int count=0;
 		StringContainer sub;
+		PrintStream stream = null;
 		
-		System.out.println("zu parsen: " +value);
+		output("zu parsen: " +value, stream);
 		tokener.withBuffer(value);
 		do{
 			sub = new StringContainer();
 			tokener.nextString(sub, true, '"');
 			if(sub.length()>0){
-				System.out.println(count++ + ": #" +sub+ "# -- " +tokener.isString());
+				Assert.assertNotNull(count);
+				output(count++ + ": #" +sub+ "# -- " +tokener.isString(), stream);
 			}
 		}while (sub.length()>0);
-		System.out.println();
+		output("\n", stream);
+	}
+	
+	void output(String str, PrintStream stream) {
+		if (stream != null) {
+			stream.print(str);
+		}
 	}
 	
 	@Test
@@ -93,12 +101,12 @@ public class StringTokenerTest {
 //		String test="{id:\"Hüttenberg\"}";
 		String test="ü";
 		byte[] bytes = test.getBytes();
-		System.out.println(bytes.length);
-		System.out.println(test.length());
-		System.out.println((Character)test.charAt(0));
-		System.out.println(bytes[0]);
+		Assert.assertEquals(2, bytes.length);
+		Assert.assertEquals(2, test.length());
+		Assert.assertNotNull((Character)test.charAt(0));
+		Assert.assertNotNull(bytes[0]);
 		JsonTokener jsonTokener = (JsonTokener) new JsonTokener().withBuffer(test);
-		System.out.println(jsonTokener.nextString(new StringContainer(), true, '\"'));
-		System.out.println(jsonTokener.nextString(new StringContainer(), true, '\"'));
+		Assert.assertNotNull(jsonTokener.nextString(new StringContainer(), true, '\"'));
+		Assert.assertNotNull(jsonTokener.nextString(new StringContainer(), true, '\"'));
 	}
 }

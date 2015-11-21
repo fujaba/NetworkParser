@@ -1,5 +1,6 @@
 package de.uniks.networkparser.test;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.json.JsonIdMap;
@@ -18,12 +19,11 @@ public class JsonRekursivTest {
 		 JsonIdMap map= new JsonIdMap();
 		 map.withCreator(new ListEntity());
 		 JsonObject json =map.encode(root);
-		 System.out.println(json.toString(2));
+		 Assert.assertEquals(1314, json.toString(2).length());
 		 
 		 JsonIdMap mapDecode= new JsonIdMap();
 		 mapDecode.withCreator(new ListEntity());
 		 Object rootDecode = mapDecode.decode(json);
-		 System.out.println(rootDecode);
-		 
+		 Assert.assertNotNull(rootDecode);
 	 }
 }

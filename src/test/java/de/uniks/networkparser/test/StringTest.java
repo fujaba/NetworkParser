@@ -12,32 +12,27 @@ public class StringTest {
 		String simple="<c id=\"C:\\\" />";
 		byte[] bytes = simple.getBytes();
 		String string = new ByteConverterHex().toString(bytes, bytes.length, 1);
-		System.out.println(string);
+		Assert.assertEquals("3C 63 20 69 64 3D 22 43 3A 5C 22 20 2F 3E ", string);
 	}
 	
 	@Test
 	public void testEscape(){
 		String ref="Hallo Welt";
 		String temp = ref;
-		System.out.println(temp);
 		for(int i=0;i<6;i++) {
 			temp = EntityUtil.quote(temp);
-			System.out.println(temp);
 		}
-		
-		System.out.println("=========================");
 		
 		for(int i=0;i<6;i++) {
 			temp = EntityUtil.unQuote(temp);
-			System.out.println(temp);
 		}
 		Assert.assertEquals(ref, temp);
 	}
+
 	@Test
 	public void testEscapeSimple(){
 		String g = "\"\\\"Hallo Welt\\\"\"";
 		String t = "\"\\\"\\\\\\\"Hallo Welt\\\\\\\"\\\"\"";
 		Assert.assertEquals(g, EntityUtil.unQuote(t));
-		
 	}
 }

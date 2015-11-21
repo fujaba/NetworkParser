@@ -48,7 +48,7 @@ public class XMLTest {
 		map.withCreator(new AppleCreator());
 		
 		
-		System.out.println(map.encode(appleTree).toString());
+		Assert.assertEquals(133, map.encode(appleTree).toString().length());
 	}
 	
 	
@@ -86,9 +86,8 @@ public class XMLTest {
 	public void testEscape(){
 		String xml="<chatmsg id=\"42\\\" name=\"Stefan\"></chatmsg>";
 		XMLEntity xmlEntity = new XMLEntity().withValue(xml);
-		System.out.println(xmlEntity.getString("id"));
-		System.out.println(xmlEntity.getString("name"));
-		
+		Assert.assertEquals("42\\", xmlEntity.getString("id"));
+		Assert.assertEquals("Stefan", xmlEntity.getString("name"));
 	}
 	
 	@Test
@@ -185,7 +184,6 @@ public class XMLTest {
 		map.withCreator(new ChatMessageCreator());
 		
 		String reference="<chatmsg sender=\"Stefan Lindel\" txt=\"Dies ist eine Testnachricht\"/>";
-		System.out.println(reference);
 		XMLEntity actual=map.encode(chatMessage);
 		assertEquals("WERT Vergleichen", reference, actual.toString(2));
 		assertEquals(reference.length(), actual.toString(2).length());
@@ -196,7 +194,7 @@ public class XMLTest {
 		mapDecoder.withCreator(new ChatMessageCreator());
 		
 		ChatMessage newChatMsg = (ChatMessage) mapDecoder.decode(new XMLEntity().withValue(msg));
-		System.out.println(newChatMsg);
+		Assert.assertNotNull(newChatMsg);
 	}
 	
 	@Test

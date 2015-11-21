@@ -90,6 +90,7 @@ public class CharList implements CharSequence{
 			for(int c=0;c<len; c++) {
 				this.value[count+start+c] = values.charAt(c);
 			}
+			count += len;
 		}
 		return this;
 	}
@@ -325,7 +326,7 @@ public class CharList implements CharSequence{
 		return this;
 	}
 	
-	public CharSequence trim() {
+	public CharList trim() {
 		int len = count+start;
 		while ((start < len) && (value[len - 1] <= ' ')) {
             len--;
@@ -339,6 +340,10 @@ public class CharList implements CharSequence{
 	
 	public String toString() {
 		return new String(value, start, count);
+	}
+	
+	public char[] value() {
+		return value;
 	}
 	
 	/** Init the new CharList
@@ -368,5 +373,34 @@ public class CharList implements CharSequence{
 		}
 		this.value[0] = value;
 		return this;
+	}
+
+	public void withRepeat(String string, int rest) {
+		int newCapacity = this.count + rest*string.length();
+		if(this.value == null) {
+			this.value = new char[newCapacity];
+			start = 0;
+			count = 0;
+		} else {
+			if(newCapacity > value.length) {
+				char[] copy = new char[newCapacity];
+		        System.arraycopy(value, this.start, copy, 0, count);
+		        value = copy;
+		        this.start = 0;
+			}
+		}
+		for( int i=0; i < rest;i++) {
+			for(int c=0;c<string.length(); c++) {
+				this.value[count++] = string.charAt(c);
+			}
+		}
+	}
+
+	public byte[] bytes() {
+		byte[] result = new byte[count];
+		for(int i=start; i< count;i++) {
+			result[i] = (byte) value[i];
+		}
+		return result;
 	}
 }

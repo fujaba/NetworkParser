@@ -21,7 +21,6 @@
    
 package de.uniks.networkparser.test.model;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 
 public class AppleTree
@@ -44,13 +43,13 @@ public class AppleTree
    
    public static final String PROPERTY_HAS = "has";
 
-   private HashSet<Apple> has = null;
+   private LinkedHashSet<Apple> has = null;
    
-   public HashSet<Apple> getHas()
+   public LinkedHashSet<Apple> getHas()
    {
       if (this.has == null)
       {
-         return new HashSet<Apple>();
+         return new LinkedHashSet<Apple>();
       }
    
       return this.has;
@@ -64,7 +63,7 @@ public class AppleTree
       {
          if (this.has == null)
          {
-            this.has = new HashSet<Apple>();
+            this.has = new LinkedHashSet<Apple>();
          }
          
          changed = this.has.add (value);

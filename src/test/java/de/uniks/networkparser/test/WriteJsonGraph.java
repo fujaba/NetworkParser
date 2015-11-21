@@ -2,6 +2,7 @@ package de.uniks.networkparser.test;
 
 import java.io.IOException;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.graph.GraphCardinality;
@@ -25,7 +26,7 @@ public class WriteJsonGraph {
 		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/dagre.min.js");
 		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/drawer.js");
 		
-//		System.out.println(htmlEntity.toString(2));
+		Assert.assertEquals(425, htmlEntity.toString(2).length());
 
 		DocEnvironment docEnvironment = new DocEnvironment();
 		GraphList model = new GraphList().withTyp(GraphIdMap.CLASS);
@@ -80,6 +81,6 @@ public class WriteJsonGraph {
 		GraphClazz person = model.with(new GraphClazz().withClassName("Person"));
 		
 		uni.withAssoc(person, "has", GraphCardinality.MANY, "studis", GraphCardinality.ONE);
-		System.out.println(htmlEntity.withGraph(model).toString(2));
+		Assert.assertEquals(654, htmlEntity.withGraph(model).toString(2).length());
 	}
 }
