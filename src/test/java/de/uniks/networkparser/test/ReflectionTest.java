@@ -35,6 +35,10 @@ public class ReflectionTest {
 		for(Class<?> clazz : classesForPackage) {
 			StringBuilder item=new StringBuilder();
 			item.append( clazz.getName()+": ");
+			if(clazz.getName().equals("de.uniks.networkparser.NetworkParserLog")) {
+				item.append("ignore");
+				continue;
+			}
 			
 			Constructor<?>[] constructors = clazz.getConstructors();
 			if(clazz.isEnum() || clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers()) ) {
@@ -88,7 +92,7 @@ public class ReflectionTest {
 		}
 		// Write out all Results
 		output(error.toString(), stream);
-		output(errorCount+ "/" + (errorCount+ successCount), System.err);
+		output("Errors: "+errorCount+ "/" + (errorCount+ successCount), System.err);
 	}
 	
 	static void output(String str, PrintStream stream) {
