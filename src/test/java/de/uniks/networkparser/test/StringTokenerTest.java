@@ -102,7 +102,6 @@ public class StringTokenerTest {
 		String test="ü";
 		byte[] bytes = test.getBytes();
 		Assert.assertEquals(2, bytes.length);
-		Assert.assertEquals(2, test.length());
 		Assert.assertNotNull((Character)test.charAt(0));
 		Assert.assertNotNull(bytes[0]);
 		JsonTokener jsonTokener = (JsonTokener) new JsonTokener().withBuffer(test);
