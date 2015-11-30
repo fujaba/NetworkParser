@@ -1,0 +1,133 @@
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="diagramstyle.css">	
+	<style>
+	.test {
+		box-shadow: 5px 5px 5px #888888;
+		border: 5px solid red;
+	}
+	</style>
+</head>
+<body>
+<div id="Board" />
+<script>
+function getNumber(str) {
+	return parseInt((str || "0").replace("px", ""), 10);
+};
+
+function getStyleList(el) {
+	var i, cssList = [], value, border, prop;
+	border = el.getPropertyValue("border");
+	for (i in el) {
+		prop = i;
+		value = el.getPropertyValue(prop);
+		if (value && value !== "") {
+			// optimize CSS	
+			if (border) {
+				if (prop === "border-bottom" || prop === "border-right" || prop === "border-top" || prop === "border-left") {
+					if (value !== border) {
+						cssList[prop] = value;
+					}
+				} else if (prop === "border-color" || prop === "border-bottom-color" || prop === "border-right-color" || prop === "border-top-color" || prop === "border-left-color") {
+					if (border.substring(border.length - value.length) !== value) {
+						cssList[prop] = value;
+					}
+				} else if (prop === "border-width") {
+					if (border.substring(0, value.length) !== value) {
+						cssList[prop] = value;
+					}
+				} else {
+					cssList[prop] = value;
+				}
+			} else {
+				cssList[prop] = value;
+			}
+		}
+	}
+	return cssList;
+};
+
+function getStyle(styleProp) {
+		var i, style, diff, current, ref, el = document.createElement("div"), css = {};
+		document.body.appendChild(el);
+		ref = getStyleList(window.getComputedStyle(el, null));
+		style = window.getComputedStyle(el, null);
+		el.className = styleProp;
+		current = getStyleList(style);
+		diff = getNumber(style.getPropertyValue("border-width"));
+		for (i in current) {
+			if (!current.hasOwnProperty(i)) {
+				continue;
+			}
+			if (i === "width" || i === "height") {
+				if (getNumber(current[i]) !== 0 && getNumber(current[i]) + diff * 2 !== getNumber(ref[i])) {
+					css[i] = current[i];
+				}
+			} else if (current[i] !== ref[i]) {
+				css[i] = current[i];
+			}
+		}
+		document.body.removeChild(el);
+		return css;
+	};
+
+function getSVGStyleString(styleName) {
+		var str, pos, style, css = getStyle(styleName);
+		str = "{";
+		for (style in css) {
+			if (!css.hasOwnProperty(style)) {
+				continue;
+			}
+			if (style === "border") {
+				pos = css[style].indexOf(" ");
+				str = str + "stroke-width: " + css[style].substring(0, pos) + ";";
+				pos = css[style].indexOf(" ", pos + 1);
+				str = str + "stroke:" + css[style].substring(pos) + ";";
+			//} else if (style === "background-color") {
+				// "rgba(0, 0, 0, 0) linear-gradient(45deg, white 0%, lightgray 50%) repeat scroll 0% 0% / auto padding-box border-box"
+			//	str = str + "fill: " + css[style] + ";";
+			} else if (style === "background") {
+				// "rgba(0, 0, 0, 0) linear-gradient(45deg, white 0%, lightgray 100%) repeat scroll 0% 0% / auto padding-box border-box"
+				pos = css[style].indexOf("linear-gradient");
+				if(pos>0) {
+					var filter = document.createElement("filter");
+					//filter.
+				}
+//				<defs>
+//					<filter id="drop-shadow">
+//						<feGaussianBlur in="SourceAlpha" result="blur-out" stdDeviation="2"></feGaussianBlur>
+//						<feOffset in="blur-out" dx="2" dy="2"></feOffset>
+//						<feBlend in="SourceGraphic" mode="normal"></feBlend>
+//					</filter>
+//					<linearGradient id="reflect" x1="0%" x2="0%" y1="50%" y2="0%" spreadMethod="reflect">
+//						<stop offset="0%" style="stop-color: rgb(170, 170, 170);"></stop>
+//						<stop offset="100%" style="stop-color: rgb(238, 238, 238);"></stop>
+//					</linearGradient>
+//					<linearGradient id="classelement" x1="0%" x2="100%" y1="100%" y2="0%">
+//						<stop offset="0" style="stop-color: rgb(255, 255, 255);"></stop>
+//						<stop offset="1" style="stop-color: rgb(211, 211, 211);"></stop>
+//					</linearGradient>
+//				</defs>
+				
+				pos = css[style].indexOf("linear-gradient");
+				if(pos>0) {
+					
+				}
+			//	if (css[style].substring(0, 3) === "rgb") {
+			//		pos = css[style].indexOf(")") + 1;
+			//)	} else {
+			//		pos = css[style].indexOf(" ");
+			//	}
+			//	str = str + "fill: " + css[style].substring(0, pos) + ";";
+			} else {
+				str = str + style + ": " + css[style] + ";";
+			}
+		}
+		str = str + "}";
+		return str;
+	};
+
+var test = getSVGStyleString("test");
+console.log(test);
+</script>
+</body></html>
