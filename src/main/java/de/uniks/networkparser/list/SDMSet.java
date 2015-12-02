@@ -24,7 +24,7 @@ permissions and limitations under the Licence.
 import java.util.Collection;
 import java.util.Iterator;
 
-import de.uniks.networkparser.logic.Condition;
+import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.string.CharList;
 
 

@@ -209,7 +209,9 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Str
 			sb.append("\n");
 		}
 		sb.append(EntityUtil.repeat(' ', intent));
-		sb.append("<" + this.getTag());
+		if(this.getTag() != null) {
+			sb.append("<" + this.getTag());
+		}
 
 		int size = size();
 		for (int i = 0; i < size; i++) {
@@ -237,7 +239,9 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Str
 			int intent) {
 		// parse Children
 		if (this.children != null && this.children.size() > 0) {
-			sb.append(">");
+			if(this.getTag() != null) {
+				sb.append(">");
+			}
 			for (XMLEntity child : this.children) {
 				sb.append(child.toString(indentFactor, intent + indentFactor));
 			}
@@ -245,12 +249,21 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Str
 				sb.append("\n");
 			}
 			sb.append(EntityUtil.repeat(' ', intent));
-			sb.append("</" + getTag() + ">");
+			if(this.getTag() != null) {
+				sb.append("</" + getTag() + ">");
+			}
 		} else if (this.valueItem != null) {
-			sb.append(">" + this.valueItem);
-			sb.append("</" + getTag() + ">");
+			if(this.getTag() != null) {
+				sb.append(">");
+			}
+			sb.append(this.valueItem);
+			if(this.getTag() != null) {
+				sb.append("</" + getTag() + ">");
+			}
 		} else {
-			sb.append("/>");
+			if(this.getTag() != null) {
+				sb.append("/>");
+			}
 		}
 	}
 	

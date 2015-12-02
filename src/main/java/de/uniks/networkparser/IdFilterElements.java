@@ -22,9 +22,9 @@ package de.uniks.networkparser;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.list.SimpleList;
-import de.uniks.networkparser.logic.Condition;
 import de.uniks.networkparser.logic.InstanceOf;
 import de.uniks.networkparser.logic.ValuesMap;
 import de.uniks.networkparser.logic.ValuesSimple;

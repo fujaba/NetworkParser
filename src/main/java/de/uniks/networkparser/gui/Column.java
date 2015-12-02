@@ -26,6 +26,7 @@ import de.uniks.networkparser.EntityValueFactory;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.date.DateTimeEntity;
 import de.uniks.networkparser.event.Style;
+import de.uniks.networkparser.interfaces.CellHandler;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;

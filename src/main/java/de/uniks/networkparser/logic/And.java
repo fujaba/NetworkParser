@@ -22,6 +22,8 @@ package de.uniks.networkparser.logic;
  permissions and limitations under the Licence.
 */
 import java.util.ArrayList;
+
+import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class And implements Condition<ValuesSimple>, SendableEntityCreator {

@@ -32,9 +32,12 @@ import java.net.MalformedURLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.gui.Editor;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.list.SimpleList;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -50,17 +53,32 @@ import javafx.scene.web.WebErrorEvent;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
 
-public class DiagramEditor extends SimpleShell {
+public class DiagramEditor extends SimpleShell implements Editor {
 	private final String CRLF = "\r\n";
 	private WebView browser;
 	private WebEngine webEngine;
+	private Editor logic;
 
 	@Override
 	protected Parent createContents(FXStageController controller, Parameters args) {
 		controller.withTitle("ClassdiagrammEditor");
 		controller.withSize(900, 600);
-
+		
 		this.enableError("errors");
+		String value = args.getNamed().get("logic");
+		if(value != null) {
+			try {
+				Class<?> clazz = Class.forName(value);
+				Object editor = clazz.newInstance();
+				if(editor instanceof Editor) {
+					this.logic = (Editor) editor;
+				}
+			} catch (Exception e) {
+			}
+		}
+		if(this.logic != null) {
+			controller.withIcon(getIcon());
+		}
 
 		browser = new WebView();
 		webEngine = browser.getEngine();
@@ -268,7 +286,11 @@ public class DiagramEditor extends SimpleShell {
 		launch(args);
 	}
 
-	public void generate(JsonObject model) {
+	public boolean generate(JsonObject model) {
+		if(this.logic != null) {
+			return this.logic.generate(model);
+		}
+		return false;
 	}
 
 	public class JavaApp {
@@ -314,5 +336,24 @@ public class DiagramEditor extends SimpleShell {
 		}
 		name = name + "_" + formatter.format(new Date().getTime()) + ".json";
 		writeFile(name, model.toString());
+	}
+
+	@Override
+	public void open(Object logic, String... args) {
+		SimpleList<String> values = new SimpleList<String>();
+		if(logic != null) {
+			values.add("--logic="+logic.getClass().getName());
+		}
+		values.with(args);
+
+		launch(values.toArray(new String[0]));
+	}
+
+	@Override
+	public String getIcon() {
+		if (this.logic != null) {
+			return this.logic.getIcon();
+		}
+		return null;
 	}
 }

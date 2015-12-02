@@ -183,7 +183,7 @@ public class FXStageController implements StageEvent, WindowListener {
 	}
 
 	public FXStageController withIcon(String value) {
-		if (this.stage != null) {
+		if (this.stage != null && value != null) {
 			if (value.startsWith("file") || value.startsWith("jar")) {
 				stage.getIcons().add(new Image(value));
 			} else {

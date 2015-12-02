@@ -1,5 +1,7 @@
 package de.uniks.networkparser.logic;
 
+import de.uniks.networkparser.interfaces.Condition;
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel

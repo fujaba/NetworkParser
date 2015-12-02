@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.StringTokener;
-import de.uniks.networkparser.logic.Condition;
+import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.logic.Equals;
 import de.uniks.networkparser.logic.Or;
 import de.uniks.networkparser.logic.ValuesSimple;

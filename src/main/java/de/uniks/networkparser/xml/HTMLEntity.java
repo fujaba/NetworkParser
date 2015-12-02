@@ -117,6 +117,21 @@ public class HTMLEntity implements StringItem, BaseItem {
 	public HTMLEntity withGraph(GraphList value) {
 		return withGraph(value, null);
 	}
+	
+	public HTMLEntity addStyle(String name, String style) {
+		XMLEntity styleElement = null;
+		for(XMLEntity item : header.getChildren()) {
+			if(item.getTag().equals(name)) {
+				styleElement = item;
+			}
+		}
+		if( styleElement == null) {
+			styleElement= new XMLEntity().withTag("style");
+			header.addChild(styleElement);
+		}
+		styleElement.withValueItem(styleElement.getValueItem()+"\r\n" + style);
+		return this;
+	}
 
 	public HTMLEntity withGraph(GraphList value, String path) {
 		XMLEntity script = new XMLEntity().withTag("script").withKeyValue("type", "text/javascript");
@@ -134,6 +149,15 @@ public class HTMLEntity implements StringItem, BaseItem {
 			withHeader(path + "dagre.min.js");
 			withHeader(path + "drawer.js");
 		}
+		return this;
+	}
+	
+	public HTMLEntity withNewLine() {
+		this.body.withChild(new XMLEntity().withValueItem("<br />\r\n"));
+		return this;
+	}
+	public HTMLEntity withText(String text) {
+		this.body.withChild(new XMLEntity().withValueItem(text));
 		return this;
 	}
 }

@@ -1,5 +1,8 @@
 package de.uniks.networkparser.gui.javafx.controller;
 
+import de.uniks.networkparser.interfaces.Condition;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.logic.ValuesMap;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -22,12 +25,9 @@ package de.uniks.networkparser.gui.javafx.controller;
  permissions and limitations under the Licence.
 */
 import javafx.beans.Observable;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.logic.Condition;
-import de.uniks.networkparser.logic.ValuesMap;
 
 public class ModelListenerBooleanProperty extends ModelListenerProperty<Boolean> {
-	private Condition<ValuesMap> condition;
+	private de.uniks.networkparser.interfaces.Condition<ValuesMap> condition;
 	public ModelListenerBooleanProperty(SendableEntityCreator creator, Object item, String property) {
         super(creator, item, property);
     }

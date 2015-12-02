@@ -1,4 +1,4 @@
-package de.uniks.networkparser.gui;
+package de.uniks.networkparser.interfaces;
 
 /*
  NetworkParser
@@ -21,9 +21,17 @@ package de.uniks.networkparser.gui;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
+/**
+ * @author Stefan Lindel Condition Clazz.
+ */
 @FunctionalInterface
-
-public interface CellHandler {
-	public boolean onAction(Object entity, SendableEntityCreator creator, double x, double y);
+public interface Condition<T> {
+	/**
+	 * checks if a telegram fulfills this condition.
+	 *
+	 * @param value
+	 *            the telegram to be checked
+	 * @return true if the telegram fulfills this condition, false otherwise
+	 */
+	public boolean check(T value);
 }

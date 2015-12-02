@@ -22,9 +22,10 @@ package de.uniks.networkparser;
  permissions and limitations under the Licence.
 */
 import java.util.ArrayList;
+
+import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
-import de.uniks.networkparser.logic.Condition;
 import de.uniks.networkparser.logic.ValuesMap;
 import de.uniks.networkparser.logic.ValuesSimple;
 
