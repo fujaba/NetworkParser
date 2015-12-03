@@ -35,7 +35,7 @@ public class GITVersion {
 			revision = System.getenv().BUILD_NUMBER as int
 		}
 		
-		if(release == false && branch != "master") {
+		if(release == false && isMaster()) {
 			"$major.$minor.$revision${'-SNAPSHOT'}"
 		} else {
 			"$major.$minor.$revision"
@@ -43,7 +43,7 @@ public class GITVersion {
     }
 	
 	boolean isMaster() {
-		return branch == "master"
+		return branch.contains("master")
 	}
 }
 
@@ -127,18 +127,18 @@ def buildTime() {
  */
 def getWorkingBranch() {
     // Triple double-quotes for the breaklines
-	def branch=""
-	executeCommand("git", "rev-parse", "--abbrev-ref", "HEAD").eachLine {
-		branch = it.trim()
-		println it.trim()
-	}
+	def commit, branch=""
 	executeCommand("git", "rev-parse", "HEAD").eachLine {
-		println "COMMIT: "+it.trim()
+		commit = it.trim()
+		executeCommand("git", "branch", "--contains", commit).eachLine {
+	        if(it.startsWith("* ")) {
+				branch = branch + " "+it.substring(1).trim()
+			} else {
+				branch = branch + " "+it.trim()
+			}
+		}
 	}
-	executeCommand("git", "rev-parse", "HEAD~1").eachLine {
-		println "COMMIT: "+it.trim()
-	}
-	
+	branch = branch.trim()
 	println "Git-Branch: " + branch
 	branch
 }
