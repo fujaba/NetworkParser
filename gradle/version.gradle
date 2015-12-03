@@ -127,15 +127,20 @@ def buildTime() {
  */
 def getWorkingBranch() {
     // Triple double-quotes for the breaklines
-	def commit, branch=""
+	def commit, branch="", value
 	executeCommand("git", "rev-parse", "HEAD").eachLine {
 		commit = it.trim()
-		executeCommand("git", "branch", "--contains", commit).eachLine {
+		println "Commit: "+commit
+		executeCommand("git", "branch", "-r", "--contains", commit).eachLine {
 	        if(it.startsWith("* ")) {
-				branch = branch + " "+it.substring(1).trim()
+				value = it.substring(1).trim()
 			} else {
-				branch = branch + " "+it.trim()
+				value = it.trim()
 			}
+			if(value.lastIndexOf("/")>0) {
+				value = value.substring(value.lastIndexOf("/")+1)
+			}
+			branch = branch + " "+value
 		}
 	}
 	branch = branch.trim()
