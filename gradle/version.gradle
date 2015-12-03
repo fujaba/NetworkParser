@@ -127,15 +127,20 @@ def buildTime() {
  */
 def getWorkingBranch() {
     // Triple double-quotes for the breaklines
-	def branch, test = []
+	def branch="", all = []
 	executeCommand("git", "branch").eachLine {
 		if(it.startsWith("* ")) {
-			test << it.substring(1).trim()
+			if(it.substring(1).trim() != "(no branch)") {
+				branch = it.substring(1).trim()
+			}
+			all << it.substring(1).trim()
 		} else {
-			test << it.trim()
+			all << it.trim()
 		}
 	}
-	branch = test[0]
+	if (branch == "") {
+		branch = all[0]
+	}
 	println "Git-Branch: " + branch
 	branch
 }
