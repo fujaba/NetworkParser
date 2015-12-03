@@ -1,4 +1,5 @@
-// -PlectureBuild -Pjenkins clean --refresh-dependencies build
+// clean --refresh-dependencies build
+// -PReleaseBuild 
 apply plugin: 'java'
 apply plugin: 'maven'
 apply from: 'gradle/version.gradle'

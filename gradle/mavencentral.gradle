@@ -1,7 +1,7 @@
 // import java.lang.ClassValue.Version;
 
 def isReleaseBuild() {
-    return "$version".contains("SNAPSHOT") == false || project.hasProperty('release')
+    return "$version".contains("SNAPSHOT") == false || project.hasProperty('ReleaseBuild')
 }
 if(new File("secring.gpg").exists()) {
 	apply plugin: 'signing'

@@ -13,10 +13,10 @@ task printVersion {
     }
 }
 
-version = new GITVersion(major: majorNumber,minor: getGitTag(), revision: revisionNumber(), hash: revisionHash(), buildTime: buildTime(), lecture: project.hasProperty('lectureBuild'), isFX: project.hasProperty('NetworkParserFX'), release:project.hasProperty('release'))
+//version = new GITVersion(major: majorNumber, minor: getGitTag(), revision: revisionNumber(), hash: revisionHash(), buildTime: buildTime(), master: project.hasProperty('MasterBuild'), release:project.hasProperty('ReleaseBuild'))
 
 ext{
-	gitVersion = new GITVersion(major: majorNumber,minor: getGitTag(), revision: revisionNumber(), hash: revisionHash(), buildTime: buildTime(), release:project.hasProperty('release') )
+	gitVersion = new GITVersion(major: majorNumber,minor: getGitTag(), revision: revisionNumber(), hash: revisionHash(), buildTime: buildTime(), release:project.hasProperty('ReleaseBuild'), branch: getWorkingBranch())
 }
 
 // Define a method using a closure as the method body
@@ -28,37 +28,31 @@ public class GITVersion {
 	String buildTime
 	String hash = ""
 	boolean release = false
-	boolean lecture
-	boolean isFX
+	String branch
 	String prefix = ""
 
 	String toString() {
 		if (System.getenv().BUILD_NUMBER) {
 			revision = System.getenv().BUILD_NUMBER as int
 		}
-		if(isFX) {
-			prefix = "FX"
+		
+		if(release == false && branch != "master") {
+			"$major.$minor.$revision${'-SNAPSHOT'}"
+		} else {
+			"$major.$minor.$revision"
 		}
-		//"$major.$minor.$revision${release ? '' : (lecture ? '-LECTURE' : '-SNAPSHOT')}"
-		"$major.$minor.$revision"
     }
-}
-
-def getGitTag() {
-	def gittag=-1
-	def test = [-1]
-	executeCommand("git", "tag").eachLine {
-		try {
-			test << (it.trim() as int)
-		} catch (Exception ex) {
-			// no problem as long as there's another tag with a number
-		}
+	
+	boolean isMaster() {
+		return branch == "master"
 	}
-	gittag = test.max()
-	println "Git-Tag: " + gittag
-	gittag
 }
 
+/*
+ * Execute Command with Parameter
+ *
+ * @return the Result of Command
+ */
 def executeCommand(String[] args) {
 	def pb = new ProcessBuilder(args)
 	def result = ""
@@ -82,6 +76,21 @@ def executeCommand(String[] args) {
 		} catch (Exception ex){}
 	}
 	result
+}
+
+def getGitTag() {
+	def gittag=-1
+	def test = [-1]
+	executeCommand("git", "tag").eachLine {
+		try {
+			test << (it.trim() as int)
+		} catch (Exception ex) {
+			// no problem as long as there's another tag with a number
+		}
+	}
+	gittag = test.max()
+	println "Git-Tag: " + gittag
+	gittag
 }
 
 def revisionNumber() {
@@ -110,4 +119,24 @@ def buildTime() {
 	def df = new SimpleDateFormat("yyyyMMdd'T'HHmmss") //you can change it
 	df.setTimeZone(TimeZone.getTimeZone("UTC"))
 	return df.format(new Date())
+}
+
+/*
+ * Get the name of the working branch of the project
+ *
+ * @return Name of the working branch
+ */
+def getWorkingBranch() {
+    // Triple double-quotes for the breaklines
+	def branch, test = []
+	executeCommand("git", "branch").eachLine {
+		if(it.startsWith("* ")) {
+			test << it.substring(1).trim()
+		} else {
+			test << it.trim()
+		}
+	}
+	branch = test[0]
+	println "Git-Branch: " + branch
+	branch
 }
