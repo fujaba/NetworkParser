@@ -13,10 +13,10 @@ task printVersion {
     }
 }
 
-version = new GITVersion(major: majorNumber, minor: getGitTag(), revision: revisionNumber(), hash: revisionHash(), buildTime: buildTime(), lecture: project.hasProperty('lectureBuild'), release:project.hasProperty('release'))
+version = new GITVersion(major: majorNumber, minor: getGitTag(), revision: revisionNumber(), hash: revisionHash(), buildTime: buildTime(), master: project.hasProperty('MasterBuild'), release:project.hasProperty('ReleaseBuild'))
 
 ext{
-	gitVersion = new GITVersion(major: majorNumber,minor: getGitTag(), revision: revisionNumber(), hash: revisionHash(), buildTime: buildTime(), lecture: project.hasProperty('lectureBuild'), release:project.hasProperty('release') )
+	gitVersion = new GITVersion(major: majorNumber,minor: getGitTag(), revision: revisionNumber(), hash: revisionHash(), buildTime: buildTime(), master: project.hasProperty('MasterBuild'), release:project.hasProperty('ReleaseBuild') )
 }
 
 // Define a method using a closure as the method body
@@ -28,14 +28,14 @@ public class GITVersion {
 	String buildTime
 	String hash = ""
 	boolean release = false
-	boolean lecture
+	boolean master
 	String prefix = ""
 
 	String toString() {
 		if (System.getenv().BUILD_NUMBER) {
 			revision = System.getenv().BUILD_NUMBER as int
 		}
-		if(release == false && lecture == false) {
+		if(release == false && master == false) {
 			"$major.$minor.$revision${'-SNAPSHOT'}"
 		} else {
 			"$major.$minor.$revision"

@@ -31,7 +31,8 @@ public class HTMLTest {
 		file.addStyle("Table", ".div{border:1px solid black}");
 		file.withNewLine();
 		file.withText("Second Line");
-		System.out.println(file.toString());
+		Assert.assertNotNull(file.toString());
+//		System.out.println(file.toString());
 	}
 	
 }
