@@ -1,6 +1,5 @@
 // clean --refresh-dependencies build
 // -PReleaseBuild 
-// -PMasterBuild
 apply plugin: 'java'
 apply plugin: 'maven'
 apply from: 'gradle/version.gradle'

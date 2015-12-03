@@ -18,7 +18,7 @@ if(project.hasProperty("artifactory_user")) {
 		contextUrl = "${artifactory_contextUrl}"   //The base Artifactory URL if not overridden by the publisher/resolver
 		publish {
 			repository {
-				if(project.hasProperty('MasterBuild')) {
+				if(gitVersion.isMaster()) {
 					repoKey = 'lecture'
 				} else if(project.hasProperty('ReleaseBuild')) {
 					repoKey = 'libs-release-local'
@@ -32,7 +32,7 @@ if(project.hasProperty("artifactory_user")) {
 		}
 		resolve {
 			repository {
-				if(project.hasProperty('MasterBuild')) {
+				if(gitVersion.isMaster()) {
 					repoKey = 'lecture'
 				} else if(project.hasProperty('release')) {
 					repoKey = 'libs-release-local'
