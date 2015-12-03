@@ -35,7 +35,7 @@ public class GITVersion {
 			revision = System.getenv().BUILD_NUMBER as int
 		}
 		
-		if(release == false && isMaster()) {
+		if(release == false && !isMaster()) {
 			"$major.$minor.$revision${'-SNAPSHOT'}"
 		} else {
 			"$major.$minor.$revision"
