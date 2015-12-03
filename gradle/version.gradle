@@ -137,6 +137,7 @@ def getWorkingBranch() {
 		} else {
 			all << it.trim()
 		}
+		println it.trim()
 	}
 	if (branch == "") {
 		branch = all[0]
