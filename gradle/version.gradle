@@ -132,6 +132,13 @@ def getWorkingBranch() {
 		branch = it.trim()
 		println it.trim()
 	}
+	executeCommand("git", "rev-parse", "HEAD").eachLine {
+		println "COMMIT: "+it.trim()
+	}
+	executeCommand("git", "rev-parse", "HEAD~1").eachLine {
+		println "COMMIT: "+it.trim()
+	}
+	
 	println "Git-Branch: " + branch
 	branch
 }
