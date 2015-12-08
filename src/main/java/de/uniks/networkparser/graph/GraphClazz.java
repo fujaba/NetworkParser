@@ -368,20 +368,20 @@ public class GraphClazz extends GraphAbstractClazz {
 		return with(new GraphMethod(name));
 	}
 
-	public GraphClazz withMethod(String name, GraphDataType returnType, GraphParameter... parameters) {
+	public GraphClazz withMethod(String name, GraphType returnType, GraphParameter... parameters) {
 		return with(new GraphMethod(name, returnType, parameters));
 	}
 
-	public GraphClazz withAttribute(String name, GraphDataType type) {
+	public GraphClazz withAttribute(String name, GraphType type) {
 		return this.with(new GraphAttribute(name, type));
 	}
 
-	public GraphClazz withAttribute(String name, GraphDataType type, String initialization) {
+	public GraphClazz withAttribute(String name, GraphType type, String initialization) {
 		this.with(new GraphAttribute(name, type).withInitialization(initialization));
 		return this;
 	}
 
-	public GraphAttribute getOrCreateAttribute(String attrName, GraphDataType attrType) {
+	public GraphAttribute getOrCreateAttribute(String attrName, GraphType attrType) {
 		for (GraphMember attrDecl : children) {
 			if (attrDecl.getId().equals(attrName)) {
 				return (GraphAttribute) attrDecl;

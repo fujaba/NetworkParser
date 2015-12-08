@@ -31,11 +31,11 @@ public class GraphParameter extends GraphValue implements GraphMember {
 
 	}
 
-	public GraphParameter(GraphDataType type) {
+	public GraphParameter(GraphType type) {
 		with(type);
 	}
 
-	public GraphParameter(String name, GraphDataType type) {
+	public GraphParameter(String name, GraphType type) {
 		with(name);
 		with(type);
 	}
@@ -70,7 +70,7 @@ public class GraphParameter extends GraphValue implements GraphMember {
 	}
 
 	@Override
-	public GraphParameter with(GraphDataType value) {
+	public GraphParameter with(GraphType value) {
 		super.with(value);
 		return this;
 	}

@@ -84,19 +84,19 @@ public class GraphIdMapDiff extends GraphIdMap{
 		// Copy all Nodes
 		for(Iterator<GraphMember> i = clazzDiagram.getChildren().iterator();i.hasNext();) {
 			GraphClazz item = (GraphClazz) i.next();
-			clazzes.put(item.getClassName(), item);
+			clazzes.put(item.getName(false), item);
 		}
 		// Copy all Edges
 		for(Iterator<GraphEdge> i = clazzDiagram.getEdges().iterator();i.hasNext();) {
 			GraphEdge item = i.next();
 			GraphClazz node = (GraphClazz) item.getNode();
-			edges.put(node.getClassName()+":"+item.getProperty(), item);
+			edges.put(node.getName(false)+":"+item.getProperty(), item);
 		}
 		
 		// Check all Clazzes of the objectdiagram
 		for(Iterator<GraphMember> i = objectDiagram.getChildren().iterator();i.hasNext();) {
 			GraphClazz item = (GraphClazz) i.next();
-			GraphClazz graphClazz = clazzes.get(item.getClassName());
+			GraphClazz graphClazz = clazzes.get(item.getName(false));
 			if(graphClazz != null) {
 				graphClazz.addCounter();
 			}
@@ -105,7 +105,7 @@ public class GraphIdMapDiff extends GraphIdMap{
 		for(Iterator<GraphEdge> i = objectDiagram.getEdges().iterator();i.hasNext();) {
 			GraphEdge item = i.next();
 			GraphClazz node = (GraphClazz) item.getNode();
-			String signature = node.getClassName()+":"+item.getProperty();
+			String signature = node.getName(false)+":"+item.getProperty();
 			GraphEdge graphEdge = edges.get(signature);
 			if(graphEdge != null) {
 				graphEdge.addCounter();

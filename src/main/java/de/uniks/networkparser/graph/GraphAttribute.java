@@ -35,7 +35,7 @@ public class GraphAttribute extends GraphValue implements GraphMember {
 	public GraphAttribute() {
 	}
 
-	public GraphAttribute(String name, GraphDataType datatyp) {
+	public GraphAttribute(String name, GraphType datatyp) {
 		this.with(name);
 		this.with(datatyp);
 	}
@@ -81,12 +81,12 @@ public class GraphAttribute extends GraphValue implements GraphMember {
 	}
 
 	@Override
-	public GraphAttribute with(GraphDataType value) {
+	public GraphAttribute with(GraphType value) {
 		super.with(value);
 		return this;
 	}
 
-	public GraphAttribute with(String name, GraphDataType typ) {
+	public GraphAttribute with(String name, GraphType typ) {
 		this.with(typ);
 		this.with(name);
 		return this;

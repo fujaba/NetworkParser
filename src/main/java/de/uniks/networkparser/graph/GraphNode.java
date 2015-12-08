@@ -23,7 +23,7 @@ public class GraphNode implements GraphMember{
 		return this;
 	}
 
-	public void addAttribute(String property, GraphDataType clazz, String value) {
+	public void addAttribute(String property, GraphType clazz, String value) {
 		with(new GraphAttribute().withValue(value).with(property).with(clazz));
 	}
 	

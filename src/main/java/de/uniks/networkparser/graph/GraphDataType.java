@@ -1,6 +1,6 @@
 package de.uniks.networkparser.graph;
 
-public class GraphDataType
+public class GraphDataType implements GraphType
 
 {
 	public static final String PROPERTY_VALUE = "value";
@@ -15,7 +15,7 @@ public class GraphDataType
 	public static final GraphDataType CHAR = new GraphDataType("char");
 	public static final GraphDataType BYTE = new GraphDataType("byte");
 
-	private GraphClazz value;
+	protected GraphClazz value;
 
 	GraphDataType(String value) {
 		this.with(value);
@@ -26,22 +26,19 @@ public class GraphDataType
 	      this.value = value;
 	   }
 	
-	public String getValue() {
+	public String getName(boolean shortName) {
 		if (this.value == null) {
 			return null;
 		}
-		return this.value.getId();
-	}
-
-	public GraphClazz getClazz() {
-		return value;
-	}
-	public String getValue(boolean shortName) {
-		String result = getValue();
+		String result = this.value.getId();
 		if (!shortName || result == null || result.lastIndexOf(".") < 0) {
 			return result;
 		}
 		return result.substring(result.lastIndexOf(".") + 1);
+	}
+
+	public GraphClazz getClazz() {
+		return value;
 	}
 
 	public GraphDataType with(String value) {
@@ -58,7 +55,7 @@ public class GraphDataType
 	}
 
 	public static GraphDataType ref(GraphClazz value) {
-		return new GraphDataType(value.getClassName());
+		return new GraphDataType(value);
 	}
 	
 	   public static GraphDataType ref(String value, boolean external) {
@@ -75,21 +72,20 @@ public class GraphDataType
 			return false;
 		}
 		GraphDataType other = (GraphDataType) obj;
-		if (this.getValue() == null) {
-			return other.getValue() == null;
+		if (this.getName(false) == null) {
+			return other.getName(false) == null;
 		}
-		return getValue().equals(other.getValue());
+		return getName(false).equals(other.getName(false));
 	}
 
 	@Override
 	public String toString() {
-		if ("void int long double String boolean Object".indexOf(this.getValue()) >= 0) {
-			return "DataType." + this.getValue().toUpperCase();
+		if ("void int long double String boolean Object".indexOf(this.getName(false)) >= 0) {
+			return "DataType." + this.getName(false).toUpperCase();
 		} else {
-			return "DataType.ref(\"" + this.getValue() + "\")";
+			return "DataType.ref(\"" + this.getName(false) + "\")";
 		}
 	}
-
 //FIXME	   public static DataType ref(Enumeration value)
 //	   {
 //	      return new DataType(value.getFullName());

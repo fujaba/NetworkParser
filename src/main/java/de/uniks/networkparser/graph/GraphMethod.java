@@ -33,7 +33,7 @@ public class GraphMethod extends GraphNode implements GraphMember {
 	public static final String PROPERTY_ANNOTATIONS = "annotations";
 
 	private GraphModifier modifier = GraphModifier.PUBLIC;
-	private GraphDataType returnType = GraphDataType.VOID;
+	private GraphType returnType = GraphDataType.VOID;
 	private String name;
 	private String body;
 	private SimpleSet<GraphAnnotation> annotations;
@@ -84,14 +84,14 @@ public class GraphMethod extends GraphNode implements GraphMember {
 		}
 		sb.append(")");
 		if(returnType!=null && returnType!= GraphDataType.VOID){
-			sb.append(" "+returnType.getValue());
+			sb.append(" "+returnType.getName(false));
 		}
 		return sb.toString();
 	}
 
 	private String getParameterSignature(boolean includeName,
 			GraphParameter parameter, int i) {
-		String param = parameter.getType().getValue();
+		String param = parameter.getType().getName(false);
 		if (!includeName) {
 			return param;
 		}
@@ -112,7 +112,7 @@ public class GraphMethod extends GraphNode implements GraphMember {
 		this.with(name);
 	}
 	
-	public GraphMethod(String name, GraphDataType returnType, GraphParameter... parameters) {
+	public GraphMethod(String name, GraphType returnType, GraphParameter... parameters) {
 		this.with(name);
 		this.with(parameters);
 		this.with(returnType);
@@ -123,7 +123,7 @@ public class GraphMethod extends GraphNode implements GraphMember {
 		this.with(name);
 	}
 
-	public GraphMethod withParameter(String paramName, GraphDataType dataType) {
+	public GraphMethod withParameter(String paramName, GraphType dataType) {
 		new GraphParameter(paramName, dataType).with(this);
 		return this;
 	}
@@ -137,16 +137,16 @@ public class GraphMethod extends GraphNode implements GraphMember {
 		return this;
 	}
 
-	public GraphDataType getReturnType() {
+	public GraphType getReturnType() {
 		return this.returnType;
 	}
 
-	public GraphMethod with(GraphDataType value) {
+	public GraphMethod with(GraphType value) {
 		this.returnType = value;
 		return this;
 	}
 
-	public GraphParameter createParameter(GraphDataType type) {
+	public GraphParameter createParameter(GraphType type) {
 		return new GraphParameter(type).with(this);
 	}
 

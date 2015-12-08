@@ -1,6 +1,6 @@
 package de.uniks.networkparser.graph;
 
-public abstract class GraphAbstractClazz extends GraphNode {
+public abstract class GraphAbstractClazz extends GraphNode implements GraphType {
 	private String className;
 	private boolean external;
 	private GraphAnnotation annotation;
@@ -17,8 +17,14 @@ public abstract class GraphAbstractClazz extends GraphNode {
 		return this;
 	}
 
-	public String getClassName() {
-		return className;
+	public String getName(boolean shortName) {
+		if (this.className == null) {
+			return null;
+		}
+		if (!shortName || className.lastIndexOf(".") < 0) {
+			return className;
+		}
+		return className.substring(className.lastIndexOf(".") + 1);
 	}
 
 	public String getTyp(String typ, boolean shortName) {

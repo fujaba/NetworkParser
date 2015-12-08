@@ -27,7 +27,7 @@ public abstract class GraphValue implements BaseItem {
 	public static final String PROPERTY_INITIALIZATION = "initialization";
 	public static final String PROPERTY_TYPE = "type";
 
-	protected GraphDataType type = null;
+	protected GraphType type = null;
 	protected String initialization = null;
 	protected String id;
 
@@ -40,7 +40,7 @@ public abstract class GraphValue implements BaseItem {
 		return this;
 	}
 
-	public GraphValue with(GraphDataType value) {
+	public GraphValue with(GraphType value) {
 		if ((this.type == null && value != null)
 				|| (this.type != null && this.type != value)) {
 			this.type = value;
@@ -48,7 +48,7 @@ public abstract class GraphValue implements BaseItem {
 		return this;
 	}
 
-	public GraphDataType getType() {
+	public GraphType getType() {
 		return type;
 	}
 
@@ -56,7 +56,7 @@ public abstract class GraphValue implements BaseItem {
 		if(type==null) {
 			return "?";
 		}
-		return type.getValue(shortName);
+		return type.getName(shortName);
 	}
 
 	@Override
@@ -68,7 +68,7 @@ public abstract class GraphValue implements BaseItem {
 			if(item instanceof String) {
 				with((String) item);	
 			} else if(item instanceof GraphDataType) {
-				with((GraphDataType) item);
+				with((GraphType) item);
 			}
 		}
 		return this;

@@ -100,7 +100,7 @@ public class GraphList extends GraphModel implements BaseItem{
 	public GraphClazz with(GraphClazz value) {
 		if (value != null) {
 			if(value.getId()==null){
-				value.withId(value.getClassName());
+				value.withId(value.getName(false));
 			}
 			super.with(value);
 		}
