@@ -84,7 +84,11 @@ public class Grammar {
 	 */
 	public SendableEntityCreator getWriteCreator(Object modelItem,
 			String className, IdMap map) {
-		return map.getCreator(className, true);
+		SendableEntityCreator creator = map.getCreator(className, true);
+		if(creator != null) {
+			return creator;
+		}
+		return map.getSuperCreator(modelItem);
 	}
 
 	public JsonObject getWriteObject(IdMap map,

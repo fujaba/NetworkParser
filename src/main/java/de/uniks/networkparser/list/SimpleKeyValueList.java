@@ -523,6 +523,22 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		}
 		return this;
 	}
+	public SimpleKeyValueList<K, V> addToKeyValue(Object key, Number value) {
+		int pos = hasKeyAndPos(key);
+		if(pos<0) {
+			return this;
+		}
+		if(pos==size || getByIndex(SMALL_KEY, pos, size) != key) {
+			grow(size + 1);
+			super.addKeyValue(pos, key, value);
+		}else {
+			Object oldValue = getByIndex(SMALL_VALUE, pos, size);
+			if(oldValue instanceof Integer) {
+				super.setValue(pos, ((Integer)oldValue) + (Integer)value, SMALL_VALUE);
+			}
+		}
+		return this;
+	}
 
 	@Override
 	public Set<java.util.Map.Entry<K, V>> entrySet() {

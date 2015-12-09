@@ -185,6 +185,9 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 		Object value = prototyp.getValue(entity, property);
 		if (value != null) {
 			boolean encoding = filter.isFullSeriation();
+			if(referenceObject instanceof Class<?>) {
+				encoding = true;
+			}
 			if (!encoding) {
 				Object refValue = prototyp.getValue(referenceObject, property);
 				encoding = !value.equals(refValue);
@@ -237,7 +240,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 		if (className == null) {
 			className = entity.getClass().getName();
 		}
-		SendableEntityCreator valueCreater = getCreator(className, true);
+		SendableEntityCreator valueCreater = grammar.getWriteCreator(entity, className, this);
 		if (item == null ) {
 			return null;
 			

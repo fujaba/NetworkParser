@@ -79,6 +79,22 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 		}
 		return null;
 	}
+	public SendableEntityCreator getSuperCreator(Object modelItem) {
+		if(modelItem == null) {
+			return null;
+		}
+		for(int i=0;i<this.creators.size();i++) {
+			SendableEntityCreator item = this.creators.getValueByIndex(i);
+			Object prototyp = item.getSendableInstance(true);
+			if(prototyp instanceof Class<?>) {
+				if(((Class<?>)prototyp).isAssignableFrom(modelItem.getClass())){
+					return item;
+				}
+			}
+		}
+		return null;
+	}
+	
 
 	/**
 	 * Adds the creator.
@@ -147,7 +163,11 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 			try{
 				Object reference = creator.getSendableInstance(true);
 				if (reference != null) {
-					withCreator(reference.getClass().getName(), creator);
+					if (reference instanceof Class<?>) {
+						withCreator(((Class<?>)reference).getName(), creator);
+					} else {
+						withCreator(reference.getClass().getName(), creator);
+					}
 				}
 			}catch(Exception e){}
 		}
