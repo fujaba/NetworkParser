@@ -854,4 +854,10 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 		super.withCreator(createrClass);
 		return this;
 	}
+    
+    @Override
+    public JsonIdMap withSessionId(String value) {
+        super.withSessionId(value);
+        return this;
+    }
 }
