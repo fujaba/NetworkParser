@@ -13,11 +13,11 @@ task printVersion {
     }
 }
 
-//version = new GITVersion(major: majorNumber, minor: getGitTag(), revision: revisionNumber(), hash: revisionHash(), buildTime: buildTime(), master: project.hasProperty('MasterBuild'), release:project.hasProperty('ReleaseBuild'))
 
 ext{
 	gitVersion = new GITVersion(major: majorNumber,minor: getGitTag(), revision: revisionNumber(), hash: revisionHash(), buildTime: buildTime(), release:project.hasProperty('ReleaseBuild'), branch: getWorkingBranch())
 }
+version = gitVersion
 
 // Define a method using a closure as the method body
 public class GITVersion {
@@ -36,7 +36,7 @@ public class GITVersion {
 			revision = System.getenv().BUILD_NUMBER as int
 		}
 		
-		if(release == false && branch != "master") {
+		if(release == false && !isMaster()) {
 			"$major.$minor.$revision${'-SNAPSHOT'}"
 		} else {
 			"$major.$minor.$revision"
@@ -44,7 +44,7 @@ public class GITVersion {
     }
 	
 	boolean isMaster() {
-		return branch == "master"
+		return branch.contains("master")
 	}
 }
 
@@ -128,15 +128,23 @@ def buildTime() {
  */
 def getWorkingBranch() {
     // Triple double-quotes for the breaklines
-	def branch, test = []
-	executeCommand("git", "branch").eachLine {
-		if(it.startsWith("* ")) {
-			test << it.substring(1).trim()
-		} else {
-			test << it.trim()
+	def commit, branch="", value
+	executeCommand("git", "rev-parse", "HEAD").eachLine {
+		commit = it.trim()
+		println "Commit: "+commit
+		executeCommand("git", "branch", "-r", "--contains", commit).eachLine {
+	        if(it.startsWith("* ")) {
+				value = it.substring(1).trim()
+			} else {
+				value = it.trim()
+			}
+			if(value.lastIndexOf("/")>0) {
+				value = value.substring(value.lastIndexOf("/")+1)
+			}
+			branch = branch + " "+value
 		}
 	}
-	branch = test[0]
+	branch = branch.trim()
 	println "Git-Branch: " + branch
 	branch
 }
