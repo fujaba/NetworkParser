@@ -40,11 +40,6 @@ public enum GraphCardinality
 	public String getValue() {
 		return value;
 	}
-
-	public GraphCardinality withValue(String value) {
-		this.value = value;
-		return this;
-	}
 	
 	public static GraphCardinality create(String value) {
 		if("one".equalsIgnoreCase(value) || "1".equalsIgnoreCase(value) ) {

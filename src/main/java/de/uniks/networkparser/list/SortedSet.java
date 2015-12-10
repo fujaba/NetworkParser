@@ -26,7 +26,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.sort.EntityComparator;
 import de.uniks.networkparser.sort.SortingDirection;
 
-public class SortedList<V> extends SimpleList<V> {
+public class SortedSet<V> extends SimpleSet<V> {
 	protected Comparator<V> cpr;
 	
 	@SuppressWarnings("unchecked")
@@ -41,15 +41,15 @@ public class SortedList<V> extends SimpleList<V> {
 	
 	@Override
 	public boolean isComparator() {
-        return (this.cpr != null);
+		return true;
 	}
 	
-	public SortedList<V> withComparator(Comparator<V> comparator) {
+	public SortedSet<V> withComparator(Comparator<V> comparator) {
 		this.cpr = comparator;
 		return this;
 	}
 
-	public SortedList<V> withComparator(String column) {
+	public SortedSet<V> withComparator(String column) {
 		this.cpr = new EntityComparator<V>().withColumn(column).withDirection(
 				SortingDirection.ASC);
 		return this;

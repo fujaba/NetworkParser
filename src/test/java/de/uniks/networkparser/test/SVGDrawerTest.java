@@ -26,12 +26,12 @@ public class SVGDrawerTest {
 		GraphList map = new GraphList();
 		
 		
-		GraphClazz space=map.with(new GraphClazz().withClassName("Space"));
-		GraphClazz modelHistory=map.with(new GraphClazz().withClassName("ModelHistory"));
-		GraphClazz networkNode=map.with(new GraphClazz().withClassName("NetworkNode"));
-		GraphClazz idMap=map.with(new GraphClazz().withClassName("IdMap"));
-		GraphClazz nodeProxy=map.with(new GraphClazz().withClassName("NodeProxy"));
-		GraphClazz message=map.with(new GraphClazz().withClassName("Message"));
+		GraphClazz space=map.with(new GraphClazz().with("Space"));
+		GraphClazz modelHistory=map.with(new GraphClazz().with("ModelHistory"));
+		GraphClazz networkNode=map.with(new GraphClazz().with("NetworkNode"));
+		GraphClazz idMap=map.with(new GraphClazz().with("IdMap"));
+		GraphClazz nodeProxy=map.with(new GraphClazz().with("NodeProxy"));
+		GraphClazz message=map.with(new GraphClazz().with("Message"));
 		
 		// Methods
 		networkNode.with(new GraphMethod("sendMessage", new GraphParameter(GraphDataType.ref(message)), new GraphParameter(GraphDataType.ref(nodeProxy))));
@@ -57,14 +57,14 @@ public class SVGDrawerTest {
 	public void testPattern() throws IOException {
 		GraphList map = new GraphList();
 		
-		GraphPattern space = map.with(new GraphPattern().withId("Space"));
-		GraphPattern modelHistory = map.with(new GraphPattern().withId("Item").withBounds("create"));
-		map.with(new GraphPattern().withId("ModelHistory").withBounds("nac"));
+		GraphPattern space = map.with(new GraphPattern().with("Space"));
+		GraphPattern modelHistory = map.with(new GraphPattern().with("Item").withBounds("create"));
+		map.with(new GraphPattern().with("ModelHistory").withBounds("nac"));
 		
 		map.with( GraphEdge.create(space, modelHistory).withStyle("create") );
 
 		GraphList subGraph = new GraphList();
-		GraphPattern person = subGraph.with(new GraphPattern().withId("Person"));
+		GraphPattern person = subGraph.with(new GraphPattern().with("Person"));
 		subGraph.withStyle("nac");
 		
 		map.with(GraphEdge.create(space, person));
@@ -81,10 +81,10 @@ public class SVGDrawerTest {
 		GraphList map = new GraphList();
 		
 		
-		GraphClazz networkParser=map.with(new GraphClazz().withClassName("NetworkParser"));
-		GraphClazz networkParserfx=map.with(new GraphClazz().withClassName("NetworkParserFX"));
-		GraphClazz petaf=map.with(new GraphClazz().withClassName("PetaF"));
-		GraphClazz policy=map.with(new GraphClazz().withClassName("Policy"));
+		GraphClazz networkParser=map.with(new GraphClazz().with("NetworkParser"));
+		GraphClazz networkParserfx=map.with(new GraphClazz().with("NetworkParserFX"));
+		GraphClazz petaf=map.with(new GraphClazz().with("PetaF"));
+		GraphClazz policy=map.with(new GraphClazz().with("Policy"));
 		
 		
 		map.with( GraphEdge.create(networkParser, networkParserfx) );

@@ -34,7 +34,10 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 	/** The creators. */
 	protected SimpleKeyValueList<String, SendableEntityCreator> creators = new SimpleKeyValueList<String, SendableEntityCreator>()
 			.withAllowDuplicate(false);
-
+	/**
+	 * boolean for switch of search for Interface or Abstract superclass for entity
+	 */
+	protected boolean searchForSuperCreator; 
 	/**
 	 * Gets the creator class.
 	 *
@@ -80,7 +83,7 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 		return null;
 	}
 	public SendableEntityCreator getSuperCreator(Object modelItem) {
-		if(modelItem == null) {
+		if(modelItem == null && !searchForSuperCreator) {
 			return null;
 		}
 		for(int i=0;i<this.creators.size();i++) {
@@ -164,6 +167,7 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 				Object reference = creator.getSendableInstance(true);
 				if (reference != null) {
 					if (reference instanceof Class<?>) {
+						this.searchForSuperCreator = true;
 						withCreator(((Class<?>)reference).getName(), creator);
 					} else {
 						withCreator(reference.getClass().getName(), creator);

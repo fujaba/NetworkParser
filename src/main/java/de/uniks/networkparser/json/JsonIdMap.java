@@ -408,7 +408,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 		}
 		Object result = this.updateListener.execute(jsonObject, filter);
 		if(result != null) {
-			return null;
+			return result;
 		}
 		SendableEntityCreator typeInfo = grammar.getReadCreator(jsonObject, this);
 

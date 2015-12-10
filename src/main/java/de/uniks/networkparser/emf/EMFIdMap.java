@@ -29,6 +29,7 @@ import java.util.Iterator;
 import de.uniks.networkparser.graph.GraphClazz;
 import de.uniks.networkparser.graph.GraphEdge;
 import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XMLIdMap;
@@ -316,10 +317,10 @@ public class EMFIdMap extends XMLIdMap {
 					typeName = tag;
 				}
 			} else {
-				GraphClazz clazz = (GraphClazz) model.getByObject(rootObject.getClass().getName(), false);
+				GraphClazz clazz = GraphUtil.getByObject(model, rootObject.getClass().getName(), false);
 				GraphEdge edge = model.getEdge(clazz, tag);
 				if (edge != null) {
-					typeName = edge.getOther().getNode().getId();
+					typeName = edge.getOther().getNode().getName(false);
 				}
 			}
 

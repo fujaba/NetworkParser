@@ -24,28 +24,28 @@ import de.uniks.networkparser.list.SimpleSet;
  permissions and limitations under the Licence.
 */
 
-public class GraphClazz extends GraphAbstractClazz {
+public class GraphClazz extends GraphEntity {
 	private boolean interfaze = false;
+	private boolean isEnum = false;
 	private SimpleSet<String> imports = new SimpleSet<String>();
 
-	public GraphClazz withId(String id) {
-		super.withId(id);
+	@Override
+	public GraphClazz with(String name) {
+		super.with(name);
 		return this;
 	}
-	public GraphClazz withParent(GraphNode value) {
-		super.withParent(value);
-		return this;
+	
+	@Override
+	String getFullId() {
+		if(this.getId() != null) {
+			return this.getId();
+		}
+		return super.getFullId();
 	}
+
+	@Override
 	public GraphClazz withExternal(boolean value) {
 		super.withExternal(value);
-		return this;
-	}
-	public GraphClazz withTyp(String typ, String value) {
-		super.withTyp(typ, value);
-		return this;
-	}
-	public GraphClazz withClassName(String className) {
-		super.withClassName(className);
 		return this;
 	}
 
@@ -59,13 +59,11 @@ public class GraphClazz extends GraphAbstractClazz {
 		return this;
 	}
 	
-	@Override
 	public GraphClazz with(GraphAttribute... values) {
 		super.with(values);
 		return this;
 	}
 
-	@Override
 	public GraphClazz with(GraphMethod... values) {
 		super.with(values);
 		return this;
@@ -74,6 +72,16 @@ public class GraphClazz extends GraphAbstractClazz {
 	@Override
 	public GraphClazz with(GraphAnnotation value) {
 		super.with(value);
+		return this;
+	}
+	
+	public GraphClazz with(GraphImage... values) {
+		super.with(values);
+		return this;
+	}
+	
+	public GraphClazz with(GraphLiteral... values) {
+		super.with(values);
 		return this;
 	}
 
@@ -156,7 +164,17 @@ public class GraphClazz extends GraphAbstractClazz {
 		}
 		return null;
 	}
-	public SimpleSet<GraphClazz> getInterfaces() {
+	/**
+	 * Get All Interfaces
+	 * @param transitive Get all Interfaces or direct Interfaces
+	 * @return all Interfaces of a Clazz
+	 *         <pre>
+	 *              one                       many
+	 * Clazz ----------------------------------- Clazz
+	 *              clazz                   Interfaces
+	 *         </pre>
+	 */
+	public SimpleSet<GraphClazz> getInterfaces(boolean transitive) {
 		SimpleSet<GraphClazz> interfaces = new SimpleSet<GraphClazz>();
 		if (associations == null) {
 			return interfaces;
@@ -166,6 +184,13 @@ public class GraphClazz extends GraphAbstractClazz {
 			if (!clazz.isInterface()) {
 				interfaces.with(clazz);
 			}
+		}
+		if(!transitive) {
+			return interfaces;
+		}
+		int size = interfaces.size();
+		for(int i=0;i<size;i++) {
+			interfaces.withList(interfaces.get(i).getInterfaces(transitive));
 		}
 		return interfaces;
 	}
@@ -195,23 +220,49 @@ public class GraphClazz extends GraphAbstractClazz {
 		}
 		return this;
 	}
-	
-	public SimpleSet<GraphClazz> getSuperClazzes() {
-		return getEdges(GraphEdgeTypes.GENERALISATION);
+
+	/**
+	 * Get All SuperClazzes
+	 * @param transitive Get all SuperClasses or direct SuperClasses
+	 * @return all SuperClasses of a Clazz
+	 *         <pre>
+	 *              one                       many
+	 * Clazz ----------------------------------- Clazz
+	 *              clazz                   superClazzes
+	 *         </pre>
+	 */
+	public SimpleSet<GraphClazz> getSuperClazzes(boolean transitive) {
+		SimpleSet<GraphClazz> collection = getEdges(GraphEdgeTypes.GENERALISATION);
+		if(!transitive) {
+			return collection;
+		}
+		int size = collection.size();
+		for(int i=0;i<size;i++) {
+			collection.withList(collection.get(i).getSuperClazzes(transitive));
+		}
+		return collection;
 	}
 	
 	/**
 	 * get All KindClazzes
-	 * 
-	 * @return all KindClazzes of a Clazz
+	 * @param transitive Get all KindClasses or direct KindClasses
+	 * @return all KindClasses of a Clazz
 	 *         <pre>
 	 *              one                       many
 	 * Clazz ----------------------------------- Clazz
 	 *              clazz                   kindClazzes
 	 *         </pre>
 	 */
-	public SimpleSet<GraphClazz> getKindClazzes() {
-		return getEdges(GraphEdgeTypes.CHILD);
+	public SimpleSet<GraphClazz> getKidClazzes(boolean transitive) {
+		SimpleSet<GraphClazz> kidClazzes = getEdges(GraphEdgeTypes.CHILD);
+		if(!transitive) {
+			return kidClazzes;
+		}
+		int size = kidClazzes.size();
+		for(int i=0;i<size;i++) {
+			kidClazzes.withList(kidClazzes.get(i).getKidClazzes(transitive));
+		}
+		return kidClazzes;
 	}
 	
 	public SimpleSet<GraphEdge> getAllEdges() {
@@ -245,33 +296,6 @@ public class GraphClazz extends GraphAbstractClazz {
 		return kindClazzes;
 	}
 
-	public SimpleSet<GraphClazz> getKidClazzesTransitive() {
-		SimpleSet<GraphClazz> kidClazzes = getKindClazzes();
-		int size = kidClazzes.size();
-		for(int i=0;i<size;i++) {
-			kidClazzes.withList(kidClazzes.get(i).getKidClazzesTransitive());
-		}
-		return kidClazzes;
-	}
-	
-	public SimpleSet<GraphClazz> getSuperClassTransitive() {
-		SimpleSet<GraphClazz> collection = getSuperClazzes();
-		int size = collection.size();
-		for(int i=0;i<size;i++) {
-			collection.withList(collection.get(i).getSuperClassTransitive());
-		}
-		return collection;
-	}
-
-	public SimpleSet<GraphClazz> getInterfacesTransitive() {
-		SimpleSet<GraphClazz> collection = getInterfaces();
-		int size = collection.size();
-		for(int i=0;i<size;i++) {
-			collection.withList(collection.get(i).getInterfacesTransitive());
-		}
-		return collection;
-	}
-
 	public GraphClazz withKidClazzes(GraphClazz... values) {
 		if (values == null) {
 			return this;
@@ -299,7 +323,7 @@ public class GraphClazz extends GraphAbstractClazz {
 	}
 
 	public GraphModel getClassModel() {
-		return (GraphModel) this.getParent();
+		return (GraphModel) this.parentNode;
 	}
 
 	public boolean setClassModel(GraphModel value) {
@@ -364,32 +388,15 @@ public class GraphClazz extends GraphAbstractClazz {
 		return collection;
 	}
 
-	public GraphClazz withMethod(String name) {
-		return with(new GraphMethod(name));
-	}
-
-	public GraphClazz withMethod(String name, GraphType returnType, GraphParameter... parameters) {
-		return with(new GraphMethod(name, returnType, parameters));
-	}
-
-	public GraphClazz withAttribute(String name, GraphType type) {
-		return this.with(new GraphAttribute(name, type));
-	}
-
-	public GraphClazz withAttribute(String name, GraphType type, String initialization) {
-		this.with(new GraphAttribute(name, type).withInitialization(initialization));
+	public GraphClazz withEnum(boolean value) {
+		this.isEnum = value;
 		return this;
 	}
-
-	public GraphAttribute getOrCreateAttribute(String attrName, GraphType attrType) {
-		for (GraphMember attrDecl : children) {
-			if (attrDecl.getId().equals(attrName)) {
-				return (GraphAttribute) attrDecl;
-			}
-		}
-		return new GraphAttribute(attrName, attrType).withParent(this);
+	
+	public boolean isEnum() {
+		return isEnum;
 	}
-
+	
 	public GraphClazz without(GraphAttribute... value) {
 		without(value);
 		return this;
@@ -458,7 +465,8 @@ public class GraphClazz extends GraphAbstractClazz {
 			if((item instanceof GraphModifier) == false) {
 				continue;
 			}
-			if(value.getId().equals(item.getId())) {
+			GraphModifier modifier = value;
+			if(modifier.getName().equals(modifier.getName())) {
 				return true;
 			}
 		}
@@ -478,4 +486,17 @@ public class GraphClazz extends GraphAbstractClazz {
 		}
 		return collection;
 	}
+	
+	public GraphMethod createMethod(String name, GraphParameter... parameters) {
+		GraphMethod method = new GraphMethod().with(name);
+		method.with(parameters);
+		method.setParent(this);
+		return method;
+	}
+
+	public GraphAttribute createAttribute(String name, GraphType type) {
+		GraphAttribute attribute = new GraphAttribute(name, type);
+		with(attribute);
+		return attribute;
+	}	
 }

@@ -26,7 +26,7 @@ public class FullListTest {
 		SimpleKeyValueList<String, Integer> map = new SimpleKeyValueList<String, Integer>();
 		map.flag();
 		map.add("Stefan", 42);
-		Assert.assertEquals("Map Visible CaseSensitive ",map.toString());
+		Assert.assertEquals("Map Visible CaseSensitive (1)",map.toString());
 	}
 
 	@SuppressWarnings("unchecked")

@@ -9,5 +9,8 @@ public interface GraphType {
 	   public static final GraphDataType BOOLEAN = new GraphDataType("boolean");
 	   public static final GraphDataType OBJECT = new GraphDataType("java.lang.Object");
 	   public static final GraphDataType CHAR = new GraphDataType("char");
-	   public String getName(boolean shortName);
+	   public String getName(boolean shortName);	
+	   
+	   
+//TODO	   add all method and remove This
 }

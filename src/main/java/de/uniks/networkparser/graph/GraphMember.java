@@ -22,7 +22,86 @@ package de.uniks.networkparser.graph;
  permissions and limitations under the Licence.
 */
 
-public interface GraphMember {
-	public String getId();
-	GraphMember withParent(GraphNode value);
+public abstract class GraphMember {
+	protected String name;
+	protected GraphSimpleSet<GraphMember> children=new GraphSimpleSet<GraphMember>();
+	protected GraphMember parentNode;
+	protected int count;
+	
+	String getFullId() {
+		return name;
+	}
+	// PACKAGE VISIBILITY
+	GraphSimpleSet<GraphMember> getChildren() {
+		return this.children;
+	}
+	
+	int getCount() {
+		return count;
+	}
+	void addCounter() {
+		this.count++;
+	}
+	
+	/** Set the name of Element
+	 * @param name The Name of Element
+	 * @return The Instance	
+	 */
+	public GraphMember with(String name) {
+		this.name = name;
+		return this;
+	}
+
+	public boolean setName(String value) {
+		if(value != this.name) {
+			this.name = value;
+			return true;
+		}
+		return false;
+	}
+
+
+	boolean setParent(GraphMember value) {
+		if (this.parentNode != value) {
+			GraphMember oldValue = this.parentNode;
+			if (this.parentNode != null) {
+				this.parentNode = null;
+				oldValue.without(this);
+			}
+			this.parentNode = value;
+			if (value != null) {
+				value.with(this);
+			}
+			return true;
+		}
+		return false;
+	}
+	
+	protected GraphMember with(GraphMember... values) {
+		if (values != null) {
+			for (GraphMember value : values) {
+				if(value != null) {
+					this.children.add(value);
+					value.setParent(this);
+				}
+			}
+		}
+		return this;
+	}
+	
+	protected GraphMember without(GraphMember... values) {
+		if (values != null) {
+			for (GraphMember value : values) {
+				if(value != null) {
+					this.children.remove(value);
+					value.setParent(null);
+				}
+			}
+		}
+		return this;
+	}
+	
+	String getName() {
+		return this.name;
+	}
 }

@@ -22,7 +22,7 @@
 package de.uniks.networkparser.graph;
 
 
-public class GraphParameter extends GraphValue implements GraphMember {
+public class GraphParameter extends GraphValue {
 	public static final String PROPERTY_METHOD = "method";
 	private GraphMethod method = null;
 	private GraphNode parentNode;
@@ -88,8 +88,7 @@ public class GraphParameter extends GraphValue implements GraphMember {
 		return null;
 	}
 
-	@Override
-	public GraphParameter withParent(GraphNode value) {
+	public GraphParameter withParent(GraphMethod value) {
 		if (this.parentNode != value) {
 			GraphNode oldValue = this.parentNode;
 			if (this.parentNode != null) {

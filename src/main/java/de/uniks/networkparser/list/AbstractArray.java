@@ -523,8 +523,9 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		if(isComparator()) {
 			boolean allowDuplicate = isAllowDuplicate();
 			for (int i = 0; i < this.size; i++) {
-				if (comparator().compare(getByIndex(SMALL_KEY, i, size), element) >= 0) {
-					if (!allowDuplicate && getByIndex(SMALL_KEY, i, size) == element) {
+				Object value = getKeyByIndex(i);
+				if (comparator().compare(value, element) >= 0) {
+					if (!allowDuplicate && value.equals(element)) {
 						return REMOVED;
 					}
 					return i;
@@ -707,6 +708,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		if(isCaseSensitive()) {
 			sb.append("CaseSensitive ");
 		}
+		sb.append("(").append(this.size).append(")");
 		return sb.toString();
 	}
 

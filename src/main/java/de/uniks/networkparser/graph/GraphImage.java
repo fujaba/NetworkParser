@@ -22,22 +22,16 @@ package de.uniks.networkparser.graph;
  permissions and limitations under the Licence.
 */
 
-public class GraphNodeImage implements GraphMember {
+public class GraphImage extends GraphMember {
 	public static final String PROPERTY_VALUE = "value";
-	private String id;
 	private GraphNode parentNode;
-
-	public GraphNodeImage with(String value) {
-		this.id = value;
+	
+	@Override
+	public GraphImage with(String name) {
+		super.with(name);
 		return this;
 	}
 
-	@Override
-	public String getId() {
-		return id;
-	}
-
-	@Override
 	public GraphMember withParent(GraphNode value) {
 		if (this.parentNode != value) {
 			GraphNode oldValue = this.parentNode;
@@ -56,6 +50,6 @@ public class GraphNodeImage implements GraphMember {
 	@Override
 	public String toString()
 	{
-	   return "" + id;
+	   return "" + name;
 	}
 }

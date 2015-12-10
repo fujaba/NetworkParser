@@ -23,22 +23,12 @@ package de.uniks.networkparser.graph;
 */
 import de.uniks.networkparser.interfaces.BaseItem;
 
-public abstract class GraphValue implements BaseItem {
+public abstract class GraphValue extends GraphMember implements BaseItem {
 	public static final String PROPERTY_INITIALIZATION = "initialization";
 	public static final String PROPERTY_TYPE = "type";
 
 	protected GraphType type = null;
 	protected String initialization = null;
-	protected String id;
-
-	public String getId() {
-		return id;
-	}
-	
-	public GraphValue with(String value) {
-		this.id = value;
-		return this;
-	}
 
 	public GraphValue with(GraphType value) {
 		if ((this.type == null && value != null)

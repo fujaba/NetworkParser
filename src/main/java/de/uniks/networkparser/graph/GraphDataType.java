@@ -21,16 +21,15 @@ public class GraphDataType implements GraphType
 		this.with(value);
 	}
 
-	GraphDataType( GraphClazz value )
-	   {
-	      this.value = value;
-	   }
-	
+	GraphDataType(GraphClazz value) {
+		this.value = value;
+	}
+
 	public String getName(boolean shortName) {
 		if (this.value == null) {
 			return null;
 		}
-		String result = this.value.getId();
+		String result = this.value.getName();
 		if (!shortName || result == null || result.lastIndexOf(".") < 0) {
 			return result;
 		}
@@ -42,7 +41,7 @@ public class GraphDataType implements GraphType
 	}
 
 	public GraphDataType with(String value) {
-		this.value = new GraphClazz().withId(value);
+		this.value = new GraphClazz().with(value);
 		return this;
 	}
 
@@ -54,19 +53,15 @@ public class GraphDataType implements GraphType
 		return new GraphDataType(value.getName().replace("$", "."));
 	}
 
-	public static GraphDataType ref(GraphClazz value) {
-		return new GraphDataType(value);
+	public static GraphDataType ref(String value, boolean external) {
+		return new GraphDataType(new GraphClazz().with(value).withExternal(external));
 	}
-	
-	   public static GraphDataType ref(String value, boolean external) {
-		   return new GraphDataType(new GraphClazz().withId(value).withExternal(external));
-	   }
 
-	   public static GraphDataType ref(Class<?> value, boolean external) {
-		   GraphClazz clazz = new GraphClazz().withId(value.getName().replace("$", ".")).withExternal(external);
-		   return new GraphDataType(clazz);
-	   }
-	
+	public static GraphDataType ref(Class<?> value, boolean external) {
+		GraphClazz clazz = new GraphClazz().with(value.getName().replace("$", ".")).withExternal(external);
+		return new GraphDataType(clazz);
+	}
+
 	public boolean equals(Object obj) {
 		if (!(obj instanceof GraphDataType)) {
 			return false;
@@ -86,8 +81,8 @@ public class GraphDataType implements GraphType
 			return "DataType.ref(\"" + this.getName(false) + "\")";
 		}
 	}
-//FIXME	   public static DataType ref(Enumeration value)
-//	   {
-//	      return new DataType(value.getFullName());
-//	   }
+
+	public static GraphDataType ref(GraphClazz value) {
+		return new GraphDataType(value);
+	}
 }

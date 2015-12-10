@@ -32,11 +32,6 @@ public class GraphList extends GraphModel implements BaseItem{
 		return this;
 	}
 
-	public GraphList withEdge(GraphEdge edge) {
-		add(edge);
-		return this;
-	}
-
 	public GraphList withEdge(String sourceName, String targetName) {
 		GraphEdge edge = new GraphEdge().with(sourceName).with(
 				new GraphEdge().with(targetName));
@@ -58,12 +53,11 @@ public class GraphList extends GraphModel implements BaseItem{
 		}
 		return this.associations.add(edge);
 	}
-
-
+	
 	public SimpleKeyValueList<String, Object> getLinks() {
 		SimpleKeyValueList<String, Object> links = new SimpleKeyValueList<String, Object>();
 		for (GraphEdge element : associations) {
-			for (GraphNode node : element.getNodes()) {
+			for (GraphEntity node : element.getNodes()) {
 				String key = node.getTyp(typ, false);
 				SimpleList<?> value = (SimpleList<?>)links
 						.getValueItem(key);
@@ -80,7 +74,7 @@ public class GraphList extends GraphModel implements BaseItem{
 	}
 	
 	public void initSubLinks() {
-		for(GraphNode node : getNodes()) {
+		for(GraphEntity node : getNodes()) {
 			if(node instanceof GraphClazz == false) {
 				continue;
 			}
@@ -95,16 +89,20 @@ public class GraphList extends GraphModel implements BaseItem{
 			}
 		}
 	}
-
 	
 	public GraphClazz with(GraphClazz value) {
 		if (value != null) {
-			if(value.getId()==null){
-				value.withId(value.getName(false));
+			if(value.getName()==null){
+				value.with(value.getName(false));
 			}
 			super.with(value);
 		}
 		return value;
+	}
+	
+	public GraphList with(GraphList... values) {
+		super.with(values);
+		return this;
 	}
 
 	public GraphPattern with(GraphPattern value) {
@@ -117,7 +115,7 @@ public class GraphList extends GraphModel implements BaseItem{
 		return value;
 	}
 	
-	public GraphList withNode(GraphNode... value) {
+	public GraphList withNode(GraphEntity... value) {
 		super.with(value);
 		return this;
 	}
@@ -140,27 +138,24 @@ public class GraphList extends GraphModel implements BaseItem{
 		return this;
 	}
 
-	public GraphList withMain(GraphNode parse) {
-		return this;
-	}
-
-	public GraphNode getNode(String id) {
+	public GraphClazz getNode(String id) {
 		if(id==null){
 			return null;
 		}
 		for(GraphMember item : this.getChildren()) {
-			if(item instanceof GraphNode && id.equalsIgnoreCase(item.getId())){
-				return (GraphNode)item;
+			if(item instanceof GraphClazz && id.equalsIgnoreCase(item.getFullId())){
+				return (GraphClazz)item;
 			}
 		}
 		return null;
 	}
 	
-	public SimpleSet<GraphNode> getNodes() {
-		SimpleSet<GraphNode> nodes = new SimpleSet<GraphNode>();
+
+	public SimpleSet<GraphEntity> getNodes() {
+		SimpleSet<GraphEntity> nodes = new SimpleSet<GraphEntity>();
 		for(GraphMember item : this.getChildren()) {
-			if(item instanceof GraphNode ){
-				nodes.add((GraphNode)item);
+			if(item instanceof GraphEntity){
+				nodes.add((GraphEntity)item);
 			}
 		}
 		return nodes;
@@ -170,7 +165,7 @@ public class GraphList extends GraphModel implements BaseItem{
 		return associations;
 	}
 
-	public GraphEdge getEdge(GraphNode node, String property) {
+	public GraphEdge getEdge(GraphEntity node, String property) {
 		for(GraphEdge edge : associations) {
 			GraphEdge oEdge = edge.getOther();
 			if(edge.getNode()==node && property.equals(oEdge.getProperty())) {

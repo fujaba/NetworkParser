@@ -1,23 +1,24 @@
 /*
-   Copyright (c) 2012 zuendorf
+ NetworkParser
+ Copyright (c) 2011 - 2015, Stefan Lindel
+ All rights reserved.
 
-   Permission is hereby granted, free of charge, to any person obtaining a copy of this software
-   and associated documentation files (the "Software"), to deal in the Software without restriction,
-   including without limitation the rights to use, copy, modify, merge, publish, distribute,
-   sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
-   furnished to do so, subject to the following conditions:
+ Licensed under the EUPL, Version 1.1 or (as soon they
+ will be approved by the European Commission) subsequent
+ versions of the EUPL (the "Licence");
+ You may not use this work except in compliance with the Licence.
+ You may obtain a copy of the Licence at:
 
-   The above copyright notice and this permission notice shall be included in all copies or
-   substantial portions of the Software.
+ http://ec.europa.eu/idabc/eupl5
 
-   The Software shall be used for Good, not Evil.
-
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
-   BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-   DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
+ Unless required by applicable law or agreed to in
+ writing, software distributed under the Licence is
+ distributed on an "AS IS" basis,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ express or implied.
+ See the Licence for the specific language governing
+ permissions and limitations under the Licence.
+*/
 
 package de.uniks.networkparser.graph;
 
@@ -25,7 +26,7 @@ import java.lang.annotation.Annotation;
 
 import de.uniks.networkparser.list.SimpleSet;
 
-public class GraphMethod extends GraphNode implements GraphMember {
+public class GraphMethod extends GraphNode {
 	public static final String PROPERTY_RETURNTYPE = "returnType";
 	public static final String PROPERTY_PARAMETER = "parameter";
 	public static final String PROPERTY_NODE = "node";
@@ -34,30 +35,20 @@ public class GraphMethod extends GraphNode implements GraphMember {
 
 	private GraphModifier modifier = GraphModifier.PUBLIC;
 	private GraphType returnType = GraphDataType.VOID;
-	private String name;
 	private String body;
 	private SimpleSet<GraphAnnotation> annotations;
 	private String throwsTags;
-	private GraphNode parentNode;
 
-	public String getName() {
-		return name;
-	}
-
+	@Override
 	public GraphMethod with(String name) {
-		this.name = name;
+		super.with(name);
 		return this;
 	}
 	
-	@Override
-	public String getId() {
-		return name;
-	}
-
 	public String getName(boolean includeName) {
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(this.getName() + "(");
+		sb.append(super.getName() + "(");
 		boolean first = true;
 		int i = 0;
 
@@ -96,8 +87,8 @@ public class GraphMethod extends GraphNode implements GraphMember {
 			return param;
 		}
 		String name = "";
-		if (parameter.getId() != null) {
-			name = parameter.getId().trim();
+		if (parameter.getName() != null) {
+			name = parameter.getName().trim();
 		}
 		if (name != "") {
 			return param + " " + name;
@@ -141,8 +132,8 @@ public class GraphMethod extends GraphNode implements GraphMember {
 		return this.returnType;
 	}
 
-	public GraphMethod with(GraphType value) {
-		this.returnType = value;
+	public GraphMethod with(GraphType returnType) {
+		this.returnType = returnType;
 		return this;
 	}
 
@@ -165,10 +156,10 @@ public class GraphMethod extends GraphNode implements GraphMember {
 			if(i>0) {
 				sb.append(", ");
 			}
-			if(param.getId() == null) {
+			if(param.getName() == null) {
 				sb.append("p"+i+" : "+param.getType(shortName));
 			}else{
-				sb.append(children.get(i).getId()+" : "+param.getType(shortName));
+				sb.append(children.get(i).getName()+" : "+param.getType(shortName));
 			}
 		}
 		return sb.toString();
@@ -225,7 +216,7 @@ public class GraphMethod extends GraphNode implements GraphMember {
 					this.annotations = new SimpleSet<GraphAnnotation>();
 				}
 				if (this.annotations.add(item)) {
-					item.withParent(this);
+					item.setParent(this);
 				}
 			}
 		}
@@ -240,20 +231,4 @@ public class GraphMethod extends GraphNode implements GraphMember {
 		}
 		return this;
 	}
-
-	@Override
-	public GraphMethod withParent(GraphNode value) {
-		if (this.parentNode != value) {
-			GraphNode oldValue = this.parentNode;
-			if (this.parentNode != null) {
-				this.parentNode = null;
-				oldValue.without(this);
-			}
-			this.parentNode = value;
-			if (value != null) {
-				value.with(this);
-			}
-		}
-		return this;
-	}	
 }

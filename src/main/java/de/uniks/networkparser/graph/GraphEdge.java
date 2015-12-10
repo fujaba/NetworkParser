@@ -1,6 +1,6 @@
 package de.uniks.networkparser.graph;
 
-public class GraphEdge {
+public class GraphEdge extends GraphMember {
 	public static final String PROPERTY_NODE = "node";
 	public static final String PROPERTY_CARDINALITY = "cardinality";
 	public static final String PROPERTY_PROPERTY = "property";
@@ -11,10 +11,8 @@ public class GraphEdge {
 	private GraphLabel info;
 	private GraphEdge other;
 	private GraphEdgeTypes typ = GraphEdgeTypes.EDGE;
-	private int count;
-	private GraphSimpleSet<GraphNode> nodes = new GraphSimpleSet<GraphNode>(); 
 
-	public GraphEdge with(GraphNode node, GraphCardinality cardinality, String property) {
+	public GraphEdge with(GraphClazz node, GraphCardinality cardinality, String property) {
 		with(node);
 		with(cardinality);
 		with(property);
@@ -25,7 +23,7 @@ public class GraphEdge {
 		if(cardinality != null) {
 			return cardinality;
 		}
-		if(nodes.size() > 1){
+		if(children.size() > 1){
 			return GraphCardinality.MANY;
 		}
 		return GraphCardinality.ONE;
@@ -41,12 +39,12 @@ public class GraphEdge {
 
 	public String getProperty() {
 		if(property != null) {
-			return property.getId();
+			return property.getName();
 		}
-		if(nodes.size() == 1) {
-			GraphNode item = nodes.get(0);
+		if(children.size() == 1) {
+			GraphMember item = children.get(0);
 			if(item instanceof GraphClazz) {
-				String className = ((GraphClazz)item).getClassName(true);
+				String className = ((GraphClazz)item).getName(true);
 				if(className != null) {
 					return className.toLowerCase();
 				}
@@ -63,7 +61,7 @@ public class GraphEdge {
 	
 	public GraphEdge withInfo(String value) {
 		if(info != null) {
-			this.info.withId(value);
+			this.info.with(value);
 			return this;
 		}
 		this.info = GraphLabel.create(value);
@@ -88,12 +86,12 @@ public class GraphEdge {
 		return info;
 	}
 
-	public GraphEdge with(GraphNode... values) {
+	public GraphEdge with(GraphEntity... values) {
 		if (values == null) {
 			return this;
 		}
-		for (GraphNode value : values) {
-			if(this.nodes.add(value) ) {
+		for (GraphEntity value : values) {
+			if(this.children.add(value) ) {
 				value.with(this);
 			}
 		}
@@ -133,7 +131,7 @@ public class GraphEdge {
 		return null;
 	}
 
-	public static GraphEdge create(GraphNode source, GraphNode target){
+	public static GraphEdge create(GraphEntity source, GraphEntity target){
 		GraphEdge edge = new GraphEdge().with(source);
 		edge.with(new GraphEdge().with(target));
 		return edge;
@@ -158,46 +156,42 @@ public class GraphEdge {
 		return this;
 	}
 
-	public int getCount() {
-		return count;
-	}
-
-	public GraphEdge withCount(int count) {
-		this.count = count;
-		return this;
-	}
-	
-	public GraphNode getNode() {
-		if(nodes.size()>0) {
-			return nodes.get(0);
+	public GraphEntity getNode() {
+		if(children.size()>0) {
+			GraphMember item = children.get(0);
+			if(item instanceof GraphEntity) {
+				return (GraphEntity)item;
+			}
 		}
 		return null;
-	}
-	
-	public GraphSimpleSet<GraphNode> getNodes() {
-		return nodes;
-	}
-
-	public void addCounter() {
-		this.count++;
 	}
 	
 	@Override
 	public String toString() {
 		return getIds()+getSeperator()+getOther().getIds();
 	}
+	
+	GraphSimpleSet<GraphEntity> getNodes() {
+		GraphSimpleSet<GraphEntity> values = new GraphSimpleSet<GraphEntity>(); 
+		for(GraphMember item : children) {
+			if(item instanceof GraphEntity) {
+				values.add((GraphEntity)item);
+			}
+		}
+		return values;
+	}
 
 	public String getIds() {
 		StringBuilder sb=new StringBuilder();
-		if(nodes.size()>1) {
+		if(children.size()>1) {
 			sb.append("[");
-			sb.append(nodes.get(0).getId());
-			for(int i=1;i<nodes.size();i++) {
-				sb.append(","+nodes.get(1).getId());
+			sb.append(children.get(0).getName());
+			for(int i=1;i<children.size();i++) {
+				sb.append(","+children.get(1).getName());
 			}
 			sb.append("]");
-		}else if(nodes.size()>0) {
-			sb.append(nodes.get(0).getId());
+		}else if(children.size()>0) {
+			sb.append(children.get(0).getName());
 		}else{
 			sb.append("[]");
 		}
@@ -205,19 +199,19 @@ public class GraphEdge {
 		return sb.toString();
 	}
 
-	public boolean contains(GraphNode key) {
-		return nodes.contains(key);
+	public boolean contains(GraphEntity key) {
+		return children.contains(key);
 	}
 	
-	public boolean containsOther(GraphNode key) {
+	public boolean containsOther(GraphEntity key) {
 		if(other != null) {
-			return other.getNodes().contains(key);
+			return other.getChildren().contains(key);
 		}
 		return false;
 	}
 
 	public boolean containsAll(GraphEdge others, boolean both) {
-		if(! nodes.containsAll(others.getNodes()) ) {
+		if(! children.containsAll(others.getChildren()) ) {
 			return false;
 		}
 		if(getOther()!= null && both) {

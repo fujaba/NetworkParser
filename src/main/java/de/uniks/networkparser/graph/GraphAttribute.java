@@ -22,7 +22,7 @@ package de.uniks.networkparser.graph;
  permissions and limitations under the Licence.
 */
 
-public class GraphAttribute extends GraphValue implements GraphMember {
+public class GraphAttribute extends GraphValue {
 	public static final String PROPERTY_CLAZZ = "clazz";
 	public static final String PROPERTY_VALUE = "value";
 	public static final String PROPERTY_VISIBILITY = "visibility";
@@ -67,9 +67,9 @@ public class GraphAttribute extends GraphValue implements GraphMember {
 	public GraphNode getParent() {
 		return clazz;
 	}
-
-	public GraphAttribute withParent(GraphNode clazz) {
-		this.clazz = clazz;
+	
+	public GraphAttribute withParent(GraphClazz parent) {
+		super.setParent(parent);
 		return this;
 	}
 
@@ -129,5 +129,8 @@ public class GraphAttribute extends GraphValue implements GraphMember {
 	public GraphAttribute with(GraphAnnotation value) {
 		this.annotation = value;
 		return this;
+	}
+	public String getName() {
+		return this.name;
 	}
 }

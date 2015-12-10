@@ -39,7 +39,7 @@ public class YUMLConverter implements Converter {
 			StringBuilder sb = new StringBuilder();
 			Iterator<GraphMember> i = root.getChildren().iterator();
 
-			ArrayList<GraphNode> visitedObj = new ArrayList<GraphNode>();
+			ArrayList<GraphEntity> visitedObj = new ArrayList<GraphEntity>();
 			root.initSubLinks();
 			SimpleKeyValueList <String, Object> links = root.getLinks();
 			parse(typ, i.next(), sb, visitedObj, links, removePackage);
@@ -52,14 +52,14 @@ public class YUMLConverter implements Converter {
 	}
 
 	public void parse(String typ, GraphMember item, StringBuilder sb,
-			ArrayList<GraphNode> visited,
+			ArrayList<GraphEntity> visited,
 			SimpleKeyValueList<String, Object> links, boolean shortName) {
-		if(item instanceof GraphNode) {
-			parse(typ, (GraphNode) item, sb, visited, links, shortName);
+		if(item instanceof GraphEntity) {
+			parse(typ, (GraphEntity) item, sb, visited, links, shortName);
 		}
 	}
-	public void parse(String typ, GraphNode item, StringBuilder sb,
-			ArrayList<GraphNode> visited,
+	public void parse(String typ, GraphEntity item, StringBuilder sb,
+			ArrayList<GraphEntity> visited,
 			SimpleKeyValueList<String, Object> links, boolean shortName) {
 		String key = item.getTyp(typ, shortName);
 		SimpleList<?> showedLinks = (SimpleList<?>) links
@@ -73,7 +73,7 @@ public class YUMLConverter implements Converter {
 		Iterator<?> iterator = showedLinks.iterator();
 		while (iterator.hasNext()) {
 			Object entry = iterator.next();
-			if (!(entry instanceof GraphEdge)) {
+			if (entry instanceof GraphEdge == false) {
 				continue;
 			}
 			GraphEdge element = (GraphEdge) entry;
@@ -83,8 +83,8 @@ public class YUMLConverter implements Converter {
 			sb.append(parseEntity(item, visited, typ, shortName));
 			sb.append("-");
 
-			Iterator<GraphNode> targetIterator = element.getOther().getNodes().iterator();
-			GraphNode target = targetIterator.next();
+			Iterator<GraphEntity> targetIterator = element.getOther().getNodes().iterator();
+			GraphEntity target = targetIterator.next();
 			sb.append(parseEntity(target, visited, typ, shortName));
 
 			while (targetIterator.hasNext()) {
@@ -97,12 +97,12 @@ public class YUMLConverter implements Converter {
 	}
 
 	// ##################################### Entity
-	public String parseEntity(GraphNode entity, ArrayList<GraphNode> visited,
+	public String parseEntity(GraphEntity entity, ArrayList<GraphEntity> visited,
 			boolean shortName) {
 		return parseEntity(entity, visited, null, shortName);
 	}
 
-	public String parseEntity(GraphNode entity, ArrayList<GraphNode> visited,
+	public String parseEntity(GraphEntity entity, ArrayList<GraphEntity> visited,
 			String typ, boolean shortName) {
 		if(!(entity instanceof GraphClazz)){
 			return "";
@@ -115,7 +115,7 @@ public class YUMLConverter implements Converter {
 		}
 		if (typ == null) {
 			typ = GraphIdMap.OBJECT;
-			if (clazzEntity.getId() == null) {
+			if (clazzEntity.getName(false) == null) {
 				typ = GraphIdMap.CLASS;
 			}
 		}
@@ -127,14 +127,14 @@ public class YUMLConverter implements Converter {
 			// + new String(new char[text.length()]).replace("\0", "&oline;") +
 			// "]";
 			return "[" + clazzEntity.getId() + " : "
-					+ clazzEntity.getClassName(shortName)
+					+ clazzEntity.getName(shortName)
 					+ parseEntityValues(clazzEntity, typ, shortString) + "]";
 		}
-		return "[" + clazzEntity.getClassName(shortName)
+		return "[" + clazzEntity.getName(shortName)
 				+ parseEntityValues(clazzEntity, typ, shortString) + "]";
 	}
 
-	public String parseEntityValues(GraphNode entity, String typ,
+	public String parseEntityValues(GraphEntity entity, String typ,
 			boolean shortName) {
 		if (shortName) {
 			return "";
@@ -155,7 +155,7 @@ public class YUMLConverter implements Converter {
 			GraphAttribute attribute;
 			if (element instanceof GraphAttribute) {
 				attribute = (GraphAttribute) element;
-				sb.append(attribute.getId() + splitter
+				sb.append(attribute.getName() + splitter
 						+ attribute.getValue(typ, shortName)); // / without Typ
 			}
 
@@ -167,7 +167,7 @@ public class YUMLConverter implements Converter {
 				attribute = (GraphAttribute) element;
 
 				sb.append(";");
-				sb.append(attribute.getId() + splitter
+				sb.append(attribute.getName() + splitter
 						+ attribute.getValue(typ, shortName));
 			}
 		}

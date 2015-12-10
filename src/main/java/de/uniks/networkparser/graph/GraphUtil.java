@@ -1,5 +1,4 @@
 package de.uniks.networkparser.graph;
-
 /*
 NetworkParser
 Copyright (c) 2011 - 2015, Stefan Lindel
@@ -21,26 +20,12 @@ express or implied.
 See the Licence for the specific language governing
 permissions and limitations under the Licence.
 */
-public class GraphEnumeration extends GraphAbstractClazz {
-	public GraphEnumeration withId(String id) {
-		super.withId(id);
-		return this;
-	}
-	public GraphEnumeration withParent(GraphNode value) {
-		super.withParent(value);
-		return this;
-	}
-	public GraphEnumeration withExternal(boolean value) {
-		super.withExternal(value);
-		return this;
-	}
-	public GraphEnumeration withTyp(String typ, String value) {
-		super.withTyp(typ, value);
-		return this;
-	}
-	
-	public GraphEnumeration with(GraphLiteral... values) {
-		super.with(values);
-		return this;
+/**
+ * Special Util for package Method  
+ *
+ */
+public class GraphUtil {
+	public static GraphClazz getByObject(GraphEntity item, String clazz, boolean fullName) {
+		return (GraphClazz) item.getByObject(clazz, fullName);
 	}
 }

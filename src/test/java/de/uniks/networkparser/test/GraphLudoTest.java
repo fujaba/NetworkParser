@@ -92,7 +92,7 @@ public class GraphLudoTest
       JsonArray jsonArray = jsonIdMap.toJsonArray(ludo);
       GraphConverter graphConverter = new GraphConverter();
       JsonObject converter=graphConverter.convertToJson(GraphIdMap.CLASS, jsonArray, true);
-      showDebugInfos(converter, 4205, null);
+      showDebugInfos(converter, 3452, null);
    }
    private void showDebugInfos(JsonObject json, int len, PrintStream stream) {
 	   if(stream != null) {

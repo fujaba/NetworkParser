@@ -40,6 +40,8 @@ public class EntityComparator<V> implements Comparator<V> {
 	public static final String IDMAP = "%idmap%";
 	/** Constant of HASHCODE. */
 	public static final String HASHCODE = "%hashcode%";
+	/** Constant of HASHCODE. */
+	public static final String VALUES = "%values%";
 	/** Constant of LIST. */
 	public static final String LIST = "%list%";
 
@@ -82,6 +84,9 @@ public class EntityComparator<V> implements Comparator<V> {
 	 * @return compare result
 	 */
 	public int compareValue(Object o1, Object o2) {
+		if(VALUES.equals(column)) {
+			return checkValues(o1, o2);
+		}
 		if (map != null) {
 			creator = map.getCreatorClass(o1);
 			SendableEntityCreator c2 = map.getCreatorClass(o2);
@@ -118,10 +123,7 @@ public class EntityComparator<V> implements Comparator<V> {
 			String valueA = (String) v1;
 			if (v2 != null) {
 				String valueB = (String) v2;
-				int value = valueB.compareTo(valueA);
-				if (value < 1) {
-					return -1;
-				}
+				return valueB.compareTo(valueA);
 			}
 		} else if (v1 instanceof Integer) {
 			Integer valueA = (Integer) v1;

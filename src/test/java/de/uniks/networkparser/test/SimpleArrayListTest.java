@@ -176,7 +176,7 @@ public class SimpleArrayListTest
 		list.remove(99);
 		list.remove(100);
 		list.add(5, 5);
-		Assert.assertEquals("Map Visible CaseSensitive ", list.toString());
+		Assert.assertEquals("Map Visible CaseSensitive (5)", list.toString());
 		list.add(6, 6);
 		list.add(7, 7);
 		Object[] array = list.keySet().toArray();

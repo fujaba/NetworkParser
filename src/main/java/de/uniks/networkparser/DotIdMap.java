@@ -5,10 +5,10 @@ import de.uniks.networkparser.graph.GraphClazz;
 import de.uniks.networkparser.graph.GraphDataType;
 import de.uniks.networkparser.graph.GraphEdge;
 import de.uniks.networkparser.graph.GraphEdgeTypes;
+import de.uniks.networkparser.graph.GraphEntity;
 import de.uniks.networkparser.graph.GraphIdMap;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphMethod;
-import de.uniks.networkparser.graph.GraphNode;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.IdMapDecoder;
@@ -83,7 +83,7 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 	void decodeEdge(GraphList graph, StringTokener value) {
 		char endChar;
 		do {
-			GraphNode node = decodeNode(graph, value);
+			GraphEntity node = decodeNode(graph, value);
 			graph.withNode(node);
 			
 			// and Second Node
@@ -100,7 +100,7 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 				value.next();
 				
 				GraphEdge otherEdge = new GraphEdge();
-				GraphNode otherNode = decodeNode(graph, value);
+				GraphEntity otherNode = decodeNode(graph, value);
 				otherEdge.with(otherNode);
 				graph.withNode(otherNode);
 				edge.with(otherEdge);
@@ -109,12 +109,12 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 		} while(endChar != 0 && endChar != '}');
 		value.next();
 	}
-	GraphNode decodeNode(GraphList graph, StringTokener value) {
+	GraphEntity decodeNode(GraphList graph, StringTokener value) {
 		char c = value.nextClean(true);
 		StringBuilder sb=new StringBuilder();
 		sb.append(c);
 //		boolean isQuote = true;
-		GraphNode node = null;
+		GraphEntity node = null;
 		do {
 			c = value.next();
 			switch (c) {
@@ -127,7 +127,7 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 				String id = sb.toString().trim();
 				node = graph.getNode(id);
 				if(node == null) {
-					node = new GraphNode().withId(id);
+					node = new GraphClazz().with(id);
 				}
 				if(c == '[') {
 					decodeAttributes(node, value);
@@ -146,7 +146,7 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 	}
 	
 //	ID '=' ID [ (';' | ',') ]
-	void decodeAttributes(GraphNode node, StringTokener value) {
+	void decodeAttributes(GraphEntity node, StringTokener value) {
 		value.skipChar('[');
 		char c;
 		do {
@@ -154,7 +154,10 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 			if(key != null && value.getCurrentChar()=='=') {
 				value.next();
 				String valueStr = decodeValue(value);
-				node.addAttribute(key, GraphDataType.STRING, valueStr);
+				if(node instanceof GraphClazz) {
+					GraphAttribute attribute = ((GraphClazz)node).createAttribute(key,  GraphDataType.STRING);
+					attribute.withValue(valueStr);
+				}
 			}
 			c = value.getCurrentChar();
 			if(c != ']') {
@@ -188,6 +191,14 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 		return sb.toString();
 	}
 
+	private String getTyp(GraphEntity item, String typ, boolean shortName) {
+		if (typ.equals(GraphIdMap.OBJECT)) {
+			return item.getId();
+		} else if (typ.equals(GraphIdMap.CLASS)) {
+			return item.getName(shortName);
+		}
+		return "";
+	}
 	
 	@Override
 	public String convert(GraphList root, boolean removePackage) {
@@ -204,13 +215,13 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 		boolean isObjectdiagram =false;
 		isObjectdiagram = GraphIdMap.OBJECT.equals(root.getTyp());
 
-		for(GraphNode node : root.getNodes()) {
-			sb.append(node.getId());
+		for(GraphEntity node : root.getNodes()) {
+			sb.append(node.getName(false));
 			sb.append("[label=<<table border='0' cellborder='1' cellspacing='0'><tr><td><b>");
 			if(isObjectdiagram) {
 				sb.append("<u>");
 			}
-			sb.append(node.getId()+" : "+node.getTyp(root.getTyp(), removePackage));
+			sb.append(node.getName(false)+" : "+getTyp(node, root.getTyp(), removePackage));
 			if(isObjectdiagram) {
 				sb.append("</u>"); 
 			}
@@ -225,9 +236,9 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 			for(GraphAttribute attribute : graphClazz.getAttributes()) {
 				// add attribute line
 				if(isObjectdiagram) {
-					childBuilder.append(BaseItem.CRLF+"<tr><td align='left'>"+attribute.getId() +" = "+attribute.getValue()+"</td></tr>");
+					childBuilder.append(BaseItem.CRLF+"<tr><td align='left'>"+attribute.getName() +" = "+attribute.getValue()+"</td></tr>");
 				} else {
-					childBuilder.append(BaseItem.CRLF+"<tr><td align='left'>"+attribute.getId() +" : "+attribute.getType(removePackage)+"</td></tr>");
+					childBuilder.append(BaseItem.CRLF+"<tr><td align='left'>"+attribute.getName() +" : "+attribute.getType(removePackage)+"</td></tr>");
 				}
 			}
 			if(childBuilder.length() > 0) {
@@ -239,7 +250,7 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 			for(GraphMethod method : graphClazz.getMethods()) {
 				// add attribute line
 //				if(isObjectdiagram) {
-				childBuilder.append(BaseItem.CRLF+"<tr><td align='left'>"+method.getId() + "</td></tr>");
+				childBuilder.append(BaseItem.CRLF+"<tr><td align='left'>"+method.getName(false) + "</td></tr>");
 			}
 			if(childBuilder.length() > 0) {
 				sb.append(BaseItem.CRLF+"<tr><td><table border='0' cellborder='0' cellspacing='0'>");
@@ -255,10 +266,10 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 			GraphEdge otherEdge = edge.getOther();
 			if(otherEdge.getTyp()  != GraphEdgeTypes.EDGE) {
 				// It is bidiAssoc
-				sb.append(edge.getNode().getId() + " -- " + otherEdge.getNode().getId());
+				sb.append(edge.getNode().getName(false) + " -- " + otherEdge.getNode().getName(false));
 				sb.append("[headlabel = \""+edge.getProperty()+"\" taillabel = \""+otherEdge.getProperty()+"\"];"+BaseItem.CRLF);
 			} else {
-				sb.append(edge.getNode().getId() + " -> " + otherEdge.getNode().getId());
+				sb.append(edge.getNode().getName(false) + " -> " + otherEdge.getNode().getName(false));
 				graphTyp = "digraph";
 				sb.append("[taillabel = \""+edge.getProperty()+"\"];"+BaseItem.CRLF);
 			}

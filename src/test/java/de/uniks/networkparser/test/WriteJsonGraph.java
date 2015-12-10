@@ -31,20 +31,20 @@ public class WriteJsonGraph {
 		DocEnvironment docEnvironment = new DocEnvironment();
 		GraphList model = new GraphList().withTyp(GraphIdMap.CLASS);
 
-		GraphClazz abstractArray = model.with(new GraphClazz().withClassName("AbstractArray"));
-		abstractArray.withAttribute("elements", GraphDataType.ref("Object[]"));
-		abstractArray.withAttribute("size", GraphDataType.INT);
-		abstractArray.withAttribute("index", GraphDataType.INT);
-		abstractArray.withAttribute("flag", GraphDataType.BYTE);
-		GraphClazz baseItem = model.with(new GraphClazz().withClassName("BaseItem"));
-		GraphClazz iterable = model.with(new GraphClazz().withClassName("Iterable<V>"));
-		GraphClazz abstractList = model.with(new GraphClazz().withClassName("AbstractList<V>"));
-		GraphClazz simpleList = model.with(new GraphClazz().withClassName("SimpleList<V>"));
-		GraphClazz simpleSet = model.with(new GraphClazz().withClassName("SimpleSet<V>"));
-		GraphClazz simpleKeyValueList = model.with(new GraphClazz().withClassName("SimpleKeyValueList<K, V>"));
-		GraphClazz map = model.with(new GraphClazz().withClassName("Map<K, V>"));
-		GraphClazz list = model.with(new GraphClazz().withClassName("List<V>"));
-		GraphClazz set = model.with(new GraphClazz().withClassName("Set<V>"));
+		GraphClazz abstractArray = model.with(new GraphClazz().with("AbstractArray"));
+		abstractArray.createAttribute("elements", GraphDataType.ref("Object[]"));
+		abstractArray.createAttribute("size", GraphDataType.INT);
+		abstractArray.createAttribute("index", GraphDataType.INT);
+		abstractArray.createAttribute("flag", GraphDataType.BYTE);
+		GraphClazz baseItem = model.with(new GraphClazz().with("BaseItem"));
+		GraphClazz iterable = model.with(new GraphClazz().with("Iterable<V>"));
+		GraphClazz abstractList = model.with(new GraphClazz().with("AbstractList<V>"));
+		GraphClazz simpleList = model.with(new GraphClazz().with("SimpleList<V>"));
+		GraphClazz simpleSet = model.with(new GraphClazz().with("SimpleSet<V>"));
+		GraphClazz simpleKeyValueList = model.with(new GraphClazz().with("SimpleKeyValueList<K, V>"));
+		GraphClazz map = model.with(new GraphClazz().with("Map<K, V>"));
+		GraphClazz list = model.with(new GraphClazz().with("List<V>"));
+		GraphClazz set = model.with(new GraphClazz().with("Set<V>"));
 		
 		
 		
@@ -77,8 +77,9 @@ public class WriteJsonGraph {
 		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/drawer.js");
 		
 		GraphList model = new GraphList().withTyp(GraphIdMap.CLASS);
-		GraphClazz uni = model.with(new GraphClazz().withClassName("University").withAttribute("name", GraphDataType.STRING));
-		GraphClazz person = model.with(new GraphClazz().withClassName("Person"));
+		GraphClazz uni = model.with(new GraphClazz().with("University"));
+		uni.createAttribute("name", GraphDataType.STRING);
+		GraphClazz person = model.with(new GraphClazz().with("Person"));
 		
 		uni.withAssoc(person, "has", GraphCardinality.MANY, "studis", GraphCardinality.ONE);
 		Assert.assertEquals(654, htmlEntity.withGraph(model).toString(2).length());

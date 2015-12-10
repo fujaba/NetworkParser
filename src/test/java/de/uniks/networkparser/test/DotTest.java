@@ -71,10 +71,10 @@ public class DotTest {
 	@Test
 	public void testDotConverter() throws IOException {
 		GraphList list = new GraphList();
-		GraphClazz uni = list.with(new GraphClazz().withId("UniKassel").withClassName("University"));
-		uni.withAttribute("name", GraphDataType.STRING);
-		uni.withMethod("init()");
-		GraphClazz student = list.with(new GraphClazz().withId("Stefan").withClassName("Student"));
+		GraphClazz uni = list.with(new GraphClazz().with("UniKassel").with("University"));
+		uni.createAttribute("name", GraphDataType.STRING);
+		uni.createMethod("init()");
+		GraphClazz student = list.with(new GraphClazz().with("Stefan").with("Student"));
 		student.withAssoc(uni, "owner", GraphCardinality.ONE);
 		
 		DotIdMap map=new DotIdMap();

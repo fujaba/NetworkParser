@@ -26,7 +26,6 @@ public class GraphGeneralization extends GraphEdge{
 	public GraphGeneralization() {
 		super.withTyp(GraphEdgeTypes.GENERALISATION);
 	}
-
 	
 	// CHILD -> GENERALIZATION
 	public GraphGeneralization with(GraphClazz srcClass, GraphClazz tgtClass) {
@@ -37,5 +36,4 @@ public class GraphGeneralization extends GraphEdge{
 		this.with(tgtClass);
 		return this;
 	}
-
 }

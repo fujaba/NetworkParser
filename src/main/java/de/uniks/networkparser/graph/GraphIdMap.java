@@ -82,7 +82,11 @@ public class GraphIdMap extends IdMap {
 	
 	public GraphList parsing(Object object, GraphIdMapFilter filter) {
 		GraphList list = this.createList().withTyp(filter.getTyp());
-		list.withMain(parse(object, filter, list, 0));
+		GraphClazz main = parse(object, filter, list, 0);
+		if(list instanceof GraphListDiff) {
+			((GraphListDiff)list).withMain(main);	
+		}
+		
 		return list;
 	}
 
@@ -99,7 +103,7 @@ public class GraphIdMap extends IdMap {
 	 *            the show cardinality
 	 * @return the Object as String
 	 */
-	private GraphNode parse(Object object, GraphIdMapFilter filter,
+	private GraphClazz parse(Object object, GraphIdMapFilter filter,
 			GraphList list, int deep) {
 		if (object == null) {
 			return null;
@@ -107,8 +111,8 @@ public class GraphIdMap extends IdMap {
 
 		String mainKey = getId(object);
 		GraphMember element = list.getByObject(mainKey, true);
-		if (element != null && element instanceof GraphNode) {
-			return (GraphNode)element;
+		if (element != null && element instanceof GraphClazz) {
+			return (GraphClazz)element;
 		}
 
 		SendableEntityCreator prototyp = getCreatorClass(object);
@@ -117,7 +121,7 @@ public class GraphIdMap extends IdMap {
 
 		GraphClazz newElement = this.createClazz();
 		newElement.withId(mainKey);
-		newElement.withClassName(className);
+		newElement.with(className);
 		list.with(newElement);
 		if (prototyp != null) {
 			for (String property : prototyp.getProperties()) {
@@ -140,7 +144,7 @@ public class GraphIdMap extends IdMap {
 	}
 
 	private void parsePropertyValue(Object entity, GraphIdMapFilter filter,
-			GraphList list, int deep, GraphNode element, String property,
+			GraphList list, int deep, GraphClazz element, String property,
 			Object item, GraphCardinality cardinality) {
 		if (item == null) {
 			return;
@@ -153,10 +157,11 @@ public class GraphIdMap extends IdMap {
 		}
 		SendableEntityCreator valueCreater = getCreatorClass(item);
 		if (valueCreater != null) {
-			GraphNode subId = parse(item, filter, list, deep + 1);
+			GraphClazz subId = parse(item, filter, list, deep + 1);
 			list.add(this.createEdge().with(element).with(this.createEdge(subId, cardinality, property)));
 		} else {
-			element.addAttribute(property, GraphDataType.ref(item.getClass()), "" + item);
+			GraphAttribute attribute = element.createAttribute(property, GraphDataType.ref(item.getClass()));
+			attribute.withValue("" + item);
 		}
 		return;
 	}
@@ -202,7 +207,7 @@ public class GraphIdMap extends IdMap {
 		return new GraphEdge();
 	}
 	
-	GraphEdge createEdge(GraphNode node, GraphCardinality cardinality, String property) {
+	GraphEdge createEdge(GraphClazz node, GraphCardinality cardinality, String property) {
 		return new GraphEdge().with(node, cardinality, property);
 	}
 	

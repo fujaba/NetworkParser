@@ -24,7 +24,7 @@ package de.uniks.networkparser.graph;
 
 public class GraphListDiff extends GraphList{
 	private GraphListDiff match;
-	private GraphNode mainFile;
+	private GraphEntity mainFile;
 
 
 	public GraphListDiff getMatch() {
@@ -36,13 +36,12 @@ public class GraphListDiff extends GraphList{
 		return this;
 	}
 	
-	@Override
-	public GraphList withMain(GraphNode node) {
+	public GraphList withMain(GraphEntity node) {
 		this.mainFile = node;
 		return this;
 	}
 
-	public GraphNode getMainFile() {
+	public GraphEntity getMainFile() {
 		return mainFile;
 	}
 }
