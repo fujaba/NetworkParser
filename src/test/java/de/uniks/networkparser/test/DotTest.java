@@ -9,9 +9,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.DotIdMap;
-import de.uniks.networkparser.graph.GraphCardinality;
-import de.uniks.networkparser.graph.GraphClazz;
-import de.uniks.networkparser.graph.GraphDataType;
+import de.uniks.networkparser.graph.Cardinality;
+import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.interfaces.BaseItem;
 
@@ -71,11 +71,11 @@ public class DotTest {
 	@Test
 	public void testDotConverter() throws IOException {
 		GraphList list = new GraphList();
-		GraphClazz uni = list.with(new GraphClazz().with("UniKassel").with("University"));
-		uni.createAttribute("name", GraphDataType.STRING);
+		Clazz uni = list.with(new Clazz().with("UniKassel").with("University"));
+		uni.createAttribute("name", DataType.STRING);
 		uni.createMethod("init()");
-		GraphClazz student = list.with(new GraphClazz().with("Stefan").with("Student"));
-		student.withAssoc(uni, "owner", GraphCardinality.ONE);
+		Clazz student = list.with(new Clazz().with("Stefan").with("Student"));
+		student.withAssoc(uni, "owner", Cardinality.ONE);
 		
 		DotIdMap map=new DotIdMap();
 		String convert = map.convert(list, true);

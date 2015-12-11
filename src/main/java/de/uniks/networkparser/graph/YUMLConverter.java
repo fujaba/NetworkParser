@@ -73,10 +73,10 @@ public class YUMLConverter implements Converter {
 		Iterator<?> iterator = showedLinks.iterator();
 		while (iterator.hasNext()) {
 			Object entry = iterator.next();
-			if (entry instanceof GraphEdge == false) {
+			if (entry instanceof Association == false) {
 				continue;
 			}
-			GraphEdge element = (GraphEdge) entry;
+			Association element = (Association) entry;
 			if (sb.length() > 0) {
 				sb.append(",");
 			}
@@ -104,10 +104,10 @@ public class YUMLConverter implements Converter {
 
 	public String parseEntity(GraphEntity entity, ArrayList<GraphEntity> visited,
 			String typ, boolean shortName) {
-		if(!(entity instanceof GraphClazz)){
+		if(!(entity instanceof Clazz)){
 			return "";
 		}
-		GraphClazz clazzEntity = (GraphClazz) entity;
+		Clazz clazzEntity = (Clazz) entity;
 		
 		boolean shortString = visited.contains(clazzEntity);
 		if (!shortString) {
@@ -152,19 +152,19 @@ public class YUMLConverter implements Converter {
 			}
 			sb.append("|");
 			Object element = i.next();
-			GraphAttribute attribute;
-			if (element instanceof GraphAttribute) {
-				attribute = (GraphAttribute) element;
+			Attribute attribute;
+			if (element instanceof Attribute) {
+				attribute = (Attribute) element;
 				sb.append(attribute.getName() + splitter
 						+ attribute.getValue(typ, shortName)); // / without Typ
 			}
 
 			while (i.hasNext()) {
 				element = i.next();
-				if (!(element instanceof GraphAttribute)) {
+				if (!(element instanceof Attribute)) {
 					continue;
 				}
-				attribute = (GraphAttribute) element;
+				attribute = (Attribute) element;
 
 				sb.append(";");
 				sb.append(attribute.getName() + splitter

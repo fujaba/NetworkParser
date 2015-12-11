@@ -21,26 +21,33 @@ package de.uniks.networkparser.graph;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
+public enum Cardinality
 
-public class GraphEdgeDiff extends GraphEdge{
-	private GraphEdgeDiff match;
+{
+	ONE("1"), MANY("n");
 
-	public GraphEdgeDiff getMatch() {
-		return match;
+	private String value;
+
+	private Cardinality(String value) {
+		this.value = value;
 	}
 
-	public GraphEdgeDiff withMatch(GraphEdgeDiff value) {
-		if (this.match != value) {
-			GraphEdgeDiff oldValue = this.match;
-			if (oldValue != null) {
-				this.match = null;
-				oldValue.withMatch(null);
-			}
-			this.match = value;
-			if (value != null) {
-				value.withMatch(this);
-			}
+	@Override
+	public String toString() {
+		return super.toString().toLowerCase();
+	}
+
+	public String getValue() {
+		return value;
+	}
+	
+	public static Cardinality create(String value) {
+		if("one".equalsIgnoreCase(value) || "1".equalsIgnoreCase(value) ) {
+			return ONE;
 		}
-		return this;
+		if("many".equalsIgnoreCase(value) || "n".equalsIgnoreCase(value) ) {
+			return MANY;
+		}
+		return null;
 	}
 }

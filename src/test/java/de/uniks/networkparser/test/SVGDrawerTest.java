@@ -7,14 +7,14 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import de.uniks.networkparser.graph.GraphAttribute;
-import de.uniks.networkparser.graph.GraphClazz;
+import de.uniks.networkparser.graph.Attribute;
+import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.GraphConverter;
-import de.uniks.networkparser.graph.GraphDataType;
-import de.uniks.networkparser.graph.GraphEdge;
+import de.uniks.networkparser.graph.DataType;
+import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.GraphList;
-import de.uniks.networkparser.graph.GraphMethod;
-import de.uniks.networkparser.graph.GraphParameter;
+import de.uniks.networkparser.graph.Method;
+import de.uniks.networkparser.graph.Parameter;
 import de.uniks.networkparser.graph.GraphPattern;
 import de.uniks.networkparser.json.JsonObject;
 
@@ -26,28 +26,28 @@ public class SVGDrawerTest {
 		GraphList map = new GraphList();
 		
 		
-		GraphClazz space=map.with(new GraphClazz().with("Space"));
-		GraphClazz modelHistory=map.with(new GraphClazz().with("ModelHistory"));
-		GraphClazz networkNode=map.with(new GraphClazz().with("NetworkNode"));
-		GraphClazz idMap=map.with(new GraphClazz().with("IdMap"));
-		GraphClazz nodeProxy=map.with(new GraphClazz().with("NodeProxy"));
-		GraphClazz message=map.with(new GraphClazz().with("Message"));
+		Clazz space=map.with(new Clazz().with("Space"));
+		Clazz modelHistory=map.with(new Clazz().with("ModelHistory"));
+		Clazz networkNode=map.with(new Clazz().with("NetworkNode"));
+		Clazz idMap=map.with(new Clazz().with("IdMap"));
+		Clazz nodeProxy=map.with(new Clazz().with("NodeProxy"));
+		Clazz message=map.with(new Clazz().with("Message"));
 		
 		// Methods
-		networkNode.with(new GraphMethod("sendMessage", new GraphParameter(GraphDataType.ref(message)), new GraphParameter(GraphDataType.ref(nodeProxy))));
+		networkNode.with(new Method("sendMessage", new Parameter(DataType.ref(message)), new Parameter(DataType.ref(nodeProxy))));
 		
 		// Attribute
-		networkNode.with(new GraphAttribute("online", GraphDataType.BOOLEAN));
+		networkNode.with(new Attribute("online", DataType.BOOLEAN));
 		
 //		GraphClazz nodeProxyTCP=map.with(new GraphClazz().withClassName("NodeProxyTCP"));
 //		GraphClazz nodeProxyTCP=map.with(new GraphClazz().withClassName("NodeProxy"));
 		
 		
 		// Edges
-		map.with( GraphEdge.create(space, modelHistory) );
-		map.with( GraphEdge.create(space, networkNode) );
-		map.with( GraphEdge.create(space, idMap) );
-		map.with( GraphEdge.create(networkNode, nodeProxy) );
+		map.with( Association.create(space, modelHistory) );
+		map.with( Association.create(space, networkNode) );
+		map.with( Association.create(space, idMap) );
+		map.with( Association.create(networkNode, nodeProxy) );
 		
 		GraphConverter converter=new GraphConverter();
 		writeJson("clazzModel.html", converter.convertToJson(map, false));
@@ -61,13 +61,13 @@ public class SVGDrawerTest {
 		GraphPattern modelHistory = map.with(new GraphPattern().with("Item").withBounds("create"));
 		map.with(new GraphPattern().with("ModelHistory").withBounds("nac"));
 		
-		map.with( GraphEdge.create(space, modelHistory).withStyle("create") );
+		map.with( Association.create(space, modelHistory).withStyle("create") );
 
 		GraphList subGraph = new GraphList();
 		GraphPattern person = subGraph.with(new GraphPattern().with("Person"));
 		subGraph.withStyle("nac");
 		
-		map.with(GraphEdge.create(space, person));
+		map.with(Association.create(space, person));
 		map.with(subGraph);
 		
 		GraphConverter converter=new GraphConverter();
@@ -81,15 +81,15 @@ public class SVGDrawerTest {
 		GraphList map = new GraphList();
 		
 		
-		GraphClazz networkParser=map.with(new GraphClazz().with("NetworkParser"));
-		GraphClazz networkParserfx=map.with(new GraphClazz().with("NetworkParserFX"));
-		GraphClazz petaf=map.with(new GraphClazz().with("PetaF"));
-		GraphClazz policy=map.with(new GraphClazz().with("Policy"));
+		Clazz networkParser=map.with(new Clazz().with("NetworkParser"));
+		Clazz networkParserfx=map.with(new Clazz().with("NetworkParserFX"));
+		Clazz petaf=map.with(new Clazz().with("PetaF"));
+		Clazz policy=map.with(new Clazz().with("Policy"));
 		
 		
-		map.with( GraphEdge.create(networkParser, networkParserfx) );
-		map.with( GraphEdge.create(networkParser, petaf) );
-		map.with( GraphEdge.create(petaf, policy) );
+		map.with( Association.create(networkParser, networkParserfx) );
+		map.with( Association.create(networkParser, petaf) );
+		map.with( Association.create(petaf, policy) );
 		
 		
 		GraphConverter converter=new GraphConverter();

@@ -36,31 +36,31 @@ public abstract class GraphModel extends GraphEntity {
 	 *              parent                   clazz
 	 *         </pre>
 	 */
-	public SimpleSet<GraphClazz> getClazzes() {
-		SimpleSet<GraphClazz> collection = new SimpleSet<GraphClazz>();
+	public SimpleSet<Clazz> getClazzes() {
+		SimpleSet<Clazz> collection = new SimpleSet<Clazz>();
 		if (children == null) {
 			return collection;
 		}
 		for (GraphMember child : children) {
-			if (child instanceof GraphClazz)  {
-				collection.add((GraphClazz) child);
+			if (child instanceof Clazz)  {
+				collection.add((Clazz) child);
 			}
 		}
 		return collection;
 	}
 
-	public GraphClazz createClazz(String name) {
-		GraphClazz clazz = new GraphClazz().with(name);
+	public Clazz createClazz(String name) {
+		Clazz clazz = new Clazz().with(name);
 		clazz.with(this);
 		return clazz;
 	}
 
-	public GraphModel with(GraphClazz... values) {
+	public GraphModel with(Clazz... values) {
 		super.with(values);
 		return this;
 	}
 
-	public GraphModel without(GraphClazz... values) {
+	public GraphModel without(Clazz... values) {
 		super.without(values);
 		return this;
 	}

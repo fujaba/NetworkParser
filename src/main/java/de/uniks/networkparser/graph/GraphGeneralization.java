@@ -22,14 +22,14 @@ package de.uniks.networkparser.graph;
  permissions and limitations under the Licence.
 */
 
-public class GraphGeneralization extends GraphEdge{
+public class GraphGeneralization extends Association{
 	public GraphGeneralization() {
 		super.withTyp(GraphEdgeTypes.GENERALISATION);
 	}
 	
 	// CHILD -> GENERALIZATION
-	public GraphGeneralization with(GraphClazz srcClass, GraphClazz tgtClass) {
-		GraphEdge source = new GraphGeneralization().with(srcClass);
+	public GraphGeneralization with(Clazz srcClass, Clazz tgtClass) {
+		Association source = new GraphGeneralization().with(srcClass);
 		source.withTyp(GraphEdgeTypes.CHILD);
 		this.with(source);
 		

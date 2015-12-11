@@ -2,46 +2,46 @@ package de.uniks.networkparser.graph;
 
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
-public class GraphMapDataType extends GraphDataType {
+public class GraphMapDataType extends DataType {
 
-	private GraphDataType genericKey;
+	private DataType genericKey;
 	
-	private GraphDataType genericValue;
+	private DataType genericValue;
 	
 	GraphMapDataType() {
 		super(SimpleKeyValueList.class.getName());
 		this.value.withExternal(true);
 	}
 	
-	public static GraphMapDataType ref(GraphClazz key, GraphClazz value) {
-		GraphMapDataType result = new GraphMapDataType().withGenericKey(GraphDataType.ref(key)).withGenericValue(GraphDataType.ref(value));
+	public static GraphMapDataType ref(Clazz key, Clazz value) {
+		GraphMapDataType result = new GraphMapDataType().withGenericKey(DataType.ref(key)).withGenericValue(DataType.ref(value));
 		return result;
 	}
 	public static GraphMapDataType ref(String key, String value) {
-		GraphMapDataType result = new GraphMapDataType().withGenericKey(GraphDataType.ref(key)).withGenericValue(GraphDataType.ref(value));
+		GraphMapDataType result = new GraphMapDataType().withGenericKey(DataType.ref(key)).withGenericValue(DataType.ref(value));
 		return result;
 	}
 	
-	public static GraphMapDataType ref(GraphDataType key, GraphDataType value) {
+	public static GraphMapDataType ref(DataType key, DataType value) {
 		GraphMapDataType result = new GraphMapDataType().withGenericKey(key).withGenericValue(value);
 		return result;
 	}
 
-	private GraphMapDataType withGenericKey(GraphDataType key) {
+	private GraphMapDataType withGenericKey(DataType key) {
 		this.genericKey = key;
 		return this;
 	}
 
-	private GraphMapDataType withGenericValue(GraphDataType value) {
+	private GraphMapDataType withGenericValue(DataType value) {
 		this.genericValue = value;
 		return this;
 	}
 	
-	public GraphDataType getGenericKey() {
+	public DataType getGenericKey() {
 		return genericKey;
 	}
 	
-	public GraphDataType getGenericValue() {
+	public DataType getGenericValue() {
 		return genericValue;
 	}
 	

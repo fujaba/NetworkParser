@@ -21,11 +21,11 @@ package de.uniks.networkparser.emf;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.graph.GraphAttribute;
-import de.uniks.networkparser.graph.GraphCardinality;
-import de.uniks.networkparser.graph.GraphClazz;
-import de.uniks.networkparser.graph.GraphDataType;
-import de.uniks.networkparser.graph.GraphEdge;
+import de.uniks.networkparser.graph.Attribute;
+import de.uniks.networkparser.graph.Cardinality;
+import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.graph.DataType;
+import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphLiteral;
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -108,7 +108,7 @@ public class EMFUtil {
 				continue;
 			}
 			if (eClassifier.getString(EMFIdMap.XSI_TYPE).equalsIgnoreCase(ECLASS)) {
-				GraphClazz clazz = new GraphClazz().with(eClassifier.getString(EMFIdMap.NAME));
+				Clazz clazz = new Clazz().with(eClassifier.getString(EMFIdMap.NAME));
 				model.with(clazz);
 				for(XMLEntity child : eClassifier.getChildren()) {
 					String typ = child.getString(EMFIdMap.XSI_TYPE);
@@ -120,7 +120,7 @@ public class EMFUtil {
 						if (EMFUtil.isPrimitiveType(etyp.toLowerCase())) {
 							etyp = etyp.toLowerCase();
 						}
-						clazz.with(new GraphAttribute(EMFUtil.toValidJavaId(child.getString(EMFIdMap.NAME)), GraphDataType.ref(etyp)));						
+						clazz.with(new Attribute(EMFUtil.toValidJavaId(child.getString(EMFIdMap.NAME)), DataType.ref(etyp)));						
 					}else if(typ.equals(EReferences)) {
 						child.put(PARENT, eClassifier);
 						refs.add(child);
@@ -130,7 +130,7 @@ public class EMFUtil {
 					superClazzes.add(eClassifier);
 				}
 			} else if (eClassifier.getString(EMFIdMap.XSI_TYPE).equals(EEnum)) {
-				GraphClazz graphEnum = new GraphClazz();
+				Clazz graphEnum = new Clazz();
 				graphEnum.withEnum(true);
 				graphEnum.with(eClassifier.getString(EMFIdMap.NAME));
 				for(XMLEntity child : eClassifier.getChildren()) {
@@ -148,12 +148,12 @@ public class EMFUtil {
 		 // inheritance
 		for(XMLEntity eClass : superClazzes) {
 			String id = EMFUtil.getId(eClass.getString(eSuperTypes));
-			 GraphClazz kidClazz = model.getNode(eClass.getString(EMFIdMap.NAME));
-			 GraphClazz superClazz = model.getNode(id);
+			 Clazz kidClazz = model.getNode(eClass.getString(EMFIdMap.NAME));
+			 Clazz superClazz = model.getNode(id);
 			 kidClazz.withoutSuperClazz(superClazz);
 		}
 		// assocs
-		SimpleKeyValueList<String, GraphEdge> items = new SimpleKeyValueList<String, GraphEdge>(); 
+		SimpleKeyValueList<String, Association> items = new SimpleKeyValueList<String, Association>(); 
 		for(XMLEntity eref : refs) {
 			String tgtClassName = eref.getString(ETYPE);
 			if(tgtClassName.indexOf("#")>=0) {
@@ -161,13 +161,13 @@ public class EMFUtil {
 			}
 			String tgtRoleName = eref.getString(EMFIdMap.NAME);
 			
-			GraphEdge tgtAssoc = getOrCreate(items, model, tgtClassName, tgtRoleName);
+			Association tgtAssoc = getOrCreate(items, model, tgtClassName, tgtRoleName);
 			
 			if (eref.containsKey(UPPERBOUND)) {
 				Object upperValue = eref.get(UPPERBOUND);
 				if (upperValue instanceof Number) {
 					if (((Number) upperValue).intValue() != 1) {
-						tgtAssoc.with(GraphCardinality.MANY);
+						tgtAssoc.with(Cardinality.MANY);
 					}
 				}
 			}
@@ -180,19 +180,19 @@ public class EMFUtil {
 			}else{
 				srcRoleName = EMFUtil.getId(eref.getString(EOpposite));
 			}
-			GraphEdge srcAssoc = getOrCreate(items, model, srcClassName, srcRoleName);
+			Association srcAssoc = getOrCreate(items, model, srcClassName, srcRoleName);
 			tgtAssoc.with(srcAssoc);
 			model.with(tgtAssoc);
 		}
 		return model;
 	}
-	private static GraphEdge getOrCreate(SimpleKeyValueList<String, GraphEdge> items, GraphList model, String className, String roleName) {
+	private static Association getOrCreate(SimpleKeyValueList<String, Association> items, GraphList model, String className, String roleName) {
 		roleName = EMFUtil.toValidJavaId(roleName);
 		String assocName = className+":"+roleName;
-		GraphEdge edge = items.getValue(assocName);
+		Association edge = items.getValue(assocName);
 		if(edge == null) {
-			GraphClazz clazz = model.getNode(className);
-			edge = new GraphEdge().with(clazz, GraphCardinality.ONE, roleName);
+			Clazz clazz = model.getNode(className);
+			edge = new Association().with(clazz, Cardinality.ONE, roleName);
 			if(roleName != null) {
 				items.add(assocName, edge);
 			}

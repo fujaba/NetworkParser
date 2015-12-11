@@ -8,11 +8,10 @@ import java.lang.reflect.Parameter;
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.uniks.networkparser.graph.GraphAttribute;
-import de.uniks.networkparser.graph.GraphClazz;
-import de.uniks.networkparser.graph.GraphDataType;
+import de.uniks.networkparser.graph.Attribute;
+import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphList;
-import de.uniks.networkparser.graph.GraphMethod;
 import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.list.SortedSet;
 
@@ -21,9 +20,9 @@ public class GenModel {
 	@Test
 	public void testModel() {
 		GraphModel model = new GraphList().with("de.uniks");
-		GraphClazz uni = model.createClazz("Uni");
-		GraphAttribute nameAttribute = uni.createAttribute("name", GraphDataType.STRING);
-		GraphMethod mainMethod = uni.createMethod("main");
+		Clazz uni = model.createClazz("Uni");
+		Attribute nameAttribute = uni.createAttribute("name", DataType.STRING);
+		de.uniks.networkparser.graph.Method mainMethod = uni.createMethod("main");
 		boolean printItems=true;
 //		System.out.println("Clazz: "+getCount(uni, true, printItems));
 		System.out.println("Attribute: "+getCount(nameAttribute, true, printItems));

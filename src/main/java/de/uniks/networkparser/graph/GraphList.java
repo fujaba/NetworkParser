@@ -33,15 +33,15 @@ public class GraphList extends GraphModel implements BaseItem{
 	}
 
 	public GraphList withEdge(String sourceName, String targetName) {
-		GraphEdge edge = new GraphEdge().with(sourceName).with(
-				new GraphEdge().with(targetName));
+		Association edge = new Association().with(sourceName).with(
+				new Association().with(targetName));
 		add(edge);
 		return this;
 	}
 
-	public boolean add(GraphEdge edge) {
-		for (Iterator<GraphEdge> i = this.associations.iterator(); i.hasNext();) {
-			GraphEdge item = i.next();
+	public boolean add(Association edge) {
+		for (Iterator<Association> i = this.associations.iterator(); i.hasNext();) {
+			Association item = i.next();
 			if (edge.getOther()!= null && item.containsAll(edge.getOther(), true)) {
 				// Back again
 				if(edge.getOther() != null ) {	
@@ -56,7 +56,7 @@ public class GraphList extends GraphModel implements BaseItem{
 	
 	public SimpleKeyValueList<String, Object> getLinks() {
 		SimpleKeyValueList<String, Object> links = new SimpleKeyValueList<String, Object>();
-		for (GraphEdge element : associations) {
+		for (Association element : associations) {
 			for (GraphEntity node : element.getNodes()) {
 				String key = node.getTyp(typ, false);
 				SimpleList<?> value = (SimpleList<?>)links
@@ -64,7 +64,7 @@ public class GraphList extends GraphModel implements BaseItem{
 				if (value != null) {
 					value.withAll(element);
 				} else {
-					SimpleList<GraphEdge> simpleList = new SimpleList<GraphEdge>();
+					SimpleList<Association> simpleList = new SimpleList<Association>();
 					simpleList.add(element);
 					links.put(key, simpleList);
 				}
@@ -75,12 +75,12 @@ public class GraphList extends GraphModel implements BaseItem{
 	
 	public void initSubLinks() {
 		for(GraphEntity node : getNodes()) {
-			if(node instanceof GraphClazz == false) {
+			if(node instanceof Clazz == false) {
 				continue;
 			}
-			GraphClazz graphClazz = (GraphClazz) node;
-			SimpleSet<GraphEdge> childEdges = graphClazz.getAllEdges();
-			for(GraphEdge edge : childEdges) {
+			Clazz graphClazz = (Clazz) node;
+			SimpleSet<Association> childEdges = graphClazz.getAllEdges();
+			for(Association edge : childEdges) {
 				if(associations.contains(edge) == false && associations.contains(edge.getOther()) == false) {
 					associations.add(edge);
 //				} else if(allEdges.get(edge) != graphClazz) {
@@ -90,7 +90,7 @@ public class GraphList extends GraphModel implements BaseItem{
 		}
 	}
 	
-	public GraphClazz with(GraphClazz value) {
+	public Clazz with(Clazz value) {
 		if (value != null) {
 			if(value.getName()==null){
 				value.with(value.getName(false));
@@ -110,7 +110,7 @@ public class GraphList extends GraphModel implements BaseItem{
 		return value;
 	}
 
-	public GraphEdge with(GraphEdge value) {
+	public Association with(Association value) {
 		add(value);
 		return value;
 	}
@@ -138,13 +138,13 @@ public class GraphList extends GraphModel implements BaseItem{
 		return this;
 	}
 
-	public GraphClazz getNode(String id) {
+	public Clazz getNode(String id) {
 		if(id==null){
 			return null;
 		}
 		for(GraphMember item : this.getChildren()) {
-			if(item instanceof GraphClazz && id.equalsIgnoreCase(item.getFullId())){
-				return (GraphClazz)item;
+			if(item instanceof Clazz && id.equalsIgnoreCase(item.getFullId())){
+				return (Clazz)item;
 			}
 		}
 		return null;
@@ -161,13 +161,13 @@ public class GraphList extends GraphModel implements BaseItem{
 		return nodes;
 	}
 	
-	public SimpleSet<GraphEdge> getEdges() {
+	public SimpleSet<Association> getEdges() {
 		return associations;
 	}
 
-	public GraphEdge getEdge(GraphEntity node, String property) {
-		for(GraphEdge edge : associations) {
-			GraphEdge oEdge = edge.getOther();
+	public Association getEdge(GraphEntity node, String property) {
+		for(Association edge : associations) {
+			Association oEdge = edge.getOther();
 			if(edge.getNode()==node && property.equals(oEdge.getProperty())) {
 				return edge;
 			}else if(oEdge.getNode()==node && property.equals(edge.getProperty())) {

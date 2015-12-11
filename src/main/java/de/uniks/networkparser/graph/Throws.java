@@ -20,12 +20,8 @@ express or implied.
 See the Licence for the specific language governing
 permissions and limitations under the Licence.
 */
-/**
- * Special Util for package Method  
- *
- */
-public class GraphUtil {
-	public static Clazz getByObject(GraphEntity item, String clazz, boolean fullName) {
-		return (Clazz) item.getByObject(clazz, fullName);
-	}
+
+public class Throws extends GraphMember {
+
 }
+

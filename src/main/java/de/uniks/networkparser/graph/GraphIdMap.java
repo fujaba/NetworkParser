@@ -84,7 +84,7 @@ public class GraphIdMap extends IdMap {
 		GraphList newElement = new GraphList();
 		initItem(newElement);
 		newElement.withTyp(filter.getTyp());
-		GraphClazz main = parse(object, filter, newElement, 0);
+		Clazz main = parse(object, filter, newElement, 0);
 		GraphDiff diff = newElement.getDiff();
 		if(diff != null) {
 			diff.withMain(main);	
@@ -105,7 +105,7 @@ public class GraphIdMap extends IdMap {
 	 *            the show cardinality
 	 * @return the Object as String
 	 */
-	private GraphClazz parse(Object object, GraphIdMapFilter filter,
+	private Clazz parse(Object object, GraphIdMapFilter filter,
 			GraphList list, int deep) {
 		if (object == null) {
 			return null;
@@ -113,15 +113,15 @@ public class GraphIdMap extends IdMap {
 
 		String mainKey = getId(object);
 		GraphMember element = list.getByObject(mainKey, true);
-		if (element != null && element instanceof GraphClazz) {
-			return (GraphClazz)element;
+		if (element != null && element instanceof Clazz) {
+			return (Clazz)element;
 		}
 
 		SendableEntityCreator prototyp = getCreatorClass(object);
 		String className = object.getClass().getName();
 		className = className.substring(className.lastIndexOf('.') + 1);
 
-		GraphClazz newElement = new GraphClazz();
+		Clazz newElement = new Clazz();
 		initItem(newElement);
 		newElement.withId(mainKey);
 		newElement.with(className);
@@ -135,11 +135,11 @@ public class GraphIdMap extends IdMap {
 				if (value instanceof Collection<?>) {
 					for (Object containee : ((Collection<?>) value)) {
 						parsePropertyValue(object, filter, list, deep, newElement,
-								property, containee, GraphCardinality.MANY);
+								property, containee, Cardinality.MANY);
 					}
 				} else {
 					parsePropertyValue(object, filter, list, deep, newElement,
-							property, value, GraphCardinality.ONE);
+							property, value, Cardinality.ONE);
 				}
 			}
 		}
@@ -147,8 +147,8 @@ public class GraphIdMap extends IdMap {
 	}
 
 	private void parsePropertyValue(Object entity, GraphIdMapFilter filter,
-			GraphList list, int deep, GraphClazz element, String property,
-			Object item, GraphCardinality cardinality) {
+			GraphList list, int deep, Clazz element, String property,
+			Object item, Cardinality cardinality) {
 		if (item == null) {
 			return;
 		}
@@ -160,12 +160,12 @@ public class GraphIdMap extends IdMap {
 		}
 		SendableEntityCreator valueCreater = getCreatorClass(item);
 		if (valueCreater != null) {
-			GraphClazz subId = parse(item, filter, list, deep + 1);
-			GraphEdge edge = new GraphEdge();
+			Clazz subId = parse(item, filter, list, deep + 1);
+			Association edge = new Association();
 			initItem(edge);
 			list.add(edge.with(element).with(this.createEdge(subId, cardinality, property)));
 		} else {
-			GraphAttribute attribute = element.createAttribute(property, GraphDataType.ref(item.getClass()));
+			Attribute attribute = element.createAttribute(property, DataType.ref(item.getClass()));
 			attribute.withValue("" + item);
 		}
 		return;
@@ -204,8 +204,8 @@ public class GraphIdMap extends IdMap {
 		return className.substring(className.lastIndexOf('.') + 1);
 	}
 
-	GraphEdge createEdge(GraphClazz node, GraphCardinality cardinality, String property) {
-		GraphEdge newElement = new GraphEdge();
+	Association createEdge(Clazz node, Cardinality cardinality, String property) {
+		Association newElement = new Association();
 		initItem(newElement);
 		return newElement.with(node, cardinality, property);
 	}
