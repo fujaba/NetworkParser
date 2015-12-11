@@ -3,7 +3,7 @@ package de.uniks.networkparser.graph;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class GraphSetDataType extends GraphDataType{
-	private GraphType generic;
+	private GraphDataType generic;
 	
 	GraphSetDataType() {
 		super(SimpleSet.class.getName());
@@ -19,18 +19,18 @@ public class GraphSetDataType extends GraphDataType{
 		return result;
 	}
 	
-	public static GraphSetDataType ref(GraphType value) {
+	public static GraphSetDataType ref(GraphDataType value) {
 		GraphSetDataType result = new GraphSetDataType().withGeneric(value);
 		return result;
 	}
 
 
-	private GraphSetDataType withGeneric(GraphType value) {
+	private GraphSetDataType withGeneric(GraphDataType value) {
 		this.generic = value;
 		return this;
 	}
 
-	public GraphType getGeneric() {
+	public GraphDataType getGeneric() {
 		return generic;
 	}
 	

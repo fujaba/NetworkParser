@@ -7,7 +7,7 @@ public class GraphNode extends GraphMember{
 		return this;
 	}
 	
-    public GraphNode withParent(GraphNode value) {
+    public GraphNode withParent(GraphMember value) {
     	super.setParent(value);
         return this;
     }

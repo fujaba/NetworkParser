@@ -24,43 +24,25 @@ package de.uniks.networkparser.graph;
 
 public class GraphParameter extends GraphValue {
 	public static final String PROPERTY_METHOD = "method";
-	private GraphMethod method = null;
-	private GraphNode parentNode;
 
 	GraphParameter() {
 
 	}
 
-	public GraphParameter(GraphType type) {
+	public GraphParameter(GraphDataType type) {
 		with(type);
 	}
 
-	public GraphParameter(String name, GraphType type) {
+	public GraphParameter(String name, GraphDataType type) {
 		with(name);
 		with(type);
 	}
 
 	public GraphMethod getMethod() {
-		return this.method;
+		return (GraphMethod) this.parentNode;
 	}
 
-	public GraphParameter with(GraphMethod value) {
-		if (this.method != value) {
-			GraphMethod oldValue = this.method;
-
-			if (this.method != null) {
-				this.method = null;
-				oldValue.without(this);
-			}
-
-			this.method = value;
-
-			if (value != null) {
-				value.with(this);
-			}
-		}
-		return this;
-	}
+	
 
 	// Redirect
 	@Override
@@ -70,36 +52,19 @@ public class GraphParameter extends GraphValue {
 	}
 
 	@Override
-	public GraphParameter with(GraphType value) {
+	public GraphParameter with(GraphDataType value) {
+		super.with(value);
+		return this;
+	}
+	
+	@Override
+	public GraphParameter with(GraphClazz value) {
 		super.with(value);
 		return this;
 	}
 
-	@Override
-	public GraphParameter getNewList(boolean keyValue) {
-		return new GraphParameter();
-	}
-
-	@Override
-	public Object getValueItem(Object key) {
-		if(PROPERTY_METHOD.equals(key)) {
-			return method;
-		}
-		return null;
-	}
-
 	public GraphParameter withParent(GraphMethod value) {
-		if (this.parentNode != value) {
-			GraphNode oldValue = this.parentNode;
-			if (this.parentNode != null) {
-				this.parentNode = null;
-				oldValue.without(this);
-			}
-			this.parentNode = value;
-			if (value != null) {
-				value.with(this);
-			}
-		}
+		super.setParent(value);
 		return this;
 	}
 }

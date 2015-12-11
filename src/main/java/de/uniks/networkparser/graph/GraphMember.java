@@ -26,7 +26,6 @@ public abstract class GraphMember {
 	protected String name;
 	protected GraphSimpleSet<GraphMember> children=new GraphSimpleSet<GraphMember>();
 	protected GraphMember parentNode;
-	protected int count;
 	
 	String getFullId() {
 		return name;
@@ -36,23 +35,17 @@ public abstract class GraphMember {
 		return this.children;
 	}
 	
-	int getCount() {
-		return count;
-	}
-	void addCounter() {
-		this.count++;
-	}
-	
 	/** Set the name of Element
 	 * @param name The Name of Element
 	 * @return The Instance	
 	 */
 	public GraphMember with(String name) {
+		setName(name);
 		this.name = name;
 		return this;
 	}
 
-	public boolean setName(String value) {
+	boolean setName(String value) {
 		if(value != this.name) {
 			this.name = value;
 			return true;
@@ -103,5 +96,17 @@ public abstract class GraphMember {
 	
 	String getName() {
 		return this.name;
+	}
+	
+	GraphDiff getDiff() {
+		if(this.children == null) {
+			return null;
+		}
+		for(GraphMember item : this.children) {
+			if(item instanceof GraphDiff) {
+				return (GraphDiff) item;
+			}
+		}
+		return null;
 	}
 }

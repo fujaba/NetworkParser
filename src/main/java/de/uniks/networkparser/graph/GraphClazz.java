@@ -27,7 +27,6 @@ import de.uniks.networkparser.list.SimpleSet;
 public class GraphClazz extends GraphEntity {
 	private boolean interfaze = false;
 	private boolean isEnum = false;
-	private SimpleSet<String> imports = new SimpleSet<String>();
 
 	@Override
 	public GraphClazz with(String name) {
@@ -445,13 +444,22 @@ public class GraphClazz extends GraphEntity {
 		return this;
 	}
 
-	public GraphClazz withImport(String value) {
-		this.imports.add(value);
+	public GraphClazz with(GraphImport... value) {
+		super.with(value);
 		return this;
 	}
 
-	public SimpleSet<String> getImports() {
-		return imports;
+	public SimpleSet<GraphImport> getImports() {
+		SimpleSet<GraphImport> collection = new SimpleSet<GraphImport>();
+		if (children == null) {
+			return collection;
+		}
+		for (GraphMember child : children) {
+			if (child instanceof GraphImport)  {
+				collection.add((GraphImport) child);
+			}
+		}
+		return collection;
 	}
 
 	public boolean hasModifier(GraphModifier value) {
@@ -494,8 +502,13 @@ public class GraphClazz extends GraphEntity {
 		return method;
 	}
 
-	public GraphAttribute createAttribute(String name, GraphType type) {
+	public GraphAttribute createAttribute(String name, GraphDataType type) {
 		GraphAttribute attribute = new GraphAttribute(name, type);
+		with(attribute);
+		return attribute;
+	}	
+	public GraphAttribute createAttribute(String name, GraphClazz type) {
+		GraphAttribute attribute = new GraphAttribute(name, GraphDataType.ref(type));
 		with(attribute);
 		return attribute;
 	}	

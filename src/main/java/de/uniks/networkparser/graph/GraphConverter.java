@@ -246,8 +246,9 @@ public class GraphConverter implements Converter {
 					+ target.getName(false) + ":"
 					+ edge.getOther().getProperty();
 			if (!ids.contains(id)) {
-				if(edge.getCount()>0) {
-					child.put(COUNTER, edge.getCount());
+				GraphDiff diff = edge.getDiff();
+				if(diff != null && diff.getCount()>0) {
+					child.put(COUNTER, diff.getCount());
 				}
 				child.put(SOURCE, addInfo(edge, true).withValue(ID, source.getName(shortName)));
 				child.put(TARGET, addInfo(edge.getOther(), true).withValue(ID, target.getName(shortName)));
@@ -350,8 +351,9 @@ public class GraphConverter implements Converter {
 		if(items.size()>0){
 			item.put(METHODS, items);
 		}
-		if(element.getCount()>0) {
-			item.put(COUNTER, element.getCount());
+		GraphDiff diff = element.getDiff();
+		if(diff != null && diff.getCount()>0) {
+			item.put(COUNTER, diff.getCount());
 		}
 		return item;
 	}

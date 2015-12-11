@@ -22,11 +22,9 @@
 
 package de.uniks.networkparser.graph;
 
-import java.lang.annotation.Annotation;
-
 import de.uniks.networkparser.list.SimpleSet;
 
-public class GraphMethod extends GraphNode {
+public class GraphMethod extends GraphMember {
 	public static final String PROPERTY_RETURNTYPE = "returnType";
 	public static final String PROPERTY_PARAMETER = "parameter";
 	public static final String PROPERTY_NODE = "node";
@@ -34,10 +32,8 @@ public class GraphMethod extends GraphNode {
 	public static final String PROPERTY_ANNOTATIONS = "annotations";
 
 	private GraphModifier modifier = GraphModifier.PUBLIC;
-	private GraphType returnType = GraphDataType.VOID;
+	private GraphDataType returnType = GraphDataType.VOID;
 	private String body;
-	private SimpleSet<GraphAnnotation> annotations;
-	private String throwsTags;
 
 	@Override
 	public GraphMethod with(String name) {
@@ -82,7 +78,7 @@ public class GraphMethod extends GraphNode {
 
 	private String getParameterSignature(boolean includeName,
 			GraphParameter parameter, int i) {
-		String param = parameter.getType().getName(false);
+		String param = parameter.getType(false);
 		if (!includeName) {
 			return param;
 		}
@@ -103,7 +99,7 @@ public class GraphMethod extends GraphNode {
 		this.with(name);
 	}
 	
-	public GraphMethod(String name, GraphType returnType, GraphParameter... parameters) {
+	public GraphMethod(String name, GraphDataType returnType, GraphParameter... parameters) {
 		this.with(name);
 		this.with(parameters);
 		this.with(returnType);
@@ -114,8 +110,13 @@ public class GraphMethod extends GraphNode {
 		this.with(name);
 	}
 
-	public GraphMethod withParameter(String paramName, GraphType dataType) {
-		new GraphParameter(paramName, dataType).with(this);
+	public GraphMethod withParameter(String paramName, GraphDataType dataType) {
+		new GraphParameter(paramName, dataType).withParent(this);
+		return this;
+	}
+
+	public GraphMethod withParameter(String paramName, GraphClazz dataType) {
+		new GraphParameter(paramName, GraphDataType.ref(dataType)).withParent(this);
 		return this;
 	}
 
@@ -128,21 +129,30 @@ public class GraphMethod extends GraphNode {
 		return this;
 	}
 
-	public GraphType getReturnType() {
+	public GraphDataType getReturnType() {
 		return this.returnType;
 	}
 
-	public GraphMethod with(GraphType returnType) {
+	public GraphMethod with(GraphDataType returnType) {
 		this.returnType = returnType;
 		return this;
 	}
-
-	public GraphParameter createParameter(GraphType type) {
-		return new GraphParameter(type).with(this);
+	
+	public GraphMethod with(GraphClazz returnType) {
+		this.returnType = GraphDataType.ref(returnType);
+		return this;
 	}
 
-	public GraphMethod with(GraphNode value) {
-		withParent(value);
+	public GraphParameter createParameter(GraphDataType type) {
+		return new GraphParameter(type).withParent(this);
+	}
+	
+	public GraphParameter createParameter(GraphClazz type) {
+		return new GraphParameter(GraphDataType.ref(type)).withParent(this);
+	}
+
+	public GraphMethod withParent(GraphClazz value) {
+		super.setParent(value);
 		return this;
 	}
 
@@ -169,66 +179,52 @@ public class GraphMethod extends GraphNode {
 		return this.body;
 	}
 
-	public boolean setBody(String value) {
-		if ((this.body == null && value != null) || (this.body != null && !this.body.equals(value))) {
-			this.body = value;
-			return true;
-		}
-		return false;
-	}
-
 	public GraphMethod withBody(String value) {
-		setBody(value);
+		this.body = value;
 		return this;
 	}
 	
-	public String getThrowsTags() {
-		return this.throwsTags;
-	}
-
-	public boolean setThrowsTags(String value) {
-		if ((this.throwsTags == null && value != null) || (this.throwsTags != null && !this.throwsTags.equals(value))) {
-			this.throwsTags = value;
-			return true;
+	
+	public SimpleSet<GraphThrows> getThrows() {
+		SimpleSet<GraphThrows> collection = new SimpleSet<GraphThrows>();
+		if (children == null) {
+			return collection;
 		}
-		return false;
+		for (GraphMember child : children) {
+			if (child instanceof GraphThrows)  {
+				collection.add((GraphThrows) child);
+			}
+		}
+		return collection;
 	}
 
-	public GraphMethod withThrowsTags(String value) {
-		setThrowsTags(value);
+	public GraphMethod with(GraphThrows... values) {
+		super.with(values);
 		return this;
 	}
 
-	public SimpleSet<GraphAnnotation> getAnnotations() {
-		if (this.annotations == null) {
-			return new SimpleSet<GraphAnnotation>().withFlag(SimpleSet.READONLY);
+	public GraphAnnotation getAnnotations() {
+		if(this.children == null) {
+			return null;
 		}
-		return this.annotations;
+		for(GraphMember item : this.children) {
+			if(item instanceof GraphAnnotation) {
+				return (GraphAnnotation) item;
+			}
+		}
+		return null;
 	}
 
-	public GraphMethod with(GraphAnnotation... value) {
-		if (value == null) {
-			return this;
-		}
-		for (GraphAnnotation item : value) {
-			if (item != null) {
-				if (this.annotations == null) {
-					this.annotations = new SimpleSet<GraphAnnotation>();
-				}
-				if (this.annotations.add(item)) {
-					item.setParent(this);
+	public GraphMethod with(GraphAnnotation value) {
+		// Remove Old GraphAnnotation
+		if(this.children != null) {
+			for(int i=this.children.size();i>=0;i--) {
+				if(this.children.get(i) instanceof GraphAnnotation) {
+					this.children.remove(i);
 				}
 			}
 		}
-		return this;
-	}
-
-	public GraphMethod without(Annotation... value) {
-		for (Annotation item : value) {
-			if ((this.annotations != null) && (item != null)) {
-				this.annotations.remove(item);
-			}
-		}
+		super.with(value);
 		return this;
 	}
 }

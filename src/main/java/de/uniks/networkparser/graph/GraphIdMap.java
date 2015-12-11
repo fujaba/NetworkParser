@@ -81,13 +81,15 @@ public class GraphIdMap extends IdMap {
 	}
 	
 	public GraphList parsing(Object object, GraphIdMapFilter filter) {
-		GraphList list = this.createList().withTyp(filter.getTyp());
-		GraphClazz main = parse(object, filter, list, 0);
-		if(list instanceof GraphListDiff) {
-			((GraphListDiff)list).withMain(main);	
+		GraphList newElement = new GraphList();
+		initItem(newElement);
+		newElement.withTyp(filter.getTyp());
+		GraphClazz main = parse(object, filter, newElement, 0);
+		GraphDiff diff = newElement.getDiff();
+		if(diff != null) {
+			diff.withMain(main);	
 		}
-		
-		return list;
+		return newElement;
 	}
 
 	/**
@@ -119,7 +121,8 @@ public class GraphIdMap extends IdMap {
 		String className = object.getClass().getName();
 		className = className.substring(className.lastIndexOf('.') + 1);
 
-		GraphClazz newElement = this.createClazz();
+		GraphClazz newElement = new GraphClazz();
+		initItem(newElement);
 		newElement.withId(mainKey);
 		newElement.with(className);
 		list.with(newElement);
@@ -158,7 +161,9 @@ public class GraphIdMap extends IdMap {
 		SendableEntityCreator valueCreater = getCreatorClass(item);
 		if (valueCreater != null) {
 			GraphClazz subId = parse(item, filter, list, deep + 1);
-			list.add(this.createEdge().with(element).with(this.createEdge(subId, cardinality, property)));
+			GraphEdge edge = new GraphEdge();
+			initItem(edge);
+			list.add(edge.with(element).with(this.createEdge(subId, cardinality, property)));
 		} else {
 			GraphAttribute attribute = element.createAttribute(property, GraphDataType.ref(item.getClass()));
 			attribute.withValue("" + item);
@@ -199,22 +204,13 @@ public class GraphIdMap extends IdMap {
 		return className.substring(className.lastIndexOf('.') + 1);
 	}
 
-	public GraphList createList() {
-		return new GraphList();
-	}
-
-	GraphEdge createEdge() {
-		return new GraphEdge();
-	}
-	
 	GraphEdge createEdge(GraphClazz node, GraphCardinality cardinality, String property) {
-		return new GraphEdge().with(node, cardinality, property);
+		GraphEdge newElement = new GraphEdge();
+		initItem(newElement);
+		return newElement.with(node, cardinality, property);
 	}
 	
-	public GraphClazz createClazz() {
-		return new GraphClazz();
-	}
-	public GraphAttribute createAttribute() {
-		return new GraphAttribute();
+	protected void initItem(GraphMember item) {
+		
 	}
 }

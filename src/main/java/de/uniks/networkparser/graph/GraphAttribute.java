@@ -27,34 +27,22 @@ public class GraphAttribute extends GraphValue {
 	public static final String PROPERTY_VALUE = "value";
 	public static final String PROPERTY_VISIBILITY = "visibility";
 
-	private GraphNode clazz = null;
-	private String value = null;
 	private GraphModifier visibility = GraphModifier.PRIVATE;
-	private GraphAnnotation annotation;
 
 	public GraphAttribute() {
 	}
 
-	public GraphAttribute(String name, GraphType datatyp) {
+	public GraphAttribute(String name, GraphDataType datatyp) {
 		this.with(name);
 		this.with(datatyp);
 	}
 	
 	@Override
-	public GraphAttribute withInitialization(String value) {
-		super.withInitialization(value);
+	public GraphAttribute withValue(String value) {
+		super.withValue(value);
 		return this;
 	}
 	
-	public String getValue() {
-		return value;
-	}
-
-	public GraphAttribute withValue(String value) {
-		this.value = value;
-		return this;
-	}
-
 	public GraphModifier getVisibility() {
 		return visibility;
 	}
@@ -64,8 +52,8 @@ public class GraphAttribute extends GraphValue {
 		return this;
 	}
 
-	public GraphNode getParent() {
-		return clazz;
+	public GraphClazz getClazz() {
+		return (GraphClazz) parentNode;
 	}
 	
 	public GraphAttribute withParent(GraphClazz parent) {
@@ -81,12 +69,24 @@ public class GraphAttribute extends GraphValue {
 	}
 
 	@Override
-	public GraphAttribute with(GraphType value) {
+	public GraphAttribute with(GraphDataType value) {
+		super.with(value);
+		return this;
+	}
+	
+	@Override
+	public GraphAttribute with(GraphClazz value) {
 		super.with(value);
 		return this;
 	}
 
-	public GraphAttribute with(String name, GraphType typ) {
+	public GraphAttribute with(String name, GraphDataType typ) {
+		this.with(typ);
+		this.with(name);
+		return this;
+	}
+
+	public GraphAttribute with(String name, GraphClazz typ) {
 		this.with(typ);
 		this.with(name);
 		return this;
@@ -95,7 +95,7 @@ public class GraphAttribute extends GraphValue {
 	
 	public String getValue(String typ, boolean shortName) {
 		if (typ.equals(GraphIdMap.OBJECT)) {
-			if(GraphDataType.STRING == getType() && !this.value.startsWith("\"")){
+			if(GraphDataType.STRING == this.type && !this.value.startsWith("\"")){
 				return "\""+ this.value + "\"";
 			}
 			return this.value;
@@ -103,33 +103,31 @@ public class GraphAttribute extends GraphValue {
 		return getType(shortName);
 	}
 
-	@Override
-	public GraphAttribute getNewList(boolean keyValue) {
-		return new GraphAttribute();
-	}
-
-	@Override
-	public Object getValueItem(Object key) {
-		if(PROPERTY_CLAZZ.equals(key)) {
-			return clazz;
+	public GraphAnnotation getAnnotations() {
+		if(this.children == null) {
+			return null;
 		}
-		if(PROPERTY_VALUE.equals(key)) {
-			return value;
-		}
-		if(PROPERTY_VISIBILITY.equals(key)) {
-			return visibility;
+		for(GraphMember item : this.children) {
+			if(item instanceof GraphAnnotation) {
+				return (GraphAnnotation) item;
+			}
 		}
 		return null;
 	}
-	
-	public GraphAnnotation getAnnotations() {
-		return this.annotation;
-	}
 
 	public GraphAttribute with(GraphAnnotation value) {
-		this.annotation = value;
+		// Remove Old GraphAnnotation
+		if(this.children != null) {
+			for(int i=this.children.size();i>=0;i--) {
+				if(this.children.get(i) instanceof GraphAnnotation) {
+					this.children.remove(i);
+				}
+			}
+		}
+		super.with(value);
 		return this;
 	}
+
 	public String getName() {
 		return this.name;
 	}

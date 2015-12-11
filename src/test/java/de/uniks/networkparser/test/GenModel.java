@@ -10,10 +10,10 @@ import org.junit.Test;
 
 import de.uniks.networkparser.graph.GraphAttribute;
 import de.uniks.networkparser.graph.GraphClazz;
+import de.uniks.networkparser.graph.GraphDataType;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphMethod;
 import de.uniks.networkparser.graph.GraphModel;
-import de.uniks.networkparser.graph.GraphType;
 import de.uniks.networkparser.list.SortedSet;
 
 public class GenModel {
@@ -22,7 +22,7 @@ public class GenModel {
 	public void testModel() {
 		GraphModel model = new GraphList().with("de.uniks");
 		GraphClazz uni = model.createClazz("Uni");
-		GraphAttribute nameAttribute = uni.createAttribute("name", GraphType.STRING);
+		GraphAttribute nameAttribute = uni.createAttribute("name", GraphDataType.STRING);
 		GraphMethod mainMethod = uni.createMethod("main");
 		boolean printItems=true;
 //		System.out.println("Clazz: "+getCount(uni, true, printItems));

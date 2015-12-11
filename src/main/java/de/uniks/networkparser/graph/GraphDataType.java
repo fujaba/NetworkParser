@@ -1,8 +1,6 @@
 package de.uniks.networkparser.graph;
 
-public class GraphDataType implements GraphType
-
-{
+public class GraphDataType {
 	public static final String PROPERTY_VALUE = "value";
 
 	public static final GraphDataType VOID = new GraphDataType("void");

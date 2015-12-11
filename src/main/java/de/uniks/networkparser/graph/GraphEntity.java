@@ -25,7 +25,6 @@ import de.uniks.networkparser.list.SimpleSet;
 public abstract class GraphEntity extends GraphMember {
 	protected SimpleSet<GraphEdge> associations = new SimpleSet<GraphEdge>();
 	private boolean external;
-	private GraphAnnotation annotation;
 	private String id;
 	
 	public String getName(boolean shortName) {
@@ -118,11 +117,27 @@ public abstract class GraphEntity extends GraphMember {
 	}
 	
 	public GraphAnnotation getAnnotations() {
-		return this.annotation;
+		if(this.children == null) {
+			return null;
+		}
+		for(GraphMember item : this.children) {
+			if(item instanceof GraphAnnotation) {
+				return (GraphAnnotation) item;
+			}
+		}
+		return null;
 	}
 
 	public GraphEntity with(GraphAnnotation value) {
-		this.annotation = value;
+		// Remove Old GraphAnnotation
+		if(this.children != null) {
+			for(int i=this.children.size();i>=0;i--) {
+				if(this.children.get(i) instanceof GraphAnnotation) {
+					this.children.remove(i);
+				}
+			}
+		}
+		super.with(value);
 		return this;
 	}
 }

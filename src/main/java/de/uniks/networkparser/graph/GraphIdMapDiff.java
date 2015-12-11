@@ -28,9 +28,9 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.json.JsonArray;
 
 public class GraphIdMapDiff extends GraphIdMap{
-	private HashSet<GraphClazzDiff> toDoList=new HashSet<GraphClazzDiff>();  
-	private GraphListDiff master;
-	private GraphListDiff slave;
+	private HashSet<GraphClazz> toDoList=new HashSet<GraphClazz>();  
+	private GraphList master;
+	private GraphList slave;
 //	private HashMap<GraphClazzDiff, HashSet<GraphEdgeDiff>> edges;
 	
 	public GraphIdMapDiff() {
@@ -41,38 +41,14 @@ public class GraphIdMapDiff extends GraphIdMap{
 		withCreator(map);	
 	}
 	
-	
-	@Override
-	public GraphEdge createEdge() {
-		return new GraphEdgeDiff();
-	}
-	
-	@Override
-	public GraphEdgeDiff createEdge(GraphClazz node, GraphCardinality cardinality, String property) {
-		GraphEdgeDiff edge = new GraphEdgeDiff();
-		edge.with(node, cardinality, property);
-		return edge;
-	}
-	
-	@Override
-	public GraphAttribute createAttribute() {
-		return new GraphAttributeDiff();
-	}
-	
-	@Override
-	public GraphList createList() {
-		return new GraphListDiff();
-	}
-	
-	@Override
-	public GraphClazz createClazz() {
-		GraphClazzDiff clazz = new GraphClazzDiff();
-		if(this.getMaster() ==null) {
-			this.toDoList.add(clazz);
+	protected void initItem(GraphMember item) {
+		item.with(new GraphDiff());
+		if(item instanceof GraphClazz) {
+			if(this.getMaster() ==null) {
+				this.toDoList.add((GraphClazz) item);
+			}
 		}
-		return clazz;
 	}
-
 	public void highlightModel(JsonArray clazzDiagram, GraphList objectDiagram) {
 		GraphList list = new GraphConverter().convertGraphList(GraphIdMap.CLASS, clazzDiagram, true);
 		this.highlightModel(list, objectDiagram);
@@ -98,7 +74,8 @@ public class GraphIdMapDiff extends GraphIdMap{
 			GraphClazz item = (GraphClazz) i.next();
 			GraphClazz graphClazz = clazzes.get(item.getName(false));
 			if(graphClazz != null) {
-				graphClazz.addCounter();
+				GraphDiff diff = graphClazz.getDiff();
+				diff.addCounter();
 			}
 		}
 		// Copy all Edges
@@ -108,7 +85,8 @@ public class GraphIdMapDiff extends GraphIdMap{
 			String signature = node.getName(false)+":"+item.getProperty();
 			GraphEdge graphEdge = edges.get(signature);
 			if(graphEdge != null) {
-				graphEdge.addCounter();
+				GraphDiff diff = graphEdge.getDiff();
+				diff.addCounter();
 			}
 		}
 		return clazzDiagram;
@@ -116,11 +94,14 @@ public class GraphIdMapDiff extends GraphIdMap{
 
 	
 	public void diffModel(Object master, Object slave) {
-		this.master = (GraphListDiff)this.parsingObject(master);
-		this.slave = (GraphListDiff)this.parsingObject(slave);
-		GraphClazzDiff masterFile = (GraphClazzDiff) this.getMaster().getMainFile();
-		GraphClazzDiff slaveFile = (GraphClazzDiff) this.slave.getMainFile();
-		masterFile.withMatch(slaveFile);
+		this.master = (GraphList)this.parsingObject(master);
+		this.slave = (GraphList)this.parsingObject(slave);
+		GraphDiff masterDiff = this.getMaster().getDiff();
+		GraphDiff saveDiff = this.getSlave().getDiff();
+		
+		GraphClazz masterFile = (GraphClazz) masterDiff.getMainFile();
+		GraphClazz slaveFile = (GraphClazz) saveDiff.getMainFile();
+		masterFile.getDiff().with(slaveFile);
 		
 		
 		// create new map<key: Clazz without s, Value: Object with {attributes, items}> 
@@ -131,15 +112,15 @@ public class GraphIdMapDiff extends GraphIdMap{
 		searchMatch(masterFile);
 	}
 
-	private void searchMatch(GraphClazzDiff master) {
+	private void searchMatch(GraphClazz master) {
 		master.getChildren().iterator();
 	}
 
-	public GraphListDiff getMaster() {
+	public GraphList getMaster() {
 		return master;
 	}
 	
-	public GraphListDiff getSlave() {
+	public GraphList getSlave() {
 		return slave;
 	}
 }

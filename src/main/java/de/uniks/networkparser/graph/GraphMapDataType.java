@@ -4,9 +4,9 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 
 public class GraphMapDataType extends GraphDataType {
 
-	private GraphType genericKey;
+	private GraphDataType genericKey;
 	
-	private GraphType genericValue;
+	private GraphDataType genericValue;
 	
 	GraphMapDataType() {
 		super(SimpleKeyValueList.class.getName());
@@ -27,21 +27,21 @@ public class GraphMapDataType extends GraphDataType {
 		return result;
 	}
 
-	private GraphMapDataType withGenericKey(GraphType key) {
+	private GraphMapDataType withGenericKey(GraphDataType key) {
 		this.genericKey = key;
 		return this;
 	}
 
-	private GraphMapDataType withGenericValue(GraphType value) {
+	private GraphMapDataType withGenericValue(GraphDataType value) {
 		this.genericValue = value;
 		return this;
 	}
 	
-	public GraphType getGenericKey() {
+	public GraphDataType getGenericKey() {
 		return genericKey;
 	}
 	
-	public GraphType getGenericValue() {
+	public GraphDataType getGenericValue() {
 		return genericValue;
 	}
 	
