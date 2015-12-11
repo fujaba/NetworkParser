@@ -94,10 +94,6 @@ public abstract class GraphMember {
 		return this;
 	}
 	
-	String getName() {
-		return this.name;
-	}
-	
 	GraphDiff getDiff() {
 		if(this.children == null) {
 			return null;
@@ -108,5 +104,9 @@ public abstract class GraphMember {
 			}
 		}
 		return null;
+	}
+	
+	public String getName() {
+		return this.name;
 	}
 }

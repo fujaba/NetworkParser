@@ -68,7 +68,6 @@ public class Clazz extends GraphEntity {
 		return this;
 	}
 	
-	@Override
 	public Clazz with(Annotation value) {
 		super.with(value);
 		return this;
@@ -81,6 +80,42 @@ public class Clazz extends GraphEntity {
 	
 	public Clazz with(GraphLiteral... values) {
 		super.with(values);
+		return this;
+	}
+	
+	
+	public Clazz without(GraphAssociation... values) {
+		super.without(values);
+		return this;
+	}
+	
+	public Clazz without(Modifier... values) {
+		super.without(values);
+		return this;
+	}
+	
+	public Clazz without(Attribute... values) {
+		super.without(values);
+		return this;
+	}
+
+	public Clazz without(Method... values) {
+		super.without(values);
+		return this;
+	}
+	
+	public Clazz without(Annotation value) {
+		super.without(value);
+		return this;
+	}
+	
+	public Clazz without(GraphImage... values) {
+		super.without(values);
+		return this;
+	}
+	
+	public Clazz without(GraphLiteral... values) {
+		super.without(values);
 		return this;
 	}
 
@@ -396,16 +431,6 @@ public class Clazz extends GraphEntity {
 		return isEnum;
 	}
 	
-	public Clazz without(Attribute... value) {
-		without(value);
-		return this;
-	}
-	
-	public Clazz without(Method... value) {
-		without(value);
-		return this;
-	}
-
 	public Clazz withoutKidClazz(Clazz... values) {
 		if (this.associations == null || values == null) {
 			return this;

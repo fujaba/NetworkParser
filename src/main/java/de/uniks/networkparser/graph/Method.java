@@ -137,16 +137,6 @@ public class Method extends GraphMember {
 		return (Clazz) parentNode;
 	}
 
-	public Method with(DataType returnType) {
-		this.returnType = returnType;
-		return this;
-	}
-	
-	public Method with(Clazz returnType) {
-		this.returnType = DataType.ref(returnType);
-		return this;
-	}
-
 	public Parameter createParameter(DataType type) {
 		return new Parameter(type).withParent(this);
 	}
@@ -223,6 +213,26 @@ public class Method extends GraphMember {
 	
 	public Method with(Parameter... values) {
 		super.with(values);
+		return this;
+	}
+	
+	public Method with(DataType returnType) {
+		this.returnType = returnType;
+		return this;
+	}
+	
+	public Method with(Clazz returnType) {
+		this.returnType = DataType.ref(returnType);
+		return this;
+	}
+	
+	public Method without(Parameter... values) {
+		super.without(values);
+		return this;
+	}
+	
+	public Method without(Annotation... values) {
+		super.without(values);
 		return this;
 	}
 

@@ -266,10 +266,10 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 			Association otherEdge = edge.getOther();
 			if(otherEdge.getTyp()  != GraphEdgeTypes.EDGE) {
 				// It is bidiAssoc
-				sb.append(edge.getNode().getName(false) + " -- " + otherEdge.getNode().getName(false));
+				sb.append(edge.getClazz().getName(false) + " -- " + otherEdge.getClazz().getName(false));
 				sb.append("[headlabel = \""+edge.getProperty()+"\" taillabel = \""+otherEdge.getProperty()+"\"];"+BaseItem.CRLF);
 			} else {
-				sb.append(edge.getNode().getName(false) + " -> " + otherEdge.getNode().getName(false));
+				sb.append(edge.getClazz().getName(false) + " -> " + otherEdge.getClazz().getName(false));
 				graphTyp = "digraph";
 				sb.append("[taillabel = \""+edge.getProperty()+"\"];"+BaseItem.CRLF);
 			}

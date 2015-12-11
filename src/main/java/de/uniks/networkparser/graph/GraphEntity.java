@@ -32,7 +32,10 @@ public abstract class GraphEntity extends GraphMember {
 			return null;
 		}
 		if (!shortName || name.lastIndexOf(".") < 0) {
-			return name;
+			if (name.indexOf('.') < 0 && this.parentNode != null && this.parentNode.getName() != null) {
+				return this.parentNode.getName() + "." + name.replace("$", ".");
+			}
+			return name.replace("$", ".");
 		}
 		return name.substring(name.lastIndexOf(".") + 1);
 	}
@@ -116,7 +119,7 @@ public abstract class GraphEntity extends GraphMember {
 		return this;
 	}
 	
-	public Annotation getAnnotations() {
+	public Annotation getAnnotation() {
 		if(this.children == null) {
 			return null;
 		}

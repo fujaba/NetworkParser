@@ -320,7 +320,7 @@ public class EMFIdMap extends XMLIdMap {
 				Clazz clazz = GraphUtil.getByObject(model, rootObject.getClass().getName(), false);
 				Association edge = model.getEdge(clazz, tag);
 				if (edge != null) {
-					typeName = edge.getOther().getNode().getName(false);
+					typeName = edge.getOther().getClazz().getName(false);
 				}
 			}
 

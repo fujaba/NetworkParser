@@ -168,9 +168,9 @@ public class GraphList extends GraphModel implements BaseItem{
 	public Association getEdge(GraphEntity node, String property) {
 		for(Association edge : associations) {
 			Association oEdge = edge.getOther();
-			if(edge.getNode()==node && property.equals(oEdge.getProperty())) {
+			if(edge.getClazz()==node && property.equals(oEdge.getProperty())) {
 				return edge;
-			}else if(oEdge.getNode()==node && property.equals(edge.getProperty())) {
+			}else if(oEdge.getClazz()==node && property.equals(edge.getProperty())) {
 				return oEdge;
 			}
 		}

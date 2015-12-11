@@ -51,7 +51,12 @@ public class Attribute extends Value {
 		this.visibility = visibility;
 		return this;
 	}
-
+	
+	public Attribute without(Annotation... annotation) {
+		super.without(annotation);
+		return this;
+	}
+	
 	public Clazz getClazz() {
 		return (Clazz) parentNode;
 	}
