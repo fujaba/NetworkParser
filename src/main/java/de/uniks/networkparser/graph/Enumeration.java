@@ -20,8 +20,9 @@ express or implied.
 See the Licence for the specific language governing
 permissions and limitations under the Licence.
 */
-public class GraphAssociation extends Association{
-	public GraphAssociation() {
-		super.withTyp(GraphEdgeTypes.ASSOCIATION);
+public class Enumeration extends Clazz{
+	public Clazz with(GraphLiteral... values) {
+		super.with(values);
+		return this;
 	}
 }

@@ -66,7 +66,7 @@ public class GraphIdMapDiff extends GraphIdMap{
 		for(Iterator<Association> i = clazzDiagram.getEdges().iterator();i.hasNext();) {
 			Association item = i.next();
 			Clazz node = (Clazz) item.getClazz();
-			edges.put(node.getName(false)+":"+item.getProperty(), item);
+			edges.put(node.getName(false)+":"+item.getName(), item);
 		}
 		
 		// Check all Clazzes of the objectdiagram
@@ -82,7 +82,7 @@ public class GraphIdMapDiff extends GraphIdMap{
 		for(Iterator<Association> i = objectDiagram.getEdges().iterator();i.hasNext();) {
 			Association item = i.next();
 			Clazz node = (Clazz) item.getClazz();
-			String signature = node.getName(false)+":"+item.getProperty();
+			String signature = node.getName(false)+":"+item.getName();
 			Association graphEdge = edges.get(signature);
 			if(graphEdge != null) {
 				GraphDiff diff = graphEdge.getDiff();

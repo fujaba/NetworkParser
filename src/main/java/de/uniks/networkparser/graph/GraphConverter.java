@@ -83,15 +83,15 @@ public class GraphConverter implements Converter {
 			for (Attribute attribute : node.getValue()) {
 				boolean addValue = true;
 				for (Association edge : root.getEdges()) {
-					if (edge.contains(node.getKey())) {
-						if (attribute.getName().equals(edge.getProperty())) {
+					if (edge.contains(node.getKey(), true, false)) {
+						if (attribute.getName().equals(edge.getName())) {
 							addValue = false;
 							break;
 						}
 					}
-					if (edge.getOther().contains(node.getKey())) {
+					if (edge.getOther().contains(node.getKey(), true, false)) {
 						if (attribute.getName().equals(
-								edge.getOther().getProperty())) {
+								edge.getOther().getName())) {
 							addValue = false;
 							break;
 						}
@@ -242,9 +242,9 @@ public class GraphConverter implements Converter {
 			return child;
 		}else{
 			String id = source.getName(false) + ":"
-					+ edge.getProperty()
+					+ edge.getName()
 					+ target.getName(false) + ":"
-					+ edge.getOther().getProperty();
+					+ edge.getOther().getName();
 			if (!ids.contains(id)) {
 				GraphDiff diff = edge.getDiff();
 				if(diff != null && diff.getCount()>0) {
@@ -273,9 +273,9 @@ public class GraphConverter implements Converter {
 	
 	private JsonObject addInfo(Association edge, boolean cardinality) {
 		if(cardinality) {
-			return new JsonObject().withKeyValue(CARDINALITY, edge.getCardinality()).withValue(PROPERTY, edge.getProperty());
+			return new JsonObject().withKeyValue(CARDINALITY, edge.getCardinality()).withValue(PROPERTY, edge.getName());
 		}
-		return new JsonObject().withValue(PROPERTY, edge.getProperty());
+		return new JsonObject().withValue(PROPERTY, edge.getName());
 	}
 
 	public JsonArray parseEntities(String typ, GraphEntity nodes,

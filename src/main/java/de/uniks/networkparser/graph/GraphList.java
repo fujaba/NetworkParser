@@ -46,7 +46,7 @@ public class GraphList extends GraphModel implements BaseItem{
 				// Back again
 				if(edge.getOther() != null ) {	
 					item.with(edge.getOther().getCardinality());
-					item.with(edge.getOther().getProperty());
+					item.with(edge.getOther().getName());
 				}
 				return false;
 			}
@@ -168,9 +168,9 @@ public class GraphList extends GraphModel implements BaseItem{
 	public Association getEdge(GraphEntity node, String property) {
 		for(Association edge : associations) {
 			Association oEdge = edge.getOther();
-			if(edge.getClazz()==node && property.equals(oEdge.getProperty())) {
+			if(edge.getClazz()==node && property.equals(oEdge.getName())) {
 				return edge;
-			}else if(oEdge.getClazz()==node && property.equals(edge.getProperty())) {
+			}else if(oEdge.getClazz()==node && property.equals(edge.getName())) {
 				return oEdge;
 			}
 		}

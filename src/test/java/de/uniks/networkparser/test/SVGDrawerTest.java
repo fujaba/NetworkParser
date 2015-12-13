@@ -10,6 +10,7 @@ import org.junit.Test;
 import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.GraphConverter;
+import de.uniks.networkparser.graph.GraphLabel;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.GraphList;
@@ -61,7 +62,7 @@ public class SVGDrawerTest {
 		GraphPattern modelHistory = map.with(new GraphPattern().with("Item").withBounds("create"));
 		map.with(new GraphPattern().with("ModelHistory").withBounds("nac"));
 		
-		map.with( Association.create(space, modelHistory).withStyle("create") );
+		map.with( Association.create(space, modelHistory).with(GraphLabel.CREATE) );
 
 		GraphList subGraph = new GraphList();
 		GraphPattern person = subGraph.with(new GraphPattern().with("Person"));

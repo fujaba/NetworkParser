@@ -22,10 +22,10 @@ package de.uniks.networkparser.graph;
  permissions and limitations under the Licence.
 */
 
-public class GraphLabel extends GraphMember{
+public class GraphLabel extends GraphMember {
+	public final static GraphLabel CREATE=new GraphLabel().withStyle("create"); 
 	private String style;
 
-	
 	@Override
 	public GraphLabel with(String name) {
 		super.with(name);

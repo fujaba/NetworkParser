@@ -2,37 +2,37 @@ package de.uniks.networkparser.graph;
 
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
-public class GraphMapDataType extends DataType {
+public class DataTypeMap extends DataType {
 
 	private DataType genericKey;
 	
 	private DataType genericValue;
 	
-	GraphMapDataType() {
+	DataTypeMap() {
 		super(SimpleKeyValueList.class.getName());
 		this.value.withExternal(true);
 	}
 	
-	public static GraphMapDataType ref(Clazz key, Clazz value) {
-		GraphMapDataType result = new GraphMapDataType().withGenericKey(DataType.ref(key)).withGenericValue(DataType.ref(value));
+	public static DataTypeMap ref(Clazz key, Clazz value) {
+		DataTypeMap result = new DataTypeMap().withGenericKey(DataType.ref(key)).withGenericValue(DataType.ref(value));
 		return result;
 	}
-	public static GraphMapDataType ref(String key, String value) {
-		GraphMapDataType result = new GraphMapDataType().withGenericKey(DataType.ref(key)).withGenericValue(DataType.ref(value));
+	public static DataTypeMap ref(String key, String value) {
+		DataTypeMap result = new DataTypeMap().withGenericKey(DataType.ref(key)).withGenericValue(DataType.ref(value));
 		return result;
 	}
 	
-	public static GraphMapDataType ref(DataType key, DataType value) {
-		GraphMapDataType result = new GraphMapDataType().withGenericKey(key).withGenericValue(value);
+	public static DataTypeMap ref(DataType key, DataType value) {
+		DataTypeMap result = new DataTypeMap().withGenericKey(key).withGenericValue(value);
 		return result;
 	}
 
-	private GraphMapDataType withGenericKey(DataType key) {
+	private DataTypeMap withGenericKey(DataType key) {
 		this.genericKey = key;
 		return this;
 	}
 
-	private GraphMapDataType withGenericValue(DataType value) {
+	private DataTypeMap withGenericValue(DataType value) {
 		this.genericValue = value;
 		return this;
 	}

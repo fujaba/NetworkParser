@@ -13,6 +13,7 @@ import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.GraphEdgeTypes;
 import de.uniks.networkparser.graph.GraphIdMap;
 import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.graph.Interfaze;
 import de.uniks.networkparser.xml.HTMLEntity;
 
 public class WriteJsonGraph {
@@ -36,7 +37,7 @@ public class WriteJsonGraph {
 		abstractArray.createAttribute("size", DataType.INT);
 		abstractArray.createAttribute("index", DataType.INT);
 		abstractArray.createAttribute("flag", DataType.BYTE);
-		Clazz baseItem = model.with(new Clazz().with("BaseItem"));
+		Clazz baseItem = model.with(new Interfaze().with("BaseItem"));
 		Clazz iterable = model.with(new Clazz().with("Iterable<V>"));
 		Clazz abstractList = model.with(new Clazz().with("AbstractList<V>"));
 		Clazz simpleList = model.with(new Clazz().with("SimpleList<V>"));
@@ -48,7 +49,7 @@ public class WriteJsonGraph {
 		
 		
 		
-		baseItem.withInterface(true);
+//		baseItem.withInterface(true);
 
 		model.with(Association.create(abstractArray, baseItem).withTyp(GraphEdgeTypes.IMPLEMENTS));
 		model.with(Association.create(abstractArray, iterable).withTyp(GraphEdgeTypes.IMPLEMENTS));

@@ -5,12 +5,10 @@ public class Association extends GraphMember {
 	public static final String PROPERTY_CARDINALITY = "cardinality";
 	public static final String PROPERTY_PROPERTY = "property";
 	private Cardinality cardinality;
-	// The Source or Target Edge Info
-	private GraphLabel property;
 	// The Complete Edge Info
-	private GraphLabel info;
+//	private GraphLabel info;
 	private Association other;
-	private GraphEdgeTypes typ = GraphEdgeTypes.EDGE;
+	private GraphEdgeTypes typ = GraphEdgeTypes.ASSOCIATION;
 
 	public Association with(Clazz node, Cardinality cardinality, String property) {
 		with(node);
@@ -29,17 +27,14 @@ public class Association extends GraphMember {
 		return Cardinality.ONE;
 	}
 	
-	public String getCardinalityValue() {
-		return cardinality.getValue();
-	}
-	
 	public String getCardinalityText() {
-		return property + "<br>0.." + this.cardinality;
+		return name + "<br>0.." + this.cardinality;
 	}
 
-	public String getProperty() {
-		if(property != null) {
-			return property.getName();
+	@Override
+	public String getName() {
+		if(name != null) {
+			return name;
 		}
 		if(children.size() == 1) {
 			GraphMember item = children.get(0);
@@ -54,36 +49,27 @@ public class Association extends GraphMember {
 		return null;
 	}
 
-	public Association with(String value) {
-		this.property = GraphLabel.create(value);
-		return this;
-	}
 	
-	public Association withInfo(String value) {
-		if(info != null) {
-			this.info.with(value);
-			return this;
-		}
-		this.info = GraphLabel.create(value);
-		return this;
-	}
-	
-	public Association withInfo(GraphLabel value) {
-		this.info = value;
-		return this;
-	}
-	
-	public Association withStyle(String value) {
-		if(info != null) {
-			this.info.withStyle(value);
-			return this;
-		}
-		this.info = new GraphLabel().withStyle(value);
+	public Association with(GraphLabel label) {
+		super.with(label);
 		return this;
 	}
 	
 	public GraphLabel getInfo() {
-		return info;
+		if (children == null && this.other.getChildren() == null) {
+			return null;
+		}
+		for (GraphMember child : children) {
+			if (child instanceof GraphLabel)  {
+				return (GraphLabel) child;
+			}
+		}
+		for (GraphMember child : this.other.getChildren()) {
+			if (child instanceof GraphLabel)  {
+				return (GraphLabel) child;
+			}
+		}
+		return null;
 	}
 
 	public Association with(GraphEntity... values) {
@@ -95,6 +81,11 @@ public class Association extends GraphMember {
 				value.with(this);
 			}
 		}
+		return this;
+	}
+	
+	public Association with(String name) {
+		super.with(name);
 		return this;
 	}
 
@@ -124,13 +115,6 @@ public class Association extends GraphMember {
 		return other;
 	}
 	
-	public Clazz getOtherClazz() {
-		if(other.getClazz() instanceof Clazz) {
-			return (Clazz) other.getClazz();
-		}
-		return null;
-	}
-
 	public static Association create(GraphEntity source, GraphEntity target){
 		Association edge = new Association().with(source);
 		edge.with(new Association().with(target));
@@ -141,7 +125,7 @@ public class Association extends GraphMember {
 		return typ;
 	}
 	
-	public String getSeperator() {
+	String getSeperator() {
 		if (getTyp() == GraphEdgeTypes.CHILD) {
 			return "-|>";
 		}
@@ -154,6 +138,13 @@ public class Association extends GraphMember {
 	public Association withTyp(GraphEdgeTypes typ) {
 		this.typ = typ;
 		return this;
+	}
+	
+	public Clazz getOtherClazz() {
+		if(other.getClazz() instanceof Clazz) {
+			return (Clazz) other.getClazz();
+		}
+		return null;
 	}
 
 	public GraphEntity getClazz() {
@@ -199,17 +190,17 @@ public class Association extends GraphMember {
 		return sb.toString();
 	}
 
-	public boolean contains(GraphEntity key) {
-		return children.contains(key);
+	public boolean contains(GraphEntity key, boolean self, boolean other) {
+		boolean contains = false;
+		if (self) {
+			contains = children.contains(key);
+		}
+		if (other && contains == false) {
+			contains = children.contains(key);
+		}
+		return contains;
 	}
 	
-	public boolean containsOther(GraphEntity key) {
-		if(other != null) {
-			return other.getChildren().contains(key);
-		}
-		return false;
-	}
-
 	public boolean containsAll(Association others, boolean both) {
 		if(! children.containsAll(others.getChildren()) ) {
 			return false;

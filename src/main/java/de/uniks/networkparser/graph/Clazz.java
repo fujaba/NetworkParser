@@ -25,9 +25,6 @@ import de.uniks.networkparser.list.SimpleSet;
 */
 
 public class Clazz extends GraphEntity {
-	private boolean interfaze = false;
-	private boolean isEnum = false;
-
 	@Override
 	public Clazz with(String name) {
 		super.with(name);
@@ -48,7 +45,7 @@ public class Clazz extends GraphEntity {
 		return this;
 	}
 
-	public Clazz with(GraphAssociation... values) {
+	public Clazz with(Association... values) {
 		super.with(values);
 		return this;
 	}
@@ -78,13 +75,7 @@ public class Clazz extends GraphEntity {
 		return this;
 	}
 	
-	public Clazz with(GraphLiteral... values) {
-		super.with(values);
-		return this;
-	}
-	
-	
-	public Clazz without(GraphAssociation... values) {
+	public Clazz without(Association... values) {
 		super.without(values);
 		return this;
 	}
@@ -119,23 +110,6 @@ public class Clazz extends GraphEntity {
 		return this;
 	}
 
-	public boolean isInterface() {
-		return this.interfaze;
-	}
-
-	public boolean setInterface(boolean value) {
-		if (this.interfaze != value) {
-			this.interfaze = value;
-			return true;
-		}
-		return false;
-	}
-
-	public Clazz withInterface(boolean value) {
-		setInterface(value);
-		return this;
-	}
-	
 	/**
 	 * create a Bidirectional Association 
 	 * 
@@ -148,11 +122,11 @@ public class Clazz extends GraphEntity {
 	 */
 	public Clazz withAssoc(Clazz tgtClass, String tgtRoleName, Cardinality tgtCard, String srcRoleName, Cardinality srcCard) {
 		// Target
-		GraphAssociation assocTarget = new GraphAssociation();
+		Association assocTarget = new Association();
 		assocTarget.with(tgtClass, tgtCard, tgtRoleName);
 
 		// Source
-		GraphAssociation assocSource = new GraphAssociation();
+		Association assocSource = new Association();
 		assocSource.with(this, srcCard, srcRoleName);
 		
 		assocSource.with(assocTarget);
@@ -170,12 +144,12 @@ public class Clazz extends GraphEntity {
 	 */
 	public Clazz withAssoc(Clazz tgtClass, String tgtRoleName, Cardinality tgtCard) {
 		// Target
-		GraphAssociation assocTarget = new GraphAssociation();
+		Association assocTarget = new Association();
 		assocTarget.withTyp(GraphEdgeTypes.UNDIRECTIONAL);
 		assocTarget.with(tgtClass, tgtCard, tgtRoleName);
 
 		// Source
-		GraphAssociation assocSource = new GraphAssociation();
+		Association assocSource = new Association();
 		assocSource.withTyp(GraphEdgeTypes.EDGE);
 		assocSource.with(assocTarget);
 
@@ -192,7 +166,7 @@ public class Clazz extends GraphEntity {
 				continue;
 			}
 			Clazz otherClazz = assoc.getOtherClazz();
-			if(!otherClazz.isInterface()) {
+			if(otherClazz instanceof Interfaze == false) {
 				return otherClazz;
 			}
 		}
@@ -215,7 +189,7 @@ public class Clazz extends GraphEntity {
 		}
 		for (Association assoc : associations) {
 			Clazz clazz = assoc.getOtherClazz();
-			if (!clazz.isInterface()) {
+			if (clazz instanceof Interfaze == false) {
 				interfaces.with(clazz);
 			}
 		}
@@ -241,7 +215,7 @@ public class Clazz extends GraphEntity {
 				boolean found=false;
 				for (Association assoc : associations) {
 					if(assoc instanceof GraphGeneralization) {
-						if(assoc.containsOther(item)) {
+						if(assoc.contains(item, false, true)) {
 							found = true;
 							break;
 						}
@@ -323,7 +297,7 @@ public class Clazz extends GraphEntity {
 				continue;
 			}
 			Clazz clazz = assoc.getOtherClazz();
-			if(!clazz.isInterface()) {
+			if(clazz instanceof Interfaze == false) {
 				kindClazzes.with(clazz);
 			}
 		}
@@ -342,7 +316,7 @@ public class Clazz extends GraphEntity {
 				boolean found=false;
 				for (Association assoc : associations) {
 					if(assoc instanceof GraphGeneralization) {
-						if(assoc.contains(item)) {
+						if(assoc.contains(item, true, false)) {
 							found = true;
 							break;
 						}
@@ -422,15 +396,6 @@ public class Clazz extends GraphEntity {
 		return collection;
 	}
 
-	public Clazz withEnum(boolean value) {
-		this.isEnum = value;
-		return this;
-	}
-	
-	public boolean isEnum() {
-		return isEnum;
-	}
-	
 	public Clazz withoutKidClazz(Clazz... values) {
 		if (this.associations == null || values == null) {
 			return this;
@@ -439,7 +404,7 @@ public class Clazz extends GraphEntity {
 			if (item != null) {
 				for (Association assoc : associations) {
 					if(assoc instanceof GraphGeneralization) {
-						if(assoc.containsOther(item)) {
+						if(assoc.contains(item, false, true)) {
 							this.associations.remove(assoc);
 							break;
 						}
@@ -458,7 +423,7 @@ public class Clazz extends GraphEntity {
 			if (item != null) {
 				for (Association assoc : associations) {
 					if(assoc instanceof GraphGeneralization) {
-						if(assoc.contains(item)) {
+						if(assoc.contains(item, true, false)) {
 							this.associations.remove(assoc);
 							break;
 						}
