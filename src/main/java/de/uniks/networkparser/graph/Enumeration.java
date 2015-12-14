@@ -1,4 +1,7 @@
 package de.uniks.networkparser.graph;
+
+import de.uniks.networkparser.list.SimpleSet;
+
 /*
 NetworkParser
 Copyright (c) 2011 - 2015, Stefan Lindel
@@ -24,5 +27,15 @@ public class Enumeration extends Clazz{
 	public Clazz with(GraphLiteral... values) {
 		super.with(values);
 		return this;
+	}
+	
+	public SimpleSet<GraphLiteral> getValues() {
+		SimpleSet<GraphLiteral> collection = new SimpleSet<GraphLiteral>();
+		for (GraphMember child : children) {
+			if (child instanceof GraphLiteral)  {
+				collection.add((GraphLiteral) child);
+			}
+		}
+		return collection;
 	}
 }

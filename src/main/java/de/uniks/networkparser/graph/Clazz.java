@@ -338,11 +338,6 @@ public class Clazz extends GraphEntity {
 		return super.setParent(value);
 	}
 	
-	public Clazz withClassModel(GraphModel value) {
-		setClassModel(value);
-		return this;
-	}
-
 	public Clazz with(GraphModel value) {
 		setClassModel(value);
 		return this;

@@ -60,4 +60,30 @@ public class GraphUtil {
 	public static boolean isEnumeration(Clazz clazz) {
 		return clazz instanceof Enumeration;
 	}
+	public static SimpleSet<Association> getOtherAssociations(Clazz clazz) {
+		SimpleSet<Association> collection = new SimpleSet<Association>();
+		for(Association assoc : clazz.getAssociation()) {
+			collection.add(assoc.getOther());
+		}
+		return collection;
+	}
+	public static void removeYou(Attribute attribute) {
+		attribute.withParent(null);
+		de.uniks.networkparser.graph.Annotation annotation = attribute.getAnnotation();
+		attribute.without(annotation);
+	}
+
+	public static void removeYou(Association assoc) {
+		assoc.setParent(null);
+		assoc.withOtherEdge(null);
+		assoc.without(assoc.getClazz());
+	}
+	
+
+	public static void removeYou(Clazz clazz) {
+		clazz.setParent(null);
+//		clazz.without(clazz.getAssociation().toArray(new Association[clazz.getAssociation().size()]));
+//		clazz.without(clazz.getAttributes().toArray(new Attribute[clazz.getAssociation().size()]));
+		clazz.without(clazz.getChildren().toArray(new GraphMember[clazz.getChildren().size()]));
+	}
 }

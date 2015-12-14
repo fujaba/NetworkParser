@@ -46,8 +46,8 @@ public class GenModel {
 //		Clazz uni = model.createClazz("Uni");
 //		Attribute nameAttribute = uni.createAttribute("name", DataType.STRING);
 //		de.uniks.networkparser.graph.Method mainMethod = uni.createMethod("main");
-		boolean printItems=true;
-		System.out.println(getCounting(Method.class, true, true));
+//		boolean printItems=true;
+//		System.out.println(getCounting(Method.class, true, true));
 		
 //		System.out.println("Clazz: "+getCount(uni, true, printItems));
 //		System.out.println("Attribute: "+getCount(nameAttribute, true, printItems));

@@ -40,4 +40,8 @@ public class GraphLiteral extends GraphMember{
 		this.values.put(key, new SimpleList<Object>().with(value));
 		return this;
 	}
+	
+	public SimpleKeyValueList<String, SimpleList<Object>> getValues() {
+		return values;
+	}
 }
