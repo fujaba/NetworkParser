@@ -92,7 +92,7 @@ public class GraphLudoTest
       JsonArray jsonArray = jsonIdMap.toJsonArray(ludo);
       GraphConverter graphConverter = new GraphConverter();
       JsonObject converter=graphConverter.convertToJson(GraphIdMap.CLASS, jsonArray, true);
-      showDebugInfos(converter, 3452, null);
+      showDebugInfos(converter, 3529, null);
    }
    private void showDebugInfos(JsonObject json, int len, PrintStream stream) {
 	   if(stream != null) {
@@ -119,10 +119,10 @@ public class GraphLudoTest
 	   item.put(GraphConverter.HEAD, "map.png");
 	   GraphConverter graphConverter = new GraphConverter();
       JsonObject objectModel=graphConverter.convertToJson(GraphIdMap.OBJECT, jsonArray, true);
-      showDebugInfos(objectModel, 676, null);
+      showDebugInfos(objectModel, 683, System.out);
       
       JsonObject clazzModel=graphConverter.convertToJson(GraphIdMap.CLASS, jsonArray, true);
-      showDebugInfos(clazzModel, 512, null);
+      showDebugInfos(clazzModel, 519, null);
  }
    
    

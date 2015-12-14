@@ -27,15 +27,11 @@ public enum GraphEdgeTypes {
 	ASSOCIATION("assoc"), EDGE("edge"), GENERALISATION("generalisation"), IMPLEMENTS("implements"), UNDIRECTIONAL("unidirectional"), AGGREGATION("aggregation"), COMPOSITION("Composition"), CHILD("child");
 	
 	private GraphEdgeTypes(String value) {
-		this.setValue(value);
+		this.value = value;
 	}
 	
 	public String getValue() {
 		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
 	}
 
 	public static boolean isEdge(String value) {
@@ -49,6 +45,5 @@ public enum GraphEdgeTypes {
 				value.equals(COMPOSITION.getValue())
 				);
 	}
-	
 	private String value;
 }

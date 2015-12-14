@@ -38,25 +38,25 @@ public class DataType {
 		return value;
 	}
 
-	public DataType with(String value) {
-		this.value = new Clazz().with(value);
+	public DataType with(String typ) {
+		this.value = new Clazz().with(typ);
 		return this;
 	}
 
-	public static DataType ref(String value) {
-		return new DataType(value);
+	public static DataType ref(String typ) {
+		return new DataType(typ);
 	}
 
-	public static DataType ref(Class<?> value) {
-		return new DataType(value.getName().replace("$", "."));
+	public static DataType ref(Class<?> typ) {
+		return new DataType(typ.getName().replace("$", "."));
 	}
 
-	public static DataType ref(String value, boolean external) {
-		return new DataType(new Clazz().with(value).withExternal(external));
+	public static DataType ref(String typ, boolean external) {
+		return new DataType(new Clazz().with(typ).withExternal(external));
 	}
 
-	public static DataType ref(Class<?> value, boolean external) {
-		Clazz clazz = new Clazz().with(value.getName().replace("$", ".")).withExternal(external);
+	public static DataType ref(Class<?> typ, boolean external) {
+		Clazz clazz = new Clazz().with(typ.getName().replace("$", ".")).withExternal(external);
 		return new DataType(clazz);
 	}
 
@@ -80,7 +80,7 @@ public class DataType {
 		}
 	}
 
-	public static DataType ref(Clazz value) {
-		return new DataType(value);
+	public static DataType ref(Clazz typ) {
+		return new DataType(typ);
 	}
 }
