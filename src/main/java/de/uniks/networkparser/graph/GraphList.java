@@ -79,7 +79,7 @@ public class GraphList extends GraphModel implements BaseItem{
 				continue;
 			}
 			Clazz graphClazz = (Clazz) node;
-			SimpleSet<Association> childEdges = graphClazz.getAllEdges();
+			SimpleSet<Association> childEdges = graphClazz.getAssociation();
 			for(Association edge : childEdges) {
 				if(associations.contains(edge) == false && associations.contains(edge.getOther()) == false) {
 					associations.add(edge);

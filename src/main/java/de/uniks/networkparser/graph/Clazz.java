@@ -166,7 +166,7 @@ public class Clazz extends GraphEntity {
 				continue;
 			}
 			Clazz otherClazz = assoc.getOtherClazz();
-			if(otherClazz instanceof Interfaze == false) {
+			if(GraphUtil.isInterface(otherClazz) == false) {
 				return otherClazz;
 			}
 		}
@@ -189,7 +189,7 @@ public class Clazz extends GraphEntity {
 		}
 		for (Association assoc : associations) {
 			Clazz clazz = assoc.getOtherClazz();
-			if (clazz instanceof Interfaze == false) {
+			if (GraphUtil.isInterface(clazz) == false) {
 				interfaces.with(clazz);
 			}
 		}
@@ -273,7 +273,7 @@ public class Clazz extends GraphEntity {
 		return kidClazzes;
 	}
 	
-	public SimpleSet<Association> getAllEdges() {
+	public SimpleSet<Association> getAssociation() {
 		SimpleSet<Association> allEdges = new SimpleSet<Association>();
 		if (associations == null ) {
 			return allEdges;
@@ -297,7 +297,7 @@ public class Clazz extends GraphEntity {
 				continue;
 			}
 			Clazz clazz = assoc.getOtherClazz();
-			if(clazz instanceof Interfaze == false) {
+			if(GraphUtil.isInterface(clazz) == false) {
 				kindClazzes.with(clazz);
 			}
 		}

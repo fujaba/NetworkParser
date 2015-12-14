@@ -51,4 +51,13 @@ public class GraphUtil {
 		}
 		return collection;
  	}
+	public static boolean isWithNoObjects(Clazz clazz) {
+		return (clazz.hasModifier(Modifier.ABSTRACT) || clazz instanceof Interfaze);
+	}
+	public static boolean isInterface(Clazz clazz) {
+		return clazz instanceof Interfaze;
+	}
+	public static boolean isEnumeration(Clazz clazz) {
+		return clazz instanceof Enumeration;
+	}
 }
