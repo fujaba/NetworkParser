@@ -1,4 +1,7 @@
 package de.uniks.networkparser.graph;
+
+import de.uniks.networkparser.list.SimpleSet;
+
 /*
 NetworkParser
 Copyright (c) 2011 - 2015, Stefan Lindel
@@ -28,4 +31,24 @@ public class GraphUtil {
 	public static Clazz getByObject(GraphEntity item, String clazz, boolean fullName) {
 		return (Clazz) item.getByObject(clazz, fullName);
 	}
+	public static SimpleSet<Annotation> getAnnotations(Clazz item) {
+		return getAnnotations(item.getAnnotation());
+	}
+	public static SimpleSet<Annotation> getAnnotations(Method item) {
+		return getAnnotations(item.getAnnotation());
+	}
+	public static SimpleSet<Annotation> getAnnotations(Attribute item) {
+		return getAnnotations(item.getAnnotation());
+	}
+	public static SimpleSet<Annotation> getAnnotations(Annotation item) {
+		SimpleSet<Annotation> collection = new SimpleSet<Annotation>();
+		collection.add(item);
+		if(item != null) {
+			while(item.hasNext()) {
+				item = item.next();
+				collection.add(item);
+			}
+		}
+		return collection;
+ 	}
 }

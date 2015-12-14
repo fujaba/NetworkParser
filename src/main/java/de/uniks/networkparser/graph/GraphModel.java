@@ -97,4 +97,16 @@ public abstract class GraphModel extends GraphEntity {
 		setAuthorName(value);
 		return this;
 	}
+	
+	public GraphModel generate() {
+		return this;
+	}
+
+	public GraphModel generate(String rootDir) {
+		return this;
+	}
+	
+	public boolean dumpHTML(String diagramName){
+		return false;
+	}
 }

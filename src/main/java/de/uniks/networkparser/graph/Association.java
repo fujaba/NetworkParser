@@ -142,16 +142,16 @@ public class Association extends GraphMember {
 	
 	public Clazz getOtherClazz() {
 		if(other.getClazz() instanceof Clazz) {
-			return (Clazz) other.getClazz();
+			return other.getClazz();
 		}
 		return null;
 	}
 
-	public GraphEntity getClazz() {
+	public Clazz getClazz() {
 		if(children.size()>0) {
 			GraphMember item = children.get(0);
-			if(item instanceof GraphEntity) {
-				return (GraphEntity)item;
+			if(item instanceof Clazz) {
+				return (Clazz)item;
 			}
 		}
 		return null;

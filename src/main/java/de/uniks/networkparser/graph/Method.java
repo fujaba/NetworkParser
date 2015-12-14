@@ -236,7 +236,7 @@ public class Method extends GraphMember {
 		return this;
 	}
 
-	public Annotation getAnnotations() {
+	public Annotation getAnnotation() {
 		if(this.children == null) {
 			return null;
 		}

@@ -108,7 +108,7 @@ public class Attribute extends Value {
 		return getType(shortName);
 	}
 
-	public Annotation getAnnotations() {
+	public Annotation getAnnotation() {
 		if(this.children == null) {
 			return null;
 		}
