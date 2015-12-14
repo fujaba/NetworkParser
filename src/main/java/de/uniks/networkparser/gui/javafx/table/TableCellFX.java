@@ -201,14 +201,12 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 	
 	@Override
 	public boolean onActive(boolean value) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 
 	@Override
 	public boolean nextFocus() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

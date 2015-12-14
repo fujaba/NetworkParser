@@ -14,42 +14,7 @@ public class SDMSetBase<T> extends SimpleList<T>
 	public SDMSetBase(){
 		this.withAllowDuplicate(false);
 	}
-//   @Override
-//   public String toString()
-//   {
-//      StringList stringList = new StringList();
-//      
-//      for (T elem : this)
-//      {
-//         stringList.add(elem.toString());
-//      }
-//      
-//      return "(" + stringList.concat(", ") + ")";
-//   }
-   
-//   public <ST extends SDMSetBase<T>> ST instanceOf(ST target)
-//   {
-//      String className = target.getClass().getName();
-//      className = CGUtil.baseClassName(className, "Set");
-//      try
-//      {
-//         Class<?> targetClass = target.getClass().getClassLoader().loadClass(className);
-//         for (T elem : this)
-//         {
-//            if (targetClass.isAssignableFrom(elem.getClass()))
-//            {
-//               target.add(elem);
-//            }
-//         }
-//      }
-//      catch (ClassNotFoundException e)
-//      {
-//         // TODO Auto-generated catch block
-//         e.printStackTrace();
-//      }
-//      return target;
-//   }
-//   
+
    public <ST extends SDMSetBase<T>> ST union(ST other)
    {
       @SuppressWarnings("unchecked")

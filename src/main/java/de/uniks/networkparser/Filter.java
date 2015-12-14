@@ -232,6 +232,10 @@ public class Filter {
 		return new Filter().withConvertable(convertable);
 	}
 
+	/**
+	 * Strategy for setting property value in model 
+	 * @return String type of set Value
+	 */
 	public String getStrategy() {
 		return strategy;
 	}

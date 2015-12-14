@@ -185,8 +185,6 @@ public class PomFile implements SendableEntityCreatorTag, StringItem, BaseItem{
 		return new PomFile();
 	}
 
-	//FIXME
-
 	@Override
 	public String[] getProperties() {
 		return new String[]{PROPERTY_MODELVERSION, PROPERTY_GROUPID, PROPERTY_ARTIFACTID, PROPERTY_VERSION, PROPERTY_SCOPE, PROPERTY_DEPENDENCY};

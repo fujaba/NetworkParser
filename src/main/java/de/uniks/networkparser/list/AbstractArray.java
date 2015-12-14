@@ -1403,7 +1403,6 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	
 	protected void fireProperty(Object oldElement, Object newElement,
 			Object beforeElement, Object value) {
-		//FIXME
 	}
 	
 	public boolean move(int from, int to) {

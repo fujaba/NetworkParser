@@ -312,24 +312,12 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 		}
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-
 	@Override
 	public void cancel() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public boolean onActive(boolean value) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -343,108 +331,4 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 			}
 		}
 	}
-
-
-
-	//FIXME
-//	public String getLabelPostText() {
-//		return labelPostText;
-//	}
-//
-//
-//	public void setLabelPostText(String value) {
-//		this.labelPostText = value;
-//	}
-//
-//	public void handleDefaultSelection(SelectionEvent event) {
-////		field.dispose();
-//	}
-//
-//	@Override
-//	public Object getEditorValue(boolean convert) throws ParseException {
-//		return field.getEditorValue(convert); 
-//	}
-//	
-//	public Control getEditorField(){
-//		return field.getControl();
-//	}
-//	
-//	public void setFormatLayout(String value){
-//		field.setNumberFormat(value);
-//	}
-//	public String getFormatLayout(){
-//		return field.getNumberFormat();
-//	}
-//	
-//	public void addChoiceList(Object value){
-//		field.addChoiceList(value);
-//	}
-//	
-//	public String toString(){
-//		if(column!=null){
-//			return field.getNumberFormat()+" "+column.getLabel()+":"+column.getAttrName();
-//		}
-//		return super.toString();
-//	}
-//
-//	@Override
-//	public void focusGained(FocusEvent e) {
-//		for(EventListener listener : listeners){
-//			if(listener instanceof FocusListener){
-//				((FocusListener)listener).focusGained(e);
-//			}
-//		}
-//		if (this.getParent() instanceof ModelForm) {
-//			ModelForm parent = (ModelForm) this.getParent();
-//			parent.onFocus(this);
-//		}
-//	}
-//
-//	@Override
-//	public void focusLost(FocusEvent e) {
-//		for(EventListener listener : listeners){
-//			if(listener instanceof FocusListener){
-//				((FocusListener)listener).focusLost(e);
-//			}
-//		}
-//	}
-//
-//	@Override
-//	public void keyPressed(KeyEvent e) {
-//		for(EventListener listener : listeners){
-//			if(listener instanceof KeyListener){
-//				((KeyListener)listener).keyPressed(e);
-//			}
-//		}
-//		if (this.getParent() instanceof ModelForm) {
-//			ModelForm parent = (ModelForm) this.getParent();
-//			parent.onKeyPressed(e);
-//		}
-//	}
-//
-//	@Override
-//	public void keyReleased(KeyEvent e) {
-//		for(EventListener listener : listeners){
-//			if(listener instanceof KeyListener){
-//				((KeyListener)listener).keyReleased(e);
-//			}
-//		}
-//		if (this.getParent() instanceof ModelForm) {
-//			ModelForm parent = (ModelForm) this.getParent();
-//			parent.onKeyReleased(e);
-//		}
-//	}
-//	
-//	public void addFieldListener(EventListener listener) {
-//		this.listeners.add(listener);
-//	}
-//
-//	@Override
-//	public void keyTraversed(TraverseEvent e) {
-//		if (this.getParent() instanceof ModelForm) {
-//			ModelForm parent = (ModelForm) this.getParent();
-//			parent.onKeyTraversed(e);
-//		}
-//	}
-//
 }

@@ -528,7 +528,6 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
                 }
             }
             if((columns.size() + subColumns.size())<1) {
-//            	System.out.println("FIXME DONT FIND COLUMN: " + event.getPropertyName());
             }else {
             	for(TableColumnFX column  : columns ) {
                 	Object item = event.getSource();

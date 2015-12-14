@@ -154,24 +154,6 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
         			TableCellFX tableCell = (TableCellFX) (cellSkin).getChildren().get(columnId);
     				tableCell.updateIndex(row);
         		} else {
-//FIXME        			for(int i=0;i<vf.getCellCount();i++) {
-//        				
-//        				try {
-//        					
-//        					
-//        					TableRowSkin<?> cellSkin = (TableRowSkin<?>) vf.getCell(i).getSkin();
-//        					if(cellSkin != null) {
-//        						
-//        						TableCellFX tableCell = (TableCellFX) (cellSkin).getChildren().get(columnId);
-//        						tableCell.updateIndex(i);
-//        						
-//        					}
-//        				} catch(Exception e) {
-//        					
-//        					//Whatever
-//        					
-//        				}
-//        			}
         		}
         	}
         }
