@@ -82,7 +82,7 @@ public class WriteJsonGraph {
 		uni.createAttribute("name", DataType.STRING);
 		Clazz person = model.with(new Clazz().with("Person"));
 		
-		uni.withAssoc(person, "has", Cardinality.MANY, "studis", Cardinality.ONE);
+		uni.withBidirectional(person, "has", Cardinality.MANY, "studis", Cardinality.ONE);
 		Assert.assertEquals(654, htmlEntity.withGraph(model).toString(2).length());
 	}
 }

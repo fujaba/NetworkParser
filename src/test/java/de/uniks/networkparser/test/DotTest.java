@@ -75,7 +75,7 @@ public class DotTest {
 		uni.createAttribute("name", DataType.STRING);
 		uni.createMethod("init()");
 		Clazz student = list.with(new Clazz().with("Stefan").with("Student"));
-		student.withAssoc(uni, "owner", Cardinality.ONE);
+		student.withUniDirectional(uni, "owner", Cardinality.ONE);
 		
 		DotIdMap map=new DotIdMap();
 		String convert = map.convert(list, true);

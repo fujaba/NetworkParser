@@ -66,7 +66,7 @@ public class YUmlTest {
 		uni.createAttribute("name", DataType.STRING);
 		uni.createMethod("init()");
 		Clazz student = list.with(new Clazz().with("Stefan").with("Student"));
-		student.withAssoc(uni, "owner", Cardinality.ONE);
+		student.withUniDirectional(uni, "owner", Cardinality.ONE);
 		YUMLConverter converter = new YUMLConverter();
 		Assert.assertEquals("[University|name:String]-[Student]", converter.convert(list, true));
 	}	

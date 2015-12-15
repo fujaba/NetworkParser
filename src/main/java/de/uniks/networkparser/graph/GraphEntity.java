@@ -31,7 +31,7 @@ public abstract class GraphEntity extends GraphMember {
 		if (this.name == null) {
 			return null;
 		}
-		if (!shortName || name.lastIndexOf(".") < 0) {
+		if (!shortName) {
 			if (name.indexOf('.') < 0 && this.parentNode != null && this.parentNode.getName() != null) {
 				return this.parentNode.getName() + "." + name.replace("$", ".");
 			}
