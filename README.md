@@ -31,9 +31,8 @@ The Framework have many other features like:
 - Develop
   - travis-ci: [![Build Status](https://travis-ci.org/fujaba/NetworkParser.svg?branch=develop)](https://travis-ci.org/fujaba/NetworkParser)
 
-```html
-<script type='text/javascript' src='https://www.openhub.net/p/NetworkParser/widgets/project_thin_badge?format=js'></script>
-```
+![Open Hub]https://www.openhub.net/p/NetworkParser/widgets/project_partner_badge
+
 # Getting Started
 
 ## Installation
