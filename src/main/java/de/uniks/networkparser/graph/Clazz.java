@@ -157,7 +157,7 @@ public class Clazz extends GraphEntity {
 	 * @param tgtCardinality	The Targetcardinality
 	 * @return The Clazz Instance
 	 */
-	public Clazz withUnidirectional(Clazz tgtClass, String tgtRoleName, Cardinality tgtCardinality) {
+	public Clazz withUniDirectional(Clazz tgtClass, String tgtRoleName, Cardinality tgtCardinality) {
 		// Target
 		Association assocTarget = new Association();
 		assocTarget.withTyp(GraphEdgeTypes.UNDIRECTIONAL);
