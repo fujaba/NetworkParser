@@ -3,37 +3,24 @@ package de.uniks.networkparser.test;
 
 import org.junit.Test;
 
-import de.uniks.networkparser.graph.Annotation;
-import de.uniks.networkparser.graph.Association;
-import de.uniks.networkparser.graph.Attribute;
-import de.uniks.networkparser.graph.Cardinality;
-import de.uniks.networkparser.graph.Clazz;
-import de.uniks.networkparser.graph.DataType;
-import de.uniks.networkparser.graph.DataTypeMap;
-import de.uniks.networkparser.graph.DataTypeSet;
-import de.uniks.networkparser.graph.Method;
-import de.uniks.networkparser.graph.Modifier;
-import de.uniks.networkparser.graph.Parameter;
-import de.uniks.networkparser.graph.Throws;
-import de.uniks.networkparser.graph.Value;
 import de.uniks.networkparser.list.SortedSet;
 
 public class GenModel {
 	@Test
 	public void showCountsModel() {
-		showCounting(Annotation.class);
-		showCounting(Association.class);
-		showCounting(Attribute.class);
-		showCounting(Cardinality.class);
-		showCounting(Clazz.class);
-		showCounting(DataType.class);
-		showCounting(DataTypeSet.class);
-		showCounting(DataTypeMap.class);
-		showCounting(Method.class);
-		showCounting(Modifier.class);
-		showCounting(Parameter.class);
-		showCounting(Throws.class);
-		showCounting(Value.class);
+//		showCounting(Annotation.class);
+//		showCounting(Association.class);
+//		showCounting(Attribute.class);
+//		showCounting(Cardinality.class);
+//		showCounting(Clazz.class);
+//		showCounting(DataType.class);
+//		showCounting(DataTypeSet.class);
+//		showCounting(DataTypeMap.class);
+//		showCounting(Method.class);
+//		showCounting(Modifier.class);
+//		showCounting(Parameter.class);
+//		showCounting(Throws.class);
+//		showCounting(Value.class);
 	}
 	
 	

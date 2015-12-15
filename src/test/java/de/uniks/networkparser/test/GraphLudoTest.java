@@ -119,7 +119,7 @@ public class GraphLudoTest
 	   item.put(GraphConverter.HEAD, "map.png");
 	   GraphConverter graphConverter = new GraphConverter();
       JsonObject objectModel=graphConverter.convertToJson(GraphIdMap.OBJECT, jsonArray, true);
-      showDebugInfos(objectModel, 683, System.out);
+      showDebugInfos(objectModel, 683, null);
       
       JsonObject clazzModel=graphConverter.convertToJson(GraphIdMap.CLASS, jsonArray, true);
       showDebugInfos(clazzModel, 519, null);
