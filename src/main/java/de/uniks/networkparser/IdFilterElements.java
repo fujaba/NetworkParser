@@ -26,11 +26,12 @@ import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.logic.InstanceOf;
-import de.uniks.networkparser.logic.ValuesMap;
 import de.uniks.networkparser.logic.ValuesSimple;
 
 public class IdFilterElements extends SimpleList<Object> implements UpdateListener {
 	private Condition<ValuesSimple> condition;
+	protected ValuesMap filterMap;
+
 	
 	public IdFilterElements(Condition<ValuesSimple> condition) {
 		this.condition = condition;
@@ -43,7 +44,10 @@ public class IdFilterElements extends SimpleList<Object> implements UpdateListen
 	public boolean update(String typ, BaseItem source, Object target, String property, Object oldValue,
 			Object newValue) {
 		if(condition!=null) {
-			ValuesMap value = ValuesMap.with((IdMap)target, target, property, newValue, 0);
+			if(filterMap == null) {
+				filterMap = new ValuesMap().with((IdMap)target);
+			}
+			ValuesMap value = filterMap.with(property).withValue(newValue);
 			if(condition.check(value)) {
 				return add(newValue);
 			}

@@ -118,7 +118,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 	 */
 	@Override
 	public XMLEntity encode(Object entity) {
-		return encode(entity, filter.clone());
+		return encode(entity, filter.newInstance(null));
 	}
 
 	@Override
@@ -141,10 +141,10 @@ public class XMLIdMap extends XMLSimpleIdMap {
 			xmlEntity.withTag(entity.getClass().getName());
 		}
 
-		if (filter.isId(this, entity, entity.getClass().getName())) {
+		if (filter.isId(entity, entity.getClass().getName())) {
 			xmlEntity.put(ID, getId(entity));
 		}
-		filter.withObjects(entity);
+		withObjects(filter, entity);
 
 		String[] properties = createrProtoTyp.getProperties();
 		if (properties != null) {
@@ -161,7 +161,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 						} else {
 							if (value instanceof Collection<?>) {
 								for (Object item : (Collection<?>) value) {
-									if(filter.hasObjects(item)) {
+									if(hasObjects(filter, item)) {
 										continue;
 									}
 									xmlEntity.addChild(encode(item, filter));
@@ -170,7 +170,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 							} else {
 								SendableEntityCreator valueCreater = getCreatorClass(value);
 								if (valueCreater != null) {
-									if(filter.hasObjects(value)) {
+									if(hasObjects(filter, value)) {
 										continue;
 									}
 									xmlEntity.addChild(encode(value, filter));

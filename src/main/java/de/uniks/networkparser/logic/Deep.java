@@ -1,5 +1,6 @@
 package de.uniks.networkparser.logic;
 
+import de.uniks.networkparser.ValuesMap;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -51,7 +52,7 @@ public class Deep extends ConditionMap implements SendableEntityCreator {
 
 	@Override
 	public boolean check(ValuesMap values) {
-		return values.deep <= this.deep;
+		return values.getDeep() <= this.deep;
 	}
 
 	/**

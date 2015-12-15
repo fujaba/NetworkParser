@@ -29,30 +29,20 @@ package de.uniks.networkparser.logic;
 
 public class ValuesSimple {
 	/** The Variable of value. */
-	private Object item;
+	protected Object value;
 
 	/**
-	 * @param value
-	 *            The new Value
-	 * @return ValuesSimple Instance
-	 */
-	public static ValuesSimple with(Object value) {
-		ValuesSimple simple = new ValuesSimple();
-		simple.withValue(value);
-		return simple;
-	}
-
-	/**
-	 * @return THe Value of Check
+	 * @return The Value of Check
 	 */
 	public Object getValue() {
-		return item;
+		return value;
 	}
 
 	/**
 	 * @param value Set the new Value.
 	 */
-	public void withValue(Object value) {
-		this.item = value;
+	public ValuesSimple withValue(Object value) {
+		this.value = value;
+		return this;
 	}
 }

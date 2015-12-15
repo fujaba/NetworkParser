@@ -111,23 +111,30 @@ public class Clazz extends GraphEntity {
 	}
 
 	/**
+	 * ********************************************************************
+	 * <pre>
+	 *       %srcCardinality%       %tgtCardinality%
+	 * Clazz --------------------------------------- %tgtClass%
+	 *       %srcRoleName%             %tgtRoleName%
+	 * </pre>
+	 *
 	 * create a Bidirectional Association 
 	 * 
-	 * @param tgtClass The target Clazz
-	 * @param tgtRoleName The Targetrolename
-	 * @param tgtCard	The Targetcardinality
-	 * @param srcRoleName	The sourcerolename
-	 * @param srcCard		The sourcecardinality
-	 * @return The GraphCard Instance
+	 * @param tgtClass 				The target Clazz
+	 * @param tgtRoleName 			The Targetrolename
+	 * @param tgtCardinality		The Targetcardinality
+	 * @param srcRoleName			The sourcerolename
+	 * @param srcCardinality		The sourcecardinality
+	 * @return The Clazz Instance
 	 */
-	public Clazz withAssoc(Clazz tgtClass, String tgtRoleName, Cardinality tgtCard, String srcRoleName, Cardinality srcCard) {
+	public Clazz withBidirectional(Clazz tgtClass, String tgtRoleName, Cardinality tgtCardinality, String srcRoleName, Cardinality srcCardinality) {
 		// Target
 		Association assocTarget = new Association();
-		assocTarget.with(tgtClass, tgtCard, tgtRoleName);
+		assocTarget.with(tgtClass, tgtCardinality, tgtRoleName);
 
 		// Source
 		Association assocSource = new Association();
-		assocSource.with(this, srcCard, srcRoleName);
+		assocSource.with(this, srcCardinality, srcRoleName);
 		
 		assocSource.with(assocTarget);
 
@@ -136,17 +143,25 @@ public class Clazz extends GraphEntity {
 	}
 
 	/**
+	 * ********************************************************************
+	 * <pre>
+	 *                                 %tgtCardinality%
+	 * Clazz ----------------------------------- %tgtClass%
+	 *                                    %tgtRoleName%
+	 * </pre>
+	 *
 	 * create a Undirectional Association
-	 * @param tgtClass The target Clazz
-	 * @param tgtRoleName The Targetrolename
-	 * @param tgtCard	The Targetcardinality
-	 * @return The GraphCard Instance
+	 * 
+	 * @param tgtClass			The target Clazz
+	 * @param tgtRoleName		The Targetrolename
+	 * @param tgtCardinality	The Targetcardinality
+	 * @return The Clazz Instance
 	 */
-	public Clazz withAssoc(Clazz tgtClass, String tgtRoleName, Cardinality tgtCard) {
+	public Clazz withUnidirectional(Clazz tgtClass, String tgtRoleName, Cardinality tgtCardinality) {
 		// Target
 		Association assocTarget = new Association();
 		assocTarget.withTyp(GraphEdgeTypes.UNDIRECTIONAL);
-		assocTarget.with(tgtClass, tgtCard, tgtRoleName);
+		assocTarget.with(tgtClass, tgtCardinality, tgtRoleName);
 
 		// Source
 		Association assocSource = new Association();

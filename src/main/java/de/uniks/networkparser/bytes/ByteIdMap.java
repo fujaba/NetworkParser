@@ -149,7 +149,7 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 	/** The decoder map. */
 	protected HashMap<Byte, SendableEntityCreatorTag> decoderMap;
 
-	private ByteFilter filter = new ByteFilter();
+	private ByteFilter filter = new ByteFilter().withMap(this);
 
 	/*
 	 * (non-Javadoc)
@@ -202,7 +202,7 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 	 */
 	@Override
 	public ByteItem encode(Object entity) {
-		return encode(entity, filter.withStandard(this.filter));
+		return encode(entity, null);
 	}
 
 	private boolean addClazzTyp(ByteList msg, String clazzName, Filter filter) {
@@ -255,7 +255,8 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 		if (creator == null) {
 			return null;
 		}
-		int id = filter.getIndexVisitedObjects(entity);
+		filter = this.filter.newInstance(filter);
+		int id = getIndexVisitedObjects(filter, entity);
 		if (id >= 0) {
 			// Must be a assoc
 			if (id <= Byte.MAX_VALUE) {
@@ -280,7 +281,7 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 			addClazzTyp(msg, reference.getClass().getName(), filter);
 		}
 
-		filter.withObjects(entity);
+		withObjects(filter, entity);
 		String[] properties = creator.getProperties();
 		if (properties != null) {
 			Object referenceObj = creator.getSendableInstance(true);
@@ -572,11 +573,11 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 		}
 		if (typ == ByteIdMap.DATATYPE_ASSOC) {
 			int pos = buffer.getByte();
-			return filter.getVisitedObjects(pos);
+			return getVisitedObjects(filter, pos);
 		}
 		if (typ == ByteIdMap.DATATYPE_ASSOCLONG) {
 			int pos = buffer.getInt();
-			return filter.getVisitedObjects(pos);
+			return getVisitedObjects(filter, pos);
 		}
 		if (ByteUtil.isGroup(typ)) {
 			byte subgroup = ByteUtil.getSubGroup(typ);

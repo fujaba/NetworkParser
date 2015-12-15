@@ -82,7 +82,7 @@ public abstract class IdMap extends AbstractMap implements
 
 	protected SimpleKeyValueList<String, Object> keyValue = new SimpleKeyValueList<String, Object>().withFlag(SimpleKeyValueList.BIDI);
 
-	protected Filter filter = new Filter();
+	protected Filter filter = new Filter().withMap(this);
 
 	protected NetworkParserLog logger = new NetworkParserLog();
 
@@ -95,7 +95,7 @@ public abstract class IdMap extends AbstractMap implements
 	public NetworkParserLog getLogger() {
 		return logger;
 	}
-
+	
 	/**
 	 * Set the Current Logger for Infos
 	 *
@@ -585,5 +585,25 @@ public abstract class IdMap extends AbstractMap implements
 	public IdMap withCaseSensitive(boolean value) {
 		keyValue.withCaseSensitive(value);
 		return this;
+	}
+	
+	// Methods for Filtering
+	protected boolean hasObjects(Filter filter, Object element) {
+		return filter.hasObjects(element);
+	}
+	protected void withObjects(Filter filter, Object... visitedObject) {
+		filter.withObjects(visitedObject);
+	}
+	protected int getIndexVisitedObjects(Filter filter, Object element) {
+		return filter.getIndexVisitedObjects(element);
+	}
+	protected Object getVisitedObjects(Filter filter, int index) {
+		return filter.getVisitedObjects(index);
+	}
+	protected boolean isConvertable(Filter filter, Object entity, String property, Object value, int deep) {
+		return filter.isConvertable(entity, property, value, deep);
+	}
+	protected boolean isPropertyRegard(Filter filter,  Object entity, String property, Object value, int deep) {
+		return filter.isPropertyRegard(entity, property, value, deep);
 	}
 }

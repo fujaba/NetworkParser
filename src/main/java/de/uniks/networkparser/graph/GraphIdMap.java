@@ -22,6 +22,7 @@ package de.uniks.networkparser.graph;
  permissions and limitations under the Licence.
 */
 import java.util.Collection;
+
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -38,7 +39,7 @@ public class GraphIdMap extends IdMap {
 	public static final String OBJECT = "objectdiagram";
 
 	private GraphIdMapFilter filter = new GraphIdMapFilter()
-			.withShowCardinality(true).withTyp(CLASS);
+			.withShowCardinality(true).withTyp(CLASS).withMap(this);
 
 	/**
 	 * Parses the object.
@@ -49,7 +50,7 @@ public class GraphIdMap extends IdMap {
 	 */
 	public String parseObject(Object object) {
 		return parse(object,
-				filter.clone(new GraphIdMapFilter()).withTyp(OBJECT));
+				filter.newInstance(new GraphIdMapFilter()).withTyp(OBJECT));
 	}
 	
 	/**
@@ -61,7 +62,7 @@ public class GraphIdMap extends IdMap {
 	 */
 	public GraphList parsingObject(Object object) {
 		return parsing(object,
-				filter.clone(new GraphIdMapFilter()).withTyp(OBJECT));
+				filter.newInstance(new GraphIdMapFilter()).withTyp(OBJECT));
 	}
 
 	/**
@@ -72,7 +73,7 @@ public class GraphIdMap extends IdMap {
 	 * @return the string
 	 */
 	public String parseClass(Object object) {
-		return parse(object, filter.clone(new GraphIdMapFilter())
+		return parse(object, filter.newInstance(new GraphIdMapFilter())
 				.withTyp(CLASS));
 	}
 
@@ -152,10 +153,10 @@ public class GraphIdMap extends IdMap {
 		if (item == null) {
 			return;
 		}
-		if (!filter.isPropertyRegard(entity, property, item, deep + 1)) {
+		if (!isPropertyRegard(filter, entity, property, item, deep + 1)) {
 			return;
 		}
-		if (!filter.isConvertable(entity, property, item, deep + 1)) {
+		if (!isConvertable(filter, entity, property, item, deep + 1)) {
 			return;
 		}
 		SendableEntityCreator valueCreater = getCreatorClass(item);
@@ -174,7 +175,7 @@ public class GraphIdMap extends IdMap {
 	@Override
 	public BaseItem encode(Object value) {
 		GraphList list = new GraphList();
-		parse(value, this.filter.clone(new GraphIdMapFilter()), list, 0);
+		parse(value, this.filter.newInstance(new GraphIdMapFilter()), list, 0);
 		return list;
 	}
 

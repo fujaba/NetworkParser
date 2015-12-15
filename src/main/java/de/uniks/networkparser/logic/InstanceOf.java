@@ -1,5 +1,6 @@
 package de.uniks.networkparser.logic;
 
+import de.uniks.networkparser.ValuesMap;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -167,18 +168,18 @@ public class InstanceOf extends ConditionMap implements SendableEntityCreator {
 			return false;
 		}
 		if (this.clazzName != null ) {
-			if(values.value!=null && values.value.getClass().isPrimitive()) {
+			if(values.getValue()!=null && values.getValue().getClass().isPrimitive()) {
 				return true;
 			}
-  			if(this.clazzName!=null && !this.clazzName.isInstance(values.value)) {
+  			if(this.clazzName!=null && !this.clazzName.isInstance(values.getValue())) {
 				return false;
 			}else if(this.property==null) {
 				return true;
-			}else if(this.property.equalsIgnoreCase(values.property)) {
+			}else if(this.property.equalsIgnoreCase(values.getProperty())) {
 				return false;
 			}
 		}
 		// Filter for one item
-		return (this.item == null || this.item != values.value);
+		return (this.item == null || this.item != values.getValue());
 	}
 }

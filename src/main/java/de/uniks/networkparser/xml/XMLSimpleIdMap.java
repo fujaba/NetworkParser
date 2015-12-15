@@ -135,7 +135,7 @@ public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
 
 	@Override
 	public XMLEntity encode(Object value) {
-		return encode(value, filter.clone());
+		return encode(value, null);
 	}
 
 	@Override

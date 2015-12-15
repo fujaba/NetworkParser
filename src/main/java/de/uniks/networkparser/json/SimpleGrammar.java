@@ -22,6 +22,7 @@ package de.uniks.networkparser.json;
  permissions and limitations under the Licence.
 */
 import java.util.Iterator;
+
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.IdMapCounter;

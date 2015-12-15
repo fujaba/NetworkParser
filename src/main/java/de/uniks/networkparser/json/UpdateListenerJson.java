@@ -31,6 +31,7 @@ import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.logic.UpdateCondition;
 /**
  * The listener interface for receiving update events. The class that is
  * interested in processing a update event implements this interface, and the
@@ -47,7 +48,7 @@ public class UpdateListenerJson implements PropertyChangeListener {
 	/** The suspend id list. */
 	private ArrayList<String> suspendIdList;
 
-	private UpdateFilter updateFilter = new UpdateFilter();
+	private Filter updateFilter = new Filter().withConvertable(new UpdateCondition());
 
 	/**
 	 * Instantiates a new update listener.

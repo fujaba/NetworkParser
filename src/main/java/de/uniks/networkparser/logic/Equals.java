@@ -1,5 +1,6 @@
 package de.uniks.networkparser.logic;
 
+import de.uniks.networkparser.ValuesMap;
 import de.uniks.networkparser.interfaces.BufferedBuffer;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 /**
@@ -25,8 +26,8 @@ public class Equals extends ConditionMap implements SendableEntityCreator {
 
 	@Override
 	public boolean check(ValuesMap values) {
-		if (values.entity instanceof BufferedBuffer) {
-			BufferedBuffer buffer = (BufferedBuffer) values.entity;
+		if (values.getEntity() instanceof BufferedBuffer) {
+			BufferedBuffer buffer = (BufferedBuffer) values.getEntity();
 			int pos;
 			if (position < 0) {
 				pos = buffer.position();
@@ -35,10 +36,10 @@ public class Equals extends ConditionMap implements SendableEntityCreator {
 			}
 			return buffer.byteAt(pos) == bytevalue;
 		}
-		if (values.value == null) {
+		if (values.getValue() == null) {
 			return (strValue == null);
 		}
-		return values.value.equals(strValue);
+		return values.getValue().equals(strValue);
 	}
 
 	/**

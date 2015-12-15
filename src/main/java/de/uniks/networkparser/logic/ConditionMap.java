@@ -1,5 +1,6 @@
 package de.uniks.networkparser.logic;
 
+import de.uniks.networkparser.ValuesMap;
 import de.uniks.networkparser.interfaces.Condition;
 
 /*

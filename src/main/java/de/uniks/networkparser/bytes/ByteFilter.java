@@ -1,27 +1,7 @@
 package de.uniks.networkparser.bytes;
 
-/*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
-
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
-
- http://ec.europa.eu/idabc/eupl5
-
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
-*/
 import de.uniks.networkparser.Filter;
+import de.uniks.networkparser.IdMap;
 
 public class ByteFilter extends Filter {
 	private boolean isLenCheck;
@@ -36,14 +16,13 @@ public class ByteFilter extends Filter {
 	}
 
 	@Override
-	public Filter clone() {
-		return clone(new ByteFilter());
-	}
-
-	@Override
-	protected Filter clone(Filter newInstance) {
-		ByteFilter result = (ByteFilter) super.clone(newInstance);
-		return result.withLenCheck(this.isLenCheck);
+	public ByteFilter newInstance(Filter referenceFilter) {
+		if(referenceFilter == null) {
+			referenceFilter = new ByteFilter();
+		}
+		ByteFilter filter = (ByteFilter) super.newInstance(referenceFilter);
+		filter.withLenCheck(this.isLenCheck);
+		return filter;
 	}
 
 	public String getCharset() {
@@ -84,5 +63,10 @@ public class ByteFilter extends Filter {
 					.getName();
 		}
 		return null;
+	}
+	
+	public ByteFilter withMap(IdMap map) {
+		super.withMap(map);
+		return this;
 	}
 }
