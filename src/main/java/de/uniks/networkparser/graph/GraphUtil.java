@@ -1,5 +1,6 @@
 package de.uniks.networkparser.graph;
 
+import de.uniks.networkparser.graph.Clazz.ClazzTyp;
 import de.uniks.networkparser.list.SimpleSet;
 
 /*
@@ -52,13 +53,13 @@ public class GraphUtil {
 		return collection;
  	}
 	public static boolean isWithNoObjects(Clazz clazz) {
-		return (clazz.hasModifier(Modifier.ABSTRACT) || clazz instanceof Interfaze);
+		return (clazz.hasModifier(Modifier.ABSTRACT) || clazz.getType() == ClazzTyp.INTERFACE);
 	}
 	public static boolean isInterface(Clazz clazz) {
-		return clazz instanceof Interfaze;
+		return clazz.getType() == ClazzTyp.INTERFACE;
 	}
 	public static boolean isEnumeration(Clazz clazz) {
-		return clazz instanceof Enumeration;
+		return clazz.getType() == ClazzTyp.ENUMERATION;
 	}
 	public static SimpleSet<Association> getOtherAssociations(Clazz clazz) {
 		SimpleSet<Association> collection = new SimpleSet<Association>();

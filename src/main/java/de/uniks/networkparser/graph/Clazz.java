@@ -25,10 +25,21 @@ import de.uniks.networkparser.list.SimpleSet;
 */
 
 public class Clazz extends GraphEntity {
+	public enum ClazzTyp {CLAZZ, ENUMERATION, INTERFACE};
+	private ClazzTyp typ = ClazzTyp.CLAZZ;
 	@Override
 	public Clazz with(String name) {
 		super.with(name);
 		return this;
+	}
+
+	public Clazz with(ClazzTyp clazzTyp) {
+		this.typ = clazzTyp;
+		return this;
+	}
+
+	public ClazzTyp getType() {
+		return typ;
 	}
 	
 	@Override
@@ -74,7 +85,20 @@ public class Clazz extends GraphEntity {
 		super.with(values);
 		return this;
 	}
+	public Clazz with(GraphLiteral... values) {
+		super.with(values);
+		return this;
+	}
 	
+	public SimpleSet<GraphLiteral> getValues() {
+		SimpleSet<GraphLiteral> collection = new SimpleSet<GraphLiteral>();
+		for (GraphMember child : children) {
+			if (child instanceof GraphLiteral)  {
+				collection.add((GraphLiteral) child);
+			}
+		}
+		return collection;
+	}
 	public Clazz without(Association... values) {
 		super.without(values);
 		return this;
@@ -160,12 +184,12 @@ public class Clazz extends GraphEntity {
 	public Clazz withUniDirectional(Clazz tgtClass, String tgtRoleName, Cardinality tgtCardinality) {
 		// Target
 		Association assocTarget = new Association();
-		assocTarget.withTyp(GraphEdgeTypes.UNDIRECTIONAL);
+		assocTarget.with(AssociationTypes.UNDIRECTIONAL);
 		assocTarget.with(tgtClass, tgtCardinality, tgtRoleName);
 
 		// Source
 		Association assocSource = new Association();
-		assocSource.withTyp(GraphEdgeTypes.EDGE);
+		assocSource.with(AssociationTypes.EDGE);
 		assocSource.with(assocTarget);
 
 		this.with(assocSource);
@@ -177,7 +201,7 @@ public class Clazz extends GraphEntity {
 			return null;
 		}
 		for (Association assoc : associations) {
-			if(!GraphEdgeTypes.GENERALISATION.equals(assoc.getTyp())) {
+			if(!AssociationTypes.GENERALISATION.equals(assoc.getTyp())) {
 				continue;
 			}
 			Clazz otherClazz = assoc.getOtherClazz();
@@ -229,7 +253,7 @@ public class Clazz extends GraphEntity {
 			if (item != null) {
 				boolean found=false;
 				for (Association assoc : associations) {
-					if(assoc instanceof GraphGeneralization) {
+					if(assoc.getTyp()==AssociationTypes.GENERALISATION) {
 						if(assoc.contains(item, false, true)) {
 							found = true;
 							break;
@@ -237,7 +261,7 @@ public class Clazz extends GraphEntity {
 					}
 				}
 				if(found == false) {
-					this.associations.add(new GraphGeneralization().with(this, item));
+					this.associations.add(new Association().with(AssociationTypes.GENERALISATION).with(this, item));
 				}
 			}
 		}
@@ -255,7 +279,7 @@ public class Clazz extends GraphEntity {
 	 *         </pre>
 	 */
 	public SimpleSet<Clazz> getSuperClazzes(boolean transitive) {
-		SimpleSet<Clazz> collection = getEdges(GraphEdgeTypes.GENERALISATION);
+		SimpleSet<Clazz> collection = getEdges(AssociationTypes.GENERALISATION);
 		if(!transitive) {
 			return collection;
 		}
@@ -277,7 +301,7 @@ public class Clazz extends GraphEntity {
 	 *         </pre>
 	 */
 	public SimpleSet<Clazz> getKidClazzes(boolean transitive) {
-		SimpleSet<Clazz> kidClazzes = getEdges(GraphEdgeTypes.CHILD);
+		SimpleSet<Clazz> kidClazzes = getEdges(AssociationTypes.CHILD);
 		if(!transitive) {
 			return kidClazzes;
 		}
@@ -294,14 +318,14 @@ public class Clazz extends GraphEntity {
 			return allEdges;
 		}
 		for (Association assoc : associations) {
-			if(GraphEdgeTypes.isEdge(assoc.getTyp().getValue())) {
+			if(AssociationTypes.isEdge(assoc.getTyp().getValue())) {
 				allEdges.add(assoc);
 			}
 		}
 		return allEdges;
 	}
 	
-	SimpleSet<Clazz> getEdges(GraphEdgeTypes typ) {
+	SimpleSet<Clazz> getEdges(AssociationTypes typ) {
 		SimpleSet<Clazz> kindClazzes = new SimpleSet<Clazz>();
 		if (associations == null || typ == null) {
 			return kindClazzes;
@@ -330,7 +354,7 @@ public class Clazz extends GraphEntity {
 			if (item != null) {
 				boolean found=false;
 				for (Association assoc : associations) {
-					if(assoc instanceof GraphGeneralization) {
+					if(assoc.getTyp() == AssociationTypes.CHILD) {
 						if(assoc.contains(item, true, false)) {
 							found = true;
 							break;
@@ -338,7 +362,7 @@ public class Clazz extends GraphEntity {
 					}
 				}
 				if(found == false) {
-					this.associations.add(new GraphGeneralization().with(item, this));
+					this.associations.add(new Association().with(AssociationTypes.CHILD).with(item, this));
 				}
 			}
 		}
@@ -413,7 +437,7 @@ public class Clazz extends GraphEntity {
 		for (Clazz item : values) {
 			if (item != null) {
 				for (Association assoc : associations) {
-					if(assoc instanceof GraphGeneralization) {
+					if(assoc.getTyp() == AssociationTypes.CHILD) {
 						if(assoc.contains(item, false, true)) {
 							this.associations.remove(assoc);
 							break;
@@ -432,7 +456,7 @@ public class Clazz extends GraphEntity {
 		for (Clazz item : values) {
 			if (item != null) {
 				for (Association assoc : associations) {
-					if(assoc instanceof GraphGeneralization) {
+					if(assoc.getTyp() == AssociationTypes.GENERALISATION) {
 						if(assoc.contains(item, true, false)) {
 							this.associations.remove(assoc);
 							break;

@@ -16,13 +16,13 @@ public class DataType {
 	protected Clazz value;
 
 	DataType(String value) {
-		this.with(value);
+		this.value = new Clazz().with(value);
 	}
 
 	DataType(Clazz value) {
 		this.value = value;
 	}
-
+	
 	public String getName(boolean shortName) {
 		if (this.value == null) {
 			return null;
@@ -38,11 +38,11 @@ public class DataType {
 		return value;
 	}
 
-	public DataType with(String typ) {
-		this.value = new Clazz().with(typ);
-		return this;
-	}
 
+	public static DataType ref(Clazz typ) {
+		return new DataType(typ);
+	}
+	
 	public static DataType ref(String typ) {
 		return new DataType(typ);
 	}
@@ -78,9 +78,5 @@ public class DataType {
 		} else {
 			return "DataType.ref(\"" + this.getName(false) + "\")";
 		}
-	}
-
-	public static DataType ref(Clazz typ) {
-		return new DataType(typ);
 	}
 }

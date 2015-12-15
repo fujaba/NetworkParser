@@ -5,15 +5,15 @@ import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.uniks.networkparser.graph.Association;
+import de.uniks.networkparser.graph.AssociationTypes;
 import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
-import de.uniks.networkparser.graph.GraphConverter;
+import de.uniks.networkparser.graph.Clazz.ClazzTyp;
 import de.uniks.networkparser.graph.DataType;
-import de.uniks.networkparser.graph.Association;
-import de.uniks.networkparser.graph.GraphEdgeTypes;
+import de.uniks.networkparser.graph.GraphConverter;
 import de.uniks.networkparser.graph.GraphIdMap;
 import de.uniks.networkparser.graph.GraphList;
-import de.uniks.networkparser.graph.Interfaze;
 import de.uniks.networkparser.xml.HTMLEntity;
 
 public class WriteJsonGraph {
@@ -37,7 +37,7 @@ public class WriteJsonGraph {
 		abstractArray.createAttribute("size", DataType.INT);
 		abstractArray.createAttribute("index", DataType.INT);
 		abstractArray.createAttribute("flag", DataType.BYTE);
-		Clazz baseItem = model.with(new Interfaze().with("BaseItem"));
+		Clazz baseItem = model.with(new Clazz().with(ClazzTyp.INTERFACE).with("BaseItem"));
 		Clazz iterable = model.with(new Clazz().with("Iterable<V>"));
 		Clazz abstractList = model.with(new Clazz().with("AbstractList<V>"));
 		Clazz simpleList = model.with(new Clazz().with("SimpleList<V>"));
@@ -51,18 +51,18 @@ public class WriteJsonGraph {
 		
 //		baseItem.withInterface(true);
 
-		model.with(Association.create(abstractArray, baseItem).withTyp(GraphEdgeTypes.IMPLEMENTS));
-		model.with(Association.create(abstractArray, iterable).withTyp(GraphEdgeTypes.IMPLEMENTS));
-		model.with(Association.create(abstractList, abstractArray).withTyp(GraphEdgeTypes.GENERALISATION));
+		model.with(Association.create(abstractArray, baseItem).with(AssociationTypes.IMPLEMENTS));
+		model.with(Association.create(abstractArray, iterable).with(AssociationTypes.IMPLEMENTS));
+		model.with(Association.create(abstractList, abstractArray).with(AssociationTypes.GENERALISATION));
 		
-		model.with(Association.create(simpleKeyValueList, abstractArray).withTyp(GraphEdgeTypes.GENERALISATION));
-		model.with(Association.create(simpleList, abstractList).withTyp(GraphEdgeTypes.GENERALISATION));
-		model.with(Association.create(simpleSet, abstractList).withTyp(GraphEdgeTypes.GENERALISATION));
+		model.with(Association.create(simpleKeyValueList, abstractArray).with(AssociationTypes.GENERALISATION));
+		model.with(Association.create(simpleList, abstractList).with(AssociationTypes.GENERALISATION));
+		model.with(Association.create(simpleSet, abstractList).with(AssociationTypes.GENERALISATION));
 		
 		
-		model.with(Association.create(simpleKeyValueList, map).withTyp(GraphEdgeTypes.IMPLEMENTS));
-		model.with(Association.create(simpleList, list).withTyp(GraphEdgeTypes.IMPLEMENTS));
-		model.with(Association.create(simpleSet, set).withTyp(GraphEdgeTypes.IMPLEMENTS));
+		model.with(Association.create(simpleKeyValueList, map).with(AssociationTypes.IMPLEMENTS));
+		model.with(Association.create(simpleList, list).with(AssociationTypes.IMPLEMENTS));
+		model.with(Association.create(simpleSet, set).with(AssociationTypes.IMPLEMENTS));
 		
 		
 		

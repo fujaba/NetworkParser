@@ -27,8 +27,9 @@ import java.util.Collections;
 import de.uniks.networkparser.gui.javafx.test.model.GroupAccount;
 import de.uniks.networkparser.gui.javafx.test.model.Item;
 import de.uniks.networkparser.gui.javafx.test.model.Person;
+import de.uniks.networkparser.list.SDMSet;
 
-public class GroupAccountSet extends SDMSetBase<GroupAccount>
+public class GroupAccountSet extends SDMSet<GroupAccount>
 {
 
 

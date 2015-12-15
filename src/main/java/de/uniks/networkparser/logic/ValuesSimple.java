@@ -40,6 +40,7 @@ public class ValuesSimple {
 
 	/**
 	 * @param value Set the new Value.
+	 * @return ValuesSimple Instance
 	 */
 	public ValuesSimple withValue(Object value) {
 		this.value = value;

@@ -1,5 +1,6 @@
 package de.uniks.networkparser.test;
 
+
 import org.junit.Test;
 
 import de.uniks.networkparser.graph.Annotation;
@@ -10,8 +11,6 @@ import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.DataTypeMap;
 import de.uniks.networkparser.graph.DataTypeSet;
-import de.uniks.networkparser.graph.Enumeration;
-import de.uniks.networkparser.graph.Interfaze;
 import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.graph.Modifier;
 import de.uniks.networkparser.graph.Parameter;
@@ -30,8 +29,6 @@ public class GenModel {
 		showCounting(DataType.class);
 		showCounting(DataTypeSet.class);
 		showCounting(DataTypeMap.class);
-		showCounting(Enumeration.class);
-		showCounting(Interfaze.class);
 		showCounting(Method.class);
 		showCounting(Modifier.class);
 		showCounting(Parameter.class);
@@ -47,7 +44,7 @@ public class GenModel {
 //		Attribute nameAttribute = uni.createAttribute("name", DataType.STRING);
 //		de.uniks.networkparser.graph.Method mainMethod = uni.createMethod("main");
 //		boolean printItems=true;
-//		System.out.println(getCounting(Method.class, true, true));
+//		System.out.println(getCounting(Cardinality.class, true, true));
 		
 //		System.out.println("Clazz: "+getCount(uni, true, printItems));
 //		System.out.println("Attribute: "+getCount(nameAttribute, true, printItems));
@@ -58,7 +55,7 @@ public class GenModel {
 	}
 	private String getSignature(java.lang.reflect.Method method) {
 		StringBuilder sb=new StringBuilder();
-		sb.append(method.getName()+"(");
+		sb.append(method.getDeclaringClass()+" "+method.getName()+"(");
 		java.lang.reflect.Parameter[] parameters = method.getParameters();
 		for(int i = 0;i<parameters.length;i++) {
 			sb.append(parameters[i].getType());
@@ -81,7 +78,7 @@ public class GenModel {
 		SortedSet<String> counts=new SortedSet<String>();
 		for(int i=0;i<methods.length;i++) {
 			String signature = getSignature(methods[i]);
-			if(methods[i].getDeclaringClass() == Object.class) {
+			if(methods[i].getDeclaringClass() == Object.class || methods[i].getDeclaringClass() == Enum.class) {
 				continue;
 			}
 			if (java.lang.reflect.Modifier.isStatic(methods[i].getModifiers())) {

@@ -1,7 +1,8 @@
 package de.uniks.networkparser.gui.javafx.test.model.util;
 
+import de.uniks.networkparser.list.SDMSet;
 
-public class doubleList extends SDMSetBase<Double>
+public class doubleList extends SDMSet<Double>
 {
 
    public double sum()

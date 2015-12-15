@@ -22,26 +22,30 @@ package de.uniks.networkparser.graph;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.list.SimpleKeyValueList;
-import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.list.StringList;
 
 public class GraphLiteral extends GraphMember{
-	private SimpleKeyValueList<String, SimpleList<Object>> values=new SimpleKeyValueList<String, SimpleList<Object>>();
+	private SimpleKeyValueList<String, StringList> values=new SimpleKeyValueList<String, StringList>();
 	
 	@Override
 	public GraphLiteral with(String name) {
 		super.with(name);
 		return this;
 	}
-	public GraphLiteral withKeyValue(String key, SimpleList<Object> value) {
-		this.values.put(key, value);
-		return this;
-	}
 	public GraphLiteral withKeyValue(String key, Object value) {
-		this.values.put(key, new SimpleList<Object>().with(value));
+		if(value instanceof StringList) {
+			this.values.put(key, (StringList) value);
+			return this;
+		}
+		if(value instanceof String) {
+			StringList list =new StringList();
+			list.add(""+value);
+			this.values.add(key, list);
+		}
 		return this;
 	}
 	
-	public SimpleKeyValueList<String, SimpleList<Object>> getValues() {
+	public SimpleKeyValueList<String, StringList> getValues() {
 		return values;
 	}
 }

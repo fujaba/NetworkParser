@@ -52,7 +52,6 @@ public class Filter {
 	/**
 	 * Filter for encoding ID of Element
 	 * 
-	 * @param map the Map
 	 * @param entity Entity for Show Id
 	 * @param className ClassName
 	 * @return Boolean if encoding ID
@@ -79,7 +78,7 @@ public class Filter {
 	}
 	/**
 	 * Serialization the Full object inclusive null value
-	 * @param boolean for serialization the full object
+	 * @param value for serialization the full object
 	 * @return self instance 
 	 */
 	public Filter withFull(boolean value) {

@@ -24,8 +24,9 @@ package de.uniks.networkparser.gui.javafx.test.model.util;
 import de.uniks.networkparser.gui.javafx.test.model.GroupAccount;
 import de.uniks.networkparser.gui.javafx.test.model.Item;
 import de.uniks.networkparser.gui.javafx.test.model.Person;
+import de.uniks.networkparser.list.SDMSet;
 
-public class ItemSet extends SDMSetBase<Item>
+public class ItemSet extends SDMSet<Item>
 {
 	public String getEntryType()
    {

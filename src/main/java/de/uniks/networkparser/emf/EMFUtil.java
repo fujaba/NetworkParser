@@ -1,5 +1,6 @@
 package de.uniks.networkparser.emf;
 
+import de.uniks.networkparser.graph.Association;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -24,9 +25,8 @@ package de.uniks.networkparser.emf;
 import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.graph.Clazz.ClazzTyp;
 import de.uniks.networkparser.graph.DataType;
-import de.uniks.networkparser.graph.Enumeration;
-import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphLiteral;
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -131,7 +131,7 @@ public class EMFUtil {
 					superClazzes.add(eClassifier);
 				}
 			} else if (eClassifier.getString(EMFIdMap.XSI_TYPE).equals(EEnum)) {
-				Enumeration graphEnum = new Enumeration();
+				Clazz graphEnum = new Clazz().with(ClazzTyp.ENUMERATION);
 				graphEnum.with(eClassifier.getString(EMFIdMap.NAME));
 				for(XMLEntity child : eClassifier.getChildren()) {
 					GraphLiteral literal = new GraphLiteral().with(child.getString(EMFIdMap.NAME));

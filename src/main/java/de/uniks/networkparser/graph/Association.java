@@ -8,7 +8,7 @@ public class Association extends GraphMember {
 	// The Complete Edge Info
 //	private GraphLabel info;
 	private Association other;
-	private GraphEdgeTypes typ = GraphEdgeTypes.ASSOCIATION;
+	private AssociationTypes typ = AssociationTypes.ASSOCIATION;
 
 	public Association with(Clazz node, Cardinality cardinality, String property) {
 		with(node);
@@ -121,21 +121,21 @@ public class Association extends GraphMember {
 		return edge;
 	}
 
-	public GraphEdgeTypes getTyp() {
+	public AssociationTypes getTyp() {
 		return typ;
 	}
 	
 	String getSeperator() {
-		if (getTyp() == GraphEdgeTypes.CHILD) {
+		if (getTyp() == AssociationTypes.CHILD) {
 			return "-|>";
 		}
-		if (getOther().getTyp() == GraphEdgeTypes.EDGE) {
+		if (getOther().getTyp() == AssociationTypes.EDGE) {
 			return "->";
 		}
 		return "-";
 	}
 
-	public Association withTyp(GraphEdgeTypes typ) {
+	public Association with(AssociationTypes typ) {
 		this.typ = typ;
 		return this;
 	}

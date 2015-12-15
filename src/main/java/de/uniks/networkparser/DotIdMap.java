@@ -4,7 +4,7 @@ import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.Association;
-import de.uniks.networkparser.graph.GraphEdgeTypes;
+import de.uniks.networkparser.graph.AssociationTypes;
 import de.uniks.networkparser.graph.GraphEntity;
 import de.uniks.networkparser.graph.GraphIdMap;
 import de.uniks.networkparser.graph.GraphList;
@@ -95,7 +95,7 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 				if(c == '-') {
 					// Bidiassoc
 				} else if(c == '>') {
-					edge.withTyp(GraphEdgeTypes.UNDIRECTIONAL);
+					edge.with(AssociationTypes.UNDIRECTIONAL);
 				}
 				value.next();
 				
@@ -264,7 +264,7 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 //		// now generate edges from edgeMap
 		for(Association edge : root.getEdges()) {
 			Association otherEdge = edge.getOther();
-			if(otherEdge.getTyp()  != GraphEdgeTypes.EDGE) {
+			if(otherEdge.getTyp()  != AssociationTypes.EDGE) {
 				// It is bidiAssoc
 				sb.append(edge.getClazz().getName(false) + " -- " + otherEdge.getClazz().getName(false));
 				sb.append("[headlabel = \""+edge.getName()+"\" taillabel = \""+otherEdge.getName()+"\"];"+BaseItem.CRLF);
