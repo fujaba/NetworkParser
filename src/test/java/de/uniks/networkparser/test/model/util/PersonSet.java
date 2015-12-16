@@ -24,6 +24,7 @@ package de.uniks.networkparser.test.model.util;
 import java.util.Collection;
 import java.util.Collections;
 
+import de.uniks.networkparser.list.StringList;
 import de.uniks.networkparser.test.model.GroupAccount;
 import de.uniks.networkparser.test.model.Item;
 import de.uniks.networkparser.test.model.Person;

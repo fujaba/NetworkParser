@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE project>
 <project name="gource" default="make-film" basedir=".">
 	<property name="title" value="NetworkParser"/> 
-	<target name="unpack">
+	<target name="gource" description="Visualization Git-Changes with Gource">
 		<mkdir dir="build" />
 		<mkdir dir="build/avi" />
 		<unzip src="lib/gource-0.42.win32.zip" dest="build/avi" />
-	</target>
-	<target name="make-ppm" depends="unpack">
 		<echo>*** created a huge PPM file containing screenshots</echo>
 		<echo>${basedir}</echo>
 		<exec executable="${basedir}/build/avi/gource.exe">
 			<arg line="-o build/${title}.ppm --title '${title}' -s 1 -a 1 -c 4"/>
 		</exec>
 	</target>
-	<target name="make-film" depends="make-ppm">
+	<target name="makefilm" depends="gource" description="Make a AVI with Visualization of Git-Changes">
 		<echo>*** now going to create a libx264 video file</echo>
 		<exec executable="${basedir}/build/avi/ffmpeg.exe">
 			<arg line="-y -r 60 -f image2pipe -vcodec ppm -i build/${title}.ppm -vcodec libx264 -pix_fmt yuv420p -preset ultrafast -crf 1 -threads 0 -bf 0 build/${title}.x264.avi"/>

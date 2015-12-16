@@ -388,4 +388,8 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 		super.withAll(values);
 		return this;
 	}
+	
+	public static JsonObject create(String value) {
+		return new JsonObject().withValue(value);
+	}
 }

@@ -101,6 +101,24 @@ public class Grammar {
 		return json;
 	}
 
+	/**
+	 * Get a new Instance of Element from the Creator
+	 * @param creator The EntityCreator
+	 * @return The new Instance
+	 */
+	public Object getNewPrototyp(SendableEntityCreator creator) {
+		return creator.getSendableInstance(true);
+	}
+	
+	/**
+	 * Get a new Instance of Element from the Creator
+	 * @param creator The EntityCreator
+	 * @return The new Instance
+	 */
+	public Object getNewEntity(SendableEntityCreator creator, String className) {
+		return creator.getSendableInstance(false);
+	}
+	
 	public boolean hasReadValue(JsonObject json, String property) {
 		return json.has(property);
 	}

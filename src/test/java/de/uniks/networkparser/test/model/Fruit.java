@@ -22,7 +22,7 @@
 package de.uniks.networkparser.test.model;
 
 
-public class Fruit 
+public abstract class Fruit 
 {
 
    //==========================================================================

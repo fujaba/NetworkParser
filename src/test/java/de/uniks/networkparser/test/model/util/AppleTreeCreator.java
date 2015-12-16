@@ -21,12 +21,11 @@
    
 package de.uniks.networkparser.test.model.util;
 
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.test.model.Apple;
 import de.uniks.networkparser.test.model.AppleTree;
 
-public class AppleTreeCreator implements SendableEntityCreator
+public class AppleTreeCreator extends TreeCreator 
 {
    private final String[] properties = new String[]
    {

@@ -42,7 +42,10 @@ public class FruitCreator implements SendableEntityCreator
    @Override
    public Object getSendableInstance(boolean reference)
    {
-      return new Fruit();
+	   if(reference) {
+		   return Fruit.class;   
+	   }
+	   return new GenericFruit();
    }
    
    @Override

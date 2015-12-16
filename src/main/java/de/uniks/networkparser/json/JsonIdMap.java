@@ -177,7 +177,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 	protected Object parseProperty(SendableEntityCreator prototyp,
 			Object entity, Filter filter, String className, String property,
 			JsonArray jsonArray, int deep) {
-		Object referenceObject = prototyp.getSendableInstance(true);
+		Object referenceObject = grammar.getNewPrototyp(prototyp);
 
 		Object value = prototyp.getValue(entity, property);
 		if (value != null) {
@@ -413,7 +413,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 				}
 			}
 			if (result == null) {
-				result = typeInfo.getSendableInstance(false);
+				result = grammar.getNewEntity(typeInfo, grammar.getReadValue(jsonObject, CLASS));
 				readMessages(null, null, result, jsonObject, NEW);
 			} else {
 				readMessages(null, null, result, jsonObject, UPDATE);
@@ -522,7 +522,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 					// // got a new kid, create it
 					JsonObject child = (JsonObject) value;
 					// CHECK LIST AND MAPS
-					Object ref_Obj = creator.getSendableInstance(true);
+					Object ref_Obj = grammar.getNewPrototyp(creator);
 					Object refValue = creator.getValue(ref_Obj, property);
 					if (refValue instanceof Map<?, ?>) {
 						JsonObject json = (JsonObject) value;
@@ -531,24 +531,11 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 							String key = i.next();
 							Object entryValue = json.get(key);
 							if (entryValue instanceof JsonObject) {
-								creator.setValue(
-										target,
-										property,
-										new ObjectMapEntry()
-												.with(key,
-														decode((JsonObject) entryValue)),
-										NEW);
+								creator.setValue(target, property, new ObjectMapEntry().with(key, decode((JsonObject) entryValue)), NEW);
 							} else if (entryValue instanceof JsonArray) {
-								creator.setValue(
-										target,
-										property,
-										new ObjectMapEntry().with(key,
-												decode((JsonArray) entryValue)),
-										NEW);
+								creator.setValue(target, property, new ObjectMapEntry().with(key, decode((JsonArray) entryValue)), NEW);
 							} else {
-								creator.setValue(target, property,
-										new ObjectMapEntry().with(key,
-												entryValue), NEW);
+								creator.setValue(target, property, new ObjectMapEntry().with(key, entryValue), NEW);
 							}
 						}
 					} else {

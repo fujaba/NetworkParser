@@ -41,9 +41,7 @@ import de.uniks.networkparser.list.SimpleList;
  * The Class IdMap.
  */
 
-public abstract class IdMap extends AbstractMap implements
-
-		Map<String, Object> {
+public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	/** The Constant ID. */
 	public static final String ID = "id";
 

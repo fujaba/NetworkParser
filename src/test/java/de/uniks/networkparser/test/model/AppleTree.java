@@ -23,7 +23,7 @@ package de.uniks.networkparser.test.model;
 
 import java.util.LinkedHashSet;
 
-public class AppleTree
+public class AppleTree extends Tree
 {
 
    //==========================================================================
