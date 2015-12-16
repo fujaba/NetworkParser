@@ -69,6 +69,9 @@ public class Grammar {
 	public SendableEntityCreator getReadCreator(JsonObject jsonObject,
 			IdMap map) {
 		Object className = jsonObject.get(JsonIdMap.CLASS);
+		if(className == null) {
+			return null;
+		}
 		SendableEntityCreator creator = map.getCreator((String) className, true);
 		if(creator != null) {
 			return creator;
