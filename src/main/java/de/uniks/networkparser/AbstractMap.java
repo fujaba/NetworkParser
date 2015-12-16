@@ -86,11 +86,17 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 		if(modelItem == null && !searchForSuperCreator) {
 			return null;
 		}
+		Class<?> search;
+		if(modelItem instanceof Class<?>) {
+			search = (Class<?>) modelItem; 
+		}else {
+			search = modelItem.getClass();
+		}
 		for(int i=0;i<this.creators.size();i++) {
 			SendableEntityCreator item = this.creators.getValueByIndex(i);
 			Object prototyp = item.getSendableInstance(true);
 			if(prototyp instanceof Class<?>) {
-				if(((Class<?>)prototyp).isAssignableFrom(modelItem.getClass())){
+				if(((Class<?>)prototyp).isAssignableFrom(search)){
 					return item;
 				}
 			}
