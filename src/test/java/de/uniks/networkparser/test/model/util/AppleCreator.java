@@ -30,10 +30,10 @@ public class AppleCreator extends FruitCreator
 {
    private final String[] properties = new String[]
    {
-      Apple.PROPERTY_VALUE,
+      Apple.PROPERTY_PASSWORD,
       Fruit.PROPERTY_X,
       Fruit.PROPERTY_Y,
-      Apple.PROPERTY_OWNER,
+      Apple.PROPERTY_OWNER
    };
    
    @Override
@@ -59,9 +59,9 @@ public class AppleCreator extends FruitCreator
          attribute = attrName.substring(0, pos);
       }
 
-      if (Apple.PROPERTY_VALUE.equalsIgnoreCase(attribute))
+      if (Apple.PROPERTY_PASSWORD.equalsIgnoreCase(attribute))
       {
-         return ((Apple) target).getValue();
+         return ((Apple) target).getPassword();
       }
 
       if (Fruit.PROPERTY_X.equalsIgnoreCase(attribute))
@@ -90,9 +90,9 @@ public class AppleCreator extends FruitCreator
          attrName = attrName + type;
       }
 
-      if (Apple.PROPERTY_VALUE.equalsIgnoreCase(attrName))
+      if (Apple.PROPERTY_PASSWORD.equalsIgnoreCase(attrName))
       {
-         ((Apple) target).setValue(Integer.parseInt(value.toString()));
+         ((Apple) target).setPassword(value.toString());
          return true;
       }
 

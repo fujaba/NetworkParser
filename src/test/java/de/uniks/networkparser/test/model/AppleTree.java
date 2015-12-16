@@ -21,10 +21,34 @@
    
 package de.uniks.networkparser.test.model;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.LinkedHashSet;
 
-public class AppleTree extends Tree
+import de.uniks.networkparser.interfaces.SendableEntity;
+
+public class AppleTree extends Tree implements SendableEntity
 {
+	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
+   public PropertyChangeSupport getPropertyChangeSupport()
+   {
+      return listeners;
+   }
+   public boolean addPropertyChangeListener(PropertyChangeListener listener) 
+   {
+      getPropertyChangeSupport().addPropertyChangeListener(listener);
+      return true;
+   }
+   @Override
+   public boolean addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+      getPropertyChangeSupport().addPropertyChangeListener(propertyName, listener);
+      return true;
+   }
+   @Override
+   public boolean removePropertyChangeListener(PropertyChangeListener listener) {
+	   getPropertyChangeSupport().removePropertyChangeListener(listener);
+	   return true;
+   } 
 
    //==========================================================================
    public void removeYou()
@@ -70,6 +94,7 @@ public class AppleTree extends Tree
          
          if (changed)
          {
+        	 getPropertyChangeSupport().firePropertyChange(PROPERTY_HAS, null, value);
             value.withOwner(this);
          }
       }
@@ -130,5 +155,5 @@ public class AppleTree extends Tree
       Apple value = new Apple();
       withHas(value);
       return value;
-   } 
+   }
 }

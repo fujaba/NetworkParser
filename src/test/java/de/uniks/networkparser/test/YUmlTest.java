@@ -33,10 +33,10 @@ public class YUmlTest {
 		chatMessage.setDate(date);
 
 		JsonIdMap jsonMap = new JsonIdMap();
-		jsonMap.withCreator(new ChatMessageCreator());
+		jsonMap.with(new ChatMessageCreator());
 		GraphIdMap yumlParser = new GraphIdMap();
 		yumlParser.withKeyValue(jsonMap.getKeyValue())
-			.withCreator(jsonMap);
+			.with(jsonMap);
 
 		String parseObject = yumlParser.parseObject(chatMessage);
 		assertEquals(
@@ -45,8 +45,8 @@ public class YUmlTest {
 				url + parseObject);
 
 		jsonMap = new JsonIdMap();
-		jsonMap.withCreator(new UniversityCreator());
-		jsonMap.withCreator(new RoomCreator());
+		jsonMap.with(new UniversityCreator());
+		jsonMap.with(new RoomCreator());
 		University uni = new University();
 		uni.setName("Wilhelmshoehe Allee");
 		Room room = new Room();

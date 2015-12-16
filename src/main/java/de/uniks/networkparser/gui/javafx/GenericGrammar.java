@@ -1,5 +1,8 @@
 package de.uniks.networkparser.gui.javafx;
 
+import java.util.Iterator;
+
+import de.uniks.networkparser.IdMap;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -25,6 +28,28 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.Grammar;
 
 public class GenericGrammar extends Grammar {
+	@Override
+	public SendableEntityCreator getSuperCreator(IdMap map, boolean searchForSuperCreator, Object modelItem) {
+		if(modelItem == null && !searchForSuperCreator) {
+			return null;
+		}
+		Class<?> search;
+		if(modelItem instanceof Class<?>) {
+			search = (Class<?>) modelItem; 
+		}else {
+			search = modelItem.getClass();
+		}
+		for(Iterator<SendableEntityCreator> i =map.iterator();i.hasNext();){
+			SendableEntityCreator item = i.next();
+			Object prototyp = item.getSendableInstance(true);
+			if(prototyp instanceof Class<?>) {
+				if(((Class<?>)prototyp).isAssignableFrom(search)){
+					return item;
+				}
+			}
+		}
+		return null;
+	}
 	@Override
 	public Object getNewEntity(SendableEntityCreator creator, String className) {
 		Object entity = creator.getSendableInstance(false);

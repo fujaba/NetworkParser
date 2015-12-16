@@ -67,7 +67,7 @@ public class Grammar {
 	 * @return the Creator for this JsonObject
 	 */
 	public SendableEntityCreator getReadCreator(JsonObject jsonObject,
-			IdMap map) {
+			IdMap map, boolean searchForSuperCreator) {
 		Object className = jsonObject.get(JsonIdMap.CLASS);
 		if(className == null) {
 			return null;
@@ -78,7 +78,7 @@ public class Grammar {
 		}
 		try {
 			Class<?> clazzName = Class.forName((String) className);
-			return map.getSuperCreator(clazzName);
+			return getSuperCreator(map, searchForSuperCreator, clazzName);
 		} catch (ClassNotFoundException e) {
 		}
 		return null;
@@ -95,12 +95,12 @@ public class Grammar {
 	 * @return the Creator for this JsonObject
 	 */
 	public SendableEntityCreator getWriteCreator(Object modelItem,
-			String className, IdMap map) {
+			String className, IdMap map, boolean searchForSuperCreator) {
 		SendableEntityCreator creator = map.getCreator(className, true);
 		if(creator != null) {
 			return creator;
 		}
-		return map.getSuperCreator(modelItem);
+		return getSuperCreator(map, searchForSuperCreator, modelItem);
 	}
 
 	public JsonObject getWriteObject(IdMap map,
@@ -149,6 +149,9 @@ public class Grammar {
 	}
 
 	public String getWriteId(Object obj, IdMapCounter counter) {
+		return null;
+	}
+	public SendableEntityCreator getSuperCreator(IdMap map, boolean searchForSuperCreator, Object modelItem) {
 		return null;
 	}
 }

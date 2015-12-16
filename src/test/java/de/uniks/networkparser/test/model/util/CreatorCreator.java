@@ -8,9 +8,9 @@ class CreatorCreator{
    {
       JsonIdMap jsonIdMap = (JsonIdMap) new JsonIdMap().withSessionId(sessionID);
       
-      jsonIdMap.withCreator(new de.uniks.networkparser.test.model.util.GroupAccountCreator());
-      jsonIdMap.withCreator(new de.uniks.networkparser.test.model.util.PersonCreator());
-      jsonIdMap.withCreator(new de.uniks.networkparser.test.model.util.ItemCreator());
+      jsonIdMap.with(new de.uniks.networkparser.test.model.util.GroupAccountCreator());
+      jsonIdMap.with(new de.uniks.networkparser.test.model.util.PersonCreator());
+      jsonIdMap.with(new de.uniks.networkparser.test.model.util.ItemCreator());
 
       return jsonIdMap;
    }

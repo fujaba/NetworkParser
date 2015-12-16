@@ -15,7 +15,7 @@ public class FormEditorGUI extends Application {
 	        primaryStage.setScene(new Scene(root));
 
 	        JsonIdMap map = new  JsonIdMap();
-	        map.withCreator(new PersonCreator());
+	        map.with(new PersonCreator());
 	        PersonGUI albert= new PersonGUI().withName("Albert");
 	        
 	        PropertyComposite box = new PropertyComposite();

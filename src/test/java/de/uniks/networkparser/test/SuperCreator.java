@@ -18,22 +18,24 @@ public class SuperCreator {
 	@Test
 	public void testGenicApple() {
 		JsonIdMap map=new JsonIdMap();
-		map.withCreator(new FruitCreator());
-		
+		map.with(new FruitCreator());
+		map.with(new GenericGrammar());
 		Apple apple = new Apple();
 		apple.withX(23).withY(42);
 		
 		String data = map.encode(apple).toString(2);
 		
 		JsonIdMap decodeMap=new JsonIdMap();
-		decodeMap.withCreator(new FruitCreator());
+		decodeMap.with(new FruitCreator());
+		decodeMap.with(new GenericGrammar());
 		Fruit newData = (Fruit) decodeMap.decode(data);
 		
 		Assert.assertNotNull(newData);
 		Assert.assertTrue(newData instanceof GenericFruit);
 
 		JsonIdMap decodeAppleMap=new JsonIdMap();
-		decodeAppleMap.withCreator(new FruitCreator());
+		decodeAppleMap.with(new FruitCreator());
+		decodeAppleMap.with(new GenericGrammar());
 		Fruit newApple = (Fruit) decodeAppleMap.decode(new Apple(), JsonObject.create(data));
 		Assert.assertNotNull(newApple);
 		Assert.assertTrue(newApple instanceof Apple);
@@ -41,7 +43,8 @@ public class SuperCreator {
 	@Test
 	public void testGenicAppleTree() {
 		JsonIdMap map=new JsonIdMap();
-		map.withCreator(new TreeCreator());
+		map.with(new TreeCreator());
+		map.with(new GenericGrammar());
 		
 		AppleTree appletree = new AppleTree();
 		appletree.setName("Grace");
@@ -49,8 +52,8 @@ public class SuperCreator {
 		String data = map.encode(appletree).toString(2);
 		
 		JsonIdMap decodeMap=new JsonIdMap();
-		decodeMap.withGrammar(new GenericGrammar());
-		decodeMap.withCreator(new TreeCreator());
+		decodeMap.with(new GenericGrammar());
+		decodeMap.with(new TreeCreator());
 		Tree newData = (Tree) decodeMap.decode(data);
 		Assert.assertNotNull(newData);
 		Assert.assertTrue(newData instanceof AppleTree);

@@ -27,8 +27,8 @@ public class ExampleController implements Initializable{
 	        tableList.add(new PersonGUI("Michael",   "Brown",    "michael.brown@example.com", 122));
 	        
 	        JsonIdMap map = new  JsonIdMap();
-	        map.withCreator(new TableList());
-	        map.withCreator(new PersonGUICreator());
+	        map.with(new TableList());
+	        map.with(new PersonGUICreator());
 	        TableComponent tableView = (TableComponent) table.getChildren().get(0);
 //	        SearchTableComponent tableView = ((SearchTableController)table).getTable();
 	        tableView.withMap(map).withList(tableList);

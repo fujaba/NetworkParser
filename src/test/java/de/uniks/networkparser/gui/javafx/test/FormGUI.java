@@ -12,7 +12,7 @@ public class FormGUI extends SimpleShell {
 	@Override
 	protected Pane createContents(FXStageController value, Parameters args) {
         JsonIdMap map = new  JsonIdMap();
-        map.withCreator(new PersonCreator());
+        map.with(new PersonCreator());
         PersonGUI albert= new PersonGUI().withName("Albert");
         
         ModelForm form = new ModelForm().withDataBinding(map, albert, true);

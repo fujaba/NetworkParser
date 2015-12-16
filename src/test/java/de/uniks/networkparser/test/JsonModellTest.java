@@ -33,8 +33,8 @@ public class JsonModellTest implements UpdateListener {
 		
 		
 		JsonIdMap map= new JsonIdMap();
-		map.withCreator(new PersonCreator());
-		map.withCreator(new GroupAccountCreator());
+		map.with(new PersonCreator());
+		map.with(new GroupAccountCreator());
 		Assert.assertEquals(211, map.toJsonArray(account.getPersons(), Filter.regard(InstanceOf.value(Person.class, Person.PROPERTY_PARENT))).toString(2).length());
 	}
 	
@@ -42,9 +42,8 @@ public class JsonModellTest implements UpdateListener {
 	@Test
 	public void testModell(){
 		JsonIdMap map= new JsonIdMap();
-		map.withUpdateListenerRead(this);
-		map.withUpdateListenerSend(this);
-		map.withCreator(new SortedMsgCreator());
+		map.with(this);
+		map.with(new SortedMsgCreator());
 		SortedMsg first= new SortedMsg();
 		first.setNumber(1);
 		
@@ -69,9 +68,8 @@ public class JsonModellTest implements UpdateListener {
 		new String(number.toByteArray());
 		
 		this.secondMap= new JsonIdMap();
-		secondMap.withUpdateListenerRead(this);
-		secondMap.withUpdateListenerSend(this);
-		secondMap.withCreator(new SortedMsgCreator());
+		secondMap.with(this);
+		secondMap.with(new SortedMsgCreator());
 
 		JsonObject jsonObject=map.toJsonObject(first);
 		Assert.assertEquals(385, jsonObject.toString(2).length());

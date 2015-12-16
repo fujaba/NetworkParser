@@ -74,8 +74,8 @@ public class TestApp extends Application {
 
         
         JsonIdMap map = new  JsonIdMap();
-        map.withCreator(tableList);
-        map.withCreator(new PersonGUICreator());
+        map.with(tableList);
+        map.with(new PersonGUICreator());
         
         tableView.withMap(map).withList(tableList);
         

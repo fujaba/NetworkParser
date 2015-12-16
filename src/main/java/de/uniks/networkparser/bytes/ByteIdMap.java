@@ -170,14 +170,14 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 				}
 			}
 		}
-		super.withCreator(createrClass);
+		super.with(createrClass);
 		return true;
 	}
 
 	@Override
-	public AbstractMap withCreator(String className,
+	public AbstractMap with(String className,
 			SendableEntityCreator createrClass) {
-		super.withCreator(className, createrClass);
+		super.with(className, createrClass);
 
 		if (createrClass instanceof SendableEntityCreatorTag) {
 			SendableEntityCreatorTag byteCreator = (SendableEntityCreatorTag) createrClass;
@@ -281,7 +281,7 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 			addClazzTyp(msg, reference.getClass().getName(), filter);
 		}
 
-		withObjects(filter, entity);
+		with(filter, entity);
 		String[] properties = creator.getProperties();
 		if (properties != null) {
 			Object referenceObj = creator.getSendableInstance(true);

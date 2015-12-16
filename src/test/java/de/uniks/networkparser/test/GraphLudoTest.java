@@ -55,12 +55,12 @@ public class GraphLudoTest
    public void testLudoStoryboard()
    {
       JsonIdMap jsonIdMap = new JsonIdMap();
-      jsonIdMap.withCreator(new DateCreator())
-      	.withCreator(new DiceCreator())
-      	.withCreator(new FieldCreator())
-      	.withCreator(new LudoCreator())
-      	.withCreator(new PawnCreator())
-      	.withCreator(new PlayerCreator());
+      jsonIdMap.with(new DateCreator())
+      	.with(new DiceCreator())
+      	.with(new FieldCreator())
+      	.with(new LudoCreator())
+      	.with(new PawnCreator())
+      	.with(new PlayerCreator());
       
       // create a simple ludo storyboard
       
@@ -112,7 +112,7 @@ public class GraphLudoTest
 	   root.setChild(new SortedMsg().withMsg("Child"));
 	   
 	   JsonIdMap map = new JsonIdMap();
-	   map.withCreator(new SortedMsgCreator());
+	   map.with(new SortedMsgCreator());
 	   
 	   JsonArray jsonArray = map.toJsonArray(root, new Filter().withFull(true));
 	   JsonObject item = jsonArray.get(map.getKey(root));

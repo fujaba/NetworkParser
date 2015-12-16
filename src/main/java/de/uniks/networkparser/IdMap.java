@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+
 import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.IdMapCounter;
@@ -73,7 +74,7 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	private IdMapCounter counter;
 
 	/** The update listener. */
-	protected UpdateListenerJson updateListener;
+	protected UpdateListenerJson updateListenerJson;
 
 	/** The updatelistener for Notification changes. */
 	protected PropertyChangeListener updatePropertylistener;
@@ -85,7 +86,7 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	protected NetworkParserLog logger = new NetworkParserLog();
 
 	/** The updatelistener. */
-	private UpdateListener idListener;
+	protected UpdateListener updateListener;
 
 	/**
 	 * @return the CurrentLogger
@@ -101,7 +102,7 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	 *            the new Logger
 	 * @return Itself
 	 */
-	public IdMap withLogger(NetworkParserLog logger) {
+	public IdMap with(NetworkParserLog logger) {
 		this.logger = logger;
 		return this;
 	}
@@ -111,7 +112,7 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	 */
 	public IdMap() {
 		super();
-		this.withCreator(new TextItems());
+		this.with(new TextItems());
 	}
 
 	/**
@@ -134,7 +135,7 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	 *            the new counter
 	 * @return Itself
 	 */
-	public IdMap withCounter(IdMapCounter counter) {
+	public IdMap with(IdMapCounter counter) {
 		this.counter = counter;
 		return this;
 	}
@@ -234,12 +235,16 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	@Override
 	public Object put(String jsonId, Object object) {
 		this.keyValue.with(jsonId, object);
-		if (this.idListener != null) {
-			this.idListener.update(NEW, null, this, ITEMS, null, object);
-//FOR THE FIRST ONE ONLY NULL FOR ID			this.idListener.update(NEW, jsonId, this, ITEMS, null, object);
-		}
+//		if (this.updateListener != null) {
+//			this.updateListener.update(NEW, new B(), this, ITEMS, null, object);
+//		}
 		addListener(object);
 		return object;
+	}
+	
+	public IdMap with(UpdateListener listener) {
+		this.updateListener = listener;
+		return this;
 	}
 
 	/**
@@ -256,14 +261,14 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	}
 
 	public UpdateListenerJson getUpdateListener() {
-		if (this.updateListener == null) {
-			this.updateListener = new UpdateListenerJson(this);
+		if (this.updateListenerJson == null) {
+			this.updateListenerJson = new UpdateListenerJson(this);
 		}
-		return this.updateListener;
+		return this.updateListenerJson;
 	}
 	
-	public IdMap withUpdateListener(UpdateListenerJson updateListener) {
-		this.updateListener = updateListener;
+	public IdMap with(UpdateListenerJson updateListener) {
+		this.updateListenerJson = updateListener;
 		return this;
 	}
 
@@ -387,9 +392,9 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	}
 
 	@Override
-	public AbstractMap withCreator(String className,
+	public AbstractMap with(String className,
 			SendableEntityCreator creator) {
-		return super.withCreator(className, creator);
+		return super.with(className, creator);
 	}
 
 	/**
@@ -399,10 +404,10 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	 *            the root
 	 */
 	public void garbageCollection(Object root) {
-		if (this.updateListener == null) {
-			this.updateListener = new UpdateListenerJson(this);
+		if (this.updateListenerJson == null) {
+			this.updateListenerJson = new UpdateListenerJson(this);
 		}
-		this.updateListener.garbageCollection(root);
+		this.updateListenerJson.garbageCollection(root);
 	}
 
 	public Object startUpdateModell(String clazz) {
@@ -531,25 +536,13 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 		return keyValue.values();
 	}
 
-	public IdMap withUpdateListener(PropertyChangeListener listener) {
+	public IdMap with(PropertyChangeListener listener) {
 		this.updatePropertylistener = listener;
 		return this;
 	}
 
-	public IdMap withFilter(Filter filter) {
+	public IdMap with(Filter filter) {
 		this.filter = filter;
-		return this;
-	}
-
-	/**
-	 * Sets the update ID listener.
-	 *
-	 * @param listener
-	 *            the new update msg listener
-	 * @return IdMap
-	 */
-	public IdMap withIdListener(UpdateListener listener) {
-		this.idListener = listener;
 		return this;
 	}
 	
@@ -589,7 +582,7 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	protected boolean hasObjects(Filter filter, Object element) {
 		return filter.hasObjects(element);
 	}
-	protected void withObjects(Filter filter, Object... visitedObject) {
+	protected void with(Filter filter, Object... visitedObject) {
 		filter.withObjects(visitedObject);
 	}
 	protected int getIndexVisitedObjects(Filter filter, Object element) {

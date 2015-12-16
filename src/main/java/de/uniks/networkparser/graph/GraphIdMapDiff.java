@@ -38,7 +38,7 @@ public class GraphIdMapDiff extends GraphIdMap{
 	}
 
 	public GraphIdMapDiff(IdMap map) {
-		withCreator(map);	
+		with(map);	
 	}
 	
 	protected void initItem(GraphMember item) {

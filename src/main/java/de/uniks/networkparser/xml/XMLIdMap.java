@@ -76,14 +76,14 @@ public class XMLIdMap extends XMLSimpleIdMap {
 		} else {
 			return false;
 		}
-		super.withCreator(createrClass);
+		super.with(createrClass);
 		return true;
 	}
 
 	@Override
-	public AbstractMap withCreator(String className,
+	public AbstractMap with(String className,
 			SendableEntityCreator createrClass) {
-		super.withCreator(className, createrClass);
+		super.with(className, createrClass);
 
 		if (createrClass instanceof SendableEntityCreatorTag) {
 			SendableEntityCreatorTag xmlCreator = (SendableEntityCreatorTag) createrClass;
@@ -144,7 +144,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 		if (filter.isId(entity, entity.getClass().getName())) {
 			xmlEntity.put(ID, getId(entity));
 		}
-		withObjects(filter, entity);
+		with(filter, entity);
 
 		String[] properties = createrProtoTyp.getProperties();
 		if (properties != null) {

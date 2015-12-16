@@ -38,15 +38,15 @@ public class ByteAppleTest {
 	public void testSerialization() {
 		AppleTree appleTree = new AppleTree();
 
-		appleTree.withHas(new Apple(0, 123.32f, 239f));
-		appleTree.withHas(new Apple(1, 5644f, 564f));
-		appleTree.withHas(new Apple(2, 1680f, 50f));
-		appleTree.withHas(new Apple(3, 54f, 654f));
-		appleTree.withHas(new Apple(4, 654f, 333f));
+		appleTree.withHas(new Apple("0", 123.32f, 239f));
+		appleTree.withHas(new Apple("1", 5644f, 564f));
+		appleTree.withHas(new Apple("2", 1680f, 50f));
+		appleTree.withHas(new Apple("3", 54f, 654f));
+		appleTree.withHas(new Apple("4", 654f, 333f));
 
 		ByteIdMap map = new ByteIdMap();
-		map.withCreator(new AppleTreeCreator());
-		map.withCreator(new AppleCreator());
+		map.with(new AppleTreeCreator());
+		map.with(new AppleCreator());
 		ByteItem item = map.encode(appleTree);
 		ByteBuffer bytes = item.getBytes(true);
 		Assert.assertEquals(167, bytes.length());
@@ -56,9 +56,9 @@ public class ByteAppleTest {
 	}
 //	@Te st
 	public void testSimpleApple() {
-		Apple apple = new Apple(4, 1, 3);
+		Apple apple = new Apple("4", 1, 3);
 		ByteIdMap map = new ByteIdMap();
-		map.withCreator(new AppleCreator());
+		map.with(new AppleCreator());
 		ByteItem item = map.encode(apple);
 		ByteBuffer bytes = item.getBytes(true);
 		Assert.assertEquals(61, bytes.length());
@@ -67,14 +67,14 @@ public class ByteAppleTest {
 //	@Te st
 	public void testSimpleAppleTree() {
 		AppleTree appleTree = new AppleTree();
-		appleTree.withHas(new Apple(0, 123.32f, 239f));
-		appleTree.withHas(new Apple(0, 123.32f, 239f));
+		appleTree.withHas(new Apple("0", 123.32f, 239f));
+		appleTree.withHas(new Apple("0", 123.32f, 239f));
 		
 //		appleTree.withHas(new Apple(1, 2, 3));
 //		appleTree.withHas(new Apple(4, 5, 6));
 //		appleTree.withHas(new Apple(7, 8, 9));
 		ByteIdMap map = new ByteIdMap();
-		map.withCreator(new AppleCreator(), new AppleTreeCreator());
+		map.with(new AppleCreator(), new AppleTreeCreator());
 		ByteItem item = map.encode(appleTree);
 		ByteBuffer bytes = item.getBytes(true);
 		Assert.assertEquals(94, bytes.length());
@@ -82,10 +82,10 @@ public class ByteAppleTest {
 //	@Test
 	public void testSimpleAppleTreePrimitive() {
 		AppleTree appleTree = new AppleTree();
-		appleTree.withHas(new Apple(2100000000, 123.32f, 239f));
-		appleTree.withHas(new Apple(2100000000, 123.32f, 239f));
+		appleTree.withHas(new Apple("2100000000", 123.32f, 239f));
+		appleTree.withHas(new Apple("2100000000", 123.32f, 239f));
 		ByteIdMap map = new ByteIdMap();
-		map.withCreator(new AppleCreator(), new AppleTreeCreator());
+		map.with(new AppleCreator(), new AppleTreeCreator());
 		ByteItem item = map.encode(appleTree);
 		ByteBuffer bytes = item.getBytes(true);
 		Assert.assertEquals(101, bytes.length());
@@ -95,20 +95,20 @@ public class ByteAppleTest {
 	public void testSerializationTwoItems() {
 		AppleTree appleTree = new AppleTree();
 
-		appleTree.withHas(new Apple(1, 5644f, 564f));
-		appleTree.withHas(new Apple(0, 123.32f, 239f));
+		appleTree.withHas(new Apple("1", 5644f, 564f));
+		appleTree.withHas(new Apple("0", 123.32f, 239f));
 
 		ByteIdMap map = new ByteIdMap();
-		map.withCreator(new AppleTreeCreator());
-		map.withCreator(new AppleCreator());
+		map.with(new AppleTreeCreator());
+		map.with(new AppleCreator());
 //		map.withCreator(new AppleTreeCreator(), new AppleCreator());
 		ByteItem item = map.encode(appleTree);
 
 		ByteBuffer bytes = item.getBytes(true);
 //		outputStream(bytes.array(), System.out);
-		Assert.assertEquals(95, bytes.length());
+		Assert.assertEquals(100, bytes.length());
 		String string = item.toString();
-		Assert.assertEquals(132, string.length());
+		Assert.assertEquals(128, string.length());
 	}
 	
 	void outputStream(byte[] bytes, PrintStream stream){

@@ -17,8 +17,8 @@ public class SimpleJsonTest {
 		House house=new House();
 		house.setFloor(4);
 		house.setName("University");
-		JsonIdMap map=new JsonIdMap().withCreator(new HouseCreator());
-		map.withUpdateListenerSend(new UpdateListener() {
+		JsonIdMap map=new JsonIdMap().with(new HouseCreator());
+		map.with(new UpdateListener() {
 			
 
 			@Override
@@ -33,7 +33,7 @@ public class SimpleJsonTest {
 		JsonObject json = map.encode(house);
 		String string=json.toString();
 		
-		JsonIdMap decodeMap=new JsonIdMap().withCreator(new HouseCreator());
+		JsonIdMap decodeMap=new JsonIdMap().with(new HouseCreator());
 		House newHouse = (House) decodeMap.decode(string);
 
 		// Old Model

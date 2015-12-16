@@ -15,13 +15,13 @@ public class EMFGrammar extends Grammar{
 	public static final String NV ="@nv";
 	@Override
 	public SendableEntityCreator getReadCreator(JsonObject jsonObject,
-			IdMap map) {
+			IdMap map, boolean searchForSuperCreator) {
 		SendableEntityCreator result = getCreator(jsonObject.getString(SRC), map);
 		if(result!=null){
 			return result;
 		}
 		
-		return super.getReadCreator(jsonObject, map);
+		return super.getReadCreator(jsonObject, map, searchForSuperCreator);
 	}
 	
 	@Override

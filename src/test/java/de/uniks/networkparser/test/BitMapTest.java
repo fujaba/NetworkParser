@@ -30,7 +30,7 @@ public class BitMapTest {
 		buffer.put(new byte[]{42});
 		NumberFormatCreator createrClass = new NumberFormatCreator("len", 4, 4);
 		createrClass.addBitEntity("number",BitEntity.BIT_NUMBER,  "8", BitEntity.BIT_STRING, "len", BitEntity.BIT_REFERENCE);
-		map.withCreator(createrClass);
+		map.with(createrClass);
 		NumberFormat numberItem = (NumberFormat) map.decode(buffer, createrClass);
 		Assert.assertNotNull(numberItem);
 		

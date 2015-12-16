@@ -39,7 +39,7 @@ public class GroupAccountGUI extends Application {
 	        TableComponent tableView = new TableComponent();
 	        
 	        JsonIdMap map = new  JsonIdMap();
-	        map.withCreator(new TableList(), new PersonCreator(), new GroupAccountCreator());
+	        map.with(new TableList(), new PersonCreator(), new GroupAccountCreator());
 	        
 	        tableView.withMap(map);
 	        groupAccount = new GroupAccount();

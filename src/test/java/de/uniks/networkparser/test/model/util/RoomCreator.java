@@ -10,9 +10,9 @@ public class RoomCreator implements SendableEntityCreator {
 		JsonIdMap jsonIdMap = new JsonIdMap();
 		jsonIdMap.withSessionId(sessionID);
 
-		jsonIdMap.withCreator(new UniversityCreator());
-		jsonIdMap.withCreator(new RoomCreator());
-		jsonIdMap.withCreator(new StudentCreator());
+		jsonIdMap.with(new UniversityCreator());
+		jsonIdMap.with(new RoomCreator());
+		jsonIdMap.with(new StudentCreator());
 
 		return jsonIdMap;
 	}

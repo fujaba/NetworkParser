@@ -56,7 +56,7 @@ public class SimpleGrammar extends Grammar {
 	 */
 	@Override
 	public SendableEntityCreator getReadCreator(JsonObject jsonObject,
-			IdMap map) {
+			IdMap map, boolean searchForSuperCreator) {
 		String idString = jsonObject.getString(ID);
 		String className = "."
 				+ idString.substring(0,

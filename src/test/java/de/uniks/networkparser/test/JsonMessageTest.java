@@ -16,9 +16,9 @@ public class JsonMessageTest implements UpdateListener {
 	@Test
 	public void testModell(){
 		JsonIdMap map= new JsonIdMap();
-		map.withCreator(new GroupAccountCreator());
-		map.withCreator(new PersonCreator());
-		map.withUpdateListenerSend(this);
+		map.with(new GroupAccountCreator());
+		map.with(new PersonCreator());
+		map.with(this);
 
 		GroupAccount account= new GroupAccount();
 		
