@@ -36,10 +36,12 @@ public class Person  implements SendableEntity
    public static final String PROPERTY_BALANCE = "balance";
    public static final String PROPERTY_PARENT = "parent";
    public static final String PROPERTY_ITEM = "item";
+   public static final String PROPERTY_WALLET = "wallet";
 
    private ItemSet item = null;
    private GroupAccount parent = null;
    private double balance;
+   private Wallet wallet = new Wallet();
    
    private String name;
 	   
@@ -284,5 +286,16 @@ public class Person  implements SendableEntity
       withItem(value);
       return value;
    } 
+	public Wallet getWallet() {
+		return wallet;
+	}
+	
+	public void setWallet(Wallet wallet) {
+		this.wallet = wallet;
+	} 
+	public Person withWallet(Wallet wallet) {
+		this.wallet = wallet;
+		return this;
+	} 
 }
 

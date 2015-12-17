@@ -1,5 +1,15 @@
 package de.uniks.networkparser.gui.javafx.test;
 
+import de.uniks.networkparser.event.Style;
+import de.uniks.networkparser.gui.Column;
+import de.uniks.networkparser.gui.javafx.TableList;
+import de.uniks.networkparser.gui.javafx.controller.ModelListenerStringProperty;
+import de.uniks.networkparser.gui.javafx.table.TableComponent;
+import de.uniks.networkparser.json.JsonIdMap;
+import de.uniks.networkparser.test.model.GroupAccount;
+import de.uniks.networkparser.test.model.Person;
+import de.uniks.networkparser.test.model.Wallet;
+import de.uniks.networkparser.test.model.util.GroupAccountCreator;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -11,17 +21,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import de.uniks.networkparser.event.Style;
-import de.uniks.networkparser.gui.Column;
-import de.uniks.networkparser.gui.javafx.TableList;
-import de.uniks.networkparser.gui.javafx.controller.ModelListenerStringProperty;
-import de.uniks.networkparser.gui.javafx.table.TableComponent;
-import de.uniks.networkparser.gui.javafx.test.model.GroupAccount;
-import de.uniks.networkparser.gui.javafx.test.model.Person;
-import de.uniks.networkparser.gui.javafx.test.model.Wallet;
-import de.uniks.networkparser.gui.javafx.test.model.util.GroupAccountCreator;
-import de.uniks.networkparser.gui.javafx.test.model.util.PersonCreator;
-import de.uniks.networkparser.json.JsonIdMap;
 
 public class GroupAccountGUI extends Application {
 	private GroupAccount groupAccount;

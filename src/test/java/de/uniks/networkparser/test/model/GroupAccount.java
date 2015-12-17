@@ -25,13 +25,29 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 import de.uniks.networkparser.interfaces.SendableEntity;
+import de.uniks.networkparser.test.model.ludo.StrUtil;
 import de.uniks.networkparser.test.model.util.ItemSet;
 import de.uniks.networkparser.test.model.util.PersonSet;
 
 public class GroupAccount implements SendableEntity
 {
+    public static final String PROPERTY_NAME = "name";
+    private String name;
 
-   
+    public String getName()
+    {
+       return this.name;
+    }
+    
+    public void setName(String value)
+    {
+       if ( ! StrUtil.stringEquals(this.name, value))
+       {
+          String oldValue = this.name;
+          this.name = value;
+          getPropertyChangeSupport().firePropertyChange(PROPERTY_NAME, oldValue, value);
+       }
+    }
    //==========================================================================
    
    public double getTaskNames( double p0, String p1 )
