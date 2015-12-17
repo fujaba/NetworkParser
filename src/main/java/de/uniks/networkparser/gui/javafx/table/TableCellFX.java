@@ -46,6 +46,7 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 	private Column field;
 	private EditControl<? extends Node> control;
 	private TableComponent tableComponent;
+	private UpdateItemCell updateListener;
 
 	public TableCellFX withEditFieldMap(EditFieldMap fieldMap) {
 		this.fieldMap = fieldMap;
@@ -55,10 +56,13 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 	@Override
 	public TableCellFX withColumn(Column column) {
 		this.field = column;
-		if(this.field.getStyle().getName() != null) {
-			this.getStyleClass().add(this.field.getStyle().getName());
-		}else if(this.field.getStyle() instanceof StyleFX){
-			this.setStyle(this.field.getStyle().toString());
+		Style style = this.field.getStyle();
+		if(style != null) {
+			if(this.field.getStyle().getName() != null) {
+				this.getStyleClass().add(this.field.getStyle().getName());
+			}else if(this.field.getStyle() instanceof StyleFX){
+				this.setStyle(this.field.getStyle().toString());
+			}
 		}
 		if(this.field.isListener()){
 			this.setCursor(Cursor.HAND);
@@ -82,10 +86,13 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 	}
 
 	@Override
-	protected void updateItem(TableCellValue arg0, boolean empty) {
-		super.updateItem(arg0, empty);
-		final String text = "" + arg0;
-		if (arg0 != null) {
+	protected void updateItem(TableCellValue item, boolean empty) {
+		super.updateItem(item, empty);
+		if(this.updateListener != null && this.updateListener.updateItem(this, item, empty)) {
+			return;
+		}
+		final String text = "" + item;
+		if (item != null) {
 			Platform.runLater(new Runnable() {
 				@Override
 				public void run() {
@@ -201,15 +208,18 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 	
 	@Override
 	public boolean onActive(boolean value) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 
 	@Override
 	public boolean nextFocus() {
-		// TODO Auto-generated method stub
 		return false;
+	}
+
+	public TableCell<Object, TableCellValue> withUpdateListener(UpdateItemCell updateListener) {
+		this.updateListener = updateListener;
+		return this;
 	}
 
 	// @Override

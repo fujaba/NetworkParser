@@ -39,6 +39,7 @@ import com.sun.javafx.scene.control.skin.TableViewSkin;
 import com.sun.javafx.scene.control.skin.VirtualFlow;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.TableCellValue;
+import de.uniks.networkparser.gui.javafx.controls.EditFieldMap;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
@@ -46,9 +47,11 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 	private Column column;
 	private CheckMenuItem menueItem;
 	private TableComponent tableComponent;
+	private TableCellFactory cellCreator;
 
-	public TableColumnFX withColumn(Column column, Menu visibleItems, TableComponent value){
+	public TableColumnFX withColumn(Column column, Menu visibleItems, TableComponent value, TableCellFactory cellCreator){
 		this.column = column;
+		this.cellCreator = cellCreator;
 		this.tableComponent = value;
 		if(column.getComparator()!=null){
 			this.setComparator(column.getComparator());
@@ -66,16 +69,18 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 			@Override
 			public TableCell<Object, TableCellValue> call(
 					TableColumn<Object, TableCellValue> arg0) {
-				TableCellFX cell = new TableCellFX().withTableComponent(tableComponent).withColumn(TableColumnFX.this.column).withEditFieldMap(TableColumnFX.this.tableComponent.getFieldFactory());
-				return cell;
+				Column column = TableColumnFX.this.column;
+				EditFieldMap editFieldMap = TableColumnFX.this.tableComponent.getFieldFactory();
+				return TableColumnFX.this.cellCreator.create(tableComponent, column, editFieldMap);
 			}
 		});
 		setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Object,TableCellValue>, ObservableValue<TableCellValue>>() {
 			@Override
 			public ObservableValue<TableCellValue> call(
 					javafx.scene.control.TableColumn.CellDataFeatures<Object, TableCellValue> arg0) {
-				SendableEntityCreator creator = TableColumnFX.this.tableComponent.getCreator(arg0.getValue());
-				return new TableCellValueFX().withColumn(TableColumnFX.this.column).withCreator(creator).withItem(arg0.getValue());
+				Object value = arg0.getValue();
+				SendableEntityCreator creator = TableColumnFX.this.tableComponent.getCreator(value);
+				return new TableCellValueFX().withColumn(TableColumnFX.this.column).withCreator(creator).withItem(value);
 			}
 		});
 		
@@ -154,24 +159,6 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
         			TableCellFX tableCell = (TableCellFX) (cellSkin).getChildren().get(columnId);
     				tableCell.updateIndex(row);
         		} else {
-//FIXME        			for(int i=0;i<vf.getCellCount();i++) {
-//        				
-//        				try {
-//        					
-//        					
-//        					TableRowSkin<?> cellSkin = (TableRowSkin<?>) vf.getCell(i).getSkin();
-//        					if(cellSkin != null) {
-//        						
-//        						TableCellFX tableCell = (TableCellFX) (cellSkin).getChildren().get(columnId);
-//        						tableCell.updateIndex(i);
-//        						
-//        					}
-//        				} catch(Exception e) {
-//        					
-//        					//Whatever
-//        					
-//        				}
-//        			}
         		}
         	}
         }

@@ -45,7 +45,7 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.TextItems;
 import de.uniks.networkparser.event.Style;
 import de.uniks.networkparser.gui.Column;
-import de.uniks.networkparser.gui.TableList;
+import de.uniks.networkparser.gui.javafx.TableList;
 import de.uniks.networkparser.gui.javafx.controls.EditFieldMap;
 import de.uniks.networkparser.gui.javafx.resource.Styles;
 import de.uniks.networkparser.interfaces.GUIPosition;
@@ -166,10 +166,15 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	}
 
 	public TableComponent withColumn(Column column) {
+		return withColumn(column, null);
+	}
+	public TableComponent withColumn(Column column, TableCellFactory cellCreator) {
 		init();
 		TableView<Object> browserView = getBrowserView(column.getBrowserId());
-
-		TableColumnFX columnFX = new TableColumnFX().withColumn(column, visibleItems, this);
+		if(cellCreator == null) {
+			cellCreator = new TableCellFactory();
+		}
+		TableColumnFX columnFX = new TableColumnFX().withColumn(column, visibleItems, this, cellCreator);
 		columnFX.setContextMenu(contextMenu);
 		
 		this.columns.add(columnFX);
@@ -528,7 +533,6 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
                 }
             }
             if((columns.size() + subColumns.size())<1) {
-//            	System.out.println("FIXME DONT FIND COLUMN: " + event.getPropertyName());
             }else {
             	for(TableColumnFX column  : columns ) {
                 	Object item = event.getSource();
