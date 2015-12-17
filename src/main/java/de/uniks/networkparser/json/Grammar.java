@@ -76,11 +76,11 @@ public class Grammar {
 		if(creator != null) {
 			return creator;
 		}
-		try {
-			Class<?> clazzName = Class.forName((String) className);
-			return getSuperCreator(map, searchForSuperCreator, clazzName);
-		} catch (ClassNotFoundException e) {
-		}
+		Class<?> clazzName = getClassForName((String) className);
+		return getSuperCreator(map, searchForSuperCreator, clazzName);
+	}
+	
+	protected Class<?> getClassForName(String name) {
 		return null;
 	}
 

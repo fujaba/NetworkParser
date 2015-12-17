@@ -51,6 +51,14 @@ public class ByteUtil {
 		}
 	}
 
+	public static byte[] clone(byte[] entity) {
+		byte[] result=new byte[entity.length];
+		for(int i=0;i<entity.length;i++) {
+			result[i] = entity[i];
+		}
+		return result;
+	}
+	
 	public static byte getTyp(byte group, byte subGroup) {
 		return (byte) (group + subGroup);
 	}

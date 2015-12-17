@@ -1,27 +1,5 @@
 package de.uniks.networkparser.list;
 
-/*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
-
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
-
- http://ec.europa.eu/idabc/eupl5
-
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
-*/
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -1294,7 +1272,6 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
      *         this list
      * @throws NullPointerException if the specified array is null
      */
-    @SuppressWarnings("unchecked")
     public <T> T[] toArray(T[] a) {
     	if(a==null)
     		return null;
@@ -1304,13 +1281,14 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
     	}else{
     		elementData = elements;
     	}
-        if (a.length < size) {
-            // Make a new array of a's runtime type, but my contents:
-            return (T[]) Arrays.copyOf(elementData, size, a.getClass());
-        }
         if (elementData == null)
         {
            return a; // should be empty
+        }
+        if (a.length < size) {
+            // Make a new array of a's runtime type, but my contents:
+//            return (T[]) Arrays.copyOf(elementData, size, a.getClass());
+        	return null;
         }
         System.arraycopy(elementData, 0, a, 0, size);
         if (a.length > size)

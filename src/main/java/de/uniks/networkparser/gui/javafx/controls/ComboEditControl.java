@@ -26,7 +26,7 @@ import javafx.scene.control.ComboBox;
 import de.uniks.networkparser.StringTokener;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.FieldTyp;
-import de.uniks.networkparser.gui.TableList;
+import de.uniks.networkparser.gui.javafx.TableList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.string.StringContainer;

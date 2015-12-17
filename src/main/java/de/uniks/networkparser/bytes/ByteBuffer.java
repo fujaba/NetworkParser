@@ -245,7 +245,7 @@ public class ByteBuffer extends BufferedBuffer {
 	}
 
 	public ByteBuffer with(byte[] array) {
-		this.buffer = array.clone();
+		this.buffer = array;
 		this.position = 0;
 		this.length = array.length;
 		return this;

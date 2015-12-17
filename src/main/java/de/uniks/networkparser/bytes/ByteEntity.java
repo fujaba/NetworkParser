@@ -51,7 +51,7 @@ public class ByteEntity implements ByteItem, BaseItem {
 	public byte[] getValue() {
 		if(values==null)
 			return null;
-		return this.values.clone();
+		return ByteUtil.clone(this.values);
 	}
 
 	/**
@@ -66,7 +66,7 @@ public class ByteEntity implements ByteItem, BaseItem {
 	public ByteEntity withValue(byte typ, byte[] value) {
 		this.typ = typ;
 		if(value != null){
-			this.values = value.clone();
+			this.values = ByteUtil.clone(value);
 		}
 		return this;
 	}

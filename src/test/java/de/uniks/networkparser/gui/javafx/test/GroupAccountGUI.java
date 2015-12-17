@@ -13,7 +13,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import de.uniks.networkparser.event.Style;
 import de.uniks.networkparser.gui.Column;
-import de.uniks.networkparser.gui.TableList;
+import de.uniks.networkparser.gui.javafx.TableList;
 import de.uniks.networkparser.gui.javafx.controller.ModelListenerStringProperty;
 import de.uniks.networkparser.gui.javafx.table.TableComponent;
 import de.uniks.networkparser.gui.javafx.test.model.GroupAccount;

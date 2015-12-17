@@ -65,4 +65,13 @@ public class GenericGrammar extends Grammar {
 		}
 		return null;
 	}
+	
+	@Override
+	protected Class<?> getClassForName(String className) {
+		try {
+			return Class.forName(className);
+		} catch (ClassNotFoundException e) {
+		}
+		return null;
+	}
 }

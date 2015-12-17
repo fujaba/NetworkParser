@@ -34,7 +34,6 @@ public class SimpleList<V> extends AbstractList<V> implements List<V> {
 		return new SimpleList<V>();
 	}
 	
-	@Override
 	@SuppressWarnings("unchecked")
 	public SimpleList<V> clone() {
 		return ((SimpleList<V>)getNewList(false)).init(this);
