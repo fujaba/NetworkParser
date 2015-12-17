@@ -170,7 +170,7 @@ public class Filter {
 	public String[] getProperties(SendableEntityCreator creator) {
 		return creator.getProperties();
 	}
-	
+
 	boolean isPropertyRegard(Object entity, String property, Object value, int deep) {
 		if (this.property != null) {
 			this.filter.with(entity, property, value, deep);

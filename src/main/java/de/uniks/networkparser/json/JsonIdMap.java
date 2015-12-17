@@ -232,8 +232,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 		SendableEntityCreator valueCreater = grammar.getWriteCreator(entity, className, this, this.searchForSuperCreator);
 		if (item == null ) {
 			return null;
-			
-		}else if(valueCreater!=null && !isPropertyRegard(filter, item, property, entity, deep)) {
+		}else if(!isPropertyRegard(filter, item, property, entity, deep)) {
 			return null;
 		}
 		boolean isId = filter.isId(entity, className);

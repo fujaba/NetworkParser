@@ -21,11 +21,12 @@
    
 package de.uniks.networkparser.test.model.util;
 
+import de.uniks.networkparser.list.SDMSet;
 import de.uniks.networkparser.test.model.GroupAccount;
 import de.uniks.networkparser.test.model.Item;
 import de.uniks.networkparser.test.model.Person;
 
-public class ItemSet extends SDMSetBase<Item>
+public class ItemSet extends SDMSet<Item>
 {
 	public String getEntryType()
    {

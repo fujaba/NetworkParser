@@ -30,7 +30,9 @@ import java.util.Iterator;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.logic.UpdateCondition;
 /**
  * The listener interface for receiving update events. The class that is
  * interested in processing a update event implements this interface, and the
@@ -46,8 +48,10 @@ public class UpdateListenerJson implements PropertyChangeListener {
 
 	/** The suspend id list. */
 	private ArrayList<String> suspendIdList;
+	
+	private AtomarCondition atomarFilter;
 
-	private Filter updateFilter = new UpdateFilterJson();
+	private Filter updateFilter = new Filter().withConvertable(new UpdateCondition());
 
 	/**
 	 * Instantiates a new update listener.
@@ -106,6 +110,7 @@ public class UpdateListenerJson implements PropertyChangeListener {
 	public void propertyChange(PropertyChangeEvent evt) {
 		Object oldValue = evt.getOldValue();
 		Object newValue = evt.getNewValue();
+		this.updateFilter.withPropertyRegard(atomarFilter);
 
 		if ((oldValue == null && newValue == null)
 				|| (oldValue != null && oldValue.equals(newValue))) {
@@ -433,6 +438,11 @@ public class UpdateListenerJson implements PropertyChangeListener {
 				}
 			}
 		}
+	}
+	
+	public UpdateListenerJson withAtomarFilter(UpdateListener listener) {
+		this.atomarFilter= new AtomarCondition(listener);
+		return this;
 	}
 
 	/**

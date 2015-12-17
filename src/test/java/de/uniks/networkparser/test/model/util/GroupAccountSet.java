@@ -24,11 +24,12 @@ package de.uniks.networkparser.test.model.util;
 import java.util.Collection;
 import java.util.Collections;
 
+import de.uniks.networkparser.list.SDMSet;
 import de.uniks.networkparser.test.model.GroupAccount;
 import de.uniks.networkparser.test.model.Item;
 import de.uniks.networkparser.test.model.Person;
 
-public class GroupAccountSet extends SDMSetBase<GroupAccount>
+public class GroupAccountSet extends SDMSet<GroupAccount>
 {
 
 

@@ -24,23 +24,14 @@ package de.uniks.networkparser.test.model.util;
 import java.util.Collection;
 import java.util.Collections;
 
+import de.uniks.networkparser.list.SDMSet;
 import de.uniks.networkparser.list.StringList;
 import de.uniks.networkparser.test.model.GroupAccount;
 import de.uniks.networkparser.test.model.Item;
 import de.uniks.networkparser.test.model.Person;
 
-public class PersonSet extends SDMSetBase<Person>
+public class PersonSet extends SDMSet<Person>
 {
-
-
-   
-
-   public String getEntryType()
-   {
-      return "org.sdmlib.examples.groupAccount.model.Person";
-   }
-
-
    @SuppressWarnings("unchecked")
    public PersonSet with(Object value)
    {
