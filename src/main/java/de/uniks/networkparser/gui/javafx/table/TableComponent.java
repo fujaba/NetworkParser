@@ -45,7 +45,7 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.TextItems;
 import de.uniks.networkparser.event.Style;
 import de.uniks.networkparser.gui.Column;
-import de.uniks.networkparser.gui.javafx.TableList;
+import de.uniks.networkparser.gui.TableList;
 import de.uniks.networkparser.gui.javafx.controls.EditFieldMap;
 import de.uniks.networkparser.gui.javafx.resource.Styles;
 import de.uniks.networkparser.interfaces.GUIPosition;
