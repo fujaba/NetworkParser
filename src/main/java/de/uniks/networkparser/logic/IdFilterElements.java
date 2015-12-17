@@ -1,5 +1,7 @@
-package de.uniks.networkparser;
+package de.uniks.networkparser.logic;
 
+import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.ValuesMap;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -25,8 +27,6 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.list.SimpleList;
-import de.uniks.networkparser.logic.InstanceOf;
-import de.uniks.networkparser.logic.ValuesSimple;
 
 public class IdFilterElements extends SimpleList<Object> implements UpdateListener {
 	private Condition<ValuesSimple> condition;

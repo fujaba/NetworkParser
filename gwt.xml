@@ -4,11 +4,13 @@
 	<mkdir dir="build/" />
 	<target name="gwt-compile" description="CrossCompile NetworkParser to Javascript with GWT">
 		<record name="build/gwt-Compile.txt" action="start" append="false" />
-		<!--<get description="get GWT-SDK" src="http://goo.gl/t7FQSn" dest="build/gwt.zip" />
-		<unzip src="build/gwt.zip" dest="build/" />-->
-		<!--<copy todir="build/gwtSource">
+		<get description="get GWT-SDK" src="http://goo.gl/t7FQSn" dest="build/gwt.zip" />
+		<unzip src="build/gwt.zip" dest="build/" />
+		<copy todir="build/gwtSource">
     		<fileset dir="src/main/java/">
 				<exclude name="**/javafx/**"/>
+    			<exclude name="**/InstanceOf.java"/>
+    			<exclude name="**/IdFilterElements.java"/>
     		</fileset>
   		</copy>
 		<unzip src="lib/java.beans.jar" dest="build/gwtSource">
@@ -17,7 +19,7 @@
 				<include name="**/*.xml"/>
 		        <exclude name="**/*.class"/>
 		    </patternset>
-		</unzip>-->
+		</unzip>
 	    <java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
 	        <classpath>
 	        	<pathelement location="build/gwtSource"/>
@@ -36,7 +38,7 @@
 	        <arg value="1.6" /> 
 	    </java>
 	    <record name="build/gwt-Compile.txt" action="stop" />
-		<!--<delete dir="build/gwtSource"></delete>-->
+		<delete dir="build/gwtSource"></delete>
 	</target>
 </project>
 

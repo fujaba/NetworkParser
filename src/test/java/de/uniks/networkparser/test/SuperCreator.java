@@ -9,9 +9,11 @@ import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.test.model.Apple;
 import de.uniks.networkparser.test.model.AppleTree;
 import de.uniks.networkparser.test.model.Fruit;
+import de.uniks.networkparser.test.model.Person;
 import de.uniks.networkparser.test.model.Tree;
 import de.uniks.networkparser.test.model.util.FruitCreator;
 import de.uniks.networkparser.test.model.util.GenericFruit;
+import de.uniks.networkparser.test.model.util.PersonCreator;
 import de.uniks.networkparser.test.model.util.TreeCreator;
 
 public class SuperCreator {
@@ -58,6 +60,29 @@ public class SuperCreator {
 		Assert.assertNotNull(newData);
 		Assert.assertTrue(newData instanceof AppleTree);
 		
+	}
+
+	@Test
+	public void testGenicAppleTreePlusOwner() {
+		JsonIdMap map=new JsonIdMap();
+		map.with(new TreeCreator());
+		map.with(new PersonCreator());
+		map.with(new GenericGrammar());
+		
+		AppleTree appletree = new AppleTree();
+		appletree.setName("Grace");
+		Person owner= new Person();
+		owner.withName("Albert");
+		appletree.setPerson(owner);
+		String data = map.encode(appletree).toString(2);
+		
+		JsonIdMap decodeMap=new JsonIdMap();
+		decodeMap.with(new GenericGrammar());
+		decodeMap.with(new TreeCreator());
+		decodeMap.with(new PersonCreator());
+		Tree newData = (Tree) decodeMap.decode(data);
+		Assert.assertNotNull(newData);
+		Assert.assertTrue(newData instanceof AppleTree);
 	}
 
 }

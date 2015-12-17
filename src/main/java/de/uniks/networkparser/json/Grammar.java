@@ -134,6 +134,7 @@ public class Grammar {
 	/**
 	 * Get a new Instance of Element from the Creator
 	 * @param creator The EntityCreator
+	 * @param className Alternative Name of Class
 	 * @return The new Instance
 	 */
 	public Object getNewEntity(SendableEntityCreator creator, String className) {

@@ -166,10 +166,15 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	}
 
 	public TableComponent withColumn(Column column) {
+		return withColumn(column, null);
+	}
+	public TableComponent withColumn(Column column, TableCellFactory cellCreator) {
 		init();
 		TableView<Object> browserView = getBrowserView(column.getBrowserId());
-
-		TableColumnFX columnFX = new TableColumnFX().withColumn(column, visibleItems, this);
+		if(cellCreator == null) {
+			cellCreator = new TableCellFactory();
+		}
+		TableColumnFX columnFX = new TableColumnFX().withColumn(column, visibleItems, this, cellCreator);
 		columnFX.setContextMenu(contextMenu);
 		
 		this.columns.add(columnFX);

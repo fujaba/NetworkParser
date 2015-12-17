@@ -514,6 +514,9 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 					JsonObject child = (JsonObject) value;
 					// CHECK LIST AND MAPS
 					Object ref_Obj = grammar.getNewPrototyp(creator);
+					if(ref_Obj instanceof Class<?>) {
+						ref_Obj = grammar.getNewEntity(creator, target.getClass().getName());
+					}
 					Object refValue = creator.getValue(ref_Obj, property);
 					if (refValue instanceof Map<?, ?>) {
 						JsonObject json = (JsonObject) value;
