@@ -9,6 +9,8 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply from: 'gradle/mavencentral.gradle'
 apply from: 'gradle/artifactory.gradle'
+apply plugin: 'cobertura'
+apply plugin: 'com.github.kt3k.coveralls'
 
 idea {
 	project {
@@ -35,6 +37,8 @@ buildscript {
 	}
 	dependencies {
 		classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '2.2.4')
+        classpath 'net.saliman:gradle-cobertura-plugin:2.0.0' // cobertura plugin
+        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.4.0'
 	}
 }
 
@@ -84,5 +88,7 @@ sourceSets.main.output.classesDir 'build/classes/main'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
+cobertura.coverageFormats = ['html', 'xml']
 
 defaultTasks 'clean', 'test', 'all'
