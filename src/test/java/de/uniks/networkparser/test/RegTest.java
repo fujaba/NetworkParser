@@ -7,7 +7,8 @@ import de.uniks.networkparser.StringTokener;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.logic.Equals;
 import de.uniks.networkparser.logic.Or;
-import de.uniks.networkparser.logic.ValuesSimple;
+import de.uniks.networkparser.logic.SimpleConditionValue;
+import de.uniks.networkparser.logic.SimpleValues;
 
 public class RegTest {
 	@Test
@@ -15,11 +16,11 @@ public class RegTest {
 		String reg="[abc]";
 		StringTokener item= new StringTokener();
 		item.withBuffer(reg);
-		Condition<ValuesSimple> root = parseCurrentChar(item);
+		Condition<SimpleValues> root = parseCurrentChar(item);
 		Assert.assertNotNull(root);
 	}
-	@SuppressWarnings("unchecked")
-	public Condition<ValuesSimple> parseCurrentChar(StringTokener item){
+
+	public SimpleConditionValue parseCurrentChar(StringTokener item){
 		char ch = item.getCurrentChar();
 		if(ch=='['){
 			// OR-Item

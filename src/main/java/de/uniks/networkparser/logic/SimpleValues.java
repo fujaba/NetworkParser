@@ -1,8 +1,5 @@
 package de.uniks.networkparser.logic;
 
-import de.uniks.networkparser.ValuesMap;
-import de.uniks.networkparser.interfaces.Condition;
-
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -25,22 +22,28 @@ import de.uniks.networkparser.interfaces.Condition;
  permissions and limitations under the Licence.
 */
 /**
- * @author Stefan Lindel ConditionMap Clazz
+ * Logicclass for simple Check of Value.
+ *
+ * @author Stefan Lindel
  */
 
-public abstract class ConditionMap implements Condition<ValuesSimple> {
-	@Override
-	public boolean check(ValuesSimple values) {
-		if (values instanceof ValuesMap) {
-			return check((ValuesMap) values);
-		}
-		return false;
+public class SimpleValues {
+	/** The Variable of value. */
+	protected Object value;
+
+	/**
+	 * @return The Value of Check
+	 */
+	public Object getValue() {
+		return value;
 	}
 
 	/**
-	 * @param values
-	 *            The Value of Match-Question
-	 * @return booelan if match
+	 * @param value Set the new Value.
+	 * @return ValuesSimple Instance
 	 */
-	public abstract boolean check(ValuesMap values);
+	public SimpleValues withValue(Object value) {
+		this.value = value;
+		return this;
+	}
 }

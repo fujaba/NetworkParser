@@ -1,13 +1,13 @@
 package de.uniks.networkparser.logic;
 
-import de.uniks.networkparser.ValuesMap;
+import de.uniks.networkparser.SimpleValuesMap;
 import de.uniks.networkparser.interfaces.BufferedBuffer;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 /**
  * @author Stefan Lindel Clazz of EqualsCondition
  */
 
-public class Equals extends ConditionMap implements SendableEntityCreator {
+public class Equals extends SimpleConditionMap implements SendableEntityCreator {
 	/** Constant of StrValue. */
 	public static final String STRINGVALUE = "stringvalue";
 	/** Constant of Position. */
@@ -25,7 +25,7 @@ public class Equals extends ConditionMap implements SendableEntityCreator {
 	private Byte bytevalue;
 
 	@Override
-	public boolean check(ValuesMap values) {
+	public boolean check(SimpleValuesMap values) {
 		if (values.getEntity() instanceof BufferedBuffer) {
 			BufferedBuffer buffer = (BufferedBuffer) values.getEntity();
 			int pos;

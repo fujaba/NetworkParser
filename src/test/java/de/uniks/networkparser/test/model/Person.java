@@ -29,8 +29,7 @@ import de.uniks.networkparser.test.model.ludo.StrUtil;
 import de.uniks.networkparser.test.model.util.ItemSet;
 import de.uniks.networkparser.test.model.util.PersonSet;
 
-public class Person  implements SendableEntity
-{
+public class Person  implements SendableEntity, Comparable<Object> {
 	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
    public static final String PROPERTY_NAME = "name";
    public static final String PROPERTY_BALANCE = "balance";
@@ -296,6 +295,15 @@ public class Person  implements SendableEntity
 	public Person withWallet(Wallet wallet) {
 		this.wallet = wallet;
 		return this;
+	}
+
+	@Override
+	public int compareTo(Object o) {
+		if(o instanceof Person) {
+			return this.getName().compareTo(((Person)o).getName());	
+		}
+		return -1;
+		
 	} 
 }
 

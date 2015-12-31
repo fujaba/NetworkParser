@@ -1,5 +1,7 @@
 package de.uniks.networkparser.logic;
 
+import de.uniks.networkparser.SimpleValuesMap;
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -22,28 +24,22 @@ package de.uniks.networkparser.logic;
  permissions and limitations under the Licence.
 */
 /**
- * Logicclass for simple Check of Value.
- *
- * @author Stefan Lindel
+ * @author Stefan Lindel ConditionMap Clazz
  */
 
-public class ValuesSimple {
-	/** The Variable of value. */
-	protected Object value;
-
-	/**
-	 * @return The Value of Check
-	 */
-	public Object getValue() {
-		return value;
+public abstract class SimpleConditionMap implements SimpleConditionValue {
+	@Override
+	public boolean check(SimpleValues values) {
+		if (values instanceof SimpleValuesMap) {
+			return check((SimpleValuesMap) values);
+		}
+		return false;
 	}
 
 	/**
-	 * @param value Set the new Value.
-	 * @return ValuesSimple Instance
+	 * @param values
+	 *            The Value of Match-Question
+	 * @return booelan if match
 	 */
-	public ValuesSimple withValue(Object value) {
-		this.value = value;
-		return this;
-	}
+	public abstract boolean check(SimpleValuesMap values);
 }

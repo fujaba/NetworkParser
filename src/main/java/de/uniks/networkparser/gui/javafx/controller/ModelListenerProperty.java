@@ -34,7 +34,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.ValuesMap;
+import de.uniks.networkparser.SimpleValuesMap;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
@@ -47,13 +47,13 @@ public abstract class ModelListenerProperty<T> implements javafx.beans.property.
     private LinkedHashSet<ChangeListener<? super T>> listeners=new LinkedHashSet<ChangeListener<? super T>>();
     private LinkedHashSet<InvalidationListener> invalidationListeners=new LinkedHashSet<InvalidationListener>();
     protected ObservableValue<? extends T> observable = null;
-    protected ValuesMap filter;
+    protected SimpleValuesMap filter;
 
     public ModelListenerProperty(SendableEntityCreator creator, Object item, String property) {
         this.item = item;
         this.creator = creator;
         this.property = property;
-        this.filter = new ValuesMap().withEntity(item).with(property);
+        this.filter = new SimpleValuesMap().withEntity(item).with(property);
 		if (item instanceof SendableEntity) {
 			((SendableEntity) item).addPropertyChangeListener(property, this);
 			return;

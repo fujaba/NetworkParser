@@ -1,13 +1,13 @@
 package de.uniks.networkparser;
 
-import de.uniks.networkparser.logic.ValuesSimple;
+import de.uniks.networkparser.logic.SimpleValues;
 
 /**
  * Logic Clazz for MapValues.
  *
  * @author Stefan Lindel
  */
-public class ValuesMap extends ValuesSimple {
+public class SimpleValuesMap extends SimpleValues {
 	/** Variable for IdMap. */
 	private IdMap map;
 	/** Variable for Enitity. */
@@ -29,7 +29,7 @@ public class ValuesMap extends ValuesSimple {
 	 *            depp value from root
 	 * @return ValuesMap Instance
 	 */
-	ValuesMap with(Object entity, String property, Object value, int deep) {
+	SimpleValuesMap with(Object entity, String property, Object value, int deep) {
 		this.entity = entity;
 		this.property = property;
 		this.value = value;
@@ -49,7 +49,7 @@ public class ValuesMap extends ValuesSimple {
 	 *            depp value from root
 	 * @return ValuesMap Instance
 	 */
-	ValuesMap with(Object entity, String property) {
+	SimpleValuesMap with(Object entity, String property) {
 		this.entity = entity;
 		this.property = property;
 		return this;
@@ -59,7 +59,7 @@ public class ValuesMap extends ValuesSimple {
 		return map;
 	}
 
-	public ValuesMap with(IdMap map) {
+	public SimpleValuesMap with(IdMap map) {
 		this.map = map;
 		return this;
 	}
@@ -68,21 +68,21 @@ public class ValuesMap extends ValuesSimple {
 		return entity;
 	}
 	
-	public ValuesMap withEntity(Object entity) {
+	public SimpleValuesMap withEntity(Object entity) {
 		this.entity = entity;
 		return this;
 	}
 	public String getProperty() {
 		return property;
 	}
-	public ValuesMap with(String property) {
+	public SimpleValuesMap with(String property) {
 		this.property = property;
 		return this;
 	}
 	public int getDeep() {
 		return deep;
 	}
-	public ValuesMap with(int deep) {
+	public SimpleValuesMap with(int deep) {
 		this.deep = deep;
 		return this;
 	}
@@ -90,7 +90,7 @@ public class ValuesMap extends ValuesSimple {
 	public Object getValue() {
 		return value;
 	}
-	public ValuesMap withValue(Object value) {
+	public SimpleValuesMap withValue(Object value) {
 		super.withValue(value);
 		return this;
 	}

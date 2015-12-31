@@ -1,6 +1,6 @@
 package de.uniks.networkparser.gui.javafx.controller;
 
-import de.uniks.networkparser.ValuesMap;
+import de.uniks.networkparser.SimpleValuesMap;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 /*
@@ -27,7 +27,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import javafx.beans.Observable;
 
 public class ModelListenerBooleanProperty extends ModelListenerProperty<Boolean> {
-	private de.uniks.networkparser.interfaces.Condition<ValuesMap> condition;
+	private de.uniks.networkparser.interfaces.Condition<SimpleValuesMap> condition;
 	
 	public ModelListenerBooleanProperty(SendableEntityCreator creator, Object item, String property) {
         super(creator, item, property);
@@ -54,7 +54,7 @@ public class ModelListenerBooleanProperty extends ModelListenerProperty<Boolean>
 		}
 	}
 	
-	public ModelListenerBooleanProperty withCondition(Condition<ValuesMap> condition){
+	public ModelListenerBooleanProperty withCondition(Condition<SimpleValuesMap> condition){
 		this.condition = condition;
 		return this;
 	}

@@ -31,34 +31,33 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
  * @author Stefan Lindel
  */
 
-public class Or implements Condition<ValuesSimple>, SendableEntityCreator {
+public class Or implements SimpleConditionValue, SendableEntityCreator {
 	/** Constant of CHILD. */
 	public static final String CHILD = "childs";
 	/** Variable of Conditions. */
-	private ArrayList<Condition<ValuesSimple>> list = new ArrayList<Condition<ValuesSimple>>();
+	private ArrayList<SimpleConditionValue> list = new ArrayList<SimpleConditionValue>();
 
 	/**
 	 * @param conditions
 	 *            All Conditions.
 	 * @return Or Instance
 	 */
-	@SuppressWarnings("unchecked")
-	public Or add(Condition<ValuesSimple>... conditions) {
-		for (Condition<ValuesSimple> condition : conditions) {
+	public Or add(SimpleConditionValue... conditions) {
+		for (SimpleConditionValue condition : conditions) {
 			this.list.add(condition);
 		}
 		return this;
 	}
 
 	/** @return List of Condition. */
-	private ArrayList<Condition<ValuesSimple>> getList() {
+	private ArrayList<SimpleConditionValue> getList() {
 		return list;
 	}
 
 	@Override
-	public boolean check(ValuesSimple values) {
+	public boolean check(SimpleValues values) {
 		boolean result = true;
-		for (Condition<ValuesSimple> condition : list) {
+		for (SimpleConditionValue condition : list) {
 			if (!condition.check(values)) {
 				result = false;
 			}
@@ -69,7 +68,7 @@ public class Or implements Condition<ValuesSimple>, SendableEntityCreator {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		for (Condition<ValuesSimple> condition : list) {
+		for (SimpleConditionValue condition : list) {
 			sb.append("[" + condition.toString() + " ");
 		}
 		sb.trimToSize();
@@ -95,15 +94,15 @@ public class Or implements Condition<ValuesSimple>, SendableEntityCreator {
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
 		if (CHILD.equalsIgnoreCase(attribute)) {
-			((Or) entity).add((Condition<ValuesSimple>) value);
+			if(value instanceof Condition) {
+				((Or) entity).add((SimpleConditionValue) value);
+			}
 			return true;
 		}
 		return false;
 	}
-
 }

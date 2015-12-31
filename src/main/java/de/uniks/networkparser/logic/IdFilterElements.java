@@ -1,7 +1,7 @@
 package de.uniks.networkparser.logic;
 
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.ValuesMap;
+import de.uniks.networkparser.SimpleValuesMap;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -29,11 +29,11 @@ import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.list.SimpleList;
 
 public class IdFilterElements extends SimpleList<Object> implements UpdateListener {
-	private Condition<ValuesSimple> condition;
-	protected ValuesMap filterMap;
+	private Condition<SimpleValues> condition;
+	protected SimpleValuesMap filterMap;
 
 	
-	public IdFilterElements(Condition<ValuesSimple> condition) {
+	public IdFilterElements(Condition<SimpleValues> condition) {
 		this.condition = condition;
 	}
 	public IdFilterElements(Class<?> clazzConditon) {
@@ -45,9 +45,9 @@ public class IdFilterElements extends SimpleList<Object> implements UpdateListen
 			Object newValue) {
 		if(condition!=null) {
 			if(filterMap == null) {
-				filterMap = new ValuesMap().with((IdMap)target);
+				filterMap = new SimpleValuesMap().with((IdMap)target);
 			}
-			ValuesMap value = filterMap.with(property).withValue(newValue);
+			SimpleValuesMap value = filterMap.with(property).withValue(newValue);
 			if(condition.check(value)) {
 				return add(newValue);
 			}

@@ -1,6 +1,6 @@
 package de.uniks.networkparser.logic;
 
-import de.uniks.networkparser.ValuesMap;
+import de.uniks.networkparser.SimpleValuesMap;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -29,7 +29,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
  * @author Stefan Lindel
  */
 
-public class InstanceOf extends ConditionMap implements SendableEntityCreator {
+public class InstanceOf extends SimpleConditionMap implements SendableEntityCreator {
 	/** Constant of CLAZZNAME. */
 	public static final String CLAZZNAME = "clazzname";
 	/** Constant of PROPERTY. */
@@ -162,7 +162,7 @@ public class InstanceOf extends ConditionMap implements SendableEntityCreator {
 	}
 
 	@Override
-	public boolean check(ValuesMap values) {
+	public boolean check(SimpleValuesMap values) {
 		// Filter for ClazzTyp
 		if(values==null) {
 			return false;

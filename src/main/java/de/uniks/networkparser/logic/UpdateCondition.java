@@ -21,11 +21,11 @@ package de.uniks.networkparser.logic;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.ValuesMap;
+import de.uniks.networkparser.SimpleValuesMap;
 
-public class UpdateCondition extends ConditionMap {
+public class UpdateCondition extends SimpleConditionMap {
 	@Override
-	public boolean check(ValuesMap values) {
+	public boolean check(SimpleValuesMap values) {
 		return values.getMap().getKey(values.getEntity()) == null;
 	}
 }

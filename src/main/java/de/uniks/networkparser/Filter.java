@@ -26,26 +26,26 @@ import java.util.ArrayList;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
-import de.uniks.networkparser.logic.ValuesSimple;
+import de.uniks.networkparser.logic.SimpleValues;
 
 public class Filter {
-	protected Condition<ValuesSimple> idFilter;
-	protected Condition<ValuesSimple> convertable;
-	protected Condition<ValuesSimple> property;
+	protected Condition<SimpleValues> idFilter;
+	protected Condition<SimpleValues> convertable;
+	protected Condition<SimpleValues> property;
 
 	// Temporary variables
 	protected ArrayList<Object> visitedObjects;
 	protected Boolean full;
-	protected ValuesMap filter;
+	protected SimpleValuesMap filter;
 	private String strategy = IdMap.NEW;
 
-	public Filter withIdFilter(Condition<ValuesSimple> idFilter) {
+	public Filter withIdFilter(Condition<SimpleValues> idFilter) {
 		this.idFilter = idFilter;
 		return this;
 	}
 	
 	public Filter withMap(IdMap map) {
-		this.filter = new ValuesMap().with(map);
+		this.filter = new SimpleValuesMap().with(map);
 		return this;
 	}
 
@@ -86,12 +86,12 @@ public class Filter {
 		return this;
 	}
 
-	public Filter withPropertyRegard(Condition<ValuesSimple> property) {
+	public Filter withPropertyRegard(Condition<SimpleValues> property) {
 		this.property = property;
 		return this;
 	}
 	
-	public Filter withConvertable(Condition<ValuesSimple> convertable) {
+	public Filter withConvertable(Condition<SimpleValues> convertable) {
 		this.convertable = convertable;
 		return this;
 	}
@@ -118,7 +118,7 @@ public class Filter {
 		return referenceFilter;
 	}
 	
-	ValuesMap getFilter() {
+	SimpleValuesMap getFilter() {
 		return filter;
 	}
 
@@ -204,7 +204,7 @@ public class Filter {
 	 * @param convertable Condition
 	 * @return a new Filter for regard the model 
 	 */
-	public static Filter regard(Condition<ValuesSimple> convertable) {
+	public static Filter regard(Condition<SimpleValues> convertable) {
 		return new Filter().withPropertyRegard(convertable);
 	}
 	/**
@@ -213,7 +213,7 @@ public class Filter {
 	 * @param convertable Condition
 	 * @return a new Filter for Filter with Convertable Items 
 	 */
-	public static Filter convertable(Condition<ValuesSimple> convertable) {
+	public static Filter convertable(Condition<SimpleValues> convertable) {
 		return new Filter().withConvertable(convertable);
 	}
 
