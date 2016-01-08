@@ -771,7 +771,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 	public void garbageCollection(List<String> classCounts) {
 		for (String id : this.keyValue.keySet()) {
 			if (!classCounts.contains(id)) {
-				this.keyValue.without(id, this.keyValue.getValueItem(id));
+				this.keyValue.withoutAll(id, this.keyValue.getValueItem(id));
 			}
 		}
 	}

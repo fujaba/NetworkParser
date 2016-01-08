@@ -706,7 +706,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		return this;
 	}
 	
-	public AbstractArray<V> without(Object... values) {
+	public AbstractArray<V> withoutAll(Object... values) {
 		if(values==null){
 			return this;
 		}
@@ -715,7 +715,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		}
 		return this;
 	}
-	
+
 	protected void setValue(int pos, Object value, int offset) {
 		if(pos>=size){
 			grow(pos + 1);

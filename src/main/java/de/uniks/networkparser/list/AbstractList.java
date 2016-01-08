@@ -96,6 +96,17 @@ public abstract class AbstractList<V> extends AbstractArray<V> {
 		return (ST) this;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public AbstractArray<V> without(V... values) {
+		if(values==null){
+			return this;
+		}
+		for (Object value : values) {
+			this.removeByObject(value);
+		}
+		return this;
+	}
+	
 	@Override
 	public AbstractList<V> withAll(Object... values) {
 		super.withAll(values);

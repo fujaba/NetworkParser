@@ -304,7 +304,7 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 			}
 		}
 		if (key != null) {
-			this.keyValue.without(key, oldValue);
+			this.keyValue.withoutAll(key, oldValue);
 			return true;
 		}
 		return false;

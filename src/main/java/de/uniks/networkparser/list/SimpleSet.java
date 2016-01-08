@@ -59,8 +59,8 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 		return super.addAll(c);
 	}
 	
-	public SimpleSet<V> without(Object... values) {
-		super.without(values);
+	public SimpleSet<V> withoutAll(Object... values) {
+		super.withoutAll(values);
 		return this;
 	}
 }
