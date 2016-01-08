@@ -1,6 +1,3 @@
-env:
-  global:
-    - COVERALLS_REPO_TOKEN=mySecRetRepoToken
 language: java
 jdk:
  - oraclejdk8

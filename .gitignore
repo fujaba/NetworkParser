@@ -12,3 +12,4 @@
 **/*.dvi
 **/*.synctex.gz
 **/*-eps-converted-to.pdf
+gradle.properties
