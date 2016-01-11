@@ -134,9 +134,9 @@ public class JsonTokener extends Tokener {
 	 * Cross compiling
 	 *
 	 * @param parent
-	 *            the parent Element
+	 *			the parent Element
 	 * @param newValue
-	 *            the newValue
+	 *			the newValue
 	 * @return Itself
 	 */
 	public JsonObject parseToEntity(JsonObject parent,

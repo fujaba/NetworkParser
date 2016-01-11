@@ -29,10 +29,10 @@ public class GraphNode extends GraphMember{
 		return this;
 	}
 	
-    public GraphNode withParent(GraphMember value) {
-    	super.setParent(value);
-        return this;
-    }
+	public GraphNode withParent(GraphMember value) {
+		super.setParent(value);
+		return this;
+	}
 
 	
 	@Override

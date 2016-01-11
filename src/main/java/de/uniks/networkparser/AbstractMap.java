@@ -42,7 +42,7 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 	 * Gets the creator class.
 	 *
 	 * @param reference
-	 *            the reference
+	 *			the reference
 	 * @return the creator class
 	 */
 	public SendableEntityCreator getCreatorClass(Object reference) {
@@ -56,9 +56,9 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 	 * Gets the creator classes.
 	 *
 	 * @param clazz
-	 *            Clazzname for search
+	 *			Clazzname for search
 	 * @param fullName
-	 *            if the clazzName is the Fullname for search
+	 *			if the clazzName is the Fullname for search
 	 * @return return a Creator class for a clazz name
 	 */
 	public SendableEntityCreator getCreator(String clazz, boolean fullName) {
@@ -87,7 +87,7 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 	 * Adds the creator.
 	 *
 	 * @param creatorSet
-	 *            the creater class
+	 *			the creater class
 	 * @return return a Creator class for a clazz name
 	 */
 	public AbstractMap with(Collection<SendableEntityCreator> creatorSet) {
@@ -104,7 +104,7 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 	 * Adds the creator.
 	 *
 	 * @param iterator
-	 *            the creater classes
+	 *			the creater classes
 	 * @return return a Creator class for a clazz name
 	 */
 	public AbstractMap with(Iterable<SendableEntityCreator> iterator) {
@@ -122,9 +122,9 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 	 * add a Creator to list of all creators.
 	 *
 	 * @param className
-	 *            the class name
+	 *			the class name
 	 * @param creator
-	 *            the creator
+	 *			the creator
 	 * @return AbstractIdMap to interlink arguments
 	 */
 	public AbstractMap with(String className,
@@ -137,7 +137,7 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 	 * Adds the creator.
 	 *
 	 * @param createrClass
-	 *            the creater class
+	 *			the creater class
 	 * @return AbstractIdMap to interlink arguments
 	 */
 	public AbstractMap with(SendableEntityCreator... createrClass) {
@@ -166,7 +166,7 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 	 * remove the creator.
 	 *
 	 * @param className
-	 *            the creater class
+	 *			the creater class
 	 * @return true, if successful
 	 */
 	public boolean removeCreator(String className) {

@@ -26,8 +26,8 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class ModelListenerObjectProperty extends ModelListenerProperty<Object> {
 	public ModelListenerObjectProperty(SendableEntityCreator creator, Object item, String property) {
-        super(creator, item, property);
-    }
+		super(creator, item, property);
+	}
 
 	@Override
 	public void invalidated(Observable arg0) {
@@ -36,5 +36,5 @@ public class ModelListenerObjectProperty extends ModelListenerProperty<Object> {
 	@Override
 	public Object getValue() {
 		return creator.getValue(item, property);
-    }
+	}
 }

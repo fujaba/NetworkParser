@@ -20,13 +20,13 @@ public class SimpleValuesMap extends SimpleValues {
 	/**
 	 * Set all Values of Entity
 	 * @param entity
-	 *            The Entity of Map
+	 *			The Entity of Map
 	 * @param property
-	 *            The Attribute
+	 *			The Attribute
 	 * @param value
-	 *            The current Value
+	 *			The current Value
 	 * @param deep
-	 *            depp value from root
+	 *			depp value from root
 	 * @return ValuesMap Instance
 	 */
 	SimpleValuesMap with(Object entity, String property, Object value, int deep) {
@@ -40,13 +40,13 @@ public class SimpleValuesMap extends SimpleValues {
 	/**
 	 * Set all Values of Entity
 	 * @param entity
-	 *            The Entity of Map
+	 *			The Entity of Map
 	 * @param property
-	 *            The Attribute
+	 *			The Attribute
 	 * @param value
-	 *            The current Value
+	 *			The current Value
 	 * @param deep
-	 *            depp value from root
+	 *			depp value from root
 	 * @return ValuesMap Instance
 	 */
 	SimpleValuesMap with(Object entity, String property) {

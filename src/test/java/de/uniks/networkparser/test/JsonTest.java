@@ -208,7 +208,7 @@ public class JsonTest extends IOClasses{
 		JsonIdMap map= new JsonIdMap();
 		map.getCounter().withPrefixId(";");
 		map.with(new ChangeCreator());
- 		JsonObject json = map.toJsonObject(change);
+		 JsonObject json = map.toJsonObject(change);
 		Change change2=(Change) map.decode(json);
 		assertNotNull(change2);
 		assertEquals(new Long(42), change2.getKey());
@@ -266,7 +266,7 @@ public class JsonTest extends IOClasses{
 		  try {
 			  new JsonArray().withValue("{id:42}");
 		  } catch (Throwable ex) {
-		    e = ex;
+			e = ex;
 		  }
 
 		  assertTrue(e instanceof RuntimeException);
@@ -314,9 +314,9 @@ public class JsonTest extends IOClasses{
 	
 	/**
 	 * <pre>
-	 *           0..1     rooms0..n
+	 *		   0..1	 rooms0..n
 	 * University ------------------------- Room
-	 *           university        &gt;       rooms
+	 *		   university		&gt;	   rooms
 	 * </pre>
 	 */
 	@Test

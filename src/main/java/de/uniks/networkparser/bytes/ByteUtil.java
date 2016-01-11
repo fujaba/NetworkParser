@@ -135,7 +135,7 @@ public class ByteUtil {
 	 * CHeck if the Typ is typ of Group
 	 *
 	 * @param typ
-	 *            the the typ of data
+	 *			the the typ of data
 	 * @return the boolean
 	 */
 	public static boolean isGroup(byte typ) {

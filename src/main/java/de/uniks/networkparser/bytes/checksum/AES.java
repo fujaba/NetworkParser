@@ -27,17 +27,17 @@ import de.uniks.networkparser.string.CharList;
  * triples published in FIPS-197 App C.
  *
  * @author Joan Daemen, Vincent Rijmen, Lawrie Brown, Feb 2005 Improved by
- *         Olivier Ligny, Aug 2012
+ *		 Olivier Ligny, Aug 2012
  * @see <a href="http://www.unsw.adfa.edu.au/~lpb/">Lawrie Brown</a>
  * @see <a href="http://csrc.nist.gov/encryption/aes/">AES home page</a>
  * @see <a
- *      href="http://csrc.nist.gov/publications/fips/fips197/fips-197.pdf">FIPS-197
- *      Standard</a>
+ *	  href="http://csrc.nist.gov/publications/fips/fips197/fips-197.pdf">FIPS-197
+ *	  Standard</a>
  * @see <a href="http://www.esat.kuleuven.ac.be/~rijmen/rijndael/">Rijndael Home
- *      Page</a>
+ *	  Page</a>
  * @see <a
- *      href="http://www.esat.kuleuven.ac.be/~rijmen/rijndael/rijndael.zip">Rijndael
- *      example Java code</a>
+ *	  href="http://www.esat.kuleuven.ac.be/~rijmen/rijndael/rijndael.zip">Rijndael
+ *	  example Java code</a>
  */
 
 public class AES {
@@ -157,7 +157,7 @@ public class AES {
 	 * return number of rounds for a given AES key size.
 	 *
 	 * @param keySize
-	 *            size of the user key material in bytes.
+	 *			size of the user key material in bytes.
 	 * @return number of rounds for a given AES key size.
 	 */
 	public static int getRounds(int keySize) {
@@ -177,9 +177,9 @@ public class AES {
 	 * Using pre-computed log and alog tables for speed.
 	 *
 	 * @param a
-	 *            1st value to multiply
+	 *			1st value to multiply
 	 * @param b
-	 *            2nd value to multiply
+	 *			2nd value to multiply
 	 * @return product of a * b module its generator polynomial
 	 */
 	private int mul(int a, int b) {
@@ -225,9 +225,9 @@ public class AES {
 	 * code in Fig 5, and details in this section.
 	 *
 	 * @param plain
-	 *            the 128-bit plaintext value to encrypt.
+	 *			the 128-bit plaintext value to encrypt.
 	 * @param from
-	 *            fromIndex of Array
+	 *			fromIndex of Array
 	 * @return the encrypted 128-bit ciphertext value.
 	 */
 	public byte[] encodeBlock(byte[] plain, int from) {
@@ -249,9 +249,9 @@ public class AES {
 	 * code in Fig 5, and details in this section.
 	 *
 	 * @param plain
-	 *            the 128-bit plaintext value to encrypt.
+	 *			the 128-bit plaintext value to encrypt.
 	 * @param from
-	 *            fromIndex of Array
+	 *			fromIndex of Array
 	 * @return the encrypted 128-bit ciphertext value.
 	 */
 	public byte[] encodeBlock(char[] plain, int from) {
@@ -274,7 +274,7 @@ public class AES {
 	 * code in Fig 5, and details in this section.
 	 *
 	 * @param plain
-	 *            the 128-bit plaintext value to encrypt.
+	 *			the 128-bit plaintext value to encrypt.
 	 * @return the encrypted 128-bit ciphertext value.
 	 */
 	public byte[] encodeBlock(byte[] plain) {
@@ -378,13 +378,13 @@ public class AES {
 	 * code in Fig 5, and details in this section.
 	 *
 	 * @param plain
-	 *            the 128-bit plaintext value to encrypt.
+	 *			the 128-bit plaintext value to encrypt.
 	 * @param from
-	 *            fromIndex of Array
+	 *			fromIndex of Array
 	 * @return the encrypted 128-bit ciphertext value.
 	 */
 	public byte[] decodeBlock(char[] plain, int from) {
-		byte[] 		// copy ciphertext bytes into state and do initial AddRoundKey(state)
+		byte[]		 // copy ciphertext bytes into state and do initial AddRoundKey(state)
 		Kdr = Kd[0];
 
 		byte[] a = new byte[BLOCK_SIZE];
@@ -403,7 +403,7 @@ public class AES {
 	 * code in Fig 5, and details in this section.
 	 *
 	 * @param cipher
-	 *            the 128-bit ciphertext value to decrypt.
+	 *			the 128-bit ciphertext value to decrypt.
 	 * @return the decrypted 128-bit plaintext value.
 	 */
 	public byte[] decodeBlock(byte[] cipher) {
@@ -488,7 +488,7 @@ public class AES {
 	 * numRounds being the number of rounds for this sized key.
 	 *
 	 * @param key
-	 *            The 128/192/256-bit AES key to use.
+	 *			The 128/192/256-bit AES key to use.
 	 */
 	public void setKey(byte[] key) throws IllegalArgumentException {
 		// assorted internal constants

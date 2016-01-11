@@ -51,7 +51,7 @@ public class GraphUtil {
 			}
 		}
 		return collection;
- 	}
+	 }
 	public static boolean isWithNoObjects(Clazz clazz) {
 		return (clazz.hasModifier(Modifier.ABSTRACT) || clazz.getType() == ClazzTyp.INTERFACE);
 	}

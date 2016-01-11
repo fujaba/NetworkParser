@@ -514,38 +514,38 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 			if (event.getOldValue() == null && event.getNewValue() != null && event.getPropertyName().equals(property)) {
 				addItem(event.getNewValue());
 			} else if(event.getOldValue() != null && event.getNewValue() == null && event.getPropertyName().equals(property)) {
-			    
-			    removeItem(event.getOldValue());
-			    
+				
+				removeItem(event.getOldValue());
+				
 			}
 		}else{
 			// refresh Item
 			ArrayList<TableColumnFX> columns=new ArrayList<TableColumnFX>();
 			ArrayList<TableColumnFX> subColumns=new ArrayList<TableColumnFX>();
 			String subItem = "."+event.getPropertyName();
-            for(Iterator<TableColumnFX> iterator = this.getColumnIterator();iterator.hasNext();){
-                TableColumnFX column = iterator.next();
-                String attrName = column.getColumn().getAttrName();
+			for(Iterator<TableColumnFX> iterator = this.getColumnIterator();iterator.hasNext();){
+				TableColumnFX column = iterator.next();
+				String attrName = column.getColumn().getAttrName();
 				if(attrName.equals(event.getPropertyName())){
-                	columns.add(column);
-                }else if(attrName.endsWith(subItem)) {
-                	subColumns.add(column);
-                }
-            }
-            if((columns.size() + subColumns.size())<1) {
-            }else {
-            	for(TableColumnFX column  : columns ) {
-                	Object item = event.getSource();
-                	int index = items.indexOf(item);
-                	
-                	if(index >= 0) {
-                		column.refreshCell(index);
-                	}
-            	}
-            	for(TableColumnFX column  : subColumns ) {
-            		column.refreshCell(-1);
-            	}
-            }
+					columns.add(column);
+				}else if(attrName.endsWith(subItem)) {
+					subColumns.add(column);
+				}
+			}
+			if((columns.size() + subColumns.size())<1) {
+			}else {
+				for(TableColumnFX column  : columns ) {
+					Object item = event.getSource();
+					int index = items.indexOf(item);
+					
+					if(index >= 0) {
+						column.refreshCell(index);
+					}
+				}
+				for(TableColumnFX column  : subColumns ) {
+					column.refreshCell(-1);
+				}
+			}
 		}
 	}
 	

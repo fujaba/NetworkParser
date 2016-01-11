@@ -54,8 +54,8 @@ public class GitRevision {
 	}
 	
 	public void setFull(boolean full) {
-    	this.full = full;
-    }
+		this.full = full;
+	}
 	
 	private JsonObject commitInfo(JsonArray map, Repository repository, ObjectId objectID, ObjectId newerrId) throws MissingObjectException, IncorrectObjectTypeException, IOException{
 		try{
@@ -84,9 +84,9 @@ public class GitRevision {
 						if(commit.getTree()!=null){
 							newTreeIter.reset(reader, commit.getTree());
 							diffs= new Git(repository).diff()
-							                        .setNewTree(newerTreeIter)
-							                        .setOldTree(newTreeIter)
-							                        .call();
+													.setNewTree(newerTreeIter)
+													.setOldTree(newTreeIter)
+													.call();
 						}
 					}
 					if(diffs!=null){

@@ -29,7 +29,7 @@ public class TitleSpacer extends Region implements DialogElement{
 	private DialogBox owner;
 
 	public TitleSpacer() {
-        HBox.setHgrow(this, Priority.ALWAYS);
+		HBox.setHgrow(this, Priority.ALWAYS);
 	}
 
 	@Override

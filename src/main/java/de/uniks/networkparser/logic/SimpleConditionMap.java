@@ -38,7 +38,7 @@ public abstract class SimpleConditionMap implements SimpleConditionValue {
 
 	/**
 	 * @param values
-	 *            The Value of Match-Question
+	 *			The Value of Match-Question
 	 * @return booelan if match
 	 */
 	public abstract boolean check(SimpleValuesMap values);

@@ -30,8 +30,8 @@ public class ModelListenerBooleanProperty extends ModelListenerProperty<Boolean>
 	private de.uniks.networkparser.interfaces.Condition<SimpleValuesMap> condition;
 	
 	public ModelListenerBooleanProperty(SendableEntityCreator creator, Object item, String property) {
-        super(creator, item, property);
-    }
+		super(creator, item, property);
+	}
 
 	@Override
 	public void invalidated(Observable observable) {		
@@ -44,7 +44,7 @@ public class ModelListenerBooleanProperty extends ModelListenerProperty<Boolean>
 			return condition.check(this.filter.withValue(value));
 		}
 		return false;
-    }
+	}
 	
 	@Override
 	public void setValue(Boolean value) {

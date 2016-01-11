@@ -24,7 +24,7 @@ public class ClickCounter extends Application
 	   
    public static void main(String[] args)
    {
-      launch(args);
+	  launch(args);
    }
 
    @Override
@@ -33,50 +33,50 @@ public class ClickCounter extends Application
 	   VBox root=new VBox();
 	   HBox box=new HBox();
 	   
-      Label label = new Label("Button has been clicked: ");
-      Label dataLabel = new Label();
-      
-      box.getChildren().addAll(label, dataLabel);
+	  Label label = new Label("Button has been clicked: ");
+	  Label dataLabel = new Label();
+	  
+	  box.getChildren().addAll(label, dataLabel);
   
-      dataLabel.setTextAlignment(TextAlignment.RIGHT);
-      
-      dataLabel.textProperty().bind(new ModelListenerStringProperty(new GUIEntityCreator(), data, GUIEntity.PROPERTY_NUMBER));
-      
-      field = new TextField();
+	  dataLabel.setTextAlignment(TextAlignment.RIGHT);
+	  
+	  dataLabel.textProperty().bind(new ModelListenerStringProperty(new GUIEntityCreator(), data, GUIEntity.PROPERTY_NUMBER));
+	  
+	  field = new TextField();
 //FIRST
 //		JavaBeanIntegerProperty beanProperty = JavaBeanIntegerPropertyBuilder.create().bean(data).name(GUIEntity.PROPERTY_NUMBER).build();
-//      field.textProperty().bind(beanProperty.asString());
-      
+//	  field.textProperty().bind(beanProperty.asString());
+	  
 //SECOND SDMLIB
-//      field.textProperty().bindBidirectional(new ModelListenerStringProperty(new GUIEntityCreator(), data, GUIEntity.PROPERTY_NUMBER));
+//	  field.textProperty().bindBidirectional(new ModelListenerStringProperty(new GUIEntityCreator(), data, GUIEntity.PROPERTY_NUMBER));
 
 //SIMPLE
-//      ModelListenerProperty.create(field.textProperty(), new GUIEntityCreator(), data, GUIEntity.PROPERTY_NUMBER);
+//	  ModelListenerProperty.create(field.textProperty(), new GUIEntityCreator(), data, GUIEntity.PROPERTY_NUMBER);
 
-// TEST SIMPLE      
-      ModelListenerFactory.create(field, data, GUIEntity.PROPERTY_NUMBER);
+// TEST SIMPLE	  
+	  ModelListenerFactory.create(field, data, GUIEntity.PROPERTY_NUMBER);
 
-      Button button = new Button("Clicke Me");
-      
-      root.getChildren().addAll(box, field, button);
-      
-      button.setOnAction(new EventHandler<ActionEvent>()
-      {
+	  Button button = new Button("Clicke Me");
+	  
+	  root.getChildren().addAll(box, field, button);
+	  
+	  button.setOnAction(new EventHandler<ActionEvent>()
+	  {
 
-         @Override
-         public void handle(ActionEvent arg0)
-         {
-            data.withNumber(data.getNumber() + 1);
-            System.out.println("now: " + data.getNumber());
-         }
-      });
-      
-      root.setAlignment(Pos.CENTER);
-      
-      Scene scene = new Scene(root, 400, 300);
+		 @Override
+		 public void handle(ActionEvent arg0)
+		 {
+			data.withNumber(data.getNumber() + 1);
+			System.out.println("now: " + data.getNumber());
+		 }
+	  });
+	  
+	  root.setAlignment(Pos.CENTER);
+	  
+	  Scene scene = new Scene(root, 400, 300);
 
-      stage.setTitle("Click Counter");
-      stage.setScene(scene);
-      stage.show();
+	  stage.setTitle("Click Counter");
+	  stage.setScene(scene);
+	  stage.show();
    }
 }

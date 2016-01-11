@@ -44,7 +44,7 @@ public class Equals extends SimpleConditionMap implements SendableEntityCreator 
 
 	/**
 	 * @param value
-	 *            The new Position
+	 *			The new Position
 	 * @return Equals Instance
 	 */
 	public Equals withPosition(int value) {
@@ -61,7 +61,7 @@ public class Equals extends SimpleConditionMap implements SendableEntityCreator 
 
 	/**
 	 * @param value
-	 *            The new ByteValue
+	 *			The new ByteValue
 	 * @return Equals Instance
 	 */
 	public Equals withValue(Byte value) {
@@ -78,7 +78,7 @@ public class Equals extends SimpleConditionMap implements SendableEntityCreator 
 
 	/**
 	 * @param value
-	 *            The new StringValue
+	 *			The new StringValue
 	 * @return Equals Instance
 	 */
 	public Equals withValue(String value) {

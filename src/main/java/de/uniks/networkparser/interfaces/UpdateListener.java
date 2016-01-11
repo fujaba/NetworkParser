@@ -13,17 +13,17 @@ public interface UpdateListener {
 	 * Send update msg.
 	 *
 	 * @param typ
-	 *            the typ of Message: NEW UPDATE, REMOVE or SENDUPDATE
+	 *			the typ of Message: NEW UPDATE, REMOVE or SENDUPDATE
 	 * @param source
-	 *            the Source Element
+	 *			the Source Element
 	 * @param target
-	 *            The Object of UpdateMsg
+	 *			The Object of UpdateMsg
 	 * @param property
-	 *            Which property is changed
+	 *			Which property is changed
 	 * @param oldValue
-	 *            The oldValue
+	 *			The oldValue
 	 * @param newValue
-	 *            The newValue
+	 *			The newValue
 	 * @return true, if successful
 	 */
 	public boolean update(String typ, BaseItem source, Object target, String property, Object oldValue, Object newValue);

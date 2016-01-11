@@ -48,7 +48,7 @@ public class ByteConverterHTTP extends ByteConverter {
 	 * Decode http.
 	 *
 	 * @param value
-	 *            the bytes
+	 *			the bytes
 	 * @return the object
 	 */
 	@Override

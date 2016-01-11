@@ -41,7 +41,7 @@ public class XSDEntityCreator implements SendableEntityCreatorTag, XMLGrammar {
 
 	/**
 	 * @param namespace
-	 *            the NameSpace for xsd
+	 *			the NameSpace for xsd
 	 * @return Itself
 	 */
 	public XSDEntityCreator withNameSpace(String namespace) {

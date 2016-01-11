@@ -33,13 +33,13 @@ public class SimpleGrammar extends Grammar {
 
 	/**
 	 * @param jsonObject
-	 *            the new Value
+	 *			the new Value
 	 * @param map
-	 *            the IdMap
+	 *			the IdMap
 	 * @param filter
-	 *            the Filter
+	 *			the Filter
 	 * @param isId
-	 *            is Id is reed
+	 *			is Id is reed
 	 * @return the props of theJsonObject
 	 */
 	@Override
@@ -51,7 +51,7 @@ public class SimpleGrammar extends Grammar {
 
 	/**
 	 * @param jsonObject
-	 *            the new Value
+	 *			the new Value
 	 * @return the Creator for this JsonObject
 	 */
 	@Override

@@ -7,9 +7,9 @@ import de.uniks.networkparser.test.model.ludo.Dice;
 public class DiceCreator implements SendableEntityCreator {
    private final String[] properties = new String[]
 		   {
-		      Dice.PROPERTY_VALUE,
-		      Dice.PROPERTY_GAME,
-		      Dice.PROPERTY_PLAYER,
+			  Dice.PROPERTY_VALUE,
+			  Dice.PROPERTY_GAME,
+			  Dice.PROPERTY_PLAYER,
 		   };
 		   
 	@Override

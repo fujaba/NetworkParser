@@ -140,27 +140,27 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 	public synchronized void refreshCell(int row) {
 		TableViewSkin<?> skin = (TableViewSkin<?>) this.getTableView().getSkin();
 		int columnId = this.getTableView().getVisibleLeafIndex(this);
-        ObservableList<Node> children = skin.getChildren();
-        for(Node node : children) {
-        	if(node instanceof VirtualFlow<?>) {
-        		VirtualFlow<?> vf = (VirtualFlow<?>) node;
-        		
-        		if(row >= 0 ) {
-        			IndexedCell<?> cell;
-        			try{
-        				cell = vf.getVisibleCell(row);
-        				if(cell == null) {
-	        				continue;
-	            		}
-        			}catch(Exception e) {
-        				continue;
-        			}
-        			TableRowSkin<?> cellSkin = (TableRowSkin<?>)cell.getSkin();
-        			TableCellFX tableCell = (TableCellFX) (cellSkin).getChildren().get(columnId);
-    				tableCell.updateIndex(row);
-        		} else {
-        		}
-        	}
-        }
+		ObservableList<Node> children = skin.getChildren();
+		for(Node node : children) {
+			if(node instanceof VirtualFlow<?>) {
+				VirtualFlow<?> vf = (VirtualFlow<?>) node;
+				
+				if(row >= 0 ) {
+					IndexedCell<?> cell;
+					try{
+						cell = vf.getVisibleCell(row);
+						if(cell == null) {
+							continue;
+						}
+					}catch(Exception e) {
+						continue;
+					}
+					TableRowSkin<?> cellSkin = (TableRowSkin<?>)cell.getSkin();
+					TableCellFX tableCell = (TableCellFX) (cellSkin).getChildren().get(columnId);
+					tableCell.updateIndex(row);
+				} else {
+				}
+			}
+		}
 	}
 }

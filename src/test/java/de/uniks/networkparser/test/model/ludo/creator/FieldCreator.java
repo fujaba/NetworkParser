@@ -7,19 +7,19 @@ import de.uniks.networkparser.test.model.ludo.Field;
 public class FieldCreator implements SendableEntityCreator {
 	private final String[] properties = new String[]
 	{
-      Field.PROPERTY_COLOR,
-      Field.PROPERTY_KIND,
-      Field.PROPERTY_X,
-      Field.PROPERTY_Y,
-      Field.PROPERTY_GAME,
-      Field.PROPERTY_NEXT,
-      Field.PROPERTY_PREV,
-      Field.PROPERTY_LANDING,
-      Field.PROPERTY_ENTRY,
-      Field.PROPERTY_STARTER,
-      Field.PROPERTY_BASEOWNER,
-      Field.PROPERTY_LANDER,
-      Field.PROPERTY_PAWNS
+	  Field.PROPERTY_COLOR,
+	  Field.PROPERTY_KIND,
+	  Field.PROPERTY_X,
+	  Field.PROPERTY_Y,
+	  Field.PROPERTY_GAME,
+	  Field.PROPERTY_NEXT,
+	  Field.PROPERTY_PREV,
+	  Field.PROPERTY_LANDING,
+	  Field.PROPERTY_ENTRY,
+	  Field.PROPERTY_STARTER,
+	  Field.PROPERTY_BASEOWNER,
+	  Field.PROPERTY_LANDER,
+	  Field.PROPERTY_PAWNS
 	};
    
 	@Override

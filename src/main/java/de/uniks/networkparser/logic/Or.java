@@ -39,7 +39,7 @@ public class Or implements SimpleConditionValue, SendableEntityCreator {
 
 	/**
 	 * @param conditions
-	 *            All Conditions.
+	 *			All Conditions.
 	 * @return Or Instance
 	 */
 	public Or add(SimpleConditionValue... conditions) {

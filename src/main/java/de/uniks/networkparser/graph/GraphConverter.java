@@ -176,10 +176,10 @@ public class GraphConverter implements Converter {
 						attribute.with(
 								DataType.ref(props.getValueByIndex(i).getClass()))
 								.withValue(props.getValueByIndex(i).toString());
-	               if (attributes.get(graphNode) == null) {
-	                  attributes.put(graphNode, new ArrayList<Attribute>());
-	               }
-	               attributes.get(graphNode).add(attribute);
+				   if (attributes.get(graphNode) == null) {
+					  attributes.put(graphNode, new ArrayList<Attribute>());
+				   }
+				   attributes.get(graphNode).add(attribute);
 					}
 				}
 			}

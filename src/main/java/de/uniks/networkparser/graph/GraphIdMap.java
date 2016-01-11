@@ -45,7 +45,7 @@ public class GraphIdMap extends IdMap {
 	 * Parses the object.
 	 *
 	 * @param object
-	 *            the object
+	 *			the object
 	 * @return the string
 	 */
 	public String parseObject(Object object) {
@@ -57,7 +57,7 @@ public class GraphIdMap extends IdMap {
 	 * Parses the object.
 	 *
 	 * @param object
-	 *            the object
+	 *			the object
 	 * @return the string
 	 */
 	public GraphList parsingObject(Object object) {
@@ -69,7 +69,7 @@ public class GraphIdMap extends IdMap {
 	 * Parses the class.
 	 *
 	 * @param object
-	 *            the object
+	 *			the object
 	 * @return the string
 	 */
 	public String parseClass(Object object) {
@@ -97,13 +97,13 @@ public class GraphIdMap extends IdMap {
 	 * Parses the.
 	 *
 	 * @param object
-	 *            the object to Serialisation
+	 *			the object to Serialisation
 	 * @param typ
-	 *            Is it a OBJECT OR A CLASS diagram
+	 *			Is it a OBJECT OR A CLASS diagram
 	 * @param filter
-	 *            Filter for Serialisation
+	 *			Filter for Serialisation
 	 * @param showCardinality
-	 *            the show cardinality
+	 *			the show cardinality
 	 * @return the Object as String
 	 */
 	private Clazz parse(Object object, GraphIdMapFilter filter,
@@ -194,7 +194,7 @@ public class GraphIdMap extends IdMap {
 	 * Gets the class name.
 	 *
 	 * @param object
-	 *            the object
+	 *			the object
 	 * @return the class name
 	 */
 	public String getClassName(Object object) {

@@ -152,7 +152,7 @@ public class Filter {
 
 	/**
 	 * @param visitedObject
-	 *            Visited Object to Add to List
+	 *			Visited Object to Add to List
 	 * @return Filter
 	 */
 	Filter withObjects(Object... visitedObject) {

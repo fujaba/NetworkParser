@@ -222,7 +222,7 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 		Text text = new Text(getLabelControl().getText() );
 		text.applyCss(); 
 
-	    return text.getLayoutBounds().getWidth();
+		return text.getLayoutBounds().getWidth();
 	}
 	
 	public void setLabelLength(double width){

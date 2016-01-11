@@ -1,8 +1,8 @@
 /**
  * <pre>
- *           0..n     student1..1
+ *		   0..n	 student1..1
  * Student ------------------------- University
- *           student        &lt;       university
+ *		   student		&lt;	   university
  * </pre>
  */
 package de.uniks.networkparser.test.model;
@@ -17,9 +17,9 @@ import de.uniks.networkparser.test.model.util.UniversityCreator;
 public class Student {
 	/**
 	 * <pre>
-	 *           0..n     students     0..1
+	 *		   0..n	 students	 0..1
 	 * Student ------------------------- University
-	 *           students        &lt;       university
+	 *		   students		&lt;	   university
 	 * </pre>
 	 */
 
@@ -53,9 +53,9 @@ public class Student {
 
 	/**
 	 * <pre>
-	 *           0..n     in     0..1
+	 *		   0..n	 in	 0..1
 	 * Student ------------------------- Room
-	 *           students        &gt;       in
+	 *		   students		&gt;	   in
 	 * </pre>
 	 */
 
@@ -90,9 +90,9 @@ public class Student {
 	public void removeYou() {
 		/**
 		 * <pre>
-		 *           0..n     in     0..1
+		 *		   0..n	 in	 0..1
 		 * Student ------------------------- Room
-		 *           students        &gt;       in
+		 *		   students		&gt;	   in
 		 * </pre>
 		 */
 		this.setUniversity(null);

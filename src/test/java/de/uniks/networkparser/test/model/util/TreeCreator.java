@@ -27,15 +27,15 @@ public class TreeCreator implements SendableEntityCreator {
 	@Override
 	public boolean setValue(Object entity, String attrName, Object value, String type) {
 		 if (AppleTree.PROPERTY_NAME.equalsIgnoreCase(attrName))
-	      {
-	         ((AppleTree) entity).setName(""+value);
-	         return true;
-	      }
+		  {
+			 ((AppleTree) entity).setName(""+value);
+			 return true;
+		  }
 		 if (AppleTree.PROPERTY_PERSON.equalsIgnoreCase(attrName))
-	      {
-	         ((AppleTree) entity).setPerson((Person)value);
-	         return true;
-	      }
+		  {
+			 ((AppleTree) entity).setPerson((Person)value);
+			 return true;
+		  }
 		 return false;
 	}
 

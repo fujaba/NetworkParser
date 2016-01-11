@@ -49,7 +49,7 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 	 * Convert the bytes to a String
 	 *
 	 * @param converter
-	 *            Grammar
+	 *			Grammar
 	 * @return converted bytes as String
 	 */
 	@Override
@@ -61,9 +61,9 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 	 * Convert the bytes to a String
 	 *
 	 * @param converter
-	 *            Grammar
+	 *			Grammar
 	 * @param dynamic
-	 *            if byte is dynamic
+	 *			if byte is dynamic
 	 * @return converted bytes as String
 	 */
 	@Override

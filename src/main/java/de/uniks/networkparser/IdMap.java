@@ -99,7 +99,7 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	 * Set the Current Logger for Infos
 	 *
 	 * @param logger
-	 *            the new Logger
+	 *			the new Logger
 	 * @return Itself
 	 */
 	public IdMap with(NetworkParserLog logger) {
@@ -119,7 +119,7 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	 * set the new List of Items for the Map
 	 *
 	 * @param parent
-	 *            the parent-List of Items
+	 *			the parent-List of Items
 	 * @return the Map
 	 */
 	public IdMap withKeyValue(SimpleKeyValueList<String, Object> parent) {
@@ -132,7 +132,7 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	 * Sets the counter.
 	 *
 	 * @param counter
-	 *            the new counter
+	 *			the new counter
 	 * @return Itself
 	 */
 	public IdMap with(IdMapCounter counter) {
@@ -156,7 +156,7 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	 * Sets the session id.
 	 *
 	 * @param value
-	 *            the new session id
+	 *			the new session id
 	 * @return Itself
 	 */
 	public IdMap withSessionId(String value) {
@@ -168,7 +168,7 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	 * Gets the Id. Do not generate a Id
 	 *
 	 * @param obj
-	 *            the obj
+	 *			the obj
 	 * @return the key
 	 */
 	public String getKey(Object obj) {
@@ -191,7 +191,7 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	 * Gets the object.
 	 *
 	 * @param key
-	 *            the key
+	 *			the key
 	 * @return the object
 	 */
 	public Object getObject(String key) {
@@ -211,7 +211,7 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	 * Gets or Create the id.
 	 *
 	 * @param obj
-	 *            the obj
+	 *			the obj
 	 * @return the id
 	 */
 	public String getId(Object obj) {
@@ -227,9 +227,9 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	 * Put.
 	 *
 	 * @param jsonId
-	 *            the json id
+	 *			the json id
 	 * @param object
-	 *            the object
+	 *			the object
 	 * @return the newObject
 	 */
 	@Override
@@ -249,7 +249,7 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 
 	/**
 	 * @param object
-	 *            for add Listener to object
+	 *			for add Listener to object
 	 * @return success of adding
 	 */
 	public boolean addListener(Object object) {
@@ -276,9 +276,9 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	 * Removes the Entity from List or Destroy them
 	 *
 	 * @param oldValue
-	 *            the old Value
+	 *			the old Value
 	 * @param destroy
-	 *            destroy the missed Element
+	 *			destroy the missed Element
 	 * @return boolean if success
 	 */
 	public boolean removeObj(Object oldValue, boolean destroy) {
@@ -324,11 +324,11 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	 * Clone object.
 	 *
 	 * @param reference
-	 *            the reference
+	 *			the reference
 	 * @param filter
-	 *            the filter
+	 *			the filter
 	 * @param deep
-	 *            the index of deep of model-ebene
+	 *			the index of deep of model-ebene
 	 * @return the object
 	 */
 	public Object cloneObject(Object reference, Filter filter, int deep) {
@@ -401,7 +401,7 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	 * Garbage collection.
 	 *
 	 * @param root
-	 *            the root
+	 *			the root
 	 */
 	public void garbageCollection(Object root) {
 		if (this.updateListenerJson == null) {
@@ -570,7 +570,7 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	 * For setting the Option of checking the CaseSensitive of the Properties
 	 *
 	 * @param value
-	 *            the new Value of CaseSensitive
+	 *			the new Value of CaseSensitive
 	 * @return XMLGrammar Instance
 	 */
 	public IdMap withCaseSensitive(boolean value) {

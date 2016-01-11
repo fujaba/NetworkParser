@@ -226,49 +226,49 @@ public class ReflectionTest {
 	}
 	
 	private static void checkDirectory(File directory, String pckgname,
-	        ArrayList<Class<?>> classes) throws ClassNotFoundException {
-	    File tmpDirectory;
+			ArrayList<Class<?>> classes) throws ClassNotFoundException {
+		File tmpDirectory;
 
-	    if (directory.exists() && directory.isDirectory()) {
-	        String[] files = directory.list();
-	        for (String file : files) {
-	            if (file.endsWith(".class")) {
-	                try {
-	                	output(pckgname + '.' + file.substring(0, file.length() - 6), null);
-	                    classes.add(Class.forName(pckgname + '.'
-	                            + file.substring(0, file.length() - 6)));
-	                } catch (NoClassDefFoundError e) {
-	                } catch (ExceptionInInitializerError e) {
-	                    // do nothing. this class hasn't been found by the loader, and we don't care.
-	                }
-	            } else if ((tmpDirectory = new File(directory, file))
-	                    .isDirectory() && !file.equalsIgnoreCase("test") && !file.equalsIgnoreCase("javafx")) {
-	                checkDirectory(tmpDirectory, pckgname + "." + file, classes);
-	            }
-	        }
-	    }
+		if (directory.exists() && directory.isDirectory()) {
+			String[] files = directory.list();
+			for (String file : files) {
+				if (file.endsWith(".class")) {
+					try {
+						output(pckgname + '.' + file.substring(0, file.length() - 6), null);
+						classes.add(Class.forName(pckgname + '.'
+								+ file.substring(0, file.length() - 6)));
+					} catch (NoClassDefFoundError e) {
+					} catch (ExceptionInInitializerError e) {
+						// do nothing. this class hasn't been found by the loader, and we don't care.
+					}
+				} else if ((tmpDirectory = new File(directory, file))
+						.isDirectory() && !file.equalsIgnoreCase("test") && !file.equalsIgnoreCase("javafx")) {
+					checkDirectory(tmpDirectory, pckgname + "." + file, classes);
+				}
+			}
+		}
 	}
 	/**
 	 * Attempts to list all the classes in the specified package as determined
 	 * by the context class loader
 	 * 
 	 * @param pckgname
-	 *            the package name to search
+	 *			the package name to search
 	 * @return a list of classes that exist within that package
 	 * @throws ClassNotFoundException
-	 *             if something went wrong
+	 *			 if something went wrong
 	 * @throws IOException 
 	 */
 	public static ArrayList<Class<?>> getClassesForPackage(String pckgname)
-	        throws ClassNotFoundException, IOException {
-	    ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
-	    ClassLoader cld = Thread.currentThread()
-                .getContextClassLoader();
-	    
-	    Enumeration<URL> resources = cld.getResources(pckgname.replace('.', '/'));
-        for (URL url = null; resources.hasMoreElements() && ((url = resources.nextElement()) != null);) {
-                checkDirectory(new File(URLDecoder.decode(url.getPath(), "UTF-8")), pckgname, classes);
-	    }
-        return classes;
+			throws ClassNotFoundException, IOException {
+		ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
+		ClassLoader cld = Thread.currentThread()
+				.getContextClassLoader();
+		
+		Enumeration<URL> resources = cld.getResources(pckgname.replace('.', '/'));
+		for (URL url = null; resources.hasMoreElements() && ((url = resources.nextElement()) != null);) {
+				checkDirectory(new File(URLDecoder.decode(url.getPath(), "UTF-8")), pckgname, classes);
+		}
+		return classes;
 	}
 }

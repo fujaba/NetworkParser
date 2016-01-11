@@ -12,9 +12,9 @@ import de.uniks.networkparser.test.model.util.UniversityCreator;
 public class Room {
 	/**
 	 * <pre>
-	 *           0..n     rooms     1..1
+	 *		   0..n	 rooms	 1..1
 	 * Room ------------------------- University
-	 *           rooms        &lt;       university
+	 *		   rooms		&lt;	   university
 	 * </pre>
 	 */
 
@@ -48,9 +48,9 @@ public class Room {
 
 	/**
 	 * <pre>
-	 *           0..1     in     0..n
+	 *		   0..1	 in	 0..n
 	 * Room ------------------------- Student
-	 *           in        &lt;       students
+	 *		   in		&lt;	   students
 	 * </pre>
 	 */
 
@@ -115,9 +115,9 @@ public class Room {
 		this.removeAllFromSublocations();
 		/**
 		 * <pre>
-		 *           0..1     in     0..n
+		 *		   0..1	 in	 0..n
 		 * Room ------------------------- Student
-		 *           in        &lt;       students
+		 *		   in		&lt;	   students
 		 * </pre>
 		 */
 		this.setParent(null);
@@ -269,16 +269,16 @@ public class Room {
 
 	/**
 	 * <pre>
-	 *           0..n     rooms0..1
+	 *		   0..n	 rooms0..1
 	 * Room ------------------------- University
-	 *           rooms        &lt;       university
+	 *		   rooms		&lt;	   university
 	 * </pre>
 	 */
 	/**
 	 * <pre>
-	 *           0..n     parent     0..1
+	 *		   0..n	 parent	 0..1
 	 * Room ------------------------- Room
-	 *           sublocations        &lt;       parent
+	 *		   sublocations		&lt;	   parent
 	 * </pre>
 	 */
 
@@ -312,9 +312,9 @@ public class Room {
 
 	/**
 	 * <pre>
-	 *           0..1     parent     0..n
+	 *		   0..1	 parent	 0..n
 	 * Room ------------------------- Room
-	 *           parent        &gt;       sublocations
+	 *		   parent		&gt;	   sublocations
 	 * </pre>
 	 */
 

@@ -58,9 +58,9 @@ public class ByteEntity implements ByteItem, BaseItem {
 	 * Sets the value.
 	 *
 	 * @param typ
-	 *            the new Typ
+	 *			the new Typ
 	 * @param value
-	 *            the new value
+	 *			the new value
 	 * @return Itself
 	 */
 	public ByteEntity withValue(byte typ, byte[] value) {
@@ -75,9 +75,9 @@ public class ByteEntity implements ByteItem, BaseItem {
 	 * Sets the value.
 	 *
 	 * @param typ
-	 *            The Typ of Element
+	 *			The Typ of Element
 	 * @param value
-	 *            the new value
+	 *			the new value
 	 * @return Itself
 	 */
 	public ByteEntity withValue(byte typ, byte value) {
@@ -98,7 +98,7 @@ public class ByteEntity implements ByteItem, BaseItem {
 	 * Byte to unsigned byte.
 	 *
 	 * @param n
-	 *            the Byte
+	 *			the Byte
 	 * @return the Byte
 	 */
 	public byte byteToUnsignedByte(int n) {
@@ -119,7 +119,7 @@ public class ByteEntity implements ByteItem, BaseItem {
 	 * Convert the bytes to a String
 	 *
 	 * @param converter
-	 *            Grammar
+	 *			Grammar
 	 * @return converted bytes as String
 	 */
 	@Override
@@ -131,9 +131,9 @@ public class ByteEntity implements ByteItem, BaseItem {
 	 * Convert the bytes to a String
 	 *
 	 * @param converter
-	 *            Grammar
+	 *			Grammar
 	 * @param dynamic
-	 *            if byte is dynamic
+	 *			if byte is dynamic
 	 * @return converted bytes as String
 	 */
 	@Override
@@ -148,13 +148,13 @@ public class ByteEntity implements ByteItem, BaseItem {
 	 * Gets the bytes.
 	 *
 	 * @param buffer
-	 *            The Buffer to write
+	 *			The Buffer to write
 	 * @param isDynamic
-	 *            is short the Stream for message
+	 *			is short the Stream for message
 	 * @param isLast
-	 *            is the Element is the last of Group
+	 *			is the Element is the last of Group
 	 * @param isPrimitive
-	 *            is the Element is the StreamClazz
+	 *			is the Element is the StreamClazz
 	 */
 	@Override
 	public void writeBytes(ByteBuffer buffer, boolean isDynamic,

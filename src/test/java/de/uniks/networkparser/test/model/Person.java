@@ -50,13 +50,13 @@ public class Person  implements SendableEntity, Comparable<Object> {
    
    public PropertyChangeSupport getPropertyChangeSupport()
    {
-      return listeners;
+	  return listeners;
    }
    
    public boolean addPropertyChangeListener(PropertyChangeListener listener) 
    {
-      getPropertyChangeSupport().addPropertyChangeListener(listener);
-      return true;
+	  getPropertyChangeSupport().addPropertyChangeListener(listener);
+	  return true;
    }
 
 	@Override
@@ -76,43 +76,43 @@ public class Person  implements SendableEntity, Comparable<Object> {
    
    public void removeYou()
    {
-      setParent(null);
-       withoutItem(this.getItem().toArray(new Item[this.getItem().size()]));
-      getPropertyChangeSupport().firePropertyChange("REMOVE_YOU", this, null);
+	  setParent(null);
+	   withoutItem(this.getItem().toArray(new Item[this.getItem().size()]));
+	  getPropertyChangeSupport().firePropertyChange("REMOVE_YOU", this, null);
    }
 
    
    //==========================================================================
    public String getName()
    {
-      return this.name;
+	  return this.name;
    }
    
    public void setName(String value)
    {
-      if ( ! StrUtil.stringEquals(this.name, value))
-      {
-         String oldValue = this.name;
-         this.name = value;
-         getPropertyChangeSupport().firePropertyChange(PROPERTY_NAME, oldValue, value);
-      }
+	  if ( ! StrUtil.stringEquals(this.name, value))
+	  {
+		 String oldValue = this.name;
+		 this.name = value;
+		 getPropertyChangeSupport().firePropertyChange(PROPERTY_NAME, oldValue, value);
+	  }
    }
    
    public Person withName(String value)
    {
-      setName(value);
-      return this;
+	  setName(value);
+	  return this;
    } 
 
 
    @Override
    public String toString()
    {
-      StringBuilder r = new StringBuilder();
-      
-      r.append(" ").append(this.getName());
-      r.append(" ").append(this.getBalance());
-      return r.substring(1);
+	  StringBuilder r = new StringBuilder();
+	  
+	  r.append(" ").append(this.getName());
+	  r.append(" ").append(this.getBalance());
+	  return r.substring(1);
    }
 
 
@@ -122,23 +122,23 @@ public class Person  implements SendableEntity, Comparable<Object> {
 
    public double getBalance()
    {
-      return this.balance;
+	  return this.balance;
    }
    
    public void setBalance(double value)
    {
-      if (this.balance != value)
-      {
-         double oldValue = this.balance;
-         this.balance = value;
-         getPropertyChangeSupport().firePropertyChange(PROPERTY_BALANCE, oldValue, value);
-      }
+	  if (this.balance != value)
+	  {
+		 double oldValue = this.balance;
+		 this.balance = value;
+		 getPropertyChangeSupport().firePropertyChange(PROPERTY_BALANCE, oldValue, value);
+	  }
    }
    
    public Person withBalance(double value)
    {
-      setBalance(value);
-      return this;
+	  setBalance(value);
+	  return this;
    } 
 
    
@@ -146,144 +146,144 @@ public class Person  implements SendableEntity, Comparable<Object> {
 
    
    /********************************************************************
-    * <pre>
-    *              many                       one
-    * Person ----------------------------------- GroupAccount
-    *              persons                   parent
-    * </pre>
-    */
+	* <pre>
+	*			  many					   one
+	* Person ----------------------------------- GroupAccount
+	*			  persons				   parent
+	* </pre>
+	*/
    
 
    public GroupAccount getParent()
    {
-      return this.parent;
+	  return this.parent;
    }
 
    public boolean setParent(GroupAccount value)
    {
-      boolean changed = false;
-      
-      if (this.parent != value)
-      {
-         GroupAccount oldValue = this.parent;
-         
-         if (this.parent != null)
-         {
-            this.parent = null;
-            oldValue.withoutPersons(this);
-         }
-         
-         this.parent = value;
-         
-         if (value != null)
-         {
-            value.withPersons(this);
-         }
-         
-         getPropertyChangeSupport().firePropertyChange(PROPERTY_PARENT, oldValue, value);
-         changed = true;
-      }
-      
-      return changed;
+	  boolean changed = false;
+	  
+	  if (this.parent != value)
+	  {
+		 GroupAccount oldValue = this.parent;
+		 
+		 if (this.parent != null)
+		 {
+			this.parent = null;
+			oldValue.withoutPersons(this);
+		 }
+		 
+		 this.parent = value;
+		 
+		 if (value != null)
+		 {
+			value.withPersons(this);
+		 }
+		 
+		 getPropertyChangeSupport().firePropertyChange(PROPERTY_PARENT, oldValue, value);
+		 changed = true;
+	  }
+	  
+	  return changed;
    }
    
    public boolean setUnidirectionalParent(GroupAccount value)
    {
-      boolean changed = false;
-      
-      if (this.parent != value)
-      {
-         GroupAccount oldValue = this.parent;
-         
-         this.parent = value;
-         getPropertyChangeSupport().firePropertyChange(PROPERTY_PARENT, oldValue, value);
-         changed = true;
-      }
-      
-      return changed;
+	  boolean changed = false;
+	  
+	  if (this.parent != value)
+	  {
+		 GroupAccount oldValue = this.parent;
+		 
+		 this.parent = value;
+		 getPropertyChangeSupport().firePropertyChange(PROPERTY_PARENT, oldValue, value);
+		 changed = true;
+	  }
+	  
+	  return changed;
    }
 
    public Person withParent(GroupAccount value)
    {
-      setParent(value);
-      return this;
+	  setParent(value);
+	  return this;
    } 
 
    public GroupAccount createParent()
    {
-      GroupAccount value = new GroupAccount();
-      withParent(value);
-      return value;
+	  GroupAccount value = new GroupAccount();
+	  withParent(value);
+	  return value;
    } 
 
    
    /********************************************************************
-    * <pre>
-    *              one                       many
-    * Person ----------------------------------- Item
-    *              buyer                   item
-    * </pre>
-    */
+	* <pre>
+	*			  one					   many
+	* Person ----------------------------------- Item
+	*			  buyer				   item
+	* </pre>
+	*/
    
    
    public ItemSet getItem()
    {
-      if (this.item == null)
-      {
-         return Item.EMPTY_SET;
-      }
+	  if (this.item == null)
+	  {
+		 return Item.EMPTY_SET;
+	  }
    
-      return this.item;
+	  return this.item;
    }
 
    public Person withItem(Item... value)
    {
-      if(value==null){
-         return this;
-      }
-      for (Item item : value)
-      {
-         if (item != null)
-         {
-            if (this.item == null)
-            {
-               this.item = new ItemSet();
-            }
-            
-            boolean changed = this.item.add (item);
+	  if(value==null){
+		 return this;
+	  }
+	  for (Item item : value)
+	  {
+		 if (item != null)
+		 {
+			if (this.item == null)
+			{
+			   this.item = new ItemSet();
+			}
+			
+			boolean changed = this.item.add (item);
 
-            if (changed)
-            {
-               item.withBuyer(this);
-               getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEM, null, item);
-            }
-         }
-      }
-      return this;
+			if (changed)
+			{
+			   item.withBuyer(this);
+			   getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEM, null, item);
+			}
+		 }
+	  }
+	  return this;
    } 
 
    public Person withoutItem(Item... value)
    {
-      for (Item item : value)
-      {
-         if ((this.item != null) && (item != null))
-         {
-            if (this.item.remove(item))
-            {
-               item.setBuyer(null);
-               getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEM, item, null);
-            }
-         }
-         
-      }
-      return this;
+	  for (Item item : value)
+	  {
+		 if ((this.item != null) && (item != null))
+		 {
+			if (this.item.remove(item))
+			{
+			   item.setBuyer(null);
+			   getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEM, item, null);
+			}
+		 }
+		 
+	  }
+	  return this;
    }
 
    public Item createItem()
    {
-      Item value = new Item();
-      withItem(value);
-      return value;
+	  Item value = new Item();
+	  withItem(value);
+	  return value;
    } 
 	public Wallet getWallet() {
 		return wallet;

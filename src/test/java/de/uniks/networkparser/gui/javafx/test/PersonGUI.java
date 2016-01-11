@@ -12,55 +12,55 @@ public class PersonGUI {
 	public static final String PROPERTY_EMAIL="email";
 	public static final String PROPERTY_DISTANCE="distance";
 	public static final String PROPERTY_CREATE="created";
-    private StringProperty firstName;
+	private StringProperty firstName;
 
-    private StringProperty lastName;
+	private StringProperty lastName;
 
-    private StringProperty email;
-    
-    private SimpleIntegerProperty distanceValue;
-    
-    private Date date;
-    
+	private StringProperty email;
+	
+	private SimpleIntegerProperty distanceValue;
+	
+	private Date date;
+	
 	private String caption;
 
 
-    public PersonGUI(){
-    	this.firstName = new SimpleStringProperty("");
+	public PersonGUI(){
+		this.firstName = new SimpleStringProperty("");
 
-        this.lastName = new SimpleStringProperty("");
+		this.lastName = new SimpleStringProperty("");
 
-        this.email = new SimpleStringProperty("");
-        
-        this.distanceValue = new SimpleIntegerProperty();
-    	
-    }
-    public PersonGUI(String fName, String lName, String email, int distance) {
+		this.email = new SimpleStringProperty("");
+		
+		this.distanceValue = new SimpleIntegerProperty();
+		
+	}
+	public PersonGUI(String fName, String lName, String email, int distance) {
 
-        this.firstName = new SimpleStringProperty(fName);
+		this.firstName = new SimpleStringProperty(fName);
 
-        this.lastName = new SimpleStringProperty(lName);
+		this.lastName = new SimpleStringProperty(lName);
 
-        this.email = new SimpleStringProperty(email);
-        this.distanceValue = new SimpleIntegerProperty(distance);
-    }
+		this.email = new SimpleStringProperty(email);
+		this.distanceValue = new SimpleIntegerProperty(distance);
+	}
 
-     
+	 
 
-    public PersonGUI(String fName, String lName, String email) {
-        this.firstName = new SimpleStringProperty(fName);
+	public PersonGUI(String fName, String lName, String email) {
+		this.firstName = new SimpleStringProperty(fName);
 
-        this.lastName = new SimpleStringProperty(lName);
+		this.lastName = new SimpleStringProperty(lName);
 
-        this.email = new SimpleStringProperty(email);
+		this.email = new SimpleStringProperty(email);
 	}
 	public StringProperty firstnameProperty() { return firstName; }
 
-    public StringProperty lastnameProperty() { return lastName; }
+	public StringProperty lastnameProperty() { return lastName; }
 
-    public StringProperty emailProperty() { return email; }
-    
-    public SimpleIntegerProperty distanceProperty() { return distanceValue; }
+	public StringProperty emailProperty() { return email; }
+	
+	public SimpleIntegerProperty distanceProperty() { return distanceValue; }
 
 	public String getCaption() {
 		return caption;

@@ -44,7 +44,7 @@ public class IfCondition implements SimpleConditionValue, SendableEntityCreator 
 
 	/**
 	 * @param value
-	 *            Set the new Expression
+	 *			Set the new Expression
 	 * @return IfCondition Instance
 	 */
 	public IfCondition withExpression(Condition<SimpleValues> value) {
@@ -59,7 +59,7 @@ public class IfCondition implements SimpleConditionValue, SendableEntityCreator 
 
 	/**
 	 * @param condition
-	 *            Ste The True Case
+	 *			Ste The True Case
 	 * @return InstanceOf Instance
 	 */
 	public IfCondition withTrue(Condition<SimpleValues> condition) {
@@ -74,7 +74,7 @@ public class IfCondition implements SimpleConditionValue, SendableEntityCreator 
 
 	/**
 	 * @param condition
-	 *            Set the False Case
+	 *			Set the False Case
 	 * @return IfCondition Instance
 	 */
 	public IfCondition withFalse(Condition<SimpleValues> condition) {

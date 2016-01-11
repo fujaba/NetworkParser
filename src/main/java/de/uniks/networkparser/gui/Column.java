@@ -90,7 +90,7 @@ public class Column implements SendableEntityCreatorNoIndex {
 
 	/**
 	 * @param label
-	 *            the label to set
+	 *			the label to set
 	 * @return Itself
 	 */
 	public Column withLabel(String label) {
@@ -107,7 +107,7 @@ public class Column implements SendableEntityCreatorNoIndex {
 
 	/**
 	 * @param attrName
-	 *            Attribute Name for display
+	 *			Attribute Name for display
 	 * @return Itself
 	 */
 	public Column withAttrName(String attrName) {
@@ -117,9 +117,9 @@ public class Column implements SendableEntityCreatorNoIndex {
 
 	/**
 	 * @param attrName
-	 *            Attribute Name for display
+	 *			Attribute Name for display
 	 * @param edit
-	 *            is the Column is editable
+	 *			is the Column is editable
 	 * @return this
 	 */
 	public Column withAttrName(String attrName, boolean edit) {
@@ -140,7 +140,7 @@ public class Column implements SendableEntityCreatorNoIndex {
 
 	/**
 	 * @param value
-	 *            the NumberFormat to set
+	 *			the NumberFormat to set
 	 * @return Itself
 	 */
 	public Column withNumberFormat(String value) {
@@ -157,7 +157,7 @@ public class Column implements SendableEntityCreatorNoIndex {
 
 	/**
 	 * @param value
-	 *            the editColumn to set
+	 *			the editColumn to set
 	 * @return Itself
 	 */
 	public Column withEditable(boolean value) {

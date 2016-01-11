@@ -57,7 +57,7 @@ public class UpdateListenerJson implements PropertyChangeListener {
 	 * Instantiates a new update listener.
 	 *
 	 * @param map
-	 *            the map
+	 *			the map
 	 */
 	public UpdateListenerJson(IdMap map) {
 		if (map instanceof JsonIdMap) {
@@ -69,7 +69,7 @@ public class UpdateListenerJson implements PropertyChangeListener {
 	 * Garbage collection.
 	 *
 	 * @param root
-	 *            the root
+	 *			the root
 	 * @return the json object
 	 */
 	public JsonObject garbageCollection(Object root) {
@@ -197,7 +197,7 @@ public class UpdateListenerJson implements PropertyChangeListener {
 	 * Execute.
 	 *
 	 * @param updateMessage
-	 *            the update message
+	 *			the update message
 	 * @return the MasterObject, if successful
 	 */
 	public Object execute(JsonObject updateMessage) {
@@ -208,7 +208,7 @@ public class UpdateListenerJson implements PropertyChangeListener {
 	 * Execute.
 	 *
 	 * @param updateMessage
-	 *            the update message
+	 *			the update message
 	 * @param filter Filter for exclude UpdateMessages
 	 * @return the MasterObject, if successful
 	 */
@@ -228,13 +228,13 @@ public class UpdateListenerJson implements PropertyChangeListener {
 		   
 		   if (masterObjClassName != null)
 		   {
-		      // cool, lets make it
-		      SendableEntityCreator creator = this.map.getCreator(masterObjClassName, true);
-		      masterObj = creator.getSendableInstance(false);
-		      if (masterObj != null)
-		      {
-		         this.map.put(id, masterObj);
-		      }
+			  // cool, lets make it
+			  SendableEntityCreator creator = this.map.getCreator(masterObjClassName, true);
+			  masterObj = creator.getSendableInstance(false);
+			  if (masterObj != null)
+			  {
+				 this.map.put(id, masterObj);
+			  }
 		   }
 		}
 		if (masterObj == null) {
@@ -328,11 +328,11 @@ public class UpdateListenerJson implements PropertyChangeListener {
 	 * Check value.
 	 *
 	 * @param value
-	 *            the value
+	 *			the value
 	 * @param key
-	 *            the key
+	 *			the key
 	 * @param oldJsonObject
-	 *            the json obj
+	 *			the json obj
 	 * @return true, if successful
 	 */
 	private boolean checkValue(Object value, String key,
@@ -355,7 +355,7 @@ public class UpdateListenerJson implements PropertyChangeListener {
 	 * Check prio.
 	 *
 	 * @param prio
-	 *            the prio
+	 *			the prio
 	 * @return true, if successful
 	 */
 	private boolean checkPrio(Object prio) {
@@ -378,13 +378,13 @@ public class UpdateListenerJson implements PropertyChangeListener {
 	 * Sets the value.
 	 *
 	 * @param creator
-	 *            the creator
+	 *			the creator
 	 * @param element
-	 *            the element
+	 *			the element
 	 * @param key
-	 *            the key
+	 *			the key
 	 * @param newValue
-	 *            the new value
+	 *			the new value
 	 * @return true, if successful
 	 */
 	private Object setValue(SendableEntityCreator creator, Object element,
@@ -411,7 +411,7 @@ public class UpdateListenerJson implements PropertyChangeListener {
 	 * Count message.
 	 *
 	 * @param message
-	 *            the message
+	 *			the message
 	 */
 	private void countMessage(JsonObject message, ArrayList<String> classCounts, SimpleKeyValueList<String, Object> gc) {
 		if (message.has(JsonIdMap.ID)) {
@@ -449,7 +449,7 @@ public class UpdateListenerJson implements PropertyChangeListener {
 	 * Count message.
 	 *
 	 * @param message
-	 *            the message
+	 *			the message
 	 */
 	private void countMessage(JsonArray message, ArrayList<String> classCounts, SimpleKeyValueList<String, Object> gc) {
 		for (Iterator<Object> i = message.iterator(); i.hasNext();) {

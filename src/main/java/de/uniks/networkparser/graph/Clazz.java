@@ -137,15 +137,15 @@ public class Clazz extends GraphEntity {
 	/**
 	 * ********************************************************************
 	 * <pre>
-	 *       %srcCardinality%       %tgtCardinality%
+	 *	   %srcCardinality%	   %tgtCardinality%
 	 * Clazz --------------------------------------- %tgtClass%
-	 *       %srcRoleName%             %tgtRoleName%
+	 *	   %srcRoleName%			 %tgtRoleName%
 	 * </pre>
 	 *
 	 * create a Bidirectional Association 
 	 * 
-	 * @param tgtClass 				The target Clazz
-	 * @param tgtRoleName 			The Targetrolename
+	 * @param tgtClass				 The target Clazz
+	 * @param tgtRoleName			 The Targetrolename
 	 * @param tgtCardinality		The Targetcardinality
 	 * @param srcRoleName			The sourcerolename
 	 * @param srcCardinality		The sourcecardinality
@@ -169,9 +169,9 @@ public class Clazz extends GraphEntity {
 	/**
 	 * ********************************************************************
 	 * <pre>
-	 *                                 %tgtCardinality%
+	 *								 %tgtCardinality%
 	 * Clazz ----------------------------------- %tgtClass%
-	 *                                    %tgtRoleName%
+	 *									%tgtRoleName%
 	 * </pre>
 	 *
 	 * create a Undirectional Association
@@ -215,11 +215,11 @@ public class Clazz extends GraphEntity {
 	 * Get All Interfaces
 	 * @param transitive Get all Interfaces or direct Interfaces
 	 * @return all Interfaces of a Clazz
-	 *         <pre>
-	 *              one                       many
+	 *		 <pre>
+	 *			  one					   many
 	 * Clazz ----------------------------------- Clazz
-	 *              clazz                   Interfaces
-	 *         </pre>
+	 *			  clazz				   Interfaces
+	 *		 </pre>
 	 */
 	public SimpleSet<Clazz> getInterfaces(boolean transitive) {
 		SimpleSet<Clazz> interfaces = new SimpleSet<Clazz>();
@@ -272,11 +272,11 @@ public class Clazz extends GraphEntity {
 	 * Get All SuperClazzes
 	 * @param transitive Get all SuperClasses or direct SuperClasses
 	 * @return all SuperClasses of a Clazz
-	 *         <pre>
-	 *              one                       many
+	 *		 <pre>
+	 *			  one					   many
 	 * Clazz ----------------------------------- Clazz
-	 *              clazz                   superClazzes
-	 *         </pre>
+	 *			  clazz				   superClazzes
+	 *		 </pre>
 	 */
 	public SimpleSet<Clazz> getSuperClazzes(boolean transitive) {
 		SimpleSet<Clazz> collection = getEdges(AssociationTypes.GENERALISATION);
@@ -294,11 +294,11 @@ public class Clazz extends GraphEntity {
 	 * get All KindClazzes
 	 * @param transitive Get all KindClasses or direct KindClasses
 	 * @return all KindClasses of a Clazz
-	 *         <pre>
-	 *              one                       many
+	 *		 <pre>
+	 *			  one					   many
 	 * Clazz ----------------------------------- Clazz
-	 *              clazz                   kindClazzes
-	 *         </pre>
+	 *			  clazz				   kindClazzes
+	 *		 </pre>
 	 */
 	public SimpleSet<Clazz> getKidClazzes(boolean transitive) {
 		SimpleSet<Clazz> kidClazzes = getEdges(AssociationTypes.CHILD);
@@ -387,11 +387,11 @@ public class Clazz extends GraphEntity {
 	 * 
 	 * @return all GraphAttributes of a GraphNode
 	 * 
-	 *         <pre>
-	 *              one                       many
+	 *		 <pre>
+	 *			  one					   many
 	 * GraphModel ----------------------------------- GraphAttributes
-	 *              parent                   clazz
-	 *         </pre>
+	 *			  parent				   clazz
+	 *		 </pre>
 	 */
 	public SimpleSet<Attribute> getAttributes() {
 		SimpleSet<Attribute> collection = new SimpleSet<Attribute>();
@@ -411,11 +411,11 @@ public class Clazz extends GraphEntity {
 	 * 
 	 * @return all GraphMethods of a GraphNode
 	 * 
-	 *         <pre>
-	 *              one                       many
+	 *		 <pre>
+	 *			  one					   many
 	 * GraphModel ----------------------------------- GraphMethods
-	 *              parent                   clazz
-	 *         </pre>
+	 *			  parent				   clazz
+	 *		 </pre>
 	 */
 	public SimpleSet<Method> getMethods() {
 		SimpleSet<Method> collection = new SimpleSet<Method>();

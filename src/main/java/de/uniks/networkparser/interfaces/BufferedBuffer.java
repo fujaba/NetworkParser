@@ -61,9 +61,9 @@ public abstract class BufferedBuffer extends Buffer {
 
 	/**
 	 * @param start
-	 *            startindex for parsing
+	 *			startindex for parsing
 	 * @param length
-	 *            the length of Substring
+	 *			the length of Substring
 	 * @return the Substring
 	 */
 	public abstract String substring(int start, int length);

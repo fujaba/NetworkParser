@@ -200,8 +200,8 @@ public class GraphList extends GraphModel implements BaseItem{
 	@Override
 	public BaseItem withAll(Object... values) {
 		this.children.withAll(values);
-        return this;
-    }
+		return this;
+	}
 
 	@Override
 	public Object getValueItem(Object key) {
@@ -210,9 +210,9 @@ public class GraphList extends GraphModel implements BaseItem{
 
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
-        if(keyValue) {
-            return new SimpleMapEntry<String, GraphNode>();
-        }
-        return new GraphList();
+		if(keyValue) {
+			return new SimpleMapEntry<String, GraphNode>();
+		}
+		return new GraphList();
 	}
 }

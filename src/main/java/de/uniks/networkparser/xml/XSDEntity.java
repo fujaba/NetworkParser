@@ -56,7 +56,7 @@ public class XSDEntity extends XMLEntity {
 
 	/**
 	 * @param value
-	 *            Elements of Choice.
+	 *			Elements of Choice.
 	 */
 	public void setChoice(ArrayList<XSDEntity> value) {
 		this.choice = value;
@@ -69,7 +69,7 @@ public class XSDEntity extends XMLEntity {
 
 	/**
 	 * @param values
-	 *            Set the Sequence.
+	 *			Set the Sequence.
 	 */
 	public void setSequence(ArrayList<XSDEntity> values) {
 		this.sequence = values;
@@ -82,7 +82,7 @@ public class XSDEntity extends XMLEntity {
 
 	/**
 	 * @param values
-	 *            Set All Attributes.
+	 *			Set All Attributes.
 	 */
 	public void setAttribute(ArrayList<String> values) {
 		this.attribute = values;
@@ -95,7 +95,7 @@ public class XSDEntity extends XMLEntity {
 
 	/**
 	 * @param value
-	 *            The Minimum of Elements.
+	 *			The Minimum of Elements.
 	 */
 	public void setMinOccurs(String value) {
 		this.minOccurs = value;
@@ -108,7 +108,7 @@ public class XSDEntity extends XMLEntity {
 
 	/**
 	 * @param value
-	 *            the Maximum of Elements.
+	 *			the Maximum of Elements.
 	 */
 	public void setMaxOccurs(String value) {
 		this.maxOccurs = value;

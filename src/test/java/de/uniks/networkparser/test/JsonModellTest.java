@@ -54,9 +54,9 @@ public class JsonModellTest implements UpdateListener {
 		
 		String sample="Hallo Welt";
 		
-	    byte[] dataByte = sample.getBytes();
-	    Assert.assertEquals("Actual Size of String", 10, dataByte.length);
-	    
+		byte[] dataByte = sample.getBytes();
+		Assert.assertEquals("Actual Size of String", 10, dataByte.length);
+		
 		// test string
 		String text = "Hello world!";
 		Assert.assertEquals("" + text+ "(" +text.length()+ ")", 12, text.length());

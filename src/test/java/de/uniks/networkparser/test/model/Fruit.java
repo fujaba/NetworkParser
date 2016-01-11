@@ -41,32 +41,32 @@ public abstract class Fruit
 
    public double getX()
    {
-      return this.x;
+	  return this.x;
    }
    
    public void setX(double value)
    {
-      if (this.x != value)
-      {
-         this.x = value;
-      }
+	  if (this.x != value)
+	  {
+		 this.x = value;
+	  }
    }
    
    public Fruit withX(double value)
    {
-      setX(value);
-      return this;
+	  setX(value);
+	  return this;
    } 
 
 
    @Override
    public String toString()
    {
-      StringBuilder s = new StringBuilder();
-      
-      s.append(" ").append(this.getX());
-      s.append(" ").append(this.getY());
-      return s.substring(1);
+	  StringBuilder s = new StringBuilder();
+	  
+	  s.append(" ").append(this.getX());
+	  s.append(" ").append(this.getY());
+	  return s.substring(1);
    }
 
 
@@ -79,20 +79,20 @@ public abstract class Fruit
 
    public double getY()
    {
-      return this.y;
+	  return this.y;
    }
    
    public void setY(double value)
    {
-      if (this.y != value)
-      {
-         this.y = value;
-      }
+	  if (this.y != value)
+	  {
+		 this.y = value;
+	  }
    }
    
    public Fruit withY(double value)
    {
-      setY(value);
-      return this;
+	  setY(value);
+	  return this;
    } 
 }

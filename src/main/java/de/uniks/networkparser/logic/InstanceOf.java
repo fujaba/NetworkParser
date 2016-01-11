@@ -90,7 +90,7 @@ public class InstanceOf extends SimpleConditionMap implements SendableEntityCrea
 	 * Static Method for instance a new Instance of InstanceOf Object.
 	 *
 	 * @param clazzName
-	 *            The ClazzName
+	 *			The ClazzName
 	 * @return The new Instance
 	 */
 	public static InstanceOf value(Class<?> clazzName) {
@@ -101,9 +101,9 @@ public class InstanceOf extends SimpleConditionMap implements SendableEntityCrea
 	 * Static Method for instance a new Instance of InstanceOf Object.
 	 *
 	 * @param clazz
-	 *            The ClazzName
+	 *			The ClazzName
 	 * @param property
-	 *            The Property
+	 *			The Property
 	 * @return The new Instance
 	 */
 	public static InstanceOf value(Object clazz, String property) {
@@ -123,7 +123,7 @@ public class InstanceOf extends SimpleConditionMap implements SendableEntityCrea
 
 	/**
 	 * @param value
-	 *            The new ClazzName
+	 *			The new ClazzName
 	 * @return INstacneOf Instance
 	 */
 	public InstanceOf withClazzName(Class<?> value) {
@@ -138,7 +138,7 @@ public class InstanceOf extends SimpleConditionMap implements SendableEntityCrea
 
 	/**
 	 * @param value
-	 *            The new Property
+	 *			The new Property
 	 * @return InstanceOf Instance
 	 */
 	public InstanceOf withProperty(String value) {
@@ -153,7 +153,7 @@ public class InstanceOf extends SimpleConditionMap implements SendableEntityCrea
 
 	/**
 	 * @param value
-	 *            The new Value
+	 *			The new Value
 	 * @return InstanceOf Instance
 	 */
 	public InstanceOf withValue(Object value) {
@@ -171,7 +171,7 @@ public class InstanceOf extends SimpleConditionMap implements SendableEntityCrea
 			if(values.getValue()!=null && values.getValue().getClass().isPrimitive()) {
 				return true;
 			}
-  			if(this.clazzName!=null && !this.clazzName.isInstance(values.getValue())) {
+			  if(this.clazzName!=null && !this.clazzName.isInstance(values.getValue())) {
 				return false;
 			}else if(this.property==null) {
 				return true;

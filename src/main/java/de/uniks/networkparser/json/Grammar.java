@@ -30,13 +30,13 @@ import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 public class Grammar {
 	/**
 	 * @param jsonObject
-	 *            The Object for read
+	 *			The Object for read
 	 * @param map
-	 *            The IdMap
+	 *			The IdMap
 	 * @param filter
-	 *            The filter
+	 *			The filter
 	 * @param isId
-	 *            The isReadId
+	 *			The isReadId
 	 *
 	 * @return the props of theJsonObject
 	 */
@@ -61,9 +61,11 @@ public class Grammar {
 
 	/**
 	 * @param jsonObject
-	 *            The Object for read
+	 *			The Object for read
 	 * @param map
-	 *            The IdMap
+	 *			The IdMap
+	 * @param searchForSuperCreator
+	 *			search for Creator in superclasses
 	 * @return the Creator for this JsonObject
 	 */
 	public SendableEntityCreator getReadCreator(JsonObject jsonObject,
@@ -86,12 +88,13 @@ public class Grammar {
 
 	/**
 	 * @param modelItem
-	 *            Item for write
+	 *			Item for write
 	 * @param className
-	 *            String className
+	 *			String className
 	 * @param map
-	 *            The IdMap
-	 *
+	 *			The IdMap
+	 * @param searchForSuperCreator
+	 *			search for Creator in superclasses
 	 * @return the Creator for this JsonObject
 	 */
 	public SendableEntityCreator getWriteCreator(Object modelItem,

@@ -187,15 +187,15 @@ public class NetworkParserSources {
 				if(!child.getAbsolutePath().endsWith(".java")){
 					continue;
 				}
- 				SourceItem source= new SourceItem(child).withProjectName(projectName);
- 				lineofCode += source.getLineOfCode();
- 				String customComment = source.getCustomComment();
- 				if(customComment.length()>0){
- 					customItems.put(customComment, source.getFileName());
- 					System.out.println("Thirdparty-Source: " +source.getFileName());
- 					thirdparty++;
- 					continue;
- 				}
+				 SourceItem source= new SourceItem(child).withProjectName(projectName);
+				 lineofCode += source.getLineOfCode();
+				 String customComment = source.getCustomComment();
+				 if(customComment.length()>0){
+					 customItems.put(customComment, source.getFileName());
+					 System.out.println("Thirdparty-Source: " +source.getFileName());
+					 thirdparty++;
+					 continue;
+				 }
 				if(source.skipComment()){
 					skip++;
 					continue;

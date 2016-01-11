@@ -30,11 +30,11 @@ public abstract class GraphModel extends GraphEntity {
 	 * 
 	 * @return all GraphClazz of a GraphModel
 	 * 
-	 *         <pre>
-	 *              one                       many
+	 *		 <pre>
+	 *			  one					   many
 	 * GraphModel ----------------------------------- GraphClazz
-	 *              parent                   clazz
-	 *         </pre>
+	 *			  parent				   clazz
+	 *		 </pre>
 	 */
 	public SimpleSet<Clazz> getClazzes() {
 		SimpleSet<Clazz> collection = new SimpleSet<Clazz>();

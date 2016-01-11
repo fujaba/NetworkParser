@@ -73,7 +73,7 @@ public class BasicMessage {
 	 * Sets the value.
 	 *
 	 * @param value
-	 *            the new value
+	 *			the new value
 	 * @return Itself
 	 */
 	public BasicMessage withValue(String value) {

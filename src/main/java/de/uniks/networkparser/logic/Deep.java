@@ -37,7 +37,7 @@ public class Deep extends SimpleConditionMap implements SendableEntityCreator {
 
 	/**
 	 * @param value
-	 *            The new Value
+	 *			The new Value
 	 * @return Deep Instance
 	 */
 	public Deep withDeep(int value) {
@@ -57,7 +57,7 @@ public class Deep extends SimpleConditionMap implements SendableEntityCreator {
 
 	/**
 	 * @param value
-	 *            Value of Deep
+	 *			Value of Deep
 	 * @return a new Deep Instance
 	 */
 	public static Deep value(int value) {

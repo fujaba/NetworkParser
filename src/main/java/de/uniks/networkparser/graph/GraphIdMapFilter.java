@@ -45,7 +45,7 @@ public class GraphIdMapFilter extends Filter {
 	 * Sets the show line.
 	 *
 	 * @param value
-	 *            the new show line
+	 *			the new show line
 	 * @return Itself
 	 */
 	public GraphIdMapFilter withShowLine(boolean value) {

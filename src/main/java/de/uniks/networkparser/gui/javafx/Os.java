@@ -34,7 +34,7 @@ import java.awt.SystemTray;
 import java.io.File;
 
 public class Os {
-    public enum PlatformType{ windows, mac, unix, android, unknown };
+	public enum PlatformType{ windows, mac, unix, android, unknown };
 	public boolean isWindows() {
 		String os = System.getProperty("os.name").toLowerCase();
 		// windows
@@ -84,21 +84,21 @@ public class Os {
 		return (os.indexOf("sunos") >= 0);
 	}
 
-    public static PlatformType getCurrentPlatform() {
-    	Os os = new Os();
-        if ( os.isWindows() ) return PlatformType.windows;
-        if ( os.isMac() )     return PlatformType.mac;
-        if ( os.isUnix() )    return PlatformType.unix;
-        if ( os.isAndroid() )    return PlatformType.android;
-        return PlatformType.unknown;
-    }
+	public static PlatformType getCurrentPlatform() {
+		Os os = new Os();
+		if ( os.isWindows() ) return PlatformType.windows;
+		if ( os.isMac() )	 return PlatformType.mac;
+		if ( os.isUnix() )	return PlatformType.unix;
+		if ( os.isAndroid() )	return PlatformType.android;
+		return PlatformType.unknown;
+	}
 
 	
 	
 	public String getFilename() {
 	  File jar = new File(this.getClass().getProtectionDomain().getCodeSource().getLocation()
-                .getPath());
-       return jar.getAbsoluteFile().getName();
+				.getPath());
+	   return jar.getAbsoluteFile().getName();
 	}
 	
 	public boolean isUTF8(){

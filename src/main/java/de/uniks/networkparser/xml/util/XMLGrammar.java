@@ -33,11 +33,11 @@ public interface XMLGrammar extends SendableEntityCreator {
 	 * Methgod to parse Children.
 	 *
 	 * @param entity
-	 *            the Entity
+	 *			the Entity
 	 * @param child
-	 *            the new Child
+	 *			the new Child
 	 * @param value
-	 *            the Tokener
+	 *			the Tokener
 	 * @return boolean for parsing Child
 	 */
 	public boolean parseChild(XMLEntity entity, XMLEntity child, Tokener value);
@@ -46,9 +46,9 @@ public interface XMLGrammar extends SendableEntityCreator {
 	 * Add a Child to parent Element.
 	 *
 	 * @param parent
-	 *            the Parent Element
+	 *			the Parent Element
 	 * @param child
-	 *            the new Child
+	 *			the new Child
 	 */
 	public void addChildren(XMLEntity parent, XMLEntity child);
 
@@ -56,7 +56,7 @@ public interface XMLGrammar extends SendableEntityCreator {
 	 * Set the EndTag of Child.
 	 *
 	 * @param tag
-	 *            the End Tag
+	 *			the End Tag
 	 */
 	public void endChild(String tag);
 }

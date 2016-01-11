@@ -49,7 +49,7 @@ public class Not implements SimpleConditionValue, SendableEntityCreator {
 
 	/**
 	 * @param value
-	 *            for new Condition
+	 *			for new Condition
 	 * @return Not Instance
 	 */
 	public Not withItem(Condition<SimpleValues> value) {

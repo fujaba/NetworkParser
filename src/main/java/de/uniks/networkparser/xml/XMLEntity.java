@@ -54,7 +54,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Str
 	 * Instantiates a new xML entity.
 	 *
 	 * @param value
-	 *            the tag
+	 *			the tag
 	 * @return Itself
 	 */
 	public XMLEntity withValue(String value) {
@@ -69,8 +69,8 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Str
 	 * Construct a XMLEntity from a Tokener.
 	 *
 	 * @param tokener
-	 *            A Tokener object containing the source string. or a duplicated
-	 *            key.
+	 *			A Tokener object containing the source string. or a duplicated
+	 *			key.
 	 * @return Itself
 	 */
 	public XMLEntity withValue(Tokener tokener) {
@@ -96,7 +96,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Str
 	 * Adds the child.
 	 *
 	 * @param child
-	 *            the child
+	 *			the child
 	 * @return result if the child is added
 	 */
 	public boolean addChild(XMLEntity child) {
@@ -107,7 +107,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Str
 	 * Method to add a new Child to List.
 	 *
 	 * @param value
-	 *            the new Child
+	 *			the new Child
 	 * @return XMLEntity Instance
 	 */
 	public XMLEntity withChild(XMLEntity value) {
@@ -119,7 +119,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Str
 	 * Gets the child.
 	 *
 	 * @param value
-	 *            the tag
+	 *			the tag
 	 * @return the child
 	 */
 	public XMLEntity getChild(String value) {
@@ -163,7 +163,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Str
 	 * Sets the tag.
 	 *
 	 * @param value
-	 *            the new Tag
+	 *			the new Tag
 	 * @return the instance XMLEntity
 	 */
 	public XMLEntity withTag(String value) {
@@ -184,7 +184,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Str
 	 * Sets the value.
 	 *
 	 * @param value
-	 *            the new value
+	 *			the new value
 	 * @return the XMLEntity Instance
 	 */
 	public XMLEntity withValueItem(String value) {
@@ -229,11 +229,11 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Str
 	 * Add The Children to StringBuilder.
 	 *
 	 * @param sb
-	 *            The StringBuilder where The Children add
+	 *			The StringBuilder where The Children add
 	 * @param indentFactor
-	 *            IntentFactor for indent
+	 *			IntentFactor for indent
 	 * @param intent
-	 *            Current Intent
+	 *			Current Intent
 	 */
 	protected void toStringChildren(StringBuilder sb, int indentFactor,
 			int intent) {
@@ -288,7 +288,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Str
 	 * Static Method to generate XMLEntity.
 	 *
 	 * @param tag
-	 *            Tagname
+	 *			Tagname
 	 * @return a new Instance of XMLEntity
 	 */
 	public static XMLEntity TAG(String tag) {

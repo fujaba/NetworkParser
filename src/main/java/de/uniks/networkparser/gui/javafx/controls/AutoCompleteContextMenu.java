@@ -34,10 +34,10 @@ public class AutoCompleteContextMenu extends ContextMenu{
 	private TextField control;
 
 	public AutoCompleteContextMenu(TextField control){
-        this.control = control;
-        control.setContextMenu(this);
-        AutoCompleteContextMenu.this.getScene().getStylesheets().add(Styles.getPath());
-    }
+		this.control = control;
+		control.setContextMenu(this);
+		AutoCompleteContextMenu.this.getScene().getStylesheets().add(Styles.getPath());
+	}
 	
 	public AutoCompleteContextMenu withSuggestions(Set<String> values) {
 		getItems().clear();
@@ -54,21 +54,21 @@ public class AutoCompleteContextMenu extends ContextMenu{
 			
 			menuItem.setGraphic(text);
 			menuItem.setOnAction(new EventHandler<ActionEvent>() {
-			    public void handle(ActionEvent e) {
-			    	MenuItem mnu = (MenuItem) e.getSource();
-			    	onSuggestionChoosen(((Label)mnu.getGraphic()).getText());
-			    }
+				public void handle(ActionEvent e) {
+					MenuItem mnu = (MenuItem) e.getSource();
+					onSuggestionChoosen(((Label)mnu.getGraphic()).getText());
+				}
 			});
 			
 			getItems().add(menuItem);
 			i++;
 		}
-    	return this;
-    }
-    
+		return this;
+	}
+	
 
-    private void onSuggestionChoosen(String suggestion){
-    	control.setText(suggestion);
-    	this.hide();
-    }
+	private void onSuggestionChoosen(String suggestion){
+		control.setText(suggestion);
+		this.hide();
+	}
 }

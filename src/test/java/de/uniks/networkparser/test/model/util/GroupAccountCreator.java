@@ -31,89 +31,89 @@ public class GroupAccountCreator implements SendableEntityCreator
 {
    private final String[] properties = new String[]
    {
-      GroupAccount.PROPERTY_PERSONS,
-      GroupAccount.PROPERTY_ITEM,
+	  GroupAccount.PROPERTY_PERSONS,
+	  GroupAccount.PROPERTY_ITEM,
    };
    
    @Override
    public String[] getProperties()
    {
-      return properties;
+	  return properties;
    }
    
    @Override
    public Object getSendableInstance(boolean reference)
    {
-      return new GroupAccount();
+	  return new GroupAccount();
    }
    
    @Override
    public Object getValue(Object target, String attrName)
    {
-      int pos = attrName.indexOf('.');
-      String attribute = attrName;
-      
-      if (pos > 0)
-      {
-         attribute = attrName.substring(0, pos);
-      }
+	  int pos = attrName.indexOf('.');
+	  String attribute = attrName;
+	  
+	  if (pos > 0)
+	  {
+		 attribute = attrName.substring(0, pos);
+	  }
 
-      if (GroupAccount.PROPERTY_PERSONS.equalsIgnoreCase(attribute))
-      {
-         return ((GroupAccount) target).getPersons();
-      }
+	  if (GroupAccount.PROPERTY_PERSONS.equalsIgnoreCase(attribute))
+	  {
+		 return ((GroupAccount) target).getPersons();
+	  }
 
-      if (GroupAccount.PROPERTY_ITEM.equalsIgnoreCase(attribute))
-      {
-         return ((GroupAccount) target).getItem();
-      }
-      
-      return null;
+	  if (GroupAccount.PROPERTY_ITEM.equalsIgnoreCase(attribute))
+	  {
+		 return ((GroupAccount) target).getItem();
+	  }
+	  
+	  return null;
    }
    
    @Override
    public boolean setValue(Object target, String attrName, Object value, String type)
    {
-      if (JsonIdMap.REMOVE.equals(type) && value != null)
-      {
-         attrName = attrName + type;
-      }
+	  if (JsonIdMap.REMOVE.equals(type) && value != null)
+	  {
+		 attrName = attrName + type;
+	  }
 
-      if (GroupAccount.PROPERTY_PERSONS.equalsIgnoreCase(attrName))
-      {
-         ((GroupAccount) target).withPersons((Person) value);
-         return true;
-      }
-      
-      if ((GroupAccount.PROPERTY_PERSONS + JsonIdMap.REMOVE).equalsIgnoreCase(attrName))
-      {
-         ((GroupAccount) target).withoutPersons((Person) value);
-         return true;
-      }
+	  if (GroupAccount.PROPERTY_PERSONS.equalsIgnoreCase(attrName))
+	  {
+		 ((GroupAccount) target).withPersons((Person) value);
+		 return true;
+	  }
+	  
+	  if ((GroupAccount.PROPERTY_PERSONS + JsonIdMap.REMOVE).equalsIgnoreCase(attrName))
+	  {
+		 ((GroupAccount) target).withoutPersons((Person) value);
+		 return true;
+	  }
 
-      if (GroupAccount.PROPERTY_ITEM.equalsIgnoreCase(attrName))
-      {
-         ((GroupAccount) target).withItem((Item) value);
-         return true;
-      }
-      
-      if ((GroupAccount.PROPERTY_ITEM + JsonIdMap.REMOVE).equalsIgnoreCase(attrName))
-      {
-         ((GroupAccount) target).withoutItem((Item) value);
-         return true;
-      }
-      
-      return false;
+	  if (GroupAccount.PROPERTY_ITEM.equalsIgnoreCase(attrName))
+	  {
+		 ((GroupAccount) target).withItem((Item) value);
+		 return true;
+	  }
+	  
+	  if ((GroupAccount.PROPERTY_ITEM + JsonIdMap.REMOVE).equalsIgnoreCase(attrName))
+	  {
+		 ((GroupAccount) target).withoutItem((Item) value);
+		 return true;
+	  }
+	  
+	  return false;
    }
    public static JsonIdMap createIdMap(String sessionID)
    {
-      return CreatorCreator.createIdMap(sessionID);
+	  return CreatorCreator.createIdMap(sessionID);
    }
    
    //==========================================================================
    
   public void removeObject(Object entity)
    {
-      ((GroupAccount) entity).removeYou();
+	  ((GroupAccount) entity).removeYou();
    }
 }

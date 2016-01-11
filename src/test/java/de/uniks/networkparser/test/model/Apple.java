@@ -41,9 +41,9 @@ public class Apple extends Fruit {
 
 	/********************************************************************
 	 * <pre>
-	 *              many                       one
+	 *			  many					   one
 	 * Apple ----------------------------------- AppleTree
-	 *              has                   owner
+	 *			  has				   owner
 	 * </pre>
 	 */
 
