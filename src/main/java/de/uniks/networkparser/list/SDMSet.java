@@ -28,7 +28,7 @@ import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.string.CharList;
 
 
-public abstract class SDMSet<T> extends SimpleSet<T> {
+public class SDMSet<T> extends SimpleSet<T> {
 	@SuppressWarnings("unchecked")
 	public <ST extends SDMSet<T>> ST withReadOnly() {
 		withFlag(SimpleSet.READONLY);
@@ -52,6 +52,11 @@ public abstract class SDMSet<T> extends SimpleSet<T> {
 		}
 		return stringList;
 	}
+	
+	@Override
+   public SDMSet<T> getNewList(boolean keyValue) {
+      return new SDMSet<T>();
+   }
 
 	public <ST extends SDMSet<T>> ST union(Collection<? extends T> other) {
 		@SuppressWarnings("unchecked")
