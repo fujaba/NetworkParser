@@ -37,7 +37,17 @@ public class Clazz extends GraphEntity {
 		this.typ = clazzTyp;
 		return this;
 	}
+	
+	public Clazz enableInterface() {
+		this.with(ClazzTyp.INTERFACE);
+		return this;
+	}
 
+	public Clazz enableEnumeration() {
+		this.with(ClazzTyp.ENUMERATION);
+		return this;
+	}
+	
 	public ClazzTyp getType() {
 		return typ;
 	}
