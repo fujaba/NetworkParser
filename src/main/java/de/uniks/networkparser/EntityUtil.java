@@ -575,7 +575,7 @@ public class EntityUtil {
 	}
 
 	public static boolean isPrimitiveType(String type) {
-		String primitiveTypes = " String long Long int Integer char Char boolean Boolean byte Byte float Float double Double Object java.util.Date ";
+		String primitiveTypes = " void String long Long int Integer char Char boolean Boolean byte Byte float Float double Double Object java.util.Date ";
 
 		if (type == null)
 			return false;
