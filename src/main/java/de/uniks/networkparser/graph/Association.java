@@ -148,11 +148,17 @@ public class Association extends GraphMember {
 	}
 	
 	String getSeperator() {
-		if (getOther().getTyp() == AssociationTypes.GENERALISATION) {
+		if (getTyp() == AssociationTypes.GENERALISATION) {
 			return "-|>";
 		}
-		if (getOther().getTyp() == AssociationTypes.EDGE) {
+		if (getTyp() == AssociationTypes.EDGE) {
 			return "->";
+		}
+		if (getOther().getTyp() == AssociationTypes.GENERALISATION) {
+			return "<|-";
+		}
+		if (getOther().getTyp() == AssociationTypes.EDGE) {
+			return "<-";
 		}
 		return "-";
 	}

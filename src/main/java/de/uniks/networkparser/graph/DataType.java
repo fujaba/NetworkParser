@@ -1,5 +1,7 @@
 package de.uniks.networkparser.graph;
 
+import de.uniks.networkparser.EntityUtil;
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -46,14 +48,18 @@ public class DataType {
 	}
 	
 	public String getName(boolean shortName) {
+		return getInternName(shortName, true);
+	}
+	
+	String getInternName(boolean shortName, boolean primitivAllow) {
 		if (this.value == null) {
 			return null;
 		}
 		String result = this.value.getName();
 		if (!shortName || result == null || result.lastIndexOf(".") < 0) {
-			return result;
+			return EntityUtil.convertPrimitiveToObjectType(result);
 		}
-		return result.substring(result.lastIndexOf(".") + 1);
+		return EntityUtil.convertPrimitiveToObjectType(result.substring(result.lastIndexOf(".") + 1));
 	}
 
 	public Clazz getClazz() {

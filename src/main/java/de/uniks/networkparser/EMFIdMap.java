@@ -1,4 +1,4 @@
-package de.uniks.networkparser.emf;
+package de.uniks.networkparser;
 
 /*
  NetworkParser
@@ -27,10 +27,17 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.Association;
+import de.uniks.networkparser.graph.Attribute;
+import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.graph.GraphLiteral;
 import de.uniks.networkparser.graph.GraphUtil;
+import de.uniks.networkparser.graph.Clazz.ClazzTyp;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XMLIdMap;
 import de.uniks.networkparser.xml.XMLTokener;
@@ -38,6 +45,17 @@ import de.uniks.networkparser.xml.util.XMLGrammar;
 import de.uniks.networkparser.xml.util.XSDEntityCreator;
 
 public class EMFIdMap extends XMLIdMap {
+	public static final String ECLASS = "ecore:EClass";
+	public static final String ETYPE = "eType";
+	public static final String EAttribute = "ecore:EAttribute";
+	public static final String EReferences = "ecore:EReference";
+	public static final String eSuperTypes = "eSuperTypes";
+	public static final String EEnum = "ecore:EEnum";
+	public static final String EOpposite = "eOpposite";
+	public static final String UPPERBOUND = "upperBound";
+	public static final String PARENT = "parent";
+	
+	
 	public static final String XSI_TYPE = "xsi:type";
 	public static final String XMI_ID = "xmi:id";
 	public static final String NAME = "name";
@@ -63,7 +81,7 @@ public class EMFIdMap extends XMLIdMap {
 		for (String propertyName : creatorClass.getProperties()) {
 			Object propertyValue = creatorClass.getValue(entity, propertyName);
 
-			if (EMFUtil.isPrimitiveType(EMFUtil.shortClassName(propertyValue.getClass().getName()))) {
+			if (EntityUtil.isPrimitiveType(EntityUtil.shortClassName(propertyValue.getClass().getName()))) {
 				parent.put(propertyName, propertyValue);
 			} else if (propertyValue instanceof Collection<?>) {
 				for (Object childValue : (Collection<?>) propertyValue) {
@@ -345,5 +363,108 @@ public class EMFIdMap extends XMLIdMap {
 				addChildren(kidEntity, kidFactory, kidObject);
 			}
 		}
+	}
+	public static GraphList decoding(String content) {
+		GraphList model = new GraphList();
+		
+		XMLEntity ecore = new XMLEntity().withValue(content);
+		SimpleList<XMLEntity> refs = new SimpleList<XMLEntity>();
+		SimpleList<XMLEntity> superClazzes = new SimpleList<XMLEntity>();
+
+		// add classes
+		for (XMLEntity eClassifier : ecore.getChildren()) {
+			if (!eClassifier.containsKey(EMFIdMap.XSI_TYPE)) {
+				continue;
+			}
+			if (eClassifier.getString(EMFIdMap.XSI_TYPE).equalsIgnoreCase(ECLASS)) {
+				Clazz clazz = new Clazz().with(eClassifier.getString(EMFIdMap.NAME));
+				model.with(clazz);
+				for(XMLEntity child : eClassifier.getChildren()) {
+					String typ = child.getString(EMFIdMap.XSI_TYPE);
+					if(typ.equals(EAttribute)) {
+						String etyp = EntityUtil.getId(child.getString(ETYPE));
+						if (EntityUtil.isEMFType(etyp)) {
+							etyp = etyp.substring(1);
+						}
+						if (EntityUtil.isPrimitiveType(etyp.toLowerCase())) {
+							etyp = etyp.toLowerCase();
+						}
+						clazz.with(new Attribute(EntityUtil.toValidJavaId(child.getString(EMFIdMap.NAME)), DataType.ref(etyp)));						
+					}else if(typ.equals(EReferences)) {
+						child.put(PARENT, eClassifier);
+						refs.add(child);
+					}
+				}
+				if(eClassifier.containsKey(eSuperTypes)) {
+					superClazzes.add(eClassifier);
+				}
+			} else if (eClassifier.getString(EMFIdMap.XSI_TYPE).equals(EEnum)) {
+				Clazz graphEnum = new Clazz().with(ClazzTyp.ENUMERATION);
+				graphEnum.with(eClassifier.getString(EMFIdMap.NAME));
+				for(XMLEntity child : eClassifier.getChildren()) {
+					GraphLiteral literal = new GraphLiteral().with(child.getString(EMFIdMap.NAME));
+					for(String key : child.keySet()) {
+						if(key.equals(EMFIdMap.NAME)) {
+							continue;
+						}
+						literal.withKeyValue(key, child.get(key));
+						graphEnum.with(literal);
+					}
+				}
+			}
+		}
+		 // inheritance
+		for(XMLEntity eClass : superClazzes) {
+			String id = EntityUtil.getId(eClass.getString(eSuperTypes));
+			 Clazz kidClazz = model.getNode(eClass.getString(EMFIdMap.NAME));
+			 Clazz superClazz = model.getNode(id);
+			 kidClazz.withoutSuperClazz(superClazz);
+		}
+		// assocs
+		SimpleKeyValueList<String, Association> items = new SimpleKeyValueList<String, Association>(); 
+		for(XMLEntity eref : refs) {
+			String tgtClassName = eref.getString(ETYPE);
+			if(tgtClassName.indexOf("#")>=0) {
+				tgtClassName = tgtClassName.substring(tgtClassName.indexOf("#") + 3);
+			}
+			String tgtRoleName = eref.getString(EMFIdMap.NAME);
+			
+			Association tgtAssoc = getOrCreate(items, model, tgtClassName, tgtRoleName);
+			
+			if (eref.containsKey(UPPERBOUND)) {
+				Object upperValue = eref.get(UPPERBOUND);
+				if (upperValue instanceof Number) {
+					if (((Number) upperValue).intValue() != 1) {
+						tgtAssoc.with(Cardinality.MANY);
+					}
+				}
+			}
+			
+			String srcRoleName = null;
+			XMLEntity parent =(XMLEntity) eref.get(PARENT);
+			String srcClassName = parent.getString(EMFIdMap.NAME);
+			if (!eref.containsKey(EOpposite)) {
+//				srcRoleName = tgtRoleName+"_back";
+			}else{
+				srcRoleName = EntityUtil.getId(eref.getString(EOpposite));
+			}
+			Association srcAssoc = getOrCreate(items, model, srcClassName, srcRoleName);
+			tgtAssoc.with(srcAssoc);
+			model.with(tgtAssoc);
+		}
+		return model;
+	}
+	private static Association getOrCreate(SimpleKeyValueList<String, Association> items, GraphList model, String className, String roleName) {
+		roleName = EntityUtil.toValidJavaId(roleName);
+		String assocName = className+":"+roleName;
+		Association edge = items.getValue(assocName);
+		if(edge == null) {
+			Clazz clazz = model.getNode(className);
+			edge = new Association().with(clazz, Cardinality.ONE, roleName);
+			if(roleName != null) {
+				items.add(assocName, edge);
+			}
+		}
+		return edge;
 	}
 }

@@ -70,7 +70,7 @@ public class DataTypeMap extends DataType {
 		if (this.value == null) {
 			return null;
 		}
-		return this.value.getName(shortName) + "<" + genericKey.getName(shortName) + "," + genericValue.getName(shortName) + ">";
+		return this.value.getName(shortName) + "<" + genericKey.getInternName(shortName, false) + "," + genericValue.getInternName(shortName, false) + ">";
 	}
 
 }

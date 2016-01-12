@@ -60,6 +60,6 @@ public class DataTypeSet extends DataType{
 		if (this.value == null) {
 			return null;
 		}
-		return this.value.getName(shortName) + "<" + generic.getName(shortName) + ">";
+		return this.value.getName(shortName) + "<" + generic.getInternName(shortName, false) + ">";
 	}
 }
