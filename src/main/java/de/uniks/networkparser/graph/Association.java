@@ -148,7 +148,7 @@ public class Association extends GraphMember {
 	}
 	
 	String getSeperator() {
-		if (getTyp() == AssociationTypes.CHILD) {
+		if (getOther().getTyp() == AssociationTypes.GENERALISATION) {
 			return "-|>";
 		}
 		if (getOther().getTyp() == AssociationTypes.EDGE) {

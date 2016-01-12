@@ -24,7 +24,7 @@ package de.uniks.networkparser.graph;
 
 
 public enum AssociationTypes {
-	ASSOCIATION("assoc"), EDGE("edge"), GENERALISATION("generalisation"), IMPLEMENTS("implements"), UNDIRECTIONAL("unidirectional"), AGGREGATION("aggregation"), COMPOSITION("Composition"), CHILD("child");
+	ASSOCIATION("assoc"), EDGE("edge"), GENERALISATION("generalisation"), IMPLEMENTS("implements"), UNDIRECTIONAL("unidirectional"), AGGREGATION("aggregation"), COMPOSITION("Composition");
 	
 	private AssociationTypes(String value) {
 		this.value = value;
