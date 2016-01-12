@@ -78,9 +78,9 @@ public class DateTimeEntity {
 	 * number must be normalized.
 	 *
 	 * @param month
-	 *            month as asking
+	 *			month as asking
 	 * @param year
-	 *            year of asking
+	 *			year of asking
 	 * @return int day of Month
 	 *
 	 * @see #isLeapYear(int)
@@ -107,7 +107,7 @@ public class DateTimeEntity {
 	 * normalized.
 	 *
 	 * @param year
-	 *            year for asking
+	 *			year for asking
 	 * @return day of fullyear
 	 */
 	public int getYearLength(int year) {
@@ -121,9 +121,9 @@ public class DateTimeEntity {
 	 * specified as -3.
 	 *
 	 * @param year
-	 *            the given year.
+	 *			the given year.
 	 * @return <code>true</code> if the given year is a leap year;
-	 *         <code>false</code> otherwise.
+	 *		 <code>false</code> otherwise.
 	 */
 	public boolean isLeapYear(int year) {
 		if ((year & 3) != 0) {
@@ -211,7 +211,8 @@ public class DateTimeEntity {
 		if (dayOfYear % 7 > 0) {
 			week++;
 		}
-		this.fields.put(DateField.WEEK_OF_YEAR, week + 1);
+//		week += 1;
+		this.fields.put(DateField.WEEK_OF_YEAR, week );
 		this.fields
 				.put(DateField.WEEK_OF_MONTH, week - ((dayOfYear - day) / 7));
 		this.fields.put(DateField.MILLISECONDSREAL, time);
@@ -305,9 +306,9 @@ public class DateTimeEntity {
 	 * set to the date the amount value for the field
 	 *
 	 * @param field
-	 *            dateTimeField
+	 *			dateTimeField
 	 * @param value
-	 *            value of changes
+	 *			value of changes
 	 */
 	public void set(DateField field, long value) {
 		if (field != null) {
@@ -334,7 +335,7 @@ public class DateTimeEntity {
 	 * Setter with milliseconds
 	 *
 	 * @param milliseconds
-	 *            milliseconds since 01.01.1970
+	 *			milliseconds since 01.01.1970
 	 * @return Itself
 	 */
 	public DateTimeEntity withValue(long milliseconds) {
@@ -346,11 +347,11 @@ public class DateTimeEntity {
 	 * Setter with day, month and year
 	 *
 	 * @param year
-	 *            year of the date
+	 *			year of the date
 	 * @param month
-	 *            month of the date
+	 *			month of the date
 	 * @param day
-	 *            day of the date
+	 *			day of the date
 	 * @return Itself
 	 */
 	public DateTimeEntity withValue(int year, int month, int day) {
@@ -364,7 +365,7 @@ public class DateTimeEntity {
 	 * Setter with date-String
 	 *
 	 * @param date
-	 *            date as String
+	 *			date as String
 	 * @return Itself
 	 */
 	public DateTimeEntity withValue(String date) {
@@ -378,7 +379,7 @@ public class DateTimeEntity {
 	 * Setter with date
 	 *
 	 * @param date
-	 *            with new date
+	 *			with new date
 	 * @return Itself
 	 */
 	public DateTimeEntity withValue(java.util.Date date) {
@@ -390,7 +391,7 @@ public class DateTimeEntity {
 	 * Set new TimeStamp
 	 *
 	 * @param date
-	 *            a new Date
+	 *			a new Date
 	 * @return Itself
 	 */
 	public DateTimeEntity withNewDate(long date) {
@@ -400,7 +401,7 @@ public class DateTimeEntity {
 
 	/**
 	 * @param items
-	 *            The new TextItem for text
+	 *			The new TextItem for text
 	 * @return Itself
 	 */
 	public DateTimeEntity withTextItems(TextItems items) {
@@ -437,7 +438,7 @@ public class DateTimeEntity {
 	 * Returns the date of Easter Sunday for a given year.
 	 *
 	 * @param year
-	 *            &gt; 1583
+	 *			&gt; 1583
 	 * @return The date of Easter Sunday for a given year.
 	 */
 	public static DateTimeEntity getEasterSunday(int year) {
@@ -459,7 +460,7 @@ public class DateTimeEntity {
 	 * format a date with the formatString
 	 *
 	 * @param dateFormat
-	 *            The Format
+	 *			The Format
 	 * @return a String of Date
 	 */
 	public String toString(String dateFormat) {
@@ -529,7 +530,7 @@ public class DateTimeEntity {
 	 * set a new year for the date
 	 *
 	 * @param value
-	 *            the newYear
+	 *			the newYear
 	 * @return Itself
 	 */
 	public DateTimeEntity withYear(int value) {
@@ -541,7 +542,7 @@ public class DateTimeEntity {
 	 * set a new month for the Date
 	 *
 	 * @param value
-	 *            The new Month
+	 *			The new Month
 	 * @return Itself
 	 */
 	public DateTimeEntity withMonth(int value) {
@@ -585,7 +586,7 @@ public class DateTimeEntity {
 	 * DAY_OF_YEAR AMPM, WEEK_OF_MONTH, WEEK_OF_YEAR YEAR
 	 *
 	 * @param field
-	 *            The Field for get
+	 *			The Field for get
 	 * @return the Value As Milliseconds
 	 */
 	public long getValueInMillisecond(DateField field) {
