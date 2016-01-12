@@ -25,31 +25,31 @@ import de.uniks.networkparser.list.SimpleSet;
 */
 
 public class Clazz extends GraphEntity {
-	public enum ClazzTyp {CLAZZ, ENUMERATION, INTERFACE};
-	private ClazzTyp typ = ClazzTyp.CLAZZ;
+	public enum ClazzType {CLAZZ, ENUMERATION, INTERFACE};
+	private ClazzType type = ClazzType.CLAZZ;
 	@Override
 	public Clazz with(String name) {
 		super.with(name);
 		return this;
 	}
 
-	public Clazz with(ClazzTyp clazzTyp) {
-		this.typ = clazzTyp;
+	public Clazz with(ClazzType clazzType) {
+		this.type = clazzType;
 		return this;
 	}
 	
 	public Clazz enableInterface() {
-		this.with(ClazzTyp.INTERFACE);
+		this.with(ClazzType.INTERFACE);
 		return this;
 	}
 
 	public Clazz enableEnumeration() {
-		this.with(ClazzTyp.ENUMERATION);
+		this.with(ClazzType.ENUMERATION);
 		return this;
 	}
 	
-	public ClazzTyp getType() {
-		return typ;
+	public ClazzType getType() {
+		return type;
 	}
 	
 	@Override
@@ -346,13 +346,12 @@ public class Clazz extends GraphEntity {
 		if (associations == null || typ == null) {
 			return kindClazzes;
 		}
-		String typValue = typ.getValue(); 
 		for (Association assoc : associations) {
-			if(!typValue.equals(assoc.getTyp().getValue())) {
+			if(typ != assoc.getTyp()) {
 				continue;
 			}
 			Clazz clazz = assoc.getOtherClazz();
-			if(otherTyp == null || assoc.getOther().getTyp() == otherTyp) {
+			if(otherTyp == null || assoc.getOtherTyp() == otherTyp) {
 				if(GraphUtil.isInterface(clazz) == false) {
 					kindClazzes.with(clazz);
 				}
@@ -558,6 +557,11 @@ public class Clazz extends GraphEntity {
 		Attribute attribute = new Attribute(name, DataType.ref(type));
 		with(attribute);
 		return this;
+	}
+	
+	@Override
+	public String toString() {
+		return getName();
 	}
 	
 }

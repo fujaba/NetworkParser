@@ -54,13 +54,13 @@ public class GenModel {
 		return sb.toString();
 	}
 	
-	public int getCount(Object element, boolean filterObject, boolean printItems) {
-		return getCounting(element.getClass(), filterObject, printItems);
+	public int getCount(Object element, boolean printItems) {
+		return getCounting(element.getClass(), printItems);
 	}
 	public void showCounting(Class<?> element) {
-		System.out.println(element.getSimpleName()+": "+getCounting(element, false, false));
+		System.out.println(element.getSimpleName()+": "+getCounting(element, true));
 	}
-	public int getCounting(Class<?> element, boolean filterObject, boolean printItems) {
+	public int getCounting(Class<?> element, boolean printItems) {
 		java.lang.reflect.Method[] methods = element.getMethods();
 		SortedSet<String> counts=new SortedSet<String>();
 		for(int i=0;i<methods.length;i++) {
@@ -71,7 +71,9 @@ public class GenModel {
 			if (java.lang.reflect.Modifier.isStatic(methods[i].getModifiers())) {
 				counts.with(signature);
 			} else if (java.lang.reflect.Modifier.isPublic(methods[i].getModifiers())) {
-				counts.with(signature);
+				if(signature.endsWith(" toString()")==false) {
+					counts.with(signature);
+				}
 			}
 		}
 		java.lang.reflect.Field[] fields = element.getClass().getFields();

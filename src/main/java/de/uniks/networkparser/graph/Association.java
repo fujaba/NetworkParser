@@ -30,9 +30,9 @@ public class Association extends GraphMember {
 	// The Complete Edge Info
 //	private GraphLabel info;
 	private Association other;
-	private AssociationTypes typ = AssociationTypes.ASSOCIATION;
+	private AssociationTypes type = AssociationTypes.ASSOCIATION;
 
-	public Association with(Clazz node, Cardinality cardinality, String property) {
+	Association with(Clazz node, Cardinality cardinality, String property) {
 		with(node);
 		with(cardinality);
 		with(property);
@@ -43,7 +43,7 @@ public class Association extends GraphMember {
 		if(cardinality != null) {
 			return cardinality;
 		}
-		if(children.size() > 1){
+		if(children != null && children.size() > 1){
 			return Cardinality.MANY;
 		}
 		return Cardinality.ONE;
@@ -58,7 +58,7 @@ public class Association extends GraphMember {
 		if(name != null) {
 			return name;
 		}
-		if(children.size() == 1) {
+		if(children != null && children.size() == 1) {
 			GraphMember item = children.get(0);
 			if(item instanceof Clazz) {
 				String className = ((Clazz)item).getName(true);
@@ -98,8 +98,12 @@ public class Association extends GraphMember {
 		if (values == null) {
 			return this;
 		}
+		if(values.length==1 && this.parentNode == null) {
+			this.parentNode = values[0];
+			return this;
+		}
 		for (GraphEntity value : values) {
-			if(this.children.add(value) ) {
+			if(getChildren().add(value) ) {
 				value.with(this);
 			}
 		}
@@ -144,7 +148,7 @@ public class Association extends GraphMember {
 	}
 
 	public AssociationTypes getTyp() {
-		return typ;
+		return type;
 	}
 	
 	String getSeperator() {
@@ -164,19 +168,28 @@ public class Association extends GraphMember {
 	}
 
 	public Association with(AssociationTypes typ) {
-		this.typ = typ;
+		this.type = typ;
 		return this;
 	}
 	
 	public Clazz getOtherClazz() {
-		if(other.getClazz() instanceof Clazz) {
+		if(other != null && other.getClazz() instanceof Clazz) {
 			return other.getClazz();
+		}
+		return null;
+	}
+	AssociationTypes getOtherTyp() {
+		if(other != null ) {
+			return other.getTyp();
 		}
 		return null;
 	}
 
 	public Clazz getClazz() {
-		if(children.size()>0) {
+		if(parentNode instanceof Clazz) {
+			return (Clazz) parentNode;
+		}
+		if(getChildren().size()>0) {
 			GraphMember item = children.get(0);
 			if(item instanceof Clazz) {
 				return (Clazz)item;
@@ -192,7 +205,7 @@ public class Association extends GraphMember {
 	
 	GraphSimpleSet<GraphEntity> getNodes() {
 		GraphSimpleSet<GraphEntity> values = new GraphSimpleSet<GraphEntity>(); 
-		for(GraphMember item : children) {
+		for(GraphMember item : getChildren()) {
 			if(item instanceof GraphEntity) {
 				values.add((GraphEntity)item);
 			}
@@ -202,7 +215,11 @@ public class Association extends GraphMember {
 
 	public String getIds() {
 		StringBuilder sb=new StringBuilder();
-		if(children.size()>1) {
+		if(parentNode != null){
+			sb.append(parentNode.getName());
+		} else if(children == null){
+			sb.append("[]");
+		}else if(children.size()>1) {
 			sb.append("[");
 			sb.append(children.get(0).getName());
 			for(int i=1;i<children.size();i++) {
@@ -211,10 +228,7 @@ public class Association extends GraphMember {
 			sb.append("]");
 		}else if(children.size()>0) {
 			sb.append(children.get(0).getName());
-		}else{
-			sb.append("[]");
 		}
-		
 		return sb.toString();
 	}
 

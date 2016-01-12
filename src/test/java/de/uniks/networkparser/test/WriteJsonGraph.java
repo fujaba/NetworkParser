@@ -9,7 +9,7 @@ import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.AssociationTypes;
 import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
-import de.uniks.networkparser.graph.Clazz.ClazzTyp;
+import de.uniks.networkparser.graph.Clazz.ClazzType;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphConverter;
 import de.uniks.networkparser.graph.GraphIdMap;
@@ -37,7 +37,7 @@ public class WriteJsonGraph {
 		abstractArray.createAttribute("size", DataType.INT);
 		abstractArray.createAttribute("index", DataType.INT);
 		abstractArray.createAttribute("flag", DataType.BYTE);
-		Clazz baseItem = model.with(new Clazz().with(ClazzTyp.INTERFACE).with("BaseItem"));
+		Clazz baseItem = model.with(new Clazz().with(ClazzType.INTERFACE).with("BaseItem"));
 		Clazz iterable = model.with(new Clazz().with("Iterable<V>"));
 		Clazz abstractList = model.with(new Clazz().with("AbstractList<V>"));
 		Clazz simpleList = model.with(new Clazz().with("SimpleList<V>"));

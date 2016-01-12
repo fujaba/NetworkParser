@@ -34,7 +34,7 @@ import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphLiteral;
 import de.uniks.networkparser.graph.GraphUtil;
-import de.uniks.networkparser.graph.Clazz.ClazzTyp;
+import de.uniks.networkparser.graph.Clazz.ClazzType;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
@@ -399,7 +399,7 @@ public class EMFIdMap extends XMLIdMap {
 					superClazzes.add(eClassifier);
 				}
 			} else if (eClassifier.getString(EMFIdMap.XSI_TYPE).equals(EEnum)) {
-				Clazz graphEnum = new Clazz().with(ClazzTyp.ENUMERATION);
+				Clazz graphEnum = new Clazz().with(ClazzType.ENUMERATION);
 				graphEnum.with(eClassifier.getString(EMFIdMap.NAME));
 				for(XMLEntity child : eClassifier.getChildren()) {
 					GraphLiteral literal = new GraphLiteral().with(child.getString(EMFIdMap.NAME));
@@ -460,7 +460,7 @@ public class EMFIdMap extends XMLIdMap {
 		Association edge = items.getValue(assocName);
 		if(edge == null) {
 			Clazz clazz = model.getNode(className);
-			edge = new Association().with(clazz, Cardinality.ONE, roleName);
+			edge = new Association().with(clazz).with(Cardinality.ONE).with(roleName);
 			if(roleName != null) {
 				items.add(assocName, edge);
 			}
