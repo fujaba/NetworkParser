@@ -32,26 +32,28 @@ public class GraphUtil {
 	public static Clazz getByObject(GraphEntity item, String clazz, boolean fullName) {
 		return (Clazz) item.getByObject(clazz, fullName);
 	}
-	public static SimpleSet<Annotation> getAnnotations(Clazz item) {
-		return getAnnotations(item.getAnnotation());
-	}
-	public static SimpleSet<Annotation> getAnnotations(Method item) {
-		return getAnnotations(item.getAnnotation());
-	}
-	public static SimpleSet<Annotation> getAnnotations(Attribute item) {
-		return getAnnotations(item.getAnnotation());
-	}
-	public static SimpleSet<Annotation> getAnnotations(Annotation item) {
+	public static SimpleSet<Annotation> getAnnotations(GraphMember item) {
 		SimpleSet<Annotation> collection = new SimpleSet<Annotation>();
-		collection.add(item);
-		if(item != null) {
-			while(item.hasNext()) {
-				item = item.next();
-				collection.add(item);
+		Annotation annotation = null;
+		if(item instanceof Clazz) {
+			annotation = ((Clazz)item).getAnnotation();
+		}
+		if(item instanceof Attribute) {
+			annotation = ((Attribute)item).getAnnotation();
+		}
+		if(item instanceof Annotation) {
+			annotation = (Annotation) item;
+		}
+		if(annotation != null) {
+			collection.add(annotation);
+			while(annotation.hasNext()) {
+				annotation = annotation.next();
+				collection.add(annotation);
 			}
 		}
 		return collection;
-	 }
+	}
+
 	public static boolean isWithNoObjects(Clazz clazz) {
 		return (clazz.hasModifier(Modifier.ABSTRACT) || clazz.getType() == ClazzType.INTERFACE);
 	}
@@ -68,23 +70,22 @@ public class GraphUtil {
 		}
 		return collection;
 	}
-	public static void removeYou(Attribute attribute) {
-		attribute.withParent(null);
-		de.uniks.networkparser.graph.Annotation annotation = attribute.getAnnotation();
-		attribute.without(annotation);
-	}
-
-	public static void removeYou(Association assoc) {
-		assoc.setParent(null);
-		assoc.withOtherEdge(null);
-		assoc.without(assoc.getClazz());
-	}
 	
-
-	public static void removeYou(Clazz clazz) {
-		clazz.setParent(null);
-//		clazz.without(clazz.getAssociation().toArray(new Association[clazz.getAssociation().size()]));
-//		clazz.without(clazz.getAttributes().toArray(new Attribute[clazz.getAssociation().size()]));
-		clazz.without(clazz.getChildren().toArray(new GraphMember[clazz.getChildren().size()]));
+	public static void removeYou(GraphMember value) {
+		value.setParent(null);
+		if(value instanceof Attribute) {
+			Attribute attribute = (Attribute) value;
+			Annotation annotation = attribute.getAnnotation();
+			value.without(annotation);
+		}
+		if(value instanceof Association) {
+			Association assoc = (Association) value;
+			assoc.withOtherEdge(null);
+			assoc.without(assoc.getClazz());
+		}
+		if(value instanceof Clazz) {
+			Clazz clazz = (Clazz) value;
+			clazz.without(clazz.getChildren().toArray(new GraphMember[clazz.getChildren().size()]));	
+		}
 	}
 }

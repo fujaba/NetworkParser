@@ -45,51 +45,40 @@ public class Method extends GraphMember {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(super.getName() + "(");
-		boolean first = true;
 		int i = 0;
-
-		for (GraphMember item : children) {
-			if((item instanceof Parameter) == false) {
-				continue;
-			}
-			Parameter param = (Parameter) item; 
-			if (first) {
-				sb.append(getParameterSignature(includeName, param, i));
-				first = false;
-			} else {
-				sb.append(getParameterSignature(includeName, param, i));
-			}
-
-			if (i < children.size() - 1) {
+		if(children != null) {
+			for (GraphMember item : children) {
+				if((item instanceof Parameter) == false) {
+					continue;
+				}
+				Parameter param = (Parameter) item;
+				sb.append(param.getType(false));
 				if (includeName) {
-					sb.append(", ");
-				} else {
-					sb.append(",");
+					String name = "";
+					if (param.getName() != null) {
+						name = param.getName().trim();
+					}
+					if (name != "") {
+						sb.append(" " + name);
+					} else {
+						sb.append(" p" + (i++));
+					}
+				}
+	
+				if (i < children.size() - 1) {
+					if (includeName) {
+						sb.append(", ");
+					} else {
+						sb.append(",");
+					}
 				}
 			}
-			i++;
 		}
 		sb.append(")");
 		if(returnType!=null && returnType!= DataType.VOID){
 			sb.append(" "+returnType.getName(false));
 		}
 		return sb.toString();
-	}
-
-	private String getParameterSignature(boolean includeName,
-			Parameter parameter, int i) {
-		String param = parameter.getType(false);
-		if (!includeName) {
-			return param;
-		}
-		String name = "";
-		if (parameter.getName() != null) {
-			name = parameter.getName().trim();
-		}
-		if (name != "") {
-			return param + " " + name;
-		}
-		return param + " p" + i;
 	}
 
 	public Method() {
@@ -111,12 +100,12 @@ public class Method extends GraphMember {
 	}
 
 	public Method withParameter(String paramName, DataType dataType) {
-		new Parameter(paramName, dataType).withParent(this);
+		new Parameter().with(paramName).with(dataType).withParent(this);
 		return this;
 	}
 
 	public Method withParameter(String paramName, Clazz dataType) {
-		new Parameter(paramName, DataType.ref(dataType)).withParent(this);
+		new Parameter().with(paramName).with(DataType.ref(dataType)).withParent(this);
 		return this;
 	}
 
@@ -138,11 +127,11 @@ public class Method extends GraphMember {
 	}
 
 	public Parameter createParameter(DataType type) {
-		return new Parameter(type).withParent(this);
+		return new Parameter().with(type).withParent(this);
 	}
 	
 	public Parameter createParameter(Clazz type) {
-		return new Parameter(DataType.ref(type)).withParent(this);
+		return new Parameter().with(DataType.ref(type)).withParent(this);
 	}
 
 	public Method withParent(Clazz value) {

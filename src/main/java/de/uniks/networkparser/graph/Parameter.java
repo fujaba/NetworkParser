@@ -33,17 +33,19 @@ public class Parameter extends Value {
 		with(type);
 	}
 
-	public Parameter(String name, DataType type) {
-		with(name);
-		with(type);
+	public Parameter(Clazz value) {
+		with(value);
 	}
 
+	public Parameter(Class<?> value) {
+		with(value);
+	}
+	
+	
 	public Method getMethod() {
 		return (Method) this.parentNode;
 	}
-
 	
-
 	// Redirect
 	@Override
 	public Parameter with(String string) {
@@ -59,6 +61,12 @@ public class Parameter extends Value {
 	
 	@Override
 	public Parameter with(Clazz value) {
+		super.with(value);
+		return this;
+	}
+	
+	@Override
+	public Parameter with(Class<?> value) {
 		super.with(value);
 		return this;
 	}

@@ -55,7 +55,7 @@ public class DataType {
 		if (this.value == null) {
 			return null;
 		}
-		String result = this.value.getName();
+		String result = this.value.getName(shortName);
 		if (!shortName || result == null || result.lastIndexOf(".") < 0) {
 			return EntityUtil.convertPrimitiveToObjectType(result);
 		}

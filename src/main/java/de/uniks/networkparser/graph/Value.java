@@ -42,6 +42,11 @@ public abstract class Value extends GraphMember {
 		return this;
 	}
 	
+	public Value with(Class<?> value) {
+		this.type = DataType.ref(value);
+		return this;
+	}
+	
 	public String getType(boolean shortName) {
 		if(type==null) {
 			return "?";

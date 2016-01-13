@@ -61,11 +61,6 @@ public class Attribute extends Value {
 		return (Clazz) parentNode;
 	}
 	
-	public Attribute withParent(Clazz parent) {
-		super.setParent(parent);
-		return this;
-	}
-
 	// Redirect
 	@Override
 	public Attribute with(String value) {
