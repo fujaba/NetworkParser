@@ -3,24 +3,25 @@ package de.uniks.networkparser.test;
 
 import org.junit.Test;
 
+import de.uniks.networkparser.graph.*;
 import de.uniks.networkparser.list.SortedSet;
 
 public class GenModel {
 	@Test
 	public void showCountsModel() {
-//		showCounting(Annotation.class);
-//		showCounting(Association.class);
-//		showCounting(Attribute.class);
-//		showCounting(Cardinality.class);
-//		showCounting(Clazz.class);
-//		showCounting(DataType.class);
-//		showCounting(DataTypeSet.class);
-//		showCounting(DataTypeMap.class);
-//		showCounting(Method.class);
-//		showCounting(Modifier.class);
-//		showCounting(Parameter.class);
-//		showCounting(Throws.class);
-//		showCounting(Value.class);
+		showCounting(Annotation.class);
+		showCounting(Association.class);
+		showCounting(Attribute.class);
+		showCounting(Cardinality.class);
+		showCounting(Clazz.class);
+		showCounting(DataType.class);
+		showCounting(DataTypeSet.class);
+		showCounting(DataTypeMap.class);
+		showCounting(Method.class);
+		showCounting(Modifier.class);
+		showCounting(Parameter.class);
+		showCounting(Throws.class);
+		showCounting(Value.class);
 	}
 	
 	
@@ -58,7 +59,7 @@ public class GenModel {
 		return getCounting(element.getClass(), printItems);
 	}
 	public void showCounting(Class<?> element) {
-		System.out.println(element.getSimpleName()+": "+getCounting(element, true));
+		System.out.println(element.getSimpleName()+": "+getCounting(element, false));
 	}
 	public int getCounting(Class<?> element, boolean printItems) {
 		java.lang.reflect.Method[] methods = element.getMethods();

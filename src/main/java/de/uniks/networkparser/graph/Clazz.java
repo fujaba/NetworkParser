@@ -264,8 +264,9 @@ public class Clazz extends GraphEntity {
 				boolean found=false;
 				for (Association assoc : associations) {
 					if(assoc.getTyp()==AssociationTypes.GENERALISATION) {
-						if(assoc.contains(item, false, true)) {
+						if(assoc.contains(item, false, true) == false) {
 							found = true;
+							assoc.getOther().setParent(item);
 							break;
 						}
 					}
@@ -273,7 +274,6 @@ public class Clazz extends GraphEntity {
 				if(found == false) {
 					Association child = new Association().with(AssociationTypes.EDGE).with(item);
 					child.with(new Association().with(AssociationTypes.GENERALISATION).with(this));
-					this.associations.add(child);
 				}
 			}
 		}
@@ -379,7 +379,8 @@ public class Clazz extends GraphEntity {
 					}
 				}
 				if(found == false) {
-					this.associations.add(new Association().with(AssociationTypes.EDGE).with(item, this));
+					Association child = new Association().with(AssociationTypes.GENERALISATION).with(item);
+					child.with(new Association().with(AssociationTypes.EDGE).with(this));
 				}
 			}
 		}

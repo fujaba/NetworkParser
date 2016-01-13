@@ -98,9 +98,14 @@ public class Association extends GraphMember {
 		if (values == null) {
 			return this;
 		}
-		if(values.length==1 && this.parentNode == null) {
-			this.parentNode = values[0];
-			return this;
+		if(values.length==1) {
+			if(this.parentNode == null) {
+				this.parentNode = values[0];
+				values[0].with(this);
+				return this;
+			}else if(this.parentNode == values[0]) {
+				return this;
+			}
 		}
 		for (GraphEntity value : values) {
 			if(getChildren().add(value) ) {
@@ -155,11 +160,11 @@ public class Association extends GraphMember {
 		if (getTyp() == AssociationTypes.GENERALISATION) {
 			return "-|>";
 		}
-		if (getTyp() == AssociationTypes.EDGE) {
-			return "->";
-		}
 		if (getOther().getTyp() == AssociationTypes.GENERALISATION) {
 			return "<|-";
+		}
+		if (getTyp() == AssociationTypes.EDGE) {
+			return "->";
 		}
 		if (getOther().getTyp() == AssociationTypes.EDGE) {
 			return "<-";
@@ -213,7 +218,7 @@ public class Association extends GraphMember {
 		return values;
 	}
 
-	public String getIds() {
+	String getIds() {
 		StringBuilder sb=new StringBuilder();
 		if(parentNode != null){
 			sb.append(parentNode.getName());
@@ -232,18 +237,22 @@ public class Association extends GraphMember {
 		return sb.toString();
 	}
 
-	public boolean contains(GraphEntity key, boolean self, boolean other) {
+	boolean contains(GraphEntity key, boolean self, boolean other) {
 		boolean contains = false;
 		if (self) {
-			contains = children.contains(key);
+			if(children == null) {
+				contains = this.parentNode == key;
+			} else {
+				contains = children.contains(key);
+			}
 		}
 		if (other && contains == false) {
-			contains = children.contains(key);
+			contains = this.other.contains(key, true, false);
 		}
 		return contains;
 	}
 	
-	public boolean containsAll(Association others, boolean both) {
+	boolean containsAll(Association others, boolean both) {
 		if(! children.containsAll(others.getChildren()) ) {
 			return false;
 		}

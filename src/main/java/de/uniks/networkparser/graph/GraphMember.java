@@ -86,7 +86,7 @@ public abstract class GraphMember {
 	}
 	
 	protected GraphMember without(GraphMember... values) {
-		if (values != null) {
+		if (values != null && this.children != null) {
 			for (GraphMember value : values) {
 				if(value != null) {
 					this.children.remove(value);
