@@ -23,7 +23,7 @@ permissions and limitations under the Licence.
 import de.uniks.networkparser.list.SimpleSet;
 
 public abstract class GraphEntity extends GraphMember {
-	protected SimpleSet<GraphEdge> associations = new SimpleSet<GraphEdge>();
+	protected SimpleSet<Association> associations = new SimpleSet<Association>();
 	private boolean external;
 	private String id;
 	
@@ -31,8 +31,11 @@ public abstract class GraphEntity extends GraphMember {
 		if (this.name == null) {
 			return null;
 		}
-		if (!shortName || name.lastIndexOf(".") < 0) {
-			return name;
+		if (!shortName) {
+			if (name.indexOf('.') < 0 && this.parentNode != null && this.parentNode.getName() != null) {
+				return this.parentNode.getName() + "." + name.replace("$", ".");
+			}
+			return name.replace("$", ".");
 		}
 		return name.substring(name.lastIndexOf(".") + 1);
 	}
@@ -75,8 +78,8 @@ public abstract class GraphEntity extends GraphMember {
 		}
 		sub = "."+clazz.substring(clazz.lastIndexOf(".")+1);
 		for(GraphMember item : children) {
-			if(item instanceof GraphClazz) {
-				id = ((GraphClazz)item).getId();
+			if(item instanceof Clazz) {
+				id = ((Clazz)item).getId();
 			} else {
 				id = item.getName();
 			}
@@ -104,9 +107,9 @@ public abstract class GraphEntity extends GraphMember {
 		return this;
 	}
 
-	protected GraphEntity with(GraphEdge... values) {
+	protected GraphEntity with(Association... values) {
 		if (values != null) {
-			for (GraphEdge value : values) {
+			for (Association value : values) {
 				if(value != null) {
 					this.associations.add(value);
 					value.with(this);
@@ -116,23 +119,23 @@ public abstract class GraphEntity extends GraphMember {
 		return this;
 	}
 	
-	public GraphAnnotation getAnnotations() {
+	public Annotation getAnnotation() {
 		if(this.children == null) {
 			return null;
 		}
 		for(GraphMember item : this.children) {
-			if(item instanceof GraphAnnotation) {
-				return (GraphAnnotation) item;
+			if(item instanceof Annotation) {
+				return (Annotation) item;
 			}
 		}
 		return null;
 	}
 
-	public GraphEntity with(GraphAnnotation value) {
+	public GraphEntity with(Annotation value) {
 		// Remove Old GraphAnnotation
 		if(this.children != null) {
 			for(int i=this.children.size();i>=0;i--) {
-				if(this.children.get(i) instanceof GraphAnnotation) {
+				if(this.children.get(i) instanceof Annotation) {
 					this.children.remove(i);
 				}
 			}

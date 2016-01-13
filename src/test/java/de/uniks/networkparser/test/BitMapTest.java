@@ -30,7 +30,7 @@ public class BitMapTest {
 		buffer.put(new byte[]{42});
 		NumberFormatCreator createrClass = new NumberFormatCreator("len", 4, 4);
 		createrClass.addBitEntity("number",BitEntity.BIT_NUMBER,  "8", BitEntity.BIT_STRING, "len", BitEntity.BIT_REFERENCE);
-		map.withCreator(createrClass);
+		map.with(createrClass);
 		NumberFormat numberItem = (NumberFormat) map.decode(buffer, createrClass);
 		Assert.assertNotNull(numberItem);
 		
@@ -40,9 +40,9 @@ public class BitMapTest {
 	@Test
 	public void testDate(){
 		// 25 0C AF 11 (37 12 175 17)
-		//       0         9        17        25
+		//	   0		 9		17		25
 		// Bits: 0010 0101 0000 1100 1010 1111 0001 0001
-		//         |Minute|   | hour|yL|  day |yU  |Month
+		//		 |Minute|   | hour|yL|  day |yU  |Month
 		// 15.01.13 12:37
 		ByteSimpleMap map= new ByteSimpleMap();
 		ByteBuffer buffer=ByteBuffer.allocate(4);

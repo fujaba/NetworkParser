@@ -18,8 +18,8 @@ public class JsonFilterTest {
 		
 		fullMessage.setLocation(new Location(1,2));
 		JsonIdMap map= new JsonIdMap();
-		map.withCreator(new FullMessageCreator());
-		map.withCreator(new LocationCreator());
+		map.with(new FullMessageCreator());
+		map.with(new LocationCreator());
 		
 		// Pre
 		assertEquals("Hallo Welt", fullMessage.getText());

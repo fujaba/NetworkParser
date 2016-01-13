@@ -1,22 +1,44 @@
 package de.uniks.networkparser.string;
 
+/*
+ NetworkParser
+ Copyright (c) 2011 - 2015, Stefan Lindel
+ All rights reserved.
+
+ Licensed under the EUPL, Version 1.1 or (as soon they
+ will be approved by the European Commission) subsequent
+ versions of the EUPL (the "Licence");
+ You may not use this work except in compliance with the Licence.
+ You may obtain a copy of the Licence at:
+
+ http://ec.europa.eu/idabc/eupl5
+
+ Unless required by applicable law or agreed to in
+ writing, software distributed under the Licence is
+ distributed on an "AS IS" basis,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ express or implied.
+ See the Licence for the specific language governing
+ permissions and limitations under the Licence.
+*/
+
 public class CharList implements CharSequence{
-    /**
-     * The value is used for character storage.
-     */
-    char[] value;
+	/**
+	 * The value is used for character storage.
+	 */
+	char[] value;
 
-    /**
-     * The count is the number of characters used.
-     */
-    int count;
+	/**
+	 * The count is the number of characters used.
+	 */
+	int count;
 
-    /**
-     * The start is the number of characters started.
-     */
-    int start;
+	/**
+	 * The start is the number of characters started.
+	 */
+	int start;
 
-    /** Init the new CharList
+	/** Init the new CharList
 	 * @param values the reference CharArray
 	 * @return the new CharList
 	 */
@@ -82,9 +104,9 @@ public class CharList implements CharSequence{
 			if(this.count +values.length() > value.length) {
 				int newCapacity = value.length * 2 + 2;
 				char[] copy = new char[newCapacity];
-		        System.arraycopy(value, this.start, copy, 0, count);
-		        value = copy;
-		        this.start = 0;
+				System.arraycopy(value, this.start, copy, 0, count);
+				value = copy;
+				this.start = 0;
 			}
 			int len = values.length();
 			for(int c=0;c<len; c++) {
@@ -199,75 +221,75 @@ public class CharList implements CharSequence{
 			if(this.count + 1 > value.length) {
 				int newCapacity = value.length * 2 + 2;
 				char[] copy = new char[newCapacity];
-		        System.arraycopy(value, this.start, copy, 0, count);
-		        value = copy;
-		        this.start = 0;
+				System.arraycopy(value, this.start, copy, 0, count);
+				value = copy;
+				this.start = 0;
 			}
 			this.value[count++] = src;
 		}
 		return this;
 	}
 
-    /**
-     * Returns the length (character count).
-     *
-     * @return  the length of the sequence of characters currently
-     *          represented by this object
-     */
-    @Override
-    public int length() {
-        return count;
-    }
+	/**
+	 * Returns the length (character count).
+	 *
+	 * @return  the length of the sequence of characters currently
+	 *		  represented by this object
+	 */
+	@Override
+	public int length() {
+		return count;
+	}
 
-    /**
-     * Returns the {@code char} value in this sequence at the specified index.
-     * The first {@code char} value is at index {@code 0}, the next at index
-     * {@code 1}, and so on, as in array indexing.
-     * <p>
-     * The index argument must be greater than or equal to
-     * {@code 0}, and less than the length of this sequence.
-     *
-     * <p>If the {@code char} value specified by the index is a
-     * <a href="Character.html#unicode">surrogate</a>, the surrogate
-     * value is returned.
-     *
-     * @param      index   the index of the desired {@code char} value.
-     * @return     the {@code char} value at the specified index.
-     * @throws     IndexOutOfBoundsException  if {@code index} is
-     *             negative or greater than or equal to {@code length()}.
-     */
+	/**
+	 * Returns the {@code char} value in this sequence at the specified index.
+	 * The first {@code char} value is at index {@code 0}, the next at index
+	 * {@code 1}, and so on, as in array indexing.
+	 * <p>
+	 * The index argument must be greater than or equal to
+	 * {@code 0}, and less than the length of this sequence.
+	 *
+	 * <p>If the {@code char} value specified by the index is a
+	 * <a href="Character.html#unicode">surrogate</a>, the surrogate
+	 * value is returned.
+	 *
+	 * @param	  index   the index of the desired {@code char} value.
+	 * @return	 the {@code char} value at the specified index.
+	 * @throws	 IndexOutOfBoundsException  if {@code index} is
+	 *			 negative or greater than or equal to {@code length()}.
+	 */
 	@Override
 	public char charAt(int index) {
-        if ((index < 0) || (index >= count))
-            throw new StringIndexOutOfBoundsException(index);
-        return value[index];
-    }
+		if ((index < 0) || (index >= count))
+			throw new StringIndexOutOfBoundsException(index);
+		return value[index];
+	}
 
-    /**
-     * Returns a new character sequence that is a subsequence of this sequence.
-     *
-     * <p> An invocation of this method of the form
-     *
-     * <pre>{@code
-     * sb.subSequence(begin,&nbsp;end)}</pre>
-     *
-     * behaves in exactly the same way as the invocation
-     *
-     * <pre>{@code
-     * sb.substring(begin,&nbsp;end)}</pre>
-     *
-     * This method is provided so that this class can
-     * implement the {@link CharSequence} interface.
-     *
-     * @param      start   the start index, inclusive.
-     * @param      end     the end index, exclusive.
-     * @return     the specified subsequence.
-     *
-     * @throws  IndexOutOfBoundsException
-     *          if {@code start} or {@code end} are negative,
-     *          if {@code end} is greater than {@code length()},
-     *          or if {@code start} is greater than {@code end}
-     */
+	/**
+	 * Returns a new character sequence that is a subsequence of this sequence.
+	 *
+	 * <p> An invocation of this method of the form
+	 *
+	 * <pre>{@code
+	 * sb.subSequence(begin,&nbsp;end)}</pre>
+	 *
+	 * behaves in exactly the same way as the invocation
+	 *
+	 * <pre>{@code
+	 * sb.substring(begin,&nbsp;end)}</pre>
+	 *
+	 * This method is provided so that this class can
+	 * implement the {@link CharSequence} interface.
+	 *
+	 * @param	  start   the start index, inclusive.
+	 * @param	  end	 the end index, exclusive.
+	 * @return	 the specified subsequence.
+	 *
+	 * @throws  IndexOutOfBoundsException
+	 *		  if {@code start} or {@code end} are negative,
+	 *		  if {@code end} is greater than {@code length()},
+	 *		  or if {@code start} is greater than {@code end}
+	 */
 	@Override
 	 public final CharSequence subSequence(int start, int end) {
 		return new CharList().with(this.value, this.start + start, end - start, false);
@@ -275,35 +297,35 @@ public class CharList implements CharSequence{
 
 	public boolean startsWith(String prefix, int toffset) {
 		char ta[] = value;
-        int to = toffset;
-        int pc = prefix.length();
-        if ((toffset < 0) || (toffset > value.length - pc)) {
-            return false;
-        }        
-        int po = 0;
-        // Note: toffset might be near -1>>>1.
-        while (--pc >= 0) {
-            if (ta[to++] != prefix.charAt(po++)) {
-                return false;
-            }
-        }
-        return true;
-     }
-	    
-    /**
-     * Returns the number of elements between the current position and the
-     * limit.
-     *
-     * @return  The number of elements remaining in this buffer
-     */
-    public final int remaining() {
-        return value.length - count - start;
-    }
-    
-    public final void clear() {
-    	this.count = 0;
-    	this.start = 0;
-    }
+		int to = toffset;
+		int pc = prefix.length();
+		if ((toffset < 0) || (toffset > value.length - pc)) {
+			return false;
+		}		
+		int po = 0;
+		// Note: toffset might be near -1>>>1.
+		while (--pc >= 0) {
+			if (ta[to++] != prefix.charAt(po++)) {
+				return false;
+			}
+		}
+		return true;
+	 }
+		
+	/**
+	 * Returns the number of elements between the current position and the
+	 * limit.
+	 *
+	 * @return  The number of elements remaining in this buffer
+	 */
+	public final int remaining() {
+		return value.length - count - start;
+	}
+	
+	public final void clear() {
+		this.count = 0;
+		this.start = 0;
+	}
 
 	public char remove(int position) {
 		char oldChar = this.value[position];
@@ -329,12 +351,12 @@ public class CharList implements CharSequence{
 	public CharList trim() {
 		int len = count+start;
 		while ((start < len) && (value[len - 1] <= ' ')) {
-            len--;
-        }
+			len--;
+		}
 		this.count = len - start;
 		while ((start < len) && (value[start] <= ' ')) {
-        	start++;
-        }
+			start++;
+		}
 		return this;
 	}
 	
@@ -384,9 +406,9 @@ public class CharList implements CharSequence{
 		} else {
 			if(newCapacity > value.length) {
 				char[] copy = new char[newCapacity];
-		        System.arraycopy(value, this.start, copy, 0, count);
-		        value = copy;
-		        this.start = 0;
+				System.arraycopy(value, this.start, copy, 0, count);
+				value = copy;
+				this.start = 0;
 			}
 		}
 		for( int i=0; i < rest;i++) {

@@ -1,8 +1,8 @@
 package de.uniks.networkparser.gui.javafx.controller;
 
+import de.uniks.networkparser.SimpleValuesMap;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.logic.ValuesMap;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -27,10 +27,11 @@ import de.uniks.networkparser.logic.ValuesMap;
 import javafx.beans.Observable;
 
 public class ModelListenerBooleanProperty extends ModelListenerProperty<Boolean> {
-	private de.uniks.networkparser.interfaces.Condition<ValuesMap> condition;
+	private de.uniks.networkparser.interfaces.Condition<SimpleValuesMap> condition;
+	
 	public ModelListenerBooleanProperty(SendableEntityCreator creator, Object item, String property) {
-        super(creator, item, property);
-    }
+		super(creator, item, property);
+	}
 
 	@Override
 	public void invalidated(Observable observable) {		
@@ -40,10 +41,10 @@ public class ModelListenerBooleanProperty extends ModelListenerProperty<Boolean>
 	public Boolean getValue() {
 		Object value = creator.getValue(item, property);
 		if(condition!=null){
-			return condition.check(ValuesMap.with(item, property, value));
+			return condition.check(this.filter.withValue(value));
 		}
 		return false;
-    }
+	}
 	
 	@Override
 	public void setValue(Boolean value) {
@@ -53,7 +54,7 @@ public class ModelListenerBooleanProperty extends ModelListenerProperty<Boolean>
 		}
 	}
 	
-	public ModelListenerBooleanProperty withCondition(Condition<ValuesMap> condition){
+	public ModelListenerBooleanProperty withCondition(Condition<SimpleValuesMap> condition){
 		this.condition = condition;
 		return this;
 	}

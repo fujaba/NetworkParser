@@ -1,5 +1,6 @@
 package de.uniks.networkparser.logic;
 
+import de.uniks.networkparser.SimpleValuesMap;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -28,7 +29,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
  * @author Stefan Lindel
  */
 
-public class InstanceOf extends ConditionMap implements SendableEntityCreator {
+public class InstanceOf extends SimpleConditionMap implements SendableEntityCreator {
 	/** Constant of CLAZZNAME. */
 	public static final String CLAZZNAME = "clazzname";
 	/** Constant of PROPERTY. */
@@ -89,7 +90,7 @@ public class InstanceOf extends ConditionMap implements SendableEntityCreator {
 	 * Static Method for instance a new Instance of InstanceOf Object.
 	 *
 	 * @param clazzName
-	 *            The ClazzName
+	 *			The ClazzName
 	 * @return The new Instance
 	 */
 	public static InstanceOf value(Class<?> clazzName) {
@@ -100,9 +101,9 @@ public class InstanceOf extends ConditionMap implements SendableEntityCreator {
 	 * Static Method for instance a new Instance of InstanceOf Object.
 	 *
 	 * @param clazz
-	 *            The ClazzName
+	 *			The ClazzName
 	 * @param property
-	 *            The Property
+	 *			The Property
 	 * @return The new Instance
 	 */
 	public static InstanceOf value(Object clazz, String property) {
@@ -122,7 +123,7 @@ public class InstanceOf extends ConditionMap implements SendableEntityCreator {
 
 	/**
 	 * @param value
-	 *            The new ClazzName
+	 *			The new ClazzName
 	 * @return INstacneOf Instance
 	 */
 	public InstanceOf withClazzName(Class<?> value) {
@@ -137,7 +138,7 @@ public class InstanceOf extends ConditionMap implements SendableEntityCreator {
 
 	/**
 	 * @param value
-	 *            The new Property
+	 *			The new Property
 	 * @return InstanceOf Instance
 	 */
 	public InstanceOf withProperty(String value) {
@@ -152,7 +153,7 @@ public class InstanceOf extends ConditionMap implements SendableEntityCreator {
 
 	/**
 	 * @param value
-	 *            The new Value
+	 *			The new Value
 	 * @return InstanceOf Instance
 	 */
 	public InstanceOf withValue(Object value) {
@@ -161,24 +162,24 @@ public class InstanceOf extends ConditionMap implements SendableEntityCreator {
 	}
 
 	@Override
-	public boolean check(ValuesMap values) {
+	public boolean check(SimpleValuesMap values) {
 		// Filter for ClazzTyp
 		if(values==null) {
 			return false;
 		}
 		if (this.clazzName != null ) {
-			if(values.value!=null && values.value.getClass().isPrimitive()) {
+			if(values.getValue()!=null && values.getValue().getClass().isPrimitive()) {
 				return true;
 			}
-  			if(this.clazzName!=null && !this.clazzName.isInstance(values.value)) {
+			  if(this.clazzName!=null && !this.clazzName.isInstance(values.getValue())) {
 				return false;
 			}else if(this.property==null) {
 				return true;
-			}else if(this.property.equalsIgnoreCase(values.property)) {
+			}else if(this.property.equalsIgnoreCase(values.getProperty())) {
 				return false;
 			}
 		}
 		// Filter for one item
-		return (this.item == null || this.item != values.value);
+		return (this.item == null || this.item != values.getValue());
 	}
 }

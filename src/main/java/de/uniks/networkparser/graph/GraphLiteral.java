@@ -22,9 +22,10 @@ package de.uniks.networkparser.graph;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.list.StringList;
 
 public class GraphLiteral extends GraphMember{
-	private SimpleKeyValueList<String, Object> values=new SimpleKeyValueList<String, Object>();
+	private SimpleKeyValueList<String, StringList> values=new SimpleKeyValueList<String, StringList>();
 	
 	@Override
 	public GraphLiteral with(String name) {
@@ -32,7 +33,19 @@ public class GraphLiteral extends GraphMember{
 		return this;
 	}
 	public GraphLiteral withKeyValue(String key, Object value) {
-		this.values.put(key, value);
+		if(value instanceof StringList) {
+			this.values.put(key, (StringList) value);
+			return this;
+		}
+		if(value instanceof String) {
+			StringList list =new StringList();
+			list.add(""+value);
+			this.values.add(key, list);
+		}
 		return this;
+	}
+	
+	public SimpleKeyValueList<String, StringList> getValues() {
+		return values;
 	}
 }

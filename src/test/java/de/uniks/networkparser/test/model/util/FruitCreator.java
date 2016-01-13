@@ -29,66 +29,69 @@ public class FruitCreator implements SendableEntityCreator
 {
    private final String[] properties = new String[]
    {
-      Fruit.PROPERTY_X,
-      Fruit.PROPERTY_Y,
+	  Fruit.PROPERTY_X,
+	  Fruit.PROPERTY_Y,
    };
    
    @Override
    public String[] getProperties()
    {
-      return properties;
+	  return properties;
    }
    
    @Override
    public Object getSendableInstance(boolean reference)
    {
-      return new Fruit();
+	   if(reference) {
+		   return Fruit.class;   
+	   }
+	   return new GenericFruit();
    }
    
    @Override
    public Object getValue(Object target, String attrName)
    {
-      int pos = attrName.indexOf('.');
-      String attribute = attrName;
-      
-      if (pos > 0)
-      {
-         attribute = attrName.substring(0, pos);
-      }
+	  int pos = attrName.indexOf('.');
+	  String attribute = attrName;
+	  
+	  if (pos > 0)
+	  {
+		 attribute = attrName.substring(0, pos);
+	  }
 
-      if (Fruit.PROPERTY_X.equalsIgnoreCase(attribute))
-      {
-         return ((Fruit) target).getX();
-      }
+	  if (Fruit.PROPERTY_X.equalsIgnoreCase(attribute))
+	  {
+		 return ((Fruit) target).getX();
+	  }
 
-      if (Fruit.PROPERTY_Y.equalsIgnoreCase(attribute))
-      {
-         return ((Fruit) target).getY();
-      }
-      
-      return null;
+	  if (Fruit.PROPERTY_Y.equalsIgnoreCase(attribute))
+	  {
+		 return ((Fruit) target).getY();
+	  }
+	  
+	  return null;
    }
    
    @Override
    public boolean setValue(Object target, String attrName, Object value, String type)
    {
-      if (JsonIdMap.REMOVE.equals(type) && value != null)
-      {
-         attrName = attrName + type;
-      }
+	  if (JsonIdMap.REMOVE.equals(type) && value != null)
+	  {
+		 attrName = attrName + type;
+	  }
 
-      if (Fruit.PROPERTY_X.equalsIgnoreCase(attrName))
-      {
-         ((Fruit) target).setX(Double.parseDouble(value.toString()));
-         return true;
-      }
+	  if (Fruit.PROPERTY_X.equalsIgnoreCase(attrName))
+	  {
+		 ((Fruit) target).setX(Double.parseDouble(value.toString()));
+		 return true;
+	  }
 
-      if (Fruit.PROPERTY_Y.equalsIgnoreCase(attrName))
-      {
-         ((Fruit) target).setY(Double.parseDouble(value.toString()));
-         return true;
-      }
-      
-      return false;
+	  if (Fruit.PROPERTY_Y.equalsIgnoreCase(attrName))
+	  {
+		 ((Fruit) target).setY(Double.parseDouble(value.toString()));
+		 return true;
+	  }
+	  
+	  return false;
    }
 }

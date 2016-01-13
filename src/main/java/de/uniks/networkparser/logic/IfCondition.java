@@ -27,7 +27,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
  * @author Stefan Lindel IfCondition Clazz
  */
 
-public class IfCondition implements Condition<ValuesSimple>, SendableEntityCreator {
+public class IfCondition implements SimpleConditionValue, SendableEntityCreator {
 	/** Constant for Expression. */
 	public static final String EXPRESSION = "expression";
 	/** Constant for TrueCase. */
@@ -36,59 +36,59 @@ public class IfCondition implements Condition<ValuesSimple>, SendableEntityCreat
 	public static final String FALSECONDITION = "falsecondition";
 
 	/** Variable for Expression. */
-	private Condition<ValuesSimple> expression;
+	private Condition<SimpleValues> expression;
 	/** Variable for True Case. */
-	private Condition<ValuesSimple> trueCondition;
+	private Condition<SimpleValues> trueCondition;
 	/** Variable for False Case. */
-	private Condition<ValuesSimple> falseCondition;
+	private Condition<SimpleValues> falseCondition;
 
 	/**
 	 * @param value
-	 *            Set the new Expression
+	 *			Set the new Expression
 	 * @return IfCondition Instance
 	 */
-	public IfCondition withExpression(Condition<ValuesSimple> value) {
+	public IfCondition withExpression(Condition<SimpleValues> value) {
 		this.expression = value;
 		return this;
 	}
 
 	/** @return The Expression */
-	public Condition<ValuesSimple> getExpression() {
+	public Condition<SimpleValues> getExpression() {
 		return expression;
 	}
 
 	/**
 	 * @param condition
-	 *            Ste The True Case
+	 *			Ste The True Case
 	 * @return InstanceOf Instance
 	 */
-	public IfCondition withTrue(Condition<ValuesSimple> condition) {
+	public IfCondition withTrue(Condition<SimpleValues> condition) {
 		this.trueCondition = condition;
 		return this;
 	}
 
 	/** @return The True Case */
-	public Condition<ValuesSimple> getTrue() {
+	public Condition<SimpleValues> getTrue() {
 		return trueCondition;
 	}
 
 	/**
 	 * @param condition
-	 *            Set the False Case
+	 *			Set the False Case
 	 * @return IfCondition Instance
 	 */
-	public IfCondition withFalse(Condition<ValuesSimple> condition) {
+	public IfCondition withFalse(Condition<SimpleValues> condition) {
 		this.falseCondition = condition;
 		return this;
 	}
 
 	/** @return The False Case */
-	public Condition<ValuesSimple> getFalse() {
+	public Condition<SimpleValues> getFalse() {
 		return falseCondition;
 	}
 
 	@Override
-	public boolean check(ValuesSimple values) {
+	public boolean check(SimpleValues values) {
 		if (expression.check(values)) {
 			if (trueCondition != null) {
 				return trueCondition.check(values);
@@ -125,20 +125,19 @@ public class IfCondition implements Condition<ValuesSimple>, SendableEntityCreat
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
 		if (EXPRESSION.equalsIgnoreCase(attribute)) {
-			((IfCondition) entity).withExpression((Condition<ValuesSimple>) value);
+			((IfCondition) entity).withExpression((SimpleConditionValue) value);
 			return true;
 		}
 		if (TRUECONDITION.equalsIgnoreCase(attribute)) {
-			((IfCondition) entity).withTrue((Condition<ValuesSimple>) value);
+			((IfCondition) entity).withTrue((SimpleConditionValue) value);
 			return true;
 		}
 		if (FALSECONDITION.equalsIgnoreCase(attribute)) {
-			((IfCondition) entity).withFalse((Condition<ValuesSimple>) value);
+			((IfCondition) entity).withFalse((SimpleConditionValue) value);
 			return true;
 		}
 		return false;

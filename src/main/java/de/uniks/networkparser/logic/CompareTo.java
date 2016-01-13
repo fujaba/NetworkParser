@@ -24,7 +24,7 @@ import de.uniks.networkparser.interfaces.Condition;
 */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class CompareTo implements Condition<ValuesSimple>, SendableEntityCreator {
+public class CompareTo implements Condition<SimpleValues>, SendableEntityCreator {
 	public static final String VALUE = "value";
 	public static final String COMPARE = "compare";
 	public static final int GREATER = 1;
@@ -51,7 +51,7 @@ public class CompareTo implements Condition<ValuesSimple>, SendableEntityCreator
 	}
 
 	@Override
-	public boolean check(ValuesSimple value) {
+	public boolean check(SimpleValues value) {
 		Object entityValue = value.getValue();
 		if (entityValue != null) {
 			if (entityValue instanceof Comparable<?>) {

@@ -42,9 +42,9 @@ public class StringBuffer extends TextBuffer {
 
 	@Override
 	public String substring(int start, int len) {
-        if(start<0) {
-            start = position();
-        }
+		if(start<0) {
+			start = position();
+		}
 		if (start + len > buffer.length()) {
 			len = buffer.length() - start;
 		}
@@ -53,7 +53,7 @@ public class StringBuffer extends TextBuffer {
 
 	/**
 	 * @param value
-	 *            String of Value
+	 *			String of Value
 	 * @return the CharacterBuffer
 	 */
 	public StringBuffer withValue(String value) {

@@ -30,13 +30,13 @@ import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 public class Grammar {
 	/**
 	 * @param jsonObject
-	 *            The Object for read
+	 *			The Object for read
 	 * @param map
-	 *            The IdMap
+	 *			The IdMap
 	 * @param filter
-	 *            The filter
+	 *			The filter
 	 * @param isId
-	 *            The isReadId
+	 *			The isReadId
 	 *
 	 * @return the props of theJsonObject
 	 */
@@ -61,13 +61,15 @@ public class Grammar {
 
 	/**
 	 * @param jsonObject
-	 *            The Object for read
+	 *			The Object for read
 	 * @param map
-	 *            The IdMap
+	 *			The IdMap
+	 * @param searchForSuperCreator
+	 *			search for Creator in superclasses
 	 * @return the Creator for this JsonObject
 	 */
 	public SendableEntityCreator getReadCreator(JsonObject jsonObject,
-			IdMap map) {
+			IdMap map, boolean searchForSuperCreator) {
 		Object className = jsonObject.get(JsonIdMap.CLASS);
 		if(className == null) {
 			return null;
@@ -76,31 +78,32 @@ public class Grammar {
 		if(creator != null) {
 			return creator;
 		}
-		try {
-			Class<?> clazzName = Class.forName((String) className);
-			return map.getSuperCreator(clazzName);
-		} catch (ClassNotFoundException e) {
-		}
+		Class<?> clazzName = getClassForName((String) className);
+		return getSuperCreator(map, searchForSuperCreator, clazzName);
+	}
+	
+	protected Class<?> getClassForName(String name) {
 		return null;
 	}
 
 	/**
 	 * @param modelItem
-	 *            Item for write
+	 *			Item for write
 	 * @param className
-	 *            String className
+	 *			String className
 	 * @param map
-	 *            The IdMap
-	 *
+	 *			The IdMap
+	 * @param searchForSuperCreator
+	 *			search for Creator in superclasses
 	 * @return the Creator for this JsonObject
 	 */
 	public SendableEntityCreator getWriteCreator(Object modelItem,
-			String className, IdMap map) {
+			String className, IdMap map, boolean searchForSuperCreator) {
 		SendableEntityCreator creator = map.getCreator(className, true);
 		if(creator != null) {
 			return creator;
 		}
-		return map.getSuperCreator(modelItem);
+		return getSuperCreator(map, searchForSuperCreator, modelItem);
 	}
 
 	public JsonObject getWriteObject(IdMap map,
@@ -109,7 +112,7 @@ public class Grammar {
 		JsonObject json = new JsonObject();
 		json.put(JsonIdMap.CLASS, className);
 		if (prototyp instanceof SendableEntityCreatorNoIndex
-				|| !filter.isId(map, jsonProp, className)) {
+				|| !filter.isId(jsonProp, className)) {
 			for (int i = 0; i < jsonProp.size(); i++) {
 				json.put(jsonProp.getKeyByIndex(i), jsonProp.getValueByIndex(i));
 			}
@@ -134,6 +137,10 @@ public class Grammar {
 	/**
 	 * Get a new Instance of Element from the Creator
 	 * @param creator The EntityCreator
+<<<<<<< HEAD
+=======
+	 * @param className Alternative Name of Class
+>>>>>>> adapt_SDMLib_datamodel
 	 * @return The new Instance
 	 */
 	public Object getNewEntity(SendableEntityCreator creator, String className) {
@@ -149,6 +156,9 @@ public class Grammar {
 	}
 
 	public String getWriteId(Object obj, IdMapCounter counter) {
+		return null;
+	}
+	public SendableEntityCreator getSuperCreator(IdMap map, boolean searchForSuperCreator, Object modelItem) {
 		return null;
 	}
 }

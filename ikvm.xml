@@ -2,10 +2,8 @@
 <project default="ikvm" name="Create DLL for NetworkParser">
 	<property name="ikvmVersion" value="8.0.5305" />
 	<import file="buildAnt.xml" as="Ant"/>
-	<target name="unpack">
-		<unzip src="lib/ikvm-8.0.5305.zip" dest="build/ikvm" />
-	</target>
-	<target name="ikvm" depends="unpack, Ant.buildAnt">
+	<target name="ikvm" depends="Ant.buildAnt" description="Crosscompile Networkparser with IKVM.NET to .Net Dll">
+		<unzip src="lib/ikvm-8.1.5717.0.zip" dest="build/ikvm" />
 		<taskdef name="ikvmc" classname="de.uniks.networkparser.test.ant.IkvmcTask" classpath="build/ant.jar" />
 		<mkdir dir="build/ikvmsrc/" />
 		<javac srcdir="src/main/java" destdir="build/ikvmsrc/"  includeantruntime="false" debug="true" listfiles="true">

@@ -1,12 +1,13 @@
 package de.uniks.networkparser.logic;
 
+import de.uniks.networkparser.SimpleValuesMap;
 import de.uniks.networkparser.interfaces.BufferedBuffer;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 /**
  * @author Stefan Lindel Clazz of EqualsCondition
  */
 
-public class Equals extends ConditionMap implements SendableEntityCreator {
+public class Equals extends SimpleConditionMap implements SendableEntityCreator {
 	/** Constant of StrValue. */
 	public static final String STRINGVALUE = "stringvalue";
 	/** Constant of Position. */
@@ -24,9 +25,9 @@ public class Equals extends ConditionMap implements SendableEntityCreator {
 	private Byte bytevalue;
 
 	@Override
-	public boolean check(ValuesMap values) {
-		if (values.entity instanceof BufferedBuffer) {
-			BufferedBuffer buffer = (BufferedBuffer) values.entity;
+	public boolean check(SimpleValuesMap values) {
+		if (values.getEntity() instanceof BufferedBuffer) {
+			BufferedBuffer buffer = (BufferedBuffer) values.getEntity();
 			int pos;
 			if (position < 0) {
 				pos = buffer.position();
@@ -35,15 +36,15 @@ public class Equals extends ConditionMap implements SendableEntityCreator {
 			}
 			return buffer.byteAt(pos) == bytevalue;
 		}
-		if (values.value == null) {
+		if (values.getValue() == null) {
 			return (strValue == null);
 		}
-		return values.value.equals(strValue);
+		return values.getValue().equals(strValue);
 	}
 
 	/**
 	 * @param value
-	 *            The new Position
+	 *			The new Position
 	 * @return Equals Instance
 	 */
 	public Equals withPosition(int value) {
@@ -60,7 +61,7 @@ public class Equals extends ConditionMap implements SendableEntityCreator {
 
 	/**
 	 * @param value
-	 *            The new ByteValue
+	 *			The new ByteValue
 	 * @return Equals Instance
 	 */
 	public Equals withValue(Byte value) {
@@ -77,7 +78,7 @@ public class Equals extends ConditionMap implements SendableEntityCreator {
 
 	/**
 	 * @param value
-	 *            The new StringValue
+	 *			The new StringValue
 	 * @return Equals Instance
 	 */
 	public Equals withValue(String value) {

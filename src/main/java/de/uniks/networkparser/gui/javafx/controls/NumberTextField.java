@@ -37,26 +37,26 @@ import de.uniks.networkparser.gui.FieldTyp;
 
 public class NumberTextField extends TextField implements CellEditorElement {
 	private NumberFormat nf;
-    private boolean init=false;
-    private BigDecimal value = new BigDecimal(0);
-    private CellEditorElement owner;
+	private boolean init=false;
+	private BigDecimal value = new BigDecimal(0);
+	private CellEditorElement owner;
 	private Column column;
 
-    private void format() {
-        try {
-            String input = getText();
-            if (input == null || input.length() == 0) {
-                return;
-            }
-            Number parsedNumber = nf.parse(input);
-            BigDecimal newValue = new BigDecimal(parsedNumber.toString());
-            withValue(newValue);
-            selectAll();
-        } catch (ParseException ex) {
-            // If parsing fails keep old number
-            setText(nf.format(value));
-        }
-    }
+	private void format() {
+		try {
+			String input = getText();
+			if (input == null || input.length() == 0) {
+				return;
+			}
+			Number parsedNumber = nf.parse(input);
+			BigDecimal newValue = new BigDecimal(parsedNumber.toString());
+			withValue(newValue);
+			selectAll();
+		} catch (ParseException ex) {
+			// If parsing fails keep old number
+			setText(nf.format(value));
+		}
+	}
 
 	public CellEditorElement getOwner() {
 		return owner;
@@ -115,17 +115,17 @@ public class NumberTextField extends TextField implements CellEditorElement {
 		this.column = column;
 		String numberFormat = column.getNumberFormat();
 		this.nf = NumberFormat.getInstance();
-    	int pos=numberFormat.indexOf(".");
-    	if(pos>0&& pos<numberFormat.length()){
-    		nf.setMaximumFractionDigits(numberFormat.length() - pos -1);
-    		nf.setMaximumIntegerDigits(pos);
-    	}else{
-    		nf.setMaximumFractionDigits(0);
-    		nf.setMaximumIntegerDigits(numberFormat.length());
-    		nf.setGroupingUsed(false);
-    	}
-    	nf.setMinimumIntegerDigits(1);
-    	return this;
+		int pos=numberFormat.indexOf(".");
+		if(pos>0&& pos<numberFormat.length()){
+			nf.setMaximumFractionDigits(numberFormat.length() - pos -1);
+			nf.setMaximumIntegerDigits(pos);
+		}else{
+			nf.setMaximumFractionDigits(0);
+			nf.setMaximumIntegerDigits(numberFormat.length());
+			nf.setGroupingUsed(false);
+		}
+		nf.setMinimumIntegerDigits(1);
+		return this;
 	}
 
 	@Override
@@ -142,38 +142,38 @@ public class NumberTextField extends TextField implements CellEditorElement {
 			newValue = new BigDecimal(""+value);
 		}
 		if(!init){
-    		setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent arg0) {
-                	format();
-                	apply(APPLYACTION.SAVE);
-                }
-            });
+			setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent arg0) {
+					format();
+					apply(APPLYACTION.SAVE);
+				}
+			});
 
-            focusedProperty().addListener(new ChangeListener<Boolean>() {
-                @Override
-                public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                    if (!newValue.booleanValue()) {
-                    	format();
-                    }
-                }
-            });
-            addEventFilter(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>()
-    	            {
-    	                @Override
+			focusedProperty().addListener(new ChangeListener<Boolean>() {
+				@Override
+				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+					if (!newValue.booleanValue()) {
+						format();
+					}
+				}
+			});
+			addEventFilter(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>()
+					{
+						@Override
 						public void handle(KeyEvent t)
-    	                {
-    	                	if(t.getCode()==KeyCode.ENTER){
-    	                		apply(APPLYACTION.ENTER);
-    	                	}
-    	                }
-    	            });
-            this.init = true;
-    	}
+						{
+							if(t.getCode()==KeyCode.ENTER){
+								apply(APPLYACTION.ENTER);
+							}
+						}
+					});
+			this.init = true;
+		}
 		this.value = newValue;
-        if(nf!=null){
-    		setText(nf.format(newValue));
-    	}
+		if(nf!=null){
+			setText(nf.format(newValue));
+		}
 		return this;
 	}
 

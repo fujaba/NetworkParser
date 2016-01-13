@@ -21,69 +21,68 @@
    
 package de.uniks.networkparser.test.model.util;
 
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.test.model.Apple;
 import de.uniks.networkparser.test.model.AppleTree;
 
-public class AppleTreeCreator implements SendableEntityCreator
+public class AppleTreeCreator extends TreeCreator 
 {
    private final String[] properties = new String[]
    {
-      AppleTree.PROPERTY_HAS,
+	  AppleTree.PROPERTY_HAS,
    };
    
    @Override
    public String[] getProperties()
    {
-      return properties;
+	  return properties;
    }
    
    @Override
    public Object getSendableInstance(boolean reference)
    {
-      return new AppleTree();
+	  return new AppleTree();
    }
    
    @Override
    public Object getValue(Object target, String attrName)
    {
-      int pos = attrName.indexOf('.');
-      String attribute = attrName;
-      
-      if (pos > 0)
-      {
-         attribute = attrName.substring(0, pos);
-      }
+	  int pos = attrName.indexOf('.');
+	  String attribute = attrName;
+	  
+	  if (pos > 0)
+	  {
+		 attribute = attrName.substring(0, pos);
+	  }
 
-      if (AppleTree.PROPERTY_HAS.equalsIgnoreCase(attribute))
-      {
-         return ((AppleTree) target).getHas();
-      }
-      
-      return null;
+	  if (AppleTree.PROPERTY_HAS.equalsIgnoreCase(attribute))
+	  {
+		 return ((AppleTree) target).getHas();
+	  }
+	  
+	  return null;
    }
    
    @Override
    public boolean setValue(Object target, String attrName, Object value, String type)
    {
-      if (JsonIdMap.REMOVE.equals(type) && value != null)
-      {
-         attrName = attrName + type;
-      }
+	  if (JsonIdMap.REMOVE.equals(type) && value != null)
+	  {
+		 attrName = attrName + type;
+	  }
 
-      if (AppleTree.PROPERTY_HAS.equalsIgnoreCase(attrName))
-      {
-         ((AppleTree) target).addToHas((Apple) value);
-         return true;
-      }
-      
-      if ((AppleTree.PROPERTY_HAS + JsonIdMap.REMOVE).equalsIgnoreCase(attrName))
-      {
-         ((AppleTree) target).removeFromHas((Apple) value);
-         return true;
-      }
-      
-      return false;
+	  if (AppleTree.PROPERTY_HAS.equalsIgnoreCase(attrName))
+	  {
+		 ((AppleTree) target).addToHas((Apple) value);
+		 return true;
+	  }
+	  
+	  if ((AppleTree.PROPERTY_HAS + JsonIdMap.REMOVE).equalsIgnoreCase(attrName))
+	  {
+		 ((AppleTree) target).removeFromHas((Apple) value);
+		 return true;
+	  }
+	  
+	  return false;
    }
 }

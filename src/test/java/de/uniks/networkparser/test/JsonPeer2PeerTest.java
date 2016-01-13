@@ -23,13 +23,12 @@ public class JsonPeer2PeerTest implements UpdateListener{
 	public void testModel(){
 		
 		firstMap = new JsonIdMap();
-		firstMap.withUpdateListenerRead(this);
-		firstMap.withUpdateListenerSend(this);
+		firstMap.with(this);
 		
-		firstMap.withCreator(new SortedMsgCreator());
+		firstMap.with(new SortedMsgCreator());
 		
 		secondMap = new JsonIdMap();
-		secondMap.withCreator(new SortedMsgCreator());
+		secondMap.with(new SortedMsgCreator());
 		
 		firstRoot = new SortedMsg();
 		firstRoot.setNumber(1);

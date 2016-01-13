@@ -192,4 +192,13 @@ public class GenericCreator implements SendableEntityCreator {
 		}
 		return false;
 	}
+	protected Class<?> getClassForName(String className) {
+		try {
+			return Class.forName(className);
+		} catch (ClassNotFoundException e) {
+		}
+		return null;
+	}
+
+
 }

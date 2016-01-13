@@ -26,42 +26,42 @@ import java.util.ArrayList;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
-import de.uniks.networkparser.logic.ValuesMap;
-import de.uniks.networkparser.logic.ValuesSimple;
+import de.uniks.networkparser.logic.SimpleValues;
 
 public class Filter {
-	protected Condition<ValuesSimple> idFilter;
-	protected Condition<ValuesSimple> convertable;
-	protected Condition<ValuesSimple> property;
+	protected Condition<SimpleValues> idFilter;
+	protected Condition<SimpleValues> convertable;
+	protected Condition<SimpleValues> property;
 
 	// Temporary variables
 	protected ArrayList<Object> visitedObjects;
 	protected Boolean full;
-	protected ValuesMap filterMap;
+	protected SimpleValuesMap filter;
 	private String strategy = IdMap.NEW;
 
-	public Condition<ValuesSimple> getIdFilter() {
-		return idFilter;
-	}
-
-	public Filter withIdFilter(Condition<ValuesSimple> idFilter) {
+	public Filter withIdFilter(Condition<SimpleValues> idFilter) {
 		this.idFilter = idFilter;
+		return this;
+	}
+	
+	public Filter withMap(IdMap map) {
+		this.filter = new SimpleValuesMap().with(map);
 		return this;
 	}
 
 	/**
 	 * Filter for encoding ID of Element
 	 * 
-	 * @param map the Map
 	 * @param entity Entity for Show Id
 	 * @param className ClassName
 	 * @return Boolean if encoding ID
 	 */
-	public boolean isId(IdMap map, Object entity, String className) {
+	public boolean isId(Object entity, String className) {
 		if (idFilter != null) {
-			return idFilter.check(ValuesMap.with(map, entity, className));
+			this.filter.with(entity, className);
+			return idFilter.check(this.filter);
 		}else {
-			SendableEntityCreator creator = map.getCreator(className, true);
+			SendableEntityCreator creator = filter.getMap().getCreator(className, true);
 			if(creator!=null) {
 				return !(creator instanceof SendableEntityCreatorNoIndex);
 			}
@@ -71,69 +71,58 @@ public class Filter {
 
 	/**
 	 * Serialization the Full object inclusive null value
-	 *
 	 * @return boolean for serialization the full object
 	 */
 	public Boolean isFullSeriation() {
 		return full;
 	}
-
+	/**
+	 * Serialization the Full object inclusive null value
+	 * @param value for serialization the full object
+	 * @return self instance 
+	 */
 	public Filter withFull(boolean value) {
 		this.full = value;
 		return this;
 	}
 
-	public Condition<ValuesSimple> getConvertable() {
-		return convertable;
+	public Filter withPropertyRegard(Condition<SimpleValues> property) {
+		this.property = property;
+		return this;
 	}
-
-	public Filter withConvertable(Condition<ValuesSimple> convertable) {
+	
+	public Filter withConvertable(Condition<SimpleValues> convertable) {
 		this.convertable = convertable;
 		return this;
 	}
 
-	public Condition<ValuesSimple> getPropertyRegard() {
-		return property;
+	public Filter newInstance(Filter referenceFilter) {
+		if(referenceFilter == null) {
+			referenceFilter = new Filter();
+		}
+		if (convertable != null) {
+			referenceFilter.withConvertable(convertable);
+		}
+		if (idFilter != null) {
+			referenceFilter.withIdFilter(idFilter);
+		}
+		if (property != null) {
+			referenceFilter.withPropertyRegard(property);
+		}
+		if (full != null) {
+			referenceFilter.withFull(full);
+		}else if(referenceFilter.isFullSeriation() == null) {
+			referenceFilter.withFull(false);
+		}
+		referenceFilter.withMap(this.filter.getMap());
+		return referenceFilter;
+	}
+	
+	SimpleValuesMap getFilter() {
+		return filter;
 	}
 
-	public Filter withPropertyRegard(Condition<ValuesSimple> property) {
-		this.property = property;
-		return this;
-	}
-
-	public Filter withStandard(Filter referenceFilter) {
-		if (idFilter == null && referenceFilter != null) {
-			idFilter = referenceFilter.getIdFilter();
-		}
-		if (convertable == null && referenceFilter != null) {
-			convertable = referenceFilter.getConvertable();
-		}
-		if (property == null && referenceFilter != null) {
-			property = referenceFilter.getPropertyRegard();
-		}
-		if (full == null && referenceFilter != null) {
-			full = referenceFilter.isFullSeriation();
-			if (full == null) {
-				full = false;
-			}
-		}
-		return this;
-	}
-
-	public Filter clone() {
-		Filter reference = new Filter();
-		if (reference.getClass().getName().equals(this.getClass().getName())) {
-			return clone(new Filter());
-		}
-		return this;
-	}
-
-	protected Filter clone(Filter newInstance) {
-		return newInstance.withConvertable(convertable).withIdFilter(idFilter)
-				.withPropertyRegard(property);
-	}
-
-	public boolean hasObjects(Object element) {
+	boolean hasObjects(Object element) {
 		return getVisitedObjects().contains(element);
 	}
 
@@ -143,7 +132,7 @@ public class Filter {
 		}
 		return visitedObjects;
 	}
-	public int getIndexVisitedObjects(Object element) {
+	int getIndexVisitedObjects(Object element) {
 		int pos = 0;
 		for (Object item : getVisitedObjects()) {
 			if (item == element) {
@@ -154,7 +143,7 @@ public class Filter {
 		return -1;
 	}
 
-	public Object getVisitedObjects(int index) {
+	Object getVisitedObjects(int index) {
 		if (index>=0 && index < getVisitedObjects().size()) {
 			return getVisitedObjects().get(index);
 		}
@@ -163,10 +152,10 @@ public class Filter {
 
 	/**
 	 * @param visitedObject
-	 *            Visited Object to Add to List
+	 *			Visited Object to Add to List
 	 * @return Filter
 	 */
-	public Filter withObjects(Object... visitedObject) {
+	Filter withObjects(Object... visitedObject) {
 		if (visitedObject == null) {
 			return this;
 		}
@@ -181,28 +170,24 @@ public class Filter {
 	public String[] getProperties(SendableEntityCreator creator) {
 		return creator.getProperties();
 	}
-	
-	public void initMapFilter(IdMap map) {
-		this.filterMap = ValuesMap.withMap(map);
-	}
-	
-	public boolean isPropertyRegard(Object entity, String property, Object value, int deep) {
-		if (this.property != null) {
-			this.filterMap.withValues(entity, property, value, deep);
-			return this.property.check(filterMap);
-		}
-		return true;
-	}
-	
-	public boolean isConvertable(Object entity, String property, Object value, int deep) {
-		if (this.convertable != null) {
-			this.filterMap.withValues(entity, property, value, deep);
-			return this.convertable.check(filterMap);
-		}
-		return true;
-	}
 
-	public Object getRefByEntity(Object value) {
+	boolean isPropertyRegard(Object entity, String property, Object value, int deep) {
+		if (this.property != null) {
+			this.filter.with(entity, property, value, deep);
+			return this.property.check(filter);
+		}
+		return true;
+	}
+	
+	boolean isConvertable(Object entity, String property, Object value, int deep) {
+		if (this.convertable != null) {
+			this.filter.with(entity, property, value, deep);
+			return this.convertable.check(filter);
+		}
+		return true;
+	}
+	
+	Object getRefByEntity(Object value) {
 		if(visitedObjects == null)
 			return null;
 		for (int i = 0; i < visitedObjects.size(); i += 2) {
@@ -219,7 +204,7 @@ public class Filter {
 	 * @param convertable Condition
 	 * @return a new Filter for regard the model 
 	 */
-	public static Filter regard(Condition<ValuesSimple> convertable) {
+	public static Filter regard(Condition<SimpleValues> convertable) {
 		return new Filter().withPropertyRegard(convertable);
 	}
 	/**
@@ -228,10 +213,14 @@ public class Filter {
 	 * @param convertable Condition
 	 * @return a new Filter for Filter with Convertable Items 
 	 */
-	public static Filter convertable(Condition<ValuesSimple> convertable) {
+	public static Filter convertable(Condition<SimpleValues> convertable) {
 		return new Filter().withConvertable(convertable);
 	}
 
+	/**
+	 * Strategy for setting property value in model 
+	 * @return String type of set Value
+	 */
 	public String getStrategy() {
 		return strategy;
 	}

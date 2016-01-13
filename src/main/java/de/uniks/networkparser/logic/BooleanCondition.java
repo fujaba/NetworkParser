@@ -1,6 +1,5 @@
 package de.uniks.networkparser.logic;
 
-import de.uniks.networkparser.interfaces.Condition;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -24,12 +23,12 @@ import de.uniks.networkparser.interfaces.Condition;
 */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class BooleanCondition implements Condition<ValuesSimple>, SendableEntityCreator {
+public class BooleanCondition implements SimpleConditionValue, SendableEntityCreator {
 	public static final String VALUE = "value";
 	private boolean value;
 
 	@Override
-	public boolean check(ValuesSimple values) {
+	public boolean check(SimpleValues values) {
 		return this.value;
 	}
 

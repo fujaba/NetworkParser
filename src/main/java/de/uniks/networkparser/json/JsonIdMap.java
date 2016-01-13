@@ -22,7 +22,6 @@ package de.uniks.networkparser.json;
  permissions and limitations under the Licence.
 */
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -39,7 +38,6 @@ import de.uniks.networkparser.interfaces.IdMapDecoder;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorWrapper;
-import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.util.JsonArrayCreator;
 import de.uniks.networkparser.json.util.JsonObjectCreator;
 import de.uniks.networkparser.logic.Deep;
@@ -63,12 +61,6 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 
 	protected Grammar grammar = new Grammar();
 
-	/** The updatelistener. */
-	private UpdateListener readlistener;
-
-	/** The updatelistener. */
-	private UpdateListener sendlistener;
-
 	/** If this is true the IdMap save the Typ of primary datatypes. */
 	protected boolean typSave;
 
@@ -77,71 +69,68 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 	 */
 	public JsonIdMap() {
 		super();
-		this.withCreator(new DateCreator());
-		this.withCreator(new JsonObjectCreator());
-		this.withCreator(new JsonArrayCreator());
-		this.withCreator(new ObjectMapEntry());
+		this.with(new DateCreator());
+		this.with(new JsonObjectCreator());
+		this.with(new JsonArrayCreator());
+		this.with(new ObjectMapEntry());
 	}
 
 	/**
 	 * To json object.
 	 *
 	 * @param object
-	 *            the object
+	 *			the object
 	 * @return the json object
 	 */
 	public JsonObject toJsonObject(Object object) {
-		return toJsonObject(object, filter.clone());
+		return toJsonObject(object, null);
 	}
 
 	/**
 	 * To Jsonobject.
 	 *
 	 * @param entity
-	 *            the entity
+	 *			the entity
 	 * @param filter
-	 *            the filter
+	 *			the filter
 	 * @return the Jsonobject
 	 */
 	public JsonObject toJsonObject(Object entity, Filter filter) {
 		if (entity == null) {
 			return null;
 		}
-		if (filter == null) {
-			filter = new Filter();
-		}
-		filter.initMapFilter(this);
-		return toJsonObject(entity, filter.withStandard(this.filter), entity
-				.getClass().getName(), 0);
+		
+		filter = this.filter.newInstance(filter);
+		return toJsonObject(entity, filter, entity.getClass().getName(), 0);
 	}
 
 	/**
 	 * To Jsonobject.
 	 *
 	 * @param entity
-	 *            the entity to convert
+	 *			the entity to convert
 	 * @param filter
-	 *            the filter
+	 *			the filter
 	 * @param className
-	 *            the className of the entity
+	 *			the className of the entity
 	 * @param deep
-	 *            the deep of model-level
+	 *			the deep of model-level
 	 * @return the Jsonobject
 	 */
 	protected JsonObject toJsonObject(Object entity, Filter filter,
 			String className, int deep) {
 		String id = null;
 		SendableEntityCreator creator = grammar.getWriteCreator(entity,
-				className, this);
+				className, this, this.searchForSuperCreator);
 		if (creator == null) {
 			return null;
 		}
 		if (creator instanceof SendableEntityCreatorNoIndex) {
-		} else if (!filter.isId(this, entity, className)) {
-			filter.withObjects(entity);
+		} else if (!filter.isId(entity, className)) {
+			with(filter, entity);
 		} else {
 			id = getId(entity);
-			filter.withObjects(id);
+			with(filter, id);
 		}
 
 		JsonObject jsonProp = new JsonObject().withAllowEmptyValue(filter.isFullSeriation());
@@ -240,20 +229,19 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 		if (className == null) {
 			className = entity.getClass().getName();
 		}
-		SendableEntityCreator valueCreater = grammar.getWriteCreator(entity, className, this);
+		SendableEntityCreator valueCreater = grammar.getWriteCreator(entity, className, this, this.searchForSuperCreator);
 		if (item == null ) {
 			return null;
-			
-		}else if(valueCreater!=null && !filter.isPropertyRegard(item, property, entity, deep)) {
+		}else if(!isPropertyRegard(filter, item, property, entity, deep)) {
 			return null;
 		}
-		boolean isId = filter.isId(this, entity, className);
+		boolean isId = filter.isId(entity, className);
 		if (valueCreater != null) {
-			if (filter.isConvertable(entity, property, item, deep)) {
+			if (isConvertable(filter, entity, property, item, deep)) {
 				String subId = this.getKey(entity);
 				if (valueCreater instanceof SendableEntityCreatorNoIndex
-						|| (isId && !filter.hasObjects(subId))
-						|| (!isId && !filter.hasObjects(entity))) {
+						|| (isId && !hasObjects(filter, subId))
+						|| (!isId && !hasObjects(filter, entity))) {
 					if (jsonArray == null) {
 						JsonObject result = toJsonObject(entity, filter,
 								className, deep + 1);
@@ -276,7 +264,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 	 * Encode.
 	 *
 	 * @param entity
-	 *            the entity
+	 *			the entity
 	 * @return the byte entity message
 	 */
 	@Override
@@ -288,7 +276,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 	 * Encode.
 	 *
 	 * @param entity
-	 *            the entity
+	 *			the entity
 	 * @return the byte entity message
 	 */
 	@Override
@@ -326,14 +314,13 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 	 * Read json.
 	 *
 	 * @param jsonArray
-	 *            the json array
+	 *			the json array
 	 * @return the object
 	 */
 	public Object decode(JsonArray jsonArray) {
 		Object result = null;
 		int len = jsonArray.size() - 1;
 		// Add all Objects
-		Filter filter = this.filter.clone();
 		for (int i = 0; i <= len; i++) {
 			JsonObject kidObject = jsonArray.getJSONObject(i);
 			Object tmp = decoding(kidObject, filter);
@@ -350,7 +337,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 	 * Read json.
 	 *
 	 * @param jsonObject
-	 *            the json object
+	 *			the json object
 	 * @return the object
 	 */
 	public Object decode(JsonObject jsonObject) {
@@ -361,9 +348,9 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 	 * Read json.
 	 *
 	 * @param target
-	 *            the target
+	 *			the target
 	 * @param jsonObject
-	 *            the json object
+	 *			the json object
 	 * @return the object
 	 */
 	public Object decode(Object target, JsonObject jsonObject) {
@@ -374,19 +361,16 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 	 * Read json.
 	 *
 	 * @param target
-	 *            the target
+	 *			the target
 	 * @param jsonObject
-	 *            the json object
+	 *			the json object
 	 * @param filter
-	 *            the filter for decoding
+	 *			the filter for decoding
 	 * @return the object
 	 */
 	public Object decode(Object target, JsonObject jsonObject, Filter filter) {
-		if (filter == null) {
-			filter = this.filter.clone();
-		}
-		Object mainItem = decoding(target, jsonObject,
-				filter.withStandard(this.filter));
+		filter = this.filter.newInstance(filter);
+		Object mainItem = decoding(target, jsonObject, filter);
 		return mainItem;
 	}
 
@@ -394,27 +378,23 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 	 * Read json.
 	 *
 	 * @param jsonObject
-	 *            the json object
+	 *			the json object
 	 * @param filter
-	 *            the filter for decoding
+	 *			the filter for decoding
 	 * @return the object
 	 */
 	private Object decoding(JsonObject jsonObject, Filter filter) {
 		if (jsonObject == null ){
 			return null;
 		}
-		if (this.updateListener == null) {
-			this.updateListener = new UpdateListenerJson(this);
+		if (this.updateListenerJson == null) {
+			this.updateListenerJson = new UpdateListenerJson(this);
 		}
-		Object result = this.updateListener.execute(jsonObject, filter);
+		Object result = this.updateListenerJson.execute(jsonObject, filter);
 		if(result != null) {
 			return result;
 		}
-		SendableEntityCreator typeInfo = grammar.getReadCreator(jsonObject, this);
-
-		if (filter == null) {
-			filter = this.filter.clone();
-		}
+		SendableEntityCreator typeInfo = grammar.getReadCreator(jsonObject, this, this.searchForSuperCreator);
 
 		if (typeInfo != null) {
 			if (grammar.hasReadValue(jsonObject, ID)) {
@@ -429,7 +409,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 			} else {
 				readMessages(null, null, result, jsonObject, UPDATE);
 			}
-			filter.withStandard(this.filter);
+			filter = this.filter.newInstance(filter);
 			if (typeInfo instanceof SendableEntityCreatorWrapper) {
 				String[] properties = typeInfo.getProperties();
 				if (properties != null) {
@@ -464,17 +444,17 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 	 * Read json.
 	 *
 	 * @param target
-	 *            the target
+	 *			the target
 	 * @param jsonObject
-	 *            the json object
+	 *			the json object
 	 * @param filter
-	 *            the filter for decoding
+	 *			the filter for decoding
 	 * @return the object
 	 */
 	protected Object decoding(Object target, JsonObject jsonObject,
 			Filter filter) {
 		// JSONArray jsonArray;
-		boolean isId = filter.isId(this, target, target.getClass().getName());
+		boolean isId = filter.isId(target, target.getClass().getName());
 		if (isId) {
 			String jsonId = grammar.getReadValue(jsonObject, ID);
 			if (jsonId == null) {
@@ -487,7 +467,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 				filter, isId);
 		if (jsonProp != null) {
 			SendableEntityCreator prototyp = grammar.getWriteCreator(target,
-					target.getClass().getName(), this);
+					target.getClass().getName(), this, this.searchForSuperCreator);
 			String[] properties = prototyp.getProperties();
 			if (properties != null) {
 				for (String property : properties) {
@@ -503,15 +483,15 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 	 * Parses the value.
 	 *
 	 * @param target
-	 *            the target
+	 *			the target
 	 * @param property
-	 *            the property
+	 *			the property
 	 * @param value
-	 *            the value
+	 *			the value
 	 * @param creator
-	 *            the creator
+	 *			the creator
 	 * @param filter
-	 *            the filter
+	 *			the filter
 	 */
 	protected void parseValue(Object target, String property, Object value,
 			SendableEntityCreator creator, Filter filter) {
@@ -533,7 +513,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 					// // got a new kid, create it
 					JsonObject child = (JsonObject) value;
 					// CHECK LIST AND MAPS
-					Object ref_Obj = grammar.getNewEntity(creator, null);
+					Object ref_Obj = grammar.getNewPrototyp(creator);
 					if(ref_Obj instanceof Class<?>) {
 						ref_Obj = grammar.getNewEntity(creator, target.getClass().getName());
 					}
@@ -566,7 +546,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 	 * To json array.
 	 *
 	 * @param object
-	 *            the object
+	 *			the object
 	 * @return the json array
 	 */
 	public JsonArray toJsonArray(Object object) {
@@ -577,30 +557,25 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 	 * Convert to JsonArray in the resource
 	 *
 	 * @param object
-	 *            the object
+	 *			the object
 	 * @param filter
-	 *            the filter
+	 *			the filter
 	 * @return the json array
 	 */
 	public JsonArray toJsonArray(Object object, Filter filter) {
 		JsonArray jsonArray = new JsonArray();
-		if (filter == null) {
-			filter = this.filter.clone();
-		}
-		filter.initMapFilter(this);
+		filter = this.filter.newInstance(filter);
 		if (object instanceof Collection<?>) {
 			Collection<?> list = (Collection<?>) object;
-			Filter newFilter = filter.withStandard(this.filter);
 			for (Iterator<?> i = list.iterator(); i.hasNext();) {
 				Object item = i.next();
-				toJsonArray(item, jsonArray, newFilter, 0);
+				toJsonArray(item, jsonArray, filter, 0);
 			}
 			return jsonArray;
 		}
 		if (object.getClass().isArray()) {
-			Filter newFilter = filter.withStandard(this.filter);
 			for (Object item : ((Object[]) object)) {
-				toJsonArray(item, jsonArray, newFilter, 0);
+				toJsonArray(item, jsonArray, filter, 0);
 			}
 			return jsonArray;
 		}
@@ -612,24 +587,21 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 	 * To json sorted array.
 	 *
 	 * @param object
-	 *            the object
+	 *			the object
 	 * @param jsonArray
-	 *            the list
+	 *			the list
 	 * @param filter
-	 *            the Filter for split serialisation
+	 *			the Filter for split serialisation
 	 * @return the JsonArray
 	 */
 	public JsonArray toJsonArray(Object object, JsonArray jsonArray,
 			Filter filter) {
-		if (filter == null) {
-			filter = this.filter;
-		}
 		if (jsonArray.isComparator()
 				&& jsonArray.comparator() instanceof EntityComparator) {
 			((EntityComparator<?>) jsonArray.comparator()).withMap(this);
 		}
-		return toJsonArray(object, jsonArray, filter.withStandard(this.filter),
-				0);
+		filter = this.filter.newInstance(filter);
+		return toJsonArray(object, jsonArray, filter, 0);
 	}
 
 	protected JsonArray toJsonArray(Object entity, JsonArray jsonArray,
@@ -639,16 +611,16 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 
 		JsonObject jsonObject = (JsonObject) jsonArray.getNewList(true);
 		boolean sortedArray = jsonArray.isComparator();
-		boolean isId = filter.isId(this, entity, className);
+		boolean isId = filter.isId(entity, className);
 		if (isId) {
-			if (!filter.hasObjects(id)) {
+			if (!hasObjects(filter, id)) {
 				jsonObject.put(ID, id);
 				jsonObject.put(CLASS, className);
 				if (!sortedArray) {
 					jsonArray.add(jsonObject);
 				}
 			}
-		} else if (!filter.hasObjects(entity)) {
+		} else if (!hasObjects(filter, entity)) {
 			jsonObject.put(CLASS, className);
 			if (!sortedArray) {
 				jsonArray.add(jsonObject);
@@ -666,9 +638,9 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 		}
 		String[] properties = creator.getProperties();
 		if (isId) {
-			filter.withObjects(id);
+			with(filter, id);
 		} else {
-			filter.withObjects(entity);
+			with(filter, entity);
 		}
 
 		if (properties != null) {
@@ -700,50 +672,43 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 		return jsonArray;
 	}
 
-	/**
-	 * Sets the update msg listener.
-	 *
-	 * @param listener
-	 *            the new update msg listener
-	 * @return JsonIdMap
-	 */
-	public JsonIdMap withUpdateListenerRead(UpdateListener listener) {
-		this.readlistener = listener;
-		if (listener instanceof PropertyChangeListener) {
-			super.withUpdateListener((PropertyChangeListener) listener);
-		}
-		return this;
-	}
-
-	/**
-	 * Sets the update msg listener.
-	 *
-	 * @param listener
-	 *            the new update msg listener
-	 * @return JsonIdMap
-	 */
-	public JsonIdMap withUpdateListenerSend(UpdateListener listener) {
-		this.sendlistener = listener;
-		if (listener instanceof PropertyChangeListener) {
-			super.withUpdateListener((PropertyChangeListener) listener);
-		}
-		return this;
-	}
+//	/**
+//	 * Sets the update msg listener.
+//	 *
+//	 * @param listener
+//	 *			the new update msg listener
+//	 * @return JsonIdMap
+//	 */
+//	public JsonIdMap withUpdateListenerRead(UpdateListener listener) {
+//		this.readlistener = listener;
+//		if (listener instanceof PropertyChangeListener) {
+//			super.with((PropertyChangeListener) listener);
+//		}
+//		return this;
+//	}
+//
+//	/**
+//	 * Sets the update msg listener.
+//	 *
+//	 * @param listener
+//	 *			the new update msg listener
+//	 * @return JsonIdMap
+//	 */
+//	public JsonIdMap withUpdateListenerSend(UpdateListener listener) {
+//		this.sendlistener = listener;
+//		if (listener instanceof PropertyChangeListener) {
+//			super.with((PropertyChangeListener) listener);
+//		}
+//		return this;
+//	}
 	
-	@Override
-	public IdMap withUpdateListener(PropertyChangeListener listener) {
-		super.withUpdateListener(listener);
-		
-		return this;
-	}
-
 	/**
 	 * Send update msg from PropertyChange MapUpdater
 	 *
 	 * @param evt
-	 *            the Change
+	 *			the Change
 	 * @param jsonObject
-	 *            the json object
+	 *			the json object
 	 * @return true, if successful
 	 */
 	boolean sendUpdateMsg(PropertyChangeEvent evt, JsonObject jsonObject) {
@@ -754,8 +719,8 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 			updatePropertylistener.propertyChange(evt);
 		}
 
-		if (this.sendlistener != null ) {
-			return this.sendlistener.update(SENDUPDATE, jsonObject, evt.getSource(),
+		if (this.updateListener != null ) {
+			return this.updateListener.update(SENDUPDATE, jsonObject, evt.getSource(),
 					evt.getPropertyName(), evt.getOldValue(),
 					evt.getNewValue());
 		}
@@ -764,8 +729,8 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 
 	boolean readMessages(String key, Object element, Object value,
 			JsonObject props, String typ) {
-		if (this.readlistener != null) {
-			return this.sendlistener.update(typ, props, element, key, null, value);
+		if (this.updateListener != null) {
+			return this.updateListener.update(typ, props, element, key, null, value);
 		}
 		return true;
 	}
@@ -774,7 +739,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 	 * To json object by id.
 	 *
 	 * @param id
-	 *            the id
+	 *			the id
 	 * @return the json object
 	 */
 	public JsonObject toJsonObjectById(String id) {
@@ -786,7 +751,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 	 * To json array by ids.
 	 *
 	 * @param suspendIdList
-	 *            the suspend id list
+	 *			the suspend id list
 	 */
 	public void toJsonArrayByIds(ArrayList<String> suspendIdList) {
 		JsonObject sendObj = new JsonObject();
@@ -806,7 +771,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 	public void garbageCollection(List<String> classCounts) {
 		for (String id : this.keyValue.keySet()) {
 			if (!classCounts.contains(id)) {
-				this.keyValue.without(id, this.keyValue.getValueItem(id));
+				this.keyValue.withoutAll(id, this.keyValue.getValueItem(id));
 			}
 		}
 	}
@@ -823,10 +788,10 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 
 	/**
 	 * @param value
-	 *            Gammar value
+	 *			Gammar value
 	 * @return Itself
 	 */
-	public JsonIdMap withGrammar(Grammar value) {
+	public JsonIdMap with(Grammar value) {
 		this.grammar = value;
 		return this;
 	}
@@ -835,7 +800,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 	 * Sets the typ save.
 	 *
 	 * @param typSave
-	 *            the new typ save
+	 *			the new typ save
 	 * @return Itself
 	 */
 	public JsonIdMap withTypSave(boolean typSave) {
@@ -843,8 +808,8 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 		return this;
 	}
 	
-	public JsonIdMap withCreator(SendableEntityCreator... createrClass) {
-		super.withCreator(createrClass);
+	public JsonIdMap with(SendableEntityCreator... createrClass) {
+		super.with(createrClass);
 		return this;
 	}
 	

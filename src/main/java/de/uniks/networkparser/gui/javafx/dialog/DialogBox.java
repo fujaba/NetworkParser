@@ -53,7 +53,7 @@ public class DialogBox {
 	protected static final PseudoClass ACTIVE_PSEUDO_CLASS = PseudoClass.getPseudoClass("active");
 	protected static final int HEADER_HEIGHT = 28;
 	protected static final URL DIALOGS_CSS_URL = DialogBox.class.getResource("dialogs.css");
-    protected ToolBar dialogTitleBar;
+	protected ToolBar dialogTitleBar;
    
 	BorderPane root;
 	Stage stage;
@@ -82,9 +82,9 @@ public class DialogBox {
 		titleElements.add(titleElement);
 		titleElements.add(new TitleSpacer());
 		titleElements.add(new DialogButton().withGrafik(Grafik.close));
-//        closeButton = new DialogButton().withGrafik(Grafik.close).withStage(stage);
-//        minButton = new DialogButton().withGrafik(Grafik.minimize).withStage(stage);
-//        maxButton = new DialogButton().withGrafik(Grafik.maximize).withStage(stage);
+//		closeButton = new DialogButton().withGrafik(Grafik.close).withStage(stage);
+//		minButton = new DialogButton().withGrafik(Grafik.minimize).withStage(stage);
+//		maxButton = new DialogButton().withGrafik(Grafik.maximize).withStage(stage);
 	}
 	
 	public DialogBox withTitle(String value) {
@@ -110,37 +110,37 @@ public class DialogBox {
 		if (parent instanceof Stage) {
 			this.stage = (Stage) parent;
 			this.scene = stage.getScene();
-        }else{
-        	return null;
-        }
+		}else{
+			return null;
+		}
 		configScene();
-        
-        // modify scene root to install opaque layer and the dialog
-        originalParent = scene.getRoot();
+		
+		// modify scene root to install opaque layer and the dialog
+		originalParent = scene.getRoot();
 
-        createContent();
+		createContent();
 
-        buildDialogStack(originalParent);
+		buildDialogStack(originalParent);
 
-        root.pseudoClassStateChanged(ACTIVE_PSEUDO_CLASS, true);
-        
-        root.setVisible(true);
-        
+		root.pseudoClassStateChanged(ACTIVE_PSEUDO_CLASS, true);
+		
+		root.setVisible(true);
+		
 
-        // add to originalParent
-        Parent originalParent = scene.getRoot();
-        scene.setRoot(dialogStack);
-        if (originalParent != null) {
-        	dialogStack.getChildren().add(0, originalParent);
-        	dialogStack.getProperties().putAll(originalParent.getProperties());
-        }
+		// add to originalParent
+		Parent originalParent = scene.getRoot();
+		scene.setRoot(dialogStack);
+		if (originalParent != null) {
+			dialogStack.getChildren().add(0, originalParent);
+			dialogStack.getProperties().putAll(originalParent.getProperties());
+		}
 
-        root.requestFocus();
-        if(!modal) {
-        	Toolkit.getToolkit().enterNestedEventLoop(root);
-        	return action;
-        }
-        return null;
+		root.requestFocus();
+		if(!modal) {
+			Toolkit.getToolkit().enterNestedEventLoop(root);
+			return action;
+		}
+		return null;
 	}
 	
 	public void hide(DialogButton value) {
@@ -152,19 +152,19 @@ public class DialogBox {
 	public void setAction(DialogButton value) {
 		this.action = value;
 		if(isInline) {
-	        // hide the dialog
+			// hide the dialog
 			root.setVisible(false);
-	        // reset the scene root
-	        Parent oldParent = scene.getRoot();
-	        if(oldParent instanceof Pane) {
-	        	((Pane) oldParent).getChildren().remove(originalParent);
-	        	originalParent.getStyleClass().remove("root");
-		        scene.setRoot(originalParent);
-	        }
-	        if(!modal) {
-	        	Toolkit.getToolkit().exitNestedEventLoop(root, null);
-	        }
-	        return;
+			// reset the scene root
+			Parent oldParent = scene.getRoot();
+			if(oldParent instanceof Pane) {
+				((Pane) oldParent).getChildren().remove(originalParent);
+				originalParent.getStyleClass().remove("root");
+				scene.setRoot(originalParent);
+			}
+			if(!modal) {
+				Toolkit.getToolkit().exitNestedEventLoop(root, null);
+			}
+			return;
 		}
 		if (stage != null) {
 			stage.hide();
@@ -188,119 +188,119 @@ public class DialogBox {
 	}
 	
 	private void buildDialogStack(final Node parent) {
-        dialogStack = new Pane() {
-            private boolean isFirstRun = true;
-            {
-            	if(!modal){
-	            	opaqueLayer = new Region();
-	                opaqueLayer.getStyleClass().add("lightweight-dialog-background");
-	                getChildren().add(0, opaqueLayer);
-            	}
-                getChildren().add(root);
-            }
-            
-            @Override protected void layoutChildren() {
-                final double w = getOverlayWidth();
-                final double h = getOverlayHeight();
-                
-                final double x = getOverlayX();
-                final double y = getOverlayY();
-                
-                if (parent != null) {
-                    parent.resizeRelocate(x, y, w, h);
-                }
-                
-                if (opaqueLayer != null) {
-                    opaqueLayer.resizeRelocate(x, y, w, h);
-                }
-                
-                final double dialogWidth = root.prefWidth(-1);
-                final double dialogHeight = root.prefHeight(-1);
-                root.resize((int)(dialogWidth), (int)(dialogHeight));
-                
-                // hacky, but we only want to position the dialog the first time 
-                // it is laid out - after that the only way it should move is if
-                // the user moves it.
-                if (isFirstRun) {
-                    isFirstRun = false;
-                    
-                    double dialogX = root.getLayoutX();
-                    dialogX = dialogX == 0.0 ? w / 2.0 - dialogWidth / 2.0 : dialogX;
-                    
-                    double dialogY = root.getLayoutY();
-                    dialogY = dialogY == 0.0 ? h / 2.0 - dialogHeight / 2.0 : dialogY;
-                    
-                    root.relocate((int)(dialogX), (int)(dialogY));
-                }
-            }
-            
-            // These are the actual implementations in Region (the parent of Pane),
-            // but just for clarify I reproduce them here
-            @Override protected double computeMinHeight(double width) {
-                return parent.minHeight(width);
-            }
-            
-            @Override protected double computeMinWidth(double height) {
-                return parent.minWidth(height);
-            }
-            
-            @Override protected double computePrefHeight(double width) {
-                return parent.prefHeight(width);
-            }
-            
-            @Override protected double computePrefWidth(double height) {
-                return parent.prefWidth(height);
-            }
-            
-            @Override protected double computeMaxHeight(double width) {
-                return parent.maxHeight(width);
-            }
-            
-            @Override protected double computeMaxWidth(double height) {
-                return parent.maxWidth(height);
-            }
-        };
-                
-        dialogStack.setManaged(true);
-    }
+		dialogStack = new Pane() {
+			private boolean isFirstRun = true;
+			{
+				if(!modal){
+					opaqueLayer = new Region();
+					opaqueLayer.getStyleClass().add("lightweight-dialog-background");
+					getChildren().add(0, opaqueLayer);
+				}
+				getChildren().add(root);
+			}
+			
+			@Override protected void layoutChildren() {
+				final double w = getOverlayWidth();
+				final double h = getOverlayHeight();
+				
+				final double x = getOverlayX();
+				final double y = getOverlayY();
+				
+				if (parent != null) {
+					parent.resizeRelocate(x, y, w, h);
+				}
+				
+				if (opaqueLayer != null) {
+					opaqueLayer.resizeRelocate(x, y, w, h);
+				}
+				
+				final double dialogWidth = root.prefWidth(-1);
+				final double dialogHeight = root.prefHeight(-1);
+				root.resize((int)(dialogWidth), (int)(dialogHeight));
+				
+				// hacky, but we only want to position the dialog the first time 
+				// it is laid out - after that the only way it should move is if
+				// the user moves it.
+				if (isFirstRun) {
+					isFirstRun = false;
+					
+					double dialogX = root.getLayoutX();
+					dialogX = dialogX == 0.0 ? w / 2.0 - dialogWidth / 2.0 : dialogX;
+					
+					double dialogY = root.getLayoutY();
+					dialogY = dialogY == 0.0 ? h / 2.0 - dialogHeight / 2.0 : dialogY;
+					
+					root.relocate((int)(dialogX), (int)(dialogY));
+				}
+			}
+			
+			// These are the actual implementations in Region (the parent of Pane),
+			// but just for clarify I reproduce them here
+			@Override protected double computeMinHeight(double width) {
+				return parent.minHeight(width);
+			}
+			
+			@Override protected double computeMinWidth(double height) {
+				return parent.minWidth(height);
+			}
+			
+			@Override protected double computePrefHeight(double width) {
+				return parent.prefHeight(width);
+			}
+			
+			@Override protected double computePrefWidth(double height) {
+				return parent.prefWidth(height);
+			}
+			
+			@Override protected double computeMaxHeight(double width) {
+				return parent.maxHeight(width);
+			}
+			
+			@Override protected double computeMaxWidth(double height) {
+				return parent.maxWidth(height);
+			}
+		};
+				
+		dialogStack.setManaged(true);
+	}
 	
-    private double getOverlayWidth() {
-        if (owner != null) {
-            return owner.getLayoutBounds().getWidth();
-        } else if (scene != null) {
-            return scene.getWidth();
-        } 
-        
-        return 0;
-    }
-    
-    private double getOverlayHeight() {
-        if (owner != null) {
-            return owner.getLayoutBounds().getHeight();
-        } else if (scene != null) {
-            return scene.getHeight();
-        } 
-        
-        return 0;
-    }
+	private double getOverlayWidth() {
+		if (owner != null) {
+			return owner.getLayoutBounds().getWidth();
+		} else if (scene != null) {
+			return scene.getWidth();
+		} 
+		
+		return 0;
+	}
 	
-    private double getOverlayX() {
-        return 0;
-    }
-    
-    private double getOverlayY() {
-        return 0;
-    }
-    
+	private double getOverlayHeight() {
+		if (owner != null) {
+			return owner.getLayoutBounds().getHeight();
+		} else if (scene != null) {
+			return scene.getHeight();
+		} 
+		
+		return 0;
+	}
+	
+	private double getOverlayX() {
+		return 0;
+	}
+	
+	private double getOverlayY() {
+		return 0;
+	}
+	
 	private DialogButton showExtern(Window owner) {
 		
-	    if(Toolkit.getToolkit().isFxUserThread()) {
-	    	new ShowTask(this, owner).run();
-	    	return action;
-	    }
-	    
-	    Platform.runLater(new ShowTask(this, owner));
-        return null;
+		if(Toolkit.getToolkit().isFxUserThread()) {
+			new ShowTask(this, owner).run();
+			return action;
+		}
+		
+		Platform.runLater(new ShowTask(this, owner));
+		return null;
 	}
 
 	public DialogBox withInline(boolean value) {
@@ -314,9 +314,9 @@ public class DialogBox {
 	}
 
 	public DialogBox withModal(boolean modal) {
-        this.modal = modal;
-        return this;
-    }
+		this.modal = modal;
+		return this;
+	}
 
 	
 	void configScene() {
@@ -340,66 +340,66 @@ public class DialogBox {
 	}
 	
 	public void createContent(){
-        root = new BorderPane();
-        root.getStyleClass().addAll("dialog", "decorated-root");
-        
-        stage.focusedProperty().addListener(new InvalidationListener () {
+		root = new BorderPane();
+		root.getStyleClass().addAll("dialog", "decorated-root");
+		
+		stage.focusedProperty().addListener(new InvalidationListener () {
 
 			@Override
 			public void invalidated(Observable valueModel) {
 				 boolean active = ((ReadOnlyBooleanProperty)valueModel).get();
-		         root.pseudoClassStateChanged(ACTIVE_PSEUDO_CLASS, active);
+				 root.pseudoClassStateChanged(ACTIVE_PSEUDO_CLASS, active);
 			}
-        });
-        
-        // --- titlebar (only used for cross-platform look)
-        dialogTitleBar = new ToolBar();
-        dialogTitleBar.getStyleClass().add("window-header");
-        dialogTitleBar.setPrefHeight(HEADER_HEIGHT);
-        dialogTitleBar.setMinHeight(HEADER_HEIGHT);
-        dialogTitleBar.setMaxHeight(HEADER_HEIGHT);
-        for(DialogElement element : titleElements) {
-	        dialogTitleBar.getItems().add((Node) element.withOwner(this));
-        }
-        dialogTitleBar.setOnMousePressed(new EventHandler<MouseEvent>() {
+		});
+		
+		// --- titlebar (only used for cross-platform look)
+		dialogTitleBar = new ToolBar();
+		dialogTitleBar.getStyleClass().add("window-header");
+		dialogTitleBar.setPrefHeight(HEADER_HEIGHT);
+		dialogTitleBar.setMinHeight(HEADER_HEIGHT);
+		dialogTitleBar.setMaxHeight(HEADER_HEIGHT);
+		for(DialogElement element : titleElements) {
+			dialogTitleBar.getItems().add((Node) element.withOwner(this));
+		}
+		dialogTitleBar.setOnMousePressed(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
 				if(isInline) {
-	        		mouseDragDeltaX = event.getSceneX();
-	        		mouseDragDeltaY = event.getSceneY();
-	        	}else{
-	        		mouseDragDeltaX = event.getSceneX();
-	        		mouseDragDeltaY = event.getSceneY();
-	        	}				
+					mouseDragDeltaX = event.getSceneX();
+					mouseDragDeltaY = event.getSceneY();
+				}else{
+					mouseDragDeltaX = event.getSceneX();
+					mouseDragDeltaY = event.getSceneY();
+				}				
 			}
-    	});
-        dialogTitleBar.setOnMouseDragged(new EventHandler<MouseEvent>() {
-        	@Override
+		});
+		dialogTitleBar.setOnMouseDragged(new EventHandler<MouseEvent>() {
+			@Override
 			public void handle(MouseEvent event) {
-	        	if(isInline) {
-	        		root.setLayoutX(root.getLayoutX() + (event.getSceneX() - mouseDragDeltaX));
-	        		root.setLayoutY(root.getLayoutY() + (event.getSceneY() - mouseDragDeltaY));
-	        		mouseDragDeltaX = event.getSceneX();
-	        		mouseDragDeltaY = event.getSceneY();
-	        		
-	        	}else{
-		            stage.setX(event.getScreenX() - mouseDragDeltaX);
-		            stage.setY(event.getScreenY() - mouseDragDeltaY);
-	        	}
-	        }
-        });
-        root.setTop(dialogTitleBar);
-        root.setCenter(center);
-        if(this.actionElements.size() > 0) {
-        	HBox actionToolbar = new HBox();
-        	actionToolbar.getStyleClass().add("window-action");
-        	for(DialogElement item : this.actionElements) {
-        		item.withOwner(this);
-        		actionToolbar.getChildren().add((Node) item);
-        	}
-        	actionToolbar.setAlignment(Pos.TOP_RIGHT);
-        	root.setBottom(actionToolbar);
-        }
+				if(isInline) {
+					root.setLayoutX(root.getLayoutX() + (event.getSceneX() - mouseDragDeltaX));
+					root.setLayoutY(root.getLayoutY() + (event.getSceneY() - mouseDragDeltaY));
+					mouseDragDeltaX = event.getSceneX();
+					mouseDragDeltaY = event.getSceneY();
+					
+				}else{
+					stage.setX(event.getScreenX() - mouseDragDeltaX);
+					stage.setY(event.getScreenY() - mouseDragDeltaY);
+				}
+			}
+		});
+		root.setTop(dialogTitleBar);
+		root.setCenter(center);
+		if(this.actionElements.size() > 0) {
+			HBox actionToolbar = new HBox();
+			actionToolbar.getStyleClass().add("window-action");
+			for(DialogElement item : this.actionElements) {
+				item.withOwner(this);
+				actionToolbar.getChildren().add((Node) item);
+			}
+			actionToolbar.setAlignment(Pos.TOP_RIGHT);
+			root.setBottom(actionToolbar);
+		}
 	}
 	
 	public DialogBox withCenter(Node node) {

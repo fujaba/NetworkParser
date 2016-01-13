@@ -17,12 +17,12 @@ public class JsonRekursivTest {
 		 root.withChildren(child);
 		 child.withChildren(root);
 		 JsonIdMap map= new JsonIdMap();
-		 map.withCreator(new ListEntity());
+		 map.with(new ListEntity());
 		 JsonObject json =map.encode(root);
 		 Assert.assertEquals(1314, json.toString(2).length());
 		 
 		 JsonIdMap mapDecode= new JsonIdMap();
-		 mapDecode.withCreator(new ListEntity());
+		 mapDecode.with(new ListEntity());
 		 Object rootDecode = mapDecode.decode(json);
 		 Assert.assertNotNull(rootDecode);
 	 }

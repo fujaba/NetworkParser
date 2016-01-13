@@ -33,9 +33,9 @@ import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
  * @author Stefan Lindel
  *
  * @param <K>
- *            Key-Element
+ *			Key-Element
  * @param <V>
- *            Value Element
+ *			Value Element
  */
 public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 
@@ -75,7 +75,7 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 	 * add the Values of the map to AbstractKeyValueEntry&lt;K, V&gt;
 	 *
 	 * @param collection
-	 *            a map of key-values
+	 *			a map of key-values
 	 * @return Itself
 	 */
 	public SimpleEntity<K, V> with(Map<Object, Object> collection) {

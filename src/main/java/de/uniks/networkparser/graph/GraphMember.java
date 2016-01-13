@@ -24,7 +24,7 @@ package de.uniks.networkparser.graph;
 
 public abstract class GraphMember {
 	protected String name;
-	protected GraphSimpleSet<GraphMember> children=new GraphSimpleSet<GraphMember>();
+	protected GraphSimpleSet<GraphMember> children;
 	protected GraphMember parentNode;
 	
 	String getFullId() {
@@ -32,6 +32,9 @@ public abstract class GraphMember {
 	}
 	// PACKAGE VISIBILITY
 	GraphSimpleSet<GraphMember> getChildren() {
+		if(this.children == null) {
+			this.children = new GraphSimpleSet<GraphMember>();
+		}
 		return this.children;
 	}
 	
@@ -74,7 +77,7 @@ public abstract class GraphMember {
 		if (values != null) {
 			for (GraphMember value : values) {
 				if(value != null) {
-					this.children.add(value);
+					getChildren().add(value);
 					value.setParent(this);
 				}
 			}
@@ -83,7 +86,7 @@ public abstract class GraphMember {
 	}
 	
 	protected GraphMember without(GraphMember... values) {
-		if (values != null) {
+		if (values != null && this.children != null) {
 			for (GraphMember value : values) {
 				if(value != null) {
 					this.children.remove(value);
@@ -92,10 +95,6 @@ public abstract class GraphMember {
 			}
 		}
 		return this;
-	}
-	
-	String getName() {
-		return this.name;
 	}
 	
 	GraphDiff getDiff() {
@@ -108,5 +107,9 @@ public abstract class GraphMember {
 			}
 		}
 		return null;
+	}
+	
+	public String getName() {
+		return this.name;
 	}
 }

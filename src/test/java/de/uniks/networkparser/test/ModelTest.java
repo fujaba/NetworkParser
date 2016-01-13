@@ -50,12 +50,12 @@ public class ModelTest {
 	@Test
 	public void testIdMapFromIdMap(){
 		JsonIdMap map= new JsonIdMap();
-		map.withCreator(new PersonCreator());
+		map.with(new PersonCreator());
 		Assert.assertEquals(6, countMap(map));
 		
 		JsonIdMap subMap= new JsonIdMap();
 		Assert.assertEquals(5, countMap(subMap));
-		subMap.withCreator(map);
+		subMap.with(map);
 		Assert.assertEquals(6, countMap(subMap));
 		
 	}

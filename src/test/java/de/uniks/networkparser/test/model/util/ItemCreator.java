@@ -31,101 +31,101 @@ public class ItemCreator implements SendableEntityCreator
 {
    private final String[] properties = new String[]
    {
-      Item.PROPERTY_DESCRIPTION,
-      Item.PROPERTY_VALUE,
-      Item.PROPERTY_PARENT,
-      Item.PROPERTY_BUYER,
+	  Item.PROPERTY_DESCRIPTION,
+	  Item.PROPERTY_VALUE,
+	  Item.PROPERTY_PARENT,
+	  Item.PROPERTY_BUYER,
    };
    
    @Override
    public String[] getProperties()
    {
-      return properties;
+	  return properties;
    }
    
    @Override
    public Object getSendableInstance(boolean reference)
    {
-      return new Item();
+	  return new Item();
    }
    
    @Override
    public Object getValue(Object target, String attrName)
    {
-      int pos = attrName.indexOf('.');
-      String attribute = attrName;
-      
-      if (pos > 0)
-      {
-         attribute = attrName.substring(0, pos);
-      }
+	  int pos = attrName.indexOf('.');
+	  String attribute = attrName;
+	  
+	  if (pos > 0)
+	  {
+		 attribute = attrName.substring(0, pos);
+	  }
 
-      if (Item.PROPERTY_DESCRIPTION.equalsIgnoreCase(attribute))
-      {
-         return ((Item) target).getDescription();
-      }
+	  if (Item.PROPERTY_DESCRIPTION.equalsIgnoreCase(attribute))
+	  {
+		 return ((Item) target).getDescription();
+	  }
 
-      if (Item.PROPERTY_VALUE.equalsIgnoreCase(attribute))
-      {
-         return ((Item) target).getValue();
-      }
+	  if (Item.PROPERTY_VALUE.equalsIgnoreCase(attribute))
+	  {
+		 return ((Item) target).getValue();
+	  }
 
-      if (Item.PROPERTY_PARENT.equalsIgnoreCase(attribute))
-      {
-         return ((Item) target).getParent();
-      }
+	  if (Item.PROPERTY_PARENT.equalsIgnoreCase(attribute))
+	  {
+		 return ((Item) target).getParent();
+	  }
 
-      if (Item.PROPERTY_BUYER.equalsIgnoreCase(attribute))
-      {
-         return ((Item) target).getBuyer();
-      }
-      
-      return null;
+	  if (Item.PROPERTY_BUYER.equalsIgnoreCase(attribute))
+	  {
+		 return ((Item) target).getBuyer();
+	  }
+	  
+	  return null;
    }
    
    @Override
    public boolean setValue(Object target, String attrName, Object value, String type)
    {
-      if (JsonIdMap.REMOVE.equals(type) && value != null)
-      {
-         attrName = attrName + type;
-      }
+	  if (JsonIdMap.REMOVE.equals(type) && value != null)
+	  {
+		 attrName = attrName + type;
+	  }
 
-      if (Item.PROPERTY_DESCRIPTION.equalsIgnoreCase(attrName))
-      {
-         ((Item) target).withDescription((String) value);
-         return true;
-      }
+	  if (Item.PROPERTY_DESCRIPTION.equalsIgnoreCase(attrName))
+	  {
+		 ((Item) target).withDescription((String) value);
+		 return true;
+	  }
 
-      if (Item.PROPERTY_VALUE.equalsIgnoreCase(attrName))
-      {
-         ((Item) target).withValue(Double.parseDouble(value.toString()));
-         return true;
-      }
+	  if (Item.PROPERTY_VALUE.equalsIgnoreCase(attrName))
+	  {
+		 ((Item) target).withValue(Double.parseDouble(value.toString()));
+		 return true;
+	  }
 
-      if (Item.PROPERTY_PARENT.equalsIgnoreCase(attrName))
-      {
-         ((Item) target).setParent((GroupAccount) value);
-         return true;
-      }
+	  if (Item.PROPERTY_PARENT.equalsIgnoreCase(attrName))
+	  {
+		 ((Item) target).setParent((GroupAccount) value);
+		 return true;
+	  }
 
-      if (Item.PROPERTY_BUYER.equalsIgnoreCase(attrName))
-      {
-         ((Item) target).setBuyer((Person) value);
-         return true;
-      }
-      
-      return false;
+	  if (Item.PROPERTY_BUYER.equalsIgnoreCase(attrName))
+	  {
+		 ((Item) target).setBuyer((Person) value);
+		 return true;
+	  }
+	  
+	  return false;
    }
    public static JsonIdMap createIdMap(String sessionID)
    {
-      return CreatorCreator.createIdMap(sessionID);
+	  return CreatorCreator.createIdMap(sessionID);
    }
    
    //==========================================================================
    
    public void removeObject(Object entity)
    {
-      ((Item) entity).removeYou();
+	  ((Item) entity).removeYou();
    }
 }

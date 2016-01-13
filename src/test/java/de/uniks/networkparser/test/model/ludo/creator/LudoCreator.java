@@ -8,9 +8,9 @@ public class LudoCreator implements SendableEntityCreator {
 	private final String[] properties = new String[] 
 	{
 			Ludo.PROPERTY_DATE,
-		    Ludo.PROPERTY_PLAYERS,
-		    Ludo.PROPERTY_DICE,
-		    Ludo.PROPERTY_FIELDS
+			Ludo.PROPERTY_PLAYERS,
+			Ludo.PROPERTY_DICE,
+			Ludo.PROPERTY_FIELDS
 	};
 
 	@Override

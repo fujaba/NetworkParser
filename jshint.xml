@@ -1,10 +1,10 @@
 <project default="JSHint" name="Run JSHint for Graph.js">
 <target name="JSHint">
-  <exec executable="java">
-    <arg value="-jar"/>
-    <arg value="lib\jsHint\rhino-1.7.7.jar"/>
-  	<arg value="lib\jsHint\jshint-rhino.js"/>
-	<arg value="src/main/resources/de/uniks/networkparser/graph/graph.js"/>
-  </exec>
+	<exec executable="java">
+		<arg value="-jar"/>
+		<arg value="lib\jsHint\rhino-1.7.7.jar"/>
+		<arg value="lib\jsHint\jshint-rhino.js"/>
+		<arg value="src/main/resources/de/uniks/networkparser/graph/graph.js"/>
+	</exec>
 </target>
 </project>

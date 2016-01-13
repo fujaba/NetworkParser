@@ -27,7 +27,7 @@ public class ColumnTest {
 		column.withMovable(true);
 		Assert.assertEquals(column.getBrowserId(), GUIPosition.CENTER);
 		
-		JsonIdMap map=(JsonIdMap) new JsonIdMap().withCreator(new Column());
+		JsonIdMap map=(JsonIdMap) new JsonIdMap().with(new Column());
 		
 		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.gui.Column\",\"attrName\":\"Name\"}", map.toJsonObject(column).toString());
 	}

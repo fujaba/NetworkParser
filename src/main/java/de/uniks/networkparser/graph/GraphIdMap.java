@@ -22,6 +22,7 @@ package de.uniks.networkparser.graph;
  permissions and limitations under the Licence.
 */
 import java.util.Collection;
+
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -38,41 +39,41 @@ public class GraphIdMap extends IdMap {
 	public static final String OBJECT = "objectdiagram";
 
 	private GraphIdMapFilter filter = new GraphIdMapFilter()
-			.withShowCardinality(true).withTyp(CLASS);
+			.withShowCardinality(true).withTyp(CLASS).withMap(this);
 
 	/**
 	 * Parses the object.
 	 *
 	 * @param object
-	 *            the object
+	 *			the object
 	 * @return the string
 	 */
 	public String parseObject(Object object) {
 		return parse(object,
-				filter.clone(new GraphIdMapFilter()).withTyp(OBJECT));
+				filter.newInstance(new GraphIdMapFilter()).withTyp(OBJECT));
 	}
 	
 	/**
 	 * Parses the object.
 	 *
 	 * @param object
-	 *            the object
+	 *			the object
 	 * @return the string
 	 */
 	public GraphList parsingObject(Object object) {
 		return parsing(object,
-				filter.clone(new GraphIdMapFilter()).withTyp(OBJECT));
+				filter.newInstance(new GraphIdMapFilter()).withTyp(OBJECT));
 	}
 
 	/**
 	 * Parses the class.
 	 *
 	 * @param object
-	 *            the object
+	 *			the object
 	 * @return the string
 	 */
 	public String parseClass(Object object) {
-		return parse(object, filter.clone(new GraphIdMapFilter())
+		return parse(object, filter.newInstance(new GraphIdMapFilter())
 				.withTyp(CLASS));
 	}
 
@@ -84,7 +85,7 @@ public class GraphIdMap extends IdMap {
 		GraphList newElement = new GraphList();
 		initItem(newElement);
 		newElement.withTyp(filter.getTyp());
-		GraphClazz main = parse(object, filter, newElement, 0);
+		Clazz main = parse(object, filter, newElement, 0);
 		GraphDiff diff = newElement.getDiff();
 		if(diff != null) {
 			diff.withMain(main);	
@@ -96,16 +97,16 @@ public class GraphIdMap extends IdMap {
 	 * Parses the.
 	 *
 	 * @param object
-	 *            the object to Serialisation
+	 *			the object to Serialisation
 	 * @param typ
-	 *            Is it a OBJECT OR A CLASS diagram
+	 *			Is it a OBJECT OR A CLASS diagram
 	 * @param filter
-	 *            Filter for Serialisation
+	 *			Filter for Serialisation
 	 * @param showCardinality
-	 *            the show cardinality
+	 *			the show cardinality
 	 * @return the Object as String
 	 */
-	private GraphClazz parse(Object object, GraphIdMapFilter filter,
+	private Clazz parse(Object object, GraphIdMapFilter filter,
 			GraphList list, int deep) {
 		if (object == null) {
 			return null;
@@ -113,15 +114,15 @@ public class GraphIdMap extends IdMap {
 
 		String mainKey = getId(object);
 		GraphMember element = list.getByObject(mainKey, true);
-		if (element != null && element instanceof GraphClazz) {
-			return (GraphClazz)element;
+		if (element != null && element instanceof Clazz) {
+			return (Clazz)element;
 		}
 
 		SendableEntityCreator prototyp = getCreatorClass(object);
 		String className = object.getClass().getName();
 		className = className.substring(className.lastIndexOf('.') + 1);
 
-		GraphClazz newElement = new GraphClazz();
+		Clazz newElement = new Clazz();
 		initItem(newElement);
 		newElement.withId(mainKey);
 		newElement.with(className);
@@ -135,11 +136,11 @@ public class GraphIdMap extends IdMap {
 				if (value instanceof Collection<?>) {
 					for (Object containee : ((Collection<?>) value)) {
 						parsePropertyValue(object, filter, list, deep, newElement,
-								property, containee, GraphCardinality.MANY);
+								property, containee, Cardinality.MANY);
 					}
 				} else {
 					parsePropertyValue(object, filter, list, deep, newElement,
-							property, value, GraphCardinality.ONE);
+							property, value, Cardinality.ONE);
 				}
 			}
 		}
@@ -147,25 +148,25 @@ public class GraphIdMap extends IdMap {
 	}
 
 	private void parsePropertyValue(Object entity, GraphIdMapFilter filter,
-			GraphList list, int deep, GraphClazz element, String property,
-			Object item, GraphCardinality cardinality) {
+			GraphList list, int deep, Clazz element, String property,
+			Object item, Cardinality cardinality) {
 		if (item == null) {
 			return;
 		}
-		if (!filter.isPropertyRegard(entity, property, item, deep + 1)) {
+		if (!isPropertyRegard(filter, entity, property, item, deep + 1)) {
 			return;
 		}
-		if (!filter.isConvertable(entity, property, item, deep + 1)) {
+		if (!isConvertable(filter, entity, property, item, deep + 1)) {
 			return;
 		}
 		SendableEntityCreator valueCreater = getCreatorClass(item);
 		if (valueCreater != null) {
-			GraphClazz subId = parse(item, filter, list, deep + 1);
-			GraphEdge edge = new GraphEdge();
+			Clazz subId = parse(item, filter, list, deep + 1);
+			Association edge = new Association();
 			initItem(edge);
 			list.add(edge.with(element).with(this.createEdge(subId, cardinality, property)));
 		} else {
-			GraphAttribute attribute = element.createAttribute(property, GraphDataType.ref(item.getClass()));
+			Attribute attribute = element.createAttribute(property, DataType.ref(item.getClass()));
 			attribute.withValue("" + item);
 		}
 		return;
@@ -174,7 +175,7 @@ public class GraphIdMap extends IdMap {
 	@Override
 	public BaseItem encode(Object value) {
 		GraphList list = new GraphList();
-		parse(value, this.filter.clone(new GraphIdMapFilter()), list, 0);
+		parse(value, this.filter.newInstance(new GraphIdMapFilter()), list, 0);
 		return list;
 	}
 
@@ -193,7 +194,7 @@ public class GraphIdMap extends IdMap {
 	 * Gets the class name.
 	 *
 	 * @param object
-	 *            the object
+	 *			the object
 	 * @return the class name
 	 */
 	public String getClassName(Object object) {
@@ -204,8 +205,8 @@ public class GraphIdMap extends IdMap {
 		return className.substring(className.lastIndexOf('.') + 1);
 	}
 
-	GraphEdge createEdge(GraphClazz node, GraphCardinality cardinality, String property) {
-		GraphEdge newElement = new GraphEdge();
+	Association createEdge(Clazz node, Cardinality cardinality, String property) {
+		Association newElement = new Association();
 		initItem(newElement);
 		return newElement.with(node, cardinality, property);
 	}

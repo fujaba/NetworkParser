@@ -61,15 +61,15 @@ public class SortedSet<V> extends SimpleSet<V> {
 	 * equal to, if {@code inclusive} is true) {@code fromKey}.
 	 *
 	 * @param fromElement
-	 *            low endpoint of the keys in the returned map
+	 *			low endpoint of the keys in the returned map
 	 * @param inclusive
-	 *            {@code true} if the low endpoint is to be included in the
-	 *            returned view
+	 *			{@code true} if the low endpoint is to be included in the
+	 *			returned view
 	 * @param <ST> the ContainerClass
 	 * 
-	 *             
+	 *			 
 	 * @return a view of the portion of this map whose keys are greater than (or
-	 *         equal to, if {@code inclusive} is true) {@code fromKey}
+	 *		 equal to, if {@code inclusive} is true) {@code fromKey}
 	 *
 	 */
 	@SuppressWarnings("unchecked")
@@ -112,10 +112,10 @@ public class SortedSet<V> extends SimpleSet<V> {
 	 * attempt to insert a key outside its range.
 	 *
 	 * @param toElement
-	 *            high endpoint of the keys in the returned map
+	 *			high endpoint of the keys in the returned map
 	 * @param inclusive
-	 *            {@code true} if the high endpoint is to be included in the
-	 *            returned view
+	 *			{@code true} if the high endpoint is to be included in the
+	 *			returned view
 	 * @param <ST> the ContainerClass 
 	 * 
 	 * @return result a list with less item then the key

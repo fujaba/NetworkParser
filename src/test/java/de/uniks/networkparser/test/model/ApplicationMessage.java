@@ -32,17 +32,17 @@ public class ApplicationMessage
    
    public Object get(String attrName)
    {
-      if (PROPERTY_FIXMLMESSAGE.equalsIgnoreCase(attrName))
-      {
-         return getFixmlmessage();
-      }
+	  if (PROPERTY_FIXMLMESSAGE.equalsIgnoreCase(attrName))
+	  {
+		 return getFixmlmessage();
+	  }
 
-      if (PROPERTY_ORDER.equalsIgnoreCase(attrName))
-      {
-//         return getOrder();
-      }
+	  if (PROPERTY_ORDER.equalsIgnoreCase(attrName))
+	  {
+//		 return getOrder();
+	  }
 
-      return null;
+	  return null;
    }
 
    
@@ -50,19 +50,19 @@ public class ApplicationMessage
    
    public boolean set(String attrName, Object value)
    {
-      if (PROPERTY_FIXMLMESSAGE.equalsIgnoreCase(attrName))
-      {
-         setFixmlmessage((FIXMLMessage) value);
-         return true;
-      }
+	  if (PROPERTY_FIXMLMESSAGE.equalsIgnoreCase(attrName))
+	  {
+		 setFixmlmessage((FIXMLMessage) value);
+		 return true;
+	  }
 
-      if (PROPERTY_ORDER.equalsIgnoreCase(attrName))
-      {
-//         setOrder((Order) value);
-         return true;
-      }
+	  if (PROPERTY_ORDER.equalsIgnoreCase(attrName))
+	  {
+//		 setOrder((Order) value);
+		 return true;
+	  }
 
-      return false;
+	  return false;
    }
 
    
@@ -72,12 +72,12 @@ public class ApplicationMessage
    
    public PropertyChangeSupport getPropertyChangeSupport()
    {
-      return listeners;
+	  return listeners;
    }
    
    public void addPropertyChangeListener(PropertyChangeListener listener) 
    {
-      getPropertyChangeSupport().addPropertyChangeListener(listener);
+	  getPropertyChangeSupport().addPropertyChangeListener(listener);
    }
 
    
@@ -85,19 +85,19 @@ public class ApplicationMessage
    
    public void removeYou()
    {
-      setFixmlmessage(null);
-//      setOrder(null);
-      getPropertyChangeSupport().firePropertyChange("REMOVE_YOU", this, null);
+	  setFixmlmessage(null);
+//	  setOrder(null);
+	  getPropertyChangeSupport().firePropertyChange("REMOVE_YOU", this, null);
    }
 
    
    /********************************************************************
-    * <pre>
-    *              one                       one
-    * ApplicationMessage ----------------------------------- FIXMLMessage
-    *              applicationmessage                   fixmlmessage
-    * </pre>
-    */
+	* <pre>
+	*			  one					   one
+	* ApplicationMessage ----------------------------------- FIXMLMessage
+	*			  applicationmessage				   fixmlmessage
+	* </pre>
+	*/
    
    public static final String PROPERTY_FIXMLMESSAGE = "fixmlmessage";
 
@@ -105,58 +105,58 @@ public class ApplicationMessage
 
    public FIXMLMessage getFixmlmessage()
    {
-      return this.fixmlmessage;
+	  return this.fixmlmessage;
    }
 
    public boolean setFixmlmessage(FIXMLMessage value)
    {
-      boolean changed = false;
-      
-      if (this.fixmlmessage != value)
-      {
-         FIXMLMessage oldValue = this.fixmlmessage;
-         
-         if (this.fixmlmessage != null)
-         {
-            this.fixmlmessage = null;
-            oldValue.setApplicationmessage(null);
-         }
-         
-         this.fixmlmessage = value;
-         
-         if (value != null)
-         {
-            value.withApplicationmessage(this);
-         }
-         
-         getPropertyChangeSupport().firePropertyChange(PROPERTY_FIXMLMESSAGE, oldValue, value);
-         changed = true;
-      }
-      
-      return changed;
+	  boolean changed = false;
+	  
+	  if (this.fixmlmessage != value)
+	  {
+		 FIXMLMessage oldValue = this.fixmlmessage;
+		 
+		 if (this.fixmlmessage != null)
+		 {
+			this.fixmlmessage = null;
+			oldValue.setApplicationmessage(null);
+		 }
+		 
+		 this.fixmlmessage = value;
+		 
+		 if (value != null)
+		 {
+			value.withApplicationmessage(this);
+		 }
+		 
+		 getPropertyChangeSupport().firePropertyChange(PROPERTY_FIXMLMESSAGE, oldValue, value);
+		 changed = true;
+	  }
+	  
+	  return changed;
    }
 
    public ApplicationMessage withFixmlmessage(FIXMLMessage value)
    {
-      setFixmlmessage(value);
-      return this;
+	  setFixmlmessage(value);
+	  return this;
    } 
 
    public FIXMLMessage createFixmlmessage()
    {
-      FIXMLMessage value = new FIXMLMessage();
-      withFixmlmessage(value);
-      return value;
+	  FIXMLMessage value = new FIXMLMessage();
+	  withFixmlmessage(value);
+	  return value;
    } 
 
    
    /********************************************************************
-    * <pre>
-    *              one                       one
-    * ApplicationMessage ----------------------------------- Order
-    *              applicationmessage                   order
-    * </pre>
-    */
+	* <pre>
+	*			  one					   one
+	* ApplicationMessage ----------------------------------- Order
+	*			  applicationmessage				   order
+	* </pre>
+	*/
    
    public static final String PROPERTY_ORDER = "order";
 
@@ -164,48 +164,48 @@ public class ApplicationMessage
 //
 //   public Order getOrder()
 //   {
-//      return this.order;
+//	  return this.order;
 //   }
 //
 //   public boolean setOrder(Order value)
 //   {
-//      boolean changed = false;
-//      
-//      if (this.order != value)
-//      {
-//         Order oldValue = this.order;
-//         
-//         if (this.order != null)
-//         {
-//            this.order = null;
-//            oldValue.setApplicationmessage(null);
-//         }
-//         
-//         this.order = value;
-//         
-//         if (value != null)
-//         {
-//            value.withApplicationmessage(this);
-//         }
-//         
-//         getPropertyChangeSupport().firePropertyChange(PROPERTY_ORDER, oldValue, value);
-//         changed = true;
-//      }
-//      
-//      return changed;
+//	  boolean changed = false;
+//	  
+//	  if (this.order != value)
+//	  {
+//		 Order oldValue = this.order;
+//		 
+//		 if (this.order != null)
+//		 {
+//			this.order = null;
+//			oldValue.setApplicationmessage(null);
+//		 }
+//		 
+//		 this.order = value;
+//		 
+//		 if (value != null)
+//		 {
+//			value.withApplicationmessage(this);
+//		 }
+//		 
+//		 getPropertyChangeSupport().firePropertyChange(PROPERTY_ORDER, oldValue, value);
+//		 changed = true;
+//	  }
+//	  
+//	  return changed;
 //   }
 //
 //   public ApplicationMessage withOrder(Order value)
 //   {
-//      setOrder(value);
-//      return this;
+//	  setOrder(value);
+//	  return this;
 //   } 
 //
 //   public Order createOrder()
 //   {
-//      Order value = new Order();
-//      withOrder(value);
-//      return value;
+//	  Order value = new Order();
+//	  withOrder(value);
+//	  return value;
 //   } 
 }
 

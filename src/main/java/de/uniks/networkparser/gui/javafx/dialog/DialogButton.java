@@ -62,14 +62,14 @@ public class DialogButton extends Button implements DialogElement{
 	
 	public DialogButton withGrafik(Grafik type) {
 		this.withAction(type);
-        this.setFocusTraversable(false);
+		this.setFocusTraversable(false);
 
-        getStyleClass().setAll("window-button", "window-"+type+"-button");
-        StackPane graphic = new StackPane();
-        graphic.getStyleClass().setAll("graphic");
-        setGraphic(graphic);
-        setMinSize(17, 17);
-        setPrefSize(17, 17);
+		getStyleClass().setAll("window-button", "window-"+type+"-button");
+		StackPane graphic = new StackPane();
+		graphic.getStyleClass().setAll("graphic");
+		setGraphic(graphic);
+		setMinSize(17, 17);
+		setPrefSize(17, 17);
 	
 		return this;
 	}

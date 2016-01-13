@@ -58,9 +58,9 @@ public class XMLStyledEntity extends XMLEntity {
 	 * Set new Value of Attribute.
 	 *
 	 * @param attribute
-	 *            The Attribute Key
+	 *			The Attribute Key
 	 * @param value
-	 *            The new Value of Attribute
+	 *			The new Value of Attribute
 	 * @return succes of set of the Value
 	 */
 	public boolean set(String attribute, Object value) {
@@ -74,7 +74,7 @@ public class XMLStyledEntity extends XMLEntity {
 	 * Get The Value of Attribute.
 	 *
 	 * @param key
-	 *            The Key of Attribute
+	 *			The Key of Attribute
 	 * @return The Value of Attribute
 	 */
 	public Object get(String key) {
@@ -92,7 +92,7 @@ public class XMLStyledEntity extends XMLEntity {
 
 	/**
 	 * @param value
-	 *            The new Option of Bold
+	 *			The new Option of Bold
 	 */
 	public void setBold(boolean value) {
 		style.withBold(value);

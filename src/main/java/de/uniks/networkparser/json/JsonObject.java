@@ -97,9 +97,9 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 	 * Get the JsonArray value associated with a key.
 	 *
 	 * @param key
-	 *            A key string.
+	 *			A key string.
 	 * @return A JsonArray which is the value. if the key is not found or if the
-	 *         value is not a JsonArray.
+	 *		 value is not a JsonArray.
 	 */
 	public JsonArray getJsonArray(String key) {
 		Object object = this.get(key);
@@ -116,10 +116,10 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 	 * Get the JsonObject value associated with a key.
 	 *
 	 * @param key
-	 *            A key string.
+	 *			A key string.
 	 * @return A JsonObject which is the value.
 	 * @throws RuntimeException
-	 *             if the key is not found or if the value is not a JsonObject.
+	 *			 if the key is not found or if the value is not a JsonObject.
 	 */
 	public JsonObject getJsonObject(String key) {
 		Object object = this.get(key);
@@ -136,10 +136,10 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 	 * Get the JsonObject value associated with a key.
 	 *
 	 * @param key
-	 *            A key string.
+	 *			A key string.
 	 * @return A JsonObject which is the value.
 	 * @throws RuntimeException
-	 *             if the key is not found or if the value is not a JsonObject.
+	 *			 if the key is not found or if the value is not a JsonObject.
 	 */
 	public long getLong(String key) {
 		Object object = this.get(key);
@@ -160,9 +160,9 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 	 * Warning: This method assumes that the data structure is acyclical.
 	 *
 	 * @return a printable, displayable, portable, transmittable representation
-	 *         of the object, beginning with <code>{</code>&nbsp;<small>(left
-	 *         brace)</small> and ending with <code>}</code>&nbsp;<small>(right
-	 *         brace)</small>.
+	 *		 of the object, beginning with <code>{</code>&nbsp;<small>(left
+	 *		 brace)</small> and ending with <code>}</code>&nbsp;<small>(right
+	 *		 brace)</small>.
 	 */
 	@Override
 	public String toString() {
@@ -196,11 +196,11 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 	 * Warning: This method assumes that the data structure is acyclical.
 	 *
 	 * @param indentFactor
-	 *            The number of spaces to add to each level of indentation.
+	 *			The number of spaces to add to each level of indentation.
 	 * @return a printable, displayable, portable, transmittable representation
-	 *         of the object, beginning with <code>{</code>&nbsp;<small>(left
-	 *         brace)</small> and ending with <code>}</code>&nbsp;<small>(right
-	 *         brace)</small>.
+	 *		 of the object, beginning with <code>{</code>&nbsp;<small>(left
+	 *		 brace)</small> and ending with <code>}</code>&nbsp;<small>(right
+	 *		 brace)</small>.
 	 */
 	@Override
 	public String toString(int indentFactor) {
@@ -261,7 +261,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 	 * Set the value to Tokener or pairs of values
 	 *
 	 * @param values
-	 *            a simple String of Value or pairs of key-values
+	 *			a simple String of Value or pairs of key-values
 	 * @return Itself
 	 */
 	public JsonObject withValue(String... values) {
@@ -284,7 +284,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 	 * Tokener to init the JsonObject
 	 *
 	 * @param x
-	 *            tokener to add values with the tokener
+	 *			tokener to add values with the tokener
 	 * @return Itself
 	 */
 	public JsonObject withTokener(Tokener x) {
@@ -296,7 +296,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 	 * Tokener to init the JsonObject
 	 *
 	 * @param entity
-	 *            entity to add values with the tokener
+	 *			entity to add values with the tokener
 	 * @return Itself
 	 */
 	public JsonObject withEntity(SimpleKeyValueList<?, ?> entity) {
@@ -337,9 +337,9 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 	 * accumulated, then the result will be like append.
 	 *
 	 * @param key
-	 *            A key string.
+	 *			A key string.
 	 * @param value
-	 *            An object to be accumulated under the key.
+	 *			An object to be accumulated under the key.
 	 * @return this.
 	 */
 	public JsonObject addToList(String key, Object value) {

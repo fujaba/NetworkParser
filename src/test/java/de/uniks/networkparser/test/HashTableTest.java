@@ -57,7 +57,7 @@ public class HashTableTest
 		
 		String end = String.format(FORMAT, (System.currentTimeMillis() - currentTimeMillis));
 		
-		printToStream(label+ " Add:          " +end+ "ms = number of persons: " + list.size());	
+		printToStream(label+ " Add:		  " +end+ "ms = number of persons: " + list.size());	
 		return list;
 	}
 
@@ -69,7 +69,7 @@ public class HashTableTest
 			Assert.assertTrue("not in list: "+i+"="+items.get(i), list.contains(items.get(i)));
 		}
 		String end = String.format(FORMAT, (System.currentTimeMillis() - currentTimeMillis));
-		printToStream(label+ " contains:     " +end+ "ms for " +list.size()/step + " Objects");
+		printToStream(label+ " contains:	 " +end+ "ms for " +list.size()/step + " Objects");
 	}
 	
 	private void getter(String label, List<Person> list){
@@ -106,7 +106,7 @@ public class HashTableTest
 			Assert.assertTrue("not in list", list.contains(items.get(i)));
 		}
 		String end = String.format(FORMAT, (System.currentTimeMillis() - currentTimeMillis));
-		printToStream(label+ " contains:     " + end + " for 10000 Objects");
+		printToStream(label+ " contains:	 " + end + " for 10000 Objects");
 	}
 	
 	private void iterator(String label, Collection<Person> list){
@@ -115,7 +115,7 @@ public class HashTableTest
 			Assert.assertNotNull(i.next());
 		}
 		String end = String.format(FORMAT, (System.currentTimeMillis() - currentTimeMillis));
-		printToStream(label+ " iterator:     " + end);
+		printToStream(label+ " iterator:	 " + end);
 	}
 	
 	private void removeObject(String label, Collection<Person> list){
@@ -155,9 +155,9 @@ public class HashTableTest
 
 	@Test
 	public void testLists(){
-		test("ArrayList    :", new ArrayList<Person>());
+		test("ArrayList	:", new ArrayList<Person>());
 		test("LinkedHashSet:", new LinkedHashSet<Person>());
-		test("PersonSet    :", new PersonSet());
+		test("PersonSet	:", new PersonSet());
 	}
 	
    @Test
@@ -176,31 +176,31 @@ public class HashTableTest
    {
 	   long currentTimeMillis = System.currentTimeMillis();
 	   
-      GroupAccount groupAccount = new GroupAccount();
-      
-      PersonSet personSet = new PersonSet();
-      
-      for (int i = 0; i < COUNT; i++)
-      {
-         Person person = groupAccount.createPersons().withName("p" + i);
-         
-         if (i % 100 == 0)
-         {
-            personSet.add(person);
-         }
-      }
-      
-      
-      printToStream("     number of persons: " + groupAccount.getPersons().size() + " probe size: " + personSet.size());
-      printToStream("     " +(System.currentTimeMillis() - currentTimeMillis ));
-//      for (Person person : personSet)
-//      {
-//         Assert.assertTrue("not in list", groupAccount.getPersons().contains(person));
-//         groupAccount.withoutPersons(person);
-//         Assert.assertFalse("still in list", groupAccount.getPersons().contains(person));
-//         
-//      }
+	  GroupAccount groupAccount = new GroupAccount();
+	  
+	  PersonSet personSet = new PersonSet();
+	  
+	  for (int i = 0; i < COUNT; i++)
+	  {
+		 Person person = groupAccount.createPersons().withName("p" + i);
+		 
+		 if (i % 100 == 0)
+		 {
+			personSet.add(person);
+		 }
+	  }
+	  
+	  
+	  printToStream("	 number of persons: " + groupAccount.getPersons().size() + " probe size: " + personSet.size());
+	  printToStream("	 " +(System.currentTimeMillis() - currentTimeMillis ));
+//	  for (Person person : personSet)
+//	  {
+//		 Assert.assertTrue("not in list", groupAccount.getPersons().contains(person));
+//		 groupAccount.withoutPersons(person);
+//		 Assert.assertFalse("still in list", groupAccount.getPersons().contains(person));
+//		 
+//	  }
 //
-//      Assert.assertTrue("not in list", groupAccount.getPersons().contains(personSet.get(personSet.size()-1)));
+//	  Assert.assertTrue("not in list", groupAccount.getPersons().contains(personSet.get(personSet.size()-1)));
    }
 }

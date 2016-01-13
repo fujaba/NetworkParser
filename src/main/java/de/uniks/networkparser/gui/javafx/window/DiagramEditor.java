@@ -144,7 +144,7 @@ public class DiagramEditor extends SimpleShell implements Editor {
 						if(name.indexOf("json", name.length() - 4) >= 0) {
 							error = false;
 						}
-                    }
+					}
 					if(!error) {
 						event.acceptTransferModes(TransferMode.COPY);
 						webEngine.executeScript("classEditor.setBoardStyle(\"Ok\");");
@@ -152,9 +152,9 @@ public class DiagramEditor extends SimpleShell implements Editor {
 						event.acceptTransferModes(TransferMode.NONE);
 						webEngine.executeScript("classEditor.setBoardStyle(\"Error\");");
 					}
-                }
-                 
-                event.consume();
+				}
+				 
+				event.consume();
 			}
 		});
 		browser.setOnDragDropped(new EventHandler<DragEvent>() {
@@ -162,21 +162,21 @@ public class DiagramEditor extends SimpleShell implements Editor {
 			public void handle(DragEvent event) {
 				Dragboard db = event.getDragboard();
 				if(db.hasFiles()){
-                    for(File file:db.getFiles()){
-                    	StringBuilder sb = new StringBuilder();
-                    	byte buf[] = new byte[1024];
-                        int read;
-                        FileInputStream is = null;
-                        try {
-                        	is=new FileInputStream(file);
-                            do {
-                                read = is.read(buf, 0, buf.length);
-                                if (read>0) {
-                                	sb.append(new String(buf, 0, read));
-                                }
-                            } while (read>=0);
-                        } catch (IOException e) {
-                        }finally {
+					for(File file:db.getFiles()){
+						StringBuilder sb = new StringBuilder();
+						byte buf[] = new byte[1024];
+						int read;
+						FileInputStream is = null;
+						try {
+							is=new FileInputStream(file);
+							do {
+								read = is.read(buf, 0, buf.length);
+								if (read>0) {
+									sb.append(new String(buf, 0, read));
+								}
+							} while (read>=0);
+						} catch (IOException e) {
+						}finally {
 							if(is != null) {
 								try {
 									is.close();
@@ -184,9 +184,9 @@ public class DiagramEditor extends SimpleShell implements Editor {
 								}
 							}
 						}
-                        webEngine.executeScript("classEditor.dropFile('"+sb.toString()+"', \""+file.getAbsolutePath()+"\");");
-	                   	break;
-                    }
+						webEngine.executeScript("classEditor.dropFile('"+sb.toString()+"', \""+file.getAbsolutePath()+"\");");
+						   break;
+					}
 				}
 			}
 		});

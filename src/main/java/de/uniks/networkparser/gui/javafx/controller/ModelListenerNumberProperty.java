@@ -26,8 +26,8 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class ModelListenerNumberProperty extends ModelListenerProperty<Number> {
 	public ModelListenerNumberProperty(SendableEntityCreator creator, Object item, String property) {
-        super(creator, item, property);
-    }
+		super(creator, item, property);
+	}
 
 	@Override
 	public void invalidated(Observable arg0) {

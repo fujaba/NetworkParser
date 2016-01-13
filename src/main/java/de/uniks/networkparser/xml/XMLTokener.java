@@ -53,11 +53,11 @@ public class XMLTokener extends Tokener {
 	 * BaseEntity, Long, or String.
 	 *
 	 * @param creator
-	 *            The new Creator
+	 *			The new Creator
 	 * @param allowQuote
-	 *            is in Text allow Quote
+	 *			is in Text allow Quote
 	 * @param c
-	 *            The Terminate Char
+	 *			The Terminate Char
 	 *
 	 * @return An object.
 	 */
@@ -218,7 +218,7 @@ public class XMLTokener extends Tokener {
 
 	/**
 	 * @param value
-	 *            set Prefix.
+	 *			set Prefix.
 	 * @return XMLTokener Instance
 	 */
 	public XMLTokener withPrefix(String value) {
@@ -228,7 +228,7 @@ public class XMLTokener extends Tokener {
 
 	/**
 	 * @param value
-	 *            add Prefix to Existing.
+	 *			add Prefix to Existing.
 	 * @return XMLTokener Instance
 	 */
 	public XMLTokener addPrefix(String value) {
@@ -240,7 +240,7 @@ public class XMLTokener extends Tokener {
 	 * Add a new Reference Object to Stack.
 	 *
 	 * @param item
-	 *            new Reference Object
+	 *			new Reference Object
 	 * @return XMLTokener Instance
 	 */
 	public XMLTokener withStack(Object item) {
@@ -263,7 +263,7 @@ public class XMLTokener extends Tokener {
 
 	/**
 	 * @param offset
-	 *            Offset from Last
+	 *			Offset from Last
 	 * @return The Stack Element - offset
 	 */
 	public Object getStackLast(int offset) {
@@ -272,7 +272,7 @@ public class XMLTokener extends Tokener {
 
 	/**
 	 * @param value
-	 *            of AllowQuote
+	 *			of AllowQuote
 	 * @return XMLTokener Instance
 	 */
 	public XMLTokener withAllowQuote(boolean value) {

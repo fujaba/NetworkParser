@@ -38,9 +38,9 @@ public class ByteConverterBinary extends ByteConverter {
 	 * To Binary string.
 	 *
 	 * @param values
-	 *            the bytes
+	 *			the bytes
 	 * @param size
-	 *            The size of values
+	 *			The size of values
 	 * @return the string
 	 */
 	@Override
@@ -67,7 +67,7 @@ public class ByteConverterBinary extends ByteConverter {
 	 * To byte string.
 	 *
 	 * @param value
-	 *            the hex string
+	 *			the hex string
 	 * @return the byte[]
 	 */
 	@Override

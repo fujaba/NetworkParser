@@ -79,11 +79,11 @@ public class JsonArray extends SortedList<Object> implements
 	 * Get the JSONArray associated with an index.
 	 *
 	 * @param index
-	 *            The index must be between 0 and length() - 1.
+	 *			The index must be between 0 and length() - 1.
 	 * @return A JSONArray value.
 	 * @throws RuntimeException
-	 *             If there is no value for the index. or if the value is not a
-	 *             JSONArray
+	 *			 If there is no value for the index. or if the value is not a
+	 *			 JSONArray
 	 */
 	public JsonArray getJSONArray(int index) {
 		Object object = get(index);
@@ -100,11 +100,11 @@ public class JsonArray extends SortedList<Object> implements
 	 * Get the JSONObject associated with an index.
 	 *
 	 * @param index
-	 *            subscript
+	 *			subscript
 	 * @return A JSONObject value.
 	 * @throws RuntimeException
-	 *             If there is no value for the index or if the value is not a
-	 *             JSONObject
+	 *			 If there is no value for the index or if the value is not a
+	 *			 JSONObject
 	 */
 	public JsonObject getJSONObject(int index) {
 		Object object = get(index);
@@ -118,22 +118,22 @@ public class JsonArray extends SortedList<Object> implements
 	}
 
    /**
-    * Get the JSONObject associated with an index.
-    *
-    * @param index
-    *            subscript
-    * @return A JSONObject value.
-    * @throws RuntimeException
-    *             If there is no value for the index or if the value is not a
-    *             JSONObject
-    */
+	* Get the JSONObject associated with an index.
+	*
+	* @param index
+	*			subscript
+	* @return A JSONObject value.
+	* @throws RuntimeException
+	*			 If there is no value for the index or if the value is not a
+	*			 JSONObject
+	*/
    public String getString(int index) {
-      Object object = get(index);
-      if (object instanceof String) {
-         return (String) object;
-      }
-      throw new RuntimeException("JSONArray[" + index
-            + "] is not a String.");
+	  Object object = get(index);
+	  if (object instanceof String) {
+		 return (String) object;
+	  }
+	  throw new RuntimeException("JSONArray[" + index
+			+ "] is not a String.");
    }
 
 	/**
@@ -141,10 +141,10 @@ public class JsonArray extends SortedList<Object> implements
 	 * this JSONArray.
 	 *
 	 * @param names
-	 *            A JSONArray containing a list of key strings. These will be
-	 *            paired with the values.
+	 *			A JSONArray containing a list of key strings. These will be
+	 *			paired with the values.
 	 * @return A JSONObject, or null if there are no names or if this JSONArray
-	 *         has no values.
+	 *		 has no values.
 	 */
 	public JsonObject toJSONObject(JsonArray names) {
 		if (names == null || names.size() == 0 || size() == 0) {
@@ -166,7 +166,7 @@ public class JsonArray extends SortedList<Object> implements
 	 * Warning: This method assumes that the data structure is acyclical.
 	 *
 	 * @return a printable, displayable, transmittable representation of the
-	 *         array.
+	 *		 array.
 	 */
 	@Override
 	public String toString() {
@@ -178,11 +178,11 @@ public class JsonArray extends SortedList<Object> implements
 	 * assumes that the data structure is acyclical.
 	 *
 	 * @param indentFactor
-	 *            The number of spaces to add to each level of indentation.
+	 *			The number of spaces to add to each level of indentation.
 	 * @return a printable, displayable, transmittable representation of the
-	 *         object, beginning with <code>[</code>&nbsp;<small>(left
-	 *         bracket)</small> and ending with <code>]</code>
-	 *         &nbsp;<small>(right bracket)</small>.
+	 *		 object, beginning with <code>[</code>&nbsp;<small>(left
+	 *		 bracket)</small> and ending with <code>]</code>
+	 *		 &nbsp;<small>(right bracket)</small>.
 	 */
 	@Override
 	public String toString(int indentFactor) {
@@ -238,9 +238,9 @@ public class JsonArray extends SortedList<Object> implements
 	 * JSONArray from a source JSON text.
 	 *
 	 * @param value
-	 *            A string that begins with <code>[</code>&nbsp;<small>(left
-	 *            bracket)</small> and ends with <code>]</code>
-	 *            &nbsp;<small>(right bracket)</small>.
+	 *			A string that begins with <code>[</code>&nbsp;<small>(left
+	 *			bracket)</small> and ends with <code>]</code>
+	 *			&nbsp;<small>(right bracket)</small>.
 	 * @return Itself
 	 */
 	public JsonArray withValue(String value) {
@@ -253,7 +253,7 @@ public class JsonArray extends SortedList<Object> implements
 	 * JSONArray from a JSONTokener.
 	 *
 	 * @param x
-	 *            A JSONTokener
+	 *			A JSONTokener
 	 * @return Itself
 	 */
 	public JsonArray withValue(Tokener x) {
@@ -265,7 +265,7 @@ public class JsonArray extends SortedList<Object> implements
 	 * JSONArray from a BaseEntityArray.
 	 *
 	 * @param values
-	 *            of Elements.
+	 *			of Elements.
 	 * @return Itself
 	 */
 	public JsonArray withValue(BaseItem... values) {

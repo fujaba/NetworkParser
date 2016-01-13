@@ -76,7 +76,7 @@ public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
 	 * Add new Stopwords to List.
 	 *
 	 * @param values
-	 *            The List for add
+	 *			The List for add
 	 * @return XMLSimpleIdMap Instance
 	 */
 	public XMLSimpleIdMap withStopwords(String... values) {
@@ -101,9 +101,9 @@ public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
 	 * Decoding Teh XMLTokener with XMLGrammar.
 	 *
 	 * @param tokener
-	 *            The XMLTokener
+	 *			The XMLTokener
 	 * @param factory
-	 *            The XMLGrammar for Structure
+	 *			The XMLGrammar for Structure
 	 * @return teh Model-Instance
 	 */
 	public Object decode(XMLTokener tokener, XMLGrammar factory) {
@@ -125,7 +125,7 @@ public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
 	 * Read Json Automatic create JsonArray or JsonObject.
 	 *
 	 * @param value
-	 *            Decoding Value
+	 *			Decoding Value
 	 * @return the object
 	 */
 	@Override
@@ -135,7 +135,7 @@ public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
 
 	@Override
 	public XMLEntity encode(Object value) {
-		return encode(value, filter.clone());
+		return encode(value, null);
 	}
 
 	@Override
@@ -188,12 +188,12 @@ public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
 	 * Find tag.
 	 *
 	 * @param entity
-	 *            The Entity
+	 *			The Entity
 	 *
 	 * @param tokener
-	 *            the tokener
+	 *			the tokener
 	 * @param grammar
-	 *            the grammar
+	 *			the grammar
 	 * @return the object
 	 */
 	protected Object parse(XMLEntity entity, XMLTokener tokener,
@@ -293,9 +293,9 @@ public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
 	 * Gets the entity.
 	 *
 	 * @param factory
-	 *            the grammar
+	 *			the grammar
 	 * @param tokener
-	 *            the tokener
+	 *			the tokener
 	 * @return the entity
 	 */
 	protected XMLEntity getEntity(XMLGrammar factory, XMLTokener tokener) {

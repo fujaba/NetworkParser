@@ -22,6 +22,7 @@ package de.uniks.networkparser.json;
  permissions and limitations under the Licence.
 */
 import java.util.Iterator;
+
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.IdMapCounter;
@@ -32,13 +33,13 @@ public class SimpleGrammar extends Grammar {
 
 	/**
 	 * @param jsonObject
-	 *            the new Value
+	 *			the new Value
 	 * @param map
-	 *            the IdMap
+	 *			the IdMap
 	 * @param filter
-	 *            the Filter
+	 *			the Filter
 	 * @param isId
-	 *            is Id is reed
+	 *			is Id is reed
 	 * @return the props of theJsonObject
 	 */
 	@Override
@@ -50,12 +51,12 @@ public class SimpleGrammar extends Grammar {
 
 	/**
 	 * @param jsonObject
-	 *            the new Value
+	 *			the new Value
 	 * @return the Creator for this JsonObject
 	 */
 	@Override
 	public SendableEntityCreator getReadCreator(JsonObject jsonObject,
-			IdMap map) {
+			IdMap map, boolean searchForSuperCreator) {
 		String idString = jsonObject.getString(ID);
 		String className = "."
 				+ idString.substring(0,

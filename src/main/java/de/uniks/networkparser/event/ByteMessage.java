@@ -73,7 +73,7 @@ public class ByteMessage {
 	 * Sets the value.
 	 *
 	 * @param value
-	 *            the new value
+	 *			the new value
 	 * @return Itself
 	 */
 	public ByteMessage withValue(byte[] value) {

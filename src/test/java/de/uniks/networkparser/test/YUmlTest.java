@@ -7,9 +7,9 @@ import java.util.Date;
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.uniks.networkparser.graph.GraphCardinality;
-import de.uniks.networkparser.graph.GraphClazz;
-import de.uniks.networkparser.graph.GraphDataType;
+import de.uniks.networkparser.graph.Cardinality;
+import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphIdMap;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.YUMLConverter;
@@ -33,10 +33,10 @@ public class YUmlTest {
 		chatMessage.setDate(date);
 
 		JsonIdMap jsonMap = new JsonIdMap();
-		jsonMap.withCreator(new ChatMessageCreator());
+		jsonMap.with(new ChatMessageCreator());
 		GraphIdMap yumlParser = new GraphIdMap();
 		yumlParser.withKeyValue(jsonMap.getKeyValue())
-			.withCreator(jsonMap);
+			.with(jsonMap);
 
 		String parseObject = yumlParser.parseObject(chatMessage);
 		assertEquals(
@@ -45,8 +45,8 @@ public class YUmlTest {
 				url + parseObject);
 
 		jsonMap = new JsonIdMap();
-		jsonMap.withCreator(new UniversityCreator());
-		jsonMap.withCreator(new RoomCreator());
+		jsonMap.with(new UniversityCreator());
+		jsonMap.with(new RoomCreator());
 		University uni = new University();
 		uni.setName("Wilhelmshoehe Allee");
 		Room room = new Room();
@@ -62,11 +62,11 @@ public class YUmlTest {
 	@Test
 	public void testSimpleGrahList() {
 		GraphList list = new GraphList();
-		GraphClazz uni = list.with(new GraphClazz().with("UniKassel").with("University"));
-		uni.createAttribute("name", GraphDataType.STRING);
+		Clazz uni = list.with(new Clazz().with("UniKassel").with("University"));
+		uni.createAttribute("name", DataType.STRING);
 		uni.createMethod("init()");
-		GraphClazz student = list.with(new GraphClazz().with("Stefan").with("Student"));
-		student.withAssoc(uni, "owner", GraphCardinality.ONE);
+		Clazz student = list.with(new Clazz().with("Stefan").with("Student"));
+		student.withUniDirectional(uni, "owner", Cardinality.ONE);
 		YUMLConverter converter = new YUMLConverter();
 		Assert.assertEquals("[University|name:String]-[Student]", converter.convert(list, true));
 	}	

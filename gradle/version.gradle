@@ -1,13 +1,14 @@
 // MAJOR VERSION - Manually set
 //----------------------
 def majorNumber = 4
-//group = 'de.uniks'
-group = 'com.github.fujaba'
+group = 'de.uniks'
 //----------------------
 
 import java.text.SimpleDateFormat
 
 task printVersion {
+	group "Git"
+	description "Show Final Version of Repository"
     doFirst {
         println "$version"
     }

@@ -16,7 +16,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.TableCellValue;
-import de.uniks.networkparser.gui.TableList;
+import de.uniks.networkparser.gui.javafx.TableList;
 import de.uniks.networkparser.gui.javafx.table.TableComponent;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.json.JsonIdMap;
@@ -41,53 +41,53 @@ import de.uniks.networkparser.json.JsonIdMap;
 
 public class TestApp extends Application {
 
-    private TableList tableList;
+	private TableList tableList;
 
 	private void init(Stage primaryStage) {
 
-        AnchorPane root = new AnchorPane();
+		AnchorPane root = new AnchorPane();
 
-        primaryStage.setScene(new Scene(root));
+		primaryStage.setScene(new Scene(root));
 
-//        emailCol.setCellValueFactory(new PropertyValueFactory("email"));
-//        TableComponent tableView = new TableComponent();
-        TableComponent tableView = new TableComponent();
-        tableList = new TableList();
-        tableList.add(new PersonGUI("Jacob",     "Smith",    "jacob.smith@example.com", 1));
-        tableList.add(new PersonGUI("Isabella",  "Johnson",  "isabella.johnson@example.com", 2));
-        tableList.add(new PersonGUI("Ethan",     "Williams", "ethan.williams@example.com", 23));
-        tableList.add(new PersonGUI("Emma",      "Jones",    "emma.jones@example.com", 12));
-        tableList.add(new PersonGUI("Michael",   "Brown",    "michael.brown@example.com", 122));
+//		emailCol.setCellValueFactory(new PropertyValueFactory("email"));
+//		TableComponent tableView = new TableComponent();
+		TableComponent tableView = new TableComponent();
+		tableList = new TableList();
+		tableList.add(new PersonGUI("Jacob",	 "Smith",	"jacob.smith@example.com", 1));
+		tableList.add(new PersonGUI("Isabella",  "Johnson",  "isabella.johnson@example.com", 2));
+		tableList.add(new PersonGUI("Ethan",	 "Williams", "ethan.williams@example.com", 23));
+		tableList.add(new PersonGUI("Emma",	  "Jones",	"emma.jones@example.com", 12));
+		tableList.add(new PersonGUI("Michael",   "Brown",	"michael.brown@example.com", 122));
 
-        tableList.add(new PersonGUI("Jacob",     "Smith",    "jacob.smith@example.com", 1));
-        tableList.add(new PersonGUI("Isabella",  "Johnson",  "isabella.johnson@example.com", 2));
-        tableList.add(new PersonGUI("Ethan",     "Williams", "ethan.williams@example.com", 23));
-        tableList.add(new PersonGUI("Emma",      "Jones",    "emma.jones@example.com", 12));
-        tableList.add(new PersonGUI("Michael",   "Brown",    "michael.brown@example.com", 122));
+		tableList.add(new PersonGUI("Jacob",	 "Smith",	"jacob.smith@example.com", 1));
+		tableList.add(new PersonGUI("Isabella",  "Johnson",  "isabella.johnson@example.com", 2));
+		tableList.add(new PersonGUI("Ethan",	 "Williams", "ethan.williams@example.com", 23));
+		tableList.add(new PersonGUI("Emma",	  "Jones",	"emma.jones@example.com", 12));
+		tableList.add(new PersonGUI("Michael",   "Brown",	"michael.brown@example.com", 122));
 
-        
-        tableList.add(new PersonGUI("Jacob",     "Smith",    "jacob.smith@example.com", 1));
-        tableList.add(new PersonGUI("Isabella",  "Johnson",  "isabella.johnson@example.com", 2));
-        tableList.add(new PersonGUI("Ethan",     "Williams", "ethan.williams@example.com", 23));
-        tableList.add(new PersonGUI("Emma",      "Jones",    "emma.jones@example.com", 12));
-        tableList.add(new PersonGUI("Michael",   "Brown",    "michael.brown@example.com", 122));
+		
+		tableList.add(new PersonGUI("Jacob",	 "Smith",	"jacob.smith@example.com", 1));
+		tableList.add(new PersonGUI("Isabella",  "Johnson",  "isabella.johnson@example.com", 2));
+		tableList.add(new PersonGUI("Ethan",	 "Williams", "ethan.williams@example.com", 23));
+		tableList.add(new PersonGUI("Emma",	  "Jones",	"emma.jones@example.com", 12));
+		tableList.add(new PersonGUI("Michael",   "Brown",	"michael.brown@example.com", 122));
 
-        
-        JsonIdMap map = new  JsonIdMap();
-        map.withCreator(tableList);
-        map.withCreator(new PersonGUICreator());
-        
-        tableView.withMap(map).withList(tableList);
-        
-        tableView.withSearchProperties(PersonGUI.PROPERTY_FIRSTNAME, PersonGUI.PROPERTY_LASTNAME, PersonGUI.PROPERTY_EMAIL);
-        
-//        tableView.createFromCreator(null, true);
-        
-        tableView.withColumn(new Column().withAttrName(PersonGUI.PROPERTY_FIRSTNAME));
-        tableView.withColumn(new Column().withAttrName(PersonGUI.PROPERTY_LASTNAME));
-        tableView.withColumn(new Column().withAttrName(PersonGUI.PROPERTY_EMAIL).withBrowserId(GUIPosition.WEST));
-        tableView.withColumn(new Column().withAttrName(PersonGUI.PROPERTY_DISTANCE));
-        tableView.withColumn(new Column().withAttrName(PersonGUI.PROPERTY_DISTANCE).withComparator(new Comparator<TableCellValue>() {
+		
+		JsonIdMap map = new  JsonIdMap();
+		map.with(tableList);
+		map.with(new PersonGUICreator());
+		
+		tableView.withMap(map).withList(tableList);
+		
+		tableView.withSearchProperties(PersonGUI.PROPERTY_FIRSTNAME, PersonGUI.PROPERTY_LASTNAME, PersonGUI.PROPERTY_EMAIL);
+		
+//		tableView.createFromCreator(null, true);
+		
+		tableView.withColumn(new Column().withAttrName(PersonGUI.PROPERTY_FIRSTNAME));
+		tableView.withColumn(new Column().withAttrName(PersonGUI.PROPERTY_LASTNAME));
+		tableView.withColumn(new Column().withAttrName(PersonGUI.PROPERTY_EMAIL).withBrowserId(GUIPosition.WEST));
+		tableView.withColumn(new Column().withAttrName(PersonGUI.PROPERTY_DISTANCE));
+		tableView.withColumn(new Column().withAttrName(PersonGUI.PROPERTY_DISTANCE).withComparator(new Comparator<TableCellValue>() {
 			
 			@Override
 			public int compare(TableCellValue o1, TableCellValue o2) {
@@ -96,23 +96,23 @@ public class TestApp extends Application {
 				return item1.getDistance().compareTo(item2.getDistance());
 			}
 		}));
-        
-        root.getChildren().add(tableView);
-        
-        primaryStage.show();
-        
-        
-//        System.out.println(map.toJsonObject(tableList).toString(2));
-//        tableView.test();
+		
+		root.getChildren().add(tableView);
+		
+		primaryStage.show();
+		
+		
+//		System.out.println(map.toJsonObject(tableList).toString(2));
+//		tableView.test();
 
-    }
+	}
 
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        init(primaryStage);
-//        primaryStage.show();
-    }
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+		init(primaryStage);
+//		primaryStage.show();
+	}
 
-    public static void main(String[] args) { launch(args); }
+	public static void main(String[] args) { launch(args); }
 
 }

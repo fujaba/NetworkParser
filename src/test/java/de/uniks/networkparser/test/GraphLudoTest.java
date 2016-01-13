@@ -54,45 +54,45 @@ public class GraphLudoTest
    @Test
    public void testLudoStoryboard()
    {
-      JsonIdMap jsonIdMap = new JsonIdMap();
-      jsonIdMap.withCreator(new DateCreator())
-      	.withCreator(new DiceCreator())
-      	.withCreator(new FieldCreator())
-      	.withCreator(new LudoCreator())
-      	.withCreator(new PawnCreator())
-      	.withCreator(new PlayerCreator());
-      
-      // create a simple ludo storyboard
-      
-      Ludo ludo = new Ludo();
-      
-      Player tom = ludo.createPlayers().withName("Tom").withColor("blue").withEnumColor(LudoColor.blue);
-      
-      
-      Player sabine = ludo.createPlayers().withName("Sabine").withColor(RED).withEnumColor(LudoColor.red);
-      
-      tom.createDice().withValue(6);
-      
-      Pawn p2 = tom.createPawns().withColor("blue");
-      
-      Field tomStartField = tom.createStart().withColor("blue").withKind("start");
-      
-      sabine.createStart().withColor(RED).withKind("start");
-      
-      Field tmp = tomStartField;
-      for (int i = 0; i < 4; i++)
-      {
-         tmp = tmp.createNext();
-      }
-      
-      tom.createBase().withColor("blue").withKind("base").withPawns(p2);
-      
-      sabine.createPawns().withColor(RED).withPos(tomStartField);
-      
-      JsonArray jsonArray = jsonIdMap.toJsonArray(ludo);
-      GraphConverter graphConverter = new GraphConverter();
-      JsonObject converter=graphConverter.convertToJson(GraphIdMap.CLASS, jsonArray, true);
-      showDebugInfos(converter, 3452, null);
+	  JsonIdMap jsonIdMap = new JsonIdMap();
+	  jsonIdMap.with(new DateCreator())
+		  .with(new DiceCreator())
+		  .with(new FieldCreator())
+		  .with(new LudoCreator())
+		  .with(new PawnCreator())
+		  .with(new PlayerCreator());
+	  
+	  // create a simple ludo storyboard
+	  
+	  Ludo ludo = new Ludo();
+	  
+	  Player tom = ludo.createPlayers().withName("Tom").withColor("blue").withEnumColor(LudoColor.blue);
+	  
+	  
+	  Player sabine = ludo.createPlayers().withName("Sabine").withColor(RED).withEnumColor(LudoColor.red);
+	  
+	  tom.createDice().withValue(6);
+	  
+	  Pawn p2 = tom.createPawns().withColor("blue");
+	  
+	  Field tomStartField = tom.createStart().withColor("blue").withKind("start");
+	  
+	  sabine.createStart().withColor(RED).withKind("start");
+	  
+	  Field tmp = tomStartField;
+	  for (int i = 0; i < 4; i++)
+	  {
+		 tmp = tmp.createNext();
+	  }
+	  
+	  tom.createBase().withColor("blue").withKind("base").withPawns(p2);
+	  
+	  sabine.createPawns().withColor(RED).withPos(tomStartField);
+	  
+	  JsonArray jsonArray = jsonIdMap.toJsonArray(ludo);
+	  GraphConverter graphConverter = new GraphConverter();
+	  JsonObject converter=graphConverter.convertToJson(GraphIdMap.CLASS, jsonArray, true);
+	  showDebugInfos(converter, 3529, null);
    }
    private void showDebugInfos(JsonObject json, int len, PrintStream stream) {
 	   if(stream != null) {
@@ -112,93 +112,93 @@ public class GraphLudoTest
 	   root.setChild(new SortedMsg().withMsg("Child"));
 	   
 	   JsonIdMap map = new JsonIdMap();
-	   map.withCreator(new SortedMsgCreator());
+	   map.with(new SortedMsgCreator());
 	   
 	   JsonArray jsonArray = map.toJsonArray(root, new Filter().withFull(true));
 	   JsonObject item = jsonArray.get(map.getKey(root));
 	   item.put(GraphConverter.HEAD, "map.png");
 	   GraphConverter graphConverter = new GraphConverter();
-      JsonObject objectModel=graphConverter.convertToJson(GraphIdMap.OBJECT, jsonArray, true);
-      showDebugInfos(objectModel, 676, null);
-      
-      JsonObject clazzModel=graphConverter.convertToJson(GraphIdMap.CLASS, jsonArray, true);
-      showDebugInfos(clazzModel, 512, null);
+	  JsonObject objectModel=graphConverter.convertToJson(GraphIdMap.OBJECT, jsonArray, true);
+	  showDebugInfos(objectModel, 683, null);
+	  
+	  JsonObject clazzModel=graphConverter.convertToJson(GraphIdMap.CLASS, jsonArray, true);
+	  showDebugInfos(clazzModel, 519, null);
  }
    
    
 //   @Test
 //   public void testLudoStoryboardManual()
 //   {
-//      Storyboard storyboard = new Storyboard("examples", "LudoStoryboardManual");
-//      
-//      storyboard.add("Start situation: ",
-//         DONE, "zuendorf", "19.07.2012 14:41:05", 1, 0);
-//      
-//      // create a simple ludo storyboard
-//      
-//      Player tom = new Player().withName("Tom").withColor("blue");
-//      Player sabine = new Player().withName("Sabine").withColor(RED);
-//      
-//      Dice dice = new Dice().withValue(6)
-//            .withPlayer(tom);
-//      
-//      Pawn p8 = new Pawn().withColor("blue")
-//            .withPlayer(tom);
-//      
-//      Field tomStartField = new Field().withColor("blue").withKind("start");
-//      tom.withStart(tomStartField);
-//      
-//      Field tmp = tomStartField;
-//      for (int i = 0; i < 4; i++)
-//      {
-//         tmp = new Field().withPrev(tmp);
-//      }
-//      
-//      Field tomBase = new Field().withColor("blue").withKind("base").withPawns(p8);
-//      tom.withBase(tomBase);
-//      
-//      Pawn p9 = new Pawn().withColor(RED)
-//            .withPlayer(sabine)
-//            .withPos(tomStartField);
-//      
-//      JsonIdMap jsonIdMap = CreatorCreator.createIdMap("l1");
-//      
-//      storyboard.addObjectDiagram(jsonIdMap, tom);
-//      
-//      storyboard.add("now the pawn may move to Tom's start field");
-//      
-//      storyboard.markCodeStart();
-//      // build move operation with SDM model transformations
-//      Player player = p8.getPlayer();
-//      
-//      if (player.getDice() != null && player.getDice().getValue() == 6
-//            && p8.getPos() != null && "base".equals(p8.getPos().getKind())
-//            && p8.getPos() == player.getBase())
-//      {
-//         Field startField = player.getStart();
-//         boolean hasOtherOwnPawn = false;
-//         
-//         for (Pawn otherOwnPawn : startField.getPawns())
-//         {
-//            if (otherOwnPawn.getPlayer() == player)
-//            {
-//               hasOtherOwnPawn = true;
-//               break;
-//            }
-//         }
-//         
-//         if ( ! hasOtherOwnPawn)
-//         {
-//            p8.setPos(startField);
-//         }
-//      }
-//      storyboard.addCode("examples");
-//      
-//      storyboard.addObjectDiagram(jsonIdMap, tom);
-//      
-//      StoryboardManager.get()
-//      .add(storyboard)
-//      .dumpHTML();
+//	  Storyboard storyboard = new Storyboard("examples", "LudoStoryboardManual");
+//	  
+//	  storyboard.add("Start situation: ",
+//		 DONE, "zuendorf", "19.07.2012 14:41:05", 1, 0);
+//	  
+//	  // create a simple ludo storyboard
+//	  
+//	  Player tom = new Player().withName("Tom").withColor("blue");
+//	  Player sabine = new Player().withName("Sabine").withColor(RED);
+//	  
+//	  Dice dice = new Dice().withValue(6)
+//			.withPlayer(tom);
+//	  
+//	  Pawn p8 = new Pawn().withColor("blue")
+//			.withPlayer(tom);
+//	  
+//	  Field tomStartField = new Field().withColor("blue").withKind("start");
+//	  tom.withStart(tomStartField);
+//	  
+//	  Field tmp = tomStartField;
+//	  for (int i = 0; i < 4; i++)
+//	  {
+//		 tmp = new Field().withPrev(tmp);
+//	  }
+//	  
+//	  Field tomBase = new Field().withColor("blue").withKind("base").withPawns(p8);
+//	  tom.withBase(tomBase);
+//	  
+//	  Pawn p9 = new Pawn().withColor(RED)
+//			.withPlayer(sabine)
+//			.withPos(tomStartField);
+//	  
+//	  JsonIdMap jsonIdMap = CreatorCreator.createIdMap("l1");
+//	  
+//	  storyboard.addObjectDiagram(jsonIdMap, tom);
+//	  
+//	  storyboard.add("now the pawn may move to Tom's start field");
+//	  
+//	  storyboard.markCodeStart();
+//	  // build move operation with SDM model transformations
+//	  Player player = p8.getPlayer();
+//	  
+//	  if (player.getDice() != null && player.getDice().getValue() == 6
+//			&& p8.getPos() != null && "base".equals(p8.getPos().getKind())
+//			&& p8.getPos() == player.getBase())
+//	  {
+//		 Field startField = player.getStart();
+//		 boolean hasOtherOwnPawn = false;
+//		 
+//		 for (Pawn otherOwnPawn : startField.getPawns())
+//		 {
+//			if (otherOwnPawn.getPlayer() == player)
+//			{
+//			   hasOtherOwnPawn = true;
+//			   break;
+//			}
+//		 }
+//		 
+//		 if ( ! hasOtherOwnPawn)
+//		 {
+//			p8.setPos(startField);
+//		 }
+//	  }
+//	  storyboard.addCode("examples");
+//	  
+//	  storyboard.addObjectDiagram(jsonIdMap, tom);
+//	  
+//	  StoryboardManager.get()
+//	  .add(storyboard)
+//	  .dumpHTML();
 //   }
 }
 

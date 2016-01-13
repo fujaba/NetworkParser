@@ -26,25 +26,24 @@ import java.util.ArrayList;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class And implements Condition<ValuesSimple>, SendableEntityCreator {
+public class And implements SimpleConditionValue, SendableEntityCreator {
 	public static final String CHILD = "childs";
-	private ArrayList<Condition<ValuesSimple>> list = new ArrayList<Condition<ValuesSimple>>();
+	private ArrayList<Condition<SimpleValues>> list = new ArrayList<Condition<SimpleValues>>();
 
-	@SuppressWarnings("unchecked")
-	public And add(Condition<ValuesSimple>... conditions) {
-		for (Condition<ValuesSimple> condition : conditions) {
+	public And add(SimpleConditionValue... conditions) {
+		for (Condition<SimpleValues> condition : conditions) {
 			this.list.add(condition);
 		}
 		return this;
 	}
 
-	public ArrayList<Condition<ValuesSimple>> getList() {
+	public ArrayList<Condition<SimpleValues>> getList() {
 		return list;
 	}
 
 	@Override
-	public boolean check(ValuesSimple values) {
-		for (Condition<ValuesSimple> condition : list) {
+	public boolean check(SimpleValues values) {
+		for (Condition<SimpleValues> condition : list) {
 			if (!condition.check(values)) {
 				return false;
 			}
@@ -70,12 +69,11 @@ public class And implements Condition<ValuesSimple>, SendableEntityCreator {
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
 		if (CHILD.equalsIgnoreCase(attribute)) {
-			((And) entity).add((Condition<ValuesSimple>) value);
+			((And) entity).add((SimpleConditionValue) value);
 			return true;
 		}
 		return false;

@@ -28,7 +28,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import de.uniks.networkparser.StringTokener;
 import de.uniks.networkparser.gui.Column;
-import de.uniks.networkparser.gui.TableList;
+import de.uniks.networkparser.gui.javafx.TableList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class TableFilterView implements ChangeListener<String>{

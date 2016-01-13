@@ -297,9 +297,9 @@ public class HTMLEntities {
 	 * Add a Element to HTML List.
 	 *
 	 * @param value
-	 *            String Value
+	 *			String Value
 	 * @param key
-	 *            Integer of Char
+	 *			Integer of Char
 	 */
 	private void addEntity(String value, int key) {
 		this.entities.put(value, Integer.valueOf(key));
@@ -309,7 +309,7 @@ public class HTMLEntities {
 	 * Convert special and extended characters into HTML entitities.
 	 *
 	 * @param str
-	 *            input string
+	 *			input string
 	 * @return formatted string
 	 */
 	public String encode(String str) {
@@ -345,7 +345,7 @@ public class HTMLEntities {
 	 * equivalents.
 	 *
 	 * @param str
-	 *            input string
+	 *			input string
 	 * @return formatted string
 	 */
 	public String decode(String str) {
@@ -395,7 +395,7 @@ public class HTMLEntities {
 	 * Replace single quotes characters with HTML entities.
 	 *
 	 * @param str
-	 *            the input string
+	 *			the input string
 	 * @return string with replaced single quotes
 	 */
 	public static String htmlSingleQuotes(String str) {
@@ -410,7 +410,7 @@ public class HTMLEntities {
 	 * Replace single quotes HTML entities with equivalent character.
 	 *
 	 * @param str
-	 *            the input string
+	 *			the input string
 	 * @return string with replaced single quotes
 	 */
 	public static String unhtmlSingleQuotes(String str) {
@@ -421,7 +421,7 @@ public class HTMLEntities {
 	 * Replace double quotes characters with HTML entities.
 	 *
 	 * @param str
-	 *            the input string
+	 *			the input string
 	 * @return string with replaced double quotes
 	 */
 	public static String htmlDoubleQuotes(String str) {
@@ -433,7 +433,7 @@ public class HTMLEntities {
 	 * Replace single quotes HTML entities with equivalent character.
 	 *
 	 * @param str
-	 *            the input string
+	 *			the input string
 	 * @return string with replaced single quotes
 	 */
 	public static String unhtmlDoubleQuotes(String str) {
@@ -444,7 +444,7 @@ public class HTMLEntities {
 	 * Replace &amp; characters with &amp;amp; HTML entities.
 	 *
 	 * @param str
-	 *            the input string
+	 *			the input string
 	 * @return string with replaced characters
 	 */
 	public static String htmlAmpersand(String str) {
@@ -455,7 +455,7 @@ public class HTMLEntities {
 	 * Replace &amp;amp; HTML entities with &amp; characters.
 	 *
 	 * @param str
-	 *            the input string
+	 *			the input string
 	 * @return string with replaced entities
 	 */
 	public static String unhtmlAmpersand(String str) {

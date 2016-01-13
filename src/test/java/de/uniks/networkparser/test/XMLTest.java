@@ -44,8 +44,8 @@ public class XMLTest {
 		appleTree.addToHas(new Apple());
 		
 		XMLIdMap map=new XMLIdMap();
-		map.withCreator(new AppleTreeCreator());
-		map.withCreator(new AppleCreator());
+		map.with(new AppleTreeCreator());
+		map.with(new AppleCreator());
 		
 		
 		Assert.assertEquals(133, map.encode(appleTree).toString().length());
@@ -181,7 +181,7 @@ public class XMLTest {
 		chatMessage.setSender("Stefan Lindel");
 		
 		XMLIdMap map = new XMLIdMap();
-		map.withCreator(new ChatMessageCreator());
+		map.with(new ChatMessageCreator());
 		
 		String reference="<chatmsg sender=\"Stefan Lindel\" txt=\"Dies ist eine Testnachricht\"/>";
 		XMLEntity actual=map.encode(chatMessage);
@@ -191,7 +191,7 @@ public class XMLTest {
 		String msg = actual.toString(2);
 		
 		XMLIdMap mapDecoder = new XMLIdMap();
-		mapDecoder.withCreator(new ChatMessageCreator());
+		mapDecoder.with(new ChatMessageCreator());
 		
 		ChatMessage newChatMsg = (ChatMessage) mapDecoder.decode(new XMLEntity().withValue(msg));
 		Assert.assertNotNull(newChatMsg);
@@ -278,7 +278,7 @@ public class XMLTest {
 		item.setValue("new Value");
 		
 		XMLIdMap map = new XMLIdMap();
-		map.withCreator(new XMLTestItemCreator());
+		map.with(new XMLTestItemCreator());
 		XMLEntity xmlEmF = map.encode(item);
 		Assert.assertEquals("<item id=\"42\"><user>Stefan</user><body txt=\"Hallo Welt\">new Value</body></item>", xmlEmF.toString());
 		

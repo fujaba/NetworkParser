@@ -271,8 +271,8 @@ public abstract class SimpleShell extends Application {
 			ps.println("");
 
 			Runtime r = Runtime.getRuntime();
-			ps.println("Prozessoren :       " + r.availableProcessors());
-			ps.println("Freier Speicher JVM:    " + r.freeMemory());
+			ps.println("Prozessoren :	   " + r.availableProcessors());
+			ps.println("Freier Speicher JVM:	" + r.freeMemory());
 			ps.println("Maximaler Speicher JVM: " + r.maxMemory());
 			ps.println("Gesamter Speicher JVM:  " + r.totalMemory());
 			ps.println("Gesamter Speicher Java:  "

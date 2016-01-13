@@ -24,75 +24,75 @@ package de.uniks.networkparser;
 
 public class StringBuilderBuffer extends TextBuffer {
 	/** The buffer. */
-    private StringBuilder buffer;
+	private StringBuilder buffer;
 
-    @Override
-    public char charAt(int index) {
-        return buffer.charAt(index);
-    }
-    
-    @Override
-    public byte byteAt(int index) {
-        return (byte) buffer.charAt(index);
-    }
+	@Override
+	public char charAt(int index) {
+		return buffer.charAt(index);
+	}
+	
+	@Override
+	public byte byteAt(int index) {
+		return (byte) buffer.charAt(index);
+	}
 
-    @Override
-    public String substring(int start, int len) {
-        if(start<0) {
-            start = position();
-        }
-        if (start + len > buffer.length()) {
-            len = buffer.length() - start;
-        }
-        return buffer.substring(start, start+len);
-    }
+	@Override
+	public String substring(int start, int len) {
+		if(start<0) {
+			start = position();
+		}
+		if (start + len > buffer.length()) {
+			len = buffer.length() - start;
+		}
+		return buffer.substring(start, start+len);
+	}
 
-    /**
-     * @param value String of Value
-     * @return the CharacterBuffer
-     */
-    public StringBuilderBuffer withValue(StringBuilder value) {
-        this.buffer = value;
-        this.length = buffer.length();
-        return this;
-    }
+	/**
+	 * @param value String of Value
+	 * @return the CharacterBuffer
+	 */
+	public StringBuilderBuffer withValue(StringBuilder value) {
+		this.buffer = value;
+		this.length = buffer.length();
+		return this;
+	}
 
-    @Override
-    public String toText() {
-        return new String(buffer);
-    }
+	@Override
+	public String toText() {
+		return new String(buffer);
+	}
 
-    @Override
-    public byte[] toArray() {
-        byte[] result = new byte[buffer.length()];
-        for (int i = 0; i < buffer.length(); i++) {
-            result[i] = (byte) buffer.charAt(i);
-        }
-        return result;
-    }
+	@Override
+	public byte[] toArray() {
+		byte[] result = new byte[buffer.length()];
+		for (int i = 0; i < buffer.length(); i++) {
+			result[i] = (byte) buffer.charAt(i);
+		}
+		return result;
+	}
 
-    @Override
-    public char getChar() {
-        this.position++;
-        if (this.position == this.buffer.length()) {
-            return 0;
-        }
-        char c = this.buffer.charAt(this.position);
-        if (c == '\r') {
-            this.line += 1;
-            if (this.buffer.charAt(this.position) == '\n') {
-                this.character = 1;
-                this.position++;
-                c = '\n';
-            } else {
-                this.character = 0;
-            }
-        } else if (c == '\n') {
-            this.line += 1;
-            this.character = 0;
-        } else {
-            this.character += 1;
-        }
-        return c;
-    }
+	@Override
+	public char getChar() {
+		this.position++;
+		if (this.position == this.buffer.length()) {
+			return 0;
+		}
+		char c = this.buffer.charAt(this.position);
+		if (c == '\r') {
+			this.line += 1;
+			if (this.buffer.charAt(this.position) == '\n') {
+				this.character = 1;
+				this.position++;
+				c = '\n';
+			} else {
+				this.character = 0;
+			}
+		} else if (c == '\n') {
+			this.line += 1;
+			this.character = 0;
+		} else {
+			this.character += 1;
+		}
+		return c;
+	}
 }

@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *	  http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -41,10 +41,10 @@ package de.uniks.networkparser;
  * to be logged).
  * <p>
  * For example, <code>
- *    if (log.isDebugEnabled()) {
- *        ... do something expensive ...
- *        log.debug(theResult);
- *    }
+ *	if (log.isDebugEnabled()) {
+ *		... do something expensive ...
+ *		log.debug(theResult);
+ *	}
  * </code>
  * <p>
  * Configuration of the underlying logging system will generally be done
@@ -64,11 +64,11 @@ public class NetworkParserLog {
 	 * Log a message with debug log level.
 	 *
 	 * @param owner
-	 *            The Element with call the Methods
+	 *			The Element with call the Methods
 	 * @param method
-	 *            The Caller-Method
+	 *			The Caller-Method
 	 * @param message
-	 *            log this message
+	 *			log this message
 	 */
 	public void debug(Object owner, String method, String message) {
 		System.out.println("DEBUG: " + message);
@@ -78,11 +78,11 @@ public class NetworkParserLog {
 	 * Log a message with info log level.
 	 *
 	 * @param owner
-	 *            The Element with call the Methods
+	 *			The Element with call the Methods
 	 * @param method
-	 *            The Caller-Method
+	 *			The Caller-Method
 	 * @param message
-	 *            log this message
+	 *			log this message
 	 */
 	public void info(Object owner, String method, String message) {
 		System.out.println("INFO: " + message);
@@ -92,11 +92,11 @@ public class NetworkParserLog {
 	 * Log a message with warn log level.
 	 *
 	 * @param owner
-	 *            The Element with call the Methods
+	 *			The Element with call the Methods
 	 * @param method
-	 *            The Caller-Method
+	 *			The Caller-Method
 	 * @param message
-	 *            log this message
+	 *			log this message
 	 */
 	public void warn(Object owner, String method, String message) {
 		System.err.println("WARN: " + message);
@@ -106,13 +106,13 @@ public class NetworkParserLog {
 	 * Log a message with error log level.
 	 *
 	 * @param owner
-	 *            The Element with call the Methods
+	 *			The Element with call the Methods
 	 * @param method
-	 *            The Caller-Method
+	 *			The Caller-Method
 	 * @param typ
-	 *            Typ of Log Value
+	 *			Typ of Log Value
 	 * @param params
-	 *            The Original Parameters
+	 *			The Original Parameters
 	 * @return boolean if method must Cancel
 	 */
 	public boolean error(Object owner, String method, String typ,
@@ -126,7 +126,7 @@ public class NetworkParserLog {
 
 	/**
 	 * @param value
-	 *            is Break for Error
+	 *			is Break for Error
 	 * @return Itself
 	 */
 	public NetworkParserLog withError(boolean value) {

@@ -43,7 +43,7 @@ public abstract class Tokener {
 	 * Reset the Tokener
 	 *
 	 * @param value
-	 *            The Text for parsing
+	 *			The Text for parsing
 	 * @return Itself
 	 */
 	public Tokener withBuffer(String value) {
@@ -97,9 +97,9 @@ public abstract class Tokener {
 	 * Get the next n characters.
 	 *
 	 * @param n
-	 *            The number of characters to take.
+	 *			The number of characters to take.
 	 * @return A string of n characters. Substring bounds error if there are not
-	 *         n characters remaining in the source string.
+	 *		 n characters remaining in the source string.
 	 */
 	public String getNextString(int n) {
 		if(buffer instanceof BufferedBuffer == false) {
@@ -134,9 +134,9 @@ public abstract class Tokener {
 	 * Get the next n characters.
 	 *
 	 * @param n
-	 *            The number of characters to take.
+	 *			The number of characters to take.
 	 * @return A string of n characters. Substring bounds error if there are not
-	 *         n characters remaining in the source string.
+	 *		 n characters remaining in the source string.
 	 */
 	public String skipPos(int n) {
 		if (n == -1) {
@@ -167,7 +167,7 @@ public abstract class Tokener {
 	/**
 	 * Get the next char in the string, skipping whitespace.
 	  * @param currentValid
-	 *            is the current char also a valid character
+	 *			is the current char also a valid character
 	 *
 	 * @return A character, or 0 if there are no more characters.
 	 */
@@ -189,11 +189,11 @@ public abstract class Tokener {
 	 *
 	 * @param sc StringContainer for manage Chars
 	 * @param allowCRLF
-	 *            is allow CRLF in Stream
+	 *			is allow CRLF in Stream
 	 * @param quote
-	 *            The quoting character, either <code>"</code>
-	 *            &nbsp;<small>(double quote)</small> or <code>'</code>
-	 *            &nbsp;<small>(single quote)</small>.
+	 *			The quoting character, either <code>"</code>
+	 *			&nbsp;<small>(double quote)</small> or <code>'</code>
+	 *			&nbsp;<small>(single quote)</small>.
 	 * @return the StringContainer with the new Value
 	 */
 	public StringContainer nextString(StringContainer sc, boolean allowCRLF, char quote) {
@@ -207,13 +207,13 @@ public abstract class Tokener {
 	 *
 	 * @param sc StringContainer for manage Chars
 	 * @param allowCRLF
-	 *            is allow CRLF in Stream
+	 *			is allow CRLF in Stream
 	 * @param nextStep
-	 *            must i step next after find Text
+	 *			must i step next after find Text
 	 * @param quote
-	 *            The quoting character, either <code>"</code>
-	 *            &nbsp;<small>(double quote)</small> or <code>'</code>
-	 *            &nbsp;<small>(single quote)</small>.
+	 *			The quoting character, either <code>"</code>
+	 *			&nbsp;<small>(double quote)</small> or <code>'</code>
+	 *			&nbsp;<small>(single quote)</small>.
 	 * @return the StringContainer with the new Value
 	 */
 	public StringContainer nextString(StringContainer sc, boolean allowCRLF, boolean nextStep, char quote) {
@@ -227,17 +227,17 @@ public abstract class Tokener {
 	 * 
 	 * @param sc StringContainer for manage Chars
 	 * @param allowCRLF
-	 *            is allow CRLF in Stream
+	 *			is allow CRLF in Stream
 	 * @param allowQuote
-	 *            is allow Quote in Stream
+	 *			is allow Quote in Stream
 	 * @param mustQuote
-	 *            must find Quote in Stream
+	 *			must find Quote in Stream
 	 * @param nextStep
-	 *            must i step next after find Text
+	 *			must i step next after find Text
 	 * @param quote
-	 *            The quoting character, either <code>"</code>
-	 *            &nbsp;<small>(double quote)</small> or <code>'</code>
-	 *            &nbsp;<small>(single quote)</small>.
+	 *			The quoting character, either <code>"</code>
+	 *			&nbsp;<small>(double quote)</small> or <code>'</code>
+	 *			&nbsp;<small>(single quote)</small>.
 	 * @return the StringContainer with the new Value  
 	 */
 	public StringContainer nextString(StringContainer sc, boolean allowCRLF, boolean allowQuote,
@@ -245,7 +245,7 @@ public abstract class Tokener {
 		if (getCurrentChar() == 0 ) {
 			return sc;
 		}
-        if (getCurrentChar() == quote) {
+		if (getCurrentChar() == quote) {
 			if (nextStep) {
 				next();
 			}
@@ -377,9 +377,9 @@ public abstract class Tokener {
 	 * character.
 	 *
 	 * @param creator
-	 *            The creatorobject
+	 *			The creatorobject
 	 * @param allowQuote
-	 *            is allow Quote in Strem
+	 *			is allow Quote in Strem
 	 * @return the new Element
 	 */
 	public Object nextValue(BaseItem creator, boolean allowQuote) {
@@ -461,7 +461,7 @@ public abstract class Tokener {
 	 * Skip.
 	 *
 	 * @param pos
-	 *            the pos
+	 *			the pos
 	 * @return true, if successful
 	 */
 	public boolean skip(int pos) {
@@ -478,11 +478,11 @@ public abstract class Tokener {
 	 * Skip.
 	 *
 	 * @param search
-	 *            the The String of searchelements
+	 *			the The String of searchelements
 	 * @param order
-	 *            the if the order of search element importent
+	 *			the if the order of search element importent
 	 * @param notEscape
-	 *            Boolean if escaping the text
+	 *			Boolean if escaping the text
 	 * @return true, if successful
 	 */
 	public boolean stepPos(String search, boolean order, boolean notEscape) {
@@ -551,7 +551,7 @@ public abstract class Tokener {
 	 * Char at.
 	 *
 	 * @param pos
-	 *            the Position of the bufferarray
+	 *			the Position of the bufferarray
 	 * @return the char
 	 */
 	public char charAt(int pos) {
@@ -572,16 +572,16 @@ public abstract class Tokener {
 
 	/**
 	 * @param positions
-	 *            first is start Position, second is Endposition
+	 *			first is start Position, second is Endposition
 	 *
-	 *            Absolut fix Start and End start&gt;0 StartPosition
-	 *            end&gt;Start EndPosition
+	 *			Absolut fix Start and End start&gt;0 StartPosition
+	 *			end&gt;Start EndPosition
 	 *
-	 *            Absolut from fix Position Start&gt;0 Position end NULL To End
-	 *            end -1 To this.index
+	 *			Absolut from fix Position Start&gt;0 Position end NULL To End
+	 *			end -1 To this.index
 	 *
-	 *            Relativ from indexPosition Start Position from this.index +
-	 *            (-Start) End = 0 current Position
+	 *			Relativ from indexPosition Start Position from this.index +
+	 *			(-Start) End = 0 current Position
 	 *
 	 * @return substring from buffer
 	 */
@@ -617,7 +617,7 @@ public abstract class Tokener {
 	 * Check values.
 	 *
 	 * @param items
-	 *            the items
+	 *			the items
 	 * @return true, if successful
 	 */
 	public boolean checkValues(char... items) {
@@ -644,7 +644,7 @@ public abstract class Tokener {
 	 * Sets the index.
 	 *
 	 * @param index
-	 *            the new index
+	 *			the new index
 	 */
 	public void setIndex(int index) {
 		if(this.buffer instanceof BufferedBuffer) {

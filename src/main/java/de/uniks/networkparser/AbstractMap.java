@@ -42,7 +42,7 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 	 * Gets the creator class.
 	 *
 	 * @param reference
-	 *            the reference
+	 *			the reference
 	 * @return the creator class
 	 */
 	public SendableEntityCreator getCreatorClass(Object reference) {
@@ -56,9 +56,9 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 	 * Gets the creator classes.
 	 *
 	 * @param clazz
-	 *            Clazzname for search
+	 *			Clazzname for search
 	 * @param fullName
-	 *            if the clazzName is the Fullname for search
+	 *			if the clazzName is the Fullname for search
 	 * @return return a Creator class for a clazz name
 	 */
 	public SendableEntityCreator getCreator(String clazz, boolean fullName) {
@@ -82,42 +82,20 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 		}
 		return null;
 	}
-	public SendableEntityCreator getSuperCreator(Object modelItem) {
-		if(modelItem == null && !searchForSuperCreator) {
-			return null;
-		}
-		Class<?> search;
-		if(modelItem instanceof Class<?>) {
-			search = (Class<?>) modelItem; 
-		}else {
-			search = modelItem.getClass();
-		}
-		for(int i=0;i<this.creators.size();i++) {
-			SendableEntityCreator item = this.creators.getValueByIndex(i);
-			Object prototyp = item.getSendableInstance(true);
-			if(prototyp instanceof Class<?>) {
-				if(((Class<?>)prototyp).isAssignableFrom(search)){
-					return item;
-				}
-			}
-		}
-		return null;
-	}
-	
 
 	/**
 	 * Adds the creator.
 	 *
 	 * @param creatorSet
-	 *            the creater class
+	 *			the creater class
 	 * @return return a Creator class for a clazz name
 	 */
-	public AbstractMap withCreator(Collection<SendableEntityCreator> creatorSet) {
+	public AbstractMap with(Collection<SendableEntityCreator> creatorSet) {
 		if(creatorSet == null) {
 			return this;
 		}
 		for (SendableEntityCreator sendableEntityCreator : creatorSet) {
-			withCreator(sendableEntityCreator);
+			with(sendableEntityCreator);
 		}
 		return this;
 	}
@@ -126,16 +104,16 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 	 * Adds the creator.
 	 *
 	 * @param iterator
-	 *            the creater classes
+	 *			the creater classes
 	 * @return return a Creator class for a clazz name
 	 */
-	public AbstractMap withCreator(Iterable<SendableEntityCreator> iterator) {
+	public AbstractMap with(Iterable<SendableEntityCreator> iterator) {
 		if(iterator == null) {
 			return null;
 		}
 		for (Iterator<SendableEntityCreator> i = iterator.iterator(); i
 				.hasNext();) {
-			withCreator(i.next());
+			with(i.next());
 		}
 		return this;
 	}
@@ -144,12 +122,12 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 	 * add a Creator to list of all creators.
 	 *
 	 * @param className
-	 *            the class name
+	 *			the class name
 	 * @param creator
-	 *            the creator
+	 *			the creator
 	 * @return AbstractIdMap to interlink arguments
 	 */
-	public AbstractMap withCreator(String className,
+	public AbstractMap with(String className,
 			SendableEntityCreator creator) {
 		this.creators.add(className, creator);
 		return this;
@@ -159,10 +137,10 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 	 * Adds the creator.
 	 *
 	 * @param createrClass
-	 *            the creater class
+	 *			the creater class
 	 * @return AbstractIdMap to interlink arguments
 	 */
-	public AbstractMap withCreator(SendableEntityCreator... createrClass) {
+	public AbstractMap with(SendableEntityCreator... createrClass) {
 		if(createrClass == null) {
 			return this;
 		}
@@ -174,9 +152,9 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 				if (reference != null) {
 					if (reference instanceof Class<?>) {
 						this.searchForSuperCreator = true;
-						withCreator(((Class<?>)reference).getName(), creator);
+						with(((Class<?>)reference).getName(), creator);
 					} else {
-						withCreator(reference.getClass().getName(), creator);
+						with(reference.getClass().getName(), creator);
 					}
 				}
 			}catch(Exception e){}
@@ -188,7 +166,7 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 	 * remove the creator.
 	 *
 	 * @param className
-	 *            the creater class
+	 *			the creater class
 	 * @return true, if successful
 	 */
 	public boolean removeCreator(String className) {

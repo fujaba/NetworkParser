@@ -9,45 +9,45 @@ import java.util.Set;
 
 // should become a JSON Parser
 public class University {
-    public static final String PROPERTY_USER = "&fg&user";
-    public static final String PROPERTY_ICH = "&child&value";
-    public static final String PROPERTY_VALUE = "&fg?value";
+	public static final String PROPERTY_USER = "&fg&user";
+	public static final String PROPERTY_ICH = "&child&value";
+	public static final String PROPERTY_VALUE = "&fg?value";
 
 
-    private String user;
-    private String ich;
-    private String value;
+	private String user;
+	private String ich;
+	private String value;
 
-    public String getValue() {
-        return value;
-    }
+	public String getValue() {
+		return value;
+	}
 
-    public void setValue(String value) {
-        this.value = value;
-    }
+	public void setValue(String value) {
+		this.value = value;
+	}
 
-    
-    public String getUser() {
-        return user;
-    }
+	
+	public String getUser() {
+		return user;
+	}
 
-    public void setUser(String user) {
-        this.user = user;
-    }
+	public void setUser(String user) {
+		this.user = user;
+	}
 
-    public String getIch() {
-        return ich;
-    }
+	public String getIch() {
+		return ich;
+	}
 
-    public void setIch(String ich) {
-        this.ich = ich;
-    }
+	public void setIch(String ich) {
+		this.ich = ich;
+	}
 
 	/**
 	 * <pre>
-	 *           0..1     students     0..n
+	 *		   0..1	 students	 0..n
 	 * University ------------------------- Student
-	 *           university        &gt;       students
+	 *		   university		&gt;	   students
 	 * </pre>
 	 */
 
@@ -108,9 +108,9 @@ public class University {
 
 	/**
 	 * <pre>
-	 *           1..1     rooms     0..n
+	 *		   1..1	 rooms	 0..n
 	 * University ------------------------- Room
-	 *           university        &gt;       rooms
+	 *		   university		&gt;	   rooms
 	 * </pre>
 	 */
 

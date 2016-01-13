@@ -1,6 +1,5 @@
 package de.uniks.networkparser.logic;
 
-import de.uniks.networkparser.interfaces.Condition;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -24,7 +23,7 @@ import de.uniks.networkparser.interfaces.Condition;
 */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class Between implements Condition<ValuesSimple>, SendableEntityCreator {
+public class Between implements SimpleConditionValue, SendableEntityCreator {
 	public static final String FROM = "from";
 	public static final String TO = "to";
 
@@ -56,9 +55,11 @@ public class Between implements Condition<ValuesSimple>, SendableEntityCreator {
 	}
 
 	@Override
-	public boolean check(ValuesSimple values) {
-		if (values.getValue() instanceof Number) {
+	public boolean check(SimpleValues values) {
+		if (values.getValue() instanceof Double) {
 			return (((Double) values.getValue()) >= fromValue && ((Double) values.getValue()) <= toValue);
+		}else if (values.getValue() instanceof Integer) {
+			return (((Integer) values.getValue()) >= fromValue && ((Integer) values.getValue()) <= toValue);
 		}
 		return false;
 	}

@@ -28,7 +28,7 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.json.JsonArray;
 
 public class GraphIdMapDiff extends GraphIdMap{
-	private HashSet<GraphClazz> toDoList=new HashSet<GraphClazz>();  
+	private HashSet<Clazz> toDoList=new HashSet<Clazz>();  
 	private GraphList master;
 	private GraphList slave;
 //	private HashMap<GraphClazzDiff, HashSet<GraphEdgeDiff>> edges;
@@ -38,14 +38,14 @@ public class GraphIdMapDiff extends GraphIdMap{
 	}
 
 	public GraphIdMapDiff(IdMap map) {
-		withCreator(map);	
+		with(map);	
 	}
 	
 	protected void initItem(GraphMember item) {
 		item.with(new GraphDiff());
-		if(item instanceof GraphClazz) {
+		if(item instanceof Clazz) {
 			if(this.getMaster() ==null) {
-				this.toDoList.add((GraphClazz) item);
+				this.toDoList.add((Clazz) item);
 			}
 		}
 	}
@@ -54,36 +54,36 @@ public class GraphIdMapDiff extends GraphIdMap{
 		this.highlightModel(list, objectDiagram);
 	}
 	public GraphList highlightModel(GraphList clazzDiagram, GraphList objectDiagram) {
-		HashMap<String, GraphEdge> edges = new HashMap<String, GraphEdge>();
-		HashMap<String, GraphClazz> clazzes = new HashMap<String, GraphClazz>();
+		HashMap<String, Association> edges = new HashMap<String, Association>();
+		HashMap<String, Clazz> clazzes = new HashMap<String, Clazz>();
 		
 		// Copy all Nodes
 		for(Iterator<GraphMember> i = clazzDiagram.getChildren().iterator();i.hasNext();) {
-			GraphClazz item = (GraphClazz) i.next();
+			Clazz item = (Clazz) i.next();
 			clazzes.put(item.getName(false), item);
 		}
 		// Copy all Edges
-		for(Iterator<GraphEdge> i = clazzDiagram.getEdges().iterator();i.hasNext();) {
-			GraphEdge item = i.next();
-			GraphClazz node = (GraphClazz) item.getNode();
-			edges.put(node.getName(false)+":"+item.getProperty(), item);
+		for(Iterator<Association> i = clazzDiagram.getEdges().iterator();i.hasNext();) {
+			Association item = i.next();
+			Clazz node = (Clazz) item.getClazz();
+			edges.put(node.getName(false)+":"+item.getName(), item);
 		}
 		
 		// Check all Clazzes of the objectdiagram
 		for(Iterator<GraphMember> i = objectDiagram.getChildren().iterator();i.hasNext();) {
-			GraphClazz item = (GraphClazz) i.next();
-			GraphClazz graphClazz = clazzes.get(item.getName(false));
+			Clazz item = (Clazz) i.next();
+			Clazz graphClazz = clazzes.get(item.getName(false));
 			if(graphClazz != null) {
 				GraphDiff diff = graphClazz.getDiff();
 				diff.addCounter();
 			}
 		}
 		// Copy all Edges
-		for(Iterator<GraphEdge> i = objectDiagram.getEdges().iterator();i.hasNext();) {
-			GraphEdge item = i.next();
-			GraphClazz node = (GraphClazz) item.getNode();
-			String signature = node.getName(false)+":"+item.getProperty();
-			GraphEdge graphEdge = edges.get(signature);
+		for(Iterator<Association> i = objectDiagram.getEdges().iterator();i.hasNext();) {
+			Association item = i.next();
+			Clazz node = (Clazz) item.getClazz();
+			String signature = node.getName(false)+":"+item.getName();
+			Association graphEdge = edges.get(signature);
 			if(graphEdge != null) {
 				GraphDiff diff = graphEdge.getDiff();
 				diff.addCounter();
@@ -99,8 +99,8 @@ public class GraphIdMapDiff extends GraphIdMap{
 		GraphDiff masterDiff = this.getMaster().getDiff();
 		GraphDiff saveDiff = this.getSlave().getDiff();
 		
-		GraphClazz masterFile = (GraphClazz) masterDiff.getMainFile();
-		GraphClazz slaveFile = (GraphClazz) saveDiff.getMainFile();
+		Clazz masterFile = (Clazz) masterDiff.getMainFile();
+		Clazz slaveFile = (Clazz) saveDiff.getMainFile();
 		masterFile.getDiff().with(slaveFile);
 		
 		
@@ -112,7 +112,7 @@ public class GraphIdMapDiff extends GraphIdMap{
 		searchMatch(masterFile);
 	}
 
-	private void searchMatch(GraphClazz master) {
+	private void searchMatch(Clazz master) {
 		master.getChildren().iterator();
 	}
 

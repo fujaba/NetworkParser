@@ -23,9 +23,9 @@ package de.uniks.networkparser.test.model;
 
 public class Apple extends Fruit {
 
-	public static final String PROPERTY_VALUE = "value";
+	public static final String PROPERTY_PASSWORD = "pass";
 
-	private int value;
+	private String password;
 
 	// ==========================================================================
 
@@ -41,9 +41,9 @@ public class Apple extends Fruit {
 
 	/********************************************************************
 	 * <pre>
-	 *              many                       one
+	 *			  many					   one
 	 * Apple ----------------------------------- AppleTree
-	 *              has                   owner
+	 *			  has				   owner
 	 * </pre>
 	 */
 
@@ -57,8 +57,8 @@ public class Apple extends Fruit {
 
 	}
 
-	public Apple(int value, double x, double y) {
-		withValue(value);
+	public Apple(String value, double x, double y) {
+		withPassword(value);
 		withX(x);
 		withY(y);
 	}
@@ -73,8 +73,8 @@ public class Apple extends Fruit {
 		return this.owner;
 	}
 
-	public int getValue() {
-		return this.value;
+	public String getPassword() {
+		return this.password;
 	}
 
 	// ==========================================================================
@@ -119,9 +119,9 @@ public class Apple extends Fruit {
 		return changed;
 	}
 
-	public void setValue(int value) {
-		if (this.value != value) {
-			this.value = value;
+	public void setPassword(String value) {
+		if (this.password != value) {
+			this.password = value;
 		}
 	}
 
@@ -143,7 +143,7 @@ public class Apple extends Fruit {
 	public String toString() {
 		StringBuilder s = new StringBuilder();
 
-		s.append(" ").append(this.getValue());
+		s.append(" ").append(this.getPassword());
 		s.append(" ").append(this.getX());
 		s.append(" ").append(this.getY());
 		return s.substring(1);
@@ -154,8 +154,8 @@ public class Apple extends Fruit {
 		return this;
 	}
 
-	public Apple withValue(int value) {
-		setValue(value);
+	public Apple withPassword(String value) {
+		setPassword(value);
 		return this;
 	}
 

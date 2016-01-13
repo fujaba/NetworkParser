@@ -21,25 +21,49 @@
    
 package de.uniks.networkparser.test.model;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.LinkedHashSet;
 
-public class AppleTree
+import de.uniks.networkparser.interfaces.SendableEntity;
+
+public class AppleTree extends Tree implements SendableEntity
 {
+	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
+   public PropertyChangeSupport getPropertyChangeSupport()
+   {
+	  return listeners;
+   }
+   public boolean addPropertyChangeListener(PropertyChangeListener listener) 
+   {
+	  getPropertyChangeSupport().addPropertyChangeListener(listener);
+	  return true;
+   }
+   @Override
+   public boolean addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+	  getPropertyChangeSupport().addPropertyChangeListener(propertyName, listener);
+	  return true;
+   }
+   @Override
+   public boolean removePropertyChangeListener(PropertyChangeListener listener) {
+	   getPropertyChangeSupport().removePropertyChangeListener(listener);
+	   return true;
+   } 
 
    //==========================================================================
    public void removeYou()
    {
-      removeAllFromHas();
+	  removeAllFromHas();
    }
 
    
    /********************************************************************
-    * <pre>
-    *              one                       many
-    * AppleTree ----------------------------------- Apple
-    *              owner                   has
-    * </pre>
-    */
+	* <pre>
+	*			  one					   many
+	* AppleTree ----------------------------------- Apple
+	*			  owner				   has
+	* </pre>
+	*/
    
    public static final String PROPERTY_HAS = "has";
 
@@ -47,88 +71,89 @@ public class AppleTree
    
    public LinkedHashSet<Apple> getHas()
    {
-      if (this.has == null)
-      {
-         return new LinkedHashSet<Apple>();
-      }
+	  if (this.has == null)
+	  {
+		 return new LinkedHashSet<Apple>();
+	  }
    
-      return this.has;
+	  return this.has;
    }
 
    public boolean addToHas(Apple value)
    {
-      boolean changed = false;
-      
-      if (value != null)
-      {
-         if (this.has == null)
-         {
-            this.has = new LinkedHashSet<Apple>();
-         }
-         
-         changed = this.has.add (value);
-         
-         if (changed)
-         {
-            value.withOwner(this);
-         }
-      }
-         
-      return changed;   
+	  boolean changed = false;
+	  
+	  if (value != null)
+	  {
+		 if (this.has == null)
+		 {
+			this.has = new LinkedHashSet<Apple>();
+		 }
+		 
+		 changed = this.has.add (value);
+		 
+		 if (changed)
+		 {
+			 getPropertyChangeSupport().firePropertyChange(PROPERTY_HAS, null, value);
+			value.withOwner(this);
+		 }
+	  }
+		 
+	  return changed;   
    }
 
    public boolean removeFromHas(Apple value)
    {
-      boolean changed = false;
-      
-      if ((this.has != null) && (value != null))
-      {
-         changed = this.has.remove(value);
-         
-         if (changed)
-         {
-            value.setOwner(null);
-         }
-      }
-         
-      return changed;   
+	  boolean changed = false;
+	  
+	  if ((this.has != null) && (value != null))
+	  {
+		 changed = this.has.remove(value);
+		 
+		 if (changed)
+		 {
+			value.setOwner(null);
+		 }
+	  }
+		 
+	  return changed;   
    }
 
    public AppleTree withHas(Apple... value)
    {
-      if(value==null){
-         return this;
-      }
-      for (Apple item : value)
-      {
-         addToHas(item);
-      }
-      return this;
+	  if(value==null){
+		 return this;
+	  }
+	  for (Apple item : value)
+	  {
+		 addToHas(item);
+	  }
+	  return this;
    } 
 
    public AppleTree withoutHas(Apple... value)
    {
-      for (Apple item : value)
-      {
-         removeFromHas(item);
-      }
-      return this;
+	  for (Apple item : value)
+	  {
+		 removeFromHas(item);
+	  }
+	  return this;
    }
 
    public void removeAllFromHas()
    {
-      LinkedHashSet<Apple> tmpSet = new LinkedHashSet<Apple>(this.getHas());
+	  LinkedHashSet<Apple> tmpSet = new LinkedHashSet<Apple>(this.getHas());
    
-      for (Apple value : tmpSet)
-      {
-         this.removeFromHas(value);
-      }
+	  for (Apple value : tmpSet)
+	  {
+		 this.removeFromHas(value);
+	  }
    }
 
    public Apple createHas()
    {
-      Apple value = new Apple();
-      withHas(value);
-      return value;
-   } 
+	  Apple value = new Apple();
+	  withHas(value);
+	  return value;
+   }
 }

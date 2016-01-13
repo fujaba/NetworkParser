@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+
 import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.IdMapCounter;
@@ -41,9 +42,7 @@ import de.uniks.networkparser.list.SimpleList;
  * The Class IdMap.
  */
 
-public abstract class IdMap extends AbstractMap implements
-
-		Map<String, Object> {
+public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	/** The Constant ID. */
 	public static final String ID = "id";
 
@@ -75,19 +74,19 @@ public abstract class IdMap extends AbstractMap implements
 	private IdMapCounter counter;
 
 	/** The update listener. */
-	protected UpdateListenerJson updateListener;
+	protected UpdateListenerJson updateListenerJson;
 
 	/** The updatelistener for Notification changes. */
 	protected PropertyChangeListener updatePropertylistener;
 
 	protected SimpleKeyValueList<String, Object> keyValue = new SimpleKeyValueList<String, Object>().withFlag(SimpleKeyValueList.BIDI);
 
-	protected Filter filter = new Filter();
+	protected Filter filter = new Filter().withMap(this);
 
 	protected NetworkParserLog logger = new NetworkParserLog();
 
 	/** The updatelistener. */
-	private UpdateListener idListener;
+	protected UpdateListener updateListener;
 
 	/**
 	 * @return the CurrentLogger
@@ -95,15 +94,15 @@ public abstract class IdMap extends AbstractMap implements
 	public NetworkParserLog getLogger() {
 		return logger;
 	}
-
+	
 	/**
 	 * Set the Current Logger for Infos
 	 *
 	 * @param logger
-	 *            the new Logger
+	 *			the new Logger
 	 * @return Itself
 	 */
-	public IdMap withLogger(NetworkParserLog logger) {
+	public IdMap with(NetworkParserLog logger) {
 		this.logger = logger;
 		return this;
 	}
@@ -113,14 +112,14 @@ public abstract class IdMap extends AbstractMap implements
 	 */
 	public IdMap() {
 		super();
-		this.withCreator(new TextItems());
+		this.with(new TextItems());
 	}
 
 	/**
 	 * set the new List of Items for the Map
 	 *
 	 * @param parent
-	 *            the parent-List of Items
+	 *			the parent-List of Items
 	 * @return the Map
 	 */
 	public IdMap withKeyValue(SimpleKeyValueList<String, Object> parent) {
@@ -133,10 +132,10 @@ public abstract class IdMap extends AbstractMap implements
 	 * Sets the counter.
 	 *
 	 * @param counter
-	 *            the new counter
+	 *			the new counter
 	 * @return Itself
 	 */
-	public IdMap withCounter(IdMapCounter counter) {
+	public IdMap with(IdMapCounter counter) {
 		this.counter = counter;
 		return this;
 	}
@@ -157,7 +156,7 @@ public abstract class IdMap extends AbstractMap implements
 	 * Sets the session id.
 	 *
 	 * @param value
-	 *            the new session id
+	 *			the new session id
 	 * @return Itself
 	 */
 	public IdMap withSessionId(String value) {
@@ -169,7 +168,7 @@ public abstract class IdMap extends AbstractMap implements
 	 * Gets the Id. Do not generate a Id
 	 *
 	 * @param obj
-	 *            the obj
+	 *			the obj
 	 * @return the key
 	 */
 	public String getKey(Object obj) {
@@ -192,7 +191,7 @@ public abstract class IdMap extends AbstractMap implements
 	 * Gets the object.
 	 *
 	 * @param key
-	 *            the key
+	 *			the key
 	 * @return the object
 	 */
 	public Object getObject(String key) {
@@ -212,7 +211,7 @@ public abstract class IdMap extends AbstractMap implements
 	 * Gets or Create the id.
 	 *
 	 * @param obj
-	 *            the obj
+	 *			the obj
 	 * @return the id
 	 */
 	public String getId(Object obj) {
@@ -228,25 +227,29 @@ public abstract class IdMap extends AbstractMap implements
 	 * Put.
 	 *
 	 * @param jsonId
-	 *            the json id
+	 *			the json id
 	 * @param object
-	 *            the object
+	 *			the object
 	 * @return the newObject
 	 */
 	@Override
 	public Object put(String jsonId, Object object) {
 		this.keyValue.with(jsonId, object);
-		if (this.idListener != null) {
-			this.idListener.update(NEW, null, this, ITEMS, null, object);
-//FOR THE FIRST ONE ONLY NULL FOR ID			this.idListener.update(NEW, jsonId, this, ITEMS, null, object);
-		}
+//		if (this.updateListener != null) {
+//			this.updateListener.update(NEW, new B(), this, ITEMS, null, object);
+//		}
 		addListener(object);
 		return object;
+	}
+	
+	public IdMap with(UpdateListener listener) {
+		this.updateListener = listener;
+		return this;
 	}
 
 	/**
 	 * @param object
-	 *            for add Listener to object
+	 *			for add Listener to object
 	 * @return success of adding
 	 */
 	public boolean addListener(Object object) {
@@ -258,14 +261,14 @@ public abstract class IdMap extends AbstractMap implements
 	}
 
 	public UpdateListenerJson getUpdateListener() {
-		if (this.updateListener == null) {
-			this.updateListener = new UpdateListenerJson(this);
+		if (this.updateListenerJson == null) {
+			this.updateListenerJson = new UpdateListenerJson(this);
 		}
-		return this.updateListener;
+		return this.updateListenerJson;
 	}
 	
-	public IdMap withUpdateListener(UpdateListenerJson updateListener) {
-		this.updateListener = updateListener;
+	public IdMap with(UpdateListenerJson updateListener) {
+		this.updateListenerJson = updateListener;
 		return this;
 	}
 
@@ -273,9 +276,9 @@ public abstract class IdMap extends AbstractMap implements
 	 * Removes the Entity from List or Destroy them
 	 *
 	 * @param oldValue
-	 *            the old Value
+	 *			the old Value
 	 * @param destroy
-	 *            destroy the missed Element
+	 *			destroy the missed Element
 	 * @return boolean if success
 	 */
 	public boolean removeObj(Object oldValue, boolean destroy) {
@@ -301,7 +304,7 @@ public abstract class IdMap extends AbstractMap implements
 			}
 		}
 		if (key != null) {
-			this.keyValue.without(key, oldValue);
+			this.keyValue.withoutAll(key, oldValue);
 			return true;
 		}
 		return false;
@@ -321,11 +324,11 @@ public abstract class IdMap extends AbstractMap implements
 	 * Clone object.
 	 *
 	 * @param reference
-	 *            the reference
+	 *			the reference
 	 * @param filter
-	 *            the filter
+	 *			the filter
 	 * @param deep
-	 *            the index of deep of model-ebene
+	 *			the index of deep of model-ebene
 	 * @return the object
 	 */
 	public Object cloneObject(Object reference, Filter filter, int deep) {
@@ -389,22 +392,22 @@ public abstract class IdMap extends AbstractMap implements
 	}
 
 	@Override
-	public AbstractMap withCreator(String className,
+	public AbstractMap with(String className,
 			SendableEntityCreator creator) {
-		return super.withCreator(className, creator);
+		return super.with(className, creator);
 	}
 
 	/**
 	 * Garbage collection.
 	 *
 	 * @param root
-	 *            the root
+	 *			the root
 	 */
 	public void garbageCollection(Object root) {
-		if (this.updateListener == null) {
-			this.updateListener = new UpdateListenerJson(this);
+		if (this.updateListenerJson == null) {
+			this.updateListenerJson = new UpdateListenerJson(this);
 		}
-		this.updateListener.garbageCollection(root);
+		this.updateListenerJson.garbageCollection(root);
 	}
 
 	public Object startUpdateModell(String clazz) {
@@ -533,25 +536,13 @@ public abstract class IdMap extends AbstractMap implements
 		return keyValue.values();
 	}
 
-	public IdMap withUpdateListener(PropertyChangeListener listener) {
+	public IdMap with(PropertyChangeListener listener) {
 		this.updatePropertylistener = listener;
 		return this;
 	}
 
-	public IdMap withFilter(Filter filter) {
+	public IdMap with(Filter filter) {
 		this.filter = filter;
-		return this;
-	}
-
-	/**
-	 * Sets the update ID listener.
-	 *
-	 * @param listener
-	 *            the new update msg listener
-	 * @return IdMap
-	 */
-	public IdMap withIdListener(UpdateListener listener) {
-		this.idListener = listener;
 		return this;
 	}
 	
@@ -579,11 +570,31 @@ public abstract class IdMap extends AbstractMap implements
 	 * For setting the Option of checking the CaseSensitive of the Properties
 	 *
 	 * @param value
-	 *            the new Value of CaseSensitive
+	 *			the new Value of CaseSensitive
 	 * @return XMLGrammar Instance
 	 */
 	public IdMap withCaseSensitive(boolean value) {
 		keyValue.withCaseSensitive(value);
 		return this;
+	}
+	
+	// Methods for Filtering
+	protected boolean hasObjects(Filter filter, Object element) {
+		return filter.hasObjects(element);
+	}
+	protected void with(Filter filter, Object... visitedObject) {
+		filter.withObjects(visitedObject);
+	}
+	protected int getIndexVisitedObjects(Filter filter, Object element) {
+		return filter.getIndexVisitedObjects(element);
+	}
+	protected Object getVisitedObjects(Filter filter, int index) {
+		return filter.getVisitedObjects(index);
+	}
+	protected boolean isConvertable(Filter filter, Object entity, String property, Object value, int deep) {
+		return filter.isConvertable(entity, property, value, deep);
+	}
+	protected boolean isPropertyRegard(Filter filter,  Object entity, String property, Object value, int deep) {
+		return filter.isPropertyRegard(entity, property, value, deep);
 	}
 }

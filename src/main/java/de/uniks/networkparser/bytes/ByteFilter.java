@@ -22,6 +22,7 @@ package de.uniks.networkparser.bytes;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.Filter;
+import de.uniks.networkparser.IdMap;
 
 public class ByteFilter extends Filter {
 	private boolean isLenCheck;
@@ -36,14 +37,13 @@ public class ByteFilter extends Filter {
 	}
 
 	@Override
-	public Filter clone() {
-		return clone(new ByteFilter());
-	}
-
-	@Override
-	protected Filter clone(Filter newInstance) {
-		ByteFilter result = (ByteFilter) super.clone(newInstance);
-		return result.withLenCheck(this.isLenCheck);
+	public ByteFilter newInstance(Filter referenceFilter) {
+		if(referenceFilter == null) {
+			referenceFilter = new ByteFilter();
+		}
+		ByteFilter filter = (ByteFilter) super.newInstance(referenceFilter);
+		filter.withLenCheck(this.isLenCheck);
+		return filter;
 	}
 
 	public String getCharset() {
@@ -84,5 +84,10 @@ public class ByteFilter extends Filter {
 					.getName();
 		}
 		return null;
+	}
+	
+	public ByteFilter withMap(IdMap map) {
+		super.withMap(map);
+		return this;
 	}
 }

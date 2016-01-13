@@ -32,12 +32,12 @@ public class FIXMLMessage
    
    public Object get(String attrName)
    {
-      if (PROPERTY_APPLICATIONMESSAGE.equalsIgnoreCase(attrName))
-      {
-         return getApplicationmessage();
-      }
+	  if (PROPERTY_APPLICATIONMESSAGE.equalsIgnoreCase(attrName))
+	  {
+		 return getApplicationmessage();
+	  }
 
-      return null;
+	  return null;
    }
 
    
@@ -45,13 +45,13 @@ public class FIXMLMessage
    
    public boolean set(String attrName, Object value)
    {
-      if (PROPERTY_APPLICATIONMESSAGE.equalsIgnoreCase(attrName))
-      {
-         setApplicationmessage((ApplicationMessage) value);
-         return true;
-      }
+	  if (PROPERTY_APPLICATIONMESSAGE.equalsIgnoreCase(attrName))
+	  {
+		 setApplicationmessage((ApplicationMessage) value);
+		 return true;
+	  }
 
-      return false;
+	  return false;
    }
 
    
@@ -61,12 +61,12 @@ public class FIXMLMessage
    
    public PropertyChangeSupport getPropertyChangeSupport()
    {
-      return listeners;
+	  return listeners;
    }
    
    public void addPropertyChangeListener(PropertyChangeListener listener) 
    {
-      getPropertyChangeSupport().addPropertyChangeListener(listener);
+	  getPropertyChangeSupport().addPropertyChangeListener(listener);
    }
 
    
@@ -74,18 +74,18 @@ public class FIXMLMessage
    
    public void removeYou()
    {
-      setApplicationmessage(null);
-      getPropertyChangeSupport().firePropertyChange("REMOVE_YOU", this, null);
+	  setApplicationmessage(null);
+	  getPropertyChangeSupport().firePropertyChange("REMOVE_YOU", this, null);
    }
 
    
    /********************************************************************
-    * <pre>
-    *              one                       one
-    * FIXMLMessage ----------------------------------- ApplicationMessage
-    *              fixmlmessage                   applicationmessage
-    * </pre>
-    */
+	* <pre>
+	*			  one					   one
+	* FIXMLMessage ----------------------------------- ApplicationMessage
+	*			  fixmlmessage				   applicationmessage
+	* </pre>
+	*/
    
    public static final String PROPERTY_APPLICATIONMESSAGE = "applicationmessage";
 
@@ -93,48 +93,48 @@ public class FIXMLMessage
 
    public ApplicationMessage getApplicationmessage()
    {
-      return this.applicationmessage;
+	  return this.applicationmessage;
    }
 
    public boolean setApplicationmessage(ApplicationMessage value)
    {
-      boolean changed = false;
-      
-      if (this.applicationmessage != value)
-      {
-         ApplicationMessage oldValue = this.applicationmessage;
-         
-         if (this.applicationmessage != null)
-         {
-            this.applicationmessage = null;
-            oldValue.setFixmlmessage(null);
-         }
-         
-         this.applicationmessage = value;
-         
-         if (value != null)
-         {
-            value.withFixmlmessage(this);
-         }
-         
-         getPropertyChangeSupport().firePropertyChange(PROPERTY_APPLICATIONMESSAGE, oldValue, value);
-         changed = true;
-      }
-      
-      return changed;
+	  boolean changed = false;
+	  
+	  if (this.applicationmessage != value)
+	  {
+		 ApplicationMessage oldValue = this.applicationmessage;
+		 
+		 if (this.applicationmessage != null)
+		 {
+			this.applicationmessage = null;
+			oldValue.setFixmlmessage(null);
+		 }
+		 
+		 this.applicationmessage = value;
+		 
+		 if (value != null)
+		 {
+			value.withFixmlmessage(this);
+		 }
+		 
+		 getPropertyChangeSupport().firePropertyChange(PROPERTY_APPLICATIONMESSAGE, oldValue, value);
+		 changed = true;
+	  }
+	  
+	  return changed;
    }
 
    public FIXMLMessage withApplicationmessage(ApplicationMessage value)
    {
-      setApplicationmessage(value);
-      return this;
+	  setApplicationmessage(value);
+	  return this;
    } 
 
    public ApplicationMessage createApplicationmessage()
    {
-      ApplicationMessage value = new ApplicationMessage();
-      withApplicationmessage(value);
-      return value;
+	  ApplicationMessage value = new ApplicationMessage();
+	  withApplicationmessage(value);
+	  return value;
    } 
 }
 

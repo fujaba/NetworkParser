@@ -27,9 +27,9 @@ public class TitleText extends Label implements DialogElement{
 	private DialogBox owner;
 
 	public TitleText() {
-    	setMaxHeight(Double.MAX_VALUE);
-    	getStyleClass().add("window-title");
-    }
+		setMaxHeight(Double.MAX_VALUE);
+		getStyleClass().add("window-title");
+	}
 
 	@Override
 	public DialogElement withOwner(DialogBox value) {

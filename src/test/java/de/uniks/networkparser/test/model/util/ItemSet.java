@@ -21,114 +21,115 @@
    
 package de.uniks.networkparser.test.model.util;
 
+import de.uniks.networkparser.list.SDMSet;
 import de.uniks.networkparser.test.model.GroupAccount;
 import de.uniks.networkparser.test.model.Item;
 import de.uniks.networkparser.test.model.Person;
 
-public class ItemSet extends SDMSetBase<Item>
+public class ItemSet extends SDMSet<Item>
 {
 	public String getEntryType()
    {
-      return "org.sdmlib.examples.groupAccount.Item";
+	  return "org.sdmlib.examples.groupAccount.Item";
    }
 
 
    public ItemSet with(Item value)
    {
-      this.add(value);
-      return this;
+	  this.add(value);
+	  return this;
    }
    
    public ItemSet without(Item value)
    {
-      this.remove(value);
-      return this;
+	  this.remove(value);
+	  return this;
    }
    
    public ItemSet withDescription(String value)
    {
-      for (Item obj : this)
-      {
-         obj.setDescription(value);
-      }
-      
-      return this;
+	  for (Item obj : this)
+	  {
+		 obj.setDescription(value);
+	  }
+	  
+	  return this;
    }
 
    public ItemSet withValue(double value)
    {
-      for (Item obj : this)
-      {
-         obj.setValue(value);
-      }
-      
-      return this;
+	  for (Item obj : this)
+	  {
+		 obj.setValue(value);
+	  }
+	  
+	  return this;
    }
    public doubleList getValue()
    {
 	   doubleList result = new doubleList();
-      
-      for (Item obj : this)
-      {
-         result.add(obj.getValue());
-      }
-      
-      return result;
+	  
+	  for (Item obj : this)
+	  {
+		 result.add(obj.getValue());
+	  }
+	  
+	  return result;
    }
    public double getValueSum()
    {
 	   double result=0;
-      
-      for (Item obj : this)
-      {
-    	  result += obj.getValue();
-      }
-      
-      return result;
+	  
+	  for (Item obj : this)
+	  {
+		  result += obj.getValue();
+	  }
+	  
+	  return result;
    }
 
    public GroupAccountSet getParent()
    {
-      GroupAccountSet result = new GroupAccountSet();
-      
-      for (Item obj : this)
-      {
-         result.add(obj.getParent());
-      }
-      
-      return result;
+	  GroupAccountSet result = new GroupAccountSet();
+	  
+	  for (Item obj : this)
+	  {
+		 result.add(obj.getParent());
+	  }
+	  
+	  return result;
    }
 
    public ItemSet withParent(GroupAccount value)
    {
-      for (Item obj : this)
-      {
-         obj.withParent(value);
-      }
-      
-      return this;
+	  for (Item obj : this)
+	  {
+		 obj.withParent(value);
+	  }
+	  
+	  return this;
    }
 
    public PersonSet getBuyer()
    {
-      PersonSet result = new PersonSet();
-      
-      for (Item obj : this)
-      {
-         result.add(obj.getBuyer());
-      }
-      
-      return result;
+	  PersonSet result = new PersonSet();
+	  
+	  for (Item obj : this)
+	  {
+		 result.add(obj.getBuyer());
+	  }
+	  
+	  return result;
    }
 
    public ItemSet withBuyer(Person value)
    {
-      for (Item obj : this)
-      {
-         obj.withBuyer(value);
-      }
-      
-      return this;
+	  for (Item obj : this)
+	  {
+		 obj.withBuyer(value);
+	  }
+	  
+	  return this;
    }
 
 }

@@ -33,39 +33,39 @@ import de.uniks.networkparser.interfaces.BaseItem;
  */
 public abstract class AbstractList<V> extends AbstractArray<V> {
 	/**
-     * {@inheritDoc}
-     *
-     * <p>This implementation iterates over the specified collection, and adds
-     * each object returned by the iterator to this collection, in turn.
-     *
-     * <p>Note that this implementation will throw an
-     * <tt>UnsupportedOperationException</tt> unless <tt>add</tt> is
-     * overridden (assuming the specified collection is non-empty).
-     *
-     * @throws UnsupportedOperationException {@inheritDoc}
-     * @throws ClassCastException            {@inheritDoc}
-     * @throws NullPointerException          {@inheritDoc}
-     * @throws IllegalArgumentException      {@inheritDoc}
-     * @throws IllegalStateException         {@inheritDoc}
-     *
-     * @see #add(Object)
-     */
-    public boolean addAll(Collection<? extends V> c) {
-    	if(c==null){
-    		return false;
-    	}
-        boolean modified = false;
-        for (V e : c)
-            if (add(e))
-                modified = true;
-        return modified;
-    }
-    
+	 * {@inheritDoc}
+	 *
+	 * <p>This implementation iterates over the specified collection, and adds
+	 * each object returned by the iterator to this collection, in turn.
+	 *
+	 * <p>Note that this implementation will throw an
+	 * <tt>UnsupportedOperationException</tt> unless <tt>add</tt> is
+	 * overridden (assuming the specified collection is non-empty).
+	 *
+	 * @throws UnsupportedOperationException {@inheritDoc}
+	 * @throws ClassCastException			{@inheritDoc}
+	 * @throws NullPointerException		  {@inheritDoc}
+	 * @throws IllegalArgumentException	  {@inheritDoc}
+	 * @throws IllegalStateException		 {@inheritDoc}
+	 *
+	 * @see #add(Object)
+	 */
+	public boolean addAll(Collection<? extends V> c) {
+		if(c==null){
+			return false;
+		}
+		boolean modified = false;
+		for (V e : c)
+			if (add(e))
+				modified = true;
+		return modified;
+	}
+	
 	/**
 	 * Add a Value to internal List and Array if nesessary
 	 *
 	 * @param value
-	 *            the new Value
+	 *			the new Value
 	 * @return  this boolean if success
 	 */
 	public boolean add(V value) {
@@ -77,8 +77,8 @@ public abstract class AbstractList<V> extends AbstractArray<V> {
 		addKey(pos, value, size + 1);
 		return true;
 	}
-    
-    public ListIterator<V> listIterator() {
+	
+	public ListIterator<V> listIterator() {
 		return new SimpleIterator<V>(this);
 	}
 
@@ -94,6 +94,17 @@ public abstract class AbstractList<V> extends AbstractArray<V> {
 	public <ST extends AbstractList<V>> ST with(V... values) {
 		super.withAll(values);
 		return (ST) this;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public AbstractArray<V> without(V... values) {
+		if(values==null){
+			return this;
+		}
+		for (Object value : values) {
+			this.removeByObject(value);
+		}
+		return this;
 	}
 	
 	@Override

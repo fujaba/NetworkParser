@@ -164,9 +164,9 @@ public class FullListTest {
 		iter.previous();
 		
 		try {
-	      iter.remove();
+		  iter.remove();
 		} catch (Exception e) {}
-      
+	  
 		subList.first();
 		subList.last();
 		

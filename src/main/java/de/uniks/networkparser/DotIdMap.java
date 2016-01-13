@@ -1,20 +1,41 @@
 package de.uniks.networkparser;
 
-import de.uniks.networkparser.graph.GraphAttribute;
-import de.uniks.networkparser.graph.GraphClazz;
-import de.uniks.networkparser.graph.GraphDataType;
-import de.uniks.networkparser.graph.GraphEdge;
-import de.uniks.networkparser.graph.GraphEdgeTypes;
+/*
+ NetworkParser
+ Copyright (c) 2011 - 2015, Stefan Lindel
+ All rights reserved.
+
+ Licensed under the EUPL, Version 1.1 or (as soon they
+ will be approved by the European Commission) subsequent
+ versions of the EUPL (the "Licence");
+ You may not use this work except in compliance with the Licence.
+ You may obtain a copy of the Licence at:
+
+ http://ec.europa.eu/idabc/eupl5
+
+ Unless required by applicable law or agreed to in
+ writing, software distributed under the Licence is
+ distributed on an "AS IS" basis,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ express or implied.
+ See the Licence for the specific language governing
+ permissions and limitations under the Licence.
+*/
+import de.uniks.networkparser.graph.Attribute;
+import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.graph.DataType;
+import de.uniks.networkparser.graph.Association;
+import de.uniks.networkparser.graph.AssociationTypes;
 import de.uniks.networkparser.graph.GraphEntity;
 import de.uniks.networkparser.graph.GraphIdMap;
 import de.uniks.networkparser.graph.GraphList;
-import de.uniks.networkparser.graph.GraphMethod;
+import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.IdMapDecoder;
 
 //graph	:	[ strict ] (graph | digraph) [ ID ] '{' stmt_list '}'
-//stmt_list	:	[ stmt [ ';' ] [ stmt_list ] ]
+	//stmt_list	:	[ stmt [ ';' ] [ stmt_list ] ]
 //stmt	:	node_stmt
 //|	edge_stmt
 //|	attr_stmt
@@ -89,17 +110,17 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 			// and Second Node
 			if(value.getCurrentChar() == '-') {
 				// May Be Edge
-				GraphEdge edge = new GraphEdge();
+				Association edge = new Association();
 				edge.with(node);
 				char c = value.next();
 				if(c == '-') {
 					// Bidiassoc
 				} else if(c == '>') {
-					edge.withTyp(GraphEdgeTypes.UNDIRECTIONAL);
+					edge.with(AssociationTypes.UNDIRECTIONAL);
 				}
 				value.next();
 				
-				GraphEdge otherEdge = new GraphEdge();
+				Association otherEdge = new Association();
 				GraphEntity otherNode = decodeNode(graph, value);
 				otherEdge.with(otherNode);
 				graph.withNode(otherNode);
@@ -127,7 +148,7 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 				String id = sb.toString().trim();
 				node = graph.getNode(id);
 				if(node == null) {
-					node = new GraphClazz().with(id);
+					node = new Clazz().with(id);
 				}
 				if(c == '[') {
 					decodeAttributes(node, value);
@@ -154,8 +175,8 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 			if(key != null && value.getCurrentChar()=='=') {
 				value.next();
 				String valueStr = decodeValue(value);
-				if(node instanceof GraphClazz) {
-					GraphAttribute attribute = ((GraphClazz)node).createAttribute(key,  GraphDataType.STRING);
+				if(node instanceof Clazz) {
+					Attribute attribute = ((Clazz)node).createAttribute(key,  DataType.STRING);
 					attribute.withValue(valueStr);
 				}
 			}
@@ -226,14 +247,14 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 				sb.append("</u>"); 
 			}
 			sb.append("</b></td></tr>");
-			if(node instanceof GraphClazz == false) {
+			if(node instanceof Clazz == false) {
 				sb.append("</table>>];"+BaseItem.CRLF);
 				continue;
 			}
-			GraphClazz graphClazz = (GraphClazz) node;
+			Clazz graphClazz = (Clazz) node;
 
 			StringBuilder childBuilder = new StringBuilder();
-			for(GraphAttribute attribute : graphClazz.getAttributes()) {
+			for(Attribute attribute : graphClazz.getAttributes()) {
 				// add attribute line
 				if(isObjectdiagram) {
 					childBuilder.append(BaseItem.CRLF+"<tr><td align='left'>"+attribute.getName() +" = "+attribute.getValue()+"</td></tr>");
@@ -247,7 +268,7 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 				sb.append(BaseItem.CRLF+"</table></td></tr>");
 			}
 			childBuilder = new StringBuilder();
-			for(GraphMethod method : graphClazz.getMethods()) {
+			for(Method method : graphClazz.getMethods()) {
 				// add attribute line
 //				if(isObjectdiagram) {
 				childBuilder.append(BaseItem.CRLF+"<tr><td align='left'>"+method.getName(false) + "</td></tr>");
@@ -262,16 +283,16 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 		
 		root.initSubLinks();
 //		// now generate edges from edgeMap
-		for(GraphEdge edge : root.getEdges()) {
-			GraphEdge otherEdge = edge.getOther();
-			if(otherEdge.getTyp()  != GraphEdgeTypes.EDGE) {
+		for(Association edge : root.getEdges()) {
+			Association otherEdge = edge.getOther();
+			if(otherEdge.getTyp()  != AssociationTypes.EDGE) {
 				// It is bidiAssoc
-				sb.append(edge.getNode().getName(false) + " -- " + otherEdge.getNode().getName(false));
-				sb.append("[headlabel = \""+edge.getProperty()+"\" taillabel = \""+otherEdge.getProperty()+"\"];"+BaseItem.CRLF);
+				sb.append(edge.getClazz().getName(false) + " -- " + otherEdge.getClazz().getName(false));
+				sb.append("[headlabel = \""+edge.getName()+"\" taillabel = \""+otherEdge.getName()+"\"];"+BaseItem.CRLF);
 			} else {
-				sb.append(edge.getNode().getName(false) + " -> " + otherEdge.getNode().getName(false));
+				sb.append(edge.getClazz().getName(false) + " -> " + otherEdge.getClazz().getName(false));
 				graphTyp = "digraph";
-				sb.append("[taillabel = \""+edge.getProperty()+"\"];"+BaseItem.CRLF);
+				sb.append("[taillabel = \""+edge.getName()+"\"];"+BaseItem.CRLF);
 			}
 				
 		}

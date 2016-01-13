@@ -61,7 +61,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 
 	/**
 	 * @param createrClass
-	 *            new Creator
+	 *			new Creator
 	 * @return Boolean for add the new Creator
 	 */
 	public boolean addCreator(SendableEntityCreator createrClass) {
@@ -76,14 +76,14 @@ public class XMLIdMap extends XMLSimpleIdMap {
 		} else {
 			return false;
 		}
-		super.withCreator(createrClass);
+		super.with(createrClass);
 		return true;
 	}
 
 	@Override
-	public AbstractMap withCreator(String className,
+	public AbstractMap with(String className,
 			SendableEntityCreator createrClass) {
-		super.withCreator(className, createrClass);
+		super.with(className, createrClass);
 
 		if (createrClass instanceof SendableEntityCreatorTag) {
 			SendableEntityCreatorTag xmlCreator = (SendableEntityCreatorTag) createrClass;
@@ -99,7 +99,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 	 * Gets the creator decode class.
 	 *
 	 * @param tag
-	 *            the tag
+	 *			the tag
 	 * @return the creator decode class
 	 */
 	public SendableEntityCreatorTag getCreatorDecodeClass(String tag) {
@@ -113,12 +113,12 @@ public class XMLIdMap extends XMLSimpleIdMap {
 	 * Encode.
 	 *
 	 * @param entity
-	 *            the entity
+	 *			the entity
 	 * @return the xML entity
 	 */
 	@Override
 	public XMLEntity encode(Object entity) {
-		return encode(entity, filter.clone());
+		return encode(entity, filter.newInstance(null));
 	}
 
 	@Override
@@ -141,10 +141,10 @@ public class XMLIdMap extends XMLSimpleIdMap {
 			xmlEntity.withTag(entity.getClass().getName());
 		}
 
-		if (filter.isId(this, entity, entity.getClass().getName())) {
+		if (filter.isId(entity, entity.getClass().getName())) {
 			xmlEntity.put(ID, getId(entity));
 		}
-		filter.withObjects(entity);
+		with(filter, entity);
 
 		String[] properties = createrProtoTyp.getProperties();
 		if (properties != null) {
@@ -161,7 +161,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 						} else {
 							if (value instanceof Collection<?>) {
 								for (Object item : (Collection<?>) value) {
-									if(filter.hasObjects(item)) {
+									if(hasObjects(filter, item)) {
 										continue;
 									}
 									xmlEntity.addChild(encode(item, filter));
@@ -170,7 +170,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 							} else {
 								SendableEntityCreator valueCreater = getCreatorClass(value);
 								if (valueCreater != null) {
-									if(filter.hasObjects(value)) {
+									if(hasObjects(filter, value)) {
 										continue;
 									}
 									xmlEntity.addChild(encode(value, filter));
@@ -190,11 +190,11 @@ public class XMLIdMap extends XMLSimpleIdMap {
 	 * Parser child.
 	 *
 	 * @param parent
-	 *            the parent
+	 *			the parent
 	 * @param property
-	 *            the property
+	 *			the property
 	 * @param value
-	 *            the value
+	 *			the value
 	 * @return the xML entity
 	 */
 	private XMLEntity parserChild(XMLEntity parent, String property,
@@ -252,13 +252,13 @@ public class XMLIdMap extends XMLSimpleIdMap {
 	 * Step empty pos.
 	 *
 	 * @param newPrefix
-	 *            the new prefix
+	 *			the new prefix
 	 * @param entity
-	 *            the entity
+	 *			the entity
 	 * @param tag
-	 *            the tag
+	 *			the tag
 	 * @param tokener
-	 *            the tokener
+	 *			the tokener
 	 * @return true, if successful
 	 */
 	public boolean stepEmptyPos(String newPrefix, Object entity, String tag,
@@ -333,11 +333,11 @@ public class XMLIdMap extends XMLSimpleIdMap {
 	 * Find tag.
 	 *
 	 * @param entity
-	 *            The Entity
+	 *			The Entity
 	 * @param tokener
-	 *            the Tokener
+	 *			the Tokener
 	 * @param grammar
-	 *            the grammar of XML.
+	 *			the grammar of XML.
 	 * @return the object
 	 */
 	@Override
@@ -389,13 +389,13 @@ public class XMLIdMap extends XMLSimpleIdMap {
 	 * Parse a Element with IdCreater.
 	 *
 	 * @param entity
-	 *            The Entity
+	 *			The Entity
 	 * @param grammar
-	 *            The Grammar of XML
+	 *			The Grammar of XML
 	 * @param tokener
-	 *            The XML-Tokener
+	 *			The XML-Tokener
 	 * @param creator
-	 *            The Entity-Factory
+	 *			The Entity-Factory
 	 * @return the Object
 	 */
 	protected Object parseIdEntity(XMLEntity entity, XMLGrammar grammar,

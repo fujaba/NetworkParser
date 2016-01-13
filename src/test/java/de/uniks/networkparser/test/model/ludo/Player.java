@@ -34,72 +34,72 @@ public class Player
    
    public Object get(String attrName)
    {
-      if (PROPERTY_COLOR.equalsIgnoreCase(attrName))
-      {
-         return getColor();
-      }
+	  if (PROPERTY_COLOR.equalsIgnoreCase(attrName))
+	  {
+		 return getColor();
+	  }
 
-      if (PROPERTY_ENUMCOLOR.equalsIgnoreCase(attrName))
-      {
-         return getEnumColor();
-      }
+	  if (PROPERTY_ENUMCOLOR.equalsIgnoreCase(attrName))
+	  {
+		 return getEnumColor();
+	  }
 
-      if (PROPERTY_NAME.equalsIgnoreCase(attrName))
-      {
-         return getName();
-      }
+	  if (PROPERTY_NAME.equalsIgnoreCase(attrName))
+	  {
+		 return getName();
+	  }
 
-      if (PROPERTY_X.equalsIgnoreCase(attrName))
-      {
-         return getX();
-      }
+	  if (PROPERTY_X.equalsIgnoreCase(attrName))
+	  {
+		 return getX();
+	  }
 
-      if (PROPERTY_Y.equalsIgnoreCase(attrName))
-      {
-         return getY();
-      }
+	  if (PROPERTY_Y.equalsIgnoreCase(attrName))
+	  {
+		 return getY();
+	  }
 
-      if (PROPERTY_GAME.equalsIgnoreCase(attrName))
-      {
-         return getGame();
-      }
+	  if (PROPERTY_GAME.equalsIgnoreCase(attrName))
+	  {
+		 return getGame();
+	  }
 
-      if (PROPERTY_NEXT.equalsIgnoreCase(attrName))
-      {
-         return getNext();
-      }
+	  if (PROPERTY_NEXT.equalsIgnoreCase(attrName))
+	  {
+		 return getNext();
+	  }
 
-      if (PROPERTY_PREV.equalsIgnoreCase(attrName))
-      {
-         return getPrev();
-      }
+	  if (PROPERTY_PREV.equalsIgnoreCase(attrName))
+	  {
+		 return getPrev();
+	  }
 
-      if (PROPERTY_DICE.equalsIgnoreCase(attrName))
-      {
-         return getDice();
-      }
+	  if (PROPERTY_DICE.equalsIgnoreCase(attrName))
+	  {
+		 return getDice();
+	  }
 
-      if (PROPERTY_START.equalsIgnoreCase(attrName))
-      {
-         return getStart();
-      }
+	  if (PROPERTY_START.equalsIgnoreCase(attrName))
+	  {
+		 return getStart();
+	  }
 
-      if (PROPERTY_BASE.equalsIgnoreCase(attrName))
-      {
-         return getBase();
-      }
+	  if (PROPERTY_BASE.equalsIgnoreCase(attrName))
+	  {
+		 return getBase();
+	  }
 
-      if (PROPERTY_LANDING.equalsIgnoreCase(attrName))
-      {
-         return getLanding();
-      }
+	  if (PROPERTY_LANDING.equalsIgnoreCase(attrName))
+	  {
+		 return getLanding();
+	  }
 
-      if (PROPERTY_PAWNS.equalsIgnoreCase(attrName))
-      {
-         return getPawns();
-      }
+	  if (PROPERTY_PAWNS.equalsIgnoreCase(attrName))
+	  {
+		 return getPawns();
+	  }
 
-      return null;
+	  return null;
    }
 
    
@@ -107,91 +107,91 @@ public class Player
    
    public boolean set(String attrName, Object value)
    {
-      if (PROPERTY_COLOR.equalsIgnoreCase(attrName))
-      {
-         setColor((String) value);
-         return true;
-      }
+	  if (PROPERTY_COLOR.equalsIgnoreCase(attrName))
+	  {
+		 setColor((String) value);
+		 return true;
+	  }
 
-      if (PROPERTY_ENUMCOLOR.equalsIgnoreCase(attrName))
-      {
-         setEnumColor((LudoColor) value);
-         return true;
-      }
+	  if (PROPERTY_ENUMCOLOR.equalsIgnoreCase(attrName))
+	  {
+		 setEnumColor((LudoColor) value);
+		 return true;
+	  }
 
-      if (PROPERTY_NAME.equalsIgnoreCase(attrName))
-      {
-         setName((String) value);
-         return true;
-      }
+	  if (PROPERTY_NAME.equalsIgnoreCase(attrName))
+	  {
+		 setName((String) value);
+		 return true;
+	  }
 
-      if (PROPERTY_X.equalsIgnoreCase(attrName))
-      {
-         setX(Integer.parseInt(value.toString()));
-         return true;
-      }
+	  if (PROPERTY_X.equalsIgnoreCase(attrName))
+	  {
+		 setX(Integer.parseInt(value.toString()));
+		 return true;
+	  }
 
-      if (PROPERTY_Y.equalsIgnoreCase(attrName))
-      {
-         setY(Integer.parseInt(value.toString()));
-         return true;
-      }
+	  if (PROPERTY_Y.equalsIgnoreCase(attrName))
+	  {
+		 setY(Integer.parseInt(value.toString()));
+		 return true;
+	  }
 
-      if (PROPERTY_GAME.equalsIgnoreCase(attrName))
-      {
-         setGame((Ludo) value);
-         return true;
-      }
+	  if (PROPERTY_GAME.equalsIgnoreCase(attrName))
+	  {
+		 setGame((Ludo) value);
+		 return true;
+	  }
 
-      if (PROPERTY_NEXT.equalsIgnoreCase(attrName))
-      {
-         setNext((Player) value);
-         return true;
-      }
+	  if (PROPERTY_NEXT.equalsIgnoreCase(attrName))
+	  {
+		 setNext((Player) value);
+		 return true;
+	  }
 
-      if (PROPERTY_PREV.equalsIgnoreCase(attrName))
-      {
-         setPrev((Player) value);
-         return true;
-      }
+	  if (PROPERTY_PREV.equalsIgnoreCase(attrName))
+	  {
+		 setPrev((Player) value);
+		 return true;
+	  }
 
-      if (PROPERTY_DICE.equalsIgnoreCase(attrName))
-      {
-         setDice((Dice) value);
-         return true;
-      }
+	  if (PROPERTY_DICE.equalsIgnoreCase(attrName))
+	  {
+		 setDice((Dice) value);
+		 return true;
+	  }
 
-      if (PROPERTY_START.equalsIgnoreCase(attrName))
-      {
-         setStart((Field) value);
-         return true;
-      }
+	  if (PROPERTY_START.equalsIgnoreCase(attrName))
+	  {
+		 setStart((Field) value);
+		 return true;
+	  }
 
-      if (PROPERTY_BASE.equalsIgnoreCase(attrName))
-      {
-         setBase((Field) value);
-         return true;
-      }
+	  if (PROPERTY_BASE.equalsIgnoreCase(attrName))
+	  {
+		 setBase((Field) value);
+		 return true;
+	  }
 
-      if (PROPERTY_LANDING.equalsIgnoreCase(attrName))
-      {
-         setLanding((Field) value);
-         return true;
-      }
+	  if (PROPERTY_LANDING.equalsIgnoreCase(attrName))
+	  {
+		 setLanding((Field) value);
+		 return true;
+	  }
 
-      if (PROPERTY_PAWNS.equalsIgnoreCase(attrName))
-      {
-         addToPawns((Pawn) value);
-         return true;
-      }
-      
-      if ((PROPERTY_PAWNS + JsonIdMap.REMOVE).equalsIgnoreCase(attrName))
-      {
-         removeFromPawns((Pawn) value);
-         return true;
-      }
+	  if (PROPERTY_PAWNS.equalsIgnoreCase(attrName))
+	  {
+		 addToPawns((Pawn) value);
+		 return true;
+	  }
+	  
+	  if ((PROPERTY_PAWNS + JsonIdMap.REMOVE).equalsIgnoreCase(attrName))
+	  {
+		 removeFromPawns((Pawn) value);
+		 return true;
+	  }
 
-      return false;
+	  return false;
    }
 
    
@@ -201,12 +201,12 @@ public class Player
    
    public PropertyChangeSupport getPropertyChangeSupport()
    {
-      return listeners;
+	  return listeners;
    }
    
    public void addPropertyChangeListener(PropertyChangeListener listener) 
    {
-      getPropertyChangeSupport().addPropertyChangeListener(listener);
+	  getPropertyChangeSupport().addPropertyChangeListener(listener);
    }
 
    
@@ -214,15 +214,15 @@ public class Player
    
    public void removeYou()
    {
-      setGame(null);
-      setNext(null);
-      setPrev(null);
-      setDice(null);
-      setStart(null);
-      setBase(null);
-      setLanding(null);
-      removeAllFromPawns();
-      getPropertyChangeSupport().firePropertyChange("REMOVE_YOU", this, null);
+	  setGame(null);
+	  setNext(null);
+	  setPrev(null);
+	  setDice(null);
+	  setStart(null);
+	  setBase(null);
+	  setLanding(null);
+	  removeAllFromPawns();
+	  getPropertyChangeSupport().firePropertyChange("REMOVE_YOU", this, null);
    }
 
    
@@ -234,35 +234,35 @@ public class Player
 
    public String getColor()
    {
-      return this.color;
+	  return this.color;
    }
    
    public void setColor(String value)
    {
-      if ( ! StrUtil.stringEquals(this.color, value))
-      {
-         String oldValue = this.color;
-         this.color = value;
-         getPropertyChangeSupport().firePropertyChange(PROPERTY_COLOR, oldValue, value);
-      }
+	  if ( ! StrUtil.stringEquals(this.color, value))
+	  {
+		 String oldValue = this.color;
+		 this.color = value;
+		 getPropertyChangeSupport().firePropertyChange(PROPERTY_COLOR, oldValue, value);
+	  }
    }
    
    public Player withColor(String value)
    {
-      setColor(value);
-      return this;
+	  setColor(value);
+	  return this;
    } 
 
    @Override
    public String toString()
    {
-      StringBuilder result = new StringBuilder();
-      
-      result.append(" ").append(this.getColor());
-      result.append(" ").append(this.getName());
-      result.append(" ").append(this.getX());
-      result.append(" ").append(this.getY());
-      return result.substring(1);
+	  StringBuilder result = new StringBuilder();
+	  
+	  result.append(" ").append(this.getColor());
+	  result.append(" ").append(this.getName());
+	  result.append(" ").append(this.getX());
+	  result.append(" ").append(this.getY());
+	  return result.substring(1);
    }
 
 
@@ -275,23 +275,23 @@ public class Player
 
    public LudoColor getEnumColor()
    {
-      return this.enumColor;
+	  return this.enumColor;
    }
    
    public void setEnumColor(LudoColor value)
    {
-      if (this.enumColor != value)
-      {
-         LudoColor oldValue = this.enumColor;
-         this.enumColor = value;
-         getPropertyChangeSupport().firePropertyChange(PROPERTY_ENUMCOLOR, oldValue, value);
-      }
+	  if (this.enumColor != value)
+	  {
+		 LudoColor oldValue = this.enumColor;
+		 this.enumColor = value;
+		 getPropertyChangeSupport().firePropertyChange(PROPERTY_ENUMCOLOR, oldValue, value);
+	  }
    }
    
    public Player withEnumColor(LudoColor value)
    {
-      setEnumColor(value);
-      return this;
+	  setEnumColor(value);
+	  return this;
    } 
 
    
@@ -303,23 +303,23 @@ public class Player
 
    public String getName()
    {
-      return this.name;
+	  return this.name;
    }
    
    public void setName(String value)
    {
-      if ( ! StrUtil.stringEquals(this.name, value))
-      {
-         String oldValue = this.name;
-         this.name = value;
-         getPropertyChangeSupport().firePropertyChange(PROPERTY_NAME, oldValue, value);
-      }
+	  if ( ! StrUtil.stringEquals(this.name, value))
+	  {
+		 String oldValue = this.name;
+		 this.name = value;
+		 getPropertyChangeSupport().firePropertyChange(PROPERTY_NAME, oldValue, value);
+	  }
    }
    
    public Player withName(String value)
    {
-      setName(value);
-      return this;
+	  setName(value);
+	  return this;
    } 
 
    
@@ -331,23 +331,23 @@ public class Player
 
    public int getX()
    {
-      return this.x;
+	  return this.x;
    }
    
    public void setX(int value)
    {
-      if (this.x != value)
-      {
-         int oldValue = this.x;
-         this.x = value;
-         getPropertyChangeSupport().firePropertyChange(PROPERTY_X, oldValue, value);
-      }
+	  if (this.x != value)
+	  {
+		 int oldValue = this.x;
+		 this.x = value;
+		 getPropertyChangeSupport().firePropertyChange(PROPERTY_X, oldValue, value);
+	  }
    }
    
    public Player withX(int value)
    {
-      setX(value);
-      return this;
+	  setX(value);
+	  return this;
    } 
 
    
@@ -359,32 +359,32 @@ public class Player
 
    public int getY()
    {
-      return this.y;
+	  return this.y;
    }
    
    public void setY(int value)
    {
-      if (this.y != value)
-      {
-         int oldValue = this.y;
-         this.y = value;
-         getPropertyChangeSupport().firePropertyChange(PROPERTY_Y, oldValue, value);
-      }
+	  if (this.y != value)
+	  {
+		 int oldValue = this.y;
+		 this.y = value;
+		 getPropertyChangeSupport().firePropertyChange(PROPERTY_Y, oldValue, value);
+	  }
    }
    
    public Player withY(int value)
    {
-      setY(value);
-      return this;
+	  setY(value);
+	  return this;
    } 
    
    /********************************************************************
-    * <pre>
-    *              many                       one
-    * Player ----------------------------------- Ludo
-    *              players                   game
-    * </pre>
-    */
+	* <pre>
+	*			  many					   one
+	* Player ----------------------------------- Ludo
+	*			  players				   game
+	* </pre>
+	*/
    
    public static final String PROPERTY_GAME = "game";
    
@@ -392,58 +392,58 @@ public class Player
    
    public Ludo getGame()
    {
-      return this.game;
+	  return this.game;
    }
    
    public boolean setGame(Ludo value)
    {
-      boolean changed = false;
-      
-      if (this.game != value)
-      {
-         Ludo oldValue = this.game;
-         
-         if (this.game != null)
-         {
-            this.game = null;
-            oldValue.withoutPlayers(this);
-         }
-         
-         this.game = value;
-         
-         if (value != null)
-         {
-            value.withPlayers(this);
-         }
-         
-         getPropertyChangeSupport().firePropertyChange(PROPERTY_GAME, oldValue, value);
-         changed = true;
-      }
-      
-      return changed;
+	  boolean changed = false;
+	  
+	  if (this.game != value)
+	  {
+		 Ludo oldValue = this.game;
+		 
+		 if (this.game != null)
+		 {
+			this.game = null;
+			oldValue.withoutPlayers(this);
+		 }
+		 
+		 this.game = value;
+		 
+		 if (value != null)
+		 {
+			value.withPlayers(this);
+		 }
+		 
+		 getPropertyChangeSupport().firePropertyChange(PROPERTY_GAME, oldValue, value);
+		 changed = true;
+	  }
+	  
+	  return changed;
    }
    
    public Player withGame(Ludo value)
    {
-      setGame(value);
-      return this;
+	  setGame(value);
+	  return this;
    } 
    
    public Ludo createGame()
    {
-      Ludo value = new Ludo();
-      withGame(value);
-      return value;
+	  Ludo value = new Ludo();
+	  withGame(value);
+	  return value;
    } 
 
    
    /********************************************************************
-    * <pre>
-    *              one                       one
-    * Player ----------------------------------- Player
-    *              prev                   next
-    * </pre>
-    */
+	* <pre>
+	*			  one					   one
+	* Player ----------------------------------- Player
+	*			  prev				   next
+	* </pre>
+	*/
    
    public static final String PROPERTY_NEXT = "next";
    
@@ -451,58 +451,58 @@ public class Player
    
    public Player getNext()
    {
-      return this.next;
+	  return this.next;
    }
    
    public boolean setNext(Player value)
    {
-      boolean changed = false;
-      
-      if (this.next != value)
-      {
-         Player oldValue = this.next;
-         
-         if (this.next != null)
-         {
-            this.next = null;
-            oldValue.setPrev(null);
-         }
-         
-         this.next = value;
-         
-         if (value != null)
-         {
-            value.withPrev(this);
-         }
-         
-         getPropertyChangeSupport().firePropertyChange(PROPERTY_NEXT, oldValue, value);
-         changed = true;
-      }
-      
-      return changed;
+	  boolean changed = false;
+	  
+	  if (this.next != value)
+	  {
+		 Player oldValue = this.next;
+		 
+		 if (this.next != null)
+		 {
+			this.next = null;
+			oldValue.setPrev(null);
+		 }
+		 
+		 this.next = value;
+		 
+		 if (value != null)
+		 {
+			value.withPrev(this);
+		 }
+		 
+		 getPropertyChangeSupport().firePropertyChange(PROPERTY_NEXT, oldValue, value);
+		 changed = true;
+	  }
+	  
+	  return changed;
    }
    
    public Player withNext(Player value)
    {
-      setNext(value);
-      return this;
+	  setNext(value);
+	  return this;
    } 
    
    public Player createNext()
    {
-      Player value = new Player();
-      withNext(value);
-      return value;
+	  Player value = new Player();
+	  withNext(value);
+	  return value;
    } 
 
    
    /********************************************************************
-    * <pre>
-    *              one                       one
-    * Player ----------------------------------- Player
-    *              next                   prev
-    * </pre>
-    */
+	* <pre>
+	*			  one					   one
+	* Player ----------------------------------- Player
+	*			  next				   prev
+	* </pre>
+	*/
    
    public static final String PROPERTY_PREV = "prev";
    
@@ -510,58 +510,58 @@ public class Player
    
    public Player getPrev()
    {
-      return this.prev;
+	  return this.prev;
    }
    
    public boolean setPrev(Player value)
    {
-      boolean changed = false;
-      
-      if (this.prev != value)
-      {
-         Player oldValue = this.prev;
-         
-         if (this.prev != null)
-         {
-            this.prev = null;
-            oldValue.setNext(null);
-         }
-         
-         this.prev = value;
-         
-         if (value != null)
-         {
-            value.withNext(this);
-         }
-         
-         getPropertyChangeSupport().firePropertyChange(PROPERTY_PREV, oldValue, value);
-         changed = true;
-      }
-      
-      return changed;
+	  boolean changed = false;
+	  
+	  if (this.prev != value)
+	  {
+		 Player oldValue = this.prev;
+		 
+		 if (this.prev != null)
+		 {
+			this.prev = null;
+			oldValue.setNext(null);
+		 }
+		 
+		 this.prev = value;
+		 
+		 if (value != null)
+		 {
+			value.withNext(this);
+		 }
+		 
+		 getPropertyChangeSupport().firePropertyChange(PROPERTY_PREV, oldValue, value);
+		 changed = true;
+	  }
+	  
+	  return changed;
    }
    
    public Player withPrev(Player value)
    {
-      setPrev(value);
-      return this;
+	  setPrev(value);
+	  return this;
    } 
    
    public Player createPrev()
    {
-      Player value = new Player();
-      withPrev(value);
-      return value;
+	  Player value = new Player();
+	  withPrev(value);
+	  return value;
    } 
 
    
    /********************************************************************
-    * <pre>
-    *              one                       one
-    * Player ----------------------------------- Dice
-    *              player                   dice
-    * </pre>
-    */
+	* <pre>
+	*			  one					   one
+	* Player ----------------------------------- Dice
+	*			  player				   dice
+	* </pre>
+	*/
    
    public static final String PROPERTY_DICE = "dice";
    
@@ -569,58 +569,58 @@ public class Player
    
    public Dice getDice()
    {
-      return this.dice;
+	  return this.dice;
    }
    
    public boolean setDice(Dice value)
    {
-      boolean changed = false;
-      
-      if (this.dice != value)
-      {
-         Dice oldValue = this.dice;
-         
-         if (this.dice != null)
-         {
-            this.dice = null;
-            oldValue.setPlayer(null);
-         }
-         
-         this.dice = value;
-         
-         if (value != null)
-         {
-            value.withPlayer(this);
-         }
-         
-         getPropertyChangeSupport().firePropertyChange(PROPERTY_DICE, oldValue, value);
-         changed = true;
-      }
-      
-      return changed;
+	  boolean changed = false;
+	  
+	  if (this.dice != value)
+	  {
+		 Dice oldValue = this.dice;
+		 
+		 if (this.dice != null)
+		 {
+			this.dice = null;
+			oldValue.setPlayer(null);
+		 }
+		 
+		 this.dice = value;
+		 
+		 if (value != null)
+		 {
+			value.withPlayer(this);
+		 }
+		 
+		 getPropertyChangeSupport().firePropertyChange(PROPERTY_DICE, oldValue, value);
+		 changed = true;
+	  }
+	  
+	  return changed;
    }
    
    public Player withDice(Dice value)
    {
-      setDice(value);
-      return this;
+	  setDice(value);
+	  return this;
    } 
    
    public Dice createDice()
    {
-      Dice value = new Dice();
-      withDice(value);
-      return value;
+	  Dice value = new Dice();
+	  withDice(value);
+	  return value;
    } 
 
    
    /********************************************************************
-    * <pre>
-    *              one                       one
-    * Player ----------------------------------- Field
-    *              starter                   start
-    * </pre>
-    */
+	* <pre>
+	*			  one					   one
+	* Player ----------------------------------- Field
+	*			  starter				   start
+	* </pre>
+	*/
    
    public static final String PROPERTY_START = "start";
    
@@ -628,58 +628,58 @@ public class Player
    
    public Field getStart()
    {
-      return this.start;
+	  return this.start;
    }
    
    public boolean setStart(Field value)
    {
-      boolean changed = false;
-      
-      if (this.start != value)
-      {
-         Field oldValue = this.start;
-         
-         if (this.start != null)
-         {
-            this.start = null;
-            oldValue.setStarter(null);
-         }
-         
-         this.start = value;
-         
-         if (value != null)
-         {
-            value.withStarter(this);
-         }
-         
-         getPropertyChangeSupport().firePropertyChange(PROPERTY_START, oldValue, value);
-         changed = true;
-      }
-      
-      return changed;
+	  boolean changed = false;
+	  
+	  if (this.start != value)
+	  {
+		 Field oldValue = this.start;
+		 
+		 if (this.start != null)
+		 {
+			this.start = null;
+			oldValue.setStarter(null);
+		 }
+		 
+		 this.start = value;
+		 
+		 if (value != null)
+		 {
+			value.withStarter(this);
+		 }
+		 
+		 getPropertyChangeSupport().firePropertyChange(PROPERTY_START, oldValue, value);
+		 changed = true;
+	  }
+	  
+	  return changed;
    }
    
    public Player withStart(Field value)
    {
-      setStart(value);
-      return this;
+	  setStart(value);
+	  return this;
    } 
    
    public Field createStart()
    {
-      Field value = new Field();
-      withStart(value);
-      return value;
+	  Field value = new Field();
+	  withStart(value);
+	  return value;
    } 
 
    
    /********************************************************************
-    * <pre>
-    *              one                       one
-    * Player ----------------------------------- Field
-    *              baseowner                   base
-    * </pre>
-    */
+	* <pre>
+	*			  one					   one
+	* Player ----------------------------------- Field
+	*			  baseowner				   base
+	* </pre>
+	*/
    
    public static final String PROPERTY_BASE = "base";
    
@@ -687,58 +687,58 @@ public class Player
    
    public Field getBase()
    {
-      return this.base;
+	  return this.base;
    }
    
    public boolean setBase(Field value)
    {
-      boolean changed = false;
-      
-      if (this.base != value)
-      {
-         Field oldValue = this.base;
-         
-         if (this.base != null)
-         {
-            this.base = null;
-            oldValue.setBaseowner(null);
-         }
-         
-         this.base = value;
-         
-         if (value != null)
-         {
-            value.withBaseowner(this);
-         }
-         
-         getPropertyChangeSupport().firePropertyChange(PROPERTY_BASE, oldValue, value);
-         changed = true;
-      }
-      
-      return changed;
+	  boolean changed = false;
+	  
+	  if (this.base != value)
+	  {
+		 Field oldValue = this.base;
+		 
+		 if (this.base != null)
+		 {
+			this.base = null;
+			oldValue.setBaseowner(null);
+		 }
+		 
+		 this.base = value;
+		 
+		 if (value != null)
+		 {
+			value.withBaseowner(this);
+		 }
+		 
+		 getPropertyChangeSupport().firePropertyChange(PROPERTY_BASE, oldValue, value);
+		 changed = true;
+	  }
+	  
+	  return changed;
    }
    
    public Player withBase(Field value)
    {
-      setBase(value);
-      return this;
+	  setBase(value);
+	  return this;
    } 
    
    public Field createBase()
    {
-      Field value = new Field();
-      withBase(value);
-      return value;
+	  Field value = new Field();
+	  withBase(value);
+	  return value;
    } 
 
    
    /********************************************************************
-    * <pre>
-    *              one                       one
-    * Player ----------------------------------- Field
-    *              lander                   landing
-    * </pre>
-    */
+	* <pre>
+	*			  one					   one
+	* Player ----------------------------------- Field
+	*			  lander				   landing
+	* </pre>
+	*/
    
    public static final String PROPERTY_LANDING = "landing";
    
@@ -746,58 +746,58 @@ public class Player
    
    public Field getLanding()
    {
-      return this.landing;
+	  return this.landing;
    }
    
    public boolean setLanding(Field value)
    {
-      boolean changed = false;
-      
-      if (this.landing != value)
-      {
-         Field oldValue = this.landing;
-         
-         if (this.landing != null)
-         {
-            this.landing = null;
-            oldValue.setLander(null);
-         }
-         
-         this.landing = value;
-         
-         if (value != null)
-         {
-            value.withLander(this);
-         }
-         
-         getPropertyChangeSupport().firePropertyChange(PROPERTY_LANDING, oldValue, value);
-         changed = true;
-      }
-      
-      return changed;
+	  boolean changed = false;
+	  
+	  if (this.landing != value)
+	  {
+		 Field oldValue = this.landing;
+		 
+		 if (this.landing != null)
+		 {
+			this.landing = null;
+			oldValue.setLander(null);
+		 }
+		 
+		 this.landing = value;
+		 
+		 if (value != null)
+		 {
+			value.withLander(this);
+		 }
+		 
+		 getPropertyChangeSupport().firePropertyChange(PROPERTY_LANDING, oldValue, value);
+		 changed = true;
+	  }
+	  
+	  return changed;
    }
    
    public Player withLanding(Field value)
    {
-      setLanding(value);
-      return this;
+	  setLanding(value);
+	  return this;
    } 
    
    public Field createLanding()
    {
-      Field value = new Field();
-      withLanding(value);
-      return value;
+	  Field value = new Field();
+	  withLanding(value);
+	  return value;
    } 
 
    
    /********************************************************************
-    * <pre>
-    *              one                       many
-    * Player ----------------------------------- Pawn
-    *              player                   pawns
-    * </pre>
-    */
+	* <pre>
+	*			  one					   many
+	* Player ----------------------------------- Pawn
+	*			  player				   pawns
+	* </pre>
+	*/
    
    public static final String PROPERTY_PAWNS = "pawns";
    
@@ -805,77 +805,77 @@ public class Player
    
    public LinkedHashSet<Pawn> getPawns()
    {
-      return this.pawns;
+	  return this.pawns;
    }
    
    public boolean addToPawns(Pawn value)
    {
-      boolean changed = false;
-      
-      if (value != null)
-      {
-         if (this.pawns == null)
-         {
-            this.pawns = new LinkedHashSet<Pawn>();
-         }
-         
-         changed = this.pawns.add (value);
-         
-         if (changed)
-         {
-            value.withPlayer(this);
-            getPropertyChangeSupport().firePropertyChange(PROPERTY_PAWNS, null, value);
-         }
-      }
-         
-      return changed;   
+	  boolean changed = false;
+	  
+	  if (value != null)
+	  {
+		 if (this.pawns == null)
+		 {
+			this.pawns = new LinkedHashSet<Pawn>();
+		 }
+		 
+		 changed = this.pawns.add (value);
+		 
+		 if (changed)
+		 {
+			value.withPlayer(this);
+			getPropertyChangeSupport().firePropertyChange(PROPERTY_PAWNS, null, value);
+		 }
+	  }
+		 
+	  return changed;   
    }
    
    public boolean removeFromPawns(Pawn value)
    {
-      boolean changed = false;
-      
-      if ((this.pawns != null) && (value != null))
-      {
-         changed = this.pawns.remove (value);
-         
-         if (changed)
-         {
-            value.setPlayer(null);
-            getPropertyChangeSupport().firePropertyChange(PROPERTY_PAWNS, value, null);
-         }
-      }
-         
-      return changed;   
+	  boolean changed = false;
+	  
+	  if ((this.pawns != null) && (value != null))
+	  {
+		 changed = this.pawns.remove (value);
+		 
+		 if (changed)
+		 {
+			value.setPlayer(null);
+			getPropertyChangeSupport().firePropertyChange(PROPERTY_PAWNS, value, null);
+		 }
+	  }
+		 
+	  return changed;   
    }
    
    public Player withPawns(Pawn value)
    {
-      addToPawns(value);
-      return this;
+	  addToPawns(value);
+	  return this;
    } 
    
    public Player withoutPawns(Pawn value)
    {
-      removeFromPawns(value);
-      return this;
+	  removeFromPawns(value);
+	  return this;
    } 
    
    public void removeAllFromPawns()
    {
-      LinkedHashSet<Pawn> tmpSet = new LinkedHashSet<Pawn>(this.getPawns());
+	  LinkedHashSet<Pawn> tmpSet = new LinkedHashSet<Pawn>(this.getPawns());
    
-      for (Pawn value : tmpSet)
-      {
-         this.removeFromPawns(value);
-      }
+	  for (Pawn value : tmpSet)
+	  {
+		 this.removeFromPawns(value);
+	  }
    }
    
    public Pawn createPawns()
    {
-      Pawn value = new Pawn();
-      withPawns(value);
-      return value;
+	  Pawn value = new Pawn();
+	  withPawns(value);
+	  return value;
    } 
 }
 

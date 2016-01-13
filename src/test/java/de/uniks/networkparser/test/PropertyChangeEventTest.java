@@ -18,9 +18,9 @@ public class PropertyChangeEventTest {
 	@Test
 	public void testPropertyChange() {
 		JsonIdMap map=new JsonIdMap();
-		map.withCreator(new PropertyChangeEventWrapper());
-		map.withCreator(new PersonCreator());
-		map.withCreator(new ItemCreator());
+		map.with(new PropertyChangeEventWrapper());
+		map.with(new PersonCreator());
+		map.with(new ItemCreator());
 		
 		Person person = new Person();
 		Item item = new Item();
@@ -30,9 +30,9 @@ public class PropertyChangeEventTest {
 
 		//Decode
 		JsonIdMap decodeMap=new JsonIdMap();
-		decodeMap.withCreator(new PropertyChangeEventWrapper());
-		decodeMap.withCreator(new PersonCreator());
-		decodeMap.withCreator(new ItemCreator());
+		decodeMap.with(new PropertyChangeEventWrapper());
+		decodeMap.with(new PersonCreator());
+		decodeMap.with(new ItemCreator());
 
 		
 		PropertyChangeEvent decode = (PropertyChangeEvent) decodeMap.decode(encode.toString());

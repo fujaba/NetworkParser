@@ -65,9 +65,9 @@ public class StringTokener extends Tokener {
 	 * get the () values
 	 *
 	 * @param start
-	 *            Startcharacter
+	 *			Startcharacter
 	 * @param end
-	 *            Endcharacter
+	 *			Endcharacter
 	 * @return string of values
 	 */
 	public String getStringPart(Character start, Character end) {

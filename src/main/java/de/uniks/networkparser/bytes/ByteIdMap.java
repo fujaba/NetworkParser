@@ -149,7 +149,7 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 	/** The decoder map. */
 	protected HashMap<Byte, SendableEntityCreatorTag> decoderMap;
 
-	private ByteFilter filter = new ByteFilter();
+	private ByteFilter filter = new ByteFilter().withMap(this);
 
 	/*
 	 * (non-Javadoc)
@@ -170,14 +170,14 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 				}
 			}
 		}
-		super.withCreator(createrClass);
+		super.with(createrClass);
 		return true;
 	}
 
 	@Override
-	public AbstractMap withCreator(String className,
+	public AbstractMap with(String className,
 			SendableEntityCreator createrClass) {
-		super.withCreator(className, createrClass);
+		super.with(className, createrClass);
 
 		if (createrClass instanceof SendableEntityCreatorTag) {
 			SendableEntityCreatorTag byteCreator = (SendableEntityCreatorTag) createrClass;
@@ -197,12 +197,12 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 	 * Encode.
 	 *
 	 * @param entity
-	 *            the entity
+	 *			the entity
 	 * @return the byte entity message
 	 */
 	@Override
 	public ByteItem encode(Object entity) {
-		return encode(entity, filter.withStandard(this.filter));
+		return encode(entity, null);
 	}
 
 	private boolean addClazzTyp(ByteList msg, String clazzName, Filter filter) {
@@ -255,7 +255,8 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 		if (creator == null) {
 			return null;
 		}
-		int id = filter.getIndexVisitedObjects(entity);
+		filter = this.filter.newInstance(filter);
+		int id = getIndexVisitedObjects(filter, entity);
 		if (id >= 0) {
 			// Must be a assoc
 			if (id <= Byte.MAX_VALUE) {
@@ -280,7 +281,7 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 			addClazzTyp(msg, reference.getClass().getName(), filter);
 		}
 
-		filter.withObjects(entity);
+		with(filter, entity);
 		String[] properties = creator.getProperties();
 		if (properties != null) {
 			Object referenceObj = creator.getSendableInstance(true);
@@ -359,7 +360,7 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 	 * Gets the creator decoder class.
 	 *
 	 * @param typ
-	 *            the typ
+	 *			the typ
 	 * @return the creator decoder class
 	 */
 	public SendableEntityCreatorTag getCreatorDecoderClass(byte typ) {
@@ -373,7 +374,7 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 	 * Decode.
 	 *
 	 * @param value
-	 *            the value
+	 *			the value
 	 * @return the object
 	 */
 	@Override
@@ -385,9 +386,9 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 	 * Decode.
 	 *
 	 * @param value
-	 *            the value
+	 *			the value
 	 * @param converter
-	 *            the Converter for bytes to String
+	 *			the Converter for bytes to String
 	 * @return the object
 	 */
 	public Object decode(String value, ByteConverter converter) {
@@ -402,7 +403,7 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 	 * Decode.
 	 *
 	 * @param value
-	 *            the value
+	 *			the value
 	 * @return the object
 	 */
 	public Object decode(Object value) {
@@ -426,7 +427,7 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 	 * Decode.
 	 *
 	 * @param buffer
-	 *            the in
+	 *			the in
 	 * @return the object
 	 */
 	public Object decode(ByteBuffer buffer) {
@@ -448,9 +449,9 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 	 * Decode.
 	 *
 	 * @param buffer
-	 *            the in
+	 *			the in
 	 * @param eventCreater
-	 *            The Creator as Factory
+	 *			The Creator as Factory
 	 * @return the object
 	 */
 	public Object decodeClazz(ByteBuffer buffer,
@@ -492,9 +493,9 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 	 * Gets the decode object.
 	 *
 	 * @param buffer
-	 *            the in
+	 *			the in
 	 * @param end
-	 *            EndIndex
+	 *			EndIndex
 	 * @return the decode object
 	 */
 	public Object decodeValue(ByteBuffer buffer, int end) {
@@ -572,11 +573,11 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 		}
 		if (typ == ByteIdMap.DATATYPE_ASSOC) {
 			int pos = buffer.getByte();
-			return filter.getVisitedObjects(pos);
+			return getVisitedObjects(filter, pos);
 		}
 		if (typ == ByteIdMap.DATATYPE_ASSOCLONG) {
 			int pos = buffer.getInt();
-			return filter.getVisitedObjects(pos);
+			return getVisitedObjects(filter, pos);
 		}
 		if (ByteUtil.isGroup(typ)) {
 			byte subgroup = ByteUtil.getSubGroup(typ);

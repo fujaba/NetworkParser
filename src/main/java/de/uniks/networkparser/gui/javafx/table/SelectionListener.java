@@ -37,15 +37,15 @@ public class SelectionListener implements ListChangeListener<Integer>{
 	}
 	
 	@Override
-    public void onChanged(Change<? extends Integer> change)
-    {
+	public void onChanged(Change<? extends Integer> change)
+	{
 		if(!isSelection){
 			isSelection=true;
 			selectItems(change.getList());
 			
 			isSelection = false;
 		}
-    }
+	}
 	public SelectionListener selectItems(List<? extends Integer> items){
 		
 		for(TableViewFX viewer : viewers){

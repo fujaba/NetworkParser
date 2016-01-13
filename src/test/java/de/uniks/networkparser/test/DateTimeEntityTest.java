@@ -40,8 +40,8 @@ public class DateTimeEntityTest {
 		assertEquals("MONTH", "" +reference.get(Calendar.MONTH), "" +(date.get(DateField.MONTH)-1));
 		assertEquals("YEAR", "" +reference.get(Calendar.YEAR), "" +date.get(DateField.YEAR));
 		
+		assertEquals("WEEK_OF_MONTH", "" +reference.get(Calendar.WEEK_OF_MONTH), "" +date.get(DateField.WEEK_OF_MONTH));
 		assertEquals("WEEK_OF_YEAR", "" +reference.get(Calendar.WEEK_OF_YEAR), "" +date.get(DateField.WEEK_OF_YEAR));
-//		assertEquals("WEEK_OF_MONTH", "" +reference.get(Calendar.WEEK_OF_MONTH), "" +date.get(DateField.WEEK_OF_MONTH));
 
 //		case MILLISECONDS:
 //		case MILLISECOND_OF_DAY:

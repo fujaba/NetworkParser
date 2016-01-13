@@ -9,7 +9,7 @@ import java.util.NoSuchElementException;
  * An optimized version of AbstractList.ListItr
  */
 public class SimpleIterator<E> implements ListIterator<E> {
-	private int cursor;       // index of next element to return
+	private int cursor;	   // index of next element to return
 	private int lastRet; // index of last element returned; -1 if no such
 	private AbstractArray<E> list;
 

@@ -16,8 +16,8 @@ public class XMLTCC2014Test extends IOClasses{
 		String XMLText = readFile("test3.xml").toString();
 		
 		XMLIdMap map= new XMLIdMap();
-		map.withCreator(new FIXMLMessageCreator());
-		map.withCreator(new ApplicationMessageCreator());
+		map.with(new FIXMLMessageCreator());
+		map.with(new ApplicationMessageCreator());
 //		map.withCreator(new de.kassel.ttc2014.fixml.test3.creators.OrderCreator());
 //		map.withCreator(new de.kassel.ttc2014.fixml.test3.creators.HandInstCreator());
 //		map.withCreator(new de.kassel.ttc2014.fixml.test3.creators.InstrumentCreator());

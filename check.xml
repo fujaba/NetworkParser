@@ -14,10 +14,10 @@
 	<target name="findBugs">
 		<taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask" classpath="lib/findbugs-3.0.0/findbugs-ant.jar">
 			<classpath>
-			    <fileset dir="lib/findbugs">
-			      <include name="*.jar"/>
-			    </fileset>
-			  </classpath>
+				<fileset dir="lib/findbugs">
+					<include name="*.jar"/>
+				</fileset>
+			</classpath>
 		</taskdef>
 		<mkdir dir="build/" />
 		<findbugs home="lib/findbugs/" output="xml" outputFile="build/findbugs.xml">
@@ -72,7 +72,7 @@
 		</jacococoverage>
 		<jacocoreport>
 			<executiondata>
-			     <file file="build/networkparser.exec"/>
+				<file file="build/networkparser.exec"/>
 			</executiondata>
 			<structure name="NetworkParser">
 				<classfiles><fileset dir="bin/">

@@ -1,5 +1,6 @@
 package de.uniks.networkparser.logic;
 
+import de.uniks.networkparser.SimpleValuesMap;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -28,7 +29,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
  * @author Stefan Lindel
  */
 
-public class Deep extends ConditionMap implements SendableEntityCreator {
+public class Deep extends SimpleConditionMap implements SendableEntityCreator {
 	/** Constant of Deep. */
 	public static final String DEEP = "deep";
 	/** Variable of Deep. */
@@ -36,7 +37,7 @@ public class Deep extends ConditionMap implements SendableEntityCreator {
 
 	/**
 	 * @param value
-	 *            The new Value
+	 *			The new Value
 	 * @return Deep Instance
 	 */
 	public Deep withDeep(int value) {
@@ -50,13 +51,13 @@ public class Deep extends ConditionMap implements SendableEntityCreator {
 	}
 
 	@Override
-	public boolean check(ValuesMap values) {
-		return values.deep <= this.deep;
+	public boolean check(SimpleValuesMap values) {
+		return values.getDeep() <= this.deep;
 	}
 
 	/**
 	 * @param value
-	 *            Value of Deep
+	 *			Value of Deep
 	 * @return a new Deep Instance
 	 */
 	public static Deep value(int value) {

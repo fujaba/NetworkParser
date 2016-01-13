@@ -53,7 +53,7 @@ public class CharacterBuffer extends TextBuffer {
 
 	/**
 	 * @param value
-	 *            String of Value
+	 *			String of Value
 	 * @return the CharacterBuffer
 	 */
 	public CharacterBuffer withValue(String value) {

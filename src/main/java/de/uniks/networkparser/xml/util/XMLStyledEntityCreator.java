@@ -28,7 +28,7 @@ import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XMLStyledEntity;
 /**
  * @author Stefan The XMLStyledEntityCreator is the Creator for Styled Element
- *         of XML.
+ *		 of XML.
  */
 public class XMLStyledEntityCreator implements SendableEntityCreator,
 

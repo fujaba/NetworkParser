@@ -1,13 +1,13 @@
 // import java.lang.ClassValue.Version;
 
 def isReleaseBuild() {
-    return "$version".contains("SNAPSHOT") == false || project.hasProperty('ReleaseBuild')
+    return "$version".contains("SNAPSHOT") == false && project.hasProperty('ReleaseBuild')
 }
 if(new File("secring.gpg").exists()) {
 	apply plugin: 'signing'
 
 	signing {
-		required { isReleaseBuild() && gradle.taskGraph.hasTask("uploadArchives")}
+		required { (isReleaseBuild() || "$version".contains("SNAPSHOT") == true )&& gradle.taskGraph.hasTask("uploadArchives")}
 		sign configurations.archives
 	}
 

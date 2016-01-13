@@ -32,9 +32,9 @@ public interface SendableEntity {
 	 * Adds the property change listener.
 	 *
 	 * @param propertyName
-	 *            the property name
+	 *			the property name
 	 * @param listener
-	 *            the listener
+	 *			the listener
 	 * @return boolean if add the PropertyChangeListener
 	 */
 	public boolean addPropertyChangeListener(String propertyName,
