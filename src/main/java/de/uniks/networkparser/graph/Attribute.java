@@ -27,9 +27,7 @@ public class Attribute extends Value {
 	public static final String PROPERTY_VALUE = "value";
 	public static final String PROPERTY_VISIBILITY = "visibility";
 
-	private Modifier visibility = Modifier.PRIVATE;
-
-	public Attribute() {
+	Attribute() {
 	}
 
 	public Attribute(String name, DataType datatyp) {
@@ -44,11 +42,23 @@ public class Attribute extends Value {
 	}
 	
 	public Modifier getVisibility() {
-		return visibility;
+		for (GraphMember child : children) {
+			if (child instanceof Modifier)  {
+				return (Modifier) child;
+			}
+		}
+		Modifier mod = Modifier.PRIVATE;
+		with(mod);
+		return mod;
 	}
 
-	public Attribute with(Modifier visibility) {
-		this.visibility = visibility;
+	public Attribute with(Modifier... modifier) {
+		getVisibility().with(modifier);
+		return this;
+	}
+	
+	public Attribute without(Modifier... modifier) {
+		getVisibility().without(modifier);
 		return this;
 	}
 	

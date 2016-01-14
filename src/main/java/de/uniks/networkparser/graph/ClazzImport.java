@@ -21,6 +21,15 @@ See the Licence for the specific language governing
 permissions and limitations under the Licence.
 */
 
-public class GraphImport extends GraphMember {
+public class ClazzImport extends GraphMember {
+	@Override
+	public ClazzImport with(String name) {
+		super.with(name);
+		return this;
+	}
+
+	public static ClazzImport create(String name) {
+		return new ClazzImport().with(name);
+	}
 
 }

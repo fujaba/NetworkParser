@@ -486,19 +486,19 @@ public class Clazz extends GraphEntity {
 		return this;
 	}
 
-	public Clazz with(GraphImport... value) {
+	public Clazz with(ClazzImport... value) {
 		super.with(value);
 		return this;
 	}
 
-	public SimpleSet<GraphImport> getImports() {
-		SimpleSet<GraphImport> collection = new SimpleSet<GraphImport>();
+	public SimpleSet<ClazzImport> getImports() {
+		SimpleSet<ClazzImport> collection = new SimpleSet<ClazzImport>();
 		if (children == null) {
 			return collection;
 		}
 		for (GraphMember child : children) {
-			if (child instanceof GraphImport)  {
-				collection.add((GraphImport) child);
+			if (child instanceof ClazzImport)  {
+				collection.add((ClazzImport) child);
 			}
 		}
 		return collection;
@@ -548,15 +548,15 @@ public class Clazz extends GraphEntity {
 		Attribute attribute = new Attribute(name, type);
 		with(attribute);
 		return attribute;
-	}	
-	public Attribute createAttribute(String name, Clazz type) {
-		Attribute attribute = new Attribute(name, DataType.ref(type));
-		with(attribute);
-		return attribute;
 	}
-	public Clazz withAttribute(String name, Clazz type) {
-		Attribute attribute = new Attribute(name, DataType.ref(type));
+	public Clazz withAttribute(String name, DataType type) {
+		Attribute attribute = new Attribute(name, type);
 		with(attribute);
+		return this;
+	}
+	public Clazz withMethod(String name, DataType returnType, Parameter... parameters) {
+		Method method = this.createMethod(name, parameters);
+		method.with(returnType);
 		return this;
 	}
 	

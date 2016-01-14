@@ -27,9 +27,9 @@ public class Modifier extends GraphMember {
 	public static final Modifier PROTECTED = new Modifier("protected");
 	public static final Modifier PRIVATE = new Modifier("private");
 
-	public static final Modifier FINAL = new Modifier(" final");
-	public static final Modifier ABSTRACT = new Modifier(" abstract");
-	public static final Modifier STATIC = new Modifier(" static");
+	public static final Modifier FINAL = new Modifier("final");
+	public static final Modifier ABSTRACT = new Modifier("abstract");
+	public static final Modifier STATIC = new Modifier("static");
 
 	Modifier(String value) {
 		this.setName(value);
@@ -40,25 +40,34 @@ public class Modifier extends GraphMember {
 	}
 
 	public static Modifier ref(Modifier... value) {
-		Modifier first = PUBLIC;
-		String seconds = "";
+		Modifier mod=new Modifier("");
 		for (Modifier item : value) {
 			if (item == PUBLIC || item == PACKAGE || item == PROTECTED
 					|| item == PRIVATE) {
-				first = item;
+				mod.with(item.getName());
 				continue;
 			}
-			seconds += item.getName();
+			mod.with(item);
 		}
-		return new Modifier(first + seconds);
+		return mod;
 	}
-
-	public boolean same(Modifier other) {
-		return this.getName().equalsIgnoreCase(other.getName());
-	}
-
+	
 	public boolean has(Modifier other) {
-		return this.getName().contains(other.getName());
+		if(this.getName().equals(other.getName())) {
+			return true;
+		}
+		if(this.children != null) {
+			for(GraphMember member : this.children) {
+				if((member instanceof Modifier) == false) {
+					continue;
+				}
+				if(((Modifier)member).has(other)) {
+					return true;
+				}
+			}
+		}
+		return false;
+				
 	}
 
 	@Override
