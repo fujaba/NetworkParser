@@ -43,8 +43,14 @@ public class Clazz extends GraphEntity {
 		return this;
 	}
 
-	public Clazz enableEnumeration() {
+	public Clazz enableEnumeration(String... literals) {
 		this.with(ClazzType.ENUMERATION);
+		if(literals == null) {
+			return this;
+		}
+		for(String item : literals) {
+			this.with(new Literal(item));
+		}
 		return this;
 	}
 	
@@ -95,16 +101,16 @@ public class Clazz extends GraphEntity {
 		super.with(values);
 		return this;
 	}
-	public Clazz with(GraphLiteral... values) {
+	public Clazz with(Literal... values) {
 		super.with(values);
 		return this;
 	}
 	
-	public SimpleSet<GraphLiteral> getValues() {
-		SimpleSet<GraphLiteral> collection = new SimpleSet<GraphLiteral>();
+	public SimpleSet<Literal> getValues() {
+		SimpleSet<Literal> collection = new SimpleSet<Literal>();
 		for (GraphMember child : children) {
-			if (child instanceof GraphLiteral)  {
-				collection.add((GraphLiteral) child);
+			if (child instanceof Literal)  {
+				collection.add((Literal) child);
 			}
 		}
 		return collection;
@@ -139,7 +145,7 @@ public class Clazz extends GraphEntity {
 		return this;
 	}
 	
-	public Clazz without(GraphLiteral... values) {
+	public Clazz without(Literal... values) {
 		super.without(values);
 		return this;
 	}
@@ -163,10 +169,10 @@ public class Clazz extends GraphEntity {
 	 */
 	public Clazz withBidirectional(Clazz tgtClass, String tgtRoleName, Cardinality tgtCardinality, String srcRoleName, Cardinality srcCardinality) {
 		// Target
-		Association assocTarget = new Association(tgtClass, tgtCardinality).with(tgtRoleName);
+		Association assocTarget = new Association(tgtClass).with(tgtCardinality).with(tgtRoleName);
 
 		// Source
-		Association assocSource = new Association(this, srcCardinality).with(srcRoleName);
+		Association assocSource = new Association(this).with(srcCardinality).with(srcRoleName);
 		
 		assocSource.with(assocTarget);
 
@@ -191,7 +197,7 @@ public class Clazz extends GraphEntity {
 	 */
 	public Clazz withUniDirectional(Clazz tgtClass, String tgtRoleName, Cardinality tgtCardinality) {
 		// Target
-		Association assocTarget = new Association(tgtClass, tgtCardinality);
+		Association assocTarget = new Association(tgtClass).with(tgtCardinality);
 		assocTarget.with(AssociationTypes.UNDIRECTIONAL).with(tgtRoleName);
 
 		// Source

@@ -35,15 +35,10 @@ public class Association extends GraphMember {
 	Association() {
 	}
 	
-	Association(GraphEntity node) {
+	public Association(GraphEntity node) {
 		with(node);
 	}
 	
-	public Association(Clazz node, Cardinality cardinality) {
-		with(node);
-		with(cardinality);
-	}
-
 	public Cardinality getCardinality() {
 		if(cardinality != null) {
 			return cardinality;
@@ -266,4 +261,13 @@ public class Association extends GraphMember {
 		}
 		return true;
 	}
+	public Association with(Annotation value) {
+		withAnnotaion(value);
+		return this;
+	}
+	public Association without(Annotation value) {
+		super.without(value);
+		return this;
+	}
+
 }

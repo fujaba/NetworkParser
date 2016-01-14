@@ -32,7 +32,7 @@ import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.GraphList;
-import de.uniks.networkparser.graph.GraphLiteral;
+import de.uniks.networkparser.graph.Literal;
 import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.graph.Clazz.ClazzType;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -402,7 +402,7 @@ public class EMFIdMap extends XMLIdMap {
 				Clazz graphEnum = new Clazz().with(ClazzType.ENUMERATION);
 				graphEnum.with(eClassifier.getString(EMFIdMap.NAME));
 				for(XMLEntity child : eClassifier.getChildren()) {
-					GraphLiteral literal = new GraphLiteral().with(child.getString(EMFIdMap.NAME));
+					Literal literal = new Literal(child.getString(EMFIdMap.NAME));
 					for(String key : child.keySet()) {
 						if(key.equals(EMFIdMap.NAME)) {
 							continue;
@@ -460,7 +460,7 @@ public class EMFIdMap extends XMLIdMap {
 		Association edge = items.getValue(assocName);
 		if(edge == null) {
 			Clazz clazz = model.getNode(className);
-			edge = new Association(clazz, Cardinality.ONE).with(roleName);
+			edge = new Association(clazz).with(Cardinality.ONE).with(roleName);
 			if(roleName != null) {
 				items.add(assocName, edge);
 			}

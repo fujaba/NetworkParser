@@ -126,15 +126,7 @@ public class Attribute extends Value {
 	}
 
 	public Attribute with(Annotation value) {
-		// Remove Old GraphAnnotation
-		if(this.children != null) {
-			for(int i=this.children.size();i>=0;i--) {
-				if(this.children.get(i) instanceof Annotation) {
-					this.children.remove(i);
-				}
-			}
-		}
-		super.with(value);
+		super.withAnnotaion(value);
 		return this;
 	}
 }

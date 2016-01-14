@@ -27,27 +27,29 @@ permissions and limitations under the Licence.
 */
 public class Annotation extends GraphMember implements IdMapDecoder {
 	// ==========================================================================
-	public static final Annotation DEPRECATED = new Annotation().with("Deprecated");
+	public static final Annotation DEPRECATED = new Annotation("Deprecated");
 
 	// ==========================================================================
-	public static final Annotation OVERRIDE = new Annotation().with("Override");
+	public static final Annotation OVERRIDE = new Annotation("Override");
 
 	// ==========================================================================
-	public static final Annotation SAFE_VARGARGS = new Annotation().with("SafeVarargs");
+	public static final Annotation SAFE_VARGARGS = new Annotation("SafeVarargs");
 
 	// ==========================================================================
-	public static final Annotation SUPPRESS_WARNINGS = new Annotation().with("SuppressWarnings");
+	public static final Annotation SUPPRESS_WARNINGS = new Annotation("SuppressWarnings");
 
 	private SimpleList<Annotation> value;
 	private boolean keyValue;
 	private Annotation nextAnnotaton;
 
-	public Annotation with(String name) {
-		super.with(name);
-		return this;
+	Annotation() {
 	}
 
 	
+	public Annotation(String name) {
+		super.with(name);
+	}
+
 	public static Annotation create(String value) {
 		Annotation annotation = new Annotation();
 		annotation.decode(value);

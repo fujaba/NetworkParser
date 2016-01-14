@@ -112,4 +112,17 @@ public abstract class GraphMember {
 	public String getName() {
 		return this.name;
 	}
+	
+	protected GraphMember withAnnotaion(Annotation value) {
+		// Remove Old GraphAnnotation
+		if(this.children != null) {
+			for(int i=this.children.size();i>=0;i--) {
+				if(this.children.get(i) instanceof Annotation) {
+					this.children.remove(i);
+				}
+			}
+		}
+		with(value);
+		return this;
+	}
 }

@@ -206,7 +206,7 @@ public class GraphIdMap extends IdMap {
 	}
 
 	Association createEdge(Clazz node, Cardinality cardinality, String property) {
-		Association newElement = new Association(node, cardinality).with(property);
+		Association newElement = new Association(node).with(cardinality).with(property);
 		initItem(newElement);
 		return newElement;
 	}

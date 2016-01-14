@@ -24,15 +24,19 @@ package de.uniks.networkparser.graph;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.StringList;
 
-public class GraphLiteral extends GraphMember{
+public class Literal extends GraphMember{
 	private SimpleKeyValueList<String, StringList> values=new SimpleKeyValueList<String, StringList>();
 	
+	public Literal(String name) {
+		super.with(name);
+	}
+	
 	@Override
-	public GraphLiteral with(String name) {
+	public Literal with(String name) {
 		super.with(name);
 		return this;
 	}
-	public GraphLiteral withKeyValue(String key, Object value) {
+	public Literal withKeyValue(String key, Object value) {
 		if(value instanceof StringList) {
 			this.values.put(key, (StringList) value);
 			return this;

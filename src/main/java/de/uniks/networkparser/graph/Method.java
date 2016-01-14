@@ -238,7 +238,6 @@ public class Method extends GraphMember {
 	}
 
 	public Method with(Annotation value) {
-		// Remove Old GraphAnnotation
 		if(this.children != null) {
 			for(int i=this.children.size();i>=0;i--) {
 				if(this.children.get(i) instanceof Annotation) {
