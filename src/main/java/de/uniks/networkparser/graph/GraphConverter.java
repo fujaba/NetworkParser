@@ -137,8 +137,8 @@ public class GraphConverter implements Converter {
 					// Must be a Link to 1
 					Clazz newNode = parseJsonObject(root,
 							(JsonObject) props.getValueByIndex(i), attributes);
-					root.add(new Association().with(graphNode).with(
-							new Association().with(newNode, Cardinality.ONE, props
+					root.add(new Association(graphNode).with(
+							new Association(newNode, Cardinality.ONE).with(props
 									.getKeyByIndex(i))));
 				} else if (props.getValueByIndex(i) instanceof JsonArray) {
 					// Must be a Link to n
@@ -148,9 +148,8 @@ public class GraphConverter implements Converter {
 						if (entity instanceof JsonObject) {
 							Clazz newNode = parseJsonObject(root,
 									(JsonObject) entity, attributes);
-							root.add(new Association().with(graphNode).with( 
-									new Association().with(newNode, Cardinality.MANY,
-											props.getKeyByIndex(i))));
+							root.add(new Association(graphNode).with( 
+									new Association(newNode, Cardinality.MANY).with(props.getKeyByIndex(i))));
 						} else {
 							if (sb.length() > 0) {
 								sb.append("," + entity.toString());

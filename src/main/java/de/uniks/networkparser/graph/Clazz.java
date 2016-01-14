@@ -163,12 +163,10 @@ public class Clazz extends GraphEntity {
 	 */
 	public Clazz withBidirectional(Clazz tgtClass, String tgtRoleName, Cardinality tgtCardinality, String srcRoleName, Cardinality srcCardinality) {
 		// Target
-		Association assocTarget = new Association();
-		assocTarget.with(tgtClass, tgtCardinality, tgtRoleName);
+		Association assocTarget = new Association(tgtClass, tgtCardinality).with(tgtRoleName);
 
 		// Source
-		Association assocSource = new Association();
-		assocSource.with(this, srcCardinality, srcRoleName);
+		Association assocSource = new Association(this, srcCardinality).with(srcRoleName);
 		
 		assocSource.with(assocTarget);
 
@@ -193,12 +191,11 @@ public class Clazz extends GraphEntity {
 	 */
 	public Clazz withUniDirectional(Clazz tgtClass, String tgtRoleName, Cardinality tgtCardinality) {
 		// Target
-		Association assocTarget = new Association();
-		assocTarget.with(AssociationTypes.UNDIRECTIONAL);
-		assocTarget.with(tgtClass, tgtCardinality, tgtRoleName);
+		Association assocTarget = new Association(tgtClass, tgtCardinality);
+		assocTarget.with(AssociationTypes.UNDIRECTIONAL).with(tgtRoleName);
 
 		// Source
-		Association assocSource = new Association();
+		Association assocSource = new Association(this);
 		assocSource.with(AssociationTypes.EDGE);
 		assocSource.with(assocTarget);
 
@@ -272,8 +269,8 @@ public class Clazz extends GraphEntity {
 					}
 				}
 				if(found == false) {
-					Association child = new Association().with(AssociationTypes.EDGE).with(item);
-					child.with(new Association().with(AssociationTypes.GENERALISATION).with(this));
+					Association child = new Association(item).with(AssociationTypes.EDGE);
+					child.with(new Association(this).with(AssociationTypes.GENERALISATION));
 				}
 			}
 		}
@@ -379,8 +376,8 @@ public class Clazz extends GraphEntity {
 					}
 				}
 				if(found == false) {
-					Association child = new Association().with(AssociationTypes.GENERALISATION).with(item);
-					child.with(new Association().with(AssociationTypes.EDGE).with(this));
+					Association child = new Association(item).with(AssociationTypes.GENERALISATION);
+					child.with(new Association(this).with(AssociationTypes.EDGE));
 				}
 			}
 		}

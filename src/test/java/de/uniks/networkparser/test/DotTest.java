@@ -8,10 +8,10 @@ import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.uniks.networkparser.DotIdMap;
 import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
+import de.uniks.networkparser.graph.DotIdMap;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.interfaces.BaseItem;
 

@@ -162,9 +162,9 @@ public class GraphIdMap extends IdMap {
 		SendableEntityCreator valueCreater = getCreatorClass(item);
 		if (valueCreater != null) {
 			Clazz subId = parse(item, filter, list, deep + 1);
-			Association edge = new Association();
+			Association edge = new Association(element);
 			initItem(edge);
-			list.add(edge.with(element).with(this.createEdge(subId, cardinality, property)));
+			list.add(edge.with(this.createEdge(subId, cardinality, property)));
 		} else {
 			Attribute attribute = element.createAttribute(property, DataType.ref(item.getClass()));
 			attribute.withValue("" + item);
@@ -206,9 +206,9 @@ public class GraphIdMap extends IdMap {
 	}
 
 	Association createEdge(Clazz node, Cardinality cardinality, String property) {
-		Association newElement = new Association();
+		Association newElement = new Association(node, cardinality).with(property);
 		initItem(newElement);
-		return newElement.with(node, cardinality, property);
+		return newElement;
 	}
 	
 	protected void initItem(GraphMember item) {

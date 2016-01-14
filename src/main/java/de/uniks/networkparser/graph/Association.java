@@ -32,11 +32,16 @@ public class Association extends GraphMember {
 	private Association other;
 	private AssociationTypes type = AssociationTypes.ASSOCIATION;
 
-	Association with(Clazz node, Cardinality cardinality, String property) {
+	Association() {
+	}
+	
+	Association(GraphEntity node) {
+		with(node);
+	}
+	
+	public Association(Clazz node, Cardinality cardinality) {
 		with(node);
 		with(cardinality);
-		with(property);
-		return this;
 	}
 
 	public Cardinality getCardinality() {
@@ -147,8 +152,8 @@ public class Association extends GraphMember {
 	}
 	
 	public static Association create(GraphEntity source, GraphEntity target){
-		Association edge = new Association().with(source);
-		edge.with(new Association().with(target));
+		Association edge = new Association(source);
+		edge.with(new Association(target));
 		return edge;
 	}
 

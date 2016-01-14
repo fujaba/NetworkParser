@@ -460,7 +460,7 @@ public class EMFIdMap extends XMLIdMap {
 		Association edge = items.getValue(assocName);
 		if(edge == null) {
 			Clazz clazz = model.getNode(className);
-			edge = new Association().with(clazz).with(Cardinality.ONE).with(roleName);
+			edge = new Association(clazz, Cardinality.ONE).with(roleName);
 			if(roleName != null) {
 				items.add(assocName, edge);
 			}
