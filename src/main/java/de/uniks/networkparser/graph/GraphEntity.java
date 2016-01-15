@@ -59,7 +59,7 @@ public abstract class GraphEntity extends GraphMember {
 	}
 	
 	GraphMember getByObject(String clazz, boolean fullName) {
-		if(clazz == null){
+		if(clazz == null || children == null){
 			return null;
 		}
 		String sub = clazz;

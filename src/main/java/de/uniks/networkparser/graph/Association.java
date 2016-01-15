@@ -253,6 +253,9 @@ public class Association extends GraphMember {
 	}
 	
 	boolean containsAll(Association others, boolean both) {
+		if(children == null) {
+			return false;
+		}
 		if(! children.containsAll(others.getChildren()) ) {
 			return false;
 		}
