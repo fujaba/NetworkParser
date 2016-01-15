@@ -42,13 +42,15 @@ public class Attribute extends Value {
 	}
 	
 	public Modifier getVisibility() {
-		for (GraphMember child : children) {
-			if (child instanceof Modifier)  {
-				return (Modifier) child;
+		if(children != null) {
+			for (GraphMember child : children) {
+				if (child instanceof Modifier)  {
+					return (Modifier) child;
+				}
 			}
 		}
 		Modifier mod = Modifier.PRIVATE;
-		with(mod);
+		super.with(mod);
 		return mod;
 	}
 

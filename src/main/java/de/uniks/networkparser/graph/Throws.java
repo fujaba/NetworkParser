@@ -22,6 +22,8 @@ permissions and limitations under the Licence.
 */
 
 public class Throws extends GraphMember {
-
+	public Throws(String name) {
+		super.with(name);
+	}
 }
 

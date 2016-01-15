@@ -241,8 +241,10 @@ public class Clazz extends GraphEntity {
 		}
 		for (Association assoc : associations) {
 			Clazz clazz = assoc.getOtherClazz();
-			if (GraphUtil.isInterface(clazz)) {
-				interfaces.with(clazz);
+			if(assoc.getTyp()==AssociationTypes.GENERALISATION || assoc.getTyp()==AssociationTypes.IMPLEMENTS) {
+				if (GraphUtil.isInterface(clazz)) {
+					interfaces.with(clazz);
+				}
 			}
 		}
 		if(!transitive) {

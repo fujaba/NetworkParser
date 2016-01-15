@@ -44,7 +44,6 @@ public abstract class GraphMember {
 	 */
 	public GraphMember with(String name) {
 		setName(name);
-		this.name = name;
 		return this;
 	}
 
