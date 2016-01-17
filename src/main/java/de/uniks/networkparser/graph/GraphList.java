@@ -21,7 +21,6 @@ package de.uniks.networkparser.graph;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import java.util.Iterator;
 import de.uniks.networkparser.event.SimpleMapEntry;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
@@ -55,29 +54,14 @@ public class GraphList extends GraphModel implements BaseItem{
 	public GraphList withEdge(String sourceName, String targetName) {
 		Association edge = new Association().with(sourceName).with(
 				new Association().with(targetName));
-		add(edge);
+		super.with(edge);
 		return this;
 	}
 
-	public boolean add(Association edge) {
-		for (Iterator<Association> i = this.associations.iterator(); i.hasNext();) {
-			Association item = i.next();
-			if (edge.getOther()!= null && item.containsAll(edge.getOther(), true)) {
-				// Back again
-				if(edge.getOther() != null ) {	
-					item.with(edge.getOther().getCardinality());
-					item.with(edge.getOther().getName());
-				}
-				return false;
-			}
-		}
-		return this.associations.add(edge);
-	}
-	
 	public SimpleKeyValueList<String, Object> getLinks() {
 		SimpleKeyValueList<String, Object> links = new SimpleKeyValueList<String, Object>();
 		for (Association element : associations) {
-			for (GraphEntity node : element.getNodes()) {
+			for (GraphEntity node : element.getNodes2()) {
 				String key = node.getTyp(typ, false);
 				SimpleList<?> value = (SimpleList<?>)links
 						.getValueItem(key);
@@ -121,22 +105,17 @@ public class GraphList extends GraphModel implements BaseItem{
 	}
 	
 	public GraphList with(GraphList... values) {
-		super.with(values);
+		super.withChildren(true, values);
 		return this;
 	}
 
 	public GraphPattern with(GraphPattern value) {
-		super.with(value);
+		super.withChildren(true, value);
 		return value;
 	}
 
-	public Association with(Association value) {
-		add(value);
-		return value;
-	}
-	
 	public GraphList withNode(GraphEntity... value) {
-		super.with(value);
+		super.withChildren(true, value);
 		return this;
 	}
 	
@@ -172,13 +151,7 @@ public class GraphList extends GraphModel implements BaseItem{
 	
 
 	public SimpleSet<GraphEntity> getNodes() {
-		SimpleSet<GraphEntity> nodes = new SimpleSet<GraphEntity>();
-		for(GraphMember item : this.getChildren()) {
-			if(item instanceof GraphEntity){
-				nodes.add((GraphEntity)item);
-			}
-		}
-		return nodes;
+		return super.getNodes2();
 	}
 	
 	public SimpleSet<Association> getEdges() {
@@ -198,14 +171,34 @@ public class GraphList extends GraphModel implements BaseItem{
 	}
 
 	@Override
-	public BaseItem withAll(Object... values) {
-		this.children.withAll(values);
+	public GraphList withAll(Object... values) {
+		if (values == null) {
+			return this;
+		}
+		for(Object item : values) {
+			if(item instanceof GraphMember) {
+				super.withChildren(true, (GraphMember) item);
+			}
+		}
 		return this;
 	}
 
 	@Override
 	public Object getValueItem(Object key) {
-		return this.children.getValueItem(key);
+		if(this.children == null) {
+			return null;
+		}
+		if(this.children instanceof GraphMember) {
+			if(this.children == key) {
+				return this.children;
+			}
+			return null;
+		}
+		if(this.children instanceof GraphSimpleSet) {
+			GraphSimpleSet collection = (GraphSimpleSet) this.children;
+			return collection.getValueItem(key);
+		}
+		return null;
 	}
 
 	@Override

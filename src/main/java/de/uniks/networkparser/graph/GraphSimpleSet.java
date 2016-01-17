@@ -23,7 +23,7 @@ package de.uniks.networkparser.graph;
 */
 import de.uniks.networkparser.list.SimpleSet;
 
-public class GraphSimpleSet<V> extends SimpleSet<V>{
+public class GraphSimpleSet extends SimpleSet<GraphMember> {
 	@Override
 	protected boolean checkValue(Object a, Object b) {
 		if(!(a instanceof GraphMember)) {

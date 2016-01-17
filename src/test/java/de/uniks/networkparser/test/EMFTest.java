@@ -23,7 +23,7 @@ public class EMFTest extends IOClasses{
 		StringBuffer value = readFile("railway.ecore");
 		GraphList model = EMFIdMap.decoding(value.toString());
 		Assert.assertEquals(9, model.getClazzes().size()); 
-		Assert.assertEquals("[Segment|length:int],[TrackElement]-[TrackElement],[Route]-[RailwayContainer],[Semaphore|signal:Signal]-[Route],[Semaphore]-[Route],[Semaphore]-[RailwayContainer],[SwitchPosition|position:Position]-[Switch|currentPosition:Position],[SwitchPosition]-[Route],[RailwayElement|id:int]-[RailwayContainer],[Sensor]-[TrackElement],[Sensor]-[Route]", model.toString());
+		Assert.assertEquals("[Segment|length:int],[TrackElement]-[TrackElement],[Switch|currentPosition:Position]-[SwitchPosition|position:Position],[Route]-[SwitchPosition],[Route]-[RailwayContainer],[Semaphore|signal:Signal]-[Route],[Semaphore]-[Route],[RailwayElement|id:int]-[RailwayContainer],[Sensor]-[TrackElement]", model.toString());
 	}
 	
 	@Test

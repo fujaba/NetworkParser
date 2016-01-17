@@ -21,12 +21,11 @@ package de.uniks.networkparser.graph;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import java.util.ArrayList;
 import java.util.Iterator;
-
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.list.SimpleSet;
 
 public class YUMLConverter implements Converter {
 	/** The Constant URL. */
@@ -35,37 +34,37 @@ public class YUMLConverter implements Converter {
 	@Override
 	public String convert(GraphList root, boolean removePackage) {
 		String typ = root.getTyp();
-		if (root.getChildren().size() > 0) {
+		GraphSimpleSet collection = root.getChildren();
+		if (collection.size() > 0) {
 			StringBuilder sb = new StringBuilder();
-			Iterator<GraphMember> i = root.getChildren().iterator();
+			Iterator<GraphMember> i = collection.iterator();
 
-			ArrayList<GraphEntity> visitedObj = new ArrayList<GraphEntity>();
+			SimpleList<GraphEntity> visitedObj = new SimpleList<GraphEntity>();
 			root.initSubLinks();
 			SimpleKeyValueList <String, Object> links = root.getLinks();
 			parse(typ, i.next(), sb, visitedObj, links, removePackage);
 			while (i.hasNext()) {
 				parse(typ, i.next(), sb, visitedObj, links, removePackage);
 			}
+			
 			return sb.toString();
 		}
 		return null;
 	}
 
 	public void parse(String typ, GraphMember item, StringBuilder sb,
-			ArrayList<GraphEntity> visited,
-			SimpleKeyValueList<String, Object> links, boolean shortName) {
+			SimpleList<GraphEntity> visited, SimpleKeyValueList<String, Object> links, boolean shortName) {
 		if(item instanceof GraphEntity) {
 			parse(typ, (GraphEntity) item, sb, visited, links, shortName);
 		}
 	}
 	public void parse(String typ, GraphEntity item, StringBuilder sb,
-			ArrayList<GraphEntity> visited,
-			SimpleKeyValueList<String, Object> links, boolean shortName) {
+			SimpleList<GraphEntity> visited, SimpleKeyValueList<String, Object> links, boolean shortName) {
 		String key = item.getTyp(typ, shortName);
 		SimpleList<?> showedLinks = (SimpleList<?>) links
 				.getValueItem(key);
 		if (showedLinks == null) {
-			if (sb.length() < 1) {
+			if(visited.contains(item) == false) {
 				sb.append(parseEntity(item, visited, typ, shortName));
 			}
 			return;
@@ -83,7 +82,8 @@ public class YUMLConverter implements Converter {
 			sb.append(parseEntity(item, visited, typ, shortName));
 			sb.append("-");
 
-			Iterator<GraphEntity> targetIterator = element.getOther().getNodes().iterator();
+			SimpleSet<GraphEntity> targetCollection = element.getOther().getNodes2();
+			Iterator<GraphEntity> targetIterator = targetCollection.iterator();
 			GraphEntity target = targetIterator.next();
 			sb.append(parseEntity(target, visited, typ, shortName));
 
@@ -95,14 +95,14 @@ public class YUMLConverter implements Converter {
 			}
 		}
 	}
-
+	
 	// ##################################### Entity
-	public String parseEntity(GraphEntity entity, ArrayList<GraphEntity> visited,
+	public String parseEntity(GraphEntity entity, SimpleList<GraphEntity> visited,
 			boolean shortName) {
 		return parseEntity(entity, visited, null, shortName);
 	}
 
-	public String parseEntity(GraphEntity entity, ArrayList<GraphEntity> visited,
+	public String parseEntity(GraphEntity entity, SimpleList<GraphEntity> visited,
 			String typ, boolean shortName) {
 		if(!(entity instanceof Clazz)){
 			return "";

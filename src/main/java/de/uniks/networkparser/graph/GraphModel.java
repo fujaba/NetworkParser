@@ -41,9 +41,15 @@ public abstract class GraphModel extends GraphEntity {
 		if (children == null) {
 			return collection;
 		}
-		for (GraphMember child : children) {
-			if (child instanceof Clazz)  {
-				collection.add((Clazz) child);
+		if(children instanceof Clazz) {
+			collection.add((Clazz)children);
+		}
+		if(children instanceof GraphSimpleSet) {
+			GraphSimpleSet items = (GraphSimpleSet)children;
+			for (GraphMember child : items) {
+				if (child instanceof Clazz)  {
+					collection.add((Clazz) child);
+				}
 			}
 		}
 		return collection;
@@ -56,7 +62,7 @@ public abstract class GraphModel extends GraphEntity {
 	}
 
 	public GraphModel with(Clazz... values) {
-		super.with(values);
+		super.withChildren(true, values);
 		return this;
 	}
 
@@ -65,6 +71,11 @@ public abstract class GraphModel extends GraphEntity {
 		return this;
 	}
 
+	public GraphModel with(Association... values) {
+		super.with(values);
+		return this;
+	}
+	
 	@Override
 	public GraphModel with(String name) {
 		super.with(name);

@@ -29,6 +29,7 @@ import java.util.Iterator;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.Association;
+import de.uniks.networkparser.graph.AssociationTypes;
 import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.GraphList;
@@ -59,7 +60,6 @@ public class EMFIdMap extends XMLIdMap {
 	public static final String XSI_TYPE = "xsi:type";
 	public static final String XMI_ID = "xmi:id";
 	public static final String NAME = "name";
-//	SimpleKeyValueList<String, Integer> runningNumbers = null;
 	HashMap<String, Integer> runningNumbers = null;
 	private GraphList model;
 
@@ -364,6 +364,7 @@ public class EMFIdMap extends XMLIdMap {
 			}
 		}
 	}
+
 	public static GraphList decoding(String content) {
 		GraphList model = new GraphList();
 		
@@ -449,11 +450,14 @@ public class EMFIdMap extends XMLIdMap {
 				srcRoleName = EntityUtil.getId(eref.getString(EOpposite));
 			}
 			Association srcAssoc = getOrCreate(items, model, srcClassName, srcRoleName);
+			// Create as Unidirection
 			tgtAssoc.with(srcAssoc);
+			srcAssoc.with(AssociationTypes.EDGE);
 			model.with(tgtAssoc);
 		}
 		return model;
 	}
+
 	private static Association getOrCreate(SimpleKeyValueList<String, Association> items, GraphList model, String className, String roleName) {
 		roleName = EntityUtil.toValidJavaId(roleName);
 		String assocName = className+":"+roleName;

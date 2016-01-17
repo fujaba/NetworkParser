@@ -78,17 +78,17 @@ public class Clazz extends GraphEntity {
 	}
 	
 	public Clazz with(Modifier... values) {
-		super.with(values);
+		super.withChildren(true, values);
 		return this;
 	}
 	
 	public Clazz with(Attribute... values) {
-		super.with(values);
+		super.withChildren(true, values);
 		return this;
 	}
 
 	public Clazz with(Method... values) {
-		super.with(values);
+		super.withChildren(true, values);
 		return this;
 	}
 	
@@ -98,23 +98,34 @@ public class Clazz extends GraphEntity {
 	}
 	
 	public Clazz with(GraphImage... values) {
-		super.with(values);
+		super.withChildren(true, values);
 		return this;
 	}
 	public Clazz with(Literal... values) {
-		super.with(values);
+		super.withChildren(true, values);
 		return this;
 	}
 	
 	public SimpleSet<Literal> getValues() {
 		SimpleSet<Literal> collection = new SimpleSet<Literal>();
-		for (GraphMember child : children) {
-			if (child instanceof Literal)  {
-				collection.add((Literal) child);
+		if(this.children == null) {
+			return collection;
+		}
+		if(this.children instanceof Literal) {
+			collection.add((Literal)this.children);
+			return collection;
+		}
+		if(this.children instanceof GraphSimpleSet) {
+			GraphSimpleSet list = (GraphSimpleSet) this.children;
+			for(GraphMember item : list) {
+				if(item instanceof Literal) {
+					collection.add((Literal)item);	
+				}
 			}
 		}
 		return collection;
 	}
+
 	public Clazz without(Association... values) {
 		super.without(values);
 		return this;
@@ -170,6 +181,7 @@ public class Clazz extends GraphEntity {
 	public Clazz withBidirectional(Clazz tgtClass, String tgtRoleName, Cardinality tgtCardinality, String srcRoleName, Cardinality srcCardinality) {
 		// Target
 		Association assocTarget = new Association(tgtClass).with(tgtCardinality).with(tgtRoleName);
+		tgtClass.with(assocTarget);
 
 		// Source
 		Association assocSource = new Association(this).with(srcCardinality).with(srcRoleName);
@@ -198,6 +210,7 @@ public class Clazz extends GraphEntity {
 	public Clazz withUniDirectional(Clazz tgtClass, String tgtRoleName, Cardinality tgtCardinality) {
 		// Target
 		Association assocTarget = new Association(tgtClass).with(tgtCardinality);
+		tgtClass.with(assocTarget);
 		assocTarget.with(AssociationTypes.UNDIRECTIONAL).with(tgtRoleName);
 
 		// Source
@@ -418,12 +431,19 @@ public class Clazz extends GraphEntity {
 	 */
 	public SimpleSet<Attribute> getAttributes() {
 		SimpleSet<Attribute> collection = new SimpleSet<Attribute>();
-		if (children == null) {
+		if(this.children == null) {
 			return collection;
 		}
-		for (GraphMember child : children) {
-			if (child instanceof Attribute)  {
-				collection.add((Attribute) child);
+		if(this.children instanceof Attribute) {
+			collection.add((Attribute)this.children);
+			return collection;
+		}
+		if(this.children instanceof GraphSimpleSet) {
+			GraphSimpleSet list = (GraphSimpleSet) this.children;
+			for(GraphMember item : list) {
+				if(item instanceof Attribute) {
+					collection.add((Attribute)item);	
+				}
 			}
 		}
 		return collection;
@@ -442,12 +462,19 @@ public class Clazz extends GraphEntity {
 	 */
 	public SimpleSet<Method> getMethods() {
 		SimpleSet<Method> collection = new SimpleSet<Method>();
-		if (children == null) {
+		if(this.children == null) {
 			return collection;
 		}
-		for (GraphMember child : children) {
-			if (child instanceof Method)  {
-				collection.add((Method) child);
+		if(this.children instanceof Method) {
+			collection.add((Method)this.children);
+			return collection;
+		}
+		if(this.children instanceof GraphSimpleSet) {
+			GraphSimpleSet list = (GraphSimpleSet) this.children;
+			for(GraphMember item : list) {
+				if(item instanceof Method) {
+					collection.add((Method)item);	
+				}
 			}
 		}
 		return collection;
@@ -492,18 +519,25 @@ public class Clazz extends GraphEntity {
 	}
 
 	public Clazz with(ClazzImport... value) {
-		super.with(value);
+		super.withChildren(true, value);
 		return this;
 	}
 
 	public SimpleSet<ClazzImport> getImports() {
 		SimpleSet<ClazzImport> collection = new SimpleSet<ClazzImport>();
-		if (children == null) {
+		if(this.children == null) {
 			return collection;
 		}
-		for (GraphMember child : children) {
-			if (child instanceof ClazzImport)  {
-				collection.add((ClazzImport) child);
+		if(this.children instanceof ClazzImport) {
+			collection.add((ClazzImport)this.children);
+			return collection;
+		}
+		if(this.children instanceof GraphSimpleSet) {
+			GraphSimpleSet list = (GraphSimpleSet) this.children;
+			for(GraphMember item : list) {
+				if(item instanceof ClazzImport) {
+					collection.add((ClazzImport)item);	
+				}
 			}
 		}
 		return collection;
@@ -516,30 +550,27 @@ public class Clazz extends GraphEntity {
 		if (this.children == null) {
 			return false;
 		}
-		for (GraphMember item : children) {
-			if((item instanceof Modifier) == false) {
-				continue;
-			}
+		if (this.children instanceof Modifier) {
 			Modifier modifier = value;
-			if(modifier.getName().equals(modifier.getName())) {
-				return true;
+			return modifier.getName().equals(modifier.getName());
+		}
+		if(this.children instanceof GraphSimpleSet) {
+			GraphSimpleSet items = (GraphSimpleSet) this.children; 
+			for (GraphMember item : items) {
+				if((item instanceof Modifier) == false) {
+					continue;
+				}
+				Modifier modifier = value;
+				if(modifier.getName().equals(modifier.getName())) {
+					return true;
+				}
 			}
 		}
 		return false;
 	}
 
-	public SimpleSet<Modifier> getModifiers() {
-		SimpleSet<Modifier> collection = new SimpleSet<Modifier>();
-		if (children == null ) {
-			return collection;
-		}
-		for (GraphMember child : children) {
-			if((child instanceof Modifier) == false) {
-				continue;
-			}
-			collection.add((Modifier) child);
-		}
-		return collection;
+	public Modifier getModifiers() {
+		return super.getModifiers();
 	}
 	
 	public Method createMethod(String name, Parameter... parameters) {

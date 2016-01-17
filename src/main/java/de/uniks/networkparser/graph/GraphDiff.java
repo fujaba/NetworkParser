@@ -49,7 +49,7 @@ public class GraphDiff extends GraphMember{
 			}
 			this.match = value;
 			if (value != null) {
-				value.with(this);
+				value.withChildren(true, this);
 			}
 		}
 		return this;

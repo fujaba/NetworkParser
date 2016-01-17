@@ -63,6 +63,13 @@ public class GraphUtil {
 	public static boolean isEnumeration(Clazz clazz) {
 		return clazz.getType() == ClazzType.ENUMERATION;
 	}
+	public static boolean isUndirectional(Association assoc) {
+		if(assoc.getTyp()==AssociationTypes.ASSOCIATION && assoc.getOtherTyp()==AssociationTypes.EDGE) {
+			return true;
+		}
+		return assoc.getOtherTyp()==AssociationTypes.ASSOCIATION && assoc.getTyp()==AssociationTypes.EDGE;
+	}
+	
 	public static SimpleSet<Association> getOtherAssociations(Clazz clazz) {
 		SimpleSet<Association> collection = new SimpleSet<Association>();
 		for(Association assoc : clazz.getAssociation()) {
@@ -80,12 +87,13 @@ public class GraphUtil {
 		}
 		if(value instanceof Association) {
 			Association assoc = (Association) value;
-			assoc.withOtherEdge(null);
+			assoc.withOther(null);
 			assoc.without(assoc.getClazz());
 		}
 		if(value instanceof Clazz) {
 			Clazz clazz = (Clazz) value;
-			clazz.without(clazz.getChildren().toArray(new GraphMember[clazz.getChildren().size()]));	
+			GraphSimpleSet collection = clazz.getChildren();
+			clazz.without(collection.toArray(new GraphMember[collection.size()]));	
 		}
 	}
 }

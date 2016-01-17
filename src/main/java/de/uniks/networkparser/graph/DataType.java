@@ -56,6 +56,9 @@ public class DataType {
 			return null;
 		}
 		String result = this.value.getName(shortName);
+		if(primitivAllow) {
+			return result;
+		}
 		if (!shortName || result == null || result.lastIndexOf(".") < 0) {
 			return EntityUtil.convertPrimitiveToObjectType(result);
 		}
@@ -101,10 +104,11 @@ public class DataType {
 
 	@Override
 	public String toString() {
-		if ("void int long double String boolean Object".indexOf(this.getName(false)) >= 0) {
-			return "DataType." + this.getName(false).toUpperCase();
+		String internName = this.getInternName(false, true);
+		if ("void int long double String boolean Object".indexOf(internName) >= 0) {
+			return "DataType." + internName.toUpperCase();
 		} else {
-			return "DataType.ref(\"" + this.getName(false) + "\")";
+			return "DataType.ref(\"" + internName + "\")";
 		}
 	}
 }

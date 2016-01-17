@@ -60,7 +60,7 @@ public class YUmlTest {
 	}
 	
 	@Test
-	public void testSimpleGrahList() {
+	public void testSimpleGraphList() {
 		GraphList list = new GraphList();
 		Clazz uni = list.with(new Clazz().with("UniKassel").with("University"));
 		uni.createAttribute("name", DataType.STRING);
@@ -69,5 +69,15 @@ public class YUmlTest {
 		student.withUniDirectional(uni, "owner", Cardinality.ONE);
 		YUMLConverter converter = new YUMLConverter();
 		Assert.assertEquals("[University|name:String]-[Student]", converter.convert(list, true));
+	}
+	
+	@Test
+	public void testSimpleGraph() {
+		GraphList list = new GraphList();
+		Clazz uni = list.with(new Clazz().with("UniKassel").with("University"));
+		uni.createAttribute("name", DataType.STRING);
+		list.with(new Clazz().with("Stefan").with("Student"));
+		YUMLConverter converter = new YUMLConverter();
+		Assert.assertEquals("[University|name:String][Student]", converter.convert(list, true));
 	}	
 }

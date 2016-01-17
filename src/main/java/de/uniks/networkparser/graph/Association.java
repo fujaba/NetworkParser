@@ -1,5 +1,7 @@
 package de.uniks.networkparser.graph;
 
+import de.uniks.networkparser.string.CharList;
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -43,8 +45,17 @@ public class Association extends GraphMember {
 		if(cardinality != null) {
 			return cardinality;
 		}
-		if(children != null && children.size() > 1){
-			return Cardinality.MANY;
+		if(children != null) {
+			GraphSimpleSet collection = getChildren();
+			int count=0;
+			for(GraphMember item : collection) {
+				if(item instanceof Clazz) {
+					count++;
+					if(count>1) {
+						return Cardinality.MANY;
+					}
+				}
+			}
 		}
 		return Cardinality.ONE;
 	}
@@ -58,22 +69,27 @@ public class Association extends GraphMember {
 		if(name != null) {
 			return name;
 		}
-		if(children != null && children.size() == 1) {
-			GraphMember item = children.get(0);
-			if(item instanceof Clazz) {
-				String className = ((Clazz)item).getName(true);
-				if(className != null) {
-					return className.toLowerCase();
+		if(children != null) {
+			GraphSimpleSet collection = super.getChildren();
+			if(collection.size() == 1) {
+				GraphMember item = collection.first();
+				if(item instanceof Clazz) {
+					String className = ((Clazz)item).getName(true);
+					if(className != null) {
+						return className.toLowerCase();
+					}
 				}
+				
 			}
-			
 		}
 		return null;
 	}
+	String name() {
+		return name;
+	}
 
-	
 	public Association with(GraphLabel label) {
-		super.with(label);
+		super.withChildren(true, label);
 		return this;
 	}
 	
@@ -81,7 +97,7 @@ public class Association extends GraphMember {
 		if (children == null && this.other.getChildren() == null) {
 			return null;
 		}
-		for (GraphMember child : children) {
+		for (GraphMember child : getChildren()) {
 			if (child instanceof GraphLabel)  {
 				return (GraphLabel) child;
 			}
@@ -95,23 +111,7 @@ public class Association extends GraphMember {
 	}
 
 	public Association with(GraphEntity... values) {
-		if (values == null) {
-			return this;
-		}
-		if(values.length==1) {
-			if(this.parentNode == null) {
-				this.parentNode = values[0];
-				values[0].with(this);
-				return this;
-			}else if(this.parentNode == values[0]) {
-				return this;
-			}
-		}
-		for (GraphEntity value : values) {
-			if(getChildren().add(value) ) {
-				value.with(this);
-			}
-		}
+		super.withChildren(false, values);
 		return this;
 	}
 	
@@ -120,7 +120,7 @@ public class Association extends GraphMember {
 		return this;
 	}
 
-	Association withOtherEdge(Association value) {
+	Association withOther(Association value) {
 		this.other = value;
 		return this;
 	}
@@ -130,7 +130,7 @@ public class Association extends GraphMember {
 			return this;
 		}
 		if(this.other != null) {
-			this.other.withOtherEdge(null);
+			this.other.withOther(null);
 		}
 		this.other = value;
 		getOther().with(this);
@@ -160,13 +160,13 @@ public class Association extends GraphMember {
 		if (getTyp() == AssociationTypes.GENERALISATION) {
 			return "-|>";
 		}
-		if (getOther().getTyp() == AssociationTypes.GENERALISATION) {
+		if (getOtherTyp() == AssociationTypes.GENERALISATION) {
 			return "<|-";
 		}
 		if (getTyp() == AssociationTypes.EDGE) {
 			return "->";
 		}
-		if (getOther().getTyp() == AssociationTypes.EDGE) {
+		if (getOtherTyp() == AssociationTypes.EDGE) {
 			return "<-";
 		}
 		return "-";
@@ -191,11 +191,9 @@ public class Association extends GraphMember {
 	}
 
 	public Clazz getClazz() {
-		if(parentNode instanceof Clazz) {
-			return (Clazz) parentNode;
-		}
-		if(getChildren().size()>0) {
-			GraphMember item = children.get(0);
+		GraphSimpleSet collection =  getChildren();
+		if(collection.size()>0) {
+			GraphMember item = collection.get(0);
 			if(item instanceof Clazz) {
 				return (Clazz)item;
 			}
@@ -205,45 +203,48 @@ public class Association extends GraphMember {
 	
 	@Override
 	public String toString() {
-		return getIds()+getSeperator()+getOther().getIds();
+		CharList charList = new CharList();
+		getIds(charList);
+		charList.with(getSeperator());
+		if(getOther() != null) {
+			getOther().getIds(charList);
+		}
+		return charList.toString();
 	}
 	
-	GraphSimpleSet<GraphEntity> getNodes() {
-		GraphSimpleSet<GraphEntity> values = new GraphSimpleSet<GraphEntity>(); 
-		for(GraphMember item : getChildren()) {
-			if(item instanceof GraphEntity) {
-				values.add((GraphEntity)item);
-			}
-		}
-		return values;
-	}
 
-	String getIds() {
-		StringBuilder sb=new StringBuilder();
-		if(parentNode != null){
-			sb.append(parentNode.getName());
-		} else if(children == null){
-			sb.append("[]");
-		}else if(children.size()>1) {
-			sb.append("[");
-			sb.append(children.get(0).getName());
-			for(int i=1;i<children.size();i++) {
-				sb.append(","+children.get(1).getName());
+	void getIds(CharList sb) {
+		if (children == null) {
+			sb.with("[]");
+		} else if (children instanceof GraphMember) {
+			sb.with(((GraphMember) children).getName());
+		} else if (children instanceof GraphSimpleSet) {
+			GraphSimpleSet collection = (GraphSimpleSet) children;
+			if (collection.size() < 1) {
+				return;
 			}
-			sb.append("]");
-		}else if(children.size()>0) {
-			sb.append(children.get(0).getName());
+			if (collection.size() == 1) {
+				sb.with(collection.get(0).getName());
+				return;
+			}
+			sb.with("[");
+			sb.with(collection.get(0).getName());
+			for (int i = 1; i < collection.size(); i++) {
+				sb.with("," + collection.get(1).getName());
+			}
+			sb.with("]");
 		}
-		return sb.toString();
 	}
 
 	boolean contains(GraphEntity key, boolean self, boolean other) {
 		boolean contains = false;
 		if (self) {
 			if(children == null) {
-				contains = this.parentNode == key;
-			} else {
-				contains = children.contains(key);
+				contains = false;
+			} else if(children instanceof GraphMember) {
+				contains = children == key;
+			} else if(children instanceof GraphSimpleSet) {
+				contains = ((GraphSimpleSet)children).contains(key);
 			}
 		}
 		if (other && contains == false) {
@@ -253,11 +254,14 @@ public class Association extends GraphMember {
 	}
 	
 	boolean containsAll(Association others, boolean both) {
+		GraphSimpleSet otherChildren = others.getChildren();
 		if(children == null) {
 			return false;
 		}
-		if(! children.containsAll(others.getChildren()) ) {
-			return false;
+		if(children instanceof GraphSimpleSet ) {
+			if (((GraphSimpleSet)children).containsAll(otherChildren) ) {
+				return false;
+			}
 		}
 		if(getOther()!= null && both) {
 			return getOther().containsAll(others.getOther(), false);

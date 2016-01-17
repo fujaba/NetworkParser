@@ -91,8 +91,10 @@ public class GraphLudoTest
 	  
 	  JsonArray jsonArray = jsonIdMap.toJsonArray(ludo);
 	  GraphConverter graphConverter = new GraphConverter();
+	  
+	  // May be 8 Asssocs and write 11
 	  JsonObject converter=graphConverter.convertToJson(GraphIdMap.CLASS, jsonArray, true);
-	  showDebugInfos(converter, 3529, null);
+	  showDebugInfos(converter, 3529, System.out);
    }
    private void showDebugInfos(JsonObject json, int len, PrintStream stream) {
 	   if(stream != null) {
@@ -124,81 +126,5 @@ public class GraphLudoTest
 	  JsonObject clazzModel=graphConverter.convertToJson(GraphIdMap.CLASS, jsonArray, true);
 	  showDebugInfos(clazzModel, 519, null);
  }
-   
-   
-//   @Test
-//   public void testLudoStoryboardManual()
-//   {
-//	  Storyboard storyboard = new Storyboard("examples", "LudoStoryboardManual");
-//	  
-//	  storyboard.add("Start situation: ",
-//		 DONE, "zuendorf", "19.07.2012 14:41:05", 1, 0);
-//	  
-//	  // create a simple ludo storyboard
-//	  
-//	  Player tom = new Player().withName("Tom").withColor("blue");
-//	  Player sabine = new Player().withName("Sabine").withColor(RED);
-//	  
-//	  Dice dice = new Dice().withValue(6)
-//			.withPlayer(tom);
-//	  
-//	  Pawn p8 = new Pawn().withColor("blue")
-//			.withPlayer(tom);
-//	  
-//	  Field tomStartField = new Field().withColor("blue").withKind("start");
-//	  tom.withStart(tomStartField);
-//	  
-//	  Field tmp = tomStartField;
-//	  for (int i = 0; i < 4; i++)
-//	  {
-//		 tmp = new Field().withPrev(tmp);
-//	  }
-//	  
-//	  Field tomBase = new Field().withColor("blue").withKind("base").withPawns(p8);
-//	  tom.withBase(tomBase);
-//	  
-//	  Pawn p9 = new Pawn().withColor(RED)
-//			.withPlayer(sabine)
-//			.withPos(tomStartField);
-//	  
-//	  JsonIdMap jsonIdMap = CreatorCreator.createIdMap("l1");
-//	  
-//	  storyboard.addObjectDiagram(jsonIdMap, tom);
-//	  
-//	  storyboard.add("now the pawn may move to Tom's start field");
-//	  
-//	  storyboard.markCodeStart();
-//	  // build move operation with SDM model transformations
-//	  Player player = p8.getPlayer();
-//	  
-//	  if (player.getDice() != null && player.getDice().getValue() == 6
-//			&& p8.getPos() != null && "base".equals(p8.getPos().getKind())
-//			&& p8.getPos() == player.getBase())
-//	  {
-//		 Field startField = player.getStart();
-//		 boolean hasOtherOwnPawn = false;
-//		 
-//		 for (Pawn otherOwnPawn : startField.getPawns())
-//		 {
-//			if (otherOwnPawn.getPlayer() == player)
-//			{
-//			   hasOtherOwnPawn = true;
-//			   break;
-//			}
-//		 }
-//		 
-//		 if ( ! hasOtherOwnPawn)
-//		 {
-//			p8.setPos(startField);
-//		 }
-//	  }
-//	  storyboard.addCode("examples");
-//	  
-//	  storyboard.addObjectDiagram(jsonIdMap, tom);
-//	  
-//	  StoryboardManager.get()
-//	  .add(storyboard)
-//	  .dumpHTML();
-//   }
 }
 

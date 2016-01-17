@@ -1,4 +1,6 @@
 package de.uniks.networkparser.graph;
+import java.util.Iterator;
+
 /*
 NetworkParser
 Copyright (c) 2011 - 2015, Stefan Lindel
@@ -67,7 +69,8 @@ public abstract class GraphEntity extends GraphMember {
 			sub = clazz.substring(clazz.lastIndexOf(".")+1);
 		}
 		String id;
-		for(GraphMember item : children) {
+		GraphSimpleSet collection = this.getChildren();
+		for(GraphMember item : collection) {
 			id = item.getFullId();
 			if(clazz.equalsIgnoreCase(id) || sub.equalsIgnoreCase(id)){
 				return item;
@@ -77,7 +80,7 @@ public abstract class GraphEntity extends GraphMember {
 			return null;
 		}
 		sub = "."+clazz.substring(clazz.lastIndexOf(".")+1);
-		for(GraphMember item : children) {
+		for(GraphMember item : collection) {
 			if(item instanceof Clazz) {
 				id = ((Clazz)item).getId();
 			} else {
@@ -110,25 +113,53 @@ public abstract class GraphEntity extends GraphMember {
 	protected GraphEntity with(Association... values) {
 		if (values != null) {
 			for (Association value : values) {
-				if(value != null) {
-					this.associations.add(value);
-					value.with(this);
-				}
+				addAssoc(value);
 			}
 		}
 		return this;
 	}
 	
-	public Annotation getAnnotation() {
-		if(this.children == null) {
-			return null;
-		}
-		for(GraphMember item : this.children) {
-			if(item instanceof Annotation) {
-				return (Annotation) item;
+	boolean addAssoc(Association assoc) {
+		boolean add=true;
+		if(assoc.getOther() != null) {
+			for (Iterator<Association> i = this.associations.iterator(); i.hasNext();) {
+				Association item = i.next();
+				if(isSame(item, assoc.getOther()) && isSame(item.getOther(), assoc)) {
+					if(GraphUtil.isUndirectional(item)) {
+						item.getOther().with(AssociationTypes.ASSOCIATION);
+						item.with(AssociationTypes.ASSOCIATION);
+					}
+					add=false;
+					break;
+				}else if (item.containsAll(assoc.getOther(), true) && item.getOther().name() == null && assoc.name()!= null) {
+                    item.getOther().with(assoc.getCardinality());
+                    item.getOther().with(assoc.getName());
+                    add=false;
+                    break;
+				}
 			}
 		}
-		return null;
+		if(add) {
+			this.associations.add(assoc);
+		}
+		return add;
+	}
+		
+	private static boolean isSame(Association o1, Association o2) {
+		if(o1.getClazz() != o2.getClazz()) {
+			return false;
+		}
+		if(o1.getName() == null ) {
+			if(o2.getName() == null) {
+				return true;
+			}
+			return false;
+		}
+		return o1.getName().equals(o2.getName());
+	}
+	
+	public Annotation getAnnotation() {
+		return super.getAnnotation();
 	}
 
 	public GraphEntity with(Annotation value) {

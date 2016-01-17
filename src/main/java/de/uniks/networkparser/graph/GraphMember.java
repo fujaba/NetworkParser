@@ -1,5 +1,7 @@
 package de.uniks.networkparser.graph;
 
+import de.uniks.networkparser.list.SimpleSet;
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -24,18 +26,45 @@ package de.uniks.networkparser.graph;
 
 public abstract class GraphMember {
 	protected String name;
-	protected GraphSimpleSet<GraphMember> children;
+	protected Object children;
 	protected GraphMember parentNode;
 	
 	String getFullId() {
 		return name;
 	}
 	// PACKAGE VISIBILITY
-	GraphSimpleSet<GraphMember> getChildren() {
-		if(this.children == null) {
-			this.children = new GraphSimpleSet<GraphMember>();
+	GraphSimpleSet getChildren() {
+		if(this.children instanceof GraphSimpleSet) {
+			return (GraphSimpleSet)this.children;
 		}
-		return this.children;
+		GraphSimpleSet collection = new GraphSimpleSet();
+		if(this.children == null) {
+			return collection;
+		}
+		if(this.children instanceof GraphMember) {
+			collection.withAll(this.children);
+		}
+		return collection;
+	}
+	
+	SimpleSet<GraphEntity> getNodes2() {
+		SimpleSet<GraphEntity> collection = new SimpleSet<GraphEntity>();
+		if(this.children == null) {
+			return collection;
+		}
+		if(this.children instanceof GraphEntity) {
+			collection.add((GraphEntity)this.children);
+			return collection;
+		}
+		if(this.children instanceof GraphSimpleSet) {
+			GraphSimpleSet list = (GraphSimpleSet) this.children;
+			for(GraphMember item : list) {
+				if(item instanceof GraphEntity) {
+					collection.add((GraphEntity)item);	
+				}
+			}
+		}
+		return collection;
 	}
 	
 	/** Set the name of Element
@@ -65,32 +94,64 @@ public abstract class GraphMember {
 			}
 			this.parentNode = value;
 			if (value != null) {
-				value.with(this);
+				value.withChildren(true, this);
 			}
 			return true;
 		}
 		return false;
 	}
-	
-	protected GraphMember with(GraphMember... values) {
-		if (values != null) {
-			for (GraphMember value : values) {
-				if(value != null) {
-					getChildren().add(value);
-					value.setParent(this);
+	protected GraphMember withChildren(boolean back, GraphMember... values) {
+		// Do Nothing
+		if (values == null || (values.length == 1 && (this.children == values[0]))) {
+			return this;
+		}
+		if(this.children == null) {
+			if(values.length==1){
+				this.children = values[0];
+				if(back) {
+					((GraphMember)values[0]).setParent(this);
+				}
+				return this;
+			}
+		}
+		GraphSimpleSet list;
+		if( this.children instanceof GraphSimpleSet) {
+			list = (GraphSimpleSet) this.children;
+		}else {
+			list = new GraphSimpleSet();
+			list.with((GraphMember) this.children);
+			this.children = list;
+		}
+		for (GraphMember value : values) {
+			if(value != null ) {
+				if(list.add(value)) {
+					if(back) {
+						value.setParent(this);
+					}
 				}
 			}
 		}
 		return this;
 	}
-	
+
 	protected GraphMember without(GraphMember... values) {
-		if (values != null && this.children != null) {
+		if (values == null || this.children == null) {
+			return this;
+		}
+		if(this.children instanceof GraphMember) {
 			for (GraphMember value : values) {
-				if(value != null) {
-					this.children.remove(value);
+				if(this.children == value) {
+					this.children = null;
 					value.setParent(null);
 				}
+			}
+			return this;
+		}
+		GraphSimpleSet collection = (GraphSimpleSet) this.children;
+		for (GraphMember value : values) {
+			if(value != null) {
+				collection.remove(value);
+				value.setParent(null);
 			}
 		}
 		return this;
@@ -100,7 +161,7 @@ public abstract class GraphMember {
 		if(this.children == null) {
 			return null;
 		}
-		for(GraphMember item : this.children) {
+		for(GraphMember item : getChildren()) {
 			if(item instanceof GraphDiff) {
 				return (GraphDiff) item;
 			}
@@ -115,13 +176,57 @@ public abstract class GraphMember {
 	protected GraphMember withAnnotaion(Annotation value) {
 		// Remove Old GraphAnnotation
 		if(this.children != null) {
-			for(int i=this.children.size();i>=0;i--) {
-				if(this.children.get(i) instanceof Annotation) {
-					this.children.remove(i);
+			if(this.children instanceof GraphMember) {
+				if(this.children instanceof Annotation) {
+					((Annotation)this.children).setParent(null);
+					this.children = null;
+				}
+			}
+			if(this.children instanceof GraphSimpleSet) {
+				GraphSimpleSet collection = (GraphSimpleSet) this.children;
+				for(int i=collection.size();i>=0;i--) {
+					if(collection.get(i) instanceof Annotation) {
+						GraphMember oldValue = collection.remove(i);
+						oldValue.setParent(null);
+					}
 				}
 			}
 		}
-		with(value);
+		withChildren(true, value);
 		return this;
+	}
+	
+	protected Annotation getAnnotation() {
+		if(this.children == null) {
+			return null;
+		}
+		if (this.children instanceof Annotation) {
+			return (Annotation)this.children;
+		} else if(this.children instanceof GraphSimpleSet) {
+			GraphSimpleSet collection = (GraphSimpleSet) this.children;
+			for(GraphMember item : collection) {
+				if(item instanceof Annotation) {
+					return (Annotation) item;
+				}
+			}
+		}
+		return null;
+	}
+	
+	public Modifier getModifiers() {
+		if(this.children == null) {
+			return null;
+		}
+		if (this.children instanceof Modifier) {
+			return (Modifier)this.children;
+		} else if(this.children instanceof GraphSimpleSet) {
+			GraphSimpleSet collection = (GraphSimpleSet) this.children;
+			for(GraphMember item : collection) {
+				if(item instanceof Modifier) {
+					return (Modifier) item;
+				}
+			}
+		}
+		return null;
 	}
 }

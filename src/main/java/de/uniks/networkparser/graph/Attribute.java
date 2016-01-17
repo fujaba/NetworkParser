@@ -41,26 +41,22 @@ public class Attribute extends Value {
 		return this;
 	}
 	
-	public Modifier getVisibility() {
-		if(children != null) {
-			for (GraphMember child : children) {
-				if (child instanceof Modifier)  {
-					return (Modifier) child;
-				}
-			}
+	public Modifier getModifiers() {
+		Modifier modifier = super.getModifiers();
+		if(modifier == null) {
+			modifier = Modifier.PRIVATE;
+			super.withChildren(true, modifier);
 		}
-		Modifier mod = Modifier.PRIVATE;
-		super.with(mod);
-		return mod;
+		return modifier;
 	}
 
 	public Attribute with(Modifier... modifier) {
-		getVisibility().with(modifier);
+		getModifiers().withChildren(true, modifier);
 		return this;
 	}
 	
 	public Attribute without(Modifier... modifier) {
-		getVisibility().without(modifier);
+		getModifiers().without(modifier);
 		return this;
 	}
 	
@@ -116,15 +112,7 @@ public class Attribute extends Value {
 	}
 
 	public Annotation getAnnotation() {
-		if(this.children == null) {
-			return null;
-		}
-		for(GraphMember item : this.children) {
-			if(item instanceof Annotation) {
-				return (Annotation) item;
-			}
-		}
-		return null;
+		return super.getAnnotation();
 	}
 
 	public Attribute with(Annotation value) {

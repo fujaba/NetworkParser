@@ -164,7 +164,7 @@ public class GraphIdMap extends IdMap {
 			Clazz subId = parse(item, filter, list, deep + 1);
 			Association edge = new Association(element);
 			initItem(edge);
-			list.add(edge.with(this.createEdge(subId, cardinality, property)));
+			list.with(edge.with(this.createEdge(subId, cardinality, property)));
 		} else {
 			Attribute attribute = element.createAttribute(property, DataType.ref(item.getClass()));
 			attribute.withValue("" + item);

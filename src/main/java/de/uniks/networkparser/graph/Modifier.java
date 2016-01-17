@@ -47,7 +47,7 @@ public class Modifier extends GraphMember {
 				mod.with(item.getName());
 				continue;
 			}
-			mod.with(item);
+			mod.withChildren(true, item);
 		}
 		return mod;
 	}
@@ -57,7 +57,7 @@ public class Modifier extends GraphMember {
 			return true;
 		}
 		if(this.children != null) {
-			for(GraphMember member : this.children) {
+			for(GraphMember member : this.getChildren()) {
 				if((member instanceof Modifier) == false) {
 					continue;
 				}

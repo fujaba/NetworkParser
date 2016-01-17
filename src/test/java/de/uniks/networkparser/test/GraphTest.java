@@ -4,12 +4,19 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphConverter;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphImage;
 
 public class GraphTest {
-
+	@Test
+	public void testDataType() {
+		DataType dataType = DataType.ref("int");
+		Assert.assertEquals(dataType.toString(), "DataType.INT");
+	}
+	
+	
 	@Test
 	public void testGraph() {
 		GraphList list = new GraphList();

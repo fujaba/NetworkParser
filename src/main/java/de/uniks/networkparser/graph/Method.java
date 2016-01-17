@@ -47,7 +47,8 @@ public class Method extends GraphMember {
 		sb.append(super.getName() + "(");
 		int i = 0;
 		if(children != null) {
-			for (GraphMember item : children) {
+			GraphSimpleSet collection = this.getChildren();
+			for (GraphMember item : collection) {
 				if((item instanceof Parameter) == false) {
 					continue;
 				}
@@ -65,7 +66,7 @@ public class Method extends GraphMember {
 					}
 				}
 	
-				if (i < children.size() - 1) {
+				if (i < collection.size() - 1) {
 					if (includeName) {
 						sb.append(", ");
 					} else {
@@ -141,18 +142,19 @@ public class Method extends GraphMember {
 
 	public String getParameterString(boolean shortName){
 		StringBuilder sb=new StringBuilder();
-		for(int i=0;i<children.size();i++) {
-			if((children.get(i) instanceof Parameter)==false) {
+		GraphSimpleSet collection = this.getChildren();
+		for(int i=0;i<collection.size();i++) {
+			if((collection.get(i) instanceof Parameter)==false) {
 				continue;
 			}
-			Parameter param = (Parameter) children.get(i); 
+			Parameter param = (Parameter) collection.get(i); 
 			if(i>0) {
 				sb.append(", ");
 			}
 			if(param.getName() == null) {
 				sb.append("p"+i+" : "+param.getType(shortName));
 			}else{
-				sb.append(children.get(i).getName()+" : "+param.getType(shortName));
+				sb.append(collection.get(i).getName()+" : "+param.getType(shortName));
 			}
 		}
 		return sb.toString();
@@ -173,9 +175,14 @@ public class Method extends GraphMember {
 		if (children == null) {
 			return collection;
 		}
-		for (GraphMember child : children) {
-			if (child instanceof Throws)  {
-				collection.add((Throws) child);
+		if( children instanceof Throws) {
+			collection.add((Throws) children);
+		}else if (children instanceof GraphSimpleSet) {
+			GraphSimpleSet items = (GraphSimpleSet) children;
+			for (GraphMember child : items) {
+				if (child instanceof Throws)  {
+					collection.add((Throws) child);
+				}
 			}
 		}
 		return collection;
@@ -186,9 +193,14 @@ public class Method extends GraphMember {
 		if (children == null) {
 			return collection;
 		}
-		for (GraphMember child : children) {
-			if (child instanceof Parameter)  {
-				collection.add((Parameter) child);
+		if( children instanceof Parameter) {
+			collection.add((Parameter) children);
+		}else if (children instanceof GraphSimpleSet) {
+			GraphSimpleSet items = (GraphSimpleSet) children;
+			for (GraphMember child : items) {
+				if (child instanceof Parameter)  {
+					collection.add((Parameter) child);
+				}
 			}
 		}
 		return collection;
@@ -196,12 +208,12 @@ public class Method extends GraphMember {
 	
 
 	public Method with(Throws... values) {
-		super.with(values);
+		super.withChildren(true, values);
 		return this;
 	}
 	
 	public Method with(Parameter... values) {
-		super.with(values);
+		super.withChildren(true, values);
 		return this;
 	}
 	
@@ -226,26 +238,23 @@ public class Method extends GraphMember {
 	}
 
 	public Annotation getAnnotation() {
-		if(this.children == null) {
-			return null;
-		}
-		for(GraphMember item : this.children) {
-			if(item instanceof Annotation) {
-				return (Annotation) item;
-			}
-		}
-		return null;
+		return super.getAnnotation();
 	}
 
 	public Method with(Annotation value) {
 		if(this.children != null) {
-			for(int i=this.children.size();i>=0;i--) {
-				if(this.children.get(i) instanceof Annotation) {
-					this.children.remove(i);
+			if (this.children instanceof Annotation) {
+				this.children = null;
+			} else if(this.children instanceof GraphSimpleSet) {
+				GraphSimpleSet collection = (GraphSimpleSet) this.children;
+				for(int i=collection.size();i>=0;i--) {
+					if(collection.get(i) instanceof Annotation) {
+						collection.remove(i);
+					}
 				}
 			}
 		}
-		super.with(value);
+		super.withChildren(true, value);
 		return this;
 	}
 }
