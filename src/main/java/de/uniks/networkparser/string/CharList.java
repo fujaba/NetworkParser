@@ -1,5 +1,7 @@
 package de.uniks.networkparser.string;
 
+import de.uniks.networkparser.interfaces.BaseItem;
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -49,6 +51,12 @@ public class CharList implements CharSequence{
 		for(int i=0;i<values.length;i++) {
 			this.value[i] = (char) values[i];
 		}
+		return this;
+	}
+
+	public CharList withLine(CharSequence value) {
+		with(value);
+		with(BaseItem.CRLF);
 		return this;
 	}
 	
@@ -102,7 +110,7 @@ public class CharList implements CharSequence{
 			System.arraycopy(values, start, this.value, 0, end);
 		} else {
 			if(this.count +values.length() > value.length) {
-				int newCapacity = value.length * 2 + 2;
+				int newCapacity = this.count +values.length() * 2 + 2;
 				char[] copy = new char[newCapacity];
 				System.arraycopy(value, this.start, copy, 0, count);
 				value = copy;

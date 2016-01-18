@@ -47,7 +47,7 @@ public abstract class GraphMember {
 		return collection;
 	}
 	
-	SimpleSet<GraphEntity> getNodes2() {
+	SimpleSet<GraphEntity> getNodes() {
 		SimpleSet<GraphEntity> collection = new SimpleSet<GraphEntity>();
 		if(this.children == null) {
 			return collection;

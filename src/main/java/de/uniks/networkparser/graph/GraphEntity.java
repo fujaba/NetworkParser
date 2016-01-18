@@ -25,7 +25,7 @@ permissions and limitations under the Licence.
 import de.uniks.networkparser.list.SimpleSet;
 
 public abstract class GraphEntity extends GraphMember {
-	protected SimpleSet<Association> associations = new SimpleSet<Association>();
+	protected SimpleSet<Association> associations;
 	private boolean external;
 	private String id;
 	
@@ -121,41 +121,40 @@ public abstract class GraphEntity extends GraphMember {
 	
 	boolean addAssoc(Association assoc) {
 		boolean add=true;
-		if(assoc.getOther() != null) {
+		if(assoc.getOther() != null && this.associations != null) {
 			for (Iterator<Association> i = this.associations.iterator(); i.hasNext();) {
 				Association item = i.next();
-				if(isSame(item, assoc.getOther()) && isSame(item.getOther(), assoc)) {
-					if(GraphUtil.isUndirectional(item)) {
+				if(has(item, assoc.getOther()) && has(item.getOther(), assoc)) {
+					if(item.isSame(assoc.getOther()) && item.getOther().isSame(assoc)) {
+						if(GraphUtil.isUndirectional(item)) {
+							item.getOther().with(AssociationTypes.ASSOCIATION);
+							item.with(AssociationTypes.ASSOCIATION);
+						}
+						add=false;
+						break;
+					}else if (item.containsAll(assoc.getOther(), false) && item.getOther().name() == null
+							&& assoc.name() != null) {
+						item.getOther().with(assoc.getCardinality());
+						item.getOther().with(assoc.getName());
 						item.getOther().with(AssociationTypes.ASSOCIATION);
 						item.with(AssociationTypes.ASSOCIATION);
+						add=false;
+						break;
 					}
-					add=false;
-					break;
-				}else if (item.containsAll(assoc.getOther(), true) && item.getOther().name() == null && assoc.name()!= null) {
-                    item.getOther().with(assoc.getCardinality());
-                    item.getOther().with(assoc.getName());
-                    add=false;
-                    break;
 				}
 			}
 		}
 		if(add) {
+			if(this.associations == null) {
+				this.associations = new SimpleSet<Association>();
+			}
 			this.associations.add(assoc);
 		}
 		return add;
 	}
 		
-	private static boolean isSame(Association o1, Association o2) {
-		if(o1.getClazz() != o2.getClazz()) {
-			return false;
-		}
-		if(o1.getName() == null ) {
-			if(o2.getName() == null) {
-				return true;
-			}
-			return false;
-		}
-		return o1.getName().equals(o2.getName());
+	private boolean has(Association o1, Association o2) {
+		return (o1.getClazz() == o2.getClazz());
 	}
 	
 	public Annotation getAnnotation() {

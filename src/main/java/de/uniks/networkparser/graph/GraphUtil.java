@@ -64,10 +64,10 @@ public class GraphUtil {
 		return clazz.getType() == ClazzType.ENUMERATION;
 	}
 	public static boolean isUndirectional(Association assoc) {
-		if(assoc.getTyp()==AssociationTypes.ASSOCIATION && assoc.getOtherTyp()==AssociationTypes.EDGE) {
+		if(assoc.getType()==AssociationTypes.ASSOCIATION && assoc.getOtherTyp()==AssociationTypes.EDGE) {
 			return true;
 		}
-		return assoc.getOtherTyp()==AssociationTypes.ASSOCIATION && assoc.getTyp()==AssociationTypes.EDGE;
+		return assoc.getOtherTyp()==AssociationTypes.ASSOCIATION && assoc.getType()==AssociationTypes.EDGE;
 	}
 	
 	public static SimpleSet<Association> getOtherAssociations(Clazz clazz) {

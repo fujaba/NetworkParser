@@ -227,7 +227,7 @@ public class Clazz extends GraphEntity {
 			return null;
 		}
 		for (Association assoc : associations) {
-			if(!AssociationTypes.GENERALISATION.equals(assoc.getTyp())) {
+			if(!AssociationTypes.GENERALISATION.equals(assoc.getType())) {
 				continue;
 			}
 			Clazz otherClazz = assoc.getOtherClazz();
@@ -254,7 +254,7 @@ public class Clazz extends GraphEntity {
 		}
 		for (Association assoc : associations) {
 			Clazz clazz = assoc.getOtherClazz();
-			if(assoc.getTyp()==AssociationTypes.GENERALISATION || assoc.getTyp()==AssociationTypes.IMPLEMENTS) {
+			if(assoc.getType()==AssociationTypes.GENERALISATION || assoc.getType()==AssociationTypes.IMPLEMENTS) {
 				if (GraphUtil.isInterface(clazz)) {
 					interfaces.with(clazz);
 				}
@@ -281,7 +281,7 @@ public class Clazz extends GraphEntity {
 			if (item != null) {
 				boolean found=false;
 				for (Association assoc : associations) {
-					if(assoc.getTyp()==AssociationTypes.GENERALISATION) {
+					if(assoc.getType()==AssociationTypes.GENERALISATION) {
 						if(assoc.contains(item, false, true) == false) {
 							found = true;
 							assoc.getOther().setParent(item);
@@ -348,7 +348,7 @@ public class Clazz extends GraphEntity {
 			return allEdges;
 		}
 		for (Association assoc : associations) {
-			if(AssociationTypes.isEdge(assoc.getTyp().getValue())) {
+			if(AssociationTypes.isEdge(assoc.getType().getValue())) {
 				allEdges.add(assoc);
 			}
 		}
@@ -365,7 +365,7 @@ public class Clazz extends GraphEntity {
 			return kindClazzes;
 		}
 		for (Association assoc : associations) {
-			if(typ != assoc.getTyp()) {
+			if(typ != assoc.getType()) {
 				continue;
 			}
 			Clazz clazz = assoc.getOtherClazz();
@@ -389,7 +389,7 @@ public class Clazz extends GraphEntity {
 			if (item != null) {
 				boolean found=false;
 				for (Association assoc : associations) {
-					if(assoc.getOther().getTyp() == AssociationTypes.GENERALISATION) {
+					if(assoc.getOther().getType() == AssociationTypes.GENERALISATION) {
 						if(assoc.contains(item, true, false)) {
 							found = true;
 							break;
@@ -487,7 +487,7 @@ public class Clazz extends GraphEntity {
 		for (Clazz item : values) {
 			if (item != null) {
 				for (Association assoc : associations) {
-					if(assoc.getOther().getTyp() == AssociationTypes.GENERALISATION) {
+					if(assoc.getOther().getType() == AssociationTypes.GENERALISATION) {
 						if(assoc.contains(item, false, true)) {
 							this.associations.remove(assoc);
 							break;
@@ -506,7 +506,7 @@ public class Clazz extends GraphEntity {
 		for (Clazz item : values) {
 			if (item != null) {
 				for (Association assoc : associations) {
-					if(assoc.getTyp() == AssociationTypes.GENERALISATION) {
+					if(assoc.getType() == AssociationTypes.GENERALISATION) {
 						if(assoc.contains(item, true, false)) {
 							this.associations.remove(assoc);
 							break;

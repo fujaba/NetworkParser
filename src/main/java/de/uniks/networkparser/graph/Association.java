@@ -152,18 +152,18 @@ public class Association extends GraphMember {
 		return edge;
 	}
 
-	public AssociationTypes getTyp() {
+	public AssociationTypes getType() {
 		return type;
 	}
 	
 	String getSeperator() {
-		if (getTyp() == AssociationTypes.GENERALISATION) {
+		if (getType() == AssociationTypes.GENERALISATION) {
 			return "-|>";
 		}
 		if (getOtherTyp() == AssociationTypes.GENERALISATION) {
 			return "<|-";
 		}
-		if (getTyp() == AssociationTypes.EDGE) {
+		if (getType() == AssociationTypes.EDGE) {
 			return "->";
 		}
 		if (getOtherTyp() == AssociationTypes.EDGE) {
@@ -185,7 +185,7 @@ public class Association extends GraphMember {
 	}
 	AssociationTypes getOtherTyp() {
 		if(other != null ) {
-			return other.getTyp();
+			return other.getType();
 		}
 		return null;
 	}
@@ -258,11 +258,17 @@ public class Association extends GraphMember {
 		if(children == null) {
 			return false;
 		}
+		if(children instanceof GraphMember) {
+			if(otherChildren.size()!=1 || children != otherChildren.first()) {
+				return false;
+			}
+		}
 		if(children instanceof GraphSimpleSet ) {
 			if (((GraphSimpleSet)children).containsAll(otherChildren) ) {
 				return false;
 			}
 		}
+		
 		if(getOther()!= null && both) {
 			return getOther().containsAll(others.getOther(), false);
 		}
@@ -276,5 +282,13 @@ public class Association extends GraphMember {
 		super.without(value);
 		return this;
 	}
-
+	boolean isSame(Association other) {
+		if(this.name == null ) {
+			if(other.name() == null) {
+				return true;
+			}
+			return false;
+		}
+		return this.name().equals(other.name());
+	}
 }

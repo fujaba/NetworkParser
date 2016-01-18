@@ -61,7 +61,7 @@ public class GraphList extends GraphModel implements BaseItem{
 	public SimpleKeyValueList<String, Object> getLinks() {
 		SimpleKeyValueList<String, Object> links = new SimpleKeyValueList<String, Object>();
 		for (Association element : associations) {
-			for (GraphEntity node : element.getNodes2()) {
+			for (GraphEntity node : element.getNodes()) {
 				String key = node.getTyp(typ, false);
 				SimpleList<?> value = (SimpleList<?>)links
 						.getValueItem(key);
@@ -84,11 +84,10 @@ public class GraphList extends GraphModel implements BaseItem{
 			}
 			Clazz graphClazz = (Clazz) node;
 			SimpleSet<Association> childEdges = graphClazz.getAssociation();
+			SimpleSet<Association> myAssocs = getEdges();
 			for(Association edge : childEdges) {
-				if(associations.contains(edge) == false && associations.contains(edge.getOther()) == false) {
-					associations.add(edge);
-//				} else if(allEdges.get(edge) != graphClazz) {
-//					allEdges.put(edge, graphClazz);
+				if(myAssocs.contains(edge) == false && myAssocs.contains(edge.getOther()) == false) {
+					myAssocs.add(edge);
 				}
 			}
 		}
@@ -151,10 +150,13 @@ public class GraphList extends GraphModel implements BaseItem{
 	
 
 	public SimpleSet<GraphEntity> getNodes() {
-		return super.getNodes2();
+		return super.getNodes();
 	}
 	
 	public SimpleSet<Association> getEdges() {
+		if(associations == null) {
+			associations = new SimpleSet<Association>(); 
+		}
 		return associations;
 	}
 
@@ -207,5 +209,12 @@ public class GraphList extends GraphModel implements BaseItem{
 			return new SimpleMapEntry<String, GraphNode>();
 		}
 		return new GraphList();
+	}
+
+	GraphList withoutAssoc(Association assoc) {
+		if(this.associations != null) {
+			this.associations.remove(assoc);
+		}
+		return this;
 	}
 }

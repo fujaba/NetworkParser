@@ -65,6 +65,9 @@ public class YUMLConverter implements Converter {
 				.getValueItem(key);
 		if (showedLinks == null) {
 			if(visited.contains(item) == false) {
+				if (sb.length() > 0) {
+					sb.append(",");
+				}
 				sb.append(parseEntity(item, visited, typ, shortName));
 			}
 			return;
@@ -80,9 +83,13 @@ public class YUMLConverter implements Converter {
 				sb.append(",");
 			}
 			sb.append(parseEntity(item, visited, typ, shortName));
-			sb.append("-");
+			sb.append(element.getSeperator());
+//				("->");
+//			}else{
+//				sbC.append("-");
+//			}
 
-			SimpleSet<GraphEntity> targetCollection = element.getOther().getNodes2();
+			SimpleSet<GraphEntity> targetCollection = element.getOther().getNodes();
 			Iterator<GraphEntity> targetIterator = targetCollection.iterator();
 			GraphEntity target = targetIterator.next();
 			sb.append(parseEntity(target, visited, typ, shortName));

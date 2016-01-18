@@ -256,7 +256,7 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 //		// now generate edges from edgeMap
 		for(Association edge : root.getEdges()) {
 			Association otherEdge = edge.getOther();
-			if(otherEdge.getTyp()  != AssociationTypes.EDGE) {
+			if(otherEdge.getType()  != AssociationTypes.EDGE) {
 				// It is bidiAssoc
 				sb.append(edge.getClazz().getName(false) + " -- " + otherEdge.getClazz().getName(false));
 				sb.append("[headlabel = \""+edge.getName()+"\" taillabel = \""+otherEdge.getName()+"\"];"+BaseItem.CRLF);

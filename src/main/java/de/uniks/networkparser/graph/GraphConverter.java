@@ -23,14 +23,13 @@ package de.uniks.networkparser.graph;
 */
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map.Entry;
+
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleSet;
+import de.uniks.networkparser.string.CharList;
 
 public class GraphConverter implements Converter {
 	public static final String TYP = "typ";
@@ -69,37 +68,11 @@ public class GraphConverter implements Converter {
 	public GraphList convertGraphList(String typ, JsonArray list,
 			boolean removePackage) {
 		GraphList root = new GraphList().withTyp(typ);
-		HashMap<GraphEntity, ArrayList<Attribute>> attributes = new HashMap<GraphEntity, ArrayList<Attribute>>();
+		
+		// Parse all Object to Object-Diagram
 		for (Object item : list) {
 			if (item instanceof JsonObject) {
-				parseJsonObject(root, (JsonObject) item, attributes);
-			}
-		}
-
-		// Iteration of all primitive Attributes
-		for (Iterator<Entry<GraphEntity, ArrayList<Attribute>>> iterator = attributes
-				.entrySet().iterator(); iterator.hasNext();) {
-			Entry<GraphEntity, ArrayList<Attribute>> node = iterator.next();
-			for (Attribute attribute : node.getValue()) {
-				boolean addValue = true;
-				for (Association edge : root.getEdges()) {
-					if (edge.contains(node.getKey(), true, false)) {
-						if (attribute.getName().equals(edge.getName())) {
-							addValue = false;
-							break;
-						}
-					}
-					if (edge.getOther().contains(node.getKey(), true, false)) {
-						if (attribute.getName().equals(
-								edge.getOther().getName())) {
-							addValue = false;
-							break;
-						}
-					}
-				}
-				if (addValue) {
-					node.getKey().withChildren(true, attribute);
-				}
+				parseJsonObject(root, (JsonObject) item);
 			}
 		}
 		return root;
@@ -112,8 +85,7 @@ public class GraphConverter implements Converter {
 		return convertToJson(root, removePackage);
 	}
 
-	public Clazz parseJsonObject(GraphList root, JsonObject node,
-			HashMap<GraphEntity, ArrayList<Attribute>> attributes) {
+	public Clazz parseJsonObject(GraphList root, JsonObject node) {
 		String id = node.getString(JsonIdMap.ID);
 		Clazz graphNode = (Clazz) root.getByObject(id, true);
 		if (graphNode == null) {
@@ -137,29 +109,27 @@ public class GraphConverter implements Converter {
 				if (value instanceof JsonObject) {
 					// Must be a Link to 1
 					Clazz newNode = parseJsonObject(root,
-							(JsonObject) value, attributes);
+							(JsonObject) value);
 					Association assoc  = new Association(newNode).with(Cardinality.ONE).with(props
-							.getKeyByIndex(i));
-					Association assocOther= new Association(graphNode);
+							.getKeyByIndex(i)).with(AssociationTypes.UNDIRECTIONAL);
+					Association assocOther= new Association(graphNode).with(AssociationTypes.EDGE);
 					assoc.with(assocOther);
-					// if
-//					root.with(assoc);
-					//FIXME add assoc
 					if(root.addAssoc(assoc)) {
 						graphNode.with(assoc);
 						newNode.with(assocOther);
 					}
-				} else if (props.getValueByIndex(i) instanceof JsonArray) {
+				} else if (value instanceof JsonArray) {
 					// Must be a Link to n
 					JsonArray array = (JsonArray) value;
 					StringBuilder sb = new StringBuilder();
 					for (Object entity : array) {
 						if (entity instanceof JsonObject) {
 							Clazz newNode = parseJsonObject(root,
-									(JsonObject) entity, attributes);
+									(JsonObject) entity);
 							
-							Association assoc = new Association(newNode).with(Cardinality.MANY).with(props.getKeyByIndex(i));
-							Association assocOther= new Association(graphNode);
+							Association assoc = new Association(newNode).with(Cardinality.MANY).with(props.getKeyByIndex(i)).with(AssociationTypes.UNDIRECTIONAL);
+							Association assocOther= new Association(graphNode).with(Cardinality.ONE).with(AssociationTypes.EDGE);
+							
 							assoc.with(assocOther);
 							if(root.addAssoc(assoc)) {
 								graphNode.with(assoc);
@@ -178,23 +148,14 @@ public class GraphConverter implements Converter {
 								.with(props.getKeyByIndex(i))
 								.with(value.getClass().getName())
 								.withValue(sb.toString());
-						if (attributes.get(graphNode) == null) {
-							attributes.put(graphNode,
-									new ArrayList<Attribute>());
-						}
-						attributes.get(graphNode).add(attribute);
+						graphNode.with(attribute);
 					}
-				} else {
-					Attribute attribute = new Attribute().with(props.getKeyByIndex(i));
-					if (props.getValueByIndex(i) != null) {
-						attribute.with(
-								DataType.ref(props.getValueByIndex(i).getClass()))
-								.withValue(value.toString());
-				   if (attributes.get(graphNode) == null) {
-					  attributes.put(graphNode, new ArrayList<Attribute>());
-				   }
-				   attributes.get(graphNode).add(attribute);
-					}
+				}else {
+                    Attribute attribute = new Attribute().with(props.getKeyByIndex(i));
+                    if (value != null) {
+                        attribute.with(DataType.ref(value.getClass())).withValue(value.toString());
+                        graphNode.with(attribute);
+                    }
 				}
 			}
 		}
@@ -220,8 +181,8 @@ public class GraphConverter implements Converter {
 		ArrayList<String> ids = new ArrayList<String>();
 
 		for (Association edge : edges) {
-			for (GraphEntity source : edge.getNodes2()) {
-				for (GraphEntity target : edge.getOther().getNodes2()) {
+			for (GraphEntity source : edge.getNodes()) {
+				for (GraphEntity target : edge.getOther().getNodes()) {
 					JsonObject child =  parseEdge(typ, source, target, edge, shortName, ids);
 					if(child != null) {
 						result.add(child);
@@ -247,7 +208,7 @@ public class GraphConverter implements Converter {
 	}
 	
 	private JsonObject parseEdge(String typ, Clazz source, Clazz target, Association edge, boolean shortName, ArrayList<String> ids) {
-		JsonObject child = new JsonObject().withKeyValue(TYP, edge.getTyp());
+		JsonObject child = new JsonObject().withKeyValue(TYP, edge.getType());
 		if (typ.equals(GraphIdMap.OBJECT)) {
 			child.put(SOURCE, addInfo(edge, true).withValue(ID, source.getId() + " : "
 					+ source.getName(shortName)));
@@ -255,10 +216,10 @@ public class GraphConverter implements Converter {
 					+ target.getName(shortName)));
 			return child;
 		}else{
-			String id = source.getName(false) + ":"
-					+ edge.getName()
-					+ target.getName(false) + ":"
-					+ edge.getOther().getName();
+			String id = new CharList()
+					.with(source.getName(false), ":", edge.getName(), 
+							"-", 
+					target.getName(false), ":",edge.getOther().getName()).toString();
 			if (!ids.contains(id)) {
 				GraphDiff diff = edge.getDiff();
 				if(diff != null && diff.getCount()>0) {
@@ -266,6 +227,7 @@ public class GraphConverter implements Converter {
 				}
 				child.put(SOURCE, addInfo(edge, true).withValue(ID, source.getName(shortName)));
 				child.put(TARGET, addInfo(edge.getOther(), true).withValue(ID, target.getName(shortName)));
+				ids.add(id);
 				return child;
 			}
 		}
@@ -273,7 +235,7 @@ public class GraphConverter implements Converter {
 	}
 	
 	private JsonObject parseEdge(String typ, GraphPattern source, GraphPattern target, Association edge, boolean shortName, ArrayList<String> ids) {
-		JsonObject child = new JsonObject().withKeyValue(TYP, edge.getTyp());
+		JsonObject child = new JsonObject().withKeyValue(TYP, edge.getType());
 		child.put(SOURCE, addInfo(edge, false).withValue(ID, source.getId()));
 		child.put(TARGET, addInfo(edge.getOther(), false).withValue(ID, target.getId()));
 		
