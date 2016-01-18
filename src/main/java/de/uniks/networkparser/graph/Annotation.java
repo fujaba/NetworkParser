@@ -110,10 +110,8 @@ public class Annotation extends GraphMember implements IdMapDecoder {
 			} else if( item == '{') {
 				
 				this.name = tokener.getToken(this.name);
-//				GraphAnnotation child = new GraphAnnotation().decode(tokener, '}', parent);
 				decode(tokener, '}', parent);
 				return this;
-//				return child;
 			} else if( item == '='  ) {
 				this.name = tokener.getToken(this.name);
 				this.keyValue = true;
@@ -185,9 +183,7 @@ public class Annotation extends GraphMember implements IdMapDecoder {
 	public Annotation next() {
 		return nextAnnotaton;
 	}
-	public String getValue(String key) {
-		return getValue(key, null);
-	}
+
 	public String getValue(String key, String defaultText) {
 		if(key == null || value == null) {
 			return defaultText;

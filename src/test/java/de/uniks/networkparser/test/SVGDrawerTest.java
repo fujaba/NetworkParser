@@ -35,7 +35,7 @@ public class SVGDrawerTest {
 		Clazz message=map.with(new Clazz().with("Message"));
 		
 		// Methods
-		networkNode.with(new Method("sendMessage", new Parameter(DataType.ref(message)), new Parameter(DataType.ref(nodeProxy))));
+		networkNode.with(new Method("sendMessage", new Parameter(DataType.create(message)), new Parameter(nodeProxy)));
 		
 		// Attribute
 		networkNode.with(new Attribute("online", DataType.BOOLEAN));

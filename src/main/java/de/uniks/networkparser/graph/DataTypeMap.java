@@ -34,11 +34,11 @@ public class DataTypeMap extends DataType {
 	}
 	
 	public static DataTypeMap ref(Clazz key, Clazz value) {
-		DataTypeMap result = new DataTypeMap().withGenericKey(DataType.ref(key)).withGenericValue(DataType.ref(value));
+		DataTypeMap result = new DataTypeMap().withGenericKey(DataType.create(key)).withGenericValue(DataType.create(value));
 		return result;
 	}
 	public static DataTypeMap ref(String key, String value) {
-		DataTypeMap result = new DataTypeMap().withGenericKey(DataType.ref(key)).withGenericValue(DataType.ref(value));
+		DataTypeMap result = new DataTypeMap().withGenericKey(DataType.create(key)).withGenericValue(DataType.create(value));
 		return result;
 	}
 	

@@ -33,7 +33,7 @@ public class WriteJsonGraph {
 		GraphList model = new GraphList().withTyp(GraphIdMap.CLASS);
 
 		Clazz abstractArray = model.with(new Clazz().with("AbstractArray"));
-		abstractArray.createAttribute("elements", DataType.ref("Object[]"));
+		abstractArray.createAttribute("elements", DataType.create("Object[]"));
 		abstractArray.createAttribute("size", DataType.INT);
 		abstractArray.createAttribute("index", DataType.INT);
 		abstractArray.createAttribute("flag", DataType.BYTE);

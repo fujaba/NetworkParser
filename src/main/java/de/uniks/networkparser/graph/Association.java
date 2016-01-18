@@ -60,10 +60,6 @@ public class Association extends GraphMember {
 		return Cardinality.ONE;
 	}
 	
-	public String getCardinalityText() {
-		return name + "<br>0.." + this.cardinality;
-	}
-
 	@Override
 	public String getName() {
 		if(name != null) {
@@ -171,6 +167,10 @@ public class Association extends GraphMember {
 		}
 		return "-";
 	}
+	
+	String getCardinalityText() {
+		return name + "<br>0.." + this.cardinality;
+	}
 
 	public Association with(AssociationTypes typ) {
 		this.type = typ;
@@ -204,16 +204,16 @@ public class Association extends GraphMember {
 	@Override
 	public String toString() {
 		CharList charList = new CharList();
-		getIds(charList);
+		addIds(charList);
 		charList.with(getSeperator());
 		if(getOther() != null) {
-			getOther().getIds(charList);
+			getOther().addIds(charList);
 		}
 		return charList.toString();
 	}
 	
 
-	void getIds(CharList sb) {
+	void addIds(CharList sb) {
 		if (children == null) {
 			sb.with("[]");
 		} else if (children instanceof GraphMember) {

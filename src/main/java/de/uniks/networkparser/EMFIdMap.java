@@ -390,7 +390,7 @@ public class EMFIdMap extends XMLIdMap {
 						if (EntityUtil.isPrimitiveType(etyp.toLowerCase())) {
 							etyp = etyp.toLowerCase();
 						}
-						clazz.with(new Attribute(EntityUtil.toValidJavaId(child.getString(EMFIdMap.NAME)), DataType.ref(etyp)));						
+						clazz.with(new Attribute(EntityUtil.toValidJavaId(child.getString(EMFIdMap.NAME)), DataType.create(etyp)));						
 					}else if(typ.equals(EReferences)) {
 						child.put(PARENT, eClassifier);
 						refs.add(child);

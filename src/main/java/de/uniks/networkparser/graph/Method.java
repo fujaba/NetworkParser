@@ -45,35 +45,8 @@ public class Method extends GraphMember {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(super.getName() + "(");
-		int i = 0;
 		if(children != null) {
-			GraphSimpleSet collection = this.getChildren();
-			for (GraphMember item : collection) {
-				if((item instanceof Parameter) == false) {
-					continue;
-				}
-				Parameter param = (Parameter) item;
-				sb.append(param.getType(shortName));
-				if (includeName) {
-					String name = "";
-					if (param.getName() != null) {
-						name = param.getName().trim();
-					}
-					if (name != "") {
-						sb.append(" " + name);
-					} else {
-						sb.append(" p" + (i++));
-					}
-				}
-	
-				if (i < collection.size() - 1) {
-					if (includeName) {
-						sb.append(", ");
-					} else {
-						sb.append(",");
-					}
-				}
-			}
+			sb.append(getParameterString(shortName));
 		}
 		sb.append(")");
 		if(returnType!=null && returnType!= DataType.VOID){
@@ -106,7 +79,7 @@ public class Method extends GraphMember {
 	}
 
 	public Method withParameter(String paramName, Clazz dataType) {
-		new Parameter().with(paramName).with(DataType.ref(dataType)).withParent(this);
+		new Parameter().with(paramName).with(DataType.create(dataType)).withParent(this);
 		return this;
 	}
 
@@ -127,12 +100,12 @@ public class Method extends GraphMember {
 		return (Clazz) parentNode;
 	}
 
-	public Parameter createParameter(DataType type) {
+	public Parameter create(DataType type) {
 		return new Parameter().with(type).withParent(this);
 	}
 	
-	public Parameter createParameter(Clazz type) {
-		return new Parameter().with(DataType.ref(type)).withParent(this);
+	public Parameter create(Clazz type) {
+		return new Parameter().with(DataType.create(type)).withParent(this);
 	}
 
 	public Method withParent(Clazz value) {
@@ -205,7 +178,6 @@ public class Method extends GraphMember {
 		}
 		return collection;
 	}
-	
 
 	public Method with(Throws... values) {
 		super.withChildren(true, values);
@@ -223,7 +195,7 @@ public class Method extends GraphMember {
 	}
 	
 	public Method with(Clazz returnType) {
-		this.returnType = DataType.ref(returnType);
+		this.returnType = DataType.create(returnType);
 		return this;
 	}
 	

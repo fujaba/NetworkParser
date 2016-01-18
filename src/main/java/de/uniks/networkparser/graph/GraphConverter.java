@@ -153,7 +153,7 @@ public class GraphConverter implements Converter {
 				}else {
                     Attribute attribute = new Attribute().with(props.getKeyByIndex(i));
                     if (value != null) {
-                        attribute.with(DataType.ref(value.getClass())).withValue(value.toString());
+                        attribute.with(DataType.create(value.getClass())).withValue(value.toString());
                         graphNode.with(attribute);
                     }
 				}

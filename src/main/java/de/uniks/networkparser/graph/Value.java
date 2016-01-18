@@ -43,7 +43,7 @@ public abstract class Value extends GraphMember {
 	}
 	
 	public Value with(Class<?> value) {
-		this.type = DataType.ref(value);
+		this.type = DataType.create(value);
 		return this;
 	}
 	

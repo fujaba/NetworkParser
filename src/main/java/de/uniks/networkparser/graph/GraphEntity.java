@@ -110,16 +110,10 @@ public abstract class GraphEntity extends GraphMember {
 		return this.external;
 	}
 
-	public boolean setExternal(boolean value) {
+	public GraphEntity withExternal(boolean value) {
 		if (this.external != value) {
 			this.external = value;
-			return true;
 		}
-		return false;
-	}
-
-	public GraphEntity withExternal(boolean value) {
-		setExternal(value);
 		return this;
 	}
 

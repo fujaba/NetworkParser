@@ -100,6 +100,7 @@ public abstract class GraphMember {
 		}
 		return false;
 	}
+	
 	protected GraphMember withChildren(boolean back, GraphMember... values) {
 		// Do Nothing
 		if (values == null || (values.length == 1 && (this.children == values[0]))) {

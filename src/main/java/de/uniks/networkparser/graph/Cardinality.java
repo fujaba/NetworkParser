@@ -21,9 +21,7 @@ package de.uniks.networkparser.graph;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-public enum Cardinality
-
-{
+public enum Cardinality {
 	ONE("1"), MANY("n");
 
 	private String value;

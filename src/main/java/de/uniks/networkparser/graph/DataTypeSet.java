@@ -32,11 +32,11 @@ public class DataTypeSet extends DataType{
 	}
 	
 	public static DataTypeSet ref(Clazz value) {
-		DataTypeSet result = new DataTypeSet().withGeneric(DataType.ref(value));
+		DataTypeSet result = new DataTypeSet().withGeneric(DataType.create(value));
 		return result;
 	}
 	public static DataTypeSet ref(String value) {
-		DataTypeSet result = new DataTypeSet().withGeneric(DataType.ref(value));
+		DataTypeSet result = new DataTypeSet().withGeneric(DataType.create(value));
 		return result;
 	}
 	

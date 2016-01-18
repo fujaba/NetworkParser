@@ -166,7 +166,7 @@ public class GraphIdMap extends IdMap {
 			subId.with(target);
 			list.with(edge.with(target));
 		} else {
-			Attribute attribute = element.createAttribute(property, DataType.ref(item.getClass()));
+			Attribute attribute = element.createAttribute(property, DataType.create(item.getClass()));
 			attribute.withValue("" + item);
 		}
 		return;

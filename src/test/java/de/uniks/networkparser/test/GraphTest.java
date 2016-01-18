@@ -12,7 +12,7 @@ import de.uniks.networkparser.graph.GraphImage;
 public class GraphTest {
 	@Test
 	public void testDataType() {
-		DataType dataType = DataType.ref("int");
+		DataType dataType = DataType.create("int");
 		Assert.assertEquals(dataType.toString(), "DataType.INT");
 	}
 	

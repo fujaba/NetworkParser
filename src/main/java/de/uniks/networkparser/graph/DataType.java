@@ -70,23 +70,23 @@ public class DataType {
 	}
 
 
-	public static DataType ref(Clazz typ) {
+	public static DataType create(Clazz typ) {
 		return new DataType(typ);
 	}
 	
-	public static DataType ref(String typ) {
+	public static DataType create(String typ) {
 		return new DataType(typ);
 	}
 
-	public static DataType ref(Class<?> typ) {
+	public static DataType create(Class<?> typ) {
 		return new DataType(typ.getName().replace("$", "."));
 	}
 
-	public static DataType ref(String typ, boolean external) {
+	public static DataType create(String typ, boolean external) {
 		return new DataType(new Clazz().with(typ).withExternal(external));
 	}
 
-	public static DataType ref(Class<?> typ, boolean external) {
+	public static DataType create(Class<?> typ, boolean external) {
 		Clazz clazz = new Clazz().with(typ.getName().replace("$", ".")).withExternal(external);
 		return new DataType(clazz);
 	}
