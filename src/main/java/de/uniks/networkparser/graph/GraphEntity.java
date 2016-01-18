@@ -60,6 +60,19 @@ public abstract class GraphEntity extends GraphMember {
 		return "";
 	}
 	
+	public SimpleSet<Association> getAssociation() {
+		SimpleSet<Association> allEdges = new SimpleSet<Association>();
+		if (associations == null ) {
+			return allEdges;
+		}
+		for (Association assoc : associations) {
+			if(AssociationTypes.isEdge(assoc.getType().getValue())) {
+				allEdges.add(assoc);
+			}
+		}
+		return allEdges;
+	}
+	
 	GraphMember getByObject(String clazz, boolean fullName) {
 		if(clazz == null || children == null){
 			return null;

@@ -97,7 +97,7 @@ public class GraphLudoTest
 	  
 	  // May be 8 Asssocs and write 11
 	  JsonObject converter=graphConverter.convertToJson(GraphIdMap.CLASS, jsonArray, true);
-	  showDebugInfos(converter, 3529, null);
+	  showDebugInfos(converter, 2746, null);
    }
    private void showDebugInfos(JsonObject json, int len, PrintStream stream) {
 	   if(stream != null) {
@@ -122,7 +122,7 @@ public class GraphLudoTest
 	   JsonArray jsonArray = map.toJsonArray(root, new Filter().withFull(true));
 	   GraphConverter graphConverter = new GraphConverter();
 	  JsonObject objectModel=graphConverter.convertToJson(GraphIdMap.OBJECT, jsonArray, true);
-	  showDebugInfos(objectModel, 650, System.out);
+	  showDebugInfos(objectModel, 650, null);
 	  
 	  JsonObject clazzModel=graphConverter.convertToJson(GraphIdMap.CLASS, jsonArray, true);
 	  showDebugInfos(clazzModel, 486, null);

@@ -23,7 +23,6 @@ package de.uniks.networkparser.graph;
 */
 import java.util.Iterator;
 import de.uniks.networkparser.interfaces.Converter;
-import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
@@ -39,12 +38,11 @@ public class YUMLConverter implements Converter {
 			StringBuilder sb = new StringBuilder();
 			Iterator<GraphMember> i = collection.iterator();
 
-			SimpleList<GraphEntity> visitedObj = new SimpleList<GraphEntity>();
+			SimpleList<GraphMember> visitedObj = new SimpleList<GraphMember>();
 			root.initSubLinks();
-			SimpleKeyValueList <String, Object> links = root.getLinks();
-			parse(typ, i.next(), sb, visitedObj, links, removePackage);
+			parse(typ, i.next(), sb, visitedObj, removePackage);
 			while (i.hasNext()) {
-				parse(typ, i.next(), sb, visitedObj, links, removePackage);
+				parse(typ, i.next(), sb, visitedObj, removePackage);
 			}
 			
 			return sb.toString();
@@ -53,17 +51,15 @@ public class YUMLConverter implements Converter {
 	}
 
 	public void parse(String typ, GraphMember item, StringBuilder sb,
-			SimpleList<GraphEntity> visited, SimpleKeyValueList<String, Object> links, boolean shortName) {
+			SimpleList<GraphMember> visited, boolean shortName) {
 		if(item instanceof GraphEntity) {
-			parse(typ, (GraphEntity) item, sb, visited, links, shortName);
+			parse(typ, (GraphEntity) item, sb, visited, shortName);
 		}
 	}
 	public void parse(String typ, GraphEntity item, StringBuilder sb,
-			SimpleList<GraphEntity> visited, SimpleKeyValueList<String, Object> links, boolean shortName) {
-		String key = item.getTyp(typ, shortName);
-		SimpleList<?> showedLinks = (SimpleList<?>) links
-				.getValueItem(key);
-		if (showedLinks == null) {
+			SimpleList<GraphMember> visited, boolean shortName) {
+		SimpleSet<Association> association = item.getAssociation();
+		if (association.size()==0) {
 			if(visited.contains(item) == false) {
 				if (sb.length() > 0) {
 					sb.append(",");
@@ -72,31 +68,34 @@ public class YUMLConverter implements Converter {
 			}
 			return;
 		}
-		Iterator<?> iterator = showedLinks.iterator();
+		Iterator<?> iterator = association.iterator();
 		while (iterator.hasNext()) {
 			Object entry = iterator.next();
 			if (entry instanceof Association == false) {
 				continue;
 			}
 			Association element = (Association) entry;
+			Association other = element.getOther();
+			if(visited.contains(element)) {
+				continue;
+			}
+			visited.add(element);
+			visited.add(other);
 			if (sb.length() > 0) {
 				sb.append(",");
 			}
 			sb.append(parseEntity(item, visited, typ, shortName));
-			sb.append(element.getSeperator());
-//				("->");
-//			}else{
-//				sbC.append("-");
-//			}
+			String seperator = element.getSeperator();
+			sb.append(seperator);
 
-			SimpleSet<GraphEntity> targetCollection = element.getOther().getNodes();
+			SimpleSet<GraphEntity> targetCollection = other.getNodes();
 			Iterator<GraphEntity> targetIterator = targetCollection.iterator();
 			GraphEntity target = targetIterator.next();
 			sb.append(parseEntity(target, visited, typ, shortName));
 
 			while (targetIterator.hasNext()) {
 				sb.append(parseEntity(item, visited, typ, shortName));
-				sb.append("-");
+				sb.append(seperator);
 				target = targetIterator.next();
 				sb.append(parseEntity(target, visited, typ, shortName));
 			}
@@ -104,12 +103,12 @@ public class YUMLConverter implements Converter {
 	}
 	
 	// ##################################### Entity
-	public String parseEntity(GraphEntity entity, SimpleList<GraphEntity> visited,
+	public String parseEntity(GraphEntity entity, SimpleList<GraphMember> visited,
 			boolean shortName) {
 		return parseEntity(entity, visited, null, shortName);
 	}
 
-	public String parseEntity(GraphEntity entity, SimpleList<GraphEntity> visited,
+	public String parseEntity(GraphEntity entity, SimpleList<GraphMember> visited,
 			String typ, boolean shortName) {
 		if(!(entity instanceof Clazz)){
 			return "";

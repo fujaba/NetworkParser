@@ -68,6 +68,18 @@ public class YUmlTest {
 		Clazz student = list.with(new Clazz().with("Stefan").with("Student"));
 		student.withUniDirectional(uni, "owner", Cardinality.ONE);
 		YUMLConverter converter = new YUMLConverter();
+		Assert.assertEquals("[University|name:String]<-[Student]", converter.convert(list, true));
+	}
+	
+	@Test
+	public void testSimpleBiGraphList() {
+		GraphList list = new GraphList();
+		Clazz uni = list.with(new Clazz().with("UniKassel").with("University"));
+		uni.createAttribute("name", DataType.STRING);
+		uni.createMethod("init()");
+		Clazz student = list.with(new Clazz().with("Stefan").with("Student"));
+		student.withBidirectional(uni, "owner", Cardinality.ONE, "students", Cardinality.MANY);
+		YUMLConverter converter = new YUMLConverter();
 		Assert.assertEquals("[University|name:String]-[Student]", converter.convert(list, true));
 	}
 	
@@ -78,6 +90,6 @@ public class YUmlTest {
 		uni.createAttribute("name", DataType.STRING);
 		list.with(new Clazz().with("Stefan").with("Student"));
 		YUMLConverter converter = new YUMLConverter();
-		Assert.assertEquals("[University|name:String][Student]", converter.convert(list, true));
+		Assert.assertEquals("[University|name:String],[Student]", converter.convert(list, true));
 	}	
 }

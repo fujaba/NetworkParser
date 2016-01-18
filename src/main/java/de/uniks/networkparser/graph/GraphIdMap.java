@@ -83,7 +83,6 @@ public class GraphIdMap extends IdMap {
 	
 	public GraphList parsing(Object object, GraphIdMapFilter filter) {
 		GraphList newElement = new GraphList();
-		initItem(newElement);
 		newElement.withTyp(filter.getTyp());
 		Clazz main = parse(object, filter, newElement, 0);
 		GraphDiff diff = newElement.getDiff();
@@ -123,7 +122,6 @@ public class GraphIdMap extends IdMap {
 		className = className.substring(className.lastIndexOf('.') + 1);
 
 		Clazz newElement = new Clazz();
-		initItem(newElement);
 		newElement.withId(mainKey);
 		newElement.with(className);
 		list.with(newElement);
@@ -163,8 +161,10 @@ public class GraphIdMap extends IdMap {
 		if (valueCreater != null) {
 			Clazz subId = parse(item, filter, list, deep + 1);
 			Association edge = new Association(element);
-			initItem(edge);
-			list.with(edge.with(this.createEdge(subId, cardinality, property)));
+			element.with(edge);
+			Association target = new Association(subId).with(cardinality).with(property);
+			subId.with(target);
+			list.with(edge.with(target));
 		} else {
 			Attribute attribute = element.createAttribute(property, DataType.ref(item.getClass()));
 			attribute.withValue("" + item);
@@ -203,15 +203,5 @@ public class GraphIdMap extends IdMap {
 		}
 		String className = object.getClass().getName();
 		return className.substring(className.lastIndexOf('.') + 1);
-	}
-
-	Association createEdge(Clazz node, Cardinality cardinality, String property) {
-		Association newElement = new Association(node).with(cardinality).with(property);
-		initItem(newElement);
-		return newElement;
-	}
-	
-	protected void initItem(GraphMember item) {
-		
 	}
 }

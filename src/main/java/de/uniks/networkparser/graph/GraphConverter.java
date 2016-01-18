@@ -171,7 +171,7 @@ public class GraphConverter implements Converter {
 		}
 		jsonRoot.put(STYLE, root.getStyle());
 		jsonRoot.put(NODES, parseEntities(typ, root, removePackage));
-		jsonRoot.withKeyValue(EDGES, parseEdges(typ, root.getEdges(), removePackage));
+		jsonRoot.withKeyValue(EDGES, parseEdges(typ, root.getAssociation(), removePackage));
 		return jsonRoot;
 	}
 

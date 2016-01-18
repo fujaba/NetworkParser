@@ -342,19 +342,6 @@ public class Clazz extends GraphEntity {
 		return kidClazzes;
 	}
 	
-	public SimpleSet<Association> getAssociation() {
-		SimpleSet<Association> allEdges = new SimpleSet<Association>();
-		if (associations == null ) {
-			return allEdges;
-		}
-		for (Association assoc : associations) {
-			if(AssociationTypes.isEdge(assoc.getType().getValue())) {
-				allEdges.add(assoc);
-			}
-		}
-		return allEdges;
-	}
-	
 	SimpleSet<Clazz> getEdges(AssociationTypes typ) {
 		return getEdges(typ, null);
 	}

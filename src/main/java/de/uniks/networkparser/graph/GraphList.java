@@ -24,8 +24,6 @@ package de.uniks.networkparser.graph;
 import de.uniks.networkparser.event.SimpleMapEntry;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
-import de.uniks.networkparser.list.SimpleKeyValueList;
-import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class GraphList extends GraphModel implements BaseItem{
@@ -58,25 +56,6 @@ public class GraphList extends GraphModel implements BaseItem{
 		return this;
 	}
 
-	public SimpleKeyValueList<String, Object> getLinks() {
-		SimpleKeyValueList<String, Object> links = new SimpleKeyValueList<String, Object>();
-		for (Association element : associations) {
-			for (GraphEntity node : element.getNodes()) {
-				String key = node.getTyp(typ, false);
-				SimpleList<?> value = (SimpleList<?>)links
-						.getValueItem(key);
-				if (value != null) {
-					value.withAll(element);
-				} else {
-					SimpleList<Association> simpleList = new SimpleList<Association>();
-					simpleList.add(element);
-					links.put(key, simpleList);
-				}
-			}
-		}
-		return links;
-	}
-	
 	public void initSubLinks() {
 		for(GraphEntity node : getNodes()) {
 			if(node instanceof Clazz == false) {
@@ -84,10 +63,12 @@ public class GraphList extends GraphModel implements BaseItem{
 			}
 			Clazz graphClazz = (Clazz) node;
 			SimpleSet<Association> childEdges = graphClazz.getAssociation();
-			SimpleSet<Association> myAssocs = getEdges();
+			if(this.associations == null) {
+				this.associations = new SimpleSet<Association>(); 
+			}
 			for(Association edge : childEdges) {
-				if(myAssocs.contains(edge) == false && myAssocs.contains(edge.getOther()) == false) {
-					myAssocs.add(edge);
+				if(associations.contains(edge) == false && associations.contains(edge.getOther()) == false) {
+					associations.add(edge);
 				}
 			}
 		}
@@ -153,13 +134,6 @@ public class GraphList extends GraphModel implements BaseItem{
 		return super.getNodes();
 	}
 	
-	public SimpleSet<Association> getEdges() {
-		if(associations == null) {
-			associations = new SimpleSet<Association>(); 
-		}
-		return associations;
-	}
-
 	public Association getEdge(GraphEntity node, String property) {
 		for(Association edge : associations) {
 			Association oEdge = edge.getOther();
