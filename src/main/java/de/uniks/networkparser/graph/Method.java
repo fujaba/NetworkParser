@@ -41,7 +41,7 @@ public class Method extends GraphMember {
 		return this;
 	}
 	
-	public String getName(boolean includeName) {
+	public String getName(boolean includeName, boolean shortName) {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(super.getName() + "(");
@@ -53,7 +53,7 @@ public class Method extends GraphMember {
 					continue;
 				}
 				Parameter param = (Parameter) item;
-				sb.append(param.getType(false));
+				sb.append(param.getType(shortName));
 				if (includeName) {
 					String name = "";
 					if (param.getName() != null) {
@@ -77,7 +77,7 @@ public class Method extends GraphMember {
 		}
 		sb.append(")");
 		if(returnType!=null && returnType!= DataType.VOID){
-			sb.append(" "+returnType.getName(false));
+			sb.append(" "+returnType.getName(shortName));
 		}
 		return sb.toString();
 	}
