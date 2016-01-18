@@ -137,10 +137,7 @@ public class Grammar {
 	/**
 	 * Get a new Instance of Element from the Creator
 	 * @param creator The EntityCreator
-<<<<<<< HEAD
-=======
 	 * @param className Alternative Name of Class
->>>>>>> adapt_SDMLib_datamodel
 	 * @return The new Instance
 	 */
 	public Object getNewEntity(SendableEntityCreator creator, String className) {
