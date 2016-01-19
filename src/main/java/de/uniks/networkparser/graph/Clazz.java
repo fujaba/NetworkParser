@@ -572,6 +572,16 @@ public class Clazz extends GraphEntity {
 		with(attribute);
 		return attribute;
 	}
+	public Clazz withAttribute(String name, DataType type) {
+		Attribute attribute = new Attribute(name, type);
+		with(attribute);
+		return this;
+	}
+	public Clazz withMethod(String name, DataType returnType, Parameter... parameters) {
+		Method method = this.createMethod(name, parameters);
+		method.with(returnType);
+		return this;
+	}
 	
 	@Override
 	public String toString() {
