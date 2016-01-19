@@ -31,21 +31,6 @@ public class DataTypeSet extends DataType{
 		this.value.withExternal(true);
 	}
 	
-	public static DataTypeSet ref(Clazz value) {
-		DataTypeSet result = new DataTypeSet().withGeneric(DataType.create(value));
-		return result;
-	}
-	public static DataTypeSet ref(String value) {
-		DataTypeSet result = new DataTypeSet().withGeneric(DataType.create(value));
-		return result;
-	}
-	
-	public static DataTypeSet ref(DataType value) {
-		DataTypeSet result = new DataTypeSet().withGeneric(value);
-		return result;
-	}
-
-
 	private DataTypeSet withGeneric(DataType value) {
 		this.generic = value;
 		return this;
@@ -61,5 +46,19 @@ public class DataTypeSet extends DataType{
 			return null;
 		}
 		return this.value.getName(shortName) + "<" + generic.getInternName(shortName, false) + ">";
+	}
+	
+	public static DataTypeSet create(Clazz value) {
+		DataTypeSet result = new DataTypeSet().withGeneric(DataType.create(value));
+		return result;
+	}
+	public static DataTypeSet create(String value) {
+		DataTypeSet result = new DataTypeSet().withGeneric(DataType.create(value));
+		return result;
+	}
+	
+	public static DataTypeSet create(DataType value) {
+		DataTypeSet result = new DataTypeSet().withGeneric(value);
+		return result;
 	}
 }

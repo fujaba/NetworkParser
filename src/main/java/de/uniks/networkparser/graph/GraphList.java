@@ -63,12 +63,10 @@ public class GraphList extends GraphModel implements BaseItem{
 			}
 			Clazz graphClazz = (Clazz) node;
 			SimpleSet<Association> childEdges = graphClazz.getAssociation();
-			if(this.associations == null) {
-				this.associations = new SimpleSet<Association>(); 
-			}
 			for(Association edge : childEdges) {
+				SimpleSet<Association> associations = getAssociation();
 				if(associations.contains(edge) == false && associations.contains(edge.getOther()) == false) {
-					associations.add(edge);
+					super.with(edge);
 				}
 			}
 		}
@@ -135,7 +133,7 @@ public class GraphList extends GraphModel implements BaseItem{
 	}
 	
 	public Association getEdge(GraphEntity node, String property) {
-		for(Association edge : associations) {
+		for(Association edge : getAssociation()) {
 			Association oEdge = edge.getOther();
 			if(edge.getClazz()==node && property.equals(oEdge.getName())) {
 				return edge;
@@ -183,12 +181,5 @@ public class GraphList extends GraphModel implements BaseItem{
 			return new SimpleMapEntry<String, GraphNode>();
 		}
 		return new GraphList();
-	}
-
-	GraphList withoutAssoc(Association assoc) {
-		if(this.associations != null) {
-			this.associations.remove(assoc);
-		}
-		return this;
 	}
 }

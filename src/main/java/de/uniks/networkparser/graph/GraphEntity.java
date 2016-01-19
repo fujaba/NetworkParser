@@ -25,7 +25,7 @@ permissions and limitations under the Licence.
 import de.uniks.networkparser.list.SimpleSet;
 
 public abstract class GraphEntity extends GraphMember {
-	protected SimpleSet<Association> associations;
+	protected Object associations;
 	private boolean external;
 	private String id;
 	
@@ -65,9 +65,17 @@ public abstract class GraphEntity extends GraphMember {
 		if (associations == null ) {
 			return allEdges;
 		}
-		for (Association assoc : associations) {
-			if(AssociationTypes.isEdge(assoc.getType().getValue())) {
-				allEdges.add(assoc);
+		if(associations instanceof Association) {
+			allEdges.add((Association) this.associations);
+		}else if(associations instanceof GraphSimpleSet) {
+			GraphSimpleSet collection = (GraphSimpleSet) this.associations;
+			for (GraphMember item : collection) {
+				if(item instanceof Association) {
+					Association assoc = (Association) item;
+					if(AssociationTypes.isEdge(assoc.getType().getValue())) {
+						allEdges.add(assoc);
+					}
+				}
 			}
 		}
 		return allEdges;
@@ -126,10 +134,36 @@ public abstract class GraphEntity extends GraphMember {
 		return this;
 	}
 	
+	public GraphEntity without(Association... values) {
+		if (values == null || this.associations == null) {
+			return this;
+		}
+		if(this.associations instanceof GraphMember) {
+			for (GraphMember value : values) {
+				if(this.associations == value) {
+					this.associations = null;
+				}
+			}
+			return this;
+		}
+		GraphSimpleSet collection = (GraphSimpleSet) this.associations;
+		for (GraphMember value : values) {
+			if(value != null) {
+				collection.remove(value);
+			}
+		}
+		return this;
+	}
+	
 	boolean addAssoc(Association assoc) {
+		// Do Nothing
+		if (assoc == null || (this.associations == assoc)) {
+			return false;
+		}
 		boolean add=true;
+
 		if(assoc.getOther() != null && this.associations != null) {
-			for (Iterator<Association> i = this.associations.iterator(); i.hasNext();) {
+			for (Iterator<Association> i = this.getAssociation().iterator(); i.hasNext();) {
 				Association item = i.next();
 				if(has(item, assoc.getOther()) && has(item.getOther(), assoc)) {
 					if(item.isSame(assoc.getOther()) && item.getOther().isSame(assoc)) {
@@ -153,9 +187,19 @@ public abstract class GraphEntity extends GraphMember {
 		}
 		if(add) {
 			if(this.associations == null) {
-				this.associations = new SimpleSet<Association>();
+				this.associations = assoc;
+			} else {
+				GraphSimpleSet list;
+				if( this.associations  instanceof GraphSimpleSet) {
+					list = (GraphSimpleSet) this.associations;
+					add = list.add(assoc);
+				}else {
+					list = new GraphSimpleSet().withAllowDuplicate(true);
+					list.with((GraphMember) this.associations);
+					this.associations = list;
+					add = list.add(assoc);
+				}
 			}
-			this.associations.add(assoc);
 		}
 		return add;
 	}

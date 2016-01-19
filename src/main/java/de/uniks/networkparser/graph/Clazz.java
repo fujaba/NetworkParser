@@ -226,7 +226,7 @@ public class Clazz extends GraphEntity {
 		if (associations == null) {
 			return null;
 		}
-		for (Association assoc : associations) {
+		for (Association assoc : getAssociation()) {
 			if(!AssociationTypes.GENERALISATION.equals(assoc.getType())) {
 				continue;
 			}
@@ -252,7 +252,7 @@ public class Clazz extends GraphEntity {
 		if (associations == null) {
 			return interfaces;
 		}
-		for (Association assoc : associations) {
+		for (Association assoc : getAssociation()) {
 			Clazz clazz = assoc.getOtherClazz();
 			if(assoc.getType()==AssociationTypes.GENERALISATION || assoc.getType()==AssociationTypes.IMPLEMENTS) {
 				if (GraphUtil.isInterface(clazz)) {
@@ -274,9 +274,7 @@ public class Clazz extends GraphEntity {
 		if (values == null) {
 			return this;
 		}
-		if (this.associations == null) {
-			this.associations = new SimpleSet<Association>();
-		}
+		SimpleSet<Association> associations = getAssociation();
 		for (Clazz item : values) {
 			if (item != null) {
 				boolean found=false;
@@ -351,7 +349,7 @@ public class Clazz extends GraphEntity {
 		if (associations == null || typ == null) {
 			return kindClazzes;
 		}
-		for (Association assoc : associations) {
+		for (Association assoc : getAssociation()) {
 			if(typ != assoc.getType()) {
 				continue;
 			}
@@ -369,9 +367,7 @@ public class Clazz extends GraphEntity {
 		if (values == null) {
 			return this;
 		}
-		if (this.associations == null) {
-			this.associations = new SimpleSet<Association>();
-		}
+		SimpleSet<Association> associations = getAssociation();
 		for (Clazz item : values) {
 			if (item != null) {
 				boolean found=false;
@@ -473,10 +469,10 @@ public class Clazz extends GraphEntity {
 		}
 		for (Clazz item : values) {
 			if (item != null) {
-				for (Association assoc : associations) {
+				for (Association assoc : getAssociation()) {
 					if(assoc.getOther().getType() == AssociationTypes.GENERALISATION) {
 						if(assoc.contains(item, false, true)) {
-							this.associations.remove(assoc);
+							super.without(assoc);
 							break;
 						}
 					}
@@ -492,10 +488,10 @@ public class Clazz extends GraphEntity {
 		}
 		for (Clazz item : values) {
 			if (item != null) {
-				for (Association assoc : associations) {
+				for (Association assoc : getAssociation()) {
 					if(assoc.getType() == AssociationTypes.GENERALISATION) {
 						if(assoc.contains(item, true, false)) {
-							this.associations.remove(assoc);
+							this.without(assoc);
 							break;
 						}
 					}

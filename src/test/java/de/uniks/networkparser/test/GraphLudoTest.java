@@ -97,7 +97,7 @@ public class GraphLudoTest
 	  
 	  // May be 8 Asssocs and write 11
 	  JsonObject converter=graphConverter.convertToJson(GraphIdMap.CLASS, jsonArray, true);
-	  showDebugInfos(converter, 2746, null);
+	  showDebugInfos(converter, 2746, System.out);
    }
    private void showDebugInfos(JsonObject json, int len, PrintStream stream) {
 	   if(stream != null) {
