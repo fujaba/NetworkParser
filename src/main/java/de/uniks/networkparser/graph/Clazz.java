@@ -78,7 +78,7 @@ public class Clazz extends GraphEntity {
 	}
 	
 	public Clazz with(Modifier... values) {
-		super.withChildren(true, values);
+		super.withModifier(values);
 		return this;
 	}
 	

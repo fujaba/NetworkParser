@@ -44,14 +44,14 @@ public class Attribute extends Value {
 	public Modifier getModifiers() {
 		Modifier modifier = super.getModifiers();
 		if(modifier == null) {
-			modifier = Modifier.PRIVATE;
+			modifier = new Modifier(Modifier.PRIVATE.getName());
 			super.withChildren(true, modifier);
 		}
 		return modifier;
 	}
 
 	public Attribute with(Modifier... modifier) {
-		getModifiers().withChildren(true, modifier);
+		super.withModifier(modifier);
 		return this;
 	}
 	

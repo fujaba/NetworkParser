@@ -38,12 +38,12 @@ public class Modifier extends GraphMember {
 	public static Modifier ref(String value) {
 		return new Modifier(value);
 	}
-
-	public static Modifier ref(Modifier... value) {
+	
+	public static Modifier create(Modifier... value) {
 		Modifier mod=new Modifier("");
 		for (Modifier item : value) {
-			if (item == PUBLIC || item == PACKAGE || item == PROTECTED
-					|| item == PRIVATE) {
+			if (item.has(PUBLIC) || item.has(PACKAGE) || item.has(PROTECTED)
+					|| item.has(PRIVATE)) {
 				mod.with(item.getName());
 				continue;
 			}
@@ -73,5 +73,13 @@ public class Modifier extends GraphMember {
 	@Override
 	public String toString() {
 		return this.name;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof Modifier) {
+			return this.has((Modifier) obj);
+		}
+		return super.equals(obj);
 	}
 }

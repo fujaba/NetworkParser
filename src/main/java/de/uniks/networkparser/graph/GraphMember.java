@@ -230,4 +230,19 @@ public abstract class GraphMember {
 		}
 		return null;
 	}
+	GraphMember withModifier(Modifier... values) {
+		if(values == null) {
+			return this;
+		}
+		Modifier rootModifier = getModifiers();
+		for (Modifier item : values) {
+			if (item.has(Modifier.PUBLIC) || item.has(Modifier.PACKAGE) || item.has(Modifier.PROTECTED)
+					|| item.has(Modifier.PRIVATE)) {
+				rootModifier.with(item.getName());
+				continue;
+			}
+			rootModifier.withChildren(true, item);
+		}
+		return this;
+	}
 }
