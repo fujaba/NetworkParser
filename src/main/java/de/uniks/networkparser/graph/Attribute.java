@@ -36,6 +36,12 @@ public class Attribute extends Value {
 	}
 	
 	@Override
+	public Attribute with(Class<?> value) {
+		super.with(value);
+		return this;
+	}
+	
+	@Override
 	public Attribute withValue(String value) {
 		super.withValue(value);
 		return this;

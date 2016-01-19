@@ -6,10 +6,12 @@ import java.io.PrintStream;
 import org.junit.Test;
 
 import de.uniks.networkparser.graph.*;
+import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SortedSet;
 
 public class GenModel {
-	public static PrintStream stream=null; //System.out;
+	public static PrintStream stream=null;	//System.out;
+	public static boolean methods=false;
 	@Test
 	public void showCountsModel() {
 		showCounting(Annotation.class);
@@ -45,9 +47,21 @@ public class GenModel {
 //		Assert.assertNotNull(nameAttribute);
 //		Assert.assertNotNull(mainMethod);
 	}
+	
+	private String shortName(Class<?> classType) {
+		if(classType == null) {
+			return null;
+		}
+		String name = classType.getName();
+		int pos = name.lastIndexOf(".");
+		if(pos>0) {
+			return name.substring(pos+1);
+		}
+		return name;
+	}
 	private String getSignature(java.lang.reflect.Method method) {
 		StringBuilder sb=new StringBuilder();
-		sb.append(method.getDeclaringClass()+" "+method.getName()+"(");
+		sb.append(shortName(method.getDeclaringClass())+" "+method.getName()+"(");
 		java.lang.reflect.Parameter[] parameters = method.getParameters();
 		for(int i = 0;i<parameters.length;i++) {
 			sb.append(parameters[i].getType());
@@ -56,6 +70,11 @@ public class GenModel {
 			}
 		}
 		sb.append(")");
+		if(method.getReturnType()!= null) {
+			sb.append(" : ");
+			sb.append(shortName(method.getReturnType()));
+			
+		}
 		return sb.toString();
 	}
 	
@@ -64,7 +83,34 @@ public class GenModel {
 	}
 	public void showCounting(Class<?> element) {
 		if(stream != null) {
-			stream.println(element.getSimpleName()+": "+getCounting(element, false));
+			stream.println(element.getSimpleName()+": "+getCounting(element, methods));
+		}
+		
+		if(java.lang.reflect.Modifier.isAbstract(element.getModifiers()) ) {
+			return;
+		}
+		SimpleList<String> wrongMethods = new SimpleList<String>();
+		java.lang.reflect.Method[] methods = element.getMethods();
+		for(int i=0;i<methods.length;i++) {
+			if(methods[i].getDeclaringClass() == Object.class || methods[i].getDeclaringClass() == Enum.class) {
+				continue;
+			}
+			if (java.lang.reflect.Modifier.isStatic(methods[i].getModifiers())  || 
+					java.lang.reflect.Modifier.isPublic(methods[i].getModifiers()) == false) {
+				continue;
+			}
+
+			if(element.getName().equals(methods[i].getDeclaringClass().getName())== false) {
+				String declaredClass = shortName(methods[i].getDeclaringClass());
+				String returnClass = shortName(methods[i].getReturnType());
+				if(declaredClass.equals(returnClass)) {
+					wrongMethods.add(shortName(element)+" "+getSignature(methods[i]));
+				}
+			}
+		}
+		// ERRORS
+		for(String item : wrongMethods) {
+			System.out.println(item);
 		}
 	}
 
@@ -72,10 +118,10 @@ public class GenModel {
 		java.lang.reflect.Method[] methods = element.getMethods();
 		SortedSet<String> counts=new SortedSet<String>();
 		for(int i=0;i<methods.length;i++) {
-			String signature = getSignature(methods[i]);
 			if(methods[i].getDeclaringClass() == Object.class || methods[i].getDeclaringClass() == Enum.class) {
 				continue;
 			}
+			String signature = getSignature(methods[i]);
 			if (java.lang.reflect.Modifier.isStatic(methods[i].getModifiers())) {
 				counts.with(signature);
 			} else if (java.lang.reflect.Modifier.isPublic(methods[i].getModifiers())) {

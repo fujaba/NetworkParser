@@ -41,6 +41,11 @@ public class Parameter extends Value {
 		with(value);
 	}
 	
+	@Override
+	public Parameter withValue(String value) {
+		super.withValue(value);
+		return this;
+	}
 	
 	public Method getMethod() {
 		return (Method) this.parentNode;

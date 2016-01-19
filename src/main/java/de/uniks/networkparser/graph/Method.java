@@ -30,8 +30,6 @@ public class Method extends GraphMember {
 	public static final String PROPERTY_NODE = "node";
 	public static final String PROPERTY_MODIFIER = "modifier";
 	public static final String PROPERTY_ANNOTATIONS = "annotations";
-
-	private Modifier modifier = Modifier.PUBLIC;
 	private DataType returnType = DataType.VOID;
 	private String body;
 
@@ -41,7 +39,7 @@ public class Method extends GraphMember {
 		return this;
 	}
 	
-	public String getName(boolean includeName, boolean shortName) {
+	public String getName(boolean shortName) {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(super.getName() + "(");
@@ -82,13 +80,18 @@ public class Method extends GraphMember {
 		new Parameter().with(paramName).with(DataType.create(dataType)).withParent(this);
 		return this;
 	}
-
+	
 	public Modifier getModifier() {
-		return this.modifier;
+		Modifier modifier = super.getModifiers();
+		if(modifier == null) {
+			modifier = new Modifier(Modifier.PUBLIC.getName());
+			super.withChildren(true, modifier);
+		}
+		return modifier;
 	}
 
-	public Method with(Modifier value) {
-		this.modifier = value;
+	public Method with(Modifier... modifiers) {
+		super.withModifier(modifiers);
 		return this;
 	}
 
@@ -113,7 +116,7 @@ public class Method extends GraphMember {
 		return this;
 	}
 
-	public String getParameterString(boolean shortName){
+	String getParameterString(boolean shortName){
 		StringBuilder sb=new StringBuilder();
 		GraphSimpleSet collection = this.getChildren();
 		for(int i=0;i<collection.size();i++) {
@@ -125,9 +128,9 @@ public class Method extends GraphMember {
 				sb.append(", ");
 			}
 			if(param.getName() == null) {
-				sb.append("p"+i+" : "+param.getType(shortName));
+				sb.append(param.getType(shortName)+ " p"+i);
 			}else{
-				sb.append(collection.get(i).getName()+" : "+param.getType(shortName));
+				sb.append(param.getType(shortName)+" "+collection.get(i).getName());
 			}
 		}
 		return sb.toString();

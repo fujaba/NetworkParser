@@ -45,7 +45,6 @@ public class Annotation extends GraphMember implements IdMapDecoder {
 	Annotation() {
 	}
 
-	
 	public Annotation(String name) {
 		super.with(name);
 	}
@@ -54,6 +53,13 @@ public class Annotation extends GraphMember implements IdMapDecoder {
 		Annotation annotation = new Annotation();
 		annotation.decode(value);
 		return annotation;
+	}
+	
+	//Redirect
+	@Override
+	public Annotation with(String name) {
+		super.with(name);
+		return this;
 	}
 
 	@Override

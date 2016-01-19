@@ -34,8 +34,14 @@ public class Modifier extends GraphMember {
 	Modifier(String value) {
 		this.setName(value);
 	}
+	
+	@Override
+	public Modifier with(String name) {
+		super.with(name);
+		return this;
+	}
 
-	public static Modifier ref(String value) {
+	public static Modifier create(String value) {
 		return new Modifier(value);
 	}
 	

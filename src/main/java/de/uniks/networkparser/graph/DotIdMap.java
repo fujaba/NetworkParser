@@ -242,7 +242,7 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 			for(Method method : graphClazz.getMethods()) {
 				// add attribute line
 //				if(isObjectdiagram) {
-				childBuilder.append(BaseItem.CRLF+"<tr><td align='left'>"+method.getName(false, false) + "</td></tr>");
+				childBuilder.append(BaseItem.CRLF+"<tr><td align='left'>"+method.getName(false) + "</td></tr>");
 			}
 			if(childBuilder.length() > 0) {
 				sb.append(BaseItem.CRLF+"<tr><td><table border='0' cellborder='0' cellspacing='0'>");

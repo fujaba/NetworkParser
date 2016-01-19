@@ -27,9 +27,16 @@ import de.uniks.networkparser.list.SimpleSet;
 public class Clazz extends GraphEntity {
 	public enum ClazzType {CLAZZ, ENUMERATION, INTERFACE};
 	private ClazzType type = ClazzType.CLAZZ;
+	
 	@Override
 	public Clazz with(String name) {
 		super.with(name);
+		return this;
+	}
+	
+	@Override
+	public Clazz withId(String id) {
+		super.withId(id);
 		return this;
 	}
 

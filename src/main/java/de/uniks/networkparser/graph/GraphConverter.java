@@ -370,7 +370,7 @@ public class GraphConverter implements Converter {
 				continue;
 			}
 			Method method = (Method) item;
-			result.add( method.getName(false, false));
+			result.add( method.getName(false));
 		}
 		return result;
 	}
