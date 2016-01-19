@@ -79,6 +79,16 @@ public class Clazz extends GraphEntity {
 		return this;
 	}
 
+	@Override
+	public Modifier getModifier() {
+		Modifier modifier = super.getModifier();
+		if(modifier == null) {
+			modifier = new Modifier(Modifier.PUBLIC.getName());
+			super.withChildren(true, modifier);
+		}
+		return modifier;
+	}
+	
 	public Clazz with(Association... values) {
 		super.with(values);
 		return this;
