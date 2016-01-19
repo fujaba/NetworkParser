@@ -81,8 +81,9 @@ public class Method extends GraphMember {
 		return this;
 	}
 	
+	@Override
 	public Modifier getModifier() {
-		Modifier modifier = super.getModifiers();
+		Modifier modifier = super.getModifier();
 		if(modifier == null) {
 			modifier = new Modifier(Modifier.PUBLIC.getName());
 			super.withChildren(true, modifier);

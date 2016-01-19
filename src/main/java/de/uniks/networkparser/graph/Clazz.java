@@ -558,10 +558,6 @@ public class Clazz extends GraphEntity {
 		}
 		return false;
 	}
-
-	public Modifier getModifiers() {
-		return super.getModifiers();
-	}
 	
 	public Method createMethod(String name, Parameter... parameters) {
 		Method method = new Method().with(name);

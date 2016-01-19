@@ -214,7 +214,7 @@ public abstract class GraphMember {
 		return null;
 	}
 	
-	public Modifier getModifiers() {
+	public Modifier getModifier() {
 		if(this.children == null) {
 			return null;
 		}
@@ -234,7 +234,7 @@ public abstract class GraphMember {
 		if(values == null) {
 			return this;
 		}
-		Modifier rootModifier = getModifiers();
+		Modifier rootModifier = getModifier();
 		for (Modifier item : values) {
 			if (item.has(Modifier.PUBLIC) || item.has(Modifier.PACKAGE) || item.has(Modifier.PROTECTED)
 					|| item.has(Modifier.PRIVATE)) {

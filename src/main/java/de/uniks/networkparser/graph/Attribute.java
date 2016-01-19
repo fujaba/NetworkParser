@@ -47,8 +47,9 @@ public class Attribute extends Value {
 		return this;
 	}
 	
-	public Modifier getModifiers() {
-		Modifier modifier = super.getModifiers();
+	@Override
+	public Modifier getModifier() {
+		Modifier modifier = super.getModifier();
 		if(modifier == null) {
 			modifier = new Modifier(Modifier.PRIVATE.getName());
 			super.withChildren(true, modifier);
@@ -62,7 +63,7 @@ public class Attribute extends Value {
 	}
 	
 	public Attribute without(Modifier... modifier) {
-		getModifiers().without(modifier);
+		getModifier().without(modifier);
 		return this;
 	}
 	
