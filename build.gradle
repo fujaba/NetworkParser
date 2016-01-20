@@ -3,11 +3,11 @@
 apply plugin: 'java'
 apply plugin: 'maven'
 
+ant.importBuild 'buildAnt.xml'
 if (project.hasProperty('jenkins') == false) {
 	ant.importBuild 'gource.xml'
 	ant.importBuild 'Copyright.xml'
 	ant.importBuild 'ikvm.xml'
-	ant.importBuild 'buildAnt.xml'
 	gource.group "Git"
 	makefilm.group "Git"
 	ikvm.group "Git"
