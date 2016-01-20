@@ -3,30 +3,26 @@
 apply plugin: 'java'
 apply plugin: 'maven'
 
+ant.importBuild 'buildAnt.xml'
+ant.importBuild 'gource.xml'
+ant.importBuild 'Copyright.xml'
+ant.importBuild 'ikvm.xml'
+gource.group "Git"
+makefilm.group "Git"
+ikvm.group "Git"
+AddCopyRightToSource.group "Build"
 
-if (project.hasProperty('jenkins') ) {
-	apply from: 'gradle/jenkins.gradle'
-} else {
-	ant.importBuild 'buildAnt.xml'
-	ant.importBuild 'gource.xml'
-	ant.importBuild 'Copyright.xml'
-	ant.importBuild 'ikvm.xml'
-	gource.group "Git"
-	makefilm.group "Git"
-	ikvm.group "Git"
-	AddCopyRightToSource.group "Build"
-}
 apply from: 'gradle/version.gradle'
 apply from: 'gradle/tasks.gradle'
 apply plugin: 'jacoco'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 
-if (System.env["artifactory_user"] != null) {
+if (envProjectProp["artifactory_user"] != null) {
 	println "Copy"
-	artifactory_user = System.env["artifactory_user"]
-	artifactory_password = System.env["artifactory_password"]
-	artifactory_contextUrl = System.env["artifactory_contextUrl"]
+	artifactory_user = envProjectProp["artifactory_user"]
+	artifactory_password = envProjectProp["artifactory_password"]
+	artifactory_contextUrl = envProjectProp["artifactory_contextUrl"]
 }
 
 apply from: 'gradle/mavencentral.gradle'
