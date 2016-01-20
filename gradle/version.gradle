@@ -7,11 +7,13 @@ group = 'de.uniks'
 import java.text.SimpleDateFormat
 
 ext{
-	buildAnt.execute()
-	project.ext.Revisionnumber = Integer.parseInt(ant.Revisionnumber)
-	project.ext.Branchname = ant.Branchname
-	project.ext.LastCommit = ant.LastCommit
-	project.ext.GitTag = Integer.parseInt(ant.GitTag)
+	if(project.hasProperty('buildAnt')) {
+		buildAnt.execute()
+		project.ext.Revisionnumber = Integer.parseInt(ant.Revisionnumber)
+		project.ext.Branchname = ant.Branchname
+		project.ext.LastCommit = ant.LastCommit
+		project.ext.GitTag = Integer.parseInt(ant.GitTag)
+	}
 
 	gitVersion = new GITVersion(major: majorNumber,minor: ext.GitTag, revision: ext.Revisionnumber, hash: ext.LastCommit, buildTime: buildTime(), branch: ext.Branchname)
 }
@@ -20,9 +22,9 @@ version = gitVersion
 task printVersion {
 	group "Git"
 	description "Show Final Version of Repository"
-    doLast {
-        println "$version"
-		
+	doLast {
+		println "$version"
+
 		println "Revisionnumber: "	+ project.ext.Revisionnumber
 		println "Branchname: " 		+ project.ext.Branchname
 		println "LastCommit: "		+ project.ext.LastCommit

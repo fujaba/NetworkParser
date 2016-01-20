@@ -3,8 +3,11 @@
 apply plugin: 'java'
 apply plugin: 'maven'
 
-ant.importBuild 'buildAnt.xml'
-if (project.hasProperty('jenkins') == false) {
+
+if (project.hasProperty('jenkins') ) {
+	apply from: 'gradle/jenkins.gradle'
+} else {
+	ant.importBuild 'buildAnt.xml'
 	ant.importBuild 'gource.xml'
 	ant.importBuild 'Copyright.xml'
 	ant.importBuild 'ikvm.xml'

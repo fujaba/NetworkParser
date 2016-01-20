@@ -91,6 +91,5 @@ task buildAll(type: Jar) {
 	exclude '**/javafx/**'
 	exclude '**/test/**'
 	from sourceSets.main.output
-    println "Build all Jars"
 }
 buildAll.dependsOn buildCoreJar, buildCoreJar16, buildCoreJar17, buildSourceJar, buildJavadoc, buildFullJar
