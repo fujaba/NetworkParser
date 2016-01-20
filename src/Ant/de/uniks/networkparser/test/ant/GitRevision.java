@@ -3,7 +3,10 @@ package de.uniks.networkparser.test.ant;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.diff.DiffEntry;
@@ -12,6 +15,7 @@ import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.FileMode;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
+import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
@@ -35,6 +39,7 @@ public class GitRevision {
 		System.setProperty("Branchname", repository.getBranch());
 		ObjectId headID = repository.resolve("HEAD");
 		System.setProperty("LastCommit", headID.getName());
+		calcGitTag(repository);
 		
 		JsonArray map= new JsonArray();
 		commitInfo(map, repository, headID, null);
@@ -51,6 +56,27 @@ public class GitRevision {
 		FileWriter writer= new FileWriter("build/commits.json");
 		writer.write(map.toString(2));
 		writer.close();
+	}
+	
+	public int calcGitTag(Repository repository) {
+		int gittag=-1;
+		String tagHash = "";
+		Map<String, Ref> tags = repository.getTags();
+		for(Iterator<Entry<String, Ref>> i = tags.entrySet().iterator();i.hasNext();) {
+			Entry<String, Ref> entry = i.next();
+			try {
+				Integer value = Integer.valueOf(entry.getKey());
+				if(value>0 && value > gittag) {
+					gittag = value;
+					tagHash = entry.getValue().getName();
+				}
+			}catch(Exception e) {
+				// no problem as long as there's another tag with a number
+			}
+		}
+		System.setProperty("GitTag", "" +gittag);
+		System.setProperty("GitTagHash", tagHash);
+		return gittag;
 	}
 	
 	public void setFull(boolean full) {
@@ -104,6 +130,7 @@ public class GitRevision {
 				}
 				map.add(jsonObject);
 			}
+			walk.close();
 			return jsonObject;
 		}catch(Exception e){
 			e.printStackTrace();
