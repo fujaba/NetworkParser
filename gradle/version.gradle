@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat
 
 ext{
 	if(project.hasProperty('buildAnt')) {
+		buildAntCompile.execute()
 		buildAnt.execute()
 		project.ext.Revisionnumber = Integer.parseInt(ant.Revisionnumber)
 		project.ext.Branchname = ant.Branchname
