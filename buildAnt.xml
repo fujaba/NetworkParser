@@ -4,10 +4,13 @@
 	<property name="gitjar" value="lib/git/org.eclipse.jgit-4.1.0.201509280440-r.jar" />
 	<target name="buildAntCompile">
 		<mkdir dir="build/Ant/" />
-		<javac srcdir="src/Ant" destdir="build/Ant"  includeantruntime="true" debug="true" sourcepath="src/Ant" listfiles="true">
+		<mkdir dir="bin" />
+		<javac srcdir="src/main/java" destdir="bin" includeantruntime="false" sourcepath="src/main/java" listfiles="true">
+		</javac>
+		<javac srcdir="src/Ant" destdir="build/Ant" includeantruntime="false" debug="true" sourcepath="src/Ant" listfiles="true">
 			<classpath>
 				<pathelement location="${gitjar}"/>
-				<pathelement location="bin"></pathelement>
+				<pathelement location="bin"/>
 				<pathelement location="lib\findbugs\ant.jar"/>
 			</classpath>
 		</javac>
