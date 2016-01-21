@@ -19,12 +19,11 @@ ext{
 	gitVersion = new GITVersion(major: majorNumber,minor: ext.GitTag, revision: ext.Revisionnumber, hash: ext.LastCommit, buildTime: buildTime(), branch: ext.Branchname)
 }
 version = gitVersion
-
 task printVersion {
 	group "Git"
 	description "Show Final Version of Repository"
 	doLast {
-		println "$version"
+		println gitVersion
 
 		println "Revisionnumber: "	+ project.ext.Revisionnumber
 		println "Branchname: " 		+ project.ext.Branchname

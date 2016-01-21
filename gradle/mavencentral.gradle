@@ -1,6 +1,5 @@
 def isReleaseBuild() {
-	return "$version".isRelease();
-//    return "$version".contains("SNAPSHOT") == false && project.hasProperty('ReleaseBuild')
+	return gitVersion.isRelease();
 }
 def writeFile() {
 	if(project.hasProperty("signingSecretKeyRing")) {
@@ -30,7 +29,7 @@ if(project.hasProperty("signing.keyId")) {
 	writeFile()
 
 	signing {
-		required { (isReleaseBuild() || "$version".contains("SNAPSHOT") == true )&& gradle.taskGraph.hasTask("uploadArchives")}
+		required { (isReleaseBuild() || gitVersion.isMaster() )&& gradle.taskGraph.hasTask("uploadArchives")}
 		sign configurations.archives
 	}
 
