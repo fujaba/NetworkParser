@@ -24,20 +24,21 @@ package de.uniks.networkparser.bytes.converter;
 import de.uniks.networkparser.bytes.ByteIdMap;
 import de.uniks.networkparser.bytes.ByteBuffer;
 import de.uniks.networkparser.interfaces.ByteConverter;
+import de.uniks.networkparser.string.CharList;
 
 public class ByteConverterHTTP extends ByteConverter {
 	@Override
 	public String toString(byte[] values, int size) {
-		StringBuilder returnValue = new StringBuilder();
+		CharList returnValue = new CharList();
 
 		if (values != null) {
 			for (int i = 0; i < size; i++) {
-				byte value = values[i];
-				if (value <= 32 || value == 127) {
-					returnValue.append(ByteIdMap.SPLITTER);
-					returnValue.append((char) (value + ByteIdMap.SPLITTER + 1));
+				int value = values[i];
+                if (value <= 32 || value == 127) {
+					returnValue.with(ByteIdMap.SPLITTER);
+					returnValue.with((char) (value + ByteIdMap.SPLITTER + 1));
 				} else {
-					returnValue.append((char) value);
+					returnValue.with((char) value);
 				}
 			}
 		}
@@ -47,24 +48,27 @@ public class ByteConverterHTTP extends ByteConverter {
 	/**
 	 * Decode http.
 	 *
-	 * @param value
+	 * @param values
 	 *			the bytes
 	 * @return the object
 	 */
 	@Override
-	public byte[] decode(String value) {
-		if(value == null) {
+	public byte[] decode(String values) {
+		return decode(values.getBytes());
+	}
+	public byte[] decode(byte[] values) {
+		if(values == null) {
 			return null;
 		}
-		int len = value.length();
+		int len = values.length;
 		ByteBuffer buffer = ByteBuffer.allocate(len);
 		for (int i = 0; i < len; i++) {
-			int c = value.charAt(i);
-			if (c == ByteIdMap.SPLITTER) {
-				c = value.charAt(++i);
-				buffer.put((byte) (c - ByteIdMap.SPLITTER - 1));
+			int value = values[i];
+			if (value == ByteIdMap.SPLITTER) {
+				value = values[++i];
+				buffer.put((byte) (value - ByteIdMap.SPLITTER - 1));
 			} else {
-				buffer.put((byte) c);
+				buffer.put((byte) value);
 			}
 		}
 		buffer.flip();

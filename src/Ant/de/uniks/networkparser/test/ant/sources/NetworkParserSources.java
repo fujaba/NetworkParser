@@ -2,7 +2,6 @@ package de.uniks.networkparser.test.ant.sources;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -19,7 +18,7 @@ public class NetworkParserSources {
 	private int ok;
 	private int errors;
 	private int lineofCode;
-	private ArrayList<String> emptyMethods= new ArrayList<String>(); 
+//	private ArrayList<String> emptyMethods= new ArrayList<String>(); 
 	private HashMap<String, String> customItems;
 	private int thirdparty;
 
@@ -167,9 +166,6 @@ public class NetworkParserSources {
 	}
 	private void createdComment(String sourcePath, SourceItem commentFile, String projectName){
 		File path= new File(sourcePath);
-		if(path == null) {
-			return;
-		}
 		System.out.println("TESTE: "+sourcePath);
 
 		File[] listFiles = path.listFiles();

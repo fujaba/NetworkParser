@@ -18,13 +18,6 @@ apply plugin: 'jacoco'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 
-if (envProjectProp["artifactory_user"] != null) {
-	println "Copy"
-	artifactory_user = envProjectProp["artifactory_user"]
-	artifactory_password = envProjectProp["artifactory_password"]
-	artifactory_contextUrl = envProjectProp["artifactory_contextUrl"]
-}
-
 apply from: 'gradle/mavencentral.gradle'
 apply from: 'gradle/artifactory.gradle'
 
