@@ -811,8 +811,8 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 	 * @param listener the new Listener
 	 * @return This Component
 	 * 
-	 * @see with(PropertyChangeListener)
-	 * @see ChainUpdateListener
+	 * @see JsonIdMap#with(PropertyChangeListener)
+	 * @see de.uniks.networkparser.ChainUpdateListener
 	 */
 	public JsonIdMap with(UpdateListener listener) {
 		this.listener = listener;
