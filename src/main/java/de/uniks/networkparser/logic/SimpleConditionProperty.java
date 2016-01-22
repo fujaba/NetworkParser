@@ -1,5 +1,8 @@
 package de.uniks.networkparser.logic;
 
+import java.beans.PropertyChangeEvent;
+import java.util.EventObject;
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -22,28 +25,22 @@ package de.uniks.networkparser.logic;
  permissions and limitations under the Licence.
 */
 /**
- * Logicclass for simple Check of Value.
- *
- * @author Stefan Lindel
+ * @author Stefan Lindel ConditionMap Clazz
  */
 
-public class SimpleValues {
-	/** The Variable of value. */
-	protected Object value;
-
-	/**
-	 * @return The Value of Check
-	 */
-	public Object getValue() {
-		return value;
+public abstract class SimpleConditionProperty implements SimpleConditionValue {
+	@Override
+	public boolean check(EventObject values) {
+		if (values instanceof PropertyChangeEvent) {
+			return check((PropertyChangeEvent) values);
+		}
+		return false;
 	}
 
 	/**
-	 * @param value Set the new Value.
-	 * @return ValuesSimple Instance
+	 * @param values
+	 *			The Value of Match-Question
+	 * @return booelan if match
 	 */
-	public SimpleValues withValue(Object value) {
-		this.value = value;
-		return this;
-	}
+	public abstract boolean check(PropertyChangeEvent values);
 }

@@ -1,13 +1,33 @@
 package de.uniks.networkparser.logic;
+/*
+NetworkParser
+Copyright (c) 2011 - 2015, Stefan Lindel
+All rights reserved.
 
-import de.uniks.networkparser.SimpleValuesMap;
+Licensed under the EUPL, Version 1.1 or (as soon they
+will be approved by the European Commission) subsequent
+versions of the EUPL (the "Licence");
+You may not use this work except in compliance with the Licence.
+You may obtain a copy of the Licence at:
+
+http://ec.europa.eu/idabc/eupl5
+
+Unless required by applicable law or agreed to in
+writing, software distributed under the Licence is
+distributed on an "AS IS" basis,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+express or implied.
+See the Licence for the specific language governing
+permissions and limitations under the Licence.
+*/
+import java.beans.PropertyChangeEvent;
 import de.uniks.networkparser.interfaces.BufferedBuffer;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 /**
  * @author Stefan Lindel Clazz of EqualsCondition
  */
 
-public class Equals extends SimpleConditionMap implements SendableEntityCreator {
+public class Equals extends SimpleConditionProperty implements SendableEntityCreator {
 	/** Constant of StrValue. */
 	public static final String STRINGVALUE = "stringvalue";
 	/** Constant of Position. */
@@ -25,9 +45,12 @@ public class Equals extends SimpleConditionMap implements SendableEntityCreator 
 	private Byte bytevalue;
 
 	@Override
-	public boolean check(SimpleValuesMap values) {
-		if (values.getEntity() instanceof BufferedBuffer) {
-			BufferedBuffer buffer = (BufferedBuffer) values.getEntity();
+	public boolean check(PropertyChangeEvent values) {
+		if (values == null) {
+			return (strValue == null);
+		}
+		if (values.getSource() instanceof BufferedBuffer) {
+			BufferedBuffer buffer = (BufferedBuffer) values.getSource();
 			int pos;
 			if (position < 0) {
 				pos = buffer.position();
@@ -36,10 +59,7 @@ public class Equals extends SimpleConditionMap implements SendableEntityCreator 
 			}
 			return buffer.byteAt(pos) == bytevalue;
 		}
-		if (values.getValue() == null) {
-			return (strValue == null);
-		}
-		return values.getValue().equals(strValue);
+		return values.getPropertyName().equals(strValue);
 	}
 
 	/**

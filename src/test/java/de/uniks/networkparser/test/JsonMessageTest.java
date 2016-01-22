@@ -1,5 +1,7 @@
 package de.uniks.networkparser.test;
 
+import java.beans.PropertyChangeEvent;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -41,8 +43,7 @@ public class JsonMessageTest implements UpdateListener {
 	private int pos =0;
 	
 	@Override
-	public boolean update(String typ, BaseItem source, Object target, String property,
-			Object oldValue, Object newValue) {
+	public boolean update(String typ, BaseItem source, PropertyChangeEvent event) {
 		Assert.assertEquals(messages.get(pos++), source.toString());
 		return false;
 	}

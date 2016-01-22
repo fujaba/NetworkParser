@@ -1,5 +1,7 @@
 package de.uniks.networkparser.test;
 
+import java.util.EventObject;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -11,7 +13,6 @@ import de.uniks.networkparser.logic.Equals;
 import de.uniks.networkparser.logic.IfCondition;
 import de.uniks.networkparser.logic.Not;
 import de.uniks.networkparser.logic.Or;
-import de.uniks.networkparser.logic.SimpleValues;
 import de.uniks.networkparser.test.model.Person;
 
 public class ConditionTest {
@@ -28,6 +29,6 @@ public class ConditionTest {
 		and.add(new Or().add(new BooleanCondition().withValue(false)));
 		ifCondition.withFalse(and);
 		
-		Assert.assertFalse(ifCondition.check(new SimpleValues().withValue(23)));
+		Assert.assertFalse(ifCondition.check(new EventObject(23)));
 	}
 }

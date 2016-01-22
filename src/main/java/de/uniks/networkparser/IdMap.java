@@ -1,27 +1,5 @@
 package de.uniks.networkparser;
 
-/*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
-
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
-
- http://ec.europa.eu/idabc/eupl5
-
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
-*/
-import java.beans.PropertyChangeListener;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
@@ -32,10 +10,7 @@ import java.util.Set;
 import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.IdMapCounter;
-import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.interfaces.UpdateListener;
-import de.uniks.networkparser.json.UpdateListenerJson;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 /**
@@ -73,20 +48,11 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	/** The counter. */
 	private IdMapCounter counter;
 
-	/** The update listener. */
-	protected UpdateListenerJson updateListenerJson;
-
-	/** The updatelistener for Notification changes. */
-	protected PropertyChangeListener updatePropertylistener;
-
 	protected SimpleKeyValueList<String, Object> keyValue = new SimpleKeyValueList<String, Object>().withFlag(SimpleKeyValueList.BIDI);
 
 	protected Filter filter = new Filter().withMap(this);
 
 	protected NetworkParserLog logger = new NetworkParserLog();
-
-	/** The updatelistener. */
-	protected UpdateListener updateListener;
 
 	/**
 	 * @return the CurrentLogger
@@ -224,7 +190,7 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	}
 
 	/**
-	 * Put.
+	 * Put a Object to List
 	 *
 	 * @param jsonId
 	 *			the json id
@@ -242,34 +208,8 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 		return object;
 	}
 	
-	public IdMap with(UpdateListener listener) {
-		this.updateListener = listener;
-		return this;
-	}
-
-	/**
-	 * @param object
-	 *			for add Listener to object
-	 * @return success of adding
-	 */
-	public boolean addListener(Object object) {
-		if (object instanceof SendableEntity) {
-			return ((SendableEntity) object)
-					.addPropertyChangeListener(getUpdateListener());
-		}
+	protected boolean addListener(Object object) {
 		return false;
-	}
-
-	public UpdateListenerJson getUpdateListener() {
-		if (this.updateListenerJson == null) {
-			this.updateListenerJson = new UpdateListenerJson(this);
-		}
-		return this.updateListenerJson;
-	}
-	
-	public IdMap with(UpdateListenerJson updateListener) {
-		this.updateListenerJson = updateListener;
-		return this;
 	}
 
 	/**
@@ -397,19 +337,6 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 		return super.with(className, creator);
 	}
 
-	/**
-	 * Garbage collection.
-	 *
-	 * @param root
-	 *			the root
-	 */
-	public void garbageCollection(Object root) {
-		if (this.updateListenerJson == null) {
-			this.updateListenerJson = new UpdateListenerJson(this);
-		}
-		this.updateListenerJson.garbageCollection(root);
-	}
-
 	public Object startUpdateModell(String clazz) {
 		SendableEntityCreator creator = super.getCreator(clazz, true);
 		if (creator != null) {
@@ -534,11 +461,6 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	@Override
 	public Collection<Object> values() {
 		return keyValue.values();
-	}
-
-	public IdMap with(PropertyChangeListener listener) {
-		this.updatePropertylistener = listener;
-		return this;
 	}
 
 	public IdMap with(Filter filter) {

@@ -1,5 +1,7 @@
 package de.uniks.networkparser.logic;
 
+import java.util.EventObject;
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -55,11 +57,11 @@ public class Between implements SimpleConditionValue, SendableEntityCreator {
 	}
 
 	@Override
-	public boolean check(SimpleValues values) {
-		if (values.getValue() instanceof Double) {
-			return (((Double) values.getValue()) >= fromValue && ((Double) values.getValue()) <= toValue);
-		}else if (values.getValue() instanceof Integer) {
-			return (((Integer) values.getValue()) >= fromValue && ((Integer) values.getValue()) <= toValue);
+	public boolean check(EventObject values) {
+		if (values.getSource() instanceof Double) {
+			return (((Double) values.getSource()) >= fromValue && ((Double) values.getSource()) <= toValue);
+		}else if (values.getSource() instanceof Integer) {
+			return (((Integer) values.getSource()) >= fromValue && ((Integer) values.getSource()) <= toValue);
 		}
 		return false;
 	}

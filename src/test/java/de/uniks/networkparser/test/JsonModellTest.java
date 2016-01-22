@@ -1,5 +1,6 @@
 package de.uniks.networkparser.test;
 
+import java.beans.PropertyChangeEvent;
 import java.io.PrintStream;
 import java.math.BigInteger;
 
@@ -73,7 +74,7 @@ public class JsonModellTest implements UpdateListener {
 
 		JsonObject jsonObject=map.toJsonObject(first);
 		Assert.assertEquals(385, jsonObject.toString(2).length());
-		secondMap.getUpdateListener().execute(jsonObject);
+		secondMap.getUpdateExecuter().execute(jsonObject);
 		
 		SortedMsg third= new SortedMsg();
 		third.setNumber(4);
@@ -92,15 +93,14 @@ public class JsonModellTest implements UpdateListener {
 	}
 
 	@Override
-	public boolean update(String typ, BaseItem source, Object target, String property,
-			Object oldValue, Object newValue) {
+	public boolean update(String typ, BaseItem source, PropertyChangeEvent event) {
 		if(IdMap.SENDUPDATE.equals(typ)) {
 			JsonObject jsonObject = (JsonObject) source;
 			printToStream("Send: " +jsonObject, null);
-			secondMap.getUpdateListener().execute(jsonObject);
+			secondMap.getUpdateExecuter().execute(jsonObject);
 			return true;
 		}
-		printToStream("ReceiveOBJ: Typ:" +property+ "value:" +newValue, null);
+		printToStream("ReceiveOBJ: Typ:" +event.getPropertyName()+ "value:" +event.getNewValue(), null);
 		return false;
 	}
 

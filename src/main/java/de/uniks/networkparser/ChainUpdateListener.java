@@ -1,5 +1,7 @@
 package de.uniks.networkparser;
 
+import java.beans.PropertyChangeEvent;
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -29,11 +31,10 @@ public class ChainUpdateListener implements UpdateListener{
 	private SimpleList<UpdateListener> list = new SimpleList<UpdateListener>();
 	
 	@Override
-	public boolean update(String typ, BaseItem source, Object target, String property, Object oldValue,
-			Object newValue) {
+	public boolean update(String typ, BaseItem source, PropertyChangeEvent event) {
 		boolean result=true;
 		for(int i=0;i<list.size();i++) {
-			if(!list.get(i).update(typ, source, target, property, oldValue, newValue)) {
+			if(!list.get(i).update(typ, source, event)) {
 				result = false;
 			}
 		}

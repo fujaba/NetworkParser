@@ -27,16 +27,17 @@ import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.LinkedHashSet;
+
+import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.interfaces.SendableEntity;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.logic.SimpleMapEvent;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.SimpleValuesMap;
-import de.uniks.networkparser.interfaces.SendableEntity;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public abstract class ModelListenerProperty<T> implements javafx.beans.property.Property<T>, PropertyChangeListener, ObservableValue<T>, InvalidationListener{
 	public enum PROPERTYTYPE{STRING, COLOR, BOOLEAN, INT, LONG, FLOAT, DOUBLE};
@@ -47,13 +48,12 @@ public abstract class ModelListenerProperty<T> implements javafx.beans.property.
 	private LinkedHashSet<ChangeListener<? super T>> listeners=new LinkedHashSet<ChangeListener<? super T>>();
 	private LinkedHashSet<InvalidationListener> invalidationListeners=new LinkedHashSet<InvalidationListener>();
 	protected ObservableValue<? extends T> observable = null;
-	protected SimpleValuesMap filter;
+	protected SimpleMapEvent filter;
 
 	public ModelListenerProperty(SendableEntityCreator creator, Object item, String property) {
-		this.item = item;
 		this.creator = creator;
 		this.property = property;
-		this.filter = new SimpleValuesMap().withEntity(item).with(property);
+		this.filter = new SimpleMapEvent(item, property);
 		if (item instanceof SendableEntity) {
 			((SendableEntity) item).addPropertyChangeListener(property, this);
 			return;

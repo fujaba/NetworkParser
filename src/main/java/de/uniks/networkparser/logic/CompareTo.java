@@ -1,6 +1,6 @@
 package de.uniks.networkparser.logic;
+import java.util.EventObject;
 
-import de.uniks.networkparser.interfaces.Condition;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -24,7 +24,7 @@ import de.uniks.networkparser.interfaces.Condition;
 */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class CompareTo implements Condition<SimpleValues>, SendableEntityCreator {
+public class CompareTo implements SimpleConditionValue, SendableEntityCreator {
 	public static final String VALUE = "value";
 	public static final String COMPARE = "compare";
 	public static final int GREATER = 1;
@@ -51,8 +51,8 @@ public class CompareTo implements Condition<SimpleValues>, SendableEntityCreator
 	}
 
 	@Override
-	public boolean check(SimpleValues value) {
-		Object entityValue = value.getValue();
+	public boolean check(EventObject value) {
+		Object entityValue = value.getSource();
 		if (entityValue != null) {
 			if (entityValue instanceof Comparable<?>) {
 				Comparable<?> comparatorValue = (Comparable<?>) entityValue;

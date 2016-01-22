@@ -1,5 +1,7 @@
 package de.uniks.networkparser.test;
 
+import java.beans.PropertyChangeEvent;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -23,18 +25,16 @@ public class FilterAtomar {
 		
 		UpdateListener listener = new UpdateListener() {
 			@Override
-			public boolean update(String typ, BaseItem source, Object target, String property, Object oldValue,
-					Object newValue) {
-				return (Apple.PROPERTY_PASSWORD.equals(property) == false);
+			public boolean update(String typ, BaseItem source, PropertyChangeEvent event) {
+				return (Apple.PROPERTY_PASSWORD.equals(event.getPropertyName()) == false);
 			}
 		};
 //		map.with(listener);
 		map.encode(tree);
-		map.getUpdateListener().withAtomarFilter(listener);
+		map.getUpdateExecuter().withAtomarFilter(listener);
 		map.with(new UpdateListener() {
 			@Override
-			public boolean update(String typ, BaseItem source, Object target, String property, Object oldValue,
-					Object newValue) {
+			public boolean update(String typ, BaseItem source, PropertyChangeEvent event) {
 				data = source;
 				return false;
 			}

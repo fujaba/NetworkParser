@@ -22,6 +22,7 @@ package de.uniks.networkparser.logic;
  permissions and limitations under the Licence.
 */
 import java.util.ArrayList;
+import java.util.EventObject;
 
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -55,7 +56,7 @@ public class Or implements SimpleConditionValue, SendableEntityCreator {
 	}
 
 	@Override
-	public boolean check(SimpleValues values) {
+	public boolean check(EventObject values) {
 		boolean result = true;
 		for (SimpleConditionValue condition : list) {
 			if (!condition.check(values)) {

@@ -22,7 +22,7 @@ package de.uniks.networkparser.json;
  permissions and limitations under the Licence.
 */
 import java.beans.PropertyChangeEvent;
-import java.util.ArrayList;
+import java.beans.PropertyChangeListener;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -35,9 +35,11 @@ import de.uniks.networkparser.event.ObjectMapEntry;
 import de.uniks.networkparser.event.util.DateCreator;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.IdMapDecoder;
+import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorWrapper;
+import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.util.JsonArrayCreator;
 import de.uniks.networkparser.json.util.JsonObjectCreator;
 import de.uniks.networkparser.logic.Deep;
@@ -63,6 +65,12 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 
 	/** If this is true the IdMap save the Typ of primary datatypes. */
 	protected boolean typSave;
+
+	/** The update listener. */
+	protected UpdateListenerJson updateListenerJson;
+	
+	/** The updatelistener for Notification changes. */
+	protected Object listener;
 
 	/**
 	 * Instantiates a new json id map.
@@ -165,7 +173,46 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 		}
 		return super.getId(obj);
 	}
+	
+	public UpdateListenerJson getUpdateExecuter() {
+		if (this.updateListenerJson == null) {
+			this.updateListenerJson = new UpdateListenerJson(this);
+		}
+		return this.updateListenerJson;
+	}
+	
+	public IdMap with(UpdateListenerJson updateListener) {
+		this.updateListenerJson = updateListener;
+		return this;
+	}
 
+	/**
+	 * Garbage collection.
+	 *
+	 * @param root
+	 *			the root
+	 */
+	public void garbageCollection(Object root) {
+		if (this.updateListenerJson == null) {
+			this.updateListenerJson = new UpdateListenerJson(this);
+		}
+		this.updateListenerJson.garbageCollection(root);
+	}
+
+	/**
+	 * @param object
+	 *			for add Listener to object
+	 * @return success of adding
+	 */
+	@Override
+	protected boolean addListener(Object object) {
+		if (object instanceof SendableEntity) {
+			return ((SendableEntity) object)
+					.addPropertyChangeListener(getUpdateExecuter());
+		}
+		return false;
+	}
+	
 	protected Object parseProperty(SendableEntityCreator prototyp,
 			Object entity, Filter filter, String className, String property,
 			JsonArray jsonArray, int deep) {
@@ -405,9 +452,9 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 			}
 			if (result == null) {
 				result = grammar.getNewEntity(typeInfo, grammar.getReadValue(jsonObject, CLASS));
-				readMessages(null, null, result, jsonObject, NEW);
+				readMessages(NEW, jsonObject, new PropertyChangeEvent(this, null, null, result));
 			} else {
-				readMessages(null, null, result, jsonObject, UPDATE);
+				readMessages(UPDATE, jsonObject, new PropertyChangeEvent(this, null, null, result));
 			}
 			filter = this.filter.newInstance(filter);
 			if (typeInfo instanceof SendableEntityCreatorWrapper) {
@@ -672,36 +719,6 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 		return jsonArray;
 	}
 
-//	/**
-//	 * Sets the update msg listener.
-//	 *
-//	 * @param listener
-//	 *			the new update msg listener
-//	 * @return JsonIdMap
-//	 */
-//	public JsonIdMap withUpdateListenerRead(UpdateListener listener) {
-//		this.readlistener = listener;
-//		if (listener instanceof PropertyChangeListener) {
-//			super.with((PropertyChangeListener) listener);
-//		}
-//		return this;
-//	}
-//
-//	/**
-//	 * Sets the update msg listener.
-//	 *
-//	 * @param listener
-//	 *			the new update msg listener
-//	 * @return JsonIdMap
-//	 */
-//	public JsonIdMap withUpdateListenerSend(UpdateListener listener) {
-//		this.sendlistener = listener;
-//		if (listener instanceof PropertyChangeListener) {
-//			super.with((PropertyChangeListener) listener);
-//		}
-//		return this;
-//	}
-	
 	/**
 	 * Send update msg from PropertyChange MapUpdater
 	 *
@@ -715,72 +732,47 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 		if(evt == null) {
 			return true;
 		}
-		if (updatePropertylistener != null ) {
-			updatePropertylistener.propertyChange(evt);
-		}
-
-		if (this.updateListener != null ) {
-			return this.updateListener.update(SENDUPDATE, jsonObject, evt.getSource(),
-					evt.getPropertyName(), evt.getOldValue(),
-					evt.getNewValue());
-		}
-		return true;
+		return notify(SENDUPDATE, jsonObject, evt);
+	}
+	
+	boolean readMessages(String typ, BaseItem item, PropertyChangeEvent event) {
+		return notify(typ, item, event);
 	}
 
-	boolean readMessages(String key, Object element, Object value,
-			JsonObject props, String typ) {
-		if (this.updateListener != null) {
-			return this.updateListener.update(typ, props, element, key, null, value);
-		}
+	boolean notify(String typ, BaseItem props, PropertyChangeEvent event) {
+    	if (this.listener != null ) {
+    		if(this.listener instanceof PropertyChangeListener) {
+    			((PropertyChangeListener)this.listener).propertyChange(event);
+    		}
+    		if (this.listener != null && this.listener instanceof UpdateListener) {
+    			return ((UpdateListener)this.listener).update(typ, props, event);
+    		}
+    	}
 		return true;
-	}
-
-	/**
-	 * To json object by id.
-	 *
-	 * @param id
-	 *			the id
-	 * @return the json object
-	 */
-	public JsonObject toJsonObjectById(String id) {
-		return toJsonObject(super.getObject(id),
-				new Filter().withConvertable(new Deep().withDeep(0)));
 	}
 
 	/**
 	 * To json array by ids.
 	 *
-	 * @param suspendIdList
+	 * @param ids
 	 *			the suspend id list
+	 * @return success all Items to baseItem
 	 */
-	public void toJsonArrayByIds(ArrayList<String> suspendIdList) {
-		JsonObject sendObj = new JsonObject();
-		JsonArray children = new JsonArray();
-		for (String childId : suspendIdList) {
-			children.add(toJsonObjectById(childId));
+	public JsonArray getJsonByIds(List<String> ids) {
+		if(ids == null) {
+			return null;
 		}
-		sendObj.put(IdMap.UPDATE, children);
-		sendUpdateMsg(null, sendObj);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see de.uni.kassel.peermessage.IdMap#garbageCollection(java.util.Set)
-	 */
-	public void garbageCollection(List<String> classCounts) {
-		for (String id : this.keyValue.keySet()) {
-			if (!classCounts.contains(id)) {
-				this.keyValue.withoutAll(id, this.keyValue.getValueItem(id));
+		JsonArray items=new JsonArray();
+		for (String childId : ids) {
+			JsonObject jsonObject = toJsonObject(getObject(childId),
+					new Filter().withConvertable(new Deep().withDeep(0)));
+			if(jsonObject != null) {
+				items.add(jsonObject);
 			}
 		}
+		return items;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		return this.getClass().getName() + " (" + this.size() + ")";
@@ -807,15 +799,28 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 		this.typSave = typSave;
 		return this;
 	}
-	
-	public JsonIdMap with(SendableEntityCreator... createrClass) {
-		super.with(createrClass);
+
+	public JsonIdMap with(PropertyChangeListener listener) {
+		this.listener = listener;
 		return this;
 	}
-	
-	@Override
-	public JsonIdMap withSessionId(String value) {
-		super.withSessionId(value);
+
+	/**
+	 * Set the new Listener 
+	 *
+	 * @param listener the new Listener
+	 * @return This Component
+	 * 
+	 * @see with(PropertyChangeListener)
+	 * @see ChainUpdateListener
+	 */
+	public JsonIdMap with(UpdateListener listener) {
+		this.listener = listener;
+		return this;
+	}
+
+	public JsonIdMap with(SendableEntityCreator... createrClass) {
+		super.with(createrClass);
 		return this;
 	}
 }

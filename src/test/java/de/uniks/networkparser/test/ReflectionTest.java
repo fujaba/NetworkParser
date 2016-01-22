@@ -16,7 +16,7 @@ import org.junit.Test;
 
 public class ReflectionTest {
 	private ArrayList<String> ignoreMethods=new ArrayList<String>();
-//	@ Test
+	@Test
 	public void testReflection() throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		if(TestUtil.isTravis()) {
 			return;

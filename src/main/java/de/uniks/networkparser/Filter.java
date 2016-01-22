@@ -22,30 +22,29 @@ package de.uniks.networkparser;
  permissions and limitations under the Licence.
 */
 import java.util.ArrayList;
-
-import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
-import de.uniks.networkparser.logic.SimpleValues;
+import de.uniks.networkparser.logic.SimpleConditionValue;
+import de.uniks.networkparser.logic.SimpleMapEvent;
 
 public class Filter {
-	protected Condition<SimpleValues> idFilter;
-	protected Condition<SimpleValues> convertable;
-	protected Condition<SimpleValues> property;
+	protected SimpleConditionValue idFilter;
+	protected SimpleConditionValue convertable;
+	protected SimpleConditionValue property;
 
 	// Temporary variables
 	protected ArrayList<Object> visitedObjects;
 	protected Boolean full;
-	protected SimpleValuesMap filter;
 	private String strategy = IdMap.NEW;
+	private IdMap map;
 
-	public Filter withIdFilter(Condition<SimpleValues> idFilter) {
+	public Filter withIdFilter(SimpleConditionValue idFilter) {
 		this.idFilter = idFilter;
 		return this;
 	}
 	
 	public Filter withMap(IdMap map) {
-		this.filter = new SimpleValuesMap().with(map);
+		this.map = map;
 		return this;
 	}
 
@@ -58,10 +57,9 @@ public class Filter {
 	 */
 	public boolean isId(Object entity, String className) {
 		if (idFilter != null) {
-			this.filter.with(entity, className);
-			return idFilter.check(this.filter);
+			return idFilter.check(new SimpleMapEvent(this.map, className, null, entity));
 		}else {
-			SendableEntityCreator creator = filter.getMap().getCreator(className, true);
+			SendableEntityCreator creator = this.map.getCreator(className, true);
 			if(creator!=null) {
 				return !(creator instanceof SendableEntityCreatorNoIndex);
 			}
@@ -86,12 +84,12 @@ public class Filter {
 		return this;
 	}
 
-	public Filter withPropertyRegard(Condition<SimpleValues> property) {
+	public Filter withPropertyRegard(SimpleConditionValue property) {
 		this.property = property;
 		return this;
 	}
 	
-	public Filter withConvertable(Condition<SimpleValues> convertable) {
+	public Filter withConvertable(SimpleConditionValue convertable) {
 		this.convertable = convertable;
 		return this;
 	}
@@ -114,14 +112,10 @@ public class Filter {
 		}else if(referenceFilter.isFullSeriation() == null) {
 			referenceFilter.withFull(false);
 		}
-		referenceFilter.withMap(this.filter.getMap());
+		referenceFilter.withMap(this.map);
 		return referenceFilter;
 	}
 	
-	SimpleValuesMap getFilter() {
-		return filter;
-	}
-
 	boolean hasObjects(Object element) {
 		return getVisitedObjects().contains(element);
 	}
@@ -173,16 +167,14 @@ public class Filter {
 
 	boolean isPropertyRegard(Object entity, String property, Object value, int deep) {
 		if (this.property != null) {
-			this.filter.with(entity, property, value, deep);
-			return this.property.check(filter);
+			return this.property.check(new SimpleMapEvent(entity, property, null, value, map, deep));
 		}
 		return true;
 	}
 	
 	boolean isConvertable(Object entity, String property, Object value, int deep) {
 		if (this.convertable != null) {
-			this.filter.with(entity, property, value, deep);
-			return this.convertable.check(filter);
+			return this.convertable.check(new SimpleMapEvent(entity, property, null, value, map, deep));
 		}
 		return true;
 	}
@@ -204,7 +196,7 @@ public class Filter {
 	 * @param convertable Condition
 	 * @return a new Filter for regard the model 
 	 */
-	public static Filter regard(Condition<SimpleValues> convertable) {
+	public static Filter regard(SimpleConditionValue convertable) {
 		return new Filter().withPropertyRegard(convertable);
 	}
 	/**
@@ -213,7 +205,7 @@ public class Filter {
 	 * @param convertable Condition
 	 * @return a new Filter for Filter with Convertable Items 
 	 */
-	public static Filter convertable(Condition<SimpleValues> convertable) {
+	public static Filter convertable(SimpleConditionValue convertable) {
 		return new Filter().withConvertable(convertable);
 	}
 

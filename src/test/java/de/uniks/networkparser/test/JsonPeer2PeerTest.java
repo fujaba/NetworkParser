@@ -2,6 +2,8 @@ package de.uniks.networkparser.test;
 
 import static org.junit.Assert.assertEquals;
 
+import java.beans.PropertyChangeEvent;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -38,7 +40,7 @@ public class JsonPeer2PeerTest implements UpdateListener{
 		firstRoot.setChild(second);
 		
 		firstMap.garbageCollection(firstRoot);
-		update(null, firstMap.toJsonObject(firstRoot), null, null, null, null);
+		update(null, firstMap.toJsonObject(firstRoot), null);
 		
 		SortedMsg third= new SortedMsg();
 		third.setNumber(4);
@@ -48,8 +50,7 @@ public class JsonPeer2PeerTest implements UpdateListener{
 	}
 
 	@Override
-	public boolean update(String typ, BaseItem source, Object target, String property,
-			Object oldValue, Object newValue) {
+	public boolean update(String typ, BaseItem source, PropertyChangeEvent event) {
 		JsonObject jsonObject = (JsonObject) source;
 		Object result=secondMap.decode(jsonObject);
 		if(z==0){
@@ -60,16 +61,16 @@ public class JsonPeer2PeerTest implements UpdateListener{
 			Assert.assertEquals("===== add =====", 251, jsonObject.toString().length()); 
 			assertEquals(3, secondMap.size());
 			z++;
-		} else if(z==2){
+		} else if(z==3){
 			Assert.assertEquals("===== rem =====", "{\"id\":\"J1.S3\",\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"rem\":{\"number\":4},\"upd\":{\"number\":42}}", jsonObject.toString());
 			z++;
 			assertEquals(3, secondMap.size());
-		} else if(z==3){
+		} else if(z==4){
 			Assert.assertEquals("===== rem =====", "{\"id\":\"J1.S2\",\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"rem\":{\"child\":{\"id\":\"J1.S3\"}}}", jsonObject.toString());
 			z++;
 			assertEquals(3, secondMap.size());
 		}
-		if(z>3){
+		if(z>4){
 			Assert.assertEquals("===== FIRST =====",385, firstMap.toJsonObject(firstRoot).toString(2).length());
 			//LAST
 			Object secondRoot = secondMap.getObject("J1.S1");

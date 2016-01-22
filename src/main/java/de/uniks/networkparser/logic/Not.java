@@ -1,5 +1,7 @@
 package de.uniks.networkparser.logic;
 
+import java.util.EventObject;
+
 import de.uniks.networkparser.interfaces.Condition;
 /*
  NetworkParser
@@ -33,17 +35,17 @@ public class Not implements SimpleConditionValue, SendableEntityCreator {
 	/** Constant for ITEM. */
 	public static final String ITEM = "item";
 	/** Varibale for Condition. */
-	private Condition<SimpleValues> item;
+	private SimpleConditionValue item;
 
 	@Override
-	public boolean check(SimpleValues values) {
+	public boolean check(EventObject values) {
 		return !item.check(values);
 	}
 
 	/**
 	 * @return Not Conditino
 	 */
-	public Condition<SimpleValues> getItem() {
+	public Condition<EventObject> getItem() {
 		return item;
 	}
 
@@ -52,7 +54,7 @@ public class Not implements SimpleConditionValue, SendableEntityCreator {
 	 *			for new Condition
 	 * @return Not Instance
 	 */
-	public Not withItem(Condition<SimpleValues> value) {
+	public Not withItem(SimpleConditionValue value) {
 		this.item = value;
 		return this;
 	}

@@ -1,6 +1,7 @@
 package de.uniks.networkparser.logic;
 
-import de.uniks.networkparser.SimpleValuesMap;
+import java.beans.PropertyChangeEvent;
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -29,7 +30,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
  * @author Stefan Lindel
  */
 
-public class InstanceOf extends SimpleConditionMap implements SendableEntityCreator {
+public class InstanceOf extends SimpleConditionProperty implements SendableEntityCreator {
 	/** Constant of CLAZZNAME. */
 	public static final String CLAZZNAME = "clazzname";
 	/** Constant of PROPERTY. */
@@ -162,24 +163,25 @@ public class InstanceOf extends SimpleConditionMap implements SendableEntityCrea
 	}
 
 	@Override
-	public boolean check(SimpleValuesMap values) {
+	public boolean check(PropertyChangeEvent values) {
 		// Filter for ClazzTyp
 		if(values==null) {
 			return false;
 		}
 		if (this.clazzName != null ) {
-			if(values.getValue()!=null && values.getValue().getClass().isPrimitive()) {
+			Object newValue = values.getNewValue();
+			if(newValue!=null && newValue.getClass().isPrimitive()) {
 				return true;
 			}
-			  if(this.clazzName!=null && !this.clazzName.isInstance(values.getValue())) {
+			  if(this.clazzName!=null && !this.clazzName.isInstance(newValue)) {
 				return false;
 			}else if(this.property==null) {
 				return true;
-			}else if(this.property.equalsIgnoreCase(values.getProperty())) {
+			}else if(this.property.equalsIgnoreCase(values.getPropertyName())) {
 				return false;
 			}
 		}
 		// Filter for one item
-		return (this.item == null || this.item != values.getValue());
+		return (this.item == null || this.item != values.getNewValue());
 	}
 }

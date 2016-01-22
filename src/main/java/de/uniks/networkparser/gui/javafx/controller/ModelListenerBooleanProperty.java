@@ -1,8 +1,9 @@
 package de.uniks.networkparser.gui.javafx.controller;
 
-import de.uniks.networkparser.SimpleValuesMap;
-import de.uniks.networkparser.interfaces.Condition;
+import java.util.EventObject;
+
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.logic.SimpleConditionValue;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -27,7 +28,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import javafx.beans.Observable;
 
 public class ModelListenerBooleanProperty extends ModelListenerProperty<Boolean> {
-	private de.uniks.networkparser.interfaces.Condition<SimpleValuesMap> condition;
+	private SimpleConditionValue condition;
 	
 	public ModelListenerBooleanProperty(SendableEntityCreator creator, Object item, String property) {
 		super(creator, item, property);
@@ -41,7 +42,7 @@ public class ModelListenerBooleanProperty extends ModelListenerProperty<Boolean>
 	public Boolean getValue() {
 		Object value = creator.getValue(item, property);
 		if(condition!=null){
-			return condition.check(this.filter.withValue(value));
+			return condition.check(new EventObject(value));
 		}
 		return false;
 	}
@@ -54,7 +55,7 @@ public class ModelListenerBooleanProperty extends ModelListenerProperty<Boolean>
 		}
 	}
 	
-	public ModelListenerBooleanProperty withCondition(Condition<SimpleValuesMap> condition){
+	public ModelListenerBooleanProperty withCondition(SimpleConditionValue condition){
 		this.condition = condition;
 		return this;
 	}

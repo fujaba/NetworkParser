@@ -1,5 +1,7 @@
 package de.uniks.networkparser.logic;
 
+import java.util.EventObject;
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -28,7 +30,7 @@ public class BooleanCondition implements SimpleConditionValue, SendableEntityCre
 	private boolean value;
 
 	@Override
-	public boolean check(SimpleValues values) {
+	public boolean check(EventObject values) {
 		return this.value;
 	}
 

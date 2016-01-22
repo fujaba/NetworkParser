@@ -22,28 +22,28 @@ package de.uniks.networkparser.logic;
  permissions and limitations under the Licence.
 */
 import java.util.ArrayList;
+import java.util.EventObject;
 
-import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class And implements SimpleConditionValue, SendableEntityCreator {
 	public static final String CHILD = "childs";
-	private ArrayList<Condition<SimpleValues>> list = new ArrayList<Condition<SimpleValues>>();
+	private ArrayList<SimpleConditionValue> list = new ArrayList<SimpleConditionValue>();
 
 	public And add(SimpleConditionValue... conditions) {
-		for (Condition<SimpleValues> condition : conditions) {
+		for (SimpleConditionValue condition : conditions) {
 			this.list.add(condition);
 		}
 		return this;
 	}
 
-	public ArrayList<Condition<SimpleValues>> getList() {
+	public ArrayList<SimpleConditionValue> getList() {
 		return list;
 	}
 
 	@Override
-	public boolean check(SimpleValues values) {
-		for (Condition<SimpleValues> condition : list) {
+	public boolean check(EventObject values) {
+		for (SimpleConditionValue condition : list) {
 			if (!condition.check(values)) {
 				return false;
 			}

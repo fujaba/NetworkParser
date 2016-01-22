@@ -1,7 +1,5 @@
 package de.uniks.networkparser.logic;
 
-import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.SimpleValuesMap;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -23,33 +21,29 @@ import de.uniks.networkparser.SimpleValuesMap;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
+import java.beans.PropertyChangeEvent;
+import java.util.EventObject;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.list.SimpleList;
 
 public class IdFilterElements extends SimpleList<Object> implements UpdateListener {
-	private Condition<SimpleValues> condition;
-	protected SimpleValuesMap filterMap;
+	private Condition<EventObject> condition;
 
 	
-	public IdFilterElements(Condition<SimpleValues> condition) {
+	public IdFilterElements(Condition<EventObject> condition) {
 		this.condition = condition;
 	}
 	public IdFilterElements(Class<?> clazzConditon) {
 		this.condition = InstanceOf.value(clazzConditon);
 	}
-	
+
 	@Override
-	public boolean update(String typ, BaseItem source, Object target, String property, Object oldValue,
-			Object newValue) {
+	public boolean update(String typ, BaseItem source, PropertyChangeEvent event) {
 		if(condition!=null) {
-			if(filterMap == null) {
-				filterMap = new SimpleValuesMap().with((IdMap)target);
-			}
-			SimpleValuesMap value = filterMap.with(property).withValue(newValue);
-			if(condition.check(value)) {
-				return add(newValue);
+			if(condition.check(event)) {
+				return add(event.getNewValue());
 			}
 		}
 		return false;

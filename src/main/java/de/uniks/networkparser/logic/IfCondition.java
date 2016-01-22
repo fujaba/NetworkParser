@@ -1,5 +1,7 @@
 package de.uniks.networkparser.logic;
 
+import java.util.EventObject;
+
 import de.uniks.networkparser.interfaces.Condition;
 /*
  NetworkParser
@@ -36,24 +38,24 @@ public class IfCondition implements SimpleConditionValue, SendableEntityCreator 
 	public static final String FALSECONDITION = "falsecondition";
 
 	/** Variable for Expression. */
-	private Condition<SimpleValues> expression;
+	private Condition<EventObject> expression;
 	/** Variable for True Case. */
-	private Condition<SimpleValues> trueCondition;
+	private Condition<EventObject> trueCondition;
 	/** Variable for False Case. */
-	private Condition<SimpleValues> falseCondition;
+	private Condition<EventObject> falseCondition;
 
 	/**
 	 * @param value
 	 *			Set the new Expression
 	 * @return IfCondition Instance
 	 */
-	public IfCondition withExpression(Condition<SimpleValues> value) {
+	public IfCondition withExpression(Condition<EventObject> value) {
 		this.expression = value;
 		return this;
 	}
 
 	/** @return The Expression */
-	public Condition<SimpleValues> getExpression() {
+	public Condition<EventObject> getExpression() {
 		return expression;
 	}
 
@@ -62,13 +64,13 @@ public class IfCondition implements SimpleConditionValue, SendableEntityCreator 
 	 *			Ste The True Case
 	 * @return InstanceOf Instance
 	 */
-	public IfCondition withTrue(Condition<SimpleValues> condition) {
+	public IfCondition withTrue(Condition<EventObject> condition) {
 		this.trueCondition = condition;
 		return this;
 	}
 
 	/** @return The True Case */
-	public Condition<SimpleValues> getTrue() {
+	public Condition<EventObject> getTrue() {
 		return trueCondition;
 	}
 
@@ -77,18 +79,18 @@ public class IfCondition implements SimpleConditionValue, SendableEntityCreator 
 	 *			Set the False Case
 	 * @return IfCondition Instance
 	 */
-	public IfCondition withFalse(Condition<SimpleValues> condition) {
+	public IfCondition withFalse(Condition<EventObject> condition) {
 		this.falseCondition = condition;
 		return this;
 	}
 
 	/** @return The False Case */
-	public Condition<SimpleValues> getFalse() {
+	public Condition<EventObject> getFalse() {
 		return falseCondition;
 	}
 
 	@Override
-	public boolean check(SimpleValues values) {
+	public boolean check(EventObject values) {
 		if (expression.check(values)) {
 			if (trueCondition != null) {
 				return trueCondition.check(values);
