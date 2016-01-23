@@ -1,4 +1,4 @@
-package de.uniks.networkparser.interfaces;
+package de.uniks.networkparser.buffer;
 
 /*
  NetworkParser
@@ -23,13 +23,25 @@ package de.uniks.networkparser.interfaces;
 */
 
 public abstract class BufferedBuffer extends Buffer {
-	/** The length. */
+	/** The count is the number of characters used. */
 	protected int length;
 
-	public void back() {
+	/** The line. */
+	protected int line;
+
+	/** The character. */
+	protected int character;
+	
+	/** The start is the number of characters started. */
+	int start;
+
+	public boolean back() {
 		if (this.position > 0) {
 			this.position--;
+			this.character -= 1;
+			return true;
 		}
+		return false;
 	}
 
 	public BufferedBuffer withPosition(int value) {
@@ -58,7 +70,6 @@ public abstract class BufferedBuffer extends Buffer {
 		return charAt(position());
 	}
 
-
 	/**
 	 * @param start
 	 *			startindex for parsing
@@ -66,7 +77,7 @@ public abstract class BufferedBuffer extends Buffer {
 	 *			the length of Substring
 	 * @return the Substring
 	 */
-	public abstract String substring(int start, int length);
+	public abstract CharacterBuffer subSequence(int start, int length);
 	
 	@Override
 	public BufferedBuffer withLookAHead(CharSequence lookahead) {
@@ -84,5 +95,10 @@ public abstract class BufferedBuffer extends Buffer {
 		}
 		this.withPosition(this.position() - 1);
 		return this;
+	}
+	
+	public String info() {
+		return " at " + this.position + " / "+ this.length + "[character " + this.character
+				+ " line " + this.line + "]";
 	}
 }

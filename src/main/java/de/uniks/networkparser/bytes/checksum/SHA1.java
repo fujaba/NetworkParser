@@ -1,6 +1,6 @@
 package de.uniks.networkparser.bytes.checksum;
 
-import de.uniks.networkparser.string.CharList;
+import de.uniks.networkparser.buffer.CharacterBuffer;
 
 /*
  NetworkParser
@@ -299,14 +299,14 @@ public class SHA1 extends Checksum {
 		H4 += e;
 	}
 
-	public static CharList value(CharSequence value) {
+	public static CharacterBuffer value(CharSequence value) {
 		SHA1 sha1 = new SHA1();
 		sha1.update(toByteArray(value));
 		return convertToHex(sha1.getByteArray());
 	}
 
-	public static CharList convertToHex(byte[] data) {
-		CharList buf = new CharList();
+	public static CharacterBuffer convertToHex(byte[] data) {
+		CharacterBuffer buf = new CharacterBuffer();
 		for (int i = 0; i < data.length; i++) {
 			int halfbyte = (data[i] >>> 4) & 0x0F;
 			int two_halfs = 0;

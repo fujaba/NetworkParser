@@ -22,8 +22,8 @@ package de.uniks.networkparser.bytes.converter;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.ByteConverter;
-import de.uniks.networkparser.string.CharList;
 
 public class ByteConverterHex extends ByteConverter {
 	/**
@@ -43,7 +43,7 @@ public class ByteConverterHex extends ByteConverter {
 	public String toString(byte[] values, int size, int space) {
 		String hexVal = "0123456789ABCDEF";
 
-		CharList returnValue = new CharList().withLen(size << 1 + size * space);
+		CharacterBuffer returnValue = new CharacterBuffer().withLen(size << 1 + size * space);
 		String step = EntityUtil.repeat(' ', space);
 		if (values != null) {
 			for (int i = 0; i < size; i++) {

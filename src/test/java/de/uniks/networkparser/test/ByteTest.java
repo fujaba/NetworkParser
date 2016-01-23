@@ -9,7 +9,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.uniks.networkparser.bytes.ByteBuffer;
+import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.bytes.ByteEntity;
 import de.uniks.networkparser.bytes.ByteFilter;
 import de.uniks.networkparser.bytes.ByteIdMap;

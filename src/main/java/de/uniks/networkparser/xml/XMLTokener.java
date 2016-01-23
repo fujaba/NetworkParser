@@ -26,12 +26,12 @@ import java.util.ArrayList;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.Tokener;
+import de.uniks.networkparser.buffer.BufferedBuffer;
+import de.uniks.networkparser.buffer.StringContainer;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.BufferedBuffer;
 import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
-import de.uniks.networkparser.string.StringContainer;
 /**
  * Tokener for parsing XML-Files.
  *
@@ -119,7 +119,7 @@ public class XMLTokener extends Tokener {
 			while (c >= ' ' && getStopChars().indexOf(c) < 0 && c != '>') {
 				c = next();
 			}
-			xmlEntity.withTag(((BufferedBuffer)this.buffer).substring(pos, position() - pos));
+			xmlEntity.withTag(((BufferedBuffer)this.buffer).subSequence(pos, position()).toString());
 		} else {
 			StringBuilder sb = new StringBuilder();
 			c = nextClean(false);

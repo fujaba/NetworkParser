@@ -25,12 +25,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-
 import de.uniks.networkparser.AbstractMap;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.interfaces.Buffer;
+import de.uniks.networkparser.buffer.Buffer;
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.logic.BooleanCondition;
@@ -283,15 +283,15 @@ public class XMLIdMap extends XMLSimpleIdMap {
 					exit = true;
 					break;
 				}
-				String nextTag = tokener.getNextTag();
+				CharacterBuffer nextTag = tokener.getNextTag();
 				if (nextTag.length() > 0) {
-					stack.add(nextTag);
+					stack.add(nextTag.toString());
 					continue;
 				}
 				if (tokener.getCurrentChar() == ENDTAG) {
 					if (stack.size() > 0) {
 						int temp = tokener.position();
-						String endTag = tokener.getNextTag();
+						CharacterBuffer endTag = tokener.getNextTag();
 						if (stack.get(stack.size() - 1).equals(endTag)) {
 							stack.remove(stack.size() - 1);
 						} else {
@@ -459,10 +459,10 @@ public class XMLIdMap extends XMLSimpleIdMap {
 
 			while (!tokener.isEnd() && myStack.size() > 0) {
 				if (tokener.getCurrentChar() == ENDTAG) {
-					String nextTag = tokener.getNextTag();
+					CharacterBuffer nextTag = tokener.getNextTag();
 					if (nextTag.length() < 1
 							|| myStack.get(myStack.size() - 1)
-									.equalsIgnoreCase(nextTag)) {
+									.equalsIgnoreCase(nextTag.toString())) {
 						myStack.remove(myStack.size() - 1);
 						continue;
 					}

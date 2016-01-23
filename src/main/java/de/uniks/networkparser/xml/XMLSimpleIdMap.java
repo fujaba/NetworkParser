@@ -26,11 +26,12 @@ import java.util.Collection;
 
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.buffer.StringContainer;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.IdMapDecoder;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
-import de.uniks.networkparser.string.StringContainer;
 import de.uniks.networkparser.xml.util.XMLGrammar;
 import de.uniks.networkparser.xml.util.XSDEntityCreator;
 /**
@@ -232,8 +233,8 @@ public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
 				if (tokener.getCurrentChar() == '/') {
 					tokener.popStack();
 					tokener.next();
-					String tag = tokener.getNextTag();
-					grammar.endChild(tag);
+					CharacterBuffer tag = tokener.getNextTag();
+					grammar.endChild(tag.toString());
 					// skipEntity();
 					return entity;
 				}
@@ -310,7 +311,7 @@ public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
 		} else {
 			entity = new XMLEntity();
 		}
-		String tag = null;
+		CharacterBuffer tag = null;
 		boolean isEmpty = true;
 		do {
 			if (tokener.getCurrentChar() != ITEMSTART) {
@@ -326,7 +327,7 @@ public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
 			tag = tokener.getNextTag();
 			if (tag != null) {
 				for (String stopword : this.stopwords) {
-					if (tag.startsWith(stopword)) {
+					if (tag.startsWith(stopword, 0)) {
 						tokener.stepPos(">", false, false);
 						tokener.stepPos("<", false, false);
 						tag = null;
@@ -338,7 +339,7 @@ public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
 		if (tag.isEmpty() && isEmpty) {
 			return null;
 		}
-		entity.withTag(tag);
+		entity.withTag(tag.toString());
 		return entity;
 	}
 }

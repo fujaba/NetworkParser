@@ -21,7 +21,8 @@ See the Licence for the specific language governing
 permissions and limitations under the Licence.
 */
 import java.beans.PropertyChangeEvent;
-import de.uniks.networkparser.interfaces.BufferedBuffer;
+
+import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 /**
  * @author Stefan Lindel Clazz of EqualsCondition

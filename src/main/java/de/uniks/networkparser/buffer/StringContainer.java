@@ -1,4 +1,4 @@
-package de.uniks.networkparser.string;
+package de.uniks.networkparser.buffer;
 
 /*
  NetworkParser
@@ -160,7 +160,7 @@ public class StringContainer implements CharSequence {
 			end = value.length();
 		if (start > end)
 			return EMPTY;
-		return new CharList().with(value, start, end);
+		return new CharacterBuffer().with(value, start, end);
 	}
 
 	/**
@@ -169,10 +169,10 @@ public class StringContainer implements CharSequence {
 	 * @return this instance
 	 */
 	public CharSequence split(int start) {
-		if(value instanceof CharList) {
-			((CharList)value).addStart(start);
+		if(value instanceof CharacterBuffer) {
+			((CharacterBuffer)value).addStart(start);
 		}else {
-			value = new CharList().with(value, start, value.length());
+			value = new CharacterBuffer().with(value, start, value.length());
 		}
 		return this;
 	}
@@ -255,8 +255,8 @@ public class StringContainer implements CharSequence {
 	public boolean startsWith(String prefix, int toffset) {
 		if(value instanceof String) {
 			return ((String)value).startsWith(prefix, toffset);
-		}else if(value instanceof CharList) {
-			return ((CharList)value).startsWith(prefix, toffset);
+		}else if(value instanceof CharacterBuffer) {
+			return ((CharacterBuffer)value).startsWith(prefix, toffset);
 		}
 		return value.toString().startsWith(prefix, toffset);
 	}
@@ -285,22 +285,22 @@ public class StringContainer implements CharSequence {
 	public final StringContainer with(CharSequence src) {
 		if(value == null) {
 			this.value = src;
-		} else if(value instanceof CharList) {
-			((CharList)this.value).with(src);
+		} else if(value instanceof CharacterBuffer) {
+			((CharacterBuffer)this.value).with(src);
 		} else {
-			this.value = new CharList().with(this.value).with(src);
+			this.value = new CharacterBuffer().with(this.value).with(src);
 		}
 		return this;
 	}
 	
 	public final StringContainer with(char src) {
 		if(value == null) {
-			this.value = new CharList().with(src);
+			this.value = new CharacterBuffer().with(src);
 			
-		} else if(value instanceof CharList) {
-			((CharList)this.value).with(src);
+		} else if(value instanceof CharacterBuffer) {
+			((CharacterBuffer)this.value).with(src);
 		} else {
-			this.value = new CharList().with(this.value).with(src);
+			this.value = new CharacterBuffer().with(this.value).with(src);
 		}
 		return this;
 	}
@@ -309,8 +309,8 @@ public class StringContainer implements CharSequence {
 		if(value == null) {
 			return 0;
 		}
-		if(value instanceof CharList) {
-			return ((CharList)this.value).remove(position);
+		if(value instanceof CharacterBuffer) {
+			return ((CharacterBuffer)this.value).remove(position);
 		}
 		String newString = this.value.toString();
 		char oldChar = newString.charAt(position);
@@ -328,8 +328,8 @@ public class StringContainer implements CharSequence {
 		if(value == null) {
 			return value;
 		}
-		if(value instanceof CharList) {
-			return ((CharList)this.value).trim();
+		if(value instanceof CharacterBuffer) {
+			return ((CharacterBuffer)this.value).trim();
 		}
 		value = value.toString().trim();
 		return value;

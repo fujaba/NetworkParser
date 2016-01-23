@@ -26,13 +26,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import de.uniks.networkparser.interfaces.Buffer;
-import de.uniks.networkparser.string.CharList;
+import de.uniks.networkparser.buffer.Buffer;
+import de.uniks.networkparser.buffer.CharacterBuffer;
 
 public class FileBuffer extends Buffer{
 	private BufferedReader reader;
 	private File file;
-	private CharList lookAHead = new CharList();
+	private CharacterBuffer lookAHead = new CharacterBuffer();
 	private int length;
 	private char currentChar;
 
@@ -78,7 +78,7 @@ public class FileBuffer extends Buffer{
 	}
 	
 	@Override
-	public String toText() {
+	public String toString() {
 		char[] values = new char[remaining()];
 		int len = lookAHead.length();
 		if(len>0) {
@@ -96,7 +96,7 @@ public class FileBuffer extends Buffer{
 
 	@Override
 	public byte[] toArray() {
-		return toText().getBytes();
+		return toString().getBytes();
 	}
 
 

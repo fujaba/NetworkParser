@@ -23,10 +23,8 @@ permissions and limitations under the Licence.
 */
 import java.util.Collection;
 import java.util.Iterator;
-
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.Condition;
-import de.uniks.networkparser.string.CharList;
-
 
 public class SDMSet<T> extends SimpleSet<T> {
 	@SuppressWarnings("unchecked")
@@ -40,8 +38,8 @@ public class SDMSet<T> extends SimpleSet<T> {
 		return toString(", ").withStart('(').with(")").toString();
 	}
 
-	public CharList toString(String separator) {
-		CharList stringList = new CharList();
+	public CharacterBuffer toString(String separator) {
+		CharacterBuffer stringList = new CharacterBuffer();
 		int len = this.size();
 		for (T elem : this) {
 			stringList.with(elem.toString());

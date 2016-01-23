@@ -23,10 +23,10 @@ package de.uniks.networkparser;
 */
 import java.util.ArrayList;
 
-import de.uniks.networkparser.interfaces.BufferedBuffer;
+import de.uniks.networkparser.buffer.BufferedBuffer;
+import de.uniks.networkparser.buffer.StringContainer;
 import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
-import de.uniks.networkparser.string.StringContainer;
 
 public class StringTokener extends Tokener {
 	private boolean isString = true;
@@ -87,7 +87,7 @@ public class StringTokener extends Tokener {
 				count--;
 				if (count == 0) {
 					next();
-					return ((BufferedBuffer)this.buffer).substring(pos, buffer.position() - pos);
+					return ((BufferedBuffer)this.buffer).subSequence(pos, buffer.position()).toString();
 				}
 				continue;
 			}
@@ -136,7 +136,7 @@ public class StringTokener extends Tokener {
 		return list;
 	}
 
-	public String getString(String value) {
+	String getString(String value) {
 		if (value.startsWith("\"") && value.endsWith("\"")) {
 			return value.substring(1, value.length() - 1);
 		}
@@ -187,7 +187,7 @@ public class StringTokener extends Tokener {
 			nextClean(false);
 			return defaultText;
 		}
-		String token = ((BufferedBuffer)this.buffer).substring(startToken, this.buffer.position() - startToken);
+		String token = ((BufferedBuffer)this.buffer).subSequence(startToken, this.buffer.position()).toString();
 		this.startToken = -1;
 		nextClean(false);
 		return token;

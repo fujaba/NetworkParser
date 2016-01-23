@@ -1,7 +1,7 @@
 package de.uniks.networkparser.bytes.checksum;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.bytes.converter.ByteConverterString;
-import de.uniks.networkparser.string.CharList;
 
 /**
  * AES - implementation of the AES block cipher in Java.
@@ -187,8 +187,8 @@ public class AES {
 				: 0;
 	}
 
-	public CharList encode(byte[] plain) {
-		CharList result = new CharList().withLen(plain.length);
+	public CharacterBuffer encode(byte[] plain) {
+		CharacterBuffer result = new CharacterBuffer().withLen(plain.length);
 		byte[] partByte;
 		for (int p = 0; p < plain.length; p+=16) {
 			partByte = encodeBlock(plain, p);
@@ -199,17 +199,17 @@ public class AES {
 		return result;
 	}
 
-	public CharList encode(String data) {
-		CharList string = new CharList().with(data);
+	public CharacterBuffer encode(String data) {
+		CharacterBuffer string = new CharacterBuffer().with(data);
 		int rest = ((int) data.length() / 32) * 32;
 		if(rest < data.length()) {
 			rest = 32 - data.length() + rest;
 			string.withRepeat(" ", rest);
 		}
-		CharList result = new CharList().withLen(string.length());
+		CharacterBuffer result = new CharacterBuffer().withLen(string.length());
 		byte[] partByte;
 		for (int p = 0; p < string.length(); p+=16) {
-			partByte = encodeBlock(string.value(), p);
+			partByte = encodeBlock(string.toArray(), p);
 			for(int pos =0;pos < BLOCK_SIZE; pos++) {
 				result.with((char)partByte[pos]);
 			}
@@ -348,17 +348,17 @@ public class AES {
 		return plain;
 	}
 
-	public CharList decode(String data) {
-		CharList string = new CharList().with(data);
+	public CharacterBuffer decode(String data) {
+		CharacterBuffer string = new CharacterBuffer().with(data);
 		int rest = ((int) data.length() / 32) * 32;
 		if(rest < data.length()) {
 			rest = 32 - data.length() + rest;
 			string.withRepeat(" ", rest);
 		}
-		CharList result = new CharList().withLen(string.length());
+		CharacterBuffer result = new CharacterBuffer().withLen(string.length());
 		byte[] partByte;
 		for (int p = 0; p < string.length(); p+=16) {
-			partByte = decodeBlock(string.value(), p);
+			partByte = decodeBlock(string.toCharArray(), p);
 			for(int pos =0;pos < BLOCK_SIZE; pos++) {
 				result.with((char)partByte[pos]);
 			}
@@ -367,7 +367,7 @@ public class AES {
 	}
 	
 	public byte[] decodeString(String value) {
-		return decode(value).bytes();
+		return decode(value).toArray();
 	}
 	
 	/**

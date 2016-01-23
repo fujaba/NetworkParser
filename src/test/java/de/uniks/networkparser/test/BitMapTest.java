@@ -6,10 +6,10 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.bytes.BitEntity;
 import de.uniks.networkparser.bytes.BitValue;
 import de.uniks.networkparser.bytes.ByteSimpleMap;
-import de.uniks.networkparser.bytes.ByteBuffer;
 import de.uniks.networkparser.test.model.BitDate;
 import de.uniks.networkparser.test.model.NumberFormat;
 import de.uniks.networkparser.test.model.util.BitDateCreator;

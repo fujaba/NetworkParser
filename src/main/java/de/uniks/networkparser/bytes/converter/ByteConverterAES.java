@@ -1,5 +1,6 @@
 package de.uniks.networkparser.bytes.converter;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -23,7 +24,6 @@ package de.uniks.networkparser.bytes.converter;
 */
 import de.uniks.networkparser.bytes.checksum.AES;
 import de.uniks.networkparser.interfaces.ByteConverter;
-import de.uniks.networkparser.string.CharList;
 
 public class ByteConverterAES extends ByteConverter {
 	private AES aes;
@@ -35,7 +35,7 @@ public class ByteConverterAES extends ByteConverter {
 		this.aes.setKey(value);
 	}
 
-	public CharList toString(String values) {
+	public CharacterBuffer toString(String values) {
 		return aes.encode(values);
 	}
 

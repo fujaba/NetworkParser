@@ -1,6 +1,6 @@
 package de.uniks.networkparser.graph;
 
-import de.uniks.networkparser.string.CharList;
+import de.uniks.networkparser.buffer.CharacterBuffer;
 
 /*
  NetworkParser
@@ -203,7 +203,7 @@ public class Association extends GraphMember {
 	
 	@Override
 	public String toString() {
-		CharList charList = new CharList();
+		CharacterBuffer charList = new CharacterBuffer();
 		addIds(charList);
 		charList.with(getSeperator());
 		if(getOther() != null) {
@@ -213,7 +213,7 @@ public class Association extends GraphMember {
 	}
 	
 
-	void addIds(CharList sb) {
+	void addIds(CharacterBuffer sb) {
 		if (children == null) {
 			sb.with("[]");
 		} else if (children instanceof GraphMember) {

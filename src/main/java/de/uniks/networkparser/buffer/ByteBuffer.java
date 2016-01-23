@@ -1,27 +1,25 @@
-package de.uniks.networkparser.bytes;
-
+package de.uniks.networkparser.buffer;
 /*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
+NetworkParser
+Copyright (c) 2011 - 2015, Stefan Lindel
+All rights reserved.
 
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
+Licensed under the EUPL, Version 1.1 or (as soon they
+will be approved by the European Commission) subsequent
+versions of the EUPL (the "Licence");
+You may not use this work except in compliance with the Licence.
+You may obtain a copy of the Licence at:
 
- http://ec.europa.eu/idabc/eupl5
+http://ec.europa.eu/idabc/eupl5
 
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
+Unless required by applicable law or agreed to in
+writing, software distributed under the Licence is
+distributed on an "AS IS" basis,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+express or implied.
+See the Licence for the specific language governing
+permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.interfaces.BufferedBuffer;
 
 public class ByteBuffer extends BufferedBuffer {
 	/** The buffer. */
@@ -38,12 +36,12 @@ public class ByteBuffer extends BufferedBuffer {
 	}
 
 	@Override
-	public String substring(int startTag, int length) {
+	public CharacterBuffer subSequence(int start, int length) {
 		byte[] sub = new byte[length];
 		for (int i = 0; i < length; i++) {
-			sub[i] = buffer[startTag + length];
+			sub[i] = buffer[start + length];
 		}
-		return String.valueOf(sub);
+		return new CharacterBuffer().with(sub);
 	}
 
 	@Override
@@ -51,11 +49,6 @@ public class ByteBuffer extends BufferedBuffer {
 		this.buffer = new byte[length];
 		this.length = length;
 		return this;
-	}
-
-	@Override
-	public String toText() {
-		return String.valueOf(buffer);
 	}
 
 	@Override
@@ -249,5 +242,10 @@ public class ByteBuffer extends BufferedBuffer {
 		this.position = 0;
 		this.length = array.length;
 		return this;
+	}
+	
+	@Override
+	public String toString() {
+		return String.valueOf(buffer);
 	}
 }

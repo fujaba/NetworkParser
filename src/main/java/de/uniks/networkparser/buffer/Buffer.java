@@ -1,4 +1,4 @@
-package de.uniks.networkparser.interfaces;
+package de.uniks.networkparser.buffer;
 
 /*
  NetworkParser
@@ -64,12 +64,14 @@ public abstract class Buffer {
 	public int remaining() {
 		return length() - position();
 	}
+	
+	public boolean isEmpty() {
+        return length() == 0;
+    }
 
 	public boolean isEnd() {
 		return position() >= length();
 	}
-
-	public abstract String toText();
 
 	public abstract byte[] toArray();
 	

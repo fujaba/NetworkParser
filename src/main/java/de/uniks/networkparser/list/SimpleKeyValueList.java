@@ -552,4 +552,43 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		}
 		return getKeyByIndex(pos);
 	}
+	
+	
+	
+	/**
+	 *  Init The Colleciton with short String
+	 * @param keyValue The init KeyValue String Key:Value,Key:Value ...
+	 * @return This Component
+	 */
+	public SimpleKeyValueList<K, V> withKeyValueString(String keyValue) {
+		int pos=0, start;
+		String key, value;
+		char item; 
+		do{
+			start = pos;
+			// Get String As Key
+			while(pos<keyValue.length()) {
+				item = keyValue.charAt(pos);
+				if(item == ':') {
+					break;
+				}
+				pos++;
+			}
+			key = keyValue.substring(start, pos);
+			pos++;
+			// Get Integer As Value
+			start=pos;
+			while(pos<keyValue.length()) {
+				item = keyValue.charAt(pos);
+				if(item==',') {
+					break;
+				}
+				pos++;
+			}
+			value = keyValue.substring(start, pos);
+			pos++;
+			withKeyValue(key, value);
+		}while(pos<keyValue.length());
+		return this;
+	}
 }

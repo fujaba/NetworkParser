@@ -24,12 +24,12 @@ package de.uniks.networkparser.graph;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleSet;
-import de.uniks.networkparser.string.CharList;
 
 public class GraphConverter implements Converter {
 	public static final String TYP = "typ";
@@ -216,7 +216,7 @@ public class GraphConverter implements Converter {
 					+ target.getName(shortName)));
 			return child;
 		}else{
-			String id = new CharList()
+			String id = new CharacterBuffer()
 					.with(source.getName(false), ":", edge.getName(), 
 							"-", 
 					target.getName(false), ":",edge.getOther().getName()).toString();

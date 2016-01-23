@@ -22,11 +22,12 @@ package de.uniks.networkparser;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.Buffer;
-import de.uniks.networkparser.interfaces.BufferedBuffer;
 import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
-import de.uniks.networkparser.string.StringContainer;
+import de.uniks.networkparser.buffer.Buffer;
+import de.uniks.networkparser.buffer.BufferedBuffer;
+import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.buffer.StringContainer;
 /**
  * parseToEntity The Class Tokener.
  */
@@ -309,10 +310,10 @@ public abstract class Tokener {
 			next();
 		}
 		if ((isQuote && allowQuote) || mustQuote) {
-			sc.with(((BufferedBuffer)this.buffer).substring(startpos, endPos - startpos - 1));
+			sc.with(((BufferedBuffer)this.buffer).subSequence(startpos, endPos));
 			return;
 		}
-		sc.with(((BufferedBuffer)this.buffer).substring(startpos, endPos - startpos));
+		sc.with(((BufferedBuffer)this.buffer).subSequence(startpos, endPos));
 	}
 
 	private void getStringBuffer(StringContainer sc, boolean allowCRLF,
@@ -393,7 +394,7 @@ public abstract class Tokener {
 			while (c >= ' ' && getStopChars().indexOf(c) < 0) {
 				c = next();
 			}
-			value = ((BufferedBuffer)buffer).substring(start, buffer.position() - start).trim();
+			value = ((BufferedBuffer)buffer).subSequence(start, buffer.position()).trim().toString();
 		} else {
 			StringBuilder sb = new StringBuilder();
 			while (c >= ' ' && getStopChars().indexOf(c) < 0) {
@@ -610,7 +611,7 @@ public abstract class Tokener {
 		if (start < 0 || end <= 0 || start > end) {
 			return "";
 		}
-		return ((BufferedBuffer)this.buffer).substring(start, end - start);
+		return ((BufferedBuffer)this.buffer).subSequence(start, end).toString();
 	}
 
 	/**
@@ -630,14 +631,13 @@ public abstract class Tokener {
 		return false;
 	}
 
-	public String getNextTag() {
+	public CharacterBuffer getNextTag() {
 		nextClean(false);
 		int startTag = this.buffer.position();
 		if (stepPos(" >//<", false, true)) {
-			return ((BufferedBuffer)this.buffer).substring(startTag, this.buffer.position()
-					- startTag);
+			return ((BufferedBuffer)this.buffer).subSequence(startTag, this.buffer.position());
 		}
-		return "";
+		return new CharacterBuffer();
 	}
 
 	/**
@@ -657,7 +657,7 @@ public abstract class Tokener {
 	}
 
 	public String toText() {
-		return buffer.toText();
+		return buffer.toString();
 	}
 
 	public Tokener withBuffer(Buffer buffer) {

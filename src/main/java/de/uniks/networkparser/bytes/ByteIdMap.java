@@ -34,6 +34,7 @@ import de.uniks.networkparser.AbstractMap;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.NetworkParserLog;
+import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.bytes.converter.ByteConverterHTTP;
 import de.uniks.networkparser.event.BasicMessage;
 import de.uniks.networkparser.event.ObjectMapEntry;

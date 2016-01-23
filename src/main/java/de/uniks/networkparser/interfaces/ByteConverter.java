@@ -1,6 +1,6 @@
 package de.uniks.networkparser.interfaces;
 
-import de.uniks.networkparser.bytes.ByteBuffer;
+import de.uniks.networkparser.buffer.ByteBuffer;
 
 /*
  NetworkParser

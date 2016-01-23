@@ -5,7 +5,7 @@ import java.io.PrintStream;
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.uniks.networkparser.bytes.ByteBuffer;
+import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.bytes.ByteFilter;
 import de.uniks.networkparser.bytes.ByteIdMap;
 import de.uniks.networkparser.interfaces.ByteItem;

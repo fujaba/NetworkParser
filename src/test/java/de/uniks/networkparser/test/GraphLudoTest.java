@@ -27,6 +27,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.Filter;
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.GraphConverter;
@@ -34,7 +35,6 @@ import de.uniks.networkparser.graph.GraphIdMap;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
-import de.uniks.networkparser.string.CharList;
 import de.uniks.networkparser.test.model.SortedMsg;
 import de.uniks.networkparser.test.model.ludo.Field;
 import de.uniks.networkparser.test.model.ludo.Ludo;
@@ -126,7 +126,7 @@ public class GraphLudoTest
 	  
 	  JsonObject clazzModel=graphConverter.convertToJson(GraphIdMap.CLASS, jsonArray, true);
 	  showDebugInfos(clazzModel, 486, null);
-	  Assert.assertEquals(new CharList()
+	  Assert.assertEquals(new CharacterBuffer()
 			  .withLine("{")
 			  .withLine("  \"typ\":\"classdiagram\",")
 			  .withLine("  \"style\":null,")
