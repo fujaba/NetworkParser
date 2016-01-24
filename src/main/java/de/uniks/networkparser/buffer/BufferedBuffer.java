@@ -26,19 +26,12 @@ public abstract class BufferedBuffer extends Buffer {
 	/** The count is the number of characters used. */
 	protected int length;
 
-	/** The line. */
-	protected int line;
-
-	/** The character. */
-	protected int character;
-	
 	/** The start is the number of characters started. */
 	int start;
 
 	public boolean back() {
 		if (this.position > 0) {
 			this.position--;
-			this.character -= 1;
 			return true;
 		}
 		return false;
@@ -95,10 +88,5 @@ public abstract class BufferedBuffer extends Buffer {
 		}
 		this.withPosition(this.position() - 1);
 		return this;
-	}
-	
-	public String info() {
-		return " at " + this.position + " / "+ this.length + "[character " + this.character
-				+ " line " + this.line + "]";
 	}
 }

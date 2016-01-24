@@ -292,7 +292,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 					if (stack.size() > 0) {
 						int temp = tokener.position();
 						CharacterBuffer endTag = tokener.getNextTag();
-						if (stack.get(stack.size() - 1).equals(endTag)) {
+						if (endTag.equals(stack.get(stack.size() - 1))) {
 							stack.remove(stack.size() - 1);
 						} else {
 							stack.remove(stack.size() - 1);
