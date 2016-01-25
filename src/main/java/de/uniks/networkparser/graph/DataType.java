@@ -36,6 +36,7 @@ public class DataType {
 	public static final DataType OBJECT = new DataType("Object");
 	public static final DataType CHAR = new DataType("char");
 	public static final DataType BYTE = new DataType("byte");
+	public static final DataType CONSTRUCTOR = new DataType("");
 
 	protected Clazz value;
 

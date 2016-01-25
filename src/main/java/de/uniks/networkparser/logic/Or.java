@@ -24,6 +24,7 @@ package de.uniks.networkparser.logic;
 import java.util.ArrayList;
 import java.util.EventObject;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 /**
@@ -68,12 +69,12 @@ public class Or implements SimpleConditionValue, SendableEntityCreator {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
+		CharacterBuffer sb = new CharacterBuffer();
 		for (SimpleConditionValue condition : list) {
-			sb.append("[" + condition.toString() + " ");
+			sb.with("[", condition.toString(), " ");
 		}
-		sb.trimToSize();
-		sb.append("]");
+		sb.trim();
+		sb.with("]");
 		return sb.toString();
 	}
 

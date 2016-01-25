@@ -50,6 +50,11 @@ public class Clazz extends GraphEntity {
 		return this;
 	}
 
+	public Clazz enableEnumeration() {
+		this.with(ClazzType.ENUMERATION);
+		return this;
+	}
+
 	public Clazz enableEnumeration(String... literals) {
 		this.with(ClazzType.ENUMERATION);
 		if(literals == null) {
@@ -57,6 +62,17 @@ public class Clazz extends GraphEntity {
 		}
 		for(String item : literals) {
 			this.with(new Literal(item));
+		}
+		return this;
+	}
+	
+	public Clazz enableEnumeration(Literal... literals) {
+		this.with(ClazzType.ENUMERATION);
+		if(literals == null) {
+			return this;
+		}
+		for(Literal item : literals) {
+			this.with(item);
 		}
 		return this;
 	}

@@ -29,6 +29,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
  */
 
 public class CharacterBuffer extends BufferedBuffer implements CharSequence{
+	public final char SPACE=' ';
 	/** The value is used for character storage. */
 	char[] buffer;
 
@@ -221,7 +222,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 			System.arraycopy(values, start, this.buffer, 0, end);
 		} else {
 			if(this.length +values.length() > buffer.length) {
-				int newCapacity = this.length +values.length() * 2 + 2;
+				int newCapacity = (this.length + values.length()) * 2 + 2;
 				char[] copy = new char[newCapacity];
 				System.arraycopy(buffer, this.start, copy, 0, length);
 				buffer = copy;
@@ -372,10 +373,10 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 	}
 	
 	public CharacterBuffer trim() {
-		while ((start < length) && (buffer[length - 1] <= ' ')) {
+		while ((start < length) && (buffer[length - 1] <= SPACE)) {
 			length--;
 		}
-		while ((start < length) && (buffer[start] <= ' ')) {
+		while ((start < length) && (buffer[start] <= SPACE)) {
 			start++;
 		}
 		return this;

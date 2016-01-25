@@ -1,31 +1,9 @@
 package de.uniks.networkparser.graph;
 
-/*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
-
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
-
- http://ec.europa.eu/idabc/eupl5
-
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
-*/
-import de.uniks.networkparser.list.SimpleKeyValueList;
-import de.uniks.networkparser.list.StringList;
+import de.uniks.networkparser.list.SimpleList;
 
 public class Literal extends GraphMember{
-	private SimpleKeyValueList<String, StringList> values=new SimpleKeyValueList<String, StringList>();
+	private SimpleList<Object> values;
 	
 	public Literal(String name) {
 		super.with(name);
@@ -36,20 +14,22 @@ public class Literal extends GraphMember{
 		super.with(name);
 		return this;
 	}
-	public Literal withKeyValue(String key, Object value) {
-		if(value instanceof StringList) {
-			this.values.put(key, (StringList) value);
+	public Literal withValue(Object... values) {
+		if(values == null) {
 			return this;
 		}
-		if(value instanceof String) {
-			StringList list =new StringList();
-			list.add(""+value);
-			this.values.add(key, list);
+		for(Object value : values) {
+			if(value != null) {
+				if(this.values == null) {
+					this.values = new SimpleList<Object>();
+				}
+				this.values.add(value);
+			}
 		}
 		return this;
 	}
 	
-	public SimpleKeyValueList<String, StringList> getValues() {
+	public SimpleList<Object> getValues() {
 		return values;
 	}
 }

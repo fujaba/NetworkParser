@@ -408,7 +408,8 @@ public class EMFIdMap extends XMLIdMap {
 						if(key.equals(EMFIdMap.NAME)) {
 							continue;
 						}
-						literal.withKeyValue(key, child.get(key));
+						literal.withValue(child.get(key));
+//						literal.withKeyValue(key, child.get(key));
 						graphEnum.with(literal);
 					}
 				}
