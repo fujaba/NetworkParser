@@ -35,4 +35,15 @@ public class StringTest {
 		String t = "\"\\\"\\\\\\\"Hallo Welt\\\\\\\"\\\"\"";
 		Assert.assertEquals(g, EntityUtil.unQuote(t));
 	}
+	
+	@Test
+	public void testEscapeSimpleHTML(){
+		char[] txt = new char[]{'H','a', 'l', 'l', 228};
+		String example = new String(txt);
+		EntityUtil util = new EntityUtil();
+		String encode = util.encode(example);
+		System.out.println(util.decode(encode));
+		Assert.assertEquals(example, util.decode(encode));
+	}
+
 }
