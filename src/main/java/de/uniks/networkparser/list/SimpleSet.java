@@ -24,6 +24,7 @@ import java.util.Collection;
 */
 import java.util.Set;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.Condition;
 
 public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
@@ -47,11 +48,6 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 	}
 	
 	@Override
-	public boolean add(V value) {
-		return super.add(value);
-	}
-	
-	@Override
 	public boolean addAll(int index, Collection<? extends V> values) {
 		return super.addAll(index, values);
 	}
@@ -70,5 +66,85 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 		SimpleSet<V> filterList = new SimpleSet<V>();
 		filterItems(filterList, newValue);
 		return filterList;
+	}
+	
+	// Add Methods from SDMLib
+	@Override
+	public String toString() {
+		return toString(", ").withStart('(').with(")").toString();
+	}
+	
+	public CharacterBuffer toString(String separator) {
+		CharacterBuffer stringList = new CharacterBuffer();
+		int len = this.size();
+		for (V elem : this) {
+			stringList.with(elem.toString());
+			if (len > 1) {
+				stringList.with(separator);
+			}
+			len--;
+		}
+		return stringList;
+	}
+
+	// ReadOnly Add all
+	@Override
+	public V set(int index, V element) {
+		if (isReadOnly()) {
+			throw new UnsupportedOperationException("set(" + index + ")");
+		}
+		return super.set(index, element);
+	}
+
+	@Override
+	public void add(int index, V element) {
+		if (isReadOnly()) {
+			throw new UnsupportedOperationException("add(" + index + ")");
+		}
+		super.add(index, element);
+	}
+
+	@Override
+	public V remove(int index) {
+		if (isReadOnly()) {
+			throw new UnsupportedOperationException("remove(" + index + ")");
+		}
+		return super.remove(index);
+	}
+
+	@Override
+	public boolean add(V newValue) {
+		if (isReadOnly()) {
+			throw new UnsupportedOperationException("add()");
+		}
+		return super.add(newValue);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <ST extends SimpleSet<V>> ST union(Collection<? extends V> other) {
+		ST result = (ST) this.getNewList(false);
+		result.addAll(this);
+		result.addAll(other);
+		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	public <ST extends SimpleSet<V>> ST intersection(Collection<? extends V> other) {
+		ST result = (ST) this.getNewList(false);
+		result.addAll(this);
+		result.retainAll(other);
+		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	public <ST extends SimpleSet<V>> ST minus(Object other) {
+		ST result = (ST) this.getNewList(false);
+		result.addAll(this);
+		if (other instanceof Collection) {
+			result.removeAll((Collection<?>) other);
+		} else {
+			result.remove(other);
+		}
+		return result;
 	}
 }

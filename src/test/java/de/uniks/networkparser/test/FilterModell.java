@@ -41,7 +41,7 @@ public class FilterModell {
 			}
 		}
 		
-		AttributeSet filterAttributesC = clazz.getAttributes(Attribute.NAME.not("name"), value -> ((Attribute)value).getClazz() != null);
+		AttributeSet filterAttributesC = clazz.getAttributes().filter(Attribute.NAME.not("name")).filter(value -> value.getClazz() != null);
 		for(Attribute attribute : filterAttributesC) {
 			if(output != null) {
 				output.println("Not: "+attribute.getName()); 

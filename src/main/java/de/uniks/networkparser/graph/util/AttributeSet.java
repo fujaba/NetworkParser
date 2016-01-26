@@ -19,10 +19,19 @@ public class AttributeSet extends SimpleSet<Attribute>{
 		}
 		return collection;
 	}
+
 	public ModifierSet getModifiers() {
 		ModifierSet collection = new ModifierSet();
 		for(Attribute item : this) {
 			collection.add(item.getModifier());
+		}
+		return collection;
+	}
+	
+	public DateTypeSet getDataTypes() {
+		DateTypeSet collection = new DateTypeSet();
+		for(Attribute item : this) {
+			collection.add(item.getType());
 		}
 		return collection;
 	}

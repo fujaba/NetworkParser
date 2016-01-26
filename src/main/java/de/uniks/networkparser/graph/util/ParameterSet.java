@@ -13,13 +13,20 @@ public class ParameterSet extends SimpleSet<Parameter>{
 		return collection;
 	}
 	
+	public DateTypeSet getDataTypes() {
+		DateTypeSet collection = new DateTypeSet();
+		for(Parameter item : this) {
+			collection.add(item.getType());
+		}
+		return collection;
+	}
+	
 	@Override
 	public ParameterSet filter(Condition<Parameter> newValue) {
 		ParameterSet collection = new ParameterSet();
 		filterItems( collection, newValue);
 		return collection;
 	}
-
 	
 	public ParameterSet hasName(String otherValue) {
 		return filter(Parameter.NAME.equals(otherValue));

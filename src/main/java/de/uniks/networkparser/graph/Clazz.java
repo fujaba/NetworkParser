@@ -28,6 +28,8 @@ import de.uniks.networkparser.list.SimpleSet;
 */
 
 public class Clazz extends GraphEntity {
+	public static final StringFilter<Clazz> NAME = new StringFilter<Clazz>(GraphMember.PROPERTY_NAME);
+
 	public enum ClazzType {CLAZZ, ENUMERATION, INTERFACE};
 	private ClazzType type = ClazzType.CLAZZ;
 	

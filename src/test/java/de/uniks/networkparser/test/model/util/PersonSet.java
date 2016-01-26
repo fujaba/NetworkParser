@@ -21,16 +21,17 @@
    
 package de.uniks.networkparser.test.model.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import de.uniks.networkparser.list.SDMSet;
-import de.uniks.networkparser.list.StringList;
+import de.uniks.networkparser.list.NumberList;
+import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.test.model.GroupAccount;
 import de.uniks.networkparser.test.model.Item;
 import de.uniks.networkparser.test.model.Person;
 
-public class PersonSet extends SDMSet<Person>
+public class PersonSet extends SimpleSet<Person>
 {
    @SuppressWarnings("unchecked")
    public PersonSet with(Object value)
@@ -53,9 +54,9 @@ public class PersonSet extends SDMSet<Person>
 	  return this;
    }
 
-   public StringList getName()
+   public ArrayList<String> getName()
    {
-	  StringList result = new StringList();
+	   ArrayList<String> result = new ArrayList<String>();
 	  
 	  for (Person obj : this)
 	  {
@@ -90,9 +91,9 @@ public class PersonSet extends SDMSet<Person>
 	  return this;
    }
 
-   public doubleList getBalance()
+   public NumberList getBalance()
    {
-	  doubleList result = new doubleList();
+	   NumberList result = new NumberList();
 	  
 	  for (Person obj : this)
 	  {
@@ -141,7 +142,7 @@ public class PersonSet extends SDMSet<Person>
 
    public PersonSet hasParent(Object value)
    {
-	  ObjectSet neighbors = new ObjectSet();
+	   ArrayList<Object> neighbors = new ArrayList<Object>();
 
 	  if (value instanceof Collection)
 	  {
@@ -189,7 +190,7 @@ public class PersonSet extends SDMSet<Person>
 
    public PersonSet hasItem(Object value)
    {
-	  ObjectSet neighbors = new ObjectSet();
+	   ArrayList<Object> neighbors = new ArrayList<Object>();
 
 	  if (value instanceof Collection)
 	  {

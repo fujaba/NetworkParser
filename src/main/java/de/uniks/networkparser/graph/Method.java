@@ -27,6 +27,8 @@ import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class Method extends GraphMember {
+	public static final StringFilter<Method> NAME = new StringFilter<Method>(GraphMember.PROPERTY_NAME);
+
 	public static final String PROPERTY_RETURNTYPE = "returnType";
 	public static final String PROPERTY_PARAMETER = "parameter";
 	public static final String PROPERTY_NODE = "node";

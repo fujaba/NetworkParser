@@ -26,13 +26,13 @@ import de.uniks.networkparser.list.SimpleSet;
 */
 
 public abstract class GraphMember {
-	public static final StringFilter NAME = new StringFilter("name");
+	public static final String PROPERTY_NAME="name";
 	protected String name;
 	protected Object children;
 	protected GraphMember parentNode;
 	
 	Object getValue(String attribute) {
-		if(NAME.toString().equals(attribute)) {
+		if(PROPERTY_NAME.equals(attribute)) {
 			return this.name;
 		}
 		return null;

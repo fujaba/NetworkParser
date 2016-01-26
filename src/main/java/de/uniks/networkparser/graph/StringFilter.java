@@ -34,23 +34,23 @@ public class StringFilter<T> implements Condition<T>{
 		return false;
 	}
 	
-	public StringFilter with(String value, TYPE type) {
+	public StringFilter<T> with(String value, TYPE type) {
 		this.otherValue = value;
 		this.type = type;
 		return this;
 	}
 	
-	public StringFilter equals(String otherValue) {
-		return new StringFilter(this.attribute).with(otherValue, TYPE.EQUALS);
+	public StringFilter<T> equals(String otherValue) {
+		return new StringFilter<T>(this.attribute).with(otherValue, TYPE.EQUALS);
 	}
-	public StringFilter not(String otherValue) {
-		return new StringFilter(this.attribute).with(otherValue, TYPE.NOT);
+	public StringFilter<T> not(String otherValue) {
+		return new StringFilter<T>(this.attribute).with(otherValue, TYPE.NOT);
 	}
-	public StringFilter equalsIgnoreCase(String otherValue) {
-		return new StringFilter(this.attribute).with(otherValue, TYPE.EQUALSIGNORECASE);
+	public StringFilter<T> equalsIgnoreCase(String otherValue) {
+		return new StringFilter<T>(this.attribute).with(otherValue, TYPE.EQUALSIGNORECASE);
 	}
-	public StringFilter contains(String otherValue) {
-		return new StringFilter(this.attribute).with(otherValue, TYPE.CONTAINS);
+	public StringFilter<T> contains(String otherValue) {
+		return new StringFilter<T>(this.attribute).with(otherValue, TYPE.CONTAINS);
 	}
 	
 	@Override

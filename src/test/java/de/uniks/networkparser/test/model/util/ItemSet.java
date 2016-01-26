@@ -21,12 +21,13 @@
    
 package de.uniks.networkparser.test.model.util;
 
-import de.uniks.networkparser.list.SDMSet;
+import de.uniks.networkparser.list.NumberList;
+import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.test.model.GroupAccount;
 import de.uniks.networkparser.test.model.Item;
 import de.uniks.networkparser.test.model.Person;
 
-public class ItemSet extends SDMSet<Item>
+public class ItemSet extends SimpleSet<Item>
 {
 	public String getEntryType()
    {
@@ -65,9 +66,9 @@ public class ItemSet extends SDMSet<Item>
 	  
 	  return this;
    }
-   public doubleList getValue()
+   public NumberList getValue()
    {
-	   doubleList result = new doubleList();
+	   NumberList result = new NumberList();
 	  
 	  for (Item obj : this)
 	  {

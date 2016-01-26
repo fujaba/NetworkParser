@@ -22,6 +22,7 @@ package de.uniks.networkparser.list;
  permissions and limitations under the Licence.
 */
 import java.util.List;
+
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Condition;
 

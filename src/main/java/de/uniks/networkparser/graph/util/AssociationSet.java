@@ -36,7 +36,6 @@ public class AssociationSet extends SimpleSet<Association>{
 		return collection;
 	}
 
-	
 	public AssociationSet hasName(String otherValue) {
 		return filter(Association.NAME.equals(otherValue));
 	}

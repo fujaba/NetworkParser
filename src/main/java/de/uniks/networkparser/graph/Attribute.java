@@ -23,6 +23,7 @@ package de.uniks.networkparser.graph;
 */
 
 public class Attribute extends Value {
+	public static final StringFilter<Attribute> NAME = new StringFilter<Attribute>(GraphMember.PROPERTY_NAME);
 	public static final String PROPERTY_CLAZZ = "clazz";
 	public static final String PROPERTY_VALUE = "value";
 	public static final String PROPERTY_VISIBILITY = "visibility";

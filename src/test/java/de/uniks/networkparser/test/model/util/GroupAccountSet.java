@@ -21,15 +21,17 @@
    
 package de.uniks.networkparser.test.model.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
-import de.uniks.networkparser.list.SDMSet;
+import de.uniks.networkparser.list.NumberList;
+import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.test.model.GroupAccount;
 import de.uniks.networkparser.test.model.Item;
 import de.uniks.networkparser.test.model.Person;
 
-public class GroupAccountSet extends SDMSet<GroupAccount>
+public class GroupAccountSet extends SimpleSet<GroupAccount>
 {
 
 
@@ -65,9 +67,9 @@ public class GroupAccountSet extends SDMSet<GroupAccount>
    
    //==========================================================================
    
-   public doubleList getTaskNames(double p0, String p1)
+   public NumberList getTaskNames(double p0, String p1)
    {
-	  doubleList result = new doubleList();
+	   NumberList result = new NumberList();
 	  for (GroupAccount obj : this)
 	  {
 		 result.add(obj.getTaskNames(p0, p1));
@@ -101,7 +103,7 @@ public class GroupAccountSet extends SDMSet<GroupAccount>
 
    public GroupAccountSet hasPersons(Object value)
    {
-	  ObjectSet neighbors = new ObjectSet();
+	   ArrayList<Object> neighbors = new ArrayList<Object>();
 
 	  if (value instanceof Collection)
 	  {
@@ -159,7 +161,7 @@ public class GroupAccountSet extends SDMSet<GroupAccount>
 
    public GroupAccountSet hasItem(Object value)
    {
-	  ObjectSet neighbors = new ObjectSet();
+	   ArrayList<Object> neighbors = new ArrayList<Object>();
 
 	  if (value instanceof Collection)
 	  {

@@ -26,6 +26,8 @@ See the Licence for the specific language governing
 permissions and limitations under the Licence.
 */
 public class Annotation extends GraphMember implements IdMapDecoder {
+	public static final StringFilter<Annotation> NAME = new StringFilter<Annotation>(GraphMember.PROPERTY_NAME);
+
 	// ==========================================================================
 	public static final Annotation DEPRECATED = new Annotation("Deprecated");
 

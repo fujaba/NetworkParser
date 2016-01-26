@@ -33,7 +33,7 @@ public class AnnotationSet extends SimpleSet<Annotation> {
 		filterItems( collection, newValue);
 		return collection;
 	}
-
+	
 	public AnnotationSet hasName(String otherValue) {
 		return filter(Annotation.NAME.equals(otherValue));
 	}

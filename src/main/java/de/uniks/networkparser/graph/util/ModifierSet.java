@@ -35,7 +35,6 @@ public class ModifierSet extends SimpleSet<Modifier> {
 		return collection;
 	}
 
-	
 	public ModifierSet hasName(String otherValue) {
 		return filter(Modifier.NAME.equals(otherValue));
 	}

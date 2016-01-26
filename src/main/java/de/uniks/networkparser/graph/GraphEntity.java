@@ -1,7 +1,6 @@
 package de.uniks.networkparser.graph;
 import java.util.Iterator;
 
-import de.uniks.networkparser.graph.util.AssociationSet;
 /*
 NetworkParser
 Copyright (c) 2011 - 2015, Stefan Lindel
@@ -23,7 +22,8 @@ express or implied.
 See the Licence for the specific language governing
 permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.list.SimpleSet;
+import de.uniks.networkparser.graph.util.AssociationSet;
+import de.uniks.networkparser.interfaces.Condition;
 
 public abstract class GraphEntity extends GraphMember {
 	protected Object associations;
@@ -61,25 +61,38 @@ public abstract class GraphEntity extends GraphMember {
 		return "";
 	}
 	
-	public AssociationSet getAssociations() {
-	   AssociationSet allEdges = new AssociationSet();
+	/** get All Associations
+	 * @param filters Can Filter the List of Associations
+	 * @return all Associations of a Clazz
+	 * 
+	 *<pre>
+	 * Clazz  --------------------- Associations
+	 * one                          many
+	 *</pre>
+	 */
+	public AssociationSet getAssociations(Condition<?>... filters) {
+		AssociationSet collection = new AssociationSet();
 		if (associations == null ) {
-			return allEdges;
+			return collection;
 		}
 		if(associations instanceof Association) {
-			allEdges.add((Association) this.associations);
+			if(check((Association)this.children, filters)) {
+				collection.add((Association)this.children);
+			}
 		}else if(associations instanceof GraphSimpleSet) {
-			GraphSimpleSet collection = (GraphSimpleSet) this.associations;
-			for (GraphMember item : collection) {
+			GraphSimpleSet list = (GraphSimpleSet) this.associations;
+			for (GraphMember item : list) {
 				if(item instanceof Association) {
 					Association assoc = (Association) item;
 					if(AssociationTypes.isEdge(assoc.getType().getValue())) {
-						allEdges.add(assoc);
+						if(check(assoc, filters) ) {
+							collection.add((Association)item);
+						}
 					}
 				}
 			}
 		}
-		return allEdges;
+		return collection;
 	}
 	
 	GraphMember getByObject(String clazz, boolean fullName) {
