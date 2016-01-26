@@ -58,7 +58,7 @@ public class YUMLConverter implements Converter {
 	}
 	public void parse(String typ, GraphEntity item, StringBuilder sb,
 			SimpleList<GraphMember> visited, boolean shortName) {
-		SimpleSet<Association> association = item.getAssociation();
+		SimpleSet<Association> association = item.getAssociations();
 		if (association.size()==0) {
 			if(visited.contains(item) == false) {
 				if (sb.length() > 0) {

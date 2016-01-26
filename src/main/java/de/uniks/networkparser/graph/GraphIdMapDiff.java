@@ -63,7 +63,7 @@ public class GraphIdMapDiff extends GraphIdMap{
 			clazzes.put(item.getName(false), item);
 		}
 		// Copy all Edges
-		for(Iterator<Association> i = clazzDiagram.getAssociation().iterator();i.hasNext();) {
+		for(Iterator<Association> i = clazzDiagram.getAssociations().iterator();i.hasNext();) {
 			Association item = i.next();
 			Clazz node = (Clazz) item.getClazz();
 			edges.put(node.getName(false)+":"+item.getName(), item);
@@ -79,7 +79,7 @@ public class GraphIdMapDiff extends GraphIdMap{
 			}
 		}
 		// Copy all Edges
-		for(Iterator<Association> i = objectDiagram.getAssociation().iterator();i.hasNext();) {
+		for(Iterator<Association> i = objectDiagram.getAssociations().iterator();i.hasNext();) {
 			Association item = i.next();
 			Clazz node = (Clazz) item.getClazz();
 			String signature = node.getName(false)+":"+item.getName();

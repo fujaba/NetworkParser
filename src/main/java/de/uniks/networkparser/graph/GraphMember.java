@@ -1,5 +1,6 @@
 package de.uniks.networkparser.graph;
 
+import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.list.SimpleSet;
 
 /*
@@ -25,9 +26,32 @@ import de.uniks.networkparser.list.SimpleSet;
 */
 
 public abstract class GraphMember {
+	public static final StringFilter NAME = new StringFilter("name");
 	protected String name;
 	protected Object children;
 	protected GraphMember parentNode;
+	
+	Object getValue(String attribute) {
+		if(NAME.toString().equals(attribute)) {
+			return this.name;
+		}
+		return null;
+	}
+	
+	protected boolean check(GraphMember element, Condition<?>... filters) {
+		if(filters == null) {
+			return element != null;
+		}
+		boolean result=true;
+		for(Object filter : filters) {
+			if(filter != null && result) {
+				if(filter instanceof StringFilter) {
+					result = ((StringFilter)filter).check(element);
+				}
+			}
+		}
+		return result;
+	}
 	
 	String getFullId() {
 		return name;

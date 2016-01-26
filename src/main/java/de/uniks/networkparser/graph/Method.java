@@ -22,6 +22,8 @@
 
 package de.uniks.networkparser.graph;
 
+import de.uniks.networkparser.graph.util.ParameterSet;
+import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class Method extends GraphMember {
@@ -165,18 +167,30 @@ public class Method extends GraphMember {
 		return collection;
 	}
 	
-	public SimpleSet<Parameter> getParameter() {
-		SimpleSet<Parameter> collection = new SimpleSet<Parameter>();
+	
+	/** get All Parameter
+	 * @param filters Can Filter the List of Parameter
+	 * @return all Parameter of a Method
+	 * 
+	 *<pre>
+	 * Method  --------------------- Parameter
+	 * one                          many
+	 *</pre>
+	 */
+	public ParameterSet getParameter(Condition<?>... filters) {
+		ParameterSet collection = new ParameterSet();
 		if (children == null) {
 			return collection;
 		}
 		if( children instanceof Parameter) {
-			collection.add((Parameter) children);
+			if(check((Parameter)this.children, filters)) {
+				collection.add((Parameter)this.children);
+			}
 		}else if (children instanceof GraphSimpleSet) {
 			GraphSimpleSet items = (GraphSimpleSet) children;
-			for (GraphMember child : items) {
-				if (child instanceof Parameter)  {
-					collection.add((Parameter) child);
+			for (GraphMember item : items) {
+				if(item instanceof Parameter && check(item, filters) ) {
+					collection.add((Parameter)item);	
 				}
 			}
 		}

@@ -60,7 +60,7 @@ public abstract class GraphEntity extends GraphMember {
 		return "";
 	}
 	
-	public SimpleSet<Association> getAssociation() {
+	public SimpleSet<Association> getAssociations() {
 		SimpleSet<Association> allEdges = new SimpleSet<Association>();
 		if (associations == null ) {
 			return allEdges;
@@ -163,7 +163,7 @@ public abstract class GraphEntity extends GraphMember {
 		boolean add=true;
 
 		if(assoc.getOther() != null && this.associations != null) {
-			for (Iterator<Association> i = this.getAssociation().iterator(); i.hasNext();) {
+			for (Iterator<Association> i = this.getAssociations().iterator(); i.hasNext();) {
 				Association item = i.next();
 				if(has(item, assoc.getOther()) && has(item.getOther(), assoc)) {
 					if(item.isSame(assoc.getOther()) && item.getOther().isSame(assoc)) {

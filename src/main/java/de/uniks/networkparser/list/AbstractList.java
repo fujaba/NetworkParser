@@ -24,8 +24,8 @@ package de.uniks.networkparser.list;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.ListIterator;
+
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.Condition;
 
 /**
  * @author Stefan
@@ -190,11 +190,4 @@ public abstract class AbstractList<V> extends AbstractArray<V> {
 		}
 		return allAdded;
 	}
-	
-	public void each(Condition<V> newValue) {
-		for(int i=0;i<size();i++) {
-			newValue.check(get(i));
-		}
-	}
-
 }

@@ -24,6 +24,8 @@ import java.util.Collection;
 */
 import java.util.Set;
 
+import de.uniks.networkparser.interfaces.Condition;
+
 public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 	@Override
 	public AbstractList<V> getNewList(boolean keyValue) {
@@ -62,5 +64,16 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 	public SimpleSet<V> withoutAll(Object... values) {
 		super.withoutAll(values);
 		return this;
+	}
+	
+	public SimpleSet<V> filter(Condition<V> newValue) {
+		SimpleSet<V> filterList = new SimpleSet<V>();
+		for(int i=0;i<size();i++) {
+			V item = get(i);
+			if(newValue.check(item)) {
+				filterList.add(item);
+			}
+		}
+		return filterList;
 	}
 }

@@ -14,20 +14,24 @@ public class GenModel {
 	public static boolean methods=false;
 	@Test
 	public void showCountsModel() {
-		showCounting(Annotation.class);
-		showCounting(Association.class);
-		showCounting(Attribute.class);
-		showCounting(Cardinality.class);
-		showCounting(Clazz.class);
-		showCounting(ClazzImport.class);
-		showCounting(DataType.class);
-		showCounting(DataTypeSet.class);
-		showCounting(DataTypeMap.class);
-		showCounting(Method.class);
-		showCounting(Modifier.class);
-		showCounting(Parameter.class);
-		showCounting(Throws.class);
-		showCounting(Value.class);
+		int count =0;
+		count += showCounting(Annotation.class);
+		count += showCounting(Association.class);
+		count += showCounting(Attribute.class);
+		count += showCounting(Cardinality.class);
+		count += showCounting(Clazz.class);
+		count += showCounting(ClazzImport.class);
+		count += showCounting(DataType.class);
+		count += showCounting(DataTypeSet.class);
+		count += showCounting(DataTypeMap.class);
+		count += showCounting(Method.class);
+		count += showCounting(Modifier.class);
+		count += showCounting(Parameter.class);
+		count += showCounting(Throws.class);
+		count += showCounting(Value.class);
+		if(stream != null) {
+			stream.println("Sum: "+count);
+		}
 	}
 	
 	
@@ -81,13 +85,14 @@ public class GenModel {
 	public int getCount(Object element, boolean printItems) {
 		return getCounting(element.getClass(), printItems);
 	}
-	public void showCounting(Class<?> element) {
+	public int showCounting(Class<?> element) {
+		int count=getCounting(element, methods);
 		if(stream != null) {
-			stream.println(element.getSimpleName()+": "+getCounting(element, methods));
+			stream.println(element.getSimpleName()+": "+count);
 		}
 		
 		if(java.lang.reflect.Modifier.isAbstract(element.getModifiers()) ) {
-			return;
+			return 0;
 		}
 		SimpleList<String> wrongMethods = new SimpleList<String>();
 		java.lang.reflect.Method[] methods = element.getMethods();
@@ -112,6 +117,7 @@ public class GenModel {
 		for(String item : wrongMethods) {
 			System.out.println(item);
 		}
+		return count;
 	}
 
 	public int getCounting(Class<?> element, boolean printItems) {	

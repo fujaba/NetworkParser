@@ -23,6 +23,7 @@ package de.uniks.networkparser.list;
 */
 import java.util.List;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.Condition;
 
 public class SimpleList<V> extends AbstractList<V> implements List<V> {
 	public SimpleList() {
@@ -47,5 +48,16 @@ public class SimpleList<V> extends AbstractList<V> implements List<V> {
 	@Override
 	public boolean remove(Object o) {
 		return super.removeByObject(o)>=0;
+	}
+	
+	public SimpleList<V> filter(Condition<V> newValue) {
+		SimpleList<V> filterList = new SimpleList<V>();
+		for(int i=0;i<size();i++) {
+			V item = get(i);
+			if(newValue.check(item)) {
+				filterList.add(item);
+			}
+		}
+		return filterList;
 	}
 }

@@ -1,5 +1,8 @@
 package de.uniks.networkparser.graph;
 
+import de.uniks.networkparser.graph.util.AttributeSet;
+import de.uniks.networkparser.graph.util.MethodSet;
+import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.list.SimpleSet;
 
 /*
@@ -259,7 +262,7 @@ public class Clazz extends GraphEntity {
 		if (associations == null) {
 			return null;
 		}
-		for (Association assoc : getAssociation()) {
+		for (Association assoc : getAssociations()) {
 			if(!AssociationTypes.GENERALISATION.equals(assoc.getType())) {
 				continue;
 			}
@@ -285,7 +288,7 @@ public class Clazz extends GraphEntity {
 		if (associations == null) {
 			return interfaces;
 		}
-		for (Association assoc : getAssociation()) {
+		for (Association assoc : getAssociations()) {
 			Clazz clazz = assoc.getOtherClazz();
 			if(assoc.getType()==AssociationTypes.GENERALISATION || assoc.getType()==AssociationTypes.IMPLEMENTS) {
 				if (GraphUtil.isInterface(clazz)) {
@@ -307,7 +310,7 @@ public class Clazz extends GraphEntity {
 		if (values == null) {
 			return this;
 		}
-		SimpleSet<Association> associations = getAssociation();
+		SimpleSet<Association> associations = getAssociations();
 		for (Clazz item : values) {
 			if (item != null) {
 				boolean found=false;
@@ -382,7 +385,7 @@ public class Clazz extends GraphEntity {
 		if (associations == null || typ == null) {
 			return kindClazzes;
 		}
-		for (Association assoc : getAssociation()) {
+		for (Association assoc : getAssociations()) {
 			if(typ != assoc.getType()) {
 				continue;
 			}
@@ -400,7 +403,7 @@ public class Clazz extends GraphEntity {
 		if (values == null) {
 			return this;
 		}
-		SimpleSet<Association> associations = getAssociation();
+		SimpleSet<Association> associations = getAssociations();
 		for (Clazz item : values) {
 			if (item != null) {
 				boolean found=false;
@@ -428,67 +431,62 @@ public class Clazz extends GraphEntity {
 	public boolean setClassModel(GraphModel value) {
 		return super.setParent(value);
 	}
-	
-	public Clazz with(GraphModel value) {
-		setClassModel(value);
-		return this;
-	}
 
-	/**
-	 * get All GraphAttributes
+	/** get All Attributes
+	 * @param filters Can Filter the List of Attributes
+	 * @return all Attributes of a Clazz
 	 * 
-	 * @return all GraphAttributes of a GraphNode
-	 * 
-	 *		 <pre>
-	 *			  one					   many
-	 * GraphModel ----------------------------------- GraphAttributes
-	 *			  parent				   clazz
-	 *		 </pre>
+	 *<pre>
+	 * Clazz  --------------------- Attributes
+	 * one                          many
+	 *</pre>
 	 */
-	public SimpleSet<Attribute> getAttributes() {
-		SimpleSet<Attribute> collection = new SimpleSet<Attribute>();
+	public AttributeSet getAttributes(Condition<?>... filters) {
+		AttributeSet collection = new AttributeSet();
 		if(this.children == null) {
 			return collection;
 		}
 		if(this.children instanceof Attribute) {
-			collection.add((Attribute)this.children);
+			if(check((Attribute)this.children, filters)) {
+				collection.add((Attribute)this.children);
+			}
 			return collection;
 		}
 		if(this.children instanceof GraphSimpleSet) {
 			GraphSimpleSet list = (GraphSimpleSet) this.children;
 			for(GraphMember item : list) {
-				if(item instanceof Attribute) {
+				if(item instanceof Attribute && check(item, filters) ) {
 					collection.add((Attribute)item);	
 				}
 			}
 		}
 		return collection;
 	}
-
-	/**
-	 * get All GraphMethods
+	
+	/** get All Methods
+	 * @param filters Can Filter the List of Methods
+	 * @return all Methods of a Clazz
 	 * 
-	 * @return all GraphMethods of a GraphNode
-	 * 
-	 *		 <pre>
-	 *			  one					   many
-	 * GraphModel ----------------------------------- GraphMethods
-	 *			  parent				   clazz
-	 *		 </pre>
+	 *<pre>
+	 * Clazz  --------------------- Methods
+	 * one                          many
+	 *</pre>
 	 */
-	public SimpleSet<Method> getMethods() {
-		SimpleSet<Method> collection = new SimpleSet<Method>();
+	public MethodSet getMethods(Condition<?>... filters) {
+		MethodSet collection = new MethodSet();
 		if(this.children == null) {
 			return collection;
 		}
 		if(this.children instanceof Method) {
-			collection.add((Method)this.children);
+			if(check((Method)this.children, filters)) {
+				collection.add((Method)this.children);
+			}
 			return collection;
 		}
 		if(this.children instanceof GraphSimpleSet) {
 			GraphSimpleSet list = (GraphSimpleSet) this.children;
 			for(GraphMember item : list) {
-				if(item instanceof Method) {
+				if(item instanceof Method && check(item, filters) ) {
 					collection.add((Method)item);	
 				}
 			}
@@ -502,7 +500,7 @@ public class Clazz extends GraphEntity {
 		}
 		for (Clazz item : values) {
 			if (item != null) {
-				for (Association assoc : getAssociation()) {
+				for (Association assoc : getAssociations()) {
 					if(assoc.getOther().getType() == AssociationTypes.GENERALISATION) {
 						if(assoc.contains(item, false, true)) {
 							super.without(assoc);
@@ -521,7 +519,7 @@ public class Clazz extends GraphEntity {
 		}
 		for (Clazz item : values) {
 			if (item != null) {
-				for (Association assoc : getAssociation()) {
+				for (Association assoc : getAssociations()) {
 					if(assoc.getType() == AssociationTypes.GENERALISATION) {
 						if(assoc.contains(item, true, false)) {
 							this.without(assoc);
@@ -559,32 +557,6 @@ public class Clazz extends GraphEntity {
 		return collection;
 	}
 
-	public boolean hasModifier(Modifier value) {
-		if (value == null) {
-			return true;
-		}
-		if (this.children == null) {
-			return false;
-		}
-		if (this.children instanceof Modifier) {
-			Modifier modifier = value;
-			return modifier.getName().equals(modifier.getName());
-		}
-		if(this.children instanceof GraphSimpleSet) {
-			GraphSimpleSet items = (GraphSimpleSet) this.children; 
-			for (GraphMember item : items) {
-				if((item instanceof Modifier) == false) {
-					continue;
-				}
-				Modifier modifier = value;
-				if(modifier.getName().equals(modifier.getName())) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	
 	public Method createMethod(String name, Parameter... parameters) {
 		Method method = new Method().with(name);
 		method.with(parameters);

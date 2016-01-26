@@ -57,7 +57,7 @@ public abstract class GraphModel extends GraphEntity {
 
 	public Clazz createClazz(String name) {
 		Clazz clazz = new Clazz().with(name);
-		clazz.with(this);
+		clazz.setClassModel(this);
 		return clazz;
 	}
 

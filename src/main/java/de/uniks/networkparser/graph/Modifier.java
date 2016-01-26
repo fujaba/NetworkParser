@@ -75,6 +75,10 @@ public class Modifier extends GraphMember {
 		return false;
 				
 	}
+	
+	public GraphMember getParent() {
+		return parentNode;
+	}
 
 	@Override
 	public String toString() {

@@ -254,7 +254,7 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 		
 		root.initSubLinks();
 //		// now generate edges from edgeMap
-		for(Association edge : root.getAssociation()) {
+		for(Association edge : root.getAssociations()) {
 			Association otherEdge = edge.getOther();
 			if(otherEdge.getType()  != AssociationTypes.EDGE) {
 				// It is bidiAssoc

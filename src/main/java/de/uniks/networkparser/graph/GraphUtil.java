@@ -55,7 +55,7 @@ public class GraphUtil {
 	}
 
 	public static boolean isWithNoObjects(Clazz clazz) {
-		return (clazz.hasModifier(Modifier.ABSTRACT) || clazz.getType() == ClazzType.INTERFACE);
+		return (clazz.getModifier().has(Modifier.ABSTRACT) || clazz.getType() == ClazzType.INTERFACE);
 	}
 	public static boolean isInterface(Clazz clazz) {
 		return clazz.getType() == ClazzType.INTERFACE;
@@ -72,7 +72,7 @@ public class GraphUtil {
 	
 	public static SimpleSet<Association> getOtherAssociations(Clazz clazz) {
 		SimpleSet<Association> collection = new SimpleSet<Association>();
-		for(Association assoc : clazz.getAssociation()) {
+		for(Association assoc : clazz.getAssociations()) {
 			collection.add(assoc.getOther());
 		}
 		return collection;
