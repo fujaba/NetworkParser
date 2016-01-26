@@ -1,6 +1,7 @@
 package de.uniks.networkparser.graph.util;
 
 import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class ClazzSet extends SimpleSet<Clazz>{
@@ -32,6 +33,18 @@ public class ClazzSet extends SimpleSet<Clazz>{
 			collection.add(item.getModifier());
 		}
 		return collection;
+	}
+
+	@Override
+	public ClazzSet filter(Condition<?> newValue) {
+		ClazzSet collection = new ClazzSet();
+		filterItems( collection, newValue);
+		return collection;
+	}
+
+	
+	public ClazzSet hasName(String otherValue) {
+		return filter(Clazz.NAME.equals(otherValue));
 	}
 
 

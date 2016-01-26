@@ -66,14 +66,9 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 		return this;
 	}
 	
-	public SimpleSet<V> filter(Condition<V> newValue) {
+	public SimpleSet<V> filter(Condition<?> newValue) {
 		SimpleSet<V> filterList = new SimpleSet<V>();
-		for(int i=0;i<size();i++) {
-			V item = get(i);
-			if(newValue.check(item)) {
-				filterList.add(item);
-			}
-		}
+		filterItems(filterList, newValue);
 		return filterList;
 	}
 }

@@ -5,7 +5,7 @@ import de.uniks.networkparser.interfaces.Condition;
 public class StringFilter implements Condition<Object>{
 	private String attribute;
 	private String otherValue;
-	private enum TYPE{EQUALS, EQUALSIGNORECASE, INDEXOF, NOT};
+	private enum TYPE{EQUALS, EQUALSIGNORECASE, CONTAINS, NOT};
 	private TYPE type;
 
 	public StringFilter(String attribute) {
@@ -25,8 +25,8 @@ public class StringFilter implements Condition<Object>{
 				return itemValue.equals(otherValue);
 			} else if(this.type==TYPE.EQUALSIGNORECASE) {
 				return ((String)itemValue).equalsIgnoreCase(otherValue);
-			} else if(this.type==TYPE.INDEXOF) {
-				return ((String)itemValue).indexOf(otherValue) >= 0;
+			} else if(this.type==TYPE.CONTAINS) {
+				return ((String)itemValue).contains(otherValue);
 			} else if(this.type==TYPE.NOT) {
 				return itemValue.equals(otherValue) == false;
 			}
@@ -48,6 +48,9 @@ public class StringFilter implements Condition<Object>{
 	}
 	public StringFilter equalsIgnoreCase(String otherValue) {
 		return new StringFilter(this.attribute).with(otherValue, TYPE.EQUALSIGNORECASE);
+	}
+	public StringFilter contains(String otherValue) {
+		return new StringFilter(this.attribute).with(otherValue, TYPE.CONTAINS);
 	}
 	
 	@Override

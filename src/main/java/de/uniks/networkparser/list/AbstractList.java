@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.ListIterator;
 
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.Condition;
 
 /**
  * @author Stefan
@@ -189,5 +190,16 @@ public abstract class AbstractList<V> extends AbstractArray<V> {
 			}
 		}
 		return allAdded;
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected void filterItems(AbstractList<V> filterCollection, Condition<?> newValue) { 
+		for(int i=0;i<size();i++) {
+			V item = get(i);
+			Condition<Object> filter = (Condition<Object>) newValue;
+			if(filter.check(item)) {
+				filterCollection.add(item);
+			}
+		}
 	}
 }

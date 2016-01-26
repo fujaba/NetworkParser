@@ -38,16 +38,16 @@ public abstract class GraphMember {
 		return null;
 	}
 	
+	@SuppressWarnings("unchecked")
 	protected boolean check(GraphMember element, Condition<?>... filters) {
 		if(filters == null) {
 			return element != null;
 		}
 		boolean result=true;
-		for(Object filter : filters) {
+		for(Condition<?> item : filters) {
+			Condition<Object> filter = (Condition<Object>) item;
 			if(filter != null && result) {
-				if(filter instanceof StringFilter) {
-					result = ((StringFilter)filter).check(element);
-				}
+				result = filter.check(element);
 			}
 		}
 		return result;

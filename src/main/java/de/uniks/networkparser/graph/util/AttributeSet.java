@@ -1,6 +1,7 @@
 package de.uniks.networkparser.graph.util;
 
 import de.uniks.networkparser.graph.Attribute;
+import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class AttributeSet extends SimpleSet<Attribute>{
@@ -24,5 +25,16 @@ public class AttributeSet extends SimpleSet<Attribute>{
 			collection.add(item.getModifier());
 		}
 		return collection;
+	}
+	
+	@Override
+	public AttributeSet filter(Condition<?> newValue) {
+		AttributeSet collection = new AttributeSet();
+		filterItems( collection, newValue);
+		return collection;
+	}
+	
+	public AttributeSet hasName(String otherValue) {
+		return filter(Attribute.NAME.equals(otherValue));
 	}
 }

@@ -1,6 +1,7 @@
 package de.uniks.networkparser.graph.util;
 
 import de.uniks.networkparser.graph.Method;
+import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class MethodSet extends SimpleSet<Method>{
@@ -33,6 +34,17 @@ public class MethodSet extends SimpleSet<Method>{
 		return collection;
 	}
 
+	@Override
+	public MethodSet filter(Condition<?> newValue) {
+		MethodSet collection = new MethodSet();
+		filterItems( collection, newValue);
+		return collection;
+	}
+
+	
+	public MethodSet hasName(String otherValue) {
+		return filter(Method.NAME.equals(otherValue));
+	}
 
 //FIXME		getBody()
 //	getName(boolean)

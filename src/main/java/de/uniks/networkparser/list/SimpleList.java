@@ -52,12 +52,7 @@ public class SimpleList<V> extends AbstractList<V> implements List<V> {
 	
 	public SimpleList<V> filter(Condition<V> newValue) {
 		SimpleList<V> filterList = new SimpleList<V>();
-		for(int i=0;i<size();i++) {
-			V item = get(i);
-			if(newValue.check(item)) {
-				filterList.add(item);
-			}
-		}
+		filterItems(filterList, newValue);
 		return filterList;
 	}
 }

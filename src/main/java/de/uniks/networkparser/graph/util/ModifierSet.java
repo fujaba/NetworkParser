@@ -1,6 +1,7 @@
 package de.uniks.networkparser.graph.util;
 
 import de.uniks.networkparser.graph.Modifier;
+import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class ModifierSet extends SimpleSet<Modifier> {
@@ -25,5 +26,17 @@ public class ModifierSet extends SimpleSet<Modifier> {
 			collection.withAll(item.getParent());
 		}
 		return collection;
+	}
+	
+	@Override
+	public ModifierSet filter(Condition<?> newValue) {
+		ModifierSet collection = new ModifierSet();
+		filterItems( collection, newValue);
+		return collection;
+	}
+
+	
+	public ModifierSet hasName(String otherValue) {
+		return filter(Modifier.NAME.equals(otherValue));
 	}
 }
