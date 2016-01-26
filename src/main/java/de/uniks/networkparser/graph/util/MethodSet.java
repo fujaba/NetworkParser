@@ -35,7 +35,7 @@ public class MethodSet extends SimpleSet<Method>{
 	}
 
 	@Override
-	public MethodSet filter(Condition<?> newValue) {
+	public MethodSet filter(Condition<Method> newValue) {
 		MethodSet collection = new MethodSet();
 		filterItems( collection, newValue);
 		return collection;

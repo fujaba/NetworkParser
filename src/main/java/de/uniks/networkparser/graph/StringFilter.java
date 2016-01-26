@@ -2,7 +2,7 @@ package de.uniks.networkparser.graph;
 
 import de.uniks.networkparser.interfaces.Condition;
 
-public class StringFilter implements Condition<Object>{
+public class StringFilter<T> implements Condition<T>{
 	private String attribute;
 	private String otherValue;
 	private enum TYPE{EQUALS, EQUALSIGNORECASE, CONTAINS, NOT};

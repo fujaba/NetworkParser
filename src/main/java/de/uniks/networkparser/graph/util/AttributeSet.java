@@ -28,7 +28,7 @@ public class AttributeSet extends SimpleSet<Attribute>{
 	}
 	
 	@Override
-	public AttributeSet filter(Condition<?> newValue) {
+	public AttributeSet filter(Condition<Attribute> newValue) {
 		AttributeSet collection = new AttributeSet();
 		filterItems( collection, newValue);
 		return collection;

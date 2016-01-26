@@ -14,7 +14,7 @@ public class ParameterSet extends SimpleSet<Parameter>{
 	}
 	
 	@Override
-	public ParameterSet filter(Condition<?> newValue) {
+	public ParameterSet filter(Condition<Parameter> newValue) {
 		ParameterSet collection = new ParameterSet();
 		filterItems( collection, newValue);
 		return collection;

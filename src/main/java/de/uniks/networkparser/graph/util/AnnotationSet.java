@@ -28,7 +28,7 @@ public class AnnotationSet extends SimpleSet<Annotation> {
 		return collection;
 	}
 	@Override
-	public AnnotationSet filter(Condition<?> newValue) {
+	public AnnotationSet filter(Condition<Annotation> newValue) {
 		AnnotationSet collection = new AnnotationSet();
 		filterItems( collection, newValue);
 		return collection;

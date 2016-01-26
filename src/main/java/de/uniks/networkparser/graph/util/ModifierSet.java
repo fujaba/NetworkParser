@@ -29,7 +29,7 @@ public class ModifierSet extends SimpleSet<Modifier> {
 	}
 	
 	@Override
-	public ModifierSet filter(Condition<?> newValue) {
+	public ModifierSet filter(Condition<Modifier> newValue) {
 		ModifierSet collection = new ModifierSet();
 		filterItems( collection, newValue);
 		return collection;

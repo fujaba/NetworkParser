@@ -30,7 +30,7 @@ public class AssociationSet extends SimpleSet<Association>{
 	}
 	
 	@Override
-	public AssociationSet filter(Condition<?> newValue) {
+	public AssociationSet filter(Condition<Association> newValue) {
 		AssociationSet collection = new AssociationSet();
 		filterItems( collection, newValue);
 		return collection;

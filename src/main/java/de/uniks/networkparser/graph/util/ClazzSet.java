@@ -36,7 +36,7 @@ public class ClazzSet extends SimpleSet<Clazz>{
 	}
 
 	@Override
-	public ClazzSet filter(Condition<?> newValue) {
+	public ClazzSet filter(Condition<Clazz> newValue) {
 		ClazzSet collection = new ClazzSet();
 		filterItems( collection, newValue);
 		return collection;
