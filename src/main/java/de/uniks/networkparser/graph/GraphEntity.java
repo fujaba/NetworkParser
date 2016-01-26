@@ -1,6 +1,7 @@
 package de.uniks.networkparser.graph;
 import java.util.Iterator;
 
+import de.uniks.networkparser.graph.util.AssociationSet;
 /*
 NetworkParser
 Copyright (c) 2011 - 2015, Stefan Lindel
@@ -60,8 +61,8 @@ public abstract class GraphEntity extends GraphMember {
 		return "";
 	}
 	
-	public SimpleSet<Association> getAssociations() {
-		SimpleSet<Association> allEdges = new SimpleSet<Association>();
+	public AssociationSet getAssociations() {
+	   AssociationSet allEdges = new AssociationSet();
 		if (associations == null ) {
 			return allEdges;
 		}
