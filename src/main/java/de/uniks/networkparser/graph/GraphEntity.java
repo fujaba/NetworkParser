@@ -76,8 +76,8 @@ public abstract class GraphEntity extends GraphMember {
 			return collection;
 		}
 		if(associations instanceof Association) {
-			if(check((Association)this.children, filters)) {
-				collection.add((Association)this.children);
+			if(check((Association)associations, filters)) {
+				collection.add((Association)associations);
 			}
 		}else if(associations instanceof GraphSimpleSet) {
 			GraphSimpleSet list = (GraphSimpleSet) this.associations;
