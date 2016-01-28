@@ -388,7 +388,7 @@ public class Clazz extends GraphEntity {
 		if (associations == null || typ == null) {
 			return kindClazzes;
 		}
-		for (Association assoc : getAssociations()) {
+		for (Association assoc : getEdges()) {
 			if(typ != assoc.getType()) {
 				continue;
 			}
