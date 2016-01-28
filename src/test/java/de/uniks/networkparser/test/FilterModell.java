@@ -48,7 +48,6 @@ public class FilterModell {
 			}
 		}
 		
-	//AttributeSet filterAttributesAll = clazz.getAttributes(value -> ((Attribute)value).getName().contains("sföldskfö"));
 		
 //		SimpleSet<Attribute> filterAttributesA = clazz.getAttributes().has(u"name", Attribute.NAME, Condition.EQUALS);
 //		SimpleSet<Attribute> filterAttributesB = clazz.getAttributes(StringFilter.equalsIgnoreCase(Attribute.PROPERTY_NAME, "name"));
