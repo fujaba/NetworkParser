@@ -16,7 +16,6 @@ public class GraphTest {
 		Assert.assertEquals(dataType.toString(), "DataType.INT");
 	}
 	
-	
 	@Test
 	public void testGraph() {
 		GraphList list = new GraphList();
@@ -26,5 +25,16 @@ public class GraphTest {
 		
 		GraphConverter converter=new GraphConverter();
 		Assert.assertEquals("{\"typ\":\"classdiagram\",\"style\":null,\"nodes\":[{\"typ\":\"clazz\",\"id\":\"Item\",\"head\":{\"src\":\"karli.png\"}}]}", converter.convert(list, false).toString()); 
+	}
+	
+	
+	@Test
+	public void testSuperClasses() {
+		Clazz student = new Clazz().with("Student");
+		Clazz person = new Clazz().with("Person");
+		student.withSuperClazz(person);
+		
+		Assert.assertEquals(student.getSuperClass(), person);
+		Assert.assertTrue(person.getKidClazzes(false).contains(student));
 	}
 }

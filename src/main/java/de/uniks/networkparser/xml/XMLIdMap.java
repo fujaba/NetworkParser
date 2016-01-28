@@ -275,7 +275,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 		int start = tokener.position();
 		ArrayList<String> stack = new ArrayList<String>();
 		while (!tokener.isEnd() && !exit) {
-			if (!tokener.checkValues('\t', '\r', '\n', ' ', ITEMSTART)) {
+ 			if (!tokener.checkValues('\t', '\r', '\n', ' ', ITEMSTART)) {
 				empty = false;
 			}
 			if (tokener.getCurrentChar() == ITEMSTART) {
