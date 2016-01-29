@@ -23,9 +23,9 @@ public class ParameterSet extends SimpleSet<Parameter>{
 	
 	@Override
 	public ParameterSet filter(Condition<Parameter> newValue) {
-		ParameterSet collection = new ParameterSet();
-		filterItems( collection, newValue);
-		return collection;
+		ParameterSet newList = new ParameterSet();
+		filterItems(newList, newValue);
+		return newList;
 	}
 	
 	public ParameterSet hasName(String otherValue) {

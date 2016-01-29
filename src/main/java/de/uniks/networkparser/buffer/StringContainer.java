@@ -256,7 +256,7 @@ public class StringContainer implements CharSequence {
 		if(value instanceof String) {
 			return ((String)value).startsWith(prefix, toffset);
 		}else if(value instanceof CharacterBuffer) {
-			return ((CharacterBuffer)value).startsWith(prefix, toffset);
+			return ((CharacterBuffer)value).startsWith(prefix, toffset, false);
 		}
 		return value.toString().startsWith(prefix, toffset);
 	}

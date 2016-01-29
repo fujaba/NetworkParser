@@ -24,12 +24,14 @@ package de.uniks.networkparser.gui.javafx.table;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import de.uniks.networkparser.StringTokener;
+
+import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.javafx.TableList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.list.SimpleList;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 
 public class TableFilterView implements ChangeListener<String>{
 	private String[] lastSearchCriteriaItems;
@@ -67,18 +69,18 @@ public class TableFilterView implements ChangeListener<String>{
 		lastSearchDetails = searchCriteria.contains(lastSearchCriteria);
 		lastSearchCriteria = searchCriteria;
 
-		StringTokener stringTokener = new StringTokener();
+		Tokener stringTokener = new Tokener();
 		stringTokener.withBuffer(searchCriteria.toLowerCase());
-		ArrayList<String> stringList = stringTokener.getStringList();
+		SimpleList<String> stringList = stringTokener.getStringList();
 		ArrayList<String> searchList = new ArrayList<String>();
 		for (int i = 0; i < stringList.size(); i++) {
 			if (stringList.get(i).endsWith("-") && i < stringList.size() - 1) {
 				String temp = stringList.get(i);
 				temp = temp.substring(0, temp.length() - 1);
-				searchList.addAll(stringTokener.getString(temp.trim(), true));
+				searchList.addAll(stringTokener.splitStrings(temp.trim(), true));
 				searchList.add("-" + stringList.get(++i).trim());
 			} else {
-				searchList.addAll(stringTokener.getString(stringList.get(i),
+				searchList.addAll(stringTokener.splitStrings(stringList.get(i),
 						true));
 			}
 		}

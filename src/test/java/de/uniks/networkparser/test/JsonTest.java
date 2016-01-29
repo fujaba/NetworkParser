@@ -62,7 +62,7 @@ public class JsonTest extends IOClasses{
 		String functionJson="{body:\"public main() {\r\n\tconsole.log('Hallo Welt');\n\t}\"}";
 		
 		JsonObject jsonObject= new JsonObject();
-		new JsonTokener().withAllowCRLF(true).withBuffer(functionJson).parseToEntity(jsonObject);
+		new JsonTokener().withBuffer(functionJson).parseToEntity(jsonObject);
 		Assert.assertEquals("{\"body\":\"public main() {\\u000d\\u000a\\u0009console.log(\'Hallo Welt\');\\u000a\\u0009}\"}", jsonObject.toString(2));
 	}
 	

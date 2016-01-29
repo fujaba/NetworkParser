@@ -1,5 +1,6 @@
 package de.uniks.networkparser.xml.util;
 
+import de.uniks.networkparser.buffer.Tokener;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -21,7 +22,6 @@ package de.uniks.networkparser.xml.util;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.Tokener;
 import de.uniks.networkparser.event.Style;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.xml.XMLEntity;

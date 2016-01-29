@@ -1,8 +1,9 @@
 package de.uniks.networkparser.graph;
 
 import de.uniks.networkparser.AbstractMap;
-import de.uniks.networkparser.StringTokener;
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.BufferItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.IdMapDecoder;
 
@@ -35,18 +36,18 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 
 	@Override
 	public Object decode(String value) {
-		StringTokener item = new StringTokener();
-		item.withBuffer(value);
+		CharacterBuffer item = new CharacterBuffer();
+		item.with(value);
 		return decodeGraph(item);
 	}
-	Object decodeGraph(StringTokener value) {
+	Object decodeGraph(BufferItem value) {
 		char c = value.nextClean(true);
 		StringBuilder sb=new StringBuilder();
 //		boolean isQuote = true;
 		boolean useStrict=false;
 		GraphList graph = new GraphList();
 		do {
-			c = value.next();
+			c = value.getChar();
 			switch (c) {
 			case 0:
 				break;
@@ -59,7 +60,7 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 			case '[':
 			case '{':
 			case '\n':
-				value.next();
+				value.getChar();
 				if(c == '[') {
 					decodeAttributes(graph, value);
 				}
@@ -73,7 +74,7 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 		return graph;
 	}
 	
-	void decodeEdge(GraphList graph, StringTokener value) {
+	void decodeEdge(GraphList graph, BufferItem value) {
 		char endChar;
 		do {
 			GraphEntity node = decodeNode(graph, value);
@@ -83,13 +84,13 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 			if(value.getCurrentChar() == '-') {
 				// May Be Edge
 				Association edge = new Association(node);
-				char c = value.next();
+				char c = value.getChar();
 				if(c == '-') {
 					// Bidiassoc
 				} else if(c == '>') {
 					edge.with(AssociationTypes.UNDIRECTIONAL);
 				}
-				value.next();
+				value.getChar();
 				
 				GraphEntity otherNode = decodeNode(graph, value);
 				Association otherEdge = new Association(otherNode);
@@ -99,16 +100,16 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 			}
 			endChar = value.getCurrentChar();
 		} while(endChar != 0 && endChar != '}');
-		value.next();
+		value.skip();
 	}
-	GraphEntity decodeNode(GraphList graph, StringTokener value) {
+	GraphEntity decodeNode(GraphList graph, BufferItem value) {
 		char c = value.nextClean(true);
 		StringBuilder sb=new StringBuilder();
 		sb.append(c);
 //		boolean isQuote = true;
 		GraphEntity node = null;
 		do {
-			c = value.next();
+			c = value.getChar();
 			switch (c) {
 			case 0:
 				break;
@@ -125,7 +126,7 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 					decodeAttributes(node, value);
 				}
 				if(c == '\n') {
-					value.next();
+					value.skip();
 				}
 				value.nextClean(true);
 				c = 0;
@@ -138,13 +139,13 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 	}
 	
 //	ID '=' ID [ (';' | ',') ]
-	void decodeAttributes(GraphEntity node, StringTokener value) {
+	void decodeAttributes(GraphEntity node, BufferItem value) {
 		value.skipChar('[');
 		char c;
 		do {
 			String key = decodeValue(value);
 			if(key != null && value.getCurrentChar()=='=') {
-				value.next();
+				value.skip();
 				String valueStr = decodeValue(value);
 				if(node instanceof Clazz) {
 					Attribute attribute = ((Clazz)node).createAttribute(key,  DataType.STRING);
@@ -153,18 +154,18 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 			}
 			c = value.getCurrentChar();
 			if(c != ']') {
-				c = value.next();
+				c = value.getChar();
 			}
 		}while(c != ']');
-		value.next();
+		value.skip();
 	}
 
-	String decodeValue(StringTokener value) {
+	String decodeValue(BufferItem value) {
 		char c = value.nextClean(true);
 		StringBuilder sb=new StringBuilder();
 		sb.append(c);
 		do {
-			c = value.next();
+			c = value.getChar();
 			switch (c) {
 			case 0:
 				break;

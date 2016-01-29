@@ -1,5 +1,11 @@
 package de.uniks.networkparser.gui.javafx.controls;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.gui.Column;
+import de.uniks.networkparser.gui.FieldTyp;
+import de.uniks.networkparser.gui.javafx.TableList;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.list.SimpleList;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -23,13 +29,6 @@ package de.uniks.networkparser.gui.javafx.controls;
 */
 import javafx.collections.FXCollections;
 import javafx.scene.control.ComboBox;
-import de.uniks.networkparser.StringTokener;
-import de.uniks.networkparser.buffer.StringContainer;
-import de.uniks.networkparser.gui.Column;
-import de.uniks.networkparser.gui.FieldTyp;
-import de.uniks.networkparser.gui.javafx.TableList;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.list.SimpleList;
 
 public class ComboEditControl extends EditControl<ComboBox<Object>>{
 	private SimpleList<Object> list;
@@ -60,14 +59,14 @@ public class ComboEditControl extends EditControl<ComboBox<Object>>{
 				this.list = map.getTypList(creator);
 			}
 		}else if(column.getNumberFormat()!=null && column.getNumberFormat().startsWith("[")){
-			StringTokener tokener=new StringTokener();
-			tokener.withBuffer(column.getNumberFormat());
-			tokener.setIndex(1);
+			CharacterBuffer tokener=new CharacterBuffer();
+			tokener.with(column.getNumberFormat());
+			tokener.withStartPosition(1);
 			tokener.withLength(tokener.length()-1);
-			StringContainer sub;
+			CharacterBuffer sub;
 			this.list=new TableList();
 			do{
-				sub = tokener.nextString(new StringContainer(), true, ',');
+				sub = tokener.nextString(new CharacterBuffer(), true, false, ',');
 				if(sub.length()>0){
 					list.add(sub);
 				}

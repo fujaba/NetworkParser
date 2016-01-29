@@ -193,7 +193,7 @@ public abstract class AbstractList<V> extends AbstractArray<V> {
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected void filterItems(AbstractList<V> filterCollection, Condition<?> newValue) { 
+	protected <ST extends AbstractList<V>> ST filterItems(ST filterCollection, Condition<?> newValue) { 
 		for(int i=0;i<size();i++) {
 			V item = get(i);
 			Condition<Object> filter = (Condition<Object>) newValue;
@@ -201,5 +201,6 @@ public abstract class AbstractList<V> extends AbstractArray<V> {
 				filterCollection.add(item);
 			}
 		}
+		return (ST) filterCollection;
 	}
 }

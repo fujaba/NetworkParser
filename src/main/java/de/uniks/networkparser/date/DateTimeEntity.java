@@ -22,11 +22,12 @@ package de.uniks.networkparser.date;
  permissions and limitations under the Licence.
 */
 import java.util.HashMap;
+
 import de.uniks.networkparser.DefaultTextItems;
 import de.uniks.networkparser.EntityUtil;
-import de.uniks.networkparser.StringTokener;
 import de.uniks.networkparser.TextItems;
-import de.uniks.networkparser.buffer.StringContainer;
+import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.buffer.Tokener;
 
 public class DateTimeEntity {
 	public static final String W3CDTF_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
@@ -468,13 +469,13 @@ public class DateTimeEntity {
 		calculate();
 		StringBuilder sb = new StringBuilder();
 		String sub;
-		StringTokener tokener = new StringTokener();
+		Tokener tokener = new Tokener();
 		dateFormat = dateFormat.replaceAll("'", "\"");
 		tokener.withBuffer(dateFormat);
 		do {
-			sub = tokener.nextString(new StringContainer(), false, '"').toString();
+			sub = tokener.nextString(new CharacterBuffer(), false, false, '"').toString();
 			//FIXME Change String to StringContainter
-			if (sub.length() > 0 && !tokener.isString()) {
+			if (sub.length() > 0 ) {
 				// System.out.println(count++
 				// + ": #" +sub+ "# -- " +tokener.isString());
 				// Time

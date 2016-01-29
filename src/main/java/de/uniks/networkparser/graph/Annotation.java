@@ -1,7 +1,8 @@
 package de.uniks.networkparser.graph;
 
-import de.uniks.networkparser.StringTokener;
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.BufferItem;
 import de.uniks.networkparser.interfaces.IdMapDecoder;
 import de.uniks.networkparser.list.SimpleList;
 /*
@@ -71,8 +72,8 @@ public class Annotation extends GraphMember implements IdMapDecoder {
 
 	@Override
 	public Annotation decode(String value) {
-		StringTokener tokener = new StringTokener();
-		tokener.withBuffer(value);
+		CharacterBuffer tokener = new CharacterBuffer();
+		tokener.with(value);
 		decode(tokener, (char)0, null);
 		return this;
 	}
@@ -92,37 +93,40 @@ public class Annotation extends GraphMember implements IdMapDecoder {
 		return this;
 	}
 	
-	public Annotation decode(StringTokener tokener, char endTag, Annotation parent) {
-		tokener.startToken();
+	public Annotation decode(BufferItem tokener, char endTag, Annotation parent) {
 		char item = tokener.getCurrentChar();
+		CharacterBuffer token=new CharacterBuffer();
 		boolean charCount=false;
 		while(item!=0 && item != endTag) {
 			if(item=='"') {
 				charCount=!charCount;
 			}
 			if(charCount) {
-				item = tokener.next();
+				token.with(item);
+				item = tokener.getChar();
 				continue;
 			}
 			if( item == ' ') {
-				this.name = tokener.getToken(this.name);
-				item = tokener.getCurrentChar();
+				item = tokener.getChar();
+				continue;
 			}
 			// Subannotation
 			if(item == '(' ) {
-				this.name = tokener.getToken(this.name);
+				this.name = token.toString();
+				tokener.skip();
 				Annotation child = new Annotation();
 				addValue(child);
 				child.decode(tokener, ')', this);
 				return this;
 			} else if( item == '{') {
-				
-				this.name = tokener.getToken(this.name);
+				this.name = token.toString();
+				tokener.skip();
 				decode(tokener, '}', parent);
 				return this;
 			} else if( item == '='  ) {
-				this.name = tokener.getToken(this.name);
+				this.name = token.toString();
 				this.keyValue = true;
+				tokener.skip();
 				Annotation child = new Annotation();
 				addValue(child);
 				child.decode(tokener, endTag, parent);
@@ -132,7 +136,8 @@ public class Annotation extends GraphMember implements IdMapDecoder {
 				}
 			}
 			if( item == ','  ) {
-				this.name = tokener.getToken(this.name);
+				this.name = token.toString();
+				tokener.skip();
 				if(parent != null) {
 					Annotation child = new Annotation();
 					parent.addValue(child);
@@ -140,18 +145,17 @@ public class Annotation extends GraphMember implements IdMapDecoder {
 				}
 				break;
 			}
-			item = tokener.next();
+			token.with(item);
+			item = tokener.getChar();
 			
 			if( item == '@' ) {
-				this.name = tokener.getToken(this.name);
-				tokener.back();
+				this.name = token.toString();
 				this.nextAnnotaton = new Annotation().decode(tokener, (char)0, null);
 				return this;
 			}
-
 		}
 		if(item==0 || item == endTag ) {
-			this.name = tokener.getToken(this.name);
+			this.name = token.toString();
 		}
 		return this;
 	}

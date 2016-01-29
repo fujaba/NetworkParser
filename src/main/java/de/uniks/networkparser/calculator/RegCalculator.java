@@ -24,7 +24,8 @@ package de.uniks.networkparser.calculator;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import de.uniks.networkparser.StringTokener;
+
+import de.uniks.networkparser.buffer.CharacterBuffer;
 
 public class RegCalculator {
 	public static final int LINE = 1;
@@ -70,8 +71,8 @@ public class RegCalculator {
 	}
 
 	public Double[] calculateFields(String formular) {
-		StringTokener tokener = new StringTokener();
-		tokener.withBuffer(formular);
+		CharacterBuffer tokener = new CharacterBuffer();
+		tokener.with(formular);
 
 		ArrayList<String> parts = new ArrayList<String>();
 		int pos;
@@ -80,10 +81,12 @@ public class RegCalculator {
 			pos = tokener.position();
 			String value = tokener.getStringPart('(', ')');
 			if (value != null && tokener.position() == tokener.length()) {
-				tokener.setIndex(1);
-				tokener.withLength(tokener.length() - 1);
+				pos++;
+				tokener.withStartPosition(pos);
+				tokener.withPosition(0);
+				tokener.withLength(tokener.length() - 2);
 			} else {
-				tokener.setIndex(pos);
+				tokener.withPosition(pos);
 			}
 
 		}
@@ -123,7 +126,7 @@ public class RegCalculator {
 			if (Character.isDigit(current) || current == '.') {
 				while (Character.isDigit(current) || current == '.') {
 					sb.append(current);
-					current = tokener.next();
+					current = tokener.getChar();
 				}
 				if (defaultMulti) {
 					parts.add("*");
@@ -141,7 +144,7 @@ public class RegCalculator {
 					defaultMulti = false;
 					break;
 				}
-				current = tokener.next();
+				current = tokener.getChar();
 				sb.append(current);
 			}
 			if (sb.length() > 0) {
@@ -222,14 +225,14 @@ public class RegCalculator {
 		return result;
 	}
 
-	private boolean addOperator(String value, StringTokener tokener,
+	private boolean addOperator(String value, CharacterBuffer tokener,
 			ArrayList<String> parts) {
 		if (constants.containsKey(value)) {
 			// Its constants
 			return parts.add("" + constants.get(value));
 		} else if (operators.containsKey(value)) {
 			if (operators.get(value).getPriority() == FUNCTION) {
-				tokener.next();
+				tokener.skip();
 				return parts.add(value + tokener.getStringPart('(', ')'));
 			}
 			return parts.add(value);

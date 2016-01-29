@@ -29,7 +29,6 @@ import de.uniks.networkparser.interfaces.BaseItem;
  */
 
 public class CharacterBuffer extends BufferedBuffer implements CharSequence{
-	public final char SPACE=' ';
 	/** The value is used for character storage. */
 	char[] buffer;
 
@@ -136,14 +135,22 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		return result;
 	}
 	
+	/**
+	 * Get the next character in the source string.
+	 *
+	 * @return The next character, or 0 if past the end of the source string.
+	 */
 	@Override
 	public char getChar() {
-		this.position++;
-		if (this.position >= this.buffer.length) {
+		if (this.position+this.start >= this.buffer.length) {
 			return 0;
 		}
-		char c = this.buffer[this.position];
-		if (c == '\r' && this.buffer[this.position] == '\n') {
+		this.position++;
+		if (this.position+this.start == this.buffer.length) {
+			return 0;
+		}
+		char c = this.buffer[this.position + this.start];
+		if (c == '\r' && this.buffer[this.position+this.start + 1] == '\n') {
 			this.position++;
 			c = '\n';
 		}
@@ -181,7 +188,19 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 			start = 0;
 			this.position = 0;
 			this.length = oldLen;
+		} else {
+			this.length = len;
 		}
+		return this;
+	}
+	
+	/**
+	 * Set the Current Startposition
+	 * @param pos The new Startposition
+	 * @return This Component
+	 */
+	public CharacterBuffer withStartPosition(int pos) {
+		this.start = pos;
 		return this;
 	}
 	
@@ -315,7 +334,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		return this;
 	}
 
-	public boolean startsWith(CharSequence prefix, int toffset) {
+	public boolean startsWith(CharSequence prefix, int toffset, boolean ignoreCase) {
 		if (buffer == null) {
 			return false;
 		}
@@ -328,7 +347,14 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		int po = 0;
 		// Note: toffset might be near -1>>>1.
 		while (--pc >= 0) {
-			if (ta[to++] != prefix.charAt(po++)) {
+			char c1 =ta[to++];
+			char c2 = prefix.charAt(po++);
+			if (c1 != c2) {
+	            if (ignoreCase) {
+	                if (Character.toLowerCase(c1) == Character.toLowerCase(c2)) {
+	                    continue;
+	                }
+	            }
 				return false;
 			}
 		}
@@ -373,11 +399,12 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 	}
 	
 	public CharacterBuffer trim() {
-		while ((start < length) && (buffer[length - 1] <= SPACE)) {
+		while (length>0 && (buffer[length +start - 1] <= SPACE)) {
 			length--;
 		}
 		while ((start < length) && (buffer[start] <= SPACE)) {
 			start++;
+			length--;
 		}
 		return this;
 	}
@@ -471,9 +498,18 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		}
 		return this;
 	}
+	
+	public void reset() {
+		this.length = 0;
+		this.position = 0;
+		this.start = 0;
+	}
 
 	@Override
 	public String toString() {
+		if(length<1) {
+			return "";
+		}
 		return new String(buffer, start, length);
 	}
 	
@@ -481,6 +517,75 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		if(other==null || other.length() != length) {
 			return false;
 		}
-		return startsWith(other, 0);
+		return startsWith(other, 0, false);
 	 }
+	public boolean equalsIgnoreCase(CharSequence other) {
+		if(other==null || other.length() != length) {
+			return false;
+		}
+		return startsWith(other, 0, true);
+	}
+	
+	public int indexOf(int ch) {
+		return indexOf(ch, start);
+	}
+		
+	public int indexOf(int ch, int fromIndex) {
+		final int max = buffer.length;
+		if (fromIndex < 0) {
+			fromIndex = 0;
+		} else if (fromIndex >= length) {
+			// Note: fromIndex might be near -1>>>1.
+			return -1;
+		}
+		for (int i = fromIndex; i < max; i++) {
+			if (buffer[i] == ch) {
+				return i - start;
+			}
+		}
+		return -1;
+	}
+	
+	/**
+	 * get the () values
+	 *
+	 * @param start
+	 *            Startcharacter
+	 * @param end
+	 *            Endcharacter
+	 * @return string of values
+	 */
+	public String getStringPart(Character start, Character end) {
+		int count = 1;
+		Character current = null;
+		int pos;
+		if (getCurrentChar() == start) {
+			pos = position();
+		} else {
+			pos = position() - 1;
+		}
+		while (!isEnd()) {
+			current = getChar();
+			if (current.compareTo(end) == 0) {
+				count--;
+				if (count == 0) {
+					skip();
+					return subSequence(pos, position()).toString();
+				}
+				continue;
+			}
+			if (current.compareTo(start) == 0) {
+				count++;
+			}
+		}
+		return null;
+	}
+
+	public boolean endsWith(CharSequence string, boolean ignoreCase) {
+		int pos = this.length() - string.length();
+		if(pos<0) {
+			return false;
+		}
+		return startsWith(string, pos, ignoreCase);
+	}
 }

@@ -29,7 +29,7 @@ import de.uniks.networkparser.interfaces.Condition;
 
 public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 	@Override
-	public AbstractList<V> getNewList(boolean keyValue) {
+	public SimpleSet<V> getNewList(boolean keyValue) {
 		return new SimpleSet<V>();
 	}
 
@@ -63,9 +63,9 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 	}
 	
 	public SimpleSet<V> filter(Condition<V> newValue) {
-		SimpleSet<V> filterList = new SimpleSet<V>();
-		filterItems(filterList, newValue);
-		return filterList;
+		SimpleSet<V> newList = getNewList(false);
+		filterItems(newList, newValue);
+		return this;
 	}
 	
 	// Add Methods from SDMLib

@@ -24,10 +24,7 @@ public class AnnotationTest {
 		annotation = Annotation.create("@RetryOnFailure(attempts = 3, delay = 1000, escalate = { UnknownHostException.class })");
 		Assert.assertEquals("@RetryOnFailure(attempts=3,delay=1000,escalate=UnknownHostException.class)", annotation.toString());
 
-		annotation = Annotation.create("@Target({ElementType.METHOD,\n" + 
-			 "ElementType.CONSTRUCTOR,\n"+
-			 "ElementType.TYPE,\n"+ 
-			 "ElementType.FIELD}");
+		annotation = Annotation.create("@Target({ElementType.METHOD,ElementType.CONSTRUCTOR,ElementType.TYPE,ElementType.FIELD}");
 		Assert.assertEquals("@Target(ElementType.METHOD,ElementType.CONSTRUCTOR,ElementType.TYPE,ElementType.FIELD)", annotation.toString());
 		
 		annotation = Annotation.create("@Loggable@Cacheable");

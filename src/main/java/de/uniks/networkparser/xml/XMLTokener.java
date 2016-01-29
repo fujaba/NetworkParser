@@ -1,52 +1,31 @@
 package de.uniks.networkparser.xml;
 
-/*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
-
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
-
- http://ec.europa.eu/idabc/eupl5
-
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
-*/
 import java.util.ArrayList;
 
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.NetworkParserLog;
-import de.uniks.networkparser.Tokener;
+import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.BufferedBuffer;
-import de.uniks.networkparser.buffer.StringContainer;
+import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
-/**
- * Tokener for parsing XML-Files.
- *
- * @author Stefan Lindel
- */
 
 public class XMLTokener extends Tokener {
+	public static final String TOKEN=" >//<";
+	
 	/** The stack. */
 	private ArrayList<Object> stack = new ArrayList<Object>();
 	/** Variable of AllowQuote. */
 	private boolean isAllowQuote;
-
+	
 
 	/** The prefix. */
 	private String prefix;
+	
+
 
 	/**
 	 * Get the next value. The value can be a Boolean, Double, Integer,
@@ -62,16 +41,16 @@ public class XMLTokener extends Tokener {
 	 * @return An object.
 	 */
 	@Override
-	public Object nextValue(BaseItem creator, boolean allowQuote, char c) {
+	public Object nextValue(BaseItem creator, boolean allowQuote, boolean allowDuppleMarks, char c) {
 		switch (c) {
 		case '"':
 		case '\'':
-			next();
-			StringContainer v = nextString(new StringContainer(), false, allowQuote, false, true, c);
+			skip();
+			CharacterBuffer v = nextString(new CharacterBuffer(), allowQuote, true, c);
 			String g = EntityUtil.unQuote(v); 
 			return g;
 		case '<':
-			back();
+//			back();
 			BaseItem element = creator.getNewList(false);
 			if (element instanceof SimpleKeyValueList<?, ?>) {
 				parseToEntity((SimpleKeyValueList<?, ?>) element);
@@ -85,14 +64,18 @@ public class XMLTokener extends Tokener {
 		// back();
 		if (c == '"') {
 			// next();
-			next();
+			skip();
 			return "";
 		}
-		return super.nextValue(creator, allowQuote, c);
+		return super.nextValue(creator, allowQuote,  allowDuppleMarks, c);
 	}
 
 	@Override
 	public void parseToEntity(SimpleKeyValueList<?, ?> entity) {
+		parseToEntity(entity, getCurrentChar());
+	}
+	void parseToEntity(SimpleKeyValueList<?, ?> entity, char currentChar) {
+		
 		char c = getCurrentChar();
 
 		if (c != '<') {
@@ -116,16 +99,16 @@ public class XMLTokener extends Tokener {
 		if (buffer instanceof BufferedBuffer) {
 			c = nextClean(false);
 			int pos = position();
-			while (c >= ' ' && getStopChars().indexOf(c) < 0 && c != '>') {
-				c = next();
+			while (c >= ' ' && Buffer.STOPCHARSXML.indexOf(c) < 0 && c != '>') {
+				c = getChar();
 			}
 			xmlEntity.withTag(((BufferedBuffer)this.buffer).subSequence(pos, position()).toString());
 		} else {
 			StringBuilder sb = new StringBuilder();
 			c = nextClean(false);
-			while (c >= ' ' && getStopChars().indexOf(c) < 0 && c != '>') {
+			while (c >= ' ' && Buffer.STOPCHARSXML.indexOf(c) < 0 && c != '>') {
 				sb.append(c);
-				c = next();
+				c = getChar();
 			}
 			xmlEntity.withTag(sb.toString());
 		}
@@ -141,7 +124,7 @@ public class XMLTokener extends Tokener {
 					return;
 				}
 				if (c != '<') {
-					xmlEntity.withValueItem(nextString(new StringContainer(), false, '<').toString());
+					xmlEntity.withValueItem(nextString(new CharacterBuffer(), false, false, '<').toString());
 					continue;
 				}
 			}
@@ -149,7 +132,7 @@ public class XMLTokener extends Tokener {
 			if (c == '<') {
 				char nextChar = buffer.getChar();
 				if (nextChar == '/') {
-					stepPos(">", false, false);
+					skipTo('>', false);
 					break;
 				} else {
 					buffer.withLookAHead(c);
@@ -158,17 +141,17 @@ public class XMLTokener extends Tokener {
 						parseToEntity(child);
 						xmlEntity.addChild(child);
 					} else {
-						xmlEntity.withValueItem(nextString(new StringContainer(), false, '<').toString());
+						xmlEntity.withValueItem(nextString(new CharacterBuffer(), false, false, '<').toString());
 					}
 				}
 			} else if (c == '/') {
-				next();
+				skip();
 				break;
 			} else {
-				String key = nextValue(xmlEntity, false, c).toString();
+				String key = nextValue(xmlEntity, false, true, c).toString();
 				if (key.length() > 0) {
 					xmlEntity.put(key, 
-							nextValue(xmlEntity, isAllowQuote, nextClean(false)));
+							nextValue(xmlEntity, isAllowQuote, true, nextClean(false)));
 				}
 			}
 		}
@@ -178,28 +161,29 @@ public class XMLTokener extends Tokener {
 	 * Skip the Current Entity to &gt;.
 	 */
 	protected void skipEntity() {
-		stepPos(">", false, false);
+		skipTo('>', false);
 		// Skip >
 		nextClean(false);
 	}
 	
 	public String skipHeader() {
 		boolean skip=false;
-		String tag;
+		CharacterBuffer tag;
 		do {
-			tag = this.buffer.getString(2);
-			if("<?".equals(tag)) {
+			tag = this.getString(2);
+			if(tag.equals("<?")) {
 				skipEntity();
 				skip = true;
-			} else if("<!".equals(tag)) {
+			} else if(tag.equals("<!")) {
 				skipEntity();
 				skip = true;
 			} else {
 				skip = false;
 			}
 		}while(skip);
-		this.buffer.withLookAHead(tag);
-		return tag;
+		String item = tag.toString();
+		this.buffer.withLookAHead(item);
+		return item;
 	}
 
 	@Override
@@ -283,6 +267,5 @@ public class XMLTokener extends Tokener {
 	public XMLTokener withBuffer(String value) {
 		super.withBuffer(value);
 		return this;
-		
 	}
 }

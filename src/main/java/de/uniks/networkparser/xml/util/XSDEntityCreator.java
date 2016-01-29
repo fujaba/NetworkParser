@@ -22,7 +22,8 @@ package de.uniks.networkparser.xml.util;
  permissions and limitations under the Licence.
 */
 import java.util.ArrayList;
-import de.uniks.networkparser.Tokener;
+
+import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XSDEntity;

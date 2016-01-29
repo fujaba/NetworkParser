@@ -27,7 +27,6 @@ import java.util.Collection;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.buffer.StringContainer;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.IdMapDecoder;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -41,6 +40,8 @@ import de.uniks.networkparser.xml.util.XSDEntityCreator;
  */
 
 public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
+	private static final String TOKENSTOPWORDS = " >/<";
+
 	/** The Constant ENDTAG. */
 	public static final char ENDTAG = '/';
 
@@ -49,9 +50,13 @@ public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
 
 	/** The Constant ITEMSTART. */
 	public static final char ITEMSTART = '<';
+	
+	public static final char DOUBLEQUOTIONMARK = '"';
+	
 
 	/** The Constant SPACE. */
 	public static final char SPACE = ' ';
+	public static final char EQUALS = '=';
 
 	/** The stopwords. */
 	private ArrayList<String> stopwords = new ArrayList<String>();
@@ -112,7 +117,7 @@ public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
 			factory = new XSDEntityCreator();
 		}
 		while (!tokener.isEnd()) {
-			if (tokener.stepPos("" + ITEMSTART, false, false)) {
+			if (tokener.skipTo(ITEMSTART, false)) {
 				XMLEntity item = getEntity(factory, tokener);
 				if (item != null) {
 					return parse(item, tokener, factory);
@@ -201,39 +206,36 @@ public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
 			XMLGrammar grammar) {
 		if (entity != null) {
 			// Parsing attributes
-			char myChar = tokener.getCurrentChar();
-			while (myChar != ITEMEND) {
-				if (myChar == SPACE) {
-					tokener.next();
+			CharacterBuffer token = new CharacterBuffer();
+			char myChar;
+			do{
+				if (tokener.getCurrentChar() == SPACE) {
+					tokener.getChar();
 				}
-				int start = tokener.position();
-				if (tokener.stepPos("=>", false, false)) {
-					myChar = tokener.getCurrentChar();
-					if (myChar == '=') {
-						String key = tokener.substring(start, -1);
-						tokener.skip(2);
-						start = tokener.position();
-						if (tokener.stepPos("\"", false, true)) {
-							String value = tokener.substring(start, -1);
-							tokener.next();
-							grammar.setValue(entity, key, value,
-									IdMap.NEW);
-						}
-					}
-				} else {
-					break;
+				tokener.nextString(token, true, false, SPACE, EQUALS, ITEMEND);
+				myChar = tokener.getCurrentChar();
+				if (myChar == '=') {
+					String key = token.toString();
+					token.reset();
+					tokener.skip(2);
+					tokener.nextString(token, true, false, DOUBLEQUOTIONMARK);
+					String value = token.toString();
+					token.reset();
+					tokener.skip();
+					grammar.setValue(entity, key, value, IdMap.NEW);
 				}
-			}
+				myChar = tokener.getCurrentChar();
+			}while(myChar != ITEMEND && myChar != 0);
 
 			// Add to StackTrace
 			tokener.withStack(entity);
 
 			// Parsing next Element
-			if (tokener.stepPos("/>", false, false)) {
+			if (tokener.skipTo("/>", false, false)) {
 				if (tokener.getCurrentChar() == '/') {
 					tokener.popStack();
-					tokener.next();
-					CharacterBuffer tag = tokener.getNextTag();
+					tokener.getChar();
+					CharacterBuffer tag = tokener.nextToken(TOKENSTOPWORDS);
 					grammar.endChild(tag.toString());
 					// skipEntity();
 					return entity;
@@ -241,9 +243,9 @@ public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
 
 				char quote = (char) ITEMSTART;
 				// Skip >
-				tokener.next();
-				StringContainer sc=new StringContainer();
-				tokener.nextString(sc, true, false, false, false, quote);
+				tokener.skip();
+				CharacterBuffer sc=new CharacterBuffer();
+				tokener.nextString(sc, false, false, quote);
 				sc.trim();
 				XMLEntity newTag;
 				if (tokener.getCurrentChar() == ITEMSTART) {
@@ -274,7 +276,7 @@ public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
 							if (grammar.parseChild(entity, newTag, tokener)) {
 								// Skip >
 								saveValue = false;
-								tokener.next();
+								tokener.skip();
 							} else {
 								break;
 							}
@@ -315,21 +317,20 @@ public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
 		boolean isEmpty = true;
 		do {
 			if (tokener.getCurrentChar() != ITEMSTART) {
-				StringContainer sc = new StringContainer();
-				tokener.nextString(sc, true, false,
-						false, false, ITEMSTART);
+				CharacterBuffer sc = new CharacterBuffer();
+				tokener.nextString(sc, false, false, ITEMSTART);
 				if (sc.isEmpty() == false) {
 					sc.trim();
 					isEmpty = sc.isEmpty();
 				}
 				entity.withValueItem(sc.toString());
 			}
-			tag = tokener.getNextTag();
+			tag = tokener.nextToken(TOKENSTOPWORDS);
 			if (tag != null) {
 				for (String stopword : this.stopwords) {
-					if (tag.startsWith(stopword, 0)) {
-						tokener.stepPos(">", false, false);
-						tokener.stepPos("<", false, false);
+					if (tag.startsWith(stopword, 0, false)) {
+						tokener.skipTo(XMLSimpleIdMap.ITEMEND, false);
+						tokener.skipTo(XMLSimpleIdMap.ITEMSTART, false);
 						tag = null;
 						break;
 					}

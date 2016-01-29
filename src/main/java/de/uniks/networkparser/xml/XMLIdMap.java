@@ -267,15 +267,17 @@ public class XMLIdMap extends XMLSimpleIdMap {
 		boolean empty = true;
 
 		if (!newPrefix.endsWith("&")) {
-			return tokener.stepPos("" + ITEMSTART, false, false);
+			return tokener.skipTo(ITEMSTART, false);
 		}
+		CharacterBuffer buffer = new CharacterBuffer();
 		if (tokener.getCurrentChar() != ITEMSTART) {
-			tokener.next();
+			tokener.skip();
 		}
-		int start = tokener.position();
+		buffer.with(tokener.getCurrentChar());
 		ArrayList<String> stack = new ArrayList<String>();
-		while (!tokener.isEnd() && !exit) {
-			if (!tokener.checkValues('\t', '\r', '\n', ' ', ITEMSTART)) {
+		
+		while (tokener.isEnd() == false && exit == false) {
+			if (tokener.checkValues('\t', '\r', '\n', ' ', ITEMSTART) == false) {
 				empty = false;
 			}
 			if (tokener.getCurrentChar() == ITEMSTART) {
@@ -283,36 +285,53 @@ public class XMLIdMap extends XMLSimpleIdMap {
 					exit = true;
 					break;
 				}
-				CharacterBuffer nextTag = tokener.getNextTag();
+				CharacterBuffer nextTag = tokener.nextToken(XMLTokener.TOKEN);
+				boolean addAndRemove=false;
 				if (nextTag.length() > 0) {
-					stack.add(nextTag.toString());
-					continue;
+					String newTag = nextTag.toString();
+					stack.add(newTag);
+					buffer.with(newTag);
+					if(tokener.getCurrentChar() != ITEMSTART) {
+						buffer.with(tokener.getCurrentChar());
+					}
+					if(tokener.getCurrentChar() != ENDTAG) {
+						continue;
+					}
+					if(tokener.getCurrentChar() != ITEMEND) {
+						addAndRemove = true;
+					}
 				}
 				if (tokener.getCurrentChar() == ENDTAG) {
 					if (stack.size() > 0) {
-						int temp = tokener.position();
-						CharacterBuffer endTag = tokener.getNextTag();
+						CharacterBuffer endTag = tokener.nextToken(XMLTokener.TOKEN);
 						if (endTag.equals(stack.get(stack.size() - 1))) {
 							stack.remove(stack.size() - 1);
+							buffer.with(ENDTAG);
+							buffer.with(endTag);
+							buffer.with(tokener.getCurrentChar());
 						} else {
 							stack.remove(stack.size() - 1);
-							tokener.setIndex(temp - 1);
+							if(tokener.getCurrentChar()==ITEMEND && stack.size() < 1 && addAndRemove == false){
+								exit=true;
+								break;
+							}
+							buffer.with(tokener.getCurrentChar());
 							continue;
 						}
 
 					} else {
-						tokener.back();
 						exit = true;
+						buffer.withLen(buffer.length() - 1);
 						break;
 					}
 				}
 			}
 			if (!exit) {
-				tokener.next();
+				buffer.with(tokener.getChar());
 			}
 		}
 		if (!empty && exit) {
-			String value = tokener.substring(start, -1);
+			String value = buffer.toString();
 			Object refObject = null;
 			if (newPrefix.endsWith("&")) {
 				refObject = tokener.popStack();
@@ -364,7 +383,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 		}
 		while (filter.size() > 1) {
 			while (!tokener.isEnd()) {
-				if (tokener.stepPos("" + ITEMSTART, false, false)) {
+				if (tokener.skipTo(ITEMSTART, false)) {
 					XMLEntity item = getEntity(grammar, tokener);
 					if (item != null) {
 						tag += XMLIdMap.ENTITYSPLITTER + item.getTag();
@@ -402,7 +421,6 @@ public class XMLIdMap extends XMLSimpleIdMap {
 			XMLTokener tokener, SendableEntityCreatorTag creator) {
 		boolean plainvalue = false;
 		Object item = null;
-
 		String newPrefix = "";
 		String tag = entity.getTag();
 		if (creator == null) {
@@ -452,6 +470,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 			tokener.withStack(item);
 			newPrefix = XMLIdMap.ENTITYSPLITTER;
 		}
+		CharacterBuffer plainAttribute = new CharacterBuffer();
 		if (item == null) {
 			// First Skip not valid entry
 			ArrayList<String> myStack = new ArrayList<String>();
@@ -459,7 +478,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 
 			while (!tokener.isEnd() && myStack.size() > 0) {
 				if (tokener.getCurrentChar() == ENDTAG) {
-					CharacterBuffer nextTag = tokener.getNextTag();
+					CharacterBuffer nextTag = tokener.nextToken(XMLTokener.TOKEN);
 					if (nextTag.length() < 1
 							|| myStack.get(myStack.size() - 1)
 									.equalsIgnoreCase(nextTag.toString())) {
@@ -474,28 +493,27 @@ public class XMLIdMap extends XMLSimpleIdMap {
 					}
 					continue;
 				}
-				tokener.next();
+				tokener.skip();
 			}
 		} else {
 			if (!plainvalue) {
+				plainAttribute.reset();
 				// Parse Attributes
 				while (!tokener.isEnd() && tokener.getCurrentChar() != ITEMEND) {
 					if (tokener.getCurrentChar() == ENDTAG) {
 						break;
 					}
-					tokener.next();
-					int start = tokener.position();
+//					plainAttribute.with(tokener.getChar());
 					if (tokener.getCurrentChar() != ENDTAG) {
-						if (tokener.stepPos("=", false, false)) {
-							String key = tokener.substring(start, -1);
+						int len = plainAttribute.length();
+						tokener.nextString(plainAttribute, false, false, '=');
+						if(len < plainAttribute.length()) {
+							String key = plainAttribute.trim().toString();
 							tokener.skip(2);
-							start = tokener.position();
-							if (tokener.stepPos("\"", false, true)) {
-								String value = tokener.substring(start, -1);
-								tokener.next();
-								creator.setValue(item, tokener.getPrefix()
-										+ key, value, IdMap.NEW);
-							}
+							plainAttribute.reset();
+							tokener.nextString(plainAttribute, true, true, '"');
+							creator.setValue(item, tokener.getPrefix() + key, plainAttribute.toString(), IdMap.NEW);
+							plainAttribute.reset();
 						}
 					}
 				}
@@ -537,32 +555,62 @@ public class XMLIdMap extends XMLSimpleIdMap {
 									tokener.popStack();
 								}
 							} else if (tokener.getCurrentChar() == ENDTAG) {
-								tokener.stepPos("" + ITEMEND, false, false);
+								tokener.skipTo(ITEMEND, false);
 								break;
+							}else if (tokener.getCurrentChar() != ITEMSTART) {
+								tokener.skip();
 							}
-							tokener.next();
 						}
 					}
 				} else {
-					tokener.next();
+					tokener.skip();
 				}
 				return item;
 			}
 			if (tokener.getCurrentChar() == ENDTAG) {
-				tokener.next();
+				tokener.skip();
 			} else {
-				tokener.next();
-				int start = tokener.position();
-				tokener.stepPos(ITEMSTART + "/" + tag, true, true);
-				String value = tokener.substring(start, tokener.position()
-						- tag.length() - 1);
-				creator.setValue(item, tokener.getPrefix(), value,
+				// Add Value
+				plainAttribute.reset();
+				tokener.skip();
+				nextString(tokener, plainAttribute, ITEMSTART + "/" + tag);
+//				tokener.nextString(plainAttribute, true, true, '/');
+				creator.setValue(item, tokener.getPrefix(), plainAttribute.toString(),
 						IdMap.NEW);
-				// tokener.stepPos("" + ITEMSTART, false, false);
-				tokener.stepPos("" + ITEMEND, false, false);
+				tokener.skipTo(ITEMEND, false);
 			}
 			return null;
 		}
 		return item;
+	}
+	
+	public CharacterBuffer nextString(XMLTokener tokener, CharacterBuffer buffer, String search) {
+		char[] character = search.toCharArray();
+		int z = 0;
+		int strLen = character.length;
+		
+
+		while(tokener.isEnd() == false) {
+			if(z==0) {
+				tokener.nextString(buffer, true, false, character[z++]);
+				if(tokener.getCurrentChar() == character[0]) {
+					buffer.with(tokener.getCurrentChar());
+				}
+			} else {
+				char currentChar = tokener.getChar();
+				buffer.with(currentChar);
+				if (currentChar == character[z]) {
+					z++;
+					if (z >= strLen) {
+						buffer.withLen(buffer.length() - strLen);
+						return buffer;
+					}
+				} else {
+					z = 0;
+					tokener.skip();
+				}
+			}
+		}
+		return buffer;
 	}
 }

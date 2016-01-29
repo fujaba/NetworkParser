@@ -22,8 +22,9 @@ package de.uniks.networkparser.json;
  permissions and limitations under the Licence.
 */
 import java.util.Iterator;
+
 import de.uniks.networkparser.EntityUtil;
-import de.uniks.networkparser.Tokener;
+import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.StringItem;
 import de.uniks.networkparser.list.SortedList;

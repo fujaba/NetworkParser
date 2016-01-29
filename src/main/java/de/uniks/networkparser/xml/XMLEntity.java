@@ -22,7 +22,7 @@ package de.uniks.networkparser.xml;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.EntityUtil;
-import de.uniks.networkparser.Tokener;
+import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.StringItem;
