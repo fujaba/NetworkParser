@@ -275,14 +275,8 @@ public class XMLIdMap extends XMLSimpleIdMap {
 		}
 		buffer.with(tokener.getCurrentChar());
 		ArrayList<String> stack = new ArrayList<String>();
-<<<<<<< HEAD
-		
 		while (tokener.isEnd() == false && exit == false) {
 			if (tokener.checkValues('\t', '\r', '\n', ' ', ITEMSTART) == false) {
-=======
-		while (!tokener.isEnd() && !exit) {
- 			if (!tokener.checkValues('\t', '\r', '\n', ' ', ITEMSTART)) {
->>>>>>> origin/develop
 				empty = false;
 			}
 			if (tokener.getCurrentChar() == ITEMSTART) {
