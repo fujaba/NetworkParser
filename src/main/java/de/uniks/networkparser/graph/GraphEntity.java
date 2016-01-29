@@ -95,6 +95,38 @@ public abstract class GraphEntity extends GraphMember {
 		return collection;
 	}
 	
+	/** get All Edges
+	 * @param filters Can Filter the List of Associations
+	 * @return all Associations of a Clazz
+	 * 
+	 *<pre>
+	 * Clazz  --------------------- Associations
+	 * one                          many
+	 *</pre>
+	 */
+	AssociationSet getEdges(Condition<?>... filters) {
+		AssociationSet collection = new AssociationSet();
+		if (associations == null ) {
+			return collection;
+		}
+		if(associations instanceof Association) {
+			if(check((Association)associations, filters)) {
+				collection.add((Association)associations);
+			}
+		}else if(associations instanceof GraphSimpleSet) {
+			GraphSimpleSet list = (GraphSimpleSet) this.associations;
+			for (GraphMember item : list) {
+				if(item instanceof Association) {
+					Association assoc = (Association) item;
+					if(check(assoc, filters) ) {
+						collection.add((Association)item);
+					}
+				}
+			}
+		}
+		return collection;
+	}
+	
 	GraphMember getByObject(String clazz, boolean fullName) {
 		if(clazz == null || children == null){
 			return null;

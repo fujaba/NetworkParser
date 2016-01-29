@@ -1,6 +1,8 @@
 package de.uniks.networkparser.graph;
 
+import de.uniks.networkparser.graph.util.AssociationSet;
 import de.uniks.networkparser.graph.util.AttributeSet;
+import de.uniks.networkparser.graph.util.ClazzSet;
 import de.uniks.networkparser.graph.util.MethodSet;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.list.SimpleSet;
@@ -264,16 +266,8 @@ public class Clazz extends GraphEntity {
 		if (associations == null) {
 			return null;
 		}
-		for (Association assoc : getAssociations()) {
-			if(!AssociationTypes.GENERALISATION.equals(assoc.getType())) {
-				continue;
-			}
-			Clazz otherClazz = assoc.getOtherClazz();
-			if(GraphUtil.isInterface(otherClazz) == false) {
-				return otherClazz;
-			}
-		}
-		return null;
+		ClazzSet clazzSet = getEdges(AssociationTypes.GENERALISATION, AssociationTypes.EDGE);
+		return clazzSet.first();
 	}
 	/**
 	 * Get All Interfaces
@@ -285,17 +279,21 @@ public class Clazz extends GraphEntity {
 	 *			  clazz				   Interfaces
 	 *		 </pre>
 	 */
-	public SimpleSet<Clazz> getInterfaces(boolean transitive) {
-		SimpleSet<Clazz> interfaces = new SimpleSet<Clazz>();
+	public ClazzSet getInterfaces(boolean transitive) {
+		ClazzSet interfaces = new ClazzSet();
 		if (associations == null) {
 			return interfaces;
 		}
-		for (Association assoc : getAssociations()) {
-			Clazz clazz = assoc.getOtherClazz();
-			if(assoc.getType()==AssociationTypes.GENERALISATION || assoc.getType()==AssociationTypes.IMPLEMENTS) {
-				if (GraphUtil.isInterface(clazz)) {
-					interfaces.with(clazz);
-				}
+		ClazzSet clazzSet = getEdges(AssociationTypes.EDGE, AssociationTypes.GENERALISATION);
+		for (Clazz clazz : clazzSet) {
+			if (GraphUtil.isInterface(clazz)) {
+				interfaces.with(clazz);
+			}
+		}
+		clazzSet = getEdges(AssociationTypes.EDGE, AssociationTypes.IMPLEMENTS);
+		for (Clazz clazz : clazzSet) {
+			if (GraphUtil.isInterface(clazz)) {
+				interfaces.with(clazz);
 			}
 		}
 		if(!transitive) {
@@ -312,7 +310,7 @@ public class Clazz extends GraphEntity {
 		if (values == null) {
 			return this;
 		}
-		SimpleSet<Association> associations = getAssociations();
+		AssociationSet associations = getAssociations();
 		for (Clazz item : values) {
 			if (item != null) {
 				boolean found=false;
@@ -326,8 +324,11 @@ public class Clazz extends GraphEntity {
 					}
 				}
 				if(found == false) {
-					Association child = new Association(item).with(AssociationTypes.EDGE);
-					child.with(new Association(this).with(AssociationTypes.GENERALISATION));
+					Association childAssoc = new Association(item).with(AssociationTypes.EDGE);
+					Association superAssoc = new Association(this).with(AssociationTypes.GENERALISATION);
+					childAssoc.with(superAssoc);
+					this.with(superAssoc);
+					item.with(childAssoc);
 				}
 			}
 		}
@@ -344,8 +345,8 @@ public class Clazz extends GraphEntity {
 	 *			  clazz				   superClazzes
 	 *		 </pre>
 	 */
-	public SimpleSet<Clazz> getSuperClazzes(boolean transitive) {
-		SimpleSet<Clazz> collection = getEdges(AssociationTypes.GENERALISATION);
+	public ClazzSet getSuperClazzes(boolean transitive) {
+		ClazzSet collection = getEdges(AssociationTypes.GENERALISATION);
 		if(!transitive) {
 			return collection;
 		}
@@ -366,8 +367,8 @@ public class Clazz extends GraphEntity {
 	 *			  clazz				   kindClazzes
 	 *		 </pre>
 	 */
-	public SimpleSet<Clazz> getKidClazzes(boolean transitive) {
-		SimpleSet<Clazz> kidClazzes = getEdges(AssociationTypes.EDGE, AssociationTypes.GENERALISATION);
+	public ClazzSet getKidClazzes(boolean transitive) {
+		ClazzSet kidClazzes = getEdges(AssociationTypes.EDGE, AssociationTypes.GENERALISATION);
 		if(!transitive) {
 			return kidClazzes;
 		}
@@ -378,16 +379,16 @@ public class Clazz extends GraphEntity {
 		return kidClazzes;
 	}
 	
-	SimpleSet<Clazz> getEdges(AssociationTypes typ) {
+	ClazzSet getEdges(AssociationTypes typ) {
 		return getEdges(typ, null);
 	}
 	
-	SimpleSet<Clazz> getEdges(AssociationTypes typ, AssociationTypes otherTyp) {
-		SimpleSet<Clazz> kindClazzes = new SimpleSet<Clazz>();
+	ClazzSet getEdges(AssociationTypes typ, AssociationTypes otherTyp) {
+		ClazzSet kindClazzes = new ClazzSet();
 		if (associations == null || typ == null) {
 			return kindClazzes;
 		}
-		for (Association assoc : getAssociations()) {
+		for (Association assoc : getEdges()) {
 			if(typ != assoc.getType()) {
 				continue;
 			}
@@ -405,7 +406,7 @@ public class Clazz extends GraphEntity {
 		if (values == null) {
 			return this;
 		}
-		SimpleSet<Association> associations = getAssociations();
+		AssociationSet associations = getAssociations();
 		for (Clazz item : values) {
 			if (item != null) {
 				boolean found=false;
@@ -418,8 +419,11 @@ public class Clazz extends GraphEntity {
 					}
 				}
 				if(found == false) {
-					Association child = new Association(item).with(AssociationTypes.GENERALISATION);
-					child.with(new Association(this).with(AssociationTypes.EDGE));
+					Association superAssoc = new Association(item).with(AssociationTypes.GENERALISATION);
+					Association childAssoc = new Association(this).with(AssociationTypes.EDGE);
+					childAssoc.with(superAssoc);
+					this.with(childAssoc);
+					item.with(superAssoc);
 				}
 			}
 		}
