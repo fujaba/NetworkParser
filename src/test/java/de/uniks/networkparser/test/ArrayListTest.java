@@ -2,7 +2,6 @@ package de.uniks.networkparser.test;
 
 import org.junit.Assert;
 import org.junit.Test;
-
 import de.uniks.networkparser.list.SimpleList;
 
 public class ArrayListTest {
@@ -24,11 +23,9 @@ public class ArrayListTest {
 	  Assert.assertTrue(list.contains(4));
 	  Assert.assertTrue(list.contains(5));
 
-
 	  list.remove((Integer)4);
 	  list.remove((Integer)3);
 	  list.remove((Integer)2);
-
 
 	  Assert.assertFalse(list.contains(2));
 	  Assert.assertFalse(list.contains(3));
@@ -56,11 +53,9 @@ public class ArrayListTest {
 	  Assert.assertTrue(list.contains(4));
 	  Assert.assertTrue(list.contains(5));
 
-
 	  list.remove((Integer)4);
 	  list.remove((Integer)3);
 	  list.remove((Integer)2);
-
 
 	  Assert.assertFalse(list.contains(3));
 	  Assert.assertFalse(list.contains(4));
@@ -75,11 +70,9 @@ public class ArrayListTest {
 	  Assert.assertTrue(list.contains(454));
 	  Assert.assertTrue(list.contains(455));
 
-
 	  list.remove((Integer)454);
 	  list.remove((Integer)453);
 	  list.remove((Integer)452);
-
 
 	  Assert.assertFalse(list.contains(453));
 	  Assert.assertFalse(list.contains(454));
@@ -89,5 +82,5 @@ public class ArrayListTest {
 
 	  Assert.assertTrue(list.contains(453));
 
-   } 
+   }
 }

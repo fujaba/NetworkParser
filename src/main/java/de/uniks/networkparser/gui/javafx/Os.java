@@ -39,9 +39,9 @@ public class Os {
 		String os = System.getProperty("os.name").toLowerCase();
 		// windows
 		return (os.indexOf("win") >= 0);
-	
+
 	}
-	
+
 	public boolean isMac() {
 		String os = System.getProperty("os.name").toLowerCase();
 		// Mac
@@ -53,13 +53,13 @@ public class Os {
 		// Mac
 		return (os.indexOf("ios") >= 0);
 	}
-	
+
 	public boolean isAndroid() {
 		String javafxPlatform = System.getProperty("javafx.platform").toLowerCase();
 		String vmName = System.getProperty("java.vm.name").toLowerCase();
 		return ("android".equals(javafxPlatform) ||  "dalvik".equals(vmName));
 	}
-	
+
 	public boolean isEclipse(){
 		String fileName=new Os().getFilename().toLowerCase();
 		if(!fileName.endsWith(".jar")){
@@ -68,17 +68,17 @@ public class Os {
 		}
 		return false;
 	}
-	
+
 	public boolean isUnix() {
-	
+
 		String os = System.getProperty("os.name").toLowerCase();
 		// linux or unix
 		return (os.indexOf("nix") >= 0 || os.indexOf("nux") >= 0);
-	
+
 	}
-	
+
 	public boolean isSolaris() {
-	
+
 		String os = System.getProperty("os.name").toLowerCase();
 		// Solaris
 		return (os.indexOf("sunos") >= 0);
@@ -93,14 +93,14 @@ public class Os {
 		return PlatformType.unknown;
 	}
 
-	
-	
+
+
 	public String getFilename() {
 	  File jar = new File(this.getClass().getProtectionDomain().getCodeSource().getLocation()
 				.getPath());
 	   return jar.getAbsoluteFile().getName();
 	}
-	
+
 	public boolean isUTF8(){
 		return ("UTF-8".equals(System.getProperty("file.encoding"))||"UTF8".equals(System.getProperty("file.encoding")));
 	}

@@ -21,7 +21,7 @@ public class ClickCounter extends Application
 {
    private GUIEntity data = new GUIEntity();
    private TextField field;
-	   
+
    public static void main(String[] args)
    {
 	  launch(args);
@@ -32,34 +32,34 @@ public class ClickCounter extends Application
    {
 	   VBox root=new VBox();
 	   HBox box=new HBox();
-	   
+
 	  Label label = new Label("Button has been clicked: ");
 	  Label dataLabel = new Label();
-	  
+
 	  box.getChildren().addAll(label, dataLabel);
-  
+
 	  dataLabel.setTextAlignment(TextAlignment.RIGHT);
-	  
+
 	  dataLabel.textProperty().bind(new ModelListenerStringProperty(new GUIEntityCreator(), data, GUIEntity.PROPERTY_NUMBER));
-	  
+
 	  field = new TextField();
 //FIRST
 //		JavaBeanIntegerProperty beanProperty = JavaBeanIntegerPropertyBuilder.create().bean(data).name(GUIEntity.PROPERTY_NUMBER).build();
 //	  field.textProperty().bind(beanProperty.asString());
-	  
+
 //SECOND SDMLIB
 //	  field.textProperty().bindBidirectional(new ModelListenerStringProperty(new GUIEntityCreator(), data, GUIEntity.PROPERTY_NUMBER));
 
 //SIMPLE
 //	  ModelListenerProperty.create(field.textProperty(), new GUIEntityCreator(), data, GUIEntity.PROPERTY_NUMBER);
 
-// TEST SIMPLE	  
+// TEST SIMPLE
 	  ModelListenerFactory.create(field, data, GUIEntity.PROPERTY_NUMBER);
 
 	  Button button = new Button("Clicke Me");
-	  
+
 	  root.getChildren().addAll(box, field, button);
-	  
+
 	  button.setOnAction(new EventHandler<ActionEvent>()
 	  {
 
@@ -70,9 +70,9 @@ public class ClickCounter extends Application
 			System.out.println("now: " + data.getNumber());
 		 }
 	  });
-	  
+
 	  root.setAlignment(Pos.CENTER);
-	  
+
 	  Scene scene = new Scene(root, 400, 300);
 
 	  stage.setTitle("Click Counter");

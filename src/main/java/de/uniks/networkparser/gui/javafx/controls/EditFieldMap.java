@@ -44,12 +44,12 @@ public class EditFieldMap {
 		withEditControls( new TextEditorControl().withListener(this) );
 		withEditControls( new PasswordEditControl().withListener(this) );
 	}
-	
+
 	public EditFieldMap withEditControls(EditControl<?> field){
 		fields.add(field);
 		return this;
 	}
-	
+
 	public EditFieldMap withOwner(CellEditorElement owner){
 		this.owner = owner;
 		return this;
@@ -60,7 +60,7 @@ public class EditFieldMap {
 		if(typ==null){
 			typ = getControllForTyp(column, value);
 		}
-		
+
 		for(EditControl<?> item : fields){
 			FieldTyp newTyp = item.getControllForTyp(value);
 			if(newTyp==typ){
@@ -72,11 +72,11 @@ public class EditFieldMap {
 		if(newFieldControl==null){
 			return null;
 		}
-		
+
 		newFieldControl.withOwner(owner);
 		newFieldControl.withColumn(column);
 		newFieldControl.withMap(map);
-		
+
 		// Set the value to the Control
 		if(value!=null){
 			newFieldControl.withValue(value);
@@ -126,7 +126,7 @@ public class EditFieldMap {
 		if(typ!=null){
 			return typ;
 		}
-		
+
 		// Autodetect
 		if(map!=null){
 			SendableEntityCreator creator = map.getCreatorClass(value);

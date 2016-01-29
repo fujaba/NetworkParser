@@ -27,7 +27,7 @@ public class AttributeSet extends SimpleSet<Attribute>{
 		}
 		return collection;
 	}
-	
+
 	public DateTypeSet getDataTypes() {
 		DateTypeSet collection = new DateTypeSet();
 		for(Attribute item : this) {
@@ -35,14 +35,14 @@ public class AttributeSet extends SimpleSet<Attribute>{
 		}
 		return collection;
 	}
-	
+
 	@Override
 	public AttributeSet filter(Condition<Attribute> newValue) {
 		AttributeSet collection = new AttributeSet();
 		filterItems( collection, newValue);
 		return collection;
 	}
-	
+
 	public AttributeSet hasName(String otherValue) {
 		return filter(Attribute.NAME.equals(otherValue));
 	}

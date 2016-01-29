@@ -41,7 +41,7 @@ import javafx.beans.value.ObservableValue;
 
 public abstract class ModelListenerProperty<T> implements javafx.beans.property.Property<T>, PropertyChangeListener, ObservableValue<T>, InvalidationListener{
 	public enum PROPERTYTYPE{STRING, COLOR, BOOLEAN, INT, LONG, FLOAT, DOUBLE};
-	
+
 	protected Object item;
 	protected String property;
 	protected SendableEntityCreator creator;
@@ -77,7 +77,7 @@ public abstract class ModelListenerProperty<T> implements javafx.beans.property.
 		} catch (Exception e) {
 		}
 
-		
+
 		try {
 			Method method = item.getClass().getMethod("addPropertyChangeListener", java.beans.PropertyChangeListener.class );
 			method.invoke(item, this);
@@ -155,7 +155,7 @@ public abstract class ModelListenerProperty<T> implements javafx.beans.property.
 	public void unbindBidirectional(Property<T> other) {
 		 Bindings.unbindBidirectional(this, other);
 	}
-	
+
 	public Object getItemValue(){
 		Object value = creator.getValue(item, property);
 		if(value instanceof Collection<?>){
@@ -163,20 +163,20 @@ public abstract class ModelListenerProperty<T> implements javafx.beans.property.
 		}
 		return value;
 	}
-	
+
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		for(ChangeListener<? super T> listener: listeners) {
 			SimpleObjectProperty<T> objectProperty = new SimpleObjectProperty<T>();
 			//objectProperty.setValue(parseValue(evt.getSource()));
-			
+
 			listener.changed(objectProperty, parseValue(evt.getOldValue()), parseValue(evt.getNewValue()));
 		}
 		for(InvalidationListener listener : invalidationListeners) {
 			listener.invalidated(this);
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public T parseValue(Object value){
 		return (T)value;

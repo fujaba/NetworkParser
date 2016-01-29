@@ -1,12 +1,9 @@
 package de.uniks.networkparser.test;
 
 import static org.junit.Assert.assertEquals;
-
 import java.util.Date;
-
 import org.junit.Assert;
 import org.junit.Test;
-
 import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
@@ -58,7 +55,7 @@ public class YUmlTest {
 
 		assertEquals(url + "[University]", url + yumlParser.parseClass(uni));
 	}
-	
+
 	@Test
 	public void testSimpleGraphList() {
 		GraphList list = new GraphList();
@@ -70,7 +67,7 @@ public class YUmlTest {
 		YUMLConverter converter = new YUMLConverter();
 		Assert.assertEquals("[University|name:String]<-[Student]", converter.convert(list, true));
 	}
-	
+
 	@Test
 	public void testSimpleBiGraphList() {
 		GraphList list = new GraphList();
@@ -82,7 +79,7 @@ public class YUmlTest {
 		YUMLConverter converter = new YUMLConverter();
 		Assert.assertEquals("[University|name:String]-[Student]", converter.convert(list, true));
 	}
-	
+
 	@Test
 	public void testSimpleGraph() {
 		GraphList list = new GraphList();
@@ -91,5 +88,5 @@ public class YUmlTest {
 		list.with(new Clazz().with("Stefan").with("Student"));
 		YUMLConverter converter = new YUMLConverter();
 		Assert.assertEquals("[University|name:String],[Student]", converter.convert(list, true));
-	}	
+	}
 }

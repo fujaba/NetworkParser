@@ -22,7 +22,7 @@ public class SimpleTable extends SimpleShell{
 	public static void main(String[] args) {
 		launch(args);
 	}
-	
+
 	@Override
 	protected Parent createContents(FXStageController value, Parameters args) {
 		JsonIdMap map = new JsonIdMap();
@@ -34,10 +34,10 @@ public class SimpleTable extends SimpleShell{
 		Person tom = new Person().withName("Tom");
 		Person stefan = new Person().withName("Stefan");
 		groupAccount.withPersons(albert, tom, stefan);
-		
+
 		table.withSearchProperties(Person.PROPERTY_NAME);
 		table.withColumn(new Column().withAttrName(Person.PROPERTY_NAME).withLabel("Name"));
-		
+
 		TableCellFactory tableCellFactory = new TableCellFactory().withUpdateListener(new UpdateItemCell() {
 			@Override
 			public boolean updateItem(TableCellFX cell, TableCellValue item, boolean empty) {
@@ -50,7 +50,7 @@ public class SimpleTable extends SimpleShell{
 				return true;
 			}
 		});
-		
+
 		table.withColumn(new Column().withAttrName(Person.PROPERTY_NAME).withLabel("Image"), tableCellFactory);
 		table.withList(groupAccount, GroupAccount.PROPERTY_PERSONS);
 		return table;

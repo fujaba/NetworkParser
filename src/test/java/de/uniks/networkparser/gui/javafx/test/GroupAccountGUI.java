@@ -31,34 +31,34 @@ public class GroupAccountGUI extends Application {
 	private void init(Stage primaryStage) {
 		 AnchorPane root = new AnchorPane();
 
-		 
-		 
+
+
 			primaryStage.setScene(new Scene(root));
 
 			TableComponent tableView = new TableComponent();
-			
+
 			JsonIdMap map = new  JsonIdMap();
 			map.with(new TableList(), new PersonCreator(), new GroupAccountCreator());
-			
+
 			tableView.withMap(map);
 			groupAccount = new GroupAccount();
-			
+
 			albert = groupAccount.createPersons().withName("Albert");
-			
+
 			nina = groupAccount.createPersons().withName("Nina");
 			groupAccount.setName("");
-			
+
 			tableView.withColumn(new Column().withAttrName(Person.PROPERTY_NAME).withStyle(new Style().withWidth(100)));
-			
+
 			tableView.withColumn(new Column().withAttrName(Person.PROPERTY_BALANCE).withStyle(new Style().withWidth(100)));
 			tableView.withColumn(new Column().withLabel("Money").withAttrName(Person.PROPERTY_WALLET+"."+Wallet.PROPERTY_SUM).withStyle(new Style().withWidth(100)));
-			
+
 			tableView.withSearchProperties(Person.PROPERTY_NAME);
 			tableView.withList(groupAccount,  GroupAccount.PROPERTY_PERSONS);
 			VBox box = new VBox();
-			
+
 			HBox hbox=new HBox();
-			
+
 			textField = new TextField();
 			Button addField = new Button("add");
 			addField.setOnAction(new EventHandler<ActionEvent>() {
@@ -66,9 +66,9 @@ public class GroupAccountGUI extends Application {
 				public void handle(ActionEvent arg0) {
 					groupAccount.withPersons(new Person().withName(textField.getText()));
 				}
-			});		
+			});
 			Button update = new Button("update");
-			
+
 			update.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent arg0) {
@@ -79,7 +79,7 @@ public class GroupAccountGUI extends Application {
 					nina.getWallet().setSum(nina.getBalance());
 				}
 			});
-			
+
 			Button bug = new Button("bug");
 			bug.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
@@ -88,19 +88,19 @@ public class GroupAccountGUI extends Application {
 					albert.getWallet().setSum(albert.getBalance() + 1);
 				}
 			});
-			
-			
+
+
 			hbox.getChildren().addAll(textField, addField, update, bug);
-			
+
 			HBox info=new HBox();
 			Label albertLabel=new Label();
 			albertLabel.setText("Albertsliste:");
-			
+
 			Label counter = new Label();
 			counter.textProperty().bindBidirectional(new ModelListenerStringProperty(new PersonCreator(), albert, Person.PROPERTY_ITEM));
-			
+
 			info.getChildren().addAll(albertLabel, counter);
-			
+
 			box.getChildren().addAll(tableView, hbox, info);
 			root.getChildren().add(box);
 //			groupAccount.updateBalances();

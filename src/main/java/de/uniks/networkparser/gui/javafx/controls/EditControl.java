@@ -41,24 +41,24 @@ public abstract class EditControl<T extends Node> implements CellEditorElement, 
 	protected IdMap map;
 	protected Object value;
 	protected KeyListenerMap keyListener;
-	
-	
+
+
 	@Override
 	public EditControl<T> withColumn(Column value) {
 		this.column = value;
 		return this;
 	}
-	
+
 	public EditControl<T> withMap(IdMap map) {
 		this.map = map;
 		return this;
 	}
-	
+
 	public EditControl<T> withItem(Object value) {
 		this.value = value;
 		return this;
 	}
-	
+
 
 	public EditControl<T> withOwner(CellEditorElement value) {
 		this.owner = value;
@@ -66,10 +66,10 @@ public abstract class EditControl<T extends Node> implements CellEditorElement, 
 	}
 
 	public abstract FieldTyp getControllForTyp(Object value);
-	
+
 	@Override
 	public abstract Object getValue(boolean convert);
-	
+
 	public T getControl() {
 		if (control == null ) {
 			control = createControl(column);
@@ -77,7 +77,7 @@ public abstract class EditControl<T extends Node> implements CellEditorElement, 
 		}
 		return control;
 	}
-	
+
 	protected void registerListener(){
 		control.setOnKeyPressed(this);
 		control.focusedProperty().addListener(this);
@@ -85,19 +85,19 @@ public abstract class EditControl<T extends Node> implements CellEditorElement, 
 			control.addEventFilter(KeyEvent.ANY, keyListener);
 		}
 	}
-	
+
 	public EditControl<T> withListener(EditFieldMap owner){
 		this.listener = owner;
 		return this;
 	}
-	
+
 	public void setVisible(boolean value){
 		 T control=getControl();
 		 if(control!=null){
 			 control.setVisible(value);
 		 }
 	}
-	
+
 	public boolean isVisible(){
 		 Node control=getControl();
 		 if(control!=null){
@@ -105,7 +105,7 @@ public abstract class EditControl<T extends Node> implements CellEditorElement, 
 		 }
 		return false;
 	}
-	
+
 	@Override
 	public boolean setFocus(boolean value){
 		if(value){
@@ -126,14 +126,14 @@ public abstract class EditControl<T extends Node> implements CellEditorElement, 
 		}
 		return false;
 	}
-	
+
 	@Override
 	public void dispose(){
 //		if(isActive()){
 //		}
 		control=null;
 	}
-	
+
 	@Override
 	public void cancel() {
 		if(owner != null){
@@ -161,7 +161,7 @@ public abstract class EditControl<T extends Node> implements CellEditorElement, 
 			nextFocus();
 		}
 	}
-	
+
 	public boolean clearEditor() {
 		return false;
 	}
@@ -169,7 +169,7 @@ public abstract class EditControl<T extends Node> implements CellEditorElement, 
 	public boolean onActive(boolean value) {
 		return false;
 	}
-	
+
 	@Override
 	public boolean nextFocus(){
 		if(owner != null){
@@ -187,7 +187,7 @@ public abstract class EditControl<T extends Node> implements CellEditorElement, 
 				apply(APPLYACTION.FOCUS);
 			}
 		}
-		
+
 	}
 
 	public EditControl<T> withListener(KeyListenerMap value) {

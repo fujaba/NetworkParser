@@ -25,7 +25,7 @@ package de.uniks.networkparser.graph;
 public class GraphImage extends GraphMember {
 	public static final String PROPERTY_VALUE = "value";
 	private GraphNode parentNode;
-	
+
 	@Override
 	public GraphImage with(String name) {
 		super.with(name);
@@ -46,7 +46,7 @@ public class GraphImage extends GraphMember {
 		}
 		return this;
 	}
-	
+
 	@Override
 	public String toString()
 	{

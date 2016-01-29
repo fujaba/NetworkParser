@@ -1,10 +1,8 @@
 package de.uniks.networkparser.test;
 
 import java.io.PrintStream;
-
 import org.junit.Assert;
 import org.junit.Test;
-
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.bytes.ByteFilter;
 import de.uniks.networkparser.bytes.ByteIdMap;
@@ -63,13 +61,13 @@ public class ByteAppleTest {
 		ByteBuffer bytes = item.getBytes(true);
 		Assert.assertEquals(61, bytes.length());
 	}
-	
+
 //	@Te st
 	public void testSimpleAppleTree() {
 		AppleTree appleTree = new AppleTree();
 		appleTree.withHas(new Apple("0", 123.32f, 239f));
 		appleTree.withHas(new Apple("0", 123.32f, 239f));
-		
+
 //		appleTree.withHas(new Apple(1, 2, 3));
 //		appleTree.withHas(new Apple(4, 5, 6));
 //		appleTree.withHas(new Apple(7, 8, 9));
@@ -90,7 +88,7 @@ public class ByteAppleTest {
 		ByteBuffer bytes = item.getBytes(true);
 		Assert.assertEquals(101, bytes.length());
 	}
-	
+
 	@Test
 	public void testSerializationTwoItems() {
 		AppleTree appleTree = new AppleTree();
@@ -110,12 +108,12 @@ public class ByteAppleTest {
 		String string = item.toString();
 		Assert.assertEquals(128, string.length());
 	}
-	
+
 	void outputStream(byte[] bytes, PrintStream stream){
 		if(stream == null) {
 			return;
 		}
-		
+
 		boolean newline=false;
 		for (int i=0;i<bytes.length;i++){
 			if(bytes[i]<10){

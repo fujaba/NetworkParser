@@ -29,7 +29,7 @@ public class Style implements Cloneable, SendableEntityCreatorNoIndex {
 	/**  The Constant PROPERTY_NAME for Name of Style */
 	public static final String PROPERTY_NAME="name";
 	private String name;
-	
+
 	/** The Constant PROPERTY_BOLD for Bold Attribute */
 	public static final String PROPERTY_BOLD = "bold";
 	/** The Bold value. */

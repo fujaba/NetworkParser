@@ -1,7 +1,6 @@
 package de.uniks.networkparser.test.model;
 
 import java.util.HashMap;
-
 import de.uniks.networkparser.list.SimpleEntity;
 
 public class MapEntryElement {
@@ -15,7 +14,7 @@ public class MapEntryElement {
 	public void setValue(HashMap<String, Object> value) {
 		this.value = value;
 	}
-	
+
 	public boolean addToValue(String key, Object value) {
 		boolean changed = false;
 
@@ -29,12 +28,12 @@ public class MapEntryElement {
 		}
 		return changed;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public boolean set(String attrName, Object value) {
 		if (PROPERTY_VALUE.equalsIgnoreCase(attrName)) {
 			if(value instanceof HashMap<?, ?>){
-				setValue((HashMap<String, Object>) value);	
+				setValue((HashMap<String, Object>) value);
 			} else if(value instanceof SimpleEntity){
 				SimpleEntity<?,?> item=(SimpleEntity<?,?>) value;
 				addToValue((String) item.getKey(), item.getValue());

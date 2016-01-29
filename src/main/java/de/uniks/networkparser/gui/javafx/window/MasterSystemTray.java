@@ -53,7 +53,7 @@ public class MasterSystemTray implements StageEvent{
 	public void addSeperator() {
 		getPopUp().addSeparator();
 	}
-	
+
 	private Menu getPopUp() {
 		if(popupMenu == null) {
 			popupMenu = new PopupMenu();
@@ -77,7 +77,7 @@ public class MasterSystemTray implements StageEvent{
 			e.printStackTrace();
 		}
 	}
-	
+
 	public MasterSystemTray withToolTip(String text) {
 		trayIcon.setToolTip(text);
 		return this;

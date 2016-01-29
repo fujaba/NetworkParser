@@ -1,6 +1,5 @@
 package de.uniks.networkparser.test.ant.sources;
 
-
 public class McCabe {
 	private int mcCabe=1;
 	public void finish(MethodItem item){
@@ -13,8 +12,8 @@ public class McCabe {
 		allText=allText.replaceAll(">", ")");
 		evaluate(allText);
 	}
-	
-	
+
+
 	public void evaluate(String allText)
 	{
 			int index=0;
@@ -35,7 +34,7 @@ public class McCabe {
 							i = allText.length();
 
 			}
-			
+
 			index = 0;
 			for (int i = 0; i < allText.length(); i++)
 			{
@@ -54,7 +53,7 @@ public class McCabe {
 							i = allText.length();
 
 			}
-			
+
 			index = 0;
 			for (int i = 0; i < allText.length(); i++)
 			{
@@ -63,7 +62,7 @@ public class McCabe {
 					{
 							if(checkQuotes(allText, index))
 							{
-									
+
 									mcCabe++;
 									index+=1;
 							}
@@ -74,7 +73,7 @@ public class McCabe {
 							i = allText.length();
 
 			}
-			
+
 			index = 0;
 			for (int i = 0; i < allText.length(); i++)
 			{
@@ -83,7 +82,7 @@ public class McCabe {
 					{
 							if(checkQuotes(allText, index))
 							{
-									
+
 									mcCabe++;
 									index+=1;
 							}
@@ -115,7 +114,7 @@ public class McCabe {
 					return false;
 			}
 	}
-	
+
 	public int getMcCabe() {
 		return mcCabe;
 	}

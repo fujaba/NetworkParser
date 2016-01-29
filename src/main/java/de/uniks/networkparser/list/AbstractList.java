@@ -62,7 +62,7 @@ public abstract class AbstractList<V> extends AbstractArray<V> {
 				modified = true;
 		return modified;
 	}
-	
+
 	/**
 	 * Add a Value to internal List and Array if nesessary
 	 *
@@ -79,7 +79,7 @@ public abstract class AbstractList<V> extends AbstractArray<V> {
 		addKey(pos, value, size + 1);
 		return true;
 	}
-	
+
 	public ListIterator<V> listIterator() {
 		return new SimpleIterator<V>(this);
 	}
@@ -91,13 +91,13 @@ public abstract class AbstractList<V> extends AbstractArray<V> {
 	public ListIterator<V> iteratorReverse() {
 		return new SimpleIterator<V>(this, size());
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public <ST extends AbstractList<V>> ST with(V... values) {
 		super.withAll(values);
 		return (ST) this;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public AbstractArray<V> without(V... values) {
 		if(values==null){
@@ -108,13 +108,13 @@ public abstract class AbstractList<V> extends AbstractArray<V> {
 		}
 		return this;
 	}
-	
+
 	@Override
 	public AbstractList<V> withAll(Object... values) {
 		super.withAll(values);
 		return this;
 	}
-	
+
 	@Override
 	public AbstractList<V> withList(Collection<?> values) {
 		super.withList(values);
@@ -135,8 +135,8 @@ public abstract class AbstractList<V> extends AbstractArray<V> {
 		}
 		return newList;
 	}
-	
-	
+
+
 	/**
 	 * @param element Element for check
 	 * @param sameElement boolen for switch return sameElement
@@ -160,7 +160,7 @@ public abstract class AbstractList<V> extends AbstractArray<V> {
 			addKey(index, element,size + 1);
 		}
 	}
-	
+
 	public V set(int index, V element) {
 		if(index<0 || index>size) {
 			return null;
@@ -168,7 +168,7 @@ public abstract class AbstractList<V> extends AbstractArray<V> {
 		setValue(index, element, SMALL_KEY);
 		return element;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public V remove(int index) {
 		if(index<0 || index>size) {
@@ -191,9 +191,9 @@ public abstract class AbstractList<V> extends AbstractArray<V> {
 		}
 		return allAdded;
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	protected <ST extends AbstractList<V>> ST filterItems(ST filterCollection, Condition<?> newValue) { 
+	protected <ST extends AbstractList<V>> ST filterItems(ST filterCollection, Condition<?> newValue) {
 		for(int i=0;i<size();i++) {
 			V item = get(i);
 			Condition<Object> filter = (Condition<Object>) newValue;

@@ -1,6 +1,5 @@
 package de.uniks.networkparser.test.ant.sources;
 
-
 public class LoCMetric {
 	private int linesOfCode=0;
 	private int commentCount=0;
@@ -45,12 +44,12 @@ public class LoCMetric {
 	public int getAnnotation() {
 		return annotation;
 	}
-	
+
 	@Override
 	public String toString(){
 		return "Line of File:" + getFullLines() + " - Lines of Code:" +linesOfCode;
 	}
-	
+
 	public int getFullLines(){
 		return (linesOfCode+commentCount+methodheader+emptyLine+annotation);
 	}

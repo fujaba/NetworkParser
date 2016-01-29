@@ -66,7 +66,7 @@ public class DateTimeEditControl extends EditControl<DatePicker>{
 	@Override
 	protected void registerListener() {
 		super.registerListener();
-		
+
 		control.addEventFilter(KeyEvent.ANY, new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent event) {

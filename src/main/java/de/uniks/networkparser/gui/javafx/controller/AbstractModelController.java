@@ -42,7 +42,7 @@ public abstract class AbstractModelController implements PropertyChangeListener 
 		}
 		return (ST) this;
 	}
-	
+
 	public abstract void initPropertyChange(Object model, Node gui);
 
 	public boolean addListener(Object item, String property) {

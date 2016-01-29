@@ -50,7 +50,7 @@ public class NumberSpinner extends HBox implements CellEditorElement {
 	private NumberBinding spacing;
 	private CellEditorElement owner;
 	private Column column;
-	
+
 	/**
 	 * increment number value by stepWidth
 	 */
@@ -77,7 +77,7 @@ public class NumberSpinner extends HBox implements CellEditorElement {
 		this.owner = owner;
 		return this;
 	}
-	
+
 	public BigDecimal getStepWitdh() {
 		return stepWitdh;
 	}
@@ -125,7 +125,7 @@ public class NumberSpinner extends HBox implements CellEditorElement {
 		arrowDown.setMouseTransparent(true);
 
 		// the spinner buttons scale with the textfield size
-		// the following approach leads to the desired result, but it is 
+		// the following approach leads to the desired result, but it is
 		// not fully understood why and obviously it is not quite elegant
 		buttonHeight = numberField.heightProperty().subtract(3).divide(2);
 		// give unused space in the buttons VBox to the incrementBUtton

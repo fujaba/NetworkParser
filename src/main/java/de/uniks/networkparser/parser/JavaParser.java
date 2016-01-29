@@ -1,6 +1,8 @@
 package de.uniks.networkparser.parser;
 
 public class JavaParser {
+	private boolean fileBodyHasChanged = false;
+
 	public Object parse(CharSequence fileBody) {
 //		new C
 		return null;
@@ -12,5 +14,5 @@ public class JavaParser {
 //	@Override
 //	public void parseToEntity(AbstractList<?> entityList) {
 //	}
-	
+
 }

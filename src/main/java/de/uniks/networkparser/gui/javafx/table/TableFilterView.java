@@ -111,7 +111,7 @@ public class TableFilterView implements ChangeListener<String>{
 				}
 			}
 		}catch(Exception e) {
-			
+
 		}
 	}
 
@@ -187,7 +187,7 @@ public class TableFilterView implements ChangeListener<String>{
 		}
 		return true;
 	}
-	
+
 	public TableFilterView withCounterColumn(Column column) {
 		this.updateField = column;
 		refreshCounter();
@@ -202,7 +202,7 @@ public class TableFilterView implements ChangeListener<String>{
 			}
 		}
 	}
-	
+
 	@Override
 	public void changed(ObservableValue<? extends String> property, String oldValue,
 			String newValue) {

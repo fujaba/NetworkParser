@@ -11,7 +11,7 @@ import de.uniks.networkparser.xml.XMLEntity;
 
 public class JsonTokener extends Tokener {
 	public final static String STOPCHARS = ",]}/\\\"[{;=# ";
-	
+
 	public void parseToEntity(AbstractList<?> entityList) {
 		char c = nextClean(true);
 		if (c != '[') {
@@ -52,7 +52,7 @@ public class JsonTokener extends Tokener {
 		}
 		skip();
 	}
-	
+
 	@Override
 	public Object nextValue(BaseItem creator, boolean allowQuote, boolean  allowDuppleMarks, char stopChar) {
 		stopChar = nextClean(true);
@@ -134,7 +134,7 @@ public class JsonTokener extends Tokener {
 			entity.withKeyValue(key, nextValue(entity, isQuote, false, stop));
 		}
 	}
-	
+
 	public JsonObject parseEntity(JsonObject parent,
 			SimpleKeyValueList<?, ?> newValue) {
 		if (newValue instanceof XMLEntity) {
@@ -156,7 +156,7 @@ public class JsonTokener extends Tokener {
 		}
 		return parent;
 	}
-	
+
 	public void parseEntityProp(JsonObject props, Object propValue, String prop) {
 		if (propValue != null) {
 			if (propValue instanceof XMLEntity) {

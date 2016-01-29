@@ -25,12 +25,12 @@ import de.uniks.networkparser.list.SimpleSet;
 
 public class DataTypeSet extends DataType{
 	private DataType generic;
-	
+
 	DataTypeSet() {
 		super(SimpleSet.class.getName());
 		this.value.withExternal(true);
 	}
-	
+
 	private DataTypeSet withGeneric(DataType value) {
 		this.generic = value;
 		return this;
@@ -39,7 +39,7 @@ public class DataTypeSet extends DataType{
 	public DataType getGeneric() {
 		return generic;
 	}
-	
+
 	@Override
 	public String getName(boolean shortName) {
 		if (this.value == null) {
@@ -47,7 +47,7 @@ public class DataTypeSet extends DataType{
 		}
 		return this.value.getName(shortName) + "<" + generic.getInternName(shortName, false) + ">";
 	}
-	
+
 	public static DataTypeSet create(Clazz value) {
 		DataTypeSet result = new DataTypeSet().withGeneric(DataType.create(value));
 		return result;
@@ -56,7 +56,7 @@ public class DataTypeSet extends DataType{
 		DataTypeSet result = new DataTypeSet().withGeneric(DataType.create(value));
 		return result;
 	}
-	
+
 	public static DataTypeSet create(DataType value) {
 		DataTypeSet result = new DataTypeSet().withGeneric(value);
 		return result;

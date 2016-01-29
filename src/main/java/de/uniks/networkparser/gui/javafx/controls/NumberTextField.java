@@ -66,7 +66,7 @@ public class NumberTextField extends TextField implements CellEditorElement {
 		this.owner = owner;
 		return this;
 	}
-	
+
 	@Override
 	public void cancel() {
 		if(owner!=null){
@@ -108,7 +108,7 @@ public class NumberTextField extends TextField implements CellEditorElement {
 	@Override
 	public void dispose() {
 	}
-	
+
 
 	@Override
 	public NumberTextField withColumn(Column column) {

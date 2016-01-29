@@ -38,11 +38,11 @@ public class Association extends GraphMember {
 
 	Association() {
 	}
-	
+
 	public Association(GraphEntity node) {
 		with(node);
 	}
-	
+
 	public Cardinality getCardinality() {
 		if(cardinality != null) {
 			return cardinality;
@@ -61,7 +61,7 @@ public class Association extends GraphMember {
 		}
 		return Cardinality.ONE;
 	}
-	
+
 	@Override
 	public String getName() {
 		if(name != null) {
@@ -77,7 +77,7 @@ public class Association extends GraphMember {
 						return className.toLowerCase();
 					}
 				}
-				
+
 			}
 		}
 		return null;
@@ -90,7 +90,7 @@ public class Association extends GraphMember {
 		super.withChildren(true, label);
 		return this;
 	}
-	
+
 	public GraphLabel getInfo() {
 		if (children == null && this.other.getChildren() == null) {
 			return null;
@@ -112,7 +112,7 @@ public class Association extends GraphMember {
 		super.withChildren(false, values);
 		return this;
 	}
-	
+
 	public Association with(String name) {
 		super.with(name);
 		return this;
@@ -139,11 +139,11 @@ public class Association extends GraphMember {
 		this.cardinality = cardinality;
 		return this;
 	}
-	
+
 	public Association getOther() {
 		return other;
 	}
-	
+
 	public static Association create(GraphEntity source, GraphEntity target){
 		Association edge = new Association(source);
 		edge.with(new Association(target));
@@ -153,7 +153,7 @@ public class Association extends GraphMember {
 	public AssociationTypes getType() {
 		return type;
 	}
-	
+
 	String getSeperator() {
 		if (getType() == AssociationTypes.GENERALISATION) {
 			return "-|>";
@@ -169,7 +169,7 @@ public class Association extends GraphMember {
 		}
 		return "-";
 	}
-	
+
 	String getCardinalityText() {
 		return name + "<br>0.." + this.cardinality;
 	}
@@ -178,7 +178,7 @@ public class Association extends GraphMember {
 		this.type = typ;
 		return this;
 	}
-	
+
 	public Clazz getOtherClazz() {
 		if(other != null && other.getClazz() instanceof Clazz) {
 			return other.getClazz();
@@ -202,7 +202,7 @@ public class Association extends GraphMember {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public String toString() {
 		CharacterBuffer charList = new CharacterBuffer();
@@ -213,7 +213,7 @@ public class Association extends GraphMember {
 		}
 		return charList.toString();
 	}
-	
+
 
 	void addIds(CharacterBuffer sb) {
 		if (children == null) {
@@ -254,7 +254,7 @@ public class Association extends GraphMember {
 		}
 		return contains;
 	}
-	
+
 	boolean containsAll(Association others, boolean both) {
 		GraphSimpleSet otherChildren = others.getChildren();
 		if(children == null) {
@@ -270,7 +270,7 @@ public class Association extends GraphMember {
 				return false;
 			}
 		}
-		
+
 		if(getOther()!= null && both) {
 			return getOther().containsAll(others.getOther(), false);
 		}

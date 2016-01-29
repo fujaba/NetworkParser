@@ -66,7 +66,7 @@ public class PointPaneController extends AbstractModelController implements Prop
 			this.addCircle(1, 1, 1, 2, 1, 3, 2, 1, 2, 2, 2, 3, 3, 1, 3, 2, 3, 3);
 		}
 	}
-	
+
 	public void addCircle(int... values) {
 		if(values.length%2>0){
 			return;
@@ -123,7 +123,7 @@ public class PointPaneController extends AbstractModelController implements Prop
 			this.setValue(val);
 		}
 	}
-	
+
 	/**
 	 * Returns a pseudo-random number between min and max, inclusive.
 	 * The difference between min and max can be at most

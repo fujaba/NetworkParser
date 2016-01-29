@@ -31,7 +31,6 @@ public class StyleFX extends Style{
 	public static final String PROPERTY_CURSOR="cursor";
 	private String cursor;
 
-
 	public String getCursor() {
 		return cursor;
 	}
@@ -43,7 +42,7 @@ public class StyleFX extends Style{
 	@Override
 	public String toString() {
 		String style="", item;
-		item =getBackground(); 
+		item =getBackground();
 		if(item != null){
 			if(item.startsWith("#")){
 				style +="-fx-background-color: "+item+";";
@@ -51,7 +50,7 @@ public class StyleFX extends Style{
 				style +="-fx-background-color: #"+item+";";
 			}
 		}
-		item =getForground(); 
+		item =getForground();
 		if(item != null){
 			if(item.startsWith("#")){
 				style +="-fx-text-fill: "+item+";";

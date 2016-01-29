@@ -15,19 +15,19 @@ public class PersonCreator implements SendableEntityCreator
 	  Person.PROPERTY_PARENT,
 	  Person.PROPERTY_ITEM
    };
-   
+
    @Override
    public String[] getProperties()
    {
 	  return properties;
    }
-   
+
    @Override
    public Object getSendableInstance(boolean reference)
    {
 	  return new Person();
    }
-   
+
    @Override
    public Object getValue(Object target, String attrName)
    {
@@ -47,10 +47,10 @@ public class PersonCreator implements SendableEntityCreator
 		  {
 			 return ((Person)target).getItem();
 		  }
-	
+
 		  return null;
 	   }
-   
+
    @Override
    public boolean setValue(Object target, String attrName, Object value, String type)
    {
@@ -77,7 +77,7 @@ public class PersonCreator implements SendableEntityCreator
 			  ((Person)target).withItem((Item) value);
 			 return true;
 		  }
-		  
+
 		  if ((Person.PROPERTY_ITEM + JsonIdMap.REMOVE).equalsIgnoreCase(attrName))
 		  {
 			  ((Person)target).withoutItem((Item) value);

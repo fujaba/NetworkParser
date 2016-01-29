@@ -9,13 +9,13 @@ import de.uniks.networkparser.list.SimpleList;
 
 public class Tokener implements BufferItem{
 	protected NetworkParserLog logger = new NetworkParserLog();
-	
+
 	public void parseToEntity(SimpleKeyValueList<?, ?> entity) {}
 	public void parseToEntity(AbstractList<?> entityList) {}
 
 	/** BUFFER */
 	protected Buffer buffer;
-	
+
 	/**
 	 * Reset the Tokener
 	 *
@@ -27,12 +27,12 @@ public class Tokener implements BufferItem{
 		this.buffer = new CharacterBuffer().with(value);
 		return this;
 	}
-	
+
 	public Tokener withBuffer(Buffer value) {
 		this.buffer = value;
 		return this;
 	}
-	
+
 	@Override
 	public int length() {
 		if(buffer != null) {
@@ -89,7 +89,7 @@ public class Tokener implements BufferItem{
 		}
 		return false;
 	}
-	
+
 	@Override
 	public boolean skipTo(String search, boolean order, boolean notEscape) {
 		if(buffer != null) {

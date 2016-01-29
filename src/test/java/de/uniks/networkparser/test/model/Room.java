@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
-
 import de.uniks.networkparser.test.model.util.UniversityCreator;
 
 public class Room {

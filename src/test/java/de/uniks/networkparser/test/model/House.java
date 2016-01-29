@@ -2,7 +2,6 @@ package de.uniks.networkparser.test.model;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-
 import de.uniks.networkparser.interfaces.SendableEntity;
 
 public class House implements SendableEntity{
@@ -11,20 +10,20 @@ public class House implements SendableEntity{
 	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
 	private String name;
 	private int floor;
-	
+
 	public void setFloor(int value) {
 		if(value!=this.floor){
 			Object oldValue = this.floor;
 			this.floor = value;
 			getPropertyChangeSupport().firePropertyChange(PROPERTY_FLOOR, oldValue, value);
-		}	
+		}
 	}
 	public void setName(String value) {
 		if(value!=this.name){
 			Object oldValue = this.name;
 			this.name = value;
 			getPropertyChangeSupport().firePropertyChange(PROPERTY_NAME, oldValue, value);
-		}	
+		}
 	}
 
 	public int getFloor() {return floor;}

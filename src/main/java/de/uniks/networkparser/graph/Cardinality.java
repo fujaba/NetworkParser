@@ -38,7 +38,7 @@ public enum Cardinality {
 	public String getValue() {
 		return value;
 	}
-	
+
 	public static Cardinality create(String value) {
 		if("one".equalsIgnoreCase(value) || "1".equalsIgnoreCase(value) ) {
 			return ONE;

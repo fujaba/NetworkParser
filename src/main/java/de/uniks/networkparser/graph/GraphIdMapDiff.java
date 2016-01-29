@@ -28,19 +28,19 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.json.JsonArray;
 
 public class GraphIdMapDiff extends GraphIdMap{
-	private HashSet<Clazz> toDoList=new HashSet<Clazz>();  
+	private HashSet<Clazz> toDoList=new HashSet<Clazz>();
 	private GraphList master;
 	private GraphList slave;
 //	private HashMap<GraphClazzDiff, HashSet<GraphEdgeDiff>> edges;
-	
+
 	public GraphIdMapDiff() {
-		
+
 	}
 
 	public GraphIdMapDiff(IdMap map) {
-		with(map);	
+		with(map);
 	}
-	
+
 	protected void initItem(GraphMember item) {
 		item.withChildren(true, new GraphDiff());
 		if(item instanceof Clazz) {
@@ -56,7 +56,7 @@ public class GraphIdMapDiff extends GraphIdMap{
 	public GraphList highlightModel(GraphList clazzDiagram, GraphList objectDiagram) {
 		HashMap<String, Association> edges = new HashMap<String, Association>();
 		HashMap<String, Clazz> clazzes = new HashMap<String, Clazz>();
-		
+
 		// Copy all Nodes
 		for(Iterator<GraphMember> i = clazzDiagram.getChildren().iterator();i.hasNext();) {
 			Clazz item = (Clazz) i.next();
@@ -68,7 +68,7 @@ public class GraphIdMapDiff extends GraphIdMap{
 			Clazz node = (Clazz) item.getClazz();
 			edges.put(node.getName(false)+":"+item.getName(), item);
 		}
-		
+
 		// Check all Clazzes of the objectdiagram
 		for(Iterator<GraphMember> i = objectDiagram.getChildren().iterator();i.hasNext();) {
 			Clazz item = (Clazz) i.next();
@@ -92,19 +92,19 @@ public class GraphIdMapDiff extends GraphIdMap{
 		return clazzDiagram;
 	}
 
-	
+
 	public void diffModel(Object master, Object slave) {
 		this.master = (GraphList)this.parsingObject(master);
 		this.slave = (GraphList)this.parsingObject(slave);
 		GraphDiff masterDiff = this.getMaster().getDiff();
 		GraphDiff saveDiff = this.getSlave().getDiff();
-		
+
 		Clazz masterFile = (Clazz) masterDiff.getMainFile();
 		Clazz slaveFile = (Clazz) saveDiff.getMainFile();
 		masterFile.getDiff().with(slaveFile);
-		
-		
-		// create new map<key: Clazz without s, Value: Object with {attributes, items}> 
+
+
+		// create new map<key: Clazz without s, Value: Object with {attributes, items}>
 		// Search for single clazz
 		// Search for clazz with master attributes
 		// search to 1 assoc
@@ -119,7 +119,7 @@ public class GraphIdMapDiff extends GraphIdMap{
 	public GraphList getMaster() {
 		return master;
 	}
-	
+
 	public GraphList getSlave() {
 		return slave;
 	}

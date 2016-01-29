@@ -1,6 +1,9 @@
 package de.uniks.networkparser.list;
 
 import java.util.Collection;
+import java.util.Set;
+import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.interfaces.Condition;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -22,10 +25,6 @@ import java.util.Collection;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import java.util.Set;
-
-import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.interfaces.Condition;
 
 public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 	@Override
@@ -37,43 +36,43 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 	public boolean remove(Object o) {
 		return super.removeByObject(o)>=0;
 	}
-	
+
 	public SimpleSet<V> clone() {
 		return ((SimpleSet<V>)getNewList(false)).init(this);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public SimpleSet<V> subList(int fromIndex, int toIndex) {
 		return (SimpleSet<V>) super.subList(fromIndex, toIndex);
 	}
-	
+
 	@Override
 	public boolean addAll(int index, Collection<? extends V> values) {
 		return super.addAll(index, values);
 	}
-	
+
 	@Override
 	public boolean addAll(Collection<? extends V> c) {
 		return super.addAll(c);
 	}
-	
+
 	public SimpleSet<V> withoutAll(Object... values) {
 		super.withoutAll(values);
 		return this;
 	}
-	
+
 	public SimpleSet<V> filter(Condition<V> newValue) {
 		SimpleSet<V> newList = getNewList(false);
 		filterItems(newList, newValue);
 		return this;
 	}
-	
+
 	// Add Methods from SDMLib
 	@Override
 	public String toString() {
 		return toBuffer(", ").withStart('(').with(")").toString();
 	}
-	
+
 	public String toString(String separator) {
 		return toBuffer(separator).toString();
 	}
@@ -122,7 +121,7 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 		}
 		return super.add(newValue);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public <ST extends SimpleSet<V>> ST union(Collection<? extends V> other) {
 		ST result = (ST) this.getNewList(false);

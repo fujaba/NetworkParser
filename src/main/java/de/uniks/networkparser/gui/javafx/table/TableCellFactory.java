@@ -10,7 +10,7 @@ public class TableCellFactory {
 	public TableCell<Object, TableCellValue> create(TableComponent tableComponent, Column column, EditFieldMap editFieldMap) {
 		return new TableCellFX().withTableComponent(tableComponent).withColumn(column).withEditFieldMap(editFieldMap).withUpdateListener(updateListener);
 	}
-	
+
 	public TableCellFactory withUpdateListener(UpdateItemCell updateListener) {
 		this.updateListener = updateListener;
 		return this;

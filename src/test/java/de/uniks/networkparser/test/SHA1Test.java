@@ -2,10 +2,8 @@ package de.uniks.networkparser.test;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
-
 import org.junit.Assert;
 import org.junit.Test;
-
 import de.uniks.networkparser.bytes.checksum.SHA1;
 
 public class SHA1Test {

@@ -50,52 +50,52 @@ public class PomFile implements SendableEntityCreatorTag, StringItem, BaseItem{
 		this.modelVersion = value;
 		return this;
 	}
-	
+
 	public String getModelVersion() {
 		return modelVersion;
 	}
-	
+
 	public PomFile withGroupId(String value) {
 		this.groupId = value;
 		return this;
 	}
-	
+
 	public String getGroupId() {
 		return groupId;
 	}
-	
+
 	public PomFile withArtifactId(String value) {
 		this.artifactId = value;
 		return this;
 	}
-	
+
 	public String getArtifactId() {
 		return artifactId;
 	}
-	
+
 	public PomFile withVersion(String value) {
 		this.version = value;
 		return this;
 	}
-	
+
 	public String getVersion() {
 		return version;
 	}
-	
+
 	public PomFile withScope(String value) {
 		this.scope = value;
 		return this;
 	}
-	
+
 	public String getScope() {
 		return scope;
 	}
-	
+
 	public PomFile withTag(String value) {
 		this.tag = value;
 		return this;
 	}
-	
+
 	@Override
 	public String getTag() {
 		return tag;
@@ -114,12 +114,12 @@ public class PomFile implements SendableEntityCreatorTag, StringItem, BaseItem{
 		}
 		for(int i=0;i<values.length;i+=2) {
 			if(values[i] instanceof String) {
-				setValue(this, (String)values[i], values[i+1], IdMap.NEW);	
+				setValue(this, (String)values[i], values[i+1], IdMap.NEW);
 			}
 		}
 		return this;
 	}
-	
+
 	@Override
 	public String toString() {
 		return toString(0, 0);
@@ -129,7 +129,7 @@ public class PomFile implements SendableEntityCreatorTag, StringItem, BaseItem{
 	public String toString(int indentFactor) {
 		return toString(indentFactor, 0);
 	}
-	
+
 	private void addChildren(StringBuilder sb, String spaces) {
 		for(String property : getProperties()) {
 			if(!property.endsWith(XMLIdMap.ATTRIBUTEVALUE)){
@@ -144,14 +144,14 @@ public class PomFile implements SendableEntityCreatorTag, StringItem, BaseItem{
 			}
 		}
 	}
-	
+
 	public PomFile withArtifact(String groupId, String artifactId, String version) {
 		withGroupId(groupId);
 		withArtifactId(artifactId);
 		withVersion(version);
 		return this;
 	}
-	
+
 	public String toString(int indentFactor, int intent) {
 		String spacesChild = "";
 		String spaces = "";
@@ -200,7 +200,7 @@ public class PomFile implements SendableEntityCreatorTag, StringItem, BaseItem{
 	public boolean isVisible() {
 		return visible;
 	}
-	
+
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new PomFile();

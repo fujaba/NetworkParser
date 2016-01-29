@@ -47,11 +47,11 @@ public class DataType {
 	DataType(Clazz value) {
 		this.value = value;
 	}
-	
+
 	public String getName(boolean shortName) {
 		return getInternName(shortName, true);
 	}
-	
+
 	String getInternName(boolean shortName, boolean primitivAllow) {
 		if (this.value == null) {
 			return null;
@@ -70,11 +70,10 @@ public class DataType {
 		return value;
 	}
 
-
 	public static DataType create(Clazz typ) {
 		return new DataType(typ);
 	}
-	
+
 	public static DataType create(String typ) {
 		return new DataType(typ);
 	}

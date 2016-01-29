@@ -1,7 +1,6 @@
 package de.uniks.networkparser.test.model.ludo.creator;
 
 import java.util.Date;
-
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonIdMap;
 

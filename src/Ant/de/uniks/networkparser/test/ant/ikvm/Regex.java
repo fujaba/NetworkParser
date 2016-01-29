@@ -3,7 +3,6 @@ package de.uniks.networkparser.test.ant.ikvm;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-
 import org.apache.tools.ant.BuildException;
 
 public class Regex implements Filter {

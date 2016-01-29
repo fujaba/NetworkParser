@@ -1,7 +1,6 @@
 package de.uniks.networkparser.gui.javafx;
 
 import java.util.Iterator;
-
 import de.uniks.networkparser.IdMap;
 /*
  NetworkParser
@@ -35,7 +34,7 @@ public class GenericGrammar extends Grammar {
 		}
 		Class<?> search;
 		if(modelItem instanceof Class<?>) {
-			search = (Class<?>) modelItem; 
+			search = (Class<?>) modelItem;
 		}else {
 			search = modelItem.getClass();
 		}
@@ -65,7 +64,7 @@ public class GenericGrammar extends Grammar {
 		}
 		return null;
 	}
-	
+
 	@Override
 	protected Class<?> getClassForName(String className) {
 		try {

@@ -3,7 +3,6 @@ package de.uniks.networkparser.test.ant.ikvm;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class OutputFilter implements Filter {
 	private List<Filter> filters = new ArrayList<Filter> ();
 

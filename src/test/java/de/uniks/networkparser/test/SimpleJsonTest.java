@@ -1,10 +1,8 @@
 package de.uniks.networkparser.test;
 
 import java.beans.PropertyChangeEvent;
-
 import org.junit.Assert;
 import org.junit.Test;
-
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.JsonIdMap;
@@ -28,26 +26,26 @@ public class SimpleJsonTest {
 				return false;
 			}
 		});
-		
+
 		JsonObject json = map.encode(house);
 		String string=json.toString();
-		
+
 		JsonIdMap decodeMap=new JsonIdMap().with(new HouseCreator());
 		House newHouse = (House) decodeMap.decode(string);
 
 		// Old Model
 		Assert.assertEquals(4, newHouse.getFloor());
 		Assert.assertEquals("University", newHouse.getName());
-		
-		
+
+
 		// Update old Model
 		house.setFloor(42);
-			
+
 		decodeMap.decode(updateMessage);
-		
+
 		Assert.assertEquals(42, newHouse.getFloor());
-		
-		
-		
+
+
+
 	}
 }

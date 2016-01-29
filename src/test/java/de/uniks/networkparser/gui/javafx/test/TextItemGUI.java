@@ -21,9 +21,9 @@ public class TextItemGUI extends Application{
 			Scene scene = new Scene(root, 600, 400);
 			TextField label=new TextField();
 			ModelListenerFactory.create(label, this, "name");
-			
+
 			HBox box = new HBox();
-			Button button=new Button("display"); 
+			Button button=new Button("display");
 			button.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent arg0) {
@@ -39,6 +39,6 @@ public class TextItemGUI extends Application{
 		public static void main(String[] args) {
 			launch(args);
 		}
-		
+
 
 	}

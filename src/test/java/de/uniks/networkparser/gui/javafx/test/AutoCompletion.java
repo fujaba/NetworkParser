@@ -20,13 +20,13 @@ public class AutoCompletion extends Application {
 		GridPane gridPane = new GridPane();
 		Label label = new Label("Name");
 		label.setFont(Font.font("Arial", 50));
-		
+
 		TextEditorControl control = new TextEditorControl();
 		control.withAutoCompleting(new AutoCompletionList().with("Hey", "Hello", "Hello World", "Apple", "Cool", "Costa", "Cola", "Coca Cola"));
-		
+
 		gridPane.add(label, 0, 0);
 		gridPane.add(control.getControl(), 1, 0);
-		 
+
 		//gridPane.setGridLinesVisible(true);
 		Scene scene = new Scene(gridPane);
 		stage.setScene(scene);

@@ -33,7 +33,7 @@ public class KeyListenerMap implements EventHandler<KeyEvent>{
 
 	public KeyListenerMap() {
 		withKeyListener(new KeyListener(KeyCode.ESCAPE, new Runnable() {
-			
+
 			@Override
 			public void run() {
 				if(KeyListenerMap.this.parent != null) {
@@ -44,7 +44,7 @@ public class KeyListenerMap implements EventHandler<KeyEvent>{
 			}
 		}).withInTableComponent(true));
 	}
-	
+
 	public KeyListenerMap(WindowListener value) {
 		this();
 		this.parent = value;

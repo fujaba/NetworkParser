@@ -46,7 +46,7 @@ public class ModelListenerColorProperty extends ModelListenerProperty<Color> {
 		}
 		super.propertyChange(evt);
 	}
-	
+
 	@Override
 	public Color getValue() {
 		Object value = creator.getValue(item, property);
@@ -58,7 +58,7 @@ public class ModelListenerColorProperty extends ModelListenerProperty<Color> {
 		}
 		return (Color) value;
 	}
-	
+
 	@Override
 	public void setValue(Color value) {
 		 int green = (int) (value.getGreen()*255);
@@ -71,7 +71,7 @@ public class ModelListenerColorProperty extends ModelListenerProperty<Color> {
 		 String blueString = (blue<16 ? "0" : "") + Integer.toHexString(blue);
 
 		 String hexColor = "#"+redString+greenString+blueString;
-		
+
 		creator.setValue(item, property, hexColor, IdMap.NEW);
 //		super.setValue(value);
 	}

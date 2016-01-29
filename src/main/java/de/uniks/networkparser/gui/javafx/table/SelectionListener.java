@@ -35,25 +35,25 @@ public class SelectionListener implements ListChangeListener<Integer>{
 		this.viewers.add(viewer);
 		return this;
 	}
-	
+
 	@Override
 	public void onChanged(Change<? extends Integer> change)
 	{
 		if(!isSelection){
 			isSelection=true;
 			selectItems(change.getList());
-			
+
 			isSelection = false;
 		}
 	}
 	public SelectionListener selectItems(List<? extends Integer> items){
-		
+
 		for(TableViewFX viewer : viewers){
 			setSelection(viewer, items);
 		}
 		return this;
 	}
-	
+
 	public void setSelection(TableViewFX  viewer, List<? extends Integer> items){
 		if(viewer!=null){
 			ObservableList<Integer> selectedIndices = viewer.getSelectionModel().getSelectedIndices();

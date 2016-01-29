@@ -14,7 +14,7 @@ public class FormGUI extends SimpleShell {
 		JsonIdMap map = new  JsonIdMap();
 		map.with(new PersonCreator());
 		PersonGUI albert= new PersonGUI().withName("Albert");
-		
+
 		ModelForm form = new ModelForm().withDataBinding(map, albert, true);
 		withIcon(this.getClass().getResource("iconform.png").getPath());
 		return form;

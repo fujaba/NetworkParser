@@ -61,7 +61,7 @@ public class ExcelExporter extends MenuItem implements EventHandler<ActionEvent>
 				}
 				FileOutputStream fos = new FileOutputStream(choice);
 				ZipOutputStream zos = new ZipOutputStream(fos);
-				
+
 				addToZipFile("[Content_Types].xml", Os.class.getResourceAsStream("excel/ContentTypes.xml"), zos);
 				addToZipFile("docProps/app.xml", Os.class.getResourceAsStream("excel/app.xml"), zos);
 				addToZipFile("_rels/.rels", Os.class.getResourceAsStream("excel/rels.xml"), zos);
@@ -75,15 +75,15 @@ public class ExcelExporter extends MenuItem implements EventHandler<ActionEvent>
 			}
 		}
 	}
-	
-			
+
+
 	private void addHeader(ZipOutputStream zos) throws IOException {
 		ZipEntry zipEntry = new ZipEntry("docProps/core.xml");
 		zos.putNextEntry(zipEntry);
 
 		DateTimeEntity entity=new DateTimeEntity();
 		String export = entity.toString("yyyy-mm-dd'T'HZ:MM:SS'Z'");
-		
+
 		StringBuilder sb=new StringBuilder();
 		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\r\n");
 		sb.append("<cp:coreProperties xmlns:cp=\"http://schemas.openxmlformats.org/package/2006/metadata/core-properties\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:dcterms=\"http://purl.org/dc/terms/\" xmlns:dcmitype=\"http://purl.org/dc/dcmitype/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">");
@@ -111,7 +111,7 @@ public class ExcelExporter extends MenuItem implements EventHandler<ActionEvent>
 		}
 		return  sb.toString();
 	}
-	
+
 	private String getDataLine(int column, int rowCount, Object data){
 		if(data instanceof Number) {
 			return "<c r=\""+convertColumn(column)+rowCount+"\"><v>"+data+"</v></c>";
@@ -127,9 +127,9 @@ public class ExcelExporter extends MenuItem implements EventHandler<ActionEvent>
 		}
 		return "<c r=\""+convertColumn(column)+rowCount+"\" t=\"inlineStr\"><is><t>"+data.toString()+"</t></is></c>";
 	}
-	
 
-	
+
+
 	private void addData(ZipOutputStream zos) throws IOException {
 		ZipEntry zipEntry = new ZipEntry("xl/worksheets/sheet1.xml");
 		zos.putNextEntry(zipEntry);
@@ -141,11 +141,11 @@ public class ExcelExporter extends MenuItem implements EventHandler<ActionEvent>
 			attributes.add(tableColumn.getColumn().getAttrName());
 		}
 		List<Object> items = tableComponent.getItems();
-		
+
 		StringBuilder sb=new StringBuilder();
 		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
 		sb.append("<worksheet xmlns=\"http://schemas.openxmlformats.org/spreadsheetml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" xmlns:mc=\"http://schemas.openxmlformats.org/markup-compatibility/2006\" mc:Ignorable=\"x14ac\" xmlns:x14ac=\"http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac\">\n");
-		
+
 		sb.append("<dimension ref=\"A1:"+convertColumn(labels.size())+(items.size()+1)+"\" />");
 		sb.append("<sheetViews>");
 		sb.append("<sheetView tabSelected=\"1\" workbookViewId=\"0\"><selection activeCell=\"A1\" sqref=\"A1\"/></sheetView>");
@@ -154,7 +154,7 @@ public class ExcelExporter extends MenuItem implements EventHandler<ActionEvent>
 		sb.append("<sheetData>");
 		int rowCount=1;
 		int column=1;
-		
+
 		//header
 		sb.append("<row r=\""+rowCount+"\" spans=\"1:"+labels.size()+"\" x14ac:dyDescent=\"0.3\">");
 		for(String label : labels) {
@@ -162,7 +162,7 @@ public class ExcelExporter extends MenuItem implements EventHandler<ActionEvent>
 			column++;
 		}
 		sb.append("</row>");
-		
+
 		// data
 		rowCount++;
 		for(Object item : items) {
@@ -189,7 +189,7 @@ public class ExcelExporter extends MenuItem implements EventHandler<ActionEvent>
 		zos.closeEntry();
 	}
 
-	
+
 	public void addToZipFile(String fileName, InputStream fis, ZipOutputStream zos) throws FileNotFoundException, IOException {
 		ZipEntry zipEntry = new ZipEntry(fileName);
 		zos.putNextEntry(zipEntry);

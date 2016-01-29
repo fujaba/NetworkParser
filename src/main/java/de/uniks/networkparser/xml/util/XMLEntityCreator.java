@@ -1,5 +1,6 @@
 package de.uniks.networkparser.xml.util;
 
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.Tokener;
 /*
  NetworkParser
@@ -30,6 +31,7 @@ import de.uniks.networkparser.xml.XMLEntity;
 
 public class XMLEntityCreator implements SendableEntityCreator, XMLGrammar {
 	/** The properties. */
+	public static final String ALL="all";
 	private final String[] properties = new String[] {XMLEntity.PROPERTY_TAG,
 			XMLEntity.PROPERTY_VALUE };
 
@@ -65,7 +67,8 @@ public class XMLEntityCreator implements SendableEntityCreator, XMLGrammar {
 			((XMLEntity) entity).withValueItem("" + value);
 			return true;
 		}
-		return false;
+		((XMLEntity) entity).add(attribute, value);
+		return true;
 	}
 
 	@Override
@@ -74,7 +77,18 @@ public class XMLEntityCreator implements SendableEntityCreator, XMLGrammar {
 	}
 
 	@Override
-	public void addChildren(XMLEntity parent, XMLEntity child) {
+	public void addChildren(IdMap map, XMLEntity parent, XMLEntity child) {
+		SendableEntityCreator creator = map.getCreator(child.getTag(), true);
+		if(creator != null) {
+			Object sendableInstance = creator.getSendableInstance(false);
+			if(sendableInstance != null && sendableInstance instanceof XMLEntity) {
+				if(creator.setValue(sendableInstance, ALL, child, ALL)) {
+					parent.addChild((XMLEntity)sendableInstance);
+					return;
+				}
+			}
+		}
+
 		parent.addChild(child);
 	}
 

@@ -46,7 +46,7 @@ public abstract class BufferedBuffer extends Buffer {
 	public int length() {
 		return length;
 	}
-	
+
 	public BufferedBuffer withLength(int value) {
 		this.length = value;
 		return this;
@@ -55,7 +55,7 @@ public abstract class BufferedBuffer extends Buffer {
 	public abstract byte byteAt(int index);
 
 	public abstract char charAt(int index);
-	
+
 	/**
 	 * @return The currentChar
 	 */
@@ -71,7 +71,7 @@ public abstract class BufferedBuffer extends Buffer {
 	 * @return the Substring
 	 */
 	public abstract CharacterBuffer subSequence(int start, int length);
-	
+
 	@Override
 	public BufferedBuffer withLookAHead(CharSequence lookahead) {
 		if(lookahead == null) {
@@ -80,7 +80,7 @@ public abstract class BufferedBuffer extends Buffer {
 		this.withPosition(this.position() - lookahead.length() + 1);
 		return this;
 	}
-	
+
 	@Override
 	public BufferedBuffer withLookAHead(char lookahead) {
 		if(lookahead < 0) {
@@ -89,7 +89,7 @@ public abstract class BufferedBuffer extends Buffer {
 		this.withPosition(this.position() - 1);
 		return this;
 	}
-	
+
 	@Override
 	protected CharacterBuffer parseString(CharacterBuffer sc, boolean allowQuote, boolean nextStep, char... quotes) {
 		if(quotes== null) {
@@ -146,7 +146,7 @@ public abstract class BufferedBuffer extends Buffer {
 		sc.with(this.subSequence(startpos, endPos));
 		return sc;
 	}
-	
+
 	/**
 	 * Get the next n characters.
 	 *
@@ -179,7 +179,7 @@ public abstract class BufferedBuffer extends Buffer {
 		}
 		return new String(chars);
 	}
-	
+
 	@Override
 	protected CharacterBuffer nextValue(char c, boolean allowDuppleMark) {
 		int start = position();
@@ -195,7 +195,7 @@ public abstract class BufferedBuffer extends Buffer {
 		CharacterBuffer sb = subSequence(start, position()).trim();
 		return sb;
 	}
-	
+
 	/**
 	 * @param positions
 	 *            first is start Position, second is Endposition

@@ -30,7 +30,7 @@ public class ModelListenerStringProperty extends ModelListenerProperty<String> {
 	}
 
 	@Override
-	public void invalidated(Observable observable) {	
+	public void invalidated(Observable observable) {
 	}
 
 	@Override
@@ -41,7 +41,7 @@ public class ModelListenerStringProperty extends ModelListenerProperty<String> {
 		}
 		return "";
 	}
-	
+
 	@Override
 	public String parseValue(Object value) {
 		return ""+value;

@@ -13,7 +13,7 @@ public class CopyStation {
 		System.out.println("Source: " + source);
 		System.out.println("Target: " + target);
 
-		
+
 		 NetworkParserSources center= new NetworkParserSources();
 		 center.copyFile(source, target, createDirectory, createFiles);
 	}
@@ -21,11 +21,11 @@ public class CopyStation {
 	public void setCreateFile(boolean value) {
 		this.createFiles = value;
 	}
-	
+
 	public void setCreateDirectory(boolean value) {
 		this.createDirectory = value;
 	}
-	
+
 	public void setTarget(String value) {
 		this.target = value;
 	}
@@ -41,7 +41,7 @@ public class CopyStation {
 	public String getSource() {
 		return source;
 	}
-	
+
 	public static void main(String[] args) {
 		CopyStation copyStation = new CopyStation();
 		copyStation.setSource("src/de/uniks/networkparser/");

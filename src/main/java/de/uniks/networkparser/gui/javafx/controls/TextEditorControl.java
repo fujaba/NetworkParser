@@ -39,11 +39,11 @@ public class TextEditorControl extends EditControl<TextField>{
 	public Object getValue(boolean convert) {
 		return this.control.getText();
 	}
-	
+
 	public String getText() {
 		return this.control.getText();
 	}
-	
+
 	public void setText(String value) {
 		this.control.setText(value);
 	}
@@ -67,15 +67,15 @@ public class TextEditorControl extends EditControl<TextField>{
 		autoCompleteContextMenu = new AutoCompleteContextMenu(textField);
 
 		textField.addEventHandler(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>() {
-			
+
 			@Override
 			public void handle(KeyEvent event) {
-				
+
 				AutoCompletionList listener = TextEditorControl.this.completion;
 				if(listener != null) {
 					TextField control = TextEditorControl.this.getControl();
 					Set<String> list = listener.items(control.getText());
-					
+
 					if(list.size()>0 ) {
 						if(!autoCompleteContextMenu.isShowing()) {
 							autoCompleteContextMenu.show(control, Side.BOTTOM, 0, 0.0);
@@ -87,7 +87,7 @@ public class TextEditorControl extends EditControl<TextField>{
 		});
 		return textField;
 	}
-	
+
 	public TextEditorControl withAutoCompleting(AutoCompletionList value) {
 		this.completion = value;
 		return this;

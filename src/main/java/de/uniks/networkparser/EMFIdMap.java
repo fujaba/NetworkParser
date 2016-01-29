@@ -55,8 +55,8 @@ public class EMFIdMap extends XMLIdMap {
 	public static final String EOpposite = "eOpposite";
 	public static final String UPPERBOUND = "upperBound";
 	public static final String PARENT = "parent";
-	
-	
+
+
 	public static final String XSI_TYPE = "xsi:type";
 	public static final String XMI_ID = "xmi:id";
 	public static final String NAME = "name";
@@ -367,7 +367,7 @@ public class EMFIdMap extends XMLIdMap {
 
 	public static GraphList decoding(String content) {
 		GraphList model = new GraphList();
-		
+
 		XMLEntity ecore = new XMLEntity().withValue(content);
 		SimpleList<XMLEntity> refs = new SimpleList<XMLEntity>();
 		SimpleList<XMLEntity> superClazzes = new SimpleList<XMLEntity>();
@@ -390,7 +390,7 @@ public class EMFIdMap extends XMLIdMap {
 						if (EntityUtil.isPrimitiveType(etyp.toLowerCase())) {
 							etyp = etyp.toLowerCase();
 						}
-						clazz.with(new Attribute(EntityUtil.toValidJavaId(child.getString(EMFIdMap.NAME)), DataType.create(etyp)));						
+						clazz.with(new Attribute(EntityUtil.toValidJavaId(child.getString(EMFIdMap.NAME)), DataType.create(etyp)));
 					}else if(typ.equals(EReferences)) {
 						child.put(PARENT, eClassifier);
 						refs.add(child);
@@ -423,16 +423,16 @@ public class EMFIdMap extends XMLIdMap {
 			 kidClazz.withoutSuperClazz(superClazz);
 		}
 		// assocs
-		SimpleKeyValueList<String, Association> items = new SimpleKeyValueList<String, Association>(); 
+		SimpleKeyValueList<String, Association> items = new SimpleKeyValueList<String, Association>();
 		for(XMLEntity eref : refs) {
 			String tgtClassName = eref.getString(ETYPE);
 			if(tgtClassName.indexOf("#")>=0) {
 				tgtClassName = tgtClassName.substring(tgtClassName.indexOf("#") + 3);
 			}
 			String tgtRoleName = eref.getString(EMFIdMap.NAME);
-			
+
 			Association tgtAssoc = getOrCreate(items, model, tgtClassName, tgtRoleName);
-			
+
 			if (eref.containsKey(UPPERBOUND)) {
 				Object upperValue = eref.get(UPPERBOUND);
 				if (upperValue instanceof Number) {
@@ -441,7 +441,7 @@ public class EMFIdMap extends XMLIdMap {
 					}
 				}
 			}
-			
+
 			String srcRoleName = null;
 			XMLEntity parent =(XMLEntity) eref.get(PARENT);
 			String srcClassName = parent.getString(EMFIdMap.NAME);

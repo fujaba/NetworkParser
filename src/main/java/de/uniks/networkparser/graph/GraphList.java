@@ -71,7 +71,7 @@ public class GraphList extends GraphModel implements BaseItem{
 			}
 		}
 	}
-	
+
 	public Clazz with(Clazz value) {
 		if (value != null) {
 			if(value.getName()==null){
@@ -81,7 +81,7 @@ public class GraphList extends GraphModel implements BaseItem{
 		}
 		return value;
 	}
-	
+
 	public GraphList with(GraphList... values) {
 		super.withChildren(true, values);
 		return this;
@@ -96,7 +96,7 @@ public class GraphList extends GraphModel implements BaseItem{
 		super.withChildren(true, value);
 		return this;
 	}
-	
+
 	public GraphOptions getOptions() {
 		return options;
 	}
@@ -126,12 +126,12 @@ public class GraphList extends GraphModel implements BaseItem{
 		}
 		return null;
 	}
-	
+
 
 	public SimpleSet<GraphEntity> getNodes() {
 		return super.getNodes();
 	}
-	
+
 	public Association getEdge(GraphEntity node, String property) {
 		for(Association edge : getAssociations()) {
 			Association oEdge = edge.getOther();

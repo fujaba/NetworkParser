@@ -30,24 +30,24 @@ public class TableCellValueFX extends SimpleObjectProperty<TableCellValue> imple
 	private Column column;
 	private SendableEntityCreator creator;
 	private Object item;
-	
+
 	public TableCellValueFX withItem(Object item) {
 		this.item = item;
 		this.set(this);
 		return this;
 	}
-	
+
 	public TableCellValueFX withColumn(Column column) {
 		this.column = column;
 		return this;
 	}
-	
+
 	public TableCellValueFX withCreator(
 			SendableEntityCreator creator) {
 		this.creator = creator;
 		return this;
 	}
-	
+
 	@Override
 	public Object getItem(){
 		return item;

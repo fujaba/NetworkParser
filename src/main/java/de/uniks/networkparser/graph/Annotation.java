@@ -57,7 +57,7 @@ public class Annotation extends GraphMember implements IdMapDecoder {
 		annotation.decode(value);
 		return annotation;
 	}
-	
+
 	//Redirect
 	@Override
 	public Annotation with(String name) {
@@ -77,7 +77,7 @@ public class Annotation extends GraphMember implements IdMapDecoder {
 		decode(tokener, (char)0, null);
 		return this;
 	}
-	
+
 	Annotation addValue(Annotation... values) {
 		if(values==null) {
 			return this;
@@ -92,7 +92,7 @@ public class Annotation extends GraphMember implements IdMapDecoder {
 		}
 		return this;
 	}
-	
+
 	public Annotation decode(BufferItem tokener, char endTag, Annotation parent) {
 		char item = tokener.getCurrentChar();
 		CharacterBuffer token=new CharacterBuffer();
@@ -147,7 +147,7 @@ public class Annotation extends GraphMember implements IdMapDecoder {
 			}
 			token.with(item);
 			item = tokener.getChar();
-			
+
 			if( item == '@' ) {
 				this.name = token.toString();
 				this.nextAnnotaton = new Annotation().decode(tokener, (char)0, null);
@@ -187,11 +187,11 @@ public class Annotation extends GraphMember implements IdMapDecoder {
 		sb.append(")");
 		return sb.toString();
 	}
-	
+
 	public boolean hasNext() {
 		return nextAnnotaton != null;
 	}
-	
+
 	public Annotation next() {
 		return nextAnnotaton;
 	}
@@ -200,7 +200,7 @@ public class Annotation extends GraphMember implements IdMapDecoder {
 		if(key == null || value == null) {
 			return defaultText;
 		}
-		if( keyValue && value.size() == 1) { 
+		if( keyValue && value.size() == 1) {
 			if(key.equalsIgnoreCase(getName())) {
 				return value.first().getName();
 			}else{
@@ -215,7 +215,7 @@ public class Annotation extends GraphMember implements IdMapDecoder {
 		}
 		return defaultText;
 	}
-	
+
 	public Annotation getAnnotation(String key) {
 		if(key==null) {
 			return null;
@@ -228,8 +228,8 @@ public class Annotation extends GraphMember implements IdMapDecoder {
 		}
 		return nextAnnotaton.getAnnotation(key);
 	}
-	
+
 	public GraphMember getParent() {
-		return parentNode; 
+		return parentNode;
 	}
 }

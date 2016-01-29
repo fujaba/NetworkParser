@@ -34,6 +34,6 @@ public interface SendableEntityCreatorHTML extends SendableEntityCreator {
 	 * @return the tag
 	 */
 	public String getTag();
-	
+
 	public List<String> transformProperty(String[] property);
 }

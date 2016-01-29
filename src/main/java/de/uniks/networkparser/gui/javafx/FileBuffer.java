@@ -40,8 +40,8 @@ public class FileBuffer extends Buffer{
 		withFile(new File(fileName));
 		return this;
 	}
-	
-	
+
+
 	public FileBuffer withFile(File file) throws FileNotFoundException {
 		this.file = file;
 		this.length = (int) this.file.length();
@@ -49,7 +49,7 @@ public class FileBuffer extends Buffer{
 		this.position = 0;
 		return this;
 	}
-	
+
 	@Override
 	public int length() {
 		return length;
@@ -76,7 +76,7 @@ public class FileBuffer extends Buffer{
 		}
 		return value;
 	}
-	
+
 	@Override
 	public String toString() {
 		char[] values = new char[remaining()];
@@ -99,7 +99,6 @@ public class FileBuffer extends Buffer{
 		return toString().getBytes();
 	}
 
-
 	@Override
 	public FileBuffer withLookAHead(CharSequence lookahead) {
 		this.lookAHead.set(lookahead);
@@ -108,7 +107,7 @@ public class FileBuffer extends Buffer{
 		this.position -= this.lookAHead.length();
 		return this;
 	}
-	
+
 	@Override
 	public FileBuffer withLookAHead(char current) {
 		this.lookAHead.set(this.currentChar);

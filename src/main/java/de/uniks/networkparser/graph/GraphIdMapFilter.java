@@ -61,7 +61,7 @@ public class GraphIdMapFilter extends Filter {
 		this.isShowCardinality = value;
 		return this;
 	}
-	
+
 	@Override
 	public GraphIdMapFilter newInstance(Filter referenceFilter) {
 		if(referenceFilter == null) {
@@ -78,7 +78,7 @@ public class GraphIdMapFilter extends Filter {
 		this.typ = typ;
 		return this;
 	}
-	
+
 	public GraphIdMapFilter withMap(IdMap map) {
 		super.withMap(map);
 		return this;

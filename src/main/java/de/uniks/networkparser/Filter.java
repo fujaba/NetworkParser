@@ -42,7 +42,7 @@ public class Filter {
 		this.idFilter = idFilter;
 		return this;
 	}
-	
+
 	public Filter withMap(IdMap map) {
 		this.map = map;
 		return this;
@@ -50,7 +50,7 @@ public class Filter {
 
 	/**
 	 * Filter for encoding ID of Element
-	 * 
+	 *
 	 * @param entity Entity for Show Id
 	 * @param className ClassName
 	 * @return Boolean if encoding ID
@@ -77,7 +77,7 @@ public class Filter {
 	/**
 	 * Serialization the Full object inclusive null value
 	 * @param value for serialization the full object
-	 * @return self instance 
+	 * @return self instance
 	 */
 	public Filter withFull(boolean value) {
 		this.full = value;
@@ -88,7 +88,7 @@ public class Filter {
 		this.property = property;
 		return this;
 	}
-	
+
 	public Filter withConvertable(SimpleConditionValue convertable) {
 		this.convertable = convertable;
 		return this;
@@ -115,7 +115,7 @@ public class Filter {
 		referenceFilter.withMap(this.map);
 		return referenceFilter;
 	}
-	
+
 	boolean hasObjects(Object element) {
 		return getVisitedObjects().contains(element);
 	}
@@ -171,14 +171,14 @@ public class Filter {
 		}
 		return true;
 	}
-	
+
 	boolean isConvertable(Object entity, String property, Object value, int deep) {
 		if (this.convertable != null) {
 			return this.convertable.check(new SimpleMapEvent(entity, property, null, value, map, deep));
 		}
 		return true;
 	}
-	
+
 	Object getRefByEntity(Object value) {
 		if(visitedObjects == null)
 			return null;
@@ -192,25 +192,25 @@ public class Filter {
 
 	/**
 	 * Create a new Filter for Regard Filter (Encoding Object or remove link)
-	 * 
+	 *
 	 * @param convertable Condition
-	 * @return a new Filter for regard the model 
+	 * @return a new Filter for regard the model
 	 */
 	public static Filter regard(SimpleConditionValue convertable) {
 		return new Filter().withPropertyRegard(convertable);
 	}
 	/**
 	 * Create a new Filter for Converting Filter (Encoding Object or set only the Id)
-	 * 
+	 *
 	 * @param convertable Condition
-	 * @return a new Filter for Filter with Convertable Items 
+	 * @return a new Filter for Filter with Convertable Items
 	 */
 	public static Filter convertable(SimpleConditionValue convertable) {
 		return new Filter().withConvertable(convertable);
 	}
 
 	/**
-	 * Strategy for setting property value in model 
+	 * Strategy for setting property value in model
 	 * @return String type of set Value
 	 */
 	public String getStrategy() {

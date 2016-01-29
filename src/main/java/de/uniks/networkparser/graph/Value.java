@@ -41,23 +41,23 @@ public abstract class Value extends GraphMember {
 		this.type = new DataType(value);
 		return this;
 	}
-	
+
 	public Value with(Class<?> value) {
 		this.type = DataType.create(value);
 		return this;
 	}
-	
+
 	public String getType(boolean shortName) {
 		if(type==null) {
 			return "?";
 		}
 		return type.getName(shortName);
 	}
-	
+
 	public DataType getType() {
 		return type;
 	}
-	
+
 	public Value withValue(String value) {
 		this.value = value;
 		return this;

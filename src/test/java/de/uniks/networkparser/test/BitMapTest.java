@@ -2,10 +2,8 @@ package de.uniks.networkparser.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-
 import org.junit.Assert;
 import org.junit.Test;
-
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.bytes.BitEntity;
 import de.uniks.networkparser.bytes.BitValue;
@@ -23,7 +21,7 @@ public class BitMapTest {
 		// 23 = 010111
 		//  5 = 000101
 		//  8 = 001000
-		
+
 		ByteSimpleMap map= new ByteSimpleMap();
 		ByteBuffer buffer=ByteBuffer.allocate(2);
 		buffer.put(new byte[]{8});
@@ -33,10 +31,10 @@ public class BitMapTest {
 		map.with(createrClass);
 		NumberFormat numberItem = (NumberFormat) map.decode(buffer, createrClass);
 		Assert.assertNotNull(numberItem);
-		
+
 		Assert.assertEquals(42, numberItem.getNumber());
 	}
-	
+
 	@Test
 	public void testDate(){
 		// 25 0C AF 11 (37 12 175 17)
@@ -47,7 +45,7 @@ public class BitMapTest {
 		ByteSimpleMap map= new ByteSimpleMap();
 		ByteBuffer buffer=ByteBuffer.allocate(4);
 		buffer.put(new byte[]{0x25,0x0C,(byte) 0xAF,0x11});
-		
+
 		BitDateCreator createrClass = new BitDateCreator();
 		createrClass.addField(BitDate.PROPERTY_DAY, 19,5);
 		createrClass.addField(BitDate.PROPERTY_MONTH, 28,4);
@@ -59,11 +57,11 @@ public class BitMapTest {
 		bitEntity.add(new BitValue(24, 4));
 		bitEntity.add(new BitValue(16, 3));
 		createrClass.addField(bitEntity);
-		
+
 		BitDate entity=(BitDate) map.decode(buffer, createrClass);
-		
+
 		assertNotNull(entity);
-		
+
 		assertEquals(15, entity.getDay());
 		assertEquals(1, entity.getMonth());
 		assertEquals(13, entity.getYear());

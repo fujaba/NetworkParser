@@ -25,12 +25,10 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import de.uniks.networkparser.AbstractMap;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.NetworkParserLog;
@@ -148,51 +146,9 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 	public static final byte LEN_LAST = 0x05;
 
 	/** The decoder map. */
-	protected HashMap<Byte, SendableEntityCreatorTag> decoderMap;
+//	protected HashMap<Byte, SendableEntityCreatorTag> decoderMap;
 
 	private ByteFilter filter = new ByteFilter().withMap(this);
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * de.uni.kassel.peermessage.IdMap#addCreator(de.uni.kassel.peermessage.
-	 * interfaces.SendableEntityCreator)
-	 */
-	public boolean addCreator(SendableEntityCreator createrClass) {
-		if (createrClass instanceof SendableEntityCreatorTag) {
-			if (this.decoderMap != null) {
-				String tag = ((SendableEntityCreatorTag) createrClass).getTag();
-				if(tag == null || tag.length()<1) {
-					return false;
-				}
-				if (this.decoderMap.containsKey(tag.getBytes()[0])) {
-					return false;
-				}
-			}
-		}
-		super.with(createrClass);
-		return true;
-	}
-
-	@Override
-	public AbstractMap with(String className,
-			SendableEntityCreator createrClass) {
-		super.with(className, createrClass);
-
-		if (createrClass instanceof SendableEntityCreatorTag) {
-			SendableEntityCreatorTag byteCreator = (SendableEntityCreatorTag) createrClass;
-			String tag = byteCreator.getTag();
-			if(tag!=null && tag.length() > 0 ) {
-				if (this.decoderMap == null) {
-					this.decoderMap = new HashMap<Byte, SendableEntityCreatorTag>();
-				}
-				this.decoderMap.put(tag.getBytes()[0],
-						byteCreator);
-			}
-		}
-		return this;
-	}
 
 	/**
 	 * Encode.
@@ -205,6 +161,19 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 	public ByteItem encode(Object entity) {
 		return encode(entity, null);
 	}
+
+	@Override
+	public boolean addCreator(String className, SendableEntityCreator creator) {
+    	boolean result = this.creators.add(className, creator);
+		if (creator instanceof SendableEntityCreatorTag) {
+			SendableEntityCreatorTag creatorTag = (SendableEntityCreatorTag) creator;
+			String tag = creatorTag.getTag();
+			if(tag != null && tag.length()>0) {
+				this.creators.add(String.valueOf(tag.charAt(0)), creator);
+			}
+		}
+		return result;
+    }
 
 	private boolean addClazzTyp(ByteList msg, String clazzName, Filter filter) {
 		try {
@@ -355,20 +324,6 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 			}
 		}
 		return null;
-	}
-
-	/**
-	 * Gets the creator decoder class.
-	 *
-	 * @param typ
-	 *			the typ
-	 * @return the creator decoder class
-	 */
-	public SendableEntityCreatorTag getCreatorDecoderClass(byte typ) {
-		if(this.decoderMap == null) {
-			return null;
-		}
-		return this.decoderMap.get(Byte.valueOf(typ));
 	}
 
 	/**
@@ -569,7 +524,7 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 		}
 		if (typ == ByteIdMap.DATATYPE_CLAZZID) {
 			typ = buffer.getByte();
-			SendableEntityCreator eventCreater = getCreatorDecoderClass(typ);
+			SendableEntityCreator eventCreater = getCreator(new String(new byte[]{typ}), true);
 			return decodeClazz(buffer, eventCreater);
 		}
 		if (typ == ByteIdMap.DATATYPE_ASSOC) {

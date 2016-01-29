@@ -341,7 +341,7 @@ public class ByteEntity implements ByteItem, BaseItem {
 		}
 		return values.length;
 	}
-	
+
 	public static ByteEntity create(Object value) {
 		ByteEntity item = new ByteEntity();
 		item.setValues(value);

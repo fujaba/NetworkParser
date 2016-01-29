@@ -32,16 +32,16 @@ public class TableViewFX extends TableView<Object> {
 	private ScrollBar scrollbar;
 	private TableComponent parent;
 	private GUIPosition position;
-	
+
 	public TableViewFX withPosition(GUIPosition position){
 		this.position = position;
 		return this;
 	}
-	
+
 	public GUIPosition getPosition(){
 		return position;
 	}
-	
+
 	public TableViewFX withListener(TableComponent tableComponent){
 		this.parent = tableComponent;
 		this.addEventFilter(MouseEvent.ANY, new EventHandler<MouseEvent>(){
@@ -56,7 +56,7 @@ public class TableViewFX extends TableView<Object> {
 		setItems(items);
 		return this;
 	}
-	
+
 	public ScrollBar getScrollbar() {
 		ScrollBar bar = (ScrollBar) lookup(".scroll-bar:vertical");
 		if(bar != null){
@@ -70,7 +70,7 @@ public class TableViewFX extends TableView<Object> {
 		}
 		return scrollbar;
 	}
-	
+
 	public ScrollBar getScrollbar(String orientation) {
 		return (ScrollBar) lookup(".scroll-bar:"+orientation);
 	}

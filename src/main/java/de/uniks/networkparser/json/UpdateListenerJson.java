@@ -48,7 +48,7 @@ public class UpdateListenerJson implements PropertyChangeListener {
 
 	/** The suspend id list. */
 	private ArrayList<String> suspendIdList;
-	
+
 	private AtomarCondition atomarFilter;
 
 	private Filter updateFilter = new Filter().withConvertable(new UpdateCondition());
@@ -78,7 +78,7 @@ public class UpdateListenerJson implements PropertyChangeListener {
 		}
 		JsonObject initField = this.map.toJsonObject(root);
 		ArrayList<String> classCounts = new ArrayList<String>();
-		SimpleKeyValueList<String, Object> gc = new SimpleKeyValueList<String, Object>(); 
+		SimpleKeyValueList<String, Object> gc = new SimpleKeyValueList<String, Object>();
 		countMessage(initField, classCounts, gc);
 		// Remove all others
 		for (String id : classCounts) {
@@ -202,7 +202,7 @@ public class UpdateListenerJson implements PropertyChangeListener {
 			this.map.sendUpdateMsg(evt, jsonObject);
 		}
 	}
-	
+
 	/**
 	 * Execute.
 	 *
@@ -235,7 +235,7 @@ public class UpdateListenerJson implements PropertyChangeListener {
 		if (masterObj == null)
 		{
 		   String masterObjClassName = (String) updateMessage.get(JsonIdMap.CLASS);
-		   
+
 		   if (masterObjClassName != null)
 		   {
 			  // cool, lets make it
@@ -445,7 +445,7 @@ public class UpdateListenerJson implements PropertyChangeListener {
 			}
 		}
 	}
-	
+
 	public UpdateListenerJson withAtomarFilter(UpdateListener listener) {
 		this.atomarFilter= new AtomarCondition(listener);
 		return this;

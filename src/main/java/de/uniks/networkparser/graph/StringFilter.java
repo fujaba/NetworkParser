@@ -33,13 +33,13 @@ public class StringFilter<T> implements Condition<T>{
 		}
 		return false;
 	}
-	
+
 	public StringFilter<T> with(String value, TYPE type) {
 		this.otherValue = value;
 		this.type = type;
 		return this;
 	}
-	
+
 	public StringFilter<T> equals(String otherValue) {
 		return new StringFilter<T>(this.attribute).with(otherValue, TYPE.EQUALS);
 	}
@@ -52,7 +52,7 @@ public class StringFilter<T> implements Condition<T>{
 	public StringFilter<T> contains(String otherValue) {
 		return new StringFilter<T>(this.attribute).with(otherValue, TYPE.CONTAINS);
 	}
-	
+
 	@Override
 	public String toString() {
 		return attribute;

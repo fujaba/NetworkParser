@@ -1,10 +1,8 @@
 package de.uniks.networkparser.test;
 
 import java.util.EventObject;
-
 import org.junit.Assert;
 import org.junit.Test;
-
 import de.uniks.networkparser.logic.And;
 import de.uniks.networkparser.logic.Between;
 import de.uniks.networkparser.logic.BooleanCondition;
@@ -28,7 +26,7 @@ public class ConditionTest {
 		and.add(not);
 		and.add(new Or().add(new BooleanCondition().withValue(false)));
 		ifCondition.withFalse(and);
-		
+
 		Assert.assertFalse(ifCondition.check(new EventObject(23)));
 	}
 }

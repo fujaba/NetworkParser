@@ -36,7 +36,7 @@ public class Modifier extends GraphMember {
 	Modifier(String value) {
 		this.setName(value);
 	}
-	
+
 	@Override
 	public Modifier with(String name) {
 		super.with(name);
@@ -46,7 +46,7 @@ public class Modifier extends GraphMember {
 	public static Modifier create(String value) {
 		return new Modifier(value);
 	}
-	
+
 	public static Modifier create(Modifier... value) {
 		Modifier mod=new Modifier("");
 		for (Modifier item : value) {
@@ -59,7 +59,7 @@ public class Modifier extends GraphMember {
 		}
 		return mod;
 	}
-	
+
 	public boolean has(Modifier other) {
 		if(this.getName().equals(other.getName())) {
 			return true;
@@ -75,9 +75,9 @@ public class Modifier extends GraphMember {
 			}
 		}
 		return false;
-				
+
 	}
-	
+
 	public GraphMember getParent() {
 		return parentNode;
 	}
@@ -86,7 +86,7 @@ public class Modifier extends GraphMember {
 	public String toString() {
 		return this.name;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if(obj instanceof Modifier) {

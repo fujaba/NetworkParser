@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
@@ -21,7 +20,6 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
-
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 
@@ -29,21 +27,21 @@ public class GitRevision {
 	private boolean full=false;
 	public void execute() throws IOException {
 		File file = new File("");
-		
+
 		FileRepositoryBuilder builder = new FileRepositoryBuilder();
 		Repository repository = builder.setWorkTree(file)
 		  .readEnvironment() // scan environment GIT_* variables
 		  .findGitDir() // scan up the file system tree
 		  .build();
-		
+
 		System.setProperty("Branchname", repository.getBranch());
 		ObjectId headID = repository.resolve("HEAD");
 		System.setProperty("LastCommit", headID.getName());
 		calcGitTag(repository);
-		
+
 		JsonArray map= new JsonArray();
 		commitInfo(map, repository, headID, null);
-		
+
 		int count=0;
 		while (headID!=null){
 			count++;
@@ -57,7 +55,7 @@ public class GitRevision {
 		writer.write(map.toString(2));
 		writer.close();
 	}
-	
+
 	public int calcGitTag(Repository repository) {
 		int gittag=-1;
 		String tagHash = "";
@@ -78,11 +76,11 @@ public class GitRevision {
 		System.setProperty("GitTagHash", tagHash);
 		return gittag;
 	}
-	
+
 	public void setFull(boolean full) {
 		this.full = full;
 	}
-	
+
 	private JsonObject commitInfo(JsonArray map, Repository repository, ObjectId objectID, ObjectId newerrId) throws MissingObjectException, IncorrectObjectTypeException, IOException{
 		try{
 			JsonObject jsonObject = new JsonObject();
@@ -118,7 +116,7 @@ public class GitRevision {
 					if(diffs!=null){
 						JsonArray files= new JsonArray();
 						for (DiffEntry entry : diffs) {
-							FileMode mode =entry.getNewMode(); 
+							FileMode mode =entry.getNewMode();
 							if(FileMode.MISSING==mode){
 								files.add(new JsonObject().withValue("REM", entry.getNewPath()));
 							} else {

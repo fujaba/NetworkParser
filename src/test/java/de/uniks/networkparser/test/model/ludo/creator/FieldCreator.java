@@ -21,7 +21,7 @@ public class FieldCreator implements SendableEntityCreator {
 	  Field.PROPERTY_LANDER,
 	  Field.PROPERTY_PAWNS
 	};
-   
+
 	@Override
 	public String[] getProperties() {
 		return properties;

@@ -1,5 +1,6 @@
 package de.uniks.networkparser.xml.util;
 
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.Tokener;
 /*
  NetworkParser
@@ -80,7 +81,7 @@ public class XMLStyledEntityCreator implements SendableEntityCreator,
 	}
 
 	@Override
-	public void addChildren(XMLEntity parent, XMLEntity child) {
+	public void addChildren(IdMap map, XMLEntity parent, XMLEntity child) {
 		parent.addChild(child);
 	}
 

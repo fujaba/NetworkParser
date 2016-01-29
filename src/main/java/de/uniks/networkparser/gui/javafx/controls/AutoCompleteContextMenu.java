@@ -38,7 +38,7 @@ public class AutoCompleteContextMenu extends ContextMenu{
 		control.setContextMenu(this);
 		AutoCompleteContextMenu.this.getScene().getStylesheets().add(Styles.getPath());
 	}
-	
+
 	public AutoCompleteContextMenu withSuggestions(Set<String> values) {
 		getItems().clear();
 		int i=1;
@@ -51,7 +51,7 @@ public class AutoCompleteContextMenu extends ContextMenu{
 			}
 			Label text = new Label(item);
 			text.setMinWidth(control.getWidth()-30);
-			
+
 			menuItem.setGraphic(text);
 			menuItem.setOnAction(new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent e) {
@@ -59,13 +59,13 @@ public class AutoCompleteContextMenu extends ContextMenu{
 					onSuggestionChoosen(((Label)mnu.getGraphic()).getText());
 				}
 			});
-			
+
 			getItems().add(menuItem);
 			i++;
 		}
 		return this;
 	}
-	
+
 
 	private void onSuggestionChoosen(String suggestion){
 		control.setText(suggestion);

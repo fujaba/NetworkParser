@@ -68,7 +68,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 
 	/** The update listener. */
 	protected UpdateListenerJson updateListenerJson;
-	
+
 	/** The updatelistener for Notification changes. */
 	protected Object listener;
 
@@ -107,7 +107,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 		if (entity == null) {
 			return null;
 		}
-		
+
 		filter = this.filter.newInstance(filter);
 		return toJsonObject(entity, filter, entity.getClass().getName(), 0);
 	}
@@ -173,14 +173,14 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 		}
 		return super.getId(obj);
 	}
-	
+
 	public UpdateListenerJson getUpdateExecuter() {
 		if (this.updateListenerJson == null) {
 			this.updateListenerJson = new UpdateListenerJson(this);
 		}
 		return this.updateListenerJson;
 	}
-	
+
 	public IdMap with(UpdateListenerJson updateListener) {
 		this.updateListenerJson = updateListener;
 		return this;
@@ -212,7 +212,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 		}
 		return false;
 	}
-	
+
 	protected Object parseProperty(SendableEntityCreator prototyp,
 			Object entity, Filter filter, String className, String property,
 			JsonArray jsonArray, int deep) {
@@ -734,7 +734,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 		}
 		return notify(SENDUPDATE, jsonObject, evt);
 	}
-	
+
 	boolean readMessages(String typ, BaseItem item, PropertyChangeEvent event) {
 		return notify(typ, item, event);
 	}
@@ -806,11 +806,11 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 	}
 
 	/**
-	 * Set the new Listener 
+	 * Set the new Listener
 	 *
 	 * @param listener the new Listener
 	 * @return This Component
-	 * 
+	 *
 	 * @see JsonIdMap#with(PropertyChangeListener)
 	 * @see de.uniks.networkparser.ChainUpdateListener
 	 */
@@ -823,7 +823,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 		super.with(createrClass);
 		return this;
 	}
-	
+
 	//Redirect
 	@Override
 	public JsonIdMap withSessionId(String value) {

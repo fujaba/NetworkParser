@@ -8,13 +8,11 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.resources.FileResource;
 import org.apache.tools.ant.types.resources.Resources;
-
 import de.uniks.networkparser.test.ant.ikvm.OutputFilter;
 
 /**
@@ -129,7 +127,6 @@ public class IkvmcTask extends Task {
 		}
 	}
 
-
 	public void setRecurse (String recurse) {
 		this.recurse = recurse;
 	}
@@ -173,14 +170,12 @@ public class IkvmcTask extends Task {
 		if ( !ikvmcFile.exists())
 			throw new IllegalArgumentException ("Can't find executable specified by 'ikvmc' attribute: \"" + ikvmc + "\"");
 	}
-	
+
 	private List<String> buildArguments() throws BuildException {
 		List<String> result = new ArrayList<String>();
 
 		String processName = (ikvmcFile == null) ? IKVMC_PROC_NAME : ikvmcFile.getAbsolutePath();
 		result.add(processName);
-
-
 
 		if (out != null) {
 			result.add ("-out:" + out);
@@ -267,13 +262,10 @@ public class IkvmcTask extends Task {
 		//TODO: Xtrace
 		//TODO: Xmethodtrace
 
-
 		result.addAll(classesAndJars);
 
 		return result;
 	}
-
-
 
 	/** Also modifies resourceReferences collection */
 	@SuppressWarnings("unchecked")
@@ -301,7 +293,6 @@ public class IkvmcTask extends Task {
 
 		if (!r.isExists())
 			throw new BuildException ("Missing input file: " + fullFileName);
-
 
 		boolean classOrJar = relativeName.endsWith(".class") || relativeName.endsWith(".jar") || relativeName.endsWith(".zip");
 		if (classOrJar) {
@@ -331,13 +322,11 @@ public class IkvmcTask extends Task {
 		}
 	}
 
-
 	@Override
 	public void execute () throws BuildException {
 		List<String> arguments = buildArguments ();
 		if (verbose)
 			printArguments(arguments);
-
 
 		try {
 			ProcessBuilder		  pb = new ProcessBuilder (arguments);

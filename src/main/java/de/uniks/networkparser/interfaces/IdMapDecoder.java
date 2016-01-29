@@ -27,6 +27,6 @@ package de.uniks.networkparser.interfaces;
 
 public interface IdMapDecoder {
 	public abstract Object decode(BaseItem value);
-	
+
 	public abstract Object decode(String value);
 }

@@ -1,7 +1,4 @@
-
 package de.uniks.networkparser.test;
-
-
 
 /**
  * A compiled representation of a regular expression.
@@ -566,8 +563,6 @@ package de.uniks.networkparser.test;
  *   <li> Noncharacter_Code_Point
  *   <li> Assigned
  * </ul>
-
-
  * <p>
  * <b>Predefined Character classes</b> and <b>POSIX character classes</b> are in
  * conformance with the recommendation of <i>Annex C: Compatibility Properties</i>
@@ -729,7 +724,6 @@ package de.uniks.networkparser.test;
 
 public class TodoPatternTests
 {
-   
 }
 
 //public class Pattern

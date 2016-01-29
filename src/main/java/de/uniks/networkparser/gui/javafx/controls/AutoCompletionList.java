@@ -38,7 +38,7 @@ public class AutoCompletionList {
 	private String oldSearch;
 	private IdMap map;
 	private boolean caseSensitive=false;
-	
+
 	public Set<String> items(String text) {
 		if(oldSearch!=null && oldSearch.startsWith(text) && text.length()>0) {
 			oldSearch = text;
@@ -75,7 +75,7 @@ public class AutoCompletionList {
 						result.add(item);
 					}
 				}
-			}	
+			}
 		}else{
 			text = text.toLowerCase();
 			for(String item : list) {
@@ -95,7 +95,7 @@ public class AutoCompletionList {
 		}
 		return result;
 	}
-	
+
 	private HashSet<String> getSearchList(Collection<?> items, String property, HashSet<String> result) {
 		for(Iterator<?> i = items.iterator();i.hasNext();){
 			Object item = i.next();
@@ -112,10 +112,10 @@ public class AutoCompletionList {
 					getSearchList((Collection<?>)value, property.substring(pos + 1), result);
 				}
 			}
-		}				
+		}
 		return result;
 	}
-	
+
 	public AutoCompletionList with(String... values) {
 		if(values == null) {
 			return this;
@@ -125,14 +125,14 @@ public class AutoCompletionList {
 		}
 		return this;
 	}
-	
+
 	public AutoCompletionList withList(Set<?> value, String property, IdMap map) {
 		this.items = value;
 		this.property = property;
 		this.map = map;
 		return this;
 	}
-	
+
 	public AutoCompletionList withCaseSensitive(boolean value) {
 		this.caseSensitive = value;
 		return this;

@@ -31,7 +31,7 @@ public abstract class SimpleConditionMap extends SimpleConditionProperty{
 		}
 		return false;
 	}
-	
+
 	@Override
 	public boolean check(PropertyChangeEvent values) {
 		if (values instanceof SimpleMapEvent) {
@@ -39,12 +39,10 @@ public abstract class SimpleConditionMap extends SimpleConditionProperty{
 		}
 		return false;
 	}
-	
+
 	/* @param values
 	 *			The Value of Match-Question
 	 * @return booelan if match
 	 */
 	public abstract boolean check(SimpleMapEvent values);
-
-
 }

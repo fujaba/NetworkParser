@@ -87,7 +87,7 @@ public class UniversityCreator implements SendableEntityCreator, SendableEntityC
 		}
 		return false;
 	}
-	
+
 	@Override
 	public String getTag() {
 		return "uni";

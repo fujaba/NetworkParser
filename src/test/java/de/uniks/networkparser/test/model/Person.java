@@ -1,29 +1,28 @@
 /*
-   Copyright (c) 2014 Stefan 
-   
-   Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
-   and associated documentation files (the "Software"), to deal in the Software without restriction, 
-   including without limitation the rights to use, copy, modify, merge, publish, distribute, 
-   sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is 
-   furnished to do so, subject to the following conditions: 
-   
-   The above copyright notice and this permission notice shall be included in all copies or 
-   substantial portions of the Software. 
-   
-   The Software shall be used for Good, not Evil. 
-   
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING 
-   BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
-   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
-   DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+   Copyright (c) 2014 Stefan
+
+   Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+   and associated documentation files (the "Software"), to deal in the Software without restriction,
+   including without limitation the rights to use, copy, modify, merge, publish, distribute,
+   sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+   furnished to do so, subject to the following conditions:
+
+   The above copyright notice and this permission notice shall be included in all copies or
+   substantial portions of the Software.
+
+   The Software shall be used for Good, not Evil.
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+   BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+   DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-   
+
 package de.uniks.networkparser.test.model;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.test.model.ludo.StrUtil;
 import de.uniks.networkparser.test.model.util.ItemSet;
@@ -41,19 +40,19 @@ public class Person  implements SendableEntity, Comparable<Object> {
    private GroupAccount parent = null;
    private double balance;
    private Wallet wallet = new Wallet();
-   
+
    private String name;
-	   
-   
+
+
    //==========================================================================
-   
-   
+
+
    public PropertyChangeSupport getPropertyChangeSupport()
    {
 	  return listeners;
    }
-   
-   public boolean addPropertyChangeListener(PropertyChangeListener listener) 
+
+   public boolean addPropertyChangeListener(PropertyChangeListener listener)
    {
 	  getPropertyChangeSupport().addPropertyChangeListener(listener);
 	  return true;
@@ -69,11 +68,11 @@ public class Person  implements SendableEntity, Comparable<Object> {
 	public boolean removePropertyChangeListener(PropertyChangeListener listener) {
 		getPropertyChangeSupport().removePropertyChangeListener(listener);
 		return true;
-	} 
-   
+	}
+
    //==========================================================================
-   
-   
+
+
    public void removeYou()
    {
 	  setParent(null);
@@ -81,13 +80,13 @@ public class Person  implements SendableEntity, Comparable<Object> {
 	  getPropertyChangeSupport().firePropertyChange("REMOVE_YOU", this, null);
    }
 
-   
+
    //==========================================================================
    public String getName()
    {
 	  return this.name;
    }
-   
+
    public void setName(String value)
    {
 	  if ( ! StrUtil.stringEquals(this.name, value))
@@ -97,34 +96,29 @@ public class Person  implements SendableEntity, Comparable<Object> {
 		 getPropertyChangeSupport().firePropertyChange(PROPERTY_NAME, oldValue, value);
 	  }
    }
-   
+
    public Person withName(String value)
    {
 	  setName(value);
 	  return this;
-   } 
-
+   }
 
    @Override
    public String toString()
    {
 	  StringBuilder r = new StringBuilder();
-	  
+
 	  r.append(" ").append(this.getName());
 	  r.append(" ").append(this.getBalance());
 	  return r.substring(1);
    }
 
-
-   
    //==========================================================================
-   
-
    public double getBalance()
    {
 	  return this.balance;
    }
-   
+
    public void setBalance(double value)
    {
 	  if (this.balance != value)
@@ -134,17 +128,17 @@ public class Person  implements SendableEntity, Comparable<Object> {
 		 getPropertyChangeSupport().firePropertyChange(PROPERTY_BALANCE, oldValue, value);
 	  }
    }
-   
+
    public Person withBalance(double value)
    {
 	  setBalance(value);
 	  return this;
-   } 
+   }
 
-   
+
    public static final PersonSet EMPTY_SET = new PersonSet().withFlag(PersonSet.READONLY);
 
-   
+
    /********************************************************************
 	* <pre>
 	*			  many					   one
@@ -152,7 +146,7 @@ public class Person  implements SendableEntity, Comparable<Object> {
 	*			  persons				   parent
 	* </pre>
 	*/
-   
+
 
    public GroupAccount getParent()
    {
@@ -162,44 +156,44 @@ public class Person  implements SendableEntity, Comparable<Object> {
    public boolean setParent(GroupAccount value)
    {
 	  boolean changed = false;
-	  
+
 	  if (this.parent != value)
 	  {
 		 GroupAccount oldValue = this.parent;
-		 
+
 		 if (this.parent != null)
 		 {
 			this.parent = null;
 			oldValue.withoutPersons(this);
 		 }
-		 
+
 		 this.parent = value;
-		 
+
 		 if (value != null)
 		 {
 			value.withPersons(this);
 		 }
-		 
+
 		 getPropertyChangeSupport().firePropertyChange(PROPERTY_PARENT, oldValue, value);
 		 changed = true;
 	  }
-	  
+
 	  return changed;
    }
-   
+
    public boolean setUnidirectionalParent(GroupAccount value)
    {
 	  boolean changed = false;
-	  
+
 	  if (this.parent != value)
 	  {
 		 GroupAccount oldValue = this.parent;
-		 
+
 		 this.parent = value;
 		 getPropertyChangeSupport().firePropertyChange(PROPERTY_PARENT, oldValue, value);
 		 changed = true;
 	  }
-	  
+
 	  return changed;
    }
 
@@ -207,16 +201,16 @@ public class Person  implements SendableEntity, Comparable<Object> {
    {
 	  setParent(value);
 	  return this;
-   } 
+   }
 
    public GroupAccount createParent()
    {
 	  GroupAccount value = new GroupAccount();
 	  withParent(value);
 	  return value;
-   } 
+   }
 
-   
+
    /********************************************************************
 	* <pre>
 	*			  one					   many
@@ -224,15 +218,15 @@ public class Person  implements SendableEntity, Comparable<Object> {
 	*			  buyer				   item
 	* </pre>
 	*/
-   
-   
+
+
    public ItemSet getItem()
    {
 	  if (this.item == null)
 	  {
 		 return Item.EMPTY_SET;
 	  }
-   
+
 	  return this.item;
    }
 
@@ -249,7 +243,7 @@ public class Person  implements SendableEntity, Comparable<Object> {
 			{
 			   this.item = new ItemSet();
 			}
-			
+
 			boolean changed = this.item.add (item);
 
 			if (changed)
@@ -260,7 +254,7 @@ public class Person  implements SendableEntity, Comparable<Object> {
 		 }
 	  }
 	  return this;
-   } 
+   }
 
    public Person withoutItem(Item... value)
    {
@@ -274,7 +268,7 @@ public class Person  implements SendableEntity, Comparable<Object> {
 			   getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEM, item, null);
 			}
 		 }
-		 
+
 	  }
 	  return this;
    }
@@ -284,14 +278,14 @@ public class Person  implements SendableEntity, Comparable<Object> {
 	  Item value = new Item();
 	  withItem(value);
 	  return value;
-   } 
+   }
 	public Wallet getWallet() {
 		return wallet;
 	}
-	
+
 	public void setWallet(Wallet wallet) {
 		this.wallet = wallet;
-	} 
+	}
 	public Person withWallet(Wallet wallet) {
 		this.wallet = wallet;
 		return this;
@@ -300,10 +294,10 @@ public class Person  implements SendableEntity, Comparable<Object> {
 	@Override
 	public int compareTo(Object o) {
 		if(o instanceof Person) {
-			return this.getName().compareTo(((Person)o).getName());	
+			return this.getName().compareTo(((Person)o).getName());
 		}
 		return -1;
-		
-	} 
+
+	}
 }
 

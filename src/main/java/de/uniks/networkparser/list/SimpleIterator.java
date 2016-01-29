@@ -4,7 +4,6 @@ import java.util.ConcurrentModificationException;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
-
 /**
  * An optimized version of AbstractList.ListItr
  */

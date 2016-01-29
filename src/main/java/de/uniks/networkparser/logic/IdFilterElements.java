@@ -31,7 +31,7 @@ import de.uniks.networkparser.list.SimpleList;
 public class IdFilterElements extends SimpleList<Object> implements UpdateListener {
 	private Condition<EventObject> condition;
 
-	
+
 	public IdFilterElements(Condition<EventObject> condition) {
 		this.condition = condition;
 	}

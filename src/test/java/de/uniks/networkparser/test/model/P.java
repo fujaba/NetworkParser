@@ -1,22 +1,20 @@
 package de.uniks.networkparser.test.model;
 
-
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-
 import de.uniks.networkparser.interfaces.SendableEntity;
 
 public class P implements SendableEntity {
 private String PROPERTY_MSG = "msg";
-   
+
    public void setPROPERTY_MSG(String value) {
 	  this.PROPERTY_MSG = value;
    }
-   
+
    public String getPROPERTY_MSG() {
 	  return this.PROPERTY_MSG;
    }
-   
+
 	public static final String PROPERTY_ID="number";
 	public static final String PROPERTY_CHILD="child";
 	private int number;

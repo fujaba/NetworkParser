@@ -86,5 +86,5 @@ public class ComboEditControl extends EditControl<ComboBox<Object>>{
 		control.getItems().add(value);
 		return this;
 	}
-	
+
 }

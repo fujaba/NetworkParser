@@ -40,7 +40,7 @@ public class KeyListener {
 		this.keyCode = keycode;
 		this.runnable = runnable;
 	}
-	
+
 	public KeyListener(KeyCode keyCode) {
 		this.keyCode = keyCode;
 	}
@@ -97,7 +97,7 @@ public class KeyListener {
 		this.isShortcut = value;
 		return this;
 	}
-	
+
 	public KeyListener withInTableComponent(boolean value) {
 		this.isInTableComponent = value;
 		return this;
@@ -132,7 +132,7 @@ public class KeyListener {
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
 }

@@ -1,7 +1,6 @@
 package de.uniks.networkparser.logic;
 
 import java.beans.PropertyChangeEvent;
-
 import de.uniks.networkparser.IdMap;
 
 public class SimpleMapEvent extends PropertyChangeEvent {
@@ -9,12 +8,12 @@ public class SimpleMapEvent extends PropertyChangeEvent {
 	/** Variable for Deep from Root. */
 	private int deep;
 	private IdMap map;
-	
+
 	public SimpleMapEvent(IdMap map) {
 		super(map, null, null, null);
 		this.map = map;
 	}
-	
+
 	public SimpleMapEvent(Object source, String property) {
 		super(source, property, null, null);
 	}
@@ -23,7 +22,7 @@ public class SimpleMapEvent extends PropertyChangeEvent {
 		super(source, property, oldValue, newValue);
 		this.map = source;
 	}
-	
+
 	public SimpleMapEvent(Object source, String property, Object oldValue, Object newValue, IdMap map, int deep) {
 		super(source, property, oldValue, newValue);
 		this.map = map;
@@ -39,7 +38,7 @@ public class SimpleMapEvent extends PropertyChangeEvent {
 		this.map = map;
 		return this;
 	}
-	
+
 	public SimpleMapEvent withSource(Object source) {
 		this.source = source;
 		return this;

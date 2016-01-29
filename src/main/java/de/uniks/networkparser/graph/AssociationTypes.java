@@ -22,14 +22,13 @@ package de.uniks.networkparser.graph;
  permissions and limitations under the Licence.
 */
 
-
 public enum AssociationTypes {
 	ASSOCIATION("assoc"), EDGE("edge"), GENERALISATION("generalisation"), IMPLEMENTS("implements"), UNDIRECTIONAL("unidirectional"), AGGREGATION("aggregation"), COMPOSITION("Composition");
-	
+
 	private AssociationTypes(String value) {
 		this.value = value;
 	}
-	
+
 	public String getValue() {
 		return value;
 	}

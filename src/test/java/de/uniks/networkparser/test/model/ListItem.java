@@ -2,7 +2,6 @@ package de.uniks.networkparser.test.model;
 
 import java.util.LinkedHashSet;
 
-
 public class ListItem {
 	public static final String PROPERTY_ENTITY="item";
 	private LinkedHashSet<Entity> child= new LinkedHashSet<Entity>();
@@ -22,7 +21,7 @@ public class ListItem {
 		}
 		return false;
 	}
-	
+
 	public Object get(String attrName) {
 		String attribute;
 		int pos = attrName.indexOf(".");

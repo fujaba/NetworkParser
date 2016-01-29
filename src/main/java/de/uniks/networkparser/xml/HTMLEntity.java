@@ -31,7 +31,7 @@ import de.uniks.networkparser.list.SimpleSet;
 public class HTMLEntity implements StringItem, BaseItem {
 	public static final String PROPERTY_HEADER="head";
 	public static final String PROPERTY_BODY="body";
-	
+
 	private boolean visible = true;
 	private XMLEntity body = new XMLEntity().withTag("body");
 	private XMLEntity header = new XMLEntity().withTag("head");
@@ -46,7 +46,7 @@ public class HTMLEntity implements StringItem, BaseItem {
 	public boolean isVisible() {
 		return visible;
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.toString(0);
@@ -64,13 +64,13 @@ public class HTMLEntity implements StringItem, BaseItem {
 		this.header.addChild(metaTag);
 		return this;
 	}
-	
+
 	public HTMLEntity withTitle(String value) {
 		XMLEntity titleTag = new XMLEntity().withTag("title").withValue(value);
 		this.header.addChild(titleTag);
 		return this;
 	}
-	
+
 	@Override
 	public String toString(int indentFactor, int intent) {
 		StringBuilder sb = new StringBuilder();
@@ -110,7 +110,7 @@ public class HTMLEntity implements StringItem, BaseItem {
 		}
 		return this.body.getValueItem(key);
 	}
-	
+
 	public HTMLEntity withHeader(String ref) {
 		if(ref==null || ref.length() <4) {
 			return this;
@@ -138,7 +138,7 @@ public class HTMLEntity implements StringItem, BaseItem {
 	public HTMLEntity withGraph(GraphList value) {
 		return withGraph(value, null);
 	}
-	
+
 	public HTMLEntity addStyle(String name, String style) {
 		XMLEntity styleElement = null;
 		for(XMLEntity item : header.getChildren()) {
@@ -172,7 +172,7 @@ public class HTMLEntity implements StringItem, BaseItem {
 		}
 		return this;
 	}
-	
+
 	public HTMLEntity withNewLine() {
 		this.body.withChild(new XMLEntity().withValueItem("<br />\r\n"));
 		return this;

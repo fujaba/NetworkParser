@@ -63,7 +63,7 @@ public class DiagramEditor extends SimpleShell implements Editor {
 	protected Parent createContents(FXStageController controller, Parameters args) {
 		controller.withTitle("ClassdiagrammEditor");
 		controller.withSize(900, 600);
-		
+
 		this.enableError("errors");
 		String value = args.getNamed().get("logic");
 		if(value != null) {
@@ -153,7 +153,7 @@ public class DiagramEditor extends SimpleShell implements Editor {
 						webEngine.executeScript("classEditor.setBoardStyle(\"Error\");");
 					}
 				}
-				 
+
 				event.consume();
 			}
 		});
@@ -190,7 +190,7 @@ public class DiagramEditor extends SimpleShell implements Editor {
 				}
 			}
 		});
-		
+
 		webEngine.getLoadWorker().stateProperty().addListener(new ChangeListener<State>() {
 			@Override
 			public void changed(ObservableValue<? extends State> observable, State oldValue, State newValue) {

@@ -48,7 +48,7 @@ public class GraphOptions {
 
 	public JsonObject getJson(){
 		JsonObject result = new JsonObject();
-		
+
 		result.withKeyValue("display", display);
 		result.withKeyValue("raster", raster);
 		result.withKeyValue("canvasid", canvasid);

@@ -31,7 +31,7 @@ public class PropertyChangeEventWrapper extends SendableEntityCreatorWrapper {
 	public static final String PROPERTY_OLDVALUE="oldValue";
 	public static final String PROPERTY_NEWVALUE="newValue";
 	public static final String SENDABLECLASSSTRING="java.beans.PropertyChangeEvent";
-	
+
 	@Override
 	public String[] getProperties() {
 		return new String[]{PROPERTY_SOURCE, PROPERTY_PROPERTY, PROPERTY_OLDVALUE, PROPERTY_NEWVALUE};
@@ -41,7 +41,7 @@ public class PropertyChangeEventWrapper extends SendableEntityCreatorWrapper {
 	public Object getSendableInstance(boolean prototyp) {
 		return new PropertyChangeEvent(this,null,null,null);
 	}
-	
+
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if(entity instanceof PropertyChangeEvent) {

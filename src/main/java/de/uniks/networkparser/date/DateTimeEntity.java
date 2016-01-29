@@ -225,12 +225,12 @@ public class DateTimeEntity {
 			Long time = getTimeWithTimeZone();
 			this.fields.put(DateField.MILLISECONDS, time);
 			this.fields.put(DateField.MILLISECOND, time % ONE_SECOND);
-	
+
 			if (internCalculate(time, true)) {
 				time += ONE_HOUR;
 				internCalculate(time, false);
 			}
-	
+
 			this.dirty = false;
 		}
 	}

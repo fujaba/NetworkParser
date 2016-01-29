@@ -52,7 +52,7 @@ public class GraphIdMap extends IdMap {
 		return parse(object,
 				filter.newInstance(new GraphIdMapFilter()).withTyp(OBJECT));
 	}
-	
+
 	/**
 	 * Parses the object.
 	 *
@@ -80,14 +80,14 @@ public class GraphIdMap extends IdMap {
 	public String parse(Object object, GraphIdMapFilter filter) {
 		return parsing(object, filter).toString();
 	}
-	
+
 	public GraphList parsing(Object object, GraphIdMapFilter filter) {
 		GraphList newElement = new GraphList();
 		newElement.withTyp(filter.getTyp());
 		Clazz main = parse(object, filter, newElement, 0);
 		GraphDiff diff = newElement.getDiff();
 		if(diff != null) {
-			diff.withMain(main);	
+			diff.withMain(main);
 		}
 		return newElement;
 	}

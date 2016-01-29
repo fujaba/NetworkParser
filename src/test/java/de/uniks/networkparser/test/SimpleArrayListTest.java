@@ -1,18 +1,14 @@
 package de.uniks.networkparser.test;
 
 import static org.junit.Assert.assertEquals;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashSet;
-
 import org.junit.Assert;
 import org.junit.Test;
-
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
-
 
 public class SimpleArrayListTest
 {
@@ -23,7 +19,7 @@ public class SimpleArrayListTest
 		ArrayList<String> newList=new ArrayList<String>(list);
 		Assert.assertEquals("World", newList.get(0));
 	}
-	
+
 	@Test
 	public void testSimpleList() {
 		SimpleSet<String> simpleSet = new SimpleSet<String>();
@@ -43,7 +39,7 @@ public class SimpleArrayListTest
    @Test
    public void testReorderItems() {
 	  SimpleList<String> list=new SimpleList<String>();
-	  
+
 	  list.add("Test");		// ["Test"]
 	  list.add("Hello");	// ["Test","Hello"]
 	  list.remove(1);		// ["Test"]
@@ -59,7 +55,7 @@ public class SimpleArrayListTest
    @Test
    public void testInsertItems() {
 	  SimpleList<String> list=new SimpleList<String>();
-	  
+
 	  list.add("Hello");
 	  list.add("Test");
 	  list.add(1, "World");
@@ -67,11 +63,11 @@ public class SimpleArrayListTest
 	  Assert.assertEquals("Test", newList.get(2));
 	  Assert.assertEquals(3, list.size());
    }
-   
+
    @Test
    public void testInsertMoreItems() {
 	  SimpleList<String> list=new SimpleList<String>();
-	  
+
 	  list.add("!");
 	  list.add(0, "Test");
 	  list.add(0, "Hello");
@@ -80,8 +76,8 @@ public class SimpleArrayListTest
 	  Assert.assertEquals("Test", newList.get(2));
 	  Assert.assertEquals(4, list.size());
    }
-   
-   
+
+
    @Test
    public void test()
    {
@@ -93,33 +89,32 @@ public class SimpleArrayListTest
 	  }
 	  for (int i = 0 ; i < simpleArrayList.size() ; i++)
 	  {
-	   assertEquals(list.get(i), simpleArrayList.get(i));  
+	   assertEquals(list.get(i), simpleArrayList.get(i));
 	  }
-	  
-	  
+
+
 	  for (int i = 0 ; i < simpleArrayList.size() ; i++)
 	  {
 		 assertEquals(i, simpleArrayList.indexOf(list.get(i)));
 	  }
    }
-   
+
    @Test
    public void testRetainAll() {
 	   HashSet<Integer> itemA=new HashSet<Integer>();
 	   itemA.add(1);
 	   itemA.add(2);
 	   itemA.add(3);
-	   
+
 	   HashSet<Integer> itemB=new HashSet<Integer>();
 	   itemB.add(1);
 	   itemB.add(2);
-	   
+
 	   itemA.retainAll(itemB);
 	   Assert.assertEquals(2, itemA.size());
 	   Assert.assertEquals(2, itemB.size());
-	   
-   }
 
+   }
 
    private ArrayList<TestObject> gtTestList()
    {
@@ -140,8 +135,8 @@ public class SimpleArrayListTest
 	  list.add(obj6);
 	  return list;
    }
-   
-   
+
+
    class TestObject{
 	  private int hash;
 
@@ -149,21 +144,20 @@ public class SimpleArrayListTest
 	  {
 		 this.hash = hash;
 	  }
-	  
+
 	  @Override
 	  public int hashCode()
 	  {
 		 return hash;
 	  }
-	  
-	  
+
 	  @Override
 	  public boolean equals(Object obj)
 	  {
 		 return super.equals(obj);
 	  }
    }
-	@Test	
+	@Test
 	public void testListKeySet() {
 		SimpleKeyValueList<Integer, Integer> list = new SimpleKeyValueList<Integer, Integer>();
 		list.add(99, 99);
@@ -172,7 +166,7 @@ public class SimpleArrayListTest
 		list.add(2, 2);
 		list.add(3, 3);
 		list.add(4, 4);
-		
+
 		list.remove(99);
 		list.remove(100);
 		list.add(5, 5);
@@ -183,7 +177,7 @@ public class SimpleArrayListTest
 		Assert.assertEquals(7, array.length);
 		Assert.assertEquals(1, array[0]);
 	}
-	
+
 	@Test
 	public void testMap() throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		SimpleKeyValueList<Integer, Integer> map = new SimpleKeyValueList<Integer, Integer>();
@@ -197,12 +191,12 @@ public class SimpleArrayListTest
 		map.remove(99);
 		map.remove(100);
 		map.put(5, 5);
-		
+
 		Field declaredField = map.getClass().getSuperclass().getDeclaredField("elements");
 		declaredField.setAccessible(true);
 		Object[] items = (Object[]) declaredField.get(map);
 		Object[] keys = (Object[]) items[0];
-		
+
 		Assert.assertEquals(5, keys[0]);
 		Assert.assertEquals(null, keys[1]);
 		Assert.assertEquals(1, keys[2]);

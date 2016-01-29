@@ -28,13 +28,13 @@ public class GraphNode extends GraphMember{
 		super.with(name);
 		return this;
 	}
-	
+
 	public GraphNode withParent(GraphMember value) {
 		super.setParent(value);
 		return this;
 	}
 
-	
+
 	@Override
 	public String toString() {
 		return name;

@@ -6,7 +6,7 @@ public class CharacterReader extends CharacterBuffer{
 
     /** The character. */
     protected int character;
-    
+
 	/** Is Last String is \"String\" or Text */
 	private boolean isString = true;
 
@@ -18,7 +18,7 @@ public class CharacterReader extends CharacterBuffer{
 		this.isString = isString;
 		return this;
 	}
-	
+
     public boolean back() {
     	if(super.back()) {
     		this.character -= 1;
@@ -26,7 +26,7 @@ public class CharacterReader extends CharacterBuffer{
     	}
     	return false;
     }
-    
+
     @Override
 	public char getChar() {
 		char c = super.getChar();
@@ -38,13 +38,13 @@ public class CharacterReader extends CharacterBuffer{
 		}
 		return c;
 	}
-    
+
     @Override
     public CharacterBuffer nextString(CharacterBuffer sc, boolean allowQuote, boolean nextStep, char... quotes) {
     	if(quotes ==null) {
     		return sc;
     	}
-    	
+    
     	boolean found=false;
     	for(char quote : quotes) {
 			if ('"' == quote) {
@@ -54,7 +54,7 @@ public class CharacterReader extends CharacterBuffer{
 				} else {
 					isString = !isString;
 				}
-			} 
+			}
     	}
     	if (found == false && getCurrentChar() == '"') {
 			isString = true;
@@ -72,7 +72,7 @@ public class CharacterReader extends CharacterBuffer{
 		super.nextString(sc, allowQuote, nextStep, quotes);
 		return sc;
 	}
-    
+
 	public CharacterReader with(CharSequence... items) {
 		super.with(items);
 		return this;

@@ -81,7 +81,7 @@ public class Grammar {
 		Class<?> clazzName = getClassForName((String) className);
 		return getSuperCreator(map, searchForSuperCreator, clazzName);
 	}
-	
+
 	protected Class<?> getClassForName(String name) {
 		return null;
 	}
@@ -133,7 +133,7 @@ public class Grammar {
 	public Object getNewPrototyp(SendableEntityCreator creator) {
 		return creator.getSendableInstance(true);
 	}
-	
+
 	/**
 	 * Get a new Instance of Element from the Creator
 	 * @param creator The EntityCreator
@@ -143,7 +143,7 @@ public class Grammar {
 	public Object getNewEntity(SendableEntityCreator creator, String className) {
 		return creator.getSendableInstance(false);
 	}
-	
+
 	public boolean hasReadValue(JsonObject json, String property) {
 		return json.has(property);
 	}

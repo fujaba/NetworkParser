@@ -1,15 +1,12 @@
 package de.uniks.networkparser.test;
 
 import static org.junit.Assert.assertEquals;
-
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
 import org.junit.Assert;
 import org.junit.Test;
-
 import de.uniks.networkparser.bytes.checksum.CCITT16;
 import de.uniks.networkparser.bytes.checksum.Crc16;
 import de.uniks.networkparser.bytes.checksum.Crc8;
@@ -19,7 +16,7 @@ import de.uniks.networkparser.bytes.checksum.Sum8;
 import de.uniks.networkparser.bytes.converter.ByteConverterHex;
 
 public class CheckSumTest {
-	
+
 	@Test
 	public void testCCITT16() throws UnsupportedEncodingException{
 		CCITT16 crc16= new CCITT16();
@@ -49,7 +46,7 @@ public class CheckSumTest {
 		Assert.assertEquals("CRC16-CCITT", "98EC", converter.toString(crc16.getByteArray()));
 
 	}
-	
+
 	// Albert
 	private byte[] test = new byte[]{'A', 'l', 'b', 'e','r','t'};
 	@Test
@@ -59,16 +56,16 @@ public class CheckSumTest {
 		crc.update(test);
 		assertEquals(218,crc.getValue());
 	}
-	
+
 	@Test
 	public void testCRC16(){
 		Crc16 crc= new Crc16();
 		crc.update(test);
 		assertEquals(14516,crc.getValue());
-		
+
 //		0x38B4
 	}
-	
+
 	@Test
 	public void testFCS16(){
 		FCS16 crc= new FCS16();
@@ -76,16 +73,16 @@ public class CheckSumTest {
 		crc.update(test);
 		assertEquals(19779,crc.getValue());
 	}
-	
+
 	public void printTables(int[] left, int[] right, PrintStream stream){
 		for (int i=0;i<256;i++){
 			stream.println(left[i]+ ":" +right[i]);
 		}
 	}
-	
+
 	@Test
 	public void testCRC32(){
-		
+
 	}
 	@Test
 	public void testSum8(){
@@ -94,7 +91,7 @@ public class CheckSumTest {
 		assertEquals(135, crc.getValue());
 	}
 
-	
+
 	@Test
 	public void testSHA1(){
 		// Compute digest
@@ -102,11 +99,11 @@ public class CheckSumTest {
 		try {
 			sha1 = MessageDigest.getInstance("SHA1");
 
-			String plaintext = "Stefan"; 
+			String plaintext = "Stefan";
 			byte[] bytes = (plaintext).getBytes();
 			byte[] digest = sha1.digest(bytes);
 			ByteConverterHex converter = new ByteConverterHex();
-			
+
 			SHA1 sha12 = new SHA1();
 			sha12.update(bytes);
 			byte[] value = sha12.getByteArray();

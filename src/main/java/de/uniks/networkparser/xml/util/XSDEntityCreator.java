@@ -23,6 +23,7 @@ package de.uniks.networkparser.xml.util;
 */
 import java.util.ArrayList;
 
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.xml.XMLEntity;
@@ -98,7 +99,7 @@ public class XSDEntityCreator implements SendableEntityCreatorTag, XMLGrammar {
 	}
 
 	@Override
-	public void addChildren(XMLEntity parent, XMLEntity child) {
+	public void addChildren(IdMap map, XMLEntity parent, XMLEntity child) {
 		if (this.privateStack.size() > 0) {
 			String lastTag = this.privateStack
 					.get(this.privateStack.size() - 1);

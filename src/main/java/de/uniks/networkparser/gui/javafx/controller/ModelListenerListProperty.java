@@ -54,7 +54,7 @@ public class ModelListenerListProperty extends ModelListenerProperty<ObservableL
 				Object child = iterator.next();
 				Object childValue = childCreator.getValue(child, childProperty);
 				new ModelListenerStringProperty(childCreator, child, childProperty).addListener(new ObjectListener());
-				
+
 				observableList.add(""+childValue);
 			}
 		}
@@ -62,14 +62,14 @@ public class ModelListenerListProperty extends ModelListenerProperty<ObservableL
 
 	@Override
 	public void invalidated(Observable observable) {
-		
+
 	}
 
 	@Override
 	public ObservableList<String> getValue() {
 		return values.getValue();
 	}
-	
+
 	class ObjectListener implements ChangeListener<Object>{
 		@Override
 		public void changed(ObservableValue<? extends Object> observable,

@@ -25,14 +25,14 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 
 public class DataTypeMap extends DataType {
 	private DataType genericKey;
-	
+
 	private DataType genericValue;
-	
+
 	DataTypeMap() {
 		super(SimpleKeyValueList.class.getName());
 		this.value.withExternal(true);
 	}
-	
+
 	public static DataTypeMap create(Clazz key, Clazz value) {
 		DataTypeMap result = new DataTypeMap().withGenericKey(DataType.create(key)).withGenericValue(DataType.create(value));
 		return result;
@@ -41,7 +41,7 @@ public class DataTypeMap extends DataType {
 		DataTypeMap result = new DataTypeMap().withGenericKey(DataType.create(key)).withGenericValue(DataType.create(value));
 		return result;
 	}
-	
+
 	public static DataTypeMap create(DataType key, DataType value) {
 		DataTypeMap result = new DataTypeMap().withGenericKey(key).withGenericValue(value);
 		return result;
@@ -56,15 +56,15 @@ public class DataTypeMap extends DataType {
 		this.genericValue = value;
 		return this;
 	}
-	
+
 	public DataType getGenericKey() {
 		return genericKey;
 	}
-	
+
 	public DataType getGenericValue() {
 		return genericValue;
 	}
-	
+
 	@Override
 	public String getName(boolean shortName) {
 		if (this.value == null) {

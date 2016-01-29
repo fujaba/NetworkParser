@@ -1,7 +1,6 @@
 package de.uniks.networkparser.test.ant;
 
 import java.io.File;
-
 import de.uniks.networkparser.test.ant.sources.NetworkParserSources;
 
 public class CopyRightSetter {
@@ -28,7 +27,6 @@ public class CopyRightSetter {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-
 	}
 
 	public void setFile(String value) {
@@ -54,9 +52,9 @@ public class CopyRightSetter {
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
 	}
-	
+
 	public static void main(String[] args) {
-		
+
 		CopyRightSetter copyRightSetter = new CopyRightSetter();
 		copyRightSetter.setProjectName("NetworkParser");
 		copyRightSetter.setSource("src/de/uniks/networkparser/");

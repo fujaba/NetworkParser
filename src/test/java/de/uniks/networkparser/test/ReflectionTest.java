@@ -11,7 +11,6 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
-
 import org.junit.Test;
 
 public class ReflectionTest {
@@ -29,9 +28,9 @@ public class ReflectionTest {
 		ignoreMethods.add("notify");
 		ignoreMethods.add("notifyAll");
 		PrintStream stream = null; // System.out;
-		
+
 		error.append("Start: ("+this.getClass().getName()+".java:1) \n");
-		
+
 		for(Class<?> clazz : classesForPackage) {
 			StringBuilder item=new StringBuilder();
 			item.append( clazz.getName()+": ");
@@ -39,7 +38,7 @@ public class ReflectionTest {
 				item.append("ignore");
 				continue;
 			}
-			
+
 			Constructor<?>[] constructors = clazz.getConstructors();
 			if(clazz.isEnum() || clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers()) ) {
 				continue;
@@ -54,7 +53,7 @@ public class ReflectionTest {
 						break;
 					}
 					StringBuilder itemError=new StringBuilder();
-					
+
 					for(Method m : clazz.getMethods()){
 						if(ignoreMethods.contains(m.getName())) {
 							continue;
@@ -94,13 +93,13 @@ public class ReflectionTest {
 		output(error.toString(), stream);
 		output("Errors: "+errorCount+ "/" + (errorCount+ successCount), System.err);
 	}
-	
+
 	static void output(String str, PrintStream stream) {
 		if(stream != null) {
 			stream.println(str);
 		}
 	}
-	
+
 	private Object[] getParametersNull(Method m) {
 		int length = m.getParameterTypes().length;
 		Object[] objects = new Object[length];
@@ -187,7 +186,7 @@ public class ReflectionTest {
 //		}
 //		return objects;
 //	}
-	
+
 	private String getLine(Exception e, String clazzName) {
 		Throwable cause = e.getCause();
 		if(cause!=null) {
@@ -198,7 +197,7 @@ public class ReflectionTest {
 		}
 		return getLineFromThrowable(e, clazzName);
 	}
-	
+
 	private String getLineFromThrowable(Throwable e, String clazzName) {
 		StackTraceElement[] stackTrace = e.getStackTrace();
 		for(StackTraceElement ste : stackTrace) {
@@ -209,7 +208,7 @@ public class ReflectionTest {
 		}
 		return "";
 	}
-	
+
 	private String getSignature(Method m) {
 		StringBuilder r = new StringBuilder(m.getName());
 		r.append("(");
@@ -224,7 +223,7 @@ public class ReflectionTest {
 		r.append(")");
 		return r.toString();
 	}
-	
+
 	private static void checkDirectory(File directory, String pckgname,
 			ArrayList<Class<?>> classes) throws ClassNotFoundException {
 		File tmpDirectory;
@@ -251,20 +250,20 @@ public class ReflectionTest {
 	/**
 	 * Attempts to list all the classes in the specified package as determined
 	 * by the context class loader
-	 * 
+	 *
 	 * @param pckgname
 	 *			the package name to search
 	 * @return a list of classes that exist within that package
 	 * @throws ClassNotFoundException
 	 *			 if something went wrong
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public static ArrayList<Class<?>> getClassesForPackage(String pckgname)
 			throws ClassNotFoundException, IOException {
 		ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
 		ClassLoader cld = Thread.currentThread()
 				.getContextClassLoader();
-		
+
 		Enumeration<URL> resources = cld.getResources(pckgname.replace('.', '/'));
 		for (URL url = null; resources.hasMoreElements() && ((url = resources.nextElement()) != null);) {
 				checkDirectory(new File(URLDecoder.decode(url.getPath(), "UTF-8")), pckgname, classes);

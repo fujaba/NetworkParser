@@ -22,7 +22,7 @@ public class SourceItem {
 	public static final String STARTCOMMENTEXT="/**" +CRLF;
 	private String projectName;
 	private Body body= new Body();
-	
+
 	public SourceItem(File file){
 		this.file=file;
 		if(this.file.exists()){
@@ -33,14 +33,14 @@ public class SourceItem {
 		BufferedReader in;
 		try {
 			in = new BufferedReader(new FileReader(file));
-			
+
 			MyStringBuilder packageBuilder= new MyStringBuilder();
 			MyStringBuilder headerBBuilder= new MyStringBuilder();
 			MyStringBuilder commentBuilder= new MyStringBuilder();
 			PART typ=PART.HEADER;
 			FilePart activ=headerBBuilder;
 			String line=in.readLine();
-			
+
 			while (line!=null){
 				if(line.startsWith("package ")){
 					packageBuilder.append(line+CRLF);
@@ -66,8 +66,8 @@ public class SourceItem {
 					}
 				}
 
-				activ.append(line+CRLF);	
-				
+				activ.append(line+CRLF);
+
 				if(typ!=PART.BODY){
 					if(line.indexOf("*/")>=0){
 						typ = PART.HEADER;
@@ -88,12 +88,12 @@ public class SourceItem {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public SourceItem withProjectName(String value){
 		projectName = value;
 		return this;
 	}
-	
+
 	public String getCustomComment(){
 		String custom = "";
 		if(comment.length()<1){
@@ -119,17 +119,17 @@ public class SourceItem {
 		}
 		return custom;
 	}
-	
+
 	public void write(){
 		try {
 			BufferedWriter writer= new BufferedWriter(new FileWriter(file));
-			
+
 //			String template = "%packageString%" +CRLF+CRLF+ "%comment%" +CRLF+CRLF+ "%header%%body%";
 //			template.replaceAll("%packageString%", packageString);
 //			template.replaceAll("%comment%", comment);
 //			template.replaceAll("%header%", header);
 //			template.replaceAll("%body%", body);
-			
+
 			writer.write(packageString);
 			if(packageString.length()>0){
 				writer.write(CRLF);
@@ -146,7 +146,7 @@ public class SourceItem {
 			if(header.length()>0){
 				writer.write(CRLF);
 			}
-			
+
 			writer.write(CRLF);
 			writer.write(definePart);
 			writer.write("\t" +body.toString().trim()+CRLF);
@@ -155,15 +155,15 @@ public class SourceItem {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public String getBody(){
 		return body.toString();
 	}
-	
+
 	public Body getMethods(){
 		return body;
 	}
-	
+
 	public String getFileName(){
 		return file.getAbsolutePath();
 	}
@@ -222,15 +222,15 @@ public class SourceItem {
 		}
 		return null;
 	}
-	
+
 	public String getDefinePart(){
 		return definePart;
 	}
-	
+
 	public Imports getImports(){
 		return imports;
 	}
-	
+
 	public String getShortPackageName(){
 		String simple = packageString.substring(packageString.indexOf(" ")+1).trim();
 		if(simple.endsWith(";")){
@@ -238,7 +238,7 @@ public class SourceItem {
 		}
 		return simple;
 	}
-	
+
 	public void initFile(SourceItem source) {
 		this.packageString = source.get(PART.PACKAGE);
 		this.header = source.get(PART.HEADER);

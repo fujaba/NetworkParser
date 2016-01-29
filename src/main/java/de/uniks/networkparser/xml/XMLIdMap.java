@@ -23,9 +23,8 @@ package de.uniks.networkparser.xml;
 */
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
-import de.uniks.networkparser.AbstractMap;
+
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
@@ -33,6 +32,7 @@ import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
+import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.logic.BooleanCondition;
 import de.uniks.networkparser.xml.util.XMLGrammar;
 /**
@@ -46,9 +46,6 @@ public class XMLIdMap extends XMLSimpleIdMap {
 	/** The Constant ATTRIBUTEVALUE. */
 	public static final String ATTRIBUTEVALUE = "?";
 
-	/** The decoder map. */
-	private HashMap<String, SendableEntityCreatorTag> decoderMap;
-
 	/**
 	 * Inits the.
 	 */
@@ -57,56 +54,6 @@ public class XMLIdMap extends XMLSimpleIdMap {
 		super.init();
 		getCounter();
 		this.filter.withIdFilter(BooleanCondition.value(false));
-	}
-
-	/**
-	 * @param createrClass
-	 *			new Creator
-	 * @return Boolean for add the new Creator
-	 */
-	public boolean addCreator(SendableEntityCreator createrClass) {
-		if (createrClass instanceof SendableEntityCreatorTag) {
-			if (this.decoderMap != null) {
-				if (this.decoderMap
-						.containsKey(((SendableEntityCreatorTag) createrClass)
-								.getTag())) {
-					return false;
-				}
-			}
-		} else {
-			return false;
-		}
-		super.with(createrClass);
-		return true;
-	}
-
-	@Override
-	public AbstractMap with(String className,
-			SendableEntityCreator createrClass) {
-		super.with(className, createrClass);
-
-		if (createrClass instanceof SendableEntityCreatorTag) {
-			SendableEntityCreatorTag xmlCreator = (SendableEntityCreatorTag) createrClass;
-			if (this.decoderMap == null) {
-				this.decoderMap = new HashMap<String, SendableEntityCreatorTag>();
-			}
-			this.decoderMap.put(xmlCreator.getTag(), xmlCreator);
-		}
-		return this;
-	}
-
-	/**
-	 * Gets the creator decode class.
-	 *
-	 * @param tag
-	 *			the tag
-	 * @return the creator decode class
-	 */
-	public SendableEntityCreatorTag getCreatorDecodeClass(String tag) {
-		if (this.decoderMap == null) {
-			return null;
-		}
-		return this.decoderMap.get(tag);
 	}
 
 	/**
@@ -214,7 +161,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 				label = property.substring(1);
 			}
 			if (label.length() > 0) {
-				XMLEntity child = parent.getChild(label);
+				XMLEntity child = parent.getChild(label, false);
 				if (child == null) {
 					child = new XMLEntity();
 					child.withTag(label);
@@ -241,7 +188,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 		tokener.skipHeader();
 		return decode(tokener, null);
 	}
-	
+
 	public Object decode(Buffer value) {
 		XMLTokener tokener = new XMLTokener();
 		tokener.withBuffer(value);
@@ -365,12 +312,12 @@ public class XMLIdMap extends XMLSimpleIdMap {
 		if (tag.length() < 1) {
 			return null;
 		}
-		SendableEntityCreatorTag entityCreater = getCreatorDecodeClass(tag);
-		if (entityCreater != null || tokener.getStackSize() > 0) {
-			return parseIdEntity(entity, grammar, tokener, entityCreater);
+		SendableEntityCreator entityCreater = getCreator(tag, true);
+		if ((entityCreater != null && entityCreater instanceof SendableEntityCreatorTag )|| tokener.getStackSize() > 0 ) {
+			return parseIdEntity(entity, grammar, tokener, (SendableEntityCreatorTag)entityCreater);
 		}
 		// Must be a Child of Root
-		ArrayList<SendableEntityCreatorTag> filter = new ArrayList<SendableEntityCreatorTag>();
+		SimpleSet<SendableEntityCreatorTag> filter = new SimpleSet<SendableEntityCreatorTag>();
 		for (Iterator<SendableEntityCreator> i = iterator(); i.hasNext();) {
 			SendableEntityCreator creator = i.next();
 			if (creator instanceof SendableEntityCreatorTag) {
@@ -536,7 +483,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 											refObject = tokener.getStackLast(0);
 										}
 										if (refObject != null) {
-											
+
 											SendableEntityCreator parentCreator = this.getCreatorClass(refObject);
 											parentCreator.setValue(
 													refObject,
@@ -582,12 +529,12 @@ public class XMLIdMap extends XMLSimpleIdMap {
 		}
 		return item;
 	}
-	
+
 	public CharacterBuffer nextString(XMLTokener tokener, CharacterBuffer buffer, String search) {
 		char[] character = search.toCharArray();
 		int z = 0;
 		int strLen = character.length;
-		
+
 
 		while(tokener.isEnd() == false) {
 			if(z==0) {

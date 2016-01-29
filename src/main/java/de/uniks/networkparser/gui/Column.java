@@ -47,7 +47,7 @@ public class Column implements SendableEntityCreatorNoIndex {
 	public static final String PROPERTY_BROWSERID = "browserid";
 	public static final String PROPERTY_FIELDTYP = "fieldTyp";
 	public static final String FORMAT_DATE = "HH:MM:SS";
-	
+
 	private static final String[] properties = new String[] {
 		Column.PROPERTY_ATTRNAME, Column.PROPERTY_NUMBERFORMAT,
 		Column.PROPERTY_EDITCOLUMN, Column.PROPERTY_LABEL,
@@ -235,7 +235,7 @@ public class Column implements SendableEntityCreatorNoIndex {
 	public Style getStyle() {
 		return style;
 	}
-	
+
 	public Style getOrCreateStyle() {
 		if(style == null) {
 			style = new Style();
@@ -261,7 +261,7 @@ public class Column implements SendableEntityCreatorNoIndex {
 		this.handler = handler;
 		return this;
 	}
-	
+
 	public CellHandler getListener() {
 		if (handler == null) {
 			handler = new CellHandler() {
@@ -278,7 +278,7 @@ public class Column implements SendableEntityCreatorNoIndex {
 	public boolean isListener() {
 		return handler != null;
 	}
-	
+
 	public Comparator<TableCellValue> getComparator() {
 		return comparator;
 	}
@@ -299,12 +299,12 @@ public class Column implements SendableEntityCreatorNoIndex {
 				+ "," + value + "]";
 		return this;
 	}
-	
+
 	@Override
 	public String[] getProperties() {
 		return properties;
 	}
-	
+
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new Column();
@@ -435,13 +435,13 @@ public class Column implements SendableEntityCreatorNoIndex {
 			if(getNumberFormat()!=null && value instanceof Long) {
 				DateTimeEntity item = new DateTimeEntity();
 				item.withValue((Long) value);
-				return item.toString(getNumberFormat()); 
+				return item.toString(getNumberFormat());
 			}
 			return value;
 		}
 		return null;
 	}
-	
+
 	public boolean setValue(Object controll, Object entity,
 			SendableEntityCreator creator, Object value) {
 		if (creator == null) {

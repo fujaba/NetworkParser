@@ -33,7 +33,7 @@ public class MethodSet extends SimpleSet<Method>{
 		}
 		return collection;
 	}
-	
+
 	public DateTypeSet getReturnTypes() {
 		DateTypeSet collection = new DateTypeSet();
 		for(Method item : this) {
@@ -48,7 +48,7 @@ public class MethodSet extends SimpleSet<Method>{
 		filterItems( collection, newValue);
 		return collection;
 	}
-	
+
 	public MethodSet hasName(String otherValue) {
 		return filter(Method.NAME.equals(otherValue));
 	}

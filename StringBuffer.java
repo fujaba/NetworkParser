@@ -34,7 +34,7 @@ public class StringBuffer extends TextBuffer {
 	public char charAt(int index) {
 		return buffer.charAt(index);
 	}
-	
+
 	@Override
 	public byte byteAt(int index) {
 		return (byte) buffer.charAt(index);

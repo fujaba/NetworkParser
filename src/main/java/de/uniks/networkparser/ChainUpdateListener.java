@@ -29,7 +29,7 @@ import de.uniks.networkparser.list.SimpleList;
 
 public class ChainUpdateListener implements UpdateListener{
 	private SimpleList<UpdateListener> list = new SimpleList<UpdateListener>();
-	
+
 	@Override
 	public boolean update(String typ, BaseItem source, PropertyChangeEvent event) {
 		boolean result=true;

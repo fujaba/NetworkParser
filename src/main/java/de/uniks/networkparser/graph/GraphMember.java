@@ -30,14 +30,14 @@ public abstract class GraphMember {
 	protected String name;
 	protected Object children;
 	protected GraphMember parentNode;
-	
+
 	Object getValue(String attribute) {
 		if(PROPERTY_NAME.equals(attribute)) {
 			return this.name;
 		}
 		return null;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	protected boolean check(GraphMember element, Condition<?>... filters) {
 		if(filters == null) {
@@ -52,7 +52,7 @@ public abstract class GraphMember {
 		}
 		return result;
 	}
-	
+
 	String getFullId() {
 		return name;
 	}
@@ -70,7 +70,7 @@ public abstract class GraphMember {
 		}
 		return collection;
 	}
-	
+
 	SimpleSet<GraphEntity> getNodes() {
 		SimpleSet<GraphEntity> collection = new SimpleSet<GraphEntity>();
 		if(this.children == null) {
@@ -84,16 +84,16 @@ public abstract class GraphMember {
 			GraphSimpleSet list = (GraphSimpleSet) this.children;
 			for(GraphMember item : list) {
 				if(item instanceof GraphEntity) {
-					collection.add((GraphEntity)item);	
+					collection.add((GraphEntity)item);
 				}
 			}
 		}
 		return collection;
 	}
-	
+
 	/** Set the name of Element
 	 * @param name The Name of Element
-	 * @return The Instance	
+	 * @return The Instance
 	 */
 	public GraphMember with(String name) {
 		setName(name);
@@ -107,7 +107,6 @@ public abstract class GraphMember {
 		}
 		return false;
 	}
-
 
 	boolean setParent(GraphMember value) {
 		if (this.parentNode != value) {
@@ -124,7 +123,7 @@ public abstract class GraphMember {
 		}
 		return false;
 	}
-	
+
 	protected GraphMember withChildren(boolean back, GraphMember... values) {
 		// Do Nothing
 		if (values == null || (values.length == 1 && (this.children == values[0]))) {
@@ -181,7 +180,7 @@ public abstract class GraphMember {
 		}
 		return this;
 	}
-	
+
 	GraphDiff getDiff() {
 		if(this.children == null) {
 			return null;
@@ -193,11 +192,11 @@ public abstract class GraphMember {
 		}
 		return null;
 	}
-	
+
 	public String getName() {
 		return this.name;
 	}
-	
+
 	protected GraphMember withAnnotaion(Annotation value) {
 		// Remove Old GraphAnnotation
 		if(this.children != null) {
@@ -220,7 +219,7 @@ public abstract class GraphMember {
 		withChildren(true, value);
 		return this;
 	}
-	
+
 	protected Annotation getAnnotation() {
 		if(this.children == null) {
 			return null;
@@ -237,7 +236,7 @@ public abstract class GraphMember {
 		}
 		return null;
 	}
-	
+
 	public Modifier getModifier() {
 		if(this.children == null) {
 			return null;

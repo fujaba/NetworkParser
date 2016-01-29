@@ -53,7 +53,7 @@ public class ByteConverterHex extends ByteConverter {
 				}
 				returnValue.with(hexVal.charAt(value / 16));
 				returnValue.with(hexVal.charAt(value % 16));
-				returnValue.with(step); 
+				returnValue.with(step);
 			}
 		}
 		return returnValue.toString();

@@ -67,12 +67,12 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 		if(this.field.isListener()){
 			this.setCursor(Cursor.HAND);
 		}
-		
+
 		if(field.getStyle()!= null && field.getStyle().getAlignment() != null) {
 			GUIPosition alignment = GUIPosition.valueOf( field.getStyle().getAlignment() );
 			if(alignment != null) {
 				if(alignment==GUIPosition.CENTER) {
-					this.setAlignment(Pos.CENTER);		
+					this.setAlignment(Pos.CENTER);
 				}else if(alignment==GUIPosition.WEST) {
 					this.setAlignment(Pos.CENTER_LEFT);
 				}else if(alignment==GUIPosition.EAST) {
@@ -81,7 +81,7 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 			}
 		}
 		this.setOnMouseClicked( this);
-		
+
 		return this;
 	}
 
@@ -121,16 +121,16 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 			});
 		}
 	}
-	
+
 //	public boolean isOnAction() {
 //		TablePosition<Object, ?> editingCell = getTableView().getEditingCell();
 //		int row = editingCell.getRow();
 //		Object entity = tableComponent.getElement(row);
 //		SendableEntityCreator creator = tableComponent.getCreator(entity);
-//		
+//
 //		return this.field.getListener().onAction(entity, creator, 2, getTableView().getLayoutX(), getTableView().getLayoutY());
 //	}
-	
+
 	@Override
 	public void startEdit() {
 		if(isEditable()) {
@@ -144,19 +144,19 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 			}
 		}
 	}
-	
+
 	@Override
 	public void commitEdit(TableCellValue arg0) {
 		super.commitEdit(arg0);
 		apply(APPLYACTION.SAVE);
 	}
-	
+
 	@Override
 	public void cancelEdit() {
 		super.cancelEdit();
 		cancel();
 	}
-	
+
 	@Override
 	public void cancel() {
 		setText(""+getItem());
@@ -168,7 +168,7 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 		Object value = control.getValue(false);
 		getItem().getColumn().setValue(this, getItem().getItem(), getItem().getCreator(), value);
 		setText(""+value);
-		setGraphic(null);		
+		setGraphic(null);
 	}
 
 	@Override
@@ -181,7 +181,7 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 		control.withValue(value);
 		return this;
 	}
-	
+
 	public TableCellFX withTableComponent(TableComponent value) {
 		this.tableComponent = value;
 		return this;
@@ -195,22 +195,21 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 	public boolean setFocus(boolean value) {
 		return true;
 	}
-	
+
 	@Override
 	public void handle(MouseEvent event) {
 		TablePosition<?, ?> editingCell = getTableView().getFocusModel().getFocusedCell();
 		int row = editingCell.getRow();
 		Object entity = tableComponent.getElement(row);
 		SendableEntityCreator creator = tableComponent.getCreator(entity);
-		
+
 		this.field.getListener().onAction(entity, creator, getTableView().getLayoutX(), getTableView().getLayoutY());
 	}
-	
+
 	@Override
 	public boolean onActive(boolean value) {
 		return false;
 	}
-
 
 	@Override
 	public boolean nextFocus() {

@@ -323,7 +323,7 @@ public abstract class SimpleShell extends Application {
 		return caption + getVersion() + " (" + System.getProperty("file.encoding") + " - "
 				+ System.getProperty("sun.arch.data.model") + "-Bit)";
 	}
-	
+
 	protected SimpleShell enableError(String path) {
 		this.errorPath = path;
 		if(Thread.getDefaultUncaughtExceptionHandler()==null){

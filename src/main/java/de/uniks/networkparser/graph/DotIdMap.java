@@ -73,13 +73,13 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 		}while(c != 0);
 		return graph;
 	}
-	
+
 	void decodeEdge(GraphList graph, BufferItem value) {
 		char endChar;
 		do {
 			GraphEntity node = decodeNode(graph, value);
 			graph.withNode(node);
-			
+
 			// and Second Node
 			if(value.getCurrentChar() == '-') {
 				// May Be Edge
@@ -91,7 +91,7 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 					edge.with(AssociationTypes.UNDIRECTIONAL);
 				}
 				value.getChar();
-				
+
 				GraphEntity otherNode = decodeNode(graph, value);
 				Association otherEdge = new Association(otherNode);
 				otherEdge.with(otherNode);
@@ -137,7 +137,7 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 		}while(c != 0);
 		return node;
 	}
-	
+
 //	ID '=' ID [ (';' | ',') ]
 	void decodeAttributes(GraphEntity node, BufferItem value) {
 		value.skipChar('[');
@@ -192,7 +192,7 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 		}
 		return "";
 	}
-	
+
 	@Override
 	public String convert(GraphList root, boolean removePackage) {
 		StringBuilder sb=new StringBuilder();
@@ -216,7 +216,7 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 			}
 			sb.append(node.getName(false)+" : "+getTyp(node, root.getTyp(), removePackage));
 			if(isObjectdiagram) {
-				sb.append("</u>"); 
+				sb.append("</u>");
 			}
 			sb.append("</b></td></tr>");
 			if(node instanceof Clazz == false) {
@@ -252,7 +252,7 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 			}
 			sb.append("</table>>];"+BaseItem.CRLF);
 		}
-		
+
 		root.initSubLinks();
 //		// now generate edges from edgeMap
 		for(Association edge : root.getAssociations()) {
@@ -266,7 +266,7 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 				graphTyp = "digraph";
 				sb.append("[taillabel = \""+edge.getName()+"\"];"+BaseItem.CRLF);
 			}
-				
+
 		}
 		sb.append("}");
 		return graphTyp+sb.toString();

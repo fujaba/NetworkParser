@@ -1,9 +1,7 @@
 package de.uniks.networkparser.test;
 
-
 import org.junit.Assert;
 import org.junit.Test;
-
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.event.GUILine;
 import de.uniks.networkparser.event.Style;
@@ -18,7 +16,7 @@ public class HTMLTest {
 		String txt = "Stefan <Test>";
 		String encode = html.encode(txt);
 		Assert.assertEquals("Stefan &lt;Test&gt;", encode);
-		
+
 		Assert.assertEquals(txt, html.decode(encode));
 	}
 	@Test
@@ -34,5 +32,5 @@ public class HTMLTest {
 		Assert.assertNotNull(file.toString());
 //		System.out.println(file.toString());
 	}
-	
+
 }

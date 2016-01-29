@@ -42,7 +42,7 @@ public class Method extends GraphMember {
 		super.with(name);
 		return this;
 	}
-	
+
 	public String getName(boolean shortName) {
 		StringBuilder sb = new StringBuilder();
 
@@ -63,7 +63,7 @@ public class Method extends GraphMember {
 	public Method(String name) {
 		this.with(name);
 	}
-	
+
 	public Method(String name, DataType returnType, Parameter... parameters) {
 		this.with(name);
 		this.with(parameters);
@@ -84,7 +84,7 @@ public class Method extends GraphMember {
 		new Parameter().with(paramName).with(DataType.create(dataType)).withParent(this);
 		return this;
 	}
-	
+
 	@Override
 	public Modifier getModifier() {
 		Modifier modifier = super.getModifier();
@@ -103,7 +103,7 @@ public class Method extends GraphMember {
 	public DataType getReturnType() {
 		return this.returnType;
 	}
-	
+
 	public Clazz getClazz() {
 		return (Clazz) parentNode;
 	}
@@ -111,7 +111,7 @@ public class Method extends GraphMember {
 	public Parameter create(DataType type) {
 		return new Parameter().with(type).withParent(this);
 	}
-	
+
 	public Parameter create(Clazz type) {
 		return new Parameter().with(DataType.create(type)).withParent(this);
 	}
@@ -128,7 +128,7 @@ public class Method extends GraphMember {
 			if((collection.get(i) instanceof Parameter)==false) {
 				continue;
 			}
-			Parameter param = (Parameter) collection.get(i); 
+			Parameter param = (Parameter) collection.get(i);
 			if(i>0) {
 				sb.append(", ");
 			}
@@ -149,8 +149,8 @@ public class Method extends GraphMember {
 		this.body = value;
 		return this;
 	}
-	
-	
+
+
 	public SimpleSet<Throws> getThrows() {
 		SimpleSet<Throws> collection = new SimpleSet<Throws>();
 		if (children == null) {
@@ -168,12 +168,12 @@ public class Method extends GraphMember {
 		}
 		return collection;
 	}
-	
-	
+
+
 	/** get All Parameter
 	 * @param filters Can Filter the List of Parameter
 	 * @return all Parameter of a Method
-	 * 
+	 *
 	 *<pre>
 	 * Method  --------------------- Parameter
 	 * one                          many
@@ -192,7 +192,7 @@ public class Method extends GraphMember {
 			GraphSimpleSet items = (GraphSimpleSet) children;
 			for (GraphMember item : items) {
 				if(item instanceof Parameter && check(item, filters) ) {
-					collection.add((Parameter)item);	
+					collection.add((Parameter)item);
 				}
 			}
 		}
@@ -203,27 +203,27 @@ public class Method extends GraphMember {
 		super.withChildren(true, values);
 		return this;
 	}
-	
+
 	public Method with(Parameter... values) {
 		super.withChildren(true, values);
 		return this;
 	}
-	
+
 	public Method with(DataType returnType) {
 		this.returnType = returnType;
 		return this;
 	}
-	
+
 	public Method with(Clazz returnType) {
 		this.returnType = DataType.create(returnType);
 		return this;
 	}
-	
+
 	public Method without(Parameter... values) {
 		super.without(values);
 		return this;
 	}
-	
+
 	public Method without(Annotation... values) {
 		super.without(values);
 		return this;

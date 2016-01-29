@@ -26,7 +26,7 @@ public class GraphDiff extends GraphMember{
 	private int count;
 	private GraphMember match;
 	private GraphEntity mainFile;
-	
+
 	public GraphDiff withMain(GraphEntity node) {
 		this.mainFile = node;
 		return this;
@@ -54,7 +54,7 @@ public class GraphDiff extends GraphMember{
 		}
 		return this;
 	}
-	
+
 	int getCount() {
 		return count;
 	}

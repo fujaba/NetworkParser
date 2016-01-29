@@ -2,7 +2,6 @@ package de.uniks.networkparser.test;
 
 import org.junit.Assert;
 import org.junit.Test;
-
 import de.uniks.networkparser.graph.Annotation;
 
 public class AnnotationTest {
@@ -26,7 +25,7 @@ public class AnnotationTest {
 
 		annotation = Annotation.create("@Target({ElementType.METHOD,ElementType.CONSTRUCTOR,ElementType.TYPE,ElementType.FIELD}");
 		Assert.assertEquals("@Target(ElementType.METHOD,ElementType.CONSTRUCTOR,ElementType.TYPE,ElementType.FIELD)", annotation.toString());
-		
+
 		annotation = Annotation.create("@Loggable@Cacheable");
 		Assert.assertEquals("@Loggable", annotation.toString());
 		Assert.assertEquals("@Cacheable", annotation.next().toString());

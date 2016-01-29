@@ -29,7 +29,7 @@ public class StringContainer implements CharSequence {
 	 * The value is used for character storage.
 	 */
 	CharSequence value;
-	
+
 	private final static String EMPTY="";
 
 	/**
@@ -127,7 +127,7 @@ public class StringContainer implements CharSequence {
 	public CharSequence subSequence(int start, int end) {
 		return substring(start, end);
 	}
-	
+
 	/**
 	 * Returns a new {@code String} that contains a subsequence of characters
 	 * currently contained in this character sequence. The substring begins at
@@ -176,7 +176,7 @@ public class StringContainer implements CharSequence {
 		}
 		return this;
 	}
-	
+
 	/**
 	 * Returns the {@code char} value in this sequence at the specified index.
 	 * The first {@code char} value is at index {@code 0}, the next at index
@@ -217,7 +217,7 @@ public class StringContainer implements CharSequence {
 	public boolean endsWith(String suffix) {
 		return startsWith(suffix, value.length() - suffix.length());
 	}
-	
+
 	/**
 	 * Tests if this string starts with the specified prefix.
 	 *
@@ -234,7 +234,7 @@ public class StringContainer implements CharSequence {
 	public boolean startsWith(String prefix) {
 		return startsWith(prefix, 0);
 	}
-	
+
 	  /**
 	 * Tests if the substring of this string beginning at the
 	 * specified index starts with the specified prefix.
@@ -260,7 +260,7 @@ public class StringContainer implements CharSequence {
 		}
 		return value.toString().startsWith(prefix, toffset);
 	}
-	
+
 	/**
 	 * Relative bulk <i>put</i> method&nbsp;&nbsp;<i>(optional operation)</i>.
 	 *
@@ -292,11 +292,11 @@ public class StringContainer implements CharSequence {
 		}
 		return this;
 	}
-	
+
 	public final StringContainer with(char src) {
 		if(value == null) {
 			this.value = new CharacterBuffer().with(src);
-			
+
 		} else if(value instanceof CharacterBuffer) {
 			((CharacterBuffer)this.value).with(src);
 		} else {
@@ -323,7 +323,7 @@ public class StringContainer implements CharSequence {
 		}
 		return oldChar;
 	}
-	
+
 	public CharSequence trim() {
 		if(value == null) {
 			return value;

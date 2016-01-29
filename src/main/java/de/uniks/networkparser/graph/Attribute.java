@@ -35,19 +35,19 @@ public class Attribute extends Value {
 		this.with(name);
 		this.with(datatyp);
 	}
-	
+
 	@Override
 	public Attribute with(Class<?> value) {
 		super.with(value);
 		return this;
 	}
-	
+
 	@Override
 	public Attribute withValue(String value) {
 		super.withValue(value);
 		return this;
 	}
-	
+
 	@Override
 	public Modifier getModifier() {
 		Modifier modifier = super.getModifier();
@@ -62,21 +62,21 @@ public class Attribute extends Value {
 		super.withModifier(modifier);
 		return this;
 	}
-	
+
 	public Attribute without(Modifier... modifier) {
 		getModifier().without(modifier);
 		return this;
 	}
-	
+
 	public Attribute without(Annotation... annotation) {
 		super.without(annotation);
 		return this;
 	}
-	
+
 	public Clazz getClazz() {
 		return (Clazz) parentNode;
 	}
-	
+
 	// Redirect
 	@Override
 	public Attribute with(String value) {
@@ -89,7 +89,7 @@ public class Attribute extends Value {
 		super.with(value);
 		return this;
 	}
-	
+
 	@Override
 	public Attribute with(Clazz value) {
 		super.with(value);
@@ -108,7 +108,7 @@ public class Attribute extends Value {
 		return this;
 	}
 
-	
+
 	public String getValue(String typ, boolean shortName) {
 		if (typ.equals(GraphIdMap.OBJECT)) {
 			if(DataType.STRING == this.type && !this.value.startsWith("\"")){

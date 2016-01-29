@@ -50,9 +50,8 @@ public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
 
 	/** The Constant ITEMSTART. */
 	public static final char ITEMSTART = '<';
-	
+
 	public static final char DOUBLEQUOTIONMARK = '"';
-	
 
 	/** The Constant SPACE. */
 	public static final char SPACE = ' ';
@@ -99,8 +98,7 @@ public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
 
 	@Override
 	public Object decode(BaseItem value) {
-		return decode((XMLTokener) new XMLTokener().withBuffer(value.toString()),
-				null);
+		return decode(new XMLTokener().withBuffer(value.toString()), null);
 	}
 
 	/**
@@ -136,7 +134,7 @@ public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
 	 */
 	@Override
 	public Object decode(String value) {
-		return decode(new XMLEntity().withValue(value));
+		return new XMLEntity().withValue(value);
 	}
 
 	@Override
@@ -225,7 +223,7 @@ public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
 					grammar.setValue(entity, key, value, IdMap.NEW);
 				}
 				myChar = tokener.getCurrentChar();
-			}while(myChar != ITEMEND && myChar != 0);
+			}while(myChar != ITEMEND && myChar != 0 && myChar != ENDTAG);
 
 			// Add to StackTrace
 			tokener.withStack(entity);
@@ -283,7 +281,7 @@ public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
 						} while (true);
 						child = parse(newTag, tokener.withPrefix(""), grammar);
 						if (child != null && child instanceof XMLEntity) {
-							grammar.addChildren(entity, (XMLEntity) child);
+							grammar.addChildren(this, entity, (XMLEntity) child);
 						}
 					} while (child != null);
 				}
@@ -313,6 +311,7 @@ public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
 		} else {
 			entity = new XMLEntity();
 		}
+
 		CharacterBuffer tag = null;
 		boolean isEmpty = true;
 		do {

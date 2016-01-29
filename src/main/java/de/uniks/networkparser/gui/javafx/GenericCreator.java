@@ -199,6 +199,4 @@ public class GenericCreator implements SendableEntityCreator {
 		}
 		return null;
 	}
-
-
 }

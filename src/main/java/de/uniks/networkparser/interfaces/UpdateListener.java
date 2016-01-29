@@ -19,11 +19,11 @@ public interface UpdateListener  {
 	 * @param source
 	 *			the Source Element
 	 * @param event
-	 *			The Change in a PropertyChangeEvent @see java.beans.PropertyChangeEvent 
+	 *			The Change in a PropertyChangeEvent @see java.beans.PropertyChangeEvent
 	 *
 	 * @return true, if successful
 	 */
 	public boolean update(String typ, BaseItem source, PropertyChangeEvent event);
-	
-	
+
+
 }

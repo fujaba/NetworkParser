@@ -1,17 +1,15 @@
 package de.uniks.networkparser.test;
 
 import java.io.IOException;
-
 import org.junit.Assert;
 import org.junit.Test;
-
 import de.uniks.networkparser.event.SoapObject;
 import de.uniks.networkparser.event.util.SoapCreator;
 import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XMLIdMap;
 
 public class SoapTest {
-	
+
 	@Test
 	public void testSoap() throws IOException{
 		SoapObject item = new SoapObject().withNamespace("soap");
@@ -20,13 +18,13 @@ public class SoapTest {
 					.withKeyValue("xmlns", "http://msiggi.de/Sportsdata/Webservices")
 					.withChild(XMLEntity.TAG("MatchID").withValueItem("28682"))
 				);
-		
+
 		String body = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +item.toString();
 		String reference = "<?xml version=\"1.0\" encoding=\"utf-8\"?><soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\"><soap:Body><GetMatchByMatchID xmlns=\"http://msiggi.de/Sportsdata/Webservices\"><MatchID>28682</MatchID></GetMatchByMatchID></soap:Body></soap:Envelope>";
 		Assert.assertEquals(reference, body);
 
-		
-		
+
+
 		// Send
 //		URL u = new URL("http://www.openligadb.de/Webservices/Sportsdata.asmx");
 //		HttpURLConnection conn = (HttpURLConnection) u.openConnection();
@@ -39,7 +37,7 @@ public class SoapTest {
 //		conn.setRequestProperty( "Content-Length", "" +body.length());
 //		conn.setRequestProperty("SOAPAction" , "http://msiggi.de/Sportsdata/Webservices/GetMatchByMatchID");
 //		OutputStreamWriter soapRequestWriter = new OutputStreamWriter(conn.getOutputStream());
-//		
+//
 //		soapRequestWriter.write(body);
 //		soapRequestWriter.flush();
 //
@@ -61,12 +59,12 @@ public class SoapTest {
 		// Deserialization
 		XMLIdMap map= new XMLIdMap();
 		map.with(new SoapCreator().withNamespace("soap"));
-		
+
 		SoapObject soapAnswer = (SoapObject) map.decode(answer.toString());
 
 		Assert.assertNotNull(soapAnswer.getBody());
-		
+
 		Assert.assertEquals(25, soapAnswer.getBody().getChildren().get(0).getChildren().size() );
-		
+
 	}
 }

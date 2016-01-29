@@ -60,7 +60,7 @@ public class ByteUtil {
 		}
 		return result;
 	}
-	
+
 	public static byte getTyp(byte group, byte subGroup) {
 		return (byte) (group + subGroup);
 	}

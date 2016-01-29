@@ -4,11 +4,11 @@ import de.uniks.networkparser.list.SimpleList;
 
 public class Literal extends GraphMember{
 	private SimpleList<Object> values;
-	
+
 	public Literal(String name) {
 		super.with(name);
 	}
-	
+
 	@Override
 	public Literal with(String name) {
 		super.with(name);
@@ -28,7 +28,7 @@ public class Literal extends GraphMember{
 		}
 		return this;
 	}
-	
+
 	public SimpleList<Object> getValues() {
 		return values;
 	}

@@ -11,7 +11,7 @@ public class DiceCreator implements SendableEntityCreator {
 			  Dice.PROPERTY_GAME,
 			  Dice.PROPERTY_PLAYER,
 		   };
-		   
+
 	@Override
 	public String[] getProperties() {
 		return properties;

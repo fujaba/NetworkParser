@@ -34,13 +34,13 @@ public class Clazz extends GraphEntity {
 
 	public enum ClazzType {CLAZZ, ENUMERATION, INTERFACE};
 	private ClazzType type = ClazzType.CLAZZ;
-	
+
 	@Override
 	public Clazz with(String name) {
 		super.with(name);
 		return this;
 	}
-	
+
 	@Override
 	public Clazz withId(String id) {
 		super.withId(id);
@@ -51,7 +51,7 @@ public class Clazz extends GraphEntity {
 		this.type = clazzType;
 		return this;
 	}
-	
+
 	public Clazz enableInterface() {
 		this.with(ClazzType.INTERFACE);
 		return this;
@@ -72,7 +72,7 @@ public class Clazz extends GraphEntity {
 		}
 		return this;
 	}
-	
+
 	public Clazz enableEnumeration(Literal... literals) {
 		this.with(ClazzType.ENUMERATION);
 		if(literals == null) {
@@ -83,11 +83,11 @@ public class Clazz extends GraphEntity {
 		}
 		return this;
 	}
-	
+
 	public ClazzType getType() {
 		return type;
 	}
-	
+
 	@Override
 	String getFullId() {
 		if(this.getId() != null) {
@@ -111,17 +111,17 @@ public class Clazz extends GraphEntity {
 		}
 		return modifier;
 	}
-	
+
 	public Clazz with(Association... values) {
 		super.with(values);
 		return this;
 	}
-	
+
 	public Clazz with(Modifier... values) {
 		super.withModifier(values);
 		return this;
 	}
-	
+
 	public Clazz with(Attribute... values) {
 		super.withChildren(true, values);
 		return this;
@@ -131,12 +131,12 @@ public class Clazz extends GraphEntity {
 		super.withChildren(true, values);
 		return this;
 	}
-	
+
 	public Clazz with(Annotation value) {
 		super.with(value);
 		return this;
 	}
-	
+
 	public Clazz with(GraphImage... values) {
 		super.withChildren(true, values);
 		return this;
@@ -145,7 +145,7 @@ public class Clazz extends GraphEntity {
 		super.withChildren(true, values);
 		return this;
 	}
-	
+
 	public SimpleSet<Literal> getValues() {
 		SimpleSet<Literal> collection = new SimpleSet<Literal>();
 		if(this.children == null) {
@@ -159,7 +159,7 @@ public class Clazz extends GraphEntity {
 			GraphSimpleSet list = (GraphSimpleSet) this.children;
 			for(GraphMember item : list) {
 				if(item instanceof Literal) {
-					collection.add((Literal)item);	
+					collection.add((Literal)item);
 				}
 			}
 		}
@@ -170,12 +170,12 @@ public class Clazz extends GraphEntity {
 		super.without(values);
 		return this;
 	}
-	
+
 	public Clazz without(Modifier... values) {
 		super.without(values);
 		return this;
 	}
-	
+
 	public Clazz without(Attribute... values) {
 		super.without(values);
 		return this;
@@ -185,17 +185,17 @@ public class Clazz extends GraphEntity {
 		super.without(values);
 		return this;
 	}
-	
+
 	public Clazz without(Annotation value) {
 		super.without(value);
 		return this;
 	}
-	
+
 	public Clazz without(GraphImage... values) {
 		super.without(values);
 		return this;
 	}
-	
+
 	public Clazz without(Literal... values) {
 		super.without(values);
 		return this;
@@ -209,8 +209,8 @@ public class Clazz extends GraphEntity {
 	 *	   %srcRoleName%			 %tgtRoleName%
 	 * </pre>
 	 *
-	 * create a Bidirectional Association 
-	 * 
+	 * create a Bidirectional Association
+	 *
 	 * @param tgtClass				 The target Clazz
 	 * @param tgtRoleName			 The Targetrolename
 	 * @param tgtCardinality		The Targetcardinality
@@ -225,7 +225,7 @@ public class Clazz extends GraphEntity {
 
 		// Source
 		Association assocSource = new Association(this).with(srcCardinality).with(srcRoleName);
-		
+
 		assocSource.with(assocTarget);
 
 		this.with(assocSource);
@@ -241,7 +241,7 @@ public class Clazz extends GraphEntity {
 	 * </pre>
 	 *
 	 * create a Undirectional Association
-	 * 
+	 *
 	 * @param tgtClass			The target Clazz
 	 * @param tgtRoleName		The Targetrolename
 	 * @param tgtCardinality	The Targetcardinality
@@ -356,7 +356,7 @@ public class Clazz extends GraphEntity {
 		}
 		return collection;
 	}
-	
+
 	/**
 	 * get All KindClazzes
 	 * @param transitive Get all KindClasses or direct KindClasses
@@ -378,11 +378,11 @@ public class Clazz extends GraphEntity {
 		}
 		return kidClazzes;
 	}
-	
+
 	ClazzSet getEdges(AssociationTypes typ) {
 		return getEdges(typ, null);
 	}
-	
+
 	ClazzSet getEdges(AssociationTypes typ, AssociationTypes otherTyp) {
 		ClazzSet kindClazzes = new ClazzSet();
 		if (associations == null || typ == null) {
@@ -441,7 +441,7 @@ public class Clazz extends GraphEntity {
 	/** get All Attributes
 	 * @param filters Can Filter the List of Attributes
 	 * @return all Attributes of a Clazz
-	 * 
+	 *
 	 *<pre>
 	 * Clazz  --------------------- Attributes
 	 * one                          many
@@ -462,17 +462,17 @@ public class Clazz extends GraphEntity {
 			GraphSimpleSet list = (GraphSimpleSet) this.children;
 			for(GraphMember item : list) {
 				if(item instanceof Attribute && check(item, filters) ) {
-					collection.add((Attribute)item);	
+					collection.add((Attribute)item);
 				}
 			}
 		}
 		return collection;
 	}
-	
+
 	/** get All Methods
 	 * @param filters Can Filter the List of Methods
 	 * @return all Methods of a Clazz
-	 * 
+	 *
 	 *<pre>
 	 * Clazz  --------------------- Methods
 	 * one                          many
@@ -493,7 +493,7 @@ public class Clazz extends GraphEntity {
 			GraphSimpleSet list = (GraphSimpleSet) this.children;
 			for(GraphMember item : list) {
 				if(item instanceof Method && check(item, filters) ) {
-					collection.add((Method)item);	
+					collection.add((Method)item);
 				}
 			}
 		}
@@ -556,7 +556,7 @@ public class Clazz extends GraphEntity {
 			GraphSimpleSet list = (GraphSimpleSet) this.children;
 			for(GraphMember item : list) {
 				if(item instanceof ClazzImport) {
-					collection.add((ClazzImport)item);	
+					collection.add((ClazzImport)item);
 				}
 			}
 		}
@@ -585,10 +585,10 @@ public class Clazz extends GraphEntity {
 		method.with(returnType);
 		return this;
 	}
-	
+
 	@Override
 	public String toString() {
 		return getName();
 	}
-	
+
 }

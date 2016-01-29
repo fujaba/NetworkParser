@@ -12,7 +12,7 @@ public class AssociationSet extends SimpleSet<Association>{
 		}
 		return collection;
 	}
-	
+
 	public AssociationSet getOther() {
 		AssociationSet collection = new AssociationSet();
 		for(Association item : this) {
@@ -28,7 +28,7 @@ public class AssociationSet extends SimpleSet<Association>{
 		}
 		return collection;
 	}
-	
+
 	@Override
 	public AssociationSet filter(Condition<Association> newValue) {
 		AssociationSet collection = new AssociationSet();

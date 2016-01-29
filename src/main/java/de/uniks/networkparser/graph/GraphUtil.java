@@ -25,7 +25,7 @@ See the Licence for the specific language governing
 permissions and limitations under the Licence.
 */
 /**
- * Special Util for package Method  
+ * Special Util for package Method
  *
  */
 public class GraphUtil {
@@ -69,7 +69,7 @@ public class GraphUtil {
 		}
 		return assoc.getOtherTyp()==AssociationTypes.ASSOCIATION && assoc.getType()==AssociationTypes.EDGE;
 	}
-	
+
 	public static SimpleSet<Association> getOtherAssociations(Clazz clazz) {
 		SimpleSet<Association> collection = new SimpleSet<Association>();
 		for(Association assoc : clazz.getAssociations()) {
@@ -77,7 +77,7 @@ public class GraphUtil {
 		}
 		return collection;
 	}
-	
+
 	public static void removeYou(GraphMember value) {
 		value.setParent(null);
 		if(value instanceof Attribute) {
@@ -93,7 +93,7 @@ public class GraphUtil {
 		if(value instanceof Clazz) {
 			Clazz clazz = (Clazz) value;
 			GraphSimpleSet collection = clazz.getChildren();
-			clazz.without(collection.toArray(new GraphMember[collection.size()]));	
+			clazz.without(collection.toArray(new GraphMember[collection.size()]));
 		}
 	}
 }

@@ -1,10 +1,8 @@
 package de.uniks.networkparser.test;
 
 import java.io.IOException;
-
 import org.junit.Assert;
 import org.junit.Test;
-
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.AssociationTypes;
 import de.uniks.networkparser.graph.Cardinality;
@@ -21,12 +19,12 @@ public class WriteJsonGraph {
 	@Test
 	public void testHTMLEntity() throws IOException {
 		HTMLEntity htmlEntity = new HTMLEntity();
-		
+
 		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/diagramstyle.css");
 		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/graph.js");
 		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/dagre.min.js");
 		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/drawer.js");
-		
+
 		Assert.assertEquals(425, htmlEntity.toString(2).length());
 
 		DocEnvironment docEnvironment = new DocEnvironment();
@@ -46,29 +44,29 @@ public class WriteJsonGraph {
 		Clazz map = model.with(new Clazz().with("Map<K, V>"));
 		Clazz list = model.with(new Clazz().with("List<V>"));
 		Clazz set = model.with(new Clazz().with("Set<V>"));
-		
-		
-		
+
+
+
 //		baseItem.withInterface(true);
 
 		model.with(Association.create(abstractArray, baseItem).with(AssociationTypes.IMPLEMENTS));
 		model.with(Association.create(abstractArray, iterable).with(AssociationTypes.IMPLEMENTS));
 		model.with(Association.create(abstractList, abstractArray).with(AssociationTypes.GENERALISATION));
-		
+
 		model.with(Association.create(simpleKeyValueList, abstractArray).with(AssociationTypes.GENERALISATION));
 		model.with(Association.create(simpleList, abstractList).with(AssociationTypes.GENERALISATION));
 		model.with(Association.create(simpleSet, abstractList).with(AssociationTypes.GENERALISATION));
-		
-		
+
+
 		model.with(Association.create(simpleKeyValueList, map).with(AssociationTypes.IMPLEMENTS));
 		model.with(Association.create(simpleList, list).with(AssociationTypes.IMPLEMENTS));
 		model.with(Association.create(simpleSet, set).with(AssociationTypes.IMPLEMENTS));
-		
-		
-		
+
+
+
 		docEnvironment.writeJson("simpleCollection.html", "../src/main/resources/de/uniks/networkparser/graph/", new GraphConverter().convertToJson(model, true));
 	}
-	
+
 	@Test
 	public void testWriteSimpleHTML() {
 		HTMLEntity htmlEntity = new HTMLEntity();
@@ -76,12 +74,12 @@ public class WriteJsonGraph {
 		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/graph.js");
 		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/dagre.min.js");
 		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/drawer.js");
-		
+
 		GraphList model = new GraphList().withTyp(GraphIdMap.CLASS);
 		Clazz uni = model.with(new Clazz().with("University"));
 		uni.createAttribute("name", DataType.STRING);
 		Clazz person = model.with(new Clazz().with("Person"));
-		
+
 		uni.withBidirectional(person, "has", Cardinality.MANY, "studis", Cardinality.ONE);
 		Assert.assertEquals(654, htmlEntity.withGraph(model).toString(2).length());
 	}

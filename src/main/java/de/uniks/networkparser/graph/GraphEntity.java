@@ -29,7 +29,7 @@ public abstract class GraphEntity extends GraphMember {
 	protected Object associations;
 	private boolean external;
 	private String id;
-	
+
 	public String getName(boolean shortName) {
 		if (this.name == null) {
 			return null;
@@ -47,11 +47,11 @@ public abstract class GraphEntity extends GraphMember {
 		this.id = id;
 		return this;
 	}
-	
+
 	public String getId() {
 		return id;
 	}
-	
+
 	String getTyp(String typ, boolean shortName) {
 		if (typ.equals(GraphIdMap.OBJECT)) {
 			return getId();
@@ -60,11 +60,11 @@ public abstract class GraphEntity extends GraphMember {
 		}
 		return "";
 	}
-	
+
 	/** get All Associations
 	 * @param filters Can Filter the List of Associations
 	 * @return all Associations of a Clazz
-	 * 
+	 *
 	 *<pre>
 	 * Clazz  --------------------- Associations
 	 * one                          many
@@ -94,11 +94,11 @@ public abstract class GraphEntity extends GraphMember {
 		}
 		return collection;
 	}
-	
+
 	/** get All Edges
 	 * @param filters Can Filter the List of Associations
 	 * @return all Associations of a Clazz
-	 * 
+	 *
 	 *<pre>
 	 * Clazz  --------------------- Associations
 	 * one                          many
@@ -126,7 +126,7 @@ public abstract class GraphEntity extends GraphMember {
 		}
 		return collection;
 	}
-	
+
 	GraphMember getByObject(String clazz, boolean fullName) {
 		if(clazz == null || children == null){
 			return null;
@@ -159,7 +159,7 @@ public abstract class GraphEntity extends GraphMember {
 		}
 		return null;
 	}
-	
+
 	public boolean isExternal() {
 		return this.external;
 	}
@@ -179,7 +179,7 @@ public abstract class GraphEntity extends GraphMember {
 		}
 		return this;
 	}
-	
+
 	public GraphEntity without(Association... values) {
 		if (values == null || this.associations == null) {
 			return this;
@@ -200,7 +200,7 @@ public abstract class GraphEntity extends GraphMember {
 		}
 		return this;
 	}
-	
+
 	boolean addAssoc(Association assoc) {
 		// Do Nothing
 		if (assoc == null || (this.associations == assoc)) {
@@ -249,11 +249,11 @@ public abstract class GraphEntity extends GraphMember {
 		}
 		return add;
 	}
-		
+
 	private boolean has(Association o1, Association o2) {
 		return (o1.getClazz() == o2.getClazz());
 	}
-	
+
 	public Annotation getAnnotation() {
 		return super.getAnnotation();
 	}

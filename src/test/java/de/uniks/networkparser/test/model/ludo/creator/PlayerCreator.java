@@ -5,8 +5,8 @@ import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.test.model.ludo.Player;
 
 public class PlayerCreator implements SendableEntityCreator {
-	private final String[] properties = new String[] 
-		{ 
+	private final String[] properties = new String[]
+		{
 			Player.PROPERTY_COLOR,
 			Player.PROPERTY_ENUMCOLOR,
 			Player.PROPERTY_NAME,

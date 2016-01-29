@@ -1,10 +1,7 @@
 package de.uniks.networkparser.test;
 
-
 import java.io.PrintStream;
-
 import org.junit.Test;
-
 import de.uniks.networkparser.graph.*;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SortedSet;
@@ -33,8 +30,8 @@ public class GenModel {
 			stream.println("Sum: "+count);
 		}
 	}
-	
-	
+
+
 	@Test
 	public void testModel() {
 //		GraphModel model = new GraphList().with("de.uniks");
@@ -43,7 +40,7 @@ public class GenModel {
 //		de.uniks.networkparser.graph.Method mainMethod = uni.createMethod("main");
 //		boolean printItems=true;
 //		System.out.println(getCounting(Cardinality.class, true, true));
-		
+
 //		System.out.println("Clazz: "+getCount(uni, true, printItems));
 //		System.out.println("Attribute: "+getCount(nameAttribute, true, printItems));
 //		System.out.println("Method: "+getCount(mainMethod, true, printItems));
@@ -51,7 +48,7 @@ public class GenModel {
 //		Assert.assertNotNull(nameAttribute);
 //		Assert.assertNotNull(mainMethod);
 	}
-	
+
 	private String shortName(Class<?> classType) {
 		if(classType == null) {
 			return null;
@@ -70,18 +67,18 @@ public class GenModel {
 		for(int i = 0;i<parameters.length;i++) {
 			sb.append(parameters[i].getType());
 			if(i<parameters.length - 1) {
-				sb.append(",");	
+				sb.append(",");
 			}
 		}
 		sb.append(")");
 		if(method.getReturnType()!= null) {
 			sb.append(" : ");
 			sb.append(shortName(method.getReturnType()));
-			
+
 		}
 		return sb.toString();
 	}
-	
+
 	public int getCount(Object element, boolean printItems) {
 		return getCounting(element.getClass(), printItems);
 	}
@@ -90,7 +87,7 @@ public class GenModel {
 		if(stream != null) {
 			stream.println(element.getSimpleName()+": "+count);
 		}
-		
+
 		if(java.lang.reflect.Modifier.isAbstract(element.getModifiers()) ) {
 			return 0;
 		}
@@ -100,7 +97,7 @@ public class GenModel {
 			if(methods[i].getDeclaringClass() == Object.class || methods[i].getDeclaringClass() == Enum.class) {
 				continue;
 			}
-			if (java.lang.reflect.Modifier.isStatic(methods[i].getModifiers())  || 
+			if (java.lang.reflect.Modifier.isStatic(methods[i].getModifiers())  ||
 					java.lang.reflect.Modifier.isPublic(methods[i].getModifiers()) == false) {
 				continue;
 			}
@@ -120,7 +117,7 @@ public class GenModel {
 		return count;
 	}
 
-	public int getCounting(Class<?> element, boolean printItems) {	
+	public int getCounting(Class<?> element, boolean printItems) {
 		java.lang.reflect.Method[] methods = element.getMethods();
 		SortedSet<String> counts=new SortedSet<String>();
 		for(int i=0;i<methods.length;i++) {

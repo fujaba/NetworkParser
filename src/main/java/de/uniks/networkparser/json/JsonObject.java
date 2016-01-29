@@ -88,11 +88,11 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
  */
 public class JsonObject extends SimpleKeyValueList<String, Object> implements
 		StringItem, Entity {
-	
+
 	public JsonObject() {
 		this.withAllowDuplicate(false);
 	}
-	
+
 	/**
 	 * Get the JsonArray value associated with a key.
 	 *
@@ -151,7 +151,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 		throw new RuntimeException("JsonObject[" + EntityUtil.quote(key)
 				+ "] is not a JsonObject.");
 	}
-	
+
 	/**
 	 * Make a JSON text of this JsonObject. For compactness, no whitespace is
 	 * added. If this would not result in a syntactically correct JSON text,
@@ -373,7 +373,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 		remove(key);
 		return this;
 	}
-	
+
 	@Override
 	public JsonObject withAll(Object... values) {
 		if(values == null) {
@@ -388,7 +388,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements
 		super.withAll(values);
 		return this;
 	}
-	
+
 	public static JsonObject create(String value) {
 		return new JsonObject().withValue(value);
 	}

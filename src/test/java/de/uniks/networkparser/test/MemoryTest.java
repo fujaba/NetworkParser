@@ -1,7 +1,6 @@
 package de.uniks.networkparser.test;
 
 import org.junit.Test;
-
 import de.uniks.networkparser.logic.BooleanCondition;
 import de.uniks.networkparser.logic.Or;
 

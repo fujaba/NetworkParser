@@ -5,7 +5,7 @@ import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.test.model.ludo.Ludo;
 
 public class LudoCreator implements SendableEntityCreator {
-	private final String[] properties = new String[] 
+	private final String[] properties = new String[]
 	{
 			Ludo.PROPERTY_DATE,
 			Ludo.PROPERTY_PLAYERS,

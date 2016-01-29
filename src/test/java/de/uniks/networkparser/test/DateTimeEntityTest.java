@@ -1,14 +1,11 @@
 package de.uniks.networkparser.test;
 
 import static org.junit.Assert.assertEquals;
-
 import java.io.PrintStream;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-
 import org.junit.Test;
-
 import de.uniks.networkparser.date.DateField;
 import de.uniks.networkparser.date.DateTimeEntity;
 
@@ -26,7 +23,7 @@ public class DateTimeEntityTest {
 		printToStream(df, reference, null);
 		long timeInMillis = reference.getTimeInMillis();
 		date.withTime(timeInMillis);
-		
+
 		assertEquals("MILLISECOND", "" +reference.get(Calendar.MILLISECOND), "" +date.get(DateField.MILLISECOND));
 		assertEquals("MILLISECONDS", "" +timeInMillis, "" +date.getTime());
 //		assertEquals("AMPM", "" +reference.get(Calendar.AM), "" +date.get(DateField.AMPM).getValue());
@@ -39,7 +36,7 @@ public class DateTimeEntityTest {
 		assertEquals("DAY_OF_YEAR", "" +reference.get(Calendar.DAY_OF_YEAR), "" +date.get(DateField.DAY_OF_YEAR));
 		assertEquals("MONTH", "" +reference.get(Calendar.MONTH), "" +(date.get(DateField.MONTH)-1));
 		assertEquals("YEAR", "" +reference.get(Calendar.YEAR), "" +date.get(DateField.YEAR));
-		
+
 		assertEquals("WEEK_OF_MONTH", "" +reference.get(Calendar.WEEK_OF_MONTH), "" +date.get(DateField.WEEK_OF_MONTH));
 		assertEquals("WEEK_OF_YEAR", "" +reference.get(Calendar.WEEK_OF_YEAR), "" +date.get(DateField.WEEK_OF_YEAR));
 

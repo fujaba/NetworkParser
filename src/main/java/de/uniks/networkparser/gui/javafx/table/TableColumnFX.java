@@ -64,7 +64,7 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 		menueItem.setText(column.getLabelOrAttrName());
 		menueItem.setOnAction(this);
 		visibleItems.getItems().add(menueItem);
-		
+
 		setCellFactory(new Callback<TableColumn<Object,TableCellValue>, TableCell<Object,TableCellValue>>() {
 			@Override
 			public TableCell<Object, TableCellValue> call(
@@ -83,7 +83,7 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 				return new TableCellValueFX().withColumn(TableColumnFX.this.column).withCreator(creator).withItem(value);
 			}
 		});
-		
+
 		widthProperty().addListener(new ChangeListener<Number>() {
 			public void changed(javafx.beans.value.ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				TableColumnFX.this.getColumn().getOrCreateStyle().withWidth(newValue.doubleValue());
@@ -94,7 +94,7 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 		}
 		return this;
 	}
-	
+
 	public Column getColumn() {
 		return column;
 	}
@@ -105,7 +105,7 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 		if(source==menueItem){
 			if(!menueItem.isSelected()){
 				column.withVisible(false);
-				this.setVisible(false);	
+				this.setVisible(false);
 			}else{
 				column.withVisible(true);
 				this.setVisible(true);
@@ -121,7 +121,7 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 			}
 		});
 	}
-	
+
 	public void refresh() {
 		Platform.runLater(new Runnable() {
 			@Override
@@ -129,14 +129,14 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 				// COLUMN
 				TableColumnFX.this.setText( column.getLabel() );
 				setVisible(column.isVisible());
-				
+
 				// Menue
 				menueItem.setText( column.getLabel() );
 				menueItem.setSelected(column.isVisible());
 			}
 		});
 	}
-	
+
 	public synchronized void refreshCell(int row) {
 		TableViewSkin<?> skin = (TableViewSkin<?>) this.getTableView().getSkin();
 		int columnId = this.getTableView().getVisibleLeafIndex(this);
@@ -144,7 +144,7 @@ public class TableColumnFX extends TableColumn<Object, TableCellValue> implement
 		for(Node node : children) {
 			if(node instanceof VirtualFlow<?>) {
 				VirtualFlow<?> vf = (VirtualFlow<?>) node;
-				
+
 				if(row >= 0 ) {
 					IndexedCell<?> cell;
 					try{

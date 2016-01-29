@@ -1,10 +1,8 @@
 package de.uniks.networkparser.test;
 
 import java.io.PrintStream;
-
 import org.junit.Assert;
 import org.junit.Test;
-
 import de.uniks.networkparser.bytes.checksum.AES;
 import de.uniks.networkparser.bytes.converter.ByteConverterAES;
 import de.uniks.networkparser.bytes.converter.ByteConverterHex;
@@ -14,28 +12,28 @@ public class AESTest {
 	public void testSimpleAES(){
 		AES aes = new AES();			 // init AES encrypter class
 		aes.setKey("kWmHe8xIsDpfzK4d");  // choose 16 byte password
-		
+
 		String data = "Hello world, here is some sample text.";
 		Assert.assertEquals("Original text : [" +data+ "] [" +data.length()+ " bytes]", 38, data.length());
-		
+
 		String encrypted = aes.encode(data).toString();
 		Assert.assertEquals("Encrypted text : [" +encrypted+ "] [" +encrypted.length()+ " bytes]", 64, encrypted.length());
 		ByteConverterHex converter = new ByteConverterHex();
-		
+
 //		outputStream(encrypted.getBytes(), System.out);
 		String hex = converter.toString(encrypted.getBytes()).replace(" ", "");
 		outputStream(hex.getBytes(), null);
 //		Assert.assertEquals("Encrypted text (as hex) : [" +hex+ "] [" +hex.length()+ " bytes]", 128, hex.length());
-		
+
 		String unencrypted = aes.decode(encrypted).toString();
 		Assert.assertEquals("Unencrypted text : [" +unencrypted+ "] [" +unencrypted.length()+ " bytes]", 38, unencrypted.length());
 	}
-	
+
 	void outputStream(byte[] bytes, PrintStream stream){
 		if(stream == null) {
 			return;
 		}
-		
+
 		boolean newline=false;
 		for (int i=0;i<bytes.length;i++){
 			if(bytes[i]<10){
@@ -57,25 +55,25 @@ public class AESTest {
 			stream.println("");
 		}
 	}
-	
+
 	@Test
 	public void testAES(){
 		ByteConverterAES aes = new ByteConverterAES();
 		aes.setKey("kWmHe8xIsDpfzK4d");  // choose 16 byte password
-		
+
 		String data = "Hello world, here is some sample text.";
-		Assert.assertEquals("Original text : [" +data+ "] [" +data.length()+ " bytes]", 38, data.length()); 
-		
+		Assert.assertEquals("Original text : [" +data+ "] [" +data.length()+ " bytes]", 38, data.length());
+
 		String encrypted = aes.toString(data).toString();
-		Assert.assertEquals("Encrypted text : [" +encrypted+ "] [" +encrypted.length()+ " bytes]", 64, encrypted.length()); 
-		
+		Assert.assertEquals("Encrypted text : [" +encrypted+ "] [" +encrypted.length()+ " bytes]", 64, encrypted.length());
+
 		ByteConverterHex converter = new ByteConverterHex();
-		
+
 		String hex = converter.toString(encrypted.getBytes()).replace(" ", "");
 		outputStream(hex.getBytes(), null);
-//		Assert.assertEquals("Encrypted text (as hex) : [" +hex+ "] [" +hex.length()+ " bytes]", 128, hex.length()); 
-		
-		String unencrypted = new String(aes.decode(encrypted)); 
-		Assert.assertEquals("Unencrypted text : [" +unencrypted+ "] [" +unencrypted.length()+ " bytes]", 38, unencrypted.length()); 
+//		Assert.assertEquals("Encrypted text (as hex) : [" +hex+ "] [" +hex.length()+ " bytes]", 128, hex.length());
+
+		String unencrypted = new String(aes.decode(encrypted));
+		Assert.assertEquals("Unencrypted text : [" +unencrypted+ "] [" +unencrypted.length()+ " bytes]", 38, unencrypted.length());
 	}
 }

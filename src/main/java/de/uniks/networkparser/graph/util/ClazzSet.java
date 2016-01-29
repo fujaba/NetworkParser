@@ -41,11 +41,10 @@ public class ClazzSet extends SimpleSet<Clazz>{
 		filterItems( collection, newValue);
 		return collection;
 	}
-	
+
 	public ClazzSet hasName(String otherValue) {
 		return filter(Clazz.NAME.equals(otherValue));
 	}
-
 
 	//FIXME	de.uniks.networkparser.graph.Clazz.getClassModel()
 //	de.uniks.networkparser.graph.Clazz.getImports()

@@ -6,15 +6,15 @@ public class JabberBindMessage {
 	public static final String PROPERTY_BINDXMLNS="&bind?xmlns";
 	public static final String PROPERTY_RESOURCE="&bind&resource";
 	public static final String PROPERTY_JID="&bind&jid";
-	
+
 	private String resource;
 	private String id;
 	private String type="set";
 	private String jid;
 	private final String xmlns="urn:ietf:params:xml:ns:xmpp-bind";
-	
+
 	public JabberBindMessage(){
-		
+
 	}
 	public JabberBindMessage(String resource, String id, String jid){
 		if(jid!=null&&jid.length()>0){
@@ -44,7 +44,7 @@ public class JabberBindMessage {
 	public String getXmlns() {
 		return xmlns;
 	}
-	
+
 	public Object get(String attrName) {
 		String attribute;
 		int pos = attrName.indexOf(".");
@@ -64,7 +64,7 @@ public class JabberBindMessage {
 		} else if (attribute.equalsIgnoreCase(PROPERTY_BINDXMLNS)) {
 			return getXmlns();
 		}
-			
+
 		return null;
 	}
 

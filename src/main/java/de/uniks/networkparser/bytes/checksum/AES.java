@@ -240,7 +240,7 @@ public class AES {
 		}
 		return encodeBlock(a);
 	}
-	
+
 	/**
 	 * AES encrypt 128-bit plaintext using key previously set.
 	 *
@@ -265,7 +265,7 @@ public class AES {
 		return encodeBlock(a);
 	}
 
-		
+
 	/**
 	 * AES encrypt 128-bit plaintext using key previously set.
 	 *
@@ -286,7 +286,6 @@ public class AES {
 		byte[] ta = new byte[BLOCK_SIZE]; // AES temp state variable
 		byte[] Ker; // encrypt keys for current round
 		int i, k, row, col;
-
 
 		// copy plaintext bytes into state and do initial AddRoundKey(state)
 		Ker = Ke[0];
@@ -365,11 +364,11 @@ public class AES {
 		}
 		return result.trim();
 	}
-	
+
 	public byte[] decodeString(String value) {
 		return decode(value).toArray();
 	}
-	
+
 	/**
 	 * AES encrypt 128-bit plaintext using key previously set.
 	 *
@@ -408,7 +407,7 @@ public class AES {
 	 */
 	public byte[] decodeBlock(byte[] cipher) {
 		// check for bad arguments
-		if (cipher == null || cipher.length != BLOCK_SIZE) 
+		if (cipher == null || cipher.length != BLOCK_SIZE)
 			return null;
 
 		// define working variables
@@ -571,5 +570,5 @@ public class AES {
 				i++;
 			}
 		}
-	}	
+	}
 }

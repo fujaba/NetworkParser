@@ -92,6 +92,14 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Str
 		return this.children;
 	}
 
+
+	public int getChildrenCount() {
+		if (this.children == null) {
+			return 0;
+		}
+		return this.children.size();
+	}
+
 	/**
 	 * Adds the child.
 	 *
@@ -118,17 +126,23 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Str
 	/**
 	 * Gets the child.
 	 *
-	 * @param value
-	 *			the tag
+	 * @param value the tag to looking for
+	 * @param recursiv deep search
 	 * @return the child
 	 */
-	public XMLEntity getChild(String value) {
-		if(value==null) {
+	public XMLEntity getChild(String value, boolean recursiv) {
+		if(value==null || this.children == null) {
 			return null;
 		}
-		for (XMLEntity entity : getChildren()) {
+		for (XMLEntity entity : this.children) {
 			if (value.equals(entity.getTag())) {
 				return entity;
+			}
+			if(recursiv) {
+				XMLEntity child = entity.getChild(value, recursiv);
+				if(child != null) {
+					return child;
+				}
 			}
 		}
 		return null;
@@ -149,7 +163,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Str
 		}
 		return children;
 	}
-	
+
 	/**
 	 * Gets the tag.
 	 *
@@ -217,7 +231,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Str
 		for (int i = 0; i < size; i++) {
 			Object value = getValueByIndex(i);
 			if(value != null) {
-				sb.append(" " + get(i) + "=" + EntityUtil.quote(value.toString()));	
+				sb.append(" " + get(i) + "=" + EntityUtil.quote(value.toString()));
 			}
 		}
 
@@ -266,7 +280,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Str
 			}
 		}
 	}
-	
+
 	public XMLEntity withCloseTag() {
 		if(this.valueItem==null) {
 			this.valueItem = "";
@@ -300,7 +314,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Str
 		super.withKeyValue(key, value);
 		return this;
 	}
-	
+
 	public Entity without(String key) {
 		remove(key);
 		return this;

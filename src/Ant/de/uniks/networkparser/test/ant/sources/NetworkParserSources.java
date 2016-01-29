@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
-
 import de.uniks.networkparser.graph.GraphIdMap;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.YUMLConverter;
@@ -18,7 +17,7 @@ public class NetworkParserSources {
 	private int ok;
 	private int errors;
 	private int lineofCode;
-//	private ArrayList<String> emptyMethods= new ArrayList<String>(); 
+//	private ArrayList<String> emptyMethods= new ArrayList<String>();
 	private HashMap<String, String> customItems;
 	private int thirdparty;
 
@@ -27,16 +26,16 @@ public class NetworkParserSources {
 		copiedFile(sourcePath, targetPath, createDirectory, createFiles);
 		printResult();
 	}
-	
+
 	public HashSet<SourceItem> getSources(String sourcePath){
-		HashSet<SourceItem> items= new HashSet<SourceItem>(); 
+		HashSet<SourceItem> items= new HashSet<SourceItem>();
 
 		init();
 		getSources(sourcePath, items);
-		
+
 		return items;
 	}
-	
+
 	private void getSources(String sourcePath, HashSet<SourceItem> items){
 		File path= new File(sourcePath);
 		File[] listFiles = path.listFiles();
@@ -47,14 +46,14 @@ public class NetworkParserSources {
 				if(!child.getAbsolutePath().endsWith(".java")){
 					continue;
 				}
-				
+
 				SourceItem source= new SourceItem(child);
 				items.add(source);
 //				copiedFile(child, targetPath, createFiles);
 			}
 		}
 	}
-	
+
 	public String getPackageGraph(HashSet<SourceItem> items){
 		GraphList list= new GraphList().withTyp(GraphIdMap.CLASS);
 		for (SourceItem source : items){
@@ -66,7 +65,7 @@ public class NetworkParserSources {
 		}
 		return YUMLConverter.URL+list.toString();
 	}
-	
+
 	private void copiedFile(String sourcePath, String targetPath, boolean createDirectory, boolean createFiles){
 		File path= new File(sourcePath);
 		File[] listFiles = path.listFiles();
@@ -78,7 +77,7 @@ public class NetworkParserSources {
 			}
 		}
 	}
-	
+
 	public void copiedFile(File file, String targetPath, boolean createDirectory, boolean createFiles){
 		if(!file.getAbsolutePath().endsWith(".java")){
 			return;
@@ -107,8 +106,8 @@ public class NetworkParserSources {
 				return;
 			}
 		}
-		
-		
+
+
 		SourceItem source= new SourceItem(file);
 		for (MethodItem m :  source.getMethods().getItems()){
 			if(m.getLinesOfCode()<1 && m.getName().length()>0){
@@ -138,7 +137,7 @@ public class NetworkParserSources {
 		thirdparty = 0;
 		customItems= new HashMap<String, String>();
 	}
-	
+
 	private void printResult(){
 		System.out.println(skip+ " Uebersprungen");
 		System.out.println(thirdparty+ " Andere Projekte");
@@ -199,7 +198,7 @@ public class NetworkParserSources {
 				if(source.changeComment(commentFile.getComment())){
 					System.out.println(source.getFileName());
 					change++;
-					
+
 					source.write();
 				} else {
 					ok++;

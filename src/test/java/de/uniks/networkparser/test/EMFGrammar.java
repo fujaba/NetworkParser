@@ -1,7 +1,6 @@
 package de.uniks.networkparser.test;
 
 import java.util.Iterator;
-
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -20,10 +19,10 @@ public class EMFGrammar extends Grammar{
 		if(result!=null){
 			return result;
 		}
-		
+
 		return super.getReadCreator(jsonObject, map, searchForSuperCreator);
 	}
-	
+
 	@Override
 	public String getReadValue(JsonObject json, String property) {
 		if(property.equals(JsonIdMap.ID)){
@@ -31,7 +30,7 @@ public class EMFGrammar extends Grammar{
 		}
 		return super.getReadValue(json, property);
 	}
-	
+
 	@Override
 	public boolean hasReadValue(JsonObject json, String property) {
 		if(property.equals(JsonIdMap.ID)){
@@ -39,7 +38,7 @@ public class EMFGrammar extends Grammar{
 		}
 		return super.hasReadValue(json, property);
 	}
-	
+
 	@Override
 	public JsonObject getReadProperties(JsonObject jsonObject, IdMap map, Filter filter, boolean isId) {
 		JsonObject props= new JsonObject();
@@ -55,7 +54,7 @@ public class EMFGrammar extends Grammar{
 		}
 		return props;
 	}
-	
+
 	public SendableEntityCreator getCreator(String className, IdMap map){
 		int pos=className.indexOf("@");
 		if(pos>0){

@@ -85,7 +85,7 @@ public class ByteFilter extends Filter {
 		}
 		return null;
 	}
-	
+
 	public ByteFilter withMap(IdMap map) {
 		super.withMap(map);
 		return this;

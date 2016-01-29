@@ -65,30 +65,30 @@ public class TestApp extends Application {
 		tableList.add(new PersonGUI("Emma",	  "Jones",	"emma.jones@example.com", 12));
 		tableList.add(new PersonGUI("Michael",   "Brown",	"michael.brown@example.com", 122));
 
-		
+
 		tableList.add(new PersonGUI("Jacob",	 "Smith",	"jacob.smith@example.com", 1));
 		tableList.add(new PersonGUI("Isabella",  "Johnson",  "isabella.johnson@example.com", 2));
 		tableList.add(new PersonGUI("Ethan",	 "Williams", "ethan.williams@example.com", 23));
 		tableList.add(new PersonGUI("Emma",	  "Jones",	"emma.jones@example.com", 12));
 		tableList.add(new PersonGUI("Michael",   "Brown",	"michael.brown@example.com", 122));
 
-		
+
 		JsonIdMap map = new  JsonIdMap();
 		map.with(tableList);
 		map.with(new PersonGUICreator());
-		
+
 		tableView.withMap(map).withList(tableList);
-		
+
 		tableView.withSearchProperties(PersonGUI.PROPERTY_FIRSTNAME, PersonGUI.PROPERTY_LASTNAME, PersonGUI.PROPERTY_EMAIL);
-		
+
 //		tableView.createFromCreator(null, true);
-		
+
 		tableView.withColumn(new Column().withAttrName(PersonGUI.PROPERTY_FIRSTNAME));
 		tableView.withColumn(new Column().withAttrName(PersonGUI.PROPERTY_LASTNAME));
 		tableView.withColumn(new Column().withAttrName(PersonGUI.PROPERTY_EMAIL).withBrowserId(GUIPosition.WEST));
 		tableView.withColumn(new Column().withAttrName(PersonGUI.PROPERTY_DISTANCE));
 		tableView.withColumn(new Column().withAttrName(PersonGUI.PROPERTY_DISTANCE).withComparator(new Comparator<TableCellValue>() {
-			
+
 			@Override
 			public int compare(TableCellValue o1, TableCellValue o2) {
 				PersonGUI item1 = (PersonGUI)o1.getItem();
@@ -96,12 +96,12 @@ public class TestApp extends Application {
 				return item1.getDistance().compareTo(item2.getDistance());
 			}
 		}));
-		
+
 		root.getChildren().add(tableView);
-		
+
 		primaryStage.show();
-		
-		
+
+
 //		System.out.println(map.toJsonObject(tableList).toString(2));
 //		tableView.test();
 

@@ -27,9 +27,9 @@ public abstract class GraphModel extends GraphEntity {
 
 	/**
 	 * get All GraphClazz
-	 * 
+	 *
 	 * @return all GraphClazz of a GraphModel
-	 * 
+	 *
 	 *		 <pre>
 	 *			  one					   many
 	 * GraphModel ----------------------------------- GraphClazz
@@ -75,7 +75,7 @@ public abstract class GraphModel extends GraphEntity {
 		super.with(values);
 		return this;
 	}
-	
+
 	@Override
 	public GraphModel with(String name) {
 		super.with(name);
@@ -98,7 +98,7 @@ public abstract class GraphModel extends GraphEntity {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Set the Default Author
 	 * @param value The Authorname
@@ -108,7 +108,7 @@ public abstract class GraphModel extends GraphEntity {
 		setAuthorName(value);
 		return this;
 	}
-	
+
 	public GraphModel generate() {
 		return this;
 	}
@@ -116,7 +116,7 @@ public abstract class GraphModel extends GraphEntity {
 	public GraphModel generate(String rootDir) {
 		return this;
 	}
-	
+
 	public boolean dumpHTML(String diagramName){
 		return false;
 	}

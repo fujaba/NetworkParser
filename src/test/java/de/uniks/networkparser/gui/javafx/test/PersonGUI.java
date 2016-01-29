@@ -1,7 +1,6 @@
 package de.uniks.networkparser.gui.javafx.test;
 
 import java.util.Date;
-
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -17,13 +16,12 @@ public class PersonGUI {
 	private StringProperty lastName;
 
 	private StringProperty email;
-	
-	private SimpleIntegerProperty distanceValue;
-	
-	private Date date;
-	
-	private String caption;
 
+	private SimpleIntegerProperty distanceValue;
+
+	private Date date;
+
+	private String caption;
 
 	public PersonGUI(){
 		this.firstName = new SimpleStringProperty("");
@@ -31,9 +29,9 @@ public class PersonGUI {
 		this.lastName = new SimpleStringProperty("");
 
 		this.email = new SimpleStringProperty("");
-		
+
 		this.distanceValue = new SimpleIntegerProperty();
-		
+
 	}
 	public PersonGUI(String fName, String lName, String email, int distance) {
 
@@ -45,7 +43,7 @@ public class PersonGUI {
 		this.distanceValue = new SimpleIntegerProperty(distance);
 	}
 
-	 
+
 
 	public PersonGUI(String fName, String lName, String email) {
 		this.firstName = new SimpleStringProperty(fName);
@@ -59,7 +57,7 @@ public class PersonGUI {
 	public StringProperty lastnameProperty() { return lastName; }
 
 	public StringProperty emailProperty() { return email; }
-	
+
 	public SimpleIntegerProperty distanceProperty() { return distanceValue; }
 
 	public String getCaption() {

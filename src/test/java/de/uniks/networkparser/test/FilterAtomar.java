@@ -1,10 +1,8 @@
 package de.uniks.networkparser.test;
 
 import java.beans.PropertyChangeEvent;
-
 import org.junit.Assert;
 import org.junit.Test;
-
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.JsonIdMap;
@@ -18,11 +16,11 @@ public class FilterAtomar {
 	@Test
 	public void testFilter() {
 		AppleTree tree=new AppleTree();
-		
+
 		JsonIdMap map = new JsonIdMap();
 		map.with(new AppleTreeCreator());
 		map.with(new AppleCreator());
-		
+
 		UpdateListener listener = new UpdateListener() {
 			@Override
 			public boolean update(String typ, BaseItem source, PropertyChangeEvent event) {
@@ -44,7 +42,7 @@ public class FilterAtomar {
 		apple.withX(23);
 		apple.withY(42);
 		tree.addToHas(apple);
-		
+
 		Assert.assertNotNull(data);
 		Assert.assertEquals("{\"id\":\"J1.A1\",\"class\":\"de.uniks.networkparser.test.model.AppleTree\",\"upd\":{\"has\":{\"class\":\"de.uniks.networkparser.test.model.Apple\",\"id\":\"J1.A2\",\"prop\":{\"x\":23,\"y\":42}}}}", data.toString());
 	}

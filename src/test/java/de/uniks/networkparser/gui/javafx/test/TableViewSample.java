@@ -3,7 +3,6 @@ package de.uniks.networkparser.gui.javafx.test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;

@@ -23,7 +23,7 @@ package de.uniks.networkparser.graph;
 */
 
 public class GraphLabel extends GraphMember {
-	public final static GraphLabel CREATE=new GraphLabel().withStyle("create"); 
+	public final static GraphLabel CREATE=new GraphLabel().withStyle("create");
 	private String style;
 
 	@Override
@@ -35,7 +35,7 @@ public class GraphLabel extends GraphMember {
 	public static GraphLabel create(String value) {
 		return new GraphLabel().with(value);
 	}
-	
+
 	public static GraphLabel create(String value, String style) {
 		return new GraphLabel().with(value).withStyle(style);
 	}

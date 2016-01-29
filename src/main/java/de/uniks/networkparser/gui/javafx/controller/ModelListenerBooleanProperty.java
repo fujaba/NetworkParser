@@ -1,7 +1,6 @@
 package de.uniks.networkparser.gui.javafx.controller;
 
 import java.util.EventObject;
-
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.logic.SimpleConditionValue;
 /*
@@ -29,13 +28,13 @@ import javafx.beans.Observable;
 
 public class ModelListenerBooleanProperty extends ModelListenerProperty<Boolean> {
 	private SimpleConditionValue condition;
-	
+
 	public ModelListenerBooleanProperty(SendableEntityCreator creator, Object item, String property) {
 		super(creator, item, property);
 	}
 
 	@Override
-	public void invalidated(Observable observable) {		
+	public void invalidated(Observable observable) {
 	}
 
 	@Override
@@ -46,7 +45,7 @@ public class ModelListenerBooleanProperty extends ModelListenerProperty<Boolean>
 		}
 		return false;
 	}
-	
+
 	@Override
 	public void setValue(Boolean value) {
 		Object oldValue = creator.getValue(item, property);
@@ -54,7 +53,7 @@ public class ModelListenerBooleanProperty extends ModelListenerProperty<Boolean>
 			super.setValue(value);
 		}
 	}
-	
+
 	public ModelListenerBooleanProperty withCondition(SimpleConditionValue condition){
 		this.condition = condition;
 		return this;

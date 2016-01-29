@@ -68,11 +68,11 @@ public class ModelListenerFactory {
 		}
 		return null;
 	}
-	
+
 	public static ModelListenerProperty<?> create(Label node, Object item, String field){
 		return createProperty(PROPERTYTYPE.STRING, node.textProperty(), new GenericCreator(item), item, field);
 	}
-	
+
 	public static ModelListenerProperty<?> create(Property<?> property, IdMap map, Object item, String field){
 		return create(property, map.getCreatorClass(item), item, field);
 	}
@@ -97,7 +97,7 @@ public class ModelListenerFactory {
 		}
 		return null;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private static ModelListenerProperty<?> createProperty(PROPERTYTYPE typ, Property<?> property, SendableEntityCreator creator, Object item, String field){
 		if(PROPERTYTYPE.STRING==typ) {

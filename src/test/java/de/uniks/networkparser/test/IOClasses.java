@@ -12,11 +12,11 @@ public static String CRLF="\r\n";
 		file = "test/"+file;
 		String path = IOClasses.class.getResource("IOClasses.class").getPath();
 		String root = new File("").toURI().getPath().replace(" ", "%20");
-		
+
 		if(path.startsWith(root)) {
 			path = path.substring(root.length());
 		}
-		
+
 		int pos = path.lastIndexOf("bin/");
 		if(pos>=0){
 			path = path.substring(0, pos)+"src/test/resources/" ;
@@ -40,7 +40,7 @@ public static String CRLF="\r\n";
 				indexText.append(line).append(CRLF);
 				line = bufferedReader.readLine();
 			}
-			
+
 			bufferedReader.close();
 			return indexText;
 		} catch (FileNotFoundException e) {

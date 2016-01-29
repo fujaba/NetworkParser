@@ -25,12 +25,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import de.uniks.networkparser.gui.Pos;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.StringItem;
 import de.uniks.networkparser.list.AbstractArray;
 import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.XMLEntity;
 
 public class EntityUtil {
@@ -61,6 +63,30 @@ public class EntityUtil {
 			}
 		}
 		return string;
+	}
+
+	public static SimpleList<Pos> getExcelRange(String tag) {
+		SimpleList<Pos> range = new SimpleList<Pos>();
+		if(tag == null) {
+			return range;
+		}
+		int pos = tag.toUpperCase().indexOf(":");
+		if(pos>0) {
+			Pos start = Pos.valueOf(tag.substring(0, pos));
+			Pos end = Pos.valueOf(tag.substring(pos+1));
+			Pos step = Pos.create(start.x, start.y);
+
+			while(step.y<=end.y) {
+				while(step.x<=end.x) {
+					range.add(step);
+					step = Pos.create(step.x + 1, step.y);
+				}
+				step = Pos.create(start.x, step.y + 1);
+			}
+		}else {
+			range.add(Pos.valueOf(tag));
+		}
+		return range;
 	}
 
 	/**
@@ -376,8 +402,8 @@ public class EntityUtil {
 		}
 		return new String(buf);
 	}
-	
-	
+
+
 	/**
 	 * format a String with 0
 	 *
@@ -390,7 +416,7 @@ public class EntityUtil {
 	public static String strZero(int value, int length) {
 		return strZero(String.valueOf(value), length, -1);
 	}
-	
+
 	/**
 	 * format a String with 0
 	 *
@@ -403,7 +429,7 @@ public class EntityUtil {
 	public static String strZero(long value, int length) {
 		return strZero(String.valueOf(value), length, -1);
 	}
-	
+
 	/**
 	 * format a String with 0
 	 *
@@ -418,7 +444,7 @@ public class EntityUtil {
 	public static String strZero(long value, int length, int max) {
 		return strZero(String.valueOf(value), length, max);
 	}
-	
+
 	/**
 	 * Format a date with 0
 	 *
@@ -433,7 +459,7 @@ public class EntityUtil {
 	public static String strZero(int value, int length, int max) {
 		return strZero(String.valueOf(value), length, max);
 	}
-	
+
 	public static String strZero(String value, int length, int max) {
 		if(max>0 && max<length) {
 			length = max;
@@ -450,7 +476,7 @@ public class EntityUtil {
 		sb.append(value);
 		return sb.toString();
 	}
-	
+
 	public static String getValidChars(String source, int maxLen) {
 		int i = source.length()-1;
 		StringBuilder sb=new StringBuilder();
@@ -470,7 +496,7 @@ public class EntityUtil {
 				i = lastComma;
 			}
 		}
-		
+
 		for(int k=0;k<i;k++) {
 			char charAt = source.charAt(k);
 			if(NON_FILE_CHARSSIMPLE.indexOf(charAt)<0 && charAt<55000) {
@@ -535,7 +561,7 @@ public class EntityUtil {
 				continue;
 			}
 			Object valueB = jsonB.get(i);
-			Object oldValue = compareValue(valueA, valueB); 
+			Object oldValue = compareValue(valueA, valueB);
 			if(oldValue != null) {
 				jsonA.remove(i);
 				if(sameList != null) {
@@ -546,7 +572,7 @@ public class EntityUtil {
 		}
 		return jsonA.size()<1 && jsonB.size()<1;
 	}
-	
+
 	static Object compareValue(Object valueA, Object valueB) {
 		if(valueA instanceof Entity && valueB instanceof Entity) {
 			Entity entityA = (Entity)valueA;
@@ -582,7 +608,7 @@ public class EntityUtil {
 
 		return primitiveTypes.indexOf(" " + type + " ") >= 0;
 	}
-	
+
 	public static String convertPrimitiveToObjectType(String type) {
 		int pos = transferMap.indexOf(type);
 		if(pos<0) {
@@ -621,14 +647,14 @@ public class EntityUtil {
 		}
 		return name;
 	}
-	
+
 	public static String upFirstChar(String name) {
 		if(name == null || name.length()<1) {
 			return name;
 		}
 		return name.substring(0, 1).toUpperCase()+name.substring(1);
 	}
-	
+
 	/**
 	 * Map to convert extended characters in html entities.
 	 */

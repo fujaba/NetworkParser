@@ -1,11 +1,9 @@
 package de.uniks.networkparser.xml;
 
 import java.util.ArrayList;
-
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.buffer.Buffer;
-import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -15,17 +13,14 @@ import de.uniks.networkparser.list.SimpleList;
 
 public class XMLTokener extends Tokener {
 	public static final String TOKEN=" >//<";
-	
+
 	/** The stack. */
 	private ArrayList<Object> stack = new ArrayList<Object>();
 	/** Variable of AllowQuote. */
 	private boolean isAllowQuote;
-	
 
 	/** The prefix. */
 	private String prefix;
-	
-
 
 	/**
 	 * Get the next value. The value can be a Boolean, Double, Integer,
@@ -47,7 +42,7 @@ public class XMLTokener extends Tokener {
 		case '\'':
 			skip();
 			CharacterBuffer v = nextString(new CharacterBuffer(), allowQuote, true, c);
-			String g = EntityUtil.unQuote(v); 
+			String g = EntityUtil.unQuote(v);
 			return g;
 		case '<':
 //			back();
@@ -72,12 +67,7 @@ public class XMLTokener extends Tokener {
 
 	@Override
 	public void parseToEntity(SimpleKeyValueList<?, ?> entity) {
-		parseToEntity(entity, getCurrentChar());
-	}
-	void parseToEntity(SimpleKeyValueList<?, ?> entity, char currentChar) {
-		
 		char c = getCurrentChar();
-
 		if (c != '<') {
 			c = nextClean(false);
 		}
@@ -96,26 +86,10 @@ public class XMLTokener extends Tokener {
 			return;
 		}
 		XMLEntity xmlEntity = (XMLEntity) entity;
-		if (buffer instanceof BufferedBuffer) {
-			c = nextClean(false);
-			int pos = position();
-			while (c >= ' ' && Buffer.STOPCHARSXML.indexOf(c) < 0 && c != '>') {
-				c = getChar();
-			}
-			xmlEntity.withTag(((BufferedBuffer)this.buffer).subSequence(pos, position()).toString());
-		} else {
-			StringBuilder sb = new StringBuilder();
-			c = nextClean(false);
-			while (c >= ' ' && Buffer.STOPCHARSXML.indexOf(c) < 0 && c != '>') {
-				sb.append(c);
-				c = getChar();
-			}
-			xmlEntity.withTag(sb.toString());
-		}
-
+		xmlEntity.withTag(this.buffer.nextToken(Buffer.STOPCHARSXMLEND).toString());
 		XMLEntity child;
 		while (true) {
-			c = nextClean(true);
+ 			c = nextClean(true);
 			if (c == 0) {
 				break;
 			} else if (c == '>') {
@@ -140,6 +114,7 @@ public class XMLTokener extends Tokener {
 						child = (XMLEntity) xmlEntity.getNewList(true);
 						parseToEntity(child);
 						xmlEntity.addChild(child);
+						skip();
 					} else {
 						xmlEntity.withValueItem(nextString(new CharacterBuffer(), false, false, '<').toString());
 					}
@@ -150,7 +125,7 @@ public class XMLTokener extends Tokener {
 			} else {
 				String key = nextValue(xmlEntity, false, true, c).toString();
 				if (key.length() > 0) {
-					xmlEntity.put(key, 
+					xmlEntity.put(key,
 							nextValue(xmlEntity, isAllowQuote, true, nextClean(false)));
 				}
 			}
@@ -165,7 +140,7 @@ public class XMLTokener extends Tokener {
 		// Skip >
 		nextClean(false);
 	}
-	
+
 	public String skipHeader() {
 		boolean skip=false;
 		CharacterBuffer tag;
@@ -263,7 +238,7 @@ public class XMLTokener extends Tokener {
 		this.isAllowQuote = value;
 		return this;
 	}
-	
+
 	public XMLTokener withBuffer(String value) {
 		super.withBuffer(value);
 		return this;

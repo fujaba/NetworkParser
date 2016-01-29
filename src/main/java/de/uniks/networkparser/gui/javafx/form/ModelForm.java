@@ -64,7 +64,7 @@ public class ModelForm extends BorderPane{
 	public VBox getItems(){
 		return items;
 	}
-	
+
 	public ModelForm withValue(IdMap map, Object item){
 		this.map = map;
 		this.item = item;
@@ -75,12 +75,12 @@ public class ModelForm extends BorderPane{
 		return this;
 	}
 
-	
+
 	public ModelForm withDataBinding(IdMap map, Object item, boolean addCommandBtn){
 		this.map = map;
 		this.item = item;
 		textClazz = (TextItems) map.getCreator(TextItems.class.getName(), true);
-		
+
 		SendableEntityCreator creator = map.getCreatorClass(item);
 		if(creator != null){
 			this.setCenter(items);
@@ -98,12 +98,12 @@ public class ModelForm extends BorderPane{
 				propertyComposite.withLabelOrientation(GUIPosition.WEST);
 			}
 			column.withAttrName(property);
-			
+
 			propertyComposite.withDataBinding(map, item, column);
 			getItems().getChildren().add(propertyComposite);
 			double temp = propertyComposite.getLabelWidth();
 			if(temp>max){
-				max = temp; 
+				max = temp;
 			}
 		}
 		for(Iterator<Node> iterator = getItems().getChildren().iterator();iterator.hasNext();){
@@ -112,20 +112,20 @@ public class ModelForm extends BorderPane{
 				((PropertyComposite)node).setLabelLength(max);
 			}
 		}
-		
+
 		if(addCommandBtn){
 			this.saveBtn = new Button(getText(DefaultTextItems.SAVE));
 			this.saveBtn.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					save();						
+					save();
 				}
 			});
 			this.reloadBtn = new Button(getText(DefaultTextItems.RELOAD));
 			this.reloadBtn.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
-					reload();						
+					reload();
 				}
 			});
 
@@ -133,7 +133,7 @@ public class ModelForm extends BorderPane{
 		}
 		return this;
 	}
-	
+
 	public PropertyComposite getPropertyComponente(String item){
 		for(Node child : getItems().getChildren()){
 			if(child instanceof PropertyComposite){
@@ -145,7 +145,7 @@ public class ModelForm extends BorderPane{
 		}
 		return null;
 	}
-	
+
 	private String getText(String label){
 		if(this.textClazz!=null){
 			return this.textClazz.getText(label, item, this);
@@ -169,7 +169,7 @@ public class ModelForm extends BorderPane{
 			}
 		}
 	}
-	
+
 	public void setPreSize() {
 		double max = 0;
 		for (Iterator<Node> iterator = getItems().getChildren().iterator(); iterator
@@ -190,7 +190,7 @@ public class ModelForm extends BorderPane{
 			}
 		}
 	}
-	
+
 	public ModelForm withActionComponente(Button... buttons){
 		if(buttons==null){
 			return this;
@@ -201,10 +201,10 @@ public class ModelForm extends BorderPane{
 			this.actionComposite.setPadding(new Insets(20, 30, 20, 0));
 			this.setBottom(actionComposite);
 		}
-		
+
 		int count = this.actionComposite.getChildren().size();
-		
-		
+
+
 		for(Button btn : buttons){
 			if(count>0){
 				Label empty = new Label();
@@ -221,8 +221,8 @@ public class ModelForm extends BorderPane{
 		this.listener = value;
 		return this;
 	}
-	
-	
+
+
 	public boolean focusnext() {
 		for(Iterator<Node> i = getItems().getChildren().iterator();i.hasNext();){
 			Node child  = i.next();
@@ -236,7 +236,7 @@ public class ModelForm extends BorderPane{
 		}
 		return false;
 	}
-	
+
 	public ModelForm withDefaultButton(Button value) {
 		value.setDefaultButton(true);
 		return this;

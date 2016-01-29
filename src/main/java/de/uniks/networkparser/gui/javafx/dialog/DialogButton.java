@@ -29,12 +29,12 @@ import javafx.scene.layout.StackPane;
 public class DialogButton extends Button implements DialogElement{
 	public enum Grafik{minimize,maximize,close}
 	private DialogBox owner;
-	
+
 	public DialogButton withName(String value) {
 		this.setText(value);
 		return this;
 	}
-	
+
 	public DialogButton withAction(Grafik value) {
 		if(Grafik.close.equals(value)){
 			this.setOnAction(new EventHandler<ActionEvent>() {
@@ -59,7 +59,7 @@ public class DialogButton extends Button implements DialogElement{
 		}
 		return this;
 	}
-	
+
 	public DialogButton withGrafik(Grafik type) {
 		this.withAction(type);
 		this.setFocusTraversable(false);
@@ -70,10 +70,10 @@ public class DialogButton extends Button implements DialogElement{
 		setGraphic(graphic);
 		setMinSize(17, 17);
 		setPrefSize(17, 17);
-	
+
 		return this;
 	}
-	
+
 	@Override
 	public DialogElement withOwner(DialogBox value) {
 		this.owner = value;

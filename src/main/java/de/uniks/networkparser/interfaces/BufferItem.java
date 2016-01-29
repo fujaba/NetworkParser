@@ -13,19 +13,19 @@ public interface BufferItem {
 
 	/** @return The currentChar */
 	public abstract char getCurrentChar();
-	
+
 	/**
 	 * Gets the index.
 	 *
 	 * @return the index
 	 */
 	public int position();
-	
+
 	/**
 	 * @return the remaining Count of bytes of the Buffer
 	 */
 	public int remaining();
-	
+
 	/**
 	 * @return Is Buffer is Empty
 	 */
@@ -41,7 +41,7 @@ public interface BufferItem {
 	 * @return The Buffer as byte Array
 	 */
 	public abstract byte[] toArray();
-	
+
 	/**
 	 * Add lookAHead to Buffer
 	 * @param lookahead The String for look A Head String. For Simple Buffer change position back to the length of String or Save the String.
@@ -55,7 +55,7 @@ public interface BufferItem {
 	 * @return Self Instance
 	 */
 	public BufferItem withLookAHead(char lookahead);
-	
+
 	/**
 	 * Get the next String
 	 * @param len is the Length of the new String
@@ -71,7 +71,7 @@ public interface BufferItem {
 	 * @return A character, or 0 if there are no more characters.
 	 */
 	public char nextClean(boolean currentValid);
-	
+
 	/**
 	 * Return the characters up to the next close quote character. Backslash
 	 * processing is done. The formal JSON format does not allow strings in
@@ -80,28 +80,24 @@ public interface BufferItem {
 	 * @return the StringContainer with the new Value
 	 */
 	public CharacterBuffer nextString();
-	
+
 	/**
 	 * Return the characters up to the next close quote character. Backslash
 	 * processing is done. The formal JSON format does not allow strings in
 	 * single quotes, but an implementation is allowed to accept them.
-	 * 
+	 *
 	 * @param sc StringContainer for manage Chars
-	 * @param allowCRLF
-	 *			is allow CRLF in Stream
 	 * @param allowQuote
 	 *			is allow Quote in Stream
-	 * @param mustQuote
-	 *			must find Quote in Stream
 	 * @param nextStep
 	 *			must i step next after find Text
 	 * @param quotes
 	 *			The quoting character, either <code>"</code>
 	 *			&nbsp;<small>(double quote)</small> or <code>'</code>
 	 *			&nbsp;<small>(single quote)</small>.
-	 * @return the StringContainer with the new Value  
+	 * @return the StringContainer with the new Value
 	 */
-	public CharacterBuffer nextString(CharacterBuffer sc, boolean allowQuote, boolean nextStep, char... quotes);	
+	public CharacterBuffer nextString(CharacterBuffer sc, boolean allowQuote, boolean nextStep, char... quotes);
 
 	/**
 	 * Get the NextVlaue
@@ -112,14 +108,14 @@ public interface BufferItem {
 	 * @return The NextValue
 	 */
 	public Object nextValue(BaseItem creator, boolean allowQuote, boolean allowDuppleMark, char c);
-	
+
 	/**
-	 * Get the next Token 
+	 * Get the next Token
 	 * @param stopWords may be at Simple Space
 	 * @return The next Token
 	 */
 	public CharacterBuffer nextToken(String stopWords);
-	
+
 	/**
 	 * Skip.
 	 *
@@ -144,7 +140,7 @@ public interface BufferItem {
 	 */
 	public boolean skipTo(char search, boolean notEscape);
 
-	
+
 	/**
 	 * Skip number of chars
 	 *
@@ -154,12 +150,12 @@ public interface BufferItem {
 	 */
 	public boolean skip(int pos);
 	/**
-	 * Skip 
+	 * Skip
 	 *
 	 * @return true, if successful
 	 */
 	public boolean skip();
-	
+
 	/**
 	 * Check values of the Current Char
 	 *
@@ -168,14 +164,14 @@ public interface BufferItem {
 	 * @return true, if successful
 	 */
 	public boolean checkValues(char... items);
-	
+
 	/**
 	 * Method for parsing String Elements
-	 * 
+	 *
 	 * @return A List of String
 	 */
 	public SimpleList<String> getStringList();
-	
+
 	/**
 	 * Split Strings
 	 * @param value The String value
@@ -183,7 +179,7 @@ public interface BufferItem {
 	 * @return a List of String Parts
 	 */
 	public SimpleList<String> splitStrings(String value, boolean split);
-	
+
 	/**
 	 * Skip The quotes if the CurrentChar is it
 	 * @param quotes Quotes to Skip

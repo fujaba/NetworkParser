@@ -1,15 +1,12 @@
 package tests;
 
-
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 import com.google.common.collect.testing.MinimalCollection;
 import com.google.common.collect.testing.SetTestSuiteBuilder;
 import com.google.common.collect.testing.TestStringSetGenerator;
@@ -62,8 +59,8 @@ public class GuavaTest {
 //        CollectionFeature.ALLOWS_NULL_VALUES,
 //	    CollectionFeature.SERIALIZABLE,
 	  }
-	
-	
+
+
 	public static Test suite() {
 		return new GuavaTest().allTests();
 //	    return new TestsForSetsInJavaUtil().allTests();

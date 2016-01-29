@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-
 import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.IdMapCounter;
@@ -32,10 +31,10 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 
 	/** The Constant MERGE. */
 	public static final String MERGE = "merge";
-	
+
 	/** The Constant COLLISION. */
 	public static final String COLLISION = "collision";
-	
+
 	/** The Constant PRIO. */
 	public static final String PRIO = "prio";
 
@@ -60,7 +59,7 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	public NetworkParserLog getLogger() {
 		return logger;
 	}
-	
+
 	/**
 	 * Set the Current Logger for Infos
 	 *
@@ -207,7 +206,7 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 		addListener(object);
 		return object;
 	}
-	
+
 	protected boolean addListener(Object object) {
 		return false;
 	}
@@ -467,7 +466,7 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 		this.filter = filter;
 		return this;
 	}
-	
+
 	public abstract BaseItem encode(Object value);
 
 	public abstract BaseItem encode(Object value, Filter filter);
@@ -487,7 +486,7 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	public boolean isCaseSensitive() {
 		return keyValue.isCaseSensitive();
 	}
-	
+
 	/**
 	 * For setting the Option of checking the CaseSensitive of the Properties
 	 *
@@ -499,7 +498,7 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 		keyValue.withCaseSensitive(value);
 		return this;
 	}
-	
+
 	// Methods for Filtering
 	protected boolean hasObjects(Filter filter, Object element) {
 		return filter.hasObjects(element);

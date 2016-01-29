@@ -32,16 +32,16 @@ public class CustomPane extends BorderPane implements StageEvent{
 
 	public CustomPane(Node centerNode) {
 		super();
-		
+
 		this.center  = centerNode;
 		setCenter(centerNode);
 	}
-		
+
 	@Override
 	public void stageClosing(WindowEvent event, Stage stage, FXStageController controller) {
 		if(this.center instanceof StageEvent) {
 			((StageEvent)this.center).stageClosing(event, stage, controller);
-		}		
+		}
 	}
 
 	@Override

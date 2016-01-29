@@ -67,10 +67,10 @@ public class FXStageController implements StageEvent, WindowListener {
 		}
 		return stage;
 	}
-	
+
 	public FXStageController withStage(Stage value) {
 		this.stage = value;
-		if(value != null) { 
+		if(value != null) {
 			stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 				public void handle(WindowEvent we) {
 					stageClosing(we, stage, FXStageController.this);
@@ -220,17 +220,17 @@ public class FXStageController implements StageEvent, WindowListener {
 		}
 		return null;
 	}
-	
+
 	public FXStageController withFXML(String fxmlFile) {
 		create(FXStageController.class.getResource(fxmlFile), null);
 		return this;
 	}
-	
+
 	public FXStageController withFXML(URL urlfxmlFile) {
 		create(urlfxmlFile, null);
 		return this;
 	}
-	
+
 	public Region create(String fxmlFile) {
 		return create(FXStageController.class.getResource(fxmlFile), null);
 	}
@@ -330,7 +330,7 @@ public class FXStageController implements StageEvent, WindowListener {
 		close(oldStage);
 		return stage;
 	}
-	
+
 	private void close(Stage oldStage) {
 		if(oldStage!=null) {
 			oldStage.close();
@@ -339,7 +339,7 @@ public class FXStageController implements StageEvent, WindowListener {
 			awtContainer.exit();
 		}
 	}
-	
+
 	public Stage showNewView(StageEvent value) {
 		if(value instanceof Node){
 			return showNewStage((Node) value);
@@ -351,7 +351,7 @@ public class FXStageController implements StageEvent, WindowListener {
 					WindowEvent.WINDOW_SHOWING), myStage, this);
 		}
 		Stage oldStage=stage;
-		
+
 		this.withPane(null);
 		this.withStage(null);
 
@@ -360,10 +360,10 @@ public class FXStageController implements StageEvent, WindowListener {
 
 		awtContainer = new AWTContainer(value);
 		Platform.runLater(awtContainer);
-		
+
 		return stage;
 	}
-	
+
 	public FXStageController withPane(Region value) {
 		this.pane = value;
 		if(value!=null) {

@@ -34,7 +34,6 @@ public interface SendableEntityCreator {
 	 */
 	public String[] getProperties();
 
-
 	/**
 	 * Gets the value.
 	 *

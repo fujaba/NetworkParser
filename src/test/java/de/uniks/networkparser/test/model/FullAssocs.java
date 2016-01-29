@@ -8,7 +8,7 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 public class FullAssocs {
-	
+
 	public static final String PROPERTY_PERSONS = "persons";
 	public static final String PROPERTY_PASSWORDS = "passwords";
 	public static final String PROPERTY_ANSWER = "answer";
@@ -27,22 +27,22 @@ public class FullAssocs {
 	public void setPersons(List<String> persons) {
 		this.persons = persons;
 	}
-	
+
 	public String getPassword(String user) {
 		return passwords.get(user);
 	}
-	
+
 	public Map<String, String> getPasswords() {
 		return passwords;
 	}
 	public void setPasswords(Map<String, String> passwords) {
 		this.passwords = (TreeMap<String, String>) passwords;
 	}
-	
+
 	public void addPassword(String user, String password){
 		this.passwords.put(user, password);
 	}
-	
+
 	public Object get(String attrName) {
 		String attribute;
 		int pos = attrName.indexOf(".");
@@ -64,11 +64,11 @@ public class FullAssocs {
 		}
 		return null;
 	}
-	
+
 	public void addAssoc(FullAssocs child){
 		fullMap.put(child, child);
 	}
-	
+
 	public void addPerson(String name){
 		persons.add(name);
 	}

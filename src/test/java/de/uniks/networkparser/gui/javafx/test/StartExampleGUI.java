@@ -11,9 +11,9 @@ public class StartExampleGUI extends Application{
 	public void start(Stage stage) throws Exception {
 //		Parent root = FXMLLoader.load(getClass().getResource("fxml/example.fxml"));
 		Parent root = FXMLLoader.load(getClass().getResource("fxml/example.fxml"));
-		
+
 		Scene scene = new Scene(root, 600, 400);
-		
+
 		stage.setTitle("SimpleGUI");
 		stage.setScene(scene);
 		stage.show();

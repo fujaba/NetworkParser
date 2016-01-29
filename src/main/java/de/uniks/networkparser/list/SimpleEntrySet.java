@@ -37,7 +37,7 @@ public class SimpleEntrySet<K, V> implements Set<Entry<K, V>>{
 	public Map<K, V> getMap() {
 		return map;
 	}
-	
+
 	@Override
 	public int size() {
 		return this.map.size();

@@ -7,8 +7,8 @@ import java.io.IOException;
 
 public class TestRunner {
  public static void main(String[] args) {
-	 
-	 String[] classpath = System.getProperty("java.class.path").split(";"); 
+
+	 String[] classpath = System.getProperty("java.class.path").split(";");
 	 System.out.println(classpath);
 }
  public void execute(){
@@ -31,5 +31,5 @@ public class TestRunner {
 	 }
 //	 System.out.println(classpath);
  }
- 
+
 }

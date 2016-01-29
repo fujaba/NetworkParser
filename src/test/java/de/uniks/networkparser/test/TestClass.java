@@ -2,7 +2,6 @@ package de.uniks.networkparser.test;
 
 import org.junit.Assert;
 import org.junit.Test;
-
 import de.uniks.networkparser.xml.XMLEntity;
 
 public class TestClass {

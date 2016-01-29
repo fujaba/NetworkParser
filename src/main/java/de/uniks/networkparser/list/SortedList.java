@@ -29,7 +29,7 @@ import de.uniks.networkparser.sort.SortingDirection;
 
 public class SortedList<V> extends SimpleList<V> {
 	protected Comparator<V> cpr;
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Comparator<Object> comparator() {
@@ -39,12 +39,12 @@ public class SortedList<V> extends SimpleList<V> {
 		}
 		return (Comparator<Object>) cpr;
 	}
-	
+
 	@Override
 	public boolean isComparator() {
 		return (this.cpr != null);
 	}
-	
+
 	public SortedList<V> withComparator(Comparator<V> comparator) {
 		this.cpr = comparator;
 		return this;
@@ -55,8 +55,8 @@ public class SortedList<V> extends SimpleList<V> {
 				SortingDirection.ASC);
 		return this;
 	}
-	
-	
+
+
 	/**
 	 * Returns a view of the portion of this map whose keys are greater than (or
 	 * equal to, if {@code inclusive} is true) {@code fromKey}.
@@ -67,8 +67,8 @@ public class SortedList<V> extends SimpleList<V> {
 	 *			{@code true} if the low endpoint is to be included in the
 	 *			returned view
 	 * @param <ST> the ContainerClass
-	 * 
-	 *			 
+	 *
+	 *
 	 * @return a view of the portion of this map whose keys are greater than (or
 	 *		 equal to, if {@code inclusive} is true) {@code fromKey}
 	 *
@@ -100,7 +100,7 @@ public class SortedList<V> extends SimpleList<V> {
 		}
 		return (ST) newList;
 	}
-	
+
 	/**
 	 * Returns a view of the portion of this map whose keys are less than (or
 	 * equal to, if {@code inclusive} is true) {@code toKey}. The returned map
@@ -117,8 +117,8 @@ public class SortedList<V> extends SimpleList<V> {
 	 * @param inclusive
 	 *			{@code true} if the high endpoint is to be included in the
 	 *			returned view
-	 * @param <ST> the ContainerClass 
-	 * 
+	 * @param <ST> the ContainerClass
+	 *
 	 * @return result a list with less item then the key
 	 *
 	 */
@@ -143,7 +143,7 @@ public class SortedList<V> extends SimpleList<V> {
 		}
 		return (ST) newList;
 	}
-	
+
 	public V higher(V toElement) {
 		if(!isComparator()) {
 			return null;

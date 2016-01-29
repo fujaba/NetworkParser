@@ -29,7 +29,7 @@ public class ByteBuffer extends BufferedBuffer {
 	public char charAt(int index) {
 		return (char) buffer[index];
 	}
-	
+
 	@Override
 	public byte byteAt(int index) {
 		return buffer[index];
@@ -243,7 +243,7 @@ public class ByteBuffer extends BufferedBuffer {
 		this.length = array.length;
 		return this;
 	}
-	
+
 	@Override
 	public String toString() {
 		return String.valueOf(buffer);

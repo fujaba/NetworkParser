@@ -45,7 +45,7 @@ public class SimpleIteratorSet<K,V> implements ListIterator<Entry<K, V>>{
 			return null;
 		}
 		cursor++;
-		
+
 		this.currentEntry.setKey(this.list.getKeyByIndex(cursor));
 		this.currentEntry.setValue(this.list.getValueByIndex(cursor));
 		return this.currentEntry;
@@ -59,7 +59,7 @@ public class SimpleIteratorSet<K,V> implements ListIterator<Entry<K, V>>{
 	@Override
 	public Entry<K, V> previous() {
 		cursor--;
-		
+
 		this.currentEntry.setKey(this.list.getKeyByIndex(cursor));
 		this.currentEntry.setValue(this.list.getValueByIndex(cursor));
 		return this.currentEntry;

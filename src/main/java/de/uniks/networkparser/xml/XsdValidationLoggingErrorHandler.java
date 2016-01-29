@@ -29,7 +29,7 @@ import java.util.ArrayList;
  * @author Stefan XSD Validation Error Class.
  */
 
-public class XsdValidationLoggingErrorHandler { 
+public class XsdValidationLoggingErrorHandler {
 //implements ErrorHandler {
 	//TODO VALIDATOR
 	/** Variable of Document valid. */

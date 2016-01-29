@@ -19,12 +19,12 @@ public class Body implements FilePart{
 
 	@Override
 	public void append(String value) {
-		
+
 		if(counter<1){
 			currentItem = new MethodItem();
 			items.add(currentItem);
 		}
-		
+
 		currentItem.append(value);
 		for (int z=0;z<value.length();z++){
 			if(value.charAt(z)=='{'){

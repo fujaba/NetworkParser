@@ -30,10 +30,10 @@ public interface BaseItem {
 
 	@Override
 	public String toString();
-	
+
 	BaseItem withAll(Object... values);
-	
+
 	public Object getValueItem(Object key);
-	
+
 	public BaseItem getNewList(boolean keyValue);
 }

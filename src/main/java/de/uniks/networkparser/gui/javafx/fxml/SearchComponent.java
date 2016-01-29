@@ -35,10 +35,10 @@ public class SearchComponent implements Initializable{
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		tableView = new TableComponent();
-		
+
 		root.getChildren().add(tableView);
 	}
-	
+
 	public TableComponent getTable() {
 		return tableView;
 	}

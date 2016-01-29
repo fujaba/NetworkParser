@@ -1,7 +1,6 @@
 package de.uniks.networkparser.logic;
 
 import java.util.EventObject;
-
 import de.uniks.networkparser.interfaces.Condition;
 /*
  NetworkParser

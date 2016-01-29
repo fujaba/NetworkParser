@@ -24,6 +24,7 @@ package de.uniks.networkparser;
 import java.util.Collection;
 import java.util.Iterator;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 /**
  * AbstractIdMap embedded all methods for all formats.
@@ -37,7 +38,7 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 	/**
 	 * boolean for switch of search for Interface or Abstract superclass for entity
 	 */
-	protected boolean searchForSuperCreator; 
+	protected boolean searchForSuperCreator;
 	/**
 	 * Gets the creator class.
 	 *
@@ -66,7 +67,7 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 		if (creator != null || fullName ) {
 			return (SendableEntityCreator) creator;
 		}
-		
+
 		if(clazz.lastIndexOf(".")>=0) {
 			clazz = "."+clazz.substring(clazz.lastIndexOf(".")+1);
 		} else {
@@ -129,9 +130,18 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 	 */
 	public AbstractMap with(String className,
 			SendableEntityCreator creator) {
-		this.creators.add(className, creator);
+		addCreator(className, creator);
 		return this;
 	}
+
+    public boolean addCreator(String className, SendableEntityCreator creator) {
+    	boolean result = this.creators.add(className, creator);
+		if (creator instanceof SendableEntityCreatorTag) {
+			SendableEntityCreatorTag creatorTag = (SendableEntityCreatorTag) creator;
+			this.creators.add(creatorTag.getTag(), creator);
+		}
+		return result;
+    }
 
 	/**
 	 * Adds the creator.
@@ -141,8 +151,13 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 	 * @return AbstractIdMap to interlink arguments
 	 */
 	public AbstractMap with(SendableEntityCreator... createrClass) {
+		addCreator(createrClass);
+		return this;
+	}
+
+	public boolean addCreator(SendableEntityCreator... createrClass) {
 		if(createrClass == null) {
-			return this;
+			return false;
 		}
 		for (SendableEntityCreator creator : createrClass) {
 			if(creator == null)
@@ -152,15 +167,15 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 				if (reference != null) {
 					if (reference instanceof Class<?>) {
 						this.searchForSuperCreator = true;
-						with(((Class<?>)reference).getName(), creator);
+						addCreator(((Class<?>)reference).getName(), creator);
 					} else {
-						with(reference.getClass().getName(), creator);
+						addCreator(reference.getClass().getName(), creator);
 					}
 				}
 			}catch(Exception e){}
 		}
-		return this;
-	}
+		return true;
+    }
 
 	/**
 	 * remove the creator.

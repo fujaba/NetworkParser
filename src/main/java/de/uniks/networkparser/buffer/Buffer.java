@@ -33,7 +33,8 @@ import de.uniks.networkparser.list.SimpleList;
 public abstract class Buffer implements BufferItem {
 	public final static String STOPCHARSJSON = ",:]}/\\\"[{;=# ";
 	public final static String STOPCHARSXML = ",]}/\\\"[{;=# ";
-	
+	public final static String STOPCHARSXMLEND = ",]}/\\\"[{;=#> ";
+
 	/** The index. */
 	protected int position;
 
@@ -45,17 +46,17 @@ public abstract class Buffer implements BufferItem {
 
 	@Override
 	public abstract char getCurrentChar();
-	
+
 	@Override
 	public int position() {
 		return position;
 	}
-	
+
 	@Override
 	public int remaining() {
 		return length() - position();
 	}
-	
+
 	@Override
 	public boolean isEmpty() {
         return length() == 0;
@@ -68,12 +69,12 @@ public abstract class Buffer implements BufferItem {
 
 	@Override
 	public abstract byte[] toArray();
-	
+
 	@Override
 	public abstract Buffer withLookAHead(CharSequence lookahead);
 	@Override
 	public abstract Buffer withLookAHead(char current);
-	
+
 	public CharacterBuffer getString(int len) {
 		CharacterBuffer result = new CharacterBuffer();
 		if(len<1) {
@@ -84,7 +85,7 @@ public abstract class Buffer implements BufferItem {
 		for(int i = 1; i < len; i++) {
 			result.with(getChar());
 		}
-		return result; 
+		return result;
 	}
 
 	@Override
@@ -103,7 +104,7 @@ public abstract class Buffer implements BufferItem {
 	public CharacterBuffer nextString() {
 		return nextString(new CharacterBuffer(), false, false, '"');
 	}
-	
+
 	@Override
 	public CharacterBuffer nextString(CharacterBuffer sc, boolean allowQuote, boolean nextStep, char... quotes) {
 		if (getCurrentChar() == 0 || quotes == null) {
@@ -125,7 +126,7 @@ public abstract class Buffer implements BufferItem {
 		parseString(sc, allowQuote, nextStep, quotes);
 		return sc;
 	}
-	
+
 	protected CharacterBuffer parseString(CharacterBuffer sc, boolean allowQuote, boolean nextStep, char... quotes) {
 		sc.with(getCurrentChar());
 		if(quotes== null) {
@@ -134,7 +135,7 @@ public abstract class Buffer implements BufferItem {
 		char c, b = 0;
 		int i;
 		boolean isQuote = false;
-		
+
 		int quoteLen=quotes.length;
 		do {
 			c = getChar();
@@ -181,7 +182,7 @@ public abstract class Buffer implements BufferItem {
 		}
 		return sc;
 	}
-	
+
 	protected CharacterBuffer nextValue(char c, boolean allowDuppleMark) {
 		CharacterBuffer sb = new CharacterBuffer();
 		if(allowDuppleMark) {
@@ -197,7 +198,7 @@ public abstract class Buffer implements BufferItem {
 		}
 		return sb.trim();
 	}
-	
+
 	@Override
 	public Object nextValue(BaseItem creator, boolean allowQuote, boolean allowDuppleMark, char c) {
 		CharacterBuffer value = nextValue(c, allowDuppleMark);
@@ -245,7 +246,7 @@ public abstract class Buffer implements BufferItem {
 		}
 		return value;
 	}
-	
+
 	@Override
 	public boolean skipTo(char search, boolean notEscape) {
 		int len = length();
@@ -264,7 +265,7 @@ public abstract class Buffer implements BufferItem {
 		}
 		return false;
 	}
-	
+
 	@Override
 	public boolean skipTo(String search, boolean order, boolean notEscape) {
 		char[] character = search.toCharArray();
@@ -314,7 +315,7 @@ public abstract class Buffer implements BufferItem {
 	public boolean skip() {
 		return getChar() != 0;
 	}
-	
+
 	@Override
 	public CharacterBuffer nextToken(String stopWords) {
 		nextClean(false);
@@ -330,7 +331,7 @@ public abstract class Buffer implements BufferItem {
 		parseString(characterBuffer, true, false, stops);
 		return characterBuffer;
 	}
-	
+
 	@Override
 	public boolean checkValues(char... items) {
 		char current = getCurrentChar();
@@ -358,7 +359,7 @@ public abstract class Buffer implements BufferItem {
 		} while (sc.length() > 0);
 		return list;
 	}
-	
+
 	@Override
 	public SimpleList<String> splitStrings(String value, boolean split) {
 		SimpleList<String> result = new SimpleList<String>();
@@ -372,7 +373,7 @@ public abstract class Buffer implements BufferItem {
 		}
 		return result;
 	}
-	
+
 	@Override
 	public char skipChar(char... quotes) {
 		char c = getCurrentChar();

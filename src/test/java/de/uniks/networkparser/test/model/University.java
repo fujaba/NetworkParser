@@ -13,7 +13,6 @@ public class University {
 	public static final String PROPERTY_ICH = "&child&value";
 	public static final String PROPERTY_VALUE = "&fg?value";
 
-
 	private String user;
 	private String ich;
 	private String value;
@@ -26,7 +25,7 @@ public class University {
 		this.value = value;
 	}
 
-	
+
 	public String getUser() {
 		return user;
 	}

@@ -4,10 +4,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-
 import org.junit.Assert;
 import org.junit.Test;
-
 import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
@@ -21,16 +19,16 @@ public class DotTest {
 		String item="strict graph ethane {1}";
 		DotIdMap map=new DotIdMap();
 		map.decode(item);
-	}				
-	
+	}
+
 	@Test
 	public void testDotShortest() {
 		String item="graph{1}";
 		DotIdMap map=new DotIdMap();
 		GraphList list = (GraphList) map.decode(item);
 		Assert.assertEquals(1, list.getNodes().size());
-	}	
-	
+	}
+
 
 	@Test
 	public void testDotSimple() {
@@ -54,7 +52,7 @@ public class DotTest {
 			+"2 -- 5"+BaseItem.CRLF
 			+"3 -- 5"+BaseItem.CRLF
 			+"4 -- 5}";
-		
+
 		DotIdMap map=new DotIdMap();
 		GraphList list = (GraphList) map.decode(item);
 		Assert.assertEquals(5, list.getNodes().size());
@@ -67,7 +65,7 @@ public class DotTest {
 		GraphList list = (GraphList) map.decode(item);
 		Assert.assertEquals(2, list.getNodes().size());
 	}
-	
+
 	@Test
 	public void testDotConverter() throws IOException {
 		GraphList list = new GraphList();
@@ -76,18 +74,18 @@ public class DotTest {
 		uni.createMethod("init()");
 		Clazz student = list.with(new Clazz().with("Stefan").with("Student"));
 		student.withUniDirectional(uni, "owner", Cardinality.ONE);
-		
+
 		DotIdMap map=new DotIdMap();
 		String convert = map.convert(list, true);
-		
-		
+
+
 		new File("build").mkdir();
 		FileWriter fstream = new FileWriter("build/dotFile.dot");
 		BufferedWriter out = new BufferedWriter(fstream);
 		out.write(convert);
 		//Close the output stream
 		out.close();
-		
+
 	  //		String[] command = new String[] { makeimageFile, , "." };
 		//		String path = "../GraphViz/win32/";
 		//		 String[] command = new String[] { path+"dot", "build/dotFile.dot", "-Tsvg", "-o", "build/dotFile.svg" };

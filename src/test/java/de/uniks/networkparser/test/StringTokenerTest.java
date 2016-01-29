@@ -2,10 +2,8 @@ package de.uniks.networkparser.test;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
-
 import org.junit.Assert;
 import org.junit.Test;
-
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.buffer.CharacterReader;
 import de.uniks.networkparser.date.DateTimeEntity;
@@ -17,19 +15,19 @@ public class StringTokenerTest {
 	public void testString(){
 		CharacterReader buffer = new CharacterReader().with("Hallo Welt");
 		showString(buffer, "Hallo Welt");
-		
+
 		showString(buffer, "Hallo \"meine\" Welt");
-		
+
 		showString(buffer, "\"Hallo meine\" Welt");
-		
+
 		showString(buffer, "Hallo \"meine \\\"kleine\\\"\" Welt");
-		
-		
+
+
 		DateTimeEntity dateTime = new DateTimeEntity();
 		showString(buffer, "HH:MM:SS \"Sekunden\"");
 		Assert.assertNotNull(dateTime.toString("HH:MM:SS \"Sekunden\""));
 	}
-	
+
 	@Test
 	public void testStringSplit(){
 		CharacterReader tokener = new CharacterReader().with("[1,\"2,3\",4]");
@@ -47,18 +45,18 @@ public class StringTokenerTest {
 			}while (sc.length()>0);
 		}
 	}
-	
+
 	@Test
 	public void testToday(){
 		DateTimeEntity date= new DateTimeEntity();
 		Assert.assertNotNull(date.toString("ddd. dd.mm.yyyy"));
 	}
-	
+
 	public void showString(CharacterReader tokener, String value){
 		int count=0;
 		CharacterBuffer sub;
 		PrintStream stream = null;
-		
+
 		output("zu parsen: " +value, stream);
 		tokener.reset();
 		tokener.with(value);
@@ -72,13 +70,13 @@ public class StringTokenerTest {
 		}while (sub.length()>0);
 		output("\n", stream);
 	}
-	
+
 	void output(String str, PrintStream stream) {
 		if (stream != null) {
 			stream.print(str);
 		}
 	}
-	
+
 	@Test
 	public void testSearchText(){
 		CharacterBuffer stringTokener = new CharacterBuffer().with("-Harmonie -Illusion -\"E1 E2\"");
@@ -97,7 +95,7 @@ public class StringTokenerTest {
 		String[] lastSearchCriteriaItems = searchList.toArray(new String[searchList.size()]);
 		Assert.assertEquals(3, lastSearchCriteriaItems.length);
 	}
-	
+
 	@Test
 	public void testUTF8(){
 //		String test="{id:\"Hüttenberg\"}";

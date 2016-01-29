@@ -44,7 +44,7 @@ public class YUMLConverter implements Converter {
 			while (i.hasNext()) {
 				parse(typ, i.next(), sb, visitedObj, removePackage);
 			}
-			
+
 			return sb.toString();
 		}
 		return null;
@@ -101,7 +101,7 @@ public class YUMLConverter implements Converter {
 			}
 		}
 	}
-	
+
 	// ##################################### Entity
 	public String parseEntity(GraphEntity entity, SimpleList<GraphMember> visited,
 			boolean shortName) {
@@ -114,7 +114,7 @@ public class YUMLConverter implements Converter {
 			return "";
 		}
 		Clazz clazzEntity = (Clazz) entity;
-		
+
 		boolean shortString = visited.contains(clazzEntity);
 		if (!shortString) {
 			visited.add(clazzEntity);
