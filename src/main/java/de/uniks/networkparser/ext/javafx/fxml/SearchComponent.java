@@ -1,4 +1,4 @@
-package de.uniks.networkparser.gui.javafx.fxml;
+package de.uniks.networkparser.ext.javafx.fxml;
 
 /*
  NetworkParser
@@ -23,10 +23,11 @@ package de.uniks.networkparser.gui.javafx.fxml;
 */
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import de.uniks.networkparser.ext.javafx.component.TableComponent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.AnchorPane;
-import de.uniks.networkparser.gui.javafx.table.TableComponent;
 
 public class SearchComponent implements Initializable{
 	@FXML AnchorPane root;

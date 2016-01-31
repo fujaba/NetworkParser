@@ -14,10 +14,10 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import de.uniks.networkparser.ext.javafx.TableList;
+import de.uniks.networkparser.ext.javafx.component.TableComponent;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.TableCellValue;
-import de.uniks.networkparser.gui.javafx.TableList;
-import de.uniks.networkparser.gui.javafx.table.TableComponent;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.json.JsonIdMap;
 

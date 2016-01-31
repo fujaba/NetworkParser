@@ -1,4 +1,4 @@
-package de.uniks.networkparser.gui.javafx.dialog;
+package de.uniks.networkparser.ext.javafx.dialog;
 
 /*
  NetworkParser

@@ -2,7 +2,8 @@ package de.uniks.networkparser.test;
 
 import org.junit.Assert;
 import org.junit.Test;
-import de.uniks.networkparser.gui.javafx.GenericGrammar;
+
+import de.uniks.networkparser.ext.generic.GenericGrammar;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.test.model.Apple;

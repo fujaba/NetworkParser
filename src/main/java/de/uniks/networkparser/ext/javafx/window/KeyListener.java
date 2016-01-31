@@ -1,5 +1,6 @@
-package de.uniks.networkparser.gui.javafx.window;
+package de.uniks.networkparser.ext.javafx.window;
 
+import de.uniks.networkparser.ext.javafx.component.TableCellFX;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -24,7 +25,6 @@ package de.uniks.networkparser.gui.javafx.window;
 import javafx.scene.Parent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import de.uniks.networkparser.gui.javafx.table.TableCellFX;
 
 public class KeyListener {
 	private Runnable runnable;

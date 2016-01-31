@@ -472,10 +472,11 @@ public class DateTimeEntity {
 		Tokener tokener = new Tokener();
 		dateFormat = dateFormat.replaceAll("'", "\"");
 		tokener.withBuffer(dateFormat);
+		boolean isString = false;
 		do {
 			sub = tokener.nextString(new CharacterBuffer(), false, false, '"').toString();
 			//FIXME Change String to StringContainter
-			if (sub.length() > 0 ) {
+			if (sub.length() > 0 && !isString) {
 				// System.out.println(count++
 				// + ": #" +sub+ "# -- " +tokener.isString());
 				// Time
@@ -514,6 +515,10 @@ public class DateTimeEntity {
 				sub = sub.replace("y", EntityUtil.strZero(get(DateField.YEAR), 1, 2));
 			}
 			sb.append(sub);
+			if(tokener.getCurrentChar()=='\"') {
+				tokener.getChar();
+			}
+			isString = !isString;
 		} while (sub.length() > 0);
 
 		return sb.toString();

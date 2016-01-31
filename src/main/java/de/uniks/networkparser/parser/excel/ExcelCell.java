@@ -1,5 +1,23 @@
-package de.uniks.networkparser.parser;
+package de.uniks.networkparser.parser.excel;
+import java.nio.charset.Charset;
 
+/*
+NetworkParser
+Copyright (c) 2011 - 2016, Stefan Lindel
+All rights reserved.
+
+Licensed under the EUPL, Version 1.1 or (as soon they
+will be approved by the European Commission) subsequent
+versions of the EUPL (the "Licence");
+You may not use this work except in compliance with the Licence.
+You may obtain a copy of the Licence at:
+
+http://ec.europa.eu/idabc/eupl5
+
+Unless required by applicable law or agreed to in writing, software distributed under the Licence is
+distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the Licence for the specific language governing permissions and limitations under the Licence.
+*/
 import de.uniks.networkparser.gui.Pos;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.xml.XMLEntity;
@@ -12,6 +30,7 @@ public class ExcelCell extends XMLEntity implements SendableEntityCreatorTag{
 	public static final String PROPERTY_REFERENZ="r";
 	public static final String[] PROPERTIES={PROPERTY_STYLE, PROPERTY_TYPE, PROPERTY_REFERENZ};
 	private Pos referenz;
+	private Object content;
 
 	@Override
 	public String[] getProperties() {
@@ -44,10 +63,10 @@ public class ExcelCell extends XMLEntity implements SendableEntityCreatorTag{
 			XMLEntity item = (XMLEntity) value;
 			ExcelCell parent = (ExcelCell) entity;
 			if(item.getValue(PROPERTY_STYLE) != null) {
-				parent.withStyle(""+item.getValue(PROPERTY_STYLE));
+				parent.setValueItem(PROPERTY_STYLE, ""+item.getValue(PROPERTY_STYLE));
 			}
 			if(item.getValue(PROPERTY_TYPE) != null) {
-				parent.withType(""+item.getValue(PROPERTY_TYPE));
+				parent.setValueItem(PROPERTY_TYPE, ""+item.getValue(PROPERTY_TYPE));
 			}
 			if(item.getValue(PROPERTY_REFERENZ) != null) {
 				parent.withReferenz(Pos.valueOf(""+item.getValue(PROPERTY_REFERENZ)));
@@ -61,12 +80,8 @@ public class ExcelCell extends XMLEntity implements SendableEntityCreatorTag{
 		if(entity instanceof ExcelCell == false) {
 			return false;
 		}
-		if(PROPERTY_STYLE.equals(attribute)) {
-			((ExcelCell)entity).withStyle(""+value);
-			return true;
-		}
-		if(PROPERTY_TYPE.equals(attribute)) {
-			((ExcelCell)entity).withType(""+value);
+		if(PROPERTY_STYLE.equals(attribute) || PROPERTY_TYPE.equals(attribute)) {
+			((ExcelCell)entity).setValueItem(attribute, ""+value);
 			return true;
 		}
 		if(PROPERTY_REFERENZ.equals(attribute)) {
@@ -99,18 +114,49 @@ public class ExcelCell extends XMLEntity implements SendableEntityCreatorTag{
 		return getString(PROPERTY_TYPE);
 	}
 
-	public ExcelCell withType(String type) {
-		super.setValueItem(PROPERTY_TYPE, type);
-		return this;
-	}
-
 	public String getStyle() {
 		return getString(PROPERTY_STYLE);
 	}
-
-	public ExcelCell withStyle(String style) {
-		super.setValueItem(PROPERTY_STYLE, style);
+	public Object getContent() {
+		return content;
+	}
+	public String getContentAsString() {
+		if(content == null) {
+			return "";
+		}
+		return content.toString();
+	}
+	public boolean setContent(Object value) {
+		if((this.content == null && value != null) ||
+		   (this.content != null && this.content.equals(value) == false)) {
+		   this.content = value;
+		   return true;
+	   }
+	   return false;
+	}
+	
+	public ExcelCell withContent(Object value) {
+		setContent(value);
 		return this;
 	}
-
+	
+	public String getDataLine(){
+		String ref = "";
+		if(this.referenz != null) {
+			ref = this.referenz.toString();
+		}
+		if(content == null){
+			return null;
+		}
+		if(content instanceof Number) {
+			return "<c r=\""+ref+"\"><v>"+content+"</v></c>";
+		}
+		if(content instanceof Boolean) {
+			if((Boolean)content) {
+				return "<c r=\""+ref+"\" t=\"b\"><v>1</v></c>";
+			}
+			return "<c r=\""+ref+"\" t=\"b\"><v>0</v></c>";
+		}
+		return "<c r=\""+ref+"\" t=\"inlineStr\"><is><t>"+new String(content.toString().getBytes(Charset.forName("UTF-8")))+"</t></is></c>";
+	}
 }

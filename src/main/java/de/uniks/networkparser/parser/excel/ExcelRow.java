@@ -16,19 +16,13 @@ Unless required by applicable law or agreed to in writing, software distributed 
 distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the Licence for the specific language governing permissions and limitations under the Licence.
 */
-public enum ExcelCellValueType {
-	EXTLST("extLst"), FORMULAR("f"), RICHTEXT("is"), VALUE("v");
-	private String value;
+import de.uniks.networkparser.list.SimpleList;
 
-	ExcelCellValueType(String value) {
-		this.setValue(value);
-	}
-
-	public String getValue() {
-		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
+public class ExcelRow extends SimpleList<ExcelCell>{
+	public int getRowPos() {
+		if(this.size()>0) {
+			return first().getReferenz().y;
+		}
+		return -1;
 	}
 }

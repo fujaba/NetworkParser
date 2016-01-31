@@ -1,4 +1,4 @@
-package de.uniks.networkparser.gui.javafx.controller;
+package de.uniks.networkparser.ext.javafx.controller;
 
 import java.util.EventObject;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;

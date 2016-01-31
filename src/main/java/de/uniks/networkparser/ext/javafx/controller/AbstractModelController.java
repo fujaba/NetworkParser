@@ -1,4 +1,4 @@
-package de.uniks.networkparser.gui.javafx.controller;
+package de.uniks.networkparser.ext.javafx.controller;
 
 /*
  NetworkParser
@@ -26,7 +26,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Method;
 import javafx.scene.Node;
-import de.uniks.networkparser.gui.javafx.GenericCreator;
+import de.uniks.networkparser.ext.generic.GenericCreator;
 import de.uniks.networkparser.interfaces.SendableEntity;
 
 public abstract class AbstractModelController implements PropertyChangeListener {

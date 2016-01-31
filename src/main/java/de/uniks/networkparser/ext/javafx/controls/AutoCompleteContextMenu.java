@@ -1,4 +1,4 @@
-package de.uniks.networkparser.gui.javafx.controls;
+package de.uniks.networkparser.ext.javafx.controls;
 
 /*
  NetworkParser
@@ -22,13 +22,14 @@ package de.uniks.networkparser.gui.javafx.controls;
  permissions and limitations under the Licence.
 */
 import java.util.Set;
+
+import de.uniks.networkparser.ext.javafx.resource.Styles;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
-import de.uniks.networkparser.gui.javafx.resource.Styles;
 
 public class AutoCompleteContextMenu extends ContextMenu{
 	private TextField control;

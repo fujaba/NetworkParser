@@ -1,4 +1,4 @@
-package de.uniks.networkparser.gui.javafx.window;
+package de.uniks.networkparser.ext.javafx.window;
 
 /*
  Json Id Serialisierung Map
@@ -47,7 +47,7 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import de.uniks.networkparser.gui.javafx.Os;
+import de.uniks.networkparser.ext.javafx.Os;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import javafx.application.Application;
 import javafx.scene.Parent;

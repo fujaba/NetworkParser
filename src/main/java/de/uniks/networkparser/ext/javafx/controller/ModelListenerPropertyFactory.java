@@ -1,4 +1,4 @@
-package de.uniks.networkparser.gui.javafx.controller;
+package de.uniks.networkparser.ext.javafx.controller;
 
 /*
  NetworkParser
@@ -38,7 +38,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.gui.javafx.GenericCreator;
+import de.uniks.networkparser.ext.generic.GenericCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class ModelListenerPropertyFactory {

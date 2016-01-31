@@ -1,4 +1,7 @@
 package de.uniks.networkparser.parser.excel;
+
+import de.uniks.networkparser.list.SimpleList;
+
 /*
 NetworkParser
 Copyright (c) 2011 - 2016, Stefan Lindel
@@ -16,19 +19,24 @@ Unless required by applicable law or agreed to in writing, software distributed 
 distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the Licence for the specific language governing permissions and limitations under the Licence.
 */
-public enum ExcelCellValueType {
-	EXTLST("extLst"), FORMULAR("f"), RICHTEXT("is"), VALUE("v");
-	private String value;
+public class ExcelSheet extends SimpleList<ExcelRow>{
+	public static final String PROPERTY_NAME="name";
+	private String name;
 
-	ExcelCellValueType(String value) {
-		this.setValue(value);
+	public String getName() {
+		return name;
 	}
 
-	public String getValue() {
-		return value;
+	public boolean setName(String value) {
+		if ((this.name == null && value != null) || (this.name != null && this.name.equals(value) == false)) {
+			this.name = value;
+			return true;
+		}
+		return false;
 	}
 
-	public void setValue(String value) {
-		this.value = value;
+	public ExcelSheet withName(String value) {
+		setName(value);
+		return this;
 	}
 }

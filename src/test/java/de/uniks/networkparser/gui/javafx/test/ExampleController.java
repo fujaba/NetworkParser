@@ -5,9 +5,9 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.AnchorPane;
+import de.uniks.networkparser.ext.javafx.TableList;
+import de.uniks.networkparser.ext.javafx.component.TableComponent;
 import de.uniks.networkparser.gui.Column;
-import de.uniks.networkparser.gui.javafx.TableList;
-import de.uniks.networkparser.gui.javafx.table.TableComponent;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.json.JsonIdMap;
 

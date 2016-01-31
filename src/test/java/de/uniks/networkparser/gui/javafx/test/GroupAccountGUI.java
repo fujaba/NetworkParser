@@ -1,10 +1,10 @@
 package de.uniks.networkparser.gui.javafx.test;
 
 import de.uniks.networkparser.event.Style;
+import de.uniks.networkparser.ext.javafx.TableList;
+import de.uniks.networkparser.ext.javafx.component.TableComponent;
+import de.uniks.networkparser.ext.javafx.controller.ModelListenerStringProperty;
 import de.uniks.networkparser.gui.Column;
-import de.uniks.networkparser.gui.javafx.TableList;
-import de.uniks.networkparser.gui.javafx.controller.ModelListenerStringProperty;
-import de.uniks.networkparser.gui.javafx.table.TableComponent;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.test.model.GroupAccount;
 import de.uniks.networkparser.test.model.Person;

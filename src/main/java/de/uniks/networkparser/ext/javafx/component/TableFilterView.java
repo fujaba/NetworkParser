@@ -1,4 +1,4 @@
-package de.uniks.networkparser.gui.javafx.table;
+package de.uniks.networkparser.ext.javafx.component;
 
 /*
  NetworkParser
@@ -26,8 +26,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import de.uniks.networkparser.buffer.Tokener;
+import de.uniks.networkparser.ext.javafx.TableList;
 import de.uniks.networkparser.gui.Column;
-import de.uniks.networkparser.gui.javafx.TableList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleList;
 import javafx.beans.value.ChangeListener;

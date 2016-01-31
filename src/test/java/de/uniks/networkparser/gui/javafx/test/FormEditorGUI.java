@@ -4,8 +4,8 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import de.uniks.networkparser.ext.javafx.component.PropertyComposite;
 import de.uniks.networkparser.gui.Column;
-import de.uniks.networkparser.gui.javafx.form.PropertyComposite;
 import de.uniks.networkparser.json.JsonIdMap;
 
 public class FormEditorGUI extends Application {

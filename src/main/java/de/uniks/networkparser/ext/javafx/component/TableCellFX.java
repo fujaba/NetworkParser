@@ -1,4 +1,4 @@
-package de.uniks.networkparser.gui.javafx.table;
+package de.uniks.networkparser.ext.javafx.component;
 
 /*
  NetworkParser
@@ -31,13 +31,13 @@ import javafx.scene.control.TablePosition;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
 import de.uniks.networkparser.event.Style;
+import de.uniks.networkparser.ext.javafx.StyleFX;
+import de.uniks.networkparser.ext.javafx.controls.EditControl;
+import de.uniks.networkparser.ext.javafx.controls.EditFieldMap;
 import de.uniks.networkparser.gui.CellEditorElement;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.FieldTyp;
 import de.uniks.networkparser.gui.TableCellValue;
-import de.uniks.networkparser.gui.javafx.StyleFX;
-import de.uniks.networkparser.gui.javafx.controls.EditControl;
-import de.uniks.networkparser.gui.javafx.controls.EditFieldMap;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 

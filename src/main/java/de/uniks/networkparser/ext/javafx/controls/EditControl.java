@@ -1,4 +1,4 @@
-package de.uniks.networkparser.gui.javafx.controls;
+package de.uniks.networkparser.ext.javafx.controls;
 
 /*
  NetworkParser
@@ -28,10 +28,10 @@ import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.ext.javafx.window.KeyListenerMap;
 import de.uniks.networkparser.gui.CellEditorElement;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.FieldTyp;
-import de.uniks.networkparser.gui.javafx.window.KeyListenerMap;
 
 public abstract class EditControl<T extends Node> implements CellEditorElement, EventHandler<KeyEvent>, ChangeListener<Boolean> {
 	protected T control;

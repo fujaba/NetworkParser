@@ -1,14 +1,14 @@
 package de.uniks.networkparser.gui.javafx.test;
 
+import de.uniks.networkparser.ext.javafx.component.TableCellFX;
+import de.uniks.networkparser.ext.javafx.component.TableCellFactory;
+import de.uniks.networkparser.ext.javafx.component.TableComponent;
+import de.uniks.networkparser.ext.javafx.component.UpdateItemCell;
+import de.uniks.networkparser.ext.javafx.dialog.DialogBox;
+import de.uniks.networkparser.ext.javafx.window.FXStageController;
+import de.uniks.networkparser.ext.javafx.window.SimpleShell;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.TableCellValue;
-import de.uniks.networkparser.gui.javafx.dialog.DialogBox;
-import de.uniks.networkparser.gui.javafx.table.TableCellFX;
-import de.uniks.networkparser.gui.javafx.table.TableCellFactory;
-import de.uniks.networkparser.gui.javafx.table.TableComponent;
-import de.uniks.networkparser.gui.javafx.table.UpdateItemCell;
-import de.uniks.networkparser.gui.javafx.window.FXStageController;
-import de.uniks.networkparser.gui.javafx.window.SimpleShell;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.test.model.GroupAccount;
 import de.uniks.networkparser.test.model.Person;

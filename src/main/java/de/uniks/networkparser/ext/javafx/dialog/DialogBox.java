@@ -1,4 +1,4 @@
-package de.uniks.networkparser.gui.javafx.dialog;
+package de.uniks.networkparser.ext.javafx.dialog;
 
 /*
  NetworkParser
@@ -24,7 +24,8 @@ package de.uniks.networkparser.gui.javafx.dialog;
 import java.net.URL;
 import java.util.ArrayList;
 import com.sun.javafx.tk.Toolkit;
-import de.uniks.networkparser.gui.javafx.dialog.DialogButton.Grafik;
+
+import de.uniks.networkparser.ext.javafx.dialog.DialogButton.Grafik;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;

@@ -1,13 +1,13 @@
 package de.uniks.networkparser.gui.javafx.test;
 
+import de.uniks.networkparser.ext.javafx.controls.AutoCompletionList;
+import de.uniks.networkparser.ext.javafx.controls.TextEditorControl;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import de.uniks.networkparser.gui.javafx.controls.AutoCompletionList;
-import de.uniks.networkparser.gui.javafx.controls.TextEditorControl;
 
 public class AutoCompletion extends Application {
 

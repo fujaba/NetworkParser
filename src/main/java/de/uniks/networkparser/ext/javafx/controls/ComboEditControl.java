@@ -1,9 +1,9 @@
-package de.uniks.networkparser.gui.javafx.controls;
+package de.uniks.networkparser.ext.javafx.controls;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.ext.javafx.TableList;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.FieldTyp;
-import de.uniks.networkparser.gui.javafx.TableList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleList;
 /*

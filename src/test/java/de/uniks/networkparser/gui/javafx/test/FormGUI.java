@@ -1,9 +1,9 @@
 package de.uniks.networkparser.gui.javafx.test;
 
 import javafx.scene.layout.Pane;
-import de.uniks.networkparser.gui.javafx.form.ModelForm;
-import de.uniks.networkparser.gui.javafx.window.FXStageController;
-import de.uniks.networkparser.gui.javafx.window.SimpleShell;
+import de.uniks.networkparser.ext.javafx.component.ModelForm;
+import de.uniks.networkparser.ext.javafx.window.FXStageController;
+import de.uniks.networkparser.ext.javafx.window.SimpleShell;
 import de.uniks.networkparser.json.JsonIdMap;
 
 public class FormGUI extends SimpleShell {

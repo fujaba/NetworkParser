@@ -5,6 +5,8 @@ import java.io.PrintStream;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+
+import org.junit.Assert;
 import org.junit.Test;
 import de.uniks.networkparser.date.DateField;
 import de.uniks.networkparser.date.DateTimeEntity;
@@ -44,6 +46,16 @@ public class DateTimeEntityTest {
 //		case MILLISECOND_OF_DAY:
 //		case MILLISECOND_OF_YEAR:
 //		case TIMEZONE:
+	}
+	
+	@Test
+	public void testToString() {
+		DateTimeEntity date = new DateTimeEntity();
+		date.withValue(1396439596409L);
+		String string = date.toString("yyyy-mm-dd'T'HZ:MM:SS'Z'");
+		Assert.assertEquals("2014-04-02T12:53:16Z", string);
+//		System.out.println(string);
+
 	}
 	public void printToStream(DateFormat df, GregorianCalendar reference, PrintStream stream) {
 		if(stream != null) {

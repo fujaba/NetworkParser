@@ -1,4 +1,4 @@
-package de.uniks.networkparser.gui.javafx.table;
+package de.uniks.networkparser.ext.javafx.component;
 
 /*
 NetworkParser
@@ -44,10 +44,10 @@ import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.TextItems;
 import de.uniks.networkparser.event.Style;
+import de.uniks.networkparser.ext.javafx.TableList;
+import de.uniks.networkparser.ext.javafx.controls.EditFieldMap;
+import de.uniks.networkparser.ext.javafx.resource.Styles;
 import de.uniks.networkparser.gui.Column;
-import de.uniks.networkparser.gui.javafx.TableList;
-import de.uniks.networkparser.gui.javafx.controls.EditFieldMap;
-import de.uniks.networkparser.gui.javafx.resource.Styles;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;

@@ -1,4 +1,4 @@
-package de.uniks.networkparser.gui.javafx.table;
+package de.uniks.networkparser.ext.javafx.component;
 
 import de.uniks.networkparser.gui.TableCellValue;
 

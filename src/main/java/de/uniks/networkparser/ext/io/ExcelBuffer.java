@@ -1,19 +1,35 @@
-package de.uniks.networkparser.gui.javafx;
+package de.uniks.networkparser.ext.io;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.list.SimpleList;
-import de.uniks.networkparser.parser.ExcelCell;
-import de.uniks.networkparser.parser.ExcelParser;
+import java.util.zip.ZipOutputStream;
 
-public class ExcelReader {
-	public SimpleList<SimpleList<ExcelCell>> parse(File file) {
-		SimpleList<SimpleList<ExcelCell>> data = null;
+import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.parser.excel.ExcelParser;
+import de.uniks.networkparser.parser.excel.ExcelSheet;
+import de.uniks.networkparser.parser.excel.ExcelWorkBook;
+
+public class ExcelBuffer {
+	public static void main(String[] args) {
+		ExcelBuffer buffer = new ExcelBuffer();
+		ExcelSheet content = buffer.parse(new File("test.xlsx"));
+		ExcelWorkBook workBook = new ExcelWorkBook();
+		workBook.add(content);
+		buffer.encode(new File("test2.xlsx"), workBook);
+//		C:\Arbeit\workspace\NetworkParser\test.xlsx
+	}
+	public ExcelSheet parse(File file) {
+		ExcelSheet data = null;
 		try {
 			CharacterBuffer sharedStrings = null, sheetData = null;
 			ZipFile zipEntry=new ZipFile(file);
@@ -29,7 +45,7 @@ public class ExcelReader {
 				sheetData = readContext(inputStream);
 			}
 			zipEntry.close();
-			data = new ExcelParser().parse(sheetData, sharedStrings);
+			data = new ExcelParser().parseSheet(sharedStrings, sheetData);
 		} catch (Exception e) {
 		}
 		return data;
@@ -48,5 +64,35 @@ public class ExcelReader {
 		} catch (Exception e) {
 		}
 		return out;
+	}
+	public boolean encode(File file, ExcelWorkBook workbook) {
+		boolean result=false;
+		try {
+			FileOutputStream fos = new FileOutputStream(file);
+			ZipOutputStream zos = new ZipOutputStream(fos);
+			ExcelParser excelParser = new ExcelParser();
+			SimpleKeyValueList<String, String> content = excelParser.createExcelContent(workbook);
+			for(Iterator<Entry<String, String>> iterator = content.entrySet().iterator();iterator.hasNext();){
+				Entry<String, String> entry = iterator.next();
+				ZipEntry zipEntry = new ZipEntry(entry.getKey());
+				zos.putNextEntry(zipEntry);
+				byte[] values = entry.getValue().getBytes();
+				zos.write(values, 0, values.length);
+				zos.closeEntry();
+			}
+			zos.close();
+			result = true;
+		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
+		}
+		return result;
+	}
+
+	public void addToZipFile(String fileName, String content, ZipOutputStream zos) throws FileNotFoundException, IOException {
+		ZipEntry zipEntry = new ZipEntry(fileName);
+		zos.putNextEntry(zipEntry);
+		byte[] bytes = content.getBytes();
+		zos.write(bytes, 0, bytes.length);
+		zos.closeEntry();
 	}
 }

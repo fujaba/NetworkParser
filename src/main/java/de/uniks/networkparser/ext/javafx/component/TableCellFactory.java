@@ -1,8 +1,8 @@
-package de.uniks.networkparser.gui.javafx.table;
+package de.uniks.networkparser.ext.javafx.component;
 
+import de.uniks.networkparser.ext.javafx.controls.EditFieldMap;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.TableCellValue;
-import de.uniks.networkparser.gui.javafx.controls.EditFieldMap;
 import javafx.scene.control.TableCell;
 
 public class TableCellFactory {

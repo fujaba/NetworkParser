@@ -1,4 +1,4 @@
-package de.uniks.networkparser.gui.javafx.form;
+package de.uniks.networkparser.ext.javafx.component;
 
 /*
  Json Id Serialisierung Map
@@ -45,9 +45,9 @@ import javafx.scene.layout.VBox;
 import de.uniks.networkparser.DefaultTextItems;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.TextItems;
+import de.uniks.networkparser.ext.javafx.window.KeyListenerMap;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.CellEditorElement.APPLYACTION;
-import de.uniks.networkparser.gui.javafx.window.KeyListenerMap;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 

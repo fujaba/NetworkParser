@@ -3,7 +3,8 @@ package de.uniks.networkparser.test;
 import java.beans.PropertyChangeEvent;
 import org.junit.Assert;
 import org.junit.Test;
-import de.uniks.networkparser.gui.javafx.PropertyChangeEventWrapper;
+
+import de.uniks.networkparser.ext.javafx.PropertyChangeEventWrapper;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.test.model.Item;

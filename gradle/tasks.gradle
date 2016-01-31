@@ -22,21 +22,21 @@ ext.sharedManifest = manifest {
 
 jar {
 	group "Jar"
-	exclude '**/javafx/**'
+	exclude '**/ext/**'
 	exclude '**/test/**'
 	from sourceSets.main.output
 	manifest = project.manifest {from sharedManifest}
 }
 
 task compileJava16(type: JavaCompile) {
-	source = fileTree(dir: 'src', exclude: ['**/javafx/**', '**/test/**'])
+	source = fileTree(dir: 'src', exclude: ['**/ext/**', '**/test/**'])
 	destinationDir = file('build/classes/main16')
 	sourceCompatibility = '1.6'
 	targetCompatibility = '1.6'
 	classpath = files('build/classes/main16')
 }
 task compileJava17(type: JavaCompile) {
-	source = fileTree(dir: 'src', exclude: ['**/javafx/**', '**/test/**'])
+	source = fileTree(dir: 'src', exclude: ['**/ext/**', '**/test/**'])
 	destinationDir = file('build/classes/main17')
 	sourceCompatibility = '1.7'
 	targetCompatibility = '1.7'
@@ -88,7 +88,7 @@ task buildFullJar(type: Jar) {
 task buildAll(type: Jar) {
 	description 'Build All Jars'
 	group "Jar"
-	exclude '**/javafx/**'
+	exclude '**/ext/**'
 	exclude '**/test/**'
 	from sourceSets.main.output
 }
