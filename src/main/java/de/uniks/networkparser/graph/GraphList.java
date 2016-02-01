@@ -83,17 +83,17 @@ public class GraphList extends GraphModel implements BaseItem{
 	}
 
 	public GraphList with(GraphList... values) {
-		super.withChildren(true, values);
+		super.withChildren(values);
 		return this;
 	}
 
 	public GraphPattern with(GraphPattern value) {
-		super.withChildren(true, value);
+		super.withChildren(value);
 		return value;
 	}
 
 	public GraphList withNode(GraphEntity... value) {
-		super.withChildren(true, value);
+		super.withChildren(value);
 		return this;
 	}
 
@@ -151,7 +151,7 @@ public class GraphList extends GraphModel implements BaseItem{
 		}
 		for(Object item : values) {
 			if(item instanceof GraphMember) {
-				super.withChildren(true, (GraphMember) item);
+				super.withChildren((GraphMember) item);
 			}
 		}
 		return this;

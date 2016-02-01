@@ -62,7 +62,7 @@ public abstract class GraphModel extends GraphEntity {
 	}
 
 	public GraphModel with(Clazz... values) {
-		super.withChildren(true, values);
+		super.withChildren(values);
 		return this;
 	}
 

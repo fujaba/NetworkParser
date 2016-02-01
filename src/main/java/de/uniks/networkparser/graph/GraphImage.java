@@ -41,7 +41,7 @@ public class GraphImage extends GraphMember {
 			}
 			this.parentNode = value;
 			if (value != null) {
-				value.withChildren(true, this);
+				value.withChildren(this);
 			}
 		}
 		return this;

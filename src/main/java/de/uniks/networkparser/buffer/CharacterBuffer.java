@@ -325,6 +325,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 			this.buffer[0] = item;
 			this.position = 0;
 			System.arraycopy(oldValue, start, this.buffer, 1, length);
+			this.length++;
 		}
 		return this;
 	}

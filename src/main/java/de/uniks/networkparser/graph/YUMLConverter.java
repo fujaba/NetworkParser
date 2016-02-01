@@ -156,7 +156,7 @@ public class YUMLConverter implements Converter {
 				splitter = ":";
 
 			}
-			sb.append("|");
+			
 			Object element = i.next();
 			Attribute attribute;
 			if (element instanceof Attribute) {
@@ -176,6 +176,9 @@ public class YUMLConverter implements Converter {
 				sb.append(attribute.getName() + splitter
 						+ attribute.getValue(typ, shortName));
 			}
+		}
+		if(sb.length()>0) {
+			return "|" + sb.toString();
 		}
 		return sb.toString();
 	}

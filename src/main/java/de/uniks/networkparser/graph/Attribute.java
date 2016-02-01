@@ -53,7 +53,7 @@ public class Attribute extends Value {
 		Modifier modifier = super.getModifier();
 		if(modifier == null) {
 			modifier = new Modifier(Modifier.PRIVATE.getName());
-			super.withChildren(true, modifier);
+			super.withChildren(modifier);
 		}
 		return modifier;
 	}

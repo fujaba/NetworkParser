@@ -107,7 +107,7 @@ public class Clazz extends GraphEntity {
 		Modifier modifier = super.getModifier();
 		if(modifier == null) {
 			modifier = new Modifier(Modifier.PUBLIC.getName());
-			super.withChildren(true, modifier);
+			super.withChildren(modifier);
 		}
 		return modifier;
 	}
@@ -123,12 +123,12 @@ public class Clazz extends GraphEntity {
 	}
 
 	public Clazz with(Attribute... values) {
-		super.withChildren(true, values);
+		super.withChildren(values);
 		return this;
 	}
 
 	public Clazz with(Method... values) {
-		super.withChildren(true, values);
+		super.withChildren(values);
 		return this;
 	}
 
@@ -138,11 +138,11 @@ public class Clazz extends GraphEntity {
 	}
 
 	public Clazz with(GraphImage... values) {
-		super.withChildren(true, values);
+		super.withChildren(values);
 		return this;
 	}
 	public Clazz with(Literal... values) {
-		super.withChildren(true, values);
+		super.withChildren(values);
 		return this;
 	}
 
@@ -539,7 +539,7 @@ public class Clazz extends GraphEntity {
 	}
 
 	public Clazz with(ClazzImport... value) {
-		super.withChildren(true, value);
+		super.withChildren(value);
 		return this;
 	}
 

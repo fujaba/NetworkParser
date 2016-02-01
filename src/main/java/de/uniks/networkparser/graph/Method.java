@@ -90,7 +90,7 @@ public class Method extends GraphMember {
 		Modifier modifier = super.getModifier();
 		if(modifier == null) {
 			modifier = new Modifier(Modifier.PUBLIC.getName());
-			super.withChildren(true, modifier);
+			super.withChildren(modifier);
 		}
 		return modifier;
 	}
@@ -200,12 +200,12 @@ public class Method extends GraphMember {
 	}
 
 	public Method with(Throws... values) {
-		super.withChildren(true, values);
+		super.withChildren(values);
 		return this;
 	}
 
 	public Method with(Parameter... values) {
-		super.withChildren(true, values);
+		super.withChildren(values);
 		return this;
 	}
 
@@ -246,7 +246,7 @@ public class Method extends GraphMember {
 				}
 			}
 		}
-		super.withChildren(true, value);
+		super.withChildren(value);
 		return this;
 	}
 }

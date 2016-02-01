@@ -230,6 +230,6 @@ public class Annotation extends GraphMember implements IdMapDecoder {
 	}
 
 	public GraphMember getParent() {
-		return parentNode;
+		return (GraphMember) parentNode;
 	}
 }

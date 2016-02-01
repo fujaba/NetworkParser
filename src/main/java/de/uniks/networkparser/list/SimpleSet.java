@@ -64,7 +64,7 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 	public SimpleSet<V> filter(Condition<V> newValue) {
 		SimpleSet<V> newList = getNewList(false);
 		filterItems(newList, newValue);
-		return this;
+		return newList;
 	}
 
 	// Add Methods from SDMLib

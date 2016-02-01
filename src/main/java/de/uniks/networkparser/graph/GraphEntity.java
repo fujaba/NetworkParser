@@ -35,8 +35,11 @@ public abstract class GraphEntity extends GraphMember {
 			return null;
 		}
 		if (!shortName) {
-			if (name.indexOf('.') < 0 && this.parentNode != null && this.parentNode.getName() != null) {
-				return this.parentNode.getName() + "." + name.replace("$", ".");
+			if (name.indexOf('.') < 0 && this.parentNode != null) {
+				String parentName = ((GraphMember)this.parentNode).getName();
+				if(parentName != null) {
+					return parentName + "." + name.replace("$", ".");
+				}
 			}
 			return name.replace("$", ".");
 		}

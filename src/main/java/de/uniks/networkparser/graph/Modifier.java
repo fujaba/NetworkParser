@@ -55,7 +55,7 @@ public class Modifier extends GraphMember {
 				mod.with(item.getName());
 				continue;
 			}
-			mod.withChildren(true, item);
+			mod.withChildren(item);
 		}
 		return mod;
 	}
@@ -79,7 +79,7 @@ public class Modifier extends GraphMember {
 	}
 
 	public GraphMember getParent() {
-		return parentNode;
+		return (GraphMember) parentNode;
 	}
 
 	@Override

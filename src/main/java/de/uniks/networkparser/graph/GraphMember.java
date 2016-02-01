@@ -29,7 +29,7 @@ public abstract class GraphMember {
 	public static final String PROPERTY_NAME="name";
 	protected String name;
 	protected Object children;
-	protected GraphMember parentNode;
+	protected Object parentNode;
 
 	Object getValue(String attribute) {
 		if(PROPERTY_NAME.equals(attribute)) {
@@ -109,22 +109,26 @@ public abstract class GraphMember {
 	}
 
 	boolean setParent(GraphMember value) {
+		return setParentNode(value);
+	}
+	
+	protected boolean setParentNode(GraphMember value) {
 		if (this.parentNode != value) {
-			GraphMember oldValue = this.parentNode;
+			GraphMember oldValue = (GraphMember) this.parentNode;
 			if (this.parentNode != null) {
 				this.parentNode = null;
 				oldValue.without(this);
 			}
 			this.parentNode = value;
 			if (value != null) {
-				value.withChildren(true, this);
+				value.withChildren(this);
 			}
 			return true;
 		}
 		return false;
 	}
 
-	protected GraphMember withChildren(boolean back, GraphMember... values) {
+	protected GraphMember withChildren(GraphMember... values) {
 		// Do Nothing
 		if (values == null || (values.length == 1 && (this.children == values[0]))) {
 			return this;
@@ -132,9 +136,7 @@ public abstract class GraphMember {
 		if(this.children == null) {
 			if(values.length==1){
 				this.children = values[0];
-				if(back) {
-					((GraphMember)values[0]).setParent(this);
-				}
+				((GraphMember)values[0]).setParent(this);
 				return this;
 			}
 		}
@@ -149,9 +151,7 @@ public abstract class GraphMember {
 		for (GraphMember value : values) {
 			if(value != null ) {
 				if(list.add(value)) {
-					if(back) {
-						value.setParent(this);
-					}
+					value.setParent(this);
 				}
 			}
 		}
@@ -216,7 +216,7 @@ public abstract class GraphMember {
 				}
 			}
 		}
-		withChildren(true, value);
+		withChildren(value);
 		return this;
 	}
 
@@ -264,7 +264,7 @@ public abstract class GraphMember {
 				rootModifier.with(item.getName());
 				continue;
 			}
-			rootModifier.withChildren(true, item);
+			rootModifier.withChildren(item);
 		}
 		return this;
 	}

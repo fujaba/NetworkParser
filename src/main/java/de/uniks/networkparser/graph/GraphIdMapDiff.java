@@ -42,7 +42,7 @@ public class GraphIdMapDiff extends GraphIdMap{
 	}
 
 	protected void initItem(GraphMember item) {
-		item.withChildren(true, new GraphDiff());
+		item.withChildren(new GraphDiff());
 		if(item instanceof Clazz) {
 			if(this.getMaster() ==null) {
 				this.toDoList.add((Clazz) item);
