@@ -1383,6 +1383,9 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	}
 
 	public boolean move(int from, int to) {
+		if(from == to) {
+			return true;
+		}
 		if(from<0 || to < 0 || from > size() || to > size() ) {
 			return false;
 		}

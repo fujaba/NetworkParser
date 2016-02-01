@@ -1,4 +1,4 @@
-package de.uniks.networkparser.date;
+package de.uniks.networkparser;
 
 /*
  NetworkParser
@@ -23,9 +23,6 @@ package de.uniks.networkparser.date;
 */
 import java.util.HashMap;
 
-import de.uniks.networkparser.DefaultTextItems;
-import de.uniks.networkparser.EntityUtil;
-import de.uniks.networkparser.TextItems;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.buffer.Tokener;
 

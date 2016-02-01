@@ -4,9 +4,10 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import org.junit.Assert;
 import org.junit.Test;
+
+import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.buffer.CharacterReader;
-import de.uniks.networkparser.date.DateTimeEntity;
 import de.uniks.networkparser.json.JsonTokener;
 import de.uniks.networkparser.list.SimpleList;
 

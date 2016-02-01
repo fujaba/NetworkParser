@@ -1,8 +1,8 @@
-package de.uniks.networkparser.gui.javafx.test;
+package de.uniks.networkparser.test.javafx;
 
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class PersonCreator implements SendableEntityCreator{
+public class PersonGUICreator implements SendableEntityCreator{
 
 	@Override
 	public String[] getProperties() {

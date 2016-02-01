@@ -8,8 +8,9 @@ import java.util.GregorianCalendar;
 
 import org.junit.Assert;
 import org.junit.Test;
-import de.uniks.networkparser.date.DateField;
-import de.uniks.networkparser.date.DateTimeEntity;
+
+import de.uniks.networkparser.DateField;
+import de.uniks.networkparser.DateTimeEntity;
 
 public class DateTimeEntityTest {
 	@Test

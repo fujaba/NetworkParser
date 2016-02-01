@@ -103,4 +103,8 @@ public class StyleFX extends Style{
 		}
 		return style;
 	}
+	
+	public static String getPath(){
+		return StyleFX.class.getResource("dialog/styles.css").toExternalForm();
+	}
 }

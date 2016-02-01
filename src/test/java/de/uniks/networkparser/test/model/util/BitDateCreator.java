@@ -2,7 +2,7 @@ package de.uniks.networkparser.test.model.util;
 
 import java.util.ArrayList;
 import de.uniks.networkparser.bytes.BitEntity;
-import de.uniks.networkparser.bytes.util.BitEntityCreator;
+import de.uniks.networkparser.bytes.BitEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.test.model.BitDate;
 

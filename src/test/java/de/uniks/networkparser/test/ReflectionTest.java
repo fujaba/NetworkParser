@@ -1,6 +1,7 @@
 package de.uniks.networkparser.test;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.Constructor;
@@ -55,17 +56,24 @@ public class ReflectionTest {
 					StringBuilder itemError=new StringBuilder();
 
 					for(Method m : clazz.getMethods()){
+						if(Modifier.isPublic(m.getModifiers()) == false) {
+							continue;
+						}
+							
 						if(ignoreMethods.contains(m.getName())) {
 							continue;
 						}
 						if(m.getDeclaringClass().isInterface()) {
 							continue;
 						}
+						Object[] call = null;
 						try {
 							// mit Null as Parameter
-							m.invoke(obj, getParametersNull(m));
+							call = getParametersNull(m);
+							m.invoke(obj, call);
 							successCount++;
-							m.invoke(obj, getParametersMinValues(m));
+							call = getParametersMinValues(m);
+							m.invoke(obj, call);
 							successCount++;
 //							m.invoke(obj, getParametersMaxValues(m));
 //							successCount++;
@@ -74,13 +82,13 @@ public class ReflectionTest {
 							if(line.length()<1) {
 								line = clazz.getName()+".java:1";
 							}
-							itemError.append("("+line+") : "+clazz.getName()+":"+getSignature(m) +" "+ e.getCause()+"\n");
+							itemError.append("("+line+") : "+clazz.getName()+":"+getSignature(m) +" "+ e.getCause()+":"+getParamtoString(call)+"\n");
 							String shortName="";
 							if(line.lastIndexOf(".")>0) {
 								String[] split = line.split("\\.");
 								shortName = line.substring(0, line.lastIndexOf(":") - 4) +m.getName()+"("+split[split.length - 2] + "."+split[split.length - 1]+")";
 							}
-							output("at "+clazz.getName()+": "+e.getCause()+" "+shortName, stream);
+							output("at "+clazz.getName()+": "+e.getCause()+" "+shortName+" : ", stream);
 							errorCount++;
 						}
 					}
@@ -91,7 +99,33 @@ public class ReflectionTest {
 		}
 		// Write out all Results
 		output(error.toString(), stream);
+		FileWriter writer=new FileWriter(new File("build/ReflectionError.txt"));
+		writer.write(error.toString());
+		writer.close();
 		output("Errors: "+errorCount+ "/" + (errorCount+ successCount), System.err);
+	}
+	
+	public String getParamtoString(Object[] params) {
+		StringBuilder sb= new StringBuilder();
+		sb.append("(");
+		if(params == null) {
+			sb.append(")");
+			return sb.toString();
+		}
+		boolean hasParam=false;
+		for(Object item : params) {
+			if(hasParam) {
+				sb.append(",");
+			}
+			if(item == null) {
+				sb.append("null");
+			}else {
+				sb.append(item.toString());
+			}
+			hasParam=true;
+		}
+		sb.append(")");
+		return sb.toString();
 	}
 
 	static void output(String str, PrintStream stream) {

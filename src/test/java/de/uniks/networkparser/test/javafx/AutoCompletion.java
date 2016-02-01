@@ -1,4 +1,4 @@
-package de.uniks.networkparser.gui.javafx.test;
+package de.uniks.networkparser.test.javafx;
 
 import de.uniks.networkparser.ext.javafx.controls.AutoCompletionList;
 import de.uniks.networkparser.ext.javafx.controls.TextEditorControl;

@@ -1,4 +1,4 @@
-package de.uniks.networkparser.bytes.util;
+package de.uniks.networkparser;
 
 /*
  NetworkParser
@@ -21,9 +21,7 @@ package de.uniks.networkparser.bytes.util;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.bytes.BitEntity;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public interface BitEntityCreator extends SendableEntityCreator {
-	public BitEntity[] getBitProperties();
+public enum DateField {
+	MILLISECOND, MILLISECONDS, MILLISECONDSREAL, WINTERTIME, SUMMERTIME, MILLISECOND_OF_DAY, MILLISECOND_OF_YEAR, SECOND_OF_MINUTE, MINUTE_OF_HOUR, HOUR_OF_DAY, AMPM, TIMEZONE, DAY_OF_WEEK, DAY_OF_MONTH, DAY_OF_YEAR, WEEK_OF_MONTH, WEEK_OF_YEAR, MONTH, YEAR;
 }

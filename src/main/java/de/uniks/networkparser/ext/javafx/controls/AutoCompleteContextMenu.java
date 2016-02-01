@@ -23,7 +23,7 @@ package de.uniks.networkparser.ext.javafx.controls;
 */
 import java.util.Set;
 
-import de.uniks.networkparser.ext.javafx.resource.Styles;
+import de.uniks.networkparser.ext.javafx.StyleFX;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
@@ -37,7 +37,7 @@ public class AutoCompleteContextMenu extends ContextMenu{
 	public AutoCompleteContextMenu(TextField control){
 		this.control = control;
 		control.setContextMenu(this);
-		AutoCompleteContextMenu.this.getScene().getStylesheets().add(Styles.getPath());
+		AutoCompleteContextMenu.this.getScene().getStylesheets().add(StyleFX.getPath());
 	}
 
 	public AutoCompleteContextMenu withSuggestions(Set<String> values) {

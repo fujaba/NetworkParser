@@ -1,4 +1,4 @@
-package de.uniks.networkparser.gui.javafx.test;
+package de.uniks.networkparser.test.javafx;
 
 import javafx.application.Application;
 import javafx.scene.Scene;

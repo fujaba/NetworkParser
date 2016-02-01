@@ -17,6 +17,9 @@ public class GUIEntityCreator implements SendableEntityCreator{
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
+		if(entity == null) {
+			return null;
+		}
 		if(GUIEntity.PROPERTY_NUMBER.equalsIgnoreCase(attribute)){
 			return ((GUIEntity)entity).getNumber();
 		}

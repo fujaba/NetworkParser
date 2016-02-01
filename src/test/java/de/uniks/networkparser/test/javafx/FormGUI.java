@@ -1,4 +1,4 @@
-package de.uniks.networkparser.gui.javafx.test;
+package de.uniks.networkparser.test.javafx;
 
 import javafx.scene.layout.Pane;
 import de.uniks.networkparser.ext.javafx.component.ModelForm;

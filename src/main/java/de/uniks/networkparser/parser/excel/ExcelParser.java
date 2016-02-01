@@ -1,5 +1,6 @@
 package de.uniks.networkparser.parser.excel;
 
+import de.uniks.networkparser.DateTimeEntity;
 /*
 NetworkParser
 Copyright (c) 2011 - 2016, Stefan Lindel
@@ -19,7 +20,6 @@ See the Licence for the specific language governing permissions and limitations 
 */
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.date.DateTimeEntity;
 import de.uniks.networkparser.gui.Pos;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.list.SimpleKeyValueList;

@@ -44,9 +44,9 @@ import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.TextItems;
 import de.uniks.networkparser.event.Style;
+import de.uniks.networkparser.ext.javafx.StyleFX;
 import de.uniks.networkparser.ext.javafx.TableList;
 import de.uniks.networkparser.ext.javafx.controls.EditFieldMap;
-import de.uniks.networkparser.ext.javafx.resource.Styles;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntity;
@@ -270,7 +270,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 				if(searchText == null) {
 					createNothElement();
 					searchText = new TextField();
-					searchText.getStylesheets().add(Styles.getPath());
+					searchText.getStylesheets().add(StyleFX.getPath());
 					searchText.getStyleClass().add("searchbox");
 					searchText.setPromptText(getText(DefaultTextItems.SEARCH));
 					searchText.setMinHeight(24);
