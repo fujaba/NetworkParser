@@ -318,6 +318,12 @@ public class Clazz extends GraphEntity {
 					if(assoc.getType()==AssociationTypes.GENERALISATION) {
 						if(assoc.contains(item, false, true) == false) {
 							found = true;
+							for(GraphMember member : assoc.getOther().getParents()) {
+								if(member instanceof Clazz && member != item) {
+									assoc.getOther().withoutParent(member);
+								}
+								
+							}
 							assoc.getOther().setParent(item);
 							break;
 						}

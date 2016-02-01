@@ -118,6 +118,20 @@ public class Association extends GraphMember {
 		return true;
 	}
 	
+	Association withoutParent(GraphMember member) {
+		if(parentNode == null) {
+			return this;
+		}
+		if(this.parentNode == member) {
+			this.parentNode = null;
+		}
+		if( this.parentNode instanceof GraphSimpleSet) {
+			GraphSimpleSet list = (GraphSimpleSet) this.parentNode;
+			list.remove(member);
+		}
+		return this;
+	}
+	
 	@Override
 	SimpleSet<GraphEntity> getNodes() {
 		SimpleSet<GraphEntity> collection = new SimpleSet<GraphEntity>();
@@ -341,6 +355,7 @@ public class Association extends GraphMember {
 		}
 		return true;
 	}
+
 	public Association with(Annotation value) {
 		withAnnotaion(value);
 		return this;
