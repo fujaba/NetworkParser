@@ -319,4 +319,9 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Str
 		remove(key);
 		return this;
 	}
+
+	@Override
+	public boolean has(String key) {
+		return containsKey(key);
+	}
 }

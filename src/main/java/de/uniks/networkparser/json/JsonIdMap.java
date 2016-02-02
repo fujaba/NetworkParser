@@ -34,6 +34,7 @@ import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.event.ObjectMapEntry;
 import de.uniks.networkparser.event.util.DateCreator;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.Grammar;
 import de.uniks.networkparser.interfaces.IdMapDecoder;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -61,7 +62,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 	/** The Constant MAINITEM. */
 	public static final String MAINITEM = "main";
 
-	protected Grammar grammar = new Grammar();
+	protected Grammar grammar = new JsonGrammar();
 
 	/** If this is true the IdMap save the Typ of primary datatypes. */
 	protected boolean typSave;
@@ -128,8 +129,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 	protected JsonObject toJsonObject(Object entity, Filter filter,
 			String className, int deep) {
 		String id = null;
-		SendableEntityCreator creator = grammar.getWriteCreator(entity,
-				className, this, this.searchForSuperCreator);
+		SendableEntityCreator creator = grammar.getCreator(Grammar.WRITE, entity, this, this.searchForSuperCreator, className);
 		if (creator == null) {
 			return null;
 		}
@@ -160,13 +160,13 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 				}
 			}
 		}
-		return grammar.getWriteObject(this, creator, className, id, jsonProp,
+		return (JsonObject) grammar.setProperties(this, creator, className, id, jsonProp,
 				filter);
 	}
 
 	@Override
 	public String getId(Object obj) {
-		String key = grammar.getWriteId(obj, getCounter());
+		String key = grammar.getId(obj, getCounter());
 		if (key != null) {
 			put(key, obj);
 			return key;
@@ -216,7 +216,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 	protected Object parseProperty(SendableEntityCreator prototyp,
 			Object entity, Filter filter, String className, String property,
 			JsonArray jsonArray, int deep) {
-		Object referenceObject = grammar.getNewPrototyp(prototyp);
+		Object referenceObject = grammar.getNewEntity(prototyp, className, true);
 
 		Object value = prototyp.getValue(entity, property);
 		if (value != null) {
@@ -276,7 +276,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 		if (className == null) {
 			className = entity.getClass().getName();
 		}
-		SendableEntityCreator valueCreater = grammar.getWriteCreator(entity, className, this, this.searchForSuperCreator);
+		SendableEntityCreator valueCreater = grammar.getCreator(Grammar.WRITE, entity, this, this.searchForSuperCreator, className);
 		if (item == null ) {
 			return null;
 		}else if(!isPropertyRegard(filter, item, property, entity, deep)) {
@@ -441,17 +441,17 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 		if(result != null) {
 			return result;
 		}
-		SendableEntityCreator typeInfo = grammar.getReadCreator(jsonObject, this, this.searchForSuperCreator);
+		SendableEntityCreator typeInfo = grammar.getCreator(Grammar.READ, jsonObject, this, this.searchForSuperCreator, null);
 
 		if (typeInfo != null) {
-			if (grammar.hasReadValue(jsonObject, ID)) {
-				String jsonId = grammar.getReadValue(jsonObject, ID);
+			if (grammar.hasValue(jsonObject, ID)) {
+				String jsonId = grammar.getValue(jsonObject, ID);
 				if (jsonId != null) {
 					result = getObject(jsonId);
 				}
 			}
 			if (result == null) {
-				result = grammar.getNewEntity(typeInfo, grammar.getReadValue(jsonObject, CLASS));
+				result = grammar.getNewEntity(typeInfo, grammar.getValue(jsonObject, CLASS), false);
 				readMessages(NEW, jsonObject, new PropertyChangeEvent(this, null, null, result));
 			} else {
 				readMessages(UPDATE, jsonObject, new PropertyChangeEvent(this, null, null, result));
@@ -503,18 +503,18 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 		// JSONArray jsonArray;
 		boolean isId = filter.isId(target, target.getClass().getName());
 		if (isId) {
-			String jsonId = grammar.getReadValue(jsonObject, ID);
+			String jsonId = grammar.getValue(jsonObject, ID);
 			if (jsonId == null) {
 				return target;
 			}
 			put(jsonId, target);
 			getCounter().readId(jsonId);
 		}
-		JsonObject jsonProp = grammar.getReadProperties(jsonObject, this,
-				filter, isId);
+		JsonObject jsonProp = (JsonObject) grammar.getProperties(jsonObject, this,
+				filter, isId, Grammar.READ);
 		if (jsonProp != null) {
-			SendableEntityCreator prototyp = grammar.getWriteCreator(target,
-					target.getClass().getName(), this, this.searchForSuperCreator);
+			SendableEntityCreator prototyp = grammar.getCreator(Grammar.WRITE, target,
+					this, this.searchForSuperCreator, target.getClass().getName());
 			String[] properties = prototyp.getProperties();
 			if (properties != null) {
 				for (String property : properties) {
@@ -560,9 +560,10 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 					// // got a new kid, create it
 					JsonObject child = (JsonObject) value;
 					// CHECK LIST AND MAPS
-					Object ref_Obj = grammar.getNewPrototyp(creator);
+					String className = target.getClass().getName();
+					Object ref_Obj = grammar.getNewEntity(creator, null, true);
 					if(ref_Obj instanceof Class<?>) {
-						ref_Obj = grammar.getNewEntity(creator, target.getClass().getName());
+						ref_Obj = grammar.getNewEntity(creator, className, false);
 					}
 					Object refValue = creator.getValue(ref_Obj, property);
 					if (refValue instanceof Map<?, ?>) {

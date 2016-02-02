@@ -40,4 +40,14 @@ public interface Entity extends BaseItem{
 	public Entity without(String key);
 
 	public String getKeyByIndex(int pos);
+	
+	public Object getValueByIndex(int pos);
+	
+	/**
+	 * @param key The Key for search
+	 * @return success if the item has the Property
+	 */
+	public boolean has(String key);
+	
+	public Object remove(Object key);
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE project>
 <project default="buildAnt" name="NPAnt" basedir=".">
-	<available file="build/ant.jar" property="AntJarExist" />
+	<available file="NetworkParserAnt.jar" property="AntJarExist" />
 	<property name="gitjar" value="lib/git/org.eclipse.jgit-4.1.0.201509280440-r.jar" />
 	<target name="buildAntCompile">
 		<mkdir dir="build/Ant/" />
@@ -14,13 +14,13 @@
 				<pathelement location="lib\findbugs\ant.jar"/>
 			</classpath>
 		</javac>
-		<jar destfile="build/ant.jar">
+		<jar destfile="NetworkParserAnt.jar">
 			<fileset dir="./build/Ant"/>
 		</jar>
 		<delete dir="build/Ant/" />
 	</target>
 	<target name="buildAnt" depends="buildAntCompile">
-		<taskdef name="GitRevision" classname="de.uniks.networkparser.test.ant.GitRevision" classpath="bin:build/temp/:build/ant.jar">
+		<taskdef name="GitRevision" classname="de.uniks.networkparser.test.ant.GitRevision" classpath="bin:build/temp/:NetworkParserAnt.jar">
 			<classpath>
 				<pathelement location="${gitjar}"/>
 				<pathelement location="lib/git/log4j-over-slf4j-1.7.12.jar"/>

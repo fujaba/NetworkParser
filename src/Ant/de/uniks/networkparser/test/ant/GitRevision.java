@@ -131,7 +131,6 @@ public class GitRevision {
 			walk.close();
 			return jsonObject;
 		}catch(Exception e){
-			e.printStackTrace();
 		}
 		return null;
 	}

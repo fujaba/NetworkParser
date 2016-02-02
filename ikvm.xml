@@ -4,7 +4,7 @@
 	<import file="buildAnt.xml" as="Ant"/>
 	<target name="ikvm" depends="Ant.buildAnt" description="Crosscompile Networkparser with IKVM.NET to .Net Dll">
 		<unzip src="lib/ikvm-8.1.5717.0.zip" dest="build/ikvm" />
-		<taskdef name="ikvmc" classname="de.uniks.networkparser.test.ant.IkvmcTask" classpath="build/ant.jar" />
+		<taskdef name="ikvmc" classname="de.uniks.networkparser.test.ant.IkvmcTask" classpath="NetworkParserAnt.jar" />
 		<mkdir dir="build/ikvmsrc/" />
 		<javac srcdir="src/main/java" destdir="build/ikvmsrc/"  includeantruntime="false" debug="true" listfiles="true">
 			<exclude name="**/javafx/**"/>

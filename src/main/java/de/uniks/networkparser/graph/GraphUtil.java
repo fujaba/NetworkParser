@@ -31,9 +31,15 @@ permissions and limitations under the Licence.
  */
 public class GraphUtil {
 	public static Clazz getByObject(GraphEntity item, String clazz, boolean fullName) {
+		if(clazz == null) {
+			return null;
+		}
 		return (Clazz) item.getByObject(clazz, fullName);
 	}
 	public static SimpleSet<Annotation> getAnnotations(GraphMember item) {
+		if(item == null) {
+			return null;
+		}
 		SimpleSet<Annotation> collection = new SimpleSet<Annotation>();
 		Annotation annotation = null;
 		if(item instanceof Clazz) {
@@ -56,19 +62,41 @@ public class GraphUtil {
 	}
 
 	public static boolean isWithNoObjects(Clazz clazz) {
+		if(clazz == null) {
+			return false;
+		}
 		return (clazz.getModifier().has(Modifier.ABSTRACT) || clazz.getType() == ClazzType.INTERFACE);
 	}
 	public static boolean isInterface(Clazz clazz) {
+		if(clazz == null) {
+			return false;
+		}
 		return clazz.getType() == ClazzType.INTERFACE;
 	}
 	public static boolean isEnumeration(Clazz clazz) {
+		if(clazz == null) {
+			return false;
+		}
 		return clazz.getType() == ClazzType.ENUMERATION;
 	}
 	public static boolean isUndirectional(Association assoc) {
+		if(assoc == null) {
+			return false;
+		}
 		if(assoc.getType()==AssociationTypes.ASSOCIATION && assoc.getOtherTyp()==AssociationTypes.EDGE) {
 			return true;
 		}
 		return assoc.getOtherTyp()==AssociationTypes.ASSOCIATION && assoc.getType()==AssociationTypes.EDGE;
+	}
+	
+	public static boolean isInterfaceAssociation(Association assoc) {
+		if(assoc == null) {
+			return false;
+		}
+		if(assoc.getType()==AssociationTypes.IMPLEMENTS && assoc.getOtherTyp()==AssociationTypes.EDGE) {
+			return true;
+		}
+		return assoc.getOtherTyp()==AssociationTypes.IMPLEMENTS && assoc.getType()==AssociationTypes.EDGE;
 	}
 	
 	public static CharacterBuffer getMethodParameters(Method method, boolean shortName) {

@@ -3,20 +3,23 @@ package de.uniks.networkparser.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+
 import org.junit.Assert;
 import org.junit.Test;
+
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.RestCounter;
+import de.uniks.networkparser.json.EMFJsonGrammar;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.json.JsonTokener;
-import de.uniks.networkparser.json.SimpleGrammar;
 import de.uniks.networkparser.logic.BooleanCondition;
 import de.uniks.networkparser.logic.Deep;
 import de.uniks.networkparser.test.model.Apple;
@@ -542,14 +545,14 @@ public class JsonTest extends IOClasses{
 
 	@Test
 	public void testSimple(){
-		JsonIdMap encodeMap= new JsonIdMap().with(new SimpleGrammar());
+		JsonIdMap encodeMap= new JsonIdMap().with(new EMFJsonGrammar());
 
 		encodeMap.with(new PersonCreator());
 		Person person = new Person().withName("Albert").withBalance(42);
 		String shortString = encodeMap.toJsonObject(person).toString();
-		Assert.assertEquals(48, shortString.length());
+		Assert.assertEquals(49, shortString.length());
 
-		JsonIdMap decodeMap= new JsonIdMap().with(new SimpleGrammar());
+		JsonIdMap decodeMap= new JsonIdMap().with(new EMFJsonGrammar());
 		decodeMap.with(new PersonCreator());
 		Person item = (Person) decodeMap.decode(new JsonObject().withValue(shortString));
 		Assert.assertEquals("Albert", item.getName());
@@ -563,7 +566,7 @@ public class JsonTest extends IOClasses{
 		JsonIdMap map= new JsonIdMap();
 		map.with(new BarbarianCreator());
 		map.with(new GameCreator());
-		map.with(new EMFGrammar());
+		map.with(new EMFJsonGrammar());
 
 		Barbarian barbar = (Barbarian) map.decode(new JsonObject().withValue(json));
 

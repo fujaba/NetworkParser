@@ -11,7 +11,7 @@
 		<javac destdir="build/bin17" srcdir="src/main/java"
 			debug="${javac.debug}" nowarn="${javac.nowarn}" fork="true" verbose="${verbose}"
 			deprecation="${javac.deprecation}" source="1.7" target="1.7" includeantruntime="false"/>
-		<taskdef name="CopyRightSetter" classname="de.uniks.networkparser.test.ant.CopyRightSetter"  classpath="src/Ant:bin:build/ant.jar"/>
+		<taskdef name="CopyRightSetter" classname="de.uniks.networkparser.test.ant.CopyRightSetter"  classpath="src/Ant:bin:NetworkParserAnt.jar"/>
 		<CopyRightSetter projectName="NetworkParser" source="src/main/java/de/uniks/networkparser/" file="src/Ant/de/uniks/networkparser/test/build/Licence.txt"/>
 
 		<jar destfile="./build/networkparser.jar" filesetmanifest="mergewithoutmain" manifest="build/MANIFEST.MF">

@@ -1,5 +1,6 @@
 package de.uniks.networkparser.parser.excel;
 
+import de.uniks.networkparser.gui.Pos;
 import de.uniks.networkparser.list.SimpleList;
 
 /*
@@ -38,5 +39,15 @@ public class ExcelSheet extends SimpleList<ExcelRow>{
 	public ExcelSheet withName(String value) {
 		setName(value);
 		return this;
+	}
+	
+	public ExcelCell getItem(Pos pos) {
+		for(int i=0;i<this.size();i++) {
+			ExcelRow row = this.get(i);
+			if(row != null && row.getRowPos()==pos.y) {
+				return row.getItem(pos.x);
+			}
+		}
+		return new ExcelCell();
 	}
 }

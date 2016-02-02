@@ -25,4 +25,14 @@ public class ExcelRow extends SimpleList<ExcelCell>{
 		}
 		return -1;
 	}
+	
+	public ExcelCell getItem(int index) {
+		for(int i=0;i<this.size();i++) {
+			ExcelCell cell = this.get(i);
+			if(cell != null && cell.getReferenz().x == index) {
+				return cell;
+			}
+		}
+		return new ExcelCell();
+	}
 }
