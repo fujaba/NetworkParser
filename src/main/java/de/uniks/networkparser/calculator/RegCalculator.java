@@ -84,7 +84,7 @@ public class RegCalculator {
 				pos++;
 				tokener.withStartPosition(pos);
 				tokener.withPosition(0);
-				tokener.withLength(tokener.length() - 2);
+				tokener.withBufferLength(tokener.length() - 2);
 			} else {
 				tokener.withPosition(pos);
 			}

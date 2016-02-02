@@ -80,7 +80,7 @@ public abstract class Buffer implements BufferItem {
 		if(len<1) {
 			return result;
 		}
-		result.withLen(len);
+		result.withBufferLength(len);
 		result.with(getCurrentChar());
 		for(int i = 1; i < len; i++) {
 			result.with(getChar());

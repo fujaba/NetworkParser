@@ -176,7 +176,15 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		with(BaseItem.CRLF);
 		return this;
 	}
-	public CharacterBuffer withLen(int len) {
+	
+	@Override
+	public CharacterBuffer withLength(int len) {
+		withBufferLength(len);
+		super.withLength(len);
+		return this;
+	}
+	
+	public CharacterBuffer withBufferLength(int len) {
 		if(this.buffer == null ) {
 			this.buffer = new char[len];
 		} else if (len+start > buffer.length) {
@@ -187,9 +195,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 			System.arraycopy(oldValue, start, this.buffer, 0, this.length);
 			start = 0;
 			this.position = 0;
-			this.length = oldLen;
-		} else {
-			this.length = len;
+			len = oldLen;
 		}
 		return this;
 	}
@@ -200,7 +206,13 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 	 * @return This Component
 	 */
 	public CharacterBuffer withStartPosition(int pos) {
+		int diff = pos - start;
 		this.start = pos;
+		if(length > diff) {
+			this.length -= diff;
+		}else {
+			this.length = 0;
+		}
 		return this;
 	}
 

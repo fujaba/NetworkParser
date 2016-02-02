@@ -157,7 +157,7 @@ public class ByteSimpleMap extends AbstractMap {
 		int number = length / 8 + ((length % 8 > 0) ? 1 : 0);
 
 		ByteBuffer result = new ByteBuffer();
-		result.withLength(number);
+		result.withBufferLength(number);
 
 		int resultPos = 0;
 		number = 0;

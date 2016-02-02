@@ -89,7 +89,7 @@ public class ByteEntity implements ByteItem, BaseItem {
 
 	public ByteEntity withValue(byte typ, int value) {
 		this.typ = typ;
-		ByteBuffer msgValue = new ByteBuffer().withLength(4);
+		ByteBuffer msgValue = new ByteBuffer().withBufferLength(4);
 		msgValue.put(value);
 		this.values = msgValue.flip();
 		return this;
@@ -220,50 +220,50 @@ public class ByteEntity implements ByteItem, BaseItem {
 		}
 		if (value instanceof Short) {
 			typ = ByteIdMap.DATATYPE_SHORT;
-			msgValue.withLength(Short.SIZE / BITOFBYTE);
+			msgValue.withBufferLength(Short.SIZE / BITOFBYTE);
 			msgValue.put((Short) value);
 		} else if (value instanceof Integer) {
 			typ = ByteIdMap.DATATYPE_INTEGER;
-			msgValue.withLength(Integer.SIZE / BITOFBYTE);
+			msgValue.withBufferLength(Integer.SIZE / BITOFBYTE);
 			msgValue.put((Integer) value);
 		} else if (value instanceof Long) {
 			typ = ByteIdMap.DATATYPE_LONG;
-			msgValue.withLength(Long.SIZE / BITOFBYTE);
+			msgValue.withBufferLength(Long.SIZE / BITOFBYTE);
 			msgValue.put((Long) value);
 		} else if (value instanceof Float) {
 			typ = ByteIdMap.DATATYPE_FLOAT;
-			msgValue.withLength(Float.SIZE / BITOFBYTE);
+			msgValue.withBufferLength(Float.SIZE / BITOFBYTE);
 			msgValue.put((Float) value);
 		} else if (value instanceof Double) {
 			typ = ByteIdMap.DATATYPE_DOUBLE;
-			msgValue.withLength(Double.SIZE / BITOFBYTE);
+			msgValue.withBufferLength(Double.SIZE / BITOFBYTE);
 			msgValue.put((Double) value);
 		} else if (value instanceof Byte) {
 			typ = ByteIdMap.DATATYPE_BYTE;
-			msgValue.withLength(Byte.SIZE / BITOFBYTE);
+			msgValue.withBufferLength(Byte.SIZE / BITOFBYTE);
 			msgValue.put((Byte) value);
 		} else if (value instanceof Character) {
 			typ = ByteIdMap.DATATYPE_CHAR;
-			msgValue.withLength(Character.SIZE / BITOFBYTE);
+			msgValue.withBufferLength(Character.SIZE / BITOFBYTE);
 			msgValue.put((Character) value);
 		} else if (value instanceof String) {
 			typ = ByteIdMap.DATATYPE_STRING;
 			String newValue = (String) value;
-			msgValue.withLength(newValue.length());
+			msgValue.withBufferLength(newValue.length());
 			try {
 				msgValue.put(newValue.getBytes("UTF-8"));
 			} catch (UnsupportedEncodingException e) {
 			}
 		} else if (value instanceof Date) {
 			typ = ByteIdMap.DATATYPE_DATE;
-			msgValue.withLength(Integer.SIZE / BITOFBYTE);
+			msgValue.withBufferLength(Integer.SIZE / BITOFBYTE);
 			Date newValue = (Date) value;
 			msgValue.put((int) newValue.getTime());
 		} else if (value instanceof Byte[] || value instanceof byte[]) {
 			typ = ByteIdMap.DATATYPE_BYTEARRAY;
 			if (value != null) {
 				byte[] newValue = (byte[]) value;
-				msgValue.withLength(newValue.length);
+				msgValue.withBufferLength(newValue.length);
 				msgValue.put(newValue);
 			}
 		}

@@ -1,5 +1,6 @@
 package de.uniks.networkparser.graph;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.Clazz.ClazzType;
 import de.uniks.networkparser.list.SimpleSet;
 
@@ -68,6 +69,10 @@ public class GraphUtil {
 			return true;
 		}
 		return assoc.getOtherTyp()==AssociationTypes.ASSOCIATION && assoc.getType()==AssociationTypes.EDGE;
+	}
+	
+	public static CharacterBuffer getMethodParameters(Method method, boolean shortName) {
+		return method.getParameterString(shortName);
 	}
 
 	public static SimpleSet<Association> getOtherAssociations(Clazz clazz) {

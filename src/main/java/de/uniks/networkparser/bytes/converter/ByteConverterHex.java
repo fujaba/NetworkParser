@@ -43,7 +43,7 @@ public class ByteConverterHex extends ByteConverter {
 	public String toString(byte[] values, int size, int space) {
 		String hexVal = "0123456789ABCDEF";
 
-		CharacterBuffer returnValue = new CharacterBuffer().withLen(size << 1 + size * space);
+		CharacterBuffer returnValue = new CharacterBuffer().withBufferLength(size << 1 + size * space);
 		String step = EntityUtil.repeat(' ', space);
 		if (values != null) {
 			for (int i = 0; i < size; i++) {

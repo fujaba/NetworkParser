@@ -22,6 +22,7 @@
 
 package de.uniks.networkparser.graph;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.util.ParameterSet;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.list.SimpleSet;
@@ -46,11 +47,10 @@ public class Method extends GraphMember {
 	public String getName(boolean shortName) {
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(super.getName() + "(");
+		sb.append(super.getName());
 		if(children != null) {
 			sb.append(getParameterString(shortName));
 		}
-		sb.append(")");
 		if(returnType!=null && returnType!= DataType.VOID){
 			sb.append(" "+returnType.getName(shortName));
 		}
@@ -121,8 +121,8 @@ public class Method extends GraphMember {
 		return this;
 	}
 
-	String getParameterString(boolean shortName){
-		StringBuilder sb=new StringBuilder();
+	CharacterBuffer getParameterString(boolean shortName){
+		CharacterBuffer sb=new CharacterBuffer().with("(");
 		GraphSimpleSet collection = this.getChildren();
 		for(int i=0;i<collection.size();i++) {
 			if((collection.get(i) instanceof Parameter)==false) {
@@ -130,15 +130,16 @@ public class Method extends GraphMember {
 			}
 			Parameter param = (Parameter) collection.get(i);
 			if(i>0) {
-				sb.append(", ");
+				sb.with(", ");
 			}
 			if(param.getName() == null) {
-				sb.append(param.getType(shortName)+ " p"+i);
+				sb.with(param.getType(shortName)+ " p"+i);
 			}else{
-				sb.append(param.getType(shortName)+" "+collection.get(i).getName());
+				sb.with(param.getType(shortName)+" "+collection.get(i).getName());
 			}
 		}
-		return sb.toString();
+		sb.with(")");
+		return sb;
 	}
 
 	public String getBody() {

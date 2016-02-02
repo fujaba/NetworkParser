@@ -188,7 +188,7 @@ public class AES {
 	}
 
 	public CharacterBuffer encode(byte[] plain) {
-		CharacterBuffer result = new CharacterBuffer().withLen(plain.length);
+		CharacterBuffer result = new CharacterBuffer().withBufferLength(plain.length);
 		byte[] partByte;
 		for (int p = 0; p < plain.length; p+=16) {
 			partByte = encodeBlock(plain, p);
@@ -206,7 +206,7 @@ public class AES {
 			rest = 32 - data.length() + rest;
 			string.withRepeat(" ", rest);
 		}
-		CharacterBuffer result = new CharacterBuffer().withLen(string.length());
+		CharacterBuffer result = new CharacterBuffer().withBufferLength(string.length());
 		byte[] partByte;
 		for (int p = 0; p < string.length(); p+=16) {
 			partByte = encodeBlock(string.toArray(), p);
@@ -354,7 +354,7 @@ public class AES {
 			rest = 32 - data.length() + rest;
 			string.withRepeat(" ", rest);
 		}
-		CharacterBuffer result = new CharacterBuffer().withLen(string.length());
+		CharacterBuffer result = new CharacterBuffer().withBufferLength(string.length());
 		byte[] partByte;
 		for (int p = 0; p < string.length(); p+=16) {
 			partByte = decodeBlock(string.toCharArray(), p);

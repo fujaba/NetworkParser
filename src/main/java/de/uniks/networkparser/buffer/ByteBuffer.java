@@ -44,10 +44,9 @@ public class ByteBuffer extends BufferedBuffer {
 		return new CharacterBuffer().with(sub);
 	}
 
-	@Override
-	public ByteBuffer withLength(int length) {
+	public ByteBuffer withBufferLength(int length) {
+		super.withLength(length);
 		this.buffer = new byte[length];
-		this.length = length;
 		return this;
 	}
 
@@ -224,12 +223,12 @@ public class ByteBuffer extends BufferedBuffer {
 	}
 
 	public ByteBuffer getNewBuffer(int capacity) {
-		return new ByteBuffer().withLength(capacity);
+		return new ByteBuffer().withBufferLength(capacity);
 	}
 
 	public static ByteBuffer allocate(int len) {
 		ByteBuffer bytesBuffer = new ByteBuffer();
-		bytesBuffer.withLength(len);
+		bytesBuffer.withBufferLength(len);
 		return bytesBuffer;
 	}
 

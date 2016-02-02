@@ -600,13 +600,21 @@ public class EntityUtil {
 		return emfTypes.indexOf(" " + tag.toUpperCase() + " ") >= 0;
 	}
 
+	private static final String primitiveTypes = " void String long Long int Integer char Char boolean Boolean byte Byte float Float double Double Object java.util.Date ";
+	private static final String numericTypes = " long Long int Integer byte Byte float Float double Double java.lang.Long java.lang.Integer java.lang.Byte java.lang.Float java.lang.Double";
 	public static boolean isPrimitiveType(String type) {
-		String primitiveTypes = " void String long Long int Integer char Char boolean Boolean byte Byte float Float double Double Object java.util.Date ";
 
 		if (type == null)
 			return false;
 
 		return primitiveTypes.indexOf(" " + type + " ") >= 0;
+	}
+	
+	public static boolean isNumericType(String type) {
+		if (type == null)
+			return false;
+
+		return numericTypes.indexOf(" " + type + " ") >= 0;
 	}
 
 	public static String convertPrimitiveToObjectType(String type) {

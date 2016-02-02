@@ -99,6 +99,7 @@ public class ReflectionTest {
 		}
 		// Write out all Results
 		output(error.toString(), stream);
+		new File("build").mkdir();
 		FileWriter writer=new FileWriter(new File("build/ReflectionError.txt"));
 		writer.write(error.toString());
 		writer.close();

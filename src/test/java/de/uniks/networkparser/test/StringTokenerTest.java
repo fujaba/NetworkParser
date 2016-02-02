@@ -34,7 +34,7 @@ public class StringTokenerTest {
 		CharacterReader tokener = new CharacterReader().with("[1,\"2,3\",4]");
 		if(tokener.charAt(0)=='['&&tokener.charAt(tokener.length()-1)==']'){
 			tokener.withStartPosition(1);
-			tokener.withLength(tokener.length()-1);
+			tokener.withBufferLength(tokener.length()-1);
 			int count=0;
 			CharacterBuffer sc;
 			do{

@@ -62,7 +62,7 @@ public class ComboEditControl extends EditControl<ComboBox<Object>>{
 			CharacterBuffer tokener=new CharacterBuffer();
 			tokener.with(column.getNumberFormat());
 			tokener.withStartPosition(1);
-			tokener.withLength(tokener.length()-1);
+			tokener.withBufferLength(tokener.length()-1);
 			CharacterBuffer sub;
 			this.list=new TableList();
 			do{

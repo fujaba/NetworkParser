@@ -267,7 +267,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 
 					} else {
 						exit = true;
-						buffer.withLen(buffer.length() - 1);
+						buffer.withLength(buffer.length() - 1);
 						break;
 					}
 				}
@@ -548,7 +548,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 				if (currentChar == character[z]) {
 					z++;
 					if (z >= strLen) {
-						buffer.withLen(buffer.length() - strLen);
+						buffer.withLength(buffer.length() - strLen);
 						return buffer;
 					}
 				} else {
