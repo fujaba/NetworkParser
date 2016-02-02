@@ -236,10 +236,16 @@ public class Association extends GraphMember {
 
 	String getSeperator() {
 		if (getType() == AssociationTypes.GENERALISATION) {
-			return "-|>";
+			return "-^";
 		}
 		if (getOtherType() == AssociationTypes.GENERALISATION) {
-			return "<|-";
+			return "^-";
+		}
+		if (getType() == AssociationTypes.IMPLEMENTS) {
+			return "-.-^";
+		}
+		if (getOtherType() == AssociationTypes.IMPLEMENTS) {
+			return "^-.-";
 		}
 		if (getType() == AssociationTypes.EDGE) {
 			return "->";

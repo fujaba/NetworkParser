@@ -284,13 +284,16 @@ public class Clazz extends GraphEntity {
 		if (associations == null) {
 			return interfaces;
 		}
-		ClazzSet clazzSet = getEdges(AssociationTypes.EDGE, AssociationTypes.GENERALISATION);
-		for (Clazz clazz : clazzSet) {
-			if (GraphUtil.isInterface(clazz)) {
-				interfaces.with(clazz);
+		ClazzSet clazzSet;
+		if(this.getType()==ClazzType.INTERFACE) {
+			clazzSet = getEdges(AssociationTypes.GENERALISATION, AssociationTypes.EDGE);
+			for (Clazz clazz : clazzSet) {
+				if (GraphUtil.isInterface(clazz)) {
+					interfaces.with(clazz);
+				}
 			}
 		}
-		clazzSet = getEdges(AssociationTypes.EDGE, AssociationTypes.IMPLEMENTS);
+		clazzSet = getEdges(AssociationTypes.IMPLEMENTS, AssociationTypes.EDGE);
 		for (Clazz clazz : clazzSet) {
 			if (GraphUtil.isInterface(clazz)) {
 				interfaces.with(clazz);
@@ -373,11 +376,9 @@ public class Clazz extends GraphEntity {
 			if(typ != assoc.getType()) {
 				continue;
 			}
-			Clazz clazz = assoc.getOtherClazz();
 			if(otherTyp == null || assoc.getOtherType() == otherTyp) {
-				if(GraphUtil.isInterface(clazz) == false) {
-					kindClazzes.with(clazz);
-				}
+				Clazz clazz = assoc.getOtherClazz();
+				kindClazzes.with(clazz);
 			}
 		}
 		return kindClazzes;
@@ -393,7 +394,7 @@ public class Clazz extends GraphEntity {
 				boolean found=false;
 				for (Association assoc : associations) {
 					if(assoc.getType() == direction && assoc.getOtherType() == backDirection) {
-						if(assoc.contains(item, true, false)) {
+						if(assoc.contains(item, true, false) == false) {
 							found = true;
 							for(GraphMember member : assoc.getOther().getParents()) {
 								if(member instanceof Clazz && member != item) {
