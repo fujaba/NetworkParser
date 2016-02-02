@@ -1,4 +1,6 @@
 package de.uniks.networkparser.parser.excel;
+import java.util.Iterator;
+
 /*
 NetworkParser
 Copyright (c) 2011 - 2016, Stefan Lindel
@@ -18,7 +20,8 @@ See the Licence for the specific language governing permissions and limitations 
 */
 import de.uniks.networkparser.list.SimpleList;
 
-public class ExcelRow extends SimpleList<ExcelCell>{
+public class ExcelRow implements Iterable<ExcelCell>{
+	private SimpleList<ExcelCell> children;
 	public int getRowPos() {
 		if(this.size()>0) {
 			return first().getReferenz().y;
@@ -26,6 +29,13 @@ public class ExcelRow extends SimpleList<ExcelCell>{
 		return -1;
 	}
 	
+	private ExcelCell first() {
+		if(children == null) {
+			return null;
+		}
+		return children.first();
+	}
+
 	public ExcelCell getItem(int index) {
 		for(int i=0;i<this.size();i++) {
 			ExcelCell cell = this.get(i);
@@ -34,5 +44,50 @@ public class ExcelRow extends SimpleList<ExcelCell>{
 			}
 		}
 		return new ExcelCell();
+	}
+	
+	public ExcelCell get(int index) {
+		return this.children.get(index);
+	}
+
+	public SimpleList<ExcelCell> getChildren() {
+		return children;
+	}
+	
+	public int size() {
+		if(children == null) {
+			return 0;
+		}
+		return children.size();
+	}
+
+	public boolean add(ExcelCell... values) {
+		if(values == null) {
+			return false;
+		}
+		if(children == null) {
+			children = new SimpleList<ExcelCell>();
+		}
+		boolean result=true;
+		for(ExcelCell item : values) {
+			result = children.add(item) && result;
+		}
+		return true;
+	}
+
+	@Override
+	public Iterator<ExcelCell> iterator() {
+		if(children == null) {
+			children = new SimpleList<ExcelCell>();
+		}
+		return children.iterator();
+	}
+
+	public ExcelRow with(ExcelCell... cells) {
+		if(children == null) {
+			children = new SimpleList<ExcelCell>();
+		}
+		children.with(cells);
+		return this;
 	}
 }

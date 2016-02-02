@@ -43,6 +43,10 @@ public class Filter {
 		return this;
 	}
 
+	/**
+	 * @param map The new IDMap for Filtering
+	 * @return thisComponent
+	 */
 	public Filter withMap(IdMap map) {
 		this.map = map;
 		return this;
@@ -53,7 +57,7 @@ public class Filter {
 	 *
 	 * @param entity Entity for Show Id
 	 * @param className ClassName
-	 * @return Boolean if encoding ID
+	 * @return boolean if encoding ID
 	 */
 	public boolean isId(Object entity, String className) {
 		if (idFilter != null) {

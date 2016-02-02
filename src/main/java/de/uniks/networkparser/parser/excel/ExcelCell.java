@@ -29,8 +29,9 @@ public class ExcelCell extends XMLEntity implements SendableEntityCreatorTag{
 	public static final String PROPERTY_TYPE="t";
 	public static final String PROPERTY_REFERENZ="r";
 	public static final String[] PROPERTIES={PROPERTY_STYLE, PROPERTY_TYPE, PROPERTY_REFERENZ};
-	private Pos referenz;
+	private Pos pos;
 	private Object content;
+	private ExcelCell referenceCell;
 
 	@Override
 	public String[] getProperties() {
@@ -102,11 +103,11 @@ public class ExcelCell extends XMLEntity implements SendableEntityCreatorTag{
 	}
 
 	public Pos getReferenz() {
-		return referenz;
+		return pos;
 	}
 
 	public ExcelCell withReferenz(Pos referenz) {
-		this.referenz = referenz;
+		this.pos = referenz;
 		return this;
 	}
 
@@ -118,15 +119,24 @@ public class ExcelCell extends XMLEntity implements SendableEntityCreatorTag{
 		return getString(PROPERTY_STYLE);
 	}
 	public Object getContent() {
+		if(referenceCell != null) {
+			return referenceCell.getContent();
+		}
 		return content;
 	}
 	public String getContentAsString() {
+		if(referenceCell != null) {
+			return referenceCell.getContentAsString();
+		}
 		if(content == null) {
 			return "";
 		}
 		return content.toString();
 	}
 	public boolean setContent(Object value) {
+		if(referenceCell != null) {
+			return referenceCell.setContent(value);
+		}
 		if((this.content == null && value != null) ||
 		   (this.content != null && this.content.equals(value) == false)) {
 		   this.content = value;
@@ -142,8 +152,8 @@ public class ExcelCell extends XMLEntity implements SendableEntityCreatorTag{
 	
 	public String getDataLine(){
 		String ref = "";
-		if(this.referenz != null) {
-			ref = this.referenz.toString();
+		if(this.pos != null) {
+			ref = this.pos.toString();
 		}
 		if(content == null){
 			return null;
@@ -158,5 +168,9 @@ public class ExcelCell extends XMLEntity implements SendableEntityCreatorTag{
 			return "<c r=\""+ref+"\" t=\"b\"><v>0</v></c>";
 		}
 		return "<c r=\""+ref+"\" t=\"inlineStr\"><is><t>"+new String(content.toString().getBytes(Charset.forName("UTF-8")))+"</t></is></c>";
+	}
+	
+	public ExcelCell getReferenceCell() {
+		return referenceCell;
 	}
 }

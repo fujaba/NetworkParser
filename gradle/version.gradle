@@ -8,12 +8,19 @@ import java.text.SimpleDateFormat
 
 ext{
 	if(project.hasProperty('buildAnt')) {
-		buildAntCompile.execute()
-		buildAnt.execute()
-		project.ext.Revisionnumber = Integer.parseInt(ant.Revisionnumber)
-		project.ext.Branchname = ant.Branchname
-		project.ext.LastCommit = ant.LastCommit
-		project.ext.GitTag = Integer.parseInt(ant.GitTag)
+		try{
+			buildAntCompile.execute()
+			buildAnt.execute()
+			project.ext.Revisionnumber = Integer.parseInt(ant.Revisionnumber)
+			project.ext.Branchname = ant.Branchname
+			project.ext.LastCommit = ant.LastCommit
+			project.ext.GitTag = Integer.parseInt(ant.GitTag)
+		}catch(Exception e) {
+			project.ext.Revisionnumber = -1
+			project.ext.Branchname = ""
+			project.ext.LastCommit = ""
+			project.ext.GitTag = 0
+		}
 	}
 
 	gitVersion = new GITVersion(major: majorNumber,minor: ext.GitTag, revision: ext.Revisionnumber, hash: ext.LastCommit, buildTime: buildTime(), branch: ext.Branchname)
