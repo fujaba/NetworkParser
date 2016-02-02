@@ -20,14 +20,6 @@ import de.uniks.networkparser.parser.excel.ExcelSheet;
 import de.uniks.networkparser.parser.excel.ExcelWorkBook;
 
 public class ExcelBuffer {
-	public static void main(String[] args) {
-		ExcelBuffer buffer = new ExcelBuffer();
-		ExcelSheet content = buffer.parse(new File("test.xlsx"));
-		ExcelWorkBook workBook = new ExcelWorkBook();
-		workBook.add(content);
-		buffer.encode(new File("test2.xlsx"), workBook);
-//		C:\Arbeit\workspace\NetworkParser\test.xlsx
-	}
 	public ExcelSheet parse(File file) {
 		ExcelSheet data = null;
 		try {

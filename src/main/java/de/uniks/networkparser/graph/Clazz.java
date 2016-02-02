@@ -307,37 +307,12 @@ public class Clazz extends GraphEntity {
 	}
 
 	public Clazz withSuperClazz(Clazz... values) {
-		if (values == null) {
-			return this;
-		}
-		AssociationSet associations = getAssociations();
-		for (Clazz item : values) {
-			if (item != null) {
-				boolean found=false;
-				for (Association assoc : associations) {
-					if(assoc.getType()==AssociationTypes.GENERALISATION) {
-						if(assoc.contains(item, false, true) == false) {
-							found = true;
-							for(GraphMember member : assoc.getOther().getParents()) {
-								if(member instanceof Clazz && member != item) {
-									assoc.getOther().withoutParent(member);
-								}
-								
-							}
-							assoc.getOther().setParent(item);
-							break;
-						}
-					}
-				}
-				if(found == false) {
-					Association childAssoc = new Association(item).with(AssociationTypes.EDGE);
-					Association superAssoc = new Association(this).with(AssociationTypes.GENERALISATION);
-					childAssoc.with(superAssoc);
-					this.with(superAssoc);
-					item.with(childAssoc);
-				}
-			}
-		}
+		createAssociation(AssociationTypes.GENERALISATION, AssociationTypes.EDGE, values);
+		return this;
+	}
+	
+	public Clazz withImplements(Clazz... values) {
+		createAssociation(AssociationTypes.IMPLEMENTS, AssociationTypes.EDGE, values);
 		return this;
 	}
 
@@ -399,7 +374,7 @@ public class Clazz extends GraphEntity {
 				continue;
 			}
 			Clazz clazz = assoc.getOtherClazz();
-			if(otherTyp == null || assoc.getOtherTyp() == otherTyp) {
+			if(otherTyp == null || assoc.getOtherType() == otherTyp) {
 				if(GraphUtil.isInterface(clazz) == false) {
 					kindClazzes.with(clazz);
 				}
@@ -407,32 +382,43 @@ public class Clazz extends GraphEntity {
 		}
 		return kindClazzes;
 	}
-
-	public Clazz withKidClazzes(Clazz... values) {
+	
+	void createAssociation(AssociationTypes direction, AssociationTypes backDirection, Clazz... values) {
 		if (values == null) {
-			return this;
+			return;
 		}
 		AssociationSet associations = getAssociations();
 		for (Clazz item : values) {
 			if (item != null) {
 				boolean found=false;
 				for (Association assoc : associations) {
-					if(assoc.getOther().getType() == AssociationTypes.GENERALISATION) {
+					if(assoc.getType() == direction && assoc.getOtherType() == backDirection) {
 						if(assoc.contains(item, true, false)) {
 							found = true;
+							for(GraphMember member : assoc.getOther().getParents()) {
+								if(member instanceof Clazz && member != item) {
+									assoc.getOther().withoutParent(member);
+								}
+								
+							}
+							assoc.getOther().setParent(item);
 							break;
 						}
 					}
 				}
 				if(found == false) {
-					Association superAssoc = new Association(item).with(AssociationTypes.GENERALISATION);
-					Association childAssoc = new Association(this).with(AssociationTypes.EDGE);
+					Association childAssoc = new Association(this).with(direction);
+					Association superAssoc = new Association(item).with(backDirection);
 					childAssoc.with(superAssoc);
 					this.with(childAssoc);
 					item.with(superAssoc);
 				}
 			}
 		}
+	}
+
+	public Clazz withKidClazzes(Clazz... values) {
+		createAssociation(AssociationTypes.EDGE, AssociationTypes.GENERALISATION, values);
 		return this;
 	}
 
@@ -596,5 +582,4 @@ public class Clazz extends GraphEntity {
 	public String toString() {
 		return getName();
 	}
-
 }

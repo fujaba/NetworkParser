@@ -83,20 +83,20 @@ public class GraphUtil {
 		if(assoc == null) {
 			return false;
 		}
-		if(assoc.getType()==AssociationTypes.ASSOCIATION && assoc.getOtherTyp()==AssociationTypes.EDGE) {
+		if(assoc.getType()==AssociationTypes.ASSOCIATION && assoc.getOtherType()==AssociationTypes.EDGE) {
 			return true;
 		}
-		return assoc.getOtherTyp()==AssociationTypes.ASSOCIATION && assoc.getType()==AssociationTypes.EDGE;
+		return assoc.getOtherType()==AssociationTypes.ASSOCIATION && assoc.getType()==AssociationTypes.EDGE;
 	}
 	
 	public static boolean isInterfaceAssociation(Association assoc) {
 		if(assoc == null) {
 			return false;
 		}
-		if(assoc.getType()==AssociationTypes.IMPLEMENTS && assoc.getOtherTyp()==AssociationTypes.EDGE) {
+		if(assoc.getType()==AssociationTypes.IMPLEMENTS && assoc.getOtherType()==AssociationTypes.EDGE) {
 			return true;
 		}
-		return assoc.getOtherTyp()==AssociationTypes.IMPLEMENTS && assoc.getType()==AssociationTypes.EDGE;
+		return assoc.getOtherType()==AssociationTypes.IMPLEMENTS && assoc.getType()==AssociationTypes.EDGE;
 	}
 	
 	public static CharacterBuffer getMethodParameters(Method method, boolean shortName) {

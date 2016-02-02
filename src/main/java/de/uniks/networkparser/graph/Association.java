@@ -238,13 +238,13 @@ public class Association extends GraphMember {
 		if (getType() == AssociationTypes.GENERALISATION) {
 			return "-|>";
 		}
-		if (getOtherTyp() == AssociationTypes.GENERALISATION) {
+		if (getOtherType() == AssociationTypes.GENERALISATION) {
 			return "<|-";
 		}
 		if (getType() == AssociationTypes.EDGE) {
 			return "->";
 		}
-		if (getOtherTyp() == AssociationTypes.EDGE) {
+		if (getOtherType() == AssociationTypes.EDGE) {
 			return "<-";
 		}
 		return "-";
@@ -265,7 +265,7 @@ public class Association extends GraphMember {
 		}
 		return null;
 	}
-	AssociationTypes getOtherTyp() {
+	AssociationTypes getOtherType() {
 		if(other != null ) {
 			return other.getType();
 		}
