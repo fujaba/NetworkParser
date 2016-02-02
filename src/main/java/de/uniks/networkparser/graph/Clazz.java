@@ -395,12 +395,14 @@ public class Clazz extends GraphEntity {
 				for (Association assoc : associations) {
 					if(assoc.getType() == direction && assoc.getOtherType() == backDirection) {
 						if(assoc.contains(item, true, false) == false) {
-							found = true;
-							for(GraphMember member : assoc.getOther().getParents()) {
-								if(member instanceof Clazz && member != item) {
-									assoc.getOther().withoutParent(member);
+							if(assoc.getType() == AssociationTypes.GENERALISATION) { 
+								found = true;
+								for(GraphMember member : assoc.getOther().getParents()) {
+									if(member instanceof Clazz && member != item) {
+										assoc.getOther().withoutParent(member);
+									}
+									
 								}
-								
 							}
 							assoc.getOther().setParent(item);
 							break;
