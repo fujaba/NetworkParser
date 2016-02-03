@@ -1,8 +1,8 @@
-package de.uniks.networkparser.bytes.converter;
+package de.uniks.networkparser.converter;
 
 /*
  NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
+ Copyright (c) 2011 - 2016, Stefan Lindel
  All rights reserved.
 
  Licensed under the EUPL, Version 1.1 or (as soon they
@@ -21,7 +21,6 @@ package de.uniks.networkparser.bytes.converter;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.interfaces.ByteConverter;
 
 public class ByteConverterString extends ByteConverter {
 	/**
@@ -29,16 +28,14 @@ public class ByteConverterString extends ByteConverter {
 	 *
 	 * @param values
 	 *			the bytes
-	 * @param size
-	 *			The len of values
 	 * @return the string
 	 */
 	@Override
-	public String toString(byte[] values, int size) {
-		StringBuilder returnValue = new StringBuilder(size);
+	public String toString(de.uniks.networkparser.buffer.ByteBuffer values) {
+		StringBuilder returnValue = new StringBuilder(values.length());
 		if (values != null) {
-			for (int i = 0; i < size; i++) {
-				returnValue.append((char) values[i]);
+			for (int i = 0; i < values.length(); i++) {
+				returnValue.append(values.charAt(i));
 			}
 		}
 		return returnValue.toString();

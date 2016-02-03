@@ -5,6 +5,7 @@ import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.XMLitem;
 import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.xml.XMLEntity;
@@ -149,7 +150,7 @@ public class JsonTokener extends Tokener {
 			for (int i = 0; i < xmlEntity.size(); i++) {
 				parseEntityProp(props, xmlEntity.getValueByIndex(i), xmlEntity.getKeyByIndex(i));
 			}
-			for (XMLEntity children : xmlEntity.getChildren()) {
+			for (XMLitem children : xmlEntity.getChildren()) {
 				parseEntityProp(props, children, children.getTag());
 			}
 			parent.put(JsonIdMap.JSON_PROPS, props);
@@ -208,7 +209,7 @@ public class JsonTokener extends Tokener {
 			for (int i = 0; i < xmlEntity.size(); i++) {
 				parseEntityProp(props, xmlEntity.getValueByIndex(i), xmlEntity.getKeyByIndex(i));
 			}
-			for (XMLEntity children : xmlEntity.getChildren()) {
+			for (XMLitem children : xmlEntity.getChildren()) {
 				parseEntityProp(props, children, children.getTag());
 			}
 			parent.put(JsonIdMap.JSON_PROPS, props);

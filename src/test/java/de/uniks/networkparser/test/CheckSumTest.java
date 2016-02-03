@@ -7,13 +7,15 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import org.junit.Assert;
 import org.junit.Test;
+
+import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.bytes.checksum.CCITT16;
 import de.uniks.networkparser.bytes.checksum.Crc16;
 import de.uniks.networkparser.bytes.checksum.Crc8;
 import de.uniks.networkparser.bytes.checksum.FCS16;
 import de.uniks.networkparser.bytes.checksum.SHA1;
 import de.uniks.networkparser.bytes.checksum.Sum8;
-import de.uniks.networkparser.bytes.converter.ByteConverterHex;
+import de.uniks.networkparser.converter.ByteConverterHex;
 
 public class CheckSumTest {
 
@@ -43,7 +45,8 @@ public class CheckSumTest {
 		Assert.assertEquals("CRC16-CCITT", "98ec", Integer.toHexString(crc));
 
 		crc16.update(array);
-		Assert.assertEquals("CRC16-CCITT", "98EC", converter.toString(crc16.getByteArray()));
+		ByteBuffer buffer = new ByteBuffer().with(crc16.getByteArray());
+		Assert.assertEquals("CRC16-CCITT", "98EC", converter.toString(buffer));
 
 	}
 
@@ -101,14 +104,14 @@ public class CheckSumTest {
 
 			String plaintext = "Stefan";
 			byte[] bytes = (plaintext).getBytes();
-			byte[] digest = sha1.digest(bytes);
+			ByteBuffer digest = new ByteBuffer().with(sha1.digest(bytes));
 			ByteConverterHex converter = new ByteConverterHex();
 
 			SHA1 sha12 = new SHA1();
 			sha12.update(bytes);
-			byte[] value = sha12.getByteArray();
-			Assert.assertEquals("E3500A442761EF40F1772C5D858397824B6FB5BD", converter.toString(digest, digest.length));
-			Assert.assertEquals("E3500A442761EF40F1772C5D858397824B6FB5BD", converter.toString(value, value.length));
+			ByteBuffer value = new ByteBuffer().with(sha12.getByteArray());
+			Assert.assertEquals("E3500A442761EF40F1772C5D858397824B6FB5BD", converter.toString(digest));
+			Assert.assertEquals("E3500A442761EF40F1772C5D858397824B6FB5BD", converter.toString(value));
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}

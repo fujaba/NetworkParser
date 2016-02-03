@@ -235,11 +235,28 @@ public class ByteBuffer extends BufferedBuffer {
 	public ByteBuffer getNewBuffer(byte[] array) {
 		return new ByteBuffer().with(array);
 	}
+	public ByteBuffer with(String string) {
+		this.buffer = string.getBytes();
+		this.position = 0;
+		this.length = buffer.length;
+		return this;
+	}
 
 	public ByteBuffer with(byte[] array) {
 		this.buffer = array;
 		this.position = 0;
 		this.length = array.length;
+		return this;
+	}
+	
+	public ByteBuffer with(byte value) {
+		if(this.buffer == null) {
+			this.buffer = new byte[]{value};
+			this.length =1;
+			this.position =0;
+		}else if(this.length<this.buffer.length) {
+			this.buffer[length++] = value;
+		}
 		return this;
 	}
 

@@ -1,4 +1,4 @@
-package de.uniks.networkparser.graph;
+package de.uniks.networkparser.converter;
 
 /*
  NetworkParser
@@ -22,18 +22,28 @@ package de.uniks.networkparser.graph;
  permissions and limitations under the Licence.
 */
 import java.util.Iterator;
+
+import de.uniks.networkparser.graph.Association;
+import de.uniks.networkparser.graph.Attribute;
+import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.graph.GraphEntity;
+import de.uniks.networkparser.graph.GraphIdMap;
+import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.graph.GraphMember;
+import de.uniks.networkparser.graph.GraphSimpleSet;
+import de.uniks.networkparser.graph.GraphUtil;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
-public class YUMLConverter implements Converter {
+public class YUMLConverter implements Converter{
 	/** The Constant URL. */
 	public static final String URL = "http://yuml.me/diagram/class/";
 
-	@Override
 	public String convert(GraphList root, boolean removePackage) {
 		String typ = root.getTyp();
-		GraphSimpleSet collection = root.getChildren();
+		GraphSimpleSet collection = GraphUtil.getChildren(root);
 		if (collection.size() > 0) {
 			StringBuilder sb = new StringBuilder();
 			Iterator<GraphMember> i = collection.iterator();
@@ -85,10 +95,10 @@ public class YUMLConverter implements Converter {
 				sb.append(",");
 			}
 			sb.append(parseEntity(item, visited, typ, shortName));
-			String seperator = element.getSeperator();
+			String seperator = GraphUtil.getSeperator(element);
 			sb.append(seperator);
 
-			SimpleSet<GraphEntity> targetCollection = other.getNodes();
+			SimpleSet<GraphEntity> targetCollection = GraphUtil.getNodes(other);
 			Iterator<GraphEntity> targetIterator = targetCollection.iterator();
 			GraphEntity target = targetIterator.next();
 			sb.append(parseEntity(target, visited, typ, shortName));
@@ -147,7 +157,7 @@ public class YUMLConverter implements Converter {
 		}
 		StringBuilder sb = new StringBuilder();
 
-		Iterator<GraphMember> i = entity.getChildren().iterator();
+		Iterator<GraphMember> i = GraphUtil.getChildren(entity).iterator();
 		if (i.hasNext()) {
 			String splitter = "";
 			if (typ.equals(GraphIdMap.OBJECT)) {
@@ -181,5 +191,13 @@ public class YUMLConverter implements Converter {
 			return "|" + sb.toString();
 		}
 		return sb.toString();
+	}
+
+	@Override
+	public String encode(BaseItem entity) {
+		if(entity instanceof GraphList) {
+			return convert((GraphList) entity, false);
+		}
+		return null;
 	}
 }

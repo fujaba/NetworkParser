@@ -3,13 +3,14 @@ package de.uniks.networkparser.test;
 import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Test;
+
+import de.uniks.networkparser.converter.GraphConverter;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.AssociationTypes;
 import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.Clazz.ClazzType;
 import de.uniks.networkparser.graph.DataType;
-import de.uniks.networkparser.graph.GraphConverter;
 import de.uniks.networkparser.graph.GraphIdMap;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.xml.HTMLEntity;

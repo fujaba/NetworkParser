@@ -20,6 +20,7 @@ See the Licence for the specific language governing permissions and limitations 
 */
 import de.uniks.networkparser.gui.Pos;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
+import de.uniks.networkparser.interfaces.XMLitem;
 import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.util.XMLEntityCreator;
 
@@ -61,7 +62,7 @@ public class ExcelCell extends XMLEntity implements SendableEntityCreatorTag{
 			if(value instanceof XMLEntity == false) {
 				return false;
 			}
-			XMLEntity item = (XMLEntity) value;
+			XMLitem item = (XMLitem) value;
 			ExcelCell parent = (ExcelCell) entity;
 			if(item.getValue(PROPERTY_STYLE) != null) {
 				parent.setValueItem(PROPERTY_STYLE, ""+item.getValue(PROPERTY_STYLE));
@@ -73,8 +74,8 @@ public class ExcelCell extends XMLEntity implements SendableEntityCreatorTag{
 				parent.withReferenz(Pos.valueOf(""+item.getValue(PROPERTY_REFERENZ)));
 				super.with(PROPERTY_REFERENZ, getReferenz());
 			}
-			for(XMLEntity child : item.getChildren()) {
-				parent.withChild(child);
+			for(XMLitem child : item.getChildren()) {
+				parent.addChild(child);
 			}
 			return true;
 		}

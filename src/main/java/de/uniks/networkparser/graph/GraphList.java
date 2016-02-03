@@ -1,5 +1,6 @@
 package de.uniks.networkparser.graph;
 
+import de.uniks.networkparser.converter.YUMLConverter;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -37,7 +38,7 @@ public class GraphList extends GraphModel implements BaseItem{
 	}
 
 	public String toString(Converter converter) {
-		return converter.convert(this, false);
+		return converter.encode(this);
 	}
 
 	public String getTyp() {
@@ -182,4 +183,11 @@ public class GraphList extends GraphModel implements BaseItem{
 		}
 		return new GraphList();
 	}
+
+	@Override
+	public String toString(int indentFactor) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

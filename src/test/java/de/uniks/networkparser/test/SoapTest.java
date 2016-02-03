@@ -62,9 +62,9 @@ public class SoapTest {
 
 		SoapObject soapAnswer = (SoapObject) map.decode(answer.toString());
 
-		Assert.assertNotNull(soapAnswer.getBody());
+		Assert.assertNotNull(soapAnswer.getChildren());
 
-		Assert.assertEquals(25, soapAnswer.getBody().getChildren().get(0).getChildren().size() );
+		Assert.assertEquals(25, soapAnswer.getChildren().getChildren().get(0).getChildren().size() );
 
 	}
 }

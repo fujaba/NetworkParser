@@ -32,6 +32,7 @@ import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
+import de.uniks.networkparser.interfaces.XMLitem;
 import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.logic.BooleanCondition;
 import de.uniks.networkparser.xml.util.XMLGrammar;
@@ -144,7 +145,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 	 *			the value
 	 * @return the xML entity
 	 */
-	private XMLEntity parserChild(XMLEntity parent, String property,
+	private XMLitem parserChild(XMLitem parent, String property,
 			Object value) {
 
 		if (property.startsWith(XMLIdMap.ENTITYSPLITTER)) {
@@ -161,12 +162,13 @@ public class XMLIdMap extends XMLSimpleIdMap {
 				label = property.substring(1);
 			}
 			if (label.length() > 0) {
-				XMLEntity child = parent.getChild(label, false);
+				XMLitem child = parent.getChild(label, false);
 				if (child == null) {
-					child = new XMLEntity();
-					child.withTag(label);
+					XMLEntity item = new XMLEntity();
+					item.withTag(label);
+					child = item;
 					parserChild(child, newProp, value);
-					parent.addChild(child);
+					parent.addChild(item);
 				} else {
 					parserChild(child, newProp, value);
 				}

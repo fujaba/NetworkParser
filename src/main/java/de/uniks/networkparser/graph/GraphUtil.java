@@ -110,7 +110,28 @@ public class GraphUtil {
 		}
 		return collection;
 	}
-
+	
+	public static GraphSimpleSet getChildren(GraphMember item) {
+		return item.getChildren();
+	}
+	public static String getSeperator(Association item) {
+		return item.getSeperator();
+	}
+	public static SimpleSet<GraphEntity> getNodes(GraphMember item) {
+		return item.getNodes();
+	}
+	public static GraphDiff getDifference(GraphMember item) {
+		return item.getDiff();
+	}
+	
+	public static boolean addAccoc(GraphList list, Association assoc) {
+		return list.addAssoc(assoc);
+	}
+	
+	public static Attribute createAttribute() {
+		return new Attribute();
+	}
+	
 	public static void removeYou(GraphMember value) {
 		value.setParent(null);
 		if(value instanceof Attribute) {

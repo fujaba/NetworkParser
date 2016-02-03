@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 /**
@@ -39,7 +40,6 @@ import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
  *			Value Element
  */
 public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
-
 		SendableEntityCreator, SendableEntityCreatorNoIndex {
 	/** Constant for KEY. */
 	public static final String PROPERTY_KEY = "key";
@@ -239,5 +239,18 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 			return value;
 		}
 		return null;
+	}
+
+	@Override
+	public String toString(int indentFactor) {
+		return toString();
+	}
+	
+	@Override
+	public String toString(Converter converter) {
+		if(converter == null) {
+			return null;
+		}
+		return converter.encode(this);
 	}
 }

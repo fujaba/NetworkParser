@@ -22,6 +22,7 @@ import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.gui.Pos;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.XMLitem;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.XMLEntity;
@@ -63,10 +64,10 @@ public class ExcelParser {
 		}
 
 		if (sheet != null) {
-			XMLEntity mergeCells = sheet.getChild("mergeCells", true);
+			XMLitem mergeCells = sheet.getChild("mergeCells", true);
 			// <mergeCells count="1"><mergeCell ref="A2:A3"/></mergeCells>
 			if (mergeCells != null) {
-				for (XMLEntity mergeCell : mergeCells.getChildren()) {
+				for (XMLitem mergeCell : mergeCells.getChildren()) {
 					SimpleList<Pos> excelRange = EntityUtil.getExcelRange(mergeCell.getString(REF));
 					for (Pos item : excelRange) {
 						if (item == null || item.x < 0 || item.y < 0) {
@@ -76,14 +77,14 @@ public class ExcelParser {
 					}
 				}
 			}
-			XMLEntity sheetData = sheet.getChild("sheetData", true);
-			for (XMLEntity row : sheetData.getChildren()) {
+			XMLitem sheetData = sheet.getChild("sheetData", true);
+			for (XMLitem row : sheetData.getChildren()) {
 				if (ROW.equalsIgnoreCase(row.getTag()) == false) {
 					continue;
 				}
 				ExcelRow dataRow = new ExcelRow();
 				// <c r="A1" t="s"><v>2</v></c>
-				for (XMLEntity cell : row.getChildren()) {
+				for (XMLitem cell : row.getChildren()) {
 					if (CELL.equalsIgnoreCase(cell.getTag()) == false) {
 						continue;
 					}

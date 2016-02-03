@@ -24,12 +24,12 @@ package de.uniks.networkparser.event;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
-import de.uniks.networkparser.interfaces.StringItem;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.XMLIdMap;
 
-public class PomFile implements SendableEntityCreatorTag, StringItem, BaseItem{
+public class PomFile implements SendableEntityCreatorTag, BaseItem{
 	public static final String PROPERTY_MODELVERSION = "modelVersion?";
 	public static final String PROPERTY_GROUPID = "groupId?";
 	public static final String PROPERTY_ARTIFACTID ="artifactId?";
@@ -37,7 +37,6 @@ public class PomFile implements SendableEntityCreatorTag, StringItem, BaseItem{
 	public static final String PROPERTY_SCOPE ="scope?";
 	public static final String PROPERTY_DEPENDENCY ="dependencies";
 	private static final String TAG="project";
-	private boolean visible;
 	private String modelVersion;
 	private String groupId;
 	private String artifactId;
@@ -190,16 +189,6 @@ public class PomFile implements SendableEntityCreatorTag, StringItem, BaseItem{
 	public BaseItem getNewList(boolean keyValue) {
 		return new PomFile();
 	}
-	@Override
-	public PomFile withVisible(boolean value) {
-		this.visible = value;
-		return this;
-	}
-
-	@Override
-	public boolean isVisible() {
-		return visible;
-	}
 
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
@@ -254,5 +243,13 @@ public class PomFile implements SendableEntityCreatorTag, StringItem, BaseItem{
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public String toString(Converter converter) {
+		if(converter == null) {
+			return null;
+		}
+		return converter.encode(this);
 	}
 }

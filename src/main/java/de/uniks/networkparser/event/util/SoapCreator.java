@@ -49,7 +49,7 @@ public class SoapCreator implements SendableEntityCreatorTag {
 			return ((SoapObject) entity).getHeader();
 		}
 		if (attribute.endsWith(":" + SoapObject.PROPERTY_BODY)) {
-			return ((SoapObject) entity).getBody();
+			return ((SoapObject) entity).getChildren();
 		}
 		return null;
 	}

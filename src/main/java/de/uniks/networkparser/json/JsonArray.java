@@ -26,7 +26,6 @@ import java.util.Iterator;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.StringItem;
 import de.uniks.networkparser.list.SortedList;
 /**
  * A JSONArray is an ordered sequence of values. Its external text form is a
@@ -73,9 +72,7 @@ import de.uniks.networkparser.list.SortedList;
  * @version 2010-12-28
  */
 
-public class JsonArray extends SortedList<Object> implements
-		StringItem {
-
+public class JsonArray extends SortedList<Object> implements BaseItem {
 	/**
 	 * Get the JSONArray associated with an index.
 	 *
@@ -192,8 +189,10 @@ public class JsonArray extends SortedList<Object> implements
 
 	/**
 	 * Make a prettyprinted JSON text of this JSONArray.
+	 * @param indentFactor	Factor for spacing between Level
+	 * @param indent		actual Indent Level
+	 * @return return Item As String
 	 */
-	@Override
 	public String toString(int indentFactor, int indent) {
 		Iterator<Object> iterator = iterator();
 		if (!iterator.hasNext()) {

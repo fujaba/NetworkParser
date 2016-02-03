@@ -25,7 +25,6 @@ import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
-import de.uniks.networkparser.interfaces.StringItem;
 import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 /* Copyright (c) 2002 JSON.org */
@@ -86,8 +85,7 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
  * @author JSON.org
  * @version 2011-11-24
  */
-public class JsonObject extends SimpleKeyValueList<String, Object> implements
-		StringItem, Entity {
+public class JsonObject extends SimpleKeyValueList<String, Object> implements Entity {
 
 	public JsonObject() {
 		this.withAllowDuplicate(false);

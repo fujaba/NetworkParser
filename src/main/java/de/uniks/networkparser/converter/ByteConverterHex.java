@@ -1,4 +1,4 @@
-package de.uniks.networkparser.bytes.converter;
+package de.uniks.networkparser.converter;
 
 /*
  NetworkParser
@@ -22,8 +22,8 @@ package de.uniks.networkparser.bytes.converter;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.interfaces.ByteConverter;
 
 public class ByteConverterHex extends ByteConverter {
 	/**
@@ -31,23 +31,20 @@ public class ByteConverterHex extends ByteConverter {
 	 *
 	 * @param values
 	 *			the bytes
-	 * @param size
-	 *			The Size of values
 	 * @return the string
 	 */
 	@Override
-	public String toString(byte[] values, int size) {
-		return toString(values, size, 0);
+	public String toString(ByteBuffer values) {
+		return toString(values, 0);
 	}
-
-	public String toString(byte[] values, int size, int space) {
+	public String toString(ByteBuffer values, int space) {
 		String hexVal = "0123456789ABCDEF";
 
-		CharacterBuffer returnValue = new CharacterBuffer().withBufferLength(size << 1 + size * space);
+		CharacterBuffer returnValue = new CharacterBuffer().withBufferLength(values.length() << 1 + values.length() * space);
 		String step = EntityUtil.repeat(' ', space);
 		if (values != null) {
-			for (int i = 0; i < size; i++) {
-				int value = values[i];
+			for (int i = 0; i < values.length(); i++) {
+				int value = values.byteAt(i);
 				if (value < 0) {
 					value += 256;
 				}

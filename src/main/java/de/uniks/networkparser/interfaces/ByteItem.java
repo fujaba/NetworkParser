@@ -1,6 +1,7 @@
 package de.uniks.networkparser.interfaces;
 
 import de.uniks.networkparser.buffer.ByteBuffer;
+import de.uniks.networkparser.converter.ByteConverter;
 
 /*
  NetworkParser
@@ -25,19 +26,6 @@ import de.uniks.networkparser.buffer.ByteBuffer;
 */
 
 public interface ByteItem extends BaseItem {
-	/**
-	 * @return the ByteItem as String
-	 */
-	@Override
-	public String toString();
-
-	/**
-	 * @param converter
-	 *			ByteConverter for Format
-	 * @return the ByteItem as String with converter
-	 */
-	public String toString(ByteConverter converter);
-
 	/**
 	 * @param converter
 	 *			ByteConverter for Format

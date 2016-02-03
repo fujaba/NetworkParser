@@ -25,10 +25,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.gui.Pos;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
-import de.uniks.networkparser.interfaces.StringItem;
 import de.uniks.networkparser.list.AbstractArray;
 import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -268,25 +268,25 @@ public class EntityUtil {
 		if (value instanceof Boolean) {
 			return value.toString();
 		}
-		if (value instanceof StringItem) {
-			return ((StringItem) value).toString(indentFactor, intent);
+		if (value instanceof BaseItem) {
+			return ((BaseItem) value).toString(new EntityStringConverter(indentFactor, intent));
 		}
 		if (value instanceof Map) {
 			BaseItem item = reference.getNewList(true).withAll((Map<?, ?>) value);
-			if (item instanceof StringItem) {
-				return ((StringItem) item).toString(indentFactor, intent);
+			if (item instanceof BaseItem) {
+				return ((BaseItem) item).toString(new EntityStringConverter(indentFactor, intent));
 			}
-			return ((StringItem) item).toString();
+			return ((BaseItem) item).toString();
 		}
 		if (value instanceof Collection) {
 			BaseItem item = reference.getNewList(true);
 			if(item instanceof SimpleKeyValueList<?,?>) {
 				return ((SimpleKeyValueList<?,?>) item).withList((Map<?, ?>) value).toString();
 			}
-			if (item instanceof StringItem) {
-				return ((StringItem) item).toString(indentFactor, intent);
+			if (item instanceof BaseItem) {
+				return ((BaseItem) item).toString(new EntityStringConverter(indentFactor, intent));
 			}
-			return ((StringItem) item).toString();
+			return ((BaseItem) item).toString();
 		}
 		if (value.getClass().isArray()) {
 			Object[] items = (Object[]) value;
@@ -294,10 +294,10 @@ public class EntityUtil {
 			for (Object entity : items) {
 				item.withAll(entity);
 			}
-			if (item instanceof StringItem) {
-				return ((StringItem) item).toString(indentFactor, intent);
+			if (item instanceof BaseItem) {
+				return ((BaseItem) item).toString(new EntityStringConverter(indentFactor, intent));
 			}
-			return ((StringItem) item).toString();
+			return ((BaseItem) item).toString();
 		}
 		if (simpleText) {
 			return value.toString();
@@ -515,11 +515,11 @@ public class EntityUtil {
 		}
 		for(int i=entityA.size()- 1 ;i>=0;i--) {
 			String key = entityA.getKeyByIndex(i);
-			Object valueA = entityA.get(key);
-			Object valueB = entityB.get(key);
+			Object valueA = entityA.getValue(key);
+			Object valueB = entityB.getValue(key);
 			if(valueA == null) {
 				if(valueB == null) {
-					Object oldValue = entityA.get(key);
+					Object oldValue = entityA.getValue(key);
 					if(sameObject != null) {
 						sameObject.withAll(key, oldValue);
 					}

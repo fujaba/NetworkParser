@@ -1,5 +1,7 @@
 package de.uniks.networkparser.interfaces;
 
+import java.util.Set;
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -33,7 +35,7 @@ public interface Entity extends BaseItem{
 
 	public int getInt(String key);
 
-	public Object get(Object key);
+	public Object getValue(String key);
 
 	public int size();
 
@@ -50,4 +52,15 @@ public interface Entity extends BaseItem{
 	public boolean has(String key);
 	
 	public Object remove(Object key);
+	
+	/** Add Key-Value item to Entity
+	 * @param key The key
+	 * @param value The new Value
+	 * @return The value
+	 */
+	public Object put(String key, Object value);
+
+	public Set<String> keySet();
+	
+	public String toString(int indentFactor, int intent);
 }

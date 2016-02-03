@@ -3,14 +3,15 @@ package de.uniks.networkparser.test;
 import org.junit.Assert;
 import org.junit.Test;
 import de.uniks.networkparser.EntityUtil;
-import de.uniks.networkparser.bytes.converter.ByteConverterHex;
+import de.uniks.networkparser.buffer.ByteBuffer;
+import de.uniks.networkparser.converter.ByteConverterHex;
 
 public class StringTest {
 	@Test
 	public void testString(){
 		String simple="<c id=\"C:\\\" />";
-		byte[] bytes = simple.getBytes();
-		String string = new ByteConverterHex().toString(bytes, bytes.length, 1);
+		ByteBuffer bytes = new ByteBuffer().with(simple.getBytes());
+		String string = new ByteConverterHex().toString(bytes, 1);
 		Assert.assertEquals("3C 63 20 69 64 3D 22 43 3A 5C 22 20 2F 3E ", string);
 	}
 

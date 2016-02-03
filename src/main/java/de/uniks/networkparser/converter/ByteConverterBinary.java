@@ -1,4 +1,4 @@
-package de.uniks.networkparser.bytes.converter;
+package de.uniks.networkparser.converter;
 
 /*
  NetworkParser
@@ -21,17 +21,16 @@ package de.uniks.networkparser.bytes.converter;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.interfaces.ByteConverter;
+import de.uniks.networkparser.buffer.ByteBuffer;
 
 public class ByteConverterBinary extends ByteConverter {
 	public static String toString(byte value) {
 		ByteConverterBinary converter = new ByteConverterBinary();
-		return converter.toString(new byte[] {value }, 1);
+		return converter.toString(new ByteBuffer().with(value));
 	}
 
 	public static String toString(int value) {
-		ByteConverterBinary converter = new ByteConverterBinary();
-		return converter.toString(new byte[] {(byte) value }, 1);
+		return toString((byte)value);
 	}
 
 	/**
@@ -39,15 +38,13 @@ public class ByteConverterBinary extends ByteConverter {
 	 *
 	 * @param values
 	 *			the bytes
-	 * @param size
-	 *			The size of values
 	 * @return the string
 	 */
 	@Override
-	public String toString(byte[] values, int size) {
+	public String toString(ByteBuffer values) {
 		StringBuilder sb = new StringBuilder();
-		for (int z = 0; z < size; z++) {
-			int number = values[z];
+		for (int z = 0; z < values.length(); z++) {
+			int number = values.byteAt(z);
 			char[] bits = new char[] {'0', '0', '0', '0', '0', '0', '0', '0' };
 			int i = 7;
 			if (number < 0) {

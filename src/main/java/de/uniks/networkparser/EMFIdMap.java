@@ -37,6 +37,7 @@ import de.uniks.networkparser.graph.Literal;
 import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.graph.Clazz.ClazzType;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.XMLitem;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.XMLEntity;
@@ -151,8 +152,8 @@ public class EMFIdMap extends XMLIdMap {
 		return rootObject;
 	}
 
-	private void addXMIIds(XMLEntity xmlEntity, String rootId) {
-		if (xmlEntity.contains(XMI_ID)) {
+	private void addXMIIds(XMLitem xmlEntity, String rootId) {
+		if (xmlEntity.has(XMI_ID)) {
 			return;
 		}
 		String tag = xmlEntity.getTag();
@@ -171,7 +172,7 @@ public class EMFIdMap extends XMLIdMap {
 		}
 		// kid.put(XMI_ID, "$" + tag + num);
 
-		if (xmlEntity.contains("href")) {
+		if (xmlEntity.has("href")) {
 			// might point to another xml file already loaded
 			String refString = xmlEntity.getString("href");
 			String[] split = refString.split("#//");
@@ -189,17 +190,17 @@ public class EMFIdMap extends XMLIdMap {
 		}
 		xmlEntity.put(XMI_ID, rootId);
 
-		for (XMLEntity kid : xmlEntity.getChildren()) {
+		for (XMLitem kid : xmlEntity.getChildren()) {
 			addXMIIds(kid, rootId);
 		}
 	}
 
-	private void addValues(SendableEntityCreator rootFactory, XMLEntity xmlEntity, Object rootObject) {
+	private void addValues(SendableEntityCreator rootFactory, XMLitem xmlEntity, Object rootObject) {
 		if (rootFactory == null) {
 			return;
 		}
 		// add to map
-		String id = (String) xmlEntity.get(XMI_ID);
+		String id = (String) xmlEntity.getValue(XMI_ID);
 
 		if (id.startsWith("$")) {
 			id = "_" + id.substring(1);
@@ -261,9 +262,9 @@ public class EMFIdMap extends XMLIdMap {
 		}
 
 		// recursive on kids
-		for (Iterator<XMLEntity> iterator = xmlEntity.getChildren().iterator(); iterator.hasNext();) {
-			XMLEntity kidEntity = iterator.next();
-			String kidId = (String) kidEntity.get(XMI_ID);
+		for (Iterator<XMLitem> iterator = xmlEntity.getChildren().iterator(); iterator.hasNext();) {
+			XMLitem kidEntity = iterator.next();
+			String kidId = (String) kidEntity.getValue(XMI_ID);
 
 			if (kidId.startsWith("$")) {
 				kidId = "_" + kidId.substring(1);
@@ -278,8 +279,8 @@ public class EMFIdMap extends XMLIdMap {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void addChildren(XMLEntity xmlEntity, SendableEntityCreator rootFactory, Object rootObject) {
-		String id = (String) xmlEntity.get(XMI_ID);
+	private void addChildren(XMLitem xmlEntity, SendableEntityCreator rootFactory, Object rootObject) {
+		String id = (String) xmlEntity.getValue(XMI_ID);
 		int pos;
 
 		if (id.startsWith("$")) {
@@ -288,16 +289,16 @@ public class EMFIdMap extends XMLIdMap {
 
 		this.put(id, rootObject);
 
-		Iterator<XMLEntity> iterator = xmlEntity.getChildren().iterator();
+		Iterator<XMLitem> iterator = xmlEntity.getChildren().iterator();
 		while (iterator.hasNext()) {
-			XMLEntity kidEntity = iterator.next();
+			XMLitem kidEntity = iterator.next();
 			String tag = kidEntity.getTag();
 			String typeName = null;
 
 			Collection<Object> rootCollection = null;
 
 			// it might be a cross reference to an already loaded object
-			if (kidEntity.contains("href")) {
+			if (kidEntity.has("href")) {
 				// might point to another xml file already loaded
 				String refString = kidEntity.getString("href");
 				String[] split = refString.split("#//");
@@ -342,7 +343,7 @@ public class EMFIdMap extends XMLIdMap {
 				}
 			}
 
-			if (kidEntity.contains(XSI_TYPE)) {
+			if (kidEntity.has(XSI_TYPE)) {
 				typeName = kidEntity.getString(XSI_TYPE);
 				typeName = typeName.replaceAll(":", ".");
 			}
@@ -369,18 +370,18 @@ public class EMFIdMap extends XMLIdMap {
 		GraphList model = new GraphList();
 
 		XMLEntity ecore = new XMLEntity().withValue(content);
-		SimpleList<XMLEntity> refs = new SimpleList<XMLEntity>();
-		SimpleList<XMLEntity> superClazzes = new SimpleList<XMLEntity>();
+		SimpleList<XMLitem> refs = new SimpleList<XMLitem>();
+		SimpleList<XMLitem> superClazzes = new SimpleList<XMLitem>();
 
 		// add classes
-		for (XMLEntity eClassifier : ecore.getChildren()) {
+		for (XMLitem eClassifier : ecore.getChildren()) {
 			if (!eClassifier.containsKey(EMFIdMap.XSI_TYPE)) {
 				continue;
 			}
 			if (eClassifier.getString(EMFIdMap.XSI_TYPE).equalsIgnoreCase(ECLASS)) {
 				Clazz clazz = new Clazz().with(eClassifier.getString(EMFIdMap.NAME));
 				model.with(clazz);
-				for(XMLEntity child : eClassifier.getChildren()) {
+				for(XMLitem child : eClassifier.getChildren()) {
 					String typ = child.getString(EMFIdMap.XSI_TYPE);
 					if(typ.equals(EAttribute)) {
 						String etyp = EntityUtil.getId(child.getString(ETYPE));
@@ -402,13 +403,13 @@ public class EMFIdMap extends XMLIdMap {
 			} else if (eClassifier.getString(EMFIdMap.XSI_TYPE).equals(EEnum)) {
 				Clazz graphEnum = new Clazz().with(ClazzType.ENUMERATION);
 				graphEnum.with(eClassifier.getString(EMFIdMap.NAME));
-				for(XMLEntity child : eClassifier.getChildren()) {
+				for(XMLitem child : eClassifier.getChildren()) {
 					Literal literal = new Literal(child.getString(EMFIdMap.NAME));
 					for(String key : child.keySet()) {
 						if(key.equals(EMFIdMap.NAME)) {
 							continue;
 						}
-						literal.withValue(child.get(key));
+						literal.withValue(child.getValue(key));
 //						literal.withKeyValue(key, child.get(key));
 						graphEnum.with(literal);
 					}
@@ -416,7 +417,7 @@ public class EMFIdMap extends XMLIdMap {
 			}
 		}
 		 // inheritance
-		for(XMLEntity eClass : superClazzes) {
+		for(XMLitem eClass : superClazzes) {
 			String id = EntityUtil.getId(eClass.getString(eSuperTypes));
 			 Clazz kidClazz = model.getNode(eClass.getString(EMFIdMap.NAME));
 			 Clazz superClazz = model.getNode(id);
@@ -424,7 +425,7 @@ public class EMFIdMap extends XMLIdMap {
 		}
 		// assocs
 		SimpleKeyValueList<String, Association> items = new SimpleKeyValueList<String, Association>();
-		for(XMLEntity eref : refs) {
+		for(XMLitem eref : refs) {
 			String tgtClassName = eref.getString(ETYPE);
 			if(tgtClassName.indexOf("#")>=0) {
 				tgtClassName = tgtClassName.substring(tgtClassName.indexOf("#") + 3);
@@ -434,7 +435,7 @@ public class EMFIdMap extends XMLIdMap {
 			Association tgtAssoc = getOrCreate(items, model, tgtClassName, tgtRoleName);
 
 			if (eref.containsKey(UPPERBOUND)) {
-				Object upperValue = eref.get(UPPERBOUND);
+				Object upperValue = eref.getValue(UPPERBOUND);
 				if (upperValue instanceof Number) {
 					if (((Number) upperValue).intValue() != 1) {
 						tgtAssoc.with(Cardinality.MANY);
@@ -443,7 +444,7 @@ public class EMFIdMap extends XMLIdMap {
 			}
 
 			String srcRoleName = null;
-			XMLEntity parent =(XMLEntity) eref.get(PARENT);
+			XMLEntity parent =(XMLEntity) eref.getValue(PARENT);
 			String srcClassName = parent.getString(EMFIdMap.NAME);
 			if (!eref.containsKey(EOpposite)) {
 //				srcRoleName = tgtRoleName+"_back";

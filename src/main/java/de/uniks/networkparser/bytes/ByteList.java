@@ -1,32 +1,12 @@
 package de.uniks.networkparser.bytes;
 
 import de.uniks.networkparser.buffer.ByteBuffer;
-/*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
-
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
-
- http://ec.europa.eu/idabc/eupl5
-
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
-*/
-import de.uniks.networkparser.bytes.converter.ByteConverterHTTP;
-import de.uniks.networkparser.bytes.converter.ByteConverterString;
+import de.uniks.networkparser.converter.ByteConverter;
+import de.uniks.networkparser.converter.ByteConverterHTTP;
+import de.uniks.networkparser.converter.ByteConverterString;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.ByteConverter;
 import de.uniks.networkparser.interfaces.ByteItem;
+import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.list.SimpleList;
 
 public class ByteList extends SimpleList<ByteItem> implements ByteItem {
@@ -54,8 +34,11 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 	 * @return converted bytes as String
 	 */
 	@Override
-	public String toString(ByteConverter converter) {
-		return toString(converter, false);
+	public String toString(Converter converter) {
+		if(converter instanceof ByteConverter) {
+			return toString((ByteConverter)converter, false);	
+		}
+		return toString(null, false);
 	}
 
 	/**
@@ -72,7 +55,7 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 		if (converter == null) {
 			converter = new ByteConverterHTTP();
 		}
-		return converter.toString(this, dynamic);
+		return converter.toString(this.getBytes(dynamic));
 	}
 
 	@Override

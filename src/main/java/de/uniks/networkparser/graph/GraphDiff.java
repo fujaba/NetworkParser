@@ -55,7 +55,7 @@ public class GraphDiff extends GraphMember{
 		return this;
 	}
 
-	int getCount() {
+	public int getCount() {
 		return count;
 	}
 	void addCounter() {

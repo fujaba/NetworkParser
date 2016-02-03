@@ -22,30 +22,19 @@ package de.uniks.networkparser.xml;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.EntityUtil;
-import de.uniks.networkparser.graph.GraphConverter;
+import de.uniks.networkparser.converter.GraphConverter;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.StringItem;
+import de.uniks.networkparser.interfaces.Converter;
+import de.uniks.networkparser.interfaces.XMLitem;
 import de.uniks.networkparser.list.SimpleSet;
 
-public class HTMLEntity implements StringItem, BaseItem {
+public class HTMLEntity implements BaseItem {
 	public static final String PROPERTY_HEADER="head";
 	public static final String PROPERTY_BODY="body";
 
-	private boolean visible = true;
 	private XMLEntity body = new XMLEntity().withTag("body");
 	private XMLEntity header = new XMLEntity().withTag("head");
-
-	@Override
-	public HTMLEntity withVisible(boolean value) {
-		this.visible = value;
-		return this;
-	}
-
-	@Override
-	public boolean isVisible() {
-		return visible;
-	}
 
 	@Override
 	public String toString() {
@@ -71,7 +60,6 @@ public class HTMLEntity implements StringItem, BaseItem {
 		return this;
 	}
 
-	@Override
 	public String toString(int indentFactor, int intent) {
 		StringBuilder sb = new StringBuilder();
 		if (intent > 0) {
@@ -140,15 +128,16 @@ public class HTMLEntity implements StringItem, BaseItem {
 	}
 
 	public HTMLEntity addStyle(String name, String style) {
-		XMLEntity styleElement = null;
-		for(XMLEntity item : header.getChildren()) {
+		XMLitem styleElement = null;
+		for(XMLitem item : header.getChildren()) {
 			if(item.getTag().equals(name)) {
 				styleElement = item;
 			}
 		}
 		if( styleElement == null) {
-			styleElement= new XMLEntity().withTag("style");
-			header.addChild(styleElement);
+			XMLEntity element = new XMLEntity().withTag("style"); 
+			header.addChild(element);
+			styleElement = element; 
 		}
 		styleElement.withValueItem(styleElement.getValueItem()+"\r\n" + style);
 		return this;
@@ -180,5 +169,13 @@ public class HTMLEntity implements StringItem, BaseItem {
 	public HTMLEntity withText(String text) {
 		this.body.withChild(new XMLEntity().withValueItem(text));
 		return this;
+	}
+	
+	@Override
+	public String toString(Converter converter) {
+		if(converter == null) {
+			return null;
+		}
+		return converter.encode(this);
 	}
 }

@@ -4,12 +4,13 @@ import static org.junit.Assert.assertEquals;
 import java.util.Date;
 import org.junit.Assert;
 import org.junit.Test;
+
+import de.uniks.networkparser.converter.YUMLConverter;
 import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphIdMap;
 import de.uniks.networkparser.graph.GraphList;
-import de.uniks.networkparser.graph.YUMLConverter;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.test.model.ChatMessage;
 import de.uniks.networkparser.test.model.Room;

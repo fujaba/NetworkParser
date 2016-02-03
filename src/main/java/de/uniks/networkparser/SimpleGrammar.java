@@ -16,7 +16,7 @@ public abstract class SimpleGrammar implements Grammar{
 			return getSuperCreator(map, searchForSuperCreator, item);
 		}
 		if(className == null && item instanceof Entity) {
-			Object name = ((Entity)item).get(JsonIdMap.CLASS);
+			Object name = ((Entity)item).getValue(JsonIdMap.CLASS);
 			if(name == null) {
 				return null;
 			}

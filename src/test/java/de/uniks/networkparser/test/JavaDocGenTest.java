@@ -16,18 +16,26 @@ public class JavaDocGenTest {
 		
 		try{
 			ProcessBuilder pb = new ProcessBuilder("javadoc");
-			pb = new ProcessBuilder("javadoc","-notree", "-noindex", "-nohelp", "-nonavbar", "-subpackages", "de.uniks.networkparser", "-sourcepath","src/main/java", "-d", "build/testJavadoc");
+			//pb = new ProcessBuilder("javadoc","-notree", "-noindex", "-nonavbar", "-quiet", "-subpackages", "de.uniks.networkparser", "-sourcepath", "src/main/java", "-d", "build/testJavadoc");
+			pb = new ProcessBuilder("javadoc", "-noindex", "-notree", "-quiet", "-subpackages", "de.uniks.networkparser", "-sourcepath", "src/main/java", "-d", "build/testJavadoc");
 //			pb.redirectOutput(Redirect.INHERIT);
 //			pb.redirectError(Redirect.INHERIT);
 			Process p = pb.start();
-			BufferedReader reader = new BufferedReader (new InputStreamReader(p.getInputStream()));
-			SimpleList<String> item=new SimpleList<String>();
+			BufferedReader errorReader = new BufferedReader (new InputStreamReader(p.getErrorStream()));
+
+			SimpleList<String> errors=new SimpleList<String>();
 			String line;
-			while ((line = reader.readLine ()) != null) {
-				item.add(line);
+			while ((line = errorReader.readLine ()) != null) {
+				line = line.trim();
+				if("^".equals(line) == false) {
+					errors.add(line);
+				}
 			}
-			String last = item.last();
-			Assert.assertTrue(last.startsWith("Generating "));
+			errorReader.close();
+			for(String item : errors) {
+				System.err.println(item);
+			}
+			Assert.assertEquals(0, errors.size());
 		}catch(Exception e) {
 		}
 	}

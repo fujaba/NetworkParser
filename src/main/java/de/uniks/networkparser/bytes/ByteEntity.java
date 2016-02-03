@@ -25,10 +25,11 @@ import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
 import de.uniks.networkparser.buffer.ByteBuffer;
-import de.uniks.networkparser.bytes.converter.ByteConverterHTTP;
+import de.uniks.networkparser.converter.ByteConverter;
+import de.uniks.networkparser.converter.ByteConverterHTTP;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.ByteConverter;
 import de.uniks.networkparser.interfaces.ByteItem;
+import de.uniks.networkparser.interfaces.Converter;
 /**
  * The Class ByteEntity.
  */
@@ -124,8 +125,11 @@ public class ByteEntity implements ByteItem, BaseItem {
 	 * @return converted bytes as String
 	 */
 	@Override
-	public String toString(ByteConverter converter) {
-		return toString(converter, false);
+	public String toString(Converter converter) {
+		if(converter instanceof ByteConverter) {
+			return toString((ByteConverter)converter, false);	
+		}
+		return null;
 	}
 
 	/**
@@ -142,7 +146,7 @@ public class ByteEntity implements ByteItem, BaseItem {
 		if (converter == null) {
 			converter = new ByteConverterHTTP();
 		}
-		return converter.toString(this, dynamic);
+		return converter.toString(this.getBytes(dynamic));
 	}
 
 	/**
@@ -372,5 +376,10 @@ public class ByteEntity implements ByteItem, BaseItem {
 			return values;
 		}
 		return null;
+	}
+
+	@Override
+	public String toString(int indentFactor) {
+		return toString();
 	}
 }

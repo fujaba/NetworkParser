@@ -21,25 +21,23 @@ package de.uniks.networkparser.bytes;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.buffer.ByteBuffer;
-import de.uniks.networkparser.bytes.converter.ByteConverterHTTP;
+import de.uniks.networkparser.converter.ByteConverter;
+import de.uniks.networkparser.converter.ByteConverterHTTP;
 import de.uniks.networkparser.event.BasicMessage;
 import de.uniks.networkparser.event.ObjectMapEntry;
 import de.uniks.networkparser.event.UnknownMessage;
 import de.uniks.networkparser.event.util.BasicMessageCreator;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.ByteConverter;
 import de.uniks.networkparser.interfaces.ByteItem;
 import de.uniks.networkparser.interfaces.IdMapDecoder;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -214,7 +212,7 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 				return true;
 			}
 
-		} catch (UnsupportedEncodingException e) {
+		} catch (Exception e) {
 		}
 		return false;
 	}
@@ -493,7 +491,7 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 				eventCreater = super.getCreator(new String(
 						buffer.getValue(len), filter.getCharset()), true);
 				return decodeClazz(buffer, eventCreater);
-			} catch (UnsupportedEncodingException e) {
+			} catch (Exception e) {
 			}
 			return null;
 		}
@@ -504,7 +502,7 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 				eventCreater = super.getCreator(new String(
 						buffer.getValue(len), filter.getCharset()), true);
 				return decodeClazz(buffer, eventCreater);
-			} catch (UnsupportedEncodingException e) {
+			} catch (Exception e) {
 			}
 			return null;
 		}
@@ -553,7 +551,7 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 			if (group == ByteIdMap.DATATYPE_STRING) {
 				try {
 					return new String(buffer.getValue(len), filter.getCharset());
-				} catch (UnsupportedEncodingException e) {
+				} catch (Exception e) {
 					return "";
 				}
 			} else if (group == ByteIdMap.DATATYPE_BYTEARRAY) {

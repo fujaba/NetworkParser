@@ -4,7 +4,6 @@ import de.uniks.networkparser.AbstractMap;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferItem;
-import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.IdMapDecoder;
 
 //graph	:	[ strict ] (graph | digraph) [ ID ] '{' stmt_list '}'
@@ -25,7 +24,7 @@ import de.uniks.networkparser.interfaces.IdMapDecoder;
 //|	':' compass_pt
 //subgraph	:	[ subgraph [ ID ] ] '{' stmt_list '}'
 //compass_pt	:	(n | ne | e | se | s | sw | w | nw | c | _)
-public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
+public class DotIdMap extends AbstractMap implements IdMapDecoder {
 	@Override
 	public Object decode(BaseItem value) {
 		if(value instanceof GraphList==false) {
@@ -193,7 +192,6 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder, Converter {
 		return "";
 	}
 
-	@Override
 	public String convert(GraphList root, boolean removePackage) {
 		StringBuilder sb=new StringBuilder();
 		String graphTyp = "graph";

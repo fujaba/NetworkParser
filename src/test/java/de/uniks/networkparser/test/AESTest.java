@@ -3,9 +3,11 @@ package de.uniks.networkparser.test;
 import java.io.PrintStream;
 import org.junit.Assert;
 import org.junit.Test;
+
+import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.bytes.checksum.AES;
-import de.uniks.networkparser.bytes.converter.ByteConverterAES;
-import de.uniks.networkparser.bytes.converter.ByteConverterHex;
+import de.uniks.networkparser.converter.ByteConverterAES;
+import de.uniks.networkparser.converter.ByteConverterHex;
 
 public class AESTest {
 	@Test
@@ -21,7 +23,7 @@ public class AESTest {
 		ByteConverterHex converter = new ByteConverterHex();
 
 //		outputStream(encrypted.getBytes(), System.out);
-		String hex = converter.toString(encrypted.getBytes()).replace(" ", "");
+		String hex = converter.toString(new ByteBuffer().with(encrypted)).replace(" ", "");
 		outputStream(hex.getBytes(), null);
 //		Assert.assertEquals("Encrypted text (as hex) : [" +hex+ "] [" +hex.length()+ " bytes]", 128, hex.length());
 
@@ -69,7 +71,7 @@ public class AESTest {
 
 		ByteConverterHex converter = new ByteConverterHex();
 
-		String hex = converter.toString(encrypted.getBytes()).replace(" ", "");
+		String hex = converter.toString(new ByteBuffer().with(encrypted)).replace(" ", "");
 		outputStream(hex.getBytes(), null);
 //		Assert.assertEquals("Encrypted text (as hex) : [" +hex+ "] [" +hex.length()+ " bytes]", 128, hex.length());
 

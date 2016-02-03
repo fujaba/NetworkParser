@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.converter.GraphConverter;
 import de.uniks.networkparser.json.JsonArray;
 
 public class GraphIdMapDiff extends GraphIdMap{

@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.Converter;
 
 public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	/** Is Allow Duplicate Items in List	 */
@@ -1417,5 +1418,18 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 			elements[to] = temp;
 		}
 		return true;
+	}
+
+	@Override
+	public String toString(int indentFactor) {
+		return this.toString();
+	}
+
+	@Override
+	public String toString(Converter converter) {
+		if(converter == null) {
+			return null;
+		}
+		return converter.encode(this);
 	}
 }

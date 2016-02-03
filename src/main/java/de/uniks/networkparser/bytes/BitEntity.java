@@ -1,6 +1,7 @@
 package de.uniks.networkparser.bytes;
 
 import de.uniks.networkparser.buffer.ByteBuffer;
+import de.uniks.networkparser.converter.ByteConverter;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -22,12 +23,10 @@ import de.uniks.networkparser.buffer.ByteBuffer;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.interfaces.ByteConverter;
 import de.uniks.networkparser.interfaces.ByteItem;
+import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.list.SimpleList;
-public class BitEntity extends SimpleList<BitValue> implements
-
-		ByteItem {
+public class BitEntity extends SimpleList<BitValue> implements ByteItem {
 	public static final byte BIT_STRING = 0x53; // S = String;
 	public static final byte BIT_NUMBER = 0x4E; // N = Number
 	public static final byte BIT_BYTE = 0x42; // B = Byte
@@ -134,7 +133,7 @@ public class BitEntity extends SimpleList<BitValue> implements
 	}
 
 	@Override
-	public String toString(ByteConverter converter) {
+	public String toString(Converter converter) {
 		return toString();
 	}
 

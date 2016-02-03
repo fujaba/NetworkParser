@@ -1,7 +1,5 @@
-package de.uniks.networkparser.bytes.converter;
+package de.uniks.networkparser.converter;
 
-import de.uniks.networkparser.buffer.ByteBuffer;
-import de.uniks.networkparser.buffer.CharacterBuffer;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -24,16 +22,17 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.bytes.ByteIdMap;
-import de.uniks.networkparser.interfaces.ByteConverter;
+import de.uniks.networkparser.buffer.ByteBuffer;
+import de.uniks.networkparser.buffer.CharacterBuffer;
 
 public class ByteConverterHTTP extends ByteConverter {
 	@Override
-	public String toString(byte[] values, int size) {
+	public String toString(ByteBuffer values) {
 		CharacterBuffer returnValue = new CharacterBuffer();
 
 		if (values != null) {
-			for (int i = 0; i < size; i++) {
-				int value = values[i];
+			for (int i = 0; i < values.length(); i++) {
+				int value = values.byteAt(i);
                 if (value <= 32 || value == 127) {
 					returnValue.with(ByteIdMap.SPLITTER);
 					returnValue.with((char) (value + ByteIdMap.SPLITTER + 1));

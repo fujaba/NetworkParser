@@ -24,25 +24,18 @@ package de.uniks.networkparser.event;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.event.util.SoapCreator;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.StringItem;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.xml.XMLEntity;
 
-public class SoapObject implements StringItem, BaseItem {
+public class SoapObject extends SimpleEvent<XMLEntity> {
 	public static final String PROPERTY_HEADER = "Header";
 	public static final String PROPERTY_BODY = "BODY";
 	private String namespace = "s";
 	private SimpleKeyValueList<String, String> headers;
-	private XMLEntity body;
-	private boolean visible = true;
 
 	public SoapObject withBody(XMLEntity body) {
-		this.body = body;
+		this.children = body;
 		return this;
-	}
-
-	public XMLEntity getBody() {
-		return body;
 	}
 
 	public String getNamespace() {
@@ -80,8 +73,8 @@ public class SoapObject implements StringItem, BaseItem {
 		}
 		sb.append("<" + namespace + ":Body>");
 
-		if (body != null) {
-			sb.append(body.toString(indentFactor, indentFactor + indentFactor));
+		if (children != null) {
+			sb.append(children.toString(indentFactor, indentFactor + indentFactor));
 			sb.append(spaces);
 		}
 		sb.append("</" + namespace + ":Body>");
@@ -91,17 +84,6 @@ public class SoapObject implements StringItem, BaseItem {
 		sb.append("</" + namespace + ":Envelope>");
 
 		return sb.toString();
-	}
-
-	@Override
-	public SoapObject withVisible(boolean value) {
-		this.visible = value;
-		return this;
-	}
-
-	@Override
-	public boolean isVisible() {
-		return visible;
 	}
 
 	public SimpleKeyValueList<String, String> getHeader() {
@@ -114,9 +96,7 @@ public class SoapObject implements StringItem, BaseItem {
 			return this;
 		}
 		for(Object item : values) {
-			if(item instanceof Boolean) {
-				withVisible((Boolean) item);
-			} else if(item instanceof String) {
+			if(item instanceof String) {
 				withNamespace((String) item);
 			} else if(item instanceof XMLEntity) {
 				withBody((XMLEntity) item);
@@ -136,8 +116,13 @@ public class SoapObject implements StringItem, BaseItem {
 			return headers;
 		}
 		if(PROPERTY_BODY.equals(key)){
-			return body;
+			return children;
 		}
 		return null;
+	}
+	
+	@Override
+	public XMLEntity getChildren() {
+		return children;
 	}
 }
