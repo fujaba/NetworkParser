@@ -1,9 +1,11 @@
 package de.uniks.networkparser.test;
 
 import java.beans.PropertyChangeEvent;
+
 import org.junit.Assert;
 import org.junit.Test;
-import de.uniks.networkparser.interfaces.BaseItem;
+
+import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
@@ -20,7 +22,7 @@ public class SimpleJsonTest {
 		JsonIdMap map=new JsonIdMap().with(new HouseCreator());
 		map.with(new UpdateListener() {
 			@Override
-			public boolean update(String typ, BaseItem source, PropertyChangeEvent event) {
+			public boolean update(String typ, Entity source, PropertyChangeEvent event) {
 				updateMessage = source.toString();
 				Assert.assertEquals("{\"id\":\"J1.H1\",\"class\":\"de.uniks.networkparser.test.model.House\",\"rem\":{\"floor\":4},\"upd\":{\"floor\":42}}", source.toString());
 				return false;

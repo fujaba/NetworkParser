@@ -3,11 +3,13 @@ package de.uniks.networkparser.test;
 import java.beans.PropertyChangeEvent;
 import java.io.PrintStream;
 import java.math.BigInteger;
+
 import org.junit.Assert;
 import org.junit.Test;
+
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
@@ -91,7 +93,7 @@ public class JsonModellTest implements UpdateListener {
 	}
 
 	@Override
-	public boolean update(String typ, BaseItem source, PropertyChangeEvent event) {
+	public boolean update(String typ, Entity source, PropertyChangeEvent event) {
 		if(IdMap.SENDUPDATE.equals(typ)) {
 			JsonObject jsonObject = (JsonObject) source;
 			printToStream("Send: " +jsonObject, null);

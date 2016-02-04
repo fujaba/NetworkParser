@@ -34,6 +34,7 @@ import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.event.ObjectMapEntry;
 import de.uniks.networkparser.event.util.DateCreator;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.Grammar;
 import de.uniks.networkparser.interfaces.IdMapDecoder;
 import de.uniks.networkparser.interfaces.SendableEntity;
@@ -736,11 +737,11 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 		return notify(SENDUPDATE, jsonObject, evt);
 	}
 
-	boolean readMessages(String typ, BaseItem item, PropertyChangeEvent event) {
+	boolean readMessages(String typ, Entity item, PropertyChangeEvent event) {
 		return notify(typ, item, event);
 	}
 
-	boolean notify(String typ, BaseItem props, PropertyChangeEvent event) {
+	boolean notify(String typ, Entity props, PropertyChangeEvent event) {
     	if (this.listener != null ) {
     		if(this.listener instanceof PropertyChangeListener) {
     			((PropertyChangeListener)this.listener).propertyChange(event);

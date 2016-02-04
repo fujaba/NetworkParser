@@ -23,7 +23,7 @@ public interface UpdateListener  {
 	 *
 	 * @return true, if successful
 	 */
-	public boolean update(String typ, BaseItem source, PropertyChangeEvent event);
+	public boolean update(String typ, Entity source, PropertyChangeEvent event);
 
 
 }
