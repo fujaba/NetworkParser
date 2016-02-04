@@ -143,7 +143,7 @@ public class BitEntity extends SimpleList<BitValue> implements ByteItem {
 	}
 
 	@Override
-	public BitEntity withAll(Object... values) {
+	public BitEntity with(Object... values) {
 		if(values==null){
 			return this;
 		}

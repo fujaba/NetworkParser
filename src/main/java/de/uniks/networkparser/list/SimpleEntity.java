@@ -214,7 +214,7 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 	}
 
 	@Override
-	public BaseItem withAll(Object... values) {
+	public BaseItem with(Object... values) {
 		if(values == null) {
 			return this;
 		}
@@ -230,8 +230,7 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 		return new SimpleEntity<K, V>();
 	}
 
-	@Override
-	public Object getValueItem(Object key) {
+	public Object getValue(Object key) {
 		if(PROPERTY_KEY.equals(key)) {
 			return key;
 		}
@@ -252,5 +251,10 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 			return null;
 		}
 		return converter.encode(this);
+	}
+
+	@Override
+	public int size() {
+		return 1;
 	}
 }

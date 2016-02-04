@@ -147,7 +147,7 @@ public class EMFJsonGrammar extends SimpleGrammar {
 
 		if (properties.size() > 0) {
 			for (int i = 0; i < properties.size(); i++) {
-				json.put(properties.getKeyByIndex(i), properties.getValueByIndex(i));
+				json.put(properties.getKeyByIndex(i), properties.getValue(i));
 			}
 		}
 		return json;

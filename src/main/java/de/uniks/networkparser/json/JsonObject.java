@@ -86,7 +86,6 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
  * @version 2011-11-24
  */
 public class JsonObject extends SimpleKeyValueList<String, Object> implements Entity {
-
 	public JsonObject() {
 		this.withAllowDuplicate(false);
 	}
@@ -344,12 +343,12 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 		Object object = this.get(key);
 		if (object == null) {
 			this.put(key,
-					value instanceof AbstractList ? getNewList(true).withAll(value)
+					value instanceof AbstractList ? getNewList(true).with(value)
 							: value);
 		} else if (object instanceof AbstractList) {
-			((AbstractList<?>) object).withAll(value);
+			((AbstractList<?>) object).with(value);
 		} else {
-			this.put(key, getNewList(false).withAll(object, value));
+			this.put(key, getNewList(false).with(object, value));
 		}
 		return this;
 	}
@@ -372,22 +371,12 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 		return this;
 	}
 
-	@Override
-	public JsonObject withAll(Object... values) {
-		if(values == null) {
-			return this;
-		}
-		if(values.length % 2 == 0) {
-			for(int i=0;i<values.length; i+=2) {
-				withKeyValue(values[i], values[i+1]);
-			}
-			return this;
-		}
-		super.withAll(values);
-		return this;
-	}
-
 	public static JsonObject create(String value) {
 		return new JsonObject().withValue(value);
+	}
+
+	@Override
+	public Object getValue(int index) {
+		return this.getValueByIndex(index);
 	}
 }

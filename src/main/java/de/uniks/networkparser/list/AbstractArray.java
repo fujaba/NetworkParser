@@ -3,6 +3,8 @@ package de.uniks.networkparser.list;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
+
+import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 
@@ -690,8 +692,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		return sb.toString();
 	}
 
-
-	public AbstractArray<V> withAll(Object... values) {
+	public AbstractArray<V> with(Object... values) {
 		if(values==null){
 			return this;
 		}
@@ -1120,7 +1121,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		return arrayCopy(elements, size);
 	}
 
-	public Object getValueItem(Object key) {
+	public Object getValue(Object key) {
 		int pos = indexOf(key);
 		if (pos >= 0) {
 			return this.getByIndex(SMALL_VALUE, pos, size);
@@ -1184,8 +1185,8 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 							BaseItem result = this.getNewList(true);
 							AbstractList<?> items = (AbstractList<?>) child;
 							for (int z = 0; z < items.size(); z++) {
-								result.withAll(((AbstractList<?>) items
-										.get(z)).getValueItem(keyString
+								result.with(((AbstractList<?>) items
+										.get(z)).getValue(keyString
 										.substring(end + 1)));
 							}
 							return result;
@@ -1196,12 +1197,12 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 						}
 						if (list.size() >= id) {
 							return ((SimpleKeyValueList<?, ?>) list.get(id))
-									.getValueItem(keyString.substring(end + 1));
+									.getValue(keyString.substring(end + 1));
 						}
 					}
 				} else {
 					return ((SimpleKeyValueList<?, ?>) child)
-							.getValueItem(keyString.substring(end + 1));
+							.getValue(keyString.substring(end + 1));
 				}
 			}
 		}
@@ -1344,7 +1345,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		}
 
 		while(fromIndex<toIndex) {
-			newInstance.withAll(get(fromIndex++));
+			newInstance.with(get(fromIndex++));
 		}
 		return newInstance;
 	}
@@ -1424,11 +1425,19 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	public String toString(int indentFactor) {
 		return this.toString();
 	}
+	
+	public String toString(int indentFactor, int indent) {
+		return this.toString();
+	}
 
 	@Override
 	public String toString(Converter converter) {
 		if(converter == null) {
 			return null;
+		}
+		if(converter instanceof EntityStringConverter) {
+			EntityStringConverter item = (EntityStringConverter)converter;
+			return toString(item.getIndentFactor(), item.getIntent());
 		}
 		return converter.encode(this);
 	}

@@ -93,8 +93,8 @@ public abstract class AbstractList<V> extends AbstractArray<V> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <ST extends AbstractList<V>> ST with(V... values) {
-		super.withAll(values);
+	public <ST extends AbstractList<V>> ST withValue(V... values) {
+		super.with(values);
 		return (ST) this;
 	}
 
@@ -110,8 +110,8 @@ public abstract class AbstractList<V> extends AbstractArray<V> {
 	}
 
 	@Override
-	public AbstractList<V> withAll(Object... values) {
-		super.withAll(values);
+	public AbstractList<V> with(Object... values) {
+		super.with(values);
 		return this;
 	}
 
@@ -123,7 +123,7 @@ public abstract class AbstractList<V> extends AbstractArray<V> {
 
 	public void copyEntity(BaseItem target, int pos) {
 		if(target != null)
-			target.withAll(get(pos));
+			target.with(get(pos));
 	}
 
 	public BaseItem subSet(V fromElement, V toElement) {

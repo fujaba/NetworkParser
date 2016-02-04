@@ -8,14 +8,14 @@ public class AnnotationSet extends SimpleSet<Annotation> {
 	public MethodSet getMethods() {
 		MethodSet collection = new MethodSet();
 		for(Annotation item : this) {
-			collection.withAll(item.getParent());
+			collection.with(item.getParent());
 		}
 		return collection;
 	}
 	public AttributeSet getAttributes() {
 		AttributeSet collection = new AttributeSet();
 		for(Annotation item : this) {
-			collection.withAll(item.getParent());
+			collection.with(item.getParent());
 		}
 		return collection;
 	}
@@ -23,7 +23,7 @@ public class AnnotationSet extends SimpleSet<Annotation> {
 	public ClazzSet getClazzes() {
 		ClazzSet collection = new ClazzSet();
 		for(Annotation item : this) {
-			collection.withAll(item.getParent());
+			collection.with(item.getParent());
 		}
 		return collection;
 	}

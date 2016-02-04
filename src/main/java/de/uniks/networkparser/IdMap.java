@@ -162,7 +162,7 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	public Object getObject(String key) {
 		Object result = null;
 		try {
-			result = this.keyValue.getValueItem(key);
+			result = this.keyValue.getValue(key);
 		} catch (ConcurrentModificationException e) {
 			if (this.logger.error(this, "getObject",
 					NetworkParserLog.ERROR_TYP_CONCURRENTMODIFICATION, key)) {
@@ -475,7 +475,7 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	public Set<java.util.Map.Entry<String, Object>> entrySet() {
 		LinkedHashSet<java.util.Map.Entry<String, Object>> list = new LinkedHashSet<java.util.Map.Entry<String, Object>>();
 		for (String key : keyValue.keySet()) {
-			list.add(new MapEntry().with(key, keyValue.getValueItem(key)));
+			list.add(new MapEntry().with(key, keyValue.getValue(key)));
 		}
 		return list;
 	}

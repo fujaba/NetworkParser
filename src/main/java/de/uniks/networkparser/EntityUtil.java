@@ -272,7 +272,7 @@ public class EntityUtil {
 			return ((BaseItem) value).toString(new EntityStringConverter(indentFactor, intent));
 		}
 		if (value instanceof Map) {
-			BaseItem item = reference.getNewList(true).withAll((Map<?, ?>) value);
+			BaseItem item = reference.getNewList(true).with((Map<?, ?>) value);
 			if (item instanceof BaseItem) {
 				return ((BaseItem) item).toString(new EntityStringConverter(indentFactor, intent));
 			}
@@ -292,7 +292,7 @@ public class EntityUtil {
 			Object[] items = (Object[]) value;
 			BaseItem item = reference.getNewList(false);
 			for (Object entity : items) {
-				item.withAll(entity);
+				item.with(entity);
 			}
 			if (item instanceof BaseItem) {
 				return ((BaseItem) item).toString(new EntityStringConverter(indentFactor, intent));
@@ -320,11 +320,11 @@ public class EntityUtil {
 			return ((AbstractArray<?>) value).toString();
 		}
 		if (value instanceof Collection) {
-			return reference.getNewList(false).withAll(
+			return reference.getNewList(false).with(
 			(Collection<?>) value).toString();
 		}
 		if (value.getClass().isArray()) {
-			return reference.getNewList(false).withAll(
+			return reference.getNewList(false).with(
 			(Map<?, ?>) value).toString();
 		}
 		if (simpleText) {
@@ -521,7 +521,7 @@ public class EntityUtil {
 				if(valueB == null) {
 					Object oldValue = entityA.getValue(key);
 					if(sameObject != null) {
-						sameObject.withAll(key, oldValue);
+						sameObject.with(key, oldValue);
 					}
 					entityA.without(key);
 					entityB.without(key);
@@ -531,7 +531,7 @@ public class EntityUtil {
 			Object oldValue = compareValue(valueA, valueB);
 			if(oldValue != null) {
 				if(sameObject != null) {
-					sameObject.withAll(key, oldValue);
+					sameObject.with(key, oldValue);
 				}
 				entityA.without(key);
 				entityB.without(key);
@@ -565,7 +565,7 @@ public class EntityUtil {
 			if(oldValue != null) {
 				jsonA.remove(i);
 				if(sameList != null) {
-					sameList.withAll(oldValue);
+					sameList.with(oldValue);
 				}
 				jsonB.remove(i);
 			}

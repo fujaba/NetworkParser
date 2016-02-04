@@ -42,7 +42,12 @@ public class ChainUpdateListener implements UpdateListener{
 	}
 
 	public ChainUpdateListener with(UpdateListener... values) {
-		list.with(values);
+		if(values ==null) {
+			return this;
+		}
+		for(UpdateListener item : values) {
+			list.with(item);	
+		}
 		return this;
 	}
 }

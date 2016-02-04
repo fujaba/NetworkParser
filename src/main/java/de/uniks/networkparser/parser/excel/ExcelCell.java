@@ -19,12 +19,15 @@ distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, e
 See the Licence for the specific language governing permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.gui.Pos;
+import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.Converter;
+import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
-import de.uniks.networkparser.interfaces.XMLitem;
+import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.util.XMLEntityCreator;
 
-public class ExcelCell extends XMLEntity implements SendableEntityCreatorTag{
+public class ExcelCell implements SendableEntityCreatorTag, EntityList{
 	public static final String TAG="c";
 	public static final String PROPERTY_STYLE="s";
 	public static final String PROPERTY_TYPE="t";
@@ -33,6 +36,9 @@ public class ExcelCell extends XMLEntity implements SendableEntityCreatorTag{
 	private Pos pos;
 	private Object content;
 	private ExcelCell referenceCell;
+	private String style;
+	private String type;
+	private SimpleList<EntityList> children;
 
 	@Override
 	public String[] getProperties() {
@@ -62,28 +68,31 @@ public class ExcelCell extends XMLEntity implements SendableEntityCreatorTag{
 			if(value instanceof XMLEntity == false) {
 				return false;
 			}
-			XMLitem item = (XMLitem) value;
+			XMLEntity item = (XMLEntity) value;
 			ExcelCell parent = (ExcelCell) entity;
 			if(item.getValue(PROPERTY_STYLE) != null) {
-				parent.setValueItem(PROPERTY_STYLE, ""+item.getValue(PROPERTY_STYLE));
+				parent.setStyle(item.getString(PROPERTY_STYLE));
 			}
 			if(item.getValue(PROPERTY_TYPE) != null) {
-				parent.setValueItem(PROPERTY_TYPE, ""+item.getValue(PROPERTY_TYPE));
+				parent.setType(item.getString(PROPERTY_TYPE));
 			}
 			if(item.getValue(PROPERTY_REFERENZ) != null) {
 				parent.withReferenz(Pos.valueOf(""+item.getValue(PROPERTY_REFERENZ)));
-				super.with(PROPERTY_REFERENZ, getReferenz());
 			}
-			for(XMLitem child : item.getChildren()) {
-				parent.addChild(child);
+			for(EntityList child : item.getChildren()) {
+				parent.with(child);
 			}
 			return true;
 		}
 		if(entity instanceof ExcelCell == false) {
 			return false;
 		}
-		if(PROPERTY_STYLE.equals(attribute) || PROPERTY_TYPE.equals(attribute)) {
-			((ExcelCell)entity).setValueItem(attribute, ""+value);
+		if(PROPERTY_STYLE.equals(attribute)) {
+			((ExcelCell)entity).setStyle(""+value);
+			return true;
+		}
+		if(PROPERTY_TYPE.equals(attribute)) {
+			((ExcelCell)entity).setType(""+value);
 			return true;
 		}
 		if(PROPERTY_REFERENZ.equals(attribute)) {
@@ -113,11 +122,11 @@ public class ExcelCell extends XMLEntity implements SendableEntityCreatorTag{
 	}
 
 	public String getType() {
-		return getString(PROPERTY_TYPE);
+		return type;
 	}
 
 	public String getStyle() {
-		return getString(PROPERTY_STYLE);
+		return style;
 	}
 	public Object getContent() {
 		if(referenceCell != null) {
@@ -173,5 +182,81 @@ public class ExcelCell extends XMLEntity implements SendableEntityCreatorTag{
 	
 	public ExcelCell getReferenceCell() {
 		return referenceCell;
+	}
+
+	public boolean setStyle(String value) {
+		if((this.style == null && value != null) ||
+				(this.style != null && this.style.equals(value) == false)) {
+			this.style = value;
+			return true;
+		}
+		return false;
+	}
+
+	public boolean setType(String value) {
+		if((this.type == null && value != null) ||
+				(this.style != null && this.type.equals(value) == false)) {
+			this.type = value;
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public String toString(int indentFactor) {
+		return toString();
+	}
+
+	@Override
+	public String toString(Converter converter) {
+		return toString();
+	}
+
+	@Override
+	public String toString(int indentFactor, int intent) {
+		return toString();
+	}
+
+	@Override
+	public ExcelCell with(Object... values) {
+		if(values == null) {
+			return null;
+		}
+		if(children ==null) {
+			this.children = new SimpleList<EntityList>();
+		}
+		for(Object item : values) {
+			if(item instanceof EntityList) {
+				this.children.add((EntityList) item);
+			}
+		}
+		return this;
+	}
+
+	@Override
+	public BaseItem getNewList(boolean keyValue) {
+		return new ExcelCell();
+	}
+
+	@Override
+	public SimpleList<EntityList> getChildren() {
+		return this.children;
+	}
+
+	@Override
+	public int size() {
+		if(this.children == null) {
+			return 0;
+		}
+		return this.children.size();
+	}
+
+	public boolean setReferenceCell(ExcelCell value) {
+		if((this.referenceCell == null && value != null) ||
+				(this.referenceCell != null && this.referenceCell.equals(value) == false)) {
+			this.referenceCell = value;
+			return true;
+		}
+		return false;
 	}
 }

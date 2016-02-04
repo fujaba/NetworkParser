@@ -339,7 +339,7 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 	@Override
 	public Object decode(String value) {
 		if (value.startsWith("[")) {
-			return decode(new JsonArray().withAll(value));
+			return decode(new JsonArray().with(value));
 		}
 		return decode(new JsonObject().withValue(value));
 	}

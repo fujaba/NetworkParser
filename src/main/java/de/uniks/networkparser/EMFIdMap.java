@@ -26,18 +26,19 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import de.uniks.networkparser.graph.Clazz;
-import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.AssociationTypes;
 import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Cardinality;
-import de.uniks.networkparser.graph.GraphList;
-import de.uniks.networkparser.graph.Literal;
-import de.uniks.networkparser.graph.GraphUtil;
+import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.Clazz.ClazzType;
+import de.uniks.networkparser.graph.DataType;
+import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.graph.GraphUtil;
+import de.uniks.networkparser.graph.Literal;
+import de.uniks.networkparser.interfaces.Entity;
+import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.interfaces.XMLitem;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.XMLEntity;
@@ -152,7 +153,7 @@ public class EMFIdMap extends XMLIdMap {
 		return rootObject;
 	}
 
-	private void addXMIIds(XMLitem xmlEntity, String rootId) {
+	private void addXMIIds(XMLEntity xmlEntity, String rootId) {
 		if (xmlEntity.has(XMI_ID)) {
 			return;
 		}
@@ -190,12 +191,15 @@ public class EMFIdMap extends XMLIdMap {
 		}
 		xmlEntity.put(XMI_ID, rootId);
 
-		for (XMLitem kid : xmlEntity.getChildren()) {
-			addXMIIds(kid, rootId);
+		for (EntityList kid : xmlEntity.getChildren()) {
+			if(kid  instanceof XMLEntity == false) {
+				continue;
+			}
+			addXMIIds((XMLEntity)kid, rootId);
 		}
 	}
 
-	private void addValues(SendableEntityCreator rootFactory, XMLitem xmlEntity, Object rootObject) {
+	private void addValues(SendableEntityCreator rootFactory, XMLEntity xmlEntity, Object rootObject) {
 		if (rootFactory == null) {
 			return;
 		}
@@ -262,10 +266,12 @@ public class EMFIdMap extends XMLIdMap {
 		}
 
 		// recursive on kids
-		for (Iterator<XMLitem> iterator = xmlEntity.getChildren().iterator(); iterator.hasNext();) {
-			XMLitem kidEntity = iterator.next();
-			String kidId = (String) kidEntity.getValue(XMI_ID);
-
+		for (Iterator<EntityList> iterator = xmlEntity.getChildren().iterator(); iterator.hasNext();) {
+			EntityList kidEntity = iterator.next();
+			String kidId = "";
+			if(kidEntity instanceof Entity) {
+				kidId = (String) ((Entity) kidEntity).getValue(XMI_ID);
+			}
 			if (kidId.startsWith("$")) {
 				kidId = "_" + kidId.substring(1);
 			}
@@ -274,12 +280,12 @@ public class EMFIdMap extends XMLIdMap {
 
 			SendableEntityCreator kidFactory = this.getCreatorClass(kidObject);
 
-			addValues(kidFactory, kidEntity, kidObject);
+			addValues(kidFactory, (XMLEntity)kidEntity, kidObject);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	private void addChildren(XMLitem xmlEntity, SendableEntityCreator rootFactory, Object rootObject) {
+	private void addChildren(XMLEntity xmlEntity, SendableEntityCreator rootFactory, Object rootObject) {
 		String id = (String) xmlEntity.getValue(XMI_ID);
 		int pos;
 
@@ -289,9 +295,13 @@ public class EMFIdMap extends XMLIdMap {
 
 		this.put(id, rootObject);
 
-		Iterator<XMLitem> iterator = xmlEntity.getChildren().iterator();
+		Iterator<EntityList> iterator = xmlEntity.getChildren().iterator();
 		while (iterator.hasNext()) {
-			XMLitem kidEntity = iterator.next();
+			EntityList child = iterator.next();
+			if(child  instanceof XMLEntity == false) {
+				continue;
+			}
+			XMLEntity kidEntity = (XMLEntity) child;
 			String tag = kidEntity.getTag();
 			String typeName = null;
 
@@ -370,46 +380,59 @@ public class EMFIdMap extends XMLIdMap {
 		GraphList model = new GraphList();
 
 		XMLEntity ecore = new XMLEntity().withValue(content);
-		SimpleList<XMLitem> refs = new SimpleList<XMLitem>();
-		SimpleList<XMLitem> superClazzes = new SimpleList<XMLitem>();
+		SimpleList<Entity> refs = new SimpleList<Entity>();
+		SimpleList<Entity> superClazzes = new SimpleList<Entity>();
 
 		// add classes
-		for (XMLitem eClassifier : ecore.getChildren()) {
-			if (!eClassifier.containsKey(EMFIdMap.XSI_TYPE)) {
+		for (EntityList eClassifier : ecore.getChildren()) {
+			if(eClassifier instanceof XMLEntity == false) {
 				continue;
 			}
-			if (eClassifier.getString(EMFIdMap.XSI_TYPE).equalsIgnoreCase(ECLASS)) {
-				Clazz clazz = new Clazz().with(eClassifier.getString(EMFIdMap.NAME));
+			XMLEntity xml = (XMLEntity) eClassifier;
+			if (xml.has(EMFIdMap.XSI_TYPE)== false) { 
+				continue;
+			}
+			
+			if (xml.getString(EMFIdMap.XSI_TYPE).equalsIgnoreCase(ECLASS)) {
+				Clazz clazz = new Clazz().with(xml.getString(EMFIdMap.NAME));
 				model.with(clazz);
-				for(XMLitem child : eClassifier.getChildren()) {
-					String typ = child.getString(EMFIdMap.XSI_TYPE);
+				for(EntityList child : xml.getChildren()) {
+					if(child instanceof Entity == false) {
+						continue;
+					}
+					Entity childItem = (Entity) child;
+					String typ = childItem.getString(EMFIdMap.XSI_TYPE);
 					if(typ.equals(EAttribute)) {
-						String etyp = EntityUtil.getId(child.getString(ETYPE));
+						String etyp = EntityUtil.getId(childItem.getString(ETYPE));
 						if (EntityUtil.isEMFType(etyp)) {
 							etyp = etyp.substring(1);
 						}
 						if (EntityUtil.isPrimitiveType(etyp.toLowerCase())) {
 							etyp = etyp.toLowerCase();
 						}
-						clazz.with(new Attribute(EntityUtil.toValidJavaId(child.getString(EMFIdMap.NAME)), DataType.create(etyp)));
+						clazz.with(new Attribute(EntityUtil.toValidJavaId(childItem.getString(EMFIdMap.NAME)), DataType.create(etyp)));
 					}else if(typ.equals(EReferences)) {
-						child.put(PARENT, eClassifier);
-						refs.add(child);
+						childItem.put(PARENT, eClassifier);
+						refs.add(childItem);
 					}
 				}
-				if(eClassifier.containsKey(eSuperTypes)) {
-					superClazzes.add(eClassifier);
+				if(xml.has(eSuperTypes)) {
+					superClazzes.add(xml);
 				}
-			} else if (eClassifier.getString(EMFIdMap.XSI_TYPE).equals(EEnum)) {
+			} else if (xml.getString(EMFIdMap.XSI_TYPE).equals(EEnum)) {
 				Clazz graphEnum = new Clazz().with(ClazzType.ENUMERATION);
-				graphEnum.with(eClassifier.getString(EMFIdMap.NAME));
-				for(XMLitem child : eClassifier.getChildren()) {
-					Literal literal = new Literal(child.getString(EMFIdMap.NAME));
-					for(String key : child.keySet()) {
+				graphEnum.with(xml.getString(EMFIdMap.NAME));
+				for(EntityList child : xml.getChildren()) {
+					if(child instanceof Entity == false) {
+						continue;
+					}
+					Entity childItem = (Entity) child;
+					Literal literal = new Literal(childItem.getString(EMFIdMap.NAME));
+					for(String key : childItem.keySet()) {
 						if(key.equals(EMFIdMap.NAME)) {
 							continue;
 						}
-						literal.withValue(child.getValue(key));
+						literal.withValue(childItem.getValue(key));
 //						literal.withKeyValue(key, child.get(key));
 						graphEnum.with(literal);
 					}
@@ -417,7 +440,7 @@ public class EMFIdMap extends XMLIdMap {
 			}
 		}
 		 // inheritance
-		for(XMLitem eClass : superClazzes) {
+		for(Entity eClass : superClazzes) {
 			String id = EntityUtil.getId(eClass.getString(eSuperTypes));
 			 Clazz kidClazz = model.getNode(eClass.getString(EMFIdMap.NAME));
 			 Clazz superClazz = model.getNode(id);
@@ -425,7 +448,7 @@ public class EMFIdMap extends XMLIdMap {
 		}
 		// assocs
 		SimpleKeyValueList<String, Association> items = new SimpleKeyValueList<String, Association>();
-		for(XMLitem eref : refs) {
+		for(Entity eref : refs) {
 			String tgtClassName = eref.getString(ETYPE);
 			if(tgtClassName.indexOf("#")>=0) {
 				tgtClassName = tgtClassName.substring(tgtClassName.indexOf("#") + 3);
@@ -434,7 +457,7 @@ public class EMFIdMap extends XMLIdMap {
 
 			Association tgtAssoc = getOrCreate(items, model, tgtClassName, tgtRoleName);
 
-			if (eref.containsKey(UPPERBOUND)) {
+			if (eref.has(UPPERBOUND)) {
 				Object upperValue = eref.getValue(UPPERBOUND);
 				if (upperValue instanceof Number) {
 					if (((Number) upperValue).intValue() != 1) {
@@ -446,7 +469,7 @@ public class EMFIdMap extends XMLIdMap {
 			String srcRoleName = null;
 			XMLEntity parent =(XMLEntity) eref.getValue(PARENT);
 			String srcClassName = parent.getString(EMFIdMap.NAME);
-			if (!eref.containsKey(EOpposite)) {
+			if (!eref.has(EOpposite)) {
 //				srcRoleName = tgtRoleName+"_back";
 			}else{
 				srcRoleName = EntityUtil.getId(eref.getString(EOpposite));
@@ -463,7 +486,7 @@ public class EMFIdMap extends XMLIdMap {
 	private static Association getOrCreate(SimpleKeyValueList<String, Association> items, GraphList model, String className, String roleName) {
 		roleName = EntityUtil.toValidJavaId(roleName);
 		String assocName = className+":"+roleName;
-		Association edge = items.getValue(assocName);
+		Association edge = (Association) items.getValue(assocName);
 		if(edge == null) {
 			Clazz clazz = model.getNode(className);
 			edge = new Association(clazz).with(Cardinality.ONE).with(roleName);

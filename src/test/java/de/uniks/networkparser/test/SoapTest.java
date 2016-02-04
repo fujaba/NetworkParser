@@ -1,10 +1,13 @@
 package de.uniks.networkparser.test;
 
 import java.io.IOException;
+
 import org.junit.Assert;
 import org.junit.Test;
+
 import de.uniks.networkparser.event.SoapObject;
 import de.uniks.networkparser.event.util.SoapCreator;
+import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XMLIdMap;
 
@@ -62,9 +65,10 @@ public class SoapTest {
 
 		SoapObject soapAnswer = (SoapObject) map.decode(answer.toString());
 
-		Assert.assertNotNull(soapAnswer.getChildren());
+		Assert.assertNotNull(soapAnswer.getBody());
 
-		Assert.assertEquals(25, soapAnswer.getChildren().getChildren().get(0).getChildren().size() );
+		EntityList entity = soapAnswer.getBody().getChildren().get(0);
+		Assert.assertEquals(25, ((XMLEntity)entity).getChildren().size() );
 
 	}
 }

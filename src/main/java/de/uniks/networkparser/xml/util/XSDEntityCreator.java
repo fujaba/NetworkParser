@@ -25,6 +25,7 @@ import java.util.ArrayList;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.Tokener;
+import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XSDEntity;
@@ -65,7 +66,7 @@ public class XSDEntityCreator implements SendableEntityCreatorTag, XMLGrammar {
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		return ((XSDEntity) entity).getValueItem(attribute);
+		return ((XSDEntity) entity).getValue(attribute);
 	}
 
 	@Override
@@ -99,7 +100,7 @@ public class XSDEntityCreator implements SendableEntityCreatorTag, XMLGrammar {
 	}
 
 	@Override
-	public void addChildren(IdMap map, XMLEntity parent, XMLEntity child) {
+	public void addChildren(IdMap map, EntityList parent, EntityList child) {
 		if (this.privateStack.size() > 0) {
 			String lastTag = this.privateStack
 					.get(this.privateStack.size() - 1);
@@ -112,7 +113,7 @@ public class XSDEntityCreator implements SendableEntityCreatorTag, XMLGrammar {
 			}
 
 		}
-		parent.addChild(child);
+		parent.with(child);
 	}
 
 	@Override

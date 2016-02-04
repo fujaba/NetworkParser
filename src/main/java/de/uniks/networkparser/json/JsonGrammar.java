@@ -40,7 +40,7 @@ public class JsonGrammar extends SimpleGrammar {
 			JsonObject props = new JsonObject();
 			for (int i = 0; i < item.size(); i++) {
 				if (!JsonIdMap.CLASS.equalsIgnoreCase(item.getKeyByIndex(i))) {
-					props.put(item.getKeyByIndex(i), item.getValueByIndex(i));
+					props.put(item.getKeyByIndex(i), item.getValue(i));
 				}
 
 			}
@@ -57,7 +57,7 @@ public class JsonGrammar extends SimpleGrammar {
 		if (prototyp instanceof SendableEntityCreatorNoIndex
 				|| !filter.isId(properties, className)) {
 			for (int i = 0; i < properties.size(); i++) {
-				json.put(properties.getKeyByIndex(i), properties.getValueByIndex(i));
+				json.put(properties.getKeyByIndex(i), properties.getValue(i));
 			}
 			return json;
 		}

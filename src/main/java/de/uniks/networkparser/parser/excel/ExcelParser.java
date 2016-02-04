@@ -22,7 +22,8 @@ import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.gui.Pos;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.XMLitem;
+import de.uniks.networkparser.interfaces.Entity;
+import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.XMLEntity;
@@ -64,11 +65,14 @@ public class ExcelParser {
 		}
 
 		if (sheet != null) {
-			XMLitem mergeCells = sheet.getChild("mergeCells", true);
+			EntityList mergeCells = sheet.getChild("mergeCells", true);
 			// <mergeCells count="1"><mergeCell ref="A2:A3"/></mergeCells>
 			if (mergeCells != null) {
-				for (XMLitem mergeCell : mergeCells.getChildren()) {
-					SimpleList<Pos> excelRange = EntityUtil.getExcelRange(mergeCell.getString(REF));
+				for (EntityList mergeCell : mergeCells.getChildren()) {
+					if(mergeCell instanceof Entity == false) {
+						continue;
+					}
+					SimpleList<Pos> excelRange = EntityUtil.getExcelRange(((Entity) mergeCell).getString(REF));
 					for (Pos item : excelRange) {
 						if (item == null || item.x < 0 || item.y < 0) {
 							continue;
@@ -77,46 +81,58 @@ public class ExcelParser {
 					}
 				}
 			}
-			XMLitem sheetData = sheet.getChild("sheetData", true);
-			for (XMLitem row : sheetData.getChildren()) {
-				if (ROW.equalsIgnoreCase(row.getTag()) == false) {
-					continue;
-				}
-				ExcelRow dataRow = new ExcelRow();
-				// <c r="A1" t="s"><v>2</v></c>
-				for (XMLitem cell : row.getChildren()) {
-					if (CELL.equalsIgnoreCase(cell.getTag()) == false) {
-						continue;
-					}
-					if (cell instanceof ExcelCell == false) {
-						continue;
-					}
-					ExcelCell excelCell = (ExcelCell) cell;
-					if (CELL_TYPE_REFERENCE.equalsIgnoreCase(excelCell.getType())) {
-						// <v>2</v>
-						try {
-							String ref = cell.getChildren().first().getValueItem();
-							if (sharedStrings != null) {
-								XMLEntity refString = (XMLEntity) sharedStrings.getChildren().get(Integer.valueOf(ref));
-								String text = refString.getChildren().first().getValueItem();
-								excelCell.setContent(text);
+			EntityList sheetData = sheet.getChild("sheetData", true);
+			if (sheetData != null) {
+//				if (rows != null && rows instanceof XMLEntity) {
+					for (EntityList child : sheetData.getChildren()) {
+						if (child == null || child instanceof XMLEntity == false ) {
+							continue;
+						}
+						XMLEntity row = (XMLEntity) child;
+						if(ROW.equalsIgnoreCase(row.getTag()) == false) {
+							continue;
+						}
+						ExcelRow dataRow = new ExcelRow();
+						// <c r="A1" t="s"><v>2</v></c>
+						for (EntityList item : row.getChildren()) {
+							if (child == null || item instanceof ExcelCell ) {
+								continue;
 							}
-						} catch (Exception e) {
+							ExcelCell cell = (ExcelCell) item;
+							if (CELL.equalsIgnoreCase(cell.getTag()) == false) {
+								continue;
+							}
+							if (cell instanceof ExcelCell == false) {
+								continue;
+							}
+							ExcelCell excelCell = (ExcelCell) cell;
+							if (CELL_TYPE_REFERENCE.equalsIgnoreCase(excelCell.getType())) {
+								// <v>2</v>
+								try {
+									String ref = ((XMLEntity)cell.getChildren().first()).getValue();
+									if (sharedStrings != null) {
+										XMLEntity refString = (XMLEntity) sharedStrings.getChildren().get(Integer.valueOf(ref));
+										String text = ((XMLEntity)refString.getChildren().first()).getValue();
+										excelCell.setContent(text);
+									}
+								} catch (Exception e) {
+								}
+							} else if (excelCell.getChildren() == null) {
+								String pos = mergeCellPos.get(excelCell.getReferenz().toString());
+								if (pos != null && cells.contains(pos)) {
+									ExcelCell firstCell = cells.get(pos);
+									excelCell.setReferenceCell(firstCell);
+								}
+							}
+							cells.add(excelCell.getReferenz().toString(), excelCell);
+							dataRow.add(excelCell);
 						}
-					} else if (excelCell.getChildrenCount() < 1) {
-						String pos = mergeCellPos.get(excelCell.getReferenz().toString());
-						if (pos != null && cells.contains(pos)) {
-							ExcelCell firstCell = cells.get(pos);
-							excelCell.setContent(firstCell.getContent());
+						if(dataRow.size() > 0 ) {
+							data.add(dataRow);
 						}
 					}
-					cells.add(excelCell.getReferenz().toString(), excelCell);
-					dataRow.add(excelCell);
 				}
-				if(dataRow.size() > 0 ) {
-					data.add(dataRow);
-				}
-			}
+//			}
 		}
 		return data;
 	}
@@ -132,7 +148,7 @@ public class ExcelParser {
 				if (!first) {
 					result.with(SEMICOLON);
 				}
-				result.with(cell.getValueItem());
+				result.with(cell.getContentAsString());
 				first = false;
 			}
 			result.with(BaseItem.CRLF);

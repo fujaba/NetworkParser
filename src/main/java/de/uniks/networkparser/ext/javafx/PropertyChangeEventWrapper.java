@@ -22,7 +22,8 @@ package de.uniks.networkparser.ext.javafx;
  permissions and limitations under the Licence.
 */
 import java.beans.PropertyChangeEvent;
-import de.uniks.networkparser.interfaces.BaseItem;
+
+import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorWrapper;
 
 public class PropertyChangeEventWrapper extends SendableEntityCreatorWrapper {
@@ -62,11 +63,11 @@ public class PropertyChangeEventWrapper extends SendableEntityCreatorWrapper {
 	}
 
 	@Override
-	public Object newInstance(BaseItem item) {
-		Object source = item.getValueItem(PROPERTY_SOURCE);
-		String property = ""+item.getValueItem(PROPERTY_PROPERTY);
-		Object oldValue = item.getValueItem(PROPERTY_OLDVALUE);
-		Object newValue = item.getValueItem(PROPERTY_NEWVALUE);
+	public Object newInstance(Entity item) {
+		Object source = item.getValue(PROPERTY_SOURCE);
+		String property = ""+item.getValue(PROPERTY_PROPERTY);
+		Object oldValue = item.getValue(PROPERTY_OLDVALUE);
+		Object newValue = item.getValue(PROPERTY_NEWVALUE);
 		return new PropertyChangeEvent(source, property, oldValue, newValue);
 	}
 }

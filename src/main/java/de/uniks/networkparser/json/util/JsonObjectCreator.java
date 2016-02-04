@@ -48,7 +48,7 @@ public class JsonObjectCreator implements SendableEntityCreator,
 		if(entity==null) {
 			return null;
 		}
-		return ((JsonObject) entity).getValueItem(attribute);
+		return ((JsonObject) entity).getValue(attribute);
 	}
 
 	@Override

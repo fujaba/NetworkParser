@@ -25,8 +25,6 @@ import java.util.Set;
 */
 
 public interface Entity extends BaseItem{
-	public boolean containsKey(Object key);
-
 	public String getString(String key);
 
 	public boolean getBoolean(String key);
@@ -35,23 +33,24 @@ public interface Entity extends BaseItem{
 
 	public int getInt(String key);
 
-	public Object getValue(String key);
-
-	public int size();
-
-	public Entity without(String key);
+	public Object getValue(Object key);
 
 	public String getKeyByIndex(int pos);
 	
-	public Object getValueByIndex(int pos);
+	/**
+	 * Get a Value from Key-ValueMap with Index
+	 * @param index Index of Value
+	 * @return The Value
+	 */
+	public Object getValue(int index);
+	
+	public Entity without(String key);
 	
 	/**
 	 * @param key The Key for search
 	 * @return success if the item has the Property
 	 */
 	public boolean has(String key);
-	
-	public Object remove(Object key);
 	
 	/** Add Key-Value item to Entity
 	 * @param key The key

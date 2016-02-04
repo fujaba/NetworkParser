@@ -2,6 +2,7 @@ package de.uniks.networkparser.xml.util;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.Tokener;
+import de.uniks.networkparser.interfaces.EntityList;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -53,7 +54,7 @@ public interface XMLGrammar extends SendableEntityCreator {
 	 * @param child
 	 *			the new Child
 	 */
-	public void addChildren(IdMap map, XMLEntity parent, XMLEntity child);
+	public void addChildren(IdMap map, EntityList parent, EntityList child);
 
 	/**
 	 * Set the EndTag of Child.

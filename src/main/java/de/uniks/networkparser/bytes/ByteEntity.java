@@ -353,7 +353,7 @@ public class ByteEntity implements ByteItem, BaseItem {
 	}
 
 	@Override
-	public BaseItem withAll(Object... values) {
+	public BaseItem with(Object... values) {
 		if(values==null){
 			return this;
 		}
@@ -366,9 +366,8 @@ public class ByteEntity implements ByteItem, BaseItem {
 		}
 		return this;
 	}
-
-	@Override
-	public Object getValueItem(Object key) {
+	
+	public Object getValue(Object key) {
 		if("TYP".equals(key)) {
 			return typ;
 		}

@@ -83,11 +83,17 @@ public class ExcelRow implements Iterable<ExcelCell>{
 		return children.iterator();
 	}
 
-	public ExcelRow with(ExcelCell... cells) {
+	public ExcelRow with(ExcelCell... values) {
+		if(values == null) {
+			return this;
+		}
 		if(children == null) {
 			children = new SimpleList<ExcelCell>();
 		}
-		children.with(cells);
+		
+		for(ExcelCell cell: values) {
+			children.with(cell);
+		}
 		return this;
 	}
 }

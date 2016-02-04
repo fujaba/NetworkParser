@@ -14,7 +14,7 @@ public class SimpleArrayListTest
 {
 	@Test
 	public void testRemoveFirstItem() {
-		SimpleList<String> list=new SimpleList<String>().with("Hello", "World", "Test");
+		SimpleList<String> list=new SimpleList<String>().withValue("Hello", "World", "Test");
 		list.remove(0);
 		ArrayList<String> newList=new ArrayList<String>(list);
 		Assert.assertEquals("World", newList.get(0));

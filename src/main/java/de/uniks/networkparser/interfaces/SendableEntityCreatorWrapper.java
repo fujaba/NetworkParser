@@ -28,6 +28,6 @@ public abstract class SendableEntityCreatorWrapper implements SendableEntityCrea
 		return false;
 	}
 
-	public abstract Object newInstance(BaseItem item);
+	public abstract Object newInstance(Entity item);
 
 }

@@ -344,8 +344,11 @@ public class DiagramEditor extends SimpleShell implements Editor {
 		if(logic != null) {
 			values.add("--logic="+logic.getClass().getName());
 		}
-		values.with(args);
-
+		if(args != null) {
+			for(String item : args) {
+				values.with(item);		
+			}
+		}
 		launch(values.toArray(new String[0]));
 	}
 

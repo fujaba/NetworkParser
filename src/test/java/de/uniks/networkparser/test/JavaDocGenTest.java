@@ -11,7 +11,7 @@ import de.uniks.networkparser.list.SimpleList;
 
 public class JavaDocGenTest {
 
-	@Test
+	@Test(timeout=20000)
 	public void testGenJavaDoc() {
 		
 		try{

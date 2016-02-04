@@ -171,12 +171,12 @@ public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
 					if (encoding) {
 						if (value instanceof Collection<?>) {
 							for (Object item : (Collection<?>) value) {
-								xmlEntity.addChild(encode(item));
+								xmlEntity.with(encode(item));
 							}
 						} else {
 							SendableEntityCreator valueCreater = getCreatorClass(value);
 							if (valueCreater != null) {
-								xmlEntity.addChild(encode(value));
+								xmlEntity.with(encode(value));
 							} else {
 								xmlEntity.put(property, value);
 							}
@@ -261,7 +261,7 @@ public class XMLSimpleIdMap extends IdMap implements IdMapDecoder {
 							}
 							if (newTag.getTag().isEmpty()) {
 								if (saveValue) {
-									entity.withValueItem(newTag.getValueItem());
+									entity.withValueItem(newTag.getValue());
 								}
 								tokener.skipEntity();
 								newTag = getEntity(grammar, tokener);

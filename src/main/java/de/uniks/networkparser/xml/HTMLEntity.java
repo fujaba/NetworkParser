@@ -26,7 +26,7 @@ import de.uniks.networkparser.converter.GraphConverter;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
-import de.uniks.networkparser.interfaces.XMLitem;
+import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class HTMLEntity implements BaseItem {
@@ -50,13 +50,13 @@ public class HTMLEntity implements BaseItem {
 		XMLEntity metaTag = new XMLEntity().withTag("meta");
 		metaTag.withKeyValue("http-equiv", "Content-Type");
 		metaTag.withKeyValue("content", "text/html;charset="+encoding);
-		this.header.addChild(metaTag);
+		this.header.with(metaTag);
 		return this;
 	}
 
 	public HTMLEntity withTitle(String value) {
 		XMLEntity titleTag = new XMLEntity().withTag("title").withValue(value);
-		this.header.addChild(titleTag);
+		this.header.with(titleTag);
 		return this;
 	}
 
@@ -74,12 +74,12 @@ public class HTMLEntity implements BaseItem {
 	}
 
 	@Override
-	public HTMLEntity withAll(Object... values) {
+	public HTMLEntity with(Object... values) {
 		if(values == null) {
 			return this;
 		}
 		if(values.length % 2 == 0) {
-			this.body.withAll(values);
+			this.body.with(values);
 		} else {
 			for(Object item : values) {
 				if(item instanceof XMLEntity) {
@@ -90,13 +90,12 @@ public class HTMLEntity implements BaseItem {
 		return this;
 	}
 
-	@Override
-	public Object getValueItem(Object key) {
-		Object result=this.header.getValueItem(key);
+	public Object getValue(Object key) {
+		Object result=this.header.getValue(key);
 		if(result!=null) {
 			return result;
 		}
-		return this.body.getValueItem(key);
+		return this.body.getValue(key);
 	}
 
 	public HTMLEntity withHeader(String ref) {
@@ -108,12 +107,12 @@ public class HTMLEntity implements BaseItem {
 			linkTag.withKeyValue("rel", "stylesheet");
 			linkTag.withKeyValue("type", "text/css");
 			linkTag.withKeyValue("href", ref);
-			this.header.addChild(linkTag);
+			this.header.with(linkTag);
 		}
 		if(ref.substring(ref.length() - 3).equalsIgnoreCase(".js") ) {
 			XMLEntity scriptTag = new XMLEntity().withTag("script").withCloseTag();
 			scriptTag.withKeyValue("src", ref);
-			this.header.addChild(scriptTag);
+			this.header.with(scriptTag);
 		}
 		return this;
 	}
@@ -128,18 +127,22 @@ public class HTMLEntity implements BaseItem {
 	}
 
 	public HTMLEntity addStyle(String name, String style) {
-		XMLitem styleElement = null;
-		for(XMLitem item : header.getChildren()) {
-			if(item.getTag().equals(name)) {
-				styleElement = item;
+		XMLEntity styleElement = null;
+		for(EntityList child : header.getChildren()) {
+			if(child  instanceof XMLEntity == false) {
+				continue;
+			}
+			XMLEntity xml = (XMLEntity) child;
+			if(xml.getTag().equals(name)) {
+				styleElement = xml;
 			}
 		}
 		if( styleElement == null) {
 			XMLEntity element = new XMLEntity().withTag("style"); 
-			header.addChild(element);
+			header.with(element);
 			styleElement = element; 
 		}
-		styleElement.withValueItem(styleElement.getValueItem()+"\r\n" + style);
+		styleElement.withValueItem(styleElement.getValue()+"\r\n" + style);
 		return this;
 	}
 
@@ -151,7 +154,7 @@ public class HTMLEntity implements BaseItem {
 		sb.append(";"+CRLF);
 		sb.append("new Graph(json).layout();");
 		script.withValueItem(sb.toString());
-		withAll(script);
+		with(script);
 		if(path != null) {
 			// Add graph-framework
 			withHeader(path + "diagramstyle.css");
@@ -177,5 +180,10 @@ public class HTMLEntity implements BaseItem {
 			return null;
 		}
 		return converter.encode(this);
+	}
+
+	@Override
+	public int size() {
+		return body.size();
 	}
 }

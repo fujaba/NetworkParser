@@ -38,7 +38,15 @@ public class GraphList extends GraphModel implements BaseItem{
 	}
 
 	public String toString(Converter converter) {
+		if(converter == null) {
+			return null;
+		}
 		return converter.encode(this);
+	}
+	
+	@Override
+	public String toString(int indentFactor) {
+		return toString();
 	}
 
 	public String getTyp() {
@@ -146,7 +154,7 @@ public class GraphList extends GraphModel implements BaseItem{
 	}
 
 	@Override
-	public GraphList withAll(Object... values) {
+	public GraphList with(Object... values) {
 		if (values == null) {
 			return this;
 		}
@@ -158,8 +166,7 @@ public class GraphList extends GraphModel implements BaseItem{
 		return this;
 	}
 
-	@Override
-	public Object getValueItem(Object key) {
+	public Object getValue(Object key) {
 		if(this.children == null) {
 			return null;
 		}
@@ -171,7 +178,7 @@ public class GraphList extends GraphModel implements BaseItem{
 		}
 		if(this.children instanceof GraphSimpleSet) {
 			GraphSimpleSet collection = (GraphSimpleSet) this.children;
-			return collection.getValueItem(key);
+			return collection.getValue(key);
 		}
 		return null;
 	}
@@ -185,9 +192,9 @@ public class GraphList extends GraphModel implements BaseItem{
 	}
 
 	@Override
-	public String toString(int indentFactor) {
+	public int size() {
 		// TODO Auto-generated method stub
-		return null;
+		return 0;
 	}
 
 }

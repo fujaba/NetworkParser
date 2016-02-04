@@ -15,4 +15,15 @@ public class JavaParser {
 //	public void parseToEntity(AbstractList<?> entityList) {
 //	}
 
+	public boolean isFileBodyHasChanged() {
+		return fileBodyHasChanged;
+	}
+
+	public boolean setFileBodyHasChanged(boolean value) {
+		if(value != this.fileBodyHasChanged) {
+			this.fileBodyHasChanged = value;
+			return true;
+		}
+		return false;
+	}
 }

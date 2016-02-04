@@ -423,7 +423,7 @@ public class UpdateListenerJson implements PropertyChangeListener {
 		if (message.has(JsonIdMap.ID)) {
 			String id = (String) message.get(JsonIdMap.ID);
 			if (gc.containsKey(id)) {
-				gc.put(id, (Integer) gc.getValueItem(id) + 1);
+				gc.put(id, (Integer) gc.getValue(id) + 1);
 			} else {
 				gc.put(id, 1);
 			}

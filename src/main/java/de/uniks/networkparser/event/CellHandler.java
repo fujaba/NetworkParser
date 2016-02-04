@@ -1,4 +1,6 @@
-package de.uniks.networkparser.interfaces;
+package de.uniks.networkparser.event;
+
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 /*
  NetworkParser

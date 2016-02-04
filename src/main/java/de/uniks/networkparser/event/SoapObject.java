@@ -22,16 +22,19 @@ package de.uniks.networkparser.event;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.event.util.SoapCreator;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.xml.XMLEntity;
 
-public class SoapObject extends SimpleEvent<XMLEntity> {
+public class SoapObject implements BaseItem {
 	public static final String PROPERTY_HEADER = "Header";
 	public static final String PROPERTY_BODY = "BODY";
 	private String namespace = "s";
 	private SimpleKeyValueList<String, String> headers;
+	protected XMLEntity children;
 
 	public SoapObject withBody(XMLEntity body) {
 		this.children = body;
@@ -91,7 +94,7 @@ public class SoapObject extends SimpleEvent<XMLEntity> {
 	}
 
 	@Override
-	public BaseItem withAll(Object... values) {
+	public BaseItem with(Object... values) {
 		if(values==null) {
 			return this;
 		}
@@ -110,8 +113,7 @@ public class SoapObject extends SimpleEvent<XMLEntity> {
 		return new SoapObject();
 	}
 
-	@Override
-	public Object getValueItem(Object key) {
+	public Object getValue(Object key) {
 		if(PROPERTY_HEADER.equals(key)){
 			return headers;
 		}
@@ -121,8 +123,21 @@ public class SoapObject extends SimpleEvent<XMLEntity> {
 		return null;
 	}
 	
-	@Override
-	public XMLEntity getChildren() {
+	public XMLEntity getBody() {
 		return children;
+	}
+
+	@Override
+	public String toString(Converter converter) {
+		if(converter instanceof EntityStringConverter) {
+			EntityStringConverter item = (EntityStringConverter)converter;
+			return toString(item.getIndentFactor(), item.getIntent());
+		}
+		return null;
+	}
+
+	@Override
+	public int size() {
+		return children.size();
 	}
 }

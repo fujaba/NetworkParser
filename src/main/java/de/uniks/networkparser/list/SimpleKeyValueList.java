@@ -344,8 +344,17 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return this;
 	}
 
-	public SimpleKeyValueList<K, V> withAll(Object... values) {
-		super.withAll(values);
+	public SimpleKeyValueList<K, V> with(Object... values) {
+		if(values == null) {
+			return this;
+		}
+		if (values.length % 2 == 0) {
+			for (int i = 0; i < values.length; i += 2) {
+				withKeyValue(values[i], values[i + 1]);
+			}
+			return this;
+		}
+		super.with(values);
 		return this;
 	}
 
@@ -452,11 +461,6 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	@SuppressWarnings("unchecked")
 	public V getValueByIndex(int index) {
 		return (V) super.getByIndex(SMALL_VALUE, index + this.index, size);
-	}
-
-	@SuppressWarnings("unchecked")
-	public V getValue(K key) {
-		return (V) super.getValueItem(key);
 	}
 
 	@SuppressWarnings("unchecked")

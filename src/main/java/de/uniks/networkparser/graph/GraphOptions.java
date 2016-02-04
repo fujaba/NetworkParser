@@ -62,7 +62,7 @@ public class GraphOptions {
 		result.withKeyValue("rotatetext", rotateText);
 		result.withKeyValue("linetyp", lineTyp);
 		if(buttons != null){
-			result.withKeyValue("buttons", new JsonArray().withAll(buttons));
+			result.withKeyValue("buttons", new JsonArray().with(buttons));
 		}
 		return result;
 	}

@@ -66,7 +66,7 @@ public abstract class GraphMember {
 			return collection;
 		}
 		if(this.children instanceof GraphMember) {
-			collection.withAll(this.children);
+			collection.with(this.children);
 		}
 		return collection;
 	}

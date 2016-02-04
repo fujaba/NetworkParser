@@ -24,6 +24,7 @@ import de.uniks.networkparser.buffer.Tokener;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.event.Style;
+import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XMLStyledEntity;
@@ -81,8 +82,8 @@ public class XMLStyledEntityCreator implements SendableEntityCreator,
 	}
 
 	@Override
-	public void addChildren(IdMap map, XMLEntity parent, XMLEntity child) {
-		parent.addChild(child);
+	public void addChildren(IdMap map, EntityList parent, EntityList child) {
+		parent.with(child);
 	}
 
 	@Override

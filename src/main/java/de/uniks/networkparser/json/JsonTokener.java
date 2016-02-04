@@ -5,7 +5,7 @@ import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.XMLitem;
+import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.xml.XMLEntity;
@@ -27,7 +27,7 @@ public class JsonTokener extends Tokener {
 			for (;;) {
 				c = getCurrentChar();
 				if (c != ',') {
-					entityList.withAll(nextValue(entityList, false, false, (char)0));
+					entityList.with(nextValue(entityList, false, false, (char)0));
 				}
 				c = nextClean(true);
 				switch (c) {
@@ -142,16 +142,20 @@ public class JsonTokener extends Tokener {
 			XMLEntity xmlEntity = (XMLEntity) newValue;
 			parent.put(JsonIdMap.CLASS, xmlEntity.getTag());
 			JsonObject props = new JsonObject();
-			if (xmlEntity.getValueItem() != null
-					&& xmlEntity.getValueItem().length() > 0) {
-				parent.put(JsonIdMap.VALUE, xmlEntity.getValueItem());
+			if (xmlEntity.getValue() != null
+					&& xmlEntity.getValue().length() > 0) {
+				parent.put(JsonIdMap.VALUE, xmlEntity.getValue());
 			}
 
 			for (int i = 0; i < xmlEntity.size(); i++) {
 				parseEntityProp(props, xmlEntity.getValueByIndex(i), xmlEntity.getKeyByIndex(i));
 			}
-			for (XMLitem children : xmlEntity.getChildren()) {
-				parseEntityProp(props, children, children.getTag());
+			for (EntityList child : xmlEntity.getChildren()) {
+				if(child  instanceof XMLEntity == false) {
+					continue;
+				}
+				XMLEntity xml = (XMLEntity) child;
+				parseEntityProp(props, xml, xml.getTag());
 			}
 			parent.put(JsonIdMap.JSON_PROPS, props);
 		}
@@ -201,16 +205,21 @@ public class JsonTokener extends Tokener {
 			XMLEntity xmlEntity = (XMLEntity) newValue;
 			parent.put(JsonIdMap.CLASS, xmlEntity.getTag());
 			JsonObject props = new JsonObject();
-			if (xmlEntity.getValueItem() != null
-					&& xmlEntity.getValueItem().length() > 0) {
-				parent.put(JsonIdMap.VALUE, xmlEntity.getValueItem());
+			if (xmlEntity.getValue() != null
+					&& xmlEntity.getValue().length() > 0) {
+				parent.put(JsonIdMap.VALUE, xmlEntity.getValue());
 			}
 
 			for (int i = 0; i < xmlEntity.size(); i++) {
 				parseEntityProp(props, xmlEntity.getValueByIndex(i), xmlEntity.getKeyByIndex(i));
 			}
-			for (XMLitem children : xmlEntity.getChildren()) {
-				parseEntityProp(props, children, children.getTag());
+			
+			for (EntityList child : xmlEntity.getChildren()) {
+				if(child  instanceof XMLEntity == false) {
+					continue;
+				}
+				XMLEntity xml = (XMLEntity) child;
+				parseEntityProp(props, xml, xml.getTag());
 			}
 			parent.put(JsonIdMap.JSON_PROPS, props);
 		}

@@ -107,7 +107,7 @@ public class PomFile implements SendableEntityCreatorTag, BaseItem{
 	}
 
 	@Override
-	public PomFile withAll(Object... values) {
+	public PomFile with(Object... values) {
 		if(values==null || values.length % 2 == 1) {
 			return this;
 		}
@@ -181,8 +181,7 @@ public class PomFile implements SendableEntityCreatorTag, BaseItem{
 		return sb.toString();
 	}
 
-	@Override
-	public Object getValueItem(Object key) {
+	public Object getValue(Object key) {
 		return getValue(this, ""+key);
 	}
 	@Override
@@ -251,5 +250,10 @@ public class PomFile implements SendableEntityCreatorTag, BaseItem{
 			return null;
 		}
 		return converter.encode(this);
+	}
+
+	@Override
+	public int size() {
+		return dependencies.size();
 	}
 }

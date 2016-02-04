@@ -24,15 +24,15 @@ package de.uniks.networkparser.xml;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.interfaces.Entity;
+import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
-import de.uniks.networkparser.interfaces.XMLitem;
 import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.logic.BooleanCondition;
 import de.uniks.networkparser.xml.util.XMLGrammar;
@@ -112,7 +112,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 									if(hasObjects(filter, item)) {
 										continue;
 									}
-									xmlEntity.addChild(encode(item, filter));
+									xmlEntity.with(encode(item, filter));
 								}
 
 							} else {
@@ -121,7 +121,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 									if(hasObjects(filter, value)) {
 										continue;
 									}
-									xmlEntity.addChild(encode(value, filter));
+									xmlEntity.with(encode(value, filter));
 								} else {
 									xmlEntity.put(property, value);
 								}
@@ -145,7 +145,7 @@ public class XMLIdMap extends XMLSimpleIdMap {
 	 *			the value
 	 * @return the xML entity
 	 */
-	private XMLitem parserChild(XMLitem parent, String property,
+	private EntityList parserChild(EntityList parent, String property,
 			Object value) {
 
 		if (property.startsWith(XMLIdMap.ENTITYSPLITTER)) {
@@ -162,23 +162,29 @@ public class XMLIdMap extends XMLSimpleIdMap {
 				label = property.substring(1);
 			}
 			if (label.length() > 0) {
-				XMLitem child = parent.getChild(label, false);
-				if (child == null) {
-					XMLEntity item = new XMLEntity();
-					item.withTag(label);
-					child = item;
-					parserChild(child, newProp, value);
-					parent.addChild(item);
-				} else {
-					parserChild(child, newProp, value);
+				EntityList child = null;
+				if(parent instanceof XMLEntity) {
+					XMLEntity entry = (XMLEntity) parent;
+					child = entry.getChild(label, false);
+					if (child == null) {
+						XMLEntity item = new XMLEntity();
+						item.withTag(label);
+						child = item;
+						parserChild(child, newProp, value);
+						entry.with(item);
+					} else {
+						parserChild(child, newProp, value);
+					}
 				}
 				return child;
 			}
 		} else if (property.startsWith(XMLIdMap.ATTRIBUTEVALUE)) {
-			parent.put(property.substring(1),
-					EntityUtil.valueToString(value, true, parent));
-		} else if ("".equals(property)) {
-			parent.withValueItem(EntityUtil.valueToString(value, true, parent));
+			if(parent instanceof Entity) {
+				((Entity)parent).put(property.substring(1),
+						EntityUtil.valueToString(value, true, parent));
+			}
+		} else if ("".equals(property) && parent instanceof XMLEntity) {
+			((XMLEntity)parent).withValueItem(EntityUtil.valueToString(value, true, parent));
 		}
 		return null;
 	}

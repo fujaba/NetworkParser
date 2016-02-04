@@ -24,19 +24,20 @@ package de.uniks.networkparser.xml;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.event.MapEntry;
-import de.uniks.networkparser.interfaces.XMLitem;
+import de.uniks.networkparser.interfaces.Entity;
+import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 /**
  * The Class XMLEntity.
  */
-public class XMLEntity extends SimpleKeyValueList<String, Object> implements XMLitem {
+public class XMLEntity extends SimpleKeyValueList<String, Object> implements Entity, EntityList {
 	/** Constant of TAG. */
 	public static final String PROPERTY_TAG = "tag";
 	/** Constant of VALUE. */
 	public static final String PROPERTY_VALUE = "value";
 	/** The children. */
-	private SimpleList<XMLitem> children;
+	private SimpleList<EntityList> children;
 
 	/** The tag. */
 	private String tag;
@@ -84,9 +85,9 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements XML
 	 *
 	 * @return the children
 	 */
-	public SimpleList<XMLitem> getChildren() {
+	public SimpleList<EntityList> getChildren() {
 		if (this.children == null) {
-			this.children = new SimpleList<XMLitem>();
+			this.children = new SimpleList<EntityList>();
 		}
 		return this.children;
 	}
@@ -102,12 +103,25 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements XML
 	/**
 	 * Adds the child.
 	 *
-	 * @param child
+	 * @param values
 	 *			the child
 	 * @return result if the child is added
 	 */
-	public boolean addChild(XMLitem child) {
-		return getChildren().add(child);
+	@Override
+	public XMLEntity with(Object... values) {
+		if(values==null){
+			return this;
+		}
+		if (values.length % 2 == 1 || values[0] instanceof String == false) {
+			for(Object item : values) {
+				if(item instanceof EntityList) {
+					getChildren().add((EntityList) item);
+				}
+			}
+			return this;
+		}
+		super.with(values);
+		return this;
 	}
 
 	/**
@@ -129,16 +143,20 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements XML
 	 * @param recursiv deep search
 	 * @return the child
 	 */
-	public XMLitem getChild(String value, boolean recursiv) {
+	public EntityList getChild(String value, boolean recursiv) {
 		if(value==null || this.children == null) {
 			return null;
 		}
-		for (XMLitem entity : this.children) {
-			if (value.equals(entity.getTag())) {
+		for (EntityList entity : this.children) {
+			if(entity instanceof XMLEntity == false) {
+				continue;
+			}
+			XMLEntity item = (XMLEntity) entity;
+			if (value.equals(item.getTag())) {
 				return entity;
 			}
 			if(recursiv) {
-				XMLitem child = entity.getChild(value, recursiv);
+				EntityList child = item.getChild(value, recursiv);
 				if(child != null) {
 					return child;
 				}
@@ -153,11 +171,15 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements XML
 	 * @param value The Value of Filter
 	 * @return all Children where match the Filter
 	 */
-	public SimpleList<XMLitem> getChildren(String key, String value) {
-		SimpleList<XMLitem> children=new SimpleList<XMLitem>();
-		for (XMLitem entity : getChildren()) {
-			if(value.equalsIgnoreCase(entity.getString(key))) {
-				children.add(entity);
+	public SimpleList<Entity> getChildren(String key, String value) {
+		SimpleList<Entity> children=new SimpleList<Entity>();
+		for (EntityList entity : getChildren()) {
+			if(entity instanceof Entity) {
+				continue;
+			}
+			Entity item = (Entity) entity;
+			if(value.equalsIgnoreCase(item.getString(key))) {
+				children.add(item);
 			}
 		}
 		return children;
@@ -189,7 +211,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements XML
 	 *
 	 * @return the value
 	 */
-	public String getValueItem() {
+	public String getValue() {
 		return this.valueItem;
 	}
 
@@ -255,7 +277,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements XML
 			if(this.getTag() != null) {
 				sb.append(">");
 			}
-			for (XMLitem child : this.children) {
+			for (EntityList child : this.children) {
 				sb.append(child.toString(indentFactor, intent + indentFactor));
 			}
 			if (indentFactor > 0) {
@@ -314,7 +336,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements XML
 		return this;
 	}
 
-	public XMLitem without(String key) {
+	public XMLEntity without(String key) {
 		remove(key);
 		return this;
 	}
@@ -323,4 +345,10 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements XML
 	public boolean has(String key) {
 		return containsKey(key);
 	}
+
+	@Override
+	public Object getValue(int index) {
+		return getValueByIndex(index);
+	}
+	
 }

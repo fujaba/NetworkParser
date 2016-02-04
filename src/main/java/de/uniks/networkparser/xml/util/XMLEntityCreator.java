@@ -2,6 +2,7 @@ package de.uniks.networkparser.xml.util;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.Tokener;
+import de.uniks.networkparser.interfaces.EntityList;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -51,7 +52,7 @@ public class XMLEntityCreator implements SendableEntityCreator, XMLGrammar {
 			return ((XMLEntity) entity).getTag();
 		}
 		if (XMLEntity.PROPERTY_VALUE.equalsIgnoreCase(attribute)) {
-			return ((XMLEntity) entity).getValueItem();
+			return ((XMLEntity) entity).getValue();
 		}
 		return null;
 	}
@@ -77,19 +78,22 @@ public class XMLEntityCreator implements SendableEntityCreator, XMLGrammar {
 	}
 
 	@Override
-	public void addChildren(IdMap map, XMLEntity parent, XMLEntity child) {
-		SendableEntityCreator creator = map.getCreator(child.getTag(), true);
+	public void addChildren(IdMap map, EntityList parent, EntityList child) {
+		SendableEntityCreator creator = null;
+		if(child instanceof XMLEntity) {
+			creator = map.getCreator(((XMLEntity)child).getTag(), true);
+		}
 		if(creator != null) {
 			Object sendableInstance = creator.getSendableInstance(false);
-			if(sendableInstance != null && sendableInstance instanceof XMLEntity) {
+			if(sendableInstance != null && sendableInstance instanceof EntityList) {
 				if(creator.setValue(sendableInstance, ALL, child, ALL)) {
-					parent.addChild((XMLEntity)sendableInstance);
+					parent.with(sendableInstance);
 					return;
 				}
 			}
 		}
 
-		parent.addChild(child);
+		parent.with(child);
 	}
 
 	@Override

@@ -26,6 +26,8 @@ import java.util.Iterator;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.EntityList;
+import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SortedList;
 /**
  * A JSONArray is an ordered sequence of values. Its external text form is a
@@ -72,7 +74,7 @@ import de.uniks.networkparser.list.SortedList;
  * @version 2010-12-28
  */
 
-public class JsonArray extends SortedList<Object> implements BaseItem {
+public class JsonArray extends SortedList<Object> implements BaseItem, EntityList {
 	/**
 	 * Get the JSONArray associated with an index.
 	 *
@@ -306,5 +308,16 @@ public class JsonArray extends SortedList<Object> implements BaseItem {
 	@Override
 	public JsonArray subList(int fromIndex, int toIndex) {
 		return (JsonArray) super.subList(fromIndex, toIndex);
+	}
+
+	@Override
+	public SimpleList<EntityList> getChildren() {
+		SimpleList<EntityList> items = new SimpleList<EntityList>();
+		for(Object item : this) {
+			if(item instanceof EntityList) {
+				items.add((EntityList)item);
+			}
+		}
+		return items;
 	}
 }
