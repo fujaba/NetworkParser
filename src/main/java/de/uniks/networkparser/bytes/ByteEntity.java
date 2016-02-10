@@ -34,7 +34,7 @@ import de.uniks.networkparser.interfaces.Converter;
  * The Class ByteEntity.
  */
 
-public class ByteEntity implements ByteItem, BaseItem {
+public class ByteEntity implements ByteItem {
 	/** The Constant BIT OF A BYTE. */
 	public final static int BITOFBYTE = 8;
 	public final static int TYPBYTE = 1;
@@ -375,10 +375,5 @@ public class ByteEntity implements ByteItem, BaseItem {
 			return values;
 		}
 		return null;
-	}
-
-	@Override
-	public String toString(int indentFactor) {
-		return toString();
 	}
 }

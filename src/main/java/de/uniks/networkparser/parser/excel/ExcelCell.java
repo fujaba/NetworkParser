@@ -1,6 +1,7 @@
 package de.uniks.networkparser.parser.excel;
 import java.nio.charset.Charset;
 
+import de.uniks.networkparser.IdMap;
 /*
 NetworkParser
 Copyright (c) 2011 - 2016, Stefan Lindel
@@ -24,8 +25,6 @@ import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.list.SimpleList;
-import de.uniks.networkparser.xml.XMLEntity;
-import de.uniks.networkparser.xml.util.XMLEntityCreator;
 
 public class ExcelCell implements SendableEntityCreatorTag, EntityList{
 	public static final String TAG="c";
@@ -64,26 +63,6 @@ public class ExcelCell implements SendableEntityCreatorTag, EntityList{
 
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if(XMLEntityCreator.ALL.equals(type)) {
-			if(value instanceof XMLEntity == false) {
-				return false;
-			}
-			XMLEntity item = (XMLEntity) value;
-			ExcelCell parent = (ExcelCell) entity;
-			if(item.getValue(PROPERTY_STYLE) != null) {
-				parent.setStyle(item.getString(PROPERTY_STYLE));
-			}
-			if(item.getValue(PROPERTY_TYPE) != null) {
-				parent.setType(item.getString(PROPERTY_TYPE));
-			}
-			if(item.getValue(PROPERTY_REFERENZ) != null) {
-				parent.withReferenz(Pos.valueOf(""+item.getValue(PROPERTY_REFERENZ)));
-			}
-			for(EntityList child : item.getChildren()) {
-				parent.with(child);
-			}
-			return true;
-		}
 		if(entity instanceof ExcelCell == false) {
 			return false;
 		}
@@ -97,6 +76,10 @@ public class ExcelCell implements SendableEntityCreatorTag, EntityList{
 		}
 		if(PROPERTY_REFERENZ.equals(attribute)) {
 			((ExcelCell)entity).withReferenz(Pos.valueOf(""+value));
+			return true;
+		}
+		if(IdMap.CHILDREN.equals(type)) {
+			((ExcelCell)entity).with(value);
 			return true;
 		}
 		return false;
@@ -160,26 +143,6 @@ public class ExcelCell implements SendableEntityCreatorTag, EntityList{
 		return this;
 	}
 	
-	public String getDataLine(){
-		String ref = "";
-		if(this.pos != null) {
-			ref = this.pos.toString();
-		}
-		if(content == null){
-			return null;
-		}
-		if(content instanceof Number) {
-			return "<c r=\""+ref+"\"><v>"+content+"</v></c>";
-		}
-		if(content instanceof Boolean) {
-			if((Boolean)content) {
-				return "<c r=\""+ref+"\" t=\"b\"><v>1</v></c>";
-			}
-			return "<c r=\""+ref+"\" t=\"b\"><v>0</v></c>";
-		}
-		return "<c r=\""+ref+"\" t=\"inlineStr\"><is><t>"+new String(content.toString().getBytes(Charset.forName("UTF-8")))+"</t></is></c>";
-	}
-	
 	public ExcelCell getReferenceCell() {
 		return referenceCell;
 	}
@@ -203,17 +166,38 @@ public class ExcelCell implements SendableEntityCreatorTag, EntityList{
 	}
 
 	@Override
+	public String toString() {
+		String ref = "";
+		if(this.pos != null) {
+			ref = this.pos.toString();
+		}
+		Object context = getContent();
+		if(context == null){
+			return null;
+		}
+		if(context instanceof Number) {
+			return "<c r=\""+ref+"\"><v>"+context+"</v></c>";
+		}
+		if(context instanceof Boolean) {
+			if((Boolean)context) {
+				return "<c r=\""+ref+"\" t=\"b\"><v>1</v></c>";
+			}
+			return "<c r=\""+ref+"\" t=\"b\"><v>0</v></c>";
+		}
+		return "<c r=\""+ref+"\" t=\"inlineStr\"><is><t>"+new String(context.toString().getBytes(Charset.forName("UTF-8")))+"</t></is></c>";
+	}
+	
+	@Override
 	public String toString(int indentFactor) {
+		return toString();
+	}
+	
+	protected String toString(int indentFactor, int indent) {
 		return toString();
 	}
 
 	@Override
 	public String toString(Converter converter) {
-		return toString();
-	}
-
-	@Override
-	public String toString(int indentFactor, int intent) {
 		return toString();
 	}
 

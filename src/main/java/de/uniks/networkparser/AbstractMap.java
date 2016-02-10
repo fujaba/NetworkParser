@@ -23,6 +23,7 @@ package de.uniks.networkparser;
 */
 import java.util.Collection;
 import java.util.Iterator;
+
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -32,6 +33,9 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
  */
 
 public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
+	/** The Constant ENTITYSPLITTER. */
+	public static final char ENTITYSPLITTER = '.';
+
 	/** The creators. */
 	protected SimpleKeyValueList<String, SendableEntityCreator> creators = new SimpleKeyValueList<String, SendableEntityCreator>()
 			.withAllowDuplicate(false);
@@ -67,20 +71,21 @@ public abstract class AbstractMap implements Iterable<SendableEntityCreator> {
 		if (creator != null || fullName ) {
 			return (SendableEntityCreator) creator;
 		}
-
-		if(clazz.lastIndexOf(".")>=0) {
-			clazz = "."+clazz.substring(clazz.lastIndexOf(".")+1);
+		String endTag;
+		if(clazz.lastIndexOf(ENTITYSPLITTER)>=0) {
+			endTag = ENTITYSPLITTER + clazz.substring(clazz.lastIndexOf(ENTITYSPLITTER)+1);
 		} else {
-			clazz = "." + clazz;
+			endTag = ENTITYSPLITTER + clazz;
 		}
 		for(int i=0;i<this.creators.size();i++) {
 			String key = this.creators.getKeyByIndex(i);
 			SendableEntityCreator value = this.creators.getValueByIndex(i);
-			if (key.endsWith(clazz)
-					&& value instanceof SendableEntityCreator) {
+			if (key.endsWith(endTag)) {
 				return value;
 			}
 		}
+		
+		// Search for Child Node
 		return null;
 	}
 

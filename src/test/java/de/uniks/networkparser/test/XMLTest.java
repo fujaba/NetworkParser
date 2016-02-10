@@ -9,6 +9,7 @@ import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Test;
 import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.test.model.Apple;
 import de.uniks.networkparser.test.model.AppleTree;
 import de.uniks.networkparser.test.model.ChatMessage;
@@ -32,7 +33,7 @@ import de.uniks.networkparser.test.model.util.UniversityCreator;
 import de.uniks.networkparser.test.model.util.XMLTestItemCreator;
 import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XMLIdMap;
-import de.uniks.networkparser.xml.XMLSimpleIdMap;
+import de.uniks.networkparser.xml.XMLIdMap;
 import de.uniks.networkparser.xml.XMLTokener;
 
 public class XMLTest {
@@ -46,7 +47,7 @@ public class XMLTest {
 		map.with(new AppleCreator());
 
 
-		Assert.assertEquals(133, map.encode(appleTree).toString().length());
+		Assert.assertEquals(133, map.encode(appleTree, map.SimpleFilter).toString().length());
 	}
 
 	@Test
@@ -116,7 +117,7 @@ public class XMLTest {
 		assertEquals("se", entity.getValue());
 		assertEquals("Stefan Lindel", entity.getUser());
 
-		assertEquals(xmlWithoutComment, map.encode(entity).toString());
+		assertEquals(xmlWithoutComment, map.encode(entity, map.SimpleFilter).toString());
 	}
 
 	@Test
@@ -154,7 +155,7 @@ public class XMLTest {
 		assertEquals("se", entity.getValue());
 		assertEquals("Stefan Lindel", entity.getUser());
 
-		assertEquals(xml, map.encode(entity).toString());
+		assertEquals(xml, map.encode(entity, map.SimpleFilter).toString());
 	}
 
 	@Test
@@ -172,7 +173,7 @@ public class XMLTest {
 	@Test
 	public void testXMLwithTwoChildrenUniExt(){
 		String xml = "<uni name=\"Kassel\"><child /><child /></uni>";
-		XMLSimpleIdMap map = new XMLSimpleIdMap();
+		XMLIdMap map = new XMLIdMap();
 		XMLEntity entity = (XMLEntity) map.decode(xml);
 		Assert.assertEquals(2, entity.getChildrenCount());
 	}
@@ -180,7 +181,7 @@ public class XMLTest {
 	@Test
 	public void testXMLwithTwoChildrenAndValues(){
 		String xml = "<row r=\"3\" spans=\"1:3\"><c r=\"A3\" s=\"1\"/><c r=\"B3\" t=\"s\"><v>6</v></c><c r=\"C3\" t=\"s\"><v>7</v></c></row>";
-		XMLSimpleIdMap map = new XMLSimpleIdMap();
+		XMLIdMap map = new XMLIdMap();
 		XMLEntity entity = (XMLEntity) map.decode(xml);
 		Assert.assertEquals(3, entity.getChildrenCount());
 	}
@@ -197,7 +198,7 @@ public class XMLTest {
 		map.with(new ChatMessageCreator());
 
 		String reference="<chatmsg sender=\"Stefan Lindel\" txt=\"Dies ist eine Testnachricht\"/>";
-		XMLEntity actual=map.encode(chatMessage);
+		XMLEntity actual=map.encode(chatMessage, map.SimpleFilter);
 		assertEquals("WERT Vergleichen", reference, actual.toString(2));
 		assertEquals(reference.length(), actual.toString(2).length());
 
@@ -217,7 +218,7 @@ public class XMLTest {
 
 		StringMessage msg = new StringMessage("Hallo World");
 
-		XMLEntity xml = map.encode(msg);
+		XMLEntity xml = map.encode(msg, map.SimpleFilter);
 //		"<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 		assertEquals("<p value=\"Hallo World\"/>", xml.toString(0));
 
@@ -243,7 +244,7 @@ public class XMLTest {
 		newMessage.setId("Cw0pc-0");
 		newMessage.setTo("peercenter@googlemail.com");
 		newMessage.setBody("Hallo Welt");
-		XMLEntity encoding = map.encode(newMessage);
+		XMLEntity encoding = map.encode(newMessage, map.SimpleFilter);
 
 		assertEquals(
 				"<message to=\"peercenter@googlemail.com\" id=\"Cw0pc-0\"><body>Hallo Welt</body></message>",
@@ -259,7 +260,7 @@ public class XMLTest {
 		XMLIdMap xmlMap = new XMLIdMap();
 		xmlMap.addCreator(new ChatMessageCreator());
 		String reference="<chatmsg sender=\"Stefan Lindel\" txt=\"Dies ist eine Testnachricht\"/>";
-		assertEquals("WERT Vergleichen", reference, xmlMap.encode(chatMessage).toString(2));
+		assertEquals("WERT Vergleichen", reference, xmlMap.encode(chatMessage, map.SimpleFilter).toString(2));
 	}
 
 	public static StringBuilder readFile(String fileName) throws IOException {

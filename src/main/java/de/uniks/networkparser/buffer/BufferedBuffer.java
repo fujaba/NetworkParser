@@ -216,6 +216,9 @@ public abstract class BufferedBuffer extends Buffer {
 		if (positions.length < 2) {
 			// END IS END OF BUFFER (Exclude)
 			end = length();
+			if(start==-1) {
+				start = this.position();
+			}
 		} else {
 			end = positions[1];
 		}

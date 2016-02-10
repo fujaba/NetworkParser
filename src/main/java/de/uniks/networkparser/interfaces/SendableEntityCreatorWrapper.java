@@ -29,5 +29,4 @@ public abstract class SendableEntityCreatorWrapper implements SendableEntityCrea
 	}
 
 	public abstract Object newInstance(Entity item);
-
 }

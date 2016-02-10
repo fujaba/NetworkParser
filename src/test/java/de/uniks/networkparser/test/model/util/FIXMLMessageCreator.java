@@ -33,6 +33,6 @@ public class FIXMLMessageCreator implements SendableEntityCreatorTag {
 
 	@Override
 	public String getTag() {
-		return "FIXML?FIXMLMessage";
+		return "FIXML.FIXMLMessage";
 	}
 }

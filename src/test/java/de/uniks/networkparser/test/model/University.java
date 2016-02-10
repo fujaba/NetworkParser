@@ -9,9 +9,9 @@ import java.util.Set;
 
 // should become a JSON Parser
 public class University {
-	public static final String PROPERTY_USER = "&fg&user";
-	public static final String PROPERTY_ICH = "&child&value";
-	public static final String PROPERTY_VALUE = "&fg?value";
+	public static final String PROPERTY_USER = ".fg.user.";
+	public static final String PROPERTY_ICH = ".child.value.";
+	public static final String PROPERTY_VALUE = ".fg.value";
 
 	private String user;
 	private String ich;

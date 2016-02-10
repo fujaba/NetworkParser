@@ -8,16 +8,19 @@ import de.uniks.networkparser.ext.io.ExcelBuffer;
 import de.uniks.networkparser.parser.excel.ExcelSheet;
 import de.uniks.networkparser.parser.excel.ExcelWorkBook;
 
-public class ExcelTest {
+public class ExcelTest extends IOClasses{
 	@Test
 	public void testCreate() {
-		File file = new File("test.xlsx");
+		String path = getAbsolutePath("test.xlsx");
+		String output = "build/test2.xlsx";
+		File file = new File(path);
 		if(file.exists()) {
 			ExcelBuffer buffer = new ExcelBuffer();
 			ExcelSheet content = buffer.parse(file);
 			ExcelWorkBook workBook = new ExcelWorkBook();
 			workBook.add(content);
-			buffer.encode(new File("test2.xlsx"), workBook);
+			new File("build").mkdir();
+			buffer.encode(new File(output), workBook);
 		}
 	}
 }

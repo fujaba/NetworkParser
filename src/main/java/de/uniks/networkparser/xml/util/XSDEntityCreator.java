@@ -23,34 +23,17 @@ package de.uniks.networkparser.xml.util;
 */
 import java.util.ArrayList;
 
-import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.buffer.Tokener;
-import de.uniks.networkparser.interfaces.EntityList;
-import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
-import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XSDEntity;
 /**
  * @author Stefan XSD Entity is a Creator for Structore of XML-XSD.
  */
 
-public class XSDEntityCreator implements SendableEntityCreatorTag, XMLGrammar {
-	/** NameSpace of XML. */
-	private String nameSpace = "";
+public class XSDEntityCreator extends XMLEntityCreator {
 	/** Private Stack of Items. */
 	private ArrayList<String> privateStack = new ArrayList<String>();
 	/** Tags to ignore. */
 	public static final String[] IGNORETAGS = new String[] {"annotation",
 			"documentation", "complextype", "simpletype" };
-
-	/**
-	 * @param namespace
-	 *			the NameSpace for xsd
-	 * @return Itself
-	 */
-	public XSDEntityCreator withNameSpace(String namespace) {
-		this.nameSpace = namespace;
-		return this;
-	}
 
 	@Override
 	public String[] getProperties() {
@@ -63,61 +46,44 @@ public class XSDEntityCreator implements SendableEntityCreatorTag, XMLGrammar {
 	public Object getSendableInstance(boolean prototyp) {
 		return new XSDEntity();
 	}
-
-	@Override
-	public Object getValue(Object entity, String attribute) {
-		return ((XSDEntity) entity).getValue(attribute);
-	}
-
-	@Override
-	public boolean setValue(Object entity, String attribute, Object value,
-			String type) {
-		((XSDEntity) entity).put(attribute, value);
-		return true;
-	}
-
-	@Override
-	public String getTag() {
-		return nameSpace + ":element";
-	}
-
-	@Override
-	public boolean parseChild(XMLEntity entity, XMLEntity child, Tokener value) {
-		String tag = child.getTag();
-		for (String ignoreTag : IGNORETAGS) {
-			if (tag.equalsIgnoreCase(nameSpace + ":" + ignoreTag)) {
-				return true;
-			}
-		}
-		if (child.getTag().equalsIgnoreCase(
-				nameSpace + ":" + XSDEntity.PROPERTY_SEQUENCE)) {
-			this.privateStack.add(XSDEntity.PROPERTY_SEQUENCE);
-		} else if (child.getTag().equalsIgnoreCase(
-				nameSpace + ":" + XSDEntity.PROPERTY_CHOICE)) {
-			this.privateStack.add(XSDEntity.PROPERTY_CHOICE);
-		}
-		return false;
-	}
-
-	@Override
-	public void addChildren(IdMap map, EntityList parent, EntityList child) {
-		if (this.privateStack.size() > 0) {
-			String lastTag = this.privateStack
-					.get(this.privateStack.size() - 1);
-			if (lastTag.equals(XSDEntity.PROPERTY_CHOICE)) {
-				((XSDEntity) parent).setValueItem(XSDEntity.PROPERTY_CHOICE,
-						child);
-			} else if (lastTag.equals(XSDEntity.PROPERTY_SEQUENCE)) {
-				((XSDEntity) parent).setValueItem(XSDEntity.PROPERTY_SEQUENCE,
-						child);
-			}
-
-		}
-		parent.with(child);
-	}
-
-	@Override
-	public void endChild(String tag) {
-		this.privateStack.remove(this.privateStack.size() - 1);
-	}
+//
+//	@Override
+//	public boolean parseChild(XMLEntity entity, XMLEntity child, Tokener value) {
+//		String tag = child.getTag();
+//		for (String ignoreTag : IGNORETAGS) {
+//			if (tag.equalsIgnoreCase(nameSpace + ":" + ignoreTag)) {
+//				return true;
+//			}
+//		}
+//		if (child.getTag().equalsIgnoreCase(
+//				nameSpace + ":" + XSDEntity.PROPERTY_SEQUENCE)) {
+//			this.privateStack.add(XSDEntity.PROPERTY_SEQUENCE);
+//		} else if (child.getTag().equalsIgnoreCase(
+//				nameSpace + ":" + XSDEntity.PROPERTY_CHOICE)) {
+//			this.privateStack.add(XSDEntity.PROPERTY_CHOICE);
+//		}
+//		return false;
+//	}
+//
+//	@Override
+//	public void addChildren(IdMap map, EntityList parent, EntityList child) {
+//		if (this.privateStack.size() > 0) {
+//			String lastTag = this.privateStack
+//					.get(this.privateStack.size() - 1);
+//			if (lastTag.equals(XSDEntity.PROPERTY_CHOICE)) {
+//				((XSDEntity) parent).setValueItem(XSDEntity.PROPERTY_CHOICE,
+//						child);
+//			} else if (lastTag.equals(XSDEntity.PROPERTY_SEQUENCE)) {
+//				((XSDEntity) parent).setValueItem(XSDEntity.PROPERTY_SEQUENCE,
+//						child);
+//			}
+//
+//		}
+//		parent.with(child);
+//	}
+//
+//	@Override
+//	public void endChild(String tag) {
+//		this.privateStack.remove(this.privateStack.size() - 1);
+//	}
 }

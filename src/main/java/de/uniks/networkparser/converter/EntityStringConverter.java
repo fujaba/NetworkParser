@@ -6,20 +6,20 @@ import de.uniks.networkparser.interfaces.Entity;
 
 public class EntityStringConverter implements Converter {
 	private int indentFactor;
-	private int intent;
+	private int indent;
 	
 	public EntityStringConverter() {
 	}
 
-	public EntityStringConverter(int intentFactor, int intent) {
-		this.indentFactor = intentFactor;
-		this.intent = intent;
+	public EntityStringConverter(int indentFactor, int indent) {
+		this.indentFactor = indentFactor;
+		this.indent = indent;
 	}
 
 	@Override
 	public String encode(BaseItem entity) {
 		if(entity instanceof Entity) {
-			return ((Entity) entity).toString(getIndentFactor(), intent);
+			return ((Entity) entity).toString(getIndentFactor());
 		}else if(entity instanceof BaseItem) {
 			return ((BaseItem) entity).toString(this);
 		}
@@ -33,7 +33,7 @@ public class EntityStringConverter implements Converter {
 		return indentFactor;
 	}
 
-	public int getIntent() {
-		return intent;
+	public int getIndent() {
+		return indent;
 	}
 }

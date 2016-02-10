@@ -4,12 +4,14 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+
 import org.junit.Assert;
 import org.junit.Test;
+
+import de.uniks.networkparser.converter.DotConverter;
 import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
-import de.uniks.networkparser.graph.DotIdMap;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.interfaces.BaseItem;
 
@@ -17,14 +19,14 @@ public class DotTest {
 	@Test
 	public void testDotShort() {
 		String item="strict graph ethane {1}";
-		DotIdMap map=new DotIdMap();
+		DotConverter map = new DotConverter();
 		map.decode(item);
 	}
 
 	@Test
 	public void testDotShortest() {
 		String item="graph{1}";
-		DotIdMap map=new DotIdMap();
+		DotConverter map = new DotConverter();
 		GraphList list = (GraphList) map.decode(item);
 		Assert.assertEquals(1, list.getNodes().size());
 	}
@@ -37,7 +39,7 @@ public class DotTest {
 			  +"\"To\" -> \"Web\""+BaseItem.CRLF
 			  +"\"To\" -> \"GraphViz!\""+BaseItem.CRLF
 			+"}";
-		DotIdMap map=new DotIdMap();
+		DotConverter map = new DotConverter();
 		GraphList list = (GraphList) map.decode(item);
 		Assert.assertEquals(4, list.getNodes().size());
 	}
@@ -53,7 +55,7 @@ public class DotTest {
 			+"3 -- 5"+BaseItem.CRLF
 			+"4 -- 5}";
 
-		DotIdMap map=new DotIdMap();
+		DotConverter map = new DotConverter();
 		GraphList list = (GraphList) map.decode(item);
 		Assert.assertEquals(5, list.getNodes().size());
 	}
@@ -61,7 +63,7 @@ public class DotTest {
 	public void testDotPMAttribute() {
 		String item="graph smallworld {"+BaseItem.CRLF
 			+"1[BONUS=2,ID=ISLAND] -- 2[BONUS=3]}";
-		DotIdMap map=new DotIdMap();
+		DotConverter map = new DotConverter();
 		GraphList list = (GraphList) map.decode(item);
 		Assert.assertEquals(2, list.getNodes().size());
 	}
@@ -75,8 +77,7 @@ public class DotTest {
 		Clazz student = list.with(new Clazz().with("Stefan").with("Student"));
 		student.withUniDirectional(uni, "owner", Cardinality.ONE);
 
-		DotIdMap map=new DotIdMap();
-		String convert = map.convert(list, true);
+		String convert = list.toString(new DotConverter(true));
 
 
 		new File("build").mkdir();

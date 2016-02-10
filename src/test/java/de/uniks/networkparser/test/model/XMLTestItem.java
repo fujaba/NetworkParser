@@ -2,9 +2,9 @@ package de.uniks.networkparser.test.model;
 
 public class XMLTestItem {
 	public static final String PROPERTY_ID = "id";
-	public static final String PROPERTY_BODY = "&body?txt";
-	public static final String PROPERTY_VALUE = "&body";
-	public static final String PROPERTY_USER = "&user";
+	public static final String PROPERTY_BODY = ".body.txt";
+	public static final String PROPERTY_VALUE = ".body.";
+	public static final String PROPERTY_USER = ".user.";
 
 	private int id;
 	private String body;

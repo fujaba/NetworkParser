@@ -40,9 +40,8 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 
 	/** The Constant SENDUPDATE. */
 	public static final String SENDUPDATE = "sendupdate";
-
-	/** The Constant ITEMS. */
-	public static final String ITEMS = "items";
+	
+	public static final String CHILDREN= "<CHILDREN>";
 
 	/** The counter. */
 	private IdMapCounter counter;

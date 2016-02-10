@@ -5,7 +5,7 @@ public class JabberChatMessage {
 	public static final String PROPERTY_TYPE = "type";
 	public static final String PROPERTY_ID = "id";
 	public static final String PROPERTY_FROM = "from";
-	public static final String PROPERTY_BODY = "&body";
+	public static final String PROPERTY_BODY = ".body.";
 	private String to;
 	private String type;
 	private String id;

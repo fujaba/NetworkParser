@@ -43,11 +43,6 @@ public class GraphList extends GraphModel implements BaseItem{
 		}
 		return converter.encode(this);
 	}
-	
-	@Override
-	public String toString(int indentFactor) {
-		return toString();
-	}
 
 	public String getTyp() {
 		return typ;

@@ -23,6 +23,7 @@ package de.uniks.networkparser.xml;
 */
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.Tokener;
+import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
@@ -109,10 +110,14 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	 */
 	@Override
 	public XMLEntity with(Object... values) {
-		if(values==null){
+		if(values==null || values.length < 1){
 			return this;
 		}
-		if (values.length % 2 == 1 || values[0] instanceof String == false) {
+		if(values[0] instanceof String) {
+			if(values.length == 1) {
+				this.withValueItem((String)values[0]);
+			}
+		}else if (values.length % 2 == 1) {
 			for(Object item : values) {
 				if(item instanceof EntityList) {
 					getChildren().add((EntityList) item);
@@ -131,7 +136,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	 *			the new Child
 	 * @return XMLEntity Instance
 	 */
-	public XMLEntity withChild(XMLEntity value) {
+	public XMLEntity withChild(EntityList value) {
 		getChildren().add(value);
 		return this;
 	}
@@ -237,13 +242,12 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		return toString(indentFactor, 0);
 	}
 
-	@Override
-	public String toString(int indentFactor, int intent) {
+	protected String toString(int indentFactor, int indent) {
 		StringBuilder sb = new StringBuilder();
-		if (intent > 0) {
+		if (indent > 0) {
 			sb.append("\n");
 		}
-		sb.append(EntityUtil.repeat(' ', intent));
+		sb.append(EntityUtil.repeat(' ', indent));
 		if(this.getTag() != null) {
 			sb.append("<" + this.getTag());
 		}
@@ -256,7 +260,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 			}
 		}
 
-		toStringChildren(sb, indentFactor, intent + indentFactor);
+		toStringChildren(sb, indentFactor, indent + indentFactor);
 		return sb.toString();
 	}
 
@@ -266,24 +270,24 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	 * @param sb
 	 *			The StringBuilder where The Children add
 	 * @param indentFactor
-	 *			IntentFactor for indent
-	 * @param intent
-	 *			Current Intent
+	 *			indentFactor for indent
+	 * @param indent
+	 *			Current Indent
 	 */
 	protected void toStringChildren(StringBuilder sb, int indentFactor,
-			int intent) {
+			int indent) {
 		// parse Children
 		if (this.children != null && this.children.size() > 0) {
 			if(this.getTag() != null) {
 				sb.append(">");
 			}
 			for (EntityList child : this.children) {
-				sb.append(child.toString(indentFactor, intent + indentFactor));
+				sb.append(child.toString(new EntityStringConverter(indentFactor, indent + indentFactor)));
 			}
 			if (indentFactor > 0) {
 				sb.append("\n");
 			}
-			sb.append(EntityUtil.repeat(' ', intent));
+			sb.append(EntityUtil.repeat(' ', indent));
 			if(this.getTag() != null) {
 				sb.append("</" + getTag() + ">");
 			}

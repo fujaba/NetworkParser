@@ -1,26 +1,31 @@
 package de.uniks.networkparser.xml;
 
-import java.util.ArrayList;
 import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.buffer.Buffer;
+import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.list.SimpleSet;
 
 public class XMLTokener extends Tokener {
 	public static final String TOKEN=" >//<";
 
-	/** The stack. */
-	private ArrayList<Object> stack = new ArrayList<Object>();
+	/** The Stack. */
+	private SimpleKeyValueList<Object, SendableEntityCreatorTag> stack = new SimpleKeyValueList<Object, SendableEntityCreatorTag>();
+	
+	private SimpleList<String> tags = new SimpleList<String>();
+	
 	/** Variable of AllowQuote. */
 	private boolean isAllowQuote;
 
-	/** The prefix. */
-	private String prefix;
+	private SimpleKeyValueList<String, SimpleSet<String>> childProperties= new SimpleKeyValueList<String, SimpleSet<String>>();
 
 	/**
 	 * Get the next value. The value can be a Boolean, Double, Integer,
@@ -167,66 +172,65 @@ public class XMLTokener extends Tokener {
 	}
 
 	/**
-	 * Get the Prefix from Tokener my be seperated by &amp;.
-	 *
-	 * @return the Prefix
+	 * Remove The Last Element 
 	 */
-	public String getPrefix() {
-		return prefix;
-	}
-
-	/**
-	 * @param value
-	 *			set Prefix.
-	 * @return XMLTokener Instance
-	 */
-	public XMLTokener withPrefix(String value) {
-		this.prefix = value;
-		return this;
-	}
-
-	/**
-	 * @param value
-	 *			add Prefix to Existing.
-	 * @return XMLTokener Instance
-	 */
-	public XMLTokener addPrefix(String value) {
-		this.prefix += value;
-		return this;
-	}
-
-	/**
-	 * Add a new Reference Object to Stack.
-	 *
-	 * @param item
-	 *			new Reference Object
-	 * @return XMLTokener Instance
-	 */
-	public XMLTokener withStack(Object item) {
-		this.stack.add(item);
-		this.prefix = "";
-		return this;
-	}
-
-	/**
-	 * @return The Last Element and remove it
-	 */
-	public Object popStack() {
-		return this.stack.remove(this.stack.size() - 1);
+	public void popStack() {
+		this.stack.removePos(this.stack.size() - 1);
+		this.tags.remove(this.tags.size() - 1);
 	}
 
 	/** @return The StackSize */
 	public int getStackSize() {
 		return this.stack.size();
 	}
-
+	
 	/**
-	 * @param offset
-	 *			Offset from Last
 	 * @return The Stack Element - offset
 	 */
-	public Object getStackLast(int offset) {
-		return this.stack.get(this.stack.size() - 1 - offset);
+	public Object getCurrentItem() {
+		return this.stack.last();
+	}
+	
+	/**
+	 * Add a new Reference Object to Stack.
+	 * @param tag	The new Tag
+	 * @param item 	new Reference Object
+	 * @param creator The Creator for the Item
+	 * @return XMLTokener Instance
+	 */
+	public XMLTokener withStack(String tag, Object item, SendableEntityCreatorTag creator) {
+		stack.add(item, creator);
+		tags.add(tag);
+		String[] properties = creator.getProperties();
+		for(String property : properties) {
+			int lastPos = property.lastIndexOf(IdMap.ENTITYSPLITTER);
+			if(lastPos >= 0) {
+				String prop;
+				if(lastPos == property.length() - 1) {
+					// Value of XML Entity like uni.
+					prop = ".";
+				} else {
+					prop = property.substring(lastPos + 1);
+				}
+				int pos = childProperties.indexOf(prop);
+				if(pos>=0) {
+					childProperties.getValueByIndex(pos).add(property);
+				} else {
+					SimpleSet<String> child = new SimpleSet<String>();
+					child.add(property);
+					childProperties.put(prop, child);
+				}
+			}
+		}
+		return this;
+	}
+
+	
+	/**
+	 * @return The Stack Element - offset
+	 */
+	public SendableEntityCreatorTag getCurrentCreator() {
+		return this.stack.getValueByIndex(this.stack.size() - 1);
 	}
 
 	/**
@@ -242,5 +246,54 @@ public class XMLTokener extends Tokener {
 	public XMLTokener withBuffer(String value) {
 		super.withBuffer(value);
 		return this;
+	}
+	@Override
+	public String toString() {
+		if(buffer instanceof BufferedBuffer) {
+			return "XMLTokener: "+((BufferedBuffer)buffer).substring(-1);
+		}
+		return super.toString();
+	}
+
+	public void setValue(String key, String value) {
+		SimpleSet<String> set = childProperties.get(key);
+		if(set != null) {
+			for(String ChildKey : set) {
+				int pos = getEntityPos(ChildKey);
+				if(pos >= 0 ) {
+					Object entity = stack.getKeyByIndex(pos);
+					SendableEntityCreatorTag creator = stack.getValueByIndex(pos);
+					creator.setValue(entity, ChildKey, value, XMLIdMap.NEW);
+				}
+			}
+		}
+//		Object entity = getCurrentItem();
+		
+//		creator.setValue(entity, key, value, NEW);
+		
+	}
+	
+	private int getEntityPos(String entity) {
+		int start=entity.lastIndexOf(XMLIdMap.ENTITYSPLITTER);
+		int pos = this.tags.size() - 1;
+		for(int end=start-1;end>=0;end --) {
+			if(entity.charAt(end) ==XMLIdMap.ENTITYSPLITTER) {
+				String item = entity.substring(end+1, start);
+				String tag = tags.get(pos);
+				if(tag == null || tag.equals(item) == false) {
+					return -1;
+				}
+				start = end;
+				pos--;
+			}
+		}
+		return pos;
+	}
+
+	public String getCurrentTag() {
+		if(this.tags.size() >0 ){
+			return this.tags.get(this.tags.size() - 1);
+		}
+		return null;
 	}
 }

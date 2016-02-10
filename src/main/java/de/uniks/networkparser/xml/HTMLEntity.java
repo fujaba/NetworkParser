@@ -22,6 +22,7 @@ package de.uniks.networkparser.xml;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.converter.GraphConverter;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -38,10 +39,9 @@ public class HTMLEntity implements BaseItem {
 
 	@Override
 	public String toString() {
-		return this.toString(0);
+		return this.toString(0, 0);
 	}
 
-	@Override
 	public String toString(int indentFactor) {
 		return toString(indentFactor, 0);
 	}
@@ -60,15 +60,15 @@ public class HTMLEntity implements BaseItem {
 		return this;
 	}
 
-	public String toString(int indentFactor, int intent) {
+	protected String toString(int indentFactor, int indent) {
 		StringBuilder sb = new StringBuilder();
-		if (intent > 0) {
+		if (indent > 0) {
 			sb.append("\n");
 		}
-		sb.append(EntityUtil.repeat(' ', intent));
+		sb.append(EntityUtil.repeat(' ', indent));
 		sb.append("<html>");
-		sb.append(header.toString(indentFactor, intent));
-		sb.append(body.toString(indentFactor, intent));
+		sb.append(header.toString(indentFactor, indent));
+		sb.append(body.toString(indentFactor, indent));
 		sb.append("</html>");
 		return sb.toString();
 	}
@@ -176,12 +176,15 @@ public class HTMLEntity implements BaseItem {
 	
 	@Override
 	public String toString(Converter converter) {
+		if(converter instanceof EntityStringConverter) {
+			EntityStringConverter item = (EntityStringConverter)converter;
+			return toString(item.getIndentFactor(), item.getIndent());
+		}
 		if(converter == null) {
 			return null;
 		}
 		return converter.encode(this);
 	}
-
 	@Override
 	public int size() {
 		return body.size();

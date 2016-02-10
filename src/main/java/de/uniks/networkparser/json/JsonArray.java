@@ -195,7 +195,7 @@ public class JsonArray extends SortedList<Object> implements BaseItem, EntityLis
 	 * @param indent		actual Indent Level
 	 * @return return Item As String
 	 */
-	public String toString(int indentFactor, int indent) {
+	protected String toString(int indentFactor, int indent) {
 		Iterator<Object> iterator = iterator();
 		if (!iterator.hasNext()) {
 			return "[]";

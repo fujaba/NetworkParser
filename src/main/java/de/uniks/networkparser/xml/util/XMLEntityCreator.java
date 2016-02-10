@@ -1,38 +1,18 @@
 package de.uniks.networkparser.xml.util;
 
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.interfaces.EntityList;
-/*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
-
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
-
- http://ec.europa.eu/idabc/eupl5
-
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
-*/
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.xml.XMLEntity;
 /**
  * @author Stefan Creator for XML Entity.
  */
 
-public class XMLEntityCreator implements SendableEntityCreator, XMLGrammar {
+public class XMLEntityCreator implements SendableEntityCreatorTag {
+	/** NameSpace of XML. */
+	private String nameSpace = "";
+	
 	/** The properties. */
-	public static final String ALL="all";
 	private final String[] properties = new String[] {XMLEntity.PROPERTY_TAG,
 			XMLEntity.PROPERTY_VALUE };
 
@@ -41,6 +21,17 @@ public class XMLEntityCreator implements SendableEntityCreator, XMLGrammar {
 		return properties;
 	}
 
+	/**
+	 * @param namespace
+	 *			the NameSpace for xsd
+	 * @return Itself
+	 */
+	public XMLEntityCreator withNameSpace(String namespace) {
+		this.nameSpace = namespace;
+		return this;
+	}
+	
+	
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new XMLEntity();
@@ -68,35 +59,19 @@ public class XMLEntityCreator implements SendableEntityCreator, XMLGrammar {
 			((XMLEntity) entity).withValueItem("" + value);
 			return true;
 		}
-		((XMLEntity) entity).add(attribute, value);
+		if(IdMap.CHILDREN.equals(type) && value instanceof EntityList){
+			((XMLEntity) entity).withChild((EntityList)value);
+		}else if(attribute != null && attribute.isEmpty() == false) {
+			((XMLEntity) entity).add(attribute, value);
+		}
 		return true;
 	}
 
 	@Override
-	public boolean parseChild(XMLEntity entity, XMLEntity child, Tokener value) {
-		return false;
-	}
-
-	@Override
-	public void addChildren(IdMap map, EntityList parent, EntityList child) {
-		SendableEntityCreator creator = null;
-		if(child instanceof XMLEntity) {
-			creator = map.getCreator(((XMLEntity)child).getTag(), true);
+	public String getTag() {
+		if(nameSpace != null) {
+			return nameSpace + ":element";
 		}
-		if(creator != null) {
-			Object sendableInstance = creator.getSendableInstance(false);
-			if(sendableInstance != null && sendableInstance instanceof EntityList) {
-				if(creator.setValue(sendableInstance, ALL, child, ALL)) {
-					parent.with(sendableInstance);
-					return;
-				}
-			}
-		}
-
-		parent.with(child);
-	}
-
-	@Override
-	public void endChild(String tag) {
+		return null;
 	}
 }

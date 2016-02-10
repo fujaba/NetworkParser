@@ -55,12 +55,11 @@ public class SoapObject implements BaseItem {
 		return toString(0, 0);
 	}
 
-	@Override
 	public String toString(int indentFactor) {
 		return toString(indentFactor, 0);
 	}
 
-	public String toString(int indentFactor, int intent) {
+	protected String toString(int indentFactor, int indent) {
 		String spaces = "";
 		if (indentFactor > 0) {
 			spaces = "\r\n" + EntityUtil.repeat(' ', indentFactor);
@@ -77,7 +76,7 @@ public class SoapObject implements BaseItem {
 		sb.append("<" + namespace + ":Body>");
 
 		if (children != null) {
-			sb.append(children.toString(indentFactor, indentFactor + indentFactor));
+			sb.append(children.toString(new EntityStringConverter(indentFactor, indent + indentFactor)));
 			sb.append(spaces);
 		}
 		sb.append("</" + namespace + ":Body>");
@@ -131,9 +130,12 @@ public class SoapObject implements BaseItem {
 	public String toString(Converter converter) {
 		if(converter instanceof EntityStringConverter) {
 			EntityStringConverter item = (EntityStringConverter)converter;
-			return toString(item.getIndentFactor(), item.getIntent());
+			return toString(item.getIndentFactor(), item.getIndent());
 		}
-		return null;
+		if(converter == null) {
+			return null;
+		}
+		return converter.encode(this);
 	}
 
 	@Override

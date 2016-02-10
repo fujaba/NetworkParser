@@ -39,13 +39,13 @@ import de.uniks.networkparser.graph.Literal;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XMLIdMap;
 import de.uniks.networkparser.xml.XMLTokener;
-import de.uniks.networkparser.xml.util.XMLGrammar;
-import de.uniks.networkparser.xml.util.XSDEntityCreator;
+import de.uniks.networkparser.xml.util.XMLEntityCreator;
 
 public class EMFIdMap extends XMLIdMap {
 	public static final String ECLASS = "ecore:EClass";
@@ -120,9 +120,14 @@ public class EMFIdMap extends XMLIdMap {
 		return this;
 	}
 
-	public Object decode(XMLTokener tokener, XMLGrammar factory) {
-		if (factory == null) {
-			factory = new XSDEntityCreator();
+	/**
+	 * @param tokener XMLTokener
+	 * @param defaultFactory DefaultTokener
+	 * @return decoded Object
+	 */
+	public Object decode(XMLTokener tokener, SendableEntityCreatorTag defaultFactory) {
+		if (defaultFactory == null) {
+			defaultFactory = new XMLEntityCreator();
 		}
 		tokener.skipHeader();
 		XMLEntity xmlEntity = new XMLEntity();

@@ -27,7 +27,7 @@ import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.XMLEntity;
-import de.uniks.networkparser.xml.XMLSimpleIdMap;
+import de.uniks.networkparser.xml.XMLIdMap;
 import de.uniks.networkparser.xml.XMLTokener;
 import de.uniks.networkparser.xml.util.XMLEntityCreator;
 
@@ -55,7 +55,7 @@ public class ExcelParser {
 		SimpleKeyValueList<String, ExcelCell> cells = new SimpleKeyValueList<String, ExcelCell>();
 		SimpleKeyValueList<String, String> mergeCellPos = new SimpleKeyValueList<String, String>();
 
-		XMLSimpleIdMap map = new XMLSimpleIdMap();
+		XMLIdMap map = new XMLIdMap();
 		map.with(new ExcelCell());
 		XMLTokener tokener = new XMLTokener().withBuffer(sheetFile.toString());
 		XMLEntity sheet = (XMLEntity) map.decode(tokener, new XMLEntityCreator());
@@ -95,7 +95,7 @@ public class ExcelParser {
 						ExcelRow dataRow = new ExcelRow();
 						// <c r="A1" t="s"><v>2</v></c>
 						for (EntityList item : row.getChildren()) {
-							if (child == null || item instanceof ExcelCell ) {
+							if (item == null || item instanceof ExcelCell == false) {
 								continue;
 							}
 							ExcelCell cell = (ExcelCell) item;
@@ -225,7 +225,7 @@ public class ExcelParser {
 			}
 			data.with("  <row r=\"" + row.getRowPos() + "\">");
 			for (ExcelCell cell : row) {
-				data.with(cell.getDataLine());
+				data.with(cell.toString());
 			}
 			data.with("</row>\r\n");
 		}

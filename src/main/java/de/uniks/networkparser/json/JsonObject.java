@@ -203,9 +203,8 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 	public String toString(int indentFactor) {
 		return toString(indentFactor, 0);
 	}
-
-	@Override
-	public String toString(int indentFactor, int indent) {
+	
+	protected String toString(int indentFactor, int indent) {
 		int length = this.size();
 		if (length == 0) {
 			return "{}";

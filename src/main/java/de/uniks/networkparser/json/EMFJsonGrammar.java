@@ -40,8 +40,6 @@ public class EMFJsonGrammar extends SimpleGrammar {
 
 	@Override
 	public BaseItem getProperties(Entity item, IdMap map, Filter filter, boolean isId, String type) {
-//		item.remove(ID);
-//		return item;
 		JsonObject props= new JsonObject();
 		if(item.has(PROP)){
 			String key = item.getString(PROP);
@@ -60,21 +58,6 @@ public class EMFJsonGrammar extends SimpleGrammar {
 	@Override
 	public SendableEntityCreator getCreator(String type, Object item, IdMap map, boolean searchForSuperCreator,
 			String className) {
-//		if(Grammar.READ.equals(type) && item instanceof Entity) {
-//			String idString = ((Entity)item).getString(ID);
-//			className = "." + idString.substring(0, idString.indexOf(map.getCounter().getSplitter()));
-//
-//			// Find Item for LastName
-//			for (Iterator<SendableEntityCreator> iterator = map.iterator(); iterator
-//					.hasNext();) {
-//				SendableEntityCreator entry = iterator.next();
-//				if (entry.getSendableInstance(true).getClass().getName()
-//						.endsWith(className)) {
-//					return entry;
-//				}
-//			}
-//		} else if(Grammar.WRITE.equals(type)) {
-//		}
 		if(Grammar.READ.equals(type) && item instanceof Entity) {
 			SendableEntityCreator result = getCreator(type, null, map, false, ((Entity)item).getString(SRC));
 			if(result!=null){
@@ -124,7 +107,6 @@ public class EMFJsonGrammar extends SimpleGrammar {
 	@Override
 	public String getValue(Entity item, String property) {
 		if (JsonIdMap.ID.equals(property)) {
-//			return item.getString(ID);
 			return item.getString(SRC);
 		}
 		return item.getString(property);
@@ -152,5 +134,4 @@ public class EMFJsonGrammar extends SimpleGrammar {
 		}
 		return json;
 	}
-
 }

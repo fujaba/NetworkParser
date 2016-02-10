@@ -6,5 +6,17 @@ public interface EntityList extends BaseItem{
 
 	public SimpleList<EntityList> getChildren();
 	
-	public String toString(int indentFactor, int intent);
+	/**
+	 * Make a prettyprinted Text of this Entity.
+	 * <p>
+	 * Warning: This method assumes that the data structure is acyclical.
+	 *
+	 * @param indentFactor
+	 *			The number of spaces to add to each level of indentation.
+	 * @return a printable, displayable, portable, transmittable representation
+	 *		 of the object, beginning with <code>{</code>&nbsp;<small>(left
+	 *		 brace)</small> and ending with <code>}</code>&nbsp;<small>(right
+	 *		 brace)</small>.
+	 */
+	public String toString(int indentFactor);
 }

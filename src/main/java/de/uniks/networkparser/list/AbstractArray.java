@@ -1420,14 +1420,24 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		}
 		return true;
 	}
-
-	@Override
-	public String toString(int indentFactor) {
-		return this.toString();
-	}
 	
-	public String toString(int indentFactor, int indent) {
-		return this.toString();
+	
+	/**
+	 * Make a prettyprinted Text of this Entity.
+	 * <p>
+	 * Warning: This method assumes that the data structure is acyclical.
+	 *
+	 * @param indentFactor
+	 *			The number of spaces to add to each level of indentation.
+	 * @param indent
+	 *			The number of current spaces 
+	 * @return a printable, displayable, portable, transmittable representation
+	 *		 of the object, beginning with <code>{</code>&nbsp;<small>(left
+	 *		 brace)</small> and ending with <code>}</code>&nbsp;<small>(right
+	 *		 brace)</small>.
+	 */
+	protected String toString(int indentFactor, int indent) {
+		return toString();
 	}
 
 	@Override
@@ -1436,8 +1446,8 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 			return null;
 		}
 		if(converter instanceof EntityStringConverter) {
-			EntityStringConverter item = (EntityStringConverter)converter;
-			return toString(item.getIndentFactor(), item.getIntent());
+			EntityStringConverter entityConverter = (EntityStringConverter) converter;
+			return toString(entityConverter.getIndentFactor(), entityConverter.getIndent());
 		}
 		return converter.encode(this);
 	}

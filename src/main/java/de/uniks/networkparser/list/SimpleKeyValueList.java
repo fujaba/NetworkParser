@@ -474,6 +474,16 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return (V) removeByIndex(index, SMALL_VALUE, oldIndex);
 	}
 
+	@SuppressWarnings("unchecked")
+	public V removePos(int pos) {
+		if (pos < 0) {
+			return null;
+		}
+		int oldIndex = this.index;
+		removeItem(pos, SMALL_KEY, oldIndex);
+		return (V) removeByIndex(pos, SMALL_VALUE, oldIndex);
+	}
+
 	@Override
 	public void putAll(Map<? extends K, ? extends V> values) {
 		if(values==null) {

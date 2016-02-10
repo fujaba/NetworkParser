@@ -241,11 +241,6 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 	}
 
 	@Override
-	public String toString(int indentFactor) {
-		return toString();
-	}
-	
-	@Override
 	public String toString(Converter converter) {
 		if(converter == null) {
 			return null;

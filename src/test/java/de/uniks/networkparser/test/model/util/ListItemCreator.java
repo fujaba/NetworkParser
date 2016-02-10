@@ -1,6 +1,8 @@
 package de.uniks.networkparser.test.model.util;
 
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
+import de.uniks.networkparser.test.model.Entity;
 import de.uniks.networkparser.test.model.ListItem;
 
 public class ListItemCreator implements SendableEntityCreatorTag {
@@ -21,7 +23,10 @@ public class ListItemCreator implements SendableEntityCreatorTag {
 		}
 
 		@Override
-		public boolean setValue(Object entity, String attribute, Object value, String typ) {
+		public boolean setValue(Object entity, String attribute, Object value, String type) {
+			if(IdMap.CHILDREN.equals(type)) {
+				return ((ListItem) entity).getChild().add((Entity) value);
+			}
 			return ((ListItem) entity).set(attribute, value);
 		}
 

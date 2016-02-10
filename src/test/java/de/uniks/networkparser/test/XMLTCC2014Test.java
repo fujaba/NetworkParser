@@ -3,6 +3,8 @@ package de.uniks.networkparser.test;
 import static org.junit.Assert.*;
 import org.junit.Assert;
 import org.junit.Test;
+
+import de.uniks.networkparser.test.model.FIXMLMessage;
 import de.uniks.networkparser.test.model.util.ApplicationMessageCreator;
 import de.uniks.networkparser.test.model.util.FIXMLMessageCreator;
 import de.uniks.networkparser.xml.XMLEntity;
@@ -26,9 +28,9 @@ public class XMLTCC2014Test extends IOClasses{
 //		map.withCreator(new de.kassel.ttc2014.fixml.test3.creators.Rule80ACreator());
 //		map.withCreator(new de.kassel.ttc2014.fixml.test3.creators.LimitOrderCreator());
 
-		Object item = map.decode(XMLText);
-
+		FIXMLMessage item = (FIXMLMessage) map.decode(XMLText);
 		assertNotNull(item);
+		assertNotNull(item.getApplicationmessage());
 	}
 
 	@Test

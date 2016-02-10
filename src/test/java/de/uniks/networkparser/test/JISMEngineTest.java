@@ -2,9 +2,9 @@ package de.uniks.networkparser.test;
 
 import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
-import de.uniks.networkparser.xml.XMLSimpleIdMap;
+import de.uniks.networkparser.xml.XMLIdMap;
 import de.uniks.networkparser.xml.XMLTokener;
-import de.uniks.networkparser.xml.util.XMLStyledEntityCreator;
+import de.uniks.networkparser.xml.util.XMLEntityCreator;
 
 public class JISMEngineTest extends IOClasses{
 
@@ -12,9 +12,9 @@ public class JISMEngineTest extends IOClasses{
 	public void testJISMEngine(){
 		StringBuffer stringBuffer = readFile("template.html");
 
-		XMLSimpleIdMap decoder= new XMLSimpleIdMap();
+		XMLIdMap decoder= new XMLIdMap();
 		String data = stringBuffer.toString();
-		XMLStyledEntityCreator factory = new XMLStyledEntityCreator();
+		XMLEntityCreator factory = new XMLEntityCreator();
 		Object decode = decoder.decode(new XMLTokener().withBuffer(data), factory);
 		assertNotNull(decode);
 	}

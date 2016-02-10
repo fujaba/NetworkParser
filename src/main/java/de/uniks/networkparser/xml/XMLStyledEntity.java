@@ -35,7 +35,7 @@ public class XMLStyledEntity extends XMLEntity {
 
 	@Override
 	protected void toStringChildren(StringBuilder sb, int indentFactor,
-			int intent) {
+			int indent) {
 		// Starttag
 		if (style.isBold()) {
 			sb.append("<b>");
@@ -43,7 +43,7 @@ public class XMLStyledEntity extends XMLEntity {
 		if (style.isItalic()) {
 			sb.append("<i>");
 		}
-		super.toStringChildren(sb, indentFactor, intent);
+		super.toStringChildren(sb, indentFactor, indent);
 
 		// EndTag
 		if (style.isItalic()) {

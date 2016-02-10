@@ -25,11 +25,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import de.uniks.networkparser.AbstractMap;
+import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.ByteBuffer;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
-public class ByteSimpleMap extends AbstractMap {
+public class ByteSimpleMap extends IdMap {
 	public Object decode(ByteBuffer buffer, BitEntityCreator creator) {
 		SimpleKeyValueList<String, Object> values = new SimpleKeyValueList<String, Object>();
 		BitEntity[] bitProperties = creator.getBitProperties();
@@ -226,5 +228,17 @@ public class ByteSimpleMap extends AbstractMap {
 		}
 		values.put(entry.getPropertyName(), element);
 		return element;
+	}
+
+	@Override
+	public BaseItem encode(Object value) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public BaseItem encode(Object value, Filter filter) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

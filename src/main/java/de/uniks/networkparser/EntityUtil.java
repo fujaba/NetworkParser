@@ -245,7 +245,7 @@ public class EntityUtil {
 	 *			The value to be serialized.
 	 * @param indentFactor
 	 *			The number of spaces to add to each level of indentation.
-	 * @param intent
+	 * @param indent
 	 *			The indentation of the top level.
 	 * @param simpleText
 	 *			Boolean for switch between text and Escaped-Text
@@ -258,7 +258,7 @@ public class EntityUtil {
 	 *		 brace)</small>.
 	 */
 	public static String valueToString(Object value, int indentFactor,
-			int intent, boolean simpleText, BaseItem reference) {
+			int indent, boolean simpleText, BaseItem reference) {
 		if (value == null) {
 			return "null";
 		}
@@ -269,12 +269,12 @@ public class EntityUtil {
 			return value.toString();
 		}
 		if (value instanceof BaseItem) {
-			return ((BaseItem) value).toString(new EntityStringConverter(indentFactor, intent));
+			return ((BaseItem) value).toString(new EntityStringConverter(indentFactor, indent));
 		}
 		if (value instanceof Map) {
 			BaseItem item = reference.getNewList(true).with((Map<?, ?>) value);
 			if (item instanceof BaseItem) {
-				return ((BaseItem) item).toString(new EntityStringConverter(indentFactor, intent));
+				return ((BaseItem) item).toString(new EntityStringConverter(indentFactor, indent));
 			}
 			return ((BaseItem) item).toString();
 		}
@@ -284,7 +284,7 @@ public class EntityUtil {
 				return ((SimpleKeyValueList<?,?>) item).withList((Map<?, ?>) value).toString();
 			}
 			if (item instanceof BaseItem) {
-				return ((BaseItem) item).toString(new EntityStringConverter(indentFactor, intent));
+				return ((BaseItem) item).toString(new EntityStringConverter(indentFactor, indent));
 			}
 			return ((BaseItem) item).toString();
 		}
@@ -295,7 +295,7 @@ public class EntityUtil {
 				item.with(entity);
 			}
 			if (item instanceof BaseItem) {
-				return ((BaseItem) item).toString(new EntityStringConverter(indentFactor, intent));
+				return ((BaseItem) item).toString(new EntityStringConverter(indentFactor, indent));
 			}
 			return ((BaseItem) item).toString();
 		}

@@ -1,48 +1,62 @@
-package de.uniks.networkparser.graph;
+package de.uniks.networkparser.converter;
 
-import de.uniks.networkparser.AbstractMap;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.graph.Association;
+import de.uniks.networkparser.graph.AssociationTypes;
+import de.uniks.networkparser.graph.Attribute;
+import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.graph.DataType;
+import de.uniks.networkparser.graph.GraphEntity;
+import de.uniks.networkparser.graph.GraphIdMap;
+import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferItem;
-import de.uniks.networkparser.interfaces.IdMapDecoder;
+import de.uniks.networkparser.interfaces.Converter;
 
-//graph	:	[ strict ] (graph | digraph) [ ID ] '{' stmt_list '}'
-	//stmt_list	:	[ stmt [ ';' ] [ stmt_list ] ]
-//stmt	:	node_stmt
-//|	edge_stmt
-//|	attr_stmt
-//|	ID '=' ID
-//|	subgraph
-//attr_stmt	:	(graph | node | edge) attr_list
-//attr_list	:	'[' [ a_list ] ']' [ attr_list ]
-//a_list	:	ID '=' ID [ (';' | ',') ] [ a_list ]
-//edge_stmt	:	(node_id | subgraph) edgeRHS [ attr_list ]
-//edgeRHS	:	edgeop (node_id | subgraph) [ edgeRHS ]
-//node_stmt	:	node_id [ attr_list ]
-//node_id	:	ID [ port ]
-//port	:	':' ID [ ':' compass_pt ]
-//|	':' compass_pt
-//subgraph	:	[ subgraph [ ID ] ] '{' stmt_list '}'
-//compass_pt	:	(n | ne | e | se | s | sw | w | nw | c | _)
-public class DotIdMap extends AbstractMap implements IdMapDecoder {
-	@Override
-	public Object decode(BaseItem value) {
-		if(value instanceof GraphList==false) {
-			return null;
+// graph : [ strict ] (graph | digraph) [ ID ] '{' stmt_list '}'
+// stmt_list : [ stmt [ ';' ] [ stmt_list ] ]
+// stmt : node_stmt
+// | edge_stmt
+// | attr_stmt
+// | ID '=' ID
+// | subgraph
+// attr_stmt : (graph | node | edge) attr_list
+// attr_list : '[' [ a_list ] ']' [ attr_list ]
+// a_list : ID '=' ID [ (';' | ',') ] [ a_list ]
+// edge_stmt : (node_id | subgraph) edgeRHS [ attr_list ]
+// edgeRHS : edgeop (node_id | subgraph) [ edgeRHS ]
+// node_stmt : node_id [ attr_list ]
+// node_id : ID [ port ]
+// port : ':' ID [ ':' compass_pt ]
+// | ':' compass_pt
+// subgraph : [ subgraph [ ID ] ] '{' stmt_list '}'
+// compass_pt : (n | ne | e | se | s | sw | w | nw | c | _)
+public class DotConverter implements Converter {
+	private boolean removePackage;
+	public DotConverter() {
+		
+	}
+
+	public DotConverter(boolean removePackage) {
+		this.removePackage = removePackage;
+	}
+
+	public GraphList decode(Object item) {
+		if(item instanceof CharacterBuffer) {
+			return decodeGraph((CharacterBuffer)item);
+		}else if(item != null) {
+			CharacterBuffer buffer = new CharacterBuffer();
+			buffer.with(item.toString());
+			return decodeGraph(buffer);
 		}
 		return null;
 	}
 
-	@Override
-	public Object decode(String value) {
-		CharacterBuffer item = new CharacterBuffer();
-		item.with(value);
-		return decodeGraph(item);
-	}
-	Object decodeGraph(BufferItem value) {
+	GraphList decodeGraph(BufferItem value) {
 		char c = value.nextClean(true);
 		StringBuilder sb=new StringBuilder();
-//		boolean isQuote = true;
+//			boolean isQuote = true;
 		boolean useStrict=false;
 		GraphList graph = new GraphList();
 		do {
@@ -101,11 +115,12 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder {
 		} while(endChar != 0 && endChar != '}');
 		value.skip();
 	}
+
 	GraphEntity decodeNode(GraphList graph, BufferItem value) {
 		char c = value.nextClean(true);
 		StringBuilder sb=new StringBuilder();
 		sb.append(c);
-//		boolean isQuote = true;
+//			boolean isQuote = true;
 		GraphEntity node = null;
 		do {
 			c = value.getChar();
@@ -137,7 +152,7 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder {
 		return node;
 	}
 
-//	ID '=' ID [ (';' | ',') ]
+//		ID '=' ID [ (';' | ',') ]
 	void decodeAttributes(GraphEntity node, BufferItem value) {
 		value.skipChar('[');
 		char c;
@@ -192,7 +207,15 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder {
 		return "";
 	}
 
-	public String convert(GraphList root, boolean removePackage) {
+	@Override
+	public String encode(BaseItem entity) {
+		return encode(entity, removePackage);
+	}
+	public String encode(BaseItem entity, boolean removePackage) {
+		if(entity instanceof GraphList == false) {
+			return "";
+		}
+		GraphList root = (GraphList) entity;
 		StringBuilder sb=new StringBuilder();
 		String graphTyp = "graph";
 		if(GraphIdMap.OBJECT.equals(root.getTyp())) {
@@ -240,7 +263,7 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder {
 			childBuilder = new StringBuilder();
 			for(Method method : graphClazz.getMethods()) {
 				// add attribute line
-//				if(isObjectdiagram) {
+//					if(isObjectdiagram) {
 				childBuilder.append(BaseItem.CRLF+"<tr><td align='left'>"+method.getName(false) + "</td></tr>");
 			}
 			if(childBuilder.length() > 0) {
@@ -252,7 +275,7 @@ public class DotIdMap extends AbstractMap implements IdMapDecoder {
 		}
 
 		root.initSubLinks();
-//		// now generate edges from edgeMap
+//			// now generate edges from edgeMap
 		for(Association edge : root.getAssociations()) {
 			Association otherEdge = edge.getOther();
 			if(otherEdge.getType()  != AssociationTypes.EDGE) {

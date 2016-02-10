@@ -35,7 +35,7 @@ public abstract class ByteConverter implements Converter{
 		}
 		byte[] array;
 		if (entity instanceof BaseItem) {
-			array = ((BaseItem) entity).toString(2).getBytes();
+			array = ((BaseItem) entity).toString().getBytes();
 		} else {
 			array = entity.toString().getBytes();
 		}

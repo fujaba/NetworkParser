@@ -67,7 +67,7 @@ public class SoapTest {
 
 		Assert.assertNotNull(soapAnswer.getBody());
 
-		EntityList entity = soapAnswer.getBody().getChildren().get(0);
+		EntityList entity = soapAnswer.getBody().getChildren().get(0).getChildren().get(0);
 		Assert.assertEquals(25, ((XMLEntity)entity).getChildren().size() );
 
 	}

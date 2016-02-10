@@ -23,11 +23,11 @@ package de.uniks.networkparser.event;
 */
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.list.SimpleList;
-import de.uniks.networkparser.xml.XMLIdMap;
 
 public class PomFile implements SendableEntityCreatorTag, BaseItem{
 	public static final String PROPERTY_MODELVERSION = "modelVersion?";
@@ -124,16 +124,12 @@ public class PomFile implements SendableEntityCreatorTag, BaseItem{
 		return toString(0, 0);
 	}
 
-	@Override
 	public String toString(int indentFactor) {
 		return toString(indentFactor, 0);
 	}
 
 	private void addChildren(StringBuilder sb, String spaces) {
 		for(String property : getProperties()) {
-			if(!property.endsWith(XMLIdMap.ATTRIBUTEVALUE)){
-				continue;
-			}
 			Object value = getValue(this, property);
 			if(value!=null){
 				sb.append(spaces);
@@ -151,13 +147,13 @@ public class PomFile implements SendableEntityCreatorTag, BaseItem{
 		return this;
 	}
 
-	public String toString(int indentFactor, int intent) {
+	protected String toString(int indentFactor, int indent) {
 		String spacesChild = "";
 		String spaces = "";
 		if (indentFactor > 0) {
-			spacesChild = "\r\n" + EntityUtil.repeat(' ', intent+indentFactor);
+			spacesChild = "\r\n" + EntityUtil.repeat(' ', indent+indentFactor);
 		}
-		spaces = EntityUtil.repeat(' ', intent);
+		spaces = EntityUtil.repeat(' ', indent);
 		StringBuilder sb = new StringBuilder(spaces);
 		if(tag==TAG) {
 			sb.append("<"+tag+" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\" xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">");
@@ -169,7 +165,7 @@ public class PomFile implements SendableEntityCreatorTag, BaseItem{
 		if(dependencies.size() >0) {
 			sb.append(spacesChild+"<dependencies>");
 			for(PomFile item : dependencies) {
-				sb.append("\r\n" +item.toString(indentFactor, intent+indentFactor+indentFactor));
+				sb.append("\r\n" +item.toString(indentFactor, indent+indentFactor+indentFactor));
 			}
 			sb.append(spacesChild+"</dependencies>");
 		}
@@ -246,6 +242,10 @@ public class PomFile implements SendableEntityCreatorTag, BaseItem{
 
 	@Override
 	public String toString(Converter converter) {
+		if(converter instanceof EntityStringConverter) {
+			EntityStringConverter item = (EntityStringConverter)converter;
+			return toString(item.getIndentFactor(), item.getIndent());
+		}
 		if(converter == null) {
 			return null;
 		}

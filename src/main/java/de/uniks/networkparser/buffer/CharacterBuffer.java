@@ -446,6 +446,22 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		}
 		return this;
 	}
+	
+	public boolean isEmptyCharacter() {
+		if(super.isEmpty()) {
+			return true;
+		}
+		int len = length;
+		int pos=start;
+		while (len>0 && (buffer[len + pos - 1] <= SPACE)) {
+			len--;
+		}
+		while ((pos < len) && (buffer[pos] <= SPACE)) {
+			pos++;
+			len--;
+		}
+		return len == 0;
+	}
 
 	public void withRepeat(String string, int rest) {
 		int newCapacity = this.length + rest*string.length();
@@ -565,11 +581,11 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 	}
 
 	public int indexOf(int ch) {
-		return indexOf(ch, start);
+		return indexOf(ch, 0);
 	}
 
 	public int indexOf(int ch, int fromIndex) {
-		final int max = buffer.length;
+		final int max = length();
 		if (fromIndex < 0) {
 			fromIndex = 0;
 		} else if (fromIndex >= length) {
@@ -577,13 +593,22 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 			return -1;
 		}
 		for (int i = fromIndex; i < max; i++) {
-			if (buffer[i] == ch) {
+			if (buffer[i+start] == ch) {
 				return i - start;
 			}
 		}
 		return -1;
 	}
 
+	public int lastIndexOf(char ch) {
+		for (int i = length - 1; i >= start; i--) {
+			if (buffer[i] == ch) {
+				return i - start;
+			}
+		}
+		return -1;
+	}
+	
 	/**
 	 * get the () values
 	 *
