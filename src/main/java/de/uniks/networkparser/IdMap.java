@@ -1,5 +1,26 @@
 package de.uniks.networkparser;
 
+/*
+NetworkParser
+Copyright (c) 2011 - 2016, Stefan Lindel
+All rights reserved.
+
+Licensed under the EUPL, Version 1.1 or (as soon they
+will be approved by the European Commission) subsequent
+versions of the EUPL (the "Licence");
+You may not use this work except in compliance with the Licence.
+You may obtain a copy of the Licence at:
+
+http://ec.europa.eu/idabc/eupl5
+
+Unless required by applicable law or agreed to in
+writing, software distributed under the Licence is
+distributed on an "AS IS" basis,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+express or implied.
+See the Licence for the specific language governing
+permissions and limitations under the Licence.
+*/
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
@@ -10,13 +31,13 @@ import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.IdMapCounter;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 /**
  * The Class IdMap.
  */
-
-public abstract class IdMap extends AbstractMap implements Map<String, Object> {
+public abstract class IdMap implements Map<String, Object>, Iterable<SendableEntityCreator> {
 	/** The Constant ID. */
 	public static final String ID = "id";
 
@@ -42,6 +63,11 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	public static final String SENDUPDATE = "sendupdate";
 	
 	public static final String CHILDREN= "<CHILDREN>";
+	
+	/** The Constant SPACE. */
+	public static final char SPACE = ' ';
+	/** The Constant EQUALS. */
+	public static final char EQUALS = '=';
 
 	/** The counter. */
 	private IdMapCounter counter;
@@ -51,6 +77,166 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	protected Filter filter = new Filter().withMap(this);
 
 	protected NetworkParserLog logger = new NetworkParserLog();
+
+	/** The Constant ENTITYSPLITTER. */
+	public static final char ENTITYSPLITTER = '.';
+
+	/** The creators. */
+	protected SimpleKeyValueList<String, SendableEntityCreator> creators = new SimpleKeyValueList<String, SendableEntityCreator>()
+			.withAllowDuplicate(false);
+	/**
+	 * boolean for switch of search for Interface or Abstract superclass for entity
+	 */
+	protected boolean searchForSuperCreator;
+	/**
+	 * Gets the creator class.
+	 *
+	 * @param reference
+	 *			the reference
+	 * @return the creator class
+	 */
+	public SendableEntityCreator getCreatorClass(Object reference) {
+		if (reference == null) {
+			return null;
+		}
+		return getCreator(reference.getClass().getName(), true);
+	}
+
+	/**
+	 * Gets the creator classes.
+	 *
+	 * @param clazz
+	 *			Clazzname for search
+	 * @param fullName
+	 *			if the clazzName is the Fullname for search
+	 * @return return a Creator class for a clazz name
+	 */
+	public SendableEntityCreator getCreator(String clazz, boolean fullName) {
+		Object creator = this.creators.getValue(clazz);
+		if (creator != null || fullName ) {
+			return (SendableEntityCreator) creator;
+		}
+		String endTag;
+		if(clazz.lastIndexOf(ENTITYSPLITTER)>=0) {
+			endTag = ENTITYSPLITTER + clazz.substring(clazz.lastIndexOf(ENTITYSPLITTER)+1);
+		} else {
+			endTag = ENTITYSPLITTER + clazz;
+		}
+		for(int i=0;i<this.creators.size();i++) {
+			String key = this.creators.getKeyByIndex(i);
+			SendableEntityCreator value = this.creators.getValueByIndex(i);
+			if (key.endsWith(endTag)) {
+				return value;
+			}
+		}
+		
+		// Search for Child Node
+		return null;
+	}
+
+	/**
+	 * Adds the creator.
+	 *
+	 * @param creatorSet
+	 *			the creater class
+	 * @return return a Creator class for a clazz name
+	 */
+	public IdMap with(Collection<SendableEntityCreator> creatorSet) {
+		if(creatorSet == null) {
+			return this;
+		}
+		for (SendableEntityCreator sendableEntityCreator : creatorSet) {
+			with(sendableEntityCreator);
+		}
+		return this;
+	}
+
+	/**
+	 * Adds the creator.
+	 *
+	 * @param iterator
+	 *			the creater classes
+	 * @return return a Creator class for a clazz name
+	 */
+	public IdMap with(Iterable<SendableEntityCreator> iterator) {
+		if(iterator == null) {
+			return null;
+		}
+		for (Iterator<SendableEntityCreator> i = iterator.iterator(); i
+				.hasNext();) {
+			with(i.next());
+		}
+		return this;
+	}
+
+	/**
+	 * add a Creator to list of all creators.
+	 *
+	 * @param className
+	 *			the class name
+	 * @param creator
+	 *			the creator
+	 * @return AbstractIdMap to interlink arguments
+	 */
+	public IdMap with(String className,
+			SendableEntityCreator creator) {
+		addCreator(className, creator);
+		return this;
+	}
+
+    public boolean addCreator(String className, SendableEntityCreator creator) {
+    	boolean result = this.creators.add(className, creator);
+		if (creator instanceof SendableEntityCreatorTag) {
+			SendableEntityCreatorTag creatorTag = (SendableEntityCreatorTag) creator;
+			this.creators.add(creatorTag.getTag(), creator);
+		}
+		return result;
+    }
+
+	/**
+	 * Adds the creator.
+	 *
+	 * @param createrClass
+	 *			the creater class
+	 * @return AbstractIdMap to interlink arguments
+	 */
+	public IdMap with(SendableEntityCreator... createrClass) {
+		addCreator(createrClass);
+		return this;
+	}
+
+	public boolean addCreator(SendableEntityCreator... createrClass) {
+		if(createrClass == null) {
+			return false;
+		}
+		for (SendableEntityCreator creator : createrClass) {
+			if(creator == null)
+				continue;
+			try{
+				Object reference = creator.getSendableInstance(true);
+				if (reference != null) {
+					if (reference instanceof Class<?>) {
+						this.searchForSuperCreator = true;
+						addCreator(((Class<?>)reference).getName(), creator);
+					} else {
+						addCreator(reference.getClass().getName(), creator);
+					}
+				}
+			}catch(Exception e){}
+		}
+		return true;
+    }
+
+	/**
+	 * remove the creator.
+	 *
+	 * @param className
+	 *			the creater class
+	 * @return true, if successful
+	 */
+	public boolean removeCreator(String className) {
+		return this.creators.remove(className) != null;
+	}
 
 	/**
 	 * @return the CurrentLogger
@@ -329,14 +515,8 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 		return newObject;
 	}
 
-	@Override
-	public AbstractMap with(String className,
-			SendableEntityCreator creator) {
-		return super.with(className, creator);
-	}
-
 	public Object startUpdateModell(String clazz) {
-		SendableEntityCreator creator = super.getCreator(clazz, true);
+		SendableEntityCreator creator = getCreator(clazz, true);
 		if (creator != null) {
 			Object result = creator.getSendableInstance(false);
 			String id = getId(result);
@@ -516,5 +696,10 @@ public abstract class IdMap extends AbstractMap implements Map<String, Object> {
 	}
 	protected boolean isPropertyRegard(Filter filter,  Object entity, String property, Object value, int deep) {
 		return filter.isPropertyRegard(entity, property, value, deep);
+	}
+	
+	@Override
+	public Iterator<SendableEntityCreator> iterator() {
+		return this.creators.values().iterator();
 	}
 }

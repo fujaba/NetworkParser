@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Set;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.Condition;
+import de.uniks.networkparser.interfaces.UpdateListener;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -25,8 +26,10 @@ import de.uniks.networkparser.interfaces.Condition;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
+import de.uniks.networkparser.logic.SimpleCollectionEvent;
 
 public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
+	private UpdateListener listener;
 	@Override
 	public SimpleSet<V> getNewList(boolean keyValue) {
 		return new SimpleSet<V>();
@@ -148,5 +151,18 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 			result.remove(other);
 		}
 		return result;
+	}
+
+	public SimpleSet<V> withListener(UpdateListener listener) {
+		this.listener = listener;
+		return this;
+	}
+	
+	@Override
+	protected boolean fireProperty(String type, Object oldElement, Object newElement, Object beforeElement, Object value) {
+		if(this.listener != null) {
+			this.listener.update(type, new SimpleCollectionEvent(this, oldElement, newElement, beforeElement, value));
+		}
+		return super.fireProperty(type, oldElement, newElement, beforeElement, value);
 	}
 }

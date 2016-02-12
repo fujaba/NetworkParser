@@ -23,6 +23,6 @@ permissions and limitations under the Licence.
 public class UpdateCondition extends SimpleConditionMap {
 	@Override
 	public boolean check(SimpleMapEvent values) {
-		return values.getMap().getKey(values.getSource()) == null;
+		return values.getMap().getKey(values.getModelItem()) == null;
 	}
 }

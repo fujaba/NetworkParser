@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
@@ -269,25 +270,25 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		this.index = 0;
 		if(arrayFlag==1) {
 			for(int i=elements.length - 1;i > 0;i--) {
-				fireProperty(elements[i], null, elements[i - 1], null);
+				fireProperty(IdMap.REMOVE, elements[i], null, elements[i - 1], null);
 			}
-			fireProperty(elements[0], null, null, null);
+			fireProperty(IdMap.REMOVE, elements[0], null, null, null);
 			this.elements = null;
 			return;
 		}
 		Object[] items = (Object[]) elements[SMALL_KEY];
 		if(arrayFlag>3) {
 			for(int i=items.length - 1;i > 0;i--) {
-				fireProperty(items[i], null, items[i - 1], ((Object[])elements[SMALL_VALUE])[i]);
+				fireProperty(IdMap.REMOVE, items[i], null, items[i - 1], ((Object[])elements[SMALL_VALUE])[i]);
 			}
-			fireProperty(items[0], null, null, ((Object[])elements[SMALL_VALUE])[0]);
+			fireProperty(IdMap.REMOVE, items[0], null, null, ((Object[])elements[SMALL_VALUE])[0]);
 			this.elements = null;
 			return;
 		}
 		for(int i=items.length - 1;i > 0;i--) {
-			fireProperty(items[i], null, items[i - 1], null);
+			fireProperty(IdMap.REMOVE, items[i], null, items[i - 1], null);
 		}
-		fireProperty(items[0], null, null, null);
+		fireProperty(IdMap.REMOVE, items[0], null, null, null);
 		this.elements = null;
 	}
 
@@ -607,7 +608,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 			   addHashItem(pos, value, (Object[])elements[BIG_VALUE]);
 			}
 		}
-		fireProperty(null, key, beforeKey, value);
+		fireProperty(IdMap.NEW, null, key, beforeKey, value);
 		return pos;
 	}
 
@@ -662,7 +663,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		if (pos > 0) {
 			beforeElement = this.getByIndex(SMALL_KEY, pos-1, size);
 		}
-		fireProperty(null, element, beforeElement, null);
+		fireProperty(IdMap.NEW, null, element, beforeElement, null);
 		return pos;
 	}
 
@@ -733,7 +734,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		if(pos>0) {
 			beforeElement = items[pos - 1];
 		}
-		fireProperty(oldValue, value, beforeElement, null);
+		fireProperty(IdMap.UPDATE, oldValue, value, beforeElement, null);
 	}
 
 	public AbstractArray<V> withList(Collection<?> list) {
@@ -1380,8 +1381,9 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		this.index = 0;
 	}
 
-	protected void fireProperty(Object oldElement, Object newElement,
+	protected boolean fireProperty(String type, Object oldElement, Object newElement,
 			Object beforeElement, Object value) {
+		return true;
 	}
 
 	public boolean move(int from, int to) {
@@ -1421,33 +1423,23 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		return true;
 	}
 	
+	protected String parseItem(EntityStringConverter converter) {
+		return "";
+	}
 	
 	/**
 	 * Make a prettyprinted Text of this Entity.
 	 * <p>
-	 * Warning: This method assumes that the data structure is acyclical.
-	 *
-	 * @param indentFactor
-	 *			The number of spaces to add to each level of indentation.
-	 * @param indent
-	 *			The number of current spaces 
-	 * @return a printable, displayable, portable, transmittable representation
-	 *		 of the object, beginning with <code>{</code>&nbsp;<small>(left
-	 *		 brace)</small> and ending with <code>}</code>&nbsp;<small>(right
-	 *		 brace)</small>.
+	 * @param converter
+	 *			Converter for transform Item to STring
 	 */
-	protected String toString(int indentFactor, int indent) {
-		return toString();
-	}
-
 	@Override
 	public String toString(Converter converter) {
 		if(converter == null) {
 			return null;
 		}
 		if(converter instanceof EntityStringConverter) {
-			EntityStringConverter entityConverter = (EntityStringConverter) converter;
-			return toString(entityConverter.getIndentFactor(), entityConverter.getIndent());
+			return parseItem((EntityStringConverter) converter);
 		}
 		return converter.encode(this);
 	}

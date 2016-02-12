@@ -6,9 +6,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.JsonIdMap;
+import de.uniks.networkparser.logic.SimpleMapEvent;
 import de.uniks.networkparser.test.model.Apple;
 import de.uniks.networkparser.test.model.AppleTree;
 import de.uniks.networkparser.test.model.util.AppleCreator;
@@ -26,7 +26,7 @@ public class FilterAtomar {
 
 		UpdateListener listener = new UpdateListener() {
 			@Override
-			public boolean update(String typ, Entity source, PropertyChangeEvent event) {
+			public boolean update(String typ, PropertyChangeEvent event) {
 				return (Apple.PROPERTY_PASSWORD.equals(event.getPropertyName()) == false);
 			}
 		};
@@ -35,8 +35,9 @@ public class FilterAtomar {
 		map.getUpdateExecuter().withAtomarFilter(listener);
 		map.with(new UpdateListener() {
 			@Override
-			public boolean update(String typ, Entity source, PropertyChangeEvent event) {
-				data = source;
+			public boolean update(String typ, PropertyChangeEvent event) {
+				SimpleMapEvent simpleEvent = (SimpleMapEvent) event;
+				data = simpleEvent.getEntity();
 				return false;
 			}
 		});

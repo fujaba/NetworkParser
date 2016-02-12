@@ -25,7 +25,6 @@ import java.beans.PropertyChangeEvent;
 import java.util.EventObject;
 
 import de.uniks.networkparser.interfaces.Condition;
-import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.list.SimpleList;
 
@@ -41,7 +40,7 @@ public class IdFilterElements extends SimpleList<Object> implements UpdateListen
 	}
 
 	@Override
-	public boolean update(String typ, Entity source, PropertyChangeEvent event) {
+	public boolean update(String typ, PropertyChangeEvent event) {
 		if(condition!=null) {
 			if(condition.check(event)) {
 				return add(event.getNewValue());

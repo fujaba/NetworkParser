@@ -23,6 +23,7 @@ package de.uniks.networkparser.json;
 */
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.Tokener;
+import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.list.AbstractList;
@@ -86,6 +87,8 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
  * @version 2011-11-24
  */
 public class JsonObject extends SimpleKeyValueList<String, Object> implements Entity {
+	public final static String START="{";
+	public final static String END="}";
 	public JsonObject() {
 		this.withAllowDuplicate(false);
 	}
@@ -163,28 +166,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 	 */
 	@Override
 	public String toString() {
-		int length = this.size();
-		if (length == 0) {
-			return "{}";
-		}
-		if (!isVisible()) {
-			return "{Item with " + size() + " values}";
-		}
-
-		StringBuilder sb = new StringBuilder("{");
-		Object item = getKeyByIndex(0);
-		sb.append(EntityUtil.quote(item.toString()));
-		sb.append(":");
-		sb.append(EntityUtil.valueToString(getValueByIndex(0), false, this));
-		for (int i = 1; i < size(); i++) {
-			sb.append(",");
-			Object value = get(i);
-			sb.append(EntityUtil.quote(value.toString()));
-			sb.append(":");
-			sb.append(EntityUtil.valueToString(getValueByIndex(i), false, this));
-		}
-		sb.append("}");
-		return sb.toString();
+		return parseItem(new EntityStringConverter());
 	}
 
 	/**
@@ -201,10 +183,9 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 	 */
 	@Override
 	public String toString(int indentFactor) {
-		return toString(indentFactor, 0);
+		return parseItem(new EntityStringConverter(indentFactor));
 	}
-	
-	protected String toString(int indentFactor, int indent) {
+	protected String parseItem(EntityStringConverter converter) {
 		int length = this.size();
 		if (length == 0) {
 			return "{}";
@@ -213,43 +194,26 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 		if (!isVisible()) {
 			return "{" + size() + " values}";
 		}
-
-		int newindent = indent + indentFactor;
-		String prefix = "";
-		StringBuilder sb;
-		String step = EntityUtil.repeat(' ', indentFactor);
-		if (indent > 0) {
-			sb = new StringBuilder();
-			for (int i = 0; i < indent; i += indentFactor) {
-				sb.append(step);
-			}
-			prefix = CRLF + sb.toString();
-		} else if (indentFactor > 0) {
-			prefix = CRLF;
+		converter.add();
+		StringBuilder sb = new StringBuilder(START);
+		if(length>1) {
+			sb.append(converter.getPrefix());
 		}
-
-		if (length == 1) {
-			sb = new StringBuilder("{");
-		} else {
-			sb = new StringBuilder("{" + prefix + step);
-		}
-
 		sb.append(EntityUtil.quote(get(0).toString()));
 		sb.append(":");
-		sb.append(EntityUtil.valueToString(getValueByIndex(0), indentFactor,
-				newindent, false, this));
+		sb.append(EntityUtil.valueToString(getValueByIndex(0), false, this, converter));
 		for (int i = 1; i < length; i++) {
-			sb.append("," + prefix + step);
+			sb.append(",");
+			sb.append(converter.getPrefix());
 			sb.append(EntityUtil.quote(get(i).toString()));
 			sb.append(":");
-			sb.append(EntityUtil.valueToString(getValueByIndex(i), indentFactor,
-					newindent, false, this));
+			sb.append(EntityUtil.valueToString(getValueByIndex(i), false, this, converter));
 		}
-		if (length == 1) {
-			sb.append("}");
-		} else {
-			sb.append(prefix + "}");
+		converter.minus();
+		if(length>1) {
+			sb.append(converter.getPrefix());
 		}
+		sb.append(END);
 		return sb.toString();
 	}
 

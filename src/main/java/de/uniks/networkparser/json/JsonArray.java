@@ -25,6 +25,7 @@ import java.util.Iterator;
 
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.Tokener;
+import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.list.SimpleList;
@@ -170,7 +171,7 @@ public class JsonArray extends SortedList<Object> implements BaseItem, EntityLis
 	 */
 	@Override
 	public String toString() {
-		return toString(0, 0);
+		return parseItem(new EntityStringConverter());
 	}
 
 	/**
@@ -186,16 +187,16 @@ public class JsonArray extends SortedList<Object> implements BaseItem, EntityLis
 	 */
 	@Override
 	public String toString(int indentFactor) {
-		return toString(indentFactor, 0);
+		return parseItem(new EntityStringConverter(indentFactor));
 	}
 
 	/**
 	 * Make a prettyprinted JSON text of this JSONArray.
-	 * @param indentFactor	Factor for spacing between Level
-	 * @param indent		actual Indent Level
+	 * @param converter	Factor for spacing between Level
 	 * @return return Item As String
 	 */
-	protected String toString(int indentFactor, int indent) {
+	@Override
+	protected String parseItem(EntityStringConverter converter) {
 		Iterator<Object> iterator = iterator();
 		if (!iterator.hasNext()) {
 			return "[]";
@@ -204,35 +205,20 @@ public class JsonArray extends SortedList<Object> implements BaseItem, EntityLis
 		if (!isVisible()) {
 			return "[" + size() + " Items]";
 		}
-
-		StringBuilder sb;
-		String step = EntityUtil.repeat(' ', indentFactor);
-		String prefix = "";
-		int newindent = 0;
-		if (indent > 0) {
-			newindent = indent + indentFactor;
-		}
-
-		if (newindent > 0) {
-			sb = new StringBuilder();
-			for (int i = 0; i < indent; i += indentFactor) {
-				sb.append(step);
-			}
-			prefix = CRLF + sb.toString();
-		}
 		// First Element
-		sb = new StringBuilder("[" + prefix);
+		converter.add();
+		StringBuilder sb = new StringBuilder("[").append(converter.getPrefix());
 		Object element = iterator.next();
-		sb.append(EntityUtil.valueToString(element, indentFactor, newindent,
-				false, this));
-
+		sb.append(EntityUtil.valueToString(element, false, this, converter));
 		while (iterator.hasNext()) {
 			element = iterator.next();
-			sb.append("," + prefix + step);
-			sb.append(EntityUtil.valueToString(element, indentFactor,
-					newindent, false, this));
+			sb.append(",");
+			sb.append(converter.getPrefix());
+			sb.append(EntityUtil.valueToString(element, false, this, converter));
 		}
-		sb.append(prefix + ']');
+		converter.minus();
+		sb.append(converter.getPrefix());
+		sb.append(']');
 		return sb.toString();
 	}
 

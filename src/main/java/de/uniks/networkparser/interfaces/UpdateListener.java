@@ -16,14 +16,12 @@ public interface UpdateListener  {
 	 *
 	 * @param typ
 	 *			the typ of Message: NEW UPDATE, REMOVE or SENDUPDATE
-	 * @param source
-	 *			the Source Element
 	 * @param event
 	 *			The Change in a PropertyChangeEvent @see java.beans.PropertyChangeEvent
 	 *
 	 * @return true, if successful
 	 */
-	public boolean update(String typ, Entity source, PropertyChangeEvent event);
+	public boolean update(String typ, PropertyChangeEvent event);
 
 
 }

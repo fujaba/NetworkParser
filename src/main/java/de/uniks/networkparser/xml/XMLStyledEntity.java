@@ -22,6 +22,8 @@ package de.uniks.networkparser.xml;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.event.Style;
 /**
  * Style Element of XML.
@@ -34,23 +36,22 @@ public class XMLStyledEntity extends XMLEntity {
 	private Style style = new Style();
 
 	@Override
-	protected void toStringChildren(StringBuilder sb, int indentFactor,
-			int indent) {
+	protected void toStringChildren(CharacterBuffer sb, EntityStringConverter converter) {
 		// Starttag
 		if (style.isBold()) {
-			sb.append("<b>");
+			sb.with("<b>");
 		}
 		if (style.isItalic()) {
-			sb.append("<i>");
+			sb.with("<i>");
 		}
-		super.toStringChildren(sb, indentFactor, indent);
+		super.toStringChildren(sb, converter);
 
 		// EndTag
 		if (style.isItalic()) {
-			sb.append("</i>");
+			sb.with("</i>");
 		}
 		if (style.isBold()) {
-			sb.append("</b>");
+			sb.with("</b>");
 		}
 	}
 

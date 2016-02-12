@@ -29,6 +29,7 @@ import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
@@ -57,16 +58,13 @@ public class XMLIdMap extends IdMap implements IdMapDecoder {
 	public static final char ITEMSTART = '<';
 
 	public static final char DOUBLEQUOTIONMARK = '"';
-
-	/** The Constant SPACE. */
-	public static final char SPACE = ' ';
-	/** The Constant EQUALS. */
-	public static final char EQUALS = '=';
 	
 	/** The stopwords. */
 	private ArrayList<String> stopwords = new ArrayList<String>();
 
 	public final Filter SimpleFilter = new Filter().withMap(this).withIdFilter(BooleanCondition.value(false));
+	
+	public final EntityStringConverter simpleConverter = new EntityStringConverter();
 	
 	/**
 	 * Instantiates a new XML id map.
@@ -232,8 +230,7 @@ public class XMLIdMap extends IdMap implements IdMapDecoder {
 			if(property.length() == 1) {
 				// Its ChildValue
 				if(parent instanceof XMLEntity) {
-					//FIXME creator.setValue(entity, XMLEntity.PROPERTY_VALUE, valueItem.toString(), NEW);
-					((XMLEntity)parent).withValueItem(EntityUtil.valueToString(value, true, parent));
+					((XMLEntity)parent).withValueItem(EntityUtil.valueToString(value, true, parent, simpleConverter));
 				}
 			} else {
 				int pos = property.indexOf(XMLIdMap.ENTITYSPLITTER, 1);
@@ -261,7 +258,7 @@ public class XMLIdMap extends IdMap implements IdMapDecoder {
 						return child;
 					}
 					if(parent instanceof Entity) {
-						((Entity)parent).put(label, EntityUtil.valueToString(value, true, parent));
+						((Entity)parent).put(label, EntityUtil.valueToString(value, true, parent, simpleConverter));
 					}
 					return entry;
 				}

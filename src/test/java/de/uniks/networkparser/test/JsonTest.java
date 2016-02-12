@@ -155,8 +155,6 @@ public class JsonTest extends IOClasses{
 		assertEquals(item.getValue().getString("value"), "42");
 	}
 
-
-
 	@Test
 	public void testSimpleList(){
 		FullAssocs fullAssocs = new FullAssocs();
@@ -169,7 +167,7 @@ public class JsonTest extends IOClasses{
 
 		JsonObject jsonObject = map.toJsonObject(fullAssocs);
 		String data = jsonObject.toString(2);
-		Assert.assertEquals(142, data.length());
+		Assert.assertEquals(144, data.length());
 
 		FullAssocs newfullAssocs = (FullAssocs) map.decode(data);
 		assertNotNull(newfullAssocs);
@@ -337,18 +335,18 @@ public class JsonTest extends IOClasses{
 
 		JsonArray jsonArray = map.toJsonArray(kassel, new Filter().withConvertable(Deep.value(1)));
 		String jsonString = jsonArray.toString(2);
-		assertEquals(1980, jsonString.length());
+		assertEquals(2178, jsonString.length());
 
 		jsonArray = map.toJsonArray(kassel, new Filter().withConvertable(new Deep().withDeep(0)));
 
 		jsonString = jsonArray.toString(2);
-		assertEquals(569, jsonString.length());
+		assertEquals(631, jsonString.length());
 
 		jsonArray = map.toJsonArray(kassel);
 
 		jsonString = jsonArray.toString(2);
 
-		assertEquals(2199, jsonString.length());
+		assertEquals(2419, jsonString.length());
 
 		JsonIdMap readMap = UniversityCreator.createIdMap("s2");
 
@@ -398,7 +396,7 @@ public class JsonTest extends IOClasses{
 
 
 		// Array
-		reference="[{\r\n  \"id\":\"J1.C1\",\r\n  \"class\":\"de.uniks.networkparser.test.model.ChatMessage\",\r\n  \"prop\":{\r\n    \"sender\":\"Stefan Lindel\",\r\n    \"time\":null,\r\n    \"txt\":\"Dies ist eine Testnachricht\",\r\n    \"count\":0,\r\n    \"activ\":false\r\n  }\r\n}]";
+		reference="[\r\n  {\r\n    \"id\":\"J1.C1\",\r\n    \"class\":\"de.uniks.networkparser.test.model.ChatMessage\",\r\n    \"prop\":{\r\n      \"sender\":\"Stefan Lindel\",\r\n      \"time\":null,\r\n      \"txt\":\"Dies ist eine Testnachricht\",\r\n      \"count\":0,\r\n      \"activ\":false\r\n    }\r\n  }\r\n]";
 		JsonArray actualArray=jsonMap.toJsonArray(chatMessage, new Filter().withFull(true));
 		assertEquals("WERT Vergleichen", reference, actualArray.toString(2));
 	}
@@ -636,5 +634,18 @@ public class JsonTest extends IOClasses{
 		Assert.assertEquals("{\"list\":[2,1],\"id\":42}", same.toString());
 		Assert.assertEquals("{\"no\":23,\"array\":[2]}", jsonA.toString());
 		Assert.assertEquals("{\"no\":24,\"array\":[3]}", jsonB.toString());
+	}
+	
+	@Test
+	public void testJsonArrayTest(){
+		JsonArray array=new JsonArray();
+		array.with(1,2,3,4,5);
+		Assert.assertEquals("[1,2,3,4,5]", array.toString());
+		array.with(new JsonArray().with(6,7));
+		array.with(8);
+		array.with(new JsonObject().with("id", 42));
+		array.with(new JsonObject().with("id", 42, "class", "JsonObject"));
+
+		Assert.assertEquals("[\r\n  1,\r\n  2,\r\n  3,\r\n  4,\r\n  5,\r\n  [\r\n    6,\r\n    7\r\n  ],\r\n  8,\r\n  {\"id\":42},\r\n  {\r\n    \"id\":42,\r\n    \"class\":\"JsonObject\"\r\n  }\r\n]", array.toString(2));
 	}
 }

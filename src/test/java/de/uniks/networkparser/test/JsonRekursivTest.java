@@ -18,7 +18,7 @@ public class JsonRekursivTest {
 		 JsonIdMap map= new JsonIdMap();
 		 map.with(new ListEntity());
 		 JsonObject json =map.encode(root);
-		 Assert.assertEquals(1314, json.toString(2).length());
+		 Assert.assertEquals(1318, json.toString(2).length());
 
 		 JsonIdMap mapDecode= new JsonIdMap();
 		 mapDecode.with(new ListEntity());

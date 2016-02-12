@@ -34,7 +34,6 @@ import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.event.ObjectMapEntry;
 import de.uniks.networkparser.event.util.DateCreator;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.Grammar;
 import de.uniks.networkparser.interfaces.IdMapDecoder;
 import de.uniks.networkparser.interfaces.SendableEntity;
@@ -45,6 +44,7 @@ import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.util.JsonArrayCreator;
 import de.uniks.networkparser.json.util.JsonObjectCreator;
 import de.uniks.networkparser.logic.Deep;
+import de.uniks.networkparser.logic.SimpleMapEvent;
 import de.uniks.networkparser.sort.EntityComparator;
 /**
  * The Class JsonIdMap.
@@ -453,9 +453,9 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 			}
 			if (result == null) {
 				result = grammar.getNewEntity(typeInfo, grammar.getValue(jsonObject, CLASS), false);
-				readMessages(NEW, jsonObject, new PropertyChangeEvent(this, null, null, result));
+				readMessages(NEW, new SimpleMapEvent(this, jsonObject, result));
 			} else {
-				readMessages(UPDATE, jsonObject, new PropertyChangeEvent(this, null, null, result));
+				readMessages(UPDATE, new SimpleMapEvent(this,jsonObject, result));
 			}
 			filter = this.filter.newInstance(filter);
 			if (typeInfo instanceof SendableEntityCreatorWrapper) {
@@ -730,24 +730,24 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 	 *			the json object
 	 * @return true, if successful
 	 */
-	boolean sendUpdateMsg(PropertyChangeEvent evt, JsonObject jsonObject) {
+	boolean sendUpdateMsg(PropertyChangeEvent evt) {
 		if(evt == null) {
 			return true;
 		}
-		return notify(SENDUPDATE, jsonObject, evt);
+		return notify(SENDUPDATE, evt);
 	}
 
-	boolean readMessages(String typ, Entity item, PropertyChangeEvent event) {
-		return notify(typ, item, event);
+	boolean readMessages(String typ, PropertyChangeEvent event) {
+		return notify(typ, event);
 	}
 
-	boolean notify(String typ, Entity props, PropertyChangeEvent event) {
+	boolean notify(String typ, PropertyChangeEvent event) {
     	if (this.listener != null ) {
     		if(this.listener instanceof PropertyChangeListener) {
     			((PropertyChangeListener)this.listener).propertyChange(event);
     		}
     		if (this.listener != null && this.listener instanceof UpdateListener) {
-    			return ((UpdateListener)this.listener).update(typ, props, event);
+    			return ((UpdateListener)this.listener).update(typ, event);
     		}
     	}
 		return true;

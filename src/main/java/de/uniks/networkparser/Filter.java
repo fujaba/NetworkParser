@@ -22,6 +22,7 @@ package de.uniks.networkparser;
  permissions and limitations under the Licence.
 */
 import java.util.ArrayList;
+
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.logic.SimpleConditionValue;
@@ -171,14 +172,14 @@ public class Filter {
 
 	boolean isPropertyRegard(Object entity, String property, Object value, int deep) {
 		if (this.property != null) {
-			return this.property.check(new SimpleMapEvent(entity, property, null, value, map, deep));
+			return this.property.check(new SimpleMapEvent(map, property, null, value).with(deep).withModelItem(entity));
 		}
 		return true;
 	}
 
 	boolean isConvertable(Object entity, String property, Object value, int deep) {
 		if (this.convertable != null) {
-			return this.convertable.check(new SimpleMapEvent(entity, property, null, value, map, deep));
+			return this.convertable.check(new SimpleMapEvent(map, property, null, value).with(deep).withModelItem(entity));
 		}
 		return true;
 	}

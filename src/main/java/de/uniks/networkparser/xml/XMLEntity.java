@@ -22,6 +22,7 @@ package de.uniks.networkparser.xml;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.event.MapEntry;
@@ -39,6 +40,10 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	public static final String PROPERTY_VALUE = "value";
 	/** The children. */
 	private SimpleList<EntityList> children;
+	
+	public static final String START = "<";
+	
+	public static final String END = ">";
 
 	/** The tag. */
 	private String tag;
@@ -234,33 +239,32 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 
 	@Override
 	public String toString() {
-		return toString(0);
+		return parseItem(new EntityStringConverter());
 	}
 
 	@Override
 	public String toString(int indentFactor) {
-		return toString(indentFactor, 0);
+		return parseItem(new EntityStringConverter(indentFactor));
 	}
 
-	protected String toString(int indentFactor, int indent) {
-		StringBuilder sb = new StringBuilder();
-		if (indent > 0) {
-			sb.append("\n");
-		}
-		sb.append(EntityUtil.repeat(' ', indent));
+	@Override
+	protected String parseItem(EntityStringConverter converter) {
+		CharacterBuffer sb = new CharacterBuffer().with(converter.getPrefixFirst());
+		converter.add();
 		if(this.getTag() != null) {
-			sb.append("<" + this.getTag());
+			sb.with(START, this.getTag());
 		}
 
 		int size = size();
 		for (int i = 0; i < size; i++) {
 			Object value = getValueByIndex(i);
 			if(value != null) {
-				sb.append(" " + get(i) + "=" + EntityUtil.quote(value.toString()));
+				sb.with(" ", get(i), "=", EntityUtil.quote(value.toString()));
 			}
 		}
 
-		toStringChildren(sb, indentFactor, indent + indentFactor);
+		toStringChildren(sb, converter);
+		converter.minus();
 		return sb.toString();
 	}
 
@@ -269,39 +273,33 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	 *
 	 * @param sb
 	 *			The StringBuilder where The Children add
-	 * @param indentFactor
-	 *			indentFactor for indent
-	 * @param indent
-	 *			Current Indent
+	 * @param converter
+	 *			The Current Converter
 	 */
-	protected void toStringChildren(StringBuilder sb, int indentFactor,
-			int indent) {
+	protected void toStringChildren(CharacterBuffer sb, EntityStringConverter converter) {
 		// parse Children
 		if (this.children != null && this.children.size() > 0) {
 			if(this.getTag() != null) {
-				sb.append(">");
+				sb.with(END);
 			}
 			for (EntityList child : this.children) {
-				sb.append(child.toString(new EntityStringConverter(indentFactor, indent + indentFactor)));
+				sb.with(child.toString(converter));
 			}
-			if (indentFactor > 0) {
-				sb.append("\n");
-			}
-			sb.append(EntityUtil.repeat(' ', indent));
+			sb.with(converter.getPrefix());
 			if(this.getTag() != null) {
-				sb.append("</" + getTag() + ">");
+				sb.with("</", getTag(), END);
 			}
 		} else if (this.valueItem != null) {
 			if(this.getTag() != null) {
-				sb.append(">");
+				sb.with(END);
 			}
-			sb.append(this.valueItem);
+			sb.with(this.valueItem);
 			if(this.getTag() != null) {
-				sb.append("</" + getTag() + ">");
+				sb.with("</", getTag(), END);
 			}
 		} else {
 			if(this.getTag() != null) {
-				sb.append("/>");
+				sb.with("/>");
 			}
 		}
 	}

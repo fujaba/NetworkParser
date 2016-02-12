@@ -9,12 +9,12 @@ import org.junit.Test;
 
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.logic.Deep;
 import de.uniks.networkparser.logic.InstanceOf;
+import de.uniks.networkparser.logic.SimpleMapEvent;
 import de.uniks.networkparser.test.model.GroupAccount;
 import de.uniks.networkparser.test.model.Person;
 import de.uniks.networkparser.test.model.SortedMsg;
@@ -36,7 +36,7 @@ public class JsonModellTest implements UpdateListener {
 		JsonIdMap map= new JsonIdMap();
 		map.with(new PersonCreator());
 		map.with(new GroupAccountCreator());
-		Assert.assertEquals(155, map.toJsonArray(account.getPersons(), Filter.regard(InstanceOf.value(Person.class, Person.PROPERTY_PARENT))).toString(2).length());
+		Assert.assertEquals(175, map.toJsonArray(account.getPersons(), Filter.regard(InstanceOf.value(Person.class, Person.PROPERTY_PARENT))).toString(2).length());
 	}
 
 
@@ -93,9 +93,11 @@ public class JsonModellTest implements UpdateListener {
 	}
 
 	@Override
-	public boolean update(String typ, Entity source, PropertyChangeEvent event) {
+	public boolean update(String typ, PropertyChangeEvent event) {
+		SimpleMapEvent simpleEvent = (SimpleMapEvent) event;
+
 		if(IdMap.SENDUPDATE.equals(typ)) {
-			JsonObject jsonObject = (JsonObject) source;
+			JsonObject jsonObject = (JsonObject) simpleEvent.getEntity();
 			printToStream("Send: " +jsonObject, null);
 			secondMap.getUpdateExecuter().execute(jsonObject);
 			return true;

@@ -13,21 +13,11 @@ public class NumberFormatCreator implements BitEntityCreator{
 		entities.add(new BitEntity().with(propertyName, BitEntity.BIT_BYTE).withStartLen(start, len));
 	}
 
-//	public NumberFormatCreator(String propertyName, String start, String startTyp, String len, String lenTyp){
-//		addBitEntity(propertyName, start, startTyp, len, lenTyp);
-//	}
-//
-//	public void addBitEntity(String propertyName, String start, String startTyp, String len, String lenTyp){
-//		entities.add(new BitEntity(propertyName, BitEntity.BIT_BYTE, start, startTyp, len, lenTyp));
-//	}
 	public void addBitEntity(String propertyName, byte bitNumber, String start, byte bitString, String len, byte bitReference){
 		BitEntity bitEntity = new BitEntity().with(propertyName, bitNumber);
 		bitEntity.add(new BitValue(bitString, start, bitReference, len));
 		entities.add(bitEntity);
 	}
-//		entities.add(new BitEntity(propertyName, dataTyp, start, startTyp, len, lenTyp));
-//	}
-
 
 	public NumberFormatCreator(){
 		entities.add(new BitEntity().with("number", BitEntity.BIT_BYTE).withStartLen(0, 8));

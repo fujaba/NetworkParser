@@ -42,10 +42,10 @@ public class XSDEntityCreator extends XMLEntityCreator {
 				XSDEntity.PROPERTY_MINOCCURS, XSDEntity.PROPERTY_MAXOCCURS };
 	}
 
-	@Override
-	public Object getSendableInstance(boolean prototyp) {
-		return new XSDEntity();
-	}
+//	@Override
+//	public Object getSendableInstance(boolean prototyp) {
+//		return new XSDEntity();
+//	}
 //
 //	@Override
 //	public boolean parseChild(XMLEntity entity, XMLEntity child, Tokener value) {

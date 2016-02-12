@@ -53,7 +53,7 @@ public abstract class ModelListenerProperty<T> implements javafx.beans.property.
 	public ModelListenerProperty(SendableEntityCreator creator, Object item, String property) {
 		this.creator = creator;
 		this.property = property;
-		this.filter = new SimpleMapEvent(item, property);
+		this.filter = new SimpleMapEvent(null, property).withModelItem(item);
 		if (item instanceof SendableEntity) {
 			((SendableEntity) item).addPropertyChangeListener(property, this);
 			return;

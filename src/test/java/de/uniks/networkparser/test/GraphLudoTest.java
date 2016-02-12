@@ -94,7 +94,7 @@ public class GraphLudoTest
 
 	  // May be 8 Asssocs and write 11
 	  JsonObject converter=graphConverter.convertToJson(GraphIdMap.CLASS, jsonArray, true);
-	  showDebugInfos(converter, 2746, null);
+	  showDebugInfos(converter, 2758, null);
    }
    private void showDebugInfos(JsonObject json, int len, PrintStream stream) {
 	   if(stream != null) {
@@ -119,26 +119,26 @@ public class GraphLudoTest
 	   JsonArray jsonArray = map.toJsonArray(root, new Filter().withFull(true));
 	   GraphConverter graphConverter = new GraphConverter();
 	  JsonObject objectModel=graphConverter.convertToJson(GraphIdMap.OBJECT, jsonArray, true);
-	  showDebugInfos(objectModel, 650, null);
+	  showDebugInfos(objectModel, 658, null);
 
 	  JsonObject clazzModel=graphConverter.convertToJson(GraphIdMap.CLASS, jsonArray, true);
-	  showDebugInfos(clazzModel, 486, null);
+	  showDebugInfos(clazzModel, 492, null);
 	  Assert.assertEquals(new CharacterBuffer()
 			  .withLine("{")
 			  .withLine("  \"typ\":\"classdiagram\",")
 			  .withLine("  \"style\":null,")
 			  .withLine("  \"nodes\":[")
-			  .withLine("  {")
+			  .withLine("    {")
 			  .withLine("      \"typ\":\"clazz\",")
 			  .withLine("      \"id\":\"SortedMsg\",")
 			  .withLine("      \"attributes\":[")
-			  .withLine("      \"number:Integer\",")
+			  .withLine("        \"number:Integer\",")
 			  .withLine("        \"msg:String\"")
 			  .withLine("      ]")
 			  .withLine("    }")
 			  .withLine("  ],")
 			  .withLine("  \"edges\":[")
-			  .withLine("  {")
+			  .withLine("    {")
 			  .withLine("      \"typ\":\"ASSOCIATION\",")
 			  .withLine("      \"source\":{")
 			  .withLine("        \"cardinality\":\"one\",")
@@ -182,7 +182,7 @@ public class GraphLudoTest
 	  GraphConverter graphConverter = new GraphConverter();
 
 	  JsonObject converter=graphConverter.convertToJson(GraphIdMap.CLASS, jsonArray, true);
-	  showDebugInfos(converter, 563, null);
+	  showDebugInfos(converter, 569, null);
  }
 
 }

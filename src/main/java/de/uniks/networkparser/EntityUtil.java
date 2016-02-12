@@ -24,10 +24,9 @@ package de.uniks.networkparser;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
-import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.gui.Pos;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.list.AbstractArray;
 import de.uniks.networkparser.list.AbstractList;
@@ -243,22 +242,19 @@ public class EntityUtil {
 	 *
 	 * @param value
 	 *			The value to be serialized.
-	 * @param indentFactor
-	 *			The number of spaces to add to each level of indentation.
-	 * @param indent
-	 *			The indentation of the top level.
 	 * @param simpleText
 	 *			Boolean for switch between text and Escaped-Text
 	 * @param reference
 	 *			A Reference Object to generate new Objects like Factory
 	 *			Pattern
+	 * @param converter
+	 *			The Converter to transform Item
 	 * @return a printable, displayable, transmittable representation of the
 	 *		 object, beginning with <code>{</code>&nbsp;<small>(left
 	 *		 brace)</small> and ending with <code>}</code>&nbsp;<small>(right
 	 *		 brace)</small>.
 	 */
-	public static String valueToString(Object value, int indentFactor,
-			int indent, boolean simpleText, BaseItem reference) {
+	public static String valueToString(Object value, boolean simpleText, BaseItem reference, Converter converter) {
 		if (value == null) {
 			return "null";
 		}
@@ -268,23 +264,24 @@ public class EntityUtil {
 		if (value instanceof Boolean) {
 			return value.toString();
 		}
+		
 		if (value instanceof BaseItem) {
-			return ((BaseItem) value).toString(new EntityStringConverter(indentFactor, indent));
+			return ((BaseItem) value).toString(converter);
 		}
 		if (value instanceof Map) {
 			BaseItem item = reference.getNewList(true).with((Map<?, ?>) value);
 			if (item instanceof BaseItem) {
-				return ((BaseItem) item).toString(new EntityStringConverter(indentFactor, indent));
+				return ((BaseItem) item).toString(converter);
 			}
 			return ((BaseItem) item).toString();
 		}
 		if (value instanceof Collection) {
 			BaseItem item = reference.getNewList(true);
 			if(item instanceof SimpleKeyValueList<?,?>) {
-				return ((SimpleKeyValueList<?,?>) item).withList((Map<?, ?>) value).toString();
+				return ((SimpleKeyValueList<?,?>) item).withList((Map<?, ?>) value).toString(converter);
 			}
 			if (item instanceof BaseItem) {
-				return ((BaseItem) item).toString(new EntityStringConverter(indentFactor, indent));
+				return ((BaseItem) item).toString(converter);
 			}
 			return ((BaseItem) item).toString();
 		}
@@ -295,37 +292,9 @@ public class EntityUtil {
 				item.with(entity);
 			}
 			if (item instanceof BaseItem) {
-				return ((BaseItem) item).toString(new EntityStringConverter(indentFactor, indent));
+				return ((BaseItem) item).toString(converter);
 			}
 			return ((BaseItem) item).toString();
-		}
-		if (simpleText) {
-			return value.toString();
-		}
-		return quote(value.toString());
-	}
-
-	public static String valueToString(Object value, boolean simpleText,
-			BaseItem reference) {
-		if (value == null) {
-			return "null";
-		}
-		if (value instanceof Number) {
-			return valueToString((Number) value);
-		}
-		if (value instanceof Boolean) {
-			return value.toString();
-		}
-		if (value instanceof AbstractArray<?>) {
-			return ((AbstractArray<?>) value).toString();
-		}
-		if (value instanceof Collection) {
-			return reference.getNewList(false).with(
-			(Collection<?>) value).toString();
-		}
-		if (value.getClass().isArray()) {
-			return reference.getNewList(false).with(
-			(Map<?, ?>) value).toString();
 		}
 		if (simpleText) {
 			return value.toString();

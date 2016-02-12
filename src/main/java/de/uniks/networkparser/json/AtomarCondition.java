@@ -34,7 +34,7 @@ public class AtomarCondition extends SimpleConditionProperty{
 
 	@Override
 	public boolean check(PropertyChangeEvent values) {
-		return filter.update(IdMap.SENDUPDATE, null, values);
+		return filter.update(IdMap.SENDUPDATE, values);
 	}
 
 }

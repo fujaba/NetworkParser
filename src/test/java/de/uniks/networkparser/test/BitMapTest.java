@@ -2,12 +2,14 @@ package de.uniks.networkparser.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+
 import org.junit.Assert;
 import org.junit.Test;
+
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.bytes.BitEntity;
 import de.uniks.networkparser.bytes.BitValue;
-import de.uniks.networkparser.bytes.ByteSimpleMap;
+import de.uniks.networkparser.bytes.ByteParser;
 import de.uniks.networkparser.test.model.BitDate;
 import de.uniks.networkparser.test.model.NumberFormat;
 import de.uniks.networkparser.test.model.util.BitDateCreator;
@@ -22,13 +24,12 @@ public class BitMapTest {
 		//  5 = 000101
 		//  8 = 001000
 
-		ByteSimpleMap map= new ByteSimpleMap();
+		ByteParser map= new ByteParser();
 		ByteBuffer buffer=ByteBuffer.allocate(2);
 		buffer.put(new byte[]{8});
 		buffer.put(new byte[]{42});
 		NumberFormatCreator createrClass = new NumberFormatCreator("len", 4, 4);
 		createrClass.addBitEntity("number",BitEntity.BIT_NUMBER,  "8", BitEntity.BIT_STRING, "len", BitEntity.BIT_REFERENCE);
-		map.with(createrClass);
 		NumberFormat numberItem = (NumberFormat) map.decode(buffer, createrClass);
 		Assert.assertNotNull(numberItem);
 
@@ -42,7 +43,7 @@ public class BitMapTest {
 		// Bits: 0010 0101 0000 1100 1010 1111 0001 0001
 		//		 |Minute|   | hour|yL|  day |yU  |Month
 		// 15.01.13 12:37
-		ByteSimpleMap map= new ByteSimpleMap();
+		ByteParser map= new ByteParser();
 		ByteBuffer buffer=ByteBuffer.allocate(4);
 		buffer.put(new byte[]{0x25,0x0C,(byte) 0xAF,0x11});
 

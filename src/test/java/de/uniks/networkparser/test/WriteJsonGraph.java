@@ -26,7 +26,7 @@ public class WriteJsonGraph {
 		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/dagre.min.js");
 		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/drawer.js");
 
-		Assert.assertEquals(425, htmlEntity.toString(2).length());
+		Assert.assertEquals(440, htmlEntity.toString(2).length());
 
 		DocEnvironment docEnvironment = new DocEnvironment();
 		GraphList model = new GraphList().withTyp(GraphIdMap.CLASS);
@@ -82,6 +82,6 @@ public class WriteJsonGraph {
 		Clazz person = model.with(new Clazz().with("Person"));
 
 		uni.withBidirectional(person, "has", Cardinality.MANY, "studis", Cardinality.ONE);
-		Assert.assertEquals(654, htmlEntity.withGraph(model).toString(2).length());
+		Assert.assertEquals(673, htmlEntity.withGraph(model).toString(2).length());
 	}
 }

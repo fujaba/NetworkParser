@@ -89,12 +89,14 @@ public class TableList extends SortedList<Object> implements
 	}
 
 	@Override
-	protected void fireProperty(Object oldValue, Object newValue,
+	protected boolean fireProperty(String type, Object oldValue, Object newValue,
 			Object beforeValue, Object value) {
-		super.fireProperty(oldValue, newValue, beforeValue, value);
+		boolean result = super.fireProperty(type, oldValue, newValue, beforeValue, value);
 
 		getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEMS, oldValue,
 				newValue);
+		
+		return result;
 	}
 
 	public PropertyChangeSupport getPropertyChangeSupport() {

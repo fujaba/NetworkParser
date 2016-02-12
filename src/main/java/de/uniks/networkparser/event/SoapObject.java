@@ -1,27 +1,6 @@
 package de.uniks.networkparser.event;
 
-/*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
-
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
-
- http://ec.europa.eu/idabc/eupl5
-
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
-*/
-import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.event.util.SoapCreator;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -52,39 +31,29 @@ public class SoapObject implements BaseItem {
 
 	@Override
 	public String toString() {
-		return toString(0, 0);
+		return parseItem(new EntityStringConverter());
 	}
 
 	public String toString(int indentFactor) {
-		return toString(indentFactor, 0);
+		return parseItem(new EntityStringConverter(indentFactor));
 	}
+	
 
-	protected String toString(int indentFactor, int indent) {
-		String spaces = "";
-		if (indentFactor > 0) {
-			spaces = "\r\n" + EntityUtil.repeat(' ', indentFactor);
-		}
-		StringBuilder sb = new StringBuilder();
-		sb.append("<" + namespace + ":Envelope xmlns:xsi=\""
-				+ SoapCreator.XMLNS_XSI + "\" xmlns:xsd=\""
-				+ SoapCreator.XMLNS_XSD + "\"");
-		sb.append(" xmlns:" + namespace + "=\"" + SoapCreator.XMLNS_SOAP + "\"");
-		sb.append(">");
-		if (indentFactor > 0) {
-			sb.append(spaces);
-		}
-		sb.append("<" + namespace + ":Body>");
+	protected String parseItem(EntityStringConverter converter) {
+		CharacterBuffer sb = new CharacterBuffer();
+		sb.with("<", namespace, ":Envelope xmlns:xsi=\"", SoapCreator.XMLNS_XSI,"\" xmlns:xsd=\"", SoapCreator.XMLNS_XSD, "\"");
+		sb.with(" xmlns:", namespace, "=\"", SoapCreator.XMLNS_SOAP, "\">");
+		converter.add();
+		sb.with(converter.getPrefix());
+		sb.with("<", namespace, ":Body>");
 
 		if (children != null) {
-			sb.append(children.toString(new EntityStringConverter(indentFactor, indent + indentFactor)));
-			sb.append(spaces);
+			sb.with(children.toString(converter));
 		}
-		sb.append("</" + namespace + ":Body>");
-		if (indentFactor > 0) {
-			sb.append("\r\n");
-		}
-		sb.append("</" + namespace + ":Envelope>");
-
+		sb.with("</", namespace, ":Body>");
+		converter.minus();
+		sb.with(converter.getPrefix());
+		sb.with("</", namespace, ":Envelope>");
 		return sb.toString();
 	}
 
@@ -128,12 +97,11 @@ public class SoapObject implements BaseItem {
 
 	@Override
 	public String toString(Converter converter) {
-		if(converter instanceof EntityStringConverter) {
-			EntityStringConverter item = (EntityStringConverter)converter;
-			return toString(item.getIndentFactor(), item.getIndent());
-		}
 		if(converter == null) {
 			return null;
+		}
+		if(converter instanceof EntityStringConverter) {
+			return parseItem((EntityStringConverter) converter);
 		}
 		return converter.encode(this);
 	}
