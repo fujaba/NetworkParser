@@ -1,26 +1,5 @@
 package de.uniks.networkparser.json;
 
-/*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
-
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
-
- http://ec.europa.eu/idabc/eupl5
-
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
-*/
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
@@ -36,7 +15,6 @@ import de.uniks.networkparser.event.util.DateCreator;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Grammar;
 import de.uniks.networkparser.interfaces.IdMapDecoder;
-import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorWrapper;
@@ -70,9 +48,6 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 
 	/** The update listener. */
 	protected UpdateListenerJson updateListenerJson;
-
-	/** The updatelistener for Notification changes. */
-	protected Object listener;
 
 	/**
 	 * Instantiates a new json id map.
@@ -112,6 +87,188 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 
 		filter = this.filter.newInstance(filter);
 		return toJsonObject(entity, filter, entity.getClass().getName(), 0);
+	}
+	
+	@Override
+	public String getId(Object obj) {
+		String key = grammar.getId(obj, getCounter());
+		if (key != null) {
+			put(key, obj);
+			return key;
+		}
+		return super.getId(obj);
+	}
+
+	@Override
+	public UpdateListenerJson getUpdateExecuter() {
+		if (this.updateListenerJson == null) {
+			this.updateListenerJson = new UpdateListenerJson(this);
+		}
+		return this.updateListenerJson;
+	}
+
+	public IdMap with(UpdateListenerJson updateListener) {
+		this.updateListenerJson = updateListener;
+		return this;
+	}
+
+	/**
+	 * Garbage collection.
+	 *
+	 * @param root
+	 *			the root
+	 */
+	public void garbageCollection(Object root) {
+		if (this.updateListenerJson == null) {
+			this.updateListenerJson = new UpdateListenerJson(this);
+		}
+		this.updateListenerJson.garbageCollection(root);
+	}
+	
+	/**
+	 * @param value
+	 *			Gammar value
+	 * @return Itself
+	 */
+	public JsonIdMap with(Grammar value) {
+		this.grammar = value;
+		return this;
+	}
+
+	/**
+	 * Sets the typ save.
+	 *
+	 * @param typSave
+	 *			the new typ save
+	 * @return Itself
+	 */
+	public JsonIdMap withTypSave(boolean typSave) {
+		this.typSave = typSave;
+		return this;
+	}
+
+	public JsonIdMap with(PropertyChangeListener listener) {
+		this.listener = listener;
+		return this;
+	}
+
+	/**
+	 * Set the new Listener
+	 *
+	 * @param listener the new Listener
+	 * @return This Component
+	 *
+	 * @see JsonIdMap#with(PropertyChangeListener)
+	 * @see de.uniks.networkparser.ChainUpdateListener
+	 */
+	public JsonIdMap with(UpdateListener listener) {
+		this.listener = listener;
+		return this;
+	}
+
+	public JsonIdMap with(SendableEntityCreator... createrClass) {
+		super.with(createrClass);
+		return this;
+	}
+
+	public JsonIdMap withSessionId(String value) {
+		getCounter().withPrefixId(value);
+		return this;
+	}
+	
+	boolean notifyUpdate(PropertyChangeEvent event) {
+		return super.notify(event);
+	}
+	
+	/**
+	 * Encode.
+	 *
+	 * @param entity
+	 *			the entity
+	 * @return the byte entity message
+	 */
+	@Override
+	public JsonObject encode(Object entity) {
+		return toJsonObject(entity);
+	}
+
+	/**
+	 * Encode.
+	 *
+	 * @param entity
+	 *			the entity
+	 * @return the byte entity message
+	 */
+	@Override
+	public JsonObject encode(Object entity, Filter filter) {
+		return toJsonObject(entity, filter);
+	}
+
+	/**
+	 * Read Json Automatic create JsonArray or JsonObject
+	 *
+	 * @return the object
+	 */
+	@Override
+	public Object decode(String value) {
+		if (value.startsWith("[")) {
+			return decode(new JsonArray().with(value));
+		}
+		return decode(new JsonObject().withValue(value));
+	}
+
+	/**
+	 * Read Json Automatic create JsonArray or JsonObject
+	 *
+	 * @return the object
+	 */
+	@Override
+	public Object decode(BaseItem value) {
+		if (value instanceof JsonArray) {
+			return decode((JsonArray) value);
+		}
+		return decode((JsonObject) value);
+	}
+
+	/**
+	 * Read json.
+	 *
+	 * @param target
+	 *			the target
+	 * @param jsonObject
+	 *			the json object
+	 * @return the object
+	 */
+	public Object decode(Object target, JsonObject jsonObject) {
+		return decode(target, jsonObject, null);
+	}
+
+	/**
+	 * Read json.
+	 *
+	 * @param target
+	 *			the target
+	 * @param jsonObject
+	 *			the json object
+	 * @param filter
+	 *			the filter for decoding
+	 * @return the object
+	 */
+	public Object decode(Object target, JsonObject jsonObject, Filter filter) {
+		filter = this.filter.newInstance(filter);
+		Object mainItem = decoding(target, jsonObject, filter);
+		return mainItem;
+	}
+
+	/**
+	 * To json array.
+	 *
+	 * @param object
+	 *			the object
+	 * @return the json array
+	 */
+	public JsonArray toJsonArray(Object object) {
+		return toJsonArray(object, null);
 	}
 
 	/**
@@ -163,55 +320,6 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 		}
 		return (JsonObject) grammar.setProperties(this, creator, className, id, jsonProp,
 				filter);
-	}
-
-	@Override
-	public String getId(Object obj) {
-		String key = grammar.getId(obj, getCounter());
-		if (key != null) {
-			put(key, obj);
-			return key;
-		}
-		return super.getId(obj);
-	}
-
-	public UpdateListenerJson getUpdateExecuter() {
-		if (this.updateListenerJson == null) {
-			this.updateListenerJson = new UpdateListenerJson(this);
-		}
-		return this.updateListenerJson;
-	}
-
-	public IdMap with(UpdateListenerJson updateListener) {
-		this.updateListenerJson = updateListener;
-		return this;
-	}
-
-	/**
-	 * Garbage collection.
-	 *
-	 * @param root
-	 *			the root
-	 */
-	public void garbageCollection(Object root) {
-		if (this.updateListenerJson == null) {
-			this.updateListenerJson = new UpdateListenerJson(this);
-		}
-		this.updateListenerJson.garbageCollection(root);
-	}
-
-	/**
-	 * @param object
-	 *			for add Listener to object
-	 * @return success of adding
-	 */
-	@Override
-	protected boolean addListener(Object object) {
-		if (object instanceof SendableEntity) {
-			return ((SendableEntity) object)
-					.addPropertyChangeListener(getUpdateExecuter());
-		}
-		return false;
 	}
 
 	protected Object parseProperty(SendableEntityCreator prototyp,
@@ -309,56 +417,6 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 	}
 
 	/**
-	 * Encode.
-	 *
-	 * @param entity
-	 *			the entity
-	 * @return the byte entity message
-	 */
-	@Override
-	public JsonObject encode(Object entity) {
-		return toJsonObject(entity);
-	}
-
-	/**
-	 * Encode.
-	 *
-	 * @param entity
-	 *			the entity
-	 * @return the byte entity message
-	 */
-	@Override
-	public JsonObject encode(Object entity, Filter filter) {
-		return toJsonObject(entity, filter);
-	}
-
-	/**
-	 * Read Json Automatic create JsonArray or JsonObject
-	 *
-	 * @return the object
-	 */
-	@Override
-	public Object decode(String value) {
-		if (value.startsWith("[")) {
-			return decode(new JsonArray().with(value));
-		}
-		return decode(new JsonObject().withValue(value));
-	}
-
-	/**
-	 * Read Json Automatic create JsonArray or JsonObject
-	 *
-	 * @return the object
-	 */
-	@Override
-	public Object decode(BaseItem value) {
-		if (value instanceof JsonArray) {
-			return decode((JsonArray) value);
-		}
-		return decode((JsonObject) value);
-	}
-
-	/**
 	 * Read json.
 	 *
 	 * @param jsonArray
@@ -390,36 +448,6 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 	 */
 	public Object decode(JsonObject jsonObject) {
 		return decoding(jsonObject, null);
-	}
-
-	/**
-	 * Read json.
-	 *
-	 * @param target
-	 *			the target
-	 * @param jsonObject
-	 *			the json object
-	 * @return the object
-	 */
-	public Object decode(Object target, JsonObject jsonObject) {
-		return decode(target, jsonObject, null);
-	}
-
-	/**
-	 * Read json.
-	 *
-	 * @param target
-	 *			the target
-	 * @param jsonObject
-	 *			the json object
-	 * @param filter
-	 *			the filter for decoding
-	 * @return the object
-	 */
-	public Object decode(Object target, JsonObject jsonObject, Filter filter) {
-		filter = this.filter.newInstance(filter);
-		Object mainItem = decoding(target, jsonObject, filter);
-		return mainItem;
 	}
 
 	/**
@@ -592,17 +620,6 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 	}
 
 	/**
-	 * To json array.
-	 *
-	 * @param object
-	 *			the object
-	 * @return the json array
-	 */
-	public JsonArray toJsonArray(Object object) {
-		return toJsonArray(object, null);
-	}
-
-	/**
 	 * Convert to JsonArray in the resource
 	 *
 	 * @param object
@@ -721,18 +738,6 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 		return jsonArray;
 	}
 
-	boolean notify(PropertyChangeEvent event) {
-    	if (this.listener != null ) {
-    		if(this.listener instanceof PropertyChangeListener) {
-    			((PropertyChangeListener)this.listener).propertyChange(event);
-    		}
-    		if (this.listener != null && this.listener instanceof UpdateListener) {
-    			return ((UpdateListener)this.listener).update(event);
-    		}
-    	}
-		return true;
-	}
-
 	/**
 	 * To json array by ids.
 	 *
@@ -753,63 +758,5 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 			}
 		}
 		return items;
-	}
-
-	@Override
-	public String toString() {
-		return this.getClass().getName() + " (" + this.size() + ")";
-	}
-
-	/**
-	 * @param value
-	 *			Gammar value
-	 * @return Itself
-	 */
-	public JsonIdMap with(Grammar value) {
-		this.grammar = value;
-		return this;
-	}
-
-	/**
-	 * Sets the typ save.
-	 *
-	 * @param typSave
-	 *			the new typ save
-	 * @return Itself
-	 */
-	public JsonIdMap withTypSave(boolean typSave) {
-		this.typSave = typSave;
-		return this;
-	}
-
-	public JsonIdMap with(PropertyChangeListener listener) {
-		this.listener = listener;
-		return this;
-	}
-
-	/**
-	 * Set the new Listener
-	 *
-	 * @param listener the new Listener
-	 * @return This Component
-	 *
-	 * @see JsonIdMap#with(PropertyChangeListener)
-	 * @see de.uniks.networkparser.ChainUpdateListener
-	 */
-	public JsonIdMap with(UpdateListener listener) {
-		this.listener = listener;
-		return this;
-	}
-
-	public JsonIdMap with(SendableEntityCreator... createrClass) {
-		super.with(createrClass);
-		return this;
-	}
-
-	//Redirect
-	@Override
-	public JsonIdMap withSessionId(String value) {
-		super.withSessionId(value);
-		return this;
 	}
 }

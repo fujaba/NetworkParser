@@ -6,9 +6,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
+
+import de.uniks.networkparser.converter.YUMLConverter;
 import de.uniks.networkparser.graph.GraphIdMap;
 import de.uniks.networkparser.graph.GraphList;
-import de.uniks.networkparser.graph.YUMLConverter;
 
 public class NetworkParserSources {
 	private int change;

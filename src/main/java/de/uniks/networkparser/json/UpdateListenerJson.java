@@ -105,7 +105,7 @@ public class UpdateListenerJson implements PropertyChangeListener {
 		if(array.size() > 0) {
 			JsonObject message = new JsonObject();
 			message.put(IdMap.UPDATE, array);
-			this.map.notify(new SimpleMapEvent(IdMap.NEW, map, IdMap.UPDATE).with(message));
+			this.map.notifyUpdate(new SimpleMapEvent(IdMap.NEW, map, IdMap.UPDATE).with(message));
 		}
 
 		this.suspendIdList = null;
@@ -200,7 +200,7 @@ public class UpdateListenerJson implements PropertyChangeListener {
 			jsonObject.put(IdMap.PRIO, this.map.getCounter().getPrio());
 		}
 		if (this.suspendIdList == null) {
-			this.map.notify(new SimpleMapEvent(evt, IdMap.NEW, map, jsonObject));
+			this.map.notifyUpdate(new SimpleMapEvent(evt, IdMap.NEW, map, jsonObject));
 		}
 	}
 
@@ -302,7 +302,7 @@ public class UpdateListenerJson implements PropertyChangeListener {
 				if (removeJsonObject != null
 						&& removeJsonObject instanceof JsonObject) {
 					JsonObject json = (JsonObject) removeJsonObject;
-					this.map.notify(new SimpleMapEvent(IdMap.REMOVE, map, key, this.map.decode(json), null).with(json).withModelItem(masterObj));
+					this.map.notifyUpdate(new SimpleMapEvent(IdMap.REMOVE, map, key, this.map.decode(json), null).with(json).withModelItem(masterObj));
 				}
 			}
 			return masterObj;
@@ -319,12 +319,12 @@ public class UpdateListenerJson implements PropertyChangeListener {
 					setValue(creator, masterObj, key, newValue,
 							IdMap.UPDATE);
 					
-					this.map.notify(new SimpleMapEvent(IdMap.UPDATE, map, key, oldValue, newValue).with(update).withModelItem(masterObj));
+					this.map.notifyUpdate(new SimpleMapEvent(IdMap.UPDATE, map, key, oldValue, newValue).with(update).withModelItem(masterObj));
 				} else if (checkPrio(prio)) {
 					Object newValue = update.get(key);
 					setValue(creator, masterObj, key, newValue,
 							IdMap.UPDATE);
-					this.map.notify(new SimpleMapEvent(IdMap.UPDATE, map, key, oldValue, newValue).with(update).withModelItem(masterObj));
+					this.map.notifyUpdate(new SimpleMapEvent(IdMap.UPDATE, map, key, oldValue, newValue).with(update).withModelItem(masterObj));
 				}
 			}
 			return masterObj;
@@ -402,13 +402,13 @@ public class UpdateListenerJson implements PropertyChangeListener {
 			Object value = this.map.decode(json);
 			if (value != null) {
 				creator.setValue(element, key, value, typ);
-				if(this.map.notify(new SimpleMapEvent(typ, map, key, null, value).with(json).withModelItem(element))){
+				if(this.map.notifyUpdate(new SimpleMapEvent(typ, map, key, null, value).with(json).withModelItem(element))){
 					return element;
 				}
 			}
 		} else {
 			creator.setValue(element, key, newValue, typ);
-			if(this.map.notify(new SimpleMapEvent(typ, map, key, null, newValue).withModelItem(element))){
+			if(this.map.notifyUpdate(new SimpleMapEvent(typ, map, key, null, newValue).withModelItem(element))){
 				return element;
 			}
 		}

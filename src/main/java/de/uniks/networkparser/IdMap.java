@@ -1,5 +1,7 @@
 package de.uniks.networkparser;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 /*
 NetworkParser
 Copyright (c) 2011 - 2016, Stefan Lindel
@@ -27,11 +29,14 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+
 import de.uniks.networkparser.event.MapEntry;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.IdMapCounter;
+import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
+import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 /**
@@ -58,9 +63,6 @@ public abstract class IdMap implements Map<String, Object>, Iterable<SendableEnt
 
 	/** The Constant PRIO. */
 	public static final String PRIO = "prio";
-
-	/** The Constant SENDUPDATE. */
-//	public static final String SENDUPDATE = "sendupdate";
 	
 	public static final String CHILDREN= "<CHILDREN>";
 	
@@ -77,6 +79,9 @@ public abstract class IdMap implements Map<String, Object>, Iterable<SendableEnt
 	protected Filter filter = new Filter().withMap(this);
 
 	protected NetworkParserLog logger = new NetworkParserLog();
+
+	/** The updatelistener for Notification changes. */
+	protected Object listener;
 
 	/** The Constant ENTITYSPLITTER. */
 	public static final char ENTITYSPLITTER = '.';
@@ -303,18 +308,6 @@ public abstract class IdMap implements Map<String, Object>, Iterable<SendableEnt
 	}
 
 	/**
-	 * Sets the session id.
-	 *
-	 * @param value
-	 *			the new session id
-	 * @return Itself
-	 */
-	public IdMap withSessionId(String value) {
-		getCounter().withPrefixId(value);
-		return this;
-	}
-
-	/**
 	 * Gets the Id. Do not generate a Id
 	 *
 	 * @param obj
@@ -385,15 +378,14 @@ public abstract class IdMap implements Map<String, Object>, Iterable<SendableEnt
 	@Override
 	public Object put(String jsonId, Object object) {
 		this.keyValue.with(jsonId, object);
-//		if (this.updateListener != null) {
-//			this.updateListener.update(NEW, new B(), this, ITEMS, null, object);
-//		}
-		addListener(object);
+		if (object instanceof SendableEntity) {
+			((SendableEntity) object).addPropertyChangeListener(getUpdateExecuter());
+		}
 		return object;
 	}
 
-	protected boolean addListener(Object object) {
-		return false;
+	public PropertyChangeListener getUpdateExecuter() {
+		return null;
 	}
 
 	/**
@@ -701,5 +693,22 @@ public abstract class IdMap implements Map<String, Object>, Iterable<SendableEnt
 	@Override
 	public Iterator<SendableEntityCreator> iterator() {
 		return this.creators.values().iterator();
+	}
+	
+	protected boolean notify(PropertyChangeEvent event) {
+    	if (this.listener != null ) {
+    		if(this.listener instanceof PropertyChangeListener) {
+    			((PropertyChangeListener)this.listener).propertyChange(event);
+    		}
+    		if (this.listener != null && this.listener instanceof UpdateListener) {
+    			return ((UpdateListener)this.listener).update(event);
+    		}
+    	}
+		return true;
+	}
+	
+	@Override
+	public String toString() {
+		return this.getClass().getName() + " (" + this.size() + ")";
 	}
 }

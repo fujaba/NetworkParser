@@ -5,7 +5,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import de.uniks.networkparser.bytes.converter.ByteConverterHex;
+
+import de.uniks.networkparser.buffer.ByteBuffer;
+import de.uniks.networkparser.converter.ByteConverterHex;
 
 public class ConvertKey {
 	String input;
@@ -20,7 +22,7 @@ public class ConvertKey {
 		}
 		String key = new String(Files.readAllBytes(Paths.get(inputFile.toURI())));
 		ByteConverterHex converterHex = new ByteConverterHex();
-		String hexValue = converterHex.toString(key.getBytes(), key.length());
+		String hexValue = converterHex.toString(new ByteBuffer().with(key.getBytes()));
 		FileOutputStream out = new FileOutputStream(output);
 		out.write(hexValue.getBytes());
 		out.close();
