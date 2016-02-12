@@ -453,9 +453,9 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 			}
 			if (result == null) {
 				result = grammar.getNewEntity(typeInfo, grammar.getValue(jsonObject, CLASS), false);
-				readMessages(NEW, new SimpleMapEvent(this, jsonObject, result));
+				notify(new SimpleMapEvent(NEW, this, jsonObject, result));
 			} else {
-				readMessages(UPDATE, new SimpleMapEvent(this,jsonObject, result));
+				notify(new SimpleMapEvent(UPDATE, this,jsonObject, result));
 			}
 			filter = this.filter.newInstance(filter);
 			if (typeInfo instanceof SendableEntityCreatorWrapper) {
@@ -721,33 +721,13 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 		return jsonArray;
 	}
 
-	/**
-	 * Send update msg from PropertyChange MapUpdater
-	 *
-	 * @param evt
-	 *			the Change
-	 * @param jsonObject
-	 *			the json object
-	 * @return true, if successful
-	 */
-	boolean sendUpdateMsg(PropertyChangeEvent evt) {
-		if(evt == null) {
-			return true;
-		}
-		return notify(SENDUPDATE, evt);
-	}
-
-	boolean readMessages(String typ, PropertyChangeEvent event) {
-		return notify(typ, event);
-	}
-
-	boolean notify(String typ, PropertyChangeEvent event) {
+	boolean notify(PropertyChangeEvent event) {
     	if (this.listener != null ) {
     		if(this.listener instanceof PropertyChangeListener) {
     			((PropertyChangeListener)this.listener).propertyChange(event);
     		}
     		if (this.listener != null && this.listener instanceof UpdateListener) {
-    			return ((UpdateListener)this.listener).update(typ, event);
+    			return ((UpdateListener)this.listener).update(event);
     		}
     	}
 		return true;

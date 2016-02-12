@@ -1,7 +1,7 @@
 package de.uniks.networkparser.logic;
 
-import java.util.EventObject;
-import de.uniks.networkparser.interfaces.Condition;
+import java.beans.PropertyChangeEvent;
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -24,11 +24,12 @@ import de.uniks.networkparser.interfaces.Condition;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.UpdateListener;
 /**
  * @author Stefan Lindel IfCondition Clazz
  */
 
-public class IfCondition implements SimpleConditionValue, SendableEntityCreator {
+public class IfCondition implements UpdateListener, SendableEntityCreator {
 	/** Constant for Expression. */
 	public static final String EXPRESSION = "expression";
 	/** Constant for TrueCase. */
@@ -37,24 +38,24 @@ public class IfCondition implements SimpleConditionValue, SendableEntityCreator 
 	public static final String FALSECONDITION = "falsecondition";
 
 	/** Variable for Expression. */
-	private Condition<EventObject> expression;
+	private UpdateListener expression;
 	/** Variable for True Case. */
-	private Condition<EventObject> trueCondition;
+	private UpdateListener trueCondition;
 	/** Variable for False Case. */
-	private Condition<EventObject> falseCondition;
+	private UpdateListener falseCondition;
 
 	/**
 	 * @param value
 	 *			Set the new Expression
 	 * @return IfCondition Instance
 	 */
-	public IfCondition withExpression(Condition<EventObject> value) {
+	public IfCondition withExpression(UpdateListener value) {
 		this.expression = value;
 		return this;
 	}
 
 	/** @return The Expression */
-	public Condition<EventObject> getExpression() {
+	public UpdateListener getExpression() {
 		return expression;
 	}
 
@@ -63,13 +64,13 @@ public class IfCondition implements SimpleConditionValue, SendableEntityCreator 
 	 *			Ste The True Case
 	 * @return InstanceOf Instance
 	 */
-	public IfCondition withTrue(Condition<EventObject> condition) {
+	public IfCondition withTrue(UpdateListener condition) {
 		this.trueCondition = condition;
 		return this;
 	}
 
 	/** @return The True Case */
-	public Condition<EventObject> getTrue() {
+	public UpdateListener getTrue() {
 		return trueCondition;
 	}
 
@@ -78,25 +79,26 @@ public class IfCondition implements SimpleConditionValue, SendableEntityCreator 
 	 *			Set the False Case
 	 * @return IfCondition Instance
 	 */
-	public IfCondition withFalse(Condition<EventObject> condition) {
+	public IfCondition withFalse(UpdateListener condition) {
 		this.falseCondition = condition;
 		return this;
 	}
 
 	/** @return The False Case */
-	public Condition<EventObject> getFalse() {
+	public UpdateListener getFalse() {
 		return falseCondition;
 	}
 
+	
 	@Override
-	public boolean check(EventObject values) {
-		if (expression.check(values)) {
+	public boolean update(PropertyChangeEvent evt) {
+		if (expression.update(evt)) {
 			if (trueCondition != null) {
-				return trueCondition.check(values);
+				return trueCondition.update(evt);
 			}
 		} else {
 			if (falseCondition != null) {
-				return falseCondition.check(values);
+				return falseCondition.update(evt);
 			}
 		}
 		return false;
@@ -130,15 +132,15 @@ public class IfCondition implements SimpleConditionValue, SendableEntityCreator 
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
 		if (EXPRESSION.equalsIgnoreCase(attribute)) {
-			((IfCondition) entity).withExpression((SimpleConditionValue) value);
+			((IfCondition) entity).withExpression((UpdateListener) value);
 			return true;
 		}
 		if (TRUECONDITION.equalsIgnoreCase(attribute)) {
-			((IfCondition) entity).withTrue((SimpleConditionValue) value);
+			((IfCondition) entity).withTrue((UpdateListener) value);
 			return true;
 		}
 		if (FALSECONDITION.equalsIgnoreCase(attribute)) {
-			((IfCondition) entity).withFalse((SimpleConditionValue) value);
+			((IfCondition) entity).withFalse((UpdateListener) value);
 			return true;
 		}
 		return false;

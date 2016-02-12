@@ -60,7 +60,7 @@ public abstract class IdMap implements Map<String, Object>, Iterable<SendableEnt
 	public static final String PRIO = "prio";
 
 	/** The Constant SENDUPDATE. */
-	public static final String SENDUPDATE = "sendupdate";
+//	public static final String SENDUPDATE = "sendupdate";
 	
 	public static final String CHILDREN= "<CHILDREN>";
 	

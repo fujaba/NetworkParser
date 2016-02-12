@@ -1,5 +1,7 @@
 package de.uniks.networkparser.logic;
 
+import java.beans.PropertyChangeEvent;
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -22,13 +24,14 @@ package de.uniks.networkparser.logic;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.UpdateListener;
 /**
  * DeepCondition.
  *
  * @author Stefan Lindel
  */
 
-public class Deep extends SimpleConditionMap implements SendableEntityCreator {
+public class Deep implements SendableEntityCreator, UpdateListener {
 	/** Constant of Deep. */
 	public static final String DEEP = "deep";
 	/** Variable of Deep. */
@@ -50,8 +53,11 @@ public class Deep extends SimpleConditionMap implements SendableEntityCreator {
 	}
 
 	@Override
-	public boolean check(SimpleMapEvent values) {
-		return values.getDeep() <= this.deep;
+	public boolean update(PropertyChangeEvent evt) {
+		if(evt instanceof SimpleMapEvent) {
+			return ((SimpleMapEvent)evt).getDeep() <= this.deep;
+		}
+		return false;
 	}
 
 	/**

@@ -197,7 +197,7 @@ public abstract class AbstractList<V> extends AbstractArray<V> {
 		for(int i=0;i<size();i++) {
 			V item = get(i);
 			Condition<Object> filter = (Condition<Object>) newValue;
-			if(filter.check(item)) {
+			if(filter.update(item)) {
 				filterCollection.add(item);
 			}
 		}

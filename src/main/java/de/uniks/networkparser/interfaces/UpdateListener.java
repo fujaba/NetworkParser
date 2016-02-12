@@ -10,18 +10,5 @@ import java.beans.PropertyChangeEvent;
 * event occurs, that object's appropriate method is invoked.
 */
 @FunctionalInterface
-public interface UpdateListener  {
-	/**
-	 * Send update msg.
-	 *
-	 * @param typ
-	 *			the typ of Message: NEW UPDATE, REMOVE or SENDUPDATE
-	 * @param event
-	 *			The Change in a PropertyChangeEvent @see java.beans.PropertyChangeEvent
-	 *
-	 * @return true, if successful
-	 */
-	public boolean update(String typ, PropertyChangeEvent event);
-
-
+public interface UpdateListener extends Condition<PropertyChangeEvent>{
 }

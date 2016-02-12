@@ -7,6 +7,7 @@ import java.beans.PropertyChangeEvent;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
@@ -41,7 +42,7 @@ public class JsonPeer2PeerTest implements UpdateListener{
 
 		firstMap.garbageCollection(firstRoot);
 		
-		update(null, new SimpleMapEvent(firstMap, null).with(firstMap.toJsonObject(firstRoot)));
+		update(new SimpleMapEvent(IdMap.NEW, firstMap, null).with(firstMap.toJsonObject(firstRoot)));
 
 		SortedMsg third= new SortedMsg();
 		third.setNumber(4);
@@ -51,7 +52,7 @@ public class JsonPeer2PeerTest implements UpdateListener{
 	}
 
 	@Override
-	public boolean update(String typ,PropertyChangeEvent event) {
+	public boolean update(PropertyChangeEvent event) {
 		SimpleMapEvent simpleEvent = (SimpleMapEvent) event;
 		
 		JsonObject jsonObject = (JsonObject) simpleEvent.getEntity();

@@ -1,5 +1,6 @@
 package de.uniks.networkparser.logic;
 
+import java.beans.PropertyChangeEvent;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -22,45 +23,45 @@ package de.uniks.networkparser.logic;
  permissions and limitations under the Licence.
 */
 import java.util.ArrayList;
-import java.util.EventObject;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.UpdateListener;
 /**
  * Or Clazz for Or Conditions.
  *
  * @author Stefan Lindel
  */
 
-public class Or implements SimpleConditionValue, SendableEntityCreator {
+public class Or implements UpdateListener, SendableEntityCreator {
 	/** Constant of CHILD. */
 	public static final String CHILD = "childs";
 	/** Variable of Conditions. */
-	private ArrayList<SimpleConditionValue> list = new ArrayList<SimpleConditionValue>();
+	private ArrayList<UpdateListener> list = new ArrayList<UpdateListener>();
 
 	/**
 	 * @param conditions
 	 *			All Conditions.
 	 * @return Or Instance
 	 */
-	public Or add(SimpleConditionValue... conditions) {
-		for (SimpleConditionValue condition : conditions) {
+	public Or add(UpdateListener... conditions) {
+		for (UpdateListener condition : conditions) {
 			this.list.add(condition);
 		}
 		return this;
 	}
 
 	/** @return List of Condition. */
-	private ArrayList<SimpleConditionValue> getList() {
+	private ArrayList<UpdateListener> getList() {
 		return list;
 	}
 
 	@Override
-	public boolean check(EventObject values) {
+	public boolean update(PropertyChangeEvent evt) {
 		boolean result = true;
-		for (SimpleConditionValue condition : list) {
-			if (!condition.check(values)) {
+		for (UpdateListener condition : list) {
+			if (!condition.update(evt)) {
 				result = false;
 			}
 		}
@@ -70,7 +71,7 @@ public class Or implements SimpleConditionValue, SendableEntityCreator {
 	@Override
 	public String toString() {
 		CharacterBuffer sb = new CharacterBuffer();
-		for (SimpleConditionValue condition : list) {
+		for (UpdateListener condition : list) {
 			sb.with("[", condition.toString(), " ");
 		}
 		sb.trim();
@@ -101,7 +102,7 @@ public class Or implements SimpleConditionValue, SendableEntityCreator {
 			String type) {
 		if (CHILD.equalsIgnoreCase(attribute)) {
 			if(value instanceof Condition) {
-				((Or) entity).add((SimpleConditionValue) value);
+				((Or) entity).add((UpdateListener) value);
 			}
 			return true;
 		}

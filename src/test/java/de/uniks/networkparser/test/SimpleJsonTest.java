@@ -22,7 +22,7 @@ public class SimpleJsonTest {
 		JsonIdMap map=new JsonIdMap().with(new HouseCreator());
 		map.with(new UpdateListener() {
 			@Override
-			public boolean update(String typ, PropertyChangeEvent event) {
+			public boolean update(PropertyChangeEvent event) {
 				SimpleMapEvent simpleEvent = (SimpleMapEvent) event;
 				
 				updateMessage = simpleEvent.getEntity().toString();

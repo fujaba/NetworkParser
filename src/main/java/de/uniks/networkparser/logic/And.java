@@ -1,5 +1,6 @@
 package de.uniks.networkparser.logic;
 
+import java.beans.PropertyChangeEvent;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -22,29 +23,29 @@ package de.uniks.networkparser.logic;
  permissions and limitations under the Licence.
 */
 import java.util.ArrayList;
-import java.util.EventObject;
 
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.UpdateListener;
 
-public class And implements SimpleConditionValue, SendableEntityCreator {
+public class And implements UpdateListener, SendableEntityCreator {
 	public static final String CHILD = "childs";
-	private ArrayList<SimpleConditionValue> list = new ArrayList<SimpleConditionValue>();
+	private ArrayList<UpdateListener> list = new ArrayList<UpdateListener>();
 
-	public And add(SimpleConditionValue... conditions) {
-		for (SimpleConditionValue condition : conditions) {
+	public And add(UpdateListener... conditions) {
+		for (UpdateListener condition : conditions) {
 			this.list.add(condition);
 		}
 		return this;
 	}
 
-	public ArrayList<SimpleConditionValue> getList() {
+	public ArrayList<UpdateListener> getList() {
 		return list;
 	}
 
 	@Override
-	public boolean check(EventObject values) {
-		for (SimpleConditionValue condition : list) {
-			if (!condition.check(values)) {
+	public boolean update(PropertyChangeEvent evt) {
+		for (UpdateListener condition : list) {
+			if (!condition.update(evt)) {
 				return false;
 			}
 		}
@@ -73,7 +74,7 @@ public class And implements SimpleConditionValue, SendableEntityCreator {
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
 		if (CHILD.equalsIgnoreCase(attribute)) {
-			((And) entity).add((SimpleConditionValue) value);
+			((And) entity).add((UpdateListener) value);
 			return true;
 		}
 		return false;

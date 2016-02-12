@@ -1,6 +1,6 @@
 package de.uniks.networkparser.logic;
 
-import java.util.EventObject;
+import java.beans.PropertyChangeEvent;
 
 /*
  NetworkParser
@@ -24,13 +24,14 @@ import java.util.EventObject;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.UpdateListener;
 
-public class BooleanCondition implements SimpleConditionValue, SendableEntityCreator {
+public class BooleanCondition implements UpdateListener, SendableEntityCreator {
 	public static final String VALUE = "value";
 	private boolean value;
 
 	@Override
-	public boolean check(EventObject values) {
+	public boolean update(PropertyChangeEvent value) {
 		return this.value;
 	}
 

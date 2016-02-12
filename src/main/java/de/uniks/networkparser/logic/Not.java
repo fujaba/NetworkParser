@@ -1,7 +1,7 @@
 package de.uniks.networkparser.logic;
 
-import java.util.EventObject;
-import de.uniks.networkparser.interfaces.Condition;
+import java.beans.PropertyChangeEvent;
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -24,27 +24,29 @@ import de.uniks.networkparser.interfaces.Condition;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.UpdateListener;
 /**
  * Not Clazz for neg. Condition.
  *
  * @author Stefan Lindel
  */
 
-public class Not implements SimpleConditionValue, SendableEntityCreator {
+public class Not implements UpdateListener, SendableEntityCreator {
 	/** Constant for ITEM. */
 	public static final String ITEM = "item";
 	/** Varibale for Condition. */
-	private SimpleConditionValue item;
+	private UpdateListener item;
 
+	
 	@Override
-	public boolean check(EventObject values) {
-		return !item.check(values);
+	public boolean update(PropertyChangeEvent evt) {
+		return !item.update(evt);
 	}
 
 	/**
-	 * @return Not Conditino
+	 * @return Not Condition
 	 */
-	public Condition<EventObject> getItem() {
+	public UpdateListener getItem() {
 		return item;
 	}
 
@@ -53,7 +55,7 @@ public class Not implements SimpleConditionValue, SendableEntityCreator {
 	 *			for new Condition
 	 * @return Not Instance
 	 */
-	public Not withItem(SimpleConditionValue value) {
+	public Not withItem(UpdateListener value) {
 		this.item = value;
 		return this;
 	}
@@ -80,8 +82,8 @@ public class Not implements SimpleConditionValue, SendableEntityCreator {
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
 		if (ITEM.equalsIgnoreCase(attribute)) {
-			if(value instanceof SimpleConditionValue) {
-				((Not) entity).withItem((SimpleConditionValue) value);
+			if(value instanceof UpdateListener) {
+				((Not) entity).withItem((UpdateListener) value);
 			}
 		}
 		return false;

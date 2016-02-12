@@ -25,13 +25,13 @@ import java.util.ArrayList;
 
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
-import de.uniks.networkparser.logic.SimpleConditionValue;
+import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.logic.SimpleMapEvent;
 
 public class Filter {
-	protected SimpleConditionValue idFilter;
-	protected SimpleConditionValue convertable;
-	protected SimpleConditionValue property;
+	protected UpdateListener idFilter;
+	protected UpdateListener convertable;
+	protected UpdateListener property;
 
 	// Temporary variables
 	protected ArrayList<Object> visitedObjects;
@@ -39,7 +39,7 @@ public class Filter {
 	private String strategy = IdMap.NEW;
 	private IdMap map;
 
-	public Filter withIdFilter(SimpleConditionValue idFilter) {
+	public Filter withIdFilter(UpdateListener idFilter) {
 		this.idFilter = idFilter;
 		return this;
 	}
@@ -62,7 +62,7 @@ public class Filter {
 	 */
 	public boolean isId(Object entity, String className) {
 		if (idFilter != null) {
-			return idFilter.check(new SimpleMapEvent(this.map, className, null, entity));
+			return idFilter.update(new SimpleMapEvent(IdMap.NEW, this.map, className, null, entity));
 		}else {
 			SendableEntityCreator creator = this.map.getCreator(className, true);
 			if(creator!=null) {
@@ -89,12 +89,12 @@ public class Filter {
 		return this;
 	}
 
-	public Filter withPropertyRegard(SimpleConditionValue property) {
+	public Filter withPropertyRegard(UpdateListener property) {
 		this.property = property;
 		return this;
 	}
 
-	public Filter withConvertable(SimpleConditionValue convertable) {
+	public Filter withConvertable(UpdateListener convertable) {
 		this.convertable = convertable;
 		return this;
 	}
@@ -172,14 +172,14 @@ public class Filter {
 
 	boolean isPropertyRegard(Object entity, String property, Object value, int deep) {
 		if (this.property != null) {
-			return this.property.check(new SimpleMapEvent(map, property, null, value).with(deep).withModelItem(entity));
+			return this.property.update(new SimpleMapEvent(IdMap.NEW, map, property, null, value).with(deep).withModelItem(entity));
 		}
 		return true;
 	}
 
 	boolean isConvertable(Object entity, String property, Object value, int deep) {
 		if (this.convertable != null) {
-			return this.convertable.check(new SimpleMapEvent(map, property, null, value).with(deep).withModelItem(entity));
+			return this.convertable.update(new SimpleMapEvent(IdMap.NEW, map, property, null, value).with(deep).withModelItem(entity));
 		}
 		return true;
 	}
@@ -201,7 +201,7 @@ public class Filter {
 	 * @param convertable Condition
 	 * @return a new Filter for regard the model
 	 */
-	public static Filter regard(SimpleConditionValue convertable) {
+	public static Filter regard(UpdateListener convertable) {
 		return new Filter().withPropertyRegard(convertable);
 	}
 	/**
@@ -210,7 +210,7 @@ public class Filter {
 	 * @param convertable Condition
 	 * @return a new Filter for Filter with Convertable Items
 	 */
-	public static Filter convertable(SimpleConditionValue convertable) {
+	public static Filter convertable(UpdateListener convertable) {
 		return new Filter().withConvertable(convertable);
 	}
 

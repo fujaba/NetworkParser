@@ -2,10 +2,11 @@ package de.uniks.networkparser.test;
 
 import org.junit.Assert;
 import org.junit.Test;
+
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.logic.Equals;
 import de.uniks.networkparser.logic.Or;
-import de.uniks.networkparser.logic.SimpleConditionValue;
 
 public class RegTest {
 	@Test
@@ -13,11 +14,11 @@ public class RegTest {
 		String reg="[abc]";
 		CharacterBuffer item= new CharacterBuffer();
 		item.with(reg);
-		SimpleConditionValue root = parseCurrentChar(item);
+		UpdateListener root = parseCurrentChar(item);
 		Assert.assertNotNull(root);
 	}
 
-	public SimpleConditionValue parseCurrentChar(CharacterBuffer item){
+	public UpdateListener parseCurrentChar(CharacterBuffer item){
 		char ch = item.getCurrentChar();
 		if(ch=='['){
 			// OR-Item

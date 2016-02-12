@@ -1,8 +1,10 @@
 package de.uniks.networkparser.test;
 
-import java.util.EventObject;
+import java.beans.PropertyChangeEvent;
+
 import org.junit.Assert;
 import org.junit.Test;
+
 import de.uniks.networkparser.logic.And;
 import de.uniks.networkparser.logic.Between;
 import de.uniks.networkparser.logic.BooleanCondition;
@@ -27,6 +29,6 @@ public class ConditionTest {
 		and.add(new Or().add(new BooleanCondition().withValue(false)));
 		ifCondition.withFalse(and);
 
-		Assert.assertFalse(ifCondition.check(new EventObject(23)));
+		Assert.assertFalse(ifCondition.update(new PropertyChangeEvent(23, null, null, null)));
 	}
 }

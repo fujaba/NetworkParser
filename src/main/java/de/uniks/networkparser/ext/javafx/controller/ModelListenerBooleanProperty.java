@@ -1,8 +1,9 @@
 package de.uniks.networkparser.ext.javafx.controller;
 
-import java.util.EventObject;
+import java.beans.PropertyChangeEvent;
+
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.logic.SimpleConditionValue;
+import de.uniks.networkparser.interfaces.UpdateListener;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -27,7 +28,7 @@ import de.uniks.networkparser.logic.SimpleConditionValue;
 import javafx.beans.Observable;
 
 public class ModelListenerBooleanProperty extends ModelListenerProperty<Boolean> {
-	private SimpleConditionValue condition;
+	private UpdateListener condition;
 
 	public ModelListenerBooleanProperty(SendableEntityCreator creator, Object item, String property) {
 		super(creator, item, property);
@@ -41,7 +42,7 @@ public class ModelListenerBooleanProperty extends ModelListenerProperty<Boolean>
 	public Boolean getValue() {
 		Object value = creator.getValue(item, property);
 		if(condition!=null){
-			return condition.check(new EventObject(value));
+			return condition.update(new PropertyChangeEvent(value, null, null, null));
 		}
 		return false;
 	}
@@ -54,7 +55,7 @@ public class ModelListenerBooleanProperty extends ModelListenerProperty<Boolean>
 		}
 	}
 
-	public ModelListenerBooleanProperty withCondition(SimpleConditionValue condition){
+	public ModelListenerBooleanProperty withCondition(UpdateListener condition){
 		this.condition = condition;
 		return this;
 	}

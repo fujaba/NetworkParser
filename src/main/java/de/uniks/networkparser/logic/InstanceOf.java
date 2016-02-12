@@ -24,13 +24,14 @@ import java.beans.PropertyChangeEvent;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.UpdateListener;
 /**
  * InstanceOf Condition.
  *
  * @author Stefan Lindel
  */
 
-public class InstanceOf extends SimpleConditionProperty implements SendableEntityCreator {
+public class InstanceOf implements UpdateListener, SendableEntityCreator {
 	/** Constant of CLAZZNAME. */
 	public static final String CLAZZNAME = "clazzname";
 	/** Constant of PROPERTY. */
@@ -163,13 +164,14 @@ public class InstanceOf extends SimpleConditionProperty implements SendableEntit
 	}
 
 	@Override
-	public boolean check(PropertyChangeEvent values) {
+	public boolean update(PropertyChangeEvent evt) {
 		// Filter for ClazzTyp
-		if(values==null) {
+		if(evt==null) {
 			return false;
 		}
+		PropertyChangeEvent event = (PropertyChangeEvent) evt;
 		if (this.clazzName != null ) {
-			Object newValue = values.getNewValue();
+			Object newValue = event.getNewValue();
 			if(newValue!=null && newValue.getClass().isPrimitive()) {
 				return true;
 			}
@@ -177,11 +179,11 @@ public class InstanceOf extends SimpleConditionProperty implements SendableEntit
 				return false;
 			}else if(this.property==null) {
 				return true;
-			}else if(this.property.equalsIgnoreCase(values.getPropertyName())) {
+			}else if(this.property.equalsIgnoreCase(event.getPropertyName())) {
 				return false;
 			}
 		}
 		// Filter for one item
-		return (this.item == null || this.item != values.getNewValue());
+		return (this.item == null || this.item != event.getNewValue());
 	}
 }

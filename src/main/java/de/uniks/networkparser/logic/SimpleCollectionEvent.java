@@ -23,14 +23,16 @@ permissions and limitations under the Licence.
 import java.beans.PropertyChangeEvent;
 import de.uniks.networkparser.list.AbstractArray;
 
-public class SimpleCollectionEvent extends PropertyChangeEvent {
+public final class SimpleCollectionEvent extends PropertyChangeEvent {
 	private static final long serialVersionUID = 1L;
 	public static final String PROPERTY="items";
 	private Object beforeValue;
 	private Object value;
+	private String type;
 
-	public SimpleCollectionEvent(AbstractArray<?> source, Object oldValue, Object newValue, Object beforeValue, Object value) {
+	public SimpleCollectionEvent(AbstractArray<?> source, String type, Object oldValue, Object newValue, Object beforeValue, Object value) {
 		super(source, PROPERTY, oldValue, newValue);
+		this.type = type;
 		this.beforeValue = beforeValue;
 		this.value = value;
 	}
@@ -46,5 +48,14 @@ public class SimpleCollectionEvent extends PropertyChangeEvent {
 
 	public Object getValue() {
 		return value;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public SimpleCollectionEvent with(String type) {
+		this.type = type;
+		return this;
 	}
 }

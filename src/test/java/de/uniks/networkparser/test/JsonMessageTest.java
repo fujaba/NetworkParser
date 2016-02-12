@@ -43,7 +43,7 @@ public class JsonMessageTest implements UpdateListener {
 	private int pos =0;
 
 	@Override
-	public boolean update(String typ, PropertyChangeEvent event) {
+	public boolean update(PropertyChangeEvent event) {
 		SimpleMapEvent simpleEvent = (SimpleMapEvent) event;
 		Assert.assertEquals("Message "+pos+":", messages.get(pos++), simpleEvent.getEntity().toString());
 		return false;

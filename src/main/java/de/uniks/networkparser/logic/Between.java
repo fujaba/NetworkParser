@@ -1,6 +1,6 @@
 package de.uniks.networkparser.logic;
 
-import java.util.EventObject;
+import java.beans.PropertyChangeEvent;
 
 /*
  NetworkParser
@@ -24,8 +24,9 @@ import java.util.EventObject;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.UpdateListener;
 
-public class Between implements SimpleConditionValue, SendableEntityCreator {
+public class Between implements UpdateListener, SendableEntityCreator {
 	public static final String FROM = "from";
 	public static final String TO = "to";
 
@@ -57,11 +58,11 @@ public class Between implements SimpleConditionValue, SendableEntityCreator {
 	}
 
 	@Override
-	public boolean check(EventObject values) {
-		if (values.getSource() instanceof Double) {
-			return (((Double) values.getSource()) >= fromValue && ((Double) values.getSource()) <= toValue);
-		}else if (values.getSource() instanceof Integer) {
-			return (((Integer) values.getSource()) >= fromValue && ((Integer) values.getSource()) <= toValue);
+	public boolean update(PropertyChangeEvent evt) {
+		if (evt.getSource() instanceof Double) {
+			return (((Double) evt.getSource()) >= fromValue && ((Double) evt.getSource()) <= toValue);
+		}else if (evt.getSource() instanceof Integer) {
+			return (((Integer) evt.getSource()) >= fromValue && ((Integer) evt.getSource()) <= toValue);
 		}
 		return false;
 	}

@@ -47,7 +47,7 @@ public abstract class GraphMember {
 		for(Condition<?> item : filters) {
 			Condition<Object> filter = (Condition<Object>) item;
 			if(filter != null && result) {
-				result = filter.check(element);
+				result = filter.update(element);
 			}
 		}
 		return result;

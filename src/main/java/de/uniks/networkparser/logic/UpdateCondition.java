@@ -1,4 +1,9 @@
 package de.uniks.networkparser.logic;
+
+import java.beans.PropertyChangeEvent;
+
+import de.uniks.networkparser.interfaces.UpdateListener;
+
 /*
 NetworkParser
 Copyright (c) 2011 - 2015, Stefan Lindel
@@ -20,9 +25,13 @@ express or implied.
 See the Licence for the specific language governing
 permissions and limitations under the Licence.
 */
-public class UpdateCondition extends SimpleConditionMap {
+public class UpdateCondition implements UpdateListener{
 	@Override
-	public boolean check(SimpleMapEvent values) {
-		return values.getMap().getKey(values.getModelItem()) == null;
+	public boolean update(PropertyChangeEvent evt) {
+		if(evt instanceof SimpleMapEvent) {
+			SimpleMapEvent event = (SimpleMapEvent)evt;
+			return event.getMap().getKey(event.getModelItem()) == null;
+		}
+		return false;
 	}
 }

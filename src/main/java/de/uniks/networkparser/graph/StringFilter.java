@@ -12,7 +12,7 @@ public class StringFilter<T> implements Condition<T>{
 		this.attribute = attribute;
 	}
 
-	public boolean check(Object value) {
+	public boolean update(Object value) {
 		Object itemValue =null;
 		if(value instanceof GraphMember) {
 			itemValue = ((GraphMember)value).getValue(attribute);

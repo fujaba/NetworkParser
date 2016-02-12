@@ -93,15 +93,16 @@ public class JsonModellTest implements UpdateListener {
 	}
 
 	@Override
-	public boolean update(String typ, PropertyChangeEvent event) {
-		SimpleMapEvent simpleEvent = (SimpleMapEvent) event;
+	public boolean update(PropertyChangeEvent evt) {
+		SimpleMapEvent simpleEvent = (SimpleMapEvent) evt;
 
-		if(IdMap.SENDUPDATE.equals(typ)) {
+		if(IdMap.NEW.equals(simpleEvent.getType())) {
 			JsonObject jsonObject = (JsonObject) simpleEvent.getEntity();
 			printToStream("Send: " +jsonObject, null);
 			secondMap.getUpdateExecuter().execute(jsonObject);
 			return true;
 		}
+		PropertyChangeEvent event = (PropertyChangeEvent) evt;
 		printToStream("ReceiveOBJ: Typ:" +event.getPropertyName()+ "value:" +event.getNewValue(), null);
 		return false;
 	}

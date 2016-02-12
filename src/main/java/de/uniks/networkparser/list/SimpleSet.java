@@ -2,6 +2,7 @@ package de.uniks.networkparser.list;
 
 import java.util.Collection;
 import java.util.Set;
+
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.UpdateListener;
@@ -161,7 +162,7 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 	@Override
 	protected boolean fireProperty(String type, Object oldElement, Object newElement, Object beforeElement, Object value) {
 		if(this.listener != null) {
-			this.listener.update(type, new SimpleCollectionEvent(this, oldElement, newElement, beforeElement, value));
+			this.listener.update(new SimpleCollectionEvent(this, type, oldElement, newElement, beforeElement, value));
 		}
 		return super.fireProperty(type, oldElement, newElement, beforeElement, value);
 	}
