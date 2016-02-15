@@ -14,7 +14,6 @@ public final class SimpleMapEvent extends PropertyChangeEvent {
 	private static final long serialVersionUID = 1L;
 	/** Variable for Deep from Root. */
 	private int deep;
-	private IdMap map;
 	private Entity entity;
 	private Object modelItem;
 	private String type;
@@ -27,28 +26,21 @@ public final class SimpleMapEvent extends PropertyChangeEvent {
 	public SimpleMapEvent(String type, IdMap source, String property, Object oldValue, Object newValue) {
 		super(source, property, oldValue, newValue);
 		this.type = type;
-		this.map = source;
 	}
 	
 	public SimpleMapEvent(String type, IdMap source, Entity entity, Object newValue) {
 		super(source, null, null, newValue);
 		this.entity = entity;
 		this.type = type;
-		this.map = source;
 	}
 
 	public SimpleMapEvent(PropertyChangeEvent source, String type, IdMap map, Entity entity) {
-		super(source.getSource(), source.getPropertyName(), source.getOldValue(), source.getNewValue());
+		super(map, source.getPropertyName(), source.getOldValue(), source.getNewValue());
+		this.modelItem = source.getSource();
 		this.type = type;
-		this.map = map;
 		this.entity = entity;
 	}
 
-	public SimpleMapEvent with(IdMap map) {
-		this.map = map;
-		return this;
-	}
-	
 	@Override
 	public IdMap getSource() {
 		Object item = super.getSource();
@@ -65,10 +57,6 @@ public final class SimpleMapEvent extends PropertyChangeEvent {
 	public SimpleMapEvent with(int deep) {
 		this.deep = deep;
 		return this;
-	}
-
-	public IdMap getMap() {
-		return map;
 	}
 
 	public Entity getEntity() {

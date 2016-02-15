@@ -30,7 +30,7 @@ public class UpdateCondition implements UpdateListener{
 	public boolean update(PropertyChangeEvent evt) {
 		if(evt instanceof SimpleMapEvent) {
 			SimpleMapEvent event = (SimpleMapEvent)evt;
-			return event.getMap().getKey(event.getModelItem()) == null;
+			return event.getSource().getKey(event.getModelItem()) == null;
 		}
 		return false;
 	}
