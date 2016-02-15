@@ -378,10 +378,15 @@ public abstract class IdMap implements Map<String, Object>, Iterable<SendableEnt
 	@Override
 	public Object put(String jsonId, Object object) {
 		this.keyValue.with(jsonId, object);
+		addListener(object);
+		return object;
+	}
+
+	protected boolean addListener(Object object) {
 		if (object instanceof SendableEntity) {
 			((SendableEntity) object).addPropertyChangeListener(getUpdateExecuter());
 		}
-		return object;
+		return false;
 	}
 
 	public PropertyChangeListener getUpdateExecuter() {
