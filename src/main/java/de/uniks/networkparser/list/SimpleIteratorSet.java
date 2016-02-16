@@ -22,6 +22,7 @@ package de.uniks.networkparser.list;
  permissions and limitations under the Licence.
 */
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Map.Entry;
 
 public class SimpleIteratorSet<K,V> implements ListIterator<Entry<K, V>>{
@@ -31,6 +32,17 @@ public class SimpleIteratorSet<K,V> implements ListIterator<Entry<K, V>>{
 
 	public SimpleIteratorSet(SimpleKeyValueList<K, V> list) {
 		this.list = list;
+		this.currentEntry = new SimpleEntity<K, V>();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public SimpleIteratorSet(Object collection) {
+		if(collection instanceof SimpleKeyValueList<?,?>) {
+			this.list = (SimpleKeyValueList<K, V>) collection;	
+		} else if (collection instanceof Map<?,?>) {
+			this.list = new SimpleKeyValueList<K,V>();
+			this.list.withList((Map<?,?>)collection);
+		}
 		this.currentEntry = new SimpleEntity<K, V>();
 	}
 
@@ -91,11 +103,5 @@ public class SimpleIteratorSet<K,V> implements ListIterator<Entry<K, V>>{
 	@Override
 	public void add(Entry<K, V> e) {
 		this.list.add(e.getKey(), e.getValue());
-	}
-	
-	@SuppressWarnings("unchecked")
-	public SimpleIteratorSet<K,V> with(SimpleKeyValueList<?,?> collection) {
-		this.list = (SimpleKeyValueList<K, V>) collection;
-		return this;
 	}
 }

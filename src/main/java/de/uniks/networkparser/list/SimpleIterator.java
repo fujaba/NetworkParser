@@ -1,6 +1,7 @@
 package de.uniks.networkparser.list;
 
 import java.util.ConcurrentModificationException;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
@@ -15,6 +16,19 @@ public class SimpleIterator<E> implements ListIterator<E> {
 	public SimpleIterator(AbstractArray<E> list) {
 		this.with(list, 0);
 	}
+	
+	@SuppressWarnings("unchecked")
+	public SimpleIterator(Object collection) {
+		if(collection instanceof AbstractArray<?>) {
+			this.list = (AbstractArray<E>) collection;	
+		} else if (collection instanceof List<?>) {
+			this.list = new SimpleList<E>();
+			this.list.withList((List<?>)collection);
+		}
+		this.cursor = 0;
+		this.lastRet = -1;
+	}
+
 
 	public SimpleIterator(AbstractArray<E> list, int index) {
 		this.with(list, index);
