@@ -92,4 +92,10 @@ public class SimpleIteratorSet<K,V> implements ListIterator<Entry<K, V>>{
 	public void add(Entry<K, V> e) {
 		this.list.add(e.getKey(), e.getValue());
 	}
+	
+	@SuppressWarnings("unchecked")
+	public SimpleIteratorSet<K,V> with(SimpleKeyValueList<?,?> collection) {
+		this.list = (SimpleKeyValueList<K, V>) collection;
+		return this;
+	}
 }

@@ -27,7 +27,7 @@ public class SimpleIterator<E> implements ListIterator<E> {
 	   this.list = newList;
 	   return this;
 	}
-
+	
 	public boolean hasPrevious() {
 		return cursor != 0;
 	}
@@ -99,5 +99,14 @@ public class SimpleIterator<E> implements ListIterator<E> {
 		} catch (IndexOutOfBoundsException ex) {
 			throw new ConcurrentModificationException();
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public SimpleIterator<E> with(AbstractArray<?> newList)
+	{
+	   this.cursor = 0;
+	   this.lastRet = -1;
+	   this.list = (AbstractArray<E>) newList;
+	   return this;
 	}
 }
