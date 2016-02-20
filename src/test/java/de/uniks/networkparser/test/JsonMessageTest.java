@@ -5,8 +5,8 @@ import java.beans.PropertyChangeEvent;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.UpdateListener;
-import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.logic.SimpleMapEvent;
 import de.uniks.networkparser.test.model.GroupAccount;
@@ -17,7 +17,7 @@ import de.uniks.networkparser.test.model.util.PersonCreator;
 public class JsonMessageTest implements UpdateListener {
 	@Test
 	public void testModell(){
-		JsonIdMap map= new JsonIdMap();
+		IdMap map= new IdMap();
 		map.with(new GroupAccountCreator());
 		map.with(new PersonCreator());
 		map.with(this);
@@ -30,7 +30,7 @@ public class JsonMessageTest implements UpdateListener {
 			"{\"id\":\"J1.P3\",\"class\":\"de.uniks.networkparser.test.model.Person\",\"upd\":{\"name\":\"Albert\"}}"
 		);
 
-		map.encode(account);
+		map.toJsonObject(account);
 
 		Person tobi = new Person().withName("Tobi");
 		account.withUnidirectionalPersons(tobi);

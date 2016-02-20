@@ -109,13 +109,13 @@ public class NetworkParserLog {
 	 *			The Element with call the Methods
 	 * @param method
 	 *			The Caller-Method
-	 * @param typ
+	 * @param type
 	 *			Typ of Log Value
 	 * @param params
 	 *			The Original Parameters
 	 * @return boolean if method must Cancel
 	 */
-	public boolean error(Object owner, String method, String typ,
+	public boolean error(Object owner, String method, String type,
 			Object... params) {
 		return this.isError;
 	}

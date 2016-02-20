@@ -39,14 +39,13 @@ import de.uniks.networkparser.event.UnknownMessage;
 import de.uniks.networkparser.event.util.BasicMessageCreator;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ByteItem;
-import de.uniks.networkparser.interfaces.IdMapDecoder;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 /**
  * The Class ByteIdMap.
  */
 
-public class ByteIdMap extends IdMap implements IdMapDecoder{
+public class ByteIdMap extends IdMap {
 	/** The SPLITTER. */
 	public static final char SPLITTER = ' ';
 
@@ -155,13 +154,12 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 	 *			the entity
 	 * @return the byte entity message
 	 */
-	@Override
 	public ByteItem encode(Object entity) {
 		return encode(entity, null);
 	}
 
 	@Override
-	public boolean addCreator(String className, SendableEntityCreator creator) {
+	public ByteIdMap with(String className, SendableEntityCreator creator) {
     	boolean result = this.creators.add(className, creator);
 		if (creator instanceof SendableEntityCreatorTag) {
 			SendableEntityCreatorTag creatorTag = (SendableEntityCreatorTag) creator;
@@ -170,7 +168,7 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 				this.creators.add(String.valueOf(tag.charAt(0)), creator);
 			}
 		}
-		return result;
+		return this;
     }
 
 	private boolean addClazzTyp(ByteList msg, String clazzName, Filter filter) {
@@ -217,7 +215,6 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 		return false;
 	}
 
-	@Override
 	public ByteItem encode(Object entity, Filter filter) {
 		SendableEntityCreator creator = getCreatorClass(entity);
 		if (creator == null) {
@@ -301,7 +298,7 @@ public class ByteIdMap extends IdMap implements IdMapDecoder{
 				ByteItem child;
 
 				for (Iterator<?> i = map.entrySet().iterator(); i.hasNext();) {
-					java.util.Map.Entry<?, ?> entity = (Entry<?, ?>) i.next();
+					java.util.Map.Entry<?, ?> entity = (java.util.Map.Entry<?, ?>) i.next();
 					ByteList item = new ByteList()
 							.withTyp(ByteIdMap.DATATYPE_CHECK);
 

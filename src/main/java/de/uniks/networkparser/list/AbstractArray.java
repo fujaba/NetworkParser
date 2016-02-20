@@ -187,6 +187,13 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		}
 		return (ST) this;
 	}
+	
+	public void setAllowEmptyValue(boolean value) {
+		this.flag = (byte) (this.flag | ALLOWEMPTYVALUE);
+		if(!value) {
+			this.flag -= ALLOWEMPTYVALUE;
+		}
+	}
 
 	/**
 	 * Is Visible Entity

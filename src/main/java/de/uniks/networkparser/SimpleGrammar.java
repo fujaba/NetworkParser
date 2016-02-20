@@ -3,7 +3,7 @@ package de.uniks.networkparser;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.Grammar;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.json.JsonIdMap;
+import de.uniks.networkparser.json.JsonTokener;
 
 public abstract class SimpleGrammar implements Grammar{
 	@Override
@@ -16,7 +16,7 @@ public abstract class SimpleGrammar implements Grammar{
 			return getSuperCreator(map, searchForSuperCreator, item);
 		}
 		if(className == null && item instanceof Entity) {
-			Object name = ((Entity)item).getValue(JsonIdMap.CLASS);
+			Object name = ((Entity)item).getValue(IdMap.CLASS);
 			if(name == null) {
 				return null;
 			}

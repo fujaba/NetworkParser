@@ -1,12 +1,12 @@
 package de.uniks.networkparser.test.javafx;
 
+import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.ext.javafx.component.PropertyComposite;
+import de.uniks.networkparser.gui.Column;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import de.uniks.networkparser.ext.javafx.component.PropertyComposite;
-import de.uniks.networkparser.gui.Column;
-import de.uniks.networkparser.json.JsonIdMap;
 
 public class FormEditorGUI extends Application {
 	private void init(Stage primaryStage) {
@@ -14,7 +14,7 @@ public class FormEditorGUI extends Application {
 
 			primaryStage.setScene(new Scene(root));
 
-			JsonIdMap map = new  JsonIdMap();
+			IdMap map = new  IdMap();
 			map.with(new PersonCreator());
 			PersonGUI albert= new PersonGUI().withName("Albert");
 

@@ -23,6 +23,8 @@ permissions and limitations under the Licence.
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleGrammar;
+import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.IdMapCounter;
@@ -33,13 +35,13 @@ public class JsonGrammar extends SimpleGrammar {
 	@Override
 	public BaseItem getProperties(Entity item, IdMap map, Filter filter, boolean isId, String type) {
 		if (isId) {
-			if (item.has(JsonIdMap.JSON_PROPS)) {
-				return ((JsonObject)item).getJsonObject(JsonIdMap.JSON_PROPS);
+			if (item.has(JsonTokener.PROPS)) {
+				return ((JsonObject)item).getJsonObject(JsonTokener.PROPS);
 			}
 		} else {
 			JsonObject props = new JsonObject();
 			for (int i = 0; i < item.size(); i++) {
-				if (!JsonIdMap.CLASS.equalsIgnoreCase(item.getKeyByIndex(i))) {
+				if (!IdMap.CLASS.equalsIgnoreCase(item.getKeyByIndex(i))) {
 					props.put(item.getKeyByIndex(i), item.getValue(i));
 				}
 
@@ -50,26 +52,23 @@ public class JsonGrammar extends SimpleGrammar {
 	}
 	
 	@Override
-	public BaseItem setProperties(IdMap map, SendableEntityCreator prototyp, String className, String id,
-			Entity properties, Filter filter) {
-		JsonObject json = new JsonObject();
-		json.put(JsonIdMap.CLASS, className);
-		if (prototyp instanceof SendableEntityCreatorNoIndex
-				|| !filter.isId(properties, className)) {
-			for (int i = 0; i < properties.size(); i++) {
-				json.put(properties.getKeyByIndex(i), properties.getValue(i));
-			}
-			return json;
-		}
-		json.put(IdMap.ID, id);
-		if (properties.size() > 0) {
-			json.put(JsonIdMap.JSON_PROPS, properties);
-		}
-		return json;
-	}
-	
-	@Override
 	public String getId(Object obj, IdMapCounter counter) {
 		return null;
+	}
+
+	@Override
+	public CharacterBuffer getPrefixProperties(SendableEntityCreator creator, Tokener format, boolean isId) {
+		if (creator instanceof SendableEntityCreatorNoIndex || isId == false || format instanceof JsonTokener == false) {
+			return new CharacterBuffer();
+		}
+		return new CharacterBuffer().with(IdMap.ENTITYSPLITTER).with(JsonTokener.PROPS).with(IdMap.ENTITYSPLITTER);
+	}
+
+	@Override
+	public void writeBasicValue(Entity entity, String className, String id) {
+		entity.put(IdMap.CLASS, className);
+		if(id != null) {
+			entity.put(IdMap.ID, id);
+		}
 	}
 }

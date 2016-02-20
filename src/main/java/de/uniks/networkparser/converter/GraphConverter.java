@@ -24,6 +24,7 @@ package de.uniks.networkparser.converter;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.AssociationTypes;
@@ -45,8 +46,8 @@ import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.json.JsonArray;
-import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
+import de.uniks.networkparser.json.JsonTokener;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class GraphConverter implements Converter{
@@ -102,7 +103,7 @@ public class GraphConverter implements Converter{
 	}
 
 	public Clazz parseJsonObject(GraphList root, JsonObject node) {
-		String id = node.getString(JsonIdMap.ID);
+		String id = node.getString(IdMap.ID);
 		Clazz graphNode = GraphUtil.getByObject(root, id, true);
 		if (graphNode == null) {
 			graphNode = new Clazz();
@@ -110,16 +111,16 @@ public class GraphConverter implements Converter{
 			root.with(graphNode);
 		}
 
-		if (node.containsKey(JsonIdMap.CLASS)) {
-			graphNode.with(node.getString(JsonIdMap.CLASS));
+		if (node.containsKey(IdMap.CLASS)) {
+			graphNode.with(node.getString(IdMap.CLASS));
 		}
 		if (node.containsKey(HEAD)) {
 			graphNode
 					.with(new GraphImage().with(node.getString(HEAD)));
 		}
 
-		if (node.containsKey(JsonIdMap.JSON_PROPS)) {
-			JsonObject props = node.getJsonObject(JsonIdMap.JSON_PROPS);
+		if (node.containsKey(JsonTokener.PROPS)) {
+			JsonObject props = node.getJsonObject(JsonTokener.PROPS);
 			for (int i = 0; i < props.size(); i++) {
 				Object value = props.getValueByIndex(i);
 				if (value instanceof JsonObject) {

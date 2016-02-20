@@ -1,55 +1,30 @@
 package de.uniks.networkparser;
 
-/*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
-
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
-
- http://ec.europa.eu/idabc/eupl5
-
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
-*/
-import java.util.ArrayList;
-
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.logic.SimpleMapEvent;
 
 public class Filter {
+	/** The Constant MERGE. */
+	public static final String MERGE = "merge";
+
+	/** The Constant COLLISION. */
+	public static final String COLLISION = "collision";
+
+	/** The Constant PRIO. */
+	public static final String PRIO = "prio";
+
 	protected UpdateListener idFilter;
 	protected UpdateListener convertable;
 	protected UpdateListener property;
 
 	// Temporary variables
-	protected ArrayList<Object> visitedObjects;
-	protected Boolean full;
+	protected boolean full;
 	private String strategy = IdMap.NEW;
-	private IdMap map;
 
 	public Filter withIdFilter(UpdateListener idFilter) {
 		this.idFilter = idFilter;
-		return this;
-	}
-
-	/**
-	 * @param map The new IDMap for Filtering
-	 * @return thisComponent
-	 */
-	public Filter withMap(IdMap map) {
-		this.map = map;
 		return this;
 	}
 
@@ -60,11 +35,11 @@ public class Filter {
 	 * @param className ClassName
 	 * @return boolean if encoding ID
 	 */
-	public boolean isId(Object entity, String className) {
+	public boolean isId(Object entity, String className, IdMap map) {
 		if (idFilter != null) {
-			return idFilter.update(new SimpleMapEvent(IdMap.NEW, this.map, className, null, entity));
+			return idFilter.update(new SimpleMapEvent(IdMap.NEW, map, className, null, entity));
 		}else {
-			SendableEntityCreator creator = this.map.getCreator(className, true);
+			SendableEntityCreator creator = map.getCreator(className, true);
 			if(creator!=null) {
 				return !(creator instanceof SendableEntityCreatorNoIndex);
 			}
@@ -76,7 +51,7 @@ public class Filter {
 	 * Serialization the Full object inclusive null value
 	 * @return boolean for serialization the full object
 	 */
-	public Boolean isFullSeriation() {
+	public boolean isFullSeriation() {
 		return full;
 	}
 	/**
@@ -99,100 +74,22 @@ public class Filter {
 		return this;
 	}
 
-	public Filter newInstance(Filter referenceFilter) {
-		if(referenceFilter == null) {
-			referenceFilter = new Filter();
-		}
-		if (convertable != null) {
-			referenceFilter.withConvertable(convertable);
-		}
-		if (idFilter != null) {
-			referenceFilter.withIdFilter(idFilter);
-		}
-		if (property != null) {
-			referenceFilter.withPropertyRegard(property);
-		}
-		if (full != null) {
-			referenceFilter.withFull(full);
-		}else if(referenceFilter.isFullSeriation() == null) {
-			referenceFilter.withFull(false);
-		}
-		referenceFilter.withMap(this.map);
-		return referenceFilter;
-	}
-
-	boolean hasObjects(Object element) {
-		return getVisitedObjects().contains(element);
-	}
-
-	ArrayList<Object> getVisitedObjects() {
-		if (visitedObjects == null) {
-			visitedObjects = new ArrayList<Object>();
-		}
-		return visitedObjects;
-	}
-	int getIndexVisitedObjects(Object element) {
-		int pos = 0;
-		for (Object item : getVisitedObjects()) {
-			if (item == element) {
-				return pos;
-			}
-			pos++;
-		}
-		return -1;
-	}
-
-	Object getVisitedObjects(int index) {
-		if (index>=0 && index < getVisitedObjects().size()) {
-			return getVisitedObjects().get(index);
-		}
-		return null;
-	}
-
-	/**
-	 * @param visitedObject
-	 *			Visited Object to Add to List
-	 * @return Filter
-	 */
-	Filter withObjects(Object... visitedObject) {
-		if (visitedObject == null) {
-			return this;
-		}
-		for (Object item : visitedObject) {
-			if (item != null) {
-				getVisitedObjects().add(item);
-			}
-		}
-		return this;
-	}
-
 	public String[] getProperties(SendableEntityCreator creator) {
 		return creator.getProperties();
 	}
 
-	boolean isPropertyRegard(Object entity, String property, Object value, int deep) {
+	boolean isPropertyRegard(Object entity, String property, Object value, IdMap map, int deep) {
 		if (this.property != null) {
 			return this.property.update(new SimpleMapEvent(IdMap.NEW, map, property, null, value).with(deep).withModelItem(entity));
 		}
 		return true;
 	}
 
-	boolean isConvertable(Object entity, String property, Object value, int deep) {
+	boolean isConvertable(Object entity, String property, Object value, IdMap map, int deep) {
 		if (this.convertable != null) {
 			return this.convertable.update(new SimpleMapEvent(IdMap.NEW, map, property, null, value).with(deep).withModelItem(entity));
 		}
 		return true;
-	}
-
-	Object getRefByEntity(Object value) {
-		if(visitedObjects == null)
-			return null;
-		for (int i = 0; i < visitedObjects.size(); i += 2) {
-			if (visitedObjects.get(i) == value) {
-				return visitedObjects.get(i + 1);
-			}
-		}
-		return null;
 	}
 
 	/**

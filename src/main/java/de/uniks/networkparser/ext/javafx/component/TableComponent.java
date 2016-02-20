@@ -52,7 +52,6 @@ import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonArray;
-import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.logic.InstanceOf;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -76,7 +75,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	private ArrayList<TableColumnFX> columns = new ArrayList<TableColumnFX>();
 	public static final String PROPERTY_COLUMN = "column";
 	public static final String PROPERTY_ITEM = "item";
-	protected JsonIdMap map;
+	protected IdMap map;
 	protected Object source;
 	private String property;
 	protected SendableEntityCreator sourceCreator;
@@ -253,7 +252,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	}
 
 
-	public TableComponent withMap(JsonIdMap map){
+	public TableComponent withMap(IdMap map){
 		this.map = map;
 		this.field.withMap(map);
 		return this;
@@ -601,7 +600,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	public JsonArray saveColumns() {
 		JsonArray list=new JsonArray();
 		for(TableColumnFX column : columns) {
-			list.add(map.encode(column.getColumn(), Filter.regard(InstanceOf.value(Style.class))));
+			list.add(map.toJsonObject(column.getColumn(), Filter.regard(InstanceOf.value(Style.class))));
 		}
 		return list;
 	}
@@ -610,16 +609,16 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		if(columns==null || columns.size()<this.columns.size()) {
 			return false;
 		}
-		if(!(map instanceof JsonIdMap)) {
+		if(!(map instanceof IdMap)) {
 			return false;
 		}
 		Filter filter=new Filter();
 		if(merge) {
-			filter.withStrategy(IdMap.MERGE);
+			filter.withStrategy(Filter.MERGE);
 		}
 		for(int i=0;i<this.columns.size();i++) {
 			TableColumnFX column = this.columns.get(i);
-			map.decode(column.getColumn(), columns.getJSONObject(i), filter);
+			map.decode(columns.getJSONObject(i), column.getColumn(), filter);
 			column.refresh();
 		}
 		return true;

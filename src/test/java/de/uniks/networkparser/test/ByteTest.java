@@ -43,7 +43,7 @@ public class ByteTest{
 	public void testByteEntity(){
 		StringMessage msg= new StringMessage("Hallo Welt");
 		ByteIdMap map= new ByteIdMap();
-		map.addCreator(new StringMessageCreator());
+		map.with(new StringMessageCreator());
 		ByteItem data = map.encode(msg);
 		// CLAZZ, StringMessage<0x02>, 0x00, 0x46, Hallo Welt(10 Bytes)
 		byte[] array = data.getBytes(false).array();
@@ -55,7 +55,7 @@ public class ByteTest{
 		SortedMsg msg= new SortedMsg();
 		msg.setNumber(42);
 		ByteIdMap map= new ByteIdMap();
-		map.addCreator(new SortedMsgCreator());
+		map.with(new SortedMsgCreator());
 		ByteItem data = map.encode(msg);
 		ByteBuffer bytes = data.getBytes(false);
 		SortedMsg newMsg = (SortedMsg) map.decode(bytes);
@@ -69,7 +69,7 @@ public class ByteTest{
 		chatMessage.setSender("Stefan Lindel");
 
 		ByteIdMap byteMap = new ByteIdMap();
-		byteMap.addCreator(new ChatMessageCreator());
+		byteMap.with(new ChatMessageCreator());
 		ByteItem msg=byteMap.encode(chatMessage);
 //		String reference="C-Stefan ALindel\"FDies Aist Aeine ATestnachricht";
 		String reference="#cK-Stefan ALindel\"ODies Aist Aeine ATestnachricht";
@@ -81,7 +81,7 @@ public class ByteTest{
 	@Test
 	public void testByteDefault(){
 		ByteIdMap map= new ByteIdMap();
-		map.addCreator(new UniversityCreator());
+		map.with(new UniversityCreator());
 		University uni = new University();
 		uni.setName("Uni Kassel");
 		ByteItem data = map.encode(uni);
@@ -97,8 +97,8 @@ public class ByteTest{
 	@Test
 	public void testMessages() throws RuntimeException {
 		ByteIdMap map = new ByteIdMap();
-		map.addCreator(new ByteMessageCreator());
-		map.addCreator(new StringMessageCreator());
+		map.with(new ByteMessageCreator());
+		map.with(new StringMessageCreator());
 
 		ByteMessage message = new ByteMessage().withValue(new byte[] { 52, 50 });
 		ByteItem stream = map.encode(message);
@@ -112,7 +112,7 @@ public class ByteTest{
 	@Test
 	public void testByteList(){
 		ByteIdMap map= new ByteIdMap();
-		map.addCreator(new FullAssocsCreator());
+		map.with(new FullAssocsCreator());
 		FullAssocs uni = new FullAssocs();
 		uni.addPerson("Maier");
 		uni.addPerson("Schulz");
@@ -135,7 +135,7 @@ public class ByteTest{
 	@Test
 	public void testByteDynamic(){
 		ByteIdMap map= new ByteIdMap();
-		map.addCreator(new SortedMsgCreator());
+		map.with(new SortedMsgCreator());
 		SortedMsg sortedMsg = new SortedMsg();
 		sortedMsg.setNumber(23);
 		ByteItem msg=map.encode(sortedMsg, new ByteFilter());
@@ -185,7 +185,7 @@ public class ByteTest{
 	public void testByteHex() throws RuntimeException {
 		StringMessage stringMessage = new StringMessage("Test");
 		ByteIdMap map = new ByteIdMap();
-		map.addCreator(new StringMessageCreator());
+		map.with(new StringMessageCreator());
 		ByteItem encode = map.encode(stringMessage);
 
 		ByteBuffer master = encode.getBytes(false);
@@ -230,8 +230,8 @@ public class ByteTest{
 		assocs.addPassword("Stefan", "42");
 
 		ByteIdMap map= new ByteIdMap();
-		map.addCreator(new FullAssocsCreator());
-		map.addCreator(new StringMessageCreator());
+		map.with(new FullAssocsCreator());
+		map.with(new StringMessageCreator());
 
 		ByteItem data = map.encode(assocs);
 		ByteBuffer bytes = data.getBytes(false);

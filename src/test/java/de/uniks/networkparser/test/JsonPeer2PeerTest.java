@@ -9,15 +9,14 @@ import org.junit.Test;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.UpdateListener;
-import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.logic.SimpleMapEvent;
 import de.uniks.networkparser.test.model.SortedMsg;
 import de.uniks.networkparser.test.model.util.SortedMsgCreator;
 
 public class JsonPeer2PeerTest implements UpdateListener{
-	private JsonIdMap firstMap;
-	private JsonIdMap secondMap;
+	private IdMap firstMap;
+	private IdMap secondMap;
 	private int z;
 	private SortedMsg firstRoot;
 	protected SortedMsg secondRoot;
@@ -25,12 +24,12 @@ public class JsonPeer2PeerTest implements UpdateListener{
 	@Test
 	public void testModel(){
 
-		firstMap = new JsonIdMap();
+		firstMap = new IdMap();
 		firstMap.with(this);
 
 		firstMap.with(new SortedMsgCreator());
 
-		secondMap = new JsonIdMap();
+		secondMap = new IdMap();
 		secondMap.with(new SortedMsgCreator());
 
 		firstRoot = new SortedMsg();

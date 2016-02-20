@@ -118,7 +118,7 @@ public class HTMLEntity implements BaseItem {
 			header.with(element);
 			styleElement = element; 
 		}
-		styleElement.withValueItem(styleElement.getValue()+"\r\n" + style);
+		styleElement.setValueItem(styleElement.getValue()+"\r\n" + style);
 		return this;
 	}
 
@@ -129,7 +129,7 @@ public class HTMLEntity implements BaseItem {
 		sb.append( value.toString(new GraphConverter()) );
 		sb.append(";"+CRLF);
 		sb.append("new Graph(json).layout();");
-		script.withValueItem(sb.toString());
+		script.setValueItem(sb.toString());
 		with(script);
 		if(path != null) {
 			// Add graph-framework
@@ -142,11 +142,15 @@ public class HTMLEntity implements BaseItem {
 	}
 
 	public HTMLEntity withNewLine() {
-		this.body.withChild(new XMLEntity().withValueItem("<br />\r\n"));
+		XMLEntity xmlEntity = new XMLEntity();
+		xmlEntity.setValueItem("<br />\r\n");
+		this.body.withChild(xmlEntity);
 		return this;
 	}
 	public HTMLEntity withText(String text) {
-		this.body.withChild(new XMLEntity().withValueItem(text));
+		XMLEntity xmlEntity = new XMLEntity();
+		xmlEntity.setValueItem(text);
+		this.body.withChild(xmlEntity);
 		return this;
 	}
 	

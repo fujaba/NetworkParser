@@ -22,13 +22,14 @@ package de.uniks.networkparser.json;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
-/* Copyright (c) 2002 JSON.org */
 
 /**
  * A JsonObject is an unordered collection of name/value pairs. Its external
@@ -239,6 +240,18 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 		}
 		return this;
 	}
+	
+	/**
+	 * Set the value to Tokener or pairs of values
+	 *
+	 * @param values
+	 *			a simple String of Value or pairs of key-values
+	 * @return Itself
+	 */
+	public JsonObject withValue(Buffer values) {
+		new JsonTokener().withBuffer(values).parseToEntity(this);
+		return this;
+	}
 
 	/**
 	 * Tokener to init the JsonObject
@@ -341,5 +354,29 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 	@Override
 	public Object getValue(int index) {
 		return this.getValueByIndex(index);
+	}
+
+	@Override
+	public boolean setValueItem(Object value) {
+		this.add(IdMap.VALUE, value);
+		return true;
+	}
+
+	@Override
+	public BaseItem getChild(String label, boolean recursiv) {
+		if(label == null || this.size() < 1) {
+			return null;
+		}
+		Object item = this.get(label);
+		JsonObject child; 
+		if(item instanceof JsonObject) {
+			child = (JsonObject) item;
+		}else {
+			child = new JsonObject();
+			this.put(label, child);
+		}
+		return child;
+
+		
 	}
 }

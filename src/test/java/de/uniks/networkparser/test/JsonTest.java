@@ -14,10 +14,10 @@ import org.junit.Test;
 
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Filter;
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.RestCounter;
 import de.uniks.networkparser.json.EMFJsonGrammar;
 import de.uniks.networkparser.json.JsonArray;
-import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.json.JsonTokener;
 import de.uniks.networkparser.logic.BooleanCondition;
@@ -106,7 +106,7 @@ public class JsonTest extends IOClasses{
 
 	@Test
 	public void testJSONMap(){
-		JsonIdMap map= new JsonIdMap();
+		IdMap map= new IdMap();
 		map.with(new FullAssocsCreator());
 		FullAssocs assoc= new FullAssocs();
 		assoc.addPassword("Stefan", "42");
@@ -123,21 +123,21 @@ public class JsonTest extends IOClasses{
 
 	@Test
 	public void testSimpleMap() {
-		JsonIdMap map= new JsonIdMap();
+		IdMap map= new IdMap();
 		map.with(new FullAssocsCreator());
 		FullAssocs uni = new FullAssocs();
 		uni.addPassword("Stefan", "test");
 
 		JsonObject jsonObject = map.toJsonObject(uni);
 
-		JsonIdMap mapReserve= new JsonIdMap();
+		IdMap mapReserve= new IdMap();
 		mapReserve.with(new FullAssocsCreator());
 		mapReserve.decode(jsonObject.toString());
 	}
 
 	@Test
 	public void testSimpleJson() {
-		JsonIdMap map= new JsonIdMap();
+		IdMap map= new IdMap();
 		map.with(new ChangeCreator());
 		Change change = new Change();
 
@@ -148,7 +148,7 @@ public class JsonTest extends IOClasses{
 		change.setValue(data);
 		JsonObject jsonObject = map.toJsonObject(change);
 
-		JsonIdMap mapReserve= new JsonIdMap();
+		IdMap mapReserve= new IdMap();
 		mapReserve.with(new ChangeCreator());
 		Change item = (Change) mapReserve.decode(jsonObject.toString());
 		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.Change\",\"id\":\"J1.C1\",\"prop\":{\"value\":{\"class\":\"de.uniks.networkparser.json.JsonObject\",\"VALUE\":\"{\\\"id\\\":\\\"name\\\",\\\"value\\\":\\\"42\\\"}\"}}}", jsonObject.toString());
@@ -161,7 +161,7 @@ public class JsonTest extends IOClasses{
 		fullAssocs.addPerson("Kassem");
 		fullAssocs.addPerson("Stefan");
 
-		JsonIdMap map= new JsonIdMap();
+		IdMap map= new IdMap();
 		map.with(new FullAssocsCreator());
 
 
@@ -203,7 +203,7 @@ public class JsonTest extends IOClasses{
 		change.setKey(new Long(42));
 		change.setValue(new JsonObject().withValue(jsonText));
 		change.setList(new JsonArray().withValue(new JsonObject().withValue(jsonText)));
-		JsonIdMap map= new JsonIdMap();
+		IdMap map= new IdMap();
 		map.getCounter().withPrefixId(";");
 		map.with(new ChangeCreator());
 		 JsonObject json = map.toJsonObject(change);
@@ -226,7 +226,7 @@ public class JsonTest extends IOClasses{
 	@Test
 	public void testSortJson(){
 		String text = "{\"id\":\"42\", \"class\":\"de.uniks.networkparser.test.model.SortedMsg\" \"props\":{\"key:\":\"\", \"value\":{}}}";
-		JsonIdMap map= new JsonIdMap();
+		IdMap map= new IdMap();
 		map.with(new SortedMsgCreator());
 		Object item = map.decode(text);
 		Assert.assertNotNull(item);
@@ -239,7 +239,7 @@ public class JsonTest extends IOClasses{
 		change.setKey(new Long(42));
 
 		// Map
-		JsonIdMap map= new JsonIdMap();
+		IdMap map= new IdMap();
 		map.withSessionId(null);
 		map.with(new ChangeCreator());
 
@@ -277,7 +277,7 @@ public class JsonTest extends IOClasses{
 
 	@Test
 	public void testSortedMap(){
-		JsonIdMap map= new JsonIdMap();
+		IdMap map= new IdMap();
 		map.with(new SortedMsgCreator());
 		SortedMsg first= new SortedMsg();
 		first.setNumber(1);
@@ -291,7 +291,7 @@ public class JsonTest extends IOClasses{
 
 		third.setChild(second);
 		JsonArray jsonArray = new JsonArray();
-		jsonArray.withComparator(JsonIdMap.JSON_PROPS+ "." +SortedMsg.PROPERTY_ID);
+		jsonArray.withComparator(JsonTokener.PROPS+ "." +SortedMsg.PROPERTY_ID);
 		map.toJsonArray(first, jsonArray, null);
 		assertEquals(3, jsonArray.size());
 
@@ -331,7 +331,7 @@ public class JsonTest extends IOClasses{
 
 		new Student().withName("Nina").withUniversity(kassel).withIn(lab);
 
-		JsonIdMap map = UniversityCreator.createIdMap("s1");
+		IdMap map = UniversityCreator.createIdMap("s1");
 
 		JsonArray jsonArray = map.toJsonArray(kassel, new Filter().withConvertable(Deep.value(1)));
 		String jsonString = jsonArray.toString(2);
@@ -348,7 +348,7 @@ public class JsonTest extends IOClasses{
 
 		assertEquals(2419, jsonString.length());
 
-		JsonIdMap readMap = UniversityCreator.createIdMap("s2");
+		IdMap readMap = UniversityCreator.createIdMap("s2");
 
 		University clone = (University) readMap.decode(jsonArray);
 
@@ -361,7 +361,7 @@ public class JsonTest extends IOClasses{
 		chatMessage.setText("Dies ist eine Testnachricht");
 		chatMessage.setSender("Stefan Lindel");
 
-		JsonIdMap jsonMap = new JsonIdMap();
+		IdMap jsonMap = new IdMap();
 		jsonMap.with(new ChatMessageCreator());
 
 		String reference="{\r\n  \"class\":\"de.uniks.networkparser.test.model.ChatMessage\",\r\n  \"id\":\"J1.C1\",\r\n  \"prop\":{\r\n    \"sender\":\"Stefan Lindel\",\r\n    \"txt\":\"Dies ist eine Testnachricht\"\r\n  }\r\n}";
@@ -371,7 +371,7 @@ public class JsonTest extends IOClasses{
 
 		String msg = actual.toString(2);
 
-		JsonIdMap map = new JsonIdMap();
+		IdMap map = new IdMap();
 		map.with(new ChatMessageCreator());
 
 		ChatMessage newChatMsg = (ChatMessage) map.decode(new JsonObject().withValue(msg));
@@ -383,7 +383,7 @@ public class JsonTest extends IOClasses{
 		ChatMessage chatMessage= new ChatMessage();
 		chatMessage.setText("Dies ist eine Testnachricht");
 		chatMessage.setSender("Stefan Lindel");
-		JsonIdMap jsonMap = new JsonIdMap();
+		IdMap jsonMap = new IdMap();
 		jsonMap.with(new ChatMessageCreator());
 
 		String reference="{\r\n  \"class\":\"de.uniks.networkparser.test.model.ChatMessage\",\r\n  \"id\":\"J1.C1\",\r\n  \"prop\":{\r\n    \"sender\":\"Stefan Lindel\",\r\n    \"txt\":\"Dies ist eine Testnachricht\"\r\n  }\r\n}";
@@ -408,7 +408,7 @@ public class JsonTest extends IOClasses{
 		date.setTime(1330538995929L);
 		FullMessage msg = new FullMessage(date, 42, "Hallo Welt");
 		msg.setLocation(new Location(42, 23));
-		JsonIdMap map = new JsonIdMap();
+		IdMap map = new IdMap();
 //		map.setTypSave(true);
 		map.with(new FullMessageCreator());
 		map.with(new LocationCreator());
@@ -430,7 +430,7 @@ public class JsonTest extends IOClasses{
 
 	@Test
 	public void testRest(){
-		JsonIdMap map = new JsonIdMap();
+		IdMap map = new IdMap();
 		map.with(new FullMessageCreator());
 		map.with(new LocationCreator());
 		FullMessage msg = new FullMessage(42, "Hallo Welt");
@@ -443,7 +443,7 @@ public class JsonTest extends IOClasses{
 
 	@Test
 	public void testMapTest(){
-		JsonIdMap map= new JsonIdMap();
+		IdMap map= new IdMap();
 		map.with(new MapEntryElementCreator());
 		MapEntryElement item= new MapEntryElement();
 
@@ -476,7 +476,7 @@ public class JsonTest extends IOClasses{
 		parent.setChild(child);
 
 
-		JsonIdMap map= new JsonIdMap();
+		IdMap map= new IdMap();
 		map.with(new SortedMsgCreator());
 		String ref="{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"J1.S1\",\"prop\":{\"number\":1,\"child\":{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"J1.S2\",\"prop\":{\"number\":2,\"parent\":{\"id\":\"J1.S1\",\"class\":\"de.uniks.networkparser.test.model.SortedMsg\"}}}}}";
 		assertEquals(ref, map.toJsonObject(parent).toString());
@@ -488,7 +488,7 @@ public class JsonTest extends IOClasses{
 
 	@Test
 	public void testEscapeText(){
-		JsonIdMap map= new JsonIdMap();
+		IdMap map= new IdMap();
 		map.with(new StringMessageCreator());
 		StringMessage stringMessage = new StringMessage("C:\\TEST\\MY\\WORLD.TXT");
 
@@ -499,7 +499,7 @@ public class JsonTest extends IOClasses{
 
 		Assert.assertEquals(reference, msg);
 
-		JsonIdMap mapReverse= new JsonIdMap();
+		IdMap mapReverse= new IdMap();
 		mapReverse.with(new StringMessageCreator());
 
 
@@ -519,7 +519,7 @@ public class JsonTest extends IOClasses{
 		parent.setChild(child);
 
 
-		JsonIdMap map= new JsonIdMap();
+		IdMap map= new IdMap();
 		map.with(new SortedMsgCreator());
 		HashSet<Object> items= new HashSet<Object>();
 		items.add(parent);
@@ -530,7 +530,7 @@ public class JsonTest extends IOClasses{
 	@Test
 	public void testFullList() {
 		Apple apple = new Apple();
-		JsonIdMap map = new JsonIdMap();
+		IdMap map = new IdMap();
 		map.with(new AppleCreator());
 
 		// ARRAY
@@ -543,14 +543,14 @@ public class JsonTest extends IOClasses{
 
 	@Test
 	public void testSimple(){
-		JsonIdMap encodeMap= new JsonIdMap().with(new EMFJsonGrammar());
+		IdMap encodeMap= new IdMap().with(new EMFJsonGrammar());
 
 		encodeMap.with(new PersonCreator());
 		Person person = new Person().withName("Albert").withBalance(42);
 		String shortString = encodeMap.toJsonObject(person).toString();
 		Assert.assertEquals(49, shortString.length());
 
-		JsonIdMap decodeMap= new JsonIdMap().with(new EMFJsonGrammar());
+		IdMap decodeMap= new IdMap().with(new EMFJsonGrammar());
 		decodeMap.with(new PersonCreator());
 		Person item = (Person) decodeMap.decode(new JsonObject().withValue(shortString));
 		Assert.assertEquals("Albert", item.getName());
@@ -561,7 +561,7 @@ public class JsonTest extends IOClasses{
 	public void testServerJson(){
 		String json = "{\"@ts\":\"1368185625179\",\"@src\":\"Barbarian@2b40c3b9\",\"@prop\":\"position\",\"@nv\":\"42\"}";
 
-		JsonIdMap map= new JsonIdMap();
+		IdMap map= new IdMap();
 		map.with(new BarbarianCreator());
 		map.with(new GameCreator());
 		map.with(new EMFJsonGrammar());

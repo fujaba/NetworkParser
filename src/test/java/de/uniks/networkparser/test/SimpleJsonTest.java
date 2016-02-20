@@ -5,8 +5,8 @@ import java.beans.PropertyChangeEvent;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.UpdateListener;
-import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.logic.SimpleMapEvent;
 import de.uniks.networkparser.test.model.House;
@@ -19,7 +19,7 @@ public class SimpleJsonTest {
 		House house=new House();
 		house.setFloor(4);
 		house.setName("University");
-		JsonIdMap map=new JsonIdMap().with(new HouseCreator());
+		IdMap map=new IdMap().with(new HouseCreator());
 		map.with(new UpdateListener() {
 			@Override
 			public boolean update(PropertyChangeEvent event) {
@@ -31,10 +31,10 @@ public class SimpleJsonTest {
 			}
 		});
 
-		JsonObject json = map.encode(house);
+		JsonObject json = map.toJsonObject(house);
 		String string=json.toString();
 
-		JsonIdMap decodeMap=new JsonIdMap().with(new HouseCreator());
+		IdMap decodeMap=new IdMap().with(new HouseCreator());
 		House newHouse = (House) decodeMap.decode(string);
 
 		// Old Model

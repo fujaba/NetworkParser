@@ -41,7 +41,7 @@ public class UpdateAccumulate {
 
 		if (oldValue != creator.getValue(defaultItem, property)) {
 			if (change == null) {
-				change = new JsonObject().withValue(JsonIdMap.ID,
+				change = new JsonObject().withValue(IdMap.ID,
 						map.getId(source));
 			}
 			JsonObject child;
@@ -58,7 +58,7 @@ public class UpdateAccumulate {
 				String oldId = map.getId(oldValue);
 				if (oldId != null) {
 					child.put(property,
-							new JsonObject().withValue(JsonIdMap.ID, oldId));
+							new JsonObject().withValue(IdMap.ID, oldId));
 				}
 			} else {
 				child.put(property, oldValue);
@@ -77,7 +77,7 @@ public class UpdateAccumulate {
 				String newId = map.getId(newValue);
 				if (newId != null) {
 					child.put(property,
-							new JsonObject().withValue(JsonIdMap.ID, newId));
+							new JsonObject().withValue(IdMap.ID, newId));
 				}
 			} else {
 				child.put(property, newValue);
@@ -109,7 +109,7 @@ public class UpdateAccumulate {
 
 		if (oldValue != creator.getValue(defaultItem, property)) {
 			if (change == null) {
-				change = new JsonObject().withValue(JsonIdMap.ID,
+				change = new JsonObject().withValue(IdMap.ID,
 						map.getId(item));
 			}
 			JsonObject child;
@@ -126,7 +126,7 @@ public class UpdateAccumulate {
 				String oldId = map.getId(oldValue);
 				if (oldId != null) {
 					child.put(property,
-							new JsonObject().withValue(JsonIdMap.ID, oldId));
+							new JsonObject().withValue(IdMap.ID, oldId));
 				}
 			} else {
 				child.put(property, oldValue);
@@ -145,7 +145,7 @@ public class UpdateAccumulate {
 				String newId = map.getId(newValue);
 				if (newId != null) {
 					child.put(property,
-							new JsonObject().withValue(JsonIdMap.ID, newId));
+							new JsonObject().withValue(IdMap.ID, newId));
 				}
 			} else {
 				child.put(property, newValue);

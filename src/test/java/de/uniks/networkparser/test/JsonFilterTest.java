@@ -1,8 +1,10 @@
 package de.uniks.networkparser.test;
 
 import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
-import de.uniks.networkparser.json.JsonIdMap;
+
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.test.model.FullMessage;
 import de.uniks.networkparser.test.model.Location;
 import de.uniks.networkparser.test.model.util.FullMessageCreator;
@@ -15,7 +17,7 @@ public class JsonFilterTest {
 		fullMessage.setText("Hallo Welt");
 
 		fullMessage.setLocation(new Location(1,2));
-		JsonIdMap map= new JsonIdMap();
+		IdMap map= new IdMap();
 		map.with(new FullMessageCreator());
 		map.with(new LocationCreator());
 

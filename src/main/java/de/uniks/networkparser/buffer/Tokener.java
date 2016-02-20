@@ -3,11 +3,14 @@ package de.uniks.networkparser.buffer;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferItem;
+import de.uniks.networkparser.interfaces.Entity;
+import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 
 public class Tokener implements BufferItem{
+	//FIXME REMVOE
 	protected NetworkParserLog logger = new NetworkParserLog();
 
 	public void parseToEntity(SimpleKeyValueList<?, ?> entity) {}
@@ -202,5 +205,16 @@ public class Tokener implements BufferItem{
 			return buffer.skipChar(quotes);
 		}
 		return 0;
+	}
+	
+	public Entity newInstance() {
+		return null;
+	}
+	public EntityList newInstanceList() {
+		return null;
+	}
+	
+	public Object transformValue(Object value, BaseItem reference) {
+		return value;
 	}
 }

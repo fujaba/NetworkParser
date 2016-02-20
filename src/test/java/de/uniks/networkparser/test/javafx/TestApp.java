@@ -10,16 +10,16 @@ package de.uniks.networkparser.test.javafx;
 
 import java.util.Comparator;
 
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.javafx.TableList;
 import de.uniks.networkparser.ext.javafx.component.TableComponent;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.TableCellValue;
 import de.uniks.networkparser.interfaces.GUIPosition;
-import de.uniks.networkparser.json.JsonIdMap;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 
 /**
 
@@ -73,7 +73,7 @@ public class TestApp extends Application {
 		tableList.add(new PersonGUI("Michael",   "Brown",	"michael.brown@example.com", 122));
 
 
-		JsonIdMap map = new  JsonIdMap();
+		IdMap map = new  IdMap();
 		map.with(tableList);
 		map.with(new PersonGUICreator());
 

@@ -1,0 +1,197 @@
+package de.uniks.networkparser;
+
+import java.beans.PropertyChangeEvent;
+
+import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.buffer.Tokener;
+import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.Entity;
+import de.uniks.networkparser.interfaces.Grammar;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.xml.MapEntityStack;
+
+/**
+ * @author Stefan
+ * MapEntity for IdMap
+ */
+public class MapEntity extends SimpleList<Object>{
+	private IdMap map;
+	private Filter filter;
+	private Grammar grammar;
+	private int deep;
+	private Object target;
+	private MapEntityStack stack;
+	
+	/**
+	 * boolean for switch of search for Interface or Abstract superclass for entity
+	 */
+	protected boolean searchForSuperCreator;
+
+	/** If this is true the IdMap save the Typ of primary datatypes. */
+	private boolean typSave;
+
+	public MapEntity(IdMap map, Filter filter, Grammar grammar, boolean searchForSuperCreator) {
+		this.map = map;
+		if(filter != null) {
+			this.filter = filter;
+		} else {
+			this.filter = this.map.getDefaultFilter();
+		}
+		this.grammar = grammar;
+		this.searchForSuperCreator = searchForSuperCreator;
+	}
+	
+	public IdMap getMap() {
+		return map;
+	}
+	public void setMap(IdMap map) {
+		this.map = map;
+	}
+	public Filter getFilter() {
+		return filter;
+	}
+	public void setFilter(Filter filter) {
+		this.filter = filter;
+	}
+
+	/**
+	 * @return the grammar
+	 */
+	public Grammar getGrammar() {
+		return grammar;
+	}
+	public void add() {
+		this.deep = this.deep + 1;
+	}
+	public void minus() {
+		this.deep = this.deep - 1;
+	}
+	public boolean isTypSave() {
+		return typSave;
+	}
+	
+	// Methods for Map
+	public boolean error(String method, String type, Object entity, String className) {
+		return false;
+	}
+//FIXME	public boolean error(String method, String type, Object entity, String className) {
+//		return this.map.getLogger().error(this.map, method, type, entity, filter, className, deep);
+//	}
+	public SendableEntityCreator getCreatorClass(Object reference) {
+		return map.getCreatorClass(reference);
+	}
+	public String getKey(Object reference) {
+		return map.getKey(reference);
+	}
+	public String getId(Object reference) {
+		return map.getId(reference);
+	}
+	public Object getObject(String key) {
+		return map.getObject(key);
+	}
+	public boolean notify(PropertyChangeEvent evt) {
+		return this.map.notify(evt);
+	}
+	
+	// Methods for Grammar
+	public SendableEntityCreator getCreator(String type, Object item, String className) {
+		return grammar.getCreator(type, item, map, searchForSuperCreator, className);
+	}
+	public Object getNewEntity(SendableEntityCreator creator, String className, boolean prototype) {
+		return grammar.getNewEntity(creator, className, prototype);
+	}
+	public boolean hasValue(Entity item, String property) {
+		return grammar.hasValue(item, property);
+	}
+	public String getValue(Entity item, String property) {
+		return grammar.getValue(item, property);
+	}
+	public BaseItem getProperties(Entity entity, boolean isId, String type) {
+		return grammar.getProperties(entity, map, filter, isId, type);
+	}
+
+	// Method for Filter
+	public String getId(Object entity, String className) {
+		if (filter.isId(entity, className, map) == false) {
+			this.with(entity);
+		} else {
+			String id = map.getId(entity);
+			this.with(id);
+			return id;
+		}
+		return null;
+	}
+
+	public boolean isFullSeriation() {
+		return filter.isFullSeriation();
+	}
+	public String[] getProperties(SendableEntityCreator creator) {
+		return filter.getProperties(creator);
+	}
+	public boolean isPropertyRegard(Object entity, String property, Object value) {
+		return filter.isPropertyRegard(entity, property, value, map, deep);
+	}
+	public boolean isConvertable(Object entity, String property, Object value) {
+		return filter.isConvertable(entity, property, value, map, deep);
+	}
+	public boolean isId(Object entity, String className) {
+		return filter.isId(entity, className, map);
+	}
+	public String getStrategy() {
+		return filter.getStrategy();
+	}
+	/**
+	 * @return the target
+	 */
+	public Object getTarget() {
+		return target;
+	}
+	/**
+	 * @param target the target to set
+	 * @return The Target Object
+	 */
+	public MapEntity withTarget(Object target) {
+		this.target = target;
+		return this;
+	}
+
+	public MapEntity withDeep(int value) {
+		this.deep = value;
+		return this;
+	}
+	
+	public Object getRefByEntity(Object value) {
+		for (int i = 0; i < size(); i += 2) {
+			if (get(i) == value) {
+				return get(i + 1);
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * @return the stack
+	 */
+	public MapEntityStack getStack() {
+		return stack;
+	}
+
+	/**
+	 * @param stack the stack to set
+	 * @return 
+	 */
+	public MapEntity withStack(MapEntityStack stack) {
+		this.stack = stack;
+		return this;
+	}
+
+	public CharacterBuffer getPrefixProperties(SendableEntityCreator creator, Tokener tokener, Object entity, String className) {
+		boolean isId = filter.isId(entity, className, map);
+		return grammar.getPrefixProperties(creator, tokener, isId);
+	}
+	
+	public void writeBasicValue(Entity entity, String className, String id) {
+		grammar.writeBasicValue(entity, className, id);
+	}
+}

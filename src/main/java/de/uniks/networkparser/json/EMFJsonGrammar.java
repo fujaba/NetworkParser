@@ -26,6 +26,8 @@ import java.util.Iterator;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleGrammar;
+import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.Grammar;
@@ -106,7 +108,7 @@ public class EMFJsonGrammar extends SimpleGrammar {
 
 	@Override
 	public String getValue(Entity item, String property) {
-		if (JsonIdMap.ID.equals(property)) {
+		if (IdMap.ID.equals(property)) {
 			return item.getString(SRC);
 		}
 		return item.getString(property);
@@ -114,24 +116,21 @@ public class EMFJsonGrammar extends SimpleGrammar {
 
 	@Override
 	public boolean hasValue(Entity json, String property) {
-		if(property.equals(JsonIdMap.ID)){
+		if(property.equals(IdMap.ID)){
 			property = SRC;
 		}
 		return super.hasValue(json, property);
 	}
 
 	@Override
-	public BaseItem setProperties(IdMap map, SendableEntityCreator prototyp, String className, String id,
-			Entity properties, Filter filter) {
-		JsonObject json = new JsonObject();
+	public CharacterBuffer getPrefixProperties(SendableEntityCreator creator, Tokener format, boolean isId) {
+		return new CharacterBuffer();
+	}
 
-		json.put(SRC, id);
-
-		if (properties.size() > 0) {
-			for (int i = 0; i < properties.size(); i++) {
-				json.put(properties.getKeyByIndex(i), properties.getValue(i));
-			}
+	@Override
+	public void writeBasicValue(Entity entity, String className, String id) {
+		if(id != null) {
+			entity.put(SRC, id);
 		}
-		return json;
 	}
 }

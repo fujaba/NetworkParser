@@ -24,7 +24,8 @@ package de.uniks.networkparser.test.model.ludo;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.LinkedHashSet;
-import de.uniks.networkparser.json.JsonIdMap;
+
+import de.uniks.networkparser.IdMap;
 
 public class Player
 {
@@ -185,7 +186,7 @@ public class Player
 		 return true;
 	  }
 
-	  if ((PROPERTY_PAWNS + JsonIdMap.REMOVE).equalsIgnoreCase(attrName))
+	  if ((PROPERTY_PAWNS + IdMap.REMOVE).equalsIgnoreCase(attrName))
 	  {
 		 removeFromPawns((Pawn) value);
 		 return true;

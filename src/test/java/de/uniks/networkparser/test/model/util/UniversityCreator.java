@@ -1,15 +1,15 @@
 package de.uniks.networkparser.test.model.util;
 
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
-import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.test.model.Room;
 import de.uniks.networkparser.test.model.Student;
 import de.uniks.networkparser.test.model.University;
 
 public class UniversityCreator implements SendableEntityCreator, SendableEntityCreatorTag {
-	public static JsonIdMap createIdMap(String sessionID) {
-		JsonIdMap jsonIdMap = new JsonIdMap();
+	public static IdMap createIdMap(String sessionID) {
+		IdMap jsonIdMap = new IdMap();
 		jsonIdMap.withSessionId(sessionID);
 
 		jsonIdMap.with(new UniversityCreator());

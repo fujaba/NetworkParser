@@ -95,3 +95,12 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 defaultTasks 'clean', 'test', 'buildAll'
+
+
+
+task cleanupws(type: Delete) {
+	description 'Delete Configuration Files from Workspace'
+	group "BUILD"
+	delete 'gradle.properties'
+	delete fileTree(dir: ".", include: "*.gpg")
+}

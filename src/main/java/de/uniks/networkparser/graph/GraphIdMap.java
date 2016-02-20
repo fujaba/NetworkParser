@@ -39,7 +39,7 @@ public class GraphIdMap extends IdMap {
 	public static final String OBJECT = "objectdiagram";
 
 	private GraphIdMapFilter filter = new GraphIdMapFilter()
-			.withShowCardinality(true).withTyp(CLASS).withMap(this);
+			.withShowCardinality(true).withTyp(CLASS);
 
 	/**
 	 * Parses the object.

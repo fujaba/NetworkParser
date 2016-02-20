@@ -25,13 +25,14 @@ import java.io.PrintStream;
 import org.junit.Assert;
 import org.junit.Test;
 import de.uniks.networkparser.Filter;
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.GraphConverter;
+import de.uniks.networkparser.event.util.DateCreator;
 import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.GraphIdMap;
 import de.uniks.networkparser.json.JsonArray;
-import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.test.model.SortedMsg;
 import de.uniks.networkparser.test.model.ludo.Field;
@@ -39,7 +40,6 @@ import de.uniks.networkparser.test.model.ludo.Ludo;
 import de.uniks.networkparser.test.model.ludo.LudoColor;
 import de.uniks.networkparser.test.model.ludo.Pawn;
 import de.uniks.networkparser.test.model.ludo.Player;
-import de.uniks.networkparser.test.model.ludo.creator.DateCreator;
 import de.uniks.networkparser.test.model.ludo.creator.DiceCreator;
 import de.uniks.networkparser.test.model.ludo.creator.FieldCreator;
 import de.uniks.networkparser.test.model.ludo.creator.LudoCreator;
@@ -54,7 +54,7 @@ public class GraphLudoTest
    @Test
    public void testLudoStoryboard()
    {
-	  JsonIdMap jsonIdMap = new JsonIdMap();
+	   IdMap jsonIdMap = new IdMap();
 	  jsonIdMap.with(new DateCreator())
 		  .with(new DiceCreator())
 		  .with(new FieldCreator())
@@ -113,7 +113,7 @@ public class GraphLudoTest
 
 	   root.setChild(new SortedMsg().withMsg("Child"));
 
-	   JsonIdMap map = new JsonIdMap();
+	   IdMap map = new IdMap();
 	   map.with(new SortedMsgCreator());
 
 	   JsonArray jsonArray = map.toJsonArray(root, new Filter().withFull(true));
@@ -168,7 +168,7 @@ public class GraphLudoTest
 	 @Test
 	 public void testLudoToMany()
 	 {
-	  JsonIdMap jsonIdMap = new JsonIdMap();
+		 IdMap jsonIdMap = new IdMap();
 	  jsonIdMap
 		  .with(new LudoCreator())
 		  .with(new PlayerCreator());

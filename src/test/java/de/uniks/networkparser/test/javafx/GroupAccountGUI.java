@@ -1,11 +1,11 @@
 package de.uniks.networkparser.test.javafx;
 
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.event.Style;
 import de.uniks.networkparser.ext.javafx.TableList;
 import de.uniks.networkparser.ext.javafx.component.TableComponent;
 import de.uniks.networkparser.ext.javafx.controller.ModelListenerStringProperty;
 import de.uniks.networkparser.gui.Column;
-import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.test.model.GroupAccount;
 import de.uniks.networkparser.test.model.Person;
 import de.uniks.networkparser.test.model.Wallet;
@@ -37,7 +37,7 @@ public class GroupAccountGUI extends Application {
 
 			TableComponent tableView = new TableComponent();
 
-			JsonIdMap map = new  JsonIdMap();
+			IdMap map = new  IdMap();
 			map.with(new TableList(), new PersonCreator(), new GroupAccountCreator());
 
 			tableView.withMap(map);

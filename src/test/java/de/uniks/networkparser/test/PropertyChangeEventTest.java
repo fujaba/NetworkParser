@@ -1,11 +1,12 @@
 package de.uniks.networkparser.test;
 
 import java.beans.PropertyChangeEvent;
+
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.javafx.PropertyChangeEventWrapper;
-import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.test.model.Item;
 import de.uniks.networkparser.test.model.Person;
@@ -16,7 +17,7 @@ public class PropertyChangeEventTest {
 
 	@Test
 	public void testPropertyChange() {
-		JsonIdMap map=new JsonIdMap();
+		IdMap map=new IdMap();
 		map.with(new PropertyChangeEventWrapper());
 		map.with(new PersonCreator());
 		map.with(new ItemCreator());
@@ -25,10 +26,10 @@ public class PropertyChangeEventTest {
 		Item item = new Item();
 		PropertyChangeEvent propertyChange = new PropertyChangeEvent(person, "child", null, item);
 
-		JsonObject encode = map.encode(propertyChange);
+		JsonObject encode = map.toJsonObject(propertyChange);
 
 		//Decode
-		JsonIdMap decodeMap=new JsonIdMap();
+		IdMap decodeMap=new IdMap();
 		decodeMap.with(new PropertyChangeEventWrapper());
 		decodeMap.with(new PersonCreator());
 		decodeMap.with(new ItemCreator());

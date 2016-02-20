@@ -120,7 +120,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		}
 		if(values[0] instanceof String) {
 			if(values.length == 1) {
-				this.withValueItem((String)values[0]);
+				this.setValueItem((String)values[0]);
 			}
 		}else if (values.length % 2 == 1) {
 			for(Object item : values) {
@@ -172,7 +172,12 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 				}
 			}
 		}
-		return null;
+		if(recursiv) {
+			return null;
+		}
+		XMLEntity item = new XMLEntity().withTag(value);
+		with(item);
+		return item;
 	}
 
 	/**
@@ -230,11 +235,15 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	 *
 	 * @param value
 	 *			the new value
-	 * @return the XMLEntity Instance
+	 * @return Success
 	 */
-	public XMLEntity withValueItem(String value) {
-		this.valueItem = value;
-		return this;
+	public boolean setValueItem(Object value) {
+		if(value instanceof String) {
+			this.valueItem = (String)value;
+		}else {
+			this.valueItem = ""+value;
+		}
+		return true;
 	}
 
 	@Override
@@ -352,5 +361,9 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	public Object getValue(int index) {
 		return getValueByIndex(index);
 	}
-	
+
+	public XMLEntity withValueItem(String value) {
+		setValueItem(value);
+		return this;
+	}
 }

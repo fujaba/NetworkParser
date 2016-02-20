@@ -1,17 +1,17 @@
 package de.uniks.networkparser.test.javafx;
 
-import javafx.scene.layout.Pane;
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.javafx.component.ModelForm;
 import de.uniks.networkparser.ext.javafx.window.FXStageController;
 import de.uniks.networkparser.ext.javafx.window.SimpleShell;
-import de.uniks.networkparser.json.JsonIdMap;
+import javafx.scene.layout.Pane;
 
 public class FormGUI extends SimpleShell {
 	public static void main(String[] args) { launch(args); }
 
 	@Override
 	protected Pane createContents(FXStageController value, Parameters args) {
-		JsonIdMap map = new  JsonIdMap();
+		IdMap map = new  IdMap();
 		map.with(new PersonCreator());
 		PersonGUI albert= new PersonGUI().withName("Albert");
 

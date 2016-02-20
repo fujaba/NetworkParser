@@ -2,14 +2,15 @@ package de.uniks.networkparser.test.javafx;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.layout.AnchorPane;
+
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.javafx.TableList;
 import de.uniks.networkparser.ext.javafx.component.TableComponent;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.interfaces.GUIPosition;
-import de.uniks.networkparser.json.JsonIdMap;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.layout.AnchorPane;
 
 public class ExampleController implements Initializable{
 	@FXML AnchorPane table;
@@ -25,7 +26,7 @@ public class ExampleController implements Initializable{
 			tableList.add(new PersonGUI("Emma",	  "Jones",	"emma.jones@example.com", 12));
 			tableList.add(new PersonGUI("Michael",   "Brown",	"michael.brown@example.com", 122));
 
-			JsonIdMap map = new  JsonIdMap();
+			IdMap map = new  IdMap();
 			map.with(new TableList());
 			map.with(new PersonGUICreator());
 			TableComponent tableView = (TableComponent) table.getChildren().get(0);

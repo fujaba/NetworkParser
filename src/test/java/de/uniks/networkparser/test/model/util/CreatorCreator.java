@@ -1,12 +1,12 @@
 package de.uniks.networkparser.test.model.util;
 
-import de.uniks.networkparser.json.JsonIdMap;
+import de.uniks.networkparser.IdMap;
 
 class CreatorCreator{
 
-   public static JsonIdMap createIdMap(String sessionID)
+   public static IdMap createIdMap(String sessionID)
    {
-	  JsonIdMap jsonIdMap = (JsonIdMap) new JsonIdMap().withSessionId(sessionID);
+	   IdMap jsonIdMap = new IdMap().withSessionId(sessionID);
 
 	  jsonIdMap.with(new de.uniks.networkparser.test.model.util.GroupAccountCreator());
 	  jsonIdMap.with(new de.uniks.networkparser.test.model.util.PersonCreator());

@@ -64,8 +64,8 @@ public class XMLTest {
 				"	<item value=\"Sophie\"/>" +
 				"</item>" +
 				"</listitem>";
-		map.addCreator(new ListItemCreator());
-		map.addCreator(new EntityCreator());
+		map.with(new ListItemCreator());
+		map.with(new EntityCreator());
 		ListItem listItem = (ListItem) map.decode(xml);
 		assertEquals(3, listItem.getChild().size());
 		Entity[] children= new Entity[3];
@@ -92,7 +92,7 @@ public class XMLTest {
 	public void testSonderfaelle(){
 		String xml="<chatmsg sender=\"Stefan (\\\"Eraser\\\")\">0<1</chatmsg>";
 		XMLIdMap map= new XMLIdMap();
-		map.addCreator(new MyXMLEntityCreator());
+		map.with(new MyXMLEntityCreator());
 		XMLTestEntity decode = (XMLTestEntity) map.decode(xml);
 		assertEquals("Stefan (\\\"Eraser\\\")", decode.getSender());
 		assertEquals("0<1", decode.getText());
@@ -112,7 +112,7 @@ public class XMLTest {
 		String xml = "<uni name=\"Kassel\"><!-- Meine erster Test --><fg value=\"se\"><no><id></id></no><user>Stefan Lindel</user></fg></uni>";
 		String xmlWithoutComment = "<uni name=\"Kassel\"><fg value=\"se\"><user>Stefan Lindel</user></fg></uni>";
 		XMLIdMap map = new XMLIdMap();
-		map.addCreator(new UniversityCreator());
+		map.with(new UniversityCreator());
 		University entity = (University) map.decode(xml);
 		assertEquals("Kassel", entity.getName());
 		assertEquals("se", entity.getValue());
@@ -138,7 +138,7 @@ public class XMLTest {
 	public void testXML(){
 		String xml="<chatmsg>ich <b>bin</b> gut</chatmsg>";
 		XMLIdMap map= new XMLIdMap();
-		map.addCreator(new MyXMLEntityCreator());
+		map.with(new MyXMLEntityCreator());
 		XMLTestEntity decode = (XMLTestEntity) map.decode(xml);
 		assertEquals("ich <b>bin</b> gut", decode.getText());
 		xml="<chatmsg>ich bin<hr/> gut</chatmsg>";
@@ -150,7 +150,7 @@ public class XMLTest {
 	public void testUni() {
 		String xml = "<uni name=\"Kassel\"><fg value=\"se\"><user>Stefan Lindel</user></fg></uni>";
 		XMLIdMap map = new XMLIdMap();
-		map.addCreator(new UniversityCreator());
+		map.with(new UniversityCreator());
 		University entity = (University) map.decode(xml);
 		assertEquals("Kassel", entity.getName());
 		assertEquals("se", entity.getValue());
@@ -163,7 +163,7 @@ public class XMLTest {
 	public void testXMLUniExt(){
 		String xml = "<uni name=\"Kassel\"><child><value>Ich</value></child><fg value=\"se\"><user>Stefan Lindel</user></fg><not-supported/><not-supported></not-supported><!-- NIX VERSTEHEN --></uni>";
 		XMLIdMap map = new XMLIdMap();
-		map.addCreator(new UniversityCreator());
+		map.with(new UniversityCreator());
 		University entity = (University) map.decode(xml);
 		assertEquals("Kassel", entity.getName());
 		assertEquals("se", entity.getValue());
@@ -215,7 +215,7 @@ public class XMLTest {
 	@Test
 	public void testXMLParser() {
 		XMLIdMap map = new XMLIdMap();
-		map.addCreator(new StringMessageCreator());
+		map.with(new StringMessageCreator());
 
 		StringMessage msg = new StringMessage("Hallo World");
 
@@ -236,7 +236,7 @@ public class XMLTest {
 	public void testXMLChatMessage() {
 		String xml = "<message to=\"androidpeer@googlemail.com\" type=\"chat\" id=\"28\" from=\"peercenter@googlemail.com/Talk.v1054B9F0AA7\"><body>test</body><active xmlns=\"http://jabber.org/protocol/chatstates\"/><nos:x value=\"disabled\" xmlns:nos=\"google:nosave\"/><arc:record otr=\"false\" xmlns:arc=\"http://jabber.org/protocol/archive\"/></message>";
 		XMLIdMap map = new XMLIdMap();
-		map.addCreator(new JabberChatMessageCreator());
+		map.with(new JabberChatMessageCreator());
 //		map.addCreator(new JabberBindMessageCreator());
 		JabberChatMessage chat = (JabberChatMessage) map.decode(xml);
 		assertEquals("test", chat.getBody());
@@ -259,7 +259,7 @@ public class XMLTest {
 		chatMessage.setSender("Stefan Lindel");
 
 		XMLIdMap xmlMap = new XMLIdMap();
-		xmlMap.addCreator(new ChatMessageCreator());
+		xmlMap.with(new ChatMessageCreator());
 		String reference="<chatmsg sender=\"Stefan Lindel\" txt=\"Dies ist eine Testnachricht\"/>";
 		assertEquals("WERT Vergleichen", reference, xmlMap.encode(chatMessage, map.SimpleFilter).toString(2));
 	}

@@ -1,8 +1,8 @@
 package de.uniks.networkparser.test.model.util;
 
-import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.test.model.Entity;
+import de.uniks.networkparser.xml.XMLTokener;
 
 public class EntityCreator implements SendableEntityCreatorTag {
 
@@ -23,7 +23,7 @@ public class EntityCreator implements SendableEntityCreatorTag {
 
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if(IdMap.CHILDREN.equals(type)) {
+		if(XMLTokener.CHILDREN.equals(type)) {
 			((Entity) entity).setChild((Entity) value);
 			return true;
 		}

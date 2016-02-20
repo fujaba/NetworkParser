@@ -1,5 +1,6 @@
 package de.uniks.networkparser.test.javafx;
 
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.javafx.component.TableCellFX;
 import de.uniks.networkparser.ext.javafx.component.TableCellFactory;
 import de.uniks.networkparser.ext.javafx.component.TableComponent;
@@ -9,7 +10,6 @@ import de.uniks.networkparser.ext.javafx.window.FXStageController;
 import de.uniks.networkparser.ext.javafx.window.SimpleShell;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.TableCellValue;
-import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.test.model.GroupAccount;
 import de.uniks.networkparser.test.model.Person;
 import de.uniks.networkparser.test.model.util.GroupAccountCreator;
@@ -25,7 +25,7 @@ public class SimpleTable extends SimpleShell{
 
 	@Override
 	protected Parent createContents(FXStageController value, Parameters args) {
-		JsonIdMap map = new JsonIdMap();
+		IdMap map = new IdMap();
 		map.with(new GroupAccountCreator(), new PersonCreator());
 		TableComponent table = new TableComponent();
 		table.withMap(map);

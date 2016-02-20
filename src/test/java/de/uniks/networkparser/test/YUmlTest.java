@@ -1,17 +1,19 @@
 package de.uniks.networkparser.test;
 
 import static org.junit.Assert.assertEquals;
+
 import java.util.Date;
+
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.converter.YUMLConverter;
 import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphIdMap;
 import de.uniks.networkparser.graph.GraphList;
-import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.test.model.ChatMessage;
 import de.uniks.networkparser.test.model.Room;
 import de.uniks.networkparser.test.model.University;
@@ -30,7 +32,7 @@ public class YUmlTest {
 		date.setTime(1350978000017L);
 		chatMessage.setDate(date);
 
-		JsonIdMap jsonMap = new JsonIdMap();
+		IdMap jsonMap = new IdMap();
 		jsonMap.with(new ChatMessageCreator());
 		GraphIdMap yumlParser = new GraphIdMap();
 		yumlParser.withKeyValue(jsonMap.getKeyValue())
@@ -42,7 +44,7 @@ public class YUmlTest {
 						+ "[J1.C1 : ChatMessage|sender=Stefan Lindel;txt=Dies ist eine Testnachricht;count=0;activ=false]-[J1.D2 : Date|value=1350978000017]",
 				url + parseObject);
 
-		jsonMap = new JsonIdMap();
+		jsonMap = new IdMap();
 		jsonMap.with(new UniversityCreator());
 		jsonMap.with(new RoomCreator());
 		University uni = new University();

@@ -2,6 +2,8 @@ package de.uniks.networkparser.interfaces;
 
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.buffer.Tokener;
 
 public interface Grammar {
 	public static final String READ = "read";
@@ -49,18 +51,16 @@ public interface Grammar {
 	 * @return The new Instance
 	 */
 	public Object getNewEntity(SendableEntityCreator creator, String className, boolean prototype);
-	
+
+
 	/**
-	 * @param map		The IdMap
-	 * @param prototyp	The new Prototyp
-	 * @param className	The ClassName
-	 * @param id		The Id of the Item
-	 * @param properties The Properties for Set
-	 * @param filter	The current filter
-	 *
-	 * @return the props of theJsonObject
+	 * Get The Prefix For Properties
+	 * @param creator The Creator
+	 * @param format The Format Token
+	 * @param isId is Id is Set
+	 * @return The Propertyprefix
 	 */
-	public BaseItem setProperties(IdMap map,
-			SendableEntityCreator prototyp, String className, String id,
-			Entity properties, Filter filter);
+	public CharacterBuffer getPrefixProperties(SendableEntityCreator creator, Tokener format, boolean isId);
+	
+	public void writeBasicValue(Entity entity, String className, String id);
 }

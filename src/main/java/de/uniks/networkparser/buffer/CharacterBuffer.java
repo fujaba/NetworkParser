@@ -651,4 +651,9 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		}
 		return startsWith(string, pos, ignoreCase);
 	}
+
+	public void setNextString(CharSequence property, int pos) {
+		this.withLength(pos);
+		this.with(property);
+	}
 }

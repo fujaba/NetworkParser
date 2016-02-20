@@ -21,7 +21,7 @@
 
 package de.uniks.networkparser.test.model.util;
 
-import de.uniks.networkparser.json.JsonIdMap;
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.test.model.Apple;
 import de.uniks.networkparser.test.model.AppleTree;
 
@@ -66,7 +66,7 @@ public class AppleTreeCreator extends TreeCreator
    @Override
    public boolean setValue(Object target, String attrName, Object value, String type)
    {
-	  if (JsonIdMap.REMOVE.equals(type) && value != null)
+	  if (IdMap.REMOVE.equals(type) && value != null)
 	  {
 		 attrName = attrName + type;
 	  }
@@ -77,7 +77,7 @@ public class AppleTreeCreator extends TreeCreator
 		 return true;
 	  }
 
-	  if ((AppleTree.PROPERTY_HAS + JsonIdMap.REMOVE).equalsIgnoreCase(attrName))
+	  if ((AppleTree.PROPERTY_HAS + IdMap.REMOVE).equalsIgnoreCase(attrName))
 	  {
 		 ((AppleTree) target).removeFromHas((Apple) value);
 		 return true;

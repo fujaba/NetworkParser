@@ -1,9 +1,7 @@
 package de.uniks.networkparser.graph;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferItem;
-import de.uniks.networkparser.interfaces.IdMapDecoder;
 import de.uniks.networkparser.list.SimpleList;
 /*
 NetworkParser
@@ -26,7 +24,7 @@ express or implied.
 See the Licence for the specific language governing
 permissions and limitations under the Licence.
 */
-public class Annotation extends GraphMember implements IdMapDecoder {
+public class Annotation extends GraphMember {
 	public static final StringFilter<Annotation> NAME = new StringFilter<Annotation>(GraphMember.PROPERTY_NAME);
 
 	// ==========================================================================
@@ -65,12 +63,6 @@ public class Annotation extends GraphMember implements IdMapDecoder {
 		return this;
 	}
 
-	@Override
-	public Object decode(BaseItem value) {
-		return null;
-	}
-
-	@Override
 	public Annotation decode(String value) {
 		CharacterBuffer tokener = new CharacterBuffer();
 		tokener.with(value);

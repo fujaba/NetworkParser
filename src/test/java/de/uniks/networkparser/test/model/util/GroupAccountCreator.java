@@ -21,8 +21,8 @@
 
 package de.uniks.networkparser.test.model.util;
 
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.test.model.GroupAccount;
 import de.uniks.networkparser.test.model.Item;
 import de.uniks.networkparser.test.model.Person;
@@ -74,7 +74,7 @@ public class GroupAccountCreator implements SendableEntityCreator
    @Override
    public boolean setValue(Object target, String attrName, Object value, String type)
    {
-	  if (JsonIdMap.REMOVE.equals(type) && value != null)
+	  if (IdMap.REMOVE.equals(type) && value != null)
 	  {
 		 attrName = attrName + type;
 	  }
@@ -85,7 +85,7 @@ public class GroupAccountCreator implements SendableEntityCreator
 		 return true;
 	  }
 
-	  if ((GroupAccount.PROPERTY_PERSONS + JsonIdMap.REMOVE).equalsIgnoreCase(attrName))
+	  if ((GroupAccount.PROPERTY_PERSONS + IdMap.REMOVE).equalsIgnoreCase(attrName))
 	  {
 		 ((GroupAccount) target).withoutPersons((Person) value);
 		 return true;
@@ -97,7 +97,7 @@ public class GroupAccountCreator implements SendableEntityCreator
 		 return true;
 	  }
 
-	  if ((GroupAccount.PROPERTY_ITEM + JsonIdMap.REMOVE).equalsIgnoreCase(attrName))
+	  if ((GroupAccount.PROPERTY_ITEM + IdMap.REMOVE).equalsIgnoreCase(attrName))
 	  {
 		 ((GroupAccount) target).withoutItem((Item) value);
 		 return true;
@@ -105,7 +105,7 @@ public class GroupAccountCreator implements SendableEntityCreator
 
 	  return false;
    }
-   public static JsonIdMap createIdMap(String sessionID)
+   public static IdMap createIdMap(String sessionID)
    {
 	  return CreatorCreator.createIdMap(sessionID);
    }

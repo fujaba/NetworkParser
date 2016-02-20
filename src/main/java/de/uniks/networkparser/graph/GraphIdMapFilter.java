@@ -22,7 +22,6 @@ package de.uniks.networkparser.graph;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.Filter;
-import de.uniks.networkparser.IdMap;
 
 public class GraphIdMapFilter extends Filter {
 	/** The show line. */
@@ -62,25 +61,12 @@ public class GraphIdMapFilter extends Filter {
 		return this;
 	}
 
-	@Override
-	public GraphIdMapFilter newInstance(Filter referenceFilter) {
-		if(referenceFilter == null) {
-			referenceFilter = new GraphIdMapFilter();
-		}
-		return (GraphIdMapFilter) super.newInstance(referenceFilter);
-	}
-
 	public String getTyp() {
 		return typ;
 	}
 
 	public GraphIdMapFilter withTyp(String typ) {
 		this.typ = typ;
-		return this;
-	}
-
-	public GraphIdMapFilter withMap(IdMap map) {
-		super.withMap(map);
 		return this;
 	}
 }

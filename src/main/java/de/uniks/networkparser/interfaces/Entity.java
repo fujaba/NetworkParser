@@ -74,4 +74,14 @@ public interface Entity extends BaseItem{
 	 *		 brace)</small>.
 	 */
 	public String toString(int indentFactor);
+	
+	/**
+	 * Activate Allow Empty Value
+	 * @param allow
+	 */
+	public void setAllowEmptyValue(boolean allow);
+	
+	public boolean setValueItem(Object value);
+	
+	public BaseItem getChild(String label, boolean recursiv);
 }

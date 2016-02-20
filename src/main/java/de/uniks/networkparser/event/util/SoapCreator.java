@@ -1,6 +1,5 @@
 package de.uniks.networkparser.event.util;
 
-import de.uniks.networkparser.IdMap;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -25,6 +24,7 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.event.SoapObject;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.xml.XMLEntity;
+import de.uniks.networkparser.xml.XMLTokener;
 
 public class SoapCreator implements SendableEntityCreatorTag {
 	public static String XMLNS_XSI = "http://www.w3.org/2001/XMLSchema-instance";
@@ -58,7 +58,7 @@ public class SoapCreator implements SendableEntityCreatorTag {
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
-		if(IdMap.CHILDREN.equals(type)) {
+		if(XMLTokener.CHILDREN.equals(type)) {
 			((SoapObject) entity).with(value);
 			return true;
 		}

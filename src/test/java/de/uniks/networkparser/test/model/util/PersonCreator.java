@@ -1,7 +1,7 @@
 package de.uniks.networkparser.test.model.util;
 
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.test.model.GroupAccount;
 import de.uniks.networkparser.test.model.Item;
 import de.uniks.networkparser.test.model.Person;
@@ -78,7 +78,7 @@ public class PersonCreator implements SendableEntityCreator
 			 return true;
 		  }
 
-		  if ((Person.PROPERTY_ITEM + JsonIdMap.REMOVE).equalsIgnoreCase(attrName))
+		  if ((Person.PROPERTY_ITEM + IdMap.REMOVE).equalsIgnoreCase(attrName))
 		  {
 			  ((Person)target).withoutItem((Item) value);
 			 return true;

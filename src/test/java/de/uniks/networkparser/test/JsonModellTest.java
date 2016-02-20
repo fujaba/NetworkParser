@@ -10,7 +10,6 @@ import org.junit.Test;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.UpdateListener;
-import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.logic.Deep;
 import de.uniks.networkparser.logic.InstanceOf;
@@ -24,7 +23,7 @@ import de.uniks.networkparser.test.model.util.SortedMsgCreator;
 
 public class JsonModellTest implements UpdateListener {
 
-	private JsonIdMap secondMap;
+	private IdMap secondMap;
 
 	@Test
 	public void testSet(){
@@ -33,7 +32,7 @@ public class JsonModellTest implements UpdateListener {
 		account.createPersons().withName("Tobi");
 
 
-		JsonIdMap map= new JsonIdMap();
+		IdMap map= new IdMap();
 		map.with(new PersonCreator());
 		map.with(new GroupAccountCreator());
 		Assert.assertEquals(175, map.toJsonArray(account.getPersons(), Filter.regard(InstanceOf.value(Person.class, Person.PROPERTY_PARENT))).toString(2).length());
@@ -42,7 +41,7 @@ public class JsonModellTest implements UpdateListener {
 
 	@Test
 	public void testModell(){
-		JsonIdMap map= new JsonIdMap();
+		IdMap map= new IdMap();
 		map.with(this);
 		map.with(new SortedMsgCreator());
 		SortedMsg first= new SortedMsg();
@@ -68,7 +67,7 @@ public class JsonModellTest implements UpdateListener {
 		// convert back
 		new String(number.toByteArray());
 
-		this.secondMap= new JsonIdMap();
+		this.secondMap= new IdMap();
 		secondMap.with(this);
 		secondMap.with(new SortedMsgCreator());
 

@@ -3,11 +3,11 @@ package de.uniks.networkparser.test;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.event.CellHandler;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.json.JsonIdMap;
 
 public class ColumnTest {
 
@@ -26,7 +26,7 @@ public class ColumnTest {
 		column.withMovable(true);
 		Assert.assertEquals(column.getBrowserId(), GUIPosition.CENTER);
 
-		JsonIdMap map=(JsonIdMap) new JsonIdMap().with(new Column());
+		IdMap map=new IdMap().with(new Column());
 
 		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.gui.Column\",\"attrName\":\"Name\"}", map.toJsonObject(column).toString());
 	}

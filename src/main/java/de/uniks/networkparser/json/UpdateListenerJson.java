@@ -45,7 +45,7 @@ import de.uniks.networkparser.logic.UpdateCondition;
 
 public class UpdateListenerJson implements PropertyChangeListener {
 	/** The map. */
-	private JsonIdMap map;
+	private IdMap map;
 
 	/** The suspend id list. */
 	private ArrayList<String> suspendIdList;
@@ -61,9 +61,7 @@ public class UpdateListenerJson implements PropertyChangeListener {
 	 *			the map
 	 */
 	public UpdateListenerJson(IdMap map) {
-		if (map instanceof JsonIdMap) {
-			this.map = (JsonIdMap) map;
-		}
+		this.map = map;
 	}
 
 	/**
@@ -83,8 +81,8 @@ public class UpdateListenerJson implements PropertyChangeListener {
 		countMessage(initField, classCounts, gc);
 		// Remove all others
 		for (String id : classCounts) {
-			if(this.map.containsKey(id)) {
-				this.map.remove(this.map.getObject(id));
+			if(this.map.hasKey(id)) {
+				this.map.removeObj(this.map.getObject(id), false);
 			}
 		}
 		return initField;
@@ -105,7 +103,7 @@ public class UpdateListenerJson implements PropertyChangeListener {
 		if(array.size() > 0) {
 			JsonObject message = new JsonObject();
 			message.put(IdMap.UPDATE, array);
-			this.map.notifyUpdate(new SimpleMapEvent(IdMap.NEW, map, IdMap.UPDATE).with(message));
+			this.map.notify(new SimpleMapEvent(IdMap.NEW, map, IdMap.UPDATE).with(message));
 		}
 
 		this.suspendIdList = null;
@@ -152,8 +150,8 @@ public class UpdateListenerJson implements PropertyChangeListener {
 		}
 
 		JsonObject jsonObject = new JsonObject()
-		.withValue(JsonIdMap.ID, this.map.getId(source))
-		.withValue(JsonIdMap.CLASS, source.getClass().getName());
+		.withValue(IdMap.ID, this.map.getId(source))
+		.withValue(IdMap.CLASS, source.getClass().getName());
 
 		if (oldValue != null) {
 			creatorClass = this.map.getCreatorClass(oldValue);
@@ -163,7 +161,7 @@ public class UpdateListenerJson implements PropertyChangeListener {
 				String oldId = this.map.getId(oldValue);
 				if (oldId != null) {
 					child.put(propertyName,
-							new JsonObject().withValue(JsonIdMap.ID, oldId));
+							new JsonObject().withValue(IdMap.ID, oldId));
 				}
 			} else {
 				child.put(propertyName, oldValue);
@@ -179,8 +177,8 @@ public class UpdateListenerJson implements PropertyChangeListener {
 				String key = this.map.getKey(newValue);
 				if (key != null) {
 					JsonObject item = new JsonObject()
-							.withValue(JsonIdMap.ID, key)
-							.withValue(JsonIdMap.CLASS, newValue.getClass().getName());
+							.withValue(IdMap.ID, key)
+							.withValue(IdMap.CLASS, newValue.getClass().getName());
 					child.put(propertyName, item);
 				} else {
 					JsonObject item = this.map.toJsonObject(newValue,
@@ -197,10 +195,10 @@ public class UpdateListenerJson implements PropertyChangeListener {
 			jsonObject.put(IdMap.UPDATE, child);
 		}
 		if (this.map.getCounter().getPrio() != null) {
-			jsonObject.put(IdMap.PRIO, this.map.getCounter().getPrio());
+			jsonObject.put(Filter.PRIO, this.map.getCounter().getPrio());
 		}
 		if (this.suspendIdList == null) {
-			this.map.notifyUpdate(new SimpleMapEvent(evt, IdMap.NEW, map, jsonObject));
+			this.map.notify(new SimpleMapEvent(evt, IdMap.NEW, map, jsonObject));
 		}
 	}
 
@@ -228,14 +226,14 @@ public class UpdateListenerJson implements PropertyChangeListener {
 			return null;
 		}
 
-		String id = updateMessage.getString(JsonIdMap.ID);
-		JsonObject remove = (JsonObject) updateMessage.get(JsonIdMap.REMOVE);
-		JsonObject update = (JsonObject) updateMessage.get(JsonIdMap.UPDATE);
-		Object prio = updateMessage.get(JsonIdMap.PRIO);
+		String id = updateMessage.getString(IdMap.ID);
+		JsonObject remove = (JsonObject) updateMessage.get(IdMap.REMOVE);
+		JsonObject update = (JsonObject) updateMessage.get(IdMap.UPDATE);
+		Object prio = updateMessage.get(Filter.PRIO);
 		Object masterObj = this.map.getObject(id);
 		if (masterObj == null)
 		{
-		   String masterObjClassName = (String) updateMessage.get(JsonIdMap.CLASS);
+		   String masterObjClassName = (String) updateMessage.get(IdMap.CLASS);
 
 		   if (masterObjClassName != null)
 		   {
@@ -270,7 +268,7 @@ public class UpdateListenerJson implements PropertyChangeListener {
 					// ERROR
 					if (checkPrio(prio)) {
 						return setValue(creator, masterObj, key,
-								update.get(key), IdMap.COLLISION);
+								update.get(key), Filter.COLLISION);
 					}
 				}
 			}
@@ -302,7 +300,7 @@ public class UpdateListenerJson implements PropertyChangeListener {
 				if (removeJsonObject != null
 						&& removeJsonObject instanceof JsonObject) {
 					JsonObject json = (JsonObject) removeJsonObject;
-					this.map.notifyUpdate(new SimpleMapEvent(IdMap.REMOVE, map, key, this.map.decode(json), null).with(json).withModelItem(masterObj));
+					this.map.notify(new SimpleMapEvent(IdMap.REMOVE, map, key, this.map.decode(json), null).with(json).withModelItem(masterObj));
 				}
 			}
 			return masterObj;
@@ -319,12 +317,12 @@ public class UpdateListenerJson implements PropertyChangeListener {
 					setValue(creator, masterObj, key, newValue,
 							IdMap.UPDATE);
 					
-					this.map.notifyUpdate(new SimpleMapEvent(IdMap.UPDATE, map, key, oldValue, newValue).with(update).withModelItem(masterObj));
+					this.map.notify(new SimpleMapEvent(IdMap.UPDATE, map, key, oldValue, newValue).with(update).withModelItem(masterObj));
 				} else if (checkPrio(prio)) {
 					Object newValue = update.get(key);
 					setValue(creator, masterObj, key, newValue,
 							IdMap.UPDATE);
-					this.map.notifyUpdate(new SimpleMapEvent(IdMap.UPDATE, map, key, oldValue, newValue).with(update).withModelItem(masterObj));
+					this.map.notify(new SimpleMapEvent(IdMap.UPDATE, map, key, oldValue, newValue).with(update).withModelItem(masterObj));
 				}
 			}
 			return masterObj;
@@ -350,7 +348,7 @@ public class UpdateListenerJson implements PropertyChangeListener {
 			if (oldValue instanceof JsonObject) {
 				// GLAUB ICH MAL
 				String oldId = (String) ((JsonObject) oldValue)
-						.get(JsonIdMap.ID);
+						.get(IdMap.ID);
 				return oldId.equals(this.map.getId(value));
 			} else if (oldValue.equals(value)) {
 				return true;
@@ -402,13 +400,13 @@ public class UpdateListenerJson implements PropertyChangeListener {
 			Object value = this.map.decode(json);
 			if (value != null) {
 				creator.setValue(element, key, value, typ);
-				if(this.map.notifyUpdate(new SimpleMapEvent(typ, map, key, null, value).with(json).withModelItem(element))){
+				if(this.map.notify(new SimpleMapEvent(typ, map, key, null, value).with(json).withModelItem(element))){
 					return element;
 				}
 			}
 		} else {
 			creator.setValue(element, key, newValue, typ);
-			if(this.map.notifyUpdate(new SimpleMapEvent(typ, map, key, null, newValue).withModelItem(element))){
+			if(this.map.notify(new SimpleMapEvent(typ, map, key, null, newValue).withModelItem(element))){
 				return element;
 			}
 		}
@@ -422,21 +420,21 @@ public class UpdateListenerJson implements PropertyChangeListener {
 	 *			the message
 	 */
 	private void countMessage(JsonObject message, ArrayList<String> classCounts, SimpleKeyValueList<String, Object> gc) {
-		if (message.has(JsonIdMap.ID)) {
-			String id = (String) message.get(JsonIdMap.ID);
+		if (message.has(IdMap.ID)) {
+			String id = (String) message.get(IdMap.ID);
 			if (gc.containsKey(id)) {
 				gc.put(id, (Integer) gc.getValue(id) + 1);
 			} else {
 				gc.put(id, 1);
 			}
-			if (message.has(JsonIdMap.CLASS)) {
+			if (message.has(IdMap.CLASS)) {
 				if (classCounts.contains(id)) {
 					return;
 				}
 				classCounts.add(id);
 				// Its a new Object
 				JsonObject props = (JsonObject) message
-						.get(JsonIdMap.JSON_PROPS);
+						.get(JsonTokener.PROPS);
 				for (int i = 0; i < props.size(); i++) {
 					if (props.getValueByIndex(i) instanceof JsonObject) {
 						countMessage((JsonObject) props.getValueByIndex(i), classCounts, gc);

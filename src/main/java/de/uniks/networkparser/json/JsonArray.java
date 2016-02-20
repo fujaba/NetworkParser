@@ -24,6 +24,7 @@ package de.uniks.networkparser.json;
 import java.util.Iterator;
 
 import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -267,8 +268,8 @@ public class JsonArray extends SortedList<Object> implements BaseItem, EntityLis
 		for (Object item : this) {
 			if (item instanceof JsonObject) {
 				JsonObject json = (JsonObject) item;
-				if (json.has(JsonIdMap.ID)
-						&& json.getString(JsonIdMap.ID).equals(id)) {
+				if (json.has(IdMap.ID)
+						&& json.getString(IdMap.ID).equals(id)) {
 					return json;
 				}
 			}

@@ -5,9 +5,9 @@ import java.beans.PropertyChangeEvent;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.UpdateListener;
-import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.logic.SimpleMapEvent;
 import de.uniks.networkparser.test.model.Apple;
 import de.uniks.networkparser.test.model.AppleTree;
@@ -20,7 +20,7 @@ public class FilterAtomar {
 	public void testFilter() {
 		AppleTree tree=new AppleTree();
 
-		JsonIdMap map = new JsonIdMap();
+		IdMap map = new IdMap();
 		map.with(new AppleTreeCreator());
 		map.with(new AppleCreator());
 
@@ -32,7 +32,7 @@ public class FilterAtomar {
 			}
 		};
 //		map.with(listener);
-		map.encode(tree);
+		map.toJsonObject(tree);
 		map.getUpdateExecuter().withAtomarFilter(listener);
 		map.with(new UpdateListener() {
 			@Override

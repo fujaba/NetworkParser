@@ -1,7 +1,7 @@
 package de.uniks.networkparser.parser.excel;
 import java.nio.charset.Charset;
+import java.util.Comparator;
 
-import de.uniks.networkparser.IdMap;
 /*
 NetworkParser
 Copyright (c) 2011 - 2016, Stefan Lindel
@@ -25,6 +25,7 @@ import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.xml.XMLTokener;
 
 public class ExcelCell implements SendableEntityCreatorTag, EntityList{
 	public static final String TAG="c";
@@ -78,7 +79,7 @@ public class ExcelCell implements SendableEntityCreatorTag, EntityList{
 			((ExcelCell)entity).withReferenz(Pos.valueOf(""+value));
 			return true;
 		}
-		if(IdMap.CHILDREN.equals(type)) {
+		if(XMLTokener.CHILDREN.equals(type)) {
 			((ExcelCell)entity).with(value);
 			return true;
 		}
@@ -242,5 +243,15 @@ public class ExcelCell implements SendableEntityCreatorTag, EntityList{
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public boolean isComparator() {
+		return false;
+	}
+
+	@Override
+	public Comparator<Object> comparator() {
+		return null;
 	}
 }

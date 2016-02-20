@@ -1,9 +1,9 @@
 package de.uniks.networkparser.xml.util;
 
-import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.xml.XMLEntity;
+import de.uniks.networkparser.xml.XMLTokener;
 /**
  * @author Stefan Creator for XML Entity.
  */
@@ -56,10 +56,10 @@ public class XMLEntityCreator implements SendableEntityCreatorTag {
 			return true;
 		}
 		if (XMLEntity.PROPERTY_VALUE.equalsIgnoreCase(attribute)) {
-			((XMLEntity) entity).withValueItem("" + value);
+			((XMLEntity) entity).setValueItem("" + value);
 			return true;
 		}
-		if(IdMap.CHILDREN.equals(type) && value instanceof EntityList){
+		if(XMLTokener.CHILDREN.equals(type) && value instanceof EntityList){
 			((XMLEntity) entity).withChild((EntityList)value);
 		}else if(attribute != null && attribute.isEmpty() == false) {
 			((XMLEntity) entity).add(attribute, value);

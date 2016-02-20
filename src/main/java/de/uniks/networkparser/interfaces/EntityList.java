@@ -1,5 +1,7 @@
 package de.uniks.networkparser.interfaces;
 
+import java.util.Comparator;
+
 import de.uniks.networkparser.list.SimpleList;
 
 public interface EntityList extends BaseItem{
@@ -19,4 +21,8 @@ public interface EntityList extends BaseItem{
 	 *		 brace)</small>.
 	 */
 	public String toString(int indentFactor);
+	
+	public boolean isComparator();
+	
+	public Comparator<Object> comparator();
 }

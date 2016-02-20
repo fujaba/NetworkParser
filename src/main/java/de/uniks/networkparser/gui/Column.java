@@ -25,6 +25,7 @@ import java.util.Comparator;
 
 import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.EntityValueFactory;
+import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.event.CellHandler;
 import de.uniks.networkparser.event.Style;
@@ -378,7 +379,7 @@ public class Column implements SendableEntityCreatorNoIndex {
 			if(value instanceof Style) {
 				Style style = (Style) value;
 				Style oldStyle = that.getStyle();
-				if(type==IdMap.MERGE && oldStyle != null){
+				if(type==Filter.MERGE && oldStyle != null){
 					for(String prop : style.getProperties()) {
 						if(oldStyle.getValue(oldStyle, prop) == null) {
 							oldStyle.setValue(oldStyle, prop, style.getValue(style, prop), IdMap.NEW);
