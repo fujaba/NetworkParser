@@ -435,6 +435,12 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		this.start += pos;
 		return this;
 	}
+	
+	public CharacterBuffer trimStart(int pos) {
+		this.start += pos;
+		this.length -= pos;
+		return this;
+	}
 
 	public CharacterBuffer trim() {
 		while (length>0 && (buffer[length +start - 1] <= SPACE)) {
@@ -654,6 +660,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 
 	public void setNextString(CharSequence property, int pos) {
 		this.withLength(pos);
+		this.start = 0;
 		this.with(property);
 	}
 }

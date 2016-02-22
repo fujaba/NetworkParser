@@ -4,18 +4,18 @@ import static org.junit.Assert.*;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.test.model.FIXMLMessage;
 import de.uniks.networkparser.test.model.util.ApplicationMessageCreator;
 import de.uniks.networkparser.test.model.util.FIXMLMessageCreator;
 import de.uniks.networkparser.xml.XMLEntity;
-import de.uniks.networkparser.xml.XMLIdMap;
 
 public class XMLTCC2014Test extends IOClasses{
 	@Test
 	public void testPattern() {
 		String XMLText = readFile("test3.xml").toString();
 
-		XMLIdMap map= new XMLIdMap();
+		IdMap map= new IdMap();
 		map.with(new FIXMLMessageCreator());
 		map.with(new ApplicationMessageCreator());
 //		map.withCreator(new de.kassel.ttc2014.fixml.test3.creators.OrderCreator());

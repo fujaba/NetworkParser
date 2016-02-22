@@ -19,6 +19,7 @@ distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, e
 See the Licence for the specific language governing permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.gui.Pos;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -27,7 +28,6 @@ import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.XMLEntity;
-import de.uniks.networkparser.xml.XMLIdMap;
 import de.uniks.networkparser.xml.XMLTokener;
 import de.uniks.networkparser.xml.util.XMLEntityCreator;
 
@@ -55,10 +55,11 @@ public class ExcelParser {
 		SimpleKeyValueList<String, ExcelCell> cells = new SimpleKeyValueList<String, ExcelCell>();
 		SimpleKeyValueList<String, String> mergeCellPos = new SimpleKeyValueList<String, String>();
 
-		XMLIdMap map = new XMLIdMap();
+		IdMap map = new IdMap();
 		map.with(new ExcelCell());
 		XMLTokener tokener = new XMLTokener().withBuffer(sheetFile.toString());
-		XMLEntity sheet = (XMLEntity) map.decode(tokener, new XMLEntityCreator());
+		tokener.withDefaultFactory(new XMLEntityCreator());
+		XMLEntity sheet = (XMLEntity) map.decode(tokener);
 		XMLEntity sharedStrings = null;
 		if (stringFile != null) {
 			sharedStrings = (XMLEntity) map.decode(stringFile.toString());

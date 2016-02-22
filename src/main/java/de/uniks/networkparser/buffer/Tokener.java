@@ -5,16 +5,15 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
-import de.uniks.networkparser.list.AbstractList;
-import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 
 public class Tokener implements BufferItem{
-	//FIXME REMVOE
+	//FIXME REMOVE
 	protected NetworkParserLog logger = new NetworkParserLog();
 
-	public void parseToEntity(SimpleKeyValueList<?, ?> entity) {}
-	public void parseToEntity(AbstractList<?> entityList) {}
+	public void parseToEntity(Entity entity) {}
+	
+	public void parseToEntity(EntityList entity) {}
 
 	/** BUFFER */
 	protected Buffer buffer;

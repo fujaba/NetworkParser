@@ -113,7 +113,7 @@ public class JsonTest extends IOClasses{
 		assoc.addPassword("Flo", "23");
 		assoc.addAssoc(assoc);
 		JsonObject text=map.toJsonObject(assoc);
-		String master="{\"class\":\"de.uniks.networkparser.test.model.FullAssocs\",\"id\":\"J1.F1\",\"prop\":{\"passwords\":[{\"class\":\"de.uniks.networkparser.event.ObjectMapEntry\",\"key\":\"Flo\",\"value\":\"23\"},{\"class\":\"de.uniks.networkparser.event.ObjectMapEntry\",\"key\":\"Stefan\",\"value\":\"42\"}],\"fullmap\":[{\"class\":\"de.uniks.networkparser.event.ObjectMapEntry\",\"key\":{\"id\":\"J1.F1\",\"class\":\"de.uniks.networkparser.test.model.FullAssocs\"},\"value\":{\"id\":\"J1.F1\",\"class\":\"de.uniks.networkparser.test.model.FullAssocs\"}}]}}";
+		String master="{\"class\":\"de.uniks.networkparser.test.model.FullAssocs\",\"id\":\"J1.F1\",\"prop\":{\"passwords\":[{\"class\":\"de.uniks.networkparser.event.ObjectMapEntry\",\"key\":\"Flo\",\"value\":\"23\"},{\"class\":\"de.uniks.networkparser.event.ObjectMapEntry\",\"key\":\"Stefan\",\"value\":\"42\"}],\"fullmap\":[{\"class\":\"de.uniks.networkparser.event.ObjectMapEntry\",\"key\":{\"class\":\"de.uniks.networkparser.test.model.FullAssocs\",\"id\":\"J1.F1\"},\"value\":{\"class\":\"de.uniks.networkparser.test.model.FullAssocs\",\"id\":\"J1.F1\"}}]}}";
 		assertEquals(master, text.toString());
 
 		FullAssocs newAssoc = (FullAssocs) map.decode(new JsonObject().withValue(text.toString()));
@@ -302,9 +302,9 @@ public class JsonTest extends IOClasses{
 //		]
 
 		String reference = "[" +
-				"{\"id\":\"J1.S1\",\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"prop\":{\"number\":1,\"child\":{\"id\":\"J1.S2\",\"class\":\"de.uniks.networkparser.test.model.SortedMsg\"}}}," +
-				"{\"id\":\"J1.S3\",\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"prop\":{\"number\":2,\"parent\":{\"id\":\"J1.S2\",\"class\":\"de.uniks.networkparser.test.model.SortedMsg\"}}}," +
-				"{\"id\":\"J1.S2\",\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"prop\":{\"number\":3,\"child\":{\"id\":\"J1.S3\",\"class\":\"de.uniks.networkparser.test.model.SortedMsg\"},\"parent\":{\"id\":\"J1.S1\",\"class\":\"de.uniks.networkparser.test.model.SortedMsg\"}}}" +
+				"{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"J1.S1\",\"prop\":{\"number\":1,\"child\":{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"J1.S2\"}}}," +
+				"{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"J1.S3\",\"prop\":{\"number\":2,\"parent\":{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"J1.S2\"}}}," +
+				"{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"J1.S2\",\"prop\":{\"number\":3,\"child\":{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"J1.S3\"},\"parent\":{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"J1.S1\"}}}" +
 			"]";
 
 		assertEquals(reference, jsonArray.toString());
@@ -396,7 +396,7 @@ public class JsonTest extends IOClasses{
 
 
 		// Array
-		reference="[\r\n  {\r\n    \"id\":\"J1.C1\",\r\n    \"class\":\"de.uniks.networkparser.test.model.ChatMessage\",\r\n    \"prop\":{\r\n      \"sender\":\"Stefan Lindel\",\r\n      \"time\":null,\r\n      \"txt\":\"Dies ist eine Testnachricht\",\r\n      \"count\":0,\r\n      \"activ\":false\r\n    }\r\n  }\r\n]";
+		reference="[\r\n  {\r\n    \"class\":\"de.uniks.networkparser.test.model.ChatMessage\",\r\n    \"id\":\"J1.C1\",\r\n    \"prop\":{\r\n      \"sender\":\"Stefan Lindel\",\r\n      \"time\":null,\r\n      \"txt\":\"Dies ist eine Testnachricht\",\r\n      \"count\":0,\r\n      \"activ\":false\r\n    }\r\n  }\r\n]";
 		JsonArray actualArray=jsonMap.toJsonArray(chatMessage, new Filter().withFull(true));
 		assertEquals("WERT Vergleichen", reference, actualArray.toString(2));
 	}
@@ -436,8 +436,8 @@ public class JsonTest extends IOClasses{
 		FullMessage msg = new FullMessage(42, "Hallo Welt");
 		msg.setLocation(new Location(42, 23));
 		map.with(new RestCounter("http://myname.org/rest/"));
-		JsonObject json = map.toJsonObject(msg, new Filter().withConvertable(new Deep().withDeep(0)));
-		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.FullMessage\",\"id\":\"http://myname.org/rest/de.uniks.networkparser.test.model.fullmessage/1\",\"prop\":{\"txt\":\"Hallo Welt\",\"number\":42,\"location\":{\"id\":\"http://myname.org/rest/de.uniks.networkparser.test.model.location/2\",\"class\":\"de.uniks.networkparser.test.model.Location\"}}}", json.toString());
+		JsonObject json = map.toJsonObject(msg, new Filter().withConvertable(Deep.value(0)));
+		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.FullMessage\",\"id\":\"http://myname.org/rest/de.uniks.networkparser.test.model.fullmessage/1\",\"prop\":{\"txt\":\"Hallo Welt\",\"number\":42,\"location\":{\"class\":\"de.uniks.networkparser.test.model.Location\",\"id\":\"http://myname.org/rest/de.uniks.networkparser.test.model.location/2\"}}}", json.toString());
 	}
 
 
@@ -478,10 +478,10 @@ public class JsonTest extends IOClasses{
 
 		IdMap map= new IdMap();
 		map.with(new SortedMsgCreator());
-		String ref="{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"J1.S1\",\"prop\":{\"number\":1,\"child\":{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"J1.S2\",\"prop\":{\"number\":2,\"parent\":{\"id\":\"J1.S1\",\"class\":\"de.uniks.networkparser.test.model.SortedMsg\"}}}}}";
+		String ref="{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"J1.S1\",\"prop\":{\"number\":1,\"child\":{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"J1.S2\",\"prop\":{\"number\":2,\"parent\":{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"J1.S1\"}}}}}";
 		assertEquals(ref, map.toJsonObject(parent).toString());
 
-		ref = "{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"number\":1,\"child\":{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"number\":2,\"parent\":{\"id\":\"J1.S1\",\"class\":\"de.uniks.networkparser.test.model.SortedMsg\"}}}";
+		ref = "{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"number\":1,\"child\":{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"number\":2,\"parent\":{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"J1.S1\"}}}";
 		Filter filter = new Filter().withIdFilter(BooleanCondition.value(false));
 		assertEquals(ref, map.toJsonObject(parent, filter).toString());
 	}
@@ -534,7 +534,7 @@ public class JsonTest extends IOClasses{
 		map.with(new AppleCreator());
 
 		// ARRAY
-		Assert.assertEquals("[{\"id\":\"J1.A1\",\"class\":\"de.uniks.networkparser.test.model.Apple\",\"prop\":{\"pass\":null,\"x\":0,\"y\":0,\"owner\":null}}]", map.toJsonArray(apple, new Filter().withFull(true)).toString());
+		Assert.assertEquals("[{\"class\":\"de.uniks.networkparser.test.model.Apple\",\"id\":\"J1.A1\",\"prop\":{\"pass\":null,\"x\":0,\"y\":0,\"owner\":null}}]", map.toJsonArray(apple, new Filter().withFull(true)).toString());
 
 		// OBJECT
 		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.Apple\",\"id\":\"J1.A1\",\"prop\":{\"pass\":null,\"x\":0,\"y\":0,\"owner\":null}}", map.toJsonObject(apple, new Filter().withFull(true)).toString());

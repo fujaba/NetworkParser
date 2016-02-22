@@ -220,8 +220,9 @@ public class ByteIdMap extends IdMap {
 		if (creator == null) {
 			return null;
 		}
-		filter = this.filter.newInstance(filter);
-		int id = getIndexVisitedObjects(filter, entity);
+//FIXME		filter = this.filter.newInstance(filter);
+//		int id = getIndexVisitedObjects(filter, entity);
+		int id=0;
 		if (id >= 0) {
 			// Must be a assoc
 			if (id <= Byte.MAX_VALUE) {
@@ -246,7 +247,7 @@ public class ByteIdMap extends IdMap {
 			addClazzTyp(msg, reference.getClass().getName(), filter);
 		}
 
-		with(filter, entity);
+//		with(filter, entity);
 		String[] properties = creator.getProperties();
 		if (properties != null) {
 			Object referenceObj = creator.getSendableInstance(true);
@@ -386,11 +387,11 @@ public class ByteIdMap extends IdMap {
 			return null;
 		}
 		if (buffer.remaining() < 1) {
-			if (logger.error(this, "decode",
-					NetworkParserLog.ERROR_TYP_PARSING, buffer)) {
-				throw new RuntimeException("DecodeExpeption - Remaining:"
-						+ buffer.remaining());
-			}
+//			if (logger.error(this, "decode",
+//					NetworkParserLog.ERROR_TYP_PARSING, buffer)) {
+//				throw new RuntimeException("DecodeExpeption - Remaining:"
+//						+ buffer.remaining());
+//			}
 			return null;
 		}
 		return decodeValue(buffer, buffer.length());
@@ -524,11 +525,13 @@ public class ByteIdMap extends IdMap {
 		}
 		if (typ == ByteIdMap.DATATYPE_ASSOC) {
 			int pos = buffer.getByte();
-			return getVisitedObjects(filter, pos);
+			return null;
+//FIXME			return getVisitedObjects(filter, pos);
 		}
 		if (typ == ByteIdMap.DATATYPE_ASSOCLONG) {
 			int pos = buffer.getInt();
-			return getVisitedObjects(filter, pos);
+			return null;
+//			return getVisitedObjects(filter, pos);
 		}
 		if (ByteUtil.isGroup(typ)) {
 			byte subgroup = ByteUtil.getSubGroup(typ);

@@ -81,7 +81,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	 */
 	public XMLEntity withValue(Tokener tokener) {
 		if(tokener!=null) {
-			tokener.parseToEntity(this);
+			tokener.parseToEntity((Entity)this);
 		}
 		return this;
 	}

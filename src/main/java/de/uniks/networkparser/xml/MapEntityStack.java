@@ -13,8 +13,6 @@ public class MapEntityStack {
 	private SimpleList<String> tags = new SimpleList<String>();
 
 	private SimpleKeyValueList<String, SimpleSet<String>> childProperties= new SimpleKeyValueList<String, SimpleSet<String>>();
-	
-	private SendableEntityCreator defaultFactory;
 
 	/** Variable of AllowQuote. */
 //	private boolean isAllowQuote;
@@ -89,17 +87,17 @@ public class MapEntityStack {
 				if(pos >= 0 ) {
 					Object entity = stack.getKeyByIndex(pos);
 					SendableEntityCreator creator = stack.getValueByIndex(pos);
-					creator.setValue(entity, ChildKey, value, XMLIdMap.NEW);
+					creator.setValue(entity, ChildKey, value, IdMap.NEW);
 				}
 			}
 		}
 	}
 	
 	private int getEntityPos(String entity) {
-		int start=entity.lastIndexOf(XMLIdMap.ENTITYSPLITTER);
+		int start=entity.lastIndexOf(IdMap.ENTITYSPLITTER);
 		int pos = this.tags.size() - 1;
 		for(int end=start-1;end>=0;end --) {
-			if(entity.charAt(end) ==XMLIdMap.ENTITYSPLITTER) {
+			if(entity.charAt(end) ==IdMap.ENTITYSPLITTER) {
 				String item = entity.substring(end+1, start);
 				String tag = tags.get(pos);
 				if(tag == null || tag.equals(item) == false) {
@@ -117,22 +115,6 @@ public class MapEntityStack {
 			return this.tags.get(this.tags.size() - 1);
 		}
 		return null;
-	}
-
-	/**
-	 * @return the defaultFactory
-	 */
-	public SendableEntityCreator getDefaultFactory() {
-		return defaultFactory;
-	}
-
-	/**
-	 * @param defaultFactory the defaultFactory to set
-	 * @return ThisComponent
-	 */
-	public MapEntityStack withDefaultFactory(SendableEntityCreator defaultFactory) {
-		this.defaultFactory = defaultFactory;
-		return this;
 	}
 
 //FIXME REMOVE	/**

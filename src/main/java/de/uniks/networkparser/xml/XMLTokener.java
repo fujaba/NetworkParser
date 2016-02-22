@@ -14,7 +14,6 @@ import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
-import de.uniks.networkparser.interfaces.Grammar;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.list.AbstractList;
@@ -37,6 +36,8 @@ public class XMLTokener extends Tokener {
 
 	/** The Constant ITEMSTART. */
 	public static final char ITEMSTART = '<';
+	
+	private SendableEntityCreator defaultFactory;
 	
 	/** The stopwords. */
 	private ArrayList<String> stopwords = new ArrayList<String>();
@@ -75,10 +76,10 @@ public class XMLTokener extends Tokener {
 		case '<':
 //			back();
 			BaseItem element = creator.getNewList(false);
-			if (element instanceof SimpleKeyValueList<?, ?>) {
-				parseToEntity((SimpleKeyValueList<?, ?>) element);
-			} else if (element instanceof SimpleList<?>) {
-				parseToEntity((SimpleList<?>) element);
+//			if (element instanceof EntityList) {
+//				parseToEntity((EntityList) element);
+			if (element instanceof Entity) {
+				parseToEntity((Entity) element);
 			}
 			return element;
 		default:
@@ -94,7 +95,7 @@ public class XMLTokener extends Tokener {
 	}
 
 	@Override
-	public void parseToEntity(SimpleKeyValueList<?, ?> entity) {
+	public void parseToEntity(Entity entity) {
 		//FIXME CHECK OR REMOVE
 		boolean isAllowQuote = false;
 		char c = getCurrentChar();
@@ -142,7 +143,7 @@ public class XMLTokener extends Tokener {
 					buffer.withLookAHead(c);
 					if (getCurrentChar() == '<') {
 						child = (XMLEntity) xmlEntity.getNewList(true);
-						parseToEntity(child);
+						parseToEntity((Entity)child);
 						xmlEntity.with(child);
 						skip();
 					} else {
@@ -189,11 +190,6 @@ public class XMLTokener extends Tokener {
 		String item = tag.toString();
 		this.buffer.withLookAHead(item);
 		return item;
-	}
-
-	@Override
-	public void parseToEntity(AbstractList<?> entityList) {
-		// Do Nothing
 	}
 
 	public XMLTokener withBuffer(String value) {
@@ -407,7 +403,7 @@ public class XMLTokener extends Tokener {
 			}
 		}
 		MapEntityStack stack = map.getStack();
-		SendableEntityCreator defaultCreator = stack.getDefaultFactory();
+		SendableEntityCreator defaultCreator = getDefaultFactory();
 		SendableEntityCreatorTag creator;
 		if(defaultCreator instanceof SendableEntityCreatorTag) { 
 			creator = (SendableEntityCreatorTag) defaultCreator;
@@ -476,5 +472,21 @@ public class XMLTokener extends Tokener {
 	@Override
 	public Object transformValue(Object value, BaseItem reference) {
 		return EntityUtil.valueToString(value, true, reference, simpleConverter);
+	}
+	
+	/**
+	 * @return the defaultFactory
+	 */
+	public SendableEntityCreator getDefaultFactory() {
+		return defaultFactory;
+	}
+
+	/**
+	 * @param defaultFactory the defaultFactory to set
+	 * @return ThisComponent
+	 */
+	public XMLTokener withDefaultFactory(SendableEntityCreator defaultFactory) {
+		this.defaultFactory = defaultFactory;
+		return this;
 	}
 }

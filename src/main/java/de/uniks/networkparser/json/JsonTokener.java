@@ -18,7 +18,6 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorWrapper;
 import de.uniks.networkparser.json.util.JsonObjectCreator;
-import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.logic.SimpleMapEvent;
 import de.uniks.networkparser.xml.XMLEntity;
@@ -29,7 +28,7 @@ public class JsonTokener extends Tokener {
 	
 	public final static String STOPCHARS = ",]}/\\\"[{;=# ";
 
-	public void parseToEntity(AbstractList<?> entityList) {
+	public void parseToEntity(EntityList entityList) {
 		char c = nextClean(true);
 		if (c != '[') {
 			if (logger.error(this, "parseToEntity",
@@ -85,14 +84,14 @@ public class JsonTokener extends Tokener {
 			return nextString(new CharacterBuffer(), allowQuote, true, '"');
 		case '{':
 			BaseItem element = creator.getNewList(true);
-			if (element instanceof SimpleKeyValueList<?, ?>) {
-				this.parseToEntity((SimpleKeyValueList<?, ?>) element);
+			if (element instanceof Entity ) {
+				this.parseToEntity((Entity) element);
 			}
 			return element;
 		case '[':
 			BaseItem item = creator.getNewList(false);
-			if (item instanceof AbstractList<?>) {
-				this.parseToEntity((AbstractList<?>) item);
+			if (item instanceof EntityList) {
+				this.parseToEntity((EntityList) item);
 			}
 			return item;
 		default:
@@ -101,7 +100,7 @@ public class JsonTokener extends Tokener {
 		return super.nextValue(creator, allowQuote, allowDuppleMarks, stopChar);
 	}
 
-	public void parseToEntity(SimpleKeyValueList<?, ?> entity) {
+	public void parseToEntity(Entity entity) {
 		char c;
 		String key;
 		if (nextClean(true) != '{') {
@@ -148,7 +147,7 @@ public class JsonTokener extends Tokener {
 				return;
 			}
 			c = getChar();
-			entity.withKeyValue(key, nextValue(entity, isQuote, false, stop));
+			entity.put(key, nextValue(entity, isQuote, false, stop));
 		}
 	}
 

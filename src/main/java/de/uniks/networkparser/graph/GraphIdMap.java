@@ -49,8 +49,8 @@ public class GraphIdMap extends IdMap {
 	 * @return the string
 	 */
 	public String parseObject(Object object) {
-		return parse(object,
-				filter.newInstance(new GraphIdMapFilter()).withTyp(OBJECT));
+		//FIXME		return parse(object, filter.newInstance(new GraphIdMapFilter()).withTyp(OBJECT));
+		return null;
 	}
 
 	/**
@@ -61,8 +61,8 @@ public class GraphIdMap extends IdMap {
 	 * @return the string
 	 */
 	public GraphList parsingObject(Object object) {
-		return parsing(object,
-				filter.newInstance(new GraphIdMapFilter()).withTyp(OBJECT));
+		return null;
+//FIXME		return parsing(object, filter.newInstance(new GraphIdMapFilter()).withTyp(OBJECT));
 	}
 
 	/**
@@ -73,8 +73,8 @@ public class GraphIdMap extends IdMap {
 	 * @return the string
 	 */
 	public String parseClass(Object object) {
-		return parse(object, filter.newInstance(new GraphIdMapFilter())
-				.withTyp(CLASS));
+		//FIXME return parse(object, filter.newInstance(new GraphIdMapFilter()).withTyp(CLASS));
+		return null;
 	}
 
 	public String parse(Object object, GraphIdMapFilter filter) {
@@ -151,12 +151,12 @@ public class GraphIdMap extends IdMap {
 		if (item == null) {
 			return;
 		}
-		if (!isPropertyRegard(filter, entity, property, item, deep + 1)) {
-			return;
-		}
-		if (!isConvertable(filter, entity, property, item, deep + 1)) {
-			return;
-		}
+//FIXME		if (!isPropertyRegard(filter, entity, property, item, deep + 1)) {
+//			return;
+//		}
+//		if (!isConvertable(filter, entity, property, item, deep + 1)) {
+//			return;
+//		}
 		SendableEntityCreator valueCreater = getCreatorClass(item);
 		if (valueCreater != null) {
 			Clazz subId = parse(item, filter, list, deep + 1);
@@ -172,14 +172,12 @@ public class GraphIdMap extends IdMap {
 		return;
 	}
 
-	@Override
 	public BaseItem encode(Object value) {
 		GraphList list = new GraphList();
-		parse(value, this.filter.newInstance(new GraphIdMapFilter()), list, 0);
+//		parse(value, this.filter.newInstance(new GraphIdMapFilter()), list, 0);
 		return list;
 	}
 
-	@Override
 	public BaseItem encode(Object value, Filter filter) {
 		GraphList list = new GraphList();
 		if (filter instanceof GraphIdMapFilter) {

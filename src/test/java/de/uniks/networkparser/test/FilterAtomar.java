@@ -49,6 +49,6 @@ public class FilterAtomar {
 		tree.addToHas(apple);
 
 		Assert.assertNotNull(data);
-		Assert.assertEquals("{\"id\":\"J1.A1\",\"class\":\"de.uniks.networkparser.test.model.AppleTree\",\"upd\":{\"has\":{\"class\":\"de.uniks.networkparser.test.model.Apple\",\"id\":\"J1.A2\",\"prop\":{\"x\":23,\"y\":42}}}}", data.toString());
+		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.AppleTree\",\"id\":\"J1.A1\",\"upd\":{\"has\":{\"class\":\"de.uniks.networkparser.test.model.Apple\",\"id\":\"J1.A2\",\"prop\":{\"x\":23,\"y\":42}}}}", data.toString());
 	}
 }

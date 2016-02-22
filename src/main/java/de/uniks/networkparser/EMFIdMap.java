@@ -43,11 +43,10 @@ import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.XMLEntity;
-import de.uniks.networkparser.xml.XMLIdMap;
 import de.uniks.networkparser.xml.XMLTokener;
 import de.uniks.networkparser.xml.util.XMLEntityCreator;
 
-public class EMFIdMap extends XMLIdMap {
+public class EMFIdMap extends IdMap {
 	public static final String ECLASS = "ecore:EClass";
 	public static final String ETYPE = "eType";
 	public static final String EAttribute = "ecore:EAttribute";
@@ -65,7 +64,6 @@ public class EMFIdMap extends XMLIdMap {
 	HashMap<String, Integer> runningNumbers = null;
 	private GraphList model;
 
-	@Override
 	public XMLEntity encode(Object entity) {
 		XMLEntity result = new XMLEntity();
 

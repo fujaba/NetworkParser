@@ -3,34 +3,50 @@ package de.uniks.networkparser.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.beans.PropertyChangeEvent;
 import java.util.Date;
+import java.util.HashSet;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.RestCounter;
 import de.uniks.networkparser.event.util.DateCreator;
-import de.uniks.networkparser.interfaces.UpdateListener;
+import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
+import de.uniks.networkparser.json.JsonTokener;
 import de.uniks.networkparser.logic.BooleanCondition;
-import de.uniks.networkparser.logic.SimpleMapEvent;
+import de.uniks.networkparser.logic.Deep;
 import de.uniks.networkparser.test.model.Apple;
+import de.uniks.networkparser.test.model.ChatMessage;
 import de.uniks.networkparser.test.model.FullAssocs;
+import de.uniks.networkparser.test.model.FullMessage;
+import de.uniks.networkparser.test.model.Location;
 import de.uniks.networkparser.test.model.SortedMsg;
 import de.uniks.networkparser.test.model.util.AppleCreator;
+import de.uniks.networkparser.test.model.util.ChatMessageCreator;
 import de.uniks.networkparser.test.model.util.FullAssocsCreator;
+import de.uniks.networkparser.test.model.util.FullMessageCreator;
+import de.uniks.networkparser.test.model.util.LocationCreator;
 import de.uniks.networkparser.test.model.util.SortedMsgCreator;
 
-public class SimpleTest implements UpdateListener{
-	
-	private IdMap firstMap;
-	private IdMap secondMap;
-	private int z;
-	private SortedMsg firstRoot;
-	protected SortedMsg secondRoot;
+public class SimpleTest {
+	@Test
+	public void testJSONMap(){
+		IdMap map= new IdMap();
+		map.with(new FullAssocsCreator());
+		FullAssocs assoc= new FullAssocs();
+		assoc.addPassword("Stefan", "42");
+		assoc.addPassword("Flo", "23");
+		assoc.addAssoc(assoc);
+		JsonObject text=map.toJsonObject(assoc);
+		String master="{\"class\":\"de.uniks.networkparser.test.model.FullAssocs\",\"id\":\"J1.F1\",\"prop\":{\"passwords\":[{\"class\":\"de.uniks.networkparser.event.ObjectMapEntry\",\"key\":\"Flo\",\"value\":\"23\"},{\"class\":\"de.uniks.networkparser.event.ObjectMapEntry\",\"key\":\"Stefan\",\"value\":\"42\"}],\"fullmap\":[{\"class\":\"de.uniks.networkparser.event.ObjectMapEntry\",\"key\":{\"class\":\"de.uniks.networkparser.test.model.FullAssocs\",\"id\":\"J1.F1\"},\"value\":{\"class\":\"de.uniks.networkparser.test.model.FullAssocs\",\"id\":\"J1.F1\"}}]}}";
+		assertEquals(master, text.toString());
 
+		FullAssocs newAssoc = (FullAssocs) map.decode(new JsonObject().withValue(text.toString()));
+		assertEquals("Passwords", 2, newAssoc.getPasswords().size());
+	}
 //	@Test
 	public void testSimple() {
 		IdMap map = new IdMap();
@@ -39,7 +55,8 @@ public class SimpleTest implements UpdateListener{
 		apple.withX(42);
 		map.with(new AppleCreator());
 		
-		System.out.println(map.toJsonObject(apple).toString());
+//		System.out.println(map.toJsonObject(apple).toString());
+		System.out.println(map.toJsonArray(apple).toString());
 	}
 	
 //	@Test
@@ -104,70 +121,27 @@ public class SimpleTest implements UpdateListener{
 		assertEquals(ref, map.toJsonObject(parent, filter).toString());
 	}
 	
-	@Test
-	public void testModel(){
+//	@Test
+	public void testFull(){
+		ChatMessage chatMessage= new ChatMessage();
+		chatMessage.setText("Dies ist eine Testnachricht");
+		chatMessage.setSender("Stefan Lindel");
+		IdMap jsonMap = new IdMap();
+		jsonMap.with(new ChatMessageCreator());
 
-		IdMap firstMap = new IdMap();
-//		firstMap.with(this);
+		String reference="{\r\n  \"class\":\"de.uniks.networkparser.test.model.ChatMessage\",\r\n  \"id\":\"J1.C1\",\r\n  \"prop\":{\r\n    \"sender\":\"Stefan Lindel\",\r\n    \"txt\":\"Dies ist eine Testnachricht\"\r\n  }\r\n}";
+		JsonObject actual=jsonMap.toJsonObject(chatMessage);
+		assertEquals("WERT Vergleichen", reference, actual.toString(2));
 
-		firstMap.with(new SortedMsgCreator());
+		reference="{\r\n  \"class\":\"de.uniks.networkparser.test.model.ChatMessage\",\r\n  \"id\":\"J1.C1\",\r\n  \"prop\":{\r\n    \"sender\":\"Stefan Lindel\",\r\n    \"time\":null,\r\n    \"txt\":\"Dies ist eine Testnachricht\",\r\n    \"count\":0,\r\n    \"activ\":false\r\n  }\r\n}";
+		actual=jsonMap.toJsonObject(chatMessage, new Filter().withFull(true));
+		assertEquals("WERT Vergleichen", reference, actual.toString(2));
 
-		IdMap secondMap = new IdMap();
-		secondMap.with(new SortedMsgCreator());
 
-		SortedMsg firstRoot = new SortedMsg();
-		firstRoot.setNumber(1);
-
-		SortedMsg second= new SortedMsg();
-		second.setNumber(2);
-		firstRoot.setChild(second);
-
-		firstMap.garbageCollection(firstRoot);
-		
-//		update();
-		new SimpleMapEvent(IdMap.NEW, firstMap, null).with(firstMap.toJsonObject(firstRoot));
-
-		SortedMsg third= new SortedMsg();
-		third.setNumber(4);
-		third.setParent(second);
-		third.setNumber(42);
-		second.setChild(null);
-	}
-	
-	@Override
-	public boolean update(PropertyChangeEvent event) {
-		SimpleMapEvent simpleEvent = (SimpleMapEvent) event;
-		
-		JsonObject jsonObject = (JsonObject) simpleEvent.getEntity();
-		Object result=secondMap.decode(jsonObject);
-		if(z==0){
-			z++;
-			assertEquals(2, secondMap.size());
-			secondRoot=(SortedMsg) secondMap.getObject(firstMap.getKey(firstRoot));
-		} else if(z==1){
-			Assert.assertEquals("===== add =====", 251, jsonObject.toString().length());
-			assertEquals(3, secondMap.size());
-			z++;
-		} else if(z==3){
-			Assert.assertEquals("===== rem =====", "{\"id\":\"J1.S3\",\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"rem\":{\"number\":4},\"upd\":{\"number\":42}}", jsonObject.toString());
-			z++;
-			assertEquals(3, secondMap.size());
-		} else if(z==4){
-			Assert.assertEquals("===== rem =====", "{\"id\":\"J1.S2\",\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"rem\":{\"child\":{\"id\":\"J1.S3\"}}}", jsonObject.toString());
-			z++;
-			assertEquals(3, secondMap.size());
-		}
-		if(z>4){
-			Assert.assertEquals("===== FIRST =====",385, firstMap.toJsonObject(firstRoot).toString(2).length());
-			//LAST
-			Object secondRoot = secondMap.getObject("J1.S1");
-			Assert.assertEquals("===== SECOND =====",385, secondMap.toJsonObject(secondRoot).toString(2).length());
-			Assert.assertEquals("===== SIZE FIRST=====",3, firstMap.size());
-			Assert.assertEquals("===== SIZE SECOND=====",3, secondMap.size());
-			secondMap.garbageCollection(secondRoot);
-			Assert.assertEquals("===== SIZE SECOND=====",2, secondMap.size());
-		}
-		return result!=null;
-	}
-	
+		// Array
+		reference="[\r\n  {\r\n    \"id\":\"J1.C1\",\r\n    \"class\":\"de.uniks.networkparser.test.model.ChatMessage\",\r\n    \"prop\":{\r\n      \"sender\":\"Stefan Lindel\",\r\n      \"time\":null,\r\n      \"txt\":\"Dies ist eine Testnachricht\",\r\n      \"count\":0,\r\n      \"activ\":false\r\n    }\r\n  }\r\n]";
+		JsonArray actualArray=jsonMap.toJsonArray(chatMessage, new Filter().withFull(true));
+		//FIXME JSONARRAY DONT WORK
+		assertEquals("WERT Vergleichen", reference, actualArray.toString(2));
+	}	
 }

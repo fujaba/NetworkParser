@@ -150,8 +150,8 @@ public class UpdateListenerJson implements PropertyChangeListener {
 		}
 
 		JsonObject jsonObject = new JsonObject()
-		.withValue(IdMap.ID, this.map.getId(source))
-		.withValue(IdMap.CLASS, source.getClass().getName());
+				.withValue(IdMap.CLASS, source.getClass().getName())
+				.withValue(IdMap.ID, this.map.getId(source));
 
 		if (oldValue != null) {
 			creatorClass = this.map.getCreatorClass(oldValue);
@@ -177,8 +177,8 @@ public class UpdateListenerJson implements PropertyChangeListener {
 				String key = this.map.getKey(newValue);
 				if (key != null) {
 					JsonObject item = new JsonObject()
-							.withValue(IdMap.ID, key)
-							.withValue(IdMap.CLASS, newValue.getClass().getName());
+							.withValue(IdMap.CLASS, newValue.getClass().getName())
+							.withValue(IdMap.ID, key);
 					child.put(propertyName, item);
 				} else {
 					JsonObject item = this.map.toJsonObject(newValue,

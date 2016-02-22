@@ -24,10 +24,10 @@ public class JsonMessageTest implements UpdateListener {
 
 		GroupAccount account= new GroupAccount();
 
-		messages.with("{\"id\":\"J1.G1\",\"class\":\"de.uniks.networkparser.test.model.GroupAccount\",\"upd\":{\"persons\":{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"J1.P2\",\"prop\":{\"name\":\"Tobi\"}}}}",
-			"{\"id\":\"J1.P2\",\"class\":\"de.uniks.networkparser.test.model.Person\",\"upd\":{\"parent\":{\"id\":\"J1.G1\",\"class\":\"de.uniks.networkparser.test.model.GroupAccount\"}}}",
-			"{\"id\":\"J1.G1\",\"class\":\"de.uniks.networkparser.test.model.GroupAccount\",\"upd\":{\"persons\":{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"J1.P3\",\"prop\":{\"parent\":{\"id\":\"J1.G1\",\"class\":\"de.uniks.networkparser.test.model.GroupAccount\"}}}}}",
-			"{\"id\":\"J1.P3\",\"class\":\"de.uniks.networkparser.test.model.Person\",\"upd\":{\"name\":\"Albert\"}}"
+		messages.with("{\"class\":\"de.uniks.networkparser.test.model.GroupAccount\",\"id\":\"J1.G1\",\"upd\":{\"persons\":{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"J1.P2\",\"prop\":{\"name\":\"Tobi\"}}}}",
+			"{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"J1.P2\",\"upd\":{\"parent\":{\"class\":\"de.uniks.networkparser.test.model.GroupAccount\",\"id\":\"J1.G1\"}}}",
+			"{\"class\":\"de.uniks.networkparser.test.model.GroupAccount\",\"id\":\"J1.G1\",\"upd\":{\"persons\":{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"J1.P3\",\"prop\":{\"parent\":{\"class\":\"de.uniks.networkparser.test.model.GroupAccount\",\"id\":\"J1.G1\"}}}}}",
+			"{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"J1.P3\",\"upd\":{\"name\":\"Albert\"}}"
 		);
 
 		map.toJsonObject(account);
