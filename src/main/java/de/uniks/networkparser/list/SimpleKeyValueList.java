@@ -433,20 +433,6 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		   return getPositionValue(value);
 	}
 
-	public SimpleKeyValueList<K, V> withList(Map<?, ?> map) {
-		if (map != null) {
-			for (Iterator<?> i = map.entrySet().iterator(); i.hasNext();) {
-				java.util.Map.Entry<?, ?> mapEntry = (Entry<?, ?>) i.next();
-				Object item = mapEntry.getValue();
-				Object key = mapEntry.getKey();
-				if (item != null) {
-					this.withKeyValue(key, item);
-				}
-			}
-		}
-		return this;
-	}
-
 	@Override
 	public Iterator<K> iterator() {
 		return new SimpleIterator<K>(this);

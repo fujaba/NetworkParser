@@ -191,11 +191,4 @@ public class GraphList extends GraphModel implements BaseItem{
 		super.with(name);
 		return this;
 	}
-
-	@Override
-	public int size() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
 }

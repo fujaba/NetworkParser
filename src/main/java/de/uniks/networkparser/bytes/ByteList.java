@@ -75,7 +75,7 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 		int size = calcChildren(isDynamic, last);
 		byte typ;
 		if (isPrimitive) {
-			typ = ByteIdMap.DATATYPE_CLAZZSTREAM;
+			typ = ByteTokener.DATATYPE_CLAZZSTREAM;
 		} else {
 			typ = ByteUtil.getTyp(getTyp(), size, last);
 		}
@@ -111,8 +111,8 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 		if (this.get(size - 1) instanceof ByteEntity) {
 			// HEADER + VALUE
 			isPrimitive = isPrimitive
-					&& this.get(0).getTyp() == ByteIdMap.DATATYPE_CLAZZTYP;
-			if (this.get(size - 1).getTyp() == ByteIdMap.DATATYPE_NULL) {
+					&& this.get(0).getTyp() == ByteTokener.DATATYPE_CLAZZTYP;
+			if (this.get(size - 1).getTyp() == ByteTokener.DATATYPE_NULL) {
 				nullerBytes++;
 			}
 		} else {
@@ -123,7 +123,7 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 		for (int i = size - 2; i >= 0; i--) {
 			int len = this.get(i).calcLength(isDynamic, false);
 			if (isPrimitive) {
-				if (this.get(i).getTyp() == ByteIdMap.DATATYPE_NULL) {
+				if (this.get(i).getTyp() == ByteTokener.DATATYPE_NULL) {
 					nullerBytes++;
 				}
 				isPrimitive = (this.get(i).size() == len - 1);
@@ -150,7 +150,7 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 		if (!(this.get(this.size() - 1) instanceof ByteEntity)) {
 			return false;
 		}
-		if (this.get(0).getTyp() != ByteIdMap.DATATYPE_CLAZZTYP) {
+		if (this.get(0).getTyp() != ByteTokener.DATATYPE_CLAZZTYP) {
 			return false;
 		}
 		for (int i = 1; i < this.size(); i++) {
@@ -175,7 +175,7 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 
 	public SimpleList<ByteItem> withValue(String value) {
 		ByteConverterString converter = new ByteConverterString();
-		this.add(((ByteEntity)getNewList(true)).withValue(ByteIdMap.DATATYPE_FIXED,
+		this.add(((ByteEntity)getNewList(true)).withValue(ByteTokener.DATATYPE_FIXED,
 				converter.decode(value)));
 		return this;
 	}

@@ -164,8 +164,4 @@ public class HTMLEntity implements BaseItem {
 		}
 		return converter.encode(this);
 	}
-	@Override
-	public int size() {
-		return body.size();
-	}
 }

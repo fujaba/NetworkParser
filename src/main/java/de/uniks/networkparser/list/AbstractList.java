@@ -92,29 +92,6 @@ public abstract class AbstractList<V> extends AbstractArray<V> {
 		return new SimpleIterator<V>(this, size());
 	}
 
-	@SuppressWarnings("unchecked")
-	public <ST extends AbstractList<V>> ST withValue(V... values) {
-		super.with(values);
-		return (ST) this;
-	}
-
-	@SuppressWarnings("unchecked")
-	public AbstractArray<V> without(V... values) {
-		if(values==null){
-			return this;
-		}
-		for (Object value : values) {
-			this.removeByObject(value);
-		}
-		return this;
-	}
-
-	@Override
-	public AbstractList<V> with(Object... values) {
-		super.with(values);
-		return this;
-	}
-
 	@Override
 	public AbstractList<V> withList(Collection<?> values) {
 		super.withList(values);

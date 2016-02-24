@@ -23,14 +23,19 @@ package de.uniks.networkparser.ext.generic;
 */
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.LinkedHashSet;
+
+import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class GenericCreator implements SendableEntityCreator {
 	private Object item;
 	private Class<?> clazz;
 	private String[] properties = null;
-	private LinkedHashSet<String> badProperties = new LinkedHashSet<String>();
+	private static final LinkedHashSet<String> badProperties = new LinkedHashSet<String>();
 
 	public GenericCreator() {
 		badProperties.add("getClass");
@@ -49,6 +54,11 @@ public class GenericCreator implements SendableEntityCreator {
 		}
 		return this;
 	}
+	
+	public GenericCreator withClass(Class<?> clazz) {
+		this.clazz = clazz;
+		return this;
+	}
 
 	public GenericCreator withItem(Object value) {
 		this.item = value;
@@ -62,9 +72,7 @@ public class GenericCreator implements SendableEntityCreator {
 			LinkedHashSet<String> fieldNames = new LinkedHashSet<String>();
 			for (Method method : methods) {
 				String methodName = method.getName();
-				if (methodName.startsWith("get")
-						&& !badProperties.contains(methodName)
-						&& !"".equals(methodName.trim())) {
+				if(isValidMethod(methodName)) {
 					fieldNames.add(methodName);
 				}
 			}
@@ -86,6 +94,13 @@ public class GenericCreator implements SendableEntityCreator {
 			} catch (InstantiationException e) {
 			} catch (IllegalAccessException e) {
 			}
+		} else if( this.clazz != null) {
+			try {
+				return clazz.newInstance();
+			} catch (InstantiationException e) {
+			} catch (IllegalAccessException e) {
+			}
+			
 		}
 		return null;
 	}
@@ -198,5 +213,70 @@ public class GenericCreator implements SendableEntityCreator {
 		} catch (ClassNotFoundException e) {
 		}
 		return null;
+	}
+	
+	boolean isValidMethod(String methodName ) {
+		return (methodName.startsWith("get")
+				&& !badProperties.contains(methodName)
+				&& !"".equals(methodName.trim()));
+	}
+	
+	public static GenericCreator create(IdMap map, Class<?> instance) {
+		SendableEntityCreator creator = map.getCreator(instance.getName(), true);
+		if(creator != null) {
+			return (GenericCreator) creator;
+		}
+		
+		GenericCreator genericCreator = new GenericCreator();
+		genericCreator.withClass(instance);
+		map.with(genericCreator);
+
+		// VODOO
+		try {
+			Method[] methods = instance.getMethods();
+			for (Method method : methods) {
+				String methodName = method.getName();
+				if(genericCreator.isValidMethod(methodName)) {
+					Class<?> child = method.getReturnType();
+					if(EntityUtil.isPrimitiveType(child.getName()) == false) {
+						try {
+							Type types = child.getGenericSuperclass();
+							if(types != null) {
+								ParameterizedType genericSuperclass = (ParameterizedType) types;
+								if(genericSuperclass.getActualTypeArguments().length>0){
+									Type type = genericSuperclass.getActualTypeArguments()[0];
+									child = Class.forName(type.getTypeName());
+								}
+							}
+						}catch(Exception e) {
+							// Try to find SubClass for Set
+						}
+						create(map, child);
+					}
+				}
+			}
+			Field[] fields = instance.getDeclaredFields();
+			for (Field field : fields) {
+				Class<?> child = field.getType();
+				if(EntityUtil.isPrimitiveType(child.getName()) == false) {
+					try {
+						Type types = field.getGenericType();
+						if(types != null) {
+							ParameterizedType genericSuperclass = (ParameterizedType) types;
+							if(genericSuperclass.getActualTypeArguments().length>0){
+								Type type = genericSuperclass.getActualTypeArguments()[0];
+								child = Class.forName(type.getTypeName());
+							}
+						}
+					}catch(Exception e) {
+						// Try to find SubClass for Set
+					}
+					create(map, child);
+				}
+			}
+		}catch (Exception e) {
+			System.out.println(e);
+		}
+		return genericCreator;
 	}
 }

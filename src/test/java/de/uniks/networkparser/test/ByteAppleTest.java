@@ -1,11 +1,13 @@
 package de.uniks.networkparser.test;
 
 import java.io.PrintStream;
+
 import org.junit.Assert;
 import org.junit.Test;
+
+import de.uniks.networkparser.Filter;
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.ByteBuffer;
-import de.uniks.networkparser.bytes.ByteFilter;
-import de.uniks.networkparser.bytes.ByteIdMap;
 import de.uniks.networkparser.interfaces.ByteItem;
 import de.uniks.networkparser.test.model.Apple;
 import de.uniks.networkparser.test.model.AppleTree;
@@ -42,22 +44,22 @@ public class ByteAppleTest {
 		appleTree.withHas(new Apple("3", 54f, 654f));
 		appleTree.withHas(new Apple("4", 654f, 333f));
 
-		ByteIdMap map = new ByteIdMap();
+		IdMap map = new IdMap();
 		map.with(new AppleTreeCreator());
 		map.with(new AppleCreator());
-		ByteItem item = map.encode(appleTree);
+		ByteItem item = map.toByteItem(appleTree);
 		ByteBuffer bytes = item.getBytes(true);
 		Assert.assertEquals(167, bytes.length());
 		String string = item.toString();
 		Assert.assertEquals(267, string.length());
-		Assert.assertEquals(267, map.encode(appleTree, new ByteFilter()).toString().length());
+		Assert.assertEquals(267, map.toByteItem(appleTree, new Filter()).toString().length());
 	}
 //	@Te st
 	public void testSimpleApple() {
 		Apple apple = new Apple("4", 1, 3);
-		ByteIdMap map = new ByteIdMap();
+		IdMap map = new IdMap();
 		map.with(new AppleCreator());
-		ByteItem item = map.encode(apple);
+		ByteItem item = map.toByteItem(apple);
 		ByteBuffer bytes = item.getBytes(true);
 		Assert.assertEquals(61, bytes.length());
 	}
@@ -71,9 +73,9 @@ public class ByteAppleTest {
 //		appleTree.withHas(new Apple(1, 2, 3));
 //		appleTree.withHas(new Apple(4, 5, 6));
 //		appleTree.withHas(new Apple(7, 8, 9));
-		ByteIdMap map = new ByteIdMap();
+		IdMap map = new IdMap();
 		map.with(new AppleCreator(), new AppleTreeCreator());
-		ByteItem item = map.encode(appleTree);
+		ByteItem item = map.toByteItem(appleTree);
 		ByteBuffer bytes = item.getBytes(true);
 		Assert.assertEquals(94, bytes.length());
 	}
@@ -82,9 +84,9 @@ public class ByteAppleTest {
 		AppleTree appleTree = new AppleTree();
 		appleTree.withHas(new Apple("2100000000", 123.32f, 239f));
 		appleTree.withHas(new Apple("2100000000", 123.32f, 239f));
-		ByteIdMap map = new ByteIdMap();
+		IdMap map = new IdMap();
 		map.with(new AppleCreator(), new AppleTreeCreator());
-		ByteItem item = map.encode(appleTree);
+		ByteItem item = map.toByteItem(appleTree);
 		ByteBuffer bytes = item.getBytes(true);
 		Assert.assertEquals(101, bytes.length());
 	}
@@ -96,11 +98,11 @@ public class ByteAppleTest {
 		appleTree.withHas(new Apple("1", 5644f, 564f));
 		appleTree.withHas(new Apple("0", 123.32f, 239f));
 
-		ByteIdMap map = new ByteIdMap();
+		IdMap map = new IdMap();
 		map.with(new AppleTreeCreator());
 		map.with(new AppleCreator());
 //		map.withCreator(new AppleTreeCreator(), new AppleCreator());
-		ByteItem item = map.encode(appleTree);
+		ByteItem item = map.toByteItem(appleTree);
 
 		ByteBuffer bytes = item.getBytes(true);
 //		outputStream(bytes.array(), System.out);

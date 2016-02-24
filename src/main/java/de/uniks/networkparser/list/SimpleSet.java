@@ -60,11 +60,6 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 		return super.addAll(c);
 	}
 
-	public SimpleSet<V> withoutAll(Object... values) {
-		super.withoutAll(values);
-		return this;
-	}
-
 	public SimpleSet<V> filter(Condition<V> newValue) {
 		SimpleSet<V> newList = getNewList(false);
 		filterItems(newList, newValue);

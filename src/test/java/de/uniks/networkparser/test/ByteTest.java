@@ -2,14 +2,16 @@ package de.uniks.networkparser.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+
 import java.io.PrintStream;
 import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
+
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.bytes.ByteEntity;
-import de.uniks.networkparser.bytes.ByteFilter;
-import de.uniks.networkparser.bytes.ByteIdMap;
 import de.uniks.networkparser.converter.ByteConverterBinary;
 import de.uniks.networkparser.converter.ByteConverterHex;
 import de.uniks.networkparser.converter.ByteConverterString;
@@ -42,9 +44,9 @@ public class ByteTest{
 	@Test
 	public void testByteEntity(){
 		StringMessage msg= new StringMessage("Hallo Welt");
-		ByteIdMap map= new ByteIdMap();
+		IdMap map= new IdMap();
 		map.with(new StringMessageCreator());
-		ByteItem data = map.encode(msg);
+		ByteItem data = map.toByteItem(msg);
 		// CLAZZ, StringMessage<0x02>, 0x00, 0x46, Hallo Welt(10 Bytes)
 		byte[] array = data.getBytes(false).array();
 		assertEquals(14, array.length);
@@ -54,9 +56,9 @@ public class ByteTest{
 	public void testSimpleEntity(){
 		SortedMsg msg= new SortedMsg();
 		msg.setNumber(42);
-		ByteIdMap map= new ByteIdMap();
+		IdMap map= new IdMap();
 		map.with(new SortedMsgCreator());
-		ByteItem data = map.encode(msg);
+		ByteItem data = map.toByteItem(msg);
 		ByteBuffer bytes = data.getBytes(false);
 		SortedMsg newMsg = (SortedMsg) map.decode(bytes);
 		assertEquals("VALUE", 42, newMsg.getNumber());
@@ -68,9 +70,9 @@ public class ByteTest{
 		chatMessage.setText("Dies ist eine Testnachricht");
 		chatMessage.setSender("Stefan Lindel");
 
-		ByteIdMap byteMap = new ByteIdMap();
+		IdMap byteMap = new IdMap();
 		byteMap.with(new ChatMessageCreator());
-		ByteItem msg=byteMap.encode(chatMessage);
+		ByteItem msg=byteMap.toByteItem(chatMessage);
 //		String reference="C-Stefan ALindel\"FDies Aist Aeine ATestnachricht";
 		String reference="#cK-Stefan ALindel\"ODies Aist Aeine ATestnachricht";
 		String vergleich=msg.toString();
@@ -80,11 +82,11 @@ public class ByteTest{
 
 	@Test
 	public void testByteDefault(){
-		ByteIdMap map= new ByteIdMap();
+		IdMap map= new IdMap();
 		map.with(new UniversityCreator());
 		University uni = new University();
 		uni.setName("Uni Kassel");
-		ByteItem data = map.encode(uni);
+		ByteItem data = map.toByteItem(uni);
 		ByteBuffer byteBuffer = data.getBytes(false);
 //		assertEquals("ALde.uniks.networkparser.test.model.UniversityOUni Kassel", data.toString(new ByteConverterString()));
 		assertEquals("#uOUni Kassel", data.toString(new ByteConverterString()));
@@ -96,12 +98,12 @@ public class ByteTest{
 
 	@Test
 	public void testMessages() throws RuntimeException {
-		ByteIdMap map = new ByteIdMap();
+		IdMap map = new IdMap();
 		map.with(new ByteMessageCreator());
 		map.with(new StringMessageCreator());
 
 		ByteMessage message = new ByteMessage().withValue(new byte[] { 52, 50 });
-		ByteItem stream = map.encode(message);
+		ByteItem stream = map.toByteItem(message);
 		ByteMessage newMessage = (ByteMessage) map.decode(stream.getBytes(false));
 		byte[] values = newMessage.getValue();
 		assertEquals(values.length, 2);
@@ -111,13 +113,13 @@ public class ByteTest{
 
 	@Test
 	public void testByteList(){
-		ByteIdMap map= new ByteIdMap();
+		IdMap map= new IdMap();
 		map.with(new FullAssocsCreator());
 		FullAssocs uni = new FullAssocs();
 		uni.addPerson("Maier");
 		uni.addPerson("Schulz");
 		uni.setAnswer(42);
-		ByteItem msg = map.encode(uni);
+		ByteItem msg = map.toByteItem(uni);
 		ByteBuffer byteBuffer = msg.getBytes(false);
 		outputStream(byteBuffer, null);
 		assertEquals(24, byteBuffer.length());
@@ -134,11 +136,11 @@ public class ByteTest{
 
 	@Test
 	public void testByteDynamic(){
-		ByteIdMap map= new ByteIdMap();
+		IdMap map= new IdMap();
 		map.with(new SortedMsgCreator());
 		SortedMsg sortedMsg = new SortedMsg();
 		sortedMsg.setNumber(23);
-		ByteItem msg=map.encode(sortedMsg, new ByteFilter());
+		ByteItem msg=map.toByteItem(sortedMsg);
 		ByteBuffer bytesBuffer = msg.getBytes(false);
 
 //		outputStream(bytesBuffer);
@@ -184,9 +186,9 @@ public class ByteTest{
 	@Test
 	public void testByteHex() throws RuntimeException {
 		StringMessage stringMessage = new StringMessage("Test");
-		ByteIdMap map = new ByteIdMap();
+		IdMap map = new IdMap();
 		map.with(new StringMessageCreator());
-		ByteItem encode = map.encode(stringMessage);
+		ByteItem encode = map.toByteItem(stringMessage);
 
 		ByteBuffer master = encode.getBytes(false);
 		byte[] byteArray=master.getValue(master.length());
@@ -211,9 +213,9 @@ public class ByteTest{
 
 	@Test
 	public void testFehler() {
-		ByteIdMap map = new ByteIdMap();
+		IdMap map = new IdMap();
 		try {
-			Object value=map.decode(new byte[] {});
+			Object value=map.decode(new ByteBuffer());
 			if(value!=null){
 				fail("not possible");
 			}
@@ -229,11 +231,11 @@ public class ByteTest{
 		assocs.setMessage(msg);
 		assocs.addPassword("Stefan", "42");
 
-		ByteIdMap map= new ByteIdMap();
+		IdMap map= new IdMap();
 		map.with(new FullAssocsCreator());
 		map.with(new StringMessageCreator());
 
-		ByteItem data = map.encode(assocs);
+		ByteItem data = map.toByteItem(assocs);
 		ByteBuffer bytes = data.getBytes(false);
 		outputStream(bytes, null);
 		assertEquals("Length", 36, bytes.length());

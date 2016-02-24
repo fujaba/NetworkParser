@@ -105,9 +105,4 @@ public class SoapObject implements BaseItem {
 		}
 		return converter.encode(this);
 	}
-
-	@Override
-	public int size() {
-		return children.size();
-	}
 }

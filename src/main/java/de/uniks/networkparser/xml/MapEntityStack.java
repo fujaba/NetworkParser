@@ -37,7 +37,17 @@ public class MapEntityStack {
 		return this.stack.last();
 	}
 	
-
+	/**
+	 * @return The Stack Element - offset
+	 */
+	public Object getPrevItem() {
+		int pos = this.stack.size() - 2;
+		if(pos < 0) {
+			return null;
+		}
+		return this.stack.get(pos);
+	}
+	
 	/**
 	 * Add a new Reference Object to Stack.
 	 * @param tag	The new Tag

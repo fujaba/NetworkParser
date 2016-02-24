@@ -16,9 +16,7 @@ import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
-import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
-import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.util.XMLEntityCreator;
 
 public class XMLTokener extends Tokener {
@@ -42,7 +40,9 @@ public class XMLTokener extends Tokener {
 	/** The stopwords. */
 	private ArrayList<String> stopwords = new ArrayList<String>();
 
-	public final EntityStringConverter simpleConverter = new EntityStringConverter();
+	public static final EntityStringConverter SIMPLECONVERTER = new EntityStringConverter();
+	
+	private boolean isAllowQuote;
 	
 	/** Instantiates a new XML id map. */
 	public XMLTokener() {
@@ -73,11 +73,8 @@ public class XMLTokener extends Tokener {
 			CharacterBuffer v = nextString(new CharacterBuffer(), allowQuote, true, c);
 			String g = EntityUtil.unQuote(v);
 			return g;
-		case '<':
-//			back();
+		case ITEMSTART:
 			BaseItem element = creator.getNewList(false);
-//			if (element instanceof EntityList) {
-//				parseToEntity((EntityList) element);
 			if (element instanceof Entity) {
 				parseToEntity((Entity) element);
 			}
@@ -85,24 +82,19 @@ public class XMLTokener extends Tokener {
 		default:
 			break;
 		}
-		// back();
 		if (c == '"') {
-			// next();
 			skip();
 			return "";
 		}
 		return super.nextValue(creator, allowQuote,  allowDuppleMarks, c);
 	}
 
-	@Override
 	public void parseToEntity(Entity entity) {
-		//FIXME CHECK OR REMOVE
-		boolean isAllowQuote = false;
 		char c = getCurrentChar();
-		if (c != '<') {
+		if (c != ITEMSTART) {
 			c = nextClean(false);
 		}
-		if (c != '<') {
+		if (c != ITEMSTART) {
 			if (logger.error(this, "parseToEntity",
 					NetworkParserLog.ERROR_TYP_PARSING, entity)) {
 				throw new RuntimeException("A XML text must begin with '<'");
@@ -123,21 +115,21 @@ public class XMLTokener extends Tokener {
  			c = nextClean(true);
 			if (c == 0) {
 				break;
-			} else if (c == '>') {
+			} else if (c == ITEMEND) {
 				c = nextClean(false);
 				if (c == 0) {
 					return;
 				}
-				if (c != '<') {
+				if (c != ITEMSTART) {
 					xmlEntity.setValueItem(nextString(new CharacterBuffer(), false, false, '<').toString());
 					continue;
 				}
 			}
 
-			if (c == '<') {
+			if (c == ITEMSTART) {
 				char nextChar = buffer.getChar();
 				if (nextChar == '/') {
-					skipTo('>', false);
+					skipTo(ITEMEND, false);
 					break;
 				} else {
 					buffer.withLookAHead(c);
@@ -452,9 +444,15 @@ public class XMLTokener extends Tokener {
 				}
 				addToStack(creator, tokener, tag, valueItem, map);
 			}
-		} 
+		}
 		return valueItem;
 	}
+	
+	public Entity createLink(Entity parent, String property, String className, String id) {
+		parent.put(property, id);
+		return null;
+	}
+	
 	
 	protected Object addToStack(SendableEntityCreatorTag creator, XMLTokener tokener, CharacterBuffer tag, CharacterBuffer value, MapEntity map) {
 		Object entity = creator.getSendableInstance(false);
@@ -462,16 +460,13 @@ public class XMLTokener extends Tokener {
 			creator.setValue(entity, XMLEntity.PROPERTY_VALUE, value.toString(), IdMap.NEW);
 			creator.setValue(entity, XMLEntity.PROPERTY_TAG, tag.toString(), IdMap.NEW);
 		}
-		if(value.isEmpty() == false) {
-//FIXME SETVALUE			tokener.setValue(".", value.toString());
-		}
 		map.getStack().withStack(tag.toString(), entity, creator);
 		return entity;
 	}
 	
 	@Override
 	public Object transformValue(Object value, BaseItem reference) {
-		return EntityUtil.valueToString(value, true, reference, simpleConverter);
+		return EntityUtil.valueToString(value, true, reference, SIMPLECONVERTER);
 	}
 	
 	/**
@@ -487,6 +482,14 @@ public class XMLTokener extends Tokener {
 	 */
 	public XMLTokener withDefaultFactory(SendableEntityCreator defaultFactory) {
 		this.defaultFactory = defaultFactory;
+		return this;
+	}
+	public boolean isChild(Object writeValue) {
+		return writeValue instanceof BaseItem;
+	}
+
+	public XMLTokener withAllowQuote(boolean value) {
+		this.isAllowQuote = value;
 		return this;
 	}
 }

@@ -1,5 +1,7 @@
 package de.uniks.networkparser.converter;
 
+import de.uniks.networkparser.buffer.ByteBuffer;
+import de.uniks.networkparser.buffer.CharacterBuffer;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -21,9 +23,7 @@ package de.uniks.networkparser.converter;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.bytes.ByteIdMap;
-import de.uniks.networkparser.buffer.ByteBuffer;
-import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.bytes.ByteTokener;
 
 public class ByteConverterHTTP extends ByteConverter {
 	@Override
@@ -34,8 +34,8 @@ public class ByteConverterHTTP extends ByteConverter {
 			for (int i = 0; i < values.length(); i++) {
 				int value = values.byteAt(i);
                 if (value <= 32 || value == 127) {
-					returnValue.with(ByteIdMap.SPLITTER);
-					returnValue.with((char) (value + ByteIdMap.SPLITTER + 1));
+					returnValue.with(ByteTokener.SPLITTER);
+					returnValue.with((char) (value + ByteTokener.SPLITTER + 1));
 				} else {
 					returnValue.with((char) value);
 				}
@@ -63,9 +63,9 @@ public class ByteConverterHTTP extends ByteConverter {
 		ByteBuffer buffer = ByteBuffer.allocate(len);
 		for (int i = 0; i < len; i++) {
 			int value = values[i];
-			if (value == ByteIdMap.SPLITTER) {
+			if (value == ByteTokener.SPLITTER) {
 				value = values[++i];
-				buffer.put((byte) (value - ByteIdMap.SPLITTER - 1));
+				buffer.put((byte) (value - ByteTokener.SPLITTER - 1));
 			} else {
 				buffer.put((byte) value);
 			}

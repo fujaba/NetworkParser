@@ -3,10 +3,10 @@ package de.uniks.networkparser.ext.generic;
 import java.util.Iterator;
 
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.SimpleGrammar;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.json.JsonGrammar;
 
-public class GenericJsonGrammar extends JsonGrammar {
+public class GenericJsonGrammar extends SimpleGrammar {
 	@Override
 	public SendableEntityCreator getSuperCreator(IdMap map, boolean searchForSuperCreator, Object modelItem) {
 		if(modelItem == null && !searchForSuperCreator) {

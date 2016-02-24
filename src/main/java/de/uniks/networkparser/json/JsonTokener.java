@@ -27,10 +27,16 @@ public class JsonTokener extends Tokener {
 	public static final String PROPS = "prop";
 	
 	public final static String STOPCHARS = ",]}/\\\"[{;=# ";
+	
+	public static final char STARTARRAY='[';
+	public static final char ENDARRAY=']';
+	public static final char STARTENTITY='{';
+	public static final char ENDENTITY='}';
 
+	@Override
 	public void parseToEntity(EntityList entityList) {
 		char c = nextClean(true);
-		if (c != '[') {
+		if (c != STARTARRAY) {
 			if (logger.error(this, "parseToEntity",
 					NetworkParserLog.ERROR_TYP_PARSING, entityList)) {
 				throw new RuntimeException(
@@ -38,7 +44,7 @@ public class JsonTokener extends Tokener {
 			}
 			return;
 		}
-		if ((nextClean(false)) != ']') {
+		if ((nextClean(false)) != ENDARRAY) {
 			for (;;) {
 				c = getCurrentChar();
 				if (c != ',') {
@@ -48,11 +54,11 @@ public class JsonTokener extends Tokener {
 				switch (c) {
 				case ';':
 				case ',':
-					if (nextClean(false) == ']') {
+					if (nextClean(false) == ENDARRAY) {
 						return;
 					}
 					break;
-				case ']':
+				case ENDARRAY:
 					skip();
 					return;
 				default:
@@ -82,13 +88,13 @@ public class JsonTokener extends Tokener {
 			skip();
 			skip();
 			return nextString(new CharacterBuffer(), allowQuote, true, '"');
-		case '{':
+		case STARTENTITY:
 			BaseItem element = creator.getNewList(true);
 			if (element instanceof Entity ) {
 				this.parseToEntity((Entity) element);
 			}
 			return element;
-		case '[':
+		case STARTARRAY:
 			BaseItem item = creator.getNewList(false);
 			if (item instanceof EntityList) {
 				this.parseToEntity((EntityList) item);
@@ -100,10 +106,11 @@ public class JsonTokener extends Tokener {
 		return super.nextValue(creator, allowQuote, allowDuppleMarks, stopChar);
 	}
 
+	@Override
 	public void parseToEntity(Entity entity) {
 		char c;
 		String key;
-		if (nextClean(true) != '{') {
+		if (nextClean(true) != STARTENTITY) {
 			if (logger.error(this, "parseToEntity",
 					NetworkParserLog.ERROR_TYP_PARSING, entity)) {
 				throw new RuntimeException(
@@ -128,7 +135,7 @@ public class JsonTokener extends Tokener {
 				skip();
 				isQuote = false;
 				continue;
-			case '}':
+			case ENDENTITY:
 				skip();
 				return;
 			case ',':
@@ -401,7 +408,12 @@ public class JsonTokener extends Tokener {
 	public EntityList newInstanceList() {
 		return new JsonArray();
 	}
-	
+	public Entity createLink(Entity parent, String property, String className, String id) {
+		Entity child = newInstance();
+		child.put(IdMap.CLASS, className);
+		child.put(IdMap.ID, id);
+		return child;
+	}
 	
 	
 	

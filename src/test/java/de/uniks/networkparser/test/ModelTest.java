@@ -51,12 +51,12 @@ public class ModelTest {
 	public void testIdMapFromIdMap(){
 		IdMap map= new IdMap();
 		map.with(new PersonCreator());
-		Assert.assertEquals(6, countMap(map));
+		Assert.assertEquals(8, countMap(map));
 
 		IdMap subMap= new IdMap();
-		Assert.assertEquals(5, countMap(subMap));
+		Assert.assertEquals(7, countMap(subMap));
 		subMap.with(map);
-		Assert.assertEquals(6, countMap(subMap));
+		Assert.assertEquals(8, countMap(subMap));
 
 	}
 

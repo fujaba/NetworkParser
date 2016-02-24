@@ -194,7 +194,7 @@ public class Student {
 	private String name;
 
 	public void setName(String value) {
-		if (value != null && value.equalsIgnoreCase(this.name)) {
+		if (value != null && value.equalsIgnoreCase(this.name) == false) {
 			String oldValue = this.name;
 			this.name = value;
 			getPropertyChangeSupport().firePropertyChange(PROPERTY_NAME,

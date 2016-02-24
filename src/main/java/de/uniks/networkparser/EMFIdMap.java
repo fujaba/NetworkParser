@@ -431,12 +431,12 @@ public class EMFIdMap extends IdMap {
 					}
 					Entity childItem = (Entity) child;
 					Literal literal = new Literal(childItem.getString(EMFIdMap.NAME));
-					for(String key : childItem.keySet()) {
+					for(int i=0;i<childItem.size();i++) {
+						String key = childItem.getKeyByIndex(i);
 						if(key.equals(EMFIdMap.NAME)) {
 							continue;
 						}
 						literal.withValue(childItem.getValue(key));
-//						literal.withKeyValue(key, child.get(key));
 						graphEnum.with(literal);
 					}
 				}

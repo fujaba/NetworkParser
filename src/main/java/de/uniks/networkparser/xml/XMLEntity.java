@@ -22,10 +22,12 @@ package de.uniks.networkparser.xml;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.event.MapEntry;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -154,21 +156,23 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	 * @return the child
 	 */
 	public EntityList getChild(String value, boolean recursiv) {
-		if(value==null || this.children == null) {
+		if(value==null ) {
 			return null;
 		}
-		for (EntityList entity : this.children) {
-			if(entity instanceof XMLEntity == false) {
-				continue;
-			}
-			XMLEntity item = (XMLEntity) entity;
-			if (value.equals(item.getTag())) {
-				return entity;
-			}
-			if(recursiv) {
-				EntityList child = item.getChild(value, recursiv);
-				if(child != null) {
-					return child;
+		if(this.children != null) {
+			for (EntityList entity : this.children) {
+				if(entity instanceof XMLEntity == false) {
+					continue;
+				}
+				XMLEntity item = (XMLEntity) entity;
+				if (value.equals(item.getTag())) {
+					return entity;
+				}
+				if(recursiv) {
+					EntityList child = item.getChild(value, recursiv);
+					if(child != null) {
+						return child;
+					}
 				}
 			}
 		}
@@ -357,13 +361,19 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		return containsKey(key);
 	}
 
-	@Override
-	public Object getValue(int index) {
-		return getValueByIndex(index);
-	}
-
 	public XMLEntity withValueItem(String value) {
 		setValueItem(value);
 		return this;
+	}
+
+	@Override
+	public BaseItem withValue(Buffer values) {
+		new XMLTokener().withBuffer(values).parseToEntity((Entity)this);
+		return this;
+	}
+
+	@Override
+	public void setType(String type) {
+		this.withTag(type);
 	}
 }

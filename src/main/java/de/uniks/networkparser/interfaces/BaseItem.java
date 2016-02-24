@@ -50,6 +50,4 @@ public interface BaseItem {
 	BaseItem with(Object... values);
 
 	public BaseItem getNewList(boolean keyValue);
-	
-	public int size();
 }

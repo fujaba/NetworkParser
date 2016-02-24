@@ -38,6 +38,9 @@ public class ByteEntity implements ByteItem {
 	/** The Constant BIT OF A BYTE. */
 	public final static int BITOFBYTE = 8;
 	public final static int TYPBYTE = 1;
+	
+	public final static String TYP="TYP";
+	public final static String VALUE="VALUE";
 
 	/** The Byte Typ. */
 	protected byte typ;
@@ -173,23 +176,23 @@ public class ByteEntity implements ByteItem {
 			return;
 		}
 		if (isDynamic) {
-			if (typ == ByteIdMap.DATATYPE_SHORT) {
+			if (typ == ByteTokener.DATATYPE_SHORT) {
 				short bufferValue = new ByteBuffer().with(value).getShort();
 				if (bufferValue >= Byte.MIN_VALUE
 						&& bufferValue <= Byte.MAX_VALUE) {
-					typ = ByteIdMap.DATATYPE_BYTE;
+					typ = ByteTokener.DATATYPE_BYTE;
 					value = new byte[] {(byte) bufferValue };
 				}
-			} else if (typ == ByteIdMap.DATATYPE_INTEGER
-					|| typ == ByteIdMap.DATATYPE_LONG) {
+			} else if (typ == ByteTokener.DATATYPE_INTEGER
+					|| typ == ByteTokener.DATATYPE_LONG) {
 				int bufferValue = new ByteBuffer().with(value).getInt();
 				if (bufferValue >= Byte.MIN_VALUE
 						&& bufferValue <= Byte.MAX_VALUE) {
-					typ = ByteIdMap.DATATYPE_BYTE;
+					typ = ByteTokener.DATATYPE_BYTE;
 					value = new byte[] {(byte) bufferValue };
 				} else if (bufferValue >= Short.MIN_VALUE
 						&& bufferValue <= Short.MAX_VALUE) {
-					typ = ByteIdMap.DATATYPE_BYTE;
+					typ = ByteTokener.DATATYPE_BYTE;
 					ByteBuffer bbShort = ByteBuffer.allocate(Short.SIZE
 							/ BITOFBYTE);
 					bbShort.put((short) bufferValue);
@@ -198,8 +201,8 @@ public class ByteEntity implements ByteItem {
 				}
 			}
 		}
-		if (!isPrimitive || typ == ByteIdMap.DATATYPE_CLAZZTYP
-				|| typ == ByteIdMap.DATATYPE_CLAZZTYPLONG) {
+		if (!isPrimitive || typ == ByteTokener.DATATYPE_CLAZZTYP
+				|| typ == ByteTokener.DATATYPE_CLAZZTYPLONG) {
 			typ = ByteUtil.getTyp(typ, value.length, isLast);
 			ByteUtil.writeByteHeader(buffer, typ, value.length);
 		}
@@ -220,38 +223,38 @@ public class ByteEntity implements ByteItem {
 		byte typ = 0;
 		ByteBuffer msgValue = new ByteBuffer();
 		if (value == null) {
-			typ = ByteIdMap.DATATYPE_NULL;
+			typ = ByteTokener.DATATYPE_NULL;
 		}
 		if (value instanceof Short) {
-			typ = ByteIdMap.DATATYPE_SHORT;
+			typ = ByteTokener.DATATYPE_SHORT;
 			msgValue.withBufferLength(Short.SIZE / BITOFBYTE);
 			msgValue.put((Short) value);
 		} else if (value instanceof Integer) {
-			typ = ByteIdMap.DATATYPE_INTEGER;
+			typ = ByteTokener.DATATYPE_INTEGER;
 			msgValue.withBufferLength(Integer.SIZE / BITOFBYTE);
 			msgValue.put((Integer) value);
 		} else if (value instanceof Long) {
-			typ = ByteIdMap.DATATYPE_LONG;
+			typ = ByteTokener.DATATYPE_LONG;
 			msgValue.withBufferLength(Long.SIZE / BITOFBYTE);
 			msgValue.put((Long) value);
 		} else if (value instanceof Float) {
-			typ = ByteIdMap.DATATYPE_FLOAT;
+			typ = ByteTokener.DATATYPE_FLOAT;
 			msgValue.withBufferLength(Float.SIZE / BITOFBYTE);
 			msgValue.put((Float) value);
 		} else if (value instanceof Double) {
-			typ = ByteIdMap.DATATYPE_DOUBLE;
+			typ = ByteTokener.DATATYPE_DOUBLE;
 			msgValue.withBufferLength(Double.SIZE / BITOFBYTE);
 			msgValue.put((Double) value);
 		} else if (value instanceof Byte) {
-			typ = ByteIdMap.DATATYPE_BYTE;
+			typ = ByteTokener.DATATYPE_BYTE;
 			msgValue.withBufferLength(Byte.SIZE / BITOFBYTE);
 			msgValue.put((Byte) value);
 		} else if (value instanceof Character) {
-			typ = ByteIdMap.DATATYPE_CHAR;
+			typ = ByteTokener.DATATYPE_CHAR;
 			msgValue.withBufferLength(Character.SIZE / BITOFBYTE);
 			msgValue.put((Character) value);
 		} else if (value instanceof String) {
-			typ = ByteIdMap.DATATYPE_STRING;
+			typ = ByteTokener.DATATYPE_STRING;
 			String newValue = (String) value;
 			msgValue.withBufferLength(newValue.length());
 			try {
@@ -259,12 +262,12 @@ public class ByteEntity implements ByteItem {
 			} catch (UnsupportedEncodingException e) {
 			}
 		} else if (value instanceof Date) {
-			typ = ByteIdMap.DATATYPE_DATE;
+			typ = ByteTokener.DATATYPE_DATE;
 			msgValue.withBufferLength(Integer.SIZE / BITOFBYTE);
 			Date newValue = (Date) value;
 			msgValue.put((int) newValue.getTime());
 		} else if (value instanceof Byte[] || value instanceof byte[]) {
-			typ = ByteIdMap.DATATYPE_BYTEARRAY;
+			typ = ByteTokener.DATATYPE_BYTEARRAY;
 			if (value != null) {
 				byte[] newValue = (byte[]) value;
 				msgValue.withBufferLength(newValue.length);
@@ -303,14 +306,14 @@ public class ByteEntity implements ByteItem {
 			return TYPBYTE;
 		}
 		if (isDynamic) {
-			if (typ == ByteIdMap.DATATYPE_SHORT) {
+			if (typ == ByteTokener.DATATYPE_SHORT) {
 				Short bufferValue = new ByteBuffer().with(values).getShort();
 				if (bufferValue >= Byte.MIN_VALUE
 						&& bufferValue <= Byte.MAX_VALUE) {
 					return TYPBYTE + Byte.SIZE / BITOFBYTE;
 				}
-			} else if (typ == ByteIdMap.DATATYPE_INTEGER
-					|| typ == ByteIdMap.DATATYPE_LONG) {
+			} else if (typ == ByteTokener.DATATYPE_INTEGER
+					|| typ == ByteTokener.DATATYPE_LONG) {
 				Integer bufferValue = new ByteBuffer().with(values).getInt();
 				if (bufferValue >= Byte.MIN_VALUE
 						&& bufferValue <= Byte.MAX_VALUE) {
@@ -335,7 +338,7 @@ public class ByteEntity implements ByteItem {
 
 	@Override
 	public boolean isEmpty() {
-		return getTyp() == ByteIdMap.DATATYPE_NULL;
+		return getTyp() == ByteTokener.DATATYPE_NULL;
 	}
 
 	@Override
@@ -353,7 +356,21 @@ public class ByteEntity implements ByteItem {
 	}
 
 	@Override
-	public BaseItem with(Object... values) {
+	public ByteEntity with(Object... values) {
+		if(values==null){
+			return this;
+		}
+		if(values.length>1) {
+			byte[] value = new byte[values.length-1];
+			for(int i=1;i<values.length;i++) {
+				value[i-1] = (Byte) values[i];
+			}
+			withValue((Byte)values[0], value);
+		}
+		return this;
+	}
+	
+	public ByteEntity withValue(byte[] values) {
 		if(values==null){
 			return this;
 		}
@@ -368,10 +385,10 @@ public class ByteEntity implements ByteItem {
 	}
 	
 	public Object getValue(Object key) {
-		if("TYP".equals(key)) {
+		if(TYP.equals(key)) {
 			return typ;
 		}
-		if("VALUE".equals(key)) {
+		if(VALUE.equals(key)) {
 			return values;
 		}
 		return null;

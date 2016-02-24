@@ -56,4 +56,10 @@ public class SimpleList<V> extends AbstractList<V> implements List<V> {
 		filterItems(filterList, newValue);
 		return filterList;
 	}
+	
+	@Override
+	public SimpleList<V> with(Object... values) {
+		super.with(values);
+		return this;
+	}
 }

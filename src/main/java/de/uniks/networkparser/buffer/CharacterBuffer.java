@@ -600,7 +600,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		}
 		for (int i = fromIndex; i < max; i++) {
 			if (buffer[i+start] == ch) {
-				return i - start;
+				return i;
 			}
 		}
 		return -1;

@@ -251,9 +251,4 @@ public class PomFile implements SendableEntityCreatorTag, BaseItem{
 		}
 		return converter.encode(this);
 	}
-
-	@Override
-	public int size() {
-		return dependencies.size();
-	}
 }

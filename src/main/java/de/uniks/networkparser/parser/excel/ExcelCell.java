@@ -2,6 +2,7 @@ package de.uniks.networkparser.parser.excel;
 import java.nio.charset.Charset;
 import java.util.Comparator;
 
+import de.uniks.networkparser.buffer.Buffer;
 /*
 NetworkParser
 Copyright (c) 2011 - 2016, Stefan Lindel
@@ -253,5 +254,10 @@ public class ExcelCell implements SendableEntityCreatorTag, EntityList{
 	@Override
 	public Comparator<Object> comparator() {
 		return null;
+	}
+
+	@Override
+	public BaseItem withValue(Buffer values) {
+		return this;
 	}
 }

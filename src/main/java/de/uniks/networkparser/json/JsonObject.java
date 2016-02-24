@@ -352,11 +352,6 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 	}
 
 	@Override
-	public Object getValue(int index) {
-		return this.getValueByIndex(index);
-	}
-
-	@Override
 	public boolean setValueItem(Object value) {
 		this.add(IdMap.VALUE, value);
 		return true;
@@ -378,5 +373,10 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 		return child;
 
 		
+	}
+
+	@Override
+	public void setType(String type) {
+		this.add(IdMap.CLASS, type);
 	}
 }

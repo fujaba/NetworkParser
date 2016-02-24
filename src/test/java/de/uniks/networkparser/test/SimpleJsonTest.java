@@ -26,7 +26,7 @@ public class SimpleJsonTest {
 				SimpleMapEvent simpleEvent = (SimpleMapEvent) event;
 				
 				updateMessage = simpleEvent.getEntity().toString();
-				Assert.assertEquals("{\"id\":\"J1.H1\",\"class\":\"de.uniks.networkparser.test.model.House\",\"rem\":{\"floor\":4},\"upd\":{\"floor\":42}}", updateMessage.toString());
+				Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.House\",\"id\":\"J1.H1\",\"rem\":{\"floor\":4},\"upd\":{\"floor\":42}}", updateMessage.toString());
 				return false;
 			}
 		});

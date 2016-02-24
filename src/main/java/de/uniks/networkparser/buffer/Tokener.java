@@ -7,7 +7,7 @@ import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.list.SimpleList;
 
-public class Tokener implements BufferItem{
+public class Tokener implements BufferItem {
 	//FIXME REMOVE
 	protected NetworkParserLog logger = new NetworkParserLog();
 
@@ -209,11 +209,27 @@ public class Tokener implements BufferItem{
 	public Entity newInstance() {
 		return null;
 	}
+	public BaseItem newInstance(Buffer values) {
+		Entity newInstance = newInstance();
+		if(newInstance != null) {
+			newInstance.withValue(values);
+		}
+		return newInstance;
+	}
+	
 	public EntityList newInstanceList() {
 		return null;
 	}
 	
 	public Object transformValue(Object value, BaseItem reference) {
 		return value;
+	}
+	
+	public Entity createLink(Entity parent, String property, String className, String id) {
+		return null;
+	}
+
+	public boolean isChild(Object writeValue) {
+		return true;
 	}
 }

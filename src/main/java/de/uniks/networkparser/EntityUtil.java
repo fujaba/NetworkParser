@@ -278,7 +278,7 @@ public class EntityUtil {
 		if (value instanceof Collection) {
 			BaseItem item = reference.getNewList(true);
 			if(item instanceof SimpleKeyValueList<?,?>) {
-				return ((SimpleKeyValueList<?,?>) item).withList((Map<?, ?>) value).toString(converter);
+				return ((SimpleKeyValueList<?,?>) item).withMap((Map<?, ?>) value).toString(converter);
 			}
 			if (item instanceof BaseItem) {
 				return ((BaseItem) item).toString(converter);
@@ -340,7 +340,7 @@ public class EntityUtil {
 			}
 			if (object instanceof Map) {
 				return ((SimpleKeyValueList<?, ?>) reference.getNewList(false))
-						.withList((Map<?, ?>) object);
+						.withMap((Map<?, ?>) object);
 			}
 			if (object.getClass().getName().startsWith("java.")
 					|| object.getClass().getName().startsWith("javax.")) {
@@ -570,19 +570,24 @@ public class EntityUtil {
 	}
 
 	private static final String primitiveTypes = " void String long Long int Integer char Char boolean Boolean byte Byte float Float double Double Object java.util.Date ";
-	private static final String numericTypes = " long Long int Integer byte Byte float Float double Double java.lang.Long java.lang.Integer java.lang.Byte java.lang.Float java.lang.Double";
+	private static final String numericTypes = " long Long int Integer byte Byte float Float double Double ";
+	private static final String javaLang="java.lang.";
 	public static boolean isPrimitiveType(String type) {
 
 		if (type == null)
 			return false;
-
+		if(type.startsWith(javaLang)) {
+			type = type.substring(javaLang.length() );
+		}
 		return primitiveTypes.indexOf(" " + type + " ") >= 0;
 	}
 	
 	public static boolean isNumericType(String type) {
 		if (type == null)
 			return false;
-
+		if(type.startsWith(javaLang)) {
+			type = type.substring(javaLang.length() +1 );
+		}
 		return numericTypes.indexOf(" " + type + " ") >= 0;
 	}
 

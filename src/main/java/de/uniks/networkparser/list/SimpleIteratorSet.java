@@ -41,7 +41,7 @@ public class SimpleIteratorSet<K,V> implements ListIterator<Entry<K, V>>{
 			this.list = (SimpleKeyValueList<K, V>) collection;	
 		} else if (collection instanceof Map<?,?>) {
 			this.list = new SimpleKeyValueList<K,V>();
-			this.list.withList((Map<?,?>)collection);
+			this.list.withMap((Map<?,?>)collection);
 		}
 		this.currentEntry = new SimpleEntity<K, V>();
 	}

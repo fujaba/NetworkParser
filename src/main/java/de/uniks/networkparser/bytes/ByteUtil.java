@@ -31,13 +31,13 @@ public class ByteUtil {
 			// Save Typ
 			if (typ != 0) {
 				buffer.put(typ);
-				if (getSubGroup(typ) != ByteIdMap.LEN_LAST) {
+				if (getSubGroup(typ) != ByteTokener.LEN_LAST) {
 					int lenSize = ByteUtil.getTypLen(typ, valueLength, true);
 
 					if (lenSize == 1) {
-						if (typ == ByteIdMap.DATATYPE_CLAZZNAME
-								|| ByteUtil.getSubGroup(typ) == ByteIdMap.LEN_LITTLE) {
-							buffer.put((byte) (valueLength + ByteIdMap.SPLITTER));
+						if (typ == ByteTokener.DATATYPE_CLAZZNAME
+								|| ByteUtil.getSubGroup(typ) == ByteTokener.LEN_LITTLE) {
+							buffer.put((byte) (valueLength + ByteTokener.SPLITTER));
 						} else {
 							buffer.put((byte) valueLength);
 						}
@@ -49,7 +49,7 @@ public class ByteUtil {
 				}
 			}
 		} else if(buffer!=null){
-			buffer.put(ByteIdMap.DATATYPE_NULL);
+			buffer.put(ByteTokener.DATATYPE_NULL);
 		}
 	}
 
@@ -68,18 +68,18 @@ public class ByteUtil {
 	public static byte getTyp(byte typ, int len, boolean isLast) {
 		if (isGroup(typ)) {
 			if (isLast) {
-				return getTyp(typ, ByteIdMap.LEN_LAST);
+				return getTyp(typ, ByteTokener.LEN_LAST);
 			}
 			if (len > 32767) {
-				return getTyp(typ, ByteIdMap.LEN_BIG);
+				return getTyp(typ, ByteTokener.LEN_BIG);
 			}
 			if (len > 250) {
-				return getTyp(typ, ByteIdMap.LEN_MID);
+				return getTyp(typ, ByteTokener.LEN_MID);
 			}
-			if (len > ByteIdMap.SPLITTER) {
-				return getTyp(typ, ByteIdMap.LEN_SHORT);
+			if (len > ByteTokener.SPLITTER) {
+				return getTyp(typ, ByteTokener.LEN_SHORT);
 			}
-			return getTyp(typ, ByteIdMap.LEN_LITTLE);
+			return getTyp(typ, ByteTokener.LEN_LITTLE);
 		}
 		return typ;
 	}
@@ -91,23 +91,23 @@ public class ByteUtil {
 				typ = getTyp(typ, len, isLast);
 				ref = typ % 16 - 10;
 			}
-			if (ref == ByteIdMap.LEN_SHORT || ref == ByteIdMap.LEN_LITTLE) {
+			if (ref == ByteTokener.LEN_SHORT || ref == ByteTokener.LEN_LITTLE) {
 				return 1;
 			}
-			if (ref == ByteIdMap.LEN_MID) {
+			if (ref == ByteTokener.LEN_MID) {
 				return 2;
 			}
-			if (ref == ByteIdMap.LEN_BIG) {
+			if (ref == ByteTokener.LEN_BIG) {
 				return 4;
 			}
 			// if (ref == ByteIdMap.LEN_LAST) {
 			return 0;
 		}
-		if (typ == ByteIdMap.DATATYPE_CLAZZNAME) {
+		if (typ == ByteTokener.DATATYPE_CLAZZNAME) {
 			// || typ == ByteIdMap.DATATYPE_CLAZZTYP add bei ByteList
 			return 1;
 		}
-		if (typ == ByteIdMap.DATATYPE_CLAZZNAMELONG) {
+		if (typ == ByteTokener.DATATYPE_CLAZZNAMELONG) {
 			return 4;
 		}
 		// if (typ == ByteIdMap.DATATYPE_CLAZZTYP || typ ==
@@ -130,7 +130,7 @@ public class ByteUtil {
 	}
 
 	public static boolean isPrimitive(byte typ) {
-		return ((typ >= ByteIdMap.DATATYPE_SHORT && typ <= ByteIdMap.DATATYPE_BYTE) || typ <= ByteIdMap.DATATYPE_CHAR);
+		return ((typ >= ByteTokener.DATATYPE_SHORT && typ <= ByteTokener.DATATYPE_BYTE) || typ <= ByteTokener.DATATYPE_CHAR);
 	}
 
 	/**
@@ -145,64 +145,64 @@ public class ByteUtil {
 	}
 
 	public static String getStringTyp(byte typ) {
-		if (typ == ByteIdMap.DATATYPE_NULL) {
+		if (typ == ByteTokener.DATATYPE_NULL) {
 			return "DATATYPE_NULL";
 		}
-		if (typ == ByteIdMap.DATATYPE_FIXED) {
+		if (typ == ByteTokener.DATATYPE_FIXED) {
 			return "DATATYPE_FIXED";
 		}
-		if (typ == ByteIdMap.DATATYPE_SHORT) {
+		if (typ == ByteTokener.DATATYPE_SHORT) {
 			return "DATATYPE_SHORT";
 		}
-		if (typ == ByteIdMap.DATATYPE_INTEGER) {
+		if (typ == ByteTokener.DATATYPE_INTEGER) {
 			return "DATATYPE_INTEGER";
 		}
-		if (typ == ByteIdMap.DATATYPE_LONG) {
+		if (typ == ByteTokener.DATATYPE_LONG) {
 			return "DATATYPE_LONG";
 		}
-		if (typ == ByteIdMap.DATATYPE_FLOAT) {
+		if (typ == ByteTokener.DATATYPE_FLOAT) {
 			return "DATATYPE_FLOAT";
 		}
-		if (typ == ByteIdMap.DATATYPE_DOUBLE) {
+		if (typ == ByteTokener.DATATYPE_DOUBLE) {
 			return "DATATYPE_DOUBLE";
 		}
-		if (typ == ByteIdMap.DATATYPE_DATE) {
+		if (typ == ByteTokener.DATATYPE_DATE) {
 			return "DATATYPE_DATE";
 		}
-		if (typ == ByteIdMap.DATATYPE_CLAZZID) {
+		if (typ == ByteTokener.DATATYPE_CLAZZID) {
 			return "DATATYPE_CLAZZID";
 		}
-		if (typ == ByteIdMap.DATATYPE_CLAZZPACKAGE) {
+		if (typ == ByteTokener.DATATYPE_CLAZZPACKAGE) {
 			return "DATATYPE_CLAZZPACKAGE";
 		}
-		if (typ == ByteIdMap.DATATYPE_CLAZZNAME) {
+		if (typ == ByteTokener.DATATYPE_CLAZZNAME) {
 			return "DATATYPE_CLAZZNAME";
 		}
-		if (typ == ByteIdMap.DATATYPE_CLAZZNAMELONG) {
+		if (typ == ByteTokener.DATATYPE_CLAZZNAMELONG) {
 			return "DATATYPE_CLAZZNAMELONG";
 		}
-		if (typ == ByteIdMap.DATATYPE_CLAZZTYP) {
+		if (typ == ByteTokener.DATATYPE_CLAZZTYP) {
 			return "DATATYPE_CLAZZTYP";
 		}
-		if (typ == ByteIdMap.DATATYPE_CLAZZTYPLONG) {
+		if (typ == ByteTokener.DATATYPE_CLAZZTYPLONG) {
 			return "DATATYPE_CLAZZTYPLONG";
 		}
-		if (typ == ByteIdMap.DATATYPE_BYTE) {
+		if (typ == ByteTokener.DATATYPE_BYTE) {
 			return "DATATYPE_BYTE";
 		}
-		if (typ == ByteIdMap.DATATYPE_UNSIGNEDBYTE) {
+		if (typ == ByteTokener.DATATYPE_UNSIGNEDBYTE) {
 			return "DATATYPE_UNSIGNEDBYTE";
 		}
-		if (typ == ByteIdMap.DATATYPE_CHAR) {
+		if (typ == ByteTokener.DATATYPE_CHAR) {
 			return "DATATYPE_CHAR";
 		}
-		if (typ == ByteIdMap.DATATYPE_ASSOC) {
+		if (typ == ByteTokener.DATATYPE_ASSOC) {
 			return "DATATYPE_ASSOC";
 		}
-		if (typ == ByteIdMap.DATATYPE_ASSOCLONG) {
+		if (typ == ByteTokener.DATATYPE_ASSOCLONG) {
 			return "DATATYPE_ASSOCLONG";
 		}
-		if (typ == ByteIdMap.DATATYPE_CLAZZSTREAM) {
+		if (typ == ByteTokener.DATATYPE_CLAZZSTREAM) {
 			return "DATATYPE_CLAZZSTREAM";
 		}
 
@@ -210,27 +210,27 @@ public class ByteUtil {
 			byte group = getGroup(typ);
 			byte subgroup = getSubGroup(typ);
 			String result = "";
-			if (group == ByteIdMap.DATATYPE_BYTEARRAY) {
+			if (group == ByteTokener.DATATYPE_BYTEARRAY) {
 				result = "DATATYPE_BYTEARRAY";
-			} else if (group == ByteIdMap.DATATYPE_STRING) {
+			} else if (group == ByteTokener.DATATYPE_STRING) {
 				result = "DATATYPE_STRING";
-			} else if (group == ByteIdMap.DATATYPE_LIST) {
+			} else if (group == ByteTokener.DATATYPE_LIST) {
 				result = "DATATYPE_LIST";
-			} else if (group == ByteIdMap.DATATYPE_MAP) {
+			} else if (group == ByteTokener.DATATYPE_MAP) {
 				result = "DATATYPE_MAP";
-			} else if (group == ByteIdMap.DATATYPE_CHECK) {
+			} else if (group == ByteTokener.DATATYPE_CHECK) {
 				result = "DATATYPE_CHECK";
 			}
 
-			if (subgroup == ByteIdMap.LEN_LITTLE) {
+			if (subgroup == ByteTokener.LEN_LITTLE) {
 				result += "LITTLE";
-			} else if (subgroup == ByteIdMap.LEN_SHORT) {
+			} else if (subgroup == ByteTokener.LEN_SHORT) {
 				result += "SHORT";
-			} else if (subgroup == ByteIdMap.LEN_MID) {
+			} else if (subgroup == ByteTokener.LEN_MID) {
 				result += "MID";
-			} else if (subgroup == ByteIdMap.LEN_BIG) {
+			} else if (subgroup == ByteTokener.LEN_BIG) {
 				result += "BIG";
-			} else if (subgroup == ByteIdMap.LEN_LAST) {
+			} else if (subgroup == ByteTokener.LEN_LAST) {
 				result += "LAST";
 			}
 			return result;

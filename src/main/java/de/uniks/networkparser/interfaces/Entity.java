@@ -1,6 +1,6 @@
 package de.uniks.networkparser.interfaces;
 
-import java.util.Set;
+import de.uniks.networkparser.buffer.Buffer;
 
 /*
  NetworkParser
@@ -27,23 +27,10 @@ import java.util.Set;
 public interface Entity extends BaseItem{
 	public String getString(String key);
 
-	public boolean getBoolean(String key);
-
-	public double getDouble(String key);
-
-	public int getInt(String key);
-
 	public Object getValue(Object key);
 
 	public String getKeyByIndex(int pos);
-	
-	/**
-	 * Get a Value from Key-ValueMap with Index
-	 * @param index Index of Value
-	 * @return The Value
-	 */
-	public Object getValue(int index);
-	
+
 	public Entity without(String key);
 	
 	/**
@@ -59,8 +46,6 @@ public interface Entity extends BaseItem{
 	 */
 	public Object put(String key, Object value);
 
-	public Set<String> keySet();
-	
 	/**
 	 * Make a prettyprinted Text of this Entity.
 	 * <p>
@@ -84,4 +69,10 @@ public interface Entity extends BaseItem{
 	public boolean setValueItem(Object value);
 	
 	public BaseItem getChild(String label, boolean recursiv);
+	
+	public int size();
+	
+	public BaseItem withValue(Buffer values);
+	
+	public void setType(String type);
 }

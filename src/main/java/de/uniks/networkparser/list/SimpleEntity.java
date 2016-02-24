@@ -247,9 +247,4 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 		}
 		return converter.encode(this);
 	}
-
-	@Override
-	public int size() {
-		return 1;
-	}
 }

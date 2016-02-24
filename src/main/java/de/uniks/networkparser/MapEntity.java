@@ -1,6 +1,7 @@
 package de.uniks.networkparser;
 
 import java.beans.PropertyChangeEvent;
+import java.util.Iterator;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.buffer.Tokener;
@@ -8,6 +9,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.Grammar;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.MapEntityStack;
 
@@ -22,12 +24,10 @@ public class MapEntity extends SimpleList<Object>{
 	private int deep;
 	private Object target;
 	private MapEntityStack stack;
+	private boolean isId = true;
 	
-	/**
-	 * boolean for switch of search for Interface or Abstract superclass for entity
-	 */
+	/** boolean for switch of search for Interface or Abstract superclass for entity */
 	protected boolean searchForSuperCreator;
-
 	/** If this is true the IdMap save the Typ of primary datatypes. */
 	private boolean typSave;
 
@@ -81,6 +81,10 @@ public class MapEntity extends SimpleList<Object>{
 	public SendableEntityCreator getCreatorClass(Object reference) {
 		return map.getCreatorClass(reference);
 	}
+	public SendableEntityCreator getCreator(String className, boolean fullName) {
+		return map.getCreator(className, fullName);
+	}
+	
 	public String getKey(Object reference) {
 		return map.getKey(reference);
 	}
@@ -177,6 +181,17 @@ public class MapEntity extends SimpleList<Object>{
 		return stack;
 	}
 
+	public void pushStack(String className, Object entity, SendableEntityCreator creator) {
+		if(this.stack != null) {
+			this.stack.withStack(className, entity, creator);
+		}
+	}
+	
+	public void popStack() {
+		if(this.stack != null) {
+			this.stack.popStack();
+		}
+	}
 	/**
 	 * @param stack the stack to set
 	 * @return 
@@ -191,7 +206,85 @@ public class MapEntity extends SimpleList<Object>{
 		return grammar.getPrefixProperties(creator, tokener, isId);
 	}
 	
-	public void writeBasicValue(Entity entity, String className, String id) {
+	public void writeBasicValue(SendableEntityCreator creator, Entity entity, String className, String id) {
+		if(this.isId == false) {
+			if(creator instanceof SendableEntityCreatorTag) {
+				className = ((SendableEntityCreatorTag)creator).getTag();
+			}
+			id = null;
+		}
 		grammar.writeBasicValue(entity, className, id);
+	}
+	
+	public MapEntity withId(boolean value) {
+		this.isId = value;
+		return this;
+	}
+	
+	/**
+	 * @param value 
+	 * @return the addOwnerLink
+	 */
+	public boolean isAddOwnerLink(Object value) {
+		if(isId) {
+			return isId;
+		}
+		if(stack != null) {
+			return stack.getPrevItem() != value;
+		}
+		return false;
+	}
+	
+	public int getIndexOfClazz(String clazzName) {
+		if(clazzName == null) {
+			return -1;
+		}
+		int pos = 0;
+		for(Iterator<Object> i = this.iterator();i.hasNext();) {
+			Object item = i.next();
+			if (clazzName.equalsIgnoreCase(item.getClass().getName())) {
+				return pos;
+			}
+			pos++;
+		}
+		return -1;
+	}
+	
+	public int getIndexVisitedObjects(Object element) {
+		int pos = 0;
+		for(Iterator<Object> i = this.iterator();i.hasNext();) {
+			Object item = i.next();
+			if (item == element) {
+				return pos;
+			}
+			pos++;
+		}
+		return -1;
+	}
+	
+	public Object getVisitedObjects(int index) {
+		if (index>=0 && index < size()) {
+			return get(index);
+		}
+		return null;
+	}
+	
+	public String getClazz(int pos) {
+		if(pos<0 || pos > size()) {
+			return null;
+		}
+		Object item = get(pos);
+		if (item instanceof String) {
+			return "" + item;
+		}
+		return null;
+	}
+	
+	public String getLastClazz() {
+		Object item = last();
+		if(item != null) {
+			return item.getClass().getName();
+		}
+		return null;
 	}
 }

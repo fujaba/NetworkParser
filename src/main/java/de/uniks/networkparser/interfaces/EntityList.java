@@ -2,6 +2,7 @@ package de.uniks.networkparser.interfaces;
 
 import java.util.Comparator;
 
+import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.list.SimpleList;
 
 public interface EntityList extends BaseItem{
@@ -25,4 +26,8 @@ public interface EntityList extends BaseItem{
 	public boolean isComparator();
 	
 	public Comparator<Object> comparator();
+	
+	public int size();
+	
+	public BaseItem withValue(Buffer values);
 }

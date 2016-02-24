@@ -9,7 +9,7 @@ import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 
-public class AbstractArray<V> implements BaseItem, Iterable<V>  {
+public abstract class AbstractArray<V> implements BaseItem, Iterable<V>  {
 	/** Is Allow Duplicate Items in List	 */
 	public static final byte ALLOWDUPLICATE = 0x01;
 	/** Is Allow Empty Value in List (null)  */
@@ -700,6 +700,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		return sb.toString();
 	}
 
+	@Override
 	public AbstractArray<V> with(Object... values) {
 		if(values==null){
 			return this;
@@ -715,7 +716,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		return this;
 	}
 
-	public AbstractArray<V> withoutAll(Object... values) {
+	public AbstractArray<V> without(Object... values) {
 		if(values==null){
 			return this;
 		}
@@ -1326,9 +1327,7 @@ public class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		return null;
 	}
 
-	public BaseItem getNewList(boolean keyValue) {
-		return new AbstractArray<V>().withFlag(this.flag);
-	}
+	public abstract BaseItem getNewList(boolean keyValue);
 
 	/**
 	 * Returns a view of the portion of this list between the specified
