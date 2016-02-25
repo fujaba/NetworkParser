@@ -116,38 +116,10 @@ public abstract class IdMap implements Map<String, Object>, Iterable<SendableEnt
 	 *			if the clazzName is the Fullname for search
 	 * @return return a Creator class for a clazz name
 	 */
-	public SendableEntityCreator getCreator(String clazz, boolean fullName) 
-	{
+	public SendableEntityCreator getCreator(String clazz, boolean fullName) {
 		Object creator = this.creators.getValue(clazz);
-	
-		if (creator != null) {
+		if (creator != null || fullName ) {
 			return (SendableEntityCreator) creator;
-		}
-		else if (fullName)
-		{
-		   // try reflection
-		   int splitPos = clazz.lastIndexOf('.');
-		   if (splitPos >= 0)
-		   {
-		      String creatorName = clazz.substring(0, splitPos+1)
-		            + "util." 
-		            + clazz.substring(splitPos+1)
-		            + "Creator";
-		      try
-            {
-               Class creatorClass = Class.forName(creatorName);
-               creator = creatorClass.newInstance();
-               if (creator != null)
-               {
-                  this.creators.put(clazz, (SendableEntityCreator) creator);
-               }
-               return (SendableEntityCreator) creator;
-            }
-            catch (Exception e)
-            {
-               return null;
-            }
-		   }
 		}
 		String endTag;
 		if(clazz.lastIndexOf(ENTITYSPLITTER)>=0) {
