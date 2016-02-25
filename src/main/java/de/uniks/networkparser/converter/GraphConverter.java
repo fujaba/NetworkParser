@@ -34,13 +34,13 @@ import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphDiff;
 import de.uniks.networkparser.graph.GraphEntity;
-import de.uniks.networkparser.graph.GraphIdMap;
 import de.uniks.networkparser.graph.GraphImage;
 import de.uniks.networkparser.graph.GraphLabel;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.graph.GraphPattern;
 import de.uniks.networkparser.graph.GraphSimpleSet;
+import de.uniks.networkparser.graph.GraphTokener;
 import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -79,7 +79,7 @@ public class GraphConverter implements Converter{
 	}
 
 	public JsonObject convertToJson(JsonArray list, boolean removePackage) {
-		return convertToJson(GraphIdMap.OBJECT, list, removePackage);
+		return convertToJson(GraphTokener.OBJECT, list, removePackage);
 	}
 
 	public GraphList convertGraphList(String typ, JsonArray list,
@@ -228,7 +228,7 @@ public class GraphConverter implements Converter{
 
 	private JsonObject parseEdge(String typ, Clazz source, Clazz target, Association edge, boolean shortName, ArrayList<String> ids) {
 		JsonObject child = new JsonObject().withKeyValue(TYP, edge.getType());
-		if (typ.equals(GraphIdMap.OBJECT)) {
+		if (typ.equals(GraphTokener.OBJECT)) {
 			child.put(SOURCE, addInfo(edge, true).withValue(ID, source.getId() + " : "
 					+ source.getName(shortName)));
 			child.put(TARGET, addInfo(edge.getOther(), true).withValue(ID, target.getId() + " : "
@@ -281,7 +281,7 @@ public class GraphConverter implements Converter{
 		for (GraphMember entity : children) {
 			JsonObject item = parseEntity(typ, entity, shortName);
 			if (item != null) {
-				if (typ == GraphIdMap.CLASS && item.has(ID)) {
+				if (typ == GraphTokener.CLASS && item.has(ID)) {
 					String key = item.getString(ID);
 					if (ids.contains(key)) {
 						continue;
@@ -300,9 +300,9 @@ public class GraphConverter implements Converter{
 	public JsonObject parseEntity(String typ, GraphMember entity,
 			boolean shortName) {
 		if (typ == null) {
-			typ = GraphIdMap.OBJECT;
+			typ = GraphTokener.OBJECT;
 			if (entity.getName() == null) {
-				typ = GraphIdMap.CLASS;
+				typ = GraphTokener.CLASS;
 			}
 		}
 		JsonObject item = new JsonObject();
@@ -310,7 +310,7 @@ public class GraphConverter implements Converter{
 		if(entity instanceof Clazz) {
 			item.put(TYP, CLAZZ);
 			Clazz element = (Clazz) entity;
-			if (typ == GraphIdMap.OBJECT) {
+			if (typ == GraphTokener.OBJECT) {
 				item.put(ID,
 						element.getId() + " : " + element.getName(shortName));
 			} else {
@@ -367,9 +367,9 @@ public class GraphConverter implements Converter{
 			boolean shortName) {
 		JsonArray result = new JsonArray();
 		String splitter = "";
-		if (typ.equals(GraphIdMap.OBJECT)) {
+		if (typ.equals(GraphTokener.OBJECT)) {
 			splitter = "=";
-		} else if (typ.equals(GraphIdMap.CLASS)) {
+		} else if (typ.equals(GraphTokener.CLASS)) {
 			splitter = ":";
 		}
 		GraphSimpleSet children = GraphUtil.getChildren(list);

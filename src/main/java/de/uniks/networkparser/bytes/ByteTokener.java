@@ -41,6 +41,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ByteItem;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 /**
  * The Class ByteIdMap.
  */
@@ -216,6 +217,7 @@ public class ByteTokener extends Tokener {
 			addClazzTyp(msg, reference.getClass().getName(), map);
 		}
 
+		map.with(entity);
 		String[] properties = creator.getProperties();
 		if (properties != null) {
 			Object referenceObj = creator.getSendableInstance(true);
@@ -430,7 +432,18 @@ public class ByteTokener extends Tokener {
 		}
 		if (typ == ByteTokener.DATATYPE_CLAZZID) {
 			typ = buffer.getByte();
-			SendableEntityCreator eventCreater = map.getCreator(new String(new byte[]{typ}), true);
+			String id = new String(new byte[]{typ});
+			SendableEntityCreator eventCreater = map.getCreator(id, true);
+			if(eventCreater == null) {
+				SimpleKeyValueList<String, SendableEntityCreator> creators = map.getMap().getCreators();
+				for(int i=0;i<creators.size();i++) {
+					if(creators.getKeyByIndex(i).startsWith(id)) {
+						eventCreater = creators.getValueByIndex(i);
+						break;
+					}
+				}
+			}
+			
 			return decodeClazz(buffer, eventCreater, map);
 		}
 		if (typ == ByteTokener.DATATYPE_ASSOC) {

@@ -27,10 +27,10 @@ import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.GraphEntity;
-import de.uniks.networkparser.graph.GraphIdMap;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.graph.GraphSimpleSet;
+import de.uniks.networkparser.graph.GraphTokener;
 import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
@@ -130,12 +130,12 @@ public class YUMLConverter implements Converter{
 			visited.add(clazzEntity);
 		}
 		if (typ == null) {
-			typ = GraphIdMap.OBJECT;
+			typ = GraphTokener.OBJECT;
 			if (clazzEntity.getName(false) == null) {
-				typ = GraphIdMap.CLASS;
+				typ = GraphTokener.CLASS;
 			}
 		}
-		if (typ == GraphIdMap.OBJECT) {
+		if (typ == GraphTokener.OBJECT) {
 			// String text = entity.getId() + " : " + entity.getClassName();
 			// return "["
 			// + text
@@ -160,9 +160,9 @@ public class YUMLConverter implements Converter{
 		Iterator<GraphMember> i = GraphUtil.getChildren(entity).iterator();
 		if (i.hasNext()) {
 			String splitter = "";
-			if (typ.equals(GraphIdMap.OBJECT)) {
+			if (typ.equals(GraphTokener.OBJECT)) {
 				splitter = "=";
-			} else if (typ.equals(GraphIdMap.CLASS)) {
+			} else if (typ.equals(GraphTokener.CLASS)) {
 				splitter = ":";
 
 			}

@@ -12,7 +12,6 @@ import de.uniks.networkparser.converter.YUMLConverter;
 import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
-import de.uniks.networkparser.graph.GraphIdMap;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.test.model.ChatMessage;
 import de.uniks.networkparser.test.model.Room;
@@ -34,11 +33,11 @@ public class YUmlTest {
 
 		IdMap jsonMap = new IdMap();
 		jsonMap.with(new ChatMessageCreator());
-		GraphIdMap yumlParser = new GraphIdMap();
+		IdMap yumlParser = new IdMap();
 		yumlParser.withKeyValue(jsonMap.getKeyValue())
 			.with(jsonMap);
 
-		String parseObject = yumlParser.parseObject(chatMessage);
+		String parseObject = yumlParser.toObjectDiagram(chatMessage).toString();
 		assertEquals(
 				url
 						+ "[J1.C1 : ChatMessage|sender=Stefan Lindel;txt=Dies ist eine Testnachricht;count=0;activ=false]-[J1.D2 : Date|value=1350978000017]",
@@ -54,9 +53,9 @@ public class YUmlTest {
 		uni.addToRooms(room);
 
 		assertEquals(url + "[J1.U3 : University]",
-				url + yumlParser.parseObject(uni));
+				url + yumlParser.toObjectDiagram(uni).toString());
 
-		assertEquals(url + "[University]", url + yumlParser.parseClass(uni));
+		assertEquals(url + "[University]", url + yumlParser.toClassDiagram(uni).toString());
 	}
 
 	@Test

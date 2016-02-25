@@ -28,7 +28,7 @@ import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.list.SimpleSet;
 
 public class GraphList extends GraphModel implements BaseItem{
-	private String typ=GraphIdMap.CLASS;
+	private String typ=GraphTokener.CLASS;
 	private String style;
 	private GraphOptions options;
 

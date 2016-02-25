@@ -39,6 +39,8 @@ import de.uniks.networkparser.bytes.ByteTokener;
 import de.uniks.networkparser.converter.ByteConverter;
 import de.uniks.networkparser.event.ObjectMapEntry;
 import de.uniks.networkparser.event.util.DateCreator;
+import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.graph.GraphTokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ByteItem;
 import de.uniks.networkparser.interfaces.Entity;
@@ -114,9 +116,6 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	
 	private ByteTokener byteTokener = new ByteTokener();
 	
-	
-//FIXME	protected NetworkParserLog logger = new NetworkParserLog();
-
 	/** The updatelistener for Notification changes. */
 	protected Object listener;
 
@@ -962,6 +961,24 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 		return byteTokener.encode(object, map);
 	}
 	
+	public GraphList toObjectDiagram(Object object) {
+		MapEntity map = new MapEntity(this, filter, grammar, searchForSuperCreator);
+		map.withGraphFlag(GraphTokener.FLAG_OBJECT);
+		return new GraphTokener().parsing(object, map);
+	}
+	
+	public GraphList toClassDiagram(Object object) {
+		MapEntity map = new MapEntity(this, filter, grammar, searchForSuperCreator);
+		map.withGraphFlag(GraphTokener.FLAG_CLASS);
+		return new GraphTokener().parsing(object, map);
+	}
+	
+	public GraphList getDiffList(Object source, Object target) {
+		GraphList sourceModel = toObjectDiagram(source);
+		GraphList targetModel = toObjectDiagram(target);
+		return new GraphTokener().diffModel(sourceModel, targetModel);
+	}
+	
 	/**
 	 * Convert to JsonArray in the resource
 	 *
@@ -1198,7 +1215,6 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 		}
 	}
 
-	//FIXME REMOVE
 	public SimpleKeyValueList<String, Object> getKeyValue() {
 		return keyValue;
 	}

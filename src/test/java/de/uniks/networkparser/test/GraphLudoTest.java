@@ -22,8 +22,10 @@
 package de.uniks.networkparser.test;
 
 import java.io.PrintStream;
+
 import org.junit.Assert;
 import org.junit.Test;
+
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.CharacterBuffer;
@@ -31,7 +33,7 @@ import de.uniks.networkparser.converter.GraphConverter;
 import de.uniks.networkparser.event.util.DateCreator;
 import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
-import de.uniks.networkparser.graph.GraphIdMap;
+import de.uniks.networkparser.graph.GraphTokener;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.test.model.SortedMsg;
@@ -93,7 +95,7 @@ public class GraphLudoTest
 	  GraphConverter graphConverter = new GraphConverter();
 
 	  // May be 8 Asssocs and write 11
-	  JsonObject converter=graphConverter.convertToJson(GraphIdMap.CLASS, jsonArray, true);
+	  JsonObject converter=graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
 	  showDebugInfos(converter, 2758, null);
    }
    private void showDebugInfos(JsonObject json, int len, PrintStream stream) {
@@ -118,10 +120,10 @@ public class GraphLudoTest
 
 	   JsonArray jsonArray = map.toJsonArray(root, new Filter().withFull(true));
 	   GraphConverter graphConverter = new GraphConverter();
-	  JsonObject objectModel=graphConverter.convertToJson(GraphIdMap.OBJECT, jsonArray, true);
+	  JsonObject objectModel=graphConverter.convertToJson(GraphTokener.OBJECT, jsonArray, true);
 	  showDebugInfos(objectModel, 658, null);
 
-	  JsonObject clazzModel=graphConverter.convertToJson(GraphIdMap.CLASS, jsonArray, true);
+	  JsonObject clazzModel=graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
 	  showDebugInfos(clazzModel, 492, null);
 	  Assert.assertEquals(new CharacterBuffer()
 			  .withLine("{")
@@ -181,7 +183,7 @@ public class GraphLudoTest
 	  JsonArray jsonArray = jsonIdMap.toJsonArray(ludo);
 	  GraphConverter graphConverter = new GraphConverter();
 
-	  JsonObject converter=graphConverter.convertToJson(GraphIdMap.CLASS, jsonArray, true);
+	  JsonObject converter=graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
 	  showDebugInfos(converter, 569, null);
  }
 

@@ -1,6 +1,7 @@
 package de.uniks.networkparser.test;
 
 import java.io.IOException;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -11,8 +12,8 @@ import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.Clazz.ClazzType;
 import de.uniks.networkparser.graph.DataType;
-import de.uniks.networkparser.graph.GraphIdMap;
 import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.graph.GraphTokener;
 import de.uniks.networkparser.xml.HTMLEntity;
 
 public class WriteJsonGraph {
@@ -29,7 +30,7 @@ public class WriteJsonGraph {
 		Assert.assertEquals(440, htmlEntity.toString(2).length());
 
 		DocEnvironment docEnvironment = new DocEnvironment();
-		GraphList model = new GraphList().withTyp(GraphIdMap.CLASS);
+		GraphList model = new GraphList().withTyp(GraphTokener.CLASS);
 
 		Clazz abstractArray = model.with(new Clazz().with("AbstractArray"));
 		abstractArray.createAttribute("elements", DataType.create("Object[]"));
@@ -76,7 +77,7 @@ public class WriteJsonGraph {
 		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/dagre.min.js");
 		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/drawer.js");
 
-		GraphList model = new GraphList().withTyp(GraphIdMap.CLASS);
+		GraphList model = new GraphList().withTyp(GraphTokener.CLASS);
 		Clazz uni = model.with(new Clazz().with("University"));
 		uni.createAttribute("name", DataType.STRING);
 		Clazz person = model.with(new Clazz().with("Person"));

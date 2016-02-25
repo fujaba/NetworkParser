@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.buffer.Tokener;
+import de.uniks.networkparser.graph.GraphTokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.Grammar;
@@ -25,6 +26,9 @@ public class MapEntity extends SimpleList<Object>{
 	private Object target;
 	private MapEntityStack stack;
 	private boolean isId = true;
+	/** The show line. */
+	private byte graphFlag = GraphTokener.FLAG_CLASS;
+
 	
 	/** boolean for switch of search for Interface or Abstract superclass for entity */
 	protected boolean searchForSuperCreator;
@@ -75,9 +79,6 @@ public class MapEntity extends SimpleList<Object>{
 	public boolean error(String method, String type, Object entity, String className) {
 		return false;
 	}
-//FIXME	public boolean error(String method, String type, Object entity, String className) {
-//		return this.map.getLogger().error(this.map, method, type, entity, filter, className, deep);
-//	}
 	public SendableEntityCreator getCreatorClass(Object reference) {
 		return map.getCreatorClass(reference);
 	}
@@ -286,5 +287,23 @@ public class MapEntity extends SimpleList<Object>{
 			return item.getClass().getName();
 		}
 		return null;
+	}
+
+	public MapEntity withGraphFlag(byte flag) {
+		if(flag == GraphTokener.FLAG_CLASS ) {
+			graphFlag = (byte) (graphFlag & (graphFlag & GraphTokener.FLAG_OBJECT) | GraphTokener.FLAG_CLASS);
+		} else if(flag == GraphTokener.FLAG_OBJECT ) {
+			graphFlag = (byte) (graphFlag & (graphFlag & GraphTokener.FLAG_CLASS) | GraphTokener.FLAG_OBJECT);
+		} else {
+			this.graphFlag = (byte) (this.graphFlag | flag);
+		}
+		return this;
+	}
+	
+	/**
+	 * @return the type
+	 */
+	public boolean isFlag(byte flag) {
+		return (graphFlag & flag) != 0;
 	}
 }

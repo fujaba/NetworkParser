@@ -2,38 +2,53 @@ package de.uniks.networkparser.test;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Assert;
+import java.util.Date;
+
 import org.junit.Test;
 
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.buffer.ByteBuffer;
-import de.uniks.networkparser.converter.ByteConverterHex;
-import de.uniks.networkparser.converter.ByteConverterString;
-import de.uniks.networkparser.interfaces.ByteItem;
-import de.uniks.networkparser.test.model.FullAssocs;
-import de.uniks.networkparser.test.model.StringMessage;
+import de.uniks.networkparser.test.model.ChatMessage;
+import de.uniks.networkparser.test.model.Room;
 import de.uniks.networkparser.test.model.University;
-import de.uniks.networkparser.test.model.util.FullAssocsCreator;
-import de.uniks.networkparser.test.model.util.SortedMsgCreator;
-import de.uniks.networkparser.test.model.util.StringMessageCreator;
+import de.uniks.networkparser.test.model.util.ChatMessageCreator;
+import de.uniks.networkparser.test.model.util.RoomCreator;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
-import de.uniks.networkparser.xml.XMLEntity;
-import de.uniks.networkparser.xml.XMLTokener;
 
 public class SimpleTest {
 	@Test
-	public void testByteDefault(){
-		IdMap map= new IdMap();
-		map.with(new UniversityCreator());
-		University uni = new University();
-		uni.setName("Uni Kassel");
-		ByteItem data = map.toByteItem(uni);
-		ByteBuffer byteBuffer = data.getBytes(false);
-//		assertEquals("ALde.uniks.networkparser.test.model.UniversityOUni Kassel", data.toString(new ByteConverterString()));
-		assertEquals("#uOUni Kassel", data.toString(new ByteConverterString()));
-		assertEquals(13, byteBuffer.length());
-		University decodeObj = (University) map.decode(byteBuffer);
+	public void testYUML() {
+		String url = "http://yuml.me/diagram/class/";
+		ChatMessage chatMessage = new ChatMessage();
+		chatMessage.setText("Dies ist eine Testnachricht");
+		chatMessage.setSender("Stefan Lindel");
+		Date date = new Date();
+		date.setTime(1350978000017L);
+		chatMessage.setDate(date);
 
-		assertEquals(uni.getName(), decodeObj.getName());
+		IdMap jsonMap = new IdMap();
+		jsonMap.with(new ChatMessageCreator());
+		IdMap yumlParser = new IdMap();
+		yumlParser.withKeyValue(jsonMap.getKeyValue())
+			.with(jsonMap);
+
+		String parseObject = yumlParser.toObjectDiagram(chatMessage).toString();
+		assertEquals(
+				url
+						+ "[J1.C1 : ChatMessage|sender=Stefan Lindel;txt=Dies ist eine Testnachricht;count=0;activ=false]-[J1.D2 : Date|value=1350978000017]",
+				url + parseObject);
+
+		jsonMap = new IdMap();
+		jsonMap.with(new UniversityCreator());
+		jsonMap.with(new RoomCreator());
+		University uni = new University();
+		uni.setName("Wilhelmshoehe Allee");
+		Room room = new Room();
+		room.setName("1340");
+		uni.addToRooms(room);
+
+		assertEquals(url + "[J1.U3 : University]",
+				url + yumlParser.toObjectDiagram(uni).toString());
+
+		assertEquals(url + "[University]", url + yumlParser.toClassDiagram(uni).toString());
 	}
 }

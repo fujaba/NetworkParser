@@ -110,7 +110,7 @@ public class Attribute extends Value {
 
 
 	public String getValue(String typ, boolean shortName) {
-		if (typ.equals(GraphIdMap.OBJECT)) {
+		if (typ.equals(GraphTokener.OBJECT)) {
 			if(DataType.STRING == this.type && !this.value.startsWith("\"")){
 				return "\""+ this.value + "\"";
 			}

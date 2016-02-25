@@ -52,9 +52,4 @@ public class MethodSet extends SimpleSet<Method>{
 	public MethodSet hasName(String otherValue) {
 		return filter(Method.NAME.equals(otherValue));
 	}
-
-//FIXME		getBody()
-//	getName(boolean)
-//	getReturnType()
-//	getThrows()
 }

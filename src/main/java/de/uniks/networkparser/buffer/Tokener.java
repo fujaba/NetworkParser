@@ -8,7 +8,6 @@ import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.list.SimpleList;
 
 public class Tokener implements BufferItem {
-	//FIXME REMOVE
 	protected NetworkParserLog logger = new NetworkParserLog();
 
 	public void parseToEntity(Entity entity) {}

@@ -379,7 +379,8 @@ public class ByteEntity implements ByteItem {
 			for(int i=1;i<values.length;i++) {
 				value[i-1] = (Byte) values[i];
 			}
-			withValue((Byte)values[0], value);
+			this.typ = (Byte)values[0];
+			this.values = value;
 		}
 		return this;
 	}

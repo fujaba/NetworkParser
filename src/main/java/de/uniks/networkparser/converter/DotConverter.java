@@ -7,8 +7,8 @@ import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphEntity;
-import de.uniks.networkparser.graph.GraphIdMap;
 import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.graph.GraphTokener;
 import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferItem;
@@ -199,9 +199,9 @@ public class DotConverter implements Converter {
 	}
 
 	private String getTyp(GraphEntity item, String typ, boolean shortName) {
-		if (typ.equals(GraphIdMap.OBJECT)) {
+		if (typ.equals(GraphTokener.OBJECT)) {
 			return item.getId();
-		} else if (typ.equals(GraphIdMap.CLASS)) {
+		} else if (typ.equals(GraphTokener.CLASS)) {
 			return item.getName(shortName);
 		}
 		return "";
@@ -218,7 +218,7 @@ public class DotConverter implements Converter {
 		GraphList root = (GraphList) entity;
 		StringBuilder sb=new StringBuilder();
 		String graphTyp = "graph";
-		if(GraphIdMap.OBJECT.equals(root.getTyp())) {
+		if(GraphTokener.OBJECT.equals(root.getTyp())) {
 			sb.append(" ObjectDiagram {"+BaseItem.CRLF);
 		}else{
 			sb.append(" ClassDiagram {"+BaseItem.CRLF);
@@ -227,7 +227,7 @@ public class DotConverter implements Converter {
 		sb.append("   edge [fontsize = 10, fontname = \"Arial\"];"+BaseItem.CRLF);
 		sb.append("   compound=true;" + BaseItem.CRLF +BaseItem.CRLF);
 		boolean isObjectdiagram =false;
-		isObjectdiagram = GraphIdMap.OBJECT.equals(root.getTyp());
+		isObjectdiagram = GraphTokener.OBJECT.equals(root.getTyp());
 
 		for(GraphEntity node : root.getNodes()) {
 			sb.append(node.getName(false));
