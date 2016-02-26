@@ -43,6 +43,12 @@ public abstract class GraphEntity extends GraphMember {
 			}
 			return name.replace("$", ".");
 		}
+		if (name.endsWith("..."))
+		{
+		   String realName = name.substring(0, name.length()-3);
+		   int pos = realName.lastIndexOf(".");
+		   return name.substring(pos+1);
+		}
 		return name.substring(name.lastIndexOf(".") + 1);
 	}
 
