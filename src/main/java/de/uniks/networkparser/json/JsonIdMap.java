@@ -578,8 +578,9 @@ public class JsonIdMap extends IdMap implements IdMapDecoder{
 					Object kid = jsonArray.get(i);
 					if (kid instanceof JsonObject) {
 						// got a new kid, create it
-						creator.setValue(target, property,
-								decoding((JsonObject) kid, filter), NEW);
+						Object decodedObject = decoding((JsonObject) kid, filter);
+                  creator.setValue(target, property,
+								decodedObject, NEW);
 					} else {
 						creator.setValue(target, property, kid, NEW);
 					}
