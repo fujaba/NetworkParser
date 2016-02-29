@@ -569,17 +569,22 @@ public class EntityUtil {
 		return emfTypes.indexOf(" " + tag.toUpperCase() + " ") >= 0;
 	}
 
-	private static final String primitiveTypes = " void String long Long int Integer char Char boolean Boolean byte Byte float Float double Double Object java.util.Date ";
-	private static final String numericTypes = " long Long int Integer byte Byte float Float double Double ";
+	private static final String primitiveTypes = " void String char Char boolean Boolean byte Byte Object java.util.Date ";
+	private static final String numericTypes = " long Long short Short int Integer byte Byte float Float double Double ";
 	private static final String javaLang="java.lang.";
 	public static boolean isPrimitiveType(String type) {
-
-		if (type == null)
+		if (type == null) {
 			return false;
-		if(type.startsWith(javaLang)) {
-			type = type.substring(javaLang.length() );
 		}
-		return primitiveTypes.indexOf(" " + type + " ") >= 0;
+		if (type.endsWith("...")) {
+			 type = type.substring(0, type.length()-3);
+		}
+		if(type.startsWith(javaLang)) {
+			type = " " + type.substring(javaLang.length() ) + " ";
+		} else {
+			type = " " + type + " ";
+		}
+		return numericTypes.indexOf(type) >= 0 || primitiveTypes.indexOf(type) >= 0;
 	}
 	
 	public static boolean isNumericType(String type) {
