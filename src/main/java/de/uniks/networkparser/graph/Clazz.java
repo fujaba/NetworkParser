@@ -368,9 +368,9 @@ public class Clazz extends GraphEntity {
 	}
 
 	ClazzSet getEdges(AssociationTypes typ, AssociationTypes otherTyp) {
-		ClazzSet kindClazzes = new ClazzSet();
+		ClazzSet kidClazzes = new ClazzSet();
 		if (associations == null || typ == null) {
-			return kindClazzes;
+			return kidClazzes;
 		}
 		for (Association assoc : getEdges()) {
 			if(typ != assoc.getType()) {
@@ -378,10 +378,10 @@ public class Clazz extends GraphEntity {
 			}
 			if(otherTyp == null || assoc.getOtherType() == otherTyp) {
 				Clazz clazz = assoc.getOtherClazz();
-				kindClazzes.with(clazz);
+				kidClazzes.with(clazz);
 			}
 		}
-		return kindClazzes;
+		return kidClazzes;
 	}
 	
 	void createAssociation(AssociationTypes direction, AssociationTypes backDirection, Clazz... values) {
