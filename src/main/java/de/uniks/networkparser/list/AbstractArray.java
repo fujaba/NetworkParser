@@ -761,7 +761,10 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V>  {
 		}else {
 			for(Iterator<?> i = list.iterator();i.hasNext();) {
 				Object item = i.next();
-				this.addKey(size, item, newSize);
+				int pos = hasKey(item);
+				if(pos>=0) {
+					this.addKey(pos, item, newSize);
+				}
 			}
 		}
 		return this;
