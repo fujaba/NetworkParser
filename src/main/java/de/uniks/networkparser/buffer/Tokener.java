@@ -55,13 +55,7 @@ public class Tokener implements BufferItem {
 		}
 		return true;
 	}
-	@Override
-	public byte[] toArray() {
-		if(buffer != null) {
-			return buffer.toArray();
-		}
-		return null;
-	}
+
 	@Override
 	public BufferItem withLookAHead(CharSequence lookahead) {
 		if(buffer != null) {
@@ -119,6 +113,23 @@ public class Tokener implements BufferItem {
 		}
 		return 0;
 	}
+	
+	@Override
+	public byte getByte() {
+		if(buffer != null) {
+			return buffer.getByte();
+		}
+		return 0;
+	}
+	
+	@Override
+	public byte[] array(int len, boolean current) {
+		if(buffer != null) {
+			return buffer.array(len, current);
+		}
+		return null;
+	}
+	
 	@Override
 	public char getCurrentChar() {
 		if(buffer != null) {
@@ -207,13 +218,6 @@ public class Tokener implements BufferItem {
 	
 	public Entity newInstance() {
 		return null;
-	}
-	public BaseItem newInstance(Buffer values) {
-		Entity newInstance = newInstance();
-		if(newInstance != null) {
-			newInstance.withValue(values);
-		}
-		return newInstance;
 	}
 	
 	public EntityList newInstanceList() {

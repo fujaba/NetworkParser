@@ -1,31 +1,14 @@
-package de.uniks.networkparser;
+package de.uniks.networkparser.xml;
 
-/*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
-
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
-
- http://ec.europa.eu/idabc/eupl5
-
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
-*/
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.MapEntity;
+import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.AssociationTypes;
 import de.uniks.networkparser.graph.Attribute;
@@ -39,14 +22,10 @@ import de.uniks.networkparser.graph.Literal;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
-import de.uniks.networkparser.xml.XMLEntity;
-import de.uniks.networkparser.xml.XMLTokener;
-import de.uniks.networkparser.xml.util.XMLEntityCreator;
 
-public class EMFIdMap extends IdMap {
+public class EMFTokener extends Tokener{
 	public static final String ECLASS = "ecore:EClass";
 	public static final String ETYPE = "eType";
 	public static final String EAttribute = "ecore:EAttribute";
@@ -57,26 +36,55 @@ public class EMFIdMap extends IdMap {
 	public static final String UPPERBOUND = "upperBound";
 	public static final String PARENT = "parent";
 
-
 	public static final String XSI_TYPE = "xsi:type";
 	public static final String XMI_ID = "xmi:id";
 	public static final String NAME = "name";
 	HashMap<String, Integer> runningNumbers = null;
 	private GraphList model;
+//	private SendableEntityCreator defaultFactory = new XMLEntityCreator();
+	
+	/**
+	 * Skip the Current Entity to &gt;.
+	 */
+	protected void skipEntity() {
+		skipTo('>', false);
+		// Skip >
+		nextClean(false);
+	}
+	
+	public String skipHeader() {
+		boolean skip=false;
+		CharacterBuffer tag;
+		do {
+			tag = this.getString(2);
+			if(tag.equals("<?")) {
+				skipEntity();
+				skip = true;
+			} else if(tag.equals("<!")) {
+				skipEntity();
+				skip = true;
+			} else {
+				skip = false;
+			}
+		}while(skip);
+		String item = tag.toString();
+		this.buffer.withLookAHead(item);
+		return item;
+	}
 
-	public XMLEntity encode(Object entity) {
+	public XMLEntity encode(Object entity, MapEntity map) {
 		XMLEntity result = new XMLEntity();
 
 		String typetag = entity.getClass().getName().replaceAll("\\.", ":");
 		result.withTag(typetag);
 
-		encodeChildren(entity, result);
+		encodeChildren(entity, result, map);
 
 		return result;
 	}
 
-	private void encodeChildren(Object entity, XMLEntity parent) {
-		SendableEntityCreator creatorClass = this.getCreatorClass(entity);
+	private void encodeChildren(Object entity, XMLEntity parent, MapEntity map) {
+		SendableEntityCreator creatorClass = map.getCreatorClass(entity);
 
 		for (String propertyName : creatorClass.getProperties()) {
 			Object propertyValue = creatorClass.getValue(entity, propertyName);
@@ -95,7 +103,7 @@ public class EMFIdMap extends IdMap {
 
 					child.put(XSI_TYPE, typetag);
 
-					encodeChildren(childValue, child);
+					encodeChildren(childValue, child, map);
 				}
 			} else {
 				XMLEntity child = new XMLEntity();
@@ -108,33 +116,24 @@ public class EMFIdMap extends IdMap {
 
 				child.put(XSI_TYPE, typetag);
 
-				encodeChildren(propertyValue, child);
+				encodeChildren(propertyValue, child, map);
 			}
 		}
 	}
 
-	public EMFIdMap withModel(GraphList model) {
-		this.model = model;
-		return this;
-	}
-
 	/**
-	 * @param tokener XMLTokener
-	 * @param defaultFactory DefaultTokener
+	 * @param map decoding runtime values
 	 * @return decoded Object
 	 */
-	public Object decode(XMLTokener tokener, SendableEntityCreatorTag defaultFactory) {
-		if (defaultFactory == null) {
-			defaultFactory = new XMLEntityCreator();
-		}
-		tokener.skipHeader();
+	public Object decode(MapEntity map) {
+		skipHeader();
 		XMLEntity xmlEntity = new XMLEntity();
-		xmlEntity.withValue(tokener);
+		xmlEntity.withValue(this);
 		// build root entity
 		String tag = xmlEntity.getTag();
 		String[] splitTag = tag.split("\\:");
 		String className = splitTag[1];
-		SendableEntityCreator rootFactory = getCreator(className, false);
+		SendableEntityCreator rootFactory = map.getCreator(className, false);
 
 		Object rootObject = null;
 
@@ -149,9 +148,9 @@ public class EMFIdMap extends IdMap {
 
 		addXMIIds(xmlEntity, null);
 
-		addChildren(xmlEntity, rootFactory, rootObject);
+		addChildren(xmlEntity, rootFactory, rootObject, map);
 
-		addValues(rootFactory, xmlEntity, rootObject);
+		addValues(rootFactory, xmlEntity, rootObject, map);
 
 		return rootObject;
 	}
@@ -202,7 +201,7 @@ public class EMFIdMap extends IdMap {
 		}
 	}
 
-	private void addValues(SendableEntityCreator rootFactory, XMLEntity xmlEntity, Object rootObject) {
+	private void addValues(SendableEntityCreator rootFactory, XMLEntity xmlEntity, Object rootObject, MapEntity map) {
 		if (rootFactory == null) {
 			return;
 		}
@@ -233,7 +232,7 @@ public class EMFIdMap extends IdMap {
 					} else {
 						myRef = "_" + myRef.subSequence(0, 1) + "0";
 					}
-					Object object = getObject(myRef);
+					Object object = map.getObject(myRef);
 					if (object != null) {
 						rootFactory.setValue(rootObject, key, object, "");
 					}
@@ -243,22 +242,22 @@ public class EMFIdMap extends IdMap {
 				String tagChar = xmlEntity.getTag().substring(0, 1);
 				for (String ref : value.split(" ")) {
 					ref = "_" + tagChar + ref.substring(1);
-					if (getObject(ref) != null) {
-						rootFactory.setValue(rootObject, key, getObject(ref), "");
+					if (map.getObject(ref) != null) {
+						rootFactory.setValue(rootObject, key, map.getObject(ref), "");
 					}
 				}
 			} else if (value.indexOf('_') > 0) {
 				// maybe multiple separated by blanks
 				for (String ref : value.split(" ")) {
-					if (getObject(ref) != null) {
-						rootFactory.setValue(rootObject, key, getObject(ref), "");
+					if (map.getObject(ref) != null) {
+						rootFactory.setValue(rootObject, key, map.getObject(ref), "");
 					}
 				}
 			} else if (value.startsWith("$")) {
 				for (String ref : value.split(" ")) {
 					String myRef = "_" + ref.substring(1);
-					if (getObject(myRef) != null && rootFactory != null) {
-						rootFactory.setValue(rootObject, key, getObject(myRef), "");
+					if (map.getObject(myRef) != null && rootFactory != null) {
+						rootFactory.setValue(rootObject, key, map.getObject(myRef), "");
 					}
 				}
 			} else {
@@ -279,16 +278,16 @@ public class EMFIdMap extends IdMap {
 				kidId = "_" + kidId.substring(1);
 			}
 
-			Object kidObject = this.getObject(kidId);
+			Object kidObject = map.getObject(kidId);
 
-			SendableEntityCreator kidFactory = this.getCreatorClass(kidObject);
+			SendableEntityCreator kidFactory = map.getCreatorClass(kidObject);
 
-			addValues(kidFactory, (XMLEntity)kidEntity, kidObject);
+			addValues(kidFactory, (XMLEntity)kidEntity, kidObject, map);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	private void addChildren(XMLEntity xmlEntity, SendableEntityCreator rootFactory, Object rootObject) {
+	private void addChildren(XMLEntity xmlEntity, SendableEntityCreator rootFactory, Object rootObject, MapEntity map) {
 		String id = (String) xmlEntity.getValue(XMI_ID);
 		int pos;
 
@@ -296,7 +295,7 @@ public class EMFIdMap extends IdMap {
 			id = "_" + id.substring(1);
 		}
 
-		this.put(id, rootObject);
+		map.getMap().put(id, rootObject);
 
 		Iterator<EntityList> iterator = xmlEntity.getChildren().iterator();
 		while (iterator.hasNext()) {
@@ -320,7 +319,7 @@ public class EMFIdMap extends IdMap {
 					String objectId = split[1];
 					objectId = objectId.replace('@', '_');
 					objectId = objectId.replace(".", "");
-					Object object = this.getObject(objectId);
+					Object object = map.getObject(objectId);
 
 					if (object != null) {
 						// yes we know it
@@ -349,8 +348,8 @@ public class EMFIdMap extends IdMap {
 					typeName = tag;
 				}
 			} else {
-				Clazz clazz = GraphUtil.getByObject(model, rootObject.getClass().getName(), false);
-				Association edge = model.getEdge(clazz, tag);
+				Clazz clazz = GraphUtil.getByObject(getModel(), rootObject.getClass().getName(), false);
+				Association edge = getModel().getEdge(clazz, tag);
 				if (edge != null) {
 					typeName = edge.getOther().getClazz().getName(false);
 				}
@@ -362,9 +361,9 @@ public class EMFIdMap extends IdMap {
 			}
 
 			if (typeName != null) {
-				SendableEntityCreator kidFactory = getCreator(typeName, false);
+				SendableEntityCreator kidFactory = map.getCreator(typeName, false);
 				if (kidFactory == null && typeName.endsWith("s")) {
-					kidFactory = getCreator(typeName.substring(0, typeName.length() - 1), false);
+					kidFactory = map.getCreator(typeName.substring(0, typeName.length() - 1), false);
 				}
 				Object kidObject = kidFactory.getSendableInstance(false);
 
@@ -374,12 +373,12 @@ public class EMFIdMap extends IdMap {
 					rootFactory.setValue(rootObject, tag, kidObject, "");
 				}
 
-				addChildren(kidEntity, kidFactory, kidObject);
+				addChildren(kidEntity, kidFactory, kidObject, map);
 			}
 		}
 	}
 
-	public static GraphList decoding(String content) {
+	public GraphList decoding(String content) {
 		GraphList model = new GraphList();
 
 		XMLEntity ecore = new XMLEntity().withValue(content);
@@ -392,19 +391,19 @@ public class EMFIdMap extends IdMap {
 				continue;
 			}
 			XMLEntity xml = (XMLEntity) eClassifier;
-			if (xml.has(EMFIdMap.XSI_TYPE)== false) { 
+			if (xml.has(EMFTokener.XSI_TYPE)== false) { 
 				continue;
 			}
 			
-			if (xml.getString(EMFIdMap.XSI_TYPE).equalsIgnoreCase(ECLASS)) {
-				Clazz clazz = new Clazz().with(xml.getString(EMFIdMap.NAME));
+			if (xml.getString(EMFTokener.XSI_TYPE).equalsIgnoreCase(ECLASS)) {
+				Clazz clazz = new Clazz().with(xml.getString(EMFTokener.NAME));
 				model.with(clazz);
 				for(EntityList child : xml.getChildren()) {
 					if(child instanceof Entity == false) {
 						continue;
 					}
 					Entity childItem = (Entity) child;
-					String typ = childItem.getString(EMFIdMap.XSI_TYPE);
+					String typ = childItem.getString(EMFTokener.XSI_TYPE);
 					if(typ.equals(EAttribute)) {
 						String etyp = EntityUtil.getId(childItem.getString(ETYPE));
 						if (EntityUtil.isEMFType(etyp)) {
@@ -413,7 +412,7 @@ public class EMFIdMap extends IdMap {
 						if (EntityUtil.isPrimitiveType(etyp.toLowerCase())) {
 							etyp = etyp.toLowerCase();
 						}
-						clazz.with(new Attribute(EntityUtil.toValidJavaId(childItem.getString(EMFIdMap.NAME)), DataType.create(etyp)));
+						clazz.with(new Attribute(EntityUtil.toValidJavaId(childItem.getString(EMFTokener.NAME)), DataType.create(etyp)));
 					}else if(typ.equals(EReferences)) {
 						childItem.put(PARENT, eClassifier);
 						refs.add(childItem);
@@ -422,18 +421,18 @@ public class EMFIdMap extends IdMap {
 				if(xml.has(eSuperTypes)) {
 					superClazzes.add(xml);
 				}
-			} else if (xml.getString(EMFIdMap.XSI_TYPE).equals(EEnum)) {
+			} else if (xml.getString(EMFTokener.XSI_TYPE).equals(EEnum)) {
 				Clazz graphEnum = new Clazz().with(ClazzType.ENUMERATION);
-				graphEnum.with(xml.getString(EMFIdMap.NAME));
+				graphEnum.with(xml.getString(EMFTokener.NAME));
 				for(EntityList child : xml.getChildren()) {
 					if(child instanceof Entity == false) {
 						continue;
 					}
 					Entity childItem = (Entity) child;
-					Literal literal = new Literal(childItem.getString(EMFIdMap.NAME));
+					Literal literal = new Literal(childItem.getString(EMFTokener.NAME));
 					for(int i=0;i<childItem.size();i++) {
 						String key = childItem.getKeyByIndex(i);
-						if(key.equals(EMFIdMap.NAME)) {
+						if(key.equals(EMFTokener.NAME)) {
 							continue;
 						}
 						literal.withValue(childItem.getValue(key));
@@ -445,7 +444,7 @@ public class EMFIdMap extends IdMap {
 		 // inheritance
 		for(Entity eClass : superClazzes) {
 			String id = EntityUtil.getId(eClass.getString(eSuperTypes));
-			 Clazz kidClazz = model.getNode(eClass.getString(EMFIdMap.NAME));
+			 Clazz kidClazz = model.getNode(eClass.getString(EMFTokener.NAME));
 			 Clazz superClazz = model.getNode(id);
 			 kidClazz.withoutSuperClazz(superClazz);
 		}
@@ -456,7 +455,7 @@ public class EMFIdMap extends IdMap {
 			if(tgtClassName.indexOf("#")>=0) {
 				tgtClassName = tgtClassName.substring(tgtClassName.indexOf("#") + 3);
 			}
-			String tgtRoleName = eref.getString(EMFIdMap.NAME);
+			String tgtRoleName = eref.getString(EMFTokener.NAME);
 
 			Association tgtAssoc = getOrCreate(items, model, tgtClassName, tgtRoleName);
 
@@ -471,7 +470,7 @@ public class EMFIdMap extends IdMap {
 
 			String srcRoleName = null;
 			XMLEntity parent =(XMLEntity) eref.getValue(PARENT);
-			String srcClassName = parent.getString(EMFIdMap.NAME);
+			String srcClassName = parent.getString(EMFTokener.NAME);
 			if (!eref.has(EOpposite)) {
 //				srcRoleName = tgtRoleName+"_back";
 			}else{
@@ -486,7 +485,7 @@ public class EMFIdMap extends IdMap {
 		return model;
 	}
 
-	private static Association getOrCreate(SimpleKeyValueList<String, Association> items, GraphList model, String className, String roleName) {
+	private Association getOrCreate(SimpleKeyValueList<String, Association> items, GraphList model, String className, String roleName) {
 		roleName = EntityUtil.toValidJavaId(roleName);
 		String assocName = className+":"+roleName;
 		Association edge = (Association) items.getValue(assocName);
@@ -499,5 +498,21 @@ public class EMFIdMap extends IdMap {
 			}
 		}
 		return edge;
+	}
+
+	/**
+	 * @return the model
+	 */
+	public GraphList getModel() {
+		return model;
+	}
+
+	/**
+	 * @param model the model to set
+	 * @return ThisComponent
+	 */
+	public EMFTokener withModel(GraphList model) {
+		this.model = model;
+		return this;
 	}
 }

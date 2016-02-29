@@ -118,15 +118,6 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		return this;
 	}
 
-	@Override
-	public byte[] toArray() {
-		byte[] result = new byte[this.length];
-		for(int i=start; i< this.length;i++) {
-			result[i] = (byte) buffer[i];
-		}
-		return result;
-	}
-
 	public char[] toCharArray() {
 		char[] result = new char[this.length];
 		for(int i=start; i< this.length;i++) {

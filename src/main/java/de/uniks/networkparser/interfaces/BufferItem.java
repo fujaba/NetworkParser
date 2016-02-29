@@ -10,10 +10,23 @@ public interface BufferItem {
 
 	/** @return The next Char */
 	public abstract char getChar();
+	
+	public abstract byte getByte();
 
 	/** @return The currentChar */
 	public abstract char getCurrentChar();
 
+	/**
+	 * @param len len of next values
+	 * -1 remaining length
+	 * -2 all size (Only for BufferedBuffer)
+	 * @param current Add Current Byte to Array
+	 * 
+	 * @return The Buffer as byte Array
+	 */
+	public byte[] array(int len, boolean current);
+
+	
 	/**
 	 * Gets the index.
 	 *
@@ -38,11 +51,6 @@ public interface BufferItem {
 	public boolean isEnd();
 
 	/**
-	 * @return The Buffer as byte Array
-	 */
-	public abstract byte[] toArray();
-
-	/**
 	 * Add lookAHead to Buffer
 	 * @param lookahead The String for look A Head String. For Simple Buffer change position back to the length of String or Save the String.
 	 * @return Self Instance
@@ -62,10 +70,11 @@ public interface BufferItem {
 	 * @return the next StringPart
 	 */
 	public CharacterBuffer getString(int len);
+	
 
-		/**
+	/**
 	 * Get the next char in the string, skipping whitespace.
-	  * @param currentValid
+	 * @param currentValid
 	 *			is the current char also a valid character
 	 *
 	 * @return A character, or 0 if there are no more characters.

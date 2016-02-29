@@ -217,8 +217,6 @@ public class JsonTokener extends Tokener {
 		return parent;
 	}
 
-
-	//FIXME  NEW PROPERTY
 	private void parseEntityProp(JsonObject props, Object propValue, String prop) {
 		if (propValue != null) {
 			if (propValue instanceof XMLEntity) {
@@ -251,7 +249,7 @@ public class JsonTokener extends Tokener {
 	 * Read json.
 	 *
 	 * @param jsonObject the json object
-	 * @param filter  the filter for decoding
+	 * @param map  decoding runtime values
 	 * @return the object
 	 */
 	public Object decoding(JsonObject jsonObject, MapEntity map) {
@@ -414,63 +412,4 @@ public class JsonTokener extends Tokener {
 		child.put(IdMap.ID, id);
 		return child;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	//FIXME OLDS
-//	/**
-//	 * To Jsonobject.
-//	 *
-//	 * @param entity
-//	 *            the entity to convert
-//	 * @param filter
-//	 *            the filter
-//	 * @param className
-//	 *            the className of the entity
-//	 * @param deep
-//	 *            the deep of model-level
-//	 * @return the Jsonobject
-//	 */
-//	private JsonObject toJsonObject(Object entity, MapEntity map, String className) {
-//		String id = null;
-//		SendableEntityCreator creator = map.getCreator(Grammar.WRITE, entity, className);
-//		if (creator == null) {
-//			return null;
-//		}
-//		if (creator instanceof SendableEntityCreatorNoIndex) {
-//		} else {
-//			id = map.getId(entity, className);
-//		}
-//		JsonObject jsonProp = new JsonObject().withAllowEmptyValue(map.isFullSeriation());
-//		String[] properties = map.getProperties(creator);
-//		if (properties != null) {
-//			Object referenceObject = map.getNewEntity(creator, className, true);
-//			map.add();
-//			for (String property : properties) {
-//				if (jsonProp.has(property)) {
-//					if (map.error("toJsonObject", NetworkParserLog.ERROR_TYP_DUPPLICATE, entity, className)) {
-//						throw new RuntimeException("Property duplicate:" + property + "(" + className + ")");
-//					}
-//				}
-//				//Object subValue = parseProperty(creator, entity, filter, className, property, null, deep + 1);
-//				Object subValue = parseProperty(creator, entity, referenceObject, property, map, null);
-//				if (subValue != null || map.isFullSeriation()) {
-//					jsonProp.put(property, subValue);
-//				}
-//			}
-//			map.minus();
-//		}
-//		return (JsonObject) map.setProperties(creator, className, id, jsonProp);
-//	}
-//
-//
-
 }

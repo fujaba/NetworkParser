@@ -28,7 +28,6 @@ public class MapEntity extends SimpleList<Object>{
 	private boolean isId = true;
 	/** The show line. */
 	private byte graphFlag = GraphTokener.FLAG_CLASS;
-
 	
 	/** boolean for switch of search for Interface or Abstract superclass for entity */
 	protected boolean searchForSuperCreator;
@@ -195,7 +194,7 @@ public class MapEntity extends SimpleList<Object>{
 	}
 	/**
 	 * @param stack the stack to set
-	 * @return 
+	 * @return ThisComponent
 	 */
 	public MapEntity withStack(MapEntityStack stack) {
 		this.stack = stack;
@@ -223,7 +222,7 @@ public class MapEntity extends SimpleList<Object>{
 	}
 	
 	/**
-	 * @param value 
+	 * @param value Is Association To Parent
 	 * @return the addOwnerLink
 	 */
 	public boolean isAddOwnerLink(Object value) {
@@ -301,6 +300,7 @@ public class MapEntity extends SimpleList<Object>{
 	}
 	
 	/**
+	 * @param flag is the Flag is Set
 	 * @return the type
 	 */
 	public boolean isFlag(byte flag) {

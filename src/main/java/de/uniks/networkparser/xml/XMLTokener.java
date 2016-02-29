@@ -211,8 +211,8 @@ public class XMLTokener extends Tokener {
 	 *
 	 * @param tokener
 	 *			the tokener
-	 * @param defaultFactory
-	 *			the defaultFactory
+	 * @param map
+	 *			decoding runtime values
 	 * @return the object
 	 */
 	public Object parse(XMLTokener tokener, MapEntity map) {
@@ -338,10 +338,10 @@ public class XMLTokener extends Tokener {
 	/**
 	 * Gets the entity.
 	 *
-	 * @param defaultCreator
-	 *			the DefaultCreator
 	 * @param tokener
 	 *			the tokener
+	 * @param map
+	 *			the decoding runtime values
 	 * @return the entity
 	 */
 	public CharacterBuffer parseEntity(XMLTokener tokener, MapEntity map) {

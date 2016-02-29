@@ -39,9 +39,4 @@ public class AssociationSet extends SimpleSet<Association>{
 	public AssociationSet hasName(String otherValue) {
 		return filter(Association.NAME.equals(otherValue));
 	}
-
-//FIXME	getCardinality()
-//	getInfo()
-//	getName()
-//	getType()
 }

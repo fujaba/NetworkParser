@@ -62,6 +62,7 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.logic.Deep;
 import de.uniks.networkparser.sort.EntityComparator;
+import de.uniks.networkparser.xml.EMFTokener;
 import de.uniks.networkparser.xml.MapEntityStack;
 import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XMLTokener;
@@ -658,7 +659,7 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	 * @param listener the new Listener
 	 * @return This Component
 	 *
-	 * @see JsonIdMap#with(PropertyChangeListener)
+	 * @see IdMap#with(PropertyChangeListener)
 	 * @see de.uniks.networkparser.ChainUpdateListener
 	 */
 	public IdMap with(UpdateListener listener) {
@@ -677,7 +678,7 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 
 	/**
 	 * Read Json Automatic create JsonArray or JsonObject
-	 *
+	 * @param value value to decode
 	 * @return the object
 	 */
 	public Object decode(Buffer value) {
@@ -688,15 +689,15 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 		if (firstChar == JsonTokener.STARTENTITY) {
 			return decode(jsonTokener.newInstance().withValue(value));
 		}
+		MapEntity map = new MapEntity(this, filter, grammar, searchForSuperCreator);
 		if(firstChar == XMLTokener.ITEMSTART) {
 			XMLTokener tokener = new XMLTokener();
 			tokener.withBuffer(value);
 			tokener.skipHeader();
-			MapEntity map = new MapEntity(this, filter, grammar, searchForSuperCreator);
 			return decodingXMLEntity(tokener, map);
 		}
 		// MUST BE BYTE
-		return decode(byteTokener.newInstance(value));
+		return byteTokener.decodeValue((byte)firstChar, value, map);
 	}
 	
 	public Object decode(Tokener tokener) {
@@ -716,11 +717,21 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	}
 	/**
 	 * Read Json Automatic create JsonArray or JsonObject
-	 *
+	 * @param value for Decoding
 	 * @return the object
 	 */
 	public Object decode(String value) {
 		return decode(new CharacterBuffer().with(value.intern()));
+	}
+	
+	/**
+	 * Special Case for EMF
+	 * @param value EMF-Value as String
+	 * @return the object
+	 */
+	public GraphList decodeEMF(String value) {
+		EMFTokener tokener = new EMFTokener();
+		return tokener.decoding(value);
 	}
 	/**
 	 * Decode.
@@ -737,13 +748,14 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 		}
 		byte[] decodeBytes = converter.decode(value);
 		MapEntity map = new MapEntity(this, filter, grammar, searchForSuperCreator);
-		return byteTokener.decodeValue(new ByteBuffer().with(decodeBytes), map);
+		ByteBuffer buffer = new ByteBuffer().with(decodeBytes);
+		return byteTokener.decodeValue((byte)buffer.getCurrentChar(), buffer, map);
 	}
 
 
 	/**
 	 * Read Json Automatic create JsonArray or JsonObject
-	 *
+	 * @param value Value for decoding as SubClasss from BaseItem
 	 * @return the object
 	 */
 	public Object decode(BaseItem value) {
@@ -754,10 +766,10 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	/**
 	 * Read json.
 	 *
+	 * @param value
+	 *			the value for decoding
 	 * @param target
 	 *			the target
-	 * @param jsonObject
-	 *			the json object
 	 * @param filter
 	 *			the filter for decoding
 	 * @return the object
@@ -1020,12 +1032,10 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	 *
 	 * @param entity
 	 *            the entity to convert
-	 * @param filter
-	 *            the filter
-	 * @param className
-	 *            the className of the entity
-	 * @param deep
-	 *            the deep of model-level
+	 * @param map
+	 *            encoding runtimevalue
+	 * @param tokener
+	 *            tokener for Encoding like JsonTokener, XMLTokener
 	 * @return the Jsonobject
 	 */
 	public Entity encode(Object entity, MapEntity map, Tokener tokener) {

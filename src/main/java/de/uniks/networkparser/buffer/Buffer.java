@@ -34,19 +34,85 @@ public abstract class Buffer implements BufferItem {
 	public final static String STOPCHARSJSON = ",:]}/\\\"[{;=# ";
 	public final static String STOPCHARSXML = ",]}/\\\"[{;=# ";
 	public final static String STOPCHARSXMLEND = ",]}/\\\"[{;=#> ";
+//	private byte lookAHeadByte;
+//	private boolean isLookAhead;
 
 	/** The index. */
 	protected int position;
 
-	@Override
-	public abstract int length();
+	public short getShort() {
+		byte[] bytes = array(Short.SIZE /Byte.SIZE, false);
+		short result = bytes[0];
+		result = (short) (result << 8 + bytes[1]);
+		return result;
+	}
 
-	@Override
-	public abstract char getChar();
+	public int getInt() {
+		byte[] bytes = array(Integer.SIZE /Byte.SIZE, false);
+		return (int) ((bytes[0] << 24) + (bytes[1] << 16) + (bytes[2] << 8) + bytes[3]);
+	}
 
-	@Override
-	public abstract char getCurrentChar();
+	public long getLong() {
+		byte[] bytes = array(Long.SIZE /Byte.SIZE, false);
+		long result = bytes[0];
+		result = result << 8 + bytes[1];
+		result = result << 8 + bytes[2];
+		result = result << 8 + bytes[3];
+		result = result << 8 + bytes[4];
+		result = result << 8 + bytes[5];
+		result = result << 8 + bytes[6];
+		result = result << 8 + bytes[7];
+		return result;
+	}
+	
+	public float getFloat() {
+		int asInt = getInt();
+		return Float.intBitsToFloat(asInt);
+	}
 
+	public double getDouble() {
+		long asLong = getLong();
+		return Double.longBitsToDouble(asLong);
+	}
+
+	public byte[] array(int len, boolean current) {
+		if(len==-1) {
+			len = remaining();
+		}else if(len == -2) {
+			len = length();
+		}
+		if(len<0) {
+			return null;
+		}
+		byte[] result = new byte[len];
+		int start=0;
+		if(current) {
+			if(len>0 && position <0) {
+				position = 0;
+			}
+			result[0] = (byte) getCurrentChar();
+			start = 1;
+		}
+		for(int i=start; i < len;i++) {
+			result[i] = getByte();
+		}
+//		}
+		return result;
+	}
+	
+	@Override
+	public byte getByte() {
+//		if(isLookAhead) {
+//			isLookAhead = false;
+//			return lookAHeadByte;
+//		}
+//		isLookAhead = true;
+//		char item = getChar();
+//		lookAHeadByte = (byte) (item&0x00FF);
+//		return (byte) ((item&0xFF00)>>8);
+		return (byte)getChar();
+	}
+	
 	@Override
 	public int position() {
 		return position;
@@ -54,7 +120,7 @@ public abstract class Buffer implements BufferItem {
 
 	@Override
 	public int remaining() {
-		return length() - position();
+		return length() - position() - 1;
 	}
 
 	@Override
@@ -66,14 +132,6 @@ public abstract class Buffer implements BufferItem {
 	public boolean isEnd() {
 		return position() >= length();
 	}
-
-	@Override
-	public abstract byte[] toArray();
-
-	@Override
-	public abstract Buffer withLookAHead(CharSequence lookahead);
-	@Override
-	public abstract Buffer withLookAHead(char current);
 
 	public CharacterBuffer getString(int len) {
 		CharacterBuffer result = new CharacterBuffer();
@@ -90,6 +148,9 @@ public abstract class Buffer implements BufferItem {
 
 	@Override
 	public char nextClean(boolean currentValid) {
+		if(position< 0) {
+			position = 0;
+		}
 		char c = getCurrentChar();
 		if (currentValid && c > ' ') {
 			return c;

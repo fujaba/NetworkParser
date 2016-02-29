@@ -126,18 +126,4 @@ public class MapEntityStack {
 		}
 		return null;
 	}
-
-//FIXME REMOVE	/**
-//	 * @param value
-//	 *			of AllowQuote
-//	 * @return XMLTokener Instance
-//	 */
-//	public MapEntityStack withAllowQuote(boolean value) {
-//		this.isAllowQuote = value;
-//		return this;
-//	}
-//	
-//	public boolean AllowQuote() {
-//		return isAllowQuote;
-//	}
 }

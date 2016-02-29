@@ -144,7 +144,7 @@ public class ByteParser {
 			}
 
 			// Save one Result to List
-			result.flip();
+			result.flip(true);
 			results.add(result);
 		}
 
@@ -186,7 +186,7 @@ public class ByteParser {
 			result.put((byte) number);
 		}
 
-		result.flip();
+		result.flip(true);
 
 		// Set the Typ
 		Object element = null;
@@ -219,7 +219,7 @@ public class ByteParser {
 				element = result.getInt();
 			}
 		} else if (entry.getTyp() == BitEntity.BIT_STRING) {
-			result.flip();
+			result.flip(false);
 			element = String.valueOf(result.array());
 
 		}

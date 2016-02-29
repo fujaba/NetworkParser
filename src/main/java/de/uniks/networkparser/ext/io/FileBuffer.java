@@ -29,7 +29,7 @@ import java.io.IOException;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 
-public class FileBuffer extends Buffer{
+public class FileBuffer extends Buffer {
 	private BufferedReader reader;
 	private File file;
 	private CharacterBuffer lookAHead = new CharacterBuffer();
@@ -95,11 +95,6 @@ public class FileBuffer extends Buffer{
 	}
 
 	@Override
-	public byte[] toArray() {
-		return toString().getBytes();
-	}
-
-	@Override
 	public FileBuffer withLookAHead(CharSequence lookahead) {
 		this.lookAHead.set(lookahead);
 		this.currentChar = lookahead.charAt(0);
@@ -123,5 +118,10 @@ public class FileBuffer extends Buffer{
 		}
 		char value = getChar();
 		return value;
+	}
+
+
+	public byte getByte() {
+		return (byte)getChar();
 	}
 }

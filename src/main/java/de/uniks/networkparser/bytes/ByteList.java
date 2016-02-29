@@ -63,7 +63,7 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 		int len = calcLength(isDynamic, true);
 		ByteBuffer buffer = ByteUtil.getBuffer(len);
 		writeBytes(buffer, isDynamic, true, isPrimitive(isDynamic));
-		buffer.flip();
+		buffer.flip(true);
 		return buffer;
 	}
 

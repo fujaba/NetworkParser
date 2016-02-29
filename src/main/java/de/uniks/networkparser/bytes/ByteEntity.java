@@ -95,7 +95,7 @@ public class ByteEntity implements ByteItem {
 		this.typ = typ;
 		ByteBuffer msgValue = new ByteBuffer().withBufferLength(4);
 		msgValue.put(value);
-		this.values = msgValue.flip();
+		this.values = msgValue.flip(true).array();
 		return this;
 	}
 
@@ -177,7 +177,7 @@ public class ByteEntity implements ByteItem {
 		}
 		if (isDynamic) {
 			if (typ == ByteTokener.DATATYPE_SHORT) {
-				short bufferValue = new ByteBuffer().with(value).getShort();
+				short bufferValue = new ByteBuffer().with(value).flip(true).getShort();
 				if (bufferValue >= Byte.MIN_VALUE
 						&& bufferValue <= Byte.MAX_VALUE) {
 					typ = ByteTokener.DATATYPE_BYTE;
@@ -185,7 +185,7 @@ public class ByteEntity implements ByteItem {
 				}
 			} else if (typ == ByteTokener.DATATYPE_INTEGER
 					|| typ == ByteTokener.DATATYPE_LONG) {
-				int bufferValue = new ByteBuffer().with(value).getInt();
+				int bufferValue = new ByteBuffer().with(value).flip(true).getInt();
 				if (bufferValue >= Byte.MIN_VALUE
 						&& bufferValue <= Byte.MAX_VALUE) {
 					typ = ByteTokener.DATATYPE_BYTE;
@@ -196,7 +196,7 @@ public class ByteEntity implements ByteItem {
 					ByteBuffer bbShort = ByteBuffer.allocate(Short.SIZE
 							/ BITOFBYTE);
 					bbShort.put((short) bufferValue);
-					bbShort.flip();
+					bbShort.flip(true);
 					value = bbShort.array();
 				}
 			}
@@ -215,7 +215,7 @@ public class ByteEntity implements ByteItem {
 		int len = calcLength(isDynamic, true);
 		ByteBuffer buffer = ByteUtil.getBuffer(len);
 		writeBytes(buffer, isDynamic, true, false);
-		buffer.flip();
+		buffer.flip(true);
 		return buffer;
 	}
 
@@ -277,7 +277,7 @@ public class ByteEntity implements ByteItem {
 		if (typ != 0) {
 			this.typ = typ;
 			// Check for group
-			msgValue.flip();
+			msgValue.flip(true);
 			this.values = msgValue.array();
 			return true;
 		}
@@ -307,14 +307,14 @@ public class ByteEntity implements ByteItem {
 		}
 		if (isDynamic) {
 			if (typ == ByteTokener.DATATYPE_SHORT) {
-				Short bufferValue = new ByteBuffer().with(values).getShort();
+				Short bufferValue = new ByteBuffer().with(values).flip(true).getShort();
 				if (bufferValue >= Byte.MIN_VALUE
 						&& bufferValue <= Byte.MAX_VALUE) {
 					return TYPBYTE + Byte.SIZE / BITOFBYTE;
 				}
 			} else if (typ == ByteTokener.DATATYPE_INTEGER
 					|| typ == ByteTokener.DATATYPE_LONG) {
-				Integer bufferValue = new ByteBuffer().with(values).getInt();
+				Integer bufferValue = new ByteBuffer().with(values).flip(true).getInt();
 				if (bufferValue >= Byte.MIN_VALUE
 						&& bufferValue <= Byte.MAX_VALUE) {
 					return TYPBYTE + Byte.SIZE / BITOFBYTE;

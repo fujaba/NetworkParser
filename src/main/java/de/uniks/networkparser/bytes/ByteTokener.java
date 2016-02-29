@@ -37,7 +37,6 @@ import de.uniks.networkparser.event.BasicMessage;
 import de.uniks.networkparser.event.ObjectMapEntry;
 import de.uniks.networkparser.event.UnknownMessage;
 import de.uniks.networkparser.event.util.BasicMessageCreator;
-import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ByteItem;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
@@ -299,14 +298,14 @@ public class ByteTokener extends Tokener {
 	 *			the in
 	 * @param eventCreater
 	 *			The Creator as Factory
+	 * @param map the MapEntry for decoding-runtime values
 	 * @return the object
 	 */
-	public Object decodeClazz(ByteBuffer buffer,
-			SendableEntityCreator eventCreater, MapEntity map) {
+	public Object decodeClazz(Buffer buffer, SendableEntityCreator eventCreater, MapEntity map) {
 		if (eventCreater == null) {
 			UnknownMessage e = new UnknownMessage();
 			if(buffer != null)
-				e.set(UnknownMessage.PROPERTY_VALUE, buffer.array());
+				e.set(UnknownMessage.PROPERTY_VALUE, buffer.array(-1, true));
 			return e;
 		}
 		Object entity = eventCreater.getSendableInstance(false);
@@ -316,7 +315,7 @@ public class ByteTokener extends Tokener {
 				if (buffer.remaining() < 1) {
 					break;
 				}
-				Object value = decodeValue(buffer, buffer.length() - buffer.position(), map);
+				Object value = decodeValue(buffer.getByte(), buffer, buffer.length() - buffer.position(), map);
 				if (value != null) {
 					if (value instanceof List<?>) {
 						List<?> list = (List<?>) value;
@@ -345,31 +344,31 @@ public class ByteTokener extends Tokener {
 	/**
 	 * Gets the decode object.
 	 *
-	 * @param buffer
-	 *			the in
-	 * @param end
-	 *			EndIndex
+	 * @param current The CurrentChar (Typ of value)
+	 * @param buffer the Buffer for decoding
+	 * @param map decoding Runtime values
 	 * @return the decode object
 	 */
-	public Object decodeValue(ByteBuffer buffer, MapEntity map) {
+	public Object decodeValue(byte current, Buffer buffer, MapEntity map) {
 		if (buffer == null || buffer.remaining() < 1) {
 			return null;
 		}
-		return decodeValue(buffer, buffer.length(), map);
+		return decodeValue(current, buffer, buffer.length(), map);
 	}
 	
-	Object decodeValue(ByteBuffer buffer, int end, MapEntity map) {
+	Object decodeValue(Buffer buffer, int end, MapEntity map) {
 		return decodeValue(buffer.getByte(), buffer, end, map);
 	}
 	
 	/**
 	 * Gets the decode object.
-	 *
+	 * @param typ The CurrentChar (Typ of value)
 	 * @param buffer the byteBuffer
 	 * @param end EndIndex
+	 * @param map decoding Runtimevalue
 	 * @return the decode object
 	 */
-	public Object decodeValue(byte typ, ByteBuffer buffer, int end, MapEntity map) {
+	public Object decodeValue(byte typ, Buffer buffer, int end, MapEntity map) {
 		if (buffer == null || buffer.remaining() < 1) {
 			return null;
 		}
@@ -404,7 +403,7 @@ public class ByteTokener extends Tokener {
 			int len = buffer.getByte() - ByteTokener.SPLITTER;
 			SendableEntityCreator eventCreater;
 			try {
-				eventCreater = map.getCreator(new String(buffer.getValue(len), getCharset()), true);
+				eventCreater = map.getCreator(new String(buffer.array(len, false), getCharset()), true);
 				return decodeClazz(buffer, eventCreater, map);
 			} catch (Exception e) {
 			}
@@ -414,7 +413,7 @@ public class ByteTokener extends Tokener {
 			int len = buffer.getInt();
 			SendableEntityCreator eventCreater;
 			try {
-				eventCreater = map.getCreator(new String(buffer.getValue(len), getCharset()), true);
+				eventCreater = map.getCreator(new String(buffer.array(len, false), getCharset()), true);
 				return decodeClazz(buffer, eventCreater, map);
 			} catch (Exception e) {
 			}
@@ -471,12 +470,12 @@ public class ByteTokener extends Tokener {
 			byte group = ByteUtil.getGroup(typ);
 			if (group == ByteTokener.DATATYPE_STRING) {
 				try {
-					return new String(buffer.getValue(len), getCharset());
+					return new String(buffer.array(len, false), getCharset());
 				} catch (Exception e) {
 					return "";
 				}
 			} else if (group == ByteTokener.DATATYPE_BYTEARRAY) {
-				return buffer.getValue(len);
+				return buffer.array(len, false);
 			} else if (group == ByteTokener.DATATYPE_LIST) {
 				int start = buffer.position();
 				ArrayList<Object> values = new ArrayList<Object>();
@@ -516,10 +515,5 @@ public class ByteTokener extends Tokener {
 			}
 		}
 		return null;
-	}
-	
-	@Override
-	public BaseItem newInstance(Buffer values) {
-		return new ByteEntity().withValue(values.toArray());
 	}
 }

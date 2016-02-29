@@ -45,13 +45,4 @@ public class ClazzSet extends SimpleSet<Clazz>{
 	public ClazzSet hasName(String otherValue) {
 		return filter(Clazz.NAME.equals(otherValue));
 	}
-
-	//FIXME	de.uniks.networkparser.graph.Clazz.getClassModel()
-//	de.uniks.networkparser.graph.Clazz.getImports()
-//	de.uniks.networkparser.graph.Clazz.getInterfaces(boolean)
-//	de.uniks.networkparser.graph.Clazz.getKidClazzes(boolean)
-//	de.uniks.networkparser.graph.Clazz.getSuperClass()
-//	de.uniks.networkparser.graph.Clazz.getSuperClazzes(boolean)
-//	de.uniks.networkparser.graph.Clazz.getType()
-//	de.uniks.networkparser.graph.Clazz.getValues()
 }

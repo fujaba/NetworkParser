@@ -51,76 +51,15 @@ public class ByteBuffer extends BufferedBuffer {
 	}
 
 	@Override
-	public byte[] toArray() {
-		return buffer;
-	}
-
-	public byte getByte() {
-		if(this.buffer != null) {
-			return this.buffer[position++];
-		}
-		return 0;
-	}
-
-	private byte[] converter(int bits) {
-		int len = bits / 8;
-		byte[] buffer = new byte[len];
-
-		for (int i = 0; i < len; i++) {
-			buffer[i] = this.buffer[position++];
-		}
-		return buffer;
-	}
-
-	@Override
 	public char getChar() {
-		byte[] bytes = converter(Character.SIZE);
-		char result = (char) bytes[0];
-		result = (char) (result << 8 + (char) bytes[1]);
+		char result = (char) getByte();
+		result = (char) (result << 8 + (char) getByte());
 		return result;
 	}
-
-	public short getShort() {
-		byte[] bytes = converter(Short.SIZE);
-		short result = bytes[0];
-		result = (short) (result << 8 + bytes[1]);
-		return result;
-	}
-
-	public long getLong() {
-		byte[] bytes = converter(Long.SIZE);
-		long result = bytes[0];
-		result = result << 8 + bytes[1];
-		result = result << 8 + bytes[2];
-		result = result << 8 + bytes[3];
-		result = result << 8 + bytes[4];
-		result = result << 8 + bytes[5];
-		result = result << 8 + bytes[6];
-		result = result << 8 + bytes[7];
-		return result;
-	}
-
-	public int getInt() {
-		byte[] bytes = converter(Integer.SIZE);
-		return (int) ((bytes[0] << 24) + (bytes[1] << 16) + (bytes[2] << 8) + bytes[3]);
-	}
-
-	public float getFloat() {
-		int asInt = getInt();
-		return Float.intBitsToFloat(asInt);
-	}
-
-	public double getDouble() {
-		long asLong = getLong();
-		return Double.longBitsToDouble(asLong);
-	}
-
-	public byte[] getValue(int len) {
-		byte[] array = new byte[len];
-		for (int i = 0; i < len; i++) {
-			array[i] = getByte();
-		}
-		return array;
+	
+	@Override
+	public byte getByte() {
+		return this.buffer[++position];
 	}
 
 	public byte[] getValue(int start, int len) {
@@ -217,9 +156,13 @@ public class ByteBuffer extends BufferedBuffer {
 		}
 	}
 
-	public byte[] flip() {
+	public ByteBuffer flip(boolean preFirst) {
+		if (preFirst) {
+			this.position = -1;
+			return this;
+		}
 		this.position = 0;
-		return buffer;
+		return this;
 	}
 
 	public ByteBuffer getNewBuffer(int capacity) {

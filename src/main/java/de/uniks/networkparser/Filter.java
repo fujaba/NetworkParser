@@ -33,6 +33,7 @@ public class Filter {
 	 *
 	 * @param entity Entity for Show Id
 	 * @param className ClassName
+	 * @param map The IdMap
 	 * @return boolean if encoding ID
 	 */
 	public boolean isId(Object entity, String className, IdMap map) {

@@ -155,7 +155,7 @@ public class ByteTest{
 
 	}
 	private void outputStream(ByteBuffer buffer, PrintStream stream){
-		byte[] bytes=buffer.getValue(buffer.length());
+		byte[] bytes=buffer.array(buffer.length(), true);
 		buffer.withPosition(0);
 		if(stream == null) {
 			return;
@@ -191,7 +191,7 @@ public class ByteTest{
 		ByteItem encode = map.toByteItem(stringMessage);
 
 		ByteBuffer master = encode.getBytes(false);
-		byte[] byteArray=master.getValue(master.length());
+		byte[] byteArray=master.array(master.length(), true);
 
 		assertEquals(8, byteArray.length);
 		// normal String

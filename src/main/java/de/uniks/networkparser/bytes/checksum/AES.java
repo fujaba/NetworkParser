@@ -1,5 +1,6 @@
 package de.uniks.networkparser.bytes.checksum;
 
+import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.ByteConverterString;
@@ -188,11 +189,11 @@ public class AES {
 				: 0;
 	}
 
-	public CharacterBuffer encode(ByteBuffer plain) {
+	public CharacterBuffer encode(BufferedBuffer plain) {
 		CharacterBuffer result = new CharacterBuffer().withBufferLength(plain.length());
 		byte[] partByte;
 		for (int p = 0; p < plain.length(); p+=16) {
-			partByte = encodeBlock(plain, p);
+			partByte = encodeBlock(plain);
 			for(int pos =0;pos < BLOCK_SIZE; pos++) {
 				result.with((char)partByte[pos]);
 			}
@@ -209,8 +210,10 @@ public class AES {
 		}
 		CharacterBuffer result = new CharacterBuffer().withBufferLength(string.length());
 		byte[] partByte;
+		ByteBuffer buffer = new ByteBuffer().with(string.array(string.length(), true));
 		for (int p = 0; p < string.length(); p+=16) {
-			partByte = encodeBlock(new ByteBuffer().with(string.toArray()), p);
+			buffer.withPosition(p);
+			partByte = encodeBlock(buffer);
 			for(int pos =0;pos < BLOCK_SIZE; pos++) {
 				result.with((char)partByte[pos]);
 			}
@@ -231,11 +234,12 @@ public class AES {
 	 *			fromIndex of Array
 	 * @return the encrypted 128-bit ciphertext value.
 	 */
-	public byte[] encodeBlock(ByteBuffer plain, int from) {
+	private byte[] encodeBlock(BufferedBuffer plain) {
 		byte[] Ker; // encrypt keys for current round
 		byte[] a = new byte[BLOCK_SIZE];
 		int i;
 		Ker = Ke[0];
+		int from = plain.position();
 		for (i = 0; i < BLOCK_SIZE; i++) {
 			a[i] = (byte) (plain.byteAt(i + from) ^ Ker[i]);
 		}
@@ -367,7 +371,7 @@ public class AES {
 	}
 
 	public byte[] decodeString(String value) {
-		return decode(value).toArray();
+		return decode(value).array(-2, true);
 	}
 
 	/**

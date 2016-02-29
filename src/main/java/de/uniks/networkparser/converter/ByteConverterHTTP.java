@@ -70,7 +70,7 @@ public class ByteConverterHTTP extends ByteConverter {
 				buffer.put((byte) value);
 			}
 		}
-		buffer.flip();
-		return buffer.getValue(buffer.length());
+		buffer.flip(false);
+		return buffer.array(buffer.length(), true);
 	}
 }
