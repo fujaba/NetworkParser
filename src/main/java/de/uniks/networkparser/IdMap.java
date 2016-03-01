@@ -976,13 +976,13 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	public GraphList toObjectDiagram(Object object) {
 		MapEntity map = new MapEntity(this, filter, grammar, searchForSuperCreator);
 		map.withGraphFlag(GraphTokener.FLAG_OBJECT);
-		return new GraphTokener().parsing(object, map);
+		return new GraphTokener().encode(object, map);
 	}
 	
 	public GraphList toClassDiagram(Object object) {
 		MapEntity map = new MapEntity(this, filter, grammar, searchForSuperCreator);
 		map.withGraphFlag(GraphTokener.FLAG_CLASS);
-		return new GraphTokener().parsing(object, map);
+		return new GraphTokener().encode(object, map);
 	}
 	
 	public GraphList getDiffList(Object source, Object target) {
@@ -1028,7 +1028,22 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	}
 	
 	/**
-	 * To Jsonobject.
+	 * Convert a Model to Tokener
+	 * @param model The Model to encode
+	 * @param tokener The Tokener For Syntax
+	 * @return The Encoded Model
+	 */
+	public BaseItem encodeModel(Object model, Tokener tokener) {
+		MapEntity map = new MapEntity(this, filter, grammar, searchForSuperCreator);
+		BaseItem item = tokener.encode(model, map);
+		if(item != null) {
+			return item;
+		}
+		return encode(model, map, tokener);
+	}
+	
+	/**
+	 * Encode Model
 	 *
 	 * @param entity
 	 *            the entity to convert
@@ -1038,14 +1053,14 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	 *            tokener for Encoding like JsonTokener, XMLTokener
 	 * @return the Jsonobject
 	 */
-	public Entity encode(Object entity, MapEntity map, Tokener tokener) {
+	private Entity encode(Object entity, MapEntity map, Tokener tokener) {
 		if(entity == null) {
 			return null;
 		}
 		String className = entity.getClass().getName();
  		return encode(entity, className,  map, tokener);
 	}
-	public Entity encode(Object entity, String className, MapEntity map, Tokener tokener) {
+	private Entity encode(Object entity, String className, MapEntity map, Tokener tokener) {
 		String id = null;
 		SendableEntityCreator creator = map.getCreator(Grammar.WRITE, entity, className);
 		if (creator == null) {

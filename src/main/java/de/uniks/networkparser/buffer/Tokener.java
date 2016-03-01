@@ -1,5 +1,6 @@
 package de.uniks.networkparser.buffer;
 
+import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferItem;
@@ -13,6 +14,8 @@ public class Tokener implements BufferItem {
 	public void parseToEntity(Entity entity) {}
 	
 	public void parseToEntity(EntityList entity) {}
+	
+	public BaseItem encode(Object entity, MapEntity map) {return null;}
 
 	/** BUFFER */
 	protected Buffer buffer;

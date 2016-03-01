@@ -53,7 +53,8 @@ public class GraphTokener extends Tokener {
 		return CLASS;
 	}
 
-	public GraphList parsing(Object object, MapEntity map) {
+	@Override
+	public GraphList encode(Object object, MapEntity map) {
 		GraphList newElement = new GraphList();
 		
 		newElement.withTyp(getType(map));

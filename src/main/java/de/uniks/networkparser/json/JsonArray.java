@@ -77,7 +77,7 @@ import de.uniks.networkparser.list.SortedList;
  * @version 2010-12-28
  */
 
-public class JsonArray extends SortedList<Object> implements BaseItem, EntityList {
+public class JsonArray extends SortedList<Object> implements EntityList {
 	/**
 	 * Get the JSONArray associated with an index.
 	 *

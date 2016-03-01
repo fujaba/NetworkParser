@@ -7,8 +7,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.converter.YUMLConverter;
-import de.uniks.networkparser.graph.GraphIdMap;
 import de.uniks.networkparser.graph.GraphList;
 
 public class NetworkParserSources {
@@ -56,7 +56,7 @@ public class NetworkParserSources {
 	}
 
 	public String getPackageGraph(HashSet<SourceItem> items){
-		GraphList list= new GraphList().withTyp(GraphIdMap.CLASS);
+		GraphList list= new GraphList().withTyp(IdMap.CLASS);
 		for (SourceItem source : items){
 			String packageName = source.getShortPackageName();
 			for (String item : source.getImports().getPackages()){

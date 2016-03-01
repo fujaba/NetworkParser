@@ -186,6 +186,7 @@ public class ByteTokener extends Tokener {
 		return false;
 	}
 	
+	@Override
 	public ByteItem encode(Object entity, MapEntity map) {
 		SendableEntityCreator creator = map.getCreatorClass(entity);
 		if (creator == null) {
