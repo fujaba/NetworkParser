@@ -37,8 +37,7 @@ public class JsonModellTest implements UpdateListener {
 		map.with(new GroupAccountCreator());
 		Assert.assertEquals(175, map.toJsonArray(account.getPersons(), Filter.regard(InstanceOf.value(Person.class, Person.PROPERTY_PARENT))).toString(2).length());
 	}
-
-
+	
 	@Test
 	public void testModell(){
 		IdMap map= new IdMap();

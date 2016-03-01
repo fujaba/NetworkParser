@@ -2,6 +2,7 @@ package de.uniks.networkparser.logic;
 
 import java.beans.PropertyChangeEvent;
 
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.UpdateListener;
 
 /*
@@ -30,7 +31,8 @@ public class UpdateCondition implements UpdateListener{
 	public boolean update(PropertyChangeEvent evt) {
 		if(evt instanceof SimpleMapEvent) {
 			SimpleMapEvent event = (SimpleMapEvent)evt;
-			return event.getSource().getKey(event.getModelItem()) == null;
+			IdMap map = event.getSource();
+			return map.getKey(event.getModelItem()) == null && map.getKey(event.getNewValue()) == null;
 		}
 		return false;
 	}

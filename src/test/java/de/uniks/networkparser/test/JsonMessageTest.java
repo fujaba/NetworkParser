@@ -9,14 +9,30 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.logic.SimpleMapEvent;
+import de.uniks.networkparser.test.model.AppleTree;
 import de.uniks.networkparser.test.model.GroupAccount;
 import de.uniks.networkparser.test.model.Person;
+import de.uniks.networkparser.test.model.util.AppleCreator;
+import de.uniks.networkparser.test.model.util.AppleTreeCreator;
 import de.uniks.networkparser.test.model.util.GroupAccountCreator;
 import de.uniks.networkparser.test.model.util.PersonCreator;
 
 public class JsonMessageTest implements UpdateListener {
+	private SimpleList<String> messages;
+	private int pos =0;
+
+	@Override
+	public boolean update(PropertyChangeEvent event) {
+		SimpleMapEvent simpleEvent = (SimpleMapEvent) event;
+		
+		Assert.assertEquals("Message "+pos+":", messages.get(pos++), simpleEvent.getEntity().toString());
+		return false;
+	}
+	
 	@Test
 	public void testModell(){
+		messages=new SimpleList<String>();
+		this.pos = 0;
 		IdMap map= new IdMap();
 		map.with(new GroupAccountCreator());
 		map.with(new PersonCreator());
@@ -39,14 +55,22 @@ public class JsonMessageTest implements UpdateListener {
 		account.createPersons().withName("Albert");
 //		account.createPersons().withName("Tobi");
 	}
-	private SimpleList<String> messages=new SimpleList<String>();
-	private int pos =0;
-
-	@Override
-	public boolean update(PropertyChangeEvent event) {
-		SimpleMapEvent simpleEvent = (SimpleMapEvent) event;
-		Assert.assertEquals("Message "+pos+":", messages.get(pos++), simpleEvent.getEntity().toString());
-		return false;
+	
+	@Test
+	public void testModellWithUpdateSet(){
+		messages=new SimpleList<String>();
+		this.pos = 0;
+		
+		AppleTree tree = new AppleTree();
+		tree.setName("Bananenbaum");
+		IdMap map= new IdMap();
+		map.with(new AppleTreeCreator());
+		map.with(new AppleCreator());
+		map.put("root", tree);
+		messages.with("{\"class\":\"de.uniks.networkparser.test.model.AppleTree\",\"id\":\"root\",\"upd\":{\"has\":{\"class\":\"de.uniks.networkparser.test.model.Apple\",\"id\":\"J1.A1\"}}}");
+		map.with(this);
+		tree.createApple();
+		
 	}
-
+	
 }
