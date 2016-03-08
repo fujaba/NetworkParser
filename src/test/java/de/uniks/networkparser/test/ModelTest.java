@@ -10,8 +10,6 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.logic.Deep;
-import de.uniks.networkparser.test.model.Apple;
-import de.uniks.networkparser.test.model.AppleTree;
 import de.uniks.networkparser.test.model.Person;
 import de.uniks.networkparser.test.model.SortedMsg;
 import de.uniks.networkparser.test.model.util.PersonCreator;

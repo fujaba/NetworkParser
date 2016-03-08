@@ -585,7 +585,8 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	public IdMap with(Filter filter) {
 		this.filter = filter;
 		return this;
-	}	
+	}
+	
 	/**
 	 * @return the CaseSensitive Option
 	 */
@@ -945,7 +946,7 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 			return null;
 		}
 		MapEntity map = new MapEntity(this, filter, grammar, searchForSuperCreator);
-		return (JsonObject) this.encode(entity, map, new JsonTokener());
+		return (JsonObject) this.encode(entity, map, jsonTokener);
 	}
 	
 	/**
@@ -1125,7 +1126,10 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 						if(map.isId(value, className)) {
 							key = map.getKey(value);
 						}
-						boolean contains = map.contains(key);
+						boolean contains = false;
+						if(key != null) {
+							contains = map.contains(key);
+						}
 						if(valueCreater != null && targetList != null) {
 							if(map.isConvertable(entity, property, value)  && contains == false ) {
 								encode(value, childClassName, map, tokener);
@@ -1135,7 +1139,7 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 								SendableEntityCreator childCreater = map.getCreator(Grammar.WRITE, child, child.getClass().getName());
 								parseValue(fullProp, child, null, childCreater, map, tokener, parent);
 							}
-						} else if ((map.isConvertable(entity, property, value) == false || contains ) && valueCreater != null){
+						} else if (valueCreater != null && (contains || map.isConvertable(entity, property, value) == false)){
 							Entity child = null;
 							if(map.isAddOwnerLink(value)) {
 								child = tokener.createLink(newInstance, fullProp, childClassName, map.getId(value));
@@ -1208,6 +1212,11 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 						}
 						child = tokener.createLink((Entity)parent, property, childClassName, map.getId(child));
 						childClassName = null;
+					} else if(childCreater != null) {
+						if(map.isConvertable(value, property, child) == false) {
+							child = tokener.createLink((Entity)parent, property, childClassName, map.getKey(child));
+							childClassName = null;
+						}
 					}
 					parseValue( property, child, childClassName, childCreater, map, tokener, subValues);
 				}

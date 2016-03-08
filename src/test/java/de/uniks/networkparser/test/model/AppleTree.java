@@ -149,7 +149,7 @@ public class AppleTree extends Tree implements SendableEntity
 	  }
    }
 
-   public Apple createHas()
+   public Apple createApple()
    {
 	  Apple value = new Apple();
 	  withHas(value);
