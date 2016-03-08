@@ -1,6 +1,7 @@
 gradle.projectsEvaluated {
     compileJava.dependsOn(compileJava16)
 	compileJava.dependsOn(compileJava17)
+	test.dependsOn(FinishTest)
 }
 
 ext.sharedManifest = manifest {
@@ -15,8 +16,10 @@ ext.sharedManifest = manifest {
 			'Author': 'Stefan Lindel',
 			'Implementation-Version': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision,
 			'GIT-Revision': gitVersion.revision,
+			'Hash': gitVersion.hash,
 			'Java-Version': "${System.properties['java.version']}",
 			'Bundle-Description': 'NetworkParser',
+			'Coverage': gitVersion.coverage,
 			'Bundle-ClassPath': '.'
 }
 
@@ -26,7 +29,7 @@ jar {
 	exclude '**/test/**'
 	from sourceSets.main.output
 	manifest = project.manifest {from sharedManifest}
-}
+	}
 
 task compileJava16(type: JavaCompile) {
 	source = fileTree(dir: 'src', exclude: ['**/ext/**', '**/test/**'])
@@ -91,5 +94,39 @@ task buildAll(type: Jar) {
 	exclude '**/ext/**'
 	exclude '**/test/**'
 	from sourceSets.main.output
+	manifest = project.manifest {from sharedManifest}
 }
+task cleanupws(type: Delete) {
+	description 'Delete Configuration Files from Workspace'
+	group "BUILD"
+	delete 'gradle.properties'
+	delete fileTree(dir: ".", include: "*.gpg")
+}
+task FinishTest() {
+	if (new File("${buildDir}/jacoco/report.csv").exists()) {
+		String fileContents = new File("${buildDir}/jacoco/report.csv").text
+		int[] sum = new int[10]
+		//GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+		fileContents.eachLine {
+			String[] item = it.split(",")
+			for(int i=0;i<10;i++) {
+				try {
+					sum[i] += Integer.valueOf(item[i + 3])
+				}catch(Exception e) {}
+			}
+		}
+		StringBuilder sb=new StringBuilder()
+		sb.append "{INSTRUCTION:\""+sum[0]+"/"+(sum[0]+sum[1])+"\","
+		sb.append " BRANCH:\""+sum[2]+"/"+(sum[2]+sum[3])+"\","
+		sb.append " LINE:\""+sum[4]+"/"+(sum[4]+sum[5])+"\","
+		sb.append " COMPLEXITY:\""+sum[6]+"/"+(sum[6]+sum[7])+"\","
+		sb.append " METHOD:\""+sum[8]+"/"+(sum[8]+sum[9])+"\"}"
+		sharedManifest.getAttributes().put("Coverage", sb.toString())
+		project.ext.coverage = sb.toString()
+					def stringsFile = new File("strings.xml")
+			stringsFile.write sb.toString()
+
+	}
+}
+
 buildAll.dependsOn buildCoreJar, buildCoreJar16, buildCoreJar17, buildSourceJar, buildJavadoc, buildFullJar

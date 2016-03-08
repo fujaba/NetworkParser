@@ -47,6 +47,7 @@ public class GITVersion {
 	int revision = -1
 	String buildTime
 	String hash = ""
+	String coverage = ""
 	String branch
 	String prefix = ""
 

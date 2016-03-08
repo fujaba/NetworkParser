@@ -5,12 +5,18 @@ import java.util.Iterator;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.logic.Deep;
+import de.uniks.networkparser.test.model.Apple;
+import de.uniks.networkparser.test.model.AppleTree;
 import de.uniks.networkparser.test.model.Person;
+import de.uniks.networkparser.test.model.SortedMsg;
 import de.uniks.networkparser.test.model.util.PersonCreator;
 import de.uniks.networkparser.test.model.util.PersonSet;
+import de.uniks.networkparser.test.model.util.SortedMsgCreator;
 
 public class ModelTest {
 	@Test
@@ -67,6 +73,30 @@ public class ModelTest {
 			count++;
 		}
 		return count;
-
+	}
+	
+	@Test
+	public void testClone(){
+		SortedMsg root = new SortedMsg();
+		root.setMsg("root");
+		SortedMsg child1 = new SortedMsg();
+		child1.setMsg("Child");
+		SortedMsg child2 = new SortedMsg();
+		child2.setMsg("ChildChild");
+		
+		root.setChild(child1);
+		child1.setChild(child2);
+		
+		
+		IdMap map=new IdMap();
+		map.with(new SortedMsgCreator());
+		
+		SortedMsg root2 = (SortedMsg) map.cloneObject(root, new Filter().withPropertyRegard(Deep.value(1)));
+		Assert.assertNotSame(root, root2);
+		Assert.assertEquals(root2.getMsg(), "root");
+		Assert.assertNotNull(root2.getChild());
+		Assert.assertEquals(root2.getChild().getMsg(), "Child");
+		Assert.assertNull(root2.getChild().getChild());
+		
 	}
 }

@@ -447,17 +447,18 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	 *			the reference
 	 * @param filter
 	 *			the filter
-	 * @param deep
-	 *			the index of deep of model-ebene
 	 * @return the object
 	 */
-	public Object cloneObject(Object reference, Filter filter, int deep) {
+	public Object cloneObject(Object reference, Filter filter) {
 		MapEntity map = new MapEntity(this, filter, grammar, searchForSuperCreator);
-		map.withDeep(deep);
 		return cloning(reference, map);
 	}
 	private Object cloning(Object reference, MapEntity map) {
 		SendableEntityCreator creatorClass = getCreatorClass(reference);
+		if(map.contains(reference)) {
+			return null;
+		}
+		map.with(reference);
 		Object newObject = null;
 		if (creatorClass != null) {
 			newObject = creatorClass.getSendableInstance(false);
@@ -466,9 +467,9 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 			for (String property : properties) {
 				Object value = creatorClass.getValue(reference, property);
 				if (value instanceof Collection<?>) {
-					if (filter.isFullSeriation()) {
+					if (map.isFullSeriation() || map.isPropertyRegard(reference, property, value)) {
 						Collection<?> list = (Collection<?>) value;
-						map.minus();
+						map.add();
 						for (Object item : list) {
 							Object refValue = map.getRefByEntity(item);
 							if (refValue != null) {
@@ -482,8 +483,12 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 												property, item,
 												IdMap.NEW);
 									} else {
-										
-										cloning(item, map);
+										Object clonedChild = cloning(item, map);
+										if(clonedChild!=null) {
+											creatorClass.setValue(newObject,
+													property, clonedChild,
+													IdMap.NEW);
+										}
 									}
 								} else {
 									creatorClass.setValue(newObject, property,
@@ -491,9 +496,9 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 								}
 							}
 						}
-						map.add();
+						map.minus();
 					}
-				} else {
+				} else if(map.isPropertyRegard(reference, property, value)){
 					Object refValue = map.getRefByEntity(value);
 					if (refValue != null) {
 						creatorClass.setValue(newObject, property, refValue,
@@ -501,20 +506,24 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 					} else {
 						SendableEntityCreator childCreatorClass = getCreatorClass(value);
 						if (childCreatorClass != null) {
+							map.add();
 							if (!map.isConvertable(reference, property, value)) {
 								creatorClass.setValue(newObject, property,
 										value, IdMap.NEW);
-							} else {
-								map.minus();
-								cloning(value, map);
-								map.add();
+							} else if(map.isPropertyRegard(reference, property, value)) {
+								Object clonedChild = cloning(value, map);
+								if(clonedChild!=null) {
+									creatorClass.setValue(newObject,
+											property, clonedChild,
+											IdMap.NEW);
+								}
 							}
+							map.minus();
 						} else {
 							creatorClass.setValue(newObject, property, value,
 									IdMap.NEW);
 						}
 					}
-
 				}
 			}
 		}

@@ -68,23 +68,26 @@ test {
 	}
 }
 jacoco {
-	toolVersion = "0.7.5.201505241946"
+	toolVersion = "0.7.6.201602180812"
 }
 jacocoTestReport {
 	group = "Reporting"
 	description = "Generate Jacoco coverage reports after running tests."
-	executionData = files("$buildDir/jacoco/test.exec")
+	executionData = files("${buildDir}/jacoco/test.exec")
 	reports {
 		xml {
-			enabled true
+			enabled = false
 			//Following value is a file
-			destination "${buildDir}/reports/jacoco/jacoco.xml"
+			destination = new File("${buildDir}/jacoco/jacoco.xml")
 		}
-		csv.enabled false
+		csv{
+			destination = new File("${buildDir}/jacoco/report.csv")
+			enabled = true
+		}
 		html {
-			enabled true
+			enabled = true
 			//Following value is a folder
-			destination "${buildDir}/reports/jacoco"
+			destination = new File("build/jacoco/html")
 		}
 	}
 }
@@ -94,13 +97,5 @@ sourceSets.main.output.classesDir 'build/classes/main'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-defaultTasks 'clean', 'test', 'buildAll'
+defaultTasks 'clean', 'test', 'jacocoTestReport', 'buildAll'
 
-
-
-task cleanupws(type: Delete) {
-	description 'Delete Configuration Files from Workspace'
-	group "BUILD"
-	delete 'gradle.properties'
-	delete fileTree(dir: ".", include: "*.gpg")
-}
