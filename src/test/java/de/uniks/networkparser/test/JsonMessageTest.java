@@ -1,7 +1,5 @@
 package de.uniks.networkparser.test;
 
-import java.beans.PropertyChangeEvent;
-
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -22,7 +20,7 @@ public class JsonMessageTest implements UpdateListener {
 	private int pos =0;
 
 	@Override
-	public boolean update(PropertyChangeEvent event) {
+	public boolean update(Object event) {
 		SimpleMapEvent simpleEvent = (SimpleMapEvent) event;
 		
 		Assert.assertEquals("Message "+pos+":", messages.get(pos++), simpleEvent.getEntity().toString());

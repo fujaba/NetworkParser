@@ -26,7 +26,7 @@ public class FilterAtomar {
 
 		UpdateListener listener = new UpdateListener() {
 			@Override
-			public boolean update(PropertyChangeEvent evt) {
+			public boolean update(Object evt) {
 				PropertyChangeEvent event = (PropertyChangeEvent) evt;
 				return (Apple.PROPERTY_PASSWORD.equals(event.getPropertyName()) == false);
 			}
@@ -36,7 +36,7 @@ public class FilterAtomar {
 		map.getUpdateExecuter().withAtomarFilter(listener);
 		map.with(new UpdateListener() {
 			@Override
-			public boolean update(PropertyChangeEvent event) {
+			public boolean update(Object event) {
 				SimpleMapEvent simpleEvent = (SimpleMapEvent) event;
 				data = simpleEvent.getEntity();
 				return false;

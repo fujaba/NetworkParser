@@ -1,7 +1,5 @@
 package de.uniks.networkparser.logic;
 
-import java.beans.PropertyChangeEvent;
-
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -53,7 +51,7 @@ public class Deep implements SendableEntityCreator, UpdateListener {
 	}
 
 	@Override
-	public boolean update(PropertyChangeEvent evt) {
+	public boolean update(Object evt) {
 		if(evt instanceof SimpleMapEvent) {
 			return ((SimpleMapEvent)evt).getDeep() <= this.deep;
 		}

@@ -58,11 +58,12 @@ public class Between implements UpdateListener, SendableEntityCreator {
 	}
 
 	@Override
-	public boolean update(PropertyChangeEvent evt) {
-		if (evt.getSource() instanceof Double) {
-			return (((Double) evt.getSource()) >= fromValue && ((Double) evt.getSource()) <= toValue);
-		}else if (evt.getSource() instanceof Integer) {
-			return (((Integer) evt.getSource()) >= fromValue && ((Integer) evt.getSource()) <= toValue);
+	public boolean update(Object evt) {
+		PropertyChangeEvent event = (PropertyChangeEvent) evt;
+		if (event.getSource() instanceof Double) {
+			return (((Double) event.getSource()) >= fromValue && ((Double) event.getSource()) <= toValue);
+		}else if (event.getSource() instanceof Integer) {
+			return (((Integer) event.getSource()) >= fromValue && ((Integer) event.getSource()) <= toValue);
 		}
 		return false;
 	}

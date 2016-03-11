@@ -91,7 +91,7 @@ public class JsonModellTest implements UpdateListener {
 	}
 
 	@Override
-	public boolean update(PropertyChangeEvent evt) {
+	public boolean update(Object evt) {
 		SimpleMapEvent simpleEvent = (SimpleMapEvent) evt;
 
 		if(IdMap.NEW.equals(simpleEvent.getType())) {

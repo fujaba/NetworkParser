@@ -1,7 +1,5 @@
 package de.uniks.networkparser.test;
 
-import java.beans.PropertyChangeEvent;
-
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -22,7 +20,7 @@ public class SimpleJsonTest {
 		IdMap map=new IdMap().with(new HouseCreator());
 		map.with(new UpdateListener() {
 			@Override
-			public boolean update(PropertyChangeEvent event) {
+			public boolean update(Object event) {
 				SimpleMapEvent simpleEvent = (SimpleMapEvent) event;
 				
 				updateMessage = simpleEvent.getEntity().toString();

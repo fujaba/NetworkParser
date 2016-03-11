@@ -164,7 +164,7 @@ public class InstanceOf implements UpdateListener, SendableEntityCreator {
 	}
 
 	@Override
-	public boolean update(PropertyChangeEvent evt) {
+	public boolean update(Object evt) {
 		// Filter for ClazzTyp
 		if(evt==null) {
 			return false;

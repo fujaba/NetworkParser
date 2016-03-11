@@ -2,8 +2,6 @@ package de.uniks.networkparser.test;
 
 import static org.junit.Assert.assertEquals;
 
-import java.beans.PropertyChangeEvent;
-
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -51,7 +49,7 @@ public class JsonPeer2PeerTest implements UpdateListener{
 	}
 
 	@Override
-	public boolean update(PropertyChangeEvent event) {
+	public boolean update(Object event) {
 		SimpleMapEvent simpleEvent = (SimpleMapEvent) event;
 		
 		JsonObject jsonObject = (JsonObject) simpleEvent.getEntity();

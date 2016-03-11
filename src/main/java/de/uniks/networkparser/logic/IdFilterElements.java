@@ -17,10 +17,10 @@ public class IdFilterElements extends SimpleList<Object> implements UpdateListen
 	}
 
 	@Override
-	public boolean update(PropertyChangeEvent evt) {
+	public boolean update(Object evt) {
 		if(condition!=null) {
 			if(condition.update(evt)) {
-				return add(evt.getNewValue());
+				return add(((PropertyChangeEvent)evt).getNewValue());
 			}
 		}
 		return false;

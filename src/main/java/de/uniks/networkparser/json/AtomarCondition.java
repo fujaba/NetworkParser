@@ -9,10 +9,12 @@ public class AtomarCondition implements UpdateListener{
 	public AtomarCondition(UpdateListener listener) {
 		this.filter = listener;
 	}
-
+	
 	@Override
-	public boolean update(PropertyChangeEvent values) {
-		return filter.update(values);
+	public boolean update(Object value) {
+		if(value instanceof PropertyChangeEvent ) {
+			return filter.update(value);
+		}
+		return false;
 	}
-
 }

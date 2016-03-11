@@ -52,8 +52,9 @@ public class CompareTo implements UpdateListener, SendableEntityCreator {
 	}
 
 	@Override
-	public boolean update(PropertyChangeEvent value) {
-		Object entityValue = value.getSource();
+	public boolean update(Object value) {
+		PropertyChangeEvent evt = (PropertyChangeEvent) value;
+		Object entityValue = evt.getSource();
 		if (entityValue != null) {
 			if (entityValue instanceof Comparable<?>) {
 				Comparable<?> comparatorValue = (Comparable<?>) entityValue;

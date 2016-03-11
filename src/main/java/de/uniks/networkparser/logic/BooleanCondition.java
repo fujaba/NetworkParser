@@ -1,7 +1,5 @@
 package de.uniks.networkparser.logic;
 
-import java.beans.PropertyChangeEvent;
-
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -31,7 +29,7 @@ public class BooleanCondition implements UpdateListener, SendableEntityCreator {
 	private boolean value;
 
 	@Override
-	public boolean update(PropertyChangeEvent value) {
+	public boolean update(Object value) {
 		return this.value;
 	}
 

@@ -26,12 +26,13 @@ public class Equals implements UpdateListener, SendableEntityCreator {
 	private Byte bytevalue;
 
 	@Override
-	public boolean update(PropertyChangeEvent evt) {
+	public boolean update(Object evt) {
 		if (evt == null) {
 			return (strValue == null);
 		}
-		if (evt.getSource() instanceof BufferedBuffer) {
-			BufferedBuffer buffer = (BufferedBuffer) evt.getSource();
+		PropertyChangeEvent event = (PropertyChangeEvent) evt;
+		if (event.getSource() instanceof BufferedBuffer) {
+			BufferedBuffer buffer = (BufferedBuffer) event.getSource();
 			int pos;
 			if (position < 0) {
 				pos = buffer.position();
@@ -40,7 +41,7 @@ public class Equals implements UpdateListener, SendableEntityCreator {
 			}
 			return buffer.byteAt(pos) == bytevalue;
 		}
-		return evt.getPropertyName().equals(strValue);
+		return event.getPropertyName().equals(strValue);
 	}
 
 	/**

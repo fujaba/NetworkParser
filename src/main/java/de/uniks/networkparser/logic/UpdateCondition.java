@@ -1,7 +1,5 @@
 package de.uniks.networkparser.logic;
 
-import java.beans.PropertyChangeEvent;
-
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.UpdateListener;
 
@@ -28,7 +26,7 @@ permissions and limitations under the Licence.
 */
 public class UpdateCondition implements UpdateListener{
 	@Override
-	public boolean update(PropertyChangeEvent evt) {
+	public boolean update(Object evt) {
 		if(evt instanceof SimpleMapEvent) {
 			SimpleMapEvent event = (SimpleMapEvent)evt;
 			IdMap map = event.getSource();

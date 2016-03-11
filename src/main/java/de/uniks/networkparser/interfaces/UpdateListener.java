@@ -1,7 +1,5 @@
 package de.uniks.networkparser.interfaces;
 
-import java.beans.PropertyChangeEvent;
-
 /**
 * The listener interface for receiving mapUpdate events. The class that is
 * interested in processing a mapUpdate event implements this interface, and the
@@ -10,5 +8,5 @@ import java.beans.PropertyChangeEvent;
 * event occurs, that object's appropriate method is invoked.
 */
 @FunctionalInterface
-public interface UpdateListener extends Condition<PropertyChangeEvent>{
+public interface UpdateListener extends Condition<Object>{
 }

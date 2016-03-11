@@ -1,6 +1,5 @@
 package de.uniks.networkparser.logic;
 
-import java.beans.PropertyChangeEvent;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -43,7 +42,7 @@ public class And implements UpdateListener, SendableEntityCreator {
 	}
 
 	@Override
-	public boolean update(PropertyChangeEvent evt) {
+	public boolean update(Object evt) {
 		for (UpdateListener condition : list) {
 			if (!condition.update(evt)) {
 				return false;

@@ -11,7 +11,13 @@ public class ChainUpdateListener implements UpdateListener{
 	private SimpleList<Object> list = new SimpleList<Object>();
 
 	@Override
-	public boolean update(PropertyChangeEvent evt) {
+	public boolean update(Object evt) {
+		if(evt instanceof PropertyChangeEvent) {
+			return updatePCE((PropertyChangeEvent) evt);
+		}
+		return false;
+	}
+	public boolean updatePCE(PropertyChangeEvent evt) {
 		boolean result=false;
 		for(Iterator<Object> i = list.iterator();i.hasNext();) {
 			Object listener = i.next();
