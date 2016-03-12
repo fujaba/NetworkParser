@@ -60,6 +60,7 @@ public class RGBColor {
 
 	/**
 	 * @param red the red to set
+	 * @return thisComponent
 	 */
 	public RGBColor withRed(int red) {
 		this.red = red;
@@ -75,6 +76,7 @@ public class RGBColor {
 
 	/**
 	 * @param green the green to set
+	 * @return thisComponent
 	 */
 	public RGBColor withGreen(int green) {
 		this.green = green;
@@ -90,6 +92,7 @@ public class RGBColor {
 
 	/**
 	 * @param blue the blue to set
+	 * @return thisComponent
 	 */
 	public RGBColor withBlue(int blue) {
 		this.blue = blue;
