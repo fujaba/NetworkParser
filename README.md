@@ -26,10 +26,15 @@ The Framework have many other features like:
 
 ## Current Status ##
 - Master
-  - Jenkins: ![Build Status](https://se.cs.uni-kassel.de/jenkins/buildStatus/icon?job=NetworkParser)
+  - Jenkins: [![Build Status](https://se.cs.uni-kassel.de/jenkins/buildStatus/icon?job=NetworkParser)](https://se.cs.uni-kassel.de/jenkins/Networkparser/)
   - travis-ci: [![Build Status](https://travis-ci.org/fujaba/NetworkParser.svg?branch=master)](https://travis-ci.org/fujaba/NetworkParser)
+#  - Maven: [![Maven](https://img.shields.io/maven-central/v/com.github.fujaba/NetworkParser.svg?label=Release)](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22NetworkParser%22)
+  - Maven: [![Maven](http://se.cs.uni-kassel.de/maven/icon?project=NetworkParser)](http://se.cs.uni-kassel.de/maven/de/uniks/NetworkParser/latest/NetworkParser.jar)
+	
 - Develop
   - travis-ci: [![Build Status](https://travis-ci.org/fujaba/NetworkParser.svg?branch=develop)](https://travis-ci.org/fujaba/NetworkParser)
+  - Maven: [![Maven](http://se.cs.uni-kassel.de/maven/icon?project=NetworkParser&type=snaphots)](http://se.cs.uni-kassel.de/maven/de/uniks/NetworkParser/latest-SNAPSHOT/NetworkParser-SNAPSHOT.jar)
+#  - Maven: [![Maven](https://img.shields.io/maven-central/v/com.github.fujaba/NetworkParser.svg?label=Snapshot)](http://search.maven.org/#search%7Cga%7C1%7Ca%3A%22NetworkParser%22)
 
 [![Open Hub](https://www.openhub.net/p/NetworkParser/widgets/project_partner_badge?format=gif&ref=Partner+Badge "Open Hub")](https://www.openhub.net/p/NetworkParser/)
 
