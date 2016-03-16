@@ -20,5 +20,4 @@ Export-Package: de.uniks.networkparser,
  de.uniks.networkparser.logic,
  de.uniks.networkparser.parser,
  de.uniks.networkparser.sort,
- de.uniks.networkparser.xml,
- de.uniks.networkparser.xml.util
+ de.uniks.networkparser.xml

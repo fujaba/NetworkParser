@@ -75,10 +75,6 @@ public class Filter {
 		return this;
 	}
 
-	public String[] getProperties(SendableEntityCreator creator) {
-		return creator.getProperties();
-	}
-
 	boolean isPropertyRegard(Object entity, String property, Object value, IdMap map, int deep) {
 		if (this.property != null) {
 			return this.property.update(new SimpleMapEvent(IdMap.NEW, map, property, null, value).with(deep).withModelItem(entity));

@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.converter.GraphConverter;
@@ -85,13 +86,13 @@ public class GraphTokener extends Tokener {
 			return null;
 		}
 
-		String mainKey = map.getId(object);
+		String mainKey = getId(object);
 		GraphMember element = list.getByObject(mainKey, true);
 		if (element != null && element instanceof Clazz) {
 			return (Clazz)element;
 		}
 
-		SendableEntityCreator prototyp = map.getCreatorClass(object);
+		SendableEntityCreator prototyp = getCreatorClass(object);
 		String className = object.getClass().getName();
 		className = className.substring(className.lastIndexOf('.') + 1);
 
@@ -126,11 +127,11 @@ public class GraphTokener extends Tokener {
 			return;
 		}
 		map.add();
-		if(map.isPropertyRegard(entity, property, item) == false || map.isConvertable(entity, property, item) == false) {
+		if(map.isPropertyRegard(entity, getMap(), property, item) == false || map.isConvertable(entity, getMap(), property, item) == false) {
 			map.minus();
 			return;
 		}
-		SendableEntityCreator valueCreater = map.getCreatorClass(item);
+		SendableEntityCreator valueCreater = getCreatorClass(item);
 		if (valueCreater != null) {
 			Clazz subId = parse(item, map, list, deep + 1);
 			Association edge = new Association(element);
@@ -215,5 +216,11 @@ public class GraphTokener extends Tokener {
 			}
 		}
 		return clazzDiagram;
+	}
+	
+	@Override
+	public GraphTokener withMap(IdMap map) {
+		super.withMap(map);
+		return this;
 	}
 }

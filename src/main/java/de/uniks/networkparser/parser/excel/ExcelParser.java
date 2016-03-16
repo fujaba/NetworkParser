@@ -29,7 +29,7 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XMLTokener;
-import de.uniks.networkparser.xml.util.XMLEntityCreator;
+import de.uniks.networkparser.xml.XMLEntityCreator;
 
 public class ExcelParser {
 	public final String ROW = "row";

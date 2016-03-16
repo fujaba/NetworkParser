@@ -1,24 +1,87 @@
 package de.uniks.networkparser.buffer;
 
+import java.beans.PropertyChangeEvent;
+
+import de.uniks.networkparser.Filter;
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
-import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleList;
 
 public class Tokener implements BufferItem {
-	protected NetworkParserLog logger = new NetworkParserLog();
+	protected IdMap map;
+
+	/** BUFFER */
+	protected Buffer buffer;
+	
+	// Methods for Map
+	public SendableEntityCreator getCreatorClass(Object reference) {
+		if(map == null) {
+			return null;
+		}
+		return map.getCreatorClass(reference);
+	}
+
+	public SendableEntityCreator getCreator(String className, boolean fullName) {
+		if(map == null) {
+			return null;
+		}
+		return map.getCreator(className, fullName);
+	}
+
+	public String getKey(Object reference) {
+		if(map == null) {
+			return null;
+		}
+		return map.getKey(reference);
+	}
+
+	public String getId(Object reference) {
+		if(map == null) {
+			return null;
+		}
+		return map.getId(reference);
+	}
+
+	public Object getObject(String key) {
+		if(map == null) {
+			return null;
+		}
+		return map.getObject(key);
+	}
+
+	public boolean notify(PropertyChangeEvent evt) {
+		if(map == null) {
+			return false;
+		}
+		return this.map.notify(evt);
+	}
+	public Tokener withMap(IdMap map) {
+		this.map = map;
+		return this;
+	}
+
+	public IdMap getMap() {
+		return map;
+	}
+	
+	public boolean isError(Object owner, String method, String type, Object entity) {
+		if(map == null) {
+			return true;
+		}
+		//, String className
+		return map.isError(owner, method, type, entity, null);
+	}
 
 	public void parseToEntity(Entity entity) {}
 	
 	public void parseToEntity(EntityList entity) {}
 	
 	public BaseItem encode(Object entity, MapEntity map) {return null;}
-
-	/** BUFFER */
-	protected Buffer buffer;
 
 	/**
 	 * Reset the Tokener
@@ -217,6 +280,10 @@ public class Tokener implements BufferItem {
 			return buffer.skipChar(quotes);
 		}
 		return 0;
+	}
+	
+	public String[] getProperties(SendableEntityCreator creator, Filter filter) {
+		return creator.getProperties();
 	}
 	
 	public Entity newInstance() {

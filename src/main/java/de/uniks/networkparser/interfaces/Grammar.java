@@ -2,6 +2,7 @@ package de.uniks.networkparser.interfaces;
 
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.buffer.Tokener;
 
@@ -63,4 +64,6 @@ public interface Grammar {
 	public CharacterBuffer getPrefixProperties(SendableEntityCreator creator, Tokener format, boolean isId);
 	
 	public void writeBasicValue(Entity entity, String className, String id);
+	
+	public BaseItem encode(Object entity, MapEntity map, Tokener tokener);
 }

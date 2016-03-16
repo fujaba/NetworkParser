@@ -188,7 +188,7 @@ public class ByteTokener extends Tokener {
 	
 	@Override
 	public ByteItem encode(Object entity, MapEntity map) {
-		SendableEntityCreator creator = map.getCreatorClass(entity);
+		SendableEntityCreator creator = getCreatorClass(entity);
 		if (creator == null) {
 			return null;
 		}
@@ -404,7 +404,7 @@ public class ByteTokener extends Tokener {
 			int len = buffer.getByte() - ByteTokener.SPLITTER;
 			SendableEntityCreator eventCreater;
 			try {
-				eventCreater = map.getCreator(new String(buffer.array(len, false), getCharset()), true);
+				eventCreater = getCreator(new String(buffer.array(len, false), getCharset()), true);
 				return decodeClazz(buffer, eventCreater, map);
 			} catch (Exception e) {
 			}
@@ -414,7 +414,7 @@ public class ByteTokener extends Tokener {
 			int len = buffer.getInt();
 			SendableEntityCreator eventCreater;
 			try {
-				eventCreater = map.getCreator(new String(buffer.array(len, false), getCharset()), true);
+				eventCreater = getCreator(new String(buffer.array(len, false), getCharset()), true);
 				return decodeClazz(buffer, eventCreater, map);
 			} catch (Exception e) {
 			}
@@ -422,20 +422,20 @@ public class ByteTokener extends Tokener {
 		}
 		if (typ == ByteTokener.DATATYPE_CLAZZTYP) {
 			int pos = buffer.getByte() - ByteTokener.SPLITTER;
-			SendableEntityCreator eventCreater = map.getCreator(map.getClazz(pos), true);
+			SendableEntityCreator eventCreater = getCreator(map.getClazz(pos), true);
 			return decodeClazz(buffer, eventCreater, map);
 		}
 		if (typ == ByteTokener.DATATYPE_CLAZZTYPLONG) {
 			int pos = buffer.getInt();
-			SendableEntityCreator eventCreater = map.getCreator(map.getClazz(pos), true);
+			SendableEntityCreator eventCreater = getCreator(map.getClazz(pos), true);
 			return decodeClazz(buffer, eventCreater, map);
 		}
 		if (typ == ByteTokener.DATATYPE_CLAZZID) {
 			typ = buffer.getByte();
 			String id = new String(new byte[]{typ});
-			SendableEntityCreator eventCreater = map.getCreator(id, true);
+			SendableEntityCreator eventCreater = getCreator(id, true);
 			if(eventCreater == null) {
-				SimpleKeyValueList<String, SendableEntityCreator> creators = map.getMap().getCreators();
+				SimpleKeyValueList<String, SendableEntityCreator> creators = getMap().getCreators();
 				for(int i=0;i<creators.size();i++) {
 					if(creators.getKeyByIndex(i).startsWith(id)) {
 						eventCreater = creators.getValueByIndex(i);
@@ -516,5 +516,11 @@ public class ByteTokener extends Tokener {
 			}
 		}
 		return null;
+	}
+	
+	@Override
+	public ByteTokener withMap(IdMap map) {
+		super.withMap(map);
+		return this;
 	}
 }

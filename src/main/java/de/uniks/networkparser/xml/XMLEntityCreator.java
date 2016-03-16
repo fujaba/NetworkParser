@@ -1,4 +1,4 @@
-package de.uniks.networkparser.xml.util;
+package de.uniks.networkparser.xml;
 
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;

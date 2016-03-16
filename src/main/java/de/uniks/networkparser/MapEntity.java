@@ -1,6 +1,5 @@
 package de.uniks.networkparser;
 
-import java.beans.PropertyChangeEvent;
 import java.util.Iterator;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
@@ -19,7 +18,6 @@ import de.uniks.networkparser.xml.MapEntityStack;
  * MapEntity for IdMap
  */
 public class MapEntity extends SimpleList<Object>{
-	private IdMap map;
 	private Filter filter;
 	private Grammar grammar;
 	private int deep;
@@ -34,28 +32,23 @@ public class MapEntity extends SimpleList<Object>{
 	/** If this is true the IdMap save the Typ of primary datatypes. */
 	private boolean typSave;
 
-	public MapEntity(IdMap map, Filter filter, Grammar grammar, boolean searchForSuperCreator) {
-		this.map = map;
+	public MapEntity(Filter filter, Grammar grammar, boolean searchForSuperCreator) {
 		if(filter != null) {
 			this.filter = filter;
-		} else {
-			this.filter = this.map.getDefaultFilter();
 		}
 		this.grammar = grammar;
 		this.searchForSuperCreator = searchForSuperCreator;
 	}
 	
-	public IdMap getMap() {
-		return map;
-	}
-	public void setMap(IdMap map) {
-		this.map = map;
-	}
 	public Filter getFilter() {
 		return filter;
 	}
 	public void setFilter(Filter filter) {
 		this.filter = filter;
+	}
+	
+	public Entity encode(Object entity, Tokener tokener) {
+		return tokener.getMap().encode(entity, this, tokener);
 	}
 
 	/**
@@ -67,6 +60,7 @@ public class MapEntity extends SimpleList<Object>{
 	public void add() {
 		this.deep = this.deep + 1;
 	}
+
 	public void minus() {
 		this.deep = this.deep - 1;
 	}
@@ -74,32 +68,8 @@ public class MapEntity extends SimpleList<Object>{
 		return typSave;
 	}
 	
-	// Methods for Map
-	public boolean error(String method, String type, Object entity, String className) {
-		return false;
-	}
-	public SendableEntityCreator getCreatorClass(Object reference) {
-		return map.getCreatorClass(reference);
-	}
-	public SendableEntityCreator getCreator(String className, boolean fullName) {
-		return map.getCreator(className, fullName);
-	}
-	
-	public String getKey(Object reference) {
-		return map.getKey(reference);
-	}
-	public String getId(Object reference) {
-		return map.getId(reference);
-	}
-	public Object getObject(String key) {
-		return map.getObject(key);
-	}
-	public boolean notify(PropertyChangeEvent evt) {
-		return this.map.notify(evt);
-	}
-	
 	// Methods for Grammar
-	public SendableEntityCreator getCreator(String type, Object item, String className) {
+	public SendableEntityCreator getCreator(String type, IdMap map, Object item, String className) {
 		return grammar.getCreator(type, item, map, searchForSuperCreator, className);
 	}
 	public Object getNewEntity(SendableEntityCreator creator, String className, boolean prototype) {
@@ -111,12 +81,12 @@ public class MapEntity extends SimpleList<Object>{
 	public String getValue(Entity item, String property) {
 		return grammar.getValue(item, property);
 	}
-	public BaseItem getProperties(Entity entity, boolean isId, String type) {
+	public BaseItem getProperties(Entity entity, IdMap map, boolean isId, String type) {
 		return grammar.getProperties(entity, map, filter, isId, type);
 	}
 
 	// Method for Filter
-	public String getId(Object entity, String className) {
+	public String getId(Object entity, IdMap map, String className) {
 		if (filter.isId(entity, className, map) == false) {
 			this.with(entity);
 		} else {
@@ -130,16 +100,16 @@ public class MapEntity extends SimpleList<Object>{
 	public boolean isFullSeriation() {
 		return filter.isFullSeriation();
 	}
-	public String[] getProperties(SendableEntityCreator creator) {
-		return filter.getProperties(creator);
+	public String[] getProperties(Tokener tokener, SendableEntityCreator creator) {
+		return tokener.getProperties(creator, filter);
 	}
-	public boolean isPropertyRegard(Object entity, String property, Object value) {
+	public boolean isPropertyRegard(Object entity, IdMap map, String property, Object value) {
 		return filter.isPropertyRegard(entity, property, value, map, deep);
 	}
-	public boolean isConvertable(Object entity, String property, Object value) {
+	public boolean isConvertable(Object entity, IdMap map, String property, Object value) {
 		return filter.isConvertable(entity, property, value, map, deep);
 	}
-	public boolean isId(Object entity, String className) {
+	public boolean isId(Object entity, IdMap map, String className) {
 		return filter.isId(entity, className, map);
 	}
 	public String getStrategy() {
@@ -202,7 +172,7 @@ public class MapEntity extends SimpleList<Object>{
 	}
 
 	public CharacterBuffer getPrefixProperties(SendableEntityCreator creator, Tokener tokener, Object entity, String className) {
-		boolean isId = filter.isId(entity, className, map);
+		boolean isId = filter.isId(entity, className, tokener.getMap());
 		return grammar.getPrefixProperties(creator, tokener, isId);
 	}
 	

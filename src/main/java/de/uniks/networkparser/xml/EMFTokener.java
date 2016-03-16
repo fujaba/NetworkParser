@@ -84,7 +84,7 @@ public class EMFTokener extends Tokener{
 	}
 
 	private void encodeChildren(Object entity, XMLEntity parent, MapEntity map) {
-		SendableEntityCreator creatorClass = map.getCreatorClass(entity);
+		SendableEntityCreator creatorClass = getCreatorClass(entity);
 
 		for (String propertyName : creatorClass.getProperties()) {
 			Object propertyValue = creatorClass.getValue(entity, propertyName);
@@ -133,7 +133,7 @@ public class EMFTokener extends Tokener{
 		String tag = xmlEntity.getTag();
 		String[] splitTag = tag.split("\\:");
 		String className = splitTag[1];
-		SendableEntityCreator rootFactory = map.getCreator(className, false);
+		SendableEntityCreator rootFactory = getCreator(className, false);
 
 		Object rootObject = null;
 
@@ -232,7 +232,7 @@ public class EMFTokener extends Tokener{
 					} else {
 						myRef = "_" + myRef.subSequence(0, 1) + "0";
 					}
-					Object object = map.getObject(myRef);
+					Object object = getObject(myRef);
 					if (object != null) {
 						rootFactory.setValue(rootObject, key, object, "");
 					}
@@ -242,22 +242,22 @@ public class EMFTokener extends Tokener{
 				String tagChar = xmlEntity.getTag().substring(0, 1);
 				for (String ref : value.split(" ")) {
 					ref = "_" + tagChar + ref.substring(1);
-					if (map.getObject(ref) != null) {
-						rootFactory.setValue(rootObject, key, map.getObject(ref), "");
+					if (getObject(ref) != null) {
+						rootFactory.setValue(rootObject, key, getObject(ref), "");
 					}
 				}
 			} else if (value.indexOf('_') > 0) {
 				// maybe multiple separated by blanks
 				for (String ref : value.split(" ")) {
-					if (map.getObject(ref) != null) {
-						rootFactory.setValue(rootObject, key, map.getObject(ref), "");
+					if (getObject(ref) != null) {
+						rootFactory.setValue(rootObject, key, getObject(ref), "");
 					}
 				}
 			} else if (value.startsWith("$")) {
 				for (String ref : value.split(" ")) {
 					String myRef = "_" + ref.substring(1);
-					if (map.getObject(myRef) != null && rootFactory != null) {
-						rootFactory.setValue(rootObject, key, map.getObject(myRef), "");
+					if (getObject(myRef) != null && rootFactory != null) {
+						rootFactory.setValue(rootObject, key, getObject(myRef), "");
 					}
 				}
 			} else {
@@ -278,9 +278,9 @@ public class EMFTokener extends Tokener{
 				kidId = "_" + kidId.substring(1);
 			}
 
-			Object kidObject = map.getObject(kidId);
+			Object kidObject = getObject(kidId);
 
-			SendableEntityCreator kidFactory = map.getCreatorClass(kidObject);
+			SendableEntityCreator kidFactory = getCreatorClass(kidObject);
 
 			addValues(kidFactory, (XMLEntity)kidEntity, kidObject, map);
 		}
@@ -295,7 +295,7 @@ public class EMFTokener extends Tokener{
 			id = "_" + id.substring(1);
 		}
 
-		map.getMap().put(id, rootObject);
+		getMap().put(id, rootObject);
 
 		Iterator<EntityList> iterator = xmlEntity.getChildren().iterator();
 		while (iterator.hasNext()) {
@@ -319,7 +319,7 @@ public class EMFTokener extends Tokener{
 					String objectId = split[1];
 					objectId = objectId.replace('@', '_');
 					objectId = objectId.replace(".", "");
-					Object object = map.getObject(objectId);
+					Object object = getObject(objectId);
 
 					if (object != null) {
 						// yes we know it
@@ -361,9 +361,9 @@ public class EMFTokener extends Tokener{
 			}
 
 			if (typeName != null) {
-				SendableEntityCreator kidFactory = map.getCreator(typeName, false);
+				SendableEntityCreator kidFactory = getCreator(typeName, false);
 				if (kidFactory == null && typeName.endsWith("s")) {
-					kidFactory = map.getCreator(typeName.substring(0, typeName.length() - 1), false);
+					kidFactory = getCreator(typeName.substring(0, typeName.length() - 1), false);
 				}
 				Object kidObject = kidFactory.getSendableInstance(false);
 

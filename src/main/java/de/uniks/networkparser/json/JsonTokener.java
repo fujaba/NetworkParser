@@ -37,8 +37,7 @@ public class JsonTokener extends Tokener {
 	public void parseToEntity(EntityList entityList) {
 		char c = nextClean(true);
 		if (c != STARTARRAY) {
-			if (logger.error(this, "parseToEntity",
-					NetworkParserLog.ERROR_TYP_PARSING, entityList)) {
+			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entityList)) {
 				throw new RuntimeException(
 						"A JSONArray text must start with '['");
 			}
@@ -62,8 +61,7 @@ public class JsonTokener extends Tokener {
 					skip();
 					return;
 				default:
-					if (logger.error(this, "parseToEntity",
-							NetworkParserLog.ERROR_TYP_PARSING, entityList)) {
+					if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entityList)) {
 						throw new RuntimeException(
 								"Expected a ',' or ']' not '"
 										+ getCurrentChar() + "'");
@@ -111,8 +109,7 @@ public class JsonTokener extends Tokener {
 		char c;
 		String key;
 		if (nextClean(true) != STARTENTITY) {
-			if (logger.error(this, "parseToEntity",
-					NetworkParserLog.ERROR_TYP_PARSING, entity)) {
+			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
 				throw new RuntimeException(
 						"A JsonObject text must begin with '{' \n" + buffer);
 			}
@@ -124,8 +121,7 @@ public class JsonTokener extends Tokener {
 			c = nextClean(true);
 			switch (c) {
 			case 0:
-				if (logger.error(this, "parseToEntity",
-						NetworkParserLog.ERROR_TYP_PARSING, entity)) {
+				if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
 					throw new RuntimeException(
 							"A JsonObject text must end with '}'");
 				}
@@ -147,8 +143,7 @@ public class JsonTokener extends Tokener {
 			}
 			c = nextClean(true);
 			if (c != ':' && c != '=') {
-				if (logger.error(this, "parseToEntity",
-						NetworkParserLog.ERROR_TYP_PARSING, entity)) {
+				if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
 					throw new RuntimeException("Expected a ':' after a key ["+ getString(30).toString() + "]");
 				}
 				return;
@@ -256,20 +251,20 @@ public class JsonTokener extends Tokener {
 		if (jsonObject == null) {
 			return map.getTarget();
 		}
-		SendableEntityCreator typeInfo = map.getCreator(Grammar.READ, jsonObject, null);
+		SendableEntityCreator typeInfo = map.getCreator(Grammar.READ, this.map, jsonObject, null);
 		if (typeInfo != null) {
 			Object result = map.getTarget();
 			if (map.hasValue(jsonObject, IdMap.ID) && result == null) {
 				String jsonId = map.getValue(jsonObject, IdMap.ID);
 				if (jsonId != null) {
-					result = map.getObject(jsonId);
+					result = this.map.getObject(jsonId);
 				}
 			}
 			if (result == null) {
 				result = map.getNewEntity(typeInfo, map.getValue(jsonObject, IdMap.CLASS), false);
-				map.notify(new SimpleMapEvent(IdMap.NEW, map.getMap(), jsonObject, result));
+				this.map.notify(new SimpleMapEvent(IdMap.NEW, this.map, jsonObject, result));
 			} else {
-				map.notify(new SimpleMapEvent(IdMap.UPDATE, map.getMap(), jsonObject, result));
+				this.map.notify(new SimpleMapEvent(IdMap.UPDATE, this.map, jsonObject, result));
 			}
 			if (typeInfo instanceof SendableEntityCreatorWrapper) {
 				String[] properties = typeInfo.getProperties();
@@ -297,7 +292,7 @@ public class JsonTokener extends Tokener {
 		} else if (jsonObject.get(IdMap.VALUE) != null) {
 			return jsonObject.get(IdMap.VALUE);
 		} else if (jsonObject.get(IdMap.ID) != null) {
-			return map.getObject((String) jsonObject.get(IdMap.ID));
+			return this.map.getObject((String) jsonObject.get(IdMap.ID));
 		}
 		return null;
 	}
@@ -312,19 +307,19 @@ public class JsonTokener extends Tokener {
 	 */
 	private Object decoding(Object target, JsonObject jsonObject, MapEntity map) {
 		// JSONArray jsonArray;
-		boolean isId = map.isId(target, target.getClass().getName());
+		boolean isId = map.isId(target, this.map, target.getClass().getName());
 		if (isId) {
 			String jsonId = map.getValue(jsonObject, IdMap.ID);
-			IdMap idMap = map.getMap();
+			IdMap idMap = this.map;
 			if (jsonId == null) {
 				return target;
 			}
 			idMap.put(jsonId, target);
 			idMap.getCounter().readId(jsonId);
 		}
-		JsonObject jsonProp = (JsonObject) map.getProperties(jsonObject, isId, Grammar.READ);
+		JsonObject jsonProp = (JsonObject) map.getProperties(jsonObject, this.map, isId, Grammar.READ);
 		if (jsonProp != null) {
-			SendableEntityCreator prototyp = map.getCreator(Grammar.WRITE, target, target.getClass().getName());
+			SendableEntityCreator prototyp = map.getCreator(Grammar.WRITE, this.map, target, target.getClass().getName());
 			String[] properties = prototyp.getProperties();
 			if (properties != null) {
 				for (String property : properties) {
@@ -395,6 +390,12 @@ public class JsonTokener extends Tokener {
 				}
 			}
 		}
+	}
+	
+	@Override
+	public JsonTokener withMap(IdMap map) {
+		super.withMap(map);
+		return this;
 	}
 
 	@Override

@@ -98,4 +98,9 @@ public class SimpleGrammar implements Grammar{
 	public String getValue(Entity item, String property) {
 		return item.getString(property);
 	}
+
+	@Override
+	public BaseItem encode(Object entity, MapEntity map, Tokener tokener) {
+		return tokener.encode(entity, map);
+	}
 }

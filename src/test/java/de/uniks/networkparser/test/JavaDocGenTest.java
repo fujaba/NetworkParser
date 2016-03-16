@@ -11,7 +11,7 @@ import de.uniks.networkparser.list.SimpleList;
 
 public class JavaDocGenTest {
 	public static final String PREFIX="src.main.java.";
-	@Test(timeout=20000)
+	@Test(timeout=30000)
 	public void testGenJavaDoc() {
 		
 		try{

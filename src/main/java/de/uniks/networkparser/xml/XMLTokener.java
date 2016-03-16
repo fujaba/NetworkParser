@@ -17,7 +17,6 @@ import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.list.SimpleKeyValueList;
-import de.uniks.networkparser.xml.util.XMLEntityCreator;
 
 public class XMLTokener extends Tokener {
 	public static final String TOKEN=" >//<";
@@ -95,15 +94,13 @@ public class XMLTokener extends Tokener {
 			c = nextClean(false);
 		}
 		if (c != ITEMSTART) {
-			if (logger.error(this, "parseToEntity",
-					NetworkParserLog.ERROR_TYP_PARSING, entity)) {
+			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
 				throw new RuntimeException("A XML text must begin with '<'");
 			}
 			return;
 		}
 		if (!(entity instanceof XMLEntity)) {
-			if (logger.error(this, "parseToEntity",
-					NetworkParserLog.ERROR_TYP_PARSING, entity)) {
+			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
 				throw new RuntimeException("Parse only XMLEntity");
 			}
 			return;
@@ -374,7 +371,7 @@ public class XMLTokener extends Tokener {
 		if (tag.isEmpty() && isEmpty) {
 			valueItem.reset();
 		}
-		IdMap idMap = map.getMap();
+		IdMap idMap = getMap();
 		SendableEntityCreator item = idMap.getCreator(tag.toString(), false);
 		if (item != null && item instanceof SendableEntityCreatorTag) {
 			addToStack((SendableEntityCreatorTag) item, tokener, tag, valueItem, map);
@@ -469,6 +466,11 @@ public class XMLTokener extends Tokener {
 		return EntityUtil.valueToString(value, true, reference, SIMPLECONVERTER);
 	}
 	
+	@Override
+	public BaseItem encode(Object entity, MapEntity map) {
+		return null;
+	}
+	
 	/**
 	 * @return the defaultFactory
 	 */
@@ -490,6 +492,12 @@ public class XMLTokener extends Tokener {
 
 	public XMLTokener withAllowQuote(boolean value) {
 		this.isAllowQuote = value;
+		return this;
+	}
+	
+	@Override
+	public XMLTokener withMap(IdMap map) {
+		super.withMap(map);
 		return this;
 	}
 }
