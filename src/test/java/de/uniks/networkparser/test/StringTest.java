@@ -4,9 +4,24 @@ import org.junit.Assert;
 import org.junit.Test;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.ByteBuffer;
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.ByteConverterHex;
 
 public class StringTest {
+	@Test
+	public void testStringReplace(){
+		CharacterBuffer buffer = new CharacterBuffer().with("My %DEEP is not the %DEEP");
+		buffer.replace("%DEEP", "1");
+		Assert.assertEquals("My 1 is not the 1", buffer.toString());
+	}
+	
+	@Test
+	public void testStringReplaceLong(){
+		CharacterBuffer buffer = new CharacterBuffer().with("My %ID is not the %ID");
+		buffer.replace("%ID", "4223");
+		Assert.assertEquals("My 4223 is not the 4223", buffer.toString());
+	}
+	
 	@Test
 	public void testString(){
 		String simple="<c id=\"C:\\\" />";

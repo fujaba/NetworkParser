@@ -11,6 +11,7 @@ import de.uniks.networkparser.list.SimpleSet;
 public class HTMLEntity implements BaseItem {
 	public static final String PROPERTY_HEADER="head";
 	public static final String PROPERTY_BODY="body";
+	public static final String IMAGEFORMAT=" .bmp .jpg .jpeg .png .gif .svg ";
 
 	private XMLEntity body = new XMLEntity().withTag("body");
 	private XMLEntity header = new XMLEntity().withTag("head");
@@ -75,21 +76,51 @@ public class HTMLEntity implements BaseItem {
 	}
 
 	public HTMLEntity withHeader(String ref) {
-		if(ref==null || ref.length() <4) {
-			return this;
+		XMLEntity child = getChild(ref);
+		if(child != null) {
+			this.header.with(child);
 		}
-		if(ref.substring(ref.length() - 4).equalsIgnoreCase(".css") ) {
-			XMLEntity linkTag = new XMLEntity().withTag("link");
-			linkTag.withKeyValue("rel", "stylesheet");
-			linkTag.withKeyValue("type", "text/css");
-			linkTag.withKeyValue("href", ref);
-			this.header.with(linkTag);
+		return this;
+	}
+	
+	XMLEntity getChild(String ref) {
+		XMLEntity child = null;
+		
+		if(ref==null) {
+			return null;
 		}
-		if(ref.substring(ref.length() - 3).equalsIgnoreCase(".js") ) {
-			XMLEntity scriptTag = new XMLEntity().withTag("script").withCloseTag();
-			scriptTag.withKeyValue("src", ref);
-			this.header.with(scriptTag);
+		int pos = ref.lastIndexOf(".");
+		if(pos<0) {
+			return null;
 		}
+		String ext = ref.substring(pos).toLowerCase();
+		if(ext.equals(".css") ) {
+			child = new XMLEntity().withTag("link");
+			child.withKeyValue("rel", "stylesheet");
+			child.withKeyValue("type", "text/css");
+			child.withKeyValue("href", ref);
+		} else if(ext.equals(".js") ) {
+			child = new XMLEntity().withTag("script").withCloseTag();
+			child.withKeyValue("src", ref);
+		} else if(IMAGEFORMAT.indexOf(" "+ext+" ")>=0) {
+			child = new XMLEntity().withTag("img").withCloseTag();
+			child.withKeyValue("src", ref);
+		}
+		return child;
+	}
+	
+	public HTMLEntity withBody(String ref) {
+		XMLEntity child = getChild(ref);
+		if(child != null) {
+			this.body.with(child);
+		}
+		return this;
+	}
+	
+	public HTMLEntity withScript(String code) {
+		XMLEntity child = new XMLEntity().withTag("script").withCloseTag();
+		child.withValueItem(code);
+		this.body.with(child);
 		return this;
 	}
 
@@ -147,6 +178,7 @@ public class HTMLEntity implements BaseItem {
 		this.body.withChild(xmlEntity);
 		return this;
 	}
+
 	public HTMLEntity withText(String text) {
 		XMLEntity xmlEntity = new XMLEntity();
 		xmlEntity.setValueItem(text);

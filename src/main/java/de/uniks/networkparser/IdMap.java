@@ -1076,13 +1076,13 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 			return null;
 		}
 		String className = entity.getClass().getName();
- 		return encode(entity, className,  map, tokener);
+ 		return encode(entity, className,  map, tokener, null);
 	}
 	public boolean isError(Object owner, String method, String type, Object entity, String className) {
 		return logger.error(owner, method, type, entity, className);
 	}
 	
-	private Entity encode(Object entity, String className, MapEntity map, Tokener tokener) {
+	private Entity encode(Object entity, String className, MapEntity map, Tokener tokener, BaseItem parentNode) {
 		String id = null;
 		SendableEntityCreator creator = map.getCreator(Grammar.WRITE, this, entity, className);
 		if (creator == null) {
@@ -1092,7 +1092,7 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 		if(creator instanceof SendableEntityCreatorNoIndex == false) {
 			id = map.getId(entity, this, className);
 		}
-		map.writeBasicValue(creator, newInstance, className, id);
+		Entity item = map.writeBasicValue(creator, newInstance, parentNode, className, id);
 		EntityList targetList = (EntityList) map.getTarget();
 		if(targetList != null && targetList.isComparator() == false) {
 			targetList.with(newInstance);
@@ -1100,7 +1100,7 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 		String[] properties = map.getProperties(tokener, creator);
 		if (properties != null) {
 			map.pushStack(className, entity, creator);
-			newInstance.setAllowEmptyValue(map.isFullSeriation());
+			item.setAllowEmptyValue(map.isFullSeriation());
 			Object referenceObject = map.getNewEntity(creator, className, true);
 			map.add();
 			CharacterBuffer prop = map.getPrefixProperties(creator, tokener, entity, className);
@@ -1122,7 +1122,7 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 					}
 					if (encoding) {
 						prop.setNextString(property, pos);
-						Entity parent = (Entity) convertProperty(prop, newInstance);
+						Entity parent = map.convertProperty(prop, item);
 						if (parent.has(property)) {
 							if (isError(this, "Encode", NetworkParserLog.ERROR_TYP_DUPPLICATE, entity, className)) {
 								throw new RuntimeException("Property duplicate:" + property + "(" + className + ")");
@@ -1145,9 +1145,9 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 						}
 						if(valueCreater != null && targetList != null) {
 							if(map.isConvertable(entity, tokener.getMap(), property, value)  && contains == false ) {
-								encode(value, childClassName, map, tokener);
+								encode(value, childClassName, map, tokener, item);
 							}
-							Entity child = tokener.createLink(newInstance, fullProp, childClassName, tokener.getId(value));
+							Entity child = tokener.createLink(item, fullProp, childClassName, tokener.getId(value));
 							if(child != null) {
 								SendableEntityCreator childCreater = map.getCreator(Grammar.WRITE, tokener.getMap(), child, child.getClass().getName());
 								parseValue(fullProp, child, null, childCreater, map, tokener, parent);
@@ -1155,7 +1155,7 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 						} else if (valueCreater != null && (contains || map.isConvertable(entity, tokener.getMap(),  property, value) == false)){
 							Entity child = null;
 							if(map.isAddOwnerLink(value)) {
-								child = tokener.createLink(newInstance, fullProp, childClassName, tokener.getId(value));
+								child = tokener.createLink(item, fullProp, childClassName, tokener.getId(value));
 							}
 							if(child != null) {
 								SendableEntityCreator childCreater = map.getCreator(Grammar.WRITE, tokener.getMap(), child, child.getClass().getName());
@@ -1167,7 +1167,7 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 					}
 				}else if(map.isFullSeriation()) {
 					prop.setNextString(property, pos);
-					Entity parent  = (Entity) convertProperty(prop, newInstance);
+					Entity parent = map.convertProperty(prop, item);
 					parent.put(prop.toString(), value);
 				}
 			}
@@ -1179,26 +1179,7 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 		}
 		return newInstance;
 	}
-	private BaseItem convertProperty(CharacterBuffer property, BaseItem parent) {
-		BaseItem child=parent;
-		while(property.charAt(0) == ENTITYSPLITTER) {
-			if(property.length() == 1) {
-				break;
-			}
-			// Its ChildValue
-			int pos = property.indexOf(ENTITYSPLITTER, 1);
-			if (pos < 0) {
-				property.trimStart(1);
-				break;
-			}
-			String label = property.substring(1, pos);
-			property.trimStart(label.length()+1);
-			if (child instanceof Entity) {
-				child = ((Entity)child).getChild(label, false);
-			}
-		}
-		return child;
-	}
+	
 
 	private void parseValue(String property, Object value, String className, SendableEntityCreator valueCreater, MapEntity map, Tokener tokener, BaseItem parent) {
 		Object writeValue = null;
@@ -1221,7 +1202,7 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 						childClassName = null;
 					} else if(isArray) {
 						if(map.isConvertable(value, tokener.getMap(), property, child)) {
-							encode(child, childClassName, map, tokener);
+							encode(child, childClassName, map, tokener, parent);
 						}
 						child = tokener.createLink((Entity)parent, property, childClassName, tokener.getId(child));
 						childClassName = null;
@@ -1248,12 +1229,13 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 			}
 			writeValue = subValues;
 		} else if(valueCreater != null && className != null){
-			writeValue = encode(value, className, map, tokener);
+			writeValue = encode(value, className, map, tokener, parent);
 				
 		} else {
 			writeValue = value;
 		}
-		if (parent instanceof EntityList && tokener.isChild(writeValue)){
+		if(map.writeValue(parent, property, writeValue, tokener)) {
+		}else if (parent instanceof EntityList && tokener.isChild(writeValue)){
 			((EntityList)parent).with(tokener.transformValue(writeValue, parent));
 		} else if (parent instanceof Entity){
 			if (property.length() == 1 && property.charAt(0) == ENTITYSPLITTER) {

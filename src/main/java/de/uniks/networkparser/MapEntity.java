@@ -60,10 +60,15 @@ public class MapEntity extends SimpleList<Object>{
 	public void add() {
 		this.deep = this.deep + 1;
 	}
-
+	
 	public void minus() {
 		this.deep = this.deep - 1;
 	}
+	public int getDeep() {
+		return deep;
+	}
+
+
 	public boolean isTypSave() {
 		return typSave;
 	}
@@ -176,14 +181,14 @@ public class MapEntity extends SimpleList<Object>{
 		return grammar.getPrefixProperties(creator, tokener, isId);
 	}
 	
-	public void writeBasicValue(SendableEntityCreator creator, Entity entity, String className, String id) {
+	public Entity writeBasicValue(SendableEntityCreator creator, Entity entity, BaseItem parent, String className, String id) {
 		if(this.isId == false) {
 			if(creator instanceof SendableEntityCreatorTag) {
 				className = ((SendableEntityCreatorTag)creator).getTag();
 			}
 			id = null;
 		}
-		grammar.writeBasicValue(entity, className, id);
+		return grammar.writeBasicValue(entity, parent, className, id, this);
 	}
 	
 	public MapEntity withId(boolean value) {
@@ -269,11 +274,36 @@ public class MapEntity extends SimpleList<Object>{
 		return this;
 	}
 	
+	public Entity convertProperty(CharacterBuffer property, BaseItem parent) {
+		BaseItem child=parent;
+		while(property.charAt(0) == IdMap.ENTITYSPLITTER) {
+			if(property.length() == 1) {
+				break;
+			}
+			// Its ChildValue
+			int pos = property.indexOf(IdMap.ENTITYSPLITTER, 1);
+			if (pos < 0) {
+				property.trimStart(1);
+				break;
+			}
+			String label = property.substring(1, pos);
+			property.trimStart(label.length()+1);
+			if (child instanceof Entity) {
+				child = ((Entity)child).getChild(label, false);
+			}
+		}
+		return (Entity)child;
+	}
+	
 	/**
 	 * @param flag is the Flag is Set
 	 * @return the type
 	 */
 	public boolean isFlag(byte flag) {
 		return (graphFlag & flag) != 0;
+	}
+
+	public boolean writeValue(BaseItem parent, String property, Object value, Tokener tokener) {
+		return grammar.writeValue(parent, property, value, this, tokener);
 	}
 }

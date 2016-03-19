@@ -50,6 +50,9 @@ public class SimpleIteratorSet<K,V> implements ListIterator<Entry<K, V>>{
 	public boolean hasNext() {
 		return cursor<(this.list.size() - 1);
 	}
+	public void reset() {
+		this.cursor = -1;
+	}
 
 	@Override
 	public Entry<K, V> next() {

@@ -125,6 +125,71 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		}
 		return result;
 	}
+	
+	public void replace(String search, String replace) {
+		int deleted=0;
+		CharacterBuffer inserts = null;
+		int pos=position + start;
+		int len = this.length + start;
+		int startSet=0;
+		while(pos < len) {
+			int i=0;
+			for(;i<search.length();i++) {
+				if(buffer[pos + i] != search.charAt(i)) {
+					break;
+				}
+			}
+			if(i == search.length()) {
+				int diff = replace.length()-search.length();
+				if(diff<0) {
+					for(i=0;i<replace.length();i++) {
+						buffer[pos + deleted + i]=replace.charAt(i);
+					}
+					deleted += diff;
+					pos += search.length();
+				} else {
+					if(inserts==null) {
+						for(i=0;i<search.length();i++) {
+							buffer[pos + i]=replace.charAt(i);
+						}
+						inserts = new CharacterBuffer();
+						deleted +=replace.length() - i;
+						pos += i;
+						startSet = pos;
+					}else {
+						i=0;
+						deleted +=replace.length() - search.length();
+						pos += search.length();
+					}
+					for(;i<replace.length();i++) {
+						inserts.with(replace.charAt(i));
+					}
+				}
+			}else {
+				if(deleted == 0){
+				}else if(deleted < 0){
+					buffer[pos + deleted] = buffer[pos];
+				}else {
+					inserts.with(buffer[pos + i]);
+				}
+				pos++;
+			}
+		}
+		pos = pos + deleted-start; 
+		if(inserts != null) {
+			if(this.length < pos) {
+				char[] copy = new char[pos];
+				startSet -= this.start;
+				System.arraycopy(buffer, this.start, copy, 0, startSet);
+				buffer = copy;
+				this.start = 0;
+			}
+			for(int i=0;i<inserts.length();i++) {
+				this.buffer[startSet + i] = inserts.charAt(i);
+			}
+		}
+		this.length = pos;
+	}
 
 	/**
 	 * Get the next character in the source string.

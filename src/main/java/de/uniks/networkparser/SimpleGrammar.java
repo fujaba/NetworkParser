@@ -45,11 +45,12 @@ public class SimpleGrammar implements Grammar{
 	}
 
 	@Override
-	public void writeBasicValue(Entity entity, String className, String id) {
-		entity.setType(className);
+	public Entity writeBasicValue(Entity entity, BaseItem parent, String className, String id, MapEntity map) {
+  		entity.setType(className);
 		if(id != null) {
 			entity.put(IdMap.ID, id);
 		}
+		return entity;
 	}
 	
 	@Override
@@ -102,5 +103,10 @@ public class SimpleGrammar implements Grammar{
 	@Override
 	public BaseItem encode(Object entity, MapEntity map, Tokener tokener) {
 		return tokener.encode(entity, map);
+	}
+
+	@Override
+	public boolean writeValue(BaseItem parent, String property, Object value, MapEntity map, Tokener tokener) {
+		return false;
 	}
 }

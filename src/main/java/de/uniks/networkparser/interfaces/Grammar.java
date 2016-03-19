@@ -63,7 +63,9 @@ public interface Grammar {
 	 */
 	public CharacterBuffer getPrefixProperties(SendableEntityCreator creator, Tokener format, boolean isId);
 	
-	public void writeBasicValue(Entity entity, String className, String id);
+	public Entity writeBasicValue(Entity entity, BaseItem parent, String className, String id, MapEntity map);
 	
 	public BaseItem encode(Object entity, MapEntity map, Tokener tokener);
+
+	public boolean writeValue(BaseItem parent, String property, Object value, MapEntity map, Tokener tokener);
 }
