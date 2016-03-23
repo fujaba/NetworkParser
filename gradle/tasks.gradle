@@ -123,9 +123,6 @@ task FinishTest() {
 		sb.append " METHOD:\""+sum[8]+"/"+(sum[8]+sum[9])+"\"}"
 		sharedManifest.getAttributes().put("Coverage", sb.toString())
 		project.ext.coverage = sb.toString()
-					def stringsFile = new File("strings.xml")
-			stringsFile.write sb.toString()
-
 	}
 }
 

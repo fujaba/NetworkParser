@@ -12,12 +12,18 @@ ext{
 			buildAntCompile.execute()
 			buildAnt.execute()
 			project.ext.Revisionnumber = Integer.parseInt(ant.Revisionnumber)
-			project.ext.Branchname = ant.Branchname
+			if (project.hasProperty("branch")) {
+				project.ext.Branchname = ant.Branchname + " " + project.get("branch")
+			}else {
+				project.ext.Branchname = ant.Branchname
+			}
 			project.ext.LastCommit = ant.LastCommit
 			project.ext.GitTag = Integer.parseInt(ant.GitTag)
 		}catch(Exception e) {
 			project.ext.Revisionnumber = -1
-			project.ext.Branchname = ""
+			if (project.hasProperty("branch")) {
+				project.ext.Branchname = project.get("branch")
+			}
 			project.ext.LastCommit = ""
 			project.ext.GitTag = 0
 		}
