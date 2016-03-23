@@ -22,7 +22,9 @@ public class UniversityCreator implements SendableEntityCreator, SendableEntityC
 	@Override
 	public String[] getProperties() {
 		return new String[] { University.PROPERTY_NAME,
-				University.PROPERTY_STUDENTS, University.PROPERTY_ROOMS, University.PROPERTY_ICH, University.PROPERTY_USER, University.PROPERTY_VALUE};
+				University.PROPERTY_STUDENTS, University.PROPERTY_ROOMS, 
+				University.PROPERTY_ICH, University.PROPERTY_USER, University.PROPERTY_VALUE
+		};
 	}
 
 	@Override

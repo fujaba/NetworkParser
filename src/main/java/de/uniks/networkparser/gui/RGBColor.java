@@ -1,5 +1,6 @@
 package de.uniks.networkparser.gui;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
 
 public class RGBColor {
     public static final RGBColor WHITE       = new RGBColor().withValue(255, 255, 255);
@@ -112,9 +113,9 @@ public class RGBColor {
 	
 	public RGBColor add(RGBColor second) {
 		RGBColor color = new RGBColor();
-		float newRed = (getRed()+second.getRed() / 2);
-		float newGreen = (getRed()+second.getRed() / 2);
-		float newBlue = (getRed()+second.getRed() / 2);
+		float newRed = (getRed()+second.getRed()) / 2;
+		float newGreen = (getGreen()+second.getGreen()) / 2;
+		float newBlue = (getBlue()+second.getBlue()) / 2;
 		color.withValue(newRed, newGreen, newBlue);
 		return color;
 	}
@@ -181,4 +182,27 @@ public class RGBColor {
 		}
 		return true;
 	 }
+	
+	public String toString() {
+		CharacterBuffer buffer=new CharacterBuffer().withBufferLength(7);
+		buffer.with("#");
+		addHex((int)red, buffer);
+		addHex((int)green, buffer);
+		addHex((int)blue, buffer);
+		return buffer.toString();
+	}
+	private void addHex(int value, CharacterBuffer buffer) {
+		int t = (int) (value/16);
+		int rest = value - t*16;
+		if(t>9) {
+			buffer.with((char)(65+t-10));
+		}else {
+			buffer.with((char)(48+t));
+		}
+		if(rest>9) {
+			buffer.with((char)(65+rest-10));
+		}else {
+			buffer.with((char)(48+rest));
+		}
+	}
 }

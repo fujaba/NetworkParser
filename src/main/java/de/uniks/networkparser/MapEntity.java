@@ -4,7 +4,6 @@ import java.util.Iterator;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.buffer.Tokener;
-import de.uniks.networkparser.graph.GraphTokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.Grammar;
@@ -23,21 +22,15 @@ public class MapEntity extends SimpleList<Object>{
 	private int deep;
 	private Object target;
 	private MapEntityStack stack;
-	private boolean isId = true;
 	/** The show line. */
-	private byte graphFlag = GraphTokener.FLAG_CLASS;
+	private byte flag = IdMap.FLAG_ID;
+	private byte tokenerFlag;
 	
-	/** boolean for switch of search for Interface or Abstract superclass for entity */
-	protected boolean searchForSuperCreator;
-	/** If this is true the IdMap save the Typ of primary datatypes. */
-	private boolean typSave;
-
-	public MapEntity(Filter filter, Grammar grammar, boolean searchForSuperCreator) {
+	public MapEntity(Filter filter, Grammar grammar) {
 		if(filter != null) {
 			this.filter = filter;
 		}
 		this.grammar = grammar;
-		this.searchForSuperCreator = searchForSuperCreator;
 	}
 	
 	public Filter getFilter() {
@@ -68,14 +61,16 @@ public class MapEntity extends SimpleList<Object>{
 		return deep;
 	}
 
-
 	public boolean isTypSave() {
-		return typSave;
+		return (flag & IdMap.FLAG_TYPESAVE) != 0;
+	}
+	public boolean isSearchForSuperClass() {
+		return (flag & IdMap.FLAG_SEARCHFORSUPERCLASS) != 0;
 	}
 	
 	// Methods for Grammar
 	public SendableEntityCreator getCreator(String type, IdMap map, Object item, String className) {
-		return grammar.getCreator(type, item, map, searchForSuperCreator, className);
+		return grammar.getCreator(type, item, map, isSearchForSuperClass(), className);
 	}
 	public Object getNewEntity(SendableEntityCreator creator, String className, boolean prototype) {
 		return grammar.getNewEntity(creator, className, prototype);
@@ -182,7 +177,7 @@ public class MapEntity extends SimpleList<Object>{
 	}
 	
 	public Entity writeBasicValue(SendableEntityCreator creator, Entity entity, BaseItem parent, String className, String id) {
-		if(this.isId == false) {
+		if((flag & IdMap.FLAG_ID) == 0) {
 			if(creator instanceof SendableEntityCreatorTag) {
 				className = ((SendableEntityCreatorTag)creator).getTag();
 			}
@@ -191,18 +186,13 @@ public class MapEntity extends SimpleList<Object>{
 		return grammar.writeBasicValue(entity, parent, className, id, this);
 	}
 	
-	public MapEntity withId(boolean value) {
-		this.isId = value;
-		return this;
-	}
-	
 	/**
 	 * @param value Is Association To Parent
 	 * @return the addOwnerLink
 	 */
 	public boolean isAddOwnerLink(Object value) {
-		if(isId) {
-			return isId;
+		if((flag & IdMap.FLAG_ID) != 0) {
+			return true;
 		}
 		if(stack != null) {
 			return stack.getPrevItem() != value;
@@ -263,14 +253,14 @@ public class MapEntity extends SimpleList<Object>{
 		return null;
 	}
 
-	public MapEntity withGraphFlag(byte flag) {
-		if(flag == GraphTokener.FLAG_CLASS ) {
-			graphFlag = (byte) (graphFlag & (graphFlag & GraphTokener.FLAG_OBJECT) | GraphTokener.FLAG_CLASS);
-		} else if(flag == GraphTokener.FLAG_OBJECT ) {
-			graphFlag = (byte) (graphFlag & (graphFlag & GraphTokener.FLAG_CLASS) | GraphTokener.FLAG_OBJECT);
-		} else {
-			this.graphFlag = (byte) (this.graphFlag | flag);
-		}
+	@SuppressWarnings("unchecked")
+	public MapEntity withFlag(byte flag) {
+		this.flag = (byte) (this.flag | flag);
+		return this;
+	}
+	public MapEntity withoutFlag(byte flag) {
+		this.flag = (byte) (this.flag | flag); 
+		this.flag -=  flag;
 		return this;
 	}
 	
@@ -300,10 +290,27 @@ public class MapEntity extends SimpleList<Object>{
 	 * @return the type
 	 */
 	public boolean isFlag(byte flag) {
-		return (graphFlag & flag) != 0;
+		return (this.flag & flag) != 0;
 	}
 
 	public boolean writeValue(BaseItem parent, String property, Object value, Tokener tokener) {
 		return grammar.writeValue(parent, property, value, this, tokener);
+	}
+
+	public MapEntity withTokenerFlag(byte flag) {
+		this.tokenerFlag = (byte) (this.tokenerFlag | flag);
+		return this;
+	}
+	public MapEntity withoutTokenerFlag(byte flag) {
+		this.tokenerFlag = (byte) (this.tokenerFlag | flag);
+		this.tokenerFlag -= flag; 
+		return this;
+	}
+	/**
+	 * @param flag is the Flag is Set
+	 * @return the type
+	 */
+	public boolean isTokenerFlag(byte flag) {
+		return (this.tokenerFlag & flag) != 0;
 	}
 }

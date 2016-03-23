@@ -42,7 +42,7 @@ public class XMLTokener extends Tokener {
 	public static final EntityStringConverter SIMPLECONVERTER = new EntityStringConverter();
 	
 	private boolean isAllowQuote;
-	
+
 	/** Instantiates a new XML id map. */
 	public XMLTokener() {
 		this.stopwords.add("?xml");

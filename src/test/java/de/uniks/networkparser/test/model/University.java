@@ -216,8 +216,13 @@ public class University {
 		return Collections.unmodifiableSet(this.students);
 	}
 
-	public University withStudents(Student newValue) {
-		this.addToStudents(newValue);
+	public University withStudents(Student... values) {
+		if(values == null) {
+			return this;
+		}
+		for(Student student : values) {
+			this.addToStudents(student);
+		}
 		return this;
 	}
 
@@ -261,4 +266,25 @@ public class University {
 		return this.name;
 	}
 
+	public static final String PROPERTY_UNIID = "uniId";
+
+	private int uniId;
+
+	public int getUniId() {
+		return this.uniId;
+	}
+
+	public void setUniId(int value) {
+		if (this.uniId != value) {
+
+			int oldValue = this.uniId;
+			this.uniId = value;
+			getPropertyChangeSupport().firePropertyChange(PROPERTY_UNIID, oldValue, value);
+		}
+	}
+
+	public University withUniId(int value) {
+		setUniId(value);
+		return this;
+	}
 }

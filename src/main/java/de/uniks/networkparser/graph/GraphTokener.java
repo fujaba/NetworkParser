@@ -36,22 +36,22 @@ import de.uniks.networkparser.json.JsonArray;
  */
 
 public class GraphTokener extends Tokener {
-	public static final byte FLAG_OBJECT = 0x01;
-	public static final byte FLAG_CLASS = 0x02;
-	public static final byte FLAG_CARDINALITY = 0x04;
-	public static final byte FLAG_SHOWLINE = 0x08;
-	
 	/** The Constant for CLASS Diagramms. */
 	public static final String CLASS = "classdiagram";
+
+	public static final byte FLAG_CLASS = 0x01;
+	public static final byte FLAG_CARDINALITY = 0x02;
+	public static final byte FLAG_SHOWLINE = 0x04;
+//	public static final byte FLAG_OBJECT = 0x01;
 
 	/** The Constant for OBJECT Diagramms. */
 	public static final String OBJECT = "objectdiagram";
 	
 	private String getType(MapEntity map) {
-		if(map.isFlag(FLAG_OBJECT)){
-			return OBJECT;
+		if(map.isTokenerFlag(FLAG_CLASS) ){
+			return CLASS;
 		}
-		return CLASS;
+		return OBJECT;
 	}
 
 	@Override

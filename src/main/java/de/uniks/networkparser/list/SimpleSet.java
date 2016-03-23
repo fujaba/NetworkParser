@@ -69,23 +69,25 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 	// Add Methods from SDMLib
 	@Override
 	public String toString() {
-		return toBuffer(", ").withStart('(').with(")").toString();
+		CharacterBuffer buffer = new CharacterBuffer();
+		buffer.with('(');
+		return toBuffer(buffer, ", ").with(')').toString();
 	}
 
 	public String toString(String separator) {
-		return toBuffer(separator).toString();
+		CharacterBuffer buffer = new CharacterBuffer();
+		return toBuffer(buffer, separator).toString();
 	}
-	CharacterBuffer toBuffer(String separator) {
-		CharacterBuffer stringList = new CharacterBuffer();
+	CharacterBuffer toBuffer(CharacterBuffer buffer, String separator) {
 		int len = this.size();
 		for (V elem : this) {
-			stringList.with(elem.toString());
+			buffer.with(elem.toString());
 			if (len > 1) {
-				stringList.with(separator);
+				buffer.with(separator);
 			}
 			len--;
 		}
-		return stringList;
+		return buffer;
 	}
 
 	// ReadOnly Add all

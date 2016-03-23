@@ -20,7 +20,10 @@ public class StudentCreator implements SendableEntityCreator {
 	@Override
 	public String[] getProperties() {
 		return new String[] { Student.PROPERTY_NAME, Student.PROPERTY_STUD_NO,
-				Student.PROPERTY_IN, Student.PROPERTY_UNIVERSITY };
+				Student.PROPERTY_IN, Student.PROPERTY_UNIVERSITY,
+				 Student.PROPERTY_FIRSTNAME, Student.PROPERTY_LASTNAME, 
+				 Student.PROPERTY_CREDITS
+		};
 	}
 
 	@Override
