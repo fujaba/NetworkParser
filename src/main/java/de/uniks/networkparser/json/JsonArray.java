@@ -22,10 +22,15 @@ package de.uniks.networkparser.json;
  permissions and limitations under the Licence.
 */
 import java.util.Iterator;
+
 import de.uniks.networkparser.EntityUtil;
-import de.uniks.networkparser.Tokener;
+import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.buffer.Buffer;
+import de.uniks.networkparser.buffer.Tokener;
+import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.StringItem;
+import de.uniks.networkparser.interfaces.EntityList;
+import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SortedList;
 /**
  * A JSONArray is an ordered sequence of values. Its external text form is a
@@ -72,18 +77,16 @@ import de.uniks.networkparser.list.SortedList;
  * @version 2010-12-28
  */
 
-public class JsonArray extends SortedList<Object> implements
-		StringItem {
-
+public class JsonArray extends SortedList<Object> implements EntityList {
 	/**
 	 * Get the JSONArray associated with an index.
 	 *
 	 * @param index
-	 *            The index must be between 0 and length() - 1.
+	 *			The index must be between 0 and length() - 1.
 	 * @return A JSONArray value.
 	 * @throws RuntimeException
-	 *             If there is no value for the index. or if the value is not a
-	 *             JSONArray
+	 *			 If there is no value for the index. or if the value is not a
+	 *			 JSONArray
 	 */
 	public JsonArray getJSONArray(int index) {
 		Object object = get(index);
@@ -100,11 +103,11 @@ public class JsonArray extends SortedList<Object> implements
 	 * Get the JSONObject associated with an index.
 	 *
 	 * @param index
-	 *            subscript
+	 *			subscript
 	 * @return A JSONObject value.
 	 * @throws RuntimeException
-	 *             If there is no value for the index or if the value is not a
-	 *             JSONObject
+	 *			 If there is no value for the index or if the value is not a
+	 *			 JSONObject
 	 */
 	public JsonObject getJSONObject(int index) {
 		Object object = get(index);
@@ -118,22 +121,22 @@ public class JsonArray extends SortedList<Object> implements
 	}
 
    /**
-    * Get the JSONObject associated with an index.
-    *
-    * @param index
-    *            subscript
-    * @return A JSONObject value.
-    * @throws RuntimeException
-    *             If there is no value for the index or if the value is not a
-    *             JSONObject
-    */
+	* Get the JSONObject associated with an index.
+	*
+	* @param index
+	*			subscript
+	* @return A JSONObject value.
+	* @throws RuntimeException
+	*			 If there is no value for the index or if the value is not a
+	*			 JSONObject
+	*/
    public String getString(int index) {
-      Object object = get(index);
-      if (object instanceof String) {
-         return (String) object;
-      }
-      throw new RuntimeException("JSONArray[" + index
-            + "] is not a String.");
+	  Object object = get(index);
+	  if (object instanceof String) {
+		 return (String) object;
+	  }
+	  throw new RuntimeException("JSONArray[" + index
+			+ "] is not a String.");
    }
 
 	/**
@@ -141,10 +144,10 @@ public class JsonArray extends SortedList<Object> implements
 	 * this JSONArray.
 	 *
 	 * @param names
-	 *            A JSONArray containing a list of key strings. These will be
-	 *            paired with the values.
+	 *			A JSONArray containing a list of key strings. These will be
+	 *			paired with the values.
 	 * @return A JSONObject, or null if there are no names or if this JSONArray
-	 *         has no values.
+	 *		 has no values.
 	 */
 	public JsonObject toJSONObject(JsonArray names) {
 		if (names == null || names.size() == 0 || size() == 0) {
@@ -166,11 +169,11 @@ public class JsonArray extends SortedList<Object> implements
 	 * Warning: This method assumes that the data structure is acyclical.
 	 *
 	 * @return a printable, displayable, transmittable representation of the
-	 *         array.
+	 *		 array.
 	 */
 	@Override
 	public String toString() {
-		return toString(0, 0);
+		return parseItem(new EntityStringConverter());
 	}
 
 	/**
@@ -178,22 +181,24 @@ public class JsonArray extends SortedList<Object> implements
 	 * assumes that the data structure is acyclical.
 	 *
 	 * @param indentFactor
-	 *            The number of spaces to add to each level of indentation.
+	 *			The number of spaces to add to each level of indentation.
 	 * @return a printable, displayable, transmittable representation of the
-	 *         object, beginning with <code>[</code>&nbsp;<small>(left
-	 *         bracket)</small> and ending with <code>]</code>
-	 *         &nbsp;<small>(right bracket)</small>.
+	 *		 object, beginning with <code>[</code>&nbsp;<small>(left
+	 *		 bracket)</small> and ending with <code>]</code>
+	 *		 &nbsp;<small>(right bracket)</small>.
 	 */
 	@Override
 	public String toString(int indentFactor) {
-		return toString(indentFactor, 0);
+		return parseItem(new EntityStringConverter(indentFactor));
 	}
 
 	/**
 	 * Make a prettyprinted JSON text of this JSONArray.
+	 * @param converter	Factor for spacing between Level
+	 * @return return Item As String
 	 */
 	@Override
-	public String toString(int indentFactor, int indent) {
+	protected String parseItem(EntityStringConverter converter) {
 		Iterator<Object> iterator = iterator();
 		if (!iterator.hasNext()) {
 			return "[]";
@@ -202,35 +207,20 @@ public class JsonArray extends SortedList<Object> implements
 		if (!isVisible()) {
 			return "[" + size() + " Items]";
 		}
-
-		StringBuilder sb;
-		String step = EntityUtil.repeat(' ', indentFactor);
-		String prefix = "";
-		int newindent = 0;
-		if (indent > 0) {
-			newindent = indent + indentFactor;
-		}
-
-		if (newindent > 0) {
-			sb = new StringBuilder();
-			for (int i = 0; i < indent; i += indentFactor) {
-				sb.append(step);
-			}
-			prefix = CRLF + sb.toString();
-		}
 		// First Element
-		sb = new StringBuilder("[" + prefix);
+		converter.add();
+		StringBuilder sb = new StringBuilder("[").append(converter.getPrefix());
 		Object element = iterator.next();
-		sb.append(EntityUtil.valueToString(element, indentFactor, newindent,
-				false, this));
-
+		sb.append(EntityUtil.valueToString(element, false, this, converter));
 		while (iterator.hasNext()) {
 			element = iterator.next();
-			sb.append("," + prefix + step);
-			sb.append(EntityUtil.valueToString(element, indentFactor,
-					newindent, false, this));
+			sb.append(",");
+			sb.append(converter.getPrefix());
+			sb.append(EntityUtil.valueToString(element, false, this, converter));
 		}
-		sb.append(prefix + ']');
+		converter.minus();
+		sb.append(converter.getPrefix());
+		sb.append(']');
 		return sb.toString();
 	}
 
@@ -238,14 +228,16 @@ public class JsonArray extends SortedList<Object> implements
 	 * JSONArray from a source JSON text.
 	 *
 	 * @param value
-	 *            A string that begins with <code>[</code>&nbsp;<small>(left
-	 *            bracket)</small> and ends with <code>]</code>
-	 *            &nbsp;<small>(right bracket)</small>.
+	 *			A string that begins with <code>[</code>&nbsp;<small>(left
+	 *			bracket)</small> and ends with <code>]</code>
+	 *			&nbsp;<small>(right bracket)</small>.
 	 * @return Itself
 	 */
 	public JsonArray withValue(String value) {
 		clear();
-		new JsonTokener().withBuffer(value).parseToEntity(this);
+		JsonTokener tokener = new JsonTokener();
+		tokener.withBuffer(value);
+		tokener.parseToEntity(this);
 		return this;
 	}
 
@@ -253,11 +245,23 @@ public class JsonArray extends SortedList<Object> implements
 	 * JSONArray from a JSONTokener.
 	 *
 	 * @param x
-	 *            A JSONTokener
+	 *			A JSONTokener
 	 * @return Itself
 	 */
 	public JsonArray withValue(Tokener x) {
 		x.parseToEntity(this);
+		return this;
+	}
+	
+	/**
+	 * Set the value to Tokener or pairs of values
+	 *
+	 * @param values
+	 *			a simple String of Value or pairs of key-values
+	 * @return Itself
+	 */
+	public JsonArray withValue(Buffer values) {
+		new JsonTokener().withBuffer(values).parseToEntity(this);
 		return this;
 	}
 
@@ -265,7 +269,7 @@ public class JsonArray extends SortedList<Object> implements
 	 * JSONArray from a BaseEntityArray.
 	 *
 	 * @param values
-	 *            of Elements.
+	 *			of Elements.
 	 * @return Itself
 	 */
 	public JsonArray withValue(BaseItem... values) {
@@ -279,8 +283,8 @@ public class JsonArray extends SortedList<Object> implements
 		for (Object item : this) {
 			if (item instanceof JsonObject) {
 				JsonObject json = (JsonObject) item;
-				if (json.has(JsonIdMap.ID)
-						&& json.getString(JsonIdMap.ID).equals(id)) {
+				if (json.has(IdMap.ID)
+						&& json.getString(IdMap.ID).equals(id)) {
 					return json;
 				}
 			}
@@ -306,5 +310,16 @@ public class JsonArray extends SortedList<Object> implements
 	@Override
 	public JsonArray subList(int fromIndex, int toIndex) {
 		return (JsonArray) super.subList(fromIndex, toIndex);
+	}
+
+	@Override
+	public SimpleList<EntityList> getChildren() {
+		SimpleList<EntityList> items = new SimpleList<EntityList>();
+		for(Object item : this) {
+			if(item instanceof EntityList) {
+				items.add((EntityList)item);
+			}
+		}
+		return items;
 	}
 }

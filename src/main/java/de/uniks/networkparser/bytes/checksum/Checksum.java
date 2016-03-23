@@ -49,7 +49,7 @@ public abstract class Checksum {
 	 * Updates the checksum with the specified byte.
 	 *
 	 * @param b
-	 *            the byte
+	 *			the byte
 	 */
 	public void update(int b) {
 		length++;
@@ -59,7 +59,7 @@ public abstract class Checksum {
 	 * Updates the checksum with the specified byte.
 	 *
 	 * @param b
-	 *            the item to update
+	 *			the item to update
 	 */
 	public void update(byte b) {
 		update((int) (b & 0xFF));
@@ -69,11 +69,11 @@ public abstract class Checksum {
 	 * Updates the current checksum with the specified array of bytes.
 	 *
 	 * @param bytes
-	 *            the byte array to update the checksum with
+	 *			the byte array to update the checksum with
 	 * @param offset
-	 *            the start offset of the data
+	 *			the start offset of the data
 	 * @param length
-	 *            the number of bytes to use for the update
+	 *			the number of bytes to use for the update
 	 */
 	public void update(byte[] bytes, int offset, int length) {
 		for (int i = offset; i < length + offset; i++) {
@@ -85,7 +85,7 @@ public abstract class Checksum {
 	 * Updates the current checksum with the specified array of bytes.
 	 *
 	 * @param bytes
-	 *            bytearray of items
+	 *			bytearray of items
 	 */
 	public void update(byte[] bytes) {
 		update(bytes, 0, bytes.length);

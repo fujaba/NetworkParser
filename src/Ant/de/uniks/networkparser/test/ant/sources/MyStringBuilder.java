@@ -2,10 +2,10 @@ package de.uniks.networkparser.test.ant.sources;
 
 public class MyStringBuilder implements FilePart{
 	private StringBuilder sb = new StringBuilder();
-	
+
 	@Override
 	public void append(String value) {
-		sb.append(value);		
+		sb.append(value);
 	}
 
 	@Override

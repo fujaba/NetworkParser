@@ -28,7 +28,7 @@ public class Change {
 		}
 		return null;
 	}
-	
+
 	public boolean set(String attribute, Object value) {
 		if (attribute.equalsIgnoreCase(PROPERTY_KEY)) {
 			setKey((Long) value);

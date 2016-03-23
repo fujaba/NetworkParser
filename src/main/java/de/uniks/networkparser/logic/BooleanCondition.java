@@ -22,13 +22,14 @@ package de.uniks.networkparser.logic;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.UpdateListener;
 
-public class BooleanCondition implements Condition<ValuesSimple>, SendableEntityCreator {
+public class BooleanCondition implements UpdateListener, SendableEntityCreator {
 	public static final String VALUE = "value";
 	private boolean value;
 
 	@Override
-	public boolean check(ValuesSimple values) {
+	public boolean update(Object value) {
 		return this.value;
 	}
 

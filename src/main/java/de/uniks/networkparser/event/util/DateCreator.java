@@ -22,15 +22,12 @@ package de.uniks.networkparser.event.util;
  permissions and limitations under the Licence.
 */
 import java.util.Date;
+
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
 /**
  * The Class DateCreator.
  */
-
-public class DateCreator implements SendableEntityCreator,
-
-		SendableEntityCreatorNoIndex {
+public class DateCreator implements SendableEntityCreatorNoIndex {
 	/** The Constant VALUE. */
 	public static final String VALUE = "value";
 

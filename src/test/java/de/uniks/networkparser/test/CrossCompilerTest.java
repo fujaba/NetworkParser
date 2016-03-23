@@ -1,14 +1,12 @@
 package de.uniks.networkparser.test;
 
 import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
-
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.xml.XMLEntity;
 
 public class CrossCompilerTest {
-	
+
 	@Test
 	public void crossCompileXMLToJson(){
 		String xml="<de.uni.kassel.peermessage.model.ChatMessage sender=\"Stefan\" value=\"Test\">Meine Nachricht</de.uni.kassel.peermessage.model.ChatMessage>";

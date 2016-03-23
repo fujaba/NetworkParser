@@ -14,9 +14,9 @@ public class ChatMessage {
 
 	/**
 	 * <pre>
-	 *           1..1     1..1
+	 *		   1..1	 1..1
 	 * ChatMessage ------------------------> Date
-	 *           &lt;       date
+	 *		   &lt;	   date
 	 * </pre>
 	 */
 	private Date date;

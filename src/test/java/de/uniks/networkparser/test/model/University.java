@@ -9,45 +9,44 @@ import java.util.Set;
 
 // should become a JSON Parser
 public class University {
-    public static final String PROPERTY_USER = "&fg&user";
-    public static final String PROPERTY_ICH = "&child&value";
-    public static final String PROPERTY_VALUE = "&fg?value";
+	public static final String PROPERTY_USER = ".fg.user.";
+	public static final String PROPERTY_ICH = ".child.value.";
+	public static final String PROPERTY_VALUE = ".fg.value";
+
+	private String user;
+	private String ich;
+	private String value;
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
 
 
-    private String user;
-    private String ich;
-    private String value;
+	public String getUser() {
+		return user;
+	}
 
-    public String getValue() {
-        return value;
-    }
+	public void setUser(String user) {
+		this.user = user;
+	}
 
-    public void setValue(String value) {
-        this.value = value;
-    }
+	public String getIch() {
+		return ich;
+	}
 
-    
-    public String getUser() {
-        return user;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
-    }
-
-    public String getIch() {
-        return ich;
-    }
-
-    public void setIch(String ich) {
-        this.ich = ich;
-    }
+	public void setIch(String ich) {
+		this.ich = ich;
+	}
 
 	/**
 	 * <pre>
-	 *           0..1     students     0..n
+	 *		   0..1	 students	 0..n
 	 * University ------------------------- Student
-	 *           university        &gt;       students
+	 *		   university		&gt;	   students
 	 * </pre>
 	 */
 
@@ -108,9 +107,9 @@ public class University {
 
 	/**
 	 * <pre>
-	 *           1..1     rooms     0..n
+	 *		   1..1	 rooms	 0..n
 	 * University ------------------------- Room
-	 *           university        &gt;       rooms
+	 *		   university		&gt;	   rooms
 	 * </pre>
 	 */
 
@@ -217,8 +216,13 @@ public class University {
 		return Collections.unmodifiableSet(this.students);
 	}
 
-	public University withStudents(Student newValue) {
-		this.addToStudents(newValue);
+	public University withStudents(Student... values) {
+		if(values == null) {
+			return this;
+		}
+		for(Student student : values) {
+			this.addToStudents(student);
+		}
 		return this;
 	}
 
@@ -262,4 +266,25 @@ public class University {
 		return this.name;
 	}
 
+	public static final String PROPERTY_UNIID = "uniId";
+
+	private int uniId;
+
+	public int getUniId() {
+		return this.uniId;
+	}
+
+	public void setUniId(int value) {
+		if (this.uniId != value) {
+
+			int oldValue = this.uniId;
+			this.uniId = value;
+			getPropertyChangeSupport().firePropertyChange(PROPERTY_UNIID, oldValue, value);
+		}
+	}
+
+	public University withUniId(int value) {
+		setUniId(value);
+		return this;
+	}
 }

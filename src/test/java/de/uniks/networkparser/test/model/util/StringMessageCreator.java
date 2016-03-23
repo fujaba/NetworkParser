@@ -15,7 +15,7 @@ public class StringMessageCreator implements SendableEntityCreatorTag {
 	public Object getSendableInstance(boolean reference) {
 		return new StringMessage();
 	}
-	
+
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		return ((StringMessage) entity).get(attribute);

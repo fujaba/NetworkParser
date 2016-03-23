@@ -2,15 +2,14 @@ package de.uniks.networkparser.test.ant.sources;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import de.uniks.networkparser.graph.GraphIdMap;
+import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.converter.YUMLConverter;
 import de.uniks.networkparser.graph.GraphList;
-import de.uniks.networkparser.graph.YUMLConverter;
 
 public class NetworkParserSources {
 	private int change;
@@ -19,7 +18,7 @@ public class NetworkParserSources {
 	private int ok;
 	private int errors;
 	private int lineofCode;
-	private ArrayList<String> emptyMethods= new ArrayList<String>(); 
+//	private ArrayList<String> emptyMethods= new ArrayList<String>();
 	private HashMap<String, String> customItems;
 	private int thirdparty;
 
@@ -28,16 +27,16 @@ public class NetworkParserSources {
 		copiedFile(sourcePath, targetPath, createDirectory, createFiles);
 		printResult();
 	}
-	
+
 	public HashSet<SourceItem> getSources(String sourcePath){
-		HashSet<SourceItem> items= new HashSet<SourceItem>(); 
+		HashSet<SourceItem> items= new HashSet<SourceItem>();
 
 		init();
 		getSources(sourcePath, items);
-		
+
 		return items;
 	}
-	
+
 	private void getSources(String sourcePath, HashSet<SourceItem> items){
 		File path= new File(sourcePath);
 		File[] listFiles = path.listFiles();
@@ -48,16 +47,16 @@ public class NetworkParserSources {
 				if(!child.getAbsolutePath().endsWith(".java")){
 					continue;
 				}
-				
+
 				SourceItem source= new SourceItem(child);
 				items.add(source);
 //				copiedFile(child, targetPath, createFiles);
 			}
 		}
 	}
-	
+
 	public String getPackageGraph(HashSet<SourceItem> items){
-		GraphList list= new GraphList().withTyp(GraphIdMap.CLASS);
+		GraphList list= new GraphList().withTyp(IdMap.CLASS);
 		for (SourceItem source : items){
 			String packageName = source.getShortPackageName();
 			for (String item : source.getImports().getPackages()){
@@ -67,7 +66,7 @@ public class NetworkParserSources {
 		}
 		return YUMLConverter.URL+list.toString();
 	}
-	
+
 	private void copiedFile(String sourcePath, String targetPath, boolean createDirectory, boolean createFiles){
 		File path= new File(sourcePath);
 		File[] listFiles = path.listFiles();
@@ -79,7 +78,7 @@ public class NetworkParserSources {
 			}
 		}
 	}
-	
+
 	public void copiedFile(File file, String targetPath, boolean createDirectory, boolean createFiles){
 		if(!file.getAbsolutePath().endsWith(".java")){
 			return;
@@ -108,8 +107,8 @@ public class NetworkParserSources {
 				return;
 			}
 		}
-		
-		
+
+
 		SourceItem source= new SourceItem(file);
 		for (MethodItem m :  source.getMethods().getItems()){
 			if(m.getLinesOfCode()<1 && m.getName().length()>0){
@@ -139,7 +138,7 @@ public class NetworkParserSources {
 		thirdparty = 0;
 		customItems= new HashMap<String, String>();
 	}
-	
+
 	private void printResult(){
 		System.out.println(skip+ " Uebersprungen");
 		System.out.println(thirdparty+ " Andere Projekte");
@@ -167,9 +166,6 @@ public class NetworkParserSources {
 	}
 	private void createdComment(String sourcePath, SourceItem commentFile, String projectName){
 		File path= new File(sourcePath);
-		if(path == null) {
-			return;
-		}
 		System.out.println("TESTE: "+sourcePath);
 
 		File[] listFiles = path.listFiles();
@@ -187,15 +183,15 @@ public class NetworkParserSources {
 				if(!child.getAbsolutePath().endsWith(".java")){
 					continue;
 				}
- 				SourceItem source= new SourceItem(child).withProjectName(projectName);
- 				lineofCode += source.getLineOfCode();
- 				String customComment = source.getCustomComment();
- 				if(customComment.length()>0){
- 					customItems.put(customComment, source.getFileName());
- 					System.out.println("Thirdparty-Source: " +source.getFileName());
- 					thirdparty++;
- 					continue;
- 				}
+				 SourceItem source= new SourceItem(child).withProjectName(projectName);
+				 lineofCode += source.getLineOfCode();
+				 String customComment = source.getCustomComment();
+				 if(customComment.length()>0){
+					 customItems.put(customComment, source.getFileName());
+					 System.out.println("Thirdparty-Source: " +source.getFileName());
+					 thirdparty++;
+					 continue;
+				 }
 				if(source.skipComment()){
 					skip++;
 					continue;
@@ -203,7 +199,7 @@ public class NetworkParserSources {
 				if(source.changeComment(commentFile.getComment())){
 					System.out.println(source.getFileName());
 					change++;
-					
+
 					source.write();
 				} else {
 					ok++;

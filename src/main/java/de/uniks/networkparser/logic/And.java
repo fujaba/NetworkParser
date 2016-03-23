@@ -22,28 +22,29 @@ package de.uniks.networkparser.logic;
  permissions and limitations under the Licence.
 */
 import java.util.ArrayList;
+
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.UpdateListener;
 
-public class And implements Condition<ValuesSimple>, SendableEntityCreator {
+public class And implements UpdateListener, SendableEntityCreator {
 	public static final String CHILD = "childs";
-	private ArrayList<Condition<ValuesSimple>> list = new ArrayList<Condition<ValuesSimple>>();
+	private ArrayList<UpdateListener> list = new ArrayList<UpdateListener>();
 
-	@SuppressWarnings("unchecked")
-	public And add(Condition<ValuesSimple>... conditions) {
-		for (Condition<ValuesSimple> condition : conditions) {
+	public And add(UpdateListener... conditions) {
+		for (UpdateListener condition : conditions) {
 			this.list.add(condition);
 		}
 		return this;
 	}
 
-	public ArrayList<Condition<ValuesSimple>> getList() {
+	public ArrayList<UpdateListener> getList() {
 		return list;
 	}
 
 	@Override
-	public boolean check(ValuesSimple values) {
-		for (Condition<ValuesSimple> condition : list) {
-			if (!condition.check(values)) {
+	public boolean update(Object evt) {
+		for (UpdateListener condition : list) {
+			if (!condition.update(evt)) {
 				return false;
 			}
 		}
@@ -68,12 +69,11 @@ public class And implements Condition<ValuesSimple>, SendableEntityCreator {
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
 		if (CHILD.equalsIgnoreCase(attribute)) {
-			((And) entity).add((Condition<ValuesSimple>) value);
+			((And) entity).add((UpdateListener) value);
 			return true;
 		}
 		return false;

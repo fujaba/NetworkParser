@@ -1,115 +1,113 @@
 package de.uniks.networkparser.test;
 
+import java.beans.PropertyChangeEvent;
+import java.io.PrintStream;
 import java.math.BigInteger;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.UpdateListener;
-import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
+import de.uniks.networkparser.logic.Deep;
 import de.uniks.networkparser.logic.InstanceOf;
+import de.uniks.networkparser.logic.SimpleMapEvent;
 import de.uniks.networkparser.test.model.GroupAccount;
 import de.uniks.networkparser.test.model.Person;
 import de.uniks.networkparser.test.model.SortedMsg;
+import de.uniks.networkparser.test.model.util.GroupAccountCreator;
 import de.uniks.networkparser.test.model.util.PersonCreator;
 import de.uniks.networkparser.test.model.util.SortedMsgCreator;
 
 public class JsonModellTest implements UpdateListener {
 
-	private JsonIdMap secondMap;
+	private IdMap secondMap;
 
 	@Test
 	public void testSet(){
 		GroupAccount account= new GroupAccount();
 		account.createPersons().withName("Albert");
 		account.createPersons().withName("Tobi");
-		
-		
-		JsonIdMap map= new JsonIdMap();
-		map.withCreator(new PersonCreator());
-//		System.out.println(map.toJsonArray(account.getPersons(), new Filter().withPropertyRegard(InstanceOf.value(Person.class, Person.PROPERTY_PARENT))).toString(2));
-		System.out.println(map.toJsonArray(account.getPersons(), Filter.regard(InstanceOf.value(Person.class, Person.PROPERTY_PARENT))).toString(2));
+
+
+		IdMap map= new IdMap();
+		map.with(new PersonCreator());
+		map.with(new GroupAccountCreator());
+		Assert.assertEquals(175, map.toJsonArray(account.getPersons(), Filter.regard(InstanceOf.value(Person.class, Person.PROPERTY_PARENT))).toString(2).length());
 	}
-	
 	
 	@Test
 	public void testModell(){
-		JsonIdMap map= new JsonIdMap();
-		map.withUpdateListenerRead(this);
-		map.withUpdateListenerSend(this);
-		map.withCreator(new SortedMsgCreator());
+		IdMap map= new IdMap();
+		map.with(this);
+		map.with(new SortedMsgCreator());
 		SortedMsg first= new SortedMsg();
 		first.setNumber(1);
-		
+
 		SortedMsg second= new SortedMsg();
 		second.setNumber(2);
 		first.setChild(second);
-		
-		
+
+
 		String sample="Hallo Welt";
-		
-	    byte[] dataByte = sample.getBytes();
-	    System.out.println("Compression Demo");
-	    System.out.println("Actual Size of String : " + dataByte.length);
-	    
+
+		byte[] dataByte = sample.getBytes();
+		Assert.assertEquals("Actual Size of String", 10, dataByte.length);
+
 		// test string
 		String text = "Hello world!";
-		System.out.println("" + text+ "(" +text.length()+ ")");
+		Assert.assertEquals("" + text+ "(" +text.length()+ ")", 12, text.length());
 
 		// convert to big integer
 		BigInteger number = new BigInteger(text.getBytes());
-		
+
 		// convert back
 		new String(number.toByteArray());
-		
-		this.secondMap= new JsonIdMap();
-		secondMap.withUpdateListenerRead(this);
-		secondMap.withUpdateListenerSend(this);
-		secondMap.withCreator(new SortedMsgCreator());
+
+		this.secondMap= new IdMap();
+		secondMap.with(this);
+		secondMap.with(new SortedMsgCreator());
 
 		JsonObject jsonObject=map.toJsonObject(first);
-		System.out.println(jsonObject.toString(2));
-		secondMap.getUpdateListener().execute(jsonObject);
-		
+		Assert.assertEquals(385, jsonObject.toString(2).length());
+		secondMap.getUpdateExecuter().execute(jsonObject);
+
 		SortedMsg third= new SortedMsg();
 		third.setNumber(4);
 		second.setChild(third);
 		// DEEP 0
-//		System.out.println(map.toJsonObject(first, new JsonFilter(0)).toString());
+		Assert.assertEquals(165, map.toJsonObject(first, Filter.regard(Deep.value(1))).toString().length());
 		// DEEP 1
-//		System.out.println(map.toJsonObject(first, new JsonFilter(1)).toString());
+		Assert.assertEquals(340, map.toJsonObject(first, Filter.regard(Deep.value(2))).toString().length());
 		// DEEP 2
-//		System.out.println(map.toJsonObject(first, new JsonFilter(2)).toString());
+		Assert.assertEquals(438, map.toJsonObject(first, Filter.regard(Deep.value(3))).toString().length());
 		third.updateNumber(2);
 		third.setNumber(5);
-		
-//		System.out.println(map.size());
+
+		Assert.assertEquals(3, map.size());
 		second.setChild(null);
 	}
 
-	@Test
-	public void testModellReplicator(){
-		System.out.println("9".compareTo("10")); //8
-		System.out.println("1".compareTo("2"));  //-1
-		System.out.println("10".compareTo("9"));  //-8
-		System.out.println(new Integer(1).compareTo(2)); //-1
-		System.out.println(new Integer(9).compareTo(10));//-1
-		System.out.println(new Integer(10).compareTo(9)); // 1
-	}
-
 	@Override
-	public boolean update(String typ, BaseItem source, Object target, String property,
-			Object oldValue, Object newValue) {
-		if(IdMap.SENDUPDATE.equals(typ)) {
-			JsonObject jsonObject = (JsonObject) source;
-			System.out.println("Send: " +jsonObject);
-			secondMap.getUpdateListener().execute(jsonObject);
+	public boolean update(Object evt) {
+		SimpleMapEvent simpleEvent = (SimpleMapEvent) evt;
+
+		if(IdMap.NEW.equals(simpleEvent.getType())) {
+			JsonObject jsonObject = (JsonObject) simpleEvent.getEntity();
+			printToStream("Send: " +jsonObject, null);
+			secondMap.getUpdateExecuter().execute(jsonObject);
 			return true;
 		}
-		System.out.println("ReceiveOBJ: Typ:" +property+ "value:" +newValue);
+		PropertyChangeEvent event = (PropertyChangeEvent) evt;
+		printToStream("ReceiveOBJ: Typ:" +event.getPropertyName()+ "value:" +event.getNewValue(), null);
 		return false;
+	}
+
+	void printToStream(String str, PrintStream stream) {
+		if(stream != null) {
+			stream.println(str);
+		}
 	}
 }

@@ -24,7 +24,9 @@ package de.uniks.networkparser.list;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 /**
@@ -33,12 +35,11 @@ import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
  * @author Stefan Lindel
  *
  * @param <K>
- *            Key-Element
+ *			Key-Element
  * @param <V>
- *            Value Element
+ *			Value Element
  */
 public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
-
 		SendableEntityCreator, SendableEntityCreatorNoIndex {
 	/** Constant for KEY. */
 	public static final String PROPERTY_KEY = "key";
@@ -75,7 +76,7 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 	 * add the Values of the map to AbstractKeyValueEntry&lt;K, V&gt;
 	 *
 	 * @param collection
-	 *            a map of key-values
+	 *			a map of key-values
 	 * @return Itself
 	 */
 	public SimpleEntity<K, V> with(Map<Object, Object> collection) {
@@ -213,7 +214,7 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 	}
 
 	@Override
-	public BaseItem withAll(Object... values) {
+	public BaseItem with(Object... values) {
 		if(values == null) {
 			return this;
 		}
@@ -229,8 +230,7 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 		return new SimpleEntity<K, V>();
 	}
 
-	@Override
-	public Object getValueItem(Object key) {
+	public Object getValue(Object key) {
 		if(PROPERTY_KEY.equals(key)) {
 			return key;
 		}
@@ -238,5 +238,13 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 			return value;
 		}
 		return null;
+	}
+
+	@Override
+	public String toString(Converter converter) {
+		if(converter == null) {
+			return null;
+		}
+		return converter.encode(this);
 	}
 }

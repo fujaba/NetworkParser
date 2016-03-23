@@ -3,8 +3,10 @@ package de.uniks.networkparser.test.ant;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
-
+import java.util.Map;
+import java.util.Map.Entry;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
@@ -12,12 +14,12 @@ import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.FileMode;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
+import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
-
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 
@@ -25,20 +27,21 @@ public class GitRevision {
 	private boolean full=false;
 	public void execute() throws IOException {
 		File file = new File("");
-		
+
 		FileRepositoryBuilder builder = new FileRepositoryBuilder();
 		Repository repository = builder.setWorkTree(file)
 		  .readEnvironment() // scan environment GIT_* variables
 		  .findGitDir() // scan up the file system tree
 		  .build();
-		
+
 		System.setProperty("Branchname", repository.getBranch());
 		ObjectId headID = repository.resolve("HEAD");
 		System.setProperty("LastCommit", headID.getName());
-		
+		calcGitTag(repository);
+
 		JsonArray map= new JsonArray();
 		commitInfo(map, repository, headID, null);
-		
+
 		int count=0;
 		while (headID!=null){
 			count++;
@@ -52,11 +55,32 @@ public class GitRevision {
 		writer.write(map.toString(2));
 		writer.close();
 	}
-	
+
+	public int calcGitTag(Repository repository) {
+		int gittag=-1;
+		String tagHash = "";
+		Map<String, Ref> tags = repository.getTags();
+		for(Iterator<Entry<String, Ref>> i = tags.entrySet().iterator();i.hasNext();) {
+			Entry<String, Ref> entry = i.next();
+			try {
+				Integer value = Integer.valueOf(entry.getKey());
+				if(value>0 && value > gittag) {
+					gittag = value;
+					tagHash = entry.getValue().getName();
+				}
+			}catch(Exception e) {
+				// no problem as long as there's another tag with a number
+			}
+		}
+		System.setProperty("GitTag", "" +gittag);
+		System.setProperty("GitTagHash", tagHash);
+		return gittag;
+	}
+
 	public void setFull(boolean full) {
-    	this.full = full;
-    }
-	
+		this.full = full;
+	}
+
 	private JsonObject commitInfo(JsonArray map, Repository repository, ObjectId objectID, ObjectId newerrId) throws MissingObjectException, IncorrectObjectTypeException, IOException{
 		try{
 			JsonObject jsonObject = new JsonObject();
@@ -84,15 +108,15 @@ public class GitRevision {
 						if(commit.getTree()!=null){
 							newTreeIter.reset(reader, commit.getTree());
 							diffs= new Git(repository).diff()
-							                        .setNewTree(newerTreeIter)
-							                        .setOldTree(newTreeIter)
-							                        .call();
+													.setNewTree(newerTreeIter)
+													.setOldTree(newTreeIter)
+													.call();
 						}
 					}
 					if(diffs!=null){
 						JsonArray files= new JsonArray();
 						for (DiffEntry entry : diffs) {
-							FileMode mode =entry.getNewMode(); 
+							FileMode mode =entry.getNewMode();
 							if(FileMode.MISSING==mode){
 								files.add(new JsonObject().withValue("REM", entry.getNewPath()));
 							} else {
@@ -104,9 +128,9 @@ public class GitRevision {
 				}
 				map.add(jsonObject);
 			}
+			walk.close();
 			return jsonObject;
 		}catch(Exception e){
-			e.printStackTrace();
 		}
 		return null;
 	}

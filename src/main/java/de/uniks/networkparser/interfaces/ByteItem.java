@@ -1,5 +1,8 @@
 package de.uniks.networkparser.interfaces;
 
+import de.uniks.networkparser.buffer.ByteBuffer;
+import de.uniks.networkparser.converter.ByteConverter;
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -24,54 +27,41 @@ package de.uniks.networkparser.interfaces;
 
 public interface ByteItem extends BaseItem {
 	/**
-	 * @return the ByteItem as String
-	 */
-	@Override
-	public String toString();
-
-	/**
 	 * @param converter
-	 *            ByteConverter for Format
-	 * @return the ByteItem as String with converter
-	 */
-	public String toString(ByteConverter converter);
-
-	/**
-	 * @param converter
-	 *            ByteConverter for Format
+	 *			ByteConverter for Format
 	 * @param isDynamic
-	 *            ByteStream for minimize output
+	 *			ByteStream for minimize output
 	 * @return the ByteItem as String
 	 */
 	public String toString(ByteConverter converter, boolean isDynamic);
 
 	/**
 	 * @param isDynamic
-	 *            ByteStream for minimize output
+	 *			ByteStream for minimize output
 	 * @return ByteStream
 	 */
-	public BufferedBytes getBytes(boolean isDynamic);
+	public ByteBuffer getBytes(boolean isDynamic);
 
 	/**
 	 * Write the Entity to the buffer
 	 *
 	 * @param buffer
-	 *            for writing
+	 *			for writing
 	 * @param isDynamic
-	 *            dynamic switsch
+	 *			dynamic switsch
 	 * @param lastEntity
-	 *            is the entity is the last of a list
+	 *			is the entity is the last of a list
 	 * @param isPrimitive
-	 *            need the entity no datatyp
+	 *			need the entity no datatyp
 	 */
-	public void writeBytes(BufferedBytes buffer, boolean isDynamic,
+	public void writeBytes(ByteBuffer buffer, boolean isDynamic,
 			boolean lastEntity, boolean isPrimitive);
 
 	/**
 	 * @param isDynamic
-	 *            ByteStream for minimize output
+	 *			ByteStream for minimize output
 	 * @param isLast
-	 *            is the Element is the Last of Group
+	 *			is the Element is the Last of Group
 	 * @return the Size of Bytes
 	 */
 	public int calcLength(boolean isDynamic, boolean isLast);

@@ -22,13 +22,14 @@ package de.uniks.networkparser.logic;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.UpdateListener;
 /**
  * DeepCondition.
  *
  * @author Stefan Lindel
  */
 
-public class Deep extends ConditionMap implements SendableEntityCreator {
+public class Deep implements SendableEntityCreator, UpdateListener {
 	/** Constant of Deep. */
 	public static final String DEEP = "deep";
 	/** Variable of Deep. */
@@ -36,7 +37,7 @@ public class Deep extends ConditionMap implements SendableEntityCreator {
 
 	/**
 	 * @param value
-	 *            The new Value
+	 *			The new Value
 	 * @return Deep Instance
 	 */
 	public Deep withDeep(int value) {
@@ -50,13 +51,16 @@ public class Deep extends ConditionMap implements SendableEntityCreator {
 	}
 
 	@Override
-	public boolean check(ValuesMap values) {
-		return values.deep <= this.deep;
+	public boolean update(Object evt) {
+		if(evt instanceof SimpleMapEvent) {
+			return ((SimpleMapEvent)evt).getDeep() <= this.deep;
+		}
+		return false;
 	}
 
 	/**
 	 * @param value
-	 *            Value of Deep
+	 *			Value of Deep
 	 * @return a new Deep Instance
 	 */
 	public static Deep value(int value) {

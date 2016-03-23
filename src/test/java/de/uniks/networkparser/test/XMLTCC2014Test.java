@@ -1,22 +1,23 @@
 package de.uniks.networkparser.test;
 
 import static org.junit.Assert.*;
-
+import org.junit.Assert;
 import org.junit.Test;
 
+import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.test.model.FIXMLMessage;
 import de.uniks.networkparser.test.model.util.ApplicationMessageCreator;
 import de.uniks.networkparser.test.model.util.FIXMLMessageCreator;
 import de.uniks.networkparser.xml.XMLEntity;
-import de.uniks.networkparser.xml.XMLIdMap;
 
 public class XMLTCC2014Test extends IOClasses{
 	@Test
 	public void testPattern() {
 		String XMLText = readFile("test3.xml").toString();
-		
-		XMLIdMap map= new XMLIdMap();
-		map.withCreator(new FIXMLMessageCreator());
-		map.withCreator(new ApplicationMessageCreator());
+
+		IdMap map= new IdMap();
+		map.with(new FIXMLMessageCreator());
+		map.with(new ApplicationMessageCreator());
 //		map.withCreator(new de.kassel.ttc2014.fixml.test3.creators.OrderCreator());
 //		map.withCreator(new de.kassel.ttc2014.fixml.test3.creators.HandInstCreator());
 //		map.withCreator(new de.kassel.ttc2014.fixml.test3.creators.InstrumentCreator());
@@ -26,22 +27,19 @@ public class XMLTCC2014Test extends IOClasses{
 //		map.withCreator(new de.kassel.ttc2014.fixml.test3.creators.CurrencyCreator());
 //		map.withCreator(new de.kassel.ttc2014.fixml.test3.creators.Rule80ACreator());
 //		map.withCreator(new de.kassel.ttc2014.fixml.test3.creators.LimitOrderCreator());
-		
-		
-		Object item = map.decode(XMLText);
 
-		System.out.println(item);
+		FIXMLMessage item = (FIXMLMessage) map.decode(XMLText);
 		assertNotNull(item);
+		assertNotNull(item.getApplicationmessage());
 	}
 
 	@Test
 	public void testSimpleXMLEntity(){
 		String str = readFile("test3.xml").toString();
-		
-		
+
+
 		XMLEntity item= new XMLEntity();
 		item.withValue(str);
-		
-		System.out.println(item.toString());
+		Assert.assertEquals(505, item.toString().length());
 	}
 }

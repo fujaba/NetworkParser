@@ -1,27 +1,37 @@
 package de.uniks.networkparser.test;
 
+import java.io.FileNotFoundException;
+
+import org.junit.Assert;
 import org.junit.Test;
 
-import de.uniks.networkparser.emf.EMFUtil;
+import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.graph.GraphList;
 
 public class EMFTest extends IOClasses{
 
 	@Test
 	public void testEMF() {
-//		StringBuffer value = readFile(EMFTest.class.getResource("testcase4-in.petrinet").toString());
-//		EmfIdMap2 map=new EmfIdMap2();
+//		StringBuffer value = readFile("testcase4-in.petrinet");
+//		EMFIdMap map=new EMFIdMap();
 //		Object decode = map.decode(value.toString());
-//		System.out.println(decode);
+//		out.println(decode);
 	}
 
 	@Test
 	public void testEMFDecode() {
 		StringBuffer value = readFile("railway.ecore");
-		GraphList model = EMFUtil.decode(value.toString());
-		System.out.println(model);
-//		EmfIdMap2 map=new EmfIdMap2();
-//		Object decode = map.decode(value.toString());
-//		System.out.println(decode);
+		GraphList model = new IdMap().decodeEMF(value.toString());
+		Assert.assertEquals(9, model.getClazzes().size());
+		Assert.assertEquals("[Segment|length:int],[TrackElement]->[Sensor],[TrackElement]<-[TrackElement],[Switch|currentPosition:Position]->[SwitchPosition|position:Position],[Route]->[Semaphore|signal:Signal],[Route]->[SwitchPosition],[Route]->[Semaphore],[Route]->[Sensor],[Route]<-[RailwayContainer],[Semaphore]<-[RailwayContainer],[RailwayElement|id:int]<-[RailwayContainer]", model.toString());
+	}
+
+	@Test
+	public void testEMFTTC2014() throws FileNotFoundException {
+//		EMFIdMap map=new EMFIdMap();
+//		String absolutePath = getAbsolutePath("imdb.movies");
+//		String absolutePath = getAbsolutePath("railway.ecore");
+//		Object decode = map.decode(new FileBuffer().withFile(absolutePath));
+//		Assert.assertNotNull(decode.toString());
 	}
 }

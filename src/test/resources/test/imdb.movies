@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:movies="http://movies/1.0">
+  <movies:Movie persons="/912" title="2 Days in January" year="2013"/>
+  <movies:Movie persons="/2401 /3577 /510 /2364 /912" title="2 Days in New York" year="2012" rating="6.0"/>
+  <movies:Actor movies="/2401" name="&apos;Illy&apos; Liban, Ellias"/>
+  <movies:Actress movies="/3577" name="4 Non Blondes"/>
+  <movies:Actor movies="/510 /4730 /2332" name="-, Afsaneh"/>
+  <movies:Actor movies="/1893" name="1000Tinho"/>
+  <movies:Actor movies="/2461" name="11:11, Angel"/>
+  <movies:Actress movies="/2364 /614" name="Aaliyah (II)"/>
+  <movies:Actress movies="/912" name="Aames, Marlene"/>
+</xmi:XMI>

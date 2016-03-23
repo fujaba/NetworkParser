@@ -22,11 +22,11 @@ package de.uniks.networkparser.graph;
  permissions and limitations under the Licence.
 */
 
-public class GraphPattern extends GraphNode {
+public class GraphPattern extends GraphEntity {
 	private String bounds;
 	// GETTER AND SETTER
-	public GraphPattern withId(String id) {
-		super.withId(id);
+	public GraphPattern with(String id) {
+		super.with(id);
 		return this;
 	}
 

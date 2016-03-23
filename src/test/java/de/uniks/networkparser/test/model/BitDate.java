@@ -1,6 +1,5 @@
 package de.uniks.networkparser.test.model;
 
-
 public class BitDate {
 	public static final String PROPERTY_DAY = "day";
 	public static final String PROPERTY_MONTH = "month";
@@ -42,7 +41,7 @@ public class BitDate {
 	public void setHour(int hour) {
 		this.hour = hour;
 	}
-	
+
 	public Object get(String attrName) {
 		String attribute;
 		int pos = attrName.indexOf(".");

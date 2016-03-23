@@ -22,21 +22,36 @@ package de.uniks.networkparser.list;
  permissions and limitations under the Licence.
 */
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Map.Entry;
 
 public class SimpleIteratorSet<K,V> implements ListIterator<Entry<K, V>>{
 	private SimpleKeyValueList<K, V> list;
 	private SimpleEntity<K,V> currentEntry;
-	private int cursor;
+	private int cursor = -1;
 
 	public SimpleIteratorSet(SimpleKeyValueList<K, V> list) {
 		this.list = list;
+		this.currentEntry = new SimpleEntity<K, V>();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public SimpleIteratorSet(Object collection) {
+		if(collection instanceof SimpleKeyValueList<?,?>) {
+			this.list = (SimpleKeyValueList<K, V>) collection;	
+		} else if (collection instanceof Map<?,?>) {
+			this.list = new SimpleKeyValueList<K,V>();
+			this.list.withMap((Map<?,?>)collection);
+		}
 		this.currentEntry = new SimpleEntity<K, V>();
 	}
 
 	@Override
 	public boolean hasNext() {
 		return cursor<(this.list.size() - 1);
+	}
+	public void reset() {
+		this.cursor = -1;
 	}
 
 	@Override
@@ -45,7 +60,7 @@ public class SimpleIteratorSet<K,V> implements ListIterator<Entry<K, V>>{
 			return null;
 		}
 		cursor++;
-		
+
 		this.currentEntry.setKey(this.list.getKeyByIndex(cursor));
 		this.currentEntry.setValue(this.list.getValueByIndex(cursor));
 		return this.currentEntry;
@@ -59,7 +74,7 @@ public class SimpleIteratorSet<K,V> implements ListIterator<Entry<K, V>>{
 	@Override
 	public Entry<K, V> previous() {
 		cursor--;
-		
+
 		this.currentEntry.setKey(this.list.getKeyByIndex(cursor));
 		this.currentEntry.setValue(this.list.getValueByIndex(cursor));
 		return this.currentEntry;

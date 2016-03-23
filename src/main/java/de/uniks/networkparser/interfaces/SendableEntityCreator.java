@@ -34,14 +34,13 @@ public interface SendableEntityCreator {
 	 */
 	public String[] getProperties();
 
-
 	/**
 	 * Gets the value.
 	 *
 	 * @param entity
-	 *            the entity
+	 *			the entity
 	 * @param attribute
-	 *            the attribute
+	 *			the attribute
 	 * @return the value
 	 */
 	public Object getValue(Object entity, String attribute);
@@ -50,23 +49,23 @@ public interface SendableEntityCreator {
 	 * Sets the value.
 	 *
 	 * @param entity
-	 *            the entity
+	 *			the entity
 	 * @param attribute
-	 *            the attribute
+	 *			the attribute
 	 * @param value
-	 *            the value
+	 *			the value
 	 * @param type
-	 *            edit, update or remove operation
+	 *			edit, update or remove operation
 	 * @return true, if successful
 	 */
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type);
 
 	  /**
-    * Gets the sendable instance.
-    * @param prototyp
-    *            the prototyp
-    * @return the sendable instance
-    */
+	* Gets the sendable instance.
+	* @param prototyp
+	*			the prototyp
+	* @return the sendable instance
+	*/
    Object getSendableInstance(boolean prototyp);
 }

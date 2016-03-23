@@ -1,18 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE project>
 <project default="buildAnt" name="NPAnt" basedir=".">
-	<target name="buildAnt">
-		<property name="gitjar" value="lib/git/org.eclipse.jgit-4.1.0.201509280440-r.jar" />
-		<mkdir dir="build/temp/" />
-		<javac srcdir="src/Ant" destdir="build/temp"  includeantruntime="true" debug="true" sourcepath="Ant" listfiles="true">
+	<available file="NetworkParserAnt.jar" property="AntJarExist" />
+	<property name="gitjar" value="lib/git/org.eclipse.jgit-4.2.0.201601211800-r.jar" />
+	<target name="buildAntCompile">
+		<mkdir dir="build/Ant/" />
+		<mkdir dir="bin" />
+		<javac srcdir="src/main/java" destdir="bin" includeantruntime="false" sourcepath="src/main/java" listfiles="true">
+		</javac>
+		<javac srcdir="src/Ant" destdir="build/Ant" includeantruntime="false" debug="true" sourcepath="src/Ant" listfiles="true">
 			<classpath>
 				<pathelement location="${gitjar}"/>
-				<pathelement location="bin"></pathelement>
+				<pathelement location="bin"/>
+				<pathelement location="lib\findbugs\ant.jar"/>
 			</classpath>
 		</javac>
-        <jar destfile="build/ant.jar">
-            <fileset dir="./build/temp"/>
-        </jar>
-		<taskdef name="GitRevision" classname="de.uniks.networkparser.test.ant.GitRevision" classpath="bin:build/temp/:build/ant.jar">
+		<jar destfile="NetworkParserAnt.jar">
+			<fileset dir="./build/Ant"/>
+		</jar>
+		<delete dir="build/Ant/" />
+	</target>
+	<target name="buildAnt" depends="buildAntCompile">
+		<taskdef name="GitRevision" classname="de.uniks.networkparser.test.ant.GitRevision" classpath="bin:build/temp/:NetworkParserAnt.jar">
 			<classpath>
 				<pathelement location="${gitjar}"/>
 				<pathelement location="lib/git/log4j-over-slf4j-1.7.12.jar"/>
@@ -31,12 +39,11 @@
 			project.setProperty("Branchname", System.getProperty("Branchname"));
 			project.setProperty("LastCommit", System.getProperty("LastCommit"));
 			project.setProperty("Revisionnumber", System.getProperty("Revisionnumber"));
+			project.setProperty("GitTag", System.getProperty("GitTag"));
 		</script>
-		<echo>${Revisionnumber}</echo>
 		<tstamp><format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss" /></tstamp>
-        <property name="version" value="${revisionVersion}" />
-   		<property name="file.encoding" value="utf-8"/>
-		<delete dir="build/temp/" />
+		<property name="version" value="${revisionVersion}" />
+		<property name="file.encoding" value="utf-8"/>
 		<echo file="build/MANIFEST.MF">Manifest-Version: 1.0
 Specification-Version: 4.2.23.${Revisionnumber} ${TODAY}
 Implementation-Title: Networkparser

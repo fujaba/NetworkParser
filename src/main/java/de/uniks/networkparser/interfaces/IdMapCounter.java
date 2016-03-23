@@ -30,7 +30,7 @@ public interface IdMapCounter {
 	 * Sets the prefix for The Id of Elements
 	 *
 	 * @param sessionId
-	 *            the new prefix id
+	 *			the new prefix id
 	 * @return Itself
 	 */
 	public IdMapCounter withPrefixId(String sessionId);
@@ -44,7 +44,7 @@ public interface IdMapCounter {
 	 * Sets the splitter for The session id
 	 *
 	 * @param splitter
-	 *            the new splitter character for the session id
+	 *			the new splitter character for the session id
 	 * @return Itself
 	 */
 	public IdMapCounter withSplitter(char splitter);
@@ -58,7 +58,7 @@ public interface IdMapCounter {
 	 * Gets the id.
 	 *
 	 * @param obj
-	 *            the obj
+	 *			the obj
 	 * @return the id
 	 */
 	public String getId(Object obj);
@@ -67,7 +67,7 @@ public interface IdMapCounter {
 	 * Read id.
 	 *
 	 * @param id
-	 *            the last id from Message
+	 *			the last id from Message
 	 */
 	public void readId(String id);
 

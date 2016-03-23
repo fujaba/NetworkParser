@@ -48,7 +48,7 @@ public class GraphOptions {
 
 	public JsonObject getJson(){
 		JsonObject result = new JsonObject();
-		
+
 		result.withKeyValue("display", display);
 		result.withKeyValue("raster", raster);
 		result.withKeyValue("canvasid", canvasid);
@@ -62,7 +62,7 @@ public class GraphOptions {
 		result.withKeyValue("rotatetext", rotateText);
 		result.withKeyValue("linetyp", lineTyp);
 		if(buttons != null){
-			result.withKeyValue("buttons", new JsonArray().withAll(buttons));
+			result.withKeyValue("buttons", new JsonArray().with(buttons));
 		}
 		return result;
 	}

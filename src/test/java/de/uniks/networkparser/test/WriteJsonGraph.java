@@ -2,16 +2,18 @@ package de.uniks.networkparser.test;
 
 import java.io.IOException;
 
+import org.junit.Assert;
 import org.junit.Test;
 
-import de.uniks.networkparser.graph.GraphCardinality;
-import de.uniks.networkparser.graph.GraphClazz;
-import de.uniks.networkparser.graph.GraphConverter;
-import de.uniks.networkparser.graph.GraphDataType;
-import de.uniks.networkparser.graph.GraphEdge;
-import de.uniks.networkparser.graph.GraphEdgeTypes;
-import de.uniks.networkparser.graph.GraphIdMap;
+import de.uniks.networkparser.converter.GraphConverter;
+import de.uniks.networkparser.graph.Association;
+import de.uniks.networkparser.graph.AssociationTypes;
+import de.uniks.networkparser.graph.Cardinality;
+import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.graph.Clazz.ClazzType;
+import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.graph.GraphTokener;
 import de.uniks.networkparser.xml.HTMLEntity;
 
 public class WriteJsonGraph {
@@ -19,54 +21,54 @@ public class WriteJsonGraph {
 	@Test
 	public void testHTMLEntity() throws IOException {
 		HTMLEntity htmlEntity = new HTMLEntity();
-		
+
 		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/diagramstyle.css");
 		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/graph.js");
 		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/dagre.min.js");
 		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/drawer.js");
-		
-//		System.out.println(htmlEntity.toString(2));
+
+		Assert.assertEquals(440, htmlEntity.toString(2).length());
 
 		DocEnvironment docEnvironment = new DocEnvironment();
-		GraphList model = new GraphList().withTyp(GraphIdMap.CLASS);
+		GraphList model = new GraphList().withTyp(GraphTokener.CLASS);
 
-		GraphClazz abstractArray = model.with(new GraphClazz().withClassName("AbstractArray"));
-		abstractArray.withAttribute("elements", GraphDataType.ref("Object[]"));
-		abstractArray.withAttribute("size", GraphDataType.INT);
-		abstractArray.withAttribute("index", GraphDataType.INT);
-		abstractArray.withAttribute("flag", GraphDataType.BYTE);
-		GraphClazz baseItem = model.with(new GraphClazz().withClassName("BaseItem"));
-		GraphClazz iterable = model.with(new GraphClazz().withClassName("Iterable<V>"));
-		GraphClazz abstractList = model.with(new GraphClazz().withClassName("AbstractList<V>"));
-		GraphClazz simpleList = model.with(new GraphClazz().withClassName("SimpleList<V>"));
-		GraphClazz simpleSet = model.with(new GraphClazz().withClassName("SimpleSet<V>"));
-		GraphClazz simpleKeyValueList = model.with(new GraphClazz().withClassName("SimpleKeyValueList<K, V>"));
-		GraphClazz map = model.with(new GraphClazz().withClassName("Map<K, V>"));
-		GraphClazz list = model.with(new GraphClazz().withClassName("List<V>"));
-		GraphClazz set = model.with(new GraphClazz().withClassName("Set<V>"));
-		
-		
-		
-		baseItem.withInterface(true);
+		Clazz abstractArray = model.with(new Clazz().with("AbstractArray"));
+		abstractArray.createAttribute("elements", DataType.create("Object[]"));
+		abstractArray.createAttribute("size", DataType.INT);
+		abstractArray.createAttribute("index", DataType.INT);
+		abstractArray.createAttribute("flag", DataType.BYTE);
+		Clazz baseItem = model.with(new Clazz().with(ClazzType.INTERFACE).with("BaseItem"));
+		Clazz iterable = model.with(new Clazz().with("Iterable<V>"));
+		Clazz abstractList = model.with(new Clazz().with("AbstractList<V>"));
+		Clazz simpleList = model.with(new Clazz().with("SimpleList<V>"));
+		Clazz simpleSet = model.with(new Clazz().with("SimpleSet<V>"));
+		Clazz simpleKeyValueList = model.with(new Clazz().with("SimpleKeyValueList<K, V>"));
+		Clazz map = model.with(new Clazz().with("Map<K, V>"));
+		Clazz list = model.with(new Clazz().with("List<V>"));
+		Clazz set = model.with(new Clazz().with("Set<V>"));
 
-		model.with(GraphEdge.create(abstractArray, baseItem).withTyp(GraphEdgeTypes.IMPLEMENTS));
-		model.with(GraphEdge.create(abstractArray, iterable).withTyp(GraphEdgeTypes.IMPLEMENTS));
-		model.with(GraphEdge.create(abstractList, abstractArray).withTyp(GraphEdgeTypes.GENERALISATION));
-		
-		model.with(GraphEdge.create(simpleKeyValueList, abstractArray).withTyp(GraphEdgeTypes.GENERALISATION));
-		model.with(GraphEdge.create(simpleList, abstractList).withTyp(GraphEdgeTypes.GENERALISATION));
-		model.with(GraphEdge.create(simpleSet, abstractList).withTyp(GraphEdgeTypes.GENERALISATION));
-		
-		
-		model.with(GraphEdge.create(simpleKeyValueList, map).withTyp(GraphEdgeTypes.IMPLEMENTS));
-		model.with(GraphEdge.create(simpleList, list).withTyp(GraphEdgeTypes.IMPLEMENTS));
-		model.with(GraphEdge.create(simpleSet, set).withTyp(GraphEdgeTypes.IMPLEMENTS));
-		
-		
-		
+
+
+//		baseItem.withInterface(true);
+
+		model.with(Association.create(abstractArray, baseItem).with(AssociationTypes.IMPLEMENTS));
+		model.with(Association.create(abstractArray, iterable).with(AssociationTypes.IMPLEMENTS));
+		model.with(Association.create(abstractList, abstractArray).with(AssociationTypes.GENERALISATION));
+
+		model.with(Association.create(simpleKeyValueList, abstractArray).with(AssociationTypes.GENERALISATION));
+		model.with(Association.create(simpleList, abstractList).with(AssociationTypes.GENERALISATION));
+		model.with(Association.create(simpleSet, abstractList).with(AssociationTypes.GENERALISATION));
+
+
+		model.with(Association.create(simpleKeyValueList, map).with(AssociationTypes.IMPLEMENTS));
+		model.with(Association.create(simpleList, list).with(AssociationTypes.IMPLEMENTS));
+		model.with(Association.create(simpleSet, set).with(AssociationTypes.IMPLEMENTS));
+
+
+
 		docEnvironment.writeJson("simpleCollection.html", "../src/main/resources/de/uniks/networkparser/graph/", new GraphConverter().convertToJson(model, true));
 	}
-	
+
 	@Test
 	public void testWriteSimpleHTML() {
 		HTMLEntity htmlEntity = new HTMLEntity();
@@ -74,12 +76,13 @@ public class WriteJsonGraph {
 		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/graph.js");
 		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/dagre.min.js");
 		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/drawer.js");
-		
-		GraphList model = new GraphList().withTyp(GraphIdMap.CLASS);
-		GraphClazz uni = model.with(new GraphClazz().withClassName("University").withAttribute("name", GraphDataType.STRING));
-		GraphClazz person = model.with(new GraphClazz().withClassName("Person"));
-		
-		uni.withAssoc(person, "has", GraphCardinality.MANY, "studis", GraphCardinality.ONE);
-		System.out.println(htmlEntity.withGraph(model).toString(2));
+
+		GraphList model = new GraphList().withTyp(GraphTokener.CLASS);
+		Clazz uni = model.with(new Clazz().with("University"));
+		uni.createAttribute("name", DataType.STRING);
+		Clazz person = model.with(new Clazz().with("Person"));
+
+		uni.withBidirectional(person, "has", Cardinality.MANY, "studis", Cardinality.ONE);
+		Assert.assertEquals(673, htmlEntity.withGraph(model).toString(2).length());
 	}
 }

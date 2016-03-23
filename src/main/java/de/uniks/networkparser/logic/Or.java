@@ -22,42 +22,45 @@ package de.uniks.networkparser.logic;
  permissions and limitations under the Licence.
 */
 import java.util.ArrayList;
+
+import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.UpdateListener;
 /**
  * Or Clazz for Or Conditions.
  *
  * @author Stefan Lindel
  */
 
-public class Or implements Condition<ValuesSimple>, SendableEntityCreator {
+public class Or implements UpdateListener, SendableEntityCreator {
 	/** Constant of CHILD. */
 	public static final String CHILD = "childs";
 	/** Variable of Conditions. */
-	private ArrayList<Condition<ValuesSimple>> list = new ArrayList<Condition<ValuesSimple>>();
+	private ArrayList<UpdateListener> list = new ArrayList<UpdateListener>();
 
 	/**
 	 * @param conditions
-	 *            All Conditions.
+	 *			All Conditions.
 	 * @return Or Instance
 	 */
-	@SuppressWarnings("unchecked")
-	public Or add(Condition<ValuesSimple>... conditions) {
-		for (Condition<ValuesSimple> condition : conditions) {
+	public Or add(UpdateListener... conditions) {
+		for (UpdateListener condition : conditions) {
 			this.list.add(condition);
 		}
 		return this;
 	}
 
 	/** @return List of Condition. */
-	private ArrayList<Condition<ValuesSimple>> getList() {
+	private ArrayList<UpdateListener> getList() {
 		return list;
 	}
 
 	@Override
-	public boolean check(ValuesSimple values) {
+	public boolean update(Object evt) {
 		boolean result = true;
-		for (Condition<ValuesSimple> condition : list) {
-			if (!condition.check(values)) {
+		for (UpdateListener condition : list) {
+			if (!condition.update(evt)) {
 				result = false;
 			}
 		}
@@ -66,12 +69,12 @@ public class Or implements Condition<ValuesSimple>, SendableEntityCreator {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		for (Condition<ValuesSimple> condition : list) {
-			sb.append("[" + condition.toString() + " ");
+		CharacterBuffer sb = new CharacterBuffer();
+		for (UpdateListener condition : list) {
+			sb.with("[", condition.toString(), " ");
 		}
-		sb.trimToSize();
-		sb.append("]");
+		sb.trim();
+		sb.with("]");
 		return sb.toString();
 	}
 
@@ -93,15 +96,15 @@ public class Or implements Condition<ValuesSimple>, SendableEntityCreator {
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
 		if (CHILD.equalsIgnoreCase(attribute)) {
-			((Or) entity).add((Condition<ValuesSimple>) value);
+			if(value instanceof Condition) {
+				((Or) entity).add((UpdateListener) value);
+			}
 			return true;
 		}
 		return false;
 	}
-
 }

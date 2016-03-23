@@ -11,7 +11,7 @@ public class Imports implements FilePart{
 	public void append(String value) {
 		items.add(value);
 		String simple = value.trim();
-		
+
 //		if(simple.endsWith(";")){
 ////			simple =simple.substring(0, simple.length()-1);
 //		}
@@ -26,9 +26,9 @@ public class Imports implements FilePart{
 
 	@Override
 	public void finish() {
-		
+
 	}
-	
+
 	@Override
 	public String toString(){
 		StringBuilder sb = new StringBuilder();

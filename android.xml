@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE project>
+<project default="android-compile" name="Android Compiler">
+	<mkdir dir="build/" />
+	<property name="androidBat" value="build/android-sdk-windows/tools/android.bat" />
+	<property name="androidtarget" value="1" />
+
+	<target name="android-compile" description="Compile NetworkParser to Android">
+		<record name="build/android.txt" action="start" append="false" />
+		<!--<get description="get Android-SDK" src="http://dl.google.com/android/android-sdk_r24.4.1-windows.zip" dest="build/android.zip" />
+		<unzip src="build/android.zip" dest="build" />
+		-->
+		<!--<exec executable="cmd">
+			<arg value="/C"/>
+			<arg line="echo y | call ${androidBat} update sdk -u -s"/>
+		</exec>-->
+
+		<exec executable="${androidBat}">
+			<!--<arg line="list targets"/>-->
+			<arg line="create project -n NetworkParser -p build/NetworkParserAndroid -t android-23 -k de.uniks.networkparser -a NPApp"/>
+		</exec>
+		<copy todir="build/NetworkParserAndroid/src">
+			<fileset dir="src/main/java/">
+				<exclude name="**/javafx/**"/>
+			</fileset>
+		</copy>
+		<ant antfile="build.xml" target="debug" inheritrefs="true" dir="build/NetworkParserAndroid/" />
+	</target>
+</project>
+

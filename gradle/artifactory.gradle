@@ -1,5 +1,3 @@
-import java.lang.ClassValue.Version;
-
 if(project.hasProperty("artifactory_user")) {
 	apply plugin: 'artifactory'
 	buildscript {
@@ -20,7 +18,7 @@ if(project.hasProperty("artifactory_user")) {
 			repository {
 				if(gitVersion.isMaster()) {
 					repoKey = 'lecture'
-				} else if(project.hasProperty('ReleaseBuild')) {
+				} else if(gitVersion.isRelease()) {
 					repoKey = 'libs-release-local'
 				} else {
 					repoKey = 'libs-snapshot-local'
@@ -34,7 +32,7 @@ if(project.hasProperty("artifactory_user")) {
 			repository {
 				if(gitVersion.isMaster()) {
 					repoKey = 'lecture'
-				} else if(project.hasProperty('release')) {
+				} else if(gitVersion.isRelease()) {
 					repoKey = 'libs-release-local'
 				} else {
 					repoKey = 'libs-snapshot-local'

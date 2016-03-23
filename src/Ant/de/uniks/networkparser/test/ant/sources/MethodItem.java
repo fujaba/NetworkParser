@@ -9,7 +9,7 @@ public class MethodItem {
 	private ArrayList<String> body= new ArrayList<String>();
 	private LoCMetric locmetric= new LoCMetric();
 	private McCabe mccabemetric= new McCabe();
-	
+
 	public void append(String value) {
 		if(body.size()<1){
 			if(value.indexOf("{")>0 && value.indexOf("(")>0){
@@ -21,15 +21,14 @@ public class MethodItem {
 				isMethod = true;
 			}
 		}
-		
+
 		body.add(value);
 	}
-
 
 	public boolean isMethod() {
 		return isMethod;
 	}
-	
+
 	@Override
 	public String toString(){
 		StringBuilder sb = new StringBuilder();
@@ -39,17 +38,15 @@ public class MethodItem {
 		return sb.toString();
 	}
 
-
 	public void finish() {
 		locmetric.finish(this);
 		mccabemetric.finish(this);
 	}
 
-
 	public int getLinesOfCode() {
 		return locmetric.getLinesOfCode();
 	}
-	
+
 	public LoCMetric getLinesOfCodeMetric() {
 		return locmetric;
 	}
@@ -58,11 +55,9 @@ public class MethodItem {
 		return body;
 	}
 
-
 	public String getName() {
 		return name;
 	}
-
 
 	public int getMcCabe() {
 		return mccabemetric.getMcCabe();

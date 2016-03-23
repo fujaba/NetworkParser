@@ -8,23 +8,5 @@ package de.uniks.networkparser.interfaces;
 * event occurs, that object's appropriate method is invoked.
 */
 @FunctionalInterface
-public interface UpdateListener {
-	/**
-	 * Send update msg.
-	 *
-	 * @param typ
-	 *            the typ of Message: NEW UPDATE, REMOVE or SENDUPDATE
-	 * @param source
-	 *            the Source Element
-	 * @param target
-	 *            The Object of UpdateMsg
-	 * @param property
-	 *            Which property is changed
-	 * @param oldValue
-	 *            The oldValue
-	 * @param newValue
-	 *            The newValue
-	 * @return true, if successful
-	 */
-	public boolean update(String typ, BaseItem source, Object target, String property, Object oldValue, Object newValue);
+public interface UpdateListener extends Condition<Object>{
 }

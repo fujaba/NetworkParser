@@ -2,14 +2,24 @@
 // -PReleaseBuild 
 apply plugin: 'java'
 apply plugin: 'maven'
+
+ant.importBuild 'buildAnt.xml'
+ant.importBuild 'gource.xml'
+ant.importBuild 'Copyright.xml'
+ant.importBuild 'ikvm.xml'
+gource.group "Git"
+makefilm.group "Git"
+ikvm.group "Git"
+AddCopyRightToSource.group "Build"
+
 apply from: 'gradle/version.gradle'
 apply from: 'gradle/tasks.gradle'
 apply plugin: 'jacoco'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
+
 apply from: 'gradle/mavencentral.gradle'
 apply from: 'gradle/artifactory.gradle'
-apply plugin: 'com.github.kt3k.coveralls'
 
 idea {
 	project {
@@ -36,50 +46,50 @@ buildscript {
 	}
 	dependencies {
 		classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '2.2.4')
-        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.4.0'
 	}
 }
 
 artifacts { 
-	archives coreJar
-	archives coreJar16
-	archives coreJar17
-	archives sourceJar
-	archives sourceJar16
-	archives sourceJar17
-	archives javadocJar
-	archives fullJar
+	archives buildCoreJar
+	archives buildCoreJar16
+	archives buildCoreJar17
+	archives buildSourceJar
+	archives buildJavadoc
+	archives buildFullJar
 }
 
 test {
-    testLogging {
-        events "failed"
-        exceptionFormat "short"
+	testLogging {
+		events "failed"
+		exceptionFormat "short"
 		showStackTraces	true
 		showStandardStreams true
 		showCauses true
-    }
+	}
 }
 jacoco {
-    toolVersion = "0.7.5.201505241946"
+	toolVersion = "0.7.6.201602180812"
 }
 jacocoTestReport {
-    group = "Reporting"
-    description = "Generate Jacoco coverage reports after running tests."
-    executionData = files("$buildDir/jacoco/test.exec")
-    reports {
-        xml {
-            enabled true
-            //Following value is a file
-            destination "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
-        }
-        csv.enabled false
-        html {
-            enabled true
-            //Following value is a folder
-            destination "${buildDir}/reports/jacoco"
-        }
-    }
+	group = "Reporting"
+	description = "Generate Jacoco coverage reports after running tests."
+	executionData = files("${buildDir}/jacoco/test.exec")
+	reports {
+		xml {
+			enabled = false
+			//Following value is a file
+			destination = new File("${buildDir}/jacoco/jacoco.xml")
+		}
+		csv{
+			destination = new File("${buildDir}/jacoco/report.csv")
+			enabled = true
+		}
+		html {
+			enabled = true
+			//Following value is a folder
+			destination = new File("build/jacoco/html")
+		}
+	}
 }
 
 sourceSets.main.output.classesDir 'build/classes/main'
@@ -87,4 +97,5 @@ sourceSets.main.output.classesDir 'build/classes/main'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-defaultTasks 'clean', 'test', 'all'
+defaultTasks 'clean', 'test', 'jacocoTestReport', 'buildAll'
+

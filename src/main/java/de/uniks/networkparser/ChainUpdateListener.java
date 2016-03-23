@@ -1,47 +1,51 @@
 package de.uniks.networkparser;
 
-/*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Iterator;
 
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
-
- http://ec.europa.eu/idabc/eupl5
-
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
-*/
-import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.list.SimpleList;
 
 public class ChainUpdateListener implements UpdateListener{
-	private SimpleList<UpdateListener> list = new SimpleList<UpdateListener>();
-	
+	private SimpleList<Object> list = new SimpleList<Object>();
+
 	@Override
-	public boolean update(String typ, BaseItem source, Object target, String property, Object oldValue,
-			Object newValue) {
-		boolean result=true;
-		for(int i=0;i<list.size();i++) {
-			if(!list.get(i).update(typ, source, target, property, oldValue, newValue)) {
-				result = false;
+	public boolean update(Object evt) {
+		if(evt instanceof PropertyChangeEvent) {
+			return updatePCE((PropertyChangeEvent) evt);
+		}
+		return false;
+	}
+	public boolean updatePCE(PropertyChangeEvent evt) {
+		boolean result=false;
+		for(Iterator<Object> i = list.iterator();i.hasNext();) {
+			Object listener = i.next();
+			if(listener instanceof UpdateListener) {
+				result = result & ((UpdateListener)listener).update(evt);
+			} else if(listener instanceof PropertyChangeListener) {
+				((PropertyChangeListener)listener).propertyChange(evt);
 			}
 		}
 		return result;
 	}
 
 	public ChainUpdateListener with(UpdateListener... values) {
-		list.with(values);
+		if(values ==null) {
+			return this;
+		}
+		for(UpdateListener item : values) {
+			list.with(item);	
+		}
+		return this;
+	}
+	public ChainUpdateListener with(PropertyChangeListener... values) {
+		if(values ==null) {
+			return this;
+		}
+		for(PropertyChangeListener item : values) {
+			list.with(item);	
+		}
 		return this;
 	}
 }

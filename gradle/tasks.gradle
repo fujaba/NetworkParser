@@ -1,6 +1,7 @@
 gradle.projectsEvaluated {
     compileJava.dependsOn(compileJava16)
 	compileJava.dependsOn(compileJava17)
+	test.dependsOn(FinishTest)
 }
 
 ext.sharedManifest = manifest {
@@ -15,82 +16,117 @@ ext.sharedManifest = manifest {
 			'Author': 'Stefan Lindel',
 			'Implementation-Version': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision,
 			'GIT-Revision': gitVersion.revision,
+			'Hash': gitVersion.hash,
 			'Java-Version': "${System.properties['java.version']}",
 			'Bundle-Description': 'NetworkParser',
+			'Coverage': gitVersion.coverage,
 			'Bundle-ClassPath': '.'
 }
 
 jar {
-	exclude '**/javafx/**'
+	group "Jar"
+	exclude '**/ext/**'
 	exclude '**/test/**'
 	from sourceSets.main.output
 	manifest = project.manifest {from sharedManifest}
-}
+	}
 
 task compileJava16(type: JavaCompile) {
-	source = fileTree(dir: 'src', exclude: ['**/javafx/**', '**/test/**'])
+	source = fileTree(dir: 'src', exclude: ['**/ext/**', '**/test/**'])
 	destinationDir = file('build/classes/main16')
 	sourceCompatibility = '1.6'
 	targetCompatibility = '1.6'
 	classpath = files('build/classes/main16')
 }
 task compileJava17(type: JavaCompile) {
-	source = fileTree(dir: 'src', exclude: ['**/javafx/**', '**/test/**'])
+	source = fileTree(dir: 'src', exclude: ['**/ext/**', '**/test/**'])
 	destinationDir = file('build/classes/main17')
 	sourceCompatibility = '1.7'
 	targetCompatibility = '1.7'
 	classpath = files('build/classes/main17')
 }
 
-task coreJar(type: Jar) {
+task buildCoreJar(type: Jar) {
+	description 'Build Jar with NetworkParser-Core without dependency of JavaFX and Reflection'
+	group "Jar"
 	from sourceSets.main.output
 	exclude '**/test/**'
 	manifest = project.manifest {from sharedManifest}
 }
 
-task coreJar16(type: Jar) {
+task buildCoreJar16(type: Jar) {
 	from fileTree(dir: 'build/classes/main16'); classifier = 'core16'
 	manifest = project.manifest {from sharedManifest}
 }
 
-task coreJar17(type: Jar) {
+task buildCoreJar17(type: Jar) {
 	from fileTree(dir: 'build/classes/main17'); classifier = 'core17'
 	manifest = project.manifest {from sharedManifest}
 }
 
-task sourceJar(type: Jar) {
+task buildSourceJar(type: Jar) {
+	description 'Build Jar with class-Files and Source-Files'
+	group "Jar"
 	from (sourceSets.main.allJava + sourceSets.main.output); classifier = 'sources'
 	exclude '**/test/**'
 	manifest = project.manifest {from sharedManifest}
 }
 
-task sourceJar16(type: Jar) {
-	from (sourceSets.main.allJava + fileTree(dir: 'build/classes/main16')); classifier = 'sources16'
-	exclude '**/test/**'
-	exclude '**/gui/**'
-	manifest = project.manifest {from sharedManifest}
-}
-
-task sourceJar17(type: Jar) {
-	from (sourceSets.main.allJava + fileTree(dir: 'build/classes/main17')); classifier = 'sources17'
-	exclude '**/test/**'
-	exclude '**/gui/**'
-	manifest = project.manifest {from sharedManifest}
-}
-
-task javadocJar(type: Jar) {
+task buildJavadoc(type: Jar) {
+	description 'Build JavaDoc Jar'
+	group "Jar"
 	from javadoc.outputs.files; classifier = 'javadoc'
 	exclude '**/test/**'
 	manifest = project.manifest {from sharedManifest}
 }
 
-task fullJar(type: Jar) {
+task buildFullJar(type: Jar) {
+	description 'Build FullJar with Class-Files, Source-Files and JavaDoc'
+	group "Jar"
 	from {(sourceSets.main.output + sourceSets.main.allJava + javadoc.outputs.files )}; classifier = 'full'
 	exclude '**/test/**'
 	manifest = project.manifest {from sharedManifest}
 }
 
-task all(type: Jar) << {
-    println "Build all Jars"
+task buildAll(type: Jar) {
+	description 'Build All Jars'
+	group "Jar"
+	exclude '**/ext/**'
+	exclude '**/test/**'
+	from sourceSets.main.output
+	manifest = project.manifest {from sharedManifest}
 }
-all.dependsOn coreJar, coreJar16, coreJar17, sourceJar, sourceJar16, sourceJar17, javadocJar, fullJar
+task cleanupws(type: Delete) {
+	description 'Delete Configuration Files from Workspace'
+	group "BUILD"
+	delete 'gradle.properties'
+	delete fileTree(dir: ".", include: "*.gpg")
+}
+task FinishTest() {
+	if (new File("${buildDir}/jacoco/report.csv").exists()) {
+		String fileContents = new File("${buildDir}/jacoco/report.csv").text
+		int[] sum = new int[10]
+		//GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+		fileContents.eachLine {
+			String[] item = it.split(",")
+			for(int i=0;i<10;i++) {
+				try {
+					sum[i] += Integer.valueOf(item[i + 3])
+				}catch(Exception e) {}
+			}
+		}
+		StringBuilder sb=new StringBuilder()
+		sb.append "{INSTRUCTION:\""+sum[0]+"/"+(sum[0]+sum[1])+"\","
+		sb.append " BRANCH:\""+sum[2]+"/"+(sum[2]+sum[3])+"\","
+		sb.append " LINE:\""+sum[4]+"/"+(sum[4]+sum[5])+"\","
+		sb.append " COMPLEXITY:\""+sum[6]+"/"+(sum[6]+sum[7])+"\","
+		sb.append " METHOD:\""+sum[8]+"/"+(sum[8]+sum[9])+"\"}"
+		sharedManifest.getAttributes().put("Coverage", sb.toString())
+		project.ext.coverage = sb.toString()
+					def stringsFile = new File("strings.xml")
+			stringsFile.write sb.toString()
+
+	}
+}
+
+buildAll.dependsOn buildCoreJar, buildCoreJar16, buildCoreJar17, buildSourceJar, buildJavadoc, buildFullJar

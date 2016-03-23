@@ -22,22 +22,22 @@ package de.uniks.networkparser.graph;
  permissions and limitations under the Licence.
 */
 
-public class GraphLabel implements GraphMember{
-	private String id;
+public class GraphLabel extends GraphMember {
+	public final static GraphLabel CREATE=new GraphLabel().withStyle("create");
 	private String style;
-	private GraphNode parentNode;
-	
-	public static GraphLabel create(String value) {
-		return new GraphLabel().withId(value);
-	}
-	
-	public static GraphLabel create(String value, String style) {
-		return new GraphLabel().withId(value).withStyle(style);
+
+	@Override
+	public GraphLabel with(String name) {
+		super.with(name);
+		return this;
 	}
 
-	public GraphLabel withId(String value) {
-		this.id = value;
-		return this;
+	public static GraphLabel create(String value) {
+		return new GraphLabel().with(value);
+	}
+
+	public static GraphLabel create(String value, String style) {
+		return new GraphLabel().with(value).withStyle(style);
 	}
 
 	public String getStyle() {
@@ -47,32 +47,5 @@ public class GraphLabel implements GraphMember{
 	public GraphLabel withStyle(String style) {
 		this.style = style;
 		return this;
-	}
-
-	@Override
-	public String getId() {
-		return id;
-	}
-
-	@Override
-	public GraphMember withParent(GraphNode value) {
-		setParent(value);
-		return this;
-	}
-	
-	public boolean setParent(GraphNode value) {
-		if (this.parentNode != value) {
-			GraphNode oldValue = this.parentNode;
-			if (this.parentNode != null) {
-				this.parentNode = null;
-				oldValue.without(this);
-			}
-			this.parentNode = value;
-			if (value != null) {
-				value.with(this);
-			}
-			return true;
-		}
-		return false;
 	}
 }

@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.interfaces.BaseItem;
 
@@ -33,15 +34,15 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		super();
 		withFlag(MAP);
 	}
-	
+
 	/**
 	 * Set a Value to Entity With this Method it is possible to set a Value of a
 	 * Set by using a [Number] or [L] for Last
 	 *
 	 * @param key
-	 *            the Key to add
+	 *			the Key to add
 	 * @param value
-	 *            the Value to add
+	 *			the Value to add
 	 * @return Itself
 	 */
 	@SuppressWarnings("unchecked")
@@ -145,18 +146,18 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		if(target != null)
 			target.withKeyValue(this.get(pos), this.getValueByIndex(pos));
 	}
-	
+
 	@Override
 	public Set<K> keySet() {
 		SimpleSet<K> item = new SimpleSet<K>();
 		if(isComplex(size) && this.elements!=null) {
-			item.init((Object[])this.elements[SMALL_KEY], size);
+			item.init((Object[])this.elements[SMALL_KEY], size, this.index);
 		}else if(this.elements!=null) {
-			item.init(this.elements, size);
+			item.init(this.elements, size, this.index);
 		}
 		return item;
 	}
-	
+
 	public Iterator<K> keyIterator() {
 		return keySet().iterator();
 	}
@@ -166,15 +167,15 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	 * and "false" are converted to boolean.
 	 *
 	 * @param key
-	 *            The Value 
+	 *			The Value
 	 * @return The truth.
 	 * @throws RuntimeException
-	 *             If there is no value for the index or if the value is not
-	 *             convertible to boolean.
+	 *			 If there is no value for the index or if the value is not
+	 *			 convertible to boolean.
 	 */
 	public boolean getBoolean(K key) throws RuntimeException {
 		Object value = get(key);
-			
+
 		if (Boolean.FALSE.equals(value)
 				|| (value instanceof String && ((String) value)
 						.equalsIgnoreCase("false"))) {
@@ -193,8 +194,8 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	 * @param key  The Value
 	 * @return The value.
 	 * @throws RuntimeException
-	 *             If the key is not found or if the value cannot be converted
-	 *             to a number.
+	 *			 If the key is not found or if the value cannot be converted
+	 *			 to a number.
 	 */
 	public double getDouble(K key) throws RuntimeException {
 		Object object = get(key);
@@ -205,14 +206,14 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 			throw new RuntimeException("SimpleKeyValueList is not a number.");
 		}
 	}
-	
+
 	/**
 	 * Get the int value associated with an index.
 	 *
 	 * @param key  The Value
 	 * @return The value.
 	 * @throws RuntimeException
-	 *             If the key is not found or if the value is not a number.
+	 *			 If the key is not found or if the value is not a number.
 	 */
 	public int getInt(K key) throws RuntimeException {
 		Object object = get(key);
@@ -223,15 +224,15 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 			throw new RuntimeException("SimpleKeyValueList is not a number.");
 		}
 	}
-	
+
 	/**
 	 * Get the long value associated with an index.
 	 *
 	 * @param key  The Value
 	 * @return The value.
 	 * @throws RuntimeException
-	 *             If the key is not found or if the value cannot be converted
-	 *             to a number.
+	 *			 If the key is not found or if the value cannot be converted
+	 *			 to a number.
 	 */
 	public long getLong(K key) throws RuntimeException {
 		Object object = get(key);
@@ -242,14 +243,14 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 			throw new RuntimeException("SimpleKeyValueList is not a number.");
 		}
 	}
-	
+
 	/**
 	 * Get the string associated with an index.
 	 *
 	 * @param key  The Value
 	 * @return A string value.
 	 * @throws RuntimeException
-	 *             If there is no value for the index.
+	 *			 If there is no value for the index.
 	 */
 	public String getString(K key) throws RuntimeException {
 		Object object = get(key);
@@ -258,17 +259,17 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		}
 		return object.toString();
 	}
-	
+
 	/**
 	 * Get the string associated with an index.
 	 *
 	 * @param key
-	 *            The index must be between 0 and length() - 1.
+	 *			The index must be between 0 and length() - 1.
 	 * @param defaultValue
-	 *            The defaultValue
+	 *			The defaultValue
 	 * @return A string value.
 	 * @throws RuntimeException
-	 *             If there is no value for the index.
+	 *			 If there is no value for the index.
 	 */
 	public String getString(K key, String defaultValue) {
 		if(key==null){
@@ -280,18 +281,18 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		}
 		return getValueByIndex(pos).toString();
 	}
-	
+
 	/**
 	 * Increment a property of a Entity. If there is no such property, create
 	 * one with a value of 1. If there is such a property, and if it is an
 	 * Integer, Long, Double, or Float, then add one to it.
 	 *
 	 * @param key
-	 *            A key string.
+	 *			A key string.
 	 * @return this.
 	 * @throws RuntimeException
-	 *             If there is already a property with this name that is not an
-	 *             Integer, Long, Double, or Float.
+	 *			 If there is already a property with this name that is not an
+	 *			 Integer, Long, Double, or Float.
 	 */
 	public SimpleKeyValueList<K, V> increment(K key) throws RuntimeException {
 		Object value = this.get(key);
@@ -332,7 +333,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		throw new RuntimeException("Unable to increment ["
 				+ EntityUtil.quote("" + key) + "].");
 	}
-	
+
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
 		return new SimpleKeyValueList<K, V>();
@@ -342,18 +343,27 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		super.withList(values);
 		return this;
 	}
-	
-	public SimpleKeyValueList<K, V> withAll(Object... values) {
-		super.withAll(values);
+
+	public SimpleKeyValueList<K, V> with(Object... values) {
+		if(values == null) {
+			return this;
+		}
+		if (values.length % 2 == 0) {
+			for (int i = 0; i < values.length; i += 2) {
+				withKeyValue(values[i], values[i + 1]);
+			}
+			return this;
+		}
+		super.with(values);
 		return this;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public <ST extends SimpleKeyValueList<K, V>> ST with(K key, V value) {
 		add(key, value);
 		return (ST)this;
 	}
-	
+
 	public boolean add(K key, V value) {
 		int pos = hasKey(key);
 		if(pos>=0) {
@@ -363,7 +373,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		}
 		return false;
 	}
-	
+
 	public boolean add(int pos, K key, V value) {
 		if(hasKey(key)>=0) {
 			grow(size + 1);
@@ -373,7 +383,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return false;
 	}
 
-	
+
 	@Override
 	public V put(K key, V value) {
 		int pos = hasKeyAndPos(key);
@@ -388,16 +398,15 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		}
 		return value;
 	}
-	
+
 	@Override
 	public boolean containsKey(Object key) {
 		return super.contains(key);
 	}
-	
+
 	public int getPositionValue(Object o) {
 		return getPosition(o, SMALL_VALUE, false);
 	}
-
 
 	@Override
 	public boolean containsValue(Object value) {
@@ -405,15 +414,15 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 			return false;
 		}
 		if(isComplex(size)) {
-    		return getPositionValue(value)>=0;
-    	}
+			return getPositionValue(value)>=0;
+		}
 		Object[] items = (Object[]) elements[SMALL_VALUE];
 		for (int i = 0; i < size; i++)
-            if (value.equals(items[i]))
-                return true;
+			if (value.equals(items[i]))
+				return true;
 		return false;
 	}
-	
+
 	public int indexOfValue(Object value){
 		if(elements==null || value == null){
 			return -1;
@@ -421,28 +430,14 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		if((this.flag & BIDI)!=BIDI || size<=MINHASHINGSIZE) {
 			return search((Object[]) elements[SMALL_VALUE], value);
 		}
-   		return getPositionValue(value);
-	}
-
-	public SimpleKeyValueList<K, V> withList(Map<?, ?> map) {
-		if (map != null) {
-			for (Iterator<?> i = map.entrySet().iterator(); i.hasNext();) {
-				java.util.Map.Entry<?, ?> mapEntry = (Entry<?, ?>) i.next();
-				Object item = mapEntry.getValue();
-				Object key = mapEntry.getKey();
-				if (item != null) {
-					this.withKeyValue(key, item);
-				}
-			}
-		}
-		return this;
+		   return getPositionValue(value);
 	}
 
 	@Override
 	public Iterator<K> iterator() {
 		return new SimpleIterator<K>(this);
 	}
-	
+
 	@Override
 	@SuppressWarnings("unchecked")
 	public K getKeyByIndex(int index) {
@@ -453,12 +448,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	public V getValueByIndex(int index) {
 		return (V) super.getByIndex(SMALL_VALUE, index + this.index, size);
 	}
-	
-	@SuppressWarnings("unchecked")
-	public V getValue(K key) {
-		return (V) super.getValueItem(key);
-	}
-	
+
 	@SuppressWarnings("unchecked")
 	public V remove(Object key) {
 		int index = indexOf(key);
@@ -469,7 +459,17 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		removeItem(index, SMALL_KEY, oldIndex);
 		return (V) removeByIndex(index, SMALL_VALUE, oldIndex);
 	}
-	
+
+	@SuppressWarnings("unchecked")
+	public V removePos(int pos) {
+		if (pos < 0) {
+			return null;
+		}
+		int oldIndex = this.index;
+		removeItem(pos, SMALL_KEY, oldIndex);
+		return (V) removeByIndex(pos, SMALL_VALUE, oldIndex);
+	}
+
 	@Override
 	public void putAll(Map<? extends K, ? extends V> values) {
 		if(values==null) {
@@ -477,9 +477,9 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		}
 		for (java.util.Map.Entry<? extends K, ? extends V> entry : values.entrySet()) {
 			add(entry.getKey(), entry.getValue());
-        }
+		}
 	}
-	
+
 	public SimpleKeyValueList<K, V> withMap(Map<?, ?> value) {
 		if(value==null) {
 			return this;
@@ -499,14 +499,14 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		}
 		return null;
 	}
-	
+
 	@Override
 	public Collection<V> values() {
 		SimpleList<V> item = new SimpleList<V>();
 		if(elements == null) {
 			return item;
 		}
-		item.init((Object[])elements[SMALL_VALUE], size);
+		item.init((Object[])elements[SMALL_VALUE], size, this.index);
 		return item;
 	}
 
@@ -523,6 +523,22 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		}
 		return this;
 	}
+	public SimpleKeyValueList<K, V> addToKeyValue(Object key, Number value) {
+		int pos = hasKeyAndPos(key);
+		if(pos<0) {
+			return this;
+		}
+		if(pos==size || getByIndex(SMALL_KEY, pos, size) != key) {
+			grow(size + 1);
+			super.addKeyValue(pos, key, value);
+		}else {
+			Object oldValue = getByIndex(SMALL_VALUE, pos, size);
+			if(oldValue instanceof Integer) {
+				super.setValue(pos, ((Integer)oldValue) + (Integer)value, SMALL_VALUE);
+			}
+		}
+		return this;
+	}
 
 	@Override
 	public Set<java.util.Map.Entry<K, V>> entrySet() {
@@ -535,5 +551,47 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 			return null;
 		}
 		return getKeyByIndex(pos);
+	}
+
+	/**
+	 *  Init The Colleciton with short String
+	 * @param keyValue The init KeyValue String Key:Value,Key:Value ...
+	 * @param valueType Class from Value
+	 * @return This Component
+	 */
+	public SimpleKeyValueList<K, V> withKeyValueString(String keyValue, Class<?> valueType) {
+		int pos=0, start;
+		String key, value;
+		char item;
+		do{
+			start = pos;
+			// Get String As Key
+			while(pos<keyValue.length()) {
+				item = keyValue.charAt(pos);
+				if(item == ':') {
+					break;
+				}
+				pos++;
+			}
+			key = keyValue.substring(start, pos);
+			pos++;
+			// Get Integer As Value
+			start=pos;
+			while(pos<keyValue.length()) {
+				item = keyValue.charAt(pos);
+				if(item==',') {
+					break;
+				}
+				pos++;
+			}
+			value = keyValue.substring(start, pos);
+			pos++;
+			if(valueType == Integer.class) {
+				withKeyValue(key, Integer.valueOf(value));
+			} else {
+				withKeyValue(key, value);
+			}
+		}while(pos<keyValue.length());
+		return this;
 	}
 }

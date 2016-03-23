@@ -24,6 +24,7 @@ package de.uniks.networkparser.event.util;
 import de.uniks.networkparser.event.SoapObject;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.xml.XMLEntity;
+import de.uniks.networkparser.xml.XMLTokener;
 
 public class SoapCreator implements SendableEntityCreatorTag {
 	public static String XMLNS_XSI = "http://www.w3.org/2001/XMLSchema-instance";
@@ -34,8 +35,8 @@ public class SoapCreator implements SendableEntityCreatorTag {
 	@Override
 	public String[] getProperties() {
 		return new String[] {
-				"&" + nameSpace + ":" + SoapObject.PROPERTY_HEADER,
-				"&" + nameSpace + ":" + SoapObject.PROPERTY_BODY };
+				"." + nameSpace + ":" + SoapObject.PROPERTY_HEADER,
+				"." + nameSpace + ":" + SoapObject.PROPERTY_BODY };
 	}
 
 	@Override
@@ -57,6 +58,10 @@ public class SoapCreator implements SendableEntityCreatorTag {
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
+		if(XMLTokener.CHILDREN.equals(type)) {
+			((SoapObject) entity).with(value);
+			return true;
+		}
 		if (attribute.toLowerCase().endsWith(
 				":" + SoapObject.PROPERTY_BODY.toLowerCase())) {
 			((SoapObject) entity).withBody(new XMLEntity()

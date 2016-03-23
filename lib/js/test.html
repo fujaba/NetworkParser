@@ -1,0 +1,52 @@
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="diagramstyle.css">
+	<script src="test.js"></script>
+	<script src="dagre.min.js"></script>
+	<script src="svgConverter.js"></script>
+	<script src="jspdf.min.js"></script>
+	
+</head>
+<body>
+<script>
+//var json = {"nodes": [ {"typ" : "node", id : "Albert:Simple"}], "options" : {"display" : "svg"} };
+var json = {
+	"typ": "clazzdiagram",
+	"style": null,
+	"nodes": [
+		{"typ": "node", id:"node"},
+		{"typ": "Smily", id: "Smily"},
+		{"typ": "Database", id: "Database"},
+		{"typ": "Letter", id: "Letter"},
+		{"typ": "Mobilphone", id: "Mobilphone"},
+		{"typ": "Wall", id: "Wall"},
+		{"typ": "Actor", id: "Actor"},
+		{"typ": "Lamp", id: "Lamp"},
+		{"typ": "Stop", id:"Stop"},
+		{"typ": "Min", id: "Min"},
+		{"typ": "Arrow", id: "Arrow"},
+		{"typ": "Max", id: "Max"},
+		{"typ": "Button", id: "Button", width:90, value: "Hallo Welt"},
+		{"typ": "Dropdown", id: "Dropdown"},
+		{"typ": "Pattern", id: "PatternObject"},
+		{"typ": "clazz", id: "University", attributes:["name:String"], methods:["toString()"]},
+		{"typ": "clazz", id: "Student", attributes:["name:String"]},
+		{"typ": "object", id: "u1:Uni"},
+		{"typ": "EdgeIcon", id:"EdgeIcon"}
+	],
+	"edges": [
+	{"typ": "edge", "source": "Smily", "target": "Database"},
+	{"typ": "generalisation", "source": "Letter", "target": "Database"},
+	{"typ": "implements", "source": "Mobilphone", "target": "Actor"},
+	{"typ": "unidirectional", "source": "Lamp", "target": "Stop"},
+	{"typ": "aggregation", "source": "Min", "target": "Max"},
+	{"typ": "composition", "source": "Max", "target": "Stop"},
+	{typ: "edge", source: {cardinality: "one", property: "university", id: "University"}, target: {cardinality: "many", property: "students", id: "Student"}}
+	]
+};
+
+//json = {"typ": "objectdiagram",	"nodes": [	{"typ": "node", id:"node"} ]};
+//json = {"typ": "objectdiagram",	"nodes": [	{"typ": "Mobilphone", id: "Max"} ]};
+new Graph(json).layout();
+</script>
+</body></html>

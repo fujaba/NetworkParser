@@ -22,24 +22,25 @@ package de.uniks.networkparser.list;
  permissions and limitations under the Licence.
 */
 import java.util.List;
+
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.Condition;
 
 public class SimpleList<V> extends AbstractList<V> implements List<V> {
 	public SimpleList() {
 		withFlag(SimpleList.ALLOWDUPLICATE);
 	}
-	
+
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
 		return new SimpleList<V>();
 	}
-	
-	@Override
+
 	@SuppressWarnings("unchecked")
 	public SimpleList<V> clone() {
 		return ((SimpleList<V>)getNewList(false)).init(this);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public SimpleList<V> subList(int fromIndex, int toIndex) {
 		return (SimpleList<V>) super.subList(fromIndex, toIndex);
@@ -48,5 +49,17 @@ public class SimpleList<V> extends AbstractList<V> implements List<V> {
 	@Override
 	public boolean remove(Object o) {
 		return super.removeByObject(o)>=0;
+	}
+
+	public SimpleList<V> filter(Condition<V> newValue) {
+		SimpleList<V> filterList = new SimpleList<V>();
+		filterItems(filterList, newValue);
+		return filterList;
+	}
+	
+	@Override
+	public SimpleList<V> with(Object... values) {
+		super.with(values);
+		return this;
 	}
 }

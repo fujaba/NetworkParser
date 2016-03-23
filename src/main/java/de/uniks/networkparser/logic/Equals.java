@@ -1,33 +1,14 @@
 package de.uniks.networkparser.logic;
+import java.beans.PropertyChangeEvent;
 
-/*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
-
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
-
- http://ec.europa.eu/idabc/eupl5
-
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
-*/
-import de.uniks.networkparser.interfaces.Buffer;
+import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.UpdateListener;
 /**
  * @author Stefan Lindel Clazz of EqualsCondition
  */
 
-public class Equals extends ConditionMap implements SendableEntityCreator {
+public class Equals implements UpdateListener, SendableEntityCreator {
 	/** Constant of StrValue. */
 	public static final String STRINGVALUE = "stringvalue";
 	/** Constant of Position. */
@@ -45,9 +26,13 @@ public class Equals extends ConditionMap implements SendableEntityCreator {
 	private Byte bytevalue;
 
 	@Override
-	public boolean check(ValuesMap values) {
-		if (values.entity instanceof Buffer) {
-			Buffer buffer = (Buffer) values.entity;
+	public boolean update(Object evt) {
+		if (evt == null) {
+			return (strValue == null);
+		}
+		PropertyChangeEvent event = (PropertyChangeEvent) evt;
+		if (event.getSource() instanceof BufferedBuffer) {
+			BufferedBuffer buffer = (BufferedBuffer) event.getSource();
 			int pos;
 			if (position < 0) {
 				pos = buffer.position();
@@ -56,15 +41,12 @@ public class Equals extends ConditionMap implements SendableEntityCreator {
 			}
 			return buffer.byteAt(pos) == bytevalue;
 		}
-		if (values.value == null) {
-			return (strValue == null);
-		}
-		return values.value.equals(strValue);
+		return event.getPropertyName().equals(strValue);
 	}
 
 	/**
 	 * @param value
-	 *            The new Position
+	 *			The new Position
 	 * @return Equals Instance
 	 */
 	public Equals withPosition(int value) {
@@ -81,7 +63,7 @@ public class Equals extends ConditionMap implements SendableEntityCreator {
 
 	/**
 	 * @param value
-	 *            The new ByteValue
+	 *			The new ByteValue
 	 * @return Equals Instance
 	 */
 	public Equals withValue(Byte value) {
@@ -98,7 +80,7 @@ public class Equals extends ConditionMap implements SendableEntityCreator {
 
 	/**
 	 * @param value
-	 *            The new StringValue
+	 *			The new StringValue
 	 * @return Equals Instance
 	 */
 	public Equals withValue(String value) {

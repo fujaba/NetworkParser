@@ -12,4 +12,5 @@
 **/*.dvi
 **/*.synctex.gz
 **/*-eps-converted-to.pdf
+NetworkParserAnt.jar
 gradle.properties

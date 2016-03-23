@@ -1,33 +1,40 @@
 /*
-   Copyright (c) 2012 zuendorf 
-   
-   Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
-   and associated documentation files (the "Software"), to deal in the Software without restriction, 
-   including without limitation the rights to use, copy, modify, merge, publish, distribute, 
-   sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is 
-   furnished to do so, subject to the following conditions: 
-   
-   The above copyright notice and this permission notice shall be included in all copies or 
-   substantial portions of the Software. 
-   
-   The Software shall be used for Good, not Evil. 
-   
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING 
-   BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
-   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
-   DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+   Copyright (c) 2012 zuendorf
+
+   Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+   and associated documentation files (the "Software"), to deal in the Software without restriction,
+   including without limitation the rights to use, copy, modify, merge, publish, distribute,
+   sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+   furnished to do so, subject to the following conditions:
+
+   The above copyright notice and this permission notice shall be included in all copies or
+   substantial portions of the Software.
+
+   The Software shall be used for Good, not Evil.
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+   BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+   DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-   
+
 package de.uniks.networkparser.test;
-   
+
+import java.io.PrintStream;
+
+import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.Filter;
-import de.uniks.networkparser.graph.GraphConverter;
-import de.uniks.networkparser.graph.GraphIdMap;
+import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.converter.GraphConverter;
+import de.uniks.networkparser.event.util.DateCreator;
+import de.uniks.networkparser.graph.Cardinality;
+import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.graph.GraphTokener;
 import de.uniks.networkparser.json.JsonArray;
-import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.test.model.SortedMsg;
 import de.uniks.networkparser.test.model.ludo.Field;
@@ -35,163 +42,150 @@ import de.uniks.networkparser.test.model.ludo.Ludo;
 import de.uniks.networkparser.test.model.ludo.LudoColor;
 import de.uniks.networkparser.test.model.ludo.Pawn;
 import de.uniks.networkparser.test.model.ludo.Player;
-import de.uniks.networkparser.test.model.ludo.creator.DateCreator;
 import de.uniks.networkparser.test.model.ludo.creator.DiceCreator;
 import de.uniks.networkparser.test.model.ludo.creator.FieldCreator;
 import de.uniks.networkparser.test.model.ludo.creator.LudoCreator;
 import de.uniks.networkparser.test.model.ludo.creator.PawnCreator;
 import de.uniks.networkparser.test.model.ludo.creator.PlayerCreator;
 import de.uniks.networkparser.test.model.util.SortedMsgCreator;
-   
-public class GraphLudoTest 
+
+public class GraphLudoTest
 {
    private static final String RED = "red";
-
 
    @Test
    public void testLudoStoryboard()
    {
-      JsonIdMap jsonIdMap = new JsonIdMap();
-      jsonIdMap.withCreator(new DateCreator())
-      	.withCreator(new DiceCreator())
-      	.withCreator(new FieldCreator())
-      	.withCreator(new LudoCreator())
-      	.withCreator(new PawnCreator())
-      	.withCreator(new PlayerCreator());
-      
-      // create a simple ludo storyboard
-      
-      Ludo ludo = new Ludo();
-      
-      Player tom = ludo.createPlayers().withName("Tom").withColor("blue").withEnumColor(LudoColor.blue);
-      
-      
-      Player sabine = ludo.createPlayers().withName("Sabine").withColor(RED).withEnumColor(LudoColor.red);
-      
-      tom.createDice().withValue(6);
-      
-      Pawn p2 = tom.createPawns().withColor("blue");
-      
-      Field tomStartField = tom.createStart().withColor("blue").withKind("start");
-      
-      sabine.createStart().withColor(RED).withKind("start");
-      
-      Field tmp = tomStartField;
-      for (int i = 0; i < 4; i++)
-      {
-         tmp = tmp.createNext();
-      }
-      
-      tom.createBase().withColor("blue").withKind("base").withPawns(p2);
-      
-      sabine.createPawns().withColor(RED).withPos(tomStartField);
-      
-      JsonArray jsonArray = jsonIdMap.toJsonArray(ludo);
-      //System.out.println(jsonArray.toString());
-//      GraphIdMap docMap=new
-      GraphConverter graphConverter = new GraphConverter();
-      JsonObject converter=graphConverter.convertToJson(GraphIdMap.CLASS, jsonArray, true);
-      System.out.println("###############################");
-      System.out.println(converter.toString(2));
-      System.out.println("###############################");
+	   IdMap jsonIdMap = new IdMap();
+	  jsonIdMap.with(new DateCreator())
+		  .with(new DiceCreator())
+		  .with(new FieldCreator())
+		  .with(new LudoCreator())
+		  .with(new PawnCreator())
+		  .with(new PlayerCreator());
+
+	  // create a simple ludo storyboard
+
+	  Ludo ludo = new Ludo();
+
+	  Player tom = ludo.createPlayers().withName("Tom").withColor("blue").withEnumColor(LudoColor.blue);
+
+
+	  Player sabine = ludo.createPlayers().withName("Sabine").withColor(RED).withEnumColor(LudoColor.red);
+
+	  tom.createDice().withValue(6);
+
+	  Pawn p2 = tom.createPawns().withColor("blue");
+
+	  Field tomStartField = tom.createStart().withColor("blue").withKind("start");
+
+	  sabine.createStart().withColor(RED).withKind("start");
+
+	  Field tmp = tomStartField;
+	  for (int i = 0; i < 4; i++)
+	  {
+		 tmp = tmp.createNext();
+	  }
+
+	  tom.createBase().withColor("blue").withKind("base").withPawns(p2);
+
+	  sabine.createPawns().withColor(RED).withPos(tomStartField);
+
+	  JsonArray jsonArray = jsonIdMap.toJsonArray(ludo);
+	  GraphConverter graphConverter = new GraphConverter();
+
+	  // May be 8 Asssocs and write 11
+	  JsonObject converter=graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
+	  showDebugInfos(converter, 2758, null);
+   }
+   private void showDebugInfos(JsonObject json, int len, PrintStream stream) {
+	   if(stream != null) {
+		   stream.println("###############################");
+		   stream.println(json.toString(2));
+		   stream.println("###############################");
+	   }
+	   Assert.assertEquals(len, json.toString(2).length());
    }
 
-   @Test
+ @Test
  public void testSimpleGraph()
  {
 	   SortedMsg root = new SortedMsg();
 	   root.withMsg("Hallo Welt");
-	   
+
 	   root.setChild(new SortedMsg().withMsg("Child"));
-	   
-	   JsonIdMap map = new JsonIdMap();
-	   map.withCreator(new SortedMsgCreator());
-	   
+
+	   IdMap map = new IdMap();
+	   map.with(new SortedMsgCreator());
+
 	   JsonArray jsonArray = map.toJsonArray(root, new Filter().withFull(true));
-	   JsonObject item = jsonArray.get(map.getKey(root));
-	   item.put(GraphConverter.HEAD, "map.png");
 	   GraphConverter graphConverter = new GraphConverter();
-      JsonObject objectModel=graphConverter.convertToJson(GraphIdMap.OBJECT, jsonArray, true);
-      System.out.println(objectModel.toString(2));
-      
-      JsonObject clazzModel=graphConverter.convertToJson(GraphIdMap.CLASS, jsonArray, true);
-      System.out.println(clazzModel.toString(2));
+	  JsonObject objectModel=graphConverter.convertToJson(GraphTokener.OBJECT, jsonArray, true);
+	  showDebugInfos(objectModel, 658, null);
+
+	  JsonObject clazzModel=graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
+	  showDebugInfos(clazzModel, 492, null);
+	  Assert.assertEquals(new CharacterBuffer()
+			  .withLine("{")
+			  .withLine("  \"typ\":\"classdiagram\",")
+			  .withLine("  \"style\":null,")
+			  .withLine("  \"nodes\":[")
+			  .withLine("    {")
+			  .withLine("      \"typ\":\"clazz\",")
+			  .withLine("      \"id\":\"SortedMsg\",")
+			  .withLine("      \"attributes\":[")
+			  .withLine("        \"number:Integer\",")
+			  .withLine("        \"msg:String\"")
+			  .withLine("      ]")
+			  .withLine("    }")
+			  .withLine("  ],")
+			  .withLine("  \"edges\":[")
+			  .withLine("    {")
+			  .withLine("      \"typ\":\"ASSOCIATION\",")
+			  .withLine("      \"source\":{")
+			  .withLine("        \"cardinality\":\"one\",")
+			  .withLine("        \"property\":\"child\",")
+			  .withLine("        \"id\":\"SortedMsg\"")
+			  .withLine("      },")
+ 			  .withLine("      \"target\":{")
+ 			  .withLine("        \"cardinality\":\"one\",")
+ 			  .withLine("        \"property\":\"parent\",")
+ 			  .withLine("        \"id\":\"SortedMsg\"")
+ 			  .withLine("      }")
+ 			  .withLine("    }")
+ 			  .withLine("  ]")
+ 			  .with("}").toString(), clazzModel.toString(2));
+ 	}
+
+	 @Test
+	 public void testClazzTest() {
+		 Clazz ludo = new Clazz().with("Ludo");
+		 Clazz player = new Clazz().with("Player");
+		 ludo.withBidirectional(player, "players",  Cardinality.MANY, "game", Cardinality.ONE);
+		 Assert.assertNotNull(ludo);
+	 }
+
+
+
+	 @Test
+	 public void testLudoToMany()
+	 {
+		 IdMap jsonIdMap = new IdMap();
+	  jsonIdMap
+		  .with(new LudoCreator())
+		  .with(new PlayerCreator());
+
+	  // create a simple ludo storyboard
+	  Ludo ludo = new Ludo();
+	  ludo.createPlayers().withName("Tom").withColor("blue").withEnumColor(LudoColor.blue);
+	  ludo.createPlayers().withName("Sabine").withColor(RED).withEnumColor(LudoColor.red);
+
+	  JsonArray jsonArray = jsonIdMap.toJsonArray(ludo);
+	  GraphConverter graphConverter = new GraphConverter();
+
+	  JsonObject converter=graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
+	  showDebugInfos(converter, 569, null);
  }
-   
-   
-//   @Test
-//   public void testLudoStoryboardManual()
-//   {
-//      Storyboard storyboard = new Storyboard("examples", "LudoStoryboardManual");
-//      
-//      storyboard.add("Start situation: ",
-//         DONE, "zuendorf", "19.07.2012 14:41:05", 1, 0);
-//      
-//      // create a simple ludo storyboard
-//      
-//      Player tom = new Player().withName("Tom").withColor("blue");
-//      Player sabine = new Player().withName("Sabine").withColor(RED);
-//      
-//      Dice dice = new Dice().withValue(6)
-//            .withPlayer(tom);
-//      
-//      Pawn p8 = new Pawn().withColor("blue")
-//            .withPlayer(tom);
-//      
-//      Field tomStartField = new Field().withColor("blue").withKind("start");
-//      tom.withStart(tomStartField);
-//      
-//      Field tmp = tomStartField;
-//      for (int i = 0; i < 4; i++)
-//      {
-//         tmp = new Field().withPrev(tmp);
-//      }
-//      
-//      Field tomBase = new Field().withColor("blue").withKind("base").withPawns(p8);
-//      tom.withBase(tomBase);
-//      
-//      Pawn p9 = new Pawn().withColor(RED)
-//            .withPlayer(sabine)
-//            .withPos(tomStartField);
-//      
-//      JsonIdMap jsonIdMap = CreatorCreator.createIdMap("l1");
-//      
-//      storyboard.addObjectDiagram(jsonIdMap, tom);
-//      
-//      storyboard.add("now the pawn may move to Tom's start field");
-//      
-//      storyboard.markCodeStart();
-//      // build move operation with SDM model transformations
-//      Player player = p8.getPlayer();
-//      
-//      if (player.getDice() != null && player.getDice().getValue() == 6
-//            && p8.getPos() != null && "base".equals(p8.getPos().getKind())
-//            && p8.getPos() == player.getBase())
-//      {
-//         Field startField = player.getStart();
-//         boolean hasOtherOwnPawn = false;
-//         
-//         for (Pawn otherOwnPawn : startField.getPawns())
-//         {
-//            if (otherOwnPawn.getPlayer() == player)
-//            {
-//               hasOtherOwnPawn = true;
-//               break;
-//            }
-//         }
-//         
-//         if ( ! hasOtherOwnPawn)
-//         {
-//            p8.setPos(startField);
-//         }
-//      }
-//      storyboard.addCode("examples");
-//      
-//      storyboard.addObjectDiagram(jsonIdMap, tom);
-//      
-//      StoryboardManager.get()
-//      .add(storyboard)
-//      .dumpHTML();
-//   }
+
 }
 

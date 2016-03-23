@@ -1,32 +1,12 @@
 package de.uniks.networkparser.bytes;
 
-/*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
-
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
-
- http://ec.europa.eu/idabc/eupl5
-
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
-*/
-import de.uniks.networkparser.bytes.converter.ByteConverterHTTP;
-import de.uniks.networkparser.bytes.converter.ByteConverterString;
+import de.uniks.networkparser.buffer.ByteBuffer;
+import de.uniks.networkparser.converter.ByteConverter;
+import de.uniks.networkparser.converter.ByteConverterHTTP;
+import de.uniks.networkparser.converter.ByteConverterString;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.BufferedBytes;
-import de.uniks.networkparser.interfaces.ByteConverter;
 import de.uniks.networkparser.interfaces.ByteItem;
+import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.list.SimpleList;
 
 public class ByteList extends SimpleList<ByteItem> implements ByteItem {
@@ -50,21 +30,24 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 	 * Convert the bytes to a String
 	 *
 	 * @param converter
-	 *            Grammar
+	 *			Grammar
 	 * @return converted bytes as String
 	 */
 	@Override
-	public String toString(ByteConverter converter) {
-		return toString(converter, false);
+	public String toString(Converter converter) {
+		if(converter instanceof ByteConverter) {
+			return toString((ByteConverter)converter, false);	
+		}
+		return toString(null, false);
 	}
 
 	/**
 	 * Convert the bytes to a String
 	 *
 	 * @param converter
-	 *            Grammar
+	 *			Grammar
 	 * @param dynamic
-	 *            if byte is dynamic
+	 *			if byte is dynamic
 	 * @return converted bytes as String
 	 */
 	@Override
@@ -72,27 +55,27 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 		if (converter == null) {
 			converter = new ByteConverterHTTP();
 		}
-		return converter.toString(this, dynamic);
+		return converter.toString(this.getBytes(dynamic));
 	}
 
 	@Override
-	public BufferedBytes getBytes(boolean isDynamic) {
+	public ByteBuffer getBytes(boolean isDynamic) {
 		int len = calcLength(isDynamic, true);
-		BufferedBytes buffer = ByteUtil.getBuffer(len);
+		ByteBuffer buffer = ByteUtil.getBuffer(len);
 		writeBytes(buffer, isDynamic, true, isPrimitive(isDynamic));
-		buffer.flip();
+		buffer.flip(true);
 		return buffer;
 	}
 
 	@Override
-	public void writeBytes(BufferedBytes buffer, boolean isDynamic,
+	public void writeBytes(ByteBuffer buffer, boolean isDynamic,
 			boolean last, boolean isPrimitive) {
 		// Override for each ByteList
 		isPrimitive = isPrimitive(isDynamic);
 		int size = calcChildren(isDynamic, last);
 		byte typ;
 		if (isPrimitive) {
-			typ = ByteIdMap.DATATYPE_CLAZZSTREAM;
+			typ = ByteTokener.DATATYPE_CLAZZSTREAM;
 		} else {
 			typ = ByteUtil.getTyp(getTyp(), size, last);
 		}
@@ -128,8 +111,8 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 		if (this.get(size - 1) instanceof ByteEntity) {
 			// HEADER + VALUE
 			isPrimitive = isPrimitive
-					&& this.get(0).getTyp() == ByteIdMap.DATATYPE_CLAZZTYP;
-			if (this.get(size - 1).getTyp() == ByteIdMap.DATATYPE_NULL) {
+					&& this.get(0).getTyp() == ByteTokener.DATATYPE_CLAZZTYP;
+			if (this.get(size - 1).getTyp() == ByteTokener.DATATYPE_NULL) {
 				nullerBytes++;
 			}
 		} else {
@@ -140,7 +123,7 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 		for (int i = size - 2; i >= 0; i--) {
 			int len = this.get(i).calcLength(isDynamic, false);
 			if (isPrimitive) {
-				if (this.get(i).getTyp() == ByteIdMap.DATATYPE_NULL) {
+				if (this.get(i).getTyp() == ByteTokener.DATATYPE_NULL) {
 					nullerBytes++;
 				}
 				isPrimitive = (this.get(i).size() == len - 1);
@@ -167,7 +150,7 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 		if (!(this.get(this.size() - 1) instanceof ByteEntity)) {
 			return false;
 		}
-		if (this.get(0).getTyp() != ByteIdMap.DATATYPE_CLAZZTYP) {
+		if (this.get(0).getTyp() != ByteTokener.DATATYPE_CLAZZTYP) {
 			return false;
 		}
 		for (int i = 1; i < this.size(); i++) {
@@ -192,13 +175,13 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 
 	public SimpleList<ByteItem> withValue(String value) {
 		ByteConverterString converter = new ByteConverterString();
-		this.add(((ByteEntity)getNewList(true)).withValue(ByteIdMap.DATATYPE_FIXED,
+		this.add(((ByteEntity)getNewList(true)).withValue(ByteTokener.DATATYPE_FIXED,
 				converter.decode(value)));
 		return this;
 	}
 
 	@Override
-	public ByteList withAll(Object... values) {
+	public ByteList with(Object... values) {
 		if (values != null) {
 			for (Object value : values) {
 				if (value instanceof ByteItem) {

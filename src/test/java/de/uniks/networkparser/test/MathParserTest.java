@@ -3,7 +3,6 @@ package de.uniks.networkparser.test;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 import de.uniks.networkparser.calculator.RegCalculator;
 
 /*
@@ -24,7 +23,6 @@ import de.uniks.networkparser.calculator.RegCalculator;
  limitations under the License.
  */
 
-
 public class MathParserTest {
 	private RegCalculator calculator;
 
@@ -32,12 +30,12 @@ public class MathParserTest {
 	public void InitCalculator(){
 		calculator = new RegCalculator().withStandard();
 	}
-	
+
 	@Test
 	public void calculation001() {
 		Assert.assertEquals(7.0, calculator.calculate("4+3"), 0.0);
 	}
-	
+
 	@Test
 	public void calculation002() {
 		Assert.assertEquals(14.0, calculator.calculate("5 + ((1 + 2) * 4) - 3"), 0.0);
@@ -162,41 +160,41 @@ public class MathParserTest {
 	public void calculation026() {
 		Assert.assertEquals(4.0, calculator.calculate("-2^2"), 0.0);
 	}
-	
+
 	@Test
 	public void calculation027() {
 		Assert.assertEquals(88.0, calculator.calculate("5*2^4+4*2^2-6*2+4"), 0.0);
 	}
-	
+
 	@Test
 	public void calculation028() {
 		Assert.assertEquals(6561.0, calculator.calculate("3^3*3^4*3"), 0.0);
 	}
-	
+
 	@Test
 	public void calculation029() {
 		Assert.assertEquals(625.0, calculator.calculate("5^7/5^3"), 0.0);
 	}
-	
+
 	@Test
 	public void calculation030() {
 		Assert.assertEquals(244140625.0, calculator.calculate("(5^3)^4"), 0.0);
 	}
-	
+
 	@Test
 	public void calculation031() {
 		Assert.assertEquals(810000.0, calculator.calculate("(5*2*3)^4"), 0.0);
 	}
-	
+
 	@Test
 	public void calculation032() {
 		Assert.assertEquals(43046721.0, calculator.calculate("(3^4)^4"), 0.0);
 	}
-	
+
 	@Test
 	public void calculation033() {
 		Assert.assertEquals(9.0, calculator.calculate("(((2-1/5)^2)/((3-2/9)^(-1)))"), 0.00001);
-		
+
 		Assert.assertEquals(863.2857142, calculator.calculate("(((2-1/5)^2)/((3-2/9)^(-1))) / (((6/7)*(5/4)-(2/7)/(1/2))^3)/((1/2)-(1/3)*(1/4)/(1/5))-5(1/7)"), 0.0000001);
 	}
 }

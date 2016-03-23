@@ -1,102 +1,112 @@
 package de.uniks.networkparser.test;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
-
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.uniks.networkparser.StringTokener;
-import de.uniks.networkparser.date.DateTimeEntity;
+import de.uniks.networkparser.DateTimeEntity;
+import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.buffer.CharacterReader;
 import de.uniks.networkparser.json.JsonTokener;
+import de.uniks.networkparser.list.SimpleList;
 
 public class StringTokenerTest {
 	@Test
 	public void testString(){
-		StringTokener tokener=(StringTokener) new StringTokener().withBuffer("Hallo Welt");
-		showString(tokener, "Hallo Welt");
-		
-		showString(tokener, "Hallo \"meine\" Welt");
-		
-		showString(tokener, "\"Hallo meine\" Welt");
-		
-		showString(tokener, "Hallo \"meine \\\"kleine\\\"\" Welt");
-		
-		
+		CharacterReader buffer = new CharacterReader().with("Hallo Welt");
+		showString(buffer, "Hallo Welt");
+
+		showString(buffer, "Hallo \"meine\" Welt");
+
+		showString(buffer, "\"Hallo meine\" Welt");
+
+		showString(buffer, "Hallo \"meine \\\"kleine\\\"\" Welt");
+
+
 		DateTimeEntity dateTime = new DateTimeEntity();
-		showString(tokener, "HH:MM:SS \"Sekunden\"");
-		System.out.println(dateTime.toString("HH:MM:SS \"Sekunden\""));
+		showString(buffer, "HH:MM:SS \"Sekunden\"");
+		Assert.assertNotNull(dateTime.toString("HH:MM:SS \"Sekunden\""));
 	}
-	
+
 	@Test
 	public void testStringSplit(){
-		StringTokener tokener = (StringTokener) new StringTokener().withBuffer("[1,\"2,3\",4]");
+		CharacterReader tokener = new CharacterReader().with("[1,\"2,3\",4]");
 		if(tokener.charAt(0)=='['&&tokener.charAt(tokener.length()-1)==']'){
-			tokener.setIndex(1);
-			tokener.setLength(tokener.length()-1);
+			tokener.withStartPosition(1);
+			tokener.withBufferLength(tokener.length()-1);
 			int count=0;
-			String sub;
-			//FIXME change to ""
+			CharacterBuffer sc;
 			do{
-				sub = tokener.nextString(true, ',');
-				if(sub.length()>0){
-					System.out.println(count++ + ": #" +sub+ "# -- " +tokener.isString());
+				sc = tokener.nextString(new CharacterBuffer(), true, false, ',');
+				if(sc.length()>0){
+					Assert.assertNotNull(count);
+					output(count++ + ": #" +sc.toString()+ "# -- " +tokener.isString(), null);
 				}
-			}while (sub.length()>0);
+			}while (sc.length()>0);
 		}
 	}
-	
+
 	@Test
 	public void testToday(){
 		DateTimeEntity date= new DateTimeEntity();
-	   System.out.println(date.getTime());
-		System.out.println(date.toString("ddd. dd.mm.yyyy"));
+		Assert.assertNotNull(date.toString("ddd. dd.mm.yyyy"));
 	}
-	
-	public void showString(StringTokener tokener, String value){
+
+	public void showString(CharacterReader tokener, String value){
 		int count=0;
-		String sub;
-		
-		System.out.println("zu parsen: " +value);
-		tokener.withBuffer(value);
+		CharacterBuffer sub;
+		PrintStream stream = null;
+
+		output("zu parsen: " +value, stream);
+		tokener.reset();
+		tokener.with(value);
 		do{
-			sub=tokener.nextString(true, '"');
+			sub = new CharacterBuffer();
+			tokener.nextString(sub, true, false, '"');
 			if(sub.length()>0){
-				System.out.println(count++ + ": #" +sub+ "# -- " +tokener.isString());
+				Assert.assertNotNull(count);
+				output(count++ + ": #" +sub+ "# -- " +tokener.isString(), stream);
 			}
 		}while (sub.length()>0);
-		System.out.println();
+		output("\n", stream);
 	}
-	
+
+	void output(String str, PrintStream stream) {
+		if (stream != null) {
+			stream.print(str);
+		}
+	}
+
 	@Test
 	public void testSearchText(){
-		StringTokener stringTokener = (StringTokener) new StringTokener().withBuffer("-Harmonie -Illusion -\"E1 E2\"");
-		ArrayList<String> stringList = stringTokener.getStringList();
+		CharacterBuffer stringTokener = new CharacterBuffer().with("-Harmonie -Illusion -\"E1 E2\"");
+		SimpleList<String> stringList = stringTokener.getStringList();
 		ArrayList<String> searchList= new ArrayList<String>();
 		for (int i=0;i<stringList.size();i++){
 			if(stringList.get(i).endsWith("-") && i<stringList.size()-1){
 				String temp=stringList.get(i);
 				temp=temp.substring(0, temp.length()-1);
-				searchList.addAll(stringTokener.getString(temp.trim(), true));
+				searchList.addAll(stringTokener.splitStrings(temp.trim(), true));
 				searchList.add("-" +stringList.get(++i).trim());
 			} else {
-				searchList.addAll(stringTokener.getString(stringList.get(i), true));
+				searchList.addAll(stringTokener.splitStrings(stringList.get(i), true));
 			}
 		}
 		String[] lastSearchCriteriaItems = searchList.toArray(new String[searchList.size()]);
 		Assert.assertEquals(3, lastSearchCriteriaItems.length);
 	}
-	
+
 	@Test
 	public void testUTF8(){
 //		String test="{id:\"Hüttenberg\"}";
 		String test="ü";
 		byte[] bytes = test.getBytes();
-		System.out.println(bytes.length);
-		System.out.println(test.length());
-		System.out.println((Character)test.charAt(0));
-		System.out.println(bytes[0]);
+		Assert.assertEquals(2, bytes.length);
+		Assert.assertNotNull((Character)test.charAt(0));
+		Assert.assertNotNull(bytes[0]);
 		JsonTokener jsonTokener = (JsonTokener) new JsonTokener().withBuffer(test);
-		System.out.println(jsonTokener.nextString(true, '\"'));
-		System.out.println(jsonTokener.nextString(true, '\"'));
+		Assert.assertNotNull(jsonTokener.nextString(new CharacterBuffer(), true, false, '\"'));
+		Assert.assertNotNull(jsonTokener.nextString(new CharacterBuffer(), true, false, '\"'));
 	}
 }

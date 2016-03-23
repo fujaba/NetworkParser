@@ -1,4 +1,5 @@
 package de.uniks.networkparser.logic;
+import java.beans.PropertyChangeEvent;
 
 /*
  NetworkParser
@@ -22,8 +23,9 @@ package de.uniks.networkparser.logic;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.UpdateListener;
 
-public class CompareTo implements Condition<ValuesSimple>, SendableEntityCreator {
+public class CompareTo implements UpdateListener, SendableEntityCreator {
 	public static final String VALUE = "value";
 	public static final String COMPARE = "compare";
 	public static final int GREATER = 1;
@@ -50,8 +52,9 @@ public class CompareTo implements Condition<ValuesSimple>, SendableEntityCreator
 	}
 
 	@Override
-	public boolean check(ValuesSimple value) {
-		Object entityValue = value.getValue();
+	public boolean update(Object value) {
+		PropertyChangeEvent evt = (PropertyChangeEvent) value;
+		Object entityValue = evt.getSource();
 		if (entityValue != null) {
 			if (entityValue instanceof Comparable<?>) {
 				Comparable<?> comparatorValue = (Comparable<?>) entityValue;

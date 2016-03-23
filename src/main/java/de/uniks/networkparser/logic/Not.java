@@ -22,36 +22,38 @@ package de.uniks.networkparser.logic;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.UpdateListener;
 /**
  * Not Clazz for neg. Condition.
  *
  * @author Stefan Lindel
  */
 
-public class Not implements Condition<ValuesSimple>, SendableEntityCreator {
+public class Not implements UpdateListener, SendableEntityCreator {
 	/** Constant for ITEM. */
 	public static final String ITEM = "item";
 	/** Varibale for Condition. */
-	private Condition<ValuesSimple> item;
+	private UpdateListener item;
 
+	
 	@Override
-	public boolean check(ValuesSimple values) {
-		return !item.check(values);
+	public boolean update(Object evt) {
+		return !item.update(evt);
 	}
 
 	/**
-	 * @return Not Conditino
+	 * @return Not Condition
 	 */
-	public Condition<ValuesSimple> getItem() {
+	public UpdateListener getItem() {
 		return item;
 	}
 
 	/**
 	 * @param value
-	 *            for new Condition
+	 *			for new Condition
 	 * @return Not Instance
 	 */
-	public Not withItem(Condition<ValuesSimple> value) {
+	public Not withItem(UpdateListener value) {
 		this.item = value;
 		return this;
 	}
@@ -74,13 +76,18 @@ public class Not implements Condition<ValuesSimple>, SendableEntityCreator {
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
 		if (ITEM.equalsIgnoreCase(attribute)) {
-			((Not) entity).withItem((Condition<ValuesSimple>) value);
+			if(value instanceof UpdateListener) {
+				((Not) entity).withItem((UpdateListener) value);
+			}
 		}
 		return false;
+	}
+	
+	public static Not create(UpdateListener condition) {
+		return new Not().withItem(condition);
 	}
 }

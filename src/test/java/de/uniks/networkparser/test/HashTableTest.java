@@ -1,18 +1,15 @@
 package de.uniks.networkparser.test;
 
-
-
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 import de.uniks.networkparser.test.model.GroupAccount;
 import de.uniks.networkparser.test.model.Person;
 import de.uniks.networkparser.test.model.util.PersonSet;
@@ -22,6 +19,14 @@ public class HashTableTest
 	public static final String FORMAT="%5d";
 	private static ArrayList<Person> items = new ArrayList<Person>();
 	public static int COUNT;
+	public static PrintStream stream;
+
+	public static void printToStream(String string) {
+		if(HashTableTest.stream != null) {
+			HashTableTest.stream.println(string);
+		}
+	}
+
 	@BeforeClass
 	public static void initDummy(){
 		// VM Arg
@@ -30,24 +35,25 @@ public class HashTableTest
 			HashTableTest.COUNT = Integer.valueOf((String)System.getProperty("count"));
 		}else{
 //			HashTableTest.COUNT = 1000 * 1000;
-			HashTableTest.COUNT = 1000;
+			HashTableTest.COUNT = 100;
 		}
-		System.out.println("Run test for "+HashTableTest.COUNT+" items");
+//		HashTableTest.stream = System.out;
+		printToStream("Run test for "+HashTableTest.COUNT+" items");
 		for (int i = 0; i < COUNT; i++) {
 			items.add(new Person().withName("p" + i));
 		}
 	}
-	
+
 	private Collection<Person> add(String label, Collection<Person> list){
 		long currentTimeMillis = System.currentTimeMillis();
-		
+
 		for (int i = 0; i < COUNT; i++) {
 			list.add(items.get(i));
 		}
-		
+
 		String end = String.format(FORMAT, (System.currentTimeMillis() - currentTimeMillis));
-		
-		System.out.println(label+ " Add:          " +end+ "ms = number of persons: " + list.size());	
+
+		printToStream(label+ " Add:		  " +end+ "ms = number of persons: " + list.size());
 		return list;
 	}
 
@@ -59,9 +65,9 @@ public class HashTableTest
 			Assert.assertTrue("not in list: "+i+"="+items.get(i), list.contains(items.get(i)));
 		}
 		String end = String.format(FORMAT, (System.currentTimeMillis() - currentTimeMillis));
-		System.out.println(label+ " contains:     " +end+ "ms for " +list.size()/step + " Objects");
+		printToStream(label+ " contains:	 " +end+ "ms for " +list.size()/step + " Objects");
 	}
-	
+
 	private void getter(String label, List<Person> list){
 		int step=1000;
 		long currentTimeMillis = System.currentTimeMillis();
@@ -69,9 +75,9 @@ public class HashTableTest
 			Assert.assertNotNull("not in list", list.get(i));
 		}
 		String end = String.format(FORMAT, (System.currentTimeMillis() - currentTimeMillis));
-		System.out.println(label+ " getter(index):" +end+ "ms for " +list.size()/step + " Objects");
+		printToStream(label+ " getter(index):" +end+ "ms for " +list.size()/step + " Objects");
 	}
-	
+
 	private void getter(String label, Set<Person> list){
 		long currentTimeMillis = System.currentTimeMillis();
 		for (int i = 0; i < items.size(); i += 1000) {
@@ -87,34 +93,34 @@ public class HashTableTest
 			}
 		}
 		String end = String.format(FORMAT, (System.currentTimeMillis() - currentTimeMillis));
-		System.out.println(label+ " getter(index):" + end + " for 100 Objects");
+		printToStream(label+ " getter(index):" + end + " for 100 Objects");
 	}
-	
+
 	private void contains(String label, Set<Person> list){
 		long currentTimeMillis = System.currentTimeMillis();
 		for (int i = 0; i < items.size(); i += 100) {
 			Assert.assertTrue("not in list", list.contains(items.get(i)));
 		}
 		String end = String.format(FORMAT, (System.currentTimeMillis() - currentTimeMillis));
-		System.out.println(label+ " contains:     " + end + " for 10000 Objects");
+		printToStream(label+ " contains:	 " + end + " for 10000 Objects");
 	}
-	
+
 	private void iterator(String label, Collection<Person> list){
 		long currentTimeMillis = System.currentTimeMillis();
 		for (Iterator<Person> i = list.iterator();i.hasNext();){
 			Assert.assertNotNull(i.next());
 		}
 		String end = String.format(FORMAT, (System.currentTimeMillis() - currentTimeMillis));
-		System.out.println(label+ " iterator:     " + end);
+		printToStream(label+ " iterator:	 " + end);
 	}
-	
+
 	private void removeObject(String label, Collection<Person> list){
 		long currentTimeMillis = System.currentTimeMillis();
 
 		for (int i = 0; i < items.size(); i += 100) {
-			System.out.println(i);
+			printToStream(""+i);
 			if(i==0) {
-				System.out.println("HH");
+				printToStream("HH");
 			}
 			list.remove(items.get(i));
 		}
@@ -125,9 +131,9 @@ public class HashTableTest
 			Assert.assertNotNull("Item "+c+"/"+list.size()+" are null", item);
 		}
 		String end = String.format(FORMAT, (System.currentTimeMillis() - currentTimeMillis));
-		System.out.println(label+ " removeObject: " + end+ "(" +list.size()+ ")");
+		printToStream(label+ " removeObject: " + end+ "(" +list.size()+ ")");
 	}
-	
+
 	private void test(String text, Set<Person> items){
 		add(text, items);
 		contains(text, items);
@@ -141,15 +147,15 @@ public class HashTableTest
 		iterator(text, items);
 		getter(text, items);
 		removeObject(text, items);
-	}	
+	}
 
 	@Test
 	public void testLists(){
-		test("ArrayList    :", new ArrayList<Person>());
+		test("ArrayList	:", new ArrayList<Person>());
 		test("LinkedHashSet:", new LinkedHashSet<Person>());
-		test("PersonSet    :", new PersonSet());
+		test("PersonSet	:", new PersonSet());
 	}
-	
+
    @Test
    public void testSmallList() {
 	   PersonSet personSet = new PersonSet();
@@ -159,38 +165,38 @@ public class HashTableTest
 	   personSet.remove(newValue);
 	   Assert.assertEquals(1, personSet.size());
    }
-	
-	
+
+
    @Test
    public void testInsertion()
    {
 	   long currentTimeMillis = System.currentTimeMillis();
-	   
-      GroupAccount groupAccount = new GroupAccount();
-      
-      PersonSet personSet = new PersonSet();
-      
-      for (int i = 0; i < COUNT; i++)
-      {
-         Person person = groupAccount.createPersons().withName("p" + i);
-         
-         if (i % 100 == 0)
-         {
-            personSet.add(person);
-         }
-      }
-      
-      
-      System.out.println("     number of persons: " + groupAccount.getPersons().size() + " probe size: " + personSet.size());
-      System.out.println("     " +(System.currentTimeMillis() - currentTimeMillis ));
-//      for (Person person : personSet)
-//      {
-//         Assert.assertTrue("not in list", groupAccount.getPersons().contains(person));
-//         groupAccount.withoutPersons(person);
-//         Assert.assertFalse("still in list", groupAccount.getPersons().contains(person));
-//         
-//      }
+
+	  GroupAccount groupAccount = new GroupAccount();
+
+	  PersonSet personSet = new PersonSet();
+
+	  for (int i = 0; i < COUNT; i++)
+	  {
+		 Person person = groupAccount.createPersons().withName("p" + i);
+
+		 if (i % 100 == 0)
+		 {
+			personSet.add(person);
+		 }
+	  }
+
+
+	  printToStream("	 number of persons: " + groupAccount.getPersons().size() + " probe size: " + personSet.size());
+	  printToStream("	 " +(System.currentTimeMillis() - currentTimeMillis ));
+//	  for (Person person : personSet)
+//	  {
+//		 Assert.assertTrue("not in list", groupAccount.getPersons().contains(person));
+//		 groupAccount.withoutPersons(person);
+//		 Assert.assertFalse("still in list", groupAccount.getPersons().contains(person));
 //
-//      Assert.assertTrue("not in list", groupAccount.getPersons().contains(personSet.get(personSet.size()-1)));
+//	  }
+//
+//	  Assert.assertTrue("not in list", groupAccount.getPersons().contains(personSet.get(personSet.size()-1)));
    }
 }

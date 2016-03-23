@@ -1,7 +1,6 @@
 package de.uniks.networkparser.test.model;
 
 import java.util.ArrayList;
-
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 

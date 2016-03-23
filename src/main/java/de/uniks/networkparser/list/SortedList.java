@@ -22,27 +22,29 @@ package de.uniks.networkparser.list;
  permissions and limitations under the Licence.
 */
 import java.util.Comparator;
+
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.sort.EntityComparator;
 import de.uniks.networkparser.sort.SortingDirection;
 
 public class SortedList<V> extends SimpleList<V> {
 	protected Comparator<V> cpr;
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Comparator<Object> comparator() {
 		if (this.cpr == null) {
 			withComparator(new EntityComparator<V>().withColumn(
-					EntityComparator.LIST).withDirection(SortingDirection.ASC));
+					EntityComparator.VALUES).withDirection(SortingDirection.ASC));
 		}
 		return (Comparator<Object>) cpr;
 	}
-	
+
+	@Override
 	public boolean isComparator() {
 		return (this.cpr != null);
 	}
-	
+
 	public SortedList<V> withComparator(Comparator<V> comparator) {
 		this.cpr = comparator;
 		return this;
@@ -53,22 +55,22 @@ public class SortedList<V> extends SimpleList<V> {
 				SortingDirection.ASC);
 		return this;
 	}
-	
-	
+
+
 	/**
 	 * Returns a view of the portion of this map whose keys are greater than (or
 	 * equal to, if {@code inclusive} is true) {@code fromKey}.
 	 *
 	 * @param fromElement
-	 *            low endpoint of the keys in the returned map
+	 *			low endpoint of the keys in the returned map
 	 * @param inclusive
-	 *            {@code true} if the low endpoint is to be included in the
-	 *            returned view
+	 *			{@code true} if the low endpoint is to be included in the
+	 *			returned view
 	 * @param <ST> the ContainerClass
-	 * 
-	 *             
+	 *
+	 *
 	 * @return a view of the portion of this map whose keys are greater than (or
-	 *         equal to, if {@code inclusive} is true) {@code fromKey}
+	 *		 equal to, if {@code inclusive} is true) {@code fromKey}
 	 *
 	 */
 	@SuppressWarnings("unchecked")
@@ -83,11 +85,11 @@ public class SortedList<V> extends SimpleList<V> {
 			int compare = comparator().compare(get(pos), fromElement);
 			if (compare == 0) {
 				if (inclusive) {
-					copyEntity(newList, pos);
+					copyEntity(newList, pos++);
 				}
 				break;
 			} else if (compare > 0) {
-				copyEntity(newList, pos);
+				copyEntity(newList, pos++);
 				break;
 			}
 		}
@@ -98,7 +100,7 @@ public class SortedList<V> extends SimpleList<V> {
 		}
 		return (ST) newList;
 	}
-	
+
 	/**
 	 * Returns a view of the portion of this map whose keys are less than (or
 	 * equal to, if {@code inclusive} is true) {@code toKey}. The returned map
@@ -111,12 +113,12 @@ public class SortedList<V> extends SimpleList<V> {
 	 * attempt to insert a key outside its range.
 	 *
 	 * @param toElement
-	 *            high endpoint of the keys in the returned map
+	 *			high endpoint of the keys in the returned map
 	 * @param inclusive
-	 *            {@code true} if the high endpoint is to be included in the
-	 *            returned view
-	 * @param <ST> the ContainerClass 
-	 * 
+	 *			{@code true} if the high endpoint is to be included in the
+	 *			returned view
+	 * @param <ST> the ContainerClass
+	 *
 	 * @return result a list with less item then the key
 	 *
 	 */
@@ -141,7 +143,7 @@ public class SortedList<V> extends SimpleList<V> {
 		}
 		return (ST) newList;
 	}
-	
+
 	public V higher(V toElement) {
 		if(!isComparator()) {
 			return null;

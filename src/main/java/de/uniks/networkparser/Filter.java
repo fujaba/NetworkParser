@@ -1,64 +1,44 @@
 package de.uniks.networkparser;
 
-/*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
-
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
-
- http://ec.europa.eu/idabc/eupl5
-
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
-*/
-import java.util.ArrayList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
-import de.uniks.networkparser.logic.Condition;
-import de.uniks.networkparser.logic.ValuesMap;
-import de.uniks.networkparser.logic.ValuesSimple;
+import de.uniks.networkparser.interfaces.UpdateListener;
+import de.uniks.networkparser.logic.SimpleMapEvent;
 
 public class Filter {
-	protected Condition<ValuesSimple> idFilter;
-	protected Condition<ValuesSimple> convertable;
-	protected Condition<ValuesSimple> property;
+	/** The Constant MERGE. */
+	public static final String MERGE = "merge";
+
+	/** The Constant COLLISION. */
+	public static final String COLLISION = "collision";
+
+	/** The Constant PRIO. */
+	public static final String PRIO = "prio";
+
+	protected UpdateListener idFilter;
+	protected UpdateListener convertable;
+	protected UpdateListener property;
 
 	// Temporary variables
-	protected ArrayList<Object> visitedObjects;
-	protected Boolean full;
-	protected ValuesMap filterMap;
+	protected boolean full;
 	private String strategy = IdMap.NEW;
 
-	public Condition<ValuesSimple> getIdFilter() {
-		return idFilter;
-	}
-
-	public Filter withIdFilter(Condition<ValuesSimple> idFilter) {
+	public Filter withIdFilter(UpdateListener idFilter) {
 		this.idFilter = idFilter;
 		return this;
 	}
 
 	/**
 	 * Filter for encoding ID of Element
-	 * 
-	 * @param map the Map
+	 *
 	 * @param entity Entity for Show Id
 	 * @param className ClassName
-	 * @return Boolean if encoding ID
+	 * @param map The IdMap
+	 * @return boolean if encoding ID
 	 */
-	public boolean isId(IdMap map, Object entity, String className) {
+	public boolean isId(Object entity, String className, IdMap map) {
 		if (idFilter != null) {
-			return idFilter.check(ValuesMap.with(map, entity, className));
+			return idFilter.update(new SimpleMapEvent(IdMap.NEW, map, className, null, entity));
 		}else {
 			SendableEntityCreator creator = map.getCreator(className, true);
 			if(creator!=null) {
@@ -70,167 +50,68 @@ public class Filter {
 
 	/**
 	 * Serialization the Full object inclusive null value
-	 *
 	 * @return boolean for serialization the full object
 	 */
-	public Boolean isFullSeriation() {
+	public boolean isFullSeriation() {
 		return full;
 	}
-
+	/**
+	 * Serialization the Full object inclusive null value
+	 * @param value for serialization the full object
+	 * @return self instance
+	 */
 	public Filter withFull(boolean value) {
 		this.full = value;
 		return this;
 	}
 
-	public Condition<ValuesSimple> getConvertable() {
-		return convertable;
-	}
-
-	public Filter withConvertable(Condition<ValuesSimple> convertable) {
-		this.convertable = convertable;
-		return this;
-	}
-
-	public Condition<ValuesSimple> getPropertyRegard() {
-		return property;
-	}
-
-	public Filter withPropertyRegard(Condition<ValuesSimple> property) {
+	public Filter withPropertyRegard(UpdateListener property) {
 		this.property = property;
 		return this;
 	}
 
-	public Filter withStandard(Filter referenceFilter) {
-		if (idFilter == null && referenceFilter != null) {
-			idFilter = referenceFilter.getIdFilter();
-		}
-		if (convertable == null && referenceFilter != null) {
-			convertable = referenceFilter.getConvertable();
-		}
-		if (property == null && referenceFilter != null) {
-			property = referenceFilter.getPropertyRegard();
-		}
-		if (full == null && referenceFilter != null) {
-			full = referenceFilter.isFullSeriation();
-			if (full == null) {
-				full = false;
-			}
-		}
+	public Filter withConvertable(UpdateListener convertable) {
+		this.convertable = convertable;
 		return this;
 	}
 
-	public Filter clone() {
-		Filter reference = new Filter();
-		if (reference.getClass().getName().equals(this.getClass().getName())) {
-			return clone(new Filter());
-		}
-		return this;
-	}
-
-	protected Filter clone(Filter newInstance) {
-		return newInstance.withConvertable(convertable).withIdFilter(idFilter)
-				.withPropertyRegard(property);
-	}
-
-	public boolean hasObjects(Object element) {
-		return getVisitedObjects().contains(element);
-	}
-
-	ArrayList<Object> getVisitedObjects() {
-		if (visitedObjects == null) {
-			visitedObjects = new ArrayList<Object>();
-		}
-		return visitedObjects;
-	}
-	public int getIndexVisitedObjects(Object element) {
-		int pos = 0;
-		for (Object item : getVisitedObjects()) {
-			if (item == element) {
-				return pos;
-			}
-			pos++;
-		}
-		return -1;
-	}
-
-	public Object getVisitedObjects(int index) {
-		if (index>=0 && index < getVisitedObjects().size()) {
-			return getVisitedObjects().get(index);
-		}
-		return null;
-	}
-
-	/**
-	 * @param visitedObject
-	 *            Visited Object to Add to List
-	 * @return Filter
-	 */
-	public Filter withObjects(Object... visitedObject) {
-		if (visitedObject == null) {
-			return this;
-		}
-		for (Object item : visitedObject) {
-			if (item != null) {
-				getVisitedObjects().add(item);
-			}
-		}
-		return this;
-	}
-
-	public String[] getProperties(SendableEntityCreator creator) {
-		return creator.getProperties();
-	}
-	
-	public void initMapFilter(IdMap map) {
-		this.filterMap = ValuesMap.withMap(map);
-	}
-	
-	public boolean isPropertyRegard(Object entity, String property, Object value, int deep) {
+	boolean isPropertyRegard(Object entity, String property, Object value, IdMap map, int deep) {
 		if (this.property != null) {
-			this.filterMap.withValues(entity, property, value, deep);
-			return this.property.check(filterMap);
-		}
-		return true;
-	}
-	
-	public boolean isConvertable(Object entity, String property, Object value, int deep) {
-		if (this.convertable != null) {
-			this.filterMap.withValues(entity, property, value, deep);
-			return this.convertable.check(filterMap);
+			return this.property.update(new SimpleMapEvent(IdMap.NEW, map, property, null, value).with(deep).withModelItem(entity));
 		}
 		return true;
 	}
 
-	public Object getRefByEntity(Object value) {
-		if(visitedObjects == null)
-			return null;
-		for (int i = 0; i < visitedObjects.size(); i += 2) {
-			if (visitedObjects.get(i) == value) {
-				return visitedObjects.get(i + 1);
-			}
+	boolean isConvertable(Object entity, String property, Object value, IdMap map, int deep) {
+		if (this.convertable != null) {
+			return this.convertable.update(new SimpleMapEvent(IdMap.NEW, map, property, null, value).with(deep).withModelItem(entity));
 		}
-		return null;
+		return true;
 	}
 
 	/**
 	 * Create a new Filter for Regard Filter (Encoding Object or remove link)
-	 * 
+	 *
 	 * @param convertable Condition
-	 * @return a new Filter for regard the model 
+	 * @return a new Filter for regard the model
 	 */
-	public static Filter regard(Condition<ValuesSimple> convertable) {
+	public static Filter regard(UpdateListener convertable) {
 		return new Filter().withPropertyRegard(convertable);
 	}
 	/**
 	 * Create a new Filter for Converting Filter (Encoding Object or set only the Id)
-	 * 
+	 *
 	 * @param convertable Condition
-	 * @return a new Filter for Filter with Convertable Items 
+	 * @return a new Filter for Filter with Convertable Items
 	 */
-	public static Filter convertable(Condition<ValuesSimple> convertable) {
+	public static Filter convertable(UpdateListener convertable) {
 		return new Filter().withConvertable(convertable);
 	}
 
+	/**
+	 * Strategy for setting property value in model
+	 * @return String type of set Value
+	 */
 	public String getStrategy() {
 		return strategy;
 	}

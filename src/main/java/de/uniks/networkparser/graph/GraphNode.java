@@ -1,148 +1,42 @@
 package de.uniks.networkparser.graph;
 
-import de.uniks.networkparser.list.SimpleSet;
+/*
+ NetworkParser
+ Copyright (c) 2011 - 2015, Stefan Lindel
+ All rights reserved.
 
-public class GraphNode implements GraphMember{
-	protected int count;
-	protected String id;
-	protected GraphNode parentNode;
-	protected GraphSimpleSet<GraphMember> children=new GraphSimpleSet<GraphMember>();
-	protected SimpleSet<GraphEdge> associations = new SimpleSet<GraphEdge>();
+ Licensed under the EUPL, Version 1.1 or (as soon they
+ will be approved by the European Commission) subsequent
+ versions of the EUPL (the "Licence");
+ You may not use this work except in compliance with the Licence.
+ You may obtain a copy of the Licence at:
 
-	// GETTER AND SETTER
-	public String getId() {
-		return id;
-	}
+ http://ec.europa.eu/idabc/eupl5
 
-	public String getTyp(String typ, boolean shortName) {
-		return getId();
-	}
+ Unless required by applicable law or agreed to in
+ writing, software distributed under the Licence is
+ distributed on an "AS IS" basis,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ express or implied.
+ See the Licence for the specific language governing
+ permissions and limitations under the Licence.
+*/
 
-	public GraphNode withId(String id) {
-		this.id = id;
+public class GraphNode extends GraphMember{
+	@Override
+	public GraphNode with(String name) {
+		super.with(name);
 		return this;
 	}
 
-	public void addAttribute(String property, GraphDataType clazz, String value) {
-		with(new GraphAttribute().withValue(value).with(property).with(clazz));
+	public GraphNode withParent(GraphMember value) {
+		super.setParent(value);
+		return this;
 	}
-	
+
+
 	@Override
 	public String toString() {
-		return id;
-	}
-
-	public GraphNode with(GraphAttribute... values) {
-		return withMember(values);
-	}
-	public GraphNode with(GraphMethod... values) {
-		return withMember(values);
-	}
-
-	public GraphNode with(GraphList... values) {
-		return withMember(values);
-	}
-	
-	public GraphNode with(GraphNodeImage... values) {
-		return withMember(values);
-	}
-	GraphNode with(GraphMember... values) {
-		return withMember(values);
-	}
-	
-	public GraphNode with(GraphEdge... values) {
-		if (values != null) {
-			for (GraphEdge value : values) {
-				if(this.associations.add(value)) {
-					value.with(this);
-				}
-			}
-		}
-		return this;
-	}
-
-	GraphNode without(GraphMember... values) {
-		if (values != null) {
-			for (GraphMember value : values) {
-				if(value != null) {
-					this.children.remove(value);
-					value.withParent(null);
-				}
-			}
-		}
-		return this;
-	}
-
-	GraphNode withMember(GraphMember... values) {
-		if (values != null) {
-			for (GraphMember value : values) {
-				if(value != null) {
-					this.children.add(value);
-					value.withParent(this);
-				}
-			}
-		}
-		return this;
-	}
-	
-	public GraphMember getByObject(String clazz, boolean fullName) {
-		if(clazz == null){
-			return null;
-		}
-		String sub = clazz;
-		if(clazz.lastIndexOf(".")>=0) {
-			sub = clazz.substring(clazz.lastIndexOf(".")+1);
-		}
-		for(GraphMember item : children) {
-			if(clazz.equalsIgnoreCase(item.getId()) || sub.equalsIgnoreCase(item.getId())){
-				return item;
-			}
-		}
-		if(fullName || clazz.lastIndexOf(".") < 0) {
-			return null;
-		}
-		sub = "."+clazz.substring(clazz.lastIndexOf(".")+1);
-		for(GraphMember item : children) {
-			if(item.getId().endsWith(clazz)){
-				return item;
-			}
-		}
-		return null;
-	}
-	
-	public boolean setParent(GraphNode value) {
-		if (this.parentNode != value) {
-			GraphNode oldValue = this.parentNode;
-			if (this.parentNode != null) {
-				this.parentNode = null;
-				oldValue.without(this);
-			}
-			this.parentNode = value;
-			if (value != null) {
-				value.with(this);
-			}
-			return true;
-		}
-		return false;
-	}
-	
-	public GraphNode withParent(GraphNode value) {
-		setParent(value);
-		return this;
-	}
-	
-	public GraphNode getParent() {
-		return parentNode;
-	}
-
-	int getCount() {
-		return count;
-	}
-	void addCounter() {
-		this.count++;
-	}
-
-	GraphSimpleSet<GraphMember> getChildren() {
-		return children;
+		return name;
 	}
 }

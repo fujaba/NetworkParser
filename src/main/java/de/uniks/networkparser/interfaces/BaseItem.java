@@ -24,16 +24,30 @@ package de.uniks.networkparser.interfaces;
 /**
  * The Class BaseEntity.
  */
-
 public interface BaseItem {
 	public static final String CRLF = "\r\n";
 
+	/**
+	 * @return the Item as String
+	 */
 	@Override
 	public String toString();
+
+	/**
+	 * @param converter
+	 *			Converter for Format
+	 * @return the Item as String with converter
+	 */
+	public String toString(Converter converter);
+
 	
-	BaseItem withAll(Object... values);
-	
-	public Object getValueItem(Object key);
-	
+	/** Add Elements to List or KeyValue
+	 * if param Modulo 2 the Params can be Key,Value
+	 * or add all Values  to List
+	 * @param values Items to Add to List 
+	 * @return this Component
+	 */
+	BaseItem with(Object... values);
+
 	public BaseItem getNewList(boolean keyValue);
 }

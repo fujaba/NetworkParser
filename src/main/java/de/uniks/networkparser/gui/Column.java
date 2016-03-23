@@ -22,9 +22,12 @@ package de.uniks.networkparser.gui;
  permissions and limitations under the Licence.
 */
 import java.util.Comparator;
+
+import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.EntityValueFactory;
+import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.date.DateTimeEntity;
+import de.uniks.networkparser.event.CellHandler;
 import de.uniks.networkparser.event.Style;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -46,7 +49,7 @@ public class Column implements SendableEntityCreatorNoIndex {
 	public static final String PROPERTY_BROWSERID = "browserid";
 	public static final String PROPERTY_FIELDTYP = "fieldTyp";
 	public static final String FORMAT_DATE = "HH:MM:SS";
-	
+
 	private static final String[] properties = new String[] {
 		Column.PROPERTY_ATTRNAME, Column.PROPERTY_NUMBERFORMAT,
 		Column.PROPERTY_EDITCOLUMN, Column.PROPERTY_LABEL,
@@ -89,7 +92,7 @@ public class Column implements SendableEntityCreatorNoIndex {
 
 	/**
 	 * @param label
-	 *            the label to set
+	 *			the label to set
 	 * @return Itself
 	 */
 	public Column withLabel(String label) {
@@ -106,7 +109,7 @@ public class Column implements SendableEntityCreatorNoIndex {
 
 	/**
 	 * @param attrName
-	 *            Attribute Name for display
+	 *			Attribute Name for display
 	 * @return Itself
 	 */
 	public Column withAttrName(String attrName) {
@@ -116,9 +119,9 @@ public class Column implements SendableEntityCreatorNoIndex {
 
 	/**
 	 * @param attrName
-	 *            Attribute Name for display
+	 *			Attribute Name for display
 	 * @param edit
-	 *            is the Column is editable
+	 *			is the Column is editable
 	 * @return this
 	 */
 	public Column withAttrName(String attrName, boolean edit) {
@@ -139,7 +142,7 @@ public class Column implements SendableEntityCreatorNoIndex {
 
 	/**
 	 * @param value
-	 *            the NumberFormat to set
+	 *			the NumberFormat to set
 	 * @return Itself
 	 */
 	public Column withNumberFormat(String value) {
@@ -156,7 +159,7 @@ public class Column implements SendableEntityCreatorNoIndex {
 
 	/**
 	 * @param value
-	 *            the editColumn to set
+	 *			the editColumn to set
 	 * @return Itself
 	 */
 	public Column withEditable(boolean value) {
@@ -234,7 +237,7 @@ public class Column implements SendableEntityCreatorNoIndex {
 	public Style getStyle() {
 		return style;
 	}
-	
+
 	public Style getOrCreateStyle() {
 		if(style == null) {
 			style = new Style();
@@ -260,7 +263,7 @@ public class Column implements SendableEntityCreatorNoIndex {
 		this.handler = handler;
 		return this;
 	}
-	
+
 	public CellHandler getListener() {
 		if (handler == null) {
 			handler = new CellHandler() {
@@ -277,7 +280,7 @@ public class Column implements SendableEntityCreatorNoIndex {
 	public boolean isListener() {
 		return handler != null;
 	}
-	
+
 	public Comparator<TableCellValue> getComparator() {
 		return comparator;
 	}
@@ -298,12 +301,12 @@ public class Column implements SendableEntityCreatorNoIndex {
 				+ "," + value + "]";
 		return this;
 	}
-	
+
 	@Override
 	public String[] getProperties() {
 		return properties;
 	}
-	
+
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new Column();
@@ -376,7 +379,7 @@ public class Column implements SendableEntityCreatorNoIndex {
 			if(value instanceof Style) {
 				Style style = (Style) value;
 				Style oldStyle = that.getStyle();
-				if(type==IdMap.MERGE && oldStyle != null){
+				if(type==Filter.MERGE && oldStyle != null){
 					for(String prop : style.getProperties()) {
 						if(oldStyle.getValue(oldStyle, prop) == null) {
 							oldStyle.setValue(oldStyle, prop, style.getValue(style, prop), IdMap.NEW);
@@ -434,13 +437,13 @@ public class Column implements SendableEntityCreatorNoIndex {
 			if(getNumberFormat()!=null && value instanceof Long) {
 				DateTimeEntity item = new DateTimeEntity();
 				item.withValue((Long) value);
-				return item.toString(getNumberFormat()); 
+				return item.toString(getNumberFormat());
 			}
 			return value;
 		}
 		return null;
 	}
-	
+
 	public boolean setValue(Object controll, Object entity,
 			SendableEntityCreator creator, Object value) {
 		if (creator == null) {

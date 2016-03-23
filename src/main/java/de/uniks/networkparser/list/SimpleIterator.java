@@ -1,21 +1,34 @@
 package de.uniks.networkparser.list;
 
 import java.util.ConcurrentModificationException;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
-
 
 /**
  * An optimized version of AbstractList.ListItr
  */
 public class SimpleIterator<E> implements ListIterator<E> {
-	private int cursor;       // index of next element to return
+	private int cursor;	   // index of next element to return
 	private int lastRet; // index of last element returned; -1 if no such
 	private AbstractArray<E> list;
 
 	public SimpleIterator(AbstractArray<E> list) {
 		this.with(list, 0);
 	}
+	
+	@SuppressWarnings("unchecked")
+	public SimpleIterator(Object collection) {
+		if(collection instanceof AbstractArray<?>) {
+			this.list = (AbstractArray<E>) collection;	
+		} else if (collection instanceof List<?>) {
+			this.list = new SimpleList<E>();
+			this.list.withList((List<?>)collection);
+		}
+		this.cursor = 0;
+		this.lastRet = -1;
+	}
+
 
 	public SimpleIterator(AbstractArray<E> list, int index) {
 		this.with(list, index);
@@ -28,7 +41,7 @@ public class SimpleIterator<E> implements ListIterator<E> {
 	   this.list = newList;
 	   return this;
 	}
-
+	
 	public boolean hasPrevious() {
 		return cursor != 0;
 	}
@@ -100,5 +113,14 @@ public class SimpleIterator<E> implements ListIterator<E> {
 		} catch (IndexOutOfBoundsException ex) {
 			throw new ConcurrentModificationException();
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public SimpleIterator<E> with(AbstractArray<?> newList)
+	{
+	   this.cursor = 0;
+	   this.lastRet = -1;
+	   this.list = (AbstractArray<E>) newList;
+	   return this;
 	}
 }

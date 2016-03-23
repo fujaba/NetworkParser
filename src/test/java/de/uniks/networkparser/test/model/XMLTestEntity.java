@@ -1,7 +1,7 @@
 package de.uniks.networkparser.test.model;
 
 public class XMLTestEntity {
-		public static final String PROPERTY_TEXT = "&";
+		public static final String PROPERTY_TEXT = ".";
 		public static final String PROPERTY_SENDER = "sender";
 		private String text;
 		private String sender;

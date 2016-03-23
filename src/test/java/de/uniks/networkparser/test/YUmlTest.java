@@ -4,15 +4,15 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
 
+import org.junit.Assert;
 import org.junit.Test;
 
-import de.uniks.networkparser.graph.GraphCardinality;
-import de.uniks.networkparser.graph.GraphClazz;
-import de.uniks.networkparser.graph.GraphDataType;
-import de.uniks.networkparser.graph.GraphIdMap;
+import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.converter.YUMLConverter;
+import de.uniks.networkparser.graph.Cardinality;
+import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphList;
-import de.uniks.networkparser.graph.YUMLConverter;
-import de.uniks.networkparser.json.JsonIdMap;
 import de.uniks.networkparser.test.model.ChatMessage;
 import de.uniks.networkparser.test.model.Room;
 import de.uniks.networkparser.test.model.University;
@@ -31,21 +31,21 @@ public class YUmlTest {
 		date.setTime(1350978000017L);
 		chatMessage.setDate(date);
 
-		JsonIdMap jsonMap = new JsonIdMap();
-		jsonMap.withCreator(new ChatMessageCreator());
-		GraphIdMap yumlParser = new GraphIdMap();
+		IdMap jsonMap = new IdMap();
+		jsonMap.with(new ChatMessageCreator());
+		IdMap yumlParser = new IdMap();
 		yumlParser.withKeyValue(jsonMap.getKeyValue())
-			.withCreator(jsonMap);
+			.with(jsonMap);
 
-		String parseObject = yumlParser.parseObject(chatMessage);
+		String parseObject = yumlParser.toObjectDiagram(chatMessage).toString();
 		assertEquals(
 				url
 						+ "[J1.C1 : ChatMessage|sender=Stefan Lindel;txt=Dies ist eine Testnachricht;count=0;activ=false]-[J1.D2 : Date|value=1350978000017]",
 				url + parseObject);
 
-		jsonMap = new JsonIdMap();
-		jsonMap.withCreator(new UniversityCreator());
-		jsonMap.withCreator(new RoomCreator());
+		jsonMap = new IdMap();
+		jsonMap.with(new UniversityCreator());
+		jsonMap.with(new RoomCreator());
 		University uni = new University();
 		uni.setName("Wilhelmshoehe Allee");
 		Room room = new Room();
@@ -53,21 +53,42 @@ public class YUmlTest {
 		uni.addToRooms(room);
 
 		assertEquals(url + "[J1.U3 : University]",
-				url + yumlParser.parseObject(uni));
+				url + yumlParser.toObjectDiagram(uni).toString());
 
-		assertEquals(url + "[University]", url + yumlParser.parseClass(uni));
+		assertEquals(url + "[University]", url + yumlParser.toClassDiagram(uni).toString());
 	}
-	
+
 	@Test
-	public void testSimpleGrahList() {
+	public void testSimpleGraphList() {
 		GraphList list = new GraphList();
-		GraphClazz uni = list.with(new GraphClazz().withId("UniKassel").withClassName("University"));
-		uni.withAttribute("name", GraphDataType.STRING);
-		uni.withMethod("init()");
-		GraphClazz student = list.with(new GraphClazz().withId("Stefan").withClassName("Student"));
-		student.withAssoc(uni, "owner", GraphCardinality.ONE);
+		Clazz uni = list.with(new Clazz().with("UniKassel").with("University"));
+		uni.createAttribute("name", DataType.STRING);
+		uni.createMethod("init()");
+		Clazz student = list.with(new Clazz().with("Stefan").with("Student"));
+		student.withUniDirectional(uni, "owner", Cardinality.ONE);
 		YUMLConverter converter = new YUMLConverter();
-		System.out.println(converter.convert(list, true));
-	}	
-	
+		Assert.assertEquals("[University|name:String]<-[Student]", converter.convert(list, true));
+	}
+
+	@Test
+	public void testSimpleBiGraphList() {
+		GraphList list = new GraphList();
+		Clazz uni = list.with(new Clazz().with("UniKassel").with("University"));
+		uni.createAttribute("name", DataType.STRING);
+		uni.createMethod("init()");
+		Clazz student = list.with(new Clazz().with("Stefan").with("Student"));
+		student.withBidirectional(uni, "owner", Cardinality.ONE, "students", Cardinality.MANY);
+		YUMLConverter converter = new YUMLConverter();
+		Assert.assertEquals("[University|name:String]-[Student]", converter.convert(list, true));
+	}
+
+	@Test
+	public void testSimpleGraph() {
+		GraphList list = new GraphList();
+		Clazz uni = list.with(new Clazz().with("UniKassel").with("University"));
+		uni.createAttribute("name", DataType.STRING);
+		list.with(new Clazz().with("Stefan").with("Student"));
+		YUMLConverter converter = new YUMLConverter();
+		Assert.assertEquals("[University|name:String],[Student]", converter.convert(list, true));
+	}
 }

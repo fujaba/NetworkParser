@@ -11,7 +11,7 @@ public class Entity {
 	public void setChild(Entity child) {
 		this.child = child;
 	}
-	
+
 	public boolean set(String attribute, Object value) {
 		if (attribute.equalsIgnoreCase(PROPERTY_CHILD)) {
 			setChild((Entity) value);
@@ -22,7 +22,7 @@ public class Entity {
 		}
 		return false;
 	}
-	
+
 	public Object get(String attrName) {
 		String attribute;
 		int pos = attrName.indexOf(".");

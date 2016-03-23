@@ -1,5 +1,7 @@
 package de.uniks.networkparser.interfaces;
 
+import de.uniks.networkparser.buffer.Buffer;
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -23,21 +25,54 @@ package de.uniks.networkparser.interfaces;
 */
 
 public interface Entity extends BaseItem{
-	public boolean containsKey(Object key);
-
 	public String getString(String key);
 
-	public boolean getBoolean(String key);
-
-	public double getDouble(String key);
-
-	public int getInt(String key);
-
-	public Object get(Object key);
-	
-	public int size();
-
-	public Entity without(String key);
+	public Object getValue(Object key);
 
 	public String getKeyByIndex(int pos);
+
+	public Entity without(String key);
+	
+	/**
+	 * @param key The Key for search
+	 * @return success if the item has the Property
+	 */
+	public boolean has(String key);
+	
+	/** Add Key-Value item to Entity
+	 * @param key The key
+	 * @param value The new Value
+	 * @return The value
+	 */
+	public Object put(String key, Object value);
+
+	/**
+	 * Make a prettyprinted Text of this Entity.
+	 * <p>
+	 * Warning: This method assumes that the data structure is acyclical.
+	 *
+	 * @param indentFactor
+	 *			The number of spaces to add to each level of indentation.
+	 * @return a printable, displayable, portable, transmittable representation
+	 *		 of the object, beginning with <code>{</code>&nbsp;<small>(left
+	 *		 brace)</small> and ending with <code>}</code>&nbsp;<small>(right
+	 *		 brace)</small>.
+	 */
+	public String toString(int indentFactor);
+	
+	/**
+	 * Activate Allow Empty Value
+	 * @param allow is Empty Value (NULL) Allow
+	 */
+	public void setAllowEmptyValue(boolean allow);
+	
+	public boolean setValueItem(Object value);
+	
+	public BaseItem getChild(String label, boolean recursiv);
+	
+	public int size();
+	
+	public BaseItem withValue(Buffer values);
+	
+	public void setType(String type);
 }

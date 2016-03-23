@@ -1,14 +1,35 @@
 package de.uniks.networkparser.event;
 
+/*
+ NetworkParser
+ Copyright (c) 2011 - 2015, Stefan Lindel
+ All rights reserved.
+
+ Licensed under the EUPL, Version 1.1 or (as soon they
+ will be approved by the European Commission) subsequent
+ versions of the EUPL (the "Licence");
+ You may not use this work except in compliance with the Licence.
+ You may obtain a copy of the Licence at:
+
+ http://ec.europa.eu/idabc/eupl5
+
+ Unless required by applicable law or agreed to in
+ writing, software distributed under the Licence is
+ distributed on an "AS IS" basis,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ express or implied.
+ See the Licence for the specific language governing
+ permissions and limitations under the Licence.
+*/
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
-import de.uniks.networkparser.interfaces.StringItem;
 import de.uniks.networkparser.list.SimpleList;
-import de.uniks.networkparser.xml.XMLIdMap;
 
-public class PomFile implements SendableEntityCreatorTag, StringItem, BaseItem{
+public class PomFile implements SendableEntityCreatorTag, BaseItem{
 	public static final String PROPERTY_MODELVERSION = "modelVersion?";
 	public static final String PROPERTY_GROUPID = "groupId?";
 	public static final String PROPERTY_ARTIFACTID ="artifactId?";
@@ -16,7 +37,6 @@ public class PomFile implements SendableEntityCreatorTag, StringItem, BaseItem{
 	public static final String PROPERTY_SCOPE ="scope?";
 	public static final String PROPERTY_DEPENDENCY ="dependencies";
 	private static final String TAG="project";
-	private boolean visible;
 	private String modelVersion;
 	private String groupId;
 	private String artifactId;
@@ -29,52 +49,52 @@ public class PomFile implements SendableEntityCreatorTag, StringItem, BaseItem{
 		this.modelVersion = value;
 		return this;
 	}
-	
+
 	public String getModelVersion() {
 		return modelVersion;
 	}
-	
+
 	public PomFile withGroupId(String value) {
 		this.groupId = value;
 		return this;
 	}
-	
+
 	public String getGroupId() {
 		return groupId;
 	}
-	
+
 	public PomFile withArtifactId(String value) {
 		this.artifactId = value;
 		return this;
 	}
-	
+
 	public String getArtifactId() {
 		return artifactId;
 	}
-	
+
 	public PomFile withVersion(String value) {
 		this.version = value;
 		return this;
 	}
-	
+
 	public String getVersion() {
 		return version;
 	}
-	
+
 	public PomFile withScope(String value) {
 		this.scope = value;
 		return this;
 	}
-	
+
 	public String getScope() {
 		return scope;
 	}
-	
+
 	public PomFile withTag(String value) {
 		this.tag = value;
 		return this;
 	}
-	
+
 	@Override
 	public String getTag() {
 		return tag;
@@ -87,33 +107,29 @@ public class PomFile implements SendableEntityCreatorTag, StringItem, BaseItem{
 	}
 
 	@Override
-	public PomFile withAll(Object... values) {
+	public PomFile with(Object... values) {
 		if(values==null || values.length % 2 == 1) {
 			return this;
 		}
 		for(int i=0;i<values.length;i+=2) {
 			if(values[i] instanceof String) {
-				setValue(this, (String)values[i], values[i+1], IdMap.NEW);	
+				setValue(this, (String)values[i], values[i+1], IdMap.NEW);
 			}
 		}
 		return this;
 	}
-	
+
 	@Override
 	public String toString() {
 		return toString(0, 0);
 	}
 
-	@Override
 	public String toString(int indentFactor) {
 		return toString(indentFactor, 0);
 	}
-	
+
 	private void addChildren(StringBuilder sb, String spaces) {
 		for(String property : getProperties()) {
-			if(!property.endsWith(XMLIdMap.ATTRIBUTEVALUE)){
-				continue;
-			}
 			Object value = getValue(this, property);
 			if(value!=null){
 				sb.append(spaces);
@@ -123,21 +139,21 @@ public class PomFile implements SendableEntityCreatorTag, StringItem, BaseItem{
 			}
 		}
 	}
-	
+
 	public PomFile withArtifact(String groupId, String artifactId, String version) {
 		withGroupId(groupId);
 		withArtifactId(artifactId);
 		withVersion(version);
 		return this;
 	}
-	
-	public String toString(int indentFactor, int intent) {
+
+	protected String toString(int indentFactor, int indent) {
 		String spacesChild = "";
 		String spaces = "";
 		if (indentFactor > 0) {
-			spacesChild = "\r\n" + EntityUtil.repeat(' ', intent+indentFactor);
+			spacesChild = "\r\n" + EntityUtil.repeat(' ', indent+indentFactor);
 		}
-		spaces = EntityUtil.repeat(' ', intent);
+		spaces = EntityUtil.repeat(' ', indent);
 		StringBuilder sb = new StringBuilder(spaces);
 		if(tag==TAG) {
 			sb.append("<"+tag+" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\" xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">");
@@ -149,7 +165,7 @@ public class PomFile implements SendableEntityCreatorTag, StringItem, BaseItem{
 		if(dependencies.size() >0) {
 			sb.append(spacesChild+"<dependencies>");
 			for(PomFile item : dependencies) {
-				sb.append("\r\n" +item.toString(indentFactor, intent+indentFactor+indentFactor));
+				sb.append("\r\n" +item.toString(indentFactor, indent+indentFactor+indentFactor));
 			}
 			sb.append(spacesChild+"</dependencies>");
 		}
@@ -161,31 +177,18 @@ public class PomFile implements SendableEntityCreatorTag, StringItem, BaseItem{
 		return sb.toString();
 	}
 
-	@Override
-	public Object getValueItem(Object key) {
+	public Object getValue(Object key) {
 		return getValue(this, ""+key);
 	}
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
 		return new PomFile();
 	}
-	@Override
-	public PomFile withVisible(boolean value) {
-		this.visible = value;
-		return this;
-	}
 
-	@Override
-	public boolean isVisible() {
-		return visible;
-	}
-	
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new PomFile();
 	}
-
-	//FIXME
 
 	@Override
 	public String[] getProperties() {
@@ -235,5 +238,17 @@ public class PomFile implements SendableEntityCreatorTag, StringItem, BaseItem{
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public String toString(Converter converter) {
+		if(converter instanceof EntityStringConverter) {
+			EntityStringConverter item = (EntityStringConverter)converter;
+			return toString(item.getIndentFactor(), item.getIndent());
+		}
+		if(converter == null) {
+			return null;
+		}
+		return converter.encode(this);
 	}
 }

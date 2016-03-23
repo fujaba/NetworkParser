@@ -1,9 +1,7 @@
 package de.uniks.networkparser.test.model;
 
-
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-
 import de.uniks.networkparser.interfaces.SendableEntity;
 
 public class SortedMsg implements SendableEntity {
@@ -37,7 +35,7 @@ public class SortedMsg implements SendableEntity {
 	}
 
 	public void setChild(SortedMsg value) {
-		
+
 		if(value!=this.child){
 			SortedMsg oldValue=this.child;
 			this.child = value;
@@ -116,7 +114,7 @@ public class SortedMsg implements SendableEntity {
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
-	
+
 	public SortedMsg withMsg(String msg) {
 		this.msg = msg;
 		return this;

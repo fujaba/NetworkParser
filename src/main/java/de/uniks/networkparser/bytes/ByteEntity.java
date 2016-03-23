@@ -23,19 +23,24 @@ package de.uniks.networkparser.bytes;
 */
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
-import de.uniks.networkparser.bytes.converter.ByteConverterHTTP;
+
+import de.uniks.networkparser.buffer.ByteBuffer;
+import de.uniks.networkparser.converter.ByteConverter;
+import de.uniks.networkparser.converter.ByteConverterHTTP;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.BufferedBytes;
-import de.uniks.networkparser.interfaces.ByteConverter;
 import de.uniks.networkparser.interfaces.ByteItem;
+import de.uniks.networkparser.interfaces.Converter;
 /**
  * The Class ByteEntity.
  */
 
-public class ByteEntity implements ByteItem, BaseItem {
+public class ByteEntity implements ByteItem {
 	/** The Constant BIT OF A BYTE. */
 	public final static int BITOFBYTE = 8;
 	public final static int TYPBYTE = 1;
+	
+	public final static String TYP="TYP";
+	public final static String VALUE="VALUE";
 
 	/** The Byte Typ. */
 	protected byte typ;
@@ -51,22 +56,22 @@ public class ByteEntity implements ByteItem, BaseItem {
 	public byte[] getValue() {
 		if(values==null)
 			return null;
-		return this.values.clone();
+		return ByteUtil.clone(this.values);
 	}
 
 	/**
 	 * Sets the value.
 	 *
 	 * @param typ
-	 *            the new Typ
+	 *			the new Typ
 	 * @param value
-	 *            the new value
+	 *			the new value
 	 * @return Itself
 	 */
 	public ByteEntity withValue(byte typ, byte[] value) {
 		this.typ = typ;
 		if(value != null){
-			this.values = value.clone();
+			this.values = ByteUtil.clone(value);
 		}
 		return this;
 	}
@@ -75,9 +80,9 @@ public class ByteEntity implements ByteItem, BaseItem {
 	 * Sets the value.
 	 *
 	 * @param typ
-	 *            The Typ of Element
+	 *			The Typ of Element
 	 * @param value
-	 *            the new value
+	 *			the new value
 	 * @return Itself
 	 */
 	public ByteEntity withValue(byte typ, byte value) {
@@ -88,9 +93,9 @@ public class ByteEntity implements ByteItem, BaseItem {
 
 	public ByteEntity withValue(byte typ, int value) {
 		this.typ = typ;
-		BytesBuffer msgValue = new BytesBuffer().withLength(4);
+		ByteBuffer msgValue = new ByteBuffer().withBufferLength(4);
 		msgValue.put(value);
-		this.values = msgValue.flip();
+		this.values = msgValue.flip(true).array();
 		return this;
 	}
 
@@ -98,7 +103,7 @@ public class ByteEntity implements ByteItem, BaseItem {
 	 * Byte to unsigned byte.
 	 *
 	 * @param n
-	 *            the Byte
+	 *			the Byte
 	 * @return the Byte
 	 */
 	public byte byteToUnsignedByte(int n) {
@@ -119,21 +124,24 @@ public class ByteEntity implements ByteItem, BaseItem {
 	 * Convert the bytes to a String
 	 *
 	 * @param converter
-	 *            Grammar
+	 *			Grammar
 	 * @return converted bytes as String
 	 */
 	@Override
-	public String toString(ByteConverter converter) {
-		return toString(converter, false);
+	public String toString(Converter converter) {
+		if(converter instanceof ByteConverter) {
+			return toString((ByteConverter)converter, false);	
+		}
+		return null;
 	}
 
 	/**
 	 * Convert the bytes to a String
 	 *
 	 * @param converter
-	 *            Grammar
+	 *			Grammar
 	 * @param dynamic
-	 *            if byte is dynamic
+	 *			if byte is dynamic
 	 * @return converted bytes as String
 	 */
 	@Override
@@ -141,23 +149,23 @@ public class ByteEntity implements ByteItem, BaseItem {
 		if (converter == null) {
 			converter = new ByteConverterHTTP();
 		}
-		return converter.toString(this, dynamic);
+		return converter.toString(this.getBytes(dynamic));
 	}
 
 	/**
 	 * Gets the bytes.
 	 *
 	 * @param buffer
-	 *            The Buffer to write
+	 *			The Buffer to write
 	 * @param isDynamic
-	 *            is short the Stream for message
+	 *			is short the Stream for message
 	 * @param isLast
-	 *            is the Element is the last of Group
+	 *			is the Element is the last of Group
 	 * @param isPrimitive
-	 *            is the Element is the StreamClazz
+	 *			is the Element is the StreamClazz
 	 */
 	@Override
-	public void writeBytes(BufferedBytes buffer, boolean isDynamic,
+	public void writeBytes(ByteBuffer buffer, boolean isDynamic,
 			boolean isLast, boolean isPrimitive) {
 		byte[] value = this.values;
 
@@ -168,33 +176,33 @@ public class ByteEntity implements ByteItem, BaseItem {
 			return;
 		}
 		if (isDynamic) {
-			if (typ == ByteIdMap.DATATYPE_SHORT) {
-				short bufferValue = new BytesBuffer().with(value).getShort();
+			if (typ == ByteTokener.DATATYPE_SHORT) {
+				short bufferValue = new ByteBuffer().with(value).flip(true).getShort();
 				if (bufferValue >= Byte.MIN_VALUE
 						&& bufferValue <= Byte.MAX_VALUE) {
-					typ = ByteIdMap.DATATYPE_BYTE;
+					typ = ByteTokener.DATATYPE_BYTE;
 					value = new byte[] {(byte) bufferValue };
 				}
-			} else if (typ == ByteIdMap.DATATYPE_INTEGER
-					|| typ == ByteIdMap.DATATYPE_LONG) {
-				int bufferValue = new BytesBuffer().with(value).getInt();
+			} else if (typ == ByteTokener.DATATYPE_INTEGER
+					|| typ == ByteTokener.DATATYPE_LONG) {
+				int bufferValue = new ByteBuffer().with(value).flip(true).getInt();
 				if (bufferValue >= Byte.MIN_VALUE
 						&& bufferValue <= Byte.MAX_VALUE) {
-					typ = ByteIdMap.DATATYPE_BYTE;
+					typ = ByteTokener.DATATYPE_BYTE;
 					value = new byte[] {(byte) bufferValue };
 				} else if (bufferValue >= Short.MIN_VALUE
 						&& bufferValue <= Short.MAX_VALUE) {
-					typ = ByteIdMap.DATATYPE_BYTE;
-					BytesBuffer bbShort = BytesBuffer.allocate(Short.SIZE
+					typ = ByteTokener.DATATYPE_BYTE;
+					ByteBuffer bbShort = ByteBuffer.allocate(Short.SIZE
 							/ BITOFBYTE);
 					bbShort.put((short) bufferValue);
-					bbShort.flip();
+					bbShort.flip(true);
 					value = bbShort.array();
 				}
 			}
 		}
-		if (!isPrimitive || typ == ByteIdMap.DATATYPE_CLAZZTYP
-				|| typ == ByteIdMap.DATATYPE_CLAZZTYPLONG) {
+		if (!isPrimitive || typ == ByteTokener.DATATYPE_CLAZZTYP
+				|| typ == ByteTokener.DATATYPE_CLAZZTYPLONG) {
 			typ = ByteUtil.getTyp(typ, value.length, isLast);
 			ByteUtil.writeByteHeader(buffer, typ, value.length);
 		}
@@ -203,73 +211,73 @@ public class ByteEntity implements ByteItem, BaseItem {
 	}
 
 	@Override
-	public BufferedBytes getBytes(boolean isDynamic) {
+	public ByteBuffer getBytes(boolean isDynamic) {
 		int len = calcLength(isDynamic, true);
-		BufferedBytes buffer = ByteUtil.getBuffer(len);
+		ByteBuffer buffer = ByteUtil.getBuffer(len);
 		writeBytes(buffer, isDynamic, true, false);
-		buffer.flip();
+		buffer.flip(true);
 		return buffer;
 	}
 
 	public boolean setValues(Object value) {
 		byte typ = 0;
-		BytesBuffer msgValue = new BytesBuffer();
+		ByteBuffer msgValue = new ByteBuffer();
 		if (value == null) {
-			typ = ByteIdMap.DATATYPE_NULL;
+			typ = ByteTokener.DATATYPE_NULL;
 		}
 		if (value instanceof Short) {
-			typ = ByteIdMap.DATATYPE_SHORT;
-			msgValue.withLength(Short.SIZE / BITOFBYTE);
+			typ = ByteTokener.DATATYPE_SHORT;
+			msgValue.withBufferLength(Short.SIZE / BITOFBYTE);
 			msgValue.put((Short) value);
 		} else if (value instanceof Integer) {
-			typ = ByteIdMap.DATATYPE_INTEGER;
-			msgValue.withLength(Integer.SIZE / BITOFBYTE);
+			typ = ByteTokener.DATATYPE_INTEGER;
+			msgValue.withBufferLength(Integer.SIZE / BITOFBYTE);
 			msgValue.put((Integer) value);
 		} else if (value instanceof Long) {
-			typ = ByteIdMap.DATATYPE_LONG;
-			msgValue.withLength(Long.SIZE / BITOFBYTE);
+			typ = ByteTokener.DATATYPE_LONG;
+			msgValue.withBufferLength(Long.SIZE / BITOFBYTE);
 			msgValue.put((Long) value);
 		} else if (value instanceof Float) {
-			typ = ByteIdMap.DATATYPE_FLOAT;
-			msgValue.withLength(Float.SIZE / BITOFBYTE);
+			typ = ByteTokener.DATATYPE_FLOAT;
+			msgValue.withBufferLength(Float.SIZE / BITOFBYTE);
 			msgValue.put((Float) value);
 		} else if (value instanceof Double) {
-			typ = ByteIdMap.DATATYPE_DOUBLE;
-			msgValue.withLength(Double.SIZE / BITOFBYTE);
+			typ = ByteTokener.DATATYPE_DOUBLE;
+			msgValue.withBufferLength(Double.SIZE / BITOFBYTE);
 			msgValue.put((Double) value);
 		} else if (value instanceof Byte) {
-			typ = ByteIdMap.DATATYPE_BYTE;
-			msgValue.withLength(Byte.SIZE / BITOFBYTE);
+			typ = ByteTokener.DATATYPE_BYTE;
+			msgValue.withBufferLength(Byte.SIZE / BITOFBYTE);
 			msgValue.put((Byte) value);
 		} else if (value instanceof Character) {
-			typ = ByteIdMap.DATATYPE_CHAR;
-			msgValue.withLength(Character.SIZE / BITOFBYTE);
+			typ = ByteTokener.DATATYPE_CHAR;
+			msgValue.withBufferLength(Character.SIZE / BITOFBYTE);
 			msgValue.put((Character) value);
 		} else if (value instanceof String) {
-			typ = ByteIdMap.DATATYPE_STRING;
+			typ = ByteTokener.DATATYPE_STRING;
 			String newValue = (String) value;
-			msgValue.withLength(newValue.length());
+			msgValue.withBufferLength(newValue.length());
 			try {
 				msgValue.put(newValue.getBytes("UTF-8"));
 			} catch (UnsupportedEncodingException e) {
 			}
 		} else if (value instanceof Date) {
-			typ = ByteIdMap.DATATYPE_DATE;
-			msgValue.withLength(Integer.SIZE / BITOFBYTE);
+			typ = ByteTokener.DATATYPE_DATE;
+			msgValue.withBufferLength(Integer.SIZE / BITOFBYTE);
 			Date newValue = (Date) value;
 			msgValue.put((int) newValue.getTime());
 		} else if (value instanceof Byte[] || value instanceof byte[]) {
-			typ = ByteIdMap.DATATYPE_BYTEARRAY;
+			typ = ByteTokener.DATATYPE_BYTEARRAY;
 			if (value != null) {
 				byte[] newValue = (byte[]) value;
-				msgValue.withLength(newValue.length);
+				msgValue.withBufferLength(newValue.length);
 				msgValue.put(newValue);
 			}
 		}
 		if (typ != 0) {
 			this.typ = typ;
 			// Check for group
-			msgValue.flip();
+			msgValue.flip(true);
 			this.values = msgValue.array();
 			return true;
 		}
@@ -298,15 +306,15 @@ public class ByteEntity implements ByteItem, BaseItem {
 			return TYPBYTE;
 		}
 		if (isDynamic) {
-			if (typ == ByteIdMap.DATATYPE_SHORT) {
-				Short bufferValue = new BytesBuffer().with(values).getShort();
+			if (typ == ByteTokener.DATATYPE_SHORT) {
+				Short bufferValue = new ByteBuffer().with(values).flip(true).getShort();
 				if (bufferValue >= Byte.MIN_VALUE
 						&& bufferValue <= Byte.MAX_VALUE) {
 					return TYPBYTE + Byte.SIZE / BITOFBYTE;
 				}
-			} else if (typ == ByteIdMap.DATATYPE_INTEGER
-					|| typ == ByteIdMap.DATATYPE_LONG) {
-				Integer bufferValue = new BytesBuffer().with(values).getInt();
+			} else if (typ == ByteTokener.DATATYPE_INTEGER
+					|| typ == ByteTokener.DATATYPE_LONG) {
+				Integer bufferValue = new ByteBuffer().with(values).flip(true).getInt();
 				if (bufferValue >= Byte.MIN_VALUE
 						&& bufferValue <= Byte.MAX_VALUE) {
 					return TYPBYTE + Byte.SIZE / BITOFBYTE;
@@ -330,7 +338,7 @@ public class ByteEntity implements ByteItem, BaseItem {
 
 	@Override
 	public boolean isEmpty() {
-		return getTyp() == ByteIdMap.DATATYPE_NULL;
+		return getTyp() == ByteTokener.DATATYPE_NULL;
 	}
 
 	@Override
@@ -340,7 +348,7 @@ public class ByteEntity implements ByteItem, BaseItem {
 		}
 		return values.length;
 	}
-	
+
 	public static ByteEntity create(Object value) {
 		ByteEntity item = new ByteEntity();
 		item.setValues(value);
@@ -348,7 +356,7 @@ public class ByteEntity implements ByteItem, BaseItem {
 	}
 
 	@Override
-	public BaseItem withAll(Object... values) {
+	public ByteEntity with(Object... values) {
 		if(values==null){
 			return this;
 		}
@@ -361,13 +369,27 @@ public class ByteEntity implements ByteItem, BaseItem {
 		}
 		return this;
 	}
-
-	@Override
-	public Object getValueItem(Object key) {
-		if("TYP".equals(key)) {
+	
+	public ByteEntity withValue(byte[] values) {
+		if(values==null){
+			return this;
+		}
+		if(values.length>1) {
+			byte[] value = new byte[values.length-1];
+			for(int i=1;i<values.length;i++) {
+				value[i-1] = (Byte) values[i];
+			}
+			this.typ = (Byte)values[0];
+			this.values = value;
+		}
+		return this;
+	}
+	
+	public Object getValue(Object key) {
+		if(TYP.equals(key)) {
 			return typ;
 		}
-		if("VALUE".equals(key)) {
+		if(VALUE.equals(key)) {
 			return values;
 		}
 		return null;

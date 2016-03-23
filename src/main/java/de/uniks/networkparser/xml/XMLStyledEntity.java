@@ -22,6 +22,8 @@ package de.uniks.networkparser.xml;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.event.Style;
 /**
  * Style Element of XML.
@@ -34,23 +36,22 @@ public class XMLStyledEntity extends XMLEntity {
 	private Style style = new Style();
 
 	@Override
-	protected void toStringChildren(StringBuilder sb, int indentFactor,
-			int intent) {
+	protected void toStringChildren(CharacterBuffer sb, EntityStringConverter converter) {
 		// Starttag
 		if (style.isBold()) {
-			sb.append("<b>");
+			sb.with("<b>");
 		}
 		if (style.isItalic()) {
-			sb.append("<i>");
+			sb.with("<i>");
 		}
-		super.toStringChildren(sb, indentFactor, intent);
+		super.toStringChildren(sb, converter);
 
 		// EndTag
 		if (style.isItalic()) {
-			sb.append("</i>");
+			sb.with("</i>");
 		}
 		if (style.isBold()) {
-			sb.append("</b>");
+			sb.with("</b>");
 		}
 	}
 
@@ -58,9 +59,9 @@ public class XMLStyledEntity extends XMLEntity {
 	 * Set new Value of Attribute.
 	 *
 	 * @param attribute
-	 *            The Attribute Key
+	 *			The Attribute Key
 	 * @param value
-	 *            The new Value of Attribute
+	 *			The new Value of Attribute
 	 * @return succes of set of the Value
 	 */
 	public boolean set(String attribute, Object value) {
@@ -74,7 +75,7 @@ public class XMLStyledEntity extends XMLEntity {
 	 * Get The Value of Attribute.
 	 *
 	 * @param key
-	 *            The Key of Attribute
+	 *			The Key of Attribute
 	 * @return The Value of Attribute
 	 */
 	public Object get(String key) {
@@ -92,7 +93,7 @@ public class XMLStyledEntity extends XMLEntity {
 
 	/**
 	 * @param value
-	 *            The new Option of Bold
+	 *			The new Option of Bold
 	 */
 	public void setBold(boolean value) {
 		style.withBold(value);

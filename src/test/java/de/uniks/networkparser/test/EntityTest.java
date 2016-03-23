@@ -1,11 +1,8 @@
 package de.uniks.networkparser.test;
 
 import static org.junit.Assert.*;
-
 import java.util.HashMap;
-
 import org.junit.Test;
-
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 
@@ -21,16 +18,16 @@ public class EntityTest {
 		list.add(new JsonObject().withValue("id", "1"));
 		list.add(new JsonObject().withValue("id", "2"));
 		child.put("list", list);
-		
-		assertEquals("23",entity.getValueItem("id"));
-		assertEquals("42",entity.getValueItem("child.id"));
-		assertEquals("0",entity.getValueItem("child.list[0].id"));
-		assertEquals("1",entity.getValueItem("child.list[1].id"));
-		assertEquals("2",entity.getValueItem("child.list[2].id"));
-		assertEquals("2",entity.getValueItem("child.list[L].id"));
-		assertEquals("{\"id\":\"2\"}",entity.getValueItem("child.list[L]").toString());
+
+		assertEquals("23",entity.getValue("id"));
+		assertEquals("42",entity.getValue("child.id"));
+		assertEquals("0",entity.getValue("child.list[0].id"));
+		assertEquals("1",entity.getValue("child.list[1].id"));
+		assertEquals("2",entity.getValue("child.list[2].id"));
+		assertEquals("2",entity.getValue("child.list[L].id"));
+		assertEquals("{\"id\":\"2\"}",entity.getValue("child.list[L]").toString());
 	}
-	
+
 	@Test
 	public void testClone(){
 		HashMap<String, String> map = new HashMap<String, String>();
@@ -49,5 +46,5 @@ public class EntityTest {
 		cloneEntity.increment("int");
 		assertEquals("Must be 24", 24, cloneEntity.getInt("int"));
 	}
-	
+
 }

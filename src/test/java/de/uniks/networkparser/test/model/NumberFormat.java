@@ -1,6 +1,5 @@
 package de.uniks.networkparser.test.model;
 
-
 public class NumberFormat {
 	public static final String PROPERTY_NUMBER="number";
 	private int number;
@@ -12,7 +11,7 @@ public class NumberFormat {
 	public void setNumber(int number) {
 		this.number = number;
 	}
-	
+
 	public boolean set(String attrName, Object value) {
 		if (PROPERTY_NUMBER.equalsIgnoreCase(attrName)) {
 			setNumber(Integer.valueOf("" +value));
