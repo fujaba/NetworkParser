@@ -76,7 +76,7 @@ public class EMFTokener extends Tokener{
 		XMLEntity result = new XMLEntity();
 
 		String typetag = entity.getClass().getName().replaceAll("\\.", ":");
-		result.withTag(typetag);
+		result.setType(typetag);
 
 		encodeChildren(entity, result, map);
 
@@ -97,7 +97,7 @@ public class EMFTokener extends Tokener{
 
 					parent.withChild(child);
 
-					child.withTag(propertyName);
+					child.setType(propertyName);
 
 					String typetag = childValue.getClass().getName().replaceAll("\\.", ":");
 
@@ -110,7 +110,7 @@ public class EMFTokener extends Tokener{
 
 				parent.withChild(child);
 
-				child.withTag(propertyName);
+				child.setType(propertyName);
 
 				String typetag = propertyValue.getClass().getName().replaceAll("\\.", ":");
 

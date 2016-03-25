@@ -13,8 +13,8 @@ public class HTMLEntity implements BaseItem {
 	public static final String PROPERTY_BODY="body";
 	public static final String IMAGEFORMAT=" .bmp .jpg .jpeg .png .gif .svg ";
 
-	private XMLEntity body = new XMLEntity().withTag("body");
-	private XMLEntity header = new XMLEntity().withTag("head");
+	private XMLEntity body = new XMLEntity().setType("body");
+	private XMLEntity header = new XMLEntity().setType("head");
 
 	@Override
 	public String toString() {
@@ -26,7 +26,7 @@ public class HTMLEntity implements BaseItem {
 	}
 
 	public HTMLEntity withEncoding(String encoding) {
-		XMLEntity metaTag = new XMLEntity().withTag("meta");
+		XMLEntity metaTag = new XMLEntity().setType("meta");
 		metaTag.withKeyValue("http-equiv", "Content-Type");
 		metaTag.withKeyValue("content", "text/html;charset="+encoding);
 		this.header.with(metaTag);
@@ -34,7 +34,7 @@ public class HTMLEntity implements BaseItem {
 	}
 
 	public HTMLEntity withTitle(String value) {
-		XMLEntity titleTag = new XMLEntity().withTag("title").withValue(value);
+		XMLEntity titleTag = new XMLEntity().setType("title").withValue(value);
 		this.header.with(titleTag);
 		return this;
 	}
@@ -95,15 +95,15 @@ public class HTMLEntity implements BaseItem {
 		}
 		String ext = ref.substring(pos).toLowerCase();
 		if(ext.equals(".css") ) {
-			child = new XMLEntity().withTag("link");
+			child = new XMLEntity().setType("link");
 			child.withKeyValue("rel", "stylesheet");
 			child.withKeyValue("type", "text/css");
 			child.withKeyValue("href", ref);
 		} else if(ext.equals(".js") ) {
-			child = new XMLEntity().withTag("script").withCloseTag();
+			child = new XMLEntity().setType("script").withCloseTag();
 			child.withKeyValue("src", ref);
 		} else if(IMAGEFORMAT.indexOf(" "+ext+" ")>=0) {
-			child = new XMLEntity().withTag("img").withCloseTag();
+			child = new XMLEntity().setType("img").withCloseTag();
 			child.withKeyValue("src", ref);
 		}
 		return child;
@@ -118,7 +118,7 @@ public class HTMLEntity implements BaseItem {
 	}
 	
 	public HTMLEntity withScript(String code) {
-		XMLEntity child = new XMLEntity().withTag("script").withCloseTag();
+		XMLEntity child = new XMLEntity().setType("script").withCloseTag();
 		child.withValueItem(code);
 		this.body.with(child);
 		return this;
@@ -145,7 +145,7 @@ public class HTMLEntity implements BaseItem {
 			}
 		}
 		if( styleElement == null) {
-			XMLEntity element = new XMLEntity().withTag("style"); 
+			XMLEntity element = new XMLEntity().setType("style"); 
 			header.with(element);
 			styleElement = element; 
 		}
@@ -154,7 +154,7 @@ public class HTMLEntity implements BaseItem {
 	}
 
 	public HTMLEntity withGraph(GraphList value, String path) {
-		XMLEntity script = new XMLEntity().withTag("script").withKeyValue("type", "text/javascript");
+		XMLEntity script = new XMLEntity().setType("script").withKeyValue("type", "text/javascript");
 		StringBuilder sb=new StringBuilder();
 		sb.append("var json=");
 		sb.append( value.toString(new GraphConverter()) );

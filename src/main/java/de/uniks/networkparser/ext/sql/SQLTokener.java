@@ -1,6 +1,26 @@
 
 package de.uniks.networkparser.ext.sql;
+/*
+NetworkParser
+Copyright (c) 2011 - 2016, Stefan Lindel
+All rights reserved.
 
+Licensed under the EUPL, Version 1.1 or (as soon they
+will be approved by the European Commission) subsequent
+versions of the EUPL (the "Licence");
+You may not use this work except in compliance with the Licence.
+You may obtain a copy of the Licence at:
+
+http://ec.europa.eu/idabc/eupl5
+
+Unless required by applicable law or agreed to in
+writing, software distributed under the Licence is
+distributed on an "AS IS" basis,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+express or implied.
+See the Licence for the specific language governing
+permissions and limitations under the Licence.
+*/
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -203,13 +223,13 @@ public class SQLTokener extends Tokener{
 	}
 
 	private String parseModel(MapEntity map, Object item, SQLStatementList statements) {
-		String className = item.getClass().getName();
-		SendableEntityCreator creator = map.getCreator(IdMap.NEW, this.map, item, className);
 		if(map.contains(item)) {
 			return this.map.getKey(item);
 		}
 		String id = this.map.getId(item);
 		map.with(item);
+		String className = item.getClass().getName();
+		SendableEntityCreator creator = map.getCreator(IdMap.NEW, this.map, item, className);
 		if(creator == null) {
 			return item.toString();
 		}	

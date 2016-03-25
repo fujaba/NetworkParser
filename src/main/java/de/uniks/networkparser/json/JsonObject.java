@@ -376,7 +376,8 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 	}
 
 	@Override
-	public void setType(String type) {
+	public JsonObject setType(String type) {
 		this.add(IdMap.CLASS, type);
+		return this;
 	}
 }

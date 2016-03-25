@@ -307,14 +307,14 @@ public class XMLTest {
 
 	@Test
 	public void testXMLCompare(){
-		XMLEntity xmlA = new XMLEntity().withKeyValue("id", 42).withTag("p");
-		XMLEntity xmlB = new XMLEntity().withKeyValue("id", 42).withTag("p");
+		XMLEntity xmlA = new XMLEntity().withKeyValue("id", 42).setType("p");
+		XMLEntity xmlB = new XMLEntity().withKeyValue("id", 42).setType("p");
 		xmlA.withKeyValue("no", 23);
 		xmlB.withKeyValue("no", 24);
-		xmlA.withChild(new XMLEntity().withTag("1"));
-		xmlA.withChild(new XMLEntity().withTag("2"));
-		xmlB.withChild(new XMLEntity().withTag("1"));
-		xmlB.withChild(new XMLEntity().withTag("3"));
+		xmlA.withChild(new XMLEntity().setType("1"));
+		xmlA.withChild(new XMLEntity().setType("2"));
+		xmlB.withChild(new XMLEntity().setType("1"));
+		xmlB.withChild(new XMLEntity().setType("3"));
 
 		Assert.assertFalse(EntityUtil.compareEntity(xmlA, xmlB));
 		Assert.assertEquals("<p no=\"23\"><2/></p>", xmlA.toString());

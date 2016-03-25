@@ -179,7 +179,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		if(recursiv) {
 			return null;
 		}
-		XMLEntity item = new XMLEntity().withTag(value);
+		XMLEntity item = new XMLEntity().setType(value);
 		with(item);
 		return item;
 	}
@@ -213,17 +213,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		return this.tag;
 	}
 
-	/**
-	 * Sets the tag.
-	 *
-	 * @param value
-	 *			the new Tag
-	 * @return the instance XMLEntity
-	 */
-	public XMLEntity withTag(String value) {
-		this.tag = value;
-		return this;
-	}
+
 
 	/**
 	 * Gets the value.
@@ -263,7 +253,6 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	@Override
 	protected String parseItem(EntityStringConverter converter) {
 		CharacterBuffer sb = new CharacterBuffer().with(converter.getPrefixFirst());
-		converter.add();
 		if(this.getTag() != null) {
 			sb.with(START, this.getTag());
 		}
@@ -275,9 +264,8 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 				sb.with(" ", get(i), "=", EntityUtil.quote(value.toString()));
 			}
 		}
-
+		
 		toStringChildren(sb, converter);
-		converter.minus();
 		return sb.toString();
 	}
 
@@ -295,9 +283,11 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 			if(this.getTag() != null) {
 				sb.with(END);
 			}
+			converter.add();
 			for (EntityList child : this.children) {
 				sb.with(child.toString(converter));
 			}
+			converter.minus();
 			sb.with(converter.getPrefix());
 			if(this.getTag() != null) {
 				sb.with("</", getTag(), END);
@@ -342,7 +332,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	 * @return a new Instance of XMLEntity
 	 */
 	public static XMLEntity TAG(String tag) {
-		return new XMLEntity().withTag(tag);
+		return new XMLEntity().setType(tag);
 	}
 
 	@Override
@@ -372,8 +362,16 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		return this;
 	}
 
+	/**
+	 * Sets the tag.
+	 *
+	 * @param value
+	 *			the new Tag
+	 * @return the instance XMLEntity
+	 */
 	@Override
-	public void setType(String type) {
-		this.withTag(type);
+	public XMLEntity setType(String value) {
+		this.tag = value;
+		return this;
 	}
 }

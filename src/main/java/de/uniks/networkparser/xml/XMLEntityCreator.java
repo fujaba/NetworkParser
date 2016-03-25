@@ -52,7 +52,7 @@ public class XMLEntityCreator implements SendableEntityCreatorTag {
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
 		if (XMLEntity.PROPERTY_TAG.equalsIgnoreCase(attribute)) {
-			((XMLEntity) entity).withTag("" + value);
+			((XMLEntity) entity).setType("" + value);
 			return true;
 		}
 		if (XMLEntity.PROPERTY_VALUE.equalsIgnoreCase(attribute)) {

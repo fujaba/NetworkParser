@@ -106,7 +106,7 @@ public class XMLTokener extends Tokener {
 			return;
 		}
 		XMLEntity xmlEntity = (XMLEntity) entity;
-		xmlEntity.withTag(this.buffer.nextToken(Buffer.STOPCHARSXMLEND).toString());
+		xmlEntity.setType(this.buffer.nextToken(Buffer.STOPCHARSXMLEND).toString());
 		XMLEntity child;
 		while (true) {
  			c = nextClean(true);
