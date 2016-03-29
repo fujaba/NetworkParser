@@ -6,6 +6,7 @@ import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.util.AttributeSet;
+import de.uniks.networkparser.interfaces.Condition;
 
 public class FilterModell {
 
@@ -39,7 +40,12 @@ public class FilterModell {
 			}
 		}
 
-		AttributeSet filterAttributesC = clazz.getAttributes().filter(Attribute.NAME.not("name")).filter(value -> value.getClazz() != null);
+		AttributeSet filterAttributesC = clazz.getAttributes().filter(Attribute.NAME.not("name")).filter(new Condition<Attribute>() {
+			@Override
+			public boolean update(Attribute value) {
+				return value.getClazz() != null;
+			}
+		});
 		for(Attribute attribute : filterAttributesC) {
 			if(output != null) {
 				output.println("Not: "+attribute.getName());

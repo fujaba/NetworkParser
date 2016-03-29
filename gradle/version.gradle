@@ -20,9 +20,12 @@ ext{
 			project.ext.LastCommit = ant.LastCommit
 			project.ext.GitTag = Integer.parseInt(ant.GitTag)
 		}catch(Exception e) {
+			println e
 			project.ext.Revisionnumber = -1
 			if (project.hasProperty("branch")) {
 				project.ext.Branchname = project.get("branch")
+			} else {
+				project.ext.Branchname = ""
 			}
 			project.ext.LastCommit = ""
 			project.ext.GitTag = 0

@@ -46,7 +46,8 @@ public class ExcelBuffer {
 	private CharacterBuffer readContext(InputStream is) {
 		final char[] buffer = new char[1024];
 		CharacterBuffer out = new CharacterBuffer();
-		try (Reader in = new InputStreamReader(is, "UTF-8")) {
+		try {
+			Reader in = new InputStreamReader(is, "UTF-8");
 			for (;;) {
 				int rsz = in.read(buffer, 0, buffer.length);
 				if (rsz < 0)

@@ -22,7 +22,7 @@ public class TableViewSample extends Application {
   @Override
   public void start(Stage primaryStage) {
 	final BorderPane root = new BorderPane();
-	final TableView<PersonGUI> table = new TableView<>();
+	final TableView<PersonGUI> table = new TableView<PersonGUI>();
 	table.getItems().addAll(
 		new PersonGUI("Jacob", "Smith", "jacob.smith@example.com"),
 		new PersonGUI("Isabella", "Johnson", "isabella.johnson@example.com"),
