@@ -17,8 +17,7 @@ apply from: 'gradle/tasks.gradle'
 apply plugin: 'jacoco'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
-apply plugin: 'coveralls'
-
+apply plugin: "com.github.kt3k.coveralls"
 apply from: 'gradle/mavencentral.gradle'
 apply from: 'gradle/artifactory.gradle'
 
@@ -44,10 +43,13 @@ test {
 buildscript {
 	repositories {
 		jcenter()
+		maven {
+			url "https://plugins.gradle.org/m2/"
+		}
 	}
 	dependencies {
-		classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '2.2.4')
-		classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:0.3.1'
+		classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '[2,)')
+		classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.6.3"
 	}
 }
 
@@ -78,7 +80,7 @@ jacocoTestReport {
 	executionData = files("${buildDir}/jacoco/test.exec")
 	reports {
 		xml {
-			enabled = false
+			enabled = true
 			//Following value is a file
 			destination = new File("${buildDir}/jacoco/jacoco.xml")
 		}
@@ -99,5 +101,5 @@ sourceSets.main.output.classesDir 'build/classes/main'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-defaultTasks 'clean', 'test', 'jacocoTestReport', 'buildAll'
+defaultTasks 'test', 'jacocoTestReport', 'buildAll'
 
