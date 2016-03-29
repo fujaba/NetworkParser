@@ -18,9 +18,9 @@ public class ReflectionTest {
 	private ArrayList<String> ignoreMethods=new ArrayList<String>();
 	@Test
 	public void testReflection() throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		if(TestUtil.isTravis()) {
-			return;
-		}
+//		if(TestUtil.isTravis()) {
+//			return;
+//		}
 		ArrayList<Class<?>> classesForPackage = getClassesForPackage("de.uniks.networkparser");
 		StringBuilder error=new StringBuilder();
 		int errorCount=0;
