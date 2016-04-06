@@ -1,5 +1,7 @@
 package de.uniks.networkparser.test;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 
 import org.junit.Test;
@@ -17,6 +19,7 @@ public class ExcelTest extends IOClasses{
 		if(file.exists()) {
 			ExcelBuffer buffer = new ExcelBuffer();
 			ExcelSheet content = buffer.parse(file);
+			assertNotNull(content);
 			ExcelWorkBook workBook = new ExcelWorkBook();
 			workBook.add(content);
 			new File("build").mkdir();
