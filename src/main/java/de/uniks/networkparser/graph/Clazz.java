@@ -1,5 +1,7 @@
 package de.uniks.networkparser.graph;
 
+import java.util.Collection;
+
 import de.uniks.networkparser.graph.util.AssociationSet;
 import de.uniks.networkparser.graph.util.AttributeSet;
 import de.uniks.networkparser.graph.util.ClazzSet;
@@ -473,26 +475,44 @@ public class Clazz extends GraphEntity {
     * one                          many
     *</pre>
     */
-   public AssociationSet getAssociations(Condition<?>... filters) {
-      AssociationSet collection = new AssociationSet();
-      if(this.children == null) {
-         return collection;
+   public AssociationSet getAssociations(Condition<?>... filters) 
+   {
+      //      AssociationSet collection = new AssociationSet();
+      //      if(this.children == null) {
+      //         return collection;
+      //      }
+      //      if(this.children instanceof Association) {
+      //         if(check((Association)this.children, filters)) {
+      //            collection.add((Association)this.children);
+      //         }
+      //         return collection;
+      //      }
+      //      if(this.children instanceof GraphSimpleSet) {
+      //         GraphSimpleSet list = (GraphSimpleSet) this.children;
+      //         for(GraphMember item : list) {
+      //            if(item instanceof Association && check(item, filters) ) {
+      //               collection.add((Association)item);
+      //            }
+      //         }
+      //      }
+
+      if (this.associations == null)
+      {
+         return AssociationSet.EMPTY_SET;
       }
-      if(this.children instanceof Association) {
-         if(check((Association)this.children, filters)) {
-            collection.add((Association)this.children);
-         }
-         return collection;
+      
+      AssociationSet result = new AssociationSet();
+      if (this.associations instanceof Collection)
+      {
+         result.addAll((Collection<? extends Association>) this.associations);
       }
-      if(this.children instanceof GraphSimpleSet) {
-         GraphSimpleSet list = (GraphSimpleSet) this.children;
-         for(GraphMember item : list) {
-            if(item instanceof Association && check(item, filters) ) {
-               collection.add((Association)item);
-            }
-         }
+      else
+      {
+         result.with(this.associations);
       }
-      return collection;
+      
+      return result ;
+      
    }
 
 	/** get All Methods
