@@ -464,6 +464,37 @@ public class Clazz extends GraphEntity {
 		return collection;
 	}
 
+   /** get all Associations
+    * @param filters Can Filter the List of Attributes
+    * @return all Attributes of a Clazz
+    *
+    *<pre>
+    * Clazz  --------------------- Association
+    * one                          many
+    *</pre>
+    */
+   public AssociationSet getAssociations(Condition<?>... filters) {
+      AssociationSet collection = new AssociationSet();
+      if(this.children == null) {
+         return collection;
+      }
+      if(this.children instanceof Association) {
+         if(check((Association)this.children, filters)) {
+            collection.add((Association)this.children);
+         }
+         return collection;
+      }
+      if(this.children instanceof GraphSimpleSet) {
+         GraphSimpleSet list = (GraphSimpleSet) this.children;
+         for(GraphMember item : list) {
+            if(item instanceof Association && check(item, filters) ) {
+               collection.add((Association)item);
+            }
+         }
+      }
+      return collection;
+   }
+
 	/** get All Methods
 	 * @param filters Can Filter the List of Methods
 	 * @return all Methods of a Clazz

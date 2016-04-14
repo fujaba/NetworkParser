@@ -1,4 +1,5 @@
 package de.uniks.networkparser.graph;
+import de.uniks.networkparser.graph.util.ClazzSet;
 /*
 NetworkParser
 Copyright (c) 2011 - 2015, Stefan Lindel
@@ -36,8 +37,8 @@ public abstract class GraphModel extends GraphEntity {
 	 *			  parent				   clazz
 	 *		 </pre>
 	 */
-	public SimpleSet<Clazz> getClazzes() {
-		SimpleSet<Clazz> collection = new SimpleSet<Clazz>();
+	public ClazzSet getClazzes() {
+	   ClazzSet collection = new ClazzSet();
 		if (children == null) {
 			return collection;
 		}
