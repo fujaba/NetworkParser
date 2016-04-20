@@ -1,12 +1,14 @@
 package de.uniks.networkparser.test;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.xml.EMFTokener;
 
 public class EMFTest extends IOClasses{
 
@@ -21,17 +23,27 @@ public class EMFTest extends IOClasses{
 	@Test
 	public void testEMFDecode() {
 		StringBuffer value = readFile("railway.ecore");
-		GraphList model = new IdMap().decodeEMF(value.toString());
-		Assert.assertEquals(9, model.getClazzes().size());
-		Assert.assertEquals("[Segment|length:int],[TrackElement]->[Sensor],[TrackElement]<-[TrackElement],[Switch|currentPosition:Position]->[SwitchPosition|position:Position],[Route]->[Semaphore|signal:Signal],[Route]->[SwitchPosition],[Route]->[Semaphore],[Route]->[Sensor],[Route]<-[RailwayContainer],[Semaphore]<-[RailwayContainer],[RailwayElement|id:int]<-[RailwayContainer]", model.toString());
+		Object model = new IdMap().decodeEMF(value.toString());
+		GraphList list = (GraphList) model;
+		Assert.assertEquals(9, list.getClazzes().size());
+		Assert.assertEquals("[Segment|length:int]-^[TrackElement],[TrackElement]-^[RailwayElement|id:int],[TrackElement]^-[Switch|currentPosition:Position],[TrackElement]->[Sensor],[TrackElement]<-[TrackElement],[Switch]->[SwitchPosition|position:Position],[Route]-^[RailwayElement],[Route]->[Semaphore|signal:Signal],[Route]->[SwitchPosition],[Route]->[Semaphore],[Route]->[Sensor],[Route]<-[RailwayContainer],[Semaphore]-^[RailwayElement],[Semaphore]<-[RailwayContainer],[SwitchPosition]-^[RailwayElement],[RailwayElement]^-[Sensor],[RailwayElement]<-[RailwayContainer]", model.toString());
 	}
 
 	@Test
 	public void testEMFTTC2014() throws FileNotFoundException {
-//		EMFIdMap map=new EMFIdMap();
-//		String absolutePath = getAbsolutePath("imdb.movies");
-//		String absolutePath = getAbsolutePath("railway.ecore");
-//		Object decode = map.decode(new FileBuffer().withFile(absolutePath));
-//		Assert.assertNotNull(decode.toString());
+		IdMap map=new IdMap();
+		StringBuffer value = readFile("imdb.movies");
+		ArrayList<?> decode = (ArrayList<?>) map.decodeEMF(value.toString());
+		Assert.assertEquals(0, decode.size());
+	}
+	
+	@Test
+	public void testXMITOEMF() throws FileNotFoundException {
+		IdMap map=new IdMap();
+		StringBuffer value = readFile("imdb.movies");
+		EMFTokener tokener = new EMFTokener().withFlag(EMFTokener.CLASSMODEL);
+		tokener.withBuffer(value);
+		GraphList decode = (GraphList) map.decode(tokener);
+		Assert.assertEquals(0, decode.getClazzes().size());
 	}
 }

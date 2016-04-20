@@ -721,11 +721,17 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 			return decode(new JsonArray().withValue(tokener));
 		}
 		if(firstChar == XMLTokener.ITEMSTART) {
-			XMLTokener xmlTokener = (XMLTokener) tokener;
-			xmlTokener.skipHeader();
 			MapEntity map = new MapEntity(filter, grammar);
 			map.withFlag(flag);
-			return decodingXMLEntity(xmlTokener, map);
+			if(tokener instanceof XMLTokener) {
+				XMLTokener xmlTokener = (XMLTokener) tokener;
+				xmlTokener.skipHeader();
+				return decodingXMLEntity(xmlTokener, map);
+			} else if(tokener instanceof EMFTokener) {
+				EMFTokener xmlTokener = (EMFTokener) tokener;
+				return ((EMFTokener) xmlTokener).decode(map);
+			}
+			return null;
 		}
 		Entity item = tokener.newInstance();
 		tokener.parseToEntity(item);
@@ -745,9 +751,16 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	 * @param value EMF-Value as String
 	 * @return the object
 	 */
-	public GraphList decodeEMF(String value) {
+	public Object decodeEMF(String value) {
+		if(value ==null ) {
+			return null;
+		}
 		EMFTokener tokener = new EMFTokener();
-		return tokener.decoding(value);
+		MapEntity map = new MapEntity(filter, grammar);
+		tokener.withMap(this);
+		map.withFlag(flag);
+		tokener.withBuffer(value);
+		return tokener.decode(map);
 	}
 	/**
 	 * Decode.

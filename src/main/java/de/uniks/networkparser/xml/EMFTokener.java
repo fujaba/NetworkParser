@@ -30,18 +30,24 @@ public class EMFTokener extends Tokener{
 	public static final String ETYPE = "eType";
 	public static final String EAttribute = "ecore:EAttribute";
 	public static final String EReferences = "ecore:EReference";
+	public static final String ECore = "ecore:EPackage";
 	public static final String eSuperTypes = "eSuperTypes";
 	public static final String EEnum = "ecore:EEnum";
 	public static final String EOpposite = "eOpposite";
 	public static final String UPPERBOUND = "upperBound";
-	public static final String PARENT = "parent";
 
 	public static final String XSI_TYPE = "xsi:type";
 	public static final String XMI_ID = "xmi:id";
 	public static final String NAME = "name";
 	HashMap<String, Integer> runningNumbers = null;
 	private GraphList model;
-//	private SendableEntityCreator defaultFactory = new XMLEntityCreator();
+	private byte flag;
+	public static final byte CLASSMODEL=0x01;
+	
+	public EMFTokener withFlag(byte value) {
+		this.flag = value;
+		return this;
+	}
 	
 	/**
 	 * Skip the Current Entity to &gt;.
@@ -128,9 +134,15 @@ public class EMFTokener extends Tokener{
 	public Object decode(MapEntity map) {
 		skipHeader();
 		XMLEntity xmlEntity = new XMLEntity();
-		xmlEntity.withValue(this);
+		xmlEntity.withValue(this.buffer);
+		if(ECore.equals(xmlEntity.getTag())) {
+			return decoding(xmlEntity);
+		}
 		// build root entity
 		String tag = xmlEntity.getTag();
+		if(this.flag == CLASSMODEL) {
+			return decodingClassModel(xmlEntity);
+		}
 		String[] splitTag = tag.split("\\:");
 		String className = splitTag[1];
 		SendableEntityCreator rootFactory = getCreator(className, false);
@@ -153,6 +165,12 @@ public class EMFTokener extends Tokener{
 		addValues(rootFactory, xmlEntity, rootObject, map);
 
 		return rootObject;
+	}
+	
+	private GraphList decodingClassModel(XMLEntity value) {
+		GraphList model = new GraphList();
+		//TODO CREATING METHOD BODY
+		return model;
 	}
 
 	private void addXMIIds(XMLEntity xmlEntity, String rootId) {
@@ -365,6 +383,9 @@ public class EMFTokener extends Tokener{
 				if (kidFactory == null && typeName.endsWith("s")) {
 					kidFactory = getCreator(typeName.substring(0, typeName.length() - 1), false);
 				}
+				if(kidFactory == null) {
+					continue;
+				}
 				Object kidObject = kidFactory.getSendableInstance(false);
 
 				if (rootCollection != null) {
@@ -379,13 +400,18 @@ public class EMFTokener extends Tokener{
 	}
 
 	public GraphList decoding(String content) {
-		GraphList model = new GraphList();
+		return decoding(new XMLEntity().withValue(content));
+	}
+	public GraphList decoding(Tokener content) {
+		return decoding(new XMLEntity().withValue(this));
+	}
 
-		XMLEntity ecore = new XMLEntity().withValue(content);
-		SimpleList<Entity> refs = new SimpleList<Entity>();
+	private GraphList decoding(XMLEntity ecore) {
+		GraphList model = new GraphList();
 		SimpleList<Entity> superClazzes = new SimpleList<Entity>();
 
 		// add classes
+		SimpleKeyValueList<Entity, EntityList> parentList=new SimpleKeyValueList<Entity, EntityList>();
 		for (EntityList eClassifier : ecore.getChildren()) {
 			if(eClassifier instanceof XMLEntity == false) {
 				continue;
@@ -414,8 +440,7 @@ public class EMFTokener extends Tokener{
 						}
 						clazz.with(new Attribute(EntityUtil.toValidJavaId(childItem.getString(EMFTokener.NAME)), DataType.create(etyp)));
 					}else if(typ.equals(EReferences)) {
-						childItem.put(PARENT, eClassifier);
-						refs.add(childItem);
+						parentList.add(childItem, eClassifier);
 					}
 				}
 				if(xml.has(eSuperTypes)) {
@@ -446,11 +471,12 @@ public class EMFTokener extends Tokener{
 			String id = EntityUtil.getId(eClass.getString(eSuperTypes));
 			 Clazz kidClazz = model.getNode(eClass.getString(EMFTokener.NAME));
 			 Clazz superClazz = model.getNode(id);
-			 kidClazz.withoutSuperClazz(superClazz);
+			 kidClazz.withSuperClazz(superClazz);
 		}
 		// assocs
 		SimpleKeyValueList<String, Association> items = new SimpleKeyValueList<String, Association>();
-		for(Entity eref : refs) {
+		for(int i=0;i<parentList.size();i++) {
+			Entity eref = parentList.get(i);
 			String tgtClassName = eref.getString(ETYPE);
 			if(tgtClassName.indexOf("#")>=0) {
 				tgtClassName = tgtClassName.substring(tgtClassName.indexOf("#") + 3);
@@ -469,7 +495,7 @@ public class EMFTokener extends Tokener{
 			}
 
 			String srcRoleName = null;
-			XMLEntity parent =(XMLEntity) eref.getValue(PARENT);
+			XMLEntity parent = (XMLEntity) parentList.getValueByIndex(i);
 			String srcClassName = parent.getString(EMFTokener.NAME);
 			if (!eref.has(EOpposite)) {
 //				srcRoleName = tgtRoleName+"_back";
