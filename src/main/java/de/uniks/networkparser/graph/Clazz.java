@@ -475,45 +475,27 @@ public class Clazz extends GraphEntity {
     * one                          many
     *</pre>
     */
-   public AssociationSet getAssociations(Condition<?>... filters) 
-   {
-      //      AssociationSet collection = new AssociationSet();
-      //      if(this.children == null) {
-      //         return collection;
-      //      }
-      //      if(this.children instanceof Association) {
-      //         if(check((Association)this.children, filters)) {
-      //            collection.add((Association)this.children);
-      //         }
-      //         return collection;
-      //      }
-      //      if(this.children instanceof GraphSimpleSet) {
-      //         GraphSimpleSet list = (GraphSimpleSet) this.children;
-      //         for(GraphMember item : list) {
-      //            if(item instanceof Association && check(item, filters) ) {
-      //               collection.add((Association)item);
-      //            }
-      //         }
-      //      }
-
-      if (this.associations == null)
-      {
-         return AssociationSet.EMPTY_SET;
-      }
-      
-      AssociationSet result = new AssociationSet();
-      if (this.associations instanceof Collection)
-      {
-         result.addAll((Collection<? extends Association>) this.associations);
-      }
-      else
-      {
-         result.with(this.associations);
-      }
-      
-      return result ;
-      
-   }
+	public AssociationSet getAssociations(Condition<?>... filters) {
+		if (this.associations == null) {
+			return AssociationSet.EMPTY_SET;
+		}
+		AssociationSet result = new AssociationSet();
+		if (this.associations instanceof Association) {
+			if (check((Association) this.associations, filters)) {
+				result.add((Association) this.associations);
+			}
+			return result;
+		}
+		if (this.associations instanceof Collection<?>) {
+			Collection<?> list = (Collection<?>) this.associations;
+			for (Object item : list) {
+				if (item instanceof Association && check((Association) item, filters)) {
+					result.add((Association) item);
+				}
+			}
+		}
+		return result;
+	}
 
 	/** get All Methods
 	 * @param filters Can Filter the List of Methods
