@@ -31,7 +31,17 @@ public class AssociationSet extends SimpleSet<Association>
 		}
 		return collection;
 	}
-
+	
+	@Override
+	public boolean add(Association newValue) {
+		if(newValue.getOther() != null) {
+			if(indexOf(newValue.getOther()) >= 0) {
+				return false;
+			}
+		}
+		return super.add(newValue);
+	}
+	
 	@Override
 	public AssociationSet filter(Condition<Association> newValue) {
 		AssociationSet collection = new AssociationSet();
