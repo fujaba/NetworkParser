@@ -71,7 +71,7 @@ public final class Version {
 		ECB prev = null;
 		ECB first = null;
 		for(int z=0;z<array.size();z+=2) {
-			ECB element = new ECB(ecCodeBlocks, (int)array.get(z), (int)array.get(z + 1));
+			ECB element = new ECB(ecCodeBlocks, (Integer)array.get(z), (Integer)array.get(z + 1));
 			if(prev != null) {
 				prev.withNext(element);
 			}

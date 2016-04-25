@@ -52,7 +52,7 @@ final class DecodedBitStreamParser {
 	static DecoderResult decode(byte[] bytes, Version version, ErrorCorrectionLevel ecLevel) throws Exception {
 		BitArray bits = new BitArray(bytes);
 		StringBuilder result = new StringBuilder(50);
-		List<byte[]> byteSegments = new ArrayList<>(1);
+		List<byte[]> byteSegments = new ArrayList<byte[]>(1);
 		int symbolSequence = -1;
 		int parityData = -1;
 
