@@ -7,8 +7,10 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import de.uniks.networkparser.interfaces.SendableEntity;
+
 // should become a JSON Parser
-public class University {
+public class University implements SendableEntity {
 	public static final String PROPERTY_USER = ".fg.user.";
 	public static final String PROPERTY_ICH = ".child.value.";
 	public static final String PROPERTY_VALUE = ".fg.value";
@@ -63,6 +65,8 @@ public class University {
 			}
 			changed = this.students.add(value);
 			if (changed) {
+				getPropertyChangeSupport().firePropertyChange(PROPERTY_STUDENTS,
+						null, value);
 				value.setUniversity(this);
 			}
 		}
@@ -179,18 +183,21 @@ public class University {
 	protected final PropertyChangeSupport listeners = new PropertyChangeSupport(
 			this);
 
-	public void addPropertyChangeListener(PropertyChangeListener listener) {
+	public boolean addPropertyChangeListener(PropertyChangeListener listener) {
 		getPropertyChangeSupport().addPropertyChangeListener(listener);
+		return true;
 	}
 
-	public void removePropertyChangeListener(PropertyChangeListener listener) {
+	public boolean removePropertyChangeListener(PropertyChangeListener listener) {
 		getPropertyChangeSupport().removePropertyChangeListener(listener);
+		return true;
 	}
 
-	public void addPropertyChangeListener(String property,
+	public boolean addPropertyChangeListener(String property,
 			PropertyChangeListener listener) {
 		getPropertyChangeSupport()
 				.addPropertyChangeListener(property, listener);
+		return true;
 	}
 
 	public void removePropertyChangeListener(String property,

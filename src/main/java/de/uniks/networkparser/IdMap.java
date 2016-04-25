@@ -55,7 +55,7 @@ import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.json.JsonTokener;
-import de.uniks.networkparser.json.UpdateListenerJson;
+import de.uniks.networkparser.json.UpdateJson;
 import de.uniks.networkparser.json.util.JsonArrayCreator;
 import de.uniks.networkparser.json.util.JsonObjectCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -108,9 +108,6 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	
 	private Grammar grammar = new SimpleGrammar();
 	
-	/** The update listener. */
-	protected UpdateListenerJson updateListenerJson;
-
 	/** The counter. */
 	private IdMapCounter counter;
 
@@ -126,8 +123,14 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	
 	protected NetworkParserLog logger = new NetworkParserLog();
 
+	/** The update listener. */
+	protected UpdateListener updateListener;
+	
+	/** The Condition. */
+	protected UpdateListener condition;
+
 	/** The updatelistener for Notification changes. */
-	protected Object listener;
+	protected PropertyChangeListener listener = new UpdateJson(this);
 
 	/** The Constant ENTITYSPLITTER. */
 	public static final char ENTITYSPLITTER = '.';
@@ -147,6 +150,10 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 		this.with(new XMLEntityCreator());
 	}
 
+	public UpdateListener getCondition() {
+		return condition;
+	}
+	
 	/**
 	 * Gets the creator class.
 	 *
@@ -384,16 +391,9 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 
 	protected boolean addListener(Object object) {
 		if (object instanceof SendableEntity) {
-			((SendableEntity) object).addPropertyChangeListener(getUpdateExecuter());
+			((SendableEntity) object).addPropertyChangeListener(this.listener);
 		}
 		return false;
-	}
-
-	public UpdateListenerJson getUpdateExecuter() {
-		if (this.updateListenerJson == null) {
-			this.updateListenerJson = new UpdateListenerJson(this);
-		}
-		return this.updateListenerJson;
 	}
 
 	/**
@@ -623,6 +623,12 @@ public class IdMap implements Iterable<SendableEntityCreator> {
     		if (this.listener != null && this.listener instanceof UpdateListener) {
     			return ((UpdateListener)this.listener).update(event);
     		}
+    		if(this.updateListener != null) {
+    			this.updateListener.update(event);
+    		}
+    		if(this.condition != null) {
+    			return this.condition.update(event);
+    		}
     	}
 		return true;
 	}
@@ -632,10 +638,31 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 		return this.getClass().getName() + " (" + this.size() + ")";
 	}
 
-
-
-	public IdMap with(UpdateListenerJson updateListener) {
-		this.updateListenerJson = updateListener;
+	/**
+	 * Set the new Listener
+	 *
+	 * @param updateListener the new Listener
+	 * @return This Component
+	 *
+	 * @see IdMap#with(PropertyChangeListener)
+	 * @see de.uniks.networkparser.ChainListener
+	 */
+	public IdMap with(UpdateListener updateListener) {
+		this.updateListener = updateListener;
+		return this;
+	}
+	
+	/**
+	 * Set the new Listener
+	 *
+	 * @param updateListener the new Listener
+	 * @return This Component
+	 *
+	 * @see IdMap#with(PropertyChangeListener)
+	 * @see de.uniks.networkparser.ChainListener
+	 */
+	public IdMap withFilter(UpdateListener updateListener) {
+		this.condition = updateListener;
 		return this;
 	}
 
@@ -646,10 +673,9 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	 *			the root
 	 */
 	public void garbageCollection(Object root) {
-		if (this.updateListenerJson == null) {
-			this.updateListenerJson = new UpdateListenerJson(this);
+		if(this.listener instanceof UpdateJson) {
+			((UpdateJson)this.listener).garbageCollection(root);
 		}
-		this.updateListenerJson.garbageCollection(root);
 	}
 	
 	/**
@@ -663,20 +689,6 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	}
 
 	public IdMap with(PropertyChangeListener listener) {
-		this.listener = listener;
-		return this;
-	}
-
-	/**
-	 * Set the new Listener
-	 *
-	 * @param listener the new Listener
-	 * @return This Component
-	 *
-	 * @see IdMap#with(PropertyChangeListener)
-	 * @see de.uniks.networkparser.ChainUpdateListener
-	 */
-	public IdMap with(UpdateListener listener) {
 		this.listener = listener;
 		return this;
 	}
@@ -743,6 +755,9 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	 * @return the object
 	 */
 	public Object decode(String value) {
+		if(value == null) {
+			return null;
+		}
 		return decode(new CharacterBuffer().with(value.intern()));
 	}
 	
@@ -878,12 +893,12 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	}
 
 	private Object decodingJsonObject(JsonObject jsonObject, MapEntity map) {
-		if (this.updateListenerJson == null) {
-			this.updateListenerJson = new UpdateListenerJson(this);
-		}
-		Object result = this.updateListenerJson.execute(jsonObject, filter);
-		if (result != null) {
-			return result;
+		if(this.listener instanceof UpdateJson) {
+			UpdateJson listener = (UpdateJson) this.listener;
+			Object result = listener.execute(jsonObject, filter);
+			if (result != null) {
+				return result;
+			}
 		}
 		return jsonTokener.decoding(jsonObject, map);
 	}

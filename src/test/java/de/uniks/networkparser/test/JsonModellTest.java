@@ -72,7 +72,8 @@ public class JsonModellTest implements UpdateListener {
 
 		JsonObject jsonObject=map.toJsonObject(first);
 		Assert.assertEquals(385, jsonObject.toString(2).length());
-		secondMap.getUpdateExecuter().execute(jsonObject);
+		
+		secondMap.decode(jsonObject);
 
 		SortedMsg third= new SortedMsg();
 		third.setNumber(4);
@@ -97,7 +98,7 @@ public class JsonModellTest implements UpdateListener {
 		if(IdMap.NEW.equals(simpleEvent.getType())) {
 			JsonObject jsonObject = (JsonObject) simpleEvent.getEntity();
 			printToStream("Send: " +jsonObject, null);
-			secondMap.getUpdateExecuter().execute(jsonObject);
+//			secondMap.decode(jsonObject);
 			return true;
 		}
 		PropertyChangeEvent event = (PropertyChangeEvent) evt;

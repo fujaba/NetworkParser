@@ -24,7 +24,7 @@ package de.uniks.networkparser.json;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class UpdateAccumulate {
+public class UpdateJsonAccumulate {
 	private JsonObject change;
 	private IdMap map;
 
@@ -86,12 +86,12 @@ public class UpdateAccumulate {
 		return true;
 	}
 
-	public UpdateAccumulate withMap(IdMap map) {
+	public UpdateJsonAccumulate withMap(IdMap map) {
 		this.map = map;
 		return this;
 	}
 
-	public UpdateAccumulate withAttribute(Object item, Object newValue,
+	public UpdateJsonAccumulate withAttribute(Object item, Object newValue,
 			String property) {
 		changeAttribute(item, newValue, property);
 		return this;
@@ -158,7 +158,7 @@ public class UpdateAccumulate {
 		return change;
 	}
 
-	public UpdateAccumulate withChange(JsonObject change) {
+	public UpdateJsonAccumulate withChange(JsonObject change) {
 		this.change = change;
 		return this;
 	}

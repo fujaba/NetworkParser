@@ -19,6 +19,7 @@ import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.graph.Literal;
+import de.uniks.networkparser.graph.util.AssociationSet;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -167,12 +168,59 @@ public class EMFTokener extends Tokener{
 		return rootObject;
 	}
 	
-	private GraphList decodingClassModel(XMLEntity value) {
+	private GraphList decodingClassModel(XMLEntity values) {
 		GraphList model = new GraphList();
+		SimpleKeyValueList<String, Clazz> items = new SimpleKeyValueList<String, Clazz>();
+		for(EntityList item : values.getChildren()) {
+			if(item instanceof XMLEntity == false) {
+				continue;
+			}
+			XMLEntity child = (XMLEntity) item;
+			String[] splitTag = child.getTag().split("\\:");
+			String className = splitTag[1];
+			Clazz clazz = items.get(className);
+			if(clazz == null) {
+				// Create New One
+				clazz = new Clazz();
+				clazz.with(className);
+				items.add(className, clazz);
+				model.with(clazz);
+			}
+			for(int i = 0;i < child.size();i++) {
+				String key = child.get(i);
+				String value = (String) child.getValueByIndex(i);
+				if(value == null) {
+					value = "";
+				}
+				if(value.startsWith("/")) {
+					// Association
+					AssociationSet associations = clazz.getAssociations();
+					Association found = null;
+					for(Association assoc : associations) {
+						if(key.equals(assoc.getName())) {
+							found = assoc;
+							break;
+						}
+					}
+					if(found == null ) {
+						found = new Association(clazz);
+						found.with(key);
+						String ref = getRef(key, child, null);
+						Association back = new Association(items.get(ref));
+						found.with(back);
+					}
+					
+					if(value.indexOf("/", 1) > 0) {
+						// To Many
+						found.with(Cardinality.MANY);
+					}
+				}
+			}
+		}
 		//TODO CREATING METHOD BODY
 		return model;
 	}
-
+	
 	private void addXMIIds(XMLEntity xmlEntity, String rootId) {
 		if (xmlEntity.has(XMI_ID)) {
 			return;
@@ -241,42 +289,11 @@ public class EMFTokener extends Tokener{
 			if ("".equals(value) || XMI_ID.equals(key)) {
 				continue;
 			}
-
-			if (value.startsWith("//@")) {
-				for (String ref : value.split(" ")) {
-					String myRef = "_" + ref.substring(3);
-					if (myRef.indexOf('.') > 0) {
-						myRef = myRef.replaceAll("\\.|/@", "");
-					} else {
-						myRef = "_" + myRef.subSequence(0, 1) + "0";
-					}
-					Object object = getObject(myRef);
-					if (object != null) {
-						rootFactory.setValue(rootObject, key, object, "");
-					}
-				}
-			} else if (value.startsWith("/")) {
-				// maybe multiple separated by blanks
-				String tagChar = xmlEntity.getTag().substring(0, 1);
-				for (String ref : value.split(" ")) {
-					ref = "_" + tagChar + ref.substring(1);
-					if (getObject(ref) != null) {
-						rootFactory.setValue(rootObject, key, getObject(ref), "");
-					}
-				}
-			} else if (value.indexOf('_') > 0) {
-				// maybe multiple separated by blanks
-				for (String ref : value.split(" ")) {
-					if (getObject(ref) != null) {
-						rootFactory.setValue(rootObject, key, getObject(ref), "");
-					}
-				}
-			} else if (value.startsWith("$")) {
-				for (String ref : value.split(" ")) {
-					String myRef = "_" + ref.substring(1);
-					if (getObject(myRef) != null && rootFactory != null) {
-						rootFactory.setValue(rootObject, key, getObject(myRef), "");
-					}
+			String myRef = getRef(value, xmlEntity, rootFactory);
+			if(myRef != null) {
+				Object object = getObject(myRef);
+				if (object != null) {
+					rootFactory.setValue(rootObject, key, object, "");
 				}
 			} else {
 				if (rootFactory != null) {
@@ -302,6 +319,44 @@ public class EMFTokener extends Tokener{
 
 			addValues(kidFactory, (XMLEntity)kidEntity, kidObject, map);
 		}
+	}
+	
+	private String getRef(String value, XMLEntity xmlEntity, SendableEntityCreator rootFactory) {
+		if (value.startsWith("//@")) {
+			for (String ref : value.split(" ")) {
+				String myRef = "_" + ref.substring(3);
+				if (myRef.indexOf('.') > 0) {
+					myRef = myRef.replaceAll("\\.|/@", "");
+				} else {
+					myRef = "_" + myRef.subSequence(0, 1) + "0";
+				}
+				return myRef;
+			}
+		} else if (value.startsWith("/")) {
+			// maybe multiple separated by blanks
+			String tagChar = xmlEntity.getTag().substring(0, 1);
+			for (String ref : value.split(" ")) {
+				ref = "_" + tagChar + ref.substring(1);
+				if (getObject(ref) != null) {
+					return ref;
+				}
+			}
+		} else if (value.indexOf('_') > 0) {
+			// maybe multiple separated by blanks
+			for (String ref : value.split(" ")) {
+				if (getObject(ref) != null) {
+					return ref;
+				}
+			}
+		} else if (value.startsWith("$")) {
+			for (String ref : value.split(" ")) {
+				String myRef = "_" + ref.substring(1);
+				if (rootFactory != null && getObject(myRef) != null) {
+					return myRef;
+				}
+			}
+		}
+		return null;
 	}
 
 	@SuppressWarnings("unchecked")

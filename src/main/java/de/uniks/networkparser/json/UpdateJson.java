@@ -30,7 +30,6 @@ import java.util.Iterator;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.logic.SimpleMapEvent;
 import de.uniks.networkparser.logic.UpdateCondition;
@@ -43,14 +42,14 @@ import de.uniks.networkparser.logic.UpdateCondition;
  *
  */
 
-public class UpdateListenerJson implements PropertyChangeListener {
+public class UpdateJson implements PropertyChangeListener {
 	/** The map. */
 	private IdMap map;
 
 	/** The suspend id list. */
 	private ArrayList<String> suspendIdList;
 
-	private AtomarCondition atomarFilter;
+//	private UpdateListener atomarFilter;
 
 	private Filter updateFilter = new Filter().withConvertable(new UpdateCondition());
 
@@ -60,7 +59,7 @@ public class UpdateListenerJson implements PropertyChangeListener {
 	 * @param map
 	 *			the map
 	 */
-	public UpdateListenerJson(IdMap map) {
+	public UpdateJson(IdMap map) {
 		this.map = map;
 	}
 
@@ -108,7 +107,7 @@ public class UpdateListenerJson implements PropertyChangeListener {
 
 		this.suspendIdList = null;
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -119,7 +118,7 @@ public class UpdateListenerJson implements PropertyChangeListener {
 	public void propertyChange(PropertyChangeEvent evt) {
 		Object oldValue = evt.getOldValue();
 		Object newValue = evt.getNewValue();
-		this.updateFilter.withPropertyRegard(atomarFilter);
+        this.updateFilter.withPropertyRegard(map.getCondition());
 
 		if ((oldValue == null && newValue == null)
 				|| (oldValue != null && oldValue.equals(newValue))) {
@@ -444,11 +443,6 @@ public class UpdateListenerJson implements PropertyChangeListener {
 				}
 			}
 		}
-	}
-
-	public UpdateListenerJson withAtomarFilter(UpdateListener listener) {
-		this.atomarFilter= new AtomarCondition(listener);
-		return this;
 	}
 
 	/**

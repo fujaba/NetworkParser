@@ -31,9 +31,8 @@ public class FilterAtomar {
 				return (Apple.PROPERTY_PASSWORD.equals(event.getPropertyName()) == false);
 			}
 		};
-//		map.with(listener);
 		map.toJsonObject(tree);
-		map.getUpdateExecuter().withAtomarFilter(listener);
+		map.withFilter(listener);
 		map.with(new UpdateListener() {
 			@Override
 			public boolean update(Object event) {

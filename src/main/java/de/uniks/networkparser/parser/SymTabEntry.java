@@ -22,6 +22,20 @@
 package de.uniks.networkparser.parser;
 
 public class SymTabEntry {
+	public static final String TYPE_IMPORT = "import";
+	
+	public static final String TYPE_CLASS = "class";
+
+	public static final String TYPE_EXTENDS = "extends";
+	public static final String TYPE_IMPLEMENTS = "implements";
+	
+	public static final String TYPE_ATTRIBUTE = "attribute";
+	public static final String TYPE_ENUMVALUE = "enumvalue";
+	public static final String TYPE_METHOD = "method";
+	public static final String TYPE_PACKAGE = "package";
+	public static final String TYPE_COMMENT = "comment";
+	public static final String TYPE_JAVADOC = "javadoc";
+
 	public static final String PROPERTY_TYPE = "type";
 	public static final String PROPERTY_VALUE = "value";
 

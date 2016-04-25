@@ -44,6 +44,6 @@ public class EMFTest extends IOClasses{
 		EMFTokener tokener = new EMFTokener().withFlag(EMFTokener.CLASSMODEL);
 		tokener.withBuffer(value);
 		GraphList decode = (GraphList) map.decode(tokener);
-		Assert.assertEquals(0, decode.getClazzes().size());
+		Assert.assertEquals(3, decode.getClazzes().size());
 	}
 }
