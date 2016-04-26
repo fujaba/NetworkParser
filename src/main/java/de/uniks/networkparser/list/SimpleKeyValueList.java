@@ -594,4 +594,15 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		}while(pos<keyValue.length());
 		return this;
 	}
+	
+	@Override
+	public AbstractArray<K> without(Object... values) {
+		if(values == null) {
+			return this;
+		}
+		for(Object item : values) {
+			remove(item);
+		}
+		return this;
+	}
 }

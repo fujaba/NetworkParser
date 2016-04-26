@@ -433,7 +433,7 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 			}
 		}
 		if (key != null) {
-			this.keyValue.without(key, oldValue);
+			this.keyValue.without(key);
 			return true;
 		}
 		return false;
