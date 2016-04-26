@@ -17,6 +17,7 @@ import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.Clazz.ClazzType;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.graph.Literal;
 import de.uniks.networkparser.graph.util.AssociationSet;
@@ -130,9 +131,10 @@ public class EMFTokener extends Tokener{
 
 	/**
 	 * @param map decoding runtime values
+	 * @param root The Root Element of Returnvalue
 	 * @return decoded Object
 	 */
-	public Object decode(MapEntity map) {
+	public Object decode(MapEntity map, GraphModel root) {
 		skipHeader();
 		XMLEntity xmlEntity = new XMLEntity();
 		xmlEntity.withValue(this.buffer);
@@ -142,7 +144,10 @@ public class EMFTokener extends Tokener{
 		// build root entity
 		String tag = xmlEntity.getTag();
 		if(this.flag == CLASSMODEL) {
-			return decodingClassModel(xmlEntity);
+			if(root == null) {
+				root = new GraphList();
+			}
+			return decodingClassModel(xmlEntity, root);
 		}
 		String[] splitTag = tag.split("\\:");
 		String className = splitTag[1];
@@ -168,8 +173,7 @@ public class EMFTokener extends Tokener{
 		return rootObject;
 	}
 	
-	private GraphList decodingClassModel(XMLEntity values) {
-		GraphList model = new GraphList();
+	private GraphModel decodingClassModel(XMLEntity values, GraphModel model) {
 		SimpleKeyValueList<String, Clazz> items = new SimpleKeyValueList<String, Clazz>();
 		for(EntityList item : values.getChildren()) {
 			if(item instanceof XMLEntity == false) {

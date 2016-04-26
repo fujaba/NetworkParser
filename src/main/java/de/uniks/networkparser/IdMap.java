@@ -40,6 +40,7 @@ import de.uniks.networkparser.converter.ByteConverter;
 import de.uniks.networkparser.event.ObjectMapEntry;
 import de.uniks.networkparser.event.util.DateCreator;
 import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.graph.GraphTokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ByteItem;
@@ -152,6 +153,10 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 
 	public UpdateListener getCondition() {
 		return condition;
+	}
+	
+	public UpdateListener getListener() {
+		return updateListener;
 	}
 	
 	/**
@@ -741,7 +746,7 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 				return decodingXMLEntity(xmlTokener, map);
 			} else if(tokener instanceof EMFTokener) {
 				EMFTokener xmlTokener = (EMFTokener) tokener;
-				return ((EMFTokener) xmlTokener).decode(map);
+				return ((EMFTokener) xmlTokener).decode(map, null);
 			}
 			return null;
 		}
@@ -767,6 +772,15 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	 * @return the object
 	 */
 	public Object decodeEMF(String value) {
+		return decodeEMF(value, null);
+	}
+	/**
+	 * Special Case for EMF
+	 * @param value EMF-Value as String
+	 * @param root The Root Element for Result of ClassModel
+	 * @return the object
+	 */
+	public Object decodeEMF(String value, GraphModel root) {
 		if(value ==null ) {
 			return null;
 		}
@@ -775,7 +789,7 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 		tokener.withMap(this);
 		map.withFlag(flag);
 		tokener.withBuffer(value);
-		return tokener.decode(map);
+		return tokener.decode(map, root);
 	}
 	/**
 	 * Decode.
