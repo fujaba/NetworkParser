@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.converter.GraphConverter;
+import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphList;
@@ -36,5 +37,20 @@ public class GraphTest {
 
 		Assert.assertEquals(student.getSuperClass(), person);
 		Assert.assertTrue(person.getKidClazzes(false).contains(student));
+	}
+	
+	@Test
+	public void testComplex() {
+		Clazz student = new Clazz().with("Student");
+		Clazz person = new Clazz().with("Person");
+		Clazz uni = new Clazz().with("Uni");
+		student.withSuperClazz(person);
+
+		Assert.assertEquals(student.getSuperClass(), person);
+		Assert.assertTrue(person.getKidClazzes(false).contains(student));
+		
+		uni.withBidirectional(student, "stud", Cardinality.MANY, "owner", Cardinality.ONE);
+		
+		
 	}
 }
