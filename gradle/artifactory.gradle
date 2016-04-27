@@ -1,5 +1,7 @@
 if(project.hasProperty("artifactory_user")) {
 	apply plugin: "com.jfrog.artifactory"
+	apply plugin: 'maven-publish'
+
 	buildscript {
 		repositories {
 			maven {
@@ -8,6 +10,18 @@ if(project.hasProperty("artifactory_user")) {
 					username = "${artifactory_user}"
 					password = "${artifactory_password}"
 				}
+			}
+		}
+	}
+	publishing {
+		publications {
+			artifactoryJava(MavenPublication) {
+				artifact buildCoreJar
+				artifact buildCoreJar16
+				artifact buildCoreJar17
+				artifact buildSourceJar
+				artifact buildJavadoc
+				artifact buildFullJar
 			}
 		}
 	}
@@ -24,6 +38,12 @@ if(project.hasProperty("artifactory_user")) {
 				username = "${artifactory_user}"
 				password = "${artifactory_password}"
 				maven = true
+			}
+			defaults {
+				// Reference to Gradle publications defined in the build script.
+				// This is how we tell the Artifactory Plugin which artifacts should be
+				// published to Artifactory.
+				publications('artifactoryJava')
 			}
 		}
 		resolve {
