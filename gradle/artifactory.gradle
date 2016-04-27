@@ -39,6 +39,9 @@ if(project.hasProperty("artifactory_user")) {
 			}
 		}
 	}
+	artifacts { 
+		archives buildCoreJar, buildCoreJar17, buildSourceJar, buildJavadoc, buildFullJar
+	}
 } else {
 	task artifactoryPublish(type: Jar) {
 	}
