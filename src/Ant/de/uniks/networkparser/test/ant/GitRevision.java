@@ -4,9 +4,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
@@ -20,10 +22,15 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
+
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 
 public class GitRevision {
+	public static void main(String[] args) throws IOException {
+		GitRevision revision = new GitRevision();
+		revision.execute();
+	}
 	private boolean full=false;
 	public void execute() throws IOException {
 		File file = new File("");
@@ -34,9 +41,31 @@ public class GitRevision {
 		  .findGitDir() // scan up the file system tree
 		  .build();
 
-		System.setProperty("Branchname", repository.getBranch());
+		Map<String, Ref> allRefs = repository.getAllRefs();
 		ObjectId headID = repository.resolve("HEAD");
-		System.setProperty("LastCommit", headID.getName());
+		String id = headID.name();
+		if(id == null) {
+			id = "";
+		}
+		LinkedHashSet<String> branches=new LinkedHashSet<String>();
+		branches.add(repository.getBranch());
+		for(Iterator<String> i = allRefs.keySet().iterator();i.hasNext();){
+			String key = i.next();
+			Ref refValue = allRefs.get(key);
+			if(id.equals(refValue.getObjectId().name())) {
+				if(branches.contains(key) == false) {
+					branches.add(key);
+				}
+			}
+		}
+		Iterator<String> i = branches.iterator();
+		StringBuilder allBranches = new StringBuilder(i.next());
+		while(i.hasNext()) {
+			allBranches.append(" ").append(i.next());
+		}
+		
+		System.setProperty("Branchname", allBranches.toString());
+		System.setProperty("LastCommit", id);
 		calcGitTag(repository);
 
 		JsonArray map= new JsonArray();
