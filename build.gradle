@@ -52,14 +52,8 @@ buildscript {
 		classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.6.3"
 	}
 }
-
 artifacts { 
-	archives buildCoreJar
-	archives buildCoreJar16
-	archives buildCoreJar17
-	archives buildSourceJar
-	archives buildJavadoc
-	archives buildFullJar
+	archives buildCoreJar, buildCoreJar16, buildCoreJar17, buildSourceJar, buildJavadoc, buildFullJar
 }
 
 test {
