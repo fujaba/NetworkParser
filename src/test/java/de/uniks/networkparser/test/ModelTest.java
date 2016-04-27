@@ -12,9 +12,13 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.logic.Deep;
 import de.uniks.networkparser.test.model.Person;
 import de.uniks.networkparser.test.model.SortedMsg;
+import de.uniks.networkparser.test.model.Student;
+import de.uniks.networkparser.test.model.University;
 import de.uniks.networkparser.test.model.util.PersonCreator;
 import de.uniks.networkparser.test.model.util.PersonSet;
 import de.uniks.networkparser.test.model.util.SortedMsgCreator;
+import de.uniks.networkparser.test.model.util.StudentCreator;
+import de.uniks.networkparser.test.model.util.UniversityCreator;
 
 public class ModelTest {
 	@Test
@@ -95,6 +99,25 @@ public class ModelTest {
 		Assert.assertNotNull(root2.getChild());
 		Assert.assertEquals(root2.getChild().getMsg(), "Child");
 		Assert.assertNull(root2.getChild().getChild());
+	}
+	
+	@Test
+	public void testAtomar() {
+		University uni = new University();
+		uni.addToStudents(new Student().withFirstName("Albert"));
+		IdMap map=new IdMap();
+		map.with(new UniversityCreator());
+		map.with(new StudentCreator());
+//		AtomarCondition filter = new AtomarCondition(new UpdateListener() {
+//			@Override
+//			public boolean update(Object value) {
+//				System.out.println(value);
+//				return false;
+//			}
+//		});
+//		map.with(filter);
+		map.toJsonObject(uni);
+		uni.withStudents(new Student().withFirstName("Stefan"));
 		
 	}
 }

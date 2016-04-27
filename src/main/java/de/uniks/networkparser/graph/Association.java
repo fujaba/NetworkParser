@@ -41,7 +41,7 @@ public class Association extends GraphMember {
 	}
 
 	public Association(GraphEntity node) {
-		with(node);
+		this.parentNode = node;
 	}
 
 	public Cardinality getCardinality() {

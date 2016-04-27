@@ -4,8 +4,11 @@ import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.list.SimpleSet;
 
-public class AssociationSet extends SimpleSet<Association>{
-	public ClazzSet getClazzes() {
+public class AssociationSet extends SimpleSet<Association>
+{
+   public static final AssociationSet EMPTY_SET = new AssociationSet();
+   
+   public ClazzSet getClazzes() {
 		ClazzSet collection = new ClazzSet();
 		for(Association item : this) {
 			collection.add(item.getClazz());
@@ -28,7 +31,17 @@ public class AssociationSet extends SimpleSet<Association>{
 		}
 		return collection;
 	}
-
+	
+	@Override
+	public boolean add(Association newValue) {
+		if(newValue.getOther() != null) {
+			if(indexOf(newValue.getOther()) >= 0) {
+				return false;
+			}
+		}
+		return super.add(newValue);
+	}
+	
 	@Override
 	public AssociationSet filter(Condition<Association> newValue) {
 		AssociationSet collection = new AssociationSet();

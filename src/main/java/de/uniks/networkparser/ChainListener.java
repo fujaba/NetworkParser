@@ -7,8 +7,14 @@ import java.util.Iterator;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.list.SimpleList;
 
-public class ChainUpdateListener implements UpdateListener{
+public class ChainListener implements UpdateListener{
+	private boolean chain=true;
 	private SimpleList<Object> list = new SimpleList<Object>();
+
+	public ChainListener enableHook() {
+		this.chain = false;
+		return this;
+	}
 
 	@Override
 	public boolean update(Object evt) {
@@ -17,20 +23,24 @@ public class ChainUpdateListener implements UpdateListener{
 		}
 		return false;
 	}
+
 	public boolean updatePCE(PropertyChangeEvent evt) {
-		boolean result=false;
 		for(Iterator<Object> i = list.iterator();i.hasNext();) {
 			Object listener = i.next();
 			if(listener instanceof UpdateListener) {
-				result = result & ((UpdateListener)listener).update(evt);
+				if(((UpdateListener)listener).update(evt) == false) {
+					if(chain) {
+						return false;
+					}
+				}
 			} else if(listener instanceof PropertyChangeListener) {
 				((PropertyChangeListener)listener).propertyChange(evt);
 			}
 		}
-		return result;
+		return true;
 	}
 
-	public ChainUpdateListener with(UpdateListener... values) {
+	public ChainListener with(UpdateListener... values) {
 		if(values ==null) {
 			return this;
 		}
@@ -39,7 +49,7 @@ public class ChainUpdateListener implements UpdateListener{
 		}
 		return this;
 	}
-	public ChainUpdateListener with(PropertyChangeListener... values) {
+	public ChainListener with(PropertyChangeListener... values) {
 		if(values ==null) {
 			return this;
 		}

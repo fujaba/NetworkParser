@@ -1,5 +1,7 @@
 package de.uniks.networkparser.graph;
 
+import java.util.Collection;
+
 import de.uniks.networkparser.graph.util.AssociationSet;
 import de.uniks.networkparser.graph.util.AttributeSet;
 import de.uniks.networkparser.graph.util.ClazzSet;
@@ -462,6 +464,37 @@ public class Clazz extends GraphEntity {
 			}
 		}
 		return collection;
+	}
+
+   /** get all Associations
+    * @param filters Can Filter the List of Attributes
+    * @return all Attributes of a Clazz
+    *
+    *<pre>
+    * Clazz  --------------------- Association
+    * one                          many
+    *</pre>
+    */
+	public AssociationSet getAssociations(Condition<?>... filters) {
+		if (this.associations == null) {
+			return AssociationSet.EMPTY_SET;
+		}
+		AssociationSet result = new AssociationSet();
+		if (this.associations instanceof Association) {
+			if (check((Association) this.associations, filters)) {
+				result.add((Association) this.associations);
+			}
+			return result;
+		}
+		if (this.associations instanceof Collection<?>) {
+			Collection<?> list = (Collection<?>) this.associations;
+			for (Object item : list) {
+				if (item instanceof Association && check((Association) item, filters)) {
+					result.add((Association) item);
+				}
+			}
+		}
+		return result;
 	}
 
 	/** get All Methods

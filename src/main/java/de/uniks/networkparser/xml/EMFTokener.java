@@ -17,8 +17,10 @@ import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.Clazz.ClazzType;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.graph.Literal;
+import de.uniks.networkparser.graph.util.AssociationSet;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -30,18 +32,24 @@ public class EMFTokener extends Tokener{
 	public static final String ETYPE = "eType";
 	public static final String EAttribute = "ecore:EAttribute";
 	public static final String EReferences = "ecore:EReference";
+	public static final String ECore = "ecore:EPackage";
 	public static final String eSuperTypes = "eSuperTypes";
 	public static final String EEnum = "ecore:EEnum";
 	public static final String EOpposite = "eOpposite";
 	public static final String UPPERBOUND = "upperBound";
-	public static final String PARENT = "parent";
 
 	public static final String XSI_TYPE = "xsi:type";
 	public static final String XMI_ID = "xmi:id";
 	public static final String NAME = "name";
 	HashMap<String, Integer> runningNumbers = null;
 	private GraphList model;
-//	private SendableEntityCreator defaultFactory = new XMLEntityCreator();
+	private byte flag;
+	public static final byte CLASSMODEL=0x01;
+	
+	public EMFTokener withFlag(byte value) {
+		this.flag = value;
+		return this;
+	}
 	
 	/**
 	 * Skip the Current Entity to &gt;.
@@ -123,14 +131,24 @@ public class EMFTokener extends Tokener{
 
 	/**
 	 * @param map decoding runtime values
+	 * @param root The Root Element of Returnvalue
 	 * @return decoded Object
 	 */
-	public Object decode(MapEntity map) {
+	public Object decode(MapEntity map, GraphModel root) {
 		skipHeader();
 		XMLEntity xmlEntity = new XMLEntity();
-		xmlEntity.withValue(this);
+		xmlEntity.withValue(this.buffer);
+		if(ECore.equals(xmlEntity.getTag())) {
+			return decoding(xmlEntity);
+		}
 		// build root entity
 		String tag = xmlEntity.getTag();
+		if(this.flag == CLASSMODEL) {
+			if(root == null) {
+				root = new GraphList();
+			}
+			return decodingClassModel(xmlEntity, root);
+		}
 		String[] splitTag = tag.split("\\:");
 		String className = splitTag[1];
 		SendableEntityCreator rootFactory = getCreator(className, false);
@@ -154,7 +172,59 @@ public class EMFTokener extends Tokener{
 
 		return rootObject;
 	}
-
+	
+	private GraphModel decodingClassModel(XMLEntity values, GraphModel model) {
+		SimpleKeyValueList<String, Clazz> items = new SimpleKeyValueList<String, Clazz>();
+		for(EntityList item : values.getChildren()) {
+			if(item instanceof XMLEntity == false) {
+				continue;
+			}
+			XMLEntity child = (XMLEntity) item;
+			String[] splitTag = child.getTag().split("\\:");
+			String className = splitTag[1];
+			Clazz clazz = items.get(className);
+			if(clazz == null) {
+				// Create New One
+				clazz = new Clazz();
+				clazz.with(className);
+				items.add(className, clazz);
+				model.with(clazz);
+			}
+			for(int i = 0;i < child.size();i++) {
+				String key = child.get(i);
+				String value = (String) child.getValueByIndex(i);
+				if(value == null) {
+					value = "";
+				}
+				if(value.startsWith("/")) {
+					// Association
+					AssociationSet associations = clazz.getAssociations();
+					Association found = null;
+					for(Association assoc : associations) {
+						if(key.equals(assoc.getName())) {
+							found = assoc;
+							break;
+						}
+					}
+					if(found == null ) {
+						found = new Association(clazz);
+						found.with(key);
+						String ref = getRef(key, child, null);
+						Association back = new Association(items.get(ref));
+						found.with(back);
+					}
+					
+					if(value.indexOf("/", 1) > 0) {
+						// To Many
+						found.with(Cardinality.MANY);
+					}
+				}
+			}
+		}
+		//TODO CREATING METHOD BODY
+		return model;
+	}
+	
 	private void addXMIIds(XMLEntity xmlEntity, String rootId) {
 		if (xmlEntity.has(XMI_ID)) {
 			return;
@@ -223,42 +293,11 @@ public class EMFTokener extends Tokener{
 			if ("".equals(value) || XMI_ID.equals(key)) {
 				continue;
 			}
-
-			if (value.startsWith("//@")) {
-				for (String ref : value.split(" ")) {
-					String myRef = "_" + ref.substring(3);
-					if (myRef.indexOf('.') > 0) {
-						myRef = myRef.replaceAll("\\.|/@", "");
-					} else {
-						myRef = "_" + myRef.subSequence(0, 1) + "0";
-					}
-					Object object = getObject(myRef);
-					if (object != null) {
-						rootFactory.setValue(rootObject, key, object, "");
-					}
-				}
-			} else if (value.startsWith("/")) {
-				// maybe multiple separated by blanks
-				String tagChar = xmlEntity.getTag().substring(0, 1);
-				for (String ref : value.split(" ")) {
-					ref = "_" + tagChar + ref.substring(1);
-					if (getObject(ref) != null) {
-						rootFactory.setValue(rootObject, key, getObject(ref), "");
-					}
-				}
-			} else if (value.indexOf('_') > 0) {
-				// maybe multiple separated by blanks
-				for (String ref : value.split(" ")) {
-					if (getObject(ref) != null) {
-						rootFactory.setValue(rootObject, key, getObject(ref), "");
-					}
-				}
-			} else if (value.startsWith("$")) {
-				for (String ref : value.split(" ")) {
-					String myRef = "_" + ref.substring(1);
-					if (getObject(myRef) != null && rootFactory != null) {
-						rootFactory.setValue(rootObject, key, getObject(myRef), "");
-					}
+			String myRef = getRef(value, xmlEntity, rootFactory);
+			if(myRef != null) {
+				Object object = getObject(myRef);
+				if (object != null) {
+					rootFactory.setValue(rootObject, key, object, "");
 				}
 			} else {
 				if (rootFactory != null) {
@@ -284,6 +323,44 @@ public class EMFTokener extends Tokener{
 
 			addValues(kidFactory, (XMLEntity)kidEntity, kidObject, map);
 		}
+	}
+	
+	private String getRef(String value, XMLEntity xmlEntity, SendableEntityCreator rootFactory) {
+		if (value.startsWith("//@")) {
+			for (String ref : value.split(" ")) {
+				String myRef = "_" + ref.substring(3);
+				if (myRef.indexOf('.') > 0) {
+					myRef = myRef.replaceAll("\\.|/@", "");
+				} else {
+					myRef = "_" + myRef.subSequence(0, 1) + "0";
+				}
+				return myRef;
+			}
+		} else if (value.startsWith("/")) {
+			// maybe multiple separated by blanks
+			String tagChar = xmlEntity.getTag().substring(0, 1);
+			for (String ref : value.split(" ")) {
+				ref = "_" + tagChar + ref.substring(1);
+				if (getObject(ref) != null) {
+					return ref;
+				}
+			}
+		} else if (value.indexOf('_') > 0) {
+			// maybe multiple separated by blanks
+			for (String ref : value.split(" ")) {
+				if (getObject(ref) != null) {
+					return ref;
+				}
+			}
+		} else if (value.startsWith("$")) {
+			for (String ref : value.split(" ")) {
+				String myRef = "_" + ref.substring(1);
+				if (rootFactory != null && getObject(myRef) != null) {
+					return myRef;
+				}
+			}
+		}
+		return null;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -365,6 +442,9 @@ public class EMFTokener extends Tokener{
 				if (kidFactory == null && typeName.endsWith("s")) {
 					kidFactory = getCreator(typeName.substring(0, typeName.length() - 1), false);
 				}
+				if(kidFactory == null) {
+					continue;
+				}
 				Object kidObject = kidFactory.getSendableInstance(false);
 
 				if (rootCollection != null) {
@@ -379,13 +459,18 @@ public class EMFTokener extends Tokener{
 	}
 
 	public GraphList decoding(String content) {
-		GraphList model = new GraphList();
+		return decoding(new XMLEntity().withValue(content));
+	}
+	public GraphList decoding(Tokener content) {
+		return decoding(new XMLEntity().withValue(this));
+	}
 
-		XMLEntity ecore = new XMLEntity().withValue(content);
-		SimpleList<Entity> refs = new SimpleList<Entity>();
+	private GraphList decoding(XMLEntity ecore) {
+		GraphList model = new GraphList();
 		SimpleList<Entity> superClazzes = new SimpleList<Entity>();
 
 		// add classes
+		SimpleKeyValueList<Entity, EntityList> parentList=new SimpleKeyValueList<Entity, EntityList>();
 		for (EntityList eClassifier : ecore.getChildren()) {
 			if(eClassifier instanceof XMLEntity == false) {
 				continue;
@@ -414,8 +499,7 @@ public class EMFTokener extends Tokener{
 						}
 						clazz.with(new Attribute(EntityUtil.toValidJavaId(childItem.getString(EMFTokener.NAME)), DataType.create(etyp)));
 					}else if(typ.equals(EReferences)) {
-						childItem.put(PARENT, eClassifier);
-						refs.add(childItem);
+						parentList.add(childItem, eClassifier);
 					}
 				}
 				if(xml.has(eSuperTypes)) {
@@ -446,11 +530,12 @@ public class EMFTokener extends Tokener{
 			String id = EntityUtil.getId(eClass.getString(eSuperTypes));
 			 Clazz kidClazz = model.getNode(eClass.getString(EMFTokener.NAME));
 			 Clazz superClazz = model.getNode(id);
-			 kidClazz.withoutSuperClazz(superClazz);
+			 kidClazz.withSuperClazz(superClazz);
 		}
 		// assocs
 		SimpleKeyValueList<String, Association> items = new SimpleKeyValueList<String, Association>();
-		for(Entity eref : refs) {
+		for(int i=0;i<parentList.size();i++) {
+			Entity eref = parentList.get(i);
 			String tgtClassName = eref.getString(ETYPE);
 			if(tgtClassName.indexOf("#")>=0) {
 				tgtClassName = tgtClassName.substring(tgtClassName.indexOf("#") + 3);
@@ -469,7 +554,7 @@ public class EMFTokener extends Tokener{
 			}
 
 			String srcRoleName = null;
-			XMLEntity parent =(XMLEntity) eref.getValue(PARENT);
+			XMLEntity parent = (XMLEntity) parentList.getValueByIndex(i);
 			String srcClassName = parent.getString(EMFTokener.NAME);
 			if (!eref.has(EOpposite)) {
 //				srcRoleName = tgtRoleName+"_back";

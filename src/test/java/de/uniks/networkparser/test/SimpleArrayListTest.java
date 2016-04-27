@@ -36,6 +36,23 @@ public class SimpleArrayListTest
 		Assert.assertEquals(1, simpleSet.getPositionKey("Welt", false));
 		Assert.assertEquals(2, simpleSet.getPositionKey("Welt", true));
 	}
+	@Test
+	public void testBigListTest() {
+		SimpleSet<Integer> list = new SimpleSet<Integer>();
+		for(int i=0;i<500;i++) {
+			list.add(i);
+		}
+		Assert.assertEquals(500, list.size());
+		SimpleSet<Integer> newList = new SimpleSet<Integer>();
+		newList.withList(list);
+		Assert.assertEquals(500, newList.size());
+		
+		SimpleSet<Integer> newListOBJ = new SimpleSet<Integer>();
+		newListOBJ.with(list.toArray(new Object[list.size()]));
+		Assert.assertEquals(500, newList.size());
+
+	}
+	
    @Test
    public void testReorderItems() {
 	  SimpleList<String> list=new SimpleList<String>();

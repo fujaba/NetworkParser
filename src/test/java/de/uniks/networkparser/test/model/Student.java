@@ -10,11 +10,12 @@ package de.uniks.networkparser.test.model;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
+import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
 
 // should become a JSON Parser
 // should become a JSON Parser
-public class Student {
+public class Student implements SendableEntity{
 	/**
 	 * <pre>
 	 *		   0..n	 students	 0..1
@@ -102,18 +103,21 @@ public class Student {
 	protected final PropertyChangeSupport listeners = new PropertyChangeSupport(
 			this);
 
-	public void addPropertyChangeListener(PropertyChangeListener listener) {
+	public boolean addPropertyChangeListener(PropertyChangeListener listener) {
 		getPropertyChangeSupport().addPropertyChangeListener(listener);
+		return true;
 	}
 
-	public void removePropertyChangeListener(PropertyChangeListener listener) {
+	public boolean removePropertyChangeListener(PropertyChangeListener listener) {
 		getPropertyChangeSupport().removePropertyChangeListener(listener);
+		return true;
 	}
 
-	public void addPropertyChangeListener(String property,
+	public boolean addPropertyChangeListener(String property,
 			PropertyChangeListener listener) {
 		getPropertyChangeSupport()
 				.addPropertyChangeListener(property, listener);
+		return true;
 	}
 
 	public void removePropertyChangeListener(String property,

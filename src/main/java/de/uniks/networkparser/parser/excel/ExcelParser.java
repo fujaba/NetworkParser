@@ -57,7 +57,7 @@ public class ExcelParser {
 
 		IdMap map = new IdMap();
 		map.with(new ExcelCell());
-		XMLTokener tokener = new XMLTokener().withBuffer(sheetFile.toString());
+		XMLTokener tokener = new XMLTokener().withBuffer(sheetFile.toString()).withMap(map);
 		tokener.withDefaultFactory(new XMLEntityCreator());
 		XMLEntity sheet = (XMLEntity) map.decode(tokener);
 		XMLEntity sharedStrings = null;
