@@ -1,7 +1,5 @@
 if(project.hasProperty("artifactory_user")) {
 	apply plugin: "com.jfrog.artifactory"
-	apply plugin: 'artifactory'
-
 	buildscript {
 		repositories {
 			maven {
