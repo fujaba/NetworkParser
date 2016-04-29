@@ -99,8 +99,7 @@ public class StringTokenerTest {
 
 	@Test
 	public void testUTF8(){
-//		String test="{id:\"Hüttenberg\"}";
-		String test="ü";
+		String test=new String(new byte[]{-61,-68});
 		byte[] bytes = test.getBytes();
 		Assert.assertEquals(2, bytes.length);
 		Assert.assertNotNull((Character)test.charAt(0));

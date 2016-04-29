@@ -7,7 +7,7 @@ import de.uniks.networkparser.calculator.RegCalculator;
 
 /*
  MathParser Java - Cross Platform Mathematical Expressions Parser
- Copyright 2013 Rodríguez Hernández, Daniel.
+ Copyright 2013 Rodriguez Hernindez, Daniel.
  daniel.rguez.hdez[at]gmail.com
 
  Licensed under the Apache License, Version 2.0 (the "License");
