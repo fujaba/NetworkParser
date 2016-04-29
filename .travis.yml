@@ -13,8 +13,8 @@ addons:
       name: "fujaba/NetworkParser"
       description: "Build submitted via Travis CI"
     notification_email: Stefan.Lindel@cs.uni-kassel.de
-    build_command_prepend: "gradle clean"
-    build_command:   "gradle -xTest -xJavadoc"
+    build_command_prepend: "mvn clean"
+    build_command:   "mvn -DskipTests=true compile"
     branch_pattern: coverity_scan
 
 before_script:
