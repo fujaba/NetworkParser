@@ -183,7 +183,7 @@ public class DateTimeEntity {
 					return true;
 				}
 			} else if (month == 10 && leftDays < 7
-					|| (dayOfWeek == 7 && hour < 3)) {
+					|| (dayOfWeek == 7)) {
 				if ((7 - dayOfWeek) < leftDays) {
 					return true;
 				}
@@ -256,7 +256,7 @@ public class DateTimeEntity {
 	}
 
 	public DateTimeEntity withTime(Long value) {
-		if (value != null && this.time != value ) {
+		if (value == null || value.equals(this.time) == false ) {
 			this.time = value;
 			this.dirty = true;
 		}

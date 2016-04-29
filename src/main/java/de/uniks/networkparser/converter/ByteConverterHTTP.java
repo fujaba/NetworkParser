@@ -1,5 +1,7 @@
 package de.uniks.networkparser.converter;
 
+import java.nio.charset.Charset;
+
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 /*
@@ -53,7 +55,7 @@ public class ByteConverterHTTP extends ByteConverter {
 	 */
 	@Override
 	public byte[] decode(String values) {
-		return decode(values.getBytes());
+		return decode(values.getBytes(Charset.forName("UTF-8")));
 	}
 	public byte[] decode(byte[] values) {
 		if(values == null) {

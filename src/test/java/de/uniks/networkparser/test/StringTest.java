@@ -1,5 +1,7 @@
 package de.uniks.networkparser.test;
 
+import java.io.UnsupportedEncodingException;
+
 import org.junit.Assert;
 import org.junit.Test;
 import de.uniks.networkparser.EntityUtil;
@@ -43,6 +45,13 @@ public class StringTest {
 		}
 		Assert.assertEquals(ref, temp);
 	}
+	
+	@Test
+	public void testByteCode() throws UnsupportedEncodingException{
+		String a = new String(new byte[]{0x42}, "UTF-8");
+		Assert.assertEquals("B", a);
+	}
+
 
 	@Test
 	public void testEscapeSimple(){

@@ -92,7 +92,8 @@ public abstract class GraphModel extends GraphEntity {
 	 * @return State for change the Autorname
 	 */
 	public boolean setAuthorName(String value) {
-		if(this.defaultAuthorName != value) {
+		if((value != null && value.equals(this.defaultAuthorName) == false)
+				|| (value==null && this.defaultAuthorName != null)) {
 			this.defaultAuthorName = value;
 			return true;
 		}

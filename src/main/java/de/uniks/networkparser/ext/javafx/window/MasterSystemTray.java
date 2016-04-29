@@ -77,6 +77,10 @@ public class MasterSystemTray implements StageEvent{
 			e.printStackTrace();
 		}
 	}
+	
+	public FXStageController getController() {
+		return this.controller;
+	}
 
 	public MasterSystemTray withToolTip(String text) {
 		trayIcon.setToolTip(text);

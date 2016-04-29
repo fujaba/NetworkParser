@@ -101,7 +101,8 @@ public abstract class GraphMember {
 	}
 
 	boolean setName(String value) {
-		if(value != this.name) {
+		if((value != null && value.equals(this.name) == false)
+				|| (value==null && this.name != null)) {
 			this.name = value;
 			return true;
 		}
@@ -211,7 +212,9 @@ public abstract class GraphMember {
 				for(int i=collection.size();i>=0;i--) {
 					if(collection.get(i) instanceof Annotation) {
 						GraphMember oldValue = collection.remove(i);
-						oldValue.setParent(null);
+						if(oldValue != null) {
+							oldValue.setParent(null);
+						}
 					}
 				}
 			}
@@ -258,13 +261,15 @@ public abstract class GraphMember {
 			return this;
 		}
 		Modifier rootModifier = getModifier();
-		for (Modifier item : values) {
-			if (item.has(Modifier.PUBLIC) || item.has(Modifier.PACKAGE) || item.has(Modifier.PROTECTED)
-					|| item.has(Modifier.PRIVATE)) {
-				rootModifier.with(item.getName());
-				continue;
+		if(rootModifier != null) {
+			for (Modifier item : values) {
+				if (item.has(Modifier.PUBLIC) || item.has(Modifier.PACKAGE) || item.has(Modifier.PROTECTED)
+						|| item.has(Modifier.PRIVATE)) {
+					rootModifier.with(item.getName());
+					continue;
+				}
+				rootModifier.withChildren(item);
 			}
-			rootModifier.withChildren(item);
 		}
 		return this;
 	}

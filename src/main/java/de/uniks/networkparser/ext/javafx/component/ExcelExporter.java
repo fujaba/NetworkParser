@@ -53,7 +53,9 @@ public class ExcelExporter extends MenuItem implements EventHandler<ActionEvent>
 		File choice = fileChooser.showSaveDialog(tableComponent.getScene().getWindow());
 		if(choice!=null) {
 			if(choice.exists()){
-				choice.delete();
+				if(choice.delete() == false) {
+					return;
+				}
 			}
 			ArrayList<String> attributes=new ArrayList<String>();
 			ExcelWorkBook workBook = new ExcelWorkBook();

@@ -23,9 +23,12 @@ package de.uniks.networkparser.ext.io;
 */
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 
@@ -45,7 +48,9 @@ public class FileBuffer extends Buffer {
 	public FileBuffer withFile(File file) throws FileNotFoundException {
 		this.file = file;
 		this.length = (int) this.file.length();
-		this.reader = new BufferedReader(new FileReader(this.file), 1024*1024);
+		FileInputStream fis = new FileInputStream(this.file);
+		InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"));
+		this.reader = new BufferedReader(isr, 1024*1024);
 		this.position = 0;
 		return this;
 	}

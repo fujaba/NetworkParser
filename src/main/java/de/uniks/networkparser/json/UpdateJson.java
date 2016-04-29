@@ -26,10 +26,12 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map.Entry;
 
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.list.SimpleIteratorSet;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.logic.SimpleMapEvent;
 import de.uniks.networkparser.logic.UpdateCondition;
@@ -252,13 +254,13 @@ public class UpdateJson implements PropertyChangeListener {
 		if (remove == null && update != null) {
 			// create Message
 			Object refObject = creator.getSendableInstance(true);
-			Iterator<String> keys = update.keySet().iterator();
-			while (keys.hasNext()) {
-				String key = keys.next();
+			for(SimpleIteratorSet<String, Object> i = new SimpleIteratorSet<String, Object>(update);i.hasNext();) {
+				Entry<String, Object> item = i.next();
+				String key = item.getKey();
 				Object value = creator.getValue(masterObj, key);
 				if (value == null) {
 					// Old Value is Standard
-					return setValue(creator, masterObj, key, update.get(key), IdMap.NEW);
+					return setValue(creator, masterObj, key, item.getValue(), IdMap.NEW);
 				} else if (value.equals(creator.getValue(refObject, key))) {
 					// Old Value is Standard
 					return setValue(creator, masterObj, key,

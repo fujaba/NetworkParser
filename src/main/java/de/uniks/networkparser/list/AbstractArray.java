@@ -346,7 +346,7 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 			hashKey = hashKey(newValue.hashCode(), items.length);
 		}
 		while (true) {
-			if (items[hashKey] == null || items[hashKey] == REMOVED) {
+			if (items[hashKey] == null || REMOVED.equals(items[hashKey])) {
 				items[hashKey] = pos;
 				return hashKey;
 			}
@@ -923,7 +923,7 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 		int lastIndex = -1;
 
 		while (hashCodes[index] != null) {
-			if (hashCodes[index] == REMOVED) {
+			if (REMOVED.equals(hashCodes[index])) {
 				index = (index + 1) % hashCodes.length;
 				continue;
 			}
@@ -1069,21 +1069,23 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 		if (complex > 1 && complex > (offset + 1) && elements[offset + 1] != null) {
 			Object[] hashCodes = ((Object[]) elements[offset + 1]);
 			int indexPos = hashKey(oldValue.hashCode(), hashCodes.length);
-			int indexHash = (Integer) hashCodes[indexPos];
-			int pos = transformIndex(indexHash, items.length);
-			while (pos != index) {
-				indexPos = (indexPos + 1) % hashCodes.length;
-				if (hashCodes[indexPos] == null) {
-					break;
+			if (hashCodes[indexPos] != null) {
+				int indexHash = (Integer) hashCodes[indexPos];
+				int pos = transformIndex(indexHash, items.length);
+				while (pos != index) {
+					indexPos = (indexPos + 1) % hashCodes.length;
+					if (hashCodes[indexPos] == null) {
+						break;
+					}
+					indexHash = (Integer) hashCodes[indexPos];
+					if (indexHash == REMOVED) {
+						continue;
+					}
+					pos = transformIndex(indexHash, items.length);
 				}
-				indexHash = (Integer) hashCodes[indexPos];
-				if (indexHash == REMOVED) {
-					continue;
+				if (pos == index) {
+					hashCodes[indexPos] = -1;
 				}
-				pos = transformIndex(indexHash, items.length);
-			}
-			if (pos == index) {
-				hashCodes[indexPos] = -1;
 			}
 		}
 

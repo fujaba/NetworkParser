@@ -23,10 +23,10 @@ public class MapEntity extends SimpleList<Object>{
 	private Object target;
 	private MapEntityStack stack;
 	/** The show line. */
-	private byte flag = IdMap.FLAG_ID;
 	private byte tokenerFlag;
 	
 	public MapEntity(Filter filter, Grammar grammar) {
+		this.flag = IdMap.FLAG_ID;
 		if(filter != null) {
 			this.filter = filter;
 		}

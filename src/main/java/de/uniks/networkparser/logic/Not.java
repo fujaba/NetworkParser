@@ -71,7 +71,7 @@ public class Not implements UpdateListener, SendableEntityCreator {
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if (ITEM.equalsIgnoreCase(attribute)) {
-			((Not) entity).getItem();
+			return ((Not) entity).getItem();
 		}
 		return null;
 	}

@@ -72,5 +72,30 @@ public class DataTypeMap extends DataType {
 		}
 		return this.value.getName(shortName) + "<" + genericKey.getInternName(shortName, false) + "," + genericValue.getInternName(shortName, false) + ">";
 	}
-
+	@Override
+	public boolean equals(Object obj) {
+		if(super.equals(obj) == false) {
+			return false;
+		}
+		if(obj instanceof DataTypeMap == false) {
+			return false;
+		}
+		if(obj.hashCode() == this.hashCode()) {
+			return true;
+		}
+		DataTypeMap otherDTM = (DataTypeMap) obj;
+		if(this.genericKey == null) {
+			if(otherDTM.getGenericKey() != null) {
+				return false;
+			}
+		} else {
+			if(otherDTM.getGenericKey().equals(this.genericKey) == false) {
+				return false;
+			}
+		}
+		if(this.genericValue == null) {
+			return otherDTM.getGenericValue() == null;
+		}
+		return otherDTM.getGenericValue().equals(this.genericValue);
+	}
 }

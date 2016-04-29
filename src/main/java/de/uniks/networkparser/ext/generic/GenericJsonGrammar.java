@@ -15,8 +15,10 @@ public class GenericJsonGrammar extends SimpleGrammar {
 		Class<?> search;
 		if(modelItem instanceof Class<?>) {
 			search = (Class<?>) modelItem;
-		}else {
+		}else if(modelItem != null) {
 			search = modelItem.getClass();
+		} else {
+			return null;
 		}
 		for(Iterator<SendableEntityCreator> i =map.iterator();i.hasNext();){
 			SendableEntityCreator item = i.next();

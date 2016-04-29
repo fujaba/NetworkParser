@@ -48,10 +48,12 @@ public class AWTContainer implements Runnable{
 	@Override
 	public void run() {
 		if (Platform.isFxApplicationThread() && !isDisposed) {
-			lock.lock();
+//			lock.lock();
 			condition = lock.newCondition();
 			try {
-				condition.await(1000, TimeUnit.MILLISECONDS);
+				if(condition.await(1000, TimeUnit.MILLISECONDS) == false) {
+					return;
+				}
 
 				Platform.runLater(this);
 			} catch (InterruptedException e) {
@@ -62,7 +64,7 @@ public class AWTContainer implements Runnable{
 
 	public void exit() {
 		condition.signal();
-		lock.unlock();
+//		lock.unlock();
 		isDisposed=true;
 	}
 

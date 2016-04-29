@@ -61,4 +61,20 @@ public class DataTypeSet extends DataType{
 		DataTypeSet result = new DataTypeSet().withGeneric(value);
 		return result;
 	}
+	@Override
+	public boolean equals(Object obj) {
+		if(super.equals(obj) == false) {
+			return false;
+		}
+		if(obj instanceof DataTypeSet == false) {
+			return false;
+		}
+		if(obj.hashCode() == this.hashCode()) {
+			return true;
+		}
+		if(this.generic == null) {
+			return ((DataTypeSet)obj).getGeneric() == null;
+		}
+		return ((DataTypeSet)obj).getGeneric().equals(this.generic);
+	}
 }

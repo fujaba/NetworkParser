@@ -89,6 +89,12 @@ public class Modifier extends GraphMember {
 
 	@Override
 	public boolean equals(Object obj) {
+		if(obj == null){
+			return false;
+		}
+		if(obj.hashCode() == this.hashCode()) {
+			return true;
+		}
 		if(obj instanceof Modifier) {
 			return this.has((Modifier) obj);
 		}

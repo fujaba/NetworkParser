@@ -95,6 +95,9 @@ public class DataType {
 		if (!(obj instanceof DataType)) {
 			return false;
 		}
+		if(obj.hashCode() == this.hashCode()) {
+			return true;
+		}
 		DataType other = (DataType) obj;
 		if (this.getName(false) == null) {
 			return other.getName(false) == null;

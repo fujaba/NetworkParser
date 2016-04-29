@@ -622,9 +622,7 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	
 	public boolean notify(PropertyChangeEvent event) {
     	if (this.listener != null ) {
-    		if(this.listener instanceof PropertyChangeListener) {
-    			((PropertyChangeListener)this.listener).propertyChange(event);
-    		}
+    		this.listener.propertyChange(event);
     		if (this.listener != null && this.listener instanceof UpdateListener) {
     			return ((UpdateListener)this.listener).update(event);
     		}
@@ -751,6 +749,9 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 			return null;
 		}
 		Entity item = tokener.newInstance();
+		if(item == null) {
+			return null;
+		}
 		tokener.parseToEntity(item);
 		return decode(item);
 	}
@@ -805,6 +806,9 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 			return null;
 		}
 		byte[] decodeBytes = converter.decode(value);
+		if(decodeBytes == null) {
+			return null;
+		}
 		MapEntity map = new MapEntity(filter, grammar);
 		map.withFlag(flag);
 		ByteBuffer buffer = new ByteBuffer().with(decodeBytes);
@@ -1150,10 +1154,16 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 			return null;
 		}
 		Entity newInstance = tokener.newInstance();
+		if (newInstance == null) {
+			return null;
+		}
 		if(creator instanceof SendableEntityCreatorNoIndex == false) {
 			id = map.getId(entity, this, className);
 		}
 		Entity item = map.writeBasicValue(creator, newInstance, parentNode, className, id);
+		if (item == null) {
+			return null;
+		}
 		EntityList targetList = (EntityList) map.getTarget();
 		if(targetList != null && targetList.isComparator() == false) {
 			targetList.with(newInstance);
@@ -1304,9 +1314,11 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 				((Entity)parent).setValueItem(tokener.transformValue(value, parent));
 			} else  if (map.isTypSave() ) {
 				Entity child = tokener.newInstance();
-				child.put(CLASS, className);
-				child.put(VALUE, tokener.transformValue(writeValue, parent));
-				((Entity)parent).put(property, child);
+				if(child != null) {
+					child.put(CLASS, className);
+					child.put(VALUE, tokener.transformValue(writeValue, parent));
+					((Entity)parent).put(property, child);
+				}
 			} else {
 				//FILTER
 				((Entity)parent).put(property, tokener.transformValue(writeValue, parent));

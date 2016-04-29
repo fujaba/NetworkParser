@@ -155,7 +155,6 @@ public abstract class GraphEntity extends GraphMember {
 		if(fullName || clazz.lastIndexOf(".") < 0) {
 			return null;
 		}
-		sub = "."+clazz.substring(clazz.lastIndexOf(".")+1);
 		for(GraphMember item : collection) {
 			if(item instanceof Clazz) {
 				id = ((Clazz)item).getId();

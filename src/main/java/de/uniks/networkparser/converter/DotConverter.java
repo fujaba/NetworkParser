@@ -106,10 +106,12 @@ public class DotConverter implements Converter {
 				value.getChar();
 
 				GraphEntity otherNode = decodeNode(graph, value);
-				Association otherEdge = new Association(otherNode);
-				otherEdge.with(otherNode);
-				graph.withNode(otherNode);
-				edge.with(otherEdge);
+				if(otherNode != null) {
+					Association otherEdge = new Association(otherNode);
+					otherEdge.with(otherNode);
+					graph.withNode(otherNode);
+					edge.with(otherEdge);
+				}
 			}
 			endChar = value.getCurrentChar();
 		} while(endChar != 0 && endChar != '}');

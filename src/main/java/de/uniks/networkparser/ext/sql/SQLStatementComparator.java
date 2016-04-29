@@ -1,8 +1,10 @@
 package de.uniks.networkparser.ext.sql;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
-public class SQLStatementComparator implements Comparator<Object>{
+public class SQLStatementComparator implements Comparator<Object>, Serializable{
+	private static final long serialVersionUID = 1L;
 
 	@Override
 	public int compare(Object o1, Object o2) {

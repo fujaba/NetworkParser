@@ -29,7 +29,7 @@ import de.uniks.networkparser.interfaces.UpdateListener;
 */
 import de.uniks.networkparser.logic.SimpleCollectionEvent;
 
-public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
+public class SimpleSet<V> extends AbstractList<V> implements Set<V>, Cloneable {
 	private UpdateListener listener;
 	@Override
 	public SimpleSet<V> getNewList(boolean keyValue) {
@@ -41,6 +41,7 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V> {
 		return super.removeByObject(o)>=0;
 	}
 
+	@Override
 	public SimpleSet<V> clone() {
 		return ((SimpleSet<V>)getNewList(false)).init(this);
 	}

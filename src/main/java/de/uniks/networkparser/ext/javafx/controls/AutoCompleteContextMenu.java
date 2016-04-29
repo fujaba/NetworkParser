@@ -42,10 +42,10 @@ public class AutoCompleteContextMenu extends ContextMenu{
 
 	public AutoCompleteContextMenu withSuggestions(Set<String> values) {
 		getItems().clear();
-		int i=1;
+		boolean alternative=false;
 		for(String item : values) {
 			MenuItem menuItem = new MenuItem();
-			if(i % 2 == 1) {
+			if(alternative) {
 				menuItem.getStyleClass().add("suggestionscell");
 			}else{
 				menuItem.getStyleClass().add("suggestionscellodd");
@@ -62,7 +62,7 @@ public class AutoCompleteContextMenu extends ContextMenu{
 			});
 
 			getItems().add(menuItem);
-			i++;
+			alternative = !alternative;
 		}
 		return this;
 	}

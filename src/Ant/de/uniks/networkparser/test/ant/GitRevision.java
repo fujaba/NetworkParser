@@ -1,8 +1,10 @@
 package de.uniks.networkparser.test.ant;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -10,6 +12,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
@@ -43,18 +46,23 @@ public class GitRevision {
 
 		Map<String, Ref> allRefs = repository.getAllRefs();
 		ObjectId headID = repository.resolve("HEAD");
-		String id = headID.name();
-		if(id == null) {
+		String id;
+		if(headID == null) {
 			id = "";
+		} else {
+			id = headID.name();
+			if(id == null) {
+				id = "";
+			}
 		}
 		LinkedHashSet<String> branches=new LinkedHashSet<String>();
 		branches.add(repository.getBranch());
-		for(Iterator<String> i = allRefs.keySet().iterator();i.hasNext();){
-			String key = i.next();
-			Ref refValue = allRefs.get(key);
-			if(id.equals(refValue.getObjectId().name())) {
-				if(branches.contains(key) == false) {
-					branches.add(key);
+		repository.close();
+		for(Iterator<Entry<String, Ref>> i = allRefs.entrySet().iterator();i.hasNext();){
+			Entry<String, Ref> item = i.next();
+			if(id.equals(item.getValue().getObjectId().name())) {
+				if(branches.contains(item.getKey()) == false) {
+					branches.add(item.getKey());
 				}
 			}
 		}
@@ -80,9 +88,21 @@ public class GitRevision {
 //			System.out.println(count);
 		}
 		System.setProperty("Revisionnumber", "" +count);
-		FileWriter writer= new FileWriter("build/commits.json");
-		writer.write(map.toString(2));
-		writer.close();
+		OutputStreamWriter writer = null;
+		try {
+			FileOutputStream fos = new FileOutputStream("build/commits.json");
+			writer = new OutputStreamWriter(fos, Charset.forName("UTF-8"));
+			writer.write(map.toString(2));
+		} catch (IOException e) {
+			throw e;
+		} finally {
+			try {
+				if(writer != null) {
+					writer.close();
+				}
+			} catch (IOException e) {
+			}
+		}
 	}
 
 	public int calcGitTag(Repository repository) {
@@ -122,8 +142,10 @@ public class GitRevision {
 				if(objectID!=null){
 					jsonObject.put("ID", objectID.getName());
 				}
-				jsonObject.put("TIME", commit.getCommitTime());
-				jsonObject.put("COMMITER", commit.getCommitterIdent().getName());
+				jsonObject.put("TIME",  "" + commit.getCommitTime());
+				if(commit.getCommitterIdent() != null) {
+					jsonObject.put("COMMITER", commit.getCommitterIdent().getName());
+				}
 				jsonObject.put("MESSAGE", commit.getFullMessage());
 
 				if(newerrId!=null && full){
@@ -159,7 +181,7 @@ public class GitRevision {
 			}
 			walk.close();
 			return jsonObject;
-		}catch(Exception e){
+		}catch(GitAPIException e) {
 		}
 		return null;
 	}

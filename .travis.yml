@@ -1,21 +1,15 @@
 language: java
 jdk: oraclejdk8
 
-env:
-  global:
-   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
-   #   via the "travis encrypt" command using the project repo's public key
-   - secure: "t7ASIBbjXuMT4Gg4OFDWqJWhLZkC6kPGCRSEY7Yc03UYjdotnmU/6xXEkqtmYb+yLg2lnCLG6ndy3OdEu/u9JhqJg/8dRuvtLV/AzAFgx1lheC/WDEU9mI1QvEww5brlk4nYE1gEh+YCuvOJSBquBLgFnqoNxexQBOenaZV8eQd100b1wmOMQMaM5KAgiyeHaokgx0Io1jbn71gXedmJHBBFOWZLINeM+wbA6DedFla0vz0Wl06ks+bcU+y3IXWJzitWmXxOFJnUYBmzre3IPJEJaL5ZgDEmlIHG8JzEp3kOBGxq9zW1IRnnt7gO0nwHm9nMup54ZRsCOnrJcZQPGKPMdxoUaroUcIOyosgwIRqEN3LgvnChiPpXQAvAdZyYm2DYYv/p4eeXtoWKwcSTe8nfqjc2VUX3BZlooLPzvgrlOprAUK5fkGAv9VG7kITtzZxXdBY9IdjQ4wsghtsluX47numIZPae6ojEVl1nbIWRHHg3ncz30tuTNzK7OJk+TK9rs7G5RBtXru1KXJD3eBhCO3BK7pF8TpD/FHEjEel7/VVsvNMIrsQeIDICAMStVr+3xTsdM4fqSEyd4h0GMYR5/Swr8dhIt470K1evZoRiTGKtNUzcI3oMqsZXTYzSlo3FfsdIC4PT3Ba+0DCWR5gCIBdBtdnQr6+6K1griNI="
-
 addons:
   coverity_scan:
     project:
       name: "fujaba/NetworkParser"
       description: "Build submitted via Travis CI"
     notification_email: Stefan.Lindel@cs.uni-kassel.de
-    build_command_prepend: "mvn clean"
-    build_command:   "mvn -DskipTests=true compile"
-    branch_pattern: coverity_scan
+    build_command_prepend: "gradle clean"
+    build_command:   "gradle -xTest -xJavadoc"
+    branch_pattern: master
 
 before_script:
   - sudo service postgresql stop || true

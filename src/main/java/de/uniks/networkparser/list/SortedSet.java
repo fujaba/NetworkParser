@@ -74,7 +74,7 @@ public class SortedSet<V> extends SimpleSet<V> {
 	 *
 	 */
 	@SuppressWarnings("unchecked")
-	public <ST extends SimpleList<V>> ST tailSet(V fromElement, boolean inclusive) {
+	public <ST extends SimpleSet<V>> ST tailSet(V fromElement, boolean inclusive) {
 		if(!isComparator()) {
 			return null;
 		}
@@ -123,7 +123,7 @@ public class SortedSet<V> extends SimpleSet<V> {
 	 *
 	 */
 	@SuppressWarnings("unchecked")
-	public <ST extends SimpleList<V>> ST headSet(V toElement, boolean inclusive) {
+	public <ST extends SimpleSet<V>> ST headSet(V toElement, boolean inclusive) {
 		if(!isComparator()) {
 			return null;
 		}

@@ -281,7 +281,7 @@ public class GraphConverter implements Converter{
 		for (GraphMember entity : children) {
 			JsonObject item = parseEntity(typ, entity, shortName);
 			if (item != null) {
-				if (typ == GraphTokener.CLASS && item.has(ID)) {
+				if (GraphTokener.CLASS.equals(typ) && item.has(ID)) {
 					String key = item.getString(ID);
 					if (ids.contains(key)) {
 						continue;

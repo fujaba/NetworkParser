@@ -52,13 +52,13 @@ public class ExcelCell implements SendableEntityCreatorTag, EntityList{
 			return null;
 		}
 		if(PROPERTY_STYLE.equals(attribute)) {
-			((ExcelCell)entity).getStyle();
+			return ((ExcelCell)entity).getStyle();
 		}
 		if(PROPERTY_TYPE.equals(attribute)) {
-			((ExcelCell)entity).getType();
+			return ((ExcelCell)entity).getType();
 		}
 		if(PROPERTY_REFERENZ.equals(attribute)) {
-			((ExcelCell)entity).getReferenz();
+			return ((ExcelCell)entity).getReferenz();
 		}
 		return null;
 	}
@@ -160,7 +160,7 @@ public class ExcelCell implements SendableEntityCreatorTag, EntityList{
 
 	public boolean setType(String value) {
 		if((this.type == null && value != null) ||
-				(this.style != null && this.type.equals(value) == false)) {
+				(this.type != null && this.type.equals(value) == false)) {
 			this.type = value;
 			return true;
 		}
@@ -175,7 +175,7 @@ public class ExcelCell implements SendableEntityCreatorTag, EntityList{
 		}
 		Object context = getContent();
 		if(context == null){
-			return null;
+			return "";
 		}
 		if(context instanceof Number) {
 			return "<c r=\""+ref+"\"><v>"+context+"</v></c>";
@@ -186,7 +186,7 @@ public class ExcelCell implements SendableEntityCreatorTag, EntityList{
 			}
 			return "<c r=\""+ref+"\" t=\"b\"><v>0</v></c>";
 		}
-		return "<c r=\""+ref+"\" t=\"inlineStr\"><is><t>"+new String(context.toString().getBytes(Charset.forName("UTF-8")))+"</t></is></c>";
+		return "<c r=\""+ref+"\" t=\"inlineStr\"><is><t>"+new String(context.toString().getBytes(Charset.forName("UTF-8")), Charset.forName("UTF-8"))+"</t></is></c>";
 	}
 	
 	@Override

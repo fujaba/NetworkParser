@@ -65,6 +65,9 @@ public class EMFTokener extends Tokener{
 		CharacterBuffer tag;
 		do {
 			tag = this.getString(2);
+			if(tag == null) {
+				break;
+			}
 			if(tag.equals("<?")) {
 				skipEntity();
 				skip = true;
@@ -75,9 +78,12 @@ public class EMFTokener extends Tokener{
 				skip = false;
 			}
 		}while(skip);
-		String item = tag.toString();
-		this.buffer.withLookAHead(item);
-		return item;
+		if(tag != null) {
+			String item = tag.toString();
+			this.buffer.withLookAHead(item);
+			return item;
+		}
+		return "";
 	}
 
 	public XMLEntity encode(Object entity, MapEntity map) {
@@ -93,6 +99,9 @@ public class EMFTokener extends Tokener{
 
 	private void encodeChildren(Object entity, XMLEntity parent, MapEntity map) {
 		SendableEntityCreator creatorClass = getCreatorClass(entity);
+		if(creatorClass == null) {
+			return;
+		}
 
 		for (String propertyName : creatorClass.getProperties()) {
 			Object propertyValue = creatorClass.getValue(entity, propertyName);
@@ -275,13 +284,6 @@ public class EMFTokener extends Tokener{
 		if (rootFactory == null) {
 			return;
 		}
-		// add to map
-		String id = (String) xmlEntity.getValue(XMI_ID);
-
-		if (id.startsWith("$")) {
-			id = "_" + id.substring(1);
-		}
-
 		// set plain attributes
 		for (int i = 0; i < xmlEntity.size(); i++) {
 			String key = xmlEntity.getKeyByIndex(i);
@@ -529,8 +531,10 @@ public class EMFTokener extends Tokener{
 		for(Entity eClass : superClazzes) {
 			String id = EntityUtil.getId(eClass.getString(eSuperTypes));
 			 Clazz kidClazz = model.getNode(eClass.getString(EMFTokener.NAME));
-			 Clazz superClazz = model.getNode(id);
-			 kidClazz.withSuperClazz(superClazz);
+			 if(kidClazz != null) {
+				 Clazz superClazz = model.getNode(id);
+				 kidClazz.withSuperClazz(superClazz);
+			 }
 		}
 		// assocs
 		SimpleKeyValueList<String, Association> items = new SimpleKeyValueList<String, Association>();
@@ -576,10 +580,12 @@ public class EMFTokener extends Tokener{
 		Association edge = (Association) items.getValue(assocName);
 		if(edge == null) {
 			Clazz clazz = model.getNode(className);
-			edge = new Association(clazz).with(Cardinality.ONE).with(roleName);
-			clazz.with(edge);
-			if(roleName != null) {
-				items.add(assocName, edge);
+			if(clazz != null) {
+				edge = new Association(clazz).with(Cardinality.ONE).with(roleName);
+				clazz.with(edge);
+				if(roleName != null) {
+					items.add(assocName, edge);
+				}
 			}
 		}
 		return edge;

@@ -62,7 +62,9 @@ final class DataBlock {
 		// and
 		// error correction level
 		Version.ECB ecBlock = version.getECBlocksForLevel(ecLevel);
-
+		if(ecBlock == null) {
+			return null;
+		}
 		// First count the total number of data blocks
 		int totalBlocks = ecBlock.getNumBlocks();
 

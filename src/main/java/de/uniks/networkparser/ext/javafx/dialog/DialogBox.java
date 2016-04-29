@@ -363,13 +363,13 @@ public class DialogBox {
 		dialogTitleBar.setOnMousePressed(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				if(isInline) {
+//				if(isInline) {
 					mouseDragDeltaX = event.getSceneX();
 					mouseDragDeltaY = event.getSceneY();
-				}else{
-					mouseDragDeltaX = event.getSceneX();
-					mouseDragDeltaY = event.getSceneY();
-				}
+//				}else{
+//					mouseDragDeltaX = event.getSceneX();
+//					mouseDragDeltaY = event.getSceneY();
+//				}
 			}
 		});
 		dialogTitleBar.setOnMouseDragged(new EventHandler<MouseEvent>() {

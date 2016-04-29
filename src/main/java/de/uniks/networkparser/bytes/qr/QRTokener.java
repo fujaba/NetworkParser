@@ -136,6 +136,9 @@ public class QRTokener {
 		byte[] codewords = parser.readCodewords();
 		// Separate into data blocks
 		DataBlock[] dataBlocks = DataBlock.getDataBlocks(codewords, version, ecLevel);
+		if(dataBlocks == null) {
+			return null;
+		}
 
 		// Count total number of data bytes
 		int totalBytes = 0;
@@ -379,12 +382,14 @@ public class QRTokener {
 			int numBytes = version.getTotalCodewords();
 			// getNumECBytes = 130
 			Version.ECB ecBlocks = version.getECBlocksForLevel(ecLevel);
-			int numEcBytes = ecBlocks.getTotalECCodewords();
-			// getNumDataBytes = 196 - 130 = 66
-			int numDataBytes = numBytes - numEcBytes;
-			int totalInputBytes = (numInputBits + 7) / 8;
-			if (numDataBytes >= totalInputBytes) {
-				return version;
+			if(ecBlocks !=null) {
+				int numEcBytes = ecBlocks.getTotalECCodewords();
+				// getNumDataBytes = 196 - 130 = 66
+				int numDataBytes = numBytes - numEcBytes;
+				int totalInputBytes = (numInputBits + 7) / 8;
+				if (numDataBytes >= totalInputBytes) {
+					return version;
+				}
 			}
 		}
 		throw new RuntimeException("Data too big");

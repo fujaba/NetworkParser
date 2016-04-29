@@ -22,8 +22,9 @@ package de.uniks.networkparser.ext.javafx.component;
  permissions and limitations under the Licence.
 */
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -54,8 +55,11 @@ public class CSVExporter extends MenuItem implements EventHandler<ActionEvent>{
 		if(choice!=null) {
 			ArrayList<String> attributes=new ArrayList<String>();
 			StringBuilder line=new StringBuilder();
+			FileOutputStream stream = null;
+			OutputStreamWriter writer = null;
 			try {
-				FileWriter writer=new FileWriter(choice);
+				stream = new FileOutputStream(choice);
+				writer = new OutputStreamWriter(stream,  "UTF-8");
 				for(Iterator<TableColumnFX> i = tableComponent.getColumnIterator();i.hasNext();) {
 					TableColumnFX tableColumn = i.next();
 					line.append(tableColumn.getColumn().getLabelOrAttrName());
@@ -80,10 +84,18 @@ public class CSVExporter extends MenuItem implements EventHandler<ActionEvent>{
 						writer.write(line.toString()+BaseItem.CRLF);
 					}
 				}
-				writer.flush();
-				writer.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+			} finally {
+				try {
+					if(writer != null) {
+						writer.flush();
+						writer.close();
+					}
+					if(stream != null) {
+						stream.close();
+					}
+				} catch (IOException e) {
+				}
 			}
 		}
 	}

@@ -1,7 +1,7 @@
 package de.uniks.networkparser.json;
 
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
@@ -18,6 +18,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorWrapper;
 import de.uniks.networkparser.json.util.JsonObjectCreator;
+import de.uniks.networkparser.list.SimpleIteratorSet;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.logic.SimpleMapEvent;
 import de.uniks.networkparser.xml.XMLEntity;
@@ -148,7 +149,7 @@ public class JsonTokener extends Tokener {
 				}
 				return;
 			}
-			c = getChar();
+			getChar();
 			entity.put(key, nextValue(entity, isQuote, false, stop));
 		}
 	}
@@ -366,12 +367,11 @@ public class JsonTokener extends Tokener {
 					Object refValue = creator.getValue(ref_Obj, property);
 					if (refValue instanceof Map<?, ?>) {
 						JsonObject json = (JsonObject) value;
-						Iterator<String> i = json.keySet().iterator();
-						while (i.hasNext()) {
-							String key = i.next();
-							Object entryValue = json.get(key);
+						for(SimpleIteratorSet<String, Object> i = new SimpleIteratorSet<String, Object>(json);i.hasNext();) {
+							Entry<String, Object> item = i.next();
+							String key = item.getKey();
+							Object entryValue = item.getValue();
 							if (entryValue instanceof JsonObject) {
-								///FIXME CHANGE DECODE TO DECODING
 								creator.setValue(target, property, new ObjectMapEntry().with(key, decoding((JsonObject) entryValue, map)), IdMap.NEW);
 							} else if (entryValue instanceof JsonArray) {
 								///FIXME CHANGE DECODE TO DECODING

@@ -40,7 +40,7 @@ import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.FieldTyp;
 
 public class NumberSpinner extends HBox implements CellEditorElement {
-	private final double ARROW_SIZE = 4;
+	private final static double ARROW_SIZE = 4;
 	private BigDecimal stepWitdh = BigDecimal.ONE;
 
 	private NumberTextField numberField;

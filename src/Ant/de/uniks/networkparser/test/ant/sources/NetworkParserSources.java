@@ -40,6 +40,9 @@ public class NetworkParserSources {
 	private void getSources(String sourcePath, HashSet<SourceItem> items){
 		File path= new File(sourcePath);
 		File[] listFiles = path.listFiles();
+		if(listFiles == null) {
+			return;
+		}
 		for (File child : listFiles){
 			if(child.isDirectory()){
 				getSources(sourcePath+child.getName()+ "/", items);
@@ -61,7 +64,7 @@ public class NetworkParserSources {
 			String packageName = source.getShortPackageName();
 			for (String item : source.getImports().getPackages()){
 				list.withEdge(packageName, item);
-				list.toString();
+//				list.toString();
 			}
 		}
 		return YUMLConverter.URL+list.toString();
@@ -70,6 +73,9 @@ public class NetworkParserSources {
 	private void copiedFile(String sourcePath, String targetPath, boolean createDirectory, boolean createFiles){
 		File path= new File(sourcePath);
 		File[] listFiles = path.listFiles();
+		if(listFiles == null) {
+			return;
+		}
 		for (File child : listFiles){
 			if(child.isDirectory()){
 				copiedFile(sourcePath+ "/" +child.getName(), targetPath+ "/" +child.getName(), createDirectory, createFiles);
@@ -98,8 +104,14 @@ public class NetworkParserSources {
 				return;
 			}
 			try {
-				targetFile.getParentFile().mkdirs();
-				targetFile.createNewFile();
+				if(targetFile.getParentFile().exists() == false) {
+					if(targetFile.getParentFile().mkdirs() == false) {
+						return;
+					}
+				}
+				if(targetFile.createNewFile() == false) {
+					return;
+				}
 				created =true;
 			} catch (IOException e) {
 //				e.printStackTrace();

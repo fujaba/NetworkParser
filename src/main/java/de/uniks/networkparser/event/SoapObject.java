@@ -56,6 +56,14 @@ public class SoapObject implements BaseItem {
 		sb.with("</", namespace, ":Envelope>");
 		return sb.toString();
 	}
+	
+	public SoapObject withHeader(String key, String value) {
+		if(this.headers == null) {
+			this.headers = new SimpleKeyValueList<String, String>();
+		}
+		this.headers.add(key, value);
+		return this;
+	}
 
 	public SimpleKeyValueList<String, String> getHeader() {
 		return headers;

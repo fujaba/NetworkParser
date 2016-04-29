@@ -101,7 +101,9 @@ public class Association extends GraphMember {
 		}
 		if(this.parentNode == null) {
 			this.parentNode = value;
-			((GraphMember)value).withChildren(this);
+			if(value != null) {
+				((GraphMember)value).withChildren(this);
+			}
 			return true;
 		}
 		GraphSimpleSet list;
@@ -113,7 +115,9 @@ public class Association extends GraphMember {
 			this.parentNode = list;
 		}
 		if(list.add(value)) {
-			value.withChildren(this);
+			if(value != null) {
+				value.withChildren(this);
+			}
 		}
 		return true;
 	}
@@ -266,7 +270,7 @@ public class Association extends GraphMember {
 	}
 
 	public Clazz getOtherClazz() {
-		if(other != null && other.getClazz() instanceof Clazz) {
+		if(other != null) {
 			return other.getClazz();
 		}
 		return null;

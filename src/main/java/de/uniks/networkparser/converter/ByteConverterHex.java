@@ -38,20 +38,21 @@ public class ByteConverterHex extends ByteConverter {
 		return toString(values, 0);
 	}
 	public String toString(ByteBuffer values, int space) {
+		if(values == null) {
+			return null;
+		}
 		String hexVal = "0123456789ABCDEF";
 
 		CharacterBuffer returnValue = new CharacterBuffer().withBufferLength(values.length() << 1 + values.length() * space);
 		String step = EntityUtil.repeat(' ', space);
-		if (values != null) {
-			for (int i = 0; i < values.length(); i++) {
-				int value = values.byteAt(i);
-				if (value < 0) {
-					value += 256;
-				}
-				returnValue.with(hexVal.charAt(value / 16));
-				returnValue.with(hexVal.charAt(value % 16));
-				returnValue.with(step);
+		for (int i = 0; i < values.length(); i++) {
+			int value = values.byteAt(i);
+			if (value < 0) {
+				value += 256;
 			}
+			returnValue.with(hexVal.charAt(value / 16));
+			returnValue.with(hexVal.charAt(value % 16));
+			returnValue.with(step);
 		}
 		return returnValue.toString();
 	}

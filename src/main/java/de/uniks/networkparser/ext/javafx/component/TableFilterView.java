@@ -136,8 +136,8 @@ public class TableFilterView implements ChangeListener<String>{
 		Boolean matches = true;
 		for (String word : lastSearchCriteriaItems) {
 			if (!"".equals(word)) {
-				if(word.indexOf("|")>0){
-					String[] orWords=word.split("|");
+				if(word.indexOf("\\|")>0){
+					String[] orWords=word.split("\\|");
 					for(String orWord : orWords) {
 						if( !simpleSearch(fullText, orWord, creatorClass, item)) {
 							matches = false;

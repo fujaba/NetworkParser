@@ -278,12 +278,9 @@ public class EntityUtil {
 		if (value instanceof Collection) {
 			BaseItem item = reference.getNewList(true);
 			if(item instanceof SimpleKeyValueList<?,?>) {
-				return ((SimpleKeyValueList<?,?>) item).withMap((Map<?, ?>) value).toString(converter);
+				return ((SimpleKeyValueList<?,?>) item).withList((Collection<?>) value).toString(converter);
 			}
-			if (item instanceof BaseItem) {
-				return ((BaseItem) item).toString(converter);
-			}
-			return ((BaseItem) item).toString();
+			return ((BaseItem) item).toString(converter);
 		}
 		if (value.getClass().isArray()) {
 			Object[] items = (Object[]) value;
@@ -363,7 +360,7 @@ public class EntityUtil {
 	 */
 	public static String repeat(char ch, int repeat) {
 		if(repeat<0) {
-			return null;
+			return "";
 		}
 		char[] buf = new char[repeat];
 		for (int i = repeat - 1; i >= 0; i--) {
@@ -616,7 +613,7 @@ public class EntityUtil {
 	}
 
 	public static String getId(String name) {
-		if (name.indexOf("/") >= 0) {
+		if (name.lastIndexOf("/") >= 0) {
 			return name.substring(name.lastIndexOf("/") + 1);
 		}
 		if (name.indexOf("#") >= 0) {

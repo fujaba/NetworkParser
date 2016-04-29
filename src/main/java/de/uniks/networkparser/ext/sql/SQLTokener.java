@@ -48,7 +48,6 @@ import de.uniks.networkparser.list.SimpleSet;
 
 public class SQLTokener extends Tokener{
 	private SQLStatement sqlConnection;
-	private Connection connection;
 	public static final String ID = "_ID";
 	public static final byte FLAG_NONE = 0x00;
 	public static final byte FLAG_CREATE = 0x01;
@@ -95,21 +94,23 @@ public class SQLTokener extends Tokener{
 	
 	public boolean executeStatements(SQLStatementList statements, SimpleList<SQLTable> results, boolean dynamicTable) {
 		boolean result=true;
-		Connection connection = this.connection;
-		boolean closeConnection=false;
-		try {
-			for(SQLStatement statement : statements ) {
-				if (statement.isEnable() == false) {
-					continue;
-				}
+		Connection connection = null;
+		for(SQLStatement statement : statements ) {
+			if (statement.isEnable() == false) {
+				continue;
+			}
+			Statement query = null;
+			try {
 				if(statement.getCommand()==SQLCommand.CONNECTION) {
+					if(connection != null) {
+						disconnect(connection);
+					}
 					connection = connect(statement);
-					closeConnection = true;
 				}else {
 					if(connection == null) {
 						connection = connect(this.sqlConnection);
 					}
-					Statement query = connection.createStatement();
+					query = connection.createStatement();
 					if (statement.getCommand() == SQLCommand.SELECT) {
 						ResultSet executeQuery = query.executeQuery(statement.toString());
 						if(results != null) {
@@ -127,23 +128,23 @@ public class SQLTokener extends Tokener{
 						query.execute(statement.toString());
 					}
 				}
-			}
-		} catch(Exception e) {
-			result = false;
-		} finally {
-			if(connection != null && closeConnection) {
-				result = result & disconnect(connection);
-            }
+			} catch(Exception e) {
+				result = false;
+			} finally {
+				if(query != null) {
+					try {
+						query.close();
+					} catch (SQLException e) {
+					}
+				}
+	        }
+		}
+		if(connection != null) {
+			result = result & disconnect(connection);
         }
 		return result;
 	}
 	
-	public boolean disconnect() {
-		if(this.connection == null) {
-			return true;
-		}
-		return disconnect(this.connection);
-	}
 	public boolean disconnect(Connection connection) {
 		 try {
          	if(connection != null ) {
@@ -263,12 +264,11 @@ public class SQLTokener extends Tokener{
 		return id;
 	}
 	
-	final class SelectSearcher {
+	final static class SelectSearcher {
 		private SimpleList<String> ids = new SimpleList<String>();
 		private SimpleList<String> deleteIds = new SimpleList<String>();
 		private boolean drop;
 		private boolean create;
-		public String tableName;
 		private SimpleList<SQLStatement> mayBeStatements = new SimpleList<SQLStatement>();
 		public void clear() {
 			ids.clear();
@@ -295,7 +295,6 @@ public class SQLTokener extends Tokener{
 			SelectSearcher values = foundKeys.get(table);
 			if(values == null) {
 				values = new SelectSearcher();
-				values.tableName = table;
 				foundKeys.put(table, values);
 			}
 			if(statement.getCommand()==SQLCommand.DROPTABLE) {
@@ -347,7 +346,8 @@ public class SQLTokener extends Tokener{
 				} else if (values.drop) {
 					if(statement.isAutoStatement()) {
 						statement.withEnable(false);
-					} else if(statement != null) {
+					} else {
+//						if(statement != null) {
 						// 	Add Id
 						values.addId(primaryKey);
 					}
@@ -416,7 +416,7 @@ public class SQLTokener extends Tokener{
 				for(int i=selectSearcher.mayBeStatements.size()-1;i>=0;i--) {
 					SQLStatement statement = selectSearcher.mayBeStatements.get(i);
 					String primaryId = statement.getPrimaryId();
-					if (primaryId.equals(id)) {
+					if (primaryId != null && primaryId.equals(id)) {
 						if (statement.getCommand().equals(SQLCommand.INSERT)) {
 							statement.withCommand(SQLCommand.UPDATE);
 							statement.withCondition(ID, primaryId);

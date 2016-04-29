@@ -379,7 +379,7 @@ public class Column implements SendableEntityCreatorNoIndex {
 			if(value instanceof Style) {
 				Style style = (Style) value;
 				Style oldStyle = that.getStyle();
-				if(type==Filter.MERGE && oldStyle != null){
+				if(Filter.MERGE.equals(type) && oldStyle != null){
 					for(String prop : style.getProperties()) {
 						if(oldStyle.getValue(oldStyle, prop) == null) {
 							oldStyle.setValue(oldStyle, prop, style.getValue(style, prop), IdMap.NEW);
@@ -431,15 +431,15 @@ public class Column implements SendableEntityCreatorNoIndex {
 			if(attrName.startsWith("\"")) {
 				return attrName.substring(1, attrName.length() - 1);
 			}
-		}
-		if (creator != null ) {
-			Object value = creator.getValue(entity, attrName);
-			if(getNumberFormat()!=null && value instanceof Long) {
-				DateTimeEntity item = new DateTimeEntity();
-				item.withValue((Long) value);
-				return item.toString(getNumberFormat());
+			if (creator != null ) {
+				Object value = creator.getValue(entity, attrName);
+				if(getNumberFormat()!=null && value instanceof Long) {
+					DateTimeEntity item = new DateTimeEntity();
+					item.withValue((Long) value);
+					return item.toString(getNumberFormat());
+				}
+				return value;
 			}
-			return value;
 		}
 		return null;
 	}

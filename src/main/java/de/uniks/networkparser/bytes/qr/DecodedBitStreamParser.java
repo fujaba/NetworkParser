@@ -17,6 +17,7 @@
 package de.uniks.networkparser.bytes.qr;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -211,7 +212,7 @@ final class DecodedBitStreamParser {
 		for (int i = 0; i < count; i++) {
 			readBytes[i] = (byte) bits.readBits(8);
 		}
-		result.append(new String(readBytes));
+		result.append(new String(readBytes, Charset.forName("UTF-8")));
 		byteSegments.add(readBytes);
 	}
 

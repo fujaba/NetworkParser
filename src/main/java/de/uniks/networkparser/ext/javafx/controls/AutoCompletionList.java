@@ -67,7 +67,7 @@ public class AutoCompletionList {
 					result.add(item);
 				}
 			}
-			if(this.list != null && this.property != null && this.map != null) {
+			if(this.property != null && this.map != null) {
 				HashSet<String> items = this.getSearchList(this.items, this.property, new HashSet<String>());
 				for(Iterator<String> i = items.iterator();i.hasNext();){
 					String item = i.next();
@@ -83,7 +83,7 @@ public class AutoCompletionList {
 					result.add(item);
 				}
 			}
-			if(this.list != null && this.property != null && this.map != null) {
+			if(this.property != null && this.map != null) {
 				HashSet<String> items = this.getSearchList(this.items, this.property, new HashSet<String>());
 				for(Iterator<String> i = items.iterator();i.hasNext();){
 					String item = i.next();

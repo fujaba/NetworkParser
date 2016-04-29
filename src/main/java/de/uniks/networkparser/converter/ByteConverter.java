@@ -1,4 +1,6 @@
 package de.uniks.networkparser.converter;
+import java.nio.charset.Charset;
+
 /*
 NetworkParser
 Copyright (c) 2011 - 2016, Stefan Lindel
@@ -30,16 +32,17 @@ public abstract class ByteConverter implements Converter{
 
 	@Override
 	public String encode(BaseItem entity) {
+		ByteBuffer buffer;
 		if (entity instanceof ByteItem) {
-			return toString(((ByteItem) entity).getBytes(true));
+			buffer = ((ByteItem) entity).getBytes(true);
+		}else {
+			byte[] array = ((BaseItem) entity).toString().getBytes(Charset.forName("UTF-8"));
+			buffer = new ByteBuffer().with(array);
 		}
-		byte[] array;
-		if (entity instanceof BaseItem) {
-			array = ((BaseItem) entity).toString().getBytes();
-		} else {
-			array = entity.toString().getBytes();
+		if(buffer != null) {
+			return toString(buffer);
 		}
-		return toString(new ByteBuffer().with(array));
+		return "";
 	}
 
 	public abstract byte[] decode(String value);

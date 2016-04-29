@@ -25,13 +25,8 @@ public class EntityStringConverter implements Converter {
 	public String encode(BaseItem entity) {
 		if(entity instanceof Entity) {
 			return ((Entity) entity).toString(getIndentFactor());
-		}else if(entity instanceof BaseItem) {
-			return ((BaseItem) entity).toString(this);
 		}
-		if(entity == null) {
-			return null;
-		}
-		return entity.toString(); 
+		return ((BaseItem) entity).toString(this);
 	}
 
 	public int getIndentFactor() {

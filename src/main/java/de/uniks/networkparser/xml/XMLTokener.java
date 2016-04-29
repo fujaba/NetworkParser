@@ -81,10 +81,6 @@ public class XMLTokener extends Tokener {
 		default:
 			break;
 		}
-		if (c == '"') {
-			skip();
-			return "";
-		}
 		return super.nextValue(creator, allowQuote,  allowDuppleMarks, c);
 	}
 
@@ -166,7 +162,10 @@ public class XMLTokener extends Tokener {
 		CharacterBuffer tag;
 		do {
 			tag = this.getString(2);
-			if(tag.equals("<?")) {
+			if(tag == null) {
+				tag = new CharacterBuffer();
+				break;
+			}else if(tag.equals("<?")) {
 				skipEntity();
 				skip = true;
 			} else if(tag.equals("<!")) {
@@ -251,6 +250,9 @@ public class XMLTokener extends Tokener {
 		MapEntityStack stack = map.getStack();
 		Object entity = stack.getCurrentItem();
 		SendableEntityCreator creator = stack.getCurrentCreator();
+		if(creator == null) {
+			return null;
+		}
 		// Parsing next Element
 		if (tokener.skipTo("/>", false, false)) {
 			if (tokener.getCurrentChar() == '/') {
@@ -274,7 +276,8 @@ public class XMLTokener extends Tokener {
 					}
 					if (tokener.getCurrentChar() == ENDTAG) {
 						CharacterBuffer endTag = tokener.nextToken(XMLTokener.TOKEN);
-						if (stack.getCurrentTag().equals(endTag.toString())) {
+						String currentTag = stack.getCurrentTag();
+						if (currentTag == null || currentTag.equals(endTag.toString())) {
 							break;
 						} else {
 							valueItem.with(test);
@@ -291,7 +294,9 @@ public class XMLTokener extends Tokener {
 					}
 					test.reset();
 				}
-				creator.setValue(entity, XMLEntity.PROPERTY_VALUE, valueItem.toString(), IdMap.NEW);
+				if(entity!=null) {
+					creator.setValue(entity, XMLEntity.PROPERTY_VALUE, valueItem.toString(), IdMap.NEW);
+				}
 				stack.setValue("" + IdMap.ENTITYSPLITTER, valueItem.toString());
 				stack.popStack();
 				tokener.skipEntity();
@@ -403,6 +408,7 @@ public class XMLTokener extends Tokener {
 			addToStack(creator, tokener, tag, valueItem, map);
 			return valueItem;
 		}
+		StringBuilder sTag=new StringBuilder(startTag);
 		while(filter.size()>0) {
 			addToStack(creator, tokener, tag, valueItem, map);
 			parseAttribute(tokener, map);
@@ -425,17 +431,17 @@ public class XMLTokener extends Tokener {
 				}else{
 					creator = (SendableEntityCreatorTag) defaultCreator;
 				}
-				
-				startTag = startTag + IdMap.ENTITYSPLITTER + tag.toString();
+				sTag.append(IdMap.ENTITYSPLITTER).append(tag.toString());
+//				startTag = startTag + IdMap.ENTITYSPLITTER + tag.toString();
 				for(int i=filter.size() - 1;i >= 0;i++) {
 					String key = filter.getKeyByIndex(i);
-					if(key.equals(startTag)) {
+					if(key.equals(sTag.toString())) {
 						// FOUND THE Item
 						creator = filter.getValueByIndex(i);
 						addToStack(creator, tokener, tag, valueItem, map);
 						return valueItem;
 					}
-					if(key.startsWith(startTag) == false) {
+					if(key.startsWith(sTag.toString()) == false) {
 						filter.removePos(i);
 					}
 				}

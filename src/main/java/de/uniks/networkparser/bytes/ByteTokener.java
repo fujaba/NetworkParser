@@ -1,5 +1,7 @@
 package de.uniks.networkparser.bytes;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -173,13 +175,8 @@ public class ByteTokener extends Tokener {
 					}
 			}
 			byte[] bytes = clazzName.getBytes(getCharset());
-			if (id <= Byte.MAX_VALUE) {
-				msg.add(new ByteEntity().withValue(DATATYPE_CLAZZNAME,
-						bytes));
-			} else {
-				msg.add(new ByteEntity().withValue(DATATYPE_CLAZZNAMELONG,
-						bytes));
-			}
+			msg.add(new ByteEntity().withValue(DATATYPE_CLAZZNAME,
+					bytes));
 			return true;
 		} catch (Exception e) {
 		}
@@ -210,8 +207,10 @@ public class ByteTokener extends Tokener {
 
 		if (creator instanceof SendableEntityCreatorTag) {
 			String tag = ((SendableEntityCreatorTag) creator).getTag();
-			byte cId = tag.getBytes()[0];
-			msg.add(new ByteEntity().withValue(ByteTokener.DATATYPE_CLAZZID, cId));
+			if(tag != null) {
+				byte cId = tag.getBytes(Charset.forName("UTF-8"))[0];
+				msg.add(new ByteEntity().withValue(ByteTokener.DATATYPE_CLAZZID, cId));
+			}
 		} else {
 			Object reference = creator.getSendableInstance(true);
 			addClazzTyp(msg, reference.getClass().getName(), map);
@@ -336,9 +335,15 @@ public class ByteTokener extends Tokener {
 	}
 	
 	public Object decodeValue(ByteEntity entity, MapEntity map) {
+		if(entity == null){
+			return null;
+		}
 		byte typ = entity.getTyp();
 		ByteBuffer buffer = new ByteBuffer();
-		buffer.with((byte[])entity.getValue(ByteEntity.VALUE));
+		Object value = entity.getValue(ByteEntity.VALUE);
+		if(value!=null) {
+			buffer.with((byte[])value);
+		}
 		return decodeValue(typ, buffer, buffer.length(), map);
 	}
 	
@@ -398,7 +403,7 @@ public class ByteTokener extends Tokener {
 			return Double.valueOf(buffer.getDouble());
 		}
 		if (typ == ByteTokener.DATATYPE_DATE) {
-			return new Date(Long.valueOf(buffer.getInt()).longValue());
+			return new Date(buffer.getLong());
 		}
 		if (typ == ByteTokener.DATATYPE_CLAZZNAME) {
 			int len = buffer.getByte() - ByteTokener.SPLITTER;
@@ -432,7 +437,12 @@ public class ByteTokener extends Tokener {
 		}
 		if (typ == ByteTokener.DATATYPE_CLAZZID) {
 			typ = buffer.getByte();
-			String id = new String(new byte[]{typ});
+			String id;
+			try {
+				id = new String(new byte[]{typ}, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				id = "";
+			}
 			SendableEntityCreator eventCreater = getCreator(id, true);
 			if(eventCreater == null) {
 				SimpleKeyValueList<String, SendableEntityCreator> creators = getMap().getCreators();

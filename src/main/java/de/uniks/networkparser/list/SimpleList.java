@@ -26,7 +26,7 @@ import java.util.List;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Condition;
 
-public class SimpleList<V> extends AbstractList<V> implements List<V> {
+public class SimpleList<V> extends AbstractList<V> implements List<V>, Cloneable {
 	public SimpleList() {
 		withFlag(SimpleList.ALLOWDUPLICATE);
 	}

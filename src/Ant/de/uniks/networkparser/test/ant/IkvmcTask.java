@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -371,7 +372,7 @@ public class IkvmcTask extends Task {
 
 		public void run() {
 			try {
-				InputStreamReader isr = new InputStreamReader(is);
+				InputStreamReader isr = new InputStreamReader(is, Charset.forName("UTF-8"));
 				BufferedReader br = new BufferedReader(isr);
 				String line;
 				while ((line = br.readLine()) != null) {

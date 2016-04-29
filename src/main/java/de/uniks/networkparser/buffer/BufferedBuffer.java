@@ -98,7 +98,7 @@ public abstract class BufferedBuffer extends Buffer {
 		}
 		int startpos = this.position();
 		char c;
-		boolean isQuote = false;
+//		boolean isQuote = false;
 		char b = getCurrentChar();
 		int i, quoteLen=quotes.length;
 		do {
@@ -116,14 +116,14 @@ public abstract class BufferedBuffer extends Buffer {
 						if (allowQuote) {
 							c = 0;
 						}
-						isQuote = false;
+//						isQuote = false;
 					}
 					if (allowQuote) {
 						b = c;
 						c = 1;
 						continue;
 					}
-					isQuote = true;
+//					isQuote = true;
 				}
 			}
 			b = c;
@@ -138,10 +138,6 @@ public abstract class BufferedBuffer extends Buffer {
 		int endPos = this.position();
 		if (nextStep) {
 			skip();
-		}
-		if ((isQuote && allowQuote)) {
-			sc.with(this.subSequence(startpos, endPos));
-			return sc;
 		}
 		sc.with(this.subSequence(startpos, endPos));
 		return sc;

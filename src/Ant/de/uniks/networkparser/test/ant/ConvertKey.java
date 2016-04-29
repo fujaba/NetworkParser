@@ -3,6 +3,7 @@ package de.uniks.networkparser.test.ant;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -12,20 +13,32 @@ import de.uniks.networkparser.converter.ByteConverterHex;
 public class ConvertKey {
 	String input;
 	String output;
-	public void execute() throws IOException {
+	public void execute()  {
 		if(input == null) {
 			System.err.println("No Inputfile defined");
+			return;
 		}
 		File inputFile = new File(input);
 		if(output == null) {
 			output = input+".hex";
 		}
-		String key = new String(Files.readAllBytes(Paths.get(inputFile.toURI())));
-		ByteConverterHex converterHex = new ByteConverterHex();
-		String hexValue = converterHex.toString(new ByteBuffer().with(key.getBytes()));
-		FileOutputStream out = new FileOutputStream(output);
-		out.write(hexValue.getBytes());
-		out.close();
+		FileOutputStream out = null;
+		try {
+			String key = new String(Files.readAllBytes(Paths.get(inputFile.toURI())));
+			ByteConverterHex converterHex = new ByteConverterHex();
+			
+			String hexValue = converterHex.toString(new ByteBuffer().with(key.getBytes(Charset.forName("UTF-8"))));
+			out = new FileOutputStream(output);
+			out.write(hexValue.getBytes());
+		} catch (IOException e) {
+		} finally {
+			if(out != null) {
+				try {
+					out.close();
+				} catch (IOException e) {
+				}
+			}
+		}
 	}
 
 	public void setInput(String value) {

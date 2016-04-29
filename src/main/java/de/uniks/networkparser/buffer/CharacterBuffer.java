@@ -246,12 +246,9 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		} else if (len+start > buffer.length) {
 			char[] oldValue = this.buffer;
 			this.buffer = new char[len];
-			int oldLen = this.length - start;
-
 			System.arraycopy(oldValue, start, this.buffer, 0, this.length);
 			start = 0;
 			this.position = 0;
-			len = oldLen;
 		}
 		return this;
 	}

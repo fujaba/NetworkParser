@@ -42,7 +42,6 @@ public abstract class EditControl<T extends Node> implements CellEditorElement, 
 	protected Object value;
 	protected KeyListenerMap keyListener;
 
-
 	@Override
 	public EditControl<T> withColumn(Column value) {
 		this.column = value;
@@ -89,6 +88,10 @@ public abstract class EditControl<T extends Node> implements CellEditorElement, 
 	public EditControl<T> withListener(EditFieldMap owner){
 		this.listener = owner;
 		return this;
+	}
+	
+	public EditFieldMap getListener() {
+		return listener;
 	}
 
 	public void setVisible(boolean value){

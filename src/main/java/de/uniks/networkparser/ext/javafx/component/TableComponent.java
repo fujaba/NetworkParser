@@ -466,8 +466,9 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 			Method method = item.getClass().getMethod("addPropertyChangeListener", java.beans.PropertyChangeListener.class );
 			method.invoke(item, this);
 			return true;
-		} catch (Exception e) {
-
+		} catch (ReflectiveOperationException e) {
+		} catch (SecurityException e) {
+		} catch (IllegalArgumentException e) {
 		}
 		return false;
 	}
@@ -481,8 +482,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 			try {
 				Method method = item.getClass().getMethod("removePropertyChangeListener", java.beans.PropertyChangeListener.class );
 				method.invoke(item, this);
-			} catch (Exception e) {
-
+			} catch (ReflectiveOperationException e) {
 			}
 		}
 	}
@@ -607,9 +607,6 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 
 	public boolean loadColumns(JsonArray columns, boolean merge) {
 		if(columns==null || columns.size()<this.columns.size()) {
-			return false;
-		}
-		if(!(map instanceof IdMap)) {
 			return false;
 		}
 		Filter filter=new Filter();

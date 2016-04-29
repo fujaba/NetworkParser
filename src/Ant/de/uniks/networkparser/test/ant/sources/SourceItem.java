@@ -1,12 +1,13 @@
 package de.uniks.networkparser.test.ant.sources;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 
 public class SourceItem {
 	public static final String CRLF="\r\n";
@@ -30,9 +31,11 @@ public class SourceItem {
 		}
 	}
 	private void readFile() {
-		BufferedReader in;
+		BufferedReader in = null;
 		try {
-			in = new BufferedReader(new FileReader(file));
+			FileInputStream networkFile = new FileInputStream(file);
+			InputStreamReader isr = new InputStreamReader(networkFile,  "UTF-8");
+			in = new BufferedReader(isr);
 
 			MyStringBuilder packageBuilder= new MyStringBuilder();
 			MyStringBuilder headerBBuilder= new MyStringBuilder();
@@ -81,11 +84,18 @@ public class SourceItem {
 			this.imports.finish();
 			this.header=headerBBuilder.toString().trim();
 			this.comment=commentBuilder.toString();
-			in.close();
+			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
+			if(in != null) {
+				try {
+					in.close();
+				} catch (IOException e) {
+				}
+			}
 		}
 	}
 
@@ -121,9 +131,11 @@ public class SourceItem {
 	}
 
 	public void write(){
+		OutputStreamWriter writer = null;
 		try {
-			BufferedWriter writer= new BufferedWriter(new FileWriter(file));
-
+			FileOutputStream networkFile = new FileOutputStream(file);
+			writer = new OutputStreamWriter(networkFile,  "UTF-8");
+//			PrintWriter pw = new PrintWriter(ps);
 //			String template = "%packageString%" +CRLF+CRLF+ "%comment%" +CRLF+CRLF+ "%header%%body%";
 //			template.replaceAll("%packageString%", packageString);
 //			template.replaceAll("%comment%", comment);
@@ -150,9 +162,13 @@ public class SourceItem {
 			writer.write(CRLF);
 			writer.write(definePart);
 			writer.write("\t" +body.toString().trim()+CRLF);
-			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				writer.close();
+			} catch (IOException e) {
+			}
 		}
 	}
 

@@ -25,18 +25,23 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Method;
-import javafx.scene.Node;
+
 import de.uniks.networkparser.ext.generic.GenericCreator;
 import de.uniks.networkparser.interfaces.SendableEntity;
+import javafx.scene.Node;
 
 public abstract class AbstractModelController implements PropertyChangeListener {
 	@SuppressWarnings("unchecked")
 	public <ST extends AbstractModelController> ST init(Object model, Node gui) {
 		if(model != null && gui != null) {
-			try{
+			try {
 				Method method = this.getClass().getMethod("initPropertyChange"+model.getClass().getSimpleName(), model.getClass(), Node.class);
 				method.invoke(this, model, gui);
-			}catch(Exception e){
+			} catch (ReflectiveOperationException e) {
+				this.initPropertyChange(model, gui);
+			} catch (SecurityException e) {
+				this.initPropertyChange(model, gui);
+			} catch (IllegalArgumentException e) {
 				this.initPropertyChange(model, gui);
 			}
 		}
@@ -77,10 +82,11 @@ public abstract class AbstractModelController implements PropertyChangeListener 
 			PropertyChangeSupport pc = (PropertyChangeSupport) method.invoke(item);
 			if(property == null) {
 				pc.addPropertyChangeListener(listener);
+				listener.propertyChange(new PropertyChangeEvent(item, property, null, null));
 			}else {
 				pc.addPropertyChangeListener(property, listener);
+				listener.propertyChange(new PropertyChangeEvent(item, property, null, creator.getValue(item, property)));
 			}
-			listener.propertyChange(new PropertyChangeEvent(item, property, null, creator.getValue(item, property)));
 			return true;
 		} catch (Exception e) {
 		}
@@ -89,7 +95,9 @@ public abstract class AbstractModelController implements PropertyChangeListener 
 			method.invoke(item, listener);
 			listener.propertyChange(new PropertyChangeEvent(item, property, null, creator.getValue(item, property)));
 			return  true;
-		} catch (Exception e) {
+		} catch (ReflectiveOperationException e) {
+		} catch (SecurityException e) {
+		} catch (IllegalArgumentException e) {
 		}
 		return false;
 	}

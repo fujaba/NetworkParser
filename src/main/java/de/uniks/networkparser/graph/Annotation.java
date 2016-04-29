@@ -201,7 +201,8 @@ public class Annotation extends GraphMember {
 		}
 		for(Annotation item : value) {
 			String result = item.getValue(key, defaultText);
-			if(result != defaultText) {
+			if((result != null && result.equals(defaultText) == false)
+					|| (result==null && defaultText != null)) {
 				return result;
 			}
 		}

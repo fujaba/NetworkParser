@@ -21,6 +21,8 @@ See the Licence for the specific language governing
 permissions and limitations under the Licence.
 */
 
+import java.nio.charset.Charset;
+
 public class ByteBuffer extends BufferedBuffer {
 	/** The buffer. */
 	protected byte[] buffer;
@@ -179,7 +181,7 @@ public class ByteBuffer extends BufferedBuffer {
 		return new ByteBuffer().with(array);
 	}
 	public ByteBuffer with(String string) {
-		this.buffer = string.getBytes();
+		this.buffer = string.getBytes(Charset.forName("UTF-8"));
 		this.position = 0;
 		this.length = buffer.length;
 		return this;

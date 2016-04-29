@@ -154,7 +154,7 @@ public class BitEntity extends SimpleList<BitValue> implements ByteItem {
 			} else if (value instanceof Integer) {
 				this.typ = BIT_NUMBER;
 				this.property = "" + value;
-			} else if (value instanceof BitEntity) {
+			} else if (value instanceof BitValue) {
 				this.add((BitValue) value);
 			} else {
 				this.typ = BIT_STRING;

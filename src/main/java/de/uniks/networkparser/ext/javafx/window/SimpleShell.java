@@ -35,7 +35,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.lang.ProcessBuilder.Redirect;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.management.ManagementFactory;
@@ -90,17 +91,14 @@ public abstract class SimpleShell extends Application {
 
 		String debugPort = null;
 		String outputRedirect = null;
-		try {
-			if (getDefaultString() != null
-					&& !getDefaultString().equalsIgnoreCase(System.getProperty("file.encoding"))) {
-				System.setProperty("file.encoding", getDefaultString());
-				Class<Charset> c = Charset.class;
+		if (getDefaultString() != null
+				&& !getDefaultString().equalsIgnoreCase(System.getProperty("file.encoding"))) {
+			System.setProperty("file.encoding", getDefaultString());
+			Class<Charset> c = Charset.class;
 
-				java.lang.reflect.Field defaultCharsetField = c.getDeclaredField("defaultCharset");
-				defaultCharsetField.setAccessible(true);
-				defaultCharsetField.set(null, null);
-			}
-		} catch (Exception e) {
+			java.lang.reflect.Field defaultCharsetField = c.getDeclaredField("defaultCharset");
+			defaultCharsetField.setAccessible(true);
+			defaultCharsetField.set(null, null);
 		}
 		SimpleKeyValueList<String, String> params = getParameterMap();
 		for (int i = 0; i < params.size(); i++) {
@@ -121,6 +119,7 @@ public abstract class SimpleShell extends Application {
 			} else if (key.equalsIgnoreCase("-?")) {
 				System.out.println(getCommandHelp());
 				System.exit(1);
+				return;
 			}
 		}
 		if (debugPort != null) {
@@ -234,55 +233,67 @@ public abstract class SimpleShell extends Application {
 
 	}
 
-	protected boolean writeErrorFile(String fileName, Throwable e, Object... extra) {
+	protected boolean writeErrorFile(String fileName, Throwable e, Object... extras) {
 		boolean success;
 		try {
 			errorPath = createDir(errorPath);
+			if(errorPath == null) {
+				errorPath = "";
+			}
 			if (!errorPath.endsWith("/")) {
 				errorPath += "/";
 			}
 			String fullfilename = errorPath + fileName;
 
 			File file = new File(fullfilename);
-			if (!file.exists()) {
-				file.createNewFile();
+			if (file.exists() == false) {
+				if(file.createNewFile() == false) {
+					return false;
+				}
 			}
 			FileOutputStream networkFile = new FileOutputStream(errorPath + "/" + fileName);
 
-			PrintStream ps = new PrintStream(networkFile);
-			ps.println("Error: " + e.getMessage());
-			if (extra != null) {
-				ps.println("Extra: " + extra.toString());
+			OutputStreamWriter ps = new OutputStreamWriter(networkFile,  "UTF-8");
+			PrintWriter pw = new PrintWriter(ps);
+			pw.println("Error: " + e.getMessage());
+			if (extras != null) {
+				StringBuilder sb=new StringBuilder();
+				for(Object item : extras) {
+					if(item != null) {
+						sb.append(item.toString()+", ");
+					}
+				}
+				pw.println("Extra: " + sb.toString());
 			}
-			ps.println("Thread: " + Thread.currentThread().getName());
-			ps.println("------------ SYSTEM-INFO ------------");
-			printProperty(ps, "java.class.version");
-			printProperty(ps, "java.runtime.version");
-			printProperty(ps, "java.specification.version");
-			printProperty(ps, "java.version");
-			printProperty(ps, "os.arch");
-			printProperty(ps, "os.name");
-			printProperty(ps, "os.version");
-			printProperty(ps, "user.dir");
-			printProperty(ps, "user.home");
-			printProperty(ps, "user.language");
-			printProperty(ps, "user.name");
-			printProperty(ps, "user.timezone");
-			ps.println("");
+			pw.println("Thread: " + Thread.currentThread().getName());
+			pw.println("------------ SYSTEM-INFO ------------");
+			printProperty(pw, "java.class.version");
+			printProperty(pw, "java.runtime.version");
+			printProperty(pw, "java.specification.version");
+			printProperty(pw, "java.version");
+			printProperty(pw, "os.arch");
+			printProperty(pw, "os.name");
+			printProperty(pw, "os.version");
+			printProperty(pw, "user.dir");
+			printProperty(pw, "user.home");
+			printProperty(pw, "user.language");
+			printProperty(pw, "user.name");
+			printProperty(pw, "user.timezone");
+			pw.println("");
 
 			Runtime r = Runtime.getRuntime();
-			ps.println("Prozessoren :	   " + r.availableProcessors());
-			ps.println("Freier Speicher JVM:	" + r.freeMemory());
-			ps.println("Maximaler Speicher JVM: " + r.maxMemory());
-			ps.println("Gesamter Speicher JVM:  " + r.totalMemory());
-			ps.println("Gesamter Speicher Java:  "
+			pw.println("Prozessoren :	   " + r.availableProcessors());
+			pw.println("Freier Speicher JVM:	" + r.freeMemory());
+			pw.println("Maximaler Speicher JVM: " + r.maxMemory());
+			pw.println("Gesamter Speicher JVM:  " + r.totalMemory());
+			pw.println("Gesamter Speicher Java:  "
 					+ ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean())
 							.getTotalSwapSpaceSize());
 
-			ps.println("***  ***");
+			pw.println("***  ***");
 
-			ps.println();
-			e.printStackTrace(ps);
+			pw.println();
+			e.printStackTrace(pw);
 			ps.close();
 			success = true;
 		} catch (FileNotFoundException exception) {
@@ -306,7 +317,7 @@ public abstract class SimpleShell extends Application {
 		return null;
 	}
 
-	private void printProperty(PrintStream ps, String property) {
+	private void printProperty(PrintWriter ps, String property) {
 		ps.println(property + ": " + System.getProperty(property));
 	}
 

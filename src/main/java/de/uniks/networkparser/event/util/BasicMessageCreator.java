@@ -29,6 +29,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 
 public class BasicMessageCreator implements SendableEntityCreatorTag {
 	/** The properties. */
+	public static final String ANSWER_OF_EVERYTHING="B";
 	protected final String[] properties = new String[] {BasicMessage.PROPERTY_VALUE };
 
 	/*
@@ -52,7 +53,7 @@ public class BasicMessageCreator implements SendableEntityCreatorTag {
 	 */
 	@Override
 	public String getTag() {
-		return new String(new byte[]{0x42});
+		return ANSWER_OF_EVERYTHING;
 	}
 
 	/*

@@ -41,22 +41,25 @@ public class StyleFX extends Style{
 
 	@Override
 	public String toString() {
-		String style="", item;
+		StringBuilder style=new StringBuilder();
+		String item;
 		item =getBackground();
 		if(item != null){
-			if(item.startsWith("#")){
-				style +="-fx-background-color: "+item+";";
-			}else{
-				style +="-fx-background-color: #"+item+";";
+			style.append("-fx-background-color: ");
+			if(item.startsWith("#") == false){
+				style.append("#");
 			}
+			style.append(item);
+			style.append(";");
 		}
 		item =getForground();
 		if(item != null){
-			if(item.startsWith("#")){
-				style +="-fx-text-fill: "+item+";";
-			}else{
-				style +="-fx-text-fill: #"+item+";";
+			style.append("-fx-text-fill: ");
+			if(item.startsWith("#") == false){
+				style.append("#");
 			}
+			style.append(item);
+			style.append(";");
 		}
 		if(getBorders().size()>0){
 			String[] isBorders=new String[]{"0","0","0","0"};
@@ -84,24 +87,25 @@ public class StyleFX extends Style{
 						break;
 				}
 			}
-			style+="-fx-border-color:";
+			style.append("-fx-border-color:");
+			
 			for(int i=0;i<4;i++){
-				style+=" "+colors[i]+"";
+				style.append(" "+colors[i]);
 			}
-			style+=";";
-			style+="-fx-border-width:";
+			style.append(";");
+			style.append("-fx-border-width:");
 			for(int i=0;i<4;i++){
-				style+=" "+isBorders[i];
+				style.append(" "+isBorders[i]);
 			}
-			style+=";";
+			style.append(";");
 		}
 		if(cursor!=null){
-			style+="-fx-cursor:"+cursor+";";
+			style.append("-fx-cursor:"+cursor+";");
 		}
 		if(this.getAlignment()!= null) {
-			style+="-fx-text-alignment:"+this.getAlignment()+";";
+			style.append("-fx-text-alignment:"+this.getAlignment()+";");
 		}
-		return style;
+		return style.toString();
 	}
 	
 	public static String getPath(){

@@ -133,6 +133,9 @@ public class GraphUtil {
 	}
 	
 	public static void removeYou(GraphMember value) {
+		if(value == null) {
+			return;
+		}
 		value.setParent(null);
 		if(value instanceof Attribute) {
 			Attribute attribute = (Attribute) value;

@@ -24,6 +24,7 @@ package de.uniks.networkparser.ext.javafx.controller;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -31,7 +32,6 @@ import java.util.LinkedHashSet;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.logic.SimpleMapEvent;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.Property;
@@ -48,12 +48,11 @@ public abstract class ModelListenerProperty<T> implements javafx.beans.property.
 	private LinkedHashSet<ChangeListener<? super T>> listeners=new LinkedHashSet<ChangeListener<? super T>>();
 	private LinkedHashSet<InvalidationListener> invalidationListeners=new LinkedHashSet<InvalidationListener>();
 	protected ObservableValue<? extends T> observable = null;
-	protected SimpleMapEvent filter;
 
 	public ModelListenerProperty(SendableEntityCreator creator, Object item, String property) {
 		this.creator = creator;
 		this.property = property;
-		this.filter = new SimpleMapEvent(IdMap.NEW, null, property).withModelItem(item);
+//		this.filter = new SimpleMapEvent(IdMap.NEW, null, property).withModelItem(item);
 		if (item instanceof SendableEntity) {
 			((SendableEntity) item).addPropertyChangeListener(property, this);
 			return;
@@ -78,17 +77,28 @@ public abstract class ModelListenerProperty<T> implements javafx.beans.property.
 		}
 
 
-		try {
-			Method method = item.getClass().getMethod("addPropertyChangeListener", java.beans.PropertyChangeListener.class );
-			method.invoke(item, this);
-			return;
-		} catch (Exception e) {
-		}
+			try {
+				Method method = item.getClass().getMethod("addPropertyChangeListener", java.beans.PropertyChangeListener.class );
+				method.invoke(item, this);
+			} catch (NoSuchMethodException e) {
+			} catch (SecurityException e) {
+			} catch (IllegalAccessException e) {
+			} catch (IllegalArgumentException e) {
+			} catch (InvocationTargetException e) {
+			}
 	}
 
 	@Override
 	public Object getBean() {
 		return item;
+	}
+	
+	public boolean setBean(Object value) {
+		if(value != this.item) {
+			this.item = value;
+			return true;
+		}
+		return false;
 	}
 
 	@Override

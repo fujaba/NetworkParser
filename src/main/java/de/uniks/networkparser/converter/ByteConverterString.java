@@ -32,11 +32,12 @@ public class ByteConverterString extends ByteConverter {
 	 */
 	@Override
 	public String toString(de.uniks.networkparser.buffer.ByteBuffer values) {
+		if(values == null) {
+			return null;
+		}
 		StringBuilder returnValue = new StringBuilder(values.length());
-		if (values != null) {
-			for (int i = 0; i < values.length(); i++) {
-				returnValue.append(values.charAt(i));
-			}
+		for (int i = 0; i < values.length(); i++) {
+			returnValue.append(values.charAt(i));
 		}
 		return returnValue.toString();
 	}

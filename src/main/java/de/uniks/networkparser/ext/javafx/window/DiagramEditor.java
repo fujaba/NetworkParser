@@ -54,7 +54,7 @@ import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
 
 public class DiagramEditor extends SimpleShell implements Editor {
-	private final String CRLF = "\r\n";
+	private final static String CRLF = "\r\n";
 	private WebView browser;
 	private WebEngine webEngine;
 	private Editor logic;
@@ -73,7 +73,10 @@ public class DiagramEditor extends SimpleShell implements Editor {
 				if(editor instanceof Editor) {
 					this.logic = (Editor) editor;
 				}
-			} catch (Exception e) {
+			} catch (RuntimeException e) {
+			} catch (ClassNotFoundException e) {
+			} catch (InstantiationException e) {
+			} catch (IllegalAccessException e) {
 			}
 		}
 		if(this.logic != null) {
@@ -172,7 +175,7 @@ public class DiagramEditor extends SimpleShell implements Editor {
 							do {
 								read = is.read(buf, 0, buf.length);
 								if (read>0) {
-									sb.append(new String(buf, 0, read));
+									sb.append(new String(buf, 0, read, "UTF-8"));
 								}
 							} while (read>=0);
 						} catch (IOException e) {
@@ -212,13 +215,20 @@ public class DiagramEditor extends SimpleShell implements Editor {
 			} catch (IOException e) {
 			}
 		}
+		FileOutputStream out = null;
 		try {
-			FileOutputStream out = new FileOutputStream(target);
-			byte[] bytes = content.getBytes();
+			out = new FileOutputStream(target);
+			byte[] bytes = content.getBytes("UTF-8");
 			out.write(bytes, 0, bytes.length);
-			out.close();
 		} catch (FileNotFoundException e) {
 		} catch (IOException e) {
+		} finally {
+			if(out != null) {
+				try {
+					out.close();
+				} catch (IOException e) {
+				}
+			}
 		}
 	}
 
@@ -239,10 +249,14 @@ public class DiagramEditor extends SimpleShell implements Editor {
 					count = is.read(buffer);
 					if (count == -1)
 						break;
-					sb.append(new String(buffer, 0, count));
+					sb.append(new String(buffer, 0, count, "UTF-8"));
 				}
-				is.close();
 			} catch (IOException e) {
+			} finally {
+				try {
+					is.close();
+				} catch (IOException e) {
+				}
 			}
 		}
 		if (file.endsWith(".js")) {
@@ -257,16 +271,18 @@ public class DiagramEditor extends SimpleShell implements Editor {
 		File target = new File(file);
 
 		InputStream is = GraphList.class.getResourceAsStream(file);
-
+		FileOutputStream out = null;
 		if (is != null) {
 			final int BUFF_SIZE = 5 * 1024; // 5KB
 			final byte[] buffer = new byte[BUFF_SIZE];
 
 			try {
 				if (!target.exists()) {
-					target.createNewFile();
+					if(target.createNewFile() == false) {
+						return;
+					}
 				}
-				FileOutputStream out = new FileOutputStream(target);
+				out = new FileOutputStream(target);
 
 				while (true) {
 					int count = is.read(buffer);
@@ -274,10 +290,20 @@ public class DiagramEditor extends SimpleShell implements Editor {
 						break;
 					out.write(buffer, 0, count);
 				}
-				out.close();
-				is.close();
+				
+			} catch (IOException e) {
 			} catch (Exception e) {
-				// e.printStackTrace();
+			} finally {
+				if(out != null) {
+					try {
+						out.close();
+					} catch (IOException e) {
+					}
+					try {
+						is.close();
+					} catch (IOException e) {
+					}
+				}
 			}
 		}
 	}
@@ -293,7 +319,7 @@ public class DiagramEditor extends SimpleShell implements Editor {
 		return false;
 	}
 
-	public class JavaApp {
+	public final static class JavaApp {
 		private DiagramEditor owner;
 
 		public JavaApp(DiagramEditor owner) {

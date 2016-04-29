@@ -119,13 +119,13 @@ public class GenericCreator implements SendableEntityCreator {
 			Method method = this.clazz.getMethod("get" + this.getMethodName(attribute));
 			Object invoke = method.invoke(entity);
 			return invoke;
-		} catch (Exception e) {
+		} catch (ReflectiveOperationException e) {
 		}
 		try {
 			Method method = this.clazz.getMethod(attribute);
 			Object invoke = method.invoke(entity);
 			return invoke;
-		} catch (Exception e2) {
+		} catch (ReflectiveOperationException e) {
 		}
 		// No Method Found
 		try {
@@ -149,7 +149,7 @@ public class GenericCreator implements SendableEntityCreator {
 			this.clazz.getMethod(methodName, value.getClass()).invoke(entity,
 					value);
 			return true;
-		} catch (Exception e) {
+		} catch (ReflectiveOperationException e) {
 		}
 		// maybe a number
 		try {

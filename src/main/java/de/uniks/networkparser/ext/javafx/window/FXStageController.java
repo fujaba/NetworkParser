@@ -252,7 +252,7 @@ public class FXStageController implements StageEvent, WindowListener {
 
 		} catch (IOException e) {
 			System.err.println("FXML Load Error:" + e.getMessage());
-			System.err.println("FXML Load Error:" + e.getCause().toString());
+			System.err.println("FXML Load Error:" + e.getCause());
 			return null;
 		}
 		this.withController(fxmlLoader.getController());
@@ -344,12 +344,9 @@ public class FXStageController implements StageEvent, WindowListener {
 		if(value instanceof Node){
 			return showNewStage((Node) value);
 		}
-
-		if (value instanceof StageEvent) {
-			Stage myStage = getStage();
-			((StageEvent) value).stageShowing(new WindowEvent(myStage,
-					WindowEvent.WINDOW_SHOWING), myStage, this);
-		}
+		Stage myStage = getStage();
+		((StageEvent) value).stageShowing(new WindowEvent(myStage,
+				WindowEvent.WINDOW_SHOWING), myStage, this);
 		Stage oldStage=stage;
 
 		this.withPane(null);

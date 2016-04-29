@@ -194,8 +194,10 @@ public class AES {
 		byte[] partByte;
 		for (int p = 0; p < plain.length(); p+=16) {
 			partByte = encodeBlock(plain);
-			for(int pos =0;pos < BLOCK_SIZE; pos++) {
-				result.with((char)partByte[pos]);
+			if(partByte != null) {
+				for(int pos =0;pos < BLOCK_SIZE; pos++) {
+					result.with((char)partByte[pos]);
+				}
 			}
 		}
 		return result;
@@ -363,8 +365,10 @@ public class AES {
 		byte[] partByte;
 		for (int p = 0; p < string.length(); p+=16) {
 			partByte = decodeBlock(string.toCharArray(), p);
-			for(int pos =0;pos < BLOCK_SIZE; pos++) {
-				result.with((char)partByte[pos]);
+			if(partByte != null) {
+				for(int pos =0;pos < BLOCK_SIZE; pos++) {
+					result.with((char)partByte[pos]);
+				}
 			}
 		}
 		return result.trim();

@@ -133,18 +133,18 @@ public class SHA1 extends Checksum {
 				length -= 8;
 			}
 
-			while (length < 0) // (len >= 4)
-			{
-				w[currentPos >> 2] = ((bytes[offset++] & 0xff) << 24) | ((bytes[offset++] & 0xff) << 16)
-						| ((bytes[offset++] & 0xff) << 8) | (bytes[offset++] & 0xff);
-				length -= 4;
-				currentPos += 4;
-				currentLen += 32;
-				if (currentPos == 64) {
-					perform();
-					currentPos = 0;
-				}
-			}
+//			while (length < 0) // (len >= 4)
+//			{
+//				w[currentPos >> 2] = ((bytes[offset++] & 0xff) << 24) | ((bytes[offset++] & 0xff) << 16)
+//						| ((bytes[offset++] & 0xff) << 8) | (bytes[offset++] & 0xff);
+//				length -= 4;
+//				currentPos += 4;
+//				currentLen += 32;
+//				if (currentPos == 64) {
+//					perform();
+//					currentPos = 0;
+//				}
+//			}
 		}
 
 		/* Remaining bytes (1-3) */

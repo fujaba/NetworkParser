@@ -113,9 +113,9 @@ public class RGBColor {
 	
 	public RGBColor add(RGBColor second) {
 		RGBColor color = new RGBColor();
-		float newRed = (getRed()+second.getRed()) / 2;
-		float newGreen = (getGreen()+second.getGreen()) / 2;
-		float newBlue = (getBlue()+second.getBlue()) / 2;
+		float newRed = ((float)(getRed()+second.getRed())) / 2;
+		float newGreen = ((float)(getGreen()+second.getGreen())) / 2;
+		float newBlue = ((float)(getBlue()+second.getBlue())) / 2;
 		color.withValue(newRed, newGreen, newBlue);
 		return color;
 	}
@@ -167,17 +167,23 @@ public class RGBColor {
 	public float getYellow() {
 		return yellow;
 	}
-	public boolean equals(RGBColor other) {
+	
+	@Override
+	public boolean equals(Object other) {
 		if(other == null) {
 			return false;
 		}
-		if(other.getRed()!=getRed()) {
+		if(other instanceof RGBColor == false) {
 			return false;
 		}
-		if(other.getGreen()!=getGreen()) {
+		RGBColor otherColor = (RGBColor) other;
+		if(otherColor.getRed()!=getRed()) {
 			return false;
 		}
-		if(other.getBlue()!=getBlue()) {
+		if(otherColor.getGreen()!=getGreen()) {
+			return false;
+		}
+		if(otherColor.getBlue()!=getBlue()) {
 			return false;
 		}
 		return true;
