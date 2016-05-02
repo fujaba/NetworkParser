@@ -39,30 +39,40 @@ public class GitRevision {
 		File file = new File("");
 
 		FileRepositoryBuilder builder = new FileRepositoryBuilder();
-		Repository repository = builder.setWorkTree(file)
-		  .readEnvironment() // scan environment GIT_* variables
-		  .findGitDir() // scan up the file system tree
-		  .build();
-
-		Map<String, Ref> allRefs = repository.getAllRefs();
-		ObjectId headID = repository.resolve("HEAD");
-		String id;
-		if(headID == null) {
-			id = "";
-		} else {
-			id = headID.name();
+		Repository repository = null;
+		Map<String, Ref> allRefs = null;
+		LinkedHashSet<String> branches=new LinkedHashSet<String>();
+		String id = null;
+		ObjectId headID = null;
+		try {
+			repository = builder.setWorkTree(file)
+			  .readEnvironment() // scan environment GIT_* variables
+			  .findGitDir() // scan up the file system tree
+			  .build();
+	
+			allRefs = repository.getAllRefs();
+			headID = repository.resolve("HEAD");
+			if(headID != null) {
+				id = headID.name();
+			}
+			branches.add(repository.getBranch());
+		}catch(IOException e) {
+		} finally {
+			if(repository != null) {
+				repository.close();
+			}
+		}
+		if(allRefs != null) {
 			if(id == null) {
 				id = "";
 			}
-		}
-		LinkedHashSet<String> branches=new LinkedHashSet<String>();
-		branches.add(repository.getBranch());
-		repository.close();
-		for(Iterator<Entry<String, Ref>> i = allRefs.entrySet().iterator();i.hasNext();){
-			Entry<String, Ref> item = i.next();
-			if(id.equals(item.getValue().getObjectId().name())) {
-				if(branches.contains(item.getKey()) == false) {
-					branches.add(item.getKey());
+	
+			for(Iterator<Entry<String, Ref>> i = allRefs.entrySet().iterator();i.hasNext();){
+				Entry<String, Ref> item = i.next();
+				if(id.equals(item.getValue().getObjectId().name())) {
+					if(branches.contains(item.getKey()) == false) {
+						branches.add(item.getKey());
+					}
 				}
 			}
 		}

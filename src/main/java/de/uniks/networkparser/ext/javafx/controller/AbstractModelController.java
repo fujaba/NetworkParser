@@ -74,7 +74,7 @@ public abstract class AbstractModelController implements PropertyChangeListener 
 				method.invoke(item, property, listener);
 				listener.propertyChange(new PropertyChangeEvent(item, property, null, creator.getValue(item, property)));
 				return  true;
-			} catch (Exception e) {
+			} catch (ReflectiveOperationException e) {
 			}
 		}
 		try {

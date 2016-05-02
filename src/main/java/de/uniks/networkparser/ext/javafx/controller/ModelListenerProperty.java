@@ -24,7 +24,6 @@ package de.uniks.networkparser.ext.javafx.controller;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -65,7 +64,7 @@ public abstract class ModelListenerProperty<T> implements javafx.beans.property.
 			Method method = item.getClass().getMethod("addPropertyChangeListener", String.class, java.beans.PropertyChangeListener.class );
 			method.invoke(item, property, this);
 			return;
-		} catch (Exception e) {
+		} catch (ReflectiveOperationException e) {
 		}
 
 		try {
@@ -73,19 +72,13 @@ public abstract class ModelListenerProperty<T> implements javafx.beans.property.
 			PropertyChangeSupport pc = (PropertyChangeSupport) method.invoke(item);
 			pc.addPropertyChangeListener(property, this);
 			return;
-		} catch (Exception e) {
+		} catch (ReflectiveOperationException e) {
 		}
-
-
-			try {
-				Method method = item.getClass().getMethod("addPropertyChangeListener", java.beans.PropertyChangeListener.class );
-				method.invoke(item, this);
-			} catch (NoSuchMethodException e) {
-			} catch (SecurityException e) {
-			} catch (IllegalAccessException e) {
-			} catch (IllegalArgumentException e) {
-			} catch (InvocationTargetException e) {
-			}
+		try {
+			Method method = item.getClass().getMethod("addPropertyChangeListener", java.beans.PropertyChangeListener.class );
+			method.invoke(item, this);
+		} catch (ReflectiveOperationException e) {
+		}
 	}
 
 	@Override

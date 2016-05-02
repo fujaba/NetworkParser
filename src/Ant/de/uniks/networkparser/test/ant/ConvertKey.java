@@ -29,7 +29,7 @@ public class ConvertKey {
 			
 			String hexValue = converterHex.toString(new ByteBuffer().with(key.getBytes(Charset.forName("UTF-8"))));
 			out = new FileOutputStream(output);
-			out.write(hexValue.getBytes());
+			out.write(hexValue.getBytes(Charset.forName("UTF-8")));
 		} catch (IOException e) {
 		} finally {
 			if(out != null) {

@@ -299,6 +299,8 @@ public class DiagramEditor extends SimpleShell implements Editor {
 						out.close();
 					} catch (IOException e) {
 					}
+				}
+				if(is != null) {
 					try {
 						is.close();
 					} catch (IOException e) {

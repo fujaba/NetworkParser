@@ -270,10 +270,7 @@ public class EntityUtil {
 		}
 		if (value instanceof Map) {
 			BaseItem item = reference.getNewList(true).with((Map<?, ?>) value);
-			if (item instanceof BaseItem) {
-				return ((BaseItem) item).toString(converter);
-			}
-			return ((BaseItem) item).toString();
+			return item.toString(converter);
 		}
 		if (value instanceof Collection) {
 			BaseItem item = reference.getNewList(true);

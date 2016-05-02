@@ -458,7 +458,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 				Method method = item.getClass().getMethod("addPropertyChangeListener", String.class, java.beans.PropertyChangeListener.class );
 				method.invoke(item, property, this);
 				return true;
-			} catch (Exception e) {
+			} catch (ReflectiveOperationException e) {
 			}
 		}
 
