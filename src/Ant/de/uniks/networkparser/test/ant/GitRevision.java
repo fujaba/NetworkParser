@@ -45,6 +45,7 @@ public class GitRevision {
 		String id = null;
 		ObjectId headID = null;
 		JsonArray map= new JsonArray();
+		int count=0;
 		try {
 			repository = builder.setWorkTree(file)
 			  .readEnvironment() // scan environment GIT_* variables
@@ -59,6 +60,13 @@ public class GitRevision {
 			}
 			commitInfo(map, repository, headID, null);
 			branches.add(repository.getBranch());
+			
+			while (headID!=null){
+				count++;
+				ObjectId oldId = headID;
+				headID = repository.resolve(headID.getName()+ "^1");
+				commitInfo(map, repository, headID, oldId);
+			}
 		}catch(IOException e) {
 		} finally {
 			if(repository != null) {
@@ -87,15 +95,6 @@ public class GitRevision {
 		
 		System.setProperty("Branchname", allBranches.toString());
 		System.setProperty("LastCommit", id);
-
-		int count=0;
-		while (headID!=null){
-			count++;
-			ObjectId oldId = headID;
-			headID = repository.resolve(headID.getName()+ "^1");
-			commitInfo(map, repository, headID, oldId);
-//			System.out.println(count);
-		}
 		System.setProperty("Revisionnumber", "" +count);
 		OutputStreamWriter writer = null;
 		try {
