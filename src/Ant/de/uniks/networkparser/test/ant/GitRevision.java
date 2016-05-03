@@ -44,6 +44,7 @@ public class GitRevision {
 		LinkedHashSet<String> branches=new LinkedHashSet<String>();
 		String id = null;
 		ObjectId headID = null;
+		JsonArray map= new JsonArray();
 		try {
 			repository = builder.setWorkTree(file)
 			  .readEnvironment() // scan environment GIT_* variables
@@ -51,12 +52,12 @@ public class GitRevision {
 			  .build();
 	
 			calcGitTag(repository);
-			
 			allRefs = repository.getAllRefs();
 			headID = repository.resolve("HEAD");
 			if(headID != null) {
 				id = headID.name();
 			}
+			commitInfo(map, repository, headID, null);
 			branches.add(repository.getBranch());
 		}catch(IOException e) {
 		} finally {
@@ -86,9 +87,6 @@ public class GitRevision {
 		
 		System.setProperty("Branchname", allBranches.toString());
 		System.setProperty("LastCommit", id);
-
-		JsonArray map= new JsonArray();
-		commitInfo(map, repository, headID, null);
 
 		int count=0;
 		while (headID!=null){

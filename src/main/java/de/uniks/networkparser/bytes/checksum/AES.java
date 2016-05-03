@@ -438,8 +438,10 @@ public class AES {
 			}
 
 			// InvSubBytes(state) into a using inverse S-box Si
-			for (i = 0; i < BLOCK_SIZE; i++)
-				cipher[i] = Si[ta[i] & 0xFF];
+			for (i = 0; i < BLOCK_SIZE; i++) {
+				int pos = ta[i] & 0xFF;
+				cipher[i] = Si[pos];
+			}
 
 			// AddRoundKey(state) into ta
 			for (i = 0; i < BLOCK_SIZE; i++)
