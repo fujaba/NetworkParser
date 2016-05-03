@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!DOCTYPE project>
 <project default="coverage" name="Create Jar for NetworkParser" xmlns:cs="antlib:com.puppycrawl.tools.checkstyle">
 	<target name="checkStyle">
-		<taskdef resource="checkstyletask.properties" classpath="lib/checkstyle/checkstyle-6.5-all.jar" />
+		<taskdef resource="com/puppycrawl/tools/checkstyle/ant/checkstyle-ant-task.properties" classpath="lib/checkstyle/checkstyle-6.11.2-all.jar" />
 		<mkdir dir="build/" />
-		<checkstyle config="lib/checkstyle/sun_checks.xml" >
+		<checkstyle config="lib\checkstyle\sun_checks.xml" >
 			<fileset dir="src/main/java" includes="**/*.java"/>
 			<!-- Location of cache-file. Something that is project specific -->
 			<property key="checkstyle.cache.file" file="target/cachefile"/>
@@ -12,7 +12,7 @@
 		</checkstyle>
 	</target>
 	<target name="findBugs">
-		<taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask" classpath="lib/findbugs-3.0.0/findbugs-ant.jar">
+		<taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask" classpath="lib/findbugs/lib/findbugs-ant.jar">
 			<classpath>
 				<fileset dir="lib/findbugs">
 					<include name="*.jar"/>
@@ -27,7 +27,7 @@
 	</target>
 	<taskdef name="jacococoverage" classname="org.jacoco.ant.CoverageTask"><classpath path="lib\jacoco\jacocoant-0.7.5.201505241946.jar" /></taskdef>
 	<taskdef name="jacocoreport" classname="org.jacoco.ant.ReportTask"><classpath path="lib\jacoco\jacocoant-0.7.5.201505241946.jar"/></taskdef>
-	<target name="coverage">
+	<target name="coverage" depends="checkStyle,findBugs">
 		<mkdir dir="build/junit"/>
 		<jacococoverage output="file" destfile="build/networkparser.exec">
 			<junit fork="yes" failureProperty="test.failed" forkmode="once" showoutput="false" printsummary="false">

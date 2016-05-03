@@ -1,4 +1,4 @@
-package de.uniks.networkparser.buffer;
+package de.uniks.networkparser.ext.javafx.component;
 
 /*
  NetworkParser
@@ -22,18 +22,13 @@ package de.uniks.networkparser.buffer;
  permissions and limitations under the Licence.
 */
 
-public class TokenBuffer extends CharacterBuffer{
-	//	private boolean isString = true;
-	private int startToken = -1;
+public class Runner implements Runnable{
+	protected Object params;
 
-	public CharSequence getToken(CharSequence defaultText) {
-		if(this.startToken < 0) {
-			nextClean(false);
-			return defaultText;
-		}
-		CharacterBuffer token = subSequence(startToken, this.position());
-		this.startToken = -1;
-		nextClean(false);
-		return token;
+	public Runner(Object runner) {
+		this.params = runner;
+	}
+	@Override
+	public void run() {
 	}
 }

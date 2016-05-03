@@ -1,9 +1,30 @@
 package de.uniks.networkparser.gui;
 
+/*
+ NetworkParser
+ Copyright (c) 2011 - 2015, Stefan Lindel
+ All rights reserved.
+
+ Licensed under the EUPL, Version 1.1 or (as soon they
+ will be approved by the European Commission) subsequent
+ versions of the EUPL (the "Licence");
+ You may not use this work except in compliance with the Licence.
+ You may obtain a copy of the Licence at:
+
+ http://ec.europa.eu/idabc/eupl5
+
+ Unless required by applicable law or agreed to in
+ writing, software distributed under the Licence is
+ distributed on an "AS IS" basis,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ express or implied.
+ See the Licence for the specific language governing
+ permissions and limitations under the Licence.
+*/
 import de.uniks.networkparser.buffer.CharacterBuffer;
 
 public class RGBColor {
-    public static final RGBColor WHITE       = new RGBColor().withValue(255, 255, 255);
+	public static final RGBColor WHITE       = new RGBColor().withValue(255, 255, 255);
     public static final RGBColor TANSPARENT  = new RGBColor().withValue(0, 0, 0);
     public static final RGBColor BLACK       = new RGBColor().withValue(0, 0, 0);
     public static final RGBColor RED         = new RGBColor().withValue(255, 0, 0);
@@ -170,11 +191,11 @@ public class RGBColor {
 	
 	@Override
 	public boolean equals(Object other) {
-		if(other == null) {
+		if(other == null || other instanceof RGBColor == false) {
 			return false;
 		}
-		if(other instanceof RGBColor == false) {
-			return false;
+		if(other.hashCode() == this.hashCode()) {
+			return true;
 		}
 		RGBColor otherColor = (RGBColor) other;
 		if(otherColor.getRed()!=getRed()) {
@@ -188,6 +209,10 @@ public class RGBColor {
 		}
 		return true;
 	 }
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
 	
 	public String toString() {
 		CharacterBuffer buffer=new CharacterBuffer().withBufferLength(7);

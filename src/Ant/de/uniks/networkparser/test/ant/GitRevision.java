@@ -50,6 +50,8 @@ public class GitRevision {
 			  .findGitDir() // scan up the file system tree
 			  .build();
 	
+			calcGitTag(repository);
+			
 			allRefs = repository.getAllRefs();
 			headID = repository.resolve("HEAD");
 			if(headID != null) {
@@ -84,7 +86,6 @@ public class GitRevision {
 		
 		System.setProperty("Branchname", allBranches.toString());
 		System.setProperty("LastCommit", id);
-		calcGitTag(repository);
 
 		JsonArray map= new JsonArray();
 		commitInfo(map, repository, headID, null);

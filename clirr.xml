@@ -3,20 +3,21 @@
 
 <!-- depends="build.buildJars" -->
 <target name="checkbinarycompatibility" >
-	<!-- buildtools.classpath should either contain
-		clirr-core-uber.jar or alternatively
-		clirr-core.jar and the libraries it depends on -->
-	<path id="dependency.path">
-		<fileset dir="lib/clirr-0.6/" includes="*.jar" />
-	</path>
-	<taskdef classpathref="dependency.path" resource="clirrtask.properties"/>
-	<property name="jar.baseline" value="${ant.project.name}-1.0.jar"/>
-
-<echo>${jar.baseline}</echo>
-<echo>${jar.buildresult}</echo>
+	<taskdef  resource="clirrtask.properties">
+		<classpath>
+			<fileset dir="lib/clirr">
+				<include name="*.jar"/>
+			</fileset>
+		</classpath>
+	</taskdef>
+	<property name="jar.baseline" value="${ant.project.name}-4.0.-1-SNAPSHOT.jar"/>
+	 <property
+	        name="jar.baseline"
+	        value="${ant.project.name}-${compatibility.baseline.version}.jar"/>
+	<echo>${jar.baseline}</echo>
 	<clirr>
-		<origfiles dir="build" includes="networkparser-1.0.jar"/>
-		<newfiles dir="build" includes="networkparser.jar"/>
+		<origfiles dir="build/libs" includes="${jar.baseline}"/>
+		<newfiles dir="build/libs" includes="${jar.baseline"/>
 		<formatter type="xml" outfile="build/clirr.xml" />
 		<!-- TODO: example for 3rd party classpath -->
 	</clirr>

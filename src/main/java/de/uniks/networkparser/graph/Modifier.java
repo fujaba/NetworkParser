@@ -100,4 +100,8 @@ public class Modifier extends GraphMember {
 		}
 		return super.equals(obj);
 	}
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
 }

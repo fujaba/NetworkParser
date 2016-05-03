@@ -302,16 +302,15 @@ public class AES {
 			Ker = Ke[r]; // get session keys for this round
 
 			// SubBytes(state) into ta using S-Box S
-			for (i = 0; i < BLOCK_SIZE; i++)
-				ta[i] = S[plain[i] & 0xFF];
+			for (i = 0; i < BLOCK_SIZE; i++) {
+				int pos = plain[i] & 0xFF;
+				ta[i] = S[pos];
+			}
 
 			// ShiftRows(state) into a
 			for (i = 0; i < BLOCK_SIZE; i++) {
 				row = i % COL_SIZE;
-				k = (i + (row_shift[row] * COL_SIZE)) % BLOCK_SIZE; // get
-																	// shifted
-																	// byte
-																	// index
+				k = (i + (row_shift[row] * COL_SIZE)) % BLOCK_SIZE; // get shifted byte index
 				plain[i] = ta[k];
 			}
 
@@ -337,14 +336,15 @@ public class AES {
 		Ker = Ke[numRounds]; // get session keys for final round
 
 		// SubBytes(state) into a using S-Box S
-		for (i = 0; i < BLOCK_SIZE; i++)
-			plain[i] = S[plain[i] & 0xFF];
+		for (i = 0; i < BLOCK_SIZE; i++) {
+			int pos = plain[i] & 0xFF;
+			plain[i] = S[pos];
+		}
 
 		// ShiftRows(state) into ta
 		for (i = 0; i < BLOCK_SIZE; i++) {
 			row = i % COL_SIZE;
-			k = (i + (row_shift[row] * COL_SIZE)) % BLOCK_SIZE; // get shifted
-																// byte index
+			k = (i + (row_shift[row] * COL_SIZE)) % BLOCK_SIZE; // get shifted byte index
 			ta[i] = plain[k];
 		}
 

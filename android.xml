@@ -6,14 +6,12 @@
 
 	<target name="android-compile" description="Compile NetworkParser to Android">
 		<record name="build/android.txt" action="start" append="false" />
-		<!--<get description="get Android-SDK" src="http://dl.google.com/android/android-sdk_r24.4.1-windows.zip" dest="build/android.zip" />
+		<get description="get Android-SDK" src="http://dl.google.com/android/android-sdk_r24.4.1-windows.zip" dest="build/android.zip" />
 		<unzip src="build/android.zip" dest="build" />
-		-->
-		<!--<exec executable="cmd">
+		<exec executable="cmd">
 			<arg value="/C"/>
 			<arg line="echo y | call ${androidBat} update sdk -u -s"/>
-		</exec>-->
-
+		</exec>
 		<exec executable="${androidBat}">
 			<!--<arg line="list targets"/>-->
 			<arg line="create project -n NetworkParser -p build/NetworkParserAndroid -t android-23 -k de.uniks.networkparser -a NPApp"/>

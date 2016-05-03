@@ -77,4 +77,9 @@ public class DataTypeSet extends DataType{
 		}
 		return ((DataTypeSet)obj).getGeneric().equals(this.generic);
 	}
+	
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
 }

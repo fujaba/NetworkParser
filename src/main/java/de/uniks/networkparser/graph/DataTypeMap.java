@@ -98,4 +98,8 @@ public class DataTypeMap extends DataType {
 		}
 		return otherDTM.getGenericValue().equals(this.genericValue);
 	}
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
 }

@@ -179,7 +179,7 @@ public class DateTimeEntity {
 				return true;
 			} else if (month == 3 && leftDays < 7) {
 				if ((7 - dayOfWeek) >= leftDays
-						|| (dayOfWeek == 7 && hour >= 3)) {
+						|| (dayOfWeek == 7)) {
 					return true;
 				}
 			} else if (month == 10 && leftDays < 7

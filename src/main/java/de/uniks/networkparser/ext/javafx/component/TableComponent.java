@@ -301,9 +301,9 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		}
 		if(element instanceof HBox) {
 			final HBox parent = (HBox) element;
-			Platform.runLater(new Runnable() {
-				@Override
+			Platform.runLater(new Runner(elements) {
 				public void run() {
+					Node[] elements = (Node[]) this.params;
 					for(Node item : elements) {
 						parent.getChildren().add(item);
 						HBox.setMargin(item, new Insets(0, 5, 0, 5));

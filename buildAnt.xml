@@ -11,7 +11,7 @@
 			<classpath>
 				<pathelement location="${gitjar}"/>
 				<pathelement location="bin"/>
-				<pathelement location="lib\findbugs\ant.jar"/>
+				<pathelement location="lib\findbugs\lib\ant.jar"/>
 			</classpath>
 		</javac>
 		<jar destfile="NetworkParserAnt.jar">

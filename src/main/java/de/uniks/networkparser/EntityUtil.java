@@ -285,10 +285,7 @@ public class EntityUtil {
 			for (Object entity : items) {
 				item.with(entity);
 			}
-			if (item instanceof BaseItem) {
-				return ((BaseItem) item).toString(converter);
-			}
-			return ((BaseItem) item).toString();
+			return item.toString(converter);
 		}
 		if (simpleText) {
 			return value.toString();

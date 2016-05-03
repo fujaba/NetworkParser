@@ -118,8 +118,7 @@ public abstract class SimpleShell extends Application {
 				}
 			} else if (key.equalsIgnoreCase("-?")) {
 				System.out.println(getCommandHelp());
-				System.exit(1);
-				return;
+				Runtime.getRuntime().exit(1);
 			}
 		}
 		if (debugPort != null) {

@@ -138,8 +138,8 @@ public class GenericCreator implements SendableEntityCreator {
 			}
 			Object invoke = field.get(entity);
 			return invoke;
-		} catch (Exception e2) {
-			System.out.println(e2);
+		} catch (ReflectiveOperationException e) {
+			System.out.println(e);
 		}
 		return null;
 	}
@@ -165,7 +165,7 @@ public class GenericCreator implements SendableEntityCreator {
 			this.clazz.getMethod(methodName, double.class).invoke(entity,
 					doubleValue);
 			return true;
-		} catch (Exception e) {
+		} catch (ReflectiveOperationException e) {
 		}
 		// maybe a float
 		try {
@@ -173,7 +173,7 @@ public class GenericCreator implements SendableEntityCreator {
 			this.clazz.getMethod(methodName, float.class).invoke(entity,
 					floatValue);
 			return true;
-		} catch (Exception e) {
+		} catch (ReflectiveOperationException e) {
 		}
 		return false;
 	}
@@ -202,8 +202,8 @@ public class GenericCreator implements SendableEntityCreator {
 			}
 			field.set(entity, value);
 			return true;
-		} catch (Exception e2) {
-			System.out.println(e2);
+		} catch (ReflectiveOperationException e) {
+			System.out.println(e);
 		}
 		return false;
 	}
@@ -232,50 +232,46 @@ public class GenericCreator implements SendableEntityCreator {
 		map.with(genericCreator);
 
 		// VODOO
-		try {
-			Method[] methods = instance.getMethods();
-			for (Method method : methods) {
-				String methodName = method.getName();
-				if(genericCreator.isValidMethod(methodName)) {
-					Class<?> child = method.getReturnType();
-					if(EntityUtil.isPrimitiveType(child.getName()) == false) {
-						try {
-							Type types = child.getGenericSuperclass();
-							if(types != null) {
-								ParameterizedType genericSuperclass = (ParameterizedType) types;
-								if(genericSuperclass.getActualTypeArguments().length>0){
-									Type type = genericSuperclass.getActualTypeArguments()[0];
-									child = Class.forName(type.getTypeName());
-								}
-							}
-						}catch(Exception e) {
-							// Try to find SubClass for Set
-						}
-						create(map, child);
-					}
-				}
-			}
-			Field[] fields = instance.getDeclaredFields();
-			for (Field field : fields) {
-				Class<?> child = field.getType();
-				if(EntityUtil.isPrimitiveType(child.getName()) == false) {
+		Method[] methods = instance.getMethods();
+		for (Method method : methods) {
+			String methodName = method.getName();
+			if (genericCreator.isValidMethod(methodName)) {
+				Class<?> child = method.getReturnType();
+				if (EntityUtil.isPrimitiveType(child.getName()) == false) {
 					try {
-						Type types = field.getGenericType();
-						if(types != null) {
+						Type types = child.getGenericSuperclass();
+						if (types != null && types instanceof ParameterizedType) {
 							ParameterizedType genericSuperclass = (ParameterizedType) types;
-							if(genericSuperclass.getActualTypeArguments().length>0){
+							if (genericSuperclass.getActualTypeArguments().length > 0) {
 								Type type = genericSuperclass.getActualTypeArguments()[0];
 								child = Class.forName(type.getTypeName());
 							}
 						}
-					}catch(Exception e) {
+					} catch (ReflectiveOperationException e) {
 						// Try to find SubClass for Set
 					}
 					create(map, child);
 				}
 			}
-		}catch (Exception e) {
-			System.out.println(e);
+		}
+		Field[] fields = instance.getDeclaredFields();
+		for (Field field : fields) {
+			Class<?> child = field.getType();
+			if (EntityUtil.isPrimitiveType(child.getName()) == false) {
+				try {
+					Type types = field.getGenericType();
+					if (types != null  && types instanceof ParameterizedType) {
+						ParameterizedType genericSuperclass = (ParameterizedType) types;
+						if (genericSuperclass.getActualTypeArguments().length > 0) {
+							Type type = genericSuperclass.getActualTypeArguments()[0];
+							child = Class.forName(type.getTypeName());
+						}
+					}
+				} catch (ReflectiveOperationException e) {
+					// Try to find SubClass for Set
+				}
+				create(map, child);
+			}
 		}
 		return genericCreator;
 	}

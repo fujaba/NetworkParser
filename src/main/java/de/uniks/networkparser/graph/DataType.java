@@ -104,7 +104,10 @@ public class DataType {
 		}
 		return getName(false).equals(other.getName(false));
 	}
-
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
 	@Override
 	public String toString() {
 		String internName = this.getInternName(false, true);

@@ -88,7 +88,7 @@ public abstract class AbstractModelController implements PropertyChangeListener 
 				listener.propertyChange(new PropertyChangeEvent(item, property, null, creator.getValue(item, property)));
 			}
 			return true;
-		} catch (Exception e) {
+		} catch (ReflectiveOperationException e) {
 		}
 		try {
 			Method method = item.getClass().getMethod("addPropertyChangeListener",  java.beans.PropertyChangeListener.class );
@@ -96,8 +96,6 @@ public abstract class AbstractModelController implements PropertyChangeListener 
 			listener.propertyChange(new PropertyChangeEvent(item, property, null, creator.getValue(item, property)));
 			return  true;
 		} catch (ReflectiveOperationException e) {
-		} catch (SecurityException e) {
-		} catch (IllegalArgumentException e) {
 		}
 		return false;
 	}
