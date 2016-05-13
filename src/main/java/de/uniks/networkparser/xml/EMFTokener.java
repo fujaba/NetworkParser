@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.buffer.CharacterBuffer;
@@ -38,7 +39,6 @@ import de.uniks.networkparser.graph.Clazz.ClazzType;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphModel;
-import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.graph.Literal;
 import de.uniks.networkparser.graph.util.AssociationSet;
 import de.uniks.networkparser.interfaces.Entity;
@@ -63,7 +63,6 @@ public class EMFTokener extends Tokener{
 	public static final String XMI_ID = "xmi:id";
 	public static final String NAME = "name";
 	HashMap<String, Integer> runningNumbers = null;
-	private GraphList model;
 	
 	/**
 	 * Skip the Current Entity to &gt;.
@@ -197,7 +196,7 @@ public class EMFTokener extends Tokener{
 		runningNumbers = new HashMap<String, Integer>();
 
 		addXMIIds(xmlEntity, null);
-
+		
 		addChildren(xmlEntity, rootFactory, rootObject, map);
 
 		addValues(rootFactory, xmlEntity, rootObject, map);
@@ -451,12 +450,12 @@ public class EMFTokener extends Tokener{
 				}else{
 					typeName = tag;
 				}
-			} else {
-				Clazz clazz = GraphUtil.getByObject(getModel(), rootObject.getClass().getName(), false);
-				Association edge = getModel().getEdge(clazz, tag);
-				if (edge != null) {
-					typeName = edge.getOther().getClazz().getName(false);
-				}
+//			} else {
+//				Clazz clazz = GraphUtil.getByObject(model, rootObject.getClass().getName(), false);
+//				Association edge = model.getEdge(clazz, tag);
+//				if (edge != null) {
+//					typeName = edge.getOther().getClazz().getName(false);
+//				}
 			}
 
 			if (kidEntity.has(XSI_TYPE)) {
@@ -614,21 +613,5 @@ public class EMFTokener extends Tokener{
 			}
 		}
 		return edge;
-	}
-
-	/**
-	 * @return the model
-	 */
-	public GraphList getModel() {
-		return model;
-	}
-
-	/**
-	 * @param model the model to set
-	 * @return ThisComponent
-	 */
-	public EMFTokener withModel(GraphList model) {
-		this.model = model;
-		return this;
 	}
 }
