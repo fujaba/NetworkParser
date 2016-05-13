@@ -41,9 +41,8 @@ public class EMFTest extends IOClasses{
 	public void testXMITOEMF() throws FileNotFoundException {
 		IdMap map=new IdMap();
 		StringBuffer value = readFile("imdb.movies");
-		EMFTokener tokener = new EMFTokener().withFlag(EMFTokener.CLASSMODEL);
-		tokener.withBuffer(value);
-		GraphList decode = (GraphList) map.decode(tokener);
+		GraphList decode = new GraphList();
+		map.decodeEMF(value.toString(), decode);
 		Assert.assertEquals(3, decode.getClazzes().size());
 	}
 }

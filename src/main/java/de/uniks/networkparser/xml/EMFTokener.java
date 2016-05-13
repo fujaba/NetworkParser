@@ -55,6 +55,7 @@ public class EMFTokener extends Tokener{
 	public static final String ECore = "ecore:EPackage";
 	public static final String eSuperTypes = "eSuperTypes";
 	public static final String EEnum = "ecore:EEnum";
+	public static final String ECORE = "ecore";
 	public static final String EOpposite = "eOpposite";
 	public static final String UPPERBOUND = "upperBound";
 
@@ -63,13 +64,6 @@ public class EMFTokener extends Tokener{
 	public static final String NAME = "name";
 	HashMap<String, Integer> runningNumbers = null;
 	private GraphList model;
-	private byte flag;
-	public static final byte CLASSMODEL=0x01;
-	
-	public EMFTokener withFlag(byte value) {
-		this.flag = value;
-		return this;
-	}
 	
 	/**
 	 * Skip the Current Entity to &gt;.
@@ -163,7 +157,7 @@ public class EMFTokener extends Tokener{
 	 * @param root The Root Element of Returnvalue
 	 * @return decoded Object
 	 */
-	public Object decode(MapEntity map, GraphModel root) {
+	public Object decode(MapEntity map, Object root) {
 		skipHeader();
 		XMLEntity xmlEntity = new XMLEntity();
 		xmlEntity.withValue(this.buffer);
@@ -172,25 +166,34 @@ public class EMFTokener extends Tokener{
 		}
 		// build root entity
 		String tag = xmlEntity.getTag();
-		if(this.flag == CLASSMODEL) {
-			if(root == null) {
-				root = new GraphList();
-			}
-			return decodingClassModel(xmlEntity, root);
-		}
 		String[] splitTag = tag.split("\\:");
-		String className = splitTag[1];
-		SendableEntityCreator rootFactory = getCreator(className, false);
-
-		Object rootObject = null;
-
-		if (rootFactory != null) {
-			rootObject = rootFactory.getSendableInstance(false);
-		} else {
-			// just use an ArrayList
-			rootObject = new ArrayList<Object>();
+		if(splitTag.length<2) {
+			return null;
 		}
-
+		if(ECORE.equalsIgnoreCase(splitTag[0]) || root instanceof GraphModel) {
+			GraphModel model;
+			if(root == null || root instanceof GraphModel == false) {
+				model = new GraphList();
+			} else {
+				model = (GraphModel) root;  
+			}
+			return decodingClassModel(xmlEntity, model);
+		}
+		Object rootObject = null;
+		SendableEntityCreator rootFactory;
+		if(root == null) {
+			String className = splitTag[1];
+			rootFactory = getCreator(className, false);
+			if (rootFactory != null) {
+				rootObject = rootFactory.getSendableInstance(false);
+			} else {
+				// just use an ArrayList
+				rootObject = new ArrayList<Object>();
+			}
+		}else {
+			rootObject = root;
+			rootFactory = getCreatorClass(root);
+		}
 		runningNumbers = new HashMap<String, Integer>();
 
 		addXMIIds(xmlEntity, null);
@@ -202,7 +205,7 @@ public class EMFTokener extends Tokener{
 		return rootObject;
 	}
 	
-	private GraphModel decodingClassModel(XMLEntity values, GraphModel model) {
+	private Object decodingClassModel(XMLEntity values, GraphModel model) {
 		SimpleKeyValueList<String, Clazz> items = new SimpleKeyValueList<String, Clazz>();
 		for(EntityList item : values.getChildren()) {
 			if(item instanceof XMLEntity == false) {
@@ -217,7 +220,9 @@ public class EMFTokener extends Tokener{
 				clazz = new Clazz();
 				clazz.with(className);
 				items.add(className, clazz);
-				model.with(clazz);
+				if(model instanceof GraphModel) {
+					model.with(clazz);
+				}
 			}
 			for(int i = 0;i < child.size();i++) {
 				String key = child.get(i);

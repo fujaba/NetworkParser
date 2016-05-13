@@ -40,7 +40,6 @@ import de.uniks.networkparser.converter.ByteConverter;
 import de.uniks.networkparser.event.ObjectMapEntry;
 import de.uniks.networkparser.event.util.DateCreator;
 import de.uniks.networkparser.graph.GraphList;
-import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.graph.GraphTokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ByteItem;
@@ -103,7 +102,7 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	public static final byte FLAG_ID = 0x01;
 	public static final byte FLAG_TYPESAVE = 0x02;
 	public static final byte FLAG_SEARCHFORSUPERCLASS = 0x04;
-	//public static final byte FLAG_NOID = 0x02;
+//	public static final byte FLAG_NOID = 0x02;
 //	public static final byte FLAG_ALLOWQUOTE = 0x04;
 	private byte flag;
 	
@@ -744,6 +743,7 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 				return decodingXMLEntity(xmlTokener, map);
 			} else if(tokener instanceof EMFTokener) {
 				EMFTokener xmlTokener = (EMFTokener) tokener;
+				xmlTokener.withMap(this);
 				return ((EMFTokener) xmlTokener).decode(map, null);
 			}
 			return null;
@@ -781,7 +781,7 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	 * @param root The Root Element for Result of ClassModel
 	 * @return the object
 	 */
-	public Object decodeEMF(String value, GraphModel root) {
+	public Object decodeEMF(String value, Object root) {
 		if(value ==null ) {
 			return null;
 		}
