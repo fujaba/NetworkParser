@@ -131,8 +131,8 @@ public class GraphConverter implements Converter{
 					Association assocOther= new Association(graphNode).with(AssociationTypes.EDGE);
 					assoc.with(assocOther);
 					if(GraphUtil.addAccoc(root, assoc)) {
-						graphNode.with(assoc);
-						newNode.with(assocOther);
+						graphNode.with(assocOther);
+						newNode.with(assoc);
 					}
 				} else if (value instanceof JsonArray) {
 					// Must be a Link to n
@@ -148,8 +148,8 @@ public class GraphConverter implements Converter{
 
 							assoc.with(assocOther);
 							if(GraphUtil.addAccoc(root, assoc)) {
-								graphNode.with(assoc);
-								newNode.with(assocOther);
+								graphNode.with(assocOther);
+								newNode.with(assoc);
 							}
 						} else {
 							if (sb.length() > 0) {

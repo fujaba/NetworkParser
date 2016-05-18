@@ -85,7 +85,7 @@ public class GraphLudoTest
 		  
 		  YUMLConverter converterYUML = new YUMLConverter();
 		  GraphList root = graphConverter.convertGraphList(GraphTokener.CLASS, jsonArray);
-		  System.out.println(converterYUML.convert(root, true));
+		  Assert.assertEquals("[Ludo]-[Player|color:String;name:String],[Player]-[Field|color:String;kind:String],[Player]-[Pawn|color:String],[Field]-[Pawn|color:String]", converterYUML.convert(root, true));
 		  
 		  showDebugInfos(converter, 1569, null);
    }

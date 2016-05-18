@@ -167,7 +167,6 @@ public class YUMLConverter implements Converter{
 				splitter = "=";
 			} else if (typ.equals(GraphTokener.CLASS)) {
 				splitter = ":";
-
 			}
 			
 			Object element = i.next();
