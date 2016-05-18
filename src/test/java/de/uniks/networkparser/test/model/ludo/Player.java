@@ -198,16 +198,19 @@ public class Player
 
    //==========================================================================
 
-   protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
+   protected PropertyChangeSupport listeners = null;
 
-   public PropertyChangeSupport getPropertyChangeSupport()
-   {
-	  return listeners;
+   public void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+	   if(listeners != null) {
+		   listeners.firePropertyChange(propertyName, oldValue, newValue);
+	   }
    }
 
-   public void addPropertyChangeListener(PropertyChangeListener listener)
-   {
-	  getPropertyChangeSupport().addPropertyChangeListener(listener);
+   public void addPropertyChangeListener(PropertyChangeListener listener) {
+	   if(listeners == null) {
+		   listeners = new PropertyChangeSupport(this);
+	   }
+	   listeners.addPropertyChangeListener(listener);
    }
 
 
@@ -223,7 +226,7 @@ public class Player
 	  setBase(null);
 	  setLanding(null);
 	  removeAllFromPawns();
-	  getPropertyChangeSupport().firePropertyChange("REMOVE_YOU", this, null);
+	  firePropertyChange("REMOVE_YOU", this, null);
    }
 
 
@@ -244,7 +247,7 @@ public class Player
 	  {
 		 String oldValue = this.color;
 		 this.color = value;
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_COLOR, oldValue, value);
+		 firePropertyChange(PROPERTY_COLOR, oldValue, value);
 	  }
    }
 
@@ -282,7 +285,7 @@ public class Player
 	  {
 		 LudoColor oldValue = this.enumColor;
 		 this.enumColor = value;
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_ENUMCOLOR, oldValue, value);
+		 firePropertyChange(PROPERTY_ENUMCOLOR, oldValue, value);
 	  }
    }
 
@@ -310,7 +313,7 @@ public class Player
 	  {
 		 String oldValue = this.name;
 		 this.name = value;
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_NAME, oldValue, value);
+		 firePropertyChange(PROPERTY_NAME, oldValue, value);
 	  }
    }
 
@@ -338,7 +341,7 @@ public class Player
 	  {
 		 int oldValue = this.x;
 		 this.x = value;
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_X, oldValue, value);
+		 firePropertyChange(PROPERTY_X, oldValue, value);
 	  }
    }
 
@@ -366,7 +369,7 @@ public class Player
 	  {
 		 int oldValue = this.y;
 		 this.y = value;
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_Y, oldValue, value);
+		 firePropertyChange(PROPERTY_Y, oldValue, value);
 	  }
    }
 
@@ -414,7 +417,7 @@ public class Player
 			value.withPlayers(this);
 		 }
 
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_GAME, oldValue, value);
+		 firePropertyChange(PROPERTY_GAME, oldValue, value);
 		 changed = true;
 	  }
 
@@ -473,7 +476,7 @@ public class Player
 			value.withPrev(this);
 		 }
 
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_NEXT, oldValue, value);
+		 firePropertyChange(PROPERTY_NEXT, oldValue, value);
 		 changed = true;
 	  }
 
@@ -532,7 +535,7 @@ public class Player
 			value.withNext(this);
 		 }
 
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_PREV, oldValue, value);
+		 firePropertyChange(PROPERTY_PREV, oldValue, value);
 		 changed = true;
 	  }
 
@@ -591,7 +594,7 @@ public class Player
 			value.withPlayer(this);
 		 }
 
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_DICE, oldValue, value);
+		 firePropertyChange(PROPERTY_DICE, oldValue, value);
 		 changed = true;
 	  }
 
@@ -650,7 +653,7 @@ public class Player
 			value.withStarter(this);
 		 }
 
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_START, oldValue, value);
+		 firePropertyChange(PROPERTY_START, oldValue, value);
 		 changed = true;
 	  }
 
@@ -709,7 +712,7 @@ public class Player
 			value.withBaseowner(this);
 		 }
 
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_BASE, oldValue, value);
+		 firePropertyChange(PROPERTY_BASE, oldValue, value);
 		 changed = true;
 	  }
 
@@ -768,7 +771,7 @@ public class Player
 			value.withLander(this);
 		 }
 
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_LANDING, oldValue, value);
+		 firePropertyChange(PROPERTY_LANDING, oldValue, value);
 		 changed = true;
 	  }
 
@@ -822,7 +825,7 @@ public class Player
 		 if (changed)
 		 {
 			value.withPlayer(this);
-			getPropertyChangeSupport().firePropertyChange(PROPERTY_PAWNS, null, value);
+			firePropertyChange(PROPERTY_PAWNS, null, value);
 		 }
 	  }
 
@@ -840,7 +843,7 @@ public class Player
 		 if (changed)
 		 {
 			value.setPlayer(null);
-			getPropertyChangeSupport().firePropertyChange(PROPERTY_PAWNS, value, null);
+			firePropertyChange(PROPERTY_PAWNS, value, null);
 		 }
 	  }
 

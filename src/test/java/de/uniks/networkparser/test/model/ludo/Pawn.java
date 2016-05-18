@@ -102,16 +102,19 @@ public class Pawn
 
    //==========================================================================
 
-   protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
+   protected PropertyChangeSupport listeners = null;
 
-   public PropertyChangeSupport getPropertyChangeSupport()
-   {
-	  return listeners;
+   public void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+	   if(listeners != null) {
+		   listeners.firePropertyChange(propertyName, oldValue, newValue);
+	   }
    }
 
-   public void addPropertyChangeListener(PropertyChangeListener listener)
-   {
-	  getPropertyChangeSupport().addPropertyChangeListener(listener);
+   public void addPropertyChangeListener(PropertyChangeListener listener) {
+	   if(listeners == null) {
+		   listeners = new PropertyChangeSupport(this);
+	   }
+	   listeners.addPropertyChangeListener(listener);
    }
 
 
@@ -121,7 +124,7 @@ public class Pawn
    {
 	  setPlayer(null);
 	  setPos(null);
-	  getPropertyChangeSupport().firePropertyChange("REMOVE_YOU", this, null);
+	  firePropertyChange("REMOVE_YOU", this, null);
    }
 
 
@@ -142,7 +145,7 @@ public class Pawn
 	  {
 		 String oldValue = this.color;
 		 this.color = value;
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_COLOR, oldValue, value);
+		 firePropertyChange(PROPERTY_COLOR, oldValue, value);
 	  }
    }
 
@@ -179,7 +182,7 @@ public class Pawn
 	  {
 		 int oldValue = this.x;
 		 this.x = value;
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_X, oldValue, value);
+		 firePropertyChange(PROPERTY_X, oldValue, value);
 	  }
    }
 
@@ -207,7 +210,7 @@ public class Pawn
 	  {
 		 int oldValue = this.y;
 		 this.y = value;
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_Y, oldValue, value);
+		 firePropertyChange(PROPERTY_Y, oldValue, value);
 	  }
    }
 
@@ -259,7 +262,7 @@ public class Pawn
 			value.withPawns(this);
 		 }
 
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_PLAYER, oldValue, value);
+		 firePropertyChange(PROPERTY_PLAYER, oldValue, value);
 		 changed = true;
 	  }
 
@@ -318,7 +321,7 @@ public class Pawn
 			value.withPawns(this);
 		 }
 
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_POS, oldValue, value);
+		 firePropertyChange(PROPERTY_POS, oldValue, value);
 		 changed = true;
 	  }
 

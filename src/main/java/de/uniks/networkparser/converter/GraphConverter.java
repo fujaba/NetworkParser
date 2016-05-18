@@ -82,8 +82,7 @@ public class GraphConverter implements Converter{
 		return convertToJson(GraphTokener.OBJECT, list, removePackage);
 	}
 
-	public GraphList convertGraphList(String typ, JsonArray list,
-			boolean removePackage) {
+	public GraphList convertGraphList(String typ, JsonArray list) {
 		GraphList root = new GraphList().withTyp(typ);
 
 		// Parse all Object to Object-Diagram
@@ -98,7 +97,7 @@ public class GraphConverter implements Converter{
 
 	public JsonObject convertToJson(String typ, JsonArray list,
 			boolean removePackage) {
-		GraphList root = convertGraphList(typ, list, removePackage);
+		GraphList root = convertGraphList(typ, list);
 		return convertToJson(root, removePackage);
 	}
 

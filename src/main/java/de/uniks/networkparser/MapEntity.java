@@ -24,7 +24,7 @@ public class MapEntity extends SimpleList<Object>{
 	private MapEntityStack stack;
 	/** The show line. */
 	private byte tokenerFlag;
-	
+		
 	public MapEntity(Filter filter, Grammar grammar) {
 		this.flag = IdMap.FLAG_ID;
 		if(filter != null) {

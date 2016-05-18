@@ -335,7 +335,7 @@ public class JsonTest extends IOClasses{
 
 		JsonArray jsonArray = map.toJsonArray(kassel, new Filter().withConvertable(Deep.value(1)));
 		String jsonString = jsonArray.toString(2);
-		assertEquals(2222, jsonString.length());
+		assertEquals(2463, jsonString.length());
 
 		jsonArray = map.toJsonArray(kassel, new Filter().withConvertable(new Deep().withDeep(0)));
 

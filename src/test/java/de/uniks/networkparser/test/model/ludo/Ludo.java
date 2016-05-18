@@ -105,16 +105,19 @@ public class Ludo
 
    //==========================================================================
 
-   protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
+   protected PropertyChangeSupport listeners = null;
 
-   public PropertyChangeSupport getPropertyChangeSupport()
-   {
-	  return listeners;
+   public void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+	   if(listeners != null) {
+		   listeners.firePropertyChange(propertyName, oldValue, newValue);
+	   }
    }
 
-   public void addPropertyChangeListener(PropertyChangeListener listener)
-   {
-	  getPropertyChangeSupport().addPropertyChangeListener(listener);
+   public void addPropertyChangeListener(PropertyChangeListener listener) {
+	   if(listeners == null) {
+		   listeners = new PropertyChangeSupport(this);
+	   }
+	   listeners.addPropertyChangeListener(listener);
    }
 
 
@@ -125,7 +128,7 @@ public class Ludo
 	  removeAllFromPlayers();
 	  setDice(null);
 	  removeAllFromFields();
-	  getPropertyChangeSupport().firePropertyChange("REMOVE_YOU", this, null);
+	  firePropertyChange("REMOVE_YOU", this, null);
    }
 
 
@@ -146,7 +149,7 @@ public class Ludo
 	  {
 		 java.util.Date oldValue = this.date;
 		 this.date = value;
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_DATE, oldValue, value);
+		 firePropertyChange(PROPERTY_DATE, oldValue, value);
 	  }
    }
 
@@ -190,7 +193,7 @@ public class Ludo
 		 if (changed)
 		 {
 			value.withGame(this);
-			getPropertyChangeSupport().firePropertyChange(PROPERTY_PLAYERS, null, value);
+			firePropertyChange(PROPERTY_PLAYERS, null, value);
 		 }
 	  }
 
@@ -208,7 +211,7 @@ public class Ludo
 		 if (changed)
 		 {
 			value.setGame(null);
-			getPropertyChangeSupport().firePropertyChange(PROPERTY_PLAYERS, value, null);
+			firePropertyChange(PROPERTY_PLAYERS, value, null);
 		 }
 	  }
 
@@ -283,7 +286,7 @@ public class Ludo
 			value.withGame(this);
 		 }
 
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_DICE, oldValue, value);
+		 firePropertyChange(PROPERTY_DICE, oldValue, value);
 		 changed = true;
 	  }
 
@@ -337,7 +340,7 @@ public class Ludo
 		 if (changed)
 		 {
 			value.withGame(this);
-			getPropertyChangeSupport().firePropertyChange(PROPERTY_FIELDS, null, value);
+			firePropertyChange(PROPERTY_FIELDS, null, value);
 		 }
 	  }
 
@@ -355,7 +358,7 @@ public class Ludo
 		 if (changed)
 		 {
 			value.setGame(null);
-			getPropertyChangeSupport().firePropertyChange(PROPERTY_FIELDS, value, null);
+			firePropertyChange(PROPERTY_FIELDS, value, null);
 		 }
 	  }
 

@@ -30,10 +30,14 @@ import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.GraphConverter;
+import de.uniks.networkparser.converter.YUMLConverter;
 import de.uniks.networkparser.event.util.DateCreator;
 import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.GraphTokener;
+import de.uniks.networkparser.interfaces.Entity;
+import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.test.model.SortedMsg;
@@ -53,6 +57,39 @@ public class GraphLudoTest
 {
    private static final String RED = "red";
 
+   @Test
+   public void SimpleModel() {
+	   IdMap jsonIdMap = new IdMap();
+	  jsonIdMap.with(new FieldCreator())
+		  .with(new LudoCreator())
+		  .with(new PawnCreator())
+		  .with(new PlayerCreator());
+	  
+		  Ludo ludo = new Ludo();
+
+		  Player tom = ludo.createPlayers().withName("Tom").withColor("blue");
+		  Player  sabine = ludo.createPlayers().withName("Sabine").withColor(RED);
+//		  tom.createDice().withValue(6);
+		  tom.createPawns().withColor("blue"); // IS IS THE DIFFERENT
+
+		  Field tomStartField = tom.createStart().withColor("blue").withKind("start");
+		  sabine.createPawns().withColor(RED).withPos(tomStartField);
+
+		  JsonArray jsonArray = jsonIdMap.toJsonArray(ludo);
+//		  showDebugInfos(jsonArray, 1428, System.out);
+
+		  GraphConverter graphConverter = new GraphConverter();
+
+		  // May be 8 Asssocs and write 11
+		  JsonObject converter=graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
+		  
+		  YUMLConverter converterYUML = new YUMLConverter();
+		  GraphList root = graphConverter.convertGraphList(GraphTokener.CLASS, jsonArray);
+		  System.out.println(converterYUML.convert(root, true));
+		  
+		  showDebugInfos(converter, 1569, null);
+   }
+   
    @Test
    public void testLudoStoryboard()
    {
@@ -92,13 +129,22 @@ public class GraphLudoTest
 	  sabine.createPawns().withColor(RED).withPos(tomStartField);
 
 	  JsonArray jsonArray = jsonIdMap.toJsonArray(ludo);
+	  showDebugInfos(jsonArray, 5089, null);
 	  GraphConverter graphConverter = new GraphConverter();
 
 	  // May be 8 Asssocs and write 11
 	  JsonObject converter=graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
-	  showDebugInfos(converter, 2758, null);
+	  showDebugInfos(converter, 2496, null);
    }
-   private void showDebugInfos(JsonObject json, int len, PrintStream stream) {
+   private void showDebugInfos(Entity json, int len, PrintStream stream) {
+	   if(stream != null) {
+		   stream.println("###############################");
+		   stream.println(json.toString(2));
+		   stream.println("###############################");
+	   }
+	   Assert.assertEquals(len, json.toString(2).length());
+   }
+   private void showDebugInfos(EntityList json, int len, PrintStream stream) {
 	   if(stream != null) {
 		   stream.println("###############################");
 		   stream.println(json.toString(2));

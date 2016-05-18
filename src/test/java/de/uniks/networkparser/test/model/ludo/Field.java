@@ -198,18 +198,20 @@ public class Field
 
    //==========================================================================
 
-   protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
+   protected PropertyChangeSupport listeners = null;
 
-   public PropertyChangeSupport getPropertyChangeSupport()
-   {
-	  return listeners;
+   public void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+	   if(listeners != null) {
+		   listeners.firePropertyChange(propertyName, oldValue, newValue);
+	   }
    }
 
-   public void addPropertyChangeListener(PropertyChangeListener listener)
-   {
-	  getPropertyChangeSupport().addPropertyChangeListener(listener);
+   public void addPropertyChangeListener(PropertyChangeListener listener) {
+	   if(listeners == null) {
+		   listeners = new PropertyChangeSupport(this);
+	   }
+	   listeners.addPropertyChangeListener(listener);
    }
-
 
    //==========================================================================
 
@@ -224,7 +226,7 @@ public class Field
 	  setBaseowner(null);
 	  setLander(null);
 	  removeAllFromPawns();
-	  getPropertyChangeSupport().firePropertyChange("REMOVE_YOU", this, null);
+	  firePropertyChange("REMOVE_YOU", this, null);
    }
 
 
@@ -245,7 +247,7 @@ public class Field
 	  {
 		 String oldValue = this.color;
 		 this.color = value;
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_COLOR, oldValue, value);
+		 firePropertyChange(PROPERTY_COLOR, oldValue, value);
 	  }
    }
 
@@ -283,7 +285,7 @@ public class Field
 	  {
 		 String oldValue = this.kind;
 		 this.kind = value;
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_KIND, oldValue, value);
+		 firePropertyChange(PROPERTY_KIND, oldValue, value);
 	  }
    }
 
@@ -311,7 +313,7 @@ public class Field
 	  {
 		 int oldValue = this.x;
 		 this.x = value;
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_X, oldValue, value);
+		 firePropertyChange(PROPERTY_X, oldValue, value);
 	  }
    }
 
@@ -339,7 +341,7 @@ public class Field
 	  {
 		 int oldValue = this.y;
 		 this.y = value;
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_Y, oldValue, value);
+		 firePropertyChange(PROPERTY_Y, oldValue, value);
 	  }
    }
 
@@ -387,7 +389,7 @@ public class Field
 			value.withFields(this);
 		 }
 
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_GAME, oldValue, value);
+		 firePropertyChange(PROPERTY_GAME, oldValue, value);
 		 changed = true;
 	  }
 
@@ -446,7 +448,7 @@ public class Field
 			value.withPrev(this);
 		 }
 
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_NEXT, oldValue, value);
+		 firePropertyChange(PROPERTY_NEXT, oldValue, value);
 		 changed = true;
 	  }
 
@@ -505,7 +507,7 @@ public class Field
 			value.withNext(this);
 		 }
 
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_PREV, oldValue, value);
+		 firePropertyChange(PROPERTY_PREV, oldValue, value);
 		 changed = true;
 	  }
 
@@ -564,7 +566,7 @@ public class Field
 			value.withEntry(this);
 		 }
 
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_LANDING, oldValue, value);
+		 firePropertyChange(PROPERTY_LANDING, oldValue, value);
 		 changed = true;
 	  }
 
@@ -623,7 +625,7 @@ public class Field
 			value.withLanding(this);
 		 }
 
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_ENTRY, oldValue, value);
+		 firePropertyChange(PROPERTY_ENTRY, oldValue, value);
 		 changed = true;
 	  }
 
@@ -682,7 +684,7 @@ public class Field
 			value.withStart(this);
 		 }
 
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_STARTER, oldValue, value);
+		 firePropertyChange(PROPERTY_STARTER, oldValue, value);
 		 changed = true;
 	  }
 
@@ -741,7 +743,7 @@ public class Field
 			value.withBase(this);
 		 }
 
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_BASEOWNER, oldValue, value);
+		 firePropertyChange(PROPERTY_BASEOWNER, oldValue, value);
 		 changed = true;
 	  }
 
@@ -800,7 +802,7 @@ public class Field
 			value.withLanding(this);
 		 }
 
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_LANDER, oldValue, value);
+		 firePropertyChange(PROPERTY_LANDER, oldValue, value);
 		 changed = true;
 	  }
 
@@ -854,7 +856,7 @@ public class Field
 		 if (changed)
 		 {
 			value.withPos(this);
-			getPropertyChangeSupport().firePropertyChange(PROPERTY_PAWNS, null, value);
+			firePropertyChange(PROPERTY_PAWNS, null, value);
 		 }
 	  }
 
@@ -872,7 +874,7 @@ public class Field
 		 if (changed)
 		 {
 			value.setPos(null);
-			getPropertyChangeSupport().firePropertyChange(PROPERTY_PAWNS, value, null);
+			firePropertyChange(PROPERTY_PAWNS, value, null);
 		 }
 	  }
 

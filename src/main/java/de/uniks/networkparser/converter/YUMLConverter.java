@@ -78,6 +78,9 @@ public class YUMLConverter implements Converter{
 			}
 			return;
 		}
+		if (typ == null) {
+			typ = GraphTokener.OBJECT;
+		}
 		Iterator<?> iterator = association.iterator();
 		while (iterator.hasNext()) {
 			Object entry = iterator.next();
@@ -86,6 +89,11 @@ public class YUMLConverter implements Converter{
 			}
 			Association element = (Association) entry;
 			Association other = element.getOther();
+			if(GraphTokener.CLASS.equals(typ)) {
+				if ( GraphUtil.containsClazzAssociation(visited, element, other)) {
+					continue;
+				}
+			}
 			if(visited.contains(element)) {
 				continue;
 			}
@@ -124,9 +132,8 @@ public class YUMLConverter implements Converter{
 			return "";
 		}
 		Clazz clazzEntity = (Clazz) entity;
-
 		boolean shortString = visited.contains(clazzEntity);
-		if (!shortString) {
+		if(shortString == false) {
 			visited.add(clazzEntity);
 		}
 		if (typ == null) {
@@ -135,26 +142,22 @@ public class YUMLConverter implements Converter{
 				typ = GraphTokener.CLASS;
 			}
 		}
+		
+		StringBuilder sb = new StringBuilder("[");
 		if (typ == GraphTokener.OBJECT) {
-			// String text = entity.getId() + " : " + entity.getClassName();
-			// return "["
-			// + text
-			// + "\\n"
-			// + new String(new char[text.length()]).replace("\0", "&oline;") +
-			// "]";
-			return "[" + clazzEntity.getId() + " : "
-					+ clazzEntity.getName(shortName)
-					+ parseEntityValues(clazzEntity, typ, shortString) + "]";
+			sb.append(clazzEntity.getId());
+			sb.append(" : ");
 		}
-		return "[" + clazzEntity.getName(shortName)
-				+ parseEntityValues(clazzEntity, typ, shortString) + "]";
+		sb.append(clazzEntity.getName(shortName));
+		if(shortString == false) {
+			sb.append(parseEntityValues(clazzEntity, typ, shortName));
+		}
+		sb.append("]");
+		return sb.toString();
 	}
 
 	public String parseEntityValues(GraphEntity entity, String typ,
 			boolean shortName) {
-		if (shortName) {
-			return "";
-		}
 		StringBuilder sb = new StringBuilder();
 
 		Iterator<GraphMember> i = GraphUtil.getChildren(entity).iterator();

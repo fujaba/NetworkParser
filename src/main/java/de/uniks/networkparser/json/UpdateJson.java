@@ -147,6 +147,10 @@ public class UpdateJson implements PropertyChangeListener {
 		if (!done) {
 			// this property is not part of the replicated model, do not
 			// replicate
+			// if propertyname is not found and teh name is REMOVE_YOU it remove it from the IdMap
+			if(IdMap.REMOVE_YOU.equals(propertyName)) {
+				this.removeObj(evt.getOldValue(), true);
+			}
 			return;
 		}
 
@@ -460,5 +464,18 @@ public class UpdateJson implements PropertyChangeListener {
 				countMessage((JsonObject) obj, classCounts, gc);
 			}
 		}
+	}
+	
+	/**
+	 * Remove the given object from the IdMap 
+	 * @param oldValue Object to remove
+	 * @param destroy switch for remove link from object
+	 * @return success
+	 */
+	public boolean removeObj(Object oldValue, boolean destroy) {
+		if(this.map != null) {
+			return this.map.removeObj(oldValue, destroy);
+		}
+		return false;
 	}
 }

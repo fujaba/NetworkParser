@@ -2,6 +2,7 @@ package de.uniks.networkparser.graph;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.Clazz.ClazzType;
+import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
 /*
@@ -152,5 +153,38 @@ public class GraphUtil {
 			GraphSimpleSet collection = clazz.getChildren();
 			clazz.without(collection.toArray(new GraphMember[collection.size()]));
 		}
+	}
+	
+	public static boolean containsClazzAssociation(SimpleList<GraphMember> visited, Association assoc, Association other) {
+		boolean foundAssoc = false;
+		for(GraphMember checkItem : visited) {
+			if(checkItem instanceof Association == false || checkItem.getName() == null) {
+				continue;
+			}
+			Association assocA = (Association) checkItem;
+			Association assocB = assocA.getOther();
+			if(assocB.getName() == null) {
+				continue;
+			}
+			if(assocA.getName().equals(assoc.getName())) {
+				if(assocB.getName().equals(other.getName())) {
+					//Found Link ??
+					foundAssoc = true;
+					if(assocA.getClazz() == assoc.getClazz()) {
+						if(assocB.getClazz() == other.getClazz()) {
+							// May be n-m
+							assocA.with(Cardinality.MANY);
+							assocB.with(Cardinality.MANY);
+						} else {
+							assocA.with(Cardinality.MANY);
+						}
+					} else {
+						assocB.with(Cardinality.MANY);
+					}
+					break;
+				}
+			}
+		}
+		return foundAssoc;
 	}
 }

@@ -92,7 +92,7 @@ public class SimpleIteratorSet<K,V> implements ListIterator<Entry<K, V>>{
 
 	@Override
 	public void remove() {
-		this.list.remove(cursor);
+		this.list.removePos(cursor);
 	}
 
 	@Override

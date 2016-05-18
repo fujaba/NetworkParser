@@ -8,7 +8,6 @@ import org.junit.Test;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.graph.GraphList;
-import de.uniks.networkparser.xml.EMFTokener;
 
 public class EMFTest extends IOClasses{
 

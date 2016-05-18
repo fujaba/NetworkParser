@@ -58,6 +58,7 @@ import de.uniks.networkparser.json.JsonTokener;
 import de.uniks.networkparser.json.UpdateJson;
 import de.uniks.networkparser.json.util.JsonArrayCreator;
 import de.uniks.networkparser.json.util.JsonObjectCreator;
+import de.uniks.networkparser.list.SimpleIterator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.logic.Deep;
@@ -98,6 +99,8 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	public static final String MAINITEM = "main";
 
 	public static final char DOUBLEQUOTIONMARK = '"';
+	
+	public static final String REMOVE_YOU = "REMOVE_YOU";
 	
 	public static final byte FLAG_ID = 0x01;
 	public static final byte FLAG_TYPESAVE = 0x02;
@@ -1104,6 +1107,20 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 			return target;
 		}
 		encode(object, map, tokener);
+		if(target.isComparator() == false) {
+			SimpleIterator<JsonObject> queueIterator = new SimpleIterator<JsonObject>(target);
+			if(queueIterator.hasNext()){
+				queueIterator.next();
+			}
+			while(queueIterator.hasNext()) {
+				JsonObject json = queueIterator.next();
+				Object item = this.getObject(json.getString(ID));
+				if(item!=null) {
+					String className = item.getClass().getName();
+			 		encode(item, className,  map, tokener, null);
+				}
+			}
+		}
 		return target;
 	}
 	
@@ -1148,25 +1165,39 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	}
 	
 	private Entity encode(Object entity, String className, MapEntity map, Tokener tokener, BaseItem parentNode) {
-		String id = null;
 		SendableEntityCreator creator = map.getCreator(Grammar.WRITE, this, entity, className);
 		if (creator == null) {
 			return null;
 		}
-		Entity newInstance = tokener.newInstance();
-		if (newInstance == null) {
-			return null;
-		}
+		EntityList targetList = (EntityList) map.getTarget();
+		String id = null;
 		if(creator instanceof SendableEntityCreatorNoIndex == false) {
 			id = map.getId(entity, this, className);
 		}
-		Entity item = map.writeBasicValue(creator, newInstance, parentNode, className, id);
-		if (item == null) {
-			return null;
+		boolean isSimple = targetList != null && targetList.isComparator() == false;
+
+		Entity item = null;
+		if(isSimple) {
+			// Only add to List
+			if(parentNode != null) {
+				item = map.writeBasicValue(creator, tokener.newInstance(), parentNode, className, id);
+				targetList.with(item);
+				return item;
+			}
+			// May be a Child
+			if(targetList instanceof JsonArray) {
+				JsonArray list = (JsonArray) targetList;
+				item = list.get(id);
+			}
 		}
-		EntityList targetList = (EntityList) map.getTarget();
-		if(targetList != null && targetList.isComparator() == false) {
-			targetList.with(newInstance);
+		if(isSimple == false || item == null) {
+			item = map.writeBasicValue(creator, tokener.newInstance(), parentNode, className, id);
+			if (item == null) {
+				return null;
+			}
+			if(isSimple) {
+				targetList.with(item);
+			}
 		}
 		String[] properties = map.getProperties(tokener, creator);
 		if (properties != null) {
@@ -1246,9 +1277,9 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 			map.popStack();
 		}
 		if(targetList != null && targetList.isComparator()) {
-			targetList.with(newInstance);
+			targetList.with(item);
 		}
-		return newInstance;
+		return item;
 	}
 	
 

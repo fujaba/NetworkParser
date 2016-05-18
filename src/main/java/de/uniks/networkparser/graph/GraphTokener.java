@@ -176,7 +176,7 @@ public class GraphTokener extends Tokener {
 //		}
 //	}
 	public void highlightModel(JsonArray clazzDiagram, GraphList objectDiagram) {
-		GraphList list = new GraphConverter().convertGraphList(GraphTokener.CLASS, clazzDiagram, true);
+		GraphList list = new GraphConverter().convertGraphList(GraphTokener.CLASS, clazzDiagram);
 		this.highlightModel(list, objectDiagram);
 	}
 	public GraphList highlightModel(GraphList clazzDiagram, GraphList objectDiagram) {
