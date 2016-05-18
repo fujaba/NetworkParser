@@ -146,6 +146,9 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 		elements = items;
 		this.size = size;
 		this.index = offset;
+		if(isComplex(size)) {
+			grow(size);
+		}
 		return (ST) this;
 	}
 

@@ -34,6 +34,8 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 /**
  * The Class XMLEntity.
+ * 
+ * @author Stefan Lindel
  */
 public class XMLEntity extends SimpleKeyValueList<String, Object> implements Entity, EntityList {
 	/** Constant of TAG. */

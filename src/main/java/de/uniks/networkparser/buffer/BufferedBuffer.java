@@ -57,6 +57,7 @@ public abstract class BufferedBuffer extends Buffer {
 	public abstract char charAt(int index);
 
 	/**
+	 * Get the Current Character
 	 * @return The currentChar
 	 */
 	public char getCurrentChar() {
@@ -64,6 +65,7 @@ public abstract class BufferedBuffer extends Buffer {
 	}
 
 	/**
+	 * Substring of Buffer
 	 * @param start
 	 *			startindex for parsing
 	 * @param length

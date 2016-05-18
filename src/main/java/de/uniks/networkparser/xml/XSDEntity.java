@@ -107,8 +107,9 @@ public class XSDEntity extends XMLEntity {
 	}
 
 	/**
-	 * @param value
-	 *			the Maximum of Elements.
+	 * Set the Maximum of Occurs
+	 * 
+	 * @param value		the Maximum of Elements.
 	 */
 	public void setMaxOccurs(String value) {
 		this.maxOccurs = value;
