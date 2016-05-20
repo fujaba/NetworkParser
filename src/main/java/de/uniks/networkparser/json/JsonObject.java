@@ -240,7 +240,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 		}
 		return this;
 	}
-	
+
 	/**
 	 * Set the value to Tokener or pairs of values
 	 *
@@ -363,7 +363,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 			return null;
 		}
 		Object item = this.get(label);
-		JsonObject child; 
+		JsonObject child;
 		if(item instanceof JsonObject) {
 			child = (JsonObject) item;
 		}else {
@@ -372,7 +372,7 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 		}
 		return child;
 
-		
+
 	}
 
 	@Override

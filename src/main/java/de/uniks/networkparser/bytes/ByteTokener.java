@@ -141,9 +141,9 @@ public class ByteTokener extends Tokener {
 
 	/** The Constant DATATYPE_LAST. */
 	public static final byte LEN_LAST = 0x05;
-	
+
 	public static final String CHARSET="UTF-8";
-	
+
 	public String getCharset() {
 		return CHARSET;
 	}
@@ -182,7 +182,7 @@ public class ByteTokener extends Tokener {
 		}
 		return false;
 	}
-	
+
 	@Override
 	public ByteItem encode(Object entity, MapEntity map) {
 		SendableEntityCreator creator = getCreatorClass(entity);
@@ -333,7 +333,7 @@ public class ByteTokener extends Tokener {
 		}
 		return entity;
 	}
-	
+
 	public Object decodeValue(ByteEntity entity, MapEntity map) {
 		if(entity == null){
 			return null;
@@ -346,7 +346,7 @@ public class ByteTokener extends Tokener {
 		}
 		return decodeValue(typ, buffer, buffer.length(), map);
 	}
-	
+
 	/**
 	 * Gets the decode object.
 	 *
@@ -361,11 +361,11 @@ public class ByteTokener extends Tokener {
 		}
 		return decodeValue(current, buffer, buffer.length(), map);
 	}
-	
+
 	Object decodeValue(Buffer buffer, int end, MapEntity map) {
 		return decodeValue(buffer.getByte(), buffer, end, map);
 	}
-	
+
 	/**
 	 * Gets the decode object.
 	 * @param typ The CurrentChar (Typ of value)
@@ -453,7 +453,7 @@ public class ByteTokener extends Tokener {
 					}
 				}
 			}
-			
+
 			return decodeClazz(buffer, eventCreater, map);
 		}
 		if (typ == ByteTokener.DATATYPE_ASSOC) {
@@ -527,7 +527,7 @@ public class ByteTokener extends Tokener {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public ByteTokener withMap(IdMap map) {
 		super.withMap(map);

@@ -33,7 +33,7 @@
 
 
 .dialog.heavyweight.cross-platform {
-    /** 
+    /**
      * This allows for the drop shadow which otherwise won't appear. We don't
      * want this in lightweight dialogs as it will overwrite the background.
      */
@@ -70,7 +70,7 @@
 .dialog:active .window-action {
     -fx-padding: 10 20 10 10;
     -fx-border-width: 0 2 2 2;
-    -fx-border-color: #a3a3a3; 
+    -fx-border-color: #a3a3a3;
     -fx-background-color: #F4F4F4;
 }
 

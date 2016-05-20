@@ -89,7 +89,7 @@ public abstract class EditControl<T extends Node> implements CellEditorElement, 
 		this.listener = owner;
 		return this;
 	}
-	
+
 	public EditFieldMap getListener() {
 		return listener;
 	}

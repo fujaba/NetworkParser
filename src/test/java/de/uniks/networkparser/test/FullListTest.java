@@ -9,6 +9,7 @@ import org.junit.Test;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
+import de.uniks.networkparser.test.model.Apple;
 
 public class FullListTest {
 
@@ -453,5 +454,22 @@ public class FullListTest {
 		for(int i=0;i<500;i+=2) {
 			list.removeByObject(i);
 		}
+	}
+	
+	@Test
+	public void testSize() {
+		SimpleSet<Apple> appleTree=new SimpleSet<Apple>();
+		for(int i=0;i<430;i++) {
+			appleTree.add(new Apple().withPassword("Apple"+i));
+		}
+		Assert.assertEquals(430, appleTree.size());
+		for(Apple item : appleTree) {
+			appleTree.remove(42);
+			if(appleTree.size()<400) {
+				break;
+			}
+			item.setX(0);
+		}
+		
 	}
 }

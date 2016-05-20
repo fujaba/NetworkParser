@@ -42,7 +42,7 @@ public class SQLStatement {
 	public final static String QUOTE = "'";
 	private final static String DRIVER="DRIVER";
 	private final static String DATABASE="DATABASE";
-	
+
 	public SQLStatement(SQLCommand command) {
 		this.command = command;
 	}
@@ -66,7 +66,7 @@ public class SQLStatement {
 		this.table = value;
 		return this;
 	}
-	
+
 	public boolean isAutoStatement() {
 		return autoStatement;
 	}
@@ -84,7 +84,7 @@ public class SQLStatement {
 		this.enable = enable;
 		return this;
 	}
-	
+
 	public boolean autoDisable() {
 		if(isAutoStatement()) {
 			this.withEnable(false);
@@ -92,14 +92,14 @@ public class SQLStatement {
 		}
 		return false;
 	}
-	
+
 	public static SQLStatement connect(String driver, String database, String url) {
 		SQLStatement connectStatement = new SQLStatement(SQLCommand.CONNECTION, url);
 		connectStatement.with(DRIVER, driver);
 		connectStatement.with(DATABASE, database);
 		return connectStatement;
 	}
-	
+
 	public SQLStatement with(String key, Object value) {
 		if (values == null) {
 			values = new SimpleKeyValueList<String, Object>();
@@ -115,7 +115,7 @@ public class SQLStatement {
 		}
 		return this;
 	}
-	
+
 	public SQLStatement withValues(Object... values) {
 		if(values == null) {
 			return this;
@@ -132,8 +132,8 @@ public class SQLStatement {
 		}
 		return this;
 	}
-	
-	
+
+
 	public SQLStatement withCondition(String key, Object value) {
 		if (conditions == null) {
 			conditions = new SimpleKeyValueList<String, Object>();
@@ -141,7 +141,7 @@ public class SQLStatement {
 		conditions.add(key, value);
 		return this;
 	}
-	
+
 	@Override
 	public String toString() {
 		//CONNECTION
@@ -160,7 +160,7 @@ public class SQLStatement {
 
 		// ADD COMMAND
 		sb.append(command.getValue()).append(SPACE);
-		
+
 		// SELECT STATEMENT
 		if(command == SQLCommand.SELECT) {
 			if (values instanceof SimpleList<?>) {
@@ -245,7 +245,7 @@ public class SQLStatement {
 					item = i.next();
 					if(first == false) {
 						sb.append(", ");
-					} 
+					}
 					first = false;
 					sb.append(item.getKey()).append("=").append(QUOTE);
 					convertValue(sb, item.getValue());
@@ -253,10 +253,10 @@ public class SQLStatement {
 				}
 				addCondition(sb);
 			}
-		} 
+		}
 		return sb.toString();
 	}
-	
+
 	private void convertValue(StringBuilder sb, Object value) {
 		if(value == null) {
 			return;
@@ -275,7 +275,7 @@ public class SQLStatement {
 		}
 		sb.append(value.toString());
 	}
-	
+
 	private void addCondition(StringBuilder sb) {
 		if (conditions != null) {
 			boolean first = true;
@@ -312,7 +312,7 @@ public class SQLStatement {
 	public AbstractArray<?> getValues() {
 		return values;
 	}
-	
+
 	public String getPrimaryId() {
 		SimpleIteratorSet<String, Object> i;
 		if(command == SQLCommand.SELECT) {

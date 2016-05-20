@@ -54,7 +54,7 @@ public class GenericCreator implements SendableEntityCreator {
 		}
 		return this;
 	}
-	
+
 	public GenericCreator withClass(Class<?> clazz) {
 		this.clazz = clazz;
 		return this;
@@ -100,7 +100,7 @@ public class GenericCreator implements SendableEntityCreator {
 			} catch (InstantiationException e) {
 			} catch (IllegalAccessException e) {
 			}
-			
+
 		}
 		return null;
 	}
@@ -214,19 +214,19 @@ public class GenericCreator implements SendableEntityCreator {
 		}
 		return null;
 	}
-	
+
 	boolean isValidMethod(String methodName ) {
 		return (methodName.startsWith("get")
 				&& !badProperties.contains(methodName)
 				&& !"".equals(methodName.trim()));
 	}
-	
+
 	public static GenericCreator create(IdMap map, Class<?> instance) {
 		SendableEntityCreator creator = map.getCreator(instance.getName(), true);
 		if(creator != null) {
 			return (GenericCreator) creator;
 		}
-		
+
 		GenericCreator genericCreator = new GenericCreator();
 		genericCreator.withClass(instance);
 		map.with(genericCreator);

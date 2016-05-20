@@ -250,7 +250,7 @@ public class Method extends GraphMember {
 		super.withChildren(value);
 		return this;
 	}
-	
+
 	@Override
 	public String toString()
 	{

@@ -11,7 +11,7 @@ import de.uniks.networkparser.xml.XMLTokener;
 public class XMLEntityCreator implements SendableEntityCreatorTag {
 	/** NameSpace of XML. */
 	private String nameSpace = "";
-	
+
 	/** The properties. */
 	private final String[] properties = new String[] {XMLEntity.PROPERTY_TAG,
 			XMLEntity.PROPERTY_VALUE };
@@ -22,16 +22,17 @@ public class XMLEntityCreator implements SendableEntityCreatorTag {
 	}
 
 	/**
-	 * @param namespace
-	 *			the NameSpace for xsd
-	 * @return Itself
+	 * Set a Namespace for XSD Element
+	 *
+	 * @param namespace		the NameSpace for XSD-Element
+	 * @return 				Itself
 	 */
 	public XMLEntityCreator withNameSpace(String namespace) {
 		this.nameSpace = namespace;
 		return this;
 	}
-	
-	
+
+
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new XMLEntity();

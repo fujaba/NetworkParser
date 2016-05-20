@@ -27,7 +27,7 @@ public final class SimpleMapEvent extends PropertyChangeEvent {
 		super(source, property, oldValue, newValue);
 		this.type = type;
 	}
-	
+
 	public SimpleMapEvent(String type, IdMap source, Entity entity, Object newValue) {
 		super(source, null, null, newValue);
 		this.entity = entity;
@@ -76,7 +76,7 @@ public final class SimpleMapEvent extends PropertyChangeEvent {
 		this.modelItem = modelItem;
 		return this;
 	}
-	
+
 	public String getType() {
 		return type;
 	}

@@ -24,7 +24,7 @@ public class MapEntity extends SimpleList<Object>{
 	private MapEntityStack stack;
 	/** The show line. */
 	private byte tokenerFlag;
-		
+
 	public MapEntity(Filter filter, Grammar grammar) {
 		this.flag = IdMap.FLAG_ID;
 		if(filter != null) {
@@ -32,14 +32,14 @@ public class MapEntity extends SimpleList<Object>{
 		}
 		this.grammar = grammar;
 	}
-	
+
 	public Filter getFilter() {
 		return filter;
 	}
 	public void setFilter(Filter filter) {
 		this.filter = filter;
 	}
-	
+
 	public Entity encode(Object entity, Tokener tokener) {
 		return tokener.getMap().encode(entity, this, tokener);
 	}
@@ -53,7 +53,7 @@ public class MapEntity extends SimpleList<Object>{
 	public void add() {
 		this.deep = this.deep + 1;
 	}
-	
+
 	public void minus() {
 		this.deep = this.deep - 1;
 	}
@@ -67,7 +67,7 @@ public class MapEntity extends SimpleList<Object>{
 	public boolean isSearchForSuperClass() {
 		return (flag & IdMap.FLAG_SEARCHFORSUPERCLASS) != 0;
 	}
-	
+
 	// Methods for Grammar
 	public SendableEntityCreator getCreator(String type, IdMap map, Object item, String className) {
 		return grammar.getCreator(type, item, map, isSearchForSuperClass(), className);
@@ -134,7 +134,7 @@ public class MapEntity extends SimpleList<Object>{
 		this.deep = value;
 		return this;
 	}
-	
+
 	public Object getRefByEntity(Object value) {
 		for (int i = 0; i < size(); i += 2) {
 			if (get(i) == value) {
@@ -156,7 +156,7 @@ public class MapEntity extends SimpleList<Object>{
 			this.stack.withStack(className, entity, creator);
 		}
 	}
-	
+
 	public void popStack() {
 		if(this.stack != null) {
 			this.stack.popStack();
@@ -175,7 +175,7 @@ public class MapEntity extends SimpleList<Object>{
 		boolean isId = filter.isId(entity, className, tokener.getMap());
 		return grammar.getPrefixProperties(creator, tokener, isId);
 	}
-	
+
 	public Entity writeBasicValue(SendableEntityCreator creator, Entity entity, BaseItem parent, String className, String id) {
 		if((flag & IdMap.FLAG_ID) == 0) {
 			if(creator instanceof SendableEntityCreatorTag) {
@@ -185,7 +185,7 @@ public class MapEntity extends SimpleList<Object>{
 		}
 		return grammar.writeBasicValue(entity, parent, className, id, this);
 	}
-	
+
 	/**
 	 * @param value Is Association To Parent
 	 * @return the addOwnerLink
@@ -199,7 +199,7 @@ public class MapEntity extends SimpleList<Object>{
 		}
 		return false;
 	}
-	
+
 	public int getIndexOfClazz(String clazzName) {
 		if(clazzName == null) {
 			return -1;
@@ -214,7 +214,7 @@ public class MapEntity extends SimpleList<Object>{
 		}
 		return -1;
 	}
-	
+
 	public int getIndexVisitedObjects(Object element) {
 		int pos = 0;
 		for(Iterator<Object> i = this.iterator();i.hasNext();) {
@@ -226,14 +226,14 @@ public class MapEntity extends SimpleList<Object>{
 		}
 		return -1;
 	}
-	
+
 	public Object getVisitedObjects(int index) {
 		if (index>=0 && index < size()) {
 			return get(index);
 		}
 		return null;
 	}
-	
+
 	public String getClazz(int pos) {
 		if(pos<0 || pos > size()) {
 			return null;
@@ -244,7 +244,7 @@ public class MapEntity extends SimpleList<Object>{
 		}
 		return null;
 	}
-	
+
 	public String getLastClazz() {
 		Object item = last();
 		if(item != null) {
@@ -259,11 +259,11 @@ public class MapEntity extends SimpleList<Object>{
 		return this;
 	}
 	public MapEntity withoutFlag(byte flag) {
-		this.flag = (byte) (this.flag | flag); 
+		this.flag = (byte) (this.flag | flag);
 		this.flag -=  flag;
 		return this;
 	}
-	
+
 	public Entity convertProperty(CharacterBuffer property, BaseItem parent) {
 		BaseItem child=parent;
 		while(property.charAt(0) == IdMap.ENTITYSPLITTER) {
@@ -284,7 +284,7 @@ public class MapEntity extends SimpleList<Object>{
 		}
 		return (Entity)child;
 	}
-	
+
 	/**
 	 * @param flag is the Flag is Set
 	 * @return the type
@@ -303,7 +303,7 @@ public class MapEntity extends SimpleList<Object>{
 	}
 	public MapEntity withoutTokenerFlag(byte flag) {
 		this.tokenerFlag = (byte) (this.tokenerFlag | flag);
-		this.tokenerFlag -= flag; 
+		this.tokenerFlag -= flag;
 		return this;
 	}
 	/**

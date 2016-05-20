@@ -54,8 +54,7 @@ public enum SortingDirection {
 	/**
 	 * Set the new Direction.
 	 *
-	 * @param value
-	 *			The new Sortdirection
+	 * @param value	The new Sortdirection
 	 */
 	public void setDirection(int value) {
 		this.direction = value;

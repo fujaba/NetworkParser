@@ -28,7 +28,7 @@ public class ExcelRow implements Iterable<ExcelCell>{
 		}
 		return -1;
 	}
-	
+
 	private ExcelCell first() {
 		if(children == null) {
 			return null;
@@ -45,7 +45,7 @@ public class ExcelRow implements Iterable<ExcelCell>{
 		}
 		return new ExcelCell();
 	}
-	
+
 	public ExcelCell get(int index) {
 		return this.children.get(index);
 	}
@@ -53,7 +53,7 @@ public class ExcelRow implements Iterable<ExcelCell>{
 	public SimpleList<ExcelCell> getChildren() {
 		return children;
 	}
-	
+
 	public int size() {
 		if(children == null) {
 			return 0;
@@ -90,7 +90,7 @@ public class ExcelRow implements Iterable<ExcelCell>{
 		if(children == null) {
 			children = new SimpleList<ExcelCell>();
 		}
-		
+
 		for(ExcelCell cell: values) {
 			children.with(cell);
 		}

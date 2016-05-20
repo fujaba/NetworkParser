@@ -28,7 +28,7 @@ public class AssociationSet extends SimpleSet<Association>
 
 {
 	public static final AssociationSet EMPTY_SET = new AssociationSet();
-   
+
    public ClazzSet getClazzes() {
 		ClazzSet collection = new ClazzSet();
 		for(Association item : this) {
@@ -52,7 +52,7 @@ public class AssociationSet extends SimpleSet<Association>
 		}
 		return collection;
 	}
-	
+
 	@Override
 	public boolean add(Association newValue) {
 		if(newValue.getOther() != null) {
@@ -62,7 +62,7 @@ public class AssociationSet extends SimpleSet<Association>
 		}
 		return super.add(newValue);
 	}
-	
+
 	@Override
 	public AssociationSet filter(Condition<Association> newValue) {
 		AssociationSet collection = new AssociationSet();

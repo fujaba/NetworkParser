@@ -63,7 +63,7 @@ public class EMFTokener extends Tokener{
 	public static final String XMI_ID = "xmi:id";
 	public static final String NAME = "name";
 	HashMap<String, Integer> runningNumbers = null;
-	
+
 	/**
 	 * Skip the Current Entity to &gt;.
 	 */
@@ -72,7 +72,7 @@ public class EMFTokener extends Tokener{
 		// Skip >
 		nextClean(false);
 	}
-	
+
 	public String skipHeader() {
 		boolean skip=false;
 		CharacterBuffer tag;
@@ -152,6 +152,8 @@ public class EMFTokener extends Tokener{
 	}
 
 	/**
+	 * Decode a Element from EMF
+	 *
 	 * @param map decoding runtime values
 	 * @param root The Root Element of Returnvalue
 	 * @return decoded Object
@@ -174,7 +176,7 @@ public class EMFTokener extends Tokener{
 			if(root == null || root instanceof GraphModel == false) {
 				model = new GraphList();
 			} else {
-				model = (GraphModel) root;  
+				model = (GraphModel) root;
 			}
 			return decodingClassModel(xmlEntity, model);
 		}
@@ -196,14 +198,14 @@ public class EMFTokener extends Tokener{
 		runningNumbers = new HashMap<String, Integer>();
 
 		addXMIIds(xmlEntity, null);
-		
+
 		addChildren(xmlEntity, rootFactory, rootObject, map);
 
 		addValues(rootFactory, xmlEntity, rootObject, map);
 
 		return rootObject;
 	}
-	
+
 	private Object decodingClassModel(XMLEntity values, GraphModel model) {
 		SimpleKeyValueList<String, Clazz> items = new SimpleKeyValueList<String, Clazz>();
 		for(EntityList item : values.getChildren()) {
@@ -246,7 +248,7 @@ public class EMFTokener extends Tokener{
 						Association back = new Association(items.get(ref));
 						found.with(back);
 					}
-					
+
 					if(value.indexOf("/", 1) > 0) {
 						// To Many
 						found.with(Cardinality.MANY);
@@ -257,7 +259,7 @@ public class EMFTokener extends Tokener{
 		//TODO CREATING METHOD BODY
 		return model;
 	}
-	
+
 	private void addXMIIds(XMLEntity xmlEntity, String rootId) {
 		if (xmlEntity.has(XMI_ID)) {
 			return;
@@ -350,7 +352,7 @@ public class EMFTokener extends Tokener{
 			addValues(kidFactory, (XMLEntity)kidEntity, kidObject, map);
 		}
 	}
-	
+
 	private String getRef(String value, XMLEntity xmlEntity, SendableEntityCreator rootFactory) {
 		if (value.startsWith("//@")) {
 			for (String ref : value.split(" ")) {
@@ -502,10 +504,10 @@ public class EMFTokener extends Tokener{
 				continue;
 			}
 			XMLEntity xml = (XMLEntity) eClassifier;
-			if (xml.has(EMFTokener.XSI_TYPE)== false) { 
+			if (xml.has(EMFTokener.XSI_TYPE)== false) {
 				continue;
 			}
-			
+
 			if (xml.getString(EMFTokener.XSI_TYPE).equalsIgnoreCase(ECLASS)) {
 				Clazz clazz = new Clazz().with(xml.getString(EMFTokener.NAME));
 				model.with(clazz);

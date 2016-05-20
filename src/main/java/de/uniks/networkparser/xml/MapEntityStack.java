@@ -30,16 +30,16 @@ import de.uniks.networkparser.list.SimpleSet;
 public class MapEntityStack {
 	/** The Stack. */
 	private SimpleKeyValueList<Object, SendableEntityCreator> stack = new SimpleKeyValueList<Object, SendableEntityCreator>();
-	
+
 	private SimpleList<String> tags = new SimpleList<String>();
 
 	private SimpleKeyValueList<String, SimpleSet<String>> childProperties= new SimpleKeyValueList<String, SimpleSet<String>>();
 
 	/** Variable of AllowQuote. */
 //	private boolean isAllowQuote;
-	
+
 	/**
-	 * Remove The Last Element 
+	 * Remove The Last Element
 	 */
 	public void popStack() {
 		this.stack.removePos(this.stack.size() - 1);
@@ -50,15 +50,18 @@ public class MapEntityStack {
 	public int getStackSize() {
 		return this.stack.size();
 	}
-	
+
 	/**
+	 * Get the current Element
+	 *
 	 * @return The Stack Element - offset
 	 */
 	public Object getCurrentItem() {
 		return this.stack.last();
 	}
-	
+
 	/**
+	 * Get the previous Element
 	 * @return The Stack Element - offset
 	 */
 	public Object getPrevItem() {
@@ -68,7 +71,7 @@ public class MapEntityStack {
 		}
 		return this.stack.get(pos);
 	}
-	
+
 	/**
 	 * Add a new Reference Object to Stack.
 	 * @param tag	The new Tag
@@ -102,14 +105,16 @@ public class MapEntityStack {
 		}
 		return this;
 	}
-	
+
 	/**
+	 * Get the Current Creator for the MapEntity
+	 *
 	 * @return The Stack Element - offset
 	 */
 	public SendableEntityCreator getCurrentCreator() {
 		return this.stack.getValueByIndex(this.stack.size() - 1);
 	}
-	
+
 	public void setValue(String key, String value) {
 		SimpleSet<String> set = childProperties.get(key);
 		if(set != null) {
@@ -123,7 +128,7 @@ public class MapEntityStack {
 			}
 		}
 	}
-	
+
 	private int getEntityPos(String entity) {
 		int start=entity.lastIndexOf(IdMap.ENTITYSPLITTER);
 		int pos = this.tags.size() - 1;

@@ -77,7 +77,7 @@ public class MasterSystemTray implements StageEvent{
 			e.printStackTrace();
 		}
 	}
-	
+
 	public FXStageController getController() {
 		return this.controller;
 	}

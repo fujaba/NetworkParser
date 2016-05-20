@@ -58,7 +58,7 @@ public class ClazzSet extends SimpleSet<Clazz>
       }
       return collection;
    }
-   
+
    public ModifierSet getModifiers() {
       ModifierSet collection = new ModifierSet();
       for(Clazz item : this) {

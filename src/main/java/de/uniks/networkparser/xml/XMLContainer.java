@@ -26,12 +26,12 @@ import de.uniks.networkparser.list.SimpleList;
 
 public class XMLContainer extends XMLEntity{
 	private SimpleList<String> prefix = new SimpleList<String>();
-	
+
 	public XMLContainer withPrefix(String value) {
 		this.prefix.add(value);
 		return this;
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder sb=new StringBuilder();
@@ -42,7 +42,7 @@ public class XMLContainer extends XMLEntity{
 		sb.append(super.toString());
 		return sb.toString();
 	}
-	
+
 	@Override
 	public String toString(int indentFactor) {
 		StringBuilder sb=new StringBuilder();

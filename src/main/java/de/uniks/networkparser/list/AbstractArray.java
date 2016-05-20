@@ -162,7 +162,7 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 	}
 
 	final boolean isComplex(int size) {
-		return (flag & MAP) == MAP || size >= MINHASHINGSIZE;
+		return (flag & MAP) == MAP || size >= MINHASHINGSIZE || (size > SIZE_BIG && elements.length < SIZE_BIG);
 	}
 
 	final int getArrayFlag(int size) {
@@ -538,7 +538,7 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 	final int hasKey(Object element) {
 		return hashKeyPos(element, size);
 	}
-		
+
 	/**
 	 * Add a Element to the List
 	 *
@@ -1479,7 +1479,7 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 	/**
 	 * Make a prettyprinted Text of this Entity.
 	 * <p>
-	 * 
+	 *
 	 * @param converter
 	 *            Converter for transform Item to STring
 	 */

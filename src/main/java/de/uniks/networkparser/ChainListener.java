@@ -65,7 +65,7 @@ public class ChainListener implements UpdateListener{
 			return this;
 		}
 		for(UpdateListener item : values) {
-			list.with(item);	
+			list.with(item);
 		}
 		return this;
 	}
@@ -74,7 +74,7 @@ public class ChainListener implements UpdateListener{
 			return this;
 		}
 		for(PropertyChangeListener item : values) {
-			list.with(item);	
+			list.with(item);
 		}
 		return this;
 	}

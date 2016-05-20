@@ -56,7 +56,7 @@ public class SimpleList<V> extends AbstractList<V> implements List<V>, Cloneable
 		filterItems(filterList, newValue);
 		return filterList;
 	}
-	
+
 	@Override
 	public SimpleList<V> with(Object... values) {
 		super.with(values);

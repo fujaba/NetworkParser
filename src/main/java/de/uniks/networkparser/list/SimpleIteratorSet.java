@@ -34,11 +34,11 @@ public class SimpleIteratorSet<K,V> implements ListIterator<Entry<K, V>>{
 		this.list = list;
 		this.currentEntry = new SimpleEntity<K, V>();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public SimpleIteratorSet(Object collection) {
 		if(collection instanceof SimpleKeyValueList<?,?>) {
-			this.list = (SimpleKeyValueList<K, V>) collection;	
+			this.list = (SimpleKeyValueList<K, V>) collection;
 		} else if (collection instanceof Map<?,?>) {
 			this.list = new SimpleKeyValueList<K,V>();
 			this.list.withMap((Map<?,?>)collection);

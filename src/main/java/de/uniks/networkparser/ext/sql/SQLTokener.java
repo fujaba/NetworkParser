@@ -53,7 +53,7 @@ public class SQLTokener extends Tokener{
 	public static final byte FLAG_CREATE = 0x01;
 	public static final byte FLAG_DROP = 0x02;
 	private byte flag = FLAG_CREATE;
-	
+
 	public SQLTokener(SQLStatement connection) {
 		this.sqlConnection = connection;
 	}
@@ -76,7 +76,7 @@ public class SQLTokener extends Tokener{
 			sqlClass.with(attribute.getName(), EntityUtil.convertPrimitiveToObjectType(attribute.getType().getName(true)).toUpperCase());
 		}
 	}
-	
+
 	private void parseAssociations(Clazz clazz, SQLStatement sqlClass) {
 		String type = "";
 		for (Association association : clazz.getAssociations()) {
@@ -91,7 +91,7 @@ public class SQLTokener extends Tokener{
 	public boolean executeStatements(SQLStatementList statements) {
 		return executeStatements(statements, null, false);
 	}
-	
+
 	public boolean executeStatements(SQLStatementList statements, SimpleList<SQLTable> results, boolean dynamicTable) {
 		boolean result=true;
 		Connection connection = null;
@@ -122,7 +122,7 @@ public class SQLTokener extends Tokener{
 						// Check for Insert if really insert or Update
 						if(statement.isAutoStatement()) {
 							if(statement.getCommand() == SQLCommand.INSERT || statement.getCommand() == SQLCommand.UPDATE) {
-								
+
 							}
 						}
 						query.execute(statement.toString());
@@ -144,7 +144,7 @@ public class SQLTokener extends Tokener{
         }
 		return result;
 	}
-	
+
 	public boolean disconnect(Connection connection) {
 		 try {
          	if(connection != null ) {
@@ -155,7 +155,7 @@ public class SQLTokener extends Tokener{
          }
 		return true;
 	}
-	
+
 	public Connection connect(SQLStatement connect) {
 		try {
 			return DriverManager.getConnection(connect.toString());
@@ -233,7 +233,7 @@ public class SQLTokener extends Tokener{
 		SendableEntityCreator creator = map.getCreator(IdMap.NEW, this.map, item, className);
 		if(creator == null) {
 			return item.toString();
-		}	
+		}
 		String tableName = EntityUtil.shortClassName(className);
 		// Add TableCreate
 		addTableCreate(tableName, item, creator, statements, map);
@@ -263,7 +263,7 @@ public class SQLTokener extends Tokener{
 		statements.add(insertStatement);
 		return id;
 	}
-	
+
 	final static class SelectSearcher {
 		private SimpleList<String> ids = new SimpleList<String>();
 		private SimpleList<String> deleteIds = new SimpleList<String>();
@@ -286,10 +286,10 @@ public class SQLTokener extends Tokener{
 			return deleteIds;
 		}
 	}
-	
+
 	public boolean validateStatements(SQLStatementList result, SimpleList<SQLTable> results) {
 		SimpleKeyValueList<String, SelectSearcher> foundKeys=new SimpleKeyValueList<String, SelectSearcher>();
-		
+
 		for(SQLStatement statement : result) {
 			String table = statement.getTable();
 			SelectSearcher values = foundKeys.get(table);
@@ -404,7 +404,7 @@ public class SQLTokener extends Tokener{
 		if(selectList.size() < 1) {
 			return false;
 		}
-		
+
 		// Find Ids in DataBase
 		executeStatements(selectList, results, true);
 

@@ -66,11 +66,9 @@ public abstract class BufferedBuffer extends Buffer {
 
 	/**
 	 * Substring of Buffer
-	 * @param start
-	 *			startindex for parsing
-	 * @param length
-	 *			the length of Substring
-	 * @return the Substring
+	 * @param start		startindex for parsing
+	 * @param length	the length of Substring
+	 * @return 			the Substring
 	 */
 	public abstract CharacterBuffer subSequence(int start, int length);
 
@@ -148,10 +146,9 @@ public abstract class BufferedBuffer extends Buffer {
 	/**
 	 * Get the next n characters.
 	 *
-	 * @param n
-	 *			The number of characters to take.
-	 * @return A string of n characters. Substring bounds error if there are not
-	 *		 n characters remaining in the source string.
+	 * @param n		The number of characters to take.
+	 * @return 		A string of n characters. Substring bounds error if there are not
+	 *		 		n characters remaining in the source string.
 	 */
 	public String getNextString(int n) {
 		int pos = 0;
@@ -195,17 +192,13 @@ public abstract class BufferedBuffer extends Buffer {
 	}
 
 	/**
-	 * @param positions
-	 *            first is start Position, second is Endposition
+	 * @param positions		first is start Position, second is Endposition
 	 *
-	 *            Absolut fix Start and End start&gt;0 StartPosition
-	 *            end&gt;Start EndPosition
+	 *						Absolut fix Start and End start&gt;0 StartPosition end&gt;Start EndPosition
 	 *
-	 *            Absolut from fix Position Start&gt;0 Position end NULL To End
-	 *            end -1 To this.index
+	 *						Absolut from fix Position Start&gt;0 Position end NULL To End end -1 To this.index
 	 *
-	 *            Relativ from indexPosition Start Position from this.index +
-	 *            (-Start) End = 0 current Position
+							Relativ from indexPosition Start Position from this.index + (-Start) End = 0 current Position
 	 *
 	 * @return substring from buffer
 	 */

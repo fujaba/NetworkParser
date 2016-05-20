@@ -50,10 +50,10 @@ final class BitArray implements Cloneable {
 		size = bytes.length;
 		this.bits = new int[size];
 		for(int i=0;i<size;i++) {
-			this.bits[i] = bytes[i];	
+			this.bits[i] = bytes[i];
 		}
 	}
-	
+
 	// For testing only
 	private BitArray(int[] bits, int size) {
 		this.bits = bits;
@@ -63,7 +63,7 @@ final class BitArray implements Cloneable {
 	public int getSize() {
 		return size;
 	}
-	
+
 	public int getSizeInBytes() {
 		return (size + 7) / 8;
 	}

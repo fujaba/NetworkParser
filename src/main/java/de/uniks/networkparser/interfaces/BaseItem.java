@@ -40,11 +40,11 @@ public interface BaseItem {
 	 */
 	public String toString(Converter converter);
 
-	
+
 	/** Add Elements to List or KeyValue
 	 * if param Modulo 2 the Params can be Key,Value
 	 * or add all Values  to List
-	 * @param values Items to Add to List 
+	 * @param values Items to Add to List
 	 * @return this Component
 	 */
 	BaseItem with(Object... values);

@@ -510,6 +510,13 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return item;
 	}
 
+	public Object[] valuesArrayIntern() {
+		if(elements == null) {
+			return new Object[0];
+		}
+		return (Object[]) elements[SMALL_VALUE];
+	}
+
 	public SimpleKeyValueList<K, V> withKeyValue(Object key, Object value) {
 		int pos = hasKeyAndPos(key);
 		if(pos<0) {
@@ -594,7 +601,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		}while(pos<keyValue.length());
 		return this;
 	}
-	
+
 	@Override
 	public AbstractArray<K> without(Object... values) {
 		if(values == null) {

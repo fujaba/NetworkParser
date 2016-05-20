@@ -45,7 +45,7 @@ public class ExcelSheet extends SimpleList<ExcelRow>{
 		setName(value);
 		return this;
 	}
-	
+
 	public ExcelCell getItem(Pos pos) {
 		for(int i=0;i<this.size();i++) {
 			ExcelRow row = this.get(i);

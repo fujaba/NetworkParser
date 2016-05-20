@@ -88,7 +88,7 @@ public class StyleFX extends Style{
 				}
 			}
 			style.append("-fx-border-color:");
-			
+
 			for(int i=0;i<4;i++){
 				style.append(" "+colors[i]);
 			}
@@ -107,7 +107,7 @@ public class StyleFX extends Style{
 		}
 		return style.toString();
 	}
-	
+
 	public static String getPath(){
 		return StyleFX.class.getResource("dialog/styles.css").toExternalForm();
 	}

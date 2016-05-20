@@ -56,7 +56,7 @@ import de.uniks.networkparser.interfaces.Converter;
 public class DotConverter implements Converter {
 	private boolean removePackage;
 	public DotConverter() {
-		
+
 	}
 
 	public DotConverter(boolean removePackage) {

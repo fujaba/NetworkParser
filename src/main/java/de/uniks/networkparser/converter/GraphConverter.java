@@ -399,7 +399,7 @@ public class GraphConverter implements Converter{
 	@Override
 	public String encode(BaseItem entity) {
 		if(entity instanceof GraphList) {
-			return this.convert((GraphList)entity, false);	
+			return this.convert((GraphList)entity, false);
 		}
 		return null;
 	}

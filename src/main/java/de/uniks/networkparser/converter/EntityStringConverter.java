@@ -30,7 +30,7 @@ public class EntityStringConverter implements Converter {
 	private int indentFactor;
 	private int indent;
 	public static final String EMPTY="";
-	
+
 	public EntityStringConverter() {
 	}
 
@@ -57,7 +57,7 @@ public class EntityStringConverter implements Converter {
 	public int getIndent() {
 		return indent;
 	}
-	
+
 	public String getStep() {
 		char[] buf = new char[indentFactor];
 		for (int i = 0; i < indentFactor; i++) {
@@ -92,9 +92,9 @@ public class EntityStringConverter implements Converter {
 	}
 
 	public void add() {
-		this.indent = this.indent + this.indentFactor; 
+		this.indent = this.indent + this.indentFactor;
 	}
 	public void minus() {
-		this.indent = this.indent - this.indentFactor; 
+		this.indent = this.indent - this.indentFactor;
 	}
 }

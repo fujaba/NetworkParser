@@ -139,12 +139,12 @@ public class ExcelCell implements SendableEntityCreatorTag, EntityList{
 	   }
 	   return false;
 	}
-	
+
 	public ExcelCell withContent(Object value) {
 		setContent(value);
 		return this;
 	}
-	
+
 	public ExcelCell getReferenceCell() {
 		return referenceCell;
 	}
@@ -188,12 +188,12 @@ public class ExcelCell implements SendableEntityCreatorTag, EntityList{
 		}
 		return "<c r=\""+ref+"\" t=\"inlineStr\"><is><t>"+new String(context.toString().getBytes(Charset.forName("UTF-8")), Charset.forName("UTF-8"))+"</t></is></c>";
 	}
-	
+
 	@Override
 	public String toString(int indentFactor) {
 		return toString();
 	}
-	
+
 	protected String toString(int indentFactor, int indent) {
 		return toString();
 	}

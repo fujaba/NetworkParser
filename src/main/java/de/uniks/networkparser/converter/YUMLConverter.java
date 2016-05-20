@@ -142,7 +142,7 @@ public class YUMLConverter implements Converter{
 				typ = GraphTokener.CLASS;
 			}
 		}
-		
+
 		StringBuilder sb = new StringBuilder("[");
 		if (typ == GraphTokener.OBJECT) {
 			sb.append(clazzEntity.getId());
@@ -168,7 +168,7 @@ public class YUMLConverter implements Converter{
 			} else if (typ.equals(GraphTokener.CLASS)) {
 				splitter = ":";
 			}
-			
+
 			Object element = i.next();
 			Attribute attribute;
 			if (element instanceof Attribute) {

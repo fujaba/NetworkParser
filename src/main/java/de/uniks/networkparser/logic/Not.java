@@ -35,7 +35,7 @@ public class Not implements UpdateListener, SendableEntityCreator {
 	/** Varibale for Condition. */
 	private UpdateListener item;
 
-	
+
 	@Override
 	public boolean update(Object evt) {
 		return !item.update(evt);
@@ -86,7 +86,7 @@ public class Not implements UpdateListener, SendableEntityCreator {
 		}
 		return false;
 	}
-	
+
 	public static Not create(UpdateListener condition) {
 		return new Not().withItem(condition);
 	}

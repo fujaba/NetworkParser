@@ -37,7 +37,7 @@
     -fx-border-image-source: url("searchbox.png");
     -fx-border-image-slice: 12 12 12 22 fill;
     -fx-border-image-width: 12 12 12 22;
-    -fx-border-image-repeat: stretch; 
+    -fx-border-image-repeat: stretch;
     -fx-font-size: 13px;
     -fx-prompt-text-fill: grey;
 }
@@ -50,7 +50,7 @@
 .table-row-cell:empty {
     -fx-background-color: lightyellow;
 }
-  
+ 
 .table-row-cell:empty .table-cell {
     -fx-border-width: 0px;
 }
@@ -63,7 +63,7 @@
    -fx-background-color: #0B2161;
   -fx-text-fill: #333;
    -fx-cursor: hand;
-   
+  
 }
 
 .suggestionscell:focused {

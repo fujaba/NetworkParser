@@ -4,8 +4,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="root" 
-	maxHeight="-Infinity" 
+<AnchorPane fx:id="root"
+	maxHeight="-Infinity"
 	maxWidth="-Infinity"
 	minHeight="-Infinity"
 	minWidth="-Infinity"

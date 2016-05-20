@@ -315,7 +315,7 @@ public class Clazz extends GraphEntity {
 		createAssociation(AssociationTypes.GENERALISATION, AssociationTypes.EDGE, values);
 		return this;
 	}
-	
+
 	public Clazz withImplements(Clazz... values) {
 		createAssociation(AssociationTypes.IMPLEMENTS, AssociationTypes.EDGE, values);
 		return this;
@@ -385,7 +385,7 @@ public class Clazz extends GraphEntity {
 		}
 		return kidClazzes;
 	}
-	
+
 	void createAssociation(AssociationTypes direction, AssociationTypes backDirection, Clazz... values) {
 		if (values == null) {
 			return;
@@ -397,13 +397,13 @@ public class Clazz extends GraphEntity {
 				for (Association assoc : associations) {
 					if(assoc.getType() == direction && assoc.getOtherType() == backDirection) {
 						if(assoc.contains(item, true, false) == false) {
-							if(assoc.getType() == AssociationTypes.GENERALISATION) { 
+							if(assoc.getType() == AssociationTypes.GENERALISATION) {
 								found = true;
 								for(GraphMember member : assoc.getOther().getParents()) {
 									if(member instanceof Clazz && member != item) {
 										assoc.getOther().withoutParent(member);
 									}
-									
+
 								}
 							}
 							assoc.getOther().setParent(item);

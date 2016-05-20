@@ -58,7 +58,7 @@ public class SoapObject implements BaseItem {
 	public String toString(int indentFactor) {
 		return parseItem(new EntityStringConverter(indentFactor));
 	}
-	
+
 
 	protected String parseItem(EntityStringConverter converter) {
 		CharacterBuffer sb = new CharacterBuffer();
@@ -77,7 +77,7 @@ public class SoapObject implements BaseItem {
 		sb.with("</", namespace, ":Envelope>");
 		return sb.toString();
 	}
-	
+
 	public SoapObject withHeader(String key, String value) {
 		if(this.headers == null) {
 			this.headers = new SimpleKeyValueList<String, String>();
@@ -119,7 +119,7 @@ public class SoapObject implements BaseItem {
 		}
 		return null;
 	}
-	
+
 	public XMLEntity getBody() {
 		return children;
 	}

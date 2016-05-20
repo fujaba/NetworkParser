@@ -40,7 +40,7 @@ public class RGBColor {
 	private float blue;
 	private float cyan;
 	private float magenta;
-	private float yellow; 
+	private float yellow;
 
 	public RGBColor withValue(float red, float green, float blue) {
 		int a=1;
@@ -67,12 +67,12 @@ public class RGBColor {
 		color.withValue(red, green, blue);
 		return color;
 	}
-	
+
 	public static RGBColor create(float red, float green, float blue) {
 		RGBColor color = new RGBColor().withValue(red, green, blue);
 		return color;
 	}
-	
+
 	/**
 	 * @return the red
 	 */
@@ -127,11 +127,11 @@ public class RGBColor {
 	public int getArgb() {
 		return argb;
 	}
-	
+
 	private int min(int a, int b) {
 	        return (a <= b) ? a : b;
 	}
-	
+
 	public RGBColor add(RGBColor second) {
 		RGBColor color = new RGBColor();
 		float newRed = ((float)(getRed()+second.getRed())) / 2;
@@ -163,7 +163,7 @@ public class RGBColor {
 		color.withBlue(getBlue() * 2 - second.getBlue() );
 		return color;
 	}
-	
+
 	public static RGBColor minus(String colorA, String colorB) {
 		return RGBColor.create(colorA).minus(RGBColor.create(colorB));
 	}
@@ -188,7 +188,7 @@ public class RGBColor {
 	public float getYellow() {
 		return yellow;
 	}
-	
+
 	@Override
 	public boolean equals(Object other) {
 		if(other == null || other instanceof RGBColor == false) {
@@ -213,7 +213,7 @@ public class RGBColor {
 	public int hashCode() {
 		return super.hashCode();
 	}
-	
+
 	public String toString() {
 		CharacterBuffer buffer=new CharacterBuffer().withBufferLength(7);
 		buffer.with("#");

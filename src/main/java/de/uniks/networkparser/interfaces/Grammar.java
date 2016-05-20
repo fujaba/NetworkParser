@@ -41,7 +41,7 @@ public interface Grammar {
 	 */
 	public BaseItem getProperties(Entity item,
 			IdMap map, Filter filter, boolean isId, String type);
-	
+
 	/**
  	 * @param type		can be Write or Read
  	 * @param item 		The Object for read or write
@@ -52,9 +52,9 @@ public interface Grammar {
 	 */
 	public SendableEntityCreator getCreator(String type, Object item,
 			IdMap map, boolean searchForSuperCreator, String className);
-	
+
 	public String getId(Object obj, IdMapCounter counter);
-	
+
 	/**
 	 * Get a Value from the Item
 	 * @param item target item
@@ -62,9 +62,9 @@ public interface Grammar {
 	 * @return get the Value of the key as String
 	 */
 	public String getValue(Entity item, String property);
-	
+
 	public boolean hasValue(Entity item, String property);
-	
+
 	/**
 	 * Get a new Instance of Element from the Creator
 	 * @param creator The EntityCreator
@@ -83,9 +83,9 @@ public interface Grammar {
 	 * @return The Propertyprefix
 	 */
 	public CharacterBuffer getPrefixProperties(SendableEntityCreator creator, Tokener format, boolean isId);
-	
+
 	public Entity writeBasicValue(Entity entity, BaseItem parent, String className, String id, MapEntity map);
-	
+
 	public BaseItem encode(Object entity, MapEntity map, Tokener tokener);
 
 	public boolean writeValue(BaseItem parent, String property, Object value, MapEntity map, Tokener tokener);

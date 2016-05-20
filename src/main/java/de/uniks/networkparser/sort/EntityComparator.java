@@ -262,9 +262,8 @@ public class EntityComparator<V> implements Comparator<V> {
 	/**
 	 * The new Creator for Cells.
 	 *
-	 * @param value
-	 *			The cellCreator
-	 * @return EntityComparator Instance
+	 * @param value		The cellCreator
+	 * @return 			EntityComparator Instance
 	 */
 	public EntityComparator<V> withCellCreator(EntityValueFactory value) {
 		this.cellCreator = value;

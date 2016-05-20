@@ -49,7 +49,7 @@ public class ExcelParser {
 		}
 		return excelWorkBook;
 	}
-	
+
 	public ExcelSheet parseSheet(CharSequence stringFile, CharSequence sheetFile) {
 		ExcelSheet data = new ExcelSheet();
 		SimpleKeyValueList<String, ExcelCell> cells = new SimpleKeyValueList<String, ExcelCell>();

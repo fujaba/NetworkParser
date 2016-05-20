@@ -51,7 +51,7 @@ public class SimpleGrammar implements Grammar{
 		}
 		return null;
 	}
-	
+
 	@Override
 	public String getId(Object obj, IdMapCounter counter) {
 		return null;
@@ -73,7 +73,7 @@ public class SimpleGrammar implements Grammar{
 		}
 		return entity;
 	}
-	
+
 	@Override
 	public SendableEntityCreator getCreator(String type, Object item, IdMap map, boolean searchForSuperCreator, String className) {
 		if(Grammar.WRITE.equals(type)) {
@@ -97,7 +97,7 @@ public class SimpleGrammar implements Grammar{
 		Class<?> clazzName = getClassForName((String) className);
 		return getSuperCreator(map, searchForSuperCreator, clazzName);
 	}
-	
+
 	public SendableEntityCreator getSuperCreator(IdMap map, boolean searchForSuperCreator, Object modelItem) {
 		return null;
 	}
@@ -115,7 +115,7 @@ public class SimpleGrammar implements Grammar{
 	public Object getNewEntity(SendableEntityCreator creator, String className, boolean prototype) {
 		return creator.getSendableInstance(prototype);
 	}
-	
+
 	@Override
 	public String getValue(Entity item, String property) {
 		return item.getString(property);

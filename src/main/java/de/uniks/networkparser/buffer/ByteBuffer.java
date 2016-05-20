@@ -58,7 +58,7 @@ public class ByteBuffer extends BufferedBuffer {
 		result = (char) (result << 8 + (char) getByte());
 		return result;
 	}
-	
+
 	@Override
 	public byte getByte() {
 		return this.buffer[++position];
@@ -193,7 +193,7 @@ public class ByteBuffer extends BufferedBuffer {
 		this.length = array.length;
 		return this;
 	}
-	
+
 	public ByteBuffer with(byte value) {
 		if(this.buffer == null) {
 			this.buffer = new byte[]{value};

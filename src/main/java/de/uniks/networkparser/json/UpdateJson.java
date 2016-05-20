@@ -109,7 +109,7 @@ public class UpdateJson implements PropertyChangeListener {
 
 		this.suspendIdList = null;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -321,7 +321,7 @@ public class UpdateJson implements PropertyChangeListener {
 					Object newValue = update.get(key);
 					setValue(creator, masterObj, key, newValue,
 							IdMap.UPDATE);
-					
+
 					this.map.notify(new SimpleMapEvent(IdMap.UPDATE, map, key, oldValue, newValue).with(update).withModelItem(masterObj));
 				} else if (checkPrio(prio)) {
 					Object newValue = update.get(key);
@@ -465,9 +465,9 @@ public class UpdateJson implements PropertyChangeListener {
 			}
 		}
 	}
-	
+
 	/**
-	 * Remove the given object from the IdMap 
+	 * Remove the given object from the IdMap
 	 * @param oldValue Object to remove
 	 * @param destroy switch for remove link from object
 	 * @return success

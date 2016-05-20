@@ -104,9 +104,10 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 	}
 
 	/**
-	 * @param value
-	 *			String of Value
-	 * @return the CharacterBuffer
+	 * Set the currentVlaue to Buffer
+	 *
+	 * @param value		String of Value
+	 * @return			the CharacterBuffer
 	 */
 	public CharacterBuffer withValue(String value) {
 		if(value != null) {
@@ -125,7 +126,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		}
 		return result;
 	}
-	
+
 	public void replace(String search, String replace) {
 		int deleted=0;
 		CharacterBuffer inserts = null;
@@ -175,7 +176,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 				pos++;
 			}
 		}
-		pos = pos + deleted-start; 
+		pos = pos + deleted-start;
 		if(inserts != null) {
 			if(this.length < pos) {
 				char[] copy = new char[pos];
@@ -232,14 +233,14 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		with(BaseItem.CRLF);
 		return this;
 	}
-	
+
 	@Override
 	public CharacterBuffer withLength(int len) {
 		withBufferLength(len);
 		super.withLength(len);
 		return this;
 	}
-	
+
 	public CharacterBuffer withBufferLength(int len) {
 		if(this.buffer == null ) {
 			this.buffer = new char[len];
@@ -453,8 +454,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 	 }
 
 	/**
-	 * Returns the number of elements between the current position and the
-	 * limit.
+	 * Returns the number of elements between the current position and the limit.
 	 *
 	 * @return  The number of elements remaining in this buffer
 	 */
@@ -488,7 +488,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		this.start += pos;
 		return this;
 	}
-	
+
 	public CharacterBuffer trimStart(int pos) {
 		this.start += pos;
 		this.length -= pos;
@@ -505,7 +505,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		}
 		return this;
 	}
-	
+
 	public boolean isEmptyCharacter() {
 		if(super.isEmpty()) {
 			return true;
@@ -667,15 +667,13 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		}
 		return -1;
 	}
-	
+
 	/**
 	 * get the () values
 	 *
-	 * @param start
-	 *            Startcharacter
-	 * @param end
-	 *            Endcharacter
-	 * @return string of values
+	 * @param start	Startcharacter
+	 * @param end	Endcharacter
+	 * @return 		String of values
 	 */
 	public String getStringPart(Character start, Character end) {
 		int count = 1;

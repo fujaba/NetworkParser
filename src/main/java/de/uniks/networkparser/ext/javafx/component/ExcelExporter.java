@@ -63,7 +63,7 @@ public class ExcelExporter extends MenuItem implements EventHandler<ActionEvent>
 			workBook.with(sheet);
 			ExcelRow row=new ExcelRow();
 			sheet.with(row);
-			
+
 			//header
 			for(Iterator<TableColumnFX> i = tableComponent.getColumnIterator();i.hasNext();) {
 				TableColumnFX tableColumn = i.next();

@@ -16,6 +16,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the Licence for the specific language governing permissions and limitations under the Licence.
 */
+
+/**	@author Stefan Lindel */
 public enum ExcelCellValueType {
 	EXTLST("extLst"), FORMULAR("f"), RICHTEXT("is"), VALUE("v");
 	private String value;

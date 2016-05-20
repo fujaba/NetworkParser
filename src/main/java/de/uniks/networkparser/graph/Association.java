@@ -63,8 +63,8 @@ public class Association extends GraphMember {
 		return Cardinality.ONE;
 	}
 
-	
-	
+
+
 	@Override
 	public String getName() {
 		if(name != null) {
@@ -88,7 +88,7 @@ public class Association extends GraphMember {
 	String name() {
 		return name;
 	}
-	
+
 	/* Override the Default Method for setting Parent Node
 	 * The Association can hav many Clazz-Instance as Parents (Objectdiagram) and a ClazzModel
 	 * @see de.uniks.networkparser.graph.GraphMember#setParentNode(de.uniks.networkparser.graph.GraphMember)
@@ -121,7 +121,7 @@ public class Association extends GraphMember {
 		}
 		return true;
 	}
-	
+
 	Association withoutParent(GraphMember member) {
 		if(parentNode == null) {
 			return this;
@@ -135,7 +135,7 @@ public class Association extends GraphMember {
 		}
 		return this;
 	}
-	
+
 	@Override
 	SimpleSet<GraphEntity> getNodes() {
 		SimpleSet<GraphEntity> collection = new SimpleSet<GraphEntity>();
@@ -156,7 +156,7 @@ public class Association extends GraphMember {
 		}
 		return collection;
 	}
-	
+
 	GraphSimpleSet getParents() {
 		GraphSimpleSet parents = new GraphSimpleSet();
 		if(this.parentNode == null) {
@@ -169,7 +169,7 @@ public class Association extends GraphMember {
 		parents.withList((GraphSimpleSet)this.parentNode);
 		return parents;
 	}
-	
+
 	public Association with(GraphLabel label) {
 		super.withChildren(label);
 		return this;

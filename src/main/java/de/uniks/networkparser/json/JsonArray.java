@@ -252,7 +252,7 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 		x.parseToEntity(this);
 		return this;
 	}
-	
+
 	/**
 	 * Set the value to Tokener or pairs of values
 	 *

@@ -57,7 +57,7 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 	@Override
 	public String toString(Converter converter) {
 		if(converter instanceof ByteConverter) {
-			return toString((ByteConverter)converter, false);	
+			return toString((ByteConverter)converter, false);
 		}
 		return toString(null, false);
 	}

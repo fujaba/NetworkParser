@@ -27,7 +27,7 @@ import de.uniks.networkparser.list.SimpleList;
 
 public interface EntityList extends BaseItem{
 	public SimpleList<EntityList> getChildren();
-	
+
 	/**
 	 * Make a prettyprinted Text of this Entity.
 	 * <p>
@@ -41,12 +41,12 @@ public interface EntityList extends BaseItem{
 	 *		 brace)</small>.
 	 */
 	public String toString(int indentFactor);
-	
+
 	public boolean isComparator();
-	
+
 	public Comparator<Object> comparator();
-	
+
 	public int size();
-	
+
 	public BaseItem withValue(Buffer values);
 }

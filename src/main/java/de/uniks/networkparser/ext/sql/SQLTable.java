@@ -34,7 +34,7 @@ import de.uniks.networkparser.list.SimpleList;
 public class SQLTable extends SimpleList<Object>{
 	private String table;
 	private boolean simple;
-	
+
 
 	public static SQLTable create(ResultSet executeQuery, SQLStatement statement, boolean dynamic) {
 		AbstractArray<?> values = statement.getValues();
@@ -48,18 +48,18 @@ public class SQLTable extends SimpleList<Object>{
 		}
 		return create(executeQuery, properties, statement.getTable(), dynamic);
 	}
-	
+
 	public static SQLTable create(ResultSet executeQuery, SendableEntityCreator creator) {
 		String tableName;
 		Object prototype = creator.getSendableInstance(true);
 		if(prototype instanceof Class<?>) {
-			tableName = EntityUtil.shortClassName(((Class<?>)prototype).getName()); 
+			tableName = EntityUtil.shortClassName(((Class<?>)prototype).getName());
 		}else {
 			tableName = EntityUtil.shortClassName(prototype.getClass().getName());
 		}
 		return create(executeQuery, creator.getProperties(), tableName, false);
 	}
-	
+
 	public SimpleList<Object> getColumnValue(String column) {
 		SimpleList<Object> values=new SimpleList<Object>();
 		if(this.simple) {
@@ -74,7 +74,7 @@ public class SQLTable extends SimpleList<Object>{
 		}
 		return values;
 	}
-		
+
 	public static SQLTable create(ResultSet executeQuery, String[] properties, String table, boolean isDynamicResult) {
 		SQLTable sqlTable = new SQLTable();
 		sqlTable.withTable(table);
@@ -111,11 +111,11 @@ public class SQLTable extends SimpleList<Object>{
 		this.table = value;
 		return this;
 	}
-	
+
 	public String getTable() {
 		return this.table;
 	}
-	
+
 	public boolean isSimple() {
 		return simple;
 	}

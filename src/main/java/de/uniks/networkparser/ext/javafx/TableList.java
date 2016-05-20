@@ -95,7 +95,7 @@ public class TableList extends SortedList<Object> implements
 
 		getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEMS, oldValue,
 				newValue);
-		
+
 		return result;
 	}
 

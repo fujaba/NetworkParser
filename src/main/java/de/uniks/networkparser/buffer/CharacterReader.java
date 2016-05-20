@@ -66,7 +66,7 @@ public class CharacterReader extends CharacterBuffer{
     	if(quotes ==null) {
     		return sc;
     	}
-    
+
     	boolean found=false;
     	for(char quote : quotes) {
 			if ('"' == quote) {

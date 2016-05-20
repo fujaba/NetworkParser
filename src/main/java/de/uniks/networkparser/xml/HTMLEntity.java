@@ -103,10 +103,10 @@ public class HTMLEntity implements BaseItem {
 		}
 		return this;
 	}
-	
+
 	XMLEntity getChild(String ref) {
 		XMLEntity child = null;
-		
+
 		if(ref==null) {
 			return null;
 		}
@@ -129,7 +129,7 @@ public class HTMLEntity implements BaseItem {
 		}
 		return child;
 	}
-	
+
 	public HTMLEntity withBody(String ref) {
 		XMLEntity child = getChild(ref);
 		if(child != null) {
@@ -137,7 +137,7 @@ public class HTMLEntity implements BaseItem {
 		}
 		return this;
 	}
-	
+
 	public HTMLEntity withScript(String code) {
 		XMLEntity child = new XMLEntity().setType("script").withCloseTag();
 		child.withValueItem(code);
@@ -166,9 +166,9 @@ public class HTMLEntity implements BaseItem {
 			}
 		}
 		if( styleElement == null) {
-			XMLEntity element = new XMLEntity().setType("style"); 
+			XMLEntity element = new XMLEntity().setType("style");
 			header.with(element);
-			styleElement = element; 
+			styleElement = element;
 		}
 		styleElement.setValueItem(styleElement.getValue()+"\r\n" + style);
 		return this;
@@ -206,7 +206,7 @@ public class HTMLEntity implements BaseItem {
 		this.body.withChild(xmlEntity);
 		return this;
 	}
-	
+
 	@Override
 	public String toString(Converter converter) {
 		if(converter == null) {

@@ -46,9 +46,9 @@ import de.uniks.networkparser.xml.XMLEntity;
 public class JsonTokener extends Tokener {
 	/** The Constant JSON_PROPS. */
 	public static final String PROPS = "prop";
-	
+
 	public final static String STOPCHARS = ",]}/\\\"[{;=# ";
-	
+
 	public static final char STARTARRAY='[';
 	public static final char ENDARRAY=']';
 	public static final char STARTENTITY='{';
@@ -199,7 +199,7 @@ public class JsonTokener extends Tokener {
 		}
 		return parent;
 	}
-	
+
 	/**
 	 * Cross compiling
 	 * @param parent  the parent Element
@@ -220,7 +220,7 @@ public class JsonTokener extends Tokener {
 			for (int i = 0; i < xmlEntity.size(); i++) {
 				parseEntityProp(props, xmlEntity.getValueByIndex(i), xmlEntity.getKeyByIndex(i));
 			}
-			
+
 			for (EntityList child : xmlEntity.getChildren()) {
 				if(child  instanceof XMLEntity == false) {
 					continue;
@@ -411,7 +411,7 @@ public class JsonTokener extends Tokener {
 			}
 		}
 	}
-	
+
 	@Override
 	public JsonTokener withMap(IdMap map) {
 		super.withMap(map);
@@ -422,7 +422,7 @@ public class JsonTokener extends Tokener {
 	public Entity newInstance() {
 		return new JsonObject();
 	}
-	
+
 	@Override
 	public EntityList newInstanceList() {
 		return new JsonArray();

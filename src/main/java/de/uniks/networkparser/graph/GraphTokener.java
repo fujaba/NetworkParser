@@ -46,7 +46,7 @@ public class GraphTokener extends Tokener {
 
 	/** The Constant for OBJECT Diagramms. */
 	public static final String OBJECT = "objectdiagram";
-	
+
 	private String getType(MapEntity map) {
 		if(map.isTokenerFlag(FLAG_CLASS) ){
 			return CLASS;
@@ -57,7 +57,7 @@ public class GraphTokener extends Tokener {
 	@Override
 	public GraphList encode(Object object, MapEntity map) {
 		GraphList newElement = new GraphList();
-		
+
 		newElement.withTyp(getType(map));
 		Clazz main = parse(object, map, newElement, 0);
 		GraphDiff diff = newElement.getDiff();
@@ -146,7 +146,7 @@ public class GraphTokener extends Tokener {
 		map.minus();
 		return;
 	}
-	
+
 	public GraphList diffModel(GraphList master, GraphList slave) {
 		GraphDiff masterDiff = master.getDiff();
 		GraphDiff saveDiff = slave.getDiff();
@@ -162,11 +162,11 @@ public class GraphTokener extends Tokener {
 		searchMatch(masterFile);
 		return master;
 	}
-	
+
 	private void searchMatch(Clazz master) {
 		master.getChildren().iterator();
 	}
-	
+
 //	protected void initItem(GraphMember item) {
 //		item.withChildren(new GraphDiff());
 //		if(item instanceof Clazz) {
@@ -217,7 +217,7 @@ public class GraphTokener extends Tokener {
 		}
 		return clazzDiagram;
 	}
-	
+
 	@Override
 	public GraphTokener withMap(IdMap map) {
 		super.withMap(map);

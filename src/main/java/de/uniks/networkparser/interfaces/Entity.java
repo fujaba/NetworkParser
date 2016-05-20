@@ -32,13 +32,13 @@ public interface Entity extends BaseItem{
 	public String getKeyByIndex(int pos);
 
 	public Entity without(String key);
-	
+
 	/**
 	 * @param key The Key for search
 	 * @return success if the item has the Property
 	 */
 	public boolean has(String key);
-	
+
 	/** Add Key-Value item to Entity
 	 * @param key The key
 	 * @param value The new Value
@@ -59,20 +59,20 @@ public interface Entity extends BaseItem{
 	 *		 brace)</small>.
 	 */
 	public String toString(int indentFactor);
-	
+
 	/**
 	 * Activate Allow Empty Value
 	 * @param allow is Empty Value (NULL) Allow
 	 */
 	public void setAllowEmptyValue(boolean allow);
-	
+
 	public boolean setValueItem(Object value);
-	
+
 	public BaseItem getChild(String label, boolean recursiv);
-	
+
 	public int size();
-	
+
 	public BaseItem withValue(Buffer values);
-	
+
 	public BaseItem setType(String type);
 }

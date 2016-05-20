@@ -48,7 +48,7 @@ public class HTMLGrammar extends SimpleGrammar{
 		rootItem.with(child);
 		return rootItem;
 	}
-	
+
 	private boolean transformValue(CharacterBuffer value, int deep, boolean isClassName) {
 		iterator.reset();
 		while(iterator.hasNext()) {
@@ -64,13 +64,13 @@ public class HTMLGrammar extends SimpleGrammar{
 				value.set(item.getValue());
 				value.replace(DEEP, ""+deep);
 				value.replace(PROPERTY, property);
-				
+
 				return true;
 			}
 		}
 		return false;
 	}
-	
+
 	@Override
 	public Entity writeBasicValue(Entity entity, BaseItem parent, String className, String id, MapEntity map) {
 		CharacterBuffer value = new CharacterBuffer().with(className);
@@ -92,7 +92,7 @@ public class HTMLGrammar extends SimpleGrammar{
 		}
 		return entity;
 	}
-	
+
 	@Override
 	public boolean writeValue(BaseItem parent, String property, Object value, MapEntity map, Tokener tokener) {
 		if (parent instanceof EntityList && tokener.isChild(value)){

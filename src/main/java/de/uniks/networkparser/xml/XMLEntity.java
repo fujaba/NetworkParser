@@ -34,7 +34,7 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 /**
  * The Class XMLEntity.
- * 
+ *
  * @author Stefan Lindel
  */
 public class XMLEntity extends SimpleKeyValueList<String, Object> implements Entity, EntityList {
@@ -44,9 +44,9 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	public static final String PROPERTY_VALUE = "value";
 	/** The children. */
 	private SimpleList<EntityList> children;
-	
+
 	public static final String START = "<";
-	
+
 	public static final String END = ">";
 
 	/** The tag. */
@@ -63,9 +63,8 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	/**
 	 * Instantiates a new xML entity.
 	 *
-	 * @param value
-	 *			the tag
-	 * @return Itself
+	 * @param value	the tag
+	 * @return 		Itself
 	 */
 	public XMLEntity withValue(String value) {
 		XMLTokener tokener = new XMLTokener();
@@ -78,10 +77,8 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	/**
 	 * Construct a XMLEntity from a Tokener.
 	 *
-	 * @param tokener
-	 *			A Tokener object containing the source string. or a duplicated
-	 *			key.
-	 * @return Itself
+	 * @param tokener	A Tokener object containing the source string. or a duplicated key.
+	 * @return 			Itself
 	 */
 	public XMLEntity withValue(Tokener tokener) {
 		if(tokener!=null) {
@@ -141,9 +138,8 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	/**
 	 * Method to add a new Child to List.
 	 *
-	 * @param value
-	 *			the new Child
-	 * @return XMLEntity Instance
+	 * @param value			the new Child
+	 * @return XMLEntity	Instance
 	 */
 	public XMLEntity withChild(EntityList value) {
 		getChildren().add(value);
@@ -229,9 +225,8 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	/**
 	 * Sets the value.
 	 *
-	 * @param value
-	 *			the new value
-	 * @return Success
+	 * @param value		the new value
+	 * @return 			success
 	 */
 	public boolean setValueItem(Object value) {
 		if(value instanceof String) {
@@ -266,7 +261,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 				sb.with(" ", get(i), "=", EntityUtil.quote(value.toString()));
 			}
 		}
-		
+
 		toStringChildren(sb, converter);
 		return sb.toString();
 	}
@@ -274,10 +269,8 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	/**
 	 * Add The Children to StringBuilder.
 	 *
-	 * @param sb
-	 *			The StringBuilder where The Children add
-	 * @param converter
-	 *			The Current Converter
+	 * @param sb			The StringBuilder where The Children add
+	 * @param converter		The Current Converter
 	 */
 	protected void toStringChildren(CharacterBuffer sb, EntityStringConverter converter) {
 		// parse Children
@@ -329,9 +322,8 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	/**
 	 * Static Method to generate XMLEntity.
 	 *
-	 * @param tag
-	 *			Tagname
-	 * @return a new Instance of XMLEntity
+	 * @param tag	The name
+	 * @return 		a new Instance of XMLEntity
 	 */
 	public static XMLEntity TAG(String tag) {
 		return new XMLEntity().setType(tag);

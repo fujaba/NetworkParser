@@ -89,7 +89,7 @@ public class GraphUtil {
 		}
 		return assoc.getOtherType()==AssociationTypes.ASSOCIATION && assoc.getType()==AssociationTypes.EDGE;
 	}
-	
+
 	public static boolean isInterfaceAssociation(Association assoc) {
 		if(assoc == null) {
 			return false;
@@ -99,7 +99,7 @@ public class GraphUtil {
 		}
 		return assoc.getOtherType()==AssociationTypes.IMPLEMENTS && assoc.getType()==AssociationTypes.EDGE;
 	}
-	
+
 	public static CharacterBuffer getMethodParameters(Method method, boolean shortName) {
 		return method.getParameterString(shortName);
 	}
@@ -111,7 +111,7 @@ public class GraphUtil {
 		}
 		return collection;
 	}
-	
+
 	public static GraphSimpleSet getChildren(GraphMember item) {
 		return item.getChildren();
 	}
@@ -124,15 +124,15 @@ public class GraphUtil {
 	public static GraphDiff getDifference(GraphMember item) {
 		return item.getDiff();
 	}
-	
+
 	public static boolean addAccoc(GraphList list, Association assoc) {
 		return list.addAssoc(assoc);
 	}
-	
+
 	public static Attribute createAttribute() {
 		return new Attribute();
 	}
-	
+
 	public static void removeYou(GraphMember value) {
 		if(value == null) {
 			return;
@@ -154,7 +154,7 @@ public class GraphUtil {
 			clazz.without(collection.toArray(new GraphMember[collection.size()]));
 		}
 	}
-	
+
 	public static boolean containsClazzAssociation(SimpleList<GraphMember> visited, Association assoc, Association other) {
 		boolean foundAssoc = false;
 		for(GraphMember checkItem : visited) {

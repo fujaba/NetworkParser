@@ -64,7 +64,7 @@ public abstract class Buffer implements BufferItem {
 		result = result << 8 + bytes[7];
 		return result;
 	}
-	
+
 	public float getFloat() {
 		int asInt = getInt();
 		return Float.intBitsToFloat(asInt);
@@ -99,7 +99,7 @@ public abstract class Buffer implements BufferItem {
 //		}
 		return result;
 	}
-	
+
 	@Override
 	public byte getByte() {
 //		if(isLookAhead) {
@@ -112,7 +112,7 @@ public abstract class Buffer implements BufferItem {
 //		return (byte) ((item&0xFF00)>>8);
 		return (byte)getChar();
 	}
-	
+
 	@Override
 	public int position() {
 		return position;

@@ -39,7 +39,7 @@ public class GXLTokener extends Tokener {
 	public static final String FLOAT = "float";
 	public static final String STRING = "string";
 	public static final String BAG = "bag";
-	
+
 	public static final String EDGEIDS = "edgeids";
 	public static final String EDGEMODE = "edgemode";
 	public static final String HYPERGRAPH = "hypergraph";
@@ -48,7 +48,7 @@ public class GXLTokener extends Tokener {
 	public static final String NAME = "name";
 	public static final String FROM = "from";
 	public static final String TO = "to";
-	
+
 	@Override
 	public BaseItem encode(Object entity, MapEntity map) {
 		XMLEntity instance = new XMLEntity();
@@ -87,7 +87,7 @@ public class GXLTokener extends Tokener {
 		}
 		return true;
 	}
-	
+
 	private void parseValue(String property, Object value, XMLEntity parent, XMLEntity root, XMLEntity node, MapEntity map) {
 		if(value == null) {
 			// Null Value
@@ -138,7 +138,7 @@ public class GXLTokener extends Tokener {
 			valueItem.setType(STRING);
 		}
 	}
-	
+
 	@Override
 	public XMLEntity newInstance() {
 		return new XMLEntity();

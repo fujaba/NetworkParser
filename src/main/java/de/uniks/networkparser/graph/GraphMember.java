@@ -112,7 +112,7 @@ public abstract class GraphMember {
 	boolean setParent(GraphMember value) {
 		return setParentNode(value);
 	}
-	
+
 	protected boolean setParentNode(GraphMember value) {
 		if (this.parentNode != value) {
 			GraphMember oldValue = (GraphMember) this.parentNode;

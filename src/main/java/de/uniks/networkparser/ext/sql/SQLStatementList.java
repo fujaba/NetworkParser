@@ -30,7 +30,7 @@ public class SQLStatementList extends SimpleList<SQLStatement>{
 	public Comparator<Object> comparator() {
 		return comparator;
 	}
-	
+
 	@Override
 	public boolean isComparator() {
 		return true;

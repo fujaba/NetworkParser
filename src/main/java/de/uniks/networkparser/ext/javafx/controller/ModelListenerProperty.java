@@ -85,7 +85,7 @@ public abstract class ModelListenerProperty<T> implements javafx.beans.property.
 	public Object getBean() {
 		return item;
 	}
-	
+
 	public boolean setBean(Object value) {
 		if(value != this.item) {
 			this.item = value;

@@ -42,7 +42,7 @@ public class XMLTokener extends Tokener {
 	public static final String TOKEN=" >//<";
 
 	private static final String TOKENSTOPWORDS = " >/<";
-	
+
 	public static final String CHILDREN= "<CHILDREN>";
 
 	/** The Constant ENDTAG. */
@@ -53,14 +53,14 @@ public class XMLTokener extends Tokener {
 
 	/** The Constant ITEMSTART. */
 	public static final char ITEMSTART = '<';
-	
+
 	private SendableEntityCreator defaultFactory;
-	
+
 	/** The stopwords. */
 	private ArrayList<String> stopwords = new ArrayList<String>();
 
 	public static final EntityStringConverter SIMPLECONVERTER = new EntityStringConverter();
-	
+
 	private boolean isAllowQuote;
 
 	/** Instantiates a new XML id map. */
@@ -168,9 +168,7 @@ public class XMLTokener extends Tokener {
 		}
 	}
 
-	/**
-	 * Skip the Current Entity to &gt;.
-	 */
+	/**	Skip the Current Entity to &gt;. */
 	protected void skipEntity() {
 		skipTo('>', false);
 		// Skip >
@@ -211,25 +209,23 @@ public class XMLTokener extends Tokener {
 		}
 		return super.toString();
 	}
-	
+
 	@Override
 	public Entity newInstance() {
 		return new XMLEntity();
 	}
-	
+
 	@Override
 	public EntityList newInstanceList() {
 		return new XMLEntity();
 	}
-	
+
 	/**
 	 * Find tag.
 	 *
-	 * @param tokener
-	 *			the tokener
-	 * @param map
-	 *			decoding runtime values
-	 * @return the object
+	 * @param tokener 	the tokener
+	 * @param map 		decoding runtime values
+	 * @return 			the object
 	 */
 	public Object parse(XMLTokener tokener, MapEntity map) {
 		parseAttribute(tokener, map);
@@ -265,7 +261,7 @@ public class XMLTokener extends Tokener {
 			} while (myChar != ITEMEND && myChar != 0 && myChar != ENDTAG);
 		}
 	}
-	
+
 	protected Object parseChildren(XMLTokener tokener, MapEntity map) {
 		MapEntityStack stack = map.getStack();
 		Object entity = stack.getCurrentItem();
@@ -356,14 +352,12 @@ public class XMLTokener extends Tokener {
 		}
 		return entity;
 	}
-	
+
 	/**
 	 * Gets the entity.
 	 *
-	 * @param tokener
-	 *			the tokener
-	 * @param map
-	 *			the decoding runtime values
+	 * @param tokener	the tokener
+	 * @param map	the decoding runtime values
 	 * @return the entity
 	 */
 	public CharacterBuffer parseEntity(XMLTokener tokener, MapEntity map) {
@@ -419,7 +413,7 @@ public class XMLTokener extends Tokener {
 		MapEntityStack stack = map.getStack();
 		SendableEntityCreator defaultCreator = getDefaultFactory();
 		SendableEntityCreatorTag creator;
-		if(defaultCreator instanceof SendableEntityCreatorTag) { 
+		if(defaultCreator instanceof SendableEntityCreatorTag) {
 			creator = (SendableEntityCreatorTag) defaultCreator;
 		}else {
 			creator = new XMLEntityCreator();
@@ -470,13 +464,13 @@ public class XMLTokener extends Tokener {
 		}
 		return valueItem;
 	}
-	
+
 	public Entity createLink(Entity parent, String property, String className, String id) {
 		parent.put(property, id);
 		return null;
 	}
-	
-	
+
+
 	protected Object addToStack(SendableEntityCreatorTag creator, XMLTokener tokener, CharacterBuffer tag, CharacterBuffer value, MapEntity map) {
 		Object entity = creator.getSendableInstance(false);
 		if(entity instanceof EntityList) {
@@ -486,25 +480,29 @@ public class XMLTokener extends Tokener {
 		map.getStack().withStack(tag.toString(), entity, creator);
 		return entity;
 	}
-	
+
 	@Override
 	public Object transformValue(Object value, BaseItem reference) {
 		return EntityUtil.valueToString(value, true, reference, SIMPLECONVERTER);
 	}
-	
+
 	@Override
 	public BaseItem encode(Object entity, MapEntity map) {
 		return null;
 	}
-	
+
 	/**
-	 * @return the defaultFactory
+	 * Get the DefaultFactory for Creating Element for Serialization
+	 *
+	 * @return the get The DefaultFactory
 	 */
 	public SendableEntityCreator getDefaultFactory() {
 		return defaultFactory;
 	}
 
 	/**
+	 * Add a DefaultFactoriy for creating Elements for Serialization
+	 *
 	 * @param defaultFactory the defaultFactory to set
 	 * @return ThisComponent
 	 */
@@ -520,7 +518,7 @@ public class XMLTokener extends Tokener {
 		this.isAllowQuote = value;
 		return this;
 	}
-	
+
 	@Override
 	public XMLTokener withMap(IdMap map) {
 		super.withMap(map);

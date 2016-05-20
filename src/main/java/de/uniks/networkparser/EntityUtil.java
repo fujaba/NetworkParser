@@ -264,7 +264,7 @@ public class EntityUtil {
 		if (value instanceof Boolean) {
 			return value.toString();
 		}
-		
+
 		if (value instanceof BaseItem) {
 			return ((BaseItem) value).toString(converter);
 		}
@@ -577,7 +577,7 @@ public class EntityUtil {
 		}
 		return numericTypes.indexOf(type) >= 0 || primitiveTypes.indexOf(type) >= 0;
 	}
-	
+
 	public static boolean isNumericType(String type) {
 		if (type == null)
 			return false;

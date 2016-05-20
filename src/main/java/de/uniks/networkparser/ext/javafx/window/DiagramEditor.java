@@ -290,7 +290,7 @@ public class DiagramEditor extends SimpleShell implements Editor {
 						break;
 					out.write(buffer, 0, count);
 				}
-				
+
 			} catch (IOException e) {
 			} catch (Exception e) {
 			} finally {
@@ -374,7 +374,7 @@ public class DiagramEditor extends SimpleShell implements Editor {
 		}
 		if(args != null) {
 			for(String item : args) {
-				values.with(item);		
+				values.with(item);
 			}
 		}
 		launch(values.toArray(new String[0]));

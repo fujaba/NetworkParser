@@ -37,7 +37,7 @@ public class Tokener implements BufferItem {
 
 	/** BUFFER */
 	protected Buffer buffer;
-	
+
 	// Methods for Map
 	public SendableEntityCreator getCreatorClass(Object reference) {
 		if(map == null) {
@@ -88,7 +88,7 @@ public class Tokener implements BufferItem {
 	public IdMap getMap() {
 		return map;
 	}
-	
+
 	public boolean isError(Object owner, String method, String type, Object entity) {
 		if(map == null) {
 			return true;
@@ -98,9 +98,9 @@ public class Tokener implements BufferItem {
 	}
 
 	public void parseToEntity(Entity entity) {}
-	
+
 	public void parseToEntity(EntityList entity) {}
-	
+
 	public BaseItem encode(Object entity, MapEntity map) {return null;}
 
 	/**
@@ -199,7 +199,7 @@ public class Tokener implements BufferItem {
 		}
 		return 0;
 	}
-	
+
 	@Override
 	public byte getByte() {
 		if(buffer != null) {
@@ -207,7 +207,7 @@ public class Tokener implements BufferItem {
 		}
 		return 0;
 	}
-	
+
 	@Override
 	public byte[] array(int len, boolean current) {
 		if(buffer != null) {
@@ -215,7 +215,7 @@ public class Tokener implements BufferItem {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public char getCurrentChar() {
 		if(buffer != null) {
@@ -301,23 +301,23 @@ public class Tokener implements BufferItem {
 		}
 		return 0;
 	}
-	
+
 	public String[] getProperties(SendableEntityCreator creator, Filter filter) {
 		return creator.getProperties();
 	}
-	
+
 	public Entity newInstance() {
 		return null;
 	}
-	
+
 	public EntityList newInstanceList() {
 		return null;
 	}
-	
+
 	public Object transformValue(Object value, BaseItem reference) {
 		return value;
 	}
-	
+
 	public Entity createLink(Entity parent, String property, String className, String id) {
 		return null;
 	}

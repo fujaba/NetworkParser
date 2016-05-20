@@ -185,7 +185,7 @@ public class GraphList extends GraphModel implements BaseItem{
 		}
 		return new GraphList();
 	}
-	
+
 	@Override
 	public GraphList with(String name) {
 		super.with(name);

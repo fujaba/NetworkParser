@@ -44,7 +44,7 @@ public final class Version {
 	private final ECB ecBlocks3;
 	private final ECB ecBlocks4;
 	private final int totalCodewords;
-	
+
 	private Version(int versionNumber, int[] alignmentPatternCenters, String json) {
 		this.versionNumber = versionNumber;
 		this.alignmentPatternCenters = alignmentPatternCenters;
@@ -82,7 +82,7 @@ public final class Version {
 		}
 		return first;
 	}
-	
+
 	public int getVersionNumber() {
 		return versionNumber;
 	}
@@ -94,7 +94,7 @@ public final class Version {
 	public int getTotalCodewords() {
 		return totalCodewords;
 	}
-	
+
 	public int getDimensionForVersion() {
 		return 17 + 4 * versionNumber;
 	}
@@ -214,7 +214,7 @@ public final class Version {
 		return bitMatrix;
 	}
 
-	
+
 
 	public String toString() {
 		return String.valueOf(versionNumber);
@@ -279,7 +279,7 @@ public final class Version {
 		private final int count;
 		private final int dataCodewords;
 		private final int ecCodewordsPerBlock;
-		private ECB next; 
+		private ECB next;
 
 		ECB(int ecCodewordsPerBlock, int count, int dataCodewords) {
 			this.ecCodewordsPerBlock = ecCodewordsPerBlock;

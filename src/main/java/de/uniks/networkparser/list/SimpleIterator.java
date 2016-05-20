@@ -16,11 +16,11 @@ public class SimpleIterator<E> implements ListIterator<E> {
 	public SimpleIterator(AbstractArray<E> list) {
 		this.with(list, 0);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public SimpleIterator(Object collection) {
 		if(collection instanceof AbstractArray<?>) {
-			this.list = (AbstractArray<E>) collection;	
+			this.list = (AbstractArray<E>) collection;
 		} else if (collection instanceof List<?>) {
 			this.list = new SimpleList<E>();
 			this.list.withList((List<?>)collection);
@@ -41,7 +41,7 @@ public class SimpleIterator<E> implements ListIterator<E> {
 	   this.list = newList;
 	   return this;
 	}
-	
+
 	public boolean hasPrevious() {
 		return cursor != 0;
 	}
@@ -114,7 +114,7 @@ public class SimpleIterator<E> implements ListIterator<E> {
 			throw new ConcurrentModificationException();
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public SimpleIterator<E> with(AbstractArray<?> newList)
 	{

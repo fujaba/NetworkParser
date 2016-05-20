@@ -30,7 +30,7 @@ public class AtomarCondition implements UpdateListener{
 	public AtomarCondition(UpdateListener listener) {
 		this.filter = listener;
 	}
-	
+
 	@Override
 	public boolean update(Object value) {
 		if(value instanceof PropertyChangeEvent ) {

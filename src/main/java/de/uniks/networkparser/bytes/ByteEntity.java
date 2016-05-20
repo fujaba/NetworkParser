@@ -38,7 +38,7 @@ public class ByteEntity implements ByteItem {
 	/** The Constant BIT OF A BYTE. */
 	public final static int BITOFBYTE = 8;
 	public final static int TYPBYTE = 1;
-	
+
 	public final static String TYP="TYP";
 	public final static String VALUE="VALUE";
 
@@ -130,7 +130,7 @@ public class ByteEntity implements ByteItem {
 	@Override
 	public String toString(Converter converter) {
 		if(converter instanceof ByteConverter) {
-			return toString((ByteConverter)converter, false);	
+			return toString((ByteConverter)converter, false);
 		}
 		return null;
 	}
@@ -369,7 +369,7 @@ public class ByteEntity implements ByteItem {
 		}
 		return this;
 	}
-	
+
 	public ByteEntity withValue(byte[] values) {
 		if(values==null){
 			return this;
@@ -384,7 +384,7 @@ public class ByteEntity implements ByteItem {
 		}
 		return this;
 	}
-	
+
 	public Object getValue(Object key) {
 		if(TYP.equals(key)) {
 			return typ;

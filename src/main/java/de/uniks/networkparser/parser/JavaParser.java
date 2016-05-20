@@ -33,7 +33,7 @@ public class JavaParser {
 //	      }
 //
 //	      int startPos = currentRealToken.startPos;
-//	      
+//
 //	      while (currentRealTokenEquals(IMPORT))
 //	      {
 //	         parseImport();

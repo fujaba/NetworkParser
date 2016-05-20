@@ -40,8 +40,7 @@ public class Or implements UpdateListener, SendableEntityCreator {
 	private ArrayList<UpdateListener> list = new ArrayList<UpdateListener>();
 
 	/**
-	 * @param conditions
-	 *			All Conditions.
+	 * @param conditions	All Conditions.
 	 * @return Or Instance
 	 */
 	public Or add(UpdateListener... conditions) {
