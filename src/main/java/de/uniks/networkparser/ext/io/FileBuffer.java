@@ -92,7 +92,11 @@ public class FileBuffer extends Buffer {
 			}
 		}
 		try {
-			this.reader.read(values, len, values.length - len);
+			int max = values.length - len;
+			int read = this.reader.read(values, len, max);
+			if(read<max) {
+				this.length = (max -read);
+			}
 			this.position = this.length();
 		} catch (IOException e) {
 		}

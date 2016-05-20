@@ -62,14 +62,12 @@ public class ByteEntity implements ByteItem {
 	/**
 	 * Sets the value.
 	 *
-	 * @param typ
-	 *			the new Typ
-	 * @param value
-	 *			the new value
-	 * @return Itself
+	 * @param type		the new type
+	 * @param value		the new value
+	 * @return 			Itself
 	 */
-	public ByteEntity withValue(byte typ, byte[] value) {
-		this.typ = typ;
+	public ByteEntity withValue(byte type, byte[] value) {
+		this.typ = type;
 		if(value != null){
 			this.values = ByteUtil.clone(value);
 		}
@@ -79,14 +77,12 @@ public class ByteEntity implements ByteItem {
 	/**
 	 * Sets the value.
 	 *
-	 * @param typ
-	 *			The Typ of Element
-	 * @param value
-	 *			the new value
-	 * @return Itself
+	 * @param type		the type of Element
+	 * @param value		the new value
+	 * @return 			Itself
 	 */
-	public ByteEntity withValue(byte typ, byte value) {
-		this.typ = typ;
+	public ByteEntity withValue(byte type, byte value) {
+		this.typ = type;
 		this.values = new byte[] {value };
 		return this;
 	}
@@ -102,9 +98,8 @@ public class ByteEntity implements ByteItem {
 	/**
 	 * Byte to unsigned byte.
 	 *
-	 * @param n
-	 *			the Byte
-	 * @return the Byte
+	 * @param n		the Byte
+	 * @return 		the Byte
 	 */
 	public byte byteToUnsignedByte(int n) {
 		if (n < 128)

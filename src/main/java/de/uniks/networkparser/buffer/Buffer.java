@@ -125,8 +125,8 @@ public abstract class Buffer implements BufferItem {
 
 	@Override
 	public boolean isEmpty() {
-        return length() == 0;
-    }
+		return length() == 0;
+	}
 
 	@Override
 	public boolean isEnd() {

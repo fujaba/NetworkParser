@@ -995,7 +995,7 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 	 * <tt>iterator</tt> method does not implement the <tt>remove</tt> method
 	 * and this collection contains one or more elements in common with the
 	 * specified collection.
-	 * 
+	 *
 	 * @param c 	List of Elements for removing
 	 * @return 		success
 	 *

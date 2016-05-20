@@ -65,13 +65,10 @@ final class FormatInformation {
 	}
 
 	/**
-	 * @param maskedFormatInfo1
-	 *            format info indicator, with mask still applied
-	 * @param maskedFormatInfo2
-	 *            second copy of same info; both are checked at the same time to
-	 *            establish best match
-	 * @return information about the format it specifies, or <code>null</code>
-	 *         if doesn't seem to match any known pattern
+	 * Decoding Format Inforamtion
+	 * @param maskedFormatInfo1		format info indicator, with mask still applied
+	 * @param maskedFormatInfo2		second copy of same info; both are checked at the same time to establish best match
+	 * @return information about the format it specifies, or <code>null</code>  if doesn't seem to match any known pattern
 	 */
 	static FormatInformation decodeFormatInformation(int maskedFormatInfo1, int maskedFormatInfo2) {
 		FormatInformation formatInfo = doDecodeFormatInformation(maskedFormatInfo1, maskedFormatInfo2);

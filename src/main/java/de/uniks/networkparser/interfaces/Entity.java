@@ -35,7 +35,7 @@ public interface Entity extends BaseItem{
 
 	/**
 	 * check if Entity has the Key
-	 * 
+	 *
 	 * @param key The Key for search
 	 * @return success if the item has the Property
 	 */

@@ -13,7 +13,7 @@ public class JavaDocGenTest {
 //		long time = System.currentTimeMillis();
 		JavaDocValidator javaDoc=new JavaDocValidator();
 		ArrayList<String> validateFileTree = javaDoc.validateFileTree(new File("src/main/java"), true, false);
-//		Assert.assertEquals(0, validateFileTree.size());
+		Assert.assertEquals(0, validateFileTree.size());
 //		System.out.println("Time: " +(System.currentTimeMillis()- time));
 		
 		

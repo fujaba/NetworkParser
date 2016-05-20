@@ -101,7 +101,7 @@ public class XMLTokener extends Tokener {
 		default:
 			break;
 		}
-		return super.nextValue(creator, allowQuote,  allowDuppleMarks, c);
+		return super.nextValue(creator, allowQuote, allowDuppleMarks, c);
 	}
 
 	public void parseToEntity(Entity entity) {

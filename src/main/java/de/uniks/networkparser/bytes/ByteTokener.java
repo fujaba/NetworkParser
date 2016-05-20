@@ -294,12 +294,10 @@ public class ByteTokener extends Tokener {
 	/**
 	 * Decode.
 	 *
-	 * @param buffer
-	 *			the in
-	 * @param eventCreater
-	 *			The Creator as Factory
-	 * @param map the MapEntry for decoding-runtime values
-	 * @return the object
+	 * @param buffer			the in buffer
+	 * @param eventCreater		the Creator as Factory
+	 * @param map 				the MapEntry for decoding-runtime values
+	 * @return 					the object
 	 */
 	public Object decodeClazz(Buffer buffer, SendableEntityCreator eventCreater, MapEntity map) {
 		if (eventCreater == null) {

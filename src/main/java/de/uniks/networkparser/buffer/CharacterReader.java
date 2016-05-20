@@ -24,10 +24,10 @@ package de.uniks.networkparser.buffer;
 
 public class CharacterReader extends CharacterBuffer{
 	/** The line. */
-    protected int line;
+	protected int line;
 
-    /** The character. */
-    protected int character;
+	/** The character. */
+	protected int character;
 
 	/** Is Last String is \"String\" or Text */
 	private boolean isString = true;
@@ -41,15 +41,15 @@ public class CharacterReader extends CharacterBuffer{
 		return this;
 	}
 
-    public boolean back() {
-    	if(super.back()) {
-    		this.character -= 1;
-    		return true;
-    	}
-    	return false;
-    }
+	public boolean back() {
+		if(super.back()) {
+			this.character -= 1;
+			return true;
+		}
+		return false;
+	}
 
-    @Override
+	@Override
 	public char getChar() {
 		char c = super.getChar();
 		if (c == '\n') {
@@ -61,14 +61,14 @@ public class CharacterReader extends CharacterBuffer{
 		return c;
 	}
 
-    @Override
-    public CharacterBuffer nextString(CharacterBuffer sc, boolean allowQuote, boolean nextStep, char... quotes) {
-    	if(quotes ==null) {
-    		return sc;
-    	}
+	@Override
+	public CharacterBuffer nextString(CharacterBuffer sc, boolean allowQuote, boolean nextStep, char... quotes) {
+		if(quotes ==null) {
+			return sc;
+		}
 
-    	boolean found=false;
-    	for(char quote : quotes) {
+		boolean found=false;
+		for(char quote : quotes) {
 			if ('"' == quote) {
 				found=true;
 				if (getCurrentChar() == quote) {
@@ -77,8 +77,8 @@ public class CharacterReader extends CharacterBuffer{
 					isString = !isString;
 				}
 			}
-    	}
-    	if (found == false && getCurrentChar() == '"') {
+		}
+		if (found == false && getCurrentChar() == '"') {
 			isString = true;
 			for (;;) {
 				int len = sc.length();

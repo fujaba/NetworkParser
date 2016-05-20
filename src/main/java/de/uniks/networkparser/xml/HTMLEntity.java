@@ -157,7 +157,7 @@ public class HTMLEntity implements BaseItem {
 	public HTMLEntity addStyle(String name, String style) {
 		XMLEntity styleElement = null;
 		for(EntityList child : header.getChildren()) {
-			if(child  instanceof XMLEntity == false) {
+			if(child instanceof XMLEntity == false) {
 				continue;
 			}
 			XMLEntity xml = (XMLEntity) child;

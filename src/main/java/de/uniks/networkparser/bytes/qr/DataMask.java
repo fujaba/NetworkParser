@@ -50,10 +50,8 @@ abstract class DataMask {
 	 * to a QR Code and make its bits ready to read.
 	 * </p>
 	 *
-	 * @param bits
-	 *            representation of QR Code bits
-	 * @param dimension
-	 *            dimension of QR Code, represented by bits, being unmasked
+	 * @param bits		representation of QR Code bits
+	 * @param dimension	dimension of QR Code, represented by bits, being unmasked
 	 */
 	final void unmaskBitMatrix(BitMatrix bits, int dimension) {
 		for (int i = 0; i < dimension; i++) {
@@ -68,9 +66,9 @@ abstract class DataMask {
 	abstract boolean isMasked(int i, int j);
 
 	/**
-	 * @param reference
-	 *            a value between 0 and 7 indicating one of the eight possible
-	 *            data mask patterns a QR Code may use
+	 * Get DataMask for Reference
+	 *
+	 * @param reference		a value between 0 and 7 indicating one of the eight possible data mask patterns a QR Code may use
 	 * @return DataMask encapsulating the data mask pattern
 	 */
 	static DataMask forReference(int reference) {

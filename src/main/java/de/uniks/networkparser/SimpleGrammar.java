@@ -67,7 +67,7 @@ public class SimpleGrammar implements Grammar{
 
 	@Override
 	public Entity writeBasicValue(Entity entity, BaseItem parent, String className, String id, MapEntity map) {
-  		entity.setType(className);
+		entity.setType(className);
 		if(id != null) {
 			entity.put(IdMap.ID, id);
 		}

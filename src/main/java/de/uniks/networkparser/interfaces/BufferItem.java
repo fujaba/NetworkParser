@@ -59,7 +59,7 @@ public interface BufferItem {
 
 	/**
 	 * count of Remaining Size of Buffer
-	 * 
+	 *
 	 * @return the remaining Count of bytes of the Buffer
 	 */
 	public int remaining();

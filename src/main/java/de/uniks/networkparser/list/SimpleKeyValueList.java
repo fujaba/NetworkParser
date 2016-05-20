@@ -189,8 +189,8 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	/**
 	 * Get the double value associated with an index.
 	 *
-	 * @param key  The Value
-	 * @return The value.
+	 * @param key	the Value
+	 * @return		the value.
 	 * @throws RuntimeException
 	 *			 If the key is not found or if the value cannot be converted
 	 *			 to a number.

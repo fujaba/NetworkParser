@@ -44,8 +44,8 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 	 * <a href="Character.html#unicode">surrogate</a>, the surrogate
 	 * value is returned.
 	 *
-	 * @param	  index   the index of the desired {@code char} value.
-	 * @return	 the {@code char} value at the specified index.
+	 * @param index		the index of the desired {@code char} value.
+	 * @return			the {@code char} value at the specified index.
 	 */
 	@Override
 	public char charAt(int index) {
@@ -81,14 +81,13 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 	 * This method is provided so that this class can
 	 * implement the {@link CharSequence} interface.
 	 *
-	 * @param	  start   the start index, inclusive.
-	 * @param	  end	 the end index, exclusive.
-	 * @return	 the specified subsequence.
+	 * @param start		the start index, inclusive.
+	 * @param end		the end index, exclusive.
+	 * @return			the specified subsequence.
 	 *
-	 * @throws  IndexOutOfBoundsException
-	 *		  if {@code start} or {@code end} are negative,
-	 *		  if {@code end} is greater than {@code length()},
-	 *		  or if {@code start} is greater than {@code end}
+	 * @throws IndexOutOfBoundsException
+	 *		if {@code start} or {@code end} are negative,
+	 *		if {@code end} is greater than {@code length()}, or if {@code start} is greater than {@code end}
 	 */
 	@Override
 	public CharacterBuffer subSequence(int start, int end) {
@@ -378,7 +377,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		return this;
 	}
 	/**
-	 *  Append a new Character to CharacterBuffer
+	 * Append a new Character to CharacterBuffer
 	 * @param item a new StartItem
 	 * @return CharacterBuffer Instance
 	 */
@@ -442,11 +441,11 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 			char c1 =ta[to++];
 			char c2 = prefix.charAt(po++);
 			if (c1 != c2) {
-	            if (ignoreCase) {
-	                if (Character.toLowerCase(c1) == Character.toLowerCase(c2)) {
-	                    continue;
-	                }
-	            }
+				if (ignoreCase) {
+					if (Character.toLowerCase(c1) == Character.toLowerCase(c2)) {
+						continue;
+					}
+				}
 				return false;
 			}
 		}
@@ -456,7 +455,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 	/**
 	 * Returns the number of elements between the current position and the limit.
 	 *
-	 * @return  The number of elements remaining in this buffer
+	 * @return The number of elements remaining in this buffer
 	 */
 	public final int remaining() {
 		return buffer.length - start;
@@ -554,7 +553,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 			int newCapubility=0;
 			for( int i=0;i<items.length;i++) {
 				if(items[i] != null) {
-					if((items[i] instanceof CharSequence) == false)  {
+					if((items[i] instanceof CharSequence) == false) {
 						items[i] = items[i].toString();
 					}
 					newCapubility += ((CharSequence)items[i]).length();
@@ -576,7 +575,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		} else {
 			for(Object item : items) {
 				CharSequence value = null;
-				if(item instanceof CharSequence)  {
+				if(item instanceof CharSequence) {
 					value = (CharSequence) item;
 				} else if(item != null) {
 					value = item.toString();

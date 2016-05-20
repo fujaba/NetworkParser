@@ -47,10 +47,9 @@ public class QRTokener {
 	 * booleans. "true" is taken to mean a black module.
 	 * </p>
 	 *
-	 * @param image
-	 *            booleans representing white/black QR Code modules
-	 * @return text and bytes encoded within the QR Code
-	 * @throws Exception if something wrong
+	 * @param image		booleans representing white/black QR Code modules
+	 * @return 			text and bytes encoded within the QR Code
+	 * @throws			Exception if something wrong
 	 */
 	public DecoderResult decode(boolean[][] image) throws Exception {
 		int dimension = image.length;
@@ -71,10 +70,9 @@ public class QRTokener {
 	 * booleans. "true" is taken to mean a black module.
 	 * </p>
 	 *
-	 * @param bytes
-	 *            bytes representing white/black QR Code modules
-	 * @return text and bytes encoded within the QR Code
-	 * @throws Exception if something wrong
+	 * @param bytes		bytes representing white/black QR Code modules
+	 * @return 			text and bytes encoded within the QR Code
+	 * @throws 			Exception if something wrong
 	 */
 	public DecoderResult decode(byte[][] bytes) throws Exception {
 		int dimension = bytes.length;
@@ -95,11 +93,9 @@ public class QRTokener {
 	 * taken to mean a black module.
 	 * </p>
 	 *
-	 * @param bits
-	 *            booleans representing white/black QR Code modules
-	 * @return text and bytes encoded within the QR Code
-	 * @throws Exception
-	 *             if the QR Code cannot be decoded or if error correction fails
+	 * @param bits			booleans representing white/black QR Code modules
+	 * @return 				text and bytes encoded within the QR Code
+	 * @throws Exception	if the QR Code cannot be decoded or if error correction fails
 	 */
 	public DecoderResult decode(BitMatrix bits) throws Exception {
 		// Construct a parser and read version, error-correction level
@@ -190,12 +186,9 @@ public class QRTokener {
 	 * correction.
 	 * </p>
 	 *
-	 * @param codewordBytes
-	 *            data and error correction codewords
-	 * @param numDataCodewords
-	 *            number of codewords that are data bytes
-	 * @throws ChecksumException
-	 *             if error correction fails
+	 * @param codewordBytes			data and error correction codewords
+	 * @param numDataCodewords		number of codewords that are data bytes
+	 * @throws ChecksumException	if error correction fails
 	 */
 	private void correctErrors(byte[] codewordBytes, int numDataCodewords) {
 		int numCodewords = codewordBytes.length;
@@ -228,11 +221,10 @@ public class QRTokener {
 	}
 
 	/**
-	 * @param content
-	 *            text to encode
-	 * @param ecLevel
-	 *            error correction level to use
-	 * @return {@link QRCode} representing the encoded QR code
+	 * encoding Content to QRCode
+	 * @param content		text to encode
+	 * @param ecLevel		error correction level to use
+	 * @return representing the encoded QR code {@link QRCode}
 	 */
 	public QRCode encode(String content, ErrorCorrectionLevel ecLevel) {
 		// Determine what character encoding has been specified by the caller,
@@ -319,6 +311,8 @@ public class QRTokener {
 	/**
 	 * @return the code point of the table used in alphanumeric mode or -1 if
 	 *         there is no corresponding code in the table.
+	 * @param code		AlphanumericCode
+	 * @return getAlphanumericCode or -1
 	 */
 	static int getAlphanumericCode(int code) {
 		if (code < ALPHANUMERIC_TABLE.length) {
@@ -331,6 +325,9 @@ public class QRTokener {
 	 * Choose the best mode by examining the content. Note that 'encoding' is
 	 * used as a hint; if it is Shift_JIS, and the input is only double-byte
 	 * Kanji, then we return {@link Mode#KANJI}.
+	 * @param content		Contentstring
+	 * @param encoding		switch for Shift_JIS
+	 * @return 				Mode
 	 */
 	private static Mode chooseMode(String content, String encoding) {
 		if ("Shift_JIS".equals(encoding) && isOnlyDoubleByteKanji(content)) {
@@ -418,6 +415,8 @@ public class QRTokener {
 
 	/**
 	 * Terminate bits as described in 8.4.8 and 8.4.9 of JISX0510:2004 (p.24).
+	 * @param numDataBytes			count of Data Bytes
+	 * @param bits					result Bits
 	 */
 	static void terminateBits(int numDataBytes, BitArray bits) {
 		int capacity = numDataBytes * 8;
@@ -451,6 +450,12 @@ public class QRTokener {
 	 * Get number of data bytes and number of error correction bytes for block
 	 * id "blockID". Store the result in "numDataBytesInBlock", and
 	 * "numECBytesInBlock". See table 12 in 8.5.1 of JISX0510:2004 (p.30)
+	 * @param numTotalBytes			count of all Bytes
+	 * @param numDataBytes			count of Data Bytes
+	 * @param numRSBlocks			count of Block
+	 * @param blockID				position of Block
+	 * @param numDataBytesInBlock	List of Data in Block
+	 * @param numECBytesInBlock		Error position in Block
 	 */
 	static void getNumDataBytesAndNumECBytesForBlockID(int numTotalBytes, int numDataBytes, int numRSBlocks,
 			int blockID, int[] numDataBytesInBlock, int[] numECBytesInBlock) throws RuntimeException {
@@ -501,6 +506,11 @@ public class QRTokener {
 	 * Interleave "bits" with corresponding error correction bytes. On success,
 	 * store the result in "result". The interleave rule is complicated. See 8.6
 	 * of JISX0510:2004 (p.37) for details.
+	 * @param bits			result Bits
+	 * @param numTotalBytes	count of all Bytes
+	 * @param numDataBytes	count of Data Bytes
+	 * @param numRSBlocks	count of Block
+	 * @return				result BitArray
 	 */
 	static BitArray interleaveWithECBytes(BitArray bits, int numTotalBytes, int numDataBytes, int numRSBlocks)
 			throws RuntimeException {
@@ -590,6 +600,8 @@ public class QRTokener {
 
 	/**
 	 * Append mode info. On success, store the result in "bits".
+	 * @param mode			Mode of encoding
+	 * @param bits			target Bits
 	 */
 	static void appendModeInfo(Mode mode, BitArray bits) {
 		bits.appendBits(mode.getBits(), 4);
@@ -597,6 +609,12 @@ public class QRTokener {
 
 	/**
 	 * Append length info. On success, store the result in "bits".
+	 * @param numLetters	Number of Letter
+	 * @param version		Version of QRCode
+	 * @param mode			Mode of encoding
+	 * @param bits			target Bits
+	 *
+		throws RuntimeException {
 	 */
 	static void appendLengthInfo(int numLetters, Version version, Mode mode, BitArray bits) throws RuntimeException {
 		int numBits = mode.getCharacterCountBits(version);
@@ -609,7 +627,7 @@ public class QRTokener {
 	/**
 	 * Append "bytes" in "mode" mode (encoding) into "bits". On success, store
 	 * the result in "bits".
-	 * 
+	 *
 	 * @param content		The Content
 	 * @param mode			Mode of Content example: Text or Binary
 	 * @param bits			Result Bits

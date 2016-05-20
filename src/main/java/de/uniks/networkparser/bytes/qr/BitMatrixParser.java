@@ -17,6 +17,7 @@
 package de.uniks.networkparser.bytes.qr;
 
 /**
+ * BitMatrixParser for Parsing QR-Code
  * @author Sean Owen
  */
 final class BitMatrixParser {

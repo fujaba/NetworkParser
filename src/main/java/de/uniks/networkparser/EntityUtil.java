@@ -390,7 +390,7 @@ public class EntityUtil {
 	 *
 	 * @param value		the numericvalue
 	 * @param length	the length of Value
-	 * @param max		the maxValue	
+	 * @param max		the maxValue
 	 * @return a String of Value with max value
 	 */
 	public static String strZero(int value, int length, int max) {

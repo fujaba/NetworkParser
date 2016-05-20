@@ -43,14 +43,10 @@ final class DataBlock {
 	 * blocks.
 	 * </p>
 	 *
-	 * @param rawCodewords
-	 *            bytes as read directly from the QR Code
-	 * @param version
-	 *            version of the QR Code
-	 * @param ecLevel
-	 *            error-correction level of the QR Code
-	 * @return DataBlocks containing original bytes, "de-interleaved" from
-	 *         representation in the QR Code
+	 * @param rawCodewords		bytes as read directly from the QR Code
+	 * @param version			version of the QR Code
+	 * @param ecLevel			error-correction level of the QR Code
+	 * @return DataBlocks containing original bytes, "de-interleaved" from representation in the QR Code
 	 */
 	static DataBlock[] getDataBlocks(byte[] rawCodewords, Version version, ErrorCorrectionLevel ecLevel) {
 

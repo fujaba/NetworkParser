@@ -136,9 +136,8 @@ public class ByteUtil {
 	/**
 	 * CHeck if the Typ is typ of Group
 	 *
-	 * @param typ
-	 *			the the typ of data
-	 * @return the boolean
+	 * @param typ			the the typ of data
+	 * @return 				success
 	 */
 	public static boolean isGroup(byte typ) {
 		return (typ & 0x08) == 0x08;

@@ -39,48 +39,42 @@ public class SymTabEntry {
 	public static final String PROPERTY_TYPE = "type";
 	public static final String PROPERTY_VALUE = "value";
 
-   private String value;
-   private String type;
+	private String value;
+	private String type;
 
-   public String getValue()
-   {
-      return this.value;
-   }
+	public String getValue() {
+		return this.value;
+	}
 
-   public boolean setValue(String value)
-   {
-	   if((this.value == null && value != null) ||
-		   (this.value != null && this.value.equals(value) == false)) {
-		   this.value = value;
-		   return true;
-	   }
-	   return false;
-   }
+	public boolean setValue(String value) {
+		if((this.value == null && value != null) ||
+			(this.value != null && this.value.equals(value) == false)) {
+			this.value = value;
+			return true;
+		}
+		return false;
+	}
 
-   public SymTabEntry withValue(String value)
-   {
-      setValue(value);
-      return this;
-   }
+	public SymTabEntry withValue(String value) {
+		setValue(value);
+		return this;
+	}
 
-   public String getType()
-   {
-      return this.type;
-   }
+	public String getType() {
+		return this.type;
+	}
 
-   public boolean setType(String value)
-   {
-	   if((this.type == null && value != null) ||
-		   (this.type != null && this.type.equals(value) == false)) {
+	public boolean setType(String value) {
+		if((this.type == null && value != null) ||
+			(this.type != null && this.type.equals(value) == false)) {
 			this.type = value;
 			return true;
 		}
 		return false;
-   }
+	}
 
-   public SymTabEntry withType(String value)
-   {
-      setType(value);
-      return this;
-   }
+	public SymTabEntry withType(String value) {
+		setType(value);
+		return this;
+	}
 }

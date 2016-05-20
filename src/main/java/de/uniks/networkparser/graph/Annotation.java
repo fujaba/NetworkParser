@@ -26,7 +26,7 @@ permissions and limitations under the Licence.
 */
 /**
  * Annotation of Methods or Attributes or Classes
- * 
+ *
  * @author Stefan Lindel
  *
  */

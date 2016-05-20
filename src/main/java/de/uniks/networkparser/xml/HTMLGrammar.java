@@ -113,7 +113,7 @@ public class HTMLGrammar extends SimpleGrammar{
 	}
 
 	/**
-	 *  Variables:
+	 * Variables:
 	 * %CLASSNAME ClassName
 	 * %PROPERTY Property
 	 * %DEEP Property

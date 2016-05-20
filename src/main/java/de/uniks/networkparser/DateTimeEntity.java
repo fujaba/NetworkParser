@@ -237,7 +237,7 @@ public class DateTimeEntity {
 	/**
 	 * Fix the TimeZone Offset so the Entity is a simpleCalendar item
 	 * @return The CurrentTime with TimeZone
-	 * 
+	 *
 	 * @see java.util.Date#getTime()
 	 */
 	public Long getTimeWithTimeZone() {

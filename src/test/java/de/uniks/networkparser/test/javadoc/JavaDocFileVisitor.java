@@ -331,7 +331,7 @@ public class JavaDocFileVisitor implements FileVisitor<Path> {
 				} else {
 
 					//Check if there is a line like * some text
-					if(!Pattern.compile("\\u002A \\s*\\w+").matcher(methodDoc).find()) {
+					if(!Pattern.compile("\\u002A \\s*[\\w+<]").matcher(methodDoc).find()) {
 						if(match.contains(" get") || match.contains(" set") || match.contains(" is") || match.contains(" with") ) {
 							// no nessessary Comment for getter and Setter
 							continue;

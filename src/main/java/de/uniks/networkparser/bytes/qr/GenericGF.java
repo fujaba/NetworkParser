@@ -150,7 +150,8 @@ public final class GenericGF {
 	/**
 	 * Implements both addition and subtraction -- they are the same in
 	 * GF(size).
-	 *
+	 * @param a	integer
+	 * @param b integer
 	 * @return sum/difference of a and b
 	 */
 	static int addOrSubtract(int a, int b) {

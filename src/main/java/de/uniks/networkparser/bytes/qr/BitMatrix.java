@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -34,71 +34,68 @@ import java.util.Arrays;
  * @author dswitkin@google.com (Daniel Switkin)
  */
 public final class BitMatrix implements Cloneable {
+	private final int width;
+	private final int height;
+	private final int rowSize;
+	private final int[] bits;
 
-  private final int width;
-  private final int height;
-  private final int rowSize;
-  private final int[] bits;
+	// A helper to construct a square matrix.
+	public BitMatrix(int dimension) {
+		this(dimension, dimension);
+	}
 
-  // A helper to construct a square matrix.
-  public BitMatrix(int dimension) {
-    this(dimension, dimension);
-  }
+	public BitMatrix(int width, int height) {
+		if (width < 1 || height < 1) {
+			throw new IllegalArgumentException("Both dimensions must be greater than 0");
+		}
+		this.width = width;
+		this.height = height;
+		this.rowSize = (width + 31) / 32;
+		bits = new int[rowSize * height];
+	}
 
-  public BitMatrix(int width, int height) {
-    if (width < 1 || height < 1) {
-      throw new IllegalArgumentException("Both dimensions must be greater than 0");
-    }
-    this.width = width;
-    this.height = height;
-    this.rowSize = (width + 31) / 32;
-    bits = new int[rowSize * height];
-  }
+	private BitMatrix(int width, int height, int rowSize, int[] bits) {
+		this.width = width;
+		this.height = height;
+		this.rowSize = rowSize;
+		this.bits = bits;
+	}
 
-  private BitMatrix(int width, int height, int rowSize, int[] bits) {
-    this.width = width;
-    this.height = height;
-    this.rowSize = rowSize;
-    this.bits = bits;
-  }
+	public static BitMatrix parse(String stringRepresentation, String setString, String unsetString) {
+		if (stringRepresentation == null) {
+			throw new IllegalArgumentException();
+		}
 
-  public static BitMatrix parse(String stringRepresentation, String setString, String unsetString) {
-    if (stringRepresentation == null) {
-      throw new IllegalArgumentException();
-    }
-
-    boolean[] bits = new boolean[stringRepresentation.length()];
-    int bitsPos = 0;
-    int rowStartPos = 0;
-    int rowLength = -1;
-    int nRows = 0;
-    int pos = 0;
-    while (pos < stringRepresentation.length()) {
-      if (stringRepresentation.charAt(pos) == '\n' ||
-          stringRepresentation.charAt(pos) == '\r') {
-        if (bitsPos > rowStartPos) {
-          if (rowLength == -1) {
-            rowLength = bitsPos - rowStartPos;
-          } else if (bitsPos - rowStartPos != rowLength) {
-            throw new IllegalArgumentException("row lengths do not match");
-          }
-          rowStartPos = bitsPos;
-          nRows++;
-        }
-        pos++;
-      }  else if (stringRepresentation.substring(pos, pos + setString.length()).equals(setString)) {
-        pos += setString.length();
-        bits[bitsPos] = true;
-        bitsPos++;
-      } else if (stringRepresentation.substring(pos, pos + unsetString.length()).equals(unsetString)) {
-        pos += unsetString.length();
-        bits[bitsPos] = false;
-        bitsPos++;
-      } else {
-        throw new IllegalArgumentException(
-            "illegal character encountered: " + stringRepresentation.substring(pos));
-      }
-    }
+		boolean[] bits = new boolean[stringRepresentation.length()];
+		int bitsPos = 0;
+		int rowStartPos = 0;
+		int rowLength = -1;
+		int nRows = 0;
+		int pos = 0;
+		while (pos < stringRepresentation.length()) {
+			if (stringRepresentation.charAt(pos) == '\n' || stringRepresentation.charAt(pos) == '\r') {
+				if (bitsPos > rowStartPos) {
+					if (rowLength == -1) {
+						rowLength = bitsPos - rowStartPos;
+					} else if (bitsPos - rowStartPos != rowLength) {
+						throw new IllegalArgumentException("row lengths do not match");
+					}
+					rowStartPos = bitsPos;
+					nRows++;
+				}
+				pos++;
+			}  else if (stringRepresentation.substring(pos, pos + setString.length()).equals(setString)) {
+				pos += setString.length();
+				bits[bitsPos] = true;
+				bitsPos++;
+			} else if (stringRepresentation.substring(pos, pos + unsetString.length()).equals(unsetString)) {
+				pos += unsetString.length();
+				bits[bitsPos] = false;
+				bitsPos++;
+			} else {
+				throw new IllegalArgumentException("illegal character encountered: " + stringRepresentation.substring(pos));
+			}
+		}
 
     // no EOL at end?
     if (bitsPos > rowStartPos) {
@@ -246,7 +243,7 @@ public final class BitMatrix implements Cloneable {
   /**
    * This is useful in detecting the enclosing rectangle of a 'pure' barcode.
    *
-   * @return {@code left,top,width,height} enclosing rectangle of all 1 bits, or null if it is all white
+   * @return enclosing rectangle of all 1 bits, or null if it is all white {@code left,top,width,height}
    */
   public int[] getEnclosingRectangle() {
     int left = width;
@@ -299,7 +296,7 @@ public final class BitMatrix implements Cloneable {
   /**
    * This is useful in detecting a corner of a 'pure' barcode.
    *
-   * @return {@code x,y} coordinate of top-left-most 1 bit, or null if it is all white
+   * @return coordinate of top-left-most 1 bit, or null if it is all white {@code x,y}
    */
   public int[] getTopLeftOnBit() {
     int bitsOffset = 0;

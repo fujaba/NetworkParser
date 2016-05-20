@@ -130,6 +130,9 @@ final class DecodedBitStreamParser {
 
 	/**
 	 * See specification GBT 18284-2000
+	 * @param bits		result bits
+	 * @param result	result String
+	 * @param count		count of value
 	 */
 	private static void decodeHanziSegment(BitArray bits, StringBuilder result, int count) throws Exception {
 		// Don't crash trying to read more bits than we have available.

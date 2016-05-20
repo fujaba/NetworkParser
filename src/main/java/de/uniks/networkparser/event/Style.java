@@ -150,6 +150,7 @@ public class Style implements Cloneable, SendableEntityCreatorNoIndex {
 		return this;
 	}
 
+	@Override
 	public Style clone() {
 		return clone(new Style());
 	}

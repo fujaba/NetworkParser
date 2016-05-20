@@ -35,7 +35,7 @@ public class StringContainer implements CharSequence {
 	/**
 	 * Returns {@code true} if, and only if, {@link #length()} is {@code 0}.
 	 *
-	 * @return {@code true} if {@link #length()} is {@code 0}, otherwise {@code false}
+	 * @return return {@code true} if {@link #length()} is {@code 0}, otherwise {@code false}
 	 *
 	 * @since 1.6
 	 */
@@ -132,9 +132,8 @@ public class StringContainer implements CharSequence {
 	 * currently contained in this character sequence. The substring begins at
 	 * the specified index and extends to the end of this sequence.
 	 *
-	 * @param start
-	 *			The beginning index, inclusive.
-	 * @return The new CharSequence.
+	 * @param start		the beginning index, inclusive.
+	 * @return 			the new CharSequence.
 	 */
 	public CharSequence substring(int start) {
 		return substring(start, value.length());
@@ -146,11 +145,9 @@ public class StringContainer implements CharSequence {
 	 * specified {@code start} and extends to the character at index
 	 * {@code end - 1}.
 	 *
-	 * @param start
-	 *			The beginning index, inclusive.
-	 * @param end
-	 *			The ending index, exclusive.
-	 * @return The new CharSequence.
+	 * @param start		the beginning index, inclusive.
+	 * @param end		the ending index, exclusive.
+	 * @return 			the new CharSequence.
 	 */
 	public CharSequence substring(int start, int end) {
 		if (start < 0)
@@ -204,9 +201,8 @@ public class StringContainer implements CharSequence {
 	/**
 	 * Tests if this string ends with the specified suffix.
 	 *
-	 * @param suffix
-	 *			the suffix.
-	 * @return {@code true} if the character sequence represented by the
+	 * @param suffix	the suffix.
+	 * @return 			return {@code true} if the character sequence represented by the
 	 *		 argument is a suffix of the character sequence represented by
 	 *		 this object; {@code false} otherwise. Note that the result will
 	 *		 be {@code true} if the argument is the empty string or is equal
@@ -220,36 +216,34 @@ public class StringContainer implements CharSequence {
 	/**
 	 * Tests if this string starts with the specified prefix.
 	 *
-	 * @param   prefix   the prefix.
-	 * @return  {@code true} if the character sequence represented by the
-	 *		  argument is a prefix of the character sequence represented by
-	 *		  this string; {@code false} otherwise.
-	 *		  Note also that {@code true} will be returned if the
-	 *		  argument is an empty string or is equal to this
-	 *		  {@code String} object as determined by the
-	 *		  {@link #equals(Object)} method.
-	 * @since   1. 0
+	 * @param prefix	the prefix.
+	 * @return return {@code true} if the character sequence represented by the
+	 *			argument is a prefix of the character sequence represented by
+	 *			this string; {@code false} otherwise.
+	 *			Note also that {@code true} will be returned if the
+	 *			argument is an empty string or is equal to this
+	 *			{@code String} object as determined by the
+	 *			{@link #equals(Object)} method.
+	 * @since	1.0
 	 */
 	public boolean startsWith(String prefix) {
 		return startsWith(prefix, 0);
 	}
 
-	  /**
+	/**
 	 * Tests if the substring of this string beginning at the
 	 * specified index starts with the specified prefix.
 	 *
-	 * @param   prefix	the prefix.
-	 * @param   toffset   where to begin looking in this string.
-	 * @return  {@code true} if the character sequence represented by the
-	 *		  argument is a prefix of the substring of this object starting
-	 *		  at index {@code toffset}; {@code false} otherwise.
-	 *		  The result is {@code false} if {@code toffset} is
-	 *		  negative or greater than the length of this
-	 *		  {@code String} object; otherwise the result is the same
-	 *		  as the result of the expression
-	 *		  <pre>
-	 *		  this.substring(toffset).startsWith(prefix)
-	 *		  </pre>
+	 * @param prefix	the prefix.
+	 * @param toffset	where to begin looking in this string.
+	 * @return return {@code true} if the character sequence represented by the
+	 *			argument is a prefix of the substring of this object starting
+	 *			at index {@code toffset}; {@code false} otherwise.
+	 *			The result is {@code false} if {@code toffset} is
+	 *			negative or greater than the length of this
+	 *			{@code String} object; otherwise the result is the same
+	 *			as the result of the expression
+	 *			<pre>this.substring(toffset).startsWith(prefix)</pre>
 	 */
 	public boolean startsWith(String prefix, int toffset) {
 		if(value instanceof String) {
@@ -264,17 +258,17 @@ public class StringContainer implements CharSequence {
 	 * Relative bulk <i>put</i> method&nbsp;&nbsp;<i>(optional operation)</i>.
 	 *
 	 * <p> This method transfers the entire content of the given source string
-	 * into this buffer.  An invocation of this method of the form
+	 * into this buffer. An invocation of this method of the form
 	 * <tt>dst.put(s)</tt> behaves in exactly the same way as the invocation
 	 *
 	 * <pre>
 	 *	 dst.put(s, 0, s.length()) </pre>
 	 *
-	 * @param   src						The source string
-	 * @return  						This buffer
+	 * @param src						The source string
+	 * @return							This buffer
 	 *
-	 * @throws  BufferOverflowException	If there is insufficient space in this buffer
-	 * @throws  ReadOnlyBufferException	If this buffer is read-only
+	 * @throws BufferOverflowException	If there is insufficient space in this buffer
+	 * @throws ReadOnlyBufferException	If this buffer is read-only
 	 */
 	public final StringContainer with(CharSequence src) {
 		if(value == null) {

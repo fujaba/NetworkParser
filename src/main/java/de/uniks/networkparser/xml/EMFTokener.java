@@ -221,9 +221,7 @@ public class EMFTokener extends Tokener{
 				clazz = new Clazz();
 				clazz.with(className);
 				items.add(className, clazz);
-				if(model instanceof GraphModel) {
-					model.with(clazz);
-				}
+				model.with(clazz);
 			}
 			for(int i = 0;i < child.size();i++) {
 				String key = child.get(i);
@@ -299,7 +297,7 @@ public class EMFTokener extends Tokener{
 		xmlEntity.put(XMI_ID, rootId);
 
 		for (EntityList kid : xmlEntity.getChildren()) {
-			if(kid  instanceof XMLEntity == false) {
+			if(kid instanceof XMLEntity == false) {
 				continue;
 			}
 			addXMIIds((XMLEntity)kid, rootId);
@@ -405,7 +403,7 @@ public class EMFTokener extends Tokener{
 		Iterator<EntityList> iterator = xmlEntity.getChildren().iterator();
 		while (iterator.hasNext()) {
 			EntityList child = iterator.next();
-			if(child  instanceof XMLEntity == false) {
+			if(child instanceof XMLEntity == false) {
 				continue;
 			}
 			XMLEntity kidEntity = (XMLEntity) child;

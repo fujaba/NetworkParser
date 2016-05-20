@@ -32,14 +32,9 @@ import de.uniks.networkparser.converter.ByteConverterString;
  *		 Olivier Ligny, Aug 2012
  * @see <a href="http://www.unsw.adfa.edu.au/~lpb/">Lawrie Brown</a>
  * @see <a href="http://csrc.nist.gov/encryption/aes/">AES home page</a>
- * @see <a
- *	  href="http://csrc.nist.gov/publications/fips/fips197/fips-197.pdf">FIPS-197
- *	  Standard</a>
- * @see <a href="http://www.esat.kuleuven.ac.be/~rijmen/rijndael/">Rijndael Home
- *	  Page</a>
- * @see <a
- *	  href="http://www.esat.kuleuven.ac.be/~rijmen/rijndael/rijndael.zip">Rijndael
- *	  example Java code</a>
+ * @see <a href="http://csrc.nist.gov/publications/fips/fips197/fips-197.pdf">FIPS-197 Standard</a>
+ * @see <a href="http://www.esat.kuleuven.ac.be/~rijmen/rijndael/">Rijndael Home Page</a>
+ * @see <a href="http://www.esat.kuleuven.ac.be/~rijmen/rijndael/rijndael.zip">Rijndael example Java code</a>
  */
 
 public class AES {
@@ -158,9 +153,8 @@ public class AES {
 	/**
 	 * return number of rounds for a given AES key size.
 	 *
-	 * @param keySize
-	 *			size of the user key material in bytes.
-	 * @return number of rounds for a given AES key size.
+	 * @param keySize		size of the user key material in bytes.
+	 * @return 				number of rounds for a given AES key size.
 	 */
 	public static int getRounds(int keySize) {
 		switch (keySize) {
@@ -175,14 +169,12 @@ public class AES {
 
 	/**
 	 * multiply two elements of GF(2^8).
-	 * <p>
+	 *
 	 * Using pre-computed log and alog tables for speed.
 	 *
-	 * @param a
-	 *			1st value to multiply
-	 * @param b
-	 *			2nd value to multiply
-	 * @return product of a * b module its generator polynomial
+	 * @param a		first value to multiply
+	 * @param b		second value to multiply
+	 * @return 		product of a * b module its generator polynomial
 	 */
 	private int mul(int a, int b) {
 		return (a != 0 && b != 0) ? alog[(log[a & 0xFF] + log[b & 0xFF]) % 255]
@@ -230,11 +222,9 @@ public class AES {
 	 * Follows cipher specification given in FIPS-197 section 5.1 See pseudo
 	 * code in Fig 5, and details in this section.
 	 *
-	 * @param plain
-	 *			the 128-bit plaintext value to encrypt.
-	 * @param from
-	 *			fromIndex of Array
-	 * @return the encrypted 128-bit ciphertext value.
+	 * @param plain		the 128-bit plaintext value to encrypt.
+	 * @param from		fromIndex of Array
+	 * @return 			the encrypted 128-bit ciphertext value.
 	 */
 	private byte[] encodeBlock(BufferedBuffer plain) {
 		byte[] Ker; // encrypt keys for current round
@@ -255,11 +245,9 @@ public class AES {
 	 * Follows cipher specification given in FIPS-197 section 5.1 See pseudo
 	 * code in Fig 5, and details in this section.
 	 *
-	 * @param plain
-	 *			the 128-bit plaintext value to encrypt.
-	 * @param from
-	 *			fromIndex of Array
-	 * @return the encrypted 128-bit ciphertext value.
+	 * @param plain		the 128-bit plaintext value to encrypt.
+	 * @param from		fromIndex of Array
+	 * @return 			the encrypted 128-bit ciphertext value.
 	 */
 	public byte[] encodeBlock(char[] plain, int from) {
 		byte[] Ker; // encrypt keys for current round
@@ -280,9 +268,8 @@ public class AES {
 	 * Follows cipher specification given in FIPS-197 section 5.1 See pseudo
 	 * code in Fig 5, and details in this section.
 	 *
-	 * @param plain
-	 *			the 128-bit plaintext value to encrypt.
-	 * @return the encrypted 128-bit ciphertext value.
+	 * @param plain		the 128-bit plaintext value to encrypt.
+	 * @return 			the encrypted 128-bit ciphertext value.
 	 */
 	public byte[] encodeBlock(byte[] plain) {
 		// check for bad arguments
@@ -385,11 +372,9 @@ public class AES {
 	 * Follows cipher specification given in FIPS-197 section 5.1 See pseudo
 	 * code in Fig 5, and details in this section.
 	 *
-	 * @param plain
-	 *			the 128-bit plaintext value to encrypt.
-	 * @param from
-	 *			fromIndex of Array
-	 * @return the encrypted 128-bit ciphertext value.
+	 * @param plain		the 128-bit plaintext value to encrypt.
+	 * @param from		fromIndex of Array
+	 * @return 			the encrypted 128-bit ciphertext value.
 	 */
 	public byte[] decodeBlock(char[] plain, int from) {
 		byte[]		 // copy ciphertext bytes into state and do initial AddRoundKey(state)
@@ -410,9 +395,8 @@ public class AES {
 	 * Follows cipher specification given in FIPS-197 section 5.3 See pseudo
 	 * code in Fig 5, and details in this section.
 	 *
-	 * @param cipher
-	 *			the 128-bit ciphertext value to decrypt.
-	 * @return the decrypted 128-bit plaintext value.
+	 * @param cipher	the 128-bit ciphertext value to decrypt.
+	 * @return 			the decrypted 128-bit plaintext value.
 	 */
 	public byte[] decodeBlock(byte[] cipher) {
 		// check for bad arguments
@@ -497,8 +481,7 @@ public class AES {
 	 * Session keys will be saved in Ke and Kd instance variables, along with
 	 * numRounds being the number of rounds for this sized key.
 	 *
-	 * @param key
-	 *			The 128/192/256-bit AES key to use.
+	 * @param key		The 128/192/256-bit AES key to use.
 	 */
 	public void setKey(byte[] key) throws IllegalArgumentException {
 		// assorted internal constants

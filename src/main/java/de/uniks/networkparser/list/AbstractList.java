@@ -43,7 +43,7 @@ public abstract class AbstractList<V> extends AbstractArray<V> {
 	 * <tt>UnsupportedOperationException</tt> unless <tt>add</tt> is
 	 * overridden (assuming the specified collection is non-empty).
 	 * @param c	List of Elements for adding
-	 * @return success 
+	 * @return success
 	 * @see #add(Object)
 	 */
 	public boolean addAll(Collection<? extends V> c) {
@@ -108,7 +108,7 @@ public abstract class AbstractList<V> extends AbstractArray<V> {
 
 
 	/**
-	 * Get the next bigger Value of a Set 
+	 * Get the next bigger Value of a Set
 	 * @param element Element for check
 	 * @param sameElement boolen for switch return sameElement
 	 * @return the element or higher Element
