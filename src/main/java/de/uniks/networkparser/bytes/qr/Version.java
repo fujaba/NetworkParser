@@ -120,11 +120,9 @@ public final class Version {
 	 * Deduces version information purely from QR Code dimensions.
 	 * </p>
 	 *
-	 * @param dimension
-	 *            dimension in modules
-	 * @return Version for a QR Code of that dimension
-	 * @throws RuntimeException
-	 *             if dimension is not 1 mod 4
+	 * @param dimension		dimension in modules
+	 * @return 				Version for a QR Code of that dimension
+	 * @throws RuntimeException	 if dimension is not 1 mod 4
 	 */
 	public static Version getProvisionalVersionForDimension(int dimension) {
 		if (dimension % 4 != 1) {
@@ -222,6 +220,7 @@ public final class Version {
 
 	/**
 	 * See ISO 18004:2006 6.5.1 Table 9
+	 * @return Version-Array with Build Polynom
 	 */
 	private static Version[] buildVersions() {
 		return new Version[] {

@@ -81,9 +81,8 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 	/**
 	 * Get the JSONArray associated with an index.
 	 *
-	 * @param index
-	 *			The index must be between 0 and length() - 1.
-	 * @return A JSONArray value.
+	 * @param index		The index must be between 0 and length() - 1.
+	 * @return 			A JSONArray value.
 	 * @throws RuntimeException
 	 *			 If there is no value for the index. or if the value is not a
 	 *			 JSONArray
@@ -102,9 +101,8 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 	/**
 	 * Get the JSONObject associated with an index.
 	 *
-	 * @param index
-	 *			subscript
-	 * @return A JSONObject value.
+	 * @param index		subscript
+	 * @return 			A JSONObject value.
 	 * @throws RuntimeException
 	 *			 If there is no value for the index or if the value is not a
 	 *			 JSONObject
@@ -123,9 +121,8 @@ public class JsonArray extends SortedList<Object> implements EntityList {
    /**
 	* Get the JSONObject associated with an index.
 	*
-	* @param index
-	*			subscript
-	* @return A JSONObject value.
+	* @param index	subscript
+	* @return 		A JSONObject value.
 	* @throws RuntimeException
 	*			 If there is no value for the index or if the value is not a
 	*			 JSONObject
@@ -143,11 +140,8 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 	 * Produce a JSONObject by combining a JSONArray of names with the values of
 	 * this JSONArray.
 	 *
-	 * @param names
-	 *			A JSONArray containing a list of key strings. These will be
-	 *			paired with the values.
-	 * @return A JSONObject, or null if there are no names or if this JSONArray
-	 *		 has no values.
+	 * @param names	A JSONArray containing a list of key strings. These will be paired with the values.
+	 * @return A JSONObject, or null if there are no names or if this JSONArray has no values.
 	 */
 	public JsonObject toJSONObject(JsonArray names) {
 		if (names == null || names.size() == 0 || size() == 0) {
@@ -227,10 +221,7 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 	/**
 	 * JSONArray from a source JSON text.
 	 *
-	 * @param value
-	 *			A string that begins with <code>[</code>&nbsp;<small>(left
-	 *			bracket)</small> and ends with <code>]</code>
-	 *			&nbsp;<small>(right bracket)</small>.
+	 * @param value		A string that begins with <code>[</code>&nbsp;<small>(left bracket)</small> and ends with <code>]</code>&nbsp;<small>(right bracket)</small>.
 	 * @return Itself
 	 */
 	public JsonArray withValue(String value) {
@@ -244,8 +235,7 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 	/**
 	 * JSONArray from a JSONTokener.
 	 *
-	 * @param x
-	 *			A JSONTokener
+	 * @param x	A JSONTokener
 	 * @return Itself
 	 */
 	public JsonArray withValue(Tokener x) {
@@ -256,8 +246,7 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 	/**
 	 * Set the value to Tokener or pairs of values
 	 *
-	 * @param values
-	 *			a simple String of Value or pairs of key-values
+	 * @param values	a simple String of Value or pairs of key-values
 	 * @return Itself
 	 */
 	public JsonArray withValue(Buffer values) {
@@ -268,8 +257,7 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 	/**
 	 * JSONArray from a BaseEntityArray.
 	 *
-	 * @param values
-	 *			of Elements.
+	 * @param values	of Elements.
 	 * @return Itself
 	 */
 	public JsonArray withValue(BaseItem... values) {

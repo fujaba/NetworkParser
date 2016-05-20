@@ -91,26 +91,22 @@ public class Column implements SendableEntityCreatorNoIndex {
 	}
 
 	/**
-	 * @param label
-	 *			the label to set
-	 * @return Itself
+	 * @param label		the label to set
+	 * @return 			Itself
 	 */
 	public Column withLabel(String label) {
 		this.label = label;
 		return this;
 	}
 
-	/**
-	 * @return the Attribute Name for display
-	 */
+	/**	@return the Attribute Name for display */
 	public String getAttrName() {
 		return attrName;
 	}
 
 	/**
-	 * @param attrName
-	 *			Attribute Name for display
-	 * @return Itself
+	 * @param attrName		Attribute Name for display
+	 * @return 				Itself
 	 */
 	public Column withAttrName(String attrName) {
 		this.attrName = attrName;
@@ -118,11 +114,9 @@ public class Column implements SendableEntityCreatorNoIndex {
 	}
 
 	/**
-	 * @param attrName
-	 *			Attribute Name for display
-	 * @param edit
-	 *			is the Column is editable
-	 * @return this
+	 * @param attrName		Attribute Name for display
+	 * @param edit			is the Column is editable
+	 * @return 				Itself
 	 */
 	public Column withAttrName(String attrName, boolean edit) {
 		this.attrName = attrName;
@@ -141,9 +135,8 @@ public class Column implements SendableEntityCreatorNoIndex {
 	}
 
 	/**
-	 * @param value
-	 *			the NumberFormat to set
-	 * @return Itself
+	 * @param value		the NumberFormat to set
+	 * @return 			Itself
 	 */
 	public Column withNumberFormat(String value) {
 		this.numberFormat = value;
@@ -158,9 +151,8 @@ public class Column implements SendableEntityCreatorNoIndex {
 	}
 
 	/**
-	 * @param value
-	 *			the editColumn to set
-	 * @return Itself
+	 * @param value		the editColumn to set
+	 * @return 			Itself
 	 */
 	public Column withEditable(boolean value) {
 		this.isEditable = value;

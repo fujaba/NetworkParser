@@ -52,6 +52,7 @@ package de.uniks.networkparser;
  * system.
  *
  * @version $Id: Log.java 1432663 2013-01-13 17:24:18Z tn $
+ * @author Stefan Lindel
  */
 public class NetworkParserLog {
 	public static final String ERROR_TYP_PARSING = "PARSING";
@@ -63,12 +64,9 @@ public class NetworkParserLog {
 	/**
 	 * Log a message with debug log level.
 	 *
-	 * @param owner
-	 *			The Element with call the Methods
-	 * @param method
-	 *			The Caller-Method
-	 * @param message
-	 *			log this message
+	 * @param owner		The Element with call the Methods
+	 * @param method	The Caller-Method
+	 * @param message	log this message
 	 */
 	public void debug(Object owner, String method, String message) {
 		System.out.println("DEBUG: " + message);
@@ -77,12 +75,9 @@ public class NetworkParserLog {
 	/**
 	 * Log a message with info log level.
 	 *
-	 * @param owner
-	 *			The Element with call the Methods
-	 * @param method
-	 *			The Caller-Method
-	 * @param message
-	 *			log this message
+	 * @param owner		The Element with call the Methods
+	 * @param method	The Caller-Method
+	 * @param message	log this message
 	 */
 	public void info(Object owner, String method, String message) {
 		System.out.println("INFO: " + message);
@@ -91,12 +86,9 @@ public class NetworkParserLog {
 	/**
 	 * Log a message with warn log level.
 	 *
-	 * @param owner
-	 *			The Element with call the Methods
-	 * @param method
-	 *			The Caller-Method
-	 * @param message
-	 *			log this message
+	 * @param owner		The Element with call the Methods
+	 * @param method	The Caller-Method
+	 * @param message	log this message
 	 */
 	public void warn(Object owner, String method, String message) {
 		System.err.println("WARN: " + message);
@@ -105,14 +97,10 @@ public class NetworkParserLog {
 	/**
 	 * Log a message with error log level.
 	 *
-	 * @param owner
-	 *			The Element with call the Methods
-	 * @param method
-	 *			The Caller-Method
-	 * @param type
-	 *			Typ of Log Value
-	 * @param params
-	 *			The Original Parameters
+	 * @param owner		The Element with call the Methods
+	 * @param method	The Caller-Method
+	 * @param type		Typ of Log Value
+	 * @param params	The Original Parameters
 	 * @return boolean if method must Cancel
 	 */
 	public boolean error(Object owner, String method, String type,
@@ -125,9 +113,8 @@ public class NetworkParserLog {
 	}
 
 	/**
-	 * @param value
-	 *			is Break for Error
-	 * @return Itself
+	 * @param value		is Break for Error
+	 * @return 			Itself
 	 */
 	public NetworkParserLog withError(boolean value) {
 		this.isError = value;

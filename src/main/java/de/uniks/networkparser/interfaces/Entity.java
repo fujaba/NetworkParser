@@ -34,6 +34,8 @@ public interface Entity extends BaseItem{
 	public Entity without(String key);
 
 	/**
+	 * check if Entity has the Key
+	 * 
 	 * @param key The Key for search
 	 * @return success if the item has the Property
 	 */
@@ -51,8 +53,7 @@ public interface Entity extends BaseItem{
 	 * <p>
 	 * Warning: This method assumes that the data structure is acyclical.
 	 *
-	 * @param indentFactor
-	 *			The number of spaces to add to each level of indentation.
+	 * @param indentFactor	The number of spaces to add to each level of indentation.
 	 * @return a printable, displayable, portable, transmittable representation
 	 *		 of the object, beginning with <code>{</code>&nbsp;<small>(left
 	 *		 brace)</small> and ending with <code>}</code>&nbsp;<small>(right

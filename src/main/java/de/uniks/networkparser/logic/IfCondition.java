@@ -43,9 +43,8 @@ public class IfCondition implements UpdateListener, SendableEntityCreator {
 	private UpdateListener falseCondition;
 
 	/**
-	 * @param value
-	 *			Set the new Expression
-	 * @return IfCondition Instance
+	 * @param value		Set the new Expression
+	 * @return 			IfCondition Instance
 	 */
 	public IfCondition withExpression(UpdateListener value) {
 		this.expression = value;
@@ -58,9 +57,8 @@ public class IfCondition implements UpdateListener, SendableEntityCreator {
 	}
 
 	/**
-	 * @param condition
-	 *			Ste The True Case
-	 * @return InstanceOf Instance
+	 * @param condition		Set The True Case
+	 * @return 				InstanceOf Instance
 	 */
 	public IfCondition withTrue(UpdateListener condition) {
 		this.trueCondition = condition;
@@ -73,9 +71,8 @@ public class IfCondition implements UpdateListener, SendableEntityCreator {
 	}
 
 	/**
-	 * @param condition
-	 *			Set the False Case
-	 * @return IfCondition Instance
+	 * @param condition		Set the False Case
+	 * @return 				IfCondition Instance
 	 */
 	public IfCondition withFalse(UpdateListener condition) {
 		this.falseCondition = condition;

@@ -49,9 +49,8 @@ public class Not implements UpdateListener, SendableEntityCreator {
 	}
 
 	/**
-	 * @param value
-	 *			for new Condition
-	 * @return Not Instance
+	 * @param value		for new Condition
+	 * @return 			Not Instance
 	 */
 	public Not withItem(UpdateListener value) {
 		this.item = value;

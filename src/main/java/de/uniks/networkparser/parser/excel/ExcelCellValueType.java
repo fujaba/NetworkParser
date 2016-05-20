@@ -17,7 +17,9 @@ distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, e
 See the Licence for the specific language governing permissions and limitations under the Licence.
 */
 
-/**	@author Stefan Lindel */
+/**	Class for reprentation of ExcelCellValue
+ * @author Stefan Lindel
+ */
 public enum ExcelCellValueType {
 	EXTLST("extLst"), FORMULAR("f"), RICHTEXT("is"), VALUE("v");
 	private String value;

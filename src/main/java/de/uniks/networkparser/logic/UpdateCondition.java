@@ -24,6 +24,11 @@ express or implied.
 See the Licence for the specific language governing
 permissions and limitations under the Licence.
 */
+
+/**
+ * Condition for Listener for changes in Element (Datamodel) in IdMap
+ * @author Stefan Lindel
+ */
 public class UpdateCondition implements UpdateListener{
 	@Override
 	public boolean update(Object evt) {

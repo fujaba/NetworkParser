@@ -68,9 +68,8 @@ public class UpdateJson implements PropertyChangeListener {
 	/**
 	 * Garbage collection.
 	 *
-	 * @param root
-	 *			the root
-	 * @return the json object
+	 * @param root		the root
+	 * @return 			the json object
 	 */
 	public JsonObject garbageCollection(Object root) {
 		if(root == null) {
@@ -210,9 +209,8 @@ public class UpdateJson implements PropertyChangeListener {
 	/**
 	 * Execute.
 	 *
-	 * @param updateMessage
-	 *			the update message
-	 * @return the MasterObject, if successful
+	 * @param updateMessage		the update message
+	 * @return 					the MasterObject, if successful
 	 */
 	public Object execute(JsonObject updateMessage) {
 		return execute(updateMessage, new Filter());
@@ -221,10 +219,9 @@ public class UpdateJson implements PropertyChangeListener {
 	/**
 	 * Execute.
 	 *
-	 * @param updateMessage
-	 *			the update message
-	 * @param filter Filter for exclude UpdateMessages
-	 * @return the MasterObject, if successful
+	 * @param updateMessage		the update message
+	 * @param filter 			Filter for exclude UpdateMessages
+	 * @return 					the MasterObject, if successful
 	 */
 	public Object execute(JsonObject updateMessage, Filter filter) {
 		if(!updateMessage.has(IdMap.UPDATE) && !updateMessage.has(IdMap.REMOVE)) {
@@ -338,13 +335,10 @@ public class UpdateJson implements PropertyChangeListener {
 	/**
 	 * Check value.
 	 *
-	 * @param value
-	 *			the value
-	 * @param key
-	 *			the key
-	 * @param oldJsonObject
-	 *			the json obj
-	 * @return true, if successful
+	 * @param value				the value
+	 * @param key				the key
+	 * @param oldJsonObject		the json obj
+	 * @return 					true, if successful
 	 */
 	private boolean checkValue(Object value, String key,
 			JsonObject oldJsonObject) {
@@ -365,9 +359,8 @@ public class UpdateJson implements PropertyChangeListener {
 	/**
 	 * Check prio.
 	 *
-	 * @param prio
-	 *			the prio
-	 * @return true, if successful
+	 * @param prio	the prio
+	 * @return 		true, if successful
 	 */
 	private boolean checkPrio(Object prio) {
 		Object myPrio = this.map.getCounter().getPrio();
@@ -388,15 +381,12 @@ public class UpdateJson implements PropertyChangeListener {
 	/**
 	 * Sets the value.
 	 *
-	 * @param creator
-	 *			the creator
-	 * @param element
-	 *			the element
-	 * @param key
-	 *			the key
-	 * @param newValue
-	 *			the new value
-	 * @return true, if successful
+	 * @param creator	the creator
+	 * @param element	the element
+	 * @param key		the key
+	 * @param newValue	the new value
+	 * @param typ		type of set NEW, UPDATE, REMOVE
+	 * @return 			true, if successful
 	 */
 	private Object setValue(SendableEntityCreator creator, Object element,
 			String key, Object newValue, String typ) {
@@ -421,8 +411,9 @@ public class UpdateJson implements PropertyChangeListener {
 	/**
 	 * Count message.
 	 *
-	 * @param message
-	 *			the message
+	 * @param message	the message
+	 * @param classCounts	List of ClassCounts
+	 * @param gc			GarbageCollege list
 	 */
 	private void countMessage(JsonObject message, ArrayList<String> classCounts, SimpleKeyValueList<String, Object> gc) {
 		if (message.has(IdMap.ID)) {
@@ -454,8 +445,9 @@ public class UpdateJson implements PropertyChangeListener {
 	/**
 	 * Count message.
 	 *
-	 * @param message
-	 *			the message
+	 * @param message		the message
+	 * @param classCounts	List of ClassCounts
+	 * @param gc			GarbageCollege list
 	 */
 	private void countMessage(JsonArray message, ArrayList<String> classCounts, SimpleKeyValueList<String, Object> gc) {
 		for (Iterator<Object> i = message.iterator(); i.hasNext();) {

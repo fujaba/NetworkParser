@@ -23,19 +23,21 @@ package de.uniks.networkparser.interfaces;
 */
 /**
  * The Class BaseEntity.
+ * @author Stefan Lindel
  */
 public interface BaseItem {
 	public static final String CRLF = "\r\n";
 
 	/**
+	 * Convert Element to String
 	 * @return the Item as String
 	 */
 	@Override
 	public String toString();
 
 	/**
-	 * @param converter
-	 *			Converter for Format
+	 * Convert Element to String
+	 * @param converter	Converter for Format
 	 * @return the Item as String with converter
 	 */
 	public String toString(Converter converter);

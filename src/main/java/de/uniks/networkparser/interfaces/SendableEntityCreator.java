@@ -37,10 +37,8 @@ public interface SendableEntityCreator {
 	/**
 	 * Gets the value.
 	 *
-	 * @param entity
-	 *			the entity
-	 * @param attribute
-	 *			the attribute
+	 * @param entity		the entity
+	 * @param attribute		the attribute
 	 * @return the value
 	 */
 	public Object getValue(Object entity, String attribute);
@@ -48,14 +46,10 @@ public interface SendableEntityCreator {
 	/**
 	 * Sets the value.
 	 *
-	 * @param entity
-	 *			the entity
-	 * @param attribute
-	 *			the attribute
-	 * @param value
-	 *			the value
-	 * @param type
-	 *			edit, update or remove operation
+	 * @param entity	the entity
+	 * @param attribute	the attribute
+	 * @param value		the value
+	 * @param type		edit, update or remove operation
 	 * @return true, if successful
 	 */
 	public boolean setValue(Object entity, String attribute, Object value,

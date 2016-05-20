@@ -29,9 +29,8 @@ public interface Condition<T> {
 	/**
 	 * checks or notify this condition.
 	 *
-	 * @param value
-	 *			the telegram to be checked
-	 * @return true if the telegram fulfills this condition, false otherwise
+	 * @param value		the telegram to be checked
+	 * @return 			true if the telegram fulfills this condition, false otherwise
 	 */
 	public boolean update(T value);
 }

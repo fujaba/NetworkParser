@@ -36,9 +36,8 @@ public class Deep implements SendableEntityCreator, UpdateListener {
 	private int deep;
 
 	/**
-	 * @param value
-	 *			The new Value
-	 * @return Deep Instance
+	 * @param value		The new Value
+	 * @return 			Deep Instance
 	 */
 	public Deep withDeep(int value) {
 		this.deep = value;
@@ -59,9 +58,10 @@ public class Deep implements SendableEntityCreator, UpdateListener {
 	}
 
 	/**
-	 * @param value
-	 *			Value of Deep
-	 * @return a new Deep Instance
+	 * Create a new DeepFilter and return a new Instance
+	 *
+	 * @param value		Value of Deep
+	 * @return 			a new Deep Instance
 	 */
 	public static Deep value(int value) {
 		return new Deep().withDeep(value);

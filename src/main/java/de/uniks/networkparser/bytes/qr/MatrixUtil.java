@@ -17,6 +17,7 @@
 package de.uniks.networkparser.bytes.qr;
 
 /**
+ * Helperclass for QR-Matrix
  * @author satorux@google.com (Satoru Takabayashi) - creator
  * @author dswitkin@google.com (Daniel Switkin) - ported from C++
  */

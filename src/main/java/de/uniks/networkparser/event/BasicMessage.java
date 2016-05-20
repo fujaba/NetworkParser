@@ -32,8 +32,10 @@ public class BasicMessage {
 	/** The value. */
 	private String value;
 
-	/*
+	/**
 	 * Generic Getter for Attribute
+	 * @param attrName		Name of Attribute
+	 * @return				Value of Attribute
 	 */
 	public Object get(String attrName) {
 		String attribute;
@@ -49,8 +51,11 @@ public class BasicMessage {
 		return null;
 	}
 
-	/*
+	/**
 	 * Generic Setter for Attribute
+	 * @param attribute		Name of Attribute
+	 * @param value			Value of Attribute
+	 * @return 				success
 	 */
 	public boolean set(String attribute, Object value) {
 		if (attribute.equalsIgnoreCase(PROPERTY_VALUE)) {
@@ -72,9 +77,8 @@ public class BasicMessage {
 	/**
 	 * Sets the value.
 	 *
-	 * @param value
-	 *			the new value
-	 * @return Itself
+	 * @param value		the new value
+	 * @return 			Itself
 	 */
 	public BasicMessage withValue(String value) {
 		this.value = value;

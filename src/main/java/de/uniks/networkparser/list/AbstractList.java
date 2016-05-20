@@ -29,27 +29,21 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Condition;
 
 /**
+ * The Class is for generic implementation of List and Sets
  * @author Stefan
  *
  * @param <V> generic Parameter for Simple-Collection
  */
 public abstract class AbstractList<V> extends AbstractArray<V> {
 	/**
-	 * {@inheritDoc}
-	 *
 	 * <p>This implementation iterates over the specified collection, and adds
 	 * each object returned by the iterator to this collection, in turn.
 	 *
 	 * <p>Note that this implementation will throw an
 	 * <tt>UnsupportedOperationException</tt> unless <tt>add</tt> is
 	 * overridden (assuming the specified collection is non-empty).
-	 *
-	 * @throws UnsupportedOperationException {@inheritDoc}
-	 * @throws ClassCastException			{@inheritDoc}
-	 * @throws NullPointerException		  {@inheritDoc}
-	 * @throws IllegalArgumentException	  {@inheritDoc}
-	 * @throws IllegalStateException		 {@inheritDoc}
-	 *
+	 * @param c	List of Elements for adding
+	 * @return success 
 	 * @see #add(Object)
 	 */
 	public boolean addAll(Collection<? extends V> c) {
@@ -66,9 +60,8 @@ public abstract class AbstractList<V> extends AbstractArray<V> {
 	/**
 	 * Add a Value to internal List and Array if nesessary
 	 *
-	 * @param value
-	 *			the new Value
-	 * @return  this boolean if success
+	 * @param value		the new Value
+	 * @return			this boolean if success
 	 */
 	public boolean add(V value) {
 		int pos = hasKey(value);
@@ -115,6 +108,7 @@ public abstract class AbstractList<V> extends AbstractArray<V> {
 
 
 	/**
+	 * Get the next bigger Value of a Set 
 	 * @param element Element for check
 	 * @param sameElement boolen for switch return sameElement
 	 * @return the element or higher Element

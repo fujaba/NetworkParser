@@ -106,9 +106,8 @@ public class Tokener implements BufferItem {
 	/**
 	 * Reset the Tokener
 	 *
-	 * @param value
-	 *			The Text for parsing
-	 * @return Itself
+	 * @param value		The Text for parsing
+	 * @return 			Itself
 	 */
 	public Tokener withBuffer(CharSequence value) {
 		this.buffer = new CharacterBuffer().with(value);

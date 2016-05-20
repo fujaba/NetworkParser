@@ -80,10 +80,8 @@ public final class ReedSolomon {
 	 * detect and correct errors, in-place, in the input.
 	 * </p>
 	 *
-	 * @param received
-	 *            data and error-correction codewords
-	 * @param twoS
-	 *            number of error-correction codewords available
+	 * @param received	data and error-correction codewords
+	 * @param twoS		number of error-correction codewords available
 	 */
 	public void decode(int[] received, int twoS) {
 		GenericGFPoly poly = new GenericGFPoly(field, received);

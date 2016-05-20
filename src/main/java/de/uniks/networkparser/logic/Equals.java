@@ -45,9 +45,8 @@ public class Equals implements UpdateListener, SendableEntityCreator {
 	}
 
 	/**
-	 * @param value
-	 *			The new Position
-	 * @return Equals Instance
+	 * @param value		The new Position
+	 * @return 			Equals Instance
 	 */
 	public Equals withPosition(int value) {
 		this.position = value;
@@ -62,9 +61,8 @@ public class Equals implements UpdateListener, SendableEntityCreator {
 	}
 
 	/**
-	 * @param value
-	 *			The new ByteValue
-	 * @return Equals Instance
+	 * @param value		The new ByteValue
+	 * @return 			Equals Instance
 	 */
 	public Equals withValue(Byte value) {
 		this.bytevalue = value;
@@ -79,9 +77,8 @@ public class Equals implements UpdateListener, SendableEntityCreator {
 	}
 
 	/**
-	 * @param value
-	 *			The new StringValue
-	 * @return Equals Instance
+	 * @param value		The new StringValue
+	 * @return 			Equals Instance
 	 */
 	public Equals withValue(String value) {
 		this.strValue = value;

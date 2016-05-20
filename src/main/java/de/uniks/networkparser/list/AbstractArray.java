@@ -332,11 +332,9 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 	 * Get the HashKey from a Object with Max HashTableIndex and StepSize of
 	 * EntitySize
 	 *
-	 * @param hashKey
-	 *            the hashKey of a Object
-	 * @param len
-	 *            the max Length of all Hashvalues
-	 * @return the hasKey
+	 * @param hashKey	the hashKey of a Object
+	 * @param len		the max Length of all Hashvalues
+	 * @return 			the hasKey
 	 */
 	protected int hashKey(int hashKey, int len) {
 		int tmp = hashKey % len;
@@ -354,12 +352,9 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 	/**
 	 * Add a Key to internal List and Array if nesessary
 	 *
-	 * @param newValue
-	 *            the new Value
-	 * @param pos
-	 *            the new Position -1 = End
-	 * @param items
-	 *            the HashList for searching
+	 * @param newValue	the new Value
+	 * @param pos		the new Position -1 = End
+	 * @param items		the HashList for searching
 	 *
 	 * @return ths pos
 	 */
@@ -531,9 +526,8 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 	/**
 	 * Add a Element to the List
 	 *
-	 * @param element
-	 *            to add a Value
-	 * @return int the Position of the insert
+	 * @param element	to add a Value
+	 * @return 			int the Position of the insert
 	 */
 	final int hasKey(Object element) {
 		return hashKeyPos(element, size);
@@ -574,9 +568,8 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 	/**
 	 * Add a Element to the List
 	 *
-	 * @param element
-	 *            to add a Value
-	 * @return boolean if success add the Value
+	 * @param element			to add a Value
+	 * @return 					boolean if success add the Value
 	 */
 	protected int hasKeyAndPos(Object element) {
 		if (element == null || isReadOnly())
@@ -665,13 +658,10 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 	 * Add a Key to internal List and Array if nesessary Method to manipulate
 	 * Array
 	 *
-	 * @param element
-	 *            the new Value
-	 * @param pos
-	 *            the new Position -1 = End
-	 * @param size
-	 *            the newSize of the List
-	 * @return if value is added
+	 * @param element	the new Value
+	 * @param pos		the new Position -1 = End
+	 * @param size		the newSize of the List
+	 * @return 			if value is added
 	 */
 	final int addKey(int pos, Object element, int size) {
 		Object[] keys;
@@ -819,9 +809,8 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 	 * <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>,
 	 * or -1 if there is no such index.
 	 *
-	 * @param o
-	 *            Element for search
-	 * @return the index of the first found index of the element
+	 * @param o			Element for search
+	 * @return 			the index of the first found index of the element
 	 */
 	public int indexOf(Object o) {
 		return indexOf(o, size);
@@ -870,9 +859,8 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 	 * <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>,
 	 * or -1 if there is no such index.
 	 *
-	 * @param o
-	 *            Element for search
-	 * @return the index of the last found index of the element
+	 * @param o		Element for search
+	 * @return 		the index of the last found index of the element
 	 */
 	public int lastIndexOf(Object o) {
 		if (o == null)
@@ -1007,10 +995,9 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 	 * <tt>iterator</tt> method does not implement the <tt>remove</tt> method
 	 * and this collection contains one or more elements in common with the
 	 * specified collection.
-	 *
-	 * @throws UnsupportedOperationException {@inheritDoc}
-	 * @throws ClassCastException {@inheritDoc}
-	 * @throws NullPointerException {@inheritDoc}
+	 * 
+	 * @param c 	List of Elements for removing
+	 * @return 		success
 	 *
 	 * @see #contains(Object)
 	 */
@@ -1256,8 +1243,6 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 	}
 
 	/**
-	 * {@inheritDoc}
-	 *
 	 * <p>
 	 * This implementation iterates over this collection, checking each element
 	 * returned by the iterator in turn to see if it's contained in the
@@ -1271,10 +1256,8 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 	 * and this collection contains one or more elements not present in the
 	 * specified collection.
 	 *
-	 * @throws UnsupportedOperationException	{@inheritDoc}
-	 * @throws ClassCastException	{@inheritDoc}
-	 * @throws NullPointerException	{@inheritDoc}
-	 *
+	 * @param c		List of Elements for removing
+	 * @return 		success
 	 * @see #contains(Object)
 	 */
 	public boolean retainAll(Collection<?> c) {
@@ -1375,10 +1358,8 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 	 * <tt>fromIndex</tt> and <tt>toIndex</tt> are equal, the returned list is
 	 * empty.)
 	 *
-	 * @param fromIndex
-	 *            low endpoint (inclusive) of the subList
-	 * @param toIndex
-	 *            high endpoint (exclusive) of the subList
+	 * @param fromIndex		low endpoint (inclusive) of the subList
+	 * @param toIndex		high endpoint (exclusive) of the subList
 	 * @return a view of the specified range within this list
 	 */
 	public BaseItem subList(int fromIndex, int toIndex) {

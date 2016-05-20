@@ -32,8 +32,10 @@ public class ByteMessage {
 	/** The value. */
 	private byte[] value = new byte[] {};
 
-	/*
+	/**
 	 * Generic Getter for Attributes
+	 * @param attrName		Name of Attribute
+	 * @return				Value of Attribute
 	 */
 	public Object get(String attrName) {
 		String attribute;
@@ -49,8 +51,11 @@ public class ByteMessage {
 		return null;
 	}
 
-	/*
+	/**
 	 * Generic Setter for Attributes
+	 * @param attribute		the Name of Attribute
+	 * @param value			the Value of Attribute
+	 * @return 				success
 	 */
 	public boolean set(String attribute, Object value) {
 		if (attribute.equalsIgnoreCase(PROPERTY_VALUE)) {
@@ -72,9 +77,8 @@ public class ByteMessage {
 	/**
 	 * Sets the value.
 	 *
-	 * @param value
-	 *			the new value
-	 * @return Itself
+	 * @param value		the new value
+	 * @return 			Itself
 	 */
 	public ByteMessage withValue(byte[] value) {
 		this.value = value;

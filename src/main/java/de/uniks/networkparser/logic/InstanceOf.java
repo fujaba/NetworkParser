@@ -91,9 +91,8 @@ public class InstanceOf implements UpdateListener, SendableEntityCreator {
 	/**
 	 * Static Method for instance a new Instance of InstanceOf Object.
 	 *
-	 * @param clazzName
-	 *			The ClazzName
-	 * @return The new Instance
+	 * @param clazzName		The ClazzName
+	 * @return 				The new Instance
 	 */
 	public static InstanceOf value(Class<?> clazzName) {
 		return new InstanceOf().withClazzName(clazzName);
@@ -102,11 +101,9 @@ public class InstanceOf implements UpdateListener, SendableEntityCreator {
 	/**
 	 * Static Method for instance a new Instance of InstanceOf Object.
 	 *
-	 * @param clazz
-	 *			The ClazzName
-	 * @param property
-	 *			The Property
-	 * @return The new Instance
+	 * @param clazz		The ClazzName
+	 * @param property	The Property
+	 * @return 			The new Instance
 	 */
 	public static InstanceOf value(Object clazz, String property) {
 		InstanceOf result = new InstanceOf().withProperty(property);
@@ -124,9 +121,8 @@ public class InstanceOf implements UpdateListener, SendableEntityCreator {
 	}
 
 	/**
-	 * @param value
-	 *			The new ClazzName
-	 * @return INstacneOf Instance
+	 * @param value	The new ClazzName
+	 * @return 		InstacneOf Instance
 	 */
 	public InstanceOf withClazzName(Class<?> value) {
 		this.clazzName = value;
@@ -139,9 +135,8 @@ public class InstanceOf implements UpdateListener, SendableEntityCreator {
 	}
 
 	/**
-	 * @param value
-	 *			The new Property
-	 * @return InstanceOf Instance
+	 * @param value	The new Property
+	 * @return 		InstanceOf Instance
 	 */
 	public InstanceOf withProperty(String value) {
 		this.property = value;
@@ -154,9 +149,8 @@ public class InstanceOf implements UpdateListener, SendableEntityCreator {
 	}
 
 	/**
-	 * @param value
-	 *			The new Value
-	 * @return InstanceOf Instance
+	 * @param value	The new Value
+	 * @return 		InstanceOf Instance
 	 */
 	public InstanceOf withValue(Object value) {
 		this.item = value;

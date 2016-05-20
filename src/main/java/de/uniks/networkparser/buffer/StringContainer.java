@@ -35,8 +35,7 @@ public class StringContainer implements CharSequence {
 	/**
 	 * Returns {@code true} if, and only if, {@link #length()} is {@code 0}.
 	 *
-	 * @return {@code true} if {@link #length()} is {@code 0}, otherwise
-	 *		 {@code false}
+	 * @return {@code true} if {@link #length()} is {@code 0}, otherwise {@code false}
 	 *
 	 * @since 1.6
 	 */
@@ -271,16 +270,11 @@ public class StringContainer implements CharSequence {
 	 * <pre>
 	 *	 dst.put(s, 0, s.length()) </pre>
 	 *
-	 * @param   src
-	 *		  The source string
+	 * @param   src						The source string
+	 * @return  						This buffer
 	 *
-	 * @return  This buffer
-	 *
-	 * @throws  BufferOverflowException
-	 *		  If there is insufficient space in this buffer
-	 *
-	 * @throws  ReadOnlyBufferException
-	 *		  If this buffer is read-only
+	 * @throws  BufferOverflowException	If there is insufficient space in this buffer
+	 * @throws  ReadOnlyBufferException	If this buffer is read-only
 	 */
 	public final StringContainer with(CharSequence src) {
 		if(value == null) {

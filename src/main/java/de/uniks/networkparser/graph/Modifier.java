@@ -21,6 +21,10 @@ package de.uniks.networkparser.graph;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
+/**
+ * Modifier for Methods and Class
+ * @author Stefan Lindel
+ */
 public class Modifier extends GraphMember {
 	public static final StringFilter<Modifier> NAME = new StringFilter<Modifier>(GraphMember.PROPERTY_NAME);
 

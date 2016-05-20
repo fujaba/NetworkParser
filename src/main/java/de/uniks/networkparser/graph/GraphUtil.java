@@ -28,7 +28,7 @@ permissions and limitations under the Licence.
 */
 /**
  * Special Util for package Method
- *
+ * @author Stefan Lindel
  */
 public class GraphUtil {
 	public static Clazz getByObject(GraphEntity item, String clazz, boolean fullName) {

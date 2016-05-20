@@ -26,6 +26,7 @@ import java.util.Date;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 /**
  * The Class DateCreator.
+ * @author Stefan Lindel
  */
 public class DateCreator implements SendableEntityCreatorNoIndex {
 	/** The Constant VALUE. */

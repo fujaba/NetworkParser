@@ -9,6 +9,7 @@ import de.uniks.networkparser.interfaces.Entity;
  * Event for Changes in IdMap
  *
  * 	 typ the typ of Message: NEW UPDATE, REMOVE or SENDUPDATE
+ * 	@author Stefan Lindel
  */
 public final class SimpleMapEvent extends PropertyChangeEvent {
 	private static final long serialVersionUID = 1L;

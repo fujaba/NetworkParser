@@ -21,6 +21,10 @@ package de.uniks.networkparser.graph;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
+/**
+ * Cardinality of Assoziation
+ * @author Stefan Lindel
+ */
 public enum Cardinality {
 	ONE("1"), MANY("n");
 

@@ -70,14 +70,10 @@ public class GraphTokener extends Tokener {
 	/**
 	 * Parses the.
 	 *
-	 * @param object
-	 *			the object to Serialisation
-	 * @param typ
-	 *			Is it a OBJECT OR A CLASS diagram
-	 * @param filter
-	 *			Filter for Serialisation
-	 * @param showCardinality
-	 *			the show cardinality
+	 * @param object			the object to Serialisation
+	 * @param map				Runtime information OBJECT OR A CLASS diagram
+	 * @param list				Target List
+	 * @param deep				The Current Deep of Graph
 	 * @return the Object as String
 	 */
 	private Clazz parse(Object object, MapEntity map,

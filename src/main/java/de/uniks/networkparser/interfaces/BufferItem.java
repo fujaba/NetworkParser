@@ -38,6 +38,8 @@ public interface BufferItem {
 	public abstract char getCurrentChar();
 
 	/**
+	 * Return a new Array of Elements
+	 *
 	 * @param len len of next values
 	 * -1 remaining length
 	 * -2 all size (Only for BufferedBuffer)
@@ -56,6 +58,8 @@ public interface BufferItem {
 	public int position();
 
 	/**
+	 * count of Remaining Size of Buffer
+	 * 
 	 * @return the remaining Count of bytes of the Buffer
 	 */
 	public int remaining();
@@ -95,10 +99,9 @@ public interface BufferItem {
 
 	/**
 	 * Get the next char in the string, skipping whitespace.
-	 * @param currentValid
-	 *			is the current char also a valid character
+	 * @param currentValid	is the current char also a valid character
 	 *
-	 * @return A character, or 0 if there are no more characters.
+	 * @return 				A character, or 0 if there are no more characters.
 	 */
 	public char nextClean(boolean currentValid);
 
@@ -117,14 +120,11 @@ public interface BufferItem {
 	 * single quotes, but an implementation is allowed to accept them.
 	 *
 	 * @param sc StringContainer for manage Chars
-	 * @param allowQuote
-	 *			is allow Quote in Stream
-	 * @param nextStep
-	 *			must i step next after find Text
-	 * @param quotes
-	 *			The quoting character, either <code>"</code>
-	 *			&nbsp;<small>(double quote)</small> or <code>'</code>
-	 *			&nbsp;<small>(single quote)</small>.
+	 * @param allowQuote	is allow Quote in Stream
+	 * @param nextStep		must i step next after find Text
+	 * @param quotes		The quoting character, either <code>"</code>
+	 *						&nbsp;<small>(double quote)</small> or <code>'</code>
+	 *						&nbsp;<small>(single quote)</small>.
 	 * @return the StringContainer with the new Value
 	 */
 	public CharacterBuffer nextString(CharacterBuffer sc, boolean allowQuote, boolean nextStep, char... quotes);
@@ -149,24 +149,19 @@ public interface BufferItem {
 	/**
 	 * Skip.
 	 *
-	 * @param search
-	 *            the The String of searchelements
-	 * @param order
-	 *            the if the order of search element importent
-	 * @param notEscape
-	 *            Boolean if escaping the text
-	 * @return true, if successful
+	 * @param search		the The String of searchelements
+	 * @param order			the if the order of search element importent
+	 * @param notEscape		Boolean if escaping the text
+	 * @return 				true, if successful
 	 */
 	public boolean skipTo(String search, boolean order, boolean notEscape);
 
 	/**
 	 * Skip.
 	 *
-	 * @param search
-	 *            the The String of searchelements
-	 * @param notEscape
-	 *            Boolean if escaping the text
-	 * @return true, if successful
+	 * @param search	the The String of searchelements
+	 * @param notEscape	Boolean if escaping the text
+	 * @return 			true, if successful
 	 */
 	public boolean skipTo(char search, boolean notEscape);
 
@@ -174,9 +169,8 @@ public interface BufferItem {
 	/**
 	 * Skip number of chars
 	 *
-	 * @param pos
-	 *            the pos
-	 * @return true, if successful
+	 * @param pos		the pos
+	 * @return 			true, if successful
 	 */
 	public boolean skip(int pos);
 	/**
@@ -189,9 +183,8 @@ public interface BufferItem {
 	/**
 	 * Check values of the Current Char
 	 *
-	 * @param items
-	 *			the items
-	 * @return true, if successful
+	 * @param items		the items
+	 * @return 			true, if successful
 	 */
 	public boolean checkValues(char... items);
 

@@ -609,6 +609,12 @@ public class QRTokener {
 	/**
 	 * Append "bytes" in "mode" mode (encoding) into "bits". On success, store
 	 * the result in "bits".
+	 * 
+	 * @param content		The Content
+	 * @param mode			Mode of Content example: Text or Binary
+	 * @param bits			Result Bits
+	 * @param encoding		Encoding String
+	 * @throws RuntimeException	if wrong Mode
 	 */
 	static void appendBytes(String content, Mode mode, BitArray bits, String encoding) throws RuntimeException {
 		if (mode == Mode.NUMERIC) {

@@ -166,12 +166,10 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	 * Get the boolean value associated with an index. The string values "true"
 	 * and "false" are converted to boolean.
 	 *
-	 * @param key
-	 *			The Value
-	 * @return The truth.
-	 * @throws RuntimeException
-	 *			 If there is no value for the index or if the value is not
-	 *			 convertible to boolean.
+	 * @param key					The Value
+	 * @return 						The truth.
+	 *
+	 * @throws RuntimeException		If there is no value for the index or if the value is not convertible to boolean.
 	 */
 	public boolean getBoolean(K key) throws RuntimeException {
 		Object value = get(key);
@@ -263,13 +261,12 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	/**
 	 * Get the string associated with an index.
 	 *
-	 * @param key
-	 *			The index must be between 0 and length() - 1.
-	 * @param defaultValue
-	 *			The defaultValue
-	 * @return A string value.
-	 * @throws RuntimeException
-	 *			 If there is no value for the index.
+	 * @param key					The index must be between 0 and length() - 1.
+	 * @param defaultValue			The defaultValue
+	 *
+	 * @return 						A string value.
+	 *
+	 * @throws RuntimeException		If there is no value for the index.
 	 */
 	public String getString(K key, String defaultValue) {
 		if(key==null){

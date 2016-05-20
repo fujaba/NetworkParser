@@ -25,13 +25,8 @@ package de.uniks.networkparser.bytes.qr;
  * @author Sean Owen
  */
 public final class Mode {
-
 	// No, we can't use an enum here. J2ME doesn't support it.
-
-	public static final Mode TERMINATOR = new Mode(new int[] { 0, 0, 0 }, 0x00, "TERMINATOR"); // Not
-																								// really
-																								// a
-																								// mode...
+	public static final Mode TERMINATOR = new Mode(new int[] { 0, 0, 0 }, 0x00, "TERMINATOR"); // Not really a mode...
 	public static final Mode NUMERIC = new Mode(new int[] { 10, 12, 14 }, 0x01, "NUMERIC");
 	public static final Mode ALPHANUMERIC = new Mode(new int[] { 9, 11, 13 }, 0x02, "ALPHANUMERIC");
 	public static final Mode STRUCTURED_APPEND = new Mode(new int[] { 0, 0, 0 }, 0x03, "STRUCTURED_APPEND"); // Not
@@ -57,11 +52,10 @@ public final class Mode {
 	}
 
 	/**
-	 * @param bits
-	 *            four bits encoding a QR Code data mode
-	 * @return Mode encoded by these bits
-	 * @throws IllegalArgumentException
-	 *             if bits do not correspond to a known mode
+	 * Get Mode for bit
+	 * @param bits		four bits encoding a QR Code data mode
+	 * @return 			Mode encoded by these bits
+	 * @throws 			IllegalArgumentException if bits do not correspond to a known mode
 	 */
 	public static Mode forBits(int bits) {
 		switch (bits) {
@@ -93,11 +87,8 @@ public final class Mode {
 	}
 
 	/**
-	 * @param version
-	 *            version in question
-	 * @return number of bits used, in this QR Code symbol {@link Version}, to
-	 *         encode the count of characters that will follow encoded in this
-	 *         Mode
+	 * @param version		version in question
+	 * @return 				number of bits used, in this QR Code symbol {@link Version}, to encode the count of characters that will follow encoded in this Mode
 	 */
 	public int getCharacterCountBits(Version version) {
 		if (characterCountBitsForVersions == null) {

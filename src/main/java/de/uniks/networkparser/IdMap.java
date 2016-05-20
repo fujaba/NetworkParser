@@ -70,6 +70,7 @@ import de.uniks.networkparser.xml.XMLEntityCreator;
 import de.uniks.networkparser.xml.XMLTokener;
 /**
  * The Class IdMap.
+ * @author Stefan Lindel
  */
 public class IdMap implements Iterable<SendableEntityCreator> {
 	/** The Constant CLASS. */
@@ -164,9 +165,8 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	/**
 	 * Gets the creator class.
 	 *
-	 * @param reference
-	 *			the reference
-	 * @return the creator class
+	 * @param reference		the reference
+	 * @return 				the creator class
 	 */
 	public SendableEntityCreator getCreatorClass(Object reference) {
 		if (reference == null) {
@@ -178,11 +178,9 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	/**
 	 * Gets the creator classes.
 	 *
-	 * @param clazz
-	 *			Clazzname for search
-	 * @param fullName
-	 *			if the clazzName is the Fullname for search
-	 * @return return a Creator class for a clazz name
+	 * @param clazz		Clazzname for search
+	 * @param fullName	if the clazzName is the Fullname for search
+	 * @return 			return a Creator class for a clazz name
 	 */
 	public SendableEntityCreator getCreator(String clazz, boolean fullName) {
 		Object creator = this.creators.getValue(clazz);
@@ -210,9 +208,8 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	/**
 	 * Adds the creator.
 	 *
-	 * @param creatorSet
-	 *			the creater class
-	 * @return return a Creator class for a clazz name
+	 * @param creatorSet	the creater class
+	 * @return 				return a Creator class for a clazz name
 	 */
 	public IdMap with(Collection<SendableEntityCreator> creatorSet) {
 		if(creatorSet == null) {
@@ -227,9 +224,8 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	/**
 	 * Adds the creator.
 	 *
-	 * @param iterator
-	 *			the creater classes
-	 * @return return a Creator class for a clazz name
+	 * @param iterator	the creater classes
+	 * @return 			return a Creator class for a clazz name
 	 */
 	public IdMap with(Iterable<SendableEntityCreator> iterator) {
 		if(iterator == null) {
@@ -244,8 +240,7 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	/**
 	 * Adds the creator.
 	 *
-	 * @param createrClass
-	 *			the creater class
+	 * @param createrClass	the creater class
 	 * @return AbstractIdMap to interlink arguments
 	 */
 	public IdMap with(SendableEntityCreator... createrClass) {
@@ -273,10 +268,8 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	/**
 	 * add a Creator to list of all creators.
 	 *
-	 * @param className
-	 *			the class name
-	 * @param creator
-	 *			the creator
+	 * @param className	the class name
+	 * @param creator	the creator
 	 * @return AbstractIdMap to interlink arguments
 	 */
 	public IdMap with(String className,
@@ -292,9 +285,8 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	/**
 	 * remove the creator.
 	 *
-	 * @param className
-	 *			the creater class
-	 * @return true, if successful
+	 * @param className	the creater class
+	 * @return 			true, if successful
 	 */
 	public boolean removeCreator(String className) {
 		return this.creators.remove(className) != null;
@@ -303,9 +295,8 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	/**
 	 * Sets the counter.
 	 *
-	 * @param counter
-	 *			the new counter
-	 * @return Itself
+	 * @param counter	the new counter
+	 * @return 			Itself
 	 */
 	public IdMap with(IdMapCounter counter) {
 		this.counter = counter;
@@ -327,9 +318,8 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	/**
 	 * Gets the Id. Do not generate a Id
 	 *
-	 * @param obj
-	 *			the obj
-	 * @return the key
+	 * @param obj	the obj
+	 * @return 		the key
 	 */
 	public String getKey(Object obj) {
 		String result = null;
@@ -346,8 +336,7 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	/**
 	 * Gets the object.
 	 *
-	 * @param key
-	 *			the key
+	 * @param key	the key
 	 * @return the object
 	 */
 	public Object getObject(String key) {
@@ -362,8 +351,7 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	/**
 	 * Gets or Create the id.
 	 *
-	 * @param obj
-	 *			the obj
+	 * @param obj	the obj
 	 * @return the id
 	 */
 	public String getId(Object obj) {
@@ -384,10 +372,8 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	/**
 	 * Put a Object to List
 	 *
-	 * @param jsonId
-	 *			the json id
-	 * @param object
-	 *			the object
+	 * @param jsonId		the json id
+	 * @param object		the object
 	 * @return the newObject
 	 */
 	public Object put(String jsonId, Object object) {
@@ -406,10 +392,8 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	/**
 	 * Removes the Entity from List or Destroy them
 	 *
-	 * @param oldValue
-	 *			the old Value
-	 * @param destroy
-	 *			destroy the missed Element
+	 * @param oldValue		the old Value
+	 * @param destroy		destroy the missed Element
 	 * @return boolean if success
 	 */
 	public boolean removeObj(Object oldValue, boolean destroy) {
@@ -454,10 +438,8 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	/**
 	 * Clone object.
 	 *
-	 * @param reference
-	 *			the reference
-	 * @param filter
-	 *			the filter
+	 * @param reference		the reference
+	 * @param filter		the filter
 	 * @return the object
 	 */
 	public Object cloneObject(Object reference, Filter filter) {
@@ -608,9 +590,8 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	/**
 	 * For setting the Option of checking the CaseSensitive of the Properties
 	 *
-	 * @param value
-	 *			the new Value of CaseSensitive
-	 * @return XMLGrammar Instance
+	 * @param value		the new Value of CaseSensitive
+	 * @return 			XMLGrammar Instance
 	 */
 	public IdMap withCaseSensitive(boolean value) {
 		keyValue.withCaseSensitive(value);
@@ -674,8 +655,7 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	/**
 	 * Garbage collection.
 	 *
-	 * @param root
-	 *			the root
+	 * @param root	the root Element for garbage Colleciton
 	 */
 	public void garbageCollection(Object root) {
 		if(this.listener instanceof UpdateJson) {
@@ -684,8 +664,7 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	}
 
 	/**
-	 * @param value
-	 *			Gammar value
+	 * @param value		Gammar value
 	 * @return Itself
 	 */
 	public IdMap with(Grammar value) {
@@ -798,10 +777,8 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	/**
 	 * Decode.
 	 *
-	 * @param value
-	 *			the value
-	 * @param converter
-	 *			the Converter for bytes to String
+	 * @param value			the value
+	 * @param converter		the Converter for bytes to String
 	 * @return the object
 	 */
 	public Object decode(String value, ByteConverter converter) {
@@ -833,12 +810,9 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	/**
 	 * Read json.
 	 *
-	 * @param value
-	 *			the value for decoding
-	 * @param target
-	 *			the target
-	 * @param filter
-	 *			the filter for decoding
+	 * @param value		the value for decoding
+	 * @param target	the target
+	 * @param filter	the filter for decoding
 	 * @return the object
 	 */
 	public Object decode(BaseItem value, Object target, Filter filter) {
@@ -852,8 +826,9 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	}
 
 	/**
-	 * @param value
-	 * @param map
+	 * Decoding Element to model
+	 * @param value	The Baseitem for decoding
+	 * @param map	the Runtime information
 	 * @return the decoded Values
 	 */
 	private Object decoding(BaseItem value, MapEntity map) {
@@ -893,8 +868,8 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	/**
 	 * Read json.
 	 *
-	 * @param jsonArray
-	 *            the json array
+	 * @param jsonArray	the json array
+	 * @param map		the ruintime information
 	 * @return the object
 	 */
 	private Object decodingJsonArray(JsonArray jsonArray, MapEntity map) {
@@ -927,8 +902,7 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	/**
 	 * To json array by ids.
 	 *
-	 * @param ids
-	 *            the suspend id list
+	 * @param ids		the suspend id list
 	 * @return success all Items to baseItem
 	 */
 	public JsonArray getJsonByIds(List<String> ids) {
@@ -979,8 +953,7 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	/**
 	 * To json object.
 	 *
-	 * @param entity
-	 *			the object
+	 * @param entity	the object
 	 * @return the json object
 	 */
 	public JsonObject toJsonObject(Object entity) {
@@ -995,10 +968,8 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	/**
 	 * To Jsonobject.
 	 *
-	 * @param entity
-	 *			the entity
-	 * @param filter
-	 *			the filter
+	 * @param entity		the entity
+	 * @param filter		the filter
 	 * @return the Jsonobject
 	 */
 	public JsonObject toJsonObject(Object entity, Filter filter) {
@@ -1013,8 +984,7 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	/**
 	 * To json array.
 	 *
-	 * @param object
-	 *			the object
+	 * @param object	the object
 	 * @return the json array
 	 */
 	public JsonArray toJsonArray(Object object) {
@@ -1077,11 +1047,10 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	/**
 	 * Convert to JsonArray in the resource
 	 *
-	 * @param object
-	 *            the object
-	 * @param filter
-	 *            the filter
-	 * @return the json array
+	 * @param object		the object
+	 * @param map			the runtime information
+	 * @param tokener		the The Tokener for encoding
+	 * @return 				the json array
 	 */
 	private EntityList encodeList(Object object, MapEntity map, Tokener tokener) {
 		EntityList target = (EntityList) map.getTarget();
@@ -1377,8 +1346,7 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	/**
 	 * set the new List of Items for the Map
 	 *
-	 * @param parent
-	 *			the parent-List of Items
+	 * @param parent		the parent-List of Items
 	 * @return the Map
 	 */
 	public IdMap withKeyValue(SimpleKeyValueList<String, Object> parent) {

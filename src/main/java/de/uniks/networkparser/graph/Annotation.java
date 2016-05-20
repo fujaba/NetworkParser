@@ -24,6 +24,12 @@ express or implied.
 See the Licence for the specific language governing
 permissions and limitations under the Licence.
 */
+/**
+ * Annotation of Methods or Attributes or Classes
+ * 
+ * @author Stefan Lindel
+ *
+ */
 public class Annotation extends GraphMember {
 	public static final StringFilter<Annotation> NAME = new StringFilter<Annotation>(GraphMember.PROPERTY_NAME);
 
