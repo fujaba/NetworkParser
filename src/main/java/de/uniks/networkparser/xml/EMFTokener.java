@@ -242,9 +242,12 @@ public class EMFTokener extends Tokener{
 					if(found == null ) {
 						found = new Association(clazz);
 						found.with(key);
-						String ref = getRef(key, child, null);
-						Association back = new Association(items.get(ref));
-						found.with(back);
+						SimpleList<String> refs = getRef(key, child, null);
+						for (String ref : refs)
+                  {
+                     Association back = new Association(items.get(ref));
+                     found.with(back);
+                  }
 					}
 
 					if(value.indexOf("/", 1) > 0) {
@@ -319,16 +322,15 @@ public class EMFTokener extends Tokener{
 			if ("".equals(value) || XMI_ID.equals(key)) {
 				continue;
 			}
-			String myRef = getRef(value, xmlEntity, rootFactory);
-			if(myRef != null) {
-				Object object = getObject(myRef);
-				if (object != null) {
-					rootFactory.setValue(rootObject, key, object, "");
-				}
-			} else {
-				if (rootFactory != null) {
-					rootFactory.setValue(rootObject, key, value, "");
-				}
+			SimpleList<String> myRefs = getRef(value, xmlEntity, rootFactory);
+			if (myRefs.size() == 0 && rootFactory != null) {
+			   rootFactory.setValue(rootObject, key, value, "");
+			}
+			for (String myRef : myRefs) {
+			   Object object = getObject(myRef);
+			   if (object != null) {
+			      rootFactory.setValue(rootObject, key, object, "");
+			   }
 			}
 		}
 
@@ -350,9 +352,10 @@ public class EMFTokener extends Tokener{
 			addValues(kidFactory, (XMLEntity)kidEntity, kidObject, map);
 		}
 	}
-
-	private String getRef(String value, XMLEntity xmlEntity, SendableEntityCreator rootFactory) {
-		if (value.startsWith("//@")) {
+	
+	private SimpleList<String> getRef(String value, XMLEntity xmlEntity, SendableEntityCreator rootFactory) {
+		SimpleList<String> result = new SimpleList<String>();
+	   if (value.startsWith("//@")) {
 			for (String ref : value.split(" ")) {
 				String myRef = "_" + ref.substring(3);
 				if (myRef.indexOf('.') > 0) {
@@ -360,7 +363,7 @@ public class EMFTokener extends Tokener{
 				} else {
 					myRef = "_" + myRef.subSequence(0, 1) + "0";
 				}
-				return myRef;
+				result.add(myRef);
 			}
 		} else if (value.startsWith("/")) {
 			// maybe multiple separated by blanks
@@ -368,25 +371,25 @@ public class EMFTokener extends Tokener{
 			for (String ref : value.split(" ")) {
 				ref = "_" + tagChar + ref.substring(1);
 				if (getObject(ref) != null) {
-					return ref;
+					result.add(ref);
 				}
 			}
 		} else if (value.indexOf('_') > 0) {
 			// maybe multiple separated by blanks
 			for (String ref : value.split(" ")) {
 				if (getObject(ref) != null) {
-					return ref;
+				   result.add(ref);
 				}
 			}
 		} else if (value.startsWith("$")) {
 			for (String ref : value.split(" ")) {
 				String myRef = "_" + ref.substring(1);
 				if (rootFactory != null && getObject(myRef) != null) {
-					return myRef;
+					result.add(myRef);
 				}
 			}
 		}
-		return null;
+		return result;
 	}
 
 	@SuppressWarnings("unchecked")
