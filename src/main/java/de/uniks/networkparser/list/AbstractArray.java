@@ -1276,7 +1276,10 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 	}
 
 	public Iterator<V> iterator() {
-		return new SimpleIterator<V>(this);
+		return new SimpleIterator<V>(this).withCheckPointer(true);
+	}
+	public Iterator<V> iterator(boolean checkPointer) {
+		return new SimpleIterator<V>(this).withCheckPointer(checkPointer);
 	}
 
 	/**

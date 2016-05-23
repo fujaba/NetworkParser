@@ -302,7 +302,9 @@ public class JavaDocFileVisitor implements FileVisitor<Path> {
 			if(lineMethod == -1) {
 
 				for(String s : lines) { if(s.contains(match.split("\n")[0])) { lineMethod = lines.indexOf(s) + 1; break; }}
-
+			}
+			if(lineMethod == -1) {
+				continue;
 			}
 
 			//Check if there is a annotation over the method, if so go to the next method

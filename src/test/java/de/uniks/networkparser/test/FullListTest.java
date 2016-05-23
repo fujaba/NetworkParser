@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
 import java.util.ListIterator;
 import org.junit.Assert;
 import org.junit.Test;
@@ -457,7 +459,7 @@ public class FullListTest {
 		}
 	}
 	
-	@Test
+	@Test(expected=ConcurrentModificationException.class)
 	public void testSize() {
 		SimpleSet<Apple> appleTree=new SimpleSet<Apple>();
 		ArrayList<Apple> list=new ArrayList<Apple>();
@@ -476,6 +478,30 @@ public class FullListTest {
 				break;
 			}
 			item.setX(0);
+			appleTree.indexOf(list.get(0));
+		}
+	}
+	
+	@Test
+	public void testSizeAdvance() {
+		SimpleSet<Apple> appleTree=new SimpleSet<Apple>();
+		ArrayList<Apple> list=new ArrayList<Apple>();
+		for(int i=0;i<430;i++) {
+			Apple item = new Apple().withPassword("Apple"+i);
+			appleTree.add(item);
+			if(i % 50 == 0) {
+				list.add(item);
+			}
+		}
+		Assert.assertEquals(430, appleTree.size());
+		
+		for(Iterator<Apple> iterator = appleTree.iterator(false);iterator.hasNext();) {
+			Apple apple = iterator.next();
+			appleTree.remove(42);
+			if(appleTree.size()<400) {
+				break;
+			}
+			apple.setX(0);
 			appleTree.indexOf(list.get(0));
 		}
 	}
