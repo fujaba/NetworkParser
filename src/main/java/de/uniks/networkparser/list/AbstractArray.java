@@ -820,11 +820,11 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 		if (o == null || elements == null) {
 			return REMOVED;
 		}
-		if (isComplex(size)) {
-			return getPosition(o, SMALL_KEY, false);
-		}
 		if ((flag & MAP) == MAP) {
 			return search((Object[]) elements[SMALL_KEY], o);
+		}
+		if (isComplex(size)) {
+			return getPosition(o, SMALL_KEY, false);
 		}
 		return search(elements, o);
 	}
