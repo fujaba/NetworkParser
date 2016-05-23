@@ -245,7 +245,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	/**
 	 * Get the string associated with an index.
 	 *
-	 * @param key  The Value
+	 * @param key The Value
 	 * @return A string value.
 	 * @throws RuntimeException
 	 *			 If there is no value for the index.

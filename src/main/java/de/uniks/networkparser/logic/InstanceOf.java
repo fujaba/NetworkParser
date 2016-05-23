@@ -169,7 +169,7 @@ public class InstanceOf implements UpdateListener, SendableEntityCreator {
 			if(newValue!=null && newValue.getClass().isPrimitive()) {
 				return true;
 			}
-			  if(this.clazzName!=null && !this.clazzName.isInstance(newValue)) {
+			if(this.clazzName!=null && !this.clazzName.isInstance(newValue)) {
 				return false;
 			}else if(this.property==null) {
 				return true;

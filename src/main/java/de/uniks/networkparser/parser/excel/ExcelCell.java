@@ -133,11 +133,11 @@ public class ExcelCell implements SendableEntityCreatorTag, EntityList{
 			return referenceCell.setContent(value);
 		}
 		if((this.content == null && value != null) ||
-		   (this.content != null && this.content.equals(value) == false)) {
-		   this.content = value;
-		   return true;
-	   }
-	   return false;
+			(this.content != null && this.content.equals(value) == false)) {
+			this.content = value;
+			return true;
+		}
+		return false;
 	}
 
 	public ExcelCell withContent(Object value) {

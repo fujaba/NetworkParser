@@ -101,7 +101,7 @@ public class MapEntity extends SimpleList<Object>{
 		return filter.isFullSeriation();
 	}
 	public String[] getProperties(Tokener tokener, SendableEntityCreator creator) {
-		return tokener.getProperties(creator, filter);
+		return filter.getProperties(creator);
 	}
 	public boolean isPropertyRegard(Object entity, IdMap map, String property, Object value) {
 		return filter.isPropertyRegard(entity, property, value, map, deep);
@@ -260,7 +260,7 @@ public class MapEntity extends SimpleList<Object>{
 	}
 	public MapEntity withoutFlag(byte flag) {
 		this.flag = (byte) (this.flag | flag);
-		this.flag -=  flag;
+		this.flag -= flag;
 		return this;
 	}
 

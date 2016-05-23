@@ -129,6 +129,10 @@ public class Filter {
 		return new Filter().withConvertable(convertable);
 	}
 
+	public String[] getProperties(SendableEntityCreator creator) {
+		return creator.getProperties();
+	}
+	
 	/**
 	 * Strategy for setting property value in model
 	 * @return String type of set Value

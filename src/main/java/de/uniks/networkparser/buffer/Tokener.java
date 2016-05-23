@@ -22,7 +22,7 @@ package de.uniks.networkparser.buffer;
  permissions and limitations under the Licence.
 */
 import java.beans.PropertyChangeEvent;
-import de.uniks.networkparser.Filter;
+
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -299,10 +299,6 @@ public class Tokener implements BufferItem {
 			return buffer.skipChar(quotes);
 		}
 		return 0;
-	}
-
-	public String[] getProperties(SendableEntityCreator creator, Filter filter) {
-		return creator.getProperties();
 	}
 
 	public Entity newInstance() {

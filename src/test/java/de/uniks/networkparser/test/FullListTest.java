@@ -3,6 +3,7 @@ package de.uniks.networkparser.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.ListIterator;
 import org.junit.Assert;
 import org.junit.Test;
@@ -459,17 +460,23 @@ public class FullListTest {
 	@Test
 	public void testSize() {
 		SimpleSet<Apple> appleTree=new SimpleSet<Apple>();
+		ArrayList<Apple> list=new ArrayList<Apple>();
 		for(int i=0;i<430;i++) {
-			appleTree.add(new Apple().withPassword("Apple"+i));
+			Apple item = new Apple().withPassword("Apple"+i);
+			appleTree.add(item);
+			if(i % 50 == 0) {
+				list.add(item);
+			}
 		}
 		Assert.assertEquals(430, appleTree.size());
+		
 		for(Apple item : appleTree) {
 			appleTree.remove(42);
 			if(appleTree.size()<400) {
 				break;
 			}
 			item.setX(0);
+			appleTree.indexOf(list.get(0));
 		}
-		
 	}
 }

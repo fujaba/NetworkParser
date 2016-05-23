@@ -820,7 +820,7 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 		if (o == null || elements == null) {
 			return REMOVED;
 		}
-		if (size >= MINHASHINGSIZE) {
+		if (isComplex(size)) {
 			return getPosition(o, SMALL_KEY, false);
 		}
 		if ((flag & MAP) == MAP) {
@@ -1461,8 +1461,7 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 	 * Make a prettyprinted Text of this Entity.
 	 * <p>
 	 *
-	 * @param converter
-	 *            Converter for transform Item to STring
+	 * @param converter		Converter for transform Item to String
 	 */
 	@Override
 	public String toString(Converter converter) {
