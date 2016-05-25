@@ -31,6 +31,7 @@ import java.util.Map.Entry;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.list.SimpleIteratorSet;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.logic.SimpleMapEvent;
@@ -51,9 +52,7 @@ public class UpdateJson implements PropertyChangeListener {
 	/** The suspend id list. */
 	private ArrayList<String> suspendIdList;
 
-//	private UpdateListener atomarFilter;
-
-	private Filter updateFilter = new Filter().withConvertable(new UpdateCondition());
+	private Filter updateFilter = new Filter().withStrategy(IdMap.UPDATE).withConvertable(new UpdateCondition());
 
 	/**
 	 * Instantiates a new update listener.
@@ -119,7 +118,8 @@ public class UpdateJson implements PropertyChangeListener {
 	public void propertyChange(PropertyChangeEvent evt) {
 		Object oldValue = evt.getOldValue();
 		Object newValue = evt.getNewValue();
-        this.updateFilter.withPropertyRegard(map.getCondition());
+		
+		this.updateFilter.withPropertyRegard(map.getListener());
 
 		if ((oldValue == null && newValue == null)
 				|| (oldValue != null && oldValue.equals(newValue))) {
@@ -406,6 +406,11 @@ public class UpdateJson implements PropertyChangeListener {
 			}
 		}
 		return null;
+	}
+	
+	public UpdateJson withReguardFilter(UpdateListener filter) {
+		this.updateFilter.withPropertyRegard(filter);
+		return this;
 	}
 
 	/**

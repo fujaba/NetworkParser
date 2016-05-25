@@ -1,7 +1,5 @@
 package de.uniks.networkparser.test;
 
-import java.beans.PropertyChangeEvent;
-
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -24,21 +22,22 @@ public class FilterAtomar {
 		map.with(new AppleTreeCreator());
 		map.with(new AppleCreator());
 
-		UpdateListener listener = new UpdateListener() {
+		UpdateListener fitler = new UpdateListener() {
 			@Override
-			public boolean update(Object evt) {
-				PropertyChangeEvent event = (PropertyChangeEvent) evt;
-				return (Apple.PROPERTY_PASSWORD.equals(event.getPropertyName()) == false);
+			public boolean update(Object event) {
+				SimpleMapEvent simpleEvent = (SimpleMapEvent) event;
+				data = simpleEvent.getEntity();
+				return (Apple.PROPERTY_PASSWORD.equals(simpleEvent.getPropertyName()) == false);
 			}
-		};
+		}; 
+		
 		map.toJsonObject(tree);
-		map.withFilter(listener);
 		map.with(new UpdateListener() {
 			@Override
 			public boolean update(Object event) {
 				SimpleMapEvent simpleEvent = (SimpleMapEvent) event;
 				data = simpleEvent.getEntity();
-				return false;
+				return (Apple.PROPERTY_PASSWORD.equals(simpleEvent.getPropertyName()) == false);
 			}
 		});
 		Apple apple = new Apple();

@@ -22,9 +22,10 @@ public class JsonMessageTest implements UpdateListener {
 	@Override
 	public boolean update(Object event) {
 		SimpleMapEvent simpleEvent = (SimpleMapEvent) event;
-		
-		Assert.assertEquals("Message "+pos+":", messages.get(pos++), simpleEvent.getEntity().toString());
-		return false;
+		if(simpleEvent.isNewEvent()){
+			Assert.assertEquals("Message "+pos+":", messages.get(pos++), simpleEvent.getEntity().toString());
+		}
+		return true;
 	}
 	
 	@Test

@@ -130,9 +130,6 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	/** The update listener. */
 	protected UpdateListener updateListener;
 
-	/** The Condition. */
-	protected UpdateListener condition;
-
 	/** The updatelistener for Notification changes. */
 	protected PropertyChangeListener listener = new UpdateJson(this);
 
@@ -154,9 +151,9 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 		this.with(new XMLEntityCreator());
 	}
 
-	public UpdateListener getCondition() {
-		return condition;
-	}
+//	public UpdateListener getCondition() {
+//		return condition;
+//	}
 
 	public UpdateListener getListener() {
 		return updateListener;
@@ -612,9 +609,6 @@ public class IdMap implements Iterable<SendableEntityCreator> {
     		if(this.updateListener != null) {
     			this.updateListener.update(event);
     		}
-    		if(this.condition != null) {
-    			return this.condition.update(event);
-    		}
     	}
 		return true;
 	}
@@ -635,20 +629,6 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	 */
 	public IdMap with(UpdateListener updateListener) {
 		this.updateListener = updateListener;
-		return this;
-	}
-
-	/**
-	 * Set the new Listener
-	 *
-	 * @param updateListener the new Listener
-	 * @return This Component
-	 *
-	 * @see IdMap#with(PropertyChangeListener)
-	 * @see de.uniks.networkparser.ChainListener
-	 */
-	public IdMap withFilter(UpdateListener updateListener) {
-		this.condition = updateListener;
 		return this;
 	}
 

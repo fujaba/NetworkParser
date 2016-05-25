@@ -98,14 +98,14 @@ public class Filter {
 
 	boolean isPropertyRegard(Object entity, String property, Object value, IdMap map, int deep) {
 		if (this.property != null) {
-			return this.property.update(new SimpleMapEvent(IdMap.NEW, map, property, null, value).with(deep).withModelItem(entity));
+			return this.property.update(new SimpleMapEvent(this.strategy, map, property, null, value).with(deep).withModelItem(entity));
 		}
 		return true;
 	}
 
 	boolean isConvertable(Object entity, String property, Object value, IdMap map, int deep) {
 		if (this.convertable != null) {
-			return this.convertable.update(new SimpleMapEvent(IdMap.NEW, map, property, null, value).with(deep).withModelItem(entity));
+			return this.convertable.update(new SimpleMapEvent(this.strategy, map, property, null, value).with(deep).withModelItem(entity));
 		}
 		return true;
 	}

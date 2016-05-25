@@ -312,6 +312,24 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		this.length = newLen;
 		return this;
 	}
+	
+	public CharacterBuffer write(byte[] values, int length) {
+		int newLen = length+this.length;
+		if ( buffer == null || newLen+this.start>buffer.length) {
+			char[] oldValue = this.buffer;
+			this.buffer = new char[(newLen*2+2)];
+			if(oldValue != null) {
+				System.arraycopy(oldValue, start, this.buffer, 0, this.length);
+			}
+			this.start = 0;
+			this.position = 0;
+		}
+		for(int i=this.length;i<newLen;i++) {
+			this.buffer[i] = (char) values[i-this.length];
+		}
+		this.length = newLen;
+		return this;
+	}
 
 	/** Init the new CharacterBuffer
 	 * @param values the reference CharSequence

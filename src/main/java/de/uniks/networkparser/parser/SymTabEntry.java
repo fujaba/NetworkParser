@@ -42,6 +42,9 @@ public class SymTabEntry {
 	private String value;
 	private String type;
 
+	private SymTabEntry next;
+	private SymTabEntry prev;
+
 	public String getValue() {
 		return this.value;
 	}
@@ -53,6 +56,14 @@ public class SymTabEntry {
 			return true;
 		}
 		return false;
+	}
+
+	public void add(CharSequence string) {
+		if(this.value == null) {
+			this.value = ""+string;
+		} else {
+			this.value += string;
+		}
 	}
 
 	public SymTabEntry withValue(String value) {
@@ -76,5 +87,55 @@ public class SymTabEntry {
 	public SymTabEntry withType(String value) {
 		setType(value);
 		return this;
+	}
+
+	public boolean setNext(SymTabEntry value) {
+		boolean changed = false;
+
+		if (this.next != value) {
+			SymTabEntry oldValue = this.next;
+			if (this.next != null) {
+				this.next = null;
+				oldValue.setPrev(null);
+			}
+			this.next = value;
+
+			if (value != null) {
+				value.setPrev(this);
+			}
+			changed = true;
+		}
+		return changed;
+	}
+	public boolean setPrev(SymTabEntry value) {
+		boolean changed = false;
+
+		if (this.prev != value) {
+			SymTabEntry oldValue = this.prev;
+			if (this.prev != null) {
+				this.prev = null;
+				oldValue.setNext(null);
+			}
+			this.prev = value;
+
+			if (value != null) {
+				value.setNext(this);
+			}
+			changed = true;
+		}
+		return changed;
+	}
+	
+	public String toString() {
+		StringBuilder sb= new StringBuilder();
+		toString(sb);
+		return sb.toString();
+	}
+
+	public void toString(StringBuilder sb) {
+		sb.append(this.value);
+		if(this.next != null) {
+			this.next.toString(sb);
+		}
 	}
 }

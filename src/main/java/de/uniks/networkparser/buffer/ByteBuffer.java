@@ -77,6 +77,26 @@ public class ByteBuffer extends BufferedBuffer {
 	public byte[] array() {
 		return buffer;
 	}
+	
+	public void write(byte[] bytes, int len) {
+		int length=this.length;
+		int bufferLen =0;
+		if(this.buffer != null) {
+			bufferLen = this.buffer.length;
+		}
+		if(length + len > bufferLen) {
+			this.buffer = new byte[length + len];
+			if(bufferLen >0) {
+				byte[] oldBuffer = this.buffer;
+				System.arraycopy(oldBuffer, 0, this.buffer, 0, length);
+			}
+			System.arraycopy(bytes, 0, this.buffer, length, len);
+			
+		} else {
+			System.arraycopy(bytes, 0, this.buffer, length + 1, len);
+		}
+		this.length += len;
+	}
 
 	public void put(byte value) {
 		if(this.buffer != null) {

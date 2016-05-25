@@ -51,6 +51,9 @@ public class JsonPeer2PeerTest implements UpdateListener{
 	@Override
 	public boolean update(Object event) {
 		SimpleMapEvent simpleEvent = (SimpleMapEvent) event;
+		if(simpleEvent.isNewEvent() == false) {
+			return true;
+		}
 		
 		JsonObject jsonObject = (JsonObject) simpleEvent.getEntity();
 		Object result=secondMap.decode(jsonObject);
