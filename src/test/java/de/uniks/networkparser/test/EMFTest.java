@@ -7,7 +7,12 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.graph.Cardinality;
+import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.xml.EMFTokener;
+import de.uniks.networkparser.xml.XMLEntity;
 
 public class EMFTest extends IOClasses{
 
@@ -44,4 +49,18 @@ public class EMFTest extends IOClasses{
 		map.decodeEMF(value.toString(), decode);
 		Assert.assertEquals(3, decode.getClazzes().size());
 	}
+	
+	@Test
+	public void testWriteEMF() {
+		IdMap map=new IdMap();
+		GraphList list=new GraphList();
+		Clazz uni = list.createClazz("University");
+		Clazz student = list.createClazz("Student");
+		student.withAttribute("semester", DataType.INT);
+		student.withAttribute("name", DataType.STRING);
+		uni.withBidirectional(student, "student", Cardinality.MANY, "university", Cardinality.ONE);
+		XMLEntity item = (XMLEntity) map.encode(list, new EMFTokener());
+//		System.out.println(item.toString(2));
+	}
+	
 }

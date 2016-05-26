@@ -90,4 +90,8 @@ public final class SimpleMapEvent extends PropertyChangeEvent {
 	public boolean isNewEvent() {
 		return IdMap.NEW.equals(this.type);
 	}
+	
+	public boolean isUpdateEvent() {
+		return IdMap.UPDATE.equals(this.type);
+	}
 }

@@ -142,6 +142,8 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 			return (Long) object;
 		} else if (object instanceof Integer) {
 			return 0l + (Integer) object;
+		} else if (object instanceof String) {
+			return Long.valueOf(""+object);
 		}
 		throw new RuntimeException("JsonObject[" + EntityUtil.quote(key)
 				+ "] is not a JsonObject.");

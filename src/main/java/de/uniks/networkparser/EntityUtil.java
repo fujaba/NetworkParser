@@ -594,6 +594,9 @@ public class EntityUtil {
 	}
 
 	public static String shortClassName(String name) {
+		if(name==null) {
+			return "";
+		}
 		int pos = name.lastIndexOf('.');
 		name = name.substring(pos + 1);
 		pos = name.lastIndexOf('$');

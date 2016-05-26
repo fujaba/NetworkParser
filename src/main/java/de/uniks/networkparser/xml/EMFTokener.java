@@ -48,17 +48,21 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 
 public class EMFTokener extends Tokener{
-	public static final String ECLASS = "ecore:EClass";
-	public static final String ETYPE = "eType";
-	public static final String EAttribute = "ecore:EAttribute";
-	public static final String EReferences = "ecore:EReference";
-	public static final String ECore = "ecore:EPackage";
-	public static final String eSuperTypes = "eSuperTypes";
-	public static final String EEnum = "ecore:EEnum";
 	public static final String ECORE = "ecore";
+	public static final String EPACKAGE = "ecore:EPackage";
+	public static final String EAttribute = "eAttributes";
+	public static final String ECLASS = "eClassifiers";
+	public static final String EREFERENCE = "eReferences";
+	public static final String ETYPE = "eType";
+	public static final String EDATATYPE ="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//";
+	public static final String TYPE_ECLASS = "ecore:EClass";
+	public static final String TYPE_EAttribute = "ecore:EAttribute";
+	public static final String TYPE_EReferences = "ecore:EReference";
+	public static final String TYPE_ESUPERTYPE = "eSuperTypes";
+	public static final String TYPE_EEnum = "ecore:EEnum";
 	public static final String EOpposite = "eOpposite";
+	public static final String ATTRIBUTE_URL = "http://www.eclipse.org/emf/2002/Ecore#//";
 	public static final String UPPERBOUND = "upperBound";
-
 	public static final String XSI_TYPE = "xsi:type";
 	public static final String XMI_ID = "xmi:id";
 	public static final String NAME = "name";
@@ -100,6 +104,9 @@ public class EMFTokener extends Tokener{
 	}
 
 	public XMLEntity encode(Object entity, MapEntity map) {
+		if(entity instanceof GraphList) {
+			return  encodeClassModel((GraphList)entity, map);
+		}
 		XMLEntity result = new XMLEntity();
 
 		String typetag = entity.getClass().getName().replaceAll("\\.", ":");
@@ -108,6 +115,72 @@ public class EMFTokener extends Tokener{
 		encodeChildren(entity, result, map);
 
 		return result;
+	}
+	
+	public XMLEntity encodeClassModel(GraphList entity, MapEntity map) {
+		XMLContainer container = new XMLContainer();
+		container.withStandardPrefix();
+		
+		XMLEntity root = container.createChild();
+		root.setType(EPACKAGE);
+		root.withKeyValue("xmi:version", "2.0");
+		root.withKeyValue("xmlns:xmi", "http://www.omg.org/XMI");
+		root.withKeyValue("xmlns:ecore", "http://www.eclipse.org/emf/2002/Ecore");
+		String id, name = "model";
+		if(entity.getName()!= null) {
+			id = EntityUtil.shortClassName(entity.getName());
+			name = entity.getName();
+		} else {
+			id = name;
+		}
+		root.withKeyValue(NAME, id);
+		root.withKeyValue("nsURI", "http:///"+name.replace(".", "/")+".ecore");
+		root.withKeyValue("nsPrefix", name);
+		
+		for(Clazz child : entity.getClazzes()) {
+			XMLEntity ecoreClass = root.createChild();
+			ecoreClass.setType(ECLASS);
+			ecoreClass.withKeyValue(XSI_TYPE, TYPE_ECLASS);
+			ecoreClass.withKeyValue(NAME, child.getName());
+			for(Attribute attribute : child.getAttributes()) {
+				DataType type = attribute.getType();
+				if(EntityUtil.isPrimitiveType(type.getName(false))) {
+					XMLEntity ecoreAttribute = ecoreClass.createChild();
+					ecoreAttribute.setType(EAttribute);
+					ecoreAttribute.withKeyValue(NAME, attribute.getName());
+					ecoreAttribute.withKeyValue(ETYPE, EDATATYPE + "E" + EntityUtil.upFirstChar(type.getName(true)));
+				}
+			}
+			
+//			  <eClassifiers xsi:type="ecore:EClass" name="University">
+//			    <eStructuralFeatures xsi:type="ecore:EReference" name="student" ordered="false"
+//			        upperBound="-1" eType="#//Student" eOpposite="#//Student/university"/>
+//			  </eClassifiers>
+//			  <eClassifiers xsi:type="ecore:EClass" name="Student">
+//			    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" ordered="false" lowerBound="1"
+//			        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+//			    <eStructuralFeatures xsi:type="ecore:EAttribute" name="semester" ordered="false"
+//			        lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+//			    <eStructuralFeatures xsi:type="ecore:EReference" name="university" ordered="false"
+//			        upperBound="-1" eType="#//University" eOpposite="#//University/student"/>
+//			  </eClassifiers>
+//			</ecore:EPackage>
+			
+			
+			for(Association assoc : child.getAssociations()) {
+				XMLEntity ecoreAssociation = ecoreClass.createChild();
+				ecoreAssociation.setType(EREFERENCE);
+				ecoreAssociation.withKeyValue(NAME, assoc.getOther().getName());
+				ecoreAssociation.withKeyValue(ETYPE, "#//"+assoc.getOtherClazz().getName());
+				ecoreAssociation.withKeyValue(EOpposite, "#//"+assoc.getClazz().getName()+"/"+assoc.getOther().getName());
+				if(Cardinality.MANY.equals(assoc.getCardinality())) {
+					ecoreAssociation.withKeyValue(UPPERBOUND, "-1");				
+				} else {
+					ecoreAssociation.withKeyValue(UPPERBOUND, "1");
+				}
+			}
+		}
+		return container;
 	}
 
 	private void encodeChildren(Object entity, XMLEntity parent, MapEntity map) {
@@ -162,7 +235,7 @@ public class EMFTokener extends Tokener{
 		skipHeader();
 		XMLEntity xmlEntity = new XMLEntity();
 		xmlEntity.withValue(this.buffer);
-		if(ECore.equals(xmlEntity.getTag())) {
+		if(EPACKAGE.equals(xmlEntity.getTag())) {
 			return decoding(xmlEntity);
 		}
 		// build root entity
@@ -509,7 +582,7 @@ public class EMFTokener extends Tokener{
 				continue;
 			}
 
-			if (xml.getString(EMFTokener.XSI_TYPE).equalsIgnoreCase(ECLASS)) {
+			if (xml.getString(EMFTokener.XSI_TYPE).equalsIgnoreCase(TYPE_ECLASS)) {
 				Clazz clazz = new Clazz().with(xml.getString(EMFTokener.NAME));
 				model.with(clazz);
 				for(EntityList child : xml.getChildren()) {
@@ -518,7 +591,7 @@ public class EMFTokener extends Tokener{
 					}
 					Entity childItem = (Entity) child;
 					String typ = childItem.getString(EMFTokener.XSI_TYPE);
-					if(typ.equals(EAttribute)) {
+					if(typ.equals(TYPE_EAttribute)) {
 						String etyp = EntityUtil.getId(childItem.getString(ETYPE));
 						if (EntityUtil.isEMFType(etyp)) {
 							etyp = etyp.substring(1);
@@ -527,14 +600,14 @@ public class EMFTokener extends Tokener{
 							etyp = etyp.toLowerCase();
 						}
 						clazz.with(new Attribute(EntityUtil.toValidJavaId(childItem.getString(EMFTokener.NAME)), DataType.create(etyp)));
-					}else if(typ.equals(EReferences)) {
+					}else if(typ.equals(TYPE_EReferences)) {
 						parentList.add(childItem, eClassifier);
 					}
 				}
-				if(xml.has(eSuperTypes)) {
+				if(xml.has(TYPE_ESUPERTYPE)) {
 					superClazzes.add(xml);
 				}
-			} else if (xml.getString(EMFTokener.XSI_TYPE).equals(EEnum)) {
+			} else if (xml.getString(EMFTokener.XSI_TYPE).equals(TYPE_EEnum)) {
 				Clazz graphEnum = new Clazz().with(ClazzType.ENUMERATION);
 				graphEnum.with(xml.getString(EMFTokener.NAME));
 				for(EntityList child : xml.getChildren()) {
@@ -556,7 +629,7 @@ public class EMFTokener extends Tokener{
 		}
 		 // inheritance
 		for(Entity eClass : superClazzes) {
-			String id = EntityUtil.getId(eClass.getString(eSuperTypes));
+			String id = EntityUtil.getId(eClass.getString(TYPE_ESUPERTYPE));
 			 Clazz kidClazz = model.getNode(eClass.getString(EMFTokener.NAME));
 			 if(kidClazz != null) {
 				 Clazz superClazz = model.getNode(id);

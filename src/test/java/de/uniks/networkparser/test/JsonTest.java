@@ -637,6 +637,13 @@ public class JsonTest extends IOClasses{
 	}
 	
 	@Test
+	public void testLong(){
+		JsonObject item = new JsonObject().withValue("value", "1234567890");
+		Assert.assertEquals(1234567890, item.getLong("value"));
+	}
+
+	
+	@Test
 	public void testJsonArrayTest(){
 		JsonArray array=new JsonArray();
 		array.with(1,2,3,4,5);

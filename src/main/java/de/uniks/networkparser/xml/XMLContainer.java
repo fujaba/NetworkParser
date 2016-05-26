@@ -31,6 +31,11 @@ public class XMLContainer extends XMLEntity{
 		this.prefix.add(value);
 		return this;
 	}
+	
+	public XMLContainer withStandardPrefix() {
+		withPrefix("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+		return this;
+	}
 
 	@Override
 	public String toString() {

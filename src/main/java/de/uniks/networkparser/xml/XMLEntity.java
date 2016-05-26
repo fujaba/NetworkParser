@@ -145,6 +145,17 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		getChildren().add(value);
 		return this;
 	}
+	
+	/**
+	 * Method to create a new Child and add it to Children
+	 *
+	 * @return XMLEntity	new Instance
+	 */
+	public XMLEntity createChild() {
+		XMLEntity xmlEntity = new XMLEntity();
+		getChildren().add(xmlEntity);
+		return xmlEntity;
+	}
 
 	/**
 	 * Gets the child.
