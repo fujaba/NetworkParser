@@ -33,6 +33,7 @@ Export-Package: de.uniks.networkparser;
    de.uniks.networkparser.list",
  de.uniks.networkparser.event.util;uses:="de.uniks.networkparser.interfaces",
  de.uniks.networkparser.graph,
+ de.uniks.networkparser.graph.util,
  de.uniks.networkparser.gui;
   uses:="de.uniks.networkparser.interfaces,
    de.uniks.networkparser.json,
