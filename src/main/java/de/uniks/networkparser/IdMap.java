@@ -83,13 +83,13 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	public static final String ID = "id";
 
 	/** The Constant REMOVE. */
-	public static final String REMOVE = "rem";
+	public static final String REMOVE = SendableEntityCreator.REMOVE;
 
 	/** The Constant UPDATE. */
-	public static final String UPDATE = "upd";
+	public static final String UPDATE = SendableEntityCreator.UPDATE;
 
 	/** The Constant NEW. */
-	public static final String NEW = "new";
+	public static final String NEW = SendableEntityCreator.NEW;
 
 	/** The Constant SPACE. */
 	public static final char SPACE = ' ';
@@ -132,6 +132,8 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 
 	/** The updatelistener for Notification changes. */
 	protected PropertyChangeListener listener = new UpdateJson(this);
+	
+	protected SimpleKeyValueList<SendableEntityCreator, Object> referenceList = new SimpleKeyValueList<SendableEntityCreator, Object>(); 
 
 	/** The Constant ENTITYSPLITTER. */
 	public static final char ENTITYSPLITTER = '.';
@@ -1166,7 +1168,12 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 		if (properties != null) {
 			map.pushStack(className, entity, creator);
 			item.setAllowEmptyValue(map.isFullSeriation());
-			Object referenceObject = map.getNewEntity(creator, className, true);
+			// Find ReferenceObject in Cache
+			Object referenceObject = referenceList.get(creator);
+			if(referenceObject == null) {
+				referenceObject = map.getNewEntity(creator, className, true);
+				this.referenceList.add(creator, referenceObject);
+			}
 			map.add();
 			CharacterBuffer prop = map.getPrefixProperties(creator, tokener, entity, className);
 			int pos=prop.length();
@@ -1244,7 +1251,6 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 		}
 		return item;
 	}
-
 
 	private void parseValue(String property, Object value, String className, SendableEntityCreator valueCreater, MapEntity map, Tokener tokener, BaseItem parent) {
 		Object writeValue = null;

@@ -64,6 +64,12 @@ task buildCoreJar17(type: Jar) {
 	manifest = project.manifest {from sharedManifest}
 }
 
+task buildInterfaces(type: Jar) {
+	from sourceSets.main.output; classifier = 'interface'
+	include '**/networkparser/interfaces/**'
+	manifest = project.manifest {from sharedManifest}
+}
+
 task buildSourceJar(type: Jar) {
 	description 'Build Jar with class-Files and Source-Files'
 	group "Jar"
