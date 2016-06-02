@@ -60,7 +60,21 @@ public class EMFTest extends IOClasses{
 		student.withAttribute("name", DataType.STRING);
 		uni.withBidirectional(student, "student", Cardinality.MANY, "university", Cardinality.ONE);
 		XMLEntity item = (XMLEntity) map.encode(list, new EMFTokener());
-//		System.out.println(item.toString(2));
+		
+		XMLEntity root =(XMLEntity) item.getChildren().first();
+		StringBuilder sb=new StringBuilder();
+		sb.append("<ecore:EPackage xmi:version=\"2.0\" xmlns:xmi=\"http://www.omg.org/XMI\" xmlns:ecore=\"http://www.eclipse.org/emf/2002/Ecore\" name=\"model\" nsURI=\"http:///model.ecore\" nsPrefix=\"model\">"+
+				"<eClassifiers xsi:type=\"ecore:EClass\" name=\"University\">"+
+				"<eReferences name=\"student\" eType=\"#//Student\" eOpposite=\"#//Student/university\" upperBound=\"1\"/>"+
+				"</eClassifiers>"+
+	    		"<eClassifiers xsi:type=\"ecore:EClass\" name=\"Student\">"+
+	    		"<eAttributes name=\"semester\" eType=\"ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt\"/>"+
+	    		"<eAttributes name=\"name\" eType=\"ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString\"/>"+
+	    		"<eReferences name=\"university\" eType=\"#//University\" eOpposite=\"#//University/student\" upperBound=\"-1\"/>"+
+	    		"</eClassifiers>"+
+	    		"</ecore:EPackage>");
+
+		Assert.assertEquals(sb.toString(), root.toString());
 	}
 	
 }

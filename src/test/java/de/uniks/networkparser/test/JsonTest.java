@@ -655,4 +655,12 @@ public class JsonTest extends IOClasses{
 
 		Assert.assertEquals("[\r\n  1,\r\n  2,\r\n  3,\r\n  4,\r\n  5,\r\n  [\r\n    6,\r\n    7\r\n  ],\r\n  8,\r\n  {\"id\":42},\r\n  {\r\n    \"id\":42,\r\n    \"class\":\"JsonObject\"\r\n  }\r\n]", array.toString(2));
 	}
+	
+	@Test
+	public void testSimpleSpaceTest(){
+		String content=" \t\r\n{id:22}";
+		JsonObject json = new JsonObject().withValue(content);
+		Assert.assertEquals(22, json.getInt("id"));
+		
+	}
 }

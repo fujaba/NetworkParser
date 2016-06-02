@@ -27,6 +27,15 @@ package de.uniks.networkparser.interfaces;
  */
 
 public interface SendableEntityCreator {
+	/** The Constant REMOVE. */
+	public static final String REMOVE = "rem";
+
+	/** The Constant UPDATE. */
+	public static final String UPDATE = "upd";
+
+	/** The Constant NEW. */
+	public static final String NEW = "new";
+
 	/**
 	 * Gets the properties.
 	 *

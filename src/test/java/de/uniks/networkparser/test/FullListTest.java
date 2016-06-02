@@ -505,4 +505,17 @@ public class FullListTest {
 			appleTree.indexOf(list.get(0));
 		}
 	}
+	
+	@Test
+	public void testSizeIteratorRemove() {
+		SimpleSet<Apple> appleTree=new SimpleSet<Apple>();
+		for(int i=0;i<20;i++) {
+			Apple item = new Apple().withPassword("Apple"+i);
+			appleTree.add(item);
+		}
+		for(Iterator<Apple> iterator = appleTree.iterator();iterator.hasNext();) {
+			iterator.next();
+			iterator.remove();
+		}
+	}
 }

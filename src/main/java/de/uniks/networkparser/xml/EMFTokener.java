@@ -152,27 +152,12 @@ public class EMFTokener extends Tokener{
 				}
 			}
 			
-//			  <eClassifiers xsi:type="ecore:EClass" name="University">
-//			    <eStructuralFeatures xsi:type="ecore:EReference" name="student" ordered="false"
-//			        upperBound="-1" eType="#//Student" eOpposite="#//Student/university"/>
-//			  </eClassifiers>
-//			  <eClassifiers xsi:type="ecore:EClass" name="Student">
-//			    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" ordered="false" lowerBound="1"
-//			        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-//			    <eStructuralFeatures xsi:type="ecore:EAttribute" name="semester" ordered="false"
-//			        lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
-//			    <eStructuralFeatures xsi:type="ecore:EReference" name="university" ordered="false"
-//			        upperBound="-1" eType="#//University" eOpposite="#//University/student"/>
-//			  </eClassifiers>
-//			</ecore:EPackage>
-			
-			
 			for(Association assoc : child.getAssociations()) {
 				XMLEntity ecoreAssociation = ecoreClass.createChild();
 				ecoreAssociation.setType(EREFERENCE);
 				ecoreAssociation.withKeyValue(NAME, assoc.getOther().getName());
 				ecoreAssociation.withKeyValue(ETYPE, "#//"+assoc.getOtherClazz().getName());
-				ecoreAssociation.withKeyValue(EOpposite, "#//"+assoc.getClazz().getName()+"/"+assoc.getOther().getName());
+				ecoreAssociation.withKeyValue(EOpposite, "#//"+assoc.getOtherClazz().getName()+"/"+assoc.getName());
 				if(Cardinality.MANY.equals(assoc.getCardinality())) {
 					ecoreAssociation.withKeyValue(UPPERBOUND, "-1");				
 				} else {

@@ -22,15 +22,6 @@ public class FilterAtomar {
 		map.with(new AppleTreeCreator());
 		map.with(new AppleCreator());
 
-		UpdateListener fitler = new UpdateListener() {
-			@Override
-			public boolean update(Object event) {
-				SimpleMapEvent simpleEvent = (SimpleMapEvent) event;
-				data = simpleEvent.getEntity();
-				return (Apple.PROPERTY_PASSWORD.equals(simpleEvent.getPropertyName()) == false);
-			}
-		}; 
-		
 		map.toJsonObject(tree);
 		map.with(new UpdateListener() {
 			@Override
