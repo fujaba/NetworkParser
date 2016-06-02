@@ -376,8 +376,11 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	 * @return the newObject
 	 */
 	public Object put(String jsonId, Object object) {
-		this.keyValue.with(jsonId, object);
-		addListener(object);
+		boolean changed = this.keyValue.add(jsonId, object);
+		if (changed)
+		{
+		   addListener(object);
+		}
 		return object;
 	}
 
