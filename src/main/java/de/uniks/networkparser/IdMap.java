@@ -1018,10 +1018,14 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 		return new GraphTokener().withMap(this).encode(object, map);
 	}
 
-	public GraphList getDiffList(Object source, Object target) {
+	public GraphList getDiffList(Object source, Object target, boolean idCheck) {
 		GraphList sourceModel = toObjectDiagram(source);
 		GraphList targetModel = toObjectDiagram(target);
-		return new GraphTokener().withMap(this).diffModel(sourceModel, targetModel);
+		return new GraphTokener().withMap(this).diffModel(sourceModel, targetModel, idCheck);
+	}
+	
+	public GraphList getDiffList(GraphList source, GraphList target, boolean idCheck) {
+		return new GraphTokener().withMap(this).diffModel(source, target, idCheck);
 	}
 
 	/**

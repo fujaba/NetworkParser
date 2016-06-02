@@ -184,14 +184,18 @@ public abstract class GraphMember {
 
 	GraphDiff getDiff() {
 		if(this.children == null) {
-			return null;
+			GraphDiff graphDiff = new GraphDiff();
+			this.withChildren(graphDiff);
+			return graphDiff;
 		}
 		for(GraphMember item : getChildren()) {
 			if(item instanceof GraphDiff) {
 				return (GraphDiff) item;
 			}
 		}
-		return null;
+		GraphDiff graphDiff = new GraphDiff();
+		this.withChildren(graphDiff);
+		return graphDiff;
 	}
 
 	public String getName() {

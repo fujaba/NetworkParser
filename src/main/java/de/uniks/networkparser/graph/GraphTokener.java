@@ -143,11 +143,12 @@ public class GraphTokener extends Tokener {
 		return;
 	}
 
-	public GraphList diffModel(GraphList master, GraphList slave) {
+	public GraphList diffModel(GraphList master, GraphList slave, boolean idCheck) {
 		GraphDiff masterDiff = master.getDiff();
 		GraphDiff saveDiff = slave.getDiff();
 		Clazz masterFile = (Clazz) masterDiff.getMainFile();
 		Clazz slaveFile = (Clazz) saveDiff.getMainFile();
+
 		masterFile.getDiff().with(slaveFile);
 
 		// create new map<key: Clazz without s, Value: Object with {attributes, items}>
