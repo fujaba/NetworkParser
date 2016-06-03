@@ -29,82 +29,79 @@ public class GroupAccountGUI extends Application {
 	private Person nina;
 
 	private void init(Stage primaryStage) {
-		 AnchorPane root = new AnchorPane();
+		AnchorPane root = new AnchorPane();
 
+		primaryStage.setScene(new Scene(root));
 
+		TableComponent tableView = new TableComponent();
 
-			primaryStage.setScene(new Scene(root));
+		IdMap map = new  IdMap();
+		map.with(new TableList(), new PersonCreator(), new GroupAccountCreator());
 
-			TableComponent tableView = new TableComponent();
+		tableView.withMap(map);
+		groupAccount = new GroupAccount();
 
-			IdMap map = new  IdMap();
-			map.with(new TableList(), new PersonCreator(), new GroupAccountCreator());
+		albert = groupAccount.createPersons().withName("Albert");
 
-			tableView.withMap(map);
-			groupAccount = new GroupAccount();
+		nina = groupAccount.createPersons().withName("Nina");
+		groupAccount.setName("");
 
-			albert = groupAccount.createPersons().withName("Albert");
+		tableView.withColumn(new Column().withAttrName(Person.PROPERTY_NAME).withStyle(new Style().withWidth(100)));
 
-			nina = groupAccount.createPersons().withName("Nina");
-			groupAccount.setName("");
+		tableView.withColumn(new Column().withAttrName(Person.PROPERTY_BALANCE).withStyle(new Style().withWidth(100)));
+		tableView.withColumn(new Column().withLabel("Money").withAttrName(Person.PROPERTY_WALLET+"."+Wallet.PROPERTY_SUM).withStyle(new Style().withWidth(100)));
 
-			tableView.withColumn(new Column().withAttrName(Person.PROPERTY_NAME).withStyle(new Style().withWidth(100)));
+		tableView.withSearchProperties(Person.PROPERTY_NAME);
+		tableView.withList(groupAccount,  GroupAccount.PROPERTY_PERSONS);
+		VBox box = new VBox();
 
-			tableView.withColumn(new Column().withAttrName(Person.PROPERTY_BALANCE).withStyle(new Style().withWidth(100)));
-			tableView.withColumn(new Column().withLabel("Money").withAttrName(Person.PROPERTY_WALLET+"."+Wallet.PROPERTY_SUM).withStyle(new Style().withWidth(100)));
+		HBox hbox=new HBox();
 
-			tableView.withSearchProperties(Person.PROPERTY_NAME);
-			tableView.withList(groupAccount,  GroupAccount.PROPERTY_PERSONS);
-			VBox box = new VBox();
+		textField = new TextField();
+		Button addField = new Button("add");
+		addField.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				groupAccount.withPersons(new Person().withName(textField.getText()));
+			}
+		});
+		Button update = new Button("update");
 
-			HBox hbox=new HBox();
+		update.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+//				groupAccount.createItem().withBuyer(albert).withDescription("Bier").withValue(12.0);
+				albert.createItem().withDescription("Bier").withValue(12.0);
+				groupAccount.updateBalances();
+				albert.getWallet().setSum(albert.getBalance());
+				nina.getWallet().setSum(nina.getBalance());
+			}
+		});
 
-			textField = new TextField();
-			Button addField = new Button("add");
-			addField.setOnAction(new EventHandler<ActionEvent>() {
-				@Override
-				public void handle(ActionEvent arg0) {
-					groupAccount.withPersons(new Person().withName(textField.getText()));
-				}
-			});
-			Button update = new Button("update");
+		Button bug = new Button("bug");
+		bug.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+//				albert.setBalance(albert.getBalance()+1);
+				albert.getWallet().setSum(albert.getBalance() + 1);
+			}
+		});
 
-			update.setOnAction(new EventHandler<ActionEvent>() {
-				@Override
-				public void handle(ActionEvent arg0) {
-//					groupAccount.createItem().withBuyer(albert).withDescription("Bier").withValue(12.0);
-					albert.createItem().withDescription("Bier").withValue(12.0);
-					groupAccount.updateBalances();
-					albert.getWallet().setSum(albert.getBalance());
-					nina.getWallet().setSum(nina.getBalance());
-				}
-			});
+		hbox.getChildren().addAll(textField, addField, update, bug);
 
-			Button bug = new Button("bug");
-			bug.setOnAction(new EventHandler<ActionEvent>() {
-				@Override
-				public void handle(ActionEvent arg0) {
-//					albert.setBalance(albert.getBalance()+1);
-					albert.getWallet().setSum(albert.getBalance() + 1);
-				}
-			});
+		HBox info=new HBox();
+		Label albertLabel=new Label();
+		albertLabel.setText("Albertsliste:");
+		Label counter = new Label();
+		counter.textProperty().bindBidirectional(new ModelListenerStringProperty(new PersonCreator(), albert, Person.PROPERTY_ITEM));
 
+		info.getChildren().addAll(albertLabel, counter);
 
-			hbox.getChildren().addAll(textField, addField, update, bug);
-
-			HBox info=new HBox();
-			Label albertLabel=new Label();
-			albertLabel.setText("Albertsliste:");
-
-			Label counter = new Label();
-			counter.textProperty().bindBidirectional(new ModelListenerStringProperty(new PersonCreator(), albert, Person.PROPERTY_ITEM));
-
-			info.getChildren().addAll(albertLabel, counter);
-
-			box.getChildren().addAll(tableView, hbox, info);
-			root.getChildren().add(box);
-//			groupAccount.updateBalances();
+		box.getChildren().addAll(tableView, hbox, info);
+		root.getChildren().add(box);
+//		groupAccount.updateBalances();
 	}
+
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		init(primaryStage);

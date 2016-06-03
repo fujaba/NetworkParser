@@ -24,7 +24,6 @@ public class SVGDrawerTest {
 	public void testDrawClazz() throws IOException {
 		GraphList map = new GraphList();
 
-
 		Clazz space=map.with(new Clazz().with("Space"));
 		Clazz modelHistory=map.with(new Clazz().with("ModelHistory"));
 		Clazz networkNode=map.with(new Clazz().with("NetworkNode"));
@@ -40,7 +39,6 @@ public class SVGDrawerTest {
 
 //		GraphClazz nodeProxyTCP=map.with(new GraphClazz().withClassName("NodeProxyTCP"));
 //		GraphClazz nodeProxyTCP=map.with(new GraphClazz().withClassName("NodeProxy"));
-
 
 		// Edges
 		map.with( Association.create(space, modelHistory) );
@@ -73,29 +71,22 @@ public class SVGDrawerTest {
 		writeJson("pattern.html", converter.convertToJson(map, false));
 	}
 
-
-
 	@Test
 	public void testPetaF() throws IOException {
 		GraphList map = new GraphList();
-
 
 		Clazz networkParser=map.with(new Clazz().with("NetworkParser"));
 		Clazz networkParserfx=map.with(new Clazz().with("NetworkParserFX"));
 		Clazz petaf=map.with(new Clazz().with("PetaF"));
 		Clazz policy=map.with(new Clazz().with("Policy"));
 
-
 		map.with( Association.create(networkParser, networkParserfx) );
 		map.with( Association.create(networkParser, petaf) );
 		map.with( Association.create(petaf, policy) );
 
-
 		GraphConverter converter=new GraphConverter();
 		writeJson("petaf.html", converter.convertToJson(map, false));
-
 	}
-
 
 	private void writeJson(String fileName, JsonObject item) throws IOException {
 		StringBuilder sb=new StringBuilder();
@@ -110,7 +101,6 @@ public class SVGDrawerTest {
 		sb.append("\tvar json="+item.toString(2)+";"+CRLF);
 		sb.append("\tnew Graph(json).layout();"+CRLF);
 		sb.append("</script></body></html>");
-
 
 		new File("build/").mkdir();
 		FileWriter fstream = new FileWriter("build/"+fileName);

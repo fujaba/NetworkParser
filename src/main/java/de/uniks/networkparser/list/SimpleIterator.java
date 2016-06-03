@@ -31,7 +31,6 @@ public class SimpleIterator<E> implements ListIterator<E> {
 		this.lastRet = -1;
 	}
 
-
 	public SimpleIterator(AbstractArray<E> list, int index) {
 		this.with(list, index);
 	}

@@ -49,7 +49,6 @@ public interface BufferItem {
 	 */
 	public byte[] array(int len, boolean current);
 
-
 	/**
 	 * Gets the index.
 	 *
@@ -95,7 +94,6 @@ public interface BufferItem {
 	 * @return the next StringPart
 	 */
 	public CharacterBuffer getString(int len);
-
 
 	/**
 	 * Get the next char in the string, skipping whitespace.
@@ -164,7 +162,6 @@ public interface BufferItem {
 	 * @return 			true, if successful
 	 */
 	public boolean skipTo(char search, boolean notEscape);
-
 
 	/**
 	 * Skip number of chars

@@ -260,7 +260,7 @@ public class GenericCreator implements SendableEntityCreator {
 			if (EntityUtil.isPrimitiveType(child.getName()) == false) {
 				try {
 					Type types = field.getGenericType();
-					if (types != null  && types instanceof ParameterizedType) {
+					if (types != null && types instanceof ParameterizedType) {
 						ParameterizedType genericSuperclass = (ParameterizedType) types;
 						if (genericSuperclass.getActualTypeArguments().length > 0) {
 							Type type = genericSuperclass.getActualTypeArguments()[0];

@@ -23,7 +23,6 @@ public class TestWindow extends Application{
 		style.withBorder(GUIPosition.WEST, new GUILine().withColor("#000000").withWidth("1"));
 		style.withBorder(GUIPosition.SOUTH, new GUILine().withColor("#CCCCCC").withWidth("20"));
 
-
 		label.setText("Hallo Welt");
 		System.out.println(style.toString());
 		label.setStyle(style.toString());

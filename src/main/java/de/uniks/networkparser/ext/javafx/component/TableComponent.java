@@ -251,7 +251,6 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		BorderPane.clearConstraints(getLeft());
 	}
 
-
 	public TableComponent withMap(IdMap map){
 		this.map = map;
 		this.field.withMap(map);
@@ -296,7 +295,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		if(element == null) {
 			HBox hBox = new HBox();
 			hBox.setAlignment(Pos.CENTER);
-			element  = hBox;
+			element = hBox;
 			this.northComponents.setRight(element);
 		}
 		if(element instanceof HBox) {
@@ -502,7 +501,6 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		return label;
 	}
 
-
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event == null) {
@@ -533,7 +531,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 			}
 			if((columns.size() + subColumns.size())<1) {
 			}else {
-				for(TableColumnFX column  : columns ) {
+				for(TableColumnFX column : columns ) {
 					Object item = event.getSource();
 					int index = items.indexOf(item);
 
@@ -541,7 +539,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 						column.refreshCell(index);
 					}
 				}
-				for(TableColumnFX column  : subColumns ) {
+				for(TableColumnFX column : subColumns ) {
 					column.refreshCell(-1);
 				}
 			}

@@ -35,7 +35,7 @@ public class ByteConverterHTTP extends ByteConverter {
 		if (values != null) {
 			for (int i = 0; i < values.length(); i++) {
 				int value = values.byteAt(i);
-                if (value <= 32 || value == 127) {
+				if (value <= 32 || value == 127) {
 					returnValue.with(ByteTokener.SPLITTER);
 					returnValue.with((char) (value + ByteTokener.SPLITTER + 1));
 				} else {

@@ -33,7 +33,7 @@ public class CustomPane extends BorderPane implements StageEvent{
 	public CustomPane(Node centerNode) {
 		super();
 
-		this.center  = centerNode;
+		this.center = centerNode;
 		setCenter(centerNode);
 	}
 

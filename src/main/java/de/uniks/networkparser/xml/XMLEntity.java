@@ -99,7 +99,6 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		return this.children;
 	}
 
-
 	public int getChildrenCount() {
 		if (this.children == null) {
 			return 0;
@@ -221,8 +220,6 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	public String getTag() {
 		return this.tag;
 	}
-
-
 
 	/**
 	 * Gets the value.

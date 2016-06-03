@@ -58,7 +58,6 @@ public abstract class EditControl<T extends Node> implements CellEditorElement, 
 		return this;
 	}
 
-
 	public EditControl<T> withOwner(CellEditorElement value) {
 		this.owner = value;
 		return this;

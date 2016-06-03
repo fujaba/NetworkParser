@@ -34,7 +34,7 @@ public class SourceItem {
 		BufferedReader in = null;
 		try {
 			FileInputStream networkFile = new FileInputStream(file);
-			InputStreamReader isr = new InputStreamReader(networkFile,  "UTF-8");
+			InputStreamReader isr = new InputStreamReader(networkFile, "UTF-8");
 			in = new BufferedReader(isr);
 
 			MyStringBuilder packageBuilder= new MyStringBuilder();
@@ -134,7 +134,7 @@ public class SourceItem {
 		OutputStreamWriter writer = null;
 		try {
 			FileOutputStream networkFile = new FileOutputStream(file);
-			writer = new OutputStreamWriter(networkFile,  "UTF-8");
+			writer = new OutputStreamWriter(networkFile, "UTF-8");
 //			PrintWriter pw = new PrintWriter(ps);
 //			String template = "%packageString%" +CRLF+CRLF+ "%comment%" +CRLF+CRLF+ "%header%%body%";
 //			template.replaceAll("%packageString%", packageString);

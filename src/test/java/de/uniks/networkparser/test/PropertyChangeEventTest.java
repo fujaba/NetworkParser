@@ -34,7 +34,6 @@ public class PropertyChangeEventTest {
 		decodeMap.with(new PersonCreator());
 		decodeMap.with(new ItemCreator());
 
-
 		PropertyChangeEvent decode = (PropertyChangeEvent) decodeMap.decode(encode.toString());
 		Assert.assertEquals(person.getClass(), decode.getSource().getClass());
 		Assert.assertEquals("child", decode.getPropertyName());

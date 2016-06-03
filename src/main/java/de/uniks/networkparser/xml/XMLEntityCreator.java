@@ -32,7 +32,6 @@ public class XMLEntityCreator implements SendableEntityCreatorTag {
 		return this;
 	}
 
-
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
 		return new XMLEntity();

@@ -202,15 +202,12 @@ public class FullListTest {
 		Integer next = simpleList.listIterator(41).next();
 		assertEquals("listiterator[41] should deliver 42", 42, 0+next);
 
-
-
 		clone = simpleList.clone();
 
 		clone.remove(0);
 
 		simpleList.retainAll(clone);
 		simpleList.retainAll(null);
-
 
 		assertEquals("simpleList should have 549 elements", 549, simpleList.size());
 		assertEquals("simpleList[0] should be 2", 2, 0 + simpleList.first());

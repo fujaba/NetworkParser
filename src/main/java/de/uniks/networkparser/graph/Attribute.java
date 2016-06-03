@@ -108,7 +108,6 @@ public class Attribute extends Value {
 		return this;
 	}
 
-
 	public String getValue(String typ, boolean shortName) {
 		if (typ.equals(GraphTokener.OBJECT)) {
 			if(DataType.STRING == this.type && !this.value.startsWith("\"")){

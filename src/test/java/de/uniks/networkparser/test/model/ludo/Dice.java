@@ -24,234 +24,163 @@ package de.uniks.networkparser.test.model.ludo;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-public class Dice
-{
+public class Dice {
+	//==========================================================================
+	public Object get(String attrName) {
+		if (PROPERTY_VALUE.equalsIgnoreCase(attrName)) {
+			return getValue();
+		}
+		if (PROPERTY_GAME.equalsIgnoreCase(attrName)) {
+			return getGame();
+		}
+		if (PROPERTY_PLAYER.equalsIgnoreCase(attrName)) {
+			return getPlayer();
+		}
+		return null;
+	}
 
+	//==========================================================================
+	public boolean set(String attrName, Object value) {
+		if (PROPERTY_VALUE.equalsIgnoreCase(attrName)) {
+			setValue(Integer.parseInt(value.toString()));
+			return true;
+		}
+		if (PROPERTY_GAME.equalsIgnoreCase(attrName)) {
+			setGame((Ludo) value);
+			return true;
+		}
+		if (PROPERTY_PLAYER.equalsIgnoreCase(attrName)) {
+			setPlayer((Player) value);
+			return true;
+		}
+		return false;
+	}
+	//==========================================================================
+	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
+	public PropertyChangeSupport getPropertyChangeSupport() {
+		return listeners;
+	}
 
-   //==========================================================================
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		getPropertyChangeSupport().addPropertyChangeListener(listener);
+	}
 
-   public Object get(String attrName)
-   {
-	  if (PROPERTY_VALUE.equalsIgnoreCase(attrName))
-	  {
-		 return getValue();
-	  }
+	//==========================================================================
+	public void removeYou() {
+		setGame(null);
+		setPlayer(null);
+		getPropertyChangeSupport().firePropertyChange("REMOVE_YOU", this, null);
+	}
 
-	  if (PROPERTY_GAME.equalsIgnoreCase(attrName))
-	  {
-		 return getGame();
-	  }
+	//==========================================================================
+	public static final String PROPERTY_VALUE = "value";
+	private int value;
 
-	  if (PROPERTY_PLAYER.equalsIgnoreCase(attrName))
-	  {
-		 return getPlayer();
-	  }
+	public int getValue() {
+		return this.value;
+	}
 
-	  return null;
-   }
+	public void setValue(int value) {
+		if (this.value != value) {
+			int oldValue = this.value;
+			this.value = value;
+			getPropertyChangeSupport().firePropertyChange(PROPERTY_VALUE, oldValue, value);
+		}
+	}
 
+	public Dice withValue(int value) {
+		setValue(value);
+		return this;
+	}
 
-   //==========================================================================
-
-   public boolean set(String attrName, Object value)
-   {
-	  if (PROPERTY_VALUE.equalsIgnoreCase(attrName))
-	  {
-		 setValue(Integer.parseInt(value.toString()));
-		 return true;
-	  }
-
-	  if (PROPERTY_GAME.equalsIgnoreCase(attrName))
-	  {
-		 setGame((Ludo) value);
-		 return true;
-	  }
-
-	  if (PROPERTY_PLAYER.equalsIgnoreCase(attrName))
-	  {
-		 setPlayer((Player) value);
-		 return true;
-	  }
-
-	  return false;
-   }
-
-
-   //==========================================================================
-
-   protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
-
-   public PropertyChangeSupport getPropertyChangeSupport()
-   {
-	  return listeners;
-   }
-
-   public void addPropertyChangeListener(PropertyChangeListener listener)
-   {
-	  getPropertyChangeSupport().addPropertyChangeListener(listener);
-   }
-
-
-   //==========================================================================
-
-   public void removeYou()
-   {
-	  setGame(null);
-	  setPlayer(null);
-	  getPropertyChangeSupport().firePropertyChange("REMOVE_YOU", this, null);
-   }
-
-
-   //==========================================================================
-
-   public static final String PROPERTY_VALUE = "value";
-
-   private int value;
-
-   public int getValue()
-   {
-	  return this.value;
-   }
-
-   public void setValue(int value)
-   {
-	  if (this.value != value)
-	  {
-		 int oldValue = this.value;
-		 this.value = value;
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_VALUE, oldValue, value);
-	  }
-   }
-
-   public Dice withValue(int value)
-   {
-	  setValue(value);
-	  return this;
-   }
-
-   @Override
-   public String toString()
-   {
-	  StringBuilder result = new StringBuilder();
-
-	  result.append(" ").append(this.getValue());
-	  return result.substring(1);
-   }
-
-   /********************************************************************
+	@Override
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		result.append(" ").append(this.getValue());
+		return result.substring(1);
+	}
+	/********************************************************************
 	* <pre>
 	*			  one					   one
 	* Dice ----------------------------------- Ludo
 	*			  dice				   game
 	* </pre>
 	*/
+	public static final String PROPERTY_GAME = "game";
+	private Ludo game = null;
+	public Ludo getGame() {
+		return this.game;
+	}
 
-   public static final String PROPERTY_GAME = "game";
+	public boolean setGame(Ludo value) {
+		boolean changed = false;
+		if (this.game != value) {
+			Ludo oldValue = this.game;
+			if (this.game != null) {
+				this.game = null;
+				oldValue.setDice(null);
+			}
+			this.game = value;
+			if (value != null) {
+				value.withDice(this);
+			}
+			getPropertyChangeSupport().firePropertyChange(PROPERTY_GAME, oldValue, value);
+			changed = true;
+		}
+		return changed;
+	}
 
-   private Ludo game = null;
+	public Dice withGame(Ludo value) {
+		setGame(value);
+		return this;
+	}
 
-   public Ludo getGame()
-   {
-	  return this.game;
-   }
+	public Ludo createGame() {
+		Ludo value = new Ludo();
+		withGame(value);
+		return value;
+	}
 
-   public boolean setGame(Ludo value)
-   {
-	  boolean changed = false;
-
-	  if (this.game != value)
-	  {
-		 Ludo oldValue = this.game;
-
-		 if (this.game != null)
-		 {
-			this.game = null;
-			oldValue.setDice(null);
-		 }
-
-		 this.game = value;
-
-		 if (value != null)
-		 {
-			value.withDice(this);
-		 }
-
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_GAME, oldValue, value);
-		 changed = true;
-	  }
-
-	  return changed;
-   }
-
-   public Dice withGame(Ludo value)
-   {
-	  setGame(value);
-	  return this;
-   }
-
-   public Ludo createGame()
-   {
-	  Ludo value = new Ludo();
-	  withGame(value);
-	  return value;
-   }
-
-
-   /********************************************************************
+	/********************************************************************
 	* <pre>
 	*			  one					   one
 	* Dice ----------------------------------- Player
 	*			  dice				   player
 	* </pre>
 	*/
+	public static final String PROPERTY_PLAYER = "player";
+	private Player player = null;
 
-   public static final String PROPERTY_PLAYER = "player";
+	public Player getPlayer() {
+		return this.player;
+	}
 
-   private Player player = null;
+	public boolean setPlayer(Player value) {
+		boolean changed = false;
+		if (this.player != value) {
+			Player oldValue = this.player;
+			if (this.player != null) {
+				this.player = null;
+				oldValue.setDice(null);
+			}
+			this.player = value;
+			if (value != null) {
+				value.withDice(this);
+			}
+			getPropertyChangeSupport().firePropertyChange(PROPERTY_PLAYER, oldValue, value);
+			changed = true;
+		}
+		return changed;
+	}
 
-   public Player getPlayer()
-   {
-	  return this.player;
-   }
+	public Dice withPlayer(Player value) {
+		setPlayer(value);
+		return this;
+	}
 
-   public boolean setPlayer(Player value)
-   {
-	  boolean changed = false;
-
-	  if (this.player != value)
-	  {
-		 Player oldValue = this.player;
-
-		 if (this.player != null)
-		 {
-			this.player = null;
-			oldValue.setDice(null);
-		 }
-
-		 this.player = value;
-
-		 if (value != null)
-		 {
-			value.withDice(this);
-		 }
-
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_PLAYER, oldValue, value);
-		 changed = true;
-	  }
-
-	  return changed;
-   }
-
-   public Dice withPlayer(Player value)
-   {
-	  setPlayer(value);
-	  return this;
-   }
-
-   public Player createPlayer()
-   {
-	  Player value = new Player();
-	  withPlayer(value);
-	  return value;
-   }
+	public Player createPlayer() {
+		Player value = new Player();
+		withPlayer(value);
+		return value;
+	}
 }

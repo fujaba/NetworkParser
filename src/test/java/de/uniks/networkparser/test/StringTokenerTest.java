@@ -23,7 +23,6 @@ public class StringTokenerTest {
 
 		showString(buffer, "Hallo \"meine \\\"kleine\\\"\" Welt");
 
-
 		DateTimeEntity dateTime = new DateTimeEntity();
 		showString(buffer, "HH:MM:SS \"Sekunden\"");
 		Assert.assertNotNull(dateTime.toString("HH:MM:SS \"Sekunden\""));

@@ -130,7 +130,7 @@ public class PointPaneController extends AbstractModelController implements Prop
 	 * <code>Integer.MAX_VALUE - 1</code>.
 	 *
 	 * @param min Minimum value
-	 * @param max Maximum value.  Must be greater than min.
+	 * @param max Maximum value. Must be greater than min.
 	 * @return Integer between min and max, inclusive.
 	 * @see java.util.Random#nextInt(int)
 	 */

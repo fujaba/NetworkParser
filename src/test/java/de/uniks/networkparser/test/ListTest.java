@@ -12,7 +12,6 @@ public class ListTest {
 		SimpleList<String> item = new SimpleList<String>();
 		item.with("Stefan", "Alex", "Albert");
 
-
 		SimpleList<String> itemB = new SimpleList<String>();
 		itemB.with("Stefan", "Alex", "Christian");
 

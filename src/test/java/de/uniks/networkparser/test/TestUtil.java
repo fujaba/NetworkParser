@@ -10,9 +10,7 @@ public class TestUtil {
 			if("build".equalsIgnoreCase(envName)) {
 				result = "travisci".equalsIgnoreCase(env.get(envName));
 			}
-//			System.out.format("%s=%s%n",
-//							  envName,
-//							  env.get(envName));
+//			System.out.format("%s=%s%n", envName, env.get(envName));
 		}
 		return result;
 	}

@@ -68,7 +68,6 @@ public class DialogBox {
 	private double mouseDragDeltaY;
 	private double mouseDragDeltaX;
 
-
 	//Inline Show
 	private boolean isInline;
 	private Parent originalParent;
@@ -124,7 +123,6 @@ public class DialogBox {
 		root.pseudoClassStateChanged(ACTIVE_PSEUDO_CLASS, true);
 
 		root.setVisible(true);
-
 
 		// add to originalParent
 		Parent originalParent = scene.getRoot();
@@ -316,7 +314,6 @@ public class DialogBox {
 		this.modal = modal;
 		return this;
 	}
-
 
 	void configScene() {
 		Scene element = scene;

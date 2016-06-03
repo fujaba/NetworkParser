@@ -24,12 +24,9 @@ package de.uniks.networkparser.graph.util;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.list.SimpleSet;
-public class AssociationSet extends SimpleSet<Association>
-
-{
+public class AssociationSet extends SimpleSet<Association> {
 	public static final AssociationSet EMPTY_SET = new AssociationSet();
-
-   public ClazzSet getClazzes() {
+	public ClazzSet getClazzes() {
 		ClazzSet collection = new ClazzSet();
 		for(Association item : this) {
 			collection.add(item.getClazz());

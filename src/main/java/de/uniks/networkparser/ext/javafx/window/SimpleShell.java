@@ -252,7 +252,7 @@ public abstract class SimpleShell extends Application {
 			}
 			FileOutputStream networkFile = new FileOutputStream(errorPath + "/" + fileName);
 
-			OutputStreamWriter ps = new OutputStreamWriter(networkFile,  "UTF-8");
+			OutputStreamWriter ps = new OutputStreamWriter(networkFile, "UTF-8");
 			PrintWriter pw = new PrintWriter(ps);
 			pw.println("Error: " + e.getMessage());
 			if (extras != null) {

@@ -24,26 +24,24 @@ package de.uniks.networkparser.graph.util;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.list.SimpleSet;
-public class ClazzSet extends SimpleSet<Clazz>
-
-{
+public class ClazzSet extends SimpleSet<Clazz> {
 	public AttributeSet getAttributes() {
-      AttributeSet collection = new AttributeSet();
-      for(Clazz item : this) {
-         collection.addAll(item.getAttributes());
-      }
-      return collection;
-   }
+		AttributeSet collection = new AttributeSet();
+		for(Clazz item : this) {
+			collection.addAll(item.getAttributes());
+		}
+		return collection;
+	}
 
-   public AssociationSet getAssociations() {
-      AssociationSet collection = new AssociationSet();
-      for(Clazz item : this) {
-         collection.addAll(item.getAssociations());
-      }
-      return collection;
-   }
+	public AssociationSet getAssociations() {
+		AssociationSet collection = new AssociationSet();
+		for(Clazz item : this) {
+			collection.addAll(item.getAssociations());
+		}
+		return collection;
+	}
 
-   public MethodSet getMethods() {
+	public MethodSet getMethods() {
       MethodSet collection = new MethodSet();
       for(Clazz item : this) {
          collection.addAll(item.getMethods());

@@ -47,7 +47,6 @@ public class XMLTest {
 		map.with(new AppleTreeCreator());
 		map.with(new AppleCreator());
 
-
 		Assert.assertEquals(133, map.toSimpleXML(appleTree).toString().length());
 	}
 
@@ -187,8 +186,6 @@ public class XMLTest {
 		Assert.assertEquals(3, entity.getChildrenCount());
 	}
 
-
-
 	@Test
 	public void testChatMessage(){
 		ChatMessage chatMessage= new ChatMessage();
@@ -230,7 +227,6 @@ public class XMLTest {
 		result = map.decode("<p value=\"Hallo Welt\"></p>");
 		assertEquals(((StringMessage) result).getValue(), "Hallo Welt");
 	}
-
 
 	@Test
 	public void testXMLChatMessage() {
@@ -296,7 +292,6 @@ public class XMLTest {
 		map.with(new XMLTestItemCreator());
 		XMLEntity xmlEmF = map.toSimpleXML(item);
 		Assert.assertEquals("<item id=\"42\"><user>Stefan</user><body txt=\"Hallo Welt\">new Value</body></item>", xmlEmF.toString());
-
 
 		XMLTestItem newItem = (XMLTestItem) map.decode(xmlEmF.toString());
 		Assert.assertEquals(item.getBody(), newItem.getBody());

@@ -44,7 +44,6 @@ public class FileBuffer extends Buffer {
 		return this;
 	}
 
-
 	public FileBuffer withFile(File file) throws FileNotFoundException {
 		this.file = file;
 		this.length = (int) this.file.length();
@@ -128,7 +127,6 @@ public class FileBuffer extends Buffer {
 		char value = getChar();
 		return value;
 	}
-
 
 	public byte getByte() {
 		return (byte)getChar();

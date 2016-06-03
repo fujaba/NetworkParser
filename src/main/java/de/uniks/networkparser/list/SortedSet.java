@@ -56,7 +56,6 @@ public class SortedSet<V> extends SimpleSet<V> {
 		return this;
 	}
 
-
 	/**
 	 * Returns a view of the portion of this map whose keys are greater than (or
 	 * equal to, if {@code inclusive} is true) {@code fromKey}.

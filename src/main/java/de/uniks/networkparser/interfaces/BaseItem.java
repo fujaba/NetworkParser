@@ -42,7 +42,6 @@ public interface BaseItem {
 	 */
 	public String toString(Converter converter);
 
-
 	/** Add Elements to List or KeyValue
 	 * if param Modulo 2 the Params can be Key,Value
 	 * or add all Values  to List

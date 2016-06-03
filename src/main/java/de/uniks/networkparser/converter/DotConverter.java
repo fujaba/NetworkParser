@@ -185,7 +185,7 @@ public class DotConverter implements Converter {
 				value.skip();
 				String valueStr = decodeValue(value);
 				if(node instanceof Clazz) {
-					Attribute attribute = ((Clazz)node).createAttribute(key,  DataType.STRING);
+					Attribute attribute = ((Clazz)node).createAttribute(key, DataType.STRING);
 					attribute.withValue(valueStr);
 				}
 			}
@@ -301,7 +301,7 @@ public class DotConverter implements Converter {
 //			// now generate edges from edgeMap
 		for(Association edge : root.getAssociations()) {
 			Association otherEdge = edge.getOther();
-			if(otherEdge.getType()  != AssociationTypes.EDGE) {
+			if(otherEdge.getType() != AssociationTypes.EDGE) {
 				// It is bidiAssoc
 				sb.append(edge.getClazz().getName(false) + " -- " + otherEdge.getClazz().getName(false));
 				sb.append("[headlabel = \""+edge.getName()+"\" taillabel = \""+otherEdge.getName()+"\"];"+BaseItem.CRLF);

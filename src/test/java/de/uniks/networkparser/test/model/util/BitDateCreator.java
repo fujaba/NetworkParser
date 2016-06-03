@@ -21,11 +21,9 @@ public class BitDateCreator implements SendableEntityCreator,BitEntityCreator {
 		addField(new BitEntity().with(field, BitEntity.BIT_NUMBER).withStartLen(start, len).withOrientation(orientation));
 	}
 //
-//		createrClass.addBitEntity("number",BitEntity.BIT_NUMBER,  "8", BitEntity.TYP_VALUE, "len", BitEntity.TYP_REFERENCE);
+//		createrClass.addBitEntity("number",BitEntity.BIT_NUMBER, "8", BitEntity.TYP_VALUE, "len", BitEntity.TYP_REFERENCE);
 //		return new String[] { BitDate.PROPERTY_DAY,
 //				BitDate.PROPERTY_MONTH, BitDate.PROPERTY_YEAR, BitDate.PROPERTY_HOUR, BitDate.PROPERTY_MINUTE };
-
-
 
 	@Override
 	public String[] getProperties() {

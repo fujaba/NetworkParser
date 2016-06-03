@@ -48,10 +48,10 @@ public class GitRevision {
 		int count=0;
 		try {
 			repository = builder.setWorkTree(file)
-			  .readEnvironment() // scan environment GIT_* variables
-			  .findGitDir() // scan up the file system tree
-			  .build();
-	
+				.readEnvironment() // scan environment GIT_* variables
+				.findGitDir() // scan up the file system tree
+				.build();
+
 			calcGitTag(repository);
 			allRefs = repository.getAllRefs();
 			headID = repository.resolve("HEAD");
@@ -150,7 +150,7 @@ public class GitRevision {
 				if(objectID!=null){
 					jsonObject.put("ID", objectID.getName());
 				}
-				jsonObject.put("TIME",  "" + commit.getCommitTime());
+				jsonObject.put("TIME", "" + commit.getCommitTime());
 				if(commit.getCommitterIdent() != null) {
 					jsonObject.put("COMMITER", commit.getCommitterIdent().getName());
 				}

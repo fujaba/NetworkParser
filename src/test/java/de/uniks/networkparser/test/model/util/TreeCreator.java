@@ -6,7 +6,7 @@ import de.uniks.networkparser.test.model.Person;
 import de.uniks.networkparser.test.model.Tree;
 
 public class TreeCreator implements SendableEntityCreator {
-	   private final String[] properties = new String[] {Tree.PROPERTY_NAME, Tree.PROPERTY_PERSON};
+	private final String[] properties = new String[] {Tree.PROPERTY_NAME, Tree.PROPERTY_PERSON};
 
 	@Override
 	public String[] getProperties() {
@@ -26,17 +26,15 @@ public class TreeCreator implements SendableEntityCreator {
 
 	@Override
 	public boolean setValue(Object entity, String attrName, Object value, String type) {
-		 if (AppleTree.PROPERTY_NAME.equalsIgnoreCase(attrName))
-		  {
-			 ((AppleTree) entity).setName(""+value);
-			 return true;
-		  }
-		 if (AppleTree.PROPERTY_PERSON.equalsIgnoreCase(attrName))
-		  {
-			 ((AppleTree) entity).setPerson((Person)value);
-			 return true;
-		  }
-		 return false;
+		if (AppleTree.PROPERTY_NAME.equalsIgnoreCase(attrName)) {
+			((AppleTree) entity).setName(""+value);
+			return true;
+		}
+		if (AppleTree.PROPERTY_PERSON.equalsIgnoreCase(attrName)) {
+			((AppleTree) entity).setPerson((Person)value);
+			return true;
+		}
+		return false;
 	}
 
 	@Override

@@ -206,7 +206,6 @@ public class ByteTest{
 //			assertEquals(test, byteString[i++]);
 //		}
 
-
 		StringMessage newMsg = (StringMessage) map.decode(hexString, new ByteConverterHex());
 		assertEquals("Value of TextMessage", "Test", newMsg.getValue());
 	}

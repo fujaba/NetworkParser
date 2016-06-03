@@ -133,7 +133,6 @@ public class SQLStatement {
 		return this;
 	}
 
-
 	public SQLStatement withCondition(String key, Object value) {
 		if (conditions == null) {
 			conditions = new SimpleKeyValueList<String, Object>();

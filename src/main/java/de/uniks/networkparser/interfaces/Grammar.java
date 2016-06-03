@@ -74,7 +74,6 @@ public interface Grammar {
 	 */
 	public Object getNewEntity(SendableEntityCreator creator, String className, boolean prototype);
 
-
 	/**
 	 * Get The Prefix For Properties
 	 * @param creator The Creator

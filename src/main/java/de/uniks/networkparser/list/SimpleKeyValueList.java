@@ -380,7 +380,6 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return false;
 	}
 
-
 	@Override
 	public V put(K key, V value) {
 		int pos = hasKeyAndPos(key);

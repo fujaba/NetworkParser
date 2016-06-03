@@ -94,7 +94,6 @@ public class CheckSumTest {
 		assertEquals(135, crc.getValue());
 	}
 
-
 	@Test
 	public void testSHA1(){
 		// Compute digest

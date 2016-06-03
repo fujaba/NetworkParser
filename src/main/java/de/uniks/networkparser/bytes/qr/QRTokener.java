@@ -310,7 +310,7 @@ public class QRTokener {
 
 	/**
 	 * @return the code point of the table used in alphanumeric mode or -1 if
-	 *         there is no corresponding code in the table.
+	 *			there is no corresponding code in the table.
 	 * @param code		AlphanumericCode
 	 * @return getAlphanumericCode or -1
 	 */

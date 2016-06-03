@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *		http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -35,17 +35,12 @@ final class GenericGFPoly {
 	private final int[] coefficients;
 
 	/**
-	 * @param field
-	 *            the {@link GenericGF} instance representing the field to use
-	 *            to perform computations
+	 * @param field		the {@link GenericGF} instance representing the field to use to perform computations
 	 * @param coefficients
-	 *            coefficients as ints representing elements of GF(size),
-	 *            arranged from most significant (highest-power term)
-	 *            coefficient to least significant
+	 *			coefficients as ints representing elements of GF(size),
+	 *			arranged from most significant (highest-power term) coefficient to least significant
 	 * @throws IllegalArgumentException
-	 *             if argument is null or empty, or if leading coefficient is 0
-	 *             and this is not a constant polynomial (that is, it is not the
-	 *             monomial "0")
+	 *			if argument is null or empty, or if leading coefficient is 0 and this is not a constant polynomial (that is, it is not the monomial "0")
 	 */
 	GenericGFPoly(GenericGF field, int[] coefficients) {
 		if (coefficients.length == 0) {

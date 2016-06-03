@@ -31,7 +31,6 @@ public class ColumnTest {
 		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.gui.Column\",\"attrName\":\"Name\"}", map.toJsonObject(column).toString());
 	}
 
-
 	@Test
 	public void testColumnListenerTrue(){
 		Column column= new Column().withActionHandler(new CellHandler() {

@@ -80,7 +80,6 @@ public class JsonTest extends IOClasses{
 		Assert.assertEquals("{\"class\":\"JsonObject\",\"name\":\"\\\"Stefan\\\"\",\"value\":42}", item.toString());
 	}
 
-
 	@Test
 	public void testJSONList(){
 		JsonObject item = new JsonObject();
@@ -90,7 +89,6 @@ public class JsonTest extends IOClasses{
 		item.addToList("id", 42);
 		assertEquals("{\"id\":[23,42]}", item.toString());
 	}
-
 
 	@Test
 	public void testJSONPrimitive(){
@@ -102,7 +100,6 @@ public class JsonTest extends IOClasses{
 		assertEquals(23, item.get("idint"));
 		assertEquals("Wrong", 42.1d, item.getDouble("iddouble"), 0.00001);
 	}
-
 
 	@Test
 	public void testJSONMap(){
@@ -119,7 +116,6 @@ public class JsonTest extends IOClasses{
 		FullAssocs newAssoc = (FullAssocs) map.decode(new JsonObject().withValue(text.toString()));
 		assertEquals("Passwords", 2, newAssoc.getPasswords().size());
 	}
-
 
 	@Test
 	public void testSimpleMap() {
@@ -163,7 +159,6 @@ public class JsonTest extends IOClasses{
 
 		IdMap map= new IdMap();
 		map.with(new FullAssocsCreator());
-
 
 		JsonObject jsonObject = map.toJsonObject(fullAssocs);
 		String data = jsonObject.toString(2);
@@ -268,7 +263,6 @@ public class JsonTest extends IOClasses{
 		  }
 
 		  assertTrue(e instanceof RuntimeException);
-
 
 		  JsonArray array = new JsonArray().withValue("[{id:42}]");
 		  assertEquals(1, array.size());
@@ -394,13 +388,11 @@ public class JsonTest extends IOClasses{
 		actual=jsonMap.toJsonObject(chatMessage, new Filter().withFull(true));
 		assertEquals("WERT Vergleichen", reference, actual.toString(2));
 
-
 		// Array
 		reference="[\r\n  {\r\n    \"class\":\"de.uniks.networkparser.test.model.ChatMessage\",\r\n    \"id\":\"J1.C1\",\r\n    \"prop\":{\r\n      \"sender\":\"Stefan Lindel\",\r\n      \"time\":null,\r\n      \"txt\":\"Dies ist eine Testnachricht\",\r\n      \"count\":0,\r\n      \"activ\":false\r\n    }\r\n  }\r\n]";
 		JsonArray actualArray=jsonMap.toJsonArray(chatMessage, new Filter().withFull(true));
 		assertEquals("WERT Vergleichen", reference, actualArray.toString(2));
 	}
-
 
 	@Test
 	public void testFullMessage() {
@@ -440,7 +432,6 @@ public class JsonTest extends IOClasses{
 		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.FullMessage\",\"id\":\"http://myname.org/rest/de.uniks.networkparser.test.model.fullmessage/1\",\"prop\":{\"txt\":\"Hallo Welt\",\"number\":42,\"location\":{\"class\":\"de.uniks.networkparser.test.model.Location\",\"id\":\"http://myname.org/rest/de.uniks.networkparser.test.model.location/2\"}}}", json.toString());
 	}
 
-
 	@Test
 	public void testMapTest(){
 		IdMap map= new IdMap();
@@ -475,7 +466,6 @@ public class JsonTest extends IOClasses{
 
 		parent.setChild(child);
 
-
 		IdMap map= new IdMap();
 		map.with(new SortedMsgCreator());
 		String ref="{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"J1.S1\",\"prop\":{\"number\":1,\"child\":{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"J1.S2\",\"prop\":{\"number\":2,\"parent\":{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"J1.S1\"}}}}}";
@@ -502,12 +492,10 @@ public class JsonTest extends IOClasses{
 		IdMap mapReverse= new IdMap();
 		mapReverse.with(new StringMessageCreator());
 
-
 		StringMessage test = (StringMessage) mapReverse.decode(jsonObject.toString());
 
 		Assert.assertEquals("C:\\TEST\\MY\\WORLD.TXT", test.getValue());
 	}
-
 
 	@Test
 	public void testJsonArrayCount() {
@@ -517,7 +505,6 @@ public class JsonTest extends IOClasses{
 		child.setNumber(2);
 
 		parent.setChild(child);
-
 
 		IdMap map= new IdMap();
 		map.with(new SortedMsgCreator());
@@ -588,7 +575,6 @@ public class JsonTest extends IOClasses{
 		Assert.assertEquals(42, item.get("Number"));
 		Assert.assertEquals(23, item.get("number"));
 
-
 		// Dont allow Duplicate
 		JsonObject item2 = new JsonObject().withCaseSensitive(false);
 		item2.withValue(json);
@@ -601,7 +587,6 @@ public class JsonTest extends IOClasses{
 		item3.put("id", "42");
 		Assert.assertEquals("{\"id\":\"42\"}", item3.toString());
 	}
-
 
 	@Test
 	public void testJSONInJson(){
@@ -616,7 +601,6 @@ public class JsonTest extends IOClasses{
 		String newItemString = newItem.getString("item");
 		JsonObject newSubItem = new JsonObject().withValue(newItemString);
 		Assert.assertEquals(35, newSubItem.toString().length());
-
 
 //		StringBuffer readFile = readFile("test/StringThatDoesNotUnquote2.txt");
 //		String stringValue = "{\"id\": \"zuenFamilyChatServerSpace.R61\",\"prop\": {\"isToManyProperty\": true,";

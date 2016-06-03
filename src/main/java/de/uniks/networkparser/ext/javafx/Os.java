@@ -57,7 +57,7 @@ public class Os {
 	public boolean isAndroid() {
 		String javafxPlatform = System.getProperty("javafx.platform").toLowerCase();
 		String vmName = System.getProperty("java.vm.name").toLowerCase();
-		return ("android".equals(javafxPlatform) ||  "dalvik".equals(vmName));
+		return ("android".equals(javafxPlatform) || "dalvik".equals(vmName));
 	}
 
 	public boolean isEclipse(){
@@ -93,12 +93,10 @@ public class Os {
 		return PlatformType.unknown;
 	}
 
-
-
 	public String getFilename() {
-	  File jar = new File(this.getClass().getProtectionDomain().getCodeSource().getLocation()
+		File jar = new File(this.getClass().getProtectionDomain().getCodeSource().getLocation()
 				.getPath());
-	   return jar.getAbsoluteFile().getName();
+		return jar.getAbsoluteFile().getName();
 	}
 
 	public boolean isUTF8(){

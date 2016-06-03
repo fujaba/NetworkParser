@@ -94,7 +94,6 @@ public class GraphConverter implements Converter{
 		return root;
 	}
 
-
 	public JsonObject convertToJson(String typ, JsonArray list,
 			boolean removePackage) {
 		GraphList root = convertGraphList(typ, list);
@@ -126,7 +125,7 @@ public class GraphConverter implements Converter{
 					// Must be a Link to 1
 					Clazz newNode = parseJsonObject(root,
 							(JsonObject) value);
-					Association assoc  = new Association(newNode).with(Cardinality.ONE).with(props
+					Association assoc = new Association(newNode).with(Cardinality.ONE).with(props
 							.getKeyByIndex(i)).with(AssociationTypes.UNDIRECTIONAL);
 					Association assocOther= new Association(graphNode).with(AssociationTypes.EDGE);
 					assoc.with(assocOther);
@@ -167,11 +166,11 @@ public class GraphConverter implements Converter{
 						graphNode.with(attribute);
 					}
 				}else {
-                    Attribute attribute = GraphUtil.createAttribute().with(props.getKeyByIndex(i));
-                    if (value != null) {
-                        attribute.with(DataType.create(value.getClass())).withValue(value.toString());
-                        graphNode.with(attribute);
-                    }
+					Attribute attribute = GraphUtil.createAttribute().with(props.getKeyByIndex(i));
+					if (value != null) {
+						attribute.with(DataType.create(value.getClass())).withValue(value.toString());
+						graphNode.with(attribute);
+					}
 				}
 			}
 		}
@@ -201,7 +200,7 @@ public class GraphConverter implements Converter{
 			for (GraphEntity source : edgeNodes) {
 				SimpleSet<GraphEntity> edgeOtherNodes = GraphUtil.getNodes(edge.getOther());
 				for (GraphEntity target : edgeOtherNodes) {
-					JsonObject child =  parseEdge(typ, source, target, edge, shortName, ids);
+					JsonObject child = parseEdge(typ, source, target, edge, shortName, ids);
 					if(child != null) {
 						result.add(child);
 					}
@@ -319,7 +318,7 @@ public class GraphConverter implements Converter{
 			item.put(TYP, PATTERN);
 			String bounds = ((GraphPattern) entity).getBounds();
 			if(bounds != null) {
-				item.put(STYLE,  bounds);
+				item.put(STYLE, bounds);
 			}
 			item.put(ID, entity.getName());
 		}else if(entity instanceof GraphList) {

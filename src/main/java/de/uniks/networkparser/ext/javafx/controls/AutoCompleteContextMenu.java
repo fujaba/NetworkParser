@@ -67,7 +67,6 @@ public class AutoCompleteContextMenu extends ContextMenu{
 		return this;
 	}
 
-
 	private void onSuggestionChoosen(String suggestion){
 		control.setText(suggestion);
 		this.hide();

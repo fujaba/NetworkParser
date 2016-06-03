@@ -84,7 +84,6 @@ public class IfCondition implements UpdateListener, SendableEntityCreator {
 		return falseCondition;
 	}
 
-
 	@Override
 	public boolean update(Object evt) {
 		if (expression.update(evt)) {

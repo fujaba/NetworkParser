@@ -206,9 +206,9 @@ public class Clazz extends GraphEntity {
 	/**
 	 * ********************************************************************
 	 * <pre>
-	 *	   %srcCardinality%	   %tgtCardinality%
-	 * Clazz --------------------------------------- %tgtClass%
-	 *	   %srcRoleName%			 %tgtRoleName%
+	 *		%srcCardinality%		%tgtCardinality%
+	 * Clazz -------------------------------------- %tgtClass%
+	 *		%srcRoleName%			%tgtRoleName%
 	 * </pre>
 	 *
 	 * create a Bidirectional Association
@@ -276,9 +276,9 @@ public class Clazz extends GraphEntity {
 	 * @param transitive Get all Interfaces or direct Interfaces
 	 * @return all Interfaces of a Clazz
 	 *		 <pre>
-	 *			  one					   many
+	 *			one						many
 	 * Clazz ----------------------------------- Clazz
-	 *			  clazz				   Interfaces
+	 *			clazz					Interfaces
 	 *		 </pre>
 	 */
 	public ClazzSet getInterfaces(boolean transitive) {

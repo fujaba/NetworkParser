@@ -31,7 +31,6 @@ public class DotTest {
 		Assert.assertEquals(1, list.getNodes().size());
 	}
 
-
 	@Test
 	public void testDotSimple() {
 		String item="digraph G {"+BaseItem.CRLF
@@ -78,7 +77,6 @@ public class DotTest {
 		student.withUniDirectional(uni, "owner", Cardinality.ONE);
 
 		String convert = list.toString(new DotConverter(true));
-
 
 		new File("build").mkdir();
 		FileWriter fstream = new FileWriter("build/dotFile.dot");

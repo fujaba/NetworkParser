@@ -151,7 +151,6 @@ public class Method extends GraphMember {
 		return this;
 	}
 
-
 	public SimpleSet<Throws> getThrows() {
 		SimpleSet<Throws> collection = new SimpleSet<Throws>();
 		if (children == null) {
@@ -169,7 +168,6 @@ public class Method extends GraphMember {
 		}
 		return collection;
 	}
-
 
 	/** get All Parameter
 	 * @param filters Can Filter the List of Parameter

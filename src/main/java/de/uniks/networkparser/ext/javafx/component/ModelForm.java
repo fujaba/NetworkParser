@@ -75,7 +75,6 @@ public class ModelForm extends BorderPane{
 		return this;
 	}
 
-
 	public ModelForm withDataBinding(IdMap map, Object item, boolean addCommandBtn){
 		this.map = map;
 		this.item = item;
@@ -204,7 +203,6 @@ public class ModelForm extends BorderPane{
 
 		int count = this.actionComposite.getChildren().size();
 
-
 		for(Button btn : buttons){
 			if(count>0){
 				Label empty = new Label();
@@ -222,14 +220,13 @@ public class ModelForm extends BorderPane{
 		return this;
 	}
 
-
 	public boolean focusnext() {
 		for(Iterator<Node> i = getItems().getChildren().iterator();i.hasNext();){
-			Node child  = i.next();
+			Node child = i.next();
 			if(child instanceof PropertyComposite) {
 				PropertyComposite item = (PropertyComposite) child;
 				if(item.isFocus() && i.hasNext()) {
-					child  = i.next();
+					child = i.next();
 					((PropertyComposite) child).setFocus(true);
 				}
 			}

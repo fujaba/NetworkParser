@@ -35,7 +35,6 @@ public class SQLTable extends SimpleList<Object>{
 	private String table;
 	private boolean simple;
 
-
 	public static SQLTable create(ResultSet executeQuery, SQLStatement statement, boolean dynamic) {
 		AbstractArray<?> values = statement.getValues();
 		String[] properties = new String[values.size()];

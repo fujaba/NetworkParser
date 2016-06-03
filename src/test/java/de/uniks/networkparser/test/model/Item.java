@@ -26,218 +26,155 @@ import java.beans.PropertyChangeSupport;
 import de.uniks.networkparser.test.model.ludo.StrUtil;
 import de.uniks.networkparser.test.model.util.ItemSet;
 
-public class Item
-{
+public class Item {
+	//==========================================================================
+	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
+	public PropertyChangeSupport getPropertyChangeSupport() {
+		return listeners;
+	}
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		getPropertyChangeSupport().addPropertyChangeListener(listener);
+	}
+	//==========================================================================
+	public void removeYou() {
+		setParent(null);
+		setBuyer(null);
+		getPropertyChangeSupport().firePropertyChange("REMOVE_YOU", this, null);
+	}
+	//==========================================================================
+	public static final String PROPERTY_DESCRIPTION = "description";
+	private String description;
 
+	public String getDescription() {
+		return this.description;
+	}
 
-   //==========================================================================
+	public void setDescription(String value) {
+		if ( ! StrUtil.stringEquals(this.description, value)) {
+			String oldValue = this.description;
+			this.description = value;
+			getPropertyChangeSupport().firePropertyChange(PROPERTY_DESCRIPTION, oldValue, value);
+		}
+	}
 
-   protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
+	public Item withDescription(String value) {
+		setDescription(value);
+		return this;
+	}
 
-   public PropertyChangeSupport getPropertyChangeSupport()
-   {
-	  return listeners;
-   }
+	@Override
+	public String toString() {
+		StringBuilder r = new StringBuilder();
+		r.append(" ").append(this.getDescription());
+		r.append(" ").append(this.getValue());
+		return r.substring(1);
+	}
 
-   public void addPropertyChangeListener(PropertyChangeListener listener)
-   {
-	  getPropertyChangeSupport().addPropertyChangeListener(listener);
-   }
+	//==========================================================================
+	public static final String PROPERTY_VALUE = "value";
+	private double value;
 
+	public double getValue() {
+		return this.value;
+	}
 
-   //==========================================================================
+	public void setValue(double value) {
+		if (this.value != value) {
+			double oldValue = this.value;
+			this.value = value;
+			getPropertyChangeSupport().firePropertyChange(PROPERTY_VALUE, oldValue, value);
+		}
+	}
 
+	public Item withValue(double value) {
+		setValue(value);
+		return this;
+	}
 
-   public void removeYou()
-   {
-	  setParent(null);
-	  setBuyer(null);
-	  getPropertyChangeSupport().firePropertyChange("REMOVE_YOU", this, null);
-   }
+	public static final ItemSet EMPTY_SET = new ItemSet().withFlag(ItemSet.READONLY);
 
-
-   //==========================================================================
-
-   public static final String PROPERTY_DESCRIPTION = "description";
-
-   private String description;
-
-   public String getDescription()
-   {
-	  return this.description;
-   }
-
-   public void setDescription(String value)
-   {
-	  if ( ! StrUtil.stringEquals(this.description, value))
-	  {
-		 String oldValue = this.description;
-		 this.description = value;
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_DESCRIPTION, oldValue, value);
-	  }
-   }
-
-   public Item withDescription(String value)
-   {
-	  setDescription(value);
-	  return this;
-   }
-
-   @Override
-   public String toString()
-   {
-	  StringBuilder r = new StringBuilder();
-
-	  r.append(" ").append(this.getDescription());
-	  r.append(" ").append(this.getValue());
-	  return r.substring(1);
-   }
-
-   //==========================================================================
-   public static final String PROPERTY_VALUE = "value";
-
-   private double value;
-
-   public double getValue()
-   {
-	  return this.value;
-   }
-
-   public void setValue(double value)
-   {
-	  if (this.value != value)
-	  {
-		 double oldValue = this.value;
-		 this.value = value;
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_VALUE, oldValue, value);
-	  }
-   }
-
-   public Item withValue(double value)
-   {
-	  setValue(value);
-	  return this;
-   }
-
-
-   public static final ItemSet EMPTY_SET = new ItemSet().withFlag(ItemSet.READONLY);
-
-
-   /********************************************************************
+	/********************************************************************
 	* <pre>
 	*			  many					   one
 	* Item ----------------------------------- GroupAccount
 	*			  item				   parent
 	* </pre>
 	*/
+	public static final String PROPERTY_PARENT = "parent";
+	private GroupAccount parent = null;
 
-   public static final String PROPERTY_PARENT = "parent";
+	public GroupAccount getParent() {
+		return this.parent;
+	}
 
-   private GroupAccount parent = null;
+	public boolean setParent(GroupAccount value) {
+		boolean changed = false;
+		if (this.parent != value) {
+			GroupAccount oldValue = this.parent;
+			if (this.parent != null) {
+				this.parent = null;
+				oldValue.withoutItem(this);
+			}
+			this.parent = value;
+			if (value != null) {
+				value.withItem(this);
+			}
+			getPropertyChangeSupport().firePropertyChange(PROPERTY_PARENT, oldValue, value);
+			changed = true;
+		}
+		return changed;
+	}
+	public Item withParent(GroupAccount value) {
+		setParent(value);
+		return this;
+	}
 
-   public GroupAccount getParent()
-   {
-	  return this.parent;
-   }
+	public GroupAccount createParent() {
+		GroupAccount value = new GroupAccount();
+		withParent(value);
+		return value;
+	}
 
-   public boolean setParent(GroupAccount value)
-   {
-	  boolean changed = false;
-
-	  if (this.parent != value)
-	  {
-		 GroupAccount oldValue = this.parent;
-
-		 if (this.parent != null)
-		 {
-			this.parent = null;
-			oldValue.withoutItem(this);
-		 }
-
-		 this.parent = value;
-
-		 if (value != null)
-		 {
-			value.withItem(this);
-		 }
-
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_PARENT, oldValue, value);
-		 changed = true;
-	  }
-
-	  return changed;
-   }
-
-   public Item withParent(GroupAccount value)
-   {
-	  setParent(value);
-	  return this;
-   }
-
-   public GroupAccount createParent()
-   {
-	  GroupAccount value = new GroupAccount();
-	  withParent(value);
-	  return value;
-   }
-
-
-   /********************************************************************
+	/********************************************************************
 	* <pre>
 	*			  many					   one
 	* Item ----------------------------------- Person
 	*			  item				   buyer
 	* </pre>
 	*/
+	public static final String PROPERTY_BUYER = "buyer";
+	private Person buyer = null;
 
-   public static final String PROPERTY_BUYER = "buyer";
+	public Person getBuyer() {
+		return this.buyer;
+	}
 
-   private Person buyer = null;
+	public boolean setBuyer(Person value) {
+		boolean changed = false;
+		if (this.buyer != value) {
+			Person oldValue = this.buyer;
+			if (this.buyer != null) {
+				this.buyer = null;
+				oldValue.withoutItem(this);
+			}
+			this.buyer = value;
+			if (value != null) {
+				value.withItem(this);
+			}
+			getPropertyChangeSupport().firePropertyChange(PROPERTY_BUYER, oldValue, value);
+			changed = true;
+		}
+		return changed;
+	}
 
-   public Person getBuyer()
-   {
-	  return this.buyer;
-   }
+	public Item withBuyer(Person value) {
+		setBuyer(value);
+		return this;
+	}
 
-   public boolean setBuyer(Person value)
-   {
-	  boolean changed = false;
-
-	  if (this.buyer != value)
-	  {
-		 Person oldValue = this.buyer;
-
-		 if (this.buyer != null)
-		 {
-			this.buyer = null;
-			oldValue.withoutItem(this);
-		 }
-
-		 this.buyer = value;
-
-		 if (value != null)
-		 {
-			value.withItem(this);
-		 }
-
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_BUYER, oldValue, value);
-		 changed = true;
-	  }
-
-	  return changed;
-   }
-
-   public Item withBuyer(Person value)
-   {
-	  setBuyer(value);
-	  return this;
-   }
-
-   public Person createBuyer()
-   {
-	  Person value = new Person();
-	  withBuyer(value);
-	  return value;
-   }
+	public Person createBuyer() {
+		Person value = new Person();
+		withBuyer(value);
+		return value;
+	}
 }
-

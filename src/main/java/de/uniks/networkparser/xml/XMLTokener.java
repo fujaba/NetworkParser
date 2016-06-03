@@ -470,7 +470,6 @@ public class XMLTokener extends Tokener {
 		return null;
 	}
 
-
 	protected Object addToStack(SendableEntityCreatorTag creator, XMLTokener tokener, CharacterBuffer tag, CharacterBuffer value, MapEntity map) {
 		Object entity = creator.getSendableInstance(false);
 		if(entity instanceof EntityList) {

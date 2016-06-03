@@ -26,7 +26,7 @@ import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 
 public class Style implements Cloneable, SendableEntityCreatorNoIndex {
-	/**  The Constant PROPERTY_NAME for Name of Style */
+	/** The Constant PROPERTY_NAME for Name of Style */
 	public static final String PROPERTY_NAME="name";
 	private String name;
 

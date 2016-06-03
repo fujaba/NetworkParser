@@ -360,8 +360,6 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 			this.put(label, child);
 		}
 		return child;
-
-
 	}
 
 	@Override

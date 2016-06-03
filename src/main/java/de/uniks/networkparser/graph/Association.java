@@ -63,8 +63,6 @@ public class Association extends GraphMember {
 		return Cardinality.ONE;
 	}
 
-
-
 	@Override
 	public String getName() {
 		if(name != null) {
@@ -180,12 +178,12 @@ public class Association extends GraphMember {
 			return null;
 		}
 		for (GraphMember child : getChildren()) {
-			if (child instanceof GraphLabel)  {
+			if (child instanceof GraphLabel) {
 				return (GraphLabel) child;
 			}
 		}
 		for (GraphMember child : this.other.getChildren()) {
-			if (child instanceof GraphLabel)  {
+			if (child instanceof GraphLabel) {
 				return (GraphLabel) child;
 			}
 		}
@@ -283,7 +281,7 @@ public class Association extends GraphMember {
 	}
 
 	public Clazz getClazz() {
-		GraphSimpleSet collection =  getParents();
+		GraphSimpleSet collection = getParents();
 		if(collection.size()>0) {
 			GraphMember item = collection.get(0);
 			if(item instanceof Clazz) {

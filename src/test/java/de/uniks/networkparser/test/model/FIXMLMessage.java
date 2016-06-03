@@ -24,114 +24,71 @@ package de.uniks.networkparser.test.model;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-public class FIXMLMessage
-{
-
-
-   //==========================================================================
-
-   public Object get(String attrName)
-   {
-	  if (PROPERTY_APPLICATIONMESSAGE.equalsIgnoreCase(attrName))
-	  {
-		 return getApplicationmessage();
-	  }
-
-	  return null;
-   }
-
-
-   //==========================================================================
-
-   public boolean set(String attrName, Object value)
-   {
-	  if (PROPERTY_APPLICATIONMESSAGE.equalsIgnoreCase(attrName))
-	  {
-		 setApplicationmessage((ApplicationMessage) value);
-		 return true;
-	  }
-
-	  return false;
-   }
-
-
-   //==========================================================================
-
-   protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
-
-   public PropertyChangeSupport getPropertyChangeSupport()
-   {
-	  return listeners;
-   }
-
-   public void addPropertyChangeListener(PropertyChangeListener listener)
-   {
-	  getPropertyChangeSupport().addPropertyChangeListener(listener);
-   }
-
-
-   //==========================================================================
-
-   public void removeYou()
-   {
-	  setApplicationmessage(null);
-	  getPropertyChangeSupport().firePropertyChange("REMOVE_YOU", this, null);
-   }
-
-
-   /********************************************************************
+public class FIXMLMessage {
+	//==========================================================================
+	public Object get(String attrName) {
+		if (PROPERTY_APPLICATIONMESSAGE.equalsIgnoreCase(attrName)) {
+			return getApplicationmessage();
+		}
+		return null;
+	}
+	//==========================================================================
+	public boolean set(String attrName, Object value) {
+		if (PROPERTY_APPLICATIONMESSAGE.equalsIgnoreCase(attrName)) {
+			setApplicationmessage((ApplicationMessage) value);
+			return true;
+		}
+		return false;
+	}
+	//==========================================================================
+	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
+	public PropertyChangeSupport getPropertyChangeSupport() {
+		return listeners;
+	}
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		getPropertyChangeSupport().addPropertyChangeListener(listener);
+	}
+	//==========================================================================
+	public void removeYou() {
+		setApplicationmessage(null);
+		getPropertyChangeSupport().firePropertyChange("REMOVE_YOU", this, null);
+	}
+	/********************************************************************
 	* <pre>
 	*			  one					   one
 	* FIXMLMessage ----------------------------------- ApplicationMessage
 	*			  fixmlmessage				   applicationmessage
 	* </pre>
 	*/
+	public static final String PROPERTY_APPLICATIONMESSAGE = "applicationmessage";
+	private ApplicationMessage applicationmessage = null;
+	public ApplicationMessage getApplicationmessage() {
+		return this.applicationmessage;
+	}
+	public boolean setApplicationmessage(ApplicationMessage value) {
+		boolean changed = false;
+		if (this.applicationmessage != value) {
+			ApplicationMessage oldValue = this.applicationmessage;
+			if (this.applicationmessage != null) {
+				this.applicationmessage = null;
+				oldValue.setFixmlmessage(null);
+			}
+			this.applicationmessage = value;
+			if (value != null) {
+				value.withFixmlmessage(this);
+			}
+			getPropertyChangeSupport().firePropertyChange(PROPERTY_APPLICATIONMESSAGE, oldValue, value);
+			changed = true;
+		}
+		return changed;
+	}
 
-   public static final String PROPERTY_APPLICATIONMESSAGE = "applicationmessage";
+	public FIXMLMessage withApplicationmessage(ApplicationMessage value) {
+		setApplicationmessage(value);
+		return this;
+	}
 
-   private ApplicationMessage applicationmessage = null;
-
-   public ApplicationMessage getApplicationmessage()
-   {
-	  return this.applicationmessage;
-   }
-
-   public boolean setApplicationmessage(ApplicationMessage value)
-   {
-	  boolean changed = false;
-
-	  if (this.applicationmessage != value)
-	  {
-		 ApplicationMessage oldValue = this.applicationmessage;
-
-		 if (this.applicationmessage != null)
-		 {
-			this.applicationmessage = null;
-			oldValue.setFixmlmessage(null);
-		 }
-
-		 this.applicationmessage = value;
-
-		 if (value != null)
-		 {
-			value.withFixmlmessage(this);
-		 }
-
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_APPLICATIONMESSAGE, oldValue, value);
-		 changed = true;
-	  }
-
-	  return changed;
-   }
-
-   public FIXMLMessage withApplicationmessage(ApplicationMessage value)
-   {
-	  setApplicationmessage(value);
-	  return this;
-   }
-
-   public ApplicationMessage createApplicationmessage()
-   {
+	public ApplicationMessage createApplicationmessage() {
 	  ApplicationMessage value = new ApplicationMessage();
 	  withApplicationmessage(value);
 	  return value;

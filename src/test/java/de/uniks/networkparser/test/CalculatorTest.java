@@ -40,7 +40,6 @@ public class CalculatorTest {
 
 		Assert.assertEquals(42.0, calculator.calculate("max(max(2,42),1)"), 0.01);
 
-
 		Assert.assertEquals(42.0, calculator.calculate("max(1,2,42),1)"), 0.01);
 	}
 	@Test

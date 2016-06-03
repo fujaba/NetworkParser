@@ -41,9 +41,9 @@ public class AWTContainer implements Runnable{
 	/* Invokes a Runnable in JFX Thread and waits while it's finished. Like
 	* SwingUtilities.invokeAndWait does for EDT.
 	*
-	* @param run					 The Runnable that has to be called on JFX thread.
-	* @throws InterruptedException   the execution is interrupted.
-	* @throws ExecutionException	 If a exception is occurred in the run method of the Runnable
+	* @param run					The Runnable that has to be called on JFX thread.
+	* @throws InterruptedException	the execution is interrupted.
+	* @throws ExecutionException	If a exception is occurred in the run method of the Runnable
 	*/
 	@Override
 	public void run() {

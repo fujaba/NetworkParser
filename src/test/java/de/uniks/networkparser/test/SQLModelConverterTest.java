@@ -30,20 +30,20 @@ public class SQLModelConverterTest {
 	@BeforeClass
 	public static void loadSQLDriver() throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException, IOException {
 		File f = new File("lib/sql/sqlite-jdbc-3.8.11.2.jar");
-	    URL url = new URL("file:///"+f.getAbsolutePath());
-//	    DriverManager.setLogStream(System.out);
-	    URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-        Class<?> sysclass = URLClassLoader.class;
+		URL url = new URL("file:///"+f.getAbsolutePath());
+//		DriverManager.setLogStream(System.out);
+		URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+		Class<?> sysclass = URLClassLoader.class;
 
-        try {
-            Method method = sysclass.getDeclaredMethod("addURL", new Class[] {URL.class});
-            method.setAccessible(true);
-            method.invoke(sysloader, new Object[] {url});
-        } catch (Throwable t) {
-            throw new IOException("Error, could not add URL to system classloader");
-        }
-	    Class<?> c = ClassLoader.getSystemClassLoader().loadClass("org.sqlite.JDBC");
-	    c.newInstance();
+		try {
+			Method method = sysclass.getDeclaredMethod("addURL", new Class[] {URL.class});
+			method.setAccessible(true);
+			method.invoke(sysloader, new Object[] {url});
+		} catch (Throwable t) {
+			throw new IOException("Error, could not add URL to system classloader");
+		}
+		Class<?> c = ClassLoader.getSystemClassLoader().loadClass("org.sqlite.JDBC");
+		c.newInstance();
 	}
 
 	@Test

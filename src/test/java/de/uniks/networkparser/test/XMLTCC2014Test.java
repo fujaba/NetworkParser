@@ -37,7 +37,6 @@ public class XMLTCC2014Test extends IOClasses{
 	public void testSimpleXMLEntity(){
 		String str = readFile("test3.xml").toString();
 
-
 		XMLEntity item= new XMLEntity();
 		item.withValue(str);
 		Assert.assertEquals(505, item.toString().length());

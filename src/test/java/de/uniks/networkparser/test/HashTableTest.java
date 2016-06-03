@@ -156,47 +156,36 @@ public class HashTableTest
 		test("PersonSet	:", new PersonSet());
 	}
 
-   @Test
-   public void testSmallList() {
-	   PersonSet personSet = new PersonSet();
-	   Person newValue = new Person();
-	   personSet.add(newValue);
-	   personSet.add(new Person());
-	   personSet.remove(newValue);
-	   Assert.assertEquals(1, personSet.size());
-   }
+	@Test
+	public void testSmallList() {
+		PersonSet personSet = new PersonSet();
+		Person newValue = new Person();
+		personSet.add(newValue);
+		personSet.add(new Person());
+		personSet.remove(newValue);
+		Assert.assertEquals(1, personSet.size());
+	}
 
+	@Test
+	public void testInsertion() {
+		long currentTimeMillis = System.currentTimeMillis();
+		GroupAccount groupAccount = new GroupAccount();
+		PersonSet personSet = new PersonSet();
 
-   @Test
-   public void testInsertion()
-   {
-	   long currentTimeMillis = System.currentTimeMillis();
+		for (int i = 0; i < COUNT; i++) {
+			Person person = groupAccount.createPersons().withName("p" + i);
+			if (i % 100 == 0) {
+				personSet.add(person);
+			}
+		}
 
-	  GroupAccount groupAccount = new GroupAccount();
-
-	  PersonSet personSet = new PersonSet();
-
-	  for (int i = 0; i < COUNT; i++)
-	  {
-		 Person person = groupAccount.createPersons().withName("p" + i);
-
-		 if (i % 100 == 0)
-		 {
-			personSet.add(person);
-		 }
-	  }
-
-
-	  printToStream("	 number of persons: " + groupAccount.getPersons().size() + " probe size: " + personSet.size());
-	  printToStream("	 " +(System.currentTimeMillis() - currentTimeMillis ));
-//	  for (Person person : personSet)
-//	  {
-//		 Assert.assertTrue("not in list", groupAccount.getPersons().contains(person));
-//		 groupAccount.withoutPersons(person);
-//		 Assert.assertFalse("still in list", groupAccount.getPersons().contains(person));
-//
-//	  }
-//
-//	  Assert.assertTrue("not in list", groupAccount.getPersons().contains(personSet.get(personSet.size()-1)));
-   }
+		printToStream("	 number of persons: " + groupAccount.getPersons().size() + " probe size: " + personSet.size());
+		printToStream("	 " +(System.currentTimeMillis() - currentTimeMillis ));
+//		for (Person person : personSet) {
+//			Assert.assertTrue("not in list", groupAccount.getPersons().contains(person));
+//			groupAccount.withoutPersons(person);
+//			Assert.assertFalse("still in list", groupAccount.getPersons().contains(person));
+//		}
+//		Assert.assertTrue("not in list", groupAccount.getPersons().contains(personSet.get(personSet.size()-1)));
+	}
 }

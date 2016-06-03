@@ -106,7 +106,6 @@ public abstract class AbstractList<V> extends AbstractArray<V> {
 		return newList;
 	}
 
-
 	/**
 	 * Get the next bigger Value of a Set
 	 * @param element Element for check

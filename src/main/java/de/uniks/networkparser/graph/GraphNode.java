@@ -34,7 +34,6 @@ public class GraphNode extends GraphMember{
 		return this;
 	}
 
-
 	@Override
 	public String toString() {
 		return name;

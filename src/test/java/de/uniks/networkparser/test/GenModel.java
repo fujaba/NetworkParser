@@ -31,7 +31,6 @@ public class GenModel {
 		}
 	}
 
-
 	@Test
 	public void testModel() {
 //		GraphModel model = new GraphList().with("de.uniks");

@@ -13,32 +13,30 @@ import de.uniks.networkparser.ext.javafx.controller.ModelListenerFactory;
 import de.uniks.networkparser.ext.javafx.dialog.DialogBox;
 
 public class TextItemGUI extends Application{
-		private String name="bla";
-		@Override
-		public void start(Stage stage) throws Exception {
+	private String name="bla";
+	@Override
+	public void start(Stage stage) throws Exception {
 
-			AnchorPane root=new AnchorPane();
-			Scene scene = new Scene(root, 600, 400);
-			TextField label=new TextField();
-			ModelListenerFactory.create(label, this, "name");
+		AnchorPane root=new AnchorPane();
+		Scene scene = new Scene(root, 600, 400);
+		TextField label=new TextField();
+		ModelListenerFactory.create(label, this, "name");
 
-			HBox box = new HBox();
-			Button button=new Button("display");
-			button.setOnAction(new EventHandler<ActionEvent>() {
-				@Override
-				public void handle(ActionEvent arg0) {
-					DialogBox.showInfo("Name", "The name is: "+name);
-				}
-			});
-			box.getChildren().addAll( label, button);
-			root.getChildren().add(box);
-			stage.setTitle("SimpleGUI");
-			stage.setScene(scene);
-			stage.show();
-		}
-		public static void main(String[] args) {
-			launch(args);
-		}
-
-
+		HBox box = new HBox();
+		Button button=new Button("display");
+		button.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				DialogBox.showInfo("Name", "The name is: "+name);
+			}
+		});
+		box.getChildren().addAll( label, button);
+		root.getChildren().add(box);
+		stage.setTitle("SimpleGUI");
+		stage.setScene(scene);
+		stage.show();
 	}
+	public static void main(String[] args) {
+		launch(args);
+	}
+}

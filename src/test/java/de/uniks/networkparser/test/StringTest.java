@@ -52,7 +52,6 @@ public class StringTest {
 		Assert.assertEquals("B", a);
 	}
 
-
 	@Test
 	public void testEscapeSimple(){
 		String g = "\"\\\"Hallo Welt\\\"\"";

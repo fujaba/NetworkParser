@@ -109,7 +109,6 @@ public class NumberTextField extends TextField implements CellEditorElement {
 	public void dispose() {
 	}
 
-
 	@Override
 	public NumberTextField withColumn(Column column) {
 		this.column = column;

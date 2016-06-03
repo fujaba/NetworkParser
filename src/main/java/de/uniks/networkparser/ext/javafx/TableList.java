@@ -118,7 +118,6 @@ public class TableList extends SortedList<Object> implements
 	public TableList withSort(String field, SortingDirection direction,
 			EntityValueFactory cellValueCreator) {
 
-
 		EntityComparator<Object> cpr;
 		if (isComparator() && comparator() instanceof EntityComparator<?>) {
 			cpr = (EntityComparator<Object>) comparator();

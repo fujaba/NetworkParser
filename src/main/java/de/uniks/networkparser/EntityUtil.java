@@ -150,35 +150,34 @@ public class EntityUtil {
 		return sb.toString();
 	}
 
-   public static String basicUnQuote(String value) {
-	  if (value == null || value.length() == 0) {
-		 return "";
-	  }
-	  StringBuilder sb = new StringBuilder(value.length());
-	  char c;
-	  for (int i = 0; i < value.length(); i++) {
-		 c = value.charAt(i);
-		 if (c == '\\') {
-			if (i + 1 == value.length()) {
-			   sb.append('\\');
-			   break;
+	public static String basicUnQuote(String value) {
+		if (value == null || value.length() == 0) {
+			return "";
+		}
+		StringBuilder sb = new StringBuilder(value.length());
+		char c;
+		for (int i = 0; i < value.length(); i++) {
+			c = value.charAt(i);
+			if (c == '\\') {
+				if (i + 1 == value.length()) {
+					sb.append('\\');
+					break;
+				}
+				c = value.charAt(++i);
+				if (c == 'u') {
+					char no = fromHex(value.charAt(++i), value.charAt(++i), value.charAt(++i), value.charAt(++i));
+					sb.append((char) no);
+					continue;
+				//			} else if (c == '"') {
+				//			// remove the backslash
+				//			} else {
+				//			sb.append('\\');
+				}
 			}
-			c = value.charAt(++i);
-			if (c == 'u') {
-			   char no = fromHex(value.charAt(++i), value.charAt(++i),
-					 value.charAt(++i), value.charAt(++i));
-			   sb.append((char) no);
-			   continue;
-			   //			} else if (c == '"') {
-			   //			   // remove the backslash
-			   //			} else {
-			   //			   sb.append('\\');
-			}
-		 }
-		 sb.append(c);
-	  }
-	  return sb.toString();
-   }
+			sb.append(c);
+		}
+		return sb.toString();
+	}
 
 	private static char fromHex(char... values) {
 		return (char) ((HEXVAL.indexOf(values[0]) << 24)
@@ -349,7 +348,6 @@ public class EntityUtil {
 		}
 		return new String(buf);
 	}
-
 
 	/**
 	 * format a String with 0
@@ -573,7 +571,7 @@ public class EntityUtil {
 	}
 
 	public static final String javaKeyWords = " abstract assert boolean break byte case catch char class const continue default do double else enum extends final finally float for if goto implements import instanceof int interface long native new package private protected public return short static strictfp super switch synchronized this throw throws transient try void volatile while ";
-	private static final SimpleKeyValueList<String, String> transferMap =  new SimpleKeyValueList<String, String>().withKeyValueString("long:Long,int:Integer,char:Character,boolean:Boolean,byte:Byte,float:Float,double:Double", String.class);
+	private static final SimpleKeyValueList<String, String> transferMap = new SimpleKeyValueList<String, String>().withKeyValueString("long:Long,int:Integer,char:Character,boolean:Boolean,byte:Byte,float:Float,double:Double", String.class);
 
 	public static String toValidJavaId(String tag) {
 		if (javaKeyWords.indexOf(" " + tag + " ") >= 0) {
@@ -633,7 +631,7 @@ public class EntityUtil {
 		StringBuilder buf = new StringBuilder(); // the output string buffer
 		for (int i = 0; i < str.length(); ++i) {
 			char ch = str.charAt(i);
-			String entity = this.entities.getKey(Integer.valueOf(ch)); // get equivalent html  entity
+			String entity = this.entities.getKey(Integer.valueOf(ch)); // get equivalent html entity
 			if (entity == null) { // if entity has not been found
 				if (ch > 128) { // check if is an extended character
 					buf.append("&#" + ((int) ch) + ";"); // convert extended

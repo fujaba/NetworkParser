@@ -49,12 +49,10 @@ public class AppleTree extends Tree implements SendableEntity
 	   return true;
    }
 
-   //==========================================================================
-   public void removeYou()
-   {
-	  removeAllFromHas();
-   }
-
+	//==========================================================================
+	public void removeYou() {
+		removeAllFromHas();
+	}
 
    /********************************************************************
 	* <pre>

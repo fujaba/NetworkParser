@@ -101,137 +101,116 @@ public class GraphLudoTest
 		  .with(new PawnCreator())
 		  .with(new PlayerCreator());
 
-	  // create a simple ludo storyboard
+		// create a simple ludo storyboard
+		Ludo ludo = new Ludo();
+		Player tom = ludo.createPlayers().withName("Tom").withColor("blue").withEnumColor(LudoColor.blue);
+		Player sabine = ludo.createPlayers().withName("Sabine").withColor(RED).withEnumColor(LudoColor.red);
+		tom.createDice().withValue(6);
+		Pawn p2 = tom.createPawns().withColor("blue");
+		Field tomStartField = tom.createStart().withColor("blue").withKind("start");
+		sabine.createStart().withColor(RED).withKind("start");
+		Field tmp = tomStartField;
+		for (int i = 0; i < 4; i++) {
+			tmp = tmp.createNext();
+		}
+		tom.createBase().withColor("blue").withKind("base").withPawns(p2);
+		sabine.createPawns().withColor(RED).withPos(tomStartField);
+		JsonArray jsonArray = jsonIdMap.toJsonArray(ludo);
+		showDebugInfos(jsonArray, 5089, null);
+		GraphConverter graphConverter = new GraphConverter();
 
-	  Ludo ludo = new Ludo();
+		// May be 8 Asssocs and write 11
+		JsonObject converter=graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
+		showDebugInfos(converter, 2496, null);
+	}
+	private void showDebugInfos(Entity json, int len, PrintStream stream) {
+		if(stream != null) {
+			stream.println("###############################");
+			stream.println(json.toString(2));
+			stream.println("###############################");
+		}
+		Assert.assertEquals(len, json.toString(2).length());
+	}
+	private void showDebugInfos(EntityList json, int len, PrintStream stream) {
+		if(stream != null) {
+			stream.println("###############################");
+			stream.println(json.toString(2));
+			stream.println("###############################");
+		}
+		Assert.assertEquals(len, json.toString(2).length());
+	}
 
-	  Player tom = ludo.createPlayers().withName("Tom").withColor("blue").withEnumColor(LudoColor.blue);
+	@Test
+	public void testSimpleGraph() {
+		SortedMsg root = new SortedMsg();
+		root.withMsg("Hallo Welt");
 
+		root.setChild(new SortedMsg().withMsg("Child"));
 
-	  Player sabine = ludo.createPlayers().withName("Sabine").withColor(RED).withEnumColor(LudoColor.red);
+		IdMap map = new IdMap();
+		map.with(new SortedMsgCreator());
 
-	  tom.createDice().withValue(6);
+		JsonArray jsonArray = map.toJsonArray(root, new Filter().withFull(true));
+		GraphConverter graphConverter = new GraphConverter();
+		JsonObject objectModel=graphConverter.convertToJson(GraphTokener.OBJECT, jsonArray, true);
+		showDebugInfos(objectModel, 658, null);
 
-	  Pawn p2 = tom.createPawns().withColor("blue");
+		JsonObject clazzModel=graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
+		showDebugInfos(clazzModel, 492, null);
+		Assert.assertEquals(new CharacterBuffer()
+				.withLine("{")
+				.withLine("  \"typ\":\"classdiagram\",")
+				.withLine("  \"style\":null,")
+				.withLine("  \"nodes\":[")
+				.withLine("    {")
+				.withLine("      \"typ\":\"clazz\",")
+				.withLine("      \"id\":\"SortedMsg\",")
+				.withLine("      \"attributes\":[")
+				.withLine("        \"number:Integer\",")
+				.withLine("        \"msg:String\"")
+				.withLine("      ]")
+				.withLine("    }")
+				.withLine("  ],")
+				.withLine("  \"edges\":[")
+				.withLine("    {")
+				.withLine("      \"typ\":\"ASSOCIATION\",")
+				.withLine("      \"source\":{")
+				.withLine("        \"cardinality\":\"one\",")
+				.withLine("        \"property\":\"child\",")
+				.withLine("        \"id\":\"SortedMsg\"")
+				.withLine("      },")
+				.withLine("      \"target\":{")
+				.withLine("        \"cardinality\":\"one\",")
+				.withLine("        \"property\":\"parent\",")
+				.withLine("        \"id\":\"SortedMsg\"")
+				.withLine("      }")
+				.withLine("    }")
+				.withLine("  ]")
+				.with("}").toString(), clazzModel.toString(2));
+	}
 
-	  Field tomStartField = tom.createStart().withColor("blue").withKind("start");
+	@Test
+	public void testClazzTest() {
+		Clazz ludo = new Clazz().with("Ludo");
+		Clazz player = new Clazz().with("Player");
+		ludo.withBidirectional(player, "players",  Cardinality.MANY, "game", Cardinality.ONE);
+		Assert.assertNotNull(ludo);
+	}
 
-	  sabine.createStart().withColor(RED).withKind("start");
+	@Test
+	public void testLudoToMany() {
+		IdMap jsonIdMap = new IdMap();
+		jsonIdMap.with(new LudoCreator()).with(new PlayerCreator());
 
-	  Field tmp = tomStartField;
-	  for (int i = 0; i < 4; i++)
-	  {
-		 tmp = tmp.createNext();
-	  }
+		// create a simple ludo storyboard
+		Ludo ludo = new Ludo();
+		ludo.createPlayers().withName("Tom").withColor("blue").withEnumColor(LudoColor.blue);
+		ludo.createPlayers().withName("Sabine").withColor(RED).withEnumColor(LudoColor.red);
 
-	  tom.createBase().withColor("blue").withKind("base").withPawns(p2);
+		JsonArray jsonArray = jsonIdMap.toJsonArray(ludo);
+		GraphConverter graphConverter = new GraphConverter();
 
-	  sabine.createPawns().withColor(RED).withPos(tomStartField);
-
-	  JsonArray jsonArray = jsonIdMap.toJsonArray(ludo);
-	  showDebugInfos(jsonArray, 5089, null);
-	  GraphConverter graphConverter = new GraphConverter();
-
-	  // May be 8 Asssocs and write 11
-	  JsonObject converter=graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
-	  showDebugInfos(converter, 2496, null);
-   }
-   private void showDebugInfos(Entity json, int len, PrintStream stream) {
-	   if(stream != null) {
-		   stream.println("###############################");
-		   stream.println(json.toString(2));
-		   stream.println("###############################");
-	   }
-	   Assert.assertEquals(len, json.toString(2).length());
-   }
-   private void showDebugInfos(EntityList json, int len, PrintStream stream) {
-	   if(stream != null) {
-		   stream.println("###############################");
-		   stream.println(json.toString(2));
-		   stream.println("###############################");
-	   }
-	   Assert.assertEquals(len, json.toString(2).length());
-   }
-
- @Test
- public void testSimpleGraph()
- {
-	   SortedMsg root = new SortedMsg();
-	   root.withMsg("Hallo Welt");
-
-	   root.setChild(new SortedMsg().withMsg("Child"));
-
-	   IdMap map = new IdMap();
-	   map.with(new SortedMsgCreator());
-
-	   JsonArray jsonArray = map.toJsonArray(root, new Filter().withFull(true));
-	   GraphConverter graphConverter = new GraphConverter();
-	  JsonObject objectModel=graphConverter.convertToJson(GraphTokener.OBJECT, jsonArray, true);
-	  showDebugInfos(objectModel, 658, null);
-
-	  JsonObject clazzModel=graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
-	  showDebugInfos(clazzModel, 492, null);
-	  Assert.assertEquals(new CharacterBuffer()
-			  .withLine("{")
-			  .withLine("  \"typ\":\"classdiagram\",")
-			  .withLine("  \"style\":null,")
-			  .withLine("  \"nodes\":[")
-			  .withLine("    {")
-			  .withLine("      \"typ\":\"clazz\",")
-			  .withLine("      \"id\":\"SortedMsg\",")
-			  .withLine("      \"attributes\":[")
-			  .withLine("        \"number:Integer\",")
-			  .withLine("        \"msg:String\"")
-			  .withLine("      ]")
-			  .withLine("    }")
-			  .withLine("  ],")
-			  .withLine("  \"edges\":[")
-			  .withLine("    {")
-			  .withLine("      \"typ\":\"ASSOCIATION\",")
-			  .withLine("      \"source\":{")
-			  .withLine("        \"cardinality\":\"one\",")
-			  .withLine("        \"property\":\"child\",")
-			  .withLine("        \"id\":\"SortedMsg\"")
-			  .withLine("      },")
- 			  .withLine("      \"target\":{")
- 			  .withLine("        \"cardinality\":\"one\",")
- 			  .withLine("        \"property\":\"parent\",")
- 			  .withLine("        \"id\":\"SortedMsg\"")
- 			  .withLine("      }")
- 			  .withLine("    }")
- 			  .withLine("  ]")
- 			  .with("}").toString(), clazzModel.toString(2));
- 	}
-
-	 @Test
-	 public void testClazzTest() {
-		 Clazz ludo = new Clazz().with("Ludo");
-		 Clazz player = new Clazz().with("Player");
-		 ludo.withBidirectional(player, "players",  Cardinality.MANY, "game", Cardinality.ONE);
-		 Assert.assertNotNull(ludo);
-	 }
-
-
-
-	 @Test
-	 public void testLudoToMany()
-	 {
-		 IdMap jsonIdMap = new IdMap();
-	  jsonIdMap
-		  .with(new LudoCreator())
-		  .with(new PlayerCreator());
-
-	  // create a simple ludo storyboard
-	  Ludo ludo = new Ludo();
-	  ludo.createPlayers().withName("Tom").withColor("blue").withEnumColor(LudoColor.blue);
-	  ludo.createPlayers().withName("Sabine").withColor(RED).withEnumColor(LudoColor.red);
-
-	  JsonArray jsonArray = jsonIdMap.toJsonArray(ludo);
-	  GraphConverter graphConverter = new GraphConverter();
-
-	  JsonObject converter=graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
-	  showDebugInfos(converter, 569, null);
- }
-
+		JsonObject converter=graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
+		showDebugInfos(converter, 569, null);
+	}
 }
-

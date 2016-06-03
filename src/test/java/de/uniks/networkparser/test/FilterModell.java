@@ -52,7 +52,6 @@ public class FilterModell {
 			}
 		}
 
-
 //		SimpleSet<Attribute> filterAttributesA = clazz.getAttributes().has(u"name", Attribute.NAME, Condition.EQUALS);
 //		SimpleSet<Attribute> filterAttributesB = clazz.getAttributes(StringFilter.equalsIgnoreCase(Attribute.PROPERTY_NAME, "name"));
 //		filterAttributesA.get

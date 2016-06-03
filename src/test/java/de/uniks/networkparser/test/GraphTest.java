@@ -28,7 +28,6 @@ public class GraphTest {
 		Assert.assertEquals("{\"typ\":\"classdiagram\",\"style\":null,\"nodes\":[{\"typ\":\"clazz\",\"id\":\"Item\",\"head\":{\"src\":\"karli.png\"}}]}", converter.convert(list, false).toString());
 	}
 
-
 	@Test
 	public void testSuperClasses() {
 		Clazz student = new Clazz().with("Student");

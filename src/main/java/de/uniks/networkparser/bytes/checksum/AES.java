@@ -260,7 +260,6 @@ public class AES {
 		return encodeBlock(a);
 	}
 
-
 	/**
 	 * AES encrypt 128-bit plaintext using key previously set.
 	 *

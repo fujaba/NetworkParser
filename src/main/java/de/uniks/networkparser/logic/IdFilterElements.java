@@ -28,7 +28,6 @@ import de.uniks.networkparser.list.SimpleList;
 public class IdFilterElements extends SimpleList<Object> implements UpdateListener {
 	private UpdateListener condition;
 
-
 	public IdFilterElements(UpdateListener condition) {
 		this.condition = condition;
 	}

@@ -13,7 +13,6 @@ public class McCabe {
 		evaluate(allText);
 	}
 
-
 	public void evaluate(String allText)
 	{
 			int index=0;

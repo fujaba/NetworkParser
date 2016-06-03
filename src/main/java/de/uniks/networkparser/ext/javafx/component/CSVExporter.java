@@ -59,7 +59,7 @@ public class CSVExporter extends MenuItem implements EventHandler<ActionEvent>{
 			OutputStreamWriter writer = null;
 			try {
 				stream = new FileOutputStream(choice);
-				writer = new OutputStreamWriter(stream,  "UTF-8");
+				writer = new OutputStreamWriter(stream, "UTF-8");
 				for(Iterator<TableColumnFX> i = tableComponent.getColumnIterator();i.hasNext();) {
 					TableColumnFX tableColumn = i.next();
 					line.append(tableColumn.getColumn().getLabelOrAttrName());

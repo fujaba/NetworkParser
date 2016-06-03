@@ -45,8 +45,7 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 
-
-public class SQLTokener extends Tokener{
+public class SQLTokener extends Tokener {
 	private SQLStatement sqlConnection;
 	public static final String ID = "_ID";
 	public static final byte FLAG_NONE = 0x00;
@@ -118,7 +117,7 @@ public class SQLTokener extends Tokener{
 						}
 						result = true;
 					} else {
-						//TODO  VODOO
+						//TODO VODOO
 						// Check for Insert if really insert or Update
 						if(statement.isAutoStatement()) {
 							if(statement.getCommand() == SQLCommand.INSERT || statement.getCommand() == SQLCommand.UPDATE) {
@@ -137,22 +136,22 @@ public class SQLTokener extends Tokener{
 					} catch (SQLException e) {
 					}
 				}
-	        }
+			}
 		}
 		if(connection != null) {
 			result = result & disconnect(connection);
-        }
+		}
 		return result;
 	}
 
 	public boolean disconnect(Connection connection) {
 		 try {
-         	if(connection != null ) {
-         		connection.close();
-         	}
-         }catch (SQLException e) {
-         	return false;
-         }
+			if(connection != null ) {
+				connection.close();
+			}
+		}catch (SQLException e) {
+			return false;
+		}
 		return true;
 	}
 

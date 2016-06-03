@@ -54,7 +54,7 @@ public class SelectionListener implements ListChangeListener<Integer>{
 		return this;
 	}
 
-	public void setSelection(TableViewFX  viewer, List<? extends Integer> items){
+	public void setSelection(TableViewFX viewer, List<? extends Integer> items){
 		if(viewer!=null){
 			ObservableList<Integer> selectedIndices = viewer.getSelectionModel().getSelectedIndices();
 			for(Iterator<? extends Integer> iterator = items.iterator();iterator.hasNext();){

@@ -47,8 +47,6 @@ public class WriteJsonGraph {
 		Clazz list = model.with(new Clazz().with("List<V>"));
 		Clazz set = model.with(new Clazz().with("Set<V>"));
 
-
-
 //		baseItem.withInterface(true);
 
 		model.with(Association.create(abstractArray, baseItem).with(AssociationTypes.IMPLEMENTS));
@@ -59,12 +57,9 @@ public class WriteJsonGraph {
 		model.with(Association.create(simpleList, abstractList).with(AssociationTypes.GENERALISATION));
 		model.with(Association.create(simpleSet, abstractList).with(AssociationTypes.GENERALISATION));
 
-
 		model.with(Association.create(simpleKeyValueList, map).with(AssociationTypes.IMPLEMENTS));
 		model.with(Association.create(simpleList, list).with(AssociationTypes.IMPLEMENTS));
 		model.with(Association.create(simpleSet, set).with(AssociationTypes.IMPLEMENTS));
-
-
 
 		docEnvironment.writeJson("simpleCollection.html", "../src/main/resources/de/uniks/networkparser/graph/", new GraphConverter().convertToJson(model, true));
 	}

@@ -120,9 +120,8 @@ public class NetworkParserSources {
 			}
 		}
 
-
 		SourceItem source= new SourceItem(file);
-		for (MethodItem m :  source.getMethods().getItems()){
+		for (MethodItem m : source.getMethods().getItems()){
 			if(m.getLinesOfCode()<1 && m.getName().length()>0){
 				System.out.println("Empty Method: " +m.getName()+ ":" +file.getName());
 			}

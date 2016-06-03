@@ -104,15 +104,15 @@ public class ZipContainer {
 					if(element != null) {
 						CharacterBuffer output=new CharacterBuffer();
 						int len = 0;
-		                while ((len = zis.read(buffer)) > 0) {
-		                    output.write(buffer, len);
-		                }
-		                if(element instanceof Entity) {
-		                	((Entity)element).withValue(output);
-		                } else {
-		                	element.with(output.toString());
-		                }
-		                return element;
+						while ((len = zis.read(buffer)) > 0) {
+							output.write(buffer, len);
+						}
+						if(element instanceof Entity) {
+							((Entity)element).withValue(output);
+						} else {
+							element.with(output.toString());
+						}
+						return element;
 					}
 				}
 				zis.closeEntry();

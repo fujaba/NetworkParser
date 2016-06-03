@@ -181,7 +181,6 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 		return 1;
 	}
 
-
 	public byte flag() {
 		return flag;
 	}

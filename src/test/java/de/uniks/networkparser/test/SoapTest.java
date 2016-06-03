@@ -26,8 +26,6 @@ public class SoapTest {
 		String reference = "<?xml version=\"1.0\" encoding=\"utf-8\"?><soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\"><soap:Body><GetMatchByMatchID xmlns=\"http://msiggi.de/Sportsdata/Webservices\"><MatchID>28682</MatchID></GetMatchByMatchID></soap:Body></soap:Envelope>";
 		Assert.assertEquals(reference, body);
 
-
-
 		// Send
 //		URL u = new URL("http://www.openligadb.de/Webservices/Sportsdata.asmx");
 //		HttpURLConnection conn = (HttpURLConnection) u.openConnection();

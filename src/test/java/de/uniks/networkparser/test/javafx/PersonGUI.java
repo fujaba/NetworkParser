@@ -43,8 +43,6 @@ public class PersonGUI {
 		this.distanceValue = new SimpleIntegerProperty(distance);
 	}
 
-
-
 	public PersonGUI(String fName, String lName, String email) {
 		this.firstName = new SimpleStringProperty(fName);
 

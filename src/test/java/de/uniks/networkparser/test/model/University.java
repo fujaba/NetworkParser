@@ -27,7 +27,6 @@ public class University implements SendableEntity {
 		this.value = value;
 	}
 
-
 	public String getUser() {
 		return user;
 	}
@@ -46,9 +45,9 @@ public class University implements SendableEntity {
 
 	/**
 	 * <pre>
-	 *		   0..1	 students	 0..n
+	 *		0..1	 students	 0..n
 	 * University ------------------------- Student
-	 *		   university		&gt;	   students
+	 *		university		&gt;	students
 	 * </pre>
 	 */
 

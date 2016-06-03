@@ -72,7 +72,7 @@ public class ShowTask implements Runnable{
 						y = maxH / 2.0 - dialogHeight / 2.0 + titleBarHeight;
 					} else {
 						x = owner.getX() + (scene.getWidth() / 2.0) - (dialogWidth / 2.0);
-						y = owner.getY() +  titleBarHeight + (scene.getHeight() / 2.0) - (dialogHeight / 2.0);
+						y = owner.getY() + titleBarHeight + (scene.getHeight() / 2.0) - (dialogHeight / 2.0);
 					}
 
 					setX(x);
@@ -108,6 +108,6 @@ public class ShowTask implements Runnable{
 		}
 		parent.stage.show();
 //		return null;
-	  }
+		}
 
 }

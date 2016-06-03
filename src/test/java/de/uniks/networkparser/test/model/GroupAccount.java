@@ -47,44 +47,30 @@ public class GroupAccount implements SendableEntity
 		  getPropertyChangeSupport().firePropertyChange(PROPERTY_NAME, oldValue, value);
 	   }
 	}
-   //==========================================================================
+	//==========================================================================
+	public double getTaskNames( double p0, String p1 ) {
+		return 0;
+	}
+	//==========================================================================
+	public void updateBalances(  ) {
+		// compute share
+		double totalExpenses = this.getItem().getValue().sum();
+		double share = totalExpenses / this.getItem().size();
+		for (Person person : this.getPersons()) {
+			double personExpenses  = person.getItem().getValue().sum();
+			person.setBalance(personExpenses - share);
+		}
+	}
+	//==========================================================================
+	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
+	public PropertyChangeSupport getPropertyChangeSupport() {
+		return listeners;
+	}
 
-   public double getTaskNames( double p0, String p1 )
-   {
-	  return 0;
-   }
-
-
-   //==========================================================================
-
-   public void updateBalances(  )
-   {
-	  // compute share
-	  double totalExpenses = this.getItem().getValue().sum();
-	  double share = totalExpenses / this.getItem().size();
-
-	  for (Person person : this.getPersons())
-	  {
-		 double personExpenses  = person.getItem().getValue().sum();
-		 person.setBalance(personExpenses - share);
-	  }
-   }
-
-
-   //==========================================================================
-
-   protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
-
-   public PropertyChangeSupport getPropertyChangeSupport()
-   {
-	  return listeners;
-   }
-
-   public boolean addPropertyChangeListener(PropertyChangeListener listener)
-   {
-	  getPropertyChangeSupport().addPropertyChangeListener(listener);
-	  return true;
-   }
+	public boolean addPropertyChangeListener(PropertyChangeListener listener) {
+		getPropertyChangeSupport().addPropertyChangeListener(listener);
+		return true;
+	}
 
 	@Override
 	public boolean addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
@@ -97,186 +83,135 @@ public class GroupAccount implements SendableEntity
 		getPropertyChangeSupport().removePropertyChangeListener(listener);
 		return true;
 	}
-
-
-   //==========================================================================
-
-
-   public void removeYou()
-   {
+	//==========================================================================
+   public void removeYou() {
 	   withoutPersons(this.getPersons().toArray(new Person[this.getPersons().size()]));
 	   withoutItem(this.getItem().toArray(new Item[this.getItem().size()]));
 	  getPropertyChangeSupport().firePropertyChange("REMOVE_YOU", this, null);
-   }
+	}
 
-
-   /********************************************************************
+	/********************************************************************
 	* <pre>
 	*			  one					   many
 	* GroupAccount ----------------------------------- Person
 	*			  parent				   persons
 	* </pre>
 	*/
+	public static final String PROPERTY_PERSONS = "persons";
+	private PersonSet persons = null;
+	public PersonSet getPersons() {
+		if (this.persons == null) {
+			return Person.EMPTY_SET;
+		}
+		return this.persons;
+	}
 
-   public static final String PROPERTY_PERSONS = "persons";
-
-   private PersonSet persons = null;
-
-   public PersonSet getPersons()
-   {
-	  if (this.persons == null)
-	  {
-		 return Person.EMPTY_SET;
-	  }
-
-	  return this.persons;
-   }
-
-   public GroupAccount withUnidirectionalPersons(Person... value)
-   {
-	  if(value==null){
-		 return this;
-	  }
-	  for (Person item : value)
-	  {
-		 if (item != null)
-		 {
-			if (this.persons == null)
-			{
-			   this.persons = new PersonSet();
+	public GroupAccount withUnidirectionalPersons(Person... value) {
+		if(value==null){
+			return this;
+		}
+		for (Person item : value) {
+			if (item != null) {
+				if (this.persons == null) {
+					this.persons = new PersonSet();
+				}
+				boolean changed = this.persons.add (item);
+				if (changed) {
+					getPropertyChangeSupport().firePropertyChange(PROPERTY_PERSONS, null, item);
+				}
 			}
+		}
+		return this;
+	}
 
-			boolean changed = this.persons.add (item);
-
-			if (changed)
-			{
-			   getPropertyChangeSupport().firePropertyChange(PROPERTY_PERSONS, null, item);
+	public GroupAccount withPersons(Person... value) {
+		if(value==null) {
+			return this;
+		}
+		for (Person item : value) {
+			if (item != null) {
+				if (this.persons == null) {
+					this.persons = new PersonSet();
+				}
+				boolean changed = this.persons.add (item);
+				if (changed) {
+					item.withParent(this);
+					getPropertyChangeSupport().firePropertyChange(PROPERTY_PERSONS, null, item);
+				}
 			}
-		 }
-	  }
-	  return this;
-   }
+		}
+		return this;
+	}
 
-   public GroupAccount withPersons(Person... value)
-   {
-	  if(value==null){
-		 return this;
-	  }
-	  for (Person item : value)
-	  {
-		 if (item != null)
-		 {
-			if (this.persons == null)
-			{
-			   this.persons = new PersonSet();
+	public GroupAccount withoutPersons(Person... value) {
+		for (Person item : value) {
+			if ((this.persons != null) && (item != null)) {
+				if (this.persons.remove(item)) {
+					item.setParent(null);
+					getPropertyChangeSupport().firePropertyChange(PROPERTY_PERSONS, item, null);
+				}
 			}
+		}
+		return this;
+	}
 
-			boolean changed = this.persons.add (item);
+	public Person createPersons() {
+		Person value = new Person();
+		withPersons(value);
+		return value;
+	}
 
-			if (changed)
-			{
-			   item.withParent(this);
-			   getPropertyChangeSupport().firePropertyChange(PROPERTY_PERSONS, null, item);
-			}
-		 }
-	  }
-	  return this;
-   }
-
-   public GroupAccount withoutPersons(Person... value)
-   {
-	  for (Person item : value)
-	  {
-		 if ((this.persons != null) && (item != null))
-		 {
-			if (this.persons.remove(item))
-			{
-			   item.setParent(null);
-			   getPropertyChangeSupport().firePropertyChange(PROPERTY_PERSONS, item, null);
-			}
-		 }
-
-	  }
-	  return this;
-   }
-
-   public Person createPersons()
-   {
-	  Person value = new Person();
-	  withPersons(value);
-	  return value;
-   }
-
-
-   /********************************************************************
+	/********************************************************************
 	* <pre>
 	*			  one					   many
 	* GroupAccount ----------------------------------- Item
 	*			  parent				   item
 	* </pre>
 	*/
+	public static final String PROPERTY_ITEM = "item";
+	private ItemSet item = null;
 
-   public static final String PROPERTY_ITEM = "item";
+	public ItemSet getItem() {
+		if (this.item == null) {
+			return Item.EMPTY_SET;
+		}
+		return this.item;
+	}
 
-   private ItemSet item = null;
-
-   public ItemSet getItem()
-   {
-	  if (this.item == null)
-	  {
-		 return Item.EMPTY_SET;
-	  }
-
-	  return this.item;
-   }
-
-   public GroupAccount withItem(Item... value)
-   {
-	  if(value==null){
-		 return this;
-	  }
-	  for (Item item : value)
-	  {
-		 if (item != null)
-		 {
-			if (this.item == null)
-			{
-			   this.item = new ItemSet();
+	public GroupAccount withItem(Item... value) {
+		if(value==null) {
+			return this;
+		}
+		for (Item item : value) {
+			if (item != null) {
+				if (this.item == null) {
+					this.item = new ItemSet();
+				}
+				boolean changed = this.item.add (item);
+				if (changed) {
+					item.withParent(this);
+					getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEM, null, item);
+				}
 			}
+		}
+		return this;
+	}
 
-			boolean changed = this.item.add (item);
-
-			if (changed)
-			{
-			   item.withParent(this);
-			   getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEM, null, item);
+	public GroupAccount withoutItem(Item... value) {
+		for (Item item : value) {
+			if ((this.item != null) && (item != null)) {
+				if (this.item.remove(item)) {
+					item.setParent(null);
+					getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEM, item, null);
+				}
 			}
-		 }
-	  }
-	  return this;
-   }
+		}
+		return this;
+	}
 
-   public GroupAccount withoutItem(Item... value)
-   {
-	  for (Item item : value)
-	  {
-		 if ((this.item != null) && (item != null))
-		 {
-			if (this.item.remove(item))
-			{
-			   item.setParent(null);
-			   getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEM, item, null);
-			}
-		 }
-
-	  }
-	  return this;
-   }
-
-   public Item createItem()
-   {
-	  Item value = new Item();
-	  withItem(value);
-	  return value;
-   }
+	public Item createItem() {
+		Item value = new Item();
+		withItem(value);
+		return value;
+	}
 }

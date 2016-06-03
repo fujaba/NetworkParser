@@ -131,7 +131,6 @@ public class GraphList extends GraphModel implements BaseItem{
 		return null;
 	}
 
-
 	public SimpleSet<GraphEntity> getNodes() {
 		return super.getNodes();
 	}

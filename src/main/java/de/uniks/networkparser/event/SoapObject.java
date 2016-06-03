@@ -59,7 +59,6 @@ public class SoapObject implements BaseItem {
 		return parseItem(new EntityStringConverter(indentFactor));
 	}
 
-
 	protected String parseItem(EntityStringConverter converter) {
 		CharacterBuffer sb = new CharacterBuffer();
 		sb.with("<", namespace, ":Envelope xmlns:xsi=\"", SoapCreator.XMLNS_XSI,"\" xmlns:xsd=\"", SoapCreator.XMLNS_XSD, "\"");

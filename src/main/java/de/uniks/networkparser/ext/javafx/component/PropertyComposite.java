@@ -140,7 +140,7 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 
 	 public PropertyComposite withDataBinding(IdMap map, Object item, Column column) {
 		 this.item = item;
-		 this.column =  column;
+		 this.column = column;
 		 getField().withMap(map);
 		 if(map!=null){
 			 this.creator = map.getCreatorClass(item);
@@ -322,7 +322,6 @@ public class PropertyComposite extends HBox implements PropertyChangeListener, C
 	public boolean onActive(boolean value) {
 		return false;
 	}
-
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {

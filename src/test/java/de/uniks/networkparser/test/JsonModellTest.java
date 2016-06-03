@@ -31,7 +31,6 @@ public class JsonModellTest implements UpdateListener {
 		account.createPersons().withName("Albert");
 		account.createPersons().withName("Tobi");
 
-
 		IdMap map= new IdMap();
 		map.with(new PersonCreator());
 		map.with(new GroupAccountCreator());
@@ -49,7 +48,6 @@ public class JsonModellTest implements UpdateListener {
 		SortedMsg second= new SortedMsg();
 		second.setNumber(2);
 		first.setChild(second);
-
 
 		String sample="Hallo Welt";
 

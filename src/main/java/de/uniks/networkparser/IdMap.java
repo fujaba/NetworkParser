@@ -436,7 +436,6 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 		return this.keyValue.size();
 	}
 
-
 	/**
 	 * Clone object.
 	 *
@@ -779,7 +778,6 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 		ByteBuffer buffer = new ByteBuffer().with(decodeBytes);
 		return byteTokener.decodeValue((byte)buffer.getCurrentChar(), buffer, map);
 	}
-
 
 	/**
 	 * Read Json Automatic create JsonArray or JsonObject
@@ -1211,7 +1209,6 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 						className = value.getClass().getName();
 						SendableEntityCreator valueCreater = map.getCreator(Grammar.WRITE, tokener.getMap(), value, className);
 						String fullProp = prop.toString();
-
 
 						String childClassName = value.getClass().getName();
 						Object key = value;

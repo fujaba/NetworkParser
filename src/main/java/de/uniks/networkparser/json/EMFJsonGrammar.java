@@ -40,7 +40,6 @@ public class EMFJsonGrammar extends SimpleGrammar {
 	public static final String PROP="@prop";
 	public static final String NV ="@nv";
 
-
 	@Override
 	public BaseItem getProperties(Entity item, IdMap map, Filter filter, boolean isId, String type) {
 		JsonObject props= new JsonObject();

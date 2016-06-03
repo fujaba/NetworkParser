@@ -13,7 +13,7 @@ import de.uniks.networkparser.converter.ByteConverterHex;
 public class ConvertKey {
 	String input;
 	String output;
-	public void execute()  {
+	public void execute() {
 		if(input == null) {
 			System.err.println("No Inputfile defined");
 			return;

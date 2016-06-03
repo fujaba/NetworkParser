@@ -39,15 +39,11 @@ public class SimpleJsonTest {
 		Assert.assertEquals(4, newHouse.getFloor());
 		Assert.assertEquals("University", newHouse.getName());
 
-
 		// Update old Model
 		house.setFloor(42);
 
 		decodeMap.decode(updateMessage);
 
 		Assert.assertEquals(42, newHouse.getFloor());
-
-
-
 	}
 }
