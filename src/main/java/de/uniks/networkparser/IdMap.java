@@ -40,6 +40,7 @@ import de.uniks.networkparser.converter.ByteConverter;
 import de.uniks.networkparser.event.ObjectMapEntry;
 import de.uniks.networkparser.event.util.DateCreator;
 import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.graph.GraphPatternMatch;
 import de.uniks.networkparser.graph.GraphTokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ByteItem;
@@ -387,6 +388,11 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	protected boolean addListener(Object object) {
 		if (object instanceof SendableEntity) {
 			((SendableEntity) object).addPropertyChangeListener(this.listener);
+		} else {
+			SendableEntityCreator creator = getCreatorClass(object);
+			if(creator != null && creator instanceof SendableEntity) {
+				((SendableEntity) creator).addPropertyChangeListener(this.listener);
+			}
 		}
 		return false;
 	}
@@ -1021,16 +1027,16 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 		return new GraphTokener().withMap(this).encode(object, map);
 	}
 
-	public GraphList getDiffList(Object source, Object target, boolean idCheck) {
-		GraphList sourceModel = toObjectDiagram(source);
-		GraphList targetModel = toObjectDiagram(target);
-		return new GraphTokener().withMap(this).diffModel(sourceModel, targetModel, idCheck);
+	public GraphPatternMatch getDiff(Object source, Object target, boolean ordered) {
+		MapEntity map = new MapEntity(filter, grammar);
+		if(ordered) {
+			map.setFlag(GraphTokener.FLAG_ORDERD);	
+		} else {
+			map.setFlag(GraphTokener.FLAG_UNORDERD);
+		}
+		return new GraphTokener().withMap(this).diffModel(source, target, map);
 	}
 	
-	public GraphList getDiffList(GraphList source, GraphList target, boolean idCheck) {
-		return new GraphTokener().withMap(this).diffModel(source, target, idCheck);
-	}
-
 	/**
 	 * Convert to JsonArray in the resource
 	 *

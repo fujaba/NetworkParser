@@ -42,6 +42,8 @@ public class GraphTokener extends Tokener {
 	public static final byte FLAG_CLASS = 0x01;
 	public static final byte FLAG_CARDINALITY = 0x02;
 	public static final byte FLAG_SHOWLINE = 0x04;
+	public static final byte FLAG_ORDERD = 0x08;
+	public static final byte FLAG_UNORDERD = 0x00;
 //	public static final byte FLAG_OBJECT = 0x01;
 
 	/** The Constant for OBJECT Diagramms. */
@@ -142,36 +144,7 @@ public class GraphTokener extends Tokener {
 		map.minus();
 		return;
 	}
-
-	public GraphList diffModel(GraphList master, GraphList slave, boolean idCheck) {
-		GraphDiff masterDiff = master.getDiff();
-		GraphDiff saveDiff = slave.getDiff();
-		Clazz masterFile = (Clazz) masterDiff.getMainFile();
-		Clazz slaveFile = (Clazz) saveDiff.getMainFile();
-
-		masterFile.getDiff().with(slaveFile);
-
-		// create new map<key: Clazz without s, Value: Object with {attributes, items}>
-		// Search for single clazz
-		// Search for clazz with master attributes
-		// search to 1 assoc
-		// try to find in to n assoc
-		searchMatch(masterFile);
-		return master;
-	}
-
-	private void searchMatch(Clazz master) {
-		master.getChildren().iterator();
-	}
-
-//	protected void initItem(GraphMember item) {
-//		item.withChildren(new GraphDiff());
-//		if(item instanceof Clazz) {
-//			if(this.getMaster() ==null) {
-//				this.toDoList.add((Clazz) item);
-//			}
-//		}
-//	}
+	
 	public void highlightModel(JsonArray clazzDiagram, GraphList objectDiagram) {
 		GraphList list = new GraphConverter().convertGraphList(GraphTokener.CLASS, clazzDiagram);
 		this.highlightModel(list, objectDiagram);
@@ -213,6 +186,52 @@ public class GraphTokener extends Tokener {
 			}
 		}
 		return clazzDiagram;
+	}
+	
+	public GraphPatternMatch diffModel(Object master, Object slave, MapEntity map) {
+		SendableEntityCreator masterCreator = this.map.getCreatorClass(master);
+		SendableEntityCreator slaveCreator = this.map.getCreatorClass(slave);
+
+		GraphPatternMatch result = new GraphPatternMatch();
+
+		if(masterCreator == null || slaveCreator == null) {
+			// No Creator Found for both value check if th same instance
+			if(master == null) {
+				if(slave == null) {
+					return result;
+				}
+				result.with(GraphPatternCreate.create(slave));
+				return result;
+			}
+			if(master.equals(slave)) {
+				return result;
+			}
+			if(slave == null) {
+				result.with(GraphPatternDelete.create(master));
+			}else {
+				result.with(GraphPatternChange.create(master, slave));
+			}
+			return result;
+		}
+		String[] properties = masterCreator.getProperties();
+
+		// Check properties
+		// Step one use equals-Method
+		// Step two: orderd
+		//				Primitive
+		//				Assoc to 1
+		//				Assoc to n
+		// 			 unorderd
+		//				Assoc to n
+		//				Assoc to 1
+		//				Primitive ( try to find keyattributes use order: String, Date, Int, Object)
+		for(String property : properties) {
+			Object masterValue = masterCreator.getValue(master, property);
+			Object slaveValue = slaveCreator.getValue(slave, property);
+			  
+			
+		}
+		return result;
 	}
 
 	@Override
