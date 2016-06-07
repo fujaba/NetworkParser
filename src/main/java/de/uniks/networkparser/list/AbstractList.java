@@ -34,7 +34,7 @@ import de.uniks.networkparser.interfaces.Condition;
  *
  * @param <V> generic Parameter for Simple-Collection
  */
-public abstract class AbstractList<V> extends AbstractArray<V> {
+public abstract class AbstractList<V> extends AbstractArray<V> implements Iterable<V> {
 	/**
 	 * <p>This implementation iterates over the specified collection, and adds
 	 * each object returned by the iterator to this collection, in turn.
@@ -172,5 +172,12 @@ public abstract class AbstractList<V> extends AbstractArray<V> {
 			}
 		}
 		return (ST) filterCollection;
+	}
+	
+	public Iterator<V> iterator() {
+		return new SimpleIterator<V>(this).withCheckPointer(true);
+	}
+	public Iterator<V> iterator(boolean checkPointer) {
+		return new SimpleIterator<V>(this).withCheckPointer(checkPointer);
 	}
 }

@@ -1,6 +1,7 @@
 package de.uniks.networkparser.test;
 
 import java.util.Iterator;
+import java.util.Map.Entry;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -45,12 +46,13 @@ public class ModelTest {
 
 		values.with("Albert", 42);
 		values.with("Stefan", 23);
-		for (String key : values){
-			if(key.equals("Albert")){
-				Assert.assertEquals(42, values.getInt(key));
+		for(Iterator<Entry<String, Integer>> i = values.iterator();i.hasNext();){
+			Entry<String, Integer> item = i.next();
+			if(item.getKey().equals("Albert")){
+				Assert.assertEquals(42, values.getInt(item.getKey()));
 			}
-			if(key.equals("Stefan")){
-				Assert.assertEquals(23, values.getInt(key));
+			if(item.getKey().equals("Stefan")){
+				Assert.assertEquals(23, values.getInt(item.getKey()));
 			}
 		}
 	}

@@ -24,10 +24,10 @@ package de.uniks.networkparser.json.util;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonArray;
-public class JsonArrayCreator implements SendableEntityCreator,
 
-		SendableEntityCreatorNoIndex {
-	private final String[] properties = new String[] {"VALUE" };
+public class JsonArrayCreator implements SendableEntityCreator,	SendableEntityCreatorNoIndex {
+	private final static String VALUE = "VALUE";	
+	private final String[] properties = new String[] {VALUE};
 
 	@Override
 	public String[] getProperties() {

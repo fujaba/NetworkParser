@@ -29,7 +29,7 @@ import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 
-public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
+public abstract class AbstractArray<V> implements BaseItem {
 	/** Is Allow Duplicate Items in List */
 	public static final byte ALLOWDUPLICATE = 0x01;
 	/** Is Allow Empty Value in List (null) */
@@ -1264,7 +1264,8 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 			return false;
 		}
 		boolean modified = false;
-		Iterator<?> it = iterator();
+		
+		Iterator<?> it =  new SimpleIterator<V>(this);
 		while (it.hasNext()) {
 			if (!c.contains(it.next())) {
 				it.remove();
@@ -1272,13 +1273,6 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 			}
 		}
 		return modified;
-	}
-
-	public Iterator<V> iterator() {
-		return new SimpleIterator<V>(this).withCheckPointer(true);
-	}
-	public Iterator<V> iterator(boolean checkPointer) {
-		return new SimpleIterator<V>(this).withCheckPointer(checkPointer);
 	}
 
 	/**

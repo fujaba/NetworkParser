@@ -22,8 +22,10 @@ package de.uniks.networkparser.graph;
  permissions and limitations under the Licence.
 */
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map.Entry;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
@@ -31,6 +33,7 @@ import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.converter.GraphConverter;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonArray;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 /**
  * The Class YUMLIdParser.
  */
@@ -189,51 +192,105 @@ public class GraphTokener extends Tokener {
 	}
 	
 	public GraphPatternMatch diffModel(Object master, Object slave, MapEntity map) {
+		GraphPatternMatch result = new GraphPatternMatch();
+		if(master == null) {
+			if(slave == null) {
+				return result;
+			}
+			result.with(GraphPatternCreate.create(slave));
+			return result;
+		}
+		if(master.equals(slave)) {
+			return result;
+		}
+		if(slave == null) {
+			result.with(GraphPatternDelete.create(master));
+			return result;
+		}
+		
 		SendableEntityCreator masterCreator = this.map.getCreatorClass(master);
 		SendableEntityCreator slaveCreator = this.map.getCreatorClass(slave);
 
-		GraphPatternMatch result = new GraphPatternMatch();
-
 		if(masterCreator == null || slaveCreator == null) {
+			result.with(GraphPatternChange.create(master, slave));
 			// No Creator Found for both value check if th same instance
-			if(master == null) {
-				if(slave == null) {
-					return result;
-				}
-				result.with(GraphPatternCreate.create(slave));
-				return result;
-			}
-			if(master.equals(slave)) {
-				return result;
-			}
-			if(slave == null) {
-				result.with(GraphPatternDelete.create(master));
-			}else {
-				result.with(GraphPatternChange.create(master, slave));
-			}
 			return result;
 		}
 		String[] properties = masterCreator.getProperties();
 
-		// Check properties
-		// Step one use equals-Method
-		// Step two: orderd
-		//				Primitive
-		//				Assoc to 1
-		//				Assoc to n
-		// 			 unorderd
-		//				Assoc to n
-		//				Assoc to 1
-		//				Primitive ( try to find keyattributes use order: String, Date, Int, Object)
+// Check properties
+// Step one use equals-Method
+		SimpleKeyValueList<String, Collection<?>> assocMany = new SimpleKeyValueList<String, Collection<?>>();
+		SimpleKeyValueList<String, Object> attributes = new SimpleKeyValueList<String, Object>();
 		for(String property : properties) {
 			Object masterValue = masterCreator.getValue(master, property);
-			Object slaveValue = slaveCreator.getValue(slave, property);
-			  
-			
+			if(masterValue instanceof Collection<?>) {
+				assocMany.add(property, (Collection<?>)masterValue);
+			} else {
+				attributes.add(property, masterValue);
+			}
+		}
+		SimpleKeyValueList<Object, Object> matchMap=new SimpleKeyValueList<Object, Object>();
+		if(map.isFlag(GraphTokener.FLAG_ORDERD)) {
+// Step two: orderd
+//				Primitive
+//				Assoc to 1
+//				Assoc to n
+			for(Iterator<Entry<String, Object>> i = attributes.iterator();i.hasNext();){
+				Entry<String, Object> item = i.next();
+				Object value = item.getValue();
+				Object slaveValue = masterCreator.getValue(master, item.getKey());
+				if(value == null) {
+					if(slaveValue == null) {
+						continue;
+					}
+					//FIXME Switch between Collection and SimpleObject
+					result.with(GraphPatternCreate.create(slaveValue));
+					continue;
+				}
+				if(value instanceof String || value instanceof Date || value instanceof Number) {
+					if(value.equals(slaveValue) == false) {
+						result.with(GraphPatternChange.create(value, slaveValue));
+					}
+				} else {
+					matchMap.add(value, slaveValue);
+					if(this.map.getCreatorClass(value) != null ) {
+						result.with(diffModel(value, slaveValue, map));
+					} else if(value.equals(slaveValue) == false) {
+						result.with(GraphPatternChange.create(value, slaveValue));
+					}
+				}
+			}
+			// Now try to Many Assoc
+			for(Iterator<Entry<String, Collection<?>>> i = assocMany.iterator();i.hasNext();){
+				Entry<String, Collection<?>> item = i.next(); 
+				GraphPatternCollection children = GraphPatternCollection.create(item.getKey());
+				Collection<?> masterCollection = item.getValue();
+				Object slaveValue = masterCreator.getValue(master, item.getKey());
+				if(slaveValue == null || slaveValue instanceof Collection<?> == false) {
+					
+				}
+				for(Object masterEntity : masterCollection) {
+//					Object slave = matchMap.get(masterEntity);
+				}
+//				for(int z=0;z<masterCollection.size();z++) {
+//					if()
+//				}
+			}
+		} else {
+// Step two: unorderd
+//				Assoc to n
+//				Assoc to 1
+//				Primitive ( try to find keyattributes use order: String, Date, Int, Object)
+			for(String property : properties) {
+				Object masterValue = masterCreator.getValue(master, property);
+				Object slaveValue = slaveCreator.getValue(slave, property);
+//				diffModel(value, slaveValue, map)
+			}
 		}
 		return result;
 	}
-
+	
 	@Override
 	public GraphTokener withMap(IdMap map) {
 		super.withMap(map);
