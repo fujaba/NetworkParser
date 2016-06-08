@@ -83,19 +83,17 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 	 *
 	 * @param index		The index must be between 0 and length() - 1.
 	 * @return 			A JSONArray value.
-	 * @throws RuntimeException
-	 *			 If there is no value for the index. or if the value is not a
-	 *			 JSONArray
 	 */
 	public JsonArray getJSONArray(int index) {
 		Object object = get(index);
 		if (object instanceof JsonArray) {
 			return (JsonArray) object;
-		} else if(object instanceof String) {
-			return new JsonArray().withValue(""+object);
 		}
-		throw new RuntimeException("JSONArray[" + index
-				+ "] is not a JSONArray.");
+		JsonArray returnValue = new JsonArray();
+      if(object != null) {
+         returnValue.add(object);
+      }
+      return returnValue;
 	}
 
 	/**

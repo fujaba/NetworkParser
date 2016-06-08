@@ -104,11 +104,12 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 		Object object = this.get(key);
 		if (object instanceof JsonArray) {
 			return (JsonArray) object;
-		} else if(object instanceof String) {
-			return new JsonArray().withValue(""+object);
 		}
-		throw new RuntimeException("JsonObject[" + EntityUtil.quote(key)
-				+ "] is not a JsonArray.");
+		JsonArray returnValue = new JsonArray();
+		if(object != null) {
+		   returnValue.add(object);
+		}
+		return returnValue;
 	}
 
 	/**
