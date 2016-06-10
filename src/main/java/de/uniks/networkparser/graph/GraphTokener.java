@@ -192,19 +192,22 @@ public class GraphTokener extends Tokener {
 	}
 	
 	public GraphPatternMatch diffModel(Object master, Object slave, MapEntity map) {
+		if(map.add(master) == false) {
+			return null;
+		}
 		GraphPatternMatch result = new GraphPatternMatch();
 		if(master == null) {
 			if(slave == null) {
 				return result;
 			}
-			result.with(GraphPatternCreate.create(slave));
+			result.with(GraphPatternChange.createCreate(slave));
 			return result;
 		}
 		if(master.equals(slave)) {
 			return result;
 		}
 		if(slave == null) {
-			result.with(GraphPatternDelete.create(master));
+			result.with(GraphPatternChange.createDelete(master));
 			return result;
 		}
 		
@@ -212,7 +215,7 @@ public class GraphTokener extends Tokener {
 		SendableEntityCreator slaveCreator = this.map.getCreatorClass(slave);
 
 		if(masterCreator == null || slaveCreator == null) {
-			result.with(GraphPatternChange.create(master, slave));
+			result.with(GraphPatternChange.createChange(master, slave));
 			// No Creator Found for both value check if th same instance
 			return result;
 		}
@@ -239,43 +242,70 @@ public class GraphTokener extends Tokener {
 			for(Iterator<Entry<String, Object>> i = attributes.iterator();i.hasNext();){
 				Entry<String, Object> item = i.next();
 				Object value = item.getValue();
-				Object slaveValue = masterCreator.getValue(master, item.getKey());
+				Object slaveValue = slaveCreator.getValue(slave, item.getKey());
 				if(value == null) {
 					if(slaveValue == null) {
 						continue;
 					}
-					//FIXME Switch between Collection and SimpleObject
-					result.with(GraphPatternCreate.create(slaveValue));
+					if(slaveValue instanceof Collection<?>) {
+						Collection<?> child = (Collection<?>) slaveValue;
+						GraphPatternMatch match = GraphPatternMatch.create(item.getKey(), slaveValue);
+						for(Iterator<?> childIterator = child.iterator();childIterator.hasNext();) {
+							match.with(GraphPatternChange.createCreate(childIterator.next()));
+						}
+						if(match.size()>0) {
+							result.with(match);
+						}
+					} else {
+						result.with(GraphPatternChange.createCreate(item.getKey(), slaveValue));	
+					}
 					continue;
 				}
 				if(value instanceof String || value instanceof Date || value instanceof Number) {
 					if(value.equals(slaveValue) == false) {
-						result.with(GraphPatternChange.create(value, slaveValue));
+						result.with(GraphPatternChange.createChange(item.getKey(), value, slaveValue));
 					}
 				} else {
 					matchMap.add(value, slaveValue);
 					if(this.map.getCreatorClass(value) != null ) {
 						result.with(diffModel(value, slaveValue, map));
 					} else if(value.equals(slaveValue) == false) {
-						result.with(GraphPatternChange.create(value, slaveValue));
+						result.with(GraphPatternChange.createChange(item.getKey(), value, slaveValue));
 					}
 				}
 			}
 			// Now try to Many Assoc
 			for(Iterator<Entry<String, Collection<?>>> i = assocMany.iterator();i.hasNext();){
 				Entry<String, Collection<?>> item = i.next(); 
-				GraphPatternCollection children = GraphPatternCollection.create(item.getKey());
 				Collection<?> masterCollection = item.getValue();
-				Object slaveValue = masterCreator.getValue(master, item.getKey());
+				GraphPatternMatch match = GraphPatternMatch.create(item.getKey(), masterCollection);
+				Object slaveValue = slaveCreator.getValue(slave, item.getKey());
 				if(slaveValue == null || slaveValue instanceof Collection<?> == false) {
-					
+					if(masterCollection.size()>0) {
+						for(Iterator<?> childIterator = masterCollection.iterator();childIterator.hasNext();) {
+							match.with(GraphPatternChange.createDelete(childIterator.next()));
+						}
+						result.with(match);	
+					}
+					continue;
 				}
-				for(Object masterEntity : masterCollection) {
-//					Object slave = matchMap.get(masterEntity);
+				Iterator<?> masterIterator = masterCollection.iterator();
+				Iterator<?> slaveIterator = ((Collection<?>)slaveValue).iterator();
+				while(masterIterator.hasNext()) {
+					Object masterChild = masterIterator.next();
+					if(slaveIterator.hasNext()) {
+						Object slaveChild = slaveIterator.next();
+						match.with(diffModel(masterChild, slaveChild, map));
+					} else {
+						match.with(GraphPatternChange.createDelete(masterChild));
+					}
 				}
-//				for(int z=0;z<masterCollection.size();z++) {
-//					if()
-//				}
+				while(slaveIterator.hasNext()) {
+					match.with(GraphPatternChange.createCreate(slaveIterator.next()));
+				}
+				if(match.size()>0) {
+					result.with(match);	
+				}
 			}
 		} else {
 // Step two: unorderd

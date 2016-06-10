@@ -36,8 +36,10 @@ public class GraphPatternMatch implements UpdateListener, SendableEntityCreator 
 	/** Constant for ITEM. */
 	public static final String ITEM = "item";
 	public static final String MATCHES = "matches";
+	public static final String PROPERTY = "property";
 	/** Varibale for Condition. */
 	private Object item;
+	private String property;
 	private Set<UpdateListener> matches;
 
 	@Override
@@ -82,10 +84,24 @@ public class GraphPatternMatch implements UpdateListener, SendableEntityCreator 
 	public Set<UpdateListener> getMatches() {
 		return matches;
 	}
+	
+	/**
+	 * @param value		for Property
+	 * @return 			GraphPatternMatch Instance
+	 */
+	public GraphPatternMatch withProperty(String value) {
+		this.property = value;
+		return this;
+	}
+
+	/** @return The Property */
+	public String getProperty() {
+		return property;
+	}
 
 	@Override
 	public String[] getProperties() {
-		return new String[] {ITEM,MATCHES};
+		return new String[] {ITEM, PROPERTY, MATCHES};
 	}
 
 	@Override
@@ -101,6 +117,9 @@ public class GraphPatternMatch implements UpdateListener, SendableEntityCreator 
 		if (MATCHES.equalsIgnoreCase(attribute)) {
 			return ((GraphPatternMatch) entity).getMatches();
 		}
+		if (PROPERTY.equalsIgnoreCase(attribute)) {
+			return ((GraphPatternMatch) entity).getProperty();
+		}
 		return null;
 	}
 
@@ -108,15 +127,25 @@ public class GraphPatternMatch implements UpdateListener, SendableEntityCreator 
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
 		if (ITEM.equalsIgnoreCase(attribute)) {
 			((GraphPatternMatch) entity).withItem(value);
+			return true;
 		}
 		if (MATCHES.equalsIgnoreCase(attribute)) {
-			((GraphPatternMatch) entity).with((UpdateListener[])value);
+			if(value instanceof UpdateListener) {
+				((GraphPatternMatch) entity).with((UpdateListener)value);
+			} else {
+				((GraphPatternMatch) entity).with((UpdateListener[])value);
+			}
+			return true;
+		}
+		if (PROPERTY.equalsIgnoreCase(attribute)) {
+			((GraphPatternMatch) entity).withProperty(""+value);
+			return true;
 		}
 		return false;
 	}
 
-	public static GraphPatternMatch create(Object condition) {
-		return new GraphPatternMatch().withItem(condition);
+	public static GraphPatternMatch create(String property, Object item) {
+		return new GraphPatternMatch().withItem(item);
 	}
 	
 	public int size() {
