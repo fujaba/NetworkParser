@@ -32,6 +32,7 @@ repositories {
 	jcenter()
 	mavenCentral()
 }
+
 test {
 	// enable TestNG support (default is JUnit)
 	useJUnit {
@@ -40,6 +41,7 @@ test {
 		}
 	}
 }
+
 buildscript {
 	repositories {
 		jcenter()
@@ -52,6 +54,7 @@ buildscript {
 		classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.6.3"
 	}
 }
+
 artifacts { 
 	archives buildCoreJar, buildCoreJar16, buildCoreJar17, buildSourceJar, buildJavadoc, buildFullJar
 }
@@ -65,9 +68,11 @@ test {
 		showCauses true
 	}
 }
+
 jacoco {
 	toolVersion = "0.7.6.201602180812"
 }
+
 jacocoTestReport {
 	group = "Reporting"
 	description = "Generate Jacoco coverage reports after running tests."
