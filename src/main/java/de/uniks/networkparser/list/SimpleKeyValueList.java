@@ -276,7 +276,8 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		if (pos < 0) {
 			return defaultValue;
 		}
-		return getValueByIndex(pos).toString();
+		V value = getValueByIndex(pos);
+		return value == null ? defaultValue : value.toString();
 	}
 
 	/**

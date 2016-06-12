@@ -647,4 +647,15 @@ public class JsonTest extends IOClasses{
 		Assert.assertEquals(22, json.getInt("id"));
 		
 	}
+
+	@Test
+	public void testGetStringWithDefault() {
+		// See:
+		// https://github.com/fujaba/NetworkParser/issues/3
+		String content = "{\"foo\": null}";
+		JsonObject json = new JsonObject().withValue(content);
+		Assert.assertEquals(null, json.getString("foo", null));
+		Assert.assertEquals("", json.getString("foo", ""));
+		Assert.assertEquals("bar", json.getString("foo", "bar"));
+	}
 }
