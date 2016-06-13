@@ -9,8 +9,16 @@ import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class ColumnTest {
-
+public class GUITest {
+	@Test
+	public void testGUIPosition() {
+		Assert.assertEquals(GUIPosition.CENTER.getValue(), "Center");
+		Assert.assertEquals(GUIPosition.EAST.getValue(), "East");
+		Assert.assertEquals(GUIPosition.SOUTH.getValue(), "South");
+		Assert.assertEquals(GUIPosition.WEST.getValue(), "West");
+		Assert.assertEquals(GUIPosition.NORTH.getValue(), "North");
+	}
+	
 	@Test
 	public void testColumn(){
 		Column column= new Column();

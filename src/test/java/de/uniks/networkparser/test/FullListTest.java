@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.ListIterator;
@@ -12,10 +13,10 @@ import org.junit.Test;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
+import de.uniks.networkparser.list.SortedList;
 import de.uniks.networkparser.test.model.Apple;
 
 public class FullListTest {
-
 	@Test
 	public void list() {
 		SimpleList<String> simpleList = new SimpleList<String>();
@@ -514,5 +515,78 @@ public class FullListTest {
 			iterator.next();
 			iterator.remove();
 		}
+	}
+	
+	@Test
+	public void retainAll(){
+		SimpleList<String> item = new SimpleList<String>();
+		item.with("Stefan", "Alex", "Albert");
+
+		SimpleList<String> itemB = new SimpleList<String>();
+		itemB.with("Stefan", "Alex", "Christian");
+
+		item.retainAll(itemB);
+
+		Assert.assertEquals(2, item.size());
+
+		SimpleList<String> clone =  (SimpleList<String>)item.clone();
+		Assert.assertEquals(2, clone.size());
+	}
+
+	@Test
+	public void Comparator(){
+		SortedList<String> item = new SortedList<String>();
+		item.withComparator(new Comparator<String>() {
+
+			@Override
+			public int compare(String o1, String o2) {
+				return o1.compareTo(o2);
+			}
+		});
+		item.with("Stefan", "Alex", "Albert");
+		Assert.assertEquals("Albert", item.get(0));
+		Assert.assertEquals("Alex", item.get(1));
+		Assert.assertEquals("Stefan", item.get(2));
+	}
+
+
+	@Test
+	public void testFullList() {
+		SimpleSet<Integer> smallList;
+		smallList = createTest(3);
+		testList(smallList);
+		smallList = createTest(10);
+		testList(smallList);
+	}
+	private SimpleSet<Integer> createTest(int size) {
+		SimpleSet<Integer> smallList = new SimpleSet<Integer>();
+		smallList.add(1);
+		smallList.add(1, 2);
+		smallList.add(1, 2);
+		smallList.with(new Integer(3));
+		return smallList;
+	}
+	private void testList(SimpleSet<Integer> smallList) {
+		Integer theThree = new Integer(3);
+		Integer theOne = new Integer(1);
+		Assert.assertEquals(new Integer(1), smallList.first());
+		Assert.assertEquals(theThree, smallList.last());
+		Assert.assertEquals(3, smallList.size());
+		Assert.assertEquals(2, smallList.indexOf(theThree));
+		Assert.assertEquals(theThree, smallList.get(2));
+		Assert.assertEquals(theThree, smallList.getKeyByIndex(2));
+		Assert.assertEquals(2, smallList.getPositionKey(3, false));
+//		Assert.assertEquals(-1, smallList.getPositionValue(3));
+		Assert.assertEquals(1, smallList.removeByObject(2));
+		Assert.assertEquals(theOne, smallList.remove(0));
+
+		Assert.assertEquals(0, smallList.indexOf(theThree));
+		Assert.assertFalse(smallList.isAllowDuplicate());
+		Assert.assertFalse(smallList.isAllowEmptyValue());
+		Assert.assertTrue(smallList.isCaseSensitive());
+		Assert.assertFalse(smallList.isComparator());
+		Assert.assertFalse(smallList.isEmpty());
+		Assert.assertTrue(smallList.isVisible());
+		Assert.assertFalse(smallList.isReadOnly());
 	}
 }

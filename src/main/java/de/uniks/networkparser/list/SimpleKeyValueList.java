@@ -26,7 +26,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.interfaces.BaseItem;
 
 public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K, V> {
@@ -288,11 +287,8 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	 * @param key
 	 *			A key string.
 	 * @return this.
-	 * @throws RuntimeException
-	 *			 If there is already a property with this name that is not an
-	 *			 Integer, Long, Double, or Float.
 	 */
-	public SimpleKeyValueList<K, V> increment(K key) throws RuntimeException {
+	public SimpleKeyValueList<K, V> increment(K key) {
 		Object value = this.get(key);
 		if (value == null) {
 			setValueItem(key, 1);
@@ -316,20 +312,16 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		}
 		if (value instanceof String) {
 			try {
-				setValueItem(key, "" + (getInt(key) + 1));
-				return this;
+				Double newValue = Double.parseDouble((String)value);
+				if(newValue.intValue() == newValue) {
+					setValueItem(key, "" + (newValue.intValue() + 1));
+				} else {
+					setValueItem(key, "" + (newValue + 1));
+				}
 			} catch (Exception e) {
-			}
-			try {
-				setValueItem(key, "" + (getDouble(key) + 1));
-				return this;
-			} catch (Exception e) {
-				throw new RuntimeException("Unable to increment ["
-						+ EntityUtil.quote("" + key) + "].");
 			}
 		}
-		throw new RuntimeException("Unable to increment ["
-				+ EntityUtil.quote("" + key) + "].");
+		return this;
 	}
 
 	@Override
