@@ -21,7 +21,7 @@ ext{
 			project.ext.GitTag = Integer.parseInt(ant.GitTag)
 		}catch(Exception e) {
 			println e
-			project.ext.Revisionnumber = -1
+			project.ext.Revisionnumber = revisionNumber()
 			if (project.hasProperty("branch")) {
 				project.ext.Branchname = project.get("branch")
 			} else {
@@ -32,7 +32,7 @@ ext{
 		}
 	}
 
-	gitVersion = new GITVersion(major: majorNumber,minor: ext.GitTag, revision: ext.Revisionnumber, hash: ext.LastCommit, buildTime: buildTime(), branch: ext.Branchname)
+	gitVersion = new GITVersion(major: majorNumber,minor: ext.GitTag, revision: ext.Revisionnumber, hash: ext.LastCommit, buildTime: buildTime(), branch: ext.Branchname, latest: project.hasProperty('latest'))
 }
 version = gitVersion
 task printVersion {
@@ -59,13 +59,15 @@ public class GITVersion {
 	String coverage = ""
 	String branch
 	String prefix = ""
+	boolean latest
 
 	String toString() {
 		if (System.getenv().BUILD_NUMBER) {
 			revision = System.getenv().BUILD_NUMBER as int
 		}
-		
-		if(!isRelease() && !isMaster()) {
+		if(latest) {
+			""
+		} else if(!isRelease() && !isMaster()) {
 			"$major.$minor.$revision${'-SNAPSHOT'}"
 		} else {
 			"$major.$minor.$revision"
@@ -85,4 +87,40 @@ def buildTime() {
 	def df = new SimpleDateFormat("yyyyMMdd'T'HHmmss") //you can change it
 	df.setTimeZone(TimeZone.getTimeZone("UTC"))
 	return df.format(new Date())
+}
+
+def executeCommand(String[] args) {
+	def pb = new ProcessBuilder(args)
+	def result = ""
+	InputStream is = null
+	ByteArrayOutputStream stdout
+	try {
+		def prs = pb.start()
+		is = prs.getInputStream();
+		byte[] b = new byte[1024];
+		int size = 0;
+		stdout = new ByteArrayOutputStream();
+		while((size = is.read(b)) != -1){
+			stdout.write(b, 0, size);
+		}
+		result = stdout.toString()
+	} catch (Exception e) {
+	} finally{
+		try {
+			if(is != null) is.close();
+			if(stdout != null) stdout.close();
+		} catch (Exception ex){}
+	}
+	result
+}
+
+def revisionNumber() {
+	def count = 0
+	executeCommand("git", "log", "--oneline").eachLine {
+		count = count + 1
+	}
+	if( count == 0) {
+		count = -1
+	}
+	count
 }
