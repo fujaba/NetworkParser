@@ -27,6 +27,7 @@ import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.graph.GraphModel;
 import de.uniks.networkparser.graph.GraphPatternMatch;
 import de.uniks.networkparser.graph.GraphTokener;
 import de.uniks.networkparser.graph.Clazz.ClazzType;
@@ -529,5 +530,12 @@ public class GraphTest {
 		//		 processBuilder.redirectErrorStream(true);
 		//		 processBuilder.redirectOutput(Redirect.INHERIT);
 		//		 processBuilder.start();
+	}
+	
+	@Test
+	public void testFullGraph() {
+		GraphList model = new GraphList();
+		model.with("de.uniks.networkparser");
+		
 	}
 }

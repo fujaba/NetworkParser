@@ -1,10 +1,15 @@
 package de.uniks.networkparser.test;
 
 import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+
+import org.junit.Assert;
 import org.junit.Test;
+
+import de.uniks.networkparser.ext.io.FileBuffer;
 import de.uniks.networkparser.xml.XMLEntity;
 
 public class FileTest {
@@ -18,4 +23,14 @@ public class FileTest {
 		fileWriter.write(xmlEntity.toString());
 		fileWriter.close();
 	}
+	
+	@Test
+	public void fileReader() throws IOException{
+		FileBuffer buffer = new FileBuffer();
+		buffer.withFile(new File("src/test/resources/test/sample.xml"));
+		XMLEntity root = new XMLEntity().withValue(buffer);
+		Assert.assertEquals(18, root.getChildrenCount());
+		
+	}
+	
 }

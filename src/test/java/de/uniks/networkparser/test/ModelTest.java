@@ -7,9 +7,11 @@ import org.junit.Test;
 
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.ext.generic.GenericCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.logic.Deep;
+import de.uniks.networkparser.test.model.Apple;
 import de.uniks.networkparser.test.model.Person;
 import de.uniks.networkparser.test.model.SortedMsg;
 import de.uniks.networkparser.test.model.Student;
@@ -108,16 +110,21 @@ public class ModelTest {
 		IdMap map=new IdMap();
 		map.with(new UniversityCreator());
 		map.with(new StudentCreator());
-//		AtomarCondition filter = new AtomarCondition(new UpdateListener() {
-//			@Override
-//			public boolean update(Object value) {
-//				System.out.println(value);
-//				return false;
-//			}
-//		});
-//		map.with(filter);
 		map.toJsonObject(uni);
 		uni.withStudents(new Student().withFirstName("Stefan"));
-		
 	}
+	
+	@Test
+	public void testGeneric() {
+		Apple apple = new Apple();
+		GenericCreator creator = new GenericCreator(apple);
+		creator.setValue(apple, Apple.PROPERTY_X, 23.0, IdMap.NEW);
+		creator.setValue(apple, Apple.PROPERTY_Y, 42, IdMap.NEW);
+		creator.setValue(apple, "password", "Albert", IdMap.NEW);
+		
+		Assert.assertEquals(23.0, creator.getValue(apple, Apple.PROPERTY_X));
+		Assert.assertEquals(42.0, creator.getValue(apple, Apple.PROPERTY_Y));
+		Assert.assertEquals("Albert", creator.getValue(apple, "password"));
+	}
+	
 }

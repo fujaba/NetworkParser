@@ -116,14 +116,12 @@ public abstract class BufferedBuffer extends Buffer {
 						if (allowQuote) {
 							c = 0;
 						}
-//						isQuote = false;
 					}
 					if (allowQuote) {
 						b = c;
 						c = 1;
 						continue;
 					}
-//					isQuote = true;
 				}
 			}
 			b = c;

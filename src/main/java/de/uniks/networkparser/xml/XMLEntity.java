@@ -27,7 +27,6 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.event.MapEntry;
-import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -359,7 +358,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	}
 
 	@Override
-	public BaseItem withValue(Buffer values) {
+	public XMLEntity withValue(Buffer values) {
 		new XMLTokener().withBuffer(values).parseToEntity((Entity)this);
 		return this;
 	}

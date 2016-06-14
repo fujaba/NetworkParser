@@ -91,7 +91,7 @@ jacocoTestReport {
 		html {
 			enabled = true
 			//Following value is a folder
-			destination = new File("build/jacoco/html")
+			destination = new File("${buildDir}/jacoco/html")
 		}
 	}
 }

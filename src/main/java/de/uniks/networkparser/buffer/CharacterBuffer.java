@@ -420,7 +420,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 	public CharacterBuffer set(CharSequence value) {
 		this.start = 0;
 		this.length = value.length();
-		if(this.buffer.length < value.length()) {
+		if(this.buffer == null || this.buffer.length < value.length()) {
 			this.buffer = new char[this.length];
 		}
 		for(int i=0; i < this.length;i++) {
@@ -503,6 +503,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 
 	public CharacterBuffer addStart(int pos) {
 		this.start += pos;
+		this.length -= pos;
 		return this;
 	}
 

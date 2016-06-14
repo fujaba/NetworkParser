@@ -105,6 +105,7 @@ public class XMLTokener extends Tokener {
 	}
 
 	public void parseToEntity(Entity entity) {
+		skipHeader();
 		char c = getCurrentChar();
 		if (c != ITEMSTART) {
 			c = nextClean(false);

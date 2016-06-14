@@ -153,27 +153,27 @@ public class GenericCreator implements SendableEntityCreator {
 		}
 		// maybe a number
 		try {
-			int intValue = Integer.parseInt((String) value);
+			int intValue = Integer.parseInt("" + value);
 			this.clazz.getMethod(methodName, int.class)
 					.invoke(entity, intValue);
 			return true;
-		} catch (ReflectiveOperationException e) {
+		} catch (Exception e) {
 		}
 		// maybe a double
 		try {
-			double doubleValue = Double.parseDouble((String) value);
+			double doubleValue = Double.parseDouble("" + value);
 			this.clazz.getMethod(methodName, double.class).invoke(entity,
 					doubleValue);
 			return true;
-		} catch (ReflectiveOperationException e) {
+		} catch (Exception e) {
 		}
 		// maybe a float
 		try {
-			float floatValue = Float.parseFloat((String) value);
+			float floatValue = Float.parseFloat("" + value);
 			this.clazz.getMethod(methodName, float.class).invoke(entity,
 					floatValue);
 			return true;
-		} catch (ReflectiveOperationException e) {
+		} catch (Exception e) {
 		}
 		return false;
 	}

@@ -222,7 +222,7 @@ public abstract class Buffer implements BufferItem {
 					isQuote = true;
 				}
 				for(i=0;i<quoteLen;i++) {
-					if (c != quotes[i]) {
+					if (c == quotes[i]) {
 						break;
 					}
 				}
