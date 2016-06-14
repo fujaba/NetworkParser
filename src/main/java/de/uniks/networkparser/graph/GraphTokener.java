@@ -22,8 +22,10 @@ package de.uniks.networkparser.graph;
  permissions and limitations under the Licence.
 */
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map.Entry;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
@@ -31,6 +33,7 @@ import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.converter.GraphConverter;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonArray;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 /**
  * The Class YUMLIdParser.
  */
@@ -189,51 +192,135 @@ public class GraphTokener extends Tokener {
 	}
 	
 	public GraphPatternMatch diffModel(Object master, Object slave, MapEntity map) {
+		if(map.add(master) == false) {
+			return null;
+		}
+		GraphPatternMatch result = new GraphPatternMatch();
+		if(master == null) {
+			if(slave == null) {
+				return result;
+			}
+			result.with(GraphPatternChange.createCreate(slave));
+			return result;
+		}
+		if(master.equals(slave)) {
+			return result;
+		}
+		if(slave == null) {
+			result.with(GraphPatternChange.createDelete(master));
+			return result;
+		}
+		
 		SendableEntityCreator masterCreator = this.map.getCreatorClass(master);
 		SendableEntityCreator slaveCreator = this.map.getCreatorClass(slave);
 
-		GraphPatternMatch result = new GraphPatternMatch();
-
 		if(masterCreator == null || slaveCreator == null) {
+			result.with(GraphPatternChange.createChange(master, slave));
 			// No Creator Found for both value check if th same instance
-			if(master == null) {
-				if(slave == null) {
-					return result;
-				}
-				result.with(GraphPatternCreate.create(slave));
-				return result;
-			}
-			if(master.equals(slave)) {
-				return result;
-			}
-			if(slave == null) {
-				result.with(GraphPatternDelete.create(master));
-			}else {
-				result.with(GraphPatternChange.create(master, slave));
-			}
 			return result;
 		}
 		String[] properties = masterCreator.getProperties();
 
-		// Check properties
-		// Step one use equals-Method
-		// Step two: orderd
-		//				Primitive
-		//				Assoc to 1
-		//				Assoc to n
-		// 			 unorderd
-		//				Assoc to n
-		//				Assoc to 1
-		//				Primitive ( try to find keyattributes use order: String, Date, Int, Object)
+// Check properties
+// Step one use equals-Method
+		SimpleKeyValueList<String, Collection<?>> assocMany = new SimpleKeyValueList<String, Collection<?>>();
+		SimpleKeyValueList<String, Object> attributes = new SimpleKeyValueList<String, Object>();
 		for(String property : properties) {
 			Object masterValue = masterCreator.getValue(master, property);
-			Object slaveValue = slaveCreator.getValue(slave, property);
-			  
-			
+			if(masterValue instanceof Collection<?>) {
+				assocMany.add(property, (Collection<?>)masterValue);
+			} else {
+				attributes.add(property, masterValue);
+			}
+		}
+		SimpleKeyValueList<Object, Object> matchMap=new SimpleKeyValueList<Object, Object>();
+		if(map.isFlag(GraphTokener.FLAG_ORDERD)) {
+// Step two: orderd
+//				Primitive
+//				Assoc to 1
+//				Assoc to n
+			for(Iterator<Entry<String, Object>> i = attributes.iterator();i.hasNext();){
+				Entry<String, Object> item = i.next();
+				Object value = item.getValue();
+				Object slaveValue = slaveCreator.getValue(slave, item.getKey());
+				if(value == null) {
+					if(slaveValue == null) {
+						continue;
+					}
+					if(slaveValue instanceof Collection<?>) {
+						Collection<?> child = (Collection<?>) slaveValue;
+						GraphPatternMatch match = GraphPatternMatch.create(item.getKey(), slaveValue);
+						for(Iterator<?> childIterator = child.iterator();childIterator.hasNext();) {
+							match.with(GraphPatternChange.createCreate(childIterator.next()));
+						}
+						if(match.size()>0) {
+							result.with(match);
+						}
+					} else {
+						result.with(GraphPatternChange.createCreate(item.getKey(), slaveValue));	
+					}
+					continue;
+				}
+				if(value instanceof String || value instanceof Date || value instanceof Number) {
+					if(value.equals(slaveValue) == false) {
+						result.with(GraphPatternChange.createChange(item.getKey(), value, slaveValue));
+					}
+				} else {
+					matchMap.add(value, slaveValue);
+					if(this.map.getCreatorClass(value) != null ) {
+						result.with(diffModel(value, slaveValue, map));
+					} else if(value.equals(slaveValue) == false) {
+						result.with(GraphPatternChange.createChange(item.getKey(), value, slaveValue));
+					}
+				}
+			}
+			// Now try to Many Assoc
+			for(Iterator<Entry<String, Collection<?>>> i = assocMany.iterator();i.hasNext();){
+				Entry<String, Collection<?>> item = i.next(); 
+				Collection<?> masterCollection = item.getValue();
+				GraphPatternMatch match = GraphPatternMatch.create(item.getKey(), masterCollection);
+				Object slaveValue = slaveCreator.getValue(slave, item.getKey());
+				if(slaveValue == null || slaveValue instanceof Collection<?> == false) {
+					if(masterCollection.size()>0) {
+						for(Iterator<?> childIterator = masterCollection.iterator();childIterator.hasNext();) {
+							match.with(GraphPatternChange.createDelete(childIterator.next()));
+						}
+						result.with(match);	
+					}
+					continue;
+				}
+				Iterator<?> masterIterator = masterCollection.iterator();
+				Iterator<?> slaveIterator = ((Collection<?>)slaveValue).iterator();
+				while(masterIterator.hasNext()) {
+					Object masterChild = masterIterator.next();
+					if(slaveIterator.hasNext()) {
+						Object slaveChild = slaveIterator.next();
+						match.with(diffModel(masterChild, slaveChild, map));
+					} else {
+						match.with(GraphPatternChange.createDelete(masterChild));
+					}
+				}
+				while(slaveIterator.hasNext()) {
+					match.with(GraphPatternChange.createCreate(slaveIterator.next()));
+				}
+				if(match.size()>0) {
+					result.with(match);	
+				}
+			}
+		} else {
+// Step two: unorderd
+//				Assoc to n
+//				Assoc to 1
+//				Primitive ( try to find keyattributes use order: String, Date, Int, Object)
+			for(String property : properties) {
+				Object masterValue = masterCreator.getValue(master, property);
+				Object slaveValue = slaveCreator.getValue(slave, property);
+//				diffModel(value, slaveValue, map)
+			}
 		}
 		return result;
 	}
-
+	
 	@Override
 	public GraphTokener withMap(IdMap map) {
 		super.withMap(map);

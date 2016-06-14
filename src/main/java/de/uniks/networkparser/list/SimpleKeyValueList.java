@@ -24,11 +24,12 @@ package de.uniks.networkparser.list;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import de.uniks.networkparser.interfaces.BaseItem;
 
-public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K, V> {
+public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K, V>, Iterable<Entry<K, V>>{
 	public SimpleKeyValueList() {
 		super();
 		withFlag(MAP);
@@ -423,11 +424,6 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	}
 
 	@Override
-	public Iterator<K> iterator() {
-		return new SimpleIterator<K>(this);
-	}
-
-	@Override
 	@SuppressWarnings("unchecked")
 	public K getKeyByIndex(int index) {
 		return (K) super.getKeyByIndex(index);
@@ -600,5 +596,10 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 			remove(item);
 		}
 		return this;
+	}
+
+	@Override
+	public Iterator<Entry<K, V>> iterator() {
+		return new SimpleIteratorSet<K, V>(this);
 	}
 }
