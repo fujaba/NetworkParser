@@ -49,7 +49,7 @@ public class ByteTest{
 	@Test
 	public void testSimpleAES(){
 		AES aes = new AES();			 // init AES encrypter class
-		aes.setKey("kWmHe8xIsDpfzK4d");  // choose 16 byte password
+		aes.withKey("kWmHe8xIsDpfzK4d");  // choose 16 byte password
 
 		String data = "Hello world, here is some sample text.";
 		Assert.assertEquals("Original text : [" +data+ "] [" +data.length()+ " bytes]", 38, data.length());
@@ -70,7 +70,7 @@ public class ByteTest{
 	@Test
 	public void testAES(){
 		ByteConverterAES aes = new ByteConverterAES();
-		aes.setKey("kWmHe8xIsDpfzK4d");  // choose 16 byte password
+		aes.withKey("kWmHe8xIsDpfzK4d");  // choose 16 byte password
 
 		String data = "Hello world, here is some sample text.";
 		Assert.assertEquals("Original text : [" +data+ "] [" +data.length()+ " bytes]", 38, data.length());

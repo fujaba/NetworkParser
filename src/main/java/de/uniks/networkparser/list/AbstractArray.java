@@ -747,14 +747,15 @@ public abstract class AbstractArray<V> implements BaseItem {
 		return this;
 	}
 
-	public AbstractArray<V> without(Object... values) {
+	@SuppressWarnings("unchecked")
+	public <ST extends AbstractArray<V>> ST without(Object... values) {
 		if (values == null) {
-			return this;
+			return (ST)this;
 		}
 		for (Object value : values) {
 			this.removeByObject(value);
 		}
-		return this;
+		return (ST)this;
 	}
 
 	protected void setValue(int pos, Object value, int offset) {

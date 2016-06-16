@@ -77,9 +77,8 @@ public class ClazzSet extends SimpleSet<Clazz> {
 		return filter(Clazz.NAME.equals(otherValue));
 	}
 
-	@Override
-	public ClazzSet without(Object... values) {
-		super.without(values);
+	public ClazzSet with(Object... values) {
+		super.with(values);
 		return this;
 	}
 }

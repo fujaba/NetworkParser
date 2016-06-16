@@ -2,6 +2,7 @@ package de.uniks.networkparser.converter;
 
 import java.nio.charset.Charset;
 
+import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 /*
@@ -29,7 +30,7 @@ import de.uniks.networkparser.bytes.ByteTokener;
 
 public class ByteConverterHTTP extends ByteConverter {
 	@Override
-	public String toString(ByteBuffer values) {
+	public String toString(BufferedBuffer values) {
 		CharacterBuffer returnValue = new CharacterBuffer();
 
 		if (values != null) {

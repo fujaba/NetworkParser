@@ -1,6 +1,6 @@
 package de.uniks.networkparser.converter;
 
-import de.uniks.networkparser.buffer.ByteBuffer;
+import de.uniks.networkparser.buffer.BufferedBuffer;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -26,7 +26,7 @@ import de.uniks.networkparser.bytes.ByteUtil;
 
 public class ByteConverterSimple extends ByteConverter {
 	@Override
-	public String toString(ByteBuffer values) {
+	public String toString(BufferedBuffer values) {
 		if (values == null || values.length() < 1) {
 			return "EMTPY";
 		}

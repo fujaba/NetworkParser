@@ -588,17 +588,6 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	}
 
 	@Override
-	public AbstractArray<K> without(Object... values) {
-		if(values == null) {
-			return this;
-		}
-		for(Object item : values) {
-			remove(item);
-		}
-		return this;
-	}
-
-	@Override
 	public Iterator<Entry<K, V>> iterator() {
 		return new SimpleIteratorSet<K, V>(this);
 	}

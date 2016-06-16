@@ -17,6 +17,8 @@ public class GUITest {
 		Assert.assertEquals(GUIPosition.SOUTH.getValue(), "South");
 		Assert.assertEquals(GUIPosition.WEST.getValue(), "West");
 		Assert.assertEquals(GUIPosition.NORTH.getValue(), "North");
+		Assert.assertEquals(10, GUIPosition.values().length);
+		Assert.assertTrue(GUIPosition.NORTH.equals(GUIPosition.valueOf("NORTH")));
 	}
 	
 	@Test

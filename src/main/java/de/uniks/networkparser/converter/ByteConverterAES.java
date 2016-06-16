@@ -1,37 +1,17 @@
 package de.uniks.networkparser.converter;
-/*
-NetworkParser
-Copyright (c) 2011 - 2015, Stefan Lindel
-All rights reserved.
-
-Licensed under the EUPL, Version 1.1 or (as soon they
-will be approved by the European Commission) subsequent
-versions of the EUPL (the "Licence");
-You may not use this work except in compliance with the Licence.
-You may obtain a copy of the Licence at:
-
-http://ec.europa.eu/idabc/eupl5
-
-Unless required by applicable law or agreed to in
-writing, software distributed under the Licence is
-distributed on an "AS IS" basis,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
-express or implied.
-See the Licence for the specific language governing
-permissions and limitations under the Licence.
-*/
-import de.uniks.networkparser.buffer.ByteBuffer;
+import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.bytes.checksum.AES;
 
 public class ByteConverterAES extends ByteConverter {
 	private AES aes;
 
-	public void setKey(String value) {
+	public ByteConverterAES withKey(String value) {
 		if (this.aes == null) {
 			this.aes = new AES();
 		}
-		this.aes.setKey(value);
+		this.aes.withKey(value);
+		return this;
 	}
 
 	public CharacterBuffer toString(String values) {
@@ -39,7 +19,7 @@ public class ByteConverterAES extends ByteConverter {
 	}
 
 	@Override
-	public String toString(ByteBuffer values) {
+	public String toString(BufferedBuffer values) {
 		return this.aes.encode(values).toString();
 	}
 

@@ -59,4 +59,10 @@ public class ModifierSet extends SimpleSet<Modifier> {
 	public ModifierSet hasName(String otherValue) {
 		return filter(Modifier.NAME.equals(otherValue));
 	}
+	
+	@Override
+	public ModifierSet with(Object... values) {
+		super.with(values);
+		return this;
+	}
 }

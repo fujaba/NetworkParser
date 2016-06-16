@@ -1,14 +1,22 @@
 package de.uniks.networkparser.test;
 
 import static org.junit.Assert.assertEquals;
+
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
 import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.buffer.ByteBuffer;
+import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.bytes.checksum.AES;
 import de.uniks.networkparser.bytes.checksum.CCITT16;
 import de.uniks.networkparser.bytes.checksum.Crc16;
 import de.uniks.networkparser.bytes.checksum.Crc8;
@@ -84,14 +92,28 @@ public class CheckSumTest {
 	}
 
 	@Test
-	public void testCRC32(){
-
-	}
-	@Test
 	public void testSum8(){
 		Sum8 crc= new Sum8();
 		crc.update(new byte[]{0x24,(byte) 0xD3,(byte) 0xA3,0x04,0x6D,(byte) 0xC0,0x3A,(byte) 0xF7,0x2F,0x5C});
 		assertEquals(135, crc.getValue());
+	}
+	
+	@Test
+	public void testAES() throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException{
+		byte[] key = new byte[]{'4', '2'}; // TODO
+		AES aes= new AES().withKey(key);
+		CharacterBuffer encode = aes.encode(new CharacterBuffer().withValue("Albert is safe"));
+		ByteConverterHex converter = new ByteConverterHex();
+		Assert.assertEquals("5252bded4e25fe90f24f71a7dd1eb92e", converter.toString(encode).toLowerCase());
+		
+		aes= new AES().withKey("12345678901234567890");
+		encode = aes.encode(new CharacterBuffer().withValue("Albert is safe"));
+		Assert.assertEquals("1349173f3e17b09b2cfa75a2dfa075a7", converter.toString(encode).toLowerCase());
+		
+		aes= new AES().withKey("123456789012345678901234567890");
+		encode = aes.encode(new CharacterBuffer().withValue("Albert is safe"));
+		Assert.assertEquals("1052d5850e8205921ec53fa885d6f0cc", converter.toString(encode).toLowerCase());
+
 	}
 
 	@Test

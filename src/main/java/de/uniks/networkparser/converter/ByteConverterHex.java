@@ -22,7 +22,7 @@ package de.uniks.networkparser.converter;
  permissions and limitations under the Licence.
 */
 import de.uniks.networkparser.EntityUtil;
-import de.uniks.networkparser.buffer.ByteBuffer;
+import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 
 public class ByteConverterHex extends ByteConverter {
@@ -34,10 +34,10 @@ public class ByteConverterHex extends ByteConverter {
 	 * @return the string
 	 */
 	@Override
-	public String toString(ByteBuffer values) {
+	public String toString(BufferedBuffer values) {
 		return toString(values, 0);
 	}
-	public String toString(ByteBuffer values, int space) {
+	public String toString(BufferedBuffer values, int space) {
 		if(values == null) {
 			return null;
 		}

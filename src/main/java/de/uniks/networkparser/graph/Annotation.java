@@ -61,6 +61,12 @@ public class Annotation extends GraphMember {
 		annotation.decode(value);
 		return annotation;
 	}
+	
+	public Annotation newInstance() {
+		Annotation annotation = new Annotation();
+		annotation.decode(this.name);
+		return annotation;
+	}
 
 	//Redirect
 	@Override

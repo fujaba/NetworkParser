@@ -69,9 +69,7 @@ test {
 	}
 }
 
-jacoco {
-	toolVersion = "0.7.+"
-}
+jacoco.toolVersion = "0.7.+"
 
 jacocoTestReport {
 	group = "Reporting"

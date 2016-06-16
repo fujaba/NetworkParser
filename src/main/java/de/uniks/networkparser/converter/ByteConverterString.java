@@ -1,5 +1,7 @@
 package de.uniks.networkparser.converter;
 
+import de.uniks.networkparser.buffer.BufferedBuffer;
+
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -31,7 +33,7 @@ public class ByteConverterString extends ByteConverter {
 	 * @return the string
 	 */
 	@Override
-	public String toString(de.uniks.networkparser.buffer.ByteBuffer values) {
+	public String toString(BufferedBuffer values) {
 		if(values == null) {
 			return null;
 		}

@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.lang.reflect.Method;
 import java.util.Date;
 
 import org.junit.Assert;
@@ -20,18 +19,14 @@ import de.uniks.networkparser.converter.DotConverter;
 import de.uniks.networkparser.converter.GraphConverter;
 import de.uniks.networkparser.converter.YUMLConverter;
 import de.uniks.networkparser.event.util.DateCreator;
-import de.uniks.networkparser.graph.Association;
-import de.uniks.networkparser.graph.AssociationTypes;
-import de.uniks.networkparser.graph.Attribute;
-import de.uniks.networkparser.graph.Cardinality;
-import de.uniks.networkparser.graph.Clazz;
-import de.uniks.networkparser.graph.DataType;
-import de.uniks.networkparser.graph.GraphList;
-import de.uniks.networkparser.graph.GraphModel;
-import de.uniks.networkparser.graph.GraphPatternMatch;
-import de.uniks.networkparser.graph.GraphTokener;
+import de.uniks.networkparser.graph.*;
 import de.uniks.networkparser.graph.Clazz.ClazzType;
+import de.uniks.networkparser.graph.util.AnnotationSet;
+import de.uniks.networkparser.graph.util.AssociationSet;
 import de.uniks.networkparser.graph.util.AttributeSet;
+import de.uniks.networkparser.graph.util.ClazzSet;
+import de.uniks.networkparser.graph.util.MethodSet;
+import de.uniks.networkparser.graph.util.ModifierSet;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.Entity;
@@ -54,13 +49,8 @@ import de.uniks.networkparser.test.model.ludo.creator.FieldCreator;
 import de.uniks.networkparser.test.model.ludo.creator.LudoCreator;
 import de.uniks.networkparser.test.model.ludo.creator.PawnCreator;
 import de.uniks.networkparser.test.model.ludo.creator.PlayerCreator;
-import de.uniks.networkparser.test.model.util.ChatMessageCreator;
-import de.uniks.networkparser.test.model.util.RoomCreator;
-import de.uniks.networkparser.test.model.util.SortedMsgCreator;
-import de.uniks.networkparser.test.model.util.StudentCreator;
-import de.uniks.networkparser.test.model.util.UniversityCreator;
+import de.uniks.networkparser.test.model.util.*;
 import de.uniks.networkparser.xml.HTMLEntity;
-import de.uniks.networkparser.graph.GraphImage;
 
 public class GraphTest {
 	@Test
@@ -449,7 +439,7 @@ public class GraphTest {
 	@Test
 	public void testMethodBody() throws NoSuchMethodException, SecurityException {
 		Apple apple = new Apple();
-		Method method = apple.getClass().getMethod("setOwner", AppleTree.class);
+		java.lang.reflect.Method method = apple.getClass().getMethod("setOwner", AppleTree.class);
 
 		method.getModifiers();
 	}
@@ -536,6 +526,80 @@ public class GraphTest {
 	public void testFullGraph() {
 		GraphList model = new GraphList();
 		model.with("de.uniks.networkparser");
+		Clazz person = model.createClazz("Person");
+		Clazz uni = model.createClazz("University");
+		ClazzSet clazzes = model.getClazzes();
+		Assert.assertEquals(person, clazzes.get(0));
+		Assert.assertEquals(uni, clazzes.get(1));
 		
+		Attribute name = person.createAttribute("name", DataType.STRING);
+		Attribute id = person.createAttribute("id", DataType.INT);
+		
+		Method initMethod = person.createMethod("init").with(Annotation.OVERRIDE);
+		Method toStringMethod = person.createMethod("toString", new Parameter(DataType.INT)).with(DataType.STRING);
+		person.withBidirectional(uni, "owner", Cardinality.ONE, "studs", Cardinality.MANY);
+
+		AttributeSet attributes = person.getAttributes();
+		Assert.assertEquals(name, attributes.get(0));
+		Assert.assertEquals(id, attributes.get(1));
+		
+		MethodSet methods = person.getMethods();
+		Assert.assertEquals(initMethod, methods.get(0));
+		Assert.assertEquals(toStringMethod, methods.get(1));
+		Assert.assertEquals(1, methods.getClazzes().size());
+		Assert.assertEquals(1, methods.getAnnotations().size());
+		Assert.assertEquals(1, methods.getModifiers().size());
+		Assert.assertEquals(2, methods.getReturnTypes().size());
+		Assert.assertEquals(1, methods.getParameters().size());
+		
+		Assert.assertEquals(1, methods.getParameters().getMethods().size());
+		Assert.assertEquals(1, methods.getParameters().getDataTypes().size());
+
+		// Full Methods for AnnotationSet
+		Annotation override = Annotation.OVERRIDE;
+		initMethod.with(override.newInstance());
+		name.with(override.newInstance());
+		person.with(override.newInstance());
+
+		AnnotationSet listOfAnnotation = new AnnotationSet().with(override);
+		Assert.assertEquals(1, listOfAnnotation.getClazzes().size());
+		Assert.assertEquals(1, listOfAnnotation.getMethods().size());
+		Assert.assertEquals(1, listOfAnnotation.getAttributes().size());
+		
+		Modifier private1 = Modifier.PRIVATE;
+		initMethod.with(private1);
+		name.with(private1);
+		person.with(private1);
+		
+		ModifierSet listOfModifier = new ModifierSet().with(initMethod.getModifier());
+		listOfModifier.with(name.getModifier());
+		listOfModifier.with(person.getModifier());
+		Assert.assertEquals(1, listOfModifier.getClazzes().size());
+		Assert.assertEquals(1, listOfModifier.getMethods().size());
+		Assert.assertEquals(1, listOfModifier.getAttributes().size());
+		
+		// Navigate over Full Model
+		ClazzSet list = new ClazzSet().with(person, uni);
+		Assert.assertEquals(2, list.getModifiers().size());
+		Assert.assertEquals(2, list.getMethods().size());
+
+		
+		listOfAnnotation = list.getAnnotations();
+		Assert.assertEquals(1, listOfAnnotation.size());
+		
+		AssociationSet listOfAssocuation = list.getAssociations();
+		Assert.assertEquals(1, listOfAssocuation.getClazzes().size());
+		Assert.assertEquals(1, listOfAssocuation.getOther().size());
+		Assert.assertEquals(1, listOfAssocuation.getOtherClazz().size());
+		Assert.assertEquals(1, listOfAssocuation.size());
+
+		AttributeSet listOfAttribute = list.getAttributes();
+		Assert.assertEquals(2, listOfAttribute.size());
+		Assert.assertEquals(1, listOfAttribute.getClazzes().size());
+		Assert.assertEquals(1, listOfAttribute.getAnnotations().size());
+		Assert.assertEquals(1, listOfAttribute.getModifiers().size());
+		Assert.assertEquals(2, listOfAttribute.getDataTypes().size());
+
+//		ParameterSet	2044	69%	22	50%	2	7	4	15	0	5	0	1
 	}
 }

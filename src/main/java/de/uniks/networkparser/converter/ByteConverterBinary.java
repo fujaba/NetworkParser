@@ -1,5 +1,6 @@
 package de.uniks.networkparser.converter;
 
+import de.uniks.networkparser.buffer.BufferedBuffer;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -41,7 +42,7 @@ public class ByteConverterBinary extends ByteConverter {
 	 * @return the string
 	 */
 	@Override
-	public String toString(ByteBuffer values) {
+	public String toString(BufferedBuffer values) {
 		StringBuilder sb = new StringBuilder();
 		for (int z = 0; z < values.length(); z++) {
 			int number = values.byteAt(z);

@@ -246,28 +246,6 @@ public class AES {
 	 * code in Fig 5, and details in this section.
 	 *
 	 * @param plain		the 128-bit plaintext value to encrypt.
-	 * @param from		fromIndex of Array
-	 * @return 			the encrypted 128-bit ciphertext value.
-	 */
-	public byte[] encodeBlock(char[] plain, int from) {
-		byte[] Ker; // encrypt keys for current round
-		byte[] a = new byte[BLOCK_SIZE];
-		int i;
-		Ker = Ke[0];
-		for (i = 0; i < BLOCK_SIZE; i++) {
-			a[i] = (byte) (plain[i +from] ^ Ker[i]);
-		}
-		return encodeBlock(a);
-	}
-
-	/**
-	 * AES encrypt 128-bit plaintext using key previously set.
-	 *
-	 * <p>
-	 * Follows cipher specification given in FIPS-197 section 5.1 See pseudo
-	 * code in Fig 5, and details in this section.
-	 *
-	 * @param plain		the 128-bit plaintext value to encrypt.
 	 * @return 			the encrypted 128-bit ciphertext value.
 	 */
 	public byte[] encodeBlock(byte[] plain) {
@@ -468,8 +446,9 @@ public class AES {
 		return cipher;
 	}
 
-	public void setKey(String key) {
-		setKey(converter.decode(key));
+	public AES withKey(String key) {
+		withKey(converter.decode(key));
+		return this;
 	}
 
 	/**
@@ -481,17 +460,33 @@ public class AES {
 	 * numRounds being the number of rounds for this sized key.
 	 *
 	 * @param key		The 128/192/256-bit AES key to use.
+	 * @return success
 	 */
-	public void setKey(byte[] key) throws IllegalArgumentException {
+	public AES withKey(byte[] key) throws IllegalArgumentException {
 		// assorted internal constants
 		final int BC = BLOCK_SIZE / 4;
-		final int Klen = key.length;
-		final int Nk = Klen / 4;
-
+		int Klen;
 		int i, j, r;
-
-		if (!(key.length == 16 || key.length == 24 || key.length == 32))
-			throw new IllegalArgumentException("Incorrect key length");
+		if (key.length == 16 || key.length == 24 || key.length == 32) {
+			// ok is valid
+			Klen = key.length;
+		} else if(key.length>32) { 
+			Klen = 32;
+		} else {
+			if(key.length>24) {
+				Klen = 32;
+			} else if(key.length>16) {
+				Klen = 24;
+			} else {
+				Klen = 16;
+			}
+			byte[] old = key;
+			key = new byte[Klen];
+			for(i=0;i<old.length;i++) {
+				key[i] = old[i];
+			}
+		}
+		int Nk = Klen / 4;
 
 		// set master number of rounds given size of this key
 		numRounds = getRounds(Klen);
@@ -563,5 +558,6 @@ public class AES {
 				i++;
 			}
 		}
+		return this;
 	}
 }
