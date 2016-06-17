@@ -51,7 +51,7 @@ public class Not implements UpdateListener, SendableEntityCreator {
 	 * @param value		for new Condition
 	 * @return 			Not Instance
 	 */
-	public Not withItem(UpdateListener value) {
+	public Not with(UpdateListener value) {
 		this.item = value;
 		return this;
 	}
@@ -79,13 +79,13 @@ public class Not implements UpdateListener, SendableEntityCreator {
 			String type) {
 		if (ITEM.equalsIgnoreCase(attribute)) {
 			if(value instanceof UpdateListener) {
-				((Not) entity).withItem((UpdateListener) value);
+				((Not) entity).with((UpdateListener) value);
 			}
 		}
 		return false;
 	}
 
 	public static Not create(UpdateListener condition) {
-		return new Not().withItem(condition);
+		return new Not().with(condition);
 	}
 }

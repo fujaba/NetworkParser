@@ -6,7 +6,7 @@ import org.junit.Test;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.JsonObject;
-import de.uniks.networkparser.logic.SimpleMapEvent;
+import de.uniks.networkparser.logic.SimpleEvent;
 import de.uniks.networkparser.test.model.House;
 import de.uniks.networkparser.test.model.util.HouseCreator;
 
@@ -21,7 +21,7 @@ public class SimpleJsonTest {
 		map.with(new UpdateListener() {
 			@Override
 			public boolean update(Object event) {
-				SimpleMapEvent simpleEvent = (SimpleMapEvent) event;
+				SimpleEvent simpleEvent = (SimpleEvent) event;
 				
 				updateMessage = simpleEvent.getEntity().toString();
 				Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.House\",\"id\":\"J1.H1\",\"rem\":{\"floor\":4},\"upd\":{\"floor\":42}}", updateMessage.toString());

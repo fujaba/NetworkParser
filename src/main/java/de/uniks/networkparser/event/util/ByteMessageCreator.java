@@ -1,7 +1,5 @@
 package de.uniks.networkparser.event.util;
 
-import java.io.UnsupportedEncodingException;
-
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -49,29 +47,19 @@ public class ByteMessageCreator implements SendableEntityCreatorTag {
 		return new ByteMessage();
 	}
 
-	/*
-	 * Get the EventTyp of BasicMessage (0x01)
-	 */
+	/* Get the EventTyp of BasicMessage (0x01) UTF-8 */
 	@Override
 	public String getTag() {
-		try {
-			return new String(new byte[]{0x01}, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-		}
-		return "";
+		return new String(new byte[]{0x01});
 	}
 
-	/*
-	 * Getter for ByteMessage
-	 */
+	/* Getter for ByteMessage */
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		return ((ByteMessage) entity).get(attribute);
 	}
 
-	/*
-	 * Setter for ByteMessage
-	 */
+	/* Setter for ByteMessage */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String typ) {

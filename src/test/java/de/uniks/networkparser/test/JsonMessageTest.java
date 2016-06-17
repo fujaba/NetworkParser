@@ -6,7 +6,7 @@ import org.junit.Test;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.list.SimpleList;
-import de.uniks.networkparser.logic.SimpleMapEvent;
+import de.uniks.networkparser.logic.SimpleEvent;
 import de.uniks.networkparser.test.model.AppleTree;
 import de.uniks.networkparser.test.model.GroupAccount;
 import de.uniks.networkparser.test.model.Person;
@@ -21,7 +21,7 @@ public class JsonMessageTest implements UpdateListener {
 
 	@Override
 	public boolean update(Object event) {
-		SimpleMapEvent simpleEvent = (SimpleMapEvent) event;
+		SimpleEvent simpleEvent = (SimpleEvent) event;
 		if(simpleEvent.isNewEvent()){
 			Assert.assertEquals("Message "+pos+":", messages.get(pos++), simpleEvent.getEntity().toString());
 		}

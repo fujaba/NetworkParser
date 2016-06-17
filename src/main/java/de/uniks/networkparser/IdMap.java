@@ -44,6 +44,7 @@ import de.uniks.networkparser.graph.GraphPatternMatch;
 import de.uniks.networkparser.graph.GraphTokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ByteItem;
+import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.Grammar;
@@ -73,7 +74,7 @@ import de.uniks.networkparser.xml.XMLTokener;
  * The Class IdMap.
  * @author Stefan Lindel
  */
-public class IdMap implements Iterable<SendableEntityCreator> {
+public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	/** The Constant CLASS. */
 	public static final String CLASS = "class";
 
@@ -208,26 +209,10 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	/**
 	 * Adds the creator.
 	 *
-	 * @param creatorSet	the creater class
-	 * @return 				return a Creator class for a clazz name
-	 */
-	public IdMap with(Collection<SendableEntityCreator> creatorSet) {
-		if(creatorSet == null) {
-			return this;
-		}
-		for (SendableEntityCreator sendableEntityCreator : creatorSet) {
-			with(sendableEntityCreator);
-		}
-		return this;
-	}
-
-	/**
-	 * Adds the creator.
-	 *
 	 * @param iterator	the creater classes
 	 * @return 			return a Creator class for a clazz name
 	 */
-	public IdMap with(Iterable<SendableEntityCreator> iterator) {
+	public IdMap withCreator(Iterable<SendableEntityCreator> iterator) {
 		if(iterator == null) {
 			return null;
 		}
@@ -243,7 +228,7 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	 * @param createrClass	the creater class
 	 * @return AbstractIdMap to interlink arguments
 	 */
-	public IdMap with(SendableEntityCreator... createrClass) {
+	public IdMap withCreator(SendableEntityCreator... createrClass) {
 		if(createrClass == null) {
 			return this;
 		}
@@ -298,7 +283,7 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	 * @param counter	the new counter
 	 * @return 			Itself
 	 */
-	public IdMap with(IdMapCounter counter) {
+	public IdMap withCounter(IdMapCounter counter) {
 		this.counter = counter;
 		return this;
 	}
@@ -582,7 +567,7 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 		this.keyValue.clear();
 	}
 
-	public IdMap with(Filter filter) {
+	public IdMap withFilter(Filter filter) {
 		this.filter = filter;
 		return this;
 	}
@@ -637,7 +622,7 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	 * @see IdMap#with(PropertyChangeListener)
 	 * @see de.uniks.networkparser.ChainListener
 	 */
-	public IdMap with(UpdateListener updateListener) {
+	public IdMap withListener(UpdateListener updateListener) {
 		this.updateListener = updateListener;
 		return this;
 	}
@@ -657,12 +642,12 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	 * @param value		Gammar value
 	 * @return Itself
 	 */
-	public IdMap with(Grammar value) {
+	public IdMap withGrammar(Grammar value) {
 		this.grammar = value;
 		return this;
 	}
 
-	public IdMap with(PropertyChangeListener listener) {
+	public IdMap withListener(PropertyChangeListener listener) {
 		this.listener = listener;
 		return this;
 	}
@@ -1354,4 +1339,49 @@ public class IdMap implements Iterable<SendableEntityCreator> {
 	public SimpleKeyValueList<String, SendableEntityCreator> getCreators() {
 		return this.creators;
 	}
+
+	@Override
+	public BaseItem getNewList(boolean keyValue) {
+		return new IdMap();
+	}
+
+	@Override
+	public String toString(Converter converter) {
+		if(converter == null) {
+			return null;
+		}
+		return converter.encode(this);
+	}
+
+	@Override
+	public IdMap with(Object... values) {
+		if (values == null) {
+			return this;
+		}
+		for(Object item : values) {
+			if(item instanceof SendableEntityCreator) {
+				this.withCreator((SendableEntityCreator)item);
+			} else if(item instanceof UpdateListener) {
+				this.withListener((UpdateListener)item);
+			} else if(item instanceof PropertyChangeListener) {
+				this.withListener((PropertyChangeListener)item);
+			} else if(item instanceof Filter) {
+				this.withFilter((Filter)item);
+			} else if(item instanceof Grammar) {
+				this.withGrammar((Grammar)item);
+			} else if(item instanceof IdMapCounter) {
+				this.withCounter((IdMapCounter)item);
+			} else if (item instanceof Iterable<?>) {
+				Iterator<?> i = (Iterator<?>) ((Iterable<?>)item).iterator();
+				while(i.hasNext()) {
+					Object value = i.next();
+					if(value instanceof SendableEntityCreator) {
+						this.withCreator((SendableEntityCreator)value);
+					}
+				}
+			}
+		}
+		return this;
+	}
+
 }

@@ -3,6 +3,7 @@ package de.uniks.networkparser.logic;
 import java.beans.PropertyChangeEvent;
 
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 
 /**
@@ -11,51 +12,55 @@ import de.uniks.networkparser.interfaces.Entity;
  * 	 typ the typ of Message: NEW UPDATE, REMOVE or SENDUPDATE
  * 	@author Stefan Lindel
  */
-public final class SimpleMapEvent extends PropertyChangeEvent {
+public final class SimpleEvent extends PropertyChangeEvent {
 	private static final long serialVersionUID = 1L;
 	/** Variable for Deep from Root. */
 	private int deep;
 	private Entity entity;
-	private Object modelItem;
+	private Object value;
 	private String type;
+	private Object beforeElement;
 
-	public SimpleMapEvent(String type, IdMap source, String property) {
+	public SimpleEvent(String type, BaseItem source, String property) {
 		super(source, property, null, null);
 		this.type = type;
 	}
+	
+	public SimpleEvent(String type, BaseItem source, String property, Object oldValue, Object newValue, Object beforeElement, Object value) {
+		super(source, property, oldValue, newValue);
+		this.type = type;
+		this.value = value;
+		this.beforeElement = beforeElement;
+	}
 
-	public SimpleMapEvent(String type, IdMap source, String property, Object oldValue, Object newValue) {
+	public SimpleEvent(String type, BaseItem source, String property, Object oldValue, Object newValue) {
 		super(source, property, oldValue, newValue);
 		this.type = type;
 	}
 
-	public SimpleMapEvent(String type, IdMap source, Entity entity, Object newValue) {
+	public SimpleEvent(String type, BaseItem source, Entity entity, Object newValue) {
 		super(source, null, null, newValue);
 		this.entity = entity;
 		this.type = type;
 	}
 
-	public SimpleMapEvent(PropertyChangeEvent source, String type, IdMap map, Entity entity) {
+	public SimpleEvent(PropertyChangeEvent source, String type, IdMap map, Entity entity) {
 		super(map, source.getPropertyName(), source.getOldValue(), source.getNewValue());
-		this.modelItem = source.getSource();
+		this.value = source.getSource();
 		this.type = type;
 		this.entity = entity;
 	}
 
 	@Override
-	public IdMap getSource() {
-		Object item = super.getSource();
-		if(item instanceof IdMap) {
-			return (IdMap) item;
-		}
-		return null;
+	public BaseItem getSource() {
+		return (BaseItem) super.getSource();
 	}
 
 	public int getDeep() {
 		return deep;
 	}
 
-	public SimpleMapEvent with(int deep) {
+	public SimpleEvent with(int deep) {
 		this.deep = deep;
 		return this;
 	}
@@ -64,17 +69,17 @@ public final class SimpleMapEvent extends PropertyChangeEvent {
 		return entity;
 	}
 
-	public SimpleMapEvent with(Entity entity) {
+	public SimpleEvent with(Entity entity) {
 		this.entity = entity;
 		return this;
 	}
 
 	public Object getModelItem() {
-		return modelItem;
+		return value;
 	}
 
-	public SimpleMapEvent withModelItem(Object modelItem) {
-		this.modelItem = modelItem;
+	public SimpleEvent withModelItem(Object modelItem) {
+		this.value = modelItem;
 		return this;
 	}
 
@@ -82,7 +87,7 @@ public final class SimpleMapEvent extends PropertyChangeEvent {
 		return type;
 	}
 
-	public SimpleMapEvent with(String type) {
+	public SimpleEvent with(String type) {
 		this.type = type;
 		return this;
 	}
@@ -93,5 +98,10 @@ public final class SimpleMapEvent extends PropertyChangeEvent {
 	
 	public boolean isUpdateEvent() {
 		return IdMap.UPDATE.equals(this.type);
+	}
+
+	/** @return the beforeElement */
+	public Object getBeforeElement() {
+		return beforeElement;
 	}
 }

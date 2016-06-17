@@ -24,7 +24,7 @@ package de.uniks.networkparser;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.interfaces.UpdateListener;
-import de.uniks.networkparser.logic.SimpleMapEvent;
+import de.uniks.networkparser.logic.SimpleEvent;
 
 public class Filter {
 	/** The Constant MERGE. */
@@ -59,7 +59,7 @@ public class Filter {
 	 */
 	public boolean isId(Object entity, String className, IdMap map) {
 		if (idFilter != null) {
-			return idFilter.update(new SimpleMapEvent(IdMap.NEW, map, className, null, entity));
+			return idFilter.update(new SimpleEvent(IdMap.NEW, map, className, null, entity));
 		}else {
 			SendableEntityCreator creator = map.getCreator(className, true);
 			if(creator!=null) {
@@ -98,14 +98,14 @@ public class Filter {
 
 	boolean isPropertyRegard(Object entity, String property, Object value, IdMap map, int deep) {
 		if (this.property != null) {
-			return this.property.update(new SimpleMapEvent(this.strategy, map, property, null, value).with(deep).withModelItem(entity));
+			return this.property.update(new SimpleEvent(this.strategy, map, property, null, value).with(deep).withModelItem(entity));
 		}
 		return true;
 	}
 
 	boolean isConvertable(Object entity, String property, Object value, IdMap map, int deep) {
 		if (this.convertable != null) {
-			return this.convertable.update(new SimpleMapEvent(this.strategy, map, property, null, value).with(deep).withModelItem(entity));
+			return this.convertable.update(new SimpleEvent(this.strategy, map, property, null, value).with(deep).withModelItem(entity));
 		}
 		return true;
 	}

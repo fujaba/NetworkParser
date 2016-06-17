@@ -40,7 +40,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreatorWrapper;
 import de.uniks.networkparser.json.util.JsonObjectCreator;
 import de.uniks.networkparser.list.SimpleIteratorSet;
 import de.uniks.networkparser.list.SimpleKeyValueList;
-import de.uniks.networkparser.logic.SimpleMapEvent;
+import de.uniks.networkparser.logic.SimpleEvent;
 import de.uniks.networkparser.xml.XMLEntity;
 
 public class JsonTokener extends Tokener {
@@ -283,9 +283,9 @@ public class JsonTokener extends Tokener {
 			}
 			if (result == null) {
 				result = map.getNewEntity(typeInfo, map.getValue(jsonObject, IdMap.CLASS), false);
-				this.map.notify(new SimpleMapEvent(IdMap.NEW, this.map, jsonObject, result));
+				this.map.notify(new SimpleEvent(IdMap.NEW, this.map, jsonObject, result));
 			} else {
-				this.map.notify(new SimpleMapEvent(IdMap.UPDATE, this.map, jsonObject, result));
+				this.map.notify(new SimpleEvent(IdMap.UPDATE, this.map, jsonObject, result));
 			}
 			if (typeInfo instanceof SendableEntityCreatorWrapper) {
 				String[] properties = typeInfo.getProperties();

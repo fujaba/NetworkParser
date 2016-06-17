@@ -51,8 +51,8 @@ public class Deep implements SendableEntityCreator, UpdateListener {
 
 	@Override
 	public boolean update(Object evt) {
-		if(evt instanceof SimpleMapEvent) {
-			return ((SimpleMapEvent)evt).getDeep() <= this.deep;
+		if(evt instanceof SimpleEvent) {
+			return ((SimpleEvent)evt).getDeep() <= this.deep;
 		}
 		return false;
 	}

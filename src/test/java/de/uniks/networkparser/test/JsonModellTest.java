@@ -14,7 +14,7 @@ import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.logic.Deep;
 import de.uniks.networkparser.logic.InstanceOf;
-import de.uniks.networkparser.logic.SimpleMapEvent;
+import de.uniks.networkparser.logic.SimpleEvent;
 import de.uniks.networkparser.test.model.Apple;
 import de.uniks.networkparser.test.model.AppleTree;
 import de.uniks.networkparser.test.model.GroupAccount;
@@ -96,7 +96,7 @@ public class JsonModellTest implements UpdateListener {
 
 	@Override
 	public boolean update(Object evt) {
-		SimpleMapEvent simpleEvent = (SimpleMapEvent) evt;
+		SimpleEvent simpleEvent = (SimpleEvent) evt;
 
 		if(IdMap.NEW.equals(simpleEvent.getType())) {
 			JsonObject jsonObject = (JsonObject) simpleEvent.getEntity();
@@ -128,7 +128,7 @@ public class JsonModellTest implements UpdateListener {
 		map.with(new UpdateListener() {
 			@Override
 			public boolean update(Object event) {
-				SimpleMapEvent simpleEvent = (SimpleMapEvent) event;
+				SimpleEvent simpleEvent = (SimpleEvent) event;
 				data = simpleEvent.getEntity();
 				return (Apple.PROPERTY_PASSWORD.equals(simpleEvent.getPropertyName()) == false);
 			}

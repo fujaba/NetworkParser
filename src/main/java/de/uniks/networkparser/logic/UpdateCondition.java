@@ -32,9 +32,9 @@ permissions and limitations under the Licence.
 public class UpdateCondition implements UpdateListener{
 	@Override
 	public boolean update(Object evt) {
-		if(evt instanceof SimpleMapEvent) {
-			SimpleMapEvent event = (SimpleMapEvent)evt;
-			IdMap map = event.getSource();
+		if(evt instanceof SimpleEvent) {
+			SimpleEvent event = (SimpleEvent)evt;
+			IdMap map = (IdMap) event.getSource();
 			return map.getKey(event.getModelItem()) == null && map.getKey(event.getNewValue()) == null;
 		}
 		return false;

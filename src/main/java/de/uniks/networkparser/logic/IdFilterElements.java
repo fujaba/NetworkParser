@@ -22,10 +22,11 @@ package de.uniks.networkparser.logic;
  permissions and limitations under the Licence.
 */
 import java.beans.PropertyChangeEvent;
-import de.uniks.networkparser.interfaces.UpdateListener;
-import de.uniks.networkparser.list.SimpleList;
 
-public class IdFilterElements extends SimpleList<Object> implements UpdateListener {
+import de.uniks.networkparser.interfaces.UpdateListener;
+import de.uniks.networkparser.list.SimpleSet;
+
+public class IdFilterElements extends SimpleSet<Object> implements UpdateListener {
 	private UpdateListener condition;
 
 	public IdFilterElements(UpdateListener condition) {

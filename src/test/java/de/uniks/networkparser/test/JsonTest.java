@@ -25,7 +25,7 @@ import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.json.JsonTokener;
 import de.uniks.networkparser.logic.BooleanCondition;
 import de.uniks.networkparser.logic.Deep;
-import de.uniks.networkparser.logic.SimpleMapEvent;
+import de.uniks.networkparser.logic.SimpleEvent;
 import de.uniks.networkparser.test.model.Apple;
 import de.uniks.networkparser.test.model.Barbarian;
 import de.uniks.networkparser.test.model.Change;
@@ -740,7 +740,7 @@ public class JsonTest extends IOClasses {
 		map.with(new UpdateListener() {
 			@Override
 			public boolean update(Object event) {
-				SimpleMapEvent simpleEvent = (SimpleMapEvent) event;
+				SimpleEvent simpleEvent = (SimpleEvent) event;
 				
 				updateMessage = simpleEvent.getEntity().toString();
 				Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.House\",\"id\":\"J1.H1\",\"rem\":{\"floor\":4},\"upd\":{\"floor\":42}}", updateMessage.toString());
