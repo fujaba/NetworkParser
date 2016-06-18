@@ -619,7 +619,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	 * @param updateListener the new Listener
 	 * @return This Component
 	 *
-	 * @see IdMap#with(PropertyChangeListener)
+	 * @see IdMap#withListener(PropertyChangeListener)
 	 * @see de.uniks.networkparser.ChainListener
 	 */
 	public IdMap withListener(UpdateListener updateListener) {
