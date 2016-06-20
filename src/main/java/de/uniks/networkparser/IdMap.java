@@ -1039,12 +1039,10 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 			Collection<?> list = (Collection<?>) object;
 			for (Iterator<?> i = list.iterator(); i.hasNext();) {
 				Object item = i.next();
-				if(tokener.getKey(item)==null) {
-					//DEEP 0
-					Entity ignore = encode(item, map, tokener);
-					if(ignore != null) {
-						ignoreIds.add(ignore.getString(ID));
-					}
+				//DEEP 0
+				Entity ignore = encode(item, map, tokener);
+				if(ignore != null) {
+					ignoreIds.add(ignore.getString(ID));
 				}
 			}
 //			return target;

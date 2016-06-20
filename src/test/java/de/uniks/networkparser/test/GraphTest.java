@@ -12,8 +12,6 @@ import java.util.Date;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.CharacterBuffer;
@@ -21,8 +19,21 @@ import de.uniks.networkparser.converter.DotConverter;
 import de.uniks.networkparser.converter.GraphConverter;
 import de.uniks.networkparser.converter.YUMLConverter;
 import de.uniks.networkparser.event.util.DateCreator;
-import de.uniks.networkparser.graph.*;
+import de.uniks.networkparser.graph.Annotation;
+import de.uniks.networkparser.graph.Association;
+import de.uniks.networkparser.graph.AssociationTypes;
+import de.uniks.networkparser.graph.Attribute;
+import de.uniks.networkparser.graph.Cardinality;
+import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.Clazz.ClazzType;
+import de.uniks.networkparser.graph.DataType;
+import de.uniks.networkparser.graph.GraphImage;
+import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.graph.GraphPatternMatch;
+import de.uniks.networkparser.graph.GraphTokener;
+import de.uniks.networkparser.graph.Method;
+import de.uniks.networkparser.graph.Modifier;
+import de.uniks.networkparser.graph.Parameter;
 import de.uniks.networkparser.graph.util.AnnotationSet;
 import de.uniks.networkparser.graph.util.AssociationSet;
 import de.uniks.networkparser.graph.util.AttributeSet;
@@ -54,7 +65,11 @@ import de.uniks.networkparser.test.model.ludo.creator.FieldCreator;
 import de.uniks.networkparser.test.model.ludo.creator.LudoCreator;
 import de.uniks.networkparser.test.model.ludo.creator.PawnCreator;
 import de.uniks.networkparser.test.model.ludo.creator.PlayerCreator;
-import de.uniks.networkparser.test.model.util.*;
+import de.uniks.networkparser.test.model.util.ChatMessageCreator;
+import de.uniks.networkparser.test.model.util.RoomCreator;
+import de.uniks.networkparser.test.model.util.SortedMsgCreator;
+import de.uniks.networkparser.test.model.util.StudentCreator;
+import de.uniks.networkparser.test.model.util.UniversityCreator;
 import de.uniks.networkparser.xml.HTMLEntity;
 
 public class GraphTest {
@@ -116,6 +131,9 @@ public class GraphTest {
 		SimpleList<Object> list = new SimpleList<Object>();
 		list.with(uni, student, room);
 		JsonArray jsonArray = map.toJsonArray(list, new Filter().withFull(true).withPropertyRegard(BooleanCondition.value(true)));
+		Assert.assertEquals(3, jsonArray.size());
+		
+		jsonArray = map.toJsonArray(list, new Filter().withFull(true).withPropertyRegard(BooleanCondition.value(true)));
 		Assert.assertEquals(3, jsonArray.size());
 	}
 	
