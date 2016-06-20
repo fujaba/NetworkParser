@@ -64,8 +64,7 @@ public class SoapCreator implements SendableEntityCreatorTag {
 		}
 		if (attribute.toLowerCase().endsWith(
 				":" + SoapObject.PROPERTY_BODY.toLowerCase())) {
-			((SoapObject) entity).withBody(new XMLEntity()
-					.withValue("" + value));
+			((SoapObject) entity).withBody(new XMLEntity().withValue("" + value));
 			return true;
 		}
 		return false;

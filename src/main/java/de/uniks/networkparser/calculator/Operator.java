@@ -27,7 +27,7 @@ public interface Operator {
 
 	public int getValues();
 
-	public double calculate(Double[] values);
+	public double calculate(Double... values);
 
 	public String getTag();
 }

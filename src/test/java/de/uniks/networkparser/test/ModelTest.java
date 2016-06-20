@@ -10,8 +10,12 @@ import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.generic.GenericCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.UpdateListener;
+import de.uniks.networkparser.json.AtomarCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.logic.Deep;
+import de.uniks.networkparser.logic.SimpleEvent;
 import de.uniks.networkparser.test.model.Apple;
 import de.uniks.networkparser.test.model.Person;
 import de.uniks.networkparser.test.model.SortedMsg;
@@ -23,7 +27,8 @@ import de.uniks.networkparser.test.model.util.SortedMsgCreator;
 import de.uniks.networkparser.test.model.util.StudentCreator;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
 
-public class ModelTest {
+public class ModelTest implements UpdateListener {
+	private SimpleList<SimpleEvent> events = new SimpleList<SimpleEvent>(); 
 	@Test
 	public void testModel(){
 		PersonSet persons= new PersonSet();
@@ -112,8 +117,11 @@ public class ModelTest {
 		IdMap map=new IdMap();
 		map.with(new UniversityCreator());
 		map.with(new StudentCreator());
+		map.withListener(new AtomarCondition(this));
+		events.clear();
 		map.toJsonObject(uni);
 		uni.withStudents(new Student().withFirstName("Stefan"));
+		Assert.assertEquals(4, events.size());
 	}
 	
 	@Test
@@ -128,5 +136,10 @@ public class ModelTest {
 		Assert.assertEquals(42.0, creator.getValue(apple, Apple.PROPERTY_Y));
 		Assert.assertEquals("Albert", creator.getValue(apple, "password"));
 	}
-	
+
+	@Override
+	public boolean update(Object value) {
+		events.add((SimpleEvent) value);
+		return true;
+	}
 }

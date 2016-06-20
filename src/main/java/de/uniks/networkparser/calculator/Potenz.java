@@ -29,7 +29,10 @@ public class Potenz implements Operator {
 	}
 
 	@Override
-	public double calculate(Double[] values) {
+	public double calculate(Double... values) {
+		if(values == null) {
+			return 0;
+		}
 		double result = values[0];
 		if (values[1] < 0) {
 			values[1] = values[1] * -1;

@@ -102,14 +102,6 @@ public abstract class Buffer implements BufferItem {
 
 	@Override
 	public byte getByte() {
-//		if(isLookAhead) {
-//			isLookAhead = false;
-//			return lookAHeadByte;
-//		}
-//		isLookAhead = true;
-//		char item = getChar();
-//		lookAHeadByte = (byte) (item&0x00FF);
-//		return (byte) ((item&0xFF00)>>8);
 		return (byte)getChar();
 	}
 

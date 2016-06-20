@@ -67,8 +67,6 @@ public interface Entity extends BaseItem{
 	 */
 	public void setAllowEmptyValue(boolean allow);
 
-	public boolean setValueItem(Object value);
-
 	public BaseItem getChild(String label, boolean recursiv);
 
 	public int size();

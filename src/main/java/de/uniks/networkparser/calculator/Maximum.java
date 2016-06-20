@@ -29,10 +29,13 @@ public class Maximum implements Operator {
 	}
 
 	@Override
-	public double calculate(Double[] values) {
-		double max = values[0];
-		for (int i = 1; i < values.length; i++) {
-			if (values[i] > max) {
+	public double calculate(Double... values) {
+		if(values == null) {
+			return Double.MIN_VALUE;
+		}
+		double max=Double.MIN_VALUE;
+		for(int i=0;i<values.length;i++) {
+			if(values[i] != null && values[i] > max) {
 				max = values[i];
 			}
 		}

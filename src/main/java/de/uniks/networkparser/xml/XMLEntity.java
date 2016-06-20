@@ -81,6 +81,11 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	 */
 	public XMLEntity withValue(Tokener tokener) {
 		if(tokener!=null) {
+			char c = tokener.nextClean(true);
+			if(c != XMLTokener.ITEMSTART) {
+				this.valueItem = tokener.getString(tokener.length() - tokener.position()).toString();
+				return this;
+			}
 			tokener.parseToEntity((Entity)this);
 		}
 		return this;
@@ -119,9 +124,9 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		}
 		if(values[0] instanceof String) {
 			if(values.length == 1) {
-				this.setValueItem((String)values[0]);
+				this.withValue((String)values[0]);
 			}
-		}else if (values.length % 2 == 1) {
+		} else if (values.length % 2 == 1) {
 			for(Object item : values) {
 				if(item instanceof EntityList) {
 					getChildren().add((EntityList) item);
@@ -227,21 +232,6 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	 */
 	public String getValue() {
 		return this.valueItem;
-	}
-
-	/**
-	 * Sets the value.
-	 *
-	 * @param value		the new value
-	 * @return 			success
-	 */
-	public boolean setValueItem(Object value) {
-		if(value instanceof String) {
-			this.valueItem = (String)value;
-		}else {
-			this.valueItem = ""+value;
-		}
-		return true;
 	}
 
 	@Override
@@ -352,15 +342,10 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		return containsKey(key);
 	}
 
-	public XMLEntity withValueItem(String value) {
-		setValueItem(value);
-		return this;
-	}
-
 	@Override
 	public XMLEntity withValue(Buffer values) {
-		new XMLTokener().withBuffer(values).parseToEntity((Entity)this);
-		return this;
+		Tokener tokener = new XMLTokener().withBuffer(values);
+		return withValue(tokener);
 	}
 
 	/**

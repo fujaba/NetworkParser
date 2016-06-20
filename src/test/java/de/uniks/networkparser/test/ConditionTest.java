@@ -113,7 +113,7 @@ public class ConditionTest implements UpdateListener {
 		map.with(new Not());
 		
 		JsonObject jsonObject = map.toJsonObject(and);
-		System.out.println(jsonObject);
+//		System.out.println(jsonObject);
 	}
 //	Or	34114	77%	77	50%	6	16	8	29	1	9	0	1
 //	UpdateCondition	722	76%	33	50%	2	5	0	6	0	2	0	1

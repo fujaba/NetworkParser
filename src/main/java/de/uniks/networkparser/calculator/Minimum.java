@@ -29,12 +29,17 @@ public class Minimum implements Operator {
 	}
 
 	@Override
-	public double calculate(Double[] values) {
-		if (values[0] < values[1]) {
-			return values[0];
-		} else {
-			return values[1];
+	public double calculate(Double... values) {
+		if(values == null) {
+			return Double.MAX_VALUE;
 		}
+		double min=Double.MAX_VALUE;
+		for(int i=0;i<values.length;i++) {
+			if(values[i] != null && values[i] < min) {
+				min = values[i];
+			}
+		}
+		return min;
 	}
 
 	@Override

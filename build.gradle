@@ -93,6 +93,7 @@ jacocoTestReport {
 		}
 	}
 }
+test.finalizedBy jacocoTestReport
 
 sourceSets.main.output.classesDir 'build/classes/main'
 

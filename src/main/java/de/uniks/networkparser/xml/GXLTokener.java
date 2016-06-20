@@ -126,7 +126,7 @@ public class GXLTokener extends Tokener {
 			return;
 		}
 		XMLEntity valueItem = this.newInstance();
-		valueItem.withValueItem(value.toString());
+		valueItem.withValue(value.toString());
 		attribute.with(valueItem);
 		if(value instanceof Boolean) {
 			valueItem.setType(BOOL);

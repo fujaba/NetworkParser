@@ -9,6 +9,8 @@ import org.junit.Test;
 
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.event.BasicMessage;
+import de.uniks.networkparser.event.util.BasicMessageCreator;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.JsonObject;
@@ -141,5 +143,18 @@ public class JsonModellTest implements UpdateListener {
 
 		Assert.assertNotNull(data);
 		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.AppleTree\",\"id\":\"J1.A1\",\"upd\":{\"has\":{\"class\":\"de.uniks.networkparser.test.model.Apple\",\"id\":\"J1.A2\",\"prop\":{\"x\":23,\"y\":42}}}}", data.toString());
+	}
+	
+	@Test
+	public void testBasicMessage() {
+		BasicMessage message= new BasicMessage();
+		message.withValue("The answer to life the universe and everything is 42.");
+		IdMap map=new IdMap();
+		map.with(new BasicMessageCreator());
+		JsonObject jsonObject = map.toJsonObject(message);
+		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.event.BasicMessage\",\"id\":\"J1.B1\",\"prop\":{\"value\":\"The answer to life the universe and everything is 42.\"}}", jsonObject.toString());
+		
+		BasicMessage newMessage = (BasicMessage) map.decode(jsonObject);
+		Assert.assertEquals(message.getValue(), newMessage.getValue());
 	}
 }

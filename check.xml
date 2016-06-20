@@ -13,21 +13,21 @@
 	</target>
 	<target name="findBugs">
 		<taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask" classpath="lib/findbugs/lib/findbugs-ant.jar">
-			<classpath>
-				<fileset dir="lib/findbugs">
-					<include name="*.jar"/>
-				</fileset>
-			</classpath>
 		</taskdef>
 		<mkdir dir="build/" />
-		<findbugs home="lib/findbugs/" output="xml" outputFile="build/findbugs.xml">
-			<sourcePath path="src" />
-			<fileset dir="./bin" excludes="de/uniks/networkparser/test/**,**/networkparser.gwt.xml" />
+	    <findbugs home="lib/findbugs/" output="xml" outputFile="build/findbugs.xml">
+	    	<sourcePath path="${basedir}/src/main/java" />
+	    	<class location="${basedir}/lib/findbugs/lib/bcel-6.0-SNAPSHOT.jar" />
+			<!--<auxClasspath path="${basedir}/lib/Regex.jar" />
+		    
+		    <class location="${basedir}/bin/bcel.jar" />-->
 		</findbugs>
+
+		<echo>Write Errors to build/findbugs.xml</echo>
 	</target>
 	<taskdef name="jacococoverage" classname="org.jacoco.ant.CoverageTask"><classpath path="lib\jacoco\jacocoant-0.7.5.201505241946.jar" /></taskdef>
 	<taskdef name="jacocoreport" classname="org.jacoco.ant.ReportTask"><classpath path="lib\jacoco\jacocoant-0.7.5.201505241946.jar"/></taskdef>
-	<target name="coverage" depends="checkStyle,findBugs">
+	<target name="coverage" depends="findBugs, checkStyle">
 		<mkdir dir="build/junit"/>
 		<jacococoverage output="file" destfile="build/networkparser.exec">
 			<junit fork="yes" failureProperty="test.failed" forkmode="once" showoutput="false" printsummary="false">
@@ -43,31 +43,6 @@
 						<include name="**/*Test.java" />
 					</fileset>
 				</batchtest>
-<!--				<test name="de.uniks.networkparser.test.AESTest"/>
-				<test name="de.uniks.networkparser.test.BitMapTest"/>
-				<test name="de.uniks.networkparser.test.ByteTest"/>
-				<test name="de.uniks.networkparser.test.CalculatorTest"/>
-				<test name="de.uniks.networkparser.test.CheckSumTest"/>
-				<test name="de.uniks.networkparser.test.CrossCompilerTest"/>
-				<test name="de.uniks.networkparser.test.DateTimeEntityTest"/>
-				<test name="de.uniks.networkparser.test.debugTest"/>
-				<test name="de.uniks.networkparser.test.EntityTest"/>
-				<test name="de.uniks.networkparser.test.GLocationJsonTest"/>
-				<test name="de.uniks.networkparser.test.JISMEngineTest"/>
-				<test name="de.uniks.networkparser.test.JsonFilterTest"/>
-				<test name="de.uniks.networkparser.test.JsonModellTest"/>
-				<test name="de.uniks.networkparser.test.JsonPeer2PeerTest"/>
-				<test name="de.uniks.networkparser.test.JsonTest"/>
-				<test name="de.uniks.networkparser.test.MathParserTest"/>
-				<test name="de.uniks.networkparser.test.MinimalJsonTest"/>
-				<!- -<test name="de.uniks.networkparser.test.PatternTest"/>- ->
-				<test name="de.uniks.networkparser.test.RegTest"/>
-				<test name="de.uniks.networkparser.test.StringTokenerTest"/>
-				<test name="de.uniks.networkparser.test.TestSimpleJson"/>
-				<test name="de.uniks.networkparser.test.XMLTest"/>
-				<!- -<test name="de.uniks.networkparser.test.XMLValidatorTest"/>- ->
-				<!- -<test name="de.uniks.networkparser.test.YUmlTest"/>- ->
--->
 			</junit>
 		</jacococoverage>
 		<jacocoreport>

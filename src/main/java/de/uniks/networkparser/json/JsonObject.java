@@ -231,7 +231,8 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 			return this;
 		}
 		if (values.length > 0) {
-			new JsonTokener().withBuffer(values[0]).parseToEntity(this);
+			Tokener tokener = new JsonTokener().withBuffer(values[0]);
+			return withTokener(tokener);
 		}
 		return this;
 	}
@@ -339,12 +340,6 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 
 	public static JsonObject create(String value) {
 		return new JsonObject().withValue(value);
-	}
-
-	@Override
-	public boolean setValueItem(Object value) {
-		this.add(IdMap.VALUE, value);
-		return true;
 	}
 
 	@Override

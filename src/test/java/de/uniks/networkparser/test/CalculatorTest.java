@@ -3,6 +3,8 @@ package de.uniks.networkparser.test;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import de.uniks.networkparser.calculator.Minimum;
 import de.uniks.networkparser.calculator.RegCalculator;
 
 public class CalculatorTest {
@@ -234,6 +236,11 @@ public class CalculatorTest {
 		Assert.assertEquals(1.0, calculator.calculate("2+-1"), 0.01);
 		Assert.assertEquals(3.0, calculator.calculate("2--1"), 0.01);
 		Assert.assertEquals(1.0, calculator.calculate("2+(-1)"), 0.01);
-
+	}
+	
+	@Test
+	public void testOperator(){
+		Assert.assertEquals(42.0d, new Minimum().calculate(50.0d,42.0d), 0.01);
+		Assert.assertEquals(42.0d, new Minimum().calculate(42.0,50.0), 0.01);
 	}
 }

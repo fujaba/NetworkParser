@@ -56,7 +56,10 @@ public class XMLEntityCreator implements SendableEntityCreatorTag {
 			return true;
 		}
 		if (XMLEntity.PROPERTY_VALUE.equalsIgnoreCase(attribute)) {
-			((XMLEntity) entity).setValueItem("" + value);
+			String newValue = ""+value;
+			if(newValue.length()>0) {
+				((XMLEntity) entity).withValue(newValue);
+			}
 			return true;
 		}
 		if(XMLTokener.CHILDREN.equals(type) && value instanceof EntityList){

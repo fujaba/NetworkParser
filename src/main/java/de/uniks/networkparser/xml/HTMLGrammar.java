@@ -104,7 +104,9 @@ public class HTMLGrammar extends SimpleGrammar{
 			property = prop.toString();
 			if (property.length() == 1 && property.charAt(0) == IdMap.ENTITYSPLITTER) {
 //				// Its ChildValue
-				((Entity)parent).setValueItem(tokener.transformValue(value, parent));
+				Object element = tokener.transformValue(value, parent);
+				CharacterBuffer buffer = new CharacterBuffer().with(""+element);
+				((Entity)parent).withValue(buffer);
 			} else {
 				((Entity)parent).put(property, tokener.transformValue(value, parent));
 			}

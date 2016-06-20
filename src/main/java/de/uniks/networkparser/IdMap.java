@@ -1176,10 +1176,10 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 
 			for (String property : properties) {
 				Object value = creator.getValue(entity, property);
-				if(map.isPropertyRegard(entity, tokener.getMap(), property, value) == false) {
-					continue;
-				}
 				if (value != null) {
+					if(map.isPropertyRegard(entity, tokener.getMap(), property, value) == false) {
+						continue;
+					}
 					boolean encoding = map.isFullSeriation();
 					if (referenceObject instanceof Class<?>) {
 						encoding = true;
@@ -1302,11 +1302,13 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		}
 		if(map.writeValue(parent, property, writeValue, tokener)) {
 		}else if (parent instanceof EntityList && tokener.isChild(writeValue)){
-			((EntityList)parent).with(tokener.transformValue(writeValue, parent));
+			((EntityList)parent).with(writeValue);
+//			((EntityList)parent).with(tokener.transformValue(writeValue, parent));
 		} else if (parent instanceof Entity){
 			if (property.length() == 1 && property.charAt(0) == ENTITYSPLITTER) {
-					// Its ChildValue
-				((Entity)parent).setValueItem(tokener.transformValue(value, parent));
+				// Its ChildValue
+				CharacterBuffer buffer = new CharacterBuffer().with(""+ tokener.transformValue(value, parent));
+				((Entity)parent).withValue(buffer);
 			} else  if (map.isTypSave() ) {
 				Entity child = tokener.newInstance();
 				if(child != null) {

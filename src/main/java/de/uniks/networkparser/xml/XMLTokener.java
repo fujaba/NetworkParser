@@ -110,19 +110,20 @@ public class XMLTokener extends Tokener {
 		if (c != ITEMSTART) {
 			c = nextClean(false);
 		}
-		if (c != ITEMSTART) {
-			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
-				throw new RuntimeException("A XML text must begin with '<'");
-			}
-			return;
-		}
-		if (!(entity instanceof XMLEntity)) {
+		if (entity instanceof XMLEntity == false) {
 			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
 				throw new RuntimeException("Parse only XMLEntity");
 			}
 			return;
 		}
 		XMLEntity xmlEntity = (XMLEntity) entity;
+		if (c != ITEMSTART) {
+//			xmlEntity.withValue(this.buffer);
+			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
+				throw new RuntimeException("A XML text must begin with '<'");
+			}
+			return;
+		}
 		xmlEntity.setType(this.buffer.nextToken(Buffer.STOPCHARSXMLEND).toString());
 		XMLEntity child;
 		while (true) {
@@ -135,7 +136,7 @@ public class XMLTokener extends Tokener {
 					return;
 				}
 				if (c != ITEMSTART) {
-					xmlEntity.setValueItem(nextString(new CharacterBuffer(), false, false, '<').toString());
+					xmlEntity.withValue(nextString(new CharacterBuffer(), false, false, '<').toString());
 					continue;
 				}
 			}
@@ -153,7 +154,7 @@ public class XMLTokener extends Tokener {
 						xmlEntity.with(child);
 						skip();
 					} else {
-						xmlEntity.setValueItem(nextString(new CharacterBuffer(), false, false, '<').toString());
+						xmlEntity.withValue(nextString(new CharacterBuffer(), false, false, '<').toString());
 					}
 				}
 			} else if (c == '/') {
