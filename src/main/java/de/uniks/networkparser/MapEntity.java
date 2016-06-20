@@ -280,7 +280,12 @@ public class MapEntity extends SimpleList<Object>{
 			String label = property.substring(1, pos);
 			property.trimStart(label.length()+1);
 			if (child instanceof Entity) {
-				child = ((Entity)child).getChild(label, false);
+				BaseItem newItem = ((Entity)child).getChild(label, false);
+				if(newItem == null) {
+					newItem =child.getNewList(true);
+					((Entity) child).put(label, newItem);
+				}
+				child = newItem;
 			}
 		}
 		return (Entity)child;

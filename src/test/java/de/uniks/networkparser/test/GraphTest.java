@@ -12,6 +12,8 @@ import java.util.Date;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.CharacterBuffer;
@@ -33,11 +35,14 @@ import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
+import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.logic.BooleanCondition;
 import de.uniks.networkparser.test.model.Apple;
 import de.uniks.networkparser.test.model.AppleTree;
 import de.uniks.networkparser.test.model.ChatMessage;
 import de.uniks.networkparser.test.model.Room;
 import de.uniks.networkparser.test.model.SortedMsg;
+import de.uniks.networkparser.test.model.Student;
 import de.uniks.networkparser.test.model.University;
 import de.uniks.networkparser.test.model.ludo.Field;
 import de.uniks.networkparser.test.model.ludo.Ludo;
@@ -82,6 +87,38 @@ public class GraphTest {
 		Assert.assertTrue(person.getKidClazzes(false).contains(student));
 	}
 
+	@Test
+	public void testDuplicateJsonClass() {
+		University uni = new University().withName("Uni Kassel");
+		Student student = new Student().withName("Stefan");
+		Room room= new Room().withName("MathRoom");
+		student.withIn(room);
+		uni.withStudents(student);
+		
+		IdMap map=new IdMap();
+		map.withCreator(new UniversityCreator(), new StudentCreator(), new RoomCreator());
+		SimpleList<Object> list = new SimpleList<Object>();
+		list.with(uni, student);
+		JsonArray jsonArray = map.toJsonArray(list, new Filter().withFull(true).withPropertyRegard(BooleanCondition.value(true)));
+		Assert.assertEquals(3, jsonArray.size());
+	}
+	
+	@Test
+	public void testDuplicateJsonClassComplex() {
+		University uni = new University().withName("Uni Kassel");
+		Student student = new Student().withName("Stefan");
+		Room room= new Room().withName("MathRoom");
+		student.withIn(room);
+		uni.withStudents(student);
+		
+		IdMap map=new IdMap();
+		map.withCreator(new UniversityCreator(), new StudentCreator(), new RoomCreator());
+		SimpleList<Object> list = new SimpleList<Object>();
+		list.with(uni, student, room);
+		JsonArray jsonArray = map.toJsonArray(list, new Filter().withFull(true).withPropertyRegard(BooleanCondition.value(true)));
+		Assert.assertEquals(3, jsonArray.size());
+	}
+	
 	@Test
 	public void testComplex() {
 		Clazz student = new Clazz().with("Student");

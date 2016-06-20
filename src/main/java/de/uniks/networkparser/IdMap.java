@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
+
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
@@ -1032,39 +1034,48 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	 */
 	private EntityList encodeList(Object object, MapEntity map, Tokener tokener) {
 		EntityList target = (EntityList) map.getTarget();
-
+		SimpleList<String> ignoreIds=new SimpleList<String>();
 		if (object instanceof Collection<?>) {
 			Collection<?> list = (Collection<?>) object;
 			for (Iterator<?> i = list.iterator(); i.hasNext();) {
 				Object item = i.next();
 				if(tokener.getKey(item)==null) {
 					//DEEP 0
-					encode(item, map, tokener);
+					Entity ignore = encode(item, map, tokener);
+					if(ignore != null) {
+						ignoreIds.add(ignore.getString(ID));
+					}
 				}
 			}
-			return target;
-		}
-		if (object.getClass().isArray()) {
+//			return target;
+		}else if (object.getClass().isArray()) {
 			for (Object item : ((Object[]) object)) {
 				if(tokener.getKey(item)==null) {
 					//DEEP 0
-					encode(item, map, tokener);
+					Entity ignore = encode(item, map, tokener);
+					if(ignore != null) {
+						ignoreIds.add(ignore.getString(ID));
+					}
 				}
 			}
 			return target;
-		}
-		encode(object, map, tokener);
-		if(target.isComparator() == false) {
-			SimpleIterator<JsonObject> queueIterator = new SimpleIterator<JsonObject>(target);
-			if(queueIterator.hasNext()){
-				queueIterator.next();
+		} else {
+			Entity ignore = encode(object, map, tokener);
+			if(ignore != null) {
+				ignoreIds.add(ignore.getString(ID));
 			}
+		}
+		if(target.isComparator() == false) {
+			SimpleIterator<Entity> queueIterator = new SimpleIterator<Entity>(target);
 			while(queueIterator.hasNext()) {
-				JsonObject json = queueIterator.next();
-				Object item = this.getObject(json.getString(ID));
-				if(item!=null) {
-					String className = item.getClass().getName();
-			 		encode(item, className,  map, tokener, null);
+				Entity json = queueIterator.next();
+				String id = json.getString(ID);
+				if(ignoreIds.contains(id) == false) {
+					Object item = this.getObject(id);
+					if(item!=null) {
+						String className = item.getClass().getName();
+				 		encode(item, className,  map, tokener, null);
+					}
 				}
 			}
 		}
@@ -1233,6 +1244,9 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 						}
 					}
 				}else if(map.isFullSeriation()) {
+					if(property.startsWith(".")) {
+						pos--;
+					}
 					prop.setNextString(property, pos);
 					Entity parent = map.convertProperty(prop, item);
 					parent.put(prop.toString(), value);

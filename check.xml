@@ -12,15 +12,14 @@
 		</checkstyle>
 	</target>
 	<target name="findBugs">
-		<taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask" classpath="lib/findbugs/lib/findbugs-ant.jar">
-		</taskdef>
-		<mkdir dir="build/" />
-	    <findbugs home="lib/findbugs/" output="xml" outputFile="build/findbugs.xml">
-	    	<sourcePath path="${basedir}/src/main/java" />
-	    	<class location="${basedir}/lib/findbugs/lib/bcel-6.0-SNAPSHOT.jar" />
-			<!--<auxClasspath path="${basedir}/lib/Regex.jar" />
-		    
-		    <class location="${basedir}/bin/bcel.jar" />-->
+		<taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask" classpath="lib/findbugs/lib/findbugs-ant.jar"></taskdef>
+		<mkdir dir="build/findBug" />
+		<jar destfile="./build/findbug.jar" filesetmanifest="mergewithoutmain" manifest="build/MANIFEST.MF">
+			<fileset dir="./bin" excludes="de/uniks/networkparser/test/**" />
+			<fileset dir="./src/main/java"/>		
+		</jar>
+		<findbugs home="lib/findbugs/" output="html" outputFile="build/findbugs.html">
+			<class location="build/findBug.jar" />
 		</findbugs>
 
 		<echo>Write Errors to build/findbugs.xml</echo>
@@ -54,7 +53,7 @@
 					<exclude name="**/test/**" />
 				</fileset></classfiles>
 				<sourcefiles encoding="UTF-8">
-					<fileset dir="src"></fileset>					
+					<fileset dir="src"></fileset>
 				</sourcefiles>
 			</structure>
 			<html destdir="build/report"/>
