@@ -43,7 +43,7 @@ public class JsonModellTest implements UpdateListener {
 		map.with(new GroupAccountCreator());
 		Assert.assertEquals(175, map.toJsonArray(account.getPersons(), Filter.regard(InstanceOf.value(Person.class, Person.PROPERTY_PARENT))).toString(2).length());
 	}
-	
+
 	@Test
 	public void testModell(){
 		IdMap map= new IdMap();
@@ -77,7 +77,7 @@ public class JsonModellTest implements UpdateListener {
 
 		JsonObject jsonObject=map.toJsonObject(first);
 		Assert.assertEquals(385, jsonObject.toString(2).length());
-		
+
 		secondMap.decode(jsonObject);
 
 		SortedMsg third= new SortedMsg();
@@ -116,7 +116,7 @@ public class JsonModellTest implements UpdateListener {
 			stream.println(str);
 		}
 	}
-	
+
 
 	@Test
 	public void testFilterAtomar() {
@@ -144,7 +144,7 @@ public class JsonModellTest implements UpdateListener {
 		Assert.assertNotNull(data);
 		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.AppleTree\",\"id\":\"J1.A1\",\"upd\":{\"has\":{\"class\":\"de.uniks.networkparser.test.model.Apple\",\"id\":\"J1.A2\",\"prop\":{\"x\":23,\"y\":42}}}}", data.toString());
 	}
-	
+
 	@Test
 	public void testBasicMessage() {
 		BasicMessage message= new BasicMessage();
@@ -153,7 +153,7 @@ public class JsonModellTest implements UpdateListener {
 		map.with(new BasicMessageCreator());
 		JsonObject jsonObject = map.toJsonObject(message);
 		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.event.BasicMessage\",\"id\":\"J1.B1\",\"prop\":{\"value\":\"The answer to life the universe and everything is 42.\"}}", jsonObject.toString());
-		
+
 		BasicMessage newMessage = (BasicMessage) map.decode(jsonObject);
 		Assert.assertEquals(message.getValue(), newMessage.getValue());
 	}

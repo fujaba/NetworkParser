@@ -40,7 +40,7 @@ public class ZipContainer {
 		}
 		return name + "." + extension;
 	}
-	
+
 	public BaseItem getNewInstanceFromFileName(String fileName) {
 		if (fileName != null) {
 			int pos = fileName.lastIndexOf(".");
@@ -87,7 +87,7 @@ public class ZipContainer {
 		}
 		return null;
 	}
-	
+
 	public BaseItem decode(InputStream stream) {
 		ZipInputStream zis;
 		if(stream instanceof ZipInputStream) {
@@ -123,15 +123,15 @@ public class ZipContainer {
 		return null;
 	}
 }
-	
+
 //	private BaseItem data;
-//	
+//
 //	public ZipContainer withData(BaseItem data) {
 //		this.data = data;
 //		return this;
 //	}
-//	
-//	
+//
+//
 //	public BaseItem getData() {
 //		return data;
 //	}

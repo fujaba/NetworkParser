@@ -23,14 +23,14 @@ public class StringTest {
 		buffer.replace("%DEEP", "1");
 		Assert.assertEquals("My 1 is not the 1", buffer.toString());
 	}
-	
+
 	@Test
 	public void testStringReplaceLong(){
 		CharacterBuffer buffer = new CharacterBuffer().with("My %ID is not the %ID");
 		buffer.replace("%ID", "4223");
 		Assert.assertEquals("My 4223 is not the 4223", buffer.toString());
 	}
-	
+
 	@Test
 	public void testString(){
 		String simple="<c id=\"C:\\\" />";
@@ -52,7 +52,7 @@ public class StringTest {
 		}
 		Assert.assertEquals(ref, temp);
 	}
-	
+
 	@Test
 	public void testByteCode() throws UnsupportedEncodingException{
 		String a = new String(new byte[]{0x42}, "UTF-8");

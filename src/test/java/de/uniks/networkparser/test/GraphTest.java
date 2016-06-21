@@ -27,13 +27,18 @@ import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.Clazz.ClazzType;
 import de.uniks.networkparser.graph.DataType;
+import de.uniks.networkparser.graph.DataTypeMap;
+import de.uniks.networkparser.graph.DataTypeSet;
+import de.uniks.networkparser.graph.GraphDiff;
 import de.uniks.networkparser.graph.GraphImage;
 import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.graph.GraphOptions;
 import de.uniks.networkparser.graph.GraphPatternMatch;
 import de.uniks.networkparser.graph.GraphTokener;
 import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.graph.Modifier;
 import de.uniks.networkparser.graph.Parameter;
+import de.uniks.networkparser.graph.Throws;
 import de.uniks.networkparser.graph.util.AnnotationSet;
 import de.uniks.networkparser.graph.util.AssociationSet;
 import de.uniks.networkparser.graph.util.AttributeSet;
@@ -109,7 +114,7 @@ public class GraphTest {
 		Room room= new Room().withName("MathRoom");
 		student.withIn(room);
 		uni.withStudents(student);
-		
+
 		IdMap map=new IdMap();
 		map.withCreator(new UniversityCreator(), new StudentCreator(), new RoomCreator());
 		SimpleList<Object> list = new SimpleList<Object>();
@@ -117,7 +122,7 @@ public class GraphTest {
 		JsonArray jsonArray = map.toJsonArray(list, new Filter().withFull(true).withPropertyRegard(BooleanCondition.value(true)));
 		Assert.assertEquals(3, jsonArray.size());
 	}
-	
+
 	@Test
 	public void testDuplicateJsonClassComplex() {
 		University uni = new University().withName("Uni Kassel");
@@ -125,18 +130,18 @@ public class GraphTest {
 		Room room= new Room().withName("MathRoom");
 		student.withIn(room);
 		uni.withStudents(student);
-		
+
 		IdMap map=new IdMap();
 		map.withCreator(new UniversityCreator(), new StudentCreator(), new RoomCreator());
 		SimpleList<Object> list = new SimpleList<Object>();
 		list.with(uni, student, room);
 		JsonArray jsonArray = map.toJsonArray(list, new Filter().withFull(true).withPropertyRegard(BooleanCondition.value(true)));
 		Assert.assertEquals(3, jsonArray.size());
-		
+
 		jsonArray = map.toJsonArray(list, new Filter().withFull(true).withPropertyRegard(BooleanCondition.value(true)));
 		Assert.assertEquals(3, jsonArray.size());
 	}
-	
+
 	@Test
 	public void testComplex() {
 		Clazz student = new Clazz().with("Student");
@@ -346,16 +351,16 @@ public class GraphTest {
 //		IdMap mapB = new IdMap();
 //		mapB.with(new StudentCreator());
 //		mapB.with(new UniversityCreator());
-		
+
 		University uniA = new University().withName("Uni Kassel");
-		
+
 		University uniB = new University().withName("Uni Kassel");
-		
+
 		GraphPatternMatch diff = mapA.getDiff(uniA, uniB, false);
-		
+
 		Assert.assertEquals(0, diff.size());
 	}
-	
+
 	@Test
 	public void testYUML() {
 		String url = "http://yuml.me/diagram/class/";
@@ -426,7 +431,7 @@ public class GraphTest {
 		YUMLConverter converter = new YUMLConverter();
 		Assert.assertEquals("[University|name:String],[Student]", converter.convert(list, true));
 	}
-	
+
 
 	@Test
 	public void testHTMLEntity() throws IOException {
@@ -490,7 +495,7 @@ public class GraphTest {
 		uni.withBidirectional(person, "has", Cardinality.MANY, "studis", Cardinality.ONE);
 		Assert.assertEquals(669, htmlEntity.withGraph(model).toString(2).length());
 	}
-	
+
 	@Test
 	public void testMethodBody() throws NoSuchMethodException, SecurityException {
 		Apple apple = new Apple();
@@ -498,7 +503,7 @@ public class GraphTest {
 
 		method.getModifiers();
 	}
-	
+
 	@Test
 	public void testDotShort() {
 		String item="strict graph ethane {1}";
@@ -576,28 +581,74 @@ public class GraphTest {
 		//		 processBuilder.redirectOutput(Redirect.INHERIT);
 		//		 processBuilder.start();
 	}
-	
+
+	@Test
+	public void testCoverage() {
+		Assert.assertFalse(AssociationTypes.isEdge(null));
+		Assert.assertEquals(AssociationTypes.ASSOCIATION, AssociationTypes.valueOf("ASSOCIATION"));
+		Assert.assertEquals(7, AssociationTypes.values().length);
+
+		Assert.assertEquals(GraphOptions.TYP.HTML, GraphOptions.TYP.valueOf("HTML"));
+		Assert.assertEquals(4, GraphOptions.TYP.values().length);
+
+		Assert.assertEquals(GraphOptions.RANK.LR, GraphOptions.RANK.valueOf("LR"));
+		Assert.assertEquals(2, GraphOptions.RANK.values().length);
+
+		Assert.assertEquals(GraphOptions.LINETYP.CENTER, GraphOptions.LINETYP.valueOf("CENTER"));
+		Assert.assertEquals(2, GraphOptions.LINETYP.values().length);
+
+		Assert.assertEquals(Clazz.ClazzType.CLAZZ, Clazz.ClazzType.valueOf("CLAZZ"));
+		Assert.assertEquals(3, Clazz.ClazzType.values().length);
+
+		GraphList model = new GraphList();
+		model.setAuthorName("Stefan");
+		model.with("de.uniks.networkparser");
+		model.createClazz("Person");
+		Assert.assertEquals(1, model.getClazzes().size());
+	}
+
+	@Test
+	public void testMember() {
+		GraphList model = new GraphList();
+		model.createClazz("Person");
+		Assert.assertNull(model.getValue("Blub"));
+		model.with(new GraphDiff());
+		model.getClazzes(new BooleanCondition().withValue(true));
+		DataTypeSet dtSet = DataTypeSet.create(DataType.STRING);
+		Assert.assertNotNull(dtSet);
+		Assert.assertTrue(dtSet.equals(DataTypeSet.create(DataType.STRING)));
+		Assert.assertEquals("SimpleSet<String>", dtSet.getName(true));
+
+		Assert.assertNotNull(DataTypeMap.create(DataType.STRING, DataType.STRING));
+//		create(Clazz)	9	0%		n/a	1	1	2	2	1	1
+//		create(String)	9	0%		n/a	1	1	2	2	1	1
+//		getGeneric()	3	0%		n/a	1	1	1	1	1	1
+//		hashCode()
+	}
+
 	@Test
 	public void testFullGraph() {
 		GraphList model = new GraphList();
+		model.setAuthorName("Stefan");
 		model.with("de.uniks.networkparser");
 		Clazz person = model.createClazz("Person");
 		Clazz uni = model.createClazz("University");
 		ClazzSet clazzes = model.getClazzes();
 		Assert.assertEquals(person, clazzes.get(0));
 		Assert.assertEquals(uni, clazzes.get(1));
-		
+
 		Attribute name = person.createAttribute("name", DataType.STRING);
 		Attribute id = person.createAttribute("id", DataType.INT);
-		
+
 		Method initMethod = person.createMethod("init").with(Annotation.OVERRIDE);
+		initMethod.with(new Throws("Exception"));
 		Method toStringMethod = person.createMethod("toString", new Parameter(DataType.INT)).with(DataType.STRING);
 		person.withBidirectional(uni, "owner", Cardinality.ONE, "studs", Cardinality.MANY);
 
 		AttributeSet attributes = person.getAttributes();
 		Assert.assertEquals(name, attributes.get(0));
 		Assert.assertEquals(id, attributes.get(1));
-		
+
 		MethodSet methods = person.getMethods();
 		Assert.assertEquals(initMethod, methods.get(0));
 		Assert.assertEquals(toStringMethod, methods.get(1));
@@ -606,7 +657,7 @@ public class GraphTest {
 		Assert.assertEquals(1, methods.getModifiers().size());
 		Assert.assertEquals(2, methods.getReturnTypes().size());
 		Assert.assertEquals(1, methods.getParameters().size());
-		
+
 		Assert.assertEquals(1, methods.getParameters().getMethods().size());
 		Assert.assertEquals(1, methods.getParameters().getDataTypes().size());
 
@@ -620,28 +671,28 @@ public class GraphTest {
 		Assert.assertEquals(1, listOfAnnotation.getClazzes().size());
 		Assert.assertEquals(1, listOfAnnotation.getMethods().size());
 		Assert.assertEquals(1, listOfAnnotation.getAttributes().size());
-		
+
 		Modifier private1 = Modifier.PRIVATE;
 		initMethod.with(private1);
 		name.with(private1);
 		person.with(private1);
-		
+
 		ModifierSet listOfModifier = new ModifierSet().with(initMethod.getModifier());
 		listOfModifier.with(name.getModifier());
 		listOfModifier.with(person.getModifier());
 		Assert.assertEquals(1, listOfModifier.getClazzes().size());
 		Assert.assertEquals(1, listOfModifier.getMethods().size());
 		Assert.assertEquals(1, listOfModifier.getAttributes().size());
-		
+
 		// Navigate over Full Model
 		ClazzSet list = new ClazzSet().with(person, uni);
 		Assert.assertEquals(2, list.getModifiers().size());
 		Assert.assertEquals(2, list.getMethods().size());
 
-		
+
 		listOfAnnotation = list.getAnnotations();
 		Assert.assertEquals(1, listOfAnnotation.size());
-		
+
 		AssociationSet listOfAssocuation = list.getAssociations();
 		Assert.assertEquals(1, listOfAssocuation.getClazzes().size());
 		Assert.assertEquals(1, listOfAssocuation.getOther().size());

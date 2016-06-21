@@ -14,9 +14,9 @@ import org.junit.Test;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.ByteBuffer;
+import de.uniks.networkparser.bytes.AES;
 import de.uniks.networkparser.bytes.ByteEntity;
-import de.uniks.networkparser.bytes.checksum.AES;
-import de.uniks.networkparser.bytes.checksum.SHA1;
+import de.uniks.networkparser.bytes.SHA1;
 import de.uniks.networkparser.converter.ByteConverterAES;
 import de.uniks.networkparser.converter.ByteConverterBinary;
 import de.uniks.networkparser.converter.ByteConverterHex;
@@ -45,7 +45,7 @@ public class ByteTest{
 		String text="Hallo Welt";
 		Assert.assertEquals("28cbbc72d6a52617a7abbfff6756d04bbad0106a", SHA1.value(text).toString());
 	}
-	
+
 	@Test
 	public void testSimpleAES(){
 		AES aes = new AES();			 // init AES encrypter class
@@ -66,7 +66,7 @@ public class ByteTest{
 		String unencrypted = aes.decode(encrypted).toString();
 		Assert.assertEquals("Unencrypted text : [" +unencrypted+ "] [" +unencrypted.length()+ " bytes]", 38, unencrypted.length());
 	}
-	
+
 	@Test
 	public void testAES(){
 		ByteConverterAES aes = new ByteConverterAES();
@@ -87,7 +87,7 @@ public class ByteTest{
 		String unencrypted = new String(aes.decode(encrypted));
 		Assert.assertEquals("Unencrypted text : [" +unencrypted+ "] [" +unencrypted.length()+ " bytes]", 38, unencrypted.length());
 	}
-	
+
 	@Test
 	public void testString(){
 		ByteEntity entity= new ByteEntity();
@@ -296,7 +296,7 @@ public class ByteTest{
 		assertEquals("Passwort fuer Stefan", "42", newAssocs.getPassword("Stefan"));
 		assertEquals("Nachricht", "Testnachricht", newAssocs.getMessage().getValue());
 	}
-	
+
 
 	@Test
 	public void testSerialization() {

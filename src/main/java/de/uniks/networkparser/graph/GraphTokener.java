@@ -147,7 +147,7 @@ public class GraphTokener extends Tokener {
 		map.minus();
 		return;
 	}
-	
+
 	public void highlightModel(JsonArray clazzDiagram, GraphList objectDiagram) {
 		GraphList list = new GraphConverter().convertGraphList(GraphTokener.CLASS, clazzDiagram);
 		this.highlightModel(list, objectDiagram);
@@ -190,7 +190,7 @@ public class GraphTokener extends Tokener {
 		}
 		return clazzDiagram;
 	}
-	
+
 	public GraphPatternMatch diffModel(Object master, Object slave, MapEntity map) {
 		if(map.add(master) == false) {
 			return null;
@@ -210,7 +210,7 @@ public class GraphTokener extends Tokener {
 			result.with(GraphPatternChange.createDelete(master));
 			return result;
 		}
-		
+
 		SendableEntityCreator masterCreator = this.map.getCreatorClass(master);
 		SendableEntityCreator slaveCreator = this.map.getCreatorClass(slave);
 
@@ -257,7 +257,7 @@ public class GraphTokener extends Tokener {
 							result.with(match);
 						}
 					} else {
-						result.with(GraphPatternChange.createCreate(item.getKey(), slaveValue));	
+						result.with(GraphPatternChange.createCreate(item.getKey(), slaveValue));
 					}
 					continue;
 				}
@@ -285,7 +285,7 @@ public class GraphTokener extends Tokener {
 						for(Iterator<?> childIterator = masterCollection.iterator();childIterator.hasNext();) {
 							match.with(GraphPatternChange.createDelete(childIterator.next()));
 						}
-						result.with(match);	
+						result.with(match);
 					}
 					continue;
 				}
@@ -304,7 +304,7 @@ public class GraphTokener extends Tokener {
 					match.with(GraphPatternChange.createCreate(slaveIterator.next()));
 				}
 				if(match.size()>0) {
-					result.with(match);	
+					result.with(match);
 				}
 			}
 		} else {
@@ -320,7 +320,7 @@ public class GraphTokener extends Tokener {
 		}
 		return result;
 	}
-	
+
 	@Override
 	public GraphTokener withMap(IdMap map) {
 		super.withMap(map);

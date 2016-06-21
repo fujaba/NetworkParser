@@ -61,7 +61,7 @@ public class GraphPatternMatch implements UpdateListener, SendableEntityCreator 
 		this.item = value;
 		return this;
 	}
-	
+
 	/**
 	 * @param value		for new Condition
 	 * @return 			Not Instance
@@ -84,7 +84,7 @@ public class GraphPatternMatch implements UpdateListener, SendableEntityCreator 
 	public Set<UpdateListener> getMatches() {
 		return matches;
 	}
-	
+
 	/**
 	 * @param value		for Property
 	 * @return 			GraphPatternMatch Instance
@@ -147,7 +147,7 @@ public class GraphPatternMatch implements UpdateListener, SendableEntityCreator 
 	public static GraphPatternMatch create(String property, Object item) {
 		return new GraphPatternMatch().withItem(item);
 	}
-	
+
 	public int size() {
 		if(this.matches == null) {
 			return 0;

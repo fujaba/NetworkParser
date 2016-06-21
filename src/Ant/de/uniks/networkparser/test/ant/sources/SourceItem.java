@@ -84,7 +84,7 @@ public class SourceItem {
 			this.imports.finish();
 			this.header=headerBBuilder.toString().trim();
 			this.comment=commentBuilder.toString();
-			
+
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

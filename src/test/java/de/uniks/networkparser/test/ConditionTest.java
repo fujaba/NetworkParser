@@ -40,25 +40,25 @@ public class ConditionTest implements UpdateListener {
 
 		Assert.assertFalse(ifCondition.update(new PropertyChangeEvent(23, null, null, null)));
 	}
-	
+
 	@Test
 	public void testLogicCondition() {
 		IdFilterElements filter = new IdFilterElements(Person.class);
 		Person albert = new Person().withName("Albert");
-		
+
 		University uni = new University().withName("Albert");
 		PropertyChangeEvent pce = new PropertyChangeEvent(this, "child", null, albert);
 		Assert.assertTrue(filter.update(pce));
 		Assert.assertFalse(filter.update(pce));
 		pce = new PropertyChangeEvent(this, "child", null, new Date());
 		Assert.assertFalse(filter.update(pce));
-		
+
 		pce = new PropertyChangeEvent(this, "child", null, uni);
 		Assert.assertFalse(filter.update(pce));
 		filter = new IdFilterElements(InstanceOf.value(uni.getClass()));
 		Assert.assertTrue(filter.update(pce));
 	}
-	
+
 	@Test
 	public void testLogicSimpleMapEvent() {
 		IdMap map = new IdMap();
@@ -86,7 +86,7 @@ public class ConditionTest implements UpdateListener {
 		Assert.assertNull(event.getBeforeElement());
 		return false;
 	}
-	
+
 	@Test
 	public void testLogic() {
 		And and = new And();
@@ -100,9 +100,9 @@ public class ConditionTest implements UpdateListener {
 		ifCon.withFalse(BooleanCondition.value(false));
 		ifCon.withExpression(new Not().with(new Between().withRange(0, 42)));
 		or.add(ifCon);
-		
+
 		Assert.assertFalse(and.update(new PropertyChangeEvent(23, null, null, 23)));
-		
+
 		IdMap map=new IdMap();
 		map.with(new And());
 		map.with(new Or());
@@ -111,7 +111,7 @@ public class ConditionTest implements UpdateListener {
 		map.with(new IfCondition());
 		map.with(new Between());
 		map.with(new Not());
-		
+
 		JsonObject jsonObject = map.toJsonObject(and);
 //		System.out.println(jsonObject);
 	}

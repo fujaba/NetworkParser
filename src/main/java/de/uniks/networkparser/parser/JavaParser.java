@@ -38,7 +38,7 @@ public class JavaParser {
 		parseClassDecl();
 		return javaFile.getRoot();
 	}
-	
+
 	private void parseImport(JavaFile javaFile) {
 		// import qualifiedName [. *];
 		SymTabEntry nextEntity = javaFile.startNextSymTab(SymTabEntry.TYPE_IMPORT);
@@ -65,7 +65,7 @@ public class JavaParser {
 //		symTab.put(IMPORT + ":" + importName, new SymTabEntry().withMemberName(importName).withModifiers(modifier)
 //				.withStartPos(startPos).withEndPos(previousRealToken.endPos));
 	}
-	
+
 	private String parseModifiers(JavaFile javaFile) {
 		// names != class
 		String result = "";
@@ -76,7 +76,7 @@ public class JavaParser {
 		}
 		return result;
 	}
-	
+
    private void parsePackageDecl(JavaFile javaFile)
    {
 	   // skip package
@@ -206,7 +206,7 @@ public class JavaParser {
 		}
 		return javaFile.finishParse(nextEntity);
 	}
-	
+
 	public boolean isFileBodyHasChanged() {
 		return fileBodyHasChanged;
 	}

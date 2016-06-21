@@ -27,7 +27,7 @@ public class JsonMessageTest implements UpdateListener {
 		}
 		return true;
 	}
-	
+
 	@Test
 	public void testModell(){
 		messages=new SimpleList<String>();
@@ -54,12 +54,12 @@ public class JsonMessageTest implements UpdateListener {
 		account.createPersons().withName("Albert");
 //		account.createPersons().withName("Tobi");
 	}
-	
+
 	@Test
 	public void testModellWithUpdateSet(){
 		messages=new SimpleList<String>();
 		this.pos = 0;
-		
+
 		AppleTree tree = new AppleTree();
 		tree.setName("Bananenbaum");
 		IdMap map= new IdMap();
@@ -69,7 +69,7 @@ public class JsonMessageTest implements UpdateListener {
 		messages.with("{\"class\":\"de.uniks.networkparser.test.model.AppleTree\",\"id\":\"root\",\"upd\":{\"has\":{\"class\":\"de.uniks.networkparser.test.model.Apple\",\"id\":\"J1.A1\"}}}");
 		map.with(this);
 		tree.createApple();
-		
+
 	}
-	
+
 }

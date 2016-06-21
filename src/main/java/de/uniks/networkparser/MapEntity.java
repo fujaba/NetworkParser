@@ -258,7 +258,7 @@ public class MapEntity extends SimpleList<Object>{
 		this.flag = (byte) (this.flag | flag);
 		return this;
 	}
-	
+
 	public MapEntity withoutFlag(byte flag) {
 		this.flag = (byte) (this.flag | flag);
 		this.flag -= flag;

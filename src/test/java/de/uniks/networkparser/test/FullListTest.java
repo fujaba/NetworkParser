@@ -456,7 +456,7 @@ public class FullListTest {
 			list.removeByObject(i);
 		}
 	}
-	
+
 	@Test(expected=ConcurrentModificationException.class)
 	public void testSize() {
 		SimpleSet<Apple> appleTree=new SimpleSet<Apple>();
@@ -469,7 +469,7 @@ public class FullListTest {
 			}
 		}
 		Assert.assertEquals(430, appleTree.size());
-		
+
 		for(Apple item : appleTree) {
 			appleTree.remove(42);
 			if(appleTree.size()<400) {
@@ -479,7 +479,7 @@ public class FullListTest {
 			appleTree.indexOf(list.get(0));
 		}
 	}
-	
+
 	@Test
 	public void testSizeAdvance() {
 		SimpleSet<Apple> appleTree=new SimpleSet<Apple>();
@@ -492,7 +492,7 @@ public class FullListTest {
 			}
 		}
 		Assert.assertEquals(430, appleTree.size());
-		
+
 		for(Iterator<Apple> iterator = appleTree.iterator(false);iterator.hasNext();) {
 			Apple apple = iterator.next();
 			appleTree.remove(42);
@@ -503,7 +503,7 @@ public class FullListTest {
 			appleTree.indexOf(list.get(0));
 		}
 	}
-	
+
 	@Test
 	public void testSizeIteratorRemove() {
 		SimpleSet<Apple> appleTree=new SimpleSet<Apple>();
@@ -516,7 +516,7 @@ public class FullListTest {
 			iterator.remove();
 		}
 	}
-	
+
 	@Test
 	public void retainAll(){
 		SimpleList<String> item = new SimpleList<String>();

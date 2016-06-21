@@ -43,10 +43,10 @@ public class SoapTest {
 			conn.setRequestProperty( "Content-Length", "" +body.length());
 			conn.setRequestProperty("SOAPAction" , "http://msiggi.de/Sportsdata/Webservices/GetMatchByMatchID");
 			OutputStreamWriter soapRequestWriter = new OutputStreamWriter(conn.getOutputStream());
-	
+
 			soapRequestWriter.write(body);
 			soapRequestWriter.flush();
-	
+
 			// GEt
 			BufferedReader soapRequestReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			StringBuilder answer = new StringBuilder();
@@ -71,17 +71,17 @@ public class SoapTest {
 		SoapObject soapAnswer = (SoapObject) map.decode(answer.toString());
 
 		Assert.assertNotNull(soapAnswer.getBody());
-		
+
 		Assert.assertNull(creator.getValue(soapAnswer, "blub"));
 
 		EntityList entity = soapAnswer.getBody().getChildren().get(0).getChildren().get(0);
 		Assert.assertEquals(25, ((XMLEntity)entity).getChildren().size() );
-		
+
  		XMLEntity xmlEntity = map.toXMLEntity(soapAnswer);
 		Assert.assertEquals(1, xmlEntity.size());
-		
+
 		creator.setValue(soapAnswer, "Full:Body", "The answer is 42.", IdMap.NEW);
-		
+
 		Assert.assertEquals("The answer is 42.", soapAnswer.getBody().getValue());
 	}
 }

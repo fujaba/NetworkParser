@@ -116,11 +116,11 @@ public class EMFTokener extends Tokener{
 
 		return result;
 	}
-	
+
 	public XMLEntity encodeClassModel(GraphList entity, MapEntity map) {
 		XMLContainer container = new XMLContainer();
 		container.withStandardPrefix();
-		
+
 		XMLEntity root = container.createChild();
 		root.setType(EPACKAGE);
 		root.withKeyValue("xmi:version", "2.0");
@@ -136,7 +136,7 @@ public class EMFTokener extends Tokener{
 		root.withKeyValue(NAME, id);
 		root.withKeyValue("nsURI", "http:///"+name.replace(".", "/")+".ecore");
 		root.withKeyValue("nsPrefix", name);
-		
+
 		for(Clazz child : entity.getClazzes()) {
 			XMLEntity ecoreClass = root.createChild();
 			ecoreClass.setType(ECLASS);
@@ -151,7 +151,7 @@ public class EMFTokener extends Tokener{
 					ecoreAttribute.withKeyValue(ETYPE, EDATATYPE + "E" + EntityUtil.upFirstChar(type.getName(true)));
 				}
 			}
-			
+
 			for(Association assoc : child.getAssociations()) {
 				XMLEntity ecoreAssociation = ecoreClass.createChild();
 				ecoreAssociation.setType(EREFERENCE);
@@ -159,7 +159,7 @@ public class EMFTokener extends Tokener{
 				ecoreAssociation.withKeyValue(ETYPE, "#//"+assoc.getOtherClazz().getName());
 				ecoreAssociation.withKeyValue(EOpposite, "#//"+assoc.getOtherClazz().getName()+"/"+assoc.getName());
 				if(Cardinality.MANY.equals(assoc.getCardinality())) {
-					ecoreAssociation.withKeyValue(UPPERBOUND, "-1");				
+					ecoreAssociation.withKeyValue(UPPERBOUND, "-1");
 				} else {
 					ecoreAssociation.withKeyValue(UPPERBOUND, "1");
 				}
@@ -410,7 +410,7 @@ public class EMFTokener extends Tokener{
 			addValues(kidFactory, (XMLEntity)kidEntity, kidObject, map);
 		}
 	}
-	
+
 	private SimpleList<String> getRef(String value, XMLEntity xmlEntity, SendableEntityCreator rootFactory) {
 		SimpleList<String> result = new SimpleList<String>();
 	   if (value.startsWith("//@")) {

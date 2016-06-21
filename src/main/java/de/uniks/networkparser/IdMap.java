@@ -133,7 +133,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 
 	/** The updatelistener for Notification changes. */
 	protected PropertyChangeListener listener = new UpdateJson(this);
-	
+
 	protected SimpleKeyValueList<SendableEntityCreator, Object> referenceList = new SimpleKeyValueList<SendableEntityCreator, Object>(); 
 
 	/** The Constant ENTITYSPLITTER. */
@@ -1014,13 +1014,13 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	public GraphPatternMatch getDiff(Object source, Object target, boolean ordered) {
 		MapEntity map = new MapEntity(filter, grammar);
 		if(ordered) {
-			map.setFlag(GraphTokener.FLAG_ORDERD);	
+			map.setFlag(GraphTokener.FLAG_ORDERD);
 		} else {
 			map.setFlag(GraphTokener.FLAG_UNORDERD);
 		}
 		return new GraphTokener().withMap(this).diffModel(source, target, map);
 	}
-	
+
 	/**
 	 * Convert to JsonArray in the resource
 	 *

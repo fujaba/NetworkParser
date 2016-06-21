@@ -1,4 +1,4 @@
-package de.uniks.networkparser.bytes.checksum;
+package de.uniks.networkparser.bytes;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
 
@@ -166,7 +166,7 @@ public class SHA1 extends Checksum {
 	}
 
 	@Override
-	public void update(byte b) {
+	public boolean update(byte b) {
 		int idx = currentPos >> 2;
 		w[idx] = (w[idx] << 8) | (b & 0xff);
 
@@ -177,6 +177,7 @@ public class SHA1 extends Checksum {
 			perform();
 			currentPos = 0;
 		}
+		return true;
 	}
 
 	private void putInt(byte[] b, int pos, int val) {

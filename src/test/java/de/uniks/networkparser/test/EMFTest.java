@@ -40,7 +40,7 @@ public class EMFTest extends IOClasses{
 		ArrayList<?> decode = (ArrayList<?>) map.decodeEMF(value.toString());
 		Assert.assertEquals(0, decode.size());
 	}
-	
+
 	@Test
 	public void testXMITOEMF() throws FileNotFoundException {
 		IdMap map=new IdMap();
@@ -49,7 +49,7 @@ public class EMFTest extends IOClasses{
 		map.decodeEMF(value.toString(), decode);
 		Assert.assertEquals(3, decode.getClazzes().size());
 	}
-	
+
 	@Test
 	public void testWriteEMF() {
 		IdMap map=new IdMap();
@@ -60,7 +60,7 @@ public class EMFTest extends IOClasses{
 		student.withAttribute("name", DataType.STRING);
 		uni.withBidirectional(student, "student", Cardinality.MANY, "university", Cardinality.ONE);
 		XMLEntity item = (XMLEntity) map.encode(list, new EMFTokener());
-		
+
 		XMLEntity root =(XMLEntity) item.getChildren().first();
 		StringBuilder sb=new StringBuilder();
 		sb.append("<ecore:EPackage xmi:version=\"2.0\" xmlns:xmi=\"http://www.omg.org/XMI\" xmlns:ecore=\"http://www.eclipse.org/emf/2002/Ecore\" name=\"model\" nsURI=\"http:///model.ecore\" nsPrefix=\"model\">"+
@@ -76,5 +76,5 @@ public class EMFTest extends IOClasses{
 
 		Assert.assertEquals(sb.toString(), root.toString());
 	}
-	
+
 }

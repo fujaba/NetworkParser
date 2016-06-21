@@ -173,7 +173,7 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements Iterab
 		}
 		return (ST) filterCollection;
 	}
-	
+
 	public Iterator<V> iterator() {
 		return new SimpleIterator<V>(this).withCheckPointer(true);
 	}

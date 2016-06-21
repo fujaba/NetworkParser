@@ -273,7 +273,7 @@ public class Student implements SendableEntity{
 	public String getStudNo() {
 		return this.studNo;
 	}
-	
+
 	public static final String PROPERTY_FIRSTNAME = "firstName";
 
 	private String firstName;

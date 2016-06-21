@@ -85,7 +85,7 @@ public class ModelTest implements UpdateListener {
 		}
 		return count;
 	}
-	
+
 	@Test
 	public void testClone(){
 		SortedMsg root = new SortedMsg();
@@ -94,14 +94,14 @@ public class ModelTest implements UpdateListener {
 		child1.setMsg("Child");
 		SortedMsg child2 = new SortedMsg();
 		child2.setMsg("ChildChild");
-		
+
 		root.setChild(child1);
 		child1.setChild(child2);
-		
-		
+
+
 		IdMap map=new IdMap();
 		map.with(new SortedMsgCreator());
-		
+
 		SortedMsg root2 = (SortedMsg) map.cloneObject(root, new Filter().withPropertyRegard(Deep.value(1)));
 		Assert.assertNotSame(root, root2);
 		Assert.assertEquals(root2.getMsg(), "root");
@@ -109,7 +109,7 @@ public class ModelTest implements UpdateListener {
 		Assert.assertEquals(root2.getChild().getMsg(), "Child");
 		Assert.assertNull(root2.getChild().getChild());
 	}
-	
+
 	@Test
 	public void testAtomar() {
 		University uni = new University();
@@ -123,7 +123,7 @@ public class ModelTest implements UpdateListener {
 		uni.withStudents(new Student().withFirstName("Stefan"));
 		Assert.assertEquals(4, events.size());
 	}
-	
+
 	@Test
 	public void testGeneric() {
 		Apple apple = new Apple();
@@ -131,7 +131,7 @@ public class ModelTest implements UpdateListener {
 		creator.setValue(apple, Apple.PROPERTY_X, 23.0, IdMap.NEW);
 		creator.setValue(apple, Apple.PROPERTY_Y, 42, IdMap.NEW);
 		creator.setValue(apple, "password", "Albert", IdMap.NEW);
-		
+
 		Assert.assertEquals(23.0, creator.getValue(apple, Apple.PROPERTY_X));
 		Assert.assertEquals(42.0, creator.getValue(apple, Apple.PROPERTY_Y));
 		Assert.assertEquals("Albert", creator.getValue(apple, "password"));

@@ -237,7 +237,7 @@ public class CalculatorTest {
 		Assert.assertEquals(3.0, calculator.calculate("2--1"), 0.01);
 		Assert.assertEquals(1.0, calculator.calculate("2+(-1)"), 0.01);
 	}
-	
+
 	@Test
 	public void testOperator(){
 		Assert.assertEquals(42.0d, new Minimum().calculate(50.0d,42.0d), 0.01);

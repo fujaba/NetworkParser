@@ -730,7 +730,7 @@ public class JsonTest extends IOClasses {
 		// Post
 		assertEquals("Hallo Welt", fullMessage.getText());
 	}
-	
+
 	@Test
 	public void testJsonUpdateTest() {
 		House house=new House();
@@ -741,7 +741,7 @@ public class JsonTest extends IOClasses {
 			@Override
 			public boolean update(Object event) {
 				SimpleEvent simpleEvent = (SimpleEvent) event;
-				
+
 				updateMessage = simpleEvent.getEntity().toString();
 				Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.House\",\"id\":\"J1.H1\",\"rem\":{\"floor\":4},\"upd\":{\"floor\":42}}", updateMessage.toString());
 				return false;
@@ -783,7 +783,7 @@ public class JsonTest extends IOClasses {
 		JsonObject item = new JsonObject().withValue(json);
 		assertNotNull(item);
 	}
-	
+
 	@Test
 	public void testPropertyChange() {
 		IdMap map=new IdMap();

@@ -1,4 +1,4 @@
-package de.uniks.networkparser.bytes.checksum;
+package de.uniks.networkparser.bytes;
 
 /*
  NetworkParser
@@ -31,7 +31,7 @@ public class Adler32 extends Checksum {
 	private static final int BASE = 65521;
 
 	@Override
-	public void update(int b) {
+	public boolean update(int b) {
 		super.update(b);
 		int s1 = (int) value & 0xffff;
 		int s2 = (int) value >>> 16;
@@ -39,6 +39,7 @@ public class Adler32 extends Checksum {
 		s2 = (s1 + s2) % BASE;
 
 		value = (s2 << 16) + s1;
+		return true;
 	}
 
 	@Override

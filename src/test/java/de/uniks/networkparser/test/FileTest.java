@@ -23,14 +23,14 @@ public class FileTest {
 		fileWriter.write(xmlEntity.toString());
 		fileWriter.close();
 	}
-	
+
 	@Test
 	public void fileReader() throws IOException{
 		FileBuffer buffer = new FileBuffer();
 		buffer.withFile(new File("src/test/resources/test/sample.xml"));
 		XMLEntity root = new XMLEntity().withValue(buffer);
 		Assert.assertEquals(18, root.getChildrenCount());
-		
+
 	}
-	
+
 }

@@ -20,11 +20,11 @@ public class StringInputStream extends InputStream {
 		}
 		return 0;
 	}
-	
+
 	public void withData(String value) {
 		this.mBuf.append(value);
 	}
-	
+
 	public static StringInputStream create(StringOutputStream stream) {
 		StringInputStream result = new StringInputStream();
 		result.withData(stream.toString());

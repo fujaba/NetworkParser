@@ -118,7 +118,7 @@ public class UpdateJson implements PropertyChangeListener {
 	public void propertyChange(PropertyChangeEvent evt) {
 		Object oldValue = evt.getOldValue();
 		Object newValue = evt.getNewValue();
-		
+
 		this.updateFilter.withPropertyRegard(map.getListener());
 
 		if ((oldValue == null && newValue == null)
@@ -407,7 +407,7 @@ public class UpdateJson implements PropertyChangeListener {
 		}
 		return null;
 	}
-	
+
 	public UpdateJson withReguardFilter(UpdateListener filter) {
 		this.updateFilter.withPropertyRegard(filter);
 		return this;

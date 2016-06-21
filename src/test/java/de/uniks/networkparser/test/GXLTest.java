@@ -15,7 +15,7 @@ public class GXLTest {
 	@Test
 	public void testSimple() {
 		XMLContainer xmlContainer = new XMLContainer();
-		
+
 		StringBuilder reference = new StringBuilder();
 		xmlContainer.withPrefix("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 		xmlContainer.withPrefix("<!DOCTYPE gxl SYSTEM \"http://www.gupro.de/GXL/gxl-1.0.dtd\">");

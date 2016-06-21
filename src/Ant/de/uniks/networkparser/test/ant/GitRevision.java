@@ -60,7 +60,7 @@ public class GitRevision {
 			}
 			commitInfo(map, repository, headID, null);
 			branches.add(repository.getBranch());
-			
+
 			while (headID!=null){
 				count++;
 				ObjectId oldId = headID;
@@ -77,7 +77,7 @@ public class GitRevision {
 			if(id == null) {
 				id = "";
 			}
-	
+
 			for(Iterator<Entry<String, Ref>> i = allRefs.entrySet().iterator();i.hasNext();){
 				Entry<String, Ref> item = i.next();
 				if(id.equals(item.getValue().getObjectId().name())) {
@@ -92,7 +92,7 @@ public class GitRevision {
 		while(i.hasNext()) {
 			allBranches.append(" ").append(i.next());
 		}
-		
+
 		System.setProperty("Branchname", allBranches.toString());
 		System.setProperty("LastCommit", id);
 		System.setProperty("Revisionnumber", "" +count);

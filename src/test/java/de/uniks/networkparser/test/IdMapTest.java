@@ -25,11 +25,11 @@ public class IdMapTest {
 			ludo.createPlayers().withName("Player"+i);
 		}
 		map.toJsonObject(ludo);
-		
+
 		SimpleList<Object> typList = map.getTypList(playerCreator);
 		Assert.assertEquals(450, typList.size());
 	}
-	
+
 	@Test
 	public void testReflectionModelIdMap() {
 		IdMap map=new IdMap();
@@ -66,6 +66,6 @@ public class IdMapTest {
 		};
 		Date date = new Date();
 		wrapper.setValue(date, "VALUE", 200, IdMap.NEW); 
-		
-	}	
+
+	}
 }

@@ -24,12 +24,12 @@ package de.uniks.networkparser.parser;
 public class Token 
 {
 	public char kind;
-	
+
 	public int startPos;
 	public int endPos;
 
 	public StringBuilder text = new StringBuilder();
-	
+
 	public String name ()
 	{
 		return this.text.toString();

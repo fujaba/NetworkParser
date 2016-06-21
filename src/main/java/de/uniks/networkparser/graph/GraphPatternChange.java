@@ -61,7 +61,7 @@ public class GraphPatternChange implements UpdateListener, SendableEntityCreator
 	public Object getNewValue() {
 		return newValue;
 	}
-	
+
 	/**
 	 * @param value		for Property
 	 * @return 			GraphPatternChange Instance
@@ -84,7 +84,7 @@ public class GraphPatternChange implements UpdateListener, SendableEntityCreator
 		this.newValue = value;
 		return this;
 	}
-	
+
 	@Override
 	public String[] getProperties() {
 		return new String[] {PROPERTY, OLD, NEW};

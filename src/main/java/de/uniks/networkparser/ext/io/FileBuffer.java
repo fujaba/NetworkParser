@@ -118,7 +118,7 @@ public class FileBuffer extends Buffer {
 		this.position--;
 		return this;
 	}
-	
+
 	@Override
 	public char nextClean(boolean currentValid) {
 		char current = super.nextClean(currentValid);

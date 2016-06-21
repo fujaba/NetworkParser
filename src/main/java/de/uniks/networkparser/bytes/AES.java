@@ -1,4 +1,4 @@
-package de.uniks.networkparser.bytes.checksum;
+package de.uniks.networkparser.bytes;
 
 import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.ByteBuffer;

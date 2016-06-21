@@ -1,7 +1,7 @@
 package de.uniks.networkparser.converter;
 import de.uniks.networkparser.buffer.BufferedBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.bytes.checksum.AES;
+import de.uniks.networkparser.bytes.AES;
 
 public class ByteConverterAES extends ByteConverter {
 	private AES aes;

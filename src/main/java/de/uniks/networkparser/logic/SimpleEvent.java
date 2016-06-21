@@ -25,7 +25,7 @@ public final class SimpleEvent extends PropertyChangeEvent {
 		super(source, property, null, null);
 		this.type = type;
 	}
-	
+
 	public SimpleEvent(String type, BaseItem source, String property, Object oldValue, Object newValue, Object beforeElement, Object value) {
 		super(source, property, oldValue, newValue);
 		this.type = type;
@@ -91,11 +91,11 @@ public final class SimpleEvent extends PropertyChangeEvent {
 		this.type = type;
 		return this;
 	}
-	
+
 	public boolean isNewEvent() {
 		return IdMap.NEW.equals(this.type);
 	}
-	
+
 	public boolean isUpdateEvent() {
 		return IdMap.UPDATE.equals(this.type);
 	}

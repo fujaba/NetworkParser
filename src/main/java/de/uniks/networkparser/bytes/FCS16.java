@@ -1,4 +1,4 @@
-package de.uniks.networkparser.bytes.checksum;
+package de.uniks.networkparser.bytes;
 
 /*
  NetworkParser
@@ -82,9 +82,10 @@ public class FCS16 extends Checksum {
 	}
 
 	@Override
-	public void update(int b) {
+	public boolean update(int b) {
 		super.update(b);
 		value = (int) (((value >> 8) ^ crc_table[((int) value ^ (int) b) & 0xFF]) & 0xFFFF);
+		return true;
 	}
 
 	@Override

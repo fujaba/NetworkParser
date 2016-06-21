@@ -318,7 +318,7 @@ public class XMLTest extends IOClasses{
 		Assert.assertEquals("<p no=\"23\"><2/></p>", xmlA.toString());
 		Assert.assertEquals("<p no=\"24\"><3/></p>", xmlB.toString());
 	}
-	
+
 	@Test
 	public void testPattern() {
 		String XMLText = readFile("test3.xml").toString();
@@ -340,7 +340,7 @@ public class XMLTest extends IOClasses{
 		item.withValue(str);
 		Assert.assertEquals(505, item.toString().length());
 	}
-	
+
 	@Test
 	public void testJISMEngine(){
 		StringBuffer stringBuffer = readFile("template.html");

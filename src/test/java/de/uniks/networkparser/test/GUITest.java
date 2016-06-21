@@ -20,7 +20,7 @@ public class GUITest {
 		Assert.assertEquals(10, GUIPosition.values().length);
 		Assert.assertTrue(GUIPosition.NORTH.equals(GUIPosition.valueOf("NORTH")));
 	}
-	
+
 	@Test
 	public void testColumn(){
 		Column column= new Column();

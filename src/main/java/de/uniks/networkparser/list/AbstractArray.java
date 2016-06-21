@@ -1265,7 +1265,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 			return false;
 		}
 		boolean modified = false;
-		
+
 		Iterator<?> it =  new SimpleIterator<V>(this);
 		while (it.hasNext()) {
 			if (!c.contains(it.next())) {

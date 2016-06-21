@@ -24,14 +24,14 @@ public class JavaFile {
 	public JavaFile(CharSequence content) {
 		this.content = content;
 		this.endPos = content.length();
-		
+
 		nextChar();
 	    nextChar();
-		
+
 		nextToken();
 		nextToken();
 	}
-	
+
 	public String currentWord() {
 		return currentToken.text.toString();
 	}
@@ -39,15 +39,15 @@ public class JavaFile {
 	public boolean currentKindEquals(char c) {
 		return currentToken.kind == c;
 	}
-	
+
 	public int getCurrentStart() {
 		return currentToken.startPos;
 	}
-	
+
 	public int getCurrentEnd() {
 		return currentToken.endPos;
 	}
-	
+
 	public boolean lookAheadKindEquals(char c) {
 		return lookAheadToken.kind == c;
 	}
@@ -58,7 +58,7 @@ public class JavaFile {
 	public static boolean stringEquals(String s1, String s2) {
 		return s1 == null ? s2 == null : s1.equals(s2);
 	}
-	
+
 	public boolean skip(char character) {
 		if (currentKindEquals(character)) {
 			nextToken();
@@ -68,7 +68,7 @@ public class JavaFile {
 		}
 		return false;
 	}
-	
+
 	public boolean skip(String string) {
 		if (currentTokenEquals(string)) {
 			nextToken();
@@ -78,14 +78,14 @@ public class JavaFile {
 		}
 		return false;
 	}
-	
+
 	public void error(CharSequence info) {
 		System.err.println("Parser Error: expected token " + info + " found " + currentWord()
         + " at pos " + currentToken.startPos + " at line "
         + getLineIndexOf(currentToken.startPos, content));
         throw new RuntimeException("parse error");
 	}
-	
+
 	private long getLineIndexOf(int startPos, CharSequence fileBody)
 	   {
 	      long count = 1;
@@ -225,7 +225,7 @@ public class JavaFile {
 			lookAheadChar = content.charAt(lookAheadIndex);
 		}
 	}
-	
+
 	public SymTabEntry getRoot() {
 		return symTabEntry;
 	}
@@ -248,14 +248,14 @@ public class JavaFile {
 		list.add(nextEntity);
 		return nextEntity;
 	}
-	
+
 	public CharSequence finishParse(SymTabEntry nextEntity) {
 		int endPos = getCurrentEnd();
 		CharSequence sequence = subString(this.parsePos, endPos);
 		nextEntity.add( sequence );
 		return sequence;
 	}
-	
+
 	public void addCurrentCharacter(char checkCharacter, SymTabEntry nextEntity) {
 		if(currentKindEquals(checkCharacter)) {
 			nextEntity.add(this.currentToken.text.toString());
@@ -268,7 +268,7 @@ public class JavaFile {
 			nextToken();
 		}
 	}
-	
+
 	public void addCurrentToken(SymTabEntry nextEntity) {
 		nextEntity.add(this.currentToken.text.toString());
 	}

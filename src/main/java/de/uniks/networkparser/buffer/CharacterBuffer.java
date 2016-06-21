@@ -312,7 +312,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		this.length = newLen;
 		return this;
 	}
-	
+
 	public CharacterBuffer write(byte[] values, int length) {
 		int newLen = length+this.length;
 		if ( buffer == null || newLen+this.start>buffer.length) {

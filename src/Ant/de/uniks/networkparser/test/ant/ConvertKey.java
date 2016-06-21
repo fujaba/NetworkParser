@@ -26,7 +26,7 @@ public class ConvertKey {
 		try {
 			String key = new String(Files.readAllBytes(Paths.get(inputFile.toURI())), Charset.forName("UTF-8"));
 			ByteConverterHex converterHex = new ByteConverterHex();
-			
+
 			String hexValue = converterHex.toString(new ByteBuffer().with(key.getBytes(Charset.forName("UTF-8"))));
 			out = new FileOutputStream(output);
 			out.write(hexValue.getBytes(Charset.forName("UTF-8")));

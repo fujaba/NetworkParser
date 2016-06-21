@@ -23,7 +23,7 @@ public class SimpleMessageBox extends SimpleShell{
 			@Override
 			public void handle(ActionEvent event) {
 				DialogBox.showInfo("Test", "info");
-				
+
 			}
 		});
 		gridPane.getChildren().add(button);

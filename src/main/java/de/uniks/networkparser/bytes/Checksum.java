@@ -1,4 +1,4 @@
-package de.uniks.networkparser.bytes.checksum;
+package de.uniks.networkparser.bytes;
 
 /*
  NetworkParser
@@ -48,19 +48,23 @@ public abstract class Checksum {
 	/**
 	 * Updates the checksum with the specified byte.
 	 *
-	 * @param b		the byte
+	 * @param data		the byte
+	 * @return success to add the new Value  
 	 */
-	public void update(int b) {
+	public boolean update(int data) {
 		length++;
+		return true;
 	}
 
 	/**
 	 * Updates the checksum with the specified byte.
 	 *
 	 * @param b		the item to update
+	 * @return success
 	 */
-	public void update(byte b) {
+	public boolean update(byte b) {
 		update((int) (b & 0xFF));
+		return true;
 	}
 
 	/**

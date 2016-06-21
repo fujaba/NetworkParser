@@ -26,14 +26,14 @@ import de.uniks.networkparser.json.JsonObject;
 
 public class SVGDrawerTest {
 	public static final String CRLF = "\r\n";
-	
+
 	@Test
 	public void testGenSVG() throws Exception {
 		QRTokener tokener = new QRTokener();
-		
+
 		QRCode encode = tokener.encode("test", ErrorCorrectionLevel.Q);
 		ByteMatrix matrix = encode.getMatrix();
-		
+
 		StringBuilder sb=new StringBuilder();
 		sb.append("<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\r\n");
 		int posx;
@@ -55,7 +55,7 @@ public class SVGDrawerTest {
 //		FileWriter writer=new FileWriter(new File("qr.svg"));
 //		writer.write(sb.toString());
 //		writer.close();
-		
+
 		DecoderResult decode = tokener.decode(matrix.getArray());
 		Assert.assertEquals("test", decode.getText());
 	}

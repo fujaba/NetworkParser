@@ -18,6 +18,6 @@ public class JavaParserTest {
 		JavaParser parser = new JavaParser();
 		SymTabEntry parse = parser.parse(context);
 		System.out.println(parse);
-		
+
 	}
 }

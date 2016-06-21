@@ -26,16 +26,16 @@ public class ZipTest {
 		IdMap map= new IdMap();
 		map.with(new PersonCreator());
 		map.with(new GroupAccountCreator());
-		
+
 		JsonObject jsonObject = map.toJsonObject(account);
 		int len = jsonObject.toString().length();
 		StringOutputStream stream=new StringOutputStream();
 		ZipContainer zip = new ZipContainer();
 		zip.encode(jsonObject, stream, true);
-		
+
 		StringInputStream inputStream = StringInputStream.create(stream);
 		BaseItem readData = zip.decode(inputStream);
-		
+
 		Assert.assertEquals(len, readData.toString().length());
 	}
 }

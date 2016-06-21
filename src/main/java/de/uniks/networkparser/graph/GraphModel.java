@@ -21,13 +21,14 @@ express or implied.
 See the Licence for the specific language governing
 permissions and limitations under the Licence.
 */
+import de.uniks.networkparser.interfaces.Condition;
 
 public abstract class GraphModel extends GraphEntity {
 	private String defaultAuthorName;
 
 	/**
 	 * get All GraphClazz
-	 *
+	 * @param filters Can Filter the List of Clazzes
 	 * @return all GraphClazz of a GraphModel
 	 *
 	 *		 <pre>
@@ -36,7 +37,7 @@ public abstract class GraphModel extends GraphEntity {
 	 *			  parent				   clazz
 	 *		 </pre>
 	 */
-	public ClazzSet getClazzes() {
+	public ClazzSet getClazzes(Condition<?>... filters) {
 	   ClazzSet collection = new ClazzSet();
 		if (children == null) {
 			return collection;
@@ -48,7 +49,9 @@ public abstract class GraphModel extends GraphEntity {
 			GraphSimpleSet items = (GraphSimpleSet)children;
 			for (GraphMember child : items) {
 				if (child instanceof Clazz)  {
-					collection.add((Clazz) child);
+					if(check(child, filters) ) {
+						collection.add((Clazz) child);
+					}
 				}
 			}
 		}

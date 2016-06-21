@@ -38,7 +38,7 @@ public class JsonPeer2PeerTest implements UpdateListener{
 		firstRoot.setChild(second);
 
 		firstMap.garbageCollection(firstRoot);
-		
+
 		update(new SimpleEvent(IdMap.NEW, firstMap, null).with(firstMap.toJsonObject(firstRoot)));
 
 		SortedMsg third= new SortedMsg();
@@ -54,7 +54,7 @@ public class JsonPeer2PeerTest implements UpdateListener{
 		if(simpleEvent.isNewEvent() == false) {
 			return true;
 		}
-		
+
 		JsonObject jsonObject = (JsonObject) simpleEvent.getEntity();
 		Object result=secondMap.decode(jsonObject);
 		if(z==0){

@@ -21,9 +21,9 @@ public class GraphPatternTest {
 
 		University uniA = new University().withName("Uni Kassel");
 		University uniB = new University().withName("Uni Kassel");
-		
+
 		GraphPatternMatch diff = mapA.getDiff(uniA, uniB, false);
-		
+
 		Assert.assertEquals(0, diff.size());
 	}
 
@@ -35,9 +35,9 @@ public class GraphPatternTest {
 
 		University uniA = new University().withName("Uni Kassel");
 		University uniB = new University().withName("Uni Paderborn");
-		
+
 		GraphPatternMatch diff = mapA.getDiff(uniA, uniB, true);
-		
+
 		Assert.assertEquals(1, diff.size());
 	}
 	@Test
@@ -49,9 +49,9 @@ public class GraphPatternTest {
 		University uniA = new University().withName("Uni Kassel");
 		University uniB = new University().withName("Uni Paderborn");
 		uniB.withStudents(new Student().withName("Alex"));
-		
+
 		GraphPatternMatch diff = mapA.getDiff(uniA, uniB, true);
-		
+
 		Assert.assertEquals(2, diff.size());
 	}
 	@Test
@@ -66,14 +66,14 @@ public class GraphPatternTest {
 		Room room = new Room().withName("Mathroom").withStudents(student);
 		uni.withStudents(student);
 		uni.withRooms(room);
-		
+
 		University uniB = new University().withName("Uni Kassel");
 		Student studentB = new Student().withName("Stefan");
 		Room roomB = new Room().withName("Mathroom").withStudents(studentB);
 		uniB.withRooms(roomB);
 
 		GraphPatternMatch diff = mapA.getDiff(uni, uniB, true);
-		
+
 		Assert.assertEquals(3, diff.size());
 	}
 }

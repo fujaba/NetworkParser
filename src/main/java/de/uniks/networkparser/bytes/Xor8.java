@@ -1,4 +1,4 @@
-package de.uniks.networkparser.bytes.checksum;
+package de.uniks.networkparser.bytes;
 
 /*
  NetworkParser
@@ -22,18 +22,23 @@ package de.uniks.networkparser.bytes.checksum;
  permissions and limitations under the Licence.
 */
 
-public class SumBSD extends Checksum {
-	/** implemented from original GNU C source */
+public class Xor8 extends Checksum {
 	@Override
-	public void update(int b) {
+	public boolean update(int b) {
 		super.update(b);
-		value = (value >> 1) + ((value & 1) << 15);
-		value += b & 0xFF;
-		value &= 0xffff;
+		value ^= b & 0xFF;
+		return true;
 	}
 
 	@Override
 	public int getOrder() {
-		return 16;
+		return 8;
 	}
 }
+
+/*
+ * Testvector from Motorola's GPS:
+ * (http://www.motorola.com/ies/GPS/docs_pdf/checksum.pdf)
+ *
+ * hex: 45 61 01 => 25
+ */
