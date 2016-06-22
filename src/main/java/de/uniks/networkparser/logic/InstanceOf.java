@@ -166,10 +166,7 @@ public class InstanceOf implements UpdateListener, SendableEntityCreator {
 		PropertyChangeEvent event = (PropertyChangeEvent) evt;
 		if (this.clazzName != null ) {
 			Object newValue = event.getNewValue();
-			if(newValue!=null && newValue.getClass().isPrimitive()) {
-				return true;
-			}
-			if(this.clazzName!=null && !this.clazzName.isInstance(newValue)) {
+			if(this.clazzName.isInstance(newValue) == false) {
 				return false;
 			}else if(this.property==null) {
 				return true;

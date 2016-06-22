@@ -92,6 +92,11 @@ jacocoTestReport {
 			destination = new File("${buildDir}/jacoco/html")
 		}
 	}
+	afterEvaluate {
+		classDirectories = files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: ['**/javafx/**'])
+		})
+	}
 }
 test.finalizedBy jacocoTestReport
 

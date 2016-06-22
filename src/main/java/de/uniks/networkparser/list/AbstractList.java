@@ -180,4 +180,21 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements Iterab
 	public Iterator<V> iterator(boolean checkPointer) {
 		return new SimpleIterator<V>(this).withCheckPointer(checkPointer);
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof Collection<?> == false) {
+			return false;
+		}
+		Collection<?> collection = (Collection<?>)obj;
+		if(collection.size() != this.size()) {
+			return false;
+		}
+		for(Object item : this) {
+			if(collection.contains(item) == false) {
+				return false;
+			}
+		}
+		return true;
+	}
 }

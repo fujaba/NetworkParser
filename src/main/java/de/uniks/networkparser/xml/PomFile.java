@@ -5,6 +5,7 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
+import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.list.SimpleList;
 
@@ -14,7 +15,9 @@ public class PomFile implements SendableEntityCreatorTag, BaseItem{
 	public static final String PROPERTY_ARTIFACTID ="artifactId?";
 	public static final String PROPERTY_VERSION ="version?";
 	public static final String PROPERTY_SCOPE ="scope?";
-	public static final String PROPERTY_DEPENDENCY ="dependencies";
+	public static final String PROPERTY_DEPENDENCIES ="dependencies";
+	public static final String PROPERTY_DEPENDENCY ="dependency";
+	
 	private static final String TAG="project";
 	private String modelVersion;
 	private String groupId;
@@ -171,7 +174,7 @@ public class PomFile implements SendableEntityCreatorTag, BaseItem{
 
 	@Override
 	public String[] getProperties() {
-		return new String[]{PROPERTY_MODELVERSION, PROPERTY_GROUPID, PROPERTY_ARTIFACTID, PROPERTY_VERSION, PROPERTY_SCOPE, PROPERTY_DEPENDENCY};
+		return new String[]{PROPERTY_MODELVERSION, PROPERTY_GROUPID, PROPERTY_ARTIFACTID, PROPERTY_VERSION, PROPERTY_SCOPE, PROPERTY_DEPENDENCIES};
 	}
 
 	@Override
@@ -229,5 +232,53 @@ public class PomFile implements SendableEntityCreatorTag, BaseItem{
 			return null;
 		}
 		return converter.encode(this);
+	}
+	
+	private Object getChild(XMLEntity xmlEntity, String value) {
+		if(value == null) {
+			return null;
+		}
+		
+		boolean isValue=false;
+		String property;
+		if(value.endsWith("?")) {
+			property = value.substring(0, value.length() - 1);
+			isValue=true;
+		} else {
+			property = value;
+		}
+		EntityList child = xmlEntity.getChild(property, false);
+		if(child != null) {
+			if(isValue) {
+				String newValue = ((XMLEntity) child).getValue();
+				setValue(this, value, newValue, IdMap.NEW);
+				return newValue;
+			}
+			return child;
+		}
+		return null;
+	}
+	
+	public PomFile withValue(String value) {
+		XMLEntity xmlEntity = new XMLEntity().withValue(value);
+		return withValue(xmlEntity);
+	}
+	public PomFile withValue(XMLEntity xmlEntity) {
+		for(String property : getProperties()) {
+			Object child = getChild(xmlEntity, property);
+			if(PROPERTY_DEPENDENCIES.equals(property)) {
+				// Parse Dependency
+				XMLEntity children = (XMLEntity) child;
+				for(EntityList dependency : children.getChildren()) {
+					PomFile pomDependency = new PomFile().withValue((XMLEntity)dependency);
+					this.dependencies.add(pomDependency);
+				}
+			}
+		}
+		return this;
+	}
+
+	public SimpleList<PomFile> getDependencies() {
+		return dependencies;
 	}
 }

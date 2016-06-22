@@ -22,6 +22,7 @@ import de.uniks.networkparser.logic.InstanceOf;
 import de.uniks.networkparser.logic.Not;
 import de.uniks.networkparser.logic.Or;
 import de.uniks.networkparser.logic.SimpleEvent;
+import de.uniks.networkparser.logic.UpdateCondition;
 import de.uniks.networkparser.test.model.Person;
 import de.uniks.networkparser.test.model.University;
 
@@ -145,14 +146,43 @@ public class ConditionTest implements UpdateListener {
 //		CompareTo	4882	63%	119	45%	9	20	8	31	0	10	0	1
 //		Equals
 	}
-	
+	@Test
+	public void testBetween() {
+		Between between = new Between();
+		between.withRange(0, 23);
+		Assert.assertFalse(between.update(new PropertyChangeEvent(this, "root", null, new University())));
+	}
+
 	@Test
 	public void testInstanceOf() {
 		University uni = new University();
 		InstanceOf condition = new InstanceOf();
 		condition.setValue(condition, InstanceOf.PROPERTY, "root", IdMap.NEW);
 		condition.setValue(condition, InstanceOf.VALUE, uni, IdMap.NEW);
+		
+		Assert.assertTrue(new InstanceOf().update(new PropertyChangeEvent(this, null, null, uni)));
+		
+		condition = InstanceOf.value(uni, InstanceOf.VALUE);
+		Assert.assertNotNull(condition);
+		
+		Assert.assertFalse(condition.update(new PropertyChangeEvent(this, InstanceOf.VALUE, null, uni)));
+		Assert.assertFalse(condition.update(this));
+				
+		condition = new InstanceOf();
+		Assert.assertTrue(condition.update(new PropertyChangeEvent(this, InstanceOf.VALUE, null, uni)));
+		condition.withValue(uni);
+		Assert.assertFalse(condition.update(new PropertyChangeEvent(this, InstanceOf.VALUE, null, uni)));
+		Assert.assertTrue(condition.update(new PropertyChangeEvent(this, InstanceOf.VALUE, null, new University())));
 	}
 	
-	
+	@Test
+	public void testUpdateCondition() {
+		UpdateCondition condition = new UpdateCondition();
+		IdMap map=new IdMap();
+		University uni = new University();
+		map.put("root", uni);
+		Assert.assertTrue(condition.update(new SimpleEvent("new", map,"VALUE")));
+		
+		Assert.assertFalse(condition.update(new SimpleEvent("new", map,"VALUE", null, uni)));
+	}
 }
