@@ -24,7 +24,7 @@ package de.uniks.networkparser.xml;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.EntityStringConverter;
-import de.uniks.networkparser.event.Style;
+import de.uniks.networkparser.gui.Style;
 /**
  * Style Element of XML.
  *

@@ -24,8 +24,6 @@ package de.uniks.networkparser.list;
 import java.util.Comparator;
 
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.sort.EntityComparator;
-import de.uniks.networkparser.sort.SortingDirection;
 
 public class SortedSet<V> extends SimpleSet<V> {
 	protected Comparator<V> cpr;

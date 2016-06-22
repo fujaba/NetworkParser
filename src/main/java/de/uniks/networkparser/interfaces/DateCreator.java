@@ -1,4 +1,4 @@
-package de.uniks.networkparser.event.util;
+package de.uniks.networkparser.interfaces;
 
 /*
  NetworkParser
@@ -22,8 +22,6 @@ package de.uniks.networkparser.event.util;
  permissions and limitations under the Licence.
 */
 import java.util.Date;
-
-import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 /**
  * The Class DateCreator.
  * @author Stefan Lindel
@@ -32,25 +30,19 @@ public class DateCreator implements SendableEntityCreatorNoIndex {
 	/** The Constant VALUE. */
 	public static final String VALUE = "value";
 
-	/*
-	 * return the Properties
-	 */
+	/* return the Properties */
 	@Override
 	public String[] getProperties() {
-		return new String[] {VALUE };
+		return new String[] { VALUE };
 	}
 
-	/*
-	 * Create new Instance of Date
-	 */
+	/* Create new Instance of Date */
 	@Override
 	public Object getSendableInstance(boolean reference) {
 		return new Date();
 	}
 
-	/*
-	 * Getter for java.util.Date
-	 */
+	/* Getter for java.util.Date */
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if (VALUE.equals(attribute)) {
@@ -59,9 +51,7 @@ public class DateCreator implements SendableEntityCreatorNoIndex {
 		return null;
 	}
 
-	/*
-	 * Setter for java.util.Date
-	 */
+	/* Setter for java.util.Date */
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String typ) {

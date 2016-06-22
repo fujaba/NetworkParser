@@ -1,4 +1,4 @@
-package de.uniks.networkparser.sort;
+package de.uniks.networkparser.list;
 
 /*
  NetworkParser
@@ -25,7 +25,6 @@ import java.util.Comparator;
 import de.uniks.networkparser.EntityValueFactory;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.list.SimpleList;
 /**
  * Compare Value for GUI.
  *

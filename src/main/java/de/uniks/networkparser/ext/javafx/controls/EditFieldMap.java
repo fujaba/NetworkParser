@@ -22,12 +22,13 @@ package de.uniks.networkparser.ext.javafx.controls;
  permissions and limitations under the Licence.
 */
 import java.util.HashSet;
+
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.event.util.DateCreator;
 import de.uniks.networkparser.gui.CellEditorElement;
 import de.uniks.networkparser.gui.CellEditorElement.APPLYACTION;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.FieldTyp;
+import de.uniks.networkparser.interfaces.DateCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class EditFieldMap {

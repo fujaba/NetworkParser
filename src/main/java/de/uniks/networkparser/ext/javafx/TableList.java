@@ -29,9 +29,9 @@ import de.uniks.networkparser.EntityValueFactory;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.list.EntityComparator;
 import de.uniks.networkparser.list.SortedList;
-import de.uniks.networkparser.sort.EntityComparator;
-import de.uniks.networkparser.sort.SortingDirection;
+import de.uniks.networkparser.list.SortingDirection;
 public class TableList extends SortedList<Object> implements
 
 		SendableEntity, SendableEntityCreator {

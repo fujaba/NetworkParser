@@ -37,7 +37,10 @@ public class Not implements UpdateListener, SendableEntityCreator {
 
 	@Override
 	public boolean update(Object evt) {
-		return !item.update(evt);
+		if(item != null) {
+			return !item.update(evt);
+		}
+		return false;
 	}
 
 	/**

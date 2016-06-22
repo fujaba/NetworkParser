@@ -1,5 +1,6 @@
 package de.uniks.networkparser.bytes;
 
+import de.uniks.networkparser.EntityUtil;
 /*
  NetworkParser
  Copyright (c) 2011 - 2015, Stefan Lindel
@@ -82,7 +83,7 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 	@Override
 	public ByteBuffer getBytes(boolean isDynamic) {
 		int len = calcLength(isDynamic, true);
-		ByteBuffer buffer = ByteUtil.getBuffer(len);
+		ByteBuffer buffer = EntityUtil.getBuffer(len);
 		writeBytes(buffer, isDynamic, true, isPrimitive(isDynamic));
 		buffer.flip(true);
 		return buffer;
@@ -98,9 +99,9 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 		if (isPrimitive) {
 			typ = ByteTokener.DATATYPE_CLAZZSTREAM;
 		} else {
-			typ = ByteUtil.getTyp(getTyp(), size, last);
+			typ = EntityUtil.getTyp(getTyp(), size, last);
 		}
-		ByteUtil.writeByteHeader(buffer, typ, size);
+		EntityUtil.writeByteHeader(buffer, typ, size);
 
 		for (int i = 0; i < size(); i++) {
 			((ByteItem) get(i)).writeBytes(buffer, isDynamic,
@@ -116,8 +117,7 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 		int length = calcChildren(isDynamic, isLast);
 		// add The Headerlength
 		if (typ != 0) {
-			length += ByteEntity.TYPBYTE
-					+ ByteUtil.getTypLen(typ, length, isLast);
+			length += ByteEntity.TYPBYTE + EntityUtil.getTypLen(typ, length, isLast);
 		}
 		return length;
 	}
