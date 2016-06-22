@@ -7,6 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleSet;
@@ -184,5 +185,59 @@ public class ConditionTest implements UpdateListener {
 		Assert.assertTrue(condition.update(new SimpleEvent("new", map,"VALUE")));
 		
 		Assert.assertFalse(condition.update(new SimpleEvent("new", map,"VALUE", null, uni)));
+	}
+	
+	@Test
+	public void testDeepCondition() {
+		Deep condition = Deep.value(23);
+		Assert.assertEquals(23, condition.getValue(condition, Deep.DEEP));
+		condition.setValue(condition, Deep.DEEP, 42, null);
+		Assert.assertEquals(42, condition.getDeep());
+	}
+
+	@Test
+	public void testEqualsCondition() {
+		Equals condition = new Equals();
+		condition.setValue(condition, Equals.STRINGVALUE, "Stefan", null);
+		condition.setValue(condition, Equals.BYTEVALUE, (byte)0x42, null);
+		condition.setValue(condition, Equals.POSITION, 42, null);
+		
+		Assert.assertEquals("Stefan", condition.getValue(condition, Equals.STRINGVALUE));
+		Assert.assertEquals((byte)0x42, condition.getValue(condition, Equals.BYTEVALUE));
+		Assert.assertEquals(42, condition.getValue(condition, Equals.POSITION));
+		
+		Assert.assertEquals("==Stefan ", condition.toString());
+		CharacterBuffer source = new CharacterBuffer();
+		Assert.assertFalse(condition.update(new PropertyChangeEvent(source, "", null, null)));
+		Assert.assertFalse(condition.update(null));
+		condition.withPosition(-1);
+		
+		Assert.assertFalse(condition.update(new PropertyChangeEvent(source, "", null, null)));
+		
+		source.with((char)0x42);
+		Assert.assertTrue(condition.update(new PropertyChangeEvent(source, "", null, null)));
+	}
+
+	@Test
+	public void testCompareToCondition() {
+		CompareTo condition = new CompareTo();
+		condition.setValue(condition, CompareTo.COMPARE, 42, null);
+		
+		Person person = new Person().withName("");
+		condition.setValue(condition, CompareTo.VALUE, person, null);
+		
+		Assert.assertEquals(42, condition.getValue(condition, CompareTo.COMPARE));
+		Assert.assertEquals(person, condition.getValue(condition, CompareTo.VALUE));
+
+		Person person2 = new Person().withName("");
+		Assert.assertFalse(condition.update(new PropertyChangeEvent(this, "", null, person2)));
+		condition.withCompare(0);
+		Assert.assertTrue(condition.update(new PropertyChangeEvent(this, "", null, person2)));
+		person.setName("Albert");
+		person2.setName("Stefan");
+		Assert.assertFalse(condition.update(new PropertyChangeEvent(this, "", null, person2)));
+		condition.withCompare(-1);
+		Assert.assertTrue(condition.update(new PropertyChangeEvent(this, "", null, person2)));
+		
 	}
 }
