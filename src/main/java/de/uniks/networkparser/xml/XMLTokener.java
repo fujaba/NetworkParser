@@ -146,6 +146,9 @@ public class XMLTokener extends Tokener {
 				if (nextChar == '/') {
 					skipTo(ITEMEND, false);
 					break;
+				} else if(nextChar == '!') {
+					skipTo("-->", true, true);
+					skip();
 				} else {
 					buffer.withLookAHead(c);
 					if (getCurrentChar() == '<') {
@@ -185,11 +188,12 @@ public class XMLTokener extends Tokener {
 			if(tag == null) {
 				tag = new CharacterBuffer();
 				break;
-			}else if(tag.equals("<?")) {
+			} else if(tag.equals("<?")) {
 				skipEntity();
 				skip = true;
 			} else if(tag.equals("<!")) {
-				skipEntity();
+				skipTo("-->", true, true);
+				skip();
 				skip = true;
 			} else {
 				skip = false;
