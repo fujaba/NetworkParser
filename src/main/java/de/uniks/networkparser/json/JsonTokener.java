@@ -29,7 +29,6 @@ import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.buffer.Tokener;
-import de.uniks.networkparser.event.ObjectMapEntry;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
@@ -38,6 +37,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorWrapper;
 import de.uniks.networkparser.json.util.JsonObjectCreator;
+import de.uniks.networkparser.list.ObjectMapEntry;
 import de.uniks.networkparser.list.SimpleIteratorSet;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.logic.SimpleEvent;
@@ -157,7 +157,12 @@ public class JsonTokener extends Tokener {
 				return;
 			case ',':
 				skip();
-				key = nextValue(entity, isQuote, false, stop).toString();
+				Object keyValue = nextValue(entity, isQuote, false, stop);
+				if(keyValue == null) {
+					// No Key Found Must eb an empty statement
+					return;
+				}
+				key = keyValue.toString();
 				break;
 			default:
 				key = nextValue(entity, isQuote, false, stop).toString();

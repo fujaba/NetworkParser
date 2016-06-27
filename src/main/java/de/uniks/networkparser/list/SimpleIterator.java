@@ -133,6 +133,10 @@ public class SimpleIterator<E> implements ListIterator<E> {
 		return this;
 	}
 
+	public int position() {
+		return cursor;
+	}
+	
 	public SimpleIterator<E> withCheckPointer(boolean checkPointer) {
 		if(checkPointer) {
 			this.checkPointer = this.list.size();

@@ -313,6 +313,7 @@ public class GraphTokener extends Tokener {
 //				Assoc to 1
 //				Primitive ( try to find keyattributes use order: String, Date, Int, Object)
 			for(String property : properties) {
+				//TODO IMplementation of Unordered Model
 				Object masterValue = masterCreator.getValue(master, property);
 				Object slaveValue = slaveCreator.getValue(slave, property);
 //				diffModel(value, slaveValue, map)

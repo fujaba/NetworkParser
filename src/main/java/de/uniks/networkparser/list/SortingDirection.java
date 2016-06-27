@@ -1,4 +1,4 @@
-package de.uniks.networkparser.sort;
+package de.uniks.networkparser.list;
 
 /*
  NetworkParser

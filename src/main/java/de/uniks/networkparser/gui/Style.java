@@ -1,4 +1,4 @@
-package de.uniks.networkparser.event;
+package de.uniks.networkparser.gui;
 
 /*
  NetworkParser
@@ -22,6 +22,7 @@ package de.uniks.networkparser.event;
  permissions and limitations under the Licence.
 */
 import java.util.HashMap;
+
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 

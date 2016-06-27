@@ -9,8 +9,8 @@ import org.junit.Test;
 
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.event.BasicMessage;
-import de.uniks.networkparser.event.util.BasicMessageCreator;
+import de.uniks.networkparser.bytes.ByteMessage;
+import de.uniks.networkparser.bytes.ByteMessageCreator;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.JsonObject;
@@ -147,14 +147,14 @@ public class JsonModellTest implements UpdateListener {
 
 	@Test
 	public void testBasicMessage() {
-		BasicMessage message= new BasicMessage();
+		ByteMessage message= new ByteMessage();
 		message.withValue("The answer to life the universe and everything is 42.");
 		IdMap map=new IdMap();
-		map.with(new BasicMessageCreator());
+		map.with(new ByteMessageCreator());
 		JsonObject jsonObject = map.toJsonObject(message);
-		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.event.BasicMessage\",\"id\":\"J1.B1\",\"prop\":{\"value\":\"The answer to life the universe and everything is 42.\"}}", jsonObject.toString());
+		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.bytes.ByteMessage\",\"id\":\"J1.B1\",\"prop\":{\"value\":\"The answer to life the universe and everything is 42.\"}}", jsonObject.toString());
 
-		BasicMessage newMessage = (BasicMessage) map.decode(jsonObject);
+		ByteMessage newMessage = (ByteMessage) map.decode(jsonObject);
 		Assert.assertEquals(message.getValue(), newMessage.getValue());
 	}
 }

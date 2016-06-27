@@ -30,18 +30,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.Tokener;
-import de.uniks.networkparser.event.BasicMessage;
-import de.uniks.networkparser.event.ObjectMapEntry;
-import de.uniks.networkparser.event.UnknownMessage;
-import de.uniks.networkparser.event.util.BasicMessageCreator;
 import de.uniks.networkparser.interfaces.ByteItem;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
+import de.uniks.networkparser.list.ObjectMapEntry;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 /**
  * The Class ByteIdMap.
@@ -199,11 +197,6 @@ public class ByteTokener extends Tokener {
 			}
 		}
 		ByteList msg = new ByteList();
-		if (creator instanceof BasicMessageCreator) {
-			BasicMessage basicEvent = (BasicMessage) entity;
-			addClazzTyp(msg, basicEvent.getValue(), map);
-			return msg;
-		}
 
 		if (creator instanceof SendableEntityCreatorTag) {
 			String tag = ((SendableEntityCreatorTag) creator).getTag();
@@ -301,9 +294,9 @@ public class ByteTokener extends Tokener {
 	 */
 	public Object decodeClazz(Buffer buffer, SendableEntityCreator eventCreater, MapEntity map) {
 		if (eventCreater == null) {
-			UnknownMessage e = new UnknownMessage();
+			ByteMessage  e = new ByteMessage();
 			if(buffer != null)
-				e.set(UnknownMessage.PROPERTY_VALUE, buffer.array(-1, true));
+				e.set(ByteMessage.PROPERTY_VALUE, buffer.array(-1, true));
 			return e;
 		}
 		Object entity = eventCreater.getSendableInstance(false);
@@ -462,8 +455,8 @@ public class ByteTokener extends Tokener {
 			int pos = buffer.getInt();
 			return map.getVisitedObjects(pos);
 		}
-		if (ByteUtil.isGroup(typ)) {
-			byte subgroup = ByteUtil.getSubGroup(typ);
+		if (EntityUtil.isGroup(typ)) {
+			byte subgroup = EntityUtil.getSubGroup(typ);
 			int len = 0;
 			if (subgroup == ByteTokener.LEN_LITTLE) {
 				len = buffer.getByte() - ByteTokener.SPLITTER;
@@ -476,7 +469,7 @@ public class ByteTokener extends Tokener {
 			} else if (subgroup == ByteTokener.LEN_LAST) {
 				len = end - 1;
 			}
-			byte group = ByteUtil.getGroup(typ);
+			byte group = EntityUtil.getGroup(typ);
 			if (group == ByteTokener.DATATYPE_STRING) {
 				try {
 					return new String(buffer.array(len, false), getCharset());

@@ -1,4 +1,6 @@
-package de.uniks.networkparser.event;
+package de.uniks.networkparser.gui;
+
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 /*
  NetworkParser
@@ -21,23 +23,8 @@ package de.uniks.networkparser.event;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.list.SimpleEntity;
+@FunctionalInterface
 
-public class ObjectMapEntry extends SimpleEntity<Object, Object> {
-	@Override
-	public Object getSendableInstance(boolean prototyp) {
-		return new ObjectMapEntry();
-	}
-
-	@Override
-	public ObjectMapEntry withKeyItem(Object key) {
-		withKey(key);
-		return this;
-	}
-
-	@Override
-	public ObjectMapEntry withValueItem(Object value) {
-		this.withValue(value);
-		return this;
-	}
+public interface CellHandler {
+	public boolean onAction(Object entity, SendableEntityCreator creator, double x, double y);
 }

@@ -1,4 +1,4 @@
-package de.uniks.networkparser.event;
+package de.uniks.networkparser.bytes;
 
 /*
  NetworkParser
@@ -22,18 +22,18 @@ package de.uniks.networkparser.event;
  permissions and limitations under the Licence.
 */
 /**
- * The Class BasicMessage.
+ * The Class ByteMessage.
  */
 
-public class BasicMessage {
+public class ByteMessage {
 	/** The Constant PROPERTY_VALUE. */
 	public static final String PROPERTY_VALUE = "value";
 
 	/** The value. */
-	private String value;
+	private byte[] value = new byte[] {};
 
 	/**
-	 * Generic Getter for Attribute
+	 * Generic Getter for Attributes
 	 * @param attrName		Name of Attribute
 	 * @return				Value of Attribute
 	 */
@@ -46,20 +46,20 @@ public class BasicMessage {
 			attribute = attrName;
 		}
 		if (attribute.equalsIgnoreCase(PROPERTY_VALUE)) {
-			return getValue();
+			return this.value;
 		}
 		return null;
 	}
 
 	/**
-	 * Generic Setter for Attribute
-	 * @param attribute		Name of Attribute
-	 * @param value			Value of Attribute
+	 * Generic Setter for Attributes
+	 * @param attribute		the Name of Attribute
+	 * @param value			the Value of Attribute
 	 * @return 				success
 	 */
 	public boolean set(String attribute, Object value) {
 		if (attribute.equalsIgnoreCase(PROPERTY_VALUE)) {
-			withValue((String) value);
+			withValue((byte[]) value);
 			return true;
 		}
 		return false;
@@ -70,9 +70,19 @@ public class BasicMessage {
 	 *
 	 * @return the value
 	 */
-	public String getValue() {
+	public byte[] getValue() {
 		return this.value;
 	}
+	
+	/**
+	 * Gets the value As String
+	 *
+	 * @return the value
+	 */
+	public String getValueString() {
+		return new String(this.value);
+	}
+
 
 	/**
 	 * Sets the value.
@@ -80,8 +90,19 @@ public class BasicMessage {
 	 * @param value		the new value
 	 * @return 			Itself
 	 */
-	public BasicMessage withValue(String value) {
+	public ByteMessage withValue(byte[] value) {
 		this.value = value;
+		return this;
+	}
+	
+	/**
+	 * Sets the value.
+	 *
+	 * @param value		the new value
+	 * @return 			Itself
+	 */
+	public ByteMessage withValue(String value) {
+		this.value = value.getBytes();
 		return this;
 	}
 }

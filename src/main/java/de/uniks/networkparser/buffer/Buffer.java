@@ -33,7 +33,7 @@ import de.uniks.networkparser.list.SimpleList;
 public abstract class Buffer implements BufferItem {
 	public final static String STOPCHARSJSON = ",:]}/\\\"[{;=# ";
 	public final static String STOPCHARSXML = ",]}/\\\"[{;=# ";
-	public final static String STOPCHARSXMLEND = ",]}/\\\"[{;=#> ";
+	public final static String STOPCHARSXMLEND = ",]}/\\\"[{;=#>\r\n ";
 //	private byte lookAHeadByte;
 //	private boolean isLookAhead;
 

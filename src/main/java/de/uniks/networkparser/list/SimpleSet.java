@@ -132,9 +132,15 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V>, Cloneable {
 		}
 		return result;
 	}
-
+	
 	public SimpleSet<V> withListener(UpdateListener listener) {
 		this.listener = listener;
+		return this;
+	}
+	
+	@Override
+	public SimpleSet<V> with(Object... values) {
+		super.with(values);
 		return this;
 	}
 

@@ -37,6 +37,7 @@ import de.uniks.networkparser.test.model.util.MyXMLEntityCreator;
 import de.uniks.networkparser.test.model.util.StringMessageCreator;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
 import de.uniks.networkparser.test.model.util.XMLTestItemCreator;
+import de.uniks.networkparser.xml.PomFile;
 import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XMLTokener;
 
@@ -349,5 +350,49 @@ public class XMLTest extends IOClasses{
 		String data = stringBuffer.toString();
 		Object decode = decoder.decode(data);
 		assertNotNull(decode);
+	}
+	
+	@Test
+	public void PomTest() {
+		StringBuilder sb;
+		PomFile pomFile;
+		sb = new StringBuilder();
+		sb.append("<project>\r\n");
+		sb.append("  <modelVersion>4.2.0</modelVersion>\r\n");
+		sb.append("  <!--<build>-->\r\n");
+		sb.append("  <!--</build>-->\r\n");
+		sb.append("</project>\r\n");
+		pomFile = new PomFile().withValue(sb.toString());
+		Assert.assertEquals("4.2.0", pomFile.getModelVersion());
+		
+		sb=new StringBuilder();
+		sb.append("<?xml version=\"1.0\"?>\r\n");
+		sb.append("<project\r\n");
+		sb.append("		xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n");
+		sb.append("   <modelVersion>4.2.0</modelVersion>\r\n");
+		sb.append("   <!--  -->\r\n");
+		sb.append("</project>\r\n");
+		Assert.assertEquals("4.2.0", pomFile.getModelVersion());
+		
+		sb=new StringBuilder();
+		sb.append("<!--\r\n");
+		sb.append(" My Framework\r\n");
+		sb.append(" see <http://www.sdmlib.org />\r\n");
+		sb.append("-->\r\n");
+		sb.append("<project>\r\n");
+		sb.append("   <modelVersion>4.2.0</modelVersion>\r\n");
+		sb.append("</project>\r\n");
+		Assert.assertEquals("4.2.0", pomFile.getModelVersion());
+		
+		sb=new StringBuilder();
+		sb.append("<project>\r\n");
+		sb.append("   <modelVersion>4.2.0</modelVersion>\r\n");
+		sb.append("   <!-- =Compile time dependencies= -->\r\n");
+		sb.append("   <!-- ==Apache dependencies== -->\r\n");
+	    sb.append("</project>\r\n");
+		
+		pomFile = new PomFile().withValue(sb.toString());
+
+		Assert.assertEquals("4.2.0", pomFile.getModelVersion());
 	}
 }

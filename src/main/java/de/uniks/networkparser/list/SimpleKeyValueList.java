@@ -380,10 +380,10 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		if(pos<0) {
 			return null;
 		}
-		if(pos==size || getByIndex(SMALL_KEY, pos, size) != key) {
+		if(pos==size) {
 			grow(size + 1);
 			super.addKeyValue(pos, key, value);
-		}else {
+		} else {
 			super.setValue(pos, value, SMALL_VALUE);
 		}
 		return value;

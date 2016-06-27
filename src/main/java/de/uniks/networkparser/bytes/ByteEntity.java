@@ -24,6 +24,7 @@ package de.uniks.networkparser.bytes;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
+import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.converter.ByteConverter;
 import de.uniks.networkparser.converter.ByteConverterHTTP;
@@ -56,7 +57,7 @@ public class ByteEntity implements ByteItem {
 	public byte[] getValue() {
 		if(values==null)
 			return null;
-		return ByteUtil.clone(this.values);
+		return EntityUtil.clone(this.values);
 	}
 
 	/**
@@ -69,7 +70,7 @@ public class ByteEntity implements ByteItem {
 	public ByteEntity withValue(byte type, byte[] value) {
 		this.typ = type;
 		if(value != null){
-			this.values = ByteUtil.clone(value);
+			this.values = EntityUtil.clone(value);
 		}
 		return this;
 	}
@@ -166,8 +167,8 @@ public class ByteEntity implements ByteItem {
 
 		byte typ = getTyp();
 		if (value == null) {
-			typ = ByteUtil.getTyp(typ, 0, isLast);
-			ByteUtil.writeByteHeader(buffer, typ, 0);
+			typ = EntityUtil.getTyp(typ, 0, isLast);
+			EntityUtil.writeByteHeader(buffer, typ, 0);
 			return;
 		}
 		if (isDynamic) {
@@ -198,8 +199,8 @@ public class ByteEntity implements ByteItem {
 		}
 		if (!isPrimitive || typ == ByteTokener.DATATYPE_CLAZZTYP
 				|| typ == ByteTokener.DATATYPE_CLAZZTYPLONG) {
-			typ = ByteUtil.getTyp(typ, value.length, isLast);
-			ByteUtil.writeByteHeader(buffer, typ, value.length);
+			typ = EntityUtil.getTyp(typ, value.length, isLast);
+			EntityUtil.writeByteHeader(buffer, typ, value.length);
 		}
 		// SAVE Length
 		buffer.put(value);
@@ -208,7 +209,7 @@ public class ByteEntity implements ByteItem {
 	@Override
 	public ByteBuffer getBytes(boolean isDynamic) {
 		int len = calcLength(isDynamic, true);
-		ByteBuffer buffer = ByteUtil.getBuffer(len);
+		ByteBuffer buffer = EntityUtil.getBuffer(len);
 		writeBytes(buffer, isDynamic, true, false);
 		buffer.flip(true);
 		return buffer;
@@ -319,7 +320,7 @@ public class ByteEntity implements ByteItem {
 				}
 			}
 		}
-		return TYPBYTE + ByteUtil.getTypLen(typ, values.length, isLast)
+		return TYPBYTE + EntityUtil.getTypLen(typ, values.length, isLast)
 				+ this.values.length;
 	}
 

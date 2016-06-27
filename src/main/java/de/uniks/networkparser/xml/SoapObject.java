@@ -1,4 +1,4 @@
-package de.uniks.networkparser.event;
+package de.uniks.networkparser.xml;
 
 /*
  NetworkParser
@@ -23,16 +23,19 @@ package de.uniks.networkparser.event;
 */
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.EntityStringConverter;
-import de.uniks.networkparser.event.util.SoapCreator;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
+import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.list.SimpleKeyValueList;
-import de.uniks.networkparser.xml.XMLEntity;
 
-public class SoapObject implements BaseItem {
+public class SoapObject implements BaseItem, SendableEntityCreatorTag {
+	public static String XMLNS_XSI = "http://www.w3.org/2001/XMLSchema-instance";
+	public static String XMLNS_XSD = "http://www.w3.org/2001/XMLSchema";
+	public static String XMLNS_SOAP = "http://schemas.xmlsoap.org/soap/envelope/";
+	private String nameSpace = "s";
+
 	public static final String PROPERTY_HEADER = "Header";
 	public static final String PROPERTY_BODY = "BODY";
-	private String namespace = "s";
 	private SimpleKeyValueList<String, String> headers;
 	protected XMLEntity children;
 
@@ -41,12 +44,12 @@ public class SoapObject implements BaseItem {
 		return this;
 	}
 
-	public String getNamespace() {
-		return namespace;
+	public String getNameSpace() {
+		return nameSpace;
 	}
 
-	public SoapObject withNamespace(String namespace) {
-		this.namespace = namespace;
+	public SoapObject withNameSpace(String value) {
+		this.nameSpace = value;
 		return this;
 	}
 
@@ -61,19 +64,19 @@ public class SoapObject implements BaseItem {
 
 	protected String parseItem(EntityStringConverter converter) {
 		CharacterBuffer sb = new CharacterBuffer();
-		sb.with("<", namespace, ":Envelope xmlns:xsi=\"", SoapCreator.XMLNS_XSI,"\" xmlns:xsd=\"", SoapCreator.XMLNS_XSD, "\"");
-		sb.with(" xmlns:", namespace, "=\"", SoapCreator.XMLNS_SOAP, "\">");
+		sb.with("<", nameSpace, ":Envelope xmlns:xsi=\"", XMLNS_XSI,"\" xmlns:xsd=\"", XMLNS_XSD, "\"");
+		sb.with(" xmlns:", nameSpace, "=\"", XMLNS_SOAP, "\">");
 		converter.add();
 		sb.with(converter.getPrefix());
-		sb.with("<", namespace, ":Body>");
+		sb.with("<", nameSpace, ":Body>");
 
 		if (children != null) {
 			sb.with(children.toString(converter));
 		}
-		sb.with("</", namespace, ":Body>");
+		sb.with("</", nameSpace, ":Body>");
 		converter.minus();
 		sb.with(converter.getPrefix());
-		sb.with("</", namespace, ":Envelope>");
+		sb.with("</", nameSpace, ":Envelope>");
 		return sb.toString();
 	}
 
@@ -96,7 +99,7 @@ public class SoapObject implements BaseItem {
 		}
 		for(Object item : values) {
 			if(item instanceof String) {
-				withNamespace((String) item);
+				withNameSpace((String) item);
 			} else if(item instanceof XMLEntity) {
 				withBody((XMLEntity) item);
 			}
@@ -132,5 +135,48 @@ public class SoapObject implements BaseItem {
 			return parseItem((EntityStringConverter) converter);
 		}
 		return converter.encode(this);
+	}
+	
+	@Override
+	public String[] getProperties() {
+		return new String[] {
+				"." + nameSpace + ":" + SoapObject.PROPERTY_HEADER,
+				"." + nameSpace + ":" + SoapObject.PROPERTY_BODY };
+	}
+
+	@Override
+	public Object getSendableInstance(boolean prototyp) {
+		return new SoapObject();
+	}
+
+	@Override
+	public Object getValue(Object entity, String attribute) {
+		if (attribute.endsWith(":" + SoapObject.PROPERTY_HEADER)) {
+			return ((SoapObject) entity).getHeader();
+		}
+		if (attribute.endsWith(":" + SoapObject.PROPERTY_BODY)) {
+			return ((SoapObject) entity).getBody();
+		}
+		return null;
+	}
+
+	@Override
+	public boolean setValue(Object entity, String attribute, Object value,
+			String type) {
+		if(XMLTokener.CHILDREN.equals(type)) {
+			((SoapObject) entity).with(value);
+			return true;
+		}
+		if (attribute.toLowerCase().endsWith(
+				":" + SoapObject.PROPERTY_BODY.toLowerCase())) {
+			((SoapObject) entity).withBody(new XMLEntity().withValue("" + value));
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public String getTag() {
+		return nameSpace + ":Envelope";
 	}
 }

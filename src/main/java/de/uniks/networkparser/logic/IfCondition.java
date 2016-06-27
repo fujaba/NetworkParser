@@ -86,7 +86,7 @@ public class IfCondition implements UpdateListener, SendableEntityCreator {
 
 	@Override
 	public boolean update(Object evt) {
-		if (expression.update(evt)) {
+		if (expression != null && expression.update(evt)) {
 			if (trueCondition != null) {
 				return trueCondition.update(evt);
 			}

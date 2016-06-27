@@ -1,4 +1,4 @@
-package de.uniks.networkparser.event;
+package de.uniks.networkparser.gui;
 
 /*
  NetworkParser
@@ -21,25 +21,37 @@ package de.uniks.networkparser.event;
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.list.SimpleEntity;
 
-public class SimpleMapEntry<K, V> extends SimpleEntity<K, V> {
-	@Override
-	public Object getSendableInstance(boolean prototyp) {
-		return new SimpleMapEntry<K, V>();
+public class GUILine {
+	/** The Font-Size-Family value. */
+	private String color;
+	private boolean customLine;
+	private String width;
+
+	public String getColor() {
+		return color;
 	}
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public SimpleMapEntry<K, V> withKeyItem(Object key) {
-		withKey((K) key);
+	public GUILine withColor(String color) {
+		this.color = color;
 		return this;
 	}
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public SimpleMapEntry<K, V> withValueItem(Object value) {
-		this.withValue((V) value);
+	public String getWidth() {
+		return width;
+	}
+
+	public GUILine withWidth(String width) {
+		this.width = width;
+		return this;
+	}
+
+	public boolean isCustomLine() {
+		return customLine;
+	}
+
+	public GUILine withCustomLine(boolean customLine) {
+		this.customLine = customLine;
 		return this;
 	}
 }

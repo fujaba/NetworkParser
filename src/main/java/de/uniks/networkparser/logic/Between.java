@@ -59,11 +59,16 @@ public class Between implements UpdateListener, SendableEntityCreator {
 
 	@Override
 	public boolean update(Object evt) {
+		if(evt instanceof PropertyChangeEvent == false) {
+			return false;
+		}
 		PropertyChangeEvent event = (PropertyChangeEvent) evt;
-		if (event.getSource() instanceof Double) {
-			return (((Double) event.getSource()) >= fromValue && ((Double) event.getSource()) <= toValue);
-		}else if (event.getSource() instanceof Integer) {
-			return (((Integer) event.getSource()) >= fromValue && ((Integer) event.getSource()) <= toValue);
+		Object newValue = event.getNewValue();
+		
+		if (newValue instanceof Double) {
+			return (((Double) newValue) >= fromValue && ((Double) newValue) <= toValue);
+		}else if (newValue instanceof Integer) {
+			return (((Integer) newValue) >= fromValue && ((Integer) newValue) <= toValue);
 		}
 		return false;
 	}
@@ -93,11 +98,19 @@ public class Between implements UpdateListener, SendableEntityCreator {
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
 		if (FROM.equalsIgnoreCase(attribute)) {
-			((Between) entity).withFrom((Double) value);
+			if(value instanceof  Double) {
+				((Between) entity).withFrom((Double) value);
+			} else if(value instanceof Integer) {
+				((Between) entity).withFrom((Integer) value);
+			}
 			return true;
 		}
 		if (TO.equalsIgnoreCase(attribute)) {
-			((Between) entity).withTo((Double) value);
+			if(value instanceof  Double) {
+				((Between) entity).withTo((Double) value);
+			} else if(value instanceof Integer) {
+				((Between) entity).withTo((Integer) value);
+			}
 			return true;
 		}
 		return false;

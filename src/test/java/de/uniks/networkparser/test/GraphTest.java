@@ -18,7 +18,6 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.DotConverter;
 import de.uniks.networkparser.converter.GraphConverter;
 import de.uniks.networkparser.converter.YUMLConverter;
-import de.uniks.networkparser.event.util.DateCreator;
 import de.uniks.networkparser.graph.Annotation;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.AssociationTypes;
@@ -47,6 +46,7 @@ import de.uniks.networkparser.graph.util.MethodSet;
 import de.uniks.networkparser.graph.util.ModifierSet;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Condition;
+import de.uniks.networkparser.interfaces.DateCreator;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.json.JsonArray;
@@ -554,7 +554,7 @@ public class GraphTest {
 		GraphList list = (GraphList) map.decode(item);
 		Assert.assertEquals(2, list.getNodes().size());
 	}
-
+	
 	@Test
 	public void testDotConverter() throws IOException {
 		GraphList list = new GraphList();
@@ -603,8 +603,12 @@ public class GraphTest {
 		GraphList model = new GraphList();
 		model.setAuthorName("Stefan");
 		model.with("de.uniks.networkparser");
-		model.createClazz("Person");
+		Clazz person = model.createClazz("Person");
 		Assert.assertEquals(1, model.getClazzes().size());
+		
+		AssociationSet set = new AssociationSet();
+		set.add(new Association(person));
+		Assert.assertEquals(1, set.size());
 	}
 
 	@Test
