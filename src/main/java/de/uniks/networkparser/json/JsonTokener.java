@@ -157,7 +157,12 @@ public class JsonTokener extends Tokener {
 				return;
 			case ',':
 				skip();
-				key = nextValue(entity, isQuote, false, stop).toString();
+				Object keyValue = nextValue(entity, isQuote, false, stop);
+				if(keyValue == null) {
+					// No Key Found Must eb an empty statement
+					return;
+				}
+				key = keyValue.toString();
 				break;
 			default:
 				key = nextValue(entity, isQuote, false, stop).toString();

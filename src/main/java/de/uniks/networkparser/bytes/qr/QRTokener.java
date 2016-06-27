@@ -260,7 +260,7 @@ public class QRTokener {
 		// bits it takes to know version. First we take a guess at version by
 		// assuming version will be
 		// the minimum, 1:
-
+		Version.getVersionForNumber(1);
 		int provisionalBitsNeeded = headerBits.getSize() + mode.getCharacterCountBits(Version.getVersionForNumber(1))
 				+ dataBits.getSize();
 		Version provisionalVersion = chooseVersion(provisionalBitsNeeded, ecLevel);

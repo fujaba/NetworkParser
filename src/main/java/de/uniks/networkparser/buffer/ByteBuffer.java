@@ -29,11 +29,17 @@ public class ByteBuffer extends BufferedBuffer {
 
 	@Override
 	public char charAt(int index) {
+		if(index<0 || buffer == null || index>=buffer.length) {
+			return 0;
+		}
 		return (char) buffer[index];
 	}
 
 	@Override
 	public byte byteAt(int index) {
+		if(index<0 || buffer == null || index>=buffer.length) {
+			return 0;
+		}
 		return buffer[index];
 	}
 
@@ -61,6 +67,9 @@ public class ByteBuffer extends BufferedBuffer {
 
 	@Override
 	public byte getByte() {
+		if(buffer == null || position>=buffer.length) {
+			return 0;
+		}
 		return this.buffer[++position];
 	}
 

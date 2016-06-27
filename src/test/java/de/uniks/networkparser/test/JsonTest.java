@@ -61,6 +61,21 @@ import de.uniks.networkparser.test.model.util.UniversityCreator;
 
 public class JsonTest extends IOClasses {
 	private String updateMessage;
+	
+	@Test
+	public void testJSONDuplicate() {
+		JsonObject json = new JsonObject().withValue("{\"type\":\"new\", \"type\":\"old\"}");
+		Assert.assertEquals(json.get("type"), "old");
+		Assert.assertEquals(1, json.size());
+	}
+	
+	@Test
+	public void testJSONEmptyKey() {
+		JsonObject json = new JsonObject().withValue("{\"id\":42, }");
+		Assert.assertEquals(json.get("id"), 42);
+		Assert.assertEquals(1, json.size());
+	}
+	
 	@Test
 	public void testJSONPath() {
 		JsonObject json = new JsonObject().withValue("{\"id\":\"D:\\\\Roellmedia\\\\\"\n\r}");
