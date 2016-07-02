@@ -1,28 +1,29 @@
 package de.uniks.networkparser.bytes;
 
-import de.uniks.networkparser.buffer.CharacterBuffer;
-
 /*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
+NetworkParser
+The MIT License
+Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
 
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
- http://ec.europa.eu/idabc/eupl5
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 */
+import de.uniks.networkparser.buffer.CharacterBuffer;
 
 public class SHA1 extends Checksum {
 	private int H0, H1, H2, H3, H4;
@@ -132,23 +133,8 @@ public class SHA1 extends Checksum {
 				currentLen += 64;
 				length -= 8;
 			}
-
-//			while (length < 0) // (len >= 4)
-//			{
-//				w[currentPos >> 2] = ((bytes[offset++] & 0xff) << 24) | ((bytes[offset++] & 0xff) << 16)
-//						| ((bytes[offset++] & 0xff) << 8) | (bytes[offset++] & 0xff);
-//				length -= 4;
-//				currentPos += 4;
-//				currentLen += 32;
-//				if (currentPos == 64) {
-//					perform();
-//					currentPos = 0;
-//				}
-//			}
 		}
-
 		/* Remaining bytes (1-3) */
-
 		while (length > 0) {
 			/* Here is room for further improvements */
 			int idx = currentPos >> 2;
@@ -206,15 +192,13 @@ public class SHA1 extends Checksum {
 			w[15] = 0;
 			perform();
 		}
-
 		/*
 		 * Now currentPos is a multiple of 4 and we can do the remaining padding
 		 * much more efficiently, furthermore we are sure that currentPos <= 56.
 		 */
-
-		for (int i = currentPos >> 2; i < 14; i++)
+		for (int i = currentPos >> 2; i < 14; i++){
 			w[i] = 0;
-
+		}
 		w[14] = (int) (currentLen >> 32);
 		w[15] = (int) currentLen;
 
@@ -330,7 +314,6 @@ public class SHA1 extends Checksum {
 		for (int i = 0; i < barr.length; i++) {
 			barr[i] = (byte) charSequence.charAt(i);
 		}
-
 		return barr;
 	}
 }

@@ -1,61 +1,56 @@
 package de.uniks.networkparser.bytes;
 
 /*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
+NetworkParser
+The MIT License
+Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
 
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
- http://ec.europa.eu/idabc/eupl5
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 */
 
 public class BitValue {
-	private BitEntity start;
-	private BitEntity len;
+	private byte start;
+	private byte len;
 	private int orientation = 1;
 
 	public BitValue(int start, int len) {
-		this.start = new BitEntity().with(start);
-		this.len = new BitEntity().with(len);
+		this.start = (byte)start;
+		this.len = (byte)len;
 	}
-
-	public BitValue(byte startTyp, String startValue, byte lentyp,
-			String lenvalue) {
-		this.start = new BitEntity().with(startValue, startTyp);
-		this.len = new BitEntity().with(lenvalue, lentyp);
+	public BitValue(byte start, byte len) {
+		this.start = start;
+		this.len = len;
 	}
-
-	public BitEntity getStart() {
+	public byte getStart() {
 		return start;
 	}
-
-	public BitValue withStart(BitEntity start) {
+	public BitValue withStart(byte start) {
 		this.start = start;
 		return this;
 	}
-
-	public BitEntity getLen() {
+	public byte getLen() {
 		return len;
 	}
-
-	public BitValue withLen(BitEntity len) {
+	public BitValue withLen(byte len) {
 		this.len = len;
 		return this;
 	}
-
 	public BitValue withOrientation(int value) {
 		this.orientation = value;
 		return this;

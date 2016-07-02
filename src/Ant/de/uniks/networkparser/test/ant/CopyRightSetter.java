@@ -7,6 +7,7 @@ public class CopyRightSetter {
 	String source;
 	String copyrightFile;
 	private String projectName;
+	private boolean showDebug=false;
 
 	public void execute() {
 		try{
@@ -23,7 +24,7 @@ public class CopyRightSetter {
 		}
 
 		NetworkParserSources center = new NetworkParserSources();
-		center.createComment(copyrightFile, source, projectName);
+		center.createComment(copyrightFile, source, projectName, showDebug);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -57,8 +58,8 @@ public class CopyRightSetter {
 
 		CopyRightSetter copyRightSetter = new CopyRightSetter();
 		copyRightSetter.setProjectName("NetworkParser");
-		copyRightSetter.setSource("src/de/uniks/networkparser/");
-		copyRightSetter.setFile("Ant/de/uniks/networkparser/test/build/Licence.txt");
+		copyRightSetter.setSource("src/main/java/de/uniks/networkparser/");
+		copyRightSetter.setFile("src/main/resources/Licence.txt");
 		copyRightSetter.execute();
 	}
 }

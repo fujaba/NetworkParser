@@ -1,5 +1,5 @@
 /*
- * Copyright 2007 ZXing authors
+ * Copyright 2008 ZXing authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -142,9 +142,8 @@ final class BitMatrixParser {
 
 	// Get the data mask for the format used in this QR Code. This will exclude
 	// some bits from reading as we wind through the bit matrix.
-	DataMask dataMask = DataMask.forReference(formatInfo.getDataMask());
 	int dimension = bitMatrix.getHeight();
-	dataMask.unmaskBitMatrix(bitMatrix, dimension);
+	unmaskBitMatrix(formatInfo.getDataMask(), bitMatrix, dimension);
 
 	BitMatrix functionPattern = version.buildFunctionPattern();
 
@@ -188,6 +187,85 @@ final class BitMatrixParser {
 		}
 		return result;
 	}
+	
+	/**
+	 * <p>
+	 * Implementations of this method reverse the data masking process applied
+	 * to a QR Code and make its bits ready to read.
+	 * </p>
+	 *
+	 * @param bits		representation of QR Code bits
+	 * @param dimension	dimension of QR Code, represented by bits, being unmasked
+	 */
+	final void unmaskBitMatrix(byte mask, BitMatrix bits, int dimension) {
+		if(mask == 0) { // 000: mask bits for which (x + y) mod 2 == 0
+			for (int i = 0; i < dimension; i++) {
+				for (int j = 0; j < dimension; j++) {
+					if (((i + j) & 0x01) == 0) {
+						bits.flip(j, i);
+					}
+				}
+			}
+		} else if(mask == 1) { // 001: mask bits for which x mod 2 == 0
+			for (int i = 0; i < dimension; i++) {
+				for (int j = 0; j < dimension; j++) {
+					if ((i & 0x01) == 0) {
+						bits.flip(j, i);
+					}
+				}
+			}
+		} else if(mask == 2) { // 010: mask bits for which y mod 3 == 0
+			for (int i = 0; i < dimension; i++) {
+				for (int j = 0; j < dimension; j++) {
+					if (j % 3 == 0) {
+						bits.flip(j, i);
+					}
+				}
+			}
+		} else if(mask == 3) { // 011: mask bits for which (x + y) mod 3 == 0
+			for (int i = 0; i < dimension; i++) {
+				for (int j = 0; j < dimension; j++) {
+					if ((i + j) % 3 == 0) {
+						bits.flip(j, i);
+					}
+				}
+			}
+		} else if(mask == 4) { // 100: mask bits for which (x/2 + y/3) mod 2 == 0
+			for (int i = 0; i < dimension; i++) {
+				for (int j = 0; j < dimension; j++) {
+					if ((((i / 2) + (j / 3)) & 0x01) == 0) {
+						bits.flip(j, i);
+					}
+				}
+			}
+		} else if(mask == 5) { // 101: mask bits for which xy mod 2 + xy mod 3 == 0
+			for (int i = 0; i < dimension; i++) {
+				for (int j = 0; j < dimension; j++) {
+					int temp = i * j;
+					if((temp & 0x01) + (temp % 3) == 0) {
+						bits.flip(j, i);
+					}
+				}
+			}
+		} else if(mask == 6) { // 110: mask bits for which (xy mod 2 + xy mod 3) mod 2 == 0
+			for (int i = 0; i < dimension; i++) {
+				for (int j = 0; j < dimension; j++) {
+					int temp = i * j;
+					if((((temp & 0x01) + (temp % 3)) & 0x01) == 0) {
+						bits.flip(j, i);
+					}
+				}
+			}
+		} else if(mask == 7) { // 111: mask bits for which ((x+y)mod 2 + xy mod 3) mod 2 == 0
+			for (int i = 0; i < dimension; i++) {
+				for (int j = 0; j < dimension; j++) {
+					if(((((i + j) & 0x01) + ((i * j) % 3)) & 0x01) == 0) {
+						bits.flip(j, i);
+					}
+				}
+			}
+		}
+	}
 
 	/**
 	* Revert the mask removal done while reading the code words. The bit matrix should revert to its original state.
@@ -196,9 +274,8 @@ final class BitMatrixParser {
 		if (parsedFormatInfo == null) {
 			return; // We have no format information, and have no data mask
 		}
-		DataMask dataMask = DataMask.forReference(parsedFormatInfo.getDataMask());
 		int dimension = bitMatrix.getHeight();
-		dataMask.unmaskBitMatrix(bitMatrix, dimension);
+		unmaskBitMatrix(parsedFormatInfo.getDataMask(), bitMatrix, dimension);
 	}
 
 	/**

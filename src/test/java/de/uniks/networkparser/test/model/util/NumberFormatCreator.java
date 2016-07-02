@@ -20,7 +20,7 @@ public class NumberFormatCreator implements BitEntityCreator{
 	}
 
 	public NumberFormatCreator(){
-		entities.add(new BitEntity().with("number", BitEntity.BIT_BYTE).withStartLen(0, 8));
+		entities.add(new BitEntity().with("number", BitEntity.BIT_BYTE).withStartLen((byte)0, (byte)8));
 	}
 
 	@Override

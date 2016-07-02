@@ -113,8 +113,8 @@ public class SourceItem {
 			}
 		} else if(comment.startsWith(STARTCOMMENT)){
 			custom = comment.substring(STARTCOMMENT.length());
-		} else if(comment.startsWith(STARTCOMMENTEXT)){
-			custom = comment.substring(STARTCOMMENTEXT.length());
+//		} else if(comment.startsWith(STARTCOMMENTEXT)){
+//			custom = comment.substring(STARTCOMMENTEXT.length());
 		}
 
 		if(custom.length()>0){

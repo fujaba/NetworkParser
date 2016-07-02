@@ -1,29 +1,30 @@
 package de.uniks.networkparser.bytes;
 
 /*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
+NetworkParser
+The MIT License
+Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
 
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
- http://ec.europa.eu/idabc/eupl5
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 */
 import java.util.ArrayList;
 import java.util.Iterator;
-
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -69,14 +70,14 @@ public class ByteParser {
 
 			int orientationSource = bitValue.getOrientation();
 			int orientationTarget = entry.getOrientation();
-
-			int temp = Integer.parseInt(""
-					+ getEntity(buffer, bitValue.getStart(), values));
+			BitEntity bit = new BitEntity().with(bitValue.getStart());
+			int temp = Integer.parseInt("" + getEntity(buffer, bit, values));
 			int posOfByte = temp / 8;
 			int posOfBit = (8 - ((temp + 1) % 8)) % 8;
 
+			bit = new BitEntity().with(bitValue.getLen());
 			int length = Integer.parseInt(""
-					+ getEntity(buffer, bitValue.getLen(), values));
+					+ getEntity(buffer,bit, values));
 			int noOfByte = length / 8;
 			if (length % 8 > 0) {
 				noOfByte++;
