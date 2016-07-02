@@ -15,7 +15,8 @@ public class NumberFormatCreator implements BitEntityCreator{
 
 	public void addBitEntity(String propertyName, byte bitNumber, String start, byte bitString, String len, byte bitReference){
 		BitEntity bitEntity = new BitEntity().with(propertyName, bitNumber);
-		bitEntity.add(new BitValue(bitString, start, bitReference, len));
+//		bitEntity.add(new BitValue(bitString, start, bitReference, len));
+		bitEntity.add(new BitValue(Integer.valueOf(start), 0).withLenProperty(bitReference, len));
 		entities.add(bitEntity);
 	}
 

@@ -22,8 +22,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-public class NumberList extends SimpleList<Number>
-{
+
+/**
+ * @author Stefan Lindel
+ * NumberList for List of Numbers (Integer Double etc.)
+ *
+ */
+public class NumberList extends SimpleList<Number> {
 	public double sum()
    {
       double result = 0;

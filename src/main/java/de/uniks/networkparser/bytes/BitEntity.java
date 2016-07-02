@@ -44,8 +44,10 @@ public class BitEntity extends SimpleList<BitValue> implements ByteItem {
 	public static final String PROPERTY_ORIENTATION = "orientation";
 
 	public BitEntity with(String property, byte typ) {
-		this.property = property;
-		this.typ = typ;
+		if(typ != 0) {
+			this.property = property;
+			this.typ = typ;
+		}
 		return this;
 	}
 
@@ -163,6 +165,13 @@ public class BitEntity extends SimpleList<BitValue> implements ByteItem {
 				this.typ = BIT_STRING;
 				this.property = "" + value;
 			}
+		}
+		return this;
+	}
+	
+	public BitEntity withTyp(byte typ) {
+		if(typ != 0) {
+			this.typ = typ;
 		}
 		return this;
 	}

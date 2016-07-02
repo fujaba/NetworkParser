@@ -194,6 +194,7 @@ final class BitMatrixParser {
 	 * to a QR Code and make its bits ready to read.
 	 * </p>
 	 *
+	 * @param mask		The Byte to Convert
 	 * @param bits		representation of QR Code bits
 	 * @param dimension	dimension of QR Code, represented by bits, being unmasked
 	 */

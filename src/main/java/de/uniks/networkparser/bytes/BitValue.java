@@ -27,7 +27,10 @@ THE SOFTWARE.
 public class BitValue {
 	private byte start;
 	private byte len;
+	private byte lenTyp;
+	private String property;
 	private int orientation = 1;
+	
 
 	public BitValue(int start, int len) {
 		this.start = (byte)start;
@@ -58,5 +61,16 @@ public class BitValue {
 
 	public int getOrientation() {
 		return orientation;
+	}
+	public byte getLenTyp() {
+		return lenTyp;
+	}
+	public String getProperty() {
+		return property;
+	}
+	public BitValue withLenProperty(byte lenTyp, String property) {
+		this.lenTyp = lenTyp;
+		this.property = property;
+		return this;
 	}
 }
