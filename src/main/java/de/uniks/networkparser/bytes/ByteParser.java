@@ -75,8 +75,8 @@ public class ByteParser {
 			int posOfByte = temp / 8;
 			int posOfBit = (8 - ((temp + 1) % 8)) % 8;
 
-			bit = new BitEntity().with(bitValue.getLen());
-			bit.with(bitValue.getProperty(), bitValue.getLenTyp());
+			bit = new BitEntity().with(bitValue.size());
+			bit.with(bitValue.getProperty(), bitValue.getTyp());
 			int length = Integer.parseInt(""
 					+ getEntity(buffer,bit, values));
 			int noOfByte = length / 8;

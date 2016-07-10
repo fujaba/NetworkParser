@@ -67,10 +67,21 @@ public class ByteBuffer extends BufferedBuffer {
 
 	@Override
 	public byte getByte() {
-		if(buffer == null || position>=buffer.length) {
+		if(buffer == null || position>=buffer.length-1) {
 			return 0;
 		}
 		return this.buffer[++position];
+	}
+	
+	public Byte[] getBytes() {
+		if(buffer == null || position>=buffer.length-1) {
+			return new Byte[0];
+		}
+		Byte[] result=new Byte[length];
+		for(int i=0;i<length;i++) {
+			result[i] = this.buffer[i+position];
+		}
+		return result;
 	}
 
 	public byte[] getValue(int start, int len) {
@@ -86,24 +97,70 @@ public class ByteBuffer extends BufferedBuffer {
 	public byte[] array() {
 		return buffer;
 	}
-
-	public void write(byte[] bytes, int len) {
-		int length=this.length;
-		int bufferLen =0;
+	public boolean add(byte bytes) {
+		return addBytes(bytes, 1);
+	}
+	public boolean add(int bytes) {
+		return addBytes((byte) bytes, 1);
+	}
+	public boolean add(Byte[] bytes) {
+		if(bytes == null) {
+			return false;
+		}
+		return addBytes(bytes, bytes.length);
+	}
+	
+	public boolean add(byte[] bytes) {
+		if(bytes == null) {
+			return false;
+		}
+		return addBytes(bytes, bytes.length);
+	}
+	protected boolean addBytes(Object bytes, int len) {
+		int bufferLen = 0;
 		if(this.buffer != null) {
 			bufferLen = this.buffer.length;
 		}
-		if(length + len > bufferLen) {
-			this.buffer = new byte[length + len];
-			if(bufferLen >0) {
-				byte[] oldBuffer = this.buffer;
-				System.arraycopy(oldBuffer, 0, this.buffer, 0, length);
+		// Add ad end of Array
+		if(position<0) {
+			// New Size with Buffer
+			int newSize = (length + len) + (length + len) / 2 + 5;
+			byte[] oldBuffer = this.buffer;
+			this.buffer = new byte[newSize];
+			int oldSize = 0;
+			if(oldBuffer != null) {
+				oldSize = oldBuffer.length;
+				System.arraycopy(oldBuffer, oldBuffer.length - length, this.buffer, newSize - length, length);
 			}
-			System.arraycopy(bytes, 0, this.buffer, length, len);
+			position +=  newSize - oldSize;
+		} else if(position + len > bufferLen) {
+			// New Size with Buffer
+			if(bufferLen > 0) {
+				int newSize = (position + len) + (position + len) / 2 + 5;
+				byte[] oldBuffer = this.buffer;
+				this.buffer = new byte[newSize];
+				System.arraycopy(oldBuffer, 0, this.buffer, 0, position);
+			} else {
+				this.buffer = new byte[len];
+			}
+		}
+		if(bytes instanceof Byte) {
+			this.buffer[position] = (byte) bytes;
 		} else {
-			System.arraycopy(bytes, 0, this.buffer, length + 1, len);
+			if(bytes instanceof byte[]) {
+				byte[] source = (byte[])bytes;
+			    for(int i = 0; i < len; i++){
+			    	this.buffer[position + i] = source[i];
+			    }
+			}else {
+				Byte[] source = (Byte[])bytes;
+				for(int i = 0; i < len; i++){
+			    	this.buffer[position + i] = source[i];
+			    }
+			}
 		}
 		this.length += len;
+		return true;
 	}
 
 	public void put(byte value) {

@@ -25,10 +25,12 @@ THE SOFTWARE.
 */
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
+
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.converter.ByteConverter;
 import de.uniks.networkparser.converter.ByteConverterHTTP;
+import de.uniks.networkparser.converter.ByteConverterHex;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ByteItem;
 import de.uniks.networkparser.interfaces.Converter;
@@ -50,6 +52,26 @@ public class ByteEntity implements ByteItem {
 	/** The values. */
 	protected byte[] values;
 
+	
+	
+	public String toBinaryString() {
+		if(values == null || values.length<1) {
+			return "";
+		}
+		byte[] result = new byte[values.length*9+9];
+		for (int z=0; z<Byte.SIZE; z++) {
+			result[7-z] = (byte) (typ >> z & 0x1);
+		}
+		result[8] = ' ';
+		for(int i=0;i<values.length;i++) {
+			for (int z=0; z<Byte.SIZE; z++) {
+				result[i*9+7-z+9] = (byte) (values[i] >> z & 0x1);
+			}
+			result[i*9+8+9] = ' ';
+		}
+		return new String(result);
+	}
+	
 	/**
 	 * Gets the value.
 	 *
@@ -129,7 +151,7 @@ public class ByteEntity implements ByteItem {
 		if(converter instanceof ByteConverter) {
 			return toString((ByteConverter)converter, false);
 		}
-		return null;
+		return toString(new ByteConverterHex(), false);
 	}
 
 	/**

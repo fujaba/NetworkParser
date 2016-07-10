@@ -35,7 +35,19 @@ import de.uniks.networkparser.list.SimpleList;
 
 public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 	/** The children of the ByteEntity. */
-	private byte typ = 0;
+	private byte typ;
+	
+	public static final byte BIT_STRING = 0x53; // S = String;
+	public static final byte BIT_NUMBER = 0x4E; // N = Number
+	public static final byte BIT_BYTE = 0x42; // B = Byte
+	public static final byte BIT_REFERENCE = 0x52; // R = Reference
+
+	// Can be a Typ
+	protected String property;
+	protected int orientation = 1;
+	public static final String PROPERTY_PROPERTY = "property";
+	public static final String PROPERTY_TYP = "typ";
+	public static final String PROPERTY_ORIENTATION = "orientation";
 
 	@Override
 	public BaseItem getNewList(boolean keyValue) {

@@ -2,11 +2,14 @@ package de.uniks.networkparser.test;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -17,14 +20,49 @@ import org.junit.Test;
 
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.buffer.DERBuffer;
 import de.uniks.networkparser.bytes.AES;
 import de.uniks.networkparser.bytes.CRC;
 import de.uniks.networkparser.bytes.FCS16;
+import de.uniks.networkparser.bytes.RSAKey;
 import de.uniks.networkparser.bytes.SHA1;
 import de.uniks.networkparser.bytes.Sum;
+import de.uniks.networkparser.converter.ByteConverter64;
 import de.uniks.networkparser.converter.ByteConverterHex;
 
 public class CheckSumTest {
+	@Test
+	public void testRSA() throws InvalidKeySpecException, NoSuchAlgorithmException, IOException {
+		RSAKey key = RSAKey.generateKey(11, 13, 143);
+		key.withPubExp(23);
+		BigInteger encrypt = key.encrypt(BigInteger.valueOf(7));
+		
+		Assert.assertEquals(2, encrypt.intValue());
+		
+//		key = RSAKey.generateKey(512);
+		
+		DERBuffer publicStream = key.getPublicStream();
+		ByteConverter64 converter = new ByteConverter64();
+		String string = converter.toString(publicStream);
+		Assert.assertNotNull(string);
+//		BASE64Decoder b64 = new BASE64Decoder();
+//		byte[] decoded = b64.decodeBuffer(string);
+	
+//		byte[] decode = converter.decode(string);
+		
+//		X509EncodedKeySpec spec = new X509EncodedKeySpec(decoded);
+//	      KeyFactory kf = KeyFactory.getInstance("RSA");
+//	      PublicKey generatePublic2 = kf.generatePublic(spec);
+
+		key = RSAKey.generateKey(1024);
+		StringBuilder textEncrypt = key.encrypt("Hallo");
+		
+//		System.out.println(textEncrypt.toString());
+		
+//FIXME		RSAKey descriptKey = RSAKey.getDecryptKey(1024, key.getPrivateKey());
+//		descriptKey.decrypt(textEncrypt.toString());
+	}
+	
 	@Test
 	public void testCRC32() {
 		CRC crc = new CRC(32);

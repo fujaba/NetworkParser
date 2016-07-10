@@ -14,6 +14,7 @@ import org.junit.Test;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.ByteBuffer;
+import de.uniks.networkparser.buffer.DERBuffer;
 import de.uniks.networkparser.bytes.AES;
 import de.uniks.networkparser.bytes.ByteEntity;
 import de.uniks.networkparser.bytes.ByteMessage;
@@ -40,6 +41,17 @@ import de.uniks.networkparser.test.model.util.StringMessageCreator;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
 
 public class ByteTest{
+	@Test
+	public void testBuffer() {
+		DERBuffer buffer = new DERBuffer();
+		buffer.add(new byte[]{24,25,26,27,28,29,30,31,32});
+		buffer.add(new byte[]{19,20,21,22,23});
+		buffer.add(new byte[]{14,15,16,17,18});
+		buffer.add(new byte[]{0,1,2,3,4,5,6,7,8,9,10,11,12,13});
+		for(int i=0;i<buffer.length();i++) {
+			Assert.assertEquals(i, buffer.byteAt(i));
+		}
+	}
 	@Test
 	public void testSHA1() throws NoSuchAlgorithmException, UnsupportedEncodingException {
 		String text="Hallo Welt";

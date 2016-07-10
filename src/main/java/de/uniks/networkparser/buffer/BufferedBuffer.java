@@ -48,6 +48,11 @@ public abstract class BufferedBuffer extends Buffer {
 	public int length() {
 		return length;
 	}
+	
+	@Override
+	public boolean isEnd() {
+		return position()-start+1 >= length();
+	}
 
 	public BufferedBuffer withLength(int value) {
 		this.length = value;
