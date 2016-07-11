@@ -73,7 +73,7 @@ public class RSAKey {
 
 	/** 
 	 * Sets the public exponent.
-	 * @param pubExp The the Public Exponent
+	 * @param value The the Public Exponent
 	 * @return ThisComponent
 	*/
 	
