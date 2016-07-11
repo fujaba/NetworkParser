@@ -145,7 +145,7 @@ public class ByteBuffer extends BufferedBuffer {
 			}
 		}
 		if(bytes instanceof Byte) {
-			this.buffer[position] = (byte) bytes;
+			this.buffer[position] = (Byte) bytes;
 		} else {
 			if(bytes instanceof byte[]) {
 				byte[] source = (byte[])bytes;

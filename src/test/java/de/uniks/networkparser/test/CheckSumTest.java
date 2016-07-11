@@ -56,7 +56,7 @@ public class CheckSumTest {
 
 		key = RSAKey.generateKey(1024);
 		StringBuilder textEncrypt = key.encrypt("Hallo");
-		
+		Assert.assertNotNull(textEncrypt);
 //		System.out.println(textEncrypt.toString());
 		
 //FIXME		RSAKey descriptKey = RSAKey.getDecryptKey(1024, key.getPrivateKey());

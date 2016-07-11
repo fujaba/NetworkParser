@@ -93,7 +93,7 @@ public class RegCalculator {
 		}
 		Character current = tokener.getCurrentChar();
 		boolean defaultMulti = false;
-		while (!tokener.isEnd()) {
+		while (tokener.isEnd() == false) {
 			if (current == null) {
 				current = tokener.nextClean(defaultMulti);
 			}
@@ -153,6 +153,9 @@ public class RegCalculator {
 				defaultMulti = false;
 			}
 			current = null;
+		}
+		if(parts.size()<1) {
+			parts.add(""+current);
 		}
 
 		// Parsing Funciton & Parsing (

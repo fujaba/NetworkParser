@@ -125,7 +125,7 @@ public class DERBuffer extends ByteBuffer {
 				add((Byte[])item);
 				
 				z--;
-				if((byte)values[z] == DERBuffer.BITSTRING) {
+				if((Byte)values[z] == DERBuffer.BITSTRING) {
 					add(0);
 				}
 				if(pos == 0) {
@@ -133,7 +133,7 @@ public class DERBuffer extends ByteBuffer {
 				} else {
 					addLength(length- pos);
 				}
-				add((byte)values[z]);
+				add((Byte)values[z]);
 			} else if(item instanceof Object[]) {
 				pos = length;
 				addGroup((Object[])item);
@@ -143,7 +143,7 @@ public class DERBuffer extends ByteBuffer {
 					addLength(length - pos);
 				}
 				z--;
-				add((byte)values[z]);
+				add((Byte)values[z]);
 			} else if(item instanceof BigInteger) {
 				add((BigInteger)item);
 			} else if(item instanceof Byte) {
@@ -151,7 +151,7 @@ public class DERBuffer extends ByteBuffer {
 					add((byte)0);
 					add(NULL);
 				}else {
-					add((byte)item);
+					add((Byte)item);
 				}
 			}
 			z--;

@@ -105,7 +105,11 @@ public class RSAKey {
 		return message.modPow(getPublicKey(), getModulus());
 	}
 
-	/** Performs the classical RSA computation. */
+	/**
+	 *  Performs the classical RSA computation.
+	 *  @param value Enscript the Value
+	 *  @return the enscripted Message
+	 * */
 	public StringBuilder encrypt(String value) {
 		return encrypt(value, value.length());
 	}
@@ -114,7 +118,11 @@ public class RSAKey {
 		return decrypt(new BigInteger(message));
 	}
 	
-    /** Performs the classical RSA computation. */
+    /** 
+     * Performs the classical RSA computation. 
+     * @param message Message to descrypt
+     * @return the descrypted Message 
+     * */
 	public StringBuilder decrypt(BigInteger message) {
 		BigInteger text = message.modPow(getPrivateKey(), getModulus());
 		BigInteger divider = BigInteger.valueOf(1000);
@@ -179,23 +187,35 @@ public class RSAKey {
 		return string;
 	}
 
-	/** Weeds out bad inputs. */
-	private final BigInteger weedOut(BigInteger arg) {
-		if (!isNull(arg) && isPositive(arg)) {
-			return arg;
+	/** 
+	 * Weeds out bad inputs.
+	 * @param value The Value for Check
+	 * @return the checked Value
+	 * */
+	private final BigInteger weedOut(BigInteger value) {
+		if (!isNull(value) && isPositive(value)) {
+			return value;
 		} else {
 			return null;
 		}
 	}
 
-	/** Returns true when the argument is greater than zero. */
+	/** 
+	 * Returns true when the argument is greater than zero.
+	 * @param number Number for Check
+	 * @return if number is Positive
+	 * */
 	private final boolean isPositive(BigInteger number) {
 		return (number.compareTo(BigInteger.ZERO) > 0);
 	}
 
-	/** Returns true when the argument is null. */
-	private final boolean isNull(Object obj) {
-		return !(obj != null);
+	/** 
+	 * Returns true when the argument is null.
+	 * @param value Value for Check
+	 * @return if Value is Null
+	 * */
+	private final boolean isNull(Object value) {
+		return (value == null);
 	}
 	public static RSAKey generateKey(int p, int q, int max){
 		return generateKey(BigInteger.valueOf(p), BigInteger.valueOf(q), max);
@@ -231,14 +251,20 @@ public class RSAKey {
 
 	/**
 	 * Computes the LCM of the primes.
-	 * 
+	 * @param p first prime
+	 * @param q second prime
 	 * @return Phi
 	 */
 	private static BigInteger computePhi(BigInteger p, BigInteger q) {
 		return lcm(p.subtract(BigInteger.ONE), q.subtract(BigInteger.ONE));
 	}
 
-	/** Computes the least common multiple. */
+	/** 
+	 * Computes the least common multiple.
+	 * @param a first value
+	 * @param b second value
+	 * @return the multiply of a,b
+	 * */
 	private static BigInteger lcm(BigInteger a, BigInteger b) {
 		return (a.multiply(b).divide(a.gcd(b)));
 	}

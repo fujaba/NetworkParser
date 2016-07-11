@@ -216,6 +216,10 @@ public class ConditionTest implements UpdateListener {
 		
 		source.with((char)0x42);
 		Assert.assertTrue(condition.update(new PropertyChangeEvent(source, "", null, null)));
+		
+		condition = new Equals();
+		condition.withValue(Equals.STRINGVALUE);
+		Assert.assertFalse(condition.update(new PropertyChangeEvent(this, "HALLO", null, null)));
 	}
 
 	@Test
