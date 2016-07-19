@@ -30,7 +30,7 @@ import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.logic.SimpleEvent;
 
-public class SimpleSet<V> extends AbstractList<V> implements Set<V>, Cloneable {
+public class SimpleSet<V> extends AbstractList<V> implements Set<V>, Cloneable, Iterable<V> {
 	public static final String PROPERTY="items";
 	private UpdateListener listener;
 
