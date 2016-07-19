@@ -360,10 +360,8 @@ public class EntityUtil {
 	/**
 	 * Safe String comparison.
 	 *
-	 * @param s1
-	 *            first string
-	 * @param s2
-	 *            second string
+	 * @param s1	first string
+	 * @param s2	second string
 	 * @return true if both parameters are null or equal
 	 */
 	public static boolean stringEquals(String s1, String s2) {
