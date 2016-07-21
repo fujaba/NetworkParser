@@ -1,6 +1,7 @@
 package de.uniks.networkparser.converter;
 
 import de.uniks.networkparser.buffer.BufferedBuffer;
+import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 
 public class ByteConverter64 extends ByteConverter {
@@ -34,6 +35,7 @@ public class ByteConverter64 extends ByteConverter {
 				pem_convert_array[pem_array[i]] = ((byte)i);
 		}		
 	}
+	
 	@Override
 	public byte[] decode(String value) {
 		if(value == null) {
@@ -43,16 +45,32 @@ public class ByteConverter64 extends ByteConverter {
 			initPEMArray();
 		}
 		byte[] bytes = value.getBytes();
-		byte[] result = new byte[bytes.length*3/4];
 		int pos=0;
-		for(int i=0;i<bytes.length-3;i+=4) {
-			int n = pem_convert_array[(bytes[i+3] & 0xFF)];
-	    	int m = pem_convert_array[(bytes[i+2] & 0xFF)];
-	    	int k = pem_convert_array[(bytes[i+1] & 0xFF)];
-	    	int j = pem_convert_array[(bytes[i+0] & 0xFF)];
-	    	result[pos++] = (byte)(j << 2 & 0xFC | k >>> 4 & 0x3);
-	    	result[pos++] = (byte)(k << 4 & 0xF0 | m >>> 2 & 0xF);
-	    	result[pos++] = (byte)(m << 6 & 0xC0 | n & 0x3F);
+		byte[] result;
+		if(value.charAt(value.length() - 1) == '=') {
+			result = new byte[bytes.length*3/4 - 1];
+			for(int i=0;i<bytes.length-3;i+=4) {
+				int n = pem_convert_array[(bytes[i+3] & 0xFF)];
+				int m = pem_convert_array[(bytes[i+2] & 0xFF)];
+				int k = pem_convert_array[(bytes[i+1] & 0xFF)];
+				int j = pem_convert_array[(bytes[i+0] & 0xFF)];
+				result[pos++] = (byte)(j << 2 & 0xFC | k >>> 4 & 0x3);
+				result[pos++] = (byte)(k << 4 & 0xF0 | m >>> 2 & 0xF);
+				if(pos<result.length) {
+					result[pos++] = (byte)(m << 6 & 0xC0 | n & 0x3F);
+				}
+			}
+		} else {
+			result = new byte[bytes.length*3/4];
+			for(int i=0;i<bytes.length-3;i+=4) {
+				int n = pem_convert_array[(bytes[i+3] & 0xFF)];
+				int m = pem_convert_array[(bytes[i+2] & 0xFF)];
+				int k = pem_convert_array[(bytes[i+1] & 0xFF)];
+				int j = pem_convert_array[(bytes[i+0] & 0xFF)];
+				result[pos++] = (byte)(j << 2 & 0xFC | k >>> 4 & 0x3);
+				result[pos++] = (byte)(k << 4 & 0xF0 | m >>> 2 & 0xF);
+				result[pos++] = (byte)(m << 6 & 0xC0 | n & 0x3F);
+			}
 		}
 		return result;
 	}

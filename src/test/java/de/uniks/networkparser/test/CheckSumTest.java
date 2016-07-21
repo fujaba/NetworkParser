@@ -1,5 +1,6 @@
 package de.uniks.networkparser.test;
 
+import static javax.xml.bind.DatatypeConverter.parseBase64Binary;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
@@ -31,6 +32,19 @@ import de.uniks.networkparser.converter.ByteConverter64;
 import de.uniks.networkparser.converter.ByteConverterHex;
 
 public class CheckSumTest {
+	@Test
+	public void testBase64() {
+		String test = "{\"newValue\":\"crematoria.O17735\",\"valueType\":\"de.uniks.se1.ist.model.Order\",\"objectId\":\"crematoria.G1\",\"objectType\":\"de.uniks.se1.ist.model.Game\",\"property\":\"order\",\"sessionId\":\"server\",\"propertyKind\":\"toMany\",\"changeNo\":\"1469081710178\",\"oldValue\":null,\"timestamp\":\"1469081710178\",\"signature\":\"MEUCIQDcJZlzd4mnhZtLFXkzN8xVrS4mTSMkdcUv+mM9tlkqQAIgfX1j68KDiMYlOBQPCEvHJ7H27PwED5fO0VCtKDffAwc=\"}";
+		String signature = "MEUCIQDcJZlzd4mnhZtLFXkzN8xVrS4mTSMkdcUv+mM9tlkqQAIgfX1j68KDiMYlOBQPCEvHJ7H27PwED5fO0VCtKDffAwc=";
+		byte[] publicKeyBytes = parseBase64Binary(signature);
+		ByteConverter64 converter = new ByteConverter64();
+		byte[] decode = converter.decode(signature);
+		Assert.assertEquals(publicKeyBytes.length, decode.length);
+		for(int i=0;i<publicKeyBytes.length;i++) {
+			Assert.assertEquals(publicKeyBytes[i], decode[i]);
+		}
+	}
+	
 	@Test
 	public void testRSA() throws InvalidKeySpecException, NoSuchAlgorithmException, IOException {
 		RSAKey key = RSAKey.generateKey(11, 13, 143);
