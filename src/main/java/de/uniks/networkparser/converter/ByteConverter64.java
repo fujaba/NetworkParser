@@ -1,12 +1,12 @@
 package de.uniks.networkparser.converter;
 
 import de.uniks.networkparser.buffer.BufferedBuffer;
-import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 
 public class ByteConverter64 extends ByteConverter {
 //	private static final int BYTEPERATOM = 3;
-	private static final char[] pem_array = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/' };
+	private static final char[] pem_array = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/','=' };
+	private static final byte PADDING = 127;
 	// ENCODE
 	@Override
 	public String toString(BufferedBuffer values) {
@@ -33,7 +33,8 @@ public class ByteConverter64 extends ByteConverter {
 		}
 		for (int i = 0; i < pem_array.length; i++) {
 				pem_convert_array[pem_array[i]] = ((byte)i);
-		}		
+		}
+		pem_convert_array['='] = PADDING;
 	}
 	
 	@Override
@@ -45,30 +46,42 @@ public class ByteConverter64 extends ByteConverter {
 			initPEMArray();
 		}
 		byte[] bytes = value.getBytes();
-		int pos=0;
-		byte[] result;
-		if(value.charAt(value.length() - 1) == '=') {
-			result = new byte[bytes.length*3/4 - 1];
-			for(int i=0;i<bytes.length-3;i+=4) {
-				int n = pem_convert_array[(bytes[i+3] & 0xFF)];
-				int m = pem_convert_array[(bytes[i+2] & 0xFF)];
-				int k = pem_convert_array[(bytes[i+1] & 0xFF)];
-				int j = pem_convert_array[(bytes[i+0] & 0xFF)];
-				result[pos++] = (byte)(j << 2 & 0xFC | k >>> 4 & 0x3);
-				result[pos++] = (byte)(k << 4 & 0xF0 | m >>> 2 & 0xF);
-				if(pos<result.length) {
-					result[pos++] = (byte)(m << 6 & 0xC0 | n & 0x3F);
-				}
+		int i;
+		byte[] result = null;
+		for(i=bytes.length - 1;i>=bytes.length - 3;i--) {
+			byte c = pem_convert_array[value.charAt(i)];
+			if(c == PADDING) {
+				continue;
 			}
-		} else {
+			if(c == -1) {
+				result = new byte[bytes.length*3/4];
+			}
+			break;
+        }
+		i++;
+		if(result == null && (value.length() - i) >2) {
 			result = new byte[bytes.length*3/4];
-			for(int i=0;i<bytes.length-3;i+=4) {
-				int n = pem_convert_array[(bytes[i+3] & 0xFF)];
-				int m = pem_convert_array[(bytes[i+2] & 0xFF)];
-				int k = pem_convert_array[(bytes[i+1] & 0xFF)];
-				int j = pem_convert_array[(bytes[i+0] & 0xFF)];
-				result[pos++] = (byte)(j << 2 & 0xFC | k >>> 4 & 0x3);
-				result[pos++] = (byte)(k << 4 & 0xF0 | m >>> 2 & 0xF);
+		} else {
+			result = new byte[bytes.length*3/4 - bytes.length + i];
+		}
+		int pos=0;
+		for(i=0;i<bytes.length-7;i+=4) {
+			int n = pem_convert_array[(bytes[i+3] & 0xFF)];
+			int m = pem_convert_array[(bytes[i+2] & 0xFF)];
+			int k = pem_convert_array[(bytes[i+1] & 0xFF)];
+			int j = pem_convert_array[(bytes[i+0] & 0xFF)];
+			result[pos++] = (byte)(j << 2 & 0xFC | k >>> 4 & 0x3);
+			result[pos++] = (byte)(k << 4 & 0xF0 | m >>> 2 & 0xF);
+			result[pos++] = (byte)(m << 6 & 0xC0 | n & 0x3F);
+		}
+		int n = pem_convert_array[(bytes[i+3] & 0xFF)];
+		int m = pem_convert_array[(bytes[i+2] & 0xFF)];
+		int k = pem_convert_array[(bytes[i+1] & 0xFF)];
+		int j = pem_convert_array[(bytes[i+0] & 0xFF)];
+		result[pos++] = (byte)(j << 2 & 0xFC | k >>> 4 & 0x3);
+		if(pos<result.length) {
+			result[pos++] = (byte)(k << 4 & 0xF0 | m >>> 2 & 0xF);
+			if(pos<result.length) {
 				result[pos++] = (byte)(m << 6 & 0xC0 | n & 0x3F);
 			}
 		}

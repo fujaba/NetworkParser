@@ -34,7 +34,6 @@ import de.uniks.networkparser.converter.ByteConverterHex;
 public class CheckSumTest {
 	@Test
 	public void testBase64() {
-		String test = "{\"newValue\":\"crematoria.O17735\",\"valueType\":\"de.uniks.se1.ist.model.Order\",\"objectId\":\"crematoria.G1\",\"objectType\":\"de.uniks.se1.ist.model.Game\",\"property\":\"order\",\"sessionId\":\"server\",\"propertyKind\":\"toMany\",\"changeNo\":\"1469081710178\",\"oldValue\":null,\"timestamp\":\"1469081710178\",\"signature\":\"MEUCIQDcJZlzd4mnhZtLFXkzN8xVrS4mTSMkdcUv+mM9tlkqQAIgfX1j68KDiMYlOBQPCEvHJ7H27PwED5fO0VCtKDffAwc=\"}";
 		String signature = "MEUCIQDcJZlzd4mnhZtLFXkzN8xVrS4mTSMkdcUv+mM9tlkqQAIgfX1j68KDiMYlOBQPCEvHJ7H27PwED5fO0VCtKDffAwc=";
 		byte[] publicKeyBytes = parseBase64Binary(signature);
 		ByteConverter64 converter = new ByteConverter64();

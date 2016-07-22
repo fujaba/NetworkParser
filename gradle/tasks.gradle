@@ -19,17 +19,11 @@ ext.sharedManifest = manifest {
 			'Hash': gitVersion.hash,
 			'Java-Version': "${System.properties['java.version']}",
 			'Bundle-Description': 'NetworkParser',
+			'Licence': 'MIT and Apache License',
+			'Homepage': 'https://github.com/fujaba/Networkparser',
 			'Coverage': gitVersion.coverage,
 			'Bundle-ClassPath': '.'
 }
-
-jar {
-	group "Jar"
-	exclude '**/ext/**'
-	exclude '**/test/**'
-	from sourceSets.main.output
-	manifest = project.manifest {from sharedManifest}
-	}
 
 task compileJava16(type: JavaCompile) {
 	source = fileTree(dir: 'src', exclude: ['**/ext/**', '**/test/**'])
@@ -46,60 +40,41 @@ task compileJava17(type: JavaCompile) {
 	classpath = files('build/classes/main17')
 }
 
-task buildCoreJar(type: Jar) {
-	description 'Build Jar with NetworkParser-Core without dependency of JavaFX and Reflection'
-	group "Jar"
-	from sourceSets.main.output
-	exclude '**/test/**'
-	manifest = project.manifest {from sharedManifest}
-}
-
-task buildCoreJar16(type: Jar) {
-	from fileTree(dir: 'build/classes/main16'); classifier = 'core16'
-	manifest = project.manifest {from sharedManifest}
-}
-
-task buildCoreJar17(type: Jar) {
-	from fileTree(dir: 'build/classes/main17'); classifier = 'core17'
-	manifest = project.manifest {from sharedManifest}
-}
-
-task buildInterfaces(type: Jar) {
-	from sourceSets.main.output; classifier = 'interface'
-	include '**/networkparser/interfaces/**'
-	manifest = project.manifest {from sharedManifest}
-}
-
-task buildSourceJar(type: Jar) {
-	description 'Build Jar with class-Files and Source-Files'
-	group "Jar"
-	from (sourceSets.main.allJava + sourceSets.main.output); classifier = 'sources'
-	exclude '**/test/**'
-	manifest = project.manifest {from sharedManifest}
-}
-
-task buildJavadoc(type: Jar) {
-	description 'Build JavaDoc Jar'
-	group "Jar"
-	from javadoc.outputs.files; classifier = 'javadoc'
-	exclude '**/test/**'
-	manifest = project.manifest {from sharedManifest}
-}
-
-task buildFullJar(type: Jar) {
-	description 'Build FullJar with Class-Files, Source-Files and JavaDoc'
-	group "Jar"
-	from {(sourceSets.main.output + sourceSets.main.allJava + javadoc.outputs.files )}; classifier = 'full'
-	exclude '**/test/**'
-	manifest = project.manifest {from sharedManifest}
-}
-
-task buildAll(type: Jar) {
-	description 'Build All Jars'
+jar {
 	group "Jar"
 	exclude '**/ext/**'
 	exclude '**/test/**'
 	from sourceSets.main.output
+	manifest = project.manifest {from sharedManifest}
+	}
+
+task buildCoreJar16(type: Jar, dependsOn: jar) {
+	group "Jar"; from fileTree(dir: 'build/classes/main16'); classifier = 'core16'
+	manifest = project.manifest {from sharedManifest}
+}
+
+task buildCoreJar17(type: Jar, dependsOn: buildCoreJar16) {
+	group "Jar"; from fileTree(dir: 'build/classes/main17'); classifier = 'core17'
+	manifest = project.manifest {from sharedManifest}
+}
+task buildCoreJar18(type: Jar, dependsOn: buildCoreJar17) {
+	description 'Build Jar with NetworkParser-Core without dependency of JavaFX and Reflection'
+	group "Jar";from sourceSets.main.output; classifier = 'core18';
+	exclude '**/ext/**'
+	exclude '**/test/**'
+	manifest = project.manifest {from sharedManifest}
+}
+task buildInterfaces(type: Jar) {
+	description 'Build a small jar with only the Interfaces'
+	group "Jar"; from sourceSets.main.output; classifier = 'interface'
+	include '**/networkparser/interfaces/**'
+	manifest = project.manifest {from sharedManifest}
+}
+task buildSourceJar(type: Jar, dependsOn: buildCoreJar18) {
+	description 'Build Jar with class-Files, Source-Files and JavaDoc'
+	group "Jar";
+	group "Jar"; from {(sourceSets.main.output + sourceSets.main.allJava + javadoc.outputs.files )}; classifier = 'soruce'
+	exclude '**/test/**'
 	manifest = project.manifest {from sharedManifest}
 }
 task cleanupws(type: Delete) {
@@ -132,4 +107,3 @@ task FinishTest() {
 	}
 }
 
-buildAll.dependsOn buildCoreJar, buildCoreJar16, buildCoreJar17, buildSourceJar, buildJavadoc, buildFullJar

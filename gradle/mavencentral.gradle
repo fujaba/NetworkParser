@@ -48,21 +48,21 @@ if(project.hasProperty("signing.keyId")) {
 
 				pom{
 					project {
-					   name 'Networkparser'
-					   packaging 'jar'
-					   description 'Networkparser is a Framework for serialization to Json, XML and Byte.'
-					   url 'https://github.com/fujaba/Networkparser'
+						name 'Networkparser'
+						packaging 'jar'
+						description 'Networkparser is a Framework for serialization to Json, XML and Byte.'
+						url 'https://github.com/fujaba/Networkparser'
 
 						scm {
-						   url 'scm:git@github.com:fujaba/Networkparser.git'
-						   connection 'scm:git@github.com:fujaba/Networkparser.git'
-						   developerConnection 'scm:git@github.com:fujaba/Networkparser.git'
+							url 'scm:git@github.com:fujaba/Networkparser.git'
+							connection 'scm:git@github.com:fujaba/Networkparser.git'
+							developerConnection 'scm:git@github.com:fujaba/Networkparser.git'
 						}
 
 						licenses {
-						   license {
-								name 'Licensed under the EUPL'
-								url 'http://opensource.org/licenses/EUPL-1.1'
+							license {
+								name 'Licensed under the MIT'
+								url 'https://opensource.org/licenses/MIT'
 							}
 					   }
 						developers {

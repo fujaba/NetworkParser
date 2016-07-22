@@ -16,12 +16,10 @@ if(project.hasProperty("artifactory_user")) {
 	publishing {
 		publications {
 			artifactoryJava(MavenPublication) {
-				artifact buildCoreJar
 				artifact buildCoreJar16
 				artifact buildCoreJar17
+				artifact buildCoreJar18
 				artifact buildSourceJar
-				artifact buildJavadoc
-				artifact buildFullJar
 			}
 		}
 	}
