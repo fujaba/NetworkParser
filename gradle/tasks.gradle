@@ -73,7 +73,7 @@ task buildInterfaces(type: Jar) {
 task buildSourceJar(type: Jar, dependsOn: buildCoreJar18) {
 	description 'Build Jar with class-Files, Source-Files and JavaDoc'
 	group "Jar";
-	group "Jar"; from {(sourceSets.main.output + sourceSets.main.allJava + javadoc.outputs.files )}; classifier = 'soruce'
+	group "Jar"; from {(sourceSets.main.output + sourceSets.main.allJava + javadoc.outputs.files )}; classifier = 'source'
 	exclude '**/test/**'
 	manifest = project.manifest {from sharedManifest}
 }
