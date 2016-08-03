@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.bytes.ByteTokener;
-import de.uniks.networkparser.gui.Pos;
+import de.uniks.networkparser.Pos;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.Entity;

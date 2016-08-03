@@ -1,8 +1,5 @@
 package de.uniks.networkparser.parser.excel;
 
-import de.uniks.networkparser.gui.Pos;
-import de.uniks.networkparser.list.SimpleList;
-
 /*
 NetworkParser
 Copyright (c) 2011 - 2016, Stefan Lindel
@@ -20,6 +17,8 @@ Unless required by applicable law or agreed to in writing, software distributed 
 distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the Licence for the specific language governing permissions and limitations under the Licence.
 */
+import de.uniks.networkparser.Pos;
+import de.uniks.networkparser.list.SimpleList;
 
 /**
  * Metamodell for Excel-Sheet

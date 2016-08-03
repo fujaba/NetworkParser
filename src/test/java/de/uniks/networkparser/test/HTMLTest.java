@@ -3,8 +3,8 @@ package de.uniks.networkparser.test;
 import org.junit.Assert;
 import org.junit.Test;
 import de.uniks.networkparser.EntityUtil;
-import de.uniks.networkparser.gui.GUILine;
-import de.uniks.networkparser.gui.Style;
+import de.uniks.networkparser.GUILine;
+import de.uniks.networkparser.Style;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.xml.HTMLEntity;
 

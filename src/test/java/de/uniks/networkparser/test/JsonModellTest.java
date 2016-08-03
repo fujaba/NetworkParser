@@ -7,16 +7,16 @@ import java.math.BigInteger;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.uniks.networkparser.Deep;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.bytes.ByteMessage;
 import de.uniks.networkparser.bytes.ByteMessageCreator;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.JsonObject;
-import de.uniks.networkparser.logic.Deep;
 import de.uniks.networkparser.logic.InstanceOf;
-import de.uniks.networkparser.logic.SimpleEvent;
 import de.uniks.networkparser.test.model.Apple;
 import de.uniks.networkparser.test.model.AppleTree;
 import de.uniks.networkparser.test.model.GroupAccount;

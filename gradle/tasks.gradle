@@ -60,8 +60,13 @@ task buildCoreJar17(type: Jar, dependsOn: buildCoreJar16) {
 task buildCoreJar18(type: Jar, dependsOn: buildCoreJar17) {
 	description 'Build Jar with NetworkParser-Core without dependency of JavaFX and Reflection'
 	group "Jar";from sourceSets.main.output; classifier = 'core18';
-	exclude '**/ext/**'
-	exclude '**/test/**'
+	excludes = ['**/ext/**', '**/test/**']
+	manifest = project.manifest {from sharedManifest}
+}
+task buildMinCoreJar(type: Jar) {
+	description 'Build Minimum-Jar with NetworkParser-Core without dependency of JavaFX and Reflection'
+	group "Jar";from sourceSets.main.output; classifier = 'min';
+	excludes = ['**/ext/**', '**/calculator/**', '**/parser/**', '**/logic/**', '**/**.css', '**/**.js', '**/gui/**','**/test/**']
 	manifest = project.manifest {from sharedManifest}
 }
 task buildInterfaces(type: Jar) {

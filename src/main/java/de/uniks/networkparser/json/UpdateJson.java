@@ -31,12 +31,12 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.list.SimpleIteratorSet;
 import de.uniks.networkparser.list.SimpleKeyValueList;
-import de.uniks.networkparser.logic.SimpleEvent;
-import de.uniks.networkparser.logic.UpdateCondition;
+import de.uniks.networkparser.UpdateCondition;
 /**
  * The listener interface for receiving update events. The class that is
  * interested in processing a update event implements this interface, and the

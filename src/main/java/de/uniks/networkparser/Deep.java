@@ -1,4 +1,4 @@
-package de.uniks.networkparser.logic;
+package de.uniks.networkparser;
 
 /*
 NetworkParser

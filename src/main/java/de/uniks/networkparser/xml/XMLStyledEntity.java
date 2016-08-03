@@ -26,7 +26,7 @@ THE SOFTWARE.
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.EntityStringConverter;
-import de.uniks.networkparser.gui.Style;
+import de.uniks.networkparser.Style;
 /**
  * Style Element of XML.
  *

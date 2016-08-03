@@ -56,7 +56,7 @@ buildscript {
 }
 
 artifacts { 
-	archives buildCoreJar16, buildCoreJar17, buildCoreJar18, buildSourceJar
+	archives buildCoreJar16, buildCoreJar17, buildCoreJar18, buildSourceJar, buildMinCoreJar
 }
 
 test {

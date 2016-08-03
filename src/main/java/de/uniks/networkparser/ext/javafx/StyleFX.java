@@ -25,8 +25,8 @@ THE SOFTWARE.
 */
 import java.util.Iterator;
 import java.util.Map.Entry;
-import de.uniks.networkparser.gui.GUILine;
-import de.uniks.networkparser.gui.Style;
+import de.uniks.networkparser.GUILine;
+import de.uniks.networkparser.Style;
 import de.uniks.networkparser.interfaces.GUIPosition;
 
 public class StyleFX extends Style{

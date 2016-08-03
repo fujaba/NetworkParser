@@ -1,8 +1,7 @@
-package de.uniks.networkparser.logic;
+package de.uniks.networkparser;
 
 import java.beans.PropertyChangeEvent;
 
-import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 

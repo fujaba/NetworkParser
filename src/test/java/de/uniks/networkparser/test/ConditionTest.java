@@ -6,7 +6,9 @@ import java.util.Date;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.uniks.networkparser.Deep;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.JsonObject;
@@ -15,15 +17,13 @@ import de.uniks.networkparser.logic.And;
 import de.uniks.networkparser.logic.Between;
 import de.uniks.networkparser.logic.BooleanCondition;
 import de.uniks.networkparser.logic.CompareTo;
-import de.uniks.networkparser.logic.Deep;
 import de.uniks.networkparser.logic.Equals;
 import de.uniks.networkparser.logic.IdFilterElements;
 import de.uniks.networkparser.logic.IfCondition;
 import de.uniks.networkparser.logic.InstanceOf;
 import de.uniks.networkparser.logic.Not;
 import de.uniks.networkparser.logic.Or;
-import de.uniks.networkparser.logic.SimpleEvent;
-import de.uniks.networkparser.logic.UpdateCondition;
+import de.uniks.networkparser.UpdateCondition;
 import de.uniks.networkparser.test.model.Person;
 import de.uniks.networkparser.test.model.University;
 

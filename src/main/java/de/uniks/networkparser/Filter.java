@@ -26,7 +26,6 @@ THE SOFTWARE.
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.interfaces.UpdateListener;
-import de.uniks.networkparser.logic.SimpleEvent;
 
 public class Filter {
 	/** The Constant MERGE. */

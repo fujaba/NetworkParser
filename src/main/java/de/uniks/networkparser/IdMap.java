@@ -63,7 +63,6 @@ import de.uniks.networkparser.list.ObjectMapEntry;
 import de.uniks.networkparser.list.SimpleIterator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
-import de.uniks.networkparser.logic.Deep;
 import de.uniks.networkparser.xml.EMFTokener;
 import de.uniks.networkparser.xml.MapEntityStack;
 import de.uniks.networkparser.xml.XMLEntity;
@@ -153,10 +152,6 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		this.with(new ObjectMapEntry());
 		this.with(new XMLEntityCreator());
 	}
-
-//	public UpdateListener getCondition() {
-//		return condition;
-//	}
 
 	public UpdateListener getListener() {
 		return updateListener;
@@ -884,8 +879,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		}
 		JsonArray items = new JsonArray();
 		for (String childId : ids) {
-			JsonObject jsonObject = toJsonObject(getObject(childId),
-					new Filter().withConvertable(new Deep().withDeep(0)));
+			JsonObject jsonObject = toJsonObject(getObject(childId), Filter.convertable(Deep.value(0)));
 			if (jsonObject != null) {
 				items.add(jsonObject);
 			}
@@ -1000,7 +994,6 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	public GraphList toObjectDiagram(Object object) {
 		MapEntity map = new MapEntity(filter, grammar);
 		map.withFlag(flag);
-//		map.withTokenerFlag(GraphTokener.FLAG_CLASS);
 		return new GraphTokener().withMap(this).encode(object, map);
 	}
 
