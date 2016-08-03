@@ -262,7 +262,7 @@ public class Student implements SendableEntity{
 	private String studNo;
 
 	public void setStudNo(String value) {
-		if (value != null && value.equalsIgnoreCase(this.studNo)) {
+		if (value != null && value.equalsIgnoreCase(this.studNo) == false) {
 			String oldValue = this.studNo;
 			this.studNo = value;
 			getPropertyChangeSupport().firePropertyChange(PROPERTY_STUD_NO,

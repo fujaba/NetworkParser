@@ -22,16 +22,32 @@ import de.uniks.networkparser.test.model.AppleTree;
 import de.uniks.networkparser.test.model.GroupAccount;
 import de.uniks.networkparser.test.model.Person;
 import de.uniks.networkparser.test.model.SortedMsg;
+import de.uniks.networkparser.test.model.Student;
+import de.uniks.networkparser.test.model.University;
 import de.uniks.networkparser.test.model.util.AppleCreator;
 import de.uniks.networkparser.test.model.util.AppleTreeCreator;
 import de.uniks.networkparser.test.model.util.GroupAccountCreator;
 import de.uniks.networkparser.test.model.util.PersonCreator;
 import de.uniks.networkparser.test.model.util.SortedMsgCreator;
+import de.uniks.networkparser.test.model.util.StudentCreator;
+import de.uniks.networkparser.test.model.util.UniversityCreator;
 
 public class JsonModellTest implements UpdateListener {
 	private IdMap secondMap;
 	BaseItem data;
 
+	@Test
+	public void testuniWithStudents(){
+		University uni = new University();
+		uni.withStudents(new Student().withFirstName("Albert").withStudNo("geheim"));
+		uni.withStudents(new Student().withFirstName("Stefan"));
+		
+		IdMap map=new IdMap();
+		map.withCreator(new UniversityCreator(), new StudentCreator());
+		String json = map.toJsonArray(uni, Filter.regard(InstanceOf.value(Student.PROPERTY_STUD_NO))).toString();
+		Assert.assertFalse(json.indexOf("geheim") >= 0);
+	}
+	
 	@Test
 	public void testSet(){
 		GroupAccount account= new GroupAccount();

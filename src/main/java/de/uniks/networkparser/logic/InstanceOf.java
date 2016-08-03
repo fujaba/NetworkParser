@@ -115,6 +115,15 @@ public class InstanceOf implements UpdateListener, SendableEntityCreator {
 		}
 		return result;
 	}
+	/**
+	 * Static Method for instance a new Instance of InstanceOf Object.
+	 *
+	 * @param property	The Property
+	 * @return 			The new Instance
+	 */
+	public static InstanceOf value(String property) {
+		return new InstanceOf().withProperty(property);
+	}
 
 	/** @return The ClazzName */
 	public Class<?> getClazzName() {
@@ -174,6 +183,8 @@ public class InstanceOf implements UpdateListener, SendableEntityCreator {
 			}else if(this.property.equalsIgnoreCase(event.getPropertyName())) {
 				return false;
 			}
+		} else if (this.property != null) {
+			return this.property.equalsIgnoreCase(event.getPropertyName()) == false;
 		}
 		// Filter for one item
 		return (this.item == null || this.item != event.getNewValue());
