@@ -879,7 +879,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		}
 		JsonArray items = new JsonArray();
 		for (String childId : ids) {
-			JsonObject jsonObject = toJsonObject(getObject(childId), Filter.convertable(Deep.value(0)));
+			JsonObject jsonObject = toJsonObject(getObject(childId), Filter.convertable(Deep.create(0)));
 			if (jsonObject != null) {
 				items.add(jsonObject);
 			}
@@ -1269,6 +1269,9 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 						child = tokener.createLink((Entity)parent, property, childClassName, tokener.getKey(child));
 						childClassName = null;
 					} else if(isArray) {
+						if(map.isPropertyRegard(value, tokener.getMap(), property, child) == false) {
+							continue;
+						}
 						if(map.isConvertable(value, tokener.getMap(), property, child)) {
 							encode(child, childClassName, map, tokener, parent);
 						}

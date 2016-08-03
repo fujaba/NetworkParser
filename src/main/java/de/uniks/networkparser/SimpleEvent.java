@@ -20,34 +20,64 @@ public final class SimpleEvent extends PropertyChangeEvent {
 	private String type;
 	private Object beforeElement;
 
-	public SimpleEvent(String type, BaseItem source, String property) {
-		super(source, property, null, null);
+	/**
+	 * Constructor for example Filter Regard or Convertable
+	 * @param type		typ of Event
+	 * @param source	List Container
+	 * @param property	Property of Event
+	 * @param oldValue	Old Element
+	 * @param newValue	new Element
+	 */
+	public SimpleEvent(String type, BaseItem source, String property, Object oldValue, Object newValue, int deep, Object modelItem) {
+		super(source, property, oldValue, newValue);
+		this.deep = deep;
+		this.type = type;
+		this.value = modelItem;
+	}
+	
+	/**
+	 * Constructor for example Filter and UpdateJson
+	 * @param type		typ of Event
+	 * @param entity	source Entity
+	 * @param source	List Container
+	 * @param property	Property of Event
+	 * @param oldValue	Old Element
+	 * @param newValue	new Element
+	 */
+	public SimpleEvent(String type, Entity entity, BaseItem source, String property, Object oldValue, Object newValue) {
+		super(source, property, oldValue, newValue);
+		this.entity = entity;
 		this.type = type;
 	}
+	/**
+	 * Constructor for example UpdateJson
+	 * @param type		typ of Event
+	 * @param entity	source Entity
+	 * @param source	source PropertyChange
+	 * @param map		IdMap 
+	 */
+	public SimpleEvent(String type, Entity entity, PropertyChangeEvent source, IdMap map) {
+		super(map, source.getPropertyName(), source.getOldValue(), source.getNewValue());
+		this.value = source.getSource();
+		this.type = type;
+		this.entity = entity;
+	}
 
+	/**
+	 * Constructor for example Event of List
+	 * @param type		typ of Event
+	 * @param source	List Container
+	 * @param property	Property of Event
+	 * @param oldValue	Old Element
+	 * @param newValue	new Element
+	 * @param beforeElement	beforeElement
+	 * @param newValue	Value of KeyValue List
+	 */
 	public SimpleEvent(String type, BaseItem source, String property, Object oldValue, Object newValue, Object beforeElement, Object value) {
 		super(source, property, oldValue, newValue);
 		this.type = type;
 		this.value = value;
 		this.beforeElement = beforeElement;
-	}
-
-	public SimpleEvent(String type, BaseItem source, String property, Object oldValue, Object newValue) {
-		super(source, property, oldValue, newValue);
-		this.type = type;
-	}
-
-	public SimpleEvent(String type, BaseItem source, Entity entity, Object newValue) {
-		super(source, null, null, newValue);
-		this.entity = entity;
-		this.type = type;
-	}
-
-	public SimpleEvent(PropertyChangeEvent source, String type, IdMap map, Entity entity) {
-		super(map, source.getPropertyName(), source.getOldValue(), source.getNewValue());
-		this.value = source.getSource();
-		this.type = type;
-		this.entity = entity;
 	}
 
 	@Override
@@ -59,18 +89,8 @@ public final class SimpleEvent extends PropertyChangeEvent {
 		return deep;
 	}
 
-	public SimpleEvent with(int deep) {
-		this.deep = deep;
-		return this;
-	}
-
 	public Entity getEntity() {
 		return entity;
-	}
-
-	public SimpleEvent with(Entity entity) {
-		this.entity = entity;
-		return this;
 	}
 
 	public Object getModelItem() {
@@ -84,11 +104,6 @@ public final class SimpleEvent extends PropertyChangeEvent {
 
 	public String getType() {
 		return type;
-	}
-
-	public SimpleEvent with(String type) {
-		this.type = type;
-		return this;
 	}
 
 	public boolean isNewEvent() {

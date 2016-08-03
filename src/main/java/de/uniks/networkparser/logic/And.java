@@ -31,7 +31,20 @@ public class And implements UpdateListener, SendableEntityCreator {
 	public static final String CHILD = "childs";
 	private ArrayList<UpdateListener> list = new ArrayList<UpdateListener>();
 
-	public And add(UpdateListener... conditions) {
+	/**
+	 * Static Method for instance a new Instance of And Object.
+	 *
+	 * @param conditions	All Conditions.
+	 * @return 			The new Instance
+	 */
+	public static And create(UpdateListener... conditions) {
+		return new And().with(conditions);
+	}
+	
+	public And with(UpdateListener... conditions) {
+		if(conditions == null) {
+			return this;
+		}
 		for (UpdateListener condition : conditions) {
 			this.list.add(condition);
 		}
@@ -74,7 +87,7 @@ public class And implements UpdateListener, SendableEntityCreator {
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
 		if (CHILD.equalsIgnoreCase(attribute)) {
-			((And) entity).add((UpdateListener) value);
+			((And) entity).with((UpdateListener) value);
 			return true;
 		}
 		return false;

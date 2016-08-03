@@ -39,7 +39,7 @@ public class JsonPeer2PeerTest implements UpdateListener{
 
 		firstMap.garbageCollection(firstRoot);
 
-		update(new SimpleEvent(IdMap.NEW, firstMap, null).with(firstMap.toJsonObject(firstRoot)));
+		update(new SimpleEvent(IdMap.NEW, firstMap.toJsonObject(firstRoot), firstMap, null, null, null));
 
 		SortedMsg third= new SortedMsg();
 		third.setNumber(4);

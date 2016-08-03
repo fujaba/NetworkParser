@@ -357,7 +357,7 @@ public class JsonTest extends IOClasses {
 
 		IdMap map = UniversityCreator.createIdMap("s1");
 
-		JsonArray jsonArray = map.toJsonArray(kassel, new Filter().withConvertable(Deep.value(1)));
+		JsonArray jsonArray = map.toJsonArray(kassel, new Filter().withConvertable(Deep.create(1)));
 		String jsonString = jsonArray.toString(2);
 		assertEquals(2463, jsonString.length());
 
@@ -457,7 +457,7 @@ public class JsonTest extends IOClasses {
 		FullMessage msg = new FullMessage(42, "Hallo Welt");
 		msg.setLocation(new Location(42, 23));
 		map.with(new RestCounter("http://myname.org/rest/"));
-		JsonObject json = map.toJsonObject(msg, new Filter().withConvertable(Deep.value(0)));
+		JsonObject json = map.toJsonObject(msg, new Filter().withConvertable(Deep.create(0)));
 		Assert.assertEquals(
 				"{\"class\":\"de.uniks.networkparser.test.model.FullMessage\",\"id\":\"http://myname.org/rest/de.uniks.networkparser.test.model.fullmessage/1\",\"prop\":{\"txt\":\"Hallo Welt\",\"number\":42,\"location\":{\"class\":\"de.uniks.networkparser.test.model.Location\",\"id\":\"http://myname.org/rest/de.uniks.networkparser.test.model.location/2\"}}}",
 				json.toString());
@@ -503,7 +503,7 @@ public class JsonTest extends IOClasses {
 		assertEquals(ref, map.toJsonObject(parent).toString());
 
 		ref = "{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"number\":1,\"child\":{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"number\":2,\"parent\":{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"J1.S1\"}}}";
-		Filter filter = new Filter().withIdFilter(BooleanCondition.value(false));
+		Filter filter = new Filter().withIdFilter(BooleanCondition.create(false));
 		assertEquals(ref, map.toJsonObject(parent, filter).toString());
 	}
 

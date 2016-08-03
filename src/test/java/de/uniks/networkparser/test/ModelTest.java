@@ -102,7 +102,7 @@ public class ModelTest implements UpdateListener {
 		IdMap map=new IdMap();
 		map.with(new SortedMsgCreator());
 
-		SortedMsg root2 = (SortedMsg) map.cloneObject(root, new Filter().withPropertyRegard(Deep.value(1)));
+		SortedMsg root2 = (SortedMsg) map.cloneObject(root, new Filter().withPropertyRegard(Deep.create(1)));
 		Assert.assertNotSame(root, root2);
 		Assert.assertEquals(root2.getMsg(), "root");
 		Assert.assertNotNull(root2.getChild());

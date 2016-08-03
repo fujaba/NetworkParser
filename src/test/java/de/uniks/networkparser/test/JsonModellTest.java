@@ -17,10 +17,13 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.logic.InstanceOf;
+import de.uniks.networkparser.logic.Not;
+import de.uniks.networkparser.logic.Or;
 import de.uniks.networkparser.test.model.Apple;
 import de.uniks.networkparser.test.model.AppleTree;
 import de.uniks.networkparser.test.model.GroupAccount;
 import de.uniks.networkparser.test.model.Person;
+import de.uniks.networkparser.test.model.Room;
 import de.uniks.networkparser.test.model.SortedMsg;
 import de.uniks.networkparser.test.model.Student;
 import de.uniks.networkparser.test.model.University;
@@ -28,6 +31,7 @@ import de.uniks.networkparser.test.model.util.AppleCreator;
 import de.uniks.networkparser.test.model.util.AppleTreeCreator;
 import de.uniks.networkparser.test.model.util.GroupAccountCreator;
 import de.uniks.networkparser.test.model.util.PersonCreator;
+import de.uniks.networkparser.test.model.util.RoomCreator;
 import de.uniks.networkparser.test.model.util.SortedMsgCreator;
 import de.uniks.networkparser.test.model.util.StudentCreator;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
@@ -44,8 +48,27 @@ public class JsonModellTest implements UpdateListener {
 		
 		IdMap map=new IdMap();
 		map.withCreator(new UniversityCreator(), new StudentCreator());
-		String json = map.toJsonArray(uni, Filter.regard(InstanceOf.value(Student.PROPERTY_STUD_NO))).toString();
+		String json = map.toJsonArray(uni, Filter.regard(InstanceOf.create(Student.PROPERTY_STUD_NO))).toString();
 		Assert.assertFalse(json.indexOf("geheim") >= 0);
+	}
+	
+	@Test
+	public void testuniWithStudentsAndRoom(){
+		University uni = new University();
+		uni.withRooms(new Room().withName("R1339"));
+		Student albert = new Student().withFirstName("Albert").withStudNo("geheim");
+		uni.withStudents(albert);
+		uni.withStudents(new Student().withFirstName("Stefan"));
+		
+		IdMap map=new IdMap();
+
+		InstanceOf classFilter = InstanceOf.create(Student.class);
+		map.withCreator(new UniversityCreator(), new StudentCreator(), new RoomCreator());
+		Or filter= Or.create(InstanceOf.create(Student.PROPERTY_STUD_NO), classFilter.withWhiteList(true));
+		String json = map.toJsonArray(uni, Filter.regard(filter)).toString(2);
+		Assert.assertFalse(json.indexOf("geheim") >= 0);
+		System.out.println(json);
+		Assert.assertFalse(json.indexOf("de.uniks.networkparser.test.model.Room") >=0);
 	}
 	
 	@Test
@@ -57,7 +80,7 @@ public class JsonModellTest implements UpdateListener {
 		IdMap map= new IdMap();
 		map.with(new PersonCreator());
 		map.with(new GroupAccountCreator());
-		Assert.assertEquals(175, map.toJsonArray(account.getPersons(), Filter.regard(InstanceOf.value(Person.class, Person.PROPERTY_PARENT))).toString(2).length());
+		Assert.assertEquals(175, map.toJsonArray(account.getPersons(), Filter.regard(InstanceOf.create(Person.class, Person.PROPERTY_PARENT))).toString(2).length());
 	}
 
 	@Test
@@ -100,11 +123,11 @@ public class JsonModellTest implements UpdateListener {
 		third.setNumber(4);
 		second.setChild(third);
 		// DEEP 0
-		Assert.assertEquals(165, map.toJsonObject(first, Filter.regard(Deep.value(1))).toString().length());
+		Assert.assertEquals(165, map.toJsonObject(first, Filter.regard(Deep.create(1))).toString().length());
 		// DEEP 1
-		Assert.assertEquals(340, map.toJsonObject(first, Filter.regard(Deep.value(2))).toString().length());
+		Assert.assertEquals(340, map.toJsonObject(first, Filter.regard(Deep.create(2))).toString().length());
 		// DEEP 2
-		Assert.assertEquals(438, map.toJsonObject(first, Filter.regard(Deep.value(3))).toString().length());
+		Assert.assertEquals(438, map.toJsonObject(first, Filter.regard(Deep.create(3))).toString().length());
 		third.updateNumber(2);
 		third.setNumber(5);
 

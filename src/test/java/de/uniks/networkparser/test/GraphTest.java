@@ -119,7 +119,7 @@ public class GraphTest {
 		map.withCreator(new UniversityCreator(), new StudentCreator(), new RoomCreator());
 		SimpleList<Object> list = new SimpleList<Object>();
 		list.with(uni, student);
-		JsonArray jsonArray = map.toJsonArray(list, new Filter().withFull(true).withPropertyRegard(BooleanCondition.value(true)));
+		JsonArray jsonArray = map.toJsonArray(list, new Filter().withFull(true).withPropertyRegard(BooleanCondition.create(true)));
 		Assert.assertEquals(3, jsonArray.size());
 	}
 
@@ -135,10 +135,10 @@ public class GraphTest {
 		map.withCreator(new UniversityCreator(), new StudentCreator(), new RoomCreator());
 		SimpleList<Object> list = new SimpleList<Object>();
 		list.with(uni, student, room);
-		JsonArray jsonArray = map.toJsonArray(list, new Filter().withFull(true).withPropertyRegard(BooleanCondition.value(true)));
+		JsonArray jsonArray = map.toJsonArray(list, new Filter().withFull(true).withPropertyRegard(BooleanCondition.create(true)));
 		Assert.assertEquals(3, jsonArray.size());
 
-		jsonArray = map.toJsonArray(list, new Filter().withFull(true).withPropertyRegard(BooleanCondition.value(true)));
+		jsonArray = map.toJsonArray(list, new Filter().withFull(true).withPropertyRegard(BooleanCondition.create(true)));
 		Assert.assertEquals(3, jsonArray.size());
 	}
 

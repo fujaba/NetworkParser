@@ -34,7 +34,7 @@ public class IdFilterElements extends SimpleSet<Object> implements UpdateListene
 		this.condition = condition;
 	}
 	public IdFilterElements(Class<?> clazzConditon) {
-		this.condition = InstanceOf.value(clazzConditon);
+		this.condition = InstanceOf.create(clazzConditon);
 	}
 
 	@Override

@@ -44,13 +44,19 @@ public class BooleanCondition implements UpdateListener, SendableEntityCreator {
 		return value;
 	}
 
-	public static BooleanCondition value(boolean value) {
+	/**
+	 * Static Method for instance a new Instance of BooleanCondition Object.
+	 *
+	 * @param value		Value
+	 * @return 			The new Instance
+	 */
+	public static BooleanCondition create(boolean value) {
 		return new BooleanCondition().withValue(value);
 	}
 
 	@Override
 	public String[] getProperties() {
-		return new String[] {VALUE };
+		return new String[] { VALUE };
 	}
 
 	@Override

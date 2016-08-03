@@ -90,6 +90,12 @@ public class Not implements UpdateListener, SendableEntityCreator {
 		return false;
 	}
 
+	/**
+	 * Static Method for instance a new Instance of Not Object.
+	 *
+	 * @param condition	Condition to negate
+	 * @return 			The new Instance
+	 */
 	public static Not create(UpdateListener condition) {
 		return new Not().with(condition);
 	}

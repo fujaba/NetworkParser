@@ -290,9 +290,9 @@ public class JsonTokener extends Tokener {
 			}
 			if (result == null) {
 				result = map.getNewEntity(typeInfo, map.getValue(jsonObject, IdMap.CLASS), false);
-				this.map.notify(new SimpleEvent(IdMap.NEW, this.map, jsonObject, result));
+				this.map.notify(new SimpleEvent(IdMap.NEW, jsonObject, this.map, null, null, result));
 			} else {
-				this.map.notify(new SimpleEvent(IdMap.UPDATE, this.map, jsonObject, result));
+				this.map.notify(new SimpleEvent(IdMap.UPDATE, jsonObject, this.map, null, null, result));
 			}
 			if (typeInfo instanceof SendableEntityCreatorWrapper) {
 				String[] properties = typeInfo.getProperties();

@@ -36,8 +36,8 @@ public class ConditionTest implements UpdateListener {
 		ifCondition.withTrue(new CompareTo().withValue(albert));
 		And and = new And();
 		Not not = new Not().with(new Equals().withValue("Albert"));
-		and.add(not);
-		and.add(new Or().add(new BooleanCondition().withValue(false)));
+		and.with(not);
+		and.with(new Or().with(new BooleanCondition().withValue(false)));
 		ifCondition.withFalse(and);
 
 		Assert.assertFalse(ifCondition.update(new PropertyChangeEvent(this, null, null, 23)));
@@ -60,18 +60,18 @@ public class ConditionTest implements UpdateListener {
 
 		pce = new PropertyChangeEvent(this, "child", null, uni);
 		Assert.assertFalse(filter.update(pce));
-		filter = new IdFilterElements(InstanceOf.value(uni.getClass()));
+		filter = new IdFilterElements(InstanceOf.create(uni.getClass()));
 		Assert.assertTrue(filter.update(pce));
 	}
 
 	@Test
 	public void testLogicSimpleMapEvent() {
 		IdMap map = new IdMap();
-		SimpleEvent filter = new SimpleEvent(IdMap.NEW, map, "child");
+		SimpleEvent filter = new SimpleEvent(IdMap.NEW, null, map, null, null, "child");
 		Assert.assertNotNull(filter.getSource());
 		Assert.assertFalse(filter.isUpdateEvent());
 		Assert.assertTrue(filter.isNewEvent());
-		filter.with(IdMap.UPDATE);
+		filter = new SimpleEvent(IdMap.UPDATE, null, map, null, null, "child");
 		Assert.assertTrue(filter.isUpdateEvent());
 	}
 
@@ -95,20 +95,20 @@ public class ConditionTest implements UpdateListener {
 	@Test
 	public void testLogic() {
 		And and = new And();
-		and.add(BooleanCondition.value(true));
+		and.with(BooleanCondition.create(true));
 		Or or = new Or();
-		and.add(or);
-		and.setValue(and, And.CHILD, Deep.value(42), IdMap.NEW);
-		or.add(InstanceOf.value(Person.class));
+		and.with(or);
+		and.setValue(and, And.CHILD, Deep.create(42), IdMap.NEW);
+		or.with(InstanceOf.create(Person.class));
 		BooleanCondition falseCondition = new BooleanCondition();
 		falseCondition.setValue(falseCondition, BooleanCondition.VALUE, false, IdMap.NEW);
 		Not not = new Not();
 		not.setValue(not, Not.ITEM, falseCondition, IdMap.NEW);
 		
-		and.add(not);
+		and.with(not);
 		IfCondition ifCon = new IfCondition();
-		ifCon.withTrue(BooleanCondition.value(true));
-		ifCon.withFalse(BooleanCondition.value(false));
+		ifCon.withTrue(BooleanCondition.create(true));
+		ifCon.withFalse(BooleanCondition.create(false));
 		ifCon.withExpression(new Not().with(new Between().withRange(0, 42)));
 		or.setValue(or, Or.CHILD, ifCon, IdMap.NEW);
 		
@@ -163,7 +163,7 @@ public class ConditionTest implements UpdateListener {
 		
 		Assert.assertTrue(new InstanceOf().update(new PropertyChangeEvent(this, null, null, uni)));
 		
-		condition = InstanceOf.value(uni, InstanceOf.VALUE);
+		condition = InstanceOf.create(uni, InstanceOf.VALUE);
 		Assert.assertNotNull(condition);
 		
 		Assert.assertFalse(condition.update(new PropertyChangeEvent(this, InstanceOf.VALUE, null, uni)));
@@ -182,14 +182,14 @@ public class ConditionTest implements UpdateListener {
 		IdMap map=new IdMap();
 		University uni = new University();
 		map.put("root", uni);
-		Assert.assertTrue(condition.update(new SimpleEvent("new", map,"VALUE")));
+		Assert.assertTrue(condition.update(new SimpleEvent("new", null, map,"VALUE", null, null)));
 		
-		Assert.assertFalse(condition.update(new SimpleEvent("new", map,"VALUE", null, uni)));
+		Assert.assertFalse(condition.update(new SimpleEvent("new", null, map,"VALUE", null, uni)));
 	}
 	
 	@Test
 	public void testDeepCondition() {
-		Deep condition = Deep.value(23);
+		Deep condition = Deep.create(23);
 		Assert.assertEquals(23, condition.getValue(condition, Deep.DEEP));
 		condition.setValue(condition, Deep.DEEP, 42, null);
 		Assert.assertEquals(42, condition.getDeep());

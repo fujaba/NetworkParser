@@ -41,12 +41,25 @@ public class Or implements UpdateListener, SendableEntityCreator {
 	private ArrayList<UpdateListener> list = new ArrayList<UpdateListener>();
 
 	/**
+	 * Static Method for instance a new Instance of Or Object.
+	 *
+	 * @param conditions	All Conditions.
+	 * @return 			The new Instance
+	 */
+	public static Or create(UpdateListener... conditions) {
+		return new Or().with(conditions);
+	}
+	
+	/**
 	 * Add a new UpdateListener to logic
 	 *
 	 * @param conditions	All Conditions.
 	 * @return Or Instance
 	 */
-	public Or add(UpdateListener... conditions) {
+	public Or with(UpdateListener... conditions) {
+		if(conditions == null) {
+			return this;
+		}
 		for (UpdateListener condition : conditions) {
 			this.list.add(condition);
 		}
@@ -62,7 +75,7 @@ public class Or implements UpdateListener, SendableEntityCreator {
 	public boolean update(Object evt) {
 		boolean result = true;
 		for (UpdateListener condition : list) {
-			if (!condition.update(evt)) {
+			if (condition.update(evt) == false) {
 				result = false;
 			}
 		}
@@ -103,7 +116,7 @@ public class Or implements UpdateListener, SendableEntityCreator {
 			String type) {
 		if (CHILD.equalsIgnoreCase(attribute)) {
 			if(value instanceof Condition) {
-				((Or) entity).add((UpdateListener) value);
+				((Or) entity).with((UpdateListener) value);
 			}
 			return true;
 		}

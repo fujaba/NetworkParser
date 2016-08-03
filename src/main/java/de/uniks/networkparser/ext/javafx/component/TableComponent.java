@@ -598,7 +598,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	public JsonArray saveColumns() {
 		JsonArray list=new JsonArray();
 		for(TableColumnFX column : columns) {
-			list.add(map.toJsonObject(column.getColumn(), Filter.regard(InstanceOf.value(Style.class))));
+			list.add(map.toJsonObject(column.getColumn(), Filter.regard(InstanceOf.create(Style.class))));
 		}
 		return list;
 	}

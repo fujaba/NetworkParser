@@ -10,7 +10,7 @@ public class MemoryTest {
 		// Add Structure
 		Or or = new Or();
 		for(int i=0;i<100;i++) {
-			or.add(BooleanCondition.value(true));
+			or.with(BooleanCondition.create(true));
 		}
 		// Test Memory Size
 //		System.out.println("START");

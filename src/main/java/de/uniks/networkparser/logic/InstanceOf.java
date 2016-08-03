@@ -24,6 +24,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.beans.PropertyChangeEvent;
+import java.util.Collection;
+
+import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.UpdateListener;
 /**
@@ -39,8 +44,12 @@ public class InstanceOf implements UpdateListener, SendableEntityCreator {
 	public static final String PROPERTY = "property";
 	/** Constant of VALUE. */
 	public static final String VALUE = "value";
+
 	/** Variable of ClazzName. */
 	private Class<?> clazzName;
+
+	/** Variable of WhiteList of ClassNames. */
+	private boolean whiteList;
 
 	/** Variable of Property. */
 	private String property;
@@ -95,7 +104,7 @@ public class InstanceOf implements UpdateListener, SendableEntityCreator {
 	 * @param clazzName		The ClazzName
 	 * @return 				The new Instance
 	 */
-	public static InstanceOf value(Class<?> clazzName) {
+	public static InstanceOf create(Class<?> clazzName) {
 		return new InstanceOf().withClazzName(clazzName);
 	}
 
@@ -106,7 +115,7 @@ public class InstanceOf implements UpdateListener, SendableEntityCreator {
 	 * @param property	The Property
 	 * @return 			The new Instance
 	 */
-	public static InstanceOf value(Object clazz, String property) {
+	public static InstanceOf create(Object clazz, String property) {
 		InstanceOf result = new InstanceOf().withProperty(property);
 		if(clazz instanceof Class<?>) {
 			result.withClazzName((Class<?>) clazz);
@@ -121,7 +130,7 @@ public class InstanceOf implements UpdateListener, SendableEntityCreator {
 	 * @param property	The Property
 	 * @return 			The new Instance
 	 */
-	public static InstanceOf value(String property) {
+	public static InstanceOf create(String property) {
 		return new InstanceOf().withProperty(property);
 	}
 
@@ -177,7 +186,17 @@ public class InstanceOf implements UpdateListener, SendableEntityCreator {
 		if (this.clazzName != null ) {
 			Object newValue = event.getNewValue();
 			if(this.clazzName.isInstance(newValue) == false) {
-				return false;
+				// Check for whiteList
+				if(evt instanceof SimpleEvent) {
+					SimpleEvent se = (SimpleEvent) evt;
+					IdMap map = (IdMap) se.getSource();
+					String className = newValue.getClass().getName();
+					if(map.getCreator(className, false) != null) {
+						return false;
+					}
+				}
+				// Turn around if WhiteList
+				return whiteList;
 			}else if(this.property==null) {
 				return true;
 			}else if(this.property.equalsIgnoreCase(event.getPropertyName())) {
@@ -188,5 +207,10 @@ public class InstanceOf implements UpdateListener, SendableEntityCreator {
 		}
 		// Filter for one item
 		return (this.item == null || this.item != event.getNewValue());
+	}
+
+	public InstanceOf withWhiteList(boolean whiteList) {
+		this.whiteList = whiteList;
+		return this;
 	}
 }

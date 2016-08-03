@@ -65,7 +65,7 @@ public class Deep implements SendableEntityCreator, UpdateListener {
 	 * @param value		Value of Deep
 	 * @return 			a new Deep Instance
 	 */
-	public static Deep value(int value) {
+	public static Deep create(int value) {
 		return new Deep().withDeep(value);
 	}
 
