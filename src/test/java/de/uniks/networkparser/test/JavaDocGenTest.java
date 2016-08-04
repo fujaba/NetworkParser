@@ -8,7 +8,7 @@ import de.uniks.networkparser.test.javadoc.JavaDocValidator;
 
 public class JavaDocGenTest {
 	public static final String PREFIX="src.main.java.";
-	@Test(timeout=60000)
+	@Test(timeout=120000)
 	public void testGenJavaDoc() {
 //		long time = System.currentTimeMillis();
 		JavaDocValidator javaDoc=new JavaDocValidator();

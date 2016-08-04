@@ -67,7 +67,6 @@ public class JsonModellTest implements UpdateListener {
 		Or filter= Or.create(InstanceOf.create(Student.PROPERTY_STUD_NO), classFilter.withWhiteList(true));
 		String json = map.toJsonArray(uni, Filter.regard(filter)).toString(2);
 		Assert.assertFalse(json.indexOf("geheim") >= 0);
-		System.out.println(json);
 		Assert.assertFalse(json.indexOf("de.uniks.networkparser.test.model.Room") >=0);
 	}
 	
