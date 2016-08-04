@@ -24,9 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.beans.PropertyChangeEvent;
-import java.util.Collection;
 
-import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;

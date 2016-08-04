@@ -113,6 +113,11 @@ public final class SimpleEvent extends PropertyChangeEvent {
 	public boolean isUpdateEvent() {
 		return IdMap.UPDATE.equals(this.type);
 	}
+	
+    public SimpleEvent with(Entity entity) {
+        this.entity = entity;
+        return this;
+    }
 
 	/** @return the beforeElement */
 	public Object getBeforeElement() {
