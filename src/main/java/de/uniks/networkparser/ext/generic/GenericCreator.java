@@ -28,6 +28,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.LinkedHashSet;
+
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -73,8 +74,9 @@ public class GenericCreator implements SendableEntityCreator {
 			LinkedHashSet<String> fieldNames = new LinkedHashSet<String>();
 			for (Method method : methods) {
 				String methodName = method.getName();
-				if(isValidMethod(methodName)) {
-					fieldNames.add(methodName);
+				String name = getValidMethod(methodName);
+				if(name != null) {
+					fieldNames.add(name.toLowerCase());
 				}
 			}
 			properties = fieldNames.toArray(new String[] {});
@@ -140,7 +142,7 @@ public class GenericCreator implements SendableEntityCreator {
 			Object invoke = field.get(entity);
 			return invoke;
 		} catch (ReflectiveOperationException e) {
-			System.out.println(e);
+//			System.out.println(e);
 		}
 		return null;
 	}
@@ -188,10 +190,16 @@ public class GenericCreator implements SendableEntityCreator {
 		if (setNewValue(entity, "set" + this.getMethodName(attribute), value)) {
 			return true;
 		}
-		if (setNewValue(entity, "with" + this.getMethodName(attribute),
-				value)){
+		if (setNewValue(entity, "with" + this.getMethodName(attribute), value)){
 			return true;
 		}
+		// May be Collection???
+		if(attribute.endsWith("s")) {
+			if (setNewValue(entity, "addTo" + this.getMethodName(attribute), value)){
+				return true;
+			}	
+		}
+		
 		// No Method Found
 		try {
 			Field field = this.clazz.getDeclaredField(attribute);
@@ -216,12 +224,27 @@ public class GenericCreator implements SendableEntityCreator {
 		return null;
 	}
 
-	boolean isValidMethod(String methodName ) {
-		return (methodName.startsWith("get")
-				&& !badProperties.contains(methodName)
-				&& !"".equals(methodName.trim()));
+	String getValidMethod(String methodName ) {
+		String name = null;
+		if(badProperties.contains(methodName) == false) {
+			if(methodName.startsWith("get")) {
+				name = methodName.substring(3);
+			} else if(methodName.startsWith("is")) {
+				name = methodName.substring(2);
+			}
+			if(name == null || "".equals(name.trim())) {
+				return null;
+			}
+		}
+		return name;
 	}
-
+	public static GenericCreator create(IdMap map, String className) {
+		try {
+			return create(map, Class.forName(className));
+		} catch (ClassNotFoundException e) {
+		}
+		return null;
+	}
 	public static GenericCreator create(IdMap map, Class<?> instance) {
 		SendableEntityCreator creator = map.getCreator(instance.getName(), true);
 		if(creator != null) {
@@ -229,14 +252,20 @@ public class GenericCreator implements SendableEntityCreator {
 		}
 
 		GenericCreator genericCreator = new GenericCreator();
-		genericCreator.withClass(instance);
+		// Add all Properties
+		try {
+			genericCreator.withItem(instance.newInstance());
+		} catch (Exception e1) {
+			genericCreator.withClass(instance);
+		}
+
 		map.with(genericCreator);
 
 		// VODOO
 		Method[] methods = instance.getMethods();
 		for (Method method : methods) {
 			String methodName = method.getName();
-			if (genericCreator.isValidMethod(methodName)) {
+			if (genericCreator.getValidMethod(methodName) != null) {
 				Class<?> child = method.getReturnType();
 				if (EntityUtil.isPrimitiveType(child.getName()) == false) {
 					try {

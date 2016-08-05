@@ -13,11 +13,11 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.bytes.ByteMessage;
 import de.uniks.networkparser.bytes.ByteMessageCreator;
+import de.uniks.networkparser.ext.generic.JsonParser;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.logic.InstanceOf;
-import de.uniks.networkparser.logic.Not;
 import de.uniks.networkparser.logic.Or;
 import de.uniks.networkparser.test.model.Apple;
 import de.uniks.networkparser.test.model.AppleTree;
@@ -39,6 +39,27 @@ import de.uniks.networkparser.test.model.util.UniversityCreator;
 public class JsonModellTest implements UpdateListener {
 	private IdMap secondMap;
 	BaseItem data;
+	
+	@Test
+	public void testGenericJson(){
+		University uni = new University().withName("Uni Kassel");
+		IdMap map=new IdMap();
+		map.withCreator(new UniversityCreator(), new StudentCreator());
+		JsonObject json = map.toJsonObject(uni);
+		University uniKassel = JsonParser.fromJson(json, University.class);
+		Assert.assertEquals("Uni Kassel", uniKassel.getName());
+	}
+
+	@Test
+	public void testGenericJsonModel(){
+		University uni = new University().withName("Uni Kassel");
+		uni.withStudents(new Student().withFirstName("Stefan"));
+
+		JsonObject json = JsonParser.toJson(uni);
+		
+		University uniKassel = JsonParser.fromJson(json, University.class);
+		Assert.assertEquals("Uni Kassel", uniKassel.getName());
+	}
 
 	@Test
 	public void testuniWithStudents(){
