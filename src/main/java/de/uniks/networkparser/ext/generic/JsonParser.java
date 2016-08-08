@@ -24,6 +24,7 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.json.JsonObject;
+import de.uniks.networkparser.json.JsonTokener;
 
 public class JsonParser {
 	private IdMap map;
@@ -33,6 +34,9 @@ public class JsonParser {
 			this.map = new IdMap();
 		}
 		return map;
+	}
+	public <T> T decode(Object json) {
+		return decode(json, null);
 	}
 	public <T> T decode(Object json, Class<T> classOfT) {
 		JsonObject jsonObject = null;
@@ -45,12 +49,33 @@ public class JsonParser {
 			return null;
 		}
 		String className = jsonObject.getString(IdMap.CLASS);
-		if(className == null) {
-			return null;
+		if(className == null || className.length()<1) {
+			if(classOfT == null) {
+				return null;
+			}
+			className = classOfT.getName(); 
+			if(jsonObject.has(JsonTokener.PROPS) == false) {
+				JsonObject obj = new JsonObject();
+				obj.put(JsonTokener.PROPS, jsonObject);
+				jsonObject = obj;
+			}
+			jsonObject.put(IdMap.CLASS, className);
 		}
 		IdMap map = getMap();
 		GenericCreator.create(map, className);
 		Object result = map.decode(jsonObject);
+		if(classOfT == null) {
+			try {
+				@SuppressWarnings("unchecked")
+				Class<?extends T> targetClass = (Class<? extends T>) Class.forName(className);
+				if(targetClass == null) {
+					return null;
+				}
+				return targetClass.cast(result);
+			} catch (ClassNotFoundException e) {
+				return null;
+			}
+		}
 		return classOfT.cast(result);
 		
 	}
@@ -61,6 +86,9 @@ public class JsonParser {
 		IdMap map = getMap();
 		GenericCreator.create(map, src.getClass());
 		return map.toJsonObject(src);
+	}
+	public static <T> T fromJson(Object json) {
+		return new JsonParser().decode(json);
 	}
 	public static <T> T fromJson(Object json, Class<T> classOfT) {
 		return new JsonParser().decode(json, classOfT);

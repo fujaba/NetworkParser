@@ -60,6 +60,22 @@ public class JsonModellTest implements UpdateListener {
 		University uniKassel = JsonParser.fromJson(json, University.class);
 		Assert.assertEquals("Uni Kassel", uniKassel.getName());
 	}
+	@Test
+	public void testGenericJsonModelCrazy(){
+		University uni = new University().withName("Uni Kassel");
+		uni.withStudents(new Student().withFirstName("Stefan"));
+
+		JsonObject json = JsonParser.toJson(uni);
+		
+		University uniKassel = JsonParser.fromJson(json);
+		Assert.assertEquals("Uni Kassel", uniKassel.getName());
+	}
+	@Test
+	public void testGenericJsonCrazy(){
+		JsonObject json = JsonObject.create("{name:\"Uni Kassel\"}");
+		University uniKassel = JsonParser.fromJson(json, University.class);
+		Assert.assertEquals("Uni Kassel", uniKassel.getName());
+	}
 
 	@Test
 	public void testuniWithStudents(){
