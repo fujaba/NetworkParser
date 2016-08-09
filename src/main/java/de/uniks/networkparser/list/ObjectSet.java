@@ -25,4 +25,8 @@ THE SOFTWARE.
 */
 
 public class ObjectSet extends SimpleSet<Object> {
+	public ObjectSet with(Object... values) {
+		super.with(values);
+		return this;
+	}
 }
