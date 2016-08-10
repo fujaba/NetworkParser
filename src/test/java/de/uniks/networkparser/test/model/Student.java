@@ -15,7 +15,7 @@ import de.uniks.networkparser.test.model.util.UniversityCreator;
 
 // should become a JSON Parser
 // should become a JSON Parser
-public class Student implements SendableEntity{
+public class Student extends Person implements SendableEntity{
 	/**
 	 * <pre>
 	 *		   0..n	 students	 0..1

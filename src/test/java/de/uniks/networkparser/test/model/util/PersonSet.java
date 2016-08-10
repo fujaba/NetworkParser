@@ -31,13 +31,11 @@ import de.uniks.networkparser.test.model.Person;
 
 public class PersonSet extends SimpleSet<Person>
 {
-	@SuppressWarnings("unchecked")
-	public PersonSet with(Object value) {
-		if (value instanceof java.util.Collection) {
-			this.addAll((Collection<Person>)value);
-		} else if (value != null) {
-			this.add((Person) value);
-		}
+	protected Class<?> getTypClass() {
+		return Person.class;
+	}
+	public PersonSet with(Object... values) {
+		super.with(values);
 		return this;
 	}
 

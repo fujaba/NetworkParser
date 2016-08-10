@@ -2,21 +2,53 @@ package de.uniks.networkparser.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.ListIterator;
+
 import org.junit.Assert;
 import org.junit.Test;
+
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.list.SortedList;
 import de.uniks.networkparser.test.model.Apple;
+import de.uniks.networkparser.test.model.Fruit;
+import de.uniks.networkparser.test.model.util.AppleSet;
+import de.uniks.networkparser.test.model.util.FruitSet;
 
 public class FullListTest {
+	@Test
+	public void CollectionWith() {
+		SimpleList<String> item=new SimpleList<String>();
+		item.withType(String.class);
+		item.with("Hallo", "Welt", 42, null);
+		Assert.assertEquals(2, item.size());
+	}
+	
+	@Test
+	public void CollectionWithInstanceOf() {
+		FruitSet item=new FruitSet();
+		item.with(new Fruit().withX(1).withY(1));
+		item.with(new Apple().withX(2).withX(2));
+
+		Assert.assertEquals(2, item.size());
+		AppleSet newSet=new AppleSet();
+		
+		newSet.withList(item);
+		
+		Assert.assertEquals(1, newSet.size());
+
+		newSet.with(new Fruit().withX(3).withY(3));
+		
+		Assert.assertEquals(1, newSet.size());
+	}
+	
 	@Test
 	public void list() {
 		SimpleList<String> simpleList = new SimpleList<String>();

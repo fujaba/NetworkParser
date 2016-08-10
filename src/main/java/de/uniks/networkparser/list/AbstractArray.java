@@ -26,6 +26,7 @@ THE SOFTWARE.
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
+
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
@@ -62,6 +63,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 	static final int BIG_VALUE = 4;
 	static final int SIZE_BIG = 6;
 
+	private Class<?> type;
 	/**
 	 * Start index of Elements-Array
 	 */
@@ -92,7 +94,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 
 	/** The size of the ArrayList (the number of elements it contains). */
 	int size;
-
+	
 	/**
 	 * Init-List with Collection
 	 *
@@ -655,6 +657,16 @@ public abstract class AbstractArray<V> implements BaseItem {
 		return pos;
 	}
 
+	protected Class<?> getTypClass() {
+		return null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <ST extends AbstractArray<V>> ST withType(Class<?> type) {
+		this.type = type;
+		return (ST)this;
+	}
+	
 	/**
 	 * Add a Key to internal List and Array if nesessary Method to manipulate
 	 * Array
@@ -666,6 +678,17 @@ public abstract class AbstractArray<V> implements BaseItem {
 	 */
 	final int addKey(int pos, Object element, int size) {
 		Object[] keys;
+		// declare the class instance
+		if(this.type != null) {
+			if(this.type.isAssignableFrom(element.getClass())==false) {
+				return -1;
+			}
+		} else if(getTypClass() != null) {
+			this.type = getTypClass();
+			if(this.type.isAssignableFrom(element.getClass())==false) {
+				return -1;
+			}
+		}
 
 		if (isComplex(size)) {
 			keys = (Object[]) elements[SMALL_KEY];

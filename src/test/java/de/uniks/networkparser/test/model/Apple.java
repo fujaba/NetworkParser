@@ -89,13 +89,6 @@ public class Apple extends Fruit {
 		return this.y;
 	}
 
-	@Override
-	public void removeYou() {
-		super.removeYou();
-
-		setOwner(null);
-	}
-
 	public boolean setOwner(AppleTree value) {
 		boolean changed = false;
 

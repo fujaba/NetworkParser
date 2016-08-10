@@ -254,7 +254,9 @@ public class GenericCreator implements SendableEntityCreator {
 		GenericCreator genericCreator = new GenericCreator();
 		// Add all Properties
 		try {
-			genericCreator.withItem(instance.newInstance());
+			if(instance.isInterface() == false) {
+				genericCreator.withItem(instance.newInstance());
+			}
 		} catch (Exception e1) {
 			genericCreator.withClass(instance);
 		}
@@ -280,7 +282,9 @@ public class GenericCreator implements SendableEntityCreator {
 					} catch (ReflectiveOperationException e) {
 						// Try to find SubClass for Set
 					}
-					create(map, child);
+					if(child.isInterface() == false) {
+						create(map, child);
+					}
 				}
 			}
 		}
