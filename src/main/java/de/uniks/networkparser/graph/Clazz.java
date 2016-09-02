@@ -344,13 +344,13 @@ public class Clazz extends GraphEntity {
 	}
 
 	/**
-	 * get All KindClazzes
-	 * @param transitive Get all KindClasses or direct KindClasses
-	 * @return all KindClasses of a Clazz
+	 * get All KidClazzes
+	 * @param transitive Get all KidClasses or direct KidClasses
+	 * @return all KidClasses of a Clazz
 	 *		 <pre>
 	 *			  one					   many
 	 * Clazz ----------------------------------- Clazz
-	 *			  clazz				   kindClazzes
+	 *			  superClass		   kidClazzes
 	 *		 </pre>
 	 */
 	public ClazzSet getKidClazzes(boolean transitive) {
