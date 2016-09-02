@@ -199,10 +199,11 @@ public class University implements SendableEntity {
 		return true;
 	}
 
-	public void removePropertyChangeListener(String property,
+	public boolean removePropertyChangeListener(String property,
 			PropertyChangeListener listener) {
 		getPropertyChangeSupport().removePropertyChangeListener(property,
 				listener);
+		return true;
 	}
 
 	public PropertyChangeSupport getPropertyChangeSupport() {

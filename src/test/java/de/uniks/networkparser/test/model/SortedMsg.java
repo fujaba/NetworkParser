@@ -13,7 +13,6 @@ public class SortedMsg implements SendableEntity {
 	private SortedMsg child;
 	private SortedMsg parent;
 	private String msg;
-	private PropertyChangeSupport change= new PropertyChangeSupport(this);
 
 	public int getNumber() {
 		return number;
@@ -23,7 +22,7 @@ public class SortedMsg implements SendableEntity {
 		int oldValue=this.number;
 		this.number = id;
 		if(id!=oldValue){
-			change.firePropertyChange(SortedMsg.PROPERTY_ID, oldValue, id);
+			firePropertyChange(SortedMsg.PROPERTY_ID, oldValue, id);
 		}
 	}
 	public void updateNumber(int id) {
@@ -39,7 +38,7 @@ public class SortedMsg implements SendableEntity {
 		if(value!=this.child){
 			SortedMsg oldValue=this.child;
 			this.child = value;
-			change.firePropertyChange(SortedMsg.PROPERTY_CHILD, oldValue, value);
+			firePropertyChange(SortedMsg.PROPERTY_CHILD, oldValue, value);
 			if(value!=null){
 				value.setParent(this);
 			}
@@ -50,7 +49,7 @@ public class SortedMsg implements SendableEntity {
 		if(value!=this.parent){
 			SortedMsg oldValue=this.parent;
 			this.parent = value;
-			change.firePropertyChange(SortedMsg.PROPERTY_PARENT, oldValue, value);
+			firePropertyChange(SortedMsg.PROPERTY_PARENT, oldValue, value);
 			if(value!=null){
 				value.setChild(this);
 			}
@@ -100,13 +99,6 @@ public class SortedMsg implements SendableEntity {
 		return null;
 	}
 
-	@Override
-	public boolean addPropertyChangeListener(String propertyName,
-			PropertyChangeListener listener) {
-		change.addPropertyChangeListener(propertyName, listener);
-		return true;
-	}
-
 	public String getMsg() {
 		return msg;
 	}
@@ -124,15 +116,44 @@ public class SortedMsg implements SendableEntity {
 		return parent;
 	}
 
-	@Override
-	public boolean removePropertyChangeListener(PropertyChangeListener listener) {
-		change.removePropertyChangeListener(listener);
+	protected PropertyChangeSupport listeners = null;
+	   
+	public boolean firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+		if (listeners != null) {
+			listeners.firePropertyChange(propertyName, oldValue, newValue);
+			return true;
+		}
+		return false;
+	}
+
+	public boolean addPropertyChangeListener(PropertyChangeListener listener) {
+		if (listeners == null) {
+			listeners = new PropertyChangeSupport(this);
+		}
+		listeners.addPropertyChangeListener(listener);
 		return true;
 	}
 
-	@Override
-	public boolean addPropertyChangeListener(PropertyChangeListener listener) {
-		 change.addPropertyChangeListener(listener);
+	public boolean addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+		if (listeners == null) {
+			listeners = new PropertyChangeSupport(this);
+		}
+		listeners.addPropertyChangeListener(propertyName, listener);
+		return true;
+	}
+
+	public boolean removePropertyChangeListener(PropertyChangeListener listener) {
+		if (listeners != null) {
+			listeners.removePropertyChangeListener(listener);
+		}
+		return true;
+	}
+
+	public boolean removePropertyChangeListener(String property,
+			PropertyChangeListener listener) {
+		if (listeners != null) {
+			listeners.removePropertyChangeListener(property, listener);
+		}
 		return true;
 	}
 }

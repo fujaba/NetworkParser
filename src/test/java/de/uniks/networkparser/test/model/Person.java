@@ -29,7 +29,6 @@ import de.uniks.networkparser.test.model.util.ItemSet;
 import de.uniks.networkparser.test.model.util.PersonSet;
 
 public class Person  implements SendableEntity, Comparable<Object> {
-	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
 	public static final String PROPERTY_NAME = "name";
 	public static final String PROPERTY_BALANCE = "balance";
 	public static final String PROPERTY_PARENT = "parent";
@@ -43,24 +42,44 @@ public class Person  implements SendableEntity, Comparable<Object> {
 	private String name;
 
 	//==========================================================================
-	public PropertyChangeSupport getPropertyChangeSupport() {
-		return listeners;
+	protected PropertyChangeSupport listeners = null;
+	   
+	public boolean firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+		if (listeners != null) {
+			listeners.firePropertyChange(propertyName, oldValue, newValue);
+			return true;
+		}
+		return false;
 	}
 
 	public boolean addPropertyChangeListener(PropertyChangeListener listener) {
-		getPropertyChangeSupport().addPropertyChangeListener(listener);
+		if (listeners == null) {
+			listeners = new PropertyChangeSupport(this);
+		}
+		listeners.addPropertyChangeListener(listener);
 		return true;
 	}
 
-	@Override
 	public boolean addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-		getPropertyChangeSupport().addPropertyChangeListener(propertyName, listener);
+		if (listeners == null) {
+			listeners = new PropertyChangeSupport(this);
+		}
+		listeners.addPropertyChangeListener(propertyName, listener);
 		return true;
 	}
 
-	@Override
 	public boolean removePropertyChangeListener(PropertyChangeListener listener) {
-		getPropertyChangeSupport().removePropertyChangeListener(listener);
+		if (listeners != null) {
+			listeners.removePropertyChangeListener(listener);
+		}
+		return true;
+	}
+
+	public boolean removePropertyChangeListener(String property,
+			PropertyChangeListener listener) {
+		if (listeners != null) {
+			listeners.removePropertyChangeListener(property, listener);
+		}
 		return true;
 	}
 
@@ -68,7 +87,7 @@ public class Person  implements SendableEntity, Comparable<Object> {
 	public void removeYou() {
 		setParent(null);
 		withoutItem(this.getItem().toArray(new Item[this.getItem().size()]));
-		getPropertyChangeSupport().firePropertyChange("REMOVE_YOU", this, null);
+		firePropertyChange("REMOVE_YOU", this, null);
 	}
 
 	//==========================================================================
@@ -80,7 +99,7 @@ public class Person  implements SendableEntity, Comparable<Object> {
 		if ( ! StrUtil.stringEquals(this.name, value)) {
 			String oldValue = this.name;
 			this.name = value;
-			getPropertyChangeSupport().firePropertyChange(PROPERTY_NAME, oldValue, value);
+			firePropertyChange(PROPERTY_NAME, oldValue, value);
 		}
 	}
 
@@ -106,7 +125,7 @@ public class Person  implements SendableEntity, Comparable<Object> {
 		if (this.balance != value) {
 			double oldValue = this.balance;
 			this.balance = value;
-			getPropertyChangeSupport().firePropertyChange(PROPERTY_BALANCE, oldValue, value);
+			firePropertyChange(PROPERTY_BALANCE, oldValue, value);
 		}
 	}
 
@@ -144,7 +163,7 @@ public class Person  implements SendableEntity, Comparable<Object> {
 				value.withPersons(this);
 			}
 
-			getPropertyChangeSupport().firePropertyChange(PROPERTY_PARENT, oldValue, value);
+			firePropertyChange(PROPERTY_PARENT, oldValue, value);
 			changed = true;
 		}
 
@@ -156,7 +175,7 @@ public class Person  implements SendableEntity, Comparable<Object> {
 		if (this.parent != value) {
 			GroupAccount oldValue = this.parent;
 			this.parent = value;
-			getPropertyChangeSupport().firePropertyChange(PROPERTY_PARENT, oldValue, value);
+			firePropertyChange(PROPERTY_PARENT, oldValue, value);
 			changed = true;
 		}
 		return changed;
@@ -210,7 +229,7 @@ public class Person  implements SendableEntity, Comparable<Object> {
 			if (changed)
 			{
 			   item.withBuyer(this);
-			   getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEM, null, item);
+			   firePropertyChange(PROPERTY_ITEM, null, item);
 			}
 		 }
 	  }
@@ -226,7 +245,7 @@ public class Person  implements SendableEntity, Comparable<Object> {
 			if (this.item.remove(item))
 			{
 			   item.setBuyer(null);
-			   getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEM, item, null);
+			   firePropertyChange(PROPERTY_ITEM, item, null);
 			}
 		 }
 

@@ -32,6 +32,27 @@ public class FullListTest {
 	}
 	
 	@Test
+	public void CollectionGetValue() {
+		SimpleList<String> item=new SimpleList<String>();
+		for(int i=0;i<500;i++) {
+			item.add("Number_"+i);
+		}
+		Assert.assertEquals("Number_42", item.getValue("Number_42"));
+	}
+
+	@Test
+	public void CollectionBidiValue() {
+		SimpleKeyValueList<String, Integer> bidiMap=new SimpleKeyValueList<String, Integer>();
+		bidiMap.add("Stefan", 23);
+		bidiMap.add("Tobi", 3);
+		bidiMap.add("Albert", 42);
+		bidiMap.remove("Tobi");
+		Assert.assertNull(bidiMap.getValue("Albert42"));
+//		Assert.assertEquals("Number_42", bidiMap.getValue("Albert"));
+	}
+
+	
+	@Test
 	public void CollectionWithInstanceOf() {
 		FruitSet item=new FruitSet();
 		item.with(new Fruit().withX(1).withY(1));

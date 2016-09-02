@@ -28,77 +28,96 @@ import de.uniks.networkparser.test.model.ludo.StrUtil;
 import de.uniks.networkparser.test.model.util.ItemSet;
 import de.uniks.networkparser.test.model.util.PersonSet;
 
-public class GroupAccount implements SendableEntity
-{
+public class GroupAccount implements SendableEntity {
 	public static final String PROPERTY_NAME = "name";
 	private String name;
 
-	public String getName()
-	{
-	   return this.name;
+	public String getName() {
+		return this.name;
 	}
 
-	public void setName(String value)
-	{
-	   if ( ! StrUtil.stringEquals(this.name, value))
-	   {
-		  String oldValue = this.name;
-		  this.name = value;
-		  getPropertyChangeSupport().firePropertyChange(PROPERTY_NAME, oldValue, value);
-	   }
+	public void setName(String value) {
+		if (!StrUtil.stringEquals(this.name, value)) {
+			String oldValue = this.name;
+			this.name = value;
+			firePropertyChange(PROPERTY_NAME, oldValue, value);
+		}
 	}
-	//==========================================================================
-	public double getTaskNames( double p0, String p1 ) {
+
+	// ==========================================================================
+	public double getTaskNames(double p0, String p1) {
 		return 0;
 	}
-	//==========================================================================
-	public void updateBalances(  ) {
+
+	// ==========================================================================
+	public void updateBalances() {
 		// compute share
 		double totalExpenses = this.getItem().getValue().sum();
 		double share = totalExpenses / this.getItem().size();
 		for (Person person : this.getPersons()) {
-			double personExpenses  = person.getItem().getValue().sum();
+			double personExpenses = person.getItem().getValue().sum();
 			person.setBalance(personExpenses - share);
 		}
 	}
-	//==========================================================================
-	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
-	public PropertyChangeSupport getPropertyChangeSupport() {
-		return listeners;
+
+	// ==========================================================================
+	protected PropertyChangeSupport listeners = null;
+
+	public boolean firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+		if (listeners != null) {
+			listeners.firePropertyChange(propertyName, oldValue, newValue);
+			return true;
+		}
+		return false;
 	}
 
 	public boolean addPropertyChangeListener(PropertyChangeListener listener) {
-		getPropertyChangeSupport().addPropertyChangeListener(listener);
+		if (listeners == null) {
+			listeners = new PropertyChangeSupport(this);
+		}
+		listeners.addPropertyChangeListener(listener);
 		return true;
 	}
 
-	@Override
 	public boolean addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-		getPropertyChangeSupport().addPropertyChangeListener(propertyName, listener);
+		if (listeners == null) {
+			listeners = new PropertyChangeSupport(this);
+		}
+		listeners.addPropertyChangeListener(propertyName, listener);
 		return true;
 	}
 
-	@Override
 	public boolean removePropertyChangeListener(PropertyChangeListener listener) {
-		getPropertyChangeSupport().removePropertyChangeListener(listener);
+		if (listeners != null) {
+			listeners.removePropertyChangeListener(listener);
+		}
 		return true;
 	}
-	//==========================================================================
-   public void removeYou() {
-	   withoutPersons(this.getPersons().toArray(new Person[this.getPersons().size()]));
-	   withoutItem(this.getItem().toArray(new Item[this.getItem().size()]));
-	  getPropertyChangeSupport().firePropertyChange("REMOVE_YOU", this, null);
+
+	public boolean removePropertyChangeListener(String property, PropertyChangeListener listener) {
+		if (listeners != null) {
+			listeners.removePropertyChangeListener(property, listener);
+		}
+		return true;
+	}
+
+	// ==========================================================================
+	public void removeYou() {
+		withoutPersons(this.getPersons().toArray(new Person[this.getPersons().size()]));
+		withoutItem(this.getItem().toArray(new Item[this.getItem().size()]));
+		firePropertyChange("REMOVE_YOU", this, null);
 	}
 
 	/********************************************************************
-	* <pre>
+	 * <pre>
 	*			  one					   many
 	* GroupAccount ----------------------------------- Person
 	*			  parent				   persons
-	* </pre>
-	*/
+	 * </pre>
+	 */
 	public static final String PROPERTY_PERSONS = "persons";
 	private PersonSet persons = null;
+
 	public PersonSet getPersons() {
 		if (this.persons == null) {
 			return Person.EMPTY_SET;
@@ -107,7 +126,7 @@ public class GroupAccount implements SendableEntity
 	}
 
 	public GroupAccount withUnidirectionalPersons(Person... value) {
-		if(value==null){
+		if (value == null) {
 			return this;
 		}
 		for (Person item : value) {
@@ -115,9 +134,9 @@ public class GroupAccount implements SendableEntity
 				if (this.persons == null) {
 					this.persons = new PersonSet();
 				}
-				boolean changed = this.persons.add (item);
+				boolean changed = this.persons.add(item);
 				if (changed) {
-					getPropertyChangeSupport().firePropertyChange(PROPERTY_PERSONS, null, item);
+					firePropertyChange(PROPERTY_PERSONS, null, item);
 				}
 			}
 		}
@@ -125,7 +144,7 @@ public class GroupAccount implements SendableEntity
 	}
 
 	public GroupAccount withPersons(Person... value) {
-		if(value==null) {
+		if (value == null) {
 			return this;
 		}
 		for (Person item : value) {
@@ -133,10 +152,10 @@ public class GroupAccount implements SendableEntity
 				if (this.persons == null) {
 					this.persons = new PersonSet();
 				}
-				boolean changed = this.persons.add (item);
+				boolean changed = this.persons.add(item);
 				if (changed) {
 					item.withParent(this);
-					getPropertyChangeSupport().firePropertyChange(PROPERTY_PERSONS, null, item);
+					firePropertyChange(PROPERTY_PERSONS, null, item);
 				}
 			}
 		}
@@ -148,7 +167,7 @@ public class GroupAccount implements SendableEntity
 			if ((this.persons != null) && (item != null)) {
 				if (this.persons.remove(item)) {
 					item.setParent(null);
-					getPropertyChangeSupport().firePropertyChange(PROPERTY_PERSONS, item, null);
+					firePropertyChange(PROPERTY_PERSONS, item, null);
 				}
 			}
 		}
@@ -162,12 +181,12 @@ public class GroupAccount implements SendableEntity
 	}
 
 	/********************************************************************
-	* <pre>
+	 * <pre>
 	*			  one					   many
 	* GroupAccount ----------------------------------- Item
 	*			  parent				   item
-	* </pre>
-	*/
+	 * </pre>
+	 */
 	public static final String PROPERTY_ITEM = "item";
 	private ItemSet item = null;
 
@@ -179,7 +198,7 @@ public class GroupAccount implements SendableEntity
 	}
 
 	public GroupAccount withItem(Item... value) {
-		if(value==null) {
+		if (value == null) {
 			return this;
 		}
 		for (Item item : value) {
@@ -187,10 +206,10 @@ public class GroupAccount implements SendableEntity
 				if (this.item == null) {
 					this.item = new ItemSet();
 				}
-				boolean changed = this.item.add (item);
+				boolean changed = this.item.add(item);
 				if (changed) {
 					item.withParent(this);
-					getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEM, null, item);
+					firePropertyChange(PROPERTY_ITEM, null, item);
 				}
 			}
 		}
@@ -202,7 +221,7 @@ public class GroupAccount implements SendableEntity
 			if ((this.item != null) && (item != null)) {
 				if (this.item.remove(item)) {
 					item.setParent(null);
-					getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEM, item, null);
+					firePropertyChange(PROPERTY_ITEM, item, null);
 				}
 			}
 		}

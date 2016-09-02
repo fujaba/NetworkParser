@@ -17,6 +17,7 @@ import de.uniks.networkparser.json.AtomarCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.test.model.Apple;
+import de.uniks.networkparser.test.model.GroupAccount;
 import de.uniks.networkparser.test.model.Person;
 import de.uniks.networkparser.test.model.SortedMsg;
 import de.uniks.networkparser.test.model.Student;
@@ -29,6 +30,13 @@ import de.uniks.networkparser.test.model.util.UniversityCreator;
 
 public class ModelTest implements UpdateListener {
 	private SimpleList<SimpleEvent> events = new SimpleList<SimpleEvent>(); 
+
+	@Test(expected = UnsupportedOperationException.class)
+	public void testModelGroupAccount(){
+		GroupAccount ga = new GroupAccount();
+		ga.getPersons().add(new Person().withName("Albert"));
+	}
+	
 	@Test
 	public void testModel(){
 		PersonSet persons= new PersonSet();

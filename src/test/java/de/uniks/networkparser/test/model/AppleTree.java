@@ -28,27 +28,46 @@ import de.uniks.networkparser.interfaces.SendableEntity;
 
 public class AppleTree extends Tree implements SendableEntity
 {
-	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
-   public PropertyChangeSupport getPropertyChangeSupport()
-   {
-	  return listeners;
-   }
-   public boolean addPropertyChangeListener(PropertyChangeListener listener)
-   {
-	  getPropertyChangeSupport().addPropertyChangeListener(listener);
-	  return true;
-   }
-   @Override
-   public boolean addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-	  getPropertyChangeSupport().addPropertyChangeListener(propertyName, listener);
-	  return true;
-   }
-   @Override
-   public boolean removePropertyChangeListener(PropertyChangeListener listener) {
-	   getPropertyChangeSupport().removePropertyChangeListener(listener);
-	   return true;
-   }
+	protected PropertyChangeSupport listeners = null;
+	   
+	public boolean firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+		if (listeners != null) {
+			listeners.firePropertyChange(propertyName, oldValue, newValue);
+			return true;
+		}
+		return false;
+	}
 
+	public boolean addPropertyChangeListener(PropertyChangeListener listener) {
+		if (listeners == null) {
+			listeners = new PropertyChangeSupport(this);
+		}
+		listeners.addPropertyChangeListener(listener);
+		return true;
+	}
+
+	public boolean addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+		if (listeners == null) {
+			listeners = new PropertyChangeSupport(this);
+		}
+		listeners.addPropertyChangeListener(propertyName, listener);
+		return true;
+	}
+
+	public boolean removePropertyChangeListener(PropertyChangeListener listener) {
+		if (listeners != null) {
+			listeners.removePropertyChangeListener(listener);
+		}
+		return true;
+	}
+
+	public boolean removePropertyChangeListener(String property,
+			PropertyChangeListener listener) {
+		if (listeners != null) {
+			listeners.removePropertyChangeListener(property, listener);
+		}
+		return true;
+	}
 	//==========================================================================
 	public void removeYou() {
 		removeAllFromHas();
@@ -91,7 +110,7 @@ public class AppleTree extends Tree implements SendableEntity
 
 		 if (changed)
 		 {
-			 getPropertyChangeSupport().firePropertyChange(PROPERTY_HAS, null, value);
+			firePropertyChange(PROPERTY_HAS, null, value);
 			value.withOwner(this);
 		 }
 	  }

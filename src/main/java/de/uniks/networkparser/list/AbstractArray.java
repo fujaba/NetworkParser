@@ -609,7 +609,9 @@ public abstract class AbstractArray<V> implements BaseItem {
 			}
 		}
 		Object[] items;
-		if (isComplex(size)) {
+		if ((flag & MAP) == MAP) {
+			items = ((Object[]) elements[offset]);
+		} else if (isComplex(size) && offset != SMALL_VALUE) {
 			items = ((Object[]) elements[offset]);
 		} else {
 			items = elements;
@@ -1057,7 +1059,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 				if (offsetIndex == index) {
 					return item;
 				}
-				if (isComplex(size)) {
+				if (size >= MINHASHINGSIZE) {
 					if (elements[DELETED] == null) {
 						elements[DELETED] = new Integer[] { index };
 					} else {
@@ -1186,7 +1188,10 @@ public abstract class AbstractArray<V> implements BaseItem {
 	public Object getValue(Object key) {
 		int pos = indexOf(key);
 		if (pos >= 0) {
-			return this.getByIndex(SMALL_VALUE, pos, size);
+			if ((flag & MAP) == MAP) {
+				return this.getByIndex(SMALL_VALUE, pos, size);
+			}
+			return this.getByIndex(SMALL_KEY, pos, size);
 		}
 		if (!(key instanceof String)) {
 			return null;
