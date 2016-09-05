@@ -58,9 +58,31 @@ public class FullListTest {
 		bidiMap.add("Albert", 42);
 		bidiMap.removePos(2);
 		Assert.assertNull(bidiMap.getValue("Albert"));
-//		Assert.assertEquals("Number_42", bidiMap.getValue("Albert"));
 	}
 
+	@Test
+	public void CollectionBidiValueDeleteSub() {
+		SimpleKeyValueList<String, Integer> bidiMap=new SimpleKeyValueList<String, Integer>().withFlag(SimpleKeyValueList.BIDI);
+		String delete = "Albert.42";
+		bidiMap.add("Check", 23);
+		bidiMap.add("Stefan", 23);
+		bidiMap.add("Tobi", 3);
+		bidiMap.add(delete, 42);
+		bidiMap.without(delete);
+		bidiMap.without("Check");
+		Assert.assertNull(bidiMap.getValue("Albert.42"));
+	}
+	
+	@Test
+	public void CollectionBidiGetValue() {
+		SimpleKeyValueList<String, Integer> bidiMap=new SimpleKeyValueList<String, Integer>().withFlag(SimpleKeyValueList.BIDI);
+		String delete = "Albert.42";
+		bidiMap.add("Stefan", 23);
+		bidiMap.add("Tobi", 3);
+		bidiMap.add("Albert", 3);
+//		bidiMap.add(delete, 42);
+		Assert.assertNull(bidiMap.getValue(delete));
+	}
 	
 	@Test
 	public void CollectionWithInstanceOf() {

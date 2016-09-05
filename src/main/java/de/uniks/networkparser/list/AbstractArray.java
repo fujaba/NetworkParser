@@ -1228,7 +1228,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 			id = -1;
 		}
 
-		Object child = getByIndex(SMALL_VALUE, indexOf(keyString.substring(0, len)), size);
+		Object child = getByIndex(SMALL_VALUE, indexOf(keyString.substring(0, len))+this.index, size);
 		if (child != null) {
 			if (end == 0) {
 				if (id >= 0 || id == -2) {
@@ -1264,7 +1264,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 							return ((SimpleKeyValueList<?, ?>) list.get(id)).getValue(keyString.substring(end + 1));
 						}
 					}
-				} else {
+				} else if(child instanceof SimpleKeyValueList<?, ?>){
 					return ((SimpleKeyValueList<?, ?>) child).getValue(keyString.substring(end + 1));
 				}
 			}
