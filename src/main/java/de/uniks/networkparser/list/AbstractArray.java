@@ -1051,7 +1051,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 		return index;
 	}
 
-	Object removeByIndex(int index, int offset, int offsetIndex) {
+	protected Object removeByIndex(int index, int offset, int offsetIndex) {
 		Object item = removeItem(index, offset, offsetIndex);
 		if (item != null) {
 			size--;
@@ -1080,7 +1080,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 		return item;
 	}
 
-	Object removeItem(int index, int offset, int oldIndex) {
+	protected Object removeItem(int index, int offset, int oldIndex) {
 		if (elements == null) {
 			return null;
 		}

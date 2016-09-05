@@ -435,25 +435,24 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return (V) super.getByIndex(SMALL_VALUE, index + this.index, size);
 	}
 
-	@SuppressWarnings("unchecked")
-	public V remove(Object key) {
-		int index = indexOf(key);
+	@Override
+	protected Object removeByIndex(int index, int offset, int oldIndex) {
 		if (index < 0) {
 			return null;
 		}
-		int oldIndex = this.index;
-		removeItem(index, SMALL_KEY, oldIndex);
-		return (V) removeByIndex(index, SMALL_VALUE, oldIndex);
+		super.removeItem(index, SMALL_KEY, oldIndex);
+		return super.removeByIndex(index, SMALL_VALUE, oldIndex);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public V remove(Object key) {
+		int index = this.indexOf(key);
+		return (V) removeByIndex(index, SMALL_KEY, this.index);
 	}
 
 	@SuppressWarnings("unchecked")
 	public V removePos(int pos) {
-		if (pos < 0) {
-			return null;
-		}
-		int oldIndex = this.index;
-		removeItem(pos, SMALL_KEY, oldIndex);
-		return (V) removeByIndex(pos, SMALL_VALUE, oldIndex);
+		return (V) removeByIndex(pos, SMALL_KEY, index);
 	}
 
 	@Override
