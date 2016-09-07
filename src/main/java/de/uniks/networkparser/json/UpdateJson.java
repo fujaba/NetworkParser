@@ -147,7 +147,7 @@ public class UpdateJson implements PropertyChangeListener {
 		if (!done) {
 			// this property is not part of the replicated model, do not
 			// replicate
-			// if propertyname is not found and teh name is REMOVE_YOU it remove it from the IdMap
+			// if propertyname is not found and the name is REMOVE_YOU it remove it from the IdMap
 			if(IdMap.REMOVE_YOU.equals(propertyName)) {
 				this.removeObj(evt.getOldValue(), true);
 			}
