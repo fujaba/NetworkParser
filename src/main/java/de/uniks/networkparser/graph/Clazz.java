@@ -316,6 +316,14 @@ public class Clazz extends GraphEntity {
 	}
 	
 	private void repairAssociation(Association assoc) {
+		if(AssociationTypes.IMPLEMENTS != assoc.getType() && AssociationTypes.GENERALISATION != assoc.getType()) {
+			// Wrong way try another round
+			assoc = assoc.getOther();
+		}
+		if(AssociationTypes.IMPLEMENTS != assoc.getType() && AssociationTypes.GENERALISATION != assoc.getType()) {
+			// Ignore
+			return;
+		}
 		if(this.getType() == ClazzType.INTERFACE) {
 			if(AssociationTypes.GENERALISATION != assoc.getType()) {
 				assoc.with(AssociationTypes.GENERALISATION);
