@@ -423,7 +423,11 @@ public class Clazz extends GraphEntity {
 	}
 
 	public Clazz withKidClazzes(Clazz... values) {
-		createAssociation(AssociationTypes.EDGE, AssociationTypes.GENERALISATION, values);
+		if (this.getType().equals(ClazzType.INTERFACE)) {
+			createAssociation(AssociationTypes.EDGE, AssociationTypes.IMPLEMENTS, values);
+		} else {
+			createAssociation(AssociationTypes.EDGE, AssociationTypes.GENERALISATION, values);
+		}
 		return this;
 	}
 
