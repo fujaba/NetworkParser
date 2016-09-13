@@ -264,13 +264,6 @@ public class Clazz extends GraphEntity {
 		return this;
 	}
 
-	public Clazz getSuperClass() {
-		if (associations == null) {
-			return null;
-		}
-		ClazzSet clazzSet = getEdges(AssociationTypes.GENERALISATION, AssociationTypes.EDGE);
-		return clazzSet.first();
-	}
 	/**
 	 * Get All Interfaces
 	 * @param transitive Get all Interfaces or direct Interfaces
@@ -282,45 +275,23 @@ public class Clazz extends GraphEntity {
 	 *		 </pre>
 	 */
 	public ClazzSet getInterfaces(boolean transitive) {
-		ClazzSet interfaces = new ClazzSet();
-		if (associations == null) {
-			return interfaces;
-		}
-		ClazzSet clazzSet;
+		repairAssociations();
+		AssociationTypes type = AssociationTypes.IMPLEMENTS;
 		if(this.getType()==ClazzType.INTERFACE) {
-			clazzSet = getEdges(AssociationTypes.GENERALISATION, AssociationTypes.EDGE);
-			for (Clazz clazz : clazzSet) {
-				if (GraphUtil.isInterface(clazz)) {
-					interfaces.with(clazz);
-				}
-			}
+			type = AssociationTypes.GENERALISATION;
 		}
-		clazzSet = getEdges(AssociationTypes.IMPLEMENTS, AssociationTypes.EDGE);
-		for (Clazz clazz : clazzSet) {
-			if (GraphUtil.isInterface(clazz)) {
-				interfaces.with(clazz);
-			}
-		}
+
+		ClazzSet collection = getEdges(type);
 		if(!transitive) {
-			return interfaces;
+			return collection;
 		}
-		int size = interfaces.size();
+		int size = collection.size();
 		for(int i=0;i<size;i++) {
-			interfaces.withList(interfaces.get(i).getInterfaces(transitive));
+			collection.withList(collection.get(i).getInterfaces(transitive));
 		}
-		return interfaces;
+		return collection;
 	}
-
-	public Clazz withSuperClazz(Clazz... values) {
-		createAssociation(AssociationTypes.GENERALISATION, AssociationTypes.EDGE, values);
-		return this;
-	}
-
-	public Clazz withImplements(Clazz... values) {
-		createAssociation(AssociationTypes.IMPLEMENTS, AssociationTypes.EDGE, values);
-		return this;
-	}
-
+	
 	/**
 	 * Get All SuperClazzes
 	 * @param transitive Get all SuperClasses or direct SuperClasses
@@ -332,6 +303,7 @@ public class Clazz extends GraphEntity {
 	 *		 </pre>
 	 */
 	public ClazzSet getSuperClazzes(boolean transitive) {
+		repairAssociations();
 		ClazzSet collection = getEdges(AssociationTypes.GENERALISATION);
 		if(!transitive) {
 			return collection;
@@ -341,6 +313,50 @@ public class Clazz extends GraphEntity {
 			collection.withList(collection.get(i).getSuperClazzes(transitive));
 		}
 		return collection;
+	}
+	
+	private void repairAssociation(Association assoc) {
+		if(this.getType() == ClazzType.INTERFACE) {
+			if(AssociationTypes.GENERALISATION != assoc.getType()) {
+				assoc.with(AssociationTypes.GENERALISATION);
+			}
+		} else {
+			// Its a Class
+			if(assoc.getOtherClazz().getType() == ClazzType.INTERFACE) {
+				// Must be an Implements
+				if(AssociationTypes.IMPLEMENTS != assoc.getType()) {
+					assoc.with(AssociationTypes.IMPLEMENTS);
+				}	
+			} else {
+				// Must be an Genralization
+				if(AssociationTypes.GENERALISATION != assoc.getType()) {
+					assoc.with(AssociationTypes.GENERALISATION);
+				}	
+			}
+
+		}
+		
+	}
+	private void repairAssociations() {
+		if (associations == null ) {
+			return;
+		}
+		if(associations instanceof Association) {
+			// Is is easy only one Assoc
+			repairAssociation((Association)associations);
+		}else if(associations instanceof GraphSimpleSet) {
+			GraphSimpleSet list = (GraphSimpleSet) this.associations;
+			for (GraphMember item : list) {
+				if(item instanceof Association) {
+					repairAssociation((Association)item);
+				}
+			}
+		}
+	}
+
+	public Clazz withSuperClazz(Clazz... values) {
+		createAssociation(AssociationTypes.GENERALISATION, AssociationTypes.EDGE, values);
+		return this;
 	}
 
 	/**
@@ -423,11 +439,7 @@ public class Clazz extends GraphEntity {
 	}
 
 	public Clazz withKidClazzes(Clazz... values) {
-		if (this.getType().equals(ClazzType.INTERFACE)) {
-			createAssociation(AssociationTypes.EDGE, AssociationTypes.IMPLEMENTS, values);
-		} else {
-			createAssociation(AssociationTypes.EDGE, AssociationTypes.GENERALISATION, values);
-		}
+		createAssociation(AssociationTypes.EDGE, AssociationTypes.GENERALISATION, values);
 		return this;
 	}
 

@@ -76,8 +76,14 @@ task buildInterfaces(type: Jar) {
 	manifest = project.manifest {from sharedManifest}
 }
 task buildSourceJar(type: Jar, dependsOn: buildCoreJar18) {
+	description 'Build Jar with class-Files and Source-Files'
+	group "Jar"; from {(sourceSets.main.output + sourceSets.main.allJava)}; classifier = 'sources'
+	exclude '**/test/**'
+	manifest = project.manifest {from sharedManifest}
+}
+task buildFullJar(type: Jar, dependsOn: buildSourceJar) {
 	description 'Build Jar with class-Files, Source-Files and JavaDoc'
-	group "Jar"; from {(sourceSets.main.output + sourceSets.main.allJava + javadoc.outputs.files )}; classifier = 'sources'
+	group "Jar"; from {(sourceSets.main.output + sourceSets.main.allJava + javadoc.outputs.files )}; classifier = 'full'
 	exclude '**/test/**'
 	manifest = project.manifest {from sharedManifest}
 }

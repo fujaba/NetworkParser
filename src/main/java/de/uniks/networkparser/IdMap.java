@@ -879,7 +879,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		}
 		JsonArray items = new JsonArray();
 		for (String childId : ids) {
-			JsonObject jsonObject = toJsonObject(getObject(childId), Filter.convertable(Deep.create(0)));
+			JsonObject jsonObject = toJsonObject(getObject(childId), Filter.convertable(Depth.create(0)));
 			if (jsonObject != null) {
 				items.add(jsonObject);
 			}

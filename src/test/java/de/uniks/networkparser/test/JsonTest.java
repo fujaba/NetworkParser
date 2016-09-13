@@ -13,7 +13,7 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.uniks.networkparser.Deep;
+import de.uniks.networkparser.Depth;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
@@ -357,11 +357,11 @@ public class JsonTest extends IOClasses {
 
 		IdMap map = UniversityCreator.createIdMap("s1");
 
-		JsonArray jsonArray = map.toJsonArray(kassel, new Filter().withConvertable(Deep.create(1)));
+		JsonArray jsonArray = map.toJsonArray(kassel, new Filter().withConvertable(Depth.create(1)));
 		String jsonString = jsonArray.toString(2);
 		assertEquals(2463, jsonString.length());
 
-		jsonArray = map.toJsonArray(kassel, new Filter().withConvertable(new Deep().withDeep(0)));
+		jsonArray = map.toJsonArray(kassel, new Filter().withConvertable(new Depth().withDepth(0)));
 
 		jsonString = jsonArray.toString(2);
 		assertEquals(631, jsonString.length());
@@ -457,7 +457,7 @@ public class JsonTest extends IOClasses {
 		FullMessage msg = new FullMessage(42, "Hallo Welt");
 		msg.setLocation(new Location(42, 23));
 		map.with(new RestCounter("http://myname.org/rest/"));
-		JsonObject json = map.toJsonObject(msg, new Filter().withConvertable(Deep.create(0)));
+		JsonObject json = map.toJsonObject(msg, new Filter().withConvertable(Depth.create(0)));
 		Assert.assertEquals(
 				"{\"class\":\"de.uniks.networkparser.test.model.FullMessage\",\"id\":\"http://myname.org/rest/de.uniks.networkparser.test.model.fullmessage/1\",\"prop\":{\"txt\":\"Hallo Welt\",\"number\":42,\"location\":{\"class\":\"de.uniks.networkparser.test.model.Location\",\"id\":\"http://myname.org/rest/de.uniks.networkparser.test.model.location/2\"}}}",
 				json.toString());

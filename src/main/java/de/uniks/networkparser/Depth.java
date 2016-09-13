@@ -31,30 +31,30 @@ import de.uniks.networkparser.interfaces.UpdateListener;
  * @author Stefan Lindel
  */
 
-public class Deep implements SendableEntityCreator, UpdateListener {
+public class Depth implements SendableEntityCreator, UpdateListener {
 	/** Constant of Deep. */
-	public static final String DEEP = "deep";
+	public static final String DEPTH = "depth";
 	/** Variable of Deep. */
-	private int deep;
+	private int depth;
 
 	/**
 	 * @param value		The new Value
 	 * @return 			Deep Instance
 	 */
-	public Deep withDeep(int value) {
-		this.deep = value;
+	public Depth withDepth(int value) {
+		this.depth = value;
 		return this;
 	}
 
 	/** @return The Current Deep Value */
-	public int getDeep() {
-		return deep;
+	public int getDepth() {
+		return depth;
 	}
 
 	@Override
 	public boolean update(Object evt) {
 		if(evt instanceof SimpleEvent) {
-			return ((SimpleEvent)evt).getDeep() <= this.deep;
+			return ((SimpleEvent)evt).getDepth() <= this.depth;
 		}
 		return false;
 	}
@@ -62,27 +62,27 @@ public class Deep implements SendableEntityCreator, UpdateListener {
 	/**
 	 * Create a new DeepFilter and return a new Instance
 	 *
-	 * @param value		Value of Deep
-	 * @return 			a new Deep Instance
+	 * @param value		Value of depth
+	 * @return 			a new depth Instance
 	 */
-	public static Deep create(int value) {
-		return new Deep().withDeep(value);
+	public static Depth create(int value) {
+		return new Depth().withDepth(value);
 	}
 
 	@Override
 	public String[] getProperties() {
-		return new String[] {DEEP };
+		return new String[] {DEPTH };
 	}
 
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
-		return new Deep();
+		return new Depth();
 	}
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
-		if (DEEP.equalsIgnoreCase(attribute)) {
-			return ((Deep) entity).getDeep();
+		if (DEPTH.equalsIgnoreCase(attribute)) {
+			return ((Depth) entity).getDepth();
 		}
 		return null;
 	}
@@ -90,8 +90,8 @@ public class Deep implements SendableEntityCreator, UpdateListener {
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
-		if (DEEP.equalsIgnoreCase(attribute)) {
-			((Deep) entity).withDeep(Integer.parseInt("" + value));
+		if (DEPTH.equalsIgnoreCase(attribute)) {
+			((Depth) entity).withDepth(Integer.parseInt("" + value));
 			return true;
 		}
 		return false;

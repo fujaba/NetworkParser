@@ -96,6 +96,18 @@ public class GraphTest {
 				"{\"typ\":\"classdiagram\",\"style\":null,\"nodes\":[{\"typ\":\"clazz\",\"id\":\"Item\",\"head\":{\"src\":\"karli.png\"}}]}",
 				converter.convert(list, false).toString());
 	}
+	
+	@Test
+	public void testSuperClassesAsInterface() {
+		Clazz student = new Clazz().with("Student");
+		Clazz person = new Clazz().with("Person");
+		student.withSuperClazz(person);
+		Assert.assertNotNull(student.getSuperClazzes(false).first());
+		Assert.assertEquals(student.getAssociations().first().getType(), AssociationTypes.GENERALISATION);
+		person.enableInterface();
+		Assert.assertNull(student.getSuperClazzes(false).first());
+		Assert.assertEquals(student.getAssociations().first().getType(), AssociationTypes.IMPLEMENTS);
+	}	
 
 	@Test
 	public void testSuperClasses() {
@@ -103,7 +115,7 @@ public class GraphTest {
 		Clazz person = new Clazz().with("Person");
 		student.withSuperClazz(person);
 
-		Assert.assertEquals(student.getSuperClass(), person);
+		Assert.assertEquals(student.getSuperClazzes(false).first(), person);
 		Assert.assertTrue(person.getKidClazzes(false).contains(student));
 	}
 
@@ -149,7 +161,7 @@ public class GraphTest {
 		Clazz uni = new Clazz().with("Uni");
 		student.withSuperClazz(person);
 
-		Assert.assertEquals(student.getSuperClass(), person);
+		Assert.assertEquals(student.getSuperClazzes(false).first(), person);
 		Assert.assertTrue(person.getKidClazzes(false).contains(student));
 
 		uni.withBidirectional(student, "stud", Cardinality.MANY, "owner", Cardinality.ONE);

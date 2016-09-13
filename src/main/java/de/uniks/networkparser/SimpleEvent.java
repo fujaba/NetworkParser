@@ -14,7 +14,7 @@ import de.uniks.networkparser.interfaces.Entity;
 public final class SimpleEvent extends PropertyChangeEvent {
 	private static final long serialVersionUID = 1L;
 	/** Variable for Deep from Root. */
-	private int deep;
+	private int depth;
 	private Entity entity;
 	private Object value;
 	private String type;
@@ -27,10 +27,12 @@ public final class SimpleEvent extends PropertyChangeEvent {
 	 * @param property	Property of Event
 	 * @param oldValue	Old Element
 	 * @param newValue	new Element
+	 * @param depth		depth of Element in Model structure
+	 * @param modelItem	the original modelItem 
 	 */
-	public SimpleEvent(String type, BaseItem source, String property, Object oldValue, Object newValue, int deep, Object modelItem) {
+	public SimpleEvent(String type, BaseItem source, String property, Object oldValue, Object newValue, int depth, Object modelItem) {
 		super(source, property, oldValue, newValue);
-		this.deep = deep;
+		this.depth = depth;
 		this.type = type;
 		this.value = modelItem;
 	}
@@ -71,7 +73,7 @@ public final class SimpleEvent extends PropertyChangeEvent {
 	 * @param oldValue	Old Element
 	 * @param newValue	new Element
 	 * @param beforeElement	beforeElement
-	 * @param newValue	Value of KeyValue List
+	 * @param value	Value of KeyValue List
 	 */
 	public SimpleEvent(String type, BaseItem source, String property, Object oldValue, Object newValue, Object beforeElement, Object value) {
 		super(source, property, oldValue, newValue);
@@ -85,8 +87,8 @@ public final class SimpleEvent extends PropertyChangeEvent {
 		return (BaseItem) super.getSource();
 	}
 
-	public int getDeep() {
-		return deep;
+	public int getDepth() {
+		return depth;
 	}
 
 	public Entity getEntity() {
