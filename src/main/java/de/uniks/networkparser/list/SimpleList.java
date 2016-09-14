@@ -42,10 +42,7 @@ public class SimpleList<V> extends AbstractList<V> implements List<V>, Cloneable
 	public SimpleList<V> clone() {
 		return ((SimpleList<V>)getNewList(false)).init(this);
 	}
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
+	
 	@SuppressWarnings("unchecked")
 	public SimpleList<V> subList(int fromIndex, int toIndex) {
 		return (SimpleList<V>) super.subList(fromIndex, toIndex);

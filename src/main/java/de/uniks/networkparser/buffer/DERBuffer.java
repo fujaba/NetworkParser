@@ -164,7 +164,8 @@ public class DERBuffer extends ByteBuffer {
 		if (bytes != null) {
 			position -= len;
 			this.start = position;
+			return super.addBytes(bytes, len);
 		}
-		return super.addBytes(bytes, len);
+		return false;
 	}
 }

@@ -371,7 +371,7 @@ public class SQLTokener extends Tokener {
 							values.addDeletedId(primaryKey);
 						}
 					}
-				} else {
+				} else if(primaryKey != null) {
 					values.addId(primaryKey);
 					values.addDeletedId(primaryKey);
 				}

@@ -90,6 +90,9 @@ public class CSVExporter extends MenuItem implements EventHandler<ActionEvent>{
 				try {
 					writer.flush();
 					writer.close();
+				} catch (IOException e) {
+				}
+				try {
 					stream.close();
 				} catch (IOException e) {
 				}

@@ -198,4 +198,8 @@ public abstract class AbstractList<V> extends AbstractArray<V> implements Iterab
 		}
 		return true;
 	}
+	@Override
+	public int hashCode() {
+		return super.hashCode();
+	}
 }

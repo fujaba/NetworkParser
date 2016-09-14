@@ -49,10 +49,6 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V>, Cloneable, 
 	public SimpleSet<V> clone() {
 		return ((SimpleSet<V>)getNewList(false)).init(this);
 	}
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
 	@SuppressWarnings("unchecked")
 	public SimpleSet<V> subList(int fromIndex, int toIndex) {
 		return (SimpleSet<V>) super.subList(fromIndex, toIndex);
