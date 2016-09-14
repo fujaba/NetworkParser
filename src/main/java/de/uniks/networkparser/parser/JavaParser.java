@@ -70,13 +70,14 @@ public class JavaParser {
 
 	private String parseModifiers(JavaFile javaFile) {
 		// names != class
-		String result = "";
+		StringBuilder result = new StringBuilder();
 		String modifiers = " public protected private static abstract final native synchronized transient volatile strictfp ";
 		while (modifiers.indexOf(" " + javaFile.currentWord() + " ") >= 0) {
-			result += javaFile.currentWord() + " ";
+			result.append(javaFile.currentWord());
+			result.append(" ");
 			javaFile.nextToken();
 		}
-		return result;
+		return result.toString();
 	}
 
    private void parsePackageDecl(JavaFile javaFile)

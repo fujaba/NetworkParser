@@ -88,13 +88,9 @@ public class CSVExporter extends MenuItem implements EventHandler<ActionEvent>{
 			} catch (IOException e) {
 			} finally {
 				try {
-					if(writer != null) {
-						writer.flush();
-						writer.close();
-					}
-					if(stream != null) {
-						stream.close();
-					}
+					writer.flush();
+					writer.close();
+					stream.close();
 				} catch (IOException e) {
 				}
 			}

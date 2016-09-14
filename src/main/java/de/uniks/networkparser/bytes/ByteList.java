@@ -43,8 +43,6 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 	public static final byte BIT_REFERENCE = 0x52; // R = Reference
 
 	// Can be a Typ
-	protected String property;
-	protected int orientation = 1;
 	public static final String PROPERTY_PROPERTY = "property";
 	public static final String PROPERTY_TYP = "typ";
 	public static final String PROPERTY_ORIENTATION = "orientation";

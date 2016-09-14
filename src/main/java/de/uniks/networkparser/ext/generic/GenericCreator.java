@@ -160,7 +160,8 @@ public class GenericCreator implements SendableEntityCreator {
 			this.clazz.getMethod(methodName, int.class)
 					.invoke(entity, intValue);
 			return true;
-		} catch (Exception e) {
+		} catch (ReflectiveOperationException e) {
+		} catch (NumberFormatException e) {
 		}
 		// maybe a double
 		try {
@@ -168,7 +169,8 @@ public class GenericCreator implements SendableEntityCreator {
 			this.clazz.getMethod(methodName, double.class).invoke(entity,
 					doubleValue);
 			return true;
-		} catch (Exception e) {
+		} catch (ReflectiveOperationException e) {
+		} catch (NumberFormatException e) {
 		}
 		// maybe a float
 		try {
@@ -176,7 +178,8 @@ public class GenericCreator implements SendableEntityCreator {
 			this.clazz.getMethod(methodName, float.class).invoke(entity,
 					floatValue);
 			return true;
-		} catch (Exception e) {
+		} catch (ReflectiveOperationException e) {
+		} catch (NumberFormatException e) {
 		}
 		return false;
 	}
