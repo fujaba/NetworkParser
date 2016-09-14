@@ -98,6 +98,11 @@ jacocoTestReport {
 		})
 	}
 }
+
+if (project.hasProperty('branch')) {
+	new ProcessBuilder("git", "checkout", findProperty('branch')).start()
+}
+
 test.finalizedBy jacocoTestReport
 
 sourceSets.main.output.classesDir 'build/classes/main'
