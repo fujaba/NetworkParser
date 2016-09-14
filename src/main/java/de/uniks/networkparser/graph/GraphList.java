@@ -29,8 +29,8 @@ import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.list.SimpleMapEntry;
 import de.uniks.networkparser.list.SimpleSet;
 
-public class GraphList extends GraphModel implements BaseItem{
-	private String typ=GraphTokener.CLASS;
+public class GraphList extends GraphModel implements BaseItem {
+	private String typ = GraphTokener.CLASS;
 	private String style;
 	private GraphOptions options;
 
@@ -40,7 +40,7 @@ public class GraphList extends GraphModel implements BaseItem{
 	}
 
 	public String toString(Converter converter) {
-		if(converter == null) {
+		if (converter == null) {
 			return null;
 		}
 		return converter.encode(this);
@@ -56,22 +56,21 @@ public class GraphList extends GraphModel implements BaseItem{
 	}
 
 	public GraphList withEdge(String sourceName, String targetName) {
-		Association edge = new Association().with(sourceName).with(
-				new Association().with(targetName));
+		Association edge = new Association().with(sourceName).with(new Association().with(targetName));
 		super.with(edge);
 		return this;
 	}
 
 	public void initSubLinks() {
-		for(GraphEntity node : getNodes()) {
-			if(node instanceof Clazz == false) {
+		for (GraphEntity node : getNodes()) {
+			if (node instanceof Clazz == false) {
 				continue;
 			}
 			Clazz graphClazz = (Clazz) node;
 			SimpleSet<Association> childEdges = graphClazz.getAssociations();
-			for(Association edge : childEdges) {
+			for (Association edge : childEdges) {
 				SimpleSet<Association> associations = getAssociations();
-				if(associations.contains(edge) == false && associations.contains(edge.getOther()) == false) {
+				if (associations.contains(edge) == false && associations.contains(edge.getOther()) == false) {
 					super.with(edge);
 				}
 			}
@@ -80,7 +79,7 @@ public class GraphList extends GraphModel implements BaseItem{
 
 	public Clazz with(Clazz value) {
 		if (value != null) {
-			if(value.getName()==null){
+			if (value.getName() == null) {
 				value.with(value.getName(false));
 			}
 			super.with(value);
@@ -122,12 +121,12 @@ public class GraphList extends GraphModel implements BaseItem{
 	}
 
 	public Clazz getNode(String id) {
-		if(id==null){
+		if (id == null) {
 			return null;
 		}
-		for(GraphMember item : this.getChildren()) {
-			if(item instanceof Clazz && id.equalsIgnoreCase(item.getFullId())){
-				return (Clazz)item;
+		for (GraphMember item : this.getChildren()) {
+			if (item instanceof Clazz && id.equalsIgnoreCase(item.getFullId())) {
+				return (Clazz) item;
 			}
 		}
 		return null;
@@ -138,11 +137,11 @@ public class GraphList extends GraphModel implements BaseItem{
 	}
 
 	public Association getEdge(GraphEntity node, String property) {
-		for(Association edge : getAssociations()) {
+		for (Association edge : getAssociations()) {
 			Association oEdge = edge.getOther();
-			if(edge.getClazz()==node && property.equals(oEdge.getName())) {
+			if (edge.getClazz() == node && property.equals(oEdge.getName())) {
 				return edge;
-			}else if(oEdge.getClazz()==node && property.equals(edge.getName())) {
+			} else if (oEdge.getClazz() == node && property.equals(edge.getName())) {
 				return oEdge;
 			}
 		}
@@ -154,8 +153,8 @@ public class GraphList extends GraphModel implements BaseItem{
 		if (values == null) {
 			return this;
 		}
-		for(Object item : values) {
-			if(item instanceof GraphMember) {
+		for (Object item : values) {
+			if (item instanceof GraphMember) {
 				super.withChildren((GraphMember) item);
 			}
 		}
@@ -163,16 +162,16 @@ public class GraphList extends GraphModel implements BaseItem{
 	}
 
 	public Object getValue(Object key) {
-		if(this.children == null) {
+		if (this.children == null) {
 			return null;
 		}
-		if(this.children instanceof GraphMember) {
-			if(this.children == key) {
+		if (this.children instanceof GraphMember) {
+			if (this.children == key) {
 				return this.children;
 			}
 			return null;
 		}
-		if(this.children instanceof GraphSimpleSet) {
+		if (this.children instanceof GraphSimpleSet) {
 			GraphSimpleSet collection = (GraphSimpleSet) this.children;
 			return collection.getValue(key);
 		}
@@ -181,7 +180,7 @@ public class GraphList extends GraphModel implements BaseItem{
 
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
-		if(keyValue) {
+		if (keyValue) {
 			return new SimpleMapEntry<String, GraphNode>();
 		}
 		return new GraphList();

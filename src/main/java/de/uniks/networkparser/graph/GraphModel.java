@@ -1,5 +1,11 @@
 package de.uniks.networkparser.graph;
+
+import de.uniks.networkparser.graph.Clazz.ClazzType;
+import de.uniks.networkparser.graph.util.AssociationSet;
 import de.uniks.networkparser.graph.util.ClazzSet;
+import de.uniks.networkparser.interfaces.Condition;
+import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.list.SimpleSet;
 /*
 NetworkParser
 Copyright (c) 2011 - 2015, Stefan Lindel
@@ -21,7 +27,6 @@ express or implied.
 See the Licence for the specific language governing
 permissions and limitations under the Licence.
 */
-import de.uniks.networkparser.interfaces.Condition;
 
 public abstract class GraphModel extends GraphEntity {
 	private String defaultAuthorName;
@@ -123,5 +128,60 @@ public abstract class GraphModel extends GraphEntity {
 
 	public boolean dumpHTML(String diagramName){
 		return false;
+	}
+	
+	public boolean fixClassModel() {
+		Clazz[] classes = getClazzes().toArray(new Clazz[getClazzes().size()]);
+		SimpleSet<Clazz> visited = new SimpleSet<Clazz>();
+		for (Clazz item : classes) {
+			fixClassModel(item, visited);
+		}
+		return true;
+	}
+
+	private void fixClassModel(Clazz item, SimpleSet<Clazz> visited) {
+		// Run over Interfaces, SuperClazzes, KidClazzes, Associations
+		AssociationSet assocs = item.getAssociations();
+		for (Association role : assocs) {
+			item.repairAssociation(role);
+			Clazz clazz = role.getOtherClazz();
+			if (clazz.getClassModel() == null) {
+				clazz.setClassModel(this);
+				if (visited.add(clazz)) {
+					fixClassModel(clazz, visited);
+				}
+			}
+			this.addAssoc(role);
+		}
+
+		// Fix the Clazz
+		if (item.getType() == ClazzType.ENUMERATION) {
+			SimpleSet<Literal> literals = item.getValues();
+			SimpleSet<Attribute> attributes = item.getAttributes();
+			for (Literal literal : literals) {
+				int no = 0;
+				SimpleList<Object> values = literal.getValues();
+				if (values != null) {
+					for (Object value : values) {
+						if (value != null) {
+							String type = value.getClass().getName();
+							if (attributes.size() > no) {
+								Attribute attribute = attributes.get(no);
+								if (attribute.getType().getName(false).equals(type)) {
+									// Everthing is ok
+								} else {
+									attribute.with(DataType.OBJECT);
+								}
+							} else {
+								Attribute attribute = new Attribute("value" + no, DataType.create(type));
+								attributes.add(attribute);
+								item.with(attribute);
+							}
+						}
+						no++;
+					}
+				}
+			}
+		}
 	}
 }

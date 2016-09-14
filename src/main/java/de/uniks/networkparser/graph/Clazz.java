@@ -315,7 +315,7 @@ public class Clazz extends GraphEntity {
 		return collection;
 	}
 	
-	private void repairAssociation(Association assoc) {
+	void repairAssociation(Association assoc) {
 		if(AssociationTypes.IMPLEMENTS != assoc.getType() && AssociationTypes.GENERALISATION != assoc.getType()) {
 			// Wrong way try another round
 			assoc = assoc.getOther();
