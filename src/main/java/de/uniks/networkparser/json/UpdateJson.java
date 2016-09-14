@@ -1,25 +1,27 @@
 package de.uniks.networkparser.json;
 
 /*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
+NetworkParser
+The MIT License
+Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
 
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
- http://ec.europa.eu/idabc/eupl5
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 */
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -27,14 +29,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map.Entry;
-
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.list.SimpleIteratorSet;
 import de.uniks.networkparser.list.SimpleKeyValueList;
-import de.uniks.networkparser.logic.SimpleMapEvent;
-import de.uniks.networkparser.logic.UpdateCondition;
+import de.uniks.networkparser.UpdateCondition;
 /**
  * The listener interface for receiving update events. The class that is
  * interested in processing a update event implements this interface, and the
@@ -51,9 +53,7 @@ public class UpdateJson implements PropertyChangeListener {
 	/** The suspend id list. */
 	private ArrayList<String> suspendIdList;
 
-//	private UpdateListener atomarFilter;
-
-	private Filter updateFilter = new Filter().withConvertable(new UpdateCondition());
+	private Filter updateFilter = new Filter().withStrategy(IdMap.UPDATE).withConvertable(new UpdateCondition());
 
 	/**
 	 * Instantiates a new update listener.
@@ -103,7 +103,7 @@ public class UpdateJson implements PropertyChangeListener {
 		if(array.size() > 0) {
 			JsonObject message = new JsonObject();
 			message.put(IdMap.UPDATE, array);
-			this.map.notify(new SimpleMapEvent(IdMap.NEW, map, IdMap.UPDATE).with(message));
+			this.map.notify(new SimpleEvent(IdMap.NEW, message, map, null, null, null));
 		}
 
 		this.suspendIdList = null;
@@ -119,7 +119,8 @@ public class UpdateJson implements PropertyChangeListener {
 	public void propertyChange(PropertyChangeEvent evt) {
 		Object oldValue = evt.getOldValue();
 		Object newValue = evt.getNewValue();
-        this.updateFilter.withPropertyRegard(map.getCondition());
+
+		this.updateFilter.withPropertyRegard(map.getListener());
 
 		if ((oldValue == null && newValue == null)
 				|| (oldValue != null && oldValue.equals(newValue))) {
@@ -146,7 +147,7 @@ public class UpdateJson implements PropertyChangeListener {
 		if (!done) {
 			// this property is not part of the replicated model, do not
 			// replicate
-			// if propertyname is not found and teh name is REMOVE_YOU it remove it from the IdMap
+			// if propertyname is not found and the name is REMOVE_YOU it remove it from the IdMap
 			if(IdMap.REMOVE_YOU.equals(propertyName)) {
 				this.removeObj(evt.getOldValue(), true);
 			}
@@ -202,7 +203,7 @@ public class UpdateJson implements PropertyChangeListener {
 			jsonObject.put(Filter.PRIO, this.map.getCounter().getPrio());
 		}
 		if (this.suspendIdList == null) {
-			this.map.notify(new SimpleMapEvent(evt, IdMap.NEW, map, jsonObject));
+			this.map.notify(new SimpleEvent(IdMap.NEW, jsonObject, evt,  map));
 		}
 	}
 
@@ -302,7 +303,7 @@ public class UpdateJson implements PropertyChangeListener {
 				if (removeJsonObject != null
 						&& removeJsonObject instanceof JsonObject) {
 					JsonObject json = (JsonObject) removeJsonObject;
-					this.map.notify(new SimpleMapEvent(IdMap.REMOVE, map, key, this.map.decode(json), null).with(json).withModelItem(masterObj));
+					this.map.notify(new SimpleEvent(IdMap.REMOVE, json, map, key, this.map.decode(json), null).withModelItem(masterObj));
 				}
 			}
 			return masterObj;
@@ -319,12 +320,12 @@ public class UpdateJson implements PropertyChangeListener {
 					setValue(creator, masterObj, key, newValue,
 							IdMap.UPDATE);
 
-					this.map.notify(new SimpleMapEvent(IdMap.UPDATE, map, key, oldValue, newValue).with(update).withModelItem(masterObj));
+					this.map.notify(new SimpleEvent(IdMap.UPDATE, update, map, key, oldValue, newValue).withModelItem(masterObj));
 				} else if (checkPrio(prio)) {
 					Object newValue = update.get(key);
 					setValue(creator, masterObj, key, newValue,
 							IdMap.UPDATE);
-					this.map.notify(new SimpleMapEvent(IdMap.UPDATE, map, key, oldValue, newValue).with(update).withModelItem(masterObj));
+					this.map.notify(new SimpleEvent(IdMap.UPDATE, update, map, key, oldValue, newValue).withModelItem(masterObj));
 				}
 			}
 			return masterObj;
@@ -395,17 +396,22 @@ public class UpdateJson implements PropertyChangeListener {
 			Object value = this.map.decode(json);
 			if (value != null) {
 				creator.setValue(element, key, value, typ);
-				if(this.map.notify(new SimpleMapEvent(typ, map, key, null, value).with(json).withModelItem(element))){
+				if(this.map.notify(new SimpleEvent(typ, json, map, key, null, value).withModelItem(element))){
 					return element;
 				}
 			}
 		} else {
 			creator.setValue(element, key, newValue, typ);
-			if(this.map.notify(new SimpleMapEvent(typ, map, key, null, newValue).withModelItem(element))){
+			if(this.map.notify(new SimpleEvent(typ, null, map, key, null, newValue).withModelItem(element))){
 				return element;
 			}
 		}
 		return null;
+	}
+
+	public UpdateJson withReguardFilter(UpdateListener filter) {
+		this.updateFilter.withPropertyRegard(filter);
+		return this;
 	}
 
 	/**

@@ -1,29 +1,30 @@
 package de.uniks.networkparser.converter;
 
 /*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
+NetworkParser
+The MIT License
+Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
 
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
- http://ec.europa.eu/idabc/eupl5
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 */
 import java.util.ArrayList;
 import java.util.Collection;
-
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.graph.Association;
@@ -94,7 +95,6 @@ public class GraphConverter implements Converter{
 		return root;
 	}
 
-
 	public JsonObject convertToJson(String typ, JsonArray list,
 			boolean removePackage) {
 		GraphList root = convertGraphList(typ, list);
@@ -126,7 +126,7 @@ public class GraphConverter implements Converter{
 					// Must be a Link to 1
 					Clazz newNode = parseJsonObject(root,
 							(JsonObject) value);
-					Association assoc  = new Association(newNode).with(Cardinality.ONE).with(props
+					Association assoc = new Association(newNode).with(Cardinality.ONE).with(props
 							.getKeyByIndex(i)).with(AssociationTypes.UNDIRECTIONAL);
 					Association assocOther= new Association(graphNode).with(AssociationTypes.EDGE);
 					assoc.with(assocOther);
@@ -167,11 +167,11 @@ public class GraphConverter implements Converter{
 						graphNode.with(attribute);
 					}
 				}else {
-                    Attribute attribute = GraphUtil.createAttribute().with(props.getKeyByIndex(i));
-                    if (value != null) {
-                        attribute.with(DataType.create(value.getClass())).withValue(value.toString());
-                        graphNode.with(attribute);
-                    }
+					Attribute attribute = GraphUtil.createAttribute().with(props.getKeyByIndex(i));
+					if (value != null) {
+						attribute.with(DataType.create(value.getClass())).withValue(value.toString());
+						graphNode.with(attribute);
+					}
 				}
 			}
 		}
@@ -185,7 +185,10 @@ public class GraphConverter implements Converter{
 		if(root.getOptions() != null) {
 			jsonRoot.add(OPTIONS, root.getOptions().getJson());
 		}
-		jsonRoot.put(STYLE, root.getStyle());
+		String style = root.getStyle();
+		if(style!=null) {
+			jsonRoot.put(STYLE, root.getStyle());
+		}
 		jsonRoot.put(NODES, parseEntities(typ, root, removePackage));
 		jsonRoot.withKeyValue(EDGES, parseEdges(typ, root.getAssociations(), removePackage));
 		return jsonRoot;
@@ -201,7 +204,7 @@ public class GraphConverter implements Converter{
 			for (GraphEntity source : edgeNodes) {
 				SimpleSet<GraphEntity> edgeOtherNodes = GraphUtil.getNodes(edge.getOther());
 				for (GraphEntity target : edgeOtherNodes) {
-					JsonObject child =  parseEdge(typ, source, target, edge, shortName, ids);
+					JsonObject child = parseEdge(typ, source, target, edge, shortName, ids);
 					if(child != null) {
 						result.add(child);
 					}
@@ -319,7 +322,7 @@ public class GraphConverter implements Converter{
 			item.put(TYP, PATTERN);
 			String bounds = ((GraphPattern) entity).getBounds();
 			if(bounds != null) {
-				item.put(STYLE,  bounds);
+				item.put(STYLE, bounds);
 			}
 			item.put(ID, entity.getName());
 		}else if(entity instanceof GraphList) {

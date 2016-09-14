@@ -1,28 +1,29 @@
 package de.uniks.networkparser.logic;
 
-import java.beans.PropertyChangeEvent;
-
 /*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
+NetworkParser
+The MIT License
+Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
 
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
- http://ec.europa.eu/idabc/eupl5
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 */
+import java.beans.PropertyChangeEvent;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.UpdateListener;
 
@@ -59,11 +60,16 @@ public class Between implements UpdateListener, SendableEntityCreator {
 
 	@Override
 	public boolean update(Object evt) {
+		if(evt instanceof PropertyChangeEvent == false) {
+			return false;
+		}
 		PropertyChangeEvent event = (PropertyChangeEvent) evt;
-		if (event.getSource() instanceof Double) {
-			return (((Double) event.getSource()) >= fromValue && ((Double) event.getSource()) <= toValue);
-		}else if (event.getSource() instanceof Integer) {
-			return (((Integer) event.getSource()) >= fromValue && ((Integer) event.getSource()) <= toValue);
+		Object newValue = event.getNewValue();
+		
+		if (newValue instanceof Double) {
+			return (((Double) newValue) >= fromValue && ((Double) newValue) <= toValue);
+		}else if (newValue instanceof Integer) {
+			return (((Integer) newValue) >= fromValue && ((Integer) newValue) <= toValue);
 		}
 		return false;
 	}
@@ -93,11 +99,19 @@ public class Between implements UpdateListener, SendableEntityCreator {
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
 		if (FROM.equalsIgnoreCase(attribute)) {
-			((Between) entity).withFrom((Double) value);
+			if(value instanceof  Double) {
+				((Between) entity).withFrom((Double) value);
+			} else if(value instanceof Integer) {
+				((Between) entity).withFrom((Integer) value);
+			}
 			return true;
 		}
 		if (TO.equalsIgnoreCase(attribute)) {
-			((Between) entity).withTo((Double) value);
+			if(value instanceof  Double) {
+				((Between) entity).withTo((Double) value);
+			} else if(value instanceof Integer) {
+				((Between) entity).withTo((Integer) value);
+			}
 			return true;
 		}
 		return false;

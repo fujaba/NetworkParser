@@ -41,6 +41,9 @@ public class Equals implements UpdateListener, SendableEntityCreator {
 			}
 			return buffer.byteAt(pos) == bytevalue;
 		}
+		if(event.getPropertyName() == null) {
+			return false;
+		}
 		return event.getPropertyName().equals(strValue);
 	}
 

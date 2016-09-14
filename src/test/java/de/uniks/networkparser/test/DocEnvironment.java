@@ -58,7 +58,6 @@ public class DocEnvironment {
 		sb.append("\tnew Graph(json).layout();"+CRLF);
 		sb.append("</script></body></html>");
 
-
 		new File("build").mkdir();
 		FileWriter fstream = new FileWriter("build/"+fileName);
 		BufferedWriter out = new BufferedWriter(fstream);

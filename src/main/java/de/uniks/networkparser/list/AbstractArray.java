@@ -1,35 +1,38 @@
 package de.uniks.networkparser.list;
 
 /*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
+NetworkParser
+The MIT License
+Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
 
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
- http://ec.europa.eu/idabc/eupl5
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 */
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
+
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 
-public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
+public abstract class AbstractArray<V> implements BaseItem {
 	/** Is Allow Duplicate Items in List */
 	public static final byte ALLOWDUPLICATE = 0x01;
 	/** Is Allow Empty Value in List (null) */
@@ -60,6 +63,7 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 	static final int BIG_VALUE = 4;
 	static final int SIZE_BIG = 6;
 
+	private Class<?> type;
 	/**
 	 * Start index of Elements-Array
 	 */
@@ -90,7 +94,7 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 
 	/** The size of the ArrayList (the number of elements it contains). */
 	int size;
-
+	
 	/**
 	 * Init-List with Collection
 	 *
@@ -180,7 +184,6 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 		}
 		return 1;
 	}
-
 
 	public byte flag() {
 		return flag;
@@ -606,7 +609,9 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 			}
 		}
 		Object[] items;
-		if (isComplex(size)) {
+		if ((flag & MAP) == MAP) {
+			items = ((Object[]) elements[offset]);
+		} else if (isComplex(size) && offset != SMALL_VALUE) {
 			items = ((Object[]) elements[offset]);
 		} else {
 			items = elements;
@@ -654,6 +659,16 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 		return pos;
 	}
 
+	protected Class<?> getTypClass() {
+		return null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <ST extends AbstractArray<V>> ST withType(Class<?> type) {
+		this.type = type;
+		return (ST)this;
+	}
+	
 	/**
 	 * Add a Key to internal List and Array if nesessary Method to manipulate
 	 * Array
@@ -665,6 +680,17 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 	 */
 	final int addKey(int pos, Object element, int size) {
 		Object[] keys;
+		// declare the class instance
+		if(this.type != null) {
+			if(this.type.isAssignableFrom(element.getClass())==false) {
+				return -1;
+			}
+		} else if(getTypClass() != null) {
+			this.type = getTypClass();
+			if(this.type.isAssignableFrom(element.getClass())==false) {
+				return -1;
+			}
+		}
 
 		if (isComplex(size)) {
 			keys = (Object[]) elements[SMALL_KEY];
@@ -748,14 +774,15 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 		return this;
 	}
 
-	public AbstractArray<V> without(Object... values) {
+	@SuppressWarnings("unchecked")
+	public <ST extends AbstractArray<V>> ST without(Object... values) {
 		if (values == null) {
-			return this;
+			return (ST)this;
 		}
 		for (Object value : values) {
 			this.removeByObject(value);
 		}
-		return this;
+		return (ST)this;
 	}
 
 	protected void setValue(int pos, Object value, int offset) {
@@ -1024,7 +1051,7 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 		return index;
 	}
 
-	Object removeByIndex(int index, int offset, int offsetIndex) {
+	protected Object removeByIndex(int index, int offset, int offsetIndex) {
 		Object item = removeItem(index, offset, offsetIndex);
 		if (item != null) {
 			size--;
@@ -1032,7 +1059,7 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 				if (offsetIndex == index) {
 					return item;
 				}
-				if (isComplex(size)) {
+				if (size >= MINHASHINGSIZE) {
 					if (elements[DELETED] == null) {
 						elements[DELETED] = new Integer[] { index };
 					} else {
@@ -1053,7 +1080,7 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 		return item;
 	}
 
-	Object removeItem(int index, int offset, int oldIndex) {
+	protected Object removeItem(int index, int offset, int oldIndex) {
 		if (elements == null) {
 			return null;
 		}
@@ -1161,7 +1188,10 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 	public Object getValue(Object key) {
 		int pos = indexOf(key);
 		if (pos >= 0) {
-			return this.getByIndex(SMALL_VALUE, pos, size);
+			if ((flag & MAP) == MAP) {
+				return this.getByIndex(SMALL_VALUE, pos, size);
+			}
+			return this.getByIndex(SMALL_KEY, pos, size);
 		}
 		if (!(key instanceof String)) {
 			return null;
@@ -1198,7 +1228,7 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 			id = -1;
 		}
 
-		Object child = getByIndex(SMALL_VALUE, indexOf(keyString.substring(0, len)), size);
+		Object child = getByIndex(SMALL_VALUE, indexOf(keyString.substring(0, len))+this.index, size);
 		if (child != null) {
 			if (end == 0) {
 				if (id >= 0 || id == -2) {
@@ -1234,7 +1264,7 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 							return ((SimpleKeyValueList<?, ?>) list.get(id)).getValue(keyString.substring(end + 1));
 						}
 					}
-				} else {
+				} else if(child instanceof SimpleKeyValueList<?, ?>){
 					return ((SimpleKeyValueList<?, ?>) child).getValue(keyString.substring(end + 1));
 				}
 			}
@@ -1265,7 +1295,8 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 			return false;
 		}
 		boolean modified = false;
-		Iterator<?> it = iterator();
+
+		Iterator<?> it =  new SimpleIterator<V>(this);
 		while (it.hasNext()) {
 			if (!c.contains(it.next())) {
 				it.remove();
@@ -1273,13 +1304,6 @@ public abstract class AbstractArray<V> implements BaseItem, Iterable<V> {
 			}
 		}
 		return modified;
-	}
-
-	public Iterator<V> iterator() {
-		return new SimpleIterator<V>(this).withCheckPointer(true);
-	}
-	public Iterator<V> iterator(boolean checkPointer) {
-		return new SimpleIterator<V>(this).withCheckPointer(checkPointer);
 	}
 
 	/**

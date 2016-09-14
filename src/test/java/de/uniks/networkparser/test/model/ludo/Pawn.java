@@ -25,206 +25,148 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.LinkedHashSet;
 
-public class Pawn
-{
+public class Pawn {
+	//==========================================================================
+	public Object get(String attrName) {
+		if (PROPERTY_COLOR.equalsIgnoreCase(attrName)) {
+			return getColor();
+		}
+		if (PROPERTY_X.equalsIgnoreCase(attrName)) {
+			return getX();
+		}
+		if (PROPERTY_Y.equalsIgnoreCase(attrName)) {
+			return getY();
+		}
+		if (PROPERTY_PLAYER.equalsIgnoreCase(attrName)) {
+			return getPlayer();
+		}
+		if (PROPERTY_POS.equalsIgnoreCase(attrName)) {
+			return getPos();
+		}
+		return null;
+	}
 
+	//==========================================================================
+	public boolean set(String attrName, Object value) {
+		if (PROPERTY_COLOR.equalsIgnoreCase(attrName)) {
+			setColor((String) value);
+			return true;
+		}
+		if (PROPERTY_X.equalsIgnoreCase(attrName)) {
+			setX(Integer.parseInt(value.toString()));
+			return true;
+		}
+		if (PROPERTY_Y.equalsIgnoreCase(attrName)) {
+			setY(Integer.parseInt(value.toString()));
+			return true;
+		}
+		if (PROPERTY_PLAYER.equalsIgnoreCase(attrName)) {
+			setPlayer((Player) value);
+			return true;
+		}
+		if (PROPERTY_POS.equalsIgnoreCase(attrName)) {
+			setPos((Field) value);
+			return true;
+		}
+		return false;
+	}
 
-   //==========================================================================
+	//==========================================================================
+	protected PropertyChangeSupport listeners = null;
+	public void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+		if(listeners != null) {
+			listeners.firePropertyChange(propertyName, oldValue, newValue);
+		}
+	}
 
-   public Object get(String attrName)
-   {
-	  if (PROPERTY_COLOR.equalsIgnoreCase(attrName))
-	  {
-		 return getColor();
-	  }
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		if(listeners == null) {
+			listeners = new PropertyChangeSupport(this);
+		}
+		listeners.addPropertyChangeListener(listener);
+	}
 
-	  if (PROPERTY_X.equalsIgnoreCase(attrName))
-	  {
-		 return getX();
-	  }
+	//==========================================================================
+	public void removeYou() {
+		setPlayer(null);
+		setPos(null);
+		firePropertyChange("REMOVE_YOU", this, null);
+	}
 
-	  if (PROPERTY_Y.equalsIgnoreCase(attrName))
-	  {
-		 return getY();
-	  }
+	//==========================================================================
+	public static final String PROPERTY_COLOR = "color";
+	private String color;
 
-	  if (PROPERTY_PLAYER.equalsIgnoreCase(attrName))
-	  {
-		 return getPlayer();
-	  }
+	public String getColor() {
+		return this.color;
+	}
 
-	  if (PROPERTY_POS.equalsIgnoreCase(attrName))
-	  {
-		 return getPos();
-	  }
+	public void setColor(String value) {
+		if ( ! StrUtil.stringEquals(this.color, value)) {
+			String oldValue = this.color;
+			this.color = value;
+			firePropertyChange(PROPERTY_COLOR, oldValue, value);
+		}
+	}
 
-	  return null;
-   }
+	public Pawn withColor(String value) {
+		setColor(value);
+		return this;
+	}
 
+	@Override
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		result.append(" ").append(this.getColor());
+		result.append(" ").append(this.getX());
+		result.append(" ").append(this.getY());
+		return result.substring(1);
+	}
 
-   //==========================================================================
+	//==========================================================================
+	public static final String PROPERTY_X = "x";
+	private int x;
 
-   public boolean set(String attrName, Object value)
-   {
-	  if (PROPERTY_COLOR.equalsIgnoreCase(attrName))
-	  {
-		 setColor((String) value);
-		 return true;
-	  }
+	public int getX() {
+		return this.x;
+	}
 
-	  if (PROPERTY_X.equalsIgnoreCase(attrName))
-	  {
-		 setX(Integer.parseInt(value.toString()));
-		 return true;
-	  }
+	public void setX(int value) {
+		if (this.x != value) {
+			int oldValue = this.x;
+			this.x = value;
+			firePropertyChange(PROPERTY_X, oldValue, value);
+		}
+	}
 
-	  if (PROPERTY_Y.equalsIgnoreCase(attrName))
-	  {
-		 setY(Integer.parseInt(value.toString()));
-		 return true;
-	  }
+	public Pawn withX(int value) {
+		setX(value);
+		return this;
+	}
 
-	  if (PROPERTY_PLAYER.equalsIgnoreCase(attrName))
-	  {
-		 setPlayer((Player) value);
-		 return true;
-	  }
+	//==========================================================================
+	public static final String PROPERTY_Y = "y";
+	private int y;
 
-	  if (PROPERTY_POS.equalsIgnoreCase(attrName))
-	  {
-		 setPos((Field) value);
-		 return true;
-	  }
+	public int getY() {
+		return this.y;
+	}
 
-	  return false;
-   }
+	public void setY(int value) {
+		if (this.y != value) {
+			int oldValue = this.y;
+			this.y = value;
+			firePropertyChange(PROPERTY_Y, oldValue, value);
+		}
+	}
 
+	public Pawn withY(int value) {
+		setY(value);
+		return this;
+	}
 
-   //==========================================================================
-
-   protected PropertyChangeSupport listeners = null;
-
-   public void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
-	   if(listeners != null) {
-		   listeners.firePropertyChange(propertyName, oldValue, newValue);
-	   }
-   }
-
-   public void addPropertyChangeListener(PropertyChangeListener listener) {
-	   if(listeners == null) {
-		   listeners = new PropertyChangeSupport(this);
-	   }
-	   listeners.addPropertyChangeListener(listener);
-   }
-
-
-   //==========================================================================
-
-   public void removeYou()
-   {
-	  setPlayer(null);
-	  setPos(null);
-	  firePropertyChange("REMOVE_YOU", this, null);
-   }
-
-
-   //==========================================================================
-
-   public static final String PROPERTY_COLOR = "color";
-
-   private String color;
-
-   public String getColor()
-   {
-	  return this.color;
-   }
-
-   public void setColor(String value)
-   {
-	  if ( ! StrUtil.stringEquals(this.color, value))
-	  {
-		 String oldValue = this.color;
-		 this.color = value;
-		 firePropertyChange(PROPERTY_COLOR, oldValue, value);
-	  }
-   }
-
-   public Pawn withColor(String value)
-   {
-	  setColor(value);
-	  return this;
-   }
-
-   @Override
-   public String toString()
-   {
-	  StringBuilder result = new StringBuilder();
-
-	  result.append(" ").append(this.getColor());
-	  result.append(" ").append(this.getX());
-	  result.append(" ").append(this.getY());
-	  return result.substring(1);
-   }
-
-   //==========================================================================
-   public static final String PROPERTY_X = "x";
-
-   private int x;
-
-   public int getX()
-   {
-	  return this.x;
-   }
-
-   public void setX(int value)
-   {
-	  if (this.x != value)
-	  {
-		 int oldValue = this.x;
-		 this.x = value;
-		 firePropertyChange(PROPERTY_X, oldValue, value);
-	  }
-   }
-
-   public Pawn withX(int value)
-   {
-	  setX(value);
-	  return this;
-   }
-
-
-   //==========================================================================
-
-   public static final String PROPERTY_Y = "y";
-
-   private int y;
-
-   public int getY()
-   {
-	  return this.y;
-   }
-
-   public void setY(int value)
-   {
-	  if (this.y != value)
-	  {
-		 int oldValue = this.y;
-		 this.y = value;
-		 firePropertyChange(PROPERTY_Y, oldValue, value);
-	  }
-   }
-
-   public Pawn withY(int value)
-   {
-	  setY(value);
-	  return this;
-   }
-
-
-   public static final LinkedHashSet<Pawn> EMPTY_SET = new LinkedHashSet<Pawn>();
-
-
-   /********************************************************************
+	public static final LinkedHashSet<Pawn> EMPTY_SET = new LinkedHashSet<Pawn>();
+	/********************************************************************
 	* <pre>
 	*			  many					   one
 	* Pawn ----------------------------------- Player
@@ -232,58 +174,42 @@ public class Pawn
 	* </pre>
 	*/
 
-   public static final String PROPERTY_PLAYER = "player";
+	public static final String PROPERTY_PLAYER = "player";
+	private Player player = null;
+	public Player getPlayer() {
+		return this.player;
+	}
 
-   private Player player = null;
-
-   public Player getPlayer()
-   {
-	  return this.player;
+	public boolean setPlayer(Player value) {
+		boolean changed = false;
+		if (this.player != value) {
+			Player oldValue = this.player;
+			if (this.player != null) {
+				this.player = null;
+				oldValue.withoutPawns(this);
+			}
+			this.player = value;
+			if (value != null) {
+				value.withPawns(this);
+			}
+			firePropertyChange(PROPERTY_PLAYER, oldValue, value);
+			changed = true;
+		}
+		return changed;
    }
 
-   public boolean setPlayer(Player value)
-   {
-	  boolean changed = false;
+	public Pawn withPlayer(Player value) {
+		setPlayer(value);
+		return this;
+	}
 
-	  if (this.player != value)
-	  {
-		 Player oldValue = this.player;
+	public Player createPlayer() {
+		Player value = new Player();
+		withPlayer(value);
+		return value;
+	}
 
-		 if (this.player != null)
-		 {
-			this.player = null;
-			oldValue.withoutPawns(this);
-		 }
-
-		 this.player = value;
-
-		 if (value != null)
-		 {
-			value.withPawns(this);
-		 }
-
-		 firePropertyChange(PROPERTY_PLAYER, oldValue, value);
-		 changed = true;
-	  }
-
-	  return changed;
-   }
-
-   public Pawn withPlayer(Player value)
-   {
-	  setPlayer(value);
-	  return this;
-   }
-
-   public Player createPlayer()
-   {
-	  Player value = new Player();
-	  withPlayer(value);
-	  return value;
-   }
-
-
-   /********************************************************************
+	/********************************************************************
 	* <pre>
 	*			  many					   one
 	* Pawn ----------------------------------- Field
@@ -291,54 +217,39 @@ public class Pawn
 	* </pre>
 	*/
 
-   public static final String PROPERTY_POS = "pos";
+	public static final String PROPERTY_POS = "pos";
+	private Field pos = null;
 
-   private Field pos = null;
+	public Field getPos() {
+		return this.pos;
+	}
 
-   public Field getPos()
-   {
-	  return this.pos;
-   }
+	public boolean setPos(Field value) {
+		boolean changed = false;
+		if (this.pos != value) {
+			Field oldValue = this.pos;
+			if (this.pos != null) {
+				this.pos = null;
+				oldValue.withoutPawns(this);
+			}
+			this.pos = value;
+			if (value != null) {
+				value.withPawns(this);
+			}
+			firePropertyChange(PROPERTY_POS, oldValue, value);
+			changed = true;
+		}
+		return changed;
+	}
 
-   public boolean setPos(Field value)
-   {
-	  boolean changed = false;
+	public Pawn withPos(Field value) {
+		setPos(value);
+		return this;
+	}
 
-	  if (this.pos != value)
-	  {
-		 Field oldValue = this.pos;
-
-		 if (this.pos != null)
-		 {
-			this.pos = null;
-			oldValue.withoutPawns(this);
-		 }
-
-		 this.pos = value;
-
-		 if (value != null)
-		 {
-			value.withPawns(this);
-		 }
-
-		 firePropertyChange(PROPERTY_POS, oldValue, value);
-		 changed = true;
-	  }
-
-	  return changed;
-   }
-
-   public Pawn withPos(Field value)
-   {
-	  setPos(value);
-	  return this;
-   }
-
-   public Field createPos()
-   {
-	  Field value = new Field();
-	  withPos(value);
-	  return value;
-   }
+	public Field createPos() {
+		Field value = new Field();
+		withPos(value);
+		return value;
+	}
 }
-

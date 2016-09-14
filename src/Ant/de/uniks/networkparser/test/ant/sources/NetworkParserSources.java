@@ -120,9 +120,8 @@ public class NetworkParserSources {
 			}
 		}
 
-
 		SourceItem source= new SourceItem(file);
-		for (MethodItem m :  source.getMethods().getItems()){
+		for (MethodItem m : source.getMethods().getItems()){
 			if(m.getLinesOfCode()<1 && m.getName().length()>0){
 				System.out.println("Empty Method: " +m.getName()+ ":" +file.getName());
 			}
@@ -169,16 +168,18 @@ public class NetworkParserSources {
 		}
 	}
 
-	public void createComment(String commentPath, String sourcePath, String projectName){
+	public void createComment(String commentPath, String sourcePath, String projectName, boolean showDebug){
 		File path= new File(commentPath);
 		SourceItem commentFile= new SourceItem(path);
 		init();
-		createdComment(sourcePath, commentFile, projectName);
+		createdComment(sourcePath, commentFile, projectName, showDebug);
 		printResult();
 	}
-	private void createdComment(String sourcePath, SourceItem commentFile, String projectName){
+	private void createdComment(String sourcePath, SourceItem commentFile, String projectName, boolean showDebug){
 		File path= new File(sourcePath);
-		System.out.println("TESTE: "+sourcePath);
+		if(showDebug) {
+			System.out.println("TESTE: "+sourcePath);
+		}
 
 		File[] listFiles = path.listFiles();
 		if(listFiles == null) {
@@ -190,7 +191,7 @@ public class NetworkParserSources {
 			}
 
 			if(child.isDirectory()){
-				createdComment(sourcePath+child.getName()+ "/", commentFile, projectName);
+				createdComment(sourcePath+child.getName()+ "/", commentFile, projectName, showDebug);
 			} else {
 				if(!child.getAbsolutePath().endsWith(".java")){
 					continue;
@@ -200,7 +201,10 @@ public class NetworkParserSources {
 				 String customComment = source.getCustomComment();
 				 if(customComment.length()>0){
 					 customItems.put(customComment, source.getFileName());
-					 System.out.println("Thirdparty-Source: " +source.getFileName());
+//					 System.out.println("Thirdparty-Source (" +source.getFileName()+":1)");
+					 String relativ = source.getFileName().substring(new File("src\\main\\java").getAbsolutePath().length() + 1);
+					 int pos = relativ.lastIndexOf("\\");
+					 System.out.println("Thirdparty-Source "+relativ.replaceAll("\\\\", ".")+"("+relativ.substring(pos+1)+":1)");
 					 thirdparty++;
 					 continue;
 				 }

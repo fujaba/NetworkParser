@@ -1,25 +1,27 @@
 package de.uniks.networkparser.xml;
 
 /*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
+NetworkParser
+The MIT License
+Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
 
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
- http://ec.europa.eu/idabc/eupl5
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 */
 import java.util.ArrayList;
 import de.uniks.networkparser.EntityUtil;
@@ -105,23 +107,25 @@ public class XMLTokener extends Tokener {
 	}
 
 	public void parseToEntity(Entity entity) {
+		skipHeader();
 		char c = getCurrentChar();
 		if (c != ITEMSTART) {
 			c = nextClean(false);
 		}
-		if (c != ITEMSTART) {
-			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
-				throw new RuntimeException("A XML text must begin with '<'");
-			}
-			return;
-		}
-		if (!(entity instanceof XMLEntity)) {
+		if (entity instanceof XMLEntity == false) {
 			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
 				throw new RuntimeException("Parse only XMLEntity");
 			}
 			return;
 		}
 		XMLEntity xmlEntity = (XMLEntity) entity;
+		if (c != ITEMSTART) {
+//			xmlEntity.withValue(this.buffer);
+			if (isError(this, "parseToEntity", NetworkParserLog.ERROR_TYP_PARSING, entity)) {
+				throw new RuntimeException("A XML text must begin with '<'");
+			}
+			return;
+		}
 		xmlEntity.setType(this.buffer.nextToken(Buffer.STOPCHARSXMLEND).toString());
 		XMLEntity child;
 		while (true) {
@@ -134,7 +138,7 @@ public class XMLTokener extends Tokener {
 					return;
 				}
 				if (c != ITEMSTART) {
-					xmlEntity.setValueItem(nextString(new CharacterBuffer(), false, false, '<').toString());
+					xmlEntity.withValue(nextString(new CharacterBuffer(), false, false, '<').toString());
 					continue;
 				}
 			}
@@ -144,6 +148,9 @@ public class XMLTokener extends Tokener {
 				if (nextChar == '/') {
 					skipTo(ITEMEND, false);
 					break;
+				} else if(nextChar == '!') {
+					skipTo("-->", true, true);
+					skip();
 				} else {
 					buffer.withLookAHead(c);
 					if (getCurrentChar() == '<') {
@@ -152,7 +159,7 @@ public class XMLTokener extends Tokener {
 						xmlEntity.with(child);
 						skip();
 					} else {
-						xmlEntity.setValueItem(nextString(new CharacterBuffer(), false, false, '<').toString());
+						xmlEntity.withValue(nextString(new CharacterBuffer(), false, false, '<').toString());
 					}
 				}
 			} else if (c == '/') {
@@ -183,11 +190,12 @@ public class XMLTokener extends Tokener {
 			if(tag == null) {
 				tag = new CharacterBuffer();
 				break;
-			}else if(tag.equals("<?")) {
+			} else if(tag.equals("<?")) {
 				skipEntity();
 				skip = true;
 			} else if(tag.equals("<!")) {
-				skipEntity();
+				skipTo("-->", true, true);
+				skip();
 				skip = true;
 			} else {
 				skip = false;
@@ -469,7 +477,6 @@ public class XMLTokener extends Tokener {
 		parent.put(property, id);
 		return null;
 	}
-
 
 	protected Object addToStack(SendableEntityCreatorTag creator, XMLTokener tokener, CharacterBuffer tag, CharacterBuffer value, MapEntity map) {
 		Object entity = creator.getSendableInstance(false);

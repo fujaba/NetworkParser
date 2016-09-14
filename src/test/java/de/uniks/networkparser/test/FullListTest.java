@@ -2,20 +2,106 @@ package de.uniks.networkparser.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.ListIterator;
+
 import org.junit.Assert;
 import org.junit.Test;
+
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
+import de.uniks.networkparser.list.SortedList;
 import de.uniks.networkparser.test.model.Apple;
+import de.uniks.networkparser.test.model.Fruit;
+import de.uniks.networkparser.test.model.util.AppleSet;
+import de.uniks.networkparser.test.model.util.FruitSet;
 
 public class FullListTest {
+	@Test
+	public void CollectionWith() {
+		SimpleList<String> item=new SimpleList<String>();
+		item.withType(String.class);
+		item.with("Hallo", "Welt", 42, null);
+		Assert.assertEquals(2, item.size());
+	}
+	
+	@Test
+	public void CollectionGetValue() {
+		SimpleList<String> item=new SimpleList<String>();
+		for(int i=0;i<500;i++) {
+			item.add("Number_"+i);
+		}
+		Assert.assertEquals("Number_42", item.getValue("Number_42"));
+	}
 
+	@Test
+	public void CollectionBidiValue() {
+		SimpleKeyValueList<String, Integer> bidiMap=new SimpleKeyValueList<String, Integer>();
+		bidiMap.add("Stefan", 23);
+		bidiMap.add("Tobi", 3);
+		bidiMap.add("Albert", 42);
+		bidiMap.remove("Tobi");
+		Assert.assertNull(bidiMap.getValue("Albert42"));
+	}
+	
+	@Test
+	public void CollectionBidiValueDelete() {
+		SimpleKeyValueList<String, Integer> bidiMap=new SimpleKeyValueList<String, Integer>().withFlag(SimpleKeyValueList.BIDI);
+		bidiMap.add("Stefan", 23);
+		bidiMap.add("Tobi", 3);
+		bidiMap.add("Albert", 42);
+		bidiMap.removePos(2);
+		Assert.assertNull(bidiMap.getValue("Albert"));
+	}
+
+	@Test
+	public void CollectionBidiValueDeleteSub() {
+		SimpleKeyValueList<String, Integer> bidiMap=new SimpleKeyValueList<String, Integer>().withFlag(SimpleKeyValueList.BIDI);
+		String delete = "Albert.42";
+		bidiMap.add("Check", 23);
+		bidiMap.add("Stefan", 23);
+		bidiMap.add("Tobi", 3);
+		bidiMap.add(delete, 42);
+		bidiMap.without(delete);
+		bidiMap.without("Check");
+		Assert.assertNull(bidiMap.getValue("Albert.42"));
+	}
+	
+	@Test
+	public void CollectionBidiGetValue() {
+		SimpleKeyValueList<String, Integer> bidiMap=new SimpleKeyValueList<String, Integer>().withFlag(SimpleKeyValueList.BIDI);
+		String delete = "Albert.42";
+		bidiMap.add("Stefan", 23);
+		bidiMap.add("Tobi", 3);
+		bidiMap.add("Albert", 3);
+//		bidiMap.add(delete, 42);
+		Assert.assertNull(bidiMap.getValue(delete));
+	}
+	
+	@Test
+	public void CollectionWithInstanceOf() {
+		FruitSet item=new FruitSet();
+		item.with(new Fruit().withX(1).withY(1));
+		item.with(new Apple().withX(2).withX(2));
+
+		Assert.assertEquals(2, item.size());
+		AppleSet newSet=new AppleSet();
+		
+		newSet.withList(item);
+		
+		Assert.assertEquals(1, newSet.size());
+
+		newSet.with(new Fruit().withX(3).withY(3));
+		
+		Assert.assertEquals(1, newSet.size());
+	}
+	
 	@Test
 	public void list() {
 		SimpleList<String> simpleList = new SimpleList<String>();
@@ -202,15 +288,12 @@ public class FullListTest {
 		Integer next = simpleList.listIterator(41).next();
 		assertEquals("listiterator[41] should deliver 42", 42, 0+next);
 
-
-
 		clone = simpleList.clone();
 
 		clone.remove(0);
 
 		simpleList.retainAll(clone);
 		simpleList.retainAll(null);
-
 
 		assertEquals("simpleList should have 549 elements", 549, simpleList.size());
 		assertEquals("simpleList[0] should be 2", 2, 0 + simpleList.first());
@@ -458,7 +541,7 @@ public class FullListTest {
 			list.removeByObject(i);
 		}
 	}
-	
+
 	@Test(expected=ConcurrentModificationException.class)
 	public void testSize() {
 		SimpleSet<Apple> appleTree=new SimpleSet<Apple>();
@@ -471,7 +554,7 @@ public class FullListTest {
 			}
 		}
 		Assert.assertEquals(430, appleTree.size());
-		
+
 		for(Apple item : appleTree) {
 			appleTree.remove(42);
 			if(appleTree.size()<400) {
@@ -481,7 +564,7 @@ public class FullListTest {
 			appleTree.indexOf(list.get(0));
 		}
 	}
-	
+
 	@Test
 	public void testSizeAdvance() {
 		SimpleSet<Apple> appleTree=new SimpleSet<Apple>();
@@ -494,7 +577,7 @@ public class FullListTest {
 			}
 		}
 		Assert.assertEquals(430, appleTree.size());
-		
+
 		for(Iterator<Apple> iterator = appleTree.iterator(false);iterator.hasNext();) {
 			Apple apple = iterator.next();
 			appleTree.remove(42);
@@ -504,5 +587,91 @@ public class FullListTest {
 			apple.setX(0);
 			appleTree.indexOf(list.get(0));
 		}
+	}
+
+	@Test
+	public void testSizeIteratorRemove() {
+		SimpleSet<Apple> appleTree=new SimpleSet<Apple>();
+		for(int i=0;i<20;i++) {
+			Apple item = new Apple().withPassword("Apple"+i);
+			appleTree.add(item);
+		}
+		for(Iterator<Apple> iterator = appleTree.iterator();iterator.hasNext();) {
+			iterator.next();
+			iterator.remove();
+		}
+	}
+
+	@Test
+	public void retainAll(){
+		SimpleList<String> item = new SimpleList<String>();
+		item.with("Stefan", "Alex", "Albert");
+
+		SimpleList<String> itemB = new SimpleList<String>();
+		itemB.with("Stefan", "Alex", "Christian");
+
+		item.retainAll(itemB);
+
+		Assert.assertEquals(2, item.size());
+
+		SimpleList<String> clone =  (SimpleList<String>)item.clone();
+		Assert.assertEquals(2, clone.size());
+	}
+
+	@Test
+	public void Comparator(){
+		SortedList<String> item = new SortedList<String>();
+		item.withComparator(new Comparator<String>() {
+
+			@Override
+			public int compare(String o1, String o2) {
+				return o1.compareTo(o2);
+			}
+		});
+		item.with("Stefan", "Alex", "Albert");
+		Assert.assertEquals("Albert", item.get(0));
+		Assert.assertEquals("Alex", item.get(1));
+		Assert.assertEquals("Stefan", item.get(2));
+	}
+
+
+	@Test
+	public void testFullList() {
+		SimpleSet<Integer> smallList;
+		smallList = createTest(3);
+		testList(smallList);
+		smallList = createTest(10);
+		testList(smallList);
+	}
+	private SimpleSet<Integer> createTest(int size) {
+		SimpleSet<Integer> smallList = new SimpleSet<Integer>();
+		smallList.add(1);
+		smallList.add(1, 2);
+		smallList.add(1, 2);
+		smallList.with(new Integer(3));
+		return smallList;
+	}
+	private void testList(SimpleSet<Integer> smallList) {
+		Integer theThree = new Integer(3);
+		Integer theOne = new Integer(1);
+		Assert.assertEquals(new Integer(1), smallList.first());
+		Assert.assertEquals(theThree, smallList.last());
+		Assert.assertEquals(3, smallList.size());
+		Assert.assertEquals(2, smallList.indexOf(theThree));
+		Assert.assertEquals(theThree, smallList.get(2));
+		Assert.assertEquals(theThree, smallList.getKeyByIndex(2));
+		Assert.assertEquals(2, smallList.getPositionKey(3, false));
+//		Assert.assertEquals(-1, smallList.getPositionValue(3));
+		Assert.assertEquals(1, smallList.removeByObject(2));
+		Assert.assertEquals(theOne, smallList.remove(0));
+
+		Assert.assertEquals(0, smallList.indexOf(theThree));
+		Assert.assertFalse(smallList.isAllowDuplicate());
+		Assert.assertFalse(smallList.isAllowEmptyValue());
+		Assert.assertTrue(smallList.isCaseSensitive());
+		Assert.assertFalse(smallList.isComparator());
+		Assert.assertFalse(smallList.isEmpty());
+		Assert.assertTrue(smallList.isVisible());
+		Assert.assertFalse(smallList.isReadOnly());
 	}
 }

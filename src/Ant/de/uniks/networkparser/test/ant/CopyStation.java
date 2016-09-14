@@ -13,7 +13,6 @@ public class CopyStation {
 		System.out.println("Source: " + source);
 		System.out.println("Target: " + target);
 
-
 		 NetworkParserSources center= new NetworkParserSources();
 		 center.copyFile(source, target, createDirectory, createFiles);
 	}

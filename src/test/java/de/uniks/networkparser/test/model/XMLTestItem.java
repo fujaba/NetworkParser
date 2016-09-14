@@ -11,7 +11,6 @@ public class XMLTestItem {
 	private String value;
 	private String user;
 
-
 	public int getId() {
 		return id;
 	}

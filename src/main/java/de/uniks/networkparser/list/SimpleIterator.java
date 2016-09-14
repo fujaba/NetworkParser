@@ -31,7 +31,6 @@ public class SimpleIterator<E> implements ListIterator<E> {
 		this.lastRet = -1;
 	}
 
-
 	public SimpleIterator(AbstractArray<E> list, int index) {
 		this.with(list, index);
 	}
@@ -134,6 +133,10 @@ public class SimpleIterator<E> implements ListIterator<E> {
 		return this;
 	}
 
+	public int position() {
+		return cursor;
+	}
+	
 	public SimpleIterator<E> withCheckPointer(boolean checkPointer) {
 		if(checkPointer) {
 			this.checkPointer = this.list.size();

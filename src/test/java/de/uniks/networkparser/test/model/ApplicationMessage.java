@@ -24,132 +24,83 @@ package de.uniks.networkparser.test.model;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-public class ApplicationMessage
-{
-
-
-   //==========================================================================
-
-   public Object get(String attrName)
-   {
-	  if (PROPERTY_FIXMLMESSAGE.equalsIgnoreCase(attrName))
-	  {
-		 return getFixmlmessage();
-	  }
-
-	  if (PROPERTY_ORDER.equalsIgnoreCase(attrName))
-	  {
-//		 return getOrder();
-	  }
-
-	  return null;
-   }
-
-
-   //==========================================================================
-
-   public boolean set(String attrName, Object value)
-   {
-	  if (PROPERTY_FIXMLMESSAGE.equalsIgnoreCase(attrName))
-	  {
-		 setFixmlmessage((FIXMLMessage) value);
-		 return true;
-	  }
-
-	  if (PROPERTY_ORDER.equalsIgnoreCase(attrName))
-	  {
-//		 setOrder((Order) value);
-		 return true;
-	  }
-
-	  return false;
-   }
-
-
-   //==========================================================================
-
-   protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
-
-   public PropertyChangeSupport getPropertyChangeSupport()
-   {
-	  return listeners;
-   }
-
-   public void addPropertyChangeListener(PropertyChangeListener listener)
-   {
-	  getPropertyChangeSupport().addPropertyChangeListener(listener);
-   }
-
-
-   //==========================================================================
-
-   public void removeYou()
-   {
-	  setFixmlmessage(null);
-//	  setOrder(null);
-	  getPropertyChangeSupport().firePropertyChange("REMOVE_YOU", this, null);
-   }
-
-
-   /********************************************************************
+public class ApplicationMessage {
+	//==========================================================================
+	public Object get(String attrName) {
+		if (PROPERTY_FIXMLMESSAGE.equalsIgnoreCase(attrName)) {
+			return getFixmlmessage();
+		}
+		if (PROPERTY_ORDER.equalsIgnoreCase(attrName)) {
+//			return getOrder();
+		}
+		return null;
+	}
+	//==========================================================================
+	public boolean set(String attrName, Object value) {
+		if (PROPERTY_FIXMLMESSAGE.equalsIgnoreCase(attrName)) {
+			setFixmlmessage((FIXMLMessage) value);
+			return true;
+		}
+		if (PROPERTY_ORDER.equalsIgnoreCase(attrName)) {
+//			setOrder((Order) value);
+			return true;
+		}
+		return false;
+	}
+	//==========================================================================
+	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
+	public PropertyChangeSupport getPropertyChangeSupport() {
+		return listeners;
+	}
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		getPropertyChangeSupport().addPropertyChangeListener(listener);
+	}
+	//==========================================================================
+	public void removeYou() {
+		setFixmlmessage(null);
+//		setOrder(null);
+		getPropertyChangeSupport().firePropertyChange("REMOVE_YOU", this, null);
+	}
+	/********************************************************************
 	* <pre>
 	*			  one					   one
 	* ApplicationMessage ----------------------------------- FIXMLMessage
 	*			  applicationmessage				   fixmlmessage
 	* </pre>
 	*/
+	public static final String PROPERTY_FIXMLMESSAGE = "fixmlmessage";
+	private FIXMLMessage fixmlmessage = null;
+	public FIXMLMessage getFixmlmessage() {
+		return this.fixmlmessage;
+	}
+	public boolean setFixmlmessage(FIXMLMessage value) {
+		boolean changed = false;
+		if (this.fixmlmessage != value) {
+			FIXMLMessage oldValue = this.fixmlmessage;
+			if (this.fixmlmessage != null) {
+				this.fixmlmessage = null;
+				oldValue.setApplicationmessage(null);
+			}
+			this.fixmlmessage = value;
+			if (value != null) {
+				value.withApplicationmessage(this);
+			}
+			getPropertyChangeSupport().firePropertyChange(PROPERTY_FIXMLMESSAGE, oldValue, value);
+			changed = true;
+		}
+		return changed;
+	}
 
-   public static final String PROPERTY_FIXMLMESSAGE = "fixmlmessage";
+	public ApplicationMessage withFixmlmessage(FIXMLMessage value) {
+		setFixmlmessage(value);
+		return this;
+	}
 
-   private FIXMLMessage fixmlmessage = null;
-
-   public FIXMLMessage getFixmlmessage()
-   {
-	  return this.fixmlmessage;
-   }
-
-   public boolean setFixmlmessage(FIXMLMessage value)
-   {
-	  boolean changed = false;
-
-	  if (this.fixmlmessage != value)
-	  {
-		 FIXMLMessage oldValue = this.fixmlmessage;
-
-		 if (this.fixmlmessage != null)
-		 {
-			this.fixmlmessage = null;
-			oldValue.setApplicationmessage(null);
-		 }
-
-		 this.fixmlmessage = value;
-
-		 if (value != null)
-		 {
-			value.withApplicationmessage(this);
-		 }
-
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_FIXMLMESSAGE, oldValue, value);
-		 changed = true;
-	  }
-
-	  return changed;
-   }
-
-   public ApplicationMessage withFixmlmessage(FIXMLMessage value)
-   {
-	  setFixmlmessage(value);
-	  return this;
-   }
-
-   public FIXMLMessage createFixmlmessage()
-   {
-	  FIXMLMessage value = new FIXMLMessage();
-	  withFixmlmessage(value);
-	  return value;
-   }
-
-
+	public FIXMLMessage createFixmlmessage() {
+		FIXMLMessage value = new FIXMLMessage();
+		withFixmlmessage(value);
+		return value;
+	}
    /********************************************************************
 	* <pre>
 	*			  one					   one
@@ -158,54 +109,39 @@ public class ApplicationMessage
 	* </pre>
 	*/
 
-   public static final String PROPERTY_ORDER = "order";
-
-//   private Order order = null;
+	public static final String PROPERTY_ORDER = "order";
+//	private Order order = null;
+//	public Order getOrder() {
+//		return this.order;
+//	}
 //
-//   public Order getOrder()
-//   {
-//	  return this.order;
-//   }
+//	public boolean setOrder(Order value) {
+//		boolean changed = false;
+//		if (this.order != value) {
+//			Order oldValue = this.order;
+//			if (this.order != null) {
+//				this.order = null;
+//				oldValue.setApplicationmessage(null);
+//			}
+//			this.order = value;
+//			if (value != null) {
+//				value.withApplicationmessage(this);
+//			}
+//			getPropertyChangeSupport().firePropertyChange(PROPERTY_ORDER, oldValue, value);
+//			changed = true;
+//		}
+//		return changed;
+//	}
 //
-//   public boolean setOrder(Order value)
-//   {
-//	  boolean changed = false;
+//	public ApplicationMessage withOrder(Order value) {
+//		setOrder(value);
+//		return this;
+//	}
 //
-//	  if (this.order != value)
-//	  {
-//		 Order oldValue = this.order;
-//
-//		 if (this.order != null)
-//		 {
-//			this.order = null;
-//			oldValue.setApplicationmessage(null);
-//		 }
-//
-//		 this.order = value;
-//
-//		 if (value != null)
-//		 {
-//			value.withApplicationmessage(this);
-//		 }
-//
-//		 getPropertyChangeSupport().firePropertyChange(PROPERTY_ORDER, oldValue, value);
-//		 changed = true;
-//	  }
-//
-//	  return changed;
-//   }
-//
-//   public ApplicationMessage withOrder(Order value)
-//   {
-//	  setOrder(value);
-//	  return this;
-//   }
-//
-//   public Order createOrder()
-//   {
-//	  Order value = new Order();
-//	  withOrder(value);
-//	  return value;
-//   }
+//	public Order createOrder() {
+//		Order value = new Order();
+//		withOrder(value);
+//		return value;
+//	}
 }
 

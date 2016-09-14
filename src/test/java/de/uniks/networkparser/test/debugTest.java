@@ -7,7 +7,7 @@ import java.util.TreeSet;
 import org.junit.Assert;
 import org.junit.Test;
 import de.uniks.networkparser.json.JsonArray;
-import de.uniks.networkparser.sort.EntityComparator;
+import de.uniks.networkparser.list.EntityComparator;
 
 public class debugTest {
 //	private RegCalculator calculator;

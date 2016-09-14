@@ -48,10 +48,10 @@ public class GitRevision {
 		int count=0;
 		try {
 			repository = builder.setWorkTree(file)
-			  .readEnvironment() // scan environment GIT_* variables
-			  .findGitDir() // scan up the file system tree
-			  .build();
-	
+				.readEnvironment() // scan environment GIT_* variables
+				.findGitDir() // scan up the file system tree
+				.build();
+
 			calcGitTag(repository);
 			allRefs = repository.getAllRefs();
 			headID = repository.resolve("HEAD");
@@ -60,7 +60,7 @@ public class GitRevision {
 			}
 			commitInfo(map, repository, headID, null);
 			branches.add(repository.getBranch());
-			
+
 			while (headID!=null){
 				count++;
 				ObjectId oldId = headID;
@@ -77,7 +77,7 @@ public class GitRevision {
 			if(id == null) {
 				id = "";
 			}
-	
+
 			for(Iterator<Entry<String, Ref>> i = allRefs.entrySet().iterator();i.hasNext();){
 				Entry<String, Ref> item = i.next();
 				if(id.equals(item.getValue().getObjectId().name())) {
@@ -92,7 +92,7 @@ public class GitRevision {
 		while(i.hasNext()) {
 			allBranches.append(" ").append(i.next());
 		}
-		
+
 		System.setProperty("Branchname", allBranches.toString());
 		System.setProperty("LastCommit", id);
 		System.setProperty("Revisionnumber", "" +count);
@@ -150,7 +150,7 @@ public class GitRevision {
 				if(objectID!=null){
 					jsonObject.put("ID", objectID.getName());
 				}
-				jsonObject.put("TIME",  "" + commit.getCommitTime());
+				jsonObject.put("TIME", "" + commit.getCommitTime());
 				if(commit.getCommitterIdent() != null) {
 					jsonObject.put("COMMITER", commit.getCommitterIdent().getName());
 				}

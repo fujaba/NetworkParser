@@ -205,7 +205,7 @@ public class IkvmcTask extends Task {
 		for (Reference ref : moduleRefs) {
 			if (ref.path != null && ref.path.length () > 0) {
 				for (String refPath : ref.path.split (",")) {
-					String	  fullPath = refPath;
+					String	fullPath = refPath;
 
 					if (ref.base != null)
 						fullPath = ref.base + "/" + fullPath;
@@ -330,12 +330,12 @@ public class IkvmcTask extends Task {
 			printArguments(arguments);
 
 		try {
-			ProcessBuilder		  pb = new ProcessBuilder (arguments);
+			ProcessBuilder	pb = new ProcessBuilder (arguments);
 
-			Process				 process = pb.start ();
+			Process			process = pb.start();
 
-			new StreamPump (process.getInputStream (), System.out, outputFilter).start ();
-			new StreamPump (process.getErrorStream (), System.err, outputFilter).start ();
+			new StreamPump (process.getInputStream(), System.out, outputFilter).start();
+			new StreamPump (process.getErrorStream(), System.err, outputFilter).start();
 
 			ProcessShutdown shutdownHook = new ProcessShutdown (process);
 			Runtime.getRuntime().addShutdownHook(shutdownHook);

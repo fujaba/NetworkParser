@@ -34,7 +34,7 @@ public class SourceItem {
 		BufferedReader in = null;
 		try {
 			FileInputStream networkFile = new FileInputStream(file);
-			InputStreamReader isr = new InputStreamReader(networkFile,  "UTF-8");
+			InputStreamReader isr = new InputStreamReader(networkFile, "UTF-8");
 			in = new BufferedReader(isr);
 
 			MyStringBuilder packageBuilder= new MyStringBuilder();
@@ -84,7 +84,7 @@ public class SourceItem {
 			this.imports.finish();
 			this.header=headerBBuilder.toString().trim();
 			this.comment=commentBuilder.toString();
-			
+
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -113,8 +113,8 @@ public class SourceItem {
 			}
 		} else if(comment.startsWith(STARTCOMMENT)){
 			custom = comment.substring(STARTCOMMENT.length());
-		} else if(comment.startsWith(STARTCOMMENTEXT)){
-			custom = comment.substring(STARTCOMMENTEXT.length());
+//		} else if(comment.startsWith(STARTCOMMENTEXT)){
+//			custom = comment.substring(STARTCOMMENTEXT.length());
 		}
 
 		if(custom.length()>0){
@@ -134,7 +134,7 @@ public class SourceItem {
 		OutputStreamWriter writer = null;
 		try {
 			FileOutputStream networkFile = new FileOutputStream(file);
-			writer = new OutputStreamWriter(networkFile,  "UTF-8");
+			writer = new OutputStreamWriter(networkFile, "UTF-8");
 //			PrintWriter pw = new PrintWriter(ps);
 //			String template = "%packageString%" +CRLF+CRLF+ "%comment%" +CRLF+CRLF+ "%header%%body%";
 //			template.replaceAll("%packageString%", packageString);

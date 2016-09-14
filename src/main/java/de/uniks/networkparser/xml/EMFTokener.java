@@ -1,31 +1,32 @@
 package de.uniks.networkparser.xml;
 
 /*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
+NetworkParser
+The MIT License
+Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
 
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
- http://ec.europa.eu/idabc/eupl5
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 */
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.buffer.CharacterBuffer;
@@ -48,17 +49,21 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 
 public class EMFTokener extends Tokener{
-	public static final String ECLASS = "ecore:EClass";
-	public static final String ETYPE = "eType";
-	public static final String EAttribute = "ecore:EAttribute";
-	public static final String EReferences = "ecore:EReference";
-	public static final String ECore = "ecore:EPackage";
-	public static final String eSuperTypes = "eSuperTypes";
-	public static final String EEnum = "ecore:EEnum";
 	public static final String ECORE = "ecore";
+	public static final String EPACKAGE = "ecore:EPackage";
+	public static final String EAttribute = "eAttributes";
+	public static final String ECLASS = "eClassifiers";
+	public static final String EREFERENCE = "eReferences";
+	public static final String ETYPE = "eType";
+	public static final String EDATATYPE ="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//";
+	public static final String TYPE_ECLASS = "ecore:EClass";
+	public static final String TYPE_EAttribute = "ecore:EAttribute";
+	public static final String TYPE_EReferences = "ecore:EReference";
+	public static final String TYPE_ESUPERTYPE = "eSuperTypes";
+	public static final String TYPE_EEnum = "ecore:EEnum";
 	public static final String EOpposite = "eOpposite";
+	public static final String ATTRIBUTE_URL = "http://www.eclipse.org/emf/2002/Ecore#//";
 	public static final String UPPERBOUND = "upperBound";
-
 	public static final String XSI_TYPE = "xsi:type";
 	public static final String XMI_ID = "xmi:id";
 	public static final String NAME = "name";
@@ -100,6 +105,9 @@ public class EMFTokener extends Tokener{
 	}
 
 	public XMLEntity encode(Object entity, MapEntity map) {
+		if(entity instanceof GraphList) {
+			return  encodeClassModel((GraphList)entity, map);
+		}
 		XMLEntity result = new XMLEntity();
 
 		String typetag = entity.getClass().getName().replaceAll("\\.", ":");
@@ -108,6 +116,57 @@ public class EMFTokener extends Tokener{
 		encodeChildren(entity, result, map);
 
 		return result;
+	}
+
+	public XMLEntity encodeClassModel(GraphList entity, MapEntity map) {
+		XMLContainer container = new XMLContainer();
+		container.withStandardPrefix();
+
+		XMLEntity root = container.createChild();
+		root.setType(EPACKAGE);
+		root.withKeyValue("xmi:version", "2.0");
+		root.withKeyValue("xmlns:xmi", "http://www.omg.org/XMI");
+		root.withKeyValue("xmlns:ecore", "http://www.eclipse.org/emf/2002/Ecore");
+		String id, name = "model";
+		if(entity.getName()!= null) {
+			id = EntityUtil.shortClassName(entity.getName());
+			name = entity.getName();
+		} else {
+			id = name;
+		}
+		root.withKeyValue(NAME, id);
+		root.withKeyValue("nsURI", "http:///"+name.replace(".", "/")+".ecore");
+		root.withKeyValue("nsPrefix", name);
+
+		for(Clazz child : entity.getClazzes()) {
+			XMLEntity ecoreClass = root.createChild();
+			ecoreClass.setType(ECLASS);
+			ecoreClass.withKeyValue(XSI_TYPE, TYPE_ECLASS);
+			ecoreClass.withKeyValue(NAME, child.getName());
+			for(Attribute attribute : child.getAttributes()) {
+				DataType type = attribute.getType();
+				if(EntityUtil.isPrimitiveType(type.getName(false))) {
+					XMLEntity ecoreAttribute = ecoreClass.createChild();
+					ecoreAttribute.setType(EAttribute);
+					ecoreAttribute.withKeyValue(NAME, attribute.getName());
+					ecoreAttribute.withKeyValue(ETYPE, EDATATYPE + "E" + EntityUtil.upFirstChar(type.getName(true)));
+				}
+			}
+
+			for(Association assoc : child.getAssociations()) {
+				XMLEntity ecoreAssociation = ecoreClass.createChild();
+				ecoreAssociation.setType(EREFERENCE);
+				ecoreAssociation.withKeyValue(NAME, assoc.getOther().getName());
+				ecoreAssociation.withKeyValue(ETYPE, "#//"+assoc.getOtherClazz().getName());
+				ecoreAssociation.withKeyValue(EOpposite, "#//"+assoc.getOtherClazz().getName()+"/"+assoc.getName());
+				if(Cardinality.MANY.equals(assoc.getCardinality())) {
+					ecoreAssociation.withKeyValue(UPPERBOUND, "-1");
+				} else {
+					ecoreAssociation.withKeyValue(UPPERBOUND, "1");
+				}
+			}
+		}
+		return container;
 	}
 
 	private void encodeChildren(Object entity, XMLEntity parent, MapEntity map) {
@@ -162,7 +221,7 @@ public class EMFTokener extends Tokener{
 		skipHeader();
 		XMLEntity xmlEntity = new XMLEntity();
 		xmlEntity.withValue(this.buffer);
-		if(ECore.equals(xmlEntity.getTag())) {
+		if(EPACKAGE.equals(xmlEntity.getTag())) {
 			return decoding(xmlEntity);
 		}
 		// build root entity
@@ -352,7 +411,7 @@ public class EMFTokener extends Tokener{
 			addValues(kidFactory, (XMLEntity)kidEntity, kidObject, map);
 		}
 	}
-	
+
 	private SimpleList<String> getRef(String value, XMLEntity xmlEntity, SendableEntityCreator rootFactory) {
 		SimpleList<String> result = new SimpleList<String>();
 	   if (value.startsWith("//@")) {
@@ -509,7 +568,7 @@ public class EMFTokener extends Tokener{
 				continue;
 			}
 
-			if (xml.getString(EMFTokener.XSI_TYPE).equalsIgnoreCase(ECLASS)) {
+			if (xml.getString(EMFTokener.XSI_TYPE).equalsIgnoreCase(TYPE_ECLASS)) {
 				Clazz clazz = new Clazz().with(xml.getString(EMFTokener.NAME));
 				model.with(clazz);
 				for(EntityList child : xml.getChildren()) {
@@ -518,7 +577,7 @@ public class EMFTokener extends Tokener{
 					}
 					Entity childItem = (Entity) child;
 					String typ = childItem.getString(EMFTokener.XSI_TYPE);
-					if(typ.equals(EAttribute)) {
+					if(typ.equals(TYPE_EAttribute)) {
 						String etyp = EntityUtil.getId(childItem.getString(ETYPE));
 						if (EntityUtil.isEMFType(etyp)) {
 							etyp = etyp.substring(1);
@@ -527,14 +586,14 @@ public class EMFTokener extends Tokener{
 							etyp = etyp.toLowerCase();
 						}
 						clazz.with(new Attribute(EntityUtil.toValidJavaId(childItem.getString(EMFTokener.NAME)), DataType.create(etyp)));
-					}else if(typ.equals(EReferences)) {
+					}else if(typ.equals(TYPE_EReferences)) {
 						parentList.add(childItem, eClassifier);
 					}
 				}
-				if(xml.has(eSuperTypes)) {
+				if(xml.has(TYPE_ESUPERTYPE)) {
 					superClazzes.add(xml);
 				}
-			} else if (xml.getString(EMFTokener.XSI_TYPE).equals(EEnum)) {
+			} else if (xml.getString(EMFTokener.XSI_TYPE).equals(TYPE_EEnum)) {
 				Clazz graphEnum = new Clazz().with(ClazzType.ENUMERATION);
 				graphEnum.with(xml.getString(EMFTokener.NAME));
 				for(EntityList child : xml.getChildren()) {
@@ -556,7 +615,7 @@ public class EMFTokener extends Tokener{
 		}
 		 // inheritance
 		for(Entity eClass : superClazzes) {
-			String id = EntityUtil.getId(eClass.getString(eSuperTypes));
+			String id = EntityUtil.getId(eClass.getString(TYPE_ESUPERTYPE));
 			 Clazz kidClazz = model.getNode(eClass.getString(EMFTokener.NAME));
 			 if(kidClazz != null) {
 				 Clazz superClazz = model.getNode(id);

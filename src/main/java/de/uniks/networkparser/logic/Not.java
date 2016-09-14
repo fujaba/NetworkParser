@@ -1,25 +1,27 @@
 package de.uniks.networkparser.logic;
 
 /*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
+NetworkParser
+The MIT License
+Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
 
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
- http://ec.europa.eu/idabc/eupl5
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.UpdateListener;
@@ -35,10 +37,12 @@ public class Not implements UpdateListener, SendableEntityCreator {
 	/** Varibale for Condition. */
 	private UpdateListener item;
 
-
 	@Override
 	public boolean update(Object evt) {
-		return !item.update(evt);
+		if(item != null) {
+			return !item.update(evt);
+		}
+		return false;
 	}
 
 	/**
@@ -52,7 +56,7 @@ public class Not implements UpdateListener, SendableEntityCreator {
 	 * @param value		for new Condition
 	 * @return 			Not Instance
 	 */
-	public Not withItem(UpdateListener value) {
+	public Not with(UpdateListener value) {
 		this.item = value;
 		return this;
 	}
@@ -80,13 +84,19 @@ public class Not implements UpdateListener, SendableEntityCreator {
 			String type) {
 		if (ITEM.equalsIgnoreCase(attribute)) {
 			if(value instanceof UpdateListener) {
-				((Not) entity).withItem((UpdateListener) value);
+				((Not) entity).with((UpdateListener) value);
 			}
 		}
 		return false;
 	}
 
+	/**
+	 * Static Method for instance a new Instance of Not Object.
+	 *
+	 * @param condition	Condition to negate
+	 * @return 			The new Instance
+	 */
 	public static Not create(UpdateListener condition) {
-		return new Not().withItem(condition);
+		return new Not().with(condition);
 	}
 }

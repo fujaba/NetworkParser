@@ -1,35 +1,36 @@
 package de.uniks.networkparser.xml;
 
 /*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
+NetworkParser
+The MIT License
+Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
 
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
- http://ec.europa.eu/idabc/eupl5
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 */
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.converter.EntityStringConverter;
-import de.uniks.networkparser.event.MapEntry;
-import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
+import de.uniks.networkparser.list.MapEntry;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 /**
@@ -37,6 +38,7 @@ import de.uniks.networkparser.list.SimpleList;
  *
  * @author Stefan Lindel
  */
+
 public class XMLEntity extends SimpleKeyValueList<String, Object> implements Entity, EntityList {
 	/** Constant of TAG. */
 	public static final String PROPERTY_TAG = "tag";
@@ -69,7 +71,6 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	public XMLEntity withValue(String value) {
 		XMLTokener tokener = new XMLTokener();
 		tokener.withBuffer(value);
-		tokener.skipHeader();
 		withValue(tokener);
 		return this;
 	}
@@ -82,6 +83,11 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	 */
 	public XMLEntity withValue(Tokener tokener) {
 		if(tokener!=null) {
+			char c = tokener.nextClean(true);
+			if(c != XMLTokener.ITEMSTART) {
+				this.valueItem = tokener.getString(tokener.length() - tokener.position()).toString();
+				return this;
+			}
 			tokener.parseToEntity((Entity)this);
 		}
 		return this;
@@ -98,7 +104,6 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		}
 		return this.children;
 	}
-
 
 	public int getChildrenCount() {
 		if (this.children == null) {
@@ -121,9 +126,9 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		}
 		if(values[0] instanceof String) {
 			if(values.length == 1) {
-				this.setValueItem((String)values[0]);
+				this.withValue((String)values[0]);
 			}
-		}else if (values.length % 2 == 1) {
+		} else if (values.length % 2 == 1) {
 			for(Object item : values) {
 				if(item instanceof EntityList) {
 					getChildren().add((EntityList) item);
@@ -144,6 +149,17 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	public XMLEntity withChild(EntityList value) {
 		getChildren().add(value);
 		return this;
+	}
+
+	/**
+	 * Method to create a new Child and add it to Children
+	 *
+	 * @return XMLEntity	new Instance
+	 */
+	public XMLEntity createChild() {
+		XMLEntity xmlEntity = new XMLEntity();
+		getChildren().add(xmlEntity);
+		return xmlEntity;
 	}
 
 	/**
@@ -211,8 +227,6 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		return this.tag;
 	}
 
-
-
 	/**
 	 * Gets the value.
 	 *
@@ -220,21 +234,6 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	 */
 	public String getValue() {
 		return this.valueItem;
-	}
-
-	/**
-	 * Sets the value.
-	 *
-	 * @param value		the new value
-	 * @return 			success
-	 */
-	public boolean setValueItem(Object value) {
-		if(value instanceof String) {
-			this.valueItem = (String)value;
-		}else {
-			this.valueItem = ""+value;
-		}
-		return true;
 	}
 
 	@Override
@@ -345,15 +344,10 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		return containsKey(key);
 	}
 
-	public XMLEntity withValueItem(String value) {
-		setValueItem(value);
-		return this;
-	}
-
 	@Override
-	public BaseItem withValue(Buffer values) {
-		new XMLTokener().withBuffer(values).parseToEntity((Entity)this);
-		return this;
+	public XMLEntity withValue(Buffer values) {
+		Tokener tokener = new XMLTokener().withBuffer(values);
+		return withValue(tokener);
 	}
 
 	/**

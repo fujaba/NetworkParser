@@ -43,11 +43,11 @@ import de.uniks.networkparser.DefaultTextItems;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.TextItems;
-import de.uniks.networkparser.event.Style;
 import de.uniks.networkparser.ext.javafx.StyleFX;
 import de.uniks.networkparser.ext.javafx.TableList;
 import de.uniks.networkparser.ext.javafx.controls.EditFieldMap;
 import de.uniks.networkparser.gui.Column;
+import de.uniks.networkparser.Style;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -251,7 +251,6 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		BorderPane.clearConstraints(getLeft());
 	}
 
-
 	public TableComponent withMap(IdMap map){
 		this.map = map;
 		this.field.withMap(map);
@@ -296,7 +295,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		if(element == null) {
 			HBox hBox = new HBox();
 			hBox.setAlignment(Pos.CENTER);
-			element  = hBox;
+			element = hBox;
 			this.northComponents.setRight(element);
 		}
 		if(element instanceof HBox) {
@@ -502,7 +501,6 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		return label;
 	}
 
-
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event == null) {
@@ -533,7 +531,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 			}
 			if((columns.size() + subColumns.size())<1) {
 			}else {
-				for(TableColumnFX column  : columns ) {
+				for(TableColumnFX column : columns ) {
 					Object item = event.getSource();
 					int index = items.indexOf(item);
 
@@ -541,7 +539,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 						column.refreshCell(index);
 					}
 				}
-				for(TableColumnFX column  : subColumns ) {
+				for(TableColumnFX column : subColumns ) {
 					column.refreshCell(-1);
 				}
 			}
@@ -600,7 +598,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	public JsonArray saveColumns() {
 		JsonArray list=new JsonArray();
 		for(TableColumnFX column : columns) {
-			list.add(map.toJsonObject(column.getColumn(), Filter.regard(InstanceOf.value(Style.class))));
+			list.add(map.toJsonObject(column.getColumn(), Filter.regard(InstanceOf.create(Style.class))));
 		}
 		return list;
 	}

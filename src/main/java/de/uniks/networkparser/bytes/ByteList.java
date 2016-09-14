@@ -1,26 +1,29 @@
 package de.uniks.networkparser.bytes;
 
 /*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
+NetworkParser
+The MIT License
+Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
 
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
- http://ec.europa.eu/idabc/eupl5
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 */
+import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.converter.ByteConverter;
 import de.uniks.networkparser.converter.ByteConverterHTTP;
@@ -32,7 +35,19 @@ import de.uniks.networkparser.list.SimpleList;
 
 public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 	/** The children of the ByteEntity. */
-	private byte typ = 0;
+	private byte typ;
+	
+	public static final byte BIT_STRING = 0x53; // S = String;
+	public static final byte BIT_NUMBER = 0x4E; // N = Number
+	public static final byte BIT_BYTE = 0x42; // B = Byte
+	public static final byte BIT_REFERENCE = 0x52; // R = Reference
+
+	// Can be a Typ
+	protected String property;
+	protected int orientation = 1;
+	public static final String PROPERTY_PROPERTY = "property";
+	public static final String PROPERTY_TYP = "typ";
+	public static final String PROPERTY_ORIENTATION = "orientation";
 
 	@Override
 	public BaseItem getNewList(boolean keyValue) {
@@ -82,7 +97,7 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 	@Override
 	public ByteBuffer getBytes(boolean isDynamic) {
 		int len = calcLength(isDynamic, true);
-		ByteBuffer buffer = ByteUtil.getBuffer(len);
+		ByteBuffer buffer = EntityUtil.getBuffer(len);
 		writeBytes(buffer, isDynamic, true, isPrimitive(isDynamic));
 		buffer.flip(true);
 		return buffer;
@@ -98,9 +113,9 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 		if (isPrimitive) {
 			typ = ByteTokener.DATATYPE_CLAZZSTREAM;
 		} else {
-			typ = ByteUtil.getTyp(getTyp(), size, last);
+			typ = EntityUtil.getTyp(getTyp(), size, last);
 		}
-		ByteUtil.writeByteHeader(buffer, typ, size);
+		EntityUtil.writeByteHeader(buffer, typ, size);
 
 		for (int i = 0; i < size(); i++) {
 			((ByteItem) get(i)).writeBytes(buffer, isDynamic,
@@ -116,8 +131,7 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 		int length = calcChildren(isDynamic, isLast);
 		// add The Headerlength
 		if (typ != 0) {
-			length += ByteEntity.TYPBYTE
-					+ ByteUtil.getTypLen(typ, length, isLast);
+			length += ByteEntity.TYPBYTE + EntityUtil.getTypLen(typ, length, isLast);
 		}
 		return length;
 	}

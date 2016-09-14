@@ -1,32 +1,36 @@
 package de.uniks.networkparser.bytes;
 
 /*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
+NetworkParser
+The MIT License
+Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
 
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
- http://ec.europa.eu/idabc/eupl5
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 */
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
+import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.converter.ByteConverter;
 import de.uniks.networkparser.converter.ByteConverterHTTP;
+import de.uniks.networkparser.converter.ByteConverterHex;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ByteItem;
 import de.uniks.networkparser.interfaces.Converter;
@@ -48,6 +52,26 @@ public class ByteEntity implements ByteItem {
 	/** The values. */
 	protected byte[] values;
 
+	
+	
+	public String toBinaryString() {
+		if(values == null || values.length<1) {
+			return "";
+		}
+		byte[] result = new byte[values.length*9+9];
+		for (int z=0; z<Byte.SIZE; z++) {
+			result[7-z] = (byte) (typ >> z & 0x1);
+		}
+		result[8] = ' ';
+		for(int i=0;i<values.length;i++) {
+			for (int z=0; z<Byte.SIZE; z++) {
+				result[i*9+7-z+9] = (byte) (values[i] >> z & 0x1);
+			}
+			result[i*9+8+9] = ' ';
+		}
+		return new String(result);
+	}
+	
 	/**
 	 * Gets the value.
 	 *
@@ -56,7 +80,7 @@ public class ByteEntity implements ByteItem {
 	public byte[] getValue() {
 		if(values==null)
 			return null;
-		return ByteUtil.clone(this.values);
+		return EntityUtil.clone(this.values);
 	}
 
 	/**
@@ -69,7 +93,7 @@ public class ByteEntity implements ByteItem {
 	public ByteEntity withValue(byte type, byte[] value) {
 		this.typ = type;
 		if(value != null){
-			this.values = ByteUtil.clone(value);
+			this.values = EntityUtil.clone(value);
 		}
 		return this;
 	}
@@ -127,7 +151,7 @@ public class ByteEntity implements ByteItem {
 		if(converter instanceof ByteConverter) {
 			return toString((ByteConverter)converter, false);
 		}
-		return null;
+		return toString(new ByteConverterHex(), false);
 	}
 
 	/**
@@ -166,8 +190,8 @@ public class ByteEntity implements ByteItem {
 
 		byte typ = getTyp();
 		if (value == null) {
-			typ = ByteUtil.getTyp(typ, 0, isLast);
-			ByteUtil.writeByteHeader(buffer, typ, 0);
+			typ = EntityUtil.getTyp(typ, 0, isLast);
+			EntityUtil.writeByteHeader(buffer, typ, 0);
 			return;
 		}
 		if (isDynamic) {
@@ -198,8 +222,8 @@ public class ByteEntity implements ByteItem {
 		}
 		if (!isPrimitive || typ == ByteTokener.DATATYPE_CLAZZTYP
 				|| typ == ByteTokener.DATATYPE_CLAZZTYPLONG) {
-			typ = ByteUtil.getTyp(typ, value.length, isLast);
-			ByteUtil.writeByteHeader(buffer, typ, value.length);
+			typ = EntityUtil.getTyp(typ, value.length, isLast);
+			EntityUtil.writeByteHeader(buffer, typ, value.length);
 		}
 		// SAVE Length
 		buffer.put(value);
@@ -208,7 +232,7 @@ public class ByteEntity implements ByteItem {
 	@Override
 	public ByteBuffer getBytes(boolean isDynamic) {
 		int len = calcLength(isDynamic, true);
-		ByteBuffer buffer = ByteUtil.getBuffer(len);
+		ByteBuffer buffer = EntityUtil.getBuffer(len);
 		writeBytes(buffer, isDynamic, true, false);
 		buffer.flip(true);
 		return buffer;
@@ -319,7 +343,7 @@ public class ByteEntity implements ByteItem {
 				}
 			}
 		}
-		return TYPBYTE + ByteUtil.getTypLen(typ, values.length, isLast)
+		return TYPBYTE + EntityUtil.getTypLen(typ, values.length, isLast)
 				+ this.values.length;
 	}
 

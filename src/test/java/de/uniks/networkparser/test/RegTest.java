@@ -25,7 +25,7 @@ public class RegTest {
 			Or or = new Or();
 			item.skip();
 			while (ch!=']'){
-				or.add( parseCurrentChar(item));
+				or.with( parseCurrentChar(item));
 				ch = item.getChar();
 			}
 			return or;

@@ -4,25 +4,36 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.ByteBuffer;
+import de.uniks.networkparser.buffer.DERBuffer;
+import de.uniks.networkparser.bytes.AES;
 import de.uniks.networkparser.bytes.ByteEntity;
+import de.uniks.networkparser.bytes.ByteMessage;
+import de.uniks.networkparser.bytes.ByteMessageCreator;
+import de.uniks.networkparser.bytes.SHA1;
+import de.uniks.networkparser.converter.ByteConverterAES;
 import de.uniks.networkparser.converter.ByteConverterBinary;
 import de.uniks.networkparser.converter.ByteConverterHex;
 import de.uniks.networkparser.converter.ByteConverterString;
-import de.uniks.networkparser.event.ByteMessage;
-import de.uniks.networkparser.event.util.ByteMessageCreator;
 import de.uniks.networkparser.interfaces.ByteItem;
+import de.uniks.networkparser.test.model.Apple;
+import de.uniks.networkparser.test.model.AppleTree;
 import de.uniks.networkparser.test.model.ChatMessage;
 import de.uniks.networkparser.test.model.FullAssocs;
 import de.uniks.networkparser.test.model.SortedMsg;
 import de.uniks.networkparser.test.model.StringMessage;
 import de.uniks.networkparser.test.model.University;
+import de.uniks.networkparser.test.model.util.AppleCreator;
+import de.uniks.networkparser.test.model.util.AppleTreeCreator;
 import de.uniks.networkparser.test.model.util.ChatMessageCreator;
 import de.uniks.networkparser.test.model.util.FullAssocsCreator;
 import de.uniks.networkparser.test.model.util.SortedMsgCreator;
@@ -30,6 +41,65 @@ import de.uniks.networkparser.test.model.util.StringMessageCreator;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
 
 public class ByteTest{
+	@Test
+	public void testBuffer() {
+		DERBuffer buffer = new DERBuffer();
+		buffer.add(new byte[]{24,25,26,27,28,29,30,31,32});
+		buffer.add(new byte[]{19,20,21,22,23});
+		buffer.add(new byte[]{14,15,16,17,18});
+		buffer.add(new byte[]{0,1,2,3,4,5,6,7,8,9,10,11,12,13});
+		for(int i=0;i<buffer.length();i++) {
+			Assert.assertEquals(i, buffer.byteAt(i));
+		}
+	}
+	@Test
+	public void testSHA1() throws NoSuchAlgorithmException, UnsupportedEncodingException {
+		String text="Hallo Welt";
+		Assert.assertEquals("28cbbc72d6a52617a7abbfff6756d04bbad0106a", SHA1.value(text).toString());
+	}
+
+	@Test
+	public void testSimpleAES(){
+		AES aes = new AES();			 // init AES encrypter class
+		aes.withKey("kWmHe8xIsDpfzK4d");  // choose 16 byte password
+
+		String data = "Hello world, here is some sample text.";
+		Assert.assertEquals("Original text : [" +data+ "] [" +data.length()+ " bytes]", 38, data.length());
+
+		String encrypted = aes.encode(data).toString();
+		Assert.assertEquals("Encrypted text : [" +encrypted+ "] [" +encrypted.length()+ " bytes]", 64, encrypted.length());
+		ByteConverterHex converter = new ByteConverterHex();
+
+//		outputStream(encrypted.getBytes(), System.out);
+		String hex = converter.toString(new ByteBuffer().with(encrypted)).replace(" ", "");
+		outputStream(hex.getBytes(), null);
+//		Assert.assertEquals("Encrypted text (as hex) : [" +hex+ "] [" +hex.length()+ " bytes]", 128, hex.length());
+
+		String unencrypted = aes.decode(encrypted).toString();
+		Assert.assertEquals("Unencrypted text : [" +unencrypted+ "] [" +unencrypted.length()+ " bytes]", 38, unencrypted.length());
+	}
+
+	@Test
+	public void testAES(){
+		ByteConverterAES aes = new ByteConverterAES();
+		aes.withKey("kWmHe8xIsDpfzK4d");  // choose 16 byte password
+
+		String data = "Hello world, here is some sample text.";
+		Assert.assertEquals("Original text : [" +data+ "] [" +data.length()+ " bytes]", 38, data.length());
+
+		String encrypted = aes.toString(data).toString();
+		Assert.assertEquals("Encrypted text : [" +encrypted+ "] [" +encrypted.length()+ " bytes]", 64, encrypted.length());
+
+		ByteConverterHex converter = new ByteConverterHex();
+
+		String hex = converter.toString(new ByteBuffer().with(encrypted)).replace(" ", "");
+		outputStream(hex.getBytes(), null);
+//		Assert.assertEquals("Encrypted text (as hex) : [" +hex+ "] [" +hex.length()+ " bytes]", 128, hex.length());
+
+		String unencrypted = new String(aes.decode(encrypted));
+		Assert.assertEquals("Unencrypted text : [" +unencrypted+ "] [" +unencrypted.length()+ " bytes]", 38, unencrypted.length());
+	}
+
 	@Test
 	public void testString(){
 		ByteEntity entity= new ByteEntity();
@@ -123,9 +193,7 @@ public class ByteTest{
 		ByteBuffer byteBuffer = msg.getBytes(false);
 		outputStream(byteBuffer, null);
 		assertEquals(24, byteBuffer.length());
-
 //		outputStream(byteBuffer);
-
 		String string = msg.toString();
 		FullAssocs uni2 = (FullAssocs) map.decode(string);
 
@@ -142,25 +210,21 @@ public class ByteTest{
 		sortedMsg.setNumber(23);
 		ByteItem msg=map.toByteItem(sortedMsg);
 		ByteBuffer bytesBuffer = msg.getBytes(false);
-
 //		outputStream(bytesBuffer);
-
 		assertEquals("Len of not dynamic", 7, bytesBuffer.length());
 
 		bytesBuffer = msg.getBytes(true);
-
 //		outputStream(bytesBuffer);
-
 		assertEquals("Len of dynamic", 4, bytesBuffer.length());
 
 	}
-	private void outputStream(ByteBuffer buffer, PrintStream stream){
-		byte[] bytes=buffer.array(buffer.length(), true);
-		buffer.withPosition(0);
+	void outputStream(ByteBuffer buffer, PrintStream stream){
+		outputStream(buffer.array(), stream);
+	}
+	void outputStream(byte[] bytes, PrintStream stream){
 		if(stream == null) {
 			return;
 		}
-
 		boolean newline=false;
 		for (int i=0;i<bytes.length;i++){
 			if(bytes[i]<10){
@@ -206,7 +270,6 @@ public class ByteTest{
 //			assertEquals(test, byteString[i++]);
 //		}
 
-
 		StringMessage newMsg = (StringMessage) map.decode(hexString, new ByteConverterHex());
 		assertEquals("Value of TextMessage", "Test", newMsg.getValue());
 	}
@@ -244,5 +307,84 @@ public class ByteTest{
 
 		assertEquals("Passwort fuer Stefan", "42", newAssocs.getPassword("Stefan"));
 		assertEquals("Nachricht", "Testnachricht", newAssocs.getMessage().getValue());
+	}
+
+
+	@Test
+	public void testSerialization() {
+		AppleTree appleTree = new AppleTree();
+
+		appleTree.withHas(new Apple("0", 123.32f, 239f));
+		appleTree.withHas(new Apple("1", 5644f, 564f));
+		appleTree.withHas(new Apple("2", 1680f, 50f));
+		appleTree.withHas(new Apple("3", 54f, 654f));
+		appleTree.withHas(new Apple("4", 654f, 333f));
+
+		IdMap map = new IdMap();
+		map.with(new AppleTreeCreator());
+		map.with(new AppleCreator());
+		ByteItem item = map.toByteItem(appleTree);
+		ByteBuffer bytes = item.getBytes(true);
+		Assert.assertEquals(175, bytes.length());
+		String string = item.toString();
+		Assert.assertEquals(245, string.length());
+		Assert.assertEquals(245, map.toByteItem(appleTree, new Filter()).toString().length());
+	}
+	@Test
+	public void testSimpleApple() {
+		Apple apple = new Apple("4", 1, 3);
+		IdMap map = new IdMap();
+		map.with(new AppleCreator());
+		ByteItem item = map.toByteItem(apple);
+		ByteBuffer bytes = item.getBytes(true);
+		Assert.assertEquals(62, bytes.length());
+	}
+
+	@Test
+	public void testSimpleAppleTree() {
+		AppleTree appleTree = new AppleTree();
+		appleTree.withHas(new Apple("0", 123.32f, 239f));
+		appleTree.withHas(new Apple("0", 123.32f, 239f));
+
+//		appleTree.withHas(new Apple(1, 2, 3));
+//		appleTree.withHas(new Apple(4, 5, 6));
+//		appleTree.withHas(new Apple(7, 8, 9));
+		IdMap map = new IdMap();
+		map.with(new AppleCreator(), new AppleTreeCreator());
+		ByteItem item = map.toByteItem(appleTree);
+		ByteBuffer bytes = item.getBytes(true);
+		Assert.assertEquals(100, bytes.length());
+	}
+
+	@Test
+	public void testSimpleAppleTreePrimitive() {
+		AppleTree appleTree = new AppleTree();
+		appleTree.withHas(new Apple("2100000000", 123.32f, 239f));
+		appleTree.withHas(new Apple("2100000000", 123.32f, 239f));
+		IdMap map = new IdMap();
+		map.with(new AppleCreator(), new AppleTreeCreator());
+		ByteItem item = map.toByteItem(appleTree);
+		ByteBuffer bytes = item.getBytes(true);
+		Assert.assertEquals(118, bytes.length());
+	}
+
+	@Test
+	public void testSerializationTwoItems() {
+		AppleTree appleTree = new AppleTree();
+
+		appleTree.withHas(new Apple("1", 5644f, 564f));
+		appleTree.withHas(new Apple("0", 123.32f, 239f));
+
+		IdMap map = new IdMap();
+		map.with(new AppleTreeCreator());
+		map.with(new AppleCreator());
+//		map.withCreator(new AppleTreeCreator(), new AppleCreator());
+		ByteItem item = map.toByteItem(appleTree);
+
+		ByteBuffer bytes = item.getBytes(true);
+//		outputStream(bytes.array(), System.out);
+		Assert.assertEquals(100, bytes.length());
+		String string = item.toString();
+		Assert.assertEquals(128, string.length());
 	}
 }

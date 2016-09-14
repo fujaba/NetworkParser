@@ -1,35 +1,35 @@
 package de.uniks.networkparser.graph;
 
-import java.util.Collection;
+/*
+NetworkParser
+The MIT License
+Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
 
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+import java.util.Collection;
 import de.uniks.networkparser.graph.util.AssociationSet;
 import de.uniks.networkparser.graph.util.AttributeSet;
 import de.uniks.networkparser.graph.util.ClazzSet;
 import de.uniks.networkparser.graph.util.MethodSet;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.list.SimpleSet;
-
-/*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
-
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
-
- http://ec.europa.eu/idabc/eupl5
-
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
-*/
 
 public class Clazz extends GraphEntity {
 	public static final StringFilter<Clazz> NAME = new StringFilter<Clazz>(GraphMember.PROPERTY_NAME);
@@ -206,9 +206,9 @@ public class Clazz extends GraphEntity {
 	/**
 	 * ********************************************************************
 	 * <pre>
-	 *	   %srcCardinality%	   %tgtCardinality%
-	 * Clazz --------------------------------------- %tgtClass%
-	 *	   %srcRoleName%			 %tgtRoleName%
+	 *		%srcCardinality%		%tgtCardinality%
+	 * Clazz -------------------------------------- %tgtClass%
+	 *		%srcRoleName%			%tgtRoleName%
 	 * </pre>
 	 *
 	 * create a Bidirectional Association
@@ -264,63 +264,34 @@ public class Clazz extends GraphEntity {
 		return this;
 	}
 
-	public Clazz getSuperClass() {
-		if (associations == null) {
-			return null;
-		}
-		ClazzSet clazzSet = getEdges(AssociationTypes.GENERALISATION, AssociationTypes.EDGE);
-		return clazzSet.first();
-	}
 	/**
 	 * Get All Interfaces
 	 * @param transitive Get all Interfaces or direct Interfaces
 	 * @return all Interfaces of a Clazz
 	 *		 <pre>
-	 *			  one					   many
+	 *			one						many
 	 * Clazz ----------------------------------- Clazz
-	 *			  clazz				   Interfaces
+	 *			clazz					Interfaces
 	 *		 </pre>
 	 */
 	public ClazzSet getInterfaces(boolean transitive) {
-		ClazzSet interfaces = new ClazzSet();
-		if (associations == null) {
-			return interfaces;
-		}
-		ClazzSet clazzSet;
+		repairAssociations();
+		AssociationTypes type = AssociationTypes.IMPLEMENTS;
 		if(this.getType()==ClazzType.INTERFACE) {
-			clazzSet = getEdges(AssociationTypes.GENERALISATION, AssociationTypes.EDGE);
-			for (Clazz clazz : clazzSet) {
-				if (GraphUtil.isInterface(clazz)) {
-					interfaces.with(clazz);
-				}
-			}
+			type = AssociationTypes.GENERALISATION;
 		}
-		clazzSet = getEdges(AssociationTypes.IMPLEMENTS, AssociationTypes.EDGE);
-		for (Clazz clazz : clazzSet) {
-			if (GraphUtil.isInterface(clazz)) {
-				interfaces.with(clazz);
-			}
-		}
+
+		ClazzSet collection = getEdges(type);
 		if(!transitive) {
-			return interfaces;
+			return collection;
 		}
-		int size = interfaces.size();
+		int size = collection.size();
 		for(int i=0;i<size;i++) {
-			interfaces.withList(interfaces.get(i).getInterfaces(transitive));
+			collection.withList(collection.get(i).getInterfaces(transitive));
 		}
-		return interfaces;
+		return collection;
 	}
-
-	public Clazz withSuperClazz(Clazz... values) {
-		createAssociation(AssociationTypes.GENERALISATION, AssociationTypes.EDGE, values);
-		return this;
-	}
-
-	public Clazz withImplements(Clazz... values) {
-		createAssociation(AssociationTypes.IMPLEMENTS, AssociationTypes.EDGE, values);
-		return this;
-	}
-
+	
 	/**
 	 * Get All SuperClazzes
 	 * @param transitive Get all SuperClasses or direct SuperClasses
@@ -332,6 +303,7 @@ public class Clazz extends GraphEntity {
 	 *		 </pre>
 	 */
 	public ClazzSet getSuperClazzes(boolean transitive) {
+		repairAssociations();
 		ClazzSet collection = getEdges(AssociationTypes.GENERALISATION);
 		if(!transitive) {
 			return collection;
@@ -342,15 +314,67 @@ public class Clazz extends GraphEntity {
 		}
 		return collection;
 	}
+	
+	void repairAssociation(Association assoc) {
+		if(AssociationTypes.IMPLEMENTS != assoc.getType() && AssociationTypes.GENERALISATION != assoc.getType()) {
+			// Wrong way try another round
+			assoc = assoc.getOther();
+		}
+		if(AssociationTypes.IMPLEMENTS != assoc.getType() && AssociationTypes.GENERALISATION != assoc.getType()) {
+			// Ignore
+			return;
+		}
+		if(this.getType() == ClazzType.INTERFACE) {
+			if(AssociationTypes.GENERALISATION != assoc.getType()) {
+				assoc.with(AssociationTypes.GENERALISATION);
+			}
+		} else {
+			// Its a Class
+			if(assoc.getOtherClazz().getType() == ClazzType.INTERFACE) {
+				// Must be an Implements
+				if(AssociationTypes.IMPLEMENTS != assoc.getType()) {
+					assoc.with(AssociationTypes.IMPLEMENTS);
+				}	
+			} else {
+				// Must be an Genralization
+				if(AssociationTypes.GENERALISATION != assoc.getType()) {
+					assoc.with(AssociationTypes.GENERALISATION);
+				}	
+			}
+
+		}
+		
+	}
+	private void repairAssociations() {
+		if (associations == null ) {
+			return;
+		}
+		if(associations instanceof Association) {
+			// Is is easy only one Assoc
+			repairAssociation((Association)associations);
+		}else if(associations instanceof GraphSimpleSet) {
+			GraphSimpleSet list = (GraphSimpleSet) this.associations;
+			for (GraphMember item : list) {
+				if(item instanceof Association) {
+					repairAssociation((Association)item);
+				}
+			}
+		}
+	}
+
+	public Clazz withSuperClazz(Clazz... values) {
+		createAssociation(AssociationTypes.GENERALISATION, AssociationTypes.EDGE, values);
+		return this;
+	}
 
 	/**
-	 * get All KindClazzes
-	 * @param transitive Get all KindClasses or direct KindClasses
-	 * @return all KindClasses of a Clazz
+	 * get All KidClazzes
+	 * @param transitive Get all KidClasses or direct KidClasses
+	 * @return all KidClasses of a Clazz
 	 *		 <pre>
 	 *			  one					   many
 	 * Clazz ----------------------------------- Clazz
-	 *			  clazz				   kindClazzes
+	 *			  superClass		   kidClazzes
 	 *		 </pre>
 	 */
 	public ClazzSet getKidClazzes(boolean transitive) {

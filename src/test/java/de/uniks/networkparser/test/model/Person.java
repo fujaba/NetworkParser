@@ -29,117 +29,114 @@ import de.uniks.networkparser.test.model.util.ItemSet;
 import de.uniks.networkparser.test.model.util.PersonSet;
 
 public class Person  implements SendableEntity, Comparable<Object> {
-	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
-   public static final String PROPERTY_NAME = "name";
-   public static final String PROPERTY_BALANCE = "balance";
-   public static final String PROPERTY_PARENT = "parent";
-   public static final String PROPERTY_ITEM = "item";
-   public static final String PROPERTY_WALLET = "wallet";
+	public static final String PROPERTY_NAME = "name";
+	public static final String PROPERTY_BALANCE = "balance";
+	public static final String PROPERTY_PARENT = "parent";
+	public static final String PROPERTY_ITEM = "item";
+	public static final String PROPERTY_WALLET = "wallet";
 
-   private ItemSet item = null;
-   private GroupAccount parent = null;
-   private double balance;
-   private Wallet wallet = new Wallet();
+	private ItemSet item = null;
+	private GroupAccount parent = null;
+	private double balance;
+	private Wallet wallet = new Wallet();
+	private String name;
 
-   private String name;
+	//==========================================================================
+	protected PropertyChangeSupport listeners = null;
+	   
+	public boolean firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+		if (listeners != null) {
+			listeners.firePropertyChange(propertyName, oldValue, newValue);
+			return true;
+		}
+		return false;
+	}
 
+	public boolean addPropertyChangeListener(PropertyChangeListener listener) {
+		if (listeners == null) {
+			listeners = new PropertyChangeSupport(this);
+		}
+		listeners.addPropertyChangeListener(listener);
+		return true;
+	}
 
-   //==========================================================================
-
-
-   public PropertyChangeSupport getPropertyChangeSupport()
-   {
-	  return listeners;
-   }
-
-   public boolean addPropertyChangeListener(PropertyChangeListener listener)
-   {
-	  getPropertyChangeSupport().addPropertyChangeListener(listener);
-	  return true;
-   }
-
-	@Override
 	public boolean addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-		getPropertyChangeSupport().addPropertyChangeListener(propertyName, listener);
+		if (listeners == null) {
+			listeners = new PropertyChangeSupport(this);
+		}
+		listeners.addPropertyChangeListener(propertyName, listener);
 		return true;
+	}
+
+	public boolean removePropertyChangeListener(PropertyChangeListener listener) {
+		if (listeners != null) {
+			listeners.removePropertyChangeListener(listener);
+		}
+		return true;
+	}
+
+	public boolean removePropertyChangeListener(String property,
+			PropertyChangeListener listener) {
+		if (listeners != null) {
+			listeners.removePropertyChangeListener(property, listener);
+		}
+		return true;
+	}
+
+	//==========================================================================
+	public void removeYou() {
+		setParent(null);
+		withoutItem(this.getItem().toArray(new Item[this.getItem().size()]));
+		firePropertyChange("REMOVE_YOU", this, null);
+	}
+
+	//==========================================================================
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(String value) {
+		if ( ! StrUtil.stringEquals(this.name, value)) {
+			String oldValue = this.name;
+			this.name = value;
+			firePropertyChange(PROPERTY_NAME, oldValue, value);
+		}
+	}
+
+	public Person withName(String value) {
+		setName(value);
+		return this;
 	}
 
 	@Override
-	public boolean removePropertyChangeListener(PropertyChangeListener listener) {
-		getPropertyChangeSupport().removePropertyChangeListener(listener);
-		return true;
+	public String toString() {
+		StringBuilder r = new StringBuilder();
+		r.append(" ").append(this.getName());
+		r.append(" ").append(this.getBalance());
+		return r.substring(1);
 	}
 
-   //==========================================================================
+	//==========================================================================
+	public double getBalance() {
+		return this.balance;
+	}
 
+	public void setBalance(double value) {
+		if (this.balance != value) {
+			double oldValue = this.balance;
+			this.balance = value;
+			firePropertyChange(PROPERTY_BALANCE, oldValue, value);
+		}
+	}
 
-   public void removeYou()
-   {
-	  setParent(null);
-	   withoutItem(this.getItem().toArray(new Item[this.getItem().size()]));
-	  getPropertyChangeSupport().firePropertyChange("REMOVE_YOU", this, null);
-   }
+	public Person withBalance(double value) {
+		setBalance(value);
+		return this;
+	}
 
+	public static final PersonSet EMPTY_SET = new PersonSet().withFlag(PersonSet.READONLY);
 
-   //==========================================================================
-   public String getName()
-   {
-	  return this.name;
-   }
-
-   public void setName(String value)
-   {
-	  if ( ! StrUtil.stringEquals(this.name, value))
-	  {
-		 String oldValue = this.name;
-		 this.name = value;
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_NAME, oldValue, value);
-	  }
-   }
-
-   public Person withName(String value)
-   {
-	  setName(value);
-	  return this;
-   }
-
-   @Override
-   public String toString()
-   {
-	  StringBuilder r = new StringBuilder();
-
-	  r.append(" ").append(this.getName());
-	  r.append(" ").append(this.getBalance());
-	  return r.substring(1);
-   }
-
-   //==========================================================================
-   public double getBalance()
-   {
-	  return this.balance;
-   }
-
-   public void setBalance(double value)
-   {
-	  if (this.balance != value)
-	  {
-		 double oldValue = this.balance;
-		 this.balance = value;
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_BALANCE, oldValue, value);
-	  }
-   }
-
-   public Person withBalance(double value)
-   {
-	  setBalance(value);
-	  return this;
-   }
-
-
-   public static final PersonSet EMPTY_SET = new PersonSet().withFlag(PersonSet.READONLY);
-
-
-   /********************************************************************
+	/********************************************************************
 	* <pre>
 	*			  many					   one
 	* Person ----------------------------------- GroupAccount
@@ -147,69 +144,53 @@ public class Person  implements SendableEntity, Comparable<Object> {
 	* </pre>
 	*/
 
+	public GroupAccount getParent() {
+		return this.parent;
+	}
 
-   public GroupAccount getParent()
-   {
-	  return this.parent;
+	public boolean setParent(GroupAccount value) {
+		boolean changed = false;
+		if (this.parent != value) {
+			GroupAccount oldValue = this.parent;
+			if (this.parent != null) {
+				this.parent = null;
+				oldValue.withoutPersons(this);
+			}
+
+			this.parent = value;
+
+			if (value != null) {
+				value.withPersons(this);
+			}
+
+			firePropertyChange(PROPERTY_PARENT, oldValue, value);
+			changed = true;
+		}
+
+		return changed;
    }
 
-   public boolean setParent(GroupAccount value)
-   {
-	  boolean changed = false;
+	public boolean setUnidirectionalParent(GroupAccount value) {
+		boolean changed = false;
+		if (this.parent != value) {
+			GroupAccount oldValue = this.parent;
+			this.parent = value;
+			firePropertyChange(PROPERTY_PARENT, oldValue, value);
+			changed = true;
+		}
+		return changed;
+	}
 
-	  if (this.parent != value)
-	  {
-		 GroupAccount oldValue = this.parent;
+	public Person withParent(GroupAccount value) {
+		setParent(value);
+		return this;
+	}
 
-		 if (this.parent != null)
-		 {
-			this.parent = null;
-			oldValue.withoutPersons(this);
-		 }
-
-		 this.parent = value;
-
-		 if (value != null)
-		 {
-			value.withPersons(this);
-		 }
-
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_PARENT, oldValue, value);
-		 changed = true;
-	  }
-
-	  return changed;
-   }
-
-   public boolean setUnidirectionalParent(GroupAccount value)
-   {
-	  boolean changed = false;
-
-	  if (this.parent != value)
-	  {
-		 GroupAccount oldValue = this.parent;
-
-		 this.parent = value;
-		 getPropertyChangeSupport().firePropertyChange(PROPERTY_PARENT, oldValue, value);
-		 changed = true;
-	  }
-
-	  return changed;
-   }
-
-   public Person withParent(GroupAccount value)
-   {
-	  setParent(value);
-	  return this;
-   }
-
-   public GroupAccount createParent()
-   {
-	  GroupAccount value = new GroupAccount();
-	  withParent(value);
-	  return value;
-   }
-
+	public GroupAccount createParent() {
+		GroupAccount value = new GroupAccount();
+		withParent(value);
+		return value;
+	}
 
    /********************************************************************
 	* <pre>
@@ -218,7 +199,6 @@ public class Person  implements SendableEntity, Comparable<Object> {
 	*			  buyer				   item
 	* </pre>
 	*/
-
 
    public ItemSet getItem()
    {
@@ -249,7 +229,7 @@ public class Person  implements SendableEntity, Comparable<Object> {
 			if (changed)
 			{
 			   item.withBuyer(this);
-			   getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEM, null, item);
+			   firePropertyChange(PROPERTY_ITEM, null, item);
 			}
 		 }
 	  }
@@ -265,7 +245,7 @@ public class Person  implements SendableEntity, Comparable<Object> {
 			if (this.item.remove(item))
 			{
 			   item.setBuyer(null);
-			   getPropertyChangeSupport().firePropertyChange(PROPERTY_ITEM, item, null);
+			   firePropertyChange(PROPERTY_ITEM, item, null);
 			}
 		 }
 

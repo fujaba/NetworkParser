@@ -4,6 +4,6 @@
 	<import file="buildAnt.xml" as="Ant"/>
 	<target name="AddCopyRightToSource" depends="Ant.buildAnt" description="Add Licencetext to Sourcecode-Files">
 		<taskdef name="CopyRightSetter" classname="de.uniks.networkparser.test.ant.CopyRightSetter"  classpath="src/Ant:bin:NetworkParserAnt.jar"/>
-		<CopyRightSetter projectName="NetworkParser" source="src/main/java/de/uniks/networkparser/" file="src/Ant/de/uniks/networkparser/test/ant/Licence.txt"/>
+		<CopyRightSetter projectName="NetworkParser" source="src/main/java/de/uniks/networkparser/" file="src/main/resources/Licence.txt"/>
 	</target>
 </project>

@@ -1,25 +1,28 @@
-/*
-   Copyright (c) 2012 Albert Zuendorf
-
-   Permission is hereby granted, free of charge, to any person obtaining a copy of this software
-   and associated documentation files (the "Software"), to deal in the Software without restriction,
-   including without limitation the rights to use, copy, modify, merge, publish, distribute,
-   sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
-   furnished to do so, subject to the following conditions:
-
-   The above copyright notice and this permission notice shall be included in all copies or
-   substantial portions of the Software.
-
-   The Software shall be used for Good, not Evil.
-
-   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
-   BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-   DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
 package de.uniks.networkparser.parser;
+
+/*
+NetworkParser
+The MIT License
+Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
 
 public class SymTabEntry {
 	public static final String TYPE_IMPORT = "import";
@@ -42,6 +45,9 @@ public class SymTabEntry {
 	private String value;
 	private String type;
 
+	private SymTabEntry next;
+	private SymTabEntry prev;
+
 	public String getValue() {
 		return this.value;
 	}
@@ -53,6 +59,14 @@ public class SymTabEntry {
 			return true;
 		}
 		return false;
+	}
+
+	public void add(CharSequence string) {
+		if(this.value == null) {
+			this.value = ""+string;
+		} else {
+			this.value += string;
+		}
 	}
 
 	public SymTabEntry withValue(String value) {
@@ -76,5 +90,55 @@ public class SymTabEntry {
 	public SymTabEntry withType(String value) {
 		setType(value);
 		return this;
+	}
+
+	public boolean setNext(SymTabEntry value) {
+		boolean changed = false;
+
+		if (this.next != value) {
+			SymTabEntry oldValue = this.next;
+			if (this.next != null) {
+				this.next = null;
+				oldValue.setPrev(null);
+			}
+			this.next = value;
+
+			if (value != null) {
+				value.setPrev(this);
+			}
+			changed = true;
+		}
+		return changed;
+	}
+	public boolean setPrev(SymTabEntry value) {
+		boolean changed = false;
+
+		if (this.prev != value) {
+			SymTabEntry oldValue = this.prev;
+			if (this.prev != null) {
+				this.prev = null;
+				oldValue.setNext(null);
+			}
+			this.prev = value;
+
+			if (value != null) {
+				value.setNext(this);
+			}
+			changed = true;
+		}
+		return changed;
+	}
+
+	public String toString() {
+		StringBuilder sb= new StringBuilder();
+		toString(sb);
+		return sb.toString();
+	}
+
+	public void toString(StringBuilder sb) {
+		sb.append(this.value);
+		if(this.next != null) {
+			this.next.toString(sb);
+		}
 	}
 }

@@ -1,6 +1,7 @@
 package de.uniks.networkparser.converter;
 import java.nio.charset.Charset;
 
+import de.uniks.networkparser.buffer.BufferedBuffer;
 /*
 NetworkParser
 Copyright (c) 2011 - 2016, Stefan Lindel
@@ -28,7 +29,7 @@ import de.uniks.networkparser.interfaces.ByteItem;
 import de.uniks.networkparser.interfaces.Converter;
 
 public abstract class ByteConverter implements Converter{
-	public abstract String toString(ByteBuffer values);
+	public abstract String toString(BufferedBuffer values);
 
 	@Override
 	public String encode(BaseItem entity) {

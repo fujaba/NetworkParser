@@ -27,7 +27,6 @@ public class University implements SendableEntity {
 		this.value = value;
 	}
 
-
 	public String getUser() {
 		return user;
 	}
@@ -46,9 +45,9 @@ public class University implements SendableEntity {
 
 	/**
 	 * <pre>
-	 *		   0..1	 students	 0..n
+	 *		0..1	 students	 0..n
 	 * University ------------------------- Student
-	 *		   university		&gt;	   students
+	 *		university		&gt;	students
 	 * </pre>
 	 */
 
@@ -200,10 +199,11 @@ public class University implements SendableEntity {
 		return true;
 	}
 
-	public void removePropertyChangeListener(String property,
+	public boolean removePropertyChangeListener(String property,
 			PropertyChangeListener listener) {
 		getPropertyChangeSupport().removePropertyChangeListener(property,
 				listener);
+		return true;
 	}
 
 	public PropertyChangeSupport getPropertyChangeSupport() {

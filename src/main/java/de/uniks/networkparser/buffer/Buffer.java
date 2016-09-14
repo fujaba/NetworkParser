@@ -1,30 +1,31 @@
 package de.uniks.networkparser.buffer;
 
+/*
+NetworkParser
+The MIT License
+Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.BufferItem;
 import de.uniks.networkparser.list.SimpleList;
-
-/*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
-
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
-
- http://ec.europa.eu/idabc/eupl5
-
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
-*/
 /**
  * INterface for Buffer For Tokener to parse some Values
  *
@@ -33,7 +34,7 @@ import de.uniks.networkparser.list.SimpleList;
 public abstract class Buffer implements BufferItem {
 	public final static String STOPCHARSJSON = ",:]}/\\\"[{;=# ";
 	public final static String STOPCHARSXML = ",]}/\\\"[{;=# ";
-	public final static String STOPCHARSXMLEND = ",]}/\\\"[{;=#> ";
+	public final static String STOPCHARSXMLEND = ",]}/\\\"[{;=#>\r\n ";
 //	private byte lookAHeadByte;
 //	private boolean isLookAhead;
 
@@ -102,14 +103,6 @@ public abstract class Buffer implements BufferItem {
 
 	@Override
 	public byte getByte() {
-//		if(isLookAhead) {
-//			isLookAhead = false;
-//			return lookAHeadByte;
-//		}
-//		isLookAhead = true;
-//		char item = getChar();
-//		lookAHeadByte = (byte) (item&0x00FF);
-//		return (byte) ((item&0xFF00)>>8);
 		return (byte)getChar();
 	}
 
@@ -222,7 +215,7 @@ public abstract class Buffer implements BufferItem {
 					isQuote = true;
 				}
 				for(i=0;i<quoteLen;i++) {
-					if (c != quotes[i]) {
+					if (c == quotes[i]) {
 						break;
 					}
 				}

@@ -1,36 +1,40 @@
 package de.uniks.networkparser.graph;
 
 /*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
+NetworkParser
+The MIT License
+Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
 
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
- http://ec.europa.eu/idabc/eupl5
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 */
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-
+import java.util.Map.Entry;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.converter.GraphConverter;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonArray;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 /**
  * The Class YUMLIdParser.
  */
@@ -42,6 +46,8 @@ public class GraphTokener extends Tokener {
 	public static final byte FLAG_CLASS = 0x01;
 	public static final byte FLAG_CARDINALITY = 0x02;
 	public static final byte FLAG_SHOWLINE = 0x04;
+	public static final byte FLAG_ORDERD = 0x08;
+	public static final byte FLAG_UNORDERD = 0x00;
 //	public static final byte FLAG_OBJECT = 0x01;
 
 	/** The Constant for OBJECT Diagramms. */
@@ -143,34 +149,6 @@ public class GraphTokener extends Tokener {
 		return;
 	}
 
-	public GraphList diffModel(GraphList master, GraphList slave) {
-		GraphDiff masterDiff = master.getDiff();
-		GraphDiff saveDiff = slave.getDiff();
-		Clazz masterFile = (Clazz) masterDiff.getMainFile();
-		Clazz slaveFile = (Clazz) saveDiff.getMainFile();
-		masterFile.getDiff().with(slaveFile);
-
-		// create new map<key: Clazz without s, Value: Object with {attributes, items}>
-		// Search for single clazz
-		// Search for clazz with master attributes
-		// search to 1 assoc
-		// try to find in to n assoc
-		searchMatch(masterFile);
-		return master;
-	}
-
-	private void searchMatch(Clazz master) {
-		master.getChildren().iterator();
-	}
-
-//	protected void initItem(GraphMember item) {
-//		item.withChildren(new GraphDiff());
-//		if(item instanceof Clazz) {
-//			if(this.getMaster() ==null) {
-//				this.toDoList.add((Clazz) item);
-//			}
-//		}
-//	}
 	public void highlightModel(JsonArray clazzDiagram, GraphList objectDiagram) {
 		GraphList list = new GraphConverter().convertGraphList(GraphTokener.CLASS, clazzDiagram);
 		this.highlightModel(list, objectDiagram);
@@ -212,6 +190,137 @@ public class GraphTokener extends Tokener {
 			}
 		}
 		return clazzDiagram;
+	}
+
+	public GraphPatternMatch diffModel(Object master, Object slave, MapEntity map) {
+		if(map.add(master) == false) {
+			return null;
+		}
+		GraphPatternMatch result = new GraphPatternMatch();
+		if(master == null) {
+			if(slave == null) {
+				return result;
+			}
+			result.with(GraphPatternChange.createCreate(slave));
+			return result;
+		}
+		if(master.equals(slave)) {
+			return result;
+		}
+		if(slave == null) {
+			result.with(GraphPatternChange.createDelete(master));
+			return result;
+		}
+
+		SendableEntityCreator masterCreator = this.map.getCreatorClass(master);
+		SendableEntityCreator slaveCreator = this.map.getCreatorClass(slave);
+
+		if(masterCreator == null || slaveCreator == null) {
+			result.with(GraphPatternChange.createChange(master, slave));
+			// No Creator Found for both value check if th same instance
+			return result;
+		}
+		String[] properties = masterCreator.getProperties();
+
+// Check properties
+// Step one use equals-Method
+		SimpleKeyValueList<String, Collection<?>> assocMany = new SimpleKeyValueList<String, Collection<?>>();
+		SimpleKeyValueList<String, Object> attributes = new SimpleKeyValueList<String, Object>();
+		for(String property : properties) {
+			Object masterValue = masterCreator.getValue(master, property);
+			if(masterValue instanceof Collection<?>) {
+				assocMany.add(property, (Collection<?>)masterValue);
+			} else {
+				attributes.add(property, masterValue);
+			}
+		}
+		SimpleKeyValueList<Object, Object> matchMap=new SimpleKeyValueList<Object, Object>();
+		if(map.isFlag(GraphTokener.FLAG_ORDERD)) {
+// Step two: orderd
+//				Primitive
+//				Assoc to 1
+//				Assoc to n
+			for(Iterator<Entry<String, Object>> i = attributes.iterator();i.hasNext();){
+				Entry<String, Object> item = i.next();
+				Object value = item.getValue();
+				Object slaveValue = slaveCreator.getValue(slave, item.getKey());
+				if(value == null) {
+					if(slaveValue == null) {
+						continue;
+					}
+					if(slaveValue instanceof Collection<?>) {
+						Collection<?> child = (Collection<?>) slaveValue;
+						GraphPatternMatch match = GraphPatternMatch.create(item.getKey(), slaveValue);
+						for(Iterator<?> childIterator = child.iterator();childIterator.hasNext();) {
+							match.with(GraphPatternChange.createCreate(childIterator.next()));
+						}
+						if(match.size()>0) {
+							result.with(match);
+						}
+					} else {
+						result.with(GraphPatternChange.createCreate(item.getKey(), slaveValue));
+					}
+					continue;
+				}
+				if(value instanceof String || value instanceof Date || value instanceof Number) {
+					if(value.equals(slaveValue) == false) {
+						result.with(GraphPatternChange.createChange(item.getKey(), value, slaveValue));
+					}
+				} else {
+					matchMap.add(value, slaveValue);
+					if(this.map.getCreatorClass(value) != null ) {
+						result.with(diffModel(value, slaveValue, map));
+					} else if(value.equals(slaveValue) == false) {
+						result.with(GraphPatternChange.createChange(item.getKey(), value, slaveValue));
+					}
+				}
+			}
+			// Now try to Many Assoc
+			for(Iterator<Entry<String, Collection<?>>> i = assocMany.iterator();i.hasNext();){
+				Entry<String, Collection<?>> item = i.next(); 
+				Collection<?> masterCollection = item.getValue();
+				GraphPatternMatch match = GraphPatternMatch.create(item.getKey(), masterCollection);
+				Object slaveValue = slaveCreator.getValue(slave, item.getKey());
+				if(slaveValue == null || slaveValue instanceof Collection<?> == false) {
+					if(masterCollection.size()>0) {
+						for(Iterator<?> childIterator = masterCollection.iterator();childIterator.hasNext();) {
+							match.with(GraphPatternChange.createDelete(childIterator.next()));
+						}
+						result.with(match);
+					}
+					continue;
+				}
+				Iterator<?> masterIterator = masterCollection.iterator();
+				Iterator<?> slaveIterator = ((Collection<?>)slaveValue).iterator();
+				while(masterIterator.hasNext()) {
+					Object masterChild = masterIterator.next();
+					if(slaveIterator.hasNext()) {
+						Object slaveChild = slaveIterator.next();
+						match.with(diffModel(masterChild, slaveChild, map));
+					} else {
+						match.with(GraphPatternChange.createDelete(masterChild));
+					}
+				}
+				while(slaveIterator.hasNext()) {
+					match.with(GraphPatternChange.createCreate(slaveIterator.next()));
+				}
+				if(match.size()>0) {
+					result.with(match);
+				}
+			}
+		} else {
+// Step two: unorderd
+//				Assoc to n
+//				Assoc to 1
+//				Primitive ( try to find keyattributes use order: String, Date, Int, Object)
+			for(String property : properties) {
+				//TODO IMplementation of Unordered Model
+				Object masterValue = masterCreator.getValue(master, property);
+				Object slaveValue = slaveCreator.getValue(slave, property);
+//				diffModel(value, slaveValue, map)
+			}
+		}
+		return result;
 	}
 
 	@Override

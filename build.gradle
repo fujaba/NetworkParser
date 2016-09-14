@@ -23,8 +23,8 @@ apply from: 'gradle/artifactory.gradle'
 
 idea {
 	project {
-		jdkName = '1.7'
-		languageLevel = '1.7'
+		// jdkName = '1.7'
+		// languageLevel = '1.7'
 	}
 }
 
@@ -32,6 +32,7 @@ repositories {
 	jcenter()
 	mavenCentral()
 }
+
 test {
 	// enable TestNG support (default is JUnit)
 	useJUnit {
@@ -40,6 +41,7 @@ test {
 		}
 	}
 }
+
 buildscript {
 	repositories {
 		jcenter()
@@ -52,8 +54,9 @@ buildscript {
 		classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.6.3"
 	}
 }
+
 artifacts { 
-	archives buildCoreJar, buildCoreJar16, buildCoreJar17, buildSourceJar, buildJavadoc, buildFullJar
+	archives buildCoreJar16, buildCoreJar17, buildCoreJar18, buildFullJar, buildSourceJar, buildMinCoreJar
 }
 
 test {
@@ -65,9 +68,9 @@ test {
 		showCauses true
 	}
 }
-jacoco {
-	toolVersion = "0.7.6.201602180812"
-}
+
+jacoco.toolVersion = "0.7.+"
+
 jacocoTestReport {
 	group = "Reporting"
 	description = "Generate Jacoco coverage reports after running tests."
@@ -86,15 +89,21 @@ jacocoTestReport {
 		html {
 			enabled = true
 			//Following value is a folder
-			destination = new File("build/jacoco/html")
+			destination = new File("${buildDir}/jacoco/html")
 		}
 	}
+	afterEvaluate {
+		classDirectories = files(classDirectories.files.collect {
+			fileTree(dir: it, exclude: ['**/javafx/**'])
+		})
+	}
 }
+test.finalizedBy jacocoTestReport
 
 sourceSets.main.output.classesDir 'build/classes/main'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-defaultTasks 'test', 'jacocoTestReport', 'buildAll'
+defaultTasks 'test', 'jacocoTestReport', 'buildFullJar'
 

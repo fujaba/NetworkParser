@@ -17,6 +17,7 @@ import de.uniks.networkparser.test.model.Apple;
 import de.uniks.networkparser.test.model.AppleTree;
 import de.uniks.networkparser.test.model.ChatMessage;
 import de.uniks.networkparser.test.model.Entity;
+import de.uniks.networkparser.test.model.FIXMLMessage;
 import de.uniks.networkparser.test.model.JabberBindMessage;
 import de.uniks.networkparser.test.model.JabberChatMessage;
 import de.uniks.networkparser.test.model.ListItem;
@@ -26,18 +27,21 @@ import de.uniks.networkparser.test.model.XMLTestEntity;
 import de.uniks.networkparser.test.model.XMLTestItem;
 import de.uniks.networkparser.test.model.util.AppleCreator;
 import de.uniks.networkparser.test.model.util.AppleTreeCreator;
+import de.uniks.networkparser.test.model.util.ApplicationMessageCreator;
 import de.uniks.networkparser.test.model.util.ChatMessageCreator;
 import de.uniks.networkparser.test.model.util.EntityCreator;
+import de.uniks.networkparser.test.model.util.FIXMLMessageCreator;
 import de.uniks.networkparser.test.model.util.JabberChatMessageCreator;
 import de.uniks.networkparser.test.model.util.ListItemCreator;
 import de.uniks.networkparser.test.model.util.MyXMLEntityCreator;
 import de.uniks.networkparser.test.model.util.StringMessageCreator;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
 import de.uniks.networkparser.test.model.util.XMLTestItemCreator;
+import de.uniks.networkparser.xml.PomFile;
 import de.uniks.networkparser.xml.XMLEntity;
 import de.uniks.networkparser.xml.XMLTokener;
 
-public class XMLTest {
+public class XMLTest extends IOClasses{
 	@Test
 	public void testSimpleExport(){
 		AppleTree appleTree = new AppleTree();
@@ -47,8 +51,13 @@ public class XMLTest {
 		map.with(new AppleTreeCreator());
 		map.with(new AppleCreator());
 
-
 		Assert.assertEquals(133, map.toSimpleXML(appleTree).toString().length());
+	}
+
+	@Test
+	public void test(){
+		XMLEntity xmlEntity = new XMLEntity().withValue("<chatmsg folder=\"C:\\temp\\\\\" />");
+		Assert.assertEquals("C:\\temp\\", xmlEntity.getValue("folder"));
 	}
 
 	@Test
@@ -187,8 +196,6 @@ public class XMLTest {
 		Assert.assertEquals(3, entity.getChildrenCount());
 	}
 
-
-
 	@Test
 	public void testChatMessage(){
 		ChatMessage chatMessage= new ChatMessage();
@@ -231,7 +238,6 @@ public class XMLTest {
 		assertEquals(((StringMessage) result).getValue(), "Hallo Welt");
 	}
 
-
 	@Test
 	public void testXMLChatMessage() {
 		String xml = "<message to=\"androidpeer@googlemail.com\" type=\"chat\" id=\"28\" from=\"peercenter@googlemail.com/Talk.v1054B9F0AA7\"><body>test</body><active xmlns=\"http://jabber.org/protocol/chatstates\"/><nos:x value=\"disabled\" xmlns:nos=\"google:nosave\"/><arc:record otr=\"false\" xmlns:arc=\"http://jabber.org/protocol/archive\"/></message>";
@@ -264,12 +270,6 @@ public class XMLTest {
 		assertEquals("WERT Vergleichen", reference, xmlMap.toSimpleXML(chatMessage).toString(2));
 	}
 
-	public static StringBuilder readFile(String fileName) throws IOException {
-		File file = new File(fileName);
-		StringBuilder stringBuilder = readFile(file);
-		return stringBuilder;
-	}
-
 	public static StringBuilder readFile(File file) throws IOException {
 		StringBuilder result = new StringBuilder();
 		BufferedReader in = new BufferedReader(new FileReader(file));
@@ -297,7 +297,6 @@ public class XMLTest {
 		XMLEntity xmlEmF = map.toSimpleXML(item);
 		Assert.assertEquals("<item id=\"42\"><user>Stefan</user><body txt=\"Hallo Welt\">new Value</body></item>", xmlEmF.toString());
 
-
 		XMLTestItem newItem = (XMLTestItem) map.decode(xmlEmF.toString());
 		Assert.assertEquals(item.getBody(), newItem.getBody());
 		Assert.assertEquals(item.getId(), newItem.getId());
@@ -319,5 +318,81 @@ public class XMLTest {
 		Assert.assertFalse(EntityUtil.compareEntity(xmlA, xmlB));
 		Assert.assertEquals("<p no=\"23\"><2/></p>", xmlA.toString());
 		Assert.assertEquals("<p no=\"24\"><3/></p>", xmlB.toString());
+	}
+
+	@Test
+	public void testPattern() {
+		String XMLText = readFile("test3.xml").toString();
+
+		IdMap map= new IdMap();
+		map.with(new FIXMLMessageCreator());
+		map.with(new ApplicationMessageCreator());
+
+		FIXMLMessage item = (FIXMLMessage) map.decode(XMLText);
+		assertNotNull(item);
+		assertNotNull(item.getApplicationmessage());
+	}
+
+	@Test
+	public void testSimpleXMLEntity(){
+		String str = readFile("test3.xml").toString();
+
+		XMLEntity item= new XMLEntity();
+		item.withValue(str);
+		Assert.assertEquals(505, item.toString().length());
+	}
+
+	@Test
+	public void testJISMEngine(){
+		StringBuffer stringBuffer = readFile("template.html");
+
+		IdMap decoder= new IdMap();
+		String data = stringBuffer.toString();
+		Object decode = decoder.decode(data);
+		assertNotNull(decode);
+	}
+	
+	@Test
+	public void PomTest() {
+		StringBuilder sb;
+		PomFile pomFile;
+		sb = new StringBuilder();
+		sb.append("<project>\r\n");
+		sb.append("  <modelVersion>4.2.0</modelVersion>\r\n");
+		sb.append("  <!--<build>-->\r\n");
+		sb.append("  <!--</build>-->\r\n");
+		sb.append("</project>\r\n");
+		pomFile = new PomFile().withValue(sb.toString());
+		Assert.assertEquals("4.2.0", pomFile.getModelVersion());
+		
+		sb=new StringBuilder();
+		sb.append("<?xml version=\"1.0\"?>\r\n");
+		sb.append("<project\r\n");
+		sb.append("		xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\r\n");
+		sb.append("   <modelVersion>4.2.0</modelVersion>\r\n");
+		sb.append("   <!--  -->\r\n");
+		sb.append("</project>\r\n");
+		Assert.assertEquals("4.2.0", pomFile.getModelVersion());
+		
+		sb=new StringBuilder();
+		sb.append("<!--\r\n");
+		sb.append(" My Framework\r\n");
+		sb.append(" see <http://www.sdmlib.org />\r\n");
+		sb.append("-->\r\n");
+		sb.append("<project>\r\n");
+		sb.append("   <modelVersion>4.2.0</modelVersion>\r\n");
+		sb.append("</project>\r\n");
+		Assert.assertEquals("4.2.0", pomFile.getModelVersion());
+		
+		sb=new StringBuilder();
+		sb.append("<project>\r\n");
+		sb.append("   <modelVersion>4.2.0</modelVersion>\r\n");
+		sb.append("   <!-- =Compile time dependencies= -->\r\n");
+		sb.append("   <!-- ==Apache dependencies== -->\r\n");
+	    sb.append("</project>\r\n");
+		
+		pomFile = new PomFile().withValue(sb.toString());
+
+		Assert.assertEquals("4.2.0", pomFile.getModelVersion());
 	}
 }

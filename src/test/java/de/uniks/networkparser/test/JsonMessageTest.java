@@ -4,15 +4,18 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.interfaces.UpdateListener;
+import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleList;
-import de.uniks.networkparser.logic.SimpleMapEvent;
 import de.uniks.networkparser.test.model.AppleTree;
 import de.uniks.networkparser.test.model.GroupAccount;
+import de.uniks.networkparser.test.model.House;
 import de.uniks.networkparser.test.model.Person;
 import de.uniks.networkparser.test.model.util.AppleCreator;
 import de.uniks.networkparser.test.model.util.AppleTreeCreator;
 import de.uniks.networkparser.test.model.util.GroupAccountCreator;
+import de.uniks.networkparser.test.model.util.HouseCreator;
 import de.uniks.networkparser.test.model.util.PersonCreator;
 
 public class JsonMessageTest implements UpdateListener {
@@ -21,12 +24,13 @@ public class JsonMessageTest implements UpdateListener {
 
 	@Override
 	public boolean update(Object event) {
-		SimpleMapEvent simpleEvent = (SimpleMapEvent) event;
-		
-		Assert.assertEquals("Message "+pos+":", messages.get(pos++), simpleEvent.getEntity().toString());
-		return false;
+		SimpleEvent simpleEvent = (SimpleEvent) event;
+		if(simpleEvent.isNewEvent()){
+			Assert.assertEquals("Message "+pos+":", messages.get(pos++), simpleEvent.getEntity().toString());
+		}
+		return true;
 	}
-	
+
 	@Test
 	public void testModell(){
 		messages=new SimpleList<String>();
@@ -53,12 +57,12 @@ public class JsonMessageTest implements UpdateListener {
 		account.createPersons().withName("Albert");
 //		account.createPersons().withName("Tobi");
 	}
-	
+
 	@Test
 	public void testModellWithUpdateSet(){
 		messages=new SimpleList<String>();
 		this.pos = 0;
-		
+
 		AppleTree tree = new AppleTree();
 		tree.setName("Bananenbaum");
 		IdMap map= new IdMap();
@@ -68,7 +72,42 @@ public class JsonMessageTest implements UpdateListener {
 		messages.with("{\"class\":\"de.uniks.networkparser.test.model.AppleTree\",\"id\":\"root\",\"upd\":{\"has\":{\"class\":\"de.uniks.networkparser.test.model.Apple\",\"id\":\"J1.A1\"}}}");
 		map.with(this);
 		tree.createApple();
-		
+
 	}
-	
+	@Test
+	public void testSimple() {
+		House house=new House();
+		house.setFloor(4);
+		house.setName("University");
+		IdMap map=new IdMap().with(new HouseCreator());
+		messages = new SimpleList<String>();
+		map.with(new UpdateListener() {
+			@Override
+			public boolean update(Object event) {
+				SimpleEvent simpleEvent = (SimpleEvent) event;
+				String msg = simpleEvent.getEntity().toString();
+				messages.add(msg);
+				Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.House\",\"id\":\"J1.H1\",\"rem\":{\"floor\":4},\"upd\":{\"floor\":42}}", msg);
+				return false;
+			}
+		});
+
+		JsonObject json = map.toJsonObject(house);
+		String string=json.toString();
+
+		IdMap decodeMap=new IdMap().with(new HouseCreator());
+		House newHouse = (House) decodeMap.decode(string);
+
+		// Old Model
+		Assert.assertEquals(4, newHouse.getFloor());
+		Assert.assertEquals("University", newHouse.getName());
+
+		// Update old Model
+		house.setFloor(42);
+
+		decodeMap.decode(messages.get(pos));
+
+		Assert.assertEquals(42, newHouse.getFloor());
+	}
+
 }

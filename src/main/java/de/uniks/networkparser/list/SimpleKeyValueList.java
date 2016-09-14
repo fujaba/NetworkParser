@@ -1,35 +1,36 @@
 package de.uniks.networkparser.list;
 
 /*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
+NetworkParser
+The MIT License
+Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
 
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
- http://ec.europa.eu/idabc/eupl5
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 */
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
-
-import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.interfaces.BaseItem;
 
-public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K, V> {
+public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K, V>, Iterable<Entry<K, V>>{
 	public SimpleKeyValueList() {
 		super();
 		withFlag(MAP);
@@ -276,7 +277,8 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		if (pos < 0) {
 			return defaultValue;
 		}
-		return getValueByIndex(pos).toString();
+		V value = getValueByIndex(pos);
+		return value == null ? defaultValue : value.toString();
 	}
 
 	/**
@@ -287,11 +289,8 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	 * @param key
 	 *			A key string.
 	 * @return this.
-	 * @throws RuntimeException
-	 *			 If there is already a property with this name that is not an
-	 *			 Integer, Long, Double, or Float.
 	 */
-	public SimpleKeyValueList<K, V> increment(K key) throws RuntimeException {
+	public SimpleKeyValueList<K, V> increment(K key) {
 		Object value = this.get(key);
 		if (value == null) {
 			setValueItem(key, 1);
@@ -315,20 +314,16 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		}
 		if (value instanceof String) {
 			try {
-				setValueItem(key, "" + (getInt(key) + 1));
-				return this;
+				Double newValue = Double.parseDouble((String)value);
+				if(newValue.intValue() == newValue) {
+					setValueItem(key, "" + (newValue.intValue() + 1));
+				} else {
+					setValueItem(key, "" + (newValue + 1));
+				}
 			} catch (Exception e) {
-			}
-			try {
-				setValueItem(key, "" + (getDouble(key) + 1));
-				return this;
-			} catch (Exception e) {
-				throw new RuntimeException("Unable to increment ["
-						+ EntityUtil.quote("" + key) + "].");
 			}
 		}
-		throw new RuntimeException("Unable to increment ["
-				+ EntityUtil.quote("" + key) + "].");
+		return this;
 	}
 
 	@Override
@@ -380,17 +375,16 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return false;
 	}
 
-
 	@Override
 	public V put(K key, V value) {
 		int pos = hasKeyAndPos(key);
 		if(pos<0) {
 			return null;
 		}
-		if(pos==size || getByIndex(SMALL_KEY, pos, size) != key) {
+		if(pos==size) {
 			grow(size + 1);
 			super.addKeyValue(pos, key, value);
-		}else {
+		} else {
 			super.setValue(pos, value, SMALL_VALUE);
 		}
 		return value;
@@ -431,11 +425,6 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	}
 
 	@Override
-	public Iterator<K> iterator() {
-		return new SimpleIterator<K>(this);
-	}
-
-	@Override
 	@SuppressWarnings("unchecked")
 	public K getKeyByIndex(int index) {
 		return (K) super.getKeyByIndex(index);
@@ -446,25 +435,24 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return (V) super.getByIndex(SMALL_VALUE, index + this.index, size);
 	}
 
-	@SuppressWarnings("unchecked")
-	public V remove(Object key) {
-		int index = indexOf(key);
+	@Override
+	protected Object removeByIndex(int index, int offset, int oldIndex) {
 		if (index < 0) {
 			return null;
 		}
-		int oldIndex = this.index;
-		removeItem(index, SMALL_KEY, oldIndex);
-		return (V) removeByIndex(index, SMALL_VALUE, oldIndex);
+		super.removeItem(index, SMALL_KEY, oldIndex);
+		return super.removeByIndex(index, SMALL_VALUE, oldIndex);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public V remove(Object key) {
+		int index = this.indexOf(key);
+		return (V) removeByIndex(index, SMALL_KEY, this.index);
 	}
 
 	@SuppressWarnings("unchecked")
 	public V removePos(int pos) {
-		if (pos < 0) {
-			return null;
-		}
-		int oldIndex = this.index;
-		removeItem(pos, SMALL_KEY, oldIndex);
-		return (V) removeByIndex(pos, SMALL_VALUE, oldIndex);
+		return (V) removeByIndex(pos, SMALL_KEY, index);
 	}
 
 	@Override
@@ -600,13 +588,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	}
 
 	@Override
-	public AbstractArray<K> without(Object... values) {
-		if(values == null) {
-			return this;
-		}
-		for(Object item : values) {
-			remove(item);
-		}
-		return this;
+	public Iterator<Entry<K, V>> iterator() {
+		return new SimpleIteratorSet<K, V>(this);
 	}
 }

@@ -18,9 +18,6 @@ public class ReflectionTest {
 	private ArrayList<String> ignoreMethods=new ArrayList<String>();
 	@Test
 	public void testReflection() throws ClassNotFoundException, IOException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-//		if(TestUtil.isTravis()) {
-//			return;
-//		}
 		ArrayList<Class<?>> classesForPackage = getClassesForPackage("de.uniks.networkparser");
 		StringBuilder error=new StringBuilder();
 		int errorCount=0;
@@ -59,7 +56,7 @@ public class ReflectionTest {
 						if(Modifier.isPublic(m.getModifiers()) == false) {
 							continue;
 						}
-							
+
 						if(ignoreMethods.contains(m.getName())) {
 							continue;
 						}
@@ -105,7 +102,7 @@ public class ReflectionTest {
 		writer.close();
 		output("Errors: "+errorCount+ "/" + (errorCount+ successCount), System.err);
 	}
-	
+
 	public String getParamtoString(Object[] params) {
 		StringBuilder sb= new StringBuilder();
 		sb.append("(");

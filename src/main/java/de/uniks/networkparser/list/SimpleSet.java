@@ -1,36 +1,40 @@
 package de.uniks.networkparser.list;
 
+/*
+NetworkParser
+The MIT License
+Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
 import java.util.Collection;
 import java.util.Set;
 
+import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.UpdateListener;
-/*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
 
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
-
- http://ec.europa.eu/idabc/eupl5
-
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
-*/
-import de.uniks.networkparser.logic.SimpleCollectionEvent;
-
-public class SimpleSet<V> extends AbstractList<V> implements Set<V>, Cloneable {
+public class SimpleSet<V> extends AbstractList<V> implements Set<V>, Cloneable, Iterable<V> {
+	public static final String PROPERTY="items";
 	private UpdateListener listener;
+
 	@Override
 	public SimpleSet<V> getNewList(boolean keyValue) {
 		return new SimpleSet<V>();
@@ -151,16 +155,22 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V>, Cloneable {
 		}
 		return result;
 	}
-
+	
 	public SimpleSet<V> withListener(UpdateListener listener) {
 		this.listener = listener;
+		return this;
+	}
+	
+	@Override
+	public SimpleSet<V> with(Object... values) {
+		super.with(values);
 		return this;
 	}
 
 	@Override
 	protected boolean fireProperty(String type, Object oldElement, Object newElement, Object beforeElement, Object value) {
 		if(this.listener != null) {
-			this.listener.update(new SimpleCollectionEvent(this, type, oldElement, newElement, beforeElement, value));
+			this.listener.update(new SimpleEvent(type, this, PROPERTY, oldElement, newElement, beforeElement, value));
 		}
 		return super.fireProperty(type, oldElement, newElement, beforeElement, value);
 	}

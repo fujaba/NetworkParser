@@ -65,13 +65,11 @@ public class TestApp extends Application {
 		tableList.add(new PersonGUI("Emma",	  "Jones",	"emma.jones@example.com", 12));
 		tableList.add(new PersonGUI("Michael",   "Brown",	"michael.brown@example.com", 122));
 
-
 		tableList.add(new PersonGUI("Jacob",	 "Smith",	"jacob.smith@example.com", 1));
 		tableList.add(new PersonGUI("Isabella",  "Johnson",  "isabella.johnson@example.com", 2));
 		tableList.add(new PersonGUI("Ethan",	 "Williams", "ethan.williams@example.com", 23));
 		tableList.add(new PersonGUI("Emma",	  "Jones",	"emma.jones@example.com", 12));
 		tableList.add(new PersonGUI("Michael",   "Brown",	"michael.brown@example.com", 122));
-
 
 		IdMap map = new  IdMap();
 		map.with(tableList);
@@ -100,7 +98,6 @@ public class TestApp extends Application {
 		root.getChildren().add(tableView);
 
 		primaryStage.show();
-
 
 //		System.out.println(map.toJsonObject(tableList).toString(2));
 //		tableView.test();

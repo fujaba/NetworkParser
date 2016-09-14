@@ -1,28 +1,32 @@
 package de.uniks.networkparser.logic;
 
+/*
+NetworkParser
+The MIT License
+Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
 import java.beans.PropertyChangeEvent;
 
-/*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
-
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
-
- http://ec.europa.eu/idabc/eupl5
-
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
-*/
+import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.UpdateListener;
 /**
@@ -38,8 +42,12 @@ public class InstanceOf implements UpdateListener, SendableEntityCreator {
 	public static final String PROPERTY = "property";
 	/** Constant of VALUE. */
 	public static final String VALUE = "value";
+
 	/** Variable of ClazzName. */
 	private Class<?> clazzName;
+
+	/** Variable of WhiteList of ClassNames. */
+	private boolean whiteList;
 
 	/** Variable of Property. */
 	private String property;
@@ -94,7 +102,7 @@ public class InstanceOf implements UpdateListener, SendableEntityCreator {
 	 * @param clazzName		The ClazzName
 	 * @return 				The new Instance
 	 */
-	public static InstanceOf value(Class<?> clazzName) {
+	public static InstanceOf create(Class<?> clazzName) {
 		return new InstanceOf().withClazzName(clazzName);
 	}
 
@@ -105,7 +113,7 @@ public class InstanceOf implements UpdateListener, SendableEntityCreator {
 	 * @param property	The Property
 	 * @return 			The new Instance
 	 */
-	public static InstanceOf value(Object clazz, String property) {
+	public static InstanceOf create(Object clazz, String property) {
 		InstanceOf result = new InstanceOf().withProperty(property);
 		if(clazz instanceof Class<?>) {
 			result.withClazzName((Class<?>) clazz);
@@ -113,6 +121,15 @@ public class InstanceOf implements UpdateListener, SendableEntityCreator {
 			result.withClazzName(clazz.getClass());
 		}
 		return result;
+	}
+	/**
+	 * Static Method for instance a new Instance of InstanceOf Object.
+	 *
+	 * @param property	The Property
+	 * @return 			The new Instance
+	 */
+	public static InstanceOf create(String property) {
+		return new InstanceOf().withProperty(property);
 	}
 
 	/** @return The ClazzName */
@@ -160,24 +177,38 @@ public class InstanceOf implements UpdateListener, SendableEntityCreator {
 	@Override
 	public boolean update(Object evt) {
 		// Filter for ClazzTyp
-		if(evt==null) {
+		if(evt == null || evt instanceof PropertyChangeEvent == false) {
 			return false;
 		}
 		PropertyChangeEvent event = (PropertyChangeEvent) evt;
 		if (this.clazzName != null ) {
 			Object newValue = event.getNewValue();
-			if(newValue!=null && newValue.getClass().isPrimitive()) {
-				return true;
-			}
-			if(this.clazzName!=null && !this.clazzName.isInstance(newValue)) {
-				return false;
+			if(this.clazzName.isInstance(newValue) == false) {
+				// Check for whiteList
+				if(evt instanceof SimpleEvent) {
+					SimpleEvent se = (SimpleEvent) evt;
+					IdMap map = (IdMap) se.getSource();
+					String className = newValue.getClass().getName();
+					if(map.getCreator(className, false) != null) {
+						return false;
+					}
+				}
+				// Turn around if WhiteList
+				return whiteList;
 			}else if(this.property==null) {
 				return true;
 			}else if(this.property.equalsIgnoreCase(event.getPropertyName())) {
 				return false;
 			}
+		} else if (this.property != null) {
+			return this.property.equalsIgnoreCase(event.getPropertyName()) == false;
 		}
 		// Filter for one item
 		return (this.item == null || this.item != event.getNewValue());
+	}
+
+	public InstanceOf withWhiteList(boolean whiteList) {
+		this.whiteList = whiteList;
+		return this;
 	}
 }

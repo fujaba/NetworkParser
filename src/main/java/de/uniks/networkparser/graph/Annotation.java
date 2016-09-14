@@ -62,6 +62,12 @@ public class Annotation extends GraphMember {
 		return annotation;
 	}
 
+	public Annotation newInstance() {
+		Annotation annotation = new Annotation();
+		annotation.decode(this.name);
+		return annotation;
+	}
+
 	//Redirect
 	@Override
 	public Annotation with(String name) {
@@ -116,12 +122,12 @@ public class Annotation extends GraphMember {
 				addValue(child);
 				child.decode(tokener, ')', this);
 				return this;
-			} else if( item == '{') {
+			} else if( item == '{' ) {
 				this.name = token.toString();
 				tokener.skip();
 				decode(tokener, '}', parent);
 				return this;
-			} else if( item == '='  ) {
+			} else if( item == '=' ) {
 				this.name = token.toString();
 				this.keyValue = true;
 				tokener.skip();
@@ -133,7 +139,7 @@ public class Annotation extends GraphMember {
 					break;
 				}
 			}
-			if( item == ','  ) {
+			if( item == ',' ) {
 				this.name = token.toString();
 				tokener.skip();
 				if(parent != null) {

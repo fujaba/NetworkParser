@@ -1,30 +1,34 @@
 package de.uniks.networkparser;
 
 /*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
+NetworkParser
+The MIT License
+Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
 
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
- http://ec.europa.eu/idabc/eupl5
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 */
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import de.uniks.networkparser.gui.Pos;
+import de.uniks.networkparser.buffer.ByteBuffer;
+import de.uniks.networkparser.bytes.ByteTokener;
+import de.uniks.networkparser.Pos;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.Entity;
@@ -113,6 +117,50 @@ public class EntityUtil {
 		}
 		return string;
 	}
+	public static String CONTROLCHARACTER = "abtnvfr"; 
+	public static String unQuoteControlCharacter(CharSequence value) {
+		if (value == null || value.length() == 0) {
+			return "";
+		}
+		StringBuilder sb = new StringBuilder(value.length());
+		char c;
+		int i = 0;
+		int len = value.length();
+		if(value.charAt(0)=='\"'){
+			i++;
+			len--;
+		}
+		for (; i < len; i++) {
+			c = value.charAt(i);
+			if (c == '\\') {
+				if (i + 1 == len) {
+					sb.append('\\');
+					break;
+				}
+				c = value.charAt(++i);
+				int pos = CONTROLCHARACTER.indexOf(c);
+				if(pos>=0) {
+					sb.append(pos+7);
+				} else if(c == '\"') {
+					sb.append('\"');
+				} else if(c == 0x39) {
+					sb.append(0x39);
+				} else if(c == 'u') {
+					char no = fromHex(value.charAt(++i), value.charAt(++i),
+							value.charAt(++i), value.charAt(++i));
+					sb.append(no);
+				} else if(c == 'o') {
+					char no = fromOctal(value.charAt(++i), value.charAt(++i), value.charAt(++i));
+					sb.append(no);
+				} else {
+					sb.append(c);
+				}
+				continue;
+			}
+			sb.append(c);
+		}
+		return sb.toString();
+	}
 
 	public static String unQuote(CharSequence value) {
 		if (value == null || value.length() == 0) {
@@ -150,42 +198,56 @@ public class EntityUtil {
 		return sb.toString();
 	}
 
-   public static String basicUnQuote(String value) {
-	  if (value == null || value.length() == 0) {
-		 return "";
-	  }
-	  StringBuilder sb = new StringBuilder(value.length());
-	  char c;
-	  for (int i = 0; i < value.length(); i++) {
-		 c = value.charAt(i);
-		 if (c == '\\') {
-			if (i + 1 == value.length()) {
-			   sb.append('\\');
-			   break;
+	public static String basicUnQuote(String value) {
+		if (value == null || value.length() == 0) {
+			return "";
+		}
+		StringBuilder sb = new StringBuilder(value.length());
+		char c;
+		for (int i = 0; i < value.length(); i++) {
+			c = value.charAt(i);
+			if (c == '\\') {
+				if (i + 1 == value.length()) {
+					sb.append('\\');
+					break;
+				}
+				c = value.charAt(++i);
+				if (c == 'u') {
+					char no = fromHex(value.charAt(++i), value.charAt(++i), value.charAt(++i), value.charAt(++i));
+					sb.append((char) no);
+					continue;
+				//			} else if (c == '"') {
+				//			// remove the backslash
+				//			} else {
+				//			sb.append('\\');
+				}
 			}
-			c = value.charAt(++i);
-			if (c == 'u') {
-			   char no = fromHex(value.charAt(++i), value.charAt(++i),
-					 value.charAt(++i), value.charAt(++i));
-			   sb.append((char) no);
-			   continue;
-			   //			} else if (c == '"') {
-			   //			   // remove the backslash
-			   //			} else {
-			   //			   sb.append('\\');
-			}
-		 }
-		 sb.append(c);
-	  }
-	  return sb.toString();
-   }
+			sb.append(c);
+		}
+		return sb.toString();
+	}
 
 	private static char fromHex(char... values) {
+		if(values == null) {
+			return 0;
+		}
 		return (char) ((HEXVAL.indexOf(values[0]) << 24)
 				+ (HEXVAL.indexOf(values[1]) << 16)
 				+ (HEXVAL.indexOf(values[2]) << 8) + HEXVAL.indexOf(values[3]));
 	}
-
+	
+	private static char fromOctal(char... values) {
+		if(values == null) {
+			return 0;
+		}
+		int result=0;
+		int mult=1;
+		for(int i=values.length-1;i>=0;i--) {
+			result += values[i] * mult;
+			mult = mult *8;
+		}
+		return  (char)result; 
+	}
 	/**
 	 * Produce a string in double quotes with backslash sequences in all the
 	 * right places. A backslash will be inserted within &lt;/, producing
@@ -270,6 +332,10 @@ public class EntityUtil {
 			}
 			return ((BaseItem) item).toString(converter);
 		}
+		if(value.getClass().getName().equals("[B")) {
+			// Its a ByteArray
+			return quote(new String((byte[])value));
+		}
 		if (value.getClass().isArray()) {
 			Object[] items = (Object[]) value;
 			BaseItem item = reference.getNewList(false);
@@ -350,7 +416,16 @@ public class EntityUtil {
 		return new String(buf);
 	}
 
-
+	/**
+	 * Safe String comparison.
+	 *
+	 * @param s1	first string
+	 * @param s2	second string
+	 * @return true if both parameters are null or equal
+	 */
+	public static boolean stringEquals(String s1, String s2) {
+		return s1 == null ? s2 == null : s1.equals(s2);
+	}
 	/**
 	 * format a String with 0
 	 *
@@ -573,7 +648,7 @@ public class EntityUtil {
 	}
 
 	public static final String javaKeyWords = " abstract assert boolean break byte case catch char class const continue default do double else enum extends final finally float for if goto implements import instanceof int interface long native new package private protected public return short static strictfp super switch synchronized this throw throws transient try void volatile while ";
-	private static final SimpleKeyValueList<String, String> transferMap =  new SimpleKeyValueList<String, String>().withKeyValueString("long:Long,int:Integer,char:Character,boolean:Boolean,byte:Byte,float:Float,double:Double", String.class);
+	private static final SimpleKeyValueList<String, String> transferMap = new SimpleKeyValueList<String, String>().withKeyValueString("long:Long,int:Integer,char:Character,boolean:Boolean,byte:Byte,float:Float,double:Double", String.class);
 
 	public static String toValidJavaId(String tag) {
 		if (javaKeyWords.indexOf(" " + tag + " ") >= 0) {
@@ -594,6 +669,9 @@ public class EntityUtil {
 	}
 
 	public static String shortClassName(String name) {
+		if(name==null) {
+			return "";
+		}
 		int pos = name.lastIndexOf('.');
 		name = name.substring(pos + 1);
 		pos = name.lastIndexOf('$');
@@ -630,7 +708,7 @@ public class EntityUtil {
 		StringBuilder buf = new StringBuilder(); // the output string buffer
 		for (int i = 0; i < str.length(); ++i) {
 			char ch = str.charAt(i);
-			String entity = this.entities.getKey(Integer.valueOf(ch)); // get equivalent html  entity
+			String entity = this.entities.getKey(Integer.valueOf(ch)); // get equivalent html entity
 			if (entity == null) { // if entity has not been found
 				if (ch > 128) { // check if is an extended character
 					buf.append("&#" + ((int) ch) + ";"); // convert extended
@@ -691,5 +769,218 @@ public class EntityUtil {
 			}
 		}
 		return buf.toString();
+	}
+	
+	public static void writeByteHeader(ByteBuffer buffer, byte typ, int valueLength) {
+		if (valueLength > 0 ) {
+			// Save Typ
+			if (typ != 0) {
+				buffer.put(typ);
+				if (getSubGroup(typ) != ByteTokener.LEN_LAST) {
+					int lenSize = getTypLen(typ, valueLength, true);
+
+					if (lenSize == 1) {
+						if (typ == ByteTokener.DATATYPE_CLAZZNAME
+								|| getSubGroup(typ) == ByteTokener.LEN_LITTLE) {
+							buffer.put((byte) (valueLength + ByteTokener.SPLITTER));
+						} else {
+							buffer.put((byte) valueLength);
+						}
+					} else if (lenSize == 2) {
+						buffer.put((short) valueLength);
+					} else if (lenSize == 4) {
+						buffer.put((int) valueLength);
+					}
+				}
+			}
+		} else if(buffer!=null){
+			buffer.put(ByteTokener.DATATYPE_NULL);
+		}
+	}
+
+	public static byte[] clone(byte[] entity) {
+		byte[] result=new byte[entity.length];
+		for(int i=0;i<entity.length;i++) {
+			result[i] = entity[i];
+		}
+		return result;
+	}
+
+	public static byte getTyp(byte group, byte subGroup) {
+		return (byte) (group + subGroup);
+	}
+
+	public static byte getTyp(byte typ, int len, boolean isLast) {
+		if (isGroup(typ)) {
+			if (isLast) {
+				return getTyp(typ, ByteTokener.LEN_LAST);
+			}
+			if (len > 32767) {
+				return getTyp(typ, ByteTokener.LEN_BIG);
+			}
+			if (len > 250) {
+				return getTyp(typ, ByteTokener.LEN_MID);
+			}
+			if (len > ByteTokener.SPLITTER) {
+				return getTyp(typ, ByteTokener.LEN_SHORT);
+			}
+			return getTyp(typ, ByteTokener.LEN_LITTLE);
+		}
+		return typ;
+	}
+
+	public static int getTypLen(byte typ, int len, boolean isLast) {
+		if (isGroup(typ)) {
+			int ref = typ % 16 - 10;
+			if (ref == 0) {
+				typ = getTyp(typ, len, isLast);
+				ref = typ % 16 - 10;
+			}
+			if (ref == ByteTokener.LEN_SHORT || ref == ByteTokener.LEN_LITTLE) {
+				return 1;
+			}
+			if (ref == ByteTokener.LEN_MID) {
+				return 2;
+			}
+			if (ref == ByteTokener.LEN_BIG) {
+				return 4;
+			}
+			// if (ref == ByteIdMap.LEN_LAST) {
+			return 0;
+		}
+		if (typ == ByteTokener.DATATYPE_CLAZZNAME) {
+			// || typ == ByteIdMap.DATATYPE_CLAZZTYP add bei ByteList
+			return 1;
+		}
+		if (typ == ByteTokener.DATATYPE_CLAZZNAMELONG) {
+			return 4;
+		}
+		return 0;
+	}
+
+	public static ByteBuffer getBuffer(int len) {
+		if (len < 1) {
+			return null;
+		}
+		ByteBuffer message = ByteBuffer.allocate(len);
+		return message;
+	}
+
+	public static boolean isPrimitive(byte typ) {
+		return ((typ >= ByteTokener.DATATYPE_SHORT && typ <= ByteTokener.DATATYPE_BYTE) || typ <= ByteTokener.DATATYPE_CHAR);
+	}
+
+	/**
+	 * CHeck if the Typ is typ of Group
+	 *
+	 * @param typ			the the typ of data
+	 * @return 				success
+	 */
+	public static boolean isGroup(byte typ) {
+		return (typ & 0x08) == 0x08;
+	}
+
+	public static String getStringTyp(byte typ) {
+		if (typ == ByteTokener.DATATYPE_NULL) {
+			return "DATATYPE_NULL";
+		}
+		if (typ == ByteTokener.DATATYPE_FIXED) {
+			return "DATATYPE_FIXED";
+		}
+		if (typ == ByteTokener.DATATYPE_SHORT) {
+			return "DATATYPE_SHORT";
+		}
+		if (typ == ByteTokener.DATATYPE_INTEGER) {
+			return "DATATYPE_INTEGER";
+		}
+		if (typ == ByteTokener.DATATYPE_LONG) {
+			return "DATATYPE_LONG";
+		}
+		if (typ == ByteTokener.DATATYPE_FLOAT) {
+			return "DATATYPE_FLOAT";
+		}
+		if (typ == ByteTokener.DATATYPE_DOUBLE) {
+			return "DATATYPE_DOUBLE";
+		}
+		if (typ == ByteTokener.DATATYPE_DATE) {
+			return "DATATYPE_DATE";
+		}
+		if (typ == ByteTokener.DATATYPE_CLAZZID) {
+			return "DATATYPE_CLAZZID";
+		}
+		if (typ == ByteTokener.DATATYPE_CLAZZPACKAGE) {
+			return "DATATYPE_CLAZZPACKAGE";
+		}
+		if (typ == ByteTokener.DATATYPE_CLAZZNAME) {
+			return "DATATYPE_CLAZZNAME";
+		}
+		if (typ == ByteTokener.DATATYPE_CLAZZNAMELONG) {
+			return "DATATYPE_CLAZZNAMELONG";
+		}
+		if (typ == ByteTokener.DATATYPE_CLAZZTYP) {
+			return "DATATYPE_CLAZZTYP";
+		}
+		if (typ == ByteTokener.DATATYPE_CLAZZTYPLONG) {
+			return "DATATYPE_CLAZZTYPLONG";
+		}
+		if (typ == ByteTokener.DATATYPE_BYTE) {
+			return "DATATYPE_BYTE";
+		}
+		if (typ == ByteTokener.DATATYPE_UNSIGNEDBYTE) {
+			return "DATATYPE_UNSIGNEDBYTE";
+		}
+		if (typ == ByteTokener.DATATYPE_CHAR) {
+			return "DATATYPE_CHAR";
+		}
+		if (typ == ByteTokener.DATATYPE_ASSOC) {
+			return "DATATYPE_ASSOC";
+		}
+		if (typ == ByteTokener.DATATYPE_ASSOCLONG) {
+			return "DATATYPE_ASSOCLONG";
+		}
+		if (typ == ByteTokener.DATATYPE_CLAZZSTREAM) {
+			return "DATATYPE_CLAZZSTREAM";
+		}
+
+		if (isGroup(typ)) {
+			byte group = getGroup(typ);
+			byte subgroup = getSubGroup(typ);
+			String result;
+			if (group == ByteTokener.DATATYPE_BYTEARRAY) {
+				result = "DATATYPE_BYTEARRAY";
+			} else if (group == ByteTokener.DATATYPE_STRING) {
+				result = "DATATYPE_STRING";
+			} else if (group == ByteTokener.DATATYPE_LIST) {
+				result = "DATATYPE_LIST";
+			} else if (group == ByteTokener.DATATYPE_MAP) {
+				result = "DATATYPE_MAP";
+			} else if (group == ByteTokener.DATATYPE_CHECK) {
+				result = "DATATYPE_CHECK";
+			} else {
+				result = "";
+			}
+
+			if (subgroup == ByteTokener.LEN_LITTLE) {
+				result += "LITTLE";
+			} else if (subgroup == ByteTokener.LEN_SHORT) {
+				result += "SHORT";
+			} else if (subgroup == ByteTokener.LEN_MID) {
+				result += "MID";
+			} else if (subgroup == ByteTokener.LEN_BIG) {
+				result += "BIG";
+			} else if (subgroup == ByteTokener.LEN_LAST) {
+				result += "LAST";
+			}
+			return result;
+		}
+		return null;
+	}
+
+	public static byte getGroup(byte typ) {
+		return (byte) ((typ / 16) * 16 + 10);
+	}
+
+	public static byte getSubGroup(byte typ) {
+		return (byte) ((typ % 16) - 10);
 	}
 }

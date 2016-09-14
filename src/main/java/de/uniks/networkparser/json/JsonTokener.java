@@ -1,25 +1,27 @@
 package de.uniks.networkparser.json;
 
 /*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
+NetworkParser
+The MIT License
+Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
 
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
- http://ec.europa.eu/idabc/eupl5
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 */
 import java.util.Map;
 import java.util.Map.Entry;
@@ -27,9 +29,9 @@ import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.NetworkParserLog;
+import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.buffer.Tokener;
-import de.uniks.networkparser.event.ObjectMapEntry;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
@@ -38,9 +40,9 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorWrapper;
 import de.uniks.networkparser.json.util.JsonObjectCreator;
+import de.uniks.networkparser.list.ObjectMapEntry;
 import de.uniks.networkparser.list.SimpleIteratorSet;
 import de.uniks.networkparser.list.SimpleKeyValueList;
-import de.uniks.networkparser.logic.SimpleMapEvent;
 import de.uniks.networkparser.xml.XMLEntity;
 
 public class JsonTokener extends Tokener {
@@ -157,7 +159,12 @@ public class JsonTokener extends Tokener {
 				return;
 			case ',':
 				skip();
-				key = nextValue(entity, isQuote, false, stop).toString();
+				Object keyValue = nextValue(entity, isQuote, false, stop);
+				if(keyValue == null) {
+					// No Key Found Must eb an empty statement
+					return;
+				}
+				key = keyValue.toString();
 				break;
 			default:
 				key = nextValue(entity, isQuote, false, stop).toString();
@@ -283,9 +290,9 @@ public class JsonTokener extends Tokener {
 			}
 			if (result == null) {
 				result = map.getNewEntity(typeInfo, map.getValue(jsonObject, IdMap.CLASS), false);
-				this.map.notify(new SimpleMapEvent(IdMap.NEW, this.map, jsonObject, result));
+				this.map.notify(new SimpleEvent(IdMap.NEW, jsonObject, this.map, null, null, result));
 			} else {
-				this.map.notify(new SimpleMapEvent(IdMap.UPDATE, this.map, jsonObject, result));
+				this.map.notify(new SimpleEvent(IdMap.UPDATE, jsonObject, this.map, null, null, result));
 			}
 			if (typeInfo instanceof SendableEntityCreatorWrapper) {
 				String[] properties = typeInfo.getProperties();

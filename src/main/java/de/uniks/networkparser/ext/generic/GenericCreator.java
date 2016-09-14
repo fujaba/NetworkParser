@@ -1,25 +1,27 @@
 package de.uniks.networkparser.ext.generic;
 
 /*
- NetworkParser
- Copyright (c) 2011 - 2015, Stefan Lindel
- All rights reserved.
+NetworkParser
+The MIT License
+Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
 
- Licensed under the EUPL, Version 1.1 or (as soon they
- will be approved by the European Commission) subsequent
- versions of the EUPL (the "Licence");
- You may not use this work except in compliance with the Licence.
- You may obtain a copy of the Licence at:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
- http://ec.europa.eu/idabc/eupl5
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
- Unless required by applicable law or agreed to in
- writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- express or implied.
- See the Licence for the specific language governing
- permissions and limitations under the Licence.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 */
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -72,8 +74,9 @@ public class GenericCreator implements SendableEntityCreator {
 			LinkedHashSet<String> fieldNames = new LinkedHashSet<String>();
 			for (Method method : methods) {
 				String methodName = method.getName();
-				if(isValidMethod(methodName)) {
-					fieldNames.add(methodName);
+				String name = getValidMethod(methodName);
+				if(name != null) {
+					fieldNames.add(name.toLowerCase());
 				}
 			}
 			properties = fieldNames.toArray(new String[] {});
@@ -139,7 +142,7 @@ public class GenericCreator implements SendableEntityCreator {
 			Object invoke = field.get(entity);
 			return invoke;
 		} catch (ReflectiveOperationException e) {
-			System.out.println(e);
+//			System.out.println(e);
 		}
 		return null;
 	}
@@ -153,27 +156,27 @@ public class GenericCreator implements SendableEntityCreator {
 		}
 		// maybe a number
 		try {
-			int intValue = Integer.parseInt((String) value);
+			int intValue = Integer.parseInt("" + value);
 			this.clazz.getMethod(methodName, int.class)
 					.invoke(entity, intValue);
 			return true;
-		} catch (ReflectiveOperationException e) {
+		} catch (Exception e) {
 		}
 		// maybe a double
 		try {
-			double doubleValue = Double.parseDouble((String) value);
+			double doubleValue = Double.parseDouble("" + value);
 			this.clazz.getMethod(methodName, double.class).invoke(entity,
 					doubleValue);
 			return true;
-		} catch (ReflectiveOperationException e) {
+		} catch (Exception e) {
 		}
 		// maybe a float
 		try {
-			float floatValue = Float.parseFloat((String) value);
+			float floatValue = Float.parseFloat("" + value);
 			this.clazz.getMethod(methodName, float.class).invoke(entity,
 					floatValue);
 			return true;
-		} catch (ReflectiveOperationException e) {
+		} catch (Exception e) {
 		}
 		return false;
 	}
@@ -187,10 +190,16 @@ public class GenericCreator implements SendableEntityCreator {
 		if (setNewValue(entity, "set" + this.getMethodName(attribute), value)) {
 			return true;
 		}
-		if (setNewValue(entity, "with" + this.getMethodName(attribute),
-				value)){
+		if (setNewValue(entity, "with" + this.getMethodName(attribute), value)){
 			return true;
 		}
+		// May be Collection???
+		if(attribute.endsWith("s")) {
+			if (setNewValue(entity, "addTo" + this.getMethodName(attribute), value)){
+				return true;
+			}	
+		}
+		
 		// No Method Found
 		try {
 			Field field = this.clazz.getDeclaredField(attribute);
@@ -215,12 +224,27 @@ public class GenericCreator implements SendableEntityCreator {
 		return null;
 	}
 
-	boolean isValidMethod(String methodName ) {
-		return (methodName.startsWith("get")
-				&& !badProperties.contains(methodName)
-				&& !"".equals(methodName.trim()));
+	String getValidMethod(String methodName ) {
+		String name = null;
+		if(badProperties.contains(methodName) == false) {
+			if(methodName.startsWith("get")) {
+				name = methodName.substring(3);
+			} else if(methodName.startsWith("is")) {
+				name = methodName.substring(2);
+			}
+			if(name == null || "".equals(name.trim())) {
+				return null;
+			}
+		}
+		return name;
 	}
-
+	public static GenericCreator create(IdMap map, String className) {
+		try {
+			return create(map, Class.forName(className));
+		} catch (ClassNotFoundException e) {
+		}
+		return null;
+	}
 	public static GenericCreator create(IdMap map, Class<?> instance) {
 		SendableEntityCreator creator = map.getCreator(instance.getName(), true);
 		if(creator != null) {
@@ -228,14 +252,22 @@ public class GenericCreator implements SendableEntityCreator {
 		}
 
 		GenericCreator genericCreator = new GenericCreator();
-		genericCreator.withClass(instance);
+		// Add all Properties
+		try {
+			if(instance.isInterface() == false) {
+				genericCreator.withItem(instance.newInstance());
+			}
+		} catch (Exception e1) {
+			genericCreator.withClass(instance);
+		}
+
 		map.with(genericCreator);
 
 		// VODOO
 		Method[] methods = instance.getMethods();
 		for (Method method : methods) {
 			String methodName = method.getName();
-			if (genericCreator.isValidMethod(methodName)) {
+			if (genericCreator.getValidMethod(methodName) != null) {
 				Class<?> child = method.getReturnType();
 				if (EntityUtil.isPrimitiveType(child.getName()) == false) {
 					try {
@@ -250,7 +282,9 @@ public class GenericCreator implements SendableEntityCreator {
 					} catch (ReflectiveOperationException e) {
 						// Try to find SubClass for Set
 					}
-					create(map, child);
+					if(child.isInterface() == false) {
+						create(map, child);
+					}
 				}
 			}
 		}
@@ -260,7 +294,7 @@ public class GenericCreator implements SendableEntityCreator {
 			if (EntityUtil.isPrimitiveType(child.getName()) == false) {
 				try {
 					Type types = field.getGenericType();
-					if (types != null  && types instanceof ParameterizedType) {
+					if (types != null && types instanceof ParameterizedType) {
 						ParameterizedType genericSuperclass = (ParameterizedType) types;
 						if (genericSuperclass.getActualTypeArguments().length > 0) {
 							Type type = genericSuperclass.getActualTypeArguments()[0];

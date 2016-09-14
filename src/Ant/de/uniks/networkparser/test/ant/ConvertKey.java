@@ -13,7 +13,7 @@ import de.uniks.networkparser.converter.ByteConverterHex;
 public class ConvertKey {
 	String input;
 	String output;
-	public void execute()  {
+	public void execute() {
 		if(input == null) {
 			System.err.println("No Inputfile defined");
 			return;
@@ -26,7 +26,7 @@ public class ConvertKey {
 		try {
 			String key = new String(Files.readAllBytes(Paths.get(inputFile.toURI())), Charset.forName("UTF-8"));
 			ByteConverterHex converterHex = new ByteConverterHex();
-			
+
 			String hexValue = converterHex.toString(new ByteBuffer().with(key.getBytes(Charset.forName("UTF-8"))));
 			out = new FileOutputStream(output);
 			out.write(hexValue.getBytes(Charset.forName("UTF-8")));

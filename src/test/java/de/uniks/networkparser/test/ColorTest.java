@@ -11,5 +11,5 @@ public class ColorTest {
 		RGBColor purple = RGBColor.RED.add(RGBColor.BLUE);
 		Assert.assertEquals("#7F007F", purple.toString());
 	}
-	
+
 }

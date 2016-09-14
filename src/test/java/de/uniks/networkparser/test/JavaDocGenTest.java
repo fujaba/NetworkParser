@@ -8,16 +8,16 @@ import de.uniks.networkparser.test.javadoc.JavaDocValidator;
 
 public class JavaDocGenTest {
 	public static final String PREFIX="src.main.java.";
-	@Test(timeout=60000)
+	@Test(timeout=120000)
 	public void testGenJavaDoc() {
 //		long time = System.currentTimeMillis();
 		JavaDocValidator javaDoc=new JavaDocValidator();
 		ArrayList<String> validateFileTree = javaDoc.validateFileTree(new File("src/main/java"), true, false);
 		Assert.assertEquals(0, validateFileTree.size());
 //		System.out.println("Time: " +(System.currentTimeMillis()- time));
-		
-		
-		
+
+
+
 //		try{
 //			time = System.currentTimeMillis();
 //			ProcessBuilder pb = new ProcessBuilder("javadoc","-notree", "-noindex", "-nonavbar", "-quiet", "-subpackages", "de.uniks.networkparser", "-sourcepath", "src/main/java", "-d", "build/testJavadoc");
@@ -28,8 +28,8 @@ public class JavaDocGenTest {
 //			Process p = pb.start();
 //			BufferedReader errorReader = new BufferedReader (new InputStreamReader(p.getErrorStream()));
 //
-//			
-//			
+//
+//
 //			SimpleList<String> errors=new SimpleList<String>();
 //			String line;
 //			while ((line = errorReader.readLine ()) != null) {
@@ -53,7 +53,7 @@ public class JavaDocGenTest {
 //					end = path.indexOf(":", start);
 //					start = path.lastIndexOf(".", start - 1);
 //					System.out.println(item +" "+ path.substring(0, end) + "("+path.substring(start+1 )+")");
-//					
+//
 //				}else {
 //					System.err.println(item);
 //				}

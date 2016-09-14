@@ -15,12 +15,13 @@ public class NumberFormatCreator implements BitEntityCreator{
 
 	public void addBitEntity(String propertyName, byte bitNumber, String start, byte bitString, String len, byte bitReference){
 		BitEntity bitEntity = new BitEntity().with(propertyName, bitNumber);
-		bitEntity.add(new BitValue(bitString, start, bitReference, len));
+//		bitEntity.add(new BitValue(bitString, start, bitReference, len));
+		bitEntity.add(new BitValue(Integer.valueOf(start), 0).withLenProperty(bitReference, len));
 		entities.add(bitEntity);
 	}
 
 	public NumberFormatCreator(){
-		entities.add(new BitEntity().with("number", BitEntity.BIT_BYTE).withStartLen(0, 8));
+		entities.add(new BitEntity().with("number", BitEntity.BIT_BYTE).withStartLen((byte)0, (byte)8));
 	}
 
 	@Override

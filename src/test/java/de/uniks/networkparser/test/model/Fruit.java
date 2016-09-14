@@ -21,13 +21,8 @@
 
 package de.uniks.networkparser.test.model;
 
-public abstract class Fruit
+public class Fruit
 {
-   //==========================================================================
-   public void removeYou()
-   {
-   }
-
    //==========================================================================
    public static final String PROPERTY_X = "x";
 
