@@ -25,8 +25,11 @@ THE SOFTWARE.
 */
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Random;
+
+import de.uniks.networkparser.interfaces.SendableEntity;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
@@ -34,15 +37,20 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 
-public class PointPaneController extends AbstractModelController implements PropertyChangeListener{
+public class PointPaneController extends AbstractModelController implements PropertyChangeListener, EventHandler<MouseEvent>, SendableEntity {
+	public static final String PROPERTY_CLICK="click";
+	public static final String PROPERTY_VALUE="value";
 	private Pane pane;
 	private ArrayList<Circle> children = new ArrayList<Circle>();
 	private String color="BLACK";
 	private EventHandler<MouseEvent> mouseHandler;
+	private PropertyChangeSupport listeners;
+	private int number;
 
 	public PointPaneController(Node value) {
 		if (value instanceof Pane) {
 			this.pane = (Pane) value;
+			this.pane.setOnMouseClicked(this);
 		}
 	}
 
@@ -67,6 +75,9 @@ public class PointPaneController extends AbstractModelController implements Prop
 		} else if (number == 9) {
 			this.addCircle(1, 1, 1, 2, 1, 3, 2, 1, 2, 2, 2, 3, 3, 1, 3, 2, 3, 3);
 		}
+		int oldValue = this.number;
+		this.number = number;
+		firePropertyChange(PROPERTY_VALUE, oldValue, number);
 	}
 
 	public void addCircle(int... values) {
@@ -155,9 +166,62 @@ public class PointPaneController extends AbstractModelController implements Prop
 
 	public PointPaneController addMouseListener(EventHandler<MouseEvent> listener) {
 		this.mouseHandler = listener;
-		if(this.pane!=null){
-			this.pane.setOnMouseClicked(mouseHandler);
-		}
 		return this;
+	}
+	
+	public Pane getPane() {
+		return pane;
+	}
+
+	@Override
+	public void handle(MouseEvent event) {
+		if(this.mouseHandler != null){
+			this.mouseHandler.handle(event);
+		}
+		firePropertyChange(PROPERTY_CLICK, null, number);
+	}
+
+	public boolean firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+		if (listeners != null) {
+			listeners.firePropertyChange(propertyName, oldValue, newValue);
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+		if (listeners == null) {
+	   		listeners = new PropertyChangeSupport(this);
+	   	}
+		listeners.addPropertyChangeListener(propertyName, listener);
+		return true;
+	}
+
+	@Override
+	public boolean addPropertyChangeListener(PropertyChangeListener listener) {
+		if (listeners == null) {
+	   		listeners = new PropertyChangeSupport(this);
+	   	}
+		listeners.addPropertyChangeListener(listener);
+		return true;
+	}
+
+	@Override
+	public boolean removePropertyChangeListener(PropertyChangeListener listener) {
+		if (listeners == null) {
+	   		return true;
+	   	}
+		listeners.removePropertyChangeListener(listener);
+		return true;
+	}
+
+	@Override
+	public boolean removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+		if (listeners == null) {
+	   		return true;
+	   	}
+		listeners.removePropertyChangeListener(propertyName, listener);
+		return true;
 	}
 }
