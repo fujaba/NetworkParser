@@ -316,28 +316,28 @@ public class Clazz extends GraphEntity {
 	}
 	
 	void repairAssociation(Association assoc) {
-		if(AssociationTypes.IMPLEMENTS != assoc.getType() && AssociationTypes.GENERALISATION != assoc.getType()) {
+		if(AssociationTypes.IMPLEMENTS.equals(assoc.getType()) == false && AssociationTypes.GENERALISATION.equals(assoc.getType()) == false) {
 			// Wrong way try another round
 			assoc = assoc.getOther();
 		}
-		if(AssociationTypes.IMPLEMENTS != assoc.getType() && AssociationTypes.GENERALISATION != assoc.getType()) {
+		if(AssociationTypes.IMPLEMENTS.equals(assoc.getType()) == false  && AssociationTypes.GENERALISATION.equals(assoc.getType()) == false) {
 			// Ignore
 			return;
 		}
-		if(this.getType() == ClazzType.INTERFACE) {
-			if(AssociationTypes.GENERALISATION != assoc.getType()) {
+		if(assoc.getClazz().getType().equals(ClazzType.INTERFACE)) {
+			if(AssociationTypes.GENERALISATION.equals(assoc.getType()) ==false) {
 				assoc.with(AssociationTypes.GENERALISATION);
 			}
 		} else {
 			// Its a Class
-			if(assoc.getOtherClazz().getType() == ClazzType.INTERFACE) {
+			if(assoc.getOtherClazz().getType().equals(ClazzType.INTERFACE)) {
 				// Must be an Implements
-				if(AssociationTypes.IMPLEMENTS != assoc.getType()) {
+				if(AssociationTypes.IMPLEMENTS.equals(assoc.getType())==false) {
 					assoc.with(AssociationTypes.IMPLEMENTS);
 				}	
 			} else {
 				// Must be an Genralization
-				if(AssociationTypes.GENERALISATION != assoc.getType()) {
+				if(AssociationTypes.GENERALISATION.equals(assoc.getType())==false) {
 					assoc.with(AssociationTypes.GENERALISATION);
 				}	
 			}
