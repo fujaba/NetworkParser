@@ -1,5 +1,6 @@
 package de.uniks.networkparser.graph;
 
+import de.uniks.networkparser.EntityUtil;
 /*
 NetworkParser
 The MIT License
@@ -254,5 +255,19 @@ public class Method extends GraphMember {
 	public String toString()
 	{
 	   return getName(true);
+	}
+	
+	public boolean isValidReturn() {
+		if(getReturnType() == null || DataType.VOID.equals(getReturnType())) {
+			return true;
+		}
+		if(this.body == null) {
+			return false;
+		}
+		String[] lines = this.body.split("\n");
+		if(lines.length<1) {
+			return false;
+		}
+		return lines[lines.length - 1].trim().startsWith("return");
 	}
 }

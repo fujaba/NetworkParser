@@ -339,7 +339,7 @@ public class Clazz extends GraphEntity {
 				// Must be an Genralization
 				if(AssociationTypes.GENERALISATION.equals(assoc.getType())==false) {
 					assoc.with(AssociationTypes.GENERALISATION);
-				}	
+				}
 			}
 
 		}
@@ -354,9 +354,20 @@ public class Clazz extends GraphEntity {
 			repairAssociation((Association)associations);
 		}else if(associations instanceof GraphSimpleSet) {
 			GraphSimpleSet list = (GraphSimpleSet) this.associations;
+			AssociationSet generalizations = new AssociationSet();
 			for (GraphMember item : list) {
 				if(item instanceof Association) {
-					repairAssociation((Association)item);
+					Association assoc = (Association) item;
+					repairAssociation(assoc);
+					if(AssociationTypes.GENERALISATION.equals(assoc.getType())) {
+						generalizations.add(assoc);
+					}
+				}
+			}
+			if(generalizations.size() > 1) {
+				// Repair only valid last generalization
+				for(int i=0;i<generalizations.size() - 1;i++) {
+					this.without(generalizations.get(i));
 				}
 			}
 		}
@@ -417,31 +428,19 @@ public class Clazz extends GraphEntity {
 		AssociationSet associations = getAssociations();
 		for (Clazz item : values) {
 			if (item != null) {
-				boolean found=false;
 				for (Association assoc : associations) {
 					if(assoc.getType() == direction && assoc.getOtherType() == backDirection) {
 						if(assoc.contains(item, true, false) == false) {
-							if(assoc.getType() == AssociationTypes.GENERALISATION) {
-								found = true;
-								for(GraphMember member : assoc.getOther().getParents()) {
-									if(member instanceof Clazz && member != item) {
-										assoc.getOther().withoutParent(member);
-									}
-
-								}
-							}
 							assoc.getOther().setParent(item);
 							break;
 						}
 					}
 				}
-				if(found == false) {
-					Association childAssoc = new Association(this).with(direction);
-					Association superAssoc = new Association(item).with(backDirection);
-					childAssoc.with(superAssoc);
-					this.with(childAssoc);
-					item.with(superAssoc);
-				}
+				Association childAssoc = new Association(this).with(direction);
+				Association superAssoc = new Association(item).with(backDirection);
+				childAssoc.with(superAssoc);
+				this.with(childAssoc);
+				item.with(superAssoc);
 			}
 		}
 	}
