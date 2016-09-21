@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="10" height="10" tilewidth="32" tileheight="32" nextobjectid="28">
+ <tileset firstgid="1" name="" tilewidth="32" tileheight="32" tilecount="667" columns="23">
+  <image source="32x32_map_tile v3.1 [MARGINLESS].png" width="736" height="928"/>
+ </tileset>
+ <layer name="Background" width="10" height="10">
+  <data encoding="csv">
+24,25,25,25,25,25,25,25,26,0,
+47,48,48,48,48,48,48,48,49,0,
+47,48,48,48,48,48,48,48,48,0,
+47,48,48,48,48,95,118,48,0,48,
+47,48,48,48,48,118,0,0,0,0,
+47,48,48,48,78,78,78,55,77,77,
+47,48,93,48,0,0,0,0,0,0,
+47,48,48,48,0,0,0,0,0,0,
+47,48,48,0,0,0,0,0,0,0,
+47,48,48,48,0,0,0,0,0,0
+</data>
+ </layer>
+ <objectgroup name="Zombie">
+  <object id="15" gid="73" x="121" y="116" width="32" height="32"/>
+  <object id="23" name="Zombie" gid="139" x="195" y="132" width="32" height="32"/>
+  <object id="24" name="Zombie" gid="139" x="200" y="158" width="32" height="32"/>
+ </objectgroup>
+</map>

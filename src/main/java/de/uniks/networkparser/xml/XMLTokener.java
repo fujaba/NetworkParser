@@ -399,7 +399,10 @@ public class XMLTokener extends Tokener {
 			valueItem.reset();
 		}
 		IdMap idMap = getMap();
-		SendableEntityCreator item = idMap.getCreator(tag.toString(), false);
+		SendableEntityCreator item = null;
+		if(idMap != null) {
+			item = idMap.getCreator(tag.toString(), false);
+		}
 		if (item != null && item instanceof SendableEntityCreatorTag) {
 			addToStack((SendableEntityCreatorTag) item, tokener, tag, valueItem, map);
 			return valueItem;
@@ -411,11 +414,13 @@ public class XMLTokener extends Tokener {
 			startTag = tag.toString();
 		}
 		SimpleKeyValueList<String, SendableEntityCreatorTag> filter=new SimpleKeyValueList<String, SendableEntityCreatorTag>();
-		for(int i=0;i<idMap.getCreators().size();i++) {
-			String key = idMap.getCreators().getKeyByIndex(i);
-			SendableEntityCreator value = idMap.getCreators().getValueByIndex(i);
-			if (key.startsWith(startTag) && value instanceof SendableEntityCreatorTag) {
-				filter.put(key, (SendableEntityCreatorTag) value);
+		if(idMap != null) {
+			for(int i=0;i<idMap.getCreators().size();i++) {
+				String key = idMap.getCreators().getKeyByIndex(i);
+				SendableEntityCreator value = idMap.getCreators().getValueByIndex(i);
+				if (key.startsWith(startTag) && value instanceof SendableEntityCreatorTag) {
+					filter.put(key, (SendableEntityCreatorTag) value);
+				}
 			}
 		}
 		MapEntityStack stack = map.getStack();
@@ -487,7 +492,7 @@ public class XMLTokener extends Tokener {
 		map.getStack().withStack(tag.toString(), entity, creator);
 		return entity;
 	}
-
+	
 	@Override
 	public Object transformValue(Object value, BaseItem reference) {
 		return EntityUtil.valueToString(value, true, reference, SIMPLECONVERTER);

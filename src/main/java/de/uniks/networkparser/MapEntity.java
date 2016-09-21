@@ -47,6 +47,11 @@ public class MapEntity extends SimpleList<Object>{
 	/** The show line. */
 	private byte tokenerFlag;
 
+	public MapEntity(Grammar grammar, String tag, Object item, SendableEntityCreator creator) {
+		this.flag = 0;
+		this.grammar = grammar;
+		this.withStack(new MapEntityStack().withStack(tag, item, creator));
+	}
 	public MapEntity(Filter filter, Grammar grammar) {
 		this.flag = IdMap.FLAG_ID;
 		if(filter != null) {
@@ -192,7 +197,7 @@ public class MapEntity extends SimpleList<Object>{
 		this.stack = stack;
 		return this;
 	}
-
+	
 	public CharacterBuffer getPrefixProperties(SendableEntityCreator creator, Tokener tokener, Object entity, String className) {
 		boolean isId = filter.isId(entity, className, tokener.getMap());
 		return grammar.getPrefixProperties(creator, tokener, isId);

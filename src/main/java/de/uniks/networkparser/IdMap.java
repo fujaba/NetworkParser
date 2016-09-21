@@ -103,12 +103,13 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 
 	public static final String REMOVE_YOU = "REMOVE_YOU";
 
+	public static final byte FLAG_NONE = 0x00;
 	public static final byte FLAG_ID = 0x01;
 	public static final byte FLAG_TYPESAVE = 0x02;
 	public static final byte FLAG_SEARCHFORSUPERCLASS = 0x04;
 //	public static final byte FLAG_NOID = 0x02;
 //	public static final byte FLAG_ALLOWQUOTE = 0x04;
-	private byte flag;
+	private byte flag = FLAG_ID;
 
 	private Grammar grammar = new SimpleGrammar();
 
@@ -253,11 +254,11 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	 */
 	public IdMap with(String className,
 			SendableEntityCreator creator) {
-    	this.creators.add(className, creator);
 		if (creator instanceof SendableEntityCreatorTag) {
 			SendableEntityCreatorTag creatorTag = (SendableEntityCreatorTag) creator;
 			this.creators.add(creatorTag.getTag(), creator);
 		}
+		this.creators.add(className, creator);
 		return this;
 	}
 
@@ -897,7 +898,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 			return null;
 		}
 		MapEntity map = new MapEntity(filter, grammar);
-		map.withFlag(flag);
+		map.setFlag(flag);
 		return (XMLEntity) this.encode(entity, map, xmlTokener);
 	}
 
@@ -1081,6 +1082,16 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	}
 
 	/**
+	 * Set the current flag
+	 * @param flag	the new flag
+	 * @return ThisComponent
+	 */
+	public IdMap withFlag(byte flag) {
+		this.flag = flag;
+		return this;
+	}
+	
+	/**
 	 * Convert a Model to Tokener
 	 * @param model The Model to encode
 	 * @param tokener The Tokener For Syntax
@@ -1195,10 +1206,13 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 								throw new RuntimeException("Property duplicate:" + property + "(" + className + ")");
 							}
 						}
-
+						if(value instanceof Entity && parent instanceof XMLEntity) {
+							parent.with(value);
+							continue;
+						}
 						className = value.getClass().getName();
-						SendableEntityCreator valueCreater = map.getCreator(Grammar.WRITE, tokener.getMap(), value, className);
 						String fullProp = prop.toString();
+						SendableEntityCreator valueCreater = map.getCreator(Grammar.WRITE, tokener.getMap(), value, className);
 
 						String childClassName = value.getClass().getName();
 						Object key = value;
