@@ -1,6 +1,7 @@
 package de.uniks.networkparser.gui;
 
 import de.uniks.networkparser.MapEntity;
+import de.uniks.networkparser.Pos;
 import de.uniks.networkparser.SimpleGrammar;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
@@ -48,7 +49,7 @@ public class TileMap implements SendableEntityCreatorTag {
 	public String source;
 	public int imagewidth;
 	public int imageheight;
-	public int[] backgorund;
+	public int[] background;
 	
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
@@ -68,6 +69,53 @@ public class TileMap implements SendableEntityCreatorTag {
 				TILESET_LAYER,
 				TILESET_OBJECTGROUP
 				};
+	}
+	
+	/**
+	 * Return the Position of the Background Sprite
+	 * @param backgroundPos Background Positoin 0..n
+	 * @return Position of Background Pos
+	 */
+	public Pos getSpriteBackgroundPos(int backgroundPos) {
+		int spritePos = 0;
+		if(background != null) {
+			spritePos = background[backgroundPos];
+		}
+		return this.getSpritePos(spritePos);
+	}
+	
+	/** Return the Position of Sprite
+	 * @param pos The Position 00..n
+	 * @return The Position
+	 */
+	public Pos getSpritePos(int pos) {
+		Pos result = new Pos();
+		result.y = pos/columns;
+		result.x = pos-(result.y*columns) - 1;
+		return result;
+	}
+	
+	/**
+	 * Return the Position of a Sprite
+	 * @param sprite the SpriteNumber
+	 * @return the Position of Sprite
+	 */
+	public Pos getPos(int sprite) {
+		Pos pos = new Pos();
+		pos.y = sprite/this.width;
+		pos.x = sprite-(pos.y*this.width);
+		return pos;
+	}
+	
+	public int length() {
+		if(background == null) {
+			return 0;
+		}
+		return background.length;
+	}
+	
+	public SimpleList<TileObject> getByName(String element) {
+		return this.objects.get(element);
 	}
 
 	@Override
@@ -122,7 +170,7 @@ public class TileMap implements SendableEntityCreatorTag {
 			return map.imageheight;
 		}
 		if(TILESET_LAYER.equalsIgnoreCase(attribute)) {
-			if(map.backgorund == null) {
+			if(map.background == null) {
 				return null;
 			}
 			XMLEntity layer=XMLEntity.TAG("layer");
@@ -132,9 +180,9 @@ public class TileMap implements SendableEntityCreatorTag {
 			XMLEntity data=XMLEntity.TAG("data");
 			data.withKeyValue(ENCODING, "csv");
 			StringBuilder sb=new StringBuilder();
-			for(int i=0;i<map.backgorund.length;i++) {
-				sb.append(map.backgorund[i]);
-				if(i<map.backgorund.length - 1) {
+			for(int i=0;i<map.background.length;i++) {
+				sb.append(map.background[i]);
+				if(i<map.background.length - 1) {
 					sb.append(",");
 				}
 				if(i%10==9) {
@@ -218,17 +266,19 @@ public class TileMap implements SendableEntityCreatorTag {
 					int i=0;
 					int start=0;
 					int z=0;
-					map.backgorund = new int[map.width*map.height];
+					map.background = new int[map.width*map.height];
 					while(i<text.length() ) {
 						if(text.charAt(i) != ',') {
 							i++;
 							continue;
 						}
 						String number = text.substring(start, i);
-						map.backgorund[z++] = Integer.valueOf(number.trim());
+						map.background[z++] = Integer.valueOf(number.trim());
 						i++;
 						start=i;
 					}
+					String number = text.substring(start, i);
+					map.background[z] = Integer.valueOf(number.trim());
 					return true;
 				}
 			}
