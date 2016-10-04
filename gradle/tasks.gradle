@@ -81,7 +81,15 @@ task buildSourceJar(type: Jar, dependsOn: buildCoreJar18) {
 	exclude '**/test/**'
 	manifest = project.manifest {from sharedManifest}
 }
-task buildFullJar(type: Jar, dependsOn: buildSourceJar) {
+task buildJavadoc(type: Jar) {
+    description 'Build JavaDoc Jar'
+    group "Jar"; from javadoc.outputs.files; classifier = 'javadoc'
+    exclude '**/ext/**'
+    exclude '**/test/**'
+    manifest = project.manifest {from sharedManifest}
+}
+
+task buildFullJar(type: Jar, dependsOn: [buildSourceJar,buildJavadoc]) {
 	description 'Build Jar with class-Files, Source-Files and JavaDoc'
 	group "Jar"; from {(sourceSets.main.output + sourceSets.main.allJava + javadoc.outputs.files )}; classifier = 'full'
 	exclude '**/test/**'

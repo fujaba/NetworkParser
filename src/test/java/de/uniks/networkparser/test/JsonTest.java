@@ -19,7 +19,7 @@ import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.RestCounter;
 import de.uniks.networkparser.SimpleEvent;
-import de.uniks.networkparser.ext.javafx.PropertyChangeEventWrapper;
+import de.uniks.networkparser.ext.PropertyChangeEventWrapper;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.EMFJsonGrammar;
 import de.uniks.networkparser.json.JsonArray;

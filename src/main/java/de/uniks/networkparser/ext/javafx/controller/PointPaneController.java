@@ -28,6 +28,8 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import de.uniks.networkparser.interfaces.SendableEntity;
 import javafx.event.EventHandler;
@@ -46,6 +48,7 @@ public class PointPaneController extends AbstractModelController implements Prop
 	private EventHandler<MouseEvent> mouseHandler;
 	private PropertyChangeSupport listeners;
 	private int number;
+	private int delay = 0;
 
 	public PointPaneController(Node value) {
 		if (value instanceof Pane) {
@@ -125,6 +128,11 @@ public class PointPaneController extends AbstractModelController implements Prop
 		this.color = color;
 		return this;
 	}
+	
+	public PointPaneController withDelay(int delay) {
+		this.delay = delay;
+		return this;
+	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
@@ -133,7 +141,18 @@ public class PointPaneController extends AbstractModelController implements Prop
 			if(evt.getNewValue() != null) {
 				val=(Integer)evt.getNewValue();
 			}
-			this.setValue(val);
+			if(this.delay>0) {
+				Timer timer = new Timer();
+				final int value = val;
+				timer.schedule(new TimerTask() {
+					@Override
+					public void run() {
+						PointPaneController.this.setValue(value);
+					}
+				}, delay);
+			} else {
+				this.setValue(val);
+			}
 		}
 	}
 

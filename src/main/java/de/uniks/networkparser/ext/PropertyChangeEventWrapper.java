@@ -1,4 +1,4 @@
-package de.uniks.networkparser.ext.javafx;
+package de.uniks.networkparser.ext;
 
 /*
 NetworkParser
