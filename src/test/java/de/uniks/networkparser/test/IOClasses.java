@@ -9,7 +9,7 @@ import java.io.IOException;
 public class IOClasses {
 public static String CRLF="\r\n";
 	public String getAbsolutePath(String file){
-		file = "test/"+file;
+		file = "de/uniks/networkparser/test/"+file;
 		String path = IOClasses.class.getResource("IOClasses.class").getPath();
 		String root = new File("").toURI().getPath().replace(" ", "%20");
 
@@ -23,7 +23,7 @@ public static String CRLF="\r\n";
 		}else{
 			pos = path.lastIndexOf("build/classes");
 			if(pos>=0){
-				path = path.substring(0, pos + 6)+"resources/test/";
+				path = path.substring(0, pos + 6)+"resources/";
 			}
 		}
 		return path+file;
