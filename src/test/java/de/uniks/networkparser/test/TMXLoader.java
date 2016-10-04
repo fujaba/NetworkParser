@@ -1,5 +1,6 @@
 package de.uniks.networkparser.test;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.IdMap;
@@ -17,6 +18,7 @@ public class TMXLoader extends IOClasses{
 		IdMap map=new IdMap();
 		map.with(new TileMap());
 		map.withFlag(IdMap.FLAG_NONE);
-		System.out.println(map.toXMLEntity(tile).toString(2));
+//		System.out.println(map.toXMLEntity(tile).toString(2));
+		Assert.assertNotNull(map.toXMLEntity(tile).toString(2));
 	}
 }

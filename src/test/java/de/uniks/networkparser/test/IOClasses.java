@@ -23,7 +23,7 @@ public static String CRLF="\r\n";
 		}else{
 			pos = path.lastIndexOf("build/classes");
 			if(pos>=0){
-				path = path.substring(0, pos + 6)+"resources/";
+				path = path.substring(0, pos + 6)+"resources/test/";
 			}
 		}
 		return path+file;
