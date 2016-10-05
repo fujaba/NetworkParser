@@ -31,6 +31,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import javax.imageio.ImageIO;
+
+import de.uniks.networkparser.test.javafx.SimpleController;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -45,7 +49,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import javax.imageio.ImageIO;
 
 public class FXStageController implements StageEvent, WindowListener {
 	private KeyListenerMap listener = new KeyListenerMap(this);
@@ -275,6 +278,15 @@ public class FXStageController implements StageEvent, WindowListener {
 	public Stage showNewStage(String fxml, Class<?> path) {
 		loadNewStage(fxml, path);
 		this.show();
+		return stage;
+	}
+	
+	public Stage showNewStage(String fxml, Class<?> path, Object extraDatapath) {
+		showNewStage(fxml, path);
+		Object controllerNew = getController();
+		if(controllerNew instanceof SimpleController) {
+			((SimpleController) controllerNew).init(extraDatapath);
+		}
 		return stage;
 	}
 
