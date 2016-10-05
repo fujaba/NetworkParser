@@ -28,18 +28,26 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import de.uniks.networkparser.interfaces.SendableEntity;
+import javafx.animation.Animation.Status;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+import javafx.scene.transform.Rotate;
+import javafx.util.Duration;
 
-public class PointPaneController extends AbstractModelController implements PropertyChangeListener, EventHandler<MouseEvent>, SendableEntity {
+public class PointPaneController extends AbstractModelController implements PropertyChangeListener, EventHandler<MouseEvent>, SendableEntity{
 	public static final String PROPERTY_CLICK="click";
 	public static final String PROPERTY_VALUE="value";
 	private Pane pane;
@@ -48,16 +56,86 @@ public class PointPaneController extends AbstractModelController implements Prop
 	private EventHandler<MouseEvent> mouseHandler;
 	private PropertyChangeSupport listeners;
 	private int number;
-	private int delay = 0;
+	private Timeline timeline = new Timeline();
+	private LinkedBlockingQueue<KeyFrame> animations = new LinkedBlockingQueue<KeyFrame>();
+	private boolean animation=true;
 
 	public PointPaneController(Node value) {
 		if (value instanceof Pane) {
 			this.pane = (Pane) value;
 			this.pane.setOnMouseClicked(this);
 		}
+		this.timeline.setOnFinished(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				PointPaneController.this.finishAnimationEvent();
+			}
+		});
+	}
+	
+	public void addW6Listener() {
+		EventHandler<MouseEvent> eventListener = new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				PointPaneController that = PointPaneController.this;
+				if(that.timeline.getStatus()==Status.STOPPED) {
+					int point = that.randInt(1, 6);
+					that.setValue(point);
+				}
+			}
+		};
+		this.addMouseListener(eventListener);
 	}
 
 	public void setValue(int number) {
+		if(animation == false) {
+			showNumber(number);
+			fireEvent(number);
+			return;
+		}
+		Rotate rotationTransform = new Rotate(0, pane.getLayoutX()+pane.getWidth()/2, pane.getLayoutY()+pane.getHeight()/2);
+		this.pane.getTransforms().setAll(rotationTransform);
+
+		// Rotate
+		KeyFrame animation = new KeyFrame(Duration.seconds(2), new KeyValue(rotationTransform.angleProperty(), 360));
+		this.animations.add(animation);
+
+		SimpleIntegerProperty item = new SimpleIntegerProperty(0);
+		item.addListener(new ChangeListener<Number>() {
+			public void changed(javafx.beans.value.ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				showNumber((int)newValue);
+			};
+		});
+		int count=600;
+		this.animations.add(new KeyFrame(Duration.millis(count), new KeyValue(item, 6)));
+		this.animations.add(new KeyFrame(Duration.millis(count), new KeyValue(item, 1)));
+		this.animations.add(new KeyFrame(Duration.millis(count), new KeyValue(item, 6)));
+		this.animations.add(new KeyFrame(Duration.millis(count), new KeyValue(item, 1)));
+		this.animations.add(new KeyFrame(Duration.ONE, new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				fireEvent(number);				
+			}
+		}, new KeyValue(item, number)));
+
+		// Run Animation
+		finishAnimationEvent();
+	}
+	
+	
+	public void finishAnimationEvent() {
+		if(animations.size()>0 && timeline.getStatus()==Status.STOPPED) {
+			timeline.getKeyFrames().setAll(animations.poll());
+			timeline.play();
+		}
+	}
+	
+	public PointPaneController withAnimation(boolean value) {
+		this.animation = value;
+		return this;
+	}
+	
+	public void showNumber(int number) {
 		this.reset();
 		if (number == 1) {
 			this.addCircle(2, 2);
@@ -78,6 +156,9 @@ public class PointPaneController extends AbstractModelController implements Prop
 		} else if (number == 9) {
 			this.addCircle(1, 1, 1, 2, 1, 3, 2, 1, 2, 2, 2, 3, 3, 1, 3, 2, 3, 3);
 		}
+	}
+	
+	private void fireEvent(int number) {
 		int oldValue = this.number;
 		this.number = number;
 		firePropertyChange(PROPERTY_VALUE, oldValue, number);
@@ -129,11 +210,6 @@ public class PointPaneController extends AbstractModelController implements Prop
 		return this;
 	}
 	
-	public PointPaneController withDelay(int delay) {
-		this.delay = delay;
-		return this;
-	}
-
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if(evt != null){
@@ -141,18 +217,7 @@ public class PointPaneController extends AbstractModelController implements Prop
 			if(evt.getNewValue() != null) {
 				val=(Integer)evt.getNewValue();
 			}
-			if(this.delay>0) {
-				Timer timer = new Timer();
-				final int value = val;
-				timer.schedule(new TimerTask() {
-					@Override
-					public void run() {
-						PointPaneController.this.setValue(value);
-					}
-				}, delay);
-			} else {
-				this.setValue(val);
-			}
+			this.setValue(val);
 		}
 	}
 
@@ -178,7 +243,7 @@ public class PointPaneController extends AbstractModelController implements Prop
 
 		return randomNum;
 	}
-
+	
 	@Override
 	public void initPropertyChange(Object model, Node gui) {
 	}

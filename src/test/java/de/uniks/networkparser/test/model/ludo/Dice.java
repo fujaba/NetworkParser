@@ -64,6 +64,10 @@ public class Dice {
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
 		getPropertyChangeSupport().addPropertyChangeListener(listener);
 	}
+	
+	public void addPropertyChangeListener(String property, PropertyChangeListener listener) {
+		getPropertyChangeSupport().addPropertyChangeListener(property, listener);
+	}
 
 	//==========================================================================
 	public void removeYou() {
