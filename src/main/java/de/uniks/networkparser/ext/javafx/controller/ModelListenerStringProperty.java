@@ -1,5 +1,9 @@
 package de.uniks.networkparser.ext.javafx.controller;
 
+import de.uniks.networkparser.SimpleEvent;
+import de.uniks.networkparser.ext.generic.GenericCreator;
+import de.uniks.networkparser.interfaces.Condition;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 /*
 NetworkParser
 The MIT License
@@ -24,13 +28,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import javafx.beans.Observable;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import javafx.beans.property.Property;
+import javafx.scene.Node;
 
 public class ModelListenerStringProperty extends ModelListenerProperty<String> {
 	public ModelListenerStringProperty(SendableEntityCreator creator, Object item, String property) {
 		super(creator, item, property);
 	}
-
+	
 	@Override
 	public void invalidated(Observable observable) {
 	}
@@ -47,5 +52,26 @@ public class ModelListenerStringProperty extends ModelListenerProperty<String> {
 	@Override
 	public String parseValue(Object value) {
 		return ""+value;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static ModelListenerStringProperty create(Node node, Object item, String property, Condition<SimpleEvent> listener) {
+		if(node == null) {
+			return null;
+		}
+		GenericCreator creator = new GenericCreator(item);
+		ModelListenerStringProperty stringProperty = new ModelListenerStringProperty(creator, item, property);
+		stringProperty.withCallBack(listener);
+		Property<String> nodeProperty = (Property<String>) ModelListenerFactory.getProperty(node);
+		if(nodeProperty!= null) {
+			stringProperty.bind(nodeProperty);
+			stringProperty.executeCallBack();
+		}
+		return stringProperty;
+	}
+
+	private ModelListenerStringProperty withCallBack(Condition<SimpleEvent> listener) {
+		this.callBack = listener;
+		return this;
 	}
 }

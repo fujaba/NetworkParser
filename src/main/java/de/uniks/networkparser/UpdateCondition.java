@@ -36,7 +36,7 @@ public class UpdateCondition implements UpdateListener {
 		if(evt instanceof SimpleEvent) {
 			SimpleEvent event = (SimpleEvent)evt;
 			IdMap map = (IdMap) event.getSource();
-			return map.getKey(event.getModelItem()) == null && map.getKey(event.getNewValue()) == null;
+			return map.getKey(event.getModelValue()) == null && map.getKey(event.getNewValue()) == null;
 		}
 		return false;
 	}

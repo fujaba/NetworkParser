@@ -30,12 +30,15 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.SimpleEvent;
+import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
@@ -48,6 +51,7 @@ public abstract class ModelListenerProperty<T> implements javafx.beans.property.
 	private LinkedHashSet<ChangeListener<? super T>> listeners=new LinkedHashSet<ChangeListener<? super T>>();
 	private LinkedHashSet<InvalidationListener> invalidationListeners=new LinkedHashSet<InvalidationListener>();
 	protected ObservableValue<? extends T> observable = null;
+	protected Condition<SimpleEvent> callBack;
 
 	public ModelListenerProperty(SendableEntityCreator creator, Object item, String property) {
 		this.creator = creator;
@@ -173,12 +177,19 @@ public abstract class ModelListenerProperty<T> implements javafx.beans.property.
 	public void propertyChange(PropertyChangeEvent evt) {
 		for(ChangeListener<? super T> listener: listeners) {
 			SimpleObjectProperty<T> objectProperty = new SimpleObjectProperty<T>();
-			//objectProperty.setValue(parseValue(evt.getSource()));
-
 			listener.changed(objectProperty, parseValue(evt.getOldValue()), parseValue(evt.getNewValue()));
 		}
 		for(InvalidationListener listener : invalidationListeners) {
 			listener.invalidated(this);
+		}
+		executeCallBack();
+	}
+	public void executeCallBack() {
+		if(callBack != null) {
+			SimpleEvent event = new SimpleEvent(this.item, this.property, null, getItemValue());
+			if(callBack.update(event)) {
+				((SimpleStringProperty)observable).set(""+event.getModelValue());				
+			}
 		}
 	}
 

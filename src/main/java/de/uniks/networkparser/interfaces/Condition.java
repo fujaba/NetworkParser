@@ -27,7 +27,6 @@ THE SOFTWARE.
  * @author Stefan Lindel Condition Clazz.
  */
 @FunctionalInterface
-
 public interface Condition<T> {
 	/**
 	 * checks or notify this condition.

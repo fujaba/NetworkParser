@@ -43,9 +43,11 @@ import de.uniks.networkparser.DefaultTextItems;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.TextItems;
+import de.uniks.networkparser.ext.generic.GenericCreator;
 import de.uniks.networkparser.ext.javafx.StyleFX;
 import de.uniks.networkparser.ext.javafx.TableList;
 import de.uniks.networkparser.ext.javafx.controls.EditFieldMap;
+import de.uniks.networkparser.gui.CellHandler;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.Style;
 import de.uniks.networkparser.interfaces.GUIPosition;
@@ -65,6 +67,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -400,10 +403,11 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 
 	public TableComponent withList(Object item, String property) {
 		if (map == null) {
-			return this;
+			this.sourceCreator = new GenericCreator(item);
+		}else {
+			this.sourceCreator = map.getCreatorClass(source);
 		}
 		this.source = item;
-		this.sourceCreator = map.getCreatorClass(source);
 		this.property = property;
 		if (sourceCreator == null) {
 			return this;
@@ -551,6 +555,9 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	}
 
 	public SendableEntityCreator getCreator(Object entity) {
+		if(this.map == null) {
+			return new GenericCreator(entity);
+		}
 		return getMap().getCreatorClass(entity);
 	}
 
@@ -617,6 +624,30 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 			column.refresh();
 		}
 		return true;
+	}
+
+	public TableComponent withColumns(Object... columns) {
+		if(columns == null) {
+			return this;
+		}
+		for(Object item : columns) {
+			if(item instanceof String) {
+				Column column = new Column().withAttrName(""+item);
+				withColumn(column);
+				continue;
+			}
+			if(item instanceof Class<?>) {
+				Column column = new Column().withNumberFormat("CLAZZ");
+				withColumn(column);
+				continue;
+			}
+			if(item instanceof CellHandler) {
+				Column column = new Column().withActionHandler((CellHandler)item);
+				withColumn(column);
+				continue;
+			}
+		}
+		return this;
 	}
 
 }

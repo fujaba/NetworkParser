@@ -70,6 +70,28 @@ public class ModelListenerFactory {
 		}
 		return null;
 	}
+	
+	public static Property<?> getProperty(Node node) {
+		if(node instanceof ColorPicker) {
+			return ((ColorPicker)node).valueProperty();
+		}
+		if(node instanceof TextField) {
+			return ((TextField)node).textProperty();
+		}
+		if(node instanceof ComboBox) {
+			return ((ComboBox<?>)node).valueProperty();
+		}
+		if(node instanceof Label) {
+			return ((Label)node).textProperty();
+		}
+		if(node instanceof CheckBox) {
+			return ((CheckBox)node).selectedProperty();
+		}
+		if(node instanceof RadioButton) {
+			return ((RadioButton)node).selectedProperty();
+		}
+		return null;
+	}
 
 	public static ModelListenerProperty<?> create(Label node, Object item, String field){
 		return createProperty(PROPERTYTYPE.STRING, node.textProperty(), new GenericCreator(item), item, field);

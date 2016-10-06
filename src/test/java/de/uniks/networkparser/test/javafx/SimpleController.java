@@ -9,6 +9,7 @@ import javafx.stage.WindowEvent;
 
 public class SimpleController implements StageEvent {
 	protected FXStageController controller;
+	protected Stage stage;
 	
 	@Override
 	public void stageClosing(WindowEvent event, Stage stage, FXStageController controller) {
@@ -18,6 +19,7 @@ public class SimpleController implements StageEvent {
 	public void stageShowing(WindowEvent event, Stage stage,
 			FXStageController controller) {
 		this.controller = controller;
+		this.stage = stage;
 	}
 	
 	public void init(Object model) {
@@ -26,6 +28,7 @@ public class SimpleController implements StageEvent {
 				Method method = this.getClass().getMethod("set"+model.getClass().getSimpleName(), model.getClass());
 				method.invoke(this, model);
 			} catch (ReflectiveOperationException e) {
+				e.printStackTrace();
 			} catch (SecurityException e) {
 			} catch (IllegalArgumentException e) {
 			}

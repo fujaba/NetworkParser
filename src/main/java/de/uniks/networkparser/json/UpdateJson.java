@@ -303,7 +303,7 @@ public class UpdateJson implements PropertyChangeListener {
 				if (removeJsonObject != null
 						&& removeJsonObject instanceof JsonObject) {
 					JsonObject json = (JsonObject) removeJsonObject;
-					this.map.notify(new SimpleEvent(IdMap.REMOVE, json, map, key, this.map.decode(json), null).withModelItem(masterObj));
+					this.map.notify(new SimpleEvent(IdMap.REMOVE, json, map, key, this.map.decode(json), null).withModelValue(masterObj));
 				}
 			}
 			return masterObj;
@@ -320,12 +320,12 @@ public class UpdateJson implements PropertyChangeListener {
 					setValue(creator, masterObj, key, newValue,
 							IdMap.UPDATE);
 
-					this.map.notify(new SimpleEvent(IdMap.UPDATE, update, map, key, oldValue, newValue).withModelItem(masterObj));
+					this.map.notify(new SimpleEvent(IdMap.UPDATE, update, map, key, oldValue, newValue).withModelValue(masterObj));
 				} else if (checkPrio(prio)) {
 					Object newValue = update.get(key);
 					setValue(creator, masterObj, key, newValue,
 							IdMap.UPDATE);
-					this.map.notify(new SimpleEvent(IdMap.UPDATE, update, map, key, oldValue, newValue).withModelItem(masterObj));
+					this.map.notify(new SimpleEvent(IdMap.UPDATE, update, map, key, oldValue, newValue).withModelValue(masterObj));
 				}
 			}
 			return masterObj;
@@ -396,13 +396,13 @@ public class UpdateJson implements PropertyChangeListener {
 			Object value = this.map.decode(json);
 			if (value != null) {
 				creator.setValue(element, key, value, typ);
-				if(this.map.notify(new SimpleEvent(typ, json, map, key, null, value).withModelItem(element))){
+				if(this.map.notify(new SimpleEvent(typ, json, map, key, null, value).withModelValue(element))){
 					return element;
 				}
 			}
 		} else {
 			creator.setValue(element, key, newValue, typ);
-			if(this.map.notify(new SimpleEvent(typ, null, map, key, null, newValue).withModelItem(element))){
+			if(this.map.notify(new SimpleEvent(typ, null, map, key, null, newValue).withModelValue(element))){
 				return element;
 			}
 		}

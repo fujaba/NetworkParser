@@ -1,7 +1,6 @@
 package de.uniks.networkparser;
 
 import java.beans.PropertyChangeEvent;
-
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 
@@ -20,6 +19,19 @@ public final class SimpleEvent extends PropertyChangeEvent {
 	private String type;
 	private Object beforeElement;
 
+	/**
+	 * Constructor for example Filter Regard or Convertable
+	 * @param source	List Container
+	 * @param property	Property of Event
+	 * @param oldValue	Old Element
+	 * @param newValue	new Element
+	 */
+	public SimpleEvent(Object source, String property, Object oldValue, Object newValue) {
+		super(source, property, oldValue, newValue);
+		this.value = newValue;
+		this.type = IdMap.NEW;
+	}
+	
 	/**
 	 * Constructor for example Filter Regard or Convertable
 	 * @param type		typ of Event
@@ -82,11 +94,6 @@ public final class SimpleEvent extends PropertyChangeEvent {
 		this.beforeElement = beforeElement;
 	}
 
-	@Override
-	public BaseItem getSource() {
-		return (BaseItem) super.getSource();
-	}
-
 	public int getDepth() {
 		return depth;
 	}
@@ -95,19 +102,22 @@ public final class SimpleEvent extends PropertyChangeEvent {
 		return entity;
 	}
 
-	public Object getModelItem() {
+	public Object getModelValue() {
 		return value;
 	}
 
-	public SimpleEvent withModelItem(Object modelItem) {
-		this.value = modelItem;
+	public SimpleEvent withModelValue(Object value) {
+		this.value = value;
 		return this;
+	}
+	public void setModelValue(Object value) {
+		this.value = value;
 	}
 
 	public String getType() {
 		return type;
 	}
-
+	
 	public boolean isNewEvent() {
 		return IdMap.NEW.equals(this.type);
 	}
