@@ -34,12 +34,13 @@ import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
 
-import de.uniks.networkparser.test.javafx.SimpleController;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
@@ -406,6 +407,34 @@ public class FXStageController implements StageEvent, WindowListener {
 		FXStageController controller = new FXStageController().withStage(stage).withFXML(path.getResource(fxml));
 		controller.show();
 		return controller;
+	}
+	
+	public boolean replaceNode(Node oldNode, Node newNode) {
+		if(oldNode == null || newNode == null) {
+			return false;
+		}
+		Parent parent = oldNode.getParent();
+		ObservableList<Node> childrenUnmodifiable = parent.getChildrenUnmodifiable();
+		int pos=0;
+		for(Node child : childrenUnmodifiable) {
+			if(child == oldNode) {
+				break;
+			}
+			pos++;
+		}
+		if(parent instanceof Pane) {
+			if(oldNode instanceof Region && newNode instanceof Region) {
+				Region oldRegion = (Region) oldNode;
+				Region newRegion = (Region) newNode;
+				newRegion.setPrefWidth(oldRegion.getPrefWidth());
+				newRegion.setPrefHeight(oldRegion.getPrefHeight());
+			}
+			Pane pane = (Pane) parent;
+			pane.getChildren().remove(pos);
+			pane.getChildren().add(pos, newNode);
+			return true;
+		}
+		return false;
 	}
 
 	public void withIcon(URL resource) {

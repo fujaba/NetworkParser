@@ -1,5 +1,15 @@
 package de.uniks.networkparser.ext.javafx.component;
 
+import de.uniks.networkparser.Style;
+import de.uniks.networkparser.ext.javafx.StyleFX;
+import de.uniks.networkparser.ext.javafx.controls.EditControl;
+import de.uniks.networkparser.ext.javafx.controls.EditFieldMap;
+import de.uniks.networkparser.gui.CellEditorElement;
+import de.uniks.networkparser.gui.Column;
+import de.uniks.networkparser.gui.FieldTyp;
+import de.uniks.networkparser.gui.TableCellValue;
+import de.uniks.networkparser.interfaces.GUIPosition;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 /*
 NetworkParser
 The MIT License
@@ -24,24 +34,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TablePosition;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
-import de.uniks.networkparser.ext.javafx.StyleFX;
-import de.uniks.networkparser.ext.javafx.controls.EditControl;
-import de.uniks.networkparser.ext.javafx.controls.EditFieldMap;
-import de.uniks.networkparser.gui.CellEditorElement;
-import de.uniks.networkparser.gui.Column;
-import de.uniks.networkparser.gui.FieldTyp;
-import de.uniks.networkparser.Style;
-import de.uniks.networkparser.gui.TableCellValue;
-import de.uniks.networkparser.interfaces.GUIPosition;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class TableCellFX extends TableCell<Object, TableCellValue> implements CellEditorElement, EventHandler<MouseEvent> {
 	private EditFieldMap fieldMap;
@@ -93,6 +95,24 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 		if(this.updateListener != null && this.updateListener.updateItem(this, item, empty)) {
 			return;
 		}
+		if(item != null && item.getColumn().isListener()) {
+			setText(null);
+			Button cellButton = new Button();
+			String simpleValue = item.getColumn().getAttrName();
+			if(simpleValue!= null) {
+				cellButton.setText(simpleValue);
+			}
+			Object entity= item.getItem();
+			SendableEntityCreator creator = item.getCreator();
+			cellButton.setOnAction(new EventHandler<ActionEvent>() {
+				public void handle(ActionEvent event) {
+					item.getColumn().getListener().onAction(entity, creator, 0, 0);
+				};
+			});
+			setGraphic(cellButton);
+			return;
+		}
+		
 		final String text = "" + item;
 		if (item != null) {
 			Platform.runLater(new Runnable() {

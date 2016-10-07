@@ -42,6 +42,7 @@ import java.util.List;
 import de.uniks.networkparser.DefaultTextItems;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.Style;
 import de.uniks.networkparser.TextItems;
 import de.uniks.networkparser.ext.generic.GenericCreator;
 import de.uniks.networkparser.ext.javafx.StyleFX;
@@ -49,7 +50,6 @@ import de.uniks.networkparser.ext.javafx.TableList;
 import de.uniks.networkparser.ext.javafx.controls.EditFieldMap;
 import de.uniks.networkparser.gui.CellHandler;
 import de.uniks.networkparser.gui.Column;
-import de.uniks.networkparser.Style;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -67,7 +67,6 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.SelectionMode;
-import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -644,6 +643,10 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 			if(item instanceof CellHandler) {
 				Column column = new Column().withActionHandler((CellHandler)item);
 				withColumn(column);
+				continue;
+			}
+			if(item instanceof Column) {
+				withColumn((Column) item);
 				continue;
 			}
 		}

@@ -432,6 +432,10 @@ public class Column implements SendableEntityCreatorNoIndex {
 				}
 				return value;
 			}
+		} else if("CLAZZ".equals(getNumberFormat())) {
+			if(entity!=null) {
+				return entity.getClass().getSimpleName();
+			}
 		}
 		return null;
 	}
@@ -442,5 +446,10 @@ public class Column implements SendableEntityCreatorNoIndex {
 			return false;
 		}
 		return creator.setValue(entity, getAttrName(), value, IdMap.UPDATE);
+	}
+
+	public Column withListener(CellHandler eventHandler) {
+		this.handler = eventHandler;
+		return this;
 	}
 }
