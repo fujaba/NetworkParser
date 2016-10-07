@@ -98,7 +98,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	public IdMap getMap() {
 		return map;
 	}
-
+	
 	public TableComponent createFromCreator(SendableEntityCreator creator, boolean edit) {
 		if(creator==null){
 			Iterator<Object> iterator = items.iterator();
@@ -652,5 +652,20 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		}
 		return this;
 	}
-
+	public void addItemsFromPropertyChange(SendableEntity parentObject, String parentProperty, String property, String itemsProperty) {
+		GenericCreator creator = new GenericCreator(parentObject);
+		if(parentObject.addPropertyChangeListener(parentProperty, new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if(property == null) {
+					TableComponent.this.withList(evt.getNewValue(), itemsProperty);
+				} else {
+					Object source = creator.getValue(evt.getSource(), property);
+					TableComponent.this.withList(source, itemsProperty);
+				}
+			}
+		}));
+		Object source = creator.getValue(parentObject, property);
+		this.withList(source, itemsProperty);
+	}
 }

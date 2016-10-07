@@ -44,7 +44,7 @@ public class ModelListenerStringProperty extends ModelListenerProperty<String> {
 	public String getValue() {
 		Object item = getItemValue();
 		if(item!=null){
-			return (String) item;
+			return ""+item;
 		}
 		return "";
 	}
