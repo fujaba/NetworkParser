@@ -59,6 +59,8 @@ public class PointPaneController extends AbstractModelController implements Prop
 	private Timeline timeline = new Timeline();
 	private LinkedBlockingQueue<KeyFrame> animations = new LinkedBlockingQueue<KeyFrame>();
 	private boolean animation=true;
+	private int max=6;
+	public static int RandomSeed = -1;
 
 	public PointPaneController(Node value) {
 		if (value instanceof Pane) {
@@ -85,6 +87,10 @@ public class PointPaneController extends AbstractModelController implements Prop
 			}
 		};
 		this.addMouseListener(eventListener);
+	}
+	
+	public void throwDice() {
+		setValue(this.randInt(1, this.max));
 	}
 
 	public void setValue(int number) {
@@ -235,7 +241,12 @@ public class PointPaneController extends AbstractModelController implements Prop
 
 		// NOTE: Usually this should be a field rather than a method
 		// variable so that it is not re-seeded every call.
-		Random rand = new Random();
+		Random rand;
+		if(PointPaneController.RandomSeed <1) {
+			rand = new Random();
+		}else{
+			rand = new Random(PointPaneController.RandomSeed);
+		}
 
 		// nextInt is normally exclusive of the top value,
 		// so add 1 to make it inclusive
