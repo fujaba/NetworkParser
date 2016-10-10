@@ -24,6 +24,7 @@ THE SOFTWARE.
 */
 
 /**
+ * Class for List of Numbers  
  * @author Stefan Lindel NumberList for List of Numbers (Integer Double etc.)
  *
  */
