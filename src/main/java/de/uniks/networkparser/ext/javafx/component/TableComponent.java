@@ -421,7 +421,9 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 				addItem(entity);
 			}
 		}
-		addUpdateListener(source, property);
+		if (source != null) {
+			addUpdateListener(source, property);
+		}
 		return this;
 	}
 
