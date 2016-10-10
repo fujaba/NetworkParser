@@ -24,22 +24,19 @@ THE SOFTWARE.
 */
 
 /**
- * @author Stefan Lindel
- * NumberList for List of Numbers (Integer Double etc.)
+ * @author Stefan Lindel NumberList for List of Numbers (Integer Double etc.)
  *
  */
 public class NumberList extends SimpleList<Number> {
-	public double sum()
-   {
-      double result = 0;
+	public double sum() {
+		double result = 0;
 
-      for (Number x : this)
-      {
-         result += x.doubleValue();
-      }
+		for (Number x : this) {
+			result += x.doubleValue();
+		}
 
-      return result;
-   }
+		return result;
+	}
 
 	public double max() {
 		double max = Double.MIN_VALUE;
@@ -63,5 +60,16 @@ public class NumberList extends SimpleList<Number> {
 		}
 		return min;
 	}
-}
+	
 
+	public double middle() {
+		double middleValue = 0;
+		for (Number x : this) {
+			middleValue += x.doubleValue();
+		}
+		if(this.size()>0) {
+			middleValue = middleValue / this.size();
+		}
+		return middleValue;
+	}
+}

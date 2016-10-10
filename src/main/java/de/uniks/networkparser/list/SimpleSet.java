@@ -142,6 +142,15 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V>, Cloneable, 
 		result.retainAll(other);
 		return result;
 	}
+	
+	 public <ST extends AbstractList<?>> ST instanceOf(ST target) {
+		for(Object obj : this) {
+			if(obj != null && obj.getClass()==target.getTypClass()) {
+				target.with(obj);	
+			}
+		}
+		return target;
+	 }
 
 	@SuppressWarnings("unchecked")
 	public <ST extends SimpleSet<V>> ST minus(Object other) {
