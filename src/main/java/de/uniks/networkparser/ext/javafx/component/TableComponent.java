@@ -69,6 +69,7 @@ import javafx.scene.control.ScrollBar;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -157,6 +158,11 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 		return resultTableViewer;
 	}
 
+	public TableViewSelectionModel<Object> getSelectionModel() {
+		TableViewFX browser = getBrowser();
+		return browser.getSelectionModel();
+	}
+	
 	public TableComponent withScrollPosition(double pos){
 		for(TableViewFX table : tableViewer){
 			if(table!=null){
@@ -663,6 +669,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 					TableComponent.this.withList(evt.getNewValue(), itemsProperty);
 				} else {
 					Object source = creator.getValue(evt.getSource(), parentProperty);
+					TableComponent.this.getItems().clear();
 					TableComponent.this.withList(source, itemsProperty);
 				}
 			}
