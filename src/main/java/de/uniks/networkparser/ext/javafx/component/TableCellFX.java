@@ -92,6 +92,11 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 	@Override
 	protected void updateItem(TableCellValue item, boolean empty) {
 		super.updateItem(item, empty);
+		if (empty || item == null) {
+			setText(null);
+			setGraphic(null);
+			return;
+		}
 		if(this.updateListener != null && this.updateListener.updateItem(this, item, empty)) {
 			return;
 		}
@@ -220,12 +225,14 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 
 	@Override
 	public void handle(MouseEvent event) {
-		TablePosition<?, ?> editingCell = getTableView().getFocusModel().getFocusedCell();
-		int row = editingCell.getRow();
-		Object entity = tableComponent.getElement(row);
-		SendableEntityCreator creator = tableComponent.getCreator(entity);
+		if (this.field != null && this.field.isListener()) {
+			TablePosition<?, ?> editingCell = getTableView().getFocusModel().getFocusedCell();
+			int row = editingCell.getRow();
+			Object entity = tableComponent.getElement(row);
+			SendableEntityCreator creator = tableComponent.getCreator(entity);
 
-		this.field.getListener().onAction(entity, creator, getTableView().getLayoutX(), getTableView().getLayoutY());
+			this.field.getListener().onAction(entity, creator, getTableView().getLayoutX(), getTableView().getLayoutY());
+		}
 	}
 
 	@Override
