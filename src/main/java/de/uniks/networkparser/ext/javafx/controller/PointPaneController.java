@@ -100,7 +100,6 @@ public class PointPaneController extends AbstractModelController implements Prop
 			return;
 		}
 		Rotate rotationTransform = new Rotate(0, pane.getTranslateX()+pane.getWidth()/2, pane.getTranslateY()+pane.getHeight()/2);
-//		Rotate rotationTransform = new Rotate(0, pane.getLayoutX()+pane.getWidth()/2, pane.getLayoutY()+pane.getHeight()/2);
 		this.pane.getTransforms().setAll(rotationTransform);
 
 		// Rotate

@@ -110,6 +110,8 @@ Here are a simple Usage of JsonIdMap for serialization and deserialization and g
 - The issue list: Head straight to https://github.com/fujaba/NetworkParser/issues for a list of all issues or click `Issues` in the navigation bar on the right.
 - See also on Openhub https://www.openhub.net/p/NetworkParser
 
+## Spenden
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=FSHD59SQ8PR2Y)
 
 # License
-NetworkParser is released under an [EuPL 1.1 license](Licence/EUPL v.1.1 - Lizenz.pdf).
+NetworkParser is released under an [The MIT License](src/main/resources/Licence.txt).
