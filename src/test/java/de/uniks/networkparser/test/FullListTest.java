@@ -13,6 +13,10 @@ import java.util.ListIterator;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.uniks.networkparser.EntityUtil;
+import de.uniks.networkparser.TextDiff;
+import de.uniks.networkparser.json.JsonArray;
+import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
@@ -23,6 +27,46 @@ import de.uniks.networkparser.test.model.util.AppleSet;
 import de.uniks.networkparser.test.model.util.FruitSet;
 
 public class FullListTest {
+	@Test
+	public void CollectionCompare() {
+		ArrayList<Object> masterA=new ArrayList<Object>();
+		ArrayList<String> slave=new ArrayList<String>();
+		slave.add("Hallo");
+		slave.add("Welt");
+		masterA.add(slave);
+		
+		ArrayList<Object> masterB=new ArrayList<Object>();
+		slave=new ArrayList<String>();
+		slave.add("Hallo");
+		slave.add("Welt");
+		masterB.add(slave);
+		
+		Assert.assertTrue(EntityUtil.compareEntity(masterA, masterB));
+	}
+	
+	private JsonObject createHelpClass(String name, String color) {
+		JsonObject master=new JsonObject();
+		JsonArray assoc=new JsonArray();
+		master.add("trainers", assoc);
+		JsonObject trainer=new JsonObject();
+		JsonObject props = new JsonObject();
+		assoc.add(trainer);
+		trainer.add("props", props);
+		props.add("name", name);
+		props.add("color", color);
+		return master;
+	}
+	
+	@Test
+	public void compareJsonWithDifference() {
+		JsonObject master = this.createHelpClass("Alice", "green");
+		JsonObject slave = this.createHelpClass("Bob", "blue");
+		TextDiff diffs=new TextDiff();
+		Assert.assertFalse(EntityUtil.compareEntity(master, slave, diffs, null));
+		
+	}
+	
+
 	@Test
 	public void CollectionWith() {
 		SimpleList<String> item=new SimpleList<String>();

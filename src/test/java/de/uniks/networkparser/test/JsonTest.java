@@ -19,6 +19,7 @@ import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.RestCounter;
 import de.uniks.networkparser.SimpleEvent;
+import de.uniks.networkparser.TextDiff;
 import de.uniks.networkparser.ext.PropertyChangeEventWrapper;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.EMFJsonGrammar;
@@ -67,6 +68,16 @@ public class JsonTest extends IOClasses {
 		JsonObject json = new JsonObject().withValue("{\"type\":\"new\", \"type\":\"old\"}");
 		Assert.assertEquals(json.get("type"), "old");
 		Assert.assertEquals(1, json.size());
+	}
+	
+	@Test
+	public void testJSONDelete() {
+		JsonObject json = new JsonObject().withValue("{\"id\":42, \"dice\":3}");
+		Assert.assertEquals(json.getValue("id"), 42);
+		Assert.assertEquals(json.getValue("dice"), 3);
+		json.without("id");
+		String key = json.getKeyByIndex(0);
+		Assert.assertEquals(json.getValue(key), 3);
 	}
 	
 	@Test
@@ -659,8 +670,10 @@ public class JsonTest extends IOClasses {
 		JsonObject jsonA = new JsonObject().withValue("{id:42, no:23, list:[1,2], array:[1,2]}");
 		JsonObject jsonB = new JsonObject().withValue("{id:42, no:24, list:[1,2], array:[1,3]}");
 		JsonObject same = new JsonObject();
-		Assert.assertFalse(EntityUtil.compareEntity(jsonA, jsonB, same));
-		Assert.assertEquals("{\"list\":[2,1],\"id\":42}", same.toString());
+		TextDiff diffList = new TextDiff();
+		
+		Assert.assertFalse(EntityUtil.compareEntity(jsonA, jsonB, diffList, same));
+		Assert.assertEquals("{\"id\":42,\"list\":[1,2]}", same.toString());
 		Assert.assertEquals("{\"no\":23,\"array\":[2]}", jsonA.toString());
 		Assert.assertEquals("{\"no\":24,\"array\":[3]}", jsonB.toString());
 	}

@@ -26,12 +26,13 @@ THE SOFTWARE.
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.bytes.ByteTokener;
-import de.uniks.networkparser.Pos;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.Entity;
+import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.AbstractArray;
 import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
@@ -518,94 +519,153 @@ public class EntityUtil {
 		return sb.toString();
 	}
 
+	
+	
 	public static boolean compareEntity(Entity entityA, Entity entityB) {
-		return compareEntity(entityA, entityB, null);
+		return compareEntity(entityA, entityB, new TextDiff(), null);
 	}
-	public static boolean compareEntity(Entity entityA, Entity entityB, Entity sameObject) {
-		if(entityB == null) {
-			return entityA == null;
+	
+	public static boolean compareEntity(List<?> jsonA, List<?> jsonB) {
+		return compareEntity(jsonA, jsonB, new TextDiff(), null);
+	}
+	
+	public static boolean compareEntity(Object entityA, Object entityB, TextDiff diffList, BaseItem sameObject) {
+		if(sameObject == null) {
+			if (entityA instanceof Entity) {
+				sameObject = ((BaseItem) entityA).getNewList(true);
+			} else if (entityB instanceof Entity) {
+				sameObject = ((BaseItem) entityB).getNewList(true);
+			} else if (entityA instanceof BaseItem) {
+				sameObject = ((BaseItem) entityA).getNewList(false);
+			} else if (entityB instanceof BaseItem) {
+				sameObject = ((BaseItem) entityB).getNewList(false);
+			} else {
+				sameObject = new JsonObject();
+			}
 		}
-		for(int i=entityA.size()- 1 ;i>=0;i--) {
-			String key = entityA.getKeyByIndex(i);
-			Object valueA = entityA.getValue(key);
-			Object valueB = entityB.getValue(key);
-			if(valueA == null) {
-				if(valueB == null) {
-					Object oldValue = entityA.getValue(key);
+		// Big Check
+		if(entityB == null) {
+			if(entityA != null) {
+				diffList.with(null, entityA, entityB);
+				return false;
+			}
+			return true;
+			
+		}
+		if(entityA instanceof Entity && entityB instanceof Entity) {
+			Entity elementA = (Entity) entityA;
+			Entity elementB = (Entity) entityB;
+			for(int i = 0;i < elementA.size();i++) {
+				String key = elementA.getKeyByIndex(i);
+				Object valueA = elementA.getValue(key);
+				Object valueB = elementB.getValue(key);
+				if(valueA == null) {
+					if(valueB == null) {
+						Object oldValue = elementA.getValue(key);
+						if(sameObject != null) {
+							sameObject.with(key, oldValue);
+						}
+						elementA.without(key);
+						elementB.without(key);
+						i--;
+					}
+					continue;
+				}
+				Object oldValue = compareValue(key, valueA, valueB, diffList, sameObject);
+				if(oldValue != null) {
 					if(sameObject != null) {
 						sameObject.with(key, oldValue);
 					}
-					entityA.without(key);
-					entityB.without(key);
+					elementA.without(key);
+					elementB.without(key);
+					i--;
 				}
-				continue;
 			}
-			Object oldValue = compareValue(valueA, valueB);
-			if(oldValue != null) {
-				if(sameObject != null) {
-					sameObject.with(key, oldValue);
+			// Other Way
+			for(int i = 0;i <elementB.size() ;i++) {
+				String key = elementB.getKeyByIndex(i);
+				Object valueA = elementA.getValue(key);
+				Object valueB = elementB.getValue(key);
+				if(valueA == null) {
+					// Its new
+					compareValue(key, valueA, valueB, diffList, sameObject);
 				}
-				entityA.without(key);
-				entityB.without(key);
 			}
+			boolean isSame = elementA.size()<1 && elementB.size()<1;
+			if(entityA instanceof XMLEntity && entityB instanceof XMLEntity) {
+				XMLEntity xmlA = (XMLEntity) entityA;
+				XMLEntity xmlB = (XMLEntity) entityB;
+				compareEntity(xmlA.getChildren(), xmlB.getChildren());
+				isSame = isSame && xmlA.getTag().equals(xmlB.getTag());
+			}
+			return isSame;
 		}
-		boolean isSamesize = entityA.size()<1 && entityB.size()<1;
-		if(entityA instanceof XMLEntity && entityB instanceof XMLEntity) {
-			XMLEntity xmlA = (XMLEntity) entityA;
-			XMLEntity xmlB = (XMLEntity) entityB;
-			compareEntity(xmlA.getChildren(), xmlB.getChildren());
-			return isSamesize && xmlA.getTag().equals(xmlB.getTag());
+		if(entityA instanceof Collection<?> && entityB instanceof Collection<?>) { 
+			Collection<?> colectionA = (Collection<?>) entityA;
+			Collection<?> colectionB = (Collection<?>) entityB;
+			Object[] itemsA = colectionA.toArray();
+			Object[] itemsB = colectionB.toArray();
+			for(int i=0;i<itemsA.length;i++) {
+				Object valueA = itemsA[i];
+				Object valueB = null;
+				if(itemsB.length>i) {
+					valueB = itemsB[i]; 
+				}
+				Object oldValue = compareValue(null, valueA, valueB, diffList, sameObject);
+				if(itemsB.length<=i) {
+					continue;
+				}
+				if(oldValue != null) {
+					colectionA.remove(valueA);
+					if(sameObject != null) {
+						sameObject.with(oldValue);
+					}
+					colectionB.remove(valueB);
+				}
+			}
+			// Other Way
+			itemsB = colectionB.toArray();
+			for(int i = colectionA.size();i <colectionB.size() ;i++) {
+				Object valueB = itemsB[i];
+				// Its new
+				compareValue(null, null, valueB, diffList, sameObject);
+			}
+			return colectionA.size()<1 && colectionB.size()<1;
 		}
-		return isSamesize;
+		return false;
 	}
 
-	public static boolean compareEntity(List<?> jsonA, List<?> jsonB) {
-		return compareEntity(jsonA, jsonB, null);
-	}
-
-	public static boolean compareEntity(List<?> jsonA, List<?> jsonB, BaseItem sameList) {
-		if(jsonB == null) {
-			return jsonA == null;
-		}
-		for(int i=jsonA.size() - 1;i>=0;i--) {
-			Object valueA = jsonA.get(i);
-			if(jsonB.size()<i) {
-				continue;
-			}
-			Object valueB = jsonB.get(i);
-			Object oldValue = compareValue(valueA, valueB);
-			if(oldValue != null) {
-				jsonA.remove(i);
-				if(sameList != null) {
-					sameList.with(oldValue);
-				}
-				jsonB.remove(i);
-			}
-		}
-		return jsonA.size()<1 && jsonB.size()<1;
-	}
-
-	static Object compareValue(Object valueA, Object valueB) {
+	static Object compareValue(String key, Object valueA, Object valueB, TextDiff diffList, BaseItem sameElement) {
+		BaseItem sameObject = null;
 		if(valueA instanceof Entity && valueB instanceof Entity) {
 			Entity entityA = (Entity)valueA;
-			Entity newKeyValue = (Entity) entityA.getNewList(true);
-			if(compareEntity(entityA, (Entity)valueB, newKeyValue)) {
-				return newKeyValue;
+			if(sameElement != null) {
+				sameObject = entityA.getNewList(true);
 			}
+			diffList.save();
+			if(compareEntity(entityA, (Entity)valueB, diffList, sameObject)) {
+				return sameObject;
+			}
+			diffList.replaceChild(key, valueA, valueB);
 			return null;
-		} else if(valueA instanceof BaseItem && valueB instanceof List<?>) {
-			BaseItem sameList = ((BaseItem)valueA).getNewList(false);
-			if(compareEntity((List<?>)valueA, (List<?>)valueB, sameList)) {
-				return sameList;
+		} else if(valueA instanceof Collection<?> && valueB instanceof Collection<?>) {
+			if(sameElement != null) {
+				sameObject = sameElement.getNewList(false);
 			}
+			diffList.save();
+			if(compareEntity((List<?>)valueA, (List<?>)valueB, diffList, sameObject)) {
+				return sameObject;
+			}
+			diffList.replaceChild(key, valueA, valueB);
 			return null;
 		}
-		if(valueA.equals(valueB)) {
+		if(valueA != null && valueA.equals(valueB)) {
 			return valueA;
 		}
+		diffList.createChild(key, valueA, valueB);
 		return null;
 	}
-
+	
 	public static final String emfTypes = " EOBJECT EBIG_DECIMAL EBOOLEAN EBYTE EBYTE_ARRAY ECHAR EDATE EDOUBLE EFLOAT EINT EINTEGER ELONG EMAP ERESOURCE ESHORT ESTRING ";
 
 	public static boolean isEMFType(String tag) {

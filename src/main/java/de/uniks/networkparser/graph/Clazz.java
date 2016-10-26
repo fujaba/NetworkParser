@@ -399,7 +399,21 @@ public class Clazz extends GraphEntity {
 		}
 		return kidClazzes;
 	}
-
+	
+	/**
+	 * get All Implements Clazz
+	 * @return all implements of a Clazz
+	 *		 <pre>
+	 *			  one					   many
+	 * Clazz ----------------------------------- Clazz
+	 *			  superClass		   kidClazzes
+	 *		 </pre>
+	 */
+	public ClazzSet getImplements() {
+		ClazzSet kidClazzes = getEdges(AssociationTypes.EDGE, AssociationTypes.IMPLEMENTS);
+		return kidClazzes;
+	}
+	
 	ClazzSet getEdges(AssociationTypes typ) {
 		return getEdges(typ, null);
 	}

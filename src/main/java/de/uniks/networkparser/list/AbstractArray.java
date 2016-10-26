@@ -1189,7 +1189,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 		int pos = indexOf(key);
 		if (pos >= 0) {
 			if ((flag & MAP) == MAP) {
-				return this.getByIndex(SMALL_VALUE, pos, size);
+				return this.getByIndex(SMALL_VALUE, pos+index, size);
 			}
 			return this.getByIndex(SMALL_KEY, pos, size);
 		}

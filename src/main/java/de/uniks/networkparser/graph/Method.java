@@ -1,6 +1,5 @@
 package de.uniks.networkparser.graph;
 
-import de.uniks.networkparser.EntityUtil;
 /*
 NetworkParser
 The MIT License

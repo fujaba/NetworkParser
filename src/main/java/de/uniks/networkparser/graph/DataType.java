@@ -115,7 +115,7 @@ public class DataType {
 		if ("void int long double String boolean Object".indexOf(internName) >= 0) {
 			return "DataType." + internName.toUpperCase();
 		} else {
-			return "DataType.ref(\"" + internName + "\")";
+			return "DataType.create(\"" + internName + "\")";
 		}
 	}
 }
