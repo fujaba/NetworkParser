@@ -18,7 +18,6 @@ public class TextDiff {
 	private Object left;
 	private Object right;
 	private SimpleList<TextDiff> children;
-	private int pos;
 
 	public TextDiff with(String key, Object left, Object right) {
 		this.left = left;
@@ -42,15 +41,19 @@ public class TextDiff {
 		return this;
 	}
 	
-	public TextDiff replaceChild(String key, Object left, Object right) {
+	public TextDiff replaceChild(TextDiff last, String key, Object left, Object right) {
 		TextDiff lastChild = null;
 		if(this.children != null) {
 			TextDiff child = new TextDiff();
 			child.with(key, left, right);
 			int size = this.children.size();
-			for(int i=this.pos; i<size;i++) {
-				lastChild = this.children.get(this.pos);
-				this.children.remove(this.pos);
+			int pos =0;
+			if(last != null) {
+				pos = this.children.indexOf(last);
+			}
+			for(int i=pos; i<size;i++) {
+				lastChild = this.children.get(pos);
+				this.children.remove(pos);
 				child.withChild(lastChild);
 			}
 			this.children.add(child);
@@ -59,12 +62,11 @@ public class TextDiff {
 	}
 	
 
-	public void save() {
+	public TextDiff getLast() {
 		if(this.children!= null) {
-			this.pos = this.children.size();	
-		}else {
-			this.pos = 0;
+			return this.children.get(this.children.size() - 1);	
 		}
+		return null;
 	}
 	
 	public TextDiff withChild(TextDiff child) {

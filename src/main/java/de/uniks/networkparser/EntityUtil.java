@@ -642,21 +642,21 @@ public class EntityUtil {
 			if(sameElement != null) {
 				sameObject = entityA.getNewList(true);
 			}
-			diffList.save();
+			TextDiff last = diffList.getLast();
 			if(compareEntity(entityA, (Entity)valueB, diffList, sameObject)) {
 				return sameObject;
 			}
-			diffList.replaceChild(key, valueA, valueB);
+			diffList.replaceChild(last, key, valueA, valueB);
 			return null;
 		} else if(valueA instanceof Collection<?> && valueB instanceof Collection<?>) {
 			if(sameElement != null) {
 				sameObject = sameElement.getNewList(false);
 			}
-			diffList.save();
+			TextDiff last = diffList.getLast();
 			if(compareEntity((List<?>)valueA, (List<?>)valueB, diffList, sameObject)) {
 				return sameObject;
 			}
-			diffList.replaceChild(key, valueA, valueB);
+			diffList.replaceChild(last, key, valueA, valueB);
 			return null;
 		}
 		if(valueA != null && valueA.equals(valueB)) {
