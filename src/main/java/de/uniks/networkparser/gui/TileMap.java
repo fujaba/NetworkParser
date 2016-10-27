@@ -40,7 +40,6 @@ public class TileMap implements SendableEntityCreatorTag {
 	public int height;
 	public int tilewidth;
 	public int tileheight;
-	public int tilename;
 	public SimpleKeyValueList<String, SimpleList<TileObject>> objects=new SimpleKeyValueList<String, SimpleList<TileObject>>();
 	
 	public int tileFirstGrid = 1;

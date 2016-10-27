@@ -154,9 +154,11 @@ public class ByteBuffer extends BufferedBuffer {
 			    }
 			}else {
 				Byte[] source = (Byte[])bytes;
-				for(int i = 0; i < len; i++){
-			    	this.buffer[position + i] = source[i];
-			    }
+				if(this.buffer != null && this.buffer.length>=position + len) {
+					for(int i = 0; i < len; i++){
+				    	this.buffer[position + i] = source[i];
+				    }
+				}
 			}
 		}
 		this.length += len;

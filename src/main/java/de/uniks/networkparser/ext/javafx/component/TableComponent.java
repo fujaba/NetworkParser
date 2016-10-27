@@ -662,7 +662,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 	}
 	public void addItemsFromPropertyChange(SendableEntity parentObject, String parentProperty, String itemsProperty) {
 		GenericCreator creator = new GenericCreator(parentObject);
-		if(parentObject.addPropertyChangeListener(parentProperty, new PropertyChangeListener() {
+		parentObject.addPropertyChangeListener(parentProperty, new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
 				if(parentProperty == null) {
@@ -673,7 +673,7 @@ public class TableComponent extends BorderPane implements PropertyChangeListener
 					TableComponent.this.withList(source, itemsProperty);
 				}
 			}
-		}));
+		});
 		Object source = creator.getValue(parentObject, parentProperty);
 		this.withList(source, itemsProperty);
 	}

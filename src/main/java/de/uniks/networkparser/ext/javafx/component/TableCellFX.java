@@ -139,14 +139,15 @@ public class TableCellFX extends TableCell<Object, TableCellValue> implements Ce
 					setStyle(style);
 				}
 			}
-		}else if(empty){
-			Platform.runLater(new Runnable() {
-				@Override
-				public void run() {
-					setText("");
-				}
-			});
 		}
+//		else if(empty){
+//			Platform.runLater(new Runnable() {
+//				@Override
+//				public void run() {
+//					setText("");
+//				}
+//			});
+//		}
 	}
 
 //	public boolean isOnAction() {

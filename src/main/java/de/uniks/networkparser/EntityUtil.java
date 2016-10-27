@@ -525,7 +525,7 @@ public class EntityUtil {
 		return compareEntity(entityA, entityB, new TextDiff(), null);
 	}
 	
-	public static boolean compareEntity(List<?> jsonA, List<?> jsonB) {
+	public static boolean compareEntity(Collection<?> jsonA, Collection<?> jsonB) {
 		return compareEntity(jsonA, jsonB, new TextDiff(), null);
 	}
 	
@@ -653,7 +653,7 @@ public class EntityUtil {
 				sameObject = sameElement.getNewList(false);
 			}
 			TextDiff last = diffList.getLast();
-			if(compareEntity((List<?>)valueA, (List<?>)valueB, diffList, sameObject)) {
+			if(compareEntity((Collection<?>)valueA, (Collection<?>)valueB, diffList, sameObject)) {
 				return sameObject;
 			}
 			diffList.replaceChild(last, key, valueA, valueB);

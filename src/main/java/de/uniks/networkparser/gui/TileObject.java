@@ -13,7 +13,6 @@ public class TileObject implements SendableEntityCreatorTag {
 	public static final String PROPERTY_HEIGHT="height";
 	public static final String PROPERTY_X="x";
 	public static final String PROPERTY_Y="y";
-	public static final String PROPERTY_TYPE="type";
 	public String id;
 	public String name;
 	public int gid;

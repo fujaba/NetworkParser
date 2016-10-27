@@ -350,9 +350,10 @@ public class XMLTokener extends Tokener {
 						tokener.skipEntity();
 						return entity;
 					}
+					
 					String childTag = stack.getCurrentTag();
 					child = parse(tokener, map);
-					if (child != null) {
+					if(childTag != null && child != null) {
 						creator.setValue(entity, childTag, child, CHILDREN);
 					}
 				} while (child != null);

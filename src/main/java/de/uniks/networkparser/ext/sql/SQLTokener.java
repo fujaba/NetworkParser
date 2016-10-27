@@ -366,7 +366,7 @@ public class SQLTokener extends Tokener {
 					if (values.getIds().contains(primaryKey) == false) {
 						if (statement.isAutoStatement()) {
 							statement.withEnable(false);
-						} else {
+						} else if(primaryKey != null) {
 							values.addId(primaryKey);
 							values.addDeletedId(primaryKey);
 						}

@@ -20,6 +20,10 @@ public class SimpleController implements StageEvent {
 		this.stage = stage;
 	}
 	
+	public Stage getStage() {
+		return stage;
+	}
+	
 	public void init(Object model) {
 		if(model != null ) {
 			try {
