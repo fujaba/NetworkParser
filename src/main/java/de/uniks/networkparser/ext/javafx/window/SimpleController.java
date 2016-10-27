@@ -6,7 +6,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 public class SimpleController implements StageEvent {
-	protected FXStageController controller;
+	private FXStageController controller;
 	protected Stage stage;
 	
 	@Override
@@ -35,5 +35,9 @@ public class SimpleController implements StageEvent {
 			} catch (IllegalArgumentException e) {
 			}
 		}
+	}
+
+	public FXStageController getController() {
+		return controller;
 	}
 }

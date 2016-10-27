@@ -149,9 +149,11 @@ public class ByteBuffer extends BufferedBuffer {
 		} else {
 			if(bytes instanceof byte[]) {
 				byte[] source = (byte[])bytes;
-			    for(int i = 0; i < len; i++){
-			    	this.buffer[position + i] = source[i];
-			    }
+				if(this.buffer != null && this.buffer.length>=position + len) {
+				    for(int i = 0; i < len; i++){
+				    	this.buffer[position + i] = source[i];
+				    }
+				}
 			}else {
 				Byte[] source = (Byte[])bytes;
 				if(this.buffer != null && this.buffer.length>=position + len) {

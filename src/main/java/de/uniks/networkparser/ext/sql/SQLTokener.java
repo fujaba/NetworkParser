@@ -353,10 +353,12 @@ public class SQLTokener extends Tokener {
 				} else {
 					values.mayBeStatements.add(statement);
 					if (statement.isAutoStatement() && values.getIds().contains(statement.getPrimaryId()) == false) {
-						statement.withCommand(SQLCommand.INSERT);
-						statement.withoutCondition(ID);
-						statement.with(ID, primaryKey);
-						values.addId(primaryKey);
+						if(primaryKey != null) {
+							statement.withCommand(SQLCommand.INSERT);
+							statement.withoutCondition(ID);
+							statement.with(ID, primaryKey);
+							values.addId(primaryKey);
+						}
 					}
 				}
 				continue;

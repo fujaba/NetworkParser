@@ -24,7 +24,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import de.uniks.networkparser.buffer.ByteBuffer;

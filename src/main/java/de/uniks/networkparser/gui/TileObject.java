@@ -20,7 +20,6 @@ public class TileObject implements SendableEntityCreatorTag {
 	public int y;
 	public int width;
 	public int height;
-	public String type;
 
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
