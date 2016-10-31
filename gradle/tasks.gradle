@@ -10,6 +10,7 @@ ext.sharedManifest = manifest {
 			'Specification-Title': 'Networkparser',
 			'Built-Time': gitVersion.buildTime,
 			'Created-By': gitVersion.major+"."+gitVersion.minor+"."+gitVersion.revision+" "+System.properties['user.name'],
+			'Build': "${System.properties['BUILD_NUMBER']}",
 			'Built-By': "${System.properties['user.name']}",
 			'Location': "${System.properties['user.language']}",
 			'Version': gitVersion.revision,
