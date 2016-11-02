@@ -7,31 +7,29 @@ group = 'de.uniks'
 import java.text.SimpleDateFormat
 
 ext{
-	if(project.hasProperty('buildAnt')) {
-		try{
-			buildAntCompile.execute()
-			buildAnt.execute()
-			project.ext.Revisionnumber = Integer.parseInt(ant.Revisionnumber)
-			if (project.hasProperty("branch")) {
-				project.ext.Branchname = ant.Branchname + " " + project.get("branch")
-			}else {
-				project.ext.Branchname = ant.Branchname
-			}
-			project.ext.LastCommit = ant.LastCommit
-			project.ext.GitTag = Integer.parseInt(ant.GitTag)
-		}catch(Exception e) {
-			println e
-			project.ext.Revisionnumber = revisionNumber()
-			if (project.hasProperty("branch")) {
-				project.ext.Branchname = project.get("branch")
-			} else {
-				project.ext.Branchname = ""
-			}
-			project.ext.LastCommit = ""
-			project.ext.GitTag = 0
+	try{
+	throw new Exception()
+		buildAntCompile.execute()
+		buildAnt.execute()
+		project.ext.Revisionnumber = Integer.parseInt(ant.Revisionnumber)
+		if (project.hasProperty("branch")) {
+			project.ext.Branchname = ant.Branchname + " " + project.get("branch")
+		}else {
+			project.ext.Branchname = ant.Branchname
 		}
+		project.ext.LastCommit = ant.LastCommit
+		project.ext.GitTag = Integer.parseInt(ant.GitTag)
+	}catch(Exception e) {
+		println e
+		project.ext.Revisionnumber = revisionNumber()
+		if (project.hasProperty("branch")) {
+			project.ext.Branchname = project.get("branch")
+		} else {
+			project.ext.Branchname = ""
+		}
+		project.ext.LastCommit = getGitLastCommit()
+		project.ext.GitTag = getGitTag()
 	}
-
 	gitVersion = new GITVersion(major: majorNumber,minor: ext.GitTag, revision: ext.Revisionnumber, hash: ext.LastCommit, buildTime: buildTime(), branch: ext.Branchname, latest: project.hasProperty('latest'))
 }
 version = gitVersion
@@ -112,6 +110,26 @@ def executeCommand(String[] args) {
 		} catch (Exception ex){}
 	}
 	result
+}
+def getGitTag() {
+	def gittag=0
+	def test = [0]
+	executeCommand("git", "tag").eachLine {
+		try {
+			test << (it.trim() as int)
+		} catch (Exception ex) {
+			// no problem as long as there's another tag with a number
+		}
+	}
+	gittag = test.max()
+	gittag
+}
+def getGitLastCommit() {
+	def gittag=""
+	executeCommand("git", "log", "--pretty=format:\"%H\"", "-1").eachLine {
+		gittag = it.trim()
+	}
+	gittag
 }
 
 def revisionNumber() {
