@@ -19,7 +19,7 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: "com.github.kt3k.coveralls"
 apply from: 'gradle/mavencentral.gradle'
-apply from: 'gradle/artifactory.gradle'
+//apply from: 'gradle/artifactory.gradle'
 
 idea {
 	project {
