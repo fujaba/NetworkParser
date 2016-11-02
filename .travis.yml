@@ -22,6 +22,6 @@ before_script:
   - sudo service cassandra stop || true
   - sudo service rsync stop || true
   - sudo service x11-common stop || true
-  - unzip -P $SIGNITURE_PASSWORD signiture.zip -d .
+  - unzip -P $SIGNITURE_PASSWORD signiture.zip
 before_install: chmod +x gradlew
-after_success: ./gradlew jacocoTestReport coveralls
+after_success: ./gradlew build uploadArchives jacocoTestReport coveralls
