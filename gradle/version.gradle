@@ -8,7 +8,6 @@ import java.text.SimpleDateFormat
 
 ext{
 	try{
-	throw new Exception()
 		buildAntCompile.execute()
 		buildAnt.execute()
 		project.ext.Revisionnumber = Integer.parseInt(ant.Revisionnumber)

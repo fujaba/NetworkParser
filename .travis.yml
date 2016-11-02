@@ -1,6 +1,8 @@
 language: java
 jdk: oraclejdk8
 
+git:
+  depth: 42000
 addons:
   coverity_scan:
     project:
@@ -24,4 +26,10 @@ before_script:
   - sudo service x11-common stop || true
   - unzip -P $SIGNITURE_PASSWORD signiture.zip
 before_install: chmod +x gradlew
-after_success: ./gradlew build uploadArchives jacocoTestReport coveralls
+# safelist
+branches:
+  only:
+  - master
+  - develop
+
+after_success: ./gradlew printVersion build uploadArchives jacocoTestReport coveralls
