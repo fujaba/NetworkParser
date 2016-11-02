@@ -20,9 +20,8 @@ before_script:
   - sudo service mongodb stop || true
   - sudo service neo4j stop || true
   - sudo service cassandra stop || true
-  - sudo service riak stop || true
   - sudo service rsync stop || true
   - sudo service x11-common stop || true
-  - unzip -P {{SIGNITURE_PASSWORD}} signiture.zip -d .
+  - unzip -P $SIGNITURE_PASSWORD signiture.zip -d .
 before_install: chmod +x gradlew
 after_success: ./gradlew jacocoTestReport coveralls
