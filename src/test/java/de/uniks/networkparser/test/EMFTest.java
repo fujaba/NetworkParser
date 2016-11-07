@@ -30,6 +30,8 @@ public class EMFTest extends IOClasses{
 		Object model = new IdMap().decodeEMF(value.toString());
 		GraphList list = (GraphList) model;
 		Assert.assertEquals(9, list.getClazzes().size());
+		Clazz segment = list.getClazzes().get(0);
+		System.out.println(segment.toString());
 		Assert.assertEquals("[Segment|length:int]-^[TrackElement],[TrackElement]-^[RailwayElement|id:int],[TrackElement]^-[Switch|currentPosition:Position],[TrackElement]->[Sensor],[TrackElement]<-[TrackElement],[Switch]->[SwitchPosition|position:Position],[Route]-^[RailwayElement],[Route]->[Semaphore|signal:Signal],[Route]->[SwitchPosition],[Route]->[Semaphore],[Route]->[Sensor],[Route]<-[RailwayContainer],[Semaphore]-^[RailwayElement],[Semaphore]<-[RailwayContainer],[SwitchPosition]-^[RailwayElement],[RailwayElement]^-[Sensor],[RailwayElement]<-[RailwayContainer]", model.toString());
 	}
 
@@ -61,7 +63,7 @@ public class EMFTest extends IOClasses{
 		uni.withBidirectional(student, "student", Cardinality.MANY, "university", Cardinality.ONE);
 		XMLEntity item = (XMLEntity) map.encode(list, new EMFTokener());
 
-		XMLEntity root =(XMLEntity) item.getChildren().first();
+		XMLEntity root =(XMLEntity) item.getChild(0);
 		StringBuilder sb=new StringBuilder();
 		sb.append("<ecore:EPackage xmi:version=\"2.0\" xmlns:xmi=\"http://www.omg.org/XMI\" xmlns:ecore=\"http://www.eclipse.org/emf/2002/Ecore\" name=\"model\" nsURI=\"http:///model.ecore\" nsPrefix=\"model\">"+
 				"<eClassifiers xsi:type=\"ecore:EClass\" name=\"University\">"+

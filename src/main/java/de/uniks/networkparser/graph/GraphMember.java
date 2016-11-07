@@ -71,6 +71,16 @@ public abstract class GraphMember {
 		}
 		return collection;
 	}
+	
+	public int size() {
+		if(this.children == null) {
+			return 0;
+		}
+		if(this.children instanceof GraphSimpleSet) {
+			return ((GraphSimpleSet)this.children).size();
+		}
+		return 1;
+	}
 
 	SimpleSet<GraphEntity> getNodes() {
 		SimpleSet<GraphEntity> collection = new SimpleSet<GraphEntity>();

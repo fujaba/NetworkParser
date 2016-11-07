@@ -192,10 +192,12 @@ public class JsonTokener extends Tokener {
 				parent.put(IdMap.VALUE, xmlEntity.getValue());
 			}
 
-			for (int i = 0; i < xmlEntity.size(); i++) {
+			int i;
+			for (i = 0; i < xmlEntity.size(); i++) {
 				parseEntityProp(props, xmlEntity.getValueByIndex(i), xmlEntity.getKeyByIndex(i));
 			}
-			for (EntityList child : xmlEntity.getChildren()) {
+			for (i = 0; i < xmlEntity.size(); i++) {
+				EntityList child = xmlEntity.getChild(i);
 				if(child  instanceof XMLEntity == false) {
 					continue;
 				}
@@ -224,11 +226,13 @@ public class JsonTokener extends Tokener {
 				parent.put(IdMap.VALUE, xmlEntity.getValue());
 			}
 
-			for (int i = 0; i < xmlEntity.size(); i++) {
+			int i;
+			for (i = 0; i < xmlEntity.size(); i++) {
 				parseEntityProp(props, xmlEntity.getValueByIndex(i), xmlEntity.getKeyByIndex(i));
 			}
 
-			for (EntityList child : xmlEntity.getChildren()) {
+			for (i = 0; i < xmlEntity.size(); i++) {
+				EntityList child = xmlEntity.getChild(i);
 				if(child  instanceof XMLEntity == false) {
 					continue;
 				}

@@ -742,7 +742,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		tokener.withMap(this);
 		map.withFlag(flag);
 		tokener.withBuffer(value);
-		return tokener.decode(map, root);
+ 		return tokener.decode(map, root);
 	}
 	/**
 	 * Decode.

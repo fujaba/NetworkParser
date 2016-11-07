@@ -234,7 +234,7 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 
 	public Object getValue(Object key) {
 		if(PROPERTY_KEY.equals(key)) {
-			return key;
+			return this.key;
 		}
 		if(PROPERTY_VALUE.equals(key)) {
 			return value;
@@ -248,5 +248,13 @@ public class SimpleEntity<K, V> implements BaseItem, Entry<K, V>,
 			return null;
 		}
 		return converter.encode(this);
+	}
+	
+	@Override
+	public int size() {
+		if(key != null) {
+			return 1;
+		}
+		return 0;
 	}
 }

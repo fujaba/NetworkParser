@@ -181,4 +181,12 @@ public class SoapObject implements BaseItem, SendableEntityCreatorTag {
 	public String getTag() {
 		return nameSpace + ":Envelope";
 	}
+
+	@Override
+	public int size() {
+		if(this.children == null) {
+			return 0;
+		}
+		return children.sizeChildren();
+	}
 }

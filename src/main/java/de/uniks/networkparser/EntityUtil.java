@@ -31,6 +31,7 @@ import de.uniks.networkparser.bytes.ByteTokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.Entity;
+import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.AbstractArray;
 import de.uniks.networkparser.list.AbstractList;
@@ -590,14 +591,35 @@ public class EntityUtil {
 					compareValue(key, valueA, valueB, diffList, sameObject);
 				}
 			}
-			boolean isSame = elementA.size()<1 && elementB.size()<1;
-			if(entityA instanceof XMLEntity && entityB instanceof XMLEntity) {
-				XMLEntity xmlA = (XMLEntity) entityA;
-				XMLEntity xmlB = (XMLEntity) entityB;
-				compareEntity(xmlA.getChildren(), xmlB.getChildren());
-				isSame = isSame && xmlA.getTag().equals(xmlB.getTag());
+			if(elementA.size()>0 || elementB.size()>0) {
+				return false;
 			}
-			return isSame;
+			if(entityA instanceof EntityList && entityB instanceof EntityList) {
+				EntityList xmlA = (EntityList) entityA;
+				EntityList xmlB = (EntityList) entityB;
+				if(xmlA.sizeChildren()!=xmlB.sizeChildren()) {
+					return false;
+				}
+				if(xmlA.sizeChildren()<1) {
+					if(entityA instanceof XMLEntity && entityB instanceof XMLEntity) {
+						return ((XMLEntity)xmlA).getTag().equals(((XMLEntity)xmlB).getTag());
+					}
+					return true;
+				}
+				SimpleList<EntityList> childrenA = new SimpleList<EntityList>();
+				SimpleList<EntityList> childrenB = new SimpleList<EntityList>();
+				for(int i=0;i<xmlA.sizeChildren();i++) {
+					childrenA.add(xmlA.getChild(i));
+					childrenB.add(xmlB.getChild(i));
+				}
+				if(compareEntity(childrenA, childrenB) == false) {
+					return false;
+				}
+				if(entityA instanceof XMLEntity && entityB instanceof XMLEntity) {
+					return ((XMLEntity)xmlA).getTag().equals(((XMLEntity)xmlB).getTag());
+				}
+			}
+			return true;
 		}
 		if(entityA instanceof Collection<?> && entityB instanceof Collection<?>) { 
 			Collection<?> colectionA = (Collection<?>) entityA;
@@ -916,6 +938,22 @@ public class EntityUtil {
 		}
 		return 0;
 	}
+	
+
+	/**
+	 * Convert String to ByteArray
+	 * @param string The String
+	 * @return the ByteArray
+	 */
+	public static byte[] getBytes(CharSequence string) {
+		int size = string.length();
+		byte[] bytes = new byte[size];
+		for (int i = 0; i < size;i++) {
+			bytes[i] = (byte) string.charAt(i);
+		}
+		return bytes;
+	}
+	
 
 	public static ByteBuffer getBuffer(int len) {
 		if (len < 1) {

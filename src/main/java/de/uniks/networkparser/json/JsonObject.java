@@ -344,17 +344,17 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 	}
 
 	@Override
-	public BaseItem getChild(String label, boolean recursiv) {
-		if(label == null || this.size() < 1) {
+	public Entity getElementBy(String key, String value) {
+		if(value == null || this.size() < 1) {
 			return null;
 		}
-		Object item = this.get(label);
+		Object item = this.get(value);
 		JsonObject child;
 		if(item instanceof JsonObject) {
 			child = (JsonObject) item;
 		}else {
 			child = new JsonObject();
-			this.put(label, child);
+			this.put(value, child);
 		}
 		return child;
 	}

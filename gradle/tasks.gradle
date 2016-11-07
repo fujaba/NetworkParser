@@ -22,6 +22,7 @@ ext.sharedManifest = manifest {
 			'Bundle-Description': 'NetworkParser',
 			'Licence': 'MIT and Apache License',
 			'Homepage': 'https://github.com/fujaba/Networkparser',
+			'scm': 'git@github.com/fujaba/Networkparser.git',
 			'Coverage': gitVersion.coverage,
 			'Bundle-ClassPath': '.'
 }

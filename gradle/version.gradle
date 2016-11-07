@@ -1,9 +1,3 @@
-// MAJOR VERSION - Manually set
-//----------------------
-def majorNumber = 4
-group = 'de.uniks'
-//----------------------
-
 import java.text.SimpleDateFormat
 
 ext{
@@ -29,7 +23,7 @@ ext{
 		project.ext.LastCommit = getGitLastCommit()
 		project.ext.GitTag = getGitTag()
 	}
-	gitVersion = new GITVersion(major: majorNumber,minor: ext.GitTag, revision: ext.Revisionnumber, hash: ext.LastCommit, buildTime: buildTime(), branch: ext.Branchname, latest: project.hasProperty('latest'))
+	gitVersion = new GITVersion(major: ext.majorNumber,minor: ext.GitTag, revision: ext.Revisionnumber, hash: ext.LastCommit, buildTime: buildTime(), branch: ext.Branchname, latest: project.hasProperty('latest'))
 }
 version = gitVersion
 task printVersion {

@@ -66,13 +66,11 @@ public class ExcelParser {
 		}
 
 		if (sheet != null) {
-			EntityList mergeCells = sheet.getChild("mergeCells", true);
+			EntityList mergeCells = sheet.getElementsBy(XMLEntity.PROPERTY_TAG,  "mergeCells");
 			// <mergeCells count="1"><mergeCell ref="A2:A3"/></mergeCells>
 			if (mergeCells != null) {
-				for (EntityList mergeCell : mergeCells.getChildren()) {
-					if(mergeCell instanceof Entity == false) {
-						continue;
-					}
+				for(int i=0;i<mergeCells.sizeChildren();i++) {
+					EntityList mergeCell = mergeCells.getChild(i);
 					SimpleList<Pos> excelRange = EntityUtil.getExcelRange(((Entity) mergeCell).getString(REF));
 					for (Pos item : excelRange) {
 						if (item == null || item.x < 0 || item.y < 0) {
@@ -82,10 +80,11 @@ public class ExcelParser {
 					}
 				}
 			}
-			EntityList sheetData = sheet.getChild("sheetData", true);
+			EntityList sheetData = sheet.getElementsBy(XMLEntity.PROPERTY_TAG,  "sheetData");
 			if (sheetData != null) {
 //				if (rows != null && rows instanceof XMLEntity) {
-					for (EntityList child : sheetData.getChildren()) {
+					for(int i=0;i<sheetData.sizeChildren();i++) {
+						EntityList child = mergeCells.getChild(i);
 						if (child == null || child instanceof XMLEntity == false ) {
 							continue;
 						}
@@ -95,7 +94,8 @@ public class ExcelParser {
 						}
 						ExcelRow dataRow = new ExcelRow();
 						// <c r="A1" t="s"><v>2</v></c>
-						for (EntityList item : row.getChildren()) {
+						for(int c=0;c<row.size();c++) {
+							EntityList item = row.getChild(c); 
 							if (item == null || item instanceof ExcelCell == false) {
 								continue;
 							}
@@ -106,13 +106,13 @@ public class ExcelParser {
 							ExcelCell excelCell = (ExcelCell) cell;
 							if (CELL_TYPE_REFERENCE.equalsIgnoreCase(excelCell.getType())) {
 								// <v>2</v>
-								String ref = ((XMLEntity)cell.getChildren().first()).getValue();
+								String ref = ((XMLEntity)cell.getChild(0)).getValue();
 								if (sharedStrings != null) {
-									XMLEntity refString = (XMLEntity) sharedStrings.getChildren().get(Integer.valueOf(ref));
-									String text = ((XMLEntity)refString.getChildren().first()).getValue();
+									XMLEntity refString = (XMLEntity) sharedStrings.getChild(Integer.valueOf(ref));
+									String text = ((XMLEntity)refString.getChild(0)).getValue();
 									excelCell.setContent(text);
 								}
-							} else if (excelCell.getChildren() == null) {
+							} else if (excelCell.sizeChildren()<1) {
 								String pos = mergeCellPos.get(excelCell.getReferenz().toString());
 								if (pos != null && cells.contains(pos)) {
 									ExcelCell firstCell = cells.get(pos);

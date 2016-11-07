@@ -73,8 +73,8 @@ public class SoapTest {
 
 		Assert.assertNull(creator.getValue(soapAnswer, "blub"));
 
-		EntityList entity = soapAnswer.getBody().getChildren().get(0).getChildren().get(0);
-		Assert.assertEquals(25, ((XMLEntity)entity).getChildren().size() );
+		EntityList entity = soapAnswer.getBody().getChild(0).getChild(0);
+		Assert.assertEquals(25, entity.sizeChildren() );
 
  		XMLEntity xmlEntity = map.toXMLEntity(soapAnswer);
 		Assert.assertEquals(1, xmlEntity.size());

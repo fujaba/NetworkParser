@@ -258,8 +258,8 @@ public class TileMap implements SendableEntityCreatorTag {
 		if(TILESET_LAYER.equalsIgnoreCase(attribute) ) {
 			// Complex Child Layer
 			XMLEntity layer = (XMLEntity) value;
-			if(layer.getChildrenCount()==1) {
-				XMLEntity data = (XMLEntity) layer.getChildren().first();
+			if(layer.sizeChildren()==1) {
+				XMLEntity data = (XMLEntity) layer.getChild(0);
 				if("csv".equals(data.get(ENCODING))) {
 					String text = data.getValue();
 					int i=0;
@@ -293,7 +293,8 @@ public class TileMap implements SendableEntityCreatorTag {
 				objects = new SimpleList<TileObject>();
 				this.objects.put(tag, objects);
 			}
-			for(EntityList item : objectGroup.getChildren()) {
+			for(int i=0;i<objectGroup.size();i++) {
+				EntityList item = objectGroup.getChild(i);
 				objects.add(TileObject.create((Entity)item));
 			}
 			return true;

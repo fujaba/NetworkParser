@@ -11,6 +11,7 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.MapEntityStack;
+import de.uniks.networkparser.xml.XMLEntity;
 /*
 NetworkParser
 The MIT License
@@ -307,10 +308,15 @@ public class MapEntity extends SimpleList<Object>{
 			String label = property.substring(1, pos);
 			property.trimStart(label.length()+1);
 			if (child instanceof Entity) {
-				BaseItem newItem = ((Entity)child).getChild(label, false);
+				BaseItem newItem = ((Entity)child).getElementBy(XMLEntity.PROPERTY_TAG, label);
 				if(newItem == null) {
-					newItem =child.getNewList(true);
-					((Entity) child).put(label, newItem);
+					newItem = child.getNewList(true);
+					if(newItem instanceof XMLEntity) {
+						((XMLEntity) newItem).setType(label);
+						child.with(newItem);
+					} else {
+						((Entity) child).put(label, newItem);
+					}
 				}
 				child = newItem;
 			}

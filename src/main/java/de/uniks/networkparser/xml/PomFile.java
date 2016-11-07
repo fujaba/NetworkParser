@@ -28,6 +28,7 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
+import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.list.SimpleList;
@@ -270,7 +271,7 @@ public class PomFile implements SendableEntityCreatorTag, BaseItem{
 		} else {
 			property = value;
 		}
-		EntityList child = xmlEntity.getChild(property, false);
+		Entity child = xmlEntity.getElementBy(XMLEntity.PROPERTY_TAG, property);
 		if(child != null) {
 			if(isValue) {
 				String newValue = ((XMLEntity) child).getValue();
@@ -289,16 +290,21 @@ public class PomFile implements SendableEntityCreatorTag, BaseItem{
 	public PomFile withValue(XMLEntity xmlEntity) {
 		for(String property : getProperties()) {
 			Object child = getChild(xmlEntity, property);
-			if(PROPERTY_DEPENDENCIES.equals(property)) {
+			if(PROPERTY_DEPENDENCIES.equals(property) && child != null) {
 				// Parse Dependency
 				XMLEntity children = (XMLEntity) child;
-				for(EntityList dependency : children.getChildren()) {
+				for(int i=0;i<children.size();i++) {
+					EntityList dependency = children.getChild(i); 
 					PomFile pomDependency = new PomFile().withValue((XMLEntity)dependency);
 					this.dependencies.add(pomDependency);
 				}
 			}
 		}
 		return this;
+	}
+	
+	public int size() {
+		return this.dependencies.size();
 	}
 
 	public SimpleList<PomFile> getDependencies() {

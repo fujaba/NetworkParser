@@ -24,6 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.util.Iterator;
+
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.Buffer;
@@ -31,7 +32,6 @@ import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.EntityList;
-import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SortedList;
 /**
  * A JSONArray is an ordered sequence of values. Its external text form is a
@@ -95,6 +95,11 @@ public class JsonArray extends SortedList<Object> implements EntityList {
          returnValue.add(object);
       }
       return returnValue;
+	}
+	
+	@Override
+	public int sizeChildren() {
+		return super.size();
 	}
 
 	/**
@@ -298,15 +303,16 @@ public class JsonArray extends SortedList<Object> implements EntityList {
 	public JsonArray subList(int fromIndex, int toIndex) {
 		return (JsonArray) super.subList(fromIndex, toIndex);
 	}
-
+	
 	@Override
-	public SimpleList<EntityList> getChildren() {
-		SimpleList<EntityList> items = new SimpleList<EntityList>();
-		for(Object item : this) {
-			if(item instanceof EntityList) {
-				items.add((EntityList)item);
-			}
+	public EntityList getChild(int index) {
+		if(index < 0 || index > this.size()) {
+			return null;
 		}
-		return items;
+		Object item = this.get(index);
+		if(item instanceof EntityList) {
+			return (EntityList) item;
+		}
+		return null;
 	}
 }

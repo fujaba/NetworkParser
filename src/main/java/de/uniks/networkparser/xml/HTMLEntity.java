@@ -158,7 +158,8 @@ public class HTMLEntity implements BaseItem {
 
 	public HTMLEntity addStyle(String name, String style) {
 		XMLEntity styleElement = null;
-		for(EntityList child : header.getChildren()) {
+		for(int i=0;i<header.size();i++) {
+			EntityList child = header.getChild(i);
 			if(child instanceof XMLEntity == false) {
 				continue;
 			}
@@ -218,5 +219,9 @@ public class HTMLEntity implements BaseItem {
 			return parseItem((EntityStringConverter)converter);
 		}
 		return converter.encode(this);
+	}
+	@Override
+	public int size() {
+		return body.size();
 	}
 }

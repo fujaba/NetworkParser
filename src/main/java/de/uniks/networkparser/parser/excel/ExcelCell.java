@@ -223,14 +223,24 @@ public class ExcelCell implements SendableEntityCreatorTag, EntityList{
 	public BaseItem getNewList(boolean keyValue) {
 		return new ExcelCell();
 	}
-
-	@Override
-	public SimpleList<EntityList> getChildren() {
-		return this.children;
+	
+	/**
+	 * Gets the children.
+	 * @param index the Index of Child
+	 * @return the children
+	 */
+	public EntityList getChild(int index) {
+		if (this.children == null || index < 0 || index > this.children.size()) {
+			return null;
+		}
+		return this.children.get(index);
+	}
+	
+	public int size() {
+		return sizeChildren();
 	}
 
-	@Override
-	public int size() {
+	public int sizeChildren() {
 		if(this.children == null) {
 			return 0;
 		}
