@@ -50,6 +50,7 @@ public class JsonTokener extends Tokener {
 	public static final String PROPS = "prop";
 
 	public final static String STOPCHARS = ",]}/\\\"[{;=# ";
+	public static final char COMMENT='#';
 
 	public static final char STARTARRAY='[';
 	public static final char ENDARRAY=']';
@@ -154,6 +155,19 @@ public class JsonTokener extends Tokener {
 				skip();
 				isQuote = false;
 				continue;
+			case COMMENT:
+				skip();
+				skipTo(BaseItem.CRLF, false, false);
+				continue;
+			case '/':
+				c = nextClean(false);
+				if('/' == c) {
+					skipTo(BaseItem.CRLF, false, false);
+					continue;
+				} else if('*' == c) {
+					skipTo("*/", true, false);
+					continue;
+				}
 			case ENDENTITY:
 				skip();
 				return;
