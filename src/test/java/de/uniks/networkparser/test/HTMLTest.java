@@ -50,10 +50,14 @@ public class HTMLTest {
 		sb.append("</div>");
 		HTMLEntity entity = new HTMLEntity().with(sb.toString());
 		XMLEntity list = entity.getElementsBy(EntityUtil.CLASS, "#mp-itn b a");
-		Assert.assertEquals(2, list.size());
-		for(int i=0;i<list.size();i++) {
+		Assert.assertEquals(2, list.sizeChildren());
+		for(int i=0;i<list.sizeChildren();i++) {
 			EntityList child = list.getChild(i);
-			System.out.println(child);
+			if(i==0) {
+				Assert.assertEquals("<a href=\"/wiki/2016_Kaikoura_earthquake\" title=\"2016 Kaikoura earthquake\">An earthquake</a>", child.toString());
+			} else {
+				Assert.assertEquals("<a href=\"/wiki/Leonard_Cohen\" title=\"Leonard Cohen\">Leonard Cohen</a>", child.toString());
+			}
 		}
 	}
 

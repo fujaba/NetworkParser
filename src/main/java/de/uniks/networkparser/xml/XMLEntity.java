@@ -63,7 +63,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	}
 
 	/**
-	 * Instantiates a new xML entity.
+	 * Instantiates a new XMLEntity.
 	 *
 	 * @param value	the tag
 	 * @return 		Itself
@@ -183,6 +183,32 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	 * @return the value
 	 */
 	public String getValue() {
+		if(this.valueItem == null && this.sizeChildren()>0 ) {
+			// Complex children
+			boolean show=false;
+			for(int i=0;i<this.children.size();i++) {
+				EntityList item = this.children.get(i);
+				if(item instanceof XMLEntity) {
+					if(((XMLEntity)item).getTag() == null) {
+						show = true;
+						break;
+					}
+				}
+			}
+			if(show) {
+				CharacterBuffer buffer=new CharacterBuffer();
+				String value = null;
+				for(int i=0;i<this.children.size();i++) {
+					EntityList item = this.children.get(i);
+					if(value != null && value.endsWith(">")) {
+						buffer.with(' ');
+					}
+					value = item.toString();
+					buffer.with(value);
+				}
+				return buffer.toString();
+			}
+		}
 		return this.valueItem;
 	}
 
@@ -405,8 +431,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 				}
 			}
 			if(value.length()==1) {
-				children.with(this);
-				return children;
+				return this;
 			}
 		}
 		if(this.children == null) {
@@ -425,6 +450,10 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 			if(value.equalsIgnoreCase(item.getString(key))) {
 				children.with(item);
 			}
+		}
+		if(children.sizeChildren()==1) {
+			// to level the result graph
+			return children.getChild(0);
 		}
 		return children;
 	}

@@ -137,9 +137,20 @@ public class XMLTokener extends Tokener {
 					return;
 				}
 				if (c != ITEMSTART) {
-					CharacterBuffer value = nextValue(xmlEntity, '<');
-					xmlEntity.withValue(value.toString());
-					continue;
+					CharacterBuffer item = new CharacterBuffer();
+					nextString(item, false, false, '<');
+					char currentChar = getCurrentChar();
+					char nextChar = nextClean(false);
+					if(nextChar !='/' ) {
+						// May be another child so it is possible text node text
+						XMLEntity newChild=new XMLEntity();
+						newChild.withValue(item.toString());
+						xmlEntity.withChild(newChild);
+					}else {
+						xmlEntity.withValue(item.toString());
+					}
+					buffer.withLookAHead(""+currentChar+nextChar);
+					c = currentChar;
 				}
 			}
 
@@ -166,49 +177,24 @@ public class XMLTokener extends Tokener {
 				skip();
 				break;
 			} else {
-				String key = nextValue(xmlEntity, false, true, c).toString();
-				if (key.length() > 0) {
-					xmlEntity.put(key,
-							nextValue(xmlEntity, isAllowQuote, true, nextClean(false)));
-				}
-			}
-		}
-	}
-	
-	private CharacterBuffer nextValue(XMLEntity xmlEntity, char stopChar){
-		CharacterBuffer buffer = new CharacterBuffer();
-		String tag = xmlEntity.getTag();
-		while(getCurrentChar()!=stopChar) {
-			nextString(buffer, false, false, '<');
-			char currentChar = getCurrentChar();
-			char nextChar = nextClean(false);
-			if(nextChar!='/') {
-				buffer.with(currentChar);
-			}else {
-				skip();
-				int z=0;
-				CharacterBuffer test=new CharacterBuffer().withStartPosition(2);
-				while(z<tag.length() && this.buffer.getCurrentChar() == tag.charAt(z)) {
-					test.with(this.buffer.getCurrentChar());
-					z++;
-					if(z<tag.length()) {
-						this.buffer.skip();
+				if(xmlEntity.sizeChildren()<1) {
+					// Normal key Value
+					String key = nextValue(xmlEntity, false, true, c).toString();
+					if (key.length() > 0) {
+						xmlEntity.put(key,
+								nextValue(xmlEntity, isAllowQuote, true, nextClean(false)));
 					}
-				}
-				if(z==tag.length()) {
-					test.withStart(nextChar);
-					test.withStart(currentChar);
-					withLookAHead(test.toString());
-					break;
-				}
-				buffer.with(currentChar);
-				buffer.with(nextChar);
-				if(test.length()>0) {
-					buffer.with(test.toString());
+				} else {
+					// Just a Child
+					CharacterBuffer item = new CharacterBuffer();
+					nextString(item, false, false, '<');
+					// May be another child so it is possible text node text
+					XMLEntity newChild=new XMLEntity();
+					newChild.withValue(item.toString());
+					xmlEntity.withChild(newChild);
 				}
 			}
 		}
-		return buffer;
 	}
 
 	/**	Skip the Current Entity to &gt;. */
