@@ -144,7 +144,7 @@ public interface BufferItem {
 	 * @param stopWords may be at Simple Space
 	 * @return The next Token
 	 */
-	public CharacterBuffer nextToken(String stopWords);
+	public CharacterBuffer nextToken(char... stopWords);
 
 	/**
 	 * Skip.

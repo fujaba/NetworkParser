@@ -40,6 +40,7 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.XMLEntity;
 
 public class EntityUtil {
+	public static final String CLASS="class";
 	private static final String HEXVAL = "0123456789abcdef";
 	public static final String NON_FILE_CHARSSIMPLE = "[\\\\/\\:\\;\\*\\?\"<>\\|!&', \u001F\u0084\u0093\u0094\u0096\u2013\u201E\u201C\u03B1 ]";
 

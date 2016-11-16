@@ -31,7 +31,7 @@ public class EMFTest extends IOClasses{
 		GraphList list = (GraphList) model;
 		Assert.assertEquals(9, list.getClazzes().size());
 		Clazz segment = list.getClazzes().get(0);
-		System.out.println(segment.toString());
+		Assert.assertEquals("Segment", segment.toString());
 		Assert.assertEquals("[Segment|length:int]-^[TrackElement],[TrackElement]-^[RailwayElement|id:int],[TrackElement]^-[Switch|currentPosition:Position],[TrackElement]->[Sensor],[TrackElement]<-[TrackElement],[Switch]->[SwitchPosition|position:Position],[Route]-^[RailwayElement],[Route]->[Semaphore|signal:Signal],[Route]->[SwitchPosition],[Route]->[Semaphore],[Route]->[Sensor],[Route]<-[RailwayContainer],[Semaphore]-^[RailwayElement],[Semaphore]<-[RailwayContainer],[SwitchPosition]-^[RailwayElement],[RailwayElement]^-[Sensor],[RailwayElement]<-[RailwayContainer]", model.toString());
 	}
 

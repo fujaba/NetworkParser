@@ -28,6 +28,7 @@ import de.uniks.networkparser.converter.GraphConverter;
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
+import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.list.SimpleSet;
 
@@ -78,7 +79,23 @@ public class HTMLEntity implements BaseItem {
 		if(values == null) {
 			return this;
 		}
-		if(values.length % 2 == 0) {
+		if(values.length == 1 && values[0] instanceof String) {
+			XMLTokener tokener = new XMLTokener();
+			String content = (String) values[0];
+			tokener.withBuffer( content );
+			XMLEntity item=new XMLEntity();
+			tokener.parseToEntity((Entity)item);
+			Entity header = item.getElementBy(XMLEntity.PROPERTY_TAG, "header");
+			if(header != null && header instanceof XMLEntity) {
+				this.header = (XMLEntity) header;
+			}
+			Entity body = item.getElementBy(XMLEntity.PROPERTY_TAG, "body");
+			if(body == null && header == null) {
+				this.body = item;
+			}else if(body != null && body instanceof XMLEntity) {
+				this.body = (XMLEntity) body;
+			}
+		}else if(values.length % 2 == 0) {
 			this.body.with(values);
 		} else {
 			for(Object item : values) {
@@ -223,5 +240,28 @@ public class HTMLEntity implements BaseItem {
 	@Override
 	public int size() {
 		return body.size();
+	}
+
+	public XMLEntity getElementsBy(String key, String value) {
+		XMLEntity item = new XMLEntity();
+		EntityList headerList = this.header.getElementsBy(key, value);
+		EntityList bodyList = this.body.getElementsBy(key, value);
+		int z=0;
+		for(z=0;z<headerList.sizeChildren();z++) {
+			item.withChild(headerList.getChild(z));
+		}
+		for(z=0;z<bodyList.sizeChildren();z++) {
+			item.withChild(bodyList.getChild(z));
+		}
+		return item;
+	}
+
+	public BaseItem getElementBy(String key, String value) {
+		Entity item = this.header.getElementBy(key, value);
+		if(item != null) {
+			return item;
+		}
+		item = this.body.getElementBy(key, value);
+		return item;
 	}
 }

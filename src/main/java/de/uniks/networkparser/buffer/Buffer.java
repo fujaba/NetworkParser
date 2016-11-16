@@ -34,7 +34,7 @@ import de.uniks.networkparser.list.SimpleList;
 public abstract class Buffer implements BufferItem {
 	public final static String STOPCHARSJSON = ",:]}/\\\"[{;=# ";
 	public final static String STOPCHARSXML = ",]}/\\\"[{;=# ";
-	public final static String STOPCHARSXMLEND = ",]}/\\\"[{;=#>\r\n ";
+	public final static char[] STOPCHARSXMLEND = new char[]{'"', ',', ']', '}', '/', '\\', '"', '[', '{', ';', '=', '#', '>', '\r', '\n', ' '};
 //	private byte lookAHeadByte;
 //	private boolean isLookAhead;
 
@@ -371,18 +371,16 @@ public abstract class Buffer implements BufferItem {
 	}
 
 	@Override
-	public CharacterBuffer nextToken(String stopWords) {
+	public CharacterBuffer nextToken(char... stopWords) {
 		nextClean(false);
 		CharacterBuffer characterBuffer = new CharacterBuffer();
 		char c = getCurrentChar();
-		char[] stops = new char[stopWords.length()];
-		for(int i=0;i<stopWords.length();i++) {
-			stops[i] = stopWords.charAt(i);
-			if(stops[i] == c) {
+		for(int i=0;i<stopWords.length;i++) {
+			if(stopWords[i] == c) {
 				return characterBuffer;
 			}
 		}
-		parseString(characterBuffer, true, false, stops);
+		parseString(characterBuffer, true, false, stopWords);
 		return characterBuffer;
 	}
 

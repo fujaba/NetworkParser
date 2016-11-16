@@ -59,6 +59,13 @@ public class XMLTest extends IOClasses{
 		XMLEntity xmlEntity = new XMLEntity().withValue("<chatmsg folder=\"C:\\temp\\\\\" />");
 		Assert.assertEquals("C:\\temp\\", xmlEntity.getValue("folder"));
 	}
+	@Test
+	public void testParseError(){
+		String content = "<li>Canadian <i>(pictured)</i> of 82.</li>";
+		XMLEntity entity=new XMLEntity();
+		entity.withValue(content);
+		Assert.assertEquals("Canadian <i>(pictured)</i> of 82.", entity.getValue());
+	}
 
 	@Test
 	public void testSimple(){

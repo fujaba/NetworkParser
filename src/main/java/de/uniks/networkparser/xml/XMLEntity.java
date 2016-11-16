@@ -374,9 +374,39 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 			if(value.equalsIgnoreCase(this.getTag())) {
 				children.with(this);
 			}
-		} else  if(PROPERTY_VALUE.equals(key)) {
+		} else if(PROPERTY_VALUE.equals(key)) {
 			if(value.equalsIgnoreCase(this.getValue())) {
 				children.with(this);
+			}
+		} else if(EntityUtil.CLASS.equals(key)) {
+			int z=0;
+			while(z<value.length() && value.charAt(z)==' ') {
+				z++;
+			}
+			String first;
+			int pos = value.indexOf(" ", z);
+			if(pos<0) {
+				first = value.substring(z);
+				pos = value.length();
+			}else {
+				first = value.substring(z, pos);
+			}
+			if(first.charAt(0) == '#'){
+				if(first.substring(1).equals(this.getValue("id"))) {
+					value =" " + value.substring(pos);
+				}
+			} else if(first.charAt(0) == '.') {
+				if(first.substring(1).equals(this.getValue(EntityUtil.CLASS))) {
+					value = " " + value.substring(pos);
+				}
+			} else {
+				if(first.equals(this.getTag())) {
+					value = " " + value.substring(pos);
+				}
+			}
+			if(value.length()==1) {
+				children.with(this);
+				return children;
 			}
 		}
 		if(this.children == null) {

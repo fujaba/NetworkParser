@@ -41,12 +41,6 @@ import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
 public class XMLTokener extends Tokener {
-	public static final String TOKEN=" >//<";
-
-	private static final String TOKENSTOPWORDS = " >/<";
-
-	public static final String CHILDREN= "<CHILDREN>";
-
 	/** The Constant ENDTAG. */
 	public static final char ENDTAG = '/';
 
@@ -55,6 +49,11 @@ public class XMLTokener extends Tokener {
 
 	/** The Constant ITEMSTART. */
 	public static final char ITEMSTART = '<';
+
+	private static final char[] TOKEN = new char[]{' ', ITEMSTART, ENDTAG, ITEMEND};
+
+	public static final String CHILDREN= "<CHILDREN>";
+
 
 	private SendableEntityCreator defaultFactory;
 
@@ -138,7 +137,8 @@ public class XMLTokener extends Tokener {
 					return;
 				}
 				if (c != ITEMSTART) {
-					xmlEntity.withValue(nextString(new CharacterBuffer(), false, false, '<').toString());
+					CharacterBuffer value = nextValue(xmlEntity, '<');
+					xmlEntity.withValue(value.toString());
 					continue;
 				}
 			}
@@ -173,6 +173,42 @@ public class XMLTokener extends Tokener {
 				}
 			}
 		}
+	}
+	
+	private CharacterBuffer nextValue(XMLEntity xmlEntity, char stopChar){
+		CharacterBuffer buffer = new CharacterBuffer();
+		String tag = xmlEntity.getTag();
+		while(getCurrentChar()!=stopChar) {
+			nextString(buffer, false, false, '<');
+			char currentChar = getCurrentChar();
+			char nextChar = nextClean(false);
+			if(nextChar!='/') {
+				buffer.with(currentChar);
+			}else {
+				skip();
+				int z=0;
+				CharacterBuffer test=new CharacterBuffer().withStartPosition(2);
+				while(z<tag.length() && this.buffer.getCurrentChar() == tag.charAt(z)) {
+					test.with(this.buffer.getCurrentChar());
+					z++;
+					if(z<tag.length()) {
+						this.buffer.skip();
+					}
+				}
+				if(z==tag.length()) {
+					test.withStart(nextChar);
+					test.withStart(currentChar);
+					withLookAHead(test.toString());
+					break;
+				}
+				buffer.with(currentChar);
+				buffer.with(nextChar);
+				if(test.length()>0) {
+					buffer.with(test.toString());
+				}
+			}
+		}
+		return buffer;
 	}
 
 	/**	Skip the Current Entity to &gt;. */
@@ -282,7 +318,7 @@ public class XMLTokener extends Tokener {
 			if (tokener.getCurrentChar() == '/') {
 				stack.popStack();
 				tokener.getChar();
-				tokener.nextToken(TOKENSTOPWORDS);
+				tokener.nextToken(TOKEN);
 				return entity;
 			}
 
@@ -334,7 +370,7 @@ public class XMLTokener extends Tokener {
 					if (valueItem == null) {
 						if (tokener.getCurrentChar() == ENDTAG) {
 							// Show if Item is End
-							valueItem = tokener.nextToken("" + ITEMEND);
+							valueItem = tokener.nextToken(ITEMEND);
 							if (valueItem.equals(stack.getCurrentTag())) {
 								stack.popStack();
 								// SKip > EndTag
@@ -381,7 +417,7 @@ public class XMLTokener extends Tokener {
 					isEmpty = valueItem.isEmpty();
 				}
 			}
-			tag = tokener.nextToken(TOKENSTOPWORDS);
+			tag = tokener.nextToken(TOKEN);
 			if (tag != null) {
 				for (String stopword : this.stopwords) {
 					if (tag.startsWith(stopword, 0, false)) {
@@ -452,7 +488,7 @@ public class XMLTokener extends Tokener {
 						creator.setValue(entity, XMLEntity.PROPERTY_VALUE, valueItem.toString(), IdMap.NEW);
 					}
 				}
-				tag = tokener.nextToken(TOKENSTOPWORDS);
+				tag = tokener.nextToken(TOKEN);
 				item = idMap.getCreator(tag.toString(), false);
 				if(item instanceof SendableEntityCreatorTag) {
 					creator = (SendableEntityCreatorTag) item;
