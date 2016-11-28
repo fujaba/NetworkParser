@@ -38,6 +38,11 @@ public class GraphList extends GraphModel implements BaseItem {
 	public String toString() {
 		return toString(new YUMLConverter());
 	}
+	public String toString(boolean removePackage) {
+		YUMLConverter converter = new YUMLConverter();
+		converter.defaultShowPackage = removePackage;
+		return toString(converter);
+	}
 
 	public String toString(Converter converter) {
 		if (converter == null) {

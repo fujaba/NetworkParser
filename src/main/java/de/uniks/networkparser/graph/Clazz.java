@@ -37,6 +37,18 @@ public class Clazz extends GraphEntity {
 	public enum ClazzType {CLAZZ, ENUMERATION, INTERFACE};
 	private ClazzType type = ClazzType.CLAZZ;
 
+	Clazz() {
+		
+	}
+	
+	/**
+	 * Constructor with Name of Clazz
+	 * @param name
+	 */
+	public Clazz(String name) {
+		this.with(name);
+	}
+	
 	@Override
 	public Clazz with(String name) {
 		super.with(name);

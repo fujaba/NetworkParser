@@ -31,8 +31,8 @@ public class EMFTest extends IOClasses{
 		GraphList list = (GraphList) model;
 		Assert.assertEquals(9, list.getClazzes().size());
 		Clazz segment = list.getClazzes().get(0);
-		Assert.assertEquals("Segment", segment.toString());
-		Assert.assertEquals("[Segment|length:int]-^[TrackElement],[TrackElement]-^[RailwayElement|id:int],[TrackElement]^-[Switch|currentPosition:Position],[TrackElement]->[Sensor],[TrackElement]<-[TrackElement],[Switch]->[SwitchPosition|position:Position],[Route]-^[RailwayElement],[Route]->[Semaphore|signal:Signal],[Route]->[SwitchPosition],[Route]->[Semaphore],[Route]->[Sensor],[Route]<-[RailwayContainer],[Semaphore]-^[RailwayElement],[Semaphore]<-[RailwayContainer],[SwitchPosition]-^[RailwayElement],[RailwayElement]^-[Sensor],[RailwayElement]<-[RailwayContainer]", model.toString());
+		Assert.assertEquals("RailwayContainer", segment.toString());
+		Assert.assertEquals("[RailwayContainer]->[Route],[RailwayContainer]->[Semaphore|signal:Signal],[RailwayContainer]->[RailwayElement|id:int],[RailwayElement]^-[Sensor],[RailwayElement]^-[SwitchPosition|position:Position],[RailwayElement]^-[Semaphore],[RailwayElement]^-[Route],[RailwayElement]^-[TrackElement],[Route]->[SwitchPosition],[Route]->[Sensor],[Route]->[Semaphore],[Route]->[Semaphore],[Segment|length:int]-^[TrackElement],[Sensor]->[TrackElement],[Switch|currentPosition:Position]->[SwitchPosition],[Switch]-^[TrackElement],[TrackElement]<-[TrackElement]", model.toString());
 	}
 
 	@Test
@@ -66,14 +66,14 @@ public class EMFTest extends IOClasses{
 		XMLEntity root =(XMLEntity) item.getChild(0);
 		StringBuilder sb=new StringBuilder();
 		sb.append("<ecore:EPackage xmi:version=\"2.0\" xmlns:xmi=\"http://www.omg.org/XMI\" xmlns:ecore=\"http://www.eclipse.org/emf/2002/Ecore\" name=\"model\" nsURI=\"http:///model.ecore\" nsPrefix=\"model\">"+
+	    		"<eClassifiers xsi:type=\"ecore:EClass\" name=\"Student\">"+
+	    		"<eAttributes name=\"name\" eType=\"ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString\"/>"+
+	    		"<eAttributes name=\"semester\" eType=\"ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt\"/>"+
+	    		"<eReferences name=\"university\" eType=\"#//University\" eOpposite=\"#//University/student\" upperBound=\"-1\"/>"+
+	    		"</eClassifiers>"+
 				"<eClassifiers xsi:type=\"ecore:EClass\" name=\"University\">"+
 				"<eReferences name=\"student\" eType=\"#//Student\" eOpposite=\"#//Student/university\" upperBound=\"1\"/>"+
 				"</eClassifiers>"+
-	    		"<eClassifiers xsi:type=\"ecore:EClass\" name=\"Student\">"+
-	    		"<eAttributes name=\"semester\" eType=\"ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt\"/>"+
-	    		"<eAttributes name=\"name\" eType=\"ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString\"/>"+
-	    		"<eReferences name=\"university\" eType=\"#//University\" eOpposite=\"#//University/student\" upperBound=\"-1\"/>"+
-	    		"</eClassifiers>"+
 	    		"</ecore:EPackage>");
 
 		Assert.assertEquals(sb.toString(), root.toString());

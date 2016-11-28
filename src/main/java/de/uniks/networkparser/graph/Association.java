@@ -342,6 +342,7 @@ public class Association extends GraphMember {
 		}
 		return contains;
 	}
+	
 
 	boolean containsAll(Association others, boolean both) {
 		if(parentNode == null) {
@@ -373,13 +374,24 @@ public class Association extends GraphMember {
 		super.without(value);
 		return this;
 	}
-	boolean isSame(Association other) {
-		if(this.name == null ) {
-			if(other.name() == null) {
-				return true;
+
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof Association) {
+			Association otherAssoc = (Association) obj;
+			if(this.containsAll(otherAssoc, false) == false) {
+				return false;
 			}
-			return false;
+			String key = this.getName();
+			String otherKey = otherAssoc.getName();
+			if(key == null ) {
+				if(otherKey == null) {
+					return true;
+				}
+			} else {
+				return key.equals(otherKey);
+			}
 		}
-		return this.name().equals(other.name());
+		return super.equals(obj);
 	}
 }

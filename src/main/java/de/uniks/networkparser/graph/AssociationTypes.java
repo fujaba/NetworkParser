@@ -24,8 +24,25 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+
+
+/**
+ * Associations types
+ * Edge - Edge normal Edge
+ * ASSOCIATION    - ASSOCIATION Bidirectional Association
+ * ASSOCIATION    - EDGE Undirectional but search for back Assoc
+ * UNDIRECTIONAL  - Edge Undirectional Association
+ * AGGREGATION    - Edge Aggregation
+ * COMPOSITION    - Edge Composition
+ * GENERALISATION - Edge Generalisation
+ * IMPLEMENTS     - Edge Implements
+ * DEPENDENCY     - Edge Dependency
+ * 
+ * @author Stefan
+ *
+ */
 public enum AssociationTypes {
-	ASSOCIATION("assoc"), EDGE("edge"), GENERALISATION("generalisation"), IMPLEMENTS("implements"), UNDIRECTIONAL("unidirectional"), AGGREGATION("aggregation"), COMPOSITION("Composition");
+	ASSOCIATION("assoc"), EDGE("edge"), GENERALISATION("generalisation"), IMPLEMENTS("implements"), UNDIRECTIONAL("unidirectional"), AGGREGATION("aggregation"), COMPOSITION("Composition"), DEPENDENCY("Dependency");
 
 	private AssociationTypes(String value) {
 		this.value = value;
@@ -47,4 +64,9 @@ public enum AssociationTypes {
 				);
 	}
 	private String value;
+	
+	@Override
+	public String toString() {
+		return this.value;
+	}
 }

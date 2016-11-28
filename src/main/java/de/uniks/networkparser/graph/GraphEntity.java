@@ -181,8 +181,119 @@ public abstract class GraphEntity extends GraphMember {
 
 	protected GraphEntity with(Association... values) {
 		if (values != null) {
-			for (Association value : values) {
-				addAssoc(value);
+			boolean add;
+			AssociationSet allAssoc = this.getAssociations();
+			for (Association assoc : values) {
+				// Do Nothing
+				if (assoc == null || (this.associations == assoc) || assoc.getOther() == null) {
+					continue;
+				}
+				add = true;
+				boolean mergeFlag = (assoc.getType()==AssociationTypes.ASSOCIATION && assoc.getOtherType() == AssociationTypes.EDGE) ||
+						(assoc.getType()==AssociationTypes.EDGE && assoc.getOtherType() == AssociationTypes.ASSOCIATION);
+					
+				// If Nessesarry to search
+				if(this.associations != null) {
+					for(Association item : allAssoc) {
+						if(item == assoc || item.getOther() == assoc) {
+							// I Know the Assoc
+							add = false;
+							break;
+						}
+						// Implements new Search for Association Only Search for duplicate
+						if(item.name() != null && item.name().equals(assoc.name())) {
+							add = false;
+							break;
+						}
+						// Check for Merge Association
+						if(mergeFlag) {
+//							if(assoc.getClazz() == this) {
+							if(item.getClazz() == assoc.getClazz()) {
+								if(item.getOtherClazz() == this) {
+									if(item.getType()==AssociationTypes.ASSOCIATION && item.getOtherType()==AssociationTypes.EDGE) {
+										Association other =item.getOther(); 
+										other.with(AssociationTypes.ASSOCIATION);
+										other.with(assoc.getName());
+										other.with(assoc.getCardinality());
+										add = false;
+										break;
+									}
+									if(item.getOther().containsAll(assoc, false)) {
+										add = false;
+										break;
+									}
+								} else {
+//							} else if(item.getOtherClazz() == assoc.getClazz() && item.getClazz() == this) {
+									if(item.getType()==AssociationTypes.EDGE && item.getOtherType()==AssociationTypes.ASSOCIATION) {
+										item.with(AssociationTypes.ASSOCIATION);
+										item.with(assoc.getName());
+										item.with(assoc.getCardinality());
+										add = false;
+										break;
+									}
+									if(item.containsAll(assoc, false)) {
+										add = false;
+										break;
+									}
+								}
+							}
+//							if(assoc.equals(item) && item.getOther().containsAll(assoc, false)) {
+//								add = false;
+//								break;
+//							} else if(assoc.getOther().equals(item) && item.containsAll(assoc, false)) {
+//								add = false;
+//								break;
+//							}
+						}
+//							if(found != null) {
+////								if(item.isSame(found.getOther()) && item.getOther().isSame(found)) {
+//									if(GraphUtil.isUndirectional(item)) {
+//										item.getOther().with(AssociationTypes.ASSOCIATION);
+//										item.with(AssociationTypes.ASSOCIATION);
+//									}
+//									return false;
+//								}else if (item.containsAll(found.getOther(), false) && item.getOther().name() == null
+//										&& found.name() != null ) {
+//									Association biAssoc = null;
+//									if(item.name() == null) {
+//										biAssoc = item;
+//									} else if(item.getOther().name() == null) {
+//										biAssoc = item.getOther();
+//									}
+//									if(biAssoc != null) {
+//										biAssoc.with(found.getCardinality());
+//										biAssoc.with(found.getName());
+//										biAssoc.with(AssociationTypes.ASSOCIATION);
+//										item.getOther().with(AssociationTypes.ASSOCIATION);
+//										return false;
+//									}
+//									// Know the Edge
+//								}
+//							}
+						}
+					}
+				if(add) {
+					// ADD TO PARENT MAY BE LIST
+					if(this.parentNode!= null) {
+						if(this.parentNode instanceof GraphModel) {
+							((GraphModel)this.parentNode).with(assoc);
+						}
+					}
+					if(this.associations == null) {
+						this.associations = assoc;
+					} else {
+						GraphSimpleSet list;
+						if( this.associations  instanceof GraphSimpleSet) {
+							list = (GraphSimpleSet) this.associations;
+							list.add(assoc);
+						}else {
+							list = new GraphSimpleSet().withAllowDuplicate(true);
+							list.with((GraphMember) this.associations);
+							this.associations = list;
+							list.add(assoc);
+						}
+					}
+				}
 			}
 		}
 		return this;
@@ -208,58 +319,17 @@ public abstract class GraphEntity extends GraphMember {
 		}
 		return this;
 	}
-
-	boolean addAssoc(Association assoc) {
-		// Do Nothing
-		if (assoc == null || (this.associations == assoc)) {
-			return false;
-		}
-		boolean add=true;
-
-		if(assoc.getOther() != null && this.associations != null) {
+	
+	public Association getAssociationByName(String name) {
+		if(this.associations != null) {
 			for (Iterator<Association> i = this.getAssociations().iterator(); i.hasNext();) {
 				Association item = i.next();
-				if(has(item, assoc.getOther()) && has(item.getOther(), assoc)) {
-					if(item.isSame(assoc.getOther()) && item.getOther().isSame(assoc)) {
-						if(GraphUtil.isUndirectional(item)) {
-							item.getOther().with(AssociationTypes.ASSOCIATION);
-							item.with(AssociationTypes.ASSOCIATION);
-						}
-						add=false;
-						break;
-					}else if (item.containsAll(assoc.getOther(), false) && item.getOther().name() == null
-							&& assoc.name() != null) {
-						item.getOther().with(assoc.getCardinality());
-						item.getOther().with(assoc.getName());
-						item.getOther().with(AssociationTypes.ASSOCIATION);
-						item.with(AssociationTypes.ASSOCIATION);
-						add=false;
-						break;
-					}
+				if(item.name()!= null && item.name().equals(name)) {
+					return item;
 				}
 			}
 		}
-		if(add) {
-			if(this.associations == null) {
-				this.associations = assoc;
-			} else {
-				GraphSimpleSet list;
-				if( this.associations  instanceof GraphSimpleSet) {
-					list = (GraphSimpleSet) this.associations;
-					add = list.add(assoc);
-				}else {
-					list = new GraphSimpleSet().withAllowDuplicate(true);
-					list.with((GraphMember) this.associations);
-					this.associations = list;
-					add = list.add(assoc);
-				}
-			}
-		}
-		return add;
-	}
-
-	private boolean has(Association o1, Association o2) {
-		return (o1.getClazz() == o2.getClazz());
+		return null;
 	}
 
 	public Annotation getAnnotation() {

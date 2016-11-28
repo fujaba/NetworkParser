@@ -1,5 +1,7 @@
 package de.uniks.networkparser.graph;
 
+import java.util.Comparator;
+
 /*
 NetworkParser
 The MIT License
@@ -26,6 +28,26 @@ THE SOFTWARE.
 import de.uniks.networkparser.list.SimpleSet;
 
 public class GraphSimpleSet extends SimpleSet<GraphMember> {
+	private static Comparator<Object> comparator=new Comparator<Object>(){
+        @Override
+        public int compare(Object o1, Object o2) {
+        	if(o1 instanceof GraphMember == false || o2 instanceof GraphMember == false ){
+        		return 0;
+        	}
+        	String id1 = ((GraphMember) o1).getFullId();
+        	String id2 = ((GraphMember) o2).getFullId();
+        	if(id1 == id2) {
+        		return 0;
+        	}
+        	if(id1 == null) {
+        		return 1;
+        	}
+        	if(id2 == null) {
+        		return -1;
+        	}
+           return id1.compareTo(id2);
+        }
+    };
 	@Override
 	protected boolean checkValue(Object a, Object b) {
 		if(!(a instanceof GraphMember)) {
@@ -42,5 +64,13 @@ public class GraphSimpleSet extends SimpleSet<GraphMember> {
 			idB = ((GraphMember)b).getName();
 		}
 		return idA.equalsIgnoreCase(idB);
+	}
+	@Override
+	public Comparator<Object> comparator() {
+		return comparator;
+	}
+	@Override
+	public boolean isComparator() {
+		return true;
 	}
 }

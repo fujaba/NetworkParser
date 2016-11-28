@@ -83,6 +83,13 @@ public class TileMap implements SendableEntityCreatorTag {
 		return this.getSpritePos(spritePos);
 	}
 	
+	public int getBackground(int sprite) {
+		if(sprite<0 || sprite>=background.length) {
+			return 0;
+		}
+		return background[sprite];
+	}
+	
 	/** Return the Position of Sprite
 	 * @param pos The Position 00..n
 	 * @return The Position

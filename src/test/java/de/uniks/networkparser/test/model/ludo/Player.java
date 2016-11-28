@@ -488,7 +488,7 @@ public class Player {
 			}
 			this.start = value;
 			if (value != null) {
-				value.withStarter(this);
+				value.setStarter(this);
 			}
 			firePropertyChange(PROPERTY_START, oldValue, value);
 			changed = true;

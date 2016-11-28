@@ -159,7 +159,7 @@ public class DotConverter implements Converter {
 				String id = sb.toString().trim();
 				node = graph.getNode(id);
 				if(node == null) {
-					node = new Clazz().with(id);
+					node = new Clazz(id);
 				}
 				if(c == '[') {
 					decodeAttributes(node, value);

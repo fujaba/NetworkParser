@@ -84,10 +84,10 @@ public class GraphUtil {
 		if(assoc == null) {
 			return false;
 		}
-		if(assoc.getType()==AssociationTypes.ASSOCIATION && assoc.getOtherType()==AssociationTypes.EDGE) {
+		if((assoc.getType()==AssociationTypes.ASSOCIATION || assoc.getType()==AssociationTypes.UNDIRECTIONAL ) && assoc.getOtherType()==AssociationTypes.EDGE) {
 			return true;
 		}
-		return assoc.getOtherType()==AssociationTypes.ASSOCIATION && assoc.getType()==AssociationTypes.EDGE;
+		return (assoc.getOtherType()==AssociationTypes.ASSOCIATION || assoc.getOtherType()==AssociationTypes.UNDIRECTIONAL) && assoc.getType()==AssociationTypes.EDGE;
 	}
 
 	public static boolean isInterfaceAssociation(Association assoc) {
@@ -101,7 +101,7 @@ public class GraphUtil {
 	}
 
 	public static CharacterBuffer getMethodParameters(Method method, boolean shortName) {
-		return method.getParameterString(shortName);
+		return method.getParameterString(shortName, false);
 	}
 
 	public static SimpleSet<Association> getOtherAssociations(Clazz clazz) {
@@ -123,10 +123,6 @@ public class GraphUtil {
 	}
 	public static GraphDiff getDifference(GraphMember item) {
 		return item.getDiff();
-	}
-
-	public static boolean addAccoc(GraphList list, Association assoc) {
-		return list.addAssoc(assoc);
 	}
 
 	public static Attribute createAttribute() {
@@ -186,5 +182,32 @@ public class GraphUtil {
 			}
 		}
 		return foundAssoc;
+	}
+	public static String getShortAssoc(Association assoc) {
+		if( assoc == null) {
+			return "";
+		}
+		CharacterBuffer sb=new CharacterBuffer();
+		Clazz clazz = assoc.getClazz();
+		if(clazz != null) {
+			sb.with(clazz.getName(true));
+		}
+		sb.with(':');
+		sb.with(assoc.getName());
+		sb.with("_");
+		sb.with(assoc.getCardinality().getValue());
+		sb.with(assoc.getSeperator());
+		assoc = assoc.getOther();
+		if(assoc != null) {
+			clazz = assoc.getClazz();
+			if(clazz != null) {
+				sb.with(clazz.getName(true));
+			}
+			sb.with(':');
+			sb.with(assoc.getName());
+			sb.with("_");
+			sb.with(assoc.getCardinality().getValue());
+		}
+		return sb.toString();
 	}
 }

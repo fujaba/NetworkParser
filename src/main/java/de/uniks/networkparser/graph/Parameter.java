@@ -38,6 +38,10 @@ public class Parameter extends Value {
 	public Parameter(Clazz value) {
 		with(value);
 	}
+	public Parameter(Clazz value, String name) {
+		with(value);
+		with(name);
+	}
 
 	public Parameter(Class<?> value) {
 		with(value);

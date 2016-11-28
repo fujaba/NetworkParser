@@ -64,7 +64,7 @@ public abstract class GraphModel extends GraphEntity {
 	}
 
 	public Clazz createClazz(String name) {
-		Clazz clazz = new Clazz().with(name);
+		Clazz clazz = new Clazz(name);
 		clazz.setClassModel(this);
 		return clazz;
 	}
@@ -151,7 +151,7 @@ public abstract class GraphModel extends GraphEntity {
 					fixClassModel(clazz, visited);
 				}
 			}
-			this.addAssoc(role);
+			this.with(role);
 		}
 
 		// Fix the Clazz
