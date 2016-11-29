@@ -658,6 +658,10 @@ public class EMFTokener extends Tokener{
 			// Create as Unidirection
 			tgtAssoc.with(srcAssoc);
 			srcAssoc.with(AssociationTypes.EDGE);
+			
+			tgtAssoc.getClazz().with(tgtAssoc);
+			srcAssoc.getClazz().with(srcAssoc);
+			
 			model.with(tgtAssoc);
 		}
 		return model;

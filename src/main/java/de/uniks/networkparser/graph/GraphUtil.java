@@ -125,10 +125,6 @@ public class GraphUtil {
 		return item.getDiff();
 	}
 
-	public static Attribute createAttribute() {
-		return new Attribute();
-	}
-
 	public static void removeYou(GraphMember value) {
 		if(value == null) {
 			return;

@@ -350,10 +350,10 @@ public class GraphTest {
 		JsonArray jsonArray = map.toJsonArray(root, new Filter().withFull(true));
 		GraphConverter graphConverter = new GraphConverter();
 		JsonObject objectModel = graphConverter.convertToJson(GraphTokener.OBJECT, jsonArray, true);
-		showDebugInfos(objectModel, 641, System.out);
+		showDebugInfos(objectModel, 635, null);
 
 		JsonObject clazzModel = graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
-		showDebugInfos(clazzModel, 475, null);
+		showDebugInfos(clazzModel, 492, null);
 		Assert.assertEquals(new CharacterBuffer().withLine("{").withLine("  \"typ\":\"classdiagram\",")
 				.withLine("  \"nodes\":[").withLine("    {")
 				.withLine("      \"typ\":\"clazz\",").withLine("      \"id\":\"SortedMsg\",")
@@ -402,7 +402,7 @@ public class GraphTest {
 		GraphConverter graphConverter = new GraphConverter();
 
 		JsonObject converter = graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
-		showDebugInfos(converter, 552, null);
+		showDebugInfos(converter, 546, null);
 	}
 	@Test
 	public void testGraphPatternTest() {

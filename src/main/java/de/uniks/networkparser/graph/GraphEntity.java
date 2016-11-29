@@ -1,6 +1,4 @@
 package de.uniks.networkparser.graph;
-import java.util.Iterator;
-
 /*
 NetworkParser
 Copyright (c) 2011 - 2015, Stefan Lindel
@@ -217,9 +215,16 @@ public abstract class GraphEntity extends GraphMember {
 								if(assocOther.name() != null) {
 									
 								}else if(item.getType()==AssociationTypes.EDGE && itemOther.getType()==AssociationTypes.ASSOCIATION) {
+									// Cool its Bidirectional but remove Attributes
+									
 									item.with(AssociationTypes.ASSOCIATION);
 									item.with(assoc.getName());
 									item.with(assoc.getCardinality());
+									
+									GraphMember attribute = item.getClazz().getChildByName(assoc.getName());
+									if(attribute != null) {
+										item.getClazz().without(attribute);
+									}
 								}
 								break;
 							}
@@ -274,13 +279,21 @@ public abstract class GraphEntity extends GraphMember {
 		return this;
 	}
 	
-	public Association getAssociationByName(String name) {
-		if(this.associations != null) {
-			for (Iterator<Association> i = this.getAssociations().iterator(); i.hasNext();) {
-				Association item = i.next();
-				if(item.name()!= null && item.name().equals(name)) {
-					return item;
-				}
+	public GraphMember getChildByName(String name) {
+		if(this.children == null) {
+			return null;
+		}
+		GraphSimpleSet children = this.getChildren();
+		String itemName;
+		for(GraphMember item : children) {
+			if(item instanceof Association) {
+				Association assoc = (Association) item;
+				itemName = assoc.getOther().name();
+			} else {
+				itemName = item.getName();
+			}
+			if(itemName != null && itemName.equals(name)) {
+				return item;
 			}
 		}
 		return null;

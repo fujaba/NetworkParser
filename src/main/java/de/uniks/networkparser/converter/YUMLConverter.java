@@ -50,7 +50,7 @@ public class YUMLConverter implements Converter{
 		if(collection.size()>0) {
 			StringBuilder sb = new StringBuilder();
 			SimpleList<GraphMember> visitedObj = new SimpleList<GraphMember>();
-//			root.initSubLinks();
+			root.initSubLinks();
 			for(GraphMember item : collection) {
 				parse(typ, item, sb, visitedObj, removePackage);
 			}

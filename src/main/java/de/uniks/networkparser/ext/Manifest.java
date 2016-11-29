@@ -43,7 +43,7 @@ public class Manifest extends SimpleKeyValueList<String, String>{
 		System.out.println("Coverage: "+manifest.getString(COVERAGE));
 	}
 
-	public static Manifest create(String value) {
+	public static Manifest create(CharSequence value) {
 		Manifest manifest = new Manifest();
 		Tokener tokener=new Tokener().withBuffer(value);
 		while(tokener.isEnd() == false) {

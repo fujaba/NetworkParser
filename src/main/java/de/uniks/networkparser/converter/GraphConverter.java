@@ -47,6 +47,7 @@ import de.uniks.networkparser.graph.GraphSimpleSet;
 import de.uniks.networkparser.graph.GraphTokener;
 import de.uniks.networkparser.graph.GraphUtil;
 import de.uniks.networkparser.graph.Method;
+import de.uniks.networkparser.graph.util.AssociationSet;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.json.JsonArray;
@@ -153,9 +154,10 @@ public class GraphConverter implements Converter{
 							}
 						} else {
 							if(attribute == null) {
-								attribute = GraphUtil.createAttribute()
-										.with(props.getKeyByIndex(i))
-										.with(value.getClass().getName());
+								//FIXME FOR ASSOC -- ATTRIBUTE
+								String name = props.getKeyByIndex(i);
+								DataType type = DataType.create(value.getClass().getName());
+								attribute = new Attribute(name, type);
 								attribute.withValue(entity.toString());
 							} else {
 								attribute.withValue(attribute.getValue() + "," + entity.toString());
@@ -163,12 +165,25 @@ public class GraphConverter implements Converter{
 						}
 					}
 				}else {
-					Attribute attribute = GraphUtil.createAttribute().with(props.getKeyByIndex(i));
+					String name = props.getKeyByIndex(i);
+					Attribute attribute;
+					AssociationSet associations = graphNode.getAssociations();
+					for(Association childAssoc : associations) {
+						 if(name.equals(childAssoc.getName()) || name.equals(childAssoc.getOther().getName())) {
+							 name = null;
+							 break;
+						 }
+					}
+					if(name == null) {
+						continue;
+					}
 					if (value != null) {
-						attribute.with(DataType.create(value.getClass()));
+						attribute = new Attribute(name, DataType.create(value.getClass()));
 						if(isClassDiagram == false) {
 							attribute.withValue(value.toString());
 						}
+					} else {
+						attribute = new Attribute(name, null);
 					}
 					graphNode.with(attribute);
 				}
