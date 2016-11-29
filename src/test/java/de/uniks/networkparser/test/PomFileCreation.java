@@ -30,4 +30,9 @@ public class PomFileCreation {
 		"</project>";
 		Assert.assertEquals(ref, pom.toString(2));
 	}
+	
+	@Test
+	public void testManifest(){
+		
+	}
 }

@@ -52,15 +52,15 @@ public enum AssociationTypes {
 		return value;
 	}
 
-	public static boolean isEdge(String value) {
+	public static boolean isEdge(AssociationTypes value) {
 		if(value == null) {
 			return false;
 		}
-		return (value.equals(ASSOCIATION.getValue()) ||
-				value.equals(EDGE.getValue()) ||
-				value.equals(UNDIRECTIONAL.getValue()) ||
-				value.equals(AGGREGATION.getValue()) ||
-				value.equals(COMPOSITION.getValue())
+		return (value.equals(ASSOCIATION) ||
+				value.equals(EDGE) ||
+				value.equals(UNDIRECTIONAL) ||
+				value.equals(AGGREGATION) ||
+				value.equals(COMPOSITION)
 				);
 	}
 	private String value;

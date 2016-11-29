@@ -224,7 +224,7 @@ public class Association extends GraphMember {
 	}
 
 	public Association getOther() {
-		return other;
+ 		return other;
 	}
 
 	public static Association create(GraphEntity source, GraphEntity target){
@@ -373,25 +373,5 @@ public class Association extends GraphMember {
 	public Association without(Annotation value) {
 		super.without(value);
 		return this;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if(obj instanceof Association) {
-			Association otherAssoc = (Association) obj;
-			if(this.containsAll(otherAssoc, false) == false) {
-				return false;
-			}
-			String key = this.getName();
-			String otherKey = otherAssoc.getName();
-			if(key == null ) {
-				if(otherKey == null) {
-					return true;
-				}
-			} else {
-				return key.equals(otherKey);
-			}
-		}
-		return super.equals(obj);
 	}
 }

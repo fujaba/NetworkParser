@@ -141,8 +141,8 @@ public class GraphConverter implements Converter{
 
 					for (Object entity : array) {
 						if (entity instanceof JsonObject) {
-							Clazz newNode = parseJsonObject(root, (JsonObject) entity);
 							assocOther = new Association(graphNode).with(Cardinality.ONE).with(AssociationTypes.EDGE);
+							Clazz newNode = parseJsonObject(root, (JsonObject) entity);
 							assoc = new Association(newNode).with(Cardinality.MANY).with(props.getKeyByIndex(i)).with(AssociationTypes.ASSOCIATION);
 							assoc.with(assocOther);
 							
@@ -238,7 +238,7 @@ public class GraphConverter implements Converter{
 	}
 
 	private JsonObject parseEdge(String typ, Clazz source, Clazz target, Association edge, boolean shortName, ArrayList<String> ids) {
-		JsonObject child = new JsonObject().withKeyValue(TYP, edge.getType());
+		JsonObject child = new JsonObject().withKeyValue(TYP, edge.getOther().getType());
 		if (typ.equals(GraphTokener.OBJECT)) {
 			child.put(SOURCE, addInfo(edge, true).withValue(ID, source.getId() + " : "
 					+ source.getName(shortName)));

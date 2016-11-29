@@ -43,7 +43,7 @@ public class Clazz extends GraphEntity {
 	
 	/**
 	 * Constructor with Name of Clazz
-	 * @param name
+	 * @param name Name of Clazz
 	 */
 	public Clazz(String name) {
 		this.with(name);
@@ -235,13 +235,12 @@ public class Clazz extends GraphEntity {
 	public Clazz withBidirectional(Clazz tgtClass, String tgtRoleName, Cardinality tgtCardinality, String srcRoleName, Cardinality srcCardinality) {
 		// Target
 		Association assocTarget = new Association(tgtClass).with(tgtCardinality).with(tgtRoleName);
-		tgtClass.with(assocTarget);
 
 		// Source
 		Association assocSource = new Association(this).with(srcCardinality).with(srcRoleName);
-
 		assocSource.with(assocTarget);
 
+		tgtClass.with(assocTarget);
 		this.with(assocSource);
 		return this;
 	}
@@ -263,15 +262,12 @@ public class Clazz extends GraphEntity {
 	 */
 	public Clazz withUniDirectional(Clazz tgtClass, String tgtRoleName, Cardinality tgtCardinality) {
 		// Target
-		Association assocTarget = new Association(tgtClass).with(tgtCardinality);
-		tgtClass.with(assocTarget);
-		assocTarget.with(AssociationTypes.UNDIRECTIONAL).with(tgtRoleName);
+		Association assocTarget = new Association(tgtClass).with(tgtCardinality).with(AssociationTypes.UNDIRECTIONAL).with(tgtRoleName);
 
 		// Source
-		Association assocSource = new Association(this);
-		assocSource.with(AssociationTypes.EDGE);
-		assocSource.with(assocTarget);
+		Association assocSource = new Association(this).with(AssociationTypes.EDGE).with(assocTarget);
 
+		tgtClass.with(assocTarget);
 		this.with(assocSource);
 		return this;
 	}

@@ -81,6 +81,11 @@ public class GraphTest {
 	@Test
 	public void testDupplicateAssoc() {
 		Clazz person=new Clazz("Person");
+		Clazz uni=new Clazz("Uni");
+		person.withBidirectional(uni, "owner", Cardinality.ONE, "has", Cardinality.MANY);
+		person.withBidirectional(uni, "owner", Cardinality.ONE, "has", Cardinality.MANY);
+		
+		Assert.assertEquals(1, uni.getAssociations().size());
 	}
 
 	@Test
@@ -95,8 +100,7 @@ public class GraphTest {
 		list.fixClassModel();
 		
 		GraphConverter converter = new GraphConverter();
-		Assert.assertEquals(256, converter.convertToJson(list, true, false).toString().length());
-		
+		showDebugInfos(converter.convertToJson(list, true, false), 446, null);
 	}
 	
 	@Test
@@ -265,25 +269,25 @@ public class GraphTest {
 		sabine.createPawns().withColor(RED).withPos(tomStartField);
 
 		JsonArray jsonArray = jsonIdMap.toJsonArray(ludo);
-		 showDebugInfos(jsonArray, 2309, null);
+		showDebugInfos(jsonArray, 2309, null);
+		jsonArray.replaceAllValues(IdMap.CLASS, "de.uniks.networkparser.test.model.ludo.", "");
+		showDebugInfos(jsonArray, 1607, null);
 
 		GraphConverter graphConverter = new GraphConverter();
 
 		// May be 8 Asssocs and write 11
 		YUMLConverter converterYUML = new YUMLConverter();
 		GraphList root  = graphConverter.convertGraphList(GraphTokener.CLASS, jsonArray);
-		System.out.println(converterYUML.convert(root, true));
 
 		JsonObject converter = graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
-		showDebugInfos(converter, 2600, System.out);
+		showDebugInfos(converter, 1528, null);
 
 		
 		root = graphConverter.convertGraphList(GraphTokener.CLASS, jsonArray);
-		Assert.assertEquals(
-				"[Ludo]-[Player|color:String;name:String],[Player]-[Pawn|color:String],[Player]-[Field|color:String;kind:String],[Field]-[Pawn]",
+		Assert.assertEquals("[Field|color:String;kind:String]-[Player|color:String;name:String],[Field]-[Pawn|color:String],[Ludo]-[Player],[Pawn]-[Player]",
 				converterYUML.convert(root, true));
 
-		showDebugInfos(converter, 1552, null);
+		showDebugInfos(converter, 1528, null);
 	}
 
 	@Test
@@ -312,7 +316,7 @@ public class GraphTest {
 
 		// May be 8 Asssocs and write 11
 		JsonObject converter = graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
-		showDebugInfos(converter, 2479, null);
+		showDebugInfos(converter, 2179, null);
 	}
 
 	private void showDebugInfos(Entity json, int len, PrintStream stream) {

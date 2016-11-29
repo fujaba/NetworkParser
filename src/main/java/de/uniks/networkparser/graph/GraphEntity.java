@@ -93,7 +93,7 @@ public abstract class GraphEntity extends GraphMember {
 			for (GraphMember item : list) {
 				if(item instanceof Association) {
 					Association assoc = (Association) item;
-					if(AssociationTypes.isEdge(assoc.getType().getValue())) {
+					if(AssociationTypes.isEdge(assoc.getType())) {
 						if(check(assoc, filters) ) {
 							collection.add((Association)item);
 						}
@@ -189,11 +189,13 @@ public abstract class GraphEntity extends GraphMember {
 					continue;
 				}
 				add = true;
-				boolean mergeFlag = (assoc.getType()==AssociationTypes.ASSOCIATION && assoc.getOtherType() == AssociationTypes.EDGE) ||
-						(assoc.getType()==AssociationTypes.EDGE && assoc.getOtherType() == AssociationTypes.ASSOCIATION);
 					
 				// If Nessesarry to search
+				// Assoc_Own - Otherclazz_Property
 				if(this.associations != null) {
+					Association assocOther = assoc.getOther();
+					boolean mergeFlag = (assoc.getType()==AssociationTypes.ASSOCIATION && assocOther.getType() == AssociationTypes.EDGE) ||
+							(assoc.getType()==AssociationTypes.EDGE && assocOther.getType() == AssociationTypes.ASSOCIATION);
 					for(Association item : allAssoc) {
 						if(item == assoc || item.getOther() == assoc) {
 							// I Know the Assoc
@@ -201,77 +203,29 @@ public abstract class GraphEntity extends GraphMember {
 							break;
 						}
 						// Implements new Search for Association Only Search for duplicate
-						if(item.name() != null && item.name().equals(assoc.name())) {
+						Association itemOther = item.getOther();
+						String name = itemOther.name();
+						
+						if(name != null && name.equals(assocOther.name()) && itemOther.getClazz() == assocOther.getClazz()) {
 							add = false;
 							break;
 						}
 						// Check for Merge Association
 						if(mergeFlag) {
-//							if(assoc.getClazz() == this) {
-							if(item.getClazz() == assoc.getClazz()) {
-								if(item.getOtherClazz() == this) {
-									if(item.getType()==AssociationTypes.ASSOCIATION && item.getOtherType()==AssociationTypes.EDGE) {
-										Association other =item.getOther(); 
-										other.with(AssociationTypes.ASSOCIATION);
-										other.with(assoc.getName());
-										other.with(assoc.getCardinality());
-										add = false;
-										break;
-									}
-									if(item.getOther().containsAll(assoc, false)) {
-										add = false;
-										break;
-									}
-								} else {
-//							} else if(item.getOtherClazz() == assoc.getClazz() && item.getClazz() == this) {
-									if(item.getType()==AssociationTypes.EDGE && item.getOtherType()==AssociationTypes.ASSOCIATION) {
-										item.with(AssociationTypes.ASSOCIATION);
-										item.with(assoc.getName());
-										item.with(assoc.getCardinality());
-										add = false;
-										break;
-									}
-									if(item.containsAll(assoc, false)) {
-										add = false;
-										break;
-									}
+							if(itemOther.getClazz() == assocOther.getClazz() && item.getClazz() == assoc.getClazz()) {
+								add = false;
+								if(assocOther.name() != null) {
+									
+								}else if(item.getType()==AssociationTypes.EDGE && itemOther.getType()==AssociationTypes.ASSOCIATION) {
+									item.with(AssociationTypes.ASSOCIATION);
+									item.with(assoc.getName());
+									item.with(assoc.getCardinality());
 								}
+								break;
 							}
-//							if(assoc.equals(item) && item.getOther().containsAll(assoc, false)) {
-//								add = false;
-//								break;
-//							} else if(assoc.getOther().equals(item) && item.containsAll(assoc, false)) {
-//								add = false;
-//								break;
-//							}
-						}
-//							if(found != null) {
-////								if(item.isSame(found.getOther()) && item.getOther().isSame(found)) {
-//									if(GraphUtil.isUndirectional(item)) {
-//										item.getOther().with(AssociationTypes.ASSOCIATION);
-//										item.with(AssociationTypes.ASSOCIATION);
-//									}
-//									return false;
-//								}else if (item.containsAll(found.getOther(), false) && item.getOther().name() == null
-//										&& found.name() != null ) {
-//									Association biAssoc = null;
-//									if(item.name() == null) {
-//										biAssoc = item;
-//									} else if(item.getOther().name() == null) {
-//										biAssoc = item.getOther();
-//									}
-//									if(biAssoc != null) {
-//										biAssoc.with(found.getCardinality());
-//										biAssoc.with(found.getName());
-//										biAssoc.with(AssociationTypes.ASSOCIATION);
-//										item.getOther().with(AssociationTypes.ASSOCIATION);
-//										return false;
-//									}
-//									// Know the Edge
-//								}
-//							}
 						}
 					}
+				}
 				if(add) {
 					// ADD TO PARENT MAY BE LIST
 					if(this.parentNode!= null) {
