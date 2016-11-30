@@ -1423,6 +1423,9 @@ public abstract class AbstractArray<V> implements BaseItem {
 	}
 
 	public void pack() {
+	    	if(elements == null){
+		    return;
+		}
 		boolean complex = isComplex(size);
 		if ((flag & MAP) == 0) {
 			if (complex) {
