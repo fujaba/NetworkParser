@@ -366,15 +366,19 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	}
 
 	protected boolean addListener(Object object) {
-		if (object instanceof SendableEntity) {
-			((SendableEntity) object).addPropertyChangeListener(this.listener);
-		} else {
-			SendableEntityCreator creator = getCreatorClass(object);
-			if(creator != null && creator instanceof SendableEntity) {
-				((SendableEntity) creator).addPropertyChangeListener(this.listener);
-			}
+	    boolean add = false; 
+	    if (object instanceof SendableEntity) {
+		add = ((SendableEntity) object).addPropertyChangeListener(this.listener);
+	    } else {
+		SendableEntityCreator creator = getCreatorClass(object);
+		if(creator != null && creator instanceof SendableEntity) {
+		    add = ((SendableEntity) creator).addPropertyChangeListener(this.listener);
 		}
-		return false;
+	    }
+	    JsonObject json = this.toJsonObject(object, Filter.regard(Depth.create(1)));
+	    SimpleEvent simpleEvent = new SimpleEvent(NEW, json, this, NEW, null, object);
+	    this.updateListener.update(simpleEvent);
+	    return add;
 	}
 
 	/**

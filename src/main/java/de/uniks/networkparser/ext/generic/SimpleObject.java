@@ -1,12 +1,17 @@
 package de.uniks.networkparser.ext.generic;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.json.JsonTokener;
+import de.uniks.networkparser.list.SimpleEntity;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
-public class SimpleObject implements SendableEntityCreator {
+public class SimpleObject implements SendableEntityCreator, SendableEntity {
     private String className;
     private String id;
 
@@ -29,7 +34,25 @@ public class SimpleObject implements SendableEntityCreator {
     private SimpleKeyValueList<String, Object> values = new SimpleKeyValueList<String, Object>();
     private String[] properties;
     private boolean dirty = false;
+    private PropertyChangeSupport propertyChangeSupport;
 
+    @SuppressWarnings("unchecked") 
+    public static SimpleObject create(SimpleEntity<String, Object>... values) {
+	SimpleObject result = new SimpleObject();
+	if(values != null) {
+	    for(SimpleEntity<String, Object> item : values) {
+		result.addValue(item.getKey(), item.getValue());
+	    }
+	}
+	return result;
+    }
+    public static SimpleObject create(String key, Object value) {
+	SimpleObject result = new SimpleObject();
+	result.addValue(key, value);
+	return result;
+    }
+    
+    
     public static SimpleObject create(JsonObject json) {
 	SimpleObject result = new SimpleObject();
 	
@@ -85,11 +108,15 @@ public class SimpleObject implements SendableEntityCreator {
 
     public boolean setValue(String attribute, Object value) {
 	int pos = this.values.indexOf(attribute);
+	Object oldValue;
 	if (pos < 0) {
+	    oldValue = null;
 	    this.addValue(attribute, value);
 	} else {
+	    oldValue = this.values.getValue(attribute);
 	    this.values.setValue(pos, value);
 	}
+	this.propertyChangeSupport.firePropertyChange(attribute, oldValue, value);
 	return true;
     }
 
@@ -135,5 +162,33 @@ public class SimpleObject implements SendableEntityCreator {
 	}
 	sb.append(']');
 	return sb.toString();
+    }
+
+    @Override
+    public boolean addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+	if(this.propertyChangeSupport == null) this.propertyChangeSupport = new PropertyChangeSupport(this);
+	this.propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
+	return true;
+    }
+
+    @Override
+    public boolean addPropertyChangeListener(PropertyChangeListener listener) {
+	if(this.propertyChangeSupport == null) this.propertyChangeSupport = new PropertyChangeSupport(this);
+	this.propertyChangeSupport.addPropertyChangeListener(listener);
+	return true;
+    }
+
+    @Override
+    public boolean removePropertyChangeListener(PropertyChangeListener listener) {
+	if(this.propertyChangeSupport == null) this.propertyChangeSupport = new PropertyChangeSupport(this);
+	this.propertyChangeSupport.removePropertyChangeListener(listener);
+	return true;
+    }
+
+    @Override
+    public boolean removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+	if(this.propertyChangeSupport == null) this.propertyChangeSupport = new PropertyChangeSupport(this);
+	this.propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
+	return true;
     }
 }
