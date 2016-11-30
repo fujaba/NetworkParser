@@ -98,9 +98,8 @@ public class GraphTokener extends Tokener {
 		String className = object.getClass().getName();
 		className = className.substring(className.lastIndexOf('.') + 1);
 
-		Clazz newElement = new Clazz();
+		Clazz newElement = new Clazz(className);
 		newElement.withId(mainKey);
-		newElement.with(className);
 		list.with(newElement);
 		if (prototyp != null) {
 			for (String property : prototyp.getProperties()) {
@@ -137,10 +136,15 @@ public class GraphTokener extends Tokener {
 		if (valueCreater != null) {
 			Clazz subId = parse(item, map, list, deep + 1);
 			Association edge = new Association(element);
-			element.with(edge);
 			Association target = new Association(subId).with(cardinality).with(property);
+			// Full Assoc
+			edge.with(target);
+			// Add to Clazzes
+			element.with(edge);
 			subId.with(target);
-			list.with(edge.with(target));
+			
+			// Add to List
+			list.with(edge);
 		} else {
 			Attribute attribute = element.createAttribute(property, DataType.create(item.getClass()));
 			attribute.withValue("" + item);

@@ -754,7 +754,12 @@ public abstract class AbstractArray<V> implements BaseItem {
 		if (isCaseSensitive()) {
 			sb.append("CaseSensitive ");
 		}
-		sb.append("(").append(this.size).append(")");
+		sb.append('(').append(this.size).append(')');
+		if(this.size == 1) {
+			sb.append(' ').append('[');
+			sb.append(this.get(0).toString());
+			sb.append(']');
+		}
 		return sb.toString();
 	}
 
@@ -1504,7 +1509,21 @@ public abstract class AbstractArray<V> implements BaseItem {
 		return converter.encode(this);
 	}
 
-	public void setFlag(byte flag) {
-		this.flag = flag;
+	public boolean setFlag(byte value) {
+		if(value != this.flag) {
+			this.flag = value;
+			return true;
+		}
+		return false;
 	}
+	public void replaceAllValues(Object key, String search, String replace) {
+		for(int i=0;i<this.size();i++)
+		{
+			Object item = get(i);
+			if(item instanceof AbstractArray<?>) {
+				((AbstractArray<?>)item).replaceAllValues(key, search, replace);
+			}
+		}
+	}
+
 }

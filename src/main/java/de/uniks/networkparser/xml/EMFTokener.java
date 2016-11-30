@@ -278,8 +278,7 @@ public class EMFTokener extends Tokener{
 			Clazz clazz = items.get(className);
 			if(clazz == null) {
 				// Create New One
-				clazz = new Clazz();
-				clazz.with(className);
+				clazz = new Clazz(className);
 				items.add(className, clazz);
 				model.with(clazz);
 			}
@@ -571,7 +570,7 @@ public class EMFTokener extends Tokener{
 			}
 
 			if (xml.getString(EMFTokener.XSI_TYPE).equalsIgnoreCase(TYPE_ECLASS)) {
-				Clazz clazz = new Clazz().with(xml.getString(EMFTokener.NAME));
+				Clazz clazz = new Clazz(xml.getString(EMFTokener.NAME));
 				model.with(clazz);
 				for(int c=0;c<xml.sizeChildren();c++) {
 					EntityList child = xml.getChild(c);
@@ -597,8 +596,8 @@ public class EMFTokener extends Tokener{
 					superClazzes.add(xml);
 				}
 			} else if (xml.getString(EMFTokener.XSI_TYPE).equals(TYPE_EEnum)) {
-				Clazz graphEnum = new Clazz().with(ClazzType.ENUMERATION);
-				graphEnum.with(xml.getString(EMFTokener.NAME));
+				Clazz graphEnum = new Clazz(xml.getString(EMFTokener.NAME));
+				graphEnum.with(ClazzType.ENUMERATION);
 				for(int c=0;c<xml.sizeChildren();c++) {
 					EntityList child = ecore.getChild(i);
 					if(child instanceof Entity == false) {
@@ -659,6 +658,10 @@ public class EMFTokener extends Tokener{
 			// Create as Unidirection
 			tgtAssoc.with(srcAssoc);
 			srcAssoc.with(AssociationTypes.EDGE);
+			
+			tgtAssoc.getClazz().with(tgtAssoc);
+			srcAssoc.getClazz().with(srcAssoc);
+			
 			model.with(tgtAssoc);
 		}
 		return model;

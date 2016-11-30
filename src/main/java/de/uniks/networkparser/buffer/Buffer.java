@@ -371,8 +371,8 @@ public abstract class Buffer implements BufferItem {
 	}
 
 	@Override
-	public CharacterBuffer nextToken(char... stopWords) {
-		nextClean(false);
+	public CharacterBuffer nextToken(boolean current, char... stopWords) {
+		nextClean(current);
 		CharacterBuffer characterBuffer = new CharacterBuffer();
 		char c = getCurrentChar();
 		for(int i=0;i<stopWords.length;i++) {

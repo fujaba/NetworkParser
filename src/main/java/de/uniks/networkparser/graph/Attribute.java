@@ -1,5 +1,7 @@
 package de.uniks.networkparser.graph;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
+
 /*
 NetworkParser
 The MIT License
@@ -127,5 +129,39 @@ public class Attribute extends Value {
 	public Attribute with(Annotation value) {
 		super.withAnnotaion(value);
 		return this;
+	}
+	
+	@Override
+	public String toString() {
+		CharacterBuffer sb = new CharacterBuffer();
+		sb.with(getName());
+		sb.with(':');
+		sb.with(getType(true));
+		if(getValue()!= null) {
+			sb.with('=');
+			sb.with(getValue());
+		}
+		return sb.toString();
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof Attribute) {
+			Attribute other = (Attribute) obj;
+			String myName = this.getName();
+			if(myName == null){
+				return other.getName() == null;
+			} else if(myName.equalsIgnoreCase(other.getName())){
+				return true;
+			}
+		} else if(obj instanceof Association) {
+			Association assoc = (Association) obj;
+			String myName = this.getName();
+			if(myName == null){
+			} else if(myName.equalsIgnoreCase(assoc.getOther().getName())){
+				return true;
+			}
+		}
+		return super.equals(obj);
 	}
 }

@@ -125,7 +125,7 @@ public class XMLTokener extends Tokener {
 			}
 			return;
 		}
-		xmlEntity.setType(this.buffer.nextToken(Buffer.STOPCHARSXMLEND).toString());
+		xmlEntity.setType(this.buffer.nextToken(false, Buffer.STOPCHARSXMLEND).toString());
 		XMLEntity child;
 		while (true) {
  			c = nextClean(true);
@@ -304,7 +304,7 @@ public class XMLTokener extends Tokener {
 			if (tokener.getCurrentChar() == '/') {
 				stack.popStack();
 				tokener.getChar();
-				tokener.nextToken(TOKEN);
+				tokener.nextToken(false, TOKEN);
 				return entity;
 			}
 
@@ -321,7 +321,7 @@ public class XMLTokener extends Tokener {
 						test.with(tokener.getChar());
 					}
 					if (tokener.getCurrentChar() == ENDTAG) {
-						CharacterBuffer endTag = tokener.nextToken(XMLTokener.TOKEN);
+						CharacterBuffer endTag = tokener.nextToken(false, XMLTokener.TOKEN);
 						String currentTag = stack.getCurrentTag();
 						if (currentTag == null || currentTag.equals(endTag.toString())) {
 							break;
@@ -356,7 +356,7 @@ public class XMLTokener extends Tokener {
 					if (valueItem == null) {
 						if (tokener.getCurrentChar() == ENDTAG) {
 							// Show if Item is End
-							valueItem = tokener.nextToken(ITEMEND);
+							valueItem = tokener.nextToken(false, ITEMEND);
 							if (valueItem.equals(stack.getCurrentTag())) {
 								stack.popStack();
 								// SKip > EndTag
@@ -403,7 +403,7 @@ public class XMLTokener extends Tokener {
 					isEmpty = valueItem.isEmpty();
 				}
 			}
-			tag = tokener.nextToken(TOKEN);
+			tag = tokener.nextToken(false, TOKEN);
 			if (tag != null) {
 				for (String stopword : this.stopwords) {
 					if (tag.startsWith(stopword, 0, false)) {
@@ -474,7 +474,7 @@ public class XMLTokener extends Tokener {
 						creator.setValue(entity, XMLEntity.PROPERTY_VALUE, valueItem.toString(), IdMap.NEW);
 					}
 				}
-				tag = tokener.nextToken(TOKEN);
+				tag = tokener.nextToken(false, TOKEN);
 				item = idMap.getCreator(tag.toString(), false);
 				if(item instanceof SendableEntityCreatorTag) {
 					creator = (SendableEntityCreatorTag) item;

@@ -24,6 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.util.Iterator;
+
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Clazz;
@@ -41,21 +42,18 @@ import de.uniks.networkparser.list.SimpleSet;
 public class YUMLConverter implements Converter{
 	/** The Constant URL. */
 	public static final String URL = "http://yuml.me/diagram/class/";
+	public boolean defaultShowPackage;
 
 	public String convert(GraphList root, boolean removePackage) {
 		String typ = root.getTyp();
 		GraphSimpleSet collection = GraphUtil.getChildren(root);
-		if (collection.size() > 0) {
+		if(collection.size()>0) {
 			StringBuilder sb = new StringBuilder();
-			Iterator<GraphMember> i = collection.iterator();
-
 			SimpleList<GraphMember> visitedObj = new SimpleList<GraphMember>();
 			root.initSubLinks();
-			parse(typ, i.next(), sb, visitedObj, removePackage);
-			while (i.hasNext()) {
-				parse(typ, i.next(), sb, visitedObj, removePackage);
+			for(GraphMember item : collection) {
+				parse(typ, item, sb, visitedObj, removePackage);
 			}
-
 			return sb.toString();
 		}
 		return null;
@@ -162,6 +160,7 @@ public class YUMLConverter implements Converter{
 		StringBuilder sb = new StringBuilder();
 
 		Iterator<GraphMember> i = GraphUtil.getChildren(entity).iterator();
+		boolean second=false;
 		if (i.hasNext()) {
 			String splitter = "";
 			if (typ.equals(GraphTokener.OBJECT)) {
@@ -170,13 +169,13 @@ public class YUMLConverter implements Converter{
 				splitter = ":";
 			}
 
-			Object element = i.next();
+			Object element;
 			Attribute attribute;
-			if (element instanceof Attribute) {
-				attribute = (Attribute) element;
-				sb.append(attribute.getName() + splitter
-						+ attribute.getValue(typ, shortName)); // / without Typ
-			}
+//			if (element instanceof Attribute) {
+//				attribute = (Attribute) element;
+//				sb.append(attribute.getName() + splitter
+//						+ attribute.getValue(typ, shortName)); // / without Typ
+//			}
 
 			while (i.hasNext()) {
 				element = i.next();
@@ -184,8 +183,10 @@ public class YUMLConverter implements Converter{
 					continue;
 				}
 				attribute = (Attribute) element;
-
-				sb.append(";");
+				if(second) {
+					sb.append(";");
+				}
+				second = true;
 				sb.append(attribute.getName() + splitter
 						+ attribute.getValue(typ, shortName));
 			}
@@ -195,11 +196,11 @@ public class YUMLConverter implements Converter{
 		}
 		return sb.toString();
 	}
-
+	
 	@Override
 	public String encode(BaseItem entity) {
 		if(entity instanceof GraphList) {
-			return convert((GraphList) entity, false);
+			return convert((GraphList) entity, defaultShowPackage);
 		}
 		return null;
 	}

@@ -141,10 +141,11 @@ public interface BufferItem {
 
 	/**
 	 * Get the next Token
+	 * @param current switch for add the current Character
 	 * @param stopWords may be at Simple Space
 	 * @return The next Token
 	 */
-	public CharacterBuffer nextToken(char... stopWords);
+	public CharacterBuffer nextToken(boolean current, char... stopWords);
 
 	/**
 	 * Skip.

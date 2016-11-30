@@ -267,9 +267,9 @@ public class Tokener implements BufferItem {
 		return null;
 	}
 	@Override
-	public CharacterBuffer nextToken(char... stopWords) {
+	public CharacterBuffer nextToken(boolean current, char... stopWords) {
 		if(buffer != null) {
-			return buffer.nextToken(stopWords);
+			return buffer.nextToken(current, stopWords);
 		}
 		return null;
 	}

@@ -356,6 +356,17 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return (ST)this;
 	}
 
+	@SuppressWarnings("unchecked")
+	public <ST extends SimpleKeyValueList<K, V>> ST withMultIndex(K[] keys, V value) {
+		if(keys == null) {
+			return (ST)this;
+		}
+		for(K key : keys) {
+			add(key, value);
+		}
+		return (ST)this;
+	}
+
 	public boolean add(K key, V value) {
 		int pos = hasKey(key);
 		if(pos>=0) {
@@ -590,5 +601,32 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	@Override
 	public Iterator<Entry<K, V>> iterator() {
 		return new SimpleIteratorSet<K, V>(this);
+	}
+	
+	@Override
+	public void replaceAllValues(Object key, String search, String replace) {
+		if(key == null) {
+			return;
+		}
+		for(int i=0;i<this.size();i++)
+		{
+			Object value = getValueByIndex(i);
+			if(value instanceof AbstractArray<?>) {
+				((AbstractArray<?>)value).replaceAllValues(key, search, replace);
+			} else {
+				Object itemKey = getKeyByIndex(i);
+				if(key.equals(itemKey)) {
+					if(search == null) {
+						this.setValue(i, replace, SMALL_VALUE);
+					} else if(value instanceof String) {
+						String stringValue = (String) value;
+						if(stringValue.indexOf(search)>=0) {
+							stringValue = stringValue.replaceAll(search, replace);
+							this.setValue(i, stringValue, SMALL_VALUE);
+						}
+					}
+				}
+			}
+		}
 	}
 }

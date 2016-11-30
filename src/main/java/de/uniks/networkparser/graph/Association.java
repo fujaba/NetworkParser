@@ -224,7 +224,7 @@ public class Association extends GraphMember {
 	}
 
 	public Association getOther() {
-		return other;
+ 		return other;
 	}
 
 	public static Association create(GraphEntity source, GraphEntity target){
@@ -342,6 +342,7 @@ public class Association extends GraphMember {
 		}
 		return contains;
 	}
+	
 
 	boolean containsAll(Association others, boolean both) {
 		if(parentNode == null) {
@@ -372,14 +373,5 @@ public class Association extends GraphMember {
 	public Association without(Annotation value) {
 		super.without(value);
 		return this;
-	}
-	boolean isSame(Association other) {
-		if(this.name == null ) {
-			if(other.name() == null) {
-				return true;
-			}
-			return false;
-		}
-		return this.name().equals(other.name());
 	}
 }
