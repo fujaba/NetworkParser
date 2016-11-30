@@ -327,6 +327,14 @@ public class GraphTest {
 		}
 		Assert.assertEquals(len, json.toString(2).length());
 	}
+	private void showDebugInfos(String value, int len, PrintStream stream) {
+		if (stream != null) {
+			stream.println("###############################");
+			stream.println(value);
+			stream.println("###############################");
+		}
+		Assert.assertEquals(len, value.length());
+	}
 
 	private void showDebugInfos(EntityList json, int len, PrintStream stream) {
 		if (stream != null) {
@@ -353,13 +361,13 @@ public class GraphTest {
 		showDebugInfos(objectModel, 635, null);
 
 		JsonObject clazzModel = graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
-		showDebugInfos(clazzModel, 492, null);
+		showDebugInfos(clazzModel, 469, null);
 		Assert.assertEquals(new CharacterBuffer().withLine("{").withLine("  \"typ\":\"classdiagram\",")
 				.withLine("  \"nodes\":[").withLine("    {")
 				.withLine("      \"typ\":\"clazz\",").withLine("      \"id\":\"SortedMsg\",")
 				.withLine("      \"attributes\":[").withLine("        \"msg:String\",")
 				.withLine("        \"number:Integer\"").withLine("      ]").withLine("    }").withLine("  ],")
-				.withLine("  \"edges\":[").withLine("    {").withLine("      \"typ\":\"ASSOCIATION\",")
+				.withLine("  \"edges\":[").withLine("    {").withLine("      \"typ\":\"assoc\",")
 				.withLine("      \"source\":{").withLine("        \"cardinality\":\"one\",")
 				.withLine("        \"property\":\"child\",").withLine("        \"id\":\"SortedMsg\"")
 				.withLine("      },").withLine("      \"target\":{").withLine("        \"cardinality\":\"one\",")
@@ -555,7 +563,7 @@ public class GraphTest {
 		Clazz person = model.with(new Clazz("Person"));
 
 		uni.withBidirectional(person, "has", Cardinality.MANY, "studis", Cardinality.ONE);
-		Assert.assertEquals(656, htmlEntity.withGraph(model).toString(2).length());
+		showDebugInfos(htmlEntity.withGraph(model).toString(2), 814, null);
 	}
 
 	@Test

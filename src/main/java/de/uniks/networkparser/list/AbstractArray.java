@@ -754,7 +754,12 @@ public abstract class AbstractArray<V> implements BaseItem {
 		if (isCaseSensitive()) {
 			sb.append("CaseSensitive ");
 		}
-		sb.append("(").append(this.size).append(")");
+		sb.append('(').append(this.size).append(')');
+		if(this.size == 1) {
+			sb.append(' ').append('[');
+			sb.append(this.get(0).toString());
+			sb.append(']');
+		}
 		return sb.toString();
 	}
 

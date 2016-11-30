@@ -98,9 +98,8 @@ public class GraphTokener extends Tokener {
 		String className = object.getClass().getName();
 		className = className.substring(className.lastIndexOf('.') + 1);
 
-		Clazz newElement = new Clazz();
+		Clazz newElement = new Clazz(className);
 		newElement.withId(mainKey);
-		newElement.with(className);
 		list.with(newElement);
 		if (prototyp != null) {
 			for (String property : prototyp.getProperties()) {

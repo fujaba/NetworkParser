@@ -148,10 +148,17 @@ public class Attribute extends Value {
 	public boolean equals(Object obj) {
 		if(obj instanceof Attribute) {
 			Attribute other = (Attribute) obj;
-			String name2 = this.getName();
-			if(this.getName() == null){
+			String myName = this.getName();
+			if(myName == null){
 				return other.getName() == null;
-			} else if(name2.equalsIgnoreCase(other.getName())){
+			} else if(myName.equalsIgnoreCase(other.getName())){
+				return true;
+			}
+		} else if(obj instanceof Association) {
+			Association assoc = (Association) obj;
+			String myName = this.getName();
+			if(myName == null){
+			} else if(myName.equalsIgnoreCase(assoc.getOther().getName())){
 				return true;
 			}
 		}

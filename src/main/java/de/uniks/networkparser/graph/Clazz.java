@@ -1,29 +1,5 @@
 package de.uniks.networkparser.graph;
 
-/*
-NetworkParser
-The MIT License
-Copyright (c) 2010-2016 Stefan Lindel https://github.com/fujaba/NetworkParser/
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-*/
-import java.util.Collection;
 import de.uniks.networkparser.graph.util.AssociationSet;
 import de.uniks.networkparser.graph.util.AttributeSet;
 import de.uniks.networkparser.graph.util.ClazzSet;
@@ -289,7 +265,7 @@ public class Clazz extends GraphEntity {
 			type = AssociationTypes.GENERALISATION;
 		}
 
-		ClazzSet collection = getEdges(type);
+		ClazzSet collection = getEdgesByTypes(type, null);
 		if(!transitive) {
 			return collection;
 		}
@@ -312,7 +288,7 @@ public class Clazz extends GraphEntity {
 	 */
 	public ClazzSet getSuperClazzes(boolean transitive) {
 		repairAssociations();
-		ClazzSet collection = getEdges(AssociationTypes.GENERALISATION);
+		ClazzSet collection = getEdgesByTypes(AssociationTypes.GENERALISATION, null);
 		if(!transitive) {
 			return collection;
 		}
@@ -354,14 +330,14 @@ public class Clazz extends GraphEntity {
 		
 	}
 	private void repairAssociations() {
-		if (associations == null ) {
+		if (this.children == null ) {
 			return;
 		}
-		if(associations instanceof Association) {
+		if(this.children instanceof Association) {
 			// Is is easy only one Assoc
-			repairAssociation((Association)associations);
-		}else if(associations instanceof GraphSimpleSet) {
-			GraphSimpleSet list = (GraphSimpleSet) this.associations;
+			repairAssociation((Association) this.children);
+		}else if(children instanceof GraphSimpleSet) {
+			GraphSimpleSet list = (GraphSimpleSet) this.children;
 			AssociationSet generalizations = new AssociationSet();
 			for (GraphMember item : list) {
 				if(item instanceof Association) {
@@ -397,7 +373,7 @@ public class Clazz extends GraphEntity {
 	 *		 </pre>
 	 */
 	public ClazzSet getKidClazzes(boolean transitive) {
-		ClazzSet kidClazzes = getEdges(AssociationTypes.EDGE, AssociationTypes.GENERALISATION);
+		ClazzSet kidClazzes = getEdgesByTypes(AssociationTypes.EDGE, AssociationTypes.GENERALISATION);
 		if(!transitive) {
 			return kidClazzes;
 		}
@@ -418,20 +394,16 @@ public class Clazz extends GraphEntity {
 	 *		 </pre>
 	 */
 	public ClazzSet getImplements() {
-		ClazzSet kidClazzes = getEdges(AssociationTypes.EDGE, AssociationTypes.IMPLEMENTS);
+		ClazzSet kidClazzes = getEdgesByTypes(AssociationTypes.EDGE, AssociationTypes.IMPLEMENTS);
 		return kidClazzes;
 	}
 	
-	ClazzSet getEdges(AssociationTypes typ) {
-		return getEdges(typ, null);
-	}
-
-	ClazzSet getEdges(AssociationTypes typ, AssociationTypes otherTyp) {
+	ClazzSet getEdgesByTypes(AssociationTypes typ, AssociationTypes otherTyp) {
 		ClazzSet kidClazzes = new ClazzSet();
-		if (associations == null || typ == null) {
+		if (this.children == null || typ == null) {
 			return kidClazzes;
 		}
-		for (Association assoc : getEdges()) {
+		for (Association assoc : super.getEdges(AssociationTypes.EDGE)) {
 			if(typ != assoc.getType()) {
 				continue;
 			}
@@ -511,37 +483,6 @@ public class Clazz extends GraphEntity {
 		return collection;
 	}
 
-   /** get all Associations
-    * @param filters Can Filter the List of Attributes
-    * @return all Attributes of a Clazz
-    *
-    *<pre>
-    * Clazz  --------------------- Association
-    * one                          many
-    *</pre>
-    */
-	public AssociationSet getAssociations(Condition<?>... filters) {
-		if (this.associations == null) {
-			return AssociationSet.EMPTY_SET;
-		}
-		AssociationSet result = new AssociationSet();
-		if (this.associations instanceof Association) {
-			if (check((Association) this.associations, filters)) {
-				result.add((Association) this.associations);
-			}
-			return result;
-		}
-		if (this.associations instanceof Collection<?>) {
-			Collection<?> list = (Collection<?>) this.associations;
-			for (Object item : list) {
-				if (item instanceof Association && check((Association) item, filters)) {
-					result.add((Association) item);
-				}
-			}
-		}
-		return result;
-	}
-
 	/** get All Methods
 	 * @param filters Can Filter the List of Methods
 	 * @return all Methods of a Clazz
@@ -574,7 +515,7 @@ public class Clazz extends GraphEntity {
 	}
 
 	public Clazz withoutKidClazz(Clazz... values) {
-		if (this.associations == null || values == null) {
+		if (this.children == null || values == null) {
 			return this;
 		}
 		for (Clazz item : values) {
@@ -593,7 +534,7 @@ public class Clazz extends GraphEntity {
 	}
 
 	public Clazz withoutSuperClazz(Clazz... values) {
-		if (this.associations == null || values == null) {
+		if (this.children == null || values == null) {
 			return this;
 		}
 		for (Clazz item : values) {
