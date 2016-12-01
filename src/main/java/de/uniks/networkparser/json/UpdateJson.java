@@ -253,9 +253,6 @@ public class UpdateJson implements PropertyChangeListener {
 			return null;
 		}
 		SendableEntityCreator creator = this.map.getCreatorClass(masterObj);
-		if(creator == null && masterObj instanceof SendableEntityCreator) {
-		    creator = (SendableEntityCreator) masterObj;
-		}
 		if (remove == null && update != null) {
 			// create Message
 			Object refObject = creator.getSendableInstance(true);

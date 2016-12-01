@@ -24,6 +24,9 @@ public class JsonMessageTest implements UpdateListener {
 
 	@Override
 	public boolean update(Object event) {
+		if(event instanceof SimpleEvent == false) {
+			return false;
+		}
 		SimpleEvent simpleEvent = (SimpleEvent) event;
 		if(simpleEvent.isNewEvent()){
 			Assert.assertEquals("Message "+pos+":", messages.get(pos++), simpleEvent.getEntity().toString());
@@ -83,8 +86,11 @@ public class JsonMessageTest implements UpdateListener {
 		messages = new SimpleList<String>();
 		map.with(new UpdateListener() {
 			@Override
-			public boolean update(Object event) {
-				SimpleEvent simpleEvent = (SimpleEvent) event;
+			public boolean update(Object evt) {
+				if(evt instanceof SimpleEvent == false) {
+					return false;
+				}
+				SimpleEvent simpleEvent = (SimpleEvent) evt;
 				String msg = simpleEvent.getEntity().toString();
 				messages.add(msg);
 				Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.House\",\"id\":\"J1.H1\",\"rem\":{\"floor\":4},\"upd\":{\"floor\":42}}", msg);

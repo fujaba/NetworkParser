@@ -768,6 +768,9 @@ public class JsonTest extends IOClasses {
 		map.with(new UpdateListener() {
 			@Override
 			public boolean update(Object event) {
+				if(event instanceof SimpleEvent == false) {
+					return false;
+				}
 				SimpleEvent simpleEvent = (SimpleEvent) event;
 
 				updateMessage = simpleEvent.getEntity().toString();

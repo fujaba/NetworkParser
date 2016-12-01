@@ -173,6 +173,9 @@ public class JsonModellTest implements UpdateListener {
 
 	@Override
 	public boolean update(Object evt) {
+		if(evt instanceof SimpleEvent == false) {
+			return false;
+		}
 		SimpleEvent simpleEvent = (SimpleEvent) evt;
 
 		if(IdMap.NEW.equals(simpleEvent.getType())) {
@@ -204,8 +207,11 @@ public class JsonModellTest implements UpdateListener {
 		map.toJsonObject(tree);
 		map.with(new UpdateListener() {
 			@Override
-			public boolean update(Object event) {
-				SimpleEvent simpleEvent = (SimpleEvent) event;
+			public boolean update(Object evt) {
+				if(evt instanceof SimpleEvent == false) {
+					return false;
+				}
+				SimpleEvent simpleEvent = (SimpleEvent) evt;
 				data = simpleEvent.getEntity();
 				return (Apple.PROPERTY_PASSWORD.equals(simpleEvent.getPropertyName()) == false);
 			}

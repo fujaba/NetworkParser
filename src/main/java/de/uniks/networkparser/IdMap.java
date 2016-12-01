@@ -168,7 +168,11 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		if (reference == null) {
 			return null;
 		}
-		return getCreator(reference.getClass().getName(), true);
+		SendableEntityCreator creator = getCreator(reference.getClass().getName(), true);
+		if (creator == null && reference instanceof SendableEntityCreator) {
+			return (SendableEntityCreator) reference;
+		}
+		return creator;
 	}
 
 	/**
@@ -196,7 +200,6 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 				return value;
 			}
 		}
-
 		// Search for Child Node
 		return null;
 	}
@@ -375,9 +378,9 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		    add = ((SendableEntity) creator).addPropertyChangeListener(this.listener);
 		}
 	    }
-	    JsonObject json = this.toJsonObject(object, Filter.regard(Depth.create(1)));
-	    SimpleEvent simpleEvent = new SimpleEvent(NEW, json, this, NEW, null, object);
-	    this.updateListener.update(simpleEvent);
+	    if(this.updateListener != null) {
+	    	this.updateListener.update(object);
+	    }
 	    return add;
 	}
 

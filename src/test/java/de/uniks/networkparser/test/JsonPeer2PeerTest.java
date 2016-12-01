@@ -49,8 +49,11 @@ public class JsonPeer2PeerTest implements UpdateListener{
 	}
 
 	@Override
-	public boolean update(Object event) {
-		SimpleEvent simpleEvent = (SimpleEvent) event;
+	public boolean update(Object evt) {
+		if(evt instanceof SimpleEvent == false) {
+			return false;
+		}
+		SimpleEvent simpleEvent = (SimpleEvent) evt;
 		if(simpleEvent.isNewEvent() == false) {
 			return true;
 		}
