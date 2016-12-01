@@ -80,10 +80,14 @@ public class SimpleGrammar implements Grammar{
 	public SendableEntityCreator getCreator(String type, Object item, IdMap map, boolean searchForSuperCreator, String className) {
 		if(Grammar.WRITE.equals(type)) {
 			SendableEntityCreator creator = map.getCreator(className, true);
+
 			if(creator != null) {
 				return creator;
 			}
-			return getSuperCreator(map, searchForSuperCreator, item);
+			if (item instanceof SendableEntityCreator) {
+				return (SendableEntityCreator) item;
+			}
+			return getSuperCreator(map, searchForSuperCreator, item); 
 		}
 		if(className == null && item instanceof Entity) {
 			Object name = ((Entity)item).getValue(IdMap.CLASS);
