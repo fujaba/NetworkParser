@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.SimpleObject;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.DotConverter;
 import de.uniks.networkparser.converter.GraphConverter;
@@ -78,6 +79,18 @@ import de.uniks.networkparser.test.model.util.UniversityCreator;
 import de.uniks.networkparser.xml.HTMLEntity;
 
 public class GraphTest {
+	@Test
+	public void testSimpleObject() {
+		SimpleObject so = SimpleObject.create("number", "number", 0);
+		IdMap map = new IdMap();
+		JsonObject jsonObject = map.toJsonObject(so);
+		Assert.assertEquals("{\"class\":\"number\",\"id\":\"J1.S1\",\"prop\":{\"number\":0}}", jsonObject.toString());
+		jsonObject = map.toJsonObject(so, Filter.SIMPLEFORMAT);
+		Assert.assertEquals("{\"class\":\"number\",\"id\":\"J1.S1\",\"number\":0}", jsonObject.toString());
+	}		
+	
+	
+	
 	@Test
 	public void testDupplicateAssoc() {
 		Clazz person=new Clazz("Person");

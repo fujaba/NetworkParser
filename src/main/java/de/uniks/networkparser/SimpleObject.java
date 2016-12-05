@@ -1,42 +1,21 @@
-package de.uniks.networkparser.ext.generic;
+package de.uniks.networkparser;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.json.JsonTokener;
 import de.uniks.networkparser.list.SimpleEntity;
 import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.list.SimpleList;
 
 public class SimpleObject implements SendableEntityCreator, SendableEntity {
-	private String className;
+	
+	protected String className;
 
-	private String id;
-
-
-	public String getClassName() {
-		return className;
-	}
-
-
-	public void setClassName(String className) {
-		this.className = className;
-	}
-
-
-	public String getId() {
-		return id;
-	}
-
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	private SimpleKeyValueList<String, Object> values = new SimpleKeyValueList<String, Object>();
+	protected String id;
 
 	private String[] properties;
 
@@ -44,13 +23,92 @@ public class SimpleObject implements SendableEntityCreator, SendableEntity {
 
 	private PropertyChangeSupport propertyChangeSupport;
 
+	private SimpleKeyValueList<String, Object> values = new SimpleKeyValueList<String, Object>();
+	protected SimpleList<String> baseElements = new SimpleList<String>();
+	
+	public String getClassName() {
+		return className;
+	}
+
+	public boolean setClassName(String value) {
+		if(value != this.className) {
+			this.className = value;
+			return true;
+		}
+		return false;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public boolean setId(String value) {
+		if(value != this.id) {
+			this.id = value;
+			return true;
+		}
+		return false;
+	}
+	
+	public Object getValue(String key) {
+		if(IdMap.ID.equals(key)) {
+			return this.getId();
+		} else if(IdMap.CLASS.equals(key)) {
+			return this.getClassName();
+		}
+		return values.get(key);
+	}
+
+	public Object getValue() {
+		if (values.size() == 1) {
+			return values.get(values.getValueByIndex(0));
+		}
+		return null;
+	}
+	
+	public boolean setValue(String key, Object value) {
+		if(value instanceof String) {
+			if(IdMap.ID.equals(key)) {
+				return this.setId((String) value);
+			} else if(IdMap.CLASS.equals(key)) {
+				return this.setClassName((String) value);
+			}
+		}
+		int pos = this.values.indexOf(key);
+
+		Object oldValue;
+		if (pos < 0) {
+			oldValue = null;
+			if(this.values.add(key, value)) {
+				this.baseElements.add(key);				
+				this.dirty = true;
+			}
+		}
+		else {
+			oldValue = this.values.getValue(key);
+			this.values.setValue(pos, value);
+		}
+		if(this.propertyChangeSupport != null) {
+			this.propertyChangeSupport.firePropertyChange(key, oldValue, value);
+		}
+		return true;
+	}
+	
+	public Object withoutValue(String key) {
+		Object result =  this.values.remove(key);
+		if(result!= null) {
+			this.baseElements.remove(key);
+			this.dirty = true;
+		}
+		return result;
+	}
 
 	@SuppressWarnings("unchecked")
 	public static SimpleObject create(SimpleEntity<String, Object>... values) {
 		SimpleObject result = new SimpleObject();
 		if (values != null) {
 			for (SimpleEntity<String, Object> item : values) {
-				result.addValue(item.getKey(), item.getValue());
+				result.setValue(item.getKey(), item.getValue());
 			}
 		}
 		return result;
@@ -60,7 +118,7 @@ public class SimpleObject implements SendableEntityCreator, SendableEntity {
 	public static SimpleObject create(String className, String key, Object value) {
 		SimpleObject result = new SimpleObject();
 		result.setClassName(className);
-		result.addValue(key, value);
+		result.setValue(key, value);
 		return result;
 	}
 
@@ -79,36 +137,16 @@ public class SimpleObject implements SendableEntityCreator, SendableEntity {
 			for (int i = 0; i < jsonProps.size(); i++) {
 				String key = jsonProps.getKeyByIndex(i);
 				Object value = jsonProps.getValueByIndex(i);
-				result.addValue(key, value);
+				result.setValue(key, value);
 			}
 		}
 		return result;
 	}
 
-
-	void addValue(String key, Object value) {
-		this.values.add(key, value);
-		this.dirty = true;
-	}
-
-
-	public Object getValue(String key) {
-		return values.get(key);
-	}
-
-
-	public Object getValue() {
-		if (values.size() == 1) {
-			return values.get(values.getValueByIndex(0));
-		}
-		return null;
-	}
-
-
 	@Override
 	public String[] getProperties() {
 		if (this.dirty) {
-			this.properties = this.values.keySet().toArray(new String[this.values.size()]);
+			this.properties = this.baseElements.toArray(new String[this.baseElements.size()]);
 			this.dirty = false;
 		}
 		return this.properties;
@@ -123,39 +161,9 @@ public class SimpleObject implements SendableEntityCreator, SendableEntity {
 		return null;
 	}
 
-
-	public boolean setValue(String attribute, Object value) {
-		int pos = this.values.indexOf(attribute);
-		Object oldValue;
-		if (pos < 0) {
-			oldValue = null;
-			this.addValue(attribute, value);
-		}
-		else {
-			oldValue = this.values.getValue(attribute);
-			this.values.setValue(pos, value);
-		}
-		this.propertyChangeSupport.firePropertyChange(attribute, oldValue, value);
-		return true;
-	}
-
-
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value, String type) {
-		if (entity instanceof SimpleObject) {
-			if( IdMap.NEW.equals(type) && value instanceof String) {
-				if(IdMap.ID.equals(attribute)) {
-					this.setId((String) value);
-					return true;
-				} else if(IdMap.CLASS.equals(attribute)) {
-					this.setClassName((String) value);
-					return true;
-				}
-			}
-			((SimpleObject) entity).setValue(attribute, value);
-			return true;
-		}
-		return false;
+		return setValue(attribute, value);
 	}
 
 

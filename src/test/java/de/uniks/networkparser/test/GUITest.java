@@ -3,13 +3,25 @@ package de.uniks.networkparser.test;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.gui.CellHandler;
 import de.uniks.networkparser.gui.Column;
+import de.uniks.networkparser.gui.controls.Button;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.json.JsonObject;
 
 public class GUITest {
+	@Test
+	public void testControlToJson() {
+		Button button = new Button();
+		IdMap map =new IdMap();
+		JsonObject json = map.toJsonObject(button, Filter.SIMPLEFORMAT);
+		System.out.println(json.toString());
+		
+		
+	}
 	@Test
 	public void testGUIPosition() {
 		Assert.assertEquals(GUIPosition.CENTER.getValue(), "Center");

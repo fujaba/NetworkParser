@@ -34,10 +34,13 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleList;
 
 public class Tokener implements BufferItem {
+	public static final String PROPS = "prop";
 	protected IdMap map;
 
 	/** BUFFER */
 	protected Buffer buffer;
+	
+//	protected boolean simpleFormat=true;
 
 	// Methods for Map
 	public SendableEntityCreator getCreatorClass(Object reference) {
@@ -46,6 +49,15 @@ public class Tokener implements BufferItem {
 		}
 		return map.getCreatorClass(reference);
 	}
+	
+//	public Tokener withSimpleFormat(boolean value) {
+//		this.simpleFormat = value;
+//		return this;
+//	}
+//	
+//	public boolean isSimpleFormat() {
+//		return simpleFormat;
+//	}
 
 	public SendableEntityCreator getCreator(String className, boolean fullName) {
 		if(map == null) {

@@ -47,8 +47,6 @@ import de.uniks.networkparser.xml.XMLEntity;
 
 public class JsonTokener extends Tokener {
 	/** The Constant JSON_PROPS. */
-	public static final String PROPS = "prop";
-
 	public final static String STOPCHARS = ",]}/\\\"[{;=# ";
 	public static final char COMMENT='#';
 
@@ -57,6 +55,11 @@ public class JsonTokener extends Tokener {
 	public static final char STARTENTITY='{';
 	public static final char ENDENTITY='}';
 
+//	public JsonTokener withSimpleFormat(boolean value) {
+//		super.withSimpleFormat(false);
+//		return this;
+//	}
+	
 	@Override
 	public void parseToEntity(EntityList entityList) {
 		char c = nextClean(true);

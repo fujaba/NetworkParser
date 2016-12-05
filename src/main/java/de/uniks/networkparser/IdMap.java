@@ -1019,6 +1019,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		}
 		MapEntity map = new MapEntity(filter, grammar);
 		map.withFlag(flag);
+		map.withSimpleFormat(true);
 		map.withoutFlag(FLAG_ID);
 		map.withStack(new MapEntityStack());
 		return (XMLEntity) this.encode(entity, map, xmlTokener);
@@ -1295,6 +1296,12 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 			}
 		}
 		if (isSimple == false || item == null) {
+			if(entity instanceof SimpleObject) {
+				String type = ((SimpleObject)entity).getClassName();
+				if(type != null) {
+					className = type; 
+				}
+			}
 			item = map.writeBasicValue(creator, tokener.newInstance(), parentNode, className, id);
 			if (item == null) {
 				return null;

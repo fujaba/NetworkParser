@@ -37,6 +37,8 @@ public class Filter {
 	/** The Constant PRIO. */
 	public static final String PRIO = "prio";
 
+	public static final Filter SIMPLEFORMAT = new Filter().withSimpleFormat(true);
+
 	protected UpdateListener idFilter;
 	protected UpdateListener convertable;
 	protected UpdateListener property;
@@ -44,6 +46,7 @@ public class Filter {
 	// Temporary variables
 	protected boolean full;
 	private String strategy = IdMap.NEW;
+	private boolean simpleFormat;
 
 	public Filter withIdFilter(UpdateListener idFilter) {
 		this.idFilter = idFilter;
@@ -68,6 +71,16 @@ public class Filter {
 			}
 		}
 		return true;
+	}
+	
+	public boolean isSimpleFormat(Object entity, SendableEntityCreator creator, String className, IdMap map){
+		if(this.isSimpleFormat()) {
+			return true;
+		}
+		if (creator instanceof SendableEntityCreatorNoIndex || isId(entity, className, map) == false) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -144,6 +157,15 @@ public class Filter {
 
 	public Filter withStrategy(String strategy) {
 		this.strategy = strategy;
+		return this;
+	}
+
+	public boolean isSimpleFormat() {
+		return simpleFormat;
+	}
+
+	public Filter withSimpleFormat(boolean value) {
+		this.simpleFormat = value;
 		return this;
 	}
 }

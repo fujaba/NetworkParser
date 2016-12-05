@@ -580,7 +580,7 @@ public class JsonTest extends IOClasses {
 
 		encodeMap.with(new PersonCreator());
 		Person person = new Person().withName("Albert").withBalance(42);
-		String shortString = encodeMap.toJsonObject(person).toString();
+		String shortString = encodeMap.toJsonObject(person, Filter.SIMPLEFORMAT).toString();
 		Assert.assertEquals(49, shortString.length());
 
 		IdMap decodeMap = new IdMap().with(new EMFJsonGrammar());
