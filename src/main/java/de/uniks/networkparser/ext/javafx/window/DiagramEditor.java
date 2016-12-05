@@ -378,7 +378,7 @@ public class DiagramEditor extends SimpleShell implements Editor {
 				values.with(item);
 			}
 		}
-		launch(values.toArray(new String[0]));
+		launch(values.toArray(new String[values.size()]));
 	}
 
 	@Override
