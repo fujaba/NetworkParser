@@ -24,10 +24,21 @@ public class SimpleObject implements SendableEntityCreator, SendableEntity {
 	private PropertyChangeSupport propertyChangeSupport;
 
 	private SimpleKeyValueList<String, Object> values = new SimpleKeyValueList<String, Object>();
-	protected SimpleList<String> baseElements = new SimpleList<String>();
+	private SimpleList<String> baseElements = new SimpleList<String>();
 	
 	public String getClassName() {
 		return className;
+	}
+	
+	protected void addBaseElements(String... elements) {
+		if(elements == null) {
+			return;
+		}
+		for(String item : elements) {
+			if(this.baseElements.add(item)) {
+				this.dirty = true;
+			}
+		}
 	}
 
 	public boolean setClassName(String value) {

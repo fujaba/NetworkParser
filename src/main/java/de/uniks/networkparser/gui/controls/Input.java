@@ -12,6 +12,7 @@ public class Input<T> extends Control {
 		super();
 		/* Set variables of parent class */
 		this.className = INPUT;
+		this.addBaseElements(VALUE);
 	}
 
 	@Override

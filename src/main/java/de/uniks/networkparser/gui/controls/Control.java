@@ -7,7 +7,7 @@ public abstract class Control extends SimpleObject{
 	public static final String PROPERTY = "property";
 
 	public Control() {
-		this.baseElements.add(PROPERTY);
+		this.addBaseElements(PROPERTY);
 	}
 	
 	/* Variables */

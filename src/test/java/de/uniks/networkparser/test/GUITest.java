@@ -16,6 +16,7 @@ public class GUITest {
 	@Test
 	public void testControlToJson() {
 		Button button = new Button();
+		button.setOnClick("MyOnClick");
 		IdMap map =new IdMap();
 		JsonObject json = map.toJsonObject(button, Filter.SIMPLEFORMAT);
 		System.out.println(json.toString());
