@@ -8,7 +8,7 @@ public class TextField extends Input<String> {
 
 	public TextField() {
 		super();
-		this.className = TEXT;
+		this.type = TEXT;
 	}
 
 }

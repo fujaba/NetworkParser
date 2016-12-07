@@ -8,6 +8,6 @@ public class NumberField extends Input<Integer> {
 
 	public NumberField() {
 		super();
-		this.className = NUMBER;
+		this.type = NUMBER;
 	}
 }

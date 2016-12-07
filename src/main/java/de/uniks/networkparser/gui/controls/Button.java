@@ -11,7 +11,7 @@ public class Button extends Input<String> {
 	public Button() {
 		super();
 		/* Set variables of parent class */
-		this.className = BUTTON;
+		this.type = BUTTON;
 		this.addBaseElements(ONCLICK);
 	}
 	
