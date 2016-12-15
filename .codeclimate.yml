@@ -12,9 +12,6 @@ engines:
   pmd:
     enabled: true
     channel: "beta"
-  stylelint:
-    enabled: true
-    channel: "beta"
   duplication:
     enabled: true
     config:
@@ -26,8 +23,5 @@ ratings:
    - "**.java"
    - "**.js"
    - "**.md"
-   - "**.less"
-   - "**.scss"
-   - "**.sss"
 exclude_paths:
 - lib/**/*
