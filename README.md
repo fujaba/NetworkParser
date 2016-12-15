@@ -30,7 +30,7 @@ The Framework have many other features like:
 <!--  - Maven: [![Maven Status](http://se.cs.uni-kassel.de/maven/icon?project=NetworkParser)](http://se.cs.uni-kassel.de/maven/de/uniks/NetworkParser/latest/NetworkParser.jar)-->
   - Coverage: [![Coverage Status](https://coveralls.io/repos/fujaba/NetworkParser/badge.svg?branch=master&service=github)](https://coveralls.io/github/fujaba/NetworkParser?branch=master)
   - Coverity Scan [![Coverity Status](https://scan.coverity.com/projects/8708/badge.svg)](https://scan.coverity.com/projects/fujaba-networkparser)
-  - CII Best Practices [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/561/badge)]
+  - CII Best Practices [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/561/badge)](https://bestpractices.coreinfrastructure.org/projects/561)
   - Codacy [![Codacy Badge](https://api.codacy.com/project/badge/Grade/03b590f35f334375b890f4261bf80bea)](https://www.codacy.com/app/stefan_7/NetworkParser?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=fujaba/NetworkParser&amp;utm_campaign=Badge_Grade)
   - Code Climate [![Code Climate](https://codeclimate.com/github/fujaba/NetworkParser/badges/gpa.svg)](https://codeclimate.com/github/fujaba/NetworkParser)
 - Develop
