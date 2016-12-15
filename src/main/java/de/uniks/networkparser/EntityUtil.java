@@ -520,7 +520,29 @@ public class EntityUtil {
 		return sb.toString();
 	}
 
-	
+	public static String getDefaultValue(String datatype) {
+		if(EntityUtil.isNumericType(datatype)) {
+			if("Long".equals(datatype)) {
+				return "0L";
+			} else if("Float".equals(datatype)) {
+				return "0f";
+			} else if("Double".equals(datatype)) {
+				return "0d";
+			}
+			return "0";
+		}
+		if("void".equals(datatype)) {
+			return "void";
+		} else if("boolean".equalsIgnoreCase(datatype)) {
+			return "false";
+		} else if (datatype.endsWith("[]")) {
+           return datatype.substring(0, datatype.length() - 2);
+        } else if (datatype.endsWith("..."))
+        {
+           return datatype.substring(0, datatype.length() - 3);
+        }
+		return "null";
+	}
 	
 	public static boolean compareEntity(Entity entityA, Entity entityB) {
 		return compareEntity(entityA, entityB, new TextDiff(), null);
@@ -853,17 +875,17 @@ public class EntityUtil {
 		return buf.toString();
 	}
 	
-	public static void writeByteHeader(ByteBuffer buffer, byte typ, int valueLength) {
+	public static void writeByteHeader(ByteBuffer buffer, byte type, int valueLength) {
 		if (valueLength > 0 ) {
-			// Save Typ
-			if (typ != 0) {
-				buffer.put(typ);
-				if (getSubGroup(typ) != ByteTokener.LEN_LAST) {
-					int lenSize = getTypLen(typ, valueLength, true);
+			// Save Type
+			if (type != 0) {
+				buffer.put(type);
+				if (getSubGroup(type) != ByteTokener.LEN_LAST) {
+					int lenSize = getTypeLen(type, valueLength, true);
 
 					if (lenSize == 1) {
-						if (typ == ByteTokener.DATATYPE_CLAZZNAME
-								|| getSubGroup(typ) == ByteTokener.LEN_LITTLE) {
+						if (type == ByteTokener.DATATYPE_CLAZZNAME
+								|| getSubGroup(type) == ByteTokener.LEN_LITTLE) {
 							buffer.put((byte) (valueLength + ByteTokener.SPLITTER));
 						} else {
 							buffer.put((byte) valueLength);
@@ -888,35 +910,35 @@ public class EntityUtil {
 		return result;
 	}
 
-	public static byte getTyp(byte group, byte subGroup) {
+	public static byte getType(byte group, byte subGroup) {
 		return (byte) (group + subGroup);
 	}
 
-	public static byte getTyp(byte typ, int len, boolean isLast) {
-		if (isGroup(typ)) {
+	public static byte getType(byte type, int len, boolean isLast) {
+		if (isGroup(type)) {
 			if (isLast) {
-				return getTyp(typ, ByteTokener.LEN_LAST);
+				return getType(type, ByteTokener.LEN_LAST);
 			}
 			if (len > 32767) {
-				return getTyp(typ, ByteTokener.LEN_BIG);
+				return getType(type, ByteTokener.LEN_BIG);
 			}
 			if (len > 250) {
-				return getTyp(typ, ByteTokener.LEN_MID);
+				return getType(type, ByteTokener.LEN_MID);
 			}
 			if (len > ByteTokener.SPLITTER) {
-				return getTyp(typ, ByteTokener.LEN_SHORT);
+				return getType(type, ByteTokener.LEN_SHORT);
 			}
-			return getTyp(typ, ByteTokener.LEN_LITTLE);
+			return getType(type, ByteTokener.LEN_LITTLE);
 		}
-		return typ;
+		return type;
 	}
 
-	public static int getTypLen(byte typ, int len, boolean isLast) {
-		if (isGroup(typ)) {
-			int ref = typ % 16 - 10;
+	public static int getTypeLen(byte type, int len, boolean isLast) {
+		if (isGroup(type)) {
+			int ref = type % 16 - 10;
 			if (ref == 0) {
-				typ = getTyp(typ, len, isLast);
-				ref = typ % 16 - 10;
+				type = getType(type, len, isLast);
+				ref = type % 16 - 10;
 			}
 			if (ref == ByteTokener.LEN_SHORT || ref == ByteTokener.LEN_LITTLE) {
 				return 1;
@@ -927,14 +949,12 @@ public class EntityUtil {
 			if (ref == ByteTokener.LEN_BIG) {
 				return 4;
 			}
-			// if (ref == ByteIdMap.LEN_LAST) {
 			return 0;
 		}
-		if (typ == ByteTokener.DATATYPE_CLAZZNAME) {
-			// || typ == ByteIdMap.DATATYPE_CLAZZTYP add bei ByteList
+		if (type == ByteTokener.DATATYPE_CLAZZNAME) {
 			return 1;
 		}
-		if (typ == ByteTokener.DATATYPE_CLAZZNAMELONG) {
+		if (type == ByteTokener.DATATYPE_CLAZZNAMELONG) {
 			return 4;
 		}
 		return 0;
@@ -964,85 +984,85 @@ public class EntityUtil {
 		return message;
 	}
 
-	public static boolean isPrimitive(byte typ) {
-		return ((typ >= ByteTokener.DATATYPE_SHORT && typ <= ByteTokener.DATATYPE_BYTE) || typ <= ByteTokener.DATATYPE_CHAR);
+	public static boolean isPrimitive(byte type) {
+		return ((type >= ByteTokener.DATATYPE_SHORT && type <= ByteTokener.DATATYPE_BYTE) || type <= ByteTokener.DATATYPE_CHAR);
 	}
 
 	/**
-	 * CHeck if the Typ is typ of Group
+	 * Check if the Type is type of Group
 	 *
-	 * @param typ			the the typ of data
+	 * @param type			the the type of data
 	 * @return 				success
 	 */
-	public static boolean isGroup(byte typ) {
-		return (typ & 0x08) == 0x08;
+	public static boolean isGroup(byte type) {
+		return (type & 0x08) == 0x08;
 	}
 
-	public static String getStringTyp(byte typ) {
-		if (typ == ByteTokener.DATATYPE_NULL) {
+	public static String getStringType(byte type) {
+		if (type == ByteTokener.DATATYPE_NULL) {
 			return "DATATYPE_NULL";
 		}
-		if (typ == ByteTokener.DATATYPE_FIXED) {
+		if (type == ByteTokener.DATATYPE_FIXED) {
 			return "DATATYPE_FIXED";
 		}
-		if (typ == ByteTokener.DATATYPE_SHORT) {
+		if (type == ByteTokener.DATATYPE_SHORT) {
 			return "DATATYPE_SHORT";
 		}
-		if (typ == ByteTokener.DATATYPE_INTEGER) {
+		if (type == ByteTokener.DATATYPE_INTEGER) {
 			return "DATATYPE_INTEGER";
 		}
-		if (typ == ByteTokener.DATATYPE_LONG) {
+		if (type == ByteTokener.DATATYPE_LONG) {
 			return "DATATYPE_LONG";
 		}
-		if (typ == ByteTokener.DATATYPE_FLOAT) {
+		if (type == ByteTokener.DATATYPE_FLOAT) {
 			return "DATATYPE_FLOAT";
 		}
-		if (typ == ByteTokener.DATATYPE_DOUBLE) {
+		if (type == ByteTokener.DATATYPE_DOUBLE) {
 			return "DATATYPE_DOUBLE";
 		}
-		if (typ == ByteTokener.DATATYPE_DATE) {
+		if (type == ByteTokener.DATATYPE_DATE) {
 			return "DATATYPE_DATE";
 		}
-		if (typ == ByteTokener.DATATYPE_CLAZZID) {
+		if (type == ByteTokener.DATATYPE_CLAZZID) {
 			return "DATATYPE_CLAZZID";
 		}
-		if (typ == ByteTokener.DATATYPE_CLAZZPACKAGE) {
+		if (type == ByteTokener.DATATYPE_CLAZZPACKAGE) {
 			return "DATATYPE_CLAZZPACKAGE";
 		}
-		if (typ == ByteTokener.DATATYPE_CLAZZNAME) {
+		if (type == ByteTokener.DATATYPE_CLAZZNAME) {
 			return "DATATYPE_CLAZZNAME";
 		}
-		if (typ == ByteTokener.DATATYPE_CLAZZNAMELONG) {
+		if (type == ByteTokener.DATATYPE_CLAZZNAMELONG) {
 			return "DATATYPE_CLAZZNAMELONG";
 		}
-		if (typ == ByteTokener.DATATYPE_CLAZZTYP) {
-			return "DATATYPE_CLAZZTYP";
+		if (type == ByteTokener.DATATYPE_CLAZZTYPE) {
+			return "DATATYPE_CLAZZTYPE";
 		}
-		if (typ == ByteTokener.DATATYPE_CLAZZTYPLONG) {
-			return "DATATYPE_CLAZZTYPLONG";
+		if (type == ByteTokener.DATATYPE_CLAZZTYPELONG) {
+			return "DATATYPE_CLAZZTYPELONG";
 		}
-		if (typ == ByteTokener.DATATYPE_BYTE) {
+		if (type == ByteTokener.DATATYPE_BYTE) {
 			return "DATATYPE_BYTE";
 		}
-		if (typ == ByteTokener.DATATYPE_UNSIGNEDBYTE) {
+		if (type == ByteTokener.DATATYPE_UNSIGNEDBYTE) {
 			return "DATATYPE_UNSIGNEDBYTE";
 		}
-		if (typ == ByteTokener.DATATYPE_CHAR) {
+		if (type == ByteTokener.DATATYPE_CHAR) {
 			return "DATATYPE_CHAR";
 		}
-		if (typ == ByteTokener.DATATYPE_ASSOC) {
+		if (type == ByteTokener.DATATYPE_ASSOC) {
 			return "DATATYPE_ASSOC";
 		}
-		if (typ == ByteTokener.DATATYPE_ASSOCLONG) {
+		if (type == ByteTokener.DATATYPE_ASSOCLONG) {
 			return "DATATYPE_ASSOCLONG";
 		}
-		if (typ == ByteTokener.DATATYPE_CLAZZSTREAM) {
+		if (type == ByteTokener.DATATYPE_CLAZZSTREAM) {
 			return "DATATYPE_CLAZZSTREAM";
 		}
 
-		if (isGroup(typ)) {
-			byte group = getGroup(typ);
-			byte subgroup = getSubGroup(typ);
+		if (isGroup(type)) {
+			byte group = getGroup(type);
+			byte subgroup = getSubGroup(type);
 			String result;
 			if (group == ByteTokener.DATATYPE_BYTEARRAY) {
 				result = "DATATYPE_BYTEARRAY";
@@ -1074,11 +1094,11 @@ public class EntityUtil {
 		return null;
 	}
 
-	public static byte getGroup(byte typ) {
-		return (byte) ((typ / 16) * 16 + 10);
+	public static byte getGroup(byte type) {
+		return (byte) ((type / 16) * 16 + 10);
 	}
 
-	public static byte getSubGroup(byte typ) {
-		return (byte) ((typ % 16) - 10);
+	public static byte getSubGroup(byte type) {
+		return (byte) ((type % 16) - 10);
 	}
 }

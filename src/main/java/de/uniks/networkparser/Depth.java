@@ -75,7 +75,7 @@ public class Depth implements SendableEntityCreator, UpdateListener {
 	}
 
 	@Override
-	public Object getSendableInstance(boolean prototyp) {
+	public Object getSendableInstance(boolean prototype) {
 		return new Depth();
 	}
 

@@ -35,16 +35,16 @@ import de.uniks.networkparser.list.SimpleList;
 
 public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 	/** The children of the ByteEntity. */
-	private byte typ;
+	private byte type;
 	
 	public static final byte BIT_STRING = 0x53; // S = String;
 	public static final byte BIT_NUMBER = 0x4E; // N = Number
 	public static final byte BIT_BYTE = 0x42; // B = Byte
 	public static final byte BIT_REFERENCE = 0x52; // R = Reference
 
-	// Can be a Typ
+	// Can be a Type
 	public static final String PROPERTY_PROPERTY = "property";
-	public static final String PROPERTY_TYP = "typ";
+	public static final String PROPERTY_TYPE = "type";
 	public static final String PROPERTY_ORIENTATION = "orientation";
 
 	@Override
@@ -107,13 +107,13 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 		// Override for each ByteList
 		isPrimitive = isPrimitive(isDynamic);
 		int size = calcChildren(isDynamic, last);
-		byte typ;
+		byte type;
 		if (isPrimitive) {
-			typ = ByteTokener.DATATYPE_CLAZZSTREAM;
+			type = ByteTokener.DATATYPE_CLAZZSTREAM;
 		} else {
-			typ = EntityUtil.getTyp(getTyp(), size, last);
+			type = EntityUtil.getType(getType(), size, last);
 		}
-		EntityUtil.writeByteHeader(buffer, typ, size);
+		EntityUtil.writeByteHeader(buffer, type, size);
 
 		for (int i = 0; i < size(); i++) {
 			((ByteItem) get(i)).writeBytes(buffer, isDynamic,
@@ -128,8 +128,8 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 		}
 		int length = calcChildren(isDynamic, isLast);
 		// add The Headerlength
-		if (typ != 0) {
-			length += ByteEntity.TYPBYTE + EntityUtil.getTypLen(typ, length, isLast);
+		if (type != 0) {
+			length += ByteEntity.TYPEBYTE + EntityUtil.getTypeLen(type, length, isLast);
 		}
 		return length;
 	}
@@ -144,19 +144,18 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 		if (this.get(size - 1) instanceof ByteEntity) {
 			// HEADER + VALUE
 			isPrimitive = isPrimitive
-					&& this.get(0).getTyp() == ByteTokener.DATATYPE_CLAZZTYP;
-			if (this.get(size - 1).getTyp() == ByteTokener.DATATYPE_NULL) {
+					&& this.get(0).getType() == ByteTokener.DATATYPE_CLAZZTYPE;
+			if (this.get(size - 1).getType() == ByteTokener.DATATYPE_NULL) {
 				nullerBytes++;
 			}
 		} else {
 			isPrimitive = false;
 		}
 		length = this.get(size - 1).calcLength(isDynamic, true);
-		// length=len+ByteUtil.getTypLen(valueList[size-1].getTyp(), len - 1);
 		for (int i = size - 2; i >= 0; i--) {
 			int len = this.get(i).calcLength(isDynamic, false);
 			if (isPrimitive) {
-				if (this.get(i).getTyp() == ByteTokener.DATATYPE_NULL) {
+				if (this.get(i).getType() == ByteTokener.DATATYPE_NULL) {
 					nullerBytes++;
 				}
 				isPrimitive = (this.get(i).size() == len - 1);
@@ -167,7 +166,7 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 			// Only for ByteList with value dynamic and values with cant be
 			// short
 			// add one for ClazzSTEAM Byte as first Byte
-			length = length - size + ByteEntity.TYPBYTE + ByteEntity.TYPBYTE
+			length = length - size + ByteEntity.TYPEBYTE + ByteEntity.TYPEBYTE
 					+ nullerBytes;
 		}
 		return length;
@@ -183,7 +182,7 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 		if (!(this.get(this.size() - 1) instanceof ByteEntity)) {
 			return false;
 		}
-		if (this.get(0).getTyp() != ByteTokener.DATATYPE_CLAZZTYP) {
+		if (this.get(0).getType() != ByteTokener.DATATYPE_CLAZZTYPE) {
 			return false;
 		}
 		for (int i = 1; i < this.size(); i++) {
@@ -196,13 +195,13 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 	}
 
 	@Override
-	public byte getTyp() {
-		return typ;
+	public byte getType() {
+		return type;
 	}
 
-	public ByteList withTyp(Byte value) {
+	public ByteList withType(Byte value) {
 		if(value != null)
-			this.typ = value;
+			this.type = value;
 		return this;
 	}
 

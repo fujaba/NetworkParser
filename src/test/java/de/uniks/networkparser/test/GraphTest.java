@@ -528,7 +528,7 @@ public class GraphTest {
 		Assert.assertEquals(438, htmlEntity.toString(2).length());
 
 		DocEnvironment docEnvironment = new DocEnvironment();
-		GraphList model = new GraphList().withTyp(GraphTokener.CLASS);
+		GraphList model = new GraphList().withType(GraphTokener.CLASS);
 
 		Clazz abstractArray = model.with(new Clazz("AbstractArray"));
 		abstractArray.createAttribute("elements", DataType.create("Object[]"));
@@ -570,7 +570,7 @@ public class GraphTest {
 		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/dagre.min.js");
 		htmlEntity.withHeader("../src/main/resources/de/uniks/networkparser/graph/drawer.js");
 
-		GraphList model = new GraphList().withTyp(GraphTokener.CLASS);
+		GraphList model = new GraphList().withType(GraphTokener.CLASS);
 		Clazz uni = model.with(new Clazz("University"));
 		uni.createAttribute("name", DataType.STRING);
 		Clazz person = model.with(new Clazz("Person"));

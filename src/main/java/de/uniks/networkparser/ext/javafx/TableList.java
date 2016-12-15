@@ -47,7 +47,7 @@ public class TableList extends SortedList<Object> implements
 	}
 
 	@Override
-	public Object getSendableInstance(boolean prototyp) {
+	public Object getSendableInstance(boolean prototype) {
 		return new TableList();
 	}
 

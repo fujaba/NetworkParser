@@ -64,7 +64,7 @@ public class GraphTokener extends Tokener {
 	public GraphList encode(Object object, MapEntity map) {
 		GraphList newElement = new GraphList();
 
-		newElement.withTyp(getType(map));
+		newElement.withType(getType(map));
 		Clazz main = parse(object, map, newElement, 0);
 		GraphDiff diff = newElement.getDiff();
 		if(diff != null) {

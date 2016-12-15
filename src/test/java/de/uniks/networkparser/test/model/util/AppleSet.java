@@ -25,7 +25,7 @@ import de.uniks.networkparser.test.model.Apple;
 
 public class AppleSet extends SimpleSet<Apple>
 {
-	protected Class<?> getTypClass() {
+	protected Class<?> getTypeClass() {
 		return Apple.class;
 	}
 	public AppleSet with(Object... values) {

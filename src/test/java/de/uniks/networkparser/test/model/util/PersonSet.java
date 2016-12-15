@@ -31,7 +31,7 @@ import de.uniks.networkparser.test.model.Person;
 
 public class PersonSet extends SimpleSet<Person>
 {
-	protected Class<?> getTypClass() {
+	protected Class<?> getTypeClass() {
 		return Person.class;
 	}
 	public PersonSet with(Object... values) {

@@ -58,7 +58,7 @@ public interface ByteItem extends BaseItem {
 	 */
 	public int calcLength(boolean isDynamic, boolean isLast);
 
-	public byte getTyp();
+	public byte getType();
 
 	/** @return true if the ByteItem is Empty */
 	public boolean isEmpty();

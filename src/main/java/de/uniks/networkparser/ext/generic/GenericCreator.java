@@ -90,7 +90,7 @@ public class GenericCreator implements SendableEntityCreator {
 	}
 
 	@Override
-	public Object getSendableInstance(boolean prototyp) {
+	public Object getSendableInstance(boolean prototype) {
 		if (item != null) {
 			try {
 				return item.getClass().newInstance();

@@ -34,7 +34,7 @@ THE SOFTWARE.
 public class BitValue implements ByteItem {
 	private byte start;
 	private byte size;
-	private byte typ;
+	private byte type;
 	private String property;
 	private int orientation = 1;
 
@@ -68,8 +68,8 @@ public class BitValue implements ByteItem {
 	public String getProperty() {
 		return property;
 	}
-	public BitValue withLenProperty(byte lenTyp, String property) {
-		this.typ = lenTyp;
+	public BitValue withLenProperty(byte lenType, String property) {
+		this.type = lenType;
 		this.property = property;
 		return this;
 	}
@@ -78,8 +78,8 @@ public class BitValue implements ByteItem {
 		return size;
 	}
 	@Override
-	public byte getTyp() {
-		return typ;
+	public byte getType() {
+		return type;
 	}
 	@Override
 	public boolean isEmpty() {

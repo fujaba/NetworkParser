@@ -45,27 +45,27 @@ public class YUMLConverter implements Converter{
 	public boolean defaultShowPackage;
 
 	public String convert(GraphList root, boolean removePackage) {
-		String typ = root.getTyp();
+		String type = root.getType();
 		GraphSimpleSet collection = GraphUtil.getChildren(root);
 		if(collection.size()>0) {
 			StringBuilder sb = new StringBuilder();
 			SimpleList<GraphMember> visitedObj = new SimpleList<GraphMember>();
 			root.initSubLinks();
 			for(GraphMember item : collection) {
-				parse(typ, item, sb, visitedObj, removePackage);
+				parse(type, item, sb, visitedObj, removePackage);
 			}
 			return sb.toString();
 		}
 		return null;
 	}
 
-	public void parse(String typ, GraphMember item, StringBuilder sb,
+	public void parse(String type, GraphMember item, StringBuilder sb,
 			SimpleList<GraphMember> visited, boolean shortName) {
 		if(item instanceof GraphEntity) {
-			parse(typ, (GraphEntity) item, sb, visited, shortName);
+			parse(type, (GraphEntity) item, sb, visited, shortName);
 		}
 	}
-	public void parse(String typ, GraphEntity item, StringBuilder sb,
+	public void parse(String type, GraphEntity item, StringBuilder sb,
 			SimpleList<GraphMember> visited, boolean shortName) {
 		SimpleSet<Association> association = item.getAssociations();
 		if (association.size()==0) {
@@ -73,12 +73,12 @@ public class YUMLConverter implements Converter{
 				if (sb.length() > 0) {
 					sb.append(",");
 				}
-				sb.append(parseEntity(item, visited, typ, shortName));
+				sb.append(parseEntity(item, visited, type, shortName));
 			}
 			return;
 		}
-		if (typ == null) {
-			typ = GraphTokener.OBJECT;
+		if (type == null) {
+			type = GraphTokener.OBJECT;
 		}
 		Iterator<?> iterator = association.iterator();
 		while (iterator.hasNext()) {
@@ -88,7 +88,7 @@ public class YUMLConverter implements Converter{
 			}
 			Association element = (Association) entry;
 			Association other = element.getOther();
-			if(GraphTokener.CLASS.equals(typ)) {
+			if(GraphTokener.CLASS.equals(type)) {
 				if ( GraphUtil.containsClazzAssociation(visited, element, other)) {
 					continue;
 				}
@@ -101,20 +101,20 @@ public class YUMLConverter implements Converter{
 			if (sb.length() > 0) {
 				sb.append(",");
 			}
-			sb.append(parseEntity(item, visited, typ, shortName));
+			sb.append(parseEntity(item, visited, type, shortName));
 			String seperator = GraphUtil.getSeperator(element);
 			sb.append(seperator);
 
 			SimpleSet<GraphEntity> targetCollection = GraphUtil.getNodes(other);
 			Iterator<GraphEntity> targetIterator = targetCollection.iterator();
 			GraphEntity target = targetIterator.next();
-			sb.append(parseEntity(target, visited, typ, shortName));
+			sb.append(parseEntity(target, visited, type, shortName));
 
 			while (targetIterator.hasNext()) {
-				sb.append(parseEntity(item, visited, typ, shortName));
+				sb.append(parseEntity(item, visited, type, shortName));
 				sb.append(seperator);
 				target = targetIterator.next();
-				sb.append(parseEntity(target, visited, typ, shortName));
+				sb.append(parseEntity(target, visited, type, shortName));
 			}
 		}
 	}
@@ -126,7 +126,7 @@ public class YUMLConverter implements Converter{
 	}
 
 	public String parseEntity(GraphEntity entity, SimpleList<GraphMember> visited,
-			String typ, boolean shortName) {
+			String type, boolean shortName) {
 		if(!(entity instanceof Clazz)){
 			return "";
 		}
@@ -135,27 +135,27 @@ public class YUMLConverter implements Converter{
 		if(shortString == false) {
 			visited.add(clazzEntity);
 		}
-		if (typ == null) {
-			typ = GraphTokener.OBJECT;
+		if (type == null) {
+			type = GraphTokener.OBJECT;
 			if (clazzEntity.getName(false) == null) {
-				typ = GraphTokener.CLASS;
+				type = GraphTokener.CLASS;
 			}
 		}
 
 		StringBuilder sb = new StringBuilder("[");
-		if (typ == GraphTokener.OBJECT) {
+		if (type == GraphTokener.OBJECT) {
 			sb.append(clazzEntity.getId());
 			sb.append(" : ");
 		}
 		sb.append(clazzEntity.getName(shortName));
 		if(shortString == false) {
-			sb.append(parseEntityValues(clazzEntity, typ, shortName));
+			sb.append(parseEntityValues(clazzEntity, type, shortName));
 		}
 		sb.append("]");
 		return sb.toString();
 	}
 
-	public String parseEntityValues(GraphEntity entity, String typ,
+	public String parseEntityValues(GraphEntity entity, String type,
 			boolean shortName) {
 		StringBuilder sb = new StringBuilder();
 
@@ -163,9 +163,9 @@ public class YUMLConverter implements Converter{
 		boolean second=false;
 		if (i.hasNext()) {
 			String splitter = "";
-			if (typ.equals(GraphTokener.OBJECT)) {
+			if (type.equals(GraphTokener.OBJECT)) {
 				splitter = "=";
-			} else if (typ.equals(GraphTokener.CLASS)) {
+			} else if (type.equals(GraphTokener.CLASS)) {
 				splitter = ":";
 			}
 
@@ -174,7 +174,7 @@ public class YUMLConverter implements Converter{
 //			if (element instanceof Attribute) {
 //				attribute = (Attribute) element;
 //				sb.append(attribute.getName() + splitter
-//						+ attribute.getValue(typ, shortName)); // / without Typ
+//						+ attribute.getValue(type, shortName)); // / without Type
 //			}
 
 			while (i.hasNext()) {
@@ -188,7 +188,7 @@ public class YUMLConverter implements Converter{
 				}
 				second = true;
 				sb.append(attribute.getName() + splitter
-						+ attribute.getValue(typ, shortName));
+						+ attribute.getValue(type, shortName));
 			}
 		}
 		if(sb.length()>0) {

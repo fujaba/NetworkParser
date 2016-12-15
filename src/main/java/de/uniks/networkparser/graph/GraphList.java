@@ -51,11 +51,11 @@ public class GraphList extends GraphModel implements BaseItem {
 		return converter.encode(this);
 	}
 
-	public String getTyp() {
+	public String getType() {
 		return typ;
 	}
 
-	public GraphList withTyp(String typ) {
+	public GraphList withType(String typ) {
 		this.typ = typ;
 		return this;
 	}

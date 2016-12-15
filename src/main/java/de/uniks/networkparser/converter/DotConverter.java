@@ -223,10 +223,10 @@ public class DotConverter implements Converter {
 		return sb.toString();
 	}
 
-	private String getTyp(GraphEntity item, String typ, boolean shortName) {
-		if (typ.equals(GraphTokener.OBJECT)) {
+	private String getType(GraphEntity item, String type, boolean shortName) {
+		if (type.equals(GraphTokener.OBJECT)) {
 			return item.getId();
-		} else if (typ.equals(GraphTokener.CLASS)) {
+		} else if (type.equals(GraphTokener.CLASS)) {
 			return item.getName(shortName);
 		}
 		return "";
@@ -242,8 +242,8 @@ public class DotConverter implements Converter {
 		}
 		GraphList root = (GraphList) entity;
 		StringBuilder sb=new StringBuilder();
-		String graphTyp = "graph";
-		if(GraphTokener.OBJECT.equals(root.getTyp())) {
+		String graphType = "graph";
+		if(GraphTokener.OBJECT.equals(root.getType())) {
 			sb.append(" ObjectDiagram {"+BaseItem.CRLF);
 		}else{
 			sb.append(" ClassDiagram {"+BaseItem.CRLF);
@@ -252,7 +252,7 @@ public class DotConverter implements Converter {
 		sb.append("   edge [fontsize = 10, fontname = \"Arial\"];"+BaseItem.CRLF);
 		sb.append("   compound=true;" + BaseItem.CRLF +BaseItem.CRLF);
 		boolean isObjectdiagram =false;
-		isObjectdiagram = GraphTokener.OBJECT.equals(root.getTyp());
+		isObjectdiagram = GraphTokener.OBJECT.equals(root.getType());
 
 		for(GraphEntity node : root.getNodes()) {
 			sb.append(node.getName(false));
@@ -260,7 +260,7 @@ public class DotConverter implements Converter {
 			if(isObjectdiagram) {
 				sb.append("<u>");
 			}
-			sb.append(node.getName(false)+" : "+getTyp(node, root.getTyp(), removePackage));
+			sb.append(node.getName(false)+" : "+getType(node, root.getType(), removePackage));
 			if(isObjectdiagram) {
 				sb.append("</u>");
 			}
@@ -309,12 +309,12 @@ public class DotConverter implements Converter {
 				sb.append("[headlabel = \""+edge.getName()+"\" taillabel = \""+otherEdge.getName()+"\"];"+BaseItem.CRLF);
 			} else {
 				sb.append(edge.getClazz().getName(false) + " -> " + otherEdge.getClazz().getName(false));
-				graphTyp = "digraph";
+				graphType = "digraph";
 				sb.append("[taillabel = \""+edge.getName()+"\"];"+BaseItem.CRLF);
 			}
 
 		}
 		sb.append("}");
-		return graphTyp+sb.toString();
+		return graphType+sb.toString();
 	}
 }

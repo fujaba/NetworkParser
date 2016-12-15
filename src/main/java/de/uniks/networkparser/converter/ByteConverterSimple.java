@@ -32,7 +32,7 @@ public class ByteConverterSimple extends ByteConverter {
 		if (values == null || values.length() < 1) {
 			return "EMTPY";
 		}
-		return EntityUtil.getStringTyp(values.byteAt(0)) + " Laenge: " + values.length();
+		return EntityUtil.getStringType(values.byteAt(0)) + " Laenge: " + values.length();
 	}
 
 	@Override
