@@ -1,6 +1,16 @@
-JavaScript: true
-Ruby: false
-Python: false
-PHP: false
+engines:
+  rubocop:
+    enabled: true
+  eslint:
+    enabled: true
+  csslint:
+    enabled: true
+  fixme:
+    enabled: true
+  duplication:
+  	enabled: true
+    config:
+    	languages:
+      - javascript
 exclude_paths:
 - lib/**/*
