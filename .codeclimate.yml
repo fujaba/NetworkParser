@@ -1,16 +1,30 @@
 engines:
-  rubocop:
-    enabled: true
   eslint:
     enabled: true
   csslint:
     enabled: true
   fixme:
     enabled: true
+  Checkstyle:
+    enabled: true
+  Markdown:
+    enabled: true
+  pmd:
+    enabled: true
+    channel: "beta"
+  stylelint:
+    enabled: true
+    channel: "beta"
   duplication:
     enabled: true
     config:
        languages:
           - javascript
+ratings:
+   paths:
+   - "**.css"
+   - "**.java"
+   - "**.js"
+   - "**.md"
 exclude_paths:
 - lib/**/*
