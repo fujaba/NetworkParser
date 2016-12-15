@@ -8,9 +8,9 @@ engines:
   fixme:
     enabled: true
   duplication:
-  	enabled: true
+    enabled: true
     config:
-    	languages:
-      - javascript
+       languages:
+          - javascript
 exclude_paths:
 - lib/**/*
