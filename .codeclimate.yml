@@ -26,5 +26,8 @@ ratings:
    - "**.java"
    - "**.js"
    - "**.md"
+   - "**.less"
+   - "**.scss"
+   - "**.sss"
 exclude_paths:
 - lib/**/*
