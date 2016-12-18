@@ -1,6 +1,8 @@
 NetworkParser
 =============
 
+[![Join the chat at https://gitter.im/NetworkParser/Lobby](https://badges.gitter.im/NetworkParser/Lobby.svg)](https://gitter.im/NetworkParser/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Framework for serialization from Java objects to Json, XML and Byte.
 
 
