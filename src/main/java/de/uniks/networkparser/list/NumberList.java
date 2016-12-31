@@ -73,4 +73,20 @@ public class NumberList extends SimpleList<Number> {
 		}
 		return middleValue;
 	}
+	
+	public String toString(String seperator)
+	{
+	   StringBuffer buf = new StringBuffer();
+	   
+	   for (int i = 0; i < this.size(); i++)
+      {
+         buf.append(get(i));
+         if (i < this.size()-1)
+         {
+            buf.append(seperator);
+         }
+      }
+	   
+	   return buf.toString();
+	}
 }
