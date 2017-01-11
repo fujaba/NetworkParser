@@ -1276,7 +1276,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		}
 		EntityList targetList = (EntityList) map.getTarget();
 		String id = null;
-		if (creator instanceof SendableEntityCreatorNoIndex == false) {
+		if (creator instanceof SendableEntityCreatorNoIndex == false && creator.getValue(entity, "id") == null) {
 			id = map.getId(entity, this, className);
 		}
 		boolean isSimple = targetList != null && targetList.isComparator() == false;
