@@ -23,6 +23,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
+
 /**
  * Class for List of Numbers  
  * @author Stefan Lindel NumberList for List of Numbers (Integer Double etc.)
@@ -74,19 +76,16 @@ public class NumberList extends SimpleList<Number> {
 		return middleValue;
 	}
 	
-	public String toString(String seperator)
-	{
-	   StringBuffer buf = new StringBuffer();
-	   
-	   for (int i = 0; i < this.size(); i++)
-      {
-         buf.append(get(i));
-         if (i < this.size()-1)
-         {
-            buf.append(seperator);
-         }
-      }
-	   
-	   return buf.toString();
+	public String toString(String seperator) {
+		if (this.size < 1) {
+			return "";
+		}
+		CharacterBuffer buf = new CharacterBuffer();
+		buf.with(get(0).toString());
+		for (int i = 1; i < this.size; i++) {
+			buf.with(seperator);
+			buf.with(get(i).toString());
+		}
+		return buf.toString();
 	}
 }

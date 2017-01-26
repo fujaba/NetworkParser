@@ -28,6 +28,13 @@ import de.uniks.networkparser.test.model.util.FruitSet;
 
 public class FullListTest {
 	@Test
+	public void AppleSet() {
+		AppleSet set = new AppleSet();
+		set.with("Hallo");
+		System.out.println(set.size());
+	}
+	
+	@Test
 	public void CollectionCompare() {
 		ArrayList<Object> masterA=new ArrayList<Object>();
 		ArrayList<String> slave=new ArrayList<String>();
