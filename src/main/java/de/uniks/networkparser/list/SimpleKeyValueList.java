@@ -491,7 +491,7 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	public V get(Object key) {
 		int pos = indexOf(key);
 		if(pos>=0) {
-			return (V) super.getByIndex(SMALL_VALUE, pos + this.index, size);
+			return (V) getByIndex(SMALL_VALUE, pos + this.index, size);
 		}
 		return null;
 	}
