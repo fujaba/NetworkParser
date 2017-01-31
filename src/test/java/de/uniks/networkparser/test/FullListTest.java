@@ -31,7 +31,7 @@ public class FullListTest {
 	public void AppleSet() {
 		AppleSet set = new AppleSet();
 		set.with("Hallo");
-		System.out.println(set.size());
+//		System.out.println(set.size());
 	}
 	
 	@Test
@@ -143,7 +143,7 @@ public class FullListTest {
 
 		Assert.assertEquals(2, item.size());
 		AppleSet newSet=new AppleSet();
-		
+		newSet.withType(Apple.class);
 		newSet.withList(item);
 		
 		Assert.assertEquals(1, newSet.size());

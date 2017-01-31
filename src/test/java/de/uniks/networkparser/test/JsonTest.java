@@ -527,7 +527,7 @@ public class JsonTest extends IOClasses {
 		JsonObject jsonObject = map.toJsonObject(stringMessage);
 		String msg = jsonObject.toString();
 
-		String reference = "{\"class\":\"de.uniks.networkparser.test.model.StringMessage\",\"id\":\"J1.S1\",\"prop\":{\"value\":\"C:\\\\TEST\\\\MY\\\\WORLD.TXT\"}}";
+		String reference = "{\"class\":\"de.uniks.networkparser.test.model.StringMessage\",\"prop\":{\"value\":\"C:\\\\TEST\\\\MY\\\\WORLD.TXT\"}}";
 
 		Assert.assertEquals(reference, msg);
 

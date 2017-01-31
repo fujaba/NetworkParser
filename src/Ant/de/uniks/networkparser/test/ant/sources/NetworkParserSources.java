@@ -59,7 +59,7 @@ public class NetworkParserSources {
 	}
 
 	public String getPackageGraph(HashSet<SourceItem> items){
-		GraphList list= new GraphList().withTyp(IdMap.CLASS);
+		GraphList list= new GraphList().withType(IdMap.CLASS);
 		for (SourceItem source : items){
 			String packageName = source.getShortPackageName();
 			for (String item : source.getImports().getPackages()){

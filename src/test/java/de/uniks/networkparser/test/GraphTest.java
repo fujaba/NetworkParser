@@ -113,7 +113,7 @@ public class GraphTest {
 		list.fixClassModel();
 		
 		GraphConverter converter = new GraphConverter();
-		showDebugInfos(converter.convertToJson(list, true, false), 446, null);
+		showDebugInfos(converter.convertToJson(list, true, false), 450, null);
 	}
 	
 	@Test
@@ -131,7 +131,7 @@ public class GraphTest {
 
 		GraphConverter converter = new GraphConverter();
 		Assert.assertEquals(
-				"{\"typ\":\"classdiagram\",\"nodes\":[{\"typ\":\"clazz\",\"id\":\"Item\",\"head\":{\"src\":\"karli.png\"}}]}",
+				"{\"type\":\"classdiagram\",\"nodes\":[{\"type\":\"clazz\",\"id\":\"Item\",\"head\":{\"src\":\"karli.png\"}}]}",
 				converter.convertToJson(list, false, false).toString());
 	}
 	
@@ -293,14 +293,14 @@ public class GraphTest {
 		GraphList root  = graphConverter.convertGraphList(GraphTokener.CLASS, jsonArray);
 
 		JsonObject converter = graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
-		showDebugInfos(converter, 1528, null);
+		showDebugInfos(converter, 1537, null);
 
 		
 		root = graphConverter.convertGraphList(GraphTokener.CLASS, jsonArray);
 		Assert.assertEquals("[Field|color:String;kind:String]-[Player|color:String;name:String],[Field]-[Pawn|color:String],[Ludo]-[Player],[Pawn]-[Player]",
 				converterYUML.convert(root, true));
 
-		showDebugInfos(converter, 1528, null);
+		showDebugInfos(converter, 1537, null);
 	}
 
 	@Test
@@ -329,7 +329,7 @@ public class GraphTest {
 
 		// May be 8 Asssocs and write 11
 		JsonObject converter = graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
-		showDebugInfos(converter, 2179, null);
+		showDebugInfos(converter, 2191, null);
 	}
 
 	private void showDebugInfos(Entity json, int len, PrintStream stream) {
@@ -371,16 +371,16 @@ public class GraphTest {
 		JsonArray jsonArray = map.toJsonArray(root, new Filter().withFull(true));
 		GraphConverter graphConverter = new GraphConverter();
 		JsonObject objectModel = graphConverter.convertToJson(GraphTokener.OBJECT, jsonArray, true);
-		showDebugInfos(objectModel, 635, null);
+		showDebugInfos(objectModel, 639, null);
 
 		JsonObject clazzModel = graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
-		showDebugInfos(clazzModel, 469, null);
-		Assert.assertEquals(new CharacterBuffer().withLine("{").withLine("  \"typ\":\"classdiagram\",")
+		showDebugInfos(clazzModel, 472, null);
+		Assert.assertEquals(new CharacterBuffer().withLine("{").withLine("  \"type\":\"classdiagram\",")
 				.withLine("  \"nodes\":[").withLine("    {")
-				.withLine("      \"typ\":\"clazz\",").withLine("      \"id\":\"SortedMsg\",")
+				.withLine("      \"type\":\"clazz\",").withLine("      \"id\":\"SortedMsg\",")
 				.withLine("      \"attributes\":[").withLine("        \"msg:String\",")
 				.withLine("        \"number:Integer\"").withLine("      ]").withLine("    }").withLine("  ],")
-				.withLine("  \"edges\":[").withLine("    {").withLine("      \"typ\":\"assoc\",")
+				.withLine("  \"edges\":[").withLine("    {").withLine("      \"type\":\"assoc\",")
 				.withLine("      \"source\":{").withLine("        \"cardinality\":\"one\",")
 				.withLine("        \"property\":\"child\",").withLine("        \"id\":\"SortedMsg\"")
 				.withLine("      },").withLine("      \"target\":{").withLine("        \"cardinality\":\"one\",")
@@ -423,7 +423,7 @@ public class GraphTest {
 		GraphConverter graphConverter = new GraphConverter();
 
 		JsonObject converter = graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
-		showDebugInfos(converter, 546, null);
+		showDebugInfos(converter, 550, null);
 	}
 	@Test
 	public void testGraphPatternTest() {
@@ -576,7 +576,7 @@ public class GraphTest {
 		Clazz person = model.with(new Clazz("Person"));
 
 		uni.withBidirectional(person, "has", Cardinality.MANY, "studis", Cardinality.ONE);
-		showDebugInfos(htmlEntity.withGraph(model).toString(2), 814, null);
+		showDebugInfos(htmlEntity.withGraph(model).toString(2), 818, null);
 	}
 
 	@Test
