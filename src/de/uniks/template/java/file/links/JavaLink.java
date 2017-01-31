@@ -3,14 +3,8 @@ package de.uniks.template.java.file.links;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import org.sdmlib.StrUtil;
-
 import de.uniks.networkparser.graph.Cardinality;
-import de.uniks.template.file.TemplateClass;
 import de.uniks.template.file.links.TemplateLink;
-import de.uniks.template.java.JavaModel;
-import de.uniks.template.java.file.JavaClass;
-import de.uniks.template.java.file.methods.JavaMethod;
 
 public class JavaLink extends TemplateLink {
 

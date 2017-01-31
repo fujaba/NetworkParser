@@ -3,11 +3,7 @@ package de.uniks.template.java.file.attributes;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import org.sdmlib.StrUtil;
-
 import de.uniks.template.file.attributes.TemplateAttribute;
-import de.uniks.template.java.JavaModel;
-import de.uniks.template.java.file.methods.JavaMethod;
 
 public class JavaAttribute extends TemplateAttribute {
 

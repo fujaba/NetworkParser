@@ -1,19 +1,19 @@
 package test;
 
 import org.junit.Test;
-import org.sdmlib.models.classes.ClassModel;
 
 import de.uniks.factory.ModelFactory;
 import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.ClazzImport;
 import de.uniks.networkparser.graph.DataType;
+import de.uniks.networkparser.graph.GraphList;
 
 public class TestAssociation {
 
 	@Test
 	public void testBidirectionalAssociation() {
-		ClassModel classModel = new ClassModel();
+		GraphList classModel = new GraphList();
 		Clazz student = classModel.createClazz("Student");
 		Clazz teacher = classModel.createClazz("Teacher");
 		student.withBidirectional(teacher, "teacher", Cardinality.ONE, "students", Cardinality.MANY);
@@ -23,7 +23,7 @@ public class TestAssociation {
 	
 	@Test
 	public void testImplementsWithoutMethods() {
-		ClassModel classModel = new ClassModel();
+		GraphList classModel = new GraphList();
 		Clazz person = classModel.createClazz("Person").enableInterface();
 		Clazz student = classModel.createClazz("Student");
 		student.withSuperClazz(person);
@@ -33,7 +33,7 @@ public class TestAssociation {
 	
 	@Test
 	public void testImplementsWithMethods() {
-		ClassModel classModel = new ClassModel();
+		GraphList classModel = new GraphList();
 		Clazz person = classModel.createClazz("Person");
 //		.enableInterface();
 		Clazz room = classModel.createClazz("Room");
@@ -54,7 +54,7 @@ public class TestAssociation {
 	
 	@Test
 	public void testImplementsWithAttribute() {
-		ClassModel classModel = new ClassModel();
+		GraphList classModel = new GraphList();
 		Clazz person = classModel.createClazz("Person").enableInterface();
 		Clazz student = classModel.createClazz("Student");
 		student.withSuperClazz(person);
@@ -65,7 +65,7 @@ public class TestAssociation {
 	
 	@Test
 	public void testExtendsWithoutData() {
-		ClassModel classModel = new ClassModel();
+		GraphList classModel = new GraphList();
 		Clazz person = classModel.createClazz("Person");
 		Clazz student = classModel.createClazz("Student");
 		student.withSuperClazz(person);
@@ -75,7 +75,7 @@ public class TestAssociation {
 	
 	@Test
 	public void testExtendsWithData() {
-		ClassModel classModel = new ClassModel();
+		GraphList classModel = new GraphList();
 		Clazz person = classModel.createClazz("Person");
 		Clazz room = classModel.createClazz("Room");
 		Clazz student = classModel.createClazz("Student");

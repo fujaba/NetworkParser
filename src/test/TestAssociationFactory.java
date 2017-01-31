@@ -1,15 +1,14 @@
 package test;
 
 import org.junit.Test;
-import org.sdmlib.models.classes.ClassModel;
 
-import de.uniks.factory.ModelFactory;
 import de.uniks.factory.java.JavaModelFactory;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
+import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.graph.Modifier;
 import de.uniks.networkparser.graph.Parameter;
@@ -18,7 +17,7 @@ public class TestAssociationFactory {
 
 	@Test
 	public void testBidirectionalAssociation() {
-		ClassModel classModel = new ClassModel();
+		GraphList classModel = new GraphList();
 		Clazz person = classModel.createClazz("Person");
 		Clazz room = classModel.createClazz("Room");
 		person.withBidirectional(room, "room", Cardinality.ONE, "persons", Cardinality.MANY);
@@ -28,7 +27,7 @@ public class TestAssociationFactory {
 
 	@Test
 	public void testMethod() {
-		ClassModel classModel = new ClassModel();
+		GraphList classModel = new GraphList();
 		Clazz person = classModel.createClazz("Person");
 		Clazz student = classModel.createClazz("Student");
 		Method method = new Method("personMethod", DataType.VOID, new Parameter(DataType.STRING).with("name"), new Parameter(DataType.INT).with("age"), new Parameter(student, "student"));
@@ -39,7 +38,7 @@ public class TestAssociationFactory {
 	
 	@Test
 	public void testInterfaceMethod() {
-		ClassModel classModel = new ClassModel();
+		GraphList classModel = new GraphList();
 		Clazz person = classModel.createClazz("Person").enableInterface();
 		Clazz student = classModel.createClazz("Student");
 		student.withSuperClazz(person);
@@ -51,7 +50,7 @@ public class TestAssociationFactory {
 	
 	@Test
 	public void testAbstractMethod() {
-		ClassModel classModel = new ClassModel();
+		GraphList classModel = new GraphList();
 		Clazz person = classModel.createClazz("Person").with(Modifier.create("abstract"));
 		Clazz student = classModel.createClazz("Student");
 		student.withSuperClazz(person);
@@ -63,7 +62,7 @@ public class TestAssociationFactory {
 	
 	@Test
 	public void testAbstractInterfaceMethod() {
-		ClassModel classModel = new ClassModel();
+		GraphList classModel = new GraphList();
 		Clazz human = classModel.createClazz("Human").enableInterface();
 		Clazz person = classModel.createClazz("Person").with(Modifier.create("abstract"));
 		Clazz student = classModel.createClazz("Student");
@@ -78,7 +77,7 @@ public class TestAssociationFactory {
 	
 	@Test 
 	public void testImplements() {
-		ClassModel classModel = new ClassModel();
+		GraphList classModel = new GraphList();
 		Clazz person = classModel.createClazz("Person").enableInterface();
 		Clazz student = classModel.createClazz("Student");
 		student.withSuperClazz(person);
@@ -88,7 +87,7 @@ public class TestAssociationFactory {
 
 	@Test
 	public void testImplementsWithData() {
-		ClassModel classModel = new ClassModel();
+		GraphList classModel = new GraphList();
 		Clazz person = classModel.createClazz("Person").enableInterface();
 		Clazz student = classModel.createClazz("Student");
 		student.withSuperClazz(person);
@@ -99,7 +98,7 @@ public class TestAssociationFactory {
 	
 	@Test
 	public void testImplementsWithDataExtended() {
-		ClassModel classModel = new ClassModel();
+		GraphList classModel = new GraphList();
 		Clazz human = classModel.createClazz("Human").enableInterface();
 		Clazz person = classModel.createClazz("Person").enableInterface();
 		Clazz student = classModel.createClazz("Student");
@@ -115,7 +114,7 @@ public class TestAssociationFactory {
 	
 	@Test
 	public void testAbstractSuperClazzWithAttribute() {
-		ClassModel classModel = new ClassModel();
+		GraphList classModel = new GraphList();
 		Clazz human = classModel.createClazz("Human").with(Modifier.create("abstract"));
 		Attribute name = new Attribute("name", DataType.STRING).with(Modifier.create("abstract"));
 		human.with(name);
@@ -132,7 +131,7 @@ public class TestAssociationFactory {
 	
 	@Test
 	public void testAbstractSuperClazzWithAssociation() {
-		ClassModel classModel = new ClassModel();
+		GraphList classModel = new GraphList();
 		Clazz human = classModel.createClazz("Human").with(Modifier.create("abstract"));
 		Clazz subHuman = classModel.createClazz("SubHuman");
 		human.withBidirectional(subHuman, "subHuman", Cardinality.ONE, "human", Cardinality.ONE);
@@ -149,7 +148,7 @@ public class TestAssociationFactory {
 	
 	@Test
 	public void testImplementAndExtendAssociation() {
-		ClassModel classModel = new ClassModel();
+		GraphList classModel = new GraphList();
 		Clazz human = classModel.createClazz("Human").enableInterface();
 		Clazz subHuman = classModel.createClazz("SubHuman").withBidirectional(human, "human", Cardinality.ONE, "subHuman", Cardinality.ONE);
 		Clazz person = classModel.createClazz("Person").withSuperClazz(human);
@@ -160,7 +159,7 @@ public class TestAssociationFactory {
 	
 	@Test 
 	public void testMultipleSuperClazzes() {
-		ClassModel classModel = new ClassModel();
+		GraphList classModel = new GraphList();
 		Clazz person = classModel.createClazz("Person").enableInterface();
 		Clazz human = classModel.createClazz("Human");
 		Clazz student = classModel.createClazz("Student");
@@ -171,7 +170,7 @@ public class TestAssociationFactory {
 	
 	@Test
 	public void testSpecialInterfaceCase() {
-		ClassModel classModel = new ClassModel();
+		GraphList classModel = new GraphList();
 		Clazz person = classModel.createClazz("Person").enableInterface();
 		Clazz human = classModel.createClazz("Human");
 		Clazz student = classModel.createClazz("Student");
