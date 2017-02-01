@@ -4,6 +4,7 @@ import java.util.List;
 
 import de.uniks.networkparser.SimpleObject;
 import de.uniks.networkparser.gui.EventTypes;
+import de.uniks.networkparser.gui.JavaBridge;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
@@ -12,6 +13,7 @@ public abstract class Control extends SimpleObject {
 	/* Constants */
 	public static final String PROPERTY = "property";
 	private SimpleKeyValueList<EventTypes, List<UpdateListener>> events;
+	protected JavaBridge owner;
 	
 	public boolean addEventListener(EventTypes type, UpdateListener listener) {
 		if(events == null) {
@@ -24,6 +26,11 @@ public abstract class Control extends SimpleObject {
 			return events.add(type, list);
 		}
 		list.add(listener);
+		return true;
+	}
+	
+	public boolean setOwner(JavaBridge owner) {
+		this.owner = owner;
 		return true;
 	}
 	
