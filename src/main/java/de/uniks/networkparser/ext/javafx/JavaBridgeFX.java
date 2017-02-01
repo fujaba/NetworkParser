@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.gui.BridgeCommand;
 import de.uniks.networkparser.gui.EventTypes;
 import de.uniks.networkparser.gui.JavaBridge;
 import de.uniks.networkparser.gui.controls.Control;
@@ -70,7 +71,7 @@ public class JavaBridgeFX extends JavaBridge {
 				callBack.put(callBackClazz, string);
 				window.setMember(string, callBackClazz);
 			}
-			executeScript("bridge.registerListener(\""+type+"\", \""+id+"\", \""+string+"."+functionName+"\");");
+			executeScript(BridgeCommand.register(type, id, string+"."+functionName));
 			return true;
 		}
 		executeScript("bridge.registerListener("+type+", \""+id+"\");");

@@ -1,7 +1,7 @@
 package de.uniks.networkparser.test.javafx;
 
-import de.uniks.networkparser.ext.javafx.StyleFX;
 import de.uniks.networkparser.GUILine;
+import de.uniks.networkparser.Style;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -17,7 +17,7 @@ public class TestWindow extends Application{
 
 		Label label = new Label();
 
-		StyleFX style=new StyleFX();
+		Style style=new Style();
 
 		style.withBorder(GUIPosition.NORTH, new GUILine().withColor("#00FFFF").withWidth("1"));
 		style.withBorder(GUIPosition.WEST, new GUILine().withColor("#000000").withWidth("1"));

@@ -1,8 +1,8 @@
 package de.uniks.networkparser.test.javafx;
 
+import de.uniks.networkparser.ext.javafx.FXStageController;
+import de.uniks.networkparser.ext.javafx.SimpleShell;
 import de.uniks.networkparser.ext.javafx.controller.PointPaneController;
-import de.uniks.networkparser.ext.javafx.window.FXStageController;
-import de.uniks.networkparser.ext.javafx.window.SimpleShell;
 import de.uniks.networkparser.test.model.ludo.Dice;
 import javafx.application.Platform;
 import javafx.scene.Parent;

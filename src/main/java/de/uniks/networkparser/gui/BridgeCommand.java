@@ -14,4 +14,7 @@ public class BridgeCommand {
 	public static final String register(EventTypes event, String id) {
 		return REGISTER+event+"\", \""+id+"\");";
 	}
+	public static final String register(EventTypes event, String id, String callBack) {
+		return REGISTER+event+"\", \""+id+"\",\""+callBack+"\");";
+	}
 }
