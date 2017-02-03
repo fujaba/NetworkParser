@@ -2,6 +2,7 @@ package test;
 
 import org.junit.Test;
 
+import de.uniks.factory.ModelFactory;
 import de.uniks.factory.java.JavaModelFactory;
 import de.uniks.networkparser.graph.Association;
 import de.uniks.networkparser.graph.Attribute;
