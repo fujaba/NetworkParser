@@ -33,43 +33,34 @@ public class Template {
 			return "";
 		}
 		// #if
-		int ifIndex = result.indexOf("{{#if");
+		int ifIndex = result.indexOf("{{#");
 		int endIndex = -1;
 		String ifSearch = result;
 		String parameter = "";
 		String searchResult = "";
 		String replacement = "";
 		String value = "";
+		String condition = "";
 		while(ifIndex > -1) {
 			ifSearch = ifSearch.substring(ifIndex);
 			endIndex = ifSearch.indexOf("{{#end}}");
-			parameter = ifSearch.substring("{{#if ".length(), ifSearch.indexOf("}}"));
+			if (ifSearch.startsWith("{{#if")) {
+				condition = "{{#if";
+			} else if (ifSearch.startsWith("{{#!")) {
+				condition = "{{#!";
+			}
+			parameter = ifSearch.substring(condition.length() + 1, ifSearch.indexOf("}}"));
 			searchResult = parameters.get("{{" + parameter + "}}");
 			value = ifSearch.substring(ifSearch.indexOf("}}") + 2, endIndex);
-			if (searchResult != null && !searchResult.equals("")) {
+			if ((condition.equals("{{#!") && (searchResult == null || searchResult.equals("")))
+					|| (condition.equals("{{#if") && (searchResult != null && !searchResult.equals("")))) {
 				replacement = value;
 			} else {
 				replacement = "";
 			}
-			result = replace(result, "{{#if " + parameter +"}}" + value + "{{#end}}", replacement);
-			ifIndex = ifSearch.indexOf("{{#if", 1);
-		}
-		// search #!
-		ifIndex = result.indexOf("{{#!");
-		ifSearch = result;
-		while(ifIndex > -1) {
-			ifSearch = ifSearch.substring(ifIndex);
-			endIndex = ifSearch.indexOf("{{#end}}");
-			parameter = ifSearch.substring("{{#! ".length(), ifSearch.indexOf("}}"));
-			searchResult = parameters.get("{{" + parameter + "}}");
-			value = ifSearch.substring(ifSearch.indexOf("}}") + 2, endIndex);
-			if (searchResult == null || searchResult.equals("")) {
-				replacement = value;
-			} else {
-				replacement = "";
-			}
-			result = replace(result, "{{#! " + parameter +"}}" + value + "{{#end}}", replacement);
-			ifIndex = ifSearch.indexOf("{{#!", 1);
+			result = replace(result, condition + " " + parameter +"}}" + value + "{{#end}}", replacement);
+			ifSearch = ifSearch.substring(endIndex, ifSearch.length());
+			ifIndex = ifSearch.indexOf("{{#", 1);
 		}
 		for (Entry<String, String> entry : parameters.entrySet()) {
 			if (variables.contains(entry.getKey())) {
@@ -124,11 +115,11 @@ public class Template {
 		} else if(template.length == 1) {
 			setTemplate(template[0]+Entity.CRLF);
 		} else {
-			StringBuilder sb=new StringBuilder(template[0]);
-			for(int i=1;i<template.length;i++) {
-				if(template[i].startsWith("{{#")) {
+			StringBuilder sb = new StringBuilder(template[0]);
+			for (int i = 1; i < template.length; i++) {
+				if (template[i].startsWith("{{#")) {
 					sb.append(template[i]);
-				} else{
+				} else {
 					sb.append(Entity.CRLF+template[i]);
 				}
 			}
