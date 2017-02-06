@@ -453,7 +453,19 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 			}
 		}
 		if (key != null) {
-			this.keyValue.without(key);
+		   this.keyValue.without(key);
+			
+			if (this.updateListener != null)
+			{
+			   JsonObject remJson = new JsonObject();
+			   
+	         JsonObject json = new JsonObject();
+	         json.put(ID, key);
+	         json.put(CLASS, oldValue.getClass().getName());
+	         json.put(REMOVE, remJson);
+	         SimpleEvent simpleEvent = new SimpleEvent(REMOVE, json, this, REMOVE_YOU, oldValue, null);
+	         this.updateListener.update(simpleEvent);
+			}
 			return true;
 		}
 		return false;
