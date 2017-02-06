@@ -29,14 +29,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map.Entry;
+
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
+import de.uniks.networkparser.UpdateCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.list.SimpleIteratorSet;
-import de.uniks.networkparser.list.SimpleKeyValueList;
-import de.uniks.networkparser.UpdateCondition;
 /**
  * The listener interface for receiving update events. The class that is
  * interested in processing a update event implements this interface, and the
@@ -54,6 +54,9 @@ public class UpdateJson implements PropertyChangeListener {
 	private ArrayList<String> suspendIdList;
 
 	private Filter updateFilter = new Filter().withStrategy(IdMap.UPDATE).withConvertable(new UpdateCondition());
+	
+	/** The update listener. */
+	private UpdateListener updateListener;
 
 	/**
 	 * Instantiates a new update listener.
@@ -63,29 +66,6 @@ public class UpdateJson implements PropertyChangeListener {
 	 */
 	public UpdateJson(IdMap map) {
 		this.map = map;
-	}
-
-	/**
-	 * Garbage collection.
-	 *
-	 * @param root		the root
-	 * @return 			the json object
-	 */
-	public JsonObject garbageCollection(Object root) {
-		if(root == null) {
-			return null;
-		}
-		JsonObject initField = this.map.toJsonObject(root);
-		ArrayList<String> classCounts = new ArrayList<String>();
-		SimpleKeyValueList<String, Object> gc = new SimpleKeyValueList<String, Object>();
-		countMessage(initField, classCounts, gc);
-		// Remove all others
-		for (String id : classCounts) {
-			if(this.map.hasKey(id)) {
-				this.map.removeObj(this.map.getObject(id), false);
-			}
-		}
-		return initField;
 	}
 
 	/**
@@ -120,7 +100,7 @@ public class UpdateJson implements PropertyChangeListener {
 		Object oldValue = evt.getOldValue();
 		Object newValue = evt.getNewValue();
 
-		this.updateFilter.withPropertyRegard(map.getListener());
+		this.updateFilter.withPropertyRegard(this.updateListener);
 
 		if ((oldValue == null && newValue == null)
 				|| (oldValue != null && oldValue.equals(newValue))) {
@@ -412,56 +392,6 @@ public class UpdateJson implements PropertyChangeListener {
 	public UpdateJson withReguardFilter(UpdateListener filter) {
 		this.updateFilter.withPropertyRegard(filter);
 		return this;
-	}
-
-	/**
-	 * Count message.
-	 *
-	 * @param message	the message
-	 * @param classCounts	List of ClassCounts
-	 * @param gc			GarbageCollege list
-	 */
-	private void countMessage(JsonObject message, ArrayList<String> classCounts, SimpleKeyValueList<String, Object> gc) {
-		if (message.has(IdMap.ID)) {
-			String id = (String) message.get(IdMap.ID);
-			if (gc.containsKey(id)) {
-				gc.put(id, (Integer) gc.getValue(id) + 1);
-			} else {
-				gc.put(id, 1);
-			}
-			if (message.has(IdMap.CLASS)) {
-				if (classCounts.contains(id)) {
-					return;
-				}
-				classCounts.add(id);
-				// Its a new Object
-				JsonObject props = (JsonObject) message
-						.get(JsonTokener.PROPS);
-				for (int i = 0; i < props.size(); i++) {
-					if (props.getValueByIndex(i) instanceof JsonObject) {
-						countMessage((JsonObject) props.getValueByIndex(i), classCounts, gc);
-					} else if (props.getValueByIndex(i) instanceof JsonArray) {
-						countMessage((JsonArray) props.getValueByIndex(i), classCounts, gc);
-					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * Count message.
-	 *
-	 * @param message		the message
-	 * @param classCounts	List of ClassCounts
-	 * @param gc			GarbageCollege list
-	 */
-	private void countMessage(JsonArray message, ArrayList<String> classCounts, SimpleKeyValueList<String, Object> gc) {
-		for (Iterator<Object> i = message.iterator(); i.hasNext();) {
-			Object obj = i.next();
-			if (obj instanceof JsonObject) {
-				countMessage((JsonObject) obj, classCounts, gc);
-			}
-		}
 	}
 
 	/**

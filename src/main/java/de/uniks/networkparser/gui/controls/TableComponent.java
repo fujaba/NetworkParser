@@ -1,9 +1,12 @@
 package de.uniks.networkparser.gui.controls;
 
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.ext.javafx.TableList;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
+import de.uniks.networkparser.list.AbstractList;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.test.model.GroupAccount;
 
 public class TableComponent extends Control{
 	public static final String PROPERTY_COLUMNS = "columns";
@@ -45,7 +48,6 @@ public class TableComponent extends Control{
 //	withElement(Node...)
 //	addItem(Object)
 //	removeItem(Object)
-//	withList(TableList)
 //	withList(Object, String)
 //	getColumn(Column)
 //	getProperty()
@@ -62,4 +64,20 @@ public class TableComponent extends Control{
 //	saveColumns()
 //	loadColumns(JsonArray, boolean)
 //	addItemsFromPropertyChange(SendableEntity, String, String)
+
+	public TableComponent withMap(IdMap map) {
+		return this;
+	}
+
+	public TableComponent withList(TableList tableList) {
+		return this;
+	}
+
+	public TableComponent withSearchProperties(String... elements) {
+		return this;
+	}
+
+	public TableComponent withList(Object entity, String property) {
+		return this;
+	}
 }

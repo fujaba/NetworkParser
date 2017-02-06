@@ -2,9 +2,9 @@ package de.uniks.networkparser.test.javafx;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.javafx.TableList;
-import de.uniks.networkparser.ext.javafx.component.TableComponent;
 import de.uniks.networkparser.ext.javafx.controller.ModelListenerStringProperty;
 import de.uniks.networkparser.gui.Column;
+import de.uniks.networkparser.gui.controls.TableComponent;
 import de.uniks.networkparser.Style;
 import de.uniks.networkparser.test.model.GroupAccount;
 import de.uniks.networkparser.test.model.Person;
@@ -97,7 +97,7 @@ public class GroupAccountGUI extends Application {
 
 		info.getChildren().addAll(albertLabel, counter);
 
-		box.getChildren().addAll(tableView, hbox, info);
+//FIXME		box.getChildren().addAll(tableView, hbox, info);
 		root.getChildren().add(box);
 //		groupAccount.updateBalances();
 	}

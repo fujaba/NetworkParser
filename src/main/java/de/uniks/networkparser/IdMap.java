@@ -2,6 +2,7 @@ package de.uniks.networkparser;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 /*
 NetworkParser
 Copyright (c) 2011 - 2016, Stefan Lindel
@@ -114,8 +115,6 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 
 	public static final byte FLAG_SEARCHFORSUPERCLASS = 0x04;
 
-	//	public static final byte FLAG_NOID = 0x02;
-	//	public static final byte FLAG_ALLOWQUOTE = 0x04;
 	private byte flag = FLAG_ID;
 
 	private Grammar grammar = new SimpleGrammar();
@@ -139,7 +138,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	protected UpdateListener updateListener;
 
 	/** The updatelistener for Notification changes. */
-	protected PropertyChangeListener listener = new UpdateJson(this);
+	protected PropertyChangeListener mapListener = new UpdateJson(this);
 
 	protected SimpleKeyValueList<SendableEntityCreator, Object> referenceList = new SimpleKeyValueList<SendableEntityCreator, Object>();
 
@@ -162,12 +161,6 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		this.with(new ObjectMapEntry());
 		this.with(new XMLEntityCreator());
 	}
-
-
-	public UpdateListener getListener() {
-		return updateListener;
-	}
-
 
 	/**
 	 * Gets the creator class.
@@ -388,15 +381,15 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	 * @return the newObject
 	 */
 	public Object put(String id, Object item) {
-		boolean changed = this.keyValue.add(id, item);
-		if (changed) {
-			addListener(item);
-		}
-		return item;
-	}
-
-
-	public boolean registerObject(String id, Object item) {
+//		boolean changed = this.keyValue.add(id, item);
+//		if (changed) {
+//			addListener(item);
+//		}
+//		return item;
+//	}
+//
+//
+//	public boolean registerObject(String id, Object item) {
 		boolean changed = this.keyValue.add(id, item);
 		if (changed) {
 			addListener(item);
@@ -416,12 +409,12 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	protected boolean addListener(Object object) {
 		boolean add = false;
 		if (object instanceof SendableEntity) {
-			add = ((SendableEntity) object).addPropertyChangeListener(this.listener);
+			add = ((SendableEntity) object).addPropertyChangeListener(this.mapListener);
 		}
 		else {
 			SendableEntityCreator creator = getCreatorClass(object);
 			if (creator != null && creator instanceof SendableEntity) {
-				add = ((SendableEntity) creator).addPropertyChangeListener(this.listener);
+				add = ((SendableEntity) creator).addPropertyChangeListener(this.mapListener);
 			}
 		}
 		return add;
@@ -662,14 +655,14 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 
 
 	public boolean notify(PropertyChangeEvent event) {
-		if (this.listener != null) {
-			this.listener.propertyChange(event);
-			if (this.listener != null && this.listener instanceof UpdateListener) {
-				return ((UpdateListener) this.listener).update(event);
+		if (this.mapListener != null) {
+			this.mapListener.propertyChange(event);
+			if (this.mapListener != null && this.mapListener instanceof UpdateListener) {
+				return ((UpdateListener) this.mapListener).update(event);
 			}
-			if (this.updateListener != null) {
-				this.updateListener.update(event);
-			}
+		}
+		if (this.updateListener != null) {
+			this.updateListener.update(event);
 		}
 		return true;
 	}
@@ -699,14 +692,65 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	/**
 	 * Garbage collection.
 	 *
-	 * @param root the root Element for garbage Colleciton
+	 * @param root		the root Element for garbage Colleciton
+	 * @return 			the json object
 	 */
-	public void garbageCollection(Object root) {
-		if (this.listener instanceof UpdateJson) {
-			((UpdateJson) this.listener).garbageCollection(root);
+	public JsonObject garbageCollection(Object root) {
+		JsonObject initField = this.toJsonObject(root);
+		ArrayList<String> classCounts = new ArrayList<String>();
+		SimpleKeyValueList<String, Object> gc = new SimpleKeyValueList<String, Object>();
+		countMessage(initField, classCounts, gc);
+		// Remove all others
+		for (String id : classCounts) {
+			if(this.hasKey(id)) {
+				this.removeObj(this.getObject(id), false);
+			}
+		}
+		return initField;
+	}
+	
+	/**
+	 * Count message.
+	 *
+	 * @param message		the message
+	 * @param classCounts	List of ClassCounts
+	 * @param gc			GarbageCollege list
+	 */
+	private void countMessage(Object message, ArrayList<String> classCounts, SimpleKeyValueList<String, Object> gc) {
+		if(message instanceof List<?>) {
+			for (Iterator<?> i = ((List<?>) message).iterator(); i.hasNext();) {
+				Object obj = i.next();
+				if (obj instanceof JsonObject) {
+					countMessage((JsonObject) obj, classCounts, gc);
+				}
+			}
+		} else if(message instanceof Entity) {
+			Entity entity = (Entity) message;
+			if (entity.has(IdMap.ID)) {
+				String id = entity.getString(IdMap.ID);
+				if (gc.containsKey(id)) {
+					gc.put(id, (Integer) gc.getValue(id) + 1);
+				} else {
+					gc.put(id, 1);
+				}
+				if (entity.has(IdMap.CLASS)) {
+					if (classCounts.contains(id)) {
+						return;
+					}
+					classCounts.add(id);
+					// Its a new Object
+					JsonObject props = (JsonObject) entity.getValue(JsonTokener.PROPS);
+					for (int i = 0; i < props.size(); i++) {
+						if (props.getValueByIndex(i) instanceof JsonObject) {
+							countMessage((JsonObject) props.getValueByIndex(i), classCounts, gc);
+						} else if (props.getValueByIndex(i) instanceof JsonArray) {
+							countMessage((JsonArray) props.getValueByIndex(i), classCounts, gc);
+						}
+					}
+				}
+			}
 		}
 	}
-
 
 	/**
 	 * @param value Gammar value
@@ -719,7 +763,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 
 
 	public IdMap withListener(PropertyChangeListener listener) {
-		this.listener = listener;
+		this.mapListener = listener;
 		return this;
 	}
 
@@ -959,8 +1003,8 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 
 
 	private Object decodingJsonObject(JsonObject jsonObject, MapEntity map) {
-		if (this.listener instanceof UpdateJson) {
-			UpdateJson listener = (UpdateJson) this.listener;
+		if (this.mapListener instanceof UpdateJson) {
+			UpdateJson listener = (UpdateJson) this.mapListener;
 			Object result = listener.execute(jsonObject, filter);
 			if (result != null) {
 				return result;

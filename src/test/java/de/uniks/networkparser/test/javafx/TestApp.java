@@ -12,9 +12,9 @@ import java.util.Comparator;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.javafx.TableList;
-import de.uniks.networkparser.ext.javafx.component.TableComponent;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.TableCellValue;
+import de.uniks.networkparser.gui.controls.TableComponent;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -95,7 +95,7 @@ public class TestApp extends Application {
 			}
 		}));
 
-		root.getChildren().add(tableView);
+//		root.getChildren().add(tableView);
 
 		primaryStage.show();
 

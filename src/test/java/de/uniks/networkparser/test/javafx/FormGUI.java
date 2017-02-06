@@ -1,9 +1,10 @@
 package de.uniks.networkparser.test.javafx;
 
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.ext.javafx.component.ModelForm;
-import de.uniks.networkparser.ext.javafx.window.FXStageController;
-import de.uniks.networkparser.ext.javafx.window.SimpleShell;
+import de.uniks.networkparser.ext.javafx.FXStageController;
+import de.uniks.networkparser.ext.javafx.SimpleShell;
+import de.uniks.networkparser.gui.controls.ModelForm;
+import javafx.application.Application.Parameters;
 import javafx.scene.layout.Pane;
 
 public class FormGUI extends SimpleShell {
@@ -17,6 +18,7 @@ public class FormGUI extends SimpleShell {
 
 		ModelForm form = new ModelForm().withDataBinding(map, albert, true);
 //		withIcon(this.getClass().getResource("iconform.png").getPath());
-		return form;
+//FIXME		return form;
+		return null;
 	}
 }

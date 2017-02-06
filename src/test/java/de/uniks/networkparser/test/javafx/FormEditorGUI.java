@@ -1,8 +1,6 @@
 package de.uniks.networkparser.test.javafx;
 
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.ext.javafx.component.PropertyComposite;
-import de.uniks.networkparser.gui.Column;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
@@ -18,9 +16,9 @@ public class FormEditorGUI extends Application {
 			map.with(new PersonCreator());
 			PersonGUI albert= new PersonGUI().withName("Albert");
 
-			PropertyComposite box = new PropertyComposite();
-			box.withDataBinding(map, albert, new Column().withAttrName(PersonGUI.PROPERTY_LASTNAME));
-			root.getChildren().add(box);
+//FIXME			PropertyComposite box = new PropertyComposite();
+//			box.withDataBinding(map, albert, new Column().withAttrName(PersonGUI.PROPERTY_LASTNAME));
+//			root.getChildren().add(box);
 
 //			tableView.withColumn(new Column().withAttrName(Person.PROPERTY_NAME).withStyle(new Style().withWidth(100)));
 //			tableView.withColumn(new Column().withAttrName(Person.PROPERTY_BALANCE).withStyle(new Style().withWidth(100)));
