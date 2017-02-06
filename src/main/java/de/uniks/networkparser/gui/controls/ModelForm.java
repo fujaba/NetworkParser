@@ -20,4 +20,8 @@ public class ModelForm extends Control{
 		}
 		return this;
 	}
+
+	public IdMap getMap() {
+		return map;
+	}
 }

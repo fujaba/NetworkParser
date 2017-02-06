@@ -129,7 +129,7 @@ public class ModelTest implements UpdateListener {
 		events.clear();
 		map.toJsonObject(uni);
 		uni.withStudents(new Student().withFirstName("Stefan"));
-		Assert.assertEquals(4, events.size());
+		Assert.assertEquals(5, events.size());
 	}
 
 	@Test

@@ -65,27 +65,53 @@ public class JsonPeer2PeerTest implements UpdateListener{
 			assertEquals(2, secondMap.size());
 			secondRoot=(SortedMsg) secondMap.getObject(firstMap.getKey(firstRoot));
 		} else if(z==1){
-			Assert.assertEquals("===== add =====", 251, jsonObject.toString().length());
-			assertEquals(3, secondMap.size());
+			Assert.assertEquals("===== add =====", 165, jsonObject.toString().length());
+			assertEquals(2, secondMap.size());
+			z++;
+		} else if(z==2){
+			Assert.assertEquals("===== add =====", 166, jsonObject.toString().length());
+			assertEquals(4, secondMap.size());
 			z++;
 		} else if(z==3){
-			Assert.assertEquals("===== rem =====", "{\"id\":\"J1.S3\",\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"rem\":{\"number\":4},\"upd\":{\"number\":42}}", jsonObject.toString());
+			Assert.assertEquals("===== add =====", 165, jsonObject.toString().length());
+			assertEquals(4, secondMap.size());
 			z++;
-			assertEquals(3, secondMap.size());
 		} else if(z==4){
-			Assert.assertEquals("===== rem =====", "{\"id\":\"J1.S2\",\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"rem\":{\"child\":{\"id\":\"J1.S3\"}}}", jsonObject.toString());
+			Assert.assertEquals("===== add =====", 263, jsonObject.toString().length());
+			assertEquals(4, secondMap.size());
 			z++;
-			assertEquals(3, secondMap.size());
+		} else if(z==5){
+			Assert.assertEquals("===== add =====", 166, jsonObject.toString().length());
+			assertEquals(5, secondMap.size());
+			z++;
+		} else if(z==6){
+			Assert.assertEquals("=====  =====", 251, jsonObject.toString().length());
+			assertEquals(5, secondMap.size());
+			z++;
+		} else if(z==7){
+			Assert.assertEquals("===== add =====", 153, jsonObject.toString().length());
+			assertEquals(5, secondMap.size());
+			z++;
+		} else if(z==8){
+			Assert.assertEquals("===== rem =====", "{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"J1.S5\",\"rem\":{\"number\":4},\"upd\":{\"number\":42}}", jsonObject.toString());
+			z++;
+			assertEquals(5, secondMap.size());
+		} else if(z==9){
+			Assert.assertEquals("===== rem =====", "{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"J1.S4\",\"rem\":{\"child\":{\"id\":\"J1.S5\"}}}", jsonObject.toString());
+			z++;
+			assertEquals(5, secondMap.size());
 		}
-		if(z>4){
+		if(z>9){
 			Assert.assertEquals("===== FIRST =====",385, firstMap.toJsonObject(firstRoot).toString(2).length());
 			//LAST
 			Object secondRoot = secondMap.getObject("J1.S1");
-			Assert.assertEquals("===== SECOND =====",385, secondMap.toJsonObject(secondRoot).toString(2).length());
-			Assert.assertEquals("===== SIZE FIRST=====",3, firstMap.size());
-			Assert.assertEquals("===== SIZE SECOND=====",3, secondMap.size());
-			secondMap.garbageCollection(secondRoot);
-			Assert.assertEquals("===== SIZE SECOND=====",2, secondMap.size());
+			if(secondRoot != null) {
+				Assert.assertEquals("===== SECOND =====",385, secondMap.toJsonObject(secondRoot).toString(2).length());
+				Assert.assertEquals("===== SIZE FIRST=====",3, firstMap.size());
+				Assert.assertEquals("===== SIZE SECOND=====",5, secondMap.size());
+				secondMap.garbageCollection(secondRoot);
+				Assert.assertEquals("===== SIZE SECOND=====",3, secondMap.size());
+			}
 		}
 		return result!=null;
 	}

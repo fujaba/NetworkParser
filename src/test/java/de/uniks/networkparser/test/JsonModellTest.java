@@ -205,7 +205,19 @@ public class JsonModellTest implements UpdateListener {
 		map.with(new AppleCreator());
 
 		map.toJsonObject(tree);
-		map.with(new UpdateListener() {
+		map.getMapListener().withFilter(new UpdateListener() {
+			@Override
+			public boolean update(Object evt) {
+				if(evt instanceof SimpleEvent == false) {
+					return false;
+				}
+				SimpleEvent simpleEvent = (SimpleEvent) evt;
+//				data = simpleEvent.getEntity();
+//				System.out.println(data);
+				return (Apple.PROPERTY_PASSWORD.equals(simpleEvent.getPropertyName()) == false);
+			}
+		});
+		map.withListener(new UpdateListener() {
 			@Override
 			public boolean update(Object evt) {
 				if(evt instanceof SimpleEvent == false) {
@@ -213,7 +225,7 @@ public class JsonModellTest implements UpdateListener {
 				}
 				SimpleEvent simpleEvent = (SimpleEvent) evt;
 				data = simpleEvent.getEntity();
-				return (Apple.PROPERTY_PASSWORD.equals(simpleEvent.getPropertyName()) == false);
+				return true;
 			}
 		});
 		Apple apple = new Apple();

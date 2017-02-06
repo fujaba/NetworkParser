@@ -14,7 +14,7 @@ public class FormEditorGUI extends Application {
 
 			IdMap map = new  IdMap();
 			map.with(new PersonCreator());
-			PersonGUI albert= new PersonGUI().withName("Albert");
+//			PersonGUI albert= new PersonGUI().withName("Albert");
 
 //FIXME			PropertyComposite box = new PropertyComposite();
 //			box.withDataBinding(map, albert, new Column().withAttrName(PersonGUI.PROPERTY_LASTNAME));

@@ -24,7 +24,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -34,6 +33,7 @@ import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.UpdateCondition;
+import de.uniks.networkparser.interfaces.MapListener;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.list.SimpleIteratorSet;
@@ -46,7 +46,7 @@ import de.uniks.networkparser.list.SimpleIteratorSet;
  *
  */
 
-public class UpdateJson implements PropertyChangeListener {
+public class UpdateJson implements MapListener {
 	/** The map. */
 	private IdMap map;
 
@@ -185,16 +185,6 @@ public class UpdateJson implements PropertyChangeListener {
 		if (this.suspendIdList == null) {
 			this.map.notify(new SimpleEvent(IdMap.NEW, jsonObject, evt,  map));
 		}
-	}
-
-	/**
-	 * Execute.
-	 *
-	 * @param updateMessage		the update message
-	 * @return 					the MasterObject, if successful
-	 */
-	public Object execute(JsonObject updateMessage) {
-		return execute(updateMessage, new Filter());
 	}
 
 	/**
@@ -391,6 +381,11 @@ public class UpdateJson implements PropertyChangeListener {
 
 	public UpdateJson withReguardFilter(UpdateListener filter) {
 		this.updateFilter.withPropertyRegard(filter);
+		return this;
+	}
+	
+	public UpdateJson withFilter(UpdateListener filter) {
+		this.updateListener = filter;
 		return this;
 	}
 

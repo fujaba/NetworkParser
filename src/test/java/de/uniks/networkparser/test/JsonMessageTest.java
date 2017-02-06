@@ -45,11 +45,13 @@ public class JsonMessageTest implements UpdateListener {
 
 		GroupAccount account= new GroupAccount();
 
-		messages.with("{\"class\":\"de.uniks.networkparser.test.model.GroupAccount\",\"id\":\"J1.G1\",\"upd\":{\"persons\":{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"J1.P2\",\"prop\":{\"name\":\"Tobi\"}}}}",
-			"{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"J1.P2\",\"upd\":{\"parent\":{\"class\":\"de.uniks.networkparser.test.model.GroupAccount\",\"id\":\"J1.G1\"}}}",
-			"{\"class\":\"de.uniks.networkparser.test.model.GroupAccount\",\"id\":\"J1.G1\",\"upd\":{\"persons\":{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"J1.P3\",\"prop\":{\"parent\":{\"class\":\"de.uniks.networkparser.test.model.GroupAccount\",\"id\":\"J1.G1\"}}}}}",
-			"{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"J1.P3\",\"upd\":{\"name\":\"Albert\"}}"
-		);
+		messages.with("{\"class\":\"de.uniks.networkparser.test.model.GroupAccount\",\"id\":\"J1.G1\"}");
+		messages.with("{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"J1.P2\",\"prop\":{\"name\":\"Tobi\"}}");
+		messages.with("{\"class\":\"de.uniks.networkparser.test.model.GroupAccount\",\"id\":\"J1.G1\",\"upd\":{\"persons\":{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"J1.P2\",\"prop\":{\"name\":\"Tobi\"}}}}");
+		messages.with("{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"J1.P2\",\"upd\":{\"parent\":{\"class\":\"de.uniks.networkparser.test.model.GroupAccount\",\"id\":\"J1.G1\"}}}");
+		messages.with("{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"J1.P3\",\"prop\":{\"parent\":{\"class\":\"de.uniks.networkparser.test.model.GroupAccount\",\"id\":\"J1.G1\"}}}");
+		messages.with("{\"class\":\"de.uniks.networkparser.test.model.GroupAccount\",\"id\":\"J1.G1\",\"upd\":{\"persons\":{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"J1.P3\",\"prop\":{\"parent\":{\"class\":\"de.uniks.networkparser.test.model.GroupAccount\",\"id\":\"J1.G1\"}}}}}");
+		messages.with("{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"J1.P3\",\"upd\":{\"name\":\"Albert\"}}");
 
 		map.toJsonObject(account);
 
@@ -72,9 +74,11 @@ public class JsonMessageTest implements UpdateListener {
 		map.with(new AppleTreeCreator());
 		map.with(new AppleCreator());
 		map.put("root", tree);
+		messages.with("{\"class\":\"de.uniks.networkparser.test.model.Apple\",\"id\":\"J1.A1\"}");
 		messages.with("{\"class\":\"de.uniks.networkparser.test.model.AppleTree\",\"id\":\"root\",\"upd\":{\"has\":{\"class\":\"de.uniks.networkparser.test.model.Apple\",\"id\":\"J1.A1\"}}}");
 		map.with(this);
 		tree.createApple();
+		Assert.assertEquals(messages.size(), pos);
 
 	}
 	@Test
@@ -93,7 +97,6 @@ public class JsonMessageTest implements UpdateListener {
 				SimpleEvent simpleEvent = (SimpleEvent) evt;
 				String msg = simpleEvent.getEntity().toString();
 				messages.add(msg);
-				Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.House\",\"id\":\"J1.H1\",\"rem\":{\"floor\":4},\"upd\":{\"floor\":42}}", msg);
 				return false;
 			}
 		});
@@ -111,7 +114,10 @@ public class JsonMessageTest implements UpdateListener {
 		// Update old Model
 		house.setFloor(42);
 
-		decodeMap.decode(messages.get(pos));
+		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.House\",\"id\":\"J1.H1\",\"prop\":{\"name\":\"University\",\"floor\":4}}", messages.get(0));
+		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.House\",\"id\":\"J1.H1\",\"rem\":{\"floor\":4},\"upd\":{\"floor\":42}}", messages.get(1));
+
+		decodeMap.decode(messages.get(1));
 
 		Assert.assertEquals(42, newHouse.getFloor());
 	}

@@ -48,6 +48,7 @@ import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.Grammar;
 import de.uniks.networkparser.interfaces.IdMapCounter;
+import de.uniks.networkparser.interfaces.MapListener;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
@@ -138,7 +139,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	protected UpdateListener updateListener;
 
 	/** The updatelistener for Notification changes. */
-	protected PropertyChangeListener mapListener = new UpdateJson(this);
+	protected MapListener mapListener = new UpdateJson(this);
 
 	protected SimpleKeyValueList<SendableEntityCreator, Object> referenceList = new SimpleKeyValueList<SendableEntityCreator, Object>();
 
@@ -762,7 +763,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	}
 
 
-	public IdMap withListener(PropertyChangeListener listener) {
+	public IdMap withListener(MapListener listener) {
 		this.mapListener = listener;
 		return this;
 	}
@@ -1539,11 +1540,13 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		}
 	}
 
+	public MapListener getMapListener() {
+		return this.mapListener;
+	}
 
 	public SimpleKeyValueList<String, Object> getKeyValue() {
 		return keyValue;
 	}
-
 
 	/**
 	 * set the new List of Items for the Map
@@ -1590,8 +1593,8 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 			else if (item instanceof UpdateListener) {
 				this.withListener((UpdateListener) item);
 			}
-			else if (item instanceof PropertyChangeListener) {
-				this.withListener((PropertyChangeListener) item);
+			else if (item instanceof MapListener) {
+				this.withListener((MapListener) item);
 			}
 			else if (item instanceof Filter) {
 				this.withFilter((Filter) item);

@@ -26,6 +26,7 @@ import de.uniks.networkparser.json.EMFJsonGrammar;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.json.JsonTokener;
+import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.logic.BooleanCondition;
 import de.uniks.networkparser.test.model.Apple;
 import de.uniks.networkparser.test.model.Barbarian;
@@ -61,8 +62,6 @@ import de.uniks.networkparser.test.model.util.StringMessageCreator;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
 
 public class JsonTest extends IOClasses {
-	private String updateMessage;
-	
 	@Test
 	public void testJSONDuplicate() {
 		JsonObject json = new JsonObject().withValue("{\"type\":\"new\", \"type\":\"old\"}");
@@ -765,6 +764,11 @@ public class JsonTest extends IOClasses {
 		house.setFloor(4);
 		house.setName("University");
 		IdMap map=new IdMap().with(new HouseCreator());
+		
+		SimpleList<String> messages= new SimpleList<String>();
+		messages.add("{\"class\":\"de.uniks.networkparser.test.model.House\",\"id\":\"J1.H1\",\"prop\":{\"name\":\"University\",\"floor\":4}}");
+		messages.add("{\"class\":\"de.uniks.networkparser.test.model.House\",\"id\":\"J1.H1\",\"rem\":{\"floor\":4},\"upd\":{\"floor\":42}}");
+		
 		map.with(new UpdateListener() {
 			@Override
 			public boolean update(Object event) {
@@ -772,9 +776,13 @@ public class JsonTest extends IOClasses {
 					return false;
 				}
 				SimpleEvent simpleEvent = (SimpleEvent) event;
-
-				updateMessage = simpleEvent.getEntity().toString();
-				Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.House\",\"id\":\"J1.H1\",\"rem\":{\"floor\":4},\"upd\":{\"floor\":42}}", updateMessage.toString());
+				String testMessage = messages.first();
+				
+				String updateMessage = simpleEvent.getEntity().toString();
+				Assert.assertEquals(testMessage, updateMessage);
+				if(messages.size()>1) {
+					messages.remove(0);
+				}
 				return false;
 			}
 		});
@@ -792,7 +800,7 @@ public class JsonTest extends IOClasses {
 		// Update old Model
 		house.setFloor(42);
 
-		decodeMap.decode(updateMessage);
+		decodeMap.decode(messages.first());
 
 		Assert.assertEquals(42, newHouse.getFloor());
 	}

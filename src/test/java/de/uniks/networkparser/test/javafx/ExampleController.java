@@ -1,15 +1,10 @@
 package de.uniks.networkparser.test.javafx;
 
 import java.net.URL;
-import java.util.Comparator;
 import java.util.ResourceBundle;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.javafx.TableList;
-import de.uniks.networkparser.gui.Column;
-import de.uniks.networkparser.gui.TableCellValue;
-import de.uniks.networkparser.gui.controls.TableComponent;
-import de.uniks.networkparser.interfaces.GUIPosition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.AnchorPane;

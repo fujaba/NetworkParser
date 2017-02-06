@@ -3,17 +3,13 @@ package de.uniks.networkparser.test.javafx;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.javafx.FXStageController;
 import de.uniks.networkparser.ext.javafx.SimpleShell;
-import de.uniks.networkparser.ext.javafx.dialog.DialogBox;
 import de.uniks.networkparser.gui.Column;
-import de.uniks.networkparser.gui.TableCellValue;
 import de.uniks.networkparser.gui.controls.TableComponent;
 import de.uniks.networkparser.test.model.GroupAccount;
 import de.uniks.networkparser.test.model.Person;
 import de.uniks.networkparser.test.model.util.GroupAccountCreator;
 import de.uniks.networkparser.test.model.util.PersonCreator;
-import javafx.application.Application.Parameters;
 import javafx.scene.Parent;
-import javafx.scene.image.ImageView;
 
 public class SimpleTable extends SimpleShell{
 
