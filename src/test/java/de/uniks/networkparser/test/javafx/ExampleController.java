@@ -4,7 +4,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.ext.javafx.TableList;
+import de.uniks.networkparser.ext.TableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.AnchorPane;

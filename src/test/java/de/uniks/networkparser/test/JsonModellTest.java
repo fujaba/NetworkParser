@@ -205,7 +205,7 @@ public class JsonModellTest implements UpdateListener {
 		map.with(new AppleCreator());
 
 		map.toJsonObject(tree);
-		map.getMapListener().withFilter(new UpdateListener() {
+		map.getMapListener().getFilter().withPropertyRegard(new UpdateListener() {
 			@Override
 			public boolean update(Object evt) {
 				if(evt instanceof SimpleEvent == false) {

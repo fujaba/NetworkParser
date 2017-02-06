@@ -11,7 +11,7 @@ package de.uniks.networkparser.test.javafx;
 import java.util.Comparator;
 
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.ext.javafx.TableList;
+import de.uniks.networkparser.ext.TableList;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.TableCellValue;
 import de.uniks.networkparser.gui.controls.TableComponent;

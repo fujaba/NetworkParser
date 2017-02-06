@@ -1,4 +1,4 @@
-package de.uniks.networkparser.ext.javafx;
+package de.uniks.networkparser.ext;
 
 /*
 NetworkParser
@@ -34,9 +34,8 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.EntityComparator;
 import de.uniks.networkparser.list.SortedList;
 import de.uniks.networkparser.list.SortingDirection;
-public class TableList extends SortedList<Object> implements
 
-		SendableEntity, SendableEntityCreator {
+public class TableList extends SortedList<Object> implements SendableEntity, SendableEntityCreator {
 	public static final String PROPERTY_ITEMS = "items";
 	public static final String[] properties = new String[] {PROPERTY_ITEMS };
 	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);

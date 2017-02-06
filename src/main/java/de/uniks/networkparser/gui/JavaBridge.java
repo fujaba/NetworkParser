@@ -6,7 +6,6 @@ import java.util.Map;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
-import de.uniks.networkparser.ext.javafx.Event;
 import de.uniks.networkparser.gui.controls.Control;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.JsonObject;

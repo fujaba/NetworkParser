@@ -35,7 +35,6 @@ import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.UpdateCondition;
 import de.uniks.networkparser.interfaces.MapListener;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.list.SimpleIteratorSet;
 /**
  * The listener interface for receiving update events. The class that is
@@ -55,9 +54,6 @@ public class UpdateJson implements MapListener {
 
 	private Filter updateFilter = new Filter().withStrategy(IdMap.UPDATE).withConvertable(new UpdateCondition());
 	
-	/** The update listener. */
-	private UpdateListener updateListener;
-
 	/**
 	 * Instantiates a new update listener.
 	 *
@@ -99,8 +95,6 @@ public class UpdateJson implements MapListener {
 	public void propertyChange(PropertyChangeEvent evt) {
 		Object oldValue = evt.getOldValue();
 		Object newValue = evt.getNewValue();
-
-		this.updateFilter.withPropertyRegard(this.updateListener);
 
 		if ((oldValue == null && newValue == null)
 				|| (oldValue != null && oldValue.equals(newValue))) {
@@ -379,16 +373,16 @@ public class UpdateJson implements MapListener {
 		return null;
 	}
 
-	public UpdateJson withReguardFilter(UpdateListener filter) {
-		this.updateFilter.withPropertyRegard(filter);
-		return this;
-	}
-	
-	public UpdateJson withFilter(UpdateListener filter) {
-		this.updateListener = filter;
+	public UpdateJson withFilter(Filter filter) {
+		this.updateFilter = filter;
 		return this;
 	}
 
+	@Override
+	public Filter getFilter() {
+		return this.updateFilter;
+	}
+	
 	/**
 	 * Remove the given object from the IdMap
 	 * @param oldValue Object to remove

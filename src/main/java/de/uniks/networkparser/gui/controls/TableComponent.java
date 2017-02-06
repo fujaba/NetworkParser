@@ -1,10 +1,10 @@
 package de.uniks.networkparser.gui.controls;
 
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.ext.javafx.TableList;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.list.SortedList;
 
 public class TableComponent extends Control{
 	public static final String PROPERTY_COLUMNS = "columns";
@@ -67,7 +67,7 @@ public class TableComponent extends Control{
 		return this;
 	}
 
-	public TableComponent withList(TableList tableList) {
+	public TableComponent withList(SortedList<Object> tableList) {
 		return this;
 	}
 

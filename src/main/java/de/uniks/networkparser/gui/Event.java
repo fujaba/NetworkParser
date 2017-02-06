@@ -1,9 +1,7 @@
-package de.uniks.networkparser.ext.javafx;
+package de.uniks.networkparser.gui;
 
-import de.uniks.networkparser.gui.EventTypes;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonObject;
-import netscape.javascript.JSObject;
 
 public class Event extends JsonObject implements SendableEntityCreator {
 
@@ -35,19 +33,13 @@ public class Event extends JsonObject implements SendableEntityCreator {
 	public static final String X = "x";
 	public static final String Y = "x";
 
-	Object currentTarget;
-	int timeStamp;
-	String type;
-	private EventTypes eventType;
-	private String id;
-
-	// The jsObject for BackupPurposes
-	public JSObject jsObject;
+	protected Object currentTarget;
+	protected int timeStamp;
+	protected String type;
+	protected EventTypes eventType;
+	protected String id;
 
 	static protected String[] properties = {TYPE, CURRENT_TARGET, TIME_STAMP, EVENT_TYPE, ID};
-
-	private Event() {
-	};
 
 	public Object getCurrentTarget() {
 		return currentTarget;
@@ -61,40 +53,6 @@ public class Event extends JsonObject implements SendableEntityCreator {
 		return type;
 	}
 	
-	public static Event create(JSObject obj) {
-//		boolean isEvent = (boolean) obj.eval("this instanceof Event");
-		Event event = new Event();
-		Object value;
-		
-		value = obj.getMember(TIME_STAMP);
-		if(value != null) {
-			if(value instanceof Double) {
-				event.timeStamp = ((Double)value).intValue();
-			} else if(value instanceof Integer) {
-				event.timeStamp = (int)value;
-			}
-		}
-		value = obj.getMember(ID);
-		if(value != null) {
-			event.id = ""+value;
-		}
-		value = obj.getMember(EVENT_TYPE);
-		if(value != null) {
-			String eventName = ""+value;
-			event.eventType = EventTypes.valueOf(eventName.toUpperCase());
-		}
-		
-		event.jsObject = obj;
-		value = obj.getMember(TYPE);
-		if(value != null) {
-			event.type = ""+value;
-		}
-		value = obj.getMember(CURRENT_TARGET);
-		if(value != null) {
-			event.currentTarget = new JsonObjectLazy(obj);
-		}
-		return event;
-	}
 
 	@Override
 	public String[] getProperties() {
@@ -131,7 +89,7 @@ public class Event extends JsonObject implements SendableEntityCreator {
 			return true;
 		}
 		if(TIME_STAMP.equals(attribute)) {
-			e.timeStamp = (int) value;
+			e.timeStamp = Integer.valueOf(""+value);
 			return true;
 		}
 		if(CURRENT_TARGET.equals(attribute)) {

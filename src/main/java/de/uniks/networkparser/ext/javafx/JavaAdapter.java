@@ -34,7 +34,7 @@ public class JavaAdapter implements UpdateListener{
 			owner.fireEvent(data);
 			return true;
 		} else if(value instanceof JSObject){
-			Event event = Event.create((JSObject) value);
+			EventFX event = EventFX.create((JSObject) value);
 			owner.fireEvent(event);
 			return true;
 		}
