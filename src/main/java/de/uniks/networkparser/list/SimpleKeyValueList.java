@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.UpdateListener;
 
 public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K, V>, Iterable<Entry<K, V>>{
 	public SimpleKeyValueList() {
@@ -628,5 +629,14 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 				}
 			}
 		}
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof UpdateListener) {
+			UpdateListener condition = (UpdateListener) obj;
+			return condition.update(this);
+		}
+		return super.equals(obj);
 	}
 }

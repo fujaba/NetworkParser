@@ -28,6 +28,7 @@ import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.json.JsonTokener;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.logic.BooleanCondition;
+import de.uniks.networkparser.logic.EntityEquals;
 import de.uniks.networkparser.test.model.Apple;
 import de.uniks.networkparser.test.model.Barbarian;
 import de.uniks.networkparser.test.model.Change;
@@ -62,6 +63,17 @@ import de.uniks.networkparser.test.model.util.StringMessageCreator;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
 
 public class JsonTest extends IOClasses {
+	
+	@Test
+	public void testJsonEquals() {
+		JsonObject jsonObject = new JsonObject();
+		jsonObject.withKeyValue("msg", "init");
+		
+		Assert.assertFalse(jsonObject.equals(EntityEquals.create("msg", "game")));
+		Assert.assertTrue(jsonObject.equals(EntityEquals.create("msg", "init")));
+	}
+	
+	
 	@Test
 	public void testJSONDuplicate() {
 		JsonObject json = new JsonObject().withValue("{\"type\":\"new\", \"type\":\"old\"}");
