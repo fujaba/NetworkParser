@@ -73,4 +73,10 @@ public interface SendableEntityCreator {
 	* @return the sendable instance
 	*/
    Object getSendableInstance(boolean prototyp);
+   
+   public default void removeObject(Object entity)
+   {
+      throw new UnsupportedOperationException();
+   }
+
 }
