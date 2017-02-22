@@ -31,7 +31,7 @@ import de.uniks.networkparser.interfaces.UpdateListener;
  * @author Stefan Lindel
  */
 
-public class Depth implements SendableEntityCreator, UpdateListener {
+public class Deep implements SendableEntityCreator, UpdateListener {
 	/** Constant of Deep. */
 	public static final String DEPTH = "depth";
 	/** Variable of Deep. */
@@ -41,7 +41,7 @@ public class Depth implements SendableEntityCreator, UpdateListener {
 	 * @param value		The new Value
 	 * @return 			Deep Instance
 	 */
-	public Depth withDepth(int value) {
+	public Deep withDepth(int value) {
 		this.depth = value;
 		return this;
 	}
@@ -65,8 +65,8 @@ public class Depth implements SendableEntityCreator, UpdateListener {
 	 * @param value		Value of depth
 	 * @return 			a new depth Instance
 	 */
-	public static Depth create(int value) {
-		return new Depth().withDepth(value);
+	public static Deep create(int value) {
+		return new Deep().withDepth(value);
 	}
 
 	@Override
@@ -76,13 +76,13 @@ public class Depth implements SendableEntityCreator, UpdateListener {
 
 	@Override
 	public Object getSendableInstance(boolean prototype) {
-		return new Depth();
+		return new Deep();
 	}
 
 	@Override
 	public Object getValue(Object entity, String attribute) {
 		if (DEPTH.equalsIgnoreCase(attribute)) {
-			return ((Depth) entity).getDepth();
+			return ((Deep) entity).getDepth();
 		}
 		return null;
 	}
@@ -91,7 +91,7 @@ public class Depth implements SendableEntityCreator, UpdateListener {
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
 		if (DEPTH.equalsIgnoreCase(attribute)) {
-			((Depth) entity).withDepth(Integer.parseInt("" + value));
+			((Deep) entity).withDepth(Integer.parseInt("" + value));
 			return true;
 		}
 		return false;

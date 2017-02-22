@@ -116,6 +116,10 @@ public class Filter {
 		}
 		return true;
 	}
+	
+	public UpdateListener getPropertyRegard() {
+		return property;
+	}
 
 	boolean isConvertable(Object entity, String property, Object value, IdMap map, int deep) {
 		if (this.convertable != null) {

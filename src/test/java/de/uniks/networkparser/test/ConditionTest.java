@@ -6,7 +6,7 @@ import java.util.Date;
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.uniks.networkparser.Depth;
+import de.uniks.networkparser.Deep;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.buffer.CharacterBuffer;
@@ -98,7 +98,7 @@ public class ConditionTest implements UpdateListener {
 		and.with(BooleanCondition.create(true));
 		Or or = new Or();
 		and.with(or);
-		and.setValue(and, And.CHILD, Depth.create(42), IdMap.NEW);
+		and.setValue(and, And.CHILD, Deep.create(42), IdMap.NEW);
 		or.with(InstanceOf.create(Person.class));
 		BooleanCondition falseCondition = new BooleanCondition();
 		falseCondition.setValue(falseCondition, BooleanCondition.VALUE, false, IdMap.NEW);
@@ -189,9 +189,9 @@ public class ConditionTest implements UpdateListener {
 	
 	@Test
 	public void testDeepCondition() {
-		Depth condition = Depth.create(23);
-		Assert.assertEquals(23, condition.getValue(condition, Depth.DEPTH));
-		condition.setValue(condition, Depth.DEPTH, 42, null);
+		Deep condition = Deep.create(23);
+		Assert.assertEquals(23, condition.getValue(condition, Deep.DEPTH));
+		condition.setValue(condition, Deep.DEPTH, 42, null);
 		Assert.assertEquals(42, condition.getDepth());
 	}
 

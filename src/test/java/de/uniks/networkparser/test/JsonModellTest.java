@@ -7,7 +7,7 @@ import java.math.BigInteger;
 import org.junit.Assert;
 import org.junit.Test;
 
-import de.uniks.networkparser.Depth;
+import de.uniks.networkparser.Deep;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
@@ -159,11 +159,11 @@ public class JsonModellTest implements UpdateListener {
 		third.setNumber(4);
 		second.setChild(third);
 		// DEEP 0
-		Assert.assertEquals(165, map.toJsonObject(first, Filter.regard(Depth.create(1))).toString().length());
+		Assert.assertEquals(165, map.toJsonObject(first, Filter.regard(Deep.create(1))).toString().length());
 		// DEEP 1
-		Assert.assertEquals(340, map.toJsonObject(first, Filter.regard(Depth.create(2))).toString().length());
+		Assert.assertEquals(340, map.toJsonObject(first, Filter.regard(Deep.create(2))).toString().length());
 		// DEEP 2
-		Assert.assertEquals(438, map.toJsonObject(first, Filter.regard(Depth.create(3))).toString().length());
+		Assert.assertEquals(438, map.toJsonObject(first, Filter.regard(Deep.create(3))).toString().length());
 		third.updateNumber(2);
 		third.setNumber(5);
 

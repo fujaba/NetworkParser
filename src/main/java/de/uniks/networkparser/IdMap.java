@@ -1,7 +1,6 @@
 package de.uniks.networkparser;
 
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 /*
 NetworkParser
@@ -30,6 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
@@ -399,7 +399,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 			if(item instanceof SendableEntityCreator) {
 				((SendableEntityCreator)item).setValue(item, IdMap.ID, id, NEW);
 			}
-			JsonObject json = this.toJsonObject(item, Filter.regard(Depth.create(1)));
+			JsonObject json = this.toJsonObject(item, Filter.regard(Deep.create(1)));
 			SimpleEvent simpleEvent = new SimpleEvent(NEW, json, this, NEW, null, item);
 			this.updateListener.update(simpleEvent);
 		}
@@ -1038,7 +1038,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		}
 		JsonArray items = new JsonArray();
 		for (String childId : ids) {
-			JsonObject jsonObject = toJsonObject(getObject(childId), Filter.convertable(Depth.create(0)));
+			JsonObject jsonObject = toJsonObject(getObject(childId), Filter.convertable(Deep.create(0)));
 			if (jsonObject != null) {
 				items.add(jsonObject);
 			}
@@ -1054,6 +1054,22 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	 * @return the XMLEntity
 	 */
 	public XMLEntity toXMLEntity(Object entity) {
+		if (entity == null) {
+			return null;
+		}
+		MapEntity map = new MapEntity(filter, grammar);
+		map.setFlag(flag);
+		return (XMLEntity) this.encode(entity, map, xmlTokener);
+	}
+	
+	/**
+	 * To XMLEntity
+	 * 
+	 * @param entity the object
+	 * @param filter Filter
+	 * @return the XMLEntity
+	 */
+	public XMLEntity toXMLEntity(Object entity, Filter filter) {
 		if (entity == null) {
 			return null;
 		}
@@ -1342,6 +1358,14 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 			// Only add to List
 			if (parentNode != null) {
 				item = map.writeBasicValue(creator, tokener.newInstance(), parentNode, className, id);
+				if(map.getDeep()>0) {
+					UpdateListener filter = map.getFilter().getPropertyRegard();
+					if(filter != null && filter instanceof Deep) {
+						if(map.getDeep()<=((Deep)filter).getDepth()) {
+							return item;
+						}
+					}
+				}
 				targetList.with(item);
 				return item;
 			}
