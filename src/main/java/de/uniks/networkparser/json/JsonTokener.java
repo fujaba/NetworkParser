@@ -457,7 +457,7 @@ public class JsonTokener extends Tokener {
 	}
 	public Entity createLink(Entity parent, String property, String className, String id) {
 		Entity child = newInstance();
-		child.put(IdMap.CLASS, className);
+//		child.put(IdMap.CLASS, className);
 		child.put(IdMap.ID, id);
 		return child;
 	}

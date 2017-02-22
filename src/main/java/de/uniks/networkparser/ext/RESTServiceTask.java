@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Collection;
+import java.util.Iterator;
 
 import de.uniks.networkparser.Deep;
 import de.uniks.networkparser.Filter;
@@ -63,11 +64,11 @@ public class RESTServiceTask implements Runnable {
 				try {
 					Socket clientSocket = serverSocket.accept();
 					BufferedReader br = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-					int read = br.read(buffer);
+					int temp = br.read(buffer);
 					isType = true;
 					type.clear();
 					request.clear();
-					for(pos = 0;pos<read;pos++) {
+					for(pos = 0;pos<temp;) {
 						if(buffer[pos] == ' ') {
 							if(isType) {
 								isType = false;
@@ -79,8 +80,9 @@ public class RESTServiceTask implements Runnable {
 						} else {
 							request.with(buffer[pos]);
 						}
-						if(pos == read) {
-							read = br.read(buffer);
+						pos++;
+						if(pos == temp) {
+							temp = br.read(buffer);
 							pos = 0;
 						}
 
@@ -98,78 +100,15 @@ public class RESTServiceTask implements Runnable {
 							continue;
 						}
 					}
-					pos = 0;
-					boolean isJSON = false;
-					boolean isXML = false;
-					if(request.startsWith(JSON, 0, false)) {
-						pos =6;
-						isJSON = true;
-					} else if(request.startsWith(XML, 0, false)) {
-						pos = 5;
-						isXML = true;
-					}
-					CharacterBuffer path = new CharacterBuffer();
-					SendableEntityCreator creator = this.creator;
-					int listPos = -1;
-					Object element = root;
-					while(pos<request.length()) {
-						if(request.charAt(pos) == '[') {
-							listPos=0;
-							pos++;
-							while(pos<request.length() && request.charAt(pos)!=']') {
-								listPos=listPos*10 + (request.charAt(pos) - 48);
-								pos++;
-							}
-							pos++;
-						}
-
-						if(request.charAt(pos) != '/' && pos<request.length()) {
-							path.with(request.charAt(pos));
-							pos++;
-						}
-						if(request.charAt(pos) == '/' || (pos==request.length() && path.length()>0)) {
-							element = creator.getValue(element, path.toString());
-							if(element == null) {
-								break;
-							}
-							// Switch For List
-							// listPos
-							if(listPos>=0 && element instanceof Collection<?>) {
-								Collection<?> collection = (Collection<?>) element;
-								Object[] array = collection.toArray();
-								if(listPos <array.length) {
-									element = array[listPos];
-								}
-							}
-							creator = map.getCreatorClass(element);
-							path.clear();
-							listPos = -1;
-							pos++;
-						}
-					}
-					
-					if(element != null) {
-						if(isJSON) {
-							if(element instanceof Collection<?>) {
-								JsonArray jsonArray = map.toJsonArray(element, filter);	
-								out.write(jsonArray.toString());
-								
-							} else {
-								JsonObject jsonObject = map.toJsonObject(element, filter);	
-								out.write(jsonObject.toString());
-							}
-						} else if(isXML) {
-							XMLEntity xml = map.toXMLEntity(element, filter);
-							out.write(xml.toString());
-						}
-					} else {
-						 out.write("HTTP 400");
-					}
+					String result = this.executeRequest(request);
+					out.write(result);
 					out.close();
 					clientSocket.close();
 				}catch (Exception e) {
 					if(errorListener != null) {
 						errorListener.update(e);
+					}else {
+						e.printStackTrace();
 					}
 				}
 			}
@@ -179,7 +118,112 @@ public class RESTServiceTask implements Runnable {
 			}
 		}
 	}
-	
+	public String executeRequest(String request) {
+		return executeRequest(new CharacterBuffer().with(request));
+	}
+	public String executeRequest(CharacterBuffer request) {
+		int pos = 0;
+		boolean isXML = false;
+		if(request.startsWith(JSON, 0, false)) {
+			pos =6;
+		} else if(request.startsWith(XML, 0, false)) {
+			pos = 5;
+			isXML = true;
+		}
+		CharacterBuffer path = new CharacterBuffer();
+		SendableEntityCreator creator = this.creator;
+		CharacterBuffer listID = new CharacterBuffer();
+		Object element = root;
+		while(pos<request.length()) {
+			if(request.charAt(pos) == '[') {
+				listID.clear();
+				pos++;
+				while(pos<request.length() && request.charAt(pos)!=']') {
+					listID.with(request.charAt(pos));
+					pos++;
+				}
+				pos++;
+			}
+
+			if(request.charAt(pos) != '/' && pos<request.length()) {
+				path.with(request.charAt(pos));
+				pos++;
+			}
+			if(request.charAt(pos) == '/' || (pos==request.length() && path.length()>0)) {
+				element = creator.getValue(element, path.toString());
+				if(element == null) {
+					break;
+				}
+				// Switch For List
+				if(element instanceof Collection<?>) {
+					int temp;
+					String id = listID.toString();
+					try {
+						temp = Integer.parseInt(id);
+					} catch (NumberFormatException e) {
+						temp = -1;
+					}
+					
+					Collection<?> collection = (Collection<?>) element;
+					if(temp<0) {
+						Object item = null;
+						Iterator<?> i = collection.iterator();
+						if(id.length()>0){
+							element = null;
+							while(i.hasNext()) {
+								item = i.next();
+								if(id.equals(map.getId(item))) {
+									element = item;
+									break;
+								}
+							}
+						}else if(collection.size() == 1) {
+							element = i.next();
+						}
+					}else {
+						element = null;
+						int collectionPos = 0;
+						for(Iterator<?> i = collection.iterator();i.hasNext();) {
+							if(collectionPos==temp) {
+								element = i.next();
+								break;
+							} else {
+								i.next();
+								collectionPos++;
+							}
+						}
+					}
+				}
+				creator = map.getCreatorClass(element);
+				path.clear();
+				listID.clear();
+				pos++;
+			}
+		}
+		if(element == root) {
+			if(path.length()>0) {
+				element = null;
+			} else if(listID.length()>0) {
+				element = map.getObject(listID.toString());
+			}
+		}
+		if(element != null) {
+			if(isXML) {
+				XMLEntity xml = map.toXMLEntity(element, filter);
+				return xml.toString();
+			}
+			if(element instanceof Collection<?>) {
+				JsonArray jsonArray = map.toJsonArray(element, filter);	
+				return jsonArray.toString();
+				
+			} else {
+				JsonObject jsonObject = map.toJsonObject(element, filter);	
+				return jsonObject.toString();
+			}
+		}
+		return "HTTP 400";
+	}
+
 	public void stop() {
 		if(serverSocket!=null) {
 			try {

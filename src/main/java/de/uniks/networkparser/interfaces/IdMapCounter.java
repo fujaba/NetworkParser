@@ -69,8 +69,8 @@ public interface IdMapCounter {
 	 */
 	public void readId(String id);
 
-	/**
-	 * @return the Prio Object for checking errors
-	 */
-	public Object getPrio();
+//	/**
+//	 * @return the Prio Object for checking errors
+//	 */
+//	public Object getPrio();
 }

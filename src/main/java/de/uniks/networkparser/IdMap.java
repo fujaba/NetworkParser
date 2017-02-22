@@ -140,7 +140,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 
 	/** The updatelistener for Notification changes. */
 	protected MapListener mapListener = new UpdateJson(this);
-
+	
 	protected SimpleKeyValueList<SendableEntityCreator, Object> referenceList = new SimpleKeyValueList<SendableEntityCreator, Object>();
 
 	/** The Constant ENTITYSPLITTER. */
@@ -461,7 +461,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 			   
 	         JsonObject json = new JsonObject();
 	         json.put(ID, key);
-	         json.put(CLASS, oldValue.getClass().getName());
+//	         json.put(CLASS, oldValue.getClass().getName());
 	         json.put(REMOVE, remJson);
 	         SimpleEvent simpleEvent = new SimpleEvent(REMOVE, json, this, REMOVE_YOU, oldValue, null);
 	         this.updateListener.update(simpleEvent);

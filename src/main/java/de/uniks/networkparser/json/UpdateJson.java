@@ -33,6 +33,7 @@ import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.UpdateCondition;
+import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.MapListener;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleIteratorSet;
@@ -67,14 +68,15 @@ public class UpdateJson implements MapListener {
 	/**
 	 * Suspend notification.
 	 */
-	public void suspendNotification() {
+	public boolean suspendNotification() {
 		this.suspendIdList = new ArrayList<String>();
+		return true;
 	}
 
 	/**
 	 * Reset notification.
 	 */
-	public void resetNotification() {
+	public boolean resetNotification() {
 		JsonArray array = this.map.getJsonByIds(this.suspendIdList);
 		if(array.size() > 0) {
 			JsonObject message = new JsonObject();
@@ -83,6 +85,7 @@ public class UpdateJson implements MapListener {
 		}
 
 		this.suspendIdList = null;
+		return true;
 	}
 
 	/*
@@ -129,7 +132,7 @@ public class UpdateJson implements MapListener {
 		}
 
 		JsonObject jsonObject = new JsonObject()
-				.withValue(IdMap.CLASS, source.getClass().getName())
+//				.withValue(IdMap.CLASS, source.getClass().getName())
 				.withValue(IdMap.ID, this.map.getId(source));
 
 		if (oldValue != null) {
@@ -173,9 +176,9 @@ public class UpdateJson implements MapListener {
 			}
 			jsonObject.put(IdMap.UPDATE, child);
 		}
-		if (this.map.getCounter().getPrio() != null) {
-			jsonObject.put(Filter.PRIO, this.map.getCounter().getPrio());
-		}
+//FIXME		if (this.map.getCounter().getPrio() != null) {
+//			jsonObject.put(Filter.PRIO, this.map.getCounter().getPrio());
+//		}
 		if (this.suspendIdList == null) {
 			this.map.notify(new SimpleEvent(IdMap.NEW, jsonObject, evt,  map));
 		}
@@ -188,19 +191,19 @@ public class UpdateJson implements MapListener {
 	 * @param filter 			Filter for exclude UpdateMessages
 	 * @return 					the MasterObject, if successful
 	 */
-	public Object execute(JsonObject updateMessage, Filter filter) {
+	public Object execute(Entity updateMessage, Filter filter) {
 		if(!updateMessage.has(IdMap.UPDATE) && !updateMessage.has(IdMap.REMOVE)) {
 			return null;
 		}
 
 		String id = updateMessage.getString(IdMap.ID);
-		JsonObject remove = (JsonObject) updateMessage.get(IdMap.REMOVE);
-		JsonObject update = (JsonObject) updateMessage.get(IdMap.UPDATE);
-		Object prio = updateMessage.get(Filter.PRIO);
+		JsonObject remove = (JsonObject) updateMessage.getValue(IdMap.REMOVE);
+		JsonObject update = (JsonObject) updateMessage.getValue(IdMap.UPDATE);
+		Object prio = updateMessage.getValue(Filter.PRIO);
 		Object masterObj = this.map.getObject(id);
 		if (masterObj == null)
 		{
-		   String masterObjClassName = (String) updateMessage.get(IdMap.CLASS);
+		   String masterObjClassName = (String) updateMessage.getValue(IdMap.CLASS);
 
 		   if (masterObjClassName != null)
 		   {
@@ -328,7 +331,8 @@ public class UpdateJson implements MapListener {
 	 * @return 		true, if successful
 	 */
 	private boolean checkPrio(Object prio) {
-		Object myPrio = this.map.getCounter().getPrio();
+//		Object myPrio = this.map.getCounter().getPrio();
+		Object myPrio = null;
 		if (prio != null && myPrio != null) {
 			if (prio instanceof Integer && myPrio instanceof Integer) {
 				Integer ref = (Integer) myPrio;

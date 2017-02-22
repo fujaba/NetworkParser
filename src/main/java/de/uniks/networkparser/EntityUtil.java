@@ -68,6 +68,15 @@ public class EntityUtil {
 		}
 		return string;
 	}
+	
+	public static boolean isNumeric(String strNum) {
+	    try {
+	        Double.parseDouble(strNum);
+	    }catch (NumberFormatException e) {
+	        return false;
+	    }
+	    return true;
+	}
 
 	public static SimpleList<Pos> getExcelRange(String tag) {
 		SimpleList<Pos> range = new SimpleList<Pos>();

@@ -1,5 +1,7 @@
 package de.uniks.networkparser;
 
+
+import de.uniks.networkparser.interfaces.IdMapCounter;
 /*
 NetworkParser
 The MIT License
@@ -23,7 +25,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-import de.uniks.networkparser.interfaces.IdMapCounter;
 /**
  * The Class SimpleIdCounter.
  */
@@ -35,6 +36,7 @@ public class SimpleIdCounter implements IdMapCounter {
 	/** The number. */
 	protected long number = 1;
 
+	
 	public IdMapCounter withNumber(long number) {
 		this.number = number;
 		return this;
@@ -42,8 +44,10 @@ public class SimpleIdCounter implements IdMapCounter {
 
 	private char splitter = '.';
 
-	/** The prio Object mostly a Timestamp or int value. */
-	private Object prio;
+//	/** The prio Object mostly a Timestamp or int value. */
+//	private Object prio;
+	private long timeStamp;
+	
 
 	/**
 	 * Set the Session Prefix for a Peer
@@ -75,11 +79,14 @@ public class SimpleIdCounter implements IdMapCounter {
 			return "";
 		}
 		String className = obj.getClass().getName();
-		char firstChar = className.charAt(className.lastIndexOf(".") + 1);
+		int pos = className.lastIndexOf(".");
+		String shortClassName = className.substring(pos+1); 
+//		char firstChar = className.charAt(className.lastIndexOf(".") + 1);
 		if (this.prefixId != null) {
-			key = this.prefixId + this.splitter + firstChar + this.number;
+			key = this.prefixId + this.splitter + shortClassName + this.splitter + this.number;
+//			+this.splitter+this.timeStamp;
 		} else {
-			key = "" + firstChar + this.number;
+			key = "" + shortClassName + this.number;
 		}
 		this.number++;
 		return key;
@@ -129,24 +136,24 @@ public class SimpleIdCounter implements IdMapCounter {
 		return this;
 	}
 
-	/**
-	 * Gets the prio.
-	 *
-	 * @return the prio
-	 */
-	@Override
-	public Object getPrio() {
-		return this.prio;
-	}
-
-	/**
-	 * Sets the prio.
-	 *
-	 * @param prio		the new prio
-	 * @return 			Itself
-	 */
-	public SimpleIdCounter withPrio(Object prio) {
-		this.prio = prio;
-		return this;
-	}
+//	/**
+//	 * Gets the prio.
+//	 *
+//	 * @return the prio
+//	 */
+//	@Override
+//	public Object getPrio() {
+//		return this.prio;
+//	}
+//
+//	/**
+//	 * Sets the prio.
+//	 *
+//	 * @param prio		the new prio
+//	 * @return 			Itself
+//	 */
+//	public SimpleIdCounter withPrio(Object prio) {
+//		this.prio = prio;
+//		return this;
+//	}
 }
