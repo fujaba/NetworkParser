@@ -31,6 +31,8 @@ The Framework have many other features like:
   - Coverage: [![Coverage Status](https://coveralls.io/repos/fujaba/NetworkParser/badge.svg?branch=master&service=github)](https://coveralls.io/github/fujaba/NetworkParser?branch=master)
   - Coverity Scan: [![Coverity Status](https://scan.coverity.com/projects/8708/badge.svg)](https://scan.coverity.com/projects/fujaba-networkparser)
   - Glitter-Chat: [![Join the chat at https://gitter.im/NetworkParser/Lobby](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/NetworkParser/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+  - [![Javadocs](http://javadoc.io/badge/de.uniks/NetworkParser.svg)](http://javadoc.io/doc/de.uniks/NetworkParser)
+  - [NetworkParser Download](https://maven-badges.herokuapp.com/maven-central/de.uniks/NetworkParser)
 
 - Develop
   - travis-ci: [![Build Status](https://travis-ci.org/fujaba/NetworkParser.svg?branch=develop)](https://travis-ci.org/fujaba/NetworkParser)

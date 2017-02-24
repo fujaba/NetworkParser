@@ -41,6 +41,8 @@ public class RestService {
 
 		Assert.assertEquals("{\"id\":\"J1.Student.2\",\"prop\":{\"name\":\"Stefan\",\"in\":{\"id\":\"J1.Room.4\"},\"university\":{\"id\":\"J1.University.1\"}}}", task.executeRequest("/json/[J1.Student.2]"));
 		
+		Assert.assertEquals("{\"id\":\"J1.Student.2\",\"prop\":{\"name\":\"Stefan\",\"in\":{\"id\":\"J1.Room.4\"},\"university\":{\"id\":\"J1.University.1\"}}}", task.executeRequest("/json/students[J1.Student.2]"));
+		
 		Assert.assertEquals("{\"id\":\"J1.University.1\",\"prop\":{\"name\":\"Uni Kassel\",\"students\":[{\"id\":\"J1.Student.2\"},{\"id\":\"J1.Student.3\"}]}}", task.executeRequest("/json/students[0]/in/students/university/"));
 	}
 	
