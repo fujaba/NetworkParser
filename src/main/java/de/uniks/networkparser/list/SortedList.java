@@ -41,7 +41,7 @@ public class SortedList<V> extends SimpleList<V> {
 
 	@Override
 	public boolean isComparator() {
-		return (this.cpr != null);
+		return true;
 	}
 
 	public SortedList<V> withComparator(Comparator<V> comparator) {

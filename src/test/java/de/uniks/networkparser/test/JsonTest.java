@@ -329,14 +329,14 @@ public class JsonTest extends IOClasses {
 		map.with(new SortedMsgCreator());
 		map.withTimeStamp(1);
 		SortedMsg first = new SortedMsg();
-		first.setNumber(1);
+		first.withNumber(1);
 
 		SortedMsg third = new SortedMsg();
-		third.setNumber(3);
+		third.withNumber(3);
 		first.setChild(third);
 
 		SortedMsg second = new SortedMsg();
-		second.setNumber(2);
+		second.withNumber(2);
 
 		third.setChild(second);
 		JsonArray jsonArray = new JsonArray();
@@ -521,9 +521,9 @@ public class JsonTest extends IOClasses {
 	@Test
 	public void calculation042() {
 		SortedMsg parent = new SortedMsg();
-		parent.setNumber(1);
+		parent.withNumber(1);
 		SortedMsg child = new SortedMsg();
-		child.setNumber(2);
+		child.withNumber(2);
 
 		parent.setChild(child);
 
@@ -561,9 +561,9 @@ public class JsonTest extends IOClasses {
 	@Test
 	public void testJsonArrayCount() {
 		SortedMsg parent = new SortedMsg();
-		parent.setNumber(1);
+		parent.withNumber(1);
 		SortedMsg child = new SortedMsg();
-		child.setNumber(2);
+		child.withNumber(2);
 
 		parent.setChild(child);
 

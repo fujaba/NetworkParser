@@ -125,10 +125,10 @@ public class JsonModellTest implements UpdateListener {
 		map.with(this);
 		map.with(new SortedMsgCreator());
 		SortedMsg first= new SortedMsg();
-		first.setNumber(1);
+		first.withNumber(1);
 
 		SortedMsg second= new SortedMsg();
-		second.setNumber(2);
+		second.withNumber(2);
 		first.setChild(second);
 
 		String sample="Hallo Welt";
@@ -156,7 +156,7 @@ public class JsonModellTest implements UpdateListener {
 		secondMap.decode(jsonObject);
 
 		SortedMsg third= new SortedMsg();
-		third.setNumber(4);
+		third.withNumber(4);
 		second.setChild(third);
 		// DEEP 0
 		Assert.assertEquals(165, map.toJsonObject(first, Filter.regard(Deep.create(1))).toString().length());
@@ -165,7 +165,7 @@ public class JsonModellTest implements UpdateListener {
 		// DEEP 2
 		Assert.assertEquals(438, map.toJsonObject(first, Filter.regard(Deep.create(3))).toString().length());
 		third.updateNumber(2);
-		third.setNumber(5);
+		third.withNumber(5);
 
 		Assert.assertEquals(3, map.size());
 		second.setChild(null);

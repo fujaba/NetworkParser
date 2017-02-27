@@ -4,7 +4,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import de.uniks.networkparser.interfaces.SendableEntity;
 
-public class SortedMsg implements SendableEntity {
+public class SortedMsg implements SendableEntity, Comparable<SortedMsg>{
 	public static final String PROPERTY_ID="number";
 	public static final String PROPERTY_CHILD="child";
 	public static final String PROPERTY_MSG="msg";
@@ -18,12 +18,13 @@ public class SortedMsg implements SendableEntity {
 		return number;
 	}
 
-	public void setNumber(int id) {
+	public SortedMsg withNumber(int id) {
 		int oldValue=this.number;
 		this.number = id;
 		if(id!=oldValue){
 			firePropertyChange(SortedMsg.PROPERTY_ID, oldValue, id);
 		}
+		return this;
 	}
 	public void updateNumber(int id) {
 		this.number = id;
@@ -58,7 +59,7 @@ public class SortedMsg implements SendableEntity {
 
 	public boolean set(String attribute, Object value) {
 		if (attribute.equalsIgnoreCase(PROPERTY_ID)) {
-			setNumber((Integer) value);
+			withNumber((Integer) value);
 			return true;
 		}
 		if (attribute.equalsIgnoreCase(PROPERTY_CHILD)) {
@@ -155,5 +156,16 @@ public class SortedMsg implements SendableEntity {
 			listeners.removePropertyChangeListener(property, listener);
 		}
 		return true;
+	}
+
+	@Override
+	public int compareTo(SortedMsg o) {
+		if(o.getNumber()==this.number) {
+			return 0;
+		}
+		if(o.getNumber()>this.number) {
+			return -1;
+		}
+		return 1;
 	}
 }

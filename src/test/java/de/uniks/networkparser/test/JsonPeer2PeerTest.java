@@ -31,10 +31,10 @@ public class JsonPeer2PeerTest implements UpdateListener{
 		secondMap.with(new SortedMsgCreator());
 
 		firstRoot = new SortedMsg();
-		firstRoot.setNumber(1);
+		firstRoot.withNumber(1);
 
 		SortedMsg second= new SortedMsg();
-		second.setNumber(2);
+		second.withNumber(2);
 		firstRoot.setChild(second);
 
 		firstMap.garbageCollection(firstRoot);
@@ -42,9 +42,9 @@ public class JsonPeer2PeerTest implements UpdateListener{
 		update(new SimpleEvent(IdMap.NEW, firstMap.toJsonObject(firstRoot), firstMap, null, null, null));
 
 		SortedMsg third= new SortedMsg();
-		third.setNumber(4);
+		third.withNumber(4);
 		third.setParent(second);
-		third.setNumber(42);
+		third.withNumber(42);
 		second.setChild(null);
 	}
 

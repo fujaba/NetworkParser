@@ -125,7 +125,7 @@ public class ByteTest{
 	@Test
 	public void testSimpleEntity(){
 		SortedMsg msg= new SortedMsg();
-		msg.setNumber(42);
+		msg.withNumber(42);
 		IdMap map= new IdMap();
 		map.with(new SortedMsgCreator());
 		ByteItem data = map.toByteItem(msg);
@@ -207,7 +207,7 @@ public class ByteTest{
 		IdMap map= new IdMap();
 		map.with(new SortedMsgCreator());
 		SortedMsg sortedMsg = new SortedMsg();
-		sortedMsg.setNumber(23);
+		sortedMsg.withNumber(23);
 		ByteItem msg=map.toByteItem(sortedMsg);
 		ByteBuffer bytesBuffer = msg.getBytes(false);
 //		outputStream(bytesBuffer);
