@@ -201,6 +201,7 @@ public class JsonModellTest implements UpdateListener {
 		AppleTree tree=new AppleTree();
 
 		IdMap map = new IdMap();
+		map.withTimeStamp(1);
 		map.with(new AppleTreeCreator());
 		map.with(new AppleCreator());
 
@@ -235,7 +236,7 @@ public class JsonModellTest implements UpdateListener {
 		tree.addToHas(apple);
 
 		Assert.assertNotNull(data);
-		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.AppleTree\",\"id\":\"A1\",\"upd\":{\"has\":{\"class\":\"de.uniks.networkparser.test.model.Apple\",\"id\":\"J1.A2\",\"prop\":{\"x\":23,\"y\":42}}}}", data.toString());
+		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.AppleTree\",\"id\":\"A1\",\"upd\":{\"has\":{\"class\":\"de.uniks.networkparser.test.model.Apple\",\"id\":\"A2\",\"prop\":{\"x\":23,\"y\":42}}}}", data.toString());
 	}
 
 	@Test

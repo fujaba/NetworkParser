@@ -83,10 +83,11 @@ public class GraphTest {
 	public void testSimpleObject() {
 		SimpleObject so = SimpleObject.create("number", "number", 0);
 		IdMap map = new IdMap();
+		map.withTimeStamp(1);
 		JsonObject jsonObject = map.toJsonObject(so);
-		Assert.assertEquals("{\"class\":\"number\",\"id\":\"J1.S1\",\"prop\":{\"number\":0}}", jsonObject.toString());
+		Assert.assertEquals("{\"class\":\"number\",\"id\":\"S1\",\"prop\":{\"number\":0}}", jsonObject.toString());
 		jsonObject = map.toJsonObject(so, Filter.SIMPLEFORMAT);
-		Assert.assertEquals("{\"class\":\"number\",\"id\":\"J1.S1\",\"number\":0}", jsonObject.toString());
+		Assert.assertEquals("{\"class\":\"number\",\"id\":\"S1\",\"number\":0}", jsonObject.toString());
 	}		
 	
 	
@@ -463,8 +464,7 @@ public class GraphTest {
 
 		String parseObject = yumlParser.toObjectDiagram(chatMessage).toString();
 		assertEquals(
-				url
-						+ "[ChatMessage.1 : ChatMessage|activ=false;count=0;sender=Stefan Lindel;txt=Dies ist eine Testnachricht]-[Date.2 : Date|value=1350978000017]",
+				url	+ "[C1 : ChatMessage|activ=false;count=0;sender=Stefan Lindel;txt=Dies ist eine Testnachricht]-[D2 : Date|value=1350978000017]",
 				url + parseObject);
 
 		jsonMap = new IdMap();
@@ -476,7 +476,7 @@ public class GraphTest {
 		room.setName("1340");
 		uni.addToRooms(room);
 
-		assertEquals(url + "[University.3 : University]",
+		assertEquals(url + "[U3 : University]",
 				url + yumlParser.toObjectDiagram(uni).toString());
 
 		assertEquals(url + "[University]", url + yumlParser.toClassDiagram(uni).toString());
