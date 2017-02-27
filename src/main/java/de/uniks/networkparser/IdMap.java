@@ -77,9 +77,6 @@ import de.uniks.networkparser.xml.XMLTokener;
  * @author Stefan Lindel
  */
 public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
-	/** The Constant CLASS. */
-	public static final String CLASS = "class";
-
 	/** The Constant VALUE. */
 	public static final String VALUE = "value";
 
@@ -466,7 +463,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 			   
 	         JsonObject json = new JsonObject();
 	         json.put(ID, key);
-//	         json.put(CLASS, oldValue.getClass().getName());
+	         json.put(CLASS, oldValue.getClass().getName());
 	         json.put(REMOVE, remJson);
 	         SimpleEvent simpleEvent = new SimpleEvent(REMOVE, json, this, REMOVE_YOU, oldValue, null);
 	         this.updateListener.update(simpleEvent);
@@ -1418,7 +1415,6 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 						String fullProp = prop.toString();
 						SendableEntityCreator valueCreater = map.getCreator(Grammar.WRITE, tokener.getMap(), value, className);
 
-						String childClassName = value.getClass().getName();
 						Object key = value;
 						if (map.isId(value, tokener.getMap(), className)) {
 							key = tokener.getKey(value);
@@ -1429,9 +1425,9 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 						}
 						if (valueCreater != null && targetList != null) {
 							if (map.isConvertable(entity, tokener.getMap(), property, value) && contains == false) {
-								encode(value, childClassName, map, tokener, item);
+								encode(value, className, map, tokener, item);
 							}
-							Entity child = tokener.createLink(item, fullProp, childClassName, tokener.getId(value));
+							Entity child = tokener.createLink(item, fullProp, className, tokener.getId(value));
 							if (child != null) {
 								SendableEntityCreator childCreater = map.getCreator(Grammar.WRITE, tokener.getMap(), child, child.getClass().getName());
 								parseValue(fullProp, child, null, childCreater, map, tokener, parent);
@@ -1440,7 +1436,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 						else if (valueCreater != null && (contains || map.isConvertable(entity, tokener.getMap(), property, value) == false)) {
 							Entity child = null;
 							if (map.isAddOwnerLink(value)) {
-								child = tokener.createLink(item, fullProp, childClassName, tokener.getId(value));
+								child = tokener.createLink(item, fullProp, className, tokener.getId(value));
 							}
 							if (child != null) {
 								SendableEntityCreator childCreater = map.getCreator(Grammar.WRITE, tokener.getMap(), child, child.getClass().getName());

@@ -30,6 +30,9 @@ THE SOFTWARE.
 
 public interface BaseItem {
 	public static final String CRLF = "\r\n";
+	
+	/** The Constant CLASS. */
+	public static final String CLASS = "class";
 
 	/**
 	 * Convert Element to String

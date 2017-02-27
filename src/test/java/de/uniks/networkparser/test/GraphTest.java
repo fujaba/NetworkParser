@@ -371,7 +371,7 @@ public class GraphTest {
 		JsonArray jsonArray = map.toJsonArray(root, new Filter().withFull(true));
 		GraphConverter graphConverter = new GraphConverter();
 		JsonObject objectModel = graphConverter.convertToJson(GraphTokener.OBJECT, jsonArray, true);
-		showDebugInfos(objectModel, 639, null);
+		showDebugInfos(objectModel, 711, System.out);
 
 		JsonObject clazzModel = graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
 		showDebugInfos(clazzModel, 472, null);
@@ -457,13 +457,14 @@ public class GraphTest {
 		IdMap jsonMap = new IdMap();
 		jsonMap.with(new ChatMessageCreator());
 		IdMap yumlParser = new IdMap();
+		yumlParser.getCounter().withTimeStamp(1);
 		yumlParser.withKeyValue(jsonMap.getKeyValue())
 			.with(jsonMap);
 
 		String parseObject = yumlParser.toObjectDiagram(chatMessage).toString();
 		assertEquals(
 				url
-						+ "[J1.C1 : ChatMessage|activ=false;count=0;sender=Stefan Lindel;txt=Dies ist eine Testnachricht]-[J1.D2 : Date|value=1350978000017]",
+						+ "[ChatMessage.1 : ChatMessage|activ=false;count=0;sender=Stefan Lindel;txt=Dies ist eine Testnachricht]-[Date.2 : Date|value=1350978000017]",
 				url + parseObject);
 
 		jsonMap = new IdMap();
@@ -475,7 +476,7 @@ public class GraphTest {
 		room.setName("1340");
 		uni.addToRooms(room);
 
-		assertEquals(url + "[J1.U3 : University]",
+		assertEquals(url + "[University.3 : University]",
 				url + yumlParser.toObjectDiagram(uni).toString());
 
 		assertEquals(url + "[University]", url + yumlParser.toClassDiagram(uni).toString());

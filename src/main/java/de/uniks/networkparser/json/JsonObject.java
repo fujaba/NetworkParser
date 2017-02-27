@@ -24,7 +24,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.EntityUtil;
-import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.converter.EntityStringConverter;
@@ -358,5 +357,10 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 		}
 		return child;
 	}
+    @Override
+    public JsonObject setType(String type) {
+    	this.add(Entity.CLASS, type);
+        return this;
+}
 	
 }

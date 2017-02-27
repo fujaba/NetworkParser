@@ -132,7 +132,7 @@ public class UpdateJson implements MapListener {
 		}
 
 		JsonObject jsonObject = new JsonObject()
-//				.withValue(IdMap.CLASS, source.getClass().getName())
+				.withValue(IdMap.CLASS, source.getClass().getName())
 				.withValue(IdMap.ID, this.map.getId(source));
 
 		if (oldValue != null) {

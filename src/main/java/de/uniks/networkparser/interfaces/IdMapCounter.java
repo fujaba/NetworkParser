@@ -49,8 +49,5 @@ public interface IdMapCounter {
 	 */
 	public String getId(Object obj);
 
-//	/**
-//	 * @return the Prio Object for checking errors
-//	 */
-//	public Object getPrio();
+	public IdMapCounter withTimeStamp(int newValue);
 }

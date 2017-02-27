@@ -1,8 +1,5 @@
 package de.uniks.networkparser;
 
-import java.sql.Time;
-import java.sql.Timestamp;
-
 import de.uniks.networkparser.interfaces.IdMapCounter;
 
 /*
@@ -64,37 +61,22 @@ public class SimpleIdCounter implements IdMapCounter {
 	 */
 	@Override
 	public String getId(Object obj) {
-		String key;
-
 		// new object generate key and add to tables
 		// <ShortClassName>#<Timestamp>
 		if (obj == null) {
 			return "";
 		}
-		String shortClassName = obj.getClass().getSimpleName();
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		key = shortClassName + IdMap.ENTITYSPLITTER + timestamp.toString();
-		return key;
+		String id = ""+obj.getClass().getSimpleName().charAt(0);
+		if(timeStamp !=0) {
+			return id+(this.timeStamp++);
+		}
+		long timeStamp = System.currentTimeMillis();
+		return id+timeStamp;
 	}
 
-	//	/**
-	//	 * Gets the prio.
-	//	 *
-	//	 * @return the prio
-	//	 */
-	//	@Override
-	//	public Object getPrio() {
-	//		return this.prio;
-	//	}
-	//
-	//	/**
-	//	 * Sets the prio.
-	//	 *
-	//	 * @param prio		the new prio
-	//	 * @return 			Itself
-	//	 */
-	//	public SimpleIdCounter withPrio(Object prio) {
-	//		this.prio = prio;
-	//		return this;
-	//	}
+	@Override
+	public SimpleIdCounter withTimeStamp(int newValue) {
+		this.timeStamp = newValue;
+		return this;
+	}
 }

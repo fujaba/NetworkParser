@@ -85,11 +85,15 @@ public class HTMLGrammar extends SimpleGrammar{
 			}
 			String prop = value.toString();
 			Entity item = (Entity) entity.getNewList(false);
-			item.setType(prop);
+			entity.put(IdMap.SESSION, map.getSession());
+
+			if(id != null) {
+				entity.put(IdMap.ID, id);
+				entity.put(IdMap.TIMESTAMP, id.substring(1));
+			}
 			entity.with(item);
 			entity = item;
 			super.writeBasicValue(item, entity, prop, id, map);
-			entity.with(IdMap.CLASS, className);
 		}else {
 			super.writeBasicValue(entity, parent, className, id, map);
 		}

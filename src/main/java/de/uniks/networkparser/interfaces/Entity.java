@@ -72,5 +72,5 @@ public interface Entity extends BaseItem{
 
 	public BaseItem withValue(Buffer values);
 
-	//public BaseItem setType(String type);
+	public BaseItem setType(String type);
 }

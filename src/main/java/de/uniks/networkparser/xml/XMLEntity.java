@@ -333,7 +333,6 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	 *			the new Tag
 	 * @return the instance XMLEntity
 	 */
-	@Override
 	public XMLEntity setType(String value) {
 		this.tag = value;
 		return this;

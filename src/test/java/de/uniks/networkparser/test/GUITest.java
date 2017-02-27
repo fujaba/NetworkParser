@@ -17,8 +17,9 @@ public class GUITest {
 	public void testControlToJson() {
 		Button button = new Button();
 		IdMap map =new IdMap();
+		map.getCounter().withTimeStamp(1);
 		JsonObject json = map.toJsonObject(button, Filter.SIMPLEFORMAT);
-		Assert.assertEquals("{\"class\":\"input\",\"id\":\"J1.B1\",\"type\":\"button\"}", json.toString());
+		Assert.assertEquals("{\"class\":\"input\",\"id\":\"B1\",\"timestamp\":\"1\",\"type\":\"button\"}", json.toString());
 	}
 	@Test
 	public void testGUIPosition() {
