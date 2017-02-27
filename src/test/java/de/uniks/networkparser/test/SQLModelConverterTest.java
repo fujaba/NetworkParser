@@ -237,7 +237,7 @@ public class SQLModelConverterTest {
 		SQLTokener tokener = new SQLTokener(SQLStatement.connect("jdbc", "sqlite", "build/sampleB.db"));
 
 		IdMap map = UniversityCreator.createIdMap("1");
-		map.getCounter().withTimeStamp(1);
+		map.withTimeStamp(1);
 
 		University universityModel = new University();
 		universityModel.withName("Uni").withUniId(1).withStudents(new Student().withStudentId(1).withFirstName("Max").withLastName("Mustermann").withCredits(5)
@@ -264,7 +264,7 @@ public class SQLModelConverterTest {
 		SQLTokener tokener = new SQLTokener(SQLStatement.connect("jdbc", "sqlite", "build/sampleC.db"));
 
 		IdMap map = UniversityCreator.createIdMap("1");
-		map.getCounter().withTimeStamp(1);
+		map.withTimeStamp(1);
 
 		University universityModel = new University();
 		universityModel.withName("Uni").withUniId(1).withStudents(new Student().withStudentId(1).withFirstName("Max").withLastName("Mustermann").withCredits(5)

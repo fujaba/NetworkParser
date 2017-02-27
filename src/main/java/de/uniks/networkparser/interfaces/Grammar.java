@@ -54,7 +54,7 @@ public interface Grammar {
 	public SendableEntityCreator getCreator(String type, Object item,
 			IdMap map, boolean searchForSuperCreator, String className);
 
-	public String getId(Object obj, IdMapCounter counter);
+	public String getId(Object obj);
 
 	/**
 	 * Get a Value from the Item

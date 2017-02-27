@@ -32,7 +32,6 @@ import de.uniks.networkparser.SimpleGrammar;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.Grammar;
-import de.uniks.networkparser.interfaces.IdMapCounter;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class EMFJsonGrammar extends SimpleGrammar {
@@ -94,16 +93,16 @@ public class EMFJsonGrammar extends SimpleGrammar {
 	}
 
 	@Override
-	public String getId(Object obj, IdMapCounter counter) {
+	public String getId(Object obj) {
 		String name = obj.getClass().getName();
 		int pos = name.lastIndexOf(".");
-		counter.withSession(null);
-		if (pos > 0) {
-			return name.substring(pos + 1) + IdMap.ENTITYSPLITTER
-					+ counter.getId(obj);
-		} else {
-			return name + IdMap.ENTITYSPLITTER + counter.getId(obj);
-		}
+//FIXME		if (pos > 0) {
+//			return name.substring(pos + 1) + IdMap.ENTITYSPLITTER
+//					+ counter.getId(obj);
+//		} else {
+//			return name + IdMap.ENTITYSPLITTER + counter.getId(obj);
+//		}
+		return null;
 	}
 
 	@Override

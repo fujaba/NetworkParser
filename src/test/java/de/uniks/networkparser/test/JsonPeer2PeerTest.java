@@ -65,7 +65,7 @@ public class JsonPeer2PeerTest implements UpdateListener{
 			assertEquals(2, secondMap.size());
 			secondRoot=(SortedMsg) secondMap.getObject(firstMap.getKey(firstRoot));
 		} else if(z==1){
-			Assert.assertEquals("===== add =====", 165, jsonObject.toString().length());
+			Assert.assertEquals("===== add =====", 239, jsonObject.toString().length());
 			assertEquals(2, secondMap.size());
 			z++;
 		} else if(z==2){

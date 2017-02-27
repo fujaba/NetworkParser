@@ -85,7 +85,10 @@ public class HTMLGrammar extends SimpleGrammar{
 			}
 			String prop = value.toString();
 			Entity item = (Entity) entity.getNewList(false);
-			entity.put(IdMap.SESSION, map.getSession());
+			String session = map.getMap().getSession();
+			if(session != null) {
+				entity.put(IdMap.SESSION, session);
+			}
 
 			if(id != null) {
 				entity.put(IdMap.ID, id);

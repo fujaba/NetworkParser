@@ -457,7 +457,7 @@ public class GraphTest {
 		IdMap jsonMap = new IdMap();
 		jsonMap.with(new ChatMessageCreator());
 		IdMap yumlParser = new IdMap();
-		yumlParser.getCounter().withTimeStamp(1);
+		yumlParser.withTimeStamp(1);
 		yumlParser.withKeyValue(jsonMap.getKeyValue())
 			.with(jsonMap);
 

@@ -2,7 +2,6 @@ package de.uniks.networkparser.gui;
 
 import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.Pos;
-import de.uniks.networkparser.SimpleGrammar;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
@@ -312,7 +311,8 @@ public class TileMap implements SendableEntityCreatorTag {
 	public static TileMap create(String value) {
 		TileMap entity = new TileMap();
 		String tag = entity.getTag();
-		MapEntity map = new MapEntity(new SimpleGrammar(), tag, entity, entity);
+//		MapEntity map = new MapEntity(new SimpleGrammar(), tag, entity, entity);
+		MapEntity map = new MapEntity(tag, entity, entity);
 		XMLTokener tokener = new XMLTokener();
 		tokener.withBuffer(value);
 		tokener.skipHeader();

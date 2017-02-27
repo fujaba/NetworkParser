@@ -39,19 +39,19 @@ public class JsonMessageTest implements UpdateListener {
 		messages=new SimpleList<String>();
 		this.pos = 0;
 		IdMap map= new IdMap();
-		map.getCounter().withTimeStamp(1);
+		map.withTimeStamp(1);
 		map.with(new GroupAccountCreator());
 		map.with(new PersonCreator());
 		map.with(this);
 
 		GroupAccount account= new GroupAccount();
 
-		messages.with("{\"class\":\"de.uniks.networkparser.test.model.GroupAccount\",\"id\":\"G1\",\"timestamp\":\"1\"}");
-		messages.with("{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"P2\",\"timestamp\":\"2\",\"prop\":{\"name\":\"Tobi\"}}");
-		messages.with("{\"class\":\"de.uniks.networkparser.test.model.GroupAccount\",\"id\":\"G1\",\"upd\":{\"persons\":{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"P2\",\"timestamp\":\"2\",\"prop\":{\"name\":\"Tobi\"}}}}");
+		messages.with("{\"class\":\"de.uniks.networkparser.test.model.GroupAccount\",\"id\":\"G1\"}");
+		messages.with("{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"P2\",\"prop\":{\"name\":\"Tobi\"}}");
+		messages.with("{\"class\":\"de.uniks.networkparser.test.model.GroupAccount\",\"id\":\"G1\",\"upd\":{\"persons\":{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"P2\",\"prop\":{\"name\":\"Tobi\"}}}}");
 		messages.with("{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"P2\",\"upd\":{\"parent\":{\"class\":\"de.uniks.networkparser.test.model.GroupAccount\",\"id\":\"G1\"}}}");
-		messages.with("{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"P3\",\"timestamp\":\"3\",\"prop\":{\"parent\":{\"class\":\"de.uniks.networkparser.test.model.GroupAccount\",\"id\":\"G1\",\"timestamp\":\"1\"}}}");
-		messages.with("{\"class\":\"de.uniks.networkparser.test.model.GroupAccount\",\"id\":\"G1\",\"upd\":{\"persons\":{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"P3\",\"timestamp\":\"3\",\"prop\":{\"parent\":{\"class\":\"de.uniks.networkparser.test.model.GroupAccount\",\"id\":\"G1\"}}}}}");
+		messages.with("{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"P3\",\"prop\":{\"parent\":{\"class\":\"de.uniks.networkparser.test.model.GroupAccount\",\"id\":\"G1\"}}}");
+		messages.with("{\"class\":\"de.uniks.networkparser.test.model.GroupAccount\",\"id\":\"G1\",\"upd\":{\"persons\":{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"P3\",\"prop\":{\"parent\":{\"class\":\"de.uniks.networkparser.test.model.GroupAccount\",\"id\":\"G1\"}}}}}");
 		messages.with("{\"class\":\"de.uniks.networkparser.test.model.Person\",\"id\":\"P3\",\"upd\":{\"name\":\"Albert\"}}");
 
 		map.toJsonObject(account);
@@ -72,12 +72,12 @@ public class JsonMessageTest implements UpdateListener {
 		AppleTree tree = new AppleTree();
 		tree.setName("Bananenbaum");
 		IdMap map= new IdMap();
-		map.getCounter().withTimeStamp(1);
+		map.withTimeStamp(1);
 		map.with(new AppleTreeCreator());
 		map.with(new AppleCreator());
 		map.put("root", tree);
-		messages.with("{\"class\":\"de.uniks.networkparser.test.model.Apple\",\"id\":\"A1\",\"timestamp\":\"1\"}");
-		messages.with("{\"class\":\"de.uniks.networkparser.test.model.AppleTree\",\"id\":\"root\",\"upd\":{\"has\":{\"class\":\"de.uniks.networkparser.test.model.Apple\",\"id\":\"A1\",\"timestamp\":\"1\"}}}");
+		messages.with("{\"class\":\"de.uniks.networkparser.test.model.Apple\",\"id\":\"A1\"}");
+		messages.with("{\"class\":\"de.uniks.networkparser.test.model.AppleTree\",\"id\":\"root\",\"upd\":{\"has\":{\"class\":\"de.uniks.networkparser.test.model.Apple\",\"id\":\"A1\"}}}");
 		map.with(this);
 		tree.createApple();
 		Assert.assertEquals(messages.size(), pos);
@@ -89,7 +89,7 @@ public class JsonMessageTest implements UpdateListener {
 		house.setFloor(4);
 		house.setName("University");
 		IdMap map=new IdMap().with(new HouseCreator());
-		map.getCounter().withTimeStamp(1);
+		map.withTimeStamp(1);
 		messages = new SimpleList<String>();
 		map.with(new UpdateListener() {
 			@Override
@@ -117,7 +117,7 @@ public class JsonMessageTest implements UpdateListener {
 		// Update old Model
 		house.setFloor(42);
 
-		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.House\",\"id\":\"H1\",\"timestamp\":\"1\",\"prop\":{\"name\":\"University\",\"floor\":4}}", messages.get(0));
+		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.House\",\"id\":\"H1\",\"prop\":{\"name\":\"University\",\"floor\":4}}", messages.get(0));
 		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.House\",\"id\":\"H1\",\"rem\":{\"floor\":4},\"upd\":{\"floor\":42}}", messages.get(1));
 
 		decodeMap.decode(messages.get(1));

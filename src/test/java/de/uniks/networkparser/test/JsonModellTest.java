@@ -116,7 +116,7 @@ public class JsonModellTest implements UpdateListener {
 		IdMap map= new IdMap();
 		map.with(new PersonCreator());
 		map.with(new GroupAccountCreator());
-		Assert.assertEquals(175, map.toJsonArray(account.getPersons(), Filter.regard(InstanceOf.create(Person.class, Person.PROPERTY_PARENT))).toString(2).length());
+		Assert.assertEquals(132, map.toJsonArray(account.getPersons(), Filter.regard(InstanceOf.create(Person.class, Person.PROPERTY_PARENT))).toString(2).length());
 	}
 
 	@Test
@@ -235,7 +235,7 @@ public class JsonModellTest implements UpdateListener {
 		tree.addToHas(apple);
 
 		Assert.assertNotNull(data);
-		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.AppleTree\",\"id\":\"J1.A1\",\"upd\":{\"has\":{\"class\":\"de.uniks.networkparser.test.model.Apple\",\"id\":\"J1.A2\",\"prop\":{\"x\":23,\"y\":42}}}}", data.toString());
+		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.AppleTree\",\"id\":\"A1\",\"upd\":{\"has\":{\"class\":\"de.uniks.networkparser.test.model.Apple\",\"id\":\"J1.A2\",\"prop\":{\"x\":23,\"y\":42}}}}", data.toString());
 	}
 
 	@Test
@@ -244,8 +244,9 @@ public class JsonModellTest implements UpdateListener {
 		message.withValue("The answer to life the universe and everything is 42.");
 		IdMap map=new IdMap();
 		map.with(new ByteMessageCreator());
+		map.withTimeStamp(1);
 		JsonObject jsonObject = map.toJsonObject(message);
-		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.bytes.ByteMessage\",\"id\":\"J1.B1\",\"prop\":{\"value\":\"The answer to life the universe and everything is 42.\"}}", jsonObject.toString());
+		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.bytes.ByteMessage\",\"id\":\"B1\",\"prop\":{\"value\":\"The answer to life the universe and everything is 42.\"}}", jsonObject.toString());
 
 		ByteMessage newMessage = (ByteMessage) map.decode(jsonObject);
 		Assert.assertEquals(message.getValue(), newMessage.getValue());

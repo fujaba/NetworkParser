@@ -229,7 +229,7 @@ public class SQLTokener extends Tokener {
 		String id = this.map.getId(item);
 		map.with(item);
 		String className = item.getClass().getName();
-		SendableEntityCreator creator = map.getCreator(IdMap.NEW, this.map, item, className);
+		SendableEntityCreator creator = map.getCreator(IdMap.NEW, item, className);
 		if(creator == null) {
 			return item.toString();
 		}

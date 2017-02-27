@@ -6,7 +6,6 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
-import de.uniks.networkparser.interfaces.Grammar;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.list.SimpleList;
@@ -41,28 +40,25 @@ THE SOFTWARE.
  */
 public class MapEntity extends SimpleList<Object>{
 	private Filter filter;
-	private Grammar grammar;
 	private int deep;
 	private Object target;
 	private MapEntityStack stack;
 	/** The show line. */
 	private byte tokenerFlag;
 	private boolean simpleFormat;
-	private String session;
+	private IdMap map;
 
-	public MapEntity(Grammar grammar, String tag, Object item, SendableEntityCreator creator) {
+	public MapEntity(String tag, Object item, SendableEntityCreator creator) {
 		this.flag = 0;
-		this.grammar = grammar;
 		this.withStack(new MapEntityStack().withStack(tag, item, creator));
 	}
 
-	public MapEntity(Filter filter, Grammar grammar, String session, byte flag) {
+	public MapEntity(Filter filter, byte flag, IdMap map) {
 		this.flag = IdMap.FLAG_ID;
 		if(filter != null) {
 			this.filter = filter;
 		}
-		this.grammar = grammar;
-		this.session = session;
+		this.map = map;
 		this.flag = (byte) (this.flag | flag);
 	}
 
@@ -77,12 +73,6 @@ public class MapEntity extends SimpleList<Object>{
 		return tokener.getMap().encode(entity, this, tokener);
 	}
 
-	/**
-	 * @return the grammar
-	 */
-	public Grammar getGrammar() {
-		return grammar;
-	}
 	public void add() {
 		this.deep = this.deep + 1;
 	}
@@ -102,20 +92,20 @@ public class MapEntity extends SimpleList<Object>{
 	}
 
 	// Methods for Grammar
-	public SendableEntityCreator getCreator(String type, IdMap map, Object item, String className) {
-		return grammar.getCreator(type, item, map, isSearchForSuperClass(), className);
+	public SendableEntityCreator getCreator(String type, Object item, String className) {
+		return map.getGrammar().getCreator(type, item, map, isSearchForSuperClass(), className);
 	}
 	public Object getNewEntity(SendableEntityCreator creator, String className, boolean prototype) {
-		return grammar.getNewEntity(creator, className, prototype);
+		return map.getGrammar().getNewEntity(creator, className, prototype);
 	}
 	public boolean hasValue(Entity item, String property) {
-		return grammar.hasValue(item, property);
+		return map.getGrammar().hasValue(item, property);
 	}
 	public String getValue(Entity item, String property) {
-		return grammar.getValue(item, property);
+		return map.getGrammar().getValue(item, property);
 	}
 	public BaseItem getProperties(Entity entity, IdMap map, boolean isId, String type) {
-		return grammar.getProperties(entity, map, filter, isId, type);
+		return map.getGrammar().getProperties(entity, map, filter, isId, type);
 	}
 
 	// Method for Filter
@@ -224,7 +214,7 @@ public class MapEntity extends SimpleList<Object>{
 			}
 			id = null;
 		}
-		return grammar.writeBasicValue(entity, parent, className, id, this);
+		return map.getGrammar().writeBasicValue(entity, parent, className, id, this);
 	}
 
 	/**
@@ -340,7 +330,7 @@ public class MapEntity extends SimpleList<Object>{
 	}
 
 	public boolean writeValue(BaseItem parent, String property, Object value, Tokener tokener) {
-		return grammar.writeValue(parent, property, value, this, tokener);
+		return map.getGrammar().writeValue(parent, property, value, this, tokener);
 	}
 
 	public MapEntity withTokenerFlag(byte flag) {
@@ -363,8 +353,8 @@ public class MapEntity extends SimpleList<Object>{
 		this.simpleFormat = value;
 		return this;
 	}
-	
-	public String getSession() {
-		return session;
+
+	public IdMap getMap() {
+		return map;
 	}
 }
