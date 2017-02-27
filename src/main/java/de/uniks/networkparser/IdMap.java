@@ -117,6 +117,11 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	public static final byte FLAG_SEARCHFORSUPERCLASS = 0x04;
 
 	private byte flag = FLAG_ID;
+	
+	public static final String SESSION = "session";
+
+	public static final String TIMESTAMP = "timestamp";
+
 
 	private Grammar grammar = new SimpleGrammar();
 
@@ -490,8 +495,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	 * @return the object
 	 */
 	public Object cloneObject(Object reference, Filter filter) {
-		MapEntity map = new MapEntity(filter, grammar);
-		map.withFlag(flag);
+		MapEntity map = new MapEntity(filter, grammar, getCounter().getSession(), flag);
 		return cloning(reference, map);
 	}
 
@@ -780,8 +784,8 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	}
 
 
-	public IdMap withSessionId(String value) {
-		getCounter().withPrefixId(value);
+	public IdMap withSession(String value) {
+		getCounter().withSession(value);
 		return this;
 	}
 
@@ -805,8 +809,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		if (firstChar == JsonTokener.STARTENTITY) {
 			return decode(jsonTokener.newInstance().withValue(value));
 		}
-		MapEntity map = new MapEntity(filter, grammar);
-		map.withFlag(flag);
+		MapEntity map = new MapEntity(filter, grammar, getCounter().getSession(), flag);
 		if (firstChar == XMLTokener.ITEMSTART) {
 			XMLTokener tokener = new XMLTokener().withMap(this);
 			tokener.withBuffer(value);
@@ -824,8 +827,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 			return decode(new JsonArray().withValue(tokener));
 		}
 		if (firstChar == XMLTokener.ITEMSTART) {
-			MapEntity map = new MapEntity(filter, grammar);
-			map.withFlag(flag);
+			MapEntity map = new MapEntity(filter, grammar, getCounter().getSession(), flag);
 			if (tokener instanceof XMLTokener) {
 				XMLTokener xmlTokener = (XMLTokener) tokener;
 				xmlTokener.skipHeader();
@@ -884,9 +886,8 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 			return null;
 		}
 		EMFTokener tokener = new EMFTokener();
-		MapEntity map = new MapEntity(filter, grammar);
+		MapEntity map = new MapEntity(filter, grammar, getCounter().getSession(), flag);
 		tokener.withMap(this);
-		map.withFlag(flag);
 		tokener.withBuffer(value);
 		return tokener.decode(map, root);
 	}
@@ -907,8 +908,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		if (decodeBytes == null) {
 			return null;
 		}
-		MapEntity map = new MapEntity(filter, grammar);
-		map.withFlag(flag);
+		MapEntity map = new MapEntity(filter, grammar, getCounter().getSession(), flag);
 		ByteBuffer buffer = new ByteBuffer().with(decodeBytes);
 		return byteTokener.decodeValue((byte) buffer.getCurrentChar(), buffer, map);
 	}
@@ -921,8 +921,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	 * @return the object
 	 */
 	public Object decode(BaseItem value) {
-		MapEntity map = new MapEntity(filter, grammar);
-		map.withFlag(flag);
+		MapEntity map = new MapEntity(filter, grammar, getCounter().getSession(), flag);
 		return decoding(value, map);
 	}
 
@@ -939,8 +938,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		if (filter == null) {
 			filter = this.filter;
 		}
-		MapEntity map = new MapEntity(filter, grammar);
-		map.withFlag(flag);
+		MapEntity map = new MapEntity(filter, grammar, getCounter().getSession(), flag);
 		map.withTarget(target);
 		return decoding(value, map);
 	}
@@ -1057,8 +1055,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		if (entity == null) {
 			return null;
 		}
-		MapEntity map = new MapEntity(filter, grammar);
-		map.setFlag(flag);
+		MapEntity map = new MapEntity(filter, grammar, getCounter().getSession(), flag);
 		return (XMLEntity) this.encode(entity, map, xmlTokener);
 	}
 	
@@ -1073,8 +1070,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		if (entity == null) {
 			return null;
 		}
-		MapEntity map = new MapEntity(filter, grammar);
-		map.setFlag(flag);
+		MapEntity map = new MapEntity(filter, grammar, getCounter().getSession(), flag);
 		return (XMLEntity) this.encode(entity, map, xmlTokener);
 	}
 
@@ -1089,8 +1085,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		if (entity == null) {
 			return null;
 		}
-		MapEntity map = new MapEntity(filter, grammar);
-		map.withFlag(flag);
+		MapEntity map = new MapEntity(filter, grammar, getCounter().getSession(), flag);
 		map.withSimpleFormat(true);
 		map.withoutFlag(FLAG_ID);
 		map.withStack(new MapEntityStack());
@@ -1108,8 +1103,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		if (entity == null) {
 			return null;
 		}
-		MapEntity map = new MapEntity(filter, grammar);
-		map.withFlag(flag);
+		MapEntity map = new MapEntity(filter, grammar, getCounter().getSession(), flag);
 		return (JsonObject) this.encode(entity, map, jsonTokener);
 	}
 
@@ -1125,8 +1119,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		if (entity == null) {
 			return null;
 		}
-		MapEntity map = new MapEntity(filter, grammar);
-		map.withFlag(flag);
+		MapEntity map = new MapEntity(filter, grammar, getCounter().getSession(), flag);
 		return (JsonObject) this.encode(entity, map, jsonTokener);
 	}
 
@@ -1146,8 +1139,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		if (filter == null) {
 			filter = this.filter;
 		}
-		MapEntity map = new MapEntity(filter, grammar);
-		map.withFlag(flag);
+		MapEntity map = new MapEntity(filter, grammar, getCounter().getSession(), flag);
 		map.withTarget(jsonTokener.newInstanceList());
 		return (JsonArray) encodeList(object, map, jsonTokener);
 	}
@@ -1157,8 +1149,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		if (filter == null) {
 			filter = this.filter;
 		}
-		MapEntity map = new MapEntity(filter, grammar);
-		map.withFlag(flag);
+		MapEntity map = new MapEntity(filter, grammar, getCounter().getSession(), flag);
 		if (target.isComparator()
 			&& target.comparator() instanceof EntityComparator) {
 			((EntityComparator<?>) target.comparator()).withMap(this);
@@ -1169,42 +1160,36 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 
 
 	public ByteItem toByteItem(Object object) {
-		MapEntity map = new MapEntity(filter, grammar);
-		map.withFlag(flag);
+		MapEntity map = new MapEntity(filter, grammar, getCounter().getSession(), flag);
 		return byteTokener.encode(object, map);
 	}
 
 
 	public ByteItem toByteItem(Object object, Filter filter) {
-		MapEntity map = new MapEntity(filter, grammar);
-		map.withFlag(flag);
+		MapEntity map = new MapEntity(filter, grammar, getCounter().getSession(), flag);
 		return byteTokener.encode(object, map);
 	}
 
 
 	public GraphList toObjectDiagram(Object object) {
-		MapEntity map = new MapEntity(filter, grammar);
-		map.withFlag(flag);
+		MapEntity map = new MapEntity(filter, grammar, getCounter().getSession(), flag);
 		return new GraphTokener().withMap(this).encode(object, map);
 	}
 
 
 	public GraphList toClassDiagram(Object object) {
-		MapEntity map = new MapEntity(filter, grammar);
-		map.withFlag(flag);
+		MapEntity map = new MapEntity(filter, grammar, getCounter().getSession(), flag);
 		map.withTokenerFlag(GraphTokener.FLAG_CLASS);
 		return new GraphTokener().withMap(this).encode(object, map);
 	}
 
 
 	public GraphPatternMatch getDiff(Object source, Object target, boolean ordered) {
-		MapEntity map = new MapEntity(filter, grammar);
+		byte flag = GraphTokener.FLAG_UNORDERD;
 		if (ordered) {
-			map.setFlag(GraphTokener.FLAG_ORDERD);
+			flag = GraphTokener.FLAG_ORDERD;
 		}
-		else {
-			map.setFlag(GraphTokener.FLAG_UNORDERD);
-		}
+		MapEntity map = new MapEntity(filter, grammar, getCounter().getSession(), flag);
 		return new GraphTokener().withMap(this).diffModel(source, target, map);
 	}
 
@@ -1301,8 +1286,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	 * @return The Encoded Model
 	 */
 	public BaseItem encode(Object model, Tokener tokener, Filter filter) {
-		MapEntity map = new MapEntity(filter, grammar);
-		map.withFlag(flag);
+		MapEntity map = new MapEntity(filter, grammar, getCounter().getSession(), flag);
 		if (tokener == null) {
 			tokener = jsonTokener;
 		}

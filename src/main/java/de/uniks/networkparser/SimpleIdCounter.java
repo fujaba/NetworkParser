@@ -1,7 +1,10 @@
 package de.uniks.networkparser;
 
+import java.sql.Time;
+import java.sql.Timestamp;
 
 import de.uniks.networkparser.interfaces.IdMapCounter;
+
 /*
 NetworkParser
 The MIT License
@@ -31,40 +34,30 @@ THE SOFTWARE.
 
 public class SimpleIdCounter implements IdMapCounter {
 	/** The prefix id. */
-	protected String prefixId = "J1";
+	protected String session = null;
 
-	/** The number. */
-	protected long number = 1;
+	/** The prio Object mostly a Timestamp or int value. */
+	protected long timeStamp;
 
-	
-	public IdMapCounter withNumber(long number) {
-		this.number = number;
-		return this;
-	}
-
-	private char splitter = '.';
-
-//	/** The prio Object mostly a Timestamp or int value. */
-//	private Object prio;
-	private long timeStamp;
-	
 
 	/**
 	 * Set the Session Prefix for a Peer
 	 */
 	@Override
-	public IdMapCounter withPrefixId(String value) {
-		this.prefixId = value;
+	public IdMapCounter withSession(String value) {
+		this.session = value;
 		return this;
 	}
+
 
 	/**
 	 * Set the Session Prefix for a Peer
 	 */
 	@Override
-	public String getPrefixId() {
-		return this.prefixId;
+	public String getSession() {
+		return this.session;
 	}
+
 
 	/**
 	 * Get a new Id
@@ -74,86 +67,34 @@ public class SimpleIdCounter implements IdMapCounter {
 		String key;
 
 		// new object generate key and add to tables
-		// <session id>.<first char><running number>
+		// <ShortClassName>#<Timestamp>
 		if (obj == null) {
 			return "";
 		}
-		String className = obj.getClass().getName();
-		int pos = className.lastIndexOf(".");
-		String shortClassName = className.substring(pos+1); 
-//		char firstChar = className.charAt(className.lastIndexOf(".") + 1);
-		if (this.prefixId != null) {
-			key = this.prefixId + this.splitter + shortClassName + this.splitter + this.number;
-//			+this.splitter+this.timeStamp;
-		} else {
-			key = "" + shortClassName + this.number;
-		}
-		this.number++;
+		String shortClassName = obj.getClass().getSimpleName();
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		key = shortClassName + IdMap.ENTITYSPLITTER + timestamp.toString();
 		return key;
 	}
 
-	/**
-	 * Read a Id from jsonString
-	 */
-	@Override
-	public void readId(String jsonId) {
-
-		String key = null;
-
-		if (prefixId != null) {
-			String[] split = jsonId.split("\\" + this.splitter);
-
-			key = split[split.length - 1];
-		} else {
-			key = jsonId;
-		}
-
-		if (key != null) {
-			try {
-				String oldNumber = key.substring(1);
-				long oldInt = Long.parseLong(oldNumber);
-				if (oldInt >= this.number) {
-					this.number = oldInt + 1;
-				}
-			} catch (Exception e) {
-				// this id does not end with a number, thus it is set by the
-				// user
-				// so we do not try to keep track of the highest number used so
-				// far.
-				// This means, do nothing
-			}
-		}
-	}
-
-	@Override
-	public char getSplitter() {
-		return this.splitter;
-	}
-
-	@Override
-	public IdMapCounter withSplitter(char splitter) {
-		this.splitter = splitter;
-		return this;
-	}
-
-//	/**
-//	 * Gets the prio.
-//	 *
-//	 * @return the prio
-//	 */
-//	@Override
-//	public Object getPrio() {
-//		return this.prio;
-//	}
-//
-//	/**
-//	 * Sets the prio.
-//	 *
-//	 * @param prio		the new prio
-//	 * @return 			Itself
-//	 */
-//	public SimpleIdCounter withPrio(Object prio) {
-//		this.prio = prio;
-//		return this;
-//	}
+	//	/**
+	//	 * Gets the prio.
+	//	 *
+	//	 * @return the prio
+	//	 */
+	//	@Override
+	//	public Object getPrio() {
+	//		return this.prio;
+	//	}
+	//
+	//	/**
+	//	 * Sets the prio.
+	//	 *
+	//	 * @param prio		the new prio
+	//	 * @return 			Itself
+	//	 */
+	//	public SimpleIdCounter withPrio(Object prio) {
+	//		this.prio = prio;
+	//		return this;
+	//	}
 }

@@ -359,9 +359,4 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 		return child;
 	}
 	
-	@Override
-	public JsonObject setType(String type) {
-//FIXME		this.add(IdMap.CLASS, type);
-		return this;
-	}
 }

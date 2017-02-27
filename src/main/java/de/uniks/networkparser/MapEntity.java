@@ -48,18 +48,22 @@ public class MapEntity extends SimpleList<Object>{
 	/** The show line. */
 	private byte tokenerFlag;
 	private boolean simpleFormat;
+	private String session;
 
 	public MapEntity(Grammar grammar, String tag, Object item, SendableEntityCreator creator) {
 		this.flag = 0;
 		this.grammar = grammar;
 		this.withStack(new MapEntityStack().withStack(tag, item, creator));
 	}
-	public MapEntity(Filter filter, Grammar grammar) {
+
+	public MapEntity(Filter filter, Grammar grammar, String session, byte flag) {
 		this.flag = IdMap.FLAG_ID;
 		if(filter != null) {
 			this.filter = filter;
 		}
 		this.grammar = grammar;
+		this.session = session;
+		this.flag = (byte) (this.flag | flag);
 	}
 
 	public Filter getFilter() {
@@ -290,12 +294,6 @@ public class MapEntity extends SimpleList<Object>{
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
-	public MapEntity withFlag(byte flag) {
-		this.flag = (byte) (this.flag | flag);
-		return this;
-	}
-
 	public MapEntity withoutFlag(byte flag) {
 		this.flag = (byte) (this.flag | flag);
 		this.flag -= flag;
@@ -364,5 +362,9 @@ public class MapEntity extends SimpleList<Object>{
 	public MapEntity withSimpleFormat(boolean value) {
 		this.simpleFormat = value;
 		return this;
+	}
+	
+	public String getSession() {
+		return session;
 	}
 }

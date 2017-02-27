@@ -97,12 +97,12 @@ public class EMFJsonGrammar extends SimpleGrammar {
 	public String getId(Object obj, IdMapCounter counter) {
 		String name = obj.getClass().getName();
 		int pos = name.lastIndexOf(".");
-		counter.withPrefixId(null);
+		counter.withSession(null);
 		if (pos > 0) {
-			return name.substring(pos + 1) + counter.getSplitter()
+			return name.substring(pos + 1) + IdMap.ENTITYSPLITTER
 					+ counter.getId(obj);
 		} else {
-			return name + counter.getSplitter() + counter.getId(obj);
+			return name + IdMap.ENTITYSPLITTER + counter.getId(obj);
 		}
 	}
 

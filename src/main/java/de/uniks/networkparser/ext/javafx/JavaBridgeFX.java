@@ -19,6 +19,11 @@ import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
 
 public class JavaBridgeFX extends JavaBridge {
+	
+	private void logScript(String script){
+		//System.out.println("Script: \"" + script + "\"");
+		System.out.println(script);
+	}
 
 	private WebView webView;
 	private SimpleKeyValueList<Object, String> callBack=new SimpleKeyValueList<Object, String>();
@@ -79,13 +84,14 @@ public class JavaBridgeFX extends JavaBridge {
 	}
 
 	protected void addAdapter(UpdateListener eventListener) {
-		JsonObjectLazy executeScript = (JsonObjectLazy) executeScript("bridge.addAdapter(new DelegateAdapter());");
+		JsonObjectLazy executeScript = (JsonObjectLazy) executeScript("bridge.addAdapter(new DiagramJS.DelegateAdapter());");
 		JSObject reference = executeScript.getReference();
 		reference.setMember("adapter", eventListener);
 	}
 	
 	private void loadBridge(WebEngine engine) {
 		engine.executeScript(loadFile(Paths.get("./res/output.js")));
+		executeScript("var bridge = new DiagramJS.Bridge();");
 	}
 	
 	private String loadFile(Path path) {
@@ -106,6 +112,7 @@ public class JavaBridgeFX extends JavaBridge {
 	}
 
 	public Object executeScript(String script) {
+		logScript(script);
 		Object jsObject = webView.getEngine().executeScript(script);
 		JsonObject item = convertJSObject(jsObject);
 		return item;

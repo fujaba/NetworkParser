@@ -36,9 +36,15 @@ public class SimpleGrammar implements Grammar{
 
 	@Override
 	public Entity writeBasicValue(Entity entity, BaseItem parent, String className, String id, MapEntity map) {
-		entity.setType(className);
+		entity.put(IdMap.SESSION, map.getSession());
+
 		if(id != null) {
 			entity.put(IdMap.ID, id);
+			int pos = id.indexOf(IdMap.ENTITYSPLITTER);
+			if(pos>0) {
+				entity.put(IdMap.TIMESTAMP, id.substring(pos+1));
+			}
+
 		}
 		return entity;
 	}

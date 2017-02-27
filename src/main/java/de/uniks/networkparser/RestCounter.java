@@ -1,5 +1,7 @@
 package de.uniks.networkparser;
 
+import java.sql.Timestamp;
+
 /*
 NetworkParser
 The MIT License
@@ -27,24 +29,26 @@ THE SOFTWARE.
 public class RestCounter extends SimpleIdCounter {
 	public RestCounter(String path) {
 		if (path.endsWith("/")) {
-			this.prefixId = path;
-		} else {
-			this.prefixId = path + "/";
+			this.session = path;
+		}
+		else {
+			this.session = path + "/";
 		}
 	}
+
 
 	@Override
 	public String getId(Object obj) {
 		String key;
 
 		// new object generate key and add to tables
-		// <session id>.<first char><running number>
+		// <ShortClassName>/<Timestamp>
 		if (obj == null) {
 			return "";
 		}
-		String className = obj.getClass().getName();
-		key = this.prefixId + className.toLowerCase() + "/" + this.number;
-		this.number++;
+		String className = obj.getClass().getSimpleName();
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		key = className + '/' + timestamp.toString();
 		return key;
 	}
 }

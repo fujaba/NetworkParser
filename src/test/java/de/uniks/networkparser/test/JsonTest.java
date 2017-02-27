@@ -250,7 +250,7 @@ public class JsonTest extends IOClasses {
 		change.setValue(new JsonObject().withValue(jsonText));
 		change.setList(new JsonArray().withValue(new JsonObject().withValue(jsonText)));
 		IdMap map = new IdMap();
-		map.getCounter().withPrefixId(";");
+		map.getCounter().withSession(";");
 		map.with(new ChangeCreator());
 		JsonObject json = map.toJsonObject(change);
 		Change change2 = (Change) map.decode(json);
@@ -286,7 +286,7 @@ public class JsonTest extends IOClasses {
 
 		// Map
 		IdMap map = new IdMap();
-		map.withSessionId(null);
+		map.withSession(null);
 		map.with(new ChangeCreator());
 
 		// Serialisation

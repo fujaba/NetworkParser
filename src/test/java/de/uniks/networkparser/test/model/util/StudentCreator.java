@@ -8,7 +8,7 @@ public class StudentCreator implements SendableEntityCreator {
 
 	public static IdMap createIdMap(String sessionID) {
 		IdMap jsonIdMap = new IdMap();
-		jsonIdMap.withSessionId(sessionID);
+		jsonIdMap.withSession(sessionID);
 
 		jsonIdMap.with(new UniversityCreator());
 		jsonIdMap.with(new RoomCreator());

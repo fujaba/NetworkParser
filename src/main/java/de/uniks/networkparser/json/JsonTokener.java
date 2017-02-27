@@ -364,7 +364,7 @@ public class JsonTokener extends Tokener {
 				return target;
 			}
 			idMap.put(jsonId, target);
-			idMap.getCounter().readId(jsonId);
+//			idMap.getCounter().readId(jsonId);
 		}
 		JsonObject jsonProp = (JsonObject) map.getProperties(jsonObject, this.map, isId, Grammar.READ);
 		if (jsonProp != null) {
