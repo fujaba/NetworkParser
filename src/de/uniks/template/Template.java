@@ -8,15 +8,21 @@ import de.uniks.networkparser.interfaces.Entity;
 
 public class Template {
 
-	public static final String FIELD = "field";
+	public static final int PACKAGE = 0;
 	
-	public static final String VALUE = "value";
+	public static final int IMPORT = 1;
+	
+	public static final int DECLARATION = 2;
+	
+	public static final int FIELD = 3;
+	
+	public static final int VALUE = 4;
 	
 	private String template = "";
 	
 	private String condition = "";
 	
-	private String type = "";
+	private int type = -1;
 	
 	private Template prevTemplate = null;
 	
@@ -188,15 +194,15 @@ public class Template {
 		return this;
 	}
 	
-	public String getType() {
+	public int getType() {
 		return type;
 	}
 	
-	public void setType(String type) {
+	public void setType(int type) {
 		this.type = type;
 	}
 	
-	public Template withType(String type) {
+	public Template withType(int type) {
 		setType(type);
 		return this;
 	}
