@@ -40,6 +40,10 @@ public class TableList extends SortedList<Object> implements SendableEntity, Sen
 	public static final String[] properties = new String[] {PROPERTY_ITEMS };
 	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
 
+	public TableList() {
+		super(false);
+	}
+	
 	@Override
 	public String[] getProperties() {
 		return properties;

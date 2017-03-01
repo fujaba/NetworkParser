@@ -93,16 +93,13 @@ public class EMFJsonGrammar extends SimpleGrammar {
 	}
 
 	@Override
-	public String getId(Object obj) {
+	public String getId(Object obj, IdMap map) {
 		String name = obj.getClass().getName();
 		int pos = name.lastIndexOf(".");
-//FIXME		if (pos > 0) {
-//			return name.substring(pos + 1) + IdMap.ENTITYSPLITTER
-//					+ counter.getId(obj);
-//		} else {
-//			return name + IdMap.ENTITYSPLITTER + counter.getId(obj);
-//		}
-		return null;
+		if (pos > 0) {
+			return name.substring(pos + 1) + IdMap.ENTITYSPLITTER + map.createId(obj);
+		}
+		return name + IdMap.ENTITYSPLITTER + map.createId(obj);
 	}
 
 	@Override

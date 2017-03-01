@@ -384,18 +384,18 @@ public class JsonTest extends IOClasses {
 
 		JsonArray jsonArray = map.toJsonArray(kassel, new Filter().withConvertable(Deep.create(1)));
 		String jsonString = jsonArray.toString(2);
-		assertEquals(2463, jsonString.length());
+		assertEquals(3051, jsonString.length());
 
 		jsonArray = map.toJsonArray(kassel, new Filter().withConvertable(new Deep().withDepth(0)));
 
 		jsonString = jsonArray.toString(2);
-		assertEquals(631, jsonString.length());
+		assertEquals(749, jsonString.length());
 
 		jsonArray = map.toJsonArray(kassel);
 
 		jsonString = jsonArray.toString(2);
 
-		assertEquals(2463, jsonString.length());
+		assertEquals(3051, jsonString.length());
 
 		IdMap readMap = UniversityCreator.createIdMap("s2");
 
@@ -601,7 +601,7 @@ public class JsonTest extends IOClasses {
 		encodeMap.with(new PersonCreator());
 		Person person = new Person().withName("Albert").withBalance(42);
 		String shortString = encodeMap.toJsonObject(person, Filter.SIMPLEFORMAT).toString();
-		Assert.assertEquals(42, shortString.length());
+		Assert.assertEquals(49, shortString.length());
 
 		IdMap decodeMap = new IdMap().with(new EMFJsonGrammar());
 		decodeMap.with(new PersonCreator());

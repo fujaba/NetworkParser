@@ -671,7 +671,7 @@ public class FullListTest {
 
 	@Test
 	public void Comparator(){
-		SortedList<String> item = new SortedList<String>();
+		SortedList<String> item = new SortedList<String>(false);
 		item.withComparator(new Comparator<String>() {
 
 			@Override

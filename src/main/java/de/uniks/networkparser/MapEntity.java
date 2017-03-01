@@ -8,7 +8,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
-import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.xml.MapEntityStack;
 import de.uniks.networkparser.xml.XMLEntity;
 /*
@@ -38,7 +38,7 @@ THE SOFTWARE.
  * @author Stefan
  * MapEntity for IdMap
  */
-public class MapEntity extends SimpleList<Object>{
+public class MapEntity extends SimpleSet<Object>{
 	private Filter filter;
 	private int deep;
 	private Object target;

@@ -29,7 +29,7 @@ public class SimpleGrammar implements Grammar{
 	}
 
 	@Override
-	public String getId(Object obj) {
+	public String getId(Object obj, IdMap map) {
 		return null;
 	}
 

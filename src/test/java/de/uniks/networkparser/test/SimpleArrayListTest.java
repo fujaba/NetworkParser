@@ -15,7 +15,7 @@ import de.uniks.networkparser.test.model.SortedMsg;
 public class SimpleArrayListTest {
 	@Test
 	public void testSortElement() {
-		SortedList<SortedMsg> list = new SortedList<SortedMsg>();
+		SortedList<SortedMsg> list = new SortedList<SortedMsg>(true);
 		list.add(new SortedMsg().withNumber(22));
 		list.add(new SortedMsg().withNumber(42));
 		list.add(new SortedMsg().withNumber(1));

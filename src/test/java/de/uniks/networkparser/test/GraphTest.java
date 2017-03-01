@@ -283,9 +283,9 @@ public class GraphTest {
 		sabine.createPawns().withColor(RED).withPos(tomStartField);
 
 		JsonArray jsonArray = jsonIdMap.toJsonArray(ludo);
-		showDebugInfos(jsonArray, 2309, null);
+		showDebugInfos(jsonArray, 2747, null);
 		jsonArray.replaceAllValues(IdMap.CLASS, "de.uniks.networkparser.test.model.ludo.", "");
-		showDebugInfos(jsonArray, 1607, null);
+		showDebugInfos(jsonArray, 2045, null);
 
 		GraphConverter graphConverter = new GraphConverter();
 
@@ -325,7 +325,7 @@ public class GraphTest {
 		tom.createBase().withColor("blue").withKind("base").withPawns(p2);
 		sabine.createPawns().withColor(RED).withPos(tomStartField);
 		JsonArray jsonArray = jsonIdMap.toJsonArray(ludo);
-		showDebugInfos(jsonArray, 5089, null);
+		showDebugInfos(jsonArray, 6051, null);
 		GraphConverter graphConverter = new GraphConverter();
 
 		// May be 8 Asssocs and write 11
@@ -367,12 +367,13 @@ public class GraphTest {
 		root.setChild(new SortedMsg().withMsg("Child"));
 
 		IdMap map = new IdMap();
+		map.withTimeStamp(1);
 		map.with(new SortedMsgCreator());
 
 		JsonArray jsonArray = map.toJsonArray(root, new Filter().withFull(true));
 		GraphConverter graphConverter = new GraphConverter();
 		JsonObject objectModel = graphConverter.convertToJson(GraphTokener.OBJECT, jsonArray, true);
-		showDebugInfos(objectModel, 711, System.out);
+		showDebugInfos(objectModel, 627, null);
 
 		JsonObject clazzModel = graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
 		showDebugInfos(clazzModel, 472, null);

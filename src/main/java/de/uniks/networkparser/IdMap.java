@@ -345,15 +345,20 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		if (key != null) {
 			return key;
 		}
-		key = grammar.getId(obj);
+		key = grammar.getId(obj, this);
 		if (key != null) {
 			put(key, obj);
 			return key;
 		}
+		return createId(obj);
+	}
+
+	public String createId(Object obj) {
+		String key;
 		if(timeStamp !=0) {
 			key = ""+obj.getClass().getSimpleName().charAt(0)+(this.timeStamp++);
 		} else {
-			long timeStamp = System.currentTimeMillis();
+			long timeStamp = System.nanoTime();
 			key = ""+obj.getClass().getSimpleName().charAt(0)+timeStamp;
 		}
 		put(key, obj);

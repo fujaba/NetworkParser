@@ -28,6 +28,12 @@ import de.uniks.networkparser.interfaces.BaseItem;
 
 public class SortedList<V> extends SimpleList<V> {
 	protected Comparator<V> cpr;
+	
+	public SortedList(boolean comparator) {
+		if(comparator) {
+			comparator();
+		}
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -41,7 +47,7 @@ public class SortedList<V> extends SimpleList<V> {
 
 	@Override
 	public boolean isComparator() {
-		return true;
+		return (this.cpr != null);
 	}
 
 	public SortedList<V> withComparator(Comparator<V> comparator) {

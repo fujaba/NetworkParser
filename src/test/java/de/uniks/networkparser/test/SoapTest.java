@@ -77,7 +77,7 @@ public class SoapTest {
 		Assert.assertEquals(25, entity.sizeChildren() );
 
  		XMLEntity xmlEntity = map.toXMLEntity(soapAnswer);
-		Assert.assertEquals(1, xmlEntity.size());
+		Assert.assertEquals(1, xmlEntity.sizeChildren());
 
 		creator.setValue(soapAnswer, "Full:Body", "The answer is 42.", IdMap.NEW);
 
