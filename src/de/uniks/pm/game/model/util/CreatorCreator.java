@@ -17,7 +17,7 @@ class CreatorCreator
    public static IdMap createIdMap(String sessionID)
    {
 
-      IdMap idMap = new IdMap().withSessionId(sessionID);
+      IdMap idMap = new IdMap().withSession(sessionID);
 
       idMap.with(new DiceCreator());
       idMap.with(new GameCreator());

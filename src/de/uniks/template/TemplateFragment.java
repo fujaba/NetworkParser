@@ -8,8 +8,11 @@ public class TemplateFragment implements Comparable<TemplateFragment> {
 	
 	@Override
 	public int compareTo(TemplateFragment other) {
-		if (other.getKey() == key && other.getValue().equals(value)) {
-			return 0;
+		if (other.getKey() == key) {
+			if(other.getValue().equals(value)) {
+				return 0;
+			}
+			return -1;
 		}
 		if (other.getKey() > key) {
 			return -1;

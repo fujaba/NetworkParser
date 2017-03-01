@@ -7,7 +7,7 @@ import de.uniks.networkparser.list.SortedList;
 
 public class TemplateResult {
 
-	private SortedList<TemplateFragment> extras = new SortedList<TemplateFragment>();
+	private SortedList<TemplateFragment> extras = new SortedList<TemplateFragment>(true);
 	
 	private CharacterBuffer result = null;
 	
