@@ -168,4 +168,9 @@ public class SortedMsg implements SendableEntity, Comparable<SortedMsg>{
 		}
 		return 1;
 	}
+	
+	@Override
+	public String toString() {
+		return this.number+": "+this.msg;
+	}
 }

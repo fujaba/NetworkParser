@@ -551,10 +551,12 @@ public abstract class AbstractArray<V> implements BaseItem {
 			boolean allowDuplicate = isAllowDuplicate();
 			for (int i = 0; i < this.size; i++) {
 				Object value = getKeyByIndex(i);
-				if (comparator().compare(value, element) >= 0) {
+				int r = comparator().compare(value, element);
+				if (r == 0) {
 					if (!allowDuplicate && value.equals(element)) {
 						return REMOVED;
 					}
+				}else if(r > 0) {
 					return i;
 				}
 			}
