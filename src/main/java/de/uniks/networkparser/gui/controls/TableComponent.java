@@ -51,7 +51,7 @@ public class TableComponent extends Control {
 			return this;
 		}
 		for (Column c : columns) {
-			if (this.columns.add(c)) {
+			if (!this.columns.contains(c)) {
 				// Save column
 				this.columns.add(c);
 			}

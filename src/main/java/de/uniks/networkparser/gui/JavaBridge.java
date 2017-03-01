@@ -59,7 +59,7 @@ public abstract class JavaBridge implements UpdateListener {
 		if(key != null) {
 			return key;
 		}
-		// Add Controll
+		// Add Control
 		JsonObject jsonObject = map.toJsonObject(c, Filter.SIMPLEFORMAT);
 		Object result = executeScript(BridgeCommand.load(jsonObject));
 		String id = null;
