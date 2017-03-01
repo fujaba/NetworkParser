@@ -28,6 +28,16 @@ import de.uniks.networkparser.test.model.util.FruitSet;
 
 public class FullListTest {
 	@Test
+	public void AppleSetDupplicate() {
+		AppleSet set = new AppleSet();
+		Apple apple = new Apple();
+		apple.withX(23).withY(42);
+		set.add(apple);
+		set.add(apple);
+		Assert.assertEquals(1, set.size());
+	}
+	
+	@Test
 	public void AppleSet() {
 		AppleSet set = new AppleSet();
 		set.with("Hallo");

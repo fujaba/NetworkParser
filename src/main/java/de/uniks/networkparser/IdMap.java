@@ -111,6 +111,8 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	public static final byte FLAG_TYPESAVE = 0x02;
 
 	public static final byte FLAG_SEARCHFORSUPERCLASS = 0x04;
+	
+	public static final byte FLAG_SIMPLEFORMAT = 0x08;
 
 	private byte flag = FLAG_ID;
 	
@@ -1059,9 +1061,9 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		if (entity == null) {
 			return null;
 		}
+		byte flag = (byte) ((this.flag |  FLAG_ID) - FLAG_ID | FLAG_SIMPLEFORMAT);
+
 		MapEntity map = new MapEntity(filter, flag, this);
-		map.withSimpleFormat(true);
-		map.withoutFlag(FLAG_ID);
 		map.withStack(new MapEntityStack());
 		return (XMLEntity) this.encode(entity, map, xmlTokener);
 	}
@@ -1164,6 +1166,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 			flag = GraphTokener.FLAG_ORDERD;
 		}
 		MapEntity map = new MapEntity(filter, flag, this);
+		map.withFlag(flag);
 		return new GraphTokener().withMap(this).diffModel(source, target, map);
 	}
 

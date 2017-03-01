@@ -44,11 +44,11 @@ public class GraphTokener extends Tokener {
 	public static final String CLASS = "classdiagram";
 
 	public static final byte FLAG_CLASS = 0x01;
+//	public static final byte FLAG_OBJECT = 0x01;
 	public static final byte FLAG_CARDINALITY = 0x02;
 	public static final byte FLAG_SHOWLINE = 0x04;
 	public static final byte FLAG_ORDERD = 0x08;
 	public static final byte FLAG_UNORDERD = 0x00;
-//	public static final byte FLAG_OBJECT = 0x01;
 
 	/** The Constant for OBJECT Diagramms. */
 	public static final String OBJECT = "objectdiagram";

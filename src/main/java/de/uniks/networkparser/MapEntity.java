@@ -45,21 +45,19 @@ public class MapEntity extends SimpleSet<Object>{
 	private MapEntityStack stack;
 	/** The show line. */
 	private byte tokenerFlag;
-	private boolean simpleFormat;
 	private IdMap map;
+	public byte mapFlag;
 
 	public MapEntity(String tag, Object item, SendableEntityCreator creator) {
-		this.flag = 0;
 		this.withStack(new MapEntityStack().withStack(tag, item, creator));
 	}
 
 	public MapEntity(Filter filter, byte flag, IdMap map) {
-		this.flag = IdMap.FLAG_ID;
 		if(filter != null) {
 			this.filter = filter;
 		}
 		this.map = map;
-		this.flag = (byte) (this.flag | flag);
+		this.mapFlag = flag;
 	}
 
 	public Filter getFilter() {
@@ -85,10 +83,13 @@ public class MapEntity extends SimpleSet<Object>{
 	}
 
 	public boolean isTypSave() {
-		return (flag & IdMap.FLAG_TYPESAVE) != 0;
+		return (mapFlag & IdMap.FLAG_TYPESAVE) != 0;
 	}
 	public boolean isSearchForSuperClass() {
-		return (flag & IdMap.FLAG_SEARCHFORSUPERCLASS) != 0;
+		return (mapFlag & IdMap.FLAG_SEARCHFORSUPERCLASS) != 0;
+	}
+	public boolean isSimpleFormat() {
+		return (mapFlag & IdMap.FLAG_SIMPLEFORMAT) != 0;
 	}
 
 	// Methods for Grammar
@@ -196,7 +197,7 @@ public class MapEntity extends SimpleSet<Object>{
 	
 	public CharacterBuffer getPrefixProperties(SendableEntityCreator creator, Tokener tokener, Object entity, String className) {
 		CharacterBuffer result = new CharacterBuffer();
-		if(this.simpleFormat) {
+		if(this.isSimpleFormat()) {
 			return result;
 		}
 		boolean isComplex = filter.isSimpleFormat(entity, creator, className, tokener.getMap());
@@ -208,7 +209,7 @@ public class MapEntity extends SimpleSet<Object>{
 	}
 
 	public Entity writeBasicValue(SendableEntityCreator creator, Entity entity, BaseItem parent, String className, String id) {
-		if((flag & IdMap.FLAG_ID) == 0) {
+		if((mapFlag & IdMap.FLAG_ID) == 0) {
 			if(creator instanceof SendableEntityCreatorTag) {
 				className = ((SendableEntityCreatorTag)creator).getTag();
 			}
@@ -222,7 +223,7 @@ public class MapEntity extends SimpleSet<Object>{
 	 * @return the addOwnerLink
 	 */
 	public boolean isAddOwnerLink(Object value) {
-		if((flag & IdMap.FLAG_ID) != 0) {
+		if((mapFlag & IdMap.FLAG_ID) != 0) {
 			return true;
 		}
 		if(stack != null) {
@@ -284,12 +285,6 @@ public class MapEntity extends SimpleSet<Object>{
 		return null;
 	}
 
-	public MapEntity withoutFlag(byte flag) {
-		this.flag = (byte) (this.flag | flag);
-		this.flag -= flag;
-		return this;
-	}
-
 	public Entity convertProperty(CharacterBuffer property, BaseItem parent) {
 		BaseItem child=parent;
 		while(property.charAt(0) == IdMap.ENTITYSPLITTER) {
@@ -326,7 +321,7 @@ public class MapEntity extends SimpleSet<Object>{
 	 * @return the type
 	 */
 	public boolean isFlag(byte flag) {
-		return (this.flag & flag) != 0;
+		return (this.mapFlag & flag) != 0;
 	}
 
 	public boolean writeValue(BaseItem parent, String property, Object value, Tokener tokener) {
@@ -348,10 +343,6 @@ public class MapEntity extends SimpleSet<Object>{
 	 */
 	public boolean isTokenerFlag(byte flag) {
 		return (this.tokenerFlag & flag) != 0;
-	}
-	public MapEntity withSimpleFormat(boolean value) {
-		this.simpleFormat = value;
-		return this;
 	}
 
 	public IdMap getMap() {
