@@ -51,6 +51,10 @@ Maven artifacts are available at:
 - https://oss.sonatype.org/content/repositories/snapshots/com/github/fujaba/NetworkParser/ - snaphots repository
 
 #Usage
+Here are a simple Usage of IdMap for serialization and deserialization
+{{md  '..src/test/java/de/uniks/networkparser/test/SimpleUsage.java[tag=serialization]'}} 
+
+
 - [serialization](example.adoc "simple Serialization")
 
 ## Maven Snapshot

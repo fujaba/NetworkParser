@@ -1,6 +1,7 @@
 = Usage
-:sourcedir: src/test/java
-:builddir: src/test/resources
+:branch: Refactoring
+:sourcedir: https://raw.githubusercontent.com/fujaba/NetworkParser/Refactoring/src/test/java
+:builddir: https://raw.githubusercontent.com/fujaba/NetworkParser/Refactoring/src/test/resources
 :source-highlighter: highlightjs
 
 Here are a simple Usage of IdMap for serialization and deserialization and get UpdateMessages
