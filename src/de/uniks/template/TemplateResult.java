@@ -1,8 +1,7 @@
 package de.uniks.template;
 
-import java.util.HashMap;
-
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SortedList;
 
 public class TemplateResult {
@@ -11,7 +10,7 @@ public class TemplateResult {
 	
 	private CharacterBuffer result = null;
 	
-	public void execute(Template rootTemplate, HashMap<String, String> parameters, boolean isStandard) {
+	public void execute(Template rootTemplate, SimpleKeyValueList<String, String> parameters, boolean isStandard) {
 		result = new CharacterBuffer();
 		String templateResult = "";
 		Template template = rootTemplate;

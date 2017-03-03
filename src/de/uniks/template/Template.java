@@ -1,10 +1,9 @@
 package de.uniks.template;
 
-import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.Map.Entry;
 
 import de.uniks.networkparser.interfaces.Entity;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 
 public class Template {
 
@@ -30,7 +29,7 @@ public class Template {
 
 	private LinkedHashSet<String> variables = new LinkedHashSet<String>();
 	
-	public String generate(HashMap<String, String> parameters) {
+	public String generate(SimpleKeyValueList<String, String> parameters) {
 		if (parameters == null) {
 			return null;
 		}
@@ -68,15 +67,15 @@ public class Template {
 			ifSearch = ifSearch.substring(endIndex, ifSearch.length());
 			ifIndex = ifSearch.indexOf("{{#", 1);
 		}
-		for (Entry<String, String> entry : parameters.entrySet()) {
-			if (variables.contains(entry.getKey())) {
-				result = replace(result, entry.getKey(), entry.getValue());
+		for (String variable : variables) {
+			if (parameters.containsKey(variable)) {
+				result = replace(result, variable, parameters.get(variable));
 			}
 		}
 		return result;
 	}
 	
-	private boolean parseCondition(HashMap<String, String> parameters) {
+	private boolean parseCondition(SimpleKeyValueList<String, String> parameters) {
 		boolean result = true;
 		if (condition != null && condition != "") {
 			boolean negateCondition = false;
