@@ -1,0 +1,21 @@
+= Usage
+:sourcedir: src/test/java
+:builddir: src/test/resources
+:source-highlighter: highlightjs
+
+Here are a simple Usage of IdMap for serialization and deserialization and get UpdateMessages
+[source, java]
+----
+include::{sourcedir}/de/uniks/networkparser/test/SimpleUsage.java[tag=serialization]
+----
+
+
+<1> Custom Model
+<2> Serialization
+<3> Deserialization
+
+[source, json]
+----
+<4>
+include::{builddir}/de/uniks/networkparser/test/serialization.json[]
+----

@@ -51,29 +51,8 @@ Maven artifacts are available at:
 - https://oss.sonatype.org/content/repositories/snapshots/com/github/fujaba/NetworkParser/ - snaphots repository
 
 #Usage
-Here are a simple Usage of JsonIdMap for serialization and deserialization and get UpdateMessages
-```java
-	House house=new House();
-	house.setFloor(4);
-	house.setName("University");
-	IdMap map=new IdMap().withCreator(new HouseCreator());
-	map.withUpdateListenerSend(new UpdateListener() {
-		@Override
-		public boolean update(String typ, BaseItem source, Object target, String property, Object oldValue,
-				Object newValue) {
-			System.out.println(source);
-			return false;
-		}
-	});
-	
-	JsonObject json = map.toJsonObject(house);
-	String string=json.toString();
-	
-	IdMap decodeMap=new IdMap().withCreator(new HouseCreator());
-	House newHouse = (House) decodeMap.decode(string);
+- [serialization](example.adoc "simple Serialization")
 
-	house.setFloor(42);
-```
 ## Maven Snapshot
 ### pom.xml
 ```xml
