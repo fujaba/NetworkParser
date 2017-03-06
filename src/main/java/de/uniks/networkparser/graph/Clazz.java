@@ -24,13 +24,18 @@ public class Clazz extends GraphEntity {
 	public Clazz(String name) {
 		this.with(name);
 	}
+	public Clazz(Class<?> name) {
+		if(name != null) {
+			with(name.getName().replace("$", "."));
+		}
+	}
 	
 	@Override
 	public Clazz with(String name) {
 		super.with(name);
 		return this;
 	}
-
+	
 	@Override
 	public Clazz withId(String id) {
 		super.withId(id);
@@ -552,25 +557,25 @@ public class Clazz extends GraphEntity {
 		return this;
 	}
 
-	public Clazz with(ClazzImport... value) {
+	public Clazz with(Import... value) {
 		super.withChildren(value);
 		return this;
 	}
 
-	public SimpleSet<ClazzImport> getImports() {
-		SimpleSet<ClazzImport> collection = new SimpleSet<ClazzImport>();
+	public SimpleSet<Import> getImports() {
+		SimpleSet<Import> collection = new SimpleSet<Import>();
 		if(this.children == null) {
 			return collection;
 		}
-		if(this.children instanceof ClazzImport) {
-			collection.add((ClazzImport)this.children);
+		if(this.children instanceof Import) {
+			collection.add((Import)this.children);
 			return collection;
 		}
 		if(this.children instanceof GraphSimpleSet) {
 			GraphSimpleSet list = (GraphSimpleSet) this.children;
 			for(GraphMember item : list) {
-				if(item instanceof ClazzImport) {
-					collection.add((ClazzImport)item);
+				if(item instanceof Import) {
+					collection.add((Import)item);
 				}
 			}
 		}
