@@ -29,4 +29,18 @@ public class ObjectSet extends SimpleSet<Object> {
 		super.with(values);
 		return this;
 	}
+	
+	public NumberList numberList()
+	{
+	   NumberList result = new NumberList();
+	   
+	   for ( Object obj : this)
+	   {
+	      if (obj instanceof Number)
+	      {
+	         result.add((Number) obj);
+	      }
+	   }
+	   return result;
+	}
 }
