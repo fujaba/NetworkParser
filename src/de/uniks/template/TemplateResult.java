@@ -36,6 +36,11 @@ public class TemplateResult {
 	}
 	
 	public void addExtra(int key, String value) {
+		for (TemplateFragment templateFragment : extras) {
+			if (templateFragment.getValue().equals(value)) {
+				return;
+			}
+		}
 		TemplateFragment templateFragment = new TemplateFragment()
 				.withKey(key)
 				.withValue(value);
@@ -53,8 +58,20 @@ public class TemplateResult {
 	}
 	
 	public void joinExtras(TemplateResult otherTemplateResult) {
+		boolean found = false;
 		for (TemplateFragment templateFragment : otherTemplateResult.getExtras()) {
-			extras.add(templateFragment);
+			found = false;
+			for (TemplateFragment ownTemplateFragment : extras) {
+				if (templateFragment.getValue().equals(ownTemplateFragment.getValue())) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				if (!extras.contains(templateFragment)) {
+					extras.add(templateFragment);
+				}
+			}
 		}
 	}
 	
