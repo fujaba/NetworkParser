@@ -530,6 +530,11 @@ public class Clazz extends GraphEntity {
 				}
 			}
 		}
+		boolean isInterface = getType() == ClazzType.INTERFACE;
+		boolean isAbstract = getModifier().has(Modifier.ABSTRACT);
+		if(isInterface || isAbstract) {
+			return collection;
+		}
 		// ALL SUPERMETHODS
 		MethodSet newMethods = new MethodSet();
 		MethodSet foundMethods = new MethodSet();
@@ -557,6 +562,12 @@ public class Clazz extends GraphEntity {
 		}
 		boolean isInterface = getType() == ClazzType.INTERFACE;
 		boolean isAbstract = getModifier().has(Modifier.ABSTRACT);
+		if(isInterface == false && isAbstract  == false ) {
+			MethodSet methods = getMethods(filters);
+			newMethod.removeAll(methods);
+			return;
+		}
+		
 		GraphSimpleSet list = this.getChildren();
 		Method entity;
 		for(GraphMember member : list) {
