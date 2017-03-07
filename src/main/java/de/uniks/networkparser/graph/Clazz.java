@@ -502,13 +502,19 @@ public class Clazz extends GraphEntity {
 		if(this.children == null) {
 			return collection;
 		}
+		ClazzSet superClasses= new ClazzSet();
 		if(this.children instanceof Method) {
 			if(check((Method)this.children, filters)) {
 				collection.add((Method)this.children);
 			}
 			return collection;
+		} else if(this.children instanceof Association) {
+			Association assoc = (Association) this.children;
+			if(assoc.getType()==AssociationTypes.GENERALISATION || assoc.getType() == AssociationTypes.IMPLEMENTS) {
+				superClasses.add(assoc.getOtherClazz());
+			}
 		}
-		ClazzSet superClasses= new ClazzSet();
+
 		if(this.children instanceof GraphSimpleSet) {
 			GraphSimpleSet list = (GraphSimpleSet) this.children;
 			for(GraphMember item : list) {
@@ -516,15 +522,19 @@ public class Clazz extends GraphEntity {
 					if(check(item, filters)) {
 						collection.add((Method)item);
 					}
-				} else if(item instanceof Clazz) {
-					superClasses.add((Clazz)item);
+				} else if(item instanceof Association) {
+					Association assoc = (Association) item;
+					if(assoc.getType()==AssociationTypes.GENERALISATION || assoc.getType() == AssociationTypes.IMPLEMENTS) {
+						superClasses.add(assoc.getOtherClazz());
+					}
 				}
 			}
 		}
 		// ALL SUPERMETHODS
 		MethodSet newMethods = new MethodSet();
 		MethodSet foundMethods = new MethodSet();
-		for(Clazz item : superClasses) {
+		for(int i=0;i<superClasses.size();i++) {
+			Clazz item = superClasses.get(i);
 			item.parseSuperMethods(superClasses, collection, newMethods, foundMethods, filters);
 		}
 		collection.addAll(foundMethods);
@@ -541,7 +551,7 @@ public class Clazz extends GraphEntity {
 	 * one                          many
 	 *</pre>
 	 */
-	void parseSuperMethods(ClazzSet clazzes, MethodSet methodFound, MethodSet newExistMethod, MethodSet newMethod, Condition<?>... filters) {
+	void parseSuperMethods(ClazzSet superClasses, MethodSet methodFound, MethodSet newExistMethod, MethodSet newMethod, Condition<?>... filters) {
 		if(this.children == null) {
 			return;
 		}
@@ -572,12 +582,12 @@ public class Clazz extends GraphEntity {
 						newMethod.remove(entity);
 					}
 				}
-			} else if(member instanceof Clazz) {
-				clazzes.add((Clazz)member);
+			} else if(member instanceof Association) {
+				Association assoc = (Association) member;
+				if(assoc.getType()==AssociationTypes.GENERALISATION || assoc.getType() == AssociationTypes.IMPLEMENTS) {
+					superClasses.add(assoc.getOtherClazz());
+				}
 			}
-		}
-		for(Clazz item : clazzes) {
-			item.parseSuperMethods(clazzes, methodFound, newExistMethod, newMethod, filters);
 		}
 	}
 

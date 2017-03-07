@@ -16,9 +16,11 @@ public class GetMethodsTest {
 	public void testAbstract() {
 		GraphList model = new GraphList().with("de.uniks");
 		Clazz person = model.createClazz("Person").with(Modifier.create(Modifier.ABSTRACT));
-		Clazz student = model.createClazz("Student").withSuperClazz(person);
 		Method method = new Method("think", DataType.BOOLEAN).with(Modifier.create(Modifier.ABSTRACT));
 		person.with(method);
+		
+		Clazz student = model.createClazz("Student").withSuperClazz(person);
+
 		MethodSet methods = student.getMethods();
 		Assert.assertEquals(1, methods.size());
 		Assert.assertEquals(method, methods.get(0));
@@ -55,14 +57,23 @@ public class GetMethodsTest {
 	public void testAbstractToAbstract() {
 		GraphList model = new GraphList().with("de.uniks");
 		Clazz person = model.createClazz("Person").with(Modifier.create(Modifier.ABSTRACT));
-		Clazz human = model.createClazz("Human").withSuperClazz(person).with(Modifier.create(Modifier.ABSTRACT));
-		Clazz student = model.createClazz("Student").withSuperClazz(human);
 		Method method = new Method("think", DataType.BOOLEAN);
 		person.with(method);
+		
+		Clazz human = model.createClazz("Human").withSuperClazz(person).with(Modifier.create(Modifier.ABSTRACT));
+		
+		Clazz student = model.createClazz("Student").withSuperClazz(human);
+		
 		MethodSet humanMethods = human.getMethods();
-		Assert.assertEquals(1, humanMethods.size());
-		Assert.assertEquals(method, humanMethods.get(0));
+		Assert.assertEquals(0, humanMethods.size());
+
 		MethodSet studentMethods = student.getMethods();
+		Assert.assertEquals(0, studentMethods.size());
+		
+		method.with(Modifier.ABSTRACT);
+		
+		studentMethods = student.getMethods();
+		
 		Assert.assertEquals(1, studentMethods.size());
 		Assert.assertEquals(method, studentMethods.get(0));
 	}
