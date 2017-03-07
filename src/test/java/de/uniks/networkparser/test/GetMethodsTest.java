@@ -85,7 +85,7 @@ public class GetMethodsTest {
 		Clazz human = model.createClazz("Human").withSuperClazz(person);
 		Clazz student = model.createClazz("Student").withSuperClazz(human);
 		Clazz pupil = model.createClazz("Pupil").withSuperClazz(student).with(Modifier.create(Modifier.ABSTRACT));
-		Method method = new Method("think", DataType.BOOLEAN);
+		Method method = new Method("think", DataType.BOOLEAN).with(Modifier.create(Modifier.ABSTRACT));
 		person.with(method);
 		MethodSet humanMethods = human.getMethods();
 		Assert.assertEquals(1, humanMethods.size());
@@ -103,10 +103,10 @@ public class GetMethodsTest {
 		Clazz human = model.createClazz("Human").withSuperClazz(person).with(Modifier.create(Modifier.ABSTRACT));
 		Clazz student = model.createClazz("Student").withSuperClazz(human);
 		Clazz pupil = model.createClazz("Pupil").withSuperClazz(student);
-		Method method = new Method("think", DataType.BOOLEAN);
+		Method method = new Method("think", DataType.BOOLEAN).with(Modifier.create(Modifier.ABSTRACT));
 		person.with(method);
 		MethodSet humanMethods = human.getMethods();
-		Assert.assertEquals(1, humanMethods.size());
+		Assert.assertEquals(0, humanMethods.size());
 		Assert.assertEquals(method, humanMethods.get(0));
 		MethodSet studentMethods = student.getMethods();
 		Assert.assertEquals(1, studentMethods.size());
@@ -123,10 +123,10 @@ public class GetMethodsTest {
 		Clazz student = model.createClazz("Student").withSuperClazz(human);
 		Clazz pupil = model.createClazz("Pupil").withSuperClazz(student);
 		Clazz subPupil = model.createClazz("SubPupil").withSuperClazz(pupil);
-		Method method = new Method("think", DataType.BOOLEAN);
+		Method method = new Method("think", DataType.BOOLEAN).with(Modifier.create(Modifier.ABSTRACT));
 		person.with(method);
 		MethodSet humanMethods = human.getMethods();
-		Assert.assertEquals(1, humanMethods.size());
+		Assert.assertEquals(0, humanMethods.size());
 		Assert.assertEquals(method, humanMethods.get(0));
 		MethodSet studentMethods = student.getMethods();
 		Assert.assertEquals(1, studentMethods.size());
@@ -145,7 +145,7 @@ public class GetMethodsTest {
 		Clazz student = model.createClazz("Student").withSuperClazz(human);
 		Clazz pupil = model.createClazz("Pupil").withSuperClazz(student).with(Modifier.create(Modifier.ABSTRACT));
 		Clazz subPupil = model.createClazz("SubPupil").withSuperClazz(pupil);
-		Method method = new Method("think", DataType.BOOLEAN);
+		Method method = new Method("think", DataType.BOOLEAN).with(Modifier.create(Modifier.ABSTRACT));
 		person.with(method);
 		MethodSet humanMethods = human.getMethods();
 		Assert.assertEquals(1, humanMethods.size());
@@ -170,7 +170,7 @@ public class GetMethodsTest {
 		Assert.assertEquals(1, studentMethods.size());
 		Assert.assertEquals(method, studentMethods.get(0));
 		MethodSet pupilMethods = pupil.getMethods();
-		Assert.assertEquals(1, pupilMethods.size());
+		Assert.assertEquals(0, pupilMethods.size());
 		Assert.assertEquals(method, pupilMethods.get(0));
 	}
 	
