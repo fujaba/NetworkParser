@@ -120,10 +120,6 @@ public abstract class GraphMember {
 		return false;
 	}
 
-	boolean setParent(GraphMember value) {
-		return setParentNode(value);
-	}
-
 	protected boolean setParentNode(GraphMember value) {
 		if (this.parentNode != value) {
 			GraphMember oldValue = (GraphMember) this.parentNode;
@@ -148,7 +144,7 @@ public abstract class GraphMember {
 		if(this.children == null) {
 			if(values.length==1){
 				this.children = values[0];
-				((GraphMember)values[0]).setParent(this);
+				((GraphMember)values[0]).setParentNode(this);
 				return this;
 			}
 		}
@@ -163,7 +159,7 @@ public abstract class GraphMember {
 		for (GraphMember value : values) {
 			if(value != null ) {
 				if(list.add(value)) {
-					value.setParent(this);
+					value.setParentNode(this);
 				}
 			}
 		}
@@ -178,7 +174,7 @@ public abstract class GraphMember {
 			for (GraphMember value : values) {
 				if(this.children == value) {
 					this.children = null;
-					value.setParent(null);
+					value.setParentNode(null);
 				}
 			}
 			return this;
@@ -187,7 +183,7 @@ public abstract class GraphMember {
 		for (GraphMember value : values) {
 			if(value != null) {
 				collection.remove(value);
-				value.setParent(null);
+				value.setParentNode(null);
 			}
 		}
 		return this;
@@ -218,7 +214,7 @@ public abstract class GraphMember {
 		if(this.children != null) {
 			if(this.children instanceof GraphMember) {
 				if(this.children instanceof Annotation) {
-					((Annotation)this.children).setParent(null);
+					((Annotation)this.children).setParentNode(null);
 					this.children = null;
 				}
 			}
@@ -228,7 +224,7 @@ public abstract class GraphMember {
 					if(collection.get(i) instanceof Annotation) {
 						GraphMember oldValue = collection.remove(i);
 						if(oldValue != null) {
-							oldValue.setParent(null);
+							oldValue.setParentNode(null);
 						}
 					}
 				}

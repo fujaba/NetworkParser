@@ -17,7 +17,7 @@ public class GenModel {
 		count += showCounting(Attribute.class);
 		count += showCounting(Cardinality.class);
 		count += showCounting(Clazz.class);
-		count += showCounting(ClazzImport.class);
+		count += showCounting(Import.class);
 		count += showCounting(DataType.class);
 		count += showCounting(DataTypeSet.class);
 		count += showCounting(DataTypeMap.class);

@@ -10,7 +10,7 @@ import de.uniks.networkparser.list.SimpleSet;
 public class Clazz extends GraphEntity {
 	public static final StringFilter<Clazz> NAME = new StringFilter<Clazz>(GraphMember.PROPERTY_NAME);
 
-	public enum ClazzType {CLAZZ, ENUMERATION, INTERFACE};
+	public enum ClazzType {CLAZZ, ENUMERATION, INTERFACE, CREATOR, SET, PATTERNOBJECT};
 	private ClazzType type = ClazzType.CLAZZ;
 
 	Clazz() {
@@ -430,7 +430,7 @@ public class Clazz extends GraphEntity {
 				for (Association assoc : associations) {
 					if(assoc.getType() == direction && assoc.getOtherType() == backDirection) {
 						if(assoc.contains(item, true, false) == false) {
-							assoc.getOther().setParent(item);
+							assoc.getOther().setParentNode(item);
 							break;
 						}
 					}
@@ -454,7 +454,7 @@ public class Clazz extends GraphEntity {
 	}
 
 	public boolean setClassModel(GraphModel value) {
-		return super.setParent(value);
+		return super.setParentNode(value);
 	}
 
 	/** get All Attributes
@@ -508,15 +508,77 @@ public class Clazz extends GraphEntity {
 			}
 			return collection;
 		}
+		ClazzSet superClasses= new ClazzSet();
 		if(this.children instanceof GraphSimpleSet) {
 			GraphSimpleSet list = (GraphSimpleSet) this.children;
 			for(GraphMember item : list) {
-				if(item instanceof Method && check(item, filters) ) {
-					collection.add((Method)item);
+				if(item instanceof Method) {
+					if(check(item, filters)) {
+						collection.add((Method)item);
+					}
+				} else if(item instanceof Clazz) {
+					superClasses.add((Clazz)item);
 				}
 			}
 		}
+		// ALL SUPERMETHODS
+		MethodSet newMethods = new MethodSet();
+		MethodSet foundMethods = new MethodSet();
+		for(Clazz item : superClasses) {
+			item.parseSuperMethods(superClasses, collection, newMethods, foundMethods, filters);
+		}
+		collection.addAll(foundMethods);
+		
 		return collection;
+	}
+	
+	/** get All Methods
+	 * @param filters Can Filter the List of Methods
+	 * @return all Methods of a Clazz
+	 *
+	 *<pre>
+	 * Clazz  --------------------- Methods
+	 * one                          many
+	 *</pre>
+	 */
+	void parseSuperMethods(ClazzSet clazzes, MethodSet methodFound, MethodSet newExistMethod, MethodSet newMethod, Condition<?>... filters) {
+		if(this.children == null) {
+			return;
+		}
+		boolean isInterface = getType() == ClazzType.INTERFACE;
+		boolean isAbstract = getModifier().has(Modifier.ABSTRACT);
+		GraphSimpleSet list = this.getChildren();
+		Method entity;
+		for(GraphMember member : list) {
+			if(member instanceof Method) {
+				entity = ((Method) member);
+				if(methodFound.contains(entity)) {
+					continue;
+				}
+				if(isInterface) {
+					if(entity.getModifier().has(Modifier.DEFAULT) == false) {
+						if(check(entity, filters) && newExistMethod.contains(entity) == false) {
+							newMethod.add(entity);
+						}
+					} else if(newExistMethod.contains(entity) == false){
+						newExistMethod.add(entity);
+						newMethod.remove(entity);
+					}
+				} else if(isAbstract && entity.getModifier().has(Modifier.ABSTRACT)) {
+					if(check(entity, filters) && newExistMethod.contains(entity) == false) {
+						newMethod.add(entity);
+					} else if(newExistMethod.contains(entity) == false){
+						newExistMethod.add(entity);
+						newMethod.remove(entity);
+					}
+				}
+			} else if(member instanceof Clazz) {
+				clazzes.add((Clazz)member);
+			}
+		}
+		for(Clazz item : clazzes) {
+			item.parseSuperMethods(clazzes, methodFound, newExistMethod, newMethod, filters);
+		}
 	}
 
 	public Clazz withoutKidClazz(Clazz... values) {
@@ -585,7 +647,7 @@ public class Clazz extends GraphEntity {
 	public Method createMethod(String name, Parameter... parameters) {
 		Method method = new Method().with(name);
 		method.with(parameters);
-		method.setParent(this);
+		method.setParentNode(this);
 		return method;
 	}
 

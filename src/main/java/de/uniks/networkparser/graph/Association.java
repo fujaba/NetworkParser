@@ -192,7 +192,7 @@ public class Association extends GraphMember {
 	}
 
 	public Association with(GraphEntity value) {
-		super.setParent(value);
+		super.setParentNode(value);
 		return this;
 	}
 

@@ -32,7 +32,7 @@ public class GraphNode extends GraphMember{
 	}
 
 	public GraphNode withParent(GraphMember value) {
-		super.setParent(value);
+		super.setParentNode(value);
 		return this;
 	}
 

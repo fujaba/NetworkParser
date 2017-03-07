@@ -108,13 +108,14 @@ public class GraphTest {
 		
 		Clazz person=list.createClazz("Person").enableInterface();
 		Clazz student=new Clazz("Student");
+		student.with(new Attribute("name", DataType.STRING));
 		
 		student.withSuperClazz(person);
 		
 		list.fixClassModel();
 		
 		GraphConverter converter = new GraphConverter();
-		showDebugInfos(converter.convertToJson(list, true, false), 450, null);
+		showDebugInfos(converter.convertToJson(list, true, false), 505, System.out);
 	}
 	
 	@Test

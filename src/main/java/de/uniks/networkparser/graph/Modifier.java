@@ -39,6 +39,7 @@ public class Modifier extends GraphMember {
 	public static final Modifier FINAL = new Modifier("final");
 	public static final Modifier ABSTRACT = new Modifier("abstract");
 	public static final Modifier STATIC = new Modifier("static");
+	public static final Modifier DEFAULT = new Modifier("default");
 
 	Modifier(String value) {
 		this.setName(value);
