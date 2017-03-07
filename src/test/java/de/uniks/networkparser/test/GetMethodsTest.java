@@ -173,8 +173,7 @@ public class GetMethodsTest {
 		Method method = new Method("think", DataType.BOOLEAN);
 		person.with(method);
 		MethodSet studentMethods = student.getMethods();
-		Assert.assertEquals(1, studentMethods.size());
-		Assert.assertEquals(method, studentMethods.get(0));
+		Assert.assertEquals(0, studentMethods.size());
 		MethodSet pupilMethods = pupil.getMethods();
 		Assert.assertEquals(1, pupilMethods.size());
 		Assert.assertEquals(method, pupilMethods.get(0));
