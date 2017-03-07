@@ -1,18 +1,15 @@
 package de.uniks.networkparser.test;
 
-import java.beans.PropertyChangeEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 
+import org.junit.Assert;
 import org.junit.Test;
 
-import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
-import de.uniks.networkparser.interfaces.Entity;
-import de.uniks.networkparser.interfaces.MapListener;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.test.model.House;
@@ -22,9 +19,9 @@ import de.uniks.networkparser.test.model.util.HouseCreator;
 import de.uniks.networkparser.test.model.util.StudentCreator;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
 
-public class SimpleUsage {
+public class SimpleUsage extends IOClasses{
 	@Test
-	public void testSerialization() throws IOException { 
+	public void testSerialization() throws IOException {
 		// tag::serialization[]
 		// Model
 		House house=new House(); //<1>
@@ -38,7 +35,8 @@ public class SimpleUsage {
 		String string=json.toString(2); //<4>
 		// end::serialization[]
 		//NO DOKU
-		Files.write(new File("src/test/resources/de/uniks/networkparser/test/serialization.json").toPath(), string.getBytes(), StandardOpenOption.CREATE);
+		//Files.write(new File("src/test/resources/de/uniks/networkparser/test/serialization.json").toPath(), string.getBytes(), StandardOpenOption.CREATE);
+		Files.write(new File("SimpleUsage.json").toPath(), string.getBytes(), StandardOpenOption.CREATE);
 		// tag::serialization[]
 		
 		// Deserialization
@@ -67,14 +65,16 @@ public class SimpleUsage {
 			@Override
 			public boolean update(Object value) {
 				SimpleEvent event = (SimpleEvent) value;
-				System.out.println(event.getEntity().toString());
+				Assert.assertNotNull(event);
+//				System.out.println(event.getEntity().toString());
 				return true;
 			}
 		});
 		
-		System.out.println("Start:");
+//		System.out.println("Start:");
 		JsonObject json = map.toJsonObject(uni);
-		System.out.println("Update:");
+		Assert.assertNotNull(json);
+//		System.out.println("Update:");
 		
 		Student albert = new Student().withName("Albert");
 		uni.withStudents(albert);

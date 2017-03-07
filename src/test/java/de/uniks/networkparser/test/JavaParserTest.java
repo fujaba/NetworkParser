@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.parser.JavaParser;
@@ -17,7 +18,6 @@ public class JavaParserTest {
 		String context = new String(fullContext);
 		JavaParser parser = new JavaParser();
 		SymTabEntry parse = parser.parse(context);
-		System.out.println(parse);
-
+		Assert.assertNotNull(parse);
 	}
 }

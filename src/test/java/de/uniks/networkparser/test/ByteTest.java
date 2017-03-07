@@ -70,7 +70,7 @@ public class ByteTest{
 		Assert.assertEquals("Encrypted text : [" +encrypted+ "] [" +encrypted.length()+ " bytes]", 64, encrypted.length());
 		ByteConverterHex converter = new ByteConverterHex();
 
-//		outputStream(encrypted.getBytes(), System.out);
+//		outputStream(encrypted.getBytes(), null);
 		String hex = converter.toString(new ByteBuffer().with(encrypted)).replace(" ", "");
 		outputStream(hex.getBytes(), null);
 //		Assert.assertEquals("Encrypted text (as hex) : [" +hex+ "] [" +hex.length()+ " bytes]", 128, hex.length());
@@ -382,7 +382,7 @@ public class ByteTest{
 		ByteItem item = map.toByteItem(appleTree);
 
 		ByteBuffer bytes = item.getBytes(true);
-//		outputStream(bytes.array(), System.out);
+//		outputStream(bytes.array(), null);
 		Assert.assertEquals(100, bytes.length());
 		String string = item.toString();
 		Assert.assertEquals(128, string.length());

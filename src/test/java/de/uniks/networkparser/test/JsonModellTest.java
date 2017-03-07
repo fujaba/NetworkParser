@@ -214,7 +214,6 @@ public class JsonModellTest implements UpdateListener {
 				}
 				SimpleEvent simpleEvent = (SimpleEvent) evt;
 //				data = simpleEvent.getEntity();
-//				System.out.println(data);
 				return (Apple.PROPERTY_PASSWORD.equals(simpleEvent.getPropertyName()) == false);
 			}
 		});
