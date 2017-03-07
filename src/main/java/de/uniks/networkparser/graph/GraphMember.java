@@ -252,6 +252,9 @@ public abstract class GraphMember {
 	}
 
 	public Modifier getModifier() {
+		if(this instanceof Modifier) {
+			return (Modifier)this;
+		}
 		if(this.children == null) {
 			return null;
 		}
@@ -272,15 +275,13 @@ public abstract class GraphMember {
 			return this;
 		}
 		Modifier rootModifier = getModifier();
-		if(rootModifier != null) {
-			for (Modifier item : values) {
-				if (item.has(Modifier.PUBLIC) || item.has(Modifier.PACKAGE) || item.has(Modifier.PROTECTED)
-						|| item.has(Modifier.PRIVATE)) {
-					rootModifier.with(item.getName());
-					continue;
-				}
-				rootModifier.withChildren(item);
+		for (Modifier item : values) {
+			if (item.has(Modifier.PUBLIC) || item.has(Modifier.PACKAGE) || item.has(Modifier.PROTECTED)
+					|| item.has(Modifier.PRIVATE)) {
+				rootModifier.with(item.getName());
+				continue;
 			}
+			rootModifier.withChildren(new Modifier(item.getName()));
 		}
 		return this;
 	}

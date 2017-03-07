@@ -90,6 +90,37 @@ public class GraphTest {
 		Assert.assertEquals("{\"class\":\"number\",\"id\":\"S1\",\"number\":0}", jsonObject.toString());
 	}		
 	
+	@Test
+	public void testModifier() {
+		GraphList model = new GraphList();
+		Clazz person = model.createClazz("Person");
+
+		Assert.assertEquals("public", person.getModifier().toString());
+
+		person.with(Modifier.ABSTRACT);
+		person.with(Modifier.ABSTRACT);
+		
+		Assert.assertEquals("public abstract", person.getModifier().toString());
+		
+		person.with(Modifier.FINAL);
+		
+		Assert.assertEquals("public abstract final", person.getModifier().toString());
+
+		Clazz uni = model.createClazz("Uni");
+		
+		Assert.assertEquals("public", uni.getModifier().toString());
+		uni.with(Modifier.ABSTRACT);
+		
+		Assert.assertEquals("public abstract", uni.getModifier().toString());
+		
+		Clazz student = model.createClazz("Student");
+		student.with(Modifier.create(Modifier.ABSTRACT));
+		
+		Assert.assertEquals("public abstract", student.getModifier().toString());
+		
+		Assert.assertEquals("public abstract", uni.getModifier().toString());
+		Assert.assertEquals("public abstract final", person.getModifier().toString());
+	}
 	
 	
 	@Test
@@ -115,7 +146,7 @@ public class GraphTest {
 		list.fixClassModel();
 		
 		GraphConverter converter = new GraphConverter();
-		showDebugInfos(converter.convertToJson(list, true, false), 505, System.out);
+		showDebugInfos(converter.convertToJson(list, true, false), 505, null);
 	}
 	
 	@Test
@@ -684,7 +715,7 @@ public class GraphTest {
 		Assert.assertEquals(2, GraphOptions.LINETYP.values().length);
 
 		Assert.assertEquals(Clazz.ClazzType.CLAZZ, Clazz.ClazzType.valueOf("CLAZZ"));
-		Assert.assertEquals(3, Clazz.ClazzType.values().length);
+		Assert.assertEquals(6, Clazz.ClazzType.values().length);
 
 		GraphList model = new GraphList();
 		model.setAuthorName("Stefan");
