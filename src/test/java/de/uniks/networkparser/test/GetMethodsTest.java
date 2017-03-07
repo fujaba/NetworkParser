@@ -128,7 +128,7 @@ public class GetMethodsTest {
 		Clazz human = model.createClazz("Human").withSuperClazz(person).with(Modifier.create(Modifier.ABSTRACT));
 		Clazz student = model.createClazz("Student").withSuperClazz(human);
 		Clazz pupil = model.createClazz("Pupil").withSuperClazz(student);
-		Clazz subPupil = model.createClazz("SubPupil").withSuperClazz(pupil);
+		Clazz subPupil = model.createClazz("SubPupil").withSuperClazz(pupil).with(Modifier.create(Modifier.ABSTRACT));
 		Method method = new Method("think", DataType.BOOLEAN).with(Modifier.ABSTRACT);
 		person.with(method);
 		MethodSet humanMethods = human.getMethods();
