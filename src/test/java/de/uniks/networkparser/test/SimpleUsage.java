@@ -1,15 +1,13 @@
 package de.uniks.networkparser.test;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
+import de.uniks.networkparser.ext.story.Story;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.test.model.House;
@@ -19,10 +17,11 @@ import de.uniks.networkparser.test.model.util.HouseCreator;
 import de.uniks.networkparser.test.model.util.StudentCreator;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
 
-public class SimpleUsage extends IOClasses{
+public class SimpleUsage {
 	@Test
-	public void testSerialization() throws IOException {
+	public void testSerialization() {
 		// tag::serialization[]
+		Story story= new Story(SimpleUsage.class);
 		// Model
 		House house=new House(); //<1>
 		house.setFloor(4);
@@ -33,17 +32,15 @@ public class SimpleUsage extends IOClasses{
 		map.withTimeStamp(1);
 		JsonObject json = map.toJsonObject(house);
 		String string=json.toString(2); //<4>
-		// end::serialization[]
-		//NO DOKU
-		//Files.write(new File("src/test/resources/de/uniks/networkparser/test/serialization.json").toPath(), string.getBytes(), StandardOpenOption.CREATE);
-		Files.write(new File("SimpleUsage.json").toPath(), string.getBytes(), StandardOpenOption.CREATE);
-		// tag::serialization[]
 		
 		// Deserialization
 		IdMap decodeMap=new IdMap().withCreator(new HouseCreator()); //<3>
 		House newHouse = (House) decodeMap.decode(string);
 
 		newHouse.setFloor(42);
+		story.finish();
+		
+		story.dumpHTML();
 		// end::serialization[]
 	}
 	

@@ -56,14 +56,4 @@ public static String CRLF="\r\n";
 //		}
 //	}
 	
-//	private String getLineFromThrowable(Throwable e, String clazzName) {
-//		StackTraceElement[] stackTrace = e.getStackTrace();
-//		for(StackTraceElement ste : stackTrace) {
-//			String name = ste.getClassName();
-//			if(name.startsWith("de.uniks.networkparser.test")) {
-//				return name+".java:"+ste.getLineNumber();
-//			}
-//		}
-//		return "";
-//	}
 }

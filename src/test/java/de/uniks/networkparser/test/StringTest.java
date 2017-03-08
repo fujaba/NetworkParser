@@ -13,10 +13,30 @@ import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.buffer.CharacterReader;
 import de.uniks.networkparser.converter.ByteConverterHex;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.json.JsonTokener;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.xml.XMLTokener;
 
 public class StringTest {
+	@Test
+	public void testgetString() {
+		CharacterBuffer test=new CharacterBuffer();
+		String ref = "Hallo World"+BaseItem.CRLF+"Stefan";
+		
+		test.with(ref);
+		Assert.assertEquals(ref.length(), test.length());
+		XMLTokener tokener = new XMLTokener();
+		tokener.withBuffer(ref);
+		
+		Object item = tokener.getString(tokener.length() - tokener.position());
+
+		String tokenerString = item.toString();
+		Assert.assertEquals(ref.length(), tokenerString.length());
+		Assert.assertEquals(ref, tokenerString);
+	}		
+	
+	
 	@Test
 	public void testStringReplace(){
 		CharacterBuffer buffer = new CharacterBuffer().with("My %DEEP is not the %DEEP");

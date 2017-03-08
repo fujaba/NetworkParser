@@ -127,6 +127,15 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		return result;
 	}
 
+	public void replace(int start, int end, String replace) {
+		if(end-start == replace.length()) {
+			int pos =0;
+			while(start<end) { 
+				this.buffer[start++] = replace.charAt(pos++);
+			}
+		}
+	}
+	
 	public void replace(String search, String replace) {
 		int deleted=0;
 		CharacterBuffer inserts = null;
@@ -207,10 +216,6 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 			return 0;
 		}
 		char c = this.buffer[this.position + this.start];
-		if (c == '\r' && this.buffer[this.position+this.start + 1] == '\n') {
-			this.position++;
-			c = '\n';
-		}
 		return c;
 	}
 
@@ -331,7 +336,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		this.length = newLen;
 		return this;
 	}
-
+	
 	/** Init the new CharacterBuffer
 	 * @param values the reference CharSequence
 	 * @param start the Startposition for the new CharacterBuffer
@@ -660,6 +665,17 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 
 	public int indexOf(int ch) {
 		return indexOf(ch, 0);
+	}
+	
+	public int indexOf(String ch) {
+		int pos = 0;
+		for(int i=0;i<ch.length();i++) {
+			pos = indexOf(ch.charAt(i), pos);
+			if(pos<0) {
+				break;
+			}
+		}
+		return pos;
 	}
 
 	public int indexOf(int ch, int fromIndex) {
