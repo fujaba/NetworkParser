@@ -118,8 +118,8 @@ public class Column implements SendableEntityCreatorNoIndex {
 	
 	/**
 	 * 
-	 * @param id
-	 * @return
+	 * @param id the new id
+	 * @return itself
 	 */
 	public Column withID(String id){
 		this.id = id;
