@@ -116,7 +116,7 @@ public class JsonModellTest implements UpdateListener {
 		IdMap map= new IdMap();
 		map.with(new PersonCreator());
 		map.with(new GroupAccountCreator());
-		Assert.assertEquals(175, map.toJsonArray(account.getPersons(), Filter.regard(InstanceOf.create(Person.class, Person.PROPERTY_PARENT))).toString(2).length());
+		Assert.assertEquals(273, map.toJsonArray(account.getPersons(), Filter.regard(InstanceOf.create(Person.class, Person.PROPERTY_PARENT))).toString(2).length());
 	}
 
 	@Test
@@ -125,10 +125,10 @@ public class JsonModellTest implements UpdateListener {
 		map.with(this);
 		map.with(new SortedMsgCreator());
 		SortedMsg first= new SortedMsg();
-		first.setNumber(1);
+		first.withNumber(1);
 
 		SortedMsg second= new SortedMsg();
-		second.setNumber(2);
+		second.withNumber(2);
 		first.setChild(second);
 
 		String sample="Hallo Welt";
@@ -151,21 +151,21 @@ public class JsonModellTest implements UpdateListener {
 		secondMap.with(new SortedMsgCreator());
 
 		JsonObject jsonObject=map.toJsonObject(first);
-		Assert.assertEquals(385, jsonObject.toString(2).length());
+		Assert.assertEquals(495, jsonObject.toString(2).length());
 
 		secondMap.decode(jsonObject);
 
 		SortedMsg third= new SortedMsg();
-		third.setNumber(4);
+		third.withNumber(4);
 		second.setChild(third);
 		// DEEP 0
-		Assert.assertEquals(165, map.toJsonObject(first, Filter.regard(Deep.create(1))).toString().length());
+		Assert.assertEquals(251, map.toJsonObject(first, Filter.regard(Deep.create(1))).toString().length());
 		// DEEP 1
-		Assert.assertEquals(340, map.toJsonObject(first, Filter.regard(Deep.create(2))).toString().length());
+		Assert.assertEquals(481, map.toJsonObject(first, Filter.regard(Deep.create(2))).toString().length());
 		// DEEP 2
-		Assert.assertEquals(438, map.toJsonObject(first, Filter.regard(Deep.create(3))).toString().length());
+		Assert.assertEquals(591, map.toJsonObject(first, Filter.regard(Deep.create(3))).toString().length());
 		third.updateNumber(2);
-		third.setNumber(5);
+		third.withNumber(5);
 
 		Assert.assertEquals(3, map.size());
 		second.setChild(null);
@@ -201,6 +201,7 @@ public class JsonModellTest implements UpdateListener {
 		AppleTree tree=new AppleTree();
 
 		IdMap map = new IdMap();
+		map.withTimeStamp(1);
 		map.with(new AppleTreeCreator());
 		map.with(new AppleCreator());
 
@@ -213,7 +214,6 @@ public class JsonModellTest implements UpdateListener {
 				}
 				SimpleEvent simpleEvent = (SimpleEvent) evt;
 //				data = simpleEvent.getEntity();
-//				System.out.println(data);
 				return (Apple.PROPERTY_PASSWORD.equals(simpleEvent.getPropertyName()) == false);
 			}
 		});
@@ -235,7 +235,7 @@ public class JsonModellTest implements UpdateListener {
 		tree.addToHas(apple);
 
 		Assert.assertNotNull(data);
-		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.AppleTree\",\"id\":\"J1.A1\",\"upd\":{\"has\":{\"class\":\"de.uniks.networkparser.test.model.Apple\",\"id\":\"J1.A2\",\"prop\":{\"x\":23,\"y\":42}}}}", data.toString());
+		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.AppleTree\",\"id\":\"A1\",\"upd\":{\"has\":{\"class\":\"de.uniks.networkparser.test.model.Apple\",\"id\":\"A2\",\"prop\":{\"x\":23,\"y\":42}}}}", data.toString());
 	}
 
 	@Test
@@ -244,8 +244,9 @@ public class JsonModellTest implements UpdateListener {
 		message.withValue("The answer to life the universe and everything is 42.");
 		IdMap map=new IdMap();
 		map.with(new ByteMessageCreator());
+		map.withTimeStamp(1);
 		JsonObject jsonObject = map.toJsonObject(message);
-		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.bytes.ByteMessage\",\"id\":\"J1.B1\",\"prop\":{\"value\":\"The answer to life the universe and everything is 42.\"}}", jsonObject.toString());
+		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.bytes.ByteMessage\",\"id\":\"B1\",\"prop\":{\"value\":\"The answer to life the universe and everything is 42.\"}}", jsonObject.toString());
 
 		ByteMessage newMessage = (ByteMessage) map.decode(jsonObject);
 		Assert.assertEquals(message.getValue(), newMessage.getValue());

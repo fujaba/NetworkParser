@@ -9,8 +9,25 @@ import org.junit.Test;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;
+import de.uniks.networkparser.list.SortedList;
+import de.uniks.networkparser.test.model.SortedMsg;
 
 public class SimpleArrayListTest {
+	@Test
+	public void testSortElement() {
+		SortedList<SortedMsg> list = new SortedList<SortedMsg>(true);
+		list.add(new SortedMsg().withNumber(22));
+		list.add(new SortedMsg().withNumber(42));
+		list.add(new SortedMsg().withNumber(1));
+		list.add(new SortedMsg().withNumber(23));
+		list.add(new SortedMsg().withNumber(80));
+		Assert.assertEquals(1, list.get(0).getNumber());
+		Assert.assertEquals(22, list.get(1).getNumber());
+		Assert.assertEquals(23, list.get(2).getNumber());
+		Assert.assertEquals(42, list.get(3).getNumber());
+		Assert.assertEquals(80, list.get(4).getNumber());
+	}
+	
 	@Test
 	public void testRemoveFirstItem() {
 		SimpleList<String> list = new SimpleList<String>().with("Hello", "World", "Test");

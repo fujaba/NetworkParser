@@ -20,6 +20,7 @@ public class IdMapTest {
 	public void testMap() {
 		PlayerCreator playerCreator = new PlayerCreator();
 		IdMap map= new IdMap().with(new LudoCreator()).with(playerCreator);
+		map.withTimeStamp(1);
 		Ludo ludo = new Ludo();
 		for(int i=0;i<450;i++) {
 			ludo.createPlayers().withName("Player"+i);

@@ -1,5 +1,7 @@
 package de.uniks.networkparser.graph;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
+
 /*
 NetworkParser
 The MIT License
@@ -39,6 +41,7 @@ public class Modifier extends GraphMember {
 	public static final Modifier FINAL = new Modifier("final");
 	public static final Modifier ABSTRACT = new Modifier("abstract");
 	public static final Modifier STATIC = new Modifier("static");
+	public static final Modifier DEFAULT = new Modifier("default");
 
 	Modifier(String value) {
 		this.setName(value);
@@ -54,16 +57,12 @@ public class Modifier extends GraphMember {
 		return new Modifier(value);
 	}
 
-	public static Modifier create(Modifier... value) {
-		Modifier mod=new Modifier("");
-		for (Modifier item : value) {
-			if (item.has(PUBLIC) || item.has(PACKAGE) || item.has(PROTECTED)
-					|| item.has(PRIVATE)) {
-				mod.with(item.getName());
-				continue;
-			}
-			mod.withChildren(item);
+	public static Modifier create(Modifier... values) {
+		if(values == null || values.length < 1) {
+			return null;
 		}
+		Modifier mod=new Modifier(values[0].getName());
+		mod.withModifier(values);
 		return mod;
 	}
 
@@ -91,7 +90,29 @@ public class Modifier extends GraphMember {
 
 	@Override
 	public String toString() {
-		return this.name;
+		CharacterBuffer buffer=new CharacterBuffer();
+		String name = this.getName();
+		GraphSimpleSet list = this.getChildren();
+		if(name != null && name.length()>0) {
+			buffer.with(name);
+			if(list.size()>0) {
+				buffer.with(" ");
+			}
+		}
+		for(int i=0;i<list.size();i++) {
+			GraphMember member = list.get(i);
+			if((member instanceof Modifier) == false) {
+				continue;
+			}
+			name = member.getName();
+			if(name != null && name.length()>0) {
+				buffer.with(name);
+				if((i+1)<list.size()) {
+					buffer.with(" ");
+				}
+			}
+		}
+		return buffer.toString();
 	}
 
 	@Override

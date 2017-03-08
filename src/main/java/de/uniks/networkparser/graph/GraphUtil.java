@@ -129,7 +129,7 @@ public class GraphUtil {
 		if(value == null) {
 			return;
 		}
-		value.setParent(null);
+		value.setParentNode(null);
 		if(value instanceof Attribute) {
 			Attribute attribute = (Attribute) value;
 			Annotation annotation = attribute.getAnnotation();

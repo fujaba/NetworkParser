@@ -127,7 +127,7 @@ public class Method extends GraphMember {
 	}
 
 	public Method withParent(Clazz value) {
-		super.setParent(value);
+		super.setParentNode(value);
 		return this;
 	}
 

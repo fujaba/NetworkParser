@@ -295,7 +295,7 @@ public class JsonTokener extends Tokener {
 		if (jsonObject == null) {
 			return map.getTarget();
 		}
-		SendableEntityCreator typeInfo = map.getCreator(Grammar.READ, this.map, jsonObject, null);
+		SendableEntityCreator typeInfo = map.getCreator(Grammar.READ, jsonObject, null);
 		if (typeInfo != null) {
 			Object result = map.getTarget();
 			if (map.hasValue(jsonObject, IdMap.ID) && result == null) {
@@ -363,7 +363,7 @@ public class JsonTokener extends Tokener {
 		}
 		JsonObject jsonProp = (JsonObject) map.getProperties(jsonObject, this.map, isId, Grammar.READ);
 		if (jsonProp != null) {
-			SendableEntityCreator prototyp = map.getCreator(Grammar.WRITE, this.map, target, target.getClass().getName());
+			SendableEntityCreator prototyp = map.getCreator(Grammar.WRITE, target, target.getClass().getName());
 			String[] properties = prototyp.getProperties();
 			if (properties != null) {
 				for (String property : properties) {

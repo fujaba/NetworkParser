@@ -61,8 +61,40 @@ public abstract class GraphModel extends GraphEntity {
 			}
 		}
 		return collection;
-	}
+	} 
 
+	public boolean clearAddOnClazzes() {
+		if(this.children == null) {
+			return true;
+		}
+		if(this.children instanceof GraphSimpleSet == false) {
+			if(this.children instanceof Clazz) {
+				Clazz clazz = (Clazz) this.children;
+				if(clazz.getType() == ClazzType.CREATOR 
+						|| clazz.getType() == ClazzType.PATTERNOBJECT
+						|| clazz.getType() == ClazzType.SET) {
+					clazz.setParentNode(null);
+					this.children = null;
+				}
+			}
+			return true;
+		}
+		
+		GraphSimpleSet list = (GraphSimpleSet) this.children;
+		for(GraphMember member : list) {
+			if(member instanceof Clazz) {
+				Clazz clazz = (Clazz) member;
+				if(clazz.getType() == ClazzType.CREATOR 
+						|| clazz.getType() == ClazzType.PATTERNOBJECT
+						|| clazz.getType() == ClazzType.SET) {
+					clazz.setParentNode(null);
+					list.remove(member);
+				}
+			}
+		}
+		return true;
+	}
+	
 	public Clazz createClazz(String name) {
 		Clazz clazz = new Clazz(name);
 		clazz.setClassModel(this);

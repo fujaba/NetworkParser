@@ -18,7 +18,6 @@ public class TMXLoader extends IOClasses{
 		IdMap map=new IdMap();
 		map.with(new TileMap());
 		map.withFlag(IdMap.FLAG_NONE);
-//		System.out.println(map.toXMLEntity(tile).toString(2));
 		Assert.assertNotNull(map.toXMLEntity(tile).toString(2));
 	}
 }

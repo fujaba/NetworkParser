@@ -329,8 +329,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	/**
 	 * Sets the tag.
 	 *
-	 * @param value
-	 *			the new Tag
+	 * @param value	the new Tag
 	 * @return the instance XMLEntity
 	 */
 	public XMLEntity setType(String value) {

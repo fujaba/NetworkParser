@@ -83,7 +83,7 @@ public class Parameter extends Value {
 	}
 
 	public Parameter withParent(Method value) {
-		super.setParent(value);
+		super.setParentNode(value);
 		return this;
 	}
 }

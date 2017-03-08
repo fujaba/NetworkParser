@@ -4,7 +4,6 @@ import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.Grammar;
-import de.uniks.networkparser.interfaces.IdMapCounter;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.json.JsonTokener;
@@ -30,20 +29,23 @@ public class SimpleGrammar implements Grammar{
 	}
 
 	@Override
-	public String getId(Object obj, IdMapCounter counter) {
+	public String getId(Object obj, IdMap map) {
 		return null;
 	}
 
 	@Override
 	public Entity writeBasicValue(Entity entity, BaseItem parent, String className, String id, MapEntity map) {
-		if(map.getSession()!= null) {
-			entity.put(IdMap.SESSION, map.getSession());
+		String session = map.getMap().getSession();
+		if(session != null) {
+			entity.put(IdMap.SESSION, session);
 		}
 		entity.setType(className);
 
 		if(id != null) {
 			entity.put(IdMap.ID, id);
-			entity.put(IdMap.TIMESTAMP, id.substring(1));
+			if(map.getMap().getTimeStamp() == 0) {
+				entity.put(IdMap.TIMESTAMP, id.substring(1));
+			}
 		}
 		return entity;
 	}

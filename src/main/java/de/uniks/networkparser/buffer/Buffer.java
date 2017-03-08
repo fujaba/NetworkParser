@@ -138,6 +138,22 @@ public abstract class Buffer implements BufferItem {
 		}
 		return result;
 	}
+	
+	public CharacterBuffer readLine() {
+		CharacterBuffer line = new CharacterBuffer();
+		char character = getCurrentChar();
+		while( character != '\r' &&  character !='\n') {
+			line.with(character);
+			character = getChar();
+		}
+		if(character == '\r') {
+			character = getChar();
+		}
+		if(character == '\n') {
+			skip();
+		}
+		return line;
+	}
 
 	@Override
 	public char nextClean(boolean currentValid) {

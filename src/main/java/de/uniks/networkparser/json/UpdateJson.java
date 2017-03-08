@@ -67,6 +67,8 @@ public class UpdateJson implements MapListener {
 
 	/**
 	 * Suspend notification.
+	 * 
+	 * @return success for suspend Notification
 	 */
 	public boolean suspendNotification() {
 		this.suspendIdList = new ArrayList<String>();
@@ -75,6 +77,8 @@ public class UpdateJson implements MapListener {
 
 	/**
 	 * Reset notification.
+	 * 
+	 * @return success for reset Notification
 	 */
 	public boolean resetNotification() {
 		JsonArray array = this.map.getJsonByIds(this.suspendIdList);

@@ -24,6 +24,7 @@ public class JsonPeer2PeerTest implements UpdateListener{
 
 		firstMap = new IdMap();
 		firstMap.with(this);
+		firstMap.withTimeStamp(1);
 
 		firstMap.with(new SortedMsgCreator());
 
@@ -31,10 +32,10 @@ public class JsonPeer2PeerTest implements UpdateListener{
 		secondMap.with(new SortedMsgCreator());
 
 		firstRoot = new SortedMsg();
-		firstRoot.setNumber(1);
+		firstRoot.withNumber(1);
 
 		SortedMsg second= new SortedMsg();
-		second.setNumber(2);
+		second.withNumber(2);
 		firstRoot.setChild(second);
 
 		firstMap.garbageCollection(firstRoot);
@@ -42,9 +43,9 @@ public class JsonPeer2PeerTest implements UpdateListener{
 		update(new SimpleEvent(IdMap.NEW, firstMap.toJsonObject(firstRoot), firstMap, null, null, null));
 
 		SortedMsg third= new SortedMsg();
-		third.setNumber(4);
+		third.withNumber(4);
 		third.setParent(second);
-		third.setNumber(42);
+		third.withNumber(42);
 		second.setChild(null);
 	}
 
@@ -65,44 +66,44 @@ public class JsonPeer2PeerTest implements UpdateListener{
 			assertEquals(2, secondMap.size());
 			secondRoot=(SortedMsg) secondMap.getObject(firstMap.getKey(firstRoot));
 		} else if(z==1){
-			Assert.assertEquals("===== add =====", 165, jsonObject.toString().length());
+			Assert.assertEquals("===== add =====", 159, jsonObject.toString().length());
 			assertEquals(2, secondMap.size());
 			z++;
 		} else if(z==2){
-			Assert.assertEquals("===== add =====", 166, jsonObject.toString().length());
+			Assert.assertEquals("===== add =====", 160, jsonObject.toString().length());
 			assertEquals(4, secondMap.size());
 			z++;
 		} else if(z==3){
-			Assert.assertEquals("===== add =====", 165, jsonObject.toString().length());
+			Assert.assertEquals("===== add =====", 159, jsonObject.toString().length());
 			assertEquals(4, secondMap.size());
 			z++;
 		} else if(z==4){
-			Assert.assertEquals("===== add =====", 263, jsonObject.toString().length());
+			Assert.assertEquals("===== add =====", 254, jsonObject.toString().length());
 			assertEquals(4, secondMap.size());
 			z++;
 		} else if(z==5){
-			Assert.assertEquals("===== add =====", 166, jsonObject.toString().length());
+			Assert.assertEquals("===== add =====", 160, jsonObject.toString().length());
 			assertEquals(5, secondMap.size());
 			z++;
 		} else if(z==6){
-			Assert.assertEquals("=====  =====", 251, jsonObject.toString().length());
+			Assert.assertEquals("=====  =====", 242, jsonObject.toString().length());
 			assertEquals(5, secondMap.size());
 			z++;
 		} else if(z==7){
-			Assert.assertEquals("===== add =====", 153, jsonObject.toString().length());
+			Assert.assertEquals("===== add =====", 147, jsonObject.toString().length());
 			assertEquals(5, secondMap.size());
 			z++;
 		} else if(z==8){
-			Assert.assertEquals("===== rem =====", "{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"J1.S5\",\"rem\":{\"number\":4},\"upd\":{\"number\":42}}", jsonObject.toString());
+			Assert.assertEquals("===== rem =====", "{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"S5\",\"rem\":{\"number\":4},\"upd\":{\"number\":42}}", jsonObject.toString());
 			z++;
 			assertEquals(5, secondMap.size());
 		} else if(z==9){
-			Assert.assertEquals("===== rem =====", "{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"J1.S4\",\"rem\":{\"child\":{\"id\":\"J1.S5\"}}}", jsonObject.toString());
+			Assert.assertEquals("===== rem =====", "{\"class\":\"de.uniks.networkparser.test.model.SortedMsg\",\"id\":\"S4\",\"rem\":{\"child\":{\"id\":\"S5\"}}}", jsonObject.toString());
 			z++;
 			assertEquals(5, secondMap.size());
 		}
 		if(z>9){
-			Assert.assertEquals("===== FIRST =====",385, firstMap.toJsonObject(firstRoot).toString(2).length());
+			Assert.assertEquals("===== FIRST =====",376, firstMap.toJsonObject(firstRoot).toString(2).length());
 			//LAST
 			Object secondRoot = secondMap.getObject("J1.S1");
 			if(secondRoot != null) {

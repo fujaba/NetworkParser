@@ -1,0 +1,12 @@
+{
+  "class":"de.uniks.networkparser.test.model.House",
+  "id":"H1",
+  "prop":{
+    "name":"University",
+    "floor":4
+  }
+}{
+    "name":"University",
+    "floor":4
+  }
+}

@@ -6,10 +6,9 @@ import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
-import de.uniks.networkparser.interfaces.Grammar;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
-import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.xml.MapEntityStack;
 import de.uniks.networkparser.xml.XMLEntity;
 /*
@@ -39,31 +38,26 @@ THE SOFTWARE.
  * @author Stefan
  * MapEntity for IdMap
  */
-public class MapEntity extends SimpleList<Object>{
+public class MapEntity extends SimpleSet<Object>{
 	private Filter filter;
-	private Grammar grammar;
 	private int deep;
 	private Object target;
 	private MapEntityStack stack;
 	/** The show line. */
 	private byte tokenerFlag;
-	private boolean simpleFormat;
-	private String session;
+	private IdMap map;
+	public byte mapFlag;
 
-	public MapEntity(Grammar grammar, String tag, Object item, SendableEntityCreator creator) {
-		this.flag = 0;
-		this.grammar = grammar;
+	public MapEntity(String tag, Object item, SendableEntityCreator creator) {
 		this.withStack(new MapEntityStack().withStack(tag, item, creator));
 	}
 
-	public MapEntity(Filter filter, Grammar grammar, String session, byte flag) {
-		this.flag = IdMap.FLAG_ID;
+	public MapEntity(Filter filter, byte flag, IdMap map) {
 		if(filter != null) {
 			this.filter = filter;
 		}
-		this.grammar = grammar;
-		this.session = session;
-		this.flag = (byte) (this.flag | flag);
+		this.map = map;
+		this.mapFlag = flag;
 	}
 
 	public Filter getFilter() {
@@ -77,12 +71,6 @@ public class MapEntity extends SimpleList<Object>{
 		return tokener.getMap().encode(entity, this, tokener);
 	}
 
-	/**
-	 * @return the grammar
-	 */
-	public Grammar getGrammar() {
-		return grammar;
-	}
 	public void add() {
 		this.deep = this.deep + 1;
 	}
@@ -95,27 +83,30 @@ public class MapEntity extends SimpleList<Object>{
 	}
 
 	public boolean isTypSave() {
-		return (flag & IdMap.FLAG_TYPESAVE) != 0;
+		return (mapFlag & IdMap.FLAG_TYPESAVE) != 0;
 	}
 	public boolean isSearchForSuperClass() {
-		return (flag & IdMap.FLAG_SEARCHFORSUPERCLASS) != 0;
+		return (mapFlag & IdMap.FLAG_SEARCHFORSUPERCLASS) != 0;
+	}
+	public boolean isSimpleFormat() {
+		return (mapFlag & IdMap.FLAG_SIMPLEFORMAT) != 0;
 	}
 
 	// Methods for Grammar
-	public SendableEntityCreator getCreator(String type, IdMap map, Object item, String className) {
-		return grammar.getCreator(type, item, map, isSearchForSuperClass(), className);
+	public SendableEntityCreator getCreator(String type, Object item, String className) {
+		return map.getGrammar().getCreator(type, item, map, isSearchForSuperClass(), className);
 	}
 	public Object getNewEntity(SendableEntityCreator creator, String className, boolean prototype) {
-		return grammar.getNewEntity(creator, className, prototype);
+		return map.getGrammar().getNewEntity(creator, className, prototype);
 	}
 	public boolean hasValue(Entity item, String property) {
-		return grammar.hasValue(item, property);
+		return map.getGrammar().hasValue(item, property);
 	}
 	public String getValue(Entity item, String property) {
-		return grammar.getValue(item, property);
+		return map.getGrammar().getValue(item, property);
 	}
 	public BaseItem getProperties(Entity entity, IdMap map, boolean isId, String type) {
-		return grammar.getProperties(entity, map, filter, isId, type);
+		return map.getGrammar().getProperties(entity, map, filter, isId, type);
 	}
 
 	// Method for Filter
@@ -206,7 +197,7 @@ public class MapEntity extends SimpleList<Object>{
 	
 	public CharacterBuffer getPrefixProperties(SendableEntityCreator creator, Tokener tokener, Object entity, String className) {
 		CharacterBuffer result = new CharacterBuffer();
-		if(this.simpleFormat) {
+		if(this.isSimpleFormat()) {
 			return result;
 		}
 		boolean isComplex = filter.isSimpleFormat(entity, creator, className, tokener.getMap());
@@ -218,13 +209,13 @@ public class MapEntity extends SimpleList<Object>{
 	}
 
 	public Entity writeBasicValue(SendableEntityCreator creator, Entity entity, BaseItem parent, String className, String id) {
-		if((flag & IdMap.FLAG_ID) == 0) {
+		if((mapFlag & IdMap.FLAG_ID) == 0) {
 			if(creator instanceof SendableEntityCreatorTag) {
 				className = ((SendableEntityCreatorTag)creator).getTag();
 			}
 			id = null;
 		}
-		return grammar.writeBasicValue(entity, parent, className, id, this);
+		return map.getGrammar().writeBasicValue(entity, parent, className, id, this);
 	}
 
 	/**
@@ -232,7 +223,7 @@ public class MapEntity extends SimpleList<Object>{
 	 * @return the addOwnerLink
 	 */
 	public boolean isAddOwnerLink(Object value) {
-		if((flag & IdMap.FLAG_ID) != 0) {
+		if((mapFlag & IdMap.FLAG_ID) != 0) {
 			return true;
 		}
 		if(stack != null) {
@@ -294,12 +285,6 @@ public class MapEntity extends SimpleList<Object>{
 		return null;
 	}
 
-	public MapEntity withoutFlag(byte flag) {
-		this.flag = (byte) (this.flag | flag);
-		this.flag -= flag;
-		return this;
-	}
-
 	public Entity convertProperty(CharacterBuffer property, BaseItem parent) {
 		BaseItem child=parent;
 		while(property.charAt(0) == IdMap.ENTITYSPLITTER) {
@@ -336,11 +321,11 @@ public class MapEntity extends SimpleList<Object>{
 	 * @return the type
 	 */
 	public boolean isFlag(byte flag) {
-		return (this.flag & flag) != 0;
+		return (this.mapFlag & flag) != 0;
 	}
 
 	public boolean writeValue(BaseItem parent, String property, Object value, Tokener tokener) {
-		return grammar.writeValue(parent, property, value, this, tokener);
+		return map.getGrammar().writeValue(parent, property, value, this, tokener);
 	}
 
 	public MapEntity withTokenerFlag(byte flag) {
@@ -359,12 +344,8 @@ public class MapEntity extends SimpleList<Object>{
 	public boolean isTokenerFlag(byte flag) {
 		return (this.tokenerFlag & flag) != 0;
 	}
-	public MapEntity withSimpleFormat(boolean value) {
-		this.simpleFormat = value;
-		return this;
-	}
-	
-	public String getSession() {
-		return session;
+
+	public IdMap getMap() {
+		return map;
 	}
 }

@@ -36,6 +36,7 @@ public class HTMLEntity implements BaseItem {
 	public static final String PROPERTY_HEADER="head";
 	public static final String PROPERTY_BODY="body";
 	public static final String IMAGEFORMAT=" .bmp .jpg .jpeg .png .gif .svg ";
+	public static final String ENCODING_UTF8="utf-8";
 
 	private XMLEntity body = new XMLEntity().setType("body");
 	private XMLEntity header = new XMLEntity().setType("head");
@@ -156,10 +157,27 @@ public class HTMLEntity implements BaseItem {
 		}
 		return this;
 	}
+	
+	public XMLEntity createBodyTag(String tag) {
+		String[] tags = tag.split("\\.");
+		XMLEntity parent = null, child = null, firstChild = null;
+		for(int i=tags.length-1;i>=0;i--) {
+			child = parent;
+			parent = new XMLEntity().setType(tags[i]);
+			if(child != null) {
+				parent.withChild(child);
+			} else {
+				firstChild = parent;
+			}
+		}
+		this.body.with(parent);
+		return firstChild;
+	}
+
 
 	public HTMLEntity withScript(String code) {
 		XMLEntity child = new XMLEntity().setType("script").withCloseTag();
-		child.withValue(code);
+		child.with(code);
 		this.body.with(child);
 		return this;
 	}
