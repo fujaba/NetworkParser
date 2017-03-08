@@ -51,7 +51,7 @@ public interface IdMapCounter {
 
 	/**
 	 * Set time stamp
-	 * @param newValue
+	 * @param newValue timeStamp for usage as Counter
 	 * @return itself
 	 */
 	public IdMapCounter withTimeStamp(int newValue);
