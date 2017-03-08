@@ -1609,7 +1609,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		return this;
 	}
 
-	public IdMap withTimeStamp(int newValue) {
+	public IdMap withTimeStamp(long newValue) {
 		this.timeStamp = newValue;
 		return this;
 	}
