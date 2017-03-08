@@ -114,9 +114,10 @@ public class JsonModellTest implements UpdateListener {
 		account.createPersons().withName("Tobi");
 
 		IdMap map= new IdMap();
+		map.withTimeStamp(1);
 		map.with(new PersonCreator());
 		map.with(new GroupAccountCreator());
-		Assert.assertEquals(273, map.toJsonArray(account.getPersons(), Filter.regard(InstanceOf.create(Person.class, Person.PROPERTY_PARENT))).toString(2).length());
+		Assert.assertEquals(169, map.toJsonArray(account.getPersons(), Filter.regard(InstanceOf.create(Person.class, Person.PROPERTY_PARENT))).toString(2).length());
 	}
 
 	@Test
@@ -149,9 +150,9 @@ public class JsonModellTest implements UpdateListener {
 		this.secondMap= new IdMap();
 		secondMap.with(this);
 		secondMap.with(new SortedMsgCreator());
-
+		map.withTimeStamp(1);
 		JsonObject jsonObject=map.toJsonObject(first);
-		Assert.assertEquals(495, jsonObject.toString(2).length());
+		Assert.assertEquals(376, jsonObject.toString(2).length());
 
 		secondMap.decode(jsonObject);
 
@@ -159,11 +160,11 @@ public class JsonModellTest implements UpdateListener {
 		third.withNumber(4);
 		second.setChild(third);
 		// DEEP 0
-		Assert.assertEquals(251, map.toJsonObject(first, Filter.regard(Deep.create(1))).toString().length());
+		Assert.assertEquals(159, map.toJsonObject(first, Filter.regard(Deep.create(1))).toString().length());
 		// DEEP 1
-		Assert.assertEquals(481, map.toJsonObject(first, Filter.regard(Deep.create(2))).toString().length());
+		Assert.assertEquals(328, map.toJsonObject(first, Filter.regard(Deep.create(2))).toString().length());
 		// DEEP 2
-		Assert.assertEquals(591, map.toJsonObject(first, Filter.regard(Deep.create(3))).toString().length());
+		Assert.assertEquals(423, map.toJsonObject(first, Filter.regard(Deep.create(3))).toString().length());
 		third.updateNumber(2);
 		third.withNumber(5);
 

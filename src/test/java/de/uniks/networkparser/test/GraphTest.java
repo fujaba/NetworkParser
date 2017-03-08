@@ -302,6 +302,7 @@ public class GraphTest {
 	@Test
 	public void SimpleModel() {
 		IdMap jsonIdMap = new IdMap();
+		jsonIdMap.withTimeStamp(1);
 		jsonIdMap.with(new FieldCreator()).with(new LudoCreator()).with(new PawnCreator()).with(new PlayerCreator());
 
 		Ludo ludo = new Ludo();
@@ -315,9 +316,9 @@ public class GraphTest {
 		sabine.createPawns().withColor(RED).withPos(tomStartField);
 
 		JsonArray jsonArray = jsonIdMap.toJsonArray(ludo);
-		showDebugInfos(jsonArray, 2747, null);
+		showDebugInfos(jsonArray, 2255, null);
 		jsonArray.replaceAllValues(IdMap.CLASS, "de.uniks.networkparser.test.model.ludo.", "");
-		showDebugInfos(jsonArray, 2045, null);
+		showDebugInfos(jsonArray, 1553, null);
 
 		GraphConverter graphConverter = new GraphConverter();
 
@@ -339,6 +340,7 @@ public class GraphTest {
 	@Test
 	public void testLudoStoryboard() {
 		IdMap jsonIdMap = new IdMap();
+		jsonIdMap.withTimeStamp(1);
 		jsonIdMap.with(new DateCreator()).with(new DiceCreator()).with(new FieldCreator()).with(new LudoCreator())
 				.with(new PawnCreator()).with(new PlayerCreator());
 
@@ -357,7 +359,7 @@ public class GraphTest {
 		tom.createBase().withColor("blue").withKind("base").withPawns(p2);
 		sabine.createPawns().withColor(RED).withPos(tomStartField);
 		JsonArray jsonArray = jsonIdMap.toJsonArray(ludo);
-		showDebugInfos(jsonArray, 6051, null);
+		showDebugInfos(jsonArray, 4966, null);
 		GraphConverter graphConverter = new GraphConverter();
 
 		// May be 8 Asssocs and write 11

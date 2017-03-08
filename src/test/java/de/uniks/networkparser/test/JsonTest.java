@@ -381,21 +381,21 @@ public class JsonTest extends IOClasses {
 		new Student().withName("Nina").withUniversity(kassel).withIn(lab);
 
 		IdMap map = UniversityCreator.createIdMap("s1");
-
+		map.withTimeStamp(1);
 		JsonArray jsonArray = map.toJsonArray(kassel, new Filter().withConvertable(Deep.create(1)));
 		String jsonString = jsonArray.toString(2);
-		assertEquals(3051, jsonString.length());
+		assertEquals(2529, jsonString.length());
 
 		jsonArray = map.toJsonArray(kassel, new Filter().withConvertable(new Deep().withDepth(0)));
 
 		jsonString = jsonArray.toString(2);
-		assertEquals(749, jsonString.length());
+		assertEquals(637, jsonString.length());
 
 		jsonArray = map.toJsonArray(kassel);
 
 		jsonString = jsonArray.toString(2);
 
-		assertEquals(3051, jsonString.length());
+		assertEquals(2529, jsonString.length());
 
 		IdMap readMap = UniversityCreator.createIdMap("s2");
 
