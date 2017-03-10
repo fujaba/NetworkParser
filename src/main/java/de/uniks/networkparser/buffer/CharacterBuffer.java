@@ -127,13 +127,55 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		return result;
 	}
 
-	public void replace(int start, int end, String replace) {
-		if(end-start == replace.length()) {
-			int pos =0;
-			while(start<end) { 
+	public boolean replace(int start, int end, String replace) {
+		int pos =0;
+		int diff = replace.length() - (end-start);
+		char[] oldChar = null;
+		int oldStart = 0;
+		int oldLen=0;
+		if(this.length + diff > this.buffer.length) {
+			//Argh array is to Small
+			int newCapacity = (this.length + diff) * 2 + 2;
+			oldChar = this.buffer;
+			
+			char[] copy = new char[newCapacity];
+			System.arraycopy(buffer, this.start, copy, 0, start);
+			oldStart = end;
+			oldLen = this.length - oldStart;
+			this.buffer = copy;
+			this.start = 0;
+		}
+		start += this.start;
+		end += this.start;
+		
+	if(diff < 0) {
+			while(start<(end+diff)) {
+				this.buffer[start++] = replace.charAt(pos++);
+			} 
+			System.arraycopy(buffer, start, buffer, start+diff, buffer.length - start);
+		} else {
+			while(start<end) {
 				this.buffer[start++] = replace.charAt(pos++);
 			}
+			if(diff > 0) {
+				if(oldChar == null) {
+					oldLen = (this.length+this.start) - start;
+					oldChar = new char[oldLen];
+					System.arraycopy(buffer, start, oldChar, 0, oldLen);
+				}
+				int no=0;
+				while(no<diff) { 
+					this.buffer[start++] = replace.charAt(pos++);
+					no++;
+				}
+				if(oldLen>0) {
+					System.arraycopy(oldChar, oldStart, buffer, start, oldLen);
+				}
+			}
 		}
+		this.length = this.length + diff;
+		this.position = 0;
+		return true;
 	}
 	
 	public void replace(String search, String replace) {

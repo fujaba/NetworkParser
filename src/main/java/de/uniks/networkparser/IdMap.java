@@ -82,15 +82,6 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	/** The Constant ID. */
 	public static final String ID = "id";
 
-	/** The Constant REMOVE. */
-	public static final String REMOVE = SendableEntityCreator.REMOVE;
-
-	/** The Constant UPDATE. */
-	public static final String UPDATE = SendableEntityCreator.UPDATE;
-
-	/** The Constant NEW. */
-	public static final String NEW = SendableEntityCreator.NEW;
-
 	/** The Constant SPACE. */
 	public static final char SPACE = ' ';
 
@@ -101,8 +92,6 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	public static final String MAINITEM = "main";
 
 	public static final char DOUBLEQUOTIONMARK = '"';
-
-	public static final String REMOVE_YOU = "REMOVE_YOU";
 
 	public static final byte FLAG_NONE = 0x00;
 
@@ -381,10 +370,10 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		}
 		if (this.updateListener != null) {
 			if(item instanceof SendableEntityCreator) {
-				((SendableEntityCreator)item).setValue(item, IdMap.ID, id, NEW);
+				((SendableEntityCreator)item).setValue(item, IdMap.ID, id, SendableEntityCreator.NEW);
 			}
 			JsonObject json = this.toJsonObject(item, Filter.regard(Deep.create(1)));
-			SimpleEvent simpleEvent = new SimpleEvent(NEW, json, this, NEW, null, item);
+			SimpleEvent simpleEvent = new SimpleEvent(SendableEntityCreator.NEW, json, this, SendableEntityCreator.NEW, null, item);
 			this.updateListener.update(simpleEvent);
 		}
 		return changed;
@@ -424,12 +413,12 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 						Iterator<?> i = continee.iterator();
 						while (i.hasNext()) {
 							creator.setValue(oldValue, prop, i.next(),
-								IdMap.REMOVE);
+								SendableEntityCreator.REMOVE);
 						}
 					}
 					else {
 						creator.setValue(oldValue, prop, reference,
-							IdMap.REMOVE);
+							SendableEntityCreator.REMOVE);
 					}
 				}
 			}
@@ -444,8 +433,8 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	         JsonObject json = new JsonObject();
 	         json.put(ID, key);
 	         json.put(CLASS, oldValue.getClass().getName());
-	         json.put(REMOVE, remJson);
-	         SimpleEvent simpleEvent = new SimpleEvent(REMOVE, json, this, REMOVE_YOU, oldValue, null);
+	         json.put(SendableEntityCreator.REMOVE, remJson);
+	         SimpleEvent simpleEvent = new SimpleEvent(SendableEntityCreator.REMOVE, json, this, SendableEntityCreator.REMOVE_YOU, oldValue, null);
 	         this.updateListener.update(simpleEvent);
 			}
 			return true;
@@ -497,7 +486,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 							Object refValue = map.getRefByEntity(item);
 							if (refValue != null) {
 								creatorClass.setValue(newObject, property,
-									refValue, IdMap.NEW);
+									refValue, SendableEntityCreator.NEW);
 							}
 							else {
 								SendableEntityCreator childCreatorClass = getCreatorClass(item);
@@ -505,20 +494,20 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 									if (!map.isConvertable(reference, this, property, item)) {
 										creatorClass.setValue(newObject,
 											property, item,
-											IdMap.NEW);
+											SendableEntityCreator.NEW);
 									}
 									else {
 										Object clonedChild = cloning(item, map);
 										if (clonedChild != null) {
 											creatorClass.setValue(newObject,
 												property, clonedChild,
-												IdMap.NEW);
+												SendableEntityCreator.NEW);
 										}
 									}
 								}
 								else {
 									creatorClass.setValue(newObject, property,
-										item, IdMap.NEW);
+										item, SendableEntityCreator.NEW);
 								}
 							}
 						}
@@ -529,7 +518,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 					Object refValue = map.getRefByEntity(value);
 					if (refValue != null) {
 						creatorClass.setValue(newObject, property, refValue,
-							IdMap.NEW);
+							SendableEntityCreator.NEW);
 					}
 					else {
 						SendableEntityCreator childCreatorClass = getCreatorClass(value);
@@ -537,21 +526,21 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 							map.add();
 							if (!map.isConvertable(reference, this, property, value)) {
 								creatorClass.setValue(newObject, property,
-									value, IdMap.NEW);
+									value, SendableEntityCreator.NEW);
 							}
 							else if (map.isPropertyRegard(reference, this, property, value)) {
 								Object clonedChild = cloning(value, map);
 								if (clonedChild != null) {
 									creatorClass.setValue(newObject,
 										property, clonedChild,
-										IdMap.NEW);
+										SendableEntityCreator.NEW);
 								}
 							}
 							map.minus();
 						}
 						else {
 							creatorClass.setValue(newObject, property, value,
-								IdMap.NEW);
+								SendableEntityCreator.NEW);
 						}
 					}
 				}

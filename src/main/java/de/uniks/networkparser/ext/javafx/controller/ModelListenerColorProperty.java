@@ -24,10 +24,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.beans.PropertyChangeEvent;
+
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import javafx.beans.Observable;
 import javafx.scene.paint.Color;
-import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class ModelListenerColorProperty extends ModelListenerProperty<Color> {
 	public ModelListenerColorProperty(SendableEntityCreator creator, Object item, String property) {
@@ -74,7 +74,7 @@ public class ModelListenerColorProperty extends ModelListenerProperty<Color> {
 
 		 String hexColor = "#"+redString+greenString+blueString;
 
-		creator.setValue(item, property, hexColor, IdMap.NEW);
+		creator.setValue(item, property, hexColor, SendableEntityCreator.NEW);
 //		super.setValue(value);
 	}
 }

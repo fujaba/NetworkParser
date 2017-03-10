@@ -1,7 +1,7 @@
 package de.uniks.networkparser.gui;
 
-import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.Entity;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 
 public class TileObject implements SendableEntityCreatorTag {
@@ -103,7 +103,7 @@ public class TileObject implements SendableEntityCreatorTag {
 		for(String item : element.getProperties()) {
 			String value = entity.getString(item);
 			if(value != null && value.length()>0) {
-				element.setValue(element, item, value, IdMap.NEW);
+				element.setValue(element, item, value, SendableEntityCreator.NEW);
 			}
 		}
 		return element;

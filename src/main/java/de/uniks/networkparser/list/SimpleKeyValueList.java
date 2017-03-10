@@ -24,14 +24,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.UpdateListener;
 
 public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K, V>, Iterable<Entry<K, V>>{
+	private Comparator<Object> cpr;
+
 	public SimpleKeyValueList() {
 		super();
 		withFlag(MAP);
@@ -638,5 +642,18 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 			return condition.update(this);
 		}
 		return super.equals(obj);
+	}
+	
+	public SimpleKeyValueList<K, V> withComparator(Comparator<Object> comparator) {
+		this.cpr = comparator;
+		return this;
+	}
+	@Override
+	public boolean isComparator() {
+		return (this.cpr != null);
+	}
+	@Override
+	public Comparator<Object> comparator() {
+		return cpr;
 	}
 }

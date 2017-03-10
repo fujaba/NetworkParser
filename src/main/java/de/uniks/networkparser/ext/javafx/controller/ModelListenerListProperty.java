@@ -26,13 +26,15 @@ THE SOFTWARE.
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+
+import com.sun.javafx.collections.ObservableListWrapper;
+
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import javafx.beans.Observable;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
-import com.sun.javafx.collections.ObservableListWrapper;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class ModelListenerListProperty extends ModelListenerProperty<ObservableList<String>> {
 	private ObservableValue<ObservableList<String>> values = new SimpleObjectProperty<ObservableList<String>>(new ObservableListWrapper<String>(new ArrayList<String>()));

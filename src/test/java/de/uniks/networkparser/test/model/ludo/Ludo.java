@@ -25,7 +25,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.LinkedHashSet;
 
-import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class Ludo {
 	//==========================================================================
@@ -55,7 +55,7 @@ public class Ludo {
 			addToPlayers((Player) value);
 			return true;
 		}
-		if ((PROPERTY_PLAYERS + IdMap.REMOVE).equalsIgnoreCase(attrName)) {
+		if ((PROPERTY_PLAYERS + SendableEntityCreator.REMOVE).equalsIgnoreCase(attrName)) {
 			removeFromPlayers((Player) value);
 			return true;
 		}
@@ -67,7 +67,7 @@ public class Ludo {
 			addToFields((Field) value);
 			return true;
 		}
-		if ((PROPERTY_FIELDS + IdMap.REMOVE).equalsIgnoreCase(attrName)) {
+		if ((PROPERTY_FIELDS + SendableEntityCreator.REMOVE).equalsIgnoreCase(attrName)) {
 			removeFromFields((Field) value);
 			return true;
 		}

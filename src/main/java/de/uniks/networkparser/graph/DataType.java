@@ -54,7 +54,7 @@ public class DataType {
 		return getInternName(shortName, true);
 	}
 
-	String getInternName(boolean shortName, boolean primitivAllow) {
+	protected String getInternName(boolean shortName, boolean primitivAllow) {
 		if (this.value == null) {
 			return null;
 		}

@@ -9,7 +9,9 @@ import org.junit.Test;
 import de.uniks.networkparser.Deep;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
+import de.uniks.networkparser.UpdateCondition;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleSet;
@@ -23,7 +25,6 @@ import de.uniks.networkparser.logic.IfCondition;
 import de.uniks.networkparser.logic.InstanceOf;
 import de.uniks.networkparser.logic.Not;
 import de.uniks.networkparser.logic.Or;
-import de.uniks.networkparser.UpdateCondition;
 import de.uniks.networkparser.test.model.Person;
 import de.uniks.networkparser.test.model.University;
 
@@ -67,11 +68,11 @@ public class ConditionTest implements UpdateListener {
 	@Test
 	public void testLogicSimpleMapEvent() {
 		IdMap map = new IdMap();
-		SimpleEvent filter = new SimpleEvent(IdMap.NEW, null, map, null, null, "child");
+		SimpleEvent filter = new SimpleEvent(SendableEntityCreator.NEW, null, map, null, null, "child");
 		Assert.assertNotNull(filter.getSource());
 		Assert.assertFalse(filter.isUpdateEvent());
 		Assert.assertTrue(filter.isNewEvent());
-		filter = new SimpleEvent(IdMap.UPDATE, null, map, null, null, "child");
+		filter = new SimpleEvent(SendableEntityCreator.UPDATE, null, map, null, null, "child");
 		Assert.assertTrue(filter.isUpdateEvent());
 	}
 
@@ -98,19 +99,19 @@ public class ConditionTest implements UpdateListener {
 		and.with(BooleanCondition.create(true));
 		Or or = new Or();
 		and.with(or);
-		and.setValue(and, And.CHILD, Deep.create(42), IdMap.NEW);
+		and.setValue(and, And.CHILD, Deep.create(42), SendableEntityCreator.NEW);
 		or.with(InstanceOf.create(Person.class));
 		BooleanCondition falseCondition = new BooleanCondition();
-		falseCondition.setValue(falseCondition, BooleanCondition.VALUE, false, IdMap.NEW);
+		falseCondition.setValue(falseCondition, BooleanCondition.VALUE, false, SendableEntityCreator.NEW);
 		Not not = new Not();
-		not.setValue(not, Not.ITEM, falseCondition, IdMap.NEW);
+		not.setValue(not, Not.ITEM, falseCondition, SendableEntityCreator.NEW);
 		
 		and.with(not);
 		IfCondition ifCon = new IfCondition();
 		ifCon.withTrue(BooleanCondition.create(true));
 		ifCon.withFalse(BooleanCondition.create(false));
 		ifCon.withExpression(new Not().with(new Between().withRange(0, 42)));
-		or.setValue(or, Or.CHILD, ifCon, IdMap.NEW);
+		or.setValue(or, Or.CHILD, ifCon, SendableEntityCreator.NEW);
 		
 		
 		Assert.assertFalse(and.update(new PropertyChangeEvent(23, null, null, 23)));
@@ -136,10 +137,10 @@ public class ConditionTest implements UpdateListener {
 		
 		Between between = new Between();
 		between.withRange(0, 23);
-		between.setValue(between, Between.FROM, 1, IdMap.NEW);
-		between.setValue(between, Between.FROM, 1.0, IdMap.NEW);
-		between.setValue(between, Between.TO, 23, IdMap.NEW);
-		between.setValue(between, Between.TO, 42.0, IdMap.NEW);
+		between.setValue(between, Between.FROM, 1, SendableEntityCreator.NEW);
+		between.setValue(between, Between.FROM, 1.0, SendableEntityCreator.NEW);
+		between.setValue(between, Between.TO, 23, SendableEntityCreator.NEW);
+		between.setValue(between, Between.TO, 42.0, SendableEntityCreator.NEW);
 		
 //		InstanceOf	48154	76%	1521	58%	12	32	9	49	0	14	0	1
 //		UpdateCondition	722	76%	33	50%	2	5	0	6	0	2	0	1
@@ -158,8 +159,8 @@ public class ConditionTest implements UpdateListener {
 	public void testInstanceOf() {
 		University uni = new University();
 		InstanceOf condition = new InstanceOf();
-		condition.setValue(condition, InstanceOf.PROPERTY, "root", IdMap.NEW);
-		condition.setValue(condition, InstanceOf.VALUE, uni, IdMap.NEW);
+		condition.setValue(condition, InstanceOf.PROPERTY, "root", SendableEntityCreator.NEW);
+		condition.setValue(condition, InstanceOf.VALUE, uni, SendableEntityCreator.NEW);
 		
 		Assert.assertTrue(new InstanceOf().update(new PropertyChangeEvent(this, null, null, uni)));
 		
@@ -198,15 +199,17 @@ public class ConditionTest implements UpdateListener {
 	@Test
 	public void testEqualsCondition() {
 		Equals condition = new Equals();
-		condition.setValue(condition, Equals.STRINGVALUE, "Stefan", null);
-		condition.setValue(condition, Equals.BYTEVALUE, (byte)0x42, null);
-		condition.setValue(condition, Equals.POSITION, 42, null);
+		condition.setValue(condition, Equals.VALUE, "Stefan", null);
 		
-		Assert.assertEquals("Stefan", condition.getValue(condition, Equals.STRINGVALUE));
-		Assert.assertEquals((byte)0x42, condition.getValue(condition, Equals.BYTEVALUE));
+		Assert.assertEquals("Stefan", condition.getValue(condition, Equals.VALUE));
+		Assert.assertEquals("==Stefan ", condition.toString());
+		
+		condition = new Equals();
+		condition.setValue(condition, Equals.POSITION, 42, null);
+		condition.setValue(condition, Equals.VALUE, (byte)0x42, null);
+		Assert.assertEquals((byte)0x42, condition.getValue(condition, Equals.VALUE));
 		Assert.assertEquals(42, condition.getValue(condition, Equals.POSITION));
 		
-		Assert.assertEquals("==Stefan ", condition.toString());
 		CharacterBuffer source = new CharacterBuffer();
 		Assert.assertFalse(condition.update(new PropertyChangeEvent(source, "", null, null)));
 		Assert.assertFalse(condition.update(null));
@@ -218,7 +221,7 @@ public class ConditionTest implements UpdateListener {
 		Assert.assertTrue(condition.update(new PropertyChangeEvent(source, "", null, null)));
 		
 		condition = new Equals();
-		condition.withValue(Equals.STRINGVALUE);
+		condition.withValue(Equals.VALUE);
 		Assert.assertFalse(condition.update(new PropertyChangeEvent(this, "HALLO", null, null)));
 	}
 

@@ -45,7 +45,7 @@ public class Filter {
 
 	// Temporary variables
 	protected boolean full;
-	private String strategy = IdMap.NEW;
+	private String strategy = SendableEntityCreator.NEW;
 	private boolean simpleFormat;
 
 	public Filter withIdFilter(UpdateListener idFilter) {
@@ -63,7 +63,7 @@ public class Filter {
 	 */
 	public boolean isId(Object entity, String className, IdMap map) {
 		if (idFilter != null) {
-			return idFilter.update(new SimpleEvent(IdMap.NEW, null, map, className, null, entity));
+			return idFilter.update(new SimpleEvent(SendableEntityCreator.NEW, null, map, className, null, entity));
 		}else {
 			SendableEntityCreator creator = map.getCreator(className, true);
 			if(creator!=null) {

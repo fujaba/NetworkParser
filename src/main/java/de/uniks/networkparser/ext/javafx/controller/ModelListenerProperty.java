@@ -29,7 +29,7 @@ import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.LinkedHashSet;
-import de.uniks.networkparser.IdMap;
+
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.SendableEntity;
@@ -57,7 +57,7 @@ public abstract class ModelListenerProperty<T> implements javafx.beans.property.
 		this.creator = creator;
 		this.property = property;
 		this.item = item;
-//		this.filter = new SimpleMapEvent(IdMap.NEW, null, property).withModelItem(item);
+//		this.filter = new SimpleMapEvent(SendableEntityCreator.NEW, null, property).withModelItem(item);
 		if (item instanceof SendableEntity) {
 			((SendableEntity) item).addPropertyChangeListener(property, this);
 			return;
@@ -127,7 +127,7 @@ public abstract class ModelListenerProperty<T> implements javafx.beans.property.
 
 	@Override
 	public void setValue(T value) {
-		creator.setValue(item, property, value, IdMap.NEW);
+		creator.setValue(item, property, value, SendableEntityCreator.NEW);
 	}
 
 	@Override

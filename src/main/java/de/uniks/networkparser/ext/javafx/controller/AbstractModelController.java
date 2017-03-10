@@ -27,6 +27,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Method;
+
 import de.uniks.networkparser.ext.generic.GenericCreator;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import javafx.scene.Node;

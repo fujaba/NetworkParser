@@ -27,10 +27,10 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 
-import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public abstract class AbstractArray<V> implements BaseItem {
 	/** Is Allow Duplicate Items in List */
@@ -309,25 +309,25 @@ public abstract class AbstractArray<V> implements BaseItem {
 		this.index = 0;
 		if (arrayFlag == 1) {
 			for (int i = elements.length - 1; i > 0; i--) {
-				fireProperty(IdMap.REMOVE, elements[i], null, elements[i - 1], null);
+				fireProperty(SendableEntityCreator.REMOVE, elements[i], null, elements[i - 1], null);
 			}
-			fireProperty(IdMap.REMOVE, elements[0], null, null, null);
+			fireProperty(SendableEntityCreator.REMOVE, elements[0], null, null, null);
 			this.elements = null;
 			return;
 		}
 		Object[] items = (Object[]) elements[SMALL_KEY];
 		if (arrayFlag > 3) {
 			for (int i = items.length - 1; i > 0; i--) {
-				fireProperty(IdMap.REMOVE, items[i], null, items[i - 1], ((Object[]) elements[SMALL_VALUE])[i]);
+				fireProperty(SendableEntityCreator.REMOVE, items[i], null, items[i - 1], ((Object[]) elements[SMALL_VALUE])[i]);
 			}
-			fireProperty(IdMap.REMOVE, items[0], null, null, ((Object[]) elements[SMALL_VALUE])[0]);
+			fireProperty(SendableEntityCreator.REMOVE, items[0], null, null, ((Object[]) elements[SMALL_VALUE])[0]);
 			this.elements = null;
 			return;
 		}
 		for (int i = items.length - 1; i > 0; i--) {
-			fireProperty(IdMap.REMOVE, items[i], null, items[i - 1], null);
+			fireProperty(SendableEntityCreator.REMOVE, items[i], null, items[i - 1], null);
 		}
-		fireProperty(IdMap.REMOVE, items[0], null, null, null);
+		fireProperty(SendableEntityCreator.REMOVE, items[0], null, null, null);
 		this.elements = null;
 	}
 
@@ -657,7 +657,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 				addHashItem(pos, value, (Object[]) elements[BIG_VALUE]);
 			}
 		}
-		fireProperty(IdMap.NEW, null, key, beforeKey, value);
+		fireProperty(SendableEntityCreator.NEW, null, key, beforeKey, value);
 		return pos;
 	}
 
@@ -731,7 +731,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 		if (pos > 0) {
 			beforeElement = this.getByIndex(SMALL_KEY, pos - 1, size);
 		}
-		fireProperty(IdMap.NEW, null, element, beforeElement, null);
+		fireProperty(SendableEntityCreator.NEW, null, element, beforeElement, null);
 		return pos;
 	}
 
@@ -808,7 +808,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 		if (pos > 0) {
 			beforeElement = items[pos - 1];
 		}
-		fireProperty(IdMap.UPDATE, oldValue, value, beforeElement, null);
+		fireProperty(SendableEntityCreator.UPDATE, oldValue, value, beforeElement, null);
 	}
 
 	public AbstractArray<V> withList(Collection<?> list) {

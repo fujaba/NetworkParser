@@ -1,5 +1,9 @@
 package de.uniks.networkparser.ext.javafx.controller;
 
+import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.ext.generic.GenericCreator;
+import de.uniks.networkparser.ext.javafx.controller.ModelListenerProperty.PROPERTYTYPE;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 /*
 NetworkParser
 The MIT License
@@ -39,10 +43,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
-import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.ext.generic.GenericCreator;
-import de.uniks.networkparser.ext.javafx.controller.ModelListenerProperty.PROPERTYTYPE;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class ModelListenerFactory {
 	public static ModelListenerProperty<?> create(Node node, Object item, String field){

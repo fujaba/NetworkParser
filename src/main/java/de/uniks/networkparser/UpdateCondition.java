@@ -1,7 +1,5 @@
 package de.uniks.networkparser;
 
-import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.interfaces.UpdateListener;
 
 /*

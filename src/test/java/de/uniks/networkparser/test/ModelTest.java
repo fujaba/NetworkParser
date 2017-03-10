@@ -136,9 +136,9 @@ public class ModelTest implements UpdateListener {
 	public void testGeneric() {
 		Apple apple = new Apple();
 		GenericCreator creator = new GenericCreator(apple);
-		creator.setValue(apple, Apple.PROPERTY_X, 23.0, IdMap.NEW);
-		creator.setValue(apple, Apple.PROPERTY_Y, 42, IdMap.NEW);
-		creator.setValue(apple, "password", "Albert", IdMap.NEW);
+		creator.setValue(apple, Apple.PROPERTY_X, 23.0, SendableEntityCreator.NEW);
+		creator.setValue(apple, Apple.PROPERTY_Y, 42, SendableEntityCreator.NEW);
+		creator.setValue(apple, "password", "Albert", SendableEntityCreator.NEW);
 
 		Assert.assertEquals(23.0, creator.getValue(apple, Apple.PROPERTY_X));
 		Assert.assertEquals(42.0, creator.getValue(apple, Apple.PROPERTY_Y));

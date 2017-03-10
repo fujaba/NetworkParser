@@ -24,6 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.util.ArrayList;
+
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
@@ -284,7 +285,7 @@ public class XMLTokener extends Tokener {
 					String value = token.toString();
 					token.reset();
 					tokener.skip();
-					creator.setValue(entity, key, value, IdMap.NEW);
+					creator.setValue(entity, key, value, SendableEntityCreator.NEW);
 					stack.setValue(key, value);
 					myChar = tokener.getCurrentChar();
 				}
@@ -341,7 +342,7 @@ public class XMLTokener extends Tokener {
 					test.reset();
 				}
 				if(entity!=null) {
-					creator.setValue(entity, XMLEntity.PROPERTY_VALUE, valueItem.toString(), IdMap.NEW);
+					creator.setValue(entity, XMLEntity.PROPERTY_VALUE, valueItem.toString(), SendableEntityCreator.NEW);
 				}
 				stack.setValue("" + IdMap.ENTITYSPLITTER, valueItem.toString());
 				stack.popStack();
@@ -366,7 +367,7 @@ public class XMLTokener extends Tokener {
 						return entity;
 					}
 					if (valueItem.isEmpty() == false) {
-						creator.setValue(entity, XMLEntity.PROPERTY_VALUE, valueItem.toString(), IdMap.NEW);
+						creator.setValue(entity, XMLEntity.PROPERTY_VALUE, valueItem.toString(), SendableEntityCreator.NEW);
 						stack.setValue("" + IdMap.ENTITYSPLITTER, valueItem.toString());
 						stack.popStack();
 						tokener.skipEntity();
@@ -471,7 +472,7 @@ public class XMLTokener extends Tokener {
 					if (valueItem.isEmpty() == false) {
 						valueItem.trim();
 						Object entity = stack.getCurrentItem();
-						creator.setValue(entity, XMLEntity.PROPERTY_VALUE, valueItem.toString(), IdMap.NEW);
+						creator.setValue(entity, XMLEntity.PROPERTY_VALUE, valueItem.toString(), SendableEntityCreator.NEW);
 					}
 				}
 				tag = tokener.nextToken(false, TOKEN);
@@ -509,8 +510,8 @@ public class XMLTokener extends Tokener {
 	protected Object addToStack(SendableEntityCreatorTag creator, XMLTokener tokener, CharacterBuffer tag, CharacterBuffer value, MapEntity map) {
 		Object entity = creator.getSendableInstance(false);
 		if(entity instanceof EntityList) {
-			creator.setValue(entity, XMLEntity.PROPERTY_VALUE, value.toString(), IdMap.NEW);
-			creator.setValue(entity, XMLEntity.PROPERTY_TAG, tag.toString(), IdMap.NEW);
+			creator.setValue(entity, XMLEntity.PROPERTY_VALUE, value.toString(), SendableEntityCreator.NEW);
+			creator.setValue(entity, XMLEntity.PROPERTY_TAG, tag.toString(), SendableEntityCreator.NEW);
 		}
 		map.getStack().withStack(tag.toString(), entity, creator);
 		return entity;

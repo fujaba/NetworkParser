@@ -2,8 +2,10 @@ package de.uniks.networkparser.test;
 
 import java.io.File;
 import java.util.ArrayList;
+
 import org.junit.Assert;
 import org.junit.Test;
+
 import de.uniks.networkparser.test.javadoc.JavaDocValidator;
 
 public class JavaDocGenTest {

@@ -27,6 +27,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Comparator;
 import java.util.Iterator;
+
 import de.uniks.networkparser.EntityValueFactory;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntity;
@@ -65,8 +66,8 @@ public class TableList extends SortedList<Object> implements SendableEntity, Sen
 	@Override
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
-		if (IdMap.REMOVE.equalsIgnoreCase(type)) {
-			attribute += IdMap.REMOVE;
+		if (SendableEntityCreator.REMOVE.equalsIgnoreCase(type)) {
+			attribute += SendableEntityCreator.REMOVE;
 		}
 		return ((TableList) entity).setValue(attribute, value);
 	}
@@ -85,7 +86,7 @@ public class TableList extends SortedList<Object> implements SendableEntity, Sen
 		if (PROPERTY_ITEMS.equalsIgnoreCase(attrName)) {
 			add(value);
 			return true;
-		} else if ((PROPERTY_ITEMS + IdMap.REMOVE)
+		} else if ((PROPERTY_ITEMS + SendableEntityCreator.REMOVE)
 				.equalsIgnoreCase(attrName)) {
 			remove(value);
 			return true;

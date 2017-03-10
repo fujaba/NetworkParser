@@ -15,6 +15,7 @@ import de.uniks.networkparser.bytes.ByteMessage;
 import de.uniks.networkparser.bytes.ByteMessageCreator;
 import de.uniks.networkparser.ext.generic.JsonParser;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.logic.InstanceOf;
@@ -179,7 +180,7 @@ public class JsonModellTest implements UpdateListener {
 		}
 		SimpleEvent simpleEvent = (SimpleEvent) evt;
 
-		if(IdMap.NEW.equals(simpleEvent.getType())) {
+		if(SendableEntityCreator.NEW.equals(simpleEvent.getType())) {
 			JsonObject jsonObject = (JsonObject) simpleEvent.getEntity();
 			printToStream("Send: " +jsonObject, null);
 //			secondMap.decode(jsonObject);

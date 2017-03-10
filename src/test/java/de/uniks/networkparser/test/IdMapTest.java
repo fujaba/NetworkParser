@@ -8,6 +8,7 @@ import org.junit.Test;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.generic.GenericCreator;
 import de.uniks.networkparser.interfaces.Entity;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorWrapper;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.test.model.University;
@@ -66,7 +67,7 @@ public class IdMapTest {
 			}
 		};
 		Date date = new Date();
-		wrapper.setValue(date, "VALUE", 200, IdMap.NEW); 
+		wrapper.setValue(date, "VALUE", 200, SendableEntityCreator.NEW); 
 
 	}
 }

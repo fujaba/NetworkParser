@@ -7,10 +7,7 @@ import java.io.IOException;
 
 import org.junit.Assert;
 import org.junit.Test;
-import de.uniks.networkparser.graph.Attribute;
-import de.uniks.networkparser.graph.Clazz;
-import de.uniks.networkparser.graph.GraphLabel;
-import de.uniks.networkparser.graph.DataType;
+
 import de.uniks.networkparser.bytes.qr.ByteMatrix;
 import de.uniks.networkparser.bytes.qr.DecoderResult;
 import de.uniks.networkparser.bytes.qr.ErrorCorrectionLevel;
@@ -18,10 +15,14 @@ import de.uniks.networkparser.bytes.qr.QRCode;
 import de.uniks.networkparser.bytes.qr.QRTokener;
 import de.uniks.networkparser.converter.GraphConverter;
 import de.uniks.networkparser.graph.Association;
+import de.uniks.networkparser.graph.Attribute;
+import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.graph.DataType;
+import de.uniks.networkparser.graph.GraphLabel;
 import de.uniks.networkparser.graph.GraphList;
+import de.uniks.networkparser.graph.GraphPattern;
 import de.uniks.networkparser.graph.Method;
 import de.uniks.networkparser.graph.Parameter;
-import de.uniks.networkparser.graph.GraphPattern;
 import de.uniks.networkparser.json.JsonObject;
 
 public class SVGDrawerTest {

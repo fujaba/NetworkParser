@@ -21,7 +21,8 @@ public class SimpleUsage {
 	@Test
 	public void testSerialization() {
 		// tag::serialization[]
-		Story story= new Story(SimpleUsage.class);
+		Story story= new Story();
+		story.addSourceCode(SimpleUsage.class);
 		// Model
 		House house=new House(); //<1>
 		house.setFloor(4);
@@ -39,6 +40,11 @@ public class SimpleUsage {
 
 		newHouse.setFloor(42);
 		story.finish();
+		
+		story.addDescription("1", "Custom Model");
+		story.addDescription("2", "Serialization");
+		story.addDescription("3", "Deserialization");
+		story.addDescription("4", string);
 		
 		story.dumpHTML();
 		// end::serialization[]

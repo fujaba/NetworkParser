@@ -23,6 +23,7 @@ package de.uniks.networkparser.test.model.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+
 import de.uniks.networkparser.list.NumberList;
 import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.test.model.GroupAccount;

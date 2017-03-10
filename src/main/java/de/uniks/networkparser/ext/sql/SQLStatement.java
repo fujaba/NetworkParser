@@ -25,6 +25,7 @@ THE SOFTWARE.
 */
 import java.util.Iterator;
 import java.util.Map.Entry;
+
 import de.uniks.networkparser.list.AbstractArray;
 import de.uniks.networkparser.list.SimpleIterator;
 import de.uniks.networkparser.list.SimpleIteratorSet;

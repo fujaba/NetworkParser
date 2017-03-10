@@ -190,4 +190,43 @@ public class StringTest {
 		Assert.assertNotNull(jsonTokener.nextString(new CharacterBuffer(), true, false, '\"'));
 		Assert.assertNotNull(jsonTokener.nextString(new CharacterBuffer(), true, false, '\"'));
 	}
+	
+	@Test
+	public void testReplace(){
+		CharacterBuffer buffer = new CharacterBuffer();
+		buffer.with("apple, kiwi, cherry");
+		
+		Assert.assertEquals("apple, kiwi, cherry", buffer.toString()); // START
+		
+		buffer.replace(7, 11, "pear");
+
+		Assert.assertEquals("apple, pear, cherry", buffer.toString()); // SAME LENGTH
+		
+		buffer.replace(7, 11, "orange");
+		
+		Assert.assertEquals("apple, orange, cherry", buffer.toString()); // LONGER LENGTH
+		
+		buffer.replace(7, 13, "grape");
+		
+		Assert.assertEquals("apple, grape, cherry", buffer.toString()); // SHORTER LENGTH
+	}
+	
+	@Test
+	public void testReplaceExtended() {
+		CharacterBuffer test=new CharacterBuffer();
+		test.with("Hallo x");
+		test.replace(6, 7, "Welt");
+		
+		Assert.assertEquals("Hallo Welt", test.toString());
+	}
+
+	@Test
+	public void testReplaceExtend() {
+		CharacterBuffer test=new CharacterBuffer();
+		test.with("\t\tIdMap map=new IdMap().withCreator(new HouseCreator()); //<2>");
+		test.replace(57, 62, "<i class=\"conum\" data-value=\"2\" />");
+		Assert.assertEquals("\t\tIdMap map=new IdMap().withCreator(new HouseCreator()); <i class=\"conum\" data-value=\"2\" />", test.toString());
+	}
+
+	
 }

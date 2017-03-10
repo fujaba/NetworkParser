@@ -1,8 +1,23 @@
 package de.uniks.networkparser.test;
 
 import java.io.PrintStream;
+
 import org.junit.Test;
-import de.uniks.networkparser.graph.*;
+
+import de.uniks.networkparser.graph.Annotation;
+import de.uniks.networkparser.graph.Association;
+import de.uniks.networkparser.graph.Attribute;
+import de.uniks.networkparser.graph.Cardinality;
+import de.uniks.networkparser.graph.Clazz;
+import de.uniks.networkparser.graph.DataType;
+import de.uniks.networkparser.graph.DataTypeMap;
+import de.uniks.networkparser.graph.DataTypeSet;
+import de.uniks.networkparser.graph.Import;
+import de.uniks.networkparser.graph.Method;
+import de.uniks.networkparser.graph.Modifier;
+import de.uniks.networkparser.graph.Parameter;
+import de.uniks.networkparser.graph.Throws;
+import de.uniks.networkparser.graph.Value;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SortedSet;
 

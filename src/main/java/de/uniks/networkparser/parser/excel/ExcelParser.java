@@ -20,16 +20,16 @@ See the Licence for the specific language governing permissions and limitations 
 import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
-import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.Pos;
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.XMLEntity;
-import de.uniks.networkparser.xml.XMLTokener;
 import de.uniks.networkparser.xml.XMLEntityCreator;
+import de.uniks.networkparser.xml.XMLTokener;
 
 public class ExcelParser {
 	public static final String ROW = "row";

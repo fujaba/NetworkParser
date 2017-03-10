@@ -32,7 +32,7 @@ public abstract class GraphMember {
 	protected Object children;
 	protected Object parentNode;
 
-	Object getValue(String attribute) {
+	protected Object getValue(String attribute) {
 		if(PROPERTY_NAME.equals(attribute)) {
 			return this.name;
 		}
@@ -54,11 +54,11 @@ public abstract class GraphMember {
 		return result;
 	}
 
-	String getFullId() {
+	protected String getFullId() {
 		return name;
 	}
 	// PACKAGE VISIBILITY
-	GraphSimpleSet getChildren() {
+	protected GraphSimpleSet getChildren() {
 		if(this.children instanceof GraphSimpleSet) {
 			return (GraphSimpleSet)this.children;
 		}
@@ -82,7 +82,7 @@ public abstract class GraphMember {
 		return 1;
 	}
 
-	SimpleSet<GraphEntity> getNodes() {
+	protected SimpleSet<GraphEntity> getNodes() {
 		SimpleSet<GraphEntity> collection = new SimpleSet<GraphEntity>();
 		if(this.children == null) {
 			return collection;
@@ -111,7 +111,7 @@ public abstract class GraphMember {
 		return this;
 	}
 
-	boolean setName(String value) {
+	protected boolean setName(String value) {
 		if((value != null && value.equals(this.name) == false)
 				|| (value==null && this.name != null)) {
 			this.name = value;
@@ -189,7 +189,7 @@ public abstract class GraphMember {
 		return this;
 	}
 
-	GraphDiff getDiff() {
+	protected GraphDiff getDiff() {
 		if(this.children == null) {
 			GraphDiff graphDiff = new GraphDiff();
 			this.withChildren(graphDiff);
@@ -267,7 +267,7 @@ public abstract class GraphMember {
 		}
 		return null;
 	}
-	GraphMember withModifier(Modifier... values) {
+	protected GraphMember withModifier(Modifier... values) {
 		if(values == null) {
 			return this;
 		}

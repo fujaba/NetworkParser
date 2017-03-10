@@ -84,7 +84,7 @@ public class Association extends GraphMember {
 		}
 		return null;
 	}
-	String name() {
+	protected String name() {
 		return name;
 	}
 
@@ -136,7 +136,7 @@ public class Association extends GraphMember {
 	}
 
 	@Override
-	SimpleSet<GraphEntity> getNodes() {
+	protected SimpleSet<GraphEntity> getNodes() {
 		SimpleSet<GraphEntity> collection = new SimpleSet<GraphEntity>();
 		if(this.parentNode == null) {
 			return collection;
@@ -156,7 +156,7 @@ public class Association extends GraphMember {
 		return collection;
 	}
 
-	GraphSimpleSet getParents() {
+	protected GraphSimpleSet getParents() {
 		GraphSimpleSet parents = new GraphSimpleSet();
 		if(this.parentNode == null) {
 			return parents;
@@ -237,7 +237,7 @@ public class Association extends GraphMember {
 		return type;
 	}
 
-	String getSeperator() {
+	protected String getSeperator() {
 		if (getType() == AssociationTypes.GENERALISATION) {
 			return "-^";
 		}
@@ -259,7 +259,7 @@ public class Association extends GraphMember {
 		return "-";
 	}
 
-	String getCardinalityText() {
+	protected String getCardinalityText() {
 		return name + "<br>0.." + this.cardinality;
 	}
 
@@ -274,7 +274,7 @@ public class Association extends GraphMember {
 		}
 		return null;
 	}
-	AssociationTypes getOtherType() {
+	protected AssociationTypes getOtherType() {
 		if(other != null ) {
 			return other.getType();
 		}
@@ -303,7 +303,7 @@ public class Association extends GraphMember {
 		return charList.toString();
 	}
 
-	void addIds(CharacterBuffer sb) {
+	protected void addIds(CharacterBuffer sb) {
 		if (parentNode == null) {
 			sb.with("[]");
 		} else if (parentNode instanceof GraphMember) {
@@ -326,7 +326,7 @@ public class Association extends GraphMember {
 		}
 	}
 
-	boolean contains(GraphEntity key, boolean self, boolean other) {
+	protected boolean contains(GraphEntity key, boolean self, boolean other) {
 		boolean contains = false;
 		if (self) {
 			if(parentNode == null) {
@@ -344,7 +344,7 @@ public class Association extends GraphMember {
 	}
 	
 
-	boolean containsAll(Association others, boolean both) {
+	protected boolean containsAll(Association others, boolean both) {
 		if(parentNode == null) {
 			return false;
 		}

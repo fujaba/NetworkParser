@@ -26,6 +26,7 @@ THE SOFTWARE.
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
+
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.AbstractArray;

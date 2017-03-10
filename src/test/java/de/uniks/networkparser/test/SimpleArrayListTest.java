@@ -1,11 +1,14 @@
 package de.uniks.networkparser.test;
 
 import static org.junit.Assert.assertEquals;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashSet;
+
 import org.junit.Assert;
 import org.junit.Test;
+
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.list.SimpleSet;

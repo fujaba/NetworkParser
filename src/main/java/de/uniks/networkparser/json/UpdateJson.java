@@ -53,7 +53,7 @@ public class UpdateJson implements MapListener {
 	/** The suspend id list. */
 	private ArrayList<String> suspendIdList;
 
-	private Filter updateFilter = new Filter().withStrategy(IdMap.UPDATE).withConvertable(new UpdateCondition());
+	private Filter updateFilter = new Filter().withStrategy(SendableEntityCreator.UPDATE).withConvertable(new UpdateCondition());
 	
 	/**
 	 * Instantiates a new update listener.
@@ -84,8 +84,8 @@ public class UpdateJson implements MapListener {
 		JsonArray array = this.map.getJsonByIds(this.suspendIdList);
 		if(array.size() > 0) {
 			JsonObject message = new JsonObject();
-			message.put(IdMap.UPDATE, array);
-			this.map.notify(new SimpleEvent(IdMap.NEW, message, map, null, null, null));
+			message.put(SendableEntityCreator.UPDATE, array);
+			this.map.notify(new SimpleEvent(SendableEntityCreator.NEW, message, map, null, null, null));
 		}
 
 		this.suspendIdList = null;
@@ -129,7 +129,7 @@ public class UpdateJson implements MapListener {
 			// this property is not part of the replicated model, do not
 			// replicate
 			// if propertyname is not found and the name is REMOVE_YOU it remove it from the IdMap
-			if(IdMap.REMOVE_YOU.equals(propertyName)) {
+			if(SendableEntityCreator.REMOVE_YOU.equals(propertyName)) {
 				this.removeObj(evt.getOldValue(), true);
 			}
 			return;
@@ -152,7 +152,7 @@ public class UpdateJson implements MapListener {
 			} else {
 				child.put(propertyName, oldValue);
 			}
-			jsonObject.put(IdMap.REMOVE, child);
+			jsonObject.put(SendableEntityCreator.REMOVE, child);
 		}
 
 		if (newValue != null) {
@@ -178,13 +178,13 @@ public class UpdateJson implements MapListener {
 				// plain attribute
 				child.put(propertyName, newValue);
 			}
-			jsonObject.put(IdMap.UPDATE, child);
+			jsonObject.put(SendableEntityCreator.UPDATE, child);
 		}
 //FIXME		if (this.map.getCounter().getPrio() != null) {
 //			jsonObject.put(Filter.PRIO, this.map.getCounter().getPrio());
 //		}
 		if (this.suspendIdList == null) {
-			this.map.notify(new SimpleEvent(IdMap.NEW, jsonObject, evt,  map));
+			this.map.notify(new SimpleEvent(SendableEntityCreator.NEW, jsonObject, evt,  map));
 		}
 	}
 
@@ -196,13 +196,13 @@ public class UpdateJson implements MapListener {
 	 * @return 					the MasterObject, if successful
 	 */
 	public Object execute(Entity updateMessage, Filter filter) {
-		if(!updateMessage.has(IdMap.UPDATE) && !updateMessage.has(IdMap.REMOVE)) {
+		if(!updateMessage.has(SendableEntityCreator.UPDATE) && !updateMessage.has(SendableEntityCreator.REMOVE)) {
 			return null;
 		}
 
 		String id = updateMessage.getString(IdMap.ID);
-		JsonObject remove = (JsonObject) updateMessage.getValue(IdMap.REMOVE);
-		JsonObject update = (JsonObject) updateMessage.getValue(IdMap.UPDATE);
+		JsonObject remove = (JsonObject) updateMessage.getValue(SendableEntityCreator.REMOVE);
+		JsonObject update = (JsonObject) updateMessage.getValue(SendableEntityCreator.UPDATE);
 		Object prio = updateMessage.getValue(Filter.PRIO);
 		Object masterObj = this.map.getObject(id);
 		if (masterObj == null)
@@ -233,11 +233,11 @@ public class UpdateJson implements MapListener {
 				Object value = creator.getValue(masterObj, key);
 				if (value == null) {
 					// Old Value is Standard
-					return setValue(creator, masterObj, key, item.getValue(), IdMap.NEW);
+					return setValue(creator, masterObj, key, item.getValue(), SendableEntityCreator.NEW);
 				} else if (value.equals(creator.getValue(refObject, key))) {
 					// Old Value is Standard
 					return setValue(creator, masterObj, key,
-							update.get(key), IdMap.NEW);
+							update.get(key), SendableEntityCreator.NEW);
 				} else {
 					// ERROR
 					if (checkPrio(prio)) {
@@ -257,24 +257,24 @@ public class UpdateJson implements MapListener {
 				if (value instanceof Collection<?>) {
 					JsonObject removeJsonObject = remove.getJsonObject(key);
 					setValue(creator, masterObj, key, removeJsonObject,
-							IdMap.REMOVE);
+							SendableEntityCreator.REMOVE);
 				} else {
 					if (checkValue(value, key, remove)) {
 						setValue(creator, masterObj, key,
 								creator.getValue(refObject, key),
-								IdMap.REMOVE);
+								SendableEntityCreator.REMOVE);
 					} else if (checkPrio(prio)) {
 						// RESET TO DEFAULTVALUE
 						setValue(creator, masterObj, key,
 								creator.getValue(refObject, key),
-								IdMap.REMOVE);
+								SendableEntityCreator.REMOVE);
 					}
 				}
 				Object removeJsonObject = remove.get(key);
 				if (removeJsonObject != null
 						&& removeJsonObject instanceof JsonObject) {
 					JsonObject json = (JsonObject) removeJsonObject;
-					this.map.notify(new SimpleEvent(IdMap.REMOVE, json, map, key, this.map.decode(json), null).withModelValue(masterObj));
+					this.map.notify(new SimpleEvent(SendableEntityCreator.REMOVE, json, map, key, this.map.decode(json), null).withModelValue(masterObj));
 				}
 			}
 			return masterObj;
@@ -288,15 +288,13 @@ public class UpdateJson implements MapListener {
 
 				if (checkValue(oldValue, key, remove)) {
 					Object newValue = update.get(key);
-					setValue(creator, masterObj, key, newValue,
-							IdMap.UPDATE);
+					setValue(creator, masterObj, key, newValue, SendableEntityCreator.UPDATE);
 
-					this.map.notify(new SimpleEvent(IdMap.UPDATE, update, map, key, oldValue, newValue).withModelValue(masterObj));
+					this.map.notify(new SimpleEvent(SendableEntityCreator.UPDATE, update, map, key, oldValue, newValue).withModelValue(masterObj));
 				} else if (checkPrio(prio)) {
 					Object newValue = update.get(key);
-					setValue(creator, masterObj, key, newValue,
-							IdMap.UPDATE);
-					this.map.notify(new SimpleEvent(IdMap.UPDATE, update, map, key, oldValue, newValue).withModelValue(masterObj));
+					setValue(creator, masterObj, key, newValue, SendableEntityCreator.UPDATE);
+					this.map.notify(new SimpleEvent(SendableEntityCreator.UPDATE, update, map, key, oldValue, newValue).withModelValue(masterObj));
 				}
 			}
 			return masterObj;

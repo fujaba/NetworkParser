@@ -24,6 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.util.Iterator;
+
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleGrammar;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;

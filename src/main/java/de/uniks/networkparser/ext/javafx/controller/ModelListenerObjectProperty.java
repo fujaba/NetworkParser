@@ -1,5 +1,6 @@
 package de.uniks.networkparser.ext.javafx.controller;
 
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 /*
 NetworkParser
 The MIT License
@@ -24,7 +25,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import javafx.beans.Observable;
-import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class ModelListenerObjectProperty extends ModelListenerProperty<Object> {
 	public ModelListenerObjectProperty(SendableEntityCreator creator, Object item, String property) {

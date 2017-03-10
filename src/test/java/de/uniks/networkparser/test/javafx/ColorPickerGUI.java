@@ -1,5 +1,9 @@
 package de.uniks.networkparser.test.javafx;
 
+import de.uniks.networkparser.ext.javafx.controller.ModelListenerColorProperty;
+import de.uniks.networkparser.ext.javafx.controller.ModelListenerStringProperty;
+import de.uniks.networkparser.test.model.GUIEntity;
+import de.uniks.networkparser.test.model.util.GUIEntityCreator;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.ColorPicker;
@@ -7,10 +11,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import de.uniks.networkparser.ext.javafx.controller.ModelListenerColorProperty;
-import de.uniks.networkparser.ext.javafx.controller.ModelListenerStringProperty;
-import de.uniks.networkparser.test.model.GUIEntity;
-import de.uniks.networkparser.test.model.util.GUIEntityCreator;
 
 public class ColorPickerGUI extends Application{
 		private GUIEntity colorPlayer;

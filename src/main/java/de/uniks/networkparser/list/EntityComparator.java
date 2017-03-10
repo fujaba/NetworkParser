@@ -24,6 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.util.Comparator;
+
 import de.uniks.networkparser.EntityValueFactory;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -277,5 +278,10 @@ public class EntityComparator<V> implements Comparator<V> {
 	public SortingDirection changeDirection() {
 		this.direction = direction.changeDirection();
 		return direction;
+	}
+	
+	public static EntityComparator<Object> createComparator() {
+		EntityComparator<Object> cpr = new EntityComparator<Object>().withColumn(EntityComparator.VALUES).withDirection(SortingDirection.ASC);
+		return cpr;
 	}
 }

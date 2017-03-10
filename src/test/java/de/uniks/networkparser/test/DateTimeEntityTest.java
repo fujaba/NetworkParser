@@ -1,6 +1,7 @@
 package de.uniks.networkparser.test;
 
 import static org.junit.Assert.assertEquals;
+
 import java.io.PrintStream;
 import java.text.DateFormat;
 import java.util.Calendar;

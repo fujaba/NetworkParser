@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.test.model.SortedMsg;
@@ -40,7 +41,7 @@ public class JsonPeer2PeerTest implements UpdateListener{
 
 		firstMap.garbageCollection(firstRoot);
 
-		update(new SimpleEvent(IdMap.NEW, firstMap.toJsonObject(firstRoot), firstMap, null, null, null));
+		update(new SimpleEvent(SendableEntityCreator.NEW, firstMap.toJsonObject(firstRoot), firstMap, null, null, null));
 
 		SortedMsg third= new SortedMsg();
 		third.withNumber(4);

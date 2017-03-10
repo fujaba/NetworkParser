@@ -86,7 +86,7 @@ public class ItemCreator implements SendableEntityCreator
    @Override
    public boolean setValue(Object target, String attrName, Object value, String type)
    {
-	  if (IdMap.REMOVE.equals(type) && value != null)
+	  if (SendableEntityCreator.REMOVE.equals(type) && value != null)
 	  {
 		 attrName = attrName + type;
 	  }

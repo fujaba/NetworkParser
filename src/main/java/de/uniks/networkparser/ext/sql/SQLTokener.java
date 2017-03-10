@@ -31,7 +31,6 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 
 import de.uniks.networkparser.EntityUtil;
-import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
 import de.uniks.networkparser.buffer.Tokener;
 import de.uniks.networkparser.graph.Association;
@@ -229,7 +228,7 @@ public class SQLTokener extends Tokener {
 		String id = this.map.getId(item);
 		map.with(item);
 		String className = item.getClass().getName();
-		SendableEntityCreator creator = map.getCreator(IdMap.NEW, item, className);
+		SendableEntityCreator creator = map.getCreator(SendableEntityCreator.NEW, item, className);
 		if(creator == null) {
 			return item.toString();
 		}

@@ -24,7 +24,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.EntityUtil;
-import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.converter.EntityStringConverter;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
@@ -119,7 +118,7 @@ public class PomFile implements SendableEntityCreatorTag, BaseItem{
 		}
 		for(int i=0;i<values.length;i+=2) {
 			if(values[i] instanceof String) {
-				setValue(this, (String)values[i], values[i+1], IdMap.NEW);
+				setValue(this, (String)values[i], values[i+1], NEW);
 			}
 		}
 		return this;
@@ -275,7 +274,7 @@ public class PomFile implements SendableEntityCreatorTag, BaseItem{
 		if(child != null) {
 			if(isValue) {
 				String newValue = ((XMLEntity) child).getValue();
-				setValue(this, value, newValue, IdMap.NEW);
+				setValue(this, value, newValue, NEW);
 				return newValue;
 			}
 			return child;

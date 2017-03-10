@@ -84,7 +84,7 @@ public class Clazz extends GraphEntity {
 	}
 
 	@Override
-	String getFullId() {
+	protected String getFullId() {
 		if(this.getId() != null) {
 			return this.getId();
 		}
@@ -270,7 +270,7 @@ public class Clazz extends GraphEntity {
 			type = AssociationTypes.GENERALISATION;
 		}
 
-		ClazzSet collection = getEdgesByTypes(type, null);
+		ClazzSet collection = getEdgeClazzes(type, null);
 		if(!transitive) {
 			return collection;
 		}
@@ -293,7 +293,7 @@ public class Clazz extends GraphEntity {
 	 */
 	public ClazzSet getSuperClazzes(boolean transitive) {
 		repairAssociations();
-		ClazzSet collection = getEdgesByTypes(AssociationTypes.GENERALISATION, null);
+		ClazzSet collection = getEdgeClazzes(AssociationTypes.GENERALISATION, null);
 		if(!transitive) {
 			return collection;
 		}
@@ -378,7 +378,7 @@ public class Clazz extends GraphEntity {
 	 *		 </pre>
 	 */
 	public ClazzSet getKidClazzes(boolean transitive) {
-		ClazzSet kidClazzes = getEdgesByTypes(AssociationTypes.EDGE, AssociationTypes.GENERALISATION);
+		ClazzSet kidClazzes = getEdgeClazzes(AssociationTypes.EDGE, AssociationTypes.GENERALISATION);
 		if(!transitive) {
 			return kidClazzes;
 		}
@@ -399,11 +399,11 @@ public class Clazz extends GraphEntity {
 	 *		 </pre>
 	 */
 	public ClazzSet getImplements() {
-		ClazzSet kidClazzes = getEdgesByTypes(AssociationTypes.EDGE, AssociationTypes.IMPLEMENTS);
+		ClazzSet kidClazzes = getEdgeClazzes(AssociationTypes.EDGE, AssociationTypes.IMPLEMENTS);
 		return kidClazzes;
 	}
 	
-	ClazzSet getEdgesByTypes(AssociationTypes typ, AssociationTypes otherTyp) {
+	ClazzSet getEdgeClazzes(AssociationTypes typ, AssociationTypes otherTyp) {
 		ClazzSet kidClazzes = new ClazzSet();
 		if (this.children == null || typ == null) {
 			return kidClazzes;

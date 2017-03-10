@@ -6,10 +6,6 @@ import de.uniks.networkparser.xml.XMLEntity;
 public class StoryStepTitle implements StoryStep{
 	private String title;
 	
-	public StoryStepTitle(String title) {
-		this.title = title;
-	}
-	
 	@Override
 	public void finish() {
 	}
@@ -19,9 +15,16 @@ public class StoryStepTitle implements StoryStep{
 	}
 
 	@Override
-	public void dump(HTMLEntity element) {
-		element.withTitle(this.title);
-		XMLEntity headerLine = element.createBodyTag("h1");
-		headerLine.withValue(this.title);
+	public boolean dump(Story story, HTMLEntity element) {
+		if(this.title != null) {
+			element.withTitle(this.title);
+			XMLEntity headerLine = element.createBodyTag("h1");
+			headerLine.withValue(this.title);
+		}
+		return true;
+	}
+
+	public String getTitle() {
+		return this.title;
 	}
 }

@@ -58,7 +58,7 @@ public abstract class GraphEntity extends GraphMember {
 		return id;
 	}
 
-	String getTyp(String typ, boolean shortName) {
+	protected String getTyp(String typ, boolean shortName) {
 		if (typ.equals(GraphTokener.OBJECT)) {
 			return getId();
 		} else if (typ.equals(GraphTokener.CLASS)) {
@@ -69,6 +69,7 @@ public abstract class GraphEntity extends GraphMember {
 
 	/** get All Edges
 	 * @param type Association types Edge for all Association for only Assocs
+	 * @param otherType Other Association type
 	 * @param filters Can Filter the List of Associations
 	 * @return all Associations of a Clazz
 	 *
@@ -106,7 +107,7 @@ public abstract class GraphEntity extends GraphMember {
 		return collection;
 	}
 
-	GraphMember getByObject(String clazz, boolean fullName) {
+	protected GraphMember getByObject(String clazz, boolean fullName) {
 		if(clazz == null || children == null){
 			return null;
 		}

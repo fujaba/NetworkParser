@@ -62,7 +62,7 @@ public class GXLTokener extends Tokener {
 		instance.with(graph);
 		if(entity != null) {
 			String className = entity.getClass().getName();
-			SendableEntityCreator creator = map.getCreator(IdMap.NEW, entity, className);
+			SendableEntityCreator creator = map.getCreator(SendableEntityCreator.NEW, entity, className);
 			encodeChildren(entity, graph, creator, map);
 		}
 		return instance;

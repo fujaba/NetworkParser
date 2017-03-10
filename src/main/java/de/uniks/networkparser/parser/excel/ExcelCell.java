@@ -19,8 +19,9 @@ See the Licence for the specific language governing permissions and limitations 
 */
 import java.nio.charset.Charset;
 import java.util.Comparator;
-import de.uniks.networkparser.buffer.Buffer;
+
 import de.uniks.networkparser.Pos;
+import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.EntityList;

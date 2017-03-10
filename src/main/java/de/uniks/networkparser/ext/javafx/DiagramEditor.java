@@ -34,6 +34,7 @@ import java.net.MalformedURLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import de.uniks.networkparser.graph.GraphList;
 import de.uniks.networkparser.gui.Editor;
 import de.uniks.networkparser.json.JsonObject;

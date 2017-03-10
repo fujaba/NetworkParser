@@ -1,6 +1,7 @@
 package de.uniks.networkparser.test.javafx;
 
 import java.util.Date;
+
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;

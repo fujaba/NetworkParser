@@ -158,7 +158,7 @@ public class HTMLEntity implements BaseItem {
 		return this;
 	}
 	
-	public XMLEntity createBodyTag(String tag) {
+	public XMLEntity createBodyTag(String tag, XMLEntity parentNode) {
 		String[] tags = tag.split("\\.");
 		XMLEntity parent = null, child = null, firstChild = null;
 		for(int i=tags.length-1;i>=0;i--) {
@@ -170,8 +170,12 @@ public class HTMLEntity implements BaseItem {
 				firstChild = parent;
 			}
 		}
-		this.body.with(parent);
+		parentNode.withChild(parent);
 		return firstChild;
+	}
+	public XMLEntity createBodyTag(String tag) {
+		return createBodyTag(tag, this.body);
+		
 	}
 
 

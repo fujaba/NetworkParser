@@ -1,7 +1,7 @@
 package de.uniks.networkparser.test.model;
 
 import java.util.ArrayList;
-import de.uniks.networkparser.IdMap;
+
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class ListEntity implements SendableEntityCreator{
@@ -39,7 +39,7 @@ public class ListEntity implements SendableEntityCreator{
 			((ListEntity)entity).withChildren((ListEntity) value);
 			return  true;
 		}
-		if((CHILDREN+IdMap.REMOVE).equalsIgnoreCase(attribute)){
+		if((CHILDREN+SendableEntityCreator.REMOVE).equalsIgnoreCase(attribute)){
 			((ListEntity)entity).withoutChildren((ListEntity) value);
 			return true;
 		}
