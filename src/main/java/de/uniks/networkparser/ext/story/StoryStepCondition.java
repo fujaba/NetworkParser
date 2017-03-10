@@ -9,14 +9,19 @@ public class StoryStepCondition implements StoryStep{
 	private Object value;
 	private String message;
 
-	public void withCondition(Condition<Object> condition) {
+	public StoryStepCondition withCondition(String message, Object value,Condition<Object> condition) {
 		this.condition = condition;
+		this.value = value;
+		this.message = message;
+		return this;
 	}
 	
-	public void withCondition(Object value) {
-		this.value = value;
+	public StoryStepCondition withCondition(Condition<Object> condition) {
+		this.condition = condition;
+		return this;
 	}
-
+	
+	
 	@Override
 	public void finish() {
 	}

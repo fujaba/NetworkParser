@@ -63,7 +63,7 @@ public class Not implements UpdateListener, SendableEntityCreator {
 
 	@Override
 	public String[] getProperties() {
-		return new String[] {ITEM };
+		return new String[] { ITEM };
 	}
 
 	@Override

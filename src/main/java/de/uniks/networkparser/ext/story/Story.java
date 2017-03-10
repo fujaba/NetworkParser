@@ -9,7 +9,10 @@ import java.lang.reflect.Method;
 
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.logic.BooleanCondition;
 import de.uniks.networkparser.logic.Equals;
+import de.uniks.networkparser.logic.Not;
+import de.uniks.networkparser.logic.NullContidion;
 import de.uniks.networkparser.xml.HTMLEntity;
 
 public class Story {
@@ -165,7 +168,8 @@ public class Story {
 //    {
 //       this.dumpHTML();
 //    }
-	private void checkCondition(StoryStepCondition step) {
+	private void addCondition(StoryStepCondition step) {
+		this.add(step);
 		if(step.checkCondition() == false && breakOnAssert) {
 			this.dumpHTML();
 			Method assertClass = null;
@@ -185,30 +189,49 @@ public class Story {
 	}
 	public void assertEquals(String message, double expected, double actual, double delta) {
 		StoryStepCondition step = new StoryStepCondition();
-		step.withMessage(message);
-		step.withCondition(new Equals().withValue(expected, delta));
-		this.add(step);
-		this.checkCondition(step);
+		step.withCondition(message, actual, new Equals().withValue(expected, delta));
+		this.addCondition(step);
 	}
 	
 	public void assertEquals(String message, int expected, int actual) {
+		StoryStepCondition step = new StoryStepCondition();
+		step.withCondition(message, actual, new Equals().withValue(expected));
+		this.addCondition(step);
 	}
 
 	public void assertEquals(String message, long expected, long actual) {
+		StoryStepCondition step = new StoryStepCondition();
+		step.withCondition(message, actual, new Equals().withValue(expected));
+		this.addCondition(step);
 	}
 	
 	public void assertEquals(String message, Object expected, Object actual) {
+		StoryStepCondition step = new StoryStepCondition();
+		step.withCondition(message, actual, new Equals().withValue(expected));
+		this.addCondition(step);
 	}
 
-	public void assertTrue(String message, boolean condition) {
+	public void assertTrue(String message, boolean actual) {
+		StoryStepCondition step = new StoryStepCondition();
+		step.withCondition(message, actual, new BooleanCondition().withValue(true));
+		this.addCondition(step);
 	}
 
-	public void assertFalse(String message, boolean condition) {
+	public void assertFalse(String message, boolean actual) {
+		StoryStepCondition step = new StoryStepCondition();
+		step.withCondition(message, actual, new BooleanCondition().withValue(false));
+		this.addCondition(step);
 	}
 
-	public void assertNull(String message, Object obj) {
+	public void assertNull(String message, Object actual) {
+		StoryStepCondition step = new StoryStepCondition();
+		step.withCondition(message, actual, new NullContidion());
+		this.addCondition(step);
 	}
 	
-	public void assertNotNull(String message, Object obj) {
+	public void assertNotNull(String message, Object actual) {
+		StoryStepCondition step = new StoryStepCondition();
+		step.withCondition(message, actual, new Not().with(new NullContidion()));
+		this.addCondition(step);
 	}
 }
