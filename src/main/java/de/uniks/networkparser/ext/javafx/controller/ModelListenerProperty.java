@@ -28,7 +28,7 @@ import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import de.uniks.networkparser.SimpleEvent;
-import de.uniks.networkparser.ext.javafx.JavaFXClasses;
+import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -97,26 +97,26 @@ public class ModelListenerProperty implements ModelListenerInterface {
 	}
 
 	public void addListener(Object listener) {
-		if(JavaFXClasses.CHANGELISTENER != null) {
-			if(JavaFXClasses.CHANGELISTENER.isAssignableFrom(listener.getClass())) {
+		if(ReflectionLoader.CHANGELISTENER != null) {
+			if(ReflectionLoader.CHANGELISTENER.isAssignableFrom(listener.getClass())) {
 				listeners.add(listener);
 			}
 		}
-		if(JavaFXClasses.INVALIDATIONLISTENER != null) {
-			if(JavaFXClasses.INVALIDATIONLISTENER.isAssignableFrom(listener.getClass())) {
+		if(ReflectionLoader.INVALIDATIONLISTENER != null) {
+			if(ReflectionLoader.INVALIDATIONLISTENER.isAssignableFrom(listener.getClass())) {
 				invalidationListeners.add(listener);
 			}
 		}
 	}
 
 	public void removeListener(Object listener) {
-		if(JavaFXClasses.CHANGELISTENER != null) {
-			if(JavaFXClasses.CHANGELISTENER.isAssignableFrom(listener.getClass())) {
+		if(ReflectionLoader.CHANGELISTENER != null) {
+			if(ReflectionLoader.CHANGELISTENER.isAssignableFrom(listener.getClass())) {
 				listeners.remove(listener);
 			}
 		}
-		if(JavaFXClasses.INVALIDATIONLISTENER != null) {
-			if(JavaFXClasses.INVALIDATIONLISTENER.isAssignableFrom(listener.getClass())) {
+		if(ReflectionLoader.INVALIDATIONLISTENER != null) {
+			if(ReflectionLoader.INVALIDATIONLISTENER.isAssignableFrom(listener.getClass())) {
 				invalidationListeners.remove(listener);
 			}
 		}
@@ -129,12 +129,12 @@ public class ModelListenerProperty implements ModelListenerInterface {
 		if (!newObservable.equals(observable)) {
 			unbind();
 			observable = newObservable;
-			JavaFXClasses.call("addListener", observable, JavaFXClasses.INVALIDATIONLISTENER, this);
+			ReflectionLoader.call("addListener", observable, ReflectionLoader.INVALIDATIONLISTENER, this);
 		}
 	}
 
 	public void bindBidirectional(Object other) {
-		JavaFXClasses.call("bindBidirectional", null, JavaFXClasses.PROPERTY, this,JavaFXClasses.PROPERTY, other);
+		ReflectionLoader.call("bindBidirectional", null, ReflectionLoader.PROPERTY, this,ReflectionLoader.PROPERTY, other);
 	}
 
 	public boolean isBound() {
@@ -143,13 +143,13 @@ public class ModelListenerProperty implements ModelListenerInterface {
 
 	public void unbind() {
 		if (observable != null) {
-			JavaFXClasses.call("removeListener", observable, JavaFXClasses.OBSERVABLEVALUE, this);
+			ReflectionLoader.call("removeListener", observable, ReflectionLoader.OBSERVABLEVALUE, this);
 			observable = null;
 		}
 	}
 
 	public void unbindBidirectional(Object other) {
-		JavaFXClasses.call("unbindBidirectional", null, JavaFXClasses.PROPERTY, this, JavaFXClasses.PROPERTY, other);
+		ReflectionLoader.call("unbindBidirectional", null, ReflectionLoader.PROPERTY, this, ReflectionLoader.PROPERTY, other);
 	}
 
 	public Object getItemValue(){
@@ -163,13 +163,13 @@ public class ModelListenerProperty implements ModelListenerInterface {
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		for(Object listener: listeners) {
-			Object event = JavaFXClasses.newInstance(JavaFXClasses.SIMPLEOBJECTPROPERTY);
+			Object event = ReflectionLoader.newInstance(ReflectionLoader.SIMPLEOBJECTPROPERTY);
 			Object oldValue = parseValue(evt.getOldValue());
 			Object newValue = parseValue(evt.getNewValue());
-			JavaFXClasses.call("changed", listener, JavaFXClasses.OBSERVABLEVALUE, event, Object.class, oldValue, Object.class, newValue);
+			ReflectionLoader.call("changed", listener, ReflectionLoader.OBSERVABLEVALUE, event, Object.class, oldValue, Object.class, newValue);
 		}
 		for(Object listener : invalidationListeners) {
-			JavaFXClasses.call("invalidated", listener, JavaFXClasses.INVALIDATIONLISTENER, this);
+			ReflectionLoader.call("invalidated", listener, ReflectionLoader.INVALIDATIONLISTENER, this);
 		}
 		executeCallBack();
 	}
@@ -178,7 +178,7 @@ public class ModelListenerProperty implements ModelListenerInterface {
 		if(callBack != null) {
 			SimpleEvent event = new SimpleEvent(this.item, this.property, null, getItemValue());
 			if(callBack.update(event)) {
-				JavaFXClasses.call("set", observable, String.class, ""+event.getModelValue());
+				ReflectionLoader.call("set", observable, String.class, ""+event.getModelValue());
 			}
 		}
 	}
@@ -197,13 +197,13 @@ public class ModelListenerProperty implements ModelListenerInterface {
 	
 	public Object parseValue(Object value){
 		if(this.type == PROPERTYTYPE.COLOR) {
-			if(value != null && JavaFXClasses.COLOR.isAssignableFrom(value.getClass())) {
+			if(value != null && ReflectionLoader.COLOR.isAssignableFrom(value.getClass())) {
 				return value;
 			}
 			if(value instanceof String) {
-				return JavaFXClasses.call("web", PROPERTYTYPE.COLOR, String.class, value);
+				return ReflectionLoader.call("web", PROPERTYTYPE.COLOR, String.class, value);
 			}
-			return JavaFXClasses.call("web", PROPERTYTYPE.COLOR, String.class, "#FFFFFF");
+			return ReflectionLoader.call("web", PROPERTYTYPE.COLOR, String.class, "#FFFFFF");
 		}
 		if(this.type == PROPERTYTYPE.STRING) {
 			return ""+value;
@@ -248,7 +248,7 @@ public class ModelListenerProperty implements ModelListenerInterface {
 	}
 	
 	public Object getProxy() {
-		return JavaFXClasses.createProxy(this, new Class[]{ModelListenerInterface.class, JavaFXClasses.PROPERTY});
+		return ReflectionLoader.createProxy(this, new Class[]{ModelListenerInterface.class, ReflectionLoader.PROPERTY});
 	}
 	
 	public void setValue(Object value) {

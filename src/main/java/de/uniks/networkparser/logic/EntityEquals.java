@@ -1,10 +1,10 @@
 package de.uniks.networkparser.logic;
 
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
-public class EntityEquals implements UpdateListener, SendableEntityCreator {
+public class EntityEquals implements ObjectCondition, SendableEntityCreator {
 	/** Constant of KEY. */
 	public static final String PROPERTY_KEY = "key";
 

@@ -2,10 +2,18 @@
 <project default="gwt-compile" name="GWT Compiler">
 	<property name="gwtversion" value="2.7.0" />
 	<mkdir dir="build/" />
-	<target name="gwt-compile" description="CrossCompile NetworkParser to Javascript with GWT">
-		<record name="build/gwt-Compile.txt" action="start" append="false" />
+	<target name="download" depends="sdkExist" if="isAvailable">
+		<echo>SDK missing</echo>
 		<get description="get GWT-SDK" src="http://goo.gl/t7FQSn" dest="build/gwt.zip" />
 		<unzip src="build/gwt.zip" dest="build/" />
+	</target>
+	<target name="sdkExist" unless="isAvailable">
+		<echo>SDK exists</echo>
+	</target>
+	<target name="gwt-compile" depends="download" description="CrossCompile NetworkParser to Javascript with GWT">
+		<available file="build/gwt.zip" property="isAvailable" />
+		<record name="build/gwt-Compile.txt" action="start" append="false" />
+
 		<copy todir="build/gwtSource">
 			<fileset dir="src/main/java/">
 				<exclude name="**/javafx/**"/>

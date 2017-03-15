@@ -8,12 +8,12 @@ import org.junit.Test;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.interfaces.UpdateListener;
+import de.uniks.networkparser.interfaces.FunctionalCondition;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.test.model.SortedMsg;
 import de.uniks.networkparser.test.model.util.SortedMsgCreator;
 
-public class JsonPeer2PeerTest implements UpdateListener{
+public class JsonPeer2PeerTest implements FunctionalCondition{
 	private IdMap firstMap;
 	private IdMap secondMap;
 	private int z;

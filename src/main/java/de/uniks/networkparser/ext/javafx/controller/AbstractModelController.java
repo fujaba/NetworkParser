@@ -29,7 +29,7 @@ import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Method;
 
 import de.uniks.networkparser.ext.generic.GenericCreator;
-import de.uniks.networkparser.ext.javafx.JavaFXClasses;
+import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.interfaces.SendableEntity;
 
 public abstract class AbstractModelController implements PropertyChangeListener {
@@ -37,7 +37,7 @@ public abstract class AbstractModelController implements PropertyChangeListener 
 	public <ST extends AbstractModelController> ST init(Object model, Object gui) {
 		if(model != null && gui != null) {
 			try {
-				Method method = this.getClass().getMethod("initPropertyChange"+model.getClass().getSimpleName(), model.getClass(), JavaFXClasses.NODE);
+				Method method = this.getClass().getMethod("initPropertyChange"+model.getClass().getSimpleName(), model.getClass(), ReflectionLoader.NODE);
 				method.invoke(this, model, gui);
 			} catch (ReflectiveOperationException e) {
 				this.initPropertyChange(model, gui);

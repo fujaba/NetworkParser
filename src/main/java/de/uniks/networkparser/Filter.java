@@ -1,5 +1,6 @@
 package de.uniks.networkparser;
 
+import de.uniks.networkparser.interfaces.ObjectCondition;
 /*
 NetworkParser
 The MIT License
@@ -25,7 +26,6 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
-import de.uniks.networkparser.interfaces.UpdateListener;
 
 public class Filter {
 	/** The Constant MERGE. */
@@ -39,16 +39,16 @@ public class Filter {
 
 	public static final Filter SIMPLEFORMAT = new Filter().withSimpleFormat(true);
 
-	protected UpdateListener idFilter;
-	protected UpdateListener convertable;
-	protected UpdateListener property;
+	protected ObjectCondition idFilter;
+	protected ObjectCondition convertable;
+	protected ObjectCondition property;
 
 	// Temporary variables
 	protected boolean full;
 	private String strategy = SendableEntityCreator.NEW;
 	private boolean simpleFormat;
 
-	public Filter withIdFilter(UpdateListener idFilter) {
+	public Filter withIdFilter(ObjectCondition idFilter) {
 		this.idFilter = idFilter;
 		return this;
 	}
@@ -100,12 +100,12 @@ public class Filter {
 		return this;
 	}
 
-	public Filter withPropertyRegard(UpdateListener property) {
+	public Filter withPropertyRegard(ObjectCondition property) {
 		this.property = property;
 		return this;
 	}
 
-	public Filter withConvertable(UpdateListener convertable) {
+	public Filter withConvertable(ObjectCondition convertable) {
 		this.convertable = convertable;
 		return this;
 	}
@@ -117,7 +117,7 @@ public class Filter {
 		return true;
 	}
 	
-	public UpdateListener getPropertyRegard() {
+	public ObjectCondition getPropertyRegard() {
 		return property;
 	}
 
@@ -134,7 +134,7 @@ public class Filter {
 	 * @param convertable Condition
 	 * @return a new Filter for regard the model
 	 */
-	public static Filter regard(UpdateListener convertable) {
+	public static Filter regard(ObjectCondition convertable) {
 		return new Filter().withPropertyRegard(convertable);
 	}
 	/**
@@ -143,7 +143,7 @@ public class Filter {
 	 * @param convertable Condition
 	 * @return a new Filter for Filter with Convertable Items
 	 */
-	public static Filter convertable(UpdateListener convertable) {
+	public static Filter convertable(ObjectCondition convertable) {
 		return new Filter().withConvertable(convertable);
 	}
 

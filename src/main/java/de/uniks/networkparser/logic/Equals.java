@@ -2,13 +2,13 @@ package de.uniks.networkparser.logic;
 import java.beans.PropertyChangeEvent;
 
 import de.uniks.networkparser.buffer.BufferedBuffer;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.interfaces.UpdateListener;
 /**
  * @author Stefan Lindel Clazz of EqualsCondition
  */
 
-public class Equals implements UpdateListener, SendableEntityCreator {
+public class Equals implements ObjectCondition, SendableEntityCreator {
 	/** Constant of StrValue. */
 	public static final String VALUE = "value";
 	/** Constant of Position. */

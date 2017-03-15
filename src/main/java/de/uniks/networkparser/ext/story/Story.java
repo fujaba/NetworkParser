@@ -160,13 +160,6 @@ public class Story {
 		return this;
 	}
 
-//	this.add("Check: " + message + " " + expected + " +-" + delta + " actual " + actual);
-//	  Assert.assertEquals("FAILED: " + message, expected, actual, delta);
-//    this.add("Check: " + message + " " + condition);
-//    if (!condition)
-//    {
-//       this.dumpHTML();
-//    }
 	private void addCondition(StoryStepCondition step) {
 		this.add(step);
 		if(step.checkCondition() == false && breakOnAssert) {

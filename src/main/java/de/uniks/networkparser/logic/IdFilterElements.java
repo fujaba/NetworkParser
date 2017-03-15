@@ -25,13 +25,13 @@ THE SOFTWARE.
 */
 import java.beans.PropertyChangeEvent;
 
-import de.uniks.networkparser.interfaces.UpdateListener;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleSet;
 
-public class IdFilterElements extends SimpleSet<Object> implements UpdateListener {
-	private UpdateListener condition;
+public class IdFilterElements extends SimpleSet<Object> implements ObjectCondition {
+	private ObjectCondition condition;
 
-	public IdFilterElements(UpdateListener condition) {
+	public IdFilterElements(ObjectCondition condition) {
 		this.condition = condition;
 	}
 	public IdFilterElements(Class<?> clazzConditon) {

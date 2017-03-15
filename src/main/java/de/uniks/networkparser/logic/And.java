@@ -25,12 +25,12 @@ THE SOFTWARE.
 */
 import java.util.ArrayList;
 
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.interfaces.UpdateListener;
 
-public class And implements UpdateListener, SendableEntityCreator {
+public class And implements ObjectCondition, SendableEntityCreator {
 	public static final String CHILD = "childs";
-	private ArrayList<UpdateListener> list = new ArrayList<UpdateListener>();
+	private ArrayList<ObjectCondition> list = new ArrayList<ObjectCondition>();
 
 	/**
 	 * Static Method for instance a new Instance of And Object.
@@ -38,27 +38,27 @@ public class And implements UpdateListener, SendableEntityCreator {
 	 * @param conditions	All Conditions.
 	 * @return 			The new Instance
 	 */
-	public static And create(UpdateListener... conditions) {
+	public static And create(ObjectCondition... conditions) {
 		return new And().with(conditions);
 	}
 	
-	public And with(UpdateListener... conditions) {
+	public And with(ObjectCondition... conditions) {
 		if(conditions == null) {
 			return this;
 		}
-		for (UpdateListener condition : conditions) {
+		for (ObjectCondition condition : conditions) {
 			this.list.add(condition);
 		}
 		return this;
 	}
 
-	public ArrayList<UpdateListener> getList() {
+	public ArrayList<ObjectCondition> getList() {
 		return list;
 	}
 
 	@Override
 	public boolean update(Object evt) {
-		for (UpdateListener condition : list) {
+		for (ObjectCondition condition : list) {
 			if (!condition.update(evt)) {
 				return false;
 			}
@@ -88,7 +88,7 @@ public class And implements UpdateListener, SendableEntityCreator {
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
 		if (CHILD.equalsIgnoreCase(attribute)) {
-			((And) entity).with((UpdateListener) value);
+			((And) entity).with((ObjectCondition) value);
 			return true;
 		}
 		return false;

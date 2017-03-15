@@ -279,7 +279,10 @@ public class GenericCreator implements SendableEntityCreator {
 							ParameterizedType genericSuperclass = (ParameterizedType) types;
 							if (genericSuperclass.getActualTypeArguments().length > 0) {
 								Type type = genericSuperclass.getActualTypeArguments()[0];
-								child = Class.forName(type.getTypeName());
+								String typeClass = ""+ReflectionLoader.call("getTypeName", type);
+								if(typeClass.length() > 0) {
+									child = Class.forName(typeClass);
+								}
 							}
 						}
 					} catch (ReflectiveOperationException e) {
@@ -301,7 +304,10 @@ public class GenericCreator implements SendableEntityCreator {
 						ParameterizedType genericSuperclass = (ParameterizedType) types;
 						if (genericSuperclass.getActualTypeArguments().length > 0) {
 							Type type = genericSuperclass.getActualTypeArguments()[0];
-							child = Class.forName(type.getTypeName());
+							String typeClass = ""+ReflectionLoader.call("getTypeName", type);
+							if(typeClass.length() > 0) {
+								child = Class.forName(typeClass);
+							}
 						}
 					}
 				} catch (ReflectiveOperationException e) {

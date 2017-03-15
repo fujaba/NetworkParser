@@ -7,11 +7,11 @@ import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.gui.controls.Control;
-import de.uniks.networkparser.interfaces.UpdateListener;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
-public abstract class JavaBridge implements UpdateListener {
+public abstract class JavaBridge implements ObjectCondition {
 
 	protected static final String JAVA_BRIDGE = "JavaBridge";
 
@@ -82,7 +82,7 @@ public abstract class JavaBridge implements UpdateListener {
 
 	public abstract Object executeScript(String script);
 
-	public void addEventListener(Control c, EventTypes eventType, UpdateListener eventListener) {
+	public void addEventListener(Control c, EventTypes eventType, ObjectCondition eventListener) {
 		executeScript(BridgeCommand.register(eventType, c.getId()));
 		c.addEventListener(eventType, eventListener);
 	}
@@ -90,9 +90,9 @@ public abstract class JavaBridge implements UpdateListener {
 	public void fireEvent(Event event) {
 		Control control = getControls().get(event.getId());
 		if(control != null) {
-			List<UpdateListener> events = control.getEvents(event.getEventType());
+			List<ObjectCondition> events = control.getEvents(event.getEventType());
 			if(events!= null) {
-				for(UpdateListener listener : events) {
+				for(ObjectCondition listener : events) {
 					listener.update(event);
 				}
 			}

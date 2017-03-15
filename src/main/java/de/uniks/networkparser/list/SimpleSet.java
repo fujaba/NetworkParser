@@ -29,11 +29,11 @@ import java.util.Set;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.Condition;
-import de.uniks.networkparser.interfaces.UpdateListener;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 
 public class SimpleSet<V> extends AbstractList<V> implements Set<V>, Cloneable, Iterable<V> {
 	public static final String PROPERTY="items";
-	private UpdateListener listener;
+	private ObjectCondition listener;
 
 	@Override
 	public SimpleSet<V> getNewList(boolean keyValue) {
@@ -164,7 +164,7 @@ public class SimpleSet<V> extends AbstractList<V> implements Set<V>, Cloneable, 
 		return result;
 	}
 	
-	public SimpleSet<V> withListener(UpdateListener listener) {
+	public SimpleSet<V> withListener(ObjectCondition listener) {
 		this.listener = listener;
 		return this;
 	}

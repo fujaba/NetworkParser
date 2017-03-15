@@ -48,11 +48,11 @@ import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.Grammar;
 import de.uniks.networkparser.interfaces.MapListener;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorNoIndex;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
-import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.json.JsonTokener;
@@ -130,7 +130,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	protected NetworkParserLog logger = new NetworkParserLog();
 
 	/** The update listener. */
-	protected UpdateListener updateListener;
+	protected ObjectCondition updateListener;
 
 	/** The updatelistener for Notification changes. */
 	protected MapListener mapListener = new UpdateJson(this);
@@ -639,8 +639,8 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	public boolean notify(PropertyChangeEvent event) {
 		if (this.mapListener != null) {
 			this.mapListener.propertyChange(event);
-			if (this.mapListener != null && this.mapListener instanceof UpdateListener) {
-				return ((UpdateListener) this.mapListener).update(event);
+			if (this.mapListener != null && this.mapListener instanceof ObjectCondition) {
+				return ((ObjectCondition) this.mapListener).update(event);
 			}
 		}
 		if (this.updateListener != null) {
@@ -664,7 +664,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	 *
 	 * @see de.uniks.networkparser.ChainListener
 	 */
-	public IdMap withListener(UpdateListener updateListener) {
+	public IdMap withListener(ObjectCondition updateListener) {
 		this.updateListener = updateListener;
 		return this;
 	}
@@ -1308,7 +1308,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 			if (parentNode != null) {
 				item = map.writeBasicValue(creator, tokener.newInstance(), parentNode, className, id);
 				if(map.getDeep()>0) {
-					UpdateListener filter = map.getFilter().getPropertyRegard();
+					ObjectCondition filter = map.getFilter().getPropertyRegard();
 					if(filter != null && filter instanceof Deep) {
 						if(map.getDeep()<=((Deep)filter).getDepth()) {
 							return item;
@@ -1573,8 +1573,8 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 			if (item instanceof SendableEntityCreator) {
 				this.withCreator((SendableEntityCreator) item);
 			}
-			else if (item instanceof UpdateListener) {
-				this.withListener((UpdateListener) item);
+			else if (item instanceof ObjectCondition) {
+				this.withListener((ObjectCondition) item);
 			}
 			else if (item instanceof MapListener) {
 				this.withListener((MapListener) item);

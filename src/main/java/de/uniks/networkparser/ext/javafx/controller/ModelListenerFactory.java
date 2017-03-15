@@ -2,7 +2,7 @@ package de.uniks.networkparser.ext.javafx.controller;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.ext.generic.GenericCreator;
-import de.uniks.networkparser.ext.javafx.JavaFXClasses;
+import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.ext.javafx.controller.ModelListenerProperty.PROPERTYTYPE;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 /*
@@ -45,47 +45,47 @@ public class ModelListenerFactory {
 			return null;
 		}
 		if(field == null) {
-			field = ""+JavaFXClasses.call("getId", node);
+			field = ""+ReflectionLoader.call("getId", node);
 		}
 		Object property;
 		// Check for Controls
-		if(JavaFXClasses.PROPERTY.isAssignableFrom(node.getClass())) {
-			if(JavaFXClasses.STRINGPROPERTY.isAssignableFrom(node.getClass())) {
+		if(ReflectionLoader.PROPERTY.isAssignableFrom(node.getClass())) {
+			if(ReflectionLoader.STRINGPROPERTY.isAssignableFrom(node.getClass())) {
 				return createProperty(PROPERTYTYPE.STRING, node, creator, item, field);
 			}
-			if(JavaFXClasses.BOOLEANPROPERTY.isAssignableFrom(node.getClass())) {
+			if(ReflectionLoader.BOOLEANPROPERTY.isAssignableFrom(node.getClass())) {
 				return createProperty(PROPERTYTYPE.BOOLEAN, node, creator, item, field);
 			}
-			if(JavaFXClasses.INTEGERPROPERTY.isAssignableFrom(node.getClass())) {
+			if(ReflectionLoader.INTEGERPROPERTY.isAssignableFrom(node.getClass())) {
 				return createProperty(PROPERTYTYPE.INTEGER, node, creator, item, field);
 			}
-			if(JavaFXClasses.DOUBLEPROPERTY.isAssignableFrom(node.getClass())) {
+			if(ReflectionLoader.DOUBLEPROPERTY.isAssignableFrom(node.getClass())) {
 				return createProperty(PROPERTYTYPE.DOUBLE, node, creator, item, field);
 			}
 			return createProperty(PROPERTYTYPE.OBJECT, node, creator, item, field);
 		}
-		if(JavaFXClasses.COLORPICKER.isAssignableFrom(node.getClass())) {
-			property = JavaFXClasses.call("valueProperty", node);
+		if(ReflectionLoader.COLORPICKER.isAssignableFrom(node.getClass())) {
+			property = ReflectionLoader.call("valueProperty", node);
 			return createProperty(PROPERTYTYPE.COLOR, property, creator, item, field);
 		}
-		if(JavaFXClasses.TEXTFIELD.isAssignableFrom(node.getClass())) {
-			property = JavaFXClasses.call("textProperty", node);
+		if(ReflectionLoader.TEXTFIELD.isAssignableFrom(node.getClass())) {
+			property = ReflectionLoader.call("textProperty", node);
 			return createProperty(PROPERTYTYPE.STRING, property, creator, item, field);
 		}
-		if(JavaFXClasses.COMBOBOX.isAssignableFrom(node.getClass())) {
-			property = JavaFXClasses.call("valueProperty", node);
+		if(ReflectionLoader.COMBOBOX.isAssignableFrom(node.getClass())) {
+			property = ReflectionLoader.call("valueProperty", node);
 			return createProperty(PROPERTYTYPE.STRING, property, creator, item, field);
 		}
-		if(JavaFXClasses.LABEL.isAssignableFrom(node.getClass())) {
-			property = JavaFXClasses.call("textProperty", node);
+		if(ReflectionLoader.LABEL.isAssignableFrom(node.getClass())) {
+			property = ReflectionLoader.call("textProperty", node);
 			return createProperty(PROPERTYTYPE.STRING, property, creator, item, field);
 		}
-		if(JavaFXClasses.CHECKBOX.isAssignableFrom(node.getClass())) {
-			property = JavaFXClasses.call("selectedProperty", node);
+		if(ReflectionLoader.CHECKBOX.isAssignableFrom(node.getClass())) {
+			property = ReflectionLoader.call("selectedProperty", node);
 			return createProperty(PROPERTYTYPE.BOOLEAN, property, creator, item, field);
 		}
-		if(JavaFXClasses.RADIOBUTTON.isAssignableFrom(node.getClass())) {
-			property = JavaFXClasses.call("selectedProperty", node);
+		if(ReflectionLoader.RADIOBUTTON.isAssignableFrom(node.getClass())) {
+			property = ReflectionLoader.call("selectedProperty", node);
 			return createProperty(PROPERTYTYPE.BOOLEAN, property, creator, item, field);
 		}
 		return null;
@@ -94,7 +94,7 @@ public class ModelListenerFactory {
 	private static ModelListenerProperty createProperty(PROPERTYTYPE typ,Object property, SendableEntityCreator creator, Object item, String field){
 		ModelListenerProperty listener = new ModelListenerProperty(creator, item, field, PROPERTYTYPE.STRING);
 		Object proxy = listener.getProxy();
-		JavaFXClasses.call("bindBidirectional", property, JavaFXClasses.PROPERTY, proxy);
+		ReflectionLoader.call("bindBidirectional", property, ReflectionLoader.PROPERTY, proxy);
 		return listener;
 	}
 }

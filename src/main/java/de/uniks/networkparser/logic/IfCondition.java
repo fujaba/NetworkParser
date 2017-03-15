@@ -1,5 +1,6 @@
 package de.uniks.networkparser.logic;
 
+import de.uniks.networkparser.interfaces.ObjectCondition;
 /*
 NetworkParser
 The MIT License
@@ -24,12 +25,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.interfaces.UpdateListener;
 /**
  * @author Stefan Lindel IfCondition Clazz
  */
 
-public class IfCondition implements UpdateListener, SendableEntityCreator {
+public class IfCondition implements ObjectCondition, SendableEntityCreator {
 	/** Constant for Expression. */
 	public static final String EXPRESSION = "expression";
 	/** Constant for TrueCase. */
@@ -38,23 +38,23 @@ public class IfCondition implements UpdateListener, SendableEntityCreator {
 	public static final String FALSECONDITION = "falsecondition";
 
 	/** Variable for Expression. */
-	private UpdateListener expression;
+	private ObjectCondition expression;
 	/** Variable for True Case. */
-	private UpdateListener trueCondition;
+	private ObjectCondition trueCondition;
 	/** Variable for False Case. */
-	private UpdateListener falseCondition;
+	private ObjectCondition falseCondition;
 
 	/**
 	 * @param value		Set the new Expression
 	 * @return 			IfCondition Instance
 	 */
-	public IfCondition withExpression(UpdateListener value) {
+	public IfCondition withExpression(ObjectCondition value) {
 		this.expression = value;
 		return this;
 	}
 
 	/** @return The Expression */
-	public UpdateListener getExpression() {
+	public ObjectCondition getExpression() {
 		return expression;
 	}
 
@@ -62,13 +62,13 @@ public class IfCondition implements UpdateListener, SendableEntityCreator {
 	 * @param condition		Set The True Case
 	 * @return 				InstanceOf Instance
 	 */
-	public IfCondition withTrue(UpdateListener condition) {
+	public IfCondition withTrue(ObjectCondition condition) {
 		this.trueCondition = condition;
 		return this;
 	}
 
 	/** @return The True Case */
-	public UpdateListener getTrue() {
+	public ObjectCondition getTrue() {
 		return trueCondition;
 	}
 
@@ -76,13 +76,13 @@ public class IfCondition implements UpdateListener, SendableEntityCreator {
 	 * @param condition		Set the False Case
 	 * @return 				IfCondition Instance
 	 */
-	public IfCondition withFalse(UpdateListener condition) {
+	public IfCondition withFalse(ObjectCondition condition) {
 		this.falseCondition = condition;
 		return this;
 	}
 
 	/** @return The False Case */
-	public UpdateListener getFalse() {
+	public ObjectCondition getFalse() {
 		return falseCondition;
 	}
 
@@ -128,15 +128,15 @@ public class IfCondition implements UpdateListener, SendableEntityCreator {
 	public boolean setValue(Object entity, String attribute, Object value,
 			String type) {
 		if (EXPRESSION.equalsIgnoreCase(attribute)) {
-			((IfCondition) entity).withExpression((UpdateListener) value);
+			((IfCondition) entity).withExpression((ObjectCondition) value);
 			return true;
 		}
 		if (TRUECONDITION.equalsIgnoreCase(attribute)) {
-			((IfCondition) entity).withTrue((UpdateListener) value);
+			((IfCondition) entity).withTrue((ObjectCondition) value);
 			return true;
 		}
 		if (FALSECONDITION.equalsIgnoreCase(attribute)) {
-			((IfCondition) entity).withFalse((UpdateListener) value);
+			((IfCondition) entity).withFalse((ObjectCondition) value);
 			return true;
 		}
 		return false;

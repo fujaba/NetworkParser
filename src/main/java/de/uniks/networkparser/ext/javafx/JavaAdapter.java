@@ -3,11 +3,11 @@ package de.uniks.networkparser.ext.javafx;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleObject;
 import de.uniks.networkparser.gui.JavaBridge;
-import de.uniks.networkparser.interfaces.UpdateListener;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.json.JsonObject;
 import netscape.javascript.JSObject;
 
-public class JavaAdapter implements UpdateListener{
+public class JavaAdapter implements ObjectCondition {
 	private JavaBridge owner;
 	
 	public JavaAdapter(JavaBridge owner) {

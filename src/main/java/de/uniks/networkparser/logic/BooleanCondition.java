@@ -1,5 +1,6 @@
 package de.uniks.networkparser.logic;
 
+import de.uniks.networkparser.interfaces.ObjectCondition;
 /*
 NetworkParser
 The MIT License
@@ -24,9 +25,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.interfaces.UpdateListener;
 
-public class BooleanCondition implements UpdateListener, SendableEntityCreator {
+public class BooleanCondition implements ObjectCondition, SendableEntityCreator {
 	public static final String VALUE = "value";
 	private boolean value;
 

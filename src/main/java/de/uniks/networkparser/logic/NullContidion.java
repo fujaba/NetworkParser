@@ -1,9 +1,9 @@
 package de.uniks.networkparser.logic;
 
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.interfaces.UpdateListener;
 
-public class NullContidion implements UpdateListener, SendableEntityCreator {
+public class NullContidion implements ObjectCondition, SendableEntityCreator {
 
 	@Override
 	public boolean update(Object value) {

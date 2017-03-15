@@ -11,7 +11,7 @@ import de.uniks.networkparser.gui.BridgeCommand;
 import de.uniks.networkparser.gui.EventTypes;
 import de.uniks.networkparser.gui.JavaBridge;
 import de.uniks.networkparser.gui.controls.Control;
-import de.uniks.networkparser.interfaces.UpdateListener;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import javafx.scene.web.WebEngine;
@@ -97,7 +97,7 @@ public class JavaBridgeFX extends JavaBridge {
 	}
 
 
-	protected void addAdapter(UpdateListener eventListener) {
+	protected void addAdapter(ObjectCondition eventListener) {
 		JsonObjectLazy executeScript = (JsonObjectLazy) executeScript("bridge.addAdapter(new DiagramJS.DelegateAdapter());");
 		JSObject reference = executeScript.getReference();
 		reference.setMember("adapter", eventListener);

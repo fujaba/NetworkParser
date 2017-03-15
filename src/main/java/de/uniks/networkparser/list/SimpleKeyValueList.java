@@ -31,7 +31,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.UpdateListener;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 
 public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K, V>, Iterable<Entry<K, V>>{
 	private Comparator<Object> cpr;
@@ -637,8 +637,8 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 	
 	@Override
 	public boolean equals(Object obj) {
-		if(obj instanceof UpdateListener) {
-			UpdateListener condition = (UpdateListener) obj;
+		if(obj instanceof ObjectCondition) {
+			ObjectCondition condition = (ObjectCondition) obj;
 			return condition.update(this);
 		}
 		return super.equals(obj);

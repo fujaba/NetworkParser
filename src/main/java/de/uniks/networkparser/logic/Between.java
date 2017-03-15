@@ -25,10 +25,10 @@ THE SOFTWARE.
 */
 import java.beans.PropertyChangeEvent;
 
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.interfaces.UpdateListener;
 
-public class Between implements UpdateListener, SendableEntityCreator {
+public class Between implements ObjectCondition, SendableEntityCreator {
 	public static final String FROM = "from";
 	public static final String TO = "to";
 

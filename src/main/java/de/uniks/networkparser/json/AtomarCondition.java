@@ -25,12 +25,12 @@ THE SOFTWARE.
 */
 import java.beans.PropertyChangeEvent;
 
-import de.uniks.networkparser.interfaces.UpdateListener;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 
-public class AtomarCondition implements UpdateListener{
-	private UpdateListener filter;
+public class AtomarCondition implements ObjectCondition{
+	private ObjectCondition filter;
 
-	public AtomarCondition(UpdateListener listener) {
+	public AtomarCondition(ObjectCondition listener) {
 		this.filter = listener;
 	}
 

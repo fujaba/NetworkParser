@@ -20,7 +20,7 @@ import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.TextDiff;
 import de.uniks.networkparser.ext.PropertyChangeEventWrapper;
-import de.uniks.networkparser.interfaces.UpdateListener;
+import de.uniks.networkparser.interfaces.FunctionalCondition;
 import de.uniks.networkparser.json.EMFJsonGrammar;
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.json.JsonObject;
@@ -792,7 +792,7 @@ public class JsonTest extends IOClasses {
 		messages.add("{\"class\":\"de.uniks.networkparser.test.model.House\",\"id\":\"H1\",\"prop\":{\"name\":\"University\",\"floor\":4}}");
 		messages.add("{\"class\":\"de.uniks.networkparser.test.model.House\",\"id\":\"H1\",\"rem\":{\"floor\":4},\"upd\":{\"floor\":42}}");
 		
-		map.with(new UpdateListener() {
+		map.with(new FunctionalCondition() {
 			@Override
 			public boolean update(Object event) {
 				if(event instanceof SimpleEvent == false) {

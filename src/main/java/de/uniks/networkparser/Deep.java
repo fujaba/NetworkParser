@@ -1,5 +1,6 @@
 package de.uniks.networkparser;
 
+import de.uniks.networkparser.interfaces.ObjectCondition;
 /*
 NetworkParser
 The MIT License
@@ -24,14 +25,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.interfaces.UpdateListener;
 /**
  * DeepCondition.
  *
  * @author Stefan Lindel
  */
 
-public class Deep implements SendableEntityCreator, UpdateListener {
+public class Deep implements SendableEntityCreator, ObjectCondition {
 	/** Constant of Deep. */
 	public static final String DEPTH = "depth";
 	/** Variable of Deep. */

@@ -15,8 +15,9 @@ import de.uniks.networkparser.bytes.ByteMessage;
 import de.uniks.networkparser.bytes.ByteMessageCreator;
 import de.uniks.networkparser.ext.generic.JsonParser;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.interfaces.FunctionalCondition;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.interfaces.UpdateListener;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.logic.InstanceOf;
 import de.uniks.networkparser.logic.Or;
@@ -37,7 +38,7 @@ import de.uniks.networkparser.test.model.util.SortedMsgCreator;
 import de.uniks.networkparser.test.model.util.StudentCreator;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
 
-public class JsonModellTest implements UpdateListener {
+public class JsonModellTest implements FunctionalCondition {
 	private IdMap secondMap;
 	BaseItem data;
 	
@@ -208,7 +209,7 @@ public class JsonModellTest implements UpdateListener {
 		map.with(new AppleCreator());
 
 		map.toJsonObject(tree);
-		map.getMapListener().getFilter().withPropertyRegard(new UpdateListener() {
+		map.getMapListener().getFilter().withPropertyRegard(new ObjectCondition() {
 			@Override
 			public boolean update(Object evt) {
 				if(evt instanceof SimpleEvent == false) {
@@ -219,7 +220,7 @@ public class JsonModellTest implements UpdateListener {
 				return (Apple.PROPERTY_PASSWORD.equals(simpleEvent.getPropertyName()) == false);
 			}
 		});
-		map.withListener(new UpdateListener() {
+		map.withListener(new ObjectCondition() {
 			@Override
 			public boolean update(Object evt) {
 				if(evt instanceof SimpleEvent == false) {

@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
-import de.uniks.networkparser.interfaces.UpdateListener;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.logic.Equals;
 import de.uniks.networkparser.logic.Or;
 
@@ -14,11 +14,11 @@ public class RegTest {
 		String reg="[abc]";
 		CharacterBuffer item= new CharacterBuffer();
 		item.with(reg);
-		UpdateListener root = parseCurrentChar(item);
+		ObjectCondition root = parseCurrentChar(item);
 		Assert.assertNotNull(root);
 	}
 
-	public UpdateListener parseCurrentChar(CharacterBuffer item){
+	public ObjectCondition parseCurrentChar(CharacterBuffer item){
 		char ch = item.getCurrentChar();
 		if(ch=='['){
 			// OR-Item
