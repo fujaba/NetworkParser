@@ -256,7 +256,7 @@ public class PointPaneController extends AbstractModelController implements Prop
 	}
 	
 	@Override
-	public void initPropertyChange(Object model, Node gui) {
+	public void initPropertyChange(Object model, Object gui) {
 	}
 
 	public PointPaneController addMouseListener(EventHandler<MouseEvent> listener) {

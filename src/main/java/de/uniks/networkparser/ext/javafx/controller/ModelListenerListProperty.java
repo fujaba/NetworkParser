@@ -29,21 +29,22 @@ import java.util.Iterator;
 
 import com.sun.javafx.collections.ObservableListWrapper;
 
+import de.uniks.networkparser.ext.javafx.controller.ModelListenerProperty.PROPERTYTYPE;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import javafx.beans.Observable;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 
-public class ModelListenerListProperty extends ModelListenerProperty<ObservableList<String>> {
+public class ModelListenerListProperty extends ModelListenerProperty { 
+//ModelListenerProperty<ObservableList<String>> {
 	private ObservableValue<ObservableList<String>> values = new SimpleObjectProperty<ObservableList<String>>(new ObservableListWrapper<String>(new ArrayList<String>()));
 	private SendableEntityCreator childCreator;
 	private String childProperty;
 
 	public ModelListenerListProperty(SendableEntityCreator creator,
-			Object item, String property, String childProperty, SendableEntityCreator childCreator) {
-		super(creator, item, property);
+			Object item, String property, String childProperty, SendableEntityCreator childCreator, PROPERTYTYPE type) {
+		super(creator, item, property, type);
 
 		this.childCreator = childCreator;
 		this.childProperty = childProperty;
@@ -57,19 +58,13 @@ public class ModelListenerListProperty extends ModelListenerProperty<ObservableL
 			for(Iterator<?> iterator = ((Collection<?>)value).iterator();iterator.hasNext();){
 				Object child = iterator.next();
 				Object childValue = childCreator.getValue(child, childProperty);
-				new ModelListenerStringProperty(childCreator, child, childProperty).addListener(new ObjectListener());
+//FIXME				new ModelListenerStringProperty(childCreator, child, childProperty).addListener(new ObjectListener());
 
 				observableList.add(""+childValue);
 			}
 		}
 	}
 
-	@Override
-	public void invalidated(Observable observable) {
-
-	}
-
-	@Override
 	public ObservableList<String> getValue() {
 		return values.getValue();
 	}

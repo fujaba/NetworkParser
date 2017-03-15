@@ -94,7 +94,6 @@ public class GraphTest {
 	public void testModifier() {
 		GraphList model = new GraphList();
 		Clazz person = model.createClazz("Person");
-
 		Assert.assertEquals("public", person.getModifier().toString());
 
 		person.with(Modifier.ABSTRACT);

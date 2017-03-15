@@ -1,9 +1,7 @@
 package de.uniks.networkparser.test.javafx;
 
 import de.uniks.networkparser.ext.javafx.controller.ModelListenerFactory;
-import de.uniks.networkparser.ext.javafx.controller.ModelListenerStringProperty;
 import de.uniks.networkparser.test.model.GUIEntity;
-import de.uniks.networkparser.test.model.util.GUIEntityCreator;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -40,7 +38,8 @@ public class ClickCounter extends Application
 
 	  dataLabel.setTextAlignment(TextAlignment.RIGHT);
 
-	  dataLabel.textProperty().bind(new ModelListenerStringProperty(new GUIEntityCreator(), data, GUIEntity.PROPERTY_NUMBER));
+	  ModelListenerFactory.create(dataLabel, data, GUIEntity.PROPERTY_NUMBER);
+//	  dataLabel.textProperty().bind(new ModelListenerStringProperty(new GUIEntityCreator(), data, GUIEntity.PROPERTY_NUMBER));
 
 	  field = new TextField();
 //FIRST

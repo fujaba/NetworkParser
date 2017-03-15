@@ -29,15 +29,15 @@ import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Method;
 
 import de.uniks.networkparser.ext.generic.GenericCreator;
+import de.uniks.networkparser.ext.javafx.JavaFXClasses;
 import de.uniks.networkparser.interfaces.SendableEntity;
-import javafx.scene.Node;
 
 public abstract class AbstractModelController implements PropertyChangeListener {
 	@SuppressWarnings("unchecked")
-	public <ST extends AbstractModelController> ST init(Object model, Node gui) {
+	public <ST extends AbstractModelController> ST init(Object model, Object gui) {
 		if(model != null && gui != null) {
 			try {
-				Method method = this.getClass().getMethod("initPropertyChange"+model.getClass().getSimpleName(), model.getClass(), Node.class);
+				Method method = this.getClass().getMethod("initPropertyChange"+model.getClass().getSimpleName(), model.getClass(), JavaFXClasses.NODE);
 				method.invoke(this, model, gui);
 			} catch (ReflectiveOperationException e) {
 				this.initPropertyChange(model, gui);
@@ -50,7 +50,7 @@ public abstract class AbstractModelController implements PropertyChangeListener 
 		return (ST) this;
 	}
 
-	public abstract void initPropertyChange(Object model, Node gui);
+	public abstract void initPropertyChange(Object model, Object gui);
 
 	public boolean addListener(Object item, String property) {
 		return addListener(item, property, this);

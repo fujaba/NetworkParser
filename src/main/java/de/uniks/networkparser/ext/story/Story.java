@@ -30,7 +30,6 @@ public class Story {
 	//ADDPATTERN
 	//ADDIMAGE
 	//ADDSVG
-	// ASSERTS
 
 	public Story() {
 		this.add(new StoryStepTitle());
