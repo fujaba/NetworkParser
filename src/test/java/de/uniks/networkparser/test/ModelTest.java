@@ -11,8 +11,8 @@ import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.generic.GenericCreator;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.interfaces.FunctionalCondition;
 import de.uniks.networkparser.json.AtomarCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
@@ -28,7 +28,7 @@ import de.uniks.networkparser.test.model.util.SortedMsgCreator;
 import de.uniks.networkparser.test.model.util.StudentCreator;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
 
-public class ModelTest implements FunctionalCondition {
+public class ModelTest implements ObjectCondition {
 	private SimpleList<SimpleEvent> events = new SimpleList<SimpleEvent>(); 
 
 	@Test(expected = UnsupportedOperationException.class)

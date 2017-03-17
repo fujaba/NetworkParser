@@ -30,7 +30,6 @@
 		<copy todir="build/NetworkParserAndroid/src">
 			<fileset dir="src/main/java/">
 				<exclude name="**/javafx/**"/>
-				<exclude name="**/FunctionalCondition.*"/>
 			</fileset>
 		</copy>
 		<ant antfile="build.xml" target="debug" inheritrefs="true" dir="build/NetworkParserAndroid/" />

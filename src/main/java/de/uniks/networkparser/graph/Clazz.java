@@ -304,7 +304,7 @@ public class Clazz extends GraphEntity {
 		return collection;
 	}
 	
-	void repairAssociation(Association assoc) {
+	protected void repairAssociation(Association assoc) {
 		if(AssociationTypes.IMPLEMENTS.equals(assoc.getType()) == false && AssociationTypes.GENERALISATION.equals(assoc.getType()) == false) {
 			// Wrong way try another round
 			assoc = assoc.getOther();
@@ -332,8 +332,8 @@ public class Clazz extends GraphEntity {
 			}
 
 		}
-		
 	}
+
 	private void repairAssociations() {
 		if (this.children == null ) {
 			return;
@@ -403,7 +403,7 @@ public class Clazz extends GraphEntity {
 		return kidClazzes;
 	}
 	
-	ClazzSet getEdgeClazzes(AssociationTypes typ, AssociationTypes otherTyp) {
+	protected ClazzSet getEdgeClazzes(AssociationTypes typ, AssociationTypes otherTyp) {
 		ClazzSet kidClazzes = new ClazzSet();
 		if (this.children == null || typ == null) {
 			return kidClazzes;
@@ -420,7 +420,7 @@ public class Clazz extends GraphEntity {
 		return kidClazzes;
 	}
 
-	void createAssociation(AssociationTypes direction, AssociationTypes backDirection, Clazz... values) {
+	protected void createAssociation(AssociationTypes direction, AssociationTypes backDirection, Clazz... values) {
 		if (values == null) {
 			return;
 		}
@@ -548,15 +548,18 @@ public class Clazz extends GraphEntity {
 	}
 	
 	/** get All Methods
+	 * @param superClasses Set of all SuperClasses
+	 * @param methodFound Set of Found Methods (Return Value)
+	 * @param newExistMethod Set of new Methods
+	 * @param newMethod new Methods
 	 * @param filters Can Filter the List of Methods
-	 * @return all Methods of a Clazz
 	 *
 	 *<pre>
 	 * Clazz  --------------------- Methods
 	 * one                          many
 	 *</pre>
 	 */
-	void parseSuperMethods(ClazzSet superClasses, MethodSet methodFound, MethodSet newExistMethod, MethodSet newMethod, Condition<?>... filters) {
+	protected void parseSuperMethods(ClazzSet superClasses, MethodSet methodFound, MethodSet newExistMethod, MethodSet newMethod, Condition<?>... filters) {
 		if(this.children == null) {
 			return;
 		}
@@ -685,6 +688,16 @@ public class Clazz extends GraphEntity {
 	public Clazz withMethod(String name, DataType returnType, Parameter... parameters) {
 		Method method = this.createMethod(name, parameters);
 		method.with(returnType);
+		return this;
+	}
+	
+	public Clazz with(Clazz tgtClass, String tgtRoleName, Cardinality tgtCardinality, String srcRoleName, Cardinality srcCardinality) {
+		this.withBidirectional(tgtClass, tgtRoleName, tgtCardinality, srcRoleName, srcCardinality);
+		return this;
+	}
+
+	public Clazz with(String name, DataType type) {
+		this.withAttribute(name, type);
 		return this;
 	}
 

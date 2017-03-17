@@ -298,20 +298,16 @@ public class GenericCreator implements SendableEntityCreator {
 		for (Field field : fields) {
 			Class<?> child = field.getType();
 			if (EntityUtil.isPrimitiveType(child.getName()) == false) {
-				try {
-					Type types = field.getGenericType();
-					if (types != null && types instanceof ParameterizedType) {
-						ParameterizedType genericSuperclass = (ParameterizedType) types;
-						if (genericSuperclass.getActualTypeArguments().length > 0) {
-							Type type = genericSuperclass.getActualTypeArguments()[0];
-							String typeClass = ""+ReflectionLoader.call("getTypeName", type);
-							if(typeClass.length() > 0) {
-								child = Class.forName(typeClass);
-							}
+				Type types = field.getGenericType();
+				if (types != null && types instanceof ParameterizedType) {
+					ParameterizedType genericSuperclass = (ParameterizedType) types;
+					if (genericSuperclass.getActualTypeArguments().length > 0) {
+						Type type = genericSuperclass.getActualTypeArguments()[0];
+						Object childClass = ReflectionLoader.call("getTypeName", type);
+						if(childClass != null) {
+							child = ReflectionLoader.getClass(""+childClass);
 						}
 					}
-				} catch (ReflectiveOperationException e) {
-					// Try to find SubClass for Set
 				}
 				create(map, child);
 			}

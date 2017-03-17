@@ -8,7 +8,7 @@ import org.junit.Test;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.ext.story.Story;
-import de.uniks.networkparser.interfaces.FunctionalCondition;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.test.model.House;
 import de.uniks.networkparser.test.model.Student;
@@ -63,7 +63,7 @@ public class SimpleUsage {
 		IdMap map=new IdMap().withCreator(new UniversityCreator(), new StudentCreator()); //<2>
 		map.withTimeStamp(1);
 		// Add UpdateListener
-		map.withListener(new FunctionalCondition() {
+		map.withListener(new ObjectCondition() {
 			
 			@Override
 			public boolean update(Object value) {

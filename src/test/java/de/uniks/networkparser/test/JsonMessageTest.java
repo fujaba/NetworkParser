@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
-import de.uniks.networkparser.interfaces.FunctionalCondition;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.test.model.AppleTree;
@@ -18,7 +18,7 @@ import de.uniks.networkparser.test.model.util.GroupAccountCreator;
 import de.uniks.networkparser.test.model.util.HouseCreator;
 import de.uniks.networkparser.test.model.util.PersonCreator;
 
-public class JsonMessageTest implements FunctionalCondition {
+public class JsonMessageTest implements ObjectCondition {
 	private SimpleList<String> messages;
 	private int pos =0;
 
@@ -91,7 +91,7 @@ public class JsonMessageTest implements FunctionalCondition {
 		IdMap map=new IdMap().with(new HouseCreator());
 		map.withTimeStamp(1);
 		messages = new SimpleList<String>();
-		map.with(new FunctionalCondition() {
+		map.with(new ObjectCondition() {
 			@Override
 			public boolean update(Object evt) {
 				if(evt instanceof SimpleEvent == false) {

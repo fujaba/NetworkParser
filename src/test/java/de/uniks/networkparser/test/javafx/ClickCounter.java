@@ -33,13 +33,14 @@ public class ClickCounter extends Application
 
 	  Label label = new Label("Button has been clicked: ");
 	  Label dataLabel = new Label();
+	  dataLabel.setId(GUIEntity.PROPERTY_NUMBER);
 
 	  box.getChildren().addAll(label, dataLabel);
 
 	  dataLabel.setTextAlignment(TextAlignment.RIGHT);
 
-	  ModelListenerFactory.create(dataLabel, data, GUIEntity.PROPERTY_NUMBER);
-//	  dataLabel.textProperty().bind(new ModelListenerStringProperty(new GUIEntityCreator(), data, GUIEntity.PROPERTY_NUMBER));
+//	  ModelListenerFactory.create(dataLabel, data, GUIEntity.PROPERTY_NUMBER);
+	  ModelListenerFactory.create(dataLabel, data);
 
 	  field = new TextField();
 //FIRST

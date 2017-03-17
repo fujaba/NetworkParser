@@ -1,36 +1,83 @@
 package de.uniks.networkparser.ext.generic;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 
 public class ReflectionLoader {
-	public static final Class<?> CHANGELISTENER = getClass("javafx.beans.value.ChangeListener");
-	public static final Class<?> NODE = getClass("javafx.scene.Node");
-	public static final Class<?> OBSERVABLEVALUE = getClass("javafx.beans.value.ObservableValue");
-	public static final Class<?> INVALIDATIONLISTENER = getClass("javafx.beans.InvalidationListener");
-	public static final Class<?> BINDINGS = getClass("javafx.beans.binding.Bindings");
+	public static final Class<?> CHANGELISTENER;
+	public static final Class<?> NODE;
+	public static final Class<?> OBSERVABLEVALUE;
+	public static final Class<?> INVALIDATIONLISTENER;
+	public static final Class<?> BINDINGS;
 	
-	public static final Class<?> PROPERTY = getClass("javafx.beans.property.Property");
-	public static final Class<?> SIMPLEOBJECTPROPERTY = getClass("javafx.beans.property.SimpleObjectProperty");
-	public static final Class<?> STRINGPROPERTY = getClass("javafx.beans.property.StringProperty");
-	public static final Class<?> BOOLEANPROPERTY = getClass("javafx.beans.property.BooleanProperty");
-	public static final Class<?> INTEGERPROPERTY = getClass("javafx.beans.property.IntegerProperty");
-	public static final Class<?> DOUBLEPROPERTY = getClass("javafx.beans.property.DoubleProperty");
+	public static final Class<?> PROPERTY;
+	public static final Class<?> SIMPLEOBJECTPROPERTY;
+	public static final Class<?> STRINGPROPERTY;
+	public static final Class<?> BOOLEANPROPERTY;
+	public static final Class<?> INTEGERPROPERTY;
+	public static final Class<?> DOUBLEPROPERTY;
 
-	public static final Class<?> COLOR = getClass("javafx.scene.paint.Color");
-	public static final Class<?> COLORPICKER = getClass("javafx.scene.control.ColorPicker");
-	public static final Class<?> TEXTFIELD = getClass("javafx.scene.control.TextField");
-	public static final Class<?> COMBOBOX = getClass("javafx.scene.control.ComboBox");
-	public static final Class<?> LABEL = getClass("javafx.scene.control.Label");
-	public static final Class<?> CHECKBOX = getClass("javafx.scene.control.CheckBox");
-	public static final Class<?> RADIOBUTTON = getClass("javafx.scene.control.RadioButton");
-	public static final Class<?> SYSTEMTRAY = getClass("java.awt.SystemTray");
+	public static final Class<?> COLOR;
+	public static final Class<?> COLORPICKER;
+	public static final Class<?> TEXTFIELD;
+	public static final Class<?> COMBOBOX;
+	public static final Class<?> LABEL;
+	public static final Class<?> CHECKBOX;
+	public static final Class<?> RADIOBUTTON;
+	public static final Class<?> SYSTEMTRAY;
 //	public static final Class<?> JUNIT = getClass("org.junit.Assert");
+	
+	static {
+		CHANGELISTENER = getClass("javafx.beans.value.ChangeListener");
+		if(CHANGELISTENER != null) {
+			NODE = getClass("javafx.scene.Node");
+			OBSERVABLEVALUE = getClass("javafx.beans.value.ObservableValue");
+			INVALIDATIONLISTENER = getClass("javafx.beans.InvalidationListener");
+			BINDINGS = getClass("javafx.beans.binding.Bindings");
+			
+			PROPERTY = getClass("javafx.beans.property.Property");
+			SIMPLEOBJECTPROPERTY = getClass("javafx.beans.property.SimpleObjectProperty");
+			STRINGPROPERTY = getClass("javafx.beans.property.StringProperty");
+			BOOLEANPROPERTY = getClass("javafx.beans.property.BooleanProperty");
+			INTEGERPROPERTY = getClass("javafx.beans.property.IntegerProperty");
+			DOUBLEPROPERTY = getClass("javafx.beans.property.DoubleProperty");
 
+			COLOR = getClass("javafx.scene.paint.Color");
+			COLORPICKER = getClass("javafx.scene.control.ColorPicker");
+			TEXTFIELD = getClass("javafx.scene.control.TextField");
+			COMBOBOX = getClass("javafx.scene.control.ComboBox");
+			LABEL = getClass("javafx.scene.control.Label");
+			CHECKBOX = getClass("javafx.scene.control.CheckBox");
+			RADIOBUTTON = getClass("javafx.scene.control.RadioButton");
+			SYSTEMTRAY = getClass("java.awt.SystemTray");
+		} else {
+			NODE = null;
+			OBSERVABLEVALUE = null;
+			INVALIDATIONLISTENER = null;
+			BINDINGS = null;
+			
+			PROPERTY = null;
+			SIMPLEOBJECTPROPERTY = null;
+			STRINGPROPERTY = null;
+			BOOLEANPROPERTY = null;
+			INTEGERPROPERTY = null;
+			DOUBLEPROPERTY = null;
+
+			COLOR = null;
+			COLORPICKER = null;
+			TEXTFIELD = null;
+			COMBOBOX = null;
+			LABEL = null;
+			CHECKBOX = null;
+			RADIOBUTTON = null;
+			SYSTEMTRAY = null;
+		}
+	}
 	
 	public static Object newInstance(Class<?> instance) {
 		Object newInstance = null;
 		try {
-			newInstance = ReflectionLoader.SIMPLEOBJECTPROPERTY.newInstance();
+			newInstance = instance.newInstance();
 		} catch (InstantiationException e) {
 		} catch (IllegalAccessException e) {
 		}
@@ -39,8 +86,9 @@ public class ReflectionLoader {
 	
 	public static Class<?> getClass(String name) {
 		try {
-			return Class.forName(name);
-		} catch (ClassNotFoundException e) {
+			return Class.forName(name, false, ReflectionLoader.class.getClassLoader());
+		} catch (Throwable e) {
+			System.out.println(name+" not found");
 		}
 		return null;
 	}
@@ -51,6 +99,9 @@ public class ReflectionLoader {
 	}
 	
 	public static Object call(String methodName, Object item, Object... arguments) {
+		if(methodName == null || item == null) {
+			return null;
+		}
 		int len=0;
 		if(arguments != null) {
 			if(arguments.length %2 ==1) {
@@ -67,7 +118,10 @@ public class ReflectionLoader {
 			pos++;
 		}
 		try {
-			boolean staticCall = item instanceof Class<?>;
+			boolean staticCall =false;
+			if(item instanceof Type == false) {
+				staticCall = item instanceof Class<?>;
+			}
 			Class<?> itemClass;
 			if(staticCall) {
 				itemClass = ((Class<?>) item);
@@ -83,7 +137,6 @@ public class ReflectionLoader {
 				return method.invoke(item, methodArgumentsValues);
 			}				
 		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		return null;
 	}
