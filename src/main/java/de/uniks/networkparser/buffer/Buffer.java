@@ -142,7 +142,7 @@ public abstract class Buffer implements BufferItem {
 	public CharacterBuffer readLine() {
 		CharacterBuffer line = new CharacterBuffer();
 		char character = getCurrentChar();
-		while( character != '\r' &&  character !='\n') {
+		while( character != '\r' &&  character !='\n' && character != 0) {
 			line.with(character);
 			character = getChar();
 		}

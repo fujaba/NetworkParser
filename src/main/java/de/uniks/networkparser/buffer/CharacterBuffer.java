@@ -126,6 +126,14 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		}
 		return result;
 	}
+	
+	public byte[] toByteArray() {
+		byte[] result = new byte[this.length];
+		for(int i=start; i< this.length;i++) {
+			result[i] = (byte) buffer[i];
+		}
+		return result;
+	}
 
 	public boolean replace(int start, int end, String replace) {
 		int pos =0;
@@ -442,6 +450,19 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		}
 		return this;
 	}
+	
+	public CharacterBuffer with(int value) {
+		String bytes=""+value;
+		this.with(bytes);
+		return this;
+	}
+	
+	public CharacterBuffer with(long value) {
+		String bytes=""+value;
+		this.with(bytes);
+		return this;
+	}
+	
 	/**
 	 * Append a new Character to CharacterBuffer
 	 * @param item a new StartItem
@@ -489,6 +510,10 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		}
 		this.buffer[0] = value;
 		return this;
+	}
+	
+	public boolean startsWith(CharSequence prefix) {
+		return this.startsWith(prefix, 0, false);
 	}
 
 	public boolean startsWith(CharSequence prefix, int toffset, boolean ignoreCase) {

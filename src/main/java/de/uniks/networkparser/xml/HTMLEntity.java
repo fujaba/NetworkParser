@@ -131,21 +131,24 @@ public class HTMLEntity implements BaseItem {
 			return null;
 		}
 		int pos = ref.lastIndexOf(".");
-		if(pos<0) {
-			return null;
+		if(pos>0) {
+			String ext = ref.substring(pos).toLowerCase();
+			if(ext.equals(".css") ) {
+				child = new XMLEntity().setType("link");
+				child.withKeyValue("rel", "stylesheet");
+				child.withKeyValue("type", "text/css");
+				child.withKeyValue("href", ref);
+			} else if(ext.equals(".js") ) {
+				child = new XMLEntity().setType("script").withCloseTag();
+				child.withKeyValue("src", ref);
+			} else if(IMAGEFORMAT.indexOf(" "+ext+" ")>=0) {
+				child = new XMLEntity().setType("img").withCloseTag();
+				child.withKeyValue("src", ref);
+			}
 		}
-		String ext = ref.substring(pos).toLowerCase();
-		if(ext.equals(".css") ) {
-			child = new XMLEntity().setType("link");
-			child.withKeyValue("rel", "stylesheet");
-			child.withKeyValue("type", "text/css");
-			child.withKeyValue("href", ref);
-		} else if(ext.equals(".js") ) {
-			child = new XMLEntity().setType("script").withCloseTag();
-			child.withKeyValue("src", ref);
-		} else if(IMAGEFORMAT.indexOf(" "+ext+" ")>=0) {
-			child = new XMLEntity().setType("img").withCloseTag();
-			child.withKeyValue("src", ref);
+		if(child == null) {
+			// May be blanko Body text
+			child = new XMLEntity().withValueItem(ref);
 		}
 		return child;
 	}
@@ -259,6 +262,7 @@ public class HTMLEntity implements BaseItem {
 		}
 		return converter.encode(this);
 	}
+	
 	@Override
 	public int size() {
 		return body.size();

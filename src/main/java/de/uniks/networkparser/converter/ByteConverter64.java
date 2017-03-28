@@ -24,7 +24,82 @@ public class ByteConverter64 extends ByteConverter {
 		}
 		return buffer.toString();
 	}
+
+	private int getStaticSize(int size) {
+		return ((size + 2) / 3) * 4;
+	}
+
+	/**
+     * Base64 encode a byte array.  No line breaks are inserted.
+     * This method is suitable for short strings, such as those
+     * in the IMAP AUTHENTICATE protocol, but not to encode the
+     * entire content of a MIME part.
+     *
+     * @param	inbuf	the byte array
+     * @return		the encoded byte array
+     */
+	public String toStaticString(CharSequence values) {
+		if (values.length() == 0) {
+			return values.toString();
+		}
+		if(values instanceof CharacterBuffer) {
+			return encode((CharacterBuffer)values, 0,values.length());
+		}
+		CharacterBuffer buffer = new CharacterBuffer();
+		buffer.withObjects(values);
+		return encode(buffer, 0,buffer.length());
+	}
+
+	/**
+	 * Internal use only version of encode. Allow specifying which part of the
+	 * input buffer to encode. If outbuf is non-null, it's used as is.
+	 * Otherwise, a new output buffer is allocated.
+	 */
+	private String encode(CharacterBuffer buffer, int off, int size) {
+		byte[] outbuf = new byte[getStaticSize(size)];
+
+		int inpos, outpos;
+		int val;
+		for (inpos = off, outpos = 0; size >= 3; size -= 3, outpos += 4) {
+			val = buffer.charAt(inpos++) & 0xff;
+			val <<= 8;
+			val |= buffer.charAt(inpos++) & 0xff;
+			val <<= 8;
+			val |= buffer.charAt(inpos++) & 0xff;
+			outbuf[outpos + 3] = (byte) pem_array[val & 0x3f];
+			val >>= 6;
+			outbuf[outpos + 2] = (byte) pem_array[val & 0x3f];
+			val >>= 6;
+			outbuf[outpos + 1] = (byte) pem_array[val & 0x3f];
+			val >>= 6;
+			outbuf[outpos + 0] = (byte) pem_array[val & 0x3f];
+		}
+		// done with groups of three, finish up any odd bytes left
+		if (size == 1) {
+			val = buffer.charAt(inpos++) & 0xff;
+			val <<= 4;
+			outbuf[outpos + 3] = (byte) '='; // pad character;
+			outbuf[outpos + 2] = (byte) '='; // pad character;
+			outbuf[outpos + 1] = (byte) pem_array[val & 0x3f];
+			val >>= 6;
+			outbuf[outpos + 0] = (byte) pem_array[val & 0x3f];
+		} else if (size == 2) {
+			val = buffer.charAt(inpos++) & 0xff;
+			val <<= 8;
+			val |= buffer.charAt(inpos++) & 0xff;
+			val <<= 2;
+			outbuf[outpos + 3] = (byte) '='; // pad character;
+			outbuf[outpos + 2] = (byte) pem_array[val & 0x3f];
+			val >>= 6;
+			outbuf[outpos + 1] = (byte) pem_array[val & 0x3f];
+			val >>= 6;
+			outbuf[outpos + 0] = (byte) pem_array[val & 0x3f];
+		}
+		return new String(outbuf);
+	}
 	
+	
+
 	private static byte[] pem_convert_array = null;
 	private void initPEMArray() {
 		pem_convert_array = new byte[256];

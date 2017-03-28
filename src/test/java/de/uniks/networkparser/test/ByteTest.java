@@ -20,6 +20,7 @@ import de.uniks.networkparser.bytes.ByteEntity;
 import de.uniks.networkparser.bytes.ByteMessage;
 import de.uniks.networkparser.bytes.ByteMessageCreator;
 import de.uniks.networkparser.bytes.SHA1;
+import de.uniks.networkparser.converter.ByteConverter64;
 import de.uniks.networkparser.converter.ByteConverterAES;
 import de.uniks.networkparser.converter.ByteConverterBinary;
 import de.uniks.networkparser.converter.ByteConverterHex;
@@ -52,6 +53,17 @@ public class ByteTest{
 			Assert.assertEquals(i, buffer.byteAt(i));
 		}
 	}
+	
+	@Test
+	public void testBASE64() {
+		String item = "tlstest#42";
+		byte[] itemByte = item.getBytes();
+		byte[] reference = BASE64EncoderStream.encode(itemByte);
+		byte[] actuals = new ByteConverter64().toStaticString(item).getBytes();
+		Assert.assertEquals(reference.length, actuals.length);
+		Assert.assertArrayEquals(reference, actuals);
+	}
+	
 	@Test
 	public void testSHA1() throws NoSuchAlgorithmException, UnsupportedEncodingException {
 		String text="Hallo Welt";
