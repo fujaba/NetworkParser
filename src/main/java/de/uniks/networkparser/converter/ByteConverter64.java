@@ -35,8 +35,8 @@ public class ByteConverter64 extends ByteConverter {
      * in the IMAP AUTHENTICATE protocol, but not to encode the
      * entire content of a MIME part.
      *
-     * @param	inbuf	the byte array
-     * @return		the encoded byte array
+     * @param values	the byte array
+     * @return the encoded byte array
      */
 	public String toStaticString(CharSequence values) {
 		if (values.length() == 0) {
@@ -54,6 +54,10 @@ public class ByteConverter64 extends ByteConverter {
 	 * Internal use only version of encode. Allow specifying which part of the
 	 * input buffer to encode. If outbuf is non-null, it's used as is.
 	 * Otherwise, a new output buffer is allocated.
+	 * @param buffer Buffer for encoding
+	 * @param off offset of String
+	 * @param size size of String
+	 * @return encoded String
 	 */
 	private String encode(CharacterBuffer buffer, int off, int size) {
 		byte[] outbuf = new byte[getStaticSize(size)];

@@ -135,6 +135,9 @@ public abstract class Buffer implements BufferItem {
 		result.with(getCurrentChar());
 		for(int i = 1; i < len; i++) {
 			result.with(getChar());
+			if(isEnd()) {
+				break;
+			}
 		}
 		return result;
 	}

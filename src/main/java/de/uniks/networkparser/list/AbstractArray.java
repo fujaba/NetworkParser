@@ -1013,6 +1013,16 @@ public abstract class AbstractArray<V> implements BaseItem {
 				return false;
 		return true;
 	}
+	
+	public boolean containsAll(Object... keys) {
+		if (keys == null)
+			return true;
+		for (Object e : keys)
+			if (!contains(e)) {
+				return false;
+			}
+		return true;
+	}
 
 	/**
 	 * {@inheritDoc}

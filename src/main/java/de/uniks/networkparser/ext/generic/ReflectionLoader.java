@@ -88,7 +88,6 @@ public class ReflectionLoader {
 		try {
 			return Class.forName(name, false, ReflectionLoader.class.getClassLoader());
 		} catch (Throwable e) {
-			System.out.println(name+" not found");
 		}
 		return null;
 	}

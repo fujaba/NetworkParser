@@ -11,9 +11,11 @@ import java.nio.charset.StandardCharsets;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
+import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.converter.ByteConverter64;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 
 public class SMTPSession {
@@ -41,6 +43,9 @@ public class SMTPSession {
 
 	/**
 	 * Creates new SMTP session by given SMTP host and port, sender email address
+	 * @param host SMTP host
+	 * @param port SMTP port
+	 * @param sender email address of sender
 	 */
 	public SMTPSession(String host, int port, String sender) {
 		this.host = host;
@@ -51,6 +56,8 @@ public class SMTPSession {
 	/**
 	 * Creates new SMTP session by given SMTP host, sender email address,
 	 * Assumes SMTP port is 25 (default for SMTP service).
+	 * @param host SMTP host
+	 * @param sender email address of sender
 	 */
 	public SMTPSession(String host, String sender) {
 		this(host, 25, sender);
@@ -75,6 +82,7 @@ public class SMTPSession {
 	/**
 	 * Closes down the connection to SMTP server (if open). Should be called if
 	 * an exception is raised during the SMTP session.
+	 * @return success
 	 */
 	public boolean close() {
 		try {
@@ -90,6 +98,9 @@ public class SMTPSession {
 	
 	/**
 	 * Connects to the SMTP server and gets input and output streams (in, out).
+	 * @param userName the Username
+	 * @param password the password
+	 * @return success
 	 */
 	public boolean connect(String userName, String password) {
 		if(serverSocket == null) {
@@ -169,15 +180,15 @@ public class SMTPSession {
 
 	/**
 	 * Connects to the SMTP server and gets input and output streams (in, out).
-	 * @return 
+	 * @return success
 	 */
-	protected boolean connect() throws IOException {
+	protected boolean connect() {
 		return this.connect(null, null);
 	}
 
 	/**
 	 * Sends given command and waits for a response from server.
-	 * 
+	 * @param commandString String for sending
 	 * @return response received from the server.
 	 */
 	protected CharacterBuffer sendCommand(String commandString) {
@@ -198,7 +209,7 @@ public class SMTPSession {
 	/**
 	 * Sends given command and waits for a response from server.
 	 * 
-	 * @return response received from the server.
+	 * @param cmd bytes for sending
 	 */
 	protected void sendValues(byte... cmd) {
 		try {
@@ -213,6 +224,8 @@ public class SMTPSession {
     /**
      * Convert the String to either ASCII or UTF-8 bytes
      * depending on allowutf8.
+     * @param s string to convert
+     * @return convert String to Byte
      */
 	private byte[] toBytes(String s) {
 		if (allowutf8)
@@ -227,6 +240,9 @@ public class SMTPSession {
 	 * Sends given commandString to the server, gets its reply and checks if it
 	 * starts with expectedResponseStart. If not, throws IOException with
 	 * server's reply (which is unexpected).
+	 * @param commandString the Command to send
+	 * @param responseCode expected value of Response
+	 * @return success
 	 */
 	protected boolean doCommand(String commandString, String responseCode) {
 		CharacterBuffer response = sendCommand(commandString);
@@ -235,6 +251,9 @@ public class SMTPSession {
 
 	/**
 	 * Checks if given server reply starts with expectedResponseStart. If not,
+	 * @param response Response as String
+	 * @param code check the response for response code
+	 * @return success
 	 */
 	protected boolean checkServerResponse(CharSequence response, String code) {
 		if(response == null || code == null) {
@@ -259,6 +278,7 @@ public class SMTPSession {
 	 * line of the server's reply consists of 3-digit number followed by some
 	 * text. If there is a '-' immediately after the number, the SMTP response
 	 * continues on the next line. Otherwise it finished at this line.
+	 * @return get the current Response
 	 */
 	protected CharacterBuffer getResponse() {
 		CharacterBuffer response = new CharacterBuffer();
@@ -281,17 +301,6 @@ public class SMTPSession {
 		return response;
 	}
 
-	/**
-	 * Prepares and returns e-mail message headers.
-	 */
-	protected String getMessageHeaders() {
-		// Most header are less than 1024 characters long
-		String headers = "";
-		headers = headers + "Sender: " + sender + "\n";
-		headers = headers + "From: " + sender + "\n";
-		return headers + "\n\n";
-	}
-	
 	/**
 	 * Get the name of the local host, for use in the EHLO and HELO commands.
 	 * The property InetAddress would tell us.
@@ -339,9 +348,10 @@ public class SMTPSession {
 	
 	/**
 	 * Sends a message using the SMTP protocol.
-	 * @return 
+	 * @param message to send
+	 * @return success
 	 */
-	public boolean sendMessage(EMailMessage message) throws IOException {
+	public boolean sendMessage(EMailMessage message) {
 		if(connect() == false) {
 			return false;
 		}
@@ -377,30 +387,31 @@ public class SMTPSession {
 		sendValues(message.getHeader(EMailMessage.PROPERTY_ID));
 		sendValues(message.getHeader(EMailMessage.PROPERTY_SUBJECT));
 		sendValues(message.getHeader(EMailMessage.PROPERTY_MIME));
-		sendValues(message.getHeader(EMailMessage.PROPERTY_CONTENTTYPE));
 		
 		SimpleList<BaseItem> messages = message.getMessages();
 		boolean multiPart = message.isMultiPart();
+		String splitter="--";
 		if(multiPart) {
-			sendValues(message.getHeader(EMailMessage.PROPERTY_BOUNDARY));
+			sendValues(message.getHeader(EMailMessage.PROPERTY_CONTENTTYPE)+message.getHeader(EMailMessage.PROPERTY_BOUNDARY));
 		} else {
+			sendValues(message.getHeader(EMailMessage.PROPERTY_CONTENTTYPE));
 			sendValues(EMailMessage.CONTENT_ENCODING);
 		}
-
 		// The CRLF separator between header and content
 		sendValues(CRLF);
-
 		for(BaseItem msg : messages) {
 			CharacterBuffer buffer=new CharacterBuffer();
 			if(msg != null) {
 				buffer.with(msg.toString());
 			}
 			if(multiPart) {
-				sendValues(message.generateBoundaryValue());
+				sendValues(splitter+message.generateBoundaryValue());
 				sendValues(EMailMessage.PROPERTY_CONTENTTYPE+message.getContentType(msg));
 				sendValues(EMailMessage.CONTENT_ENCODING);
 			}
-
+			// The CRLF separator between header and content
+			sendValues(CRLF);
+			
 			while(buffer.isEnd() == false) {
 				CharacterBuffer line=buffer.readLine();
 				// If the line begins with a ".", put an extra "." in front of it.
@@ -408,17 +419,29 @@ public class SMTPSession {
 					sendValues((byte)'.');
 				}
 				sendValues(line.toByteArray());
-				sendValues(CRLF);
+			}
+		}
+		SimpleKeyValueList<String, Buffer> attachments = message.getAttachments();
+		for(int i=0;i<attachments.size();i++) {
+			String fileName = attachments.get(i);
+			Buffer buffer = attachments.getValueByIndex(i);
+			sendValues(splitter+message.generateBoundaryValue());
+			sendValues(EMailMessage.PROPERTY_CONTENTTYPE+EMailMessage.CONTENT_TYPE_PLAIN+" name="+fileName);
+			sendValues(EMailMessage.CONTENT_ENCODING);
+			sendValues("Content-Disposition: attachment; filename="+fileName);
+			// The CRLF separator between header and content
+			sendValues(CRLF);
+			while(buffer.isEnd() == false) {
+				CharacterBuffer line=buffer.getString(1024);
+				sendValues(line.toByteArray());
 			}
 		}
 		if(multiPart) {
-			sendValues(message.generateBoundaryValue()+"--");
+			sendValues(splitter+message.generateBoundaryValue()+splitter);
 		}
 		// A "." on a line by itself ends a message.
 		doCommand(".", RESPONSE_MAILACTIONOKEY);
-		
-		
-//
+
 		// Message is sent. Close the connection to the server
 		return doCommand("QUIT", RESPONSE_SERVICE_CLOSING_TRANSMISSION);
 	}

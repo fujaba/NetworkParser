@@ -17,6 +17,7 @@ public class Manifest extends SimpleKeyValueList<String, String>{
 	public static final String LICENCE="Licence";
 	public static final String HOMEPAGE="Homepage";
 	public static final String COVERAGE="Coverage";
+	private boolean empty = true;
 	
 	public static Manifest create() {
 		String value = null;
@@ -34,13 +35,15 @@ public class Manifest extends SimpleKeyValueList<String, String>{
 	
 	public static void printVersion() {
 		Manifest manifest = create();
-		System.out.println("Title: "+manifest.getString(TITLE));
-		System.out.println("Version: "+manifest.getString(VERSION));
-		System.out.println("Time: "+manifest.getString(BUILD));
-		System.out.println("Hash: "+manifest.getString(HASH));
-		System.out.println("Licence: "+manifest.getString(LICENCE));
-		System.out.println("Homepage: "+manifest.getString(HOMEPAGE));
-		System.out.println("Coverage: "+manifest.getString(COVERAGE));
+		if(manifest.isEmptyManifest() == false) {
+			System.out.println("Title: "+manifest.getString(TITLE));
+			System.out.println("Version: "+manifest.getString(VERSION));
+			System.out.println("Time: "+manifest.getString(BUILD));
+			System.out.println("Hash: "+manifest.getString(HASH));
+			System.out.println("Licence: "+manifest.getString(LICENCE));
+			System.out.println("Homepage: "+manifest.getString(HOMEPAGE));
+			System.out.println("Coverage: "+manifest.getString(COVERAGE));
+		}
 	}
 
 	public static Manifest create(CharSequence value) {
@@ -61,9 +64,14 @@ public class Manifest extends SimpleKeyValueList<String, String>{
 				}
 				tokener.skip();
 			}
-			manifest.add(section.toString(), sectionheader.trim().toString());
-			
+			String key = section.toString();
+			manifest.add(key, sectionheader.trim().toString());
 		}
+		manifest.empty = manifest.containsAll(VERSION, TITLE, BUILD) == false;
 		return manifest; 
+	}
+	
+	public boolean isEmptyManifest() {
+		return empty;
 	}
 }

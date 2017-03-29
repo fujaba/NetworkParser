@@ -5,6 +5,7 @@ import de.uniks.networkparser.StringEntity;
 import de.uniks.networkparser.buffer.Buffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.HTMLEntity;
 
@@ -19,8 +20,8 @@ public class EMailMessage {
 	public static final String PROPERTY_BOUNDARY="boundary=";
 	public static final String PROPERTY_CONTENTTYPE="Content-Type: ";
 	public static final String CONTENT_TYPE_MULTIPART = "multipart/mixed;";
-	public static final String CONTENT_TYPE_HTML = "text/html; charset=utf-8";
-	public static final String CONTENT_TYPE_PLAIN = "text/plain; charset=utf-8";
+	public static final String CONTENT_TYPE_HTML = "text/html; charset=utf-8;";
+	public static final String CONTENT_TYPE_PLAIN = "text/plain; charset=utf-8;";
 	public static final String CONTENT_ENCODING = "Content-Transfer-Encoding: 7bit";
 	public static final String CRLF="\r\n";
 	private String subject;
@@ -32,7 +33,7 @@ public class EMailMessage {
 	private String from;
 	private SimpleList<String> to=new SimpleList<String>();
 	private static int counter;
-	private SimpleList<Buffer> attachment = new SimpleList<Buffer>();
+	private SimpleKeyValueList<String, Buffer> attachment = new SimpleKeyValueList<String, Buffer>();
 	private String boundary;
 	
 	public EMailMessage(String... toAdresses) {
@@ -145,6 +146,7 @@ public class EMailMessage {
      * This implementation generates it by concatenating a global
      * part number, a newly created object's <code>hashCode()</code>,
      * and the current time (in milliseconds).
+     * @return Boundary String
      */
     public String generateBoundaryValue() {
     	if(this.boundary != null) {
@@ -154,7 +156,7 @@ public class EMailMessage {
 		long hash = s.hashCode();
 
 		// Unique string is ----=_Part_<part>_<hashcode>.<currentTime>
-		s.with("----=_Part_").with(counter++).with('_').with(hash).with('.').with(System.currentTimeMillis());
+		s.with("_Part_").with(counter++).with('_').with(hash).with('.').with(System.currentTimeMillis());
 		this.boundary = s.toString();
 		return this.boundary;
 	}
@@ -211,7 +213,7 @@ public class EMailMessage {
 	public SimpleList<BaseItem> getMessages() {
 		return this.message;
 	}
-	public SimpleList<Buffer> getAttachments() {
+	public SimpleKeyValueList<String, Buffer> getAttachments() {
 		return this.attachment;
 	}
 	
@@ -223,8 +225,8 @@ public class EMailMessage {
 		this.to.remove(pos);
 	}
 	
-	public EMailMessage withAttachment(Buffer buffer) {
-		this.attachment.add(buffer);
+	public EMailMessage withAttachment(String fileName, Buffer buffer) {
+		this.attachment.add(fileName, buffer);
 		return this;
 	}
 }

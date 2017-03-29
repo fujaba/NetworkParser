@@ -1,5 +1,9 @@
 package de.uniks.networkparser.gui.controls;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -141,7 +145,10 @@ public class TableComponent extends Control {
 	@Override
 	public boolean setValue(String key, Object value) {
 		if (PROPERTY_COLUMNS.equals(key)) {
-			this.columns = (SimpleList<Column>) value;
+			if(value instanceof Collection<?>) {
+				Collection<?> items = ((Collection<?>) value);
+				this.columns.withList(items);
+			}
 		}
 		else if (PROPERTY_ITEM.equals(key)) {
 			// TODO: curently no item..
@@ -151,7 +158,10 @@ public class TableComponent extends Control {
 			this.property = (String) value;
 		}
 		else if (PROPERTY_SEARCHCOLUMNS.equals(key)) {
-			this.searchColumn = (SimpleList<Column>) value;
+			if(value instanceof Collection<?>) {
+				Collection<?> items = ((Collection<?>) value);
+				this.searchColumn.withList(items);
+			}
 		}
 		return super.setValue(key, value);
 	}
