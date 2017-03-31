@@ -111,7 +111,7 @@ public class JavaAdapter implements JavaViewAdapter {
 			owner.fireEvent(data);
 			return true;
 		}
-		if(value.getClass().isAssignableFrom(ReflectionLoader.JSOBJECT)) {
+		if(ReflectionLoader.JSOBJECT.isAssignableFrom(value.getClass())) {
 			EventFX event = EventFX.create((JSObject) value);
 			owner.fireEvent(event);
 			return true;
