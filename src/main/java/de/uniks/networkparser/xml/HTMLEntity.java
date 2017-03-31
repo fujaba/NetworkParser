@@ -1,5 +1,4 @@
 package de.uniks.networkparser.xml;
-
 /*
 NetworkParser
 The MIT License
@@ -37,6 +36,8 @@ public class HTMLEntity implements BaseItem {
 	public static final String PROPERTY_BODY="body";
 	public static final String IMAGEFORMAT=" .bmp .jpg .jpeg .png .gif .svg ";
 	public static final String ENCODING_UTF8="utf-8";
+	public static final String SCRIPT="script";
+	public static final String KEY_SRC="src";
 
 	private XMLEntity body = new XMLEntity().setType("body");
 	private XMLEntity header = new XMLEntity().setType("head");
@@ -49,7 +50,14 @@ public class HTMLEntity implements BaseItem {
 	public String toString(int indentFactor) {
 		return parseItem(new EntityStringConverter(indentFactor));
 	}
-
+	
+	public XMLEntity getHeaders() {
+		return header;
+	}
+	public XMLEntity getBody() {
+		return body;
+	}
+	
 	public HTMLEntity withEncoding(String encoding) {
 		XMLEntity metaTag = new XMLEntity().setType("meta");
 		metaTag.withKeyValue("http-equiv", "Content-Type");
@@ -61,6 +69,17 @@ public class HTMLEntity implements BaseItem {
 	public HTMLEntity withTitle(String value) {
 		XMLEntity titleTag = new XMLEntity().setType("title").withValue(value);
 		this.header.with(titleTag);
+		return this;
+	}
+
+	public HTMLEntity withHeaderScript(String value) {
+		XMLEntity headerChild = new XMLEntity().setType(SCRIPT).withKeyValue("language", "Javascript").withValue(value);
+		this.header.with(headerChild);
+		return this;
+	}
+	public HTMLEntity withHeaderStyle(String value) {
+		XMLEntity headerChild = new XMLEntity().setType("style").withValue(value);
+		this.header.with(headerChild);
 		return this;
 	}
 
@@ -139,11 +158,11 @@ public class HTMLEntity implements BaseItem {
 				child.withKeyValue("type", "text/css");
 				child.withKeyValue("href", ref);
 			} else if(ext.equals(".js") ) {
-				child = new XMLEntity().setType("script").withCloseTag();
-				child.withKeyValue("src", ref);
+				child = new XMLEntity().setType(SCRIPT).withCloseTag();
+				child.withKeyValue(KEY_SRC, ref);
 			} else if(IMAGEFORMAT.indexOf(" "+ext+" ")>=0) {
 				child = new XMLEntity().setType("img").withCloseTag();
-				child.withKeyValue("src", ref);
+				child.withKeyValue(KEY_SRC, ref);
 			}
 		}
 		if(child == null) {

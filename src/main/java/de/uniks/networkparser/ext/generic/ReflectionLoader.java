@@ -25,6 +25,9 @@ public class ReflectionLoader {
 	public static final Class<?> CHECKBOX;
 	public static final Class<?> RADIOBUTTON;
 	public static final Class<?> SYSTEMTRAY;
+	public static final Class<?> WEBVIEW;
+	public static final Class<?> JSOBJECT;
+	
 //	public static final Class<?> JUNIT = getClass("org.junit.Assert");
 	
 	static {
@@ -50,6 +53,8 @@ public class ReflectionLoader {
 			CHECKBOX = getClass("javafx.scene.control.CheckBox");
 			RADIOBUTTON = getClass("javafx.scene.control.RadioButton");
 			SYSTEMTRAY = getClass("java.awt.SystemTray");
+			WEBVIEW = getClass("javafx.scene.web.WebView");
+			JSOBJECT = getClass("netscape.javascript.JSObject");
 		} else {
 			NODE = null;
 			OBSERVABLEVALUE = null;
@@ -71,6 +76,8 @@ public class ReflectionLoader {
 			CHECKBOX = null;
 			RADIOBUTTON = null;
 			SYSTEMTRAY = null;
+			WEBVIEW = null;
+			JSOBJECT = null;
 		}
 	}
 	
@@ -136,6 +143,7 @@ public class ReflectionLoader {
 				return method.invoke(item, methodArgumentsValues);
 			}				
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return null;
 	}
