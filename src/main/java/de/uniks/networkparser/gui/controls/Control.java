@@ -3,6 +3,7 @@ package de.uniks.networkparser.gui.controls;
 import java.util.List;
 
 import de.uniks.networkparser.SimpleObject;
+import de.uniks.networkparser.gui.BridgeCommand;
 import de.uniks.networkparser.gui.EventTypes;
 import de.uniks.networkparser.gui.JavaBridge;
 import de.uniks.networkparser.interfaces.ObjectCondition;
