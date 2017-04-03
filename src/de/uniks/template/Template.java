@@ -1,12 +1,18 @@
 package de.uniks.template;
 
-import java.util.LinkedHashSet;
-
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.Entity;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.logic.ChainCondition;
+import de.uniks.networkparser.logic.IfCondition;
+import de.uniks.networkparser.logic.StringCondition;
+import de.uniks.networkparser.logic.VariableCondition;
 
 public class Template {
-
+	private static final char SPLITSTART='{';
+	private static final char SPLITEND='}';
 	public static final int PACKAGE = 0;
 	
 	public static final int IMPORT = 1;
@@ -17,9 +23,7 @@ public class Template {
 	
 	public static final int VALUE = 4;
 	
-	private String template = "";
-	
-	private String condition = "";
+	private ChainCondition token = new ChainCondition();
 	
 	private int type = -1;
 	
@@ -27,68 +31,28 @@ public class Template {
 	
 	private Template nextTemplate = null;
 
-	private LinkedHashSet<String> variables = new LinkedHashSet<String>();
+	private SimpleList<String> variables = new SimpleList<String>();
 	
 	public String generate(SimpleKeyValueList<String, String> parameters) {
-		if (parameters == null) {
-			return null;
+		if(this.token.getCondition() instanceof StringCondition) {
+			this.token.withCondition(this.parsing((StringCondition)this.token.getCondition(), null));	
 		}
-		String result = template;
-		if (!parseCondition(parameters)) {
+		ObjectCondition template = this.token.getTemplate();
+		if(template instanceof StringCondition) {
+			this.token.withTemplate(null);
+			this.parsing((StringCondition)template, this.token);	
+		}
+//		String result = template;
+		String result = "";
+		if(this.token.update(this) == false) {
+//		if (!parseCondition(parameters)) {
 			return "";
 		}
-		// #if
-		int ifIndex = result.indexOf("{{#");
-		int endIndex = -1;
-		String ifSearch = result;
-		String parameter = "";
-		String searchResult = "";
-		String replacement = "";
-		String value = "";
-		String condition = "";
-		while(ifIndex > -1) {
-			ifSearch = ifSearch.substring(ifIndex);
-			endIndex = ifSearch.indexOf("{{#end}}");
-			if (ifSearch.startsWith("{{#if")) {
-				condition = "{{#if";
-			} else if (ifSearch.startsWith("{{#!")) {
-				condition = "{{#!";
-			}
-			parameter = ifSearch.substring(condition.length() + 1, ifSearch.indexOf("}}"));
-			searchResult = parameters.get("{{" + parameter + "}}");
-			value = ifSearch.substring(ifSearch.indexOf("}}") + 2, endIndex);
-			if ((condition.equals("{{#!") && (searchResult == null || searchResult.equals("")))
-					|| (condition.equals("{{#if") && (searchResult != null && !searchResult.equals("")))) {
-				replacement = value;
-			} else {
-				replacement = "";
-			}
-			result = replace(result, condition + " " + parameter +"}}" + value + "{{#end}}", replacement);
-			ifSearch = ifSearch.substring(endIndex, ifSearch.length());
-			ifIndex = ifSearch.indexOf("{{#", 1);
-		}
-		for (String variable : variables) {
-			if (parameters.containsKey(variable)) {
-				result = replace(result, variable, parameters.get(variable));
-			}
-		}
-		return result;
-	}
-	
-	private boolean parseCondition(SimpleKeyValueList<String, String> parameters) {
-		boolean result = true;
-		if (condition != null && condition != "") {
-			boolean negateCondition = false;
-			String currentCondition = condition;
-			if (condition.startsWith("! ")) {
-				currentCondition = currentCondition.substring(2, condition.length());
-				negateCondition = true;
-			}
-			String currentResult = parameters.get(currentCondition);
-			if (negateCondition) {
-				result = currentResult == null || currentResult.equals("") == true;
-			} else {
-				result = currentResult != null && currentResult.equals("") == false;
+		if(parameters != null) {
+			for (String variable : variables) {
+				if (parameters.containsKey(variable)) {
+					result = replace(result, variable, parameters.get(variable));
+				}
 			}
 		}
 		return result;
@@ -107,43 +71,180 @@ public class Template {
 	}
 
 	public String getTemplate() {
-		return template;
+		return null;
+//		return template;
 	}
 
-	public void setTemplate(String template) {
-		this.template = template;
+	public ObjectCondition parsing(StringCondition tokenTemplate, ChainCondition parent) {
+//		this.template = template;
+		// Parsing Variables
+		// Search for Variables and UIUf and combiVariables
+		
+		// {{Type}}
+		// {{#if Type}} {{#end}}
+		// {{#if Type}} {{#else}} {{#end}}
+		// {{Type} } <=> {{Type}}{{#if Type}} {{#end}}
+		// Define Type=int
+		// {{{Type}}} <=> {int}
+
+		CharacterBuffer template = null;
+		CharSequence value2 = tokenTemplate.getValue();
+		if(value2 instanceof CharacterBuffer) {
+			template = (CharacterBuffer) value2;
+		}else {
+			template = new CharacterBuffer().with(value2);
+		}
+		if(parent != null) {
+			this.variables.clear();
+		}
+		
+		int start=template.position(), end;
+		ObjectCondition child = null;
+		while(template.isEnd() == false) {
+			char character = template.nextClean(true);
+			if(character != SPLITSTART) {
+				template.skip();
+				continue;
+			}
+			character = template.getChar();
+			if(character != SPLITSTART) {
+				template.skip();
+				continue;
+			}
+			// Well done found {{
+			character = template.getChar();
+			// IF {{{
+			while(character==SPLITSTART) {
+				character = template.getChar();
+			}
+			end = template.position() - 2;
+			if(end-start>0) {
+				child = StringCondition.create(template.substring(start,end));
+				if(parent != null) {
+					parent.addTemplate(child);
+				}
+			}
+			// Switch for Logic Case
+			CharacterBuffer tokenPart = new CharacterBuffer();
+			if(character == '#') {
+				tokenPart = template.nextToken(false, ' ');
+
+				// Switch for If IfNot
+				if(tokenPart.equalsIgnoreCase("ifnot")) {
+					tokenPart = template.nextToken(false, SPLITEND);
+					
+					IfCondition token = new IfCondition().withExpression(createVariable(tokenPart));
+					
+
+					template.skipChar(SPLITEND);
+					template.skipChar(SPLITEND);
+					
+					tokenPart = template.nextToken(false, SPLITSTART);
+					token.withFalse(StringCondition.create(tokenPart));
+					template.skipChar(SPLITEND);
+					template.skipChar(SPLITEND);
+					child = token;
+					if(parent != null) {
+						parent.addTemplate(child);
+					}
+				}
+				if(tokenPart.equalsIgnoreCase("if")) {
+					tokenPart = template.nextToken(false, SPLITEND);
+					IfCondition token = new IfCondition().withExpression(createVariable(tokenPart));
+					template.skipChar(SPLITEND);
+					template.skipChar(SPLITEND);
+					
+					tokenPart = template.nextToken(false, SPLITSTART);
+					token.withTrue(StringCondition.create(tokenPart));
+					template.skipChar(SPLITEND);
+					template.skipChar(SPLITEND);
+					
+					child = token;
+					if(parent != null) {
+						parent.addTemplate(child);
+					}
+				}
+				template.skip();
+				start=template.position();
+				continue;
+			}
+			
+			tokenPart.with(character);
+			while((character = template.getChar()) != SPLITEND && template.isEnd() == false) {
+				tokenPart.with(character);
+			}
+			String key = tokenPart.toString();
+			child = createVariable(key);
+			if(parent != null) {
+				parent.addTemplate(child);
+			}
+			character = template.getChar();
+			if(character == SPLITEND) {
+				template.skip();
+				start=template.position();
+				continue;
+			}
+			tokenPart.reset();
+			tokenPart.with(character);
+			while((character = template.getChar()) != SPLITEND && template.isEnd() == false) {
+				tokenPart.with(character);
+			}
+			//{{#if Type}} {{#end}}
+			IfCondition token = new IfCondition();
+			token.withExpression(createVariable(key));
+			token.withTrue(StringCondition.create(tokenPart.toString()));
+			
+			child = token;
+			if(parent != null) {
+				parent.addTemplate(child);
+			}
+			template.skip();
+			start=template.position();
+		}
+		end = template.position();
+		if(end-start>0) {
+			child = StringCondition.create(template.substring(start,end));
+			if(parent != null) {
+				parent.addTemplate(child);
+			}
+		}
+		return child;
+	}
+	
+	private VariableCondition createVariable(CharSequence value) {
+		VariableCondition condition = new VariableCondition().withValue(value);
+		this.variables.add(value.toString());
+		return condition;
 	}
 	
 	public Template withTemplate(String... template) {
+		CharacterBuffer sb = new CharacterBuffer();
 		if(template == null) {
-			setTemplate("");
+			setValue(sb);
 		} else if(template.length == 1) {
-			setTemplate(template[0]+Entity.CRLF);
+			sb.with(template[0],Entity.CRLF);
+			setValue(sb);
 		} else {
-			StringBuilder sb = new StringBuilder(template[0]);
+			sb.with(template[0]);
 			for (int i = 1; i < template.length; i++) {
 				if (template[i].startsWith("{{#")) {
-					sb.append(template[i]);
+					sb.with(template[i]);
 				} else {
-					sb.append(Entity.CRLF+template[i]);
+					sb.with(Entity.CRLF+template[i]);
 				}
 			}
-			sb.append(Entity.CRLF);
-			setTemplate(sb.toString());
+			sb.with(Entity.CRLF);
+			setValue(sb);
 		}
 		return this;
 	}
 
-	public String getCondition() {
-		return condition;
-	}
-
-	public void setCondition(String condition) {
-		this.condition = condition;
+	protected void setValue(CharSequence value) {
+		this.token.withTemplate(new StringCondition().withValue(value));
 	}
 	
-	public Template withCondition(String condition) {
-		setCondition(condition);
+	public Template withCondition(CharSequence condition) {
+		this.token.withCondition(new StringCondition().withValue(condition));
 		return this;
 	}
 	
@@ -206,22 +307,22 @@ public class Template {
 		return this;
 	}
 	
-	public LinkedHashSet<String> getVariables() {
+	public SimpleList<String> getVariables() {
 		return variables;
 	}
 	
 	public Template withVariables(String... variables) {
-		for (String string : variables) {
-			this.variables.add(string);
-		}
+//		for (String string : variables) {
+//			this.variables.add(string);
+//		}
 		return this;
 	}
-	
-	public Template withoutVariables(String...variables) {
-		for (String string : variables) {
-			this.variables.remove(string);
-		}
-		return this;
-	}
+//	
+//	public Template withoutVariables(String...variables) {
+//		for (String string : variables) {
+//			this.variables.remove(string);
+//		}
+//		return this;
+//	}
 	
 }
