@@ -3,7 +3,7 @@ package de.uniks.networkparser.logic;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
-public class NullContidion implements ObjectCondition, SendableEntityCreator {
+public class NullCondition implements ObjectCondition, SendableEntityCreator {
 
 	@Override
 	public boolean update(Object value) {
@@ -27,6 +27,6 @@ public class NullContidion implements ObjectCondition, SendableEntityCreator {
 
 	@Override
 	public Object getSendableInstance(boolean prototyp) {
-		return new NullContidion();
+		return new NullCondition();
 	}
 }
