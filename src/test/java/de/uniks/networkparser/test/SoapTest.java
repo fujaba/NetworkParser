@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.EntityList;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.xml.SoapObject;
 import de.uniks.networkparser.xml.XMLEntity;
 
@@ -77,9 +78,9 @@ public class SoapTest {
 		Assert.assertEquals(25, entity.sizeChildren() );
 
  		XMLEntity xmlEntity = map.toXMLEntity(soapAnswer);
-		Assert.assertEquals(1, xmlEntity.size());
+		Assert.assertEquals(1, xmlEntity.sizeChildren());
 
-		creator.setValue(soapAnswer, "Full:Body", "The answer is 42.", IdMap.NEW);
+		creator.setValue(soapAnswer, "Full:Body", "The answer is 42.", SendableEntityCreator.NEW);
 
 		Assert.assertEquals("The answer is 42.", soapAnswer.getBody().getValue());
 	}

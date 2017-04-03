@@ -83,12 +83,43 @@ public class GraphTest {
 	public void testSimpleObject() {
 		SimpleObject so = SimpleObject.create("number", "number", 0);
 		IdMap map = new IdMap();
+		map.withTimeStamp(1);
 		JsonObject jsonObject = map.toJsonObject(so);
-		Assert.assertEquals("{\"class\":\"number\",\"id\":\"J1.S1\",\"prop\":{\"number\":0}}", jsonObject.toString());
+		Assert.assertEquals("{\"class\":\"number\",\"id\":\"S1\",\"prop\":{\"number\":0}}", jsonObject.toString());
 		jsonObject = map.toJsonObject(so, Filter.SIMPLEFORMAT);
-		Assert.assertEquals("{\"class\":\"number\",\"id\":\"J1.S1\",\"number\":0}", jsonObject.toString());
+		Assert.assertEquals("{\"class\":\"number\",\"id\":\"S1\",\"number\":0}", jsonObject.toString());
 	}		
 	
+	@Test
+	public void testModifier() {
+		GraphList model = new GraphList();
+		Clazz person = model.createClazz("Person");
+		Assert.assertEquals("public", person.getModifier().toString());
+
+		person.with(Modifier.ABSTRACT);
+		person.with(Modifier.ABSTRACT);
+		
+		Assert.assertEquals("public abstract", person.getModifier().toString());
+		
+		person.with(Modifier.FINAL);
+		
+		Assert.assertEquals("public abstract final", person.getModifier().toString());
+
+		Clazz uni = model.createClazz("Uni");
+		
+		Assert.assertEquals("public", uni.getModifier().toString());
+		uni.with(Modifier.ABSTRACT);
+		
+		Assert.assertEquals("public abstract", uni.getModifier().toString());
+		
+		Clazz student = model.createClazz("Student");
+		student.with(Modifier.create(Modifier.ABSTRACT));
+		
+		Assert.assertEquals("public abstract", student.getModifier().toString());
+		
+		Assert.assertEquals("public abstract", uni.getModifier().toString());
+		Assert.assertEquals("public abstract final", person.getModifier().toString());
+	}
 	
 	
 	@Test
@@ -107,13 +138,14 @@ public class GraphTest {
 		
 		Clazz person=list.createClazz("Person").enableInterface();
 		Clazz student=new Clazz("Student");
+		student.with(new Attribute("name", DataType.STRING));
 		
 		student.withSuperClazz(person);
 		
 		list.fixClassModel();
 		
 		GraphConverter converter = new GraphConverter();
-		showDebugInfos(converter.convertToJson(list, true, false), 450, null);
+		showDebugInfos(converter.convertToJson(list, true, false), 505, null);
 	}
 	
 	@Test
@@ -269,6 +301,7 @@ public class GraphTest {
 	@Test
 	public void SimpleModel() {
 		IdMap jsonIdMap = new IdMap();
+		jsonIdMap.withTimeStamp(1);
 		jsonIdMap.with(new FieldCreator()).with(new LudoCreator()).with(new PawnCreator()).with(new PlayerCreator());
 
 		Ludo ludo = new Ludo();
@@ -282,9 +315,9 @@ public class GraphTest {
 		sabine.createPawns().withColor(RED).withPos(tomStartField);
 
 		JsonArray jsonArray = jsonIdMap.toJsonArray(ludo);
-		showDebugInfos(jsonArray, 2309, null);
+		showDebugInfos(jsonArray, 2255, null);
 		jsonArray.replaceAllValues(IdMap.CLASS, "de.uniks.networkparser.test.model.ludo.", "");
-		showDebugInfos(jsonArray, 1607, null);
+		showDebugInfos(jsonArray, 1553, null);
 
 		GraphConverter graphConverter = new GraphConverter();
 
@@ -306,6 +339,7 @@ public class GraphTest {
 	@Test
 	public void testLudoStoryboard() {
 		IdMap jsonIdMap = new IdMap();
+		jsonIdMap.withTimeStamp(1);
 		jsonIdMap.with(new DateCreator()).with(new DiceCreator()).with(new FieldCreator()).with(new LudoCreator())
 				.with(new PawnCreator()).with(new PlayerCreator());
 
@@ -324,7 +358,7 @@ public class GraphTest {
 		tom.createBase().withColor("blue").withKind("base").withPawns(p2);
 		sabine.createPawns().withColor(RED).withPos(tomStartField);
 		JsonArray jsonArray = jsonIdMap.toJsonArray(ludo);
-		showDebugInfos(jsonArray, 5089, null);
+		showDebugInfos(jsonArray, 4966, null);
 		GraphConverter graphConverter = new GraphConverter();
 
 		// May be 8 Asssocs and write 11
@@ -366,12 +400,13 @@ public class GraphTest {
 		root.setChild(new SortedMsg().withMsg("Child"));
 
 		IdMap map = new IdMap();
+		map.withTimeStamp(1);
 		map.with(new SortedMsgCreator());
 
 		JsonArray jsonArray = map.toJsonArray(root, new Filter().withFull(true));
 		GraphConverter graphConverter = new GraphConverter();
 		JsonObject objectModel = graphConverter.convertToJson(GraphTokener.OBJECT, jsonArray, true);
-		showDebugInfos(objectModel, 711, System.out);
+		showDebugInfos(objectModel, 627, null);
 
 		JsonObject clazzModel = graphConverter.convertToJson(GraphTokener.CLASS, jsonArray, true);
 		showDebugInfos(clazzModel, 472, null);
@@ -457,14 +492,13 @@ public class GraphTest {
 		IdMap jsonMap = new IdMap();
 		jsonMap.with(new ChatMessageCreator());
 		IdMap yumlParser = new IdMap();
-		yumlParser.getCounter().withTimeStamp(1);
+		yumlParser.withTimeStamp(1);
 		yumlParser.withKeyValue(jsonMap.getKeyValue())
 			.with(jsonMap);
 
 		String parseObject = yumlParser.toObjectDiagram(chatMessage).toString();
 		assertEquals(
-				url
-						+ "[ChatMessage.1 : ChatMessage|activ=false;count=0;sender=Stefan Lindel;txt=Dies ist eine Testnachricht]-[Date.2 : Date|value=1350978000017]",
+				url	+ "[C1 : ChatMessage|activ=false;count=0;sender=Stefan Lindel;txt=Dies ist eine Testnachricht]-[D2 : Date|value=1350978000017]",
 				url + parseObject);
 
 		jsonMap = new IdMap();
@@ -476,7 +510,7 @@ public class GraphTest {
 		room.setName("1340");
 		uni.addToRooms(room);
 
-		assertEquals(url + "[University.3 : University]",
+		assertEquals(url + "[U3 : University]",
 				url + yumlParser.toObjectDiagram(uni).toString());
 
 		assertEquals(url + "[University]", url + yumlParser.toClassDiagram(uni).toString());
@@ -682,7 +716,7 @@ public class GraphTest {
 		Assert.assertEquals(2, GraphOptions.LINETYP.values().length);
 
 		Assert.assertEquals(Clazz.ClazzType.CLAZZ, Clazz.ClazzType.valueOf("CLAZZ"));
-		Assert.assertEquals(3, Clazz.ClazzType.values().length);
+		Assert.assertEquals(6, Clazz.ClazzType.values().length);
 
 		GraphList model = new GraphList();
 		model.setAuthorName("Stefan");

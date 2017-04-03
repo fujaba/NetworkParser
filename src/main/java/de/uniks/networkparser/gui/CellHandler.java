@@ -24,7 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-@FunctionalInterface
+
 public interface CellHandler {
 	public boolean onAction(Object entity, SendableEntityCreator creator, double x, double y);
 }

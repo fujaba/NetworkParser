@@ -25,7 +25,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.LinkedHashSet;
 
-import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 public class Player {
 	//==========================================================================
@@ -141,7 +141,7 @@ public class Player {
 		 return true;
 	  }
 
-	  if ((PROPERTY_PAWNS + IdMap.REMOVE).equalsIgnoreCase(attrName))
+	  if ((PROPERTY_PAWNS + SendableEntityCreator.REMOVE).equalsIgnoreCase(attrName))
 	  {
 		 removeFromPawns((Pawn) value);
 		 return true;

@@ -24,6 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.util.Comparator;
+
 import de.uniks.networkparser.EntityValueFactory;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -35,7 +36,6 @@ import de.uniks.networkparser.interfaces.SendableEntityCreator;
  * @param <V>
  *			Generic Parameter for all Types
  */
-
 public class EntityComparator<V> implements Comparator<V> {
 	/** Constant of IDMAP. */
 	public static final String IDMAP = "%idmap%";
@@ -116,6 +116,7 @@ public class EntityComparator<V> implements Comparator<V> {
 	 * @param v2	value for compare
 	 * @return 		compare Result
 	 */
+	@SuppressWarnings("unchecked")
 	private int checkValues(Object v1, Object v2) {
 		if (v1 instanceof String) {
 			String valueA = (String) v1;
@@ -123,7 +124,9 @@ public class EntityComparator<V> implements Comparator<V> {
 				String valueB = (String) v2;
 				return valueB.compareTo(valueA);
 			}
-		} else if (v1 instanceof Integer) {
+			return 1;
+		}
+		if (v1 instanceof Integer) {
 			Integer valueA = (Integer) v1;
 			if (v2 != null) {
 				Integer valueB = (Integer) v2;
@@ -134,7 +137,8 @@ public class EntityComparator<V> implements Comparator<V> {
 				}
 			}
 			return 1;
-		} else if (v1 instanceof Long) {
+		}
+		if (v1 instanceof Long) {
 			Long valueA = (Long) v1;
 			if (v2 != null) {
 				Long valueB = (Long) v2;
@@ -144,7 +148,9 @@ public class EntityComparator<V> implements Comparator<V> {
 					return -1;
 				}
 			}
-		} else if (v1 instanceof Boolean) {
+			return 1;
+		}
+		if (v1 instanceof Boolean) {
 			Boolean valueA = (Boolean) v1;
 			Boolean valueB = (Boolean) v2;
 			if (valueB != null) {
@@ -153,7 +159,13 @@ public class EntityComparator<V> implements Comparator<V> {
 					return -1;
 				}
 			}
+			return 1;
 		}
+		if(v1 instanceof Comparable<?>) {
+			if(v2 instanceof Comparable<?>) {
+				return ((Comparable<Object>)v2).compareTo(v1);
+			}
+        }
 		return 1;
 	}
 
@@ -266,5 +278,10 @@ public class EntityComparator<V> implements Comparator<V> {
 	public SortingDirection changeDirection() {
 		this.direction = direction.changeDirection();
 		return direction;
+	}
+	
+	public static EntityComparator<Object> createComparator() {
+		EntityComparator<Object> cpr = new EntityComparator<Object>().withColumn(EntityComparator.VALUES).withDirection(SortingDirection.ASC);
+		return cpr;
 	}
 }

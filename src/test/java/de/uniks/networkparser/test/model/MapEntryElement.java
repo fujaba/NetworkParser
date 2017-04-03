@@ -1,6 +1,7 @@
 package de.uniks.networkparser.test.model;
 
 import java.util.HashMap;
+
 import de.uniks.networkparser.list.SimpleEntity;
 
 public class MapEntryElement {

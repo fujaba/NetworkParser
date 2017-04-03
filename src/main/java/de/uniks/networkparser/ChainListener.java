@@ -26,10 +26,11 @@ THE SOFTWARE.
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Iterator;
-import de.uniks.networkparser.interfaces.UpdateListener;
+
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleList;
 
-public class ChainListener implements UpdateListener{
+public class ChainListener implements ObjectCondition{
 	private boolean chain=true;
 	private SimpleList<Object> list = new SimpleList<Object>();
 
@@ -49,8 +50,8 @@ public class ChainListener implements UpdateListener{
 	public boolean updatePCE(PropertyChangeEvent evt) {
 		for(Iterator<Object> i = list.iterator();i.hasNext();) {
 			Object listener = i.next();
-			if(listener instanceof UpdateListener) {
-				if(((UpdateListener)listener).update(evt) == false) {
+			if(listener instanceof ObjectCondition) {
+				if(((ObjectCondition)listener).update(evt) == false) {
 					if(chain) {
 						return false;
 					}
@@ -62,11 +63,11 @@ public class ChainListener implements UpdateListener{
 		return true;
 	}
 
-	public ChainListener with(UpdateListener... values) {
+	public ChainListener with(ObjectCondition... values) {
 		if(values ==null) {
 			return this;
 		}
-		for(UpdateListener item : values) {
+		for(ObjectCondition item : values) {
 			list.with(item);
 		}
 		return this;

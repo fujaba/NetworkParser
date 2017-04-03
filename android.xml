@@ -4,8 +4,12 @@
 	<property name="androidBat" value="build/android-sdk-windows/tools/android.bat" />
 	<property name="androidtarget" value="1" />
 
-	<target name="android-compile" description="Compile NetworkParser to Android">
+	<target name="InitProject">
 		<record name="build/android.txt" action="start" append="false" />
+		<available file="build/android.zip" property="isAvailable" />
+	</target>
+	<target name="download" depends="InitProject" unless="isAvailable">
+		<echo>SDK missing</echo>
 		<get description="get Android-SDK" src="http://dl.google.com/android/android-sdk_r24.4.1-windows.zip" dest="build/android.zip" />
 		<unzip src="build/android.zip" dest="build" />
 		<exec executable="cmd">
@@ -16,6 +20,13 @@
 			<!--<arg line="list targets"/>-->
 			<arg line="create project -n NetworkParser -p build/NetworkParserAndroid -t android-23 -k de.uniks.networkparser -a NPApp"/>
 		</exec>
+	</target>
+	<target name="sdkExist" depends="InitProject" if="isAvailable">
+		<echo>SDK exists</echo>
+	</target>
+	<target name="android-compile" depends="download, sdkExist" description="Compile NetworkParser to Android">
+		<delete dir="build/NetworkParserAndroid/src"></delete>
+		<mkdir dir="build/NetworkParserAndroid/src" />
 		<copy todir="build/NetworkParserAndroid/src">
 			<fileset dir="src/main/java/">
 				<exclude name="**/javafx/**"/>

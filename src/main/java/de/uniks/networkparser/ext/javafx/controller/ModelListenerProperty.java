@@ -24,40 +24,33 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.LinkedHashSet;
-import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
+import de.uniks.networkparser.ext.generic.ReflectionLoader;
 import de.uniks.networkparser.interfaces.Condition;
 import de.uniks.networkparser.interfaces.SendableEntity;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import javafx.beans.InvalidationListener;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.Property;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import de.uniks.networkparser.list.SimpleSet;
 
-public abstract class ModelListenerProperty<T> implements javafx.beans.property.Property<T>, PropertyChangeListener, ObservableValue<T>, InvalidationListener{
-	public enum PROPERTYTYPE{STRING, COLOR, BOOLEAN, INT, LONG, FLOAT, DOUBLE};
+public class ModelListenerProperty implements ModelListenerInterface {
+	public enum PROPERTYTYPE{STRING, COLOR, BOOLEAN, INTEGER, LONG, FLOAT, DOUBLE, OBJECT};
 
 	protected Object item;
 	protected String property;
 	protected SendableEntityCreator creator;
-	private LinkedHashSet<ChangeListener<? super T>> listeners=new LinkedHashSet<ChangeListener<? super T>>();
-	private LinkedHashSet<InvalidationListener> invalidationListeners=new LinkedHashSet<InvalidationListener>();
-	protected ObservableValue<? extends T> observable = null;
+	private SimpleSet<Object> listeners=new SimpleSet<Object>();
+	private SimpleSet<Object> invalidationListeners=new SimpleSet<Object>();
+	protected Object observable = null;
 	protected Condition<SimpleEvent> callBack;
-
-	public ModelListenerProperty(SendableEntityCreator creator, Object item, String property) {
+	protected PROPERTYTYPE type;
+	
+	public ModelListenerProperty(SendableEntityCreator creator, Object item, String property, PROPERTYTYPE type) {
 		this.creator = creator;
 		this.property = property;
 		this.item = item;
-//		this.filter = new SimpleMapEvent(IdMap.NEW, null, property).withModelItem(item);
+		this.type = type;
 		if (item instanceof SendableEntity) {
 			((SendableEntity) item).addPropertyChangeListener(property, this);
 			return;
@@ -87,7 +80,6 @@ public abstract class ModelListenerProperty<T> implements javafx.beans.property.
 		}
 	}
 
-	@Override
 	public Object getBean() {
 		return item;
 	}
@@ -100,69 +92,64 @@ public abstract class ModelListenerProperty<T> implements javafx.beans.property.
 		return false;
 	}
 
-	@Override
 	public String getName() {
 		return property;
 	}
 
-	@Override
-	public void addListener(ChangeListener<? super T> listener) {
-		listeners.add(listener);
+	public void addListener(Object listener) {
+		if(ReflectionLoader.CHANGELISTENER != null) {
+			if(ReflectionLoader.CHANGELISTENER.isAssignableFrom(listener.getClass())) {
+				listeners.add(listener);
+			}
+		}
+		if(ReflectionLoader.INVALIDATIONLISTENER != null) {
+			if(ReflectionLoader.INVALIDATIONLISTENER.isAssignableFrom(listener.getClass())) {
+				invalidationListeners.add(listener);
+			}
+		}
 	}
 
-	@Override
-	public void removeListener(ChangeListener<? super T> listener) {
-		listeners.remove(listener);
+	public void removeListener(Object listener) {
+		if(ReflectionLoader.CHANGELISTENER != null) {
+			if(ReflectionLoader.CHANGELISTENER.isAssignableFrom(listener.getClass())) {
+				listeners.remove(listener);
+			}
+		}
+		if(ReflectionLoader.INVALIDATIONLISTENER != null) {
+			if(ReflectionLoader.INVALIDATIONLISTENER.isAssignableFrom(listener.getClass())) {
+				invalidationListeners.remove(listener);
+			}
+		}
 	}
-
-	@Override
-	public void addListener(InvalidationListener listener) {
-		this.invalidationListeners.add(listener);
-	}
-
-	@Override
-	public void removeListener(InvalidationListener listener) {
-		this.invalidationListeners.remove(listener);
-	}
-
-	@Override
-	public void setValue(T value) {
-		creator.setValue(item, property, value, IdMap.NEW);
-	}
-
-	@Override
-	public void bind(ObservableValue<? extends T> newObservable) {
+	
+	public void bind(Object newObservable) {
 		if (newObservable == null) {
 			throw new NullPointerException("Cannot bind to null");
 		}
 		if (!newObservable.equals(observable)) {
 			unbind();
 			observable = newObservable;
-			observable.addListener(this);
+			ReflectionLoader.call("addListener", observable, ReflectionLoader.INVALIDATIONLISTENER, this);
 		}
 	}
 
-	@Override
-	public void bindBidirectional(Property<T> other) {
-		Bindings.bindBidirectional(this, other);
+	public void bindBidirectional(Object other) {
+		ReflectionLoader.call("bindBidirectional", null, ReflectionLoader.PROPERTY, this,ReflectionLoader.PROPERTY, other);
 	}
 
-	@Override
 	public boolean isBound() {
 		 return observable != null;
 	}
 
-	@Override
 	public void unbind() {
 		if (observable != null) {
-			observable.removeListener(this);
+			ReflectionLoader.call("removeListener", observable, ReflectionLoader.OBSERVABLEVALUE, this);
 			observable = null;
 		}
 	}
 
-	@Override
-	public void unbindBidirectional(Property<T> other) {
-		 Bindings.unbindBidirectional(this, other);
+	public void unbindBidirectional(Object other) {
+		ReflectionLoader.call("unbindBidirectional", null, ReflectionLoader.PROPERTY, this, ReflectionLoader.PROPERTY, other);
 	}
 
 	public Object getItemValue(){
@@ -175,26 +162,120 @@ public abstract class ModelListenerProperty<T> implements javafx.beans.property.
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		for(ChangeListener<? super T> listener: listeners) {
-			SimpleObjectProperty<T> objectProperty = new SimpleObjectProperty<T>();
-			listener.changed(objectProperty, parseValue(evt.getOldValue()), parseValue(evt.getNewValue()));
+		for(Object listener: listeners) {
+			Object event = ReflectionLoader.newInstance(ReflectionLoader.SIMPLEOBJECTPROPERTY);
+			Object oldValue = parseValue(evt.getOldValue());
+			Object newValue = parseValue(evt.getNewValue());
+			ReflectionLoader.call("changed", listener, ReflectionLoader.OBSERVABLEVALUE, event, Object.class, oldValue, Object.class, newValue);
 		}
-		for(InvalidationListener listener : invalidationListeners) {
-			listener.invalidated(this);
+		for(Object listener : invalidationListeners) {
+			ReflectionLoader.call("invalidated", listener, ReflectionLoader.INVALIDATIONLISTENER, this);
 		}
 		executeCallBack();
 	}
+	
 	public void executeCallBack() {
 		if(callBack != null) {
 			SimpleEvent event = new SimpleEvent(this.item, this.property, null, getItemValue());
 			if(callBack.update(event)) {
-				((SimpleStringProperty)observable).set(""+event.getModelValue());				
+				ReflectionLoader.call("set", observable, String.class, ""+event.getModelValue());
 			}
 		}
 	}
-
-	@SuppressWarnings("unchecked")
-	public T parseValue(Object value){
-		return (T)value;
+	
+	public ModelListenerProperty withCallBack(Condition<SimpleEvent> listener) {
+		this.callBack = listener;
+		return this;
 	}
+	
+	public void invalidated(Object observable) {
+	}
+
+	public Object getValue() {
+		return getItemValue();
+	}
+	
+	public Object parseValue(Object value){
+		if(this.type == PROPERTYTYPE.COLOR) {
+			if(value != null && ReflectionLoader.COLOR.isAssignableFrom(value.getClass())) {
+				return value;
+			}
+			if(value instanceof String) {
+				return ReflectionLoader.call("web", PROPERTYTYPE.COLOR, String.class, value);
+			}
+			return ReflectionLoader.call("web", PROPERTYTYPE.COLOR, String.class, "#FFFFFF");
+		}
+		if(this.type == PROPERTYTYPE.STRING) {
+			return ""+value;
+		}
+		if(this.type == PROPERTYTYPE.BOOLEAN) {
+			if(value instanceof Boolean){
+				return value;
+			}
+			return Boolean.valueOf(""+value);
+		}
+		if(this.type == PROPERTYTYPE.INTEGER) {
+			if(value instanceof Integer){
+				return value;
+			}
+			return Integer.valueOf(""+value);
+		}
+		if(this.type == PROPERTYTYPE.LONG) {
+			if(value instanceof Long){
+				return value;
+			}
+			return Long.valueOf(""+value);
+		}
+		if(this.type == PROPERTYTYPE.FLOAT) {
+			if(value instanceof Float){
+				return value;
+			}
+			return Float.valueOf(""+value);
+		}
+		if(this.type == PROPERTYTYPE.DOUBLE) {
+			if(value instanceof Double){
+				return value;
+			}
+			return Double.valueOf(""+value);
+		}
+		if(value instanceof Number){
+			if(value instanceof Number){
+				return value;
+			}
+			return Double.valueOf(""+value);	
+		}
+		return value;
+	}
+	
+	public Object getProxy() {
+		return ReflectionLoader.createProxy(this, new Class[]{ModelListenerInterface.class, ReflectionLoader.PROPERTY});
+	}
+	
+	public void setValue(Object value) {
+//		if()
+		creator.setValue(item, property, value, SendableEntityCreator.NEW);
+	}
+
+//FIXME	@Override
+//	public void setValue(Object value) {
+//		if( value instanceof Color == false) {
+//			return;
+//		}
+//		Color color = (Color) value;
+//		 int green = (int) (color.getGreen()*255);
+//		 String greenString = (green<16 ? "0" : "") + Integer.toHexString(green);
+//	
+//		 int red = (int) (color.getRed()*255);
+//		 String redString = (red<16 ? "0" : "") + Integer.toHexString(red);
+//
+//		 int blue = (int) (color.getBlue()*255);
+//		 String blueString = (blue<16 ? "0" : "") + Integer.toHexString(blue);
+//
+//		 String hexColor = "#"+redString+greenString+blueString;
+//
+//		creator.setValue(item, property, hexColor, SendableEntityCreator.NEW);
+////		super.setValue(value);
+//	}
+
 }
+

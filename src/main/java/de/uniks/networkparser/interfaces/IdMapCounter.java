@@ -34,7 +34,7 @@ public interface IdMapCounter {
 	 * @param sessionId		the new prefix id
 	 * @return Itself
 	 */
-	public IdMapCounter withSession(String session);
+	public IdMapCounter withSession(String sessionId);
 
 	/**
 	 * @return the current sessionid
@@ -49,5 +49,10 @@ public interface IdMapCounter {
 	 */
 	public String getId(Object obj);
 
+	/**
+	 * Set time stamp
+	 * @param newValue timeStamp for usage as Counter
+	 * @return itself
+	 */
 	public IdMapCounter withTimeStamp(int newValue);
 }

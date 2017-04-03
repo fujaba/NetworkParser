@@ -79,6 +79,13 @@ import de.uniks.networkparser.list.SortedList;
  */
 
 public class JsonArray extends SortedList<Object> implements EntityList {
+	
+	/**
+	 * Default Constructor
+	 */
+	public JsonArray() {
+		super(false);
+	}
 	/**
 	 * Get the JSONArray associated with an index.
 	 *

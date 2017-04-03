@@ -1,11 +1,10 @@
 package de.uniks.networkparser.test.javafx;
 
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.Style;
 import de.uniks.networkparser.ext.TableList;
-import de.uniks.networkparser.ext.javafx.controller.ModelListenerStringProperty;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.gui.controls.TableComponent;
-import de.uniks.networkparser.Style;
 import de.uniks.networkparser.test.model.GroupAccount;
 import de.uniks.networkparser.test.model.Person;
 import de.uniks.networkparser.test.model.Wallet;
@@ -93,7 +92,7 @@ public class GroupAccountGUI extends Application {
 		Label albertLabel=new Label();
 		albertLabel.setText("Albertsliste:");
 		Label counter = new Label();
-		counter.textProperty().bindBidirectional(new ModelListenerStringProperty(new PersonCreator(), albert, Person.PROPERTY_ITEM));
+//FIXME		counter.textProperty().bindBidirectional(new ModelListenerStringProperty(new PersonCreator(), albert, Person.PROPERTY_ITEM));
 
 		info.getChildren().addAll(albertLabel, counter);
 

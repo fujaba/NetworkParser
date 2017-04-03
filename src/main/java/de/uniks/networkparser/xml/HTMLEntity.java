@@ -1,5 +1,4 @@
 package de.uniks.networkparser.xml;
-
 /*
 NetworkParser
 The MIT License
@@ -36,6 +35,9 @@ public class HTMLEntity implements BaseItem {
 	public static final String PROPERTY_HEADER="head";
 	public static final String PROPERTY_BODY="body";
 	public static final String IMAGEFORMAT=" .bmp .jpg .jpeg .png .gif .svg ";
+	public static final String ENCODING_UTF8="utf-8";
+	public static final String SCRIPT="script";
+	public static final String KEY_SRC="src";
 
 	private XMLEntity body = new XMLEntity().setType("body");
 	private XMLEntity header = new XMLEntity().setType("head");
@@ -48,7 +50,14 @@ public class HTMLEntity implements BaseItem {
 	public String toString(int indentFactor) {
 		return parseItem(new EntityStringConverter(indentFactor));
 	}
-
+	
+	public XMLEntity getHeaders() {
+		return header;
+	}
+	public XMLEntity getBody() {
+		return body;
+	}
+	
 	public HTMLEntity withEncoding(String encoding) {
 		XMLEntity metaTag = new XMLEntity().setType("meta");
 		metaTag.withKeyValue("http-equiv", "Content-Type");
@@ -60,6 +69,17 @@ public class HTMLEntity implements BaseItem {
 	public HTMLEntity withTitle(String value) {
 		XMLEntity titleTag = new XMLEntity().setType("title").withValue(value);
 		this.header.with(titleTag);
+		return this;
+	}
+
+	public HTMLEntity withHeaderScript(String value) {
+		XMLEntity headerChild = new XMLEntity().setType(SCRIPT).withKeyValue("language", "Javascript").withValue(value);
+		this.header.with(headerChild);
+		return this;
+	}
+	public HTMLEntity withHeaderStyle(String value) {
+		XMLEntity headerChild = new XMLEntity().setType("style").withValue(value);
+		this.header.with(headerChild);
 		return this;
 	}
 
@@ -130,21 +150,24 @@ public class HTMLEntity implements BaseItem {
 			return null;
 		}
 		int pos = ref.lastIndexOf(".");
-		if(pos<0) {
-			return null;
+		if(pos>0) {
+			String ext = ref.substring(pos).toLowerCase();
+			if(ext.equals(".css") ) {
+				child = new XMLEntity().setType("link");
+				child.withKeyValue("rel", "stylesheet");
+				child.withKeyValue("type", "text/css");
+				child.withKeyValue("href", ref);
+			} else if(ext.equals(".js") ) {
+				child = new XMLEntity().setType(SCRIPT).withCloseTag();
+				child.withKeyValue(KEY_SRC, ref);
+			} else if(IMAGEFORMAT.indexOf(" "+ext+" ")>=0) {
+				child = new XMLEntity().setType("img").withCloseTag();
+				child.withKeyValue(KEY_SRC, ref);
+			}
 		}
-		String ext = ref.substring(pos).toLowerCase();
-		if(ext.equals(".css") ) {
-			child = new XMLEntity().setType("link");
-			child.withKeyValue("rel", "stylesheet");
-			child.withKeyValue("type", "text/css");
-			child.withKeyValue("href", ref);
-		} else if(ext.equals(".js") ) {
-			child = new XMLEntity().setType("script").withCloseTag();
-			child.withKeyValue("src", ref);
-		} else if(IMAGEFORMAT.indexOf(" "+ext+" ")>=0) {
-			child = new XMLEntity().setType("img").withCloseTag();
-			child.withKeyValue("src", ref);
+		if(child == null) {
+			// May be blanko Body text
+			child = new XMLEntity().withValueItem(ref);
 		}
 		return child;
 	}
@@ -156,10 +179,31 @@ public class HTMLEntity implements BaseItem {
 		}
 		return this;
 	}
+	
+	public XMLEntity createBodyTag(String tag, XMLEntity parentNode) {
+		String[] tags = tag.split("\\.");
+		XMLEntity parent = null, child = null, firstChild = null;
+		for(int i=tags.length-1;i>=0;i--) {
+			child = parent;
+			parent = new XMLEntity().setType(tags[i]);
+			if(child != null) {
+				parent.withChild(child);
+			} else {
+				firstChild = parent;
+			}
+		}
+		parentNode.withChild(parent);
+		return firstChild;
+	}
+	public XMLEntity createBodyTag(String tag) {
+		return createBodyTag(tag, this.body);
+		
+	}
+
 
 	public HTMLEntity withScript(String code) {
 		XMLEntity child = new XMLEntity().setType("script").withCloseTag();
-		child.withValue(code);
+		child.with(code);
 		this.body.with(child);
 		return this;
 	}
@@ -237,6 +281,7 @@ public class HTMLEntity implements BaseItem {
 		}
 		return converter.encode(this);
 	}
+	
 	@Override
 	public int size() {
 		return body.size();

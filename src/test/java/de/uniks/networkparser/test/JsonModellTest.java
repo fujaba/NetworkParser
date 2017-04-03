@@ -15,7 +15,8 @@ import de.uniks.networkparser.bytes.ByteMessage;
 import de.uniks.networkparser.bytes.ByteMessageCreator;
 import de.uniks.networkparser.ext.generic.JsonParser;
 import de.uniks.networkparser.interfaces.BaseItem;
-import de.uniks.networkparser.interfaces.UpdateListener;
+import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.logic.InstanceOf;
 import de.uniks.networkparser.logic.Or;
@@ -36,7 +37,7 @@ import de.uniks.networkparser.test.model.util.SortedMsgCreator;
 import de.uniks.networkparser.test.model.util.StudentCreator;
 import de.uniks.networkparser.test.model.util.UniversityCreator;
 
-public class JsonModellTest implements UpdateListener {
+public class JsonModellTest implements ObjectCondition {
 	private IdMap secondMap;
 	BaseItem data;
 	
@@ -114,9 +115,10 @@ public class JsonModellTest implements UpdateListener {
 		account.createPersons().withName("Tobi");
 
 		IdMap map= new IdMap();
+		map.withTimeStamp(1);
 		map.with(new PersonCreator());
 		map.with(new GroupAccountCreator());
-		Assert.assertEquals(175, map.toJsonArray(account.getPersons(), Filter.regard(InstanceOf.create(Person.class, Person.PROPERTY_PARENT))).toString(2).length());
+		Assert.assertEquals(169, map.toJsonArray(account.getPersons(), Filter.regard(InstanceOf.create(Person.class, Person.PROPERTY_PARENT))).toString(2).length());
 	}
 
 	@Test
@@ -125,10 +127,10 @@ public class JsonModellTest implements UpdateListener {
 		map.with(this);
 		map.with(new SortedMsgCreator());
 		SortedMsg first= new SortedMsg();
-		first.setNumber(1);
+		first.withNumber(1);
 
 		SortedMsg second= new SortedMsg();
-		second.setNumber(2);
+		second.withNumber(2);
 		first.setChild(second);
 
 		String sample="Hallo Welt";
@@ -149,23 +151,23 @@ public class JsonModellTest implements UpdateListener {
 		this.secondMap= new IdMap();
 		secondMap.with(this);
 		secondMap.with(new SortedMsgCreator());
-
+		map.withTimeStamp(1);
 		JsonObject jsonObject=map.toJsonObject(first);
-		Assert.assertEquals(385, jsonObject.toString(2).length());
+		Assert.assertEquals(376, jsonObject.toString(2).length());
 
 		secondMap.decode(jsonObject);
 
 		SortedMsg third= new SortedMsg();
-		third.setNumber(4);
+		third.withNumber(4);
 		second.setChild(third);
 		// DEEP 0
-		Assert.assertEquals(165, map.toJsonObject(first, Filter.regard(Deep.create(1))).toString().length());
+		Assert.assertEquals(159, map.toJsonObject(first, Filter.regard(Deep.create(1))).toString().length());
 		// DEEP 1
-		Assert.assertEquals(340, map.toJsonObject(first, Filter.regard(Deep.create(2))).toString().length());
+		Assert.assertEquals(328, map.toJsonObject(first, Filter.regard(Deep.create(2))).toString().length());
 		// DEEP 2
-		Assert.assertEquals(438, map.toJsonObject(first, Filter.regard(Deep.create(3))).toString().length());
+		Assert.assertEquals(423, map.toJsonObject(first, Filter.regard(Deep.create(3))).toString().length());
 		third.updateNumber(2);
-		third.setNumber(5);
+		third.withNumber(5);
 
 		Assert.assertEquals(3, map.size());
 		second.setChild(null);
@@ -178,7 +180,7 @@ public class JsonModellTest implements UpdateListener {
 		}
 		SimpleEvent simpleEvent = (SimpleEvent) evt;
 
-		if(IdMap.NEW.equals(simpleEvent.getType())) {
+		if(SendableEntityCreator.NEW.equals(simpleEvent.getType())) {
 			JsonObject jsonObject = (JsonObject) simpleEvent.getEntity();
 			printToStream("Send: " +jsonObject, null);
 //			secondMap.decode(jsonObject);
@@ -201,11 +203,12 @@ public class JsonModellTest implements UpdateListener {
 		AppleTree tree=new AppleTree();
 
 		IdMap map = new IdMap();
+		map.withTimeStamp(1);
 		map.with(new AppleTreeCreator());
 		map.with(new AppleCreator());
 
 		map.toJsonObject(tree);
-		map.getMapListener().getFilter().withPropertyRegard(new UpdateListener() {
+		map.getMapListener().getFilter().withPropertyRegard(new ObjectCondition() {
 			@Override
 			public boolean update(Object evt) {
 				if(evt instanceof SimpleEvent == false) {
@@ -213,11 +216,10 @@ public class JsonModellTest implements UpdateListener {
 				}
 				SimpleEvent simpleEvent = (SimpleEvent) evt;
 //				data = simpleEvent.getEntity();
-//				System.out.println(data);
 				return (Apple.PROPERTY_PASSWORD.equals(simpleEvent.getPropertyName()) == false);
 			}
 		});
-		map.withListener(new UpdateListener() {
+		map.withListener(new ObjectCondition() {
 			@Override
 			public boolean update(Object evt) {
 				if(evt instanceof SimpleEvent == false) {
@@ -235,7 +237,7 @@ public class JsonModellTest implements UpdateListener {
 		tree.addToHas(apple);
 
 		Assert.assertNotNull(data);
-		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.AppleTree\",\"id\":\"J1.A1\",\"upd\":{\"has\":{\"class\":\"de.uniks.networkparser.test.model.Apple\",\"id\":\"J1.A2\",\"prop\":{\"x\":23,\"y\":42}}}}", data.toString());
+		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.test.model.AppleTree\",\"id\":\"A1\",\"upd\":{\"has\":{\"class\":\"de.uniks.networkparser.test.model.Apple\",\"id\":\"A2\",\"prop\":{\"x\":23,\"y\":42}}}}", data.toString());
 	}
 
 	@Test
@@ -244,8 +246,9 @@ public class JsonModellTest implements UpdateListener {
 		message.withValue("The answer to life the universe and everything is 42.");
 		IdMap map=new IdMap();
 		map.with(new ByteMessageCreator());
+		map.withTimeStamp(1);
 		JsonObject jsonObject = map.toJsonObject(message);
-		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.bytes.ByteMessage\",\"id\":\"J1.B1\",\"prop\":{\"value\":\"The answer to life the universe and everything is 42.\"}}", jsonObject.toString());
+		Assert.assertEquals("{\"class\":\"de.uniks.networkparser.bytes.ByteMessage\",\"id\":\"B1\",\"prop\":{\"value\":\"The answer to life the universe and everything is 42.\"}}", jsonObject.toString());
 
 		ByteMessage newMessage = (ByteMessage) map.decode(jsonObject);
 		Assert.assertEquals(message.getValue(), newMessage.getValue());

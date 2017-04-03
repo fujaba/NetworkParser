@@ -1,0 +1,22 @@
+<html><head><link rel="stylesheet" type="text/css" href="../src/main/resources/de/uniks/networkparser/graph/diagramstyle.css"/><meta http-equiv="Content-Type" content="text/html;charset=utf-8"/><script src="highlight.pack.js"></script><script src="highlightjs-line-numbers.min.js"></script><link rel="stylesheet" type="text/css" href="github.css"/><link rel="stylesheet" type="text/css" href="default.css"/><title>Serialization</title></head><body><script>hljs.initHighlightingOnLoad();
+hljs.initLineNumbersOnLoad();</script><h1>Serialization</h1><pre><code class="java" data-lang="java">// Model
+House house=new House(); <i class="conum" data-value="1"></i>
+house.setFloor(4);
+house.setName("University");
+
+// Serialization
+IdMap map=new IdMap().withCreator(new HouseCreator()); <i class="conum" data-value="2"></i>
+map.withTimeStamp(1);
+JsonObject json = map.toJsonObject(house);
+String string=json.toString(2); <i class="conum" data-value="4"></i>
+
+// Deserialization
+IdMap decodeMap=new IdMap().withCreator(new HouseCreator()); <i class="conum" data-value="3"></i>
+House newHouse = (House) decodeMap.decode(string);</code><div class="title">Code: <a href="../src/test/java/de/uniks/networkparser/test/SimpleUsage.java">Serialization</a></div></pre><table><tr><td><i class="conum" data-value="1"></i></td><td>Custom Model</td></tr><tr><td><i class="conum" data-value="2"></i></td><td>Serialization</td></tr><tr><td><i class="conum" data-value="3"></i></td><td>Deserialization</td></tr><tr><td><i class="conum" data-value="4"></i></td><td><pre><code class="json" data-lang="json">{
+  "class":"de.uniks.networkparser.test.model.House",
+  "id":"H1",
+  "prop":{
+    "name":"University",
+    "floor":4
+  }
+}</code></pre></td></tr></table></body></html>

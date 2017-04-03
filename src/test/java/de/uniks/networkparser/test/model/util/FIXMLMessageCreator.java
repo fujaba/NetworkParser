@@ -1,6 +1,5 @@
 package de.uniks.networkparser.test.model.util;
 
-import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
 import de.uniks.networkparser.test.model.FIXMLMessage;
 
@@ -25,7 +24,7 @@ public class FIXMLMessageCreator implements SendableEntityCreatorTag {
 	@Override
 	public boolean setValue(Object target, String attrName, Object value,
 			String type) {
-		if (IdMap.REMOVE.equals(type) && value != null) {
+		if (REMOVE.equals(type) && value != null) {
 			attrName = attrName + type;
 		}
 		return ((FIXMLMessage) target).set(attrName, value);

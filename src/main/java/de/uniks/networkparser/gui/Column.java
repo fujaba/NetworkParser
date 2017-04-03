@@ -24,10 +24,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.util.Comparator;
+
 import de.uniks.networkparser.DateTimeEntity;
 import de.uniks.networkparser.EntityValueFactory;
 import de.uniks.networkparser.Filter;
-import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.Style;
 import de.uniks.networkparser.interfaces.GUIPosition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
@@ -118,8 +118,8 @@ public class Column implements SendableEntityCreatorNoIndex {
 	
 	/**
 	 * 
-	 * @param id
-	 * @return
+	 * @param id the new id
+	 * @return itself
 	 */
 	public Column withID(String id){
 		this.id = id;
@@ -470,7 +470,7 @@ public class Column implements SendableEntityCreatorNoIndex {
 				if (Filter.MERGE.equals(type) && oldStyle != null) {
 					for (String prop : style.getProperties()) {
 						if (oldStyle.getValue(oldStyle, prop) == null) {
-							oldStyle.setValue(oldStyle, prop, style.getValue(style, prop), IdMap.NEW);
+							oldStyle.setValue(oldStyle, prop, style.getValue(style, prop), SendableEntityCreator.NEW);
 						}
 					}
 					//					for(StyleCrea)
@@ -546,7 +546,7 @@ public class Column implements SendableEntityCreatorNoIndex {
 		if (creator == null) {
 			return false;
 		}
-		return creator.setValue(entity, getAttrName(), value, IdMap.UPDATE);
+		return creator.setValue(entity, getAttrName(), value, SendableEntityCreator.UPDATE);
 	}
 
 

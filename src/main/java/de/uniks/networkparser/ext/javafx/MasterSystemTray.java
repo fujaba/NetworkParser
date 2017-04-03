@@ -33,6 +33,7 @@ import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.ActionListener;
 import java.net.URL;
+
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 

@@ -20,6 +20,7 @@ import de.uniks.networkparser.bytes.ByteEntity;
 import de.uniks.networkparser.bytes.ByteMessage;
 import de.uniks.networkparser.bytes.ByteMessageCreator;
 import de.uniks.networkparser.bytes.SHA1;
+import de.uniks.networkparser.converter.ByteConverter64;
 import de.uniks.networkparser.converter.ByteConverterAES;
 import de.uniks.networkparser.converter.ByteConverterBinary;
 import de.uniks.networkparser.converter.ByteConverterHex;
@@ -52,6 +53,17 @@ public class ByteTest{
 			Assert.assertEquals(i, buffer.byteAt(i));
 		}
 	}
+	
+	@Test
+	public void testBASE64() {
+		String item = "tlstest#42";
+		byte[] itemByte = item.getBytes();
+		byte[] reference = BASE64EncoderStream.encode(itemByte);
+		byte[] actuals = new ByteConverter64().toStaticString(item).getBytes();
+		Assert.assertEquals(reference.length, actuals.length);
+		Assert.assertArrayEquals(reference, actuals);
+	}
+	
 	@Test
 	public void testSHA1() throws NoSuchAlgorithmException, UnsupportedEncodingException {
 		String text="Hallo Welt";
@@ -70,7 +82,7 @@ public class ByteTest{
 		Assert.assertEquals("Encrypted text : [" +encrypted+ "] [" +encrypted.length()+ " bytes]", 64, encrypted.length());
 		ByteConverterHex converter = new ByteConverterHex();
 
-//		outputStream(encrypted.getBytes(), System.out);
+//		outputStream(encrypted.getBytes(), null);
 		String hex = converter.toString(new ByteBuffer().with(encrypted)).replace(" ", "");
 		outputStream(hex.getBytes(), null);
 //		Assert.assertEquals("Encrypted text (as hex) : [" +hex+ "] [" +hex.length()+ " bytes]", 128, hex.length());
@@ -125,7 +137,7 @@ public class ByteTest{
 	@Test
 	public void testSimpleEntity(){
 		SortedMsg msg= new SortedMsg();
-		msg.setNumber(42);
+		msg.withNumber(42);
 		IdMap map= new IdMap();
 		map.with(new SortedMsgCreator());
 		ByteItem data = map.toByteItem(msg);
@@ -207,7 +219,7 @@ public class ByteTest{
 		IdMap map= new IdMap();
 		map.with(new SortedMsgCreator());
 		SortedMsg sortedMsg = new SortedMsg();
-		sortedMsg.setNumber(23);
+		sortedMsg.withNumber(23);
 		ByteItem msg=map.toByteItem(sortedMsg);
 		ByteBuffer bytesBuffer = msg.getBytes(false);
 //		outputStream(bytesBuffer);
@@ -382,7 +394,7 @@ public class ByteTest{
 		ByteItem item = map.toByteItem(appleTree);
 
 		ByteBuffer bytes = item.getBytes(true);
-//		outputStream(bytes.array(), System.out);
+//		outputStream(bytes.array(), null);
 		Assert.assertEquals(100, bytes.length());
 		String string = item.toString();
 		Assert.assertEquals(128, string.length());

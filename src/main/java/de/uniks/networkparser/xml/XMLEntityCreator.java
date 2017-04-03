@@ -24,8 +24,6 @@ THE SOFTWARE.
 */
 import de.uniks.networkparser.interfaces.EntityList;
 import de.uniks.networkparser.interfaces.SendableEntityCreatorTag;
-import de.uniks.networkparser.xml.XMLEntity;
-import de.uniks.networkparser.xml.XMLTokener;
 
 /** @author Stefan Creator for XML Entity. */
 

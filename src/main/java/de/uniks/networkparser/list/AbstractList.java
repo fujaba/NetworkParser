@@ -26,6 +26,7 @@ THE SOFTWARE.
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.ListIterator;
+
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Condition;
 /**

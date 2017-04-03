@@ -4,8 +4,10 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
 import org.junit.Assert;
 import org.junit.Test;
+
 import de.uniks.networkparser.json.JsonArray;
 import de.uniks.networkparser.list.EntityComparator;
 

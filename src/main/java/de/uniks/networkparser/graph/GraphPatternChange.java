@@ -1,5 +1,6 @@
 package de.uniks.networkparser.graph;
 
+import de.uniks.networkparser.interfaces.ObjectCondition;
 /*
 NetworkParser
 The MIT License
@@ -24,14 +25,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
-import de.uniks.networkparser.interfaces.UpdateListener;
 /**
  * GraphCreate Clazz for Condition.
  *
  * @author Stefan Lindel
  */
 
-public class GraphPatternChange implements UpdateListener, SendableEntityCreator {
+public class GraphPatternChange implements ObjectCondition, SendableEntityCreator {
 	/** Constant for ITEM. */
 	public static final String OLD = "oldValue";
 	public static final String NEW = "newValue";

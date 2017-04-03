@@ -31,6 +31,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import de.uniks.networkparser.EntityUtil;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.MapEntity;
@@ -314,11 +315,11 @@ public class ByteTokener extends Tokener {
 						for (Iterator<?> i = list.iterator(); i.hasNext();) {
 							Object item = i.next();
 							eventCreater.setValue(entity, property, item,
-									IdMap.NEW);
+									SendableEntityCreator.NEW);
 						}
 					} else {
 						eventCreater.setValue(entity, property, value,
-								IdMap.NEW);
+								SendableEntityCreator.NEW);
 					}
 				}
 			}

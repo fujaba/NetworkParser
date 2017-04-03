@@ -25,8 +25,9 @@ THE SOFTWARE.
 */
 import java.util.ArrayList;
 import java.util.Iterator;
-import de.uniks.networkparser.IdMap;
+
 import de.uniks.networkparser.buffer.ByteBuffer;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
 public class ByteParser {
@@ -38,7 +39,7 @@ public class ByteParser {
 			Object element = getEntity(buffer, entity, values);
 			if (element != null) {
 				creator.setValue(newInstance, entity.getPropertyName(),
-						element, IdMap.NEW);
+						element, SendableEntityCreator.NEW);
 			}
 		}
 		return newInstance;

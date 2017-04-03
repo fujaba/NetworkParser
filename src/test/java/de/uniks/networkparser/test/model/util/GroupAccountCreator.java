@@ -74,7 +74,7 @@ public class GroupAccountCreator implements SendableEntityCreator
    @Override
    public boolean setValue(Object target, String attrName, Object value, String type)
    {
-	  if (IdMap.REMOVE.equals(type) && value != null)
+	  if (SendableEntityCreator.REMOVE.equals(type) && value != null)
 	  {
 		 attrName = attrName + type;
 	  }
@@ -85,7 +85,7 @@ public class GroupAccountCreator implements SendableEntityCreator
 		 return true;
 	  }
 
-	  if ((GroupAccount.PROPERTY_PERSONS + IdMap.REMOVE).equalsIgnoreCase(attrName))
+	  if ((GroupAccount.PROPERTY_PERSONS + SendableEntityCreator.REMOVE).equalsIgnoreCase(attrName))
 	  {
 		 ((GroupAccount) target).withoutPersons((Person) value);
 		 return true;
@@ -97,7 +97,7 @@ public class GroupAccountCreator implements SendableEntityCreator
 		 return true;
 	  }
 
-	  if ((GroupAccount.PROPERTY_ITEM + IdMap.REMOVE).equalsIgnoreCase(attrName))
+	  if ((GroupAccount.PROPERTY_ITEM + SendableEntityCreator.REMOVE).equalsIgnoreCase(attrName))
 	  {
 		 ((GroupAccount) target).withoutItem((Item) value);
 		 return true;

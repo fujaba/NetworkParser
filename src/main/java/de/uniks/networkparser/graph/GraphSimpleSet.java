@@ -28,6 +28,7 @@ THE SOFTWARE.
 import de.uniks.networkparser.list.SimpleSet;
 
 public class GraphSimpleSet extends SimpleSet<GraphMember> {
+
 	private static Comparator<Object> comparator=new Comparator<Object>(){
         @Override
         public int compare(Object o1, Object o2) {
@@ -65,10 +66,12 @@ public class GraphSimpleSet extends SimpleSet<GraphMember> {
 		}
 		return idA.equalsIgnoreCase(idB);
 	}
+	
 	@Override
 	public Comparator<Object> comparator() {
 		return comparator;
 	}
+	
 	@Override
 	public boolean isComparator() {
 		return true;

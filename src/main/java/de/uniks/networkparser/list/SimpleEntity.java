@@ -26,6 +26,7 @@ THE SOFTWARE.
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;

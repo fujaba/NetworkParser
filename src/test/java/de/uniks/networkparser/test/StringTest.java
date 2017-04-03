@@ -13,10 +13,30 @@ import de.uniks.networkparser.buffer.ByteBuffer;
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.buffer.CharacterReader;
 import de.uniks.networkparser.converter.ByteConverterHex;
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.json.JsonTokener;
 import de.uniks.networkparser.list.SimpleList;
+import de.uniks.networkparser.xml.XMLTokener;
 
 public class StringTest {
+	@Test
+	public void testgetString() {
+		CharacterBuffer test=new CharacterBuffer();
+		String ref = "Hallo World"+BaseItem.CRLF+"Stefan";
+		
+		test.with(ref);
+		Assert.assertEquals(ref.length(), test.length());
+		XMLTokener tokener = new XMLTokener();
+		tokener.withBuffer(ref);
+		
+		Object item = tokener.getString(tokener.length() - tokener.position());
+
+		String tokenerString = item.toString();
+		Assert.assertEquals(ref.length(), tokenerString.length());
+		Assert.assertEquals(ref, tokenerString);
+	}		
+	
+	
 	@Test
 	public void testStringReplace(){
 		CharacterBuffer buffer = new CharacterBuffer().with("My %DEEP is not the %DEEP");
@@ -170,4 +190,43 @@ public class StringTest {
 		Assert.assertNotNull(jsonTokener.nextString(new CharacterBuffer(), true, false, '\"'));
 		Assert.assertNotNull(jsonTokener.nextString(new CharacterBuffer(), true, false, '\"'));
 	}
+	
+	@Test
+	public void testReplace(){
+		CharacterBuffer buffer = new CharacterBuffer();
+		buffer.with("apple, kiwi, cherry");
+		
+		Assert.assertEquals("apple, kiwi, cherry", buffer.toString()); // START
+		
+		buffer.replace(7, 11, "pear");
+
+		Assert.assertEquals("apple, pear, cherry", buffer.toString()); // SAME LENGTH
+		
+		buffer.replace(7, 11, "orange");
+		
+		Assert.assertEquals("apple, orange, cherry", buffer.toString()); // LONGER LENGTH
+		
+		buffer.replace(7, 13, "grape");
+		
+		Assert.assertEquals("apple, grape, cherry", buffer.toString()); // SHORTER LENGTH
+	}
+	
+	@Test
+	public void testReplaceExtended() {
+		CharacterBuffer test=new CharacterBuffer();
+		test.with("Hallo x");
+		test.replace(6, 7, "Welt");
+		
+		Assert.assertEquals("Hallo Welt", test.toString());
+	}
+
+	@Test
+	public void testReplaceExtend() {
+		CharacterBuffer test=new CharacterBuffer();
+		test.with("\t\tIdMap map=new IdMap().withCreator(new HouseCreator()); //<2>");
+		test.replace(57, 62, "<i class=\"conum\" data-value=\"2\" />");
+		Assert.assertEquals("\t\tIdMap map=new IdMap().withCreator(new HouseCreator()); <i class=\"conum\" data-value=\"2\" />", test.toString());
+	}
+
+	
 }

@@ -174,6 +174,9 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	 * @return the tag
 	 */
 	public String getTag() {
+		if(this.tag == null || this.tag.length() <1) {
+			return null;
+		}
 		return this.tag;
 	}
 
@@ -225,7 +228,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	@Override
 	protected String parseItem(EntityStringConverter converter) {
 		CharacterBuffer sb = new CharacterBuffer().with(converter.getPrefixFirst());
-		if(this.getTag() != null) {
+		if(this.getTag() != null ) {
 			sb.with(START, this.getTag());
 		}
 
@@ -329,8 +332,7 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	/**
 	 * Sets the tag.
 	 *
-	 * @param value
-	 *			the new Tag
+	 * @param value	the new Tag
 	 * @return the instance XMLEntity
 	 */
 	public XMLEntity setType(String value) {
@@ -455,5 +457,10 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 			return children.getChild(0);
 		}
 		return children;
+	}
+	
+	public XMLEntity withValueItem(String value) {
+		this.valueItem = value;
+		return this;
 	}
 }

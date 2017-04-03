@@ -24,12 +24,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 import java.beans.PropertyChangeEvent;
-import de.uniks.networkparser.interfaces.UpdateListener;
 
-public class AtomarCondition implements UpdateListener{
-	private UpdateListener filter;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 
-	public AtomarCondition(UpdateListener listener) {
+public class AtomarCondition implements ObjectCondition{
+	private ObjectCondition filter;
+
+	public AtomarCondition(ObjectCondition listener) {
 		this.filter = listener;
 	}
 

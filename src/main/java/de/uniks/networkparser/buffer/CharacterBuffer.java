@@ -126,7 +126,66 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		}
 		return result;
 	}
+	
+	public byte[] toByteArray() {
+		byte[] result = new byte[this.length];
+		for(int i=start; i< this.length;i++) {
+			result[i] = (byte) buffer[i];
+		}
+		return result;
+	}
 
+	public boolean replace(int start, int end, String replace) {
+		int pos =0;
+		int diff = replace.length() - (end-start);
+		char[] oldChar = null;
+		int oldStart = 0;
+		int oldLen=0;
+		if(this.length + diff > this.buffer.length) {
+			//Argh array is to Small
+			int newCapacity = (this.length + diff) * 2 + 2;
+			oldChar = this.buffer;
+			
+			char[] copy = new char[newCapacity];
+			System.arraycopy(buffer, this.start, copy, 0, start);
+			oldStart = end;
+			oldLen = this.length - oldStart;
+			this.buffer = copy;
+			this.start = 0;
+		}
+		start += this.start;
+		end += this.start;
+		
+	if(diff < 0) {
+			while(start<(end+diff)) {
+				this.buffer[start++] = replace.charAt(pos++);
+			} 
+			System.arraycopy(buffer, start, buffer, start+diff, buffer.length - start);
+		} else {
+			while(start<end) {
+				this.buffer[start++] = replace.charAt(pos++);
+			}
+			if(diff > 0) {
+				if(oldChar == null) {
+					oldLen = (this.length+this.start) - start;
+					oldChar = new char[oldLen];
+					System.arraycopy(buffer, start, oldChar, 0, oldLen);
+				}
+				int no=0;
+				while(no<diff) { 
+					this.buffer[start++] = replace.charAt(pos++);
+					no++;
+				}
+				if(oldLen>0) {
+					System.arraycopy(oldChar, oldStart, buffer, start, oldLen);
+				}
+			}
+		}
+		this.length = this.length + diff;
+		this.position = 0;
+		return true;
+	}
+	
 	public void replace(String search, String replace) {
 		int deleted=0;
 		CharacterBuffer inserts = null;
@@ -207,10 +266,6 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 			return 0;
 		}
 		char c = this.buffer[this.position + this.start];
-		if (c == '\r' && this.buffer[this.position+this.start + 1] == '\n') {
-			this.position++;
-			c = '\n';
-		}
 		return c;
 	}
 
@@ -331,7 +386,7 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		this.length = newLen;
 		return this;
 	}
-
+	
 	/** Init the new CharacterBuffer
 	 * @param values the reference CharSequence
 	 * @param start the Startposition for the new CharacterBuffer
@@ -395,6 +450,19 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		}
 		return this;
 	}
+	
+	public CharacterBuffer with(int value) {
+		String bytes=""+value;
+		this.with(bytes);
+		return this;
+	}
+	
+	public CharacterBuffer with(long value) {
+		String bytes=""+value;
+		this.with(bytes);
+		return this;
+	}
+	
 	/**
 	 * Append a new Character to CharacterBuffer
 	 * @param item a new StartItem
@@ -442,6 +510,10 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		}
 		this.buffer[0] = value;
 		return this;
+	}
+	
+	public boolean startsWith(CharSequence prefix) {
+		return this.startsWith(prefix, 0, false);
 	}
 
 	public boolean startsWith(CharSequence prefix, int toffset, boolean ignoreCase) {
@@ -660,6 +732,17 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 
 	public int indexOf(int ch) {
 		return indexOf(ch, 0);
+	}
+	
+	public int indexOf(String ch) {
+		int pos = 0;
+		for(int i=0;i<ch.length();i++) {
+			pos = indexOf(ch.charAt(i), pos);
+			if(pos<0) {
+				break;
+			}
+		}
+		return pos;
 	}
 
 	public int indexOf(int ch, int fromIndex) {

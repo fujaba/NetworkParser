@@ -23,10 +23,47 @@ import de.uniks.networkparser.list.SimpleSet;
 import de.uniks.networkparser.list.SortedList;
 import de.uniks.networkparser.test.model.Apple;
 import de.uniks.networkparser.test.model.Fruit;
+import de.uniks.networkparser.test.model.SortedMsg;
 import de.uniks.networkparser.test.model.util.AppleSet;
 import de.uniks.networkparser.test.model.util.FruitSet;
 
 public class FullListTest {
+	@Test
+	public void AppleSetDupplicate() {
+		AppleSet set = new AppleSet();
+		Apple apple = new Apple();
+		apple.withX(23).withY(42);
+		set.add(apple);
+		set.add(apple);
+		Assert.assertEquals(1, set.size());
+	}
+	
+	@Test
+	public void SortedListAppleSetDupplicate() {
+		SortedList<SortedMsg> list = new SortedList<SortedMsg>(true);
+		
+		SortedMsg first = new SortedMsg().withMsg("First").withNumber(1);
+		SortedMsg second = new SortedMsg().withMsg("Second").withNumber(2);
+		SortedMsg third = new SortedMsg().withMsg("Third").withNumber(3);
+		SortedMsg newSecond = new SortedMsg().withMsg("new Second").withNumber(1);
+		
+		list.add(first);
+		list.add(second);
+		list.add(third);
+		
+		Assert.assertEquals(first, list.get(0));
+		Assert.assertEquals(second, list.get(1));
+		Assert.assertEquals(third, list.get(2));
+		
+		list.add(newSecond);
+		
+		Assert.assertEquals(first, list.get(0));
+		Assert.assertEquals(newSecond, list.get(1));
+		Assert.assertEquals(second, list.get(2));
+		Assert.assertEquals(third, list.get(3));
+		Assert.assertEquals(4, list.size());
+	}
+	
 	@Test
 	public void AppleSet() {
 		AppleSet set = new AppleSet();
@@ -671,7 +708,7 @@ public class FullListTest {
 
 	@Test
 	public void Comparator(){
-		SortedList<String> item = new SortedList<String>();
+		SortedList<String> item = new SortedList<String>(false);
 		item.withComparator(new Comparator<String>() {
 
 			@Override

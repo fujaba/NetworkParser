@@ -1,8 +1,10 @@
 package de.uniks.networkparser;
 
 import java.beans.PropertyChangeEvent;
+
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Entity;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 
 /**
  * Event for Changes in IdMap
@@ -29,7 +31,7 @@ public final class SimpleEvent extends PropertyChangeEvent {
 	public SimpleEvent(Object source, String property, Object oldValue, Object newValue) {
 		super(source, property, oldValue, newValue);
 		this.value = newValue;
-		this.type = IdMap.NEW;
+		this.type = SendableEntityCreator.NEW;
 	}
 	
 	/**
@@ -119,11 +121,11 @@ public final class SimpleEvent extends PropertyChangeEvent {
 	}
 	
 	public boolean isNewEvent() {
-		return IdMap.NEW.equals(this.type);
+		return SendableEntityCreator.NEW.equals(this.type);
 	}
 
 	public boolean isUpdateEvent() {
-		return IdMap.UPDATE.equals(this.type);
+		return SendableEntityCreator.UPDATE.equals(this.type);
 	}
 	
     public SimpleEvent with(Entity entity) {

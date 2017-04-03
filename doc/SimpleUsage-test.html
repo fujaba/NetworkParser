@@ -1,0 +1,73 @@
+<html>
+	<head>
+		<script src="highlight.pack.js"></script>
+		<script src="highlightjs-line-numbers.min.js"></script>
+		<meta charset="utf-8" />
+		<title>Simple Usage</title>
+		<link href="github.css" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" href="default.css">
+		<style>
+.hljs-line-numbers {
+    text-align: right;
+    border-right: 1px solid #ccc;
+    color: #999;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+
+.conum[data-value]:after {
+    content: attr(data-value);
+}
+.conum[data-value] {
+    display: inline-block;
+    color: #fff!important;
+    background-color: BLACK;
+    -webkit-border-radius: 100px;
+    border-radius: 100px;
+    text-align: center;
+    font-size: 8px;
+    width: 12px;
+    height: 12px;
+    line-height: 12px;
+    font-family: "Open Sans","DejaVu Sans",sans-serif;
+    font-style: normal;
+    font-weight: bold;
+}
+
+</style>
+	</head>
+	</body>
+<pre><code class="java">
+// Model
+House house=new House(); <i class="conum" data-value="1"></i>
+house.setFloor(4);
+house.setName("University");
+
+// Serialization
+IdMap map=new IdMap().withCreator(new HouseCreator()); 
+map.withTimeStamp(1);
+JsonObject json = map.toJsonObject(house);
+String string=json.toString(2); 
+
+// Deserialization
+IdMap decodeMap=new IdMap().withCreator(new HouseCreator()); 
+House newHouse = (House) decodeMap.decode(string);
+
+newHouse.setFloor(42);
+</code></pre>
+<script>
+
+hljs.initHighlightingOnLoad();
+
+hljs.initLineNumbersOnLoad();
+</script>
+
+
+</body></html>
+
+

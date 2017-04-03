@@ -5,34 +5,66 @@ import java.util.Map;
 
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.NetworkParserLog;
 import de.uniks.networkparser.SimpleEvent;
 import de.uniks.networkparser.gui.controls.Control;
-import de.uniks.networkparser.interfaces.UpdateListener;
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.json.JsonObject;
 import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.xml.HTMLEntity;
 
-public abstract class JavaBridge implements UpdateListener {
-
+public abstract class JavaBridge implements ObjectCondition {
+	public static String CONTENT_TYPE_INCLUDE="INCLUDE";
+	public static String CONTENT_TYPE_EXCLUDE="EXCLUDE";
+	
 	protected static final String JAVA_BRIDGE = "JavaBridge";
-
 	protected IdMap map;
 	protected SimpleKeyValueList<String, Control> controls = null;
 	private boolean isApplyingChangeMSG;
+	private JavaViewAdapter webView;
+	private NetworkParserLog logger;
 
 	public JavaBridge() {
-		this(null);
+		this(null, null);
 	}
 
-	public JavaBridge(IdMap map) {
+	public JavaBridge(IdMap map, JavaViewAdapter webView) {
 		if (map == null) {
 			map = new IdMap();
 		}
 		this.map = map;
 		map.with(this);
+		
+		this.webView = webView;
+		this.webView.withOwner(this);
+		
+		HTMLEntity entity = init(CONTENT_TYPE_INCLUDE, "var bridge = new DiagramJS.Bridge();");		
+		this.webView.load(entity);
 	}
+	
+	
+	public HTMLEntity init(String type, String script) {
+//		script = "classEditor = new ClassEditor(\"board\");";
+		HTMLEntity entity=new HTMLEntity();
+		entity.withScript(script);
 
+		if (CONTENT_TYPE_EXCLUDE.equals(type)) {
+			entity.withHeader("./res/diagram.js");
+			entity.withHeader("./res/material.css");
+		} else {
+			entity.withHeaderScript(readFile("./res/diagram.js"));
+			entity.withHeaderStyle(readFile("./res/material.css"));
+		}
+		return entity;
+	}
+	
+	protected String readFile(String file) {
+		return this.webView.readFile(file);
+	}
+	
 	@Override
 	public boolean update(Object event) {
+		System.out.println("UPDATE");
 		if(isApplyingChangeMSG) {
 			return false;
 		}
@@ -80,35 +112,57 @@ public abstract class JavaBridge implements UpdateListener {
 		return this.controls;
 	}
 
-	public abstract Object executeScript(String script);
+	public Object executeScript(String script) {
+		return this.webView.executeScript(script);
+	}
 
-	public void addEventListener(Control c, EventTypes eventType, UpdateListener eventListener) {
+	public void addEventListener(Control c, EventTypes eventType, ObjectCondition eventListener) {
 		executeScript(BridgeCommand.register(eventType, c.getId()));
 		c.addEventListener(eventType, eventListener);
+	}
+	public void fireEvent(JsonObject event) {
+		
 	}
 	
 	public void fireEvent(Event event) {
 		Control control = getControls().get(event.getId());
 		if(control != null) {
-			List<UpdateListener> events = control.getEvents(event.getEventType());
+			List<ObjectCondition> events = control.getEvents(event.getEventType());
 			if(events!= null) {
-				for(UpdateListener listener : events) {
+				for(ObjectCondition listener : events) {
 					listener.update(event);
 				}
 			}
 		}
 	}
+	
 	public void fireControlChange(Control control, String property, Object value) {
 		executeScript(BridgeCommand.load("{id:\""+control.getId()+"\", "+property+":\""+value+"\"}"));
-	}
-	
-	public void fireEvent(JsonObject event) {
-		
 	}
 
 	public boolean setApplyingChangeMSG(boolean value) {
 		this.isApplyingChangeMSG = value;
 		return this.isApplyingChangeMSG;
+	}
+
+	public JavaViewAdapter getViewAdapter() {
+		return webView;
+	}
+
+	public Object getWebView() {
+		return webView.getWebView();
+	}
+
+	
+	public JavaBridge withWebView(JavaViewAdapter webView) {
+		this.webView = webView;
+		return this;
+	}
+	
+	public void logScript(String msg, String level, Object owner, String method) {
+		if(logger != null) {
+			this.logger.log(msg, level, owner, method);
+		}
 	}
 	
 	

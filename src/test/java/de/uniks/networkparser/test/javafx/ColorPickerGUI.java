@@ -1,5 +1,8 @@
 package de.uniks.networkparser.test.javafx;
 
+import de.uniks.networkparser.ext.javafx.controller.ModelListenerFactory;
+import de.uniks.networkparser.test.model.GUIEntity;
+import de.uniks.networkparser.test.model.util.GUIEntityCreator;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.ColorPicker;
@@ -7,10 +10,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import de.uniks.networkparser.ext.javafx.controller.ModelListenerColorProperty;
-import de.uniks.networkparser.ext.javafx.controller.ModelListenerStringProperty;
-import de.uniks.networkparser.test.model.GUIEntity;
-import de.uniks.networkparser.test.model.util.GUIEntityCreator;
 
 public class ColorPickerGUI extends Application{
 		private GUIEntity colorPlayer;
@@ -31,9 +30,9 @@ public class ColorPickerGUI extends Application{
 //			list.withColor(colorPlayer);
 
 			Label label=new Label();
-			label.textProperty().bind(new ModelListenerStringProperty(new GUIEntityCreator(), colorPlayer, GUIEntity.PROPERTY_COLOR));
-			picker.valueProperty().bindBidirectional(new ModelListenerColorProperty(new GUIEntityCreator(), colorPlayer, GUIEntity.PROPERTY_COLOR));
-
+			ModelListenerFactory.create(picker, new GUIEntityCreator(), colorPlayer, GUIEntity.PROPERTY_COLOR);
+//			ModelListenerFactory.create(picker, new GUIEntityCreator(), colorPlayer, GUIEntity.PROPERTY_COLOR);
+//FIXME			ModelListenerFactory.create(picker, colorPlayer, GUIEntity.PROPERTY_COLOR);
 //			combo.itemsProperty().bind(new ModelListenerListProperty(list, list, ColorPickerList.PROPERTY_COLORS, ColorPlayer.PROPERTY_COLOR, colorPlayer));
 
 			VBox box = new VBox();
