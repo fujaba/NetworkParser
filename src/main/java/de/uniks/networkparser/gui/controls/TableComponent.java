@@ -35,6 +35,7 @@ public class TableComponent extends Control {
 	public TableComponent() {
 		super();
 		this.className = TABLE;
+		//addBaseElements(PROPERTY_PROPERTY);
 		addBaseElements(PROPERTY_COLUMNS);
 		addBaseElements(PROPERTY_ITEM);
 		addBaseElements(PROPERTY_SEARCHCOLUMNS);
@@ -128,9 +129,9 @@ public class TableComponent extends Control {
 			// TODO: curently no item..
 			return null;
 		}
-		else if (PROPERTY_PROPERTY.equals(key)) {
+		/*else if (PROPERTY_PROPERTY.equals(key)) {
 			return this.property;
-		}
+		}*/
 		else if (PROPERTY_SEARCHCOLUMNS.equals(key)) {
 			return this.searchColumn;
 		}
@@ -145,11 +146,10 @@ public class TableComponent extends Control {
 		}
 		else if (PROPERTY_ITEM.equals(key)) {
 			// TODO: curently no item..
-
 		}
-		else if (PROPERTY_PROPERTY.equals(key)) {
+		/*else if (PROPERTY_PROPERTY.equals(key)) {
 			this.property = (String) value;
-		}
+		}*/
 		else if (PROPERTY_SEARCHCOLUMNS.equals(key)) {
 			this.searchColumn = (SimpleList<Column>) value;
 		}
