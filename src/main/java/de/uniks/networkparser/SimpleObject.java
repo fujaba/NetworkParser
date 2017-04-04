@@ -21,7 +21,7 @@ public class SimpleObject implements SendableEntityCreator, SendableEntity {
 
 	private boolean dirty = false;
 
-	private PropertyChangeSupport propertyChangeSupport;
+	protected PropertyChangeSupport propertyChangeSupport;
 
 	private SimpleKeyValueList<String, Object> values = new SimpleKeyValueList<String, Object>();
 	private SimpleList<String> baseElements = new SimpleList<String>();
@@ -78,31 +78,39 @@ public class SimpleObject implements SendableEntityCreator, SendableEntity {
 	}
 	
 	public boolean setValue(String key, Object value) {
+		boolean changed = false;
+		boolean checked = false;
+		Object oldValue = null;
 		if(value instanceof String) {
 			if(IdMap.ID.equals(key)) {
-				return this.setId((String) value);
+				checked = true;
+				oldValue = this.getId();
+				changed = this.setId((String) value);
 			} else if(IdMap.CLASS.equals(key)) {
-				return this.setClassName((String) value);
+				oldValue = this.getClassName();
+				checked = true;
+				changed = this.setClassName((String) value);
 			}
 		}
-		int pos = this.values.indexOf(key);
-
-		Object oldValue;
-		if (pos < 0) {
-			oldValue = null;
-			if(this.values.add(key, value)) {
-				this.baseElements.add(key);				
-				this.dirty = true;
+		if(!checked){
+			int pos = this.values.indexOf(key);
+	
+			if (pos < 0) {
+				oldValue = null;
+				if(this.values.add(key, value)) {
+					this.baseElements.add(key);				
+					this.dirty = true;
+				}
+			}
+			else {
+				oldValue = this.values.setValue(pos, value);
+				changed = !(oldValue != null && oldValue.equals(value) || oldValue == value);
 			}
 		}
-		else {
-			oldValue = this.values.getValue(key);
-			this.values.setValue(pos, value);
-		}
-		if(this.propertyChangeSupport != null) {
+		if(changed && this.propertyChangeSupport != null) {
 			this.propertyChangeSupport.firePropertyChange(key, oldValue, value);
 		}
-		return true;
+		return changed;
 	}
 	
 	public Object withoutValue(String key) {

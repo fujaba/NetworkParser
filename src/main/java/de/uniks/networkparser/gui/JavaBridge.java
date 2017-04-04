@@ -129,6 +129,7 @@ public abstract class JavaBridge implements ObjectCondition {
 
 
 	public Object executeScript(String script) {
+		System.out.println(script);
 		return this.webView.executeScript(script);
 	}
 

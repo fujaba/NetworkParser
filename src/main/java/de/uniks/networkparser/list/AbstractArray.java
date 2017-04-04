@@ -792,7 +792,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 		return (ST)this;
 	}
 
-	protected void setValue(int pos, Object value, int offset) {
+	protected Object  setValue(int pos, Object value, int offset) {
 		if (pos >= size) {
 			grow(pos + 1);
 		}
@@ -809,6 +809,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 			beforeElement = items[pos - 1];
 		}
 		fireProperty(SendableEntityCreator.UPDATE, oldValue, value, beforeElement, null);
+		return oldValue;
 	}
 
 	public AbstractArray<V> withList(Collection<?> list) {
