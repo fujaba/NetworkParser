@@ -169,7 +169,6 @@ public class JavaAdapter implements JavaViewAdapter {
 		while(this.queue.size() > 0 ) {
 			String command = this.queue.remove(0);
 			this._execute(command);
-//			System.out.println(this._execute(command));
 		}
 		this.queue = null; // Disable QUEUE
 	}
