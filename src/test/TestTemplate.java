@@ -36,6 +36,29 @@ public class TestTemplate {
 	}
 	
 	@Test
+	public void testTemplateError() {
+		Template template=new Template();
+		String generate;
+		
+		template.withTemplate("{{T}}{{#if G}}false{{#else}} {{#endif}}Welt");
+		SimpleKeyValueList<String, String> variables = new SimpleKeyValueList<String, String>().withKeyValueString("T: Hello", String.class);
+		generate = template.generate(variables);
+		System.out.println("#"+generate+"#");
+	}
+	
+	@Test
+	public void testTemplateError2() {
+		Template template=new Template();
+		String generate;
+		
+		template.withTemplate("{{T}}{{#if T}}{{T}}{{#endif}}Welt");
+		SimpleKeyValueList<String, String> variables = new SimpleKeyValueList<String, String>().withKeyValueString("T:Hello", String.class);
+		generate = template.generate(variables);
+		System.out.println("#"+generate+"#");
+	}
+	
+	
+	@Test
 	public void testTemplatePlusIfExtra() {
 		Template template=new Template();
 		template.withTemplate("{{T}}{{#if G}} {{#endif}}Welt");
