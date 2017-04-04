@@ -170,9 +170,9 @@ public class Tokener implements BufferItem {
 		return this;
 	}
 	@Override
-	public CharacterBuffer nextString() {
+	public CharacterBuffer nextString(char... quotes) {
 		if(buffer != null) {
-			return buffer.nextString();
+			return buffer.nextString(quotes);
 		}
 		return null;
 	}

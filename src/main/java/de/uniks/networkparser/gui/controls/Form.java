@@ -36,7 +36,7 @@ public class Form extends Control {
 	/**
 	 * The Submit Method. eg. "get".
 	 * 
-	 * @param method
+	 * @param method Set Submit Method: POST, GET
 	 */
 	public void setMethod(String method) {
 		this.method = method;

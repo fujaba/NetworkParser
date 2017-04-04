@@ -134,7 +134,15 @@ public class ReflectionLoader {
 			}else {
 				itemClass = item.getClass();
 			}
-			Method method = itemClass.getMethod(methodName, methodArguments);
+			Method method = null;
+			try {
+				method = itemClass.getMethod(methodName, methodArguments);
+			}catch (Exception e) {
+				if(staticCall == false) {
+					itemClass = ((Class<?>) item);
+					method = itemClass.getMethod(methodName, methodArguments);
+				}
+			}
 			if(method != null) {
 				if(staticCall) {
 					return method.invoke(null, methodArgumentsValues);
