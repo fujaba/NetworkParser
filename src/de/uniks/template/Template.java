@@ -7,7 +7,6 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.logic.ChainCondition;
 import de.uniks.networkparser.logic.IfCondition;
-import de.uniks.networkparser.logic.Not;
 import de.uniks.networkparser.logic.StringCondition;
 import de.uniks.networkparser.logic.VariableCondition;
 
@@ -78,10 +77,7 @@ public class Template {
 		if(parent != null) {
 			this.variables.clear();
 		}
-		return parseCharacterBuffer(template, parent);
-	}
-	
-	private ObjectCondition parseCharacterBuffer(CharacterBuffer template, ChainCondition parent, String... stopWords) {
+		
 		int start=template.position(), end;
 		ObjectCondition child = null;
 		while(template.isEnd() == false) {
@@ -111,43 +107,45 @@ public class Template {
 			// Switch for Logic Case
 			CharacterBuffer tokenPart = new CharacterBuffer();
 			if(character == '#') {
-				int startCommand=template.position();
-				tokenPart = template.nextToken(false, ' ', SPLITEND);
+				tokenPart = template.nextToken(false, ' ');
 
-				// Is It a stopword
-				if(stopWords != null) {
-					for(String stopword : stopWords) {
-						if(tokenPart.equalsIgnoreCase(stopword)) {
-							template.withPosition(startCommand);
-							return child;
-						}
+				// Switch for If IfNot
+				if(tokenPart.equalsIgnoreCase("ifnot")) {
+					tokenPart = template.nextToken(false, SPLITEND);
+					
+					IfCondition token = new IfCondition().withExpression(createVariable(tokenPart, true));
+					
+					template.skipChar(SPLITEND);
+					template.skipChar(SPLITEND);
+					
+					tokenPart = template.nextString(SPLITSTART);
+					token.withFalse(StringCondition.create(tokenPart));
+					template.skipTo(SPLITEND, false);
+					template.skipChar(SPLITEND);
+					child = token;
+					if(parent != null) {
+						parent.addTemplate(child);
 					}
 				}
-				
-				// Switch for If IfNot
-				if(tokenPart.equalsIgnoreCase("ifnot") || tokenPart.equalsIgnoreCase("if")) {
-					IfCondition token = new IfCondition();
-					if(tokenPart.equalsIgnoreCase("ifnot")) {
-						tokenPart = template.nextToken(false, SPLITEND);
-						VariableCondition expression = createVariable(tokenPart, true);
-						token.withExpression(Not.create(expression));	
-					}else {
-						tokenPart = template.nextToken(false, SPLITEND);
-						token.withExpression(createVariable(tokenPart, true));
-					}
-					
-					template.skipChar(SPLITEND);
-					template.skipChar(SPLITEND);
-					
-					// Add Children
-					token.withTrue(parseCharacterBuffer(template, null, "else", "endif"));
-					
-					// ELSE OR ENDIF
+				if(tokenPart.equalsIgnoreCase("if")) {
 					tokenPart = template.nextToken(false, SPLITEND);
-					if("else".equalsIgnoreCase(tokenPart.toString())) {
+					IfCondition token = new IfCondition().withExpression(createVariable(tokenPart, true));
+					template.skipChar(SPLITEND);
+					template.skipChar(SPLITEND);
+					
+					tokenPart = template.nextString(SPLITSTART);
+					token.withTrue(StringCondition.create(tokenPart));
+					
+					// ENDIF
+					template.skip();
+					
+					tokenPart = template.nextToken(false, SPLITEND);
+//					if("#endif".equalsIgnoreCase(tokenPart.toString()) {
+					if("#else".equalsIgnoreCase(tokenPart.toString())) {
 						template.skipChar(SPLITEND);
 						template.skipChar(SPLITEND);
-						token.withFalse(parseCharacterBuffer(template, null, "endif"));
+						tokenPart = template.nextString(SPLITSTART);
+						token.withFalse(StringCondition.create(tokenPart));
 						template.skipTo(SPLITEND, false);
 					}
 					template.skipChar(SPLITEND);
