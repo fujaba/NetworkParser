@@ -1,8 +1,11 @@
 package de.uniks.networkparser.logic;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.interfaces.TemplateCondition;
+import de.uniks.networkparser.list.SimpleKeyValueList;
 
-public class StringCondition implements ObjectCondition{
+public class StringCondition implements TemplateCondition {
 	private CharSequence value;
 
 	@Override
@@ -16,11 +19,20 @@ public class StringCondition implements ObjectCondition{
 		this.value = value;
 		return this;
 	}
-	public CharSequence getValue() {
+	public CharSequence getValue(SimpleKeyValueList<String, String> variables) {
 		return value;
 	}
 	
 	public static StringCondition create(CharSequence sequence) {
 		return new StringCondition().withValue(sequence);
+	}
+
+	@Override
+	public boolean isExpression() {
+		if(value == null) {
+			return false;
+		}
+		CharacterBuffer item = CharacterBuffer.create(value);
+		return item.equalsIgnoreCase("true");
 	}
 }
