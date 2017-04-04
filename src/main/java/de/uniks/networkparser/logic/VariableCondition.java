@@ -17,7 +17,8 @@ public class VariableCondition implements TemplateCondition{
 		}
 		if(value instanceof Map<?,?>) {
 			Map<?, ?> collection = (Map<?, ?>) value;
-			return collection.containsKey(this.value.toString());
+			Object object = collection.get(this.value.toString());
+			return  object != null && !object.equals("");
 		}
 		if(this.value == null) {
 			return value == null;
