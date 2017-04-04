@@ -1,12 +1,13 @@
 package de.uniks.networkparser.gui.controls;
 
+import java.util.Collection;
+
+import de.uniks.networkparser.ext.javafx.controller.AbstractModelController;
 import de.uniks.networkparser.list.SimpleList;
 
 public class Form extends Control {
 	/* constants */
 	public static final String FORM = "form";
-
-	public static final String PROPERTY = "property";
 
 	public static final String METHOD = "method";
 
@@ -21,59 +22,74 @@ public class Form extends Control {
 		super();
 		/* Set variables of parent class */
 		this.className = FORM;
-		this.addBaseElements(PROPERTY);
+		this.addBaseElements(METHOD);
 		this.addBaseElements(ELEMENTS);
 	}
-
 
 	public String getMethod() {
 		return method;
 	}
 
-
 	/**
 	 * The Submit Method. eg. "get".
 	 * 
-	 * @param method Set Submit Method: POST, GET
+	 * @param value Set Submit Method: POST, GET
 	 */
-	public void setMethod(String method) {
-		this.method = method;
+	public boolean setMethod(String value) {
+		String oldValue = this.method;
+		this.method = value;
+		return firePropertyChange(METHOD, oldValue, value);
 	}
 
-
 	public SimpleList<Control> getElements() {
-		if (this.elements == null) {
-			this.elements = new SimpleList<>();
-		}
 		return elements;
 	}
 
-
 	public Form withElement(Control... elements) {
-		for (Control control : elements) {
-			getElements().add(control);
-		}
+		addElement(elements);
 		return this;
 	}
-
-
-	public void setElements(SimpleList<Control> elements) {
-		this.elements = elements;
+	public boolean addElement(Control... elements) {
+		boolean changed = false;
+		if (this.elements == null) {
+			this.elements = new SimpleList<Control>();
+		}
+		for (Control control : elements) {
+			if(this.elements.add(control)) {
+				changed = true;
+				firePropertyChange(ELEMENTS, null, control);
+			}
+		}
+		return changed;
 	}
-
 
 	@Override
 	public Object getValue(String key) {
-		if (PROPERTY.equals(key)) {
-			return this.property;
-		}
-		else if (METHOD.equals(key)) {
+		if (METHOD.equals(key)) {
 			return this.getMethod();
 		}
 		else if (ELEMENTS.equals(key)) {
-			return this.elements;
+			return this.getElements();
 		}
 		return super.getValue(key);
 	}
 
+	@Override
+	public boolean setValue(String key, Object value) {
+		if (METHOD.equals(key)) {
+			return this.setMethod(""+value);
+		}
+		else if (ELEMENTS.equals(key)) {
+			if(value instanceof Control) {
+				return this.addElement((Control)value);
+			} else if(value instanceof Control[]) {
+				return this.addElement((Control[])value);
+			} else if(value instanceof Collection<?>) {
+				Collection<?> list = (Collection<?>)value;
+				Control[] array = ((Collection<?>) value).toArray(new Control[list.size()]);
+				return this.addElement(array);
+			}
+		}
+		return super.setValue(key, value);
+	}
 }

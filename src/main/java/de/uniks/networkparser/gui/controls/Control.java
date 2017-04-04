@@ -103,26 +103,15 @@ public abstract class Control extends SimpleObject {
 		return property;
 	}
 
-
 	/**
 	 * @param value the property to set
 	 * @return success for setting
 	 */
 	public boolean setProperty(String value) {
-		if ((this.property != null && this.property.equals(value) || value == null) == false) {
-			this.property = value;
-			dsfsdffsdf
-			String oldValue = this.property;
-			this.property = "" + value;
-			if(this.propertyChangeSupport != null) {
-				this.propertyChangeSupport.firePropertyChange(key, oldValue, value);
-			}
-
-			return true;
-		}
-		return false;
+		String oldValue = this.property;
+		this.property = value;
+		return firePropertyChange(PROPERTY, oldValue, value);
 	}
-
 
 	public Object getValue(String key) {
 		if (PROPERTY.equalsIgnoreCase(key)) {
@@ -131,11 +120,10 @@ public abstract class Control extends SimpleObject {
 		return super.getValue(key);
 	}
 
-
 	@Override
 	public boolean setValue(String key, Object value) {
 		if (PROPERTY.equalsIgnoreCase(key)) {
-			this.setProperty("" + value);
+			return this.setProperty("" + value);
 		}
 		return super.setValue(key, value);
 	}

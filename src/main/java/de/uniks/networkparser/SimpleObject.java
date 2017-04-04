@@ -78,18 +78,17 @@ public class SimpleObject implements SendableEntityCreator, SendableEntity {
 	}
 	
 	public boolean setValue(String key, Object value) {
-		boolean changed = false;
 		boolean checked = false;
 		Object oldValue = null;
 		if(value instanceof String) {
 			if(IdMap.ID.equals(key)) {
 				checked = true;
 				oldValue = this.getId();
-				changed = this.setId((String) value);
+				this.setId((String) value);
 			} else if(IdMap.CLASS.equals(key)) {
 				oldValue = this.getClassName();
 				checked = true;
-				changed = this.setClassName((String) value);
+				this.setClassName((String) value);
 			}
 		}
 		if(!checked){
@@ -104,13 +103,23 @@ public class SimpleObject implements SendableEntityCreator, SendableEntity {
 			}
 			else {
 				oldValue = this.values.setValue(pos, value);
-				changed = !(oldValue != null && oldValue.equals(value) || oldValue == value);
 			}
 		}
-		if(changed && this.propertyChangeSupport != null) {
-			this.propertyChangeSupport.firePropertyChange(key, oldValue, value);
+		return firePropertyChange(key, oldValue, value);
+	}
+	
+	public boolean firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+		if (propertyChangeSupport != null) {
+			if (isChanged(oldValue, newValue)) {
+				propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
+				return true;
+			}
 		}
-		return changed;
+		return false;
+	}
+	
+	public boolean isChanged(Object oldValue, Object newValue) {
+		return !(oldValue != null && oldValue.equals(newValue) || oldValue == newValue);
 	}
 	
 	public Object withoutValue(String key) {
