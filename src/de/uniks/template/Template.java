@@ -42,39 +42,19 @@ public class Template {
 			this.token.withTemplate(null);
 			this.parsing((StringCondition)template, this.token);	
 		}
-//		String result = template;
-		String result = "";
 		if(this.token.update(this) == false) {
-//		if (!parseCondition(parameters)) {
 			return "";
 		}
-		if(parameters != null) {
-			for (String variable : variables) {
-				if (parameters.containsKey(variable)) {
-					result = replace(result, variable, parameters.get(variable));
-				}
-			}
+		TemplateParser parser =new TemplateParser();
+		parser.withVariable(parameters);
+		SimpleList<ObjectCondition> templates = this.token.getTemplates();
+		for(ObjectCondition part : templates) {
+			part.update(parser);
+			
 		}
-		return result;
+		return parser.getResult().toString();
 	}
 	
-	private String replace(String string, String pattern, String replace) {
-		int index = string.indexOf(pattern);
-		String result = string;
-		while (index != -1) {
-			String firstHalf = result.substring(0, index) + replace;
-			String secondHalf = result.substring(index + pattern.length());
-			result = firstHalf + secondHalf;
-			index = result.indexOf(pattern);
-		}
-		return result;
-	}
-
-	public String getTemplate() {
-		return null;
-//		return template;
-	}
-
 	public ObjectCondition parsing(StringCondition tokenTemplate, ChainCondition parent) {
 //		this.template = template;
 		// Parsing Variables
@@ -135,13 +115,12 @@ public class Template {
 					
 					IfCondition token = new IfCondition().withExpression(createVariable(tokenPart));
 					
-
 					template.skipChar(SPLITEND);
 					template.skipChar(SPLITEND);
 					
-					tokenPart = template.nextToken(false, SPLITSTART);
+					tokenPart = template.nextString(SPLITSTART);
 					token.withFalse(StringCondition.create(tokenPart));
-					template.skipChar(SPLITEND);
+					template.skipTo(SPLITEND, false);
 					template.skipChar(SPLITEND);
 					child = token;
 					if(parent != null) {
@@ -154,9 +133,9 @@ public class Template {
 					template.skipChar(SPLITEND);
 					template.skipChar(SPLITEND);
 					
-					tokenPart = template.nextToken(false, SPLITSTART);
+					tokenPart = template.nextString(SPLITSTART);
 					token.withTrue(StringCondition.create(tokenPart));
-					template.skipChar(SPLITEND);
+					template.skipTo(SPLITEND, false);
 					template.skipChar(SPLITEND);
 					
 					child = token;
@@ -168,11 +147,7 @@ public class Template {
 				start=template.position();
 				continue;
 			}
-			
-			tokenPart.with(character);
-			while((character = template.getChar()) != SPLITEND && template.isEnd() == false) {
-				tokenPart.with(character);
-			}
+			template.nextString(tokenPart, false, false, SPLITEND);
 			String key = tokenPart.toString();
 			child = createVariable(key);
 			if(parent != null) {
@@ -185,10 +160,8 @@ public class Template {
 				continue;
 			}
 			tokenPart.reset();
-			tokenPart.with(character);
-			while((character = template.getChar()) != SPLITEND && template.isEnd() == false) {
-				tokenPart.with(character);
-			}
+			template.nextString(tokenPart, false, false, SPLITEND);
+
 			//{{#if Type}} {{#end}}
 			IfCondition token = new IfCondition();
 			token.withExpression(createVariable(key));
@@ -310,19 +283,4 @@ public class Template {
 	public SimpleList<String> getVariables() {
 		return variables;
 	}
-	
-	public Template withVariables(String... variables) {
-//		for (String string : variables) {
-//			this.variables.add(string);
-//		}
-		return this;
-	}
-//	
-//	public Template withoutVariables(String...variables) {
-//		for (String string : variables) {
-//			this.variables.remove(string);
-//		}
-//		return this;
-//	}
-	
 }

@@ -37,9 +37,10 @@ public class TestTemplate {
 	@Test
 	public void testTemplatePlusIfExtra() {
 		Template template=new Template();
-		template.withTemplate("{{T}}{{#if T}} {{#endif}}");
+		template.withTemplate("{{T}}{{#if T}} {{#endif}}Welt");
 		
-		template.generate(new SimpleKeyValueList<String, String>().withKeyValueString("T: Hello", String.class));
+		String generate = template.generate(new SimpleKeyValueList<String, String>().withKeyValueString("T: Hello", String.class));
+		System.out.println("#"+generate+"#");
 		
 	}
 
