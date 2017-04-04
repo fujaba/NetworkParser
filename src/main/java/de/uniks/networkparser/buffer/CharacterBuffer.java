@@ -816,4 +816,15 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		this.start = 0;
 		this.with(property);
 	}
+
+	public static CharacterBuffer create(CharSequence value) {
+		if(value instanceof CharacterBuffer) {
+			return (CharacterBuffer) value; 
+		}
+		CharacterBuffer buffer = new CharacterBuffer();
+		if(value instanceof String) {
+			buffer.with(value);
+		}
+		return buffer;
+	}
 }

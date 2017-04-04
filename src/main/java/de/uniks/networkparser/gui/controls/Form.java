@@ -1,7 +1,5 @@
 package de.uniks.networkparser.gui.controls;
 
-import java.util.LinkedList;
-
 import de.uniks.networkparser.list.SimpleList;
 
 public class Form extends Control {
