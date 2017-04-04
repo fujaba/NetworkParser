@@ -60,4 +60,14 @@ public class ChainCondition implements ObjectCondition {
 		return this;
 		
 	}
+
+	@SuppressWarnings("unchecked")
+	public SimpleList<ObjectCondition> getTemplates() {
+		if(this.template instanceof SimpleList<?>) { 
+			return ((SimpleList<ObjectCondition>)this.template);
+		} 
+		SimpleList<ObjectCondition> result = new SimpleList<ObjectCondition>();
+		result.with(this.template);
+		return result;
+	}
 }

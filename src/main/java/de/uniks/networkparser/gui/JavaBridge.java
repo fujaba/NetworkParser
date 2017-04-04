@@ -199,7 +199,7 @@ public abstract class JavaBridge implements ObjectCondition {
 	 * @param methodName the name of the function that is invoked
 	 * @param object the object on which the method is invoked
 	 */
-	public void addListener(Control c, EventTypes type, String methodName, final Object object) {
+	public void addListener(Control c, EventTypes type, String methodName, Object object) {
 		try {
 			final Class<? extends Object> objectClass = object.getClass();
 			final Method method = objectClass.getMethod(methodName);

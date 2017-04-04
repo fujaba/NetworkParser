@@ -7,6 +7,9 @@ public class StringCondition implements ObjectCondition{
 
 	@Override
 	public boolean update(Object value) {
+		if(value instanceof ObjectCondition) {
+			return ((ObjectCondition)value).update(this);
+		}
 		return this.value != null;
 	}
 	public StringCondition withValue(CharSequence value) {

@@ -35,8 +35,6 @@ public abstract class Buffer implements BufferItem {
 	public final static String STOPCHARSJSON = ",:]}/\\\"[{;=# ";
 	public final static String STOPCHARSXML = ",]}/\\\"[{;=# ";
 	public final static char[] STOPCHARSXMLEND = new char[]{'"', ',', ']', '}', '/', '\\', '"', '[', '{', ';', '=', '#', '>', '\r', '\n', ' '};
-//	private byte lookAHeadByte;
-//	private boolean isLookAhead;
 
 	/** The index. */
 	protected int position;
@@ -174,8 +172,11 @@ public abstract class Buffer implements BufferItem {
 	}
 
 	@Override
-	public CharacterBuffer nextString() {
-		return nextString(new CharacterBuffer(), false, false, '"');
+	public CharacterBuffer nextString(char... quotes) {
+		if(quotes == null) {
+			quotes =new char[]{'"'};
+		}
+		return nextString(new CharacterBuffer(), false, false, quotes);
 	}
 
 	@Override
@@ -460,10 +461,10 @@ public abstract class Buffer implements BufferItem {
 					break;
 				}
 			}
-			if(found == false) {
+			c = getChar();
+			if(found) {
 				break;
 			}
-			c = getChar();
 		} while(c!=0);
 		return c;
 	}

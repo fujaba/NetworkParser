@@ -179,7 +179,7 @@ public class DotConverter implements Converter {
 
 //		ID '=' ID [ (';' | ',') ]
 	void decodeAttributes(GraphEntity node, BufferItem value) {
-		value.skipChar('[');
+		value.skipTo('[', false);
 		char c;
 		do {
 			String key = decodeValue(value);

@@ -7,6 +7,9 @@ public class VariableCondition implements ObjectCondition{
 
 	@Override
 	public boolean update(Object value) {
+		if(value instanceof ObjectCondition) {
+			return ((ObjectCondition)value).update(this);
+		}
 		if(this.value == null) {
 			return value == null;
 		}
