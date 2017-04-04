@@ -54,7 +54,7 @@ public interface BaseItem {
 	 * @param values Items to Add to List
 	 * @return this Component
 	 */
-	BaseItem with(Object... values);
+	boolean add(Object... values);
 	
 	public BaseItem getNewList(boolean keyValue);
 

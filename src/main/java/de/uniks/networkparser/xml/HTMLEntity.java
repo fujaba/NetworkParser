@@ -93,11 +93,16 @@ public class HTMLEntity implements BaseItem {
 		sb.append("</html>");
 		return sb.toString();
 	}
+	
+	public HTMLEntity with(Object... values) {
+		add(values);
+		return this;
+	}
 
 	@Override
-	public HTMLEntity with(Object... values) {
+	public boolean add(Object... values) {
 		if(values == null) {
-			return this;
+			return false;
 		}
 		if(values.length == 1 && values[0] instanceof String) {
 			XMLTokener tokener = new XMLTokener();
@@ -124,7 +129,7 @@ public class HTMLEntity implements BaseItem {
 				}
 			}
 		}
-		return this;
+		return true;
 	}
 
 	public Object getValue(Object key) {
@@ -246,7 +251,7 @@ public class HTMLEntity implements BaseItem {
 		sb.append(";"+CRLF);
 		sb.append("new Graph(json).layout();");
 		script.withValue(sb.toString());
-		with(script);
+		add(script);
 		if(path != null) {
 			// Add graph-framework
 			withHeader(path + "diagramstyle.css");

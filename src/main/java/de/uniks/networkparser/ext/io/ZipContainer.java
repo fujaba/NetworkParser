@@ -134,7 +134,7 @@ public class ZipContainer {
 						if(element instanceof Entity) {
 							((Entity)element).withValue(output);
 						} else {
-							element.with(output.toString());
+							element.add(output.toString());
 						}
 						return element;
 					}

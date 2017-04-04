@@ -305,7 +305,7 @@ public class MapEntity extends SimpleSet<Object>{
 					newItem = child.getNewList(true);
 					if(newItem instanceof XMLEntity) {
 						((XMLEntity) newItem).setType(label);
-						child.with(newItem);
+						child.add(newItem);
 					} else {
 						((Entity) child).put(label, newItem);
 					}

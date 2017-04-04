@@ -148,9 +148,9 @@ public class BitEntity extends SimpleList<BitValue> implements ByteItem {
 	}
 
 	@Override
-	public BitEntity with(Object... values) {
+	public boolean add(Object... values) {
 		if(values==null){
-			return this;
+			return false;
 		}
 		for (Object value : values) {
 			if (value instanceof Byte) {
@@ -166,7 +166,7 @@ public class BitEntity extends SimpleList<BitValue> implements ByteItem {
 				this.property = "" + value;
 			}
 		}
-		return this;
+		return true;
 	}
 	
 	public BitEntity withType(byte value) {

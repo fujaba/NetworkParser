@@ -108,14 +108,15 @@ public class BitValue implements ByteItem {
 		return converter.toString(this.getBytes(isDynamic));
 	}
 	@Override
-	public BaseItem with(Object... values) {
-		return null;
-	}
-	@Override
 	public ByteBuffer getBytes(boolean isDynamic) {
 		return null;
 	}
 	@Override
 	public void writeBytes(ByteBuffer buffer, boolean isDynamic, boolean lastEntity, boolean isPrimitive) {
+	}
+	
+	@Override
+	public boolean add(Object... values) {
+		return false;
 	}
 }

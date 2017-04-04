@@ -112,16 +112,16 @@ public class PomFile implements SendableEntityCreatorTag, BaseItem{
 	}
 
 	@Override
-	public PomFile with(Object... values) {
+	public boolean add(Object... values) {
 		if(values==null || values.length % 2 == 1) {
-			return this;
+			return false;
 		}
 		for(int i=0;i<values.length;i+=2) {
 			if(values[i] instanceof String) {
 				setValue(this, (String)values[i], values[i+1], NEW);
 			}
 		}
-		return this;
+		return true;
 	}
 
 	@Override

@@ -23,14 +23,15 @@ public class StringEntity implements BaseItem{
 	}
 	
 	@Override
-	public BaseItem with(Object... values) {
+	public boolean add(Object... values) {
 		if(values == null) {
-			return this;
+			return false;
 		}
 		if(values.length>0) {
 			this.value = (String) values[0];
+			return true;
 		}
-		return this;
+		return false;
 	}
 
 	@Override

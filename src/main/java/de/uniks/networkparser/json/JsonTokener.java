@@ -70,7 +70,7 @@ public class JsonTokener extends Tokener {
 			for (;;) {
 				c = getCurrentChar();
 				if (c != ',') {
-					entityList.with(nextValue(entityList, false, false, (char)0));
+					entityList.add(nextValue(entityList, false, false, (char)0));
 				}
 				c = nextClean(true);
 				switch (c) {

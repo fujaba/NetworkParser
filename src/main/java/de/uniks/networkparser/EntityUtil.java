@@ -333,7 +333,8 @@ public class EntityUtil {
 			return ((BaseItem) value).toString(converter);
 		}
 		if (value instanceof Map) {
-			BaseItem item = reference.getNewList(true).with((Map<?, ?>) value);
+			BaseItem item = reference.getNewList(true);
+			item.add((Map<?, ?>) value);
 			return item.toString(converter);
 		}
 		if (value instanceof Collection) {
@@ -351,7 +352,7 @@ public class EntityUtil {
 			Object[] items = (Object[]) value;
 			BaseItem item = reference.getNewList(false);
 			for (Object entity : items) {
-				item.with(entity);
+				item.add(entity);
 			}
 			return item.toString(converter);
 		}
@@ -595,7 +596,7 @@ public class EntityUtil {
 					if(valueB == null) {
 						Object oldValue = elementA.getValue(key);
 						if(sameObject != null) {
-							sameObject.with(key, oldValue);
+							sameObject.add(key, oldValue);
 						}
 						elementA.without(key);
 						elementB.without(key);
@@ -606,7 +607,7 @@ public class EntityUtil {
 				Object oldValue = compareValue(key, valueA, valueB, diffList, sameObject);
 				if(oldValue != null) {
 					if(sameObject != null) {
-						sameObject.with(key, oldValue);
+						sameObject.add(key, oldValue);
 					}
 					elementA.without(key);
 					elementB.without(key);
@@ -671,7 +672,7 @@ public class EntityUtil {
 				if(oldValue != null) {
 					colectionA.remove(valueA);
 					if(sameObject != null) {
-						sameObject.with(oldValue);
+						sameObject.add(oldValue);
 					}
 					colectionB.remove(valueB);
 				}

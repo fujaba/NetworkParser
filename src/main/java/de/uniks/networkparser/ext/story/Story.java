@@ -12,7 +12,6 @@ import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.logic.BooleanCondition;
 import de.uniks.networkparser.logic.Equals;
 import de.uniks.networkparser.logic.Not;
-import de.uniks.networkparser.logic.NullCondition;
 import de.uniks.networkparser.xml.HTMLEntity;
 
 public class Story {
@@ -217,13 +216,13 @@ public class Story {
 
 	public void assertNull(String message, Object actual) {
 		StoryStepCondition step = new StoryStepCondition();
-		step.withCondition(message, actual, new NullCondition());
+		step.withCondition(message, actual, Equals.createNullCondition());
 		this.addCondition(step);
 	}
 	
 	public void assertNotNull(String message, Object actual) {
 		StoryStepCondition step = new StoryStepCondition();
-		step.withCondition(message, actual, new Not().with(new NullCondition()));
+		step.withCondition(message, actual, new Not().with(Equals.createNullCondition()));
 		this.addCondition(step);
 	}
 }

@@ -25,16 +25,17 @@ public class ChoiceField extends Input<String> {
 	}
 
 
-	public void setChecked(boolean checked) {
+	public boolean setChecked(boolean checked) {
+		boolean oldValue = this.checked;
 		this.checked = checked;
+		return firePropertyChange(CHECKED, oldValue, checked);
 	}
 
 
 	@Override
 	public boolean setValue(String key, Object value) {
 		if (CHECKED.equals(key)) {
-			this.checked = Boolean.valueOf("" + value);
-			return true;
+			return this.setChecked(Boolean.valueOf("" + value));
 		}
 		return super.setValue(key, value);
 	}

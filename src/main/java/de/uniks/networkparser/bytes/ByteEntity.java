@@ -375,9 +375,9 @@ public class ByteEntity implements ByteItem {
 	}
 
 	@Override
-	public ByteEntity with(Object... values) {
+	public boolean add(Object... values) {
 		if(values==null){
-			return this;
+			return false;
 		}
 		if(values.length>1) {
 			byte[] value = new byte[values.length-1];
@@ -386,7 +386,7 @@ public class ByteEntity implements ByteItem {
 			}
 			withValue((Byte)values[0], value);
 		}
-		return this;
+		return true;
 	}
 
 	public ByteEntity withValue(byte[] values) {

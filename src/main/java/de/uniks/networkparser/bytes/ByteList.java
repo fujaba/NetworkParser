@@ -213,18 +213,6 @@ public class ByteList extends SimpleList<ByteItem> implements ByteItem {
 	}
 
 	@Override
-	public ByteList with(Object... values) {
-		if (values != null) {
-			for (Object value : values) {
-				if (value instanceof ByteItem) {
-					this.add((ByteItem) value);
-				}
-			}
-		}
-		return this;
-	}
-
-	@Override
 	public boolean remove(Object value) {
 		return removeByObject(value) >= 0;
 	}

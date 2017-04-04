@@ -264,7 +264,7 @@ public class GenericCreator implements SendableEntityCreator {
 			genericCreator.withClass(instance);
 		}
 
-		map.with(genericCreator);
+		map.add(genericCreator);
 
 		// VODOO
 		Method[] methods = instance.getMethods();

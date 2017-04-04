@@ -200,7 +200,8 @@ public class EMailMessage {
 	}
 	
 	public EMailMessage withMessage(String value) {
-		BaseItem item = new StringEntity().with(value);
+		BaseItem item = new StringEntity();
+		item.add(value);
 		this.message.add(item);
 		return this;
 	}

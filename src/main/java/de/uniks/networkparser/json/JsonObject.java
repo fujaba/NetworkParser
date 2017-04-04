@@ -309,13 +309,19 @@ public class JsonObject extends SimpleKeyValueList<String, Object> implements En
 	public JsonObject addToList(String key, Object value) {
 		Object object = this.get(key);
 		if (object == null) {
-			this.put(key,
-					value instanceof AbstractList ? getNewList(true).with(value)
-							: value);
+			if(value instanceof AbstractList) {
+				BaseItem newList =getNewList(true);
+				newList.add(value);
+				this.put(key, newList);
+			}else {
+				this.put(key, value);
+			}
 		} else if (object instanceof AbstractList) {
 			((AbstractList<?>) object).with(value);
 		} else {
-			this.put(key, getNewList(false).with(object, value));
+			BaseItem newList = getNewList(false);
+			newList.add(object, value);
+			this.put(key, newList);
 		}
 		return this;
 	}

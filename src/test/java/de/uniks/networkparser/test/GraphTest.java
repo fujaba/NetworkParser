@@ -490,11 +490,11 @@ public class GraphTest {
 		chatMessage.setDate(date);
 
 		IdMap jsonMap = new IdMap();
-		jsonMap.with(new ChatMessageCreator());
+		jsonMap.add(new ChatMessageCreator());
 		IdMap yumlParser = new IdMap();
 		yumlParser.withTimeStamp(1);
 		yumlParser.withKeyValue(jsonMap.getKeyValue())
-			.with(jsonMap);
+			.add(jsonMap);
 
 		String parseObject = yumlParser.toObjectDiagram(chatMessage).toString();
 		assertEquals(
@@ -734,7 +734,7 @@ public class GraphTest {
 		GraphList model = new GraphList();
 		model.createClazz("Person");
 		Assert.assertNull(model.getValue("Blub"));
-		model.with(new GraphDiff());
+		model.add(new GraphDiff());
 		model.getClazzes(new BooleanCondition().withValue(true));
 		DataTypeSet dtSet = DataTypeSet.create(DataType.STRING);
 		Assert.assertNotNull(dtSet);
@@ -816,10 +816,10 @@ public class GraphTest {
 		Assert.assertEquals(1, listOfAnnotation.size());
 
 		AssociationSet listOfAssocuation = list.getAssociations();
-		Assert.assertEquals(1, listOfAssocuation.getClazzes().size());
+		Assert.assertEquals(2, listOfAssocuation.getClazzes().size());
 		Assert.assertEquals(1, listOfAssocuation.getOther().size());
-		Assert.assertEquals(1, listOfAssocuation.getOtherClazz().size());
-		Assert.assertEquals(1, listOfAssocuation.size());
+		Assert.assertEquals(2, listOfAssocuation.getOtherClazz().size());
+		Assert.assertEquals(2, listOfAssocuation.size());
 
 		AttributeSet listOfAttribute = list.getAttributes();
 		Assert.assertEquals(2, listOfAttribute.size());

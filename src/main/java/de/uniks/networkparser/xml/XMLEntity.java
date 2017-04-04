@@ -123,9 +123,9 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	 * @return result if the child is added
 	 */
 	@Override
-	public XMLEntity with(Object... values) {
+	public boolean add(Object... values) {
 		if(values==null || values.length < 1){
-			return this;
+			return false;
 		}
 		if(values[0] instanceof String) {
 			if(values.length == 1) {
@@ -137,10 +137,10 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 					this.withChild((EntityList) item);
 				}
 			}
-			return this;
+			return true;
 		}
-		super.with(values);
-		return this;
+		super.add(values);
+		return true;
 	}
 
 	/**
@@ -396,14 +396,14 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 		}
 		EntityList children=getNewList(false);
 		if(value.equalsIgnoreCase(getString(key))) {
-			children.with(this);
+			children.add(this);
 		} else if(PROPERTY_TAG.equals(key)) {
 			if(value.equalsIgnoreCase(this.getTag())) {
-				children.with(this);
+				children.add(this);
 			}
 		} else if(PROPERTY_VALUE.equals(key)) {
 			if(value.equalsIgnoreCase(this.getValue())) {
-				children.with(this);
+				children.add(this);
 			}
 		} else if(EntityUtil.CLASS.equals(key)) {
 			int z=0;
@@ -442,14 +442,14 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 			EntityList entity = this.children.get(i);
 			if(entity instanceof XMLEntity) {
 				EntityList items = ((XMLEntity) entity).getElementsBy(key, value);
-				children.with(items);
+				children.add(items);
 			}
 			if(entity instanceof Entity == false) {
 				continue;
 			}
 			Entity item = (Entity) entity;
 			if(value.equalsIgnoreCase(item.getString(key))) {
-				children.with(item);
+				children.add(item);
 			}
 		}
 		if(children.sizeChildren()==1) {

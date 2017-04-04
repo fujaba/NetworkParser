@@ -2,6 +2,8 @@ package de.uniks.networkparser.gui.controls;
 
 import java.util.Collection;
 
+import de.uniks.networkparser.IdMap;
+import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleList;
 
 public class Form extends Control {
@@ -15,7 +17,6 @@ public class Form extends Control {
 	protected String method = "get";
 
 	private SimpleList<Control> elements;
-
 
 	public Form() {
 		super();
@@ -33,6 +34,7 @@ public class Form extends Control {
 	 * The Submit Method. eg. "get".
 	 * 
 	 * @param value Set Submit Method: POST, GET
+	 * @return return success
 	 */
 	public boolean setMethod(String value) {
 		String oldValue = this.method;
@@ -93,5 +95,17 @@ public class Form extends Control {
 			}
 		}
 		return super.setValue(key, value);
+	}
+	public Form withDataBinding(IdMap map, Object entity, boolean addCommandBtn){
+//		this.map = map;
+//		this.item = entity;
+//		textClazz = (TextItems) map.getCreator(TextItems.class.getName(), true);
+
+//		SendableEntityCreator creator = map.getCreatorClass(item);
+//		if(creator != null){
+//			this.setCenter(items);
+//			withDataBinding(addCommandBtn, creator.getProperties());
+//		}
+		return this;
 	}
 }

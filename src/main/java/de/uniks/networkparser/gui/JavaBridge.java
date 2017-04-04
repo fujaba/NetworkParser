@@ -1,7 +1,5 @@
 package de.uniks.networkparser.gui;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +41,7 @@ public abstract class JavaBridge implements ObjectCondition {
 			map = new IdMap();
 		}
 		this.map = map;
-		map.with(this);
+		map.add(this);
 
 		this.webView = webView;
 		this.webView.withOwner(this);
@@ -113,7 +111,6 @@ public abstract class JavaBridge implements ObjectCondition {
 			JsonObject json = (JsonObject) result;
 			id = json.getString("id");
 			c.setId(id);
-			c.setOwner(this);
 			getControls().put(id, c);
 		}
 		return id;
@@ -201,39 +198,7 @@ public abstract class JavaBridge implements ObjectCondition {
 	 * @param object the object on which the method is invoked
 	 */
 	public void addListener(Control c, EventTypes type, String methodName, Object object) {
-		try {
-			final Class<? extends Object> objectClass = object.getClass();
-			final Method method = objectClass.getMethod(methodName);
-
-			addEventListener(c, type, new ObjectCondition() {
-				Method savedMethod;
-
-				Object savedObject;
-				{
-					this.savedMethod = method;
-					this.savedObject = object;
-				}
-
-
-				@Override
-				public boolean update(Object value) {
-					try {
-						savedMethod.invoke(savedObject);
-						return true;
-					}
-					catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-						e.printStackTrace();
-					}
-					return false;
-				}
-			});
-		}
-		catch (NoSuchMethodException | SecurityException e) {
-			throw new RuntimeException("The function cannot be found on the given Object...");
-//			e.printStackTrace();
-		}
 	}
-
 	//	addClickListener(String, DynamicEventCallback)
 	//	addDoubleClickListener(String, DynamicEventCallback)
 	//	addMouseUpListener(String, DynamicEventCallback)

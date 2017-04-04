@@ -765,20 +765,32 @@ public abstract class AbstractArray<V> implements BaseItem {
 		return sb.toString();
 	}
 
+	
+	@SuppressWarnings("unchecked")
+	public <ST extends AbstractArray<V>> ST with(Object... values) {
+		add(values);
+		return (ST)this;
+	}
+
 	@Override
-	public AbstractArray<V> with(Object... values) {
+	public boolean add(Object... values) {
 		if (values == null) {
-			return this;
+			return false;
 		}
 		int newSize = size + values.length;
 		grow(newSize);
+		boolean changed=false;
 		for (Object value : values) {
+			if(value == null) {
+				continue;
+			}
 			int pos = hashKeyPos(value, newSize);
 			if (pos >= 0) {
 				this.addKey(pos, value, newSize);
+				changed = true;
 			}
 		}
-		return this;
+		return changed;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1270,7 +1282,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 							BaseItem result = this.getNewList(true);
 							AbstractList<?> items = (AbstractList<?>) child;
 							for (int z = 0; z < items.size(); z++) {
-								result.with(((AbstractList<?>) items.get(z)).getValue(keyString.substring(end + 1)));
+								result.add(((AbstractList<?>) items.get(z)).getValue(keyString.substring(end + 1)));
 							}
 							return result;
 						}
@@ -1420,7 +1432,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 		}
 
 		while (fromIndex < toIndex) {
-			newInstance.with(get(fromIndex++));
+			newInstance.add(get(fromIndex++));
 		}
 		return newInstance;
 	}

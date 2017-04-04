@@ -154,16 +154,16 @@ public class GraphList extends GraphModel implements BaseItem {
 	}
 
 	@Override
-	public GraphList with(Object... values) {
+	public boolean add(Object... values) {
 		if (values == null) {
-			return this;
+			return false;
 		}
 		for (Object item : values) {
 			if (item instanceof GraphMember) {
 				super.withChildren((GraphMember) item);
 			}
 		}
-		return this;
+		return true;
 	}
 
 	public Object getValue(Object key) {

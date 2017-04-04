@@ -142,6 +142,15 @@ public class ReflectionLoader {
 					itemClass = ((Class<?>) item);
 					method = itemClass.getMethod(methodName, methodArguments);
 				}
+				if(method == null) {
+					for(int i=0;i<methodArguments.length;i++) {
+						methodArguments[i] = Object.class;
+					}
+					method = itemClass.getMethod(methodName, methodArguments);
+					if(method == null) {
+						method = itemClass.getMethod(methodName, new Class[0]);
+					}
+				}
 			}
 			if(method != null) {
 				if(staticCall) {
@@ -151,7 +160,7 @@ public class ReflectionLoader {
 				return method.invoke(item, methodArgumentsValues);
 			}				
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 		return null;
 	}

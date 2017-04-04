@@ -78,9 +78,4 @@ public class ClazzSet extends SimpleSet<Clazz> {
 	public ClazzSet hasName(String otherValue) {
 		return filter(Clazz.NAME.equals(otherValue));
 	}
-
-	public ClazzSet with(Object... values) {
-		super.with(values);
-		return this;
-	}
 }

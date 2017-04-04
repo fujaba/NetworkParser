@@ -27,7 +27,10 @@ public class Equals implements ObjectCondition, SendableEntityCreator {
 	@Override
 	public boolean update(Object evt) {
 		if (evt == null) {
-			return (value == null);
+			return value == null;
+		}
+		if(value == null) {
+			return evt == null;
 		}
 		if((evt instanceof PropertyChangeEvent) == false) {
 			if(value instanceof Number && evt instanceof Number) {
@@ -52,9 +55,6 @@ public class Equals implements ObjectCondition, SendableEntityCreator {
 					return ((expValue - deltaValue) <= evtValue && (expValue + deltaValue)>= evtValue);
 				}
 				return expValue == evtValue;
-			}
-			if(value == null) {
-				return evt == null;
 			}
 			return value.equals(evt);
 		}
@@ -161,5 +161,9 @@ public class Equals implements ObjectCondition, SendableEntityCreator {
 	public Equals withDelta(Object delta) {
 		this.delta = delta;
 		return this;
+	}
+	
+	public static Equals createNullCondition() {
+		return new Equals().withValue(null);
 	}
 }

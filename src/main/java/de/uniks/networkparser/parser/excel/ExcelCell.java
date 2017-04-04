@@ -82,7 +82,7 @@ public class ExcelCell implements SendableEntityCreatorTag, EntityList{
 			return true;
 		}
 		if(XMLTokener.CHILDREN.equals(type)) {
-			((ExcelCell)entity).with(value);
+			((ExcelCell)entity).add(value);
 			return true;
 		}
 		return false;
@@ -205,9 +205,9 @@ public class ExcelCell implements SendableEntityCreatorTag, EntityList{
 	}
 
 	@Override
-	public ExcelCell with(Object... values) {
+	public boolean add(Object... values) {
 		if(values == null) {
-			return null;
+			return false;
 		}
 		if(children ==null) {
 			this.children = new SimpleList<EntityList>();
@@ -217,7 +217,7 @@ public class ExcelCell implements SendableEntityCreatorTag, EntityList{
 				this.children.add((EntityList) item);
 			}
 		}
-		return this;
+		return true;
 	}
 
 	@Override

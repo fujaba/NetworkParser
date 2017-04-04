@@ -1,4 +1,4 @@
-package de.uniks.networkparser;
+package de.uniks.networkparser.logic;
 
 /*
 NetworkParser
@@ -32,7 +32,7 @@ import de.uniks.networkparser.list.SimpleList;
 
 public class ChainListener implements ObjectCondition{
 	private boolean chain=true;
-	private SimpleList<Object> list = new SimpleList<Object>();
+	private Object list;
 
 	public ChainListener enableHook() {
 		this.chain = false;
@@ -43,12 +43,27 @@ public class ChainListener implements ObjectCondition{
 	public boolean update(Object evt) {
 		if(evt instanceof PropertyChangeEvent) {
 			return updatePCE((PropertyChangeEvent) evt);
+		} 
+		SimpleList<ObjectCondition> list = getTemplates();
+		boolean result=true;
+		for(ObjectCondition item : list) {
+			if(item.update(evt) == false) {
+				result = false;
+			}
 		}
-		return false;
+		return result;
 	}
 
 	public boolean updatePCE(PropertyChangeEvent evt) {
-		for(Iterator<Object> i = list.iterator();i.hasNext();) {
+		if(list instanceof PropertyChangeListener) { 
+			((PropertyChangeListener)list).propertyChange(evt);
+			return true;
+		} else if(list instanceof ObjectCondition) {
+			return ((ObjectCondition)list).update(evt);
+		}
+		SimpleList<?> collection = (SimpleList<?>) this.list;
+		
+		for(Iterator<?> i = collection.iterator();i.hasNext();) {
 			Object listener = i.next();
 			if(listener instanceof ObjectCondition) {
 				if(((ObjectCondition)listener).update(evt) == false) {
@@ -64,21 +79,48 @@ public class ChainListener implements ObjectCondition{
 	}
 
 	public ChainListener with(ObjectCondition... values) {
-		if(values ==null) {
-			return this;
-		}
-		for(ObjectCondition item : values) {
-			list.with(item);
-		}
+		add((Object[])values);
 		return this;
 	}
+
 	public ChainListener with(PropertyChangeListener... values) {
-		if(values ==null) {
-			return this;
-		}
-		for(PropertyChangeListener item : values) {
-			list.with(item);
-		}
+		add((Object[])values);
 		return this;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public boolean add(Object... values) {
+		if(values == null) {
+			return false;
+		}
+		if(values.length == 1 && this.list == null) {
+			if(values[0] instanceof PropertyChangeListener || values[0] instanceof ObjectCondition) {
+				this.list = values[0];
+			}
+			return true;
+		}
+		SimpleList<?> list;
+		if(this.list instanceof SimpleList<?>) {
+			list = (SimpleList<Object>) this.list;
+		} else {
+			if(values[0] instanceof PropertyChangeListener) {
+				list = new SimpleList<PropertyChangeListener>(); 
+			} else {
+				list = new SimpleList<ObjectCondition>();
+			}
+			list.with(this.list);
+			this.list = list;
+		}
+		return list.add(values);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public SimpleList<ObjectCondition> getTemplates() {
+		SimpleList<ObjectCondition> result = new SimpleList<ObjectCondition>();
+		if(this.list instanceof SimpleList<?>) { 
+			return ((SimpleList<ObjectCondition>)this.list);
+		} 
+		result.with(this.list);
+		return result;
 	}
 }

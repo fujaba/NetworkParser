@@ -149,12 +149,12 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	 * Instantiates a new id map.
 	 */
 	public IdMap() {
-		this.with(new TextItems());
-		this.with(new DateCreator());
-		this.with(new JsonObjectCreator());
-		this.with(new JsonArrayCreator());
-		this.with(new ObjectMapEntry());
-		this.with(new XMLEntityCreator());
+		this.add(new TextItems());
+		this.add(new DateCreator());
+		this.add(new JsonObjectCreator());
+		this.add(new JsonArrayCreator());
+		this.add(new ObjectMapEntry());
+		this.add(new XMLEntityCreator());
 	}
 
 	/**
@@ -217,7 +217,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 			return null;
 		}
 		for (Iterator<SendableEntityCreator> i = iterator.iterator(); i.hasNext();) {
-			with(i.next());
+			add(i.next());
 		}
 		return this;
 	}
@@ -662,7 +662,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 	 * @param updateListener the new Listener
 	 * @return This Component
 	 *
-	 * @see de.uniks.networkparser.ChainListener
+	 * @see de.uniks.networkparser.logic.ChainListener
 	 */
 	public IdMap withListener(ObjectCondition updateListener) {
 		this.updateListener = updateListener;
@@ -1315,7 +1315,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 						}
 					}
 				}
-				targetList.with(item);
+				targetList.add(item);
 				return item;
 			}
 			// May be a Child
@@ -1336,7 +1336,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 				return null;
 			}
 			if (isSimple) {
-				targetList.with(item);
+				targetList.add(item);
 			}
 		}
 		String[] properties = map.getProperties(tokener, creator);
@@ -1376,7 +1376,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 							}
 						}
 						if (value instanceof Entity && parent instanceof XMLEntity) {
-							parent.with(value);
+							parent.add(value);
 							continue;
 						}
 						className = value.getClass().getName();
@@ -1429,7 +1429,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 			map.popStack();
 		}
 		if (targetList != null && targetList.isComparator()) {
-			targetList.with(item);
+			targetList.add(item);
 		}
 		return item;
 	}
@@ -1499,7 +1499,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		if (map.writeValue(parent, property, writeValue, tokener)) {
 		}
 		else if (parent instanceof EntityList && tokener.isChild(writeValue)) {
-			((EntityList) parent).with(writeValue);
+			((EntityList) parent).add(writeValue);
 			//			((EntityList)parent).with(tokener.transformValue(writeValue, parent));
 		}
 		else if (parent instanceof Entity) {
@@ -1563,11 +1563,15 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 		return converter.encode(this);
 	}
 
+	public IdMap with(Object... values) {
+		add(values);
+		return this;
+	}
 
 	@Override
-	public IdMap with(Object... values) {
+	public boolean add(Object... values) {
 		if (values == null) {
-			return this;
+			return false;
 		}
 		for (Object item : values) {
 			if (item instanceof SendableEntityCreator) {
@@ -1595,7 +1599,7 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 				}
 			}
 		}
-		return this;
+		return true;
 	}
 
 	public IdMap withTimeStamp(long newValue) {

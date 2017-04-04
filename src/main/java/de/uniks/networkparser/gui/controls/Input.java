@@ -32,13 +32,17 @@ public class Input<T> extends Control {
 	@SuppressWarnings("unchecked")
 	public boolean setValue(String key, Object value) {
 		if (VALUE.equalsIgnoreCase(key)) {
-			this.value = (T) value;
-			return true;
+			return this.setValue((T)value);
 		} else if (TYPE.equals(key)) {
-			this.type = String.valueOf(value);
-			return true;
+			return this.setType(""+value);
 		} 
 		return super.setValue(key, value);
+	}
+	
+	public boolean setType(String value) {
+		String oldValue = this.type;
+		this.type = value;
+		return firePropertyChange(TYPE, oldValue, value);
 	}
 
 	/**
@@ -50,8 +54,11 @@ public class Input<T> extends Control {
 
 	/**
 	 * @param value	 the value to set
+	 * @return success
 	 */
-	public void setValue(T value) {
+	public boolean setValue(T value) {
+		T oldValue = this.value;
 		this.value = value;
+		return firePropertyChange(VALUE, oldValue, value);
 	}
 }

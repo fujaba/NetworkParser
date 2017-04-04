@@ -61,8 +61,7 @@ public class SimpleList<V> extends AbstractList<V> implements List<V>, Cloneable
 	}
 
 	@Override
-	public SimpleList<V> with(Object... values) {
-		super.with(values);
-		return this;
+	public boolean add(V e) {
+		return super.add(e);
 	}
 }

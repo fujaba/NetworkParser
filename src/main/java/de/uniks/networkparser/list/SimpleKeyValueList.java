@@ -342,18 +342,18 @@ public class SimpleKeyValueList<K, V> extends AbstractArray<K> implements Map<K,
 		return this;
 	}
 
-	public SimpleKeyValueList<K, V> with(Object... values) {
+	public boolean add(Object... values) {
 		if(values == null) {
-			return this;
+			return false;
 		}
 		if (values.length % 2 == 0) {
 			for (int i = 0; i < values.length; i += 2) {
 				withKeyValue(values[i], values[i + 1]);
 			}
-			return this;
+			return true;
 		}
-		super.with(values);
-		return this;
+		super.add(values);
+		return true;
 	}
 
 	@SuppressWarnings("unchecked")
