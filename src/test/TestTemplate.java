@@ -54,6 +54,9 @@ public class TestTemplate {
 		generate = template.generate(variables);
 		System.out.println("#"+generate+"#");
 
+		template.withTemplate("{{T}}{{#ifnot G}} {{#endif}}Welt");
+		generate = template.generate(variables);
+		System.out.println("#"+generate+"#");
 		
 	}
 
