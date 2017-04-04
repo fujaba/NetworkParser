@@ -2,7 +2,6 @@ package de.uniks.networkparser.gui.controls;
 
 import java.util.Collection;
 
-import de.uniks.networkparser.ext.javafx.controller.AbstractModelController;
 import de.uniks.networkparser.list.SimpleList;
 
 public class Form extends Control {
@@ -50,6 +49,9 @@ public class Form extends Control {
 		return this;
 	}
 	public boolean addElement(Control... elements) {
+		if(elements == null) {
+			return false;
+		}
 		boolean changed = false;
 		if (this.elements == null) {
 			this.elements = new SimpleList<Control>();

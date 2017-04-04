@@ -1,14 +1,11 @@
 package de.uniks.networkparser.gui.controls;
 
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.gui.Column;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.list.SimpleList;
-import de.uniks.networkparser.list.SortedList;
 
 public class TableComponent extends Control {
 	static final String TABLE = "table";
@@ -17,19 +14,15 @@ public class TableComponent extends Control {
 
 	public static final String PROPERTY_ITEM = "item";
 
-	public static final String PROPERTY_PROPERTY = "property";
-
 	public static final String PROPERTY_SEARCHCOLUMNS = "searchColumns";
 
 	protected IdMap map;
 
 	private SimpleList<Column> columns = new SimpleList<Column>();
 
-	private SimpleList<Column> searchColumn = new SimpleList<Column>();
+	private SimpleList<String> searchColumn = new SimpleList<String>();
 
-	protected Object source;
-
-	private String property;
+	private SimpleList<Object> items = new SimpleList<Object>();
 
 	protected SendableEntityCreator sourceCreator;
 
@@ -39,7 +32,6 @@ public class TableComponent extends Control {
 	public TableComponent() {
 		super();
 		this.className = TABLE;
-		//addBaseElements(PROPERTY_PROPERTY);
 		addBaseElements(PROPERTY_COLUMNS);
 		addBaseElements(PROPERTY_ITEM);
 		addBaseElements(PROPERTY_SEARCHCOLUMNS);
@@ -50,31 +42,39 @@ public class TableComponent extends Control {
 		return false;
 	}
 
-
 	public TableComponent withColumn(Column... columns) {
-		if (columns == null) {
-			return this;
-		}
-		for (Column c : columns) {
-			if (!this.columns.contains(c)) {
-				// Save column
-				this.columns.add(c);
-			}
-		}
-		if (this.owner != null) {
-			for (Column c : columns) {
-				if (this.columns.add(c)) {
-					// Add a new Column
-					this.owner.fireControlChange(this, PROPERTY_COLUMNS, c);
-				}
-			}
-		}
+		addColumn(columns);
 		return this;
+	}
+	public boolean addColumn(Column... columns) {
+		if (columns == null) {
+			return false;
+		}
+		boolean changed = false;
+		for (Column c : columns) {
+			if(this.columns.add(c)) {
+				changed = true;
+				firePropertyChange(PROPERTY_COLUMNS, null, c);
+			}
+		}
+		return changed;
+	}
+	
+	public boolean addSearchProperties(String... elements) {
+		if (elements == null) {
+			return false;
+		}
+		boolean changed = false;
+		for (String c : elements) {
+			if(this.searchColumn.add(c)) {
+				changed = true;
+				firePropertyChange(PROPERTY_SEARCHCOLUMNS, null, c);
+			}
+		}
+		return changed;
 	}
 	//	showScrollbar(TableViewFX)
 	//	withSearchProperties(String...)
-	//	withElement(Node...)
-	//	addItem(Object)
 	//	removeItem(Object)
 	//	withList(Object, String)
 	//	getColumn(Column)
@@ -99,25 +99,42 @@ public class TableComponent extends Control {
 	}
 
 
-	public TableComponent withList(SortedList<Object> tableList) {
-		return this;
-	}
-
 
 	public TableComponent withSearchProperties(String... elements) {
+		addSearchProperties(elements);
 		return this;
 	}
-
-
+	
 	public TableComponent withList(Object entity, String property) {
 		return this;
 	}
 
-
-	public SimpleList<Column> getSearchColumn() {
-		return searchColumn;
+	public TableComponent withList(Collection<Object> tableList) {
+		return this;
+	}
+	public TableComponent withList(Object... items) {
+		addList(items);
+		return this;
 	}
 
+	public boolean addList(Object... elements) {
+		if (elements == null) {
+			return false;
+		}
+		boolean changed = false;
+		for (Object c : elements) {
+			if(this.items.add(c)) {
+				changed = true;
+				firePropertyChange(PROPERTY_ITEM, null, c);
+			}
+		}
+		return changed;
+	}
+	
+
+	public SimpleList<String> getSearchColumn() {
+		return searchColumn;
+	}
 
 	public String getProperty() {
 		return property;
@@ -130,12 +147,8 @@ public class TableComponent extends Control {
 			return this.columns;
 		}
 		else if (PROPERTY_ITEM.equals(key)) {
-			// TODO: curently no item..
-			return null;
+			return this.items;
 		}
-		/*else if (PROPERTY_PROPERTY.equals(key)) {
-			return this.property;
-		}*/
 		else if (PROPERTY_SEARCHCOLUMNS.equals(key)) {
 			return this.searchColumn;
 		}
@@ -146,22 +159,38 @@ public class TableComponent extends Control {
 	@Override
 	public boolean setValue(String key, Object value) {
 		if (PROPERTY_COLUMNS.equals(key)) {
-			if(value instanceof Collection<?>) {
-				Collection<?> items = ((Collection<?>) value);
-				this.columns.withList(items);
+			if(value instanceof Control) {
+				return this.addColumn((Column)value);
+			} else if(value instanceof Column[]) {
+				return this.addColumn((Column[])value);
+			} else if(value instanceof Collection<?>) {
+				Collection<?> list = (Collection<?>)value;
+				Column[] array = ((Collection<?>) value).toArray(new Column[list.size()]);
+				return this.addColumn(array);
 			}
+			return false;
 		}
-		else if (PROPERTY_ITEM.equals(key)) {
-			// TODO: curently no item..
-		}
-		/*else if (PROPERTY_PROPERTY.equals(key)) {
-			this.property = (String) value;
-		}*/
-		else if (PROPERTY_SEARCHCOLUMNS.equals(key)) {
-			if(value instanceof Collection<?>) {
-				Collection<?> items = ((Collection<?>) value);
-				this.searchColumn.withList(items);
+		if (PROPERTY_ITEM.equals(key)) {
+			if(value instanceof Object[]) {
+				return this.addList((Object[])value);
+			} else if(value instanceof Collection<?>) {
+				Collection<?> list = (Collection<?>)value;
+				Object[] array = ((Collection<?>) value).toArray(new Object[list.size()]);
+				return this.addList(array);
 			}
+			return this.addList(value);
+		}
+		if (PROPERTY_SEARCHCOLUMNS.equals(key)) {
+			if(value instanceof String) {
+				return this.addSearchProperties((String)value);
+			} else if(value instanceof String[]) {
+				return this.addSearchProperties((String[])value);
+			} else if(value instanceof Collection<?>) {
+				Collection<?> list = (Collection<?>)value;
+				String[] array = ((Collection<?>) value).toArray(new String[list.size()]);
+				return this.addSearchProperties(array);
+			}
+			return false;
 		}
 		return super.setValue(key, value);
 	}
