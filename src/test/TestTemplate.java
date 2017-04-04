@@ -31,16 +31,29 @@ public class TestTemplate {
 		Template template=new Template();
 		template.withTemplate("{{T} }");
 		
-		template.generate(null);
+//		String generate = template.generate(new SimpleKeyValueList<String, String>().withKeyValueString("T: Hello", String.class));
+//		System.out.println("#"+generate+"#");
 	}
 	
 	@Test
 	public void testTemplatePlusIfExtra() {
 		Template template=new Template();
-		template.withTemplate("{{T}}{{#if T}} {{#endif}}Welt");
+		template.withTemplate("{{T}}{{#if G}} {{#endif}}Welt");
+		String generate;
 		
-		String generate = template.generate(new SimpleKeyValueList<String, String>().withKeyValueString("T: Hello", String.class));
+		SimpleKeyValueList<String, String> variables = new SimpleKeyValueList<String, String>().withKeyValueString("T: Hello", String.class);
+		generate = template.generate(variables);
 		System.out.println("#"+generate+"#");
+		
+		template.withTemplate("{{T}}{{#if T}} {{#endif}}Welt");
+		generate = template.generate(variables);
+		System.out.println("#"+generate+"#");
+
+		
+		template.withTemplate("{{T}}{{#if G}}false{{#else}} {{#endif}}Welt");
+		generate = template.generate(variables);
+		System.out.println("#"+generate+"#");
+
 		
 	}
 

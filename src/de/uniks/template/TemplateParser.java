@@ -2,9 +2,8 @@ package de.uniks.template;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.interfaces.TemplateCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
-import de.uniks.networkparser.logic.StringCondition;
-import de.uniks.networkparser.logic.VariableCondition;
 
 public class TemplateParser implements ObjectCondition{
 	private SimpleKeyValueList<String, String> variables;
@@ -20,13 +19,13 @@ public class TemplateParser implements ObjectCondition{
 		if(value instanceof ObjectCondition == false) {
 			return false;
 		}
-		if(value instanceof StringCondition) {
-			result.with(((StringCondition)value).getValue());
-		}
-		if(value instanceof VariableCondition) {
-			VariableCondition variableCondition = (VariableCondition)value;
-			
-			result.with(variables.get(variableCondition.getValue()));
+		if(value instanceof TemplateCondition) {
+			TemplateCondition tc = (TemplateCondition) value;
+			if(tc.isExpression()) {
+				return tc.update(variables);
+			} else {
+				result.with(tc.getValue(variables));	
+			}
 		}
 		return true;
 	}

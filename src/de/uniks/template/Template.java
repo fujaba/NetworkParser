@@ -68,7 +68,7 @@ public class Template {
 		// {{{Type}}} <=> {int}
 
 		CharacterBuffer template = null;
-		CharSequence value2 = tokenTemplate.getValue();
+		CharSequence value2 = tokenTemplate.getValue(null);
 		if(value2 instanceof CharacterBuffer) {
 			template = (CharacterBuffer) value2;
 		}else {
@@ -113,7 +113,7 @@ public class Template {
 				if(tokenPart.equalsIgnoreCase("ifnot")) {
 					tokenPart = template.nextToken(false, SPLITEND);
 					
-					IfCondition token = new IfCondition().withExpression(createVariable(tokenPart));
+					IfCondition token = new IfCondition().withExpression(createVariable(tokenPart, true));
 					
 					template.skipChar(SPLITEND);
 					template.skipChar(SPLITEND);
@@ -129,13 +129,25 @@ public class Template {
 				}
 				if(tokenPart.equalsIgnoreCase("if")) {
 					tokenPart = template.nextToken(false, SPLITEND);
-					IfCondition token = new IfCondition().withExpression(createVariable(tokenPart));
+					IfCondition token = new IfCondition().withExpression(createVariable(tokenPart, true));
 					template.skipChar(SPLITEND);
 					template.skipChar(SPLITEND);
 					
 					tokenPart = template.nextString(SPLITSTART);
 					token.withTrue(StringCondition.create(tokenPart));
-					template.skipTo(SPLITEND, false);
+					
+					// ENDIF
+					template.skip();
+					
+					tokenPart = template.nextToken(false, SPLITEND);
+//					if("#endif".equalsIgnoreCase(tokenPart.toString()) {
+					if("#else".equalsIgnoreCase(tokenPart.toString())) {
+						template.skipChar(SPLITEND);
+						template.skipChar(SPLITEND);
+						tokenPart = template.nextString(SPLITSTART);
+						token.withFalse(StringCondition.create(tokenPart));
+						template.skipTo(SPLITEND, false);
+					}
 					template.skipChar(SPLITEND);
 					
 					child = token;
@@ -149,7 +161,7 @@ public class Template {
 			}
 			template.nextString(tokenPart, false, false, SPLITEND);
 			String key = tokenPart.toString();
-			child = createVariable(key);
+			child = createVariable(key, false);
 			if(parent != null) {
 				parent.addTemplate(child);
 			}
@@ -164,7 +176,7 @@ public class Template {
 
 			//{{#if Type}} {{#end}}
 			IfCondition token = new IfCondition();
-			token.withExpression(createVariable(key));
+			token.withExpression(createVariable(key, true));
 			token.withTrue(StringCondition.create(tokenPart.toString()));
 			
 			child = token;
@@ -184,8 +196,8 @@ public class Template {
 		return child;
 	}
 	
-	private VariableCondition createVariable(CharSequence value) {
-		VariableCondition condition = new VariableCondition().withValue(value);
+	private VariableCondition createVariable(CharSequence value, boolean expression) {
+		VariableCondition condition = VariableCondition.create(value, expression);
 		this.variables.add(value.toString());
 		return condition;
 	}
