@@ -428,13 +428,18 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		if(this.buffer == null) {
 			int newCapubility=0;
 			for( int i=0;i<items.length;i++) {
-				newCapubility += items[i].length();
+				if(items[i] != null) {
+					newCapubility += items[i].length();
+				}
 			}
 			this.buffer = new char[newCapubility];
 			start = 0;
 			length = this.buffer.length;
 			int pos = 0;
 			for( int i=0;i<items.length;i++) {
+				if(items[i] == null) {
+					continue;
+				}
 				int len = items[i].length();
 				for(int c=0;c<len; c++) {
 					this.buffer[pos++] = items[i].charAt(c);
