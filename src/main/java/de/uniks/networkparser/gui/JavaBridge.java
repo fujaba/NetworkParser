@@ -132,7 +132,9 @@ public abstract class JavaBridge implements ObjectCondition {
 
 
 	public void addEventListener(Control c, EventTypes eventType, ObjectCondition eventListener) {
-		executeScript(BridgeCommand.register(eventType, c.getId()));
+		if(c.getEvents(eventType) != null){
+			executeScript(BridgeCommand.register(eventType, c.getId()));
+		}
 		c.addEventListener(eventType, eventListener);
 	}
 
