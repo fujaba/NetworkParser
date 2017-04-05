@@ -109,19 +109,33 @@ public class ReflectionLoader {
 			return null;
 		}
 		int len=0;
+		Class<?>[] methodArguments = null;
+		Object[] methodArgumentsValues = null;
 		if(arguments != null) {
-			if(arguments.length %2 ==1) {
-				return null;
+			if(arguments.length %2 == 1 || checkValue(arguments)) {
+				methodArguments=new Class[arguments.length];
+				methodArgumentsValues=new Class[arguments.length];
+				for(int i=0;i<arguments.length;i++) {
+					if(arguments[i] != null) {
+						methodArguments[i] = (Class<?>) arguments[i].getClass();
+					}else {
+						methodArguments[i] = Object.class;
+					}
+					methodArgumentsValues[i] = arguments[i];
+				}
+			} else {
+				len = arguments.length / 2;
 			}
-			len = arguments.length / 2;
 		}
-		Class<?>[] methodArguments=new Class[len];
-		Object[] methodArgumentsValues=new Object[len];
-		int pos=0;
-		for(int i=0;i<arguments.length;i+=2) {
-			methodArguments[pos] = (Class<?>) arguments[i];
-			methodArgumentsValues[pos] = arguments[i+1];
-			pos++;
+		if(methodArguments == null) {
+			methodArguments=new Class[len];
+			methodArgumentsValues=new Object[len];
+			int pos=0;
+			for(int i=0;i<arguments.length;i+=2) {
+				methodArguments[pos] = (Class<?>) arguments[i];
+				methodArgumentsValues[pos] = arguments[i+1];
+				pos++;
+			}
 		}
 		try {
 			boolean staticCall =false;
@@ -163,5 +177,19 @@ public class ReflectionLoader {
 //			e.printStackTrace();
 		}
 		return null;
+	}
+
+	private static boolean checkValue(Object[] arguments) {
+		for(int i=0;i<arguments.length;i+=2) {
+			if(arguments[i] instanceof Class<?> == false) {
+				return true;
+			}
+			if(arguments[i+1] != null) {
+				if(arguments[i+1].getClass().isAssignableFrom((Class<?>)arguments[i]) == false) {
+					return false;
+				}
+			}
+		}
+		return false;
 	}
 }
