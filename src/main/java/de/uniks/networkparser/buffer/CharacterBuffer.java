@@ -261,7 +261,9 @@ public class CharacterBuffer extends BufferedBuffer implements CharSequence{
 		if (this.position+this.start >= this.buffer.length) {
 			return 0;
 		}
-		this.position++;
+		if(this.position<this.length) {
+			this.position++;
+		}
 		if (this.position+this.start == this.buffer.length) {
 			return 0;
 		}
