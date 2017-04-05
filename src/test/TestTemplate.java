@@ -18,6 +18,15 @@ public class TestTemplate {
 		SimpleKeyValueList<String, String> parameters = new SimpleKeyValueList<String, String>().withKeyValueString("T: Hello", String.class);
 		System.out.println(parsing.update(template));
 		System.out.println(parsing.update(parameters));
+		
+		parsing = template.parsing(StringCondition.create("{{G}}"), false);
+		System.out.println(parsing.update(parameters));
+		
+		parsing = template.parsing(StringCondition.create("{{#if T}}"), false);
+		System.out.println(parsing.update(parameters));
+		
+		parsing = template.parsing(StringCondition.create("{{#if G}}"), false);
+		System.out.println(parsing.update(parameters));
 	}
 	@Test
 	public void testTemplateSimple() {
