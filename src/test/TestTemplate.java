@@ -2,6 +2,7 @@ package test;
 
 import org.junit.Test;
 
+import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.logic.StringCondition;
@@ -9,6 +10,21 @@ import de.uniks.template.Template;
 
 
 public class TestTemplate {
+	
+	@Test
+	public void testTemplateERROR() {
+		Template template=new Template();
+		String templateString ="   {{methodVisibility}} {{getModifiers}}{{#if getModifiers}} {{#endif}}{{value}} {{getName}}{{Name}}(){{methodEnd}}"+BaseItem.CRLF
+			 	  +"{{#ifnot methodEnd}}"+BaseItem.CRLF
+			 	  +"   {"+BaseItem.CRLF
+			 	  +"      return this.{{name}};"+BaseItem.CRLF
+			 	  +"   }"+BaseItem.CRLF
+			 	  +"{{#endif}}"+BaseItem.CRLF;
+	   ObjectCondition parsing = template.parsing(StringCondition.create(templateString), false);
+	   System.out.println(parsing);
+	}
+
+	
 	@Test
 	public void testTemplateCondition() {
 		Template template=new Template();
