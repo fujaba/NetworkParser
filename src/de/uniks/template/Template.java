@@ -1,15 +1,18 @@
 package de.uniks.template;
 
+import de.uniks.factory.condition.FeatureCondition;
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.interfaces.Entity;
 import de.uniks.networkparser.interfaces.ObjectCondition;
+import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
-import de.uniks.networkparser.logic.TemplateCondition;
-import de.uniks.networkparser.logic.ChainListener;
+import de.uniks.networkparser.logic.ChainCondition;
 import de.uniks.networkparser.logic.IfCondition;
 import de.uniks.networkparser.logic.Not;
 import de.uniks.networkparser.logic.StringCondition;
+import de.uniks.networkparser.logic.TemplateCondition;
 import de.uniks.networkparser.logic.VariableCondition;
 
 public class Template {
@@ -35,7 +38,15 @@ public class Template {
 
 	private SimpleList<String> variables = new SimpleList<String>();
 	
-	public String generate(SimpleKeyValueList<String, String> parameters) {
+	
+	private SimpleKeyValueList<String, ParserCondition> customTemplate = new  SimpleKeyValueList<String, ParserCondition>();
+	
+	public Template() {
+		FeatureCondition condition = new FeatureCondition();
+		customTemplate.add(condition.getKey(), condition);
+	}
+	
+	public String generate(SimpleKeyValueList<String, String> parameters, GraphMember member) {
 		if(this.token.getCondition() instanceof StringCondition) {
 			this.token.withCondition(this.parsing((StringCondition)this.token.getCondition(), false));	
 		}
@@ -45,11 +56,14 @@ public class Template {
 			ObjectCondition newTemplate = this.parsing((StringCondition)template, true);
 			this.token.withTemplate(newTemplate);
 		}
-		if(this.token.update(parameters) == false) {
-			return "";
-		}
 		TemplateParser parser =new TemplateParser();
 		parser.withVariable(parameters);
+		parser.withMember(member);
+		
+		if(this.token.update(parser) == false) {
+			return "";
+		}
+		parser.withExpression(false);
 		ObjectCondition templateCondition = this.token.getTemplate();
 		templateCondition.update(parser);
 		return parser.getResult().toString();
@@ -83,7 +97,7 @@ public class Template {
 	private ObjectCondition parseCharacterBuffer(CharacterBuffer template, String... stopWords) {
 		int start=template.position(), end;
 		ObjectCondition child = null;
-		ChainListener parent = new ChainListener();
+		ChainCondition parent = new ChainCondition();
 		while(template.isEnd() == false) {
 			char character = template.nextClean(true);
 			if(character != SPLITSTART) {
@@ -127,11 +141,11 @@ public class Template {
 					IfCondition token = new IfCondition();
 					if(tokenPart.equalsIgnoreCase("ifnot")) {
 						tokenPart = template.nextToken(false, SPLITEND);
-						VariableCondition expression = createVariable(tokenPart, true);
+						VariableCondition expression = createVariable(tokenPart);
 						token.withExpression(Not.create(expression));	
 					}else {
 						tokenPart = template.nextToken(false, SPLITEND);
-						token.withExpression(createVariable(tokenPart, true));
+						token.withExpression(createVariable(tokenPart));
 					}
 					
 					template.skipChar(SPLITEND);
@@ -152,6 +166,12 @@ public class Template {
 					
 					child = token;
 					parent.with(child);
+				} else {
+					ParserCondition condition = customTemplate.get(tokenPart.toString());
+					if(condition != null) {
+						ObjectCondition childCondition = condition.create(template);
+						parent.with(childCondition);
+					}
 				}
 				template.skip();
 				start=template.position();
@@ -159,7 +179,7 @@ public class Template {
 			}
 			template.nextString(tokenPart, false, false, SPLITEND);
 			String key = tokenPart.toString();
-			child = createVariable(key, false);
+			child = createVariable(key);
 			parent.with(child);
 			character = template.getChar();
 			if(character == SPLITEND) {
@@ -172,7 +192,7 @@ public class Template {
 
 			//{{#if Type}} {{#end}}
 			IfCondition token = new IfCondition();
-			token.withExpression(createVariable(key, true));
+			token.withExpression(createVariable(key));
 			token.withTrue(StringCondition.create(tokenPart.toString()));
 			
 			child = token;
@@ -191,8 +211,8 @@ public class Template {
 		return parent;
 	}
 	
-	private VariableCondition createVariable(CharSequence value, boolean expression) {
-		VariableCondition condition = VariableCondition.create(value, expression);
+	private VariableCondition createVariable(CharSequence value) {
+		VariableCondition condition = VariableCondition.create(value);
 		this.variables.add(value.toString());
 		return condition;
 	}

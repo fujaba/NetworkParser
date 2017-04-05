@@ -16,7 +16,8 @@ public class TemplateResult {
 		Template template = rootTemplate;
 		TemplateFragment templateFragment = null;
 		while (template != null) {
-			templateResult = template.generate(parameters);
+			//FIXME
+			templateResult = template.generate(parameters, null);
 			if (templateResult != null && templateResult.length() > 0) {
 				if (isStandard) {
 					result.with(templateResult).with("\n");

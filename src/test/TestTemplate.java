@@ -10,7 +10,17 @@ import de.uniks.template.Template;
 
 
 public class TestTemplate {
-	
+	@Test
+	public void testTemplateFeatureCondition() {
+		Template template=new Template();
+		String templateString ="{{#feature SETCLASS=SimpleSet}}"+BaseItem.CRLF;
+	   ObjectCondition parsing = template.parsing(StringCondition.create(templateString), false);
+	   
+
+	   System.out.println(parsing);
+	   template.withCondition(templateString);
+	   template.generate(null, null);
+	}
 	@Test
 	public void testTemplateERROR() {
 		Template template=new Template();
@@ -49,7 +59,7 @@ public class TestTemplate {
 		Template template=new Template();
 		template.withTemplate("{{T}}");
 		
-		String generate =  template.generate(null);
+		String generate =  template.generate(null, null);
 		System.out.println("#"+generate+"#");
 		
 	}
@@ -59,7 +69,7 @@ public class TestTemplate {
 		Template template=new Template();
 		template.withTemplate("{{{T}}}");
 		
-		template.generate(null);
+		template.generate(null, null);
 		
 	}
 
@@ -68,7 +78,7 @@ public class TestTemplate {
 		Template template=new Template();
 		template.withTemplate("{{T} }");
 		
-		String generate = template.generate(new SimpleKeyValueList<String, String>().withKeyValueString("T: Hello", String.class));
+		String generate = template.generate(new SimpleKeyValueList<String, String>().withKeyValueString("T: Hello", String.class), null);
 		System.out.println("#"+generate+"#");
 	}
 	
@@ -79,7 +89,7 @@ public class TestTemplate {
 		
 		template.withTemplate("{{T}}{{#if G}}false{{#else}} {{#endif}}Welt");
 		SimpleKeyValueList<String, String> variables = new SimpleKeyValueList<String, String>().withKeyValueString("T: Hello", String.class);
-		generate = template.generate(variables);
+		generate = template.generate(variables, null);
 		System.out.println("#"+generate+"#");
 	}
 	
@@ -90,7 +100,7 @@ public class TestTemplate {
 		
 		template.withTemplate("{{T}}{{#if T}}{{T}}{{#endif}}Welt");
 		SimpleKeyValueList<String, String> variables = new SimpleKeyValueList<String, String>().withKeyValueString("T:Hello", String.class);
-		generate = template.generate(variables);
+		generate = template.generate(variables, null);
 		System.out.println("#"+generate+"#");
 	}
 	
@@ -106,7 +116,7 @@ public class TestTemplate {
 			 	  "{{#endif}}");
 
 		SimpleKeyValueList<String, String> variables = new SimpleKeyValueList<String, String>().withKeyValueString("methodEnd:,name:testName", String.class);
-		generate = template.generate(variables);
+		generate = template.generate(variables, null);
 		System.out.println("#"+generate+"#");
 	}
 	
@@ -117,20 +127,20 @@ public class TestTemplate {
 		String generate;
 		
 		SimpleKeyValueList<String, String> variables = new SimpleKeyValueList<String, String>().withKeyValueString("T: Hello", String.class);
-		generate = template.generate(variables);
+		generate = template.generate(variables, null);
 		System.out.println("#"+generate+"#");
 		
 		template.withTemplate("{{T}}{{#if T}} {{#endif}}Welt");
-		generate = template.generate(variables);
+		generate = template.generate(variables, null);
 		System.out.println("#"+generate+"#");
 
 		
 		template.withTemplate("{{T}}{{#if G}}false{{#else}} {{#endif}}Welt");
-		generate = template.generate(variables);
+		generate = template.generate(variables, null);
 		System.out.println("#"+generate+"#");
 
 		template.withTemplate("{{T}}{{#ifnot G}} {{#endif}}Welt");
-		generate = template.generate(variables);
+		generate = template.generate(variables, null);
 		System.out.println("#"+generate+"#");
 		
 	}
