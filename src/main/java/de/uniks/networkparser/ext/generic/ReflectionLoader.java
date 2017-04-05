@@ -114,7 +114,7 @@ public class ReflectionLoader {
 		if(arguments != null) {
 			if(arguments.length %2 == 1 || checkValue(arguments)) {
 				methodArguments=new Class[arguments.length];
-				methodArgumentsValues=new Class[arguments.length];
+				methodArgumentsValues=new Object[arguments.length];
 				for(int i=0;i<arguments.length;i++) {
 					if(arguments[i] != null) {
 						methodArguments[i] = (Class<?>) arguments[i].getClass();
@@ -174,7 +174,7 @@ public class ReflectionLoader {
 				return method.invoke(item, methodArgumentsValues);
 			}				
 		} catch (Exception e) {
-//			e.printStackTrace();
+			//			e.printStackTrace();
 		}
 		return null;
 	}
