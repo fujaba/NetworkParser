@@ -25,6 +25,7 @@ THE SOFTWARE.
 */
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Collection;
 import java.util.Iterator;
 
 import de.uniks.networkparser.interfaces.ObjectCondition;
@@ -122,5 +123,14 @@ public class ChainListener implements ObjectCondition{
 		} 
 		result.with(this.list);
 		return result;
+	}
+	
+	public int size() {
+		if(this.list==null) {
+			return 0;
+		}else if(this.list instanceof Collection<?>) {
+			return ((Collection<?>)this.list).size();
+		}
+		return 1;
 	}
 }

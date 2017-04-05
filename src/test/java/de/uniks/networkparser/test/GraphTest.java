@@ -130,6 +130,7 @@ public class GraphTest {
 		person.withBidirectional(uni, "owner", Cardinality.ONE, "has", Cardinality.MANY);
 		
 		Assert.assertEquals(1, uni.getAssociations().size());
+		Assert.assertEquals(1, person.getAssociations().size());
 	}
 
 	@Test
