@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import de.uniks.factory.ModelFactory;
 import de.uniks.factory.java.JavaModelFactory;
+import de.uniks.factory.typescript.TypeScriptModelFactory;
 import de.uniks.networkparser.graph.Attribute;
 import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
@@ -35,6 +36,17 @@ public class TestAttributeFactory {
 //		long run = (System.nanoTime() - startTime);
 //		System.out.println("Duration:" +run );
 //		return run;
+		System.out.println(modelFactory.create(classModel));
+	}
+	
+	@Test
+	public void testTypeScriptAttribute() {
+		GraphList classModel = new GraphList().with("i.love.sdmlib");
+		Clazz person = classModel.createClazz("Person");
+		person.createAttribute("name", DataType.STRING);
+		person.createAttribute("age", DataType.INT);
+		person.createAttribute("wise", DataType.BOOLEAN);
+		TypeScriptModelFactory modelFactory = new TypeScriptModelFactory();
 		System.out.println(modelFactory.create(classModel));
 	}
 	
