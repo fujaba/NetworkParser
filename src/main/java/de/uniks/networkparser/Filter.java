@@ -87,7 +87,7 @@ public class Filter {
 	 * Serialization the Full object inclusive null value
 	 * @return boolean for serialization the full object
 	 */
-	public boolean isFullSeriation() {
+	public boolean isFullSerialization() {
 		return full;
 	}
 	/**

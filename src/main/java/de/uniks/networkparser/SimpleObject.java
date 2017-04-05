@@ -72,7 +72,7 @@ public class SimpleObject implements SendableEntityCreator, SendableEntity {
 
 	public Object getValue() {
 		if (values.size() == 1) {
-			return values.get(values.getValueByIndex(0));
+			return values.getValueByIndex(0);
 		}
 		return null;
 	}

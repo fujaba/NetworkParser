@@ -38,7 +38,7 @@ public class EventFX extends Event {
 		}
 		value = obj.getMember(CURRENT_TARGET);
 		if(value != null) {
-			event.currentTarget = new JsonObjectLazy(obj);
+			event.currentTarget = new JsonObjectLazy(value);
 		}
 		return event;
 	}

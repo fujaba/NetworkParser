@@ -38,11 +38,15 @@ public class Input<T> extends Control {
 		} 
 		return super.setValue(key, value);
 	}
-	
+
 	public boolean setType(String value) {
 		String oldValue = this.type;
 		this.type = value;
 		return firePropertyChange(TYPE, oldValue, value);
+	}
+	
+	public String getType(String value) {
+		return this.type;
 	}
 
 	/**
