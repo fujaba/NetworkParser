@@ -2,12 +2,23 @@ package test;
 
 import org.junit.Test;
 
+import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
+import de.uniks.networkparser.logic.StringCondition;
 import de.uniks.template.Template;
 
 
 public class TestTemplate {
-
+	@Test
+	public void testTemplateCondition() {
+		Template template=new Template();
+		ObjectCondition parsing = template.parsing(StringCondition.create("{{T}}"), false);
+		System.out.println(parsing);
+		
+		SimpleKeyValueList<String, String> parameters = new SimpleKeyValueList<String, String>().withKeyValueString("T: Hello", String.class);
+		System.out.println(parsing.update(template));
+		System.out.println(parsing.update(parameters));
+	}
 	@Test
 	public void testTemplateSimple() {
 		Template template=new Template();

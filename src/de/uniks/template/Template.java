@@ -45,7 +45,7 @@ public class Template {
 			ObjectCondition newTemplate = this.parsing((StringCondition)template, true);
 			this.token.withTemplate(newTemplate);
 		}
-		if(this.token.update(this) == false) {
+		if(this.token.update(parameters) == false) {
 			return "";
 		}
 		TemplateParser parser =new TemplateParser();
@@ -184,6 +184,9 @@ public class Template {
 		if(end-start>0) {
 			child = StringCondition.create(template.substring(start,end));
 			parent.with(child);
+		}
+		if(parent.size() <1) {
+			return null;
 		}
 		return parent;
 	}
