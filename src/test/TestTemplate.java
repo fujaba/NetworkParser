@@ -13,7 +13,8 @@ public class TestTemplate {
 		Template template=new Template();
 		template.withTemplate("{{T}}");
 		
-		template.generate(null);
+		String generate =  template.generate(null);
+		System.out.println("#"+generate+"#");
 		
 	}
 	
@@ -31,8 +32,8 @@ public class TestTemplate {
 		Template template=new Template();
 		template.withTemplate("{{T} }");
 		
-//		String generate = template.generate(new SimpleKeyValueList<String, String>().withKeyValueString("T: Hello", String.class));
-//		System.out.println("#"+generate+"#");
+		String generate = template.generate(new SimpleKeyValueList<String, String>().withKeyValueString("T: Hello", String.class));
+		System.out.println("#"+generate+"#");
 	}
 	
 	@Test
@@ -57,6 +58,21 @@ public class TestTemplate {
 		System.out.println("#"+generate+"#");
 	}
 	
+	@Test
+	public void testTemplateError3() {
+		Template template=new Template();
+		String generate;
+		
+		template.withTemplate("{{#ifnot methodEnd}}",
+			 	  "   {",
+			 	  "      return this.{{name}};",
+			 	  "   }",
+			 	  "{{#endif}}");
+
+		SimpleKeyValueList<String, String> variables = new SimpleKeyValueList<String, String>().withKeyValueString("methodEnd:,name:testName", String.class);
+		generate = template.generate(variables);
+		System.out.println("#"+generate+"#");
+	}
 	
 	@Test
 	public void testTemplatePlusIfExtra() {
