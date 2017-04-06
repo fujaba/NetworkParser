@@ -1,13 +1,13 @@
 package de.uniks.template;
 
-public class TemplateFragment implements Comparable<TemplateFragment> {
+public class TemplateResultFragment implements Comparable<TemplateResultFragment> {
 
 	private int key = -1;
 	
 	private String value = "";
 	
 	@Override
-	public int compareTo(TemplateFragment other) {
+	public int compareTo(TemplateResultFragment other) {
 		if (other.getKey() == key) {
 			if(other.getValue().equals(value)) {
 				return 0;
@@ -28,7 +28,7 @@ public class TemplateFragment implements Comparable<TemplateFragment> {
 		this.key = key;
 	}
 	
-	public TemplateFragment withKey(int key) {
+	public TemplateResultFragment withKey(int key) {
 		setKey(key);
 		return this;
 	}
@@ -41,7 +41,7 @@ public class TemplateFragment implements Comparable<TemplateFragment> {
 		this.value = value;
 	}
 
-	public TemplateFragment withValue(String value) {
+	public TemplateResultFragment withValue(String value) {
 		setValue(value);
 		return this;
 	}
