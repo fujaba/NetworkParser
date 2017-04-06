@@ -2,10 +2,10 @@ package de.uniks.networkparser.logic;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.ObjectCondition;
-import de.uniks.networkparser.interfaces.TemplateCondition;
+import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
-public class StringCondition implements TemplateCondition {
+public class StringCondition implements ParserCondition {
 	private CharSequence value;
 
 	@Override
@@ -28,11 +28,20 @@ public class StringCondition implements TemplateCondition {
 	}
 
 	@Override
-	public boolean isExpression() {
-		if(value == null) {
-			return false;
-		}
-		CharacterBuffer item = CharacterBuffer.create(value);
-		return item.equalsIgnoreCase("true");
+	public ParserCondition create(CharacterBuffer buffer) {
+		return create(buffer);
+	}
+
+    @Override
+    public boolean isExpression() {
+        if(value == null) {
+            return false;
+        }
+        CharacterBuffer item = CharacterBuffer.create(value);
+        return item.equalsIgnoreCase("true");
+    }
+	@Override
+	public String getKey() {
+		return null;
 	}
 }

@@ -31,11 +31,11 @@ import java.util.Iterator;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.list.SimpleList;
 
-public class ChainListener implements ObjectCondition{
+public class ChainCondition implements ObjectCondition{
 	private boolean chain=true;
 	private Object list;
 
-	public ChainListener enableHook() {
+	public ChainCondition enableHook() {
 		this.chain = false;
 		return this;
 	}
@@ -79,12 +79,12 @@ public class ChainListener implements ObjectCondition{
 		return true;
 	}
 
-	public ChainListener with(ObjectCondition... values) {
+	public ChainCondition with(ObjectCondition... values) {
 		add((Object[])values);
 		return this;
 	}
 
-	public ChainListener with(PropertyChangeListener... values) {
+	public ChainCondition with(PropertyChangeListener... values) {
 		add((Object[])values);
 		return this;
 	}

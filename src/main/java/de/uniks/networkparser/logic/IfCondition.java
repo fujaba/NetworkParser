@@ -95,7 +95,7 @@ public class IfCondition implements ObjectCondition, SendableEntityCreator {
 			return true;
 		} else {
 			if (falseCondition != null) {
-				return falseCondition.update(evt);
+				falseCondition.update(evt);
 			}
 		}
 		return false;
