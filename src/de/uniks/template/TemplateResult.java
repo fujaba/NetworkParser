@@ -1,6 +1,7 @@
 package de.uniks.template;
 
 import de.uniks.networkparser.buffer.CharacterBuffer;
+import de.uniks.networkparser.graph.GraphMember;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SortedList;
 
@@ -10,13 +11,14 @@ public class TemplateResult {
 	
 	private CharacterBuffer result = null;
 	
-	public void execute(Template rootTemplate, SimpleKeyValueList<String, String> parameters, boolean isStandard) {
+	public void execute(Template rootTemplate, SimpleKeyValueList<String, String> parameters, boolean isStandard, GraphMember member) {
 		result = new CharacterBuffer();
 		String templateResult = "";
 		Template template = rootTemplate;
 		TemplateFragment templateFragment = null;
 		while (template != null) {
-			templateResult = template.generate(parameters);
+			//FIXME
+			templateResult = template.generate(parameters, member);
 			if (templateResult != null && templateResult.length() > 0) {
 				if (isStandard) {
 					result.with(templateResult).with("\n");
