@@ -9,5 +9,7 @@ public class NumberField extends Input<Integer> {
 	public NumberField() {
 		super();
 		this.type = NUMBER;
+		// set the default value to 0
+		this.setValue("defaultValue", 0);
 	}
 }

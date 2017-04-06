@@ -31,6 +31,7 @@ public class Input<T> extends Control {
 	@Override
 	@SuppressWarnings("unchecked")
 	public boolean setValue(String key, Object value) {
+		key = key.trim();
 		if (VALUE.equalsIgnoreCase(key)) {
 			return this.setValue((T)value);
 		} else if (TYPE.equals(key)) {

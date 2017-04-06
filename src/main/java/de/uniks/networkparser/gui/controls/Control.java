@@ -114,6 +114,7 @@ public abstract class Control extends SimpleObject {
 
 	@Override
 	public boolean setValue(String key, Object value) {
+		key = key.trim();
 		if (PROPERTY.equalsIgnoreCase(key)) {
 			return this.setProperty("" + value);
 		}

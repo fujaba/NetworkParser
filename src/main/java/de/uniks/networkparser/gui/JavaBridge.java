@@ -142,7 +142,7 @@ public abstract class JavaBridge implements ObjectCondition {
 
 
 	public void fireEvent(JsonObject event) {
-
+		this.map.decode(event);
 	}
 
 

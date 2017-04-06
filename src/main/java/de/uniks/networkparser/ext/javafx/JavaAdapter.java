@@ -17,8 +17,6 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.web.WebEngine;
 import netscape.javascript.JSObject;
 
@@ -123,12 +121,22 @@ public class JavaAdapter implements JavaViewAdapter {
 		return false;
 	}
 	
+	/**
+	 * Reads the file and returns the content of the file as a string.
+	 * @param file the path of the file, that should be loaded
+	 * @return the content of the file as a string
+	 */
 	@Override
 	public String readFile(String file) {
 		FileBuffer buffer = new FileBuffer().withFile(file);
 		return buffer.toString();
 	}
 
+	/**
+	 * Asynchronous execute of the script.
+	 * @param script
+	 * @return
+	 */
 	@Override
 	public Object executeScript(String script) {
 		this.owner.logScript(script, NetworkParserLog.LOGLEVEL_INFO, this, "executeScript");
@@ -139,6 +147,11 @@ public class JavaAdapter implements JavaViewAdapter {
 		return _execute(script);
 	}
 	
+	/**
+	 * synchronous Execute of script
+	 * @param script
+	 * @return
+	 */
 	private Object _execute(String script) {
 		System.out.println(script);
 		Object jsObject = ReflectionLoader.call("executeScript", this.engine, String.class, script);
@@ -146,6 +159,11 @@ public class JavaAdapter implements JavaViewAdapter {
 		return item;
 	}
 
+	/**
+	 * Converts a JSObject to a JsonObject Lazy and forces a load of the LazyJsonObject.
+	 * @param element
+	 * @return JsonObjectLazy
+	 */
 	private JsonObject convertJSObject(Object element) {
 		JsonObjectLazy result = new JsonObjectLazy(element);
 		result.lazyLoad();
@@ -191,6 +209,11 @@ public class JavaAdapter implements JavaViewAdapter {
 		return true;
 	}
 
+	/**
+	 * 
+	 * @param clazz
+	 * @return
+	 */
 	public String getCallBackName(Object clazz) {
 		String callBackName = callBack.get(clazz);
 		Object window = this._execute("window");
