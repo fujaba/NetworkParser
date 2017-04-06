@@ -22,7 +22,7 @@ public class FeatureProperty implements Comparable<FeatureProperty> {
 		}
 		for (String item : value) {
 			if (item != null) {
-				excludeClazz.add(new Clazz(item));
+				includeClazz.add(new Clazz(item));
 			}
 		}
 
@@ -39,7 +39,7 @@ public class FeatureProperty implements Comparable<FeatureProperty> {
 		}
 		for (String item : value) {
 			if (item != null) {
-				includeClazz.add(new Clazz(item));
+				excludeClazz.add(new Clazz(item));
 			}
 		}
 		return this;
@@ -55,7 +55,7 @@ public class FeatureProperty implements Comparable<FeatureProperty> {
 		}
 		for (Clazz item : value) {
 			if (item != null) {
-				includeClazz.add(item);
+				excludeClazz.add(item);
 			}
 		}
 		return this;
@@ -68,6 +68,9 @@ public class FeatureProperty implements Comparable<FeatureProperty> {
 	public boolean match(String clazzName) {
 		// if Clazz is positive
 		boolean result = false;
+		if(this.classValue != null) {
+			return this.classValue.getName().equals(clazzName);
+		}
 		for (Clazz item : includeClazz) {
 			if (item == null) {
 				continue;

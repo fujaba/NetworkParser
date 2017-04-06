@@ -2,13 +2,14 @@ package de.uniks.networkparser.logic;
 
 import java.util.Map;
 
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.ObjectCondition;
-import de.uniks.networkparser.interfaces.TemplateCondition;
+import de.uniks.networkparser.interfaces.ParserCondition;
 import de.uniks.networkparser.list.SimpleKeyValueList;
 
-public class VariableCondition implements TemplateCondition{
+public class VariableCondition implements ParserCondition{
 	private CharSequence value;
-	private boolean expression;
+    private boolean expression;
 
 	@Override
 	public boolean update(Object value) {
@@ -36,18 +37,28 @@ public class VariableCondition implements TemplateCondition{
 		}
 		return null;
 	}
+
+    public VariableCondition withExpression(boolean value) {
+        this.expression = value;
+        return this;
+    }
+    
+    public static VariableCondition create(CharSequence sequence, boolean expression) {
+        return new VariableCondition().withValue(sequence).withExpression(expression);
+	}
 	
-	public static VariableCondition create(CharSequence sequence, boolean expression) {
-		return new VariableCondition().withValue(sequence).withExpression(expression);
-	}
-
-	public VariableCondition withExpression(boolean value) {
-		this.expression = value;
-		return this;
-	}
-
 	@Override
-	public boolean isExpression() {
-		return expression;
+	public ParserCondition create(CharacterBuffer buffer) {
+		return create(buffer);
 	}
+
+    @Override
+    public boolean isExpression() {
+        return expression;
+    }
+	@Override
+	public String getKey() {
+		return null;
+	}
+
 }
