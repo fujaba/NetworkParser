@@ -81,13 +81,15 @@ import de.uniks.networkparser.xml.HTMLEntity;
 public class GraphTest {
 	@Test
 	public void testSimpleObject() {
-		SimpleObject so = SimpleObject.create("number", "number", 0);
+		SimpleObject so = SimpleObject.create("number", "value", 42);
 		IdMap map = new IdMap();
 		map.withTimeStamp(1);
 		JsonObject jsonObject = map.toJsonObject(so);
-		Assert.assertEquals("{\"class\":\"number\",\"id\":\"S1\",\"prop\":{\"number\":0}}", jsonObject.toString());
+		Assert.assertEquals("{\"class\":\"number\",\"id\":\"S1\",\"prop\":{\"value\":42}}", jsonObject.toString());
 		jsonObject = map.toJsonObject(so, Filter.SIMPLEFORMAT);
-		Assert.assertEquals("{\"class\":\"number\",\"id\":\"S1\",\"number\":0}", jsonObject.toString());
+		Assert.assertEquals("{\"class\":\"number\",\"id\":\"S1\",\"value\":42}", jsonObject.toString());
+		
+		Assert.assertEquals(so.getValue(), 42);
 	}		
 	
 	@Test

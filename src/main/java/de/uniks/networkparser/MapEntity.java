@@ -122,7 +122,7 @@ public class MapEntity extends SimpleSet<Object>{
 	}
 
 	public boolean isFullSeriation() {
-		return filter.isFullSeriation();
+		return filter.isFullSerialization();
 	}
 	public String[] getProperties(Tokener tokener, SendableEntityCreator creator) {
 		return filter.getProperties(creator);

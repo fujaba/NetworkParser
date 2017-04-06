@@ -17,6 +17,9 @@ import de.uniks.networkparser.list.SimpleKeyValueList;
 import de.uniks.networkparser.list.SimpleList;
 import de.uniks.networkparser.xml.HTMLEntity;
 import de.uniks.networkparser.xml.XMLEntity;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.web.WebEngine;
 import netscape.javascript.JSObject;
 
 public class JavaAdapter implements JavaViewAdapter {
@@ -78,13 +81,14 @@ public class JavaAdapter implements JavaViewAdapter {
 		ReflectionLoader.call("loadContent", this.engine, String.class, entity.toString());
 		
 //FIXME		
-//		engine.setOnAlert(t -> {
-//			System.out.println(t.getData());
-//		});
-//
-//		engine.setOnError(e -> {
-//			System.err.println(e);
-//		});
+		((WebEngine)engine).setOnAlert(t -> {
+			System.out.println(t.getData());
+		});
+
+		((WebEngine)engine).setOnError(e -> {
+			System.err.println(e);
+		});
+		
 		return true;
 	}
 	
@@ -136,6 +140,7 @@ public class JavaAdapter implements JavaViewAdapter {
 	}
 	
 	private Object _execute(String script) {
+		System.out.println(script);
 		Object jsObject = ReflectionLoader.call("executeScript", this.engine, String.class, script);
 		JsonObject item = convertJSObject(jsObject);
 		return item;
@@ -154,7 +159,7 @@ public class JavaAdapter implements JavaViewAdapter {
 	
 	
 	protected void addAdapter(ObjectCondition eventListener) {
-		JsonObjectLazy executeScript = (JsonObjectLazy) executeScript("bridge.addAdapter(new DiagramJS.DelegateAdapter());");
+		JsonObjectLazy executeScript = (JsonObjectLazy) _execute("bridge.addAdapter(new DiagramJS.DelegateAdapter());");
 		JSObject reference = executeScript.getReference();
 //		String callBackName = getCallBackName(eventListener)+".update";
 //		reference.setMember("callBackfunction", callBackName);
