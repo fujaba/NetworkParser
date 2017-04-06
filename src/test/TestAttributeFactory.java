@@ -46,6 +46,9 @@ public class TestAttributeFactory {
 		person.createAttribute("name", DataType.STRING);
 		person.createAttribute("age", DataType.INT);
 		person.createAttribute("wise", DataType.BOOLEAN);
+		Clazz student = classModel.createClazz("Student");
+		student.createAttribute("type", DataType.STRING);
+		student.createAttribute("person", DataType.create(person));
 		TypeScriptModelFactory modelFactory = new TypeScriptModelFactory();
 		System.out.println(modelFactory.create(classModel));
 	}
