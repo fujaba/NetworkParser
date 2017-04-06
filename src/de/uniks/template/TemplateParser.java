@@ -11,6 +11,7 @@ public class TemplateParser implements ObjectCondition{
 	private CharacterBuffer result = new CharacterBuffer();
 	private GraphMember member;
 	private boolean expression=true;
+	private Template template;
 
 	public TemplateParser withVariable(SimpleKeyValueList<String, String> list) {
 		this.variables = list;
@@ -24,7 +25,7 @@ public class TemplateParser implements ObjectCondition{
 		}
 		if(value instanceof ParserCondition) {
 			ParserCondition tc = (ParserCondition) value;
-			if(this.expression) {
+			if(this.expression || tc.isExpression()) {
 				return tc.update(variables);
 			} else {
 				result.with(tc.getValue(variables));	
@@ -49,5 +50,13 @@ public class TemplateParser implements ObjectCondition{
 	public TemplateParser withExpression(boolean value) {
 		this.expression = value;
 		return this;
+	}
+
+	public void withTemplate(Template template) {
+		this.template = template;
+	}
+	
+	public Template getTemplate() {
+		return template;
 	}
 }

@@ -35,11 +35,18 @@ public class Template {
 	private Template prevTemplate = null;
 	
 	private Template nextTemplate = null;
+	
+	public String name;
 
 	private SimpleList<String> variables = new SimpleList<String>();
 	
+	private SimpleKeyValueList<String, ParserCondition> customTemplate = new SimpleKeyValueList<String, ParserCondition>();
 	
-	private SimpleKeyValueList<String, ParserCondition> customTemplate = new  SimpleKeyValueList<String, ParserCondition>();
+	public Template(String name) {
+		this.name = name;
+		FeatureCondition condition = new FeatureCondition();
+		customTemplate.add(condition.getKey(), condition);
+	}
 	
 	public Template() {
 		FeatureCondition condition = new FeatureCondition();
@@ -58,6 +65,7 @@ public class Template {
 		}
 		TemplateParser parser =new TemplateParser();
 		parser.withVariable(parameters);
+		parser.withTemplate(this);
 		parser.withMember(member);
 		
 		if(this.token.update(parser) == false) {
@@ -141,11 +149,12 @@ public class Template {
 					IfCondition token = new IfCondition();
 					if(tokenPart.equalsIgnoreCase("ifnot")) {
 						tokenPart = template.nextToken(false, SPLITEND);
-						VariableCondition expression = createVariable(tokenPart);
+						VariableCondition expression = createVariable(tokenPart, true);
 						token.withExpression(Not.create(expression));	
 					}else {
 						tokenPart = template.nextToken(false, SPLITEND);
-						token.withExpression(createVariable(tokenPart));
+						VariableCondition expression = createVariable(tokenPart, true);
+						token.withExpression(expression);
 					}
 					
 					template.skipChar(SPLITEND);
@@ -179,7 +188,7 @@ public class Template {
 			}
 			template.nextString(tokenPart, false, false, SPLITEND);
 			String key = tokenPart.toString();
-			child = createVariable(key);
+			child = createVariable(key, false);
 			parent.with(child);
 			character = template.getChar();
 			if(character == SPLITEND) {
@@ -192,7 +201,7 @@ public class Template {
 
 			//{{#if Type}} {{#end}}
 			IfCondition token = new IfCondition();
-			token.withExpression(createVariable(key));
+			token.withExpression(createVariable(key, true));
 			token.withTrue(StringCondition.create(tokenPart.toString()));
 			
 			child = token;
@@ -211,8 +220,8 @@ public class Template {
 		return parent;
 	}
 	
-	private VariableCondition createVariable(CharSequence value) {
-		VariableCondition condition = VariableCondition.create(value);
+	private VariableCondition createVariable(CharSequence value, boolean expression) {
+		VariableCondition condition = VariableCondition.create(value, expression);
 		this.variables.add(value.toString());
 		return condition;
 	}
@@ -309,5 +318,10 @@ public class Template {
 	
 	public SimpleList<String> getVariables() {
 		return variables;
+	}
+	
+	@Override
+	public String toString() {
+		return type+": "+name;
 	}
 }
