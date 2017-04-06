@@ -3,12 +3,23 @@ package test;
 import org.junit.Test;
 
 import de.uniks.factory.typescript.TypeScriptModelFactory;
+import de.uniks.networkparser.graph.Cardinality;
 import de.uniks.networkparser.graph.Clazz;
 import de.uniks.networkparser.graph.DataType;
 import de.uniks.networkparser.graph.GraphList;
 
 public class TestTypeScriptAssociationFactory {
 
+	@Test
+	public void testBidirectional() {
+		GraphList classModel = new GraphList().with("i.love.sdmlib");
+		Clazz room = classModel.createClazz("Room");
+		Clazz student = classModel.createClazz("Student");
+		student.withBidirectional(room, "room", Cardinality.ONE, "students", Cardinality.MANY);
+		TypeScriptModelFactory modelFactory = new TypeScriptModelFactory();
+		System.out.println(modelFactory.create(classModel));
+	}
+	
 	@Test
 	public void testInterface() {
 		GraphList classModel = new GraphList().with("i.love.sdmlib");
