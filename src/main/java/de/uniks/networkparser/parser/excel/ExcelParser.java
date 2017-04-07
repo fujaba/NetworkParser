@@ -84,7 +84,7 @@ public class ExcelParser {
 			if (sheetData != null) {
 //				if (rows != null && rows instanceof XMLEntity) {
 					for(int i=0;i<sheetData.sizeChildren();i++) {
-						EntityList child = mergeCells.getChild(i);
+						EntityList child = sheetData.getChild(i);
 						if (child == null || child instanceof XMLEntity == false ) {
 							continue;
 						}
