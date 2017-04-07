@@ -21,6 +21,18 @@ public class TestTypeScriptAssociationFactory {
 	}
 	
 	@Test
+	public void testBidirectionalInterface() {
+		GraphList classModel = new GraphList().with("i.love.sdmlib");
+		Clazz room = classModel.createClazz("Room").enableInterface();
+		Clazz subRoom = classModel.createClazz("SubRoom").withSuperClazz(room);
+		Clazz student = classModel.createClazz("Student");
+		student.withBidirectional(room, "room", Cardinality.ONE, "students", Cardinality.MANY);
+		TypeScriptModelFactory modelFactory = new TypeScriptModelFactory();
+		System.out.println(modelFactory.create(classModel));
+	
+	}
+	
+	@Test
 	public void testInterface() {
 		GraphList classModel = new GraphList().with("i.love.sdmlib");
 		Clazz person = classModel.createClazz("Person").enableInterface();
