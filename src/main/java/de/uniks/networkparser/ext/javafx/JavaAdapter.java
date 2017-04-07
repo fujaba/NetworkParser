@@ -149,8 +149,8 @@ public class JavaAdapter implements JavaViewAdapter {
 	
 	/**
 	 * synchronous Execute of script
-	 * @param script
-	 * @return
+	 * @param script Script for executing
+	 * @return Return value from Javascript
 	 */
 	private Object _execute(String script) {
 		System.out.println(script);
@@ -161,8 +161,8 @@ public class JavaAdapter implements JavaViewAdapter {
 
 	/**
 	 * Converts a JSObject to a JsonObject Lazy and forces a load of the LazyJsonObject.
-	 * @param element
-	 * @return JsonObjectLazy
+	 * @param element Element to Convert
+	 * @return JsonObjectLazy return new JsonObjectLazy
 	 */
 	private JsonObject convertJSObject(Object element) {
 		JsonObjectLazy result = new JsonObjectLazy(element);

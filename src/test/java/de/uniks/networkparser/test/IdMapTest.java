@@ -37,7 +37,7 @@ public class IdMapTest {
 		IdMap map=new IdMap();
 		int size = map.getCreators().size();
 		GenericCreator.create(map, University.class);
-		Assert.assertEquals(size+11, map.getCreators().size());
+		Assert.assertEquals(size+3, map.getCreators().size());
 	}
 	@Test
 	public void testWrapper() {

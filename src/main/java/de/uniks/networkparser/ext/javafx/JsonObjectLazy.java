@@ -62,7 +62,7 @@ public class JsonObjectLazy extends JsonObject {
 	
 	/**
 	 * Tries to load the Value directly from the JSObject, if it is not already loaded. 
-	 * @param key
+	 * @param key load the Key from Json
 	 * @return the value, that the REF contains, otherwise null
 	 */
 	public Object loadValue(Object key){
