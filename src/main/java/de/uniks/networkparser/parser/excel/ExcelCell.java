@@ -22,6 +22,7 @@ import java.util.Comparator;
 
 import de.uniks.networkparser.Pos;
 import de.uniks.networkparser.buffer.Buffer;
+import de.uniks.networkparser.buffer.CharacterBuffer;
 import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.Converter;
 import de.uniks.networkparser.interfaces.EntityList;
@@ -31,6 +32,7 @@ import de.uniks.networkparser.xml.XMLTokener;
 
 public class ExcelCell implements SendableEntityCreatorTag, EntityList{
 	public static final String TAG="c";
+	public static final String TAG_VALUE="v";
 	public static final String PROPERTY_STYLE="s";
 	public static final String PROPERTY_TYPE="t";
 	public static final String PROPERTY_REFERENZ="r";
@@ -69,20 +71,21 @@ public class ExcelCell implements SendableEntityCreatorTag, EntityList{
 		if(entity instanceof ExcelCell == false) {
 			return false;
 		}
+		ExcelCell item = (ExcelCell) entity;
 		if(PROPERTY_STYLE.equals(attribute)) {
-			((ExcelCell)entity).setStyle(""+value);
+			item.setStyle(""+value);
 			return true;
 		}
 		if(PROPERTY_TYPE.equals(attribute)) {
-			((ExcelCell)entity).setType(""+value);
+			item.setType(""+value);
 			return true;
 		}
 		if(PROPERTY_REFERENZ.equals(attribute)) {
-			((ExcelCell)entity).withReferenz(Pos.valueOf(""+value));
+			item.withReferenz(Pos.valueOf(""+value));
 			return true;
 		}
 		if(XMLTokener.CHILDREN.equals(type)) {
-			((ExcelCell)entity).add(value);
+			item.add(value);
 			return true;
 		}
 		return false;
@@ -176,6 +179,13 @@ public class ExcelCell implements SendableEntityCreatorTag, EntityList{
 		}
 		Object context = getContent();
 		if(context == null){
+			if(this.children != null) {
+				CharacterBuffer buffer = new CharacterBuffer(); 
+				for(EntityList item : this.children) {
+					buffer.with(item.toString());
+				}
+				return buffer.toString();
+			}
 			return "";
 		}
 		if(context instanceof Number) {

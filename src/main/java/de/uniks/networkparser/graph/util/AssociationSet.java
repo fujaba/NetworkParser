@@ -29,6 +29,11 @@ import de.uniks.networkparser.list.SimpleSet;
 
 public class AssociationSet extends SimpleSet<Association> {
 	public static final AssociationSet EMPTY_SET = new AssociationSet();
+	
+	public AssociationSet() {
+		this.withType(Association.class);
+	}
+	
 	public ClazzSet getClazzes() {
 		ClazzSet collection = new ClazzSet();
 		for(Association item : this) {

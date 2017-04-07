@@ -98,7 +98,7 @@ public class GraphTest {
 	
 		Assert.assertEquals(2, person.getMethods().size());
 		Assert.assertEquals(2, person.getAttributes().size());
-//FIXME		Assert.assertEquals(3, person.getAssociations().size());
+		Assert.assertEquals(3, person.getAssociations().size());
 	}
 	
 	

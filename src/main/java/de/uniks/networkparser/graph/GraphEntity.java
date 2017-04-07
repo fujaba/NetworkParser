@@ -275,7 +275,7 @@ public abstract class GraphEntity extends GraphMember {
     *</pre>
     */
 	public AssociationSet getAssociations(Condition<?>... filters) {
-		return getEdges(AssociationTypes.EDGE);
+		return getEdges(AssociationTypes.EDGE, filters);
 	}
 	public Annotation getAnnotation() {
 		return super.getAnnotation();

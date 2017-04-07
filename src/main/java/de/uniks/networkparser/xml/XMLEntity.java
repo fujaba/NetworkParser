@@ -442,7 +442,9 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 			EntityList entity = this.children.get(i);
 			if(entity instanceof XMLEntity) {
 				EntityList items = ((XMLEntity) entity).getElementsBy(key, value);
-				children.add(items);
+				if(items.size()>0) { 
+					children.add(items);
+				}
 			}
 			if(entity instanceof Entity == false) {
 				continue;
@@ -462,5 +464,16 @@ public class XMLEntity extends SimpleKeyValueList<String, Object> implements Ent
 	public XMLEntity withValueItem(String value) {
 		this.valueItem = value;
 		return this;
+	}
+	
+	@Override
+	public String getString(String key) throws RuntimeException {
+		if(PROPERTY_TAG.equals(key)) {
+			return this.tag;
+		}
+		if(PROPERTY_VALUE.equals(key)) {
+			return this.valueItem;
+		}
+		return super.getString(key);
 	}
 }

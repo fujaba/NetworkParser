@@ -662,7 +662,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 	}
 
 	public Class<?> getTypClass() {
-		return null;
+		return type;
 	}
 	
 	@SuppressWarnings("unchecked")

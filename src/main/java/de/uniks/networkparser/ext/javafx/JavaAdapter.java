@@ -134,8 +134,8 @@ public class JavaAdapter implements JavaViewAdapter {
 
 	/**
 	 * Asynchronous execute of the script.
-	 * @param script
-	 * @return
+	 * @param script Script for executing
+	 * @return return value from Javascript
 	 */
 	@Override
 	public Object executeScript(String script) {
@@ -150,7 +150,7 @@ public class JavaAdapter implements JavaViewAdapter {
 	/**
 	 * synchronous Execute of script
 	 * @param script Script for executing
-	 * @return Return value from Javascript
+	 * @return return value from Javascript
 	 */
 	private Object _execute(String script) {
 		System.out.println(script);
@@ -211,8 +211,8 @@ public class JavaAdapter implements JavaViewAdapter {
 
 	/**
 	 * 
-	 * @param clazz
-	 * @return
+	 * @param clazz Class for CallBack
+	 * @return return JavascriptCallbackname
 	 */
 	public String getCallBackName(Object clazz) {
 		String callBackName = callBack.get(clazz);

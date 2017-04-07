@@ -574,6 +574,30 @@ public class Clazz extends GraphEntity {
 		return collection;
 	}
 	
+	@Override
+	public AssociationSet getAssociations(Condition<?>... filters) {
+		AssociationSet collection = super.getAssociations(filters);
+		boolean isInterface = getType() == ClazzType.INTERFACE;
+		boolean isAbstract = getModifier().has(Modifier.ABSTRACT);
+		if(isInterface || isAbstract) {
+			return collection;
+		}
+		ClazzSet superClasses= new ClazzSet();
+		for(Association assoc : collection) {
+			if(assoc.getType()==AssociationTypes.GENERALISATION || assoc.getType() == AssociationTypes.IMPLEMENTS) {
+				superClasses.add(assoc.getOtherClazz());
+			}
+		}
+		AssociationSet newAssocs = new AssociationSet();
+		AssociationSet foundAssocs = new AssociationSet();
+		for(int i=0;i<superClasses.size();i++) {
+			Clazz item = superClasses.get(i);
+			item.parseSuperElements(superClasses, collection, newAssocs, foundAssocs, filters);
+		}
+		collection.addAll(foundAssocs);
+		return collection;
+	}
+	
 	/** get All Methods
 	 * @param superClasses Set of all SuperClasses
 	 * @param existsElements Set of Found Methods or new Attribute (Return Value)
@@ -592,14 +616,17 @@ public class Clazz extends GraphEntity {
 		}
 		boolean isInterface = getType() == ClazzType.INTERFACE;
 		boolean isAbstract = getModifier().has(Modifier.ABSTRACT);
+		Class<?> checkClassType = existsElements.getTypClass();
 		if(isInterface == false && isAbstract  == false ) {
-			if(existsElements.getTypClass() == Method.class) {
-				MethodSet methods = getMethods(filters);
-				newElements.removeAll(methods);
-			}else if(existsElements.getTypClass() == Attribute.class) {
-				AttributeSet attributes = getAttributes(filters);
-				newElements.removeAll(attributes);
+			SimpleSet<?> collection = null;
+			if(checkClassType == Method.class) {
+				collection = getMethods(filters);
+			}else if(checkClassType == Attribute.class) {
+				collection = getAttributes(filters);
+			}else if(checkClassType == Association.class) {
+				collection = getAssociations(filters);
 			}
+			newElements.removeAll(collection);
 			return;
 		}
 		
@@ -609,27 +636,40 @@ public class Clazz extends GraphEntity {
 				Association assoc = (Association) member;
 				if(assoc.getType()==AssociationTypes.GENERALISATION || assoc.getType() == AssociationTypes.IMPLEMENTS) {
 					superClasses.add(assoc.getOtherClazz());
-				}
-			} else {
-				if(existsElements.contains(member)) {
 					continue;
 				}
-				if(isInterface) {
-					if(member.getModifier() == null || member.getModifier().has(Modifier.DEFAULT) == false) {
-						if(check(member, filters) && newExistElements.contains(member) == false) {
-							newElements.add(member);
-						}
-					} else if(newExistElements.contains(member) == false){
-						newExistElements.add(member);
-						newElements.remove(member);
-					}
-				} else if(isAbstract && member.getModifier().has(Modifier.ABSTRACT)) {
+				if(checkClassType != Association.class) {
+					continue;
+				}
+				if(assoc.getOtherType()==AssociationTypes.GENERALISATION || assoc.getType() == AssociationTypes.IMPLEMENTS) {
+					continue;
+				}
+			}
+			if(checkClassType == Method.class && member instanceof Method == false) {
+				continue;
+			}else if(checkClassType == Attribute.class && member instanceof Attribute == false) {
+				continue;
+			}else if(checkClassType == Association.class && member instanceof Association == false) {
+				continue;
+			}
+			if(existsElements.contains(member)) {
+				continue;
+			}
+			if(isInterface) {
+				if(member.getModifier() == null || member.getModifier().has(Modifier.DEFAULT) == false) {
 					if(check(member, filters) && newExistElements.contains(member) == false) {
 						newElements.add(member);
-					} else if(newExistElements.contains(member) == false){
-						newExistElements.add(member);
-						newElements.remove(member);
 					}
+				} else if(newExistElements.contains(member) == false){
+					newExistElements.add(member);
+					newElements.remove(member);
+				}
+			} else if(isAbstract && member.getModifier().has(Modifier.ABSTRACT)) {
+				if(check(member, filters) && newExistElements.contains(member) == false) {
+					newElements.add(member);
+				} else if(newExistElements.contains(member) == false){
+					newExistElements.add(member);
+					newElements.remove(member);
 				}
 			}
 		}
