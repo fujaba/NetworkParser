@@ -80,6 +80,29 @@ import de.uniks.networkparser.xml.HTMLEntity;
 
 public class GraphTest {
 	@Test
+	public void testSimpleGeneralization() {
+		GraphList model=new GraphList();
+		Clazz creature = model.createClazz("Creature");
+		creature.createAttribute("age", DataType.INT);
+		creature.createMethod("live");
+		creature.enableInterface();
+		
+		Clazz food = model.createClazz("Food");
+		creature.withBidirectional(food, "eat", Cardinality.MANY, "meal", Cardinality.ONE);
+		
+		
+		Clazz person = model.createClazz("Person").withSuperClazz(creature);
+		person.createAttribute("name", DataType.STRING);
+		person.createMethod("go");
+		person.withBidirectional(food, "has", Cardinality.MANY, "owner", Cardinality.ONE);
+	
+		Assert.assertEquals(2, person.getMethods().size());
+		Assert.assertEquals(2, person.getAttributes().size());
+//FIXME		Assert.assertEquals(3, person.getAssociations().size());
+	}
+	
+	
+	@Test
 	public void testSimpleObject() {
 		SimpleObject so = SimpleObject.create("number", "value", 42);
 		IdMap map = new IdMap();
@@ -795,7 +818,7 @@ public class GraphTest {
 		AnnotationSet listOfAnnotation = new AnnotationSet().with(override);
 		Assert.assertEquals(1, listOfAnnotation.getClazzes().size());
 		Assert.assertEquals(1, listOfAnnotation.getMethods().size());
-		Assert.assertEquals(1, listOfAnnotation.getAttributes().size());
+		Assert.assertEquals(0, listOfAnnotation.getAttributes().size());
 
 		Modifier private1 = Modifier.PRIVATE;
 		initMethod.with(private1);
@@ -807,7 +830,7 @@ public class GraphTest {
 		listOfModifier.with(person.getModifier());
 		Assert.assertEquals(1, listOfModifier.getClazzes().size());
 		Assert.assertEquals(1, listOfModifier.getMethods().size());
-		Assert.assertEquals(1, listOfModifier.getAttributes().size());
+		Assert.assertEquals(0, listOfModifier.getAttributes().size());
 
 		// Navigate over Full Model
 		ClazzSet list = new ClazzSet().with(person, uni);

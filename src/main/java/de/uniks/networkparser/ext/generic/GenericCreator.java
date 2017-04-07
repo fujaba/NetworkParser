@@ -288,7 +288,7 @@ public class GenericCreator implements SendableEntityCreator {
 					} catch (ReflectiveOperationException e) {
 						// Try to find SubClass for Set
 					}
-					if(child.isInterface() == false) {
+					if(child.isInterface() == false && child instanceof Class<?> == false) {
 						create(map, child);
 					}
 				}

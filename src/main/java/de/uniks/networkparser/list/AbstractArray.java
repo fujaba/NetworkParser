@@ -661,7 +661,7 @@ public abstract class AbstractArray<V> implements BaseItem {
 		return pos;
 	}
 
-	protected Class<?> getTypClass() {
+	public Class<?> getTypClass() {
 		return null;
 	}
 	

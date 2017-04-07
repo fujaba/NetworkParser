@@ -9,6 +9,7 @@ public class FeatureProperty implements Comparable<FeatureProperty> {
 	private SimpleList<Clazz> excludeClazz = new SimpleList<Clazz>();
 	private SimpleList<String> path = new SimpleList<String>();
 	private Class<?> classValue;
+	private String value;
 	private Feature name;
 
 	FeatureProperty(Feature name) {
@@ -161,6 +162,15 @@ public class FeatureProperty implements Comparable<FeatureProperty> {
 			return name.toString();
 		}
 		return super.toString();
+	}
+
+	public String getStringValue() {
+		return value;
+	}
+
+	public FeatureProperty withStringValue(String value) {
+		this.value = value;
+		return this;
 	}
 
 }
