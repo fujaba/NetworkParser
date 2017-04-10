@@ -51,7 +51,7 @@ public class EntityUtil {
 	 * @param d		a double.
 	 * @return 		a String.
 	 */
-	public static String doubleToString(double d) {
+	public static final String doubleToString(double d) {
 		if (Double.isInfinite(d) || Double.isNaN(d)) {
 			return "null";
 		}
@@ -69,7 +69,7 @@ public class EntityUtil {
 		return string;
 	}
 	
-	public static boolean isNumeric(String strNum) {
+	public static final boolean isNumeric(String strNum) {
 	    try {
 	        Double.parseDouble(strNum);
 	    }catch (NumberFormatException e) {
@@ -78,7 +78,7 @@ public class EntityUtil {
 	    return true;
 	}
 
-	public static SimpleList<Pos> getExcelRange(String tag) {
+	public static final SimpleList<Pos> getExcelRange(String tag) {
 		SimpleList<Pos> range = new SimpleList<Pos>();
 		if(tag == null) {
 			return range;
@@ -109,7 +109,7 @@ public class EntityUtil {
 	 * @return 				A String.
 	 * @throws IllegalArgumentException		If n is a non-finite number.
 	 */
-	public static String valueToString(Number number)
+	public static final String valueToString(Number number)
 			throws IllegalArgumentException {
 		if (number == null) {
 			throw new IllegalArgumentException("Null pointer");
@@ -129,7 +129,7 @@ public class EntityUtil {
 		return string;
 	}
 	public static String CONTROLCHARACTER = "abtnvfr"; 
-	public static String unQuoteControlCharacter(CharSequence value) {
+	public static final String unQuoteControlCharacter(CharSequence value) {
 		if (value == null || value.length() == 0) {
 			return "";
 		}
@@ -173,7 +173,7 @@ public class EntityUtil {
 		return sb.toString();
 	}
 
-	public static String unQuote(CharSequence value) {
+	public static final String unQuote(CharSequence value) {
 		if (value == null || value.length() == 0) {
 			return "";
 		}
@@ -209,7 +209,7 @@ public class EntityUtil {
 		return sb.toString();
 	}
 
-	public static String basicUnQuote(String value) {
+	public static final String basicUnQuote(String value) {
 		if (value == null || value.length() == 0) {
 			return "";
 		}
@@ -238,7 +238,7 @@ public class EntityUtil {
 		return sb.toString();
 	}
 
-	private static char fromHex(char... values) {
+	private static final char fromHex(char... values) {
 		if(values == null) {
 			return 0;
 		}
@@ -247,7 +247,7 @@ public class EntityUtil {
 				+ (HEXVAL.indexOf(values[2]) << 8) + HEXVAL.indexOf(values[3]));
 	}
 	
-	private static char fromOctal(char... values) {
+	private static final char fromOctal(char... values) {
 		if(values == null) {
 			return 0;
 		}
@@ -269,7 +269,7 @@ public class EntityUtil {
 	 * @param string		A String
 	 * @return 				A String correctly formatted for insertion in a JSON text.
 	 */
-	public static String quote(String string) {
+	public static final String quote(String string) {
 		if (string == null || string.length() == 0) {
 			return "\"\"";
 		}
@@ -318,7 +318,7 @@ public class EntityUtil {
 	 *		 brace)</small> and ending with <code>}</code>&nbsp;<small>(right
 	 *		 brace)</small>.
 	 */
-	public static String valueToString(Object value, boolean simpleText, BaseItem reference, Converter converter) {
+	public static final String valueToString(Object value, boolean simpleText, BaseItem reference, Converter converter) {
 		if (value == null) {
 			return "null";
 		}
@@ -374,7 +374,7 @@ public class EntityUtil {
 	 * @param reference		The reference
 	 * @return The wrapped value
 	 */
-	public static Object wrap(Object object, BaseItem reference) {
+	public static final Object wrap(Object object, BaseItem reference) {
 		try {
 			if (object == null) {
 				return null;
@@ -417,7 +417,7 @@ public class EntityUtil {
 	 * @param repeat	Number of Repeat
 	 * @return a String
 	 */
-	public static String repeat(char ch, int repeat) {
+	public static final String repeat(char ch, int repeat) {
 		if(repeat<0) {
 			return "";
 		}
@@ -435,7 +435,7 @@ public class EntityUtil {
 	 * @param s2	second string
 	 * @return true if both parameters are null or equal
 	 */
-	public static boolean stringEquals(String s1, String s2) {
+	public static final boolean stringEquals(String s1, String s2) {
 		return s1 == null ? s2 == null : s1.equals(s2);
 	}
 	/**
@@ -445,7 +445,7 @@ public class EntityUtil {
 	 * @param length	the length of Value
 	 * @return a String of Value
 	 */
-	public static String strZero(int value, int length) {
+	public static final String strZero(int value, int length) {
 		return strZero(String.valueOf(value), length, -1);
 	}
 
@@ -456,7 +456,7 @@ public class EntityUtil {
 	 * @param length	the length of Value
 	 * @return a String of Value
 	 */
-	public static String strZero(long value, int length) {
+	public static final String strZero(long value, int length) {
 		return strZero(String.valueOf(value), length, -1);
 	}
 
@@ -468,7 +468,7 @@ public class EntityUtil {
 	 * @param max		the maxValue
 	 * @return a String of Value
 	 */
-	public static String strZero(long value, int length, int max) {
+	public static final String strZero(long value, int length, int max) {
 		return strZero(String.valueOf(value), length, max);
 	}
 
@@ -480,11 +480,11 @@ public class EntityUtil {
 	 * @param max		the maxValue
 	 * @return a String of Value with max value
 	 */
-	public static String strZero(int value, int length, int max) {
+	public static final String strZero(int value, int length, int max) {
 		return strZero(String.valueOf(value), length, max);
 	}
 
-	public static String strZero(String value, int length, int max) {
+	public static final String strZero(String value, int length, int max) {
 		if(max>0 && max<length) {
 			length = max;
 		}
@@ -501,7 +501,7 @@ public class EntityUtil {
 		return sb.toString();
 	}
 
-	public static String getValidChars(String source, int maxLen) {
+	public static final String getValidChars(String source, int maxLen) {
 		int i = source.length()-1;
 		StringBuilder sb=new StringBuilder();
 		if(i>0){
@@ -530,7 +530,7 @@ public class EntityUtil {
 		return sb.toString();
 	}
 
-	public static String getDefaultValue(String datatype) {
+	public static final String getDefaultValue(String datatype) {
 		if(EntityUtil.isNumericType(datatype)) {
 			if("Long".equals(datatype)) {
 				return "0L";
@@ -554,15 +554,15 @@ public class EntityUtil {
 		return "null";
 	}
 	
-	public static boolean compareEntity(Entity entityA, Entity entityB) {
+	public static final boolean compareEntity(Entity entityA, Entity entityB) {
 		return compareEntity(entityA, entityB, new TextDiff(), null);
 	}
 	
-	public static boolean compareEntity(Collection<?> jsonA, Collection<?> jsonB) {
+	public static final boolean compareEntity(Collection<?> jsonA, Collection<?> jsonB) {
 		return compareEntity(jsonA, jsonB, new TextDiff(), null);
 	}
 	
-	public static boolean compareEntity(Object entityA, Object entityB, TextDiff diffList, BaseItem sameObject) {
+	public static final boolean compareEntity(Object entityA, Object entityB, TextDiff diffList, BaseItem sameObject) {
 		if(sameObject == null) {
 			if (entityA instanceof Entity) {
 				sameObject = ((BaseItem) entityA).getNewList(true);
@@ -689,7 +689,7 @@ public class EntityUtil {
 		return false;
 	}
 
-	static Object compareValue(String key, Object valueA, Object valueB, TextDiff diffList, BaseItem sameElement) {
+	protected static final Object compareValue(String key, Object valueA, Object valueB, TextDiff diffList, BaseItem sameElement) {
 		BaseItem sameObject = null;
 		if(valueA instanceof Entity && valueB instanceof Entity) {
 			Entity entityA = (Entity)valueA;
@@ -722,14 +722,14 @@ public class EntityUtil {
 	
 	public static final String emfTypes = " EOBJECT EBIG_DECIMAL EBOOLEAN EBYTE EBYTE_ARRAY ECHAR EDATE EDOUBLE EFLOAT EINT EINTEGER ELONG EMAP ERESOURCE ESHORT ESTRING ";
 
-	public static boolean isEMFType(String tag) {
+	public static final boolean isEMFType(String tag) {
 		return emfTypes.indexOf(" " + tag.toUpperCase() + " ") >= 0;
 	}
 
 	private static final String primitiveTypes = " void String char Char boolean Boolean byte Byte Object java.util.Date ";
 	private static final String numericTypes = " long Long short Short int Integer byte Byte float Float double Double ";
 	private static final String javaLang="java.lang.";
-	public static boolean isPrimitiveType(String type) {
+	public static final boolean isPrimitiveType(String type) {
 		if (type == null) {
 			return false;
 		}
@@ -744,7 +744,7 @@ public class EntityUtil {
 		return numericTypes.indexOf(type) >= 0 || primitiveTypes.indexOf(type) >= 0;
 	}
 
-	public static boolean isNumericType(String type) {
+	public static final boolean isNumericType(String type) {
 		if (type == null)
 			return false;
 		if(type.startsWith(javaLang)) {
@@ -753,7 +753,7 @@ public class EntityUtil {
 		return numericTypes.indexOf(" " + type + " ") >= 0;
 	}
 
-	public static String convertPrimitiveToObjectType(String type) {
+	public static final String convertPrimitiveToObjectType(String type) {
 		int pos = transferMap.indexOf(type);
 		if(pos<0) {
 			return type;
@@ -764,7 +764,7 @@ public class EntityUtil {
 	public static final String javaKeyWords = " abstract assert boolean break byte case catch char class const continue default do double else enum extends final finally float for if goto implements import instanceof int interface long native new package private protected public return short static strictfp super switch synchronized this throw throws transient try void volatile while ";
 	private static final SimpleKeyValueList<String, String> transferMap = new SimpleKeyValueList<String, String>().withKeyValueString("long:Long,int:Integer,char:Character,boolean:Boolean,byte:Byte,float:Float,double:Double", String.class);
 
-	public static String toValidJavaId(String tag) {
+	public static final String toValidJavaId(String tag) {
 		if (javaKeyWords.indexOf(" " + tag + " ") >= 0) {
 			tag = "_" + tag;
 		}
@@ -772,7 +772,7 @@ public class EntityUtil {
 		return tag;
 	}
 
-	public static String getId(String name) {
+	public static final String getId(String name) {
 		if (name.lastIndexOf("/") >= 0) {
 			return name.substring(name.lastIndexOf("/") + 1);
 		}
@@ -782,7 +782,7 @@ public class EntityUtil {
 		return name;
 	}
 
-	public static String shortClassName(String name) {
+	public static final String shortClassName(String name) {
 		if(name==null) {
 			return "";
 		}
@@ -795,7 +795,7 @@ public class EntityUtil {
 		return name;
 	}
 
-	public static String upFirstChar(String name) {
+	public static final String upFirstChar(String name) {
 		if(name == null || name.length()<1) {
 			return name;
 		}
@@ -885,7 +885,7 @@ public class EntityUtil {
 		return buf.toString();
 	}
 	
-	public static void writeByteHeader(ByteBuffer buffer, byte type, int valueLength) {
+	public static final void writeByteHeader(ByteBuffer buffer, byte type, int valueLength) {
 		if (valueLength > 0 ) {
 			// Save Type
 			if (type != 0) {
@@ -912,7 +912,7 @@ public class EntityUtil {
 		}
 	}
 
-	public static byte[] clone(byte[] entity) {
+	public static final byte[] clone(byte[] entity) {
 		byte[] result=new byte[entity.length];
 		for(int i=0;i<entity.length;i++) {
 			result[i] = entity[i];
@@ -920,11 +920,11 @@ public class EntityUtil {
 		return result;
 	}
 
-	public static byte getType(byte group, byte subGroup) {
+	public static final byte getType(byte group, byte subGroup) {
 		return (byte) (group + subGroup);
 	}
 
-	public static byte getType(byte type, int len, boolean isLast) {
+	public static final byte getType(byte type, int len, boolean isLast) {
 		if (isGroup(type)) {
 			if (isLast) {
 				return getType(type, ByteTokener.LEN_LAST);
@@ -943,7 +943,7 @@ public class EntityUtil {
 		return type;
 	}
 
-	public static int getTypeLen(byte type, int len, boolean isLast) {
+	public static final int getTypeLen(byte type, int len, boolean isLast) {
 		if (isGroup(type)) {
 			int ref = type % 16 - 10;
 			if (ref == 0) {
@@ -976,7 +976,7 @@ public class EntityUtil {
 	 * @param string The String
 	 * @return the ByteArray
 	 */
-	public static byte[] getBytes(CharSequence string) {
+	public static final byte[] getBytes(CharSequence string) {
 		int size = string.length();
 		byte[] bytes = new byte[size];
 		for (int i = 0; i < size;i++) {
@@ -986,7 +986,7 @@ public class EntityUtil {
 	}
 	
 
-	public static ByteBuffer getBuffer(int len) {
+	public static final ByteBuffer getBuffer(int len) {
 		if (len < 1) {
 			return null;
 		}
@@ -994,7 +994,7 @@ public class EntityUtil {
 		return message;
 	}
 
-	public static boolean isPrimitive(byte type) {
+	public static final boolean isPrimitive(byte type) {
 		return ((type >= ByteTokener.DATATYPE_SHORT && type <= ByteTokener.DATATYPE_BYTE) || type <= ByteTokener.DATATYPE_CHAR);
 	}
 
@@ -1004,11 +1004,11 @@ public class EntityUtil {
 	 * @param type			the the type of data
 	 * @return 				success
 	 */
-	public static boolean isGroup(byte type) {
+	public static final boolean isGroup(byte type) {
 		return (type & 0x08) == 0x08;
 	}
 
-	public static String getStringType(byte type) {
+	public static final String getStringType(byte type) {
 		if (type == ByteTokener.DATATYPE_NULL) {
 			return "DATATYPE_NULL";
 		}
@@ -1104,11 +1104,11 @@ public class EntityUtil {
 		return null;
 	}
 
-	public static byte getGroup(byte type) {
+	public static final byte getGroup(byte type) {
 		return (byte) ((type / 16) * 16 + 10);
 	}
 
-	public static byte getSubGroup(byte type) {
+	public static final byte getSubGroup(byte type) {
 		return (byte) ((type % 16) - 10);
 	}
 }

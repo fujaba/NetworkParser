@@ -30,7 +30,7 @@ apply plugin: "com.github.kt3k.coveralls"
 apply from: 'gradle/mavencentral.gradle'
 //apply from: 'gradle/artifactory.gradle'
 
-
+group = "de.uniks"
 
 idea {
 	project {

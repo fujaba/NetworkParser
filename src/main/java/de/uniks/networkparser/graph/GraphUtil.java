@@ -31,13 +31,13 @@ permissions and limitations under the Licence.
  * @author Stefan Lindel
  */
 public class GraphUtil {
-	public static Clazz getByObject(GraphEntity item, String clazz, boolean fullName) {
+	public static final Clazz getByObject(GraphEntity item, String clazz, boolean fullName) {
 		if(clazz == null) {
 			return null;
 		}
 		return (Clazz) item.getByObject(clazz, fullName);
 	}
-	public static SimpleSet<Annotation> getAnnotations(GraphMember item) {
+	public static final SimpleSet<Annotation> getAnnotations(GraphMember item) {
 		if(item == null) {
 			return null;
 		}
@@ -62,25 +62,25 @@ public class GraphUtil {
 		return collection;
 	}
 
-	public static boolean isWithNoObjects(Clazz clazz) {
+	public static final boolean isWithNoObjects(Clazz clazz) {
 		if(clazz == null) {
 			return false;
 		}
 		return (clazz.getModifier().has(Modifier.ABSTRACT) || clazz.getType() == ClazzType.INTERFACE);
 	}
-	public static boolean isInterface(Clazz clazz) {
+	public static final boolean isInterface(Clazz clazz) {
 		if(clazz == null) {
 			return false;
 		}
 		return clazz.getType() == ClazzType.INTERFACE;
 	}
-	public static boolean isEnumeration(Clazz clazz) {
+	public static final boolean isEnumeration(Clazz clazz) {
 		if(clazz == null) {
 			return false;
 		}
 		return clazz.getType() == ClazzType.ENUMERATION;
 	}
-	public static boolean isUndirectional(Association assoc) {
+	public static final boolean isUndirectional(Association assoc) {
 		if(assoc == null) {
 			return false;
 		}
@@ -90,7 +90,7 @@ public class GraphUtil {
 		return (assoc.getOtherType()==AssociationTypes.ASSOCIATION || assoc.getOtherType()==AssociationTypes.UNDIRECTIONAL) && assoc.getType()==AssociationTypes.EDGE;
 	}
 
-	public static boolean isInterfaceAssociation(Association assoc) {
+	public static final boolean isInterfaceAssociation(Association assoc) {
 		if(assoc == null) {
 			return false;
 		}
@@ -100,11 +100,11 @@ public class GraphUtil {
 		return assoc.getOtherType()==AssociationTypes.IMPLEMENTS && assoc.getType()==AssociationTypes.EDGE;
 	}
 
-	public static CharacterBuffer getMethodParameters(Method method, boolean shortName) {
+	public static final CharacterBuffer getMethodParameters(Method method, boolean shortName) {
 		return method.getParameterString(shortName, false);
 	}
 
-	public static SimpleSet<Association> getOtherAssociations(Clazz clazz) {
+	public static final SimpleSet<Association> getOtherAssociations(Clazz clazz) {
 		SimpleSet<Association> collection = new SimpleSet<Association>();
 		for(Association assoc : clazz.getAssociations()) {
 			collection.add(assoc.getOther());
@@ -112,20 +112,20 @@ public class GraphUtil {
 		return collection;
 	}
 
-	public static GraphSimpleSet getChildren(GraphMember item) {
+	public static final GraphSimpleSet getChildren(GraphMember item) {
 		return item.getChildren();
 	}
-	public static String getSeperator(Association item) {
+	public static final String getSeperator(Association item) {
 		return item.getSeperator();
 	}
-	public static SimpleSet<GraphEntity> getNodes(GraphMember item) {
+	public static final SimpleSet<GraphEntity> getNodes(GraphMember item) {
 		return item.getNodes();
 	}
-	public static GraphDiff getDifference(GraphMember item) {
+	public static final GraphDiff getDifference(GraphMember item) {
 		return item.getDiff();
 	}
 
-	public static void removeYou(GraphMember value) {
+	public static final void removeYou(GraphMember value) {
 		if(value == null) {
 			return;
 		}
@@ -147,7 +147,7 @@ public class GraphUtil {
 		}
 	}
 
-	public static boolean containsClazzAssociation(SimpleList<GraphMember> visited, Association assoc, Association other) {
+	public static final boolean containsClazzAssociation(SimpleList<GraphMember> visited, Association assoc, Association other) {
 		boolean foundAssoc = false;
 		for(GraphMember checkItem : visited) {
 			if(checkItem instanceof Association == false || checkItem.getName() == null) {
@@ -179,7 +179,7 @@ public class GraphUtil {
 		}
 		return foundAssoc;
 	}
-	public static String getShortAssoc(Association assoc) {
+	public static final String getShortAssoc(Association assoc) {
 		if( assoc == null) {
 			return "";
 		}
@@ -205,5 +205,36 @@ public class GraphUtil {
 			sb.with(assoc.getCardinality().getValue());
 		}
 		return sb.toString();
+	}
+	
+	public static final GraphModel getGraphModel(GraphMember member) {
+		if(member instanceof GraphModel) {
+			return (GraphModel) member;
+		}
+		Object parent = member.getParent();
+		if(parent instanceof GraphMember) {
+			return getGraphModel((GraphMember)parent);
+		} else if(parent instanceof GraphSimpleSet) {
+			GraphSimpleSet list = (GraphSimpleSet) parent;
+			if(list.size()>0) {
+				return getGraphModel(list.first());
+			}
+		}
+		return null;
+	}
+	public static final Clazz getParentClazz(GraphMember member) {
+		if(member instanceof Clazz) {
+			return (Clazz) member;
+		}
+		Object parent = member.getParent();
+		if(parent instanceof GraphMember) {
+			return getParentClazz((GraphMember)parent);
+		} else if(parent instanceof GraphSimpleSet) {
+			GraphSimpleSet list = (GraphSimpleSet) parent;
+			if(list.size()>0) {
+				return getParentClazz(list.first());
+			}
+		}
+		return null;
 	}
 }

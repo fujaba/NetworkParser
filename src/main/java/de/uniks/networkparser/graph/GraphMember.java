@@ -135,6 +135,10 @@ public abstract class GraphMember {
 		}
 		return false;
 	}
+	
+	protected Object getParent() {
+		return parentNode;
+	}
 
 	protected GraphMember withChildren(GraphMember... values) {
 		// Do Nothing

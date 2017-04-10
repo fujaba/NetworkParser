@@ -3,7 +3,6 @@ package de.uniks.networkparser.test;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 import org.junit.Assert;
@@ -19,7 +18,6 @@ public class ExcelTest extends IOClasses{
 	public void testLoad() throws FileNotFoundException {
 		String path = getAbsolutePath("UniKassel.xlsx");
 		File myFile = new File(path);
-		FileInputStream fis = new FileInputStream(myFile);
 
 		ExcelBuffer exBuf = new ExcelBuffer();
 		ExcelSheet sheet = exBuf.parse(myFile);

@@ -26,6 +26,8 @@ THE SOFTWARE.
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
@@ -61,6 +63,13 @@ public class FileBuffer extends Buffer {
 	@Override
 	public int length() {
 		return length;
+	}
+	
+	public boolean exist() {
+		if(this.file == null) {
+			return false;
+		}
+		return this.file.exists();
 	}
 
 	@Override
@@ -148,5 +157,42 @@ public class FileBuffer extends Buffer {
 			this.reader.close();
 		} catch (IOException e) {
 		}
+	}
+	
+	public static final boolean writeFile(String fileName, CharSequence data, boolean appendData) {
+		FileBuffer buffer = new FileBuffer();
+		buffer.withFile(fileName);
+		if(buffer.exist() == false) {
+			if(buffer.createFile()) {
+				return false;
+			}
+		}
+		return buffer.write(data, appendData);
+	}
+	public static final boolean writeFile(String fileName, CharSequence data) {
+		return writeFile(fileName, data, false);
+	}
+
+	private boolean createFile() {
+		if(this.file == null) {
+			return false;
+		}
+		return file.getParentFile().mkdirs();
+	}
+	
+	public boolean write(CharSequence data, boolean append) {
+		if(this.file == null) {
+			return false;
+		}
+		try {
+			FileOutputStream os = new FileOutputStream(this.file, append);
+			os.write(data.toString().getBytes());
+			os.flush();
+			os.close();
+			return true;
+		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
+		}
+		return false;
 	}
 }
