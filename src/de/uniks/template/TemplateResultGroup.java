@@ -48,13 +48,22 @@ public class TemplateResultGroup {
 		extras.add(templateFragment);
 	}
 	
+	public void addExtra(TemplateResultFragment templateFragment) {
+		for (TemplateResultFragment templateResultFragment : extras) {
+			if (templateResultFragment.getValue().equals(templateFragment.getValue())) {
+				return;
+			}
+		}
+		extras.add(templateFragment);
+	}
+	
 	public void joinData(TemplateResultGroup otherTemplateResult) {
 		if (result == null) {
 			result = new CharacterBuffer();
 		}
 		result.with(otherTemplateResult.getResult());
 		for (TemplateResultFragment templateFragment : otherTemplateResult.getExtras()) {
-			extras.add(templateFragment);
+			addExtra(templateFragment);
 		}
 	}
 	
