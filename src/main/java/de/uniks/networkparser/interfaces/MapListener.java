@@ -10,4 +10,5 @@ public interface MapListener extends PropertyChangeListener {
 	public Filter getFilter();
 	public boolean suspendNotification();
 	public boolean resetNotification();
+	public boolean resumeNotification();
 }

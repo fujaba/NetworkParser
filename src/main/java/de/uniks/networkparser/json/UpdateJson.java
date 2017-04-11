@@ -80,7 +80,7 @@ public class UpdateJson implements MapListener {
 	 * 
 	 * @return success for reset Notification
 	 */
-	public boolean resetNotification() {
+	public boolean resumeNotification() {
 		JsonArray array = this.map.getJsonByIds(this.suspendIdList);
 		if(array.size() > 0) {
 			JsonObject message = new JsonObject();
@@ -88,6 +88,11 @@ public class UpdateJson implements MapListener {
 			this.map.notify(new SimpleEvent(SendableEntityCreator.NEW, message, map, null, null, null));
 		}
 
+		this.suspendIdList = null;
+		return true;
+	}
+
+	public boolean resetNotification() {
 		this.suspendIdList = null;
 		return true;
 	}
@@ -322,7 +327,7 @@ public class UpdateJson implements MapListener {
 				String oldId = (String) ((JsonObject) oldValue)
 						.get(IdMap.ID);
 				return oldId.equals(this.map.getId(value));
-			} else if (oldValue.equals(value)) {
+			} else if (oldValue != null && oldValue.equals(value) || value == null) {
 				return true;
 			}
 		}

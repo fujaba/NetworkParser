@@ -155,8 +155,11 @@ public class JavaAdapter implements JavaViewAdapter {
 	private Object _execute(String script) {
 		System.out.println(script);
 		Object jsObject = ReflectionLoader.call("executeScript", this.engine, String.class, script);
-		JsonObject item = convertJSObject(jsObject);
-		return item;
+		if(jsObject != null && ReflectionLoader.JSOBJECT.isAssignableFrom(jsObject.getClass())){
+			JsonObject item = convertJSObject(jsObject);
+			return item;
+		}
+		else return jsObject;
 	}
 
 	/**
