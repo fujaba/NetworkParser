@@ -1304,7 +1304,14 @@ public class IdMap implements BaseItem, Iterable<SendableEntityCreator> {
 			} else {
  				id = "" + temp;
  				if(getKey(entity) == null) {
- 					put(id, entity);
+ 					if(map.getFilter().isSimpleFormat() == true) {
+ 	 					boolean changed = this.keyValue.add(id, entity);
+ 	 					if (changed) {
+ 	 						addListener(entity);
+ 	 					}
+ 					} else {
+ 						put(id, entity);
+ 					}
  				}
 			}
 		}

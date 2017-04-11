@@ -10,6 +10,6 @@ public class NumberField extends Input<Integer> {
 		super();
 		this.type = NUMBER;
 		// set the default value to 0
-		this.setValue("defaultValue", 0);
+//		this.setValue("defaultValue", 0);
 	}
 }
