@@ -327,7 +327,7 @@ public class UpdateJson implements MapListener {
 				String oldId = (String) ((JsonObject) oldValue)
 						.get(IdMap.ID);
 				return oldId.equals(this.map.getId(value));
-			} else if (oldValue != null && oldValue.equals(value) || value == null) {
+			} else if (oldValue != null && oldValue.equals(value) || (value == null && oldValue == null)) {
 				return true;
 			}
 		}

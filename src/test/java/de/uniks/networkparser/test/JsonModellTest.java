@@ -50,7 +50,10 @@ public class JsonModellTest implements ObjectCondition {
 		updateListener.execute(json, null);
 		
 		IdMap map = new IdMap();
-		map.put("number", new SimpleObject());
+		SimpleObject so = new SimpleObject();
+		so.setValue("value", 42);
+//		so.p
+		map.put("number", so);
 		updateListener = new UpdateJson(map);
 		updateListener.execute(json, null);
 	}
