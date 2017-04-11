@@ -199,6 +199,9 @@ public class UpdateJson implements MapListener {
 		if(!updateMessage.has(SendableEntityCreator.UPDATE) && !updateMessage.has(SendableEntityCreator.REMOVE)) {
 			return null;
 		}
+		if(this.map == null) {
+			return null;
+		}
 
 		String id = updateMessage.getString(IdMap.ID);
 		JsonObject remove = (JsonObject) updateMessage.getValue(SendableEntityCreator.REMOVE);

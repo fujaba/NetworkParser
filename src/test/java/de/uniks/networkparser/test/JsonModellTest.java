@@ -11,6 +11,7 @@ import de.uniks.networkparser.Deep;
 import de.uniks.networkparser.Filter;
 import de.uniks.networkparser.IdMap;
 import de.uniks.networkparser.SimpleEvent;
+import de.uniks.networkparser.SimpleObject;
 import de.uniks.networkparser.bytes.ByteMessage;
 import de.uniks.networkparser.bytes.ByteMessageCreator;
 import de.uniks.networkparser.ext.generic.JsonParser;
@@ -18,6 +19,7 @@ import de.uniks.networkparser.interfaces.BaseItem;
 import de.uniks.networkparser.interfaces.ObjectCondition;
 import de.uniks.networkparser.interfaces.SendableEntityCreator;
 import de.uniks.networkparser.json.JsonObject;
+import de.uniks.networkparser.json.UpdateJson;
 import de.uniks.networkparser.logic.InstanceOf;
 import de.uniks.networkparser.logic.Or;
 import de.uniks.networkparser.test.model.Apple;
@@ -40,6 +42,18 @@ import de.uniks.networkparser.test.model.util.UniversityCreator;
 public class JsonModellTest implements ObjectCondition {
 	private IdMap secondMap;
 	BaseItem data;
+	
+	@Test
+	public void testJsonUpdate(){
+		JsonObject json = JsonObject.create("{id:number, upd:{value:42}, rem:{}}");
+		UpdateJson updateListener = new UpdateJson(null);
+		updateListener.execute(json, null);
+		
+		IdMap map = new IdMap();
+		map.put("number", new SimpleObject());
+		updateListener = new UpdateJson(map);
+		updateListener.execute(json, null);
+	}
 	
 	@Test
 	public void testGenericJson(){
